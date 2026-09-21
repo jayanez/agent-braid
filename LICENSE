@@ -1,0 +1,66 @@
+# Agent Braid licensing
+
+Copyright © 2026 Juan Antonio Yáñez García.
+
+Agent Braid uses a split-license model so that its executable artifacts remain
+open under strong network copyleft while its research and documentation remain
+freely reusable with attribution and share-alike obligations.
+
+## Software — AGPL-3.0-only
+
+The following material is licensed under the GNU Affero General Public License,
+version 3 only (`AGPL-3.0-only`):
+
+- `.github/workflows/**`
+- `agent_braid/**`
+- `examples/**`
+- `schemas/**`
+- `scripts/**`
+- future source code, build definitions, executable fixtures, and automation,
+  unless a file explicitly states another license
+
+The complete license text is in
+[`LICENSES/AGPL-3.0-only.txt`](LICENSES/AGPL-3.0-only.txt).
+
+## Documentation and research — CC-BY-SA-4.0
+
+The following material is licensed under the Creative Commons
+Attribution-ShareAlike 4.0 International license (`CC-BY-SA-4.0`):
+
+- the root Markdown documentation, including the Constitution, architecture,
+  research program, mathematical foundations, roadmap, governance,
+  contribution guide, security policy, and terminology
+- `docs/**`
+- `reports/**`
+- `research/**`
+- `CITATION.cff`, `.github/CODEOWNERS`, and `.gitignore`
+
+The complete license text is in
+[`LICENSES/CC-BY-SA-4.0.txt`](LICENSES/CC-BY-SA-4.0.txt).
+
+## Legal and third-party material
+
+This file, `NOTICE`, and `TRADEMARKS.md` may be reproduced as necessary to
+identify the applicable terms and comply with them. The canonical license texts
+in `LICENSES/` remain subject to their own notices. Third-party material, if
+introduced, retains its stated license and must be documented explicitly.
+
+## Attribution and marks
+
+Spec Kit 1.0.7 third-party scaffolding under `.specify/scripts/**`, unmodified
+base templates, and adapter-generated metadata retains MIT terms; see
+`LICENSES/Spec-Kit-MIT.txt` and `docs/development/THIRD_PARTY.md`.
+Our `.specify/templates/overrides/**`, editorial skill bodies and `specs/**`
+documentation use `CC-BY-SA-4.0`. Own generators, validators, tests and executable
+pilot material use `AGPL-3.0-only`. Generated files retain the terms of their
+source portions; adapter metadata does not imply GitHub authored our policies.
+
+Redistributions and adaptations must preserve the attribution and notices
+required by the applicable license and clearly identify modifications. No
+copyright license in this repository grants permission to use Agent Braid names,
+logos, or other source-identifying marks except for truthful referential use.
+See [`TRADEMARKS.md`](TRADEMARKS.md).
+
+If a path could reasonably fall into more than one category, the license stated
+in that file controls. If the file contains no license statement, documentation
+uses `CC-BY-SA-4.0` and software or executable material uses `AGPL-3.0-only`.

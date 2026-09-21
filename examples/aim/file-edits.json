@@ -1,0 +1,37 @@
+{
+  "aimVersion": "0.1.0-draft",
+  "operation": "repository.update_file",
+  "effects": [
+    {
+      "kind": "read",
+      "resource": "repo://example/project/src/User.cs"
+    },
+    {
+      "kind": "write",
+      "resource": "repo://example/project/src/User.cs"
+    }
+  ],
+  "properties": {
+    "determinism": "conditional",
+    "idempotence": "conditional",
+    "reversibility": "compensatable"
+  },
+  "preconditions": [
+    {
+      "id": "git.blob-is-current",
+      "version": "1",
+      "description": "The operation was planned against the current blob digest."
+    }
+  ],
+  "postconditions": [
+    {
+      "id": "dotnet.solution-builds",
+      "version": "1"
+    }
+  ],
+  "evidence": {
+    "source": "declared",
+    "assuranceLevel": 0,
+    "toolVersion": "example-only"
+  }
+}

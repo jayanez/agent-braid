@@ -1,0 +1,23 @@
+{
+  "recordVersion": "0.2.0",
+  "release": "M1",
+  "softwareMaturity": "alpha",
+  "independent_validation": {
+    "status": "pending",
+    "conflictOfInterest": "The evidence was produced and reviewed within the founder-led project; no external reviewer participated.",
+    "reproductionProtocol": "specs/007-m1-closure/quickstart.md",
+    "invitation": "External reviewers are invited to rerun the frozen protocol and publish positive, negative or inconclusive results."
+  },
+  "internalEvidence": [
+    "specs/003-read-only-analyzer/evidence.json",
+    "specs/005-git-worktree-adapter/evidence.json",
+    "specs/006-validation-status-policy/evidence.json",
+    "specs/007-m1-closure/reproduction.json"
+  ],
+  "scientificOrBenchmarkClaims": true,
+  "limits": [
+    "Alpha software over synthetic bounded corpora.",
+    "No production-safety, execution-authorization or merge-authorization claim.",
+    "No complete semantic dependency analysis, general confluence or Yang-Baxter result."
+  ]
+}

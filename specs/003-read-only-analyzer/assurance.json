@@ -1,0 +1,206 @@
+{
+  "articles": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    13,
+    14,
+    15,
+    16,
+    19,
+    20,
+    21,
+    23,
+    24,
+    25
+  ],
+  "assumptions": "Input identities, exact resource strings, declared effects, coverage, dependencies, and versions are truthful enough to analyze as declarations.",
+  "authority_snapshot": {
+    "commit": "3a2e0c439a2c927ea624433c087b6f0de96e1764",
+    "hashes": {
+      "ARCHITECTURE.md": "94e5114eb799b25ca666ef728f84ab1c88e6ad1b342e30a9e99276b8f44c30c2",
+      "CONSTITUTION.md": "ff7196976a1736a639947c2ab26e8da157fef23c89ba9881312f2a36459964eb",
+      "GOVERNANCE.md": "c8eda331d97c42e54be4730ef906dfaad9ae2814e36704302f97afceff037d82",
+      "LICENSE": "71201d9e7042496159fafd5043c9e50dcb282574522d4e35e0d8c3ec1941bcf7",
+      "MATHEMATICAL_FOUNDATIONS.md": "8c56b59b20ca5f9bc7464b458f980e51e05c0820645cf86181cf08883acd5ca4",
+      "RESEARCH.md": "a3e9668e2c1b80024a6ce9024b7558d31f0d3d2d1e22fa89f460a70beefdd56d",
+      "TERMINOLOGY.md": "4b52b621900a413f58fa920254c2d36df849bda906e9989f0e49b0a43aaf503c",
+      "TRADEMARKS.md": "be084562378235f7c72b4a16e9d0f37b01e7e2b035291eceb4f6478048a517b8",
+      "docs/adr/0000-template.md": "546bd5098b2f8f07804253f0b1fd2c893264d4519644ccd93913956056fac8f4",
+      "docs/adr/0001-formalization-before-implementation.md": "c68d05ee8abb12932acaebee8b95ef4873172a97f93a8dae2187b84b63a29188",
+      "docs/adr/0002-yang-baxter-is-a-hypothesis.md": "8f72ec03ea85a5cef1bed08b04c871bca5930a70e2c313f01124d4a0c194efef",
+      "docs/adr/0003-copyleft-and-trademark-protection.md": "174745a166b4f521fab0f1a043d5c96b8b4b6a626b344245d8b89616d919f8c6",
+      "docs/adr/0004-scientific-constitutional-clarifications.md": "eaf956ab7a8daae2b5ea75d5ae8832a039ef2c6d18bf2e0e27e9b2b964e0fd71",
+      "docs/adr/0005-evidence-contracts-and-bounded-laboratory.md": "a35504083c719993a8c9a460d579c9017871b20bd65760f9f2534de2d7f27f6b",
+      "docs/adr/0006-shared-spec-kit-guardrails.md": "b02e0844e311e0364b40d06e2de3c1c73628247625d20c534a644ff8d9387cb7",
+      "docs/adr/0007-read-only-python-analyzer.md": "c864497da1a8172826d1b96b728b03d16272396c53dc194680d646301c4d07f3",
+      "docs/adr/0008-read-only-git-worktree-adapter.md": "8915605500bb4fa0150ff2fe576482db8a55bd29fb53a17788a51f8671a52e76",
+      "docs/adr/0009-transparent-validation-status.md": "7e329563e069e972ef2febcf64e0fec29255c0c9af29e331a1d5beb7f382e60d",
+      "docs/architecture/AGENT_INTERACTION_METADATA.md": "0118d7f16c390fc4c1ff027b503a4eaba8a747edf3f6d7b088559f8870e27780",
+      "docs/architecture/ASSURANCE_LEVELS.md": "102d0df0dc6fc0ec114d92fe1ef053b375bd9704d0af6a048affe36900d77512",
+      "docs/architecture/CONFLUENCE_CERTIFICATE.md": "fd12a8f1a1477835848581b0f4ccd52f76d3f22dd96a3abaccb9074733464a8e",
+      "docs/architecture/DRAFT_0_2.md": "ae2bc09d941537eec6ea05edb69e4402d5c17dae0585b4add0825d6a01fdc29f",
+      "docs/theory/CLAIM_DISCIPLINE.md": "0fcd89ae045e017f62cbe0b7a83a9a9c107770856bba12a340e77f06576db053",
+      "docs/theory/OPERATIONAL_SEMANTICS.md": "7e83813d138dde064f85aafee1ba20302d55ede768d35d26340abd522ecce1f7",
+      "docs/theory/SCIENTIFIC_INTEGRATION.md": "bf4dba9119006a9261b45415edfe52b92d226648ab21aa3fd2e4a7f4822faf8c",
+      "schemas/0.1.0-alpha/analysis-report.schema.json": "91c759ad0d28de0b4e68f5bd3958de37ff2e6c102ecd8c6c2f0083e0151ad578",
+      "schemas/0.1.0-alpha/git-analysis-provenance.schema.json": "403b2e61ff7a7700c0db05df4ac3b11504e2c69e2bab9161b4a9ceb156b1316c",
+      "schemas/0.1.0-alpha/git-analysis-request.schema.json": "928c777ae68a184fae172a7cb2b172ba283b5af912edaf6c4b389bd8bf767a96",
+      "schemas/0.2.0-draft/agent-interaction-metadata.schema.json": "9d2ff528d0d3f02ba5bce63181e88732eecef96e90fabb5898b3314abd554900",
+      "schemas/0.2.0-draft/confluence-certificate.schema.json": "8e375fdc57fbd3b9f15544f2079c8f92633ec1def660f3eabed77feb784f34f0",
+      "schemas/agent-interaction-metadata.schema.json": "44b60956817cbcd92e0802dfe99ca537b20768f53472f04afd1dcc502f53cd5c",
+      "schemas/confluence-certificate.schema.json": "ea68bf94f6767d615881167d8f7dd28359e6c399edd66935ba17b88b2b1cf785",
+      "schemas/governance/release-validation-record.schema.json": "d9943f0c9f5520ea52e3b12bfba88240d03f8011b433fc5e35cb49549ab6e819"
+    },
+    "mode": "historical"
+  },
+  "compatibility": "AIM and certificate 0.1/0.2 drafts, assurance classes, and bounded verifier semantics remain unchanged; the report is a separate 0.1.0-alpha contract.",
+  "domain": "AIM 0.2.0-draft records, analysis input 0.1.0-alpha, and the nine synthetic software scenarios.",
+  "evidence_snapshot": {
+    "commit": "3a2e0c439a2c927ea624433c087b6f0de96e1764",
+    "mode": "historical"
+  },
+  "execution_contract": "Read local JSON and emit reports only; no agents, tools, Git mutations, network calls, or scheduled operations.",
+  "human_review": "approved",
+  "hypotheses": "Exact declared footprints and dependencies can support a useful conservative first analysis while unsupported cases remain unknown.",
+  "observation_contract": "Versioned report bytes after canonical input ordering, CLI exit codes, and benchmark classifications.",
+  "references": [
+    "CONSTITUTION.md",
+    "docs/adr/0007-read-only-python-analyzer.md",
+    "docs/theory/OPERATIONAL_SEMANTICS.md",
+    "docs/theory/CLAIM_DISCIPLINE.md",
+    "schemas/0.1.0-alpha/analysis-report.schema.json",
+    "examples/analysis/software-benchmark.json"
+  ],
+  "requirements": [
+    {
+      "id": "REQ-001",
+      "scenarios": [
+        {
+          "given": "Pairs with overlap, dependency, partial coverage, or external effects",
+          "id": "SC-004",
+          "obtained_evidence": [
+            {
+              "command": "python3 scripts/capture_feature_evidence.py 003-read-only-analyzer",
+              "limits": "Synthetic exact-resource corpus only; no semantic code analysis, agent execution, or production-safety claim.",
+              "outcome": "Analyzer, CLI, report contract, verifier delegation, and nine-scenario benchmark passed with zero false-safe classifications.",
+              "path": "specs/003-read-only-analyzer/evidence.json",
+              "sha256": "a5dcb1f2ac0924f2d47418feb40f618fa2c2c392d2fc5c7d02f094b3b583305f"
+            }
+          ],
+          "planned_evidence": "Run analyzer unit tests",
+          "test_file": "tests/test_analysis.py",
+          "test_name": "AnalyzerTests.test_overlap_dependency_partial_and_external_are_conservative",
+          "then": "Results are conflicting, ordered, or unknown rather than unsafe candidates",
+          "when": "Analysis runs"
+        }
+      ],
+      "text": "Classify dependencies, shared writes, partial coverage, and external effects conservatively."
+    },
+    {
+      "id": "REQ-002",
+      "scenarios": [
+        {
+          "given": "Two complete disjoint operations",
+          "id": "SC-005",
+          "obtained_evidence": [
+            {
+              "command": "python3 scripts/capture_feature_evidence.py 003-read-only-analyzer",
+              "limits": "Synthetic exact-resource corpus only; no semantic code analysis, agent execution, or production-safety claim.",
+              "outcome": "Analyzer, CLI, report contract, verifier delegation, and nine-scenario benchmark passed with zero false-safe classifications.",
+              "path": "specs/003-read-only-analyzer/evidence.json",
+              "sha256": "a5dcb1f2ac0924f2d47418feb40f618fa2c2c392d2fc5c7d02f094b3b583305f"
+            }
+          ],
+          "planned_evidence": "Inspect the report and run its test",
+          "test_file": "tests/test_analysis.py",
+          "test_name": "AnalyzerTests.test_complete_disjoint_footprints_are_candidates_not_authorization",
+          "then": "The report retains constraints and executionAuthorization false",
+          "when": "Analysis emits a candidate"
+        }
+      ],
+      "text": "Expose evidence, uncertainty, constraints, and limits without execution authorization."
+    },
+    {
+      "id": "REQ-003",
+      "scenarios": [
+        {
+          "given": "Equivalent operation batches in different input orders",
+          "id": "SC-006",
+          "obtained_evidence": [
+            {
+              "command": "python3 scripts/capture_feature_evidence.py 003-read-only-analyzer",
+              "limits": "Synthetic exact-resource corpus only; no semantic code analysis, agent execution, or production-safety claim.",
+              "outcome": "Analyzer, CLI, report contract, verifier delegation, and nine-scenario benchmark passed with zero false-safe classifications.",
+              "path": "specs/003-read-only-analyzer/evidence.json",
+              "sha256": "a5dcb1f2ac0924f2d47418feb40f618fa2c2c392d2fc5c7d02f094b3b583305f"
+            }
+          ],
+          "planned_evidence": "Run determinism and schema tests",
+          "test_file": "tests/test_analysis.py",
+          "test_name": "AnalyzerTests.test_deterministic_and_input_order_independent",
+          "then": "Canonical reports match and validate against the alpha schema",
+          "when": "Analysis runs repeatedly"
+        }
+      ],
+      "text": "Produce deterministic schema-valid JSON independent of input order."
+    },
+    {
+      "id": "REQ-004",
+      "scenarios": [
+        {
+          "given": "The nine-scenario software benchmark",
+          "id": "SC-007",
+          "obtained_evidence": [
+            {
+              "command": "python3 scripts/capture_feature_evidence.py 003-read-only-analyzer",
+              "limits": "Synthetic exact-resource corpus only; no semantic code analysis, agent execution, or production-safety claim.",
+              "outcome": "Analyzer, CLI, report contract, verifier delegation, and nine-scenario benchmark passed with zero false-safe classifications.",
+              "path": "specs/003-read-only-analyzer/evidence.json",
+              "sha256": "a5dcb1f2ac0924f2d47418feb40f618fa2c2c392d2fc5c7d02f094b3b583305f"
+            }
+          ],
+          "planned_evidence": "Capture benchmark JSON and test output",
+          "test_file": "tests/test_analysis.py",
+          "test_name": "AnalyzerTests.test_software_benchmark_has_no_false_safe_classification",
+          "then": "Expected classifications agree and falseSafeCount is zero",
+          "when": "The benchmark runner executes"
+        }
+      ],
+      "text": "Publish reference-corpus false-safe, unknown, candidate, and coverage results."
+    },
+    {
+      "id": "REQ-005",
+      "scenarios": [
+        {
+          "given": "Verified and unsupported-proof certificate fixtures",
+          "id": "SC-008",
+          "obtained_evidence": [
+            {
+              "command": "python3 scripts/capture_feature_evidence.py 003-read-only-analyzer",
+              "limits": "Synthetic exact-resource corpus only; no semantic code analysis, agent execution, or production-safety claim.",
+              "outcome": "Analyzer, CLI, report contract, verifier delegation, and nine-scenario benchmark passed with zero false-safe classifications.",
+              "path": "specs/003-read-only-analyzer/evidence.json",
+              "sha256": "a5dcb1f2ac0924f2d47418feb40f618fa2c2c392d2fc5c7d02f094b3b583305f"
+            }
+          ],
+          "planned_evidence": "Run CLI delegation tests",
+          "test_file": "tests/test_analysis.py",
+          "test_name": "AnalyzerTests.test_verify_command_preserves_bounded_checker",
+          "then": "It preserves verified and unverified statuses and exit codes",
+          "when": "The agent-braid verify command runs"
+        }
+      ],
+      "text": "Preserve the existing bounded certificate verifier behavior behind the CLI."
+    }
+  ],
+  "scientific_limits": "No semantic code equivalence, global confluence, production safety, or Yang\u2013Baxter applicability is established.",
+  "review_record": "specs/007-m1-closure/founder-review-3a2e0c4.json",
+  "scope": "Deterministic local pair analysis over declared AIM 0.2 metadata and delegation to the bounded certificate verifier.",
+  "stage": "validated"
+}

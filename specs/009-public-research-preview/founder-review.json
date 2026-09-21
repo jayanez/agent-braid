@@ -1,0 +1,40 @@
+{
+  "recordVersion": "0.1.0",
+  "feature": "Public research preview",
+  "reviewedCommit": "baadba5ce41d175e968effa46fdcf724580518df",
+  "reviewer": {
+    "name": "Juan Antonio Yáñez García",
+    "role": "founder"
+  },
+  "conflictsOfInterest": "The reviewer is the project founder and author. Codex executed the export validation and clean-room automation on the founder's machine under explicit authorization. This is internal founder-led review, not independent validation.",
+  "boundedReview": {
+    "decision": "approved",
+    "date": "2026-09-21",
+    "rationale": "Approve the bounded local publication evidence within the recorded source-tree, clean-export, portable-validation and Python 3.12 clean-room observation boundaries. The two deterministic exports matched byte-for-byte, the clean root passed portable validation and git fsck, and the fresh-clone reproduction completed with independent validation still pending. This approval does not establish source exhaustiveness, external validation, production safety, execution authorization, complete semantic dependency discovery, general confluence or a Yang-Baxter result."
+  },
+  "milestoneClosure": {
+    "decision": "approved",
+    "date": "2026-09-21",
+    "rationale": "Close the local public research-preview preparation dossier. ADR 0010 remains Accepted as a provenance decision, while remote rename, repository creation, push, visibility change, release and archival remain separately unauthorized and pending."
+  },
+  "independentValidation": "pending",
+  "repositoryVisibilityChangeAuthorized": false,
+  "remoteCutoverAuthorized": false,
+  "evidence": [
+    {
+      "path": "specs/009-public-research-preview/evidence.json",
+      "sha256": "6140889e856a539ddda78ec42b53a635bd16da03c20770885c5b13a4bda62c9e"
+    },
+    {
+      "path": "docs/releases/publication-cutover.json",
+      "sha256": "22023b5ec4f0ea82bb434fe221237afab6d0db7fabba996c5eccbeb813ca223b"
+    }
+  ],
+  "limits": [
+    "Founder-led internal review; independent validation remains pending.",
+    "The clean export does not reproduce private historical Git ancestry or establish source exhaustiveness.",
+    "No report authorizes execution, merge, deployment, repository visibility change or another external effect.",
+    "File integrity and finite reproduction do not establish production safety, complete semantic dependency discovery, general confluence or a Yang-Baxter result.",
+    "Remote cutover requires a separate explicit founder authorization and remains pending."
+  ]
+}

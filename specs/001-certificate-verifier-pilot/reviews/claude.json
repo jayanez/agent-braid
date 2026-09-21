@@ -1,0 +1,18 @@
+{
+  "reportVersion": "0.1.0",
+  "agent": "claude",
+  "agentVersion": "Claude Code 2.1.236",
+  "executedAt": "2026-09-18T00:00:00+02:00",
+  "reviewedCommit": "8167cdf95c48e518cecf9dfb59679121b3c4c3a4",
+  "prompt": "Review REQ-001 through REQ-005 against SC-009 through SC-013, the M0 exit matrix, current tasks, obtained evidence and canonical authorities. Do not edit artifacts, execute another agent or approve scientific claims. Preserve the unsupported proof as unverified; distinguish executable checks, finite evidence, human review and founder approval; retain the stated limits on confluence, production safety, adapter correctness and Yang–Baxter. Report contradictions and pending checks using the task or gate identifiers already present in the feature.",
+  "unsupportedProof": "unverified",
+  "automatedHumanSeparation": true,
+  "scientificLimitsRetained": true,
+  "contradictions": [],
+  "pendingChecks": [
+    "T006",
+    "T007",
+    "M0.5-independent-third-party-reproduction"
+  ],
+  "decision": "compatible"
+}

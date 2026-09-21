@@ -1,0 +1,12 @@
+{
+  "benchmarkVersion": "git-m1-v2",
+  "limits": "Synthetic local Git repositories; declared syntactic ground truth only, with no semantic-commutation or production-safety claim.",
+  "scenarios": [
+    {"id": "GIT-001", "family": "disjoint-commits", "expected": "independent-candidate"},
+    {"id": "GIT-002", "family": "overlapping-commits", "expected": "conflicting"},
+    {"id": "GIT-003", "family": "declared-cross-file-dependency", "expected": "ordered"},
+    {"id": "GIT-004", "family": "explicit-generated-or-uncertain-path", "expected": "unknown"},
+    {"id": "GIT-005", "family": "binary-change", "expected": "unknown"},
+    {"id": "GIT-006", "family": "deletion", "expected": "unknown"}
+  ]
+}

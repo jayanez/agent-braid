@@ -1,0 +1,18 @@
+Agent Braid
+Copyright © 2026 Juan Antonio Yáñez García
+
+Spec Kit 1.0.7 scaffolding and adapter-generated metadata include material
+copyright GitHub, Inc., licensed under MIT. See LICENSES/Spec-Kit-MIT.txt and
+docs/development/THIRD_PARTY.md for source provenance and project adaptations.
+
+Agent Braid was founded by Juan Antonio Yáñez García (@jayanez) as an open
+research and engineering project for algebraic concurrency control in
+autonomous AI-agent systems.
+
+Software and executable materials are licensed under AGPL-3.0-only.
+Documentation and research materials are licensed under CC-BY-SA-4.0.
+See LICENSE and the canonical texts in LICENSES/ for the precise scope and terms.
+
+The copyright licenses do not grant rights to use the Agent Braid name, logos,
+or other project marks in a way that suggests affiliation, endorsement, or
+continuity with the official project. See TRADEMARKS.md.

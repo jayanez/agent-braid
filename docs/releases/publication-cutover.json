@@ -1,0 +1,24 @@
+{
+  "recordVersion": "0.1.0",
+  "status": "pending-authorization",
+  "sourceRepository": "jayanez/agent-braid",
+  "archiveRepository": "jayanez/agent-braid-private-archive",
+  "publicRepository": "jayanez/agent-braid",
+  "defaultBranch": "develop",
+  "release": "v0.1.0-alpha.1",
+  "remoteOperations": [
+    {"operation": "rename-private-repository", "authorized": false, "executed": false},
+    {"operation": "create-clean-public-repository", "authorized": false, "executed": false},
+    {"operation": "push-clean-branches-and-tag", "authorized": false, "executed": false},
+    {"operation": "configure-rules-and-security", "authorized": false, "executed": false},
+    {"operation": "change-visibility-to-public", "authorized": false, "executed": false},
+    {"operation": "publish-github-prerelease", "authorized": false, "executed": false},
+    {"operation": "archive-private-repository", "authorized": false, "executed": false}
+  ],
+  "githubActions": "not-executed-billing-blocked",
+  "limits": [
+    "This record is a non-mutating readiness plan, not authorization.",
+    "The private clone must never receive the public remote.",
+    "Publication does not imply independent validation or production safety."
+  ]
+}

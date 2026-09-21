@@ -1,0 +1,54 @@
+{
+  "candidate_commit": "8167cdf95c48e518cecf9dfb59679121b3c4c3a4",
+  "captured_at": "2026-09-17T21:30:25.821490+00:00",
+  "human_review": "pending",
+  "inputs": {
+    "examples/contracts/0.2.0-draft/aim.json": "7e6a1001b7117b054f8dd89cec497a1ef3dca74bb42d2d340b3ec0ec42fe5f4e",
+    "examples/contracts/0.2.0-draft/altered-artifact.json": "4760862a2612e6bbc1fa2b5b3381a963d0d78d83f509662f1f2b7b60558d7d1c",
+    "examples/contracts/0.2.0-draft/duplicate-operation.json": "0d3f1b43c411ff95c1c8e8775fbed03d478c5563b07e8940630fc752c9796db2",
+    "examples/contracts/0.2.0-draft/duplicate-schedule.json": "537f3bf741ed1e39e892a9ba32fef66fb50f011d4cbd72e85a88b8c66470ec92",
+    "examples/contracts/0.2.0-draft/exhaustive.json": "c58d9fc0674e868192f4fc21513848a59af4afbc0acf96258fb96c975fa0669e",
+    "examples/contracts/0.2.0-draft/false-verdict.json": "90d5ad021e894cdbf9f5926d555d9bed5d2be93c9bf63990abd9a41abcba60a4",
+    "examples/contracts/0.2.0-draft/incomplete-coverage.json": "1846ac18878eb00d2d81401547843d1e41839e290bb5efe1ce3e5cdf18529aab",
+    "examples/contracts/0.2.0-draft/level-five-replay.json": "8791507e5fed0534326abd15fc7a23bf34435ce740f890b5a85d4b5b40bad6c1",
+    "examples/contracts/0.2.0-draft/missing-artifact.json": "60f488989348140b466524dfbc5115a3f8c6c82aa478eec9dd11516635165e15",
+    "examples/contracts/0.2.0-draft/proof-unverified.json": "56014be34e529e04d18f392c9f758f0ffa9e234923b7d69243e3a3bd939de412",
+    "examples/contracts/0.2.0-draft/replay.json": "748b7aa00742faa8b73bf08dbab4f3b03d329337206561d859d972095af13913",
+    "examples/contracts/0.2.0-draft/unknown-operation.json": "c34e06067b7493966f995e078401dcc61ce15584a43c4687080c9009a4778ae7",
+    "examples/lab/context-dependent.json": "abc64c65cacab3673d0ed1902f7ebe410206f80c422860e6bbe71d7bbbeb7d93",
+    "examples/lab/independent.json": "0e9e84527adc8adc0eec1122d612e3e3d900e5bd2bea1dd87aea25eb48eade67",
+    "research/lab/__init__.py": "e88d4e8c9e00094720fc9a572fa7f12f6c21e41ad81b3b52e5d29c2360d281cb",
+    "research/lab/__main__.py": "2368a26bfbcde2e2a0f7064cee720f8e8082cfb3417ed73399134e9fc7fb6806",
+    "research/lab/certificates.py": "f4545aeeb15e3f0a9023ffdfc5ac96cb09479a4039ba0b4be55e7195efb8b842",
+    "research/lab/controls.py": "a0471a21dfb13f276b20b0a7e38f1720de34d525e96344bcc8f886b7a617ab25",
+    "research/lab/model.py": "f39040b5476d663f6e7384e65d00073b084df6c8958b38bff45e4d6b19da010f",
+    "scripts/run_spec_kit_pilot.py": "2ab706ff5edee97e9bc8151645928a5b2070a1c00e06b29a49e7cd1ad68e7a89",
+    "tests/test_lab.py": "d83f9e3d56006fedc668bd335dcfdcda0f34452e81e0ee4f632383910bab8e51"
+  },
+  "interactive_claude": "specs/001-certificate-verifier-pilot/reviews/claude.json",
+  "interactive_codex": "specs/001-certificate-verifier-pilot/reviews/codex.json",
+  "observations": [
+    {
+      "command": "python3 -m research.lab verify examples/contracts/0.2.0-draft/exhaustive.json",
+      "exit_code": 0,
+      "stderr": "",
+      "stdout": "{\n  \"checkedClaim\": {\n    \"domain\": \"fixture:sha256:69dc2a126f92c97a4e08aa002b28bb18901e27976dcc816be72798c1ea80d0e1\",\n    \"method\": \"exhaustive-finite\",\n    \"property\": \"terminal-observation-equivalence\",\n    \"result\": \"equivalent-observed\",\n    \"schedulesChecked\": 2\n  },\n  \"reason\": \"finite model evidence checked; no execution authorization\",\n  \"status\": \"verified\"\n}\n"
+    },
+    {
+      "command": "python3 -m research.lab verify examples/contracts/0.2.0-draft/proof-unverified.json",
+      "exit_code": 1,
+      "stderr": "",
+      "stdout": "{\n  \"reason\": \"proof rule not supported; hashes establish identity only\",\n  \"status\": \"unverified\"\n}\n"
+    },
+    {
+      "command": "python3 -m unittest discover -s tests -p test_lab.py -v",
+      "exit_code": 0,
+      "stderr": "test_aim_identity_and_dependencies (test_lab.CertificateTests.test_aim_identity_and_dependencies) ... ok\ntest_arbitrary_malformed_input_rejected (test_lab.CertificateTests.test_arbitrary_malformed_input_rejected) ... ok\ntest_cli_exit_status (test_lab.CertificateTests.test_cli_exit_status) ... ok\ntest_dependency_free_consumer (test_lab.CertificateTests.test_dependency_free_consumer) ... ok\ntest_proof_artifact_binding (test_lab.CertificateTests.test_proof_artifact_binding) ... ok\ntest_rehashed_fake_outcome_is_rejected (test_lab.CertificateTests.test_rehashed_fake_outcome_is_rejected) ... ok\ntest_replay_selection (test_lab.CertificateTests.test_replay_selection) ... ok\ntest_scope_and_contract_mutations (test_lab.CertificateTests.test_scope_and_contract_mutations) ... ok\ntest_valid_and_invalid_corpus (test_lab.CertificateTests.test_valid_and_invalid_corpus) ... ok\ntest_all_controls (test_lab.ModelTests.test_all_controls) ... ok\ntest_canonical_and_strict_json (test_lab.ModelTests.test_canonical_and_strict_json) ... ok\ntest_context_counterexample (test_lab.ModelTests.test_context_counterexample) ... ok\ntest_dependencies_and_cycles (test_lab.ModelTests.test_dependencies_and_cycles) ... ok\ntest_guards_and_versions (test_lab.ModelTests.test_guards_and_versions) ... ok\ntest_malformed_fixtures (test_lab.ModelTests.test_malformed_fixtures) ... ok\ntest_missing_resource_and_overflow_are_atomic_errors (test_lab.ModelTests.test_missing_resource_and_overflow_are_atomic_errors) ... ok\ntest_projection_and_raw_events (test_lab.ModelTests.test_projection_and_raw_events) ... ok\ntest_read_arithmetic_and_results (test_lab.ModelTests.test_read_arithmetic_and_results) ... ok\ntest_reproducibility_and_no_mutation (test_lab.ModelTests.test_reproducibility_and_no_mutation) ... ok\ntest_six_operation_bound (test_lab.ModelTests.test_six_operation_bound) ... ok\n\n----------------------------------------------------------------------\nRan 20 tests in 0.119s\n\nOK\n",
+      "stdout": ""
+    }
+  ],
+  "platform": "Darwin",
+  "python": "3.12.14",
+  "python_executable": "${LOCAL_PATH}",
+  "repository_dirty": false
+}

@@ -1,0 +1,46 @@
+{
+  "recordVersion": "0.1.0",
+  "feature": "risk-based-validation",
+  "decisionDate": "2026-09-19",
+  "reviewedCommit": "f59a42a12f95802cb9bf58681749467fb16b98bc",
+  "reviewer": {
+    "name": "Juan Antonio Yáñez García",
+    "role": "founder"
+  },
+  "conflictsOfInterest": "The reviewer is the project founder and author. This is an internal governance and implementation review, not independent validation.",
+  "policyDecision": {
+    "status": "approved",
+    "adr": "docs/adr/0011-risk-based-validation-gates.md",
+    "acceptedModel": [
+      "targeted fast feedback during development",
+      "complete validation on a stable pull-request candidate",
+      "specialist controls for sensitive changes",
+      "explicit clean-room reproduction only at evidence boundaries"
+    ],
+    "acceptedConservativeRules": [
+      "unknown paths fail closed to sensitive validation",
+      "the complete candidate gate remains mandatory before integration",
+      "the Codex and Claude integration matrix runs only for its owned inputs or an unknown-path fallback",
+      "no executable profile constitutes evidence approval, scientific proof or independent validation"
+    ]
+  },
+  "evidenceDecision": {
+    "status": "approved",
+    "path": "specs/010-risk-validation/evidence.json",
+    "sha256": "091b14911987b0a14fde9a3da765e2abf1f37364dbffa26a7ac5896ff10d8d00",
+    "recapturedAfterAdrAcceptance": true,
+    "scope": "Local deterministic classifier tests, complete repository validation and isolated Codex/Claude integration regeneration within the documented observation boundary."
+  },
+  "candidateBinding": {
+    "status": "bound",
+    "reviewedCommit": "f59a42a12f95802cb9bf58681749467fb16b98bc",
+    "reason": "The explicitly authorized candidate commit preserves the reviewed implementation, accepted ADR and approved evidence bytes. Authority and evidence snapshots are frozen to this commit."
+  },
+  "independentValidation": "pending",
+  "limits": [
+    "GitHub-hosted Actions were not executed because repository billing blocks them.",
+    "Path classification is not semantic dependency analysis or production-safety evidence.",
+    "This decision does not authorize a commit, push, merge, release or publication.",
+    "This internal founder review is not independent validation."
+  ]
+}

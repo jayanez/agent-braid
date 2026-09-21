@@ -1,0 +1,59 @@
+{
+  "modelVersion": "integer-batch-v1",
+  "state": {
+    "x": 0,
+    "y": 0,
+    "z": 0
+  },
+  "versions": {
+    "x": 0,
+    "y": 0,
+    "z": 0
+  },
+  "operations": [
+    {
+      "id": "A",
+      "kind": "assign",
+      "target": "x",
+      "expression": {
+        "int": 1
+      },
+      "dependencies": [],
+      "readVersions": {}
+    },
+    {
+      "id": "B",
+      "kind": "assign",
+      "target": "y",
+      "expression": {
+        "int": 1
+      },
+      "dependencies": [],
+      "readVersions": {}
+    },
+    {
+      "id": "C",
+      "kind": "assign",
+      "target": "z",
+      "expression": {
+        "op": "multiply",
+        "left": {
+          "read": "x"
+        },
+        "right": {
+          "read": "y"
+        }
+      },
+      "dependencies": [],
+      "readVersions": {}
+    }
+  ],
+  "observation": {
+    "mode": "projection",
+    "resources": [
+      "x",
+      "y",
+      "z"
+    ]
+  }
+}

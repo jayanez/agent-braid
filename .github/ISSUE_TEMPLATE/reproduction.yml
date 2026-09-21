@@ -1,0 +1,42 @@
+name: Independent reproduction
+description: Report a positive, negative or inconclusive reproduction attempt.
+title: "[Reproduction]: "
+labels: ["reproduction"]
+body:
+  - type: dropdown
+    id: outcome
+    attributes:
+      label: Outcome
+      options: ["Positive", "Negative", "Inconclusive"]
+    validations:
+      required: true
+  - type: input
+    id: target
+    attributes:
+      label: Reviewed commit or release
+    validations:
+      required: true
+  - type: textarea
+    id: protocol
+    attributes:
+      label: Protocol and commands
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Evidence and immutable artifact links
+    validations:
+      required: true
+  - type: textarea
+    id: disclosure
+    attributes:
+      label: Identity, affiliation and conflicts of interest
+    validations:
+      required: true
+  - type: textarea
+    id: limits
+    attributes:
+      label: Limits and deviations
+    validations:
+      required: true

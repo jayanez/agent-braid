@@ -1,0 +1,24 @@
+{
+  "recordVersion": "0.2.0",
+  "release": "M0.5",
+  "softwareMaturity": "research-preview",
+  "independent_validation": {
+    "status": "pending",
+    "conflictOfInterest": "The evidence was produced and reviewed within the founder-led project; no external reviewer participated.",
+    "reproductionProtocol": "specs/008-m0.5-closure/quickstart.md",
+    "invitation": "External reviewers are invited to rerun the frozen protocol and publish positive, negative or inconclusive results."
+  },
+  "internalEvidence": [
+    "specs/008-m0.5-closure/evidence.json",
+    "specs/008-m0.5-closure/reproduction.json",
+    "specs/008-m0.5-closure/founder-review.json"
+  ],
+  "scientificOrBenchmarkClaims": true,
+  "limits": [
+    "Internal research-preview preparation over bounded sources, synthetic corpora and transparent scenario assumptions.",
+    "No independent validation, production-safety, market-demand, novelty or competitive-superiority claim.",
+    "No complete semantic dependency analysis, general confluence or Yang-Baxter result.",
+    "Approval of the proposal is not authorization to publish or change repository visibility.",
+    "A clean export is required while redistribution of the historical proprietary-template derivative remains unresolved."
+  ]
+}

@@ -1,0 +1,37 @@
+{
+  "captured_at": "2026-09-18T07:33:54.267150+00:00",
+  "human_review": "pending",
+  "inputs": {
+    "agent_braid/__init__.py": "697f7daba2857756bd135ac489b9e69a9487ebb976d666d2d6cf59bcd175224e",
+    "agent_braid/__main__.py": "67efadf972eab744b466da1049ccc81acf1af77db6b699075757666e48897bb8",
+    "agent_braid/analysis.py": "a96e24ffffd303b60ae2da3f8e676c7d71b0f6f4372950e8b705c365ab8f751a",
+    "agent_braid/cli.py": "c22702f9e148f2112abefff40f6e490f7c676c73d850efc377f2bcd9c4e801c6",
+    "examples/analysis/file-edits.json": "23a833a13adb2b029a696028bb1ae64ced30a65a19375d8e515c1c4d809fcd93",
+    "examples/analysis/software-benchmark.json": "206be3534e27f6cbdccaf4c8de146ba3c26e26ab877aa369541134fbf7535167",
+    "schemas/0.1.0-alpha/analysis-report.schema.json": "91c759ad0d28de0b4e68f5bd3958de37ff2e6c102ecd8c6c2f0083e0151ad578",
+    "scripts/run_software_benchmark.py": "d4410e037f92239dc68a517b40f494b6cdb26050abc586209433922d1d8785ca",
+    "tests/test_analysis.py": "c5da2d4bffb162c77ab8eae71f3f768142780e63f6f9035e4b0518511b31efa4"
+  },
+  "observations": [
+    {
+      "command": "python3 -m unittest tests.test_analysis -v",
+      "exit_code": 0,
+      "stderr": "test_cli_json_text_and_rejection (tests.test_analysis.AnalyzerTests.test_cli_json_text_and_rejection) ... ok\ntest_complete_disjoint_footprints_are_candidates_not_authorization (tests.test_analysis.AnalyzerTests.test_complete_disjoint_footprints_are_candidates_not_authorization) ... ok\ntest_deterministic_and_input_order_independent (tests.test_analysis.AnalyzerTests.test_deterministic_and_input_order_independent) ... ok\ntest_invalid_and_cyclic_batches_are_rejected (tests.test_analysis.AnalyzerTests.test_invalid_and_cyclic_batches_are_rejected) ... ok\ntest_overlap_dependency_partial_and_external_are_conservative (tests.test_analysis.AnalyzerTests.test_overlap_dependency_partial_and_external_are_conservative) ... ok\ntest_read_versions_remain_constraints (tests.test_analysis.AnalyzerTests.test_read_versions_remain_constraints) ... ok\ntest_report_schema (tests.test_analysis.AnalyzerTests.test_report_schema) ... ok\ntest_software_benchmark_has_no_false_safe_classification (tests.test_analysis.AnalyzerTests.test_software_benchmark_has_no_false_safe_classification) ... ok\ntest_verify_command_preserves_bounded_checker (tests.test_analysis.AnalyzerTests.test_verify_command_preserves_bounded_checker) ... ok\n\n----------------------------------------------------------------------\nRan 9 tests in 0.128s\n\nOK\n",
+      "stdout": ""
+    },
+    {
+      "command": "python3 scripts/run_software_benchmark.py",
+      "exit_code": 0,
+      "stderr": "",
+      "stdout": "{\n  \"analysisCost\": {\n    \"unit\": \"pair evaluations\",\n    \"value\": 9\n  },\n  \"baselineComparisons\": [\n    {\n      \"decisionRule\": \"Order every pair.\",\n      \"expectedTradeoff\": \"Avoids overlap but serializes all independent candidates.\",\n      \"id\": \"sequential\",\n      \"measuredHere\": false\n    },\n    {\n      \"decisionRule\": \"Permit every pair to overlap.\",\n      \"expectedTradeoff\": \"Ignores declared conflicts, dependencies, versions, and unknowns.\",\n      \"id\": \"uncontrolled-parallelism\",\n      \"measuredHere\": false\n    },\n    {\n      \"decisionRule\": \"Order only syntactically overlapping file regions.\",\n      \"expectedTradeoff\": \"Cannot establish cross-file semantics or hidden invariants.\",\n      \"id\": \"file-or-range-overlap\",\n      \"measuredHere\": false\n    },\n    {\n      \"decisionRule\": \"Accept changes that merge without textual conflict.\",\n      \"expectedTradeoff\": \"Post-hoc mergeability is not semantic commutation or safe interleaving.\",\n      \"id\": \"git-merge\",\n      \"measuredHere\": false\n    },\n    {\n      \"decisionRule\": \"Validate declared versions and policy constraints before commit.\",\n      \"expectedTradeoff\": \"Closer execution control, but still dependent on complete effects and an explicit execution contract.\",\n      \"id\": \"commit-gate-with-version-validation\",\n      \"measuredHere\": false\n    }\n  ],\n  \"benchmarkVersion\": \"software-m1-v2\",\n  \"candidateRate\": 0.3333333333333333,\n  \"classificationAgreement\": 9,\n  \"classificationCoverage\": 1.0,\n  \"conditionBoundScenarioCount\": 1,\n  \"falseSafeCount\": 0,\n  \"falseSerializationCount\": 0,\n  \"limits\": \"Synthetic pair classifications only; no agent execution or production-safety claim.\",\n  \"results\": [\n    {\n      \"actual\": \"independent-candidate\",\n      \"expected\": \"independent-candidate\",\n      \"family\": \"disjoint-edits\",\n      \"id\": \"SW-001\"\n    },\n    {\n      \"actual\": \"conflicting\",\n      \"expected\": \"conflicting\",\n      \"family\": \"overlapping-edits\",\n      \"id\": \"SW-002\"\n    },\n    {\n      \"actual\": \"ordered\",\n      \"expected\": \"ordered\",\n      \"family\": \"semantic-cross-file-dependency\",\n      \"id\": \"SW-003\"\n    },\n    {\n      \"actual\": \"unknown\",\n      \"expected\": \"unknown\",\n      \"family\": \"configuration-and-generated-output\",\n      \"id\": \"SW-004\"\n    },\n    {\n      \"actual\": \"independent-candidate\",\n      \"conditionEnforcement\": \"required-at-use\",\n      \"expected\": \"independent-candidate\",\n      \"family\": \"stale-snapshot\",\n      \"id\": \"SW-005\",\n      \"requiredConstraint\": \"validate-read-versions-at-use\"\n    },\n    {\n      \"actual\": \"unknown\",\n      \"expected\": \"unknown\",\n      \"family\": \"rename-or-transform\",\n      \"id\": \"SW-006\"\n    },\n    {\n      \"actual\": \"unknown\",\n      \"expected\": \"unknown\",\n      \"family\": \"unmodeled-invariant\",\n      \"id\": \"SW-007\"\n    },\n    {\n      \"actual\": \"unknown\",\n      \"expected\": \"unknown\",\n      \"family\": \"external-effect\",\n      \"id\": \"SW-008\"\n    },\n    {\n      \"actual\": \"independent-candidate\",\n      \"expected\": \"independent-candidate\",\n      \"family\": \"shared-read\",\n      \"id\": \"SW-009\"\n    }\n  ],\n  \"scenarioCount\": 9,\n  \"unknownRate\": 0.4444444444444444\n}\n"
+    },
+    {
+      "command": "python3 scripts/validate_contracts.py",
+      "exit_code": 0,
+      "stderr": "",
+      "stdout": "Contract corpus passed: legacy, 0.2 structure and finite semantic checks.\n"
+    }
+  ],
+  "platform": "Darwin",
+  "python": "3.12.14"
+}

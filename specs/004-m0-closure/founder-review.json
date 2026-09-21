@@ -1,0 +1,32 @@
+{
+  "recordVersion": "0.1.0",
+  "feature": "M0",
+  "reviewedCommit": "8167cdf95c48e518cecf9dfb59679121b3c4c3a4",
+  "reviewer": {
+    "name": "Juan Antonio Yáñez García",
+    "role": "founder"
+  },
+  "conflictsOfInterest": "The reviewer is the project founder and author. The review records that role explicitly; it is an internal founder-led M0 decision, not independent external validation.",
+  "scientificReview": {
+    "decision": "approved",
+    "date": "2026-09-18",
+    "rationale": "Approve the bounded integer-batch-v1 pilot and finite certificate verifier only within their documented semantics, finite fixture domain, observation contract and stated limits. Unsupported proof evidence remains unverified."
+  },
+  "milestoneClosure": {
+    "decision": "approved",
+    "date": "2026-09-18",
+    "rationale": "Close M0 as an internal operational and scientifically bounded foundation. This decision does not assert third-party reproduction, production safety, general confluence, adapter correctness or Yang-Baxter applicability."
+  },
+  "evidence": [
+    {"path": "docs/releases/M0_EXIT_MATRIX.md", "sha256": "0cbbf1832789688314c1627fdf5e1a262f77471a403ee691c8812135ea5aea9d"},
+    {"path": "specs/001-certificate-verifier-pilot/evidence.json", "sha256": "21e25bb8a37a6080a311fa9a09ba01f52058ab24a47e752ec2198a890e4b1418"},
+    {"path": "specs/004-m0-closure/evidence.json", "sha256": "3f27b0cf93dabbc6147c75606daeeb91c644ff089ea0472452e81c6db1326488"},
+    {"path": "specs/001-certificate-verifier-pilot/reviews/codex.json", "sha256": "f499580f959c5662d48e9e18a2022fead088af561da141c9cd52fff130bbca3b"},
+    {"path": "specs/001-certificate-verifier-pilot/reviews/claude.json", "sha256": "d241c1f723cbf1e610f16541b31fcd5a4288a3a06b40041b8fa5c377cf76a761"}
+  ],
+  "limits": [
+    "No independent third-party reproduction has been claimed; it remains an M0.5 research-preview gate.",
+    "No production safety, autonomous execution, general confluence, contextual-equivalence checker, adapter correctness or Yang-Baxter theorem is established.",
+    "Automated checks validate structure and provenance, not reviewer identity, scientific truth or authorization to execute external effects."
+  ]
+}

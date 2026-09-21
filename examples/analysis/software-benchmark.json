@@ -1,0 +1,77 @@
+{
+  "benchmarkVersion": "software-m1-v2",
+  "limits": "Synthetic pair classifications only; no agent execution or production-safety claim.",
+  "baselineComparisons": [
+    {"id": "sequential", "decisionRule": "Order every pair.", "measuredHere": false, "expectedTradeoff": "Avoids overlap but serializes all independent candidates."},
+    {"id": "uncontrolled-parallelism", "decisionRule": "Permit every pair to overlap.", "measuredHere": false, "expectedTradeoff": "Ignores declared conflicts, dependencies, versions, and unknowns."},
+    {"id": "file-or-range-overlap", "decisionRule": "Order only syntactically overlapping file regions.", "measuredHere": false, "expectedTradeoff": "Cannot establish cross-file semantics or hidden invariants."},
+    {"id": "git-merge", "decisionRule": "Accept changes that merge without textual conflict.", "measuredHere": false, "expectedTradeoff": "Post-hoc mergeability is not semantic commutation or safe interleaving."},
+    {"id": "commit-gate-with-version-validation", "decisionRule": "Validate declared versions and policy constraints before commit.", "measuredHere": false, "expectedTradeoff": "Closer execution control, but still dependent on complete effects and an explicit execution contract."}
+  ],
+  "scenarios": [
+    {
+      "id": "SW-001",
+      "family": "disjoint-edits",
+      "left": {"effects": [["write", "repo://sample/a.py"]], "coverage": "complete"},
+      "right": {"effects": [["write", "repo://sample/b.py"]], "coverage": "complete"},
+      "expected": "independent-candidate"
+    },
+    {
+      "id": "SW-002",
+      "family": "overlapping-edits",
+      "left": {"effects": [["read", "repo://sample/a.py"], ["write", "repo://sample/a.py"]], "coverage": "complete"},
+      "right": {"effects": [["write", "repo://sample/a.py"]], "coverage": "complete"},
+      "expected": "conflicting"
+    },
+    {
+      "id": "SW-003",
+      "family": "semantic-cross-file-dependency",
+      "left": {"effects": [["write", "repo://sample/api.py"]], "coverage": "complete"},
+      "right": {"effects": [["write", "repo://sample/client.py"]], "coverage": "complete", "dependsOnLeft": true},
+      "expected": "ordered"
+    },
+    {
+      "id": "SW-004",
+      "family": "configuration-and-generated-output",
+      "left": {"effects": [["write", "repo://sample/schema.json"]], "coverage": "complete"},
+      "right": {"effects": [["write", "repo://sample/generated/client.py"]], "coverage": "partial"},
+      "expected": "unknown"
+    },
+    {
+      "id": "SW-005",
+      "family": "stale-snapshot",
+      "left": {"effects": [["read", "repo://sample/config.yml"]], "coverage": "complete", "readVersion": 3},
+      "right": {"effects": [["write", "repo://sample/other.yml"]], "coverage": "complete"},
+      "expected": "independent-candidate",
+      "requiredConstraint": "validate-read-versions-at-use"
+    },
+    {
+      "id": "SW-006",
+      "family": "rename-or-transform",
+      "left": {"effects": [["transform", "repo://sample/old.py"]], "coverage": "complete"},
+      "right": {"effects": [["read", "repo://sample/new.py"]], "coverage": "complete"},
+      "expected": "unknown"
+    },
+    {
+      "id": "SW-007",
+      "family": "unmodeled-invariant",
+      "left": {"effects": [["write", "repo://sample/x.json"]], "coverage": "partial"},
+      "right": {"effects": [["write", "repo://sample/y.json"]], "coverage": "partial"},
+      "expected": "unknown"
+    },
+    {
+      "id": "SW-008",
+      "family": "external-effect",
+      "left": {"effects": [["emit", "service://notifications"]], "coverage": "complete"},
+      "right": {"effects": [["write", "repo://sample/log.txt"]], "coverage": "complete"},
+      "expected": "unknown"
+    },
+    {
+      "id": "SW-009",
+      "family": "shared-read",
+      "left": {"effects": [["read", "repo://sample/config.yml"]], "coverage": "complete"},
+      "right": {"effects": [["read", "repo://sample/config.yml"]], "coverage": "complete"},
+      "expected": "independent-candidate"
+    }
+  ]
+}

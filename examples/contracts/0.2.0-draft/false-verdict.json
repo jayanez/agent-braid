@@ -1,0 +1,180 @@
+{
+  "certificate": {
+    "certificateVersion": "0.2.0-draft",
+    "modelVersion": "integer-batch-v1",
+    "initialStateDigest": "sha256:480dcba260a69f64eed1891e153d2b1a333ec594f049b098dfc231a7304402bc",
+    "operations": [
+      {
+        "id": "A",
+        "definitionDigest": "sha256:c2cb5e0916556b8ab987a6ba50cf51e0f1e6a2a8138f330a0fddce20ea25833d"
+      },
+      {
+        "id": "B",
+        "definitionDigest": "sha256:e016c1804942d6e91fc3441a9e4bc1fdd3bafe92f967d8dd666acc61d37cd079"
+      }
+    ],
+    "observation": {
+      "mode": "projection",
+      "resources": [
+        "x",
+        "y"
+      ]
+    },
+    "executionContract": "integer-batch-atomic-v1",
+    "claim": {
+      "property": "terminal-observation-equivalence",
+      "method": "exhaustive-finite",
+      "domain": "fixture:sha256:69dc2a126f92c97a4e08aa002b28bb18901e27976dcc816be72798c1ea80d0e1",
+      "assumptions": [
+        "atomic modeled operations",
+        "no external effects",
+        "fixed batch without retries"
+      ],
+      "observationContract": "sha256:02280031d17d73e8acefbe347d1593a4a0dc49e35aad51b45e0e9a72ec1a507a",
+      "executionContract": "integer-batch-atomic-v1",
+      "assuranceClass": 4
+    },
+    "evidence": {
+      "kind": "exhaustive-finite",
+      "fixtureDigest": "sha256:69dc2a126f92c97a4e08aa002b28bb18901e27976dcc816be72798c1ea80d0e1",
+      "traces": [
+        {
+          "schedule": [
+            "A",
+            "B"
+          ],
+          "outcomeDigest": "sha256:50795a5f597998ae373c55a2f50b770e778fbe2a62d2a52eee7acf440b33e5c1"
+        },
+        {
+          "schedule": [
+            "B",
+            "A"
+          ],
+          "outcomeDigest": "sha256:48a3bec7a5d13bd68a7dcdee85b0ed1f977edbc9e485ebc36e776dde03f137bc"
+        }
+      ]
+    },
+    "result": "divergent",
+    "certificateId": "sha256:251c69aeb38098839a5dc9096cd1ff6357cd50ef70d2b2db4cb07645e9929d26"
+  },
+  "artifacts": {
+    "sha256:69dc2a126f92c97a4e08aa002b28bb18901e27976dcc816be72798c1ea80d0e1": {
+      "modelVersion": "integer-batch-v1",
+      "state": {
+        "x": 0,
+        "y": 0
+      },
+      "versions": {
+        "x": 0,
+        "y": 0
+      },
+      "operations": [
+        {
+          "id": "A",
+          "kind": "assign",
+          "target": "x",
+          "expression": {
+            "int": 1
+          },
+          "dependencies": [],
+          "readVersions": {}
+        },
+        {
+          "id": "B",
+          "kind": "assign",
+          "target": "y",
+          "expression": {
+            "int": 2
+          },
+          "dependencies": [],
+          "readVersions": {}
+        }
+      ],
+      "observation": {
+        "mode": "projection",
+        "resources": [
+          "x",
+          "y"
+        ]
+      }
+    },
+    "sha256:50795a5f597998ae373c55a2f50b770e778fbe2a62d2a52eee7acf440b33e5c1": {
+      "status": "complete",
+      "reason": "",
+      "state": {
+        "x": 1,
+        "y": 2
+      },
+      "versions": {
+        "x": 1,
+        "y": 1
+      },
+      "results": {
+        "A": 1,
+        "B": 2
+      },
+      "events": [
+        {
+          "id": "A",
+          "kind": "assign",
+          "resource": "x",
+          "value": 1,
+          "reads": {},
+          "writes": [
+            "x"
+          ]
+        },
+        {
+          "id": "B",
+          "kind": "assign",
+          "resource": "y",
+          "value": 2,
+          "reads": {},
+          "writes": [
+            "y"
+          ]
+        }
+      ],
+      "pending": []
+    },
+    "sha256:48a3bec7a5d13bd68a7dcdee85b0ed1f977edbc9e485ebc36e776dde03f137bc": {
+      "status": "complete",
+      "reason": "",
+      "state": {
+        "x": 1,
+        "y": 2
+      },
+      "versions": {
+        "x": 1,
+        "y": 1
+      },
+      "results": {
+        "B": 2,
+        "A": 1
+      },
+      "events": [
+        {
+          "id": "B",
+          "kind": "assign",
+          "resource": "y",
+          "value": 2,
+          "reads": {},
+          "writes": [
+            "y"
+          ]
+        },
+        {
+          "id": "A",
+          "kind": "assign",
+          "resource": "x",
+          "value": 1,
+          "reads": {},
+          "writes": [
+            "x"
+          ]
+        }
+      ],
+      "pending": []
+    }
+  }
+}

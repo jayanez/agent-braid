@@ -1,0 +1,77 @@
+[
+  {
+    "aimVersion": "0.2.0-draft",
+    "instanceId": "ci-write-release-config",
+    "attemptId": "ci-write-release-config-attempt-1",
+    "definition": {
+      "id": "external-config-write-v1",
+      "digest": "sha256:05694e507847ffb326c2824c0cfbce1c43218373093d8abe57d7703ce06edd3a"
+    },
+    "inputDigest": "sha256:a9f6bf115d8e964cad0c56bea126cbe578b905a47dd02c651d446e58866151e9",
+    "dependencies": [],
+    "readVersions": {
+      "api://example/config/releases/agent-braid": 12
+    },
+    "effects": {
+      "declared": [
+        {"kind": "call", "resource": "tool://configuration-service/update"},
+        {"kind": "write", "resource": "api://example/config/releases/agent-braid"}
+      ],
+      "inferred": [],
+      "observed": [],
+      "coverage": {
+        "status": "unknown",
+        "domain": "declared external configuration resources",
+        "method": "portable M0 representation fixture"
+      }
+    },
+    "evidence": [
+      {
+        "property": "independence",
+        "method": "declared",
+        "domain": "declared resources only",
+        "assumptions": ["No external request is executed by this fixture"],
+        "observationContract": "declarative-fields-only-m0",
+        "executionContract": "non-executing-portable-example-m0",
+        "assuranceClass": 0
+      }
+    ]
+  },
+  {
+    "aimVersion": "0.2.0-draft",
+    "instanceId": "ci-deploy-preview",
+    "attemptId": "ci-deploy-preview-attempt-1",
+    "definition": {
+      "id": "service-deploy-v1",
+      "digest": "sha256:3df6b6ad925a7c0d4620b6c3cd47593c5150b35bcee3bda7e6910b6929a7b779"
+    },
+    "inputDigest": "sha256:4f68b3d98099f7ad78cf997eef9b3c4ec23c738572dbf12dfba8f44118e5cd16",
+    "dependencies": ["ci-write-release-config"],
+    "readVersions": {
+      "api://example/config/releases/agent-braid": 13
+    },
+    "effects": {
+      "declared": [
+        {"kind": "deploy", "resource": "deployment://example/agent-braid/preview"}
+      ],
+      "inferred": [],
+      "observed": [],
+      "coverage": {
+        "status": "unknown",
+        "domain": "declared deployment resources",
+        "method": "portable M0 representation fixture"
+      }
+    },
+    "evidence": [
+      {
+        "property": "independence",
+        "method": "declared",
+        "domain": "declared resources only",
+        "assumptions": ["No deployment is executed or authorized by this fixture"],
+        "observationContract": "declarative-fields-only-m0",
+        "executionContract": "non-executing-portable-example-m0",
+        "assuranceClass": 0
+      }
+    ]
+  }
+]

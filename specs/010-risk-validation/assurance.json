@@ -1,0 +1,226 @@
+{
+  "articles": [
+    0,
+    9,
+    10,
+    13,
+    14,
+    19,
+    21,
+    23
+  ],
+  "assumptions": "Git reports the relevant changed paths and existing validators remain authoritative for their owned domains; path classification is incomplete dependency metadata and therefore fails closed for unknown paths.",
+  "authority_snapshot": {
+    "commit": "f59a42a12f95802cb9bf58681749467fb16b98bc",
+    "hashes": {
+      "ARCHITECTURE.md": "94e5114eb799b25ca666ef728f84ab1c88e6ad1b342e30a9e99276b8f44c30c2",
+      "CONSTITUTION.md": "ff7196976a1736a639947c2ab26e8da157fef23c89ba9881312f2a36459964eb",
+      "GOVERNANCE.md": "c8eda331d97c42e54be4730ef906dfaad9ae2814e36704302f97afceff037d82",
+      "LICENSE": "194a65558c671b81e4d10872085ba4bdda096a8f7bdb7a97d132f684ae14b502",
+      "MATHEMATICAL_FOUNDATIONS.md": "8c56b59b20ca5f9bc7464b458f980e51e05c0820645cf86181cf08883acd5ca4",
+      "RESEARCH.md": "a3e9668e2c1b80024a6ce9024b7558d31f0d3d2d1e22fa89f460a70beefdd56d",
+      "TERMINOLOGY.md": "4b52b621900a413f58fa920254c2d36df849bda906e9989f0e49b0a43aaf503c",
+      "TRADEMARKS.md": "be084562378235f7c72b4a16e9d0f37b01e7e2b035291eceb4f6478048a517b8",
+      "docs/adr/0000-template.md": "546bd5098b2f8f07804253f0b1fd2c893264d4519644ccd93913956056fac8f4",
+      "docs/adr/0001-formalization-before-implementation.md": "c68d05ee8abb12932acaebee8b95ef4873172a97f93a8dae2187b84b63a29188",
+      "docs/adr/0002-yang-baxter-is-a-hypothesis.md": "8f72ec03ea85a5cef1bed08b04c871bca5930a70e2c313f01124d4a0c194efef",
+      "docs/adr/0003-copyleft-and-trademark-protection.md": "174745a166b4f521fab0f1a043d5c96b8b4b6a626b344245d8b89616d919f8c6",
+      "docs/adr/0004-scientific-constitutional-clarifications.md": "eaf956ab7a8daae2b5ea75d5ae8832a039ef2c6d18bf2e0e27e9b2b964e0fd71",
+      "docs/adr/0005-evidence-contracts-and-bounded-laboratory.md": "a35504083c719993a8c9a460d579c9017871b20bd65760f9f2534de2d7f27f6b",
+      "docs/adr/0006-shared-spec-kit-guardrails.md": "b02e0844e311e0364b40d06e2de3c1c73628247625d20c534a644ff8d9387cb7",
+      "docs/adr/0007-read-only-python-analyzer.md": "c864497da1a8172826d1b96b728b03d16272396c53dc194680d646301c4d07f3",
+      "docs/adr/0008-read-only-git-worktree-adapter.md": "8915605500bb4fa0150ff2fe576482db8a55bd29fb53a17788a51f8671a52e76",
+      "docs/adr/0009-transparent-validation-status.md": "7e329563e069e972ef2febcf64e0fec29255c0c9af29e331a1d5beb7f382e60d",
+      "docs/adr/0010-clean-publication-provenance.md": "6481cf11e2daf5d307928310763ae82889b280cea215126ebae3b32a708f3994",
+      "docs/adr/0011-risk-based-validation-gates.md": "3aa363f808821ead18d830e931e476a0d790106112ef637875428f322d321531",
+      "docs/architecture/AGENT_INTERACTION_METADATA.md": "0118d7f16c390fc4c1ff027b503a4eaba8a747edf3f6d7b088559f8870e27780",
+      "docs/architecture/ASSURANCE_LEVELS.md": "102d0df0dc6fc0ec114d92fe1ef053b375bd9704d0af6a048affe36900d77512",
+      "docs/architecture/CONFLUENCE_CERTIFICATE.md": "fd12a8f1a1477835848581b0f4ccd52f76d3f22dd96a3abaccb9074733464a8e",
+      "docs/architecture/DRAFT_0_2.md": "ae2bc09d941537eec6ea05edb69e4402d5c17dae0585b4add0825d6a01fdc29f",
+      "docs/theory/CLAIM_DISCIPLINE.md": "0fcd89ae045e017f62cbe0b7a83a9a9c107770856bba12a340e77f06576db053",
+      "docs/theory/OPERATIONAL_SEMANTICS.md": "7e83813d138dde064f85aafee1ba20302d55ede768d35d26340abd522ecce1f7",
+      "docs/theory/SCIENTIFIC_INTEGRATION.md": "bf4dba9119006a9261b45415edfe52b92d226648ab21aa3fd2e4a7f4822faf8c",
+      "schemas/0.1.0-alpha/analysis-report.schema.json": "91c759ad0d28de0b4e68f5bd3958de37ff2e6c102ecd8c6c2f0083e0151ad578",
+      "schemas/0.1.0-alpha/git-analysis-provenance.schema.json": "403b2e61ff7a7700c0db05df4ac3b11504e2c69e2bab9161b4a9ceb156b1316c",
+      "schemas/0.1.0-alpha/git-analysis-request.schema.json": "928c777ae68a184fae172a7cb2b172ba283b5af912edaf6c4b389bd8bf767a96",
+      "schemas/0.2.0-draft/agent-interaction-metadata.schema.json": "9d2ff528d0d3f02ba5bce63181e88732eecef96e90fabb5898b3314abd554900",
+      "schemas/0.2.0-draft/confluence-certificate.schema.json": "8e375fdc57fbd3b9f15544f2079c8f92633ec1def660f3eabed77feb784f34f0",
+      "schemas/agent-interaction-metadata.schema.json": "44b60956817cbcd92e0802dfe99ca537b20768f53472f04afd1dcc502f53cd5c",
+      "schemas/confluence-certificate.schema.json": "ea68bf94f6767d615881167d8f7dd28359e6c399edd66935ba17b88b2b1cf785",
+      "schemas/governance/public-export-manifest.schema.json": "11eb7f2594939ae9fd0c9e6cfe4423a80aba686d6cdfdd8b73b0fb84b0840aa8",
+      "schemas/governance/release-validation-record.schema.json": "d9943f0c9f5520ea52e3b12bfba88240d03f8011b433fc5e35cb49549ab6e819"
+    },
+    "mode": "historical"
+  },
+  "compatibility": "No change to the Constitution, AIM, confluence certificates, assurance classes, analyzer CLI, report schemas, closure decisions or clean-room evidence contracts.",
+  "domain": "Local Python 3.12 development and GitHub Actions validation of this repository's tracked and non-ignored untracked paths.",
+  "evidence_snapshot": {
+    "commit": "f59a42a12f95802cb9bf58681749467fb16b98bc",
+    "mode": "historical"
+  },
+  "execution_contract": "Read Git path state and run existing local validation commands; never capture or approve evidence, mutate Git history, publish, push, merge or run a clean-room protocol implicitly.",
+  "human_review": "approved",
+  "hypotheses": "Proportional scheduling of unchanged validation gates will shorten feedback without increasing escaped defects; this operational expectation is not a scientific or safety claim.",
+  "observation_contract": "Changed path inventory, selected domains and profiles, ordered command plans, exit codes, workflow structure and existing validator outputs.",
+  "references": [
+    "AGENTS.md",
+    "CONSTITUTION.md",
+    "CONTRIBUTING.md",
+    "GOVERNANCE.md",
+    "docs/adr/0006-shared-spec-kit-guardrails.md",
+    "docs/adr/0009-transparent-validation-status.md",
+    "docs/adr/0011-risk-based-validation-gates.md",
+    "docs/development/SPEC_KIT.md",
+    "specs/010-risk-validation/founder-decision.json"
+  ],
+  "review_record": "specs/010-risk-validation/founder-decision.json",
+  "requirements": [
+    {
+      "id": "REQ-001",
+      "scenarios": [
+        {
+          "given": "Known and unknown tracked or untracked paths relative to an explicit base",
+          "id": "SC-031",
+          "obtained_evidence": [
+            {
+              "command": "python3 scripts/capture_feature_evidence.py 010-risk-validation",
+              "limits": "Path selection is an operational optimization, not semantic dependency analysis, evidence reproduction, scientific proof, human approval or independent validation.",
+              "outcome": "Risk-based path classification, complete candidate validation, conditional multi-agent gates and negative fallbacks passed.",
+              "path": "specs/010-risk-validation/evidence.json",
+              "sha256": "091b14911987b0a14fde9a3da765e2abf1f37364dbffa26a7ac5896ff10d8d00"
+            }
+          ],
+          "planned_evidence": "Run deterministic classification and unknown-path fallback tests",
+          "test_file": "tests/test_validation_profiles.py",
+          "test_name": "ValidationProfileTests.test_classification_is_deterministic_and_unknown_paths_fail_closed",
+          "then": "The plan is stable and every unknown path selects exhaustive sensitive fallback",
+          "when": "The validation plan is built"
+        }
+      ],
+      "text": "Classify changes deterministically, explain every selected gate and fail closed on unknown paths."
+    },
+    {
+      "id": "REQ-002",
+      "scenarios": [
+        {
+          "given": "Representative editorial, runtime, contract, science, strategy and governance changes",
+          "id": "SC-032",
+          "obtained_evidence": [
+            {
+              "command": "python3 scripts/capture_feature_evidence.py 010-risk-validation",
+              "limits": "Path selection is an operational optimization, not semantic dependency analysis, evidence reproduction, scientific proof, human approval or independent validation.",
+              "outcome": "Risk-based path classification, complete candidate validation, conditional multi-agent gates and negative fallbacks passed.",
+              "path": "specs/010-risk-validation/evidence.json",
+              "sha256": "091b14911987b0a14fde9a3da765e2abf1f37364dbffa26a7ac5896ff10d8d00"
+            }
+          ],
+          "planned_evidence": "Run targeted-domain, expensive-gate exclusion and failure propagation tests",
+          "test_file": "tests/test_validation_profiles.py",
+          "test_name": "ValidationProfileTests.test_quick_profile_runs_only_invariants_and_affected_domains",
+          "then": "Required targeted checks run, unrelated expensive checks do not and failures propagate",
+          "when": "The quick profile executes"
+        }
+      ],
+      "text": "Provide fast affected-domain feedback without weakening the later candidate gate."
+    },
+    {
+      "id": "REQ-003",
+      "scenarios": [
+        {
+          "given": "A stable pull-request candidate",
+          "id": "SC-033",
+          "obtained_evidence": [
+            {
+              "command": "python3 scripts/capture_feature_evidence.py 010-risk-validation",
+              "limits": "Path selection is an operational optimization, not semantic dependency analysis, evidence reproduction, scientific proof, human approval or independent validation.",
+              "outcome": "Risk-based path classification, complete candidate validation, conditional multi-agent gates and negative fallbacks passed.",
+              "path": "specs/010-risk-validation/evidence.json",
+              "sha256": "091b14911987b0a14fde9a3da765e2abf1f37364dbffa26a7ac5896ff10d8d00"
+            }
+          ],
+          "planned_evidence": "Inspect and execute the complete PR command inventory",
+          "test_file": "tests/test_validation_profiles.py",
+          "test_name": "ValidationProfileTests.test_pr_profile_retains_complete_repository_gate",
+          "then": "All repository-wide executable gates are present without evidence capture or approval",
+          "when": "The PR profile is planned"
+        }
+      ],
+      "text": "Retain complete repository-wide validation once per stable PR candidate."
+    },
+    {
+      "id": "REQ-004",
+      "scenarios": [
+        {
+          "given": "Sensitive changes with and without Spec Kit integration impact",
+          "id": "SC-034",
+          "obtained_evidence": [
+            {
+              "command": "python3 scripts/capture_feature_evidence.py 010-risk-validation",
+              "limits": "Path selection is an operational optimization, not semantic dependency analysis, evidence reproduction, scientific proof, human approval or independent validation.",
+              "outcome": "Risk-based path classification, complete candidate validation, conditional multi-agent gates and negative fallbacks passed.",
+              "path": "specs/010-risk-validation/evidence.json",
+              "sha256": "091b14911987b0a14fde9a3da765e2abf1f37364dbffa26a7ac5896ff10d8d00"
+            }
+          ],
+          "planned_evidence": "Run positive and negative sensitive and integration-matrix trigger tests",
+          "test_file": "tests/test_validation_profiles.py",
+          "test_name": "ValidationProfileTests.test_specialist_matrix_is_limited_to_owned_inputs",
+          "then": "All sensitive paths receive complete checks and only owned inputs trigger the matrix",
+          "when": "The paths are classified"
+        }
+      ],
+      "text": "Activate specialist controls for normative, scientific, contract, supply-chain, validation and generator changes."
+    },
+    {
+      "id": "REQ-005",
+      "scenarios": [
+        {
+          "given": "Milestone, release, publication and evidence artifacts",
+          "id": "SC-035",
+          "obtained_evidence": [
+            {
+              "command": "python3 scripts/capture_feature_evidence.py 010-risk-validation",
+              "limits": "Path selection is an operational optimization, not semantic dependency analysis, evidence reproduction, scientific proof, human approval or independent validation.",
+              "outcome": "Risk-based path classification, complete candidate validation, conditional multi-agent gates and negative fallbacks passed.",
+              "path": "specs/010-risk-validation/evidence.json",
+              "sha256": "091b14911987b0a14fde9a3da765e2abf1f37364dbffa26a7ac5896ff10d8d00"
+            }
+          ],
+          "planned_evidence": "Run deferred-boundary and non-authorizing language tests",
+          "test_file": "tests/test_validation_profiles.py",
+          "test_name": "ValidationProfileTests.test_evidence_boundaries_are_deferred_and_non_authorizing",
+          "then": "The plan names separate procedures and never claims their completion or approval",
+          "when": "Ordinary validation is planned"
+        }
+      ],
+      "text": "Keep clean-room reproduction and human decisions explicit and separate from ordinary validation profiles."
+    },
+    {
+      "id": "REQ-006",
+      "scenarios": [
+        {
+          "given": "The repository validation workflow",
+          "id": "SC-036",
+          "obtained_evidence": [
+            {
+              "command": "python3 scripts/capture_feature_evidence.py 010-risk-validation",
+              "limits": "Path selection is an operational optimization, not semantic dependency analysis, evidence reproduction, scientific proof, human approval or independent validation.",
+              "outcome": "Risk-based path classification, complete candidate validation, conditional multi-agent gates and negative fallbacks passed.",
+              "path": "specs/010-risk-validation/evidence.json",
+              "sha256": "091b14911987b0a14fde9a3da765e2abf1f37364dbffa26a7ac5896ff10d8d00"
+            }
+          ],
+          "planned_evidence": "Inspect parallel job boundaries and conditional specialist execution",
+          "test_file": "tests/test_validation_profiles.py",
+          "test_name": "ValidationProfileTests.test_ci_parallelizes_complete_gates_and_conditions_only_specialists",
+          "then": "Complete gates remain mandatory while specialist work is conditionally parallelized",
+          "when": "Workflow structure is validated"
+        }
+      ],
+      "text": "Reduce CI critical-path latency through parallel jobs without reporting skipped work as passed."
+    }
+  ],
+  "scientific_limits": "Path selection is not semantic dependency analysis, constitutional proof, scientific validation, production-safety evidence, human review, founder approval or independent reproduction.",
+  "scope": "Deterministic change classification, quick/PR/sensitive profiles, conditional specialist validation, parallel CI structure and contributor guidance.",
+  "stage": "validated"
+}

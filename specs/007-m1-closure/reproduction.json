@@ -1,0 +1,410 @@
+{
+  "benchmarks": {
+    "git": {
+      "analysisCost": {
+        "elapsedNanoseconds": 2099972334,
+        "gitCommandCount": 134
+      },
+      "baselineComparisons": [
+        {
+          "elapsedNanoseconds": 156816874,
+          "falseSerializationCount": 0,
+          "gitCommandCount": 12,
+          "id": "file-overlap",
+          "limits": "Exact changed-path overlap only; no dependencies, uncertainty, versions or semantics.",
+          "measuredHere": true,
+          "results": [
+            {
+              "decision": "allow-overlap",
+              "elapsedNanoseconds": 26512083,
+              "gitCommandCount": 2,
+              "id": "GIT-001",
+              "overlappingPaths": []
+            },
+            {
+              "decision": "serialize",
+              "elapsedNanoseconds": 26564958,
+              "gitCommandCount": 2,
+              "id": "GIT-002",
+              "overlappingPaths": [
+                "a.txt"
+              ]
+            },
+            {
+              "decision": "allow-overlap",
+              "elapsedNanoseconds": 25625166,
+              "gitCommandCount": 2,
+              "id": "GIT-003",
+              "overlappingPaths": []
+            },
+            {
+              "decision": "allow-overlap",
+              "elapsedNanoseconds": 25914041,
+              "gitCommandCount": 2,
+              "id": "GIT-004",
+              "overlappingPaths": []
+            },
+            {
+              "decision": "allow-overlap",
+              "elapsedNanoseconds": 26674501,
+              "gitCommandCount": 2,
+              "id": "GIT-005",
+              "overlappingPaths": []
+            },
+            {
+              "decision": "serialize",
+              "elapsedNanoseconds": 25526125,
+              "gitCommandCount": 2,
+              "id": "GIT-006",
+              "overlappingPaths": [
+                "a.txt"
+              ]
+            }
+          ],
+          "unsafeAllowCount": 3
+        },
+        {
+          "elapsedNanoseconds": 81951126,
+          "falseSerializationCount": 0,
+          "gitCommandCount": 6,
+          "id": "git-merge",
+          "limits": "Temporary-repository mergeability only; not semantic independence or safe interleaving.",
+          "measuredHere": true,
+          "results": [
+            {
+              "decision": "allow-overlap",
+              "elapsedNanoseconds": 13419084,
+              "exitCode": 0,
+              "gitCommandCount": 1,
+              "id": "GIT-001",
+              "outputSha256": "8201c0f8194bc8c2bd326363a4ea9168bd0e8b92df642b785447b812438d844c"
+            },
+            {
+              "decision": "serialize",
+              "elapsedNanoseconds": 14356667,
+              "exitCode": 1,
+              "gitCommandCount": 1,
+              "id": "GIT-002",
+              "outputSha256": "4a9fd90645c110884db854bde85d27227fd592d88a99d968c2911922fe964ecc"
+            },
+            {
+              "decision": "allow-overlap",
+              "elapsedNanoseconds": 13723666,
+              "exitCode": 0,
+              "gitCommandCount": 1,
+              "id": "GIT-003",
+              "outputSha256": "8201c0f8194bc8c2bd326363a4ea9168bd0e8b92df642b785447b812438d844c"
+            },
+            {
+              "decision": "allow-overlap",
+              "elapsedNanoseconds": 13432375,
+              "exitCode": 0,
+              "gitCommandCount": 1,
+              "id": "GIT-004",
+              "outputSha256": "8201c0f8194bc8c2bd326363a4ea9168bd0e8b92df642b785447b812438d844c"
+            },
+            {
+              "decision": "allow-overlap",
+              "elapsedNanoseconds": 14055667,
+              "exitCode": 0,
+              "gitCommandCount": 1,
+              "id": "GIT-005",
+              "outputSha256": "f8b68412d7d5296082150b277959f92c65613f41065bf944d0b71ecb5f4e66f9"
+            },
+            {
+              "decision": "serialize",
+              "elapsedNanoseconds": 12963667,
+              "exitCode": 1,
+              "gitCommandCount": 1,
+              "id": "GIT-006",
+              "outputSha256": "7612f0c777e720f27b7056b95df69cf0bbf92e29b9da74b604732c66e7792918"
+            }
+          ],
+          "unsafeAllowCount": 3
+        }
+      ],
+      "benchmarkVersion": "git-m1-v2",
+      "candidateRate": 0.16666666666666666,
+      "classificationAgreement": 6,
+      "coverage": 1.0,
+      "falseSafeCount": 0,
+      "falseSerializationCount": 0,
+      "limits": "Synthetic local Git repositories; declared syntactic ground truth only, with no semantic-commutation or production-safety claim.",
+      "results": [
+        {
+          "actual": "independent-candidate",
+          "expected": "independent-candidate",
+          "family": "disjoint-commits",
+          "id": "GIT-001"
+        },
+        {
+          "actual": "conflicting",
+          "expected": "conflicting",
+          "family": "overlapping-commits",
+          "id": "GIT-002"
+        },
+        {
+          "actual": "ordered",
+          "expected": "ordered",
+          "family": "declared-cross-file-dependency",
+          "id": "GIT-003"
+        },
+        {
+          "actual": "unknown",
+          "expected": "unknown",
+          "family": "explicit-generated-or-uncertain-path",
+          "id": "GIT-004"
+        },
+        {
+          "actual": "unknown",
+          "expected": "unknown",
+          "family": "binary-change",
+          "id": "GIT-005"
+        },
+        {
+          "actual": "unknown",
+          "expected": "unknown",
+          "family": "deletion",
+          "id": "GIT-006"
+        }
+      ],
+      "scenarioCount": 6,
+      "unknownRate": 0.5
+    },
+    "software": {
+      "analysisCost": {
+        "unit": "pair evaluations",
+        "value": 9
+      },
+      "baselineComparisons": [
+        {
+          "decisionRule": "Order every pair.",
+          "expectedTradeoff": "Avoids overlap but serializes all independent candidates.",
+          "id": "sequential",
+          "measuredHere": false
+        },
+        {
+          "decisionRule": "Permit every pair to overlap.",
+          "expectedTradeoff": "Ignores declared conflicts, dependencies, versions, and unknowns.",
+          "id": "uncontrolled-parallelism",
+          "measuredHere": false
+        },
+        {
+          "decisionRule": "Order only syntactically overlapping file regions.",
+          "expectedTradeoff": "Cannot establish cross-file semantics or hidden invariants.",
+          "id": "file-or-range-overlap",
+          "measuredHere": false
+        },
+        {
+          "decisionRule": "Accept changes that merge without textual conflict.",
+          "expectedTradeoff": "Post-hoc mergeability is not semantic commutation or safe interleaving.",
+          "id": "git-merge",
+          "measuredHere": false
+        },
+        {
+          "decisionRule": "Validate declared versions and policy constraints before commit.",
+          "expectedTradeoff": "Closer execution control, but still dependent on complete effects and an explicit execution contract.",
+          "id": "commit-gate-with-version-validation",
+          "measuredHere": false
+        }
+      ],
+      "benchmarkVersion": "software-m1-v2",
+      "candidateRate": 0.3333333333333333,
+      "classificationAgreement": 9,
+      "classificationCoverage": 1.0,
+      "conditionBoundScenarioCount": 1,
+      "falseSafeCount": 0,
+      "falseSerializationCount": 0,
+      "limits": "Synthetic pair classifications only; no agent execution or production-safety claim.",
+      "results": [
+        {
+          "actual": "independent-candidate",
+          "expected": "independent-candidate",
+          "family": "disjoint-edits",
+          "id": "SW-001"
+        },
+        {
+          "actual": "conflicting",
+          "expected": "conflicting",
+          "family": "overlapping-edits",
+          "id": "SW-002"
+        },
+        {
+          "actual": "ordered",
+          "expected": "ordered",
+          "family": "semantic-cross-file-dependency",
+          "id": "SW-003"
+        },
+        {
+          "actual": "unknown",
+          "expected": "unknown",
+          "family": "configuration-and-generated-output",
+          "id": "SW-004"
+        },
+        {
+          "actual": "independent-candidate",
+          "conditionEnforcement": "required-at-use",
+          "expected": "independent-candidate",
+          "family": "stale-snapshot",
+          "id": "SW-005",
+          "requiredConstraint": "validate-read-versions-at-use"
+        },
+        {
+          "actual": "unknown",
+          "expected": "unknown",
+          "family": "rename-or-transform",
+          "id": "SW-006"
+        },
+        {
+          "actual": "unknown",
+          "expected": "unknown",
+          "family": "unmodeled-invariant",
+          "id": "SW-007"
+        },
+        {
+          "actual": "unknown",
+          "expected": "unknown",
+          "family": "external-effect",
+          "id": "SW-008"
+        },
+        {
+          "actual": "independent-candidate",
+          "expected": "independent-candidate",
+          "family": "shared-read",
+          "id": "SW-009"
+        }
+      ],
+      "scenarioCount": 9,
+      "unknownRate": 0.4444444444444444
+    }
+  },
+  "capturedAt": "2026-09-18T20:53:54.585539+00:00",
+  "cleanRoom": {
+    "finalStatus": "",
+    "freshClone": true,
+    "freshEnvironment": true,
+    "initialStatus": "",
+    "pipCacheDisabled": true
+  },
+  "git": "git version 2.50.1 (Apple Git-155)",
+  "independentValidation": "pending",
+  "inputs": {
+    "examples/analysis/git-benchmark.json": "89abd151feb34f7c93912b361bcd869932ba32157b90942af786f9cf0d7831e9",
+    "examples/analysis/software-benchmark.json": "206be3534e27f6cbdccaf4c8de146ba3c26e26ab877aa369541134fbf7535167",
+    "requirements-dev.txt": "24a8316f230a1f408b5c953bf0217968f7ccab452594e774a1771ae28df86448",
+    "requirements-speckit.txt": "daa35d1e5551fba64cada1787b2646c283f9fb56ddc00b48f9b596b68134c392",
+    "research/radar/2026-09-18-m1.json": "bd3bb7142e16cc95e0b16873312be0908a89f3401b580e8cfb6e90b033eda716",
+    "research/reviews/2026-09-18-m1-radar.md": "5a4d8a2346e06aaaf76e6dafee3d53c5e5c52e5f48c51ee922ccfff4e8f6e0e2",
+    "scripts/run_git_benchmark.py": "a76fa2a66b3cc2eeda23ee615d4f9dcae54bb2fb8b4d6f92e64ee16762f7852a",
+    "scripts/run_m1_clean_room.py": "3a9da1d4eb54d3242c1e3c5c81ed0c79ac413d1d409251d58a65beddff29004b",
+    "scripts/run_software_benchmark.py": "d4410e037f92239dc68a517b40f494b6cdb26050abc586209433922d1d8785ca",
+    "scripts/spec_kit.py": "8960768ed158dce74be18d21905bb099be6c3a7e0e4879c2d735a3702851891f",
+    "scripts/test_spec_kit_integration.py": "e948f55d5ac3ed918f0a9d30cd95377a1a07b334909da7114d5b54febb575524",
+    "scripts/validate_m1_closure.py": "537abd4c824ef0f2fdee694abc0de0a859185192a836e3ad4e331df1efb05810",
+    "scripts/validate_release_records.py": "a52639ec437ebd75dec205e5e6a9ce0190c31deb0bb3d5d5c66cfe25c3eb566c",
+    "tests/test_analysis.py": "c5da2d4bffb162c77ab8eae71f3f768142780e63f6f9035e4b0518511b31efa4",
+    "tests/test_git_adapter.py": "f27408f851d23c78460bfc52b3ebc024ef58acde1c0d0f649dc9512d78b4c067"
+  },
+  "limits": [
+    "Founder-supervised internal reproduction; not independent validation.",
+    "Synthetic bounded corpora; no production-safety or execution-authorization claim.",
+    "No general confluence, semantic dependency completeness or Yang-Baxter result."
+  ],
+  "observations": [
+    {
+      "command": "${CLEAN_ROOM}/venv/bin/python -m pip install --no-cache-dir -r requirements-dev.txt -r requirements-speckit.txt",
+      "exitCode": 0,
+      "stderr": "  Running command git clone --filter=blob:none --quiet https://github.com/github/spec-kit.git ${PIP_BUILD_DIR}/specify-cli_78c5a4f01c9545a391661c91f1beabf0\n  Running command git rev-parse -q --verify 'sha^fe1d00e3ccaf495880aaf90fb0e17679e82f065b'\n  Running command git fetch -q https://github.com/github/spec-kit.git fe1d00e3ccaf495880aaf90fb0e17679e82f065b\n  Running command git checkout -q fe1d00e3ccaf495880aaf90fb0e17679e82f065b\n\n[notice] A new release of pip is available: 25.0.1 -> 26.2.1\n[notice] To update, run: ${CLEAN_ROOM}/venv/bin/python -m pip install --upgrade pip\n",
+      "stdout": "Collecting specify-cli@ git+https://github.com/github/spec-kit.git@fe1d00e3ccaf495880aaf90fb0e17679e82f065b (from -r requirements-speckit.txt (line 15))\n  Cloning https://github.com/github/spec-kit.git (to revision fe1d00e3ccaf495880aaf90fb0e17679e82f065b) to ${PIP_BUILD_DIR}/specify-cli_78c5a4f01c9545a391661c91f1beabf0\n  Resolved https://github.com/github/spec-kit.git to commit fe1d00e3ccaf495880aaf90fb0e17679e82f065b\n  Installing build dependencies: started\n  Installing build dependencies: finished with status 'done'\n  Getting requirements to build wheel: started\n  Getting requirements to build wheel: finished with status 'done'\n  Preparing metadata (pyproject.toml): started\n  Preparing metadata (pyproject.toml): finished with status 'done'\nCollecting jsonschema==4.25.1 (from -r requirements-dev.txt (line 2))\n  Downloading jsonschema-4.25.1-py3-none-any.whl.metadata (7.6 kB)\nCollecting annotated-doc==0.0.5 (from -r requirements-speckit.txt (line 2))\n  Downloading annotated_doc-0.0.5-py3-none-any.whl.metadata (6.5 kB)\nCollecting click==8.5.0 (from -r requirements-speckit.txt (line 3))\n  Downloading click-8.5.0-py3-none-any.whl.metadata (2.6 kB)\nCollecting json5==0.15.0 (from -r requirements-speckit.txt (line 4))\n  Downloading json5-0.15.0-py3-none-any.whl.metadata (37 kB)\nCollecting markdown-it-py==4.2.0 (from -r requirements-speckit.txt (line 5))\n  Downloading markdown_it_py-4.2.0-py3-none-any.whl.metadata (7.4 kB)\nCollecting mdurl==0.1.2 (from -r requirements-speckit.txt (line 6))\n  Downloading mdurl-0.1.2-py3-none-any.whl.metadata (1.6 kB)\nCollecting packaging==26.3 (from -r requirements-speckit.txt (line 7))\n  Downloading packaging-26.3-py3-none-any.whl.metadata (3.5 kB)\nCollecting pathspec==1.1.1 (from -r requirements-speckit.txt (line 8))\n  Downloading pathspec-1.1.1-py3-none-any.whl.metadata (14 kB)\nCollecting platformdirs==4.11.9 (from -r requirements-speckit.txt (line 9))\n  Downloading platformdirs-4.11.9-py3-none-any.whl.metadata (5.5 kB)\nCollecting pygments==2.21.0 (from -r requirements-speckit.txt (line 10))\n  Downloading pygments-2.21.0-py3-none-any.whl.metadata (2.5 kB)\nCollecting pyyaml==6.0.3 (from -r requirements-speckit.txt (line 11))\n  Downloading pyyaml-6.0.3-cp312-cp312-macosx_11_0_arm64.whl.metadata (2.4 kB)\nCollecting readchar==4.2.2 (from -r requirements-speckit.txt (line 12))\n  Downloading readchar-4.2.2-py3-none-any.whl.metadata (7.5 kB)\nCollecting rich==15.0.0 (from -r requirements-speckit.txt (line 13))\n  Downloading rich-15.0.0-py3-none-any.whl.metadata (18 kB)\nCollecting shellingham==1.5.4 (from -r requirements-speckit.txt (line 14))\n  Downloading shellingham-1.5.4-py2.py3-none-any.whl.metadata (3.5 kB)\nCollecting typer==0.27.2 (from -r requirements-speckit.txt (line 16))\n  Downloading typer-0.27.2-py3-none-any.whl.metadata (16 kB)\nCollecting attrs>=22.2.0 (from jsonschema==4.25.1->-r requirements-dev.txt (line 2))\n  Downloading attrs-26.1.0-py3-none-any.whl.metadata (8.8 kB)\nCollecting jsonschema-specifications>=2023.03.6 (from jsonschema==4.25.1->-r requirements-dev.txt (line 2))\n  Downloading jsonschema_specifications-2025.9.1-py3-none-any.whl.metadata (2.9 kB)\nCollecting referencing>=0.28.4 (from jsonschema==4.25.1->-r requirements-dev.txt (line 2))\n  Downloading referencing-0.37.0-py3-none-any.whl.metadata (2.8 kB)\nCollecting rpds-py>=0.7.1 (from jsonschema==4.25.1->-r requirements-dev.txt (line 2))\n  Downloading rpds_py-2026.6.3-cp312-cp312-macosx_11_0_arm64.whl.metadata (4.1 kB)\nCollecting typing-extensions>=4.4.0 (from referencing>=0.28.4->jsonschema==4.25.1->-r requirements-dev.txt (line 2))\n  Downloading typing_extensions-4.16.0-py3-none-any.whl.metadata (3.3 kB)\nDownloading jsonschema-4.25.1-py3-none-any.whl (90 kB)\nDownloading annotated_doc-0.0.5-py3-none-any.whl (5.3 kB)\nDownloading click-8.5.0-py3-none-any.whl (125 kB)\nDownloading json5-0.15.0-py3-none-any.whl (36 kB)\nDownloading markdown_it_py-4.2.0-py3-none-any.whl (91 kB)\nDownloading mdurl-0.1.2-py3-none-any.whl (10.0 kB)\nDownloading packaging-26.3-py3-none-any.whl (129 kB)\nDownloading pathspec-1.1.1-py3-none-any.whl (57 kB)\nDownloading platformdirs-4.11.9-py3-none-any.whl (24 kB)\nDownloading pygments-2.21.0-py3-none-any.whl (1.3 MB)\n   \u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501 1.3/1.3 MB 30.0 MB/s eta 0:00:00\nDownloading pyyaml-6.0.3-cp312-cp312-macosx_11_0_arm64.whl (173 kB)\nDownloading readchar-4.2.2-py3-none-any.whl (9.4 kB)\nDownloading rich-15.0.0-py3-none-any.whl (310 kB)\nDownloading shellingham-1.5.4-py2.py3-none-any.whl (9.8 kB)\nDownloading typer-0.27.2-py3-none-any.whl (123 kB)\nDownloading attrs-26.1.0-py3-none-any.whl (67 kB)\nDownloading jsonschema_specifications-2025.9.1-py3-none-any.whl (18 kB)\nDownloading referencing-0.37.0-py3-none-any.whl (26 kB)\nDownloading rpds_py-2026.6.3-cp312-cp312-macosx_11_0_arm64.whl (338 kB)\nDownloading typing_extensions-4.16.0-py3-none-any.whl (45 kB)\nBuilding wheels for collected packages: specify-cli\n  Building wheel for specify-cli (pyproject.toml): started\n  Building wheel for specify-cli (pyproject.toml): finished with status 'done'\n  Created wheel for specify-cli: filename=specify_cli-1.0.7-py3-none-any.whl size=898801 sha256=27e0ef4943047946bc1e2711bddfd3ec7991be6ee57a4d7df6a2ebde8cb72e7e\n  Stored in directory: ${PIP_CACHE}/wheels/61/23/13/a9f0b9bf0eaf4c94aef5ba96bd4bd602af32c23920bd14d385\nSuccessfully built specify-cli\nInstalling collected packages: typing-extensions, shellingham, rpds-py, readchar, pyyaml, pygments, platformdirs, pathspec, packaging, mdurl, json5, click, attrs, annotated-doc, referencing, markdown-it-py, rich, jsonschema-specifications, typer, jsonschema, specify-cli\nSuccessfully installed annotated-doc-0.0.5 attrs-26.1.0 click-8.5.0 json5-0.15.0 jsonschema-4.25.1 jsonschema-specifications-2025.9.1 markdown-it-py-4.2.0 mdurl-0.1.2 packaging-26.3 pathspec-1.1.1 platformdirs-4.11.9 pygments-2.21.0 pyyaml-6.0.3 readchar-4.2.2 referencing-0.37.0 rich-15.0.0 rpds-py-2026.6.3 shellingham-1.5.4 specify-cli-1.0.7 typer-0.27.2 typing-extensions-4.16.0\n"
+    },
+    {
+      "command": "${CLEAN_ROOM}/venv/bin/python scripts/validate_repository.py",
+      "exitCode": 0,
+      "stderr": "",
+      "stdout": "Repository validation passed.\n"
+    },
+    {
+      "command": "${CLEAN_ROOM}/venv/bin/python scripts/validate_contracts.py",
+      "exitCode": 0,
+      "stderr": "",
+      "stdout": "Contract corpus passed: legacy, 0.2 structure and finite semantic checks.\n"
+    },
+    {
+      "command": "${CLEAN_ROOM}/venv/bin/python scripts/validate_release_records.py",
+      "exitCode": 0,
+      "stderr": "",
+      "stdout": "Release records passed structural validation; no scientific approval inferred.\n"
+    },
+    {
+      "command": "${CLEAN_ROOM}/venv/bin/python scripts/validate_research_radar.py --milestone M1 --require-approved",
+      "exitCode": 0,
+      "stderr": "",
+      "stdout": "Research radar structure and provenance passed (offline check only).\n"
+    },
+    {
+      "command": "${CLEAN_ROOM}/venv/bin/python scripts/validate_spec_kit.py",
+      "exitCode": 0,
+      "stderr": "",
+      "stdout": "Spec Kit structural gates passed; semantic/human review remains separate.\n"
+    },
+    {
+      "command": "${CLEAN_ROOM}/venv/bin/python scripts/spec_kit.py check",
+      "exitCode": 0,
+      "stderr": "",
+      "stdout": "Spec Kit check: 0 files changed; no agents executed.\n"
+    },
+    {
+      "command": "${CLEAN_ROOM}/venv/bin/python scripts/test_spec_kit_integration.py",
+      "exitCode": 0,
+      "stderr": "test_solo_and_dual_regeneration (__main__.IntegrationTests.test_solo_and_dual_regeneration) ... Note: switching to 'fa958277bd919c827e781df63d8371afd6f111c9'.\n\nYou are in 'detached HEAD' state. You can look around, make experimental\nchanges and commit them, and you can discard any commits you make in this\nstate without impacting any branches by switching back to a branch.\n\nIf you want to create a new branch to retain commits you create, you may\ndo so (now or later) by using -c with the switch command. Example:\n\n  git switch -c <new-branch-name>\n\nOr undo this operation with:\n\n  git switch -\n\nTurn off this advice by setting config variable advice.detachedHead to false\n\nNote: switching to 'fa958277bd919c827e781df63d8371afd6f111c9'.\n\nYou are in 'detached HEAD' state. You can look around, make experimental\nchanges and commit them, and you can discard any commits you make in this\nstate without impacting any branches by switching back to a branch.\n\nIf you want to create a new branch to retain commits you create, you may\ndo so (now or later) by using -c with the switch command. Example:\n\n  git switch -c <new-branch-name>\n\nOr undo this operation with:\n\n  git switch -\n\nTurn off this advice by setting config variable advice.detachedHead to false\n\nNote: switching to 'fa958277bd919c827e781df63d8371afd6f111c9'.\n\nYou are in 'detached HEAD' state. You can look around, make experimental\nchanges and commit them, and you can discard any commits you make in this\nstate without impacting any branches by switching back to a branch.\n\nIf you want to create a new branch to retain commits you create, you may\ndo so (now or later) by using -c with the switch command. Example:\n\n  git switch -c <new-branch-name>\n\nOr undo this operation with:\n\n  git switch -\n\nTurn off this advice by setting config variable advice.detachedHead to false\n\nNote: switching to 'fa958277bd919c827e781df63d8371afd6f111c9'.\n\nYou are in 'detached HEAD' state. You can look around, make experimental\nchanges and commit them, and you can discard any commits you make in this\nstate without impacting any branches by switching back to a branch.\n\nIf you want to create a new branch to retain commits you create, you may\ndo so (now or later) by using -c with the switch command. Example:\n\n  git switch -c <new-branch-name>\n\nOr undo this operation with:\n\n  git switch -\n\nTurn off this advice by setting config variable advice.detachedHead to false\n\nok\n\n----------------------------------------------------------------------\nRan 1 test in 65.652s\n\nOK\n",
+      "stdout": ""
+    },
+    {
+      "command": "${CLEAN_ROOM}/venv/bin/python -m unittest discover -s tests -v",
+      "exitCode": 0,
+      "stderr": "test_cli_json_text_and_rejection (test_analysis.AnalyzerTests.test_cli_json_text_and_rejection) ... ok\ntest_complete_disjoint_footprints_are_candidates_not_authorization (test_analysis.AnalyzerTests.test_complete_disjoint_footprints_are_candidates_not_authorization) ... ok\ntest_deterministic_and_input_order_independent (test_analysis.AnalyzerTests.test_deterministic_and_input_order_independent) ... ok\ntest_invalid_and_cyclic_batches_are_rejected (test_analysis.AnalyzerTests.test_invalid_and_cyclic_batches_are_rejected) ... ok\ntest_overlap_dependency_partial_and_external_are_conservative (test_analysis.AnalyzerTests.test_overlap_dependency_partial_and_external_are_conservative) ... ok\ntest_read_versions_remain_constraints (test_analysis.AnalyzerTests.test_read_versions_remain_constraints) ... ok\ntest_report_schema (test_analysis.AnalyzerTests.test_report_schema) ... ok\ntest_software_benchmark_has_no_false_safe_classification (test_analysis.AnalyzerTests.test_software_benchmark_has_no_false_safe_classification) ... ok\ntest_verify_command_preserves_bounded_checker (test_analysis.AnalyzerTests.test_verify_command_preserves_bounded_checker) ... ok\ntest_aim_invalid_fields (test_contracts.StructuralTests.test_aim_invalid_fields) ... ok\ntest_contract_corpus (test_contracts.StructuralTests.test_contract_corpus) ... ok\ntest_legacy_bytes (test_contracts.StructuralTests.test_legacy_bytes) ... ok\ntest_commit_symlink_and_worktree_gitlink_are_unknown (test_git_adapter.GitAdapterTests.test_commit_symlink_and_worktree_gitlink_are_unknown) ... ok\ntest_disjoint_commits_are_syntactic_candidates_with_provenance (test_git_adapter.GitAdapterTests.test_disjoint_commits_are_syntactic_candidates_with_provenance) ... ok\ntest_git_benchmark_has_no_false_safe_classifications (test_git_adapter.GitAdapterTests.test_git_benchmark_has_no_false_safe_classifications) ... ok\ntest_git_benchmark_rejects_manifest_drift (test_git_adapter.GitAdapterTests.test_git_benchmark_rejects_manifest_drift) ... ok\ntest_git_paths_preserve_leading_and_trailing_spaces (test_git_adapter.GitAdapterTests.test_git_paths_preserve_leading_and_trailing_spaces) ... ok\ntest_overlap_dependency_delete_binary_and_uncertainty_are_conservative (test_git_adapter.GitAdapterTests.test_overlap_dependency_delete_binary_and_uncertainty_are_conservative) ... ok\ntest_rejects_unstable_unrelated_and_malformed_requests (test_git_adapter.GitAdapterTests.test_rejects_unstable_unrelated_and_malformed_requests) ... ok\ntest_schema_cli_and_existing_commands_remain_compatible (test_git_adapter.GitAdapterTests.test_schema_cli_and_existing_commands_remain_compatible) ... ok\ntest_symlink_is_unknown_and_external_diff_is_disabled (test_git_adapter.GitAdapterTests.test_symlink_is_unknown_and_external_diff_is_disabled) ... ok\ntest_worktree_includes_untracked_and_does_not_mutate_repository (test_git_adapter.GitAdapterTests.test_worktree_includes_untracked_and_does_not_mutate_repository) ... ok\ntest_aim_identity_and_dependencies (test_lab.CertificateTests.test_aim_identity_and_dependencies) ... ok\ntest_arbitrary_malformed_input_rejected (test_lab.CertificateTests.test_arbitrary_malformed_input_rejected) ... ok\ntest_cli_exit_status (test_lab.CertificateTests.test_cli_exit_status) ... ok\ntest_dependency_free_consumer (test_lab.CertificateTests.test_dependency_free_consumer) ... ok\ntest_proof_artifact_binding (test_lab.CertificateTests.test_proof_artifact_binding) ... ok\ntest_rehashed_fake_outcome_is_rejected (test_lab.CertificateTests.test_rehashed_fake_outcome_is_rejected) ... ok\ntest_replay_selection (test_lab.CertificateTests.test_replay_selection) ... ok\ntest_scope_and_contract_mutations (test_lab.CertificateTests.test_scope_and_contract_mutations) ... ok\ntest_valid_and_invalid_corpus (test_lab.CertificateTests.test_valid_and_invalid_corpus) ... ok\ntest_all_controls (test_lab.ModelTests.test_all_controls) ... ok\ntest_canonical_and_strict_json (test_lab.ModelTests.test_canonical_and_strict_json) ... ok\ntest_context_counterexample (test_lab.ModelTests.test_context_counterexample) ... ok\ntest_dependencies_and_cycles (test_lab.ModelTests.test_dependencies_and_cycles) ... ok\ntest_guards_and_versions (test_lab.ModelTests.test_guards_and_versions) ... ok\ntest_malformed_fixtures (test_lab.ModelTests.test_malformed_fixtures) ... ok\ntest_missing_resource_and_overflow_are_atomic_errors (test_lab.ModelTests.test_missing_resource_and_overflow_are_atomic_errors) ... ok\ntest_projection_and_raw_events (test_lab.ModelTests.test_projection_and_raw_events) ... ok\ntest_read_arithmetic_and_results (test_lab.ModelTests.test_read_arithmetic_and_results) ... ok\ntest_reproducibility_and_no_mutation (test_lab.ModelTests.test_reproducibility_and_no_mutation) ... ok\ntest_six_operation_bound (test_lab.ModelTests.test_six_operation_bound) ... ok\ntest_exit_matrix_traces_scientific_boundaries (test_m0_closure.M0ClosureTests.test_exit_matrix_traces_scientific_boundaries) ... ok\ntest_portable_workloads_cover_required_effects (test_m0_closure.M0ClosureTests.test_portable_workloads_cover_required_effects) ... ok\ntest_portable_workloads_preserve_identity_and_never_authorize (test_m0_closure.M0ClosureTests.test_portable_workloads_preserve_identity_and_never_authorize) ... ok\ntest_rejects_agent_prompt_or_pending_check_divergence (test_m0_closure.M0ClosureTests.test_rejects_agent_prompt_or_pending_check_divergence) ... ok\ntest_rejects_incompatible_python_and_unknown_commit (test_m0_closure.M0ClosureTests.test_rejects_incompatible_python_and_unknown_commit) ... ok\ntest_rejects_incomplete_review_and_closure_without_decision (test_m0_closure.M0ClosureTests.test_rejects_incomplete_review_and_closure_without_decision) ... ok\ntest_rejects_missing_agent_pair_and_commit_mismatch (test_m0_closure.M0ClosureTests.test_rejects_missing_agent_pair_and_commit_mismatch) ... ok\ntest_rejects_stale_input_and_evidence_digest (test_m0_closure.M0ClosureTests.test_rejects_stale_input_and_evidence_digest) ... ok\ntest_candidate_gate_allows_only_declared_post_freeze_records (test_m1_closure.M1ClosureTests.test_candidate_gate_allows_only_declared_post_freeze_records) ... ok\ntest_clean_room_environment_drops_python_and_git_overrides (test_m1_closure.M1ClosureTests.test_clean_room_environment_drops_python_and_git_overrides) ... ok\ntest_clean_room_helpers_apply_the_sanitized_environment (test_m1_closure.M1ClosureTests.test_clean_room_helpers_apply_the_sanitized_environment) ... ok\ntest_clean_room_inventory_includes_pinned_multi_agent_spec_kit_gates (test_m1_closure.M1ClosureTests.test_clean_room_inventory_includes_pinned_multi_agent_spec_kit_gates) ... ok\ntest_rejects_candidate_outside_closure_history (test_m1_closure.M1ClosureTests.test_rejects_candidate_outside_closure_history) ... ok\ntest_rejects_implementation_or_authority_changes_after_review (test_m1_closure.M1ClosureTests.test_rejects_implementation_or_authority_changes_after_review) ... ok\ntest_rejects_incompatible_dirty_or_failed_reproduction (test_m1_closure.M1ClosureTests.test_rejects_incompatible_dirty_or_failed_reproduction) ... ok\ntest_rejects_incomplete_environment_metadata (test_m1_closure.M1ClosureTests.test_rejects_incomplete_environment_metadata) ... ok\ntest_rejects_incomplete_founder_review (test_m1_closure.M1ClosureTests.test_rejects_incomplete_founder_review) ... ok\ntest_rejects_missing_inputs_commands_tree_and_benchmark_binding (test_m1_closure.M1ClosureTests.test_rejects_missing_inputs_commands_tree_and_benchmark_binding) ... ok\ntest_rejects_stale_hash_and_unmeasured_baseline (test_m1_closure.M1ClosureTests.test_rejects_stale_hash_and_unmeasured_baseline) ... ok\ntest_valid_internal_reproduction (test_m1_closure.M1ClosureTests.test_valid_internal_reproduction) ... ok\ntest_completed_requires_external_reviewer_and_evidence (test_release_records.ReleaseRecordTests.test_completed_requires_external_reviewer_and_evidence) ... ok\ntest_missing_status_and_pending_disclosure_fail (test_release_records.ReleaseRecordTests.test_missing_status_and_pending_disclosure_fail) ... ok\ntest_not_applicable_rejects_scientific_claims (test_release_records.ReleaseRecordTests.test_not_applicable_rejects_scientific_claims) ... ok\ntest_pending_record_cannot_claim_independent_validation (test_release_records.ReleaseRecordTests.test_pending_record_cannot_claim_independent_validation) ... ok\ntest_pending_record_is_explicit_and_complete (test_release_records.ReleaseRecordTests.test_pending_record_is_explicit_and_complete) ... ok\ntest_provisional_record_version_is_rejected (test_release_records.ReleaseRecordTests.test_provisional_record_version_is_rejected) ... ok\ntest_anchors (test_repository.LinkTests.test_anchors) ... ok\ntest_repository_invariants (test_repository.LinkTests.test_repository_invariants) ... ok\ntest_valid_and_missing_local_anchors (test_repository.LinkTests.test_valid_and_missing_local_anchors) ... ok\ntest_approval_requires_frozen_snapshot_and_matching_review (test_spec_kit.SpecKitTests.test_approval_requires_frozen_snapshot_and_matching_review) ... ok\ntest_authority_change_does_not_approve_new_text (test_spec_kit.SpecKitTests.test_authority_change_does_not_approve_new_text) ... ok\ntest_broken_reference_and_invalid_article (test_spec_kit.SpecKitTests.test_broken_reference_and_invalid_article) ... ok\ntest_current_tree_and_constitution_baseline (test_spec_kit.SpecKitTests.test_current_tree_and_constitution_baseline) ... ok\ntest_each_integration_drift_and_override_drift (test_spec_kit.SpecKitTests.test_each_integration_drift_and_override_drift) ... ok\ntest_freeze_rejects_dirty_candidate (test_spec_kit.SpecKitTests.test_freeze_rejects_dirty_candidate) ... ok\ntest_historical_evidence_stays_bound_while_current_evidence_detects_drift (test_spec_kit.SpecKitTests.test_historical_evidence_stays_bound_while_current_evidence_detects_drift) ... ok\ntest_historical_files_can_leave_worktree_but_current_files_cannot (test_spec_kit.SpecKitTests.test_historical_files_can_leave_worktree_but_current_files_cannot) ... ok\ntest_historical_snapshot_must_match_available_commit (test_spec_kit.SpecKitTests.test_historical_snapshot_must_match_available_commit) ... ok\ntest_incompatible_config_and_constitution_sync (test_spec_kit.SpecKitTests.test_incompatible_config_and_constitution_sync) ... ok\ntest_missing_assurance_is_rejected (test_spec_kit.SpecKitTests.test_missing_assurance_is_rejected) ... ok\ntest_missing_evidence_is_not_a_validated_result (test_spec_kit.SpecKitTests.test_missing_evidence_is_not_a_validated_result) ... ok\ntest_missing_integration_and_legacy_shadow_are_rejected (test_spec_kit.SpecKitTests.test_missing_integration_and_legacy_shadow_are_rejected) ... ok\ntest_new_authority_preserves_history_but_invalidates_current_work (test_spec_kit.SpecKitTests.test_new_authority_preserves_history_but_invalidates_current_work) ... ok\ntest_nonexistent_test_reference (test_spec_kit.SpecKitTests.test_nonexistent_test_reference) ... ok\ntest_replica_absence_divergence_and_idempotence (test_spec_kit.SpecKitTests.test_replica_absence_divergence_and_idempotence) ... ok\ntest_model_is_nested_monotonic_and_reproducible (test_strategy.MarketModelTests.test_model_is_nested_monotonic_and_reproducible) ... ok\ntest_rejects_duplicate_observation_ids (test_strategy.MarketModelTests.test_rejects_duplicate_observation_ids) ... ok\ntest_rejects_non_monotonic_and_unitless_inputs (test_strategy.MarketModelTests.test_rejects_non_monotonic_and_unitless_inputs) ... ok\ntest_committed_radar_has_milestone_review (test_strategy.RadarTests.test_committed_radar_has_milestone_review) ... ok\ntest_milestone_gate_requires_an_approved_review (test_strategy.RadarTests.test_milestone_gate_requires_an_approved_review) ... ok\ntest_rejects_invalid_provenance_and_peer_review_type (test_strategy.RadarTests.test_rejects_invalid_provenance_and_peer_review_type) ... ok\ntest_rejects_missing_provenance_and_bad_claim_level (test_strategy.RadarTests.test_rejects_missing_provenance_and_bad_claim_level) ... ok\n\n----------------------------------------------------------------------\nRan 94 tests in 32.023s\n\nOK\n",
+      "stdout": "Contract corpus passed: legacy, 0.2 structure and finite semantic checks.\n"
+    },
+    {
+      "command": "${CLEAN_ROOM}/venv/bin/python -m research.lab.controls",
+      "exitCode": 0,
+      "stderr": "",
+      "stdout": "CE1: all 3 pairs agree at the initial state; 6 schedules diverge: {'ABC': {'x': 1, 'y': 1, 'z': 1}, 'ACB': {'x': 1, 'y': 1, 'z': 0}, 'BAC': {'x': 1, 'y': 1, 'z': 1}, 'BCA': {'x': 1, 'y': 1, 'z': 0}, 'CAB': {'x': 1, 'y': 1, 'z': 0}, 'CBA': {'x': 1, 'y': 1, 'z': 0}}\nCE2: non-atomic increments lose an update (1 instead of 2).\nCE3: terminal observation equality is not preserved by continuation.\nCE4: equal counter states can conceal different per-operation results.\nCE5: individually valid branches with disjoint writes violate a merged invariant.\nS3: 36/36 product checks; 216/216 braid checks; bijective and not involutive.\n"
+    },
+    {
+      "command": "${CLEAN_ROOM}/venv/bin/python scripts/constitution_replica.py check",
+      "exitCode": 0,
+      "stderr": "",
+      "stdout": "Constitution replica: check passed (not an approval).\n"
+    },
+    {
+      "command": "${CLEAN_ROOM}/venv/bin/python scripts/run_software_benchmark.py",
+      "exitCode": 0,
+      "stderr": "",
+      "stdout": "{\n  \"analysisCost\": {\n    \"unit\": \"pair evaluations\",\n    \"value\": 9\n  },\n  \"baselineComparisons\": [\n    {\n      \"decisionRule\": \"Order every pair.\",\n      \"expectedTradeoff\": \"Avoids overlap but serializes all independent candidates.\",\n      \"id\": \"sequential\",\n      \"measuredHere\": false\n    },\n    {\n      \"decisionRule\": \"Permit every pair to overlap.\",\n      \"expectedTradeoff\": \"Ignores declared conflicts, dependencies, versions, and unknowns.\",\n      \"id\": \"uncontrolled-parallelism\",\n      \"measuredHere\": false\n    },\n    {\n      \"decisionRule\": \"Order only syntactically overlapping file regions.\",\n      \"expectedTradeoff\": \"Cannot establish cross-file semantics or hidden invariants.\",\n      \"id\": \"file-or-range-overlap\",\n      \"measuredHere\": false\n    },\n    {\n      \"decisionRule\": \"Accept changes that merge without textual conflict.\",\n      \"expectedTradeoff\": \"Post-hoc mergeability is not semantic commutation or safe interleaving.\",\n      \"id\": \"git-merge\",\n      \"measuredHere\": false\n    },\n    {\n      \"decisionRule\": \"Validate declared versions and policy constraints before commit.\",\n      \"expectedTradeoff\": \"Closer execution control, but still dependent on complete effects and an explicit execution contract.\",\n      \"id\": \"commit-gate-with-version-validation\",\n      \"measuredHere\": false\n    }\n  ],\n  \"benchmarkVersion\": \"software-m1-v2\",\n  \"candidateRate\": 0.3333333333333333,\n  \"classificationAgreement\": 9,\n  \"classificationCoverage\": 1.0,\n  \"conditionBoundScenarioCount\": 1,\n  \"falseSafeCount\": 0,\n  \"falseSerializationCount\": 0,\n  \"limits\": \"Synthetic pair classifications only; no agent execution or production-safety claim.\",\n  \"results\": [\n    {\n      \"actual\": \"independent-candidate\",\n      \"expected\": \"independent-candidate\",\n      \"family\": \"disjoint-edits\",\n      \"id\": \"SW-001\"\n    },\n    {\n      \"actual\": \"conflicting\",\n      \"expected\": \"conflicting\",\n      \"family\": \"overlapping-edits\",\n      \"id\": \"SW-002\"\n    },\n    {\n      \"actual\": \"ordered\",\n      \"expected\": \"ordered\",\n      \"family\": \"semantic-cross-file-dependency\",\n      \"id\": \"SW-003\"\n    },\n    {\n      \"actual\": \"unknown\",\n      \"expected\": \"unknown\",\n      \"family\": \"configuration-and-generated-output\",\n      \"id\": \"SW-004\"\n    },\n    {\n      \"actual\": \"independent-candidate\",\n      \"conditionEnforcement\": \"required-at-use\",\n      \"expected\": \"independent-candidate\",\n      \"family\": \"stale-snapshot\",\n      \"id\": \"SW-005\",\n      \"requiredConstraint\": \"validate-read-versions-at-use\"\n    },\n    {\n      \"actual\": \"unknown\",\n      \"expected\": \"unknown\",\n      \"family\": \"rename-or-transform\",\n      \"id\": \"SW-006\"\n    },\n    {\n      \"actual\": \"unknown\",\n      \"expected\": \"unknown\",\n      \"family\": \"unmodeled-invariant\",\n      \"id\": \"SW-007\"\n    },\n    {\n      \"actual\": \"unknown\",\n      \"expected\": \"unknown\",\n      \"family\": \"external-effect\",\n      \"id\": \"SW-008\"\n    },\n    {\n      \"actual\": \"independent-candidate\",\n      \"expected\": \"independent-candidate\",\n      \"family\": \"shared-read\",\n      \"id\": \"SW-009\"\n    }\n  ],\n  \"scenarioCount\": 9,\n  \"unknownRate\": 0.4444444444444444\n}\n"
+    },
+    {
+      "command": "${CLEAN_ROOM}/venv/bin/python scripts/run_git_benchmark.py",
+      "exitCode": 0,
+      "stderr": "",
+      "stdout": "{\n  \"analysisCost\": {\n    \"elapsedNanoseconds\": 2099972334,\n    \"gitCommandCount\": 134\n  },\n  \"baselineComparisons\": [\n    {\n      \"elapsedNanoseconds\": 156816874,\n      \"falseSerializationCount\": 0,\n      \"gitCommandCount\": 12,\n      \"id\": \"file-overlap\",\n      \"limits\": \"Exact changed-path overlap only; no dependencies, uncertainty, versions or semantics.\",\n      \"measuredHere\": true,\n      \"results\": [\n        {\n          \"decision\": \"allow-overlap\",\n          \"elapsedNanoseconds\": 26512083,\n          \"gitCommandCount\": 2,\n          \"id\": \"GIT-001\",\n          \"overlappingPaths\": []\n        },\n        {\n          \"decision\": \"serialize\",\n          \"elapsedNanoseconds\": 26564958,\n          \"gitCommandCount\": 2,\n          \"id\": \"GIT-002\",\n          \"overlappingPaths\": [\n            \"a.txt\"\n          ]\n        },\n        {\n          \"decision\": \"allow-overlap\",\n          \"elapsedNanoseconds\": 25625166,\n          \"gitCommandCount\": 2,\n          \"id\": \"GIT-003\",\n          \"overlappingPaths\": []\n        },\n        {\n          \"decision\": \"allow-overlap\",\n          \"elapsedNanoseconds\": 25914041,\n          \"gitCommandCount\": 2,\n          \"id\": \"GIT-004\",\n          \"overlappingPaths\": []\n        },\n        {\n          \"decision\": \"allow-overlap\",\n          \"elapsedNanoseconds\": 26674501,\n          \"gitCommandCount\": 2,\n          \"id\": \"GIT-005\",\n          \"overlappingPaths\": []\n        },\n        {\n          \"decision\": \"serialize\",\n          \"elapsedNanoseconds\": 25526125,\n          \"gitCommandCount\": 2,\n          \"id\": \"GIT-006\",\n          \"overlappingPaths\": [\n            \"a.txt\"\n          ]\n        }\n      ],\n      \"unsafeAllowCount\": 3\n    },\n    {\n      \"elapsedNanoseconds\": 81951126,\n      \"falseSerializationCount\": 0,\n      \"gitCommandCount\": 6,\n      \"id\": \"git-merge\",\n      \"limits\": \"Temporary-repository mergeability only; not semantic independence or safe interleaving.\",\n      \"measuredHere\": true,\n      \"results\": [\n        {\n          \"decision\": \"allow-overlap\",\n          \"elapsedNanoseconds\": 13419084,\n          \"exitCode\": 0,\n          \"gitCommandCount\": 1,\n          \"id\": \"GIT-001\",\n          \"outputSha256\": \"8201c0f8194bc8c2bd326363a4ea9168bd0e8b92df642b785447b812438d844c\"\n        },\n        {\n          \"decision\": \"serialize\",\n          \"elapsedNanoseconds\": 14356667,\n          \"exitCode\": 1,\n          \"gitCommandCount\": 1,\n          \"id\": \"GIT-002\",\n          \"outputSha256\": \"4a9fd90645c110884db854bde85d27227fd592d88a99d968c2911922fe964ecc\"\n        },\n        {\n          \"decision\": \"allow-overlap\",\n          \"elapsedNanoseconds\": 13723666,\n          \"exitCode\": 0,\n          \"gitCommandCount\": 1,\n          \"id\": \"GIT-003\",\n          \"outputSha256\": \"8201c0f8194bc8c2bd326363a4ea9168bd0e8b92df642b785447b812438d844c\"\n        },\n        {\n          \"decision\": \"allow-overlap\",\n          \"elapsedNanoseconds\": 13432375,\n          \"exitCode\": 0,\n          \"gitCommandCount\": 1,\n          \"id\": \"GIT-004\",\n          \"outputSha256\": \"8201c0f8194bc8c2bd326363a4ea9168bd0e8b92df642b785447b812438d844c\"\n        },\n        {\n          \"decision\": \"allow-overlap\",\n          \"elapsedNanoseconds\": 14055667,\n          \"exitCode\": 0,\n          \"gitCommandCount\": 1,\n          \"id\": \"GIT-005\",\n          \"outputSha256\": \"f8b68412d7d5296082150b277959f92c65613f41065bf944d0b71ecb5f4e66f9\"\n        },\n        {\n          \"decision\": \"serialize\",\n          \"elapsedNanoseconds\": 12963667,\n          \"exitCode\": 1,\n          \"gitCommandCount\": 1,\n          \"id\": \"GIT-006\",\n          \"outputSha256\": \"7612f0c777e720f27b7056b95df69cf0bbf92e29b9da74b604732c66e7792918\"\n        }\n      ],\n      \"unsafeAllowCount\": 3\n    }\n  ],\n  \"benchmarkVersion\": \"git-m1-v2\",\n  \"candidateRate\": 0.16666666666666666,\n  \"classificationAgreement\": 6,\n  \"coverage\": 1.0,\n  \"falseSafeCount\": 0,\n  \"falseSerializationCount\": 0,\n  \"limits\": \"Synthetic local Git repositories; declared syntactic ground truth only, with no semantic-commutation or production-safety claim.\",\n  \"results\": [\n    {\n      \"actual\": \"independent-candidate\",\n      \"expected\": \"independent-candidate\",\n      \"family\": \"disjoint-commits\",\n      \"id\": \"GIT-001\"\n    },\n    {\n      \"actual\": \"conflicting\",\n      \"expected\": \"conflicting\",\n      \"family\": \"overlapping-commits\",\n      \"id\": \"GIT-002\"\n    },\n    {\n      \"actual\": \"ordered\",\n      \"expected\": \"ordered\",\n      \"family\": \"declared-cross-file-dependency\",\n      \"id\": \"GIT-003\"\n    },\n    {\n      \"actual\": \"unknown\",\n      \"expected\": \"unknown\",\n      \"family\": \"explicit-generated-or-uncertain-path\",\n      \"id\": \"GIT-004\"\n    },\n    {\n      \"actual\": \"unknown\",\n      \"expected\": \"unknown\",\n      \"family\": \"binary-change\",\n      \"id\": \"GIT-005\"\n    },\n    {\n      \"actual\": \"unknown\",\n      \"expected\": \"unknown\",\n      \"family\": \"deletion\",\n      \"id\": \"GIT-006\"\n    }\n  ],\n  \"scenarioCount\": 6,\n  \"unknownRate\": 0.5\n}\n"
+    },
+    {
+      "command": "git diff-tree --check --root --no-commit-id -r fa958277bd919c827e781df63d8371afd6f111c9",
+      "exitCode": 0,
+      "stderr": "",
+      "stdout": ""
+    }
+  ],
+  "operator": {
+    "authorization": "Explicit founder authorization",
+    "automation": "Codex",
+    "independent": false,
+    "supervisor": "Juan Antonio Y\u00e1\u00f1ez Garc\u00eda"
+  },
+  "platform": "macOS-26.6.2-arm64-arm-64bit",
+  "python": "3.12.14",
+  "recordVersion": "0.2.0",
+  "reviewedCommit": "fa958277bd919c827e781df63d8371afd6f111c9",
+  "tree": "a0dfd908ded9bfd453b41d087da0da6e604e8ffe"
+}

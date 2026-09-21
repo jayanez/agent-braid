@@ -1,0 +1,44 @@
+{
+  "candidate_commit": "8167cdf95c48e518cecf9dfb59679121b3c4c3a4",
+  "captured_at": "2026-09-17T22:04:36.696105+00:00",
+  "inputs": {
+    "docs/releases/M0_EXIT_MATRIX.md": "0cbbf1832789688314c1627fdf5e1a262f77471a403ee691c8812135ea5aea9d",
+    "examples/workloads/README.md": "e339f9732797efac7005cc12419ea7b3f71eeeb5420ab21086e77f311abe5e14",
+    "examples/workloads/ci-deployment-controller.json": "2e5ccb4c5fe8620d5ae357c6af237074fd0206ed1d386fab763d65b1a40024eb",
+    "examples/workloads/code-agent-repository.json": "81273d6c63eb09446ea618d26cda926b23bd040851308332b90e3a2af7c8c46d",
+    "scripts/validate_m0_closure.py": "d80498cbf0303f63f9b4681abb1411a67b423f495e70e425d608d7809b633e8e",
+    "specs/001-certificate-verifier-pilot/evidence.json": "21e25bb8a37a6080a311fa9a09ba01f52058ab24a47e752ec2198a890e4b1418",
+    "specs/001-certificate-verifier-pilot/reviews/claude.json": "d241c1f723cbf1e610f16541b31fcd5a4288a3a06b40041b8fa5c377cf76a761",
+    "specs/001-certificate-verifier-pilot/reviews/codex.json": "f499580f959c5662d48e9e18a2022fead088af561da141c9cd52fff130bbca3b",
+    "tests/test_m0_closure.py": "dbb3f552e3a517e0a6acc35b38976651b3968e05dd2e8401afb8ea30681d435f"
+  },
+  "limits": "Structural, finite and provenance checks only; human and founder decisions remain pending.",
+  "observations": [
+    {
+      "command": "python3 scripts/validate_m0_closure.py readiness",
+      "exit_code": 0,
+      "stderr": "",
+      "stdout": "M0 readiness structural and provenance checks passed; no scientific approval inferred.\n"
+    },
+    {
+      "command": "python3 -m unittest tests.test_m0_closure -v",
+      "exit_code": 0,
+      "stderr": "test_exit_matrix_traces_scientific_boundaries (tests.test_m0_closure.M0ClosureTests.test_exit_matrix_traces_scientific_boundaries) ... ok\ntest_portable_workloads_cover_required_effects (tests.test_m0_closure.M0ClosureTests.test_portable_workloads_cover_required_effects) ... ok\ntest_portable_workloads_preserve_identity_and_never_authorize (tests.test_m0_closure.M0ClosureTests.test_portable_workloads_preserve_identity_and_never_authorize) ... ok\ntest_rejects_agent_prompt_or_pending_check_divergence (tests.test_m0_closure.M0ClosureTests.test_rejects_agent_prompt_or_pending_check_divergence) ... ok\ntest_rejects_incompatible_python_and_unknown_commit (tests.test_m0_closure.M0ClosureTests.test_rejects_incompatible_python_and_unknown_commit) ... ok\ntest_rejects_incomplete_review_and_closure_without_decision (tests.test_m0_closure.M0ClosureTests.test_rejects_incomplete_review_and_closure_without_decision) ... ok\ntest_rejects_missing_agent_pair_and_commit_mismatch (tests.test_m0_closure.M0ClosureTests.test_rejects_missing_agent_pair_and_commit_mismatch) ... ok\ntest_rejects_stale_input_and_evidence_digest (tests.test_m0_closure.M0ClosureTests.test_rejects_stale_input_and_evidence_digest) ... ok\n\n----------------------------------------------------------------------\nRan 8 tests in 0.019s\n\nOK\n",
+      "stdout": ""
+    },
+    {
+      "command": "python3 scripts/validate_contracts.py",
+      "exit_code": 0,
+      "stderr": "",
+      "stdout": "Contract corpus passed: legacy, 0.2 structure and finite semantic checks.\n"
+    },
+    {
+      "command": "python3 -m research.lab.controls",
+      "exit_code": 0,
+      "stderr": "",
+      "stdout": "CE1: all 3 pairs agree at the initial state; 6 schedules diverge: {'ABC': {'x': 1, 'y': 1, 'z': 1}, 'ACB': {'x': 1, 'y': 1, 'z': 0}, 'BAC': {'x': 1, 'y': 1, 'z': 1}, 'BCA': {'x': 1, 'y': 1, 'z': 0}, 'CAB': {'x': 1, 'y': 1, 'z': 0}, 'CBA': {'x': 1, 'y': 1, 'z': 0}}\nCE2: non-atomic increments lose an update (1 instead of 2).\nCE3: terminal observation equality is not preserved by continuation.\nCE4: equal counter states can conceal different per-operation results.\nCE5: individually valid branches with disjoint writes violate a merged invariant.\nS3: 36/36 product checks; 216/216 braid checks; bijective and not involutive.\n"
+    }
+  ],
+  "platform": "Darwin",
+  "python": "3.12.14"
+}

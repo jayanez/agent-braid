@@ -1,0 +1,78 @@
+[
+  {
+    "aimVersion": "0.2.0-draft",
+    "instanceId": "code-agent-read-readme",
+    "attemptId": "code-agent-read-readme-attempt-1",
+    "definition": {
+      "id": "repository-read-v1",
+      "digest": "sha256:f9db207deaca1f8b4f48f4051484cd0bc588f790c4f21f01679966dcb0b3f513"
+    },
+    "inputDigest": "sha256:9b58b21375544988c02ea15b1d3f773ffe245aca880b2272469eac85b0456cb2",
+    "dependencies": [],
+    "readVersions": {
+      "repo://example/project/README.md": 7
+    },
+    "effects": {
+      "declared": [
+        {"kind": "call", "resource": "tool://repository/read"},
+        {"kind": "read", "resource": "repo://example/project/README.md"}
+      ],
+      "inferred": [],
+      "observed": [],
+      "coverage": {
+        "status": "unknown",
+        "domain": "declared repository and tool resources",
+        "method": "portable M0 representation fixture"
+      }
+    },
+    "evidence": [
+      {
+        "property": "independence",
+        "method": "declared",
+        "domain": "declared resources only",
+        "assumptions": ["No claim of complete effects or adapter correctness"],
+        "observationContract": "declarative-fields-only-m0",
+        "executionContract": "non-executing-portable-example-m0",
+        "assuranceClass": 0
+      }
+    ]
+  },
+  {
+    "aimVersion": "0.2.0-draft",
+    "instanceId": "code-agent-edit-readme",
+    "attemptId": "code-agent-edit-readme-attempt-1",
+    "definition": {
+      "id": "repository-text-edit-v1",
+      "digest": "sha256:0d6f7087ef2fb4dd17b823f2da148bba1e1b8350297599ebbf1463cf79e3b2c4"
+    },
+    "inputDigest": "sha256:951eb99d12923808cf28c36ac0e074b9cb12e8b0d352dc4e8f1d1d98217d5013",
+    "dependencies": ["code-agent-read-readme"],
+    "readVersions": {
+      "repo://example/project/README.md": 7
+    },
+    "effects": {
+      "declared": [
+        {"kind": "transform", "resource": "repo://example/project/README.md#text"},
+        {"kind": "write", "resource": "repo://example/project/README.md"}
+      ],
+      "inferred": [],
+      "observed": [],
+      "coverage": {
+        "status": "unknown",
+        "domain": "declared repository resources",
+        "method": "portable M0 representation fixture"
+      }
+    },
+    "evidence": [
+      {
+        "property": "independence",
+        "method": "declared",
+        "domain": "declared resources only",
+        "assumptions": ["No claim of complete effects or adapter correctness"],
+        "observationContract": "declarative-fields-only-m0",
+        "executionContract": "non-executing-portable-example-m0",
+        "assuranceClass": 0
+      }
+    ]
+  }
+]

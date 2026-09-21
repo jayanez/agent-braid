@@ -1,0 +1,25 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "agent-braid"
+version = "0.1.0a1"
+description = "Portable, evidence-carrying concurrency analysis for multi-agent systems"
+readme = "README.md"
+requires-python = ">=3.12"
+license = {text = "AGPL-3.0-only"}
+authors = [{name = "Juan Antonio Yáñez García"}]
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "License :: OSI Approved :: GNU Affero General Public License v3",
+  "Programming Language :: Python :: 3.12",
+]
+dependencies = []
+
+[project.scripts]
+agent-braid = "agent_braid.cli:main"
+
+[tool.setuptools]
+packages = ["agent_braid", "research", "research.lab"]
+

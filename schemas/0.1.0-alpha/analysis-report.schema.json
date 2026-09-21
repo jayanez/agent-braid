@@ -1,0 +1,100 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://agent-braid.dev/schemas/0.1.0-alpha/analysis-report.schema.json",
+  "title": "Agent Braid analysis report 0.1.0-alpha",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["reportVersion", "analysisId", "inputDigest", "sourceKind", "analyzer", "operations", "interactions", "summary", "uncertainty", "limits", "executionAuthorization"],
+  "properties": {
+    "reportVersion": {"const": "0.1.0-alpha"},
+    "analysisId": {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$"},
+    "inputDigest": {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$"},
+    "sourceKind": {"type": "string", "minLength": 1},
+    "analyzer": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "version", "ruleSet"],
+      "properties": {
+        "name": {"const": "agent-braid"},
+        "version": {"const": "0.1.0-alpha"},
+        "ruleSet": {"const": "exact-resource-footprints-v1"}
+      }
+    },
+    "operations": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["instanceId", "attemptId", "dependencies", "coverage", "resources"],
+        "properties": {
+          "instanceId": {"type": "string", "minLength": 1},
+          "attemptId": {"type": "string", "minLength": 1},
+          "dependencies": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+          "coverage": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["status", "domain", "method"],
+            "properties": {
+              "status": {"enum": ["complete", "partial", "unknown"]},
+              "domain": {"type": "string", "minLength": 1},
+              "method": {"type": "string", "minLength": 1}
+            }
+          },
+          "resources": {"type": "array", "items": {"type": "string"}, "uniqueItems": true}
+        }
+      }
+    },
+    "interactions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["left", "right", "classification", "sharedResources", "reasons", "constraints", "evidence"],
+        "properties": {
+          "left": {"type": "string"},
+          "right": {"type": "string"},
+          "classification": {"enum": ["independent-candidate", "ordered", "conflicting", "unknown"]},
+          "sharedResources": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+          "reasons": {"type": "array", "minItems": 1, "items": {"type": "string"}},
+          "constraints": {"type": "array", "minItems": 1, "items": {"type": "string"}, "uniqueItems": true},
+          "evidence": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["method", "assuranceClass", "coverage", "ruleSet"],
+            "properties": {
+              "method": {"const": "exact-resource-footprint"},
+              "assuranceClass": {"type": "integer", "minimum": 0, "maximum": 1},
+              "coverage": {"type": "array", "items": {"enum": ["complete", "partial", "unknown"]}, "uniqueItems": true},
+              "ruleSet": {"const": "exact-resource-footprints-v1"}
+            }
+          }
+        }
+      }
+    },
+    "summary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["operationCount", "pairCount", "classifications"],
+      "properties": {
+        "operationCount": {"type": "integer", "minimum": 1},
+        "pairCount": {"type": "integer", "minimum": 0},
+        "classifications": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["independent-candidate", "ordered", "conflicting", "unknown"],
+          "properties": {
+            "independent-candidate": {"type": "integer", "minimum": 0},
+            "ordered": {"type": "integer", "minimum": 0},
+            "conflicting": {"type": "integer", "minimum": 0},
+            "unknown": {"type": "integer", "minimum": 0}
+          }
+        }
+      }
+    },
+    "uncertainty": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+    "limits": {"type": "array", "minItems": 1, "items": {"type": "string"}, "uniqueItems": true},
+    "executionAuthorization": {"const": false}
+  }
+}
+

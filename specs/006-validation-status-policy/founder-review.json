@@ -1,0 +1,26 @@
+{
+  "recordVersion": "0.1.0",
+  "feature": "validation-status-policy",
+  "reviewedCommit": "4e85faee00762faa2bf62b823557ca6acba32e2d",
+  "reviewer": {
+    "name": "Juan Antonio Yáñez García",
+    "role": "founder"
+  },
+  "conflictsOfInterest": "The reviewer is the project founder and author. This is a governance adoption decision, not external scientific validation.",
+  "decision": {
+    "status": "approved",
+    "date": "2026-09-18",
+    "rationale": "Adopt the explicit separation between software maturity, internal clean-room reproduction, founder scientific review and independent external validation. External validation remains visible and invited but does not block milestones, visibility or stable software releases. Unsupported claims of independent validation remain prohibited."
+  },
+  "evidence": [
+    {
+      "path": "specs/006-validation-status-policy/evidence.json",
+      "sha256": "967d12f1a010dfb405e950dfc7312b5f94993e701773fcacd8ec856388dc406b"
+    }
+  ],
+  "limits": [
+    "This approval does not publish a release or change repository visibility.",
+    "Structural checks do not authenticate external reviewers or establish scientific truth.",
+    "Independent validation remains pending until qualifying external evidence is recorded."
+  ]
+}

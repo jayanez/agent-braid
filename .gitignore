@@ -1,0 +1,42 @@
+# Local environments
+.venv-speckit/
+.venv/
+.env
+.env.*
+!.env.example
+
+# IDE and editor state
+.idea/
+.vscode/
+*.user
+*.suo
+
+# Build, test, and package output
+artifacts/
+bin/
+obj/
+dist/
+coverage/
+TestResults/
+__pycache__/
+*.py[cod]
+*.egg-info/
+
+# Local search index (xgrep). Not a repository artifact: the index normally
+# lives in ~/.cache/xgrep/, and this covers `xg init --local`.
+.xgrep/
+
+# OS metadata
+.DS_Store
+Thumbs.db
+
+# Agent traces may contain sensitive or proprietary state.
+traces/private/
+fixtures/private/
+
+# Agent credentials/session state is never part of scaffolding.
+.claude/*
+!.claude/skills/
+.agents/*
+!.agents/skills/
+.codex/

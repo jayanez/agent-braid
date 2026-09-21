@@ -1,0 +1,71 @@
+{
+  "modelVersion": "0.1.0",
+  "baseYear": 2026,
+  "horizonYear": 2029,
+  "currency": "USD",
+  "scope": "Organization-equivalent scenario proxy for open-tooling validation; not observed revenue or a global census.",
+  "observations": [
+    {
+      "id": "OBS-001",
+      "value": 1000000,
+      "unit": "OpenAI business customers",
+      "asOf": "2025",
+      "source": "https://openai.com/business/guides-and-resources/the-state-of-enterprise-ai-2025-report/",
+      "use": "Scenario anchor only; vendor-specific and not additive with project or seat counts."
+    },
+    {
+      "id": "OBS-002",
+      "value": 4300000,
+      "unit": "GitHub AI projects",
+      "asOf": "2025",
+      "source": "https://github.blog/news-insights/octoverse/octoverse-a-new-developer-joins-github-every-second-as-ai-leads-typescript-to-1/",
+      "use": "Context only; projects are not organizations and are excluded from TAM/SAM arithmetic."
+    },
+    {
+      "id": "OBS-003",
+      "value": 1100000,
+      "unit": "public repositories using an LLM SDK",
+      "asOf": "2025",
+      "source": "https://github.blog/news-insights/octoverse/octoverse-a-new-developer-joins-github-every-second-as-ai-leads-typescript-to-1/",
+      "use": "Context only; repositories are not organizations and are excluded from TAM/SAM arithmetic."
+    }
+  ],
+  "scenarios": {
+    "low": {
+      "agentDevelopingShare": 0.05,
+      "sharedStateRelevanceShare": 0.1,
+      "engineeringIntensiveEuUsShare": 0.35,
+      "illustrativeAnnualAssuranceSpendUsd": 5000
+    },
+    "base": {
+      "agentDevelopingShare": 0.15,
+      "sharedStateRelevanceShare": 0.25,
+      "engineeringIntensiveEuUsShare": 0.55,
+      "illustrativeAnnualAssuranceSpendUsd": 20000
+    },
+    "high": {
+      "agentDevelopingShare": 0.3,
+      "sharedStateRelevanceShare": 0.4,
+      "engineeringIntensiveEuUsShare": 0.7,
+      "illustrativeAnnualAssuranceSpendUsd": 60000
+    }
+  },
+  "somCommunityTargets18Months": {
+    "low": {"maintainedIntegrations": 2, "independentReproductions": 3, "repeatContributors": 5, "analyzedWorkloads": 20},
+    "base": {"maintainedIntegrations": 4, "independentReproductions": 10, "repeatContributors": 15, "analyzedWorkloads": 75},
+    "high": {"maintainedIntegrations": 7, "independentReproductions": 25, "repeatContributors": 40, "analyzedWorkloads": 250}
+  },
+  "calculation": {
+    "anchorObservation": "OBS-001",
+    "tamProxy": "anchor * agentDevelopingShare * sharedStateRelevanceShare",
+    "samProxy": "tamProxy * engineeringIntensiveEuUsShare",
+    "economicReference": "samProxy * illustrativeAnnualAssuranceSpendUsd",
+    "doubleCountingRule": "TAM and SAM are nested; observations with project, repository, seat, or customer units are never summed."
+  },
+  "limits": [
+    "The anchor covers one vendor's customers and is not a global organization census.",
+    "All shares and spend values are assumptions requiring primary validation.",
+    "The economic reference is neither current revenue, forecast revenue, nor capturable market.",
+    "SOM measures community adoption rather than revenue."
+  ]
+}

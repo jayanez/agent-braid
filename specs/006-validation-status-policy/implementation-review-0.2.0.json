@@ -1,0 +1,31 @@
+{
+  "recordVersion": "0.1.0",
+  "feature": "validation-status-policy",
+  "implementationVersion": "0.2.0",
+  "policyDecision": {
+    "adr": "docs/adr/0009-transparent-validation-status.md",
+    "status": "accepted",
+    "scope": "The accepted validation-status policy remains unchanged; this record reviews only its versioned schema and validator implementation."
+  },
+  "reviewedCommit": "3a2e0c439a2c927ea624433c087b6f0de96e1764",
+  "reviewer": {
+    "name": "Juan Antonio Yáñez García",
+    "role": "founder"
+  },
+  "conflictsOfInterest": "The reviewer is the project founder and author. This is an internal implementation review, not independent validation.",
+  "decision": {
+    "status": "approved",
+    "date": "2026-09-18",
+    "rationale": "Approve the 0.2.0 schema and validator implementation within its structural scope: explicit status-dependent fields, a structured external-reviewer record, a documented migration from provisional 0.1.0 and negative tests. This decision does not authenticate reviewers, approve a release, alter repository visibility or establish scientific truth."
+  },
+  "evidence": [
+    {
+      "path": "specs/006-validation-status-policy/evidence.json",
+      "sha256": "99db599f96369bec173d62f661674fe9afa57d19346d7ed2d307bbaed2c9a44b"
+    }
+  ],
+  "limits": [
+    "Structural validation cannot authenticate an external reviewer or establish reviewer independence.",
+    "This implementation review does not publish a release, alter repository visibility or establish a scientific result."
+  ]
+}

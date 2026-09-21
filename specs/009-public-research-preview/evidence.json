@@ -1,0 +1,64 @@
+{
+  "recordVersion": "0.1.0",
+  "capturedAt": "2026-09-21T07:41:43Z",
+  "sourceCommit": "a97d8b0b29fe5e3259a645d786b08a1041dbe97b",
+  "sourceTree": "1e9868ca52c8a256151ba7ff04de112f2132dcb1",
+  "environment": {
+    "platform": "macOS-26.6.2-arm64-arm-64bit",
+    "python": "3.12.14",
+    "git": "git version 2.50.1 (Apple Git-155)",
+    "operator": "Codex automation under explicit founder authorization",
+    "supervisor": "Juan Antonio Yáñez García",
+    "independent": false
+  },
+  "sourceInputs": {
+    ".specify/memory/constitution.md": "ff7196976a1736a639947c2ab26e8da157fef23c89ba9881312f2a36459964eb",
+    "CONSTITUTION.md": "ff7196976a1736a639947c2ab26e8da157fef23c89ba9881312f2a36459964eb",
+    "docs/adr/0010-clean-publication-provenance.md": "6481cf11e2daf5d307928310763ae82889b280cea215126ebae3b32a708f3994",
+    "docs/adr/0011-risk-based-validation-gates.md": "3aa363f808821ead18d830e931e476a0d790106112ef637875428f322d321531",
+    "scripts/create_public_export.py": "f56d11d2cc8a8d8870dfa4681ff343e963880f6436db5a529f660c2c410d0d3d",
+    "scripts/run_public_preview_clean_room.py": "bbe9e2fe91098ab5e3536a962a93039cbf0ad8d9629fd98cd3bd9ca7388a0874",
+    "scripts/validate_publication.py": "f8f9d990aa341f76eafe40eb665ff871102c88e438913943f1ffea7ea1823807"
+  },
+  "publicCandidate": {
+    "rootCommit": "4481ec6f85d968f5e5f7d68a767490f102340ffa",
+    "rootTree": "1e9868ca52c8a256151ba7ff04de112f2132dcb1",
+    "reproductionCommit": "5aee313ab5b2bfc760641cd42b9db238690035e2",
+    "manifestSha256": "d5546d9e471c12a1213eb884be724d5116328b0a7d6bc445eee5af086be6daee",
+    "reproductionSha256": "e34473c24f7bf7f2ef1591bac2fb86bda8dd066e9617548eb707a85bab079e4c",
+    "fileCount": 299,
+    "historyIncluded": false,
+    "privateAncestry": "unavailable",
+    "independentValidation": "pending"
+  },
+  "comparisons": {
+    "twoExportsFromSameSource": "byte-identical",
+    "manifestDiff": "none",
+    "portableRoot": "one clean root; manifest unchanged since root commit",
+    "unreachableObjects": "none reported by git fsck --full --no-reflogs"
+  },
+  "evidenceScope": "The clean export and internal reproduction are bound to the exact source candidate above. The closure metadata commit records this evidence without changing implementation or public contracts; the final public root receives its own reproduction record after its root commit.",
+  "observations": [
+    {"id": "repository", "command": "python3 scripts/validate_repository.py", "exitCode": 0, "outcome": "Repository validation passed.", "limits": "Structural checks only."},
+    {"id": "contracts", "command": "python3 scripts/validate_contracts.py", "exitCode": 0, "outcome": "Contract corpus passed.", "limits": "Finite contract checks only."},
+    {"id": "spec-kit", "command": "python3 scripts/validate_spec_kit.py", "exitCode": 0, "outcome": "Spec Kit structural gates passed.", "limits": "Human review and constitutional semantics remain separate."},
+    {"id": "publication-source", "command": "python3 scripts/validate_publication.py --source", "exitCode": 0, "outcome": "Private source gates passed; remote publication not inferred.", "limits": "No remote mutation was attempted."},
+    {"id": "release-records", "command": "python3 scripts/validate_release_records.py", "exitCode": 0, "outcome": "Release records passed structural validation.", "limits": "No scientific approval inferred."},
+    {"id": "tests", "command": "python3 -m unittest discover -s tests -v", "exitCode": 0, "outcome": "116 tests passed.", "limits": "Executable regression evidence only."},
+    {"id": "scientific-controls", "command": "python3 -m research.lab.controls", "exitCode": 0, "outcome": "CE1-CE5 and S3 controls completed with documented counterexamples and limits.", "limits": "No general confluence or Yang-Baxter claim."},
+    {"id": "whitespace", "command": "git diff --check", "exitCode": 0, "outcome": "No whitespace errors.", "limits": "Formatting check only."},
+    {"id": "profile-pr", "command": "python3 scripts/validate_change.py --base develop --profile pr", "exitCode": 0, "outcome": "Complete proportional PR profile passed.", "limits": "Does not replace clean-room or human review."},
+    {"id": "export-determinism", "command": "python3 scripts/create_public_export.py <source-commit> <export-a|export-b>; diff -ru export-a export-b", "exitCode": 0, "outcome": "Two 298-file exports and manifests were byte-identical.", "limits": "Export provenance remains internal-only."},
+    {"id": "portable-root", "command": "python3 scripts/validate_publication.py --portable", "exitCode": 0, "outcome": "Portable export and internal ancestry limit passed before and after reproduction commit.", "limits": "Private Git ancestry is unavailable."},
+    {"id": "clean-room", "command": "python3 scripts/run_public_preview_clean_room.py <public-root-commit> --python <python-3.12>", "exitCode": 0, "outcome": "Fresh clone, fresh environment, pinned dependencies, validators, Spec Kit integration, tests and scientific controls passed; reproduction record committed to the clean root.", "limits": "Founder-supervised internal reproduction; not independent validation."
+    }
+  ],
+  "excludedAttempts": [
+    "An initial sandbox-only clean-room attempt could not resolve the pinned Git dependency because network access was unavailable; it was not counted as evidence. The successful rerun used the same pinned commit in an isolated temporary environment with explicit network authorization."
+  ],
+  "limits": [
+    "The public root contains no private Git ancestry and does not prove historical claims independently.",
+    "The export and reproduction do not establish production safety, execution authorization, complete semantic dependency discovery, general confluence or a Yang-Baxter result.",
+    "Founder review, approval of this evidence and remote cutover authorization remain pending."
+  ]
+}

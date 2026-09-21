@@ -1,0 +1,107 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://agent-braid.dev/schemas/confluence-certificate.schema.json",
+  "title": "Agent Braid Confluence Certificate",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "certificateVersion",
+    "certificateId",
+    "initialStateDigest",
+    "operations",
+    "schedules",
+    "observationBoundary",
+    "normalizer",
+    "result",
+    "assuranceLevel",
+    "assumptions"
+  ],
+  "properties": {
+    "certificateVersion": {
+      "const": "0.1.0-draft"
+    },
+    "certificateId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "initialStateDigest": {
+      "$ref": "#/$defs/digest"
+    },
+    "operations": {
+      "type": "array",
+      "minItems": 2,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "definitionDigest"],
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "definitionDigest": {
+            "$ref": "#/$defs/digest"
+          }
+        }
+      }
+    },
+    "schedules": {
+      "type": "array",
+      "minItems": 2,
+      "items": {
+        "type": "array",
+        "minItems": 1,
+        "items": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "observationBoundary": {
+      "type": "string",
+      "minLength": 1
+    },
+    "normalizer": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "version"],
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "version": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "result": {
+      "enum": ["equivalent-observed", "divergent", "inconclusive", "not-applicable"]
+    },
+    "assuranceLevel": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 5
+    },
+    "assumptions": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "artifacts": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "default": []
+    }
+  },
+  "$defs": {
+    "digest": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$"
+    }
+  }
+}

@@ -1,0 +1,72 @@
+{
+  "analysisInputVersion": "0.1.0-alpha",
+  "source": {
+    "kind": "aim",
+    "description": "Two synthetic repository edits with complete exact-resource footprints"
+  },
+  "operations": [
+    {
+      "aimVersion": "0.2.0-draft",
+      "instanceId": "edit-readme",
+      "attemptId": "edit-readme-1",
+      "definition": {
+        "id": "repository.update-file-v1",
+        "digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111"
+      },
+      "inputDigest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "dependencies": [],
+      "readVersions": {},
+      "effects": {
+        "declared": [{"kind": "write", "resource": "repo://agent-braid/README.md"}],
+        "inferred": [],
+        "observed": [],
+        "coverage": {
+          "status": "complete",
+          "domain": "synthetic exact repository paths",
+          "method": "fixture declaration"
+        }
+      },
+      "evidence": [{
+        "property": "independence",
+        "method": "declared",
+        "domain": "synthetic exact repository paths",
+        "assumptions": ["no aliases or generated dependencies"],
+        "observationContract": "normalized repository tree",
+        "executionContract": "no execution; analysis only",
+        "assuranceClass": 1
+      }]
+    },
+    {
+      "aimVersion": "0.2.0-draft",
+      "instanceId": "edit-roadmap",
+      "attemptId": "edit-roadmap-1",
+      "definition": {
+        "id": "repository.update-file-v1",
+        "digest": "sha256:2222222222222222222222222222222222222222222222222222222222222222"
+      },
+      "inputDigest": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "dependencies": [],
+      "readVersions": {},
+      "effects": {
+        "declared": [{"kind": "write", "resource": "repo://agent-braid/ROADMAP.md"}],
+        "inferred": [],
+        "observed": [],
+        "coverage": {
+          "status": "complete",
+          "domain": "synthetic exact repository paths",
+          "method": "fixture declaration"
+        }
+      },
+      "evidence": [{
+        "property": "independence",
+        "method": "declared",
+        "domain": "synthetic exact repository paths",
+        "assumptions": ["no aliases or generated dependencies"],
+        "observationContract": "normalized repository tree",
+        "executionContract": "no execution; analysis only",
+        "assuranceClass": 1
+      }]
+    }
+  ]
+}
+

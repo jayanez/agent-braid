@@ -1,0 +1,9 @@
+cff-version: 1.2.0
+message: "If you use Agent Braid in research, cite this repository and the relevant release."
+title: "Agent Braid: Algebraic Concurrency Control for Autonomous AI Agents"
+type: software
+authors:
+  - family-names: "Yáñez García"
+    given-names: "Juan Antonio"
+repository-code: "https://github.com/jayanez/agent-braid"
+url: "https://github.com/jayanez/agent-braid"

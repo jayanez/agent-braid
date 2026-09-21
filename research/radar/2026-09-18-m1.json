@@ -1,0 +1,13 @@
+{
+  "radarVersion": "0.1.0",
+  "review": {
+    "date": "2026-09-18",
+    "kind": "milestone",
+    "milestones": ["M1"],
+    "reviewer": "Juan Antonio Yáñez García; founder",
+    "decision": "approved",
+    "decisionRecord": "research/reviews/2026-09-18-m1-radar.md",
+    "scopeSnapshot": "research/radar/2026-09-17.json"
+  },
+  "entries": []
+}

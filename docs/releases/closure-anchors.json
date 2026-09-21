@@ -1,0 +1,91 @@
+{
+  "recordVersion": "0.1.0",
+  "milestones": {
+    "M0": {
+      "candidateCommit": "8167cdf95c48e518cecf9dfb59679121b3c4c3a4",
+      "closureCommit": "038f896a8d79870a4f6b5a62b888857b58947b6a",
+      "closureTree": "5ca544e88da2213d328b4bcfeda548e26bcd8671",
+      "changedPaths": [
+        ".github/workflows/validate.yml",
+        "README.md",
+        "ROADMAP.md",
+        "docs/releases/M0_CLOSURE.md",
+        "docs/releases/M0_READINESS.md",
+        "scripts/capture_m0_closure_evidence.py",
+        "specs/001-certificate-verifier-pilot/assurance.json",
+        "specs/001-certificate-verifier-pilot/evidence.json",
+        "specs/001-certificate-verifier-pilot/reviews/claude.json",
+        "specs/001-certificate-verifier-pilot/reviews/codex.json",
+        "specs/001-certificate-verifier-pilot/tasks.md",
+        "specs/002-open-tooling-strategy/assurance.json",
+        "specs/002-open-tooling-strategy/evidence.json",
+        "specs/004-m0-closure/assurance.json",
+        "specs/004-m0-closure/evidence.json",
+        "specs/004-m0-closure/founder-review.json",
+        "specs/004-m0-closure/tasks.md"
+      ],
+      "protectedPaths": {
+        "docs/releases/M0_CLOSURE.md": "e2a88534897f32e26d140a8a3f53e97fab1587612332e269edcf07b452718fbb",
+        "specs/001-certificate-verifier-pilot/evidence.json": "21e25bb8a37a6080a311fa9a09ba01f52058ab24a47e752ec2198a890e4b1418",
+        "specs/001-certificate-verifier-pilot/reviews/claude.json": "d241c1f723cbf1e610f16541b31fcd5a4288a3a06b40041b8fa5c377cf76a761",
+        "specs/001-certificate-verifier-pilot/reviews/codex.json": "f499580f959c5662d48e9e18a2022fead088af561da141c9cd52fff130bbca3b",
+        "specs/001-certificate-verifier-pilot/tasks.md": "5cd550b490ad2a654021755a572f16711bd3c491146e2eaed8d89ea0cbb55db7",
+        "specs/002-open-tooling-strategy/evidence.json": "b928a7ca110b4ee1667501d0b2ac0c8d1d0b52d473838ab0d96d89a3f9bcfbf0",
+        "specs/004-m0-closure/evidence.json": "3f27b0cf93dabbc6147c75606daeeb91c644ff089ea0472452e81c6db1326488",
+        "specs/004-m0-closure/founder-review.json": "df1cf5b883eac5133eeb004f1b3e43d0f49bd2a39e443a2187507c9fc7ab9bd3",
+        "specs/004-m0-closure/tasks.md": "4afcda0a82602344ba55a31a73fefcc94faae0a37a5e79979a36fd68984a8629"
+      }
+    },
+    "M0.5": {
+      "candidateCommit": "d7bff443729571e031180b4c31920632e2a7d3ae",
+      "closureCommit": "ebe902ae6696bd7d310d151f0f2141cc32506535",
+      "closureTree": "8d57f03d289f5e332264a9a13d7359eaf08cb3cc",
+      "changedPaths": [
+        "README.md",
+        "ROADMAP.md",
+        "docs/releases/M0_5_CLOSURE.md",
+        "docs/releases/records/M0.5.json",
+        "docs/releases/research-preview-readiness.json",
+        "research/radar/2026-09-18-m0.5.json",
+        "research/reviews/2026-09-18-m0.5-radar.md",
+        "specs/008-m0.5-closure/assurance.json",
+        "specs/008-m0.5-closure/founder-review.json",
+        "specs/008-m0.5-closure/reproduction.json",
+        "specs/008-m0.5-closure/tasks.md"
+      ],
+      "protectedPaths": {
+        "docs/releases/M0_5_CLOSURE.md": "3c0668feb9c7ee1d921bdb4cab7e709a2db84022a383a7c48e482258ae94d816",
+        "docs/releases/records/M0.5.json": "f60e5c596ed808d494055a98a2f650c1cfbbd72ed35e9a60cab86ead7301aa7d",
+        "docs/releases/research-preview-readiness.json": "334ccde6ae059f393ad7e9cc92843b82829cfa13ee89fc5fa407ec510b20c7b5",
+        "research/radar/2026-09-18-m0.5.json": "1d924b635f6cd5ae6bf6f1738df1a3781bdbde97f5a4a0dc39f31816c8c83539",
+        "research/reviews/2026-09-18-m0.5-radar.md": "376be1dcd0d09f707a1ce8892e8fc6b97ee71a5dee5727e7bcd73bc7344c846f",
+        "specs/008-m0.5-closure/assurance.json": "a7446dc6ed9c0e48ef0ab0ec5249d6b8cef7f8eb06641d2710fa6b480d31d462",
+        "specs/008-m0.5-closure/founder-review.json": "41aead610e17ac4aab226476e50293aa20f41f5c70d690da738d2a52dd1f84cd",
+        "specs/008-m0.5-closure/reproduction.json": "9fc8aa0a6902f1614e077be20135c48df49841ec2cf2ee5ab3a95f090a8b72ab",
+        "specs/008-m0.5-closure/tasks.md": "3b174cc990884e2db298ab633cdb3b41a4d10bf890fdaa86494daaefcd3078e7"
+      }
+    },
+    "M1": {
+      "candidateCommit": "fa958277bd919c827e781df63d8371afd6f111c9",
+      "closureCommit": "a832158dfcb1880a06bbdf973484d9ce9499732a",
+      "closureTree": "41cfbf83953274e80cb40e7f250b1fe99e093c04",
+      "changedPaths": [
+        "README.md",
+        "ROADMAP.md",
+        "docs/releases/M1_CLOSURE.md",
+        "specs/007-m1-closure/assurance.json",
+        "specs/007-m1-closure/founder-review.json",
+        "specs/007-m1-closure/reproduction.json",
+        "specs/007-m1-closure/tasks.md"
+      ],
+      "protectedPaths": {
+        "docs/releases/M1_CLOSURE.md": "e8a640b561c0ac57a00afe8b584452cf6a66ec03034377f9096bec86a2990645",
+        "docs/releases/records/M1.json": "45c8d38e841c19b53bec1e248c1c57ecb61bc1865f50fbc20cc491d2c9e2b990",
+        "specs/007-m1-closure/assurance.json": "ad5c04626ad0a644d0829005c546120d674b13c6a1151cefb14a0e6d6a768f1a",
+        "specs/007-m1-closure/founder-review.json": "e9d48ef49a10e5dc2c4c6ea64693eac52aeb8c019dc7087e4b1c8361cf6c0d28",
+        "specs/007-m1-closure/reproduction.json": "c703516eaf3235b37fe114c776a24842f32df184597e6e8af6a184c3442b1116",
+        "specs/007-m1-closure/tasks.md": "ad18e1076bebc6e5d811ea3446b6978a3bd2c755065a766e8438e708c9b5bfdf"
+      }
+    }
+  }
+}

@@ -1,0 +1,241 @@
+name: Validate repository
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  classify:
+    name: Classify validation impact
+    runs-on: ubuntu-latest
+    outputs:
+      spec_kit_integration: ${{ steps.impact.outputs.spec_kit_integration }}
+      effective_profile: ${{ steps.impact.outputs.effective_profile }}
+      unknown_paths: ${{ steps.impact.outputs.unknown_paths }}
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: "3.12"
+
+      - name: Plan validation impact
+        id: impact
+        shell: bash
+        env:
+          EVENT_BASE: ${{ github.event.pull_request.base.sha || github.event.before }}
+          EVENT_HEAD: ${{ github.sha }}
+        run: |
+          base="$EVENT_BASE"
+          if [[ -z "$base" || "$base" == "0000000000000000000000000000000000000000" ]]; then
+            base="$(git rev-list --max-parents=0 HEAD | tail -n 1)"
+          fi
+          python3 scripts/validate_change.py \
+            --base "$base" --head "$EVENT_HEAD" --profile quick \
+            --format github --plan-only >> "$GITHUB_OUTPUT"
+
+  invariants:
+    name: Fast repository invariants
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: "3.12"
+
+      - name: Validate foundational invariants
+        run: python3 scripts/validate_repository.py
+
+      - name: Check Constitution replica
+        run: python3 scripts/constitution_replica.py check
+
+      - name: Install and smoke-test the alpha CLI
+        run: |
+          python3 -m pip install --no-deps --editable .
+          agent-braid --help
+
+      - name: Check whitespace
+        shell: bash
+        run: |
+          if [[ "${{ github.event_name }}" == "pull_request" ]]; then
+            git diff --check "${{ github.event.pull_request.base.sha }}...HEAD"
+          elif [[ "${{ github.event.before }}" =~ ^[0-9a-f]{40}$ ]] && \
+               [[ "${{ github.event.before }}" != "0000000000000000000000000000000000000000" ]]; then
+            git diff --check "${{ github.event.before }}...HEAD"
+          else
+            git diff-tree --check --root --no-commit-id -r HEAD
+          fi
+
+  tests:
+    name: Complete Python test suite
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: requirements-dev.txt
+
+      - name: Install test dependencies
+        run: python3 -m pip install -r requirements-dev.txt
+
+      - name: Run complete bounded and negative test suite
+        run: python3 -m unittest discover -s tests -v
+
+  governance_science:
+    name: Governance, contracts and scientific controls
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: requirements-dev.txt
+
+      - name: Install development-only contract validator
+        run: python3 -m pip install -r requirements-dev.txt
+
+      - name: Validate versioned contract corpus
+        run: python3 scripts/validate_contracts.py
+
+      - name: Validate formal M0 closure provenance
+        if: ${{ hashFiles('docs/releases/public-export.json') == '' }}
+        run: python3 scripts/validate_m0_closure.py closure
+
+      - name: Validate formal M1 closure provenance
+        if: ${{ hashFiles('docs/releases/public-export.json') == '' }}
+        run: python3 scripts/validate_m1_closure.py closure
+
+      - name: Validate M0.5 candidate or closure provenance
+        if: ${{ hashFiles('docs/releases/public-export.json') == '' }}
+        shell: bash
+        run: |
+          if [[ -f specs/008-m0.5-closure/founder-review.json ]]; then
+            python3 scripts/validate_m05_closure.py
+          else
+            python3 scripts/validate_m05_closure.py --candidate
+          fi
+
+      - name: Validate publication provenance boundary
+        shell: bash
+        run: |
+          if [[ -f docs/releases/public-export.json ]]; then
+            python3 scripts/validate_publication.py --portable
+          else
+            python3 scripts/validate_publication.py --source
+          fi
+
+      - name: Validate release validation status records
+        run: python3 scripts/validate_release_records.py
+
+      - name: Validate research radar provenance and milestone review
+        run: python3 scripts/validate_research_radar.py --milestone M0.5
+
+      - name: Validate reproducible market scenarios
+        run: python3 scripts/market_sizing.py --check
+
+      - name: Check finite algebraic controls
+        run: python3 -m research.lab.controls
+
+  spec_kit:
+    name: Spec Kit structure and render
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: |
+            requirements-dev.txt
+            requirements-speckit.txt
+
+      - name: Install pinned Spec Kit tooling
+        run: python3 -m pip install -r requirements-dev.txt -r requirements-speckit.txt
+
+      - name: Validate shared Spec Kit structural gates
+        run: python3 scripts/validate_spec_kit.py
+
+      - name: Re-render both official integrations
+        run: python3 scripts/spec_kit.py check
+
+  spec_kit_integration:
+    name: Spec Kit solo and dual integration matrix
+    needs: classify
+    if: ${{ needs.classify.outputs.spec_kit_integration == 'true' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: requirements-speckit.txt
+
+      - name: Install pinned Spec Kit tooling
+        run: python3 -m pip install -r requirements-speckit.txt
+
+      - name: Test Codex-only, Claude-only and dual configurations
+        run: python3 scripts/test_spec_kit_integration.py
+
+  validate:
+    name: validate
+    needs:
+      - classify
+      - invariants
+      - tests
+      - governance_science
+      - spec_kit
+      - spec_kit_integration
+    if: ${{ always() }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Require every mandatory gate
+        if: >-
+          ${{
+            needs.classify.result != 'success' ||
+            needs.invariants.result != 'success' ||
+            needs.tests.result != 'success' ||
+            needs.governance_science.result != 'success' ||
+            needs.spec_kit.result != 'success' ||
+            (needs.classify.outputs.spec_kit_integration == 'true' &&
+             needs.spec_kit_integration.result != 'success')
+          }}
+        run: exit 1
+
+      - name: Confirm aggregate validation
+        run: echo "All mandatory validation jobs passed; conditional specialist status remains visible separately."

@@ -1,0 +1,253 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://agent-braid.dev/schemas/0.2.0-draft/agent-interaction-metadata.schema.json",
+  "title": "Agent Braid agent-interaction-metadata 0.2.0-draft",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "aimVersion": {
+      "const": "0.2.0-draft"
+    },
+    "instanceId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "attemptId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "definition": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "digest": {
+          "type": "string",
+          "pattern": "^sha256:[0-9a-f]{64}$"
+        }
+      },
+      "required": [
+        "id",
+        "digest"
+      ]
+    },
+    "inputDigest": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$"
+    },
+    "dependencies": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "readVersions": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "integer",
+        "minimum": 0
+      }
+    },
+    "effects": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "declared": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "kind": {
+                "enum": [
+                  "read",
+                  "write",
+                  "call",
+                  "transform",
+                  "emit",
+                  "delete",
+                  "deploy",
+                  "unknown"
+                ]
+              },
+              "resource": {
+                "type": "string",
+                "minLength": 1
+              }
+            },
+            "required": [
+              "kind",
+              "resource"
+            ]
+          }
+        },
+        "inferred": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "kind": {
+                "enum": [
+                  "read",
+                  "write",
+                  "call",
+                  "transform",
+                  "emit",
+                  "delete",
+                  "deploy",
+                  "unknown"
+                ]
+              },
+              "resource": {
+                "type": "string",
+                "minLength": 1
+              }
+            },
+            "required": [
+              "kind",
+              "resource"
+            ]
+          }
+        },
+        "observed": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "kind": {
+                "enum": [
+                  "read",
+                  "write",
+                  "call",
+                  "transform",
+                  "emit",
+                  "delete",
+                  "deploy",
+                  "unknown"
+                ]
+              },
+              "resource": {
+                "type": "string",
+                "minLength": 1
+              }
+            },
+            "required": [
+              "kind",
+              "resource"
+            ]
+          }
+        },
+        "coverage": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "status": {
+              "enum": [
+                "complete",
+                "partial",
+                "unknown"
+              ]
+            },
+            "domain": {
+              "type": "string",
+              "minLength": 1
+            },
+            "method": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "required": [
+            "status",
+            "domain",
+            "method"
+          ]
+        }
+      },
+      "required": [
+        "declared",
+        "inferred",
+        "observed",
+        "coverage"
+      ]
+    },
+    "evidence": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "property": {
+            "enum": [
+              "terminal-observation-equivalence",
+              "independence",
+              "confluence",
+              "braid"
+            ]
+          },
+          "method": {
+            "enum": [
+              "declared",
+              "replay",
+              "exhaustive-finite",
+              "proof-rule",
+              "formal"
+            ]
+          },
+          "domain": {
+            "type": "string",
+            "minLength": 1
+          },
+          "assumptions": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "observationContract": {
+            "type": "string",
+            "minLength": 1
+          },
+          "executionContract": {
+            "type": "string",
+            "minLength": 1
+          },
+          "assuranceClass": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 5
+          }
+        },
+        "required": [
+          "property",
+          "method",
+          "domain",
+          "assumptions",
+          "observationContract",
+          "executionContract",
+          "assuranceClass"
+        ]
+      },
+      "minItems": 1
+    }
+  },
+  "required": [
+    "aimVersion",
+    "instanceId",
+    "attemptId",
+    "definition",
+    "inputDigest",
+    "dependencies",
+    "readVersions",
+    "effects",
+    "evidence"
+  ]
+}

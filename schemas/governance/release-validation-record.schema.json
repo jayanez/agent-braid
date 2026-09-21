@@ -1,0 +1,106 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://agent-braid.dev/schemas/governance/release-validation-record.schema.json",
+  "title": "Agent Braid Release Validation Record",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "recordVersion",
+    "release",
+    "softwareMaturity",
+    "independent_validation",
+    "internalEvidence",
+    "limits"
+  ],
+  "properties": {
+    "recordVersion": {"const": "0.2.0"},
+    "release": {"type": "string", "minLength": 1},
+    "softwareMaturity": {"enum": ["research-preview", "alpha", "beta", "stable"]},
+    "independent_validation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status"],
+      "properties": {
+        "status": {"enum": ["pending", "completed", "not_applicable"]},
+        "conflictOfInterest": {"type": "string", "minLength": 1},
+        "reproductionProtocol": {"type": "string", "minLength": 1},
+        "invitation": {"type": "string", "minLength": 1},
+        "reviewer": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["name", "affiliation", "external", "conflictOfInterest"],
+          "properties": {
+            "name": {"type": "string", "minLength": 1},
+            "affiliation": {"type": "string", "minLength": 1},
+            "external": {"const": true},
+            "conflictOfInterest": {"type": "string", "minLength": 1}
+          }
+        },
+        "evidence": {"type": "string", "minLength": 1},
+        "rationale": {"type": "string", "minLength": 1}
+      }
+    },
+    "internalEvidence": {
+      "type": "array",
+      "minItems": 1,
+      "items": {"type": "string", "minLength": 1}
+    },
+    "scientificOrBenchmarkClaims": {"type": "boolean"},
+    "limits": {
+      "type": "array",
+      "minItems": 1,
+      "items": {"type": "string", "minLength": 1}
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "independent_validation": {
+            "properties": {"status": {"const": "pending"}},
+            "required": ["status"]
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "independent_validation": {
+            "required": ["conflictOfInterest", "reproductionProtocol", "invitation"]
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "independent_validation": {
+            "properties": {"status": {"const": "completed"}},
+            "required": ["status"]
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "independent_validation": {"required": ["reviewer", "evidence"]}
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "independent_validation": {
+            "properties": {"status": {"const": "not_applicable"}},
+            "required": ["status"]
+          }
+        }
+      },
+      "then": {
+        "required": ["scientificOrBenchmarkClaims"],
+        "properties": {
+          "scientificOrBenchmarkClaims": {"const": false},
+          "independent_validation": {"required": ["rationale"]}
+        }
+      }
+    }
+  ]
+}

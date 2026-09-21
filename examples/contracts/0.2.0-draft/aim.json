@@ -1,0 +1,38 @@
+{
+  "aimVersion": "0.2.0-draft",
+  "instanceId": "A",
+  "attemptId": "A-attempt-1",
+  "definition": {
+    "id": "integer-assign-v1",
+    "digest": "sha256:c2cb5e0916556b8ab987a6ba50cf51e0f1e6a2a8138f330a0fddce20ea25833d"
+  },
+  "inputDigest": "sha256:69dc2a126f92c97a4e08aa002b28bb18901e27976dcc816be72798c1ea80d0e1",
+  "dependencies": [],
+  "readVersions": {},
+  "effects": {
+    "declared": [
+      {
+        "kind": "write",
+        "resource": "x"
+      }
+    ],
+    "inferred": [],
+    "observed": [],
+    "coverage": {
+      "status": "unknown",
+      "domain": "fixture resources",
+      "method": "provider declaration only"
+    }
+  },
+  "evidence": [
+    {
+      "property": "independence",
+      "method": "declared",
+      "domain": "fixture resources",
+      "assumptions": [],
+      "observationContract": "sha256:02280031d17d73e8acefbe347d1593a4a0dc49e35aad51b45e0e9a72ec1a507a",
+      "executionContract": "integer-batch-atomic-v1",
+      "assuranceClass": 0
+    }
+  ]
+}

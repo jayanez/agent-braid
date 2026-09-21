@@ -1,0 +1,204 @@
+{
+  "articles": [
+    0,
+    13,
+    14,
+    17,
+    19,
+    21,
+    23,
+    25
+  ],
+  "assumptions": "The reviewed current tree is redistributable, the private historical template derivative remains undistributable, and Git accurately exposes committed tree bytes and ancestry.",
+  "authority_snapshot": {
+    "commit": "baadba5ce41d175e968effa46fdcf724580518df",
+    "hashes": {
+      "ARCHITECTURE.md": "94e5114eb799b25ca666ef728f84ab1c88e6ad1b342e30a9e99276b8f44c30c2",
+      "CONSTITUTION.md": "ff7196976a1736a639947c2ab26e8da157fef23c89ba9881312f2a36459964eb",
+      "GOVERNANCE.md": "c8eda331d97c42e54be4730ef906dfaad9ae2814e36704302f97afceff037d82",
+      "LICENSE": "194a65558c671b81e4d10872085ba4bdda096a8f7bdb7a97d132f684ae14b502",
+      "MATHEMATICAL_FOUNDATIONS.md": "8c56b59b20ca5f9bc7464b458f980e51e05c0820645cf86181cf08883acd5ca4",
+      "RESEARCH.md": "a3e9668e2c1b80024a6ce9024b7558d31f0d3d2d1e22fa89f460a70beefdd56d",
+      "TERMINOLOGY.md": "4b52b621900a413f58fa920254c2d36df849bda906e9989f0e49b0a43aaf503c",
+      "TRADEMARKS.md": "be084562378235f7c72b4a16e9d0f37b01e7e2b035291eceb4f6478048a517b8",
+      "docs/adr/0000-template.md": "546bd5098b2f8f07804253f0b1fd2c893264d4519644ccd93913956056fac8f4",
+      "docs/adr/0001-formalization-before-implementation.md": "c68d05ee8abb12932acaebee8b95ef4873172a97f93a8dae2187b84b63a29188",
+      "docs/adr/0002-yang-baxter-is-a-hypothesis.md": "8f72ec03ea85a5cef1bed08b04c871bca5930a70e2c313f01124d4a0c194efef",
+      "docs/adr/0003-copyleft-and-trademark-protection.md": "174745a166b4f521fab0f1a043d5c96b8b4b6a626b344245d8b89616d919f8c6",
+      "docs/adr/0004-scientific-constitutional-clarifications.md": "eaf956ab7a8daae2b5ea75d5ae8832a039ef2c6d18bf2e0e27e9b2b964e0fd71",
+      "docs/adr/0005-evidence-contracts-and-bounded-laboratory.md": "a35504083c719993a8c9a460d579c9017871b20bd65760f9f2534de2d7f27f6b",
+      "docs/adr/0006-shared-spec-kit-guardrails.md": "b02e0844e311e0364b40d06e2de3c1c73628247625d20c534a644ff8d9387cb7",
+      "docs/adr/0007-read-only-python-analyzer.md": "c864497da1a8172826d1b96b728b03d16272396c53dc194680d646301c4d07f3",
+      "docs/adr/0008-read-only-git-worktree-adapter.md": "8915605500bb4fa0150ff2fe576482db8a55bd29fb53a17788a51f8671a52e76",
+      "docs/adr/0009-transparent-validation-status.md": "7e329563e069e972ef2febcf64e0fec29255c0c9af29e331a1d5beb7f382e60d",
+      "docs/adr/0010-clean-publication-provenance.md": "6481cf11e2daf5d307928310763ae82889b280cea215126ebae3b32a708f3994",
+      "docs/adr/0011-risk-based-validation-gates.md": "3aa363f808821ead18d830e931e476a0d790106112ef637875428f322d321531",
+      "docs/architecture/AGENT_INTERACTION_METADATA.md": "0118d7f16c390fc4c1ff027b503a4eaba8a747edf3f6d7b088559f8870e27780",
+      "docs/architecture/ASSURANCE_LEVELS.md": "102d0df0dc6fc0ec114d92fe1ef053b375bd9704d0af6a048affe36900d77512",
+      "docs/architecture/CONFLUENCE_CERTIFICATE.md": "fd12a8f1a1477835848581b0f4ccd52f76d3f22dd96a3abaccb9074733464a8e",
+      "docs/architecture/DRAFT_0_2.md": "ae2bc09d941537eec6ea05edb69e4402d5c17dae0585b4add0825d6a01fdc29f",
+      "docs/theory/CLAIM_DISCIPLINE.md": "0fcd89ae045e017f62cbe0b7a83a9a9c107770856bba12a340e77f06576db053",
+      "docs/theory/OPERATIONAL_SEMANTICS.md": "7e83813d138dde064f85aafee1ba20302d55ede768d35d26340abd522ecce1f7",
+      "docs/theory/SCIENTIFIC_INTEGRATION.md": "bf4dba9119006a9261b45415edfe52b92d226648ab21aa3fd2e4a7f4822faf8c",
+      "schemas/0.1.0-alpha/analysis-report.schema.json": "91c759ad0d28de0b4e68f5bd3958de37ff2e6c102ecd8c6c2f0083e0151ad578",
+      "schemas/0.1.0-alpha/git-analysis-provenance.schema.json": "403b2e61ff7a7700c0db05df4ac3b11504e2c69e2bab9161b4a9ceb156b1316c",
+      "schemas/0.1.0-alpha/git-analysis-request.schema.json": "928c777ae68a184fae172a7cb2b172ba283b5af912edaf6c4b389bd8bf767a96",
+      "schemas/0.2.0-draft/agent-interaction-metadata.schema.json": "9d2ff528d0d3f02ba5bce63181e88732eecef96e90fabb5898b3314abd554900",
+      "schemas/0.2.0-draft/confluence-certificate.schema.json": "8e375fdc57fbd3b9f15544f2079c8f92633ec1def660f3eabed77feb784f34f0",
+      "schemas/agent-interaction-metadata.schema.json": "44b60956817cbcd92e0802dfe99ca537b20768f53472f04afd1dcc502f53cd5c",
+      "schemas/confluence-certificate.schema.json": "ea68bf94f6767d615881167d8f7dd28359e6c399edd66935ba17b88b2b1cf785",
+      "schemas/governance/public-export-manifest.schema.json": "11eb7f2594939ae9fd0c9e6cfe4423a80aba686d6cdfdd8b73b0fb84b0840aa8",
+      "schemas/governance/release-validation-record.schema.json": "d9943f0c9f5520ea52e3b12bfba88240d03f8011b433fc5e35cb49549ab6e819"
+    },
+    "mode": "historical"
+  },
+  "compatibility": "No change to the Constitution, AIM, confluence certificates, assurance classes, analyzer CLI, analysis report or Git adapter contracts.",
+  "domain": "The tracked tree of one exact private Git commit and a new public Git repository containing only clean-export commits.",
+  "evidence_snapshot": {
+    "commit": "baadba5ce41d175e968effa46fdcf724580518df",
+    "mode": "historical"
+  },
+  "execution_contract": "Local read-only source inspection and writes only to an explicit new export directory; no remote rename, push, visibility mutation, release or package publication without separate founder authorization.",
+  "human_review": "approved",
+  "review_record": "specs/009-public-research-preview/founder-review.json",
+  "hypotheses": "A transparent clean research preview may attract external scrutiny and independent reproduction; adoption and validation remain untested.",
+  "observation_contract": "Canonical file inventories, SHA-256 digests, Git commit/tree identities, root-history shape, validator outputs and clean-room command results.",
+  "references": [
+    "CONSTITUTION.md",
+    "GOVERNANCE.md",
+    "LICENSE",
+    "docs/adr/0009-transparent-validation-status.md",
+    "docs/adr/0010-clean-publication-provenance.md",
+    "docs/releases/M0_5_CLOSURE.md",
+    "docs/releases/RESEARCH_PREVIEW_PROPOSAL.md",
+    "docs/releases/VALIDATION_POLICY.md",
+    "docs/releases/research-preview-readiness.json",
+    "docs/development/THIRD_PARTY.md",
+    "schemas/governance/public-export-manifest.schema.json"
+  ],
+  "requirements": [
+    {
+      "id": "REQ-001",
+      "scenarios": [
+        {
+          "given": "Recorded M0, M0.5 and M1 closure anchors plus a later unrelated commit",
+          "id": "SC-026",
+          "obtained_evidence": [
+            {
+              "command": "python3 scripts/create_public_export.py; python3 scripts/run_public_preview_clean_room.py",
+              "limits": "Founder-supervised internal evidence; human approval and remote authorization remain pending.",
+              "outcome": "Closure anchors and the clean public candidate passed the recorded finite checks.",
+              "path": "specs/009-public-research-preview/evidence.json",
+              "sha256": "6140889e856a539ddda78ec42b53a635bd16da03c20770885c5b13a4bda62c9e"
+            }
+          ],
+          "planned_evidence": "Run the closure-anchor positive and negative tests",
+          "test_file": "tests/test_publication.py",
+          "test_name": "PublicationTests.test_closure_anchors_bound_interval_not_moving_head",
+          "then": "The recorded interval passes while altered anchors or interval artifacts fail",
+          "when": "Historical closure validation runs"
+        }
+      ],
+      "text": "Validate recorded candidate-to-closure intervals without treating later feature commits as changes to a closed milestone."
+    },
+    {
+      "id": "REQ-002",
+      "scenarios": [
+        {
+          "given": "An exact source commit and two empty destinations",
+          "id": "SC-027",
+          "obtained_evidence": [
+            {
+              "command": "python3 scripts/create_public_export.py; diff -ru export-a export-b",
+              "limits": "The manifest proves the export payload, not private historical ancestry.",
+              "outcome": "Two deterministic exports from the exact source commit were byte-identical.",
+              "path": "specs/009-public-research-preview/evidence.json",
+              "sha256": "6140889e856a539ddda78ec42b53a635bd16da03c20770885c5b13a4bda62c9e"
+            }
+          ],
+          "planned_evidence": "Run deterministic export and negative path tests",
+          "test_file": "tests/test_publication.py",
+          "test_name": "PublicationTests.test_export_is_deterministic_and_rejects_unsafe_inputs",
+          "then": "Payload bytes and manifests match while unsafe or unsupported inputs are rejected",
+          "when": "The clean-export command runs"
+        }
+      ],
+      "text": "Produce a deterministic clean export and canonical per-file provenance manifest from one exact committed tree."
+    },
+    {
+      "id": "REQ-003",
+      "scenarios": [
+        {
+          "given": "A new Git root containing the generated manifest and historical records",
+          "id": "SC-028",
+          "obtained_evidence": [
+            {
+              "command": "python3 scripts/validate_publication.py --portable",
+              "limits": "Portable validation does not recreate private Git objects or prove scientific claims.",
+              "outcome": "The clean root, immutable manifest and unavailable-ancestry limit passed.",
+              "path": "specs/009-public-research-preview/evidence.json",
+              "sha256": "6140889e856a539ddda78ec42b53a635bd16da03c20770885c5b13a4bda62c9e"
+            }
+          ],
+          "planned_evidence": "Run portable-mode integrity and bypass-resistance tests",
+          "test_file": "tests/test_publication.py",
+          "test_name": "PublicationTests.test_portable_validation_requires_root_manifest_and_reports_limit",
+          "then": "Current bytes pass with an explicit ancestry limitation and late or altered manifests fail",
+          "when": "Portable validation runs"
+        }
+      ],
+      "text": "Validate portable export integrity without claiming access to or verification of unavailable private ancestry."
+    },
+    {
+      "id": "REQ-004",
+      "scenarios": [
+        {
+          "given": "A clean public candidate and publication evidence records",
+          "id": "SC-029",
+          "obtained_evidence": [
+            {
+              "command": "python3 scripts/run_public_preview_clean_room.py <public-root-commit> --python <python-3.12>",
+              "limits": "Codex executed the automation under founder supervision; this is not external validation.",
+              "outcome": "Fresh-clone reproduction completed with independent validation explicitly pending.",
+              "path": "specs/009-public-research-preview/evidence.json",
+              "sha256": "6140889e856a539ddda78ec42b53a635bd16da03c20770885c5b13a4bda62c9e"
+            }
+          ],
+          "planned_evidence": "Run publication reproduction and release-record negative tests",
+          "test_file": "tests/test_publication.py",
+          "test_name": "PublicationTests.test_release_readiness_rejects_stale_or_overclaimed_evidence",
+          "then": "Exact clean evidence and separate decisions pass while stale, dirty or overclaiming records fail",
+          "when": "Release readiness validation runs"
+        }
+      ],
+      "text": "Bind fresh internal reproduction and founder decisions to the public candidate without promoting independent validation."
+    },
+    {
+      "id": "REQ-005",
+      "scenarios": [
+        {
+          "given": "A locally approved public release graph and no publication authorization",
+          "id": "SC-030",
+          "obtained_evidence": [
+            {
+              "command": "python3 scripts/validate_publication.py --source; git fsck --full --no-reflogs",
+              "limits": "No remote rename, repository creation, push, visibility change, branch-rule change or release occurred.",
+              "outcome": "Readiness remained explicitly pending and no unreachable public-root objects were reported.",
+              "path": "specs/009-public-research-preview/evidence.json",
+              "sha256": "6140889e856a539ddda78ec42b53a635bd16da03c20770885c5b13a4bda62c9e"
+            }
+          ],
+          "planned_evidence": "Inspect the clean object graph and record remote operations as pending",
+          "test_file": "tests/test_publication.py",
+          "test_name": "PublicationTests.test_remote_cutover_requires_explicit_authorization",
+          "then": "The object and configuration plan is inspectable but no remote mutation occurs",
+          "when": "Cutover readiness is checked"
+        }
+      ],
+      "text": "Verify that the remote cutover publishes only the clean object graph with the approved branches, tag and pending-validation prerelease."
+    }
+  ],
+  "scientific_limits": "File integrity and internal reproduction do not establish independent validation, scientific truth, production safety, complete dependency discovery, general confluence or a Yang-Baxter result.",
+  "scope": "Clean public research-preview export, portable provenance, closure anchors, fresh public-root reproduction and separately authorized GitHub cutover.",
+  "stage": "validated"
+}

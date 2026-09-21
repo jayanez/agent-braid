@@ -1,0 +1,36 @@
+name: Research result or counterexample
+description: Propose bounded evidence, a counterexample or a formal result.
+title: "[Research]: "
+labels: ["research"]
+body:
+  - type: dropdown
+    id: claim
+    attributes:
+      label: Claim level
+      options: ["Analogy", "Hypothesis", "Heuristic", "Empirical", "Exhaustive finite", "Formal"]
+    validations:
+      required: true
+  - type: textarea
+    id: statement
+    attributes:
+      label: Precise statement
+    validations:
+      required: true
+  - type: textarea
+    id: domain
+    attributes:
+      label: Domain, assumptions and observation boundary
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Reproducible evidence or proof artifact
+    validations:
+      required: true
+  - type: textarea
+    id: counterexamples
+    attributes:
+      label: Known counterexamples and limits
+    validations:
+      required: true

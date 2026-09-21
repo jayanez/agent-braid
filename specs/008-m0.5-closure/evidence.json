@@ -1,0 +1,49 @@
+{
+  "captured_at": "2026-09-18T22:02:47.121769+00:00",
+  "human_review": "pending",
+  "inputs": {
+    "LICENSE": "194a65558c671b81e4d10872085ba4bdda096a8f7bdb7a97d132f684ae14b502",
+    "NOTICE": "cb5b68108bf71e8c1215cffb63f289c159819bcceab6962f9986e06e722bfa87",
+    "TRADEMARKS.md": "be084562378235f7c72b4a16e9d0f37b01e7e2b035291eceb4f6478048a517b8",
+    "docs/development/THIRD_PARTY.md": "799f86fb1f4ee44c89653b8f12fccbefb5db581bf7e34e39479810db4a0744a5",
+    "docs/releases/RESEARCH_PREVIEW_PROPOSAL.md": "606b86cb1c693a67ab3e6821042ab2cb09d13ebde7801440d2b56a16948dc896",
+    "docs/releases/research-preview-readiness.json": "62122095b2377c8a334cb4d55142fc1217e8a54b97087da10074ac99d71eaa48",
+    "docs/strategy/COMMUNITY.md": "f3245e0a3eeb299ac7c6cba7e0a9252e455ea0f96c1b7f050917b1b1094f5621",
+    "docs/strategy/ECOSYSTEM.md": "86f8cc7eb2c0e4d8edd049a4d7694b8d1cca9b44011035527b3d2713f598a279",
+    "docs/strategy/MARKET_OPPORTUNITY.md": "0ed7618ef007ccd95068de999a9d20db048e474ee8e01dcd82a2489fe870b9c1",
+    "docs/strategy/OPEN_TOOLING_STRATEGY.md": "b36c376e47a3b5f07b075fcba5985baad06d67cd147778bc5481467590ec4264",
+    "reports/README.md": "31173d3693e97e35875fec1d1c3130ea856b2a15e005b181e7053c327c4aeeab",
+    "reports/agent-braid-market-trends-2026.pdf": "f3899b199179a912194ca6677f05a664d50e99dea21e049ce71b3377cc92ee88",
+    "reports/agent-braid-market-trends-2026.pptx": "119649794e20502e43e8441be36c941d7cbc3c9254a5280adbe90ba1ff1abe93",
+    "reports/assets/agent-braid-concurrency-cover.png": "6f1cfd4a8c2713ad964cc2cafafa82cf658daac228f9e3dd5a495db39c3f619f",
+    "research/market/2026-opportunity-model.json": "3283ace158a5c0288245337063ae9fbf6816784e1ce644e481a6280593c7d316",
+    "research/radar/2026-09-18-m0.5.json": "c16bbf9856354b2656673e0c559bcfc1ce16a9c9ae928b301398289fe7d26dff",
+    "research/reviews/2026-09-18-m0.5-radar.md": "b4da1be93c58b0b052dbbae46b792d5281999888b880626f205c869bce4d8edb",
+    "scripts/run_m05_clean_room.py": "1b00bcb8c8c85a6a2157c37a13c577971cf7370c071e592e2432cf284fc68403",
+    "scripts/validate_m05_closure.py": "b743129db86da6b084b83ac7a3c9d42c5aa19e75e324dab343078d8eb9d8e93d",
+    "scripts/validate_repository.py": "8eb5f9e98416f0426e3321f2e5d85189da474b1760e93dd4f47b2768b24bdfed",
+    "tests/test_m05_closure.py": "5721a0e4cb81eaf9624cb017da6ae77e1bd9456190391adc512c046fe1183c84"
+  },
+  "observations": [
+    {
+      "command": "python3 scripts/validate_m05_closure.py --candidate",
+      "exit_code": 0,
+      "stderr": "",
+      "stdout": "M0.5 candidate gates passed; no scientific or publication approval inferred.\n"
+    },
+    {
+      "command": "python3 scripts/validate_research_radar.py --milestone M0.5",
+      "exit_code": 0,
+      "stderr": "",
+      "stdout": "Research radar structure and provenance passed (offline check only).\n"
+    },
+    {
+      "command": "python3 scripts/market_sizing.py --check",
+      "exit_code": 0,
+      "stderr": "",
+      "stdout": ""
+    }
+  ],
+  "platform": "Darwin",
+  "python": "3.12.14"
+}

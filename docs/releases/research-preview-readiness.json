@@ -1,0 +1,14 @@
+{
+  "recordVersion": "0.1.0",
+  "status": "approved",
+  "currentTreeRedistributable": true,
+  "historicalReportStatus": "unresolved",
+  "recommendedPublicationMode": "clean-export",
+  "repositoryVisibilityChangeAuthorized": false,
+  "historyRewriteAuthorized": false,
+  "limits": [
+    "This record validates the reviewed current tree, not every historical Git object.",
+    "A clean export preserves current provenance but does not publish the private repository's complete commit history.",
+    "Publication, repository visibility and destination remain separate founder decisions."
+  ]
+}

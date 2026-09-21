@@ -1,0 +1,181 @@
+{
+  "articles": [
+    0,
+    13,
+    14,
+    17,
+    18,
+    19,
+    20,
+    21,
+    22,
+    23,
+    25
+  ],
+  "assumptions": "Current primary sources remain incomplete and market figures remain transparent scenario proxies.",
+  "authority_snapshot": {
+    "commit": "d7bff443729571e031180b4c31920632e2a7d3ae",
+    "hashes": {
+      "ARCHITECTURE.md": "94e5114eb799b25ca666ef728f84ab1c88e6ad1b342e30a9e99276b8f44c30c2",
+      "CONSTITUTION.md": "ff7196976a1736a639947c2ab26e8da157fef23c89ba9881312f2a36459964eb",
+      "GOVERNANCE.md": "c8eda331d97c42e54be4730ef906dfaad9ae2814e36704302f97afceff037d82",
+      "LICENSE": "194a65558c671b81e4d10872085ba4bdda096a8f7bdb7a97d132f684ae14b502",
+      "MATHEMATICAL_FOUNDATIONS.md": "8c56b59b20ca5f9bc7464b458f980e51e05c0820645cf86181cf08883acd5ca4",
+      "RESEARCH.md": "a3e9668e2c1b80024a6ce9024b7558d31f0d3d2d1e22fa89f460a70beefdd56d",
+      "TERMINOLOGY.md": "4b52b621900a413f58fa920254c2d36df849bda906e9989f0e49b0a43aaf503c",
+      "TRADEMARKS.md": "be084562378235f7c72b4a16e9d0f37b01e7e2b035291eceb4f6478048a517b8",
+      "docs/adr/0000-template.md": "546bd5098b2f8f07804253f0b1fd2c893264d4519644ccd93913956056fac8f4",
+      "docs/adr/0001-formalization-before-implementation.md": "c68d05ee8abb12932acaebee8b95ef4873172a97f93a8dae2187b84b63a29188",
+      "docs/adr/0002-yang-baxter-is-a-hypothesis.md": "8f72ec03ea85a5cef1bed08b04c871bca5930a70e2c313f01124d4a0c194efef",
+      "docs/adr/0003-copyleft-and-trademark-protection.md": "174745a166b4f521fab0f1a043d5c96b8b4b6a626b344245d8b89616d919f8c6",
+      "docs/adr/0004-scientific-constitutional-clarifications.md": "eaf956ab7a8daae2b5ea75d5ae8832a039ef2c6d18bf2e0e27e9b2b964e0fd71",
+      "docs/adr/0005-evidence-contracts-and-bounded-laboratory.md": "a35504083c719993a8c9a460d579c9017871b20bd65760f9f2534de2d7f27f6b",
+      "docs/adr/0006-shared-spec-kit-guardrails.md": "b02e0844e311e0364b40d06e2de3c1c73628247625d20c534a644ff8d9387cb7",
+      "docs/adr/0007-read-only-python-analyzer.md": "c864497da1a8172826d1b96b728b03d16272396c53dc194680d646301c4d07f3",
+      "docs/adr/0008-read-only-git-worktree-adapter.md": "8915605500bb4fa0150ff2fe576482db8a55bd29fb53a17788a51f8671a52e76",
+      "docs/adr/0009-transparent-validation-status.md": "7e329563e069e972ef2febcf64e0fec29255c0c9af29e331a1d5beb7f382e60d",
+      "docs/architecture/AGENT_INTERACTION_METADATA.md": "0118d7f16c390fc4c1ff027b503a4eaba8a747edf3f6d7b088559f8870e27780",
+      "docs/architecture/ASSURANCE_LEVELS.md": "102d0df0dc6fc0ec114d92fe1ef053b375bd9704d0af6a048affe36900d77512",
+      "docs/architecture/CONFLUENCE_CERTIFICATE.md": "fd12a8f1a1477835848581b0f4ccd52f76d3f22dd96a3abaccb9074733464a8e",
+      "docs/architecture/DRAFT_0_2.md": "ae2bc09d941537eec6ea05edb69e4402d5c17dae0585b4add0825d6a01fdc29f",
+      "docs/theory/CLAIM_DISCIPLINE.md": "0fcd89ae045e017f62cbe0b7a83a9a9c107770856bba12a340e77f06576db053",
+      "docs/theory/OPERATIONAL_SEMANTICS.md": "7e83813d138dde064f85aafee1ba20302d55ede768d35d26340abd522ecce1f7",
+      "docs/theory/SCIENTIFIC_INTEGRATION.md": "bf4dba9119006a9261b45415edfe52b92d226648ab21aa3fd2e4a7f4822faf8c",
+      "schemas/0.1.0-alpha/analysis-report.schema.json": "91c759ad0d28de0b4e68f5bd3958de37ff2e6c102ecd8c6c2f0083e0151ad578",
+      "schemas/0.1.0-alpha/git-analysis-provenance.schema.json": "403b2e61ff7a7700c0db05df4ac3b11504e2c69e2bab9161b4a9ceb156b1316c",
+      "schemas/0.1.0-alpha/git-analysis-request.schema.json": "928c777ae68a184fae172a7cb2b172ba283b5af912edaf6c4b389bd8bf767a96",
+      "schemas/0.2.0-draft/agent-interaction-metadata.schema.json": "9d2ff528d0d3f02ba5bce63181e88732eecef96e90fabb5898b3314abd554900",
+      "schemas/0.2.0-draft/confluence-certificate.schema.json": "8e375fdc57fbd3b9f15544f2079c8f92633ec1def660f3eabed77feb784f34f0",
+      "schemas/agent-interaction-metadata.schema.json": "44b60956817cbcd92e0802dfe99ca537b20768f53472f04afd1dcc502f53cd5c",
+      "schemas/confluence-certificate.schema.json": "ea68bf94f6767d615881167d8f7dd28359e6c399edd66935ba17b88b2b1cf785",
+      "schemas/governance/release-validation-record.schema.json": "d9943f0c9f5520ea52e3b12bfba88240d03f8011b433fc5e35cb49549ab6e819"
+    },
+    "mode": "historical"
+  },
+  "compatibility": "No change to the Constitution, AIM, certificates, assurance classes, analyzer contracts or runtime behavior.",
+  "domain": "Committed English strategy, radar, market, report and research-preview readiness artifacts.",
+  "evidence_snapshot": {
+    "commit": "f91d5c073451b842c9ca3abaa17c2047ebbbeb90",
+    "mode": "historical"
+  },
+  "execution_contract": "Local validation and artifact rendering only; no repository publication, package release, external trace ingestion or visibility mutation.",
+  "human_review": "approved",
+  "hypotheses": "A transparent open research preview may attract useful scrutiny and independent reproduction; adoption remains untested.",
+  "observation_contract": "Offline structure, arithmetic, provenance, presentation-package and clean-reproduction checks.",
+  "references": [
+    "CONSTITUTION.md",
+    "docs/theory/CLAIM_DISCIPLINE.md",
+    "docs/strategy/OPEN_TOOLING_STRATEGY.md",
+    "docs/strategy/ECOSYSTEM.md",
+    "docs/strategy/MARKET_OPPORTUNITY.md",
+    "docs/strategy/COMMUNITY.md",
+    "docs/releases/VALIDATION_POLICY.md",
+    "docs/releases/RESEARCH_PREVIEW_PROPOSAL.md",
+    "research/radar/2026-09-18-m0.5.json",
+    "research/reviews/2026-09-18-m0.5-radar.md",
+    "research/market/2026-opportunity-model.json",
+    "reports/README.md"
+  ],
+  "review_record": "specs/008-m0.5-closure/founder-review.json",
+  "requirements": [
+    {
+      "id": "REQ-001",
+      "scenarios": [
+        {
+          "given": "The committed M0.5 milestone radar",
+          "id": "SC-001",
+          "obtained_evidence": [
+            {
+              "command": "python3 scripts/run_m05_clean_room.py d7bff443729571e031180b4c31920632e2a7d3ae --source . --python .venv/bin/python --output specs/008-m0.5-closure/reproduction.json",
+              "limits": "Founder-supervised internal reproduction only; no source freshness, market demand, scientific truth, publication approval or independent validation established.",
+              "outcome": "Fourteen ordered clean-room observations passed in Python 3.12.14 with clean initial and final repository state.",
+              "path": "specs/008-m0.5-closure/reproduction.json",
+              "sha256": "9fc8aa0a6902f1614e077be20135c48df49841ec2cf2ee5ab3a95f090a8b72ab"
+            }
+          ],
+          "planned_evidence": "Run radar and M0.5 closure validators",
+          "test_file": "tests/test_m05_closure.py",
+          "test_name": "M05ClosureTests.test_candidate_accepts_pending_but_closure_requires_approved_radar",
+          "then": "Provenance and claim levels pass while missing approval is rejected at closure",
+          "when": "The offline milestone gate runs"
+        }
+      ],
+      "text": "Bind a bounded M0.5 milestone radar review to the closure candidate."
+    },
+    {
+      "id": "REQ-002",
+      "scenarios": [
+        {
+          "given": "The editable trends report and research-preview proposal",
+          "id": "SC-002",
+          "obtained_evidence": [
+            {
+              "command": "python3 scripts/run_m05_clean_room.py d7bff443729571e031180b4c31920632e2a7d3ae --source . --python .venv/bin/python --output specs/008-m0.5-closure/reproduction.json",
+              "limits": "Founder-supervised internal reproduction only; no source freshness, market demand, scientific truth, publication approval or independent validation established.",
+              "outcome": "Fourteen ordered clean-room observations passed in Python 3.12.14 with clean initial and final repository state.",
+              "path": "specs/008-m0.5-closure/reproduction.json",
+              "sha256": "9fc8aa0a6902f1614e077be20135c48df49841ec2cf2ee5ab3a95f090a8b72ab"
+            }
+          ],
+          "planned_evidence": "Inspect the PPTX package, PDF and readiness record",
+          "test_file": "tests/test_m05_closure.py",
+          "test_name": "M05ClosureTests.test_report_and_history_boundary_are_required",
+          "then": "The report is structurally present and the historical publication boundary is explicit",
+          "when": "Current-tree redistribution checks run"
+        }
+      ],
+      "text": "Require original current-tree report assets and disclose unresolved historical redistribution."
+    },
+    {
+      "id": "REQ-003",
+      "scenarios": [
+        {
+          "given": "A committed M0.5 candidate and reproduction record",
+          "id": "SC-003",
+          "obtained_evidence": [
+            {
+              "command": "python3 scripts/run_m05_clean_room.py d7bff443729571e031180b4c31920632e2a7d3ae --source . --python .venv/bin/python --output specs/008-m0.5-closure/reproduction.json",
+              "limits": "Founder-supervised internal reproduction only; no source freshness, market demand, scientific truth, publication approval or independent validation established.",
+              "outcome": "Fourteen ordered clean-room observations passed in Python 3.12.14 with clean initial and final repository state.",
+              "path": "specs/008-m0.5-closure/reproduction.json",
+              "sha256": "9fc8aa0a6902f1614e077be20135c48df49841ec2cf2ee5ab3a95f090a8b72ab"
+            }
+          ],
+          "planned_evidence": "Run the clean-room protocol and negative tests",
+          "test_file": "tests/test_m05_closure.py",
+          "test_name": "M05ClosureTests.test_reproduction_rejects_incompatible_or_stale_evidence",
+          "then": "Mismatched commits, hashes, environments or failed observations are rejected",
+          "when": "The closure validator checks provenance"
+        }
+      ],
+      "text": "Bind a clean Python 3.12 reproduction to one frozen candidate."
+    },
+    {
+      "id": "REQ-004",
+      "scenarios": [
+        {
+          "given": "M0.5 evidence and a founder decision record",
+          "id": "SC-004",
+          "obtained_evidence": [
+            {
+              "command": "python3 scripts/run_m05_clean_room.py d7bff443729571e031180b4c31920632e2a7d3ae --source . --python .venv/bin/python --output specs/008-m0.5-closure/reproduction.json",
+              "limits": "Founder-supervised internal reproduction only; no source freshness, market demand, scientific truth, publication approval or independent validation established.",
+              "outcome": "Fourteen ordered clean-room observations passed in Python 3.12.14 with clean initial and final repository state.",
+              "path": "specs/008-m0.5-closure/reproduction.json",
+              "sha256": "9fc8aa0a6902f1614e077be20135c48df49841ec2cf2ee5ab3a95f090a8b72ab"
+            }
+          ],
+          "planned_evidence": "Validate the founder and release records",
+          "test_file": "tests/test_m05_closure.py",
+          "test_name": "M05ClosureTests.test_closure_requires_three_decisions_without_visibility_authorization",
+          "then": "Three decisions are explicit while external validation and visibility remain pending",
+          "when": "Milestone closure is requested"
+        }
+      ],
+      "text": "Keep founder decisions, external validation and repository visibility distinct."
+    }
+  ],
+  "scientific_limits": "No demand, competitive superiority, source exhaustiveness, production safety, general confluence or Yang-Baxter result is established.",
+  "scope": "Internal closure of M0.5 and preparation of a research-preview proposal without publication.",
+  "stage": "validated"
+}

@@ -1,0 +1,96 @@
+{
+  "radarVersion": "0.1.0",
+  "review": {
+    "date": "2026-09-17",
+    "kind": "milestone",
+    "milestones": ["M0.5"],
+    "reviewer": "project preparation; founder approval pending",
+    "decisionRecord": "docs/releases/M0_READINESS.md"
+  },
+  "entries": [
+    {
+      "id": "RAD-2026-001",
+      "title": "OpenAI Agents SDK multi-agent orchestration",
+      "url": "https://openai.github.io/openai-agents-python/multi_agent/",
+      "sourceDate": "2026-09-17-accessed",
+      "sourceClass": "official-documentation",
+      "provenance": "primary",
+      "peerReviewed": false,
+      "claimLevel": "official-documentation",
+      "relationship": "Representative orchestration surface; potential future trace adapter.",
+      "affectedArtifacts": ["docs/strategy/ECOSYSTEM.md"],
+      "status": "watch",
+      "decision": "Track adapter requirements after the core report stabilizes."
+    },
+    {
+      "id": "RAD-2026-002",
+      "title": "Anthropic multi-agent research system engineering report",
+      "url": "https://www.anthropic.com/engineering/multi-agent-research-system",
+      "sourceDate": "2025-06-13",
+      "sourceClass": "official-documentation",
+      "provenance": "primary",
+      "peerReviewed": false,
+      "claimLevel": "unreproduced-result",
+      "relationship": "Documents coordination, evaluation, and reliability challenges in one deployed multi-agent system.",
+      "affectedArtifacts": ["docs/strategy/ECOSYSTEM.md"],
+      "status": "watch",
+      "decision": "Use as an engineering signal, not general scientific evidence."
+    },
+    {
+      "id": "RAD-2026-003",
+      "title": "NVIDIA NeMo Agent Toolkit documentation",
+      "url": "https://docs.nvidia.com/nemo/agent-toolkit/latest/",
+      "sourceDate": "2026-09-17-accessed",
+      "sourceClass": "official-documentation",
+      "provenance": "primary",
+      "peerReviewed": false,
+      "claimLevel": "product-capability",
+      "relationship": "Potential future trace and observability adapter; no core dependency.",
+      "affectedArtifacts": ["docs/strategy/ECOSYSTEM.md"],
+      "status": "watch",
+      "decision": "Defer evaluation to platform stage; install nothing in M0/M1."
+    },
+    {
+      "id": "RAD-2026-004",
+      "title": "GitHub Octoverse 2025",
+      "url": "https://github.blog/news-insights/octoverse/octoverse-a-new-developer-joins-github-every-second-as-ai-leads-typescript-to-1/",
+      "sourceDate": "2026-02-28-updated",
+      "sourceClass": "market-signal",
+      "provenance": "primary",
+      "peerReviewed": false,
+      "claimLevel": "market-observation",
+      "relationship": "Provides project and repository adoption context, not organization TAM.",
+      "affectedArtifacts": ["docs/strategy/MARKET_OPPORTUNITY.md", "research/market/2026-opportunity-model.json"],
+      "status": "adopted",
+      "decision": "Retain as a contextual signal with unit and double-counting warnings."
+    },
+    {
+      "id": "RAD-2026-005",
+      "title": "OpenAI State of Enterprise AI 2025",
+      "url": "https://openai.com/business/guides-and-resources/the-state-of-enterprise-ai-2025-report/",
+      "sourceDate": "2025",
+      "sourceClass": "market-signal",
+      "provenance": "primary",
+      "peerReviewed": false,
+      "claimLevel": "market-observation",
+      "relationship": "Vendor-specific business adoption signal used as a transparent scenario anchor.",
+      "affectedArtifacts": ["docs/strategy/MARKET_OPPORTUNITY.md", "research/market/2026-opportunity-model.json"],
+      "status": "adopted",
+      "decision": "Do not describe the vendor customer count as global market size."
+    },
+    {
+      "id": "RAD-2026-006",
+      "title": "Gartner enterprise application agent forecast",
+      "url": "https://www.gartner.com/en/newsroom/press-releases/2025-08-26-gartner-predicts-40-percent-of-enterprise-apps-will-feature-task-specific-ai-agents-by-2026-up-from-less-than-5-percent-in-2025",
+      "sourceDate": "2025-08-26",
+      "sourceClass": "market-signal",
+      "provenance": "secondary",
+      "peerReviewed": false,
+      "claimLevel": "forecast",
+      "relationship": "Context for uncertainty about adoption velocity; not an input to computed TAM/SAM.",
+      "affectedArtifacts": ["docs/strategy/MARKET_OPPORTUNITY.md"],
+      "status": "watch",
+      "decision": "Keep forecast separate from observed facts and model calculations."
+    }
+  ]
+}

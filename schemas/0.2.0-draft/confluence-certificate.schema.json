@@ -1,0 +1,400 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://agent-braid.dev/schemas/0.2.0-draft/confluence-certificate.schema.json",
+  "title": "Agent Braid confluence-certificate 0.2.0-draft",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "certificateVersion": {
+      "const": "0.2.0-draft"
+    },
+    "certificateId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "modelVersion": {
+      "const": "integer-batch-v1"
+    },
+    "initialStateDigest": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$"
+    },
+    "operations": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "definitionDigest": {
+            "type": "string",
+            "pattern": "^sha256:[0-9a-f]{64}$"
+          }
+        },
+        "required": [
+          "id",
+          "definitionDigest"
+        ]
+      },
+      "minItems": 1,
+      "maxItems": 6
+    },
+    "observation": {
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "mode": {
+              "const": "exact"
+            }
+          },
+          "required": [
+            "mode"
+          ]
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "mode": {
+              "const": "projection"
+            },
+            "resources": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1
+              },
+              "minItems": 1,
+              "uniqueItems": true
+            }
+          },
+          "required": [
+            "mode",
+            "resources"
+          ]
+        }
+      ]
+    },
+    "executionContract": {
+      "const": "integer-batch-atomic-v1"
+    },
+    "claim": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "property": {
+          "enum": [
+            "terminal-observation-equivalence",
+            "independence",
+            "confluence",
+            "braid"
+          ]
+        },
+        "method": {
+          "enum": [
+            "declared",
+            "replay",
+            "exhaustive-finite",
+            "proof-rule",
+            "formal"
+          ]
+        },
+        "domain": {
+          "type": "string",
+          "minLength": 1
+        },
+        "assumptions": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "observationContract": {
+          "type": "string",
+          "minLength": 1
+        },
+        "executionContract": {
+          "type": "string",
+          "minLength": 1
+        },
+        "assuranceClass": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 5
+        }
+      },
+      "required": [
+        "property",
+        "method",
+        "domain",
+        "assumptions",
+        "observationContract",
+        "executionContract",
+        "assuranceClass"
+      ]
+    },
+    "evidence": {
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "kind": {
+              "const": "replay"
+            },
+            "fixtureDigest": {
+              "type": "string",
+              "pattern": "^sha256:[0-9a-f]{64}$"
+            },
+            "traces": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "schedule": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "minItems": 1,
+                    "uniqueItems": true
+                  },
+                  "outcomeDigest": {
+                    "type": "string",
+                    "pattern": "^sha256:[0-9a-f]{64}$"
+                  }
+                },
+                "required": [
+                  "schedule",
+                  "outcomeDigest"
+                ]
+              },
+              "minItems": 2,
+              "uniqueItems": true
+            }
+          },
+          "required": [
+            "kind",
+            "fixtureDigest",
+            "traces"
+          ]
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "kind": {
+              "const": "exhaustive-finite"
+            },
+            "fixtureDigest": {
+              "type": "string",
+              "pattern": "^sha256:[0-9a-f]{64}$"
+            },
+            "traces": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "schedule": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "minItems": 1,
+                    "uniqueItems": true
+                  },
+                  "outcomeDigest": {
+                    "type": "string",
+                    "pattern": "^sha256:[0-9a-f]{64}$"
+                  }
+                },
+                "required": [
+                  "schedule",
+                  "outcomeDigest"
+                ]
+              },
+              "minItems": 1,
+              "uniqueItems": true
+            }
+          },
+          "required": [
+            "kind",
+            "fixtureDigest",
+            "traces"
+          ]
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "kind": {
+              "const": "proof-rule"
+            },
+            "fixtureDigest": {
+              "type": "string",
+              "pattern": "^sha256:[0-9a-f]{64}$"
+            },
+            "ruleId": {
+              "type": "string",
+              "minLength": 1
+            },
+            "proofDigest": {
+              "type": "string",
+              "pattern": "^sha256:[0-9a-f]{64}$"
+            }
+          },
+          "required": [
+            "kind",
+            "fixtureDigest",
+            "ruleId",
+            "proofDigest"
+          ]
+        }
+      ]
+    },
+    "result": {
+      "enum": [
+        "equivalent-observed",
+        "divergent",
+        "inconclusive",
+        "not-applicable"
+      ]
+    }
+  },
+  "required": [
+    "certificateVersion",
+    "certificateId",
+    "modelVersion",
+    "initialStateDigest",
+    "operations",
+    "observation",
+    "executionContract",
+    "claim",
+    "evidence",
+    "result"
+  ],
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "evidence": {
+            "properties": {
+              "kind": {
+                "enum": [
+                  "replay",
+                  "exhaustive-finite"
+                ]
+              }
+            }
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "claim": {
+            "properties": {
+              "property": {
+                "const": "terminal-observation-equivalence"
+              }
+            }
+          },
+          "result": {
+            "enum": [
+              "equivalent-observed",
+              "divergent",
+              "inconclusive"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "evidence": {
+            "properties": {
+              "kind": {
+                "const": "replay"
+              }
+            }
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "claim": {
+            "properties": {
+              "method": {
+                "const": "replay"
+              },
+              "assuranceClass": {
+                "maximum": 3
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "evidence": {
+            "properties": {
+              "kind": {
+                "const": "exhaustive-finite"
+              }
+            }
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "claim": {
+            "properties": {
+              "method": {
+                "const": "exhaustive-finite"
+              },
+              "assuranceClass": {
+                "maximum": 4
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "evidence": {
+            "properties": {
+              "kind": {
+                "const": "proof-rule"
+              }
+            }
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "claim": {
+            "properties": {
+              "method": {
+                "const": "proof-rule"
+              }
+            }
+          }
+        }
+      }
+    }
+  ]
+}

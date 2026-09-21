@@ -1,0 +1,30 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://agent-braid.dev/schemas/0.1.0-alpha/git-analysis-provenance.schema.json",
+  "title": "Agent Braid Git analysis provenance 0.1.0-alpha",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["gitAnalysisProvenanceVersion", "reportInputDigest", "repositoryId", "baseCommit", "operations", "observationContract", "executionAuthorization"],
+  "properties": {
+    "gitAnalysisProvenanceVersion": {"const": "0.1.0-alpha"},
+    "reportInputDigest": {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$"},
+    "repositoryId": {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$"},
+    "baseCommit": {"type": "string", "pattern": "^[0-9a-f]{40}$"},
+    "operations": {
+      "type": "array", "minItems": 2,
+      "items": {
+        "type": "object", "additionalProperties": false,
+        "required": ["instanceId", "resolvedSource", "snapshot", "changes", "uncertainPaths"],
+        "properties": {
+          "instanceId": {"type": "string", "minLength": 1},
+          "resolvedSource": {"type": "string", "minLength": 1},
+          "snapshot": {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$"},
+          "changes": {"type": "array", "items": {"type": "object", "additionalProperties": false, "required": ["status", "path"], "properties": {"status": {"type": "string", "minLength": 1}, "path": {"type": "string", "minLength": 1}}}},
+          "uncertainPaths": {"type": "array", "items": {"type": "string", "minLength": 1}, "uniqueItems": true}
+        }
+      }
+    },
+    "observationContract": {"type": "string", "minLength": 1},
+    "executionAuthorization": {"const": false}
+  }
+}

@@ -1,0 +1,97 @@
+{
+  "radarVersion": "0.1.0",
+  "review": {
+    "date": "2026-09-19",
+    "kind": "milestone",
+    "milestones": ["M0.5"],
+    "reviewer": "Juan Antonio Yáñez García (founder)",
+    "decision": "approved",
+    "decisionRecord": "research/reviews/2026-09-18-m0.5-radar.md"
+  },
+  "entries": [
+    {
+      "id": "RAD-2026-007",
+      "title": "OpenAI Agents SDK orchestration and hosted multi-agent surfaces",
+      "url": "https://openai.github.io/openai-agents-python/multi_agent/",
+      "sourceDate": "2026-09-18-accessed",
+      "sourceClass": "official-documentation",
+      "provenance": "primary",
+      "peerReviewed": false,
+      "claimLevel": "product-capability",
+      "relationship": "Confirms expanding orchestration and parallel-agent surfaces while leaving portable shared-state correctness evidence outside Agent Braid's initial scope claim.",
+      "affectedArtifacts": ["docs/strategy/ECOSYSTEM.md", "docs/strategy/OPEN_TOOLING_STRATEGY.md"],
+      "status": "watch",
+      "decision": "Track trace-adapter requirements after M2 contracts stabilize; do not add a provider dependency now."
+    },
+    {
+      "id": "RAD-2026-008",
+      "title": "Agent2Agent protocol specification",
+      "url": "https://a2a-protocol.org/latest/specification/",
+      "sourceDate": "2026-09-18-accessed",
+      "sourceClass": "standard",
+      "provenance": "primary",
+      "peerReviewed": false,
+      "claimLevel": "official-documentation",
+      "relationship": "Task identity, artifacts, versioning, idempotency and extensions are relevant to a future AIM adapter, but protocol interoperability does not establish semantic independence.",
+      "affectedArtifacts": ["docs/strategy/ECOSYSTEM.md"],
+      "status": "watch",
+      "decision": "Retain A2A as a post-M2 adapter candidate and preserve one-way translation into AIM."
+    },
+    {
+      "id": "RAD-2026-009",
+      "title": "Model Context Protocol security best practices",
+      "url": "https://modelcontextprotocol.io/docs/2025-11-25/tutorials/security/security_best_practices",
+      "sourceDate": "2025-11-25",
+      "sourceClass": "standard",
+      "provenance": "primary",
+      "peerReviewed": false,
+      "claimLevel": "official-documentation",
+      "relationship": "Authorization, session, local-server and SSRF risks reinforce the existing gate against external traces or write-capable adapters before dedicated privacy and security review.",
+      "affectedArtifacts": ["SECURITY.md", "docs/strategy/ECOSYSTEM.md"],
+      "status": "adopted",
+      "decision": "Carry these threat classes into future adapter requirements; no MCP runtime is introduced in M0.5."
+    },
+    {
+      "id": "RAD-2026-010",
+      "title": "NVIDIA NeMo Agent Toolkit 1.8 overview",
+      "url": "https://docs.nvidia.com/nemo/agent-toolkit/latest/",
+      "sourceDate": "2026-09-18-accessed",
+      "sourceClass": "official-documentation",
+      "provenance": "primary",
+      "peerReviewed": false,
+      "claimLevel": "product-capability",
+      "relationship": "Current profiling, observability, evaluation, MCP and A2A support make NeMo a future trace-adapter comparison point rather than a core dependency.",
+      "affectedArtifacts": ["docs/strategy/ECOSYSTEM.md"],
+      "status": "watch",
+      "decision": "Defer installation and adapter work until the M2 evidence contracts are stable."
+    },
+    {
+      "id": "RAD-2026-011",
+      "title": "CoAgent: Concurrency Control for Multi-Agent Systems",
+      "url": "https://arxiv.org/abs/2606.15376",
+      "sourceDate": "2026-06-13",
+      "sourceClass": "paper",
+      "provenance": "primary",
+      "peerReviewed": false,
+      "claimLevel": "unreproduced-result",
+      "relationship": "Directly adjacent work proposes advisory concurrency control and reported workload results; its semantics, tool inverses and empirical claims have not been reproduced here.",
+      "affectedArtifacts": ["docs/strategy/ECOSYSTEM.md", "research/REFERENCES.md"],
+      "status": "watch",
+      "decision": "Add to the M2 comparison backlog and seek artifact-level reproduction before making novelty or performance claims."
+    },
+    {
+      "id": "RAD-2026-012",
+      "title": "Position: Multi-Agent Systems Should Prioritize Concurrency Control",
+      "url": "https://arxiv.org/abs/2608.18092",
+      "sourceDate": "2026-06-06",
+      "sourceClass": "paper",
+      "provenance": "primary",
+      "peerReviewed": false,
+      "claimLevel": "unreproduced-result",
+      "relationship": "The position aligns with Agent Braid's problem framing but is not evidence of demand, priority or correctness of this project's approach.",
+      "affectedArtifacts": ["docs/strategy/OPEN_TOOLING_STRATEGY.md", "research/REFERENCES.md"],
+      "status": "watch",
+      "decision": "Cite only as an adjacent position and keep independent technical validation requirements unchanged."
+    }
+  ]
+}

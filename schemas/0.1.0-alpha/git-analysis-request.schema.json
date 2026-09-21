@@ -1,0 +1,44 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://agent-braid.dev/schemas/0.1.0-alpha/git-analysis-request.schema.json",
+  "title": "Agent Braid Git analysis request 0.1.0-alpha",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["gitAnalysisRequestVersion", "repository", "baseRevision", "operations"],
+  "properties": {
+    "gitAnalysisRequestVersion": {"const": "0.1.0-alpha"},
+    "repository": {"type": "string", "minLength": 1},
+    "baseRevision": {"type": "string", "minLength": 1},
+    "operations": {
+      "type": "array",
+      "minItems": 2,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["instanceId", "attemptId", "source", "dependencies", "uncertainPaths"],
+        "properties": {
+          "instanceId": {"type": "string", "minLength": 1},
+          "attemptId": {"type": "string", "minLength": 1},
+          "dependencies": {"type": "array", "items": {"type": "string", "minLength": 1}, "uniqueItems": true},
+          "uncertainPaths": {"type": "array", "items": {"type": "string", "minLength": 1}, "uniqueItems": true},
+          "source": {
+            "oneOf": [
+              {
+                "type": "object",
+                "additionalProperties": false,
+                "required": ["kind", "revision"],
+                "properties": {"kind": {"const": "commit"}, "revision": {"type": "string", "minLength": 1}}
+              },
+              {
+                "type": "object",
+                "additionalProperties": false,
+                "required": ["kind", "path"],
+                "properties": {"kind": {"const": "worktree"}, "path": {"type": "string", "minLength": 1}}
+              }
+            ]
+          }
+        }
+      }
+    }
+  }
+}

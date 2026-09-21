@@ -1,0 +1,38 @@
+{
+  "captured_at": "2026-09-17T22:08:28.455473+00:00",
+  "human_review": "pending",
+  "inputs": {
+    "docs/releases/M0_READINESS.md": "c6784e5f49b5178a6b34a8086fd5885d70dc3e4b59febfef0beb387340347065",
+    "docs/strategy/COMMUNITY.md": "f3245e0a3eeb299ac7c6cba7e0a9252e455ea0f96c1b7f050917b1b1094f5621",
+    "docs/strategy/ECOSYSTEM.md": "a433e82fb9319f00db856fec3d4a541ce58d625f22ed18a0e7264b176ab9a0b3",
+    "docs/strategy/MARKET_OPPORTUNITY.md": "0ed7618ef007ccd95068de999a9d20db048e474ee8e01dcd82a2489fe870b9c1",
+    "docs/strategy/OPEN_TOOLING_STRATEGY.md": "b36c376e47a3b5f07b075fcba5985baad06d67cd147778bc5481467590ec4264",
+    "research/market/2026-opportunity-model.json": "3283ace158a5c0288245337063ae9fbf6816784e1ce644e481a6280593c7d316",
+    "research/radar/2026-09-17.json": "f50bbb64a1290377b976d99215ea1539b77931481dfc6322337dc26cfcaa2b84",
+    "scripts/market_sizing.py": "b6f41f20ca81486df08b8461683f65103b184cf5d0d55a29f65ce2b81a31882a",
+    "scripts/validate_research_radar.py": "4f8212e4e4d430aeb16495513dfe5ec0750831fd57ec684f4e27911f9dc7f496",
+    "tests/test_strategy.py": "6ac7a8de8ff42048469d48c2b7d420a805e4c7bb4bf02822f2e02de0080bdfe2"
+  },
+  "observations": [
+    {
+      "command": "python3 scripts/validate_research_radar.py --milestone M0.5",
+      "exit_code": 0,
+      "stderr": "",
+      "stdout": "Research radar structure and provenance passed (offline check only).\n"
+    },
+    {
+      "command": "python3 scripts/market_sizing.py",
+      "exit_code": 0,
+      "stderr": "",
+      "stdout": "{\n  \"limits\": [\n    \"The anchor covers one vendor's customers and is not a global organization census.\",\n    \"All shares and spend values are assumptions requiring primary validation.\",\n    \"The economic reference is neither current revenue, forecast revenue, nor capturable market.\",\n    \"SOM measures community adoption rather than revenue.\"\n  ],\n  \"modelVersion\": \"0.1.0\",\n  \"results\": {\n    \"base\": {\n      \"illustrativeEconomicReferenceUsd\": 412500000,\n      \"samOrganizationProxy\": 20625,\n      \"somCommunityTargets18Months\": {\n        \"analyzedWorkloads\": 75,\n        \"independentReproductions\": 10,\n        \"maintainedIntegrations\": 4,\n        \"repeatContributors\": 15\n      },\n      \"tamOrganizationProxy\": 37500\n    },\n    \"high\": {\n      \"illustrativeEconomicReferenceUsd\": 5040000000,\n      \"samOrganizationProxy\": 84000,\n      \"somCommunityTargets18Months\": {\n        \"analyzedWorkloads\": 250,\n        \"independentReproductions\": 25,\n        \"maintainedIntegrations\": 7,\n        \"repeatContributors\": 40\n      },\n      \"tamOrganizationProxy\": 120000\n    },\n    \"low\": {\n      \"illustrativeEconomicReferenceUsd\": 8750000,\n      \"samOrganizationProxy\": 1750,\n      \"somCommunityTargets18Months\": {\n        \"analyzedWorkloads\": 20,\n        \"independentReproductions\": 3,\n        \"maintainedIntegrations\": 2,\n        \"repeatContributors\": 5\n      },\n      \"tamOrganizationProxy\": 5000\n    }\n  }\n}\n"
+    },
+    {
+      "command": "python3 -m unittest tests.test_strategy -v",
+      "exit_code": 0,
+      "stderr": "test_model_is_nested_monotonic_and_reproducible (tests.test_strategy.MarketModelTests.test_model_is_nested_monotonic_and_reproducible) ... ok\ntest_rejects_duplicate_observation_ids (tests.test_strategy.MarketModelTests.test_rejects_duplicate_observation_ids) ... ok\ntest_rejects_non_monotonic_and_unitless_inputs (tests.test_strategy.MarketModelTests.test_rejects_non_monotonic_and_unitless_inputs) ... ok\ntest_committed_radar_has_milestone_review (tests.test_strategy.RadarTests.test_committed_radar_has_milestone_review) ... ok\ntest_rejects_invalid_provenance_and_peer_review_type (tests.test_strategy.RadarTests.test_rejects_invalid_provenance_and_peer_review_type) ... ok\ntest_rejects_missing_provenance_and_bad_claim_level (tests.test_strategy.RadarTests.test_rejects_missing_provenance_and_bad_claim_level) ... ok\n\n----------------------------------------------------------------------\nRan 6 tests in 0.004s\n\nOK\n",
+      "stdout": ""
+    }
+  ],
+  "platform": "Darwin",
+  "python": "3.12.14"
+}

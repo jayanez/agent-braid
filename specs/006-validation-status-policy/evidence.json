@@ -1,0 +1,38 @@
+{
+  "captured_at": "2026-09-18T19:07:10.676332+00:00",
+  "human_review": "pending",
+  "inputs": {
+    "GOVERNANCE.md": "c8eda331d97c42e54be4730ef906dfaad9ae2814e36704302f97afceff037d82",
+    "README.md": "6f7335a3cb9f65562c7bc9a3a753033d09f9e23ddca7098268a627ac04190f02",
+    "ROADMAP.md": "b77281ee2a0bc39776630696485ec40afb61e4b1a72c0279f4357a6d3d7e81b0",
+    "docs/adr/0009-transparent-validation-status.md": "7e329563e069e972ef2febcf64e0fec29255c0c9af29e331a1d5beb7f382e60d",
+    "docs/releases/M0_POLICY_SUPERSESSION.md": "0d03cf8d0497309b8b601c037bdbf80157c17ca43c374c247bb7a92b0b70af48",
+    "docs/releases/VALIDATION_POLICY.md": "1b67727859b9b6c8c0a12ef27c42bf807d29df5b7a41b28b55a848e7951fe80f",
+    "schemas/governance/release-validation-record.schema.json": "d9943f0c9f5520ea52e3b12bfba88240d03f8011b433fc5e35cb49549ab6e819",
+    "scripts/validate_release_records.py": "a52639ec437ebd75dec205e5e6a9ce0190c31deb0bb3d5d5c66cfe25c3eb566c",
+    "scripts/validate_repository.py": "8059ae4e60ec4becadbcaf82974f01335c49cfabd9e9348c6a9a70129371f1e4",
+    "tests/test_release_records.py": "d672433c5f467e642f7aaf7140e6efb44b3ac02f42be2012dfe81c6315646fcb"
+  },
+  "observations": [
+    {
+      "command": "python3 scripts/validate_release_records.py",
+      "exit_code": 0,
+      "stderr": "",
+      "stdout": "Release records passed structural validation; no scientific approval inferred.\n"
+    },
+    {
+      "command": "python3 -m unittest tests.test_release_records -v",
+      "exit_code": 0,
+      "stderr": "test_completed_requires_external_reviewer_and_evidence (tests.test_release_records.ReleaseRecordTests.test_completed_requires_external_reviewer_and_evidence) ... ok\ntest_missing_status_and_pending_disclosure_fail (tests.test_release_records.ReleaseRecordTests.test_missing_status_and_pending_disclosure_fail) ... ok\ntest_not_applicable_rejects_scientific_claims (tests.test_release_records.ReleaseRecordTests.test_not_applicable_rejects_scientific_claims) ... ok\ntest_pending_record_cannot_claim_independent_validation (tests.test_release_records.ReleaseRecordTests.test_pending_record_cannot_claim_independent_validation) ... ok\ntest_pending_record_is_explicit_and_complete (tests.test_release_records.ReleaseRecordTests.test_pending_record_is_explicit_and_complete) ... ok\ntest_provisional_record_version_is_rejected (tests.test_release_records.ReleaseRecordTests.test_provisional_record_version_is_rejected) ... ok\n\n----------------------------------------------------------------------\nRan 6 tests in 0.004s\n\nOK\n",
+      "stdout": ""
+    },
+    {
+      "command": "python3 scripts/validate_repository.py",
+      "exit_code": 0,
+      "stderr": "",
+      "stdout": "Repository validation passed.\n"
+    }
+  ],
+  "platform": "Darwin",
+  "python": "3.12.14"
+}

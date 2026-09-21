@@ -1,0 +1,80 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/jayanez/agent-braid/schemas/governance/public-export-manifest.schema.json",
+  "title": "Agent Braid public export manifest 0.1.0",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "recordVersion",
+    "sourceCommit",
+    "sourceTree",
+    "publicationMode",
+    "historyIncluded",
+    "historicalEvidence",
+    "independentValidation",
+    "transformations",
+    "protectedPaths",
+    "files"
+  ],
+  "properties": {
+    "recordVersion": {"const": "0.1.0"},
+    "sourceCommit": {"type": "string", "pattern": "^[0-9a-f]{40}$"},
+    "sourceTree": {"type": "string", "pattern": "^[0-9a-f]{40}$"},
+    "publicationMode": {"const": "clean-root"},
+    "historyIncluded": {"const": false},
+    "historicalEvidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["sourceVerification", "publicRepresentation", "limit"],
+      "properties": {
+        "sourceVerification": {"const": "internal-only"},
+        "publicRepresentation": {"const": "deterministically-redacted"},
+        "limit": {
+          "const": "Private Git ancestry and original local-path-bearing bytes are unavailable in the public export."
+        }
+      }
+    },
+    "independentValidation": {"const": "pending"},
+    "transformations": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["path", "sourceSha256", "publishedSha256", "rules"],
+        "properties": {
+          "path": {"type": "string", "minLength": 1},
+          "sourceSha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+          "publishedSha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+          "rules": {
+            "type": "array",
+            "minItems": 1,
+            "uniqueItems": true,
+            "items": {
+              "enum": ["local-path-redaction", "transformed-digest-rebinding"]
+            }
+          }
+        }
+      }
+    },
+    "protectedPaths": {
+      "type": "array",
+      "minItems": 1,
+      "items": {"type": "string", "minLength": 1}
+    },
+    "files": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["path", "sha256", "size"],
+        "properties": {
+          "path": {"type": "string", "minLength": 1},
+          "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+          "size": {"type": "integer", "minimum": 0}
+        }
+      }
+    }
+  }
+}

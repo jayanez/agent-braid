@@ -1,0 +1,44 @@
+{
+  "recordVersion": "0.1.0",
+  "feature": "M0.5",
+  "reviewedCommit": "d7bff443729571e031180b4c31920632e2a7d3ae",
+  "reviewer": {
+    "name": "Juan Antonio Yáñez García",
+    "role": "founder"
+  },
+  "conflictsOfInterest": "The reviewer is the project founder and author. Codex executed the clean-room automation on the founder's machine under explicit authorization. This is internal founder-led review, not independent validation.",
+  "boundedReview": {
+    "decision": "approved",
+    "date": "2026-09-19",
+    "rationale": "Approve the M0.5 strategy, radar, market model and current-tree report evidence only within the documented sources, assumptions and offline observation boundary. The clean-room run completed 14/14 observations and 100 tests in Python 3.12.14. This decision does not establish source exhaustiveness, demand, novelty, superiority, production safety or scientific truth."
+  },
+  "milestoneClosure": {
+    "decision": "approved",
+    "date": "2026-09-19",
+    "rationale": "Close M0.5 internally as the open-tooling strategy, bounded radar, transparent opportunity model, community path and research-preview preparation are complete. External validation remains pending and M2 implementation remains a separate feature decision."
+  },
+  "researchPreviewProposal": {
+    "decision": "approved",
+    "date": "2026-09-19",
+    "rationale": "Approve the proposal to distribute a future research preview through a clean export that excludes the private Git history containing the earlier proprietary-template derivative. This is approval of the bounded proposal only, not authorization to publish, change repository visibility or rewrite history."
+  },
+  "independentValidation": "pending",
+  "repositoryVisibilityChangeAuthorized": false,
+  "evidence": [
+    {
+      "path": "specs/008-m0.5-closure/evidence.json",
+      "sha256": "1d4cea33046e0c9a3074075e01a4e7a6c7e51f48d6ccba73dd1268db4a89ddde"
+    },
+    {
+      "path": "specs/008-m0.5-closure/reproduction.json",
+      "sha256": "9fc8aa0a6902f1614e077be20135c48df49841ec2cf2ee5ab3a95f090a8b72ab"
+    }
+  ],
+  "limits": [
+    "Founder-led internal review; independent validation remains pending.",
+    "No production-safety, execution-authorization, general-confluence or Yang-Baxter claim.",
+    "Observed market signals and scenarios do not establish capturable demand.",
+    "The current tree is redistributable under the license map, but historical report redistribution remains unresolved.",
+    "Publication, repository visibility and history operations require separate explicit authorization."
+  ]
+}
