@@ -1,124 +1,52 @@
 ---
 name: building-python-clis
-description: Builds command-line interfaces for Python libraries using Click or Typer. Includes command groups, argument handling, progress bars, shell completion, and CLI testing with CliRunner. Use when adding CLI functionality to a library or building standalone command-line tools.
+description: Build or extend Agent Braid's Python command-line interface with stdlib argparse. Use for subcommands, arguments, help, exit codes, and CLI tests; consult Click or Typer references only when that stack is explicitly chosen.
 ---
 
 # Python CLI Development
 
-## Framework Selection
+## Project route
 
-**Click** (Recommended): Mature, extensive features
-**Typer**: Modern, type-hint focused
-**argparse**: Zero dependencies, standard library
+`agent_braid/cli.py` implements the `agent-braid` entry point with `argparse`.
+Preserve its `main(argv: list[str] | None = None) -> int` interface and the
+project's zero-runtime-dependency policy. Read the current CLI and its tests
+before changing argument names, output, or exit status. Preserve the distinction
+between a verified result, a bounded rejection, and an input or runtime error.
 
-## Click Quick Start
-
-```python
-import click
-
-@click.group()
-@click.version_option(version='1.0.0')
-def cli():
-    """My CLI tool."""
-    pass
-
-@cli.command()
-@click.argument('input_file', type=click.Path(exists=True))
-@click.option('--output', '-o', default='-', help='Output file')
-@click.option('--verbose', '-v', is_flag=True)
-def process(input_file, output, verbose):
-    """Process an input file."""
-    if verbose:
-        click.echo(f"Processing {input_file}")
-    # ...
-
-if __name__ == '__main__':
-    cli()
-```
-
-## Entry Point (pyproject.toml)
-
-```toml
-[project.scripts]
-mycli = "my_package.cli:cli"
-
-[project.optional-dependencies]
-cli = ["click>=8.0"]
-```
-
-## Common Patterns
+Build subcommands with the existing parser pattern:
 
 ```python
-# File I/O with stdin/stdout support
-@click.argument('input', type=click.File('r'), default='-')
-@click.argument('output', type=click.File('w'), default='-')
-
-# Progress bar
-with click.progressbar(items, label='Processing') as bar:
-    for item in bar:
-        process(item)
-
-# Colored output
-click.secho("Success!", fg='green', bold=True)
-click.secho("Error!", fg='red', err=True)
-
-# Error handling
-if not valid:
-    raise click.BadParameter(f'Invalid value: {value}')
+parser = argparse.ArgumentParser(description=__doc__)
+subparsers = parser.add_subparsers(dest="command", required=True)
+analyze_parser = subparsers.add_parser("analyze", help="analyze AIM records")
+analyze_parser.add_argument("input", type=Path)
+analyze_parser.add_argument("--format", choices=("json", "text"), default="json")
+args = parser.parse_args(argv)
 ```
 
-## Testing with CliRunner
+Return a documented integer from `main` and use `raise SystemExit(main())` in
+the module entry point. Give `argparse` clear help text and use its type and
+choice validation. Keep machine-readable output stable when adding options.
+Check the actual command with `python3 -m agent_braid --help` and test success,
+rejection, and invalid input through the public module or console entry point.
+The existing CLI tests in `tests/test_analysis.py` and `tests/test_git_adapter.py`
+show the project's `unittest` and subprocess conventions.
 
-```python
-from click.testing import CliRunner
-from mypackage.cli import cli
+## Optional framework references
 
-def test_process():
-    runner = CliRunner()
-    result = runner.invoke(cli, ['process', 'input.txt'])
-    assert result.exit_code == 0
-    assert 'expected output' in result.output
+Use [CLICK_PATTERNS.md](CLICK_PATTERNS.md) or [TYPER_GUIDE.md](TYPER_GUIDE.md)
+only for a separately approved Click/Typer CLI or an explicit framework
+comparison. Their installation steps, decorators, `CliRunner`, and shell
+completion conventions do not apply to the current `agent-braid` command.
 
-def test_stdin():
-    runner = CliRunner()
-    result = runner.invoke(cli, ['process', '-'], input='test data\n')
-    assert result.exit_code == 0
-```
+## CLI checklist
 
-## Shell Completion
+- Keep the entry point in `pyproject.toml` aligned with the callable.
+- Check `--help` for each added subcommand and preserve existing invocations.
+- Route failures to the established output and exit-status contract.
+- Test both useful results and rejected inputs via `unittest discover`.
 
-```bash
-# Generate completion scripts
-_MYCLI_COMPLETE=bash_source mycli > ~/.mycli-complete.bash
-_MYCLI_COMPLETE=zsh_source mycli > ~/.mycli-complete.zsh
-```
-
-For detailed patterns, see:
-- **[CLICK_PATTERNS.md](CLICK_PATTERNS.md)** - Advanced Click usage
-- **[TYPER_GUIDE.md](TYPER_GUIDE.md)** - Typer alternative
-
-## CLI Checklist
-
-```
-Setup:
-- [ ] Entry point in pyproject.toml
-- [ ] --help works for all commands
-- [ ] --version displays version
-
-UX:
-- [ ] Errors go to stderr with non-zero exit
-- [ ] Helpful error messages
-- [ ] stdin/stdout support where appropriate
-
-Testing:
-- [ ] Tests for all commands
-- [ ] Test error cases
-- [ ] Test stdin processing
-```
-
-## Learn More
-
-This skill is based on the [Guide to Developing High-Quality Python Libraries](https://mcginniscommawill.com/guides/python-library-development/) by [Will McGinnis](https://mcginniscommawill.com/). See these posts for related coverage:
-
-- [Makefiles for Python Development](https://mcginniscommawill.com/posts/2025-04-08-makefiles-for-python/)
-- [pyproject.toml Explained](https://mcginniscommawill.com/posts/2025-01-26-pyproject-toml-explained/)
+This skill is adapted from the [Guide to Developing High-Quality Python
+Libraries](https://mcginniscommawill.com/guides/python-library-development/)
+by Will McGinnis. Its original Click/Typer examples remain in the optional
+references.

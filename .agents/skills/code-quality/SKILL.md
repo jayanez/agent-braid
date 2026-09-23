@@ -5,12 +5,16 @@ description: Improves Python library code quality through ruff linting, mypy typ
 
 # Python Code Quality
 
+Ruff and mypy are optional tools to evaluate or introduce; they are not current
+CI gates. Keep the repository's validation profiles as the source of truth for
+required checks.
+
 ## Quick Reference
 
 | Tool | Purpose | Command |
 |------|---------|---------|
-| ruff | Lint + format | `ruff check src && ruff format src` |
-| mypy | Type check | `mypy src` |
+| ruff | Lint | `ruff check agent_braid research tests scripts` |
+| mypy | Type check | `mypy agent_braid research` |
 
 ## Ruff Configuration
 
@@ -19,7 +23,7 @@ Minimal config in pyproject.toml:
 ```toml
 [tool.ruff]
 line-length = 88
-target-version = "py310"
+target-version = "py312"
 
 [tool.ruff.lint]
 select = ["E", "W", "F", "I", "B", "C4", "UP"]
@@ -31,7 +35,7 @@ For full configuration options, see **[RUFF_CONFIG.md](RUFF_CONFIG.md)**.
 
 ```toml
 [tool.mypy]
-python_version = "3.10"
+python_version = "3.12"
 disallow_untyped_defs = true
 warn_return_any = true
 ```
@@ -335,20 +339,20 @@ squares = [x**2 for x in numbers]
 ## Module Organization
 
 ```
-src/my_library/
-├── __init__.py      # Public API exports
-├── _internal.py     # Private (underscore prefix)
-├── exceptions.py    # Custom exceptions
-├── types.py         # Type definitions
-└── py.typed         # Type hint marker
+agent_braid/
+├── __init__.py      # Public package interface
+├── __main__.py      # python -m entry point
+├── analysis.py      # AIM analysis
+├── cli.py           # argparse CLI
+└── git_adapter.py   # Git snapshot analysis
 ```
 
 ## Checklist
 
 ```
 Code Quality:
-- [ ] ruff check passes
-- [ ] mypy passes (strict mode)
+- [ ] If adopted, Ruff checks the actual package, research, tests and scripts
+- [ ] If adopted, mypy targets the supported Python version
 - [ ] Public API has type hints
 - [ ] Public API has docstrings
 - [ ] No mutable default arguments

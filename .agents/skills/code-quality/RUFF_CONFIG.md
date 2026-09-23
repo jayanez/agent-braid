@@ -5,7 +5,7 @@
 ```toml
 [tool.ruff]
 line-length = 88
-target-version = "py310"
+target-version = "py312"
 
 [tool.ruff.lint]
 select = [
@@ -35,7 +35,7 @@ ignore = [
 "__init__.py" = ["F401"]  # unused imports OK in __init__
 
 [tool.ruff.lint.isort]
-known-first-party = ["my_library"]
+known-first-party = ["agent_braid", "research"]
 force-single-line = true
 
 [tool.ruff.format]
@@ -60,8 +60,8 @@ indent-style = "space"
 ## Commands
 
 ```bash
-ruff check src tests           # Lint
-ruff check --fix src tests     # Lint + autofix
-ruff format src tests          # Format
+ruff check agent_braid research tests scripts           # Lint
+ruff check --fix agent_braid research tests scripts     # Lint + autofix
+ruff format agent_braid research tests scripts          # Format
 ruff check --select=I --fix .  # Fix imports only
 ```

@@ -1,5 +1,9 @@
 # Pytest Fixtures Reference
 
+Optional reference for an explicitly adopted pytest test stack. Agent Braid's
+current tests and CI use `unittest`; do not add pytest-only tests without also
+updating the test runner.
+
 ## Fixture Scopes
 
 ```python

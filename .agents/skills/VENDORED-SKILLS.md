@@ -4,8 +4,11 @@ Provenance trail for skills that did not originate in this repo — audit, not p
 brought in, from where, at what commit, under what licence.
 
 Source: <https://github.com/wdm0006/python-skills>, commit `954796b7fc28e342cf08f80b9a4a39414a419c7a`,
-MIT licence. Vendored as individual folders (mirrored into both `.claude/skills/` and
+MIT licence; the full notice is in [LICENSES/python-skills-MIT.txt](../../LICENSES/python-skills-MIT.txt).
+Vendored as individual folders (mirrored into both `.claude/skills/` and
 `.agents/skills/`, matching how this repo already keeps the two in sync for the speckit skills).
+The entry points for CLI, testing, code quality, and documentation are adapted to
+this repository; Click/Typer and pytest material remains optional reference material.
 
 `microsoft/skills` was evaluated and rejected wholesale for this repo: it is almost entirely
 Azure/M365 SDK wrappers, and `agent_braid` has zero runtime dependencies by design
@@ -16,5 +19,14 @@ Azure/M365 SDK wrappers, and `agent_braid` has zero runtime dependencies by desi
 | `code-quality` | `skills/python/code-quality` | Concrete, verified gap: no ruff/mypy config exists anywhere in the repo today, despite the Constitution's reproducibility/rigor claims (falsifiable, peer-reviewable claims per `CITATION.cff`, `RESEARCH.md`). |
 | `documentation` | `skills/python/documentation` | Concrete, verified gap: no docs site (no mkdocs/sphinx) exists despite the explicit academic-reuse intent (`CITATION.cff`, split AGPL/CC-BY-SA licensing meant for citation). |
 | `api-design` | `skills/python/api-design` | The classification API (`independent-candidate`/`ordered`/`conflicting`/`unknown`) is real public, citable surface — deprecation and error-handling discipline matters for reuse. |
-| `testing-strategy` | `skills/python/testing-strategy` | **Caveat, confirmed with the maintainer**: this skill teaches pytest fixtures/parametrization and Hypothesis property-based testing. The repo today uses stdlib `unittest` (`python3 -m unittest discover`). Installed as-is; adopting pytest/Hypothesis as a **test-only** dependency (mirroring how `jsonschema` is already an accepted dev-only dependency) is a stack decision for the maintainer, not something this skill's presence implies on its own. |
-| `cli-development` | `skills/python/cli-development` | **Caveat, confirmed with the maintainer**: this skill teaches Click/Typer. The repo's CLI (`agent_braid/cli.py`, entry point `agent-braid`) is confirmed stdlib `argparse`, by design (zero runtime dependencies). The CLI-*design* principles (subcommand structure, help text, exit codes) still transfer — apply them with `argparse`, not by adding Click/Typer as a runtime dependency. |
+| `testing-strategy` | `skills/python/testing-strategy` | The entry point uses the repo's `unittest` suite and CI command. Pytest and Hypothesis references are optional; adopting either as a test-only dependency is a separate stack decision. |
+| `cli-development` | `skills/python/cli-development` | The entry point uses the repo's `argparse` CLI and zero-runtime-dependency policy. Click and Typer references remain available only for an explicitly chosen alternate stack. |
+
+## NVIDIA catalog candidates (not vendored)
+
+The current core has no NVIDIA runtime dependency. Reassess these official
+skills when their corresponding integration or experiment is scoped:
+
+- [NeMo Relay call instrumentation](https://github.com/NVIDIA/skills/blob/main/skills/nemo-relay-instrument-calls/skill-card.md) for a tool-call trace adapter.
+- [NeMo Relay context isolation](https://github.com/NVIDIA/skills/blob/main/skills/nemo-relay-instrument-context-isolation/SKILL.md) for concurrent trace scopes.
+- [cuOpt optimization formulation](https://github.com/NVIDIA/skills/blob/main/skills/cuopt-numerical-optimization-formulation/skill-card.md) for a bounded scheduling experiment.

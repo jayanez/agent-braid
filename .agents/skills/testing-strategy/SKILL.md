@@ -1,93 +1,71 @@
 ---
 name: testing-python-libraries
-description: Designs and implements pytest test suites for Python libraries with fixtures, parametrization, mocking, Hypothesis property-based testing, and CI configuration. Use when creating tests, improving coverage, setting up testing infrastructure, or implementing property-based testing.
+description: Design and review Agent Braid's unittest suites, regression cases, and validation coverage. Use when adding tests or checking whether a test can detect a bug; use pytest or Hypothesis only after an explicit test-stack decision.
 ---
 
 # Python Library Testing
 
-## Quick Start
+## Project test route
+
+Use Python 3.12 or newer in an isolated environment. The committed tests and CI
+use stdlib `unittest`; tests written only for pytest are not discovered by the
+current gate. Keep runtime dependencies empty and install development tools only
+in an isolated environment.
 
 ```bash
-uv run pytest                       # Run tests
-uv run pytest --cov=my_library      # With coverage
-uv run pytest -x                    # Stop on first failure
-uv run pytest -k "test_encode"      # Run matching tests
+python3 -m unittest discover -s tests -v                    # Full suite
+python3 -m unittest discover -s tests -p 'test_analysis.py' -v  # One module
+python3 scripts/validate_change.py --base develop --profile quick
 ```
 
-## Pytest Configuration
+Run `--profile pr` once on a stable candidate. The validator selects other
+checks based on affected paths; a passing structural check is not scientific
+proof or an approval gate.
 
-```toml
-# pyproject.toml
-[tool.pytest.ini_options]
-testpaths = ["tests"]
-addopts = "-ra -q --cov=my_library --cov-fail-under=85"
+## Existing structure
 
-[tool.coverage.run]
-branch = true
-source = ["src/my_library"]
-```
-
-## Test Structure
-
-```
-tests/
-├── conftest.py           # Shared fixtures
-├── test_encoding.py
-└── test_decoding.py
-```
+Tests live under `tests/test_*.py` and use `unittest.TestCase`. The CI command
+is `python3 -m unittest discover -s tests -v`; add tests that it discovers.
+Use `setUp` and `addCleanup` for local fixtures, `subTest` for small case
+matrices, `tempfile.TemporaryDirectory` for files, and `unittest.mock.patch`
+for controlled collaborators. Check behavior through public imports and CLI
+entry points where those are the contract.
 
 ## Essential Patterns
 
-**Basic test:**
+**Basic test and expected error:**
 ```python
-def test_encode_valid_input():
-    result = encode(37.7749, -122.4194)
-    assert isinstance(result, str)
-    assert len(result) == 12
+class AnalyzerTests(unittest.TestCase):
+    def test_invalid_batch_is_rejected(self):
+        value = self.input()
+        value["operations"][0]["dependencies"] = ["edit-roadmap"]
+        value["operations"][1]["dependencies"] = ["edit-readme"]
+        with self.assertRaisesRegex(InvalidAnalysis, "cyclic"):
+            analyze(value)
 ```
 
-**Parametrization:**
+**Case matrix:**
 ```python
-@pytest.mark.parametrize("lat,lon,expected", [
-    (37.7749, -122.4194, "9q8yy"),
-    (40.7128, -74.0060, "dr5ru"),
-])
-def test_known_values(lat, lon, expected):
-    assert encode(lat, lon, precision=5) == expected
+for case in cases:
+    with self.subTest(case=case["name"]):
+        self.assertEqual(analyze(case["input"]), case["expected"])
 ```
 
-**Fixtures:**
+**Temporary state and mocking:**
 ```python
-@pytest.fixture
-def sample_data():
-    return [(37.7749, -122.4194), (40.7128, -74.0060)]
-
-def test_batch(sample_data):
-    results = batch_encode(sample_data)
-    assert len(results) == 2
+with tempfile.TemporaryDirectory() as directory:
+    root = Path(directory)
+    (root / "guide.md").write_text("# Guide\n", encoding="utf-8")
+    failures = []
+    with patch.object(validator, "ROOT", root):
+        validator.validate_markdown_links(failures)
+    self.assertEqual(failures, [])
 ```
 
-**Mocking:**
-```python
-def test_api_call(mocker):
-    mocker.patch("my_lib.client.fetch", return_value={"data": []})
-    result = my_lib.get_data()
-    assert result == []
-```
-
-**Exception testing:**
-```python
-def test_invalid_raises():
-    with pytest.raises(ValueError, match="latitude"):
-        encode(91.0, 0.0)
-```
-
-For detailed patterns, see:
-- **[FIXTURES.md](FIXTURES.md)** - Advanced fixture patterns
-- **[HYPOTHESIS.md](HYPOTHESIS.md)** - Property-based testing
-
-CI/CD test configuration is covered by the `setting-up-python-libraries` skill from
-`wdm0006/python-skills` (not vendored in this repo).
+For an actual project example, read `tests/test_analysis.py` or
+`tests/test_git_adapter.py`. The optional [pytest fixtures](FIXTURES.md) and
+[Hypothesis strategies](HYPOTHESIS.md) references apply only if that test stack
+is explicitly adopted and the CI gate is updated to run it.
 
 ## Test Principles
 
@@ -95,7 +73,7 @@ CI/CD test configuration is covered by the `setting-up-python-libraries` skill f
 |-----------|---------|
 | Independent | No shared state between tests |
 | Deterministic | Same result every run |
-| Fast | Unit tests < 100ms each |
+| Proportionate | Keep ordinary unit tests fast; isolate slow checks |
 | Focused | Test behavior, not implementation |
 
 ## Tests That Lie: Avoiding False-Green
@@ -166,17 +144,15 @@ success by resolving an empty `server/` package that shadows the real `server.py
 — a broken wheel that still "imports." Assert a real symbol is reachable
 (`from server import main; main`), not merely that an import name resolves.
 
-**Forgotten mock → silent real network calls.** A test missing its `httpx_mock`
-fixture hits the live API: slow, flaky, rate-limited, and silently exercising
-nothing deterministic. Add `--disable-socket` (pytest-socket) so any unmocked
-network call fails loudly instead of "passing."
+**Forgotten mock → silent real network calls.** A test that omits its patched
+transport can hit the live API: slow, flaky, rate-limited, and not deterministic.
+Patch the outbound call at its actual import site and assert the expected call
+count; keep external services out of the unit suite.
 
 **No-op CI gates.** Confirm the gate actually runs the tests:
-- `go test ./...` / `pytest` with **zero test files** is a green no-op.
-- Files excluded via `--ignore` or `pytest.mark.skip` "because flaky" often fail
-  *deterministically* — exclusion hides real breakage, not flakiness.
-- Marker filters (`-m "not integration"`) can deselect the only meaningful tests.
-  Reproduce CI's exact marker expression locally before trusting green.
+- `unittest discover` with **zero discovered tests** is a green no-op.
+- A wrong `-s`/`-p` selector or `@unittest.skip` can hide the only relevant
+  test. Check the test count and reproduce CI's exact discovery command.
 
 **Empty evaluator sets must not mean "all clear."** Auditors, policy engines,
 and validation pipelines often compute a score from the enabled rules. A category
@@ -205,7 +181,8 @@ assert result.overall_score < 100
 
 **Tests written around a bug.** Wrapping a call in `try/except RuinError` to make
 it pass documents the bug as acceptable. Assert the *correct* behavior and let it
-fail until the bug is fixed (use `xfail(strict=True)` to track it without red CI).
+fail until the bug is fixed; keep known failures explicit in the issue or review
+record rather than silently accepting them in a passing test.
 
 ## Prove the Test Can Fail: Mutate the Fix
 
@@ -215,9 +192,9 @@ Do it once, while the fix is still fresh in your head; it takes a minute and it 
 the difference between a regression test and a decoration.
 
 ```bash
-# 1. revert the fix (git stash, or hand-edit the guard back to its broken form)
+# 1. temporarily revert the fix in an isolated checkout
 # 2. run ONLY the new test — it must FAIL, and for the right reason
-uv run pytest tests/test_paths.py::test_symlink_escape_rejected -q
+python3 -m unittest discover -s tests -p 'test_paths.py' -v
 # 3. restore the fix — it must pass
 ```
 
@@ -244,8 +221,8 @@ test gap, not a redundant check: write the test that pins it.
 not always surface as a clean assertion failure.
 
 - Remove a retry/iteration cap and the suite **hangs** instead of failing. Run the
-  mutated suite under an external timeout — `timeout 60 uv run pytest -q` with no
-  output *is* the reproduction. Making the cap merely unreachable (`> 10**9`) is
+  mutated suite under a bounded external timeout; a hang is itself the
+  reproduction. Making the cap merely unreachable (`> 10**9`) is
   the honest mutation; the off-by-one (`>` → `>=`) fails loudly and is the cheaper
   one to re-run day to day.
 - Drop an `await` or a `try` in async code and the runner may die with an unhandled
@@ -369,13 +346,14 @@ that is what catches one extra call in the middle.
 
 ```python
 # BAD — passes whether the code sleeps once or twice.
-monkeypatch.setattr("mypkg.client.time.sleep", lambda _s: None)
+with patch("mypkg.client.time.sleep", return_value=None):
+    run_client()
 
 # GOOD — the sequence is the assertion.
 sleeps: list[float] = []
-monkeypatch.setattr("mypkg.client.time.sleep", sleeps.append)
-...
-assert sleeps == [reset_wait, 0.1]   # reset wait, then the post-success pause
+with patch("mypkg.client.time.sleep", side_effect=sleeps.append):
+    run_client()
+self.assertEqual(sleeps, [reset_wait, 0.1])
 ```
 
 ## Changing Behavior an Existing Test Already Asserts
@@ -434,12 +412,13 @@ intuitive, and a tolerance tight enough to be meaningful is tight enough that a
 plausible guess fails on the first CI run. Compute it, then paste the result:
 
 ```bash
-uv run python -c "from mypkg import readability; \
+python3 -c "from mypkg import readability; \
   print(readability(open('tests/data/doc.md').read()))"
 ```
 
 Size the tolerance against the bug's own gap rather than your confidence: if the
-buggy and fixed paths differ by ~29 points, `pytest.approx(42.80, abs=1.0)` is
+buggy and fixed paths differ by ~29 points, `self.assertAlmostEqual(value,
+42.80, delta=1.0)` is
 both a real value assertion and tolerant of a dependency bump.
 
 **To quote the "before" number in the test's comment, load the old module
@@ -467,15 +446,20 @@ Config-directory resolution is the classic trap: setting `HOME` looks sufficient
 but on Linux the XDG variables are set independently of `HOME`, so the lookup
 ignores your temp dir and every test shares one real config directory. One test's
 corrupt fixture then leaks into the next, and run order decides who fails.
+Here `temporary_root` is a `Path` created inside `TemporaryDirectory`.
 
 ```python
 # BAD — HOME alone. macOS ignores XDG entirely, so this passes locally forever
 # and only ever fails on Linux CI.
-monkeypatch.setenv("HOME", str(tmp_path))
+with patch.dict(os.environ, {"HOME": str(temporary_root)}):
+    check_config()
 
 # GOOD — pin every input to the resolution.
-monkeypatch.setenv("HOME", str(tmp_path))
-monkeypatch.setenv("XDG_CONFIG_HOME", str(tmp_path / "config"))
+with patch.dict(os.environ, {
+    "HOME": str(temporary_root),
+    "XDG_CONFIG_HOME": str(temporary_root / "config"),
+}):
+    check_config()
 ```
 
 When a platform difference decides whether a variable is read, the incomplete
@@ -484,10 +468,9 @@ platform that runs CI.
 
 **Import-time configuration breaks collection, not tests.** A settings object
 built at module scope (`settings = Settings()`) is evaluated on import, so a
-missing variable fails *collection* — before any fixture runs, so no fixture can
-fix it. Declare the variables where collection can see them (pytest config, or a
-root `conftest.py`), mirroring the `env:` block CI uses. Better: build config in a
-factory the test can call with overrides, so importing the module is inert.
+missing variable fails *discovery* — before `setUp` runs. Supply required test
+environment before imports, or better, build config in a factory the test can
+call with overrides so importing the module is inert.
 
 **Module-level globals outlive the test that populated them.** A cache like
 `_analyzers = None` keeps one test's mocks alive for every later test. Reset it
@@ -495,11 +478,9 @@ factory the test can call with overrides, so importing the module is inert.
 leaking into the next file.
 
 ```python
-@pytest.fixture(autouse=True)
-def reset_analyzer_cache():
+def setUp(self):
     app._analyzers = None
-    yield
-    app._analyzers = None
+    self.addCleanup(setattr, app, "_analyzers", None)
 ```
 
 Resetting a mock has the same trap: `reset_mock()` clears recorded calls but
@@ -517,9 +498,14 @@ own CWD is already a valid project — it passes whether or not the path is
 threaded through at all. Move away first, so the fallback would actually fail.
 
 ```python
-def test_runs_against_given_path(tmp_path, monkeypatch, project):
-    monkeypatch.chdir(tmp_path)          # empty: a CWD fallback errors here
-    assert not run_tool(project_path=str(project)).startswith("Error")
+def test_runs_against_given_path(self):
+    with tempfile.TemporaryDirectory() as directory:
+        previous = Path.cwd()
+        try:
+            os.chdir(directory)          # empty: a CWD fallback errors here
+            self.assertFalse(run_tool(project_path=str(project)).startswith("Error"))
+        finally:
+            os.chdir(previous)
 ```
 
 **Freeze the clock and keep it frozen.** Restoring the real clock mid-test — to
@@ -545,7 +531,7 @@ Testing:
 - [ ] Values from third-party computations asserted differentially, or measured
       and pinned with a tolerance sized to the bug's gap — never estimated
 - [ ] No ambient state read unpinned (env vars, module globals, CWD, clock)
-- [ ] Coverage > 85%
+- [ ] Tests are discovered by the repository's CI command
 - [ ] Tests run in CI
 ```
 

@@ -4,7 +4,7 @@
 
 ```toml
 [tool.mypy]
-python_version = "3.10"
+python_version = "3.12"
 warn_return_any = true
 warn_unused_configs = true
 disallow_untyped_defs = true
@@ -34,7 +34,7 @@ Start lenient, tighten over time:
 ```toml
 # Phase 1: Basic
 [tool.mypy]
-python_version = "3.10"
+python_version = "3.12"
 warn_return_any = true
 
 # Phase 2: Require types on new code

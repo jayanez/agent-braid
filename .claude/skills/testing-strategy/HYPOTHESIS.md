@@ -1,5 +1,9 @@
 # Property-Based Testing with Hypothesis
 
+Optional reference for an explicit test-only dependency decision. Agent Braid's
+current CI uses `unittest`; keep any new property tests discoverable by that
+runner or update the CI gate as part of adopting a different stack.
+
 ## Installation
 
 ```bash
