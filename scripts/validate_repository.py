@@ -65,6 +65,7 @@ REQUIRED_FILES = (
     "schemas/governance/release-validation-record.schema.json",
     "schemas/governance/public-export-manifest.schema.json",
     "LICENSES/Spec-Kit-MIT.txt",
+    "LICENSES/python-skills-MIT.txt",
     ".specify/memory/PROVENANCE.md",
     ".specify/memory/constitution.md",
     "reports/agent-braid-market-trends-2026.pptx",
@@ -85,6 +86,7 @@ REQUIRED_FILES = (
     "specs/009-public-research-preview/assurance.json",
     "docs/adr/0010-clean-publication-provenance.md",
     "docs/adr/0011-risk-based-validation-gates.md",
+    "docs/adr/0012-vendored-python-skills-license-boundary.md",
     "specs/010-risk-validation/spec.md",
     "specs/010-risk-validation/plan.md",
     "specs/010-risk-validation/tasks.md",
@@ -103,6 +105,13 @@ OBSOLETE_LICENSE_TEXT = (
     "No license " + "has been selected yet",
     "public " + "license;",
 )
+VENDORED_SKILLS = {
+    "api-design": "designing-python-apis",
+    "cli-development": "building-python-clis",
+    "code-quality": "improving-python-code-quality",
+    "documentation": "documenting-python-libraries",
+    "testing-strategy": "testing-python-libraries",
+}
 
 
 def error(message: str, failures: list[str]) -> None:
@@ -157,6 +166,56 @@ def validate_markdown_links(failures: list[str]) -> None:
             elif fragment and resolved.suffix == ".md":
                 if unquote(fragment) not in markdown_anchors(resolved.read_text(encoding="utf-8")):
                     error(f"broken anchor: {path.relative_to(ROOT)} -> {raw_target}", failures)
+
+
+def validate_vendored_skills(failures: list[str]) -> None:
+    """Check the discoverable metadata and complete Codex/Claude skill mirrors."""
+    manifest_paths = [ROOT / agent / "skills" / "VENDORED-SKILLS.md"
+                      for agent in (".agents", ".claude")]
+    for path in manifest_paths:
+        if not path.is_file():
+            error(f"missing vendored skill manifest: {path.relative_to(ROOT)}", failures)
+    if all(path.is_file() for path in manifest_paths) \
+            and manifest_paths[0].read_bytes() != manifest_paths[1].read_bytes():
+        error("vendored skill manifest mirror differs: VENDORED-SKILLS.md", failures)
+
+    for folder, expected_name in VENDORED_SKILLS.items():
+        mirrors: list[dict[str, bytes]] = []
+        for agent in (".agents", ".claude"):
+            directory = ROOT / agent / "skills" / folder
+            if not directory.is_dir():
+                error(f"missing vendored skill directory: {directory.relative_to(ROOT)}", failures)
+                continue
+            files = {
+                path.relative_to(directory).as_posix(): path.read_bytes()
+                for path in directory.rglob("*") if path.is_file()
+            }
+            mirrors.append(files)
+            entry = files.get("SKILL.md")
+            if entry is None:
+                error(f"missing vendored skill entry: {directory.relative_to(ROOT)}", failures)
+            else:
+                match = re.match(r"\A---\n(.*?)\n---\n", entry.decode("utf-8"), re.DOTALL)
+                metadata = match.group(1) if match else ""
+                name = re.search(r"(?m)^name:\s*(\S.*?)\s*$", metadata)
+                description = re.search(r"(?m)^description:\s*(\S.*?)\s*$", metadata)
+                if not name or name.group(1) != expected_name or not description:
+                    error(f"invalid vendored skill metadata: {directory.relative_to(ROOT)}", failures)
+            for relative, payload in files.items():
+                if not relative.endswith(".md"):
+                    continue
+                path = directory / relative
+                for target in MARKDOWN_LINK.findall(payload.decode("utf-8")):
+                    local = target.strip().split("#", 1)[0]
+                    if not local or "://" in local or local.startswith("mailto:"):
+                        continue
+                    resolved = (path.parent / unquote(local)).resolve()
+                    if not resolved.is_relative_to(ROOT.resolve()) or not resolved.exists():
+                        error(f"broken vendored skill link: {path.relative_to(ROOT)} -> {target}", failures)
+        if len(mirrors) == 2:
+            for relative in sorted(mirrors[0].keys() | mirrors[1].keys()):
+                if mirrors[0].get(relative) != mirrors[1].get(relative):
+                    error(f"vendored skill mirror differs: {folder}/{relative}", failures)
 
 
 def markdown_anchors(text: str) -> set[str]:
@@ -224,10 +283,13 @@ def validate_licensing(failures: list[str]) -> None:
         for marker in path_markers:
             if marker not in license_text:
                 error(f"LICENSE missing path mapping: {marker}", failures)
+    if "LICENSES/python-skills-MIT.txt" not in license_text:
+        error("LICENSE missing vendored Python skills exception", failures)
 
     canonical_markers = {
         "LICENSES/AGPL-3.0-only.txt": "GNU AFFERO GENERAL PUBLIC LICENSE",
         "LICENSES/CC-BY-SA-4.0.txt": "Attribution-ShareAlike 4.0 International",
+        "LICENSES/python-skills-MIT.txt": "Copyright (c) 2025 Will McGinnis",
     }
     for relative, marker in canonical_markers.items():
         path = ROOT / relative
@@ -239,6 +301,8 @@ def validate_licensing(failures: list[str]) -> None:
         notice = notice_path.read_text(encoding="utf-8")
         if "Juan Antonio Yáñez García" not in notice:
             error("NOTICE must preserve the founder attribution", failures)
+        if "Will McGinnis" not in notice:
+            error("NOTICE must preserve the vendored Python skills attribution", failures)
 
     for path in repository_files():
         if not path.is_file() or ".git" in path.parts or "LICENSES" in path.parts:
@@ -274,6 +338,7 @@ def main() -> int:
     validate_required_files(failures)
     validate_json(failures)
     validate_markdown_links(failures)
+    validate_vendored_skills(failures)
     validate_constitution(failures)
     validate_ownership(failures)
     validate_licensing(failures)
