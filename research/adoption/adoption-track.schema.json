@@ -1,0 +1,31 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://agent-braid.dev/research/adoption/adoption-track.schema.json",
+  "title": "Agent Braid adoption track 0.1.0",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["trackVersion", "trackId", "title", "owner", "nextDecision", "sourceRadarIds", "sources", "capabilityDelta", "hypothesis", "evidencePlan", "affectedArtifacts", "risks", "stage", "decision", "stageHistory", "obtainedEvidence", "limits"],
+  "properties": {
+    "trackVersion": {"const": "0.1.0"},
+    "trackId": {"type": "string", "pattern": "^AT-2026-[0-9]{3,}-[a-z0-9-]+$"},
+    "title": {"type": "string", "minLength": 1},
+    "owner": {"type": "string", "minLength": 1},
+    "nextDecision": {"type": "string", "minLength": 1},
+    "sourceRadarIds": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+    "sourceNote": {"type": "string"},
+    "sources": {"type": "array", "minItems": 1, "items": {"type": "object", "additionalProperties": false, "required": ["url", "sourceClass", "provenance", "claimLevel", "peerReviewed"], "properties": {"url": {"type": "string", "pattern": "^https://"}, "sourceClass": {"enum": ["paper", "standard", "official-documentation", "product", "market-signal"]}, "provenance": {"enum": ["primary", "secondary"]}, "claimLevel": {"enum": ["official-documentation", "peer-reviewed-result", "unreproduced-result", "product-capability", "market-observation", "forecast"]}, "peerReviewed": {"type": "boolean"}}}},
+    "capabilityDelta": {"type": "object", "additionalProperties": false, "required": ["baseline", "candidate", "alternative", "observableMetric", "comparisonScenario"], "properties": {"baseline": {"type": "string", "minLength": 1}, "candidate": {"type": "string", "minLength": 1}, "alternative": {"type": "string", "minLength": 1}, "observableMetric": {"type": "string", "minLength": 1}, "comparisonScenario": {"type": "string", "minLength": 1}}},
+    "hypothesis": {"type": "object", "additionalProperties": false, "required": ["statement", "invalidationResult"], "properties": {"statement": {"type": "string", "minLength": 1}, "invalidationResult": {"type": "string", "minLength": 1}}},
+    "evidencePlan": {"type": "array", "minItems": 1, "items": {"type": "string", "minLength": 1}},
+    "affectedArtifacts": {"type": "array", "minItems": 1, "items": {"type": "string", "minLength": 1}, "uniqueItems": true},
+    "risks": {"type": "array", "minItems": 1, "items": {"type": "string", "minLength": 1}},
+    "stage": {"enum": ["observed", "triaged", "differentiation-hypothesis", "spike", "specified", "implemented", "verified", "decision", "operated"]},
+    "decision": {"enum": ["pending", "adopted", "watch", "rejected", "research-only"]},
+    "decisionRationale": {"type": "string"},
+    "featureRef": {"type": "string"},
+    "adrRef": {"type": "string"},
+    "stageHistory": {"type": "array", "minItems": 1, "items": {"type": "object", "additionalProperties": false, "required": ["stage", "date", "actor", "record"], "properties": {"stage": {"enum": ["observed", "triaged", "differentiation-hypothesis", "spike", "specified", "implemented", "verified", "decision", "operated"]}, "date": {"type": "string", "pattern": "^202[0-9]-[0-9]{2}-[0-9]{2}$"}, "actor": {"type": "string", "minLength": 1}, "record": {"type": "string", "minLength": 1}}}},
+    "obtainedEvidence": {"type": "array", "items": {"type": "object"}},
+    "limits": {"type": "array", "minItems": 1, "items": {"type": "string", "minLength": 1}}
+  }
+}
