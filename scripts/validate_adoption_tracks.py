@@ -55,6 +55,16 @@ def _validate_track(
         return failures
     if not isinstance(data, dict):
         return [f"{path.name}: track must be an object"]
+    allowed = {
+        "trackVersion", "trackId", "title", "owner", "nextDecision",
+        "sourceRadarIds", "sourceNote", "sources", "capabilityDelta",
+        "hypothesis", "evidencePlan", "affectedArtifacts", "risks", "stage",
+        "decision", "decisionRationale", "featureRef", "adrRef", "stageHistory",
+        "obtainedEvidence", "limits",
+    }
+    unknown_fields = sorted(set(data) - allowed)
+    if unknown_fields:
+        failures.append(f"{path.name}: unknown fields: {', '.join(unknown_fields)}")
     required = (
         "trackVersion", "trackId", "title", "owner", "nextDecision",
         "sourceRadarIds", "sources",
@@ -89,12 +99,18 @@ def _validate_track(
     if not isinstance(source_ids, list) or any(not isinstance(item, str) or not item for item in source_ids):
         failures.append(f"{path.name}: sourceRadarIds must be a string list")
     else:
+        if len(source_ids) != len(set(source_ids)):
+            failures.append(f"{path.name}: sourceRadarIds must be unique")
         missing_ids = sorted(set(source_ids) - radar_ids)
         if radar_ids and missing_ids:
             failures.append(f"{path.name}: unknown sourceRadarIds: {', '.join(missing_ids)}")
         if not source_ids and not isinstance(data.get("sourceNote"), str):
             failures.append(f"{path.name}: sourceNote is required when sourceRadarIds is empty")
-    for source in data.get("sources", []):
+    sources = data.get("sources")
+    if not isinstance(sources, list) or not sources:
+        failures.append(f"{path.name}: sources must be a non-empty list")
+        sources = []
+    for source in sources:
         if not isinstance(source, dict):
             failures.append(f"{path.name}: source must be an object")
             continue

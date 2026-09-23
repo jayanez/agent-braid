@@ -67,6 +67,19 @@ class AdoptionPathlineTests(unittest.TestCase):
             failures = validate(root)
             self.assertTrue(any("unknown sourceRadarIds" in failure for failure in failures))
 
+    def test_rejects_schema_shape_drift(self):
+        records = self._records()
+        records[0]["sources"] = []
+        records[1]["sourceRadarIds"] = ["RAD-2026-009", "RAD-2026-009"]
+        records[2]["unexpected"] = True
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            _write_registry(root, records)
+            failures = validate(root)
+            self.assertTrue(any("sources must be a non-empty list" in failure for failure in failures))
+            self.assertTrue(any("sourceRadarIds must be unique" in failure for failure in failures))
+            self.assertTrue(any("unknown fields" in failure for failure in failures))
+
     def test_rejects_backward_stage_history(self):
         records = self._records()
         records[0]["stageHistory"].append({
