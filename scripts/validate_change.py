@@ -82,6 +82,11 @@ RULES = (
         "agent_braid/git_adapter.py", "tests/test_git_adapter.py",
         "examples/analysis/git-benchmark.json", "scripts/run_git_benchmark.py",
     ), ("contracts", "git-adapter-tests")),
+    Rule("git-replay", (
+        "agent_braid/git_replay.py", "tests/test_git_replay.py",
+        "examples/analysis/git-replay-benchmark.json",
+        "scripts/run_git_replay_benchmark.py",
+    ), ("contracts", "git-replay-tests")),
     Rule("scientific-laboratory", (
         "research/lab/**", "research/counterexamples/**", "examples/lab/**",
         "tests/test_lab.py",
@@ -283,6 +288,7 @@ def command_argv(identifier: str, base: str, head: str | None, root: Path = ROOT
         "contract-tests": [python, "-m", "unittest", "tests.test_contracts", "-v"],
         "analysis-tests": [python, "-m", "unittest", "tests.test_analysis", "-v"],
         "git-adapter-tests": [python, "-m", "unittest", "tests.test_git_adapter", "-v"],
+        "git-replay-tests": [python, "-m", "unittest", "tests.test_git_replay", "-v"],
         "lab-tests": [python, "-m", "unittest", "tests.test_lab", "-v"],
         "strategy-tests": [python, "-m", "unittest", "tests.test_strategy", "-v"],
         "governance-tests": [python, "-m", "unittest", "tests.test_m0_closure",

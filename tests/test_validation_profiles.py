@@ -43,6 +43,11 @@ class ValidationProfileTests(unittest.TestCase):
         self.assertNotIn("git-adapter-tests", runtime.commands)
         self.assertNotIn("spec-kit-integration", runtime.commands)
 
+        replay = validation.build_plan(["agent_braid/git_replay.py"], "quick")
+        self.assertEqual(replay.effective_profile, "quick")
+        self.assertIn("git-replay-tests", replay.commands)
+        self.assertIn("contracts", replay.commands)
+
         issue_template = validation.build_plan([".github/ISSUE_TEMPLATE/bug.yml"], "quick")
         self.assertEqual(issue_template.effective_profile, "quick")
         self.assertNotIn("spec-kit-integration", issue_template.commands)
