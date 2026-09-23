@@ -50,7 +50,11 @@ introduced, retains its stated license and must be documented explicitly.
 Spec Kit 1.0.7 third-party scaffolding under `.specify/scripts/**`, unmodified
 base templates, and adapter-generated metadata retains MIT terms; see
 `LICENSES/Spec-Kit-MIT.txt` and `docs/development/THIRD_PARTY.md`.
-Our `.specify/templates/overrides/**`, editorial skill bodies and `specs/**`
+Vendored and repository-adapted Python skill files under
+`.agents/skills/{api-design,cli-development,code-quality,documentation,testing-strategy}/**`
+and the matching `.claude/skills/` paths retain MIT terms; see
+`LICENSES/python-skills-MIT.txt` and `.agents/skills/VENDORED-SKILLS.md`.
+Our `.specify/templates/overrides/**`, Spec Kit editorial skill bodies and `specs/**`
 documentation use `CC-BY-SA-4.0`. Own generators, validators, tests and executable
 pilot material use `AGPL-3.0-only`. Generated files retain the terms of their
 source portions; adapter metadata does not imply GitHub authored our policies.
