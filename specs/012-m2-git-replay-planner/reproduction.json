@@ -1,5 +1,29 @@
 {
   "baseCommit": "951eb4b08afba29a3941542a4bb852809d81ec73",
+  "benchmarkMeasurement": {
+    "distinctHunkWaves": {
+      "pathOverlapBaseline": 2,
+      "planner": 1
+    },
+    "gitMergeCommandCountRange": [
+      0,
+      3
+    ],
+    "outputSha256": "b6d95f1c691e9b584ccee3553664580e734c2619d73e4b709047fa64e742bacd",
+    "plannerElapsedNanosecondsRange": [
+      1087091333,
+      2954101000
+    ],
+    "plannerGitCommandCountRange": [
+      82,
+      224
+    ],
+    "threeCommitWaves": {
+      "planner": 1,
+      "serial": 3
+    },
+    "thresholdsPassed": true
+  },
   "candidateCommit": "7541ff437e2e2d6f558c5855ae76bb13067256cd",
   "candidateEvidenceInputs": {
     "allHashesMatch": true,
