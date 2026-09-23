@@ -1,0 +1,44 @@
+name: Audit Spec Kit GitHub tracking
+
+on:
+  pull_request:
+    paths:
+      - "specs/**"
+      - "docs/development/github-tracking.json"
+      - "scripts/sync_github_tracking.py"
+      - ".github/workflows/audit-spec-tracking.yml"
+  push:
+    branches: [develop]
+    paths:
+      - "specs/**"
+      - "docs/development/github-tracking.json"
+      - "scripts/sync_github_tracking.py"
+      - ".github/workflows/audit-spec-tracking.yml"
+  schedule:
+    - cron: "17 8 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: read
+
+jobs:
+  tracking:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: "3.12"
+
+      - name: Validate source IDs and tracking mapping
+        run: python3 scripts/sync_github_tracking.py source
+
+      - name: Audit repository tracking after merge
+        if: github.event_name != 'pull_request'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: python3 scripts/sync_github_tracking.py audit

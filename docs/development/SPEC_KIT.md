@@ -60,6 +60,11 @@ autonomous delivery. Review each stage before proceeding. The
 [pilot quickstart](../../specs/001-certificate-verifier-pilot/quickstart.md)
 provides an equivalent exercise without recreating the feature.
 
+After a spec or task change is merged, use the
+[GitHub tracking reconciliation](GITHUB_TRACKING.md) to audit stable IDs and
+review issue, milestone and Project updates. This tracking step remains separate
+from feature assurance and approval.
+
 ## Assurance record
 
 Each `specs/<feature>/spec.md` requires a sibling `assurance.json`. Use the pilot's
