@@ -17,6 +17,12 @@ CI validates committed structure and provenance only. It does not browse the web
 assert current scientific consensus, approve evidence, refresh normative hashes,
 or modify the Constitution.
 
+Signals that appear materially relevant are promoted through the separate
+[radar-to-adoption pathline](../adoption/ADOPTION_PATHLINE.md).
+Promotion requires a baseline, comparable alternative, falsifiable hypothesis and
+bounded evidence plan. The weekly automation may propose candidates but cannot
+create implementation work, adopt a technology or alter the repository.
+
 ## Status and claim vocabulary
 
 - Entry status: `candidate`, `adopted`, `rejected`, or `watch`.
