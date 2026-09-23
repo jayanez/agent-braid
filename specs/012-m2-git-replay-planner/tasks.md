@@ -17,6 +17,6 @@
   corpus, sequential/path-overlap/Git-merge baselines and measured thresholds.
 - [x] T007 (REQ-001–005/SC-001–008): run paired tests and proportional quick
   validation after coherent increments; record obtained evidence and task state.
-- [ ] T008 (REQ-001–005/SC-001–008): run the stable PR profile, capture/freeze
+- [x] T008 (REQ-001–005/SC-001–008): run the stable PR profile, capture/freeze
   evidence, perform clean-clone reproduction, run tracking source validation,
   and request human review. No milestone closure is inferred from checks.

@@ -1,0 +1,62 @@
+{
+  "baseCommit": "951eb4b08afba29a3941542a4bb852809d81ec73",
+  "candidateCommit": "7541ff437e2e2d6f558c5855ae76bb13067256cd",
+  "candidateEvidenceInputs": {
+    "allHashesMatch": true,
+    "count": 14
+  },
+  "candidateTree": "533189775590e8ae401ef500ddb5e1c061aab390",
+  "capturedAt": "2026-09-23T21:06:08.254895+00:00",
+  "cleanRoom": {
+    "finalStatus": [],
+    "freshClone": true,
+    "freshEnvironment": true,
+    "initialStatus": [],
+    "pipCacheDisabled": true
+  },
+  "git": "git version 2.50.1 (Apple Git-155)",
+  "limits": [
+    "Founder-supervised internal reproduction; not independent validation.",
+    "One historical-object test was skipped because its private Git object is unavailable.",
+    "Fixed-patch tracked-tree evidence only; no semantic correctness, production-safety, or execution-authorization claim."
+  ],
+  "observations": [
+    {
+      "command": "python3 scripts/validate_change.py --base 951eb4b08afba29a3941542a4bb852809d81ec73 --profile pr",
+      "exitCode": 0,
+      "outputSha256": "06b898c3fd09bb5ed52375379853903a406a6d0988d811492043a61454df8a85",
+      "summary": "Selected executable validation passed; 143 tests passed, 1 skipped for unavailable private historical Git object."
+    },
+    {
+      "command": "python3 scripts/sync_github_tracking.py source",
+      "exitCode": 0,
+      "summary": "{\n  \"specs\": 12,\n  \"tasks\": 96,\n  \"milestones\": 8,\n  \"project_review_pending\": 4,\n  \"project_url\": \"https://github.com/users/jayanez/projects/6\"\n}"
+    },
+    {
+      "command": "python3 scripts/validate_contracts.py",
+      "exitCode": 0,
+      "summary": "Contract corpus passed: legacy, 0.2 structure and finite semantic checks."
+    },
+    {
+      "command": "python3 scripts/run_git_replay_benchmark.py",
+      "exitCode": 0,
+      "falseCandidateCount": 0,
+      "scenarioCount": 7,
+      "thresholds": {
+        "differentHunkPathOverlapWaves": 2,
+        "differentHunkPlannerWaves": 1,
+        "falseCandidateCount": 0,
+        "threeOperationPlannerWaves": 1,
+        "threeOperationSerialWaves": 3
+      },
+      "thresholdsPassed": true
+    },
+    {
+      "command": "git diff-tree --check --root --no-commit-id -r 7541ff437e2e2d6f558c5855ae76bb13067256cd",
+      "exitCode": 0
+    }
+  ],
+  "platform": "macOS-26.6.2-arm64-arm-64bit-Mach-O",
+  "python": "3.13.11",
+  "recordVersion": "git-replay-m2-cleanroom-v1"
+}
