@@ -1,0 +1,43 @@
+{
+  "repository": "jayanez/agent-braid",
+  "project_url": "https://github.com/users/jayanez/projects/6",
+  "milestones": {
+    "M0": "Bounded operational foundation and internal closure.",
+    "M0.5": "Research-preview preparation and bounded internal closure.",
+    "M1": "Read-only analyzer and internal closure.",
+    "M2": "Confluence laboratory; no implementation tasks are inferred from this heading.",
+    "M3": "Braid structure; no implementation tasks are inferred from this heading.",
+    "M4": "Formal research; no implementation tasks are inferred from this heading.",
+    "Public research preview": "Public publication and cutover verification.",
+    "Cross-cutting governance": "Governance and adoption work spanning release milestones."
+  },
+  "closed_milestones": ["M0", "M0.5", "M1"],
+  "specs": {
+    "001-certificate-verifier-pilot": {"milestone": "M0", "state": "closed"},
+    "002-open-tooling-strategy": {"milestone": "M0.5", "state": "open"},
+    "003-read-only-analyzer": {"milestone": "M1", "state": "closed"},
+    "004-m0-closure": {"milestone": "M0", "state": "closed"},
+    "005-git-worktree-adapter": {"milestone": "M1", "state": "closed"},
+    "006-validation-status-policy": {"milestone": "Cross-cutting governance", "state": "closed"},
+    "007-m1-closure": {"milestone": "M1", "state": "closed"},
+    "008-m0.5-closure": {"milestone": "M0.5", "state": "closed"},
+    "009-public-research-preview": {"milestone": "Public research preview", "state": "open"},
+    "010-risk-validation": {"milestone": "Cross-cutting governance", "state": "closed"},
+    "011-adoption-pathline": {"milestone": "Cross-cutting governance", "state": "open"}
+  },
+  "task_state_overrides": {
+    "SPEC-011/T001": "Merged implementation in PR #3; source checkbox awaits reconciliation.",
+    "SPEC-011/T002": "Merged implementation in PR #3; source checkbox awaits reconciliation.",
+    "SPEC-011/T003": "Merged implementation in PR #3; source checkbox awaits reconciliation.",
+    "SPEC-011/T004": "Merged implementation in PR #3; source checkbox awaits reconciliation.",
+    "SPEC-011/T005": "Merged implementation in PR #3; source checkbox awaits reconciliation.",
+    "SPEC-011/T006": "Merged implementation in PR #3; source checkbox awaits reconciliation.",
+    "SPEC-011/T007": "Merged implementation in PR #3; source checkbox awaits reconciliation."
+  },
+  "project_review_pending": [
+    "SPEC-002",
+    "SPEC-002/T006",
+    "SPEC-011",
+    "SPEC-011/T008"
+  ]
+}
