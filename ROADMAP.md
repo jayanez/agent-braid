@@ -120,6 +120,13 @@ Exit criteria:
   remain in raw traces; terminal projection is never claimed contextual;
 - destructive/external effects default to safe policies.
 
+Technology and functionality adoption is governed by the
+[radar-to-adoption pathline](research/adoption/ADOPTION_PATHLINE.md). OpenAI
+Agents and MCP may enter bounded local spikes first; A2A requires a selected
+version and conformance artifact; OpenTelemetry remains optional while relevant
+conventions are experimental; external research algorithms remain comparators
+until reproduced. No weekly radar signal changes M2 contracts automatically.
+
 ## M3 — Braid semantics
 
 **Objective:** test whether meaningful exchange operators exist beyond independent swaps.

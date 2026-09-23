@@ -88,10 +88,12 @@ RULES = (
     ), ("lab-tests", "scientific-controls", "contracts"), True,
         boundary="Scientific evidence capture or reproduction, when claims are refreshed"),
     Rule("strategy", (
-        "docs/strategy/**", "research/radar/**", "research/market/**", "reports/**",
+        "docs/strategy/**", "research/adoption/**", "research/radar/**",
+        "research/market/**", "reports/**",
         "tests/test_strategy.py", "scripts/market_sizing.py",
-        "scripts/validate_research_radar.py",
-    ), ("strategy-tests", "research-radar", "market-model")),
+        "scripts/validate_research_radar.py", "scripts/validate_adoption_tracks.py",
+        "tests/test_adoption_pathline.py",
+    ), ("strategy-tests", "research-radar", "adoption-tracks", "market-model")),
     Rule("governance-release", (
         "docs/releases/**", "schemas/governance/**", "tests/test_release_records.py",
         "tests/test_publication.py", "tests/test_m0_closure.py",
@@ -124,7 +126,7 @@ RULES = (
 BASE_COMMANDS = ("repository", "constitution-replica", "whitespace")
 PR_COMMANDS = (
     "repository", "contracts", "release-records", "publication", "m0-closure",
-    "m1-closure", "m05-closure", "research-radar", "market-model", "cli-smoke",
+    "m1-closure", "m05-closure", "research-radar", "adoption-tracks", "market-model", "cli-smoke",
     "full-tests", "scientific-controls", "spec-kit-structure", "spec-kit-render",
     "constitution-replica", "whitespace",
 )
@@ -290,6 +292,7 @@ def command_argv(identifier: str, base: str, head: str | None, root: Path = ROOT
         "full-tests": [python, "-m", "unittest", "discover", "-s", "tests", "-v"],
         "scientific-controls": [python, "-m", "research.lab.controls"],
         "research-radar": [python, "scripts/validate_research_radar.py", "--milestone", "M0.5"],
+        "adoption-tracks": [python, "scripts/validate_adoption_tracks.py"],
         "market-model": [python, "scripts/market_sizing.py", "--check"],
         "release-records": [python, "scripts/validate_release_records.py"],
         "publication": [python, "scripts/validate_publication.py", publication_mode(root)],
