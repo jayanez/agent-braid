@@ -234,8 +234,8 @@ the implementation; it says nothing about whether the public API reaches it.
 Deprecate gracefully: warn now, document the removal version, and remove only in a
 major release. The warning mechanics (including deprecating parameters, classes,
 and modules) and the migration-guide template are owned by the
-`managing-python-releases` skill — see
-**[../release-management/MIGRATION.md](../release-management/MIGRATION.md)**.
+`managing-python-releases` skill from `wdm0006/python-skills` (not vendored in
+this repo).
 
 ## Anti-Patterns
 

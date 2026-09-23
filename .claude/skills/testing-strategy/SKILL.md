@@ -85,7 +85,9 @@ def test_invalid_raises():
 For detailed patterns, see:
 - **[FIXTURES.md](FIXTURES.md)** - Advanced fixture patterns
 - **[HYPOTHESIS.md](HYPOTHESIS.md)** - Property-based testing
-- **[../project-setup/CI.md](../project-setup/CI.md)** - CI/CD test configuration
+
+CI/CD test configuration is covered by the `setting-up-python-libraries` skill from
+`wdm0006/python-skills` (not vendored in this repo).
 
 ## Test Principles
 
