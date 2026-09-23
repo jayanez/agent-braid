@@ -58,9 +58,9 @@ class ValidationProfileTests(unittest.TestCase):
         required = {
             "repository", "contracts", "release-records", "publication",
             "m0-closure", "m1-closure", "m05-closure", "research-radar",
-            "market-model", "cli-smoke", "full-tests", "scientific-controls",
-            "spec-kit-structure", "spec-kit-render", "constitution-replica",
-            "whitespace",
+            "adoption-tracks", "market-model", "cli-smoke", "full-tests",
+            "scientific-controls", "spec-kit-structure", "spec-kit-render",
+            "constitution-replica", "whitespace",
         }
         self.assertEqual(set(plan.commands), required)
         self.assertNotIn("spec-kit-integration", plan.commands)
