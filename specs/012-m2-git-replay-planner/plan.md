@@ -90,7 +90,7 @@ schemas for the new bundle and plan under `schemas/0.1.0-alpha/`.
 
 | Requirement | Scenarios | Test and evidence |
 |---|---|---|
-| REQ-001 | SC-001–002 | `tests/test_git_replay.py`; valid commits, malformed graph, worktree and bounds |
+| REQ-001 | SC-001–002, SC-009 | `tests/test_git_replay.py`; valid commits, malformed graph, worktree and bounds |
 | REQ-002 | SC-003–004 | disjoint, different-hunk, overlapping, failed apply, and source immutability |
 | REQ-003 | SC-005 | producer/verifier round trip, tampered digest, omitted/duplicate order, missing commit |
 | REQ-004 | SC-006–007 | one-wave case, dependency levels, uncertainty, divergence and serial failure |
@@ -127,10 +127,11 @@ fixed-patch `tracked-tree-v1` experiment and consultative planning boundary.
 M2 remains open; this approval does not authorize concurrent integration,
 project-code execution, publication, or a broader semantic claim.
 
-### Open M2 follow-up backlog
+### Completed scoped follow-up tasks and open M2 risks
 
-The following work is deliberately outside the approved first-cut claim and
-remains open for later M2 increments:
+T009–T013 were completed within their recorded scopes after the approved first
+cut. Their acceptance does not close M2. The remaining resource, recovery and
+concurrent-integration questions require later M2 increments:
 
 - **T009 — Thread-safe Git environment:** pass a sanitized environment directly
   through the M1 adapter instead of mutating process-global `os.environ`; add a
