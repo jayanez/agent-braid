@@ -1,0 +1,20 @@
+{
+  "benchmarkVersion": "git-replay-m2-c1-v1",
+  "limits": "Synthetic local Git commits; fixed-patch tracked-tree observations only. No semantic correctness, production safety, or execution claim.",
+  "thresholds": {
+    "falseCandidateCount": 0,
+    "threeOperationPlannerWaves": 1,
+    "threeOperationSerialWaves": 3,
+    "differentHunkPlannerWaves": 1,
+    "differentHunkPathOverlapWaves": 2
+  },
+  "scenarios": [
+    {"id": "GIT-REPLAY-001", "family": "three-disjoint-commits", "candidateExpected": true},
+    {"id": "GIT-REPLAY-002", "family": "same-file-different-hunks", "candidateExpected": true},
+    {"id": "GIT-REPLAY-003", "family": "same-file-overlap", "candidateExpected": false},
+    {"id": "GIT-REPLAY-004", "family": "declared-dependency", "candidateExpected": true},
+    {"id": "GIT-REPLAY-005", "family": "uncertain-path", "candidateExpected": false},
+    {"id": "GIT-REPLAY-006", "family": "deletion", "candidateExpected": false},
+    {"id": "GIT-REPLAY-007", "family": "binary-change", "candidateExpected": false}
+  ]
+}

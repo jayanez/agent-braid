@@ -1,0 +1,33 @@
+{
+  "recordVersion": "agent-braid-m2-t012-founder-review-1",
+  "feature": "M2 parallel integration contract",
+  "reviewedAt": "2026-09-24",
+  "reviewer": {
+    "name": "Juan Antonio Yáñez García",
+    "role": "founder"
+  },
+  "decision": "accepted",
+  "reviewedArtifacts": [
+    {
+      "path": "docs/adr/0014-parallel-integration-contract.md",
+      "sha256": "1704f7ea81db20c777f35e317a2e320be7668c5895338305bb3937c906d12ad0"
+    },
+    {
+      "path": "docs/architecture/PARALLEL_INTEGRATION.md",
+      "sha256": "84f8366d9fc87fa6a9d312d895675f8b14f9c76835c6a0e2c22ebd9d767fab27"
+    }
+  ],
+  "decisionText": "Accept T012, ADR 0014 and the parallel integration contract. Authorize starting T013 with the local read-only prototype and agreed limits. M2 remains open. Result promotion and expansion of execution authority are not authorized.",
+  "scope": {
+    "authorized": [
+      "Implement and measure the bounded local read-only T013 prototype.",
+      "Use isolated scratch worktrees and indexes, a private coordinator, declared dependency and resource footprints, and fail-closed verification."
+    ],
+    "prohibited": [
+      "Promoting any prototype result or updating the source repository refs.",
+      "Executing repository code, tests, hooks, agents, network operations or external effects.",
+      "Expanding execution authority or closing M2."
+    ]
+  },
+  "independentValidation": "pending"
+}

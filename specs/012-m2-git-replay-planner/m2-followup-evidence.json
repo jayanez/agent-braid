@@ -1,0 +1,429 @@
+{
+  "recordVersion": "agent-braid-m2-followup-evidence-3",
+  "capturedAt": "2026-09-24",
+  "candidate": {
+    "branch": "012-m2-git-replay-planner",
+    "base": "develop",
+    "python": "3.13.11",
+    "platform": "Darwin",
+    "humanReview": "T012 accepted; T013 review pending",
+    "executionAuthorization": false
+  },
+  "scope": [
+    "T009: explicit sanitized Git environments and concurrent replay regression",
+    "T010: shared wall-time and Git-command limits, streamed captured-output limits, sampled scratch-data limits, and typed infrastructure failures",
+    "T011: deterministic plan regeneration against independently verified evidence",
+    "T012: founder accepted ADR 0014 and the reviewed parallel-integration contract",
+    "T013: bounded local prototype implementation started; execution authority remains false",
+    "T013 resource validation: pinned Linux Docker runtime, direct 512 MiB RLIMIT_AS verification, full-profile prototype regressions, and a scoped synthetic benchmark; T013 remains open for broader evaluation and review.",
+    "T013 gap controls: Git-only declared final-tree validation, in-flight child termination, and graceful coordinator stop/fresh replay"
+  ],
+  "limits": [
+    "Tracked-tree replay remains evidence only for fixed commit patches and the named finite observation.",
+    "Each evidence build/replay is bounded to 120 seconds, 512 Git commands, 16 MiB captured output, 8 MiB per command, and 64 MiB temporary data.",
+    "Temporary data is sampled every 50 ms during commands, so one in-flight write can overshoot the limit before process termination.",
+    "T013 requires a 512 MiB per-child address-space cap. Native Darwin cannot apply this cap here and continues to fail closed; the pinned Linux Docker runtime verified exact soft and hard limits for the production wrapper.",
+    "The ARM64 validation image pins the base-image digest, Debian package versions, Python dependency constraints, and Spec Kit commit. Image construction uses the network; test runs have no network.",
+    "The T013 regression suite on Darwin uses a test-only adapter without RLIMIT_AS. The Docker suite ran with the actual cap; its only skip was the test relevant only when the host cannot enforce the cap.",
+    "The candidate concurrently prepares fixed patches in isolated indexes, but candidate and serial tree integration remain sequential.",
+    "Temporary-data enforcement is sampled every 50 ms and can overshoot during an in-flight write."
+  ],
+  "observations": [
+    {
+      "task": "T009-T011",
+      "command": "PYTHONWARNINGS=error::ResourceWarning PYTHONPATH=tests .venv-m2/bin/python -m unittest -v test_git_replay",
+      "exitCode": 0,
+      "result": "14 tests passed, including concurrent callers, resource-limit failure modes, plan tampering/regeneration, evidence omissions, conflicts, uncertainty, and benchmark thresholds."
+    },
+    {
+      "task": "T009",
+      "command": "PYTHONPATH=tests .venv-m2/bin/python -m unittest -v test_git_adapter",
+      "exitCode": 0,
+      "result": "10 tests passed; existing M1 Git adapter behavior and source-repository immutability checks remain green."
+    },
+    {
+      "task": "T006/T010",
+      "command": "PYTHONPATH=tests .venv-m2/bin/python -m unittest -v test_git_replay.GitReplayTests.test_benchmark_thresholds_and_baselines",
+      "exitCode": 0,
+      "result": "Seven benchmark scenarios; zero false candidates; three disjoint commits reduce 3 serial waves to 1 candidate wave; distinct hunks in one file produce 1 planner wave versus 2 path-overlap waves. Planner Git process counts are captured at the Popen boundary."
+    },
+    {
+      "task": "T006/T010",
+      "command": "PYTHONPATH=tests .venv-m2/bin/python scripts/run_git_replay_benchmark.py",
+      "exitCode": 0,
+      "artifact": "m2-followup-benchmark.json",
+      "result": "thresholdsPassed=true; falseCandidateCount=0. The three-commit case took 6.34 s and 224 planner Git processes; the distinct-hunk case took 2.90 s and 98 processes. Their merge-tree baselines took 0.054 s/3 processes and 0.019 s/1 process respectively. These are single-run synthetic local timings, not production claims."
+    },
+    {
+      "task": "T009-T011",
+      "command": "PATH=\"$PWD/.venv-m2/bin:$PATH\" .venv-m2/bin/python scripts/validate_change.py --base develop --profile pr",
+      "exitCode": 0,
+      "result": "PR profile passed: 146 tests passed, 1 private-history test skipped; repository, contract, publication, research, CLI, scientific-control, Spec Kit structure/render, Constitution replica, and whitespace gates passed."
+    },
+    {
+      "task": "T012",
+      "command": "python3.13 scripts/validate_spec_kit.py snapshot specs/011-adoption-pathline",
+      "exitCode": 0,
+      "result": "Refreshed authority hashes before founder acceptance; the current snapshot will be refreshed again after acceptance status is recorded."
+    },
+    {
+      "task": "T012",
+      "command": "Founder decision recorded in t012-founder-review.json",
+      "exitCode": 0,
+      "artifact": "t012-founder-review.json",
+      "result": "Accepted on 2026-09-24 for the exact reviewed ADR and contract hashes. T013 may start within the local read-only profile. Promotion, execution authority expansion, and M2 closure remain prohibited."
+    },
+    {
+      "task": "T013",
+      "command": "PYTHONWARNINGS=error::ResourceWarning PYTHONDONTWRITEBYTECODE=1 .venv-m2/bin/python -m unittest -v tests.test_git_integration_prototype",
+      "exitCode": 0,
+      "result": "13 tests passed in the sensitive-profile run: isolated disjoint preparation and source-state invariance; dependency, read/write, shared-resource and path-prefix gating; same-path different-hunk preparation; merge conflict inconclusive result; incomplete, wildcard and undeclared footprints; stale-base and mid-run stale-ref rejection; cancellation; strict request/report schemas; explicit CLI output; and resource-limit fail-closed behavior. On Darwin the logic tests use a test-only adapter without RLIMIT_AS; the production profile was not run."
+    },
+    {
+      "task": "T013",
+      "command": "python3 agent_braid/git_exec.py 536870912 git version",
+      "exitCode": 125,
+      "result": "The macOS host rejected RLIMIT_AS setup (agent-braid-git-limit-setup-failed:ValueError), confirming the production runner fails closed. The T013 benchmark and full-profile replay remain unrun; no resource limit was weakened."
+    },
+    {
+      "task": "T012",
+      "command": "python3.13 scripts/validate_spec_kit.py snapshot specs/011-adoption-pathline",
+      "exitCode": 0,
+      "result": "Refreshed current authority hashes after recording accepted ADR 0014 and the parallel-integration contract. The independent review field remains pending; snapshotting does not imply approval."
+    },
+    {
+      "task": "T013",
+      "command": "PATH=.venv-m2/bin:$PATH python3 scripts/validate_change.py --base develop --profile quick",
+      "exitCode": 1,
+      "result": "The planner escalated quick to sensitive. Its first full-suite run found one stale tracking assertion: the expected open-task count was six although accepted T012 reduced it to five. The assertion was corrected; no prototype or contract gate failed."
+    },
+    {
+      "task": "T012/T013",
+      "command": "PYTHONDONTWRITEBYTECODE=1 .venv-m2/bin/python -m unittest -v tests.test_github_tracking",
+      "exitCode": 0,
+      "result": "Four tracking tests passed after aligning the open-task count with accepted T012; total inventory remains 12 specs and 101 tasks."
+    },
+    {
+      "task": "T013",
+      "command": "PATH=.venv-m2/bin:$PATH python3 scripts/validate_change.py --base develop --profile quick",
+      "exitCode": 0,
+      "result": "The planner escalated quick to sensitive. All selected validators passed; full suite ran 159 tests: 158 passed and one private-history test was skipped; Spec Kit structure/render, contract corpus, scientific controls, Constitution replica and whitespace passed. Clean-room, evidence freeze and human review remain separate."
+    },
+    {
+      "task": "T013",
+      "command": "PATH=.venv-m2/bin:$PATH python3 scripts/validate_change.py --base develop --profile pr",
+      "exitCode": 0,
+      "result": "PR profile passed in 311.626 seconds: 159 tests ran: 158 passed, 1 private-history test skipped; repository, contracts, release records, portable publication integrity, research radar, adoption tracks, market model, CLI smoke, scientific controls, Spec Kit structure/render, Constitution replica and whitespace all passed. Clean-room reproduction, evidence freeze and human review remain separate."
+    },
+    {
+      "task": "T013 container validation harness",
+      "command": "sh scripts/docker/t013/run-validation.sh quick",
+      "exitCode": 1,
+      "result": "The first full-suite container attempt used --pids-limit=128 and failed to create Git subprocesses/threads (42 test errors reported Resource temporarily unavailable). This was an outer test-container task limit, not a prototype limit; the container cap was raised to 512 Linux tasks while the prototype retains its two-worker/128-Git-command budgets."
+    },
+    {
+      "task": "T013 container validation harness",
+      "command": "sh scripts/docker/t013/run-validation.sh quick",
+      "exitCode": 1,
+      "result": "The read-only clean clone was reported by Git as dubious ownership under the host-to-container UID mapping. The runner now adds a safe.directory entry for that exact mounted checkout only, using environment configuration without modifying global Git configuration."
+    },
+    {
+      "task": "T013 quick validation",
+      "command": "sh scripts/docker/t013/run-validation.sh quick",
+      "exitCode": 0,
+      "result": "Quick escalated to the sensitive profile. Under the final no-network/read-only container policy and 512-task cap, all selected checks passed; the full suite ran 159 tests with 157 passing and 2 skips (including one private-history test). Spec Kit structure/render, contracts, repository checks, scientific controls, Constitution replica and whitespace passed."
+    },
+    {
+      "task": "T013 resource profile",
+      "command": "sh scripts/docker/t013/run-validation.sh t013",
+      "exitCode": 0,
+      "artifact": "m2-followup-t013-benchmark.json",
+      "result": "Executed from a temporary clean clone on pinned image sha256:edddb1cbcbccb0e1af6505f9ff9938905da6f79303c97d1d12092ef61508f005 (linux/arm64, Python 3.12.13, Git 2.47.3) with --network=none, read-only checkout/common Git directory, 2 GiB container memory, 2 CPUs, 512 Linux tasks and 512 MiB tmpfs. Preflight observed both soft and hard RLIMIT_AS=536870912 bytes in a child and ran Git through the production wrapper. The T013 suite ran 13 tests: 12 passed, 1 platform-specific unavailable-limit test skipped; no fallback adapter was used. Benchmark cases: disjoint operations matched with one candidate wave versus two serial waves; same-file distinct hunks matched but remained two waves; a conflicting case stayed inconclusive. All source fixtures were unchanged and unsafeAdmissionCount was zero. This is a single synthetic ARM64 measurement, not a production performance claim."
+    },
+    {
+      "task": "T013 stable candidate validation",
+      "command": "sh scripts/docker/t013/run-validation.sh pr",
+      "exitCode": 0,
+      "result": "PR profile passed in the pinned no-network Linux container: repository, contracts, release records, portable publication, research/adoption, CLI, all 159 tests (157 passed, 2 skipped), scientific controls, Spec Kit structure/render, Constitution replica and whitespace. The checks do not replace clean-room reproduction, T013 independent review, founder decision or M2 closure."
+    },
+    {
+      "task": "T013 linked-worktree mount verification",
+      "command": "sh scripts/docker/t013/run-validation.sh t013",
+      "exitCode": 0,
+      "result": "Repeated the resource gate from the active linked worktree, including its external common Git directory mounted read-only. The 512 MiB soft/hard child limit was observed, Git wrapper smoke passed, 13 prototype tests ran (12 passed, 1 platform-specific skip), and the three-case benchmark passed. The source worktree and common Git metadata were mounted read-only; this run\u2019s temporary benchmark file was not used to replace the checked-in evidence artifact."
+    },
+    {
+      "task": "T013 expanded bounded benchmark and failure controls",
+      "command": "sh scripts/docker/t013/run-validation.sh t013 /tmp/agent-braid-t013-close.W9Fkt5/artifacts",
+      "exitCode": 0,
+      "artifact": "m2-followup-t013-benchmark.json",
+      "result": "Pinned Linux ARM64 container (image sha256:edddb1cbcbccb0e1af6505f9ff9938905da6f79303c97d1d12092ef61508f005; Python 3.12.13; Git 2.47.3; no network; read-only checkout/common Git directory; 2 GiB memory; 2 CPUs; 512 tasks; 512 MiB tmpfs). The direct preflight observed soft and hard RLIMIT_AS of 536870912 bytes. Fifteen T013 tests ran: 14 passed and one platform-specific unavailable-limit test was skipped. The benchmark ran four synthetic scenarios three times each, recorded medians and raw samples, candidate/serial metrics, independent path-overlap waves and pairwise git merge-tree timing/CPU/command/output metrics. Eligible candidate trees matched the serial reference; conflicts and injected tree-verification divergence were inconclusive; source fixture repositories remained unchanged; normal corpus unsafeAdmissionCount was zero and executionAuthorization/promotionPerformed remained false. Wall-time, command-count, captured-output and scratch exhaustion controls each failed closed. Project validation commands and restart/live-agent scenarios remain outside the read-only Git-plumbing profile."
+    },
+    {
+      "task": "T013 final quick validation",
+      "command": "sh scripts/docker/t013/run-validation.sh quick",
+      "exitCode": 0,
+      "result": "Quick escalated to sensitive. Full suite: 161 tests, 159 passed and 2 skipped (one platform-specific RLIMIT test and one private-history test). Repository, contracts, release records, portable publication, research/adoption, market model, CLI, scientific controls, Spec Kit structure/render, Constitution replica and whitespace gates passed. This profile does not perform evidence freeze or human review."
+    },
+    {
+      "task": "T013 stable PR validation",
+      "command": "sh scripts/docker/t013/run-validation.sh pr",
+      "exitCode": 0,
+      "result": "PR profile passed in the pinned no-network Linux container. Full suite: 161 tests, 159 passed and 2 skipped (one platform-specific RLIMIT test and one private-history test). Repository, contracts, release records, portable publication, research/adoption, market model, CLI, scientific controls, Spec Kit structure/render, Constitution replica and whitespace gates passed. Feature-specific freeze and human review remain separate boundary gates."
+    },
+    {
+      "task": "T013 bounded gap controls",
+      "command": "sh scripts/docker/t013/run-validation.sh t013 /tmp/agent-braid-t013-close.W9Fkt5/t013-final",
+      "exitCode": 0,
+      "artifact": "m2-followup-t013-benchmark.json",
+      "result": "Pinned no-network Linux runtime: direct 512 MiB soft/hard Git child RLIMIT_AS preflight passed; 17 prototype tests ran (16 passed, one platform-specific skip). Four synthetic scenarios x3 retained expected candidate/serial outcomes and source immutability. A declared Git tracked-tree check failed closed despite candidate/serial equality; test-only /bin/sleep children substituted at the Git Popen boundary were terminated during in-flight timeout, scratch exhaustion and cancellation; SIGTERM stopped a real CLI coordinator with no partial report, removed private scratch, and a fresh process reproduced a matching result. Project validation, Git workload memory pressure and uncatchable-crash recovery remain out of scope."
+    },
+    {
+      "task": "T013 final quick validation",
+      "command": "sh scripts/docker/t013/run-validation.sh quick",
+      "exitCode": 0,
+      "result": "Quick escalated to sensitive in the pinned no-network Linux container. Full suite ran 163 tests: 161 passed and 2 skipped (platform-specific unavailable-RLIMIT and private-history cases). Repository, contracts, release records, portable publication, research/adoption, market model, CLI, scientific controls, Spec Kit structure/render, Constitution replica and whitespace gates passed. Human review remains separate."
+    },
+    {
+      "task": "T013 stable PR validation",
+      "command": "sh scripts/docker/t013/run-validation.sh pr",
+      "exitCode": 0,
+      "result": "PR profile passed on the stable candidate in the pinned no-network Linux container. Full suite ran 163 tests: 161 passed and 2 skipped; all configured repository, contract, release, portable publication, research/adoption, CLI, scientific, Spec Kit and whitespace gates passed. This does not approve T013 or close M2."
+    }
+  ],
+  "t013Benchmark": {
+    "status": "passed-with-scope-limits",
+    "artifact": "m2-followup-t013-benchmark.json",
+    "artifactSha256": "3de77345ce992733f3298445a39a95d9a92e37fc0bade35ef2ad2c635d86cb4f",
+    "reproductionCommand": "sh scripts/docker/t013/run-validation.sh t013 <artifact-directory>",
+    "scenarioCount": 4,
+    "repetitionsPerScenario": 3,
+    "scenarioSummary": [
+      {
+        "id": "disjoint-two-operations",
+        "comparison": "match",
+        "candidateWaves": [
+          [
+            "op-0",
+            "op-1"
+          ]
+        ],
+        "pathOverlapBaselineWaves": [
+          [
+            "op-0",
+            "op-1"
+          ]
+        ],
+        "medianCandidateTotalWallNanoseconds": 258796333,
+        "medianSerialTotalWallNanoseconds": 286226043,
+        "medianCandidateGitCommands": 13,
+        "medianSerialGitCommands": 13,
+        "sourceRepositoryUnchanged": true,
+        "unsafeAdmissionCount": 0
+      },
+      {
+        "id": "disjoint-three-operations",
+        "comparison": "match",
+        "candidateWaves": [
+          [
+            "op-0",
+            "op-1",
+            "op-2"
+          ]
+        ],
+        "pathOverlapBaselineWaves": [
+          [
+            "op-0",
+            "op-1",
+            "op-2"
+          ]
+        ],
+        "medianCandidateTotalWallNanoseconds": 401172458,
+        "medianSerialTotalWallNanoseconds": 452430333,
+        "medianCandidateGitCommands": 19,
+        "medianSerialGitCommands": 19,
+        "sourceRepositoryUnchanged": true,
+        "unsafeAdmissionCount": 0
+      },
+      {
+        "id": "same-file-distinct-hunks",
+        "comparison": "match",
+        "candidateWaves": [
+          [
+            "op-0"
+          ],
+          [
+            "op-1"
+          ]
+        ],
+        "pathOverlapBaselineWaves": [
+          [
+            "op-0"
+          ],
+          [
+            "op-1"
+          ]
+        ],
+        "medianCandidateTotalWallNanoseconds": 300227374,
+        "medianSerialTotalWallNanoseconds": 291972126,
+        "medianCandidateGitCommands": 13,
+        "medianSerialGitCommands": 13,
+        "sourceRepositoryUnchanged": true,
+        "unsafeAdmissionCount": 0
+      },
+      {
+        "id": "conflict",
+        "comparison": "inconclusive",
+        "candidateWaves": [
+          [
+            "op-0"
+          ],
+          [
+            "op-1"
+          ]
+        ],
+        "pathOverlapBaselineWaves": [
+          [
+            "op-0"
+          ],
+          [
+            "op-1"
+          ]
+        ],
+        "medianCandidateTotalWallNanoseconds": 256001499,
+        "medianSerialTotalWallNanoseconds": 251052500,
+        "medianCandidateGitCommands": 11,
+        "medianSerialGitCommands": 11,
+        "sourceRepositoryUnchanged": true,
+        "unsafeAdmissionCount": 0
+      }
+    ],
+    "negativeControls": {
+      "candidateVerification": {
+        "comparison": "divergent",
+        "controlPassed": true,
+        "executionAuthorization": false,
+        "id": "candidate-serial-tree-mismatch",
+        "outcome": "rejected-as-inconclusive",
+        "promotionPerformed": false,
+        "sourceRepositoryUnchanged": true,
+        "unsafeAdmissionCount": 1
+      },
+      "declaredTrackedTreeValidation": {
+        "comparison": "match",
+        "controlPassed": true,
+        "declaredCheck": {
+          "expectedTree": "29418fc125a2546512258304f6dc9ce84b7aaae1",
+          "status": "failed"
+        },
+        "id": "declared-tracked-tree-check-failure",
+        "outcome": "rejected-as-inconclusive",
+        "sourceRepositoryUnchanged": true,
+        "unsafeAdmissionCount": 1
+      },
+      "failedProjectValidation": {
+        "reason": "T013 executes Git plumbing only. The declared tracked-tree check can fail, but repository tests and other project validation commands are not run.",
+        "status": "out-of-scope"
+      },
+      "gracefulCoordinatorRestart": {
+        "controlPassed": true,
+        "firstProcessCategory": "cancelled",
+        "firstProcessExitCode": 3,
+        "freshReplayComparison": "match",
+        "id": "graceful-coordinator-stop-and-fresh-replay",
+        "noPartialReport": true,
+        "scope": "graceful SIGTERM followed by independent fresh process; not crash recovery",
+        "scratchCleanAfterStop": true,
+        "sourceRepositoryUnchanged": true
+      },
+      "resourceExhaustion": {
+        "allRejected": true,
+        "controls": [
+          {
+            "category": "timeout",
+            "id": "wall",
+            "status": "rejected"
+          },
+          {
+            "category": "command-limit",
+            "id": "command-count",
+            "status": "rejected"
+          },
+          {
+            "category": "output-limit",
+            "id": "captured-output",
+            "status": "rejected"
+          },
+          {
+            "category": "scratch-limit",
+            "id": "temporary-data",
+            "status": "rejected"
+          },
+          {
+            "category": "timeout",
+            "id": "inflight-wall",
+            "processControl": "test-only /bin/sleep at Git Popen boundary",
+            "status": "killed-after-start"
+          },
+          {
+            "category": "scratch-limit",
+            "id": "inflight-temporary-data",
+            "processControl": "test-only /bin/sleep at Git Popen boundary",
+            "status": "killed-after-start"
+          },
+          {
+            "category": "cancelled",
+            "id": "inflight-cancellation",
+            "processControl": "test-only /bin/sleep at Git Popen boundary",
+            "status": "killed-after-start"
+          }
+        ]
+      }
+    },
+    "checks": {
+      "allEligibleTreesMatched": true,
+      "allExpectedComparisonsObserved": true,
+      "allSourceRepositoriesUnchanged": true,
+      "conflictRemainedInconclusive": true,
+      "declaredTreeValidationFailureRejected": true,
+      "executionAuthorization": false,
+      "gracefulCoordinatorRestartedSafely": true,
+      "promotionPerformed": false,
+      "resourceExhaustionFailedClosed": true,
+      "sameFilePathOverlapBaselineReported": true,
+      "verificationFailureRejected": true,
+      "zeroUnsafeAdmissions": true
+    },
+    "gitMergeTreeBaseline": "One merge-tree --write-tree process per scenario sample for the first two operation commits; reports wall time, child CPU, output bytes, command count, exit code and match/conflict. This is a pairwise plumbing baseline, not an end-to-end replacement for the prototype.",
+    "resourceProfile": {
+      "imageId": "sha256:edddb1cbcbccb0e1af6505f9ff9938905da6f79303c97d1d12092ef61508f005",
+      "platform": "linux/arm64",
+      "python": "3.12.13",
+      "git": "2.47.3",
+      "network": "none",
+      "checkoutAndCommonGitDirectory": "read-only",
+      "containerMemoryBytes": 2147483648,
+      "containerCpus": 2,
+      "containerPids": 512,
+      "temporaryFilesystemBytes": 536870912,
+      "observedChildSoftAddressSpaceBytes": 536870912,
+      "observedChildHardAddressSpaceBytes": 536870912,
+      "prototypeTestsRun": 17,
+      "prototypeTestsPassed": 16,
+      "prototypeTestsSkipped": 1
+    },
+    "executionAuthorization": false,
+    "promotionPerformed": false
+  },
+  "resourceAndConcurrencyResidualRisks": [
+    "Native Darwin cannot enforce the 512 MiB RLIMIT_AS profile on this host; production fails closed there. The pinned Docker Linux runtime enforces it.",
+    "Temporary data is sampled every 50 ms: in-flight overage terminates the child but can overshoot before detection.",
+    "Declared footprints are not dynamically observed, and transient target-ref movement between rechecks can escape observation.",
+    "Only fixed patch preparation runs concurrently; candidate and serial tree integration are sequential. Concurrent merging and live-agent interleavings remain open M2 work.",
+    "The declared final-tree check validates a Git object ID only. Repository tests, external effects, failed project checks, and semantic correctness remain outside the authorized profile.",
+    "Graceful SIGTERM and fresh replay passed. SIGKILL, power loss, and persisted coordinator recovery were not tested.",
+    "The benchmark is synthetic and local with three repetitions. Pairwise merge-tree timing is not a full end-to-end coordinator baseline; performance is not a production claim.",
+    "The report field unsafeAdmissionCount counts rejected candidate multiwaves under failed verification; its name can be misread as actual execution admission. No result is promoted and executionAuthorization stays false.",
+    "T013 requires independent human review of the exact frozen candidate before its checklist may be accepted. M2 remains open and execution authority cannot be expanded."
+  ]
+}

@@ -5,7 +5,7 @@
     "M0": "Bounded operational foundation and internal closure.",
     "M0.5": "Research-preview preparation and bounded internal closure.",
     "M1": "Read-only analyzer and internal closure.",
-    "M2": "Confluence laboratory; no implementation tasks are inferred from this heading.",
+    "M2": "Confluence laboratory; bounded Git patch replay and advisory preparation planning, with milestone closure still open.",
     "M3": "Braid structure; no implementation tasks are inferred from this heading.",
     "M4": "Formal research; no implementation tasks are inferred from this heading.",
     "Public research preview": "Public publication and cutover verification.",
@@ -23,7 +23,8 @@
     "008-m0.5-closure": {"milestone": "M0.5", "state": "closed"},
     "009-public-research-preview": {"milestone": "Public research preview", "state": "open"},
     "010-risk-validation": {"milestone": "Cross-cutting governance", "state": "closed"},
-    "011-adoption-pathline": {"milestone": "Cross-cutting governance", "state": "open"}
+    "011-adoption-pathline": {"milestone": "Cross-cutting governance", "state": "open"},
+    "012-m2-git-replay-planner": {"milestone": "M2", "state": "open"}
   },
   "task_state_overrides": {
     "SPEC-011/T001": "Merged implementation in PR #3; source checkbox awaits reconciliation.",

@@ -1,0 +1,287 @@
+{
+  "articles": [
+    0,
+    2,
+    4,
+    6,
+    7,
+    9,
+    12,
+    13,
+    14,
+    19,
+    20,
+    21,
+    23,
+    24,
+    25
+  ],
+  "assumptions": "Git commit objects and local Git plumbing provide stable fixed patches; the named tracked-tree observation describes only the declared finite replay domain.",
+  "authority_snapshot": {
+    "commit": "7541ff437e2e2d6f558c5855ae76bb13067256cd",
+    "hashes": {
+      "ARCHITECTURE.md": "94e5114eb799b25ca666ef728f84ab1c88e6ad1b342e30a9e99276b8f44c30c2",
+      "CONSTITUTION.md": "ff7196976a1736a639947c2ab26e8da157fef23c89ba9881312f2a36459964eb",
+      "GOVERNANCE.md": "c8eda331d97c42e54be4730ef906dfaad9ae2814e36704302f97afceff037d82",
+      "LICENSE": "340d66a837b3a1617645d00622a46d1bcbf3534bedd997b6461d16d2e08b374f",
+      "MATHEMATICAL_FOUNDATIONS.md": "8c56b59b20ca5f9bc7464b458f980e51e05c0820645cf86181cf08883acd5ca4",
+      "RESEARCH.md": "a3e9668e2c1b80024a6ce9024b7558d31f0d3d2d1e22fa89f460a70beefdd56d",
+      "TERMINOLOGY.md": "4b52b621900a413f58fa920254c2d36df849bda906e9989f0e49b0a43aaf503c",
+      "TRADEMARKS.md": "be084562378235f7c72b4a16e9d0f37b01e7e2b035291eceb4f6478048a517b8",
+      "docs/adr/0000-template.md": "546bd5098b2f8f07804253f0b1fd2c893264d4519644ccd93913956056fac8f4",
+      "docs/adr/0001-formalization-before-implementation.md": "c68d05ee8abb12932acaebee8b95ef4873172a97f93a8dae2187b84b63a29188",
+      "docs/adr/0002-yang-baxter-is-a-hypothesis.md": "8f72ec03ea85a5cef1bed08b04c871bca5930a70e2c313f01124d4a0c194efef",
+      "docs/adr/0003-copyleft-and-trademark-protection.md": "174745a166b4f521fab0f1a043d5c96b8b4b6a626b344245d8b89616d919f8c6",
+      "docs/adr/0004-scientific-constitutional-clarifications.md": "eaf956ab7a8daae2b5ea75d5ae8832a039ef2c6d18bf2e0e27e9b2b964e0fd71",
+      "docs/adr/0005-evidence-contracts-and-bounded-laboratory.md": "a35504083c719993a8c9a460d579c9017871b20bd65760f9f2534de2d7f27f6b",
+      "docs/adr/0006-shared-spec-kit-guardrails.md": "b02e0844e311e0364b40d06e2de3c1c73628247625d20c534a644ff8d9387cb7",
+      "docs/adr/0007-read-only-python-analyzer.md": "c864497da1a8172826d1b96b728b03d16272396c53dc194680d646301c4d07f3",
+      "docs/adr/0008-read-only-git-worktree-adapter.md": "8915605500bb4fa0150ff2fe576482db8a55bd29fb53a17788a51f8671a52e76",
+      "docs/adr/0009-transparent-validation-status.md": "7e329563e069e972ef2febcf64e0fec29255c0c9af29e331a1d5beb7f382e60d",
+      "docs/adr/0010-clean-publication-provenance.md": "6481cf11e2daf5d307928310763ae82889b280cea215126ebae3b32a708f3994",
+      "docs/adr/0011-risk-based-validation-gates.md": "3aa363f808821ead18d830e931e476a0d790106112ef637875428f322d321531",
+      "docs/adr/0012-vendored-python-skills-license-boundary.md": "e98b19c465689190265ed410b9226d60d52f00a8abf95410f5aa0a567aa80fea",
+      "docs/adr/0013-isolated-git-replay-and-advisory-planning.md": "155b49a3d12170522ac04f9a5c125629810d85fc3d03c923fccf2d275a3b7d6c",
+      "docs/architecture/AGENT_INTERACTION_METADATA.md": "0118d7f16c390fc4c1ff027b503a4eaba8a747edf3f6d7b088559f8870e27780",
+      "docs/architecture/ASSURANCE_LEVELS.md": "102d0df0dc6fc0ec114d92fe1ef053b375bd9704d0af6a048affe36900d77512",
+      "docs/architecture/CONFLUENCE_CERTIFICATE.md": "fd12a8f1a1477835848581b0f4ccd52f76d3f22dd96a3abaccb9074733464a8e",
+      "docs/architecture/DRAFT_0_2.md": "ae2bc09d941537eec6ea05edb69e4402d5c17dae0585b4add0825d6a01fdc29f",
+      "docs/architecture/GIT_REPLAY.md": "9d36459e0fae8a5a1aad6cb87760d57d2e35746881ef852226e1293993677998",
+      "docs/theory/CLAIM_DISCIPLINE.md": "0fcd89ae045e017f62cbe0b7a83a9a9c107770856bba12a340e77f06576db053",
+      "docs/theory/OPERATIONAL_SEMANTICS.md": "7e83813d138dde064f85aafee1ba20302d55ede768d35d26340abd522ecce1f7",
+      "docs/theory/SCIENTIFIC_INTEGRATION.md": "bf4dba9119006a9261b45415edfe52b92d226648ab21aa3fd2e4a7f4822faf8c",
+      "schemas/0.1.0-alpha/analysis-report.schema.json": "91c759ad0d28de0b4e68f5bd3958de37ff2e6c102ecd8c6c2f0083e0151ad578",
+      "schemas/0.1.0-alpha/git-analysis-provenance.schema.json": "403b2e61ff7a7700c0db05df4ac3b11504e2c69e2bab9161b4a9ceb156b1316c",
+      "schemas/0.1.0-alpha/git-analysis-request.schema.json": "928c777ae68a184fae172a7cb2b172ba283b5af912edaf6c4b389bd8bf767a96",
+      "schemas/0.1.0-alpha/git-plan.schema.json": "3519d38b395974c3261fbb9243dd2fcbf1d0f08086c2164d64d7ebfb9a726972",
+      "schemas/0.1.0-alpha/git-replay-evidence.schema.json": "46560e30af74daf22d816130590d7bc596a9ae4fe1060ff4709e76f19487d137",
+      "schemas/0.2.0-draft/agent-interaction-metadata.schema.json": "9d2ff528d0d3f02ba5bce63181e88732eecef96e90fabb5898b3314abd554900",
+      "schemas/0.2.0-draft/confluence-certificate.schema.json": "8e375fdc57fbd3b9f15544f2079c8f92633ec1def660f3eabed77feb784f34f0",
+      "schemas/agent-interaction-metadata.schema.json": "44b60956817cbcd92e0802dfe99ca537b20768f53472f04afd1dcc502f53cd5c",
+      "schemas/confluence-certificate.schema.json": "ea68bf94f6767d615881167d8f7dd28359e6c399edd66935ba17b88b2b1cf785",
+      "schemas/governance/public-export-manifest.schema.json": "11eb7f2594939ae9fd0c9e6cfe4423a80aba686d6cdfdd8b73b0fb84b0840aa8",
+      "schemas/governance/release-validation-record.schema.json": "d9943f0c9f5520ea52e3b12bfba88240d03f8011b433fc5e35cb49549ab6e819"
+    },
+    "mode": "historical"
+  },
+  "compatibility": "Existing AIM, analysis-report, Git request/provenance and 0.2.0-draft certificate contracts remain unchanged. New Git replay evidence and plan contracts are 0.1.0-alpha.",
+  "domain": "Local SHA-1 Git repositories with one base commit and 2\u20134 descendant commit sources, at most 64 changed paths and 1 MiB aggregate patch bytes.",
+  "evidence_snapshot": {
+    "commit": "7541ff437e2e2d6f558c5855ae76bb13067256cd",
+    "mode": "historical"
+  },
+  "execution_contract": "No checkout or source mutation. Replay fixed patches in a temporary bare repository and fresh temporary Git index, using local file transport only. No project commands, agents, network services, or external effects. Every plan has executionAuthorization false.",
+  "human_review": "approved",
+  "review_record": "specs/012-m2-git-replay-planner/founder-review.json",
+  "hypotheses": "Bounded replay of all admissible orders may identify fixed-patch tracked-tree equivalence cases that support useful advisory preparation waves without authorizing execution.",
+  "observation_contract": "tracked-tree-v1: final Git tree object for each complete schedule, with per-step tree IDs, patch digests, schedule status and reasons retained in evidence.",
+  "references": [
+    "CONSTITUTION.md",
+    "GOVERNANCE.md",
+    "ROADMAP.md",
+    "docs/adr/0008-read-only-git-worktree-adapter.md",
+    "docs/adr/0013-isolated-git-replay-and-advisory-planning.md",
+    "docs/theory/OPERATIONAL_SEMANTICS.md",
+    "docs/architecture/DRAFT_0_2.md",
+    "docs/architecture/GIT_REPLAY.md",
+    "schemas/0.1.0-alpha/git-analysis-request.schema.json",
+    "schemas/0.1.0-alpha/git-analysis-provenance.schema.json"
+  ],
+  "requirements": [
+    {
+      "id": "REQ-001",
+      "scenarios": [
+        {
+          "given": "A valid request contains two commit sources descending from one base",
+          "id": "SC-001",
+          "obtained_evidence": [
+            {
+              "command": "python3 scripts/capture_feature_evidence.py 012-m2-git-replay-planner",
+              "limits": "Synthetic SHA-1 repositories and tracked-tree-v1 observations only; fixed-patch replay does not establish semantic safety, source correctness, arbitrary interleaving safety, runtime safety, or execution authorization. A validated evidence record may document a failed hypothesis.",
+              "outcome": "Bounded fixed-patch replay, consultative wave thresholds and serial/path-overlap/Git-merge baselines recorded; any negative or failed threshold remains visible in the raw observations.",
+              "path": "specs/012-m2-git-replay-planner/evidence.json",
+              "sha256": "cc242eb32ae0b3575318a57ef035854a80928e0137855187df99527efd93a43f"
+            }
+          ],
+          "planned_evidence": "Run the paired valid-request replay test",
+          "test_file": "tests/test_git_replay.py",
+          "test_name": "GitReplayTests.test_plan_replay_two_immutable_commits",
+          "then": "Resolved immutable IDs and patch digests are bound in a versioned evidence bundle",
+          "when": "plan-git creates replay evidence"
+        },
+        {
+          "given": "The request has a worktree source, more than four operations, an invalid dependency graph, or an unavailable commit",
+          "id": "SC-002",
+          "obtained_evidence": [
+            {
+              "command": "python3 scripts/capture_feature_evidence.py 012-m2-git-replay-planner",
+              "limits": "Synthetic SHA-1 repositories and tracked-tree-v1 observations only; fixed-patch replay does not establish semantic safety, source correctness, arbitrary interleaving safety, runtime safety, or execution authorization. A validated evidence record may document a failed hypothesis.",
+              "outcome": "Bounded fixed-patch replay, consultative wave thresholds and serial/path-overlap/Git-merge baselines recorded; any negative or failed threshold remains visible in the raw observations.",
+              "path": "specs/012-m2-git-replay-planner/evidence.json",
+              "sha256": "cc242eb32ae0b3575318a57ef035854a80928e0137855187df99527efd93a43f"
+            }
+          ],
+          "planned_evidence": "Run request-boundary and negative-input tests",
+          "test_file": "tests/test_git_replay.py",
+          "test_name": "GitReplayTests.test_rejects_worktree_batch_limits_and_invalid_graph",
+          "then": "It is rejected or marked unsupported and cannot produce candidate waves",
+          "when": "the request is validated"
+        },
+        {
+          "given": "The request changes more than 64 paths in total or contains more than 1 MiB of aggregate patch bytes",
+          "id": "SC-009",
+          "obtained_evidence": [
+            {
+              "command": "python3 scripts/capture_feature_evidence.py 012-m2-git-replay-planner",
+              "limits": "Synthetic SHA-1 repositories and tracked-tree-v1 observations only; fixed-patch replay does not establish semantic safety, source correctness, arbitrary interleaving safety, runtime safety, or execution authorization. A validated evidence record may document a failed hypothesis.",
+              "outcome": "Bounded fixed-patch replay, consultative wave thresholds and serial/path-overlap/Git-merge baselines recorded; any negative or failed threshold remains visible in the raw observations.",
+              "path": "specs/012-m2-git-replay-planner/evidence.json",
+              "sha256": "cc242eb32ae0b3575318a57ef035854a80928e0137855187df99527efd93a43f"
+            }
+          ],
+          "planned_evidence": "Run changed-path and aggregate-patch boundary controls",
+          "test_file": "tests/test_git_replay.py",
+          "test_name": "GitReplayTests.test_enforces_changed_path_and_aggregate_patch_bounds",
+          "then": "The request is rejected before schedule replay and no candidate plan is emitted",
+          "when": "plan-git validates the bounded replay inputs"
+        }
+      ],
+      "text": "Validate and bound immutable commit inputs, shared base, dependencies, changed paths and aggregate diffs."
+    },
+    {
+      "id": "REQ-002",
+      "scenarios": [
+        {
+          "given": "Disjoint commits and two edits in separate hunks of one file",
+          "id": "SC-003",
+          "obtained_evidence": [
+            {
+              "command": "python3 scripts/capture_feature_evidence.py 012-m2-git-replay-planner",
+              "limits": "Synthetic SHA-1 repositories and tracked-tree-v1 observations only; fixed-patch replay does not establish semantic safety, source correctness, arbitrary interleaving safety, runtime safety, or execution authorization. A validated evidence record may document a failed hypothesis.",
+              "outcome": "Bounded fixed-patch replay, consultative wave thresholds and serial/path-overlap/Git-merge baselines recorded; any negative or failed threshold remains visible in the raw observations.",
+              "path": "specs/012-m2-git-replay-planner/evidence.json",
+              "sha256": "cc242eb32ae0b3575318a57ef035854a80928e0137855187df99527efd93a43f"
+            }
+          ],
+          "planned_evidence": "Run replay and source-immutability checks",
+          "test_file": "tests/test_git_replay.py",
+          "test_name": "GitReplayTests.test_replays_disjoint_and_different_hunk_patches",
+          "then": "Each complete order has the expected tracked-tree digest and the source repository is unchanged",
+          "when": "all admissible orders are replayed from the same base"
+        },
+        {
+          "given": "Overlapping fixed patches produce distinct trees or one order fails to apply",
+          "id": "SC-004",
+          "obtained_evidence": [
+            {
+              "command": "python3 scripts/capture_feature_evidence.py 012-m2-git-replay-planner",
+              "limits": "Synthetic SHA-1 repositories and tracked-tree-v1 observations only; fixed-patch replay does not establish semantic safety, source correctness, arbitrary interleaving safety, runtime safety, or execution authorization. A validated evidence record may document a failed hypothesis.",
+              "outcome": "Bounded fixed-patch replay, consultative wave thresholds and serial/path-overlap/Git-merge baselines recorded; any negative or failed threshold remains visible in the raw observations.",
+              "path": "specs/012-m2-git-replay-planner/evidence.json",
+              "sha256": "cc242eb32ae0b3575318a57ef035854a80928e0137855187df99527efd93a43f"
+            }
+          ],
+          "planned_evidence": "Run divergence and failed-apply controls",
+          "test_file": "tests/test_git_replay.py",
+          "test_name": "GitReplayTests.test_divergent_and_failed_orders_are_not_candidates",
+          "then": "A complete mismatch is divergent and any failed order makes the result inconclusive",
+          "when": "the batch is replayed"
+        }
+      ],
+      "text": "Replay every admissible order in isolated temporary Git state and observe tracked-tree results without mutating the source repository."
+    },
+    {
+      "id": "REQ-003",
+      "scenarios": [
+        {
+          "given": "A valid evidence bundle or a bundle with altered digests, missing schedules, or duplicate schedules",
+          "id": "SC-005",
+          "obtained_evidence": [
+            {
+              "command": "python3 scripts/capture_feature_evidence.py 012-m2-git-replay-planner",
+              "limits": "Synthetic SHA-1 repositories and tracked-tree-v1 observations only; fixed-patch replay does not establish semantic safety, source correctness, arbitrary interleaving safety, runtime safety, or execution authorization. A validated evidence record may document a failed hypothesis.",
+              "outcome": "Bounded fixed-patch replay, consultative wave thresholds and serial/path-overlap/Git-merge baselines recorded; any negative or failed threshold remains visible in the raw observations.",
+              "path": "specs/012-m2-git-replay-planner/evidence.json",
+              "sha256": "cc242eb32ae0b3575318a57ef035854a80928e0137855187df99527efd93a43f"
+            }
+          ],
+          "planned_evidence": "Run producer/verifier round-trip and mutation tests",
+          "test_file": "tests/test_git_replay.py",
+          "test_name": "GitReplayTests.test_verifier_rejects_tampering_and_omitted_orders",
+          "then": "Only the faithfully reproduced complete bundle verifies",
+          "when": "verify-git checks it against the source repository"
+        }
+      ],
+      "text": "Bind evidence to immutable Git inputs and independently replay all schedules during verification."
+    },
+    {
+      "id": "REQ-004",
+      "scenarios": [
+        {
+          "given": "Three supported equivalent commits, with and without declared dependencies",
+          "id": "SC-006",
+          "obtained_evidence": [
+            {
+              "command": "python3 scripts/capture_feature_evidence.py 012-m2-git-replay-planner",
+              "limits": "Synthetic SHA-1 repositories and tracked-tree-v1 observations only; fixed-patch replay does not establish semantic safety, source correctness, arbitrary interleaving safety, runtime safety, or execution authorization. A validated evidence record may document a failed hypothesis.",
+              "outcome": "Bounded fixed-patch replay, consultative wave thresholds and serial/path-overlap/Git-merge baselines recorded; any negative or failed threshold remains visible in the raw observations.",
+              "path": "specs/012-m2-git-replay-planner/evidence.json",
+              "sha256": "cc242eb32ae0b3575318a57ef035854a80928e0137855187df99527efd93a43f"
+            }
+          ],
+          "planned_evidence": "Run wave-level and deterministic ordering tests",
+          "test_file": "tests/test_git_replay.py",
+          "test_name": "GitReplayTests.test_advisory_waves_preserve_dependencies_and_demonstrate_gain",
+          "then": "Independent work is grouped into one candidate wave and dependency order is preserved",
+          "when": "the plan is generated"
+        },
+        {
+          "given": "Uncertain, unsupported, divergent, inconclusive or unapplyable inputs",
+          "id": "SC-007",
+          "obtained_evidence": [
+            {
+              "command": "python3 scripts/capture_feature_evidence.py 012-m2-git-replay-planner",
+              "limits": "Synthetic SHA-1 repositories and tracked-tree-v1 observations only; fixed-patch replay does not establish semantic safety, source correctness, arbitrary interleaving safety, runtime safety, or execution authorization. A validated evidence record may document a failed hypothesis.",
+              "outcome": "Bounded fixed-patch replay, consultative wave thresholds and serial/path-overlap/Git-merge baselines recorded; any negative or failed threshold remains visible in the raw observations.",
+              "path": "specs/012-m2-git-replay-planner/evidence.json",
+              "sha256": "cc242eb32ae0b3575318a57ef035854a80928e0137855187df99527efd93a43f"
+            }
+          ],
+          "planned_evidence": "Run conservative planner negative controls",
+          "test_file": "tests/test_git_replay.py",
+          "test_name": "GitReplayTests.test_unknown_and_inconclusive_inputs_never_make_candidate_waves",
+          "then": "No candidate wave is emitted; a serial fallback or manual-review state is returned with executionAuthorization false",
+          "when": "the plan is generated"
+        }
+      ],
+      "text": "Generate advisory dependency waves only from verified complete equivalent evidence, otherwise choose a serial fallback or manual review."
+    },
+    {
+      "id": "REQ-005",
+      "scenarios": [
+        {
+          "given": "The committed synthetic Git replay corpus and registered thresholds",
+          "id": "SC-008",
+          "obtained_evidence": [
+            {
+              "command": "python3 scripts/capture_feature_evidence.py 012-m2-git-replay-planner",
+              "limits": "Synthetic SHA-1 repositories and tracked-tree-v1 observations only; fixed-patch replay does not establish semantic safety, source correctness, arbitrary interleaving safety, runtime safety, or execution authorization. A validated evidence record may document a failed hypothesis.",
+              "outcome": "Bounded fixed-patch replay, consultative wave thresholds and serial/path-overlap/Git-merge baselines recorded; any negative or failed threshold remains visible in the raw observations.",
+              "path": "specs/012-m2-git-replay-planner/evidence.json",
+              "sha256": "cc242eb32ae0b3575318a57ef035854a80928e0137855187df99527efd93a43f"
+            }
+          ],
+          "planned_evidence": "Run the bounded replay benchmark against all registered baselines",
+          "test_file": "tests/test_git_replay.py",
+          "test_name": "GitReplayTests.test_benchmark_thresholds_and_baselines",
+          "then": "It reports zero false candidate waves, the required three-commit gain, the distinct-hunk comparison, runtime and Git command count; failed thresholds remain negative evidence",
+          "when": "the benchmark runs"
+        }
+      ],
+      "text": "Compare the planner with registered serial, path-overlap and Git merge baselines and preserve negative outcomes."
+    }
+  ],
+  "scientific_limits": "Tracked-tree equivalence for a finite set of fixed patches does not prove source-code correctness, semantic independence, contextual equivalence, arbitrary interleaving safety, global confluence, production safety, or execution authorization.",
+  "scope": "Experimental local replay and consultative preparation planning for fixed Git commit patches within M2; no project-code execution or runtime scheduler.",
+  "stage": "validated"
+}

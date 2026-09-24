@@ -10,6 +10,7 @@ from pathlib import Path
 import subprocess
 
 from .analysis import InvalidAnalysis, analyze, _canonical, _digest
+from .git_process import GitCommandBudget, GitCommandFailure, run_git
 
 
 REQUEST_VERSION = "0.1.0-alpha"
@@ -25,10 +26,24 @@ def _require(condition: bool, message: str) -> None:
         raise InvalidGitAnalysis(message)
 
 
-def _git(cwd: Path, *args: str) -> bytes:
-    process = subprocess.run(
-        ["git", "-C", str(cwd), *args], capture_output=True, check=False
+def _git_result(cwd: Path, *args: str, env: dict[str, str] | None = None,
+                budget: GitCommandBudget | None = None,
+                allow_failure: bool = False):
+    if budget is not None:
+        try:
+            return run_git(cwd, args, env=env or os.environ.copy(), budget=budget,
+                           allow_failure=allow_failure)
+        except GitCommandFailure as exc:
+            raise InvalidGitAnalysis(f"Git observation failed: {args[0]}") from exc
+    return subprocess.run(
+        ["git", "-C", str(cwd), *args], capture_output=True, check=False,
+        env=env, timeout=30,
     )
+
+
+def _git(cwd: Path, *args: str, env: dict[str, str] | None = None,
+         budget: GitCommandBudget | None = None) -> bytes:
+    process = _git_result(cwd, *args, env=env, budget=budget)
     if process.returncode:
         reason = process.stderr.decode("utf-8", "replace").strip()
         raise InvalidGitAnalysis(f"Git observation failed: {reason or args[0]}")
@@ -62,31 +77,37 @@ def _mode(output: bytes, label: str) -> str | None:
     return value
 
 
-def _repo_root(path: Path) -> Path:
-    root = Path(_text(_git(path, "rev-parse", "--show-toplevel"), "repository root"))
+def _repo_root(path: Path, env: dict[str, str] | None = None,
+               budget: GitCommandBudget | None = None) -> Path:
+    root = Path(_text(_git(path, "rev-parse", "--show-toplevel", env=env, budget=budget),
+                      "repository root"))
     _require(root.is_absolute() and root.is_dir(), "repository must be a non-bare worktree")
     return root.resolve()
 
 
-def _common_identity(root: Path, base: str) -> str:
-    roots = _text(_git(root, "rev-list", "--max-parents=0", base), "root commits").splitlines()
+def _common_identity(root: Path, base: str, env: dict[str, str] | None = None,
+                     budget: GitCommandBudget | None = None) -> str:
+    roots = _text(_git(root, "rev-list", "--max-parents=0", base, env=env, budget=budget),
+                  "root commits").splitlines()
     _require(bool(roots), "repository has no root commit")
     return hashlib.sha256("\n".join(sorted(roots)).encode()).hexdigest()
 
 
-def _resolve(root: Path, revision: str) -> str:
+def _resolve(root: Path, revision: str, env: dict[str, str] | None = None,
+             budget: GitCommandBudget | None = None) -> str:
     _require(isinstance(revision, str) and revision.strip(), "invalid Git revision")
-    value = _text(_git(root, "rev-parse", "--verify", f"{revision}^{{commit}}"), "revision")
+    value = _text(_git(root, "rev-parse", "--verify", f"{revision}^{{commit}}",
+                       env=env, budget=budget), "revision")
     _require(len(value) == 40 and all(char in "0123456789abcdef" for char in value),
              "revision did not resolve to a commit")
     return value
 
 
-def _is_ancestor(root: Path, base: str, source: str) -> bool:
-    process = subprocess.run(
-        ["git", "-C", str(root), "merge-base", "--is-ancestor", base, source],
-        capture_output=True, check=False,
-    )
+def _is_ancestor(root: Path, base: str, source: str,
+                 env: dict[str, str] | None = None,
+                 budget: GitCommandBudget | None = None) -> bool:
+    process = _git_result(root, "merge-base", "--is-ancestor", base, source,
+                          env=env, budget=budget, allow_failure=True)
     _require(process.returncode in {0, 1}, "Git ancestry observation failed")
     return process.returncode == 0
 
@@ -106,47 +127,55 @@ def _parse_name_status(output: bytes) -> list[tuple[str, str]]:
     return changes
 
 
-def _snapshot(root: Path, base: str, source: dict) -> tuple[list[tuple[str, str]], str, str]:
+def _snapshot(root: Path, base: str, source: dict,
+              env: dict[str, str] | None = None,
+              budget: GitCommandBudget | None = None) -> tuple[list[tuple[str, str]], str, str]:
     kind = source.get("kind")
     _require(set(source) == ({"kind", "revision"} if kind == "commit" else
                              {"kind", "path"}), "invalid Git source")
     if kind == "commit":
-        resolved = _resolve(root, source["revision"])
-        _require(_is_ancestor(root, base, resolved),
+        resolved = _resolve(root, source["revision"], env, budget)
+        _require(_is_ancestor(root, base, resolved, env, budget),
                  "base revision is not an ancestor of the commit source")
         raw = _git(root, "diff", "--no-ext-diff", "--no-textconv", "--name-status", "-z",
-                   "--no-renames", base, resolved, "--")
+                   "--no-renames", base, resolved, "--", env=env, budget=budget)
         payload = _git(root, "diff", "--no-ext-diff", "--no-textconv", "--binary",
-                       "--no-renames", base, resolved, "--")
+                       "--no-renames", base, resolved, "--", env=env, budget=budget)
         changes = _parse_name_status(raw)
         classified = []
         for status, path in changes:
             if status in {"A", "M"}:
-                mode = _mode(_git(root, "ls-tree", "-z", resolved, "--", path), "tree entry")
+                mode = _mode(_git(root, "ls-tree", "-z", resolved, "--", path,
+                                  env=env, budget=budget), "tree entry")
                 if mode in {"120000", "160000"}:
                     status = "B"
                 else:
-                    content = _git(root, "show", f"{resolved}:{path}")
+                    content = _git(root, "show", f"{resolved}:{path}", env=env, budget=budget)
                     if b"\0" in content:
                         status = "B"
             classified.append((status, path))
         changes = classified
         return changes, resolved, hashlib.sha256(payload).hexdigest()
     _require(kind == "worktree", "unsupported Git source kind")
-    worktree = _repo_root(Path(source["path"]).expanduser().resolve())
-    head = _resolve(worktree, "HEAD")
-    _require(_is_ancestor(worktree, base, head),
+    worktree = _repo_root(Path(source["path"]).expanduser().resolve(), env, budget)
+    head = _resolve(worktree, "HEAD", env, budget)
+    _require(_is_ancestor(worktree, base, head, env, budget),
              "base revision is not an ancestor of the worktree HEAD")
-    common_root = _text(_git(root, "rev-parse", "--git-common-dir"), "common directory")
-    common_worktree = _text(_git(worktree, "rev-parse", "--git-common-dir"), "common directory")
+    common_root = _text(_git(root, "rev-parse", "--git-common-dir", env=env, budget=budget),
+                        "common directory")
+    common_worktree = _text(
+        _git(worktree, "rev-parse", "--git-common-dir", env=env, budget=budget),
+        "common directory",
+    )
     common_root_path = (root / common_root).resolve() if not Path(common_root).is_absolute() else Path(common_root).resolve()
     common_worktree_path = ((worktree / common_worktree).resolve()
                             if not Path(common_worktree).is_absolute() else Path(common_worktree).resolve())
     _require(common_root_path == common_worktree_path,
              "worktree does not belong to the declared repository")
     raw = _git(worktree, "diff", "--no-ext-diff", "--no-textconv", "--name-status", "-z",
-               "--no-renames", base, "--")
-    untracked = _git(worktree, "ls-files", "-z", "--others", "--exclude-standard")
+               "--no-renames", base, "--", env=env, budget=budget)
+    untracked = _git(worktree, "ls-files", "-z", "--others", "--exclude-standard",
+                     env=env, budget=budget)
     changes = _parse_name_status(raw)
     untracked_paths = [_decode(item, "untracked path") for item in untracked.split(b"\0") if item]
     changes.extend(("A", path) for path in untracked_paths)
@@ -155,7 +184,8 @@ def _snapshot(root: Path, base: str, source: dict) -> tuple[list[tuple[str, str]
         candidate = worktree / path
         if status in {"A", "M"}:
             mode = _mode(
-                _git(worktree, "ls-files", "--stage", "-z", "--", path),
+                _git(worktree, "ls-files", "--stage", "-z", "--", path,
+                     env=env, budget=budget),
                 "index entry",
             )
             if candidate.is_symlink() or mode in {"120000", "160000"}:
@@ -172,7 +202,7 @@ def _snapshot(root: Path, base: str, source: dict) -> tuple[list[tuple[str, str]
         classified.append((status, path))
     changes = classified
     payload = _git(worktree, "diff", "--no-ext-diff", "--no-textconv", "--binary",
-                   "--no-renames", base, "--")
+                   "--no-renames", base, "--", env=env, budget=budget)
     hashes = []
     for name in sorted(untracked_paths):
         candidate = worktree / name
@@ -189,7 +219,9 @@ def _snapshot(root: Path, base: str, source: dict) -> tuple[list[tuple[str, str]
     return changes, f"worktree:{head}", fingerprint
 
 
-def _record(operation: dict, repo_id: str, base: str, root: Path) -> tuple[dict, dict]:
+def _record(operation: dict, repo_id: str, base: str, root: Path,
+            env: dict[str, str] | None = None,
+            budget: GitCommandBudget | None = None) -> tuple[dict, dict]:
     required = {"instanceId", "attemptId", "source", "dependencies", "uncertainPaths"}
     _require(set(operation) == required, "invalid Git operation fields")
     for name in ("instanceId", "attemptId"):
@@ -200,8 +232,8 @@ def _record(operation: dict, repo_id: str, base: str, root: Path) -> tuple[dict,
              "invalid dependencies")
     _require(isinstance(uncertain, list) and all(isinstance(x, str) and x for x in uncertain),
              "invalid uncertainPaths")
-    before = _snapshot(root, base, operation["source"])
-    after = _snapshot(root, base, operation["source"])
+    before = _snapshot(root, base, operation["source"], env, budget)
+    after = _snapshot(root, base, operation["source"], env, budget)
     _require(before == after, "Git source changed during observation")
     changes, resolved, snapshot = before
     effects = []
@@ -251,7 +283,8 @@ def _record(operation: dict, repo_id: str, base: str, root: Path) -> tuple[dict,
     return record, observation
 
 
-def analyze_git_with_provenance(value: object) -> tuple[dict, dict]:
+def analyze_git_with_provenance(value: object, *, env: dict[str, str] | None = None,
+                                budget: GitCommandBudget | None = None) -> tuple[dict, dict]:
     """Return a report plus its separate, structured Git observation artifact."""
     _require(isinstance(value, dict), "Git analysis request must be an object")
     _require(set(value) == {"gitAnalysisRequestVersion", "repository", "baseRevision", "operations"},
@@ -260,16 +293,16 @@ def analyze_git_with_provenance(value: object) -> tuple[dict, dict]:
              "unsupported Git analysis request version")
     _require(isinstance(value["repository"], str) and value["repository"].strip(),
              "invalid repository")
-    root = _repo_root(Path(value["repository"]).expanduser().resolve())
-    base = _resolve(root, value["baseRevision"])
+    root = _repo_root(Path(value["repository"]).expanduser().resolve(), env, budget)
+    base = _resolve(root, value["baseRevision"], env, budget)
     operations = value["operations"]
     _require(isinstance(operations, list) and len(operations) >= 2,
              "at least two Git operations are required")
-    repo_id = _common_identity(root, base)
+    repo_id = _common_identity(root, base, env, budget)
     records, observations = [], []
     for operation in operations:
         _require(isinstance(operation, dict), "Git operations must be objects")
-        record, observation = _record(operation, repo_id, base, root)
+        record, observation = _record(operation, repo_id, base, root, env, budget)
         records.append(record)
         observations.append((operation["instanceId"], observation))
     report = analyze({

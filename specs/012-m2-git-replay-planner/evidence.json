@@ -1,0 +1,48 @@
+{
+  "captured_at": "2026-09-23T20:49:39.090375+00:00",
+  "human_review": "pending",
+  "inputs": {
+    "agent_braid/cli.py": "d681c0b4e6f7814f2ee900cab37fbf301bd410c9a2484ee9892ff658303f80fc",
+    "agent_braid/git_replay.py": "d4f3fb3222cd0771586346ccbcf63c0d689d2e9836e3d4bc8bbafc40c38ada22",
+    "docs/adr/0013-isolated-git-replay-and-advisory-planning.md": "155b49a3d12170522ac04f9a5c125629810d85fc3d03c923fccf2d275a3b7d6c",
+    "docs/architecture/GIT_REPLAY.md": "9d36459e0fae8a5a1aad6cb87760d57d2e35746881ef852226e1293993677998",
+    "docs/development/github-tracking.json": "181b6236d8810d37ec9fbd4e5733169eed86214fde20eb67e0cf66f76e225714",
+    "examples/analysis/git-replay-benchmark.json": "d503f0534cf703978e85b679af67e39fb4d68641d7ffdaec9f78a7b4f7f64d9f",
+    "schemas/0.1.0-alpha/git-plan.schema.json": "3519d38b395974c3261fbb9243dd2fcbf1d0f08086c2164d64d7ebfb9a726972",
+    "schemas/0.1.0-alpha/git-replay-evidence.schema.json": "46560e30af74daf22d816130590d7bc596a9ae4fe1060ff4709e76f19487d137",
+    "scripts/run_git_replay_benchmark.py": "9120bf6db5e738e215fa050d0e1313134f30cc5c732a70f647d7dfe148f37cca",
+    "specs/012-m2-git-replay-planner/plan.md": "7249570269fc15dc3227265423c2a316e26670b9be9684fe492feb853351be3a",
+    "specs/012-m2-git-replay-planner/quickstart.md": "c5aa940253486d2bba5e6a721e161b8e4eaadc943b8a769a94d2167a75fdd558",
+    "specs/012-m2-git-replay-planner/spec.md": "2b7ddfa16cd033ca0c3103cf010234297dcfc81e081e0af1d1b186483c83e1a5",
+    "tests/test_git_replay.py": "31e94f9b7430df2217b9407c0af7e61aa7013d0f342b3d7e85c235bc12afdee1",
+    "tests/test_github_tracking.py": "af35fb8df51295c4624a37da362c4ac807e7358a6abd1ba59cae96f8a3617845"
+  },
+  "observations": [
+    {
+      "command": "python3 -m unittest tests.test_git_replay -v",
+      "exit_code": 0,
+      "stderr": "test_advisory_waves_preserve_dependencies_and_demonstrate_gain (tests.test_git_replay.GitReplayTests.test_advisory_waves_preserve_dependencies_and_demonstrate_gain) ... ok\ntest_benchmark_thresholds_and_baselines (tests.test_git_replay.GitReplayTests.test_benchmark_thresholds_and_baselines) ... ok\ntest_cli_and_schemas (tests.test_git_replay.GitReplayTests.test_cli_and_schemas) ... ok\ntest_divergent_and_failed_orders_are_not_candidates (tests.test_git_replay.GitReplayTests.test_divergent_and_failed_orders_are_not_candidates) ... ok\ntest_enforces_changed_path_and_aggregate_patch_bounds (tests.test_git_replay.GitReplayTests.test_enforces_changed_path_and_aggregate_patch_bounds) ... ok\ntest_evidence_is_canonical_for_input_operation_order (tests.test_git_replay.GitReplayTests.test_evidence_is_canonical_for_input_operation_order) ... ok\ntest_plan_replay_two_immutable_commits (tests.test_git_replay.GitReplayTests.test_plan_replay_two_immutable_commits) ... ok\ntest_rejects_worktree_batch_limits_and_invalid_graph (tests.test_git_replay.GitReplayTests.test_rejects_worktree_batch_limits_and_invalid_graph) ... ok\ntest_replays_disjoint_and_different_hunk_patches (tests.test_git_replay.GitReplayTests.test_replays_disjoint_and_different_hunk_patches) ... ok\ntest_unknown_and_inconclusive_inputs_never_make_candidate_waves (tests.test_git_replay.GitReplayTests.test_unknown_and_inconclusive_inputs_never_make_candidate_waves) ... ok\ntest_verifier_rejects_tampering_and_omitted_orders (tests.test_git_replay.GitReplayTests.test_verifier_rejects_tampering_and_omitted_orders) ... ok\n\n----------------------------------------------------------------------\nRan 11 tests in 50.661s\n\nOK\n",
+      "stdout": ""
+    },
+    {
+      "command": "python3 -m unittest tests.test_github_tracking -v",
+      "exit_code": 0,
+      "stderr": "test_committed_spec_inventory_is_complete (tests.test_github_tracking.TrackingTests.test_committed_spec_inventory_is_complete) ... ok\ntest_milestone_closure_requires_explicit_mapping (tests.test_github_tracking.TrackingTests.test_milestone_closure_requires_explicit_mapping) ... ok\ntest_plan_is_empty_for_matching_relationships (tests.test_github_tracking.TrackingTests.test_plan_is_empty_for_matching_relationships) ... ok\ntest_plan_reports_missing_child_and_never_deletes_orphans (tests.test_github_tracking.TrackingTests.test_plan_reports_missing_child_and_never_deletes_orphans) ... ok\n\n----------------------------------------------------------------------\nRan 4 tests in 0.005s\n\nOK\n",
+      "stdout": ""
+    },
+    {
+      "command": "python3 scripts/run_git_replay_benchmark.py",
+      "exit_code": 0,
+      "stderr": "",
+      "stdout": "{\n  \"benchmarkVersion\": \"git-replay-m2-c1-v1\",\n  \"falseCandidateCount\": 0,\n  \"limits\": \"Synthetic local Git commits; fixed-patch tracked-tree observations only. No semantic correctness, production safety, or execution claim.\",\n  \"results\": [\n    {\n      \"candidate\": true,\n      \"expectedCandidate\": true,\n      \"family\": \"three-disjoint-commits\",\n      \"gitMergeWaveCount\": 1,\n      \"id\": \"GIT-REPLAY-001\",\n      \"mergeElapsedNanoseconds\": 39507250,\n      \"mergeGitCommandCount\": 3,\n      \"pathOverlapWaveCount\": 1,\n      \"plannerElapsedNanoseconds\": 3033611750,\n      \"plannerGitCommandCount\": 224,\n      \"plannerWaveCount\": 1,\n      \"replayResult\": \"equivalent-observed\",\n      \"scheduleCount\": 6,\n      \"serialWaveCount\": 3,\n      \"unsafeCandidate\": false\n    },\n    {\n      \"candidate\": true,\n      \"expectedCandidate\": true,\n      \"family\": \"same-file-different-hunks\",\n      \"gitMergeWaveCount\": 1,\n      \"id\": \"GIT-REPLAY-002\",\n      \"mergeElapsedNanoseconds\": 14230875,\n      \"mergeGitCommandCount\": 1,\n      \"pathOverlapWaveCount\": 2,\n      \"plannerElapsedNanoseconds\": 1336144000,\n      \"plannerGitCommandCount\": 98,\n      \"plannerWaveCount\": 1,\n      \"replayResult\": \"equivalent-observed\",\n      \"scheduleCount\": 2,\n      \"serialWaveCount\": 2,\n      \"unsafeCandidate\": false\n    },\n    {\n      \"candidate\": false,\n      \"expectedCandidate\": false,\n      \"family\": \"same-file-overlap\",\n      \"gitMergeWaveCount\": 2,\n      \"id\": \"GIT-REPLAY-003\",\n      \"mergeElapsedNanoseconds\": 14739625,\n      \"mergeGitCommandCount\": 1,\n      \"pathOverlapWaveCount\": 2,\n      \"plannerElapsedNanoseconds\": 1286715125,\n      \"plannerGitCommandCount\": 90,\n      \"plannerWaveCount\": 0,\n      \"replayResult\": \"inconclusive\",\n      \"scheduleCount\": 2,\n      \"serialWaveCount\": 2,\n      \"unsafeCandidate\": false\n    },\n    {\n      \"candidate\": true,\n      \"expectedCandidate\": true,\n      \"family\": \"declared-dependency\",\n      \"gitMergeWaveCount\": 2,\n      \"id\": \"GIT-REPLAY-004\",\n      \"mergeElapsedNanoseconds\": 5209,\n      \"mergeGitCommandCount\": 0,\n      \"pathOverlapWaveCount\": 2,\n      \"plannerElapsedNanoseconds\": 1127570584,\n      \"plannerGitCommandCount\": 82,\n      \"plannerWaveCount\": 2,\n      \"replayResult\": \"equivalent-observed\",\n      \"scheduleCount\": 1,\n      \"serialWaveCount\": 2,\n      \"unsafeCandidate\": false\n    },\n    {\n      \"candidate\": false,\n      \"expectedCandidate\": false,\n      \"family\": \"uncertain-path\",\n      \"gitMergeWaveCount\": 1,\n      \"id\": \"GIT-REPLAY-005\",\n      \"mergeElapsedNanoseconds\": 13505333,\n      \"mergeGitCommandCount\": 1,\n      \"pathOverlapWaveCount\": 1,\n      \"plannerElapsedNanoseconds\": 1306408500,\n      \"plannerGitCommandCount\": 98,\n      \"plannerWaveCount\": 2,\n      \"replayResult\": \"equivalent-observed\",\n      \"scheduleCount\": 2,\n      \"serialWaveCount\": 2,\n      \"unsafeCandidate\": false\n    },\n    {\n      \"candidate\": false,\n      \"expectedCandidate\": false,\n      \"family\": \"deletion\",\n      \"gitMergeWaveCount\": 1,\n      \"id\": \"GIT-REPLAY-006\",\n      \"mergeElapsedNanoseconds\": 13429792,\n      \"mergeGitCommandCount\": 1,\n      \"pathOverlapWaveCount\": 1,\n      \"plannerElapsedNanoseconds\": 1233314875,\n      \"plannerGitCommandCount\": 90,\n      \"plannerWaveCount\": 2,\n      \"replayResult\": \"equivalent-observed\",\n      \"scheduleCount\": 2,\n      \"serialWaveCount\": 2,\n      \"unsafeCandidate\": false\n    },\n    {\n      \"candidate\": false,\n      \"expectedCandidate\": false,\n      \"family\": \"binary-change\",\n      \"gitMergeWaveCount\": 1,\n      \"id\": \"GIT-REPLAY-007\",\n      \"mergeElapsedNanoseconds\": 14240375,\n      \"mergeGitCommandCount\": 1,\n      \"pathOverlapWaveCount\": 1,\n      \"plannerElapsedNanoseconds\": 1375632375,\n      \"plannerGitCommandCount\": 98,\n      \"plannerWaveCount\": 2,\n      \"replayResult\": \"equivalent-observed\",\n      \"scheduleCount\": 2,\n      \"serialWaveCount\": 2,\n      \"unsafeCandidate\": false\n    }\n  ],\n  \"scenarioCount\": 7,\n  \"thresholds\": {\n    \"differentHunkPathOverlapWaves\": 2,\n    \"differentHunkPlannerWaves\": 1,\n    \"falseCandidateCount\": 0,\n    \"threeOperationPlannerWaves\": 1,\n    \"threeOperationSerialWaves\": 3\n  },\n  \"thresholdsPassed\": true\n}\n"
+    },
+    {
+      "command": "python3 scripts/validate_contracts.py",
+      "exit_code": 0,
+      "stderr": "",
+      "stdout": "Contract corpus passed: legacy, 0.2 structure and finite semantic checks.\n"
+    }
+  ],
+  "platform": "Darwin",
+  "python": "3.13.11"
+}
