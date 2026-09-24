@@ -44,7 +44,7 @@ premise hidden inside the product.
 ## What works today
 
 Agent Braid is `0.1.0-alpha`. The current implementation requires Python 3.12,
-uses only the standard library at runtime and provides five local commands:
+uses only the standard library at runtime and provides seven local commands:
 
 | Command | Current capability |
 |---|---|
@@ -53,9 +53,14 @@ uses only the standard library at runtime and provides five local commands:
 | `agent-braid analyze-git <request.json>` | Observe stable local commit/worktree snapshots and produce an analysis plus a separate provenance artifact. |
 | `agent-braid plan-git <request.json> --evidence-output <path>` | Replay every admissible order of 2–4 immutable Git commits and write bounded evidence plus an advisory preparation plan. |
 | `agent-braid verify-git <evidence.json> --repository <path>` | Reconstruct patches and independently replay every recorded order. |
+| `agent-braid verify-plan <plan.json> --evidence <evidence.json> --repository <path>` | Verify a consultative plan against independently replayed evidence. |
+| `agent-braid prototype-git <request.json> --report-output <path>` | Compare bounded parallel patch preparation with serial integration in disposable local Git state. |
 
 Git preparation waves do not execute agents or authorize concurrent integration;
 every plan sets `executionAuthorization` to `false` and integration remains serial.
+The T013 prototype runs only allowlisted Git plumbing: patch preparation may
+overlap in isolated temporary indexes, while candidate and reference tree
+integration both remain serial. It writes no source-repository refs or files.
 
 The repository also contains versioned schemas, positive and negative fixtures,
 a bounded schedule laboratory, Git benchmarks, scientific controls and frozen

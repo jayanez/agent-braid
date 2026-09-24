@@ -134,23 +134,61 @@ remains open for later M2 increments:
 
 - **T009 — Thread-safe Git environment:** pass a sanitized environment directly
   through the M1 adapter instead of mutating process-global `os.environ`; add a
-  concurrent-caller regression.
-- **T010 — End-to-end resource bounds and diagnostics:** bound output while it
-  is produced, apply an overall replay budget including M1 provenance, and
+  concurrent-caller regression. Implemented; see `m2-followup-evidence.json`.
+- **T010 — End-to-end resource bounds and diagnostics:** bound captured output
+  while it is produced, apply an overall replay budget including M1 provenance, and
   distinguish patch rejection from timeout, output-limit and process-start
-  failures.
+  failures. Implemented; budget scope and checks are recorded in
+  `m2-followup-evidence.json`. Child-process RSS is not hard-limited, and the
+  temporary-data cap is sampled during a Git command; both remain explicit
+  resource risks for a future sandboxed prototype.
 - **T011 — Plan integrity:** add deterministic semantic validation or
   regeneration for plan artifacts, enforce cross-field consistency with
-  verified evidence, and retain `executionAuthorization: false`.
+  verified evidence, and retain `executionAuthorization: false`. Implemented
+  with `verify-plan`; see `m2-followup-evidence.json`.
 - **T012 — Parallel-integration contract:** specify the state, isolation,
   dependency, stale-input, conflict, verification and recovery conditions under
   which integration work could safely proceed in parallel, consistent with
-  Constitution Articles 6, 12 and 19.
+  Constitution Articles 6, 12 and 19. Proposed in ADR 0014 and
+  `docs/architecture/PARALLEL_INTEGRATION.md`; accepted for T013 by the founder
+  on 2026-09-24, bound by `t012-founder-review.json`.
 - **T013 — Bounded parallel-integration prototype and evaluation:** implement a
   gated prototype only after T012 is reviewed; compare it with serial
   integration on representative workloads, measure correctness and overhead,
   retain failed/inconclusive cases, and require human review before expanding
-  execution authority.
+  execution authority. In progress under the accepted local, read-only scope.
+
+#### T013 prototype resource profile
+
+The prototype accepts 2–4 operations, at most 16 changed paths and 256 KiB of
+aggregate patch data. It uses at most two concurrent Git workers, a 30-second
+end-to-end wall limit, 128 Git commands, 8 MiB captured output (2 MiB per
+command), 32 MiB sampled temporary data, and a 512 MiB address-space limit per
+Git child process. The temporary-data check samples every 50 ms, so a single
+in-flight write can overshoot before termination. It executes Git plumbing only;
+it runs no repository code, tests, hooks, agents, network actions or promotion.
+
+The profile is a conservative local fixture limit, not a general sandbox or
+production setting. Candidate and serial results remain separate from the
+source repository. Any unsupported platform that cannot enforce the child
+address-space limit fails closed.
+
+The accepted prototype exercises concurrent fixed-patch preparation in isolated
+temporary indexes. It computes the candidate combined tree and serial reference
+sequentially with `git merge-tree`; it does not exercise concurrent merging,
+repository code, or validation commands. The bounded evaluation uses two- and
+three-operation disjoint fixtures, different hunks in one file, a conflict, three
+repetitions per fixture, a serial reference, an independently computed
+path-overlap baseline, pairwise `git merge-tree` timing, and controlled
+wall-time, command-count, output, scratch and tree-verification failure cases.
+The additional Git-only declared final-tree check has a failed-validation
+control. In-flight time and scratch controls terminate an already started child;
+a graceful SIGTERM followed by a fresh CLI process checks cancellation, private
+scratch cleanup and source immutability. Results remain synthetic and local.
+The T013 task remains unchecked until independent human review. Concurrent tree
+merging, project validation, recovery after an uncatchable coordinator crash,
+and live-agent interleavings remain open M2 work and require an appropriately
+reviewed contract before the prototype scope or authority is broadened.
 
 These tasks deepen the residual risks identified in review and advance the
 project toward safer, more capable parallel integration. They are not complete

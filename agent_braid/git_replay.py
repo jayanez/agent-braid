@@ -10,11 +10,16 @@ import json
 import os
 from pathlib import Path
 import re
-import subprocess
 import tempfile
 
 from .analysis import _canonical, _digest
 from .git_adapter import InvalidGitAnalysis, analyze_git_with_provenance
+from .git_process import (
+    GitCommandBudget,
+    GitCommandFailure,
+    GitInfrastructureFailure,
+    run_git,
+)
 
 
 EVIDENCE_VERSION = "0.1.0-alpha"
@@ -24,7 +29,11 @@ EXECUTION = "isolated-index-patch-v1"
 MAX_OPERATIONS = 4
 MAX_PATHS = 64
 MAX_PATCH_BYTES = 1_048_576
-MAX_GIT_OUTPUT = 8_000_000
+MAX_GIT_OUTPUT = 8 * 1024 * 1024
+MAX_REPLAY_OUTPUT = 16 * 1024 * 1024
+MAX_REPLAY_SCRATCH = 64 * 1024 * 1024
+MAX_REPLAY_SECONDS = 120
+MAX_GIT_COMMANDS = 512
 GIT_TIMEOUT_SECONDS = 30
 OID = re.compile(r"^[0-9a-f]{40}$")
 SHA256 = re.compile(r"^sha256:[0-9a-f]{64}$")
@@ -32,6 +41,10 @@ SHA256 = re.compile(r"^sha256:[0-9a-f]{64}$")
 
 class InvalidGitReplay(ValueError):
     """A request is invalid or outside the bounded Git replay contract."""
+
+
+class GitPatchRejected(RuntimeError):
+    """A patch is incompatible with the current replay tree."""
 
 
 def _require(condition: bool, message: str) -> None:
@@ -62,30 +75,17 @@ def _sanitized_environment(home: Path) -> dict[str, str]:
 
 
 def _git(repo: Path, env: dict[str, str], *args: str,
-         input_bytes: bytes | None = None, allow_failure: bool = False) -> bytes:
+         budget: GitCommandBudget, input_bytes: bytes | None = None,
+         allow_failure: bool = False) -> bytes:
     try:
-        process = subprocess.run(
-            ["git", "-C", str(repo), *args], input=input_bytes,
-            capture_output=True, check=False, env=env,
-            timeout=GIT_TIMEOUT_SECONDS,
-        )
-    except subprocess.TimeoutExpired as exc:
-        raise InvalidGitReplay("Git command exceeded the 30-second limit") from exc
-    except OSError as exc:
-        raise InvalidGitReplay("Git command could not be started") from exc
-    _require(len(process.stdout) <= MAX_GIT_OUTPUT and len(process.stderr) <= MAX_GIT_OUTPUT,
-             "Git command output exceeds 8 MB")
-    if process.returncode and not allow_failure:
-        raise InvalidGitReplay("Git command failed: " + (args[0] if args else "unknown"))
-    if process.returncode and allow_failure:
-        return b""
+        process = run_git(repo, args, env=env, budget=budget, input_bytes=input_bytes,
+                          allow_failure=allow_failure,
+                          command_timeout=GIT_TIMEOUT_SECONDS)
+    except GitCommandFailure as exc:
+        if args and args[0] == "apply":
+            raise GitPatchRejected("fixed patch was rejected by git apply") from exc
+        raise InvalidGitReplay("Git command failed: " + (args[0] if args else "unknown")) from exc
     return process.stdout
-
-
-def _resolve(repo: Path, env: dict[str, str], revision: str) -> str:
-    value = _git(repo, env, "rev-parse", "--verify", f"{revision}^{{commit}}").decode().strip()
-    _require(bool(OID.fullmatch(value)), "repository must use 40-character Git commit IDs")
-    return value
 
 
 def _validate_request(value: object) -> dict:
@@ -198,13 +198,15 @@ def _mark_unsupported_binary_patches(
             reasons[identifier].append("binary-patch")
 
 
-def _patches(request: dict, provenance: dict, env: dict[str, str]) -> dict[str, bytes]:
+def _patches(request: dict, provenance: dict, env: dict[str, str],
+             budget: GitCommandBudget) -> dict[str, bytes]:
     root = Path(request["repository"]).expanduser().resolve()
     patches: dict[str, bytes] = {}
     aggregate = 0
     for item in provenance["operations"]:
         patch = _git(root, env, "diff", "--binary", "--no-ext-diff", "--no-textconv",
-                     "--no-renames", request["baseRevision"], item["resolvedSource"], "--")
+                     "--no-renames", request["baseRevision"], item["resolvedSource"], "--",
+                     budget=budget)
         expected = item["snapshot"]
         _require(expected == "sha256:" + hashlib.sha256(patch).hexdigest(),
                  "patch bytes do not match read-only Git provenance")
@@ -214,24 +216,27 @@ def _patches(request: dict, provenance: dict, env: dict[str, str]) -> dict[str, 
     return patches
 
 
-def _tree(repo: Path, env: dict[str, str]) -> str:
-    tree = _git(repo, env, "write-tree").decode().strip()
+def _tree(repo: Path, env: dict[str, str], budget: GitCommandBudget) -> str:
+    tree = _git(repo, env, "write-tree", budget=budget).decode().strip()
     _require(bool(OID.fullmatch(tree)), "unexpected Git tree object ID")
     return tree
 
 
 def _replay_all(request: dict, provenance: dict, patches: dict[str, bytes],
-                source_env: dict[str, str], temp_root: Path) -> list[dict]:
+                source_env: dict[str, str], temp_root: Path,
+                budget: GitCommandBudget) -> list[dict]:
     root = Path(request["repository"]).expanduser().resolve()
     scratch = temp_root / "scratch.git"
-    _git(temp_root, source_env, "init", "--bare", "--quiet", str(scratch))
+    _git(temp_root, source_env, "init", "--bare", "--quiet", str(scratch), budget=budget)
     scratch_env = dict(source_env)
     scratch_env["GIT_CONFIG_GLOBAL"] = os.devnull
     _git(scratch, scratch_env, "-c", "protocol.file.allow=always", "fetch",
          "--no-tags", "--no-recurse-submodules", "--depth=1", "--", str(root),
          provenance["baseCommit"],
-         *[operation["resolvedSource"] for operation in provenance["operations"]])
-    base_tree = _git(scratch, scratch_env, "rev-parse", f"{provenance['baseCommit']}^{{tree}}").decode().strip()
+         *[operation["resolvedSource"] for operation in provenance["operations"]],
+         budget=budget)
+    base_tree = _git(scratch, scratch_env, "rev-parse",
+                     f"{provenance['baseCommit']}^{{tree}}", budget=budget).decode().strip()
     _require(bool(OID.fullmatch(base_tree)), "unexpected base tree ID")
 
     result: list[dict] = []
@@ -239,29 +244,29 @@ def _replay_all(request: dict, provenance: dict, patches: dict[str, bytes],
         index_path = temp_root / f"schedule-{index}.index"
         schedule_env = dict(scratch_env)
         schedule_env["GIT_INDEX_FILE"] = str(index_path)
-        _git(scratch, schedule_env, "read-tree", provenance["baseCommit"])
+        _git(scratch, schedule_env, "read-tree", provenance["baseCommit"], budget=budget)
         steps = []
         failed = False
         for identifier in order:
-            before = _tree(scratch, schedule_env)
+            before = _tree(scratch, schedule_env, budget)
             patch = patches[identifier]
             if patch:
                 try:
                     _git(scratch, schedule_env, "apply", "--cached", "--binary",
-                         "--whitespace=nowarn", "-", input_bytes=patch)
-                except InvalidGitReplay:
+                         "--whitespace=nowarn", "-", input_bytes=patch, budget=budget)
+                except GitPatchRejected:
                     steps.append({"operationId": identifier, "inputTree": before,
                                   "outputTree": None, "status": "patch-rejected"})
                     failed = True
                     break
-            after = _tree(scratch, schedule_env)
+            after = _tree(scratch, schedule_env, budget)
             steps.append({"operationId": identifier, "inputTree": before,
                           "outputTree": after, "status": "applied"})
         if failed:
             result.append({"order": order, "status": "incomplete", "steps": steps,
                            "finalTree": None, "failure": "patch-rejected"})
         else:
-            final_tree = _tree(scratch, schedule_env)
+            final_tree = _tree(scratch, schedule_env, budget)
             result.append({"order": order, "status": "complete", "steps": steps,
                            "finalTree": final_tree, "failure": None})
         try:
@@ -299,26 +304,28 @@ def _build_evidence(request: dict) -> dict:
     with tempfile.TemporaryDirectory(prefix="agent-braid-git-replay-") as directory:
         temp_root = Path(directory)
         env = dict(_sanitized_environment(temp_root / "home"))
+        budget = GitCommandBudget(
+            temp_root=temp_root,
+            wall_seconds=MAX_REPLAY_SECONDS,
+            max_commands=MAX_GIT_COMMANDS,
+            max_output_bytes=MAX_REPLAY_OUTPUT,
+            max_command_output_bytes=MAX_GIT_OUTPUT,
+            max_scratch_bytes=MAX_REPLAY_SCRATCH,
+        )
         try:
             # M1 remains the authority for request normalization and Git provenance.
-            # Restrict all of its Git subprocesses to local read-only configuration.
-            # M1 currently reads its subprocess environment from os.environ.
-            # Restore it even if analysis raises so callers keep their config.
-            old = os.environ.copy()
-            os.environ.clear()
-            os.environ.update(env)
-            try:
-                report, provenance = analyze_git_with_provenance(normalized)
-            finally:
-                os.environ.clear()
-                os.environ.update(old)
+            # Its subprocesses receive this request's sanitized environment and
+            # shared end-to-end budget directly; process-global state is untouched.
+            report, provenance = analyze_git_with_provenance(
+                normalized, env=env, budget=budget
+            )
 
             normalized["baseRevision"] = provenance["baseCommit"]
             supported, reasons, path_count = _supported_operations(provenance)
             _require(path_count <= MAX_PATHS, "changed path count exceeds 64")
-            patches = _patches(normalized, provenance, env)
+            patches = _patches(normalized, provenance, env, budget)
             _mark_unsupported_binary_patches(provenance, patches, supported, reasons)
-            schedules = _replay_all(normalized, provenance, patches, env, temp_root)
+            schedules = _replay_all(normalized, provenance, patches, env, temp_root, budget)
             operations = []
             resolved_by_id = {item["instanceId"]: item for item in provenance["operations"]}
             for operation in normalized["operations"]:
@@ -338,7 +345,8 @@ def _build_evidence(request: dict) -> dict:
                 "repositoryId": provenance["repositoryId"],
                 "baseCommit": provenance["baseCommit"],
                 "baseTree": _git(source_root, env, "rev-parse",
-                                  f"{provenance['baseCommit']}^{{tree}}").decode().strip(),
+                                  f"{provenance['baseCommit']}^{{tree}}",
+                                  budget=budget).decode().strip(),
                 "operations": operations,
                 "analysisDigest": report["analysisId"],
                 "provenanceDigest": _hash_digest(provenance),
@@ -349,6 +357,7 @@ def _build_evidence(request: dict) -> dict:
                 "limits": [
                     "Fixed commit patches and the declared dependency graph only.",
                     "Tracked paths, modes and blob identities only; no project tests or semantic effects.",
+                    "End-to-end Git execution is limited to 120 seconds, 512 commands, 16 MiB output and 64 MiB temporary data.",
                     "Finite observation does not authorize concurrency or establish task correctness.",
                 ],
                 "executionAuthorization": False,
@@ -418,6 +427,50 @@ def _plan(bundle: dict, verification: dict) -> dict:
     }
     plan["planDigest"] = _hash_digest(plan)
     return plan
+
+
+def _plan_digest(plan: dict) -> str:
+    payload = dict(plan)
+    payload.pop("planDigest", None)
+    return _hash_digest(payload)
+
+
+def _validate_plan_shape(value: object) -> dict:
+    _require(isinstance(value, dict), "plan must be an object")
+    required = {
+        "gitPlanVersion", "evidenceDigest", "verificationStatus", "replayResult",
+        "mode", "waves", "fallbackOrder", "conditions", "executionAuthorization",
+        "limits", "planDigest",
+    }
+    _require(set(value) == required, "invalid plan fields")
+    _require(value["gitPlanVersion"] == PLAN_VERSION, "unsupported plan version")
+    for field in ("evidenceDigest", "planDigest"):
+        _require(isinstance(value[field], str) and bool(SHA256.fullmatch(value[field])),
+                 f"invalid plan {field}")
+    _require(value["verificationStatus"] in {"verified", "unverified", "rejected"},
+             "invalid plan verification status")
+    _require(value["replayResult"] in {"equivalent-observed", "divergent", "inconclusive"},
+             "invalid plan replay result")
+    _require(value["mode"] in {"candidate-preparation-waves", "serial-fallback", "manual-review"},
+             "invalid plan mode")
+    _require(value["executionAuthorization"] is False,
+             "a Git plan cannot authorize execution")
+    _require(isinstance(value["waves"], list)
+             and all(isinstance(wave, list) and wave
+                     and all(isinstance(item, str) and item for item in wave)
+                     for wave in value["waves"]), "invalid plan waves")
+    order = value["fallbackOrder"]
+    _require(order is None or isinstance(order, list)
+             and all(isinstance(item, str) and item for item in order),
+             "invalid plan fallback order")
+    _require(isinstance(value["conditions"], list) and value["conditions"]
+             and all(isinstance(item, str) and item for item in value["conditions"]),
+             "invalid plan conditions")
+    _require(isinstance(value["limits"], list)
+             and all(isinstance(item, str) and item for item in value["limits"]),
+             "invalid plan limits")
+    _require(value["planDigest"] == _plan_digest(value), "plan digest mismatch")
+    return value
 
 
 def produce(request: object) -> tuple[dict, dict]:
@@ -532,6 +585,8 @@ def verify(bundle: object, repository: str) -> dict:
         status = "unverified" if any(token in text.lower() for token in
                                       ("unavailable", "not found", "could not be started")) else "rejected"
         return {"status": status, "reason": text}
+    except GitInfrastructureFailure as exc:
+        return {"status": "unverified", "category": exc.category, "reason": str(exc)}
     except (KeyError, TypeError, ValueError, OSError, RecursionError) as exc:
         return {"status": "rejected", "reason": str(exc)}
 
@@ -544,3 +599,32 @@ def plan(bundle: object, repository: str) -> dict:
         return _plan(bundle, verification)
     except (InvalidGitReplay, KeyError, TypeError, ValueError) as exc:
         raise InvalidGitReplay(str(exc)) from exc
+
+
+def verify_plan(plan_value: object, bundle: object, repository: str) -> dict:
+    """Accept a plan only when it is the deterministic plan for verified evidence."""
+    try:
+        candidate = _validate_plan_shape(plan_value)
+        _validate_bundle_shape(bundle)
+        verification = verify(bundle, repository)
+        if verification.get("status") != "verified":
+            return {
+                "status": verification.get("status", "rejected"),
+                "category": verification.get("category"),
+                "reason": "plan evidence is not verified: " + verification.get("reason", "unknown"),
+            }
+        expected = _plan(bundle, verification)
+        if candidate != expected:
+            return {"status": "rejected", "reason": "plan does not match the regenerated evidence plan"}
+        return {
+            "status": "verified",
+            "reason": "plan digest and all fields match independently replayed evidence",
+            "checkedClaim": {
+                "property": "plan-evidence-consistency",
+                "evidenceDigest": candidate["evidenceDigest"],
+                "mode": candidate["mode"],
+                "executionAuthorization": False,
+            },
+        }
+    except (InvalidGitReplay, KeyError, TypeError, ValueError, RecursionError) as exc:
+        return {"status": "rejected", "reason": str(exc)}

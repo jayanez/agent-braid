@@ -126,17 +126,21 @@ def _merge_waves(repo: Path, operation_ids: list[str], revisions: dict[str, str]
 
 def _run_planner(request: dict) -> tuple[dict, dict, int, int]:
     calls = 0
-    original = subprocess.run
+    original = subprocess.Popen
 
     def counted(*args, **kwargs):
         nonlocal calls
         command = args[0] if args else kwargs.get("args", [])
-        if isinstance(command, (list, tuple)) and command and command[0] == "git":
+        if (isinstance(command, (list, tuple)) and command
+                and Path(command[0]).name == "git"):
             calls += 1
         return original(*args, **kwargs)
 
     started = time.perf_counter_ns()
-    with patch("subprocess.run", side_effect=counted):
+    # The resource-bounded runner uses Popen so it can cap streamed output and
+    # kill the process group. Count at that boundary to include every planner
+    # Git process without counting fixture or baseline setup commands.
+    with patch("agent_braid.git_process.subprocess.Popen", side_effect=counted):
         bundle, plan = produce(request)
     elapsed = time.perf_counter_ns() - started
     return bundle, plan, elapsed, calls

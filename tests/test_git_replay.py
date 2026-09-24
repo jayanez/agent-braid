@@ -1,7 +1,9 @@
 # SPDX-License-Identifier: AGPL-3.0-only
 
 from copy import deepcopy
+from concurrent.futures import ThreadPoolExecutor
 import json
+import os
 from pathlib import Path
 import subprocess
 import sys
@@ -13,9 +15,19 @@ from jsonschema import Draft202012Validator
 from agent_braid.git_replay import (
     InvalidGitReplay,
     _bundle_digest,
+    _plan_digest,
     plan as plan_git,
     produce,
     verify,
+    verify_plan,
+)
+from agent_braid.git_process import (
+    GitCommandBudget,
+    GitExecutionTimeout,
+    GitOutputLimitExceeded,
+    GitProcessStartFailure,
+    GitScratchLimitExceeded,
+    run_git,
 )
 from scripts.run_git_replay_benchmark import run as run_benchmark
 
@@ -105,6 +117,69 @@ class GitReplayTests(unittest.TestCase):
         self.assertFalse(plan["executionAuthorization"])
         self.assertNotIn(str(self.repo), json.dumps(bundle))
         self.assertEqual(verify(bundle, str(self.repo))["status"], "verified")
+
+    def test_concurrent_replays_do_not_mutate_process_environment(self):
+        original_environment = os.environ.copy()
+        request = self.request([self.left, self.right, self.third])
+        with ThreadPoolExecutor(max_workers=4) as executor:
+            results = list(executor.map(lambda _: produce(request), range(4)))
+        self.assertEqual(os.environ.copy(), original_environment)
+        self.assertTrue(all(item == results[0] for item in results[1:]))
+
+    def test_resource_budget_bounds_time_output_temp_data_and_start_errors(self):
+        environment = {
+            "PATH": os.environ.get("PATH", "/usr/bin:/bin"),
+            "HOME": str(self.root),
+            "LC_ALL": "C",
+        }
+        with self.subTest("time"):
+            temp_root = self.root / "budget-time"
+            temp_root.mkdir()
+            budget = GitCommandBudget(temp_root=temp_root, wall_seconds=0)
+            with self.assertRaises(GitExecutionTimeout):
+                run_git(self.repo, ("status", "--short"), env=environment, budget=budget)
+        with self.subTest("streamed output"):
+            temp_root = self.root / "budget-output"
+            temp_root.mkdir()
+            budget = GitCommandBudget(
+                temp_root=temp_root, max_output_bytes=32, max_command_output_bytes=32
+            )
+            with self.assertRaises(GitOutputLimitExceeded):
+                run_git(self.repo, ("show", self.left), env=environment, budget=budget)
+        with self.subTest("temporary data"):
+            temp_root = self.root / "budget-scratch"
+            temp_root.mkdir()
+            scratch = temp_root / "over-budget"
+            scratch.mkdir()
+            (scratch / "large.bin").write_bytes(b"x" * 128)
+            budget = GitCommandBudget(temp_root=temp_root, max_scratch_bytes=64)
+            with self.assertRaises(GitScratchLimitExceeded):
+                run_git(self.repo, ("status", "--short"), env=environment, budget=budget)
+        with self.subTest("process start"):
+            temp_root = self.root / "budget-start"
+            temp_root.mkdir()
+            budget = GitCommandBudget(temp_root=temp_root)
+            with self.assertRaises(GitProcessStartFailure):
+                run_git(self.repo, ("status", "--short"), env={"PATH": ""}, budget=budget)
+
+    def test_plan_verifier_regenerates_from_verified_evidence(self):
+        bundle, plan = produce(self.request())
+        self.assertEqual(verify_plan(plan, bundle, str(self.repo))["status"], "verified")
+
+        changed = deepcopy(plan)
+        changed["waves"] = [["op-0"], ["op-1"]]
+        changed["planDigest"] = _plan_digest(changed)
+        result = verify_plan(changed, bundle, str(self.repo))
+        self.assertEqual(result["status"], "rejected")
+        self.assertIn("regenerated", result["reason"])
+
+        bad_digest = deepcopy(plan)
+        bad_digest["planDigest"] = "sha256:" + "0" * 64
+        self.assertEqual(verify_plan(bad_digest, bundle, str(self.repo))["status"], "rejected")
+
+        changed_evidence = deepcopy(bundle)
+        changed_evidence["evidenceDigest"] = "sha256:" + "0" * 64
+        self.assertEqual(verify_plan(plan, changed_evidence, str(self.repo))["status"], "rejected")
 
     def test_evidence_is_canonical_for_input_operation_order(self):
         request = self.request([self.left, self.right, self.third])
@@ -261,6 +336,7 @@ class GitReplayTests(unittest.TestCase):
         request = self.request()
         request_path = self.root / "request.json"
         evidence_path = self.root / "evidence.json"
+        plan_path = self.root / "plan.json"
         request_path.write_text(json.dumps(request), encoding="utf-8")
         result = subprocess.run(
             [sys.executable, "-m", "agent_braid", "plan-git", str(request_path),
@@ -270,6 +346,7 @@ class GitReplayTests(unittest.TestCase):
         self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
         plan = json.loads(result.stdout)
         bundle = json.loads(evidence_path.read_text(encoding="utf-8"))
+        plan_path.write_text(json.dumps(plan), encoding="utf-8")
         Draft202012Validator(json.loads((ROOT / "schemas/0.1.0-alpha/git-plan.schema.json").read_text())).validate(plan)
         Draft202012Validator(json.loads((ROOT / "schemas/0.1.0-alpha/git-replay-evidence.schema.json").read_text())).validate(bundle)
         verified = subprocess.run(
@@ -278,6 +355,14 @@ class GitReplayTests(unittest.TestCase):
         )
         self.assertEqual(verified.returncode, 0, verified.stdout + verified.stderr)
         self.assertEqual(json.loads(verified.stdout)["status"], "verified")
+        plan_verified = subprocess.run(
+            [sys.executable, "-m", "agent_braid", "verify-plan", str(plan_path),
+             "--evidence", str(evidence_path), "--repository", str(self.repo)],
+            cwd=ROOT, capture_output=True, text=True,
+        )
+        self.assertEqual(plan_verified.returncode, 0,
+                         plan_verified.stdout + plan_verified.stderr)
+        self.assertEqual(json.loads(plan_verified.stdout)["status"], "verified")
 
 
 if __name__ == "__main__":
