@@ -1,0 +1,53 @@
+{
+  "recordVersion": "agent-braid-m2-t013-clean-room-reproduction-1",
+  "candidateCommit": "db30bc3cd8ddcec68ce2a161a7b37c105b0daf85",
+  "candidateTree": "32c3c41d3c7a5d480cfcc24f9fbcf68b9fc58d61",
+  "cleanCheckout": true,
+  "sourceRepositoryUnchanged": true,
+  "containerImageId": "sha256:edddb1cbcbccb0e1af6505f9ff9938905da6f79303c97d1d12092ef61508f005",
+  "network": "none",
+  "readOnlySourceMount": true,
+  "commands": [
+    {
+      "command": "git clone --no-local --no-hardlinks --branch 012-m2-git-replay-planner <local-worktree> <clean-checkout>",
+      "exitCode": 0
+    },
+    {
+      "command": "git fsck --full --no-reflogs --unreachable",
+      "exitCode": 0,
+      "unreachableObjects": 0
+    },
+    {
+      "command": "python3.13 scripts/validate_spec_kit.py",
+      "exitCode": 0
+    },
+    {
+      "command": "sh scripts/docker/t013/run-validation.sh t013 <artifact-directory>",
+      "exitCode": 0,
+      "prototypeTestsRun": 17,
+      "prototypeTestsPassed": 16,
+      "prototypeTestsSkipped": 1
+    },
+    {
+      "command": "sh scripts/docker/t013/run-validation.sh pr",
+      "exitCode": 0,
+      "fullTestsRun": 163,
+      "fullTestsPassed": 161,
+      "fullTestsSkipped": 2
+    }
+  ],
+  "committedBenchmarkPath": "specs/012-m2-git-replay-planner/m2-followup-t013-benchmark.json",
+  "committedBenchmarkSha256": "3de77345ce992733f3298445a39a95d9a92e37fc0bade35ef2ad2c635d86cb4f",
+  "reproducedBenchmarkPath": "specs/012-m2-git-replay-planner/t013-clean-room-benchmark.json",
+  "reproducedBenchmarkSha256": "d982334c8d12e7ccc698b60b1427afa64a2a42b94f8be4e66de6add7be088a6e",
+  "comparedInvariantSha256": "5b4344d8baeff67da4b0b43e27c2918acccdd6185c3bef0e5452dcd303532bec",
+  "benchmarkInvariantsMatched": true,
+  "timingsComparedForEquality": false,
+  "executionAuthorization": false,
+  "promotionPerformed": false,
+  "limits": [
+    "The reproduction compares statuses, waves, controls, source immutability, resource profile and execution flags; elapsed times and report digests are expected to vary.",
+    "The clean checkout is local to this Mac, and the corpus remains synthetic Git-only evidence.",
+    "Passing automated checks does not complete independent human review or close M2."
+  ]
+}

@@ -1,0 +1,297 @@
+{
+  "recordVersion": "agent-braid-m2-t013-review-2",
+  "feature": "T013 bounded parallel-integration prototype",
+  "reviewStatus": "pending-human-review",
+  "reviewer": null,
+  "reviewDate": null,
+  "candidate": {
+    "branch": "012-m2-git-replay-planner",
+    "baseCommit": "c8d3d078b529ede9da108a11ba1b3d0de0f01578",
+    "workingTreeCommitted": true,
+    "fingerprintAlgorithm": "SHA-256 over canonical UTF-8 JSON of the sorted file manifest below; canonical JSON uses sorted keys and separators comma/colon with no whitespace.",
+    "fingerprintSha256": "2f2a84d91b79af0b593df5518b158cac658f82d98b08f548e28ff2dc4e6503d9",
+    "manifestExcludes": [
+      "specs/012-m2-git-replay-planner/t013-review.json",
+      "specs/012-m2-git-replay-planner/t013-reproduction.json",
+      "specs/012-m2-git-replay-planner/t013-clean-room-benchmark.json"
+    ],
+    "files": [
+      {
+        "path": "README.md",
+        "gitStatus": "",
+        "sha256": "165e37a87bdf043479462e06a8eb0c270a7ab440e4d2fed9601518f717ccfd6b"
+      },
+      {
+        "path": "ROADMAP.md",
+        "gitStatus": "",
+        "sha256": "846380b9db82b35b7b2553500897b8595a324dacfa442e151d70266796df8d01"
+      },
+      {
+        "path": "agent_braid/cli.py",
+        "gitStatus": "",
+        "sha256": "fa3f65c981c8b0ace7c007b3061456980fe4bdda175dcfbf3480debf3a3f900c"
+      },
+      {
+        "path": "agent_braid/git_adapter.py",
+        "gitStatus": "",
+        "sha256": "4548eb96849e2d0ed1eaefc53579d065651b00a2c6ae5b1aef6e2bdc5ae3dc45"
+      },
+      {
+        "path": "agent_braid/git_exec.py",
+        "gitStatus": "",
+        "sha256": "ce5e348f355ca5f73f1095ee4cbab8779c224cce7c8ac326a5376be69d416853"
+      },
+      {
+        "path": "agent_braid/git_integration_prototype.py",
+        "gitStatus": "",
+        "sha256": "382b5b88a6002e7481e43a6762a236ab2045e8d9ec17ba692fb8014c5de75483"
+      },
+      {
+        "path": "agent_braid/git_process.py",
+        "gitStatus": "",
+        "sha256": "51175fd2b3cbbd1f622d654b809051e7e42cab58d97ef855e7a8b4b7b2d9718a"
+      },
+      {
+        "path": "agent_braid/git_replay.py",
+        "gitStatus": "",
+        "sha256": "a4e6dfc683a6d0b336abfa8e4c617c911dfda24ef493c5aba031e687e247dc1d"
+      },
+      {
+        "path": "docs/adr/0013-isolated-git-replay-and-advisory-planning.md",
+        "gitStatus": "",
+        "sha256": "1c291cb527825864520075edc2ae7c84bafb07f66790f9fc29b0149a07024d24"
+      },
+      {
+        "path": "docs/adr/0014-parallel-integration-contract.md",
+        "gitStatus": "",
+        "sha256": "2481e93cf1e392887f2ee74e39efec7dfee0a9c52340fccd491903fd4292f679"
+      },
+      {
+        "path": "docs/architecture/GIT_REPLAY.md",
+        "gitStatus": "",
+        "sha256": "365fe948089b374856d1423d69b73d1e3efa540b9d1e88f3fc5439c91d8a031d"
+      },
+      {
+        "path": "docs/architecture/PARALLEL_INTEGRATION.md",
+        "gitStatus": "",
+        "sha256": "14a55efe552cb0b5a90e8112260af681b303b9ce2e0fd0b49c7024ab4b15843b"
+      },
+      {
+        "path": "docs/development/github-tracking.json",
+        "gitStatus": "",
+        "sha256": "181b6236d8810d37ec9fbd4e5733169eed86214fde20eb67e0cf66f76e225714"
+      },
+      {
+        "path": "examples/analysis/git-replay-benchmark.json",
+        "gitStatus": "",
+        "sha256": "d503f0534cf703978e85b679af67e39fb4d68641d7ffdaec9f78a7b4f7f64d9f"
+      },
+      {
+        "path": "schemas/0.1.0-alpha/git-integration-prototype-report.schema.json",
+        "gitStatus": "",
+        "sha256": "417e5ae3f27083dfa0592589bf229fa9db8bd66cd20a29d472d9c0a83509b22e"
+      },
+      {
+        "path": "schemas/0.1.0-alpha/git-integration-prototype-request.schema.json",
+        "gitStatus": "",
+        "sha256": "3dcde3972f3ab99939bec923416e5be57f9a6c0a2fc73a281830a20f6998222b"
+      },
+      {
+        "path": "schemas/0.1.0-alpha/git-plan.schema.json",
+        "gitStatus": "",
+        "sha256": "3519d38b395974c3261fbb9243dd2fcbf1d0f08086c2164d64d7ebfb9a726972"
+      },
+      {
+        "path": "schemas/0.1.0-alpha/git-replay-evidence.schema.json",
+        "gitStatus": "",
+        "sha256": "46560e30af74daf22d816130590d7bc596a9ae4fe1060ff4709e76f19487d137"
+      },
+      {
+        "path": "scripts/capture_feature_evidence.py",
+        "gitStatus": "",
+        "sha256": "4f85d3cd8f1ea4b2f313604d30a35384e337f0cfb9eadd847dee10ee33f48ba9"
+      },
+      {
+        "path": "scripts/docker/t013/Dockerfile",
+        "gitStatus": "",
+        "sha256": "d96d3e097d01b98bb7cc40f5575cb0d1b7b23a4ae66a6882b41196b0284b12f5"
+      },
+      {
+        "path": "scripts/docker/t013/apt-packages.lock",
+        "gitStatus": "",
+        "sha256": "db23b2947328c4407d0d055c4ef9081e584b0662ec0102a8b2d5281457bd335c"
+      },
+      {
+        "path": "scripts/docker/t013/build-image.sh",
+        "gitStatus": "",
+        "sha256": "17e2bb76a0981e1ba482cf00f6450abc7ab12a8a29c133bdd17772ff95dbe046"
+      },
+      {
+        "path": "scripts/docker/t013/constraints-t013.txt",
+        "gitStatus": "",
+        "sha256": "b12b51229e18fa1ca35c7bd1404f2359debb1d877203c1e37bab685111accad5"
+      },
+      {
+        "path": "scripts/docker/t013/run-validation.sh",
+        "gitStatus": "",
+        "sha256": "8be31a5f99e480fb651c9b6a163e4b8a5a7e28bc8167964b6b449c1636c597f2"
+      },
+      {
+        "path": "scripts/docker/t013/verify-resource-profile.py",
+        "gitStatus": "",
+        "sha256": "a4440d79cf1adc042c5bdd4c01a3e65dc59909cee966947b9a64fbbeffb48aab"
+      },
+      {
+        "path": "scripts/run_git_integration_benchmark.py",
+        "gitStatus": "",
+        "sha256": "029bd3a85c60d9cdb9549921cce54364e7ed79b71ae27711cead2f4c8fa50fb5"
+      },
+      {
+        "path": "scripts/run_git_replay_benchmark.py",
+        "gitStatus": "",
+        "sha256": "c0e215a53074c581fa0c263cc56c6c33b7809543c7f222726891796744a2fab8"
+      },
+      {
+        "path": "scripts/validate_change.py",
+        "gitStatus": "",
+        "sha256": "02a79313cf142221e875952a25530cf86eae30d8e651e5f3bafaef4c78533ad3"
+      },
+      {
+        "path": "scripts/validate_repository.py",
+        "gitStatus": "",
+        "sha256": "44b035daad6771a97ac7a57dfebcc5bc24b9a73a5c8620b1b338826228fa4d99"
+      },
+      {
+        "path": "specs/011-adoption-pathline/assurance.json",
+        "gitStatus": "",
+        "sha256": "04a5bb02c717627d2b312be81dfa96b25773b87be7d5fdfdf562b3e70fbc5fb6"
+      },
+      {
+        "path": "specs/012-m2-git-replay-planner/assurance.json",
+        "gitStatus": "",
+        "sha256": "099e1357207c65ded7dd410c6e5eb42b961b64ac34df7fc6218c462a24ae2184"
+      },
+      {
+        "path": "specs/012-m2-git-replay-planner/evidence.json",
+        "gitStatus": "",
+        "sha256": "cc242eb32ae0b3575318a57ef035854a80928e0137855187df99527efd93a43f"
+      },
+      {
+        "path": "specs/012-m2-git-replay-planner/founder-review.json",
+        "gitStatus": "",
+        "sha256": "05f6bc76309799fe47f71acc3fa8aaa725b2919b0da25cd9cfae135c128af4fb"
+      },
+      {
+        "path": "specs/012-m2-git-replay-planner/m2-followup-benchmark.json",
+        "gitStatus": "",
+        "sha256": "b2f80c5691781ed766fa3c8228a030a983dc5313d56193255ad46bd59a07b46f"
+      },
+      {
+        "path": "specs/012-m2-git-replay-planner/m2-followup-evidence.json",
+        "gitStatus": "",
+        "sha256": "314757fc87256cfa05b571a728b312fa75d7aee902dd6271f361086665689379"
+      },
+      {
+        "path": "specs/012-m2-git-replay-planner/m2-followup-t013-benchmark.json",
+        "gitStatus": "",
+        "sha256": "3de77345ce992733f3298445a39a95d9a92e37fc0bade35ef2ad2c635d86cb4f"
+      },
+      {
+        "path": "specs/012-m2-git-replay-planner/plan.md",
+        "gitStatus": "",
+        "sha256": "7f2c158daa0c3509216e87b9601c56e9f94d7fa5a0ea76098810d36c6003fdd5"
+      },
+      {
+        "path": "specs/012-m2-git-replay-planner/quickstart.md",
+        "gitStatus": "",
+        "sha256": "72d76ce0157ef8025ab14acc7adea22fd127a2c6b84808e96d9b69f271be6a60"
+      },
+      {
+        "path": "specs/012-m2-git-replay-planner/reproduction.json",
+        "gitStatus": "",
+        "sha256": "dae880b189a3d90f3f728be7897a971779ea21893ca9a4f3f3795b0660b86367"
+      },
+      {
+        "path": "specs/012-m2-git-replay-planner/spec.md",
+        "gitStatus": "",
+        "sha256": "2b7ddfa16cd033ca0c3103cf010234297dcfc81e081e0af1d1b186483c83e1a5"
+      },
+      {
+        "path": "specs/012-m2-git-replay-planner/t012-founder-review.json",
+        "gitStatus": "",
+        "sha256": "193e33b8670aad7d0eee6e044cf48463615208c85bd6eb07a41c88a25bfa4e48"
+      },
+      {
+        "path": "specs/012-m2-git-replay-planner/tasks.md",
+        "gitStatus": "",
+        "sha256": "faff99235116c831414e705b4d32b494eb9074f4a386c77e11b5ca7dcf071475"
+      },
+      {
+        "path": "tests/test_git_integration_prototype.py",
+        "gitStatus": "",
+        "sha256": "89bd7ae2945da5e40749c493ed8d5f4dd7f5b72a459d28088c6fc7dae80ee53f"
+      },
+      {
+        "path": "tests/test_git_replay.py",
+        "gitStatus": "",
+        "sha256": "cd9852ceeaca5207ecd35e31a848564ba80149370bdeda231172a123427cd7fd"
+      },
+      {
+        "path": "tests/test_github_tracking.py",
+        "gitStatus": "",
+        "sha256": "33c4ca07e782c2c72da82e7fc55a2bbe32c3536631e086c38cdc64a2f84d023d"
+      },
+      {
+        "path": "tests/test_validation_profiles.py",
+        "gitStatus": "",
+        "sha256": "8e54776e32ff41cb8849bdf04448aa53911d9096bf6e9048a539864096c67ce2"
+      }
+    ],
+    "commit": "db30bc3cd8ddcec68ce2a161a7b37c105b0daf85",
+    "tree": "32c3c41d3c7a5d480cfcc24f9fbcf68b9fc58d61"
+  },
+  "reviewedEvidence": {
+    "benchmarkPath": "specs/012-m2-git-replay-planner/m2-followup-t013-benchmark.json",
+    "benchmarkSha256": "3de77345ce992733f3298445a39a95d9a92e37fc0bade35ef2ad2c635d86cb4f",
+    "evidencePath": "specs/012-m2-git-replay-planner/m2-followup-evidence.json",
+    "scope": "T013 local read-only Git plumbing prototype; candidate patch preparation is concurrent and tree integration remains serial.",
+    "evidenceSha256": "314757fc87256cfa05b571a728b312fa75d7aee902dd6271f361086665689379",
+    "reproductionPath": "specs/012-m2-git-replay-planner/t013-reproduction.json",
+    "reproductionSha256": "3ca74d69bb6cceaa6665e39a1a62a8f022e0292e349c7a718162d4db4b95ffbb",
+    "cleanRoomBenchmarkPath": "specs/012-m2-git-replay-planner/t013-clean-room-benchmark.json",
+    "cleanRoomBenchmarkSha256": "d982334c8d12e7ccc698b60b1427afa64a2a42b94f8be4e66de6add7be088a6e"
+  },
+  "reviewChecklist": [
+    {
+      "id": "R1",
+      "claim": "The exact committed candidate and both benchmark artifacts bind the stated hashes; a clean clone has no unreachable objects and remains unchanged after reproduction."
+    },
+    {
+      "id": "R2",
+      "claim": "Eligible synthetic fixtures match the serial tracked tree. Conflicts, candidate/serial divergence and a failed declared Git tree check stay inconclusive with no execution or promotion authority."
+    },
+    {
+      "id": "R3",
+      "claim": "The Linux container enforces the 512 MiB Git child address-space cap. Preflight budgets reject and controlled in-flight timeout, scratch and cancellation kill their child processes."
+    },
+    {
+      "id": "R4",
+      "claim": "Graceful SIGTERM leaves no partial report or private scratch; a fresh process reproduces a matching result without changing source Git state. Uncatchable-crash recovery is not covered."
+    },
+    {
+      "id": "R5",
+      "claim": "Three-run timings, Git commands, pairwise merge-tree and path-overlap baselines are reported as synthetic measurements; they do not establish program semantics or production speedup."
+    },
+    {
+      "id": "R6",
+      "claim": "The accepted scope stays Git-only, local and read-only. No repository code, project checks, agents, external effects, concurrent tree merging or result promotion were authorized or exercised. M2 remains open."
+    }
+  ],
+  "decision": null,
+  "decisionRationale": null,
+  "independentValidation": "pending-human-review",
+  "executionAuthorization": false,
+  "promotionPerformed": false,
+  "m2Closure": "remains-open",
+  "assuranceBoundary": "The original M2 first-cut Spec Kit assurance remains historically bound to its approved commit. This T013 review packet binds the later local candidate and reproduction without changing that earlier approval."
+}
