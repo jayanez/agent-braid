@@ -40,14 +40,13 @@ integration. They do not authorize execution or close M2.
   including isolation, dependencies, stale inputs, conflicts, resource limits,
   verification and recovery. Founder acceptance is recorded in
   `t012-founder-review.json`.
-- [ ] T013 (M2-PARALLEL-02): implement and benchmark a bounded parallel-
+- [x] T013 (M2-PARALLEL-02): implement and benchmark a bounded parallel-
   integration prototype after T012 review; retain negative cases and require
-  human review before widening execution authority. **Implementation and
-  bounded evaluation ready for independent human review:** see
+  human review before widening execution authority. **Scoped founder review
+  accepted for candidate `db30bc3` and checklist R1–R6:** see
   `m2-followup-t013-benchmark.json`, `m2-followup-evidence.json` and the
-  review packet in `t013-review.json`. The checked-in prototype remains local and
-  read-only; promotion and execution authority remain false. Leave this task
-  unchecked until the exact candidate and evidence receive human review.
+  decision in `t013-review.json`. The checked-in prototype remains local and
+  read-only; promotion and execution authority remain false.
 
 The T009–T013 implementation and obtained evidence are recorded in
 `m2-followup-evidence.json`. T012 acceptance is limited to the reviewed hashes
@@ -64,7 +63,8 @@ Git tracked-tree check, in-flight child termination and graceful coordinator
 stop/fresh replay. Its synthetic
 measurements and limits are recorded in `m2-followup-t013-benchmark.json` and
 `m2-followup-evidence.json`. This closes the macOS resource-validation blocker and
-the bounded automated evaluation. Independent human review is pending. Concurrent
+the bounded automated evaluation. Scoped founder human review is recorded in
+`t013-review.json`; separate independent validation remains pending. Concurrent
 tree merging, project validation commands, recovery after uncatchable crashes and
 live-agent interleavings remain outside this accepted read-only T013 profile;
 M2 remains open.

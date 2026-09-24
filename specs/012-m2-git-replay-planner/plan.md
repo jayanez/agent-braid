@@ -156,7 +156,9 @@ remains open for later M2 increments:
   gated prototype only after T012 is reviewed; compare it with serial
   integration on representative workloads, measure correctness and overhead,
   retain failed/inconclusive cases, and require human review before expanding
-  execution authority. In progress under the accepted local, read-only scope.
+  execution authority. Completed for the accepted local, read-only Git scope
+  and candidate `db30bc3`; see `t013-review.json`. This does not expand
+  execution authority or close M2.
 
 #### T013 prototype resource profile
 
@@ -185,11 +187,13 @@ The additional Git-only declared final-tree check has a failed-validation
 control. In-flight time and scratch controls terminate an already started child;
 a graceful SIGTERM followed by a fresh CLI process checks cancellation, private
 scratch cleanup and source immutability. Results remain synthetic and local.
-The T013 task remains unchecked until independent human review. Concurrent tree
+T013 scoped founder human review accepted R1–R6 for candidate `db30bc3` on
+2026-09-24; separate independent validation remains pending. Concurrent tree
 merging, project validation, recovery after an uncatchable coordinator crash,
 and live-agent interleavings remain open M2 work and require an appropriately
 reviewed contract before the prototype scope or authority is broadened.
 
 These tasks deepen the residual risks identified in review and advance the
-project toward safer, more capable parallel integration. They are not complete
+project toward safer, more capable parallel integration. T009–T013 are complete
+within their recorded scopes; the remaining M2 risks and capabilities are open
 and do not change the accepted first-cut evidence.

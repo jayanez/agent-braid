@@ -1,9 +1,13 @@
 {
   "recordVersion": "agent-braid-m2-t013-review-2",
   "feature": "T013 bounded parallel-integration prototype",
-  "reviewStatus": "pending-human-review",
-  "reviewer": null,
-  "reviewDate": null,
+  "reviewStatus": "accepted-scoped",
+  "reviewer": {
+    "name": "Juan Antonio Yáñez García",
+    "role": "founder"
+  },
+  "reviewDate": "2026-09-24",
+  "reviewedPackageCommit": "7198fb2f659294e0b5126b04f5026c7c757fcefd",
   "candidate": {
     "branch": "012-m2-git-replay-planner",
     "baseCommit": "c8d3d078b529ede9da108a11ba1b3d0de0f01578",
@@ -287,9 +291,12 @@
       "claim": "The accepted scope stays Git-only, local and read-only. No repository code, project checks, agents, external effects, concurrent tree merging or result promotion were authorized or exercised. M2 remains open."
     }
   ],
-  "decision": null,
-  "decisionRationale": null,
-  "independentValidation": "pending-human-review",
+  "approvedChecklistIds": ["R1", "R2", "R3", "R4", "R5", "R6"],
+  "decision": "accepted-scoped",
+  "sourceDecisionText": "Apruebo R1–R6 de T013 para el candidato `db30bc3`, dentro del alcance local Git de solo lectura. M2 permanece abierto; no autorizo promoción ni ampliación de ejecución",
+  "decisionText": "Approve R1–R6 of T013 for candidate db30bc3, within the local, read-only Git scope. M2 remains open; result promotion and expansion of execution authority are not authorized.",
+  "decisionRationale": "Founder human review accepted the six checklist items for the exact committed candidate and reviewed reproduction packet. Acceptance closes bounded T013 only. Synthetic Git-tree observations do not establish program semantics, live-agent safety, concurrent tree-merge safety, or production speedup. Those and the documented resource/recovery limits remain M2 follow-up work.",
+  "independentValidation": "pending",
   "executionAuthorization": false,
   "promotionPerformed": false,
   "m2Closure": "remains-open",
