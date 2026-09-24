@@ -14,6 +14,7 @@ authorize result promotion or concurrent integration.
 | C012-02 | Medium | `tasks.md`, post-cut introduction; `plan.md`, follow-up heading and introduction | T009–T013 were checked and reviewed within their stated scopes, while introductory text called them unfinished. The T012 and T013 review records, ADR 0014, and the later plan paragraphs establish the scoped state. | State that these tasks are complete within their recorded scopes and name the remaining M2 risks separately. Keep the milestone open. |
 | C012-03 | Informational | `m2-followup-evidence.json`, candidate status and limits; `t013-review.json`, decision | The evidence packet retains pre-review wording such as “T013 review pending.” It is a captured historical packet; the later review record contains the scoped founder acceptance. | Preserve the packet bytes and read the later decision separately. Independent validation remains pending. |
 | C012-04 | Pending external reconciliation | `docs/development/github-tracking.json`, SPEC-012; GitHub tracking audit | The repository maps SPEC-012 to open M2, with all 13 tasks checked, but its GitHub parent/subissues have not yet been created. | After this correction PR is reviewed and merged, audit the merged source, apply only its reviewed operations, and audit again. Verify private Project views separately. |
+| C012-05 | High | `scripts/test_spec_kit_integration.py`, temporary clone setup | The Spec Kit integration matrix clones the checkout but loses its remote-tracking M2 source ref. In CI the historical assurance commit then appears unavailable and portable validation incorrectly falls back to the public-root manifest, which predates ADR 0013. | Copy the already-fetched remote-tracking refs into each disposable clone through local Git fetch. Preserve historical records and rerun the solo/dual matrix. |
 
 ## Traceability and limits
 
@@ -33,8 +34,9 @@ merging, and independent validation remain outside the accepted scope.
 
 ## Verification boundary
 
-Spec Kit structure, GitHub tracking source, paired replay tests, and the
-repository quick/PR profiles must be run on the proposed correction. The
+Spec Kit structure, GitHub tracking source, paired replay tests, the solo/dual
+integration matrix, and the repository quick/PR profiles must be run on the
+proposed correction. The
 repository's shared Git object store contains unreachable objects, so Spec Kit
 validation must also be reproduced in a clean clone with the historical M2
 source branch reachable. Passing checks do not replace PR review or founder
