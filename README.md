@@ -2,7 +2,7 @@
 
 <p align="center">
   <img
-    src="reports/assets/agent-braid-concurrency-cover.png"
+    src="reports/assets/agent-braid-concurrency-cover-centered.png"
     alt="Abstract visualization of concurrent computational paths crossing, separating, and rejoining"
     width="960"
   >
