@@ -120,8 +120,38 @@ unknown inputs and negative benchmark outcomes stay visible.
 
 ## Human review and unresolved decisions
 
-No unresolved product choice remains for this cut. The architecture ADR and
-feature remain drafts until reviewed. The benchmark may fail its utility
-threshold; that outcome completes only the research protocol, not the positive
-milestone criterion. Founder closure, package publication and repository
-publication remain separate decisions.
+The founder approved this bounded first cut and ADR 0013 on 2026-09-24, as
+recorded in `founder-review.json`, against frozen candidate commit
+`7541ff437e2e2d6f558c5855ae76bb13067256cd`. The approval is limited to the
+fixed-patch `tracked-tree-v1` experiment and consultative planning boundary.
+M2 remains open; this approval does not authorize concurrent integration,
+project-code execution, publication, or a broader semantic claim.
+
+### Open M2 follow-up backlog
+
+The following work is deliberately outside the approved first-cut claim and
+remains open for later M2 increments:
+
+- **T009 — Thread-safe Git environment:** pass a sanitized environment directly
+  through the M1 adapter instead of mutating process-global `os.environ`; add a
+  concurrent-caller regression.
+- **T010 — End-to-end resource bounds and diagnostics:** bound output while it
+  is produced, apply an overall replay budget including M1 provenance, and
+  distinguish patch rejection from timeout, output-limit and process-start
+  failures.
+- **T011 — Plan integrity:** add deterministic semantic validation or
+  regeneration for plan artifacts, enforce cross-field consistency with
+  verified evidence, and retain `executionAuthorization: false`.
+- **T012 — Parallel-integration contract:** specify the state, isolation,
+  dependency, stale-input, conflict, verification and recovery conditions under
+  which integration work could safely proceed in parallel, consistent with
+  Constitution Articles 6, 12 and 19.
+- **T013 — Bounded parallel-integration prototype and evaluation:** implement a
+  gated prototype only after T012 is reviewed; compare it with serial
+  integration on representative workloads, measure correctness and overhead,
+  retain failed/inconclusive cases, and require human review before expanding
+  execution authority.
+
+These tasks deepen the residual risks identified in review and advance the
+project toward safer, more capable parallel integration. They are not complete
+and do not change the accepted first-cut evidence.

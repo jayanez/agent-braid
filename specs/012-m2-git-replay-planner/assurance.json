@@ -71,7 +71,8 @@
     "mode": "historical"
   },
   "execution_contract": "No checkout or source mutation. Replay fixed patches in a temporary bare repository and fresh temporary Git index, using local file transport only. No project commands, agents, network services, or external effects. Every plan has executionAuthorization false.",
-  "human_review": "pending",
+  "human_review": "approved",
+  "review_record": "specs/012-m2-git-replay-planner/founder-review.json",
   "hypotheses": "Bounded replay of all admissible orders may identify fixed-patch tracked-tree equivalence cases that support useful advisory preparation waves without authorizing execution.",
   "observation_contract": "tracked-tree-v1: final Git tree object for each complete schedule, with per-step tree IDs, patch digests, schedule status and reasons retained in evidence.",
   "references": [

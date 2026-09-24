@@ -34,7 +34,7 @@
       "docs/adr/0010-clean-publication-provenance.md": "6481cf11e2daf5d307928310763ae82889b280cea215126ebae3b32a708f3994",
       "docs/adr/0011-risk-based-validation-gates.md": "3aa363f808821ead18d830e931e476a0d790106112ef637875428f322d321531",
       "docs/adr/0012-vendored-python-skills-license-boundary.md": "e98b19c465689190265ed410b9226d60d52f00a8abf95410f5aa0a567aa80fea",
-      "docs/adr/0013-isolated-git-replay-and-advisory-planning.md": "155b49a3d12170522ac04f9a5c125629810d85fc3d03c923fccf2d275a3b7d6c",
+      "docs/adr/0013-isolated-git-replay-and-advisory-planning.md": "1c291cb527825864520075edc2ae7c84bafb07f66790f9fc29b0149a07024d24",
       "docs/architecture/AGENT_INTERACTION_METADATA.md": "0118d7f16c390fc4c1ff027b503a4eaba8a747edf3f6d7b088559f8870e27780",
       "docs/architecture/ASSURANCE_LEVELS.md": "102d0df0dc6fc0ec114d92fe1ef053b375bd9704d0af6a048affe36900d77512",
       "docs/architecture/CONFLUENCE_CERTIFICATE.md": "fd12a8f1a1477835848581b0f4ccd52f76d3f22dd96a3abaccb9074733464a8e",

@@ -1,8 +1,8 @@
 # ADR 0013: Isolated Git replay and advisory planning
 
-- **Status:** proposed for review
-- **Date:** 2026-09-23
-- **Deciders:** founder review pending
+- **Status:** Accepted by explicit founder decision on 2026-09-24 for the bounded first cut.
+- **Date:** 2026-09-23; accepted 2026-09-24
+- **Deciders:** Juan Antonio Yáñez García, founder
 - **Constitutional articles:** 2, 4, 6, 7, 9, 12–14, 19–21, 23–25
 
 ## Context
@@ -13,7 +13,7 @@ does not establish merge behavior or semantic correctness. The first M2 cut
 should test a narrow, immutable fixed-patch domain without turning the analyzer
 into an execution runtime.
 
-## Decision proposed
+## Decision
 
 Add a standard-library-only replay layer for 2–4 commit operations sharing one
 resolved base. Bound the batch to 64 changed paths and 1 MiB of aggregate patch
@@ -37,6 +37,15 @@ with the same tracked tree, and every operation is supported and certain.
 Otherwise provide a deterministic serial order only when its replay completes;
 all other cases require manual review. Every output states
 `executionAuthorization: false`. Integration remains serial.
+
+This decision accepts only the bounded first cut reviewed at commit
+`7541ff437e2e2d6f558c5855ae76bb13067256cd`. It does not close M2 or authorize
+concurrent integration. The review record keeps the following work open for M2:
+thread-safe Git environment handling, end-to-end time and memory limits with
+clear infrastructure-failure reporting, semantic verification of plan records,
+and a stronger integration-parallelism contract and prototype. These follow-ups
+must preserve the Constitution's requirement that concurrency is justified by
+an execution contract and evidence, not by tracked-tree equivalence alone.
 
 Add separate `0.1.0-alpha` replay-evidence and plan contracts. Preserve existing
 AIM, report, Git request/provenance and certificate contracts. Keep exhaustive

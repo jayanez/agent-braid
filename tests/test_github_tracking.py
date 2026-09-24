@@ -10,8 +10,8 @@ class TrackingTests(unittest.TestCase):
     def test_committed_spec_inventory_is_complete(self):
         config, desired = source_inventory()
         self.assertEqual(12, sum(item["kind"] == "spec" for item in desired))
-        self.assertEqual(96, sum(item["kind"] == "task" for item in desired))
-        self.assertEqual(5, sum(item["state"] == "open" and item["kind"] == "task" for item in desired))
+        self.assertEqual(101, sum(item["kind"] == "task" for item in desired))
+        self.assertEqual(9, sum(item["state"] == "open" and item["kind"] == "task" for item in desired))
         self.assertEqual(set(config["task_state_overrides"]),
                          {f"SPEC-011/T{number:03d}" for number in range(1, 8)})
 

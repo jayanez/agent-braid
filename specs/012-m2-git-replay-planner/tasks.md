@@ -19,4 +19,24 @@
   validation after coherent increments; record obtained evidence and task state.
 - [x] T008 (REQ-001–005/SC-001–008): run the stable PR profile, capture/freeze
   evidence, perform clean-clone reproduction, run tracking source validation,
-  and request human review. No milestone closure is inferred from checks.
+  and record the bounded human review. The cut approval does not close M2.
+
+## M2 remains open — post-cut follow-up backlog
+
+These tasks are beyond the approved first cut and remain uncompleted. They
+strengthen the recorded residual risks and build toward safer parallel
+integration. They do not authorize execution or close M2.
+
+- [ ] T009 (M2-RISK-01): remove process-global environment mutation from Git
+  provenance and add a concurrent-caller regression.
+- [ ] T010 (M2-RISK-02): enforce end-to-end time and memory/output budgets,
+  including M1 provenance, and report infrastructure failures distinctly from
+  patch rejection.
+- [ ] T011 (M2-RISK-03): add deterministic semantic validation or regeneration
+  for plan artifacts and verify their consistency with replayed evidence.
+- [ ] T012 (M2-PARALLEL-01): define and review the execution contract for safe
+  parallel integration, including isolation, dependencies, stale inputs,
+  conflicts, verification and recovery.
+- [ ] T013 (M2-PARALLEL-02): implement and benchmark a bounded parallel-
+  integration prototype after T012 review; retain negative cases and require
+  human review before widening execution authority.
