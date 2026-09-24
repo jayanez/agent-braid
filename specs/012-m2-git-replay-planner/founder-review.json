@@ -1,0 +1,51 @@
+{
+  "recordVersion": "0.1.0",
+  "feature": "M2 first cut: bounded Git replay and advisory planning",
+  "reviewedCommit": "7541ff437e2e2d6f558c5855ae76bb13067256cd",
+  "reviewer": {
+    "name": "Juan Antonio Yáñez García",
+    "role": "founder"
+  },
+  "conflictsOfInterest": "The reviewer is the project founder and feature author. Codex prepared the bounded review and recorded the founder's explicit decision. This is internal founder review, not independent validation.",
+  "boundedReview": {
+    "decision": "approved",
+    "date": "2026-09-24",
+    "rationale": "Approve the bounded first cut and accept ADR 0013 for exhaustive replay of fixed commit patches under tracked-tree-v1 and consultative planning only. The decision does not claim semantic correctness, production safety, arbitrary concurrent safety or execution authorization."
+  },
+  "adr0013": {
+    "decision": "accepted",
+    "date": "2026-09-24",
+    "rationale": "Accept the isolated Git replay and advisory planning boundary in ADR 0013 as reviewed at the frozen candidate commit."
+  },
+  "m2Closure": {
+    "decision": "remains-open",
+    "date": "2026-09-24",
+    "rationale": "This decision approves only the first cut. M2 remains open for deeper risk hardening and stronger, evidence-backed parallel-integration capabilities."
+  },
+  "postCutFollowUps": [
+    "T009: replace process-global environment mutation and add concurrent-caller coverage.",
+    "T010: enforce end-to-end resource budgets and distinguish infrastructure failures from patch rejection.",
+    "T011: validate or regenerate plan artifacts and enforce semantic consistency with verified evidence.",
+    "T012: define and review the execution contract required for safe parallel integration.",
+    "T013: implement and evaluate a gated parallel-integration prototype after T012 review."
+  ],
+  "independentValidation": "pending",
+  "executionAuthorization": false,
+  "evidence": [
+    {
+      "path": "specs/012-m2-git-replay-planner/evidence.json",
+      "sha256": "cc242eb32ae0b3575318a57ef035854a80928e0137855187df99527efd93a43f"
+    },
+    {
+      "path": "specs/012-m2-git-replay-planner/reproduction.json",
+      "sha256": "dae880b189a3d90f3f728be7897a971779ea21893ca9a4f3f3795b0660b86367"
+    }
+  ],
+  "limits": [
+    "Approval applies to the frozen candidate commit and the bounded first-cut claim only.",
+    "M2 remains open; no concurrent integration, project-code execution, publication or use of planner results to mutate the repository is authorized.",
+    "Tracked-tree equivalence for fixed patches does not establish source correctness, semantic independence, arbitrary interleaving safety, general confluence or production safety.",
+    "Recorded follow-ups for thread safety, end-to-end resource limits, plan integrity and parallel integration remain incomplete.",
+    "Review is founder-led and internal; independent validation remains pending."
+  ]
+}

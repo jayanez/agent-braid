@@ -101,7 +101,14 @@ commutation or correctness beyond the declared corpus.
 
 ## M2 — Confluence laboratory and scheduler
 
-**Objective:** explore schedules in isolation and convert evidence into safe parallel plans.
+**Objective:** explore schedules in isolation and convert evidence into consultative preparation plans.
+
+The first implementation cut is tracked by
+[`012-m2-git-replay-planner`](specs/012-m2-git-replay-planner/spec.md). It replays
+all admissible orders for 2–4 fixed commit patches in a temporary bare repository
+and fresh index, observing `tracked-tree-v1`. Preparation waves remain advisory;
+integration is serial and every plan has `executionAuthorization: false`. M2 stays
+open for order reduction, other workload adapters and an executable scheduler.
 
 Deliverables:
 

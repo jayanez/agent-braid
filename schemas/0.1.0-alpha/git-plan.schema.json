@@ -1,0 +1,33 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://agent-braid.dev/schemas/0.1.0-alpha/git-plan.schema.json",
+  "title": "Agent Braid consultative Git preparation plan 0.1.0-alpha",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "gitPlanVersion", "evidenceDigest", "verificationStatus", "replayResult", "mode",
+    "waves", "fallbackOrder", "conditions", "executionAuthorization", "limits", "planDigest"
+  ],
+  "properties": {
+    "gitPlanVersion": {"const": "0.1.0-alpha"},
+    "evidenceDigest": {"$ref": "#/$defs/sha256"},
+    "verificationStatus": {"enum": ["verified", "unverified", "rejected"]},
+    "replayResult": {"enum": ["equivalent-observed", "divergent", "inconclusive"]},
+    "mode": {"enum": ["candidate-preparation-waves", "serial-fallback", "manual-review"]},
+    "waves": {
+      "type": "array", "maxItems": 4,
+      "items": {"type": "array", "minItems": 1, "maxItems": 4, "uniqueItems": true, "items": {"type": "string", "minLength": 1}}
+    },
+    "fallbackOrder": {"oneOf": [
+      {"type": "array", "minItems": 2, "maxItems": 4, "uniqueItems": true, "items": {"type": "string", "minLength": 1}},
+      {"type": "null"}
+    ]},
+    "conditions": {"type": "array", "minItems": 1, "items": {"type": "string", "minLength": 1}},
+    "executionAuthorization": {"const": false},
+    "limits": {"type": "array", "items": {"type": "string", "minLength": 1}},
+    "planDigest": {"$ref": "#/$defs/sha256"}
+  },
+  "$defs": {
+    "sha256": {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$"}
+  }
+}

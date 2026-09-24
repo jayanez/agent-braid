@@ -107,6 +107,20 @@ REQUIRED_FILES = (
     "scripts/validate_publication.py",
     "scripts/run_public_preview_clean_room.py",
     "docs/releases/RESEARCH_PREVIEW_RELEASE.md",
+    "docs/adr/0013-isolated-git-replay-and-advisory-planning.md",
+    "docs/architecture/GIT_REPLAY.md",
+    "schemas/0.1.0-alpha/git-replay-evidence.schema.json",
+    "schemas/0.1.0-alpha/git-plan.schema.json",
+    "agent_braid/git_replay.py",
+    "tests/test_git_replay.py",
+    "scripts/run_git_replay_benchmark.py",
+    "examples/analysis/git-replay-benchmark.json",
+    "specs/012-m2-git-replay-planner/spec.md",
+    "specs/012-m2-git-replay-planner/plan.md",
+    "specs/012-m2-git-replay-planner/tasks.md",
+    "specs/012-m2-git-replay-planner/quickstart.md",
+    "specs/012-m2-git-replay-planner/assurance.json",
+    "specs/012-m2-git-replay-planner/evidence.json",
 )
 
 MARKDOWN_LINK = re.compile(r"(?<!!)\[[^\]]+\]\(([^)]+)\)")

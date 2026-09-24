@@ -2,7 +2,7 @@
 
 <p align="center">
   <img
-    src="reports/assets/agent-braid-concurrency-cover.png"
+    src="reports/assets/agent-braid-concurrency-cover-centered.png"
     alt="Abstract visualization of concurrent computational paths crossing, separating, and rejoining"
     width="960"
   >
@@ -44,13 +44,23 @@ premise hidden inside the product.
 ## What works today
 
 Agent Braid is `0.1.0-alpha`. The current implementation requires Python 3.12,
-uses only the standard library at runtime and provides three read-only commands:
+uses only the standard library at runtime and provides seven local commands:
 
 | Command | Current capability |
 |---|---|
 | `agent-braid analyze <aim.json>` | Classify pairwise interactions in AIM `0.2.0-draft` records and emit JSON or text. |
 | `agent-braid verify <certificate.json>` | Verify a bounded certificate bundle against its finite evidence. |
 | `agent-braid analyze-git <request.json>` | Observe stable local commit/worktree snapshots and produce an analysis plus a separate provenance artifact. |
+| `agent-braid plan-git <request.json> --evidence-output <path>` | Replay every admissible order of 2–4 immutable Git commits and write bounded evidence plus an advisory preparation plan. |
+| `agent-braid verify-git <evidence.json> --repository <path>` | Reconstruct patches and independently replay every recorded order. |
+| `agent-braid verify-plan <plan.json> --evidence <evidence.json> --repository <path>` | Verify a consultative plan against independently replayed evidence. |
+| `agent-braid prototype-git <request.json> --report-output <path>` | Compare bounded parallel patch preparation with serial integration in disposable local Git state. |
+
+Git preparation waves do not execute agents or authorize concurrent integration;
+every plan sets `executionAuthorization` to `false` and integration remains serial.
+The T013 prototype runs only allowlisted Git plumbing: patch preparation may
+overlap in isolated temporary indexes, while candidate and reference tree
+integration both remain serial. It writes no source-repository refs or files.
 
 The repository also contains versioned schemas, positive and negative fixtures,
 a bounded schedule laboratory, Git benchmarks, scientific controls and frozen
@@ -160,7 +170,7 @@ exhaustive-finite or formal results. See the
 | M0 — foundation | Closed internally | Canonical semantics, contracts, governance and bounded laboratory. |
 | M0.5 — open strategy | Closed internally | Research-preview proposal prepared and approved; publication is not authorized. |
 | M1 — analyzer | Closed internally | Deterministic AIM analysis and experimental read-only Git/worktree adapter. |
-| M2 — confluence laboratory and scheduler | Next | Reproducible certificates, partial-order reduction and safe planning under explicit contracts. |
+| M2 — confluence laboratory and scheduler | In progress | First cut: exhaustive replay of 2–4 fixed Git commit patches and consultative preparation waves. Integration remains serial; execution authorization is always false. |
 
 Independent validation remains **pending**. The evidence has been reproduced
 internally and reviewed by the founder, who has an explicit conflict of interest;
