@@ -26,6 +26,26 @@ class IntegrationTests(unittest.TestCase):
                     ["git", "clone", "--quiet", "--no-local", str(ROOT), str(root)],
                     check=True,
                 )
+                # A local clone copies branch tips, but not the source clone's
+                # remote-tracking refs. Historical assurance commits may be
+                # reachable only through those refs (as in Actions checkout).
+                # Keep them reachable in the disposable clone without network
+                # access or rewriting the reviewed evidence.
+                inherited = subprocess.run(
+                    ["git", "-C", str(ROOT), "for-each-ref", "--format=%(refname)",
+                     "refs/remotes/origin"],
+                    capture_output=True, text=True, check=True,
+                ).stdout.splitlines()
+                refspecs = [
+                    f"+{ref}:refs/remotes/source-origin/{ref.removeprefix('refs/remotes/origin/')}"
+                    for ref in inherited if ref != "refs/remotes/origin/HEAD"
+                ]
+                if refspecs:
+                    subprocess.run(
+                        ["git", "-C", str(root), "fetch", "--quiet", "--no-tags",
+                         str(ROOT), *refspecs],
+                        check=True,
+                    )
                 for integration in (".agents", ".claude"):
                     shutil.rmtree(root / integration, ignore_errors=True)
                 shutil.copytree(

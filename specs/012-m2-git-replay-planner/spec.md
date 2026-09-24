@@ -30,9 +30,12 @@ ADR 0013 records the replay and advisory-planning boundary.
   oversized, missing, unrelated, or unavailable commit inputs.
   - **SC-001:** A valid two-commit request resolves stable commit IDs and emits
     replay evidence.
-  - **SC-002:** A worktree, five-operation batch, invalid dependency graph,
-    unavailable commit, or oversized diff is rejected or retained as unknown
-    according to the input failure category; it never emits candidate waves.
+  - **SC-002:** A worktree, five-operation batch, invalid dependency graph, or
+    unavailable commit is rejected or retained as unknown according to the
+    input failure category; it never emits candidate waves.
+  - **SC-009:** A request changing more than 64 paths or containing more than
+    1 MiB of aggregate patch bytes is rejected before schedule replay and
+    emits no candidate plan.
 - **REQ-002 — isolated exhaustive replay.** Reconstruct each base-to-commit
   patch, enumerate every topological order, and apply each order in a fresh
   temporary bare repository/index. Observe the Git tracked tree under
