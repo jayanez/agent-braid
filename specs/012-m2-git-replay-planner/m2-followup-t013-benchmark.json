@@ -1,0 +1,1547 @@
+{
+  "benchmarkVersion": "agent-braid-t013-local-v3",
+  "checks": {
+    "allEligibleTreesMatched": true,
+    "allExpectedComparisonsObserved": true,
+    "allSourceRepositoriesUnchanged": true,
+    "conflictRemainedInconclusive": true,
+    "declaredTreeValidationFailureRejected": true,
+    "executionAuthorization": false,
+    "gracefulCoordinatorRestartedSafely": true,
+    "promotionPerformed": false,
+    "resourceExhaustionFailedClosed": true,
+    "sameFilePathOverlapBaselineReported": true,
+    "verificationFailureRejected": true,
+    "zeroUnsafeAdmissions": true
+  },
+  "environment": {
+    "addressSpaceBytesPerGitChild": 536870912,
+    "git": "git version 2.47.3",
+    "machine": "aarch64",
+    "platform": "Linux-7.0.12-linuxkit-aarch64-with-glibc2.41",
+    "python": "3.12.13"
+  },
+  "limits": [
+    "Synthetic fixed-commit fixtures; no repository code, hooks, agents, or network actions run.",
+    "A declared tracked-tree check is Git-only; project validation remains outside the authorized scope.",
+    "In-flight resource controls substitute a test-only /bin/sleep child at the Git Popen boundary; they exercise monitoring and process-group termination, not Git workload memory pressure.",
+    "The restart control covers graceful SIGTERM and a fresh process, not recovery from SIGKILL or a persisted coordinator state.",
+    "The prototype concurrently prepares eligible patches; tree integration remains serial.",
+    "Different hunks in one declared path remain serialized by the static footprint gate.",
+    "Path-overlap wave counts are computed independently from the prototype; Git merge-tree timing is a pairwise two-operation baseline.",
+    "Each scenario is repeated three times; the representative uses the median for candidate and serial wall time and Git command count.",
+    "Timings are local measurements and do not establish semantic safety or production performance."
+  ],
+  "negativeControls": {
+    "candidateVerification": {
+      "comparison": "divergent",
+      "controlPassed": true,
+      "executionAuthorization": false,
+      "id": "candidate-serial-tree-mismatch",
+      "outcome": "rejected-as-inconclusive",
+      "promotionPerformed": false,
+      "sourceRepositoryUnchanged": true,
+      "unsafeAdmissionCount": 1
+    },
+    "declaredTrackedTreeValidation": {
+      "comparison": "match",
+      "controlPassed": true,
+      "declaredCheck": {
+        "expectedTree": "29418fc125a2546512258304f6dc9ce84b7aaae1",
+        "status": "failed"
+      },
+      "id": "declared-tracked-tree-check-failure",
+      "outcome": "rejected-as-inconclusive",
+      "sourceRepositoryUnchanged": true,
+      "unsafeAdmissionCount": 1
+    },
+    "failedProjectValidation": {
+      "reason": "T013 executes Git plumbing only. The declared tracked-tree check can fail, but repository tests and other project validation commands are not run.",
+      "status": "out-of-scope"
+    },
+    "gracefulCoordinatorRestart": {
+      "controlPassed": true,
+      "firstProcessCategory": "cancelled",
+      "firstProcessExitCode": 3,
+      "freshReplayComparison": "match",
+      "id": "graceful-coordinator-stop-and-fresh-replay",
+      "noPartialReport": true,
+      "scope": "graceful SIGTERM followed by independent fresh process; not crash recovery",
+      "scratchCleanAfterStop": true,
+      "sourceRepositoryUnchanged": true
+    },
+    "resourceExhaustion": {
+      "allRejected": true,
+      "controls": [
+        {
+          "category": "timeout",
+          "id": "wall",
+          "status": "rejected"
+        },
+        {
+          "category": "command-limit",
+          "id": "command-count",
+          "status": "rejected"
+        },
+        {
+          "category": "output-limit",
+          "id": "captured-output",
+          "status": "rejected"
+        },
+        {
+          "category": "scratch-limit",
+          "id": "temporary-data",
+          "status": "rejected"
+        },
+        {
+          "category": "timeout",
+          "id": "inflight-wall",
+          "processControl": "test-only /bin/sleep at Git Popen boundary",
+          "status": "killed-after-start"
+        },
+        {
+          "category": "scratch-limit",
+          "id": "inflight-temporary-data",
+          "processControl": "test-only /bin/sleep at Git Popen boundary",
+          "status": "killed-after-start"
+        },
+        {
+          "category": "cancelled",
+          "id": "inflight-cancellation",
+          "processControl": "test-only /bin/sleep at Git Popen boundary",
+          "status": "killed-after-start"
+        }
+      ]
+    }
+  },
+  "scenarios": [
+    {
+      "candidateWaveCount": 1,
+      "candidateWaves": [
+        [
+          "op-0",
+          "op-1"
+        ]
+      ],
+      "comparison": "match",
+      "expectedComparison": "match",
+      "gitMergeTreePairBaseline": {
+        "capturedOutputBytes": 41,
+        "childSystemCpuSeconds": 0.0,
+        "childUserCpuSeconds": 0.0007679999999998799,
+        "command": "git merge-tree --write-tree <operation-0> <operation-1>",
+        "exitCode": 0,
+        "gitCommandCount": 1,
+        "inputOperationIds": [
+          "op-0",
+          "op-1"
+        ],
+        "status": "match",
+        "wallNanoseconds": 892292
+      },
+      "id": "disjoint-two-operations",
+      "medianCandidateGitCommands": 13,
+      "medianCandidateTotalWallNanoseconds": 258796333,
+      "medianSerialGitCommands": 13,
+      "medianSerialTotalWallNanoseconds": 286226043,
+      "metrics": {
+        "candidateCommitMaterializationGitCommands": 2,
+        "candidateCommitMaterializationGitUserCpuSeconds": 0.016356,
+        "candidateIntegrationGitCommands": 7,
+        "candidateIntegrationGitUserCpuSeconds": 0.063158,
+        "candidateIntegrationWallNanoseconds": 167662209,
+        "candidateOperationCommitMaterializationWallNanoseconds": 45672542,
+        "candidatePreparationGitCommands": 4,
+        "candidatePreparationGitUserCpuSeconds": 0.035855,
+        "candidatePreparationWallNanoseconds": 49201250,
+        "candidateTotalGitCommands": 13,
+        "candidateTotalWallNanoseconds": 262536001,
+        "capturedOutputBytes": 2911,
+        "gitChildSystemCpuSeconds": 0.268215,
+        "gitChildUserCpuSeconds": 0.656591,
+        "processPeakChildRssBytes": 38027264,
+        "processPeakChildRssScope": "process-lifetime peak; standalone CLI starts a fresh process",
+        "sampledPeakTemporaryDataBytes": 30303,
+        "serialCommitMaterializationGitCommands": 2,
+        "serialCommitMaterializationGitUserCpuSeconds": 0.016268,
+        "serialIntegrationGitCommands": 7,
+        "serialIntegrationGitUserCpuSeconds": 0.055627,
+        "serialIntegrationWallNanoseconds": 142793501,
+        "serialOperationCommitMaterializationWallNanoseconds": 48656209,
+        "serialPreparationGitCommands": 4,
+        "serialPreparationGitUserCpuSeconds": 0.032125,
+        "serialPreparationWallNanoseconds": 84962042,
+        "serialTotalGitCommands": 13,
+        "serialTotalWallNanoseconds": 276411752,
+        "wallNanoseconds": 1575913376
+      },
+      "pathOverlapBaseline": {
+        "waveCount": 1,
+        "waves": [
+          [
+            "op-0",
+            "op-1"
+          ]
+        ]
+      },
+      "repetitions": 3,
+      "reportDigest": "sha256:bdac62f9c89c5b9ad1756bab5a6dc703eeffa0785557f36b299f466263959666",
+      "resourceLimits": {
+        "addressSpaceBytesPerGitChild": 536870912,
+        "aggregatePatchBytes": 262144,
+        "capturedOutputBytes": 8388608,
+        "changedPaths": 16,
+        "concurrentGitWorkers": 2,
+        "gitCommands": 128,
+        "operations": 4,
+        "perCommandOutputBytes": 2097152,
+        "temporaryDataBytes": 33554432,
+        "temporaryDataPollMilliseconds": 50,
+        "wallSeconds": 30.0
+      },
+      "sample": 1,
+      "sampleObservations": [
+        {
+          "candidateWaveCount": 1,
+          "candidateWaves": [
+            [
+              "op-0",
+              "op-1"
+            ]
+          ],
+          "comparison": "match",
+          "expectedComparison": "match",
+          "gitMergeTreePairBaseline": {
+            "capturedOutputBytes": 41,
+            "childSystemCpuSeconds": 0.0,
+            "childUserCpuSeconds": 0.0007679999999998799,
+            "command": "git merge-tree --write-tree <operation-0> <operation-1>",
+            "exitCode": 0,
+            "gitCommandCount": 1,
+            "inputOperationIds": [
+              "op-0",
+              "op-1"
+            ],
+            "status": "match",
+            "wallNanoseconds": 892292
+          },
+          "id": "disjoint-two-operations",
+          "metrics": {
+            "candidateCommitMaterializationGitCommands": 2,
+            "candidateCommitMaterializationGitUserCpuSeconds": 0.016356,
+            "candidateIntegrationGitCommands": 7,
+            "candidateIntegrationGitUserCpuSeconds": 0.063158,
+            "candidateIntegrationWallNanoseconds": 167662209,
+            "candidateOperationCommitMaterializationWallNanoseconds": 45672542,
+            "candidatePreparationGitCommands": 4,
+            "candidatePreparationGitUserCpuSeconds": 0.035855,
+            "candidatePreparationWallNanoseconds": 49201250,
+            "candidateTotalGitCommands": 13,
+            "candidateTotalWallNanoseconds": 262536001,
+            "capturedOutputBytes": 2911,
+            "gitChildSystemCpuSeconds": 0.268215,
+            "gitChildUserCpuSeconds": 0.656591,
+            "processPeakChildRssBytes": 38027264,
+            "processPeakChildRssScope": "process-lifetime peak; standalone CLI starts a fresh process",
+            "sampledPeakTemporaryDataBytes": 30303,
+            "serialCommitMaterializationGitCommands": 2,
+            "serialCommitMaterializationGitUserCpuSeconds": 0.016268,
+            "serialIntegrationGitCommands": 7,
+            "serialIntegrationGitUserCpuSeconds": 0.055627,
+            "serialIntegrationWallNanoseconds": 142793501,
+            "serialOperationCommitMaterializationWallNanoseconds": 48656209,
+            "serialPreparationGitCommands": 4,
+            "serialPreparationGitUserCpuSeconds": 0.032125,
+            "serialPreparationWallNanoseconds": 84962042,
+            "serialTotalGitCommands": 13,
+            "serialTotalWallNanoseconds": 276411752,
+            "wallNanoseconds": 1575913376
+          },
+          "pathOverlapBaseline": {
+            "waveCount": 1,
+            "waves": [
+              [
+                "op-0",
+                "op-1"
+              ]
+            ]
+          },
+          "reportDigest": "sha256:bdac62f9c89c5b9ad1756bab5a6dc703eeffa0785557f36b299f466263959666",
+          "resourceLimits": {
+            "addressSpaceBytesPerGitChild": 536870912,
+            "aggregatePatchBytes": 262144,
+            "capturedOutputBytes": 8388608,
+            "changedPaths": 16,
+            "concurrentGitWorkers": 2,
+            "gitCommands": 128,
+            "operations": 4,
+            "perCommandOutputBytes": 2097152,
+            "temporaryDataBytes": 33554432,
+            "temporaryDataPollMilliseconds": 50,
+            "wallSeconds": 30.0
+          },
+          "sample": 1,
+          "serialWaveCount": 2,
+          "sourceRepositoryUnchanged": true,
+          "unsafeAdmissionCount": 0,
+          "wallNanosecondsIncludingHarness": 1576473543
+        },
+        {
+          "candidateWaveCount": 1,
+          "candidateWaves": [
+            [
+              "op-0",
+              "op-1"
+            ]
+          ],
+          "comparison": "match",
+          "expectedComparison": "match",
+          "gitMergeTreePairBaseline": {
+            "capturedOutputBytes": 41,
+            "childSystemCpuSeconds": 0.0006959999999995858,
+            "childUserCpuSeconds": 0.0,
+            "command": "git merge-tree --write-tree <operation-0> <operation-1>",
+            "exitCode": 0,
+            "gitCommandCount": 1,
+            "inputOperationIds": [
+              "op-0",
+              "op-1"
+            ],
+            "status": "match",
+            "wallNanoseconds": 819875
+          },
+          "id": "disjoint-two-operations",
+          "metrics": {
+            "candidateCommitMaterializationGitCommands": 2,
+            "candidateCommitMaterializationGitUserCpuSeconds": 0.016563,
+            "candidateIntegrationGitCommands": 7,
+            "candidateIntegrationGitUserCpuSeconds": 0.066847,
+            "candidateIntegrationWallNanoseconds": 161121333,
+            "candidateOperationCommitMaterializationWallNanoseconds": 45535041,
+            "candidatePreparationGitCommands": 4,
+            "candidatePreparationGitUserCpuSeconds": 0.03843,
+            "candidatePreparationWallNanoseconds": 52139959,
+            "candidateTotalGitCommands": 13,
+            "candidateTotalWallNanoseconds": 258796333,
+            "capturedOutputBytes": 2911,
+            "gitChildSystemCpuSeconds": 0.371148,
+            "gitChildUserCpuSeconds": 0.74001,
+            "processPeakChildRssBytes": 38027264,
+            "processPeakChildRssScope": "process-lifetime peak; standalone CLI starts a fresh process",
+            "sampledPeakTemporaryDataBytes": 30303,
+            "serialCommitMaterializationGitCommands": 2,
+            "serialCommitMaterializationGitUserCpuSeconds": 0.018738,
+            "serialIntegrationGitCommands": 7,
+            "serialIntegrationGitUserCpuSeconds": 0.064438,
+            "serialIntegrationWallNanoseconds": 164667583,
+            "serialOperationCommitMaterializationWallNanoseconds": 50897333,
+            "serialPreparationGitCommands": 4,
+            "serialPreparationGitUserCpuSeconds": 0.032696,
+            "serialPreparationWallNanoseconds": 96030958,
+            "serialTotalGitCommands": 13,
+            "serialTotalWallNanoseconds": 311595874,
+            "wallNanoseconds": 1693165835
+          },
+          "pathOverlapBaseline": {
+            "waveCount": 1,
+            "waves": [
+              [
+                "op-0",
+                "op-1"
+              ]
+            ]
+          },
+          "reportDigest": "sha256:9c6b003fa973c655c819ef5801305d9c0501283c030c7a083074ccb606cd9fb3",
+          "resourceLimits": {
+            "addressSpaceBytesPerGitChild": 536870912,
+            "aggregatePatchBytes": 262144,
+            "capturedOutputBytes": 8388608,
+            "changedPaths": 16,
+            "concurrentGitWorkers": 2,
+            "gitCommands": 128,
+            "operations": 4,
+            "perCommandOutputBytes": 2097152,
+            "temporaryDataBytes": 33554432,
+            "temporaryDataPollMilliseconds": 50,
+            "wallSeconds": 30.0
+          },
+          "sample": 2,
+          "serialWaveCount": 2,
+          "sourceRepositoryUnchanged": true,
+          "unsafeAdmissionCount": 0,
+          "wallNanosecondsIncludingHarness": 1693859293
+        },
+        {
+          "candidateWaveCount": 1,
+          "candidateWaves": [
+            [
+              "op-0",
+              "op-1"
+            ]
+          ],
+          "comparison": "match",
+          "expectedComparison": "match",
+          "gitMergeTreePairBaseline": {
+            "capturedOutputBytes": 41,
+            "childSystemCpuSeconds": 0.0,
+            "childUserCpuSeconds": 0.0010419999999999874,
+            "command": "git merge-tree --write-tree <operation-0> <operation-1>",
+            "exitCode": 0,
+            "gitCommandCount": 1,
+            "inputOperationIds": [
+              "op-0",
+              "op-1"
+            ],
+            "status": "match",
+            "wallNanoseconds": 1200625
+          },
+          "id": "disjoint-two-operations",
+          "metrics": {
+            "candidateCommitMaterializationGitCommands": 2,
+            "candidateCommitMaterializationGitUserCpuSeconds": 0.018375,
+            "candidateIntegrationGitCommands": 7,
+            "candidateIntegrationGitUserCpuSeconds": 0.051414,
+            "candidateIntegrationWallNanoseconds": 157758500,
+            "candidateOperationCommitMaterializationWallNanoseconds": 45081375,
+            "candidatePreparationGitCommands": 4,
+            "candidatePreparationGitUserCpuSeconds": 0.036415,
+            "candidatePreparationWallNanoseconds": 48434458,
+            "candidateTotalGitCommands": 13,
+            "candidateTotalWallNanoseconds": 251274333,
+            "capturedOutputBytes": 2911,
+            "gitChildSystemCpuSeconds": 0.270896,
+            "gitChildUserCpuSeconds": 0.6133,
+            "processPeakChildRssBytes": 38027264,
+            "processPeakChildRssScope": "process-lifetime peak; standalone CLI starts a fresh process",
+            "sampledPeakTemporaryDataBytes": 30303,
+            "serialCommitMaterializationGitCommands": 2,
+            "serialCommitMaterializationGitUserCpuSeconds": 0.016289,
+            "serialIntegrationGitCommands": 7,
+            "serialIntegrationGitUserCpuSeconds": 0.066381,
+            "serialIntegrationWallNanoseconds": 160097000,
+            "serialOperationCommitMaterializationWallNanoseconds": 46286834,
+            "serialPreparationGitCommands": 4,
+            "serialPreparationGitUserCpuSeconds": 0.036676,
+            "serialPreparationWallNanoseconds": 79842209,
+            "serialTotalGitCommands": 13,
+            "serialTotalWallNanoseconds": 286226043,
+            "wallNanoseconds": 1513081918
+          },
+          "pathOverlapBaseline": {
+            "waveCount": 1,
+            "waves": [
+              [
+                "op-0",
+                "op-1"
+              ]
+            ]
+          },
+          "reportDigest": "sha256:a4709c3707af93c5dd24d6fa3cae6e0669c987e3820d1659cd45f084e79d0faa",
+          "resourceLimits": {
+            "addressSpaceBytesPerGitChild": 536870912,
+            "aggregatePatchBytes": 262144,
+            "capturedOutputBytes": 8388608,
+            "changedPaths": 16,
+            "concurrentGitWorkers": 2,
+            "gitCommands": 128,
+            "operations": 4,
+            "perCommandOutputBytes": 2097152,
+            "temporaryDataBytes": 33554432,
+            "temporaryDataPollMilliseconds": 50,
+            "wallSeconds": 30.0
+          },
+          "sample": 3,
+          "serialWaveCount": 2,
+          "sourceRepositoryUnchanged": true,
+          "unsafeAdmissionCount": 0,
+          "wallNanosecondsIncludingHarness": 1513942626
+        }
+      ],
+      "serialWaveCount": 2,
+      "sourceRepositoryUnchanged": true,
+      "unsafeAdmissionCount": 0,
+      "wallNanosecondsIncludingHarness": 1576473543
+    },
+    {
+      "candidateWaveCount": 1,
+      "candidateWaves": [
+        [
+          "op-0",
+          "op-1",
+          "op-2"
+        ]
+      ],
+      "comparison": "match",
+      "expectedComparison": "match",
+      "gitMergeTreePairBaseline": {
+        "capturedOutputBytes": 41,
+        "childSystemCpuSeconds": 0.0,
+        "childUserCpuSeconds": 0.0006599999999998829,
+        "command": "git merge-tree --write-tree <operation-0> <operation-1>",
+        "exitCode": 0,
+        "gitCommandCount": 1,
+        "inputOperationIds": [
+          "op-0",
+          "op-1"
+        ],
+        "status": "match",
+        "wallNanoseconds": 772875
+      },
+      "id": "disjoint-three-operations",
+      "medianCandidateGitCommands": 19,
+      "medianCandidateTotalWallNanoseconds": 401172458,
+      "medianSerialGitCommands": 19,
+      "medianSerialTotalWallNanoseconds": 452430333,
+      "metrics": {
+        "candidateCommitMaterializationGitCommands": 3,
+        "candidateCommitMaterializationGitUserCpuSeconds": 0.026616,
+        "candidateIntegrationGitCommands": 10,
+        "candidateIntegrationGitUserCpuSeconds": 0.084172,
+        "candidateIntegrationWallNanoseconds": 231131708,
+        "candidateOperationCommitMaterializationWallNanoseconds": 68999542,
+        "candidatePreparationGitCommands": 6,
+        "candidatePreparationGitUserCpuSeconds": 0.04763,
+        "candidatePreparationWallNanoseconds": 95294834,
+        "candidateTotalGitCommands": 19,
+        "candidateTotalWallNanoseconds": 395426084,
+        "capturedOutputBytes": 4126,
+        "gitChildSystemCpuSeconds": 0.352594,
+        "gitChildUserCpuSeconds": 0.870521,
+        "processPeakChildRssBytes": 38027264,
+        "processPeakChildRssScope": "process-lifetime peak; standalone CLI starts a fresh process",
+        "sampledPeakTemporaryDataBytes": 32093,
+        "serialCommitMaterializationGitCommands": 3,
+        "serialCommitMaterializationGitUserCpuSeconds": 0.027591,
+        "serialIntegrationGitCommands": 10,
+        "serialIntegrationGitUserCpuSeconds": 0.078221,
+        "serialIntegrationWallNanoseconds": 207784250,
+        "serialOperationCommitMaterializationWallNanoseconds": 69439459,
+        "serialPreparationGitCommands": 6,
+        "serialPreparationGitUserCpuSeconds": 0.055498,
+        "serialPreparationWallNanoseconds": 120717959,
+        "serialTotalGitCommands": 19,
+        "serialTotalWallNanoseconds": 397941668,
+        "wallNanoseconds": 2117889084
+      },
+      "pathOverlapBaseline": {
+        "waveCount": 1,
+        "waves": [
+          [
+            "op-0",
+            "op-1",
+            "op-2"
+          ]
+        ]
+      },
+      "repetitions": 3,
+      "reportDigest": "sha256:27e4c6703826cdf568aa580df085821787daec6e34ba2ab660c0e0991e95818e",
+      "resourceLimits": {
+        "addressSpaceBytesPerGitChild": 536870912,
+        "aggregatePatchBytes": 262144,
+        "capturedOutputBytes": 8388608,
+        "changedPaths": 16,
+        "concurrentGitWorkers": 2,
+        "gitCommands": 128,
+        "operations": 4,
+        "perCommandOutputBytes": 2097152,
+        "temporaryDataBytes": 33554432,
+        "temporaryDataPollMilliseconds": 50,
+        "wallSeconds": 30.0
+      },
+      "sample": 1,
+      "sampleObservations": [
+        {
+          "candidateWaveCount": 1,
+          "candidateWaves": [
+            [
+              "op-0",
+              "op-1",
+              "op-2"
+            ]
+          ],
+          "comparison": "match",
+          "expectedComparison": "match",
+          "gitMergeTreePairBaseline": {
+            "capturedOutputBytes": 41,
+            "childSystemCpuSeconds": 0.0,
+            "childUserCpuSeconds": 0.0006599999999998829,
+            "command": "git merge-tree --write-tree <operation-0> <operation-1>",
+            "exitCode": 0,
+            "gitCommandCount": 1,
+            "inputOperationIds": [
+              "op-0",
+              "op-1"
+            ],
+            "status": "match",
+            "wallNanoseconds": 772875
+          },
+          "id": "disjoint-three-operations",
+          "metrics": {
+            "candidateCommitMaterializationGitCommands": 3,
+            "candidateCommitMaterializationGitUserCpuSeconds": 0.026616,
+            "candidateIntegrationGitCommands": 10,
+            "candidateIntegrationGitUserCpuSeconds": 0.084172,
+            "candidateIntegrationWallNanoseconds": 231131708,
+            "candidateOperationCommitMaterializationWallNanoseconds": 68999542,
+            "candidatePreparationGitCommands": 6,
+            "candidatePreparationGitUserCpuSeconds": 0.04763,
+            "candidatePreparationWallNanoseconds": 95294834,
+            "candidateTotalGitCommands": 19,
+            "candidateTotalWallNanoseconds": 395426084,
+            "capturedOutputBytes": 4126,
+            "gitChildSystemCpuSeconds": 0.352594,
+            "gitChildUserCpuSeconds": 0.870521,
+            "processPeakChildRssBytes": 38027264,
+            "processPeakChildRssScope": "process-lifetime peak; standalone CLI starts a fresh process",
+            "sampledPeakTemporaryDataBytes": 32093,
+            "serialCommitMaterializationGitCommands": 3,
+            "serialCommitMaterializationGitUserCpuSeconds": 0.027591,
+            "serialIntegrationGitCommands": 10,
+            "serialIntegrationGitUserCpuSeconds": 0.078221,
+            "serialIntegrationWallNanoseconds": 207784250,
+            "serialOperationCommitMaterializationWallNanoseconds": 69439459,
+            "serialPreparationGitCommands": 6,
+            "serialPreparationGitUserCpuSeconds": 0.055498,
+            "serialPreparationWallNanoseconds": 120717959,
+            "serialTotalGitCommands": 19,
+            "serialTotalWallNanoseconds": 397941668,
+            "wallNanoseconds": 2117889084
+          },
+          "pathOverlapBaseline": {
+            "waveCount": 1,
+            "waves": [
+              [
+                "op-0",
+                "op-1",
+                "op-2"
+              ]
+            ]
+          },
+          "reportDigest": "sha256:27e4c6703826cdf568aa580df085821787daec6e34ba2ab660c0e0991e95818e",
+          "resourceLimits": {
+            "addressSpaceBytesPerGitChild": 536870912,
+            "aggregatePatchBytes": 262144,
+            "capturedOutputBytes": 8388608,
+            "changedPaths": 16,
+            "concurrentGitWorkers": 2,
+            "gitCommands": 128,
+            "operations": 4,
+            "perCommandOutputBytes": 2097152,
+            "temporaryDataBytes": 33554432,
+            "temporaryDataPollMilliseconds": 50,
+            "wallSeconds": 30.0
+          },
+          "sample": 1,
+          "serialWaveCount": 3,
+          "sourceRepositoryUnchanged": true,
+          "unsafeAdmissionCount": 0,
+          "wallNanosecondsIncludingHarness": 2118555793
+        },
+        {
+          "candidateWaveCount": 1,
+          "candidateWaves": [
+            [
+              "op-0",
+              "op-1",
+              "op-2"
+            ]
+          ],
+          "comparison": "match",
+          "expectedComparison": "match",
+          "gitMergeTreePairBaseline": {
+            "capturedOutputBytes": 41,
+            "childSystemCpuSeconds": 0.0009380000000005495,
+            "childUserCpuSeconds": 0.0,
+            "command": "git merge-tree --write-tree <operation-0> <operation-1>",
+            "exitCode": 0,
+            "gitCommandCount": 1,
+            "inputOperationIds": [
+              "op-0",
+              "op-1"
+            ],
+            "status": "match",
+            "wallNanoseconds": 1078250
+          },
+          "id": "disjoint-three-operations",
+          "metrics": {
+            "candidateCommitMaterializationGitCommands": 3,
+            "candidateCommitMaterializationGitUserCpuSeconds": 0.026077,
+            "candidateIntegrationGitCommands": 10,
+            "candidateIntegrationGitUserCpuSeconds": 0.096837,
+            "candidateIntegrationWallNanoseconds": 233766000,
+            "candidateOperationCommitMaterializationWallNanoseconds": 72788333,
+            "candidatePreparationGitCommands": 6,
+            "candidatePreparationGitUserCpuSeconds": 0.061098,
+            "candidatePreparationWallNanoseconds": 95903459,
+            "candidateTotalGitCommands": 19,
+            "candidateTotalWallNanoseconds": 402457792,
+            "capturedOutputBytes": 4126,
+            "gitChildSystemCpuSeconds": 0.432107,
+            "gitChildUserCpuSeconds": 0.919434,
+            "processPeakChildRssBytes": 38027264,
+            "processPeakChildRssScope": "process-lifetime peak; standalone CLI starts a fresh process",
+            "sampledPeakTemporaryDataBytes": 32093,
+            "serialCommitMaterializationGitCommands": 3,
+            "serialCommitMaterializationGitUserCpuSeconds": 0.025423,
+            "serialIntegrationGitCommands": 10,
+            "serialIntegrationGitUserCpuSeconds": 0.097865,
+            "serialIntegrationWallNanoseconds": 241022542,
+            "serialOperationCommitMaterializationWallNanoseconds": 61677958,
+            "serialPreparationGitCommands": 6,
+            "serialPreparationGitUserCpuSeconds": 0.056776,
+            "serialPreparationWallNanoseconds": 149729833,
+            "serialTotalGitCommands": 19,
+            "serialTotalWallNanoseconds": 452430333,
+            "wallNanoseconds": 2246157167
+          },
+          "pathOverlapBaseline": {
+            "waveCount": 1,
+            "waves": [
+              [
+                "op-0",
+                "op-1",
+                "op-2"
+              ]
+            ]
+          },
+          "reportDigest": "sha256:576148f569acffe5f119dedeb73f6d3ef1df202dd4cf0a7aed8f73380473a3b7",
+          "resourceLimits": {
+            "addressSpaceBytesPerGitChild": 536870912,
+            "aggregatePatchBytes": 262144,
+            "capturedOutputBytes": 8388608,
+            "changedPaths": 16,
+            "concurrentGitWorkers": 2,
+            "gitCommands": 128,
+            "operations": 4,
+            "perCommandOutputBytes": 2097152,
+            "temporaryDataBytes": 33554432,
+            "temporaryDataPollMilliseconds": 50,
+            "wallSeconds": 30.0
+          },
+          "sample": 2,
+          "serialWaveCount": 3,
+          "sourceRepositoryUnchanged": true,
+          "unsafeAdmissionCount": 0,
+          "wallNanosecondsIncludingHarness": 2247043168
+        },
+        {
+          "candidateWaveCount": 1,
+          "candidateWaves": [
+            [
+              "op-0",
+              "op-1",
+              "op-2"
+            ]
+          ],
+          "comparison": "match",
+          "expectedComparison": "match",
+          "gitMergeTreePairBaseline": {
+            "capturedOutputBytes": 41,
+            "childSystemCpuSeconds": 0.0009639999999997428,
+            "childUserCpuSeconds": 0.0,
+            "command": "git merge-tree --write-tree <operation-0> <operation-1>",
+            "exitCode": 0,
+            "gitCommandCount": 1,
+            "inputOperationIds": [
+              "op-0",
+              "op-1"
+            ],
+            "status": "match",
+            "wallNanoseconds": 1111584
+          },
+          "id": "disjoint-three-operations",
+          "metrics": {
+            "candidateCommitMaterializationGitCommands": 3,
+            "candidateCommitMaterializationGitUserCpuSeconds": 0.020569,
+            "candidateIntegrationGitCommands": 10,
+            "candidateIntegrationGitUserCpuSeconds": 0.089811,
+            "candidateIntegrationWallNanoseconds": 233124625,
+            "candidateOperationCommitMaterializationWallNanoseconds": 70721333,
+            "candidatePreparationGitCommands": 6,
+            "candidatePreparationGitUserCpuSeconds": 0.055602,
+            "candidatePreparationWallNanoseconds": 97326500,
+            "candidateTotalGitCommands": 19,
+            "candidateTotalWallNanoseconds": 401172458,
+            "capturedOutputBytes": 4126,
+            "gitChildSystemCpuSeconds": 0.431557,
+            "gitChildUserCpuSeconds": 0.981441,
+            "processPeakChildRssBytes": 38027264,
+            "processPeakChildRssScope": "process-lifetime peak; standalone CLI starts a fresh process",
+            "sampledPeakTemporaryDataBytes": 32093,
+            "serialCommitMaterializationGitCommands": 3,
+            "serialCommitMaterializationGitUserCpuSeconds": 0.077626,
+            "serialIntegrationGitCommands": 10,
+            "serialIntegrationGitUserCpuSeconds": 0.10005,
+            "serialIntegrationWallNanoseconds": 226877875,
+            "serialOperationCommitMaterializationWallNanoseconds": 163109625,
+            "serialPreparationGitCommands": 6,
+            "serialPreparationGitUserCpuSeconds": 0.070208,
+            "serialPreparationWallNanoseconds": 164401334,
+            "serialTotalGitCommands": 19,
+            "serialTotalWallNanoseconds": 554388834,
+            "wallNanoseconds": 2312021209
+          },
+          "pathOverlapBaseline": {
+            "waveCount": 1,
+            "waves": [
+              [
+                "op-0",
+                "op-1",
+                "op-2"
+              ]
+            ]
+          },
+          "reportDigest": "sha256:7d5c8cdd308448d06418c0fdef8166d28d0853ff130a2aa41611212bdc0274ee",
+          "resourceLimits": {
+            "addressSpaceBytesPerGitChild": 536870912,
+            "aggregatePatchBytes": 262144,
+            "capturedOutputBytes": 8388608,
+            "changedPaths": 16,
+            "concurrentGitWorkers": 2,
+            "gitCommands": 128,
+            "operations": 4,
+            "perCommandOutputBytes": 2097152,
+            "temporaryDataBytes": 33554432,
+            "temporaryDataPollMilliseconds": 50,
+            "wallSeconds": 30.0
+          },
+          "sample": 3,
+          "serialWaveCount": 3,
+          "sourceRepositoryUnchanged": true,
+          "unsafeAdmissionCount": 0,
+          "wallNanosecondsIncludingHarness": 2313103709
+        }
+      ],
+      "serialWaveCount": 3,
+      "sourceRepositoryUnchanged": true,
+      "unsafeAdmissionCount": 0,
+      "wallNanosecondsIncludingHarness": 2118555793
+    },
+    {
+      "candidateWaveCount": 2,
+      "candidateWaves": [
+        [
+          "op-0"
+        ],
+        [
+          "op-1"
+        ]
+      ],
+      "comparison": "match",
+      "expectedComparison": "match",
+      "gitMergeTreePairBaseline": {
+        "capturedOutputBytes": 41,
+        "childSystemCpuSeconds": 0.0008690000000002307,
+        "childUserCpuSeconds": 0.0,
+        "command": "git merge-tree --write-tree <operation-0> <operation-1>",
+        "exitCode": 0,
+        "gitCommandCount": 1,
+        "inputOperationIds": [
+          "op-0",
+          "op-1"
+        ],
+        "status": "match",
+        "wallNanoseconds": 990708
+      },
+      "id": "same-file-distinct-hunks",
+      "medianCandidateGitCommands": 13,
+      "medianCandidateTotalWallNanoseconds": 300227374,
+      "medianSerialGitCommands": 13,
+      "medianSerialTotalWallNanoseconds": 291972126,
+      "metrics": {
+        "candidateCommitMaterializationGitCommands": 2,
+        "candidateCommitMaterializationGitUserCpuSeconds": 0.017618,
+        "candidateIntegrationGitCommands": 7,
+        "candidateIntegrationGitUserCpuSeconds": 0.064151,
+        "candidateIntegrationWallNanoseconds": 159306792,
+        "candidateOperationCommitMaterializationWallNanoseconds": 49913875,
+        "candidatePreparationGitCommands": 4,
+        "candidatePreparationGitUserCpuSeconds": 0.048483,
+        "candidatePreparationWallNanoseconds": 107934292,
+        "candidateTotalGitCommands": 13,
+        "candidateTotalWallNanoseconds": 317154959,
+        "capturedOutputBytes": 4410,
+        "gitChildSystemCpuSeconds": 0.316348,
+        "gitChildUserCpuSeconds": 0.640787,
+        "processPeakChildRssBytes": 38027264,
+        "processPeakChildRssScope": "process-lifetime peak; standalone CLI starts a fresh process",
+        "sampledPeakTemporaryDataBytes": 30607,
+        "serialCommitMaterializationGitCommands": 2,
+        "serialCommitMaterializationGitUserCpuSeconds": 0.014978,
+        "serialIntegrationGitCommands": 7,
+        "serialIntegrationGitUserCpuSeconds": 0.056073,
+        "serialIntegrationWallNanoseconds": 155484916,
+        "serialOperationCommitMaterializationWallNanoseconds": 49783875,
+        "serialPreparationGitCommands": 4,
+        "serialPreparationGitUserCpuSeconds": 0.040862,
+        "serialPreparationWallNanoseconds": 96914708,
+        "serialTotalGitCommands": 13,
+        "serialTotalWallNanoseconds": 302183499,
+        "wallNanoseconds": 1612909001
+      },
+      "pathOverlapBaseline": {
+        "waveCount": 2,
+        "waves": [
+          [
+            "op-0"
+          ],
+          [
+            "op-1"
+          ]
+        ]
+      },
+      "repetitions": 3,
+      "reportDigest": "sha256:55018e0b1ba4d762346547174ea7046e44491c11703d384fc660d645d7d2f215",
+      "resourceLimits": {
+        "addressSpaceBytesPerGitChild": 536870912,
+        "aggregatePatchBytes": 262144,
+        "capturedOutputBytes": 8388608,
+        "changedPaths": 16,
+        "concurrentGitWorkers": 2,
+        "gitCommands": 128,
+        "operations": 4,
+        "perCommandOutputBytes": 2097152,
+        "temporaryDataBytes": 33554432,
+        "temporaryDataPollMilliseconds": 50,
+        "wallSeconds": 30.0
+      },
+      "sample": 1,
+      "sampleObservations": [
+        {
+          "candidateWaveCount": 2,
+          "candidateWaves": [
+            [
+              "op-0"
+            ],
+            [
+              "op-1"
+            ]
+          ],
+          "comparison": "match",
+          "expectedComparison": "match",
+          "gitMergeTreePairBaseline": {
+            "capturedOutputBytes": 41,
+            "childSystemCpuSeconds": 0.0008690000000002307,
+            "childUserCpuSeconds": 0.0,
+            "command": "git merge-tree --write-tree <operation-0> <operation-1>",
+            "exitCode": 0,
+            "gitCommandCount": 1,
+            "inputOperationIds": [
+              "op-0",
+              "op-1"
+            ],
+            "status": "match",
+            "wallNanoseconds": 990708
+          },
+          "id": "same-file-distinct-hunks",
+          "metrics": {
+            "candidateCommitMaterializationGitCommands": 2,
+            "candidateCommitMaterializationGitUserCpuSeconds": 0.017618,
+            "candidateIntegrationGitCommands": 7,
+            "candidateIntegrationGitUserCpuSeconds": 0.064151,
+            "candidateIntegrationWallNanoseconds": 159306792,
+            "candidateOperationCommitMaterializationWallNanoseconds": 49913875,
+            "candidatePreparationGitCommands": 4,
+            "candidatePreparationGitUserCpuSeconds": 0.048483,
+            "candidatePreparationWallNanoseconds": 107934292,
+            "candidateTotalGitCommands": 13,
+            "candidateTotalWallNanoseconds": 317154959,
+            "capturedOutputBytes": 4410,
+            "gitChildSystemCpuSeconds": 0.316348,
+            "gitChildUserCpuSeconds": 0.640787,
+            "processPeakChildRssBytes": 38027264,
+            "processPeakChildRssScope": "process-lifetime peak; standalone CLI starts a fresh process",
+            "sampledPeakTemporaryDataBytes": 30607,
+            "serialCommitMaterializationGitCommands": 2,
+            "serialCommitMaterializationGitUserCpuSeconds": 0.014978,
+            "serialIntegrationGitCommands": 7,
+            "serialIntegrationGitUserCpuSeconds": 0.056073,
+            "serialIntegrationWallNanoseconds": 155484916,
+            "serialOperationCommitMaterializationWallNanoseconds": 49783875,
+            "serialPreparationGitCommands": 4,
+            "serialPreparationGitUserCpuSeconds": 0.040862,
+            "serialPreparationWallNanoseconds": 96914708,
+            "serialTotalGitCommands": 13,
+            "serialTotalWallNanoseconds": 302183499,
+            "wallNanoseconds": 1612909001
+          },
+          "pathOverlapBaseline": {
+            "waveCount": 2,
+            "waves": [
+              [
+                "op-0"
+              ],
+              [
+                "op-1"
+              ]
+            ]
+          },
+          "reportDigest": "sha256:55018e0b1ba4d762346547174ea7046e44491c11703d384fc660d645d7d2f215",
+          "resourceLimits": {
+            "addressSpaceBytesPerGitChild": 536870912,
+            "aggregatePatchBytes": 262144,
+            "capturedOutputBytes": 8388608,
+            "changedPaths": 16,
+            "concurrentGitWorkers": 2,
+            "gitCommands": 128,
+            "operations": 4,
+            "perCommandOutputBytes": 2097152,
+            "temporaryDataBytes": 33554432,
+            "temporaryDataPollMilliseconds": 50,
+            "wallSeconds": 30.0
+          },
+          "sample": 1,
+          "serialWaveCount": 2,
+          "sourceRepositoryUnchanged": true,
+          "unsafeAdmissionCount": 0,
+          "wallNanosecondsIncludingHarness": 1613580709
+        },
+        {
+          "candidateWaveCount": 2,
+          "candidateWaves": [
+            [
+              "op-0"
+            ],
+            [
+              "op-1"
+            ]
+          ],
+          "comparison": "match",
+          "expectedComparison": "match",
+          "gitMergeTreePairBaseline": {
+            "capturedOutputBytes": 41,
+            "childSystemCpuSeconds": 0.0,
+            "childUserCpuSeconds": 0.0006780000000006225,
+            "command": "git merge-tree --write-tree <operation-0> <operation-1>",
+            "exitCode": 0,
+            "gitCommandCount": 1,
+            "inputOperationIds": [
+              "op-0",
+              "op-1"
+            ],
+            "status": "match",
+            "wallNanoseconds": 779167
+          },
+          "id": "same-file-distinct-hunks",
+          "metrics": {
+            "candidateCommitMaterializationGitCommands": 2,
+            "candidateCommitMaterializationGitUserCpuSeconds": 0.021675,
+            "candidateIntegrationGitCommands": 7,
+            "candidateIntegrationGitUserCpuSeconds": 0.067654,
+            "candidateIntegrationWallNanoseconds": 155319959,
+            "candidateOperationCommitMaterializationWallNanoseconds": 43986959,
+            "candidatePreparationGitCommands": 4,
+            "candidatePreparationGitUserCpuSeconds": 0.041369,
+            "candidatePreparationWallNanoseconds": 91719208,
+            "candidateTotalGitCommands": 13,
+            "candidateTotalWallNanoseconds": 291026126,
+            "capturedOutputBytes": 4410,
+            "gitChildSystemCpuSeconds": 0.261093,
+            "gitChildUserCpuSeconds": 0.694244,
+            "processPeakChildRssBytes": 38027264,
+            "processPeakChildRssScope": "process-lifetime peak; standalone CLI starts a fresh process",
+            "sampledPeakTemporaryDataBytes": 30607,
+            "serialCommitMaterializationGitCommands": 2,
+            "serialCommitMaterializationGitUserCpuSeconds": 0.01576,
+            "serialIntegrationGitCommands": 7,
+            "serialIntegrationGitUserCpuSeconds": 0.061661,
+            "serialIntegrationWallNanoseconds": 151854333,
+            "serialOperationCommitMaterializationWallNanoseconds": 36460500,
+            "serialPreparationGitCommands": 4,
+            "serialPreparationGitUserCpuSeconds": 0.031892,
+            "serialPreparationWallNanoseconds": 82566500,
+            "serialTotalGitCommands": 13,
+            "serialTotalWallNanoseconds": 270881333,
+            "wallNanoseconds": 1598522751
+          },
+          "pathOverlapBaseline": {
+            "waveCount": 2,
+            "waves": [
+              [
+                "op-0"
+              ],
+              [
+                "op-1"
+              ]
+            ]
+          },
+          "reportDigest": "sha256:b3a3a759c06d1c2d47ba7319e7c88db727d52c65b93c2235ace625ba5bc336fb",
+          "resourceLimits": {
+            "addressSpaceBytesPerGitChild": 536870912,
+            "aggregatePatchBytes": 262144,
+            "capturedOutputBytes": 8388608,
+            "changedPaths": 16,
+            "concurrentGitWorkers": 2,
+            "gitCommands": 128,
+            "operations": 4,
+            "perCommandOutputBytes": 2097152,
+            "temporaryDataBytes": 33554432,
+            "temporaryDataPollMilliseconds": 50,
+            "wallSeconds": 30.0
+          },
+          "sample": 2,
+          "serialWaveCount": 2,
+          "sourceRepositoryUnchanged": true,
+          "unsafeAdmissionCount": 0,
+          "wallNanosecondsIncludingHarness": 1599075542
+        },
+        {
+          "candidateWaveCount": 2,
+          "candidateWaves": [
+            [
+              "op-0"
+            ],
+            [
+              "op-1"
+            ]
+          ],
+          "comparison": "match",
+          "expectedComparison": "match",
+          "gitMergeTreePairBaseline": {
+            "capturedOutputBytes": 41,
+            "childSystemCpuSeconds": 0.0,
+            "childUserCpuSeconds": 0.0008270000000010214,
+            "command": "git merge-tree --write-tree <operation-0> <operation-1>",
+            "exitCode": 0,
+            "gitCommandCount": 1,
+            "inputOperationIds": [
+              "op-0",
+              "op-1"
+            ],
+            "status": "match",
+            "wallNanoseconds": 961625
+          },
+          "id": "same-file-distinct-hunks",
+          "metrics": {
+            "candidateCommitMaterializationGitCommands": 2,
+            "candidateCommitMaterializationGitUserCpuSeconds": 0.018666,
+            "candidateIntegrationGitCommands": 7,
+            "candidateIntegrationGitUserCpuSeconds": 0.050699,
+            "candidateIntegrationWallNanoseconds": 161080916,
+            "candidateOperationCommitMaterializationWallNanoseconds": 44664542,
+            "candidatePreparationGitCommands": 4,
+            "candidatePreparationGitUserCpuSeconds": 0.032716,
+            "candidatePreparationWallNanoseconds": 94481916,
+            "candidateTotalGitCommands": 13,
+            "candidateTotalWallNanoseconds": 300227374,
+            "capturedOutputBytes": 4410,
+            "gitChildSystemCpuSeconds": 0.304157,
+            "gitChildUserCpuSeconds": 0.648634,
+            "processPeakChildRssBytes": 38027264,
+            "processPeakChildRssScope": "process-lifetime peak; standalone CLI starts a fresh process",
+            "sampledPeakTemporaryDataBytes": 30607,
+            "serialCommitMaterializationGitCommands": 2,
+            "serialCommitMaterializationGitUserCpuSeconds": 0.017037,
+            "serialIntegrationGitCommands": 7,
+            "serialIntegrationGitUserCpuSeconds": 0.057376,
+            "serialIntegrationWallNanoseconds": 156987167,
+            "serialOperationCommitMaterializationWallNanoseconds": 44989459,
+            "serialPreparationGitCommands": 4,
+            "serialPreparationGitUserCpuSeconds": 0.039201,
+            "serialPreparationWallNanoseconds": 89995500,
+            "serialTotalGitCommands": 13,
+            "serialTotalWallNanoseconds": 291972126,
+            "wallNanoseconds": 1596659834
+          },
+          "pathOverlapBaseline": {
+            "waveCount": 2,
+            "waves": [
+              [
+                "op-0"
+              ],
+              [
+                "op-1"
+              ]
+            ]
+          },
+          "reportDigest": "sha256:ca2e9a672277d8ac6a10a309788433498daef93a0bd55d030b0bef6e9c733242",
+          "resourceLimits": {
+            "addressSpaceBytesPerGitChild": 536870912,
+            "aggregatePatchBytes": 262144,
+            "capturedOutputBytes": 8388608,
+            "changedPaths": 16,
+            "concurrentGitWorkers": 2,
+            "gitCommands": 128,
+            "operations": 4,
+            "perCommandOutputBytes": 2097152,
+            "temporaryDataBytes": 33554432,
+            "temporaryDataPollMilliseconds": 50,
+            "wallSeconds": 30.0
+          },
+          "sample": 3,
+          "serialWaveCount": 2,
+          "sourceRepositoryUnchanged": true,
+          "unsafeAdmissionCount": 0,
+          "wallNanosecondsIncludingHarness": 1597832917
+        }
+      ],
+      "serialWaveCount": 2,
+      "sourceRepositoryUnchanged": true,
+      "unsafeAdmissionCount": 0,
+      "wallNanosecondsIncludingHarness": 1613580709
+    },
+    {
+      "candidateWaveCount": 2,
+      "candidateWaves": [
+        [
+          "op-0"
+        ],
+        [
+          "op-1"
+        ]
+      ],
+      "comparison": "inconclusive",
+      "expectedComparison": "inconclusive",
+      "gitMergeTreePairBaseline": {
+        "capturedOutputBytes": 298,
+        "childSystemCpuSeconds": 0.0009909999999999641,
+        "childUserCpuSeconds": 0.0,
+        "command": "git merge-tree --write-tree <operation-0> <operation-1>",
+        "exitCode": 1,
+        "gitCommandCount": 1,
+        "inputOperationIds": [
+          "op-0",
+          "op-1"
+        ],
+        "status": "conflict",
+        "wallNanoseconds": 1084709
+      },
+      "id": "conflict",
+      "medianCandidateGitCommands": 11,
+      "medianCandidateTotalWallNanoseconds": 256001499,
+      "medianSerialGitCommands": 11,
+      "medianSerialTotalWallNanoseconds": 251052500,
+      "metrics": {
+        "candidateCommitMaterializationGitCommands": 2,
+        "candidateCommitMaterializationGitUserCpuSeconds": 0.018228,
+        "candidateIntegrationGitCommands": 5,
+        "candidateIntegrationGitUserCpuSeconds": 0.048179,
+        "candidateIntegrationWallNanoseconds": 116282125,
+        "candidateOperationCommitMaterializationWallNanoseconds": 45376792,
+        "candidatePreparationGitCommands": 4,
+        "candidatePreparationGitUserCpuSeconds": 0.033218,
+        "candidatePreparationWallNanoseconds": 94477001,
+        "candidateTotalGitCommands": 11,
+        "candidateTotalWallNanoseconds": 256135918,
+        "capturedOutputBytes": 4940,
+        "gitChildSystemCpuSeconds": 0.273115,
+        "gitChildUserCpuSeconds": 0.606508,
+        "processPeakChildRssBytes": 38027264,
+        "processPeakChildRssScope": "process-lifetime peak; standalone CLI starts a fresh process",
+        "sampledPeakTemporaryDataBytes": 30504,
+        "serialCommitMaterializationGitCommands": 2,
+        "serialCommitMaterializationGitUserCpuSeconds": 0.020626,
+        "serialIntegrationGitCommands": 5,
+        "serialIntegrationGitUserCpuSeconds": 0.04636,
+        "serialIntegrationWallNanoseconds": 114854000,
+        "serialOperationCommitMaterializationWallNanoseconds": 45749000,
+        "serialPreparationGitCommands": 4,
+        "serialPreparationGitUserCpuSeconds": 0.040135,
+        "serialPreparationWallNanoseconds": 90449500,
+        "serialTotalGitCommands": 11,
+        "serialTotalWallNanoseconds": 251052500,
+        "wallNanoseconds": 1511409625
+      },
+      "pathOverlapBaseline": {
+        "waveCount": 2,
+        "waves": [
+          [
+            "op-0"
+          ],
+          [
+            "op-1"
+          ]
+        ]
+      },
+      "repetitions": 3,
+      "reportDigest": "sha256:eb7c2658451854e795f8ea5d26535f382b99cd3896974392c394622d2a0f3d1c",
+      "resourceLimits": {
+        "addressSpaceBytesPerGitChild": 536870912,
+        "aggregatePatchBytes": 262144,
+        "capturedOutputBytes": 8388608,
+        "changedPaths": 16,
+        "concurrentGitWorkers": 2,
+        "gitCommands": 128,
+        "operations": 4,
+        "perCommandOutputBytes": 2097152,
+        "temporaryDataBytes": 33554432,
+        "temporaryDataPollMilliseconds": 50,
+        "wallSeconds": 30.0
+      },
+      "sample": 1,
+      "sampleObservations": [
+        {
+          "candidateWaveCount": 2,
+          "candidateWaves": [
+            [
+              "op-0"
+            ],
+            [
+              "op-1"
+            ]
+          ],
+          "comparison": "inconclusive",
+          "expectedComparison": "inconclusive",
+          "gitMergeTreePairBaseline": {
+            "capturedOutputBytes": 298,
+            "childSystemCpuSeconds": 0.0009909999999999641,
+            "childUserCpuSeconds": 0.0,
+            "command": "git merge-tree --write-tree <operation-0> <operation-1>",
+            "exitCode": 1,
+            "gitCommandCount": 1,
+            "inputOperationIds": [
+              "op-0",
+              "op-1"
+            ],
+            "status": "conflict",
+            "wallNanoseconds": 1084709
+          },
+          "id": "conflict",
+          "metrics": {
+            "candidateCommitMaterializationGitCommands": 2,
+            "candidateCommitMaterializationGitUserCpuSeconds": 0.018228,
+            "candidateIntegrationGitCommands": 5,
+            "candidateIntegrationGitUserCpuSeconds": 0.048179,
+            "candidateIntegrationWallNanoseconds": 116282125,
+            "candidateOperationCommitMaterializationWallNanoseconds": 45376792,
+            "candidatePreparationGitCommands": 4,
+            "candidatePreparationGitUserCpuSeconds": 0.033218,
+            "candidatePreparationWallNanoseconds": 94477001,
+            "candidateTotalGitCommands": 11,
+            "candidateTotalWallNanoseconds": 256135918,
+            "capturedOutputBytes": 4940,
+            "gitChildSystemCpuSeconds": 0.273115,
+            "gitChildUserCpuSeconds": 0.606508,
+            "processPeakChildRssBytes": 38027264,
+            "processPeakChildRssScope": "process-lifetime peak; standalone CLI starts a fresh process",
+            "sampledPeakTemporaryDataBytes": 30504,
+            "serialCommitMaterializationGitCommands": 2,
+            "serialCommitMaterializationGitUserCpuSeconds": 0.020626,
+            "serialIntegrationGitCommands": 5,
+            "serialIntegrationGitUserCpuSeconds": 0.04636,
+            "serialIntegrationWallNanoseconds": 114854000,
+            "serialOperationCommitMaterializationWallNanoseconds": 45749000,
+            "serialPreparationGitCommands": 4,
+            "serialPreparationGitUserCpuSeconds": 0.040135,
+            "serialPreparationWallNanoseconds": 90449500,
+            "serialTotalGitCommands": 11,
+            "serialTotalWallNanoseconds": 251052500,
+            "wallNanoseconds": 1511409625
+          },
+          "pathOverlapBaseline": {
+            "waveCount": 2,
+            "waves": [
+              [
+                "op-0"
+              ],
+              [
+                "op-1"
+              ]
+            ]
+          },
+          "reportDigest": "sha256:eb7c2658451854e795f8ea5d26535f382b99cd3896974392c394622d2a0f3d1c",
+          "resourceLimits": {
+            "addressSpaceBytesPerGitChild": 536870912,
+            "aggregatePatchBytes": 262144,
+            "capturedOutputBytes": 8388608,
+            "changedPaths": 16,
+            "concurrentGitWorkers": 2,
+            "gitCommands": 128,
+            "operations": 4,
+            "perCommandOutputBytes": 2097152,
+            "temporaryDataBytes": 33554432,
+            "temporaryDataPollMilliseconds": 50,
+            "wallSeconds": 30.0
+          },
+          "sample": 1,
+          "serialWaveCount": 2,
+          "sourceRepositoryUnchanged": true,
+          "unsafeAdmissionCount": 0,
+          "wallNanosecondsIncludingHarness": 1512094000
+        },
+        {
+          "candidateWaveCount": 2,
+          "candidateWaves": [
+            [
+              "op-0"
+            ],
+            [
+              "op-1"
+            ]
+          ],
+          "comparison": "inconclusive",
+          "expectedComparison": "inconclusive",
+          "gitMergeTreePairBaseline": {
+            "capturedOutputBytes": 298,
+            "childSystemCpuSeconds": 0.0006669999999999732,
+            "childUserCpuSeconds": 0.0,
+            "command": "git merge-tree --write-tree <operation-0> <operation-1>",
+            "exitCode": 1,
+            "gitCommandCount": 1,
+            "inputOperationIds": [
+              "op-0",
+              "op-1"
+            ],
+            "status": "conflict",
+            "wallNanoseconds": 786125
+          },
+          "id": "conflict",
+          "metrics": {
+            "candidateCommitMaterializationGitCommands": 2,
+            "candidateCommitMaterializationGitUserCpuSeconds": 0.016989,
+            "candidateIntegrationGitCommands": 5,
+            "candidateIntegrationGitUserCpuSeconds": 0.038363,
+            "candidateIntegrationWallNanoseconds": 109811000,
+            "candidateOperationCommitMaterializationWallNanoseconds": 45969333,
+            "candidatePreparationGitCommands": 4,
+            "candidatePreparationGitUserCpuSeconds": 0.035543,
+            "candidatePreparationWallNanoseconds": 90743459,
+            "candidateTotalGitCommands": 11,
+            "candidateTotalWallNanoseconds": 246523792,
+            "capturedOutputBytes": 4940,
+            "gitChildSystemCpuSeconds": 0.258776,
+            "gitChildUserCpuSeconds": 0.572878,
+            "processPeakChildRssBytes": 38027264,
+            "processPeakChildRssScope": "process-lifetime peak; standalone CLI starts a fresh process",
+            "sampledPeakTemporaryDataBytes": 30504,
+            "serialCommitMaterializationGitCommands": 2,
+            "serialCommitMaterializationGitUserCpuSeconds": 0.019319,
+            "serialIntegrationGitCommands": 5,
+            "serialIntegrationGitUserCpuSeconds": 0.038747,
+            "serialIntegrationWallNanoseconds": 116638417,
+            "serialOperationCommitMaterializationWallNanoseconds": 44931500,
+            "serialPreparationGitCommands": 4,
+            "serialPreparationGitUserCpuSeconds": 0.030682,
+            "serialPreparationWallNanoseconds": 80527125,
+            "serialTotalGitCommands": 11,
+            "serialTotalWallNanoseconds": 242097042,
+            "wallNanoseconds": 1485405543
+          },
+          "pathOverlapBaseline": {
+            "waveCount": 2,
+            "waves": [
+              [
+                "op-0"
+              ],
+              [
+                "op-1"
+              ]
+            ]
+          },
+          "reportDigest": "sha256:1d82ca9633163c2d6823b21e59929b48391aae8b4b7191afe707fe629c1c1057",
+          "resourceLimits": {
+            "addressSpaceBytesPerGitChild": 536870912,
+            "aggregatePatchBytes": 262144,
+            "capturedOutputBytes": 8388608,
+            "changedPaths": 16,
+            "concurrentGitWorkers": 2,
+            "gitCommands": 128,
+            "operations": 4,
+            "perCommandOutputBytes": 2097152,
+            "temporaryDataBytes": 33554432,
+            "temporaryDataPollMilliseconds": 50,
+            "wallSeconds": 30.0
+          },
+          "sample": 2,
+          "serialWaveCount": 2,
+          "sourceRepositoryUnchanged": true,
+          "unsafeAdmissionCount": 0,
+          "wallNanosecondsIncludingHarness": 1485959209
+        },
+        {
+          "candidateWaveCount": 2,
+          "candidateWaves": [
+            [
+              "op-0"
+            ],
+            [
+              "op-1"
+            ]
+          ],
+          "comparison": "inconclusive",
+          "expectedComparison": "inconclusive",
+          "gitMergeTreePairBaseline": {
+            "capturedOutputBytes": 298,
+            "childSystemCpuSeconds": 0.0008580000000000254,
+            "childUserCpuSeconds": 0.0,
+            "command": "git merge-tree --write-tree <operation-0> <operation-1>",
+            "exitCode": 1,
+            "gitCommandCount": 1,
+            "inputOperationIds": [
+              "op-0",
+              "op-1"
+            ],
+            "status": "conflict",
+            "wallNanoseconds": 968583
+          },
+          "id": "conflict",
+          "metrics": {
+            "candidateCommitMaterializationGitCommands": 2,
+            "candidateCommitMaterializationGitUserCpuSeconds": 0.015927,
+            "candidateIntegrationGitCommands": 5,
+            "candidateIntegrationGitUserCpuSeconds": 0.049629,
+            "candidateIntegrationWallNanoseconds": 119975416,
+            "candidateOperationCommitMaterializationWallNanoseconds": 44171791,
+            "candidatePreparationGitCommands": 4,
+            "candidatePreparationGitUserCpuSeconds": 0.040487,
+            "candidatePreparationWallNanoseconds": 91854292,
+            "candidateTotalGitCommands": 11,
+            "candidateTotalWallNanoseconds": 256001499,
+            "capturedOutputBytes": 4940,
+            "gitChildSystemCpuSeconds": 0.276581,
+            "gitChildUserCpuSeconds": 0.629654,
+            "processPeakChildRssBytes": 38027264,
+            "processPeakChildRssScope": "process-lifetime peak; standalone CLI starts a fresh process",
+            "sampledPeakTemporaryDataBytes": 30504,
+            "serialCommitMaterializationGitCommands": 2,
+            "serialCommitMaterializationGitUserCpuSeconds": 0.021462,
+            "serialIntegrationGitCommands": 5,
+            "serialIntegrationGitUserCpuSeconds": 0.044335,
+            "serialIntegrationWallNanoseconds": 115179084,
+            "serialOperationCommitMaterializationWallNanoseconds": 45956958,
+            "serialPreparationGitCommands": 4,
+            "serialPreparationGitUserCpuSeconds": 0.039728,
+            "serialPreparationWallNanoseconds": 92501667,
+            "serialTotalGitCommands": 11,
+            "serialTotalWallNanoseconds": 253637709,
+            "wallNanoseconds": 1509686209
+          },
+          "pathOverlapBaseline": {
+            "waveCount": 2,
+            "waves": [
+              [
+                "op-0"
+              ],
+              [
+                "op-1"
+              ]
+            ]
+          },
+          "reportDigest": "sha256:5262d076092f3e50de9dccfc647b0f8932ca3f40c64ded7076dde3baab05ebff",
+          "resourceLimits": {
+            "addressSpaceBytesPerGitChild": 536870912,
+            "aggregatePatchBytes": 262144,
+            "capturedOutputBytes": 8388608,
+            "changedPaths": 16,
+            "concurrentGitWorkers": 2,
+            "gitCommands": 128,
+            "operations": 4,
+            "perCommandOutputBytes": 2097152,
+            "temporaryDataBytes": 33554432,
+            "temporaryDataPollMilliseconds": 50,
+            "wallSeconds": 30.0
+          },
+          "sample": 3,
+          "serialWaveCount": 2,
+          "sourceRepositoryUnchanged": true,
+          "unsafeAdmissionCount": 0,
+          "wallNanosecondsIncludingHarness": 1510478334
+        }
+      ],
+      "serialWaveCount": 2,
+      "sourceRepositoryUnchanged": true,
+      "unsafeAdmissionCount": 0,
+      "wallNanosecondsIncludingHarness": 1512094000
+    }
+  ]
+}
