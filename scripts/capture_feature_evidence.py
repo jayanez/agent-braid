@@ -140,6 +140,28 @@ FEATURES = {
         "outcome": "Git adapter, mandatory provenance, negative cases, compatibility, and six-scenario benchmark passed with zero false-safe classifications.",
         "limits": "Synthetic local Git repositories and syntactic path observations only; no semantic commutation, merge safety, production-safety, or execution claim.",
     },
+    "012-m2-git-replay-planner": {
+        "commands": [
+            [sys.executable, "-m", "unittest", "tests.test_git_replay", "-v"],
+            [sys.executable, "-m", "unittest", "tests.test_github_tracking", "-v"],
+            [sys.executable, "scripts/run_git_replay_benchmark.py"],
+            [sys.executable, "scripts/validate_contracts.py"],
+        ],
+        "inputs": [
+            "agent_braid/git_replay.py", "agent_braid/cli.py",
+            "schemas/0.1.0-alpha/git-replay-evidence.schema.json",
+            "schemas/0.1.0-alpha/git-plan.schema.json",
+            "examples/analysis/git-replay-benchmark.json",
+            "scripts/run_git_replay_benchmark.py", "tests/test_git_replay.py",
+            "docs/adr/0013-isolated-git-replay-and-advisory-planning.md",
+            "docs/architecture/GIT_REPLAY.md", "specs/012-m2-git-replay-planner/spec.md",
+            "specs/012-m2-git-replay-planner/plan.md",
+            "specs/012-m2-git-replay-planner/quickstart.md",
+            "docs/development/github-tracking.json", "tests/test_github_tracking.py",
+        ],
+        "outcome": "Bounded fixed-patch replay, consultative wave thresholds and serial/path-overlap/Git-merge baselines recorded; any negative or failed threshold remains visible in the raw observations.",
+        "limits": "Synthetic SHA-1 repositories and tracked-tree-v1 observations only; fixed-patch replay does not establish semantic safety, source correctness, arbitrary interleaving safety, runtime safety, or execution authorization. A validated evidence record may document a failed hypothesis.",
+    },
 }
 
 
@@ -172,8 +194,21 @@ def capture(feature: str) -> None:
             "stdout": redact_machine_paths(process.stdout),
             "stderr": redact_machine_paths(process.stderr),
         })
-        if process.returncode:
+        if process.returncode and feature != "012-m2-git-replay-planner":
             raise RuntimeError(f"evidence command failed: {' '.join(command)}")
+    if feature == "012-m2-git-replay-planner":
+        benchmark = next(item for item in observations
+                         if "run_git_replay_benchmark.py" in item["command"])
+        try:
+            benchmark_report = json.loads(benchmark["stdout"])
+        except json.JSONDecodeError:
+            benchmark_report = {}
+        if (benchmark["exit_code"] != 0
+                or not benchmark_report.get("thresholdsPassed", False)):
+            config["outcome"] = (
+                "Negative or incomplete M2 replay benchmark captured; inspect the raw command "
+                "observations and keep the positive advancement threshold open."
+            )
     evidence_path = feature_dir / "evidence.json"
     evidence = {
         "captured_at": datetime.now(timezone.utc).isoformat(),
@@ -201,7 +236,7 @@ def capture(feature: str) -> None:
 
 def main() -> int:
     if len(sys.argv) != 2 or sys.argv[1] not in FEATURES:
-        print("usage: capture_feature_evidence.py <002-open-tooling-strategy|003-read-only-analyzer|005-git-worktree-adapter|006-validation-status-policy|008-m0.5-closure|010-risk-validation>", file=sys.stderr)
+        print("usage: capture_feature_evidence.py <002-open-tooling-strategy|003-read-only-analyzer|005-git-worktree-adapter|006-validation-status-policy|008-m0.5-closure|010-risk-validation|012-m2-git-replay-planner>", file=sys.stderr)
         return 2
     capture(sys.argv[1])
     print(f"Captured executable evidence for {sys.argv[1]}; human review remains pending.")

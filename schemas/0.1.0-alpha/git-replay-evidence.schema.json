@@ -1,0 +1,73 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://agent-braid.dev/schemas/0.1.0-alpha/git-replay-evidence.schema.json",
+  "title": "Agent Braid bounded Git replay evidence 0.1.0-alpha",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "gitReplayEvidenceVersion", "evidenceDigest", "repositoryId", "baseCommit", "baseTree",
+    "operations", "analysisDigest", "provenanceDigest", "observationContract",
+    "executionContract", "schedules", "result", "limits", "executionAuthorization"
+  ],
+  "properties": {
+    "gitReplayEvidenceVersion": {"const": "0.1.0-alpha"},
+    "evidenceDigest": {"$ref": "#/$defs/sha256"},
+    "repositoryId": {"$ref": "#/$defs/sha256"},
+    "baseCommit": {"$ref": "#/$defs/oid"},
+    "baseTree": {"$ref": "#/$defs/oid"},
+    "operations": {
+      "type": "array", "minItems": 2, "maxItems": 4,
+      "items": {"$ref": "#/$defs/operation"}
+    },
+    "analysisDigest": {"$ref": "#/$defs/sha256"},
+    "provenanceDigest": {"$ref": "#/$defs/sha256"},
+    "observationContract": {"const": "tracked-tree-v1"},
+    "executionContract": {"const": "isolated-index-patch-v1"},
+    "schedules": {
+      "type": "array", "minItems": 1, "maxItems": 24,
+      "items": {"$ref": "#/$defs/schedule"}
+    },
+    "result": {"enum": ["equivalent-observed", "divergent", "inconclusive"]},
+    "limits": {"type": "array", "items": {"type": "string", "minLength": 1}},
+    "executionAuthorization": {"const": false}
+  },
+  "$defs": {
+    "oid": {"type": "string", "pattern": "^[0-9a-f]{40}$"},
+    "sha256": {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$"},
+    "operation": {
+      "type": "object", "additionalProperties": false,
+      "required": ["instanceId", "attemptId", "sourceCommit", "dependencies", "uncertainPaths", "patchDigest", "eligible", "ineligibleReasons"],
+      "properties": {
+        "instanceId": {"type": "string", "minLength": 1, "maxLength": 256},
+        "attemptId": {"type": "string", "minLength": 1, "maxLength": 256},
+        "sourceCommit": {"$ref": "#/$defs/oid"},
+        "dependencies": {"type": "array", "uniqueItems": true, "items": {"type": "string", "minLength": 1}},
+        "uncertainPaths": {"type": "array", "uniqueItems": true, "items": {"type": "string", "minLength": 1}},
+        "patchDigest": {"$ref": "#/$defs/sha256"},
+        "eligible": {"type": "boolean"},
+        "ineligibleReasons": {"type": "array", "items": {"type": "string", "minLength": 1}}
+      }
+    },
+    "step": {
+      "type": "object", "additionalProperties": false,
+      "required": ["operationId", "inputTree", "outputTree", "status"],
+      "properties": {
+        "operationId": {"type": "string", "minLength": 1},
+        "inputTree": {"$ref": "#/$defs/oid"},
+        "outputTree": {"oneOf": [{"$ref": "#/$defs/oid"}, {"type": "null"}]},
+        "status": {"enum": ["applied", "patch-rejected"]}
+      }
+    },
+    "schedule": {
+      "type": "object", "additionalProperties": false,
+      "required": ["order", "status", "steps", "finalTree", "failure"],
+      "properties": {
+        "order": {"type": "array", "minItems": 2, "maxItems": 4, "items": {"type": "string", "minLength": 1}},
+        "status": {"enum": ["complete", "incomplete"]},
+        "steps": {"type": "array", "minItems": 1, "maxItems": 4, "items": {"$ref": "#/$defs/step"}},
+        "finalTree": {"oneOf": [{"$ref": "#/$defs/oid"}, {"type": "null"}]},
+        "failure": {"oneOf": [{"type": "string"}, {"type": "null"}]}
+      }
+    }
+  }
+}

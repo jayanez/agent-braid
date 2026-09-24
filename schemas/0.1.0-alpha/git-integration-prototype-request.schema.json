@@ -1,0 +1,46 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://agent-braid.dev/schemas/0.1.0-alpha/git-integration-prototype-request.schema.json",
+  "title": "Agent Braid bounded Git integration prototype request 0.1.0-alpha",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "gitIntegrationPrototypeRequestVersion", "repository", "baseRevision", "targetRef", "operations"
+  ],
+  "properties": {
+    "gitIntegrationPrototypeRequestVersion": {"const": "0.1.0-alpha"},
+    "repository": {"type": "string", "minLength": 1},
+    "baseRevision": {"$ref": "#/$defs/oid"},
+    "expectedFinalTree": {"$ref": "#/$defs/oid"},
+    "targetRef": {"type": "string", "pattern": "^refs/heads/.+", "maxLength": 256},
+    "operations": {
+      "type": "array", "minItems": 2, "maxItems": 4,
+      "items": {"$ref": "#/$defs/operation"}
+    }
+  },
+  "$defs": {
+    "oid": {"type": "string", "pattern": "^[0-9a-f]{40}$"},
+    "path": {"type": "string", "minLength": 1, "maxLength": 1024},
+    "operation": {
+      "type": "object", "additionalProperties": false,
+      "required": [
+        "instanceId", "attemptId", "source", "dependencies", "reads", "writes",
+        "sharedResources", "footprintComplete"
+      ],
+      "properties": {
+        "instanceId": {"type": "string", "minLength": 1, "maxLength": 256},
+        "attemptId": {"type": "string", "minLength": 1, "maxLength": 256},
+        "source": {
+          "type": "object", "additionalProperties": false,
+          "required": ["kind", "revision"],
+          "properties": {"kind": {"const": "commit"}, "revision": {"$ref": "#/$defs/oid"}}
+        },
+        "dependencies": {"type": "array", "uniqueItems": true, "items": {"type": "string", "minLength": 1}},
+        "reads": {"type": "array", "uniqueItems": true, "items": {"$ref": "#/$defs/path"}},
+        "writes": {"type": "array", "uniqueItems": true, "items": {"$ref": "#/$defs/path"}},
+        "sharedResources": {"type": "array", "uniqueItems": true, "items": {"type": "string", "minLength": 1, "maxLength": 256}},
+        "footprintComplete": {"type": "boolean"}
+      }
+    }
+  }
+}
