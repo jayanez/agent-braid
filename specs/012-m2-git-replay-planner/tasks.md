@@ -1,8 +1,8 @@
 # Tasks
 
-- [x] T001 (REQ-001/SC-001–002): finalize the specification, assurance record,
+- [x] T001 (REQ-001/SC-001–002, SC-009): finalize the specification, assurance record,
   ADR and M2 tracking entry; verify clean Python 3.12+ Spec Kit prerequisites.
-- [x] T002 (REQ-001/SC-001–002): implement strict request validation, commit
+- [x] T002 (REQ-001/SC-001–002, SC-009): implement strict request validation, commit
   resolution, shared-base/dependency checks, patch/path bounds and stable patch
   digests in `agent_braid/git_replay.py`.
 - [x] T003 (REQ-002/SC-003–004): implement isolated bare-repository/index replay,
@@ -15,17 +15,17 @@
   preserving existing CLI behavior.
 - [x] T006 (REQ-005/SC-008): add plan schema, documentation, registered benchmark
   corpus, sequential/path-overlap/Git-merge baselines and measured thresholds.
-- [x] T007 (REQ-001–005/SC-001–008): run paired tests and proportional quick
+- [x] T007 (REQ-001–005/SC-001–009): run paired tests and proportional quick
   validation after coherent increments; record obtained evidence and task state.
-- [x] T008 (REQ-001–005/SC-001–008): run the stable PR profile, capture/freeze
+- [x] T008 (REQ-001–005/SC-001–009): run the stable PR profile, capture/freeze
   evidence, perform clean-clone reproduction, run tracking source validation,
   and record the bounded human review. The cut approval does not close M2.
 
-## M2 remains open — post-cut follow-up backlog
+## M2 remains open — completed scoped post-cut follow-up
 
-These tasks are beyond the approved first cut and remain uncompleted. They
-strengthen the recorded residual risks and build toward safer parallel
-integration. They do not authorize execution or close M2.
+These tasks were completed within their recorded scopes after the approved first
+cut. They strengthen the recorded residual risks and build toward safer parallel
+integration. Their completion does not authorize execution or close M2.
 
 - [x] T009 (M2-RISK-01): remove process-global environment mutation from Git
   provenance and add a concurrent-caller regression.
