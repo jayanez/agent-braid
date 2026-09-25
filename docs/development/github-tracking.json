@@ -24,21 +24,15 @@
     "009-public-research-preview": {"milestone": "Public research preview", "state": "open"},
     "010-risk-validation": {"milestone": "Cross-cutting governance", "state": "closed"},
     "011-adoption-pathline": {"milestone": "Cross-cutting governance", "state": "open"},
-    "012-m2-git-replay-planner": {"milestone": "M2", "state": "open"}
+    "012-m2-git-replay-planner": {"milestone": "M2", "state": "open"},
+    "013-m2-real-workload": {"milestone": "M2", "state": "open"}
   },
-  "task_state_overrides": {
-    "SPEC-011/T001": "Merged implementation in PR #3; source checkbox awaits reconciliation.",
-    "SPEC-011/T002": "Merged implementation in PR #3; source checkbox awaits reconciliation.",
-    "SPEC-011/T003": "Merged implementation in PR #3; source checkbox awaits reconciliation.",
-    "SPEC-011/T004": "Merged implementation in PR #3; source checkbox awaits reconciliation.",
-    "SPEC-011/T005": "Merged implementation in PR #3; source checkbox awaits reconciliation.",
-    "SPEC-011/T006": "Merged implementation in PR #3; source checkbox awaits reconciliation.",
-    "SPEC-011/T007": "Merged implementation in PR #3; source checkbox awaits reconciliation."
-  },
+  "task_state_overrides": {},
   "project_review_pending": [
     "SPEC-002",
     "SPEC-002/T006",
     "SPEC-011",
-    "SPEC-011/T008"
+    "SPEC-011/T008",
+    "SPEC-013/T003"
   ]
 }
