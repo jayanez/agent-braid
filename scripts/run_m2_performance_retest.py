@@ -322,6 +322,8 @@ def validate_output_path(output: Path, repository: Path,
                          internal_phase: str | None) -> None:
     require(output.parent.is_dir() and not output.is_symlink(),
             "explicit evidence artifact directory required")
+    require(not output.exists() or output.stat().st_nlink == 1,
+            "evidence output must not be a hard link")
     if internal_phase:
         require(output.parent == Path("/artifacts")
                 and Path("/artifacts") in output.resolve().parents,
@@ -431,7 +433,15 @@ def main() -> int:
         report = {"recordVersion": "agent-braid-m2-real-performance-retest-1",
                   "status": "rejected", "reason": str(exc),
                   "executionAuthorization": False, "promotionPerformed": False}
-    args.output.write_text(json.dumps(report, sort_keys=True, indent=2) + "\n")
+    payload = json.dumps(report, sort_keys=True, indent=2) + "\n"
+    with tempfile.NamedTemporaryFile(mode="w", encoding="utf-8", dir=args.output.parent,
+                                     prefix=f".{args.output.name}.", delete=False) as temporary:
+        temporary.write(payload)
+        temporary_path = Path(temporary.name)
+    try:
+        os.replace(temporary_path, args.output)
+    finally:
+        temporary_path.unlink(missing_ok=True)
     print(json.dumps({"status": report["status"], "reason": report.get("reason"),
                       "output": str(args.output)}, sort_keys=True))
     return phase_exit_code(report["status"], args.internal_phase)
