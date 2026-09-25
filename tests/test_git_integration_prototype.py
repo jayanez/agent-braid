@@ -176,6 +176,39 @@ class GitIntegrationPrototypeTests(unittest.TestCase):
         self.assertTrue(all(item["matchesSourceTree"] for item in report["operationPreparations"]))
         self.assertEqual(before, self.source_state())
 
+    def test_verified_first_operation_uses_its_tree_without_redundant_merge(self):
+        before = self.source_state()
+        with patch.object(prototype, "_git", wraps=prototype._git) as invoke:
+            report = self.run_prototype(self.request())
+        merges = [call for call in invoke.call_args_list
+                  if call.args[2:4] == ("merge-tree", "--write-tree")]
+        self.assertEqual(len(merges), 2)  # One later merge per private lane.
+        self.assertEqual(report["comparison"]["status"], "match")
+        self.assertEqual(report["unsafeAdmissionCount"], 0)
+        self.assertEqual(report["candidateIntegration"]["steps"][0]["tree"],
+                         self.text(self.git(self.repo, "rev-parse", f"{self.left}^{{tree}}")))
+        self.assertEqual(report["serialReference"]["steps"][0]["tree"],
+                         self.text(self.git(self.repo, "rev-parse", f"{self.left}^{{tree}}")))
+        self.assertEqual(before, self.source_state())
+
+    def test_balanced_benchmark_order_preserves_verified_tree(self):
+        before = self.source_state()
+        ordinary = self.run_prototype(self.request())
+        with patch.object(prototype, "_prepare_one", wraps=prototype._prepare_one) as prepare:
+            reversed_order = self.run_prototype(self.request(), benchmark_serial_first=True)
+        lanes = ["serial" if "serial" in call.args[0].parts else "candidate"
+                 for call in prepare.call_args_list]
+        self.assertEqual(lanes[:2], ["serial", "serial"])
+        self.assertEqual(set(lanes[2:]), {"candidate"})
+        self.assert_report_schema(reversed_order)
+        self.assertEqual(reversed_order["comparison"]["status"], "match")
+        self.assertEqual(reversed_order["candidateIntegration"]["finalTree"],
+                         ordinary["candidateIntegration"]["finalTree"])
+        self.assertEqual(reversed_order["serialReference"]["finalTree"],
+                         ordinary["serialReference"]["finalTree"])
+        self.assertEqual(reversed_order["unsafeAdmissionCount"], 0)
+        self.assertEqual(before, self.source_state())
+
     def test_request_schema_is_versioned_and_rejects_unknown_fields(self):
         schema = loads((ROOT / "schemas/0.1.0-alpha/git-integration-prototype-request.schema.json").read_text())
         validator = Draft202012Validator(schema)
