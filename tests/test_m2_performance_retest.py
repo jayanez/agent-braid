@@ -14,7 +14,7 @@ from unittest.mock import patch
 from scripts.run_m2_performance_retest import (
     DECISION_PATH, INPUT_PATH, PROPOSAL_PATH, ROOT, RetestRejected,
     classify_retest, complete_report, docker_phase, real_path_overlap_waves,
-    run, verify_decision,
+    phase_exit_code, run, verify_decision,
 )
 
 
@@ -132,6 +132,12 @@ class M2PerformanceRetestTests(unittest.TestCase):
         uncovered[operations[0]["instanceId"]]["reads"].append("other-agent-input.txt")
         with self.assertRaisesRegex(RetestRejected, "uncovered read"):
             real_path_overlap_waves(operations, uncovered)
+
+    def test_completed_measurement_is_a_successful_internal_phase(self) -> None:
+        self.assertEqual(phase_exit_code("measurement-complete", "batch"), 0)
+        self.assertEqual(phase_exit_code("inconclusive", "batch"), 1)
+        self.assertEqual(phase_exit_code("completed", "materialize"), 0)
+        self.assertEqual(phase_exit_code("negative-performance", None), 0)
 
 
 if __name__ == "__main__":
