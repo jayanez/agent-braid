@@ -30,6 +30,11 @@ FROZEN_COMMIT = "60d6bcaba7245e9864298321b1038cddfde6fd9e"
 FROZEN_PROTOTYPE_SHA256 = "3daf9c4ae946ab9a59fb4c2711492468ffdb6455a0bf04f6318a99b7664db860"
 SEED = 20260925
 BOOTSTRAP_SAMPLES = 10000
+PHASE_METRICS = {
+    "patchPreparation": "PreparationWallNanoseconds",
+    "fixtureCommitMaterialization": "OperationCommitMaterializationWallNanoseconds",
+    "treeIntegration": "IntegrationWallNanoseconds",
+}
 
 
 def path_overlap_waves(operations: list[dict], footprints: dict[str, dict]) -> list[list[str]]:
@@ -96,6 +101,38 @@ def summarize(samples: list[dict]) -> dict:
                            for item in comparisons.values())}
 
 
+def timed_phases(report: dict, lane: str) -> dict[str, int]:
+    metrics = report["metrics"]
+    phases = {name: metrics[lane + suffix] for name, suffix in PHASE_METRICS.items()}
+    if sum(phases.values()) != metrics[lane + "TotalWallNanoseconds"]:
+        raise ValueError("phase times do not account for total lane time")
+    return phases
+
+
+def cost_breakdown(samples: list[dict]) -> dict:
+    lanes = ("candidate", "serial", "pathOverlap")
+    medians = {
+        lane: {
+            phase: round(statistics.median(item["phases"][lane][phase]
+                                           for item in samples) / 1_000_000, 3)
+            for phase in PHASE_METRICS
+        }
+        for lane in lanes
+    }
+    paired_differences = {
+        baseline: {
+            phase: round(statistics.median(
+                (item["phases"]["candidate"][phase]
+                 - item["phases"][baseline][phase]) / 1_000_000
+                for item in samples), 3)
+            for phase in PHASE_METRICS
+        }
+        for baseline in ("serial", "pathOverlap")
+    }
+    return {"phaseMediansMilliseconds": medians,
+            "pairedMedianCandidateMinusBaselineMilliseconds": paired_differences}
+
+
 def measure(frozen_module, samples_per_scenario: int = 30) -> dict:
     if samples_per_scenario < 2:
         raise ValueError("at least two samples are required")
@@ -149,6 +186,11 @@ def measure(frozen_module, samples_per_scenario: int = 30) -> dict:
                     "candidate": report["metrics"]["candidateTotalWallNanoseconds"],
                     "serial": report["metrics"]["serialTotalWallNanoseconds"],
                     "pathOverlap": path_report["metrics"]["candidateTotalWallNanoseconds"],
+                    "phases": {
+                        "candidate": timed_phases(report, "candidate"),
+                        "serial": timed_phases(report, "serial"),
+                        "pathOverlap": timed_phases(path_report, "candidate"),
+                    },
                     "candidateGitCommands": report["metrics"]["candidateTotalGitCommands"],
                     "serialGitCommands": report["metrics"]["serialTotalGitCommands"],
                     "pathOverlapGitCommands": path_report["metrics"]["candidateTotalGitCommands"],
@@ -162,6 +204,7 @@ def measure(frozen_module, samples_per_scenario: int = 30) -> dict:
                 "pathScheduleMatchesCandidate": report["candidateWaves"] == path_report["candidateWaves"],
                 "finalTree": expected_tree,
                 "samplesNanoseconds": samples,
+                "costBreakdown": cost_breakdown(samples),
                 **summary,
             })
     return {
