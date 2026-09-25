@@ -57,9 +57,10 @@ Run two independent batches of 30 **paired Git-only samples** in the pinned,
 offline container. Alternate current versus path-baseline process order and
 candidate versus serial lane order within each batch. Keep every raw timing,
 tree, source-state, command-count and resource observation. In every pair,
-candidate, serial and path-baseline trees must match, the source and remote
-refs must remain unchanged, all lanes must complete, and unsafe admissions
-must be zero. For each batch and for both baselines, require a median paired
+candidate, serial and path-baseline trees must match, the local source state
+must remain unchanged, all lanes must complete, and unsafe admissions must be
+zero. The host must verify live remote refs before and after each offline
+batch. For each batch and for both baselines, require a median paired
 fractional improvement of at least 10% and a seeded 10,000-resample bootstrap
 95% interval with lower bound above zero. Report any failure as a negative or
 inconclusive result, not as a performance gain.
