@@ -14,7 +14,7 @@ from unittest.mock import patch
 from scripts.run_m2_performance_retest import (
     DECISION_PATH, INPUT_PATH, PROPOSAL_PATH, ROOT, RetestRejected,
     classify_retest, complete_report, docker_phase, real_path_overlap_waves,
-    phase_exit_code, run, verify_decision,
+    phase_exit_code, run, validate_output_path, verify_decision,
 )
 
 
@@ -138,6 +138,20 @@ class M2PerformanceRetestTests(unittest.TestCase):
         self.assertEqual(phase_exit_code("inconclusive", "batch"), 1)
         self.assertEqual(phase_exit_code("completed", "materialize"), 0)
         self.assertEqual(phase_exit_code("negative-performance", None), 0)
+
+    def test_rejected_output_path_cannot_write_into_source(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            source = root / "source"
+            source.mkdir()
+            with self.assertRaisesRegex(RetestRejected, "outside"):
+                validate_output_path(source / "rejection.json", source, None)
+            redirect = root / "redirect.json"
+            redirect.symlink_to(source / "rejection.json")
+            with self.assertRaisesRegex(RetestRejected, "artifact directory"):
+                validate_output_path(redirect, source, None)
+            validate_output_path(root / "result.json", source, None)
+            self.assertFalse((source / "rejection.json").exists())
 
 
 if __name__ == "__main__":
