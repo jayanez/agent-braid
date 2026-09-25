@@ -92,9 +92,9 @@
           "given": "A verified divergent evidence bundle",
           "id": "SC-001",
           "obtained_evidence": [],
-          "planned_evidence": "Extend the named baseline regression with this scenario in the implementation PR; run and record its actual result.",
-          "test_file": "tests/test_git_replay.py",
-          "test_name": "GitReplayTests.test_divergent_and_failed_orders_are_not_candidates",
+          "planned_evidence": "The focused reducer suite exercises input eligibility with a controlled divergent backend; capture a frozen feature evidence artifact and obtain human review in T003.",
+          "test_file": "tests/test_git_counterexamples.py",
+          "test_name": "GitCounterexampleReductionAlgorithmTests.test_two_operation_minimum_is_unchanged_without_any_search",
           "then": "the input is eligible for bounded reduction",
           "when": "the reducer starts"
         },
@@ -102,9 +102,9 @@
           "given": "An altered bundle or unavailable Git input",
           "id": "SC-002",
           "obtained_evidence": [],
-          "planned_evidence": "Extend the named baseline regression with this scenario in the implementation PR; run and record its actual result.",
-          "test_file": "tests/test_git_replay.py",
-          "test_name": "GitReplayTests.test_verifier_rejects_tampering_and_omitted_orders",
+          "planned_evidence": "The focused reducer suite covers tampered evidence, missing source objects and invalid input with real Git; capture a frozen feature evidence artifact and obtain human review in T003.",
+          "test_file": "tests/test_git_counterexamples.py",
+          "test_name": "GitCounterexampleRealGitTests.test_rejects_tampered_evidence_end_to_end",
           "then": "no positive reduction claim is returned",
           "when": "the reducer starts"
         }
@@ -118,9 +118,9 @@
           "given": "A divergent case with a redundant operation",
           "id": "SC-003",
           "obtained_evidence": [],
-          "planned_evidence": "Extend the named baseline regression with this scenario in the implementation PR; run and record its actual result.",
-          "test_file": "tests/test_git_replay.py",
-          "test_name": "GitReplayTests.test_replays_disjoint_and_different_hunk_patches",
+          "planned_evidence": "The reduction search is tested with a controlled divergent backend; bounded local probes found no real all-complete divergent fixture, and no impossibility is claimed. Capture a frozen feature evidence artifact and obtain human review in T003.",
+          "test_file": "tests/test_git_counterexamples.py",
+          "test_name": "GitCounterexampleReductionAlgorithmTests.test_redundant_operation_is_removed_when_a_smaller_divergent_subset_exists",
           "then": "a smaller divergent witness is selected",
           "when": "subsets are independently replayed"
         },
@@ -128,9 +128,9 @@
           "given": "A divergent case with no smaller qualifying subset",
           "id": "SC-004",
           "obtained_evidence": [],
-          "planned_evidence": "Extend the named baseline regression with this scenario in the implementation PR; run and record its actual result.",
-          "test_file": "tests/test_git_replay.py",
-          "test_name": "GitReplayTests.test_divergent_and_failed_orders_are_not_candidates",
+          "planned_evidence": "The focused reducer suite covers ordered dependency-closed subsets and an irreducible controlled case; capture a frozen feature evidence artifact and obtain human review in T003.",
+          "test_file": "tests/test_git_counterexamples.py",
+          "test_name": "GitCounterexampleReductionAlgorithmTests.test_no_smaller_qualifying_subset_leaves_the_original_witness_unchanged",
           "then": "the original operation set remains the witness",
           "when": "subsets are independently replayed"
         }
@@ -144,9 +144,9 @@
           "given": "The 120-second deadline or ten-subset attempt limit is exhausted before a minimal witness is established",
           "id": "SC-005",
           "obtained_evidence": [],
-          "planned_evidence": "Extend the named baseline regression with this scenario in the implementation PR; run and record its actual result.",
-          "test_file": "tests/test_git_replay.py",
-          "test_name": "GitReplayTests.test_resource_budget_bounds_time_output_temp_data_and_start_errors",
+          "planned_evidence": "The focused reducer suite covers candidate and deadline exhaustion, replay failure, independent candidate verification, and process-group cleanup; capture a frozen feature evidence artifact and obtain human review in T003.",
+          "test_file": "tests/test_git_counterexamples.py",
+          "test_name": "GitCounterexampleReductionAlgorithmTests.test_budget_exhaustion_by_attempt_cap_is_inconclusive_never_a_minimality_claim",
           "then": "the reduction is inconclusive and cannot claim minimality",
           "when": "subset enumeration stops"
         }
@@ -154,7 +154,7 @@
       "text": "Enforce a 120-second total deadline and at most ten candidate subsets; fail closed on timeout, incomplete search or infrastructure failure."
     }
   ],
-  "scientific_limits": "Minimality is only over enumerated operation subsets, not patch hunks, semantic effects, all schedules or arbitrary workloads.",
+  "scientific_limits": "Minimality is only over the enumerated dependency-closed operation subsets in the fixed-patch tracked-tree domain; no patch-hunk, semantic-effect, or arbitrary-workload claim is made.",
   "scope": "Internal deterministic operation-subset reduction of verified divergent fixed-patch Git replay evidence.",
   "stage": "draft"
 }
