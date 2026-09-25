@@ -1,0 +1,11 @@
+{
+  "baseCommit": "f3c734a1f42d6d5962cfedc57d7f6c1efe40e0a6",
+  "executionAuthorization": false,
+  "projectValidationExecuted": false,
+  "sourceCommits": [
+    "083f1a390988a9527a5aaeb19133401243b1d714",
+    "58351f812614058e53a8ee6aef1dd458f1bb70fc"
+  ],
+  "status": "preflight-valid",
+  "validationProfile": "m2-real-read-only-v1"
+}
