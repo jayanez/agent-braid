@@ -276,12 +276,32 @@ def _replay_all(request: dict, provenance: dict, patches: dict[str, bytes],
     return result
 
 
+def _tracked_tree_observation(schedule: dict) -> str | None:
+    """Return the tracked-tree-v1 observation for a complete replay schedule.
+
+    An incomplete schedule has no successful observation. A malformed internal
+    schedule must not be mistaken for a successful, equivalent observation.
+    """
+    _require(isinstance(schedule, dict), "invalid internal schedule")
+    _require({"status", "finalTree"} <= schedule.keys(),
+             "internal schedule lacks observation fields")
+    status = schedule.get("status")
+    final_tree = schedule.get("finalTree")
+    if status == "incomplete":
+        _require(final_tree is None, "incomplete schedule has a final tree")
+        return None
+    _require(status == "complete", "invalid internal schedule status")
+    _require(isinstance(final_tree, str) and bool(OID.fullmatch(final_tree)),
+             "complete schedule has no valid tracked tree")
+    return final_tree
+
+
 def _result(schedules: list[dict]) -> str:
-    if any(schedule["status"] != "complete" for schedule in schedules):
+    _require(bool(schedules), "no replay schedules")
+    observations = [_tracked_tree_observation(schedule) for schedule in schedules]
+    if any(observation is None for observation in observations):
         return "inconclusive"
-    return ("equivalent-observed"
-            if len({schedule["finalTree"] for schedule in schedules}) == 1
-            else "divergent")
+    return ("equivalent-observed" if len(set(observations)) == 1 else "divergent")
 
 
 def _bundle_digest(bundle: dict) -> str:

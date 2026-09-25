@@ -16,6 +16,8 @@ from agent_braid.git_replay import (
     InvalidGitReplay,
     _bundle_digest,
     _plan_digest,
+    _result,
+    _tracked_tree_observation,
     plan as plan_git,
     produce,
     verify,
@@ -112,11 +114,42 @@ class GitReplayTests(unittest.TestCase):
         bundle, plan = produce(self.request())
         self.assertEqual(bundle["result"], "equivalent-observed")
         self.assertEqual(bundle["observationContract"], "tracked-tree-v1")
+        self.assertEqual(
+            {_tracked_tree_observation(schedule) for schedule in bundle["schedules"]},
+            {bundle["schedules"][0]["finalTree"]},
+        )
         self.assertEqual(plan["mode"], "candidate-preparation-waves")
         self.assertEqual(plan["waves"], [["op-0", "op-1"]])
         self.assertFalse(plan["executionAuthorization"])
         self.assertNotIn(str(self.repo), json.dumps(bundle))
         self.assertEqual(verify(bundle, str(self.repo))["status"], "verified")
+
+    def test_tracked_tree_observation_classifies_complete_and_incomplete_schedules(self):
+        tree_a = "a" * 40
+        tree_b = "b" * 40
+        complete_a = {"status": "complete", "finalTree": tree_a}
+        complete_b = {"status": "complete", "finalTree": tree_b}
+        incomplete = {"status": "incomplete", "finalTree": None}
+
+        self.assertEqual(_tracked_tree_observation(complete_a), tree_a)
+        self.assertIsNone(_tracked_tree_observation(incomplete))
+        self.assertEqual(_result([complete_a, complete_a]), "equivalent-observed")
+        self.assertEqual(_result([complete_a, complete_b]), "divergent")
+        self.assertEqual(_result([complete_a, incomplete]), "inconclusive")
+        self.assertEqual(_result([incomplete, incomplete]), "inconclusive")
+
+    def test_tracked_tree_observation_rejects_malformed_internal_schedules(self):
+        for schedules in (
+            [],
+            [{"status": "complete", "finalTree": None}],
+            [{"status": "complete", "finalTree": "not-an-oid"}],
+            [{"status": "incomplete", "finalTree": "a" * 40}],
+            [{"status": "incomplete"}],
+            [{"status": "unknown", "finalTree": "a" * 40}],
+            [None],
+        ):
+            with self.subTest(schedules=schedules), self.assertRaises(InvalidGitReplay):
+                _result(schedules)
 
     def test_concurrent_replays_do_not_mutate_process_environment(self):
         original_environment = os.environ.copy()
