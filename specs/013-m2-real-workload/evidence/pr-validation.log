@@ -1,0 +1,276 @@
+Docker image: sha256:edddb1cbcbccb0e1af6505f9ff9938905da6f79303c97d1d12092ef61508f005
+Checkout (read-only): /private/tmp/agent-braid-m2-sync
+Common Git directory (read-only): /private/tmp/agent-braid-m2-sync/.git
+Network: disabled; memory: 2 GiB; CPU: 2; pids: 512 Linux tasks
+Requested profile: pr
+Effective profile: pr
+Changed paths: agent_braid/git_integration_prototype.py, docs/development/github-tracking.json, scripts/run_m2_real_workload.py, specs/013-m2-real-workload/assurance.json, specs/013-m2-real-workload/m2-corpus-manifest.json, specs/013-m2-real-workload/m2-corpus-preflight.json, specs/013-m2-real-workload/m2-corpus-selection.json, specs/013-m2-real-workload/m2-official-preflight.json, specs/013-m2-real-workload/m2-t003-inputs.json, specs/013-m2-real-workload/spec.md, specs/013-m2-real-workload/t003-founder-decision.json, specs/013-m2-real-workload/t003-founder-proposal.md, specs/013-m2-real-workload/tasks.md, tests/test_github_tracking.py, tests/test_m2_real_workload.py, tests/test_real_workload_manifest.py
+Domains: contributor-documentation, feature-assurance, python-package-other, scripts-other, tests-other
+Commands:
+  - repository: python3 scripts/validate_repository.py
+  - contracts: python3 scripts/validate_contracts.py
+  - release-records: python3 scripts/validate_release_records.py
+  - publication: python3 scripts/validate_publication.py --portable
+  - research-radar: python3 scripts/validate_research_radar.py --milestone M0.5
+  - adoption-tracks: python3 scripts/validate_adoption_tracks.py
+  - market-model: python3 scripts/market_sizing.py --check
+  - cli-smoke: python3 -m agent_braid --help
+  - full-tests: python3 -m unittest discover -s tests -v
+  - scientific-controls: python3 -m research.lab.controls
+  - spec-kit-structure: python3 scripts/validate_spec_kit.py
+  - spec-kit-render: python3 scripts/spec_kit.py check
+  - constitution-replica: python3 scripts/constitution_replica.py check
+  - whitespace: git diff --check f3c734a1f42d6d5962cfedc57d7f6c1efe40e0a6 --
+Deferred boundary gates:
+  - Feature-specific evidence capture, freeze and human review (not executed)
+Limits:
+  - Path selection is not semantic dependency analysis or proof.
+  - Passing commands is not evidence capture, human review, founder approval or independent validation.
+  - Clean-room procedures remain separate and are not executed by this plan.
+
+==> repository: python3 scripts/validate_repository.py
+Repository validation passed.
+
+==> contracts: python3 scripts/validate_contracts.py
+Contract corpus passed: legacy, 0.2 structure and finite semantic checks.
+
+==> release-records: python3 scripts/validate_release_records.py
+Release records passed structural validation; no scientific approval inferred.
+
+==> publication: python3 scripts/validate_publication.py --portable
+Portable export integrity and internal reproduction passed; private ancestry remains unavailable.
+
+==> research-radar: python3 scripts/validate_research_radar.py --milestone M0.5
+Research radar structure and provenance passed (offline check only).
+
+==> adoption-tracks: python3 scripts/validate_adoption_tracks.py
+Adoption-track structure and conservative pathline checks passed (no approval inferred).
+
+==> market-model: python3 scripts/market_sizing.py --check
+
+==> cli-smoke: python3 -m agent_braid --help
+usage: __main__.py [-h]
+                   {analyze,analyze-git,verify,plan-git,verify-git,verify-plan,prototype-git}
+                   ...
+
+Read-only Agent Braid CLI.
+
+positional arguments:
+  {analyze,analyze-git,verify,plan-git,verify-git,verify-plan,prototype-git}
+    analyze             analyze AIM 0.2 records
+    analyze-git         analyze stable Git snapshots
+    verify              verify a bounded certificate bundle
+    plan-git            replay immutable Git commits and emit an advisory
+                        preparation plan
+    verify-git          replay and verify a bounded Git evidence bundle
+    verify-plan         verify a plan against independently replayed Git
+                        evidence
+    prototype-git       compare bounded parallel Git patch preparation with a
+                        serial scratch integration
+
+options:
+  -h, --help            show this help message and exit
+
+==> full-tests: python3 -m unittest discover -s tests -v
+test_negative_or_inconclusive_research_is_a_valid_terminal_decision (test_adoption_pathline.AdoptionPathlineTests.test_negative_or_inconclusive_research_is_a_valid_terminal_decision) ... ok
+test_rejects_adopted_track_without_feature_reference (test_adoption_pathline.AdoptionPathlineTests.test_rejects_adopted_track_without_feature_reference) ... ok
+test_rejects_backward_stage_history (test_adoption_pathline.AdoptionPathlineTests.test_rejects_backward_stage_history) ... ok
+test_rejects_missing_differentiation_metric (test_adoption_pathline.AdoptionPathlineTests.test_rejects_missing_differentiation_metric) ... ok
+test_rejects_missing_owner_or_next_decision (test_adoption_pathline.AdoptionPathlineTests.test_rejects_missing_owner_or_next_decision) ... ok
+test_rejects_schema_shape_drift (test_adoption_pathline.AdoptionPathlineTests.test_rejects_schema_shape_drift) ... ok
+test_rejects_unknown_committed_radar_id (test_adoption_pathline.AdoptionPathlineTests.test_rejects_unknown_committed_radar_id) ... ok
+test_seeded_registry_is_valid_and_has_no_adoption (test_adoption_pathline.AdoptionPathlineTests.test_seeded_registry_is_valid_and_has_no_adoption) ... ok
+test_cli_json_text_and_rejection (test_analysis.AnalyzerTests.test_cli_json_text_and_rejection) ... ok
+test_complete_disjoint_footprints_are_candidates_not_authorization (test_analysis.AnalyzerTests.test_complete_disjoint_footprints_are_candidates_not_authorization) ... ok
+test_deterministic_and_input_order_independent (test_analysis.AnalyzerTests.test_deterministic_and_input_order_independent) ... ok
+test_invalid_and_cyclic_batches_are_rejected (test_analysis.AnalyzerTests.test_invalid_and_cyclic_batches_are_rejected) ... ok
+test_overlap_dependency_partial_and_external_are_conservative (test_analysis.AnalyzerTests.test_overlap_dependency_partial_and_external_are_conservative) ... ok
+test_read_versions_remain_constraints (test_analysis.AnalyzerTests.test_read_versions_remain_constraints) ... ok
+test_report_schema (test_analysis.AnalyzerTests.test_report_schema) ... ok
+test_software_benchmark_has_no_false_safe_classification (test_analysis.AnalyzerTests.test_software_benchmark_has_no_false_safe_classification) ... ok
+test_verify_command_preserves_bounded_checker (test_analysis.AnalyzerTests.test_verify_command_preserves_bounded_checker) ... ok
+test_aim_invalid_fields (test_contracts.StructuralTests.test_aim_invalid_fields) ... ok
+test_contract_corpus (test_contracts.StructuralTests.test_contract_corpus) ... ok
+test_legacy_bytes (test_contracts.StructuralTests.test_legacy_bytes) ... ok
+test_commit_symlink_and_worktree_gitlink_are_unknown (test_git_adapter.GitAdapterTests.test_commit_symlink_and_worktree_gitlink_are_unknown) ... ok
+test_disjoint_commits_are_syntactic_candidates_with_provenance (test_git_adapter.GitAdapterTests.test_disjoint_commits_are_syntactic_candidates_with_provenance) ... ok
+test_git_benchmark_has_no_false_safe_classifications (test_git_adapter.GitAdapterTests.test_git_benchmark_has_no_false_safe_classifications) ... ok
+test_git_benchmark_rejects_manifest_drift (test_git_adapter.GitAdapterTests.test_git_benchmark_rejects_manifest_drift) ... ok
+test_git_paths_preserve_leading_and_trailing_spaces (test_git_adapter.GitAdapterTests.test_git_paths_preserve_leading_and_trailing_spaces) ... ok
+test_overlap_dependency_delete_binary_and_uncertainty_are_conservative (test_git_adapter.GitAdapterTests.test_overlap_dependency_delete_binary_and_uncertainty_are_conservative) ... ok
+test_rejects_unstable_unrelated_and_malformed_requests (test_git_adapter.GitAdapterTests.test_rejects_unstable_unrelated_and_malformed_requests) ... ok
+test_schema_cli_and_existing_commands_remain_compatible (test_git_adapter.GitAdapterTests.test_schema_cli_and_existing_commands_remain_compatible) ... ok
+test_symlink_is_unknown_and_external_diff_is_disabled (test_git_adapter.GitAdapterTests.test_symlink_is_unknown_and_external_diff_is_disabled) ... ok
+test_worktree_includes_untracked_and_does_not_mutate_repository (test_git_adapter.GitAdapterTests.test_worktree_includes_untracked_and_does_not_mutate_repository) ... ok
+test_address_space_limit_wrapper_runs_git_without_touching_source (test_git_integration_prototype.GitIntegrationPrototypeTests.test_address_space_limit_wrapper_runs_git_without_touching_source) ... ok
+test_cancellation_stops_git_and_preserves_source_state (test_git_integration_prototype.GitIntegrationPrototypeTests.test_cancellation_stops_git_and_preserves_source_state) ... ok
+test_candidate_tree_verification_failure_is_inconclusive (test_git_integration_prototype.GitIntegrationPrototypeTests.test_candidate_tree_verification_failure_is_inconclusive) ... ok
+test_cli_writes_report_only_to_explicit_output (test_git_integration_prototype.GitIntegrationPrototypeTests.test_cli_writes_report_only_to_explicit_output) ... ok
+test_conflict_is_inconclusive_and_not_admitted (test_git_integration_prototype.GitIntegrationPrototypeTests.test_conflict_is_inconclusive_and_not_admitted) ... ok
+test_declared_tracked_tree_check_fails_closed (test_git_integration_prototype.GitIntegrationPrototypeTests.test_declared_tracked_tree_check_fails_closed) ... ok
+test_dependencies_constrain_candidate_waves (test_git_integration_prototype.GitIntegrationPrototypeTests.test_dependencies_constrain_candidate_waves) ... ok
+test_disjoint_preparation_is_parallel_and_source_stays_unchanged (test_git_integration_prototype.GitIntegrationPrototypeTests.test_disjoint_preparation_is_parallel_and_source_stays_unchanged) ... ok
+test_inflight_git_timeout_and_scratch_limit_kill_the_child (test_git_integration_prototype.GitIntegrationPrototypeTests.test_inflight_git_timeout_and_scratch_limit_kill_the_child) ... ok
+test_path_prefix_conflicts_and_distinct_hunks (test_git_integration_prototype.GitIntegrationPrototypeTests.test_path_prefix_conflicts_and_distinct_hunks) ... ok
+test_production_cli_fails_closed_when_hard_memory_limit_is_unavailable (test_git_integration_prototype.GitIntegrationPrototypeTests.test_production_cli_fails_closed_when_hard_memory_limit_is_unavailable) ... skipped 'host can enforce the production child address-space limit'
+test_read_write_and_shared_resource_overlap_are_serialized (test_git_integration_prototype.GitIntegrationPrototypeTests.test_read_write_and_shared_resource_overlap_are_serialized) ... ok
+test_request_schema_is_versioned_and_rejects_unknown_fields (test_git_integration_prototype.GitIntegrationPrototypeTests.test_request_schema_is_versioned_and_rejects_unknown_fields) ... ok
+test_resource_exhaustion_controls_fail_closed_without_source_mutation (test_git_integration_prototype.GitIntegrationPrototypeTests.test_resource_exhaustion_controls_fail_closed_without_source_mutation) ... ok
+test_stale_target_ref_is_rejected_before_work (test_git_integration_prototype.GitIntegrationPrototypeTests.test_stale_target_ref_is_rejected_before_work) ... ok
+test_target_ref_change_during_use_invalidates_both_lanes (test_git_integration_prototype.GitIntegrationPrototypeTests.test_target_ref_change_during_use_invalidates_both_lanes) ... ok
+test_unknown_wildcard_and_undeclared_footprints_require_manual_review (test_git_integration_prototype.GitIntegrationPrototypeTests.test_unknown_wildcard_and_undeclared_footprints_require_manual_review) ... ok
+test_advisory_waves_preserve_dependencies_and_demonstrate_gain (test_git_replay.GitReplayTests.test_advisory_waves_preserve_dependencies_and_demonstrate_gain) ... ok
+test_benchmark_thresholds_and_baselines (test_git_replay.GitReplayTests.test_benchmark_thresholds_and_baselines) ... ok
+test_cli_and_schemas (test_git_replay.GitReplayTests.test_cli_and_schemas) ... ok
+test_concurrent_replays_do_not_mutate_process_environment (test_git_replay.GitReplayTests.test_concurrent_replays_do_not_mutate_process_environment) ... ok
+test_divergent_and_failed_orders_are_not_candidates (test_git_replay.GitReplayTests.test_divergent_and_failed_orders_are_not_candidates) ... ok
+test_enforces_changed_path_and_aggregate_patch_bounds (test_git_replay.GitReplayTests.test_enforces_changed_path_and_aggregate_patch_bounds) ... ok
+test_evidence_is_canonical_for_input_operation_order (test_git_replay.GitReplayTests.test_evidence_is_canonical_for_input_operation_order) ... ok
+test_plan_replay_two_immutable_commits (test_git_replay.GitReplayTests.test_plan_replay_two_immutable_commits) ... ok
+test_plan_verifier_regenerates_from_verified_evidence (test_git_replay.GitReplayTests.test_plan_verifier_regenerates_from_verified_evidence) ... ok
+test_rejects_worktree_batch_limits_and_invalid_graph (test_git_replay.GitReplayTests.test_rejects_worktree_batch_limits_and_invalid_graph) ... ok
+test_replays_disjoint_and_different_hunk_patches (test_git_replay.GitReplayTests.test_replays_disjoint_and_different_hunk_patches) ... ok
+test_resource_budget_bounds_time_output_temp_data_and_start_errors (test_git_replay.GitReplayTests.test_resource_budget_bounds_time_output_temp_data_and_start_errors) ... ok
+test_unknown_and_inconclusive_inputs_never_make_candidate_waves (test_git_replay.GitReplayTests.test_unknown_and_inconclusive_inputs_never_make_candidate_waves) ... ok
+test_verifier_rejects_tampering_and_omitted_orders (test_git_replay.GitReplayTests.test_verifier_rejects_tampering_and_omitted_orders) ... ok
+test_committed_spec_inventory_is_complete (test_github_tracking.TrackingTests.test_committed_spec_inventory_is_complete) ... ok
+test_milestone_closure_requires_explicit_mapping (test_github_tracking.TrackingTests.test_milestone_closure_requires_explicit_mapping) ... ok
+test_plan_is_empty_for_matching_relationships (test_github_tracking.TrackingTests.test_plan_is_empty_for_matching_relationships) ... ok
+test_plan_reports_missing_child_and_never_deletes_orphans (test_github_tracking.TrackingTests.test_plan_reports_missing_child_and_never_deletes_orphans) ... ok
+test_aim_identity_and_dependencies (test_lab.CertificateTests.test_aim_identity_and_dependencies) ... ok
+test_arbitrary_malformed_input_rejected (test_lab.CertificateTests.test_arbitrary_malformed_input_rejected) ... ok
+test_cli_exit_status (test_lab.CertificateTests.test_cli_exit_status) ... ok
+test_dependency_free_consumer (test_lab.CertificateTests.test_dependency_free_consumer) ... ok
+test_proof_artifact_binding (test_lab.CertificateTests.test_proof_artifact_binding) ... ok
+test_rehashed_fake_outcome_is_rejected (test_lab.CertificateTests.test_rehashed_fake_outcome_is_rejected) ... ok
+test_replay_selection (test_lab.CertificateTests.test_replay_selection) ... ok
+test_scope_and_contract_mutations (test_lab.CertificateTests.test_scope_and_contract_mutations) ... ok
+test_valid_and_invalid_corpus (test_lab.CertificateTests.test_valid_and_invalid_corpus) ... ok
+test_all_controls (test_lab.ModelTests.test_all_controls) ... ok
+test_canonical_and_strict_json (test_lab.ModelTests.test_canonical_and_strict_json) ... ok
+test_context_counterexample (test_lab.ModelTests.test_context_counterexample) ... ok
+test_dependencies_and_cycles (test_lab.ModelTests.test_dependencies_and_cycles) ... ok
+test_guards_and_versions (test_lab.ModelTests.test_guards_and_versions) ... ok
+test_malformed_fixtures (test_lab.ModelTests.test_malformed_fixtures) ... ok
+test_missing_resource_and_overflow_are_atomic_errors (test_lab.ModelTests.test_missing_resource_and_overflow_are_atomic_errors) ... ok
+test_projection_and_raw_events (test_lab.ModelTests.test_projection_and_raw_events) ... ok
+test_read_arithmetic_and_results (test_lab.ModelTests.test_read_arithmetic_and_results) ... ok
+test_reproducibility_and_no_mutation (test_lab.ModelTests.test_reproducibility_and_no_mutation) ... ok
+test_six_operation_bound (test_lab.ModelTests.test_six_operation_bound) ... ok
+test_candidate_accepts_pending_but_closure_requires_approved_radar (test_m05_closure.M05ClosureTests.test_candidate_accepts_pending_but_closure_requires_approved_radar) ... ok
+test_clean_room_environment_removes_python_and_git_overrides (test_m05_closure.M05ClosureTests.test_clean_room_environment_removes_python_and_git_overrides) ... ok
+test_closure_requires_three_decisions_without_visibility_authorization (test_m05_closure.M05ClosureTests.test_closure_requires_three_decisions_without_visibility_authorization) ... ok
+test_post_freeze_changes_are_limited_to_decision_records (test_m05_closure.M05ClosureTests.test_post_freeze_changes_are_limited_to_decision_records) ... ok
+test_report_and_history_boundary_are_required (test_m05_closure.M05ClosureTests.test_report_and_history_boundary_are_required) ... ok
+test_reproduction_rejects_incompatible_or_stale_evidence (test_m05_closure.M05ClosureTests.test_reproduction_rejects_incompatible_or_stale_evidence) ... ok
+test_exit_matrix_traces_scientific_boundaries (test_m0_closure.M0ClosureTests.test_exit_matrix_traces_scientific_boundaries) ... ok
+test_portable_workloads_cover_required_effects (test_m0_closure.M0ClosureTests.test_portable_workloads_cover_required_effects) ... ok
+test_portable_workloads_preserve_identity_and_never_authorize (test_m0_closure.M0ClosureTests.test_portable_workloads_preserve_identity_and_never_authorize) ... ok
+test_rejects_agent_prompt_or_pending_check_divergence (test_m0_closure.M0ClosureTests.test_rejects_agent_prompt_or_pending_check_divergence) ... ok
+test_rejects_incompatible_python_and_unknown_commit (test_m0_closure.M0ClosureTests.test_rejects_incompatible_python_and_unknown_commit) ... ok
+test_rejects_incomplete_review_and_closure_without_decision (test_m0_closure.M0ClosureTests.test_rejects_incomplete_review_and_closure_without_decision) ... ok
+test_rejects_missing_agent_pair_and_commit_mismatch (test_m0_closure.M0ClosureTests.test_rejects_missing_agent_pair_and_commit_mismatch) ... ok
+test_rejects_stale_input_and_evidence_digest (test_m0_closure.M0ClosureTests.test_rejects_stale_input_and_evidence_digest) ... ok
+test_candidate_gate_allows_only_declared_post_freeze_records (test_m1_closure.M1ClosureTests.test_candidate_gate_allows_only_declared_post_freeze_records) ... ok
+test_clean_room_environment_drops_python_and_git_overrides (test_m1_closure.M1ClosureTests.test_clean_room_environment_drops_python_and_git_overrides) ... ok
+test_clean_room_helpers_apply_the_sanitized_environment (test_m1_closure.M1ClosureTests.test_clean_room_helpers_apply_the_sanitized_environment) ... ok
+test_clean_room_inventory_includes_pinned_multi_agent_spec_kit_gates (test_m1_closure.M1ClosureTests.test_clean_room_inventory_includes_pinned_multi_agent_spec_kit_gates) ... ok
+test_rejects_candidate_outside_closure_history (test_m1_closure.M1ClosureTests.test_rejects_candidate_outside_closure_history) ... ok
+test_rejects_implementation_or_authority_changes_after_review (test_m1_closure.M1ClosureTests.test_rejects_implementation_or_authority_changes_after_review) ... ok
+test_rejects_incompatible_dirty_or_failed_reproduction (test_m1_closure.M1ClosureTests.test_rejects_incompatible_dirty_or_failed_reproduction) ... ok
+test_rejects_incomplete_environment_metadata (test_m1_closure.M1ClosureTests.test_rejects_incomplete_environment_metadata) ... ok
+test_rejects_incomplete_founder_review (test_m1_closure.M1ClosureTests.test_rejects_incomplete_founder_review) ... ok
+test_rejects_missing_inputs_commands_tree_and_benchmark_binding (test_m1_closure.M1ClosureTests.test_rejects_missing_inputs_commands_tree_and_benchmark_binding) ... ok
+test_rejects_stale_hash_and_unmeasured_baseline (test_m1_closure.M1ClosureTests.test_rejects_stale_hash_and_unmeasured_baseline) ... ok
+test_valid_internal_reproduction (test_m1_closure.M1ClosureTests.test_valid_internal_reproduction) ... ok
+test_candidate_and_serial_project_validation (test_m2_real_workload.M2RealWorkloadTests.test_candidate_and_serial_project_validation) ... ok
+test_container_command_and_isolation_are_fixed (test_m2_real_workload.M2RealWorkloadTests.test_container_command_and_isolation_are_fixed) ... ok
+test_container_timeout_kills_private_lane (test_m2_real_workload.M2RealWorkloadTests.test_container_timeout_kills_private_lane) ... ok
+test_project_validation_fails_closed (test_m2_real_workload.M2RealWorkloadTests.test_project_validation_fails_closed) ... ok
+test_real_workload_comparison_and_claim (test_m2_real_workload.M2RealWorkloadTests.test_real_workload_comparison_and_claim) ... ok
+test_closure_anchors_bound_interval_not_moving_head (test_publication.PublicationTests.test_closure_anchors_bound_interval_not_moving_head) ... ok
+test_export_is_deterministic_and_rejects_unsafe_inputs (test_publication.PublicationTests.test_export_is_deterministic_and_rejects_unsafe_inputs) ... ok
+test_portable_validation_requires_root_manifest_and_reports_limit (test_publication.PublicationTests.test_portable_validation_requires_root_manifest_and_reports_limit) ... ok
+test_release_readiness_rejects_stale_or_overclaimed_evidence (test_publication.PublicationTests.test_release_readiness_rejects_stale_or_overclaimed_evidence) ... ok
+test_remote_cutover_requires_explicit_authorization (test_publication.PublicationTests.test_remote_cutover_requires_explicit_authorization) ... ok
+test_binds_distinct_descendant_commits_without_execution (test_real_workload_manifest.RealWorkloadManifestTests.test_binds_distinct_descendant_commits_without_execution) ... ok
+test_rejects_ambiguous_or_authority_bearing_inputs (test_real_workload_manifest.RealWorkloadManifestTests.test_rejects_ambiguous_or_authority_bearing_inputs) ... ok
+test_rejects_linear_sources_declared_as_independent (test_real_workload_manifest.RealWorkloadManifestTests.test_rejects_linear_sources_declared_as_independent) ... ok
+test_rejects_more_than_three_workstreams (test_real_workload_manifest.RealWorkloadManifestTests.test_rejects_more_than_three_workstreams) ... ok
+test_rejects_repository_with_public_origin_but_wrong_root (test_real_workload_manifest.RealWorkloadManifestTests.test_rejects_repository_with_public_origin_but_wrong_root) ... ok
+test_rejects_stale_base_and_missing_commits (test_real_workload_manifest.RealWorkloadManifestTests.test_rejects_stale_base_and_missing_commits) ... ok
+test_rejects_unrelated_source_history (test_real_workload_manifest.RealWorkloadManifestTests.test_rejects_unrelated_source_history) ... ok
+test_completed_requires_external_reviewer_and_evidence (test_release_records.ReleaseRecordTests.test_completed_requires_external_reviewer_and_evidence) ... ok
+test_missing_status_and_pending_disclosure_fail (test_release_records.ReleaseRecordTests.test_missing_status_and_pending_disclosure_fail) ... ok
+test_not_applicable_rejects_scientific_claims (test_release_records.ReleaseRecordTests.test_not_applicable_rejects_scientific_claims) ... ok
+test_pending_record_cannot_claim_independent_validation (test_release_records.ReleaseRecordTests.test_pending_record_cannot_claim_independent_validation) ... ok
+test_pending_record_is_explicit_and_complete (test_release_records.ReleaseRecordTests.test_pending_record_is_explicit_and_complete) ... ok
+test_provisional_record_version_is_rejected (test_release_records.ReleaseRecordTests.test_provisional_record_version_is_rejected) ... ok
+test_anchors (test_repository.LinkTests.test_anchors) ... ok
+test_repository_invariants (test_repository.LinkTests.test_repository_invariants) ... ok
+test_valid_and_missing_local_anchors (test_repository.LinkTests.test_valid_and_missing_local_anchors) ... ok
+test_bad_metadata_and_broken_link_fail (test_repository.VendoredSkillTests.test_bad_metadata_and_broken_link_fail) ... ok
+test_changed_or_missing_manifest_fails (test_repository.VendoredSkillTests.test_changed_or_missing_manifest_fails) ... ok
+test_changed_or_missing_mirror_fails (test_repository.VendoredSkillTests.test_changed_or_missing_mirror_fails) ... ok
+test_complete_mirrors_pass (test_repository.VendoredSkillTests.test_complete_mirrors_pass) ... ok
+test_approval_requires_frozen_snapshot_and_matching_review (test_spec_kit.SpecKitTests.test_approval_requires_frozen_snapshot_and_matching_review) ... ok
+test_authority_change_does_not_approve_new_text (test_spec_kit.SpecKitTests.test_authority_change_does_not_approve_new_text) ... ok
+test_broken_reference_and_invalid_article (test_spec_kit.SpecKitTests.test_broken_reference_and_invalid_article) ... ok
+test_current_tree_and_constitution_baseline (test_spec_kit.SpecKitTests.test_current_tree_and_constitution_baseline) ... ok
+test_each_integration_drift_and_override_drift (test_spec_kit.SpecKitTests.test_each_integration_drift_and_override_drift) ... ok
+test_freeze_rejects_dirty_candidate (test_spec_kit.SpecKitTests.test_freeze_rejects_dirty_candidate) ... ok
+test_historical_evidence_stays_bound_while_current_evidence_detects_drift (test_spec_kit.SpecKitTests.test_historical_evidence_stays_bound_while_current_evidence_detects_drift) ... ok
+test_historical_files_can_leave_worktree_but_current_files_cannot (test_spec_kit.SpecKitTests.test_historical_files_can_leave_worktree_but_current_files_cannot) ... ok
+test_historical_snapshot_must_match_available_commit (test_spec_kit.SpecKitTests.test_historical_snapshot_must_match_available_commit) ... skipped 'private historical commit objects are intentionally unavailable'
+test_incompatible_config_and_constitution_sync (test_spec_kit.SpecKitTests.test_incompatible_config_and_constitution_sync) ... ok
+test_missing_assurance_is_rejected (test_spec_kit.SpecKitTests.test_missing_assurance_is_rejected) ... ok
+test_missing_evidence_is_not_a_validated_result (test_spec_kit.SpecKitTests.test_missing_evidence_is_not_a_validated_result) ... ok
+test_missing_integration_and_legacy_shadow_are_rejected (test_spec_kit.SpecKitTests.test_missing_integration_and_legacy_shadow_are_rejected) ... ok
+test_new_authority_preserves_history_but_invalidates_current_work (test_spec_kit.SpecKitTests.test_new_authority_preserves_history_but_invalidates_current_work) ... ok
+test_nonexistent_test_reference (test_spec_kit.SpecKitTests.test_nonexistent_test_reference) ... ok
+test_replica_absence_divergence_and_idempotence (test_spec_kit.SpecKitTests.test_replica_absence_divergence_and_idempotence) ... ok
+test_model_is_nested_monotonic_and_reproducible (test_strategy.MarketModelTests.test_model_is_nested_monotonic_and_reproducible) ... ok
+test_rejects_duplicate_observation_ids (test_strategy.MarketModelTests.test_rejects_duplicate_observation_ids) ... ok
+test_rejects_non_monotonic_and_unitless_inputs (test_strategy.MarketModelTests.test_rejects_non_monotonic_and_unitless_inputs) ... ok
+test_committed_radar_has_milestone_review (test_strategy.RadarTests.test_committed_radar_has_milestone_review) ... ok
+test_milestone_gate_requires_an_approved_review (test_strategy.RadarTests.test_milestone_gate_requires_an_approved_review) ... ok
+test_rejects_invalid_provenance_and_peer_review_type (test_strategy.RadarTests.test_rejects_invalid_provenance_and_peer_review_type) ... ok
+test_rejects_missing_provenance_and_bad_claim_level (test_strategy.RadarTests.test_rejects_missing_provenance_and_bad_claim_level) ... ok
+test_changed_paths_include_untracked_files_only_for_working_tree (test_validation_profiles.ValidationProfileTests.test_changed_paths_include_untracked_files_only_for_working_tree) ... ok
+test_ci_parallelizes_complete_gates_and_conditions_only_specialists (test_validation_profiles.ValidationProfileTests.test_ci_parallelizes_complete_gates_and_conditions_only_specialists) ... ok
+test_classification_is_deterministic_and_unknown_paths_fail_closed (test_validation_profiles.ValidationProfileTests.test_classification_is_deterministic_and_unknown_paths_fail_closed) ... ok
+test_evidence_boundaries_are_deferred_and_non_authorizing (test_validation_profiles.ValidationProfileTests.test_evidence_boundaries_are_deferred_and_non_authorizing) ... ok
+test_evidence_output_redacts_the_local_repository_path (test_validation_profiles.ValidationProfileTests.test_evidence_output_redacts_the_local_repository_path) ... ok
+test_explicit_paths_bypass_git_and_github_output_is_stable (test_validation_profiles.ValidationProfileTests.test_explicit_paths_bypass_git_and_github_output_is_stable) ... ok
+test_git_revisions_resolve_to_immutable_commits (test_validation_profiles.ValidationProfileTests.test_git_revisions_resolve_to_immutable_commits) ... ok
+test_invalid_explicit_paths_are_rejected (test_validation_profiles.ValidationProfileTests.test_invalid_explicit_paths_are_rejected) ... ok
+test_pr_profile_retains_complete_repository_gate (test_validation_profiles.ValidationProfileTests.test_pr_profile_retains_complete_repository_gate) ... ok
+test_quick_profile_runs_only_invariants_and_affected_domains (test_validation_profiles.ValidationProfileTests.test_quick_profile_runs_only_invariants_and_affected_domains) ... ok
+test_specialist_matrix_is_limited_to_owned_inputs (test_validation_profiles.ValidationProfileTests.test_specialist_matrix_is_limited_to_owned_inputs) ... ok
+
+----------------------------------------------------------------------
+Ran 175 tests in 62.768s
+
+OK (skipped=2)
+Contract corpus passed: legacy, 0.2 structure and finite semantic checks.
+
+==> scientific-controls: python3 -m research.lab.controls
+CE1: all 3 pairs agree at the initial state; 6 schedules diverge: {'ABC': {'x': 1, 'y': 1, 'z': 1}, 'ACB': {'x': 1, 'y': 1, 'z': 0}, 'BAC': {'x': 1, 'y': 1, 'z': 1}, 'BCA': {'x': 1, 'y': 1, 'z': 0}, 'CAB': {'x': 1, 'y': 1, 'z': 0}, 'CBA': {'x': 1, 'y': 1, 'z': 0}}
+CE2: non-atomic increments lose an update (1 instead of 2).
+CE3: terminal observation equality is not preserved by continuation.
+CE4: equal counter states can conceal different per-operation results.
+CE5: individually valid branches with disjoint writes violate a merged invariant.
+S3: 36/36 product checks; 216/216 braid checks; bijective and not involutive.
+
+==> spec-kit-structure: python3 scripts/validate_spec_kit.py
+Spec Kit structural gates passed; semantic/human review remains separate.
+
+==> spec-kit-render: python3 scripts/spec_kit.py check
+Spec Kit check: 0 files changed; no agents executed.
+
+==> constitution-replica: python3 scripts/constitution_replica.py check
+Constitution replica: check passed (not an approval).
+
+==> whitespace: git diff --check f3c734a1f42d6d5962cfedc57d7f6c1efe40e0a6 --
+
+Selected executable validation passed. Deferred boundary gates remain unexecuted.
