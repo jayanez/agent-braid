@@ -12,5 +12,5 @@
   stage and fail-closed negative controls within the reviewed profile.
 - [x] T005 (REQ-003/SC-047): benchmark the real corpus against serial and
   path-overlap baselines; retain positive, negative and inconclusive outcomes.
-- [ ] T006 (REQ-001–003/SC-043–047): run proportional and clean-room validation,
+- [x] T006 (REQ-001–003/SC-043–047): run proportional and clean-room validation,
   freeze evidence, obtain human review and report M2 limits without closing it.

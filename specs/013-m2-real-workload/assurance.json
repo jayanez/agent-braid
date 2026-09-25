@@ -15,7 +15,7 @@
   ],
   "assumptions": "Registered source commits are reviewable Git objects; static preflight cannot prove PR approval, complete effects, or command safety.",
   "authority_snapshot": {
-    "commit": "d4c8e0b3ed04e0304295e6ece597695eea4a122d",
+    "commit": "60d6bcaba7245e9864298321b1038cddfde6fd9e",
     "hashes": {
       "ARCHITECTURE.md": "94e5114eb799b25ca666ef728f84ab1c88e6ad1b342e30a9e99276b8f44c30c2",
       "CONSTITUTION.md": "ff7196976a1736a639947c2ab26e8da157fef23c89ba9881312f2a36459964eb",
@@ -69,11 +69,12 @@
   "compatibility": "No change to existing AIM, analyzer, replay, T013 report or public CLI contracts. The proposed corpus manifest is internal and draft.",
   "domain": "Two or three real Agent Braid workstream commits on one frozen develop base; finite private candidate and serial lanes.",
   "evidence_snapshot": {
-    "commit": "d4c8e0b3ed04e0304295e6ece597695eea4a122d",
+    "commit": "60d6bcaba7245e9864298321b1038cddfde6fd9e",
     "mode": "historical"
   },
   "execution_contract": "The founder accepted the exact T003 corpus, base, image and dependency bytes under ADR 0015. The experiment runs only the pinned command in offline, bounded private containers after a read-only preflight; it never promotes refs or sets executionAuthorization true.",
-  "human_review": "pending",
+  "human_review": "approved",
+  "review_record": "specs/013-m2-real-workload/t006-founder-review.json",
   "hypotheses": "Parallel preparation may reduce elapsed time on registered real workstreams without false admission under the reviewed finite observation contract; a negative result is valid.",
   "observation_contract": "Tracked Git trees, immutable identities, source-ref freshness, bounded unit-test exit status and output, timing and resource metrics.",
   "references": [
