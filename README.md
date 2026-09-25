@@ -168,22 +168,25 @@ exhaustive-finite or formal results. See the
 | Milestone | Status | Established boundary |
 |---|---|---|
 | M0 — foundation | Closed internally | Canonical semantics, contracts, governance and bounded laboratory. |
-| M0.5 — open strategy | Closed internally | Research-preview proposal prepared and approved; publication is not authorized. |
+| M0.5 — open strategy | Closed internally | Research-preview proposal approved; the later public cutover is recorded separately. |
 | M1 — analyzer | Closed internally | Deterministic AIM analysis and experimental read-only Git/worktree adapter. |
 | M2 — confluence laboratory and scheduler | In progress | First cut: exhaustive replay of 2–4 fixed Git commit patches and consultative preparation waves. Integration remains serial; execution authorization is always false. |
 
 Independent validation remains **pending**. The evidence has been reproduced
 internally and reviewed by the founder, who has an explicit conflict of interest;
 it has not been externally validated. Third parties are invited to follow the
-published protocols. See the [validation policy](docs/releases/VALIDATION_POLICY.md),
+published protocols. Start with the [external reproduction guide](docs/releases/EXTERNAL_REPRODUCTION.md)
+and see the [validation policy](docs/releases/VALIDATION_POLICY.md),
 [M0 closure](docs/releases/M0_CLOSURE.md),
 [M0.5 closure](docs/releases/M0_5_CLOSURE.md) and
 [M1 closure](docs/releases/M1_CLOSURE.md).
 
-The repository has not been published as a research preview. The approved
-[proposal](docs/releases/RESEARCH_PREVIEW_PROPOSAL.md) requires a clean export
-because redistribution of one historical private report derivative remains
-unresolved; it does not authorize a visibility change or history rewrite.
+The [v0.1.0-alpha.1 research preview](https://github.com/jayanez/agent-braid/releases/tag/v0.1.0-alpha.1)
+was published from a clean public root. The earlier
+[proposal](docs/releases/RESEARCH_PREVIEW_PROPOSAL.md) is a historical
+pre-publication decision, not the cutover record. The
+[current remote-state audit](docs/releases/publication/CUTOVER_AUDIT_2026-09-25.md)
+records what is verifiable now and the outstanding authorization reconciliation.
 
 ## Assurance compatibility classes
 

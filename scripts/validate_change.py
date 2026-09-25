@@ -54,7 +54,8 @@ RULES = (
     Rule("spec-kit-integration", (
         ".specify/templates/**", ".specify/scripts/**", ".specify/spec-kit.lock.json",
         ".agents/skills/**", ".claude/skills/**", "scripts/spec_kit.py",
-        "scripts/test_spec_kit_integration.py", "requirements-speckit.txt",
+        "scripts/test_spec_kit_integration.py", "scripts/restore_public_spec_history.py",
+        "requirements-speckit.txt",
     ), ("spec-kit-structure", "spec-kit-render"), True, True),
     Rule("validation-process", (
         ".github/workflows/**", "AGENTS.md", "CONTRIBUTING.md",
