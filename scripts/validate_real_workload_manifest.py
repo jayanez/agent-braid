@@ -59,8 +59,8 @@ def validate_manifest(value: object, repository: Path) -> dict:
     _require(value["validationProfile"] == "m2-real-read-only-v1",
              "validation profile is unsupported")
     operations = value["operations"]
-    _require(isinstance(operations, list) and 2 <= len(operations) <= 4,
-             "two to four workstream commits are required")
+    _require(isinstance(operations, list) and 2 <= len(operations) <= 3,
+             "two or three workstream commits are required")
     identifiers: set[str] = set()
     commits: set[str] = set()
     urls: set[str] = set()

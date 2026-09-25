@@ -112,6 +112,19 @@ class RealWorkloadManifestTests(unittest.TestCase):
         with self.assertRaisesRegex(InvalidRealWorkloadManifest, "origin"):
             validate_manifest(manifest, self.repository)
 
+    def test_rejects_more_than_three_workstreams(self) -> None:
+        manifest = self.manifest()
+        manifest["operations"].extend([
+            {"instanceId": "work-3", "sourceCommit": "3" * 40,
+             "workstreamUrl": "https://github.com/jayanez/agent-braid/pull/3",
+             "dependencies": []},
+            {"instanceId": "work-4", "sourceCommit": "4" * 40,
+             "workstreamUrl": "https://github.com/jayanez/agent-braid/pull/4",
+             "dependencies": []},
+        ])
+        with self.assertRaisesRegex(InvalidRealWorkloadManifest, "two or three"):
+            validate_manifest(manifest, self.repository)
+
     @unittest.skip("SC-045 awaits ADR 0015 acceptance and a registered real corpus")
     def test_candidate_and_serial_project_validation(self) -> None:
         pass
