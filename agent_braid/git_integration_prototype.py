@@ -55,7 +55,8 @@ def _git(repo: Path, env: dict[str, str], *args: str,
          allow_failure: bool = False):
     try:
         return run_git(repo, args, env=env, budget=budget, input_bytes=input_bytes,
-                       allow_failure=allow_failure, command_timeout=MAX_WALL_SECONDS)
+                       allow_failure=allow_failure, command_timeout=MAX_WALL_SECONDS,
+                       poll_interval=0.001)
     except GitCommandFailure as exc:
         command = args[0] if args else "unknown"
         if command == "apply":
