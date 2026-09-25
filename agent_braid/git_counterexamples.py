@@ -18,6 +18,7 @@ import os
 import signal
 import subprocess
 import sys
+import tempfile
 import time
 from pathlib import Path
 
@@ -218,6 +219,21 @@ def _run_worker(
                         elapsed(), deadline_seconds, max_attempts,
                         attempts=attempts, attempt_count=attempt_count, skipped=skipped,
                     )
+                if outcome == "inconclusive":
+                    return _finalize(
+                        base, "inconclusive",
+                        "a verified candidate subset has incomplete replay schedules; "
+                        "no minimality claim is available",
+                        elapsed(), deadline_seconds, max_attempts,
+                        attempts=attempts, attempt_count=attempt_count, skipped=skipped,
+                    )
+                if outcome != "divergent" and outcome != "equivalent-observed":
+                    return _finalize(
+                        base, "inconclusive",
+                        "candidate subset has an unsupported replay result",
+                        elapsed(), deadline_seconds, max_attempts,
+                        attempts=attempts, attempt_count=attempt_count, skipped=skipped,
+                    )
                 if outcome == "divergent":
                     return _finalize(
                         base, "reduced",
@@ -271,7 +287,31 @@ def _run_worker(
     )
 
 
-def _terminate_process_group(process: "subprocess.Popen[bytes]") -> None:
+def _registered_child_groups(registry_path: Path | None) -> set[int]:
+    """Resolve child sessions even after their worker has exited."""
+    if registry_path is None:
+        return set()
+    try:
+        lines = registry_path.read_text().splitlines()
+    except OSError:
+        return set()
+    groups = set()
+    for line in lines:
+        try:
+            pid = int(line)
+            group = os.getpgid(pid)
+        except (OSError, ValueError):
+            continue
+        # Git children create new sessions, so their PGID must equal their PID.
+        # A reused PID in an unrelated group must not be targeted.
+        if group == pid and group != os.getpgrp():
+            groups.add(group)
+    return groups
+
+
+def _terminate_process_group(
+    process: "subprocess.Popen[bytes]", registry_path: Path | None = None,
+) -> None:
     child_groups: set[int] = set()
     if os.name == "posix" and process.poll() is None:
         try:
@@ -281,6 +321,8 @@ def _terminate_process_group(process: "subprocess.Popen[bytes]") -> None:
             child_groups = _descendant_process_groups(process.pid)
         except (ProcessLookupError, OSError):
             pass
+    child_groups.update(_registered_child_groups(registry_path))
+    child_groups.discard(process.pid)
     for group in sorted(child_groups):
         try:
             os.killpg(group, signal.SIGKILL)
@@ -355,34 +397,44 @@ def _run_supervised(command: list[str], payload_bytes: bytes, deadline_seconds: 
         "GIT_CONFIG_GLOBAL": os.devnull,
         "GIT_TERMINAL_PROMPT": "0",
     }
-    try:
-        process = subprocess.Popen(
-            command,
-            stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
-            start_new_session=(os.name == "posix"),
-            env=worker_env,
-        )
-    except OSError as exc:
-        return {"started": False, "timed_out": False, "returncode": None,
-                "stdout": b"", "stderr": str(exc).encode("utf-8"), "elapsedSeconds": 0.0}
+    with tempfile.TemporaryDirectory(prefix="agent-braid-reducer-worker-") as directory:
+        registry_path = Path(directory) / "child-pids"
+        registry_path.touch(mode=0o600)
+        worker_env["AGENT_BRAID_REDUCER_CHILD_REGISTRY"] = str(registry_path)
+        try:
+            process = subprocess.Popen(
+                command,
+                stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+                start_new_session=(os.name == "posix"),
+                env=worker_env,
+            )
+        except OSError as exc:
+            return {"started": False, "timed_out": False, "returncode": None,
+                    "stdout": b"", "stderr": str(exc).encode("utf-8"), "elapsedSeconds": 0.0}
+        return _communicate_supervised(process, payload_bytes, deadline_seconds, registry_path)
 
+
+def _communicate_supervised(
+    process: "subprocess.Popen[bytes]", payload_bytes: bytes,
+    deadline_seconds: float, registry_path: Path,
+) -> dict:
     started = time.monotonic()
     try:
         stdout, stderr = process.communicate(input=payload_bytes, timeout=deadline_seconds)
         timed_out = False
     except subprocess.TimeoutExpired:
-        _terminate_process_group(process)
+        _terminate_process_group(process, registry_path)
         try:
             stdout, stderr = process.communicate(timeout=SUPERVISOR_GRACE_SECONDS)
         except subprocess.TimeoutExpired:
-            _terminate_process_group(process)
+            _terminate_process_group(process, registry_path)
             for stream in (process.stdin, process.stdout, process.stderr):
                 if stream is not None:
                     stream.close()
             try:
                 process.wait(timeout=SUPERVISOR_GRACE_SECONDS)
             except subprocess.TimeoutExpired:
-                _terminate_process_group(process)
+                _terminate_process_group(process, registry_path)
             stdout, stderr = b"", b"worker descendants retained output pipes after termination"
         timed_out = True
     elapsed = time.monotonic() - started
@@ -437,7 +489,43 @@ def reduce_counterexample(bundle: object, repository: object) -> dict:
     return result
 
 
+def _register_worker_children() -> None:
+    """Record every child PID before replay can await it or exit unexpectedly."""
+    registry = os.environ.get("AGENT_BRAID_REDUCER_CHILD_REGISTRY")
+    if not registry:
+        raise OSError("reduction worker has no child-process registry")
+    original_popen = subprocess.Popen
+
+    def registered_popen(*args, **kwargs):
+        child = original_popen(*args, **kwargs)
+        try:
+            with open(registry, "a", encoding="ascii") as stream:
+                stream.write(f"{child.pid}\n")
+                stream.flush()
+        except OSError:
+            try:
+                if os.name == "posix" and kwargs.get("start_new_session"):
+                    os.killpg(child.pid, signal.SIGKILL)
+                else:
+                    child.kill()
+            except (ProcessLookupError, OSError):
+                pass
+            child.wait()
+            raise
+        return child
+
+    subprocess.Popen = registered_popen
+
+
 def _main_worker() -> int:
+    try:
+        _register_worker_children()
+    except OSError as exc:
+        result = _finalize(_base_result(None), "inconclusive",
+                           f"worker cannot register Git children ({exc})",
+                           0.0, DEADLINE_SECONDS, MAX_CANDIDATE_ATTEMPTS)
+        sys.stdout.write(json.dumps(result))
+        return 0
     try:
         raw = sys.stdin.buffer.read()
         payload = json.loads(raw.decode("utf-8"))

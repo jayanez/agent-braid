@@ -189,6 +189,32 @@ class GitCounterexampleSupervisorUnitTests(unittest.TestCase):
                 except ProcessLookupError:
                     pass
 
+    def test_exited_worker_cannot_orphan_registered_git_child_group(self):
+        with tempfile.TemporaryDirectory() as directory:
+            marker = Path(directory) / "survived"
+            child_code = (
+                "import time,pathlib; time.sleep(1); "
+                f"pathlib.Path({str(marker)!r}).write_text('survived')"
+            )
+            worker_code = (
+                "import subprocess,os; "
+                f"child=subprocess.Popen(['python3','-c',{child_code!r}], "
+                "start_new_session=True); "
+                "f=open(os.environ['AGENT_BRAID_REDUCER_CHILD_REGISTRY'],'a'); "
+                "f.write(str(child.pid)+'\\n'); f.close(); print(child.pid,flush=True)"
+            )
+            outcome = _run_supervised(["python3", "-c", worker_code], b"", 0.2)
+            self.assertTrue(outcome["timed_out"])
+            child_pid = int(outcome["stdout"].strip())
+            try:
+                time.sleep(1.2)
+                self.assertFalse(marker.exists(), "orphaned Git-style child survived")
+            finally:
+                try:
+                    os.killpg(child_pid, signal.SIGKILL)
+                except ProcessLookupError:
+                    pass
+
     def test_worker_does_not_inherit_unrelated_environment_values(self):
         command = ["python3", "-c", "import os; print(os.getenv('TEST_SECRET', 'absent'))"]
         with mock.patch.dict(os.environ, {"TEST_SECRET": "not-sent"}):
@@ -372,6 +398,24 @@ class GitCounterexampleReductionAlgorithmTests(unittest.TestCase):
         self.assertEqual(result["status"], "inconclusive")
         self.assertIsNone(result["selectedOperationIds"])
         self.assertEqual(result["attemptCount"], 1)
+
+    def test_verified_inconclusive_candidate_cannot_support_minimality(self):
+        bundle = self.divergent_bundle(["op-0", "op-1", "op-2"])
+
+        def incomplete_candidate(request):
+            ids = [operation["instanceId"] for operation in request["operations"]]
+            candidate = self.divergent_bundle(ids)
+            candidate["result"] = "inconclusive"
+            return candidate, {"mode": "manual-review"}
+
+        with mock.patch.object(git_counterexamples.git_replay, "verify",
+                               return_value={"status": "verified"}), \
+             mock.patch.object(git_counterexamples.git_replay, "produce",
+                               side_effect=incomplete_candidate):
+            result = _run_worker({"evidence": bundle, "repository": "/tmp/x"})
+        self.assertEqual(result["status"], "inconclusive")
+        self.assertIsNone(result["selectedOperationIds"])
+        self.assertEqual(result["attempts"][0]["outcome"], "inconclusive")
 
     def test_a_smaller_divergent_subset_found_before_exhaustion_still_reports_reduced(self):
         # Even with a tight attempt cap, finding a witness on the very first
