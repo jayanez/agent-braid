@@ -2,7 +2,8 @@
 
 1. Add a private reducer that validates the input with the existing verifier,
    derives subset requests from immutable source commits and enumerates bounded
-   subsets deterministically. Do not modify the current replay engine or schema.
+   dependency-closed subsets deterministically. Do not modify the current
+   replay engine or schema.
 2. Supervise input verification and subset replay in a private process group,
    with a single monotonic 120-second deadline and at most ten candidate subset
    attempts (all proper subsets for four operations). Kill the process group

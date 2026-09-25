@@ -16,6 +16,8 @@ observation-normalizer increment.
   - **SC-002:** Altered evidence and unavailable source Git objects fail closed.
 - **REQ-002 — deterministic reduction.** Examine operation subsets in ascending
   size and stable identifier order, rerunning each candidate from the same base.
+  A candidate must retain every declared prerequisite of each retained
+  operation; discarded dependency-incomplete subsets are not replay attempts.
   Preserve the original divergent classification and bind the selected subset
   to its independently verified replay evidence.
   - **SC-003:** A redundant operation is removed when a smaller verified
@@ -23,7 +25,7 @@ observation-normalizer increment.
   - **SC-004:** A case with no smaller divergent subset remains unchanged.
 - **REQ-003 — bounded failure.** A supervisor enforces one 120-second deadline
   across input verification and all subset attempts, and stops after ten
-  candidate subsets. It terminates the whole private worker process group on
+  replayed candidate subsets. It terminates the whole private worker process group on
   timeout. Each replay retains its existing per-call Git limits; those limits
   are not represented as an aggregate command or scratch quota. Budget
   exhaustion, missing checks or replay failures produce an inconclusive

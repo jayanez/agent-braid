@@ -135,7 +135,7 @@
           "when": "subsets are independently replayed"
         }
       ],
-      "text": "Enumerate operation subsets in stable size and ID order and retain only independently verified divergence."
+      "text": "Enumerate dependency-closed operation subsets in stable size and ID order and retain only independently verified divergence."
     },
     {
       "id": "REQ-003",
