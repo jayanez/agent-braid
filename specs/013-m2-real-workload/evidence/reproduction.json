@@ -1,0 +1,168 @@
+{
+  "approvedCommand": "python -m unittest discover -s tests",
+  "approvedImage": "sha256:edddb1cbcbccb0e1af6505f9ff9938905da6f79303c97d1d12092ef61508f005",
+  "approvedWorkstreams": [
+    {
+      "dependencies": [],
+      "instanceId": "m2-observation-normalizer",
+      "pullRequest": "https://github.com/jayanez/agent-braid/pull/137",
+      "sourceCommit": "58351f812614058e53a8ee6aef1dd458f1bb70fc"
+    },
+    {
+      "dependencies": [],
+      "instanceId": "m2-counterexample-reducer",
+      "pullRequest": "https://github.com/jayanez/agent-braid/pull/138",
+      "sourceCommit": "083f1a390988a9527a5aaeb19133401243b1d714"
+    }
+  ],
+  "artifacts": {
+    "cleanroom-complete.json": {
+      "path": "specs/013-m2-real-workload/evidence/cleanroom-complete.json",
+      "sha256": "96e11f103a5294abbbe67c392599a4aad24ba6de2b8182a96c5685b245352566"
+    },
+    "cleanroom-missing-history.json": {
+      "path": "specs/013-m2-real-workload/evidence/cleanroom-missing-history.json",
+      "sha256": "e9fb3f4646d3b460c7478be669e58fba418d9dc41374dad14ab33193b10862a5"
+    },
+    "cleanroom-preflight.json": {
+      "path": "specs/013-m2-real-workload/evidence/cleanroom-preflight.json",
+      "sha256": "407982c18398540995a536dfb4ef3b81d41c2ab5549c9876bf8b2c93b513b431"
+    },
+    "development-harness-inconclusive.json": {
+      "path": "specs/013-m2-real-workload/evidence/development-harness-inconclusive.json",
+      "sha256": "5f4a576604ec4d895c7f29a5cd5e5f0ba35965b9ca602b6d75eaeee6d5464875"
+    },
+    "pr-validation.log": {
+      "path": "specs/013-m2-real-workload/evidence/pr-validation.log",
+      "sha256": "27df33c19b1f3370900d2c9682b22bf6fd865b536c80159e37d434feb7cf4d7b"
+    }
+  },
+  "baseCommit": "f3c734a1f42d6d5962cfedc57d7f6c1efe40e0a6",
+  "candidateCommit": "cd14c5068e4a7b71ea2b8d037e7f20288c5f6a45",
+  "capturedAt": "2026-09-25T14:25:26.998789+00:00",
+  "cleanRoom": {
+    "candidateFetchedFromLocalCommit": true,
+    "finalWorktreeClean": true,
+    "freshPublicClone": true,
+    "historicalTestRef": "refs/keep/pr-104",
+    "historicalTestRefCommit": "f35c16ae790fd451a8824a069e0f1144d596fcfe",
+    "initialWorktreeClean": true,
+    "sourceHeadsUnchanged": true,
+    "targetRefUnchanged": true
+  },
+  "executionAuthorization": false,
+  "externalHumanValidation": "pending",
+  "inputs": {
+    "agent_braid/git_integration_prototype.py": "3daf9c4ae946ab9a59fb4c2711492468ffdb6455a0bf04f6318a99b7664db860",
+    "requirements-dev.txt": "24a8316f230a1f408b5c953bf0217968f7ccab452594e774a1771ae28df86448",
+    "requirements-speckit.txt": "daa35d1e5551fba64cada1787b2646c283f9fb56ddc00b48f9b596b68134c392",
+    "scripts/docker/t013/Dockerfile": "d96d3e097d01b98bb7cc40f5575cb0d1b7b23a4ae66a6882b41196b0284b12f5",
+    "scripts/docker/t013/apt-packages.lock": "db23b2947328c4407d0d055c4ef9081e584b0662ec0102a8b2d5281457bd335c",
+    "scripts/docker/t013/constraints-t013.txt": "b12b51229e18fa1ca35c7bd1404f2359debb1d877203c1e37bab685111accad5",
+    "scripts/run_m2_real_workload.py": "4095c77da73a6c65f448eb13ae6b98a183405007765c99d4ede73d52d21caa5e",
+    "specs/013-m2-real-workload/m2-corpus-manifest.json": "5bd3dbd8c1170d8b0a2498b3b6830177dc5476a5ab4f99cfed0052ea88192107",
+    "specs/013-m2-real-workload/m2-corpus-selection.json": "978a40379b049d023be95d8eae652d7bbd06ea07942ce5776d40d2b0ad0b9737",
+    "specs/013-m2-real-workload/m2-t003-inputs.json": "f9827da49b59fac594be0760f692dce2168607370be10d12bf58c217bf97f388",
+    "specs/013-m2-real-workload/t003-founder-decision.json": "22061b62dfdd69fbfe0bd466d8d71fb264624512196712ffb9e7e2d656086372",
+    "specs/013-m2-real-workload/t003-founder-proposal.md": "daf7f83243809a6f04e419659935c6dbc9a345cd196e0c3555a25b57778b9e0a"
+  },
+  "limits": [
+    "Two fixed real workstreams only; no general confluence or live-agent safety claim.",
+    "Static tracked-path footprints, bounded unit tests and final worktree-state comparison do not establish complete hidden or external effect discovery.",
+    "Candidate Git preparation was slower than serial in both clean-room samples.",
+    "T013 Git metrics count its own commands; archive, container setup and Git calls made by tests are outside those counts.",
+    "The first clean-room attempt is retained as inconclusive, not discarded or treated as a code failure."
+  ],
+  "m2Closure": false,
+  "observations": {
+    "candidateGitCommandCounts": [
+      13,
+      13
+    ],
+    "candidateGitWallNanoseconds": [
+      201513958,
+      207367708
+    ],
+    "candidatePreparationFasterThanSerial": false,
+    "candidateWaves": [
+      [
+        "m2-counterexample-reducer",
+        "m2-observation-normalizer"
+      ]
+    ],
+    "finalCleanRoomStatus": "completed",
+    "finalTree": "fbc0d05bb42d2d94bb237d7f0b846457d0bd5940",
+    "gitComparisons": [
+      "match",
+      "match"
+    ],
+    "initialCleanRoomReason": "All four unit-test lanes failed the Spec Kit historical-root check because the fresh clone lacked merged PR #104 head history; no input source, base, image or dependency changed.",
+    "initialCleanRoomStatus": "inconclusive",
+    "pathOverlapWaveCount": 1,
+    "prProfile": "passed; 175 tests, 2 skipped; separate from the ADR 0015 experiment",
+    "selectionNegativeControls": {
+      "duplicate_pr": "workstreamUrl must identify a distinct repository PR",
+      "moved_base": "target branch has moved from the pinned base",
+      "substituted_commit": "source PR branch head differs from substituted commit",
+      "undeclared_write": "write footprint mismatch: m2-observation-normalizer"
+    },
+    "serialGitCommandCounts": [
+      13,
+      13
+    ],
+    "serialGitWallNanoseconds": [
+      174989334,
+      184914541
+    ],
+    "serialWaveCount": 2,
+    "testOutcomes": {
+      "candidate": [
+        {
+          "capturedOutputSha256": "815ddc321e6834c28b9839b7447a87933063d2bd933fecf05bb5e96855933695",
+          "cgroupPeakMemoryBytes": 125165568,
+          "elapsedSeconds": 75.301284,
+          "exitCode": 0,
+          "peakChildRssBytes": 49156096,
+          "status": "passed",
+          "temporaryDataBytes": 16523044,
+          "testCount": 204
+        },
+        {
+          "capturedOutputSha256": "2e2ac77ab7b8b46c5d16cbac06337a9e67d4c918295f786836c6b836349ac6bd",
+          "cgroupPeakMemoryBytes": 123523072,
+          "elapsedSeconds": 75.309289,
+          "exitCode": 0,
+          "peakChildRssBytes": 46329856,
+          "status": "passed",
+          "temporaryDataBytes": 16523044,
+          "testCount": 204
+        }
+      ],
+      "serial": [
+        {
+          "capturedOutputSha256": "06acd0c353230f852af795719a0a1ceebb6091773ec552d94ea19d643c9b6a04",
+          "cgroupPeakMemoryBytes": 126951424,
+          "elapsedSeconds": 75.52157,
+          "exitCode": 0,
+          "peakChildRssBytes": 49479680,
+          "status": "passed",
+          "temporaryDataBytes": 16523044,
+          "testCount": 204
+        },
+        {
+          "capturedOutputSha256": "d7edea7cea01c32a53f9324a87181830e818542a7093edb87a3c581e0f38f673",
+          "cgroupPeakMemoryBytes": 121257984,
+          "elapsedSeconds": 74.740066,
+          "exitCode": 0,
+          "peakChildRssBytes": 48254976,
+          "status": "passed",
+          "temporaryDataBytes": 16523044,
+          "testCount": 204
+        }
+      ]
+    },
+    "unsafeAdmissionCount": 0
+  },
+  "promotionPerformed": false,
+  "recordVersion": "agent-braid-m2-t003-reproduction-v1"
+}
