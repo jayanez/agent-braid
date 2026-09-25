@@ -15,7 +15,7 @@
   ],
   "assumptions": "Registered source commits are reviewable Git objects; static preflight cannot prove PR approval, complete effects, or command safety.",
   "authority_snapshot": {
-    "commit": null,
+    "commit": "d4c8e0b3ed04e0304295e6ece597695eea4a122d",
     "hashes": {
       "ARCHITECTURE.md": "94e5114eb799b25ca666ef728f84ab1c88e6ad1b342e30a9e99276b8f44c30c2",
       "CONSTITUTION.md": "ff7196976a1736a639947c2ab26e8da157fef23c89ba9881312f2a36459964eb",
@@ -64,13 +64,13 @@
       "schemas/governance/public-export-manifest.schema.json": "11eb7f2594939ae9fd0c9e6cfe4423a80aba686d6cdfdd8b73b0fb84b0840aa8",
       "schemas/governance/release-validation-record.schema.json": "d9943f0c9f5520ea52e3b12bfba88240d03f8011b433fc5e35cb49549ab6e819"
     },
-    "mode": "current"
+    "mode": "historical"
   },
   "compatibility": "No change to existing AIM, analyzer, replay, T013 report or public CLI contracts. The proposed corpus manifest is internal and draft.",
   "domain": "Two or three real Agent Braid workstream commits on one frozen develop base; finite private candidate and serial lanes.",
   "evidence_snapshot": {
-    "commit": null,
-    "mode": "current"
+    "commit": "d4c8e0b3ed04e0304295e6ece597695eea4a122d",
+    "mode": "historical"
   },
   "execution_contract": "The founder accepted the exact T003 corpus, base, image and dependency bytes under ADR 0015. The experiment runs only the pinned command in offline, bounded private containers after a read-only preflight; it never promotes refs or sets executionAuthorization true.",
   "human_review": "pending",
