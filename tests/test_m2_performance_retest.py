@@ -5,6 +5,7 @@ from __future__ import annotations
 
 from copy import deepcopy
 import json
+import os
 from pathlib import Path
 import subprocess
 import tempfile
@@ -150,6 +151,13 @@ class M2PerformanceRetestTests(unittest.TestCase):
             redirect.symlink_to(source / "rejection.json")
             with self.assertRaisesRegex(RetestRejected, "artifact directory"):
                 validate_output_path(redirect, source, None)
+            protected = source / "protected.json"
+            protected.write_text("original")
+            hard_link = root / "hard-link.json"
+            os.link(protected, hard_link)
+            with self.assertRaisesRegex(RetestRejected, "hard link"):
+                validate_output_path(hard_link, source, None)
+            self.assertEqual(protected.read_text(), "original")
             validate_output_path(root / "result.json", source, None)
             self.assertFalse((source / "rejection.json").exists())
 
