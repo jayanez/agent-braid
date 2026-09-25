@@ -24,6 +24,7 @@ from scripts.validate_real_workload_manifest import validate_manifest
 
 FEATURE = ROOT / "specs/013-m2-real-workload"
 IMAGE = "sha256:edddb1cbcbccb0e1af6505f9ff9938905da6f79303c97d1d12092ef61508f005"
+APPROVED_PROTOTYPE_SHA256 = "3daf9c4ae946ab9a59fb4c2711492468ffdb6455a0bf04f6318a99b7664db860"
 COMMAND = ["python", "-m", "unittest", "discover", "-s", "tests"]
 MAX_ARCHIVE_BYTES = 64 * 1024 * 1024
 MAX_OUTPUT_BYTES = 8 * 1024 * 1024
@@ -175,6 +176,9 @@ def verify_inputs(repository: Path) -> tuple[dict, dict, dict]:
     require(sha(approved_path) == decision["reviewedInputFileSha256"],
             "approved input proposal changed")
     approved = json.loads(approved_path.read_text())
+    require(sha(ROOT / "agent_braid/git_integration_prototype.py")
+            == APPROVED_PROTOTYPE_SHA256,
+            "T003 reviewed prototype changed; renewed founder decision required")
     require(approved["containerImage"] == {
         "os": "linux", "architecture": "arm64", "id": IMAGE},
         "image approval differs from fixed runner")
