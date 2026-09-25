@@ -182,6 +182,9 @@ jobs:
       - name: Install pinned Spec Kit tooling
         run: python3 -m pip install -r requirements-dev.txt -r requirements-speckit.txt
 
+      - name: Restore reviewed public SPEC-012 history
+        run: python3 scripts/restore_public_spec_history.py
+
       - name: Validate shared Spec Kit structural gates
         run: python3 scripts/validate_spec_kit.py
 
@@ -208,6 +211,9 @@ jobs:
 
       - name: Install pinned Spec Kit tooling
         run: python3 -m pip install -r requirements-speckit.txt
+
+      - name: Restore reviewed public SPEC-012 history
+        run: python3 scripts/restore_public_spec_history.py
 
       - name: Test Codex-only, Claude-only and dual configurations
         run: python3 scripts/test_spec_kit_integration.py
