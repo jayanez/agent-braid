@@ -125,7 +125,7 @@ class ValidationProfileTests(unittest.TestCase):
         self.assertIn("python3 -m unittest discover -s tests -v", workflow)
         self.assertIn("needs.classify.outputs.spec_kit_integration == 'true'", workflow)
         self.assertIn("scripts/test_spec_kit_integration.py", workflow)
-        self.assertEqual(2, workflow.count("run: python3 scripts/restore_public_spec_history.py"))
+        self.assertEqual(3, workflow.count("run: python3 scripts/restore_public_spec_history.py"))
         integration = workflow.index("spec_kit_integration:")
         condition = workflow.index("needs.classify.outputs.spec_kit_integration == 'true'")
         self.assertGreater(condition, integration)
