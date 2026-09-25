@@ -34,27 +34,48 @@ it runs no project test command or live agents.
 
 | Operations | Candidate median | Serial median | Path median | Paired gain vs serial | Paired gain vs path |
 | --- | ---: | ---: | ---: | ---: | ---: |
-| 2 | 116.77 ms | 127.05 ms | 153.47 ms | 7.28% (95%: 2.70% to 11.16%) | 23.05% (95%: 17.71% to 28.76%) |
-| 3 | 192.62 ms | 195.63 ms | 226.04 ms | 5.66% (95%: -2.76% to 8.25%) | 15.05% (95%: 9.99% to 17.61%) |
+| 2 | 123.33 ms | 128.21 ms | 158.67 ms | 4.84% (95%: 1.66% to 9.06%) | 22.09% (95%: 16.24% to 25.25%) |
+| 3 | 192.45 ms | 213.65 ms | 234.28 ms | 6.45% (95%: 3.31% to 12.34%) | 18.34% (95%: 12.01% to 20.61%) |
 
 These percentages are medians of **paired fractional improvements**, rather
-than ratios of the displayed lane medians. The three-operation serial interval
-includes zero. **The 10% goal is not met.** Both path-only and candidate
-schedulers form the same single wave on these disjoint-path fixtures, so the
-gain against the frozen path baseline reflects fewer Git operations in the
-implementation, not an advantage in scheduling decisions.
+than ratios of the displayed lane medians. **The 10% goal is not met.** Both
+path-only and candidate schedulers form the same single wave on these
+disjoint-path fixtures, so the gain against the frozen path baseline reflects
+fewer Git operations in the implementation, not an advantage in scheduling
+decisions.
+
+The raw report now retains the timing of patch preparation, fixture commit
+materialization and tree integration for every lane in every sample. These are
+median paired candidate-minus-baseline differences in milliseconds; negative
+values favor the candidate:
+
+| Operations | Baseline | Patch preparation | Commit materialization | Tree integration |
+| --- | --- | ---: | ---: | ---: |
+| 2 | Serial | -7.33 | +0.66 | -0.85 |
+| 3 | Serial | -11.35 | -0.32 | -0.87 |
+| 2 | Path overlap | -0.61 | +0.69 | -34.46 |
+| 3 | Path overlap | +1.03 | +0.07 | -39.50 |
+
+The candidate and serial lanes issue the same 10 Git commands for two
+operations and 16 for three. Their measured gain comes from concurrent patch
+preparation; commit materialization and tree integration remain mostly serial.
+Against the frozen path baseline, the candidate saves three Git commands in
+integration, explaining most of that larger gain. The candidate integration
+phase itself has a 50.80 ms median for two operations and 92.22 ms for three;
+it limits the effect of parallel patch preparation on total lane time. These
+phase medians are descriptive and need not add up to the median total.
 
 The raw report was produced with Linux ARM64 image
 `sha256:edddb1cbcbccb0e1af6505f9ff9938905da6f79303c97d1d12092ef61508f005`,
 Python 3.12.13 and Git 2.47.3, offline with two CPUs, 2 GiB memory and 512
 processes. Its SHA-256 is
-`8e08c0e49fcb9f3f2b777a819e8d297cffa2ae448a4e1417efc6e95436cc3fce`.
+`74462a5be3468c13bfeed9a8c1ca11c0cc53cf679125a29d2bad5169a3ce3a38`.
 The script verifies frozen module SHA-256
 `3daf9c4ae946ab9a59fb4c2711492468ffdb6455a0bf04f6318a99b7664db860`.
 The measured candidate module SHA-256 is
 `762ebfcc6246ab3b143e13b9a4bd3315c698972bf65e1ee00e8f892aea85d0a3`;
 the benchmark script SHA-256 is
-`819fcd9e667fa0f277004290f867b30d615a2ffe511201fe81711b9ee122fd8a`.
+`98ac65b18789a0d7823bcec3920326f67a89d30109bc5d58578cd53a6968ca54`.
 Reproduction runs that script with `--samples 30`, the byte-verified T003
 module passed as `--frozen-module`, and an explicit `--output` path in the
 same pinned, offline container limits.
