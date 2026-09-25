@@ -47,8 +47,13 @@ def _git(repository: Path, *args: str, allow_failure: bool = False) -> str:
     return result.stdout.decode("ascii", "strict").strip() if result.returncode == 0 else ""
 
 
-def validate_manifest(value: object, repository: Path, *, expected_public_root: str = PUBLIC_ROOT) -> dict:
+def validate_manifest(value: object, repository: Path) -> dict:
     """Validate identity and ancestry; return a non-authorizing preflight result."""
+    return _validate_manifest(value, repository, PUBLIC_ROOT)
+
+
+def _validate_manifest(value: object, repository: Path, expected_public_root: str) -> dict:
+    """Testable core with an injected root for isolated synthetic repositories."""
     _require(isinstance(value, dict), "manifest must be an object")
     _require(set(value) == {"version", "repository", "baseCommit", "targetRef",
                             "operations", "validationProfile"}, "manifest fields are invalid")

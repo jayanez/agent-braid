@@ -10,6 +10,7 @@ from pathlib import Path
 
 from scripts.validate_real_workload_manifest import (
     InvalidRealWorkloadManifest,
+    _validate_manifest,
     validate_manifest,
 )
 
@@ -61,7 +62,7 @@ class RealWorkloadManifestTests(unittest.TestCase):
         }
 
     def validate(self, manifest: dict) -> dict:
-        return validate_manifest(manifest, self.repository, expected_public_root=self.base)
+        return _validate_manifest(manifest, self.repository, self.base)
 
     def test_binds_distinct_descendant_commits_without_execution(self) -> None:
         before = self.git("status", "--porcelain")
