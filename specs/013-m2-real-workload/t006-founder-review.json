@@ -1,0 +1,40 @@
+{
+  "recordVersion": "0.1.0",
+  "feature": "M2 real-workload validation",
+  "reviewedCommit": "60d6bcaba7245e9864298321b1038cddfde6fd9e",
+  "reviewer": {
+    "name": "Juan Antonio Yáñez García",
+    "role": "founder"
+  },
+  "conflictsOfInterest": "The founder is the project maintainer. This is an internal founder review, not independent external validation.",
+  "boundedReview": {
+    "decision": "approved",
+    "date": "2026-09-25",
+    "rationale": "Accept the frozen T003 protocol adherence and T006 evidence at the reviewed commit. The two Git repetitions yielded the same tracked tree and all four isolated test lanes passed. The first clean-room attempt remains inconclusive. Candidate Git preparation was slower than serial in both completed repetitions; this corpus did not demonstrate a performance improvement."
+  },
+  "performanceFollowUp": {
+    "priority": "M2-priority",
+    "objective": "Diagnose parallel Git preparation cost and achieve a reproducible median improvement of at least 10 percent against both serial preparation and a timed path-overlap baseline while preserving tree equivalence and safety controls.",
+    "status": "open",
+    "boundary": "A different corpus, command, image, limits or observation contract requires separate review and founder decision before a new real-workload experiment."
+  },
+  "evidence": [
+    {
+      "path": "specs/013-m2-real-workload/evidence/reproduction.json",
+      "sha256": "baf1c05f6348f5c70bc5710800290d249d7ad3ff3fe7366b245277ecc79d95f3"
+    },
+    {
+      "path": "specs/013-m2-real-workload/evidence/cleanroom-complete.json",
+      "sha256": "96e11f103a5294abbbe67c392599a4aad24ba6de2b8182a96c5685b245352566"
+    }
+  ],
+  "independentValidation": "pending",
+  "executionAuthorization": false,
+  "mergeAuthorization": false,
+  "m2Closure": false,
+  "limits": [
+    "Approval applies only to the reviewed commit and the bounded T003 experiment evidence.",
+    "The path-overlap baseline currently records wave count, not comparable elapsed time.",
+    "Finite static tracked-path and unit-test observations do not establish general confluence, live-agent safety or production speedup."
+  ]
+}
