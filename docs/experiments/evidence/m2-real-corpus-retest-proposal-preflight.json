@@ -22,7 +22,8 @@
   "negativeControlsExecuted": false,
   "priorT003Outcome": "no-performance-improvement-on-reviewed-corpus",
   "projectValidationExecuted": false,
-  "proposalDocumentSha256": "14a91dfea7e1474b8c8e72b39c1eed3e7bfc898b1ce7aeed773a667c4d393e9a",
+  "proposalBindingUpdatedAt": "2026-09-25T19:30:51.741953+00:00",
+  "proposalDocumentSha256": "5c5eb4384fd8e5978a2bbe5da0212aa7796f7e7f0badbba2b42784e70093bcc9",
   "pullRequests": [
     {
       "baseRefOid": "f3c734a1f42d6d5962cfedc57d7f6c1efe40e0a6",
