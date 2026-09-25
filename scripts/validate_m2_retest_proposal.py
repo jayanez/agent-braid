@@ -305,6 +305,13 @@ def validate_proposal(
     expected_public_root: str = PUBLIC_ROOT,
 ) -> dict:
     """Check frozen inputs and live identity; return a non-authorizing record."""
+    require((root / ".git").is_dir(), "standalone checker checkout required")
+    require(git_text(root, "status", "--porcelain=v1", "--untracked-files=all") == "",
+            "checker checkout is not clean")
+    checker_commit = git_text(root, "rev-parse", "HEAD")
+    require(git_text(root, "merge-base", PROPOSAL_COMMIT, checker_commit)
+            == PROPOSAL_COMMIT, "checker does not descend from frozen proposal")
+    checker_sha = sha((root / "scripts/validate_m2_retest_proposal.py").read_bytes())
     require((repository / ".git").is_dir(), "standalone clone required")
     require(git_text(repository, "status", "--porcelain=v1", "--untracked-files=all") == "",
             "source repository is not clean")
@@ -373,10 +380,14 @@ def validate_proposal(
             "source HEAD changed during preflight")
     require(git_text(repository, "status", "--porcelain=v1", "--untracked-files=all") == "",
             "source repository changed during preflight")
+    require(git_text(root, "status", "--porcelain=v1", "--untracked-files=all") == "",
+            "checker checkout changed during preflight")
     return {
         "recordVersion": "agent-braid-m2-retest-read-only-preflight-1",
         "status": "proposal-preflight-valid",
         "proposalCommit": PROPOSAL_COMMIT,
+        "checkerCommit": checker_commit,
+        "checkerSha256": checker_sha,
         "capturedAt": datetime.now(timezone.utc).isoformat(),
         "inputProposalSha256": INPUT_SHA256,
         "sourceHead": source_head_after,
