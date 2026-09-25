@@ -10,7 +10,7 @@
   witness.
 - [ ] T002 (REQ-001–003/SC-001–005): add verified, irreducible, tampered-input
   and aggregate-budget regressions. Implemented in
-  `tests/test_git_counterexamples.py` (26 tests): real-Git end-to-end cases
+  `tests/test_git_counterexamples.py` (28 tests): real-Git end-to-end cases
   for tampered/non-divergent/missing-object/garbage/invalid-repository input
   and a real process-group timeout, plus deterministic fake-backend cases for
   SC-003 (redundant operation removed), SC-004 (irreducible case unchanged),
