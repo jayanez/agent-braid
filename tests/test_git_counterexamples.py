@@ -198,12 +198,14 @@ class GitCounterexampleSupervisorUnitTests(unittest.TestCase):
             )
             worker_code = (
                 "import subprocess,os; "
+                "from agent_braid.git_counterexamples import _process_identity; "
                 f"child=subprocess.Popen(['python3','-c',{child_code!r}], "
                 "start_new_session=True); "
                 "f=open(os.environ['AGENT_BRAID_REDUCER_CHILD_REGISTRY'],'a'); "
-                "f.write(str(child.pid)+'\\n'); f.close(); print(child.pid,flush=True)"
+                "f.write(str(child.pid)+' '+_process_identity(child.pid)+'\\n'); "
+                "f.close(); print(child.pid,flush=True)"
             )
-            outcome = _run_supervised(["python3", "-c", worker_code], b"", 0.2)
+            outcome = _run_supervised(["python3", "-c", worker_code], b"", 0.6)
             self.assertTrue(outcome["timed_out"])
             child_pid = int(outcome["stdout"].strip())
             try:
@@ -214,6 +216,22 @@ class GitCounterexampleSupervisorUnitTests(unittest.TestCase):
                     os.killpg(child_pid, signal.SIGKILL)
                 except ProcessLookupError:
                     pass
+
+    def test_stale_child_pid_identity_cannot_target_unrelated_session(self):
+        with tempfile.TemporaryDirectory() as directory:
+            registry = Path(directory) / "child-pids"
+            child = subprocess.Popen(["python3", "-c", "import time; time.sleep(5)"],
+                                     start_new_session=True)
+            try:
+                registry.write_text(f"{child.pid} stale-birth-token\n")
+                worker = subprocess.Popen(["python3", "-c", "pass"],
+                                          start_new_session=True)
+                worker.wait()
+                _terminate_process_group(worker, registry)
+                self.assertIsNone(child.poll(), "a stale registry entry killed another session")
+            finally:
+                os.killpg(child.pid, signal.SIGKILL)
+                child.wait()
 
     def test_worker_does_not_inherit_unrelated_environment_values(self):
         command = ["python3", "-c", "import os; print(os.getenv('TEST_SECRET', 'absent'))"]
