@@ -9,6 +9,7 @@ from pathlib import Path, PurePosixPath
 import threading
 import tempfile
 import time
+from typing import Callable
 
 from .analysis import _digest
 from .git_adapter import InvalidGitAnalysis, analyze_git_with_provenance
@@ -340,7 +341,8 @@ def _unstarted_report(status: str, base: str, target_ref: str, target_commit: st
     return report
 
 
-def run_prototype(request: object, *, cancel_event: threading.Event | None = None) -> dict:
+def run_prototype(request: object, *, cancel_event: threading.Event | None = None,
+                  tree_consumer: Callable[[Path, str, str], None] | None = None) -> dict:
     """Prepare fixed Git patches concurrently in private worktrees and compare
     private merge results with a serial reference. Never update source refs.
     """
@@ -354,6 +356,9 @@ def run_prototype(request: object, *, cancel_event: threading.Event | None = Non
         env = _sanitized_environment(temp_root / "home")
         env.update({
             "GIT_NO_REPLACE_OBJECTS": "1",
+            "GIT_CONFIG_COUNT": "1",
+            "GIT_CONFIG_KEY_0": "safe.directory",
+            "GIT_CONFIG_VALUE_0": str(source),
             "GIT_AUTHOR_NAME": "Agent Braid T013 fixture",
             "GIT_AUTHOR_EMAIL": "agent-braid-t013@example.invalid",
             "GIT_COMMITTER_NAME": "Agent Braid T013 fixture",
@@ -703,4 +708,9 @@ def run_prototype(request: object, *, cancel_event: threading.Event | None = Non
             ],
         }
         report["reportDigest"] = _digest(report)
+        if tree_consumer is not None and report["status"] == "completed":
+            # The scratch object store disappears on return. A caller may
+            # export both verified trees while it is still private and live.
+            tree_consumer(scratch, candidate_integration["finalTree"],
+                          serial_integration["finalTree"])
         return report

@@ -1,0 +1,21 @@
+{
+  "version": "0.1.0-draft",
+  "repository": "jayanez/agent-braid",
+  "baseCommit": "f3c734a1f42d6d5962cfedc57d7f6c1efe40e0a6",
+  "targetRef": "refs/heads/develop",
+  "operations": [
+    {
+      "instanceId": "m2-observation-normalizer",
+      "sourceCommit": "58351f812614058e53a8ee6aef1dd458f1bb70fc",
+      "workstreamUrl": "https://github.com/jayanez/agent-braid/pull/137",
+      "dependencies": []
+    },
+    {
+      "instanceId": "m2-counterexample-reducer",
+      "sourceCommit": "083f1a390988a9527a5aaeb19133401243b1d714",
+      "workstreamUrl": "https://github.com/jayanez/agent-braid/pull/138",
+      "dependencies": []
+    }
+  ],
+  "validationProfile": "m2-real-read-only-v1"
+}
