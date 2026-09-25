@@ -1,0 +1,7 @@
+{
+  "executionAuthorization": false,
+  "promotionPerformed": false,
+  "reason": "offline phase failed without bounded evidence: ",
+  "recordVersion": "agent-braid-m2-real-performance-retest-1",
+  "status": "rejected"
+}
