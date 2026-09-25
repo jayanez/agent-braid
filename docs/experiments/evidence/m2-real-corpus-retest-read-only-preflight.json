@@ -1,0 +1,44 @@
+{
+  "baseCommit": "f3c734a1f42d6d5962cfedc57d7f6c1efe40e0a6",
+  "candidateCodeCommit": "7d1a07775c2663da93e369ceccf5a8b352c28e78",
+  "capturedAt": "2026-09-25T19:52:50.633905+00:00",
+  "checkerCommit": "56b2580dbd52aded2e65005de415cfbe6c17714c",
+  "checkerSha256": "e29c04738fca57c7756cf8b5af626413426a6bf54c527c11f7a1ac45a7b3531f",
+  "containerImage": {
+    "architecture": "arm64",
+    "id": "sha256:edddb1cbcbccb0e1af6505f9ff9938905da6f79303c97d1d12092ef61508f005",
+    "os": "linux"
+  },
+  "executionAuthorization": false,
+  "externalHumanValidation": "pending",
+  "inputProposalSha256": "fcf9ce54184e4e0528f46b3ef0da2be4c9678a940cdf99d6afa58a805ee5ff31",
+  "limits": "Read-only identity and byte checks; no Git preparation or project command was run.",
+  "m2Closure": false,
+  "negativeControlsRejected": [
+    "moved-base",
+    "substituted-commit",
+    "duplicate-pr",
+    "undeclared-write",
+    "changed-code-hash",
+    "breached-resource-limit"
+  ],
+  "projectValidationExecuted": false,
+  "proposalCommit": "87640e950d0ac3231a93446225ef7608ebe3d980",
+  "recordVersion": "agent-braid-m2-retest-read-only-preflight-1",
+  "remoteRefsAfter": {
+    "refs/heads/014-m2-observation-normalizer": "58351f812614058e53a8ee6aef1dd458f1bb70fc",
+    "refs/heads/015-m2-counterexample-reducer": "083f1a390988a9527a5aaeb19133401243b1d714",
+    "refs/heads/develop": "f3c734a1f42d6d5962cfedc57d7f6c1efe40e0a6",
+    "refs/heads/work/m2-parallel-prep-performance-20260925": "7d1a07775c2663da93e369ceccf5a8b352c28e78",
+    "refs/heads/work/m2-performance-retest-decision-20260925": "87640e950d0ac3231a93446225ef7608ebe3d980"
+  },
+  "remoteRefsBefore": {
+    "refs/heads/014-m2-observation-normalizer": "58351f812614058e53a8ee6aef1dd458f1bb70fc",
+    "refs/heads/015-m2-counterexample-reducer": "083f1a390988a9527a5aaeb19133401243b1d714",
+    "refs/heads/develop": "f3c734a1f42d6d5962cfedc57d7f6c1efe40e0a6",
+    "refs/heads/work/m2-parallel-prep-performance-20260925": "7d1a07775c2663da93e369ceccf5a8b352c28e78",
+    "refs/heads/work/m2-performance-retest-decision-20260925": "87640e950d0ac3231a93446225ef7608ebe3d980"
+  },
+  "sourceHead": "87640e950d0ac3231a93446225ef7608ebe3d980",
+  "status": "proposal-preflight-valid"
+}
