@@ -1,0 +1,770 @@
+{
+  "benchmarkVersion": "agent-braid-m2-parallel-preparation-v1",
+  "bootstrap": {
+    "confidence": 0.95,
+    "samples": 10000,
+    "seed": 20260925,
+    "statistic": "median paired fractional improvement"
+  },
+  "candidatePrototypeSha256": "762ebfcc6246ab3b143e13b9a4bd3315c698972bf65e1ee00e8f892aea85d0a3",
+  "environment": {
+    "git": "git version 2.47.3",
+    "machine": "aarch64",
+    "platform": "Linux-7.0.12-linuxkit-aarch64-with-glibc2.41",
+    "python": "3.12.13"
+  },
+  "executionAuthorization": false,
+  "frozenBaselineCommit": "60d6bcaba7245e9864298321b1038cddfde6fd9e",
+  "frozenPrototypeSha256": "3daf9c4ae946ab9a59fb4c2711492468ffdb6455a0bf04f6318a99b7664db860",
+  "goalMetOnAllScenarios": false,
+  "limits": [
+    "Synthetic fixed-patch Git workloads only; no project tests or live agents.",
+    "The frozen path-only baseline uses the reviewed T003 module with a conservative write-path scheduler.",
+    "On disjoint paths, candidate and path-only schedules are identical; any timing gain is implementation cost reduction, not a scheduling advantage.",
+    "The prior T003 real-corpus result remains unchanged. A changed real-workload protocol requires a new founder decision."
+  ],
+  "promotionPerformed": false,
+  "scenarios": [
+    {
+      "candidateWaves": [
+        [
+          "op-0",
+          "op-1"
+        ]
+      ],
+      "comparisons": {
+        "pathOverlap": {
+          "confidence95": [
+            0.177081,
+            0.287588
+          ],
+          "medianImprovement": 0.230512,
+          "meetsTenPercentAndPositiveInterval": true
+        },
+        "serial": {
+          "confidence95": [
+            0.026984,
+            0.111613
+          ],
+          "medianImprovement": 0.072755,
+          "meetsTenPercentAndPositiveInterval": false
+        }
+      },
+      "finalTree": "d1a3413583080d046b7e2f797c02079b4c6ec567",
+      "goalMet": false,
+      "operationCount": 2,
+      "pathOverlapWaves": [
+        [
+          "op-0",
+          "op-1"
+        ]
+      ],
+      "pathScheduleMatchesCandidate": true,
+      "sampleCount": 30,
+      "samplesNanoseconds": [
+        {
+          "candidate": 180052082,
+          "candidateGitCommands": 10,
+          "currentLaneOrder": "candidate-first",
+          "executionOrder": "current-first",
+          "pathOverlap": 151425542,
+          "pathOverlapGitCommands": 13,
+          "sample": 1,
+          "serial": 191493083,
+          "serialGitCommands": 10
+        },
+        {
+          "candidate": 127093916,
+          "candidateGitCommands": 10,
+          "currentLaneOrder": "serial-first",
+          "executionOrder": "path-first",
+          "pathOverlap": 161015541,
+          "pathOverlapGitCommands": 13,
+          "sample": 2,
+          "serial": 143109500,
+          "serialGitCommands": 10
+        },
+        {
+          "candidate": 117297793,
+          "candidateGitCommands": 10,
+          "currentLaneOrder": "candidate-first",
+          "executionOrder": "current-first",
+          "pathOverlap": 163609792,
+          "pathOverlapGitCommands": 13,
+          "sample": 3,
+          "serial": 154412666,
+          "serialGitCommands": 10
+        },
+        {
+          "candidate": 103925624,
+          "candidateGitCommands": 10,
+          "currentLaneOrder": "serial-first",
+          "executionOrder": "path-first",
+          "pathOverlap": 152698000,
+          "pathOverlapGitCommands": 13,
+          "sample": 4,
+          "serial": 116943168,
+          "serialGitCommands": 10
+        },
+        {
+          "candidate": 125109917,
+          "candidateGitCommands": 10,
+          "currentLaneOrder": "candidate-first",
+          "executionOrder": "current-first",
+          "pathOverlap": 151893501,
+          "pathOverlapGitCommands": 13,
+          "sample": 5,
+          "serial": 132750458,
+          "serialGitCommands": 10
+        },
+        {
+          "candidate": 106114292,
+          "candidateGitCommands": 10,
+          "currentLaneOrder": "serial-first",
+          "executionOrder": "path-first",
+          "pathOverlap": 177325959,
+          "pathOverlapGitCommands": 13,
+          "sample": 6,
+          "serial": 117397499,
+          "serialGitCommands": 10
+        },
+        {
+          "candidate": 116729041,
+          "candidateGitCommands": 10,
+          "currentLaneOrder": "candidate-first",
+          "executionOrder": "current-first",
+          "pathOverlap": 154738875,
+          "pathOverlapGitCommands": 13,
+          "sample": 7,
+          "serial": 119737834,
+          "serialGitCommands": 10
+        },
+        {
+          "candidate": 128370835,
+          "candidateGitCommands": 10,
+          "currentLaneOrder": "serial-first",
+          "executionOrder": "path-first",
+          "pathOverlap": 149239000,
+          "pathOverlapGitCommands": 13,
+          "sample": 8,
+          "serial": 112881958,
+          "serialGitCommands": 10
+        },
+        {
+          "candidate": 133524333,
+          "candidateGitCommands": 10,
+          "currentLaneOrder": "candidate-first",
+          "executionOrder": "current-first",
+          "pathOverlap": 162584668,
+          "pathOverlapGitCommands": 13,
+          "sample": 9,
+          "serial": 132127375,
+          "serialGitCommands": 10
+        },
+        {
+          "candidate": 116031458,
+          "candidateGitCommands": 10,
+          "currentLaneOrder": "serial-first",
+          "executionOrder": "path-first",
+          "pathOverlap": 140810542,
+          "pathOverlapGitCommands": 13,
+          "sample": 10,
+          "serial": 138785792,
+          "serialGitCommands": 10
+        },
+        {
+          "candidate": 106209042,
+          "candidateGitCommands": 10,
+          "currentLaneOrder": "candidate-first",
+          "executionOrder": "current-first",
+          "pathOverlap": 154628041,
+          "pathOverlapGitCommands": 13,
+          "sample": 11,
+          "serial": 114518084,
+          "serialGitCommands": 10
+        },
+        {
+          "candidate": 103438541,
+          "candidateGitCommands": 10,
+          "currentLaneOrder": "serial-first",
+          "executionOrder": "path-first",
+          "pathOverlap": 177305042,
+          "pathOverlapGitCommands": 13,
+          "sample": 12,
+          "serial": 127805750,
+          "serialGitCommands": 10
+        },
+        {
+          "candidate": 169723583,
+          "candidateGitCommands": 10,
+          "currentLaneOrder": "candidate-first",
+          "executionOrder": "current-first",
+          "pathOverlap": 150648876,
+          "pathOverlapGitCommands": 13,
+          "sample": 13,
+          "serial": 117086167,
+          "serialGitCommands": 10
+        },
+        {
+          "candidate": 118676625,
+          "candidateGitCommands": 10,
+          "currentLaneOrder": "serial-first",
+          "executionOrder": "path-first",
+          "pathOverlap": 143833541,
+          "pathOverlapGitCommands": 13,
+          "sample": 14,
+          "serial": 116176582,
+          "serialGitCommands": 10
+        },
+        {
+          "candidate": 104706042,
+          "candidateGitCommands": 10,
+          "currentLaneOrder": "candidate-first",
+          "executionOrder": "current-first",
+          "pathOverlap": 140570334,
+          "pathOverlapGitCommands": 13,
+          "sample": 15,
+          "serial": 123803501,
+          "serialGitCommands": 10
+        },
+        {
+          "candidate": 109627708,
+          "candidateGitCommands": 10,
+          "currentLaneOrder": "serial-first",
+          "executionOrder": "path-first",
+          "pathOverlap": 165409876,
+          "pathOverlapGitCommands": 13,
+          "sample": 16,
+          "serial": 131378166,
+          "serialGitCommands": 10
+        },
+        {
+          "candidate": 116665208,
+          "candidateGitCommands": 10,
+          "currentLaneOrder": "candidate-first",
+          "executionOrder": "current-first",
+          "pathOverlap": 141899334,
+          "pathOverlapGitCommands": 13,
+          "sample": 17,
+          "serial": 120129833,
+          "serialGitCommands": 10
+        },
+        {
+          "candidate": 116450417,
+          "candidateGitCommands": 10,
+          "currentLaneOrder": "serial-first",
+          "executionOrder": "path-first",
+          "pathOverlap": 152095584,
+          "pathOverlapGitCommands": 13,
+          "sample": 18,
+          "serial": 135385208,
+          "serialGitCommands": 10
+        },
+        {
+          "candidate": 108932001,
+          "candidateGitCommands": 10,
+          "currentLaneOrder": "candidate-first",
+          "executionOrder": "current-first",
+          "pathOverlap": 140859791,
+          "pathOverlapGitCommands": 13,
+          "sample": 19,
+          "serial": 117504334,
+          "serialGitCommands": 10
+        },
+        {
+          "candidate": 106080375,
+          "candidateGitCommands": 10,
+          "currentLaneOrder": "serial-first",
+          "executionOrder": "path-first",
+          "pathOverlap": 163135249,
+          "pathOverlapGitCommands": 13,
+          "sample": 20,
+          "serial": 116232625,
+          "serialGitCommands": 10
+        },
+        {
+          "candidate": 130067708,
+          "candidateGitCommands": 10,
+          "currentLaneOrder": "candidate-first",
+          "executionOrder": "current-first",
+          "pathOverlap": 138863752,
+          "pathOverlapGitCommands": 13,
+          "sample": 21,
+          "serial": 119409208,
+          "serialGitCommands": 10
+        },
+        {
+          "candidate": 129238834,
+          "candidateGitCommands": 10,
+          "currentLaneOrder": "serial-first",
+          "executionOrder": "path-first",
+          "pathOverlap": 142609458,
+          "pathOverlapGitCommands": 13,
+          "sample": 22,
+          "serial": 131449541,
+          "serialGitCommands": 10
+        },
+        {
+          "candidate": 116805125,
+          "candidateGitCommands": 10,
+          "currentLaneOrder": "candidate-first",
+          "executionOrder": "current-first",
+          "pathOverlap": 203516584,
+          "pathOverlapGitCommands": 13,
+          "sample": 23,
+          "serial": 126295125,
+          "serialGitCommands": 10
+        },
+        {
+          "candidate": 122849251,
+          "candidateGitCommands": 10,
+          "currentLaneOrder": "serial-first",
+          "executionOrder": "path-first",
+          "pathOverlap": 136880793,
+          "pathOverlapGitCommands": 13,
+          "sample": 24,
+          "serial": 131893876,
+          "serialGitCommands": 10
+        },
+        {
+          "candidate": 119833376,
+          "candidateGitCommands": 10,
+          "currentLaneOrder": "candidate-first",
+          "executionOrder": "current-first",
+          "pathOverlap": 158200709,
+          "pathOverlapGitCommands": 13,
+          "sample": 25,
+          "serial": 116884166,
+          "serialGitCommands": 10
+        },
+        {
+          "candidate": 105522251,
+          "candidateGitCommands": 10,
+          "currentLaneOrder": "serial-first",
+          "executionOrder": "path-first",
+          "pathOverlap": 166981167,
+          "pathOverlapGitCommands": 13,
+          "sample": 26,
+          "serial": 147150042,
+          "serialGitCommands": 10
+        },
+        {
+          "candidate": 120932250,
+          "candidateGitCommands": 10,
+          "currentLaneOrder": "candidate-first",
+          "executionOrder": "current-first",
+          "pathOverlap": 154936667,
+          "pathOverlapGitCommands": 13,
+          "sample": 27,
+          "serial": 119853708,
+          "serialGitCommands": 10
+        },
+        {
+          "candidate": 106649250,
+          "candidateGitCommands": 10,
+          "currentLaneOrder": "serial-first",
+          "executionOrder": "path-first",
+          "pathOverlap": 154246375,
+          "pathOverlapGitCommands": 13,
+          "sample": 28,
+          "serial": 129107042,
+          "serialGitCommands": 10
+        },
+        {
+          "candidate": 107751291,
+          "candidateGitCommands": 10,
+          "currentLaneOrder": "candidate-first",
+          "executionOrder": "current-first",
+          "pathOverlap": 152215084,
+          "pathOverlapGitCommands": 13,
+          "sample": 29,
+          "serial": 127828791,
+          "serialGitCommands": 10
+        },
+        {
+          "candidate": 163858875,
+          "candidateGitCommands": 10,
+          "currentLaneOrder": "serial-first",
+          "executionOrder": "path-first",
+          "pathOverlap": 178836875,
+          "pathOverlapGitCommands": 13,
+          "sample": 30,
+          "serial": 160082917,
+          "serialGitCommands": 10
+        }
+      ]
+    },
+    {
+      "candidateWaves": [
+        [
+          "op-0",
+          "op-1",
+          "op-2"
+        ]
+      ],
+      "comparisons": {
+        "pathOverlap": {
+          "confidence95": [
+            0.099947,
+            0.176115
+          ],
+          "medianImprovement": 0.150514,
+          "meetsTenPercentAndPositiveInterval": true
+        },
+        "serial": {
+          "confidence95": [
+            -0.027636,
+            0.082538
+          ],
+          "medianImprovement": 0.056555,
+          "meetsTenPercentAndPositiveInterval": false
+        }
+      },
+      "finalTree": "8718ebf537b3f16e0b2f039c6243b12f04947bd6",
+      "goalMet": false,
+      "operationCount": 3,
+      "pathOverlapWaves": [
+        [
+          "op-0",
+          "op-1",
+          "op-2"
+        ]
+      ],
+      "pathScheduleMatchesCandidate": true,
+      "sampleCount": 30,
+      "samplesNanoseconds": [
+        {
+          "candidate": 179713500,
+          "candidateGitCommands": 16,
+          "currentLaneOrder": "candidate-first",
+          "executionOrder": "current-first",
+          "pathOverlap": 212955709,
+          "pathOverlapGitCommands": 19,
+          "sample": 1,
+          "serial": 185433877,
+          "serialGitCommands": 16
+        },
+        {
+          "candidate": 207329001,
+          "candidateGitCommands": 16,
+          "currentLaneOrder": "serial-first",
+          "executionOrder": "path-first",
+          "pathOverlap": 217463792,
+          "pathOverlapGitCommands": 19,
+          "sample": 2,
+          "serial": 189088750,
+          "serialGitCommands": 16
+        },
+        {
+          "candidate": 185034167,
+          "candidateGitCommands": 16,
+          "currentLaneOrder": "candidate-first",
+          "executionOrder": "current-first",
+          "pathOverlap": 227121709,
+          "pathOverlapGitCommands": 19,
+          "sample": 3,
+          "serial": 216540750,
+          "serialGitCommands": 16
+        },
+        {
+          "candidate": 184602084,
+          "candidateGitCommands": 16,
+          "currentLaneOrder": "serial-first",
+          "executionOrder": "path-first",
+          "pathOverlap": 212399708,
+          "pathOverlapGitCommands": 19,
+          "sample": 4,
+          "serial": 213837751,
+          "serialGitCommands": 16
+        },
+        {
+          "candidate": 210255457,
+          "candidateGitCommands": 16,
+          "currentLaneOrder": "candidate-first",
+          "executionOrder": "current-first",
+          "pathOverlap": 236417000,
+          "pathOverlapGitCommands": 19,
+          "sample": 5,
+          "serial": 185957458,
+          "serialGitCommands": 16
+        },
+        {
+          "candidate": 181888166,
+          "candidateGitCommands": 16,
+          "currentLaneOrder": "serial-first",
+          "executionOrder": "path-first",
+          "pathOverlap": 212717000,
+          "pathOverlapGitCommands": 19,
+          "sample": 6,
+          "serial": 190868958,
+          "serialGitCommands": 16
+        },
+        {
+          "candidate": 197812625,
+          "candidateGitCommands": 16,
+          "currentLaneOrder": "candidate-first",
+          "executionOrder": "current-first",
+          "pathOverlap": 234406043,
+          "pathOverlapGitCommands": 19,
+          "sample": 7,
+          "serial": 221363666,
+          "serialGitCommands": 16
+        },
+        {
+          "candidate": 203787167,
+          "candidateGitCommands": 16,
+          "currentLaneOrder": "serial-first",
+          "executionOrder": "path-first",
+          "pathOverlap": 233722000,
+          "pathOverlapGitCommands": 19,
+          "sample": 8,
+          "serial": 192608166,
+          "serialGitCommands": 16
+        },
+        {
+          "candidate": 258545875,
+          "candidateGitCommands": 16,
+          "currentLaneOrder": "candidate-first",
+          "executionOrder": "current-first",
+          "pathOverlap": 235114042,
+          "pathOverlapGitCommands": 19,
+          "sample": 9,
+          "serial": 296984125,
+          "serialGitCommands": 16
+        },
+        {
+          "candidate": 178226834,
+          "candidateGitCommands": 16,
+          "currentLaneOrder": "serial-first",
+          "executionOrder": "path-first",
+          "pathOverlap": 230595083,
+          "pathOverlapGitCommands": 19,
+          "sample": 10,
+          "serial": 197441501,
+          "serialGitCommands": 16
+        },
+        {
+          "candidate": 195429374,
+          "candidateGitCommands": 16,
+          "currentLaneOrder": "candidate-first",
+          "executionOrder": "current-first",
+          "pathOverlap": 292534125,
+          "pathOverlapGitCommands": 19,
+          "sample": 11,
+          "serial": 210343751,
+          "serialGitCommands": 16
+        },
+        {
+          "candidate": 218763209,
+          "candidateGitCommands": 16,
+          "currentLaneOrder": "serial-first",
+          "executionOrder": "path-first",
+          "pathOverlap": 227143875,
+          "pathOverlapGitCommands": 19,
+          "sample": 12,
+          "serial": 193818958,
+          "serialGitCommands": 16
+        },
+        {
+          "candidate": 169348749,
+          "candidateGitCommands": 16,
+          "currentLaneOrder": "candidate-first",
+          "executionOrder": "current-first",
+          "pathOverlap": 231654500,
+          "pathOverlapGitCommands": 19,
+          "sample": 13,
+          "serial": 189651416,
+          "serialGitCommands": 16
+        },
+        {
+          "candidate": 175386416,
+          "candidateGitCommands": 16,
+          "currentLaneOrder": "serial-first",
+          "executionOrder": "path-first",
+          "pathOverlap": 222198959,
+          "pathOverlapGitCommands": 19,
+          "sample": 14,
+          "serial": 209656333,
+          "serialGitCommands": 16
+        },
+        {
+          "candidate": 187094957,
+          "candidateGitCommands": 16,
+          "currentLaneOrder": "candidate-first",
+          "executionOrder": "current-first",
+          "pathOverlap": 224183417,
+          "pathOverlapGitCommands": 19,
+          "sample": 15,
+          "serial": 203054292,
+          "serialGitCommands": 16
+        },
+        {
+          "candidate": 219938250,
+          "candidateGitCommands": 16,
+          "currentLaneOrder": "serial-first",
+          "executionOrder": "path-first",
+          "pathOverlap": 205189917,
+          "pathOverlapGitCommands": 19,
+          "sample": 16,
+          "serial": 237439001,
+          "serialGitCommands": 16
+        },
+        {
+          "candidate": 224103083,
+          "candidateGitCommands": 16,
+          "currentLaneOrder": "candidate-first",
+          "executionOrder": "current-first",
+          "pathOverlap": 200697250,
+          "pathOverlapGitCommands": 19,
+          "sample": 17,
+          "serial": 202348959,
+          "serialGitCommands": 16
+        },
+        {
+          "candidate": 176941417,
+          "candidateGitCommands": 16,
+          "currentLaneOrder": "serial-first",
+          "executionOrder": "path-first",
+          "pathOverlap": 224074209,
+          "pathOverlapGitCommands": 19,
+          "sample": 18,
+          "serial": 184325419,
+          "serialGitCommands": 16
+        },
+        {
+          "candidate": 225201167,
+          "candidateGitCommands": 16,
+          "currentLaneOrder": "candidate-first",
+          "executionOrder": "current-first",
+          "pathOverlap": 244133793,
+          "pathOverlapGitCommands": 19,
+          "sample": 19,
+          "serial": 199084042,
+          "serialGitCommands": 16
+        },
+        {
+          "candidate": 210206417,
+          "candidateGitCommands": 16,
+          "currentLaneOrder": "serial-first",
+          "executionOrder": "path-first",
+          "pathOverlap": 215601210,
+          "pathOverlapGitCommands": 19,
+          "sample": 20,
+          "serial": 230105792,
+          "serialGitCommands": 16
+        },
+        {
+          "candidate": 220367416,
+          "candidateGitCommands": 16,
+          "currentLaneOrder": "candidate-first",
+          "executionOrder": "current-first",
+          "pathOverlap": 316759084,
+          "pathOverlapGitCommands": 19,
+          "sample": 21,
+          "serial": 187969125,
+          "serialGitCommands": 16
+        },
+        {
+          "candidate": 189812541,
+          "candidateGitCommands": 16,
+          "currentLaneOrder": "serial-first",
+          "executionOrder": "path-first",
+          "pathOverlap": 227108541,
+          "pathOverlapGitCommands": 19,
+          "sample": 22,
+          "serial": 190339250,
+          "serialGitCommands": 16
+        },
+        {
+          "candidate": 175487918,
+          "candidateGitCommands": 16,
+          "currentLaneOrder": "candidate-first",
+          "executionOrder": "current-first",
+          "pathOverlap": 215062000,
+          "pathOverlapGitCommands": 19,
+          "sample": 23,
+          "serial": 197761291,
+          "serialGitCommands": 16
+        },
+        {
+          "candidate": 187123875,
+          "candidateGitCommands": 16,
+          "currentLaneOrder": "serial-first",
+          "executionOrder": "path-first",
+          "pathOverlap": 224967209,
+          "pathOverlapGitCommands": 19,
+          "sample": 24,
+          "serial": 208637958,
+          "serialGitCommands": 16
+        },
+        {
+          "candidate": 208470627,
+          "candidateGitCommands": 16,
+          "currentLaneOrder": "candidate-first",
+          "executionOrder": "current-first",
+          "pathOverlap": 228896500,
+          "pathOverlapGitCommands": 19,
+          "sample": 25,
+          "serial": 190680500,
+          "serialGitCommands": 16
+        },
+        {
+          "candidate": 181200832,
+          "candidateGitCommands": 16,
+          "currentLaneOrder": "serial-first",
+          "executionOrder": "path-first",
+          "pathOverlap": 243084791,
+          "pathOverlapGitCommands": 19,
+          "sample": 26,
+          "serial": 189890125,
+          "serialGitCommands": 16
+        },
+        {
+          "candidate": 202887708,
+          "candidateGitCommands": 16,
+          "currentLaneOrder": "candidate-first",
+          "executionOrder": "current-first",
+          "pathOverlap": 210061209,
+          "pathOverlapGitCommands": 19,
+          "sample": 27,
+          "serial": 190196125,
+          "serialGitCommands": 16
+        },
+        {
+          "candidate": 227958542,
+          "candidateGitCommands": 16,
+          "currentLaneOrder": "serial-first",
+          "executionOrder": "path-first",
+          "pathOverlap": 237052375,
+          "pathOverlapGitCommands": 19,
+          "sample": 28,
+          "serial": 189486874,
+          "serialGitCommands": 16
+        },
+        {
+          "candidate": 189214958,
+          "candidateGitCommands": 16,
+          "currentLaneOrder": "candidate-first",
+          "executionOrder": "current-first",
+          "pathOverlap": 217821875,
+          "pathOverlapGitCommands": 19,
+          "sample": 29,
+          "serial": 203913833,
+          "serialGitCommands": 16
+        },
+        {
+          "candidate": 179257584,
+          "candidateGitCommands": 16,
+          "currentLaneOrder": "serial-first",
+          "executionOrder": "path-first",
+          "pathOverlap": 223398917,
+          "pathOverlapGitCommands": 19,
+          "sample": 30,
+          "serial": 191936625,
+          "serialGitCommands": 16
+        }
+      ]
+    }
+  ],
+  "status": "measurement-complete"
+}
