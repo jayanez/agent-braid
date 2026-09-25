@@ -131,7 +131,7 @@ class GitCounterexampleRealGitTests(unittest.TestCase):
             elapsed = time.monotonic() - started
         self.assertEqual(result["status"], "inconclusive")
         self.assertIn("deadline", result["reason"])
-        self.assertIn("terminated", result["reason"])
+        self.assertIn("signaled", result["reason"])
         # The supervisor's own grace window bounds how long the kill+wait can take.
         self.assertLess(elapsed, 0.01 + git_counterexamples.SUPERVISOR_GRACE_SECONDS + 10)
 
@@ -165,7 +165,7 @@ class GitCounterexampleSupervisorUnitTests(unittest.TestCase):
         self.assertTrue(outcome["timed_out"])
         self.assertLess(time.monotonic() - started, 15)
 
-    def test_timeout_kills_git_style_child_in_its_own_process_group(self):
+    def test_timeout_kills_git_child_confined_to_worker_group(self):
         with tempfile.TemporaryDirectory() as directory:
             marker = Path(directory) / "survived"
             child_code = (
@@ -173,23 +173,22 @@ class GitCounterexampleSupervisorUnitTests(unittest.TestCase):
                 f"pathlib.Path({str(marker)!r}).write_text('survived')"
             )
             worker_code = (
-                "import subprocess,time; "
+                "import subprocess,time,os; "
+                "from agent_braid.git_counterexamples import _confine_worker_children; "
+                "_confine_worker_children(); "
                 f"child=subprocess.Popen(['python3','-c',{child_code!r}], "
-                "start_new_session=True); print(child.pid,flush=True); time.sleep(30)"
+                "start_new_session=True); "
+                "print(child.pid,os.getpgid(child.pid),os.getpgrp(),flush=True); "
+                "time.sleep(30)"
             )
-            outcome = _run_supervised(["python3", "-c", worker_code], b"", 0.2)
+            outcome = _run_supervised(["python3", "-c", worker_code], b"", 0.6)
             self.assertTrue(outcome["timed_out"])
-            child_pid = int(outcome["stdout"].strip())
-            try:
-                time.sleep(1.2)
-                self.assertFalse(marker.exists(), "child in a separate Git-style group survived")
-            finally:
-                try:
-                    os.killpg(child_pid, signal.SIGKILL)
-                except ProcessLookupError:
-                    pass
+            _child_pid, child_group, worker_group = map(int, outcome["stdout"].split())
+            self.assertEqual(child_group, worker_group)
+            time.sleep(1.2)
+            self.assertFalse(marker.exists(), "grouped Git child survived timeout")
 
-    def test_exited_worker_cannot_orphan_registered_git_child_group(self):
+    def test_exited_worker_cannot_orphan_grouped_git_child(self):
         with tempfile.TemporaryDirectory() as directory:
             marker = Path(directory) / "survived"
             child_code = (
@@ -198,40 +197,33 @@ class GitCounterexampleSupervisorUnitTests(unittest.TestCase):
             )
             worker_code = (
                 "import subprocess,os; "
-                "from agent_braid.git_counterexamples import _process_identity; "
+                "from agent_braid.git_counterexamples import _confine_worker_children; "
+                "_confine_worker_children(); "
                 f"child=subprocess.Popen(['python3','-c',{child_code!r}], "
                 "start_new_session=True); "
-                "f=open(os.environ['AGENT_BRAID_REDUCER_CHILD_REGISTRY'],'a'); "
-                "f.write(str(child.pid)+' '+_process_identity(child.pid)+'\\n'); "
-                "f.close(); print(child.pid,flush=True)"
+                "print(child.pid,os.getpgid(child.pid),os.getpgrp(),flush=True)"
             )
             outcome = _run_supervised(["python3", "-c", worker_code], b"", 0.6)
             self.assertTrue(outcome["timed_out"])
-            child_pid = int(outcome["stdout"].strip())
-            try:
-                time.sleep(1.2)
-                self.assertFalse(marker.exists(), "orphaned Git-style child survived")
-            finally:
-                try:
-                    os.killpg(child_pid, signal.SIGKILL)
-                except ProcessLookupError:
-                    pass
+            _child_pid, child_group, worker_group = map(int, outcome["stdout"].split())
+            self.assertEqual(child_group, worker_group)
+            time.sleep(1.2)
+            self.assertFalse(marker.exists(), "orphaned grouped Git child survived")
 
-    def test_stale_child_pid_identity_cannot_target_unrelated_session(self):
-        with tempfile.TemporaryDirectory() as directory:
-            registry = Path(directory) / "child-pids"
-            child = subprocess.Popen(["python3", "-c", "import time; time.sleep(5)"],
-                                     start_new_session=True)
-            try:
-                registry.write_text(f"{child.pid} stale-birth-token\n")
-                worker = subprocess.Popen(["python3", "-c", "pass"],
-                                          start_new_session=True)
-                worker.wait()
-                _terminate_process_group(worker, registry)
-                self.assertIsNone(child.poll(), "a stale registry entry killed another session")
-            finally:
-                os.killpg(child.pid, signal.SIGKILL)
-                child.wait()
+    def test_git_command_limit_kills_child_without_killing_worker_group(self):
+        worker_code = (
+            "import subprocess; "
+            "from agent_braid import git_process; "
+            "from agent_braid.git_counterexamples import _confine_worker_children; "
+            "_confine_worker_children(); "
+            "child=subprocess.Popen(['python3','-c','import time; time.sleep(30)'], "
+            "start_new_session=True); "
+            "git_process._kill(child); child.wait(); print('worker-alive',flush=True)"
+        )
+        outcome = _run_supervised(["python3", "-c", worker_code], b"", 5)
+        self.assertFalse(outcome["timed_out"])
+        self.assertEqual(outcome["returncode"], 0)
+        self.assertEqual(outcome["stdout"].strip(), b"worker-alive")
 
     def test_worker_does_not_inherit_unrelated_environment_values(self):
         command = ["python3", "-c", "import os; print(os.getenv('TEST_SECRET', 'absent'))"]
@@ -243,10 +235,21 @@ class GitCounterexampleSupervisorUnitTests(unittest.TestCase):
         outcome = _run_supervised(["agent-braid-definitely-not-a-real-binary"], b"", deadline_seconds=5)
         self.assertFalse(outcome["started"])
 
-    def test_terminate_process_group_is_idempotent_on_a_finished_process(self):
-        process = subprocess.Popen(["python3", "-c", "pass"], start_new_session=(os.name == "posix"))
-        process.wait()
-        _terminate_process_group(process)  # must not raise for an already-finished process
+    def test_terminate_worker_group_leaves_unrelated_session_running(self):
+        worker = subprocess.Popen(["python3", "-c", "import time; time.sleep(30)"],
+                                  start_new_session=True)
+        unrelated = subprocess.Popen(["python3", "-c", "import time; time.sleep(30)"],
+                                     start_new_session=True)
+        try:
+            _terminate_process_group(worker)
+            worker.wait(timeout=2)
+            self.assertIsNone(unrelated.poll())
+        finally:
+            if worker.poll() is None:
+                worker.kill()
+                worker.wait()
+            unrelated.kill()
+            unrelated.wait()
 
 
 class GitCounterexampleReductionAlgorithmTests(unittest.TestCase):
