@@ -25,7 +25,9 @@
     "010-risk-validation": {"milestone": "Cross-cutting governance", "state": "closed"},
     "011-adoption-pathline": {"milestone": "Cross-cutting governance", "state": "open"},
     "012-m2-git-replay-planner": {"milestone": "M2", "state": "open"},
-    "013-m2-real-workload": {"milestone": "M2", "state": "open"}
+    "013-m2-real-workload": {"milestone": "M2", "state": "open"},
+    "014-m2-observation-normalizer": {"milestone": "M2", "state": "open"},
+    "015-m2-counterexample-reducer": {"milestone": "M2", "state": "open"}
   },
   "task_state_overrides": {
     "SPEC-004/T005": "The frozen M0 task checkbox predates closure. Same-commit Codex and Claude reports are bound by specs/004-m0-closure/founder-review.json, which separately approves M0 closure; the published historical task file remains unchanged."
