@@ -14,7 +14,8 @@ from unittest.mock import patch
 
 from scripts.run_m2_performance_retest import (
     DECISION_PATH, INPUT_PATH, PROPOSAL_PATH, ROOT, RetestRejected,
-    classify_retest, complete_report, docker_phase, real_path_overlap_waves,
+    archive_tree_atomically, classify_retest, complete_report, docker_phase,
+    real_path_overlap_waves,
     phase_exit_code, run, validate_output_path, verify_decision,
 )
 
@@ -160,6 +161,20 @@ class M2PerformanceRetestTests(unittest.TestCase):
             self.assertEqual(protected.read_text(), "original")
             validate_output_path(root / "result.json", source, None)
             self.assertFalse((source / "rejection.json").exists())
+
+    def test_materialized_archive_replaces_hard_link_without_changing_source(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            protected = root / "protected.tar"
+            protected.write_bytes(b"original")
+            output = root / "candidate-0.tar"
+            os.link(protected, output)
+            with patch("scripts.run_m2_performance_retest.archive_tree") as archive:
+                archive.side_effect = lambda _scratch, _tree, path: path.write_bytes(b"archive")
+                archive_tree_atomically(root, "tree", output)
+            self.assertEqual(protected.read_bytes(), b"original")
+            self.assertEqual(output.read_bytes(), b"archive")
+            self.assertNotEqual(protected.stat().st_ino, output.stat().st_ino)
 
 
 if __name__ == "__main__":
