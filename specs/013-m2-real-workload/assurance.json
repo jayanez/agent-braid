@@ -1,15 +1,19 @@
 {
   "articles": [
     0,
+    2,
+    4,
+    6,
+    7,
+    9,
+    12,
     13,
     14,
-    17,
     19,
-    21,
-    23,
-    25
+    20,
+    23
   ],
-  "assumptions": "The committed radar records source claims honestly, the adoption registry is governance metadata, and later adapters can project into existing AIM without creating a parallel semantic model.",
+  "assumptions": "Registered source commits are reviewable Git objects; static preflight cannot prove PR approval, complete effects, or command safety.",
   "authority_snapshot": {
     "commit": null,
     "hashes": {
@@ -62,127 +66,98 @@
     },
     "mode": "current"
   },
-  "compatibility": "No change to Constitution, AIM, certificates, assurance classes, analyzer report, CLI or runtime behavior.",
-  "domain": "Committed radar and adoption-track governance records in the public repository.",
+  "compatibility": "No change to existing AIM, analyzer, replay, T013 report or public CLI contracts. The proposed corpus manifest is internal and draft.",
+  "domain": "Two or three real Agent Braid workstream commits on one frozen develop base; finite private candidate and serial lanes.",
   "evidence_snapshot": {
     "commit": null,
     "mode": "current"
   },
-  "execution_contract": "Local dependency-free validation only; no source browsing, provider execution, network calls, writes to external systems, publication or execution authority.",
+  "execution_contract": "Preflight is read-only and non-authorizing. ADR 0015 is accepted for the profile only. Repository test execution is prohibited until the exact corpus, base, image digest and dependency set receive separate founder acceptance; later runs stay isolated, offline and non-promoting.",
   "human_review": "pending",
-  "hypotheses": "A staged adoption pathline can identify material capability gains without turning weekly surveillance into automatic implementation or overclaiming superiority.",
-  "observation_contract": "JSON records, source provenance, stage transitions, artifact existence, validator outputs and negative cases.",
+  "hypotheses": "Parallel preparation may reduce elapsed time on registered real workstreams without false admission under the reviewed finite observation contract; a negative result is valid.",
+  "observation_contract": "Tracked Git trees, immutable identities, source-ref freshness, bounded unit-test exit status and output, timing and resource metrics.",
   "references": [
+    "AGENTS.md",
     "CONSTITUTION.md",
     "GOVERNANCE.md",
-    "ARCHITECTURE.md",
     "ROADMAP.md",
-    "research/adoption/ADOPTION_PATHLINE.md",
-    "docs/strategy/ECOSYSTEM.md",
-    "docs/strategy/COMMUNITY.md",
-    "research/radar/README.md",
-    "research/radar/2026-09-18-m0.5.json",
-    "research/adoption/adoption-track.schema.json"
+    "docs/adr/0014-parallel-integration-contract.md",
+    "docs/adr/0015-real-repository-validation-profile.md",
+    "specs/013-m2-real-workload/adr-0015-founder-decision.json",
+    "docs/architecture/PARALLEL_INTEGRATION.md",
+    "specs/012-m2-git-replay-planner/spec.md"
   ],
   "requirements": [
     {
       "id": "REQ-001",
       "scenarios": [
         {
-          "given": "A radar candidate is considered for project work",
-          "id": "SC-037",
+          "given": "Two distinct, registered descendant workstream commits share a pinned develop base",
+          "id": "SC-043",
           "obtained_evidence": [],
-          "planned_evidence": "Run the seeded registry and missing-field tests",
-          "test_file": "tests/test_adoption_pathline.py",
-          "test_name": "AdoptionPathlineTests.test_seeded_registry_is_valid_and_has_no_adoption",
-          "then": "It contains a stable track, stage, owner history, artifacts, evidence plan and next decision",
-          "when": "The adoption registry is validated"
+          "planned_evidence": "Executed test and, after approval, registered real-workload clean-room report; skipped future-stage tests remain pending.",
+          "test_file": "tests/test_real_workload_manifest.py",
+          "test_name": "RealWorkloadManifestTests.test_binds_distinct_descendant_commits_without_execution",
+          "then": "It binds identities and reports no execution or source mutation",
+          "when": "The read-only corpus preflight runs"
+        },
+        {
+          "given": "The base moved or an input is missing, duplicate or unsupported",
+          "id": "SC-044",
+          "obtained_evidence": [],
+          "planned_evidence": "Executed test and, after approval, registered real-workload clean-room report; skipped future-stage tests remain pending.",
+          "test_file": "tests/test_real_workload_manifest.py",
+          "test_name": "RealWorkloadManifestTests.test_rejects_stale_base_and_missing_commits",
+          "then": "It rejects the corpus before experiment execution",
+          "when": "The read-only corpus preflight runs"
         }
       ],
-      "text": "Every material radar signal has a stable adoption track and next decision before implementation work can be created."
+      "text": "Register immutable real workstream sources and fail closed on ambiguous or stale Git inputs."
     },
     {
       "id": "REQ-002",
       "scenarios": [
         {
-          "given": "A candidate track claims a material gain",
-          "id": "SC-038",
+          "given": "The founder separately accepted the exact compatible real corpus, base, image and dependency set under the accepted profile",
+          "id": "SC-045",
           "obtained_evidence": [],
-          "planned_evidence": "Run the missing differentiation metric negative test",
-          "test_file": "tests/test_adoption_pathline.py",
-          "test_name": "AdoptionPathlineTests.test_rejects_missing_differentiation_metric",
-          "then": "Missing metrics or hypotheses are rejected",
-          "when": "Its differentiation record is validated"
+          "planned_evidence": "Executed test and, after approval, registered real-workload clean-room report; skipped future-stage tests remain pending.",
+          "test_file": "tests/test_real_workload_manifest.py",
+          "test_name": "RealWorkloadManifestTests.test_candidate_and_serial_project_validation",
+          "then": "Both Git trees and separate test outcomes are reported",
+          "when": "Candidate and serial private lanes run the pinned unit-test command"
+        },
+        {
+          "given": "A stale base, test failure, undeclared effect, resource breach or missing lane occurs",
+          "id": "SC-046",
+          "obtained_evidence": [],
+          "planned_evidence": "Executed test and, after approval, registered real-workload clean-room report; skipped future-stage tests remain pending.",
+          "test_file": "tests/test_real_workload_manifest.py",
+          "test_name": "RealWorkloadManifestTests.test_project_validation_fails_closed",
+          "then": "The result is rejected or inconclusive without unsafe admission",
+          "when": "The isolated experiment attempts validation"
         }
       ],
-      "text": "A candidate beyond triage states a baseline, alternative, measurable capability delta and falsifiable hypothesis."
+      "text": "After separate founder approval of the exact corpus, base, image and dependency set, compare isolated candidate and serial project validation under the accepted command profile."
     },
     {
       "id": "REQ-003",
       "scenarios": [
         {
-          "given": "A track has a recorded stage history",
-          "id": "SC-039",
+          "given": "A real corpus and negative controls have reproducible serial and parallel observations",
+          "id": "SC-047",
           "obtained_evidence": [],
-          "planned_evidence": "Run transition and negative-outcome tests",
-          "test_file": "tests/test_adoption_pathline.py",
-          "test_name": "AdoptionPathlineTests.test_rejects_backward_stage_history",
-          "then": "Backward transitions fail while research-only negative outcomes remain valid",
-          "when": "The pathline is validated"
+          "planned_evidence": "Executed test and, after approval, registered real-workload clean-room report; skipped future-stage tests remain pending.",
+          "test_file": "tests/test_real_workload_manifest.py",
+          "test_name": "RealWorkloadManifestTests.test_real_workload_comparison_and_claim",
+          "then": "The record binds baselines, costs, outcomes and executionAuthorization false",
+          "when": "The benchmark and evidence validator run"
         }
       ],
-      "text": "Stage transitions are conservative and permit negative or inconclusive outcomes."
-    },
-    {
-      "id": "REQ-004",
-      "scenarios": [
-        {
-          "given": "A seeded track describes a future adapter",
-          "id": "SC-040",
-          "obtained_evidence": [],
-          "planned_evidence": "Review the architecture pathline and seeded mapping fields",
-          "test_file": "tests/test_adoption_pathline.py",
-          "test_name": "AdoptionPathlineTests.test_seeded_registry_is_valid_and_has_no_adoption",
-          "then": "It names preservation, unknown handling and affected AIM artifacts without adding a provider dependency",
-          "when": "The governance record is inspected"
-        }
-      ],
-      "text": "Future provider evidence maps one-way into AIM and preserves uncertainty."
-    },
-    {
-      "id": "REQ-005",
-      "scenarios": [
-        {
-          "given": "A track is marked adopted",
-          "id": "SC-041",
-          "obtained_evidence": [],
-          "planned_evidence": "Run the adopted-without-feature negative test",
-          "test_file": "tests/test_adoption_pathline.py",
-          "test_name": "AdoptionPathlineTests.test_rejects_adopted_track_without_feature_reference",
-          "then": "A separate feature reference is required",
-          "when": "Its decision record is validated"
-        }
-      ],
-      "text": "Adoption cannot silently change a public contract, dependency, security boundary, runtime or scientific claim."
-    },
-    {
-      "id": "REQ-006",
-      "scenarios": [
-        {
-          "given": "The seeded tracks reference historical and current source records",
-          "id": "SC-042",
-          "obtained_evidence": [],
-          "planned_evidence": "Run registry validation and inspect the immutable seed record",
-          "test_file": "tests/test_adoption_pathline.py",
-          "test_name": "AdoptionPathlineTests.test_seeded_registry_is_valid_and_has_no_adoption",
-          "then": "No historical radar file is rewritten and each track retains its stage history and limits",
-          "when": "The registry is validated"
-        }
-      ],
-      "text": "Historical radar snapshots and prior adoption decisions remain auditable when a source changes."
+      "text": "Publish bounded empirical comparison with complete outcomes and no execution authorization."
     }
   ],
-  "scientific_limits": "The pathline does not prove market superiority, scientific novelty, production safety, general confluence, contextual equivalence or Yang-Baxter validity. It records source claims and bounded project evidence separately.",
-  "scope": "Radar-to-adoption governance registry, seeded candidate tracks, deterministic validation and negative tests.",
+  "scientific_limits": "Finite observed trees and test outcomes do not establish contextual equivalence, full effect discovery, general confluence, live-agent safety or production speedup.",
+  "scope": "A local, read-only experiment over registered Agent Braid Git workstream commits and a future pinned private test-command stage.",
   "stage": "draft"
 }

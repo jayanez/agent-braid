@@ -110,6 +110,12 @@ and fresh index, observing `tracked-tree-v1`. Preparation waves remain advisory;
 integration is serial and every plan has `executionAuthorization: false`. M2 stays
 open for order reduction, other workload adapters and an executable scheduler.
 
+The proposed next increment, [`013-m2-real-workload`](specs/013-m2-real-workload/spec.md),
+registers real Agent Braid workstream commits for a bounded private validation
+experiment. Its preflight is read-only; accepted ADR 0015 governs the profile,
+while repository-code execution awaits separate founder acceptance of the exact
+corpus, base, image and dependencies. Neither increment closes M2.
+
 Deliverables:
 
 - schedule enumerator and partial-order reducer;

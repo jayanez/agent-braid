@@ -237,7 +237,10 @@ class GitReplayTests(unittest.TestCase):
             "head": self.text(self.git(self.repo, "rev-parse", "HEAD")),
             "status": self.git(self.repo, "status", "--porcelain=v1", "--untracked-files=all"),
             "refs": self.git(self.repo, "show-ref"),
-            "objects": self.git(self.repo, "count-objects", "-v"),
+            "objects": sorted(self.git(
+                self.repo, "cat-file", "--batch-all-objects",
+                "--batch-check=%(objectname)",
+            ).splitlines()),
         }
         disjoint, _ = produce(self.request([self.left, self.right, self.third]))
         hunks, plan = produce(self.request([self.hunk_left, self.hunk_right]))
@@ -249,7 +252,10 @@ class GitReplayTests(unittest.TestCase):
             "head": self.text(self.git(self.repo, "rev-parse", "HEAD")),
             "status": self.git(self.repo, "status", "--porcelain=v1", "--untracked-files=all"),
             "refs": self.git(self.repo, "show-ref"),
-            "objects": self.git(self.repo, "count-objects", "-v"),
+            "objects": sorted(self.git(
+                self.repo, "cat-file", "--batch-all-objects",
+                "--batch-check=%(objectname)",
+            ).splitlines()),
         }
         self.assertEqual(after, before)
 
