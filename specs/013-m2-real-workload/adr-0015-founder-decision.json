@@ -14,7 +14,7 @@
       "sha256": "b4ac30643451bd73f7982951161679523dbf752eba2a8decf45ed656c9bfde0b"
     }
   ],
-  "decisionText": "Approve ADR 0015 as the M2 validation profile with its stated command, isolation and resource limits. Defer authorization to execute the experiment until separate approval of the exact reviewed workstream corpus, frozen base and image digest.",
+  "decisionText": "Approve ADR 0015 as the M2 validation profile with its stated command, isolation and resource limits. Defer authorization to execute the experiment until separate approval of the exact reviewed workstream corpus, frozen base, image digest and dependency set.",
   "scope": {
     "authorized": [
       "Use the accepted profile to prepare and review a real-workstream corpus.",

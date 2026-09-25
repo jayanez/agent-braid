@@ -114,7 +114,7 @@ The proposed next increment, [`013-m2-real-workload`](specs/013-m2-real-workload
 registers real Agent Braid workstream commits for a bounded private validation
 experiment. Its preflight is read-only; accepted ADR 0015 governs the profile,
 while repository-code execution awaits separate founder acceptance of the exact
-corpus, base and image. Neither increment closes M2.
+corpus, base, image and dependencies. Neither increment closes M2.
 
 Deliverables:
 

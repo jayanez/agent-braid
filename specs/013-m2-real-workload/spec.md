@@ -7,8 +7,8 @@ source operations come from actual Agent Braid workstreams and a private
 candidate tree is subjected to a pinned project test command. The experiment
 does not run agents, merge to `develop`, promote refs or authorize concurrent
 integration. ADR 0015 is accepted as a validation profile only; the exact
-corpus, frozen base and image require a separate founder decision before any
-repository-code command is run under it.
+corpus, frozen base, image digest and dependency set require a separate founder
+decision before any repository-code command is run under it.
 
 ## Requirements and scenarios
 
@@ -21,8 +21,8 @@ repository-code command is run under it.
   - **SC-044:** A moved base, unavailable commit, duplicate source, unsupported
     profile or wrong repository fails before experiment execution.
 - **REQ-002 — reviewed, isolated validation.** After separate founder acceptance
-  of the exact corpus, base and image under the accepted profile, compare
-  private candidate and serial lanes from the same base in the pinned Docker
+  of the exact corpus, base, image and dependencies under the accepted profile,
+  compare private candidate and serial lanes from the same base in the pinned Docker
   runtime. Run only the declared unit-test
   command with network and host writes disabled. Report both Git and test
   outcomes; any failed, incomplete or mismatched lane is inconclusive.

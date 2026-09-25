@@ -72,7 +72,7 @@
     "commit": null,
     "mode": "current"
   },
-  "execution_contract": "Preflight is read-only and non-authorizing. ADR 0015 is accepted for the profile only. Repository test execution is prohibited until the exact corpus, base and image digest receive separate founder acceptance; later runs stay isolated, offline and non-promoting.",
+  "execution_contract": "Preflight is read-only and non-authorizing. ADR 0015 is accepted for the profile only. Repository test execution is prohibited until the exact corpus, base, image digest and dependency set receive separate founder acceptance; later runs stay isolated, offline and non-promoting.",
   "human_review": "pending",
   "hypotheses": "Parallel preparation may reduce elapsed time on registered real workstreams without false admission under the reviewed finite observation contract; a negative result is valid.",
   "observation_contract": "Tracked Git trees, immutable identities, source-ref freshness, bounded unit-test exit status and output, timing and resource metrics.",
@@ -118,7 +118,7 @@
       "id": "REQ-002",
       "scenarios": [
         {
-          "given": "The founder separately accepted the exact compatible real corpus, base and image under the accepted profile",
+          "given": "The founder separately accepted the exact compatible real corpus, base, image and dependency set under the accepted profile",
           "id": "SC-045",
           "obtained_evidence": [],
           "planned_evidence": "Executed test and, after approval, registered real-workload clean-room report; skipped future-stage tests remain pending.",
@@ -138,7 +138,7 @@
           "when": "The isolated experiment attempts validation"
         }
       ],
-      "text": "After separate founder approval of the exact corpus, base and image, compare isolated candidate and serial project validation under the accepted command profile."
+      "text": "After separate founder approval of the exact corpus, base, image and dependency set, compare isolated candidate and serial project validation under the accepted command profile."
     },
     {
       "id": "REQ-003",

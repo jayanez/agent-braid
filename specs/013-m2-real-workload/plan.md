@@ -8,9 +8,9 @@
    This read-only preflight establishes Git identity and ancestry, not review
    approval or execution permission. Its negative tests cover stale and
    ambiguous inputs.
-3. Obtain separate founder acceptance of the exact corpus, base and image
-   digest under accepted ADR 0015 before adding the test-command execution
-   stage. Reuse the pinned T013 Docker base, then materialize candidate and
+3. Obtain separate founder acceptance of the exact corpus, base, image digest
+   and dependency set under accepted ADR 0015 before adding the test-command
+   execution stage. Reuse the pinned T013 Docker base, then materialize candidate and
    serial private trees in separate containers.
    Admit only the fixed `python -m unittest discover -s tests` command under
    the reviewed resource, network and filesystem policy.
