@@ -12,7 +12,7 @@ class TrackingTests(unittest.TestCase):
         self.assertEqual(13, sum(item["kind"] == "spec" for item in desired))
         self.assertEqual(107, sum(item["kind"] == "task" for item in desired))
         self.assertEqual(8, sum(item["state"] == "open" and item["kind"] == "task" for item in desired))
-        self.assertEqual({}, config["task_state_overrides"])
+        self.assertEqual({"SPEC-004/T005"}, set(config["task_state_overrides"]))
 
     def test_plan_is_empty_for_matching_relationships(self):
         config = {"milestones": {"M0": "description"}, "closed_milestones": []}

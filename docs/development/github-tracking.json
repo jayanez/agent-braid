@@ -27,7 +27,9 @@
     "012-m2-git-replay-planner": {"milestone": "M2", "state": "open"},
     "013-m2-real-workload": {"milestone": "M2", "state": "open"}
   },
-  "task_state_overrides": {},
+  "task_state_overrides": {
+    "SPEC-004/T005": "The frozen M0 task checkbox predates closure. Same-commit Codex and Claude reports are bound by specs/004-m0-closure/founder-review.json, which separately approves M0 closure; the published historical task file remains unchanged."
+  },
   "project_review_pending": [
     "SPEC-002",
     "SPEC-002/T006",

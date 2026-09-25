@@ -16,9 +16,11 @@ it does not establish scientific validity or grant human or founder approval.
   milestone and explicitly records the parent issue and milestone states. Closed parents may
   have an open follow-up task; this must not be silently inferred away.
 - Task state follows the source checkbox except for a documented override.
-  `SPEC-004/T005` is checked against the two same-commit agent reports bound
-  by `specs/004-m0-closure/founder-review.json` and the approved M0 closure;
-  this reconciles a historical source checkbox, not a new review decision.
+  `SPEC-004/T005` retains an unchecked checkbox in the frozen public export.
+  Its documented override cites the two same-commit agent reports bound by
+  `specs/004-m0-closure/founder-review.json` and the approved M0 closure;
+  this reconciles historical tracking without changing the published source
+  record or making a new review decision.
   `SPEC-011` T001–T007 are checked against [merged PR #3](https://github.com/jayanez/agent-braid/pull/3);
   T008 and human review remain open. Remove an override only when its checkbox
   and evidence agree. A newly checked task is a proposed issue-state change,
