@@ -64,7 +64,8 @@ same pinned, offline container limits.
 The optimized runner has **not** executed a new ADR 0015 real-workload
 experiment. A real-corpus comparison under the changed implementation or
 measurement order requires a separate founder decision that binds its source
-commit, command, image, dependency bytes and observation protocol. The
+commit, command, image, dependency bytes and observation protocol. The T003
+runner rejects this changed prototype under the old approval. The
 current two-workstream corpus has one candidate wave and one path-overlap
 wave; a scheduling advantage would need a separately reviewed workload and
 admission contract where those schedules can differ safely. External human
