@@ -1,0 +1,41 @@
+{
+  "recordVersion": "agent-braid-m2-t003-input-proposal-1",
+  "status": "pending-founder-decision",
+  "repository": "jayanez/agent-braid",
+  "targetRef": "refs/heads/develop",
+  "baseCommit": "f3c734a1f42d6d5962cfedc57d7f6c1efe40e0a6",
+  "workstreams": [
+    {
+      "instanceId": "m2-observation-normalizer",
+      "pullRequest": "https://github.com/jayanez/agent-braid/pull/137",
+      "sourceCommit": "58351f812614058e53a8ee6aef1dd458f1bb70fc",
+      "dependencies": []
+    },
+    {
+      "instanceId": "m2-counterexample-reducer",
+      "pullRequest": "https://github.com/jayanez/agent-braid/pull/138",
+      "sourceCommit": "083f1a390988a9527a5aaeb19133401243b1d714",
+      "dependencies": []
+    }
+  ],
+  "manifestFileSha256": "5bd3dbd8c1170d8b0a2498b3b6830177dc5476a5ab4f99cfed0052ea88192107",
+  "selectionFileSha256": "978a40379b049d023be95d8eae652d7bbd06ea07942ce5776d40d2b0ad0b9737",
+  "canonicalSelectionSha256": "1ea5bc98d0daccc841f0ffcc9554fb84a5468e26dc504548d5a39042866d63a9",
+  "validationProfile": "m2-real-read-only-v1",
+  "containerImage": {
+    "os": "linux",
+    "architecture": "arm64",
+    "id": "sha256:edddb1cbcbccb0e1af6505f9ff9938905da6f79303c97d1d12092ef61508f005"
+  },
+  "dependencyFilesSha256": {
+    "scripts/docker/t013/Dockerfile": "d96d3e097d01b98bb7cc40f5575cb0d1b7b23a4ae66a6882b41196b0284b12f5",
+    "scripts/docker/t013/apt-packages.lock": "db23b2947328c4407d0d055c4ef9081e584b0662ec0102a8b2d5281457bd335c",
+    "scripts/docker/t013/constraints-t013.txt": "b12b51229e18fa1ca35c7bd1404f2359debb1d877203c1e37bab685111accad5",
+    "requirements-dev.txt": "24a8316f230a1f408b5c953bf0217968f7ccab452594e774a1771ae28df86448",
+    "requirements-speckit.txt": "daa35d1e5551fba64cada1787b2646c283f9fb56ddc00b48f9b596b68134c392"
+  },
+  "allowlistedCommand": "python -m unittest discover -s tests",
+  "executionAuthorization": false,
+  "projectValidationExecuted": false,
+  "externalHumanValidation": "pending"
+}

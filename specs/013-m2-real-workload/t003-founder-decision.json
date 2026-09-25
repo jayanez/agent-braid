@@ -1,0 +1,15 @@
+{
+  "recordVersion": "agent-braid-m2-t003-founder-decision-1",
+  "reviewedAt": "2026-09-25",
+  "reviewer": {"name": "Juan Antonio Yáñez García", "role": "founder"},
+  "decision": "accepted-exact-experiment",
+  "decisionText": "OK apruebo y autorizo ese experimento",
+  "reviewedProposalSha256": "daf7f83243809a6f04e419659935c6dbc9a345cd196e0c3555a25b57778b9e0a",
+  "reviewedProposalPath": "specs/013-m2-real-workload/t003-founder-proposal.md",
+  "reviewedInputFileSha256": "f9827da49b59fac594be0760f692dce2168607370be10d12bf58c217bf97f388",
+  "approvedInputsPath": "specs/013-m2-real-workload/m2-t003-inputs.json",
+  "scope": "Implement and run the ADR 0015 experiment only for the exact corpus, base, image, dependency bytes, command and limits in the approved input file.",
+  "executionAuthorization": false,
+  "externalHumanValidation": "pending",
+  "m2Closure": false
+}
