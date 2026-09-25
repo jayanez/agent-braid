@@ -1,0 +1,43 @@
+{
+  "recordVersion": "agent-braid-m2-performance-retest-founder-review-1",
+  "feature": "M2 real-workload validation",
+  "reviewedAt": "2026-09-26",
+  "reviewedPullRequest": "https://github.com/jayanez/agent-braid/pull/142",
+  "reviewedCommit": "520f90566c900920381cbaec39a514eb1641868f",
+  "reviewer": {
+    "name": "Juan Antonio Yáñez García",
+    "role": "founder"
+  },
+  "conflictsOfInterest": "The founder is the project maintainer. This is an internal founder review, not independent external validation.",
+  "decision": "approved-internal-result-review",
+  "decisionText": "Apruebo la revisión interna del retest M2 de la PR #142 en el commit 520f905. Acepto la evidencia de mejora reproducible en el corpus y condiciones registrados, incluida la equivalencia de árboles y los controles de seguridad. Mantengo documentado el primer intento incompleto. La validación humana externa y el cierre de M2 siguen pendientes.",
+  "rationale": "The two registered 30-pair batches met the median and bootstrap gates against serial preparation and the timed path-overlap baseline. All 60 pairs produced the same tracked tree with zero unsafe admissions and unchanged source fingerprints; four isolated test lanes passed. The earlier incomplete attempt remains excluded from the accepted result.",
+  "reviewedArtifacts": [
+    {
+      "path": "docs/experiments/M2_REAL_CORPUS_RETEST_RESULT.md",
+      "sha256AtReviewedCommit": "1aa0e64aca252e9c61e5a3e93df9d4bad57b53a7f626e9b21139bb5ffe60c338"
+    },
+    {
+      "path": "docs/experiments/evidence/m2-real-corpus-performance-retest.json",
+      "sha256AtReviewedCommit": "0b3b5c3496bcc9de9d6c324d3ca2765fbad19868755f89e5a8f5253a4f0e962f"
+    },
+    {
+      "path": "docs/experiments/evidence/m2-real-corpus-performance-attempt-1-batch.json",
+      "sha256AtReviewedCommit": "a444c7501550132afa90824d0f054e25c557acb08d8bbfc5deda00a404e1c3f3"
+    },
+    {
+      "path": "docs/experiments/evidence/m2-real-corpus-performance-attempt-1-result.json",
+      "sha256AtReviewedCommit": "a18cb9458482a2d40344ccc6e1c58e93596f3c7e8be5997601b178108e184e00"
+    }
+  ],
+  "independentValidation": "pending",
+  "externalHumanValidation": "pending",
+  "mergeAuthorization": false,
+  "m2Closure": false,
+  "limits": [
+    "Approval applies only to the reviewed commit and registered corpus, code, image, command, limits and tracked-tree observation contract.",
+    "The first incomplete attempt is preserved and excluded from the accepted two-batch result.",
+    "Finite tracked-tree and unit-test observations do not establish general confluence, live-agent safety or universal performance improvement.",
+    "Agent code review and passing CI do not constitute independent human validation."
+  ]
+}

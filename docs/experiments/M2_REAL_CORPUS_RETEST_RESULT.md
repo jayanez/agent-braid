@@ -1,7 +1,10 @@
 # M2 real-corpus performance retest
 
-**Status:** Completed finite experiment; internal result review and external
-human validation pending. This result does not close M2 or promote a ref.
+**Status:** Completed finite experiment. The founder accepted its bounded
+[internal result review](../../specs/013-m2-real-workload/m2-retest-founder-review.json)
+at PR #142 commit `520f90566c900920381cbaec39a514eb1641868f`.
+Independent external human validation remains pending. This result does not
+close M2 or promote a ref.
 
 The founder accepted the exact [PR #141 proposal](M2_REAL_CORPUS_RETEST_PROPOSAL.md)
 at `87640e950d0ac3231a93446225ef7608ebe3d980`; the
@@ -66,5 +69,5 @@ This is empirical evidence for two registered Agent Braid workstream commits on
 one pinned machine/image and one tracked-tree observation contract. Static
 declared footprints and passing unit tests cannot establish all runtime effects,
 general confluence, live-agent safety or a universal speedup. Review of the
-new result is internal until separately accepted; independent external
+new result is accepted as internal evidence only; independent external
 validation and M2 closure remain pending.
