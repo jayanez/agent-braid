@@ -310,6 +310,14 @@ def classify_retest(batches: list[dict], materialized: dict,
     return "completed", None
 
 
+def phase_exit_code(status: str, internal_phase: str | None) -> int:
+    if internal_phase == "batch":
+        return 0 if status == "measurement-complete" else 1
+    if internal_phase == "materialize":
+        return 0 if status == "completed" else 1
+    return 0 if status in {"completed", "negative-performance"} else 1
+
+
 def run(repository: Path, output: Path) -> dict:
     decision, proposal, _ = verify_decision()
     require(output.parent.is_dir() and not output.is_symlink(),
@@ -415,7 +423,7 @@ def main() -> int:
     args.output.write_text(json.dumps(report, sort_keys=True, indent=2) + "\n")
     print(json.dumps({"status": report["status"], "reason": report.get("reason"),
                       "output": str(args.output)}, sort_keys=True))
-    return 0 if report["status"] in {"completed", "negative-performance"} else 1
+    return phase_exit_code(report["status"], args.internal_phase)
 
 
 if __name__ == "__main__":
