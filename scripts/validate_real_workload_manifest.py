@@ -18,6 +18,7 @@ import subprocess
 OID = re.compile(r"[0-9a-f]{40}\Z")
 PR_URL = re.compile(r"https://github\.com/jayanez/agent-braid/pull/[1-9][0-9]*\Z")
 VERSION = "0.1.0-draft"
+PUBLIC_ROOT = "9b84467d54444138db8c000f442d9aea6040cab2"
 
 
 class InvalidRealWorkloadManifest(ValueError):
@@ -46,7 +47,7 @@ def _git(repository: Path, *args: str, allow_failure: bool = False) -> str:
     return result.stdout.decode("ascii", "strict").strip() if result.returncode == 0 else ""
 
 
-def validate_manifest(value: object, repository: Path) -> dict:
+def validate_manifest(value: object, repository: Path, *, expected_public_root: str = PUBLIC_ROOT) -> dict:
     """Validate identity and ancestry; return a non-authorizing preflight result."""
     _require(isinstance(value, dict), "manifest must be an object")
     _require(set(value) == {"version", "repository", "baseCommit", "targetRef",
@@ -95,12 +96,19 @@ def validate_manifest(value: object, repository: Path) -> dict:
     }, "origin does not identify the public repository")
     _require(_git(repository, "rev-parse", "--verify", "refs/heads/develop^{commit}") == base,
              "target branch has moved from the pinned base")
+    _require(_git(repository, "rev-list", "--max-parents=0", base).splitlines()
+             == [expected_public_root], "base is not from the public repository root")
     for commit in sorted(commits):
         _require(_git(repository, "rev-parse", "--verify", f"{commit}^{{commit}}",
                       allow_failure=True) == commit,
                  "source commit is unavailable")
         _require(_git(repository, "merge-base", base, commit, allow_failure=True) == base,
                  "source commit does not descend from the pinned base")
+    ordered_commits = sorted(commits)
+    for index, left in enumerate(ordered_commits):
+        for right in ordered_commits[index + 1:]:
+            _require(_git(repository, "merge-base", left, right) not in {left, right},
+                     "source commits must be separate workstreams")
     return {
         "status": "preflight-valid",
         "baseCommit": base,

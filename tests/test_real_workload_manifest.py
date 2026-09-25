@@ -60,9 +60,12 @@ class RealWorkloadManifestTests(unittest.TestCase):
             ],
         }
 
+    def validate(self, manifest: dict) -> dict:
+        return validate_manifest(manifest, self.repository, expected_public_root=self.base)
+
     def test_binds_distinct_descendant_commits_without_execution(self) -> None:
         before = self.git("status", "--porcelain")
-        result = validate_manifest(self.manifest(), self.repository)
+        result = self.validate(self.manifest())
         self.assertEqual(result["status"], "preflight-valid")
         self.assertEqual(result["baseCommit"], self.base)
         self.assertFalse(result["executionAuthorization"])
@@ -76,11 +79,11 @@ class RealWorkloadManifestTests(unittest.TestCase):
         self.git("add", "moved.txt")
         self.git("commit", "-qm", "move develop")
         with self.assertRaisesRegex(InvalidRealWorkloadManifest, "target branch has moved"):
-            validate_manifest(manifest, self.repository)
+            self.validate(manifest)
         self.git("reset", "--hard", self.base)
         manifest["operations"][0]["sourceCommit"] = "f" * 40
         with self.assertRaisesRegex(InvalidRealWorkloadManifest, "source commit is unavailable"):
-            validate_manifest(manifest, self.repository)
+            self.validate(manifest)
 
     def test_rejects_unrelated_source_history(self) -> None:
         self.git("switch", "--orphan", "unrelated")
@@ -92,25 +95,37 @@ class RealWorkloadManifestTests(unittest.TestCase):
         manifest = self.manifest()
         manifest["operations"][0]["sourceCommit"] = unrelated
         with self.assertRaisesRegex(InvalidRealWorkloadManifest, "does not descend"):
-            validate_manifest(manifest, self.repository)
+            self.validate(manifest)
+
+    def test_rejects_linear_sources_declared_as_independent(self) -> None:
+        self.git("switch", "-qc", "linear", self.commits[0])
+        (self.repository / "linear.txt").write_text("depends on work 1\n")
+        self.git("add", "linear.txt")
+        self.git("commit", "-qm", "linear source")
+        linear = self.git("rev-parse", "HEAD")
+        self.git("switch", "-q", "develop")
+        manifest = self.manifest()
+        manifest["operations"][1]["sourceCommit"] = linear
+        with self.assertRaisesRegex(InvalidRealWorkloadManifest, "separate workstreams"):
+            self.validate(manifest)
 
     def test_rejects_ambiguous_or_authority_bearing_inputs(self) -> None:
         manifest = self.manifest()
         manifest["operations"][1]["sourceCommit"] = self.commits[0]
         with self.assertRaisesRegex(InvalidRealWorkloadManifest, "repeated"):
-            validate_manifest(manifest, self.repository)
+            self.validate(manifest)
         manifest = self.manifest()
         manifest["operations"][0]["dependencies"] = ["work-2"]
         with self.assertRaisesRegex(InvalidRealWorkloadManifest, "independent"):
-            validate_manifest(manifest, self.repository)
+            self.validate(manifest)
         manifest = self.manifest()
         manifest["validationProfile"] = "execute-and-push"
         with self.assertRaisesRegex(InvalidRealWorkloadManifest, "unsupported"):
-            validate_manifest(manifest, self.repository)
+            self.validate(manifest)
         manifest = self.manifest()
         self.git("remote", "set-url", "origin", "https://github.com/other/repository.git")
         with self.assertRaisesRegex(InvalidRealWorkloadManifest, "origin"):
-            validate_manifest(manifest, self.repository)
+            self.validate(manifest)
 
     def test_rejects_more_than_three_workstreams(self) -> None:
         manifest = self.manifest()
@@ -123,7 +138,11 @@ class RealWorkloadManifestTests(unittest.TestCase):
              "dependencies": []},
         ])
         with self.assertRaisesRegex(InvalidRealWorkloadManifest, "two or three"):
-            validate_manifest(manifest, self.repository)
+            self.validate(manifest)
+
+    def test_rejects_repository_with_public_origin_but_wrong_root(self) -> None:
+        with self.assertRaisesRegex(InvalidRealWorkloadManifest, "public repository root"):
+            validate_manifest(self.manifest(), self.repository)
 
     @unittest.skip("SC-045 awaits ADR 0015 acceptance and a registered real corpus")
     def test_candidate_and_serial_project_validation(self) -> None:
