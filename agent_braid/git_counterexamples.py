@@ -12,14 +12,12 @@ never a minimality claim. See specs/015-m2-counterexample-reducer/spec.md.
 
 from __future__ import annotations
 
-import ctypes
 import itertools
 import json
 import os
 import signal
 import subprocess
 import sys
-import tempfile
 import time
 from pathlib import Path
 
@@ -34,7 +32,6 @@ MAX_CANDIDATE_ATTEMPTS = 10
 DEADLINE_SECONDS = 120.0
 SUPERVISOR_GRACE_SECONDS = 5.0
 MAX_PAYLOAD_BYTES = 8 * 1024 * 1024
-_SYSTEM_POPEN = subprocess.Popen
 
 POSITIVE_STATUSES = frozenset({"reduced", "unchanged"})
 
@@ -42,7 +39,7 @@ REDUCTION_LIMITS = [
     "Minimality is only over enumerated 2-4 operation subsets in the fixed-patch, "
     "tracked-tree-v1 domain; it does not minimize patch hunks or infer hidden effects.",
     "A single monotonic 120-second deadline covers input verification and all "
-    "candidate subset attempts, enforced by terminating a private worker process group.",
+    "candidate subset attempts, enforced by signaling a private worker process group.",
     "At most ten dependency-closed candidate subsets are independently replayed and "
     "verified; dependency-incomplete subsets are discarded before replay and do not count.",
     "Each candidate subset replay keeps its own existing per-call Git budgets; this "
@@ -289,147 +286,19 @@ def _run_worker(
     )
 
 
-def _process_identity(pid: int) -> str | None:
-    """Bind a PID to its OS-reported birth, not just its reusable number."""
-    proc_stat = Path(f"/proc/{pid}/stat")
-    if Path("/proc").is_dir():
-        try:
-            # The second field is parenthesized and may contain spaces or ')'.
-            fields = proc_stat.read_text().rsplit(") ", 1)[1].split()
-            return f"linux:{fields[19]}"  # starttime, field 22
-        except (OSError, IndexError):
-            return None
-    if sys.platform != "darwin":
-        return None
-
-    class BSDInfo(ctypes.Structure):
-        _fields_ = [
-            ("flags", ctypes.c_uint32), ("status", ctypes.c_uint32),
-            ("xstatus", ctypes.c_uint32), ("pid", ctypes.c_uint32),
-            ("ppid", ctypes.c_uint32),
-            *[(name, ctypes.c_uint32) for name in
-              ("uid", "gid", "ruid", "rgid", "svuid", "svgid", "reserved")],
-            ("comm", ctypes.c_char * 16), ("name", ctypes.c_char * 32),
-            *[(name, ctypes.c_uint32) for name in
-              ("nfiles", "pgid", "pjobc", "tdev", "tpgid")],
-            ("nice", ctypes.c_int32),
-            ("start_sec", ctypes.c_uint64), ("start_usec", ctypes.c_uint64),
-        ]
-
+def _terminate_process_group(process: "subprocess.Popen[bytes]") -> None:
+    """Signal the private group while its live anchor reserves the group ID."""
     try:
-        function = ctypes.CDLL("libproc.dylib").proc_pidinfo
-        function.argtypes = [ctypes.c_int, ctypes.c_int, ctypes.c_uint64,
-                             ctypes.c_void_p, ctypes.c_int]
-        function.restype = ctypes.c_int
-        info = BSDInfo()
-        returned = function(pid, 3, 0, ctypes.byref(info), ctypes.sizeof(info))
-        if returned != ctypes.sizeof(info) or info.pid != pid:
-            return None
-        return f"darwin:{info.start_sec}:{info.start_usec}"
-    except (OSError, AttributeError):
-        return None
-
-
-def _registered_child_groups(registry_path: Path | None) -> set[int]:
-    """Resolve child sessions even after their worker has exited."""
-    if registry_path is None:
-        return set()
-    try:
-        lines = registry_path.read_text().splitlines()
-    except OSError:
-        return set()
-    groups = set()
-    for line in lines:
-        try:
-            pid_text, identity = line.split(" ", 1)
-            pid = int(pid_text)
-            if _process_identity(pid) != identity:
-                continue
-            group = os.getpgid(pid)
-        except (OSError, ValueError):
-            continue
-        # Git children create new sessions, so their PGID must equal their PID.
-        # A reused PID in an unrelated group must not be targeted.
-        if group == pid and group != os.getpgrp():
-            groups.add(group)
-    return groups
-
-
-def _terminate_process_group(
-    process: "subprocess.Popen[bytes]", registry_path: Path | None = None,
-) -> None:
-    child_groups: set[int] = set()
-    if os.name == "posix" and process.poll() is None:
-        try:
-            # Freeze the Python worker before listing its descendants. Existing
-            # Git commands create their own sessions in git_process.run_git.
-            os.killpg(process.pid, signal.SIGSTOP)
-            child_groups = _descendant_process_groups(process.pid)
-        except (ProcessLookupError, OSError):
-            pass
-    child_groups.update(_registered_child_groups(registry_path))
-    child_groups.discard(process.pid)
-    for group in sorted(child_groups):
-        try:
-            os.killpg(group, signal.SIGKILL)
-        except (ProcessLookupError, OSError):
-            pass
-    try:
-        if os.name == "posix":
-            # The worker may have exited while a descendant still holds a pipe.
-            # Its process group must be killed even after the leader exits.
+        if os.name == "posix" and process.poll() is None:
             os.killpg(process.pid, signal.SIGKILL)
         elif process.poll() is None:
             process.kill()
     except (ProcessLookupError, OSError):
         pass
-
-
-def _descendant_process_groups(root_pid: int) -> set[int]:
-    """Find Git child sessions of a frozen worker using local process metadata."""
-    parent_by_pid: dict[int, int] = {}
-    proc_root = Path("/proc")
-    if proc_root.is_dir():
-        for entry in proc_root.iterdir():
-            if not entry.name.isdigit():
-                continue
-            try:
-                lines = (entry / "status").read_text().splitlines()
-                parent = next(int(line.split()[1]) for line in lines
-                              if line.startswith("PPid:"))
-                parent_by_pid[int(entry.name)] = parent
-            except (OSError, StopIteration, ValueError, IndexError):
-                continue
-    else:
-        try:
-            table = subprocess.run(
-                ["/bin/ps", "-axo", "pid=,ppid="],
-                check=True, capture_output=True, timeout=2,
-                env={"PATH": "/usr/bin:/bin", "LC_ALL": "C"},
-            ).stdout.decode("ascii", "strict")
-            for line in table.splitlines():
-                pid, parent = (int(value) for value in line.split())
-                parent_by_pid[pid] = parent
-        except (OSError, subprocess.SubprocessError, UnicodeError, ValueError):
-            return set()
-    descendants: set[int] = set()
-    frontier = {root_pid}
-    while frontier:
-        children = {pid for pid, parent in parent_by_pid.items() if parent in frontier}
-        children -= descendants
-        if not children:
-            break
-        descendants.update(children)
-        frontier = children
-    groups = set()
-    for pid in descendants:
-        try:
-            group = os.getpgid(pid)
-        except OSError:
-            continue
-        if group not in {root_pid, os.getpgrp()}:
-            groups.add(group)
-    return groups
+    try:
+        process.wait(timeout=SUPERVISOR_GRACE_SECONDS)
+    except subprocess.TimeoutExpired:
+        pass
 
 
 def _run_supervised(command: list[str], payload_bytes: bytes, deadline_seconds: float) -> dict:
@@ -443,46 +312,57 @@ def _run_supervised(command: list[str], payload_bytes: bytes, deadline_seconds: 
         "GIT_CONFIG_GLOBAL": os.devnull,
         "GIT_TERMINAL_PROMPT": "0",
     }
-    with tempfile.TemporaryDirectory(prefix="agent-braid-reducer-worker-") as directory:
-        registry_path = Path(directory) / "child-pids"
-        registry_path.touch(mode=0o600)
-        worker_env["AGENT_BRAID_REDUCER_CHILD_REGISTRY"] = str(registry_path)
-        try:
-            process = subprocess.Popen(
-                command,
-                stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
-                start_new_session=(os.name == "posix"),
-                env=worker_env,
-            )
-        except OSError as exc:
-            return {"started": False, "timed_out": False, "returncode": None,
-                    "stdout": b"", "stderr": str(exc).encode("utf-8"), "elapsedSeconds": 0.0}
-        return _communicate_supervised(process, payload_bytes, deadline_seconds, registry_path)
+    try:
+        anchor = subprocess.Popen(
+            ["/bin/sleep", "180"], stdin=subprocess.DEVNULL,
+            stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
+            process_group=0, env=worker_env,
+        )
+    except OSError as exc:
+        return {"started": False, "timed_out": False, "returncode": None,
+                "stdout": b"", "stderr": str(exc).encode("utf-8"), "elapsedSeconds": 0.0}
+    try:
+        process = subprocess.Popen(
+            command,
+            stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+            process_group=anchor.pid,
+            env=worker_env,
+        )
+    except OSError as exc:
+        _terminate_process_group(anchor)
+        return {"started": False, "timed_out": False, "returncode": None,
+                "stdout": b"", "stderr": str(exc).encode("utf-8"), "elapsedSeconds": 0.0}
+    return _communicate_supervised(process, payload_bytes, deadline_seconds, anchor)
 
 
 def _communicate_supervised(
     process: "subprocess.Popen[bytes]", payload_bytes: bytes,
-    deadline_seconds: float, registry_path: Path,
+    deadline_seconds: float, anchor: "subprocess.Popen[bytes]",
 ) -> dict:
     started = time.monotonic()
+    group_signaled = False
     try:
-        stdout, stderr = process.communicate(input=payload_bytes, timeout=deadline_seconds)
-        timed_out = False
-    except subprocess.TimeoutExpired:
-        _terminate_process_group(process, registry_path)
         try:
-            stdout, stderr = process.communicate(timeout=SUPERVISOR_GRACE_SECONDS)
+            stdout, stderr = process.communicate(input=payload_bytes, timeout=deadline_seconds)
+            timed_out = False
         except subprocess.TimeoutExpired:
-            _terminate_process_group(process, registry_path)
-            for stream in (process.stdin, process.stdout, process.stderr):
-                if stream is not None:
-                    stream.close()
+            group_signaled = True
+            _terminate_process_group(anchor)
             try:
-                process.wait(timeout=SUPERVISOR_GRACE_SECONDS)
+                stdout, stderr = process.communicate(timeout=SUPERVISOR_GRACE_SECONDS)
             except subprocess.TimeoutExpired:
-                _terminate_process_group(process, registry_path)
-            stdout, stderr = b"", b"worker descendants retained output pipes after termination"
-        timed_out = True
+                for stream in (process.stdin, process.stdout, process.stderr):
+                    if stream is not None:
+                        stream.close()
+                try:
+                    process.wait(timeout=SUPERVISOR_GRACE_SECONDS)
+                except subprocess.TimeoutExpired:
+                    pass
+                stdout, stderr = b"", b"worker descendants retained output pipes after termination"
+            timed_out = True
+    finally:
+        if not group_signaled:
+            _terminate_process_group(anchor)
     elapsed = time.monotonic() - started
     return {"started": True, "timed_out": timed_out, "returncode": process.returncode,
             "stdout": stdout, "stderr": stderr, "elapsedSeconds": elapsed}
@@ -507,7 +387,12 @@ def reduce_counterexample(bundle: object, repository: object) -> dict:
                           0.0, DEADLINE_SECONDS, MAX_CANDIDATE_ATTEMPTS)
 
     command = [sys.executable, "-m", "agent_braid.git_counterexamples", "--worker"]
-    outcome = _run_supervised(command, payload_bytes, DEADLINE_SECONDS)
+    try:
+        outcome = _run_supervised(command, payload_bytes, DEADLINE_SECONDS)
+    except (OSError, subprocess.SubprocessError) as exc:
+        return _finalize(base, "inconclusive",
+                          f"reduction supervisor failed ({type(exc).__name__}: {exc})",
+                          0.0, DEADLINE_SECONDS, MAX_CANDIDATE_ATTEMPTS)
 
     if not outcome["started"]:
         return _finalize(base, "inconclusive",
@@ -517,7 +402,7 @@ def reduce_counterexample(bundle: object, repository: object) -> dict:
     if outcome["timed_out"]:
         return _finalize(base, "inconclusive",
                           f"the {DEADLINE_SECONDS:g}-second reduction deadline was exceeded; "
-                          "the private worker process group was terminated and awaited",
+                          "the private worker process group was signaled; the result is inconclusive",
                           outcome["elapsedSeconds"], DEADLINE_SECONDS, MAX_CANDIDATE_ATTEMPTS)
     if outcome["returncode"] != 0:
         return _finalize(base, "inconclusive",
@@ -535,48 +420,30 @@ def reduce_counterexample(bundle: object, repository: object) -> dict:
     return result
 
 
-def _register_worker_children() -> None:
-    """Record every child PID before replay can await it or exit unexpectedly."""
-    registry = os.environ.get("AGENT_BRAID_REDUCER_CHILD_REGISTRY")
-    if not registry:
-        raise OSError("reduction worker has no child-process registry")
-    original_popen = _SYSTEM_POPEN
+def _confine_worker_children() -> None:
+    """Keep all replay Git children in the worker group for race-free cleanup."""
+    original_popen = subprocess.Popen
 
-    def registered_popen(*args, **kwargs):
-        child = original_popen(*args, **kwargs)
-        try:
-            identity = _process_identity(child.pid)
-            if identity is None:
-                if child.poll() is None:
-                    raise OSError("cannot identify a running Git child")
-                return child
-            with open(registry, "a", encoding="ascii") as stream:
-                stream.write(f"{child.pid} {identity}\n")
-                stream.flush()
-        except OSError:
+    def grouped_popen(*args, **kwargs):
+        kwargs["start_new_session"] = False
+        return original_popen(*args, **kwargs)
+
+    subprocess.Popen = grouped_popen
+
+    def kill_child(process: "subprocess.Popen[bytes]") -> None:
+        # git_process normally kills a private child group. In this worker all
+        # children share our group, so a per-command limit kills only that child.
+        if process.poll() is None:
             try:
-                if os.name == "posix" and kwargs.get("start_new_session"):
-                    os.killpg(child.pid, signal.SIGKILL)
-                else:
-                    child.kill()
+                process.kill()
             except (ProcessLookupError, OSError):
                 pass
-            child.wait()
-            raise
-        return child
 
-    subprocess.Popen = registered_popen
+    git_process._kill = kill_child
 
 
 def _main_worker() -> int:
-    try:
-        _register_worker_children()
-    except OSError as exc:
-        result = _finalize(_base_result(None), "inconclusive",
-                           f"worker cannot register Git children ({exc})",
-                           0.0, DEADLINE_SECONDS, MAX_CANDIDATE_ATTEMPTS)
-        sys.stdout.write(json.dumps(result))
-        return 0
+    _confine_worker_children()
     try:
         raw = sys.stdin.buffer.read()
         payload = json.loads(raw.decode("utf-8"))
