@@ -17,6 +17,9 @@ also exercises six in-memory rejection controls: moved base, substituted source
 commit, duplicate PR, undeclared write, changed candidate hash and breached
 resource limit. A valid result is JSON on stdout with
 `status: proposal-preflight-valid` and `executionAuthorization: false`.
+The [preparation snapshot](evidence/m2-real-corpus-retest-read-only-preflight.json)
+records the checker commit, timestamp, observed refs and rejected controls. It
+expires as soon as any bound input or live ref changes.
 
 This is a preparation check. It does not run Git preparation or the project
 test command, and it does not authorize either one. The original negative T003
