@@ -1,0 +1,656 @@
+{
+  "approvedInputsSha256": "f9827da49b59fac594be0760f692dce2168607370be10d12bf58c217bf97f388",
+  "baseCommit": "f3c734a1f42d6d5962cfedc57d7f6c1efe40e0a6",
+  "baselines": {
+    "candidateGitWallNanoseconds": 201513958,
+    "candidateWaveCount": 1,
+    "pathOverlapWaveCount": 1,
+    "serialGitWallNanoseconds": 174989334,
+    "serialWaveCount": 2
+  },
+  "command": "python -m unittest discover -s tests",
+  "decisionSha256": "22061b62dfdd69fbfe0bd466d8d71fb264624512196712ffb9e7e2d656086372",
+  "dependencyFilesSha256": {
+    "requirements-dev.txt": "24a8316f230a1f408b5c953bf0217968f7ccab452594e774a1771ae28df86448",
+    "requirements-speckit.txt": "daa35d1e5551fba64cada1787b2646c283f9fb56ddc00b48f9b596b68134c392",
+    "scripts/docker/t013/Dockerfile": "d96d3e097d01b98bb7cc40f5575cb0d1b7b23a4ae66a6882b41196b0284b12f5",
+    "scripts/docker/t013/apt-packages.lock": "db23b2947328c4407d0d055c4ef9081e584b0662ec0102a8b2d5281457bd335c",
+    "scripts/docker/t013/constraints-t013.txt": "b12b51229e18fa1ca35c7bd1404f2359debb1d877203c1e37bab685111accad5"
+  },
+  "elapsedSeconds": 309.504158,
+  "executionAuthorization": false,
+  "experimentVersion": "agent-braid-m2-t003-v1",
+  "externalHumanValidation": "pending",
+  "footprintScope": "Static fixed-patch tracked-path reads and writes for each source commit relative to the frozen base. Does not assert complete agent-development, test-runtime, generated-file or external effects.",
+  "footprintsDynamicallyObserved": false,
+  "gitReports": [
+    {
+      "analysisDigest": "sha256:d213609bd98cab6d2f59dcb678b0d41c0d584b7afd631e94e74622da3add2c2d",
+      "baseCommit": "f3c734a1f42d6d5962cfedc57d7f6c1efe40e0a6",
+      "baseTree": "13946242fcc6309b0e9ef75869a7cbe5cd6847d9",
+      "candidateIntegration": {
+        "failure": null,
+        "finalTree": "fbc0d05bb42d2d94bb237d7f0b846457d0bd5940",
+        "status": "complete",
+        "steps": [
+          {
+            "operationId": "m2-counterexample-reducer",
+            "status": "merged",
+            "temporaryCommit": "33ead793fab4f83648037f27428d9c258f003745",
+            "tree": "b8aef4d88103ef3e0347fe8e7175e6b0768366ed"
+          },
+          {
+            "operationId": "m2-observation-normalizer",
+            "status": "merged",
+            "temporaryCommit": "d0df125a3fcd2698d05c147680808d0edf4584ad",
+            "tree": "fbc0d05bb42d2d94bb237d7f0b846457d0bd5940"
+          }
+        ]
+      },
+      "candidateWaves": [
+        [
+          "m2-counterexample-reducer",
+          "m2-observation-normalizer"
+        ]
+      ],
+      "comparison": {
+        "status": "match",
+        "treesEqual": true
+      },
+      "declaredTrackedTreeCheck": {
+        "expectedTree": null,
+        "status": "not-declared"
+      },
+      "executionAuthorization": false,
+      "footprintContract": "declared-static-read-write-and-shared-resource-v1",
+      "footprintsDynamicallyObserved": false,
+      "gitIntegrationPrototypeReportVersion": "0.1.0-alpha",
+      "limits": [
+        "Runs allowlisted Git plumbing only; no repository commands, tests, hooks, agents, network effects, or ref promotion.",
+        "Operation footprints are declared inputs and are not dynamically observed because repository code is never run.",
+        "Serial and candidate tree agreement covers this fixture protocol only; it does not establish semantic safety or production concurrency.",
+        "Temporary data is sampled every 50 ms; an in-flight write may overshoot before termination.",
+        "Each Git child is capped at 512 MiB address space; peak RSS is reported from the process child-usage counter.",
+        "The target ref is sampled at defined phase boundaries; a transient move and restore between samples may go undetected.",
+        "Patch preparation can run concurrently; candidate tree integration remains serial in this prototype."
+      ],
+      "metrics": {
+        "candidateCommitMaterializationGitCommands": 2,
+        "candidateCommitMaterializationGitUserCpuSeconds": 0.015942,
+        "candidateIntegrationGitCommands": 7,
+        "candidateIntegrationGitUserCpuSeconds": 0.057098,
+        "candidateIntegrationWallNanoseconds": 128642542,
+        "candidateOperationCommitMaterializationWallNanoseconds": 24196750,
+        "candidatePreparationGitCommands": 4,
+        "candidatePreparationGitUserCpuSeconds": 0.030433,
+        "candidatePreparationWallNanoseconds": 48674666,
+        "candidateTotalGitCommands": 13,
+        "candidateTotalWallNanoseconds": 201513958,
+        "capturedOutputBytes": 431453,
+        "gitChildSystemCpuSeconds": 0.37805,
+        "gitChildUserCpuSeconds": 0.887963,
+        "processPeakChildRssBytes": 29491200,
+        "processPeakChildRssScope": "process-lifetime peak; standalone CLI starts a fresh process",
+        "sampledPeakTemporaryDataBytes": 6509175,
+        "serialCommitMaterializationGitCommands": 2,
+        "serialCommitMaterializationGitUserCpuSeconds": 0.015649,
+        "serialIntegrationGitCommands": 7,
+        "serialIntegrationGitUserCpuSeconds": 0.053169,
+        "serialIntegrationWallNanoseconds": 94750042,
+        "serialOperationCommitMaterializationWallNanoseconds": 23930500,
+        "serialPreparationGitCommands": 4,
+        "serialPreparationGitUserCpuSeconds": 0.033634,
+        "serialPreparationWallNanoseconds": 56308792,
+        "serialTotalGitCommands": 13,
+        "serialTotalWallNanoseconds": 174989334,
+        "wallNanoseconds": 1928953375
+      },
+      "observationContract": "private-tracked-tree-v1",
+      "operationDeclarations": [
+        {
+          "actualChangedPaths": [
+            "agent_braid/git_replay.py",
+            "specs/014-m2-observation-normalizer/assurance.json",
+            "tests/test_git_replay.py"
+          ],
+          "attemptId": "t003-m2-observation-normalizer",
+          "dependencies": [],
+          "footprintComplete": true,
+          "operationId": "m2-observation-normalizer",
+          "patchDigest": "sha256:9d86eaa4f146adb08e8bda0f0654ae95c099b00a91974092bc7e94fa38845ffb",
+          "reads": [
+            "agent_braid/git_replay.py",
+            "specs/014-m2-observation-normalizer/assurance.json",
+            "tests/test_git_replay.py"
+          ],
+          "sharedResources": [],
+          "sourceCommit": "58351f812614058e53a8ee6aef1dd458f1bb70fc",
+          "writes": [
+            "agent_braid/git_replay.py",
+            "specs/014-m2-observation-normalizer/assurance.json",
+            "tests/test_git_replay.py"
+          ]
+        },
+        {
+          "actualChangedPaths": [
+            "agent_braid/git_counterexamples.py",
+            "specs/015-m2-counterexample-reducer/assurance.json",
+            "specs/015-m2-counterexample-reducer/quickstart.md",
+            "specs/015-m2-counterexample-reducer/tasks.md",
+            "tests/test_git_counterexamples.py"
+          ],
+          "attemptId": "t003-m2-counterexample-reducer",
+          "dependencies": [],
+          "footprintComplete": true,
+          "operationId": "m2-counterexample-reducer",
+          "patchDigest": "sha256:af0188709566b4c915e7142177abbd79a161f7249960772dd20346afef831f72",
+          "reads": [
+            "agent_braid/git_counterexamples.py",
+            "specs/015-m2-counterexample-reducer/assurance.json",
+            "specs/015-m2-counterexample-reducer/quickstart.md",
+            "specs/015-m2-counterexample-reducer/tasks.md",
+            "tests/test_git_counterexamples.py"
+          ],
+          "sharedResources": [],
+          "sourceCommit": "083f1a390988a9527a5aaeb19133401243b1d714",
+          "writes": [
+            "agent_braid/git_counterexamples.py",
+            "specs/015-m2-counterexample-reducer/assurance.json",
+            "specs/015-m2-counterexample-reducer/quickstart.md",
+            "specs/015-m2-counterexample-reducer/tasks.md",
+            "tests/test_git_counterexamples.py"
+          ]
+        }
+      ],
+      "operationOrder": [
+        "m2-counterexample-reducer",
+        "m2-observation-normalizer"
+      ],
+      "operationPreparations": [
+        {
+          "elapsedNanoseconds": 48377791,
+          "matchesSourceTree": true,
+          "operationId": "m2-counterexample-reducer",
+          "preparedTree": "b8aef4d88103ef3e0347fe8e7175e6b0768366ed",
+          "sourceTree": "b8aef4d88103ef3e0347fe8e7175e6b0768366ed",
+          "status": "complete"
+        },
+        {
+          "elapsedNanoseconds": 48347292,
+          "matchesSourceTree": true,
+          "operationId": "m2-observation-normalizer",
+          "preparedTree": "b16f489d71347bf3db20fe1ba53485c0b9dcd433",
+          "sourceTree": "b16f489d71347bf3db20fe1ba53485c0b9dcd433",
+          "status": "complete"
+        }
+      ],
+      "promotionPerformed": false,
+      "provenanceDigest": "sha256:89d6a35211dd080752481ee608ac69317427922795fee7e50e9e06f45072a471",
+      "reportDigest": "sha256:533bb39b7e8a25e82e4c672d24dd0b734582039c15cc675689788b4ea7322bd0",
+      "repositoryId": "sha256:06a9ead4bc73a4a1079d74ad3b328e0063ed19b2bd1bfac1539fefb0f56a642d",
+      "resourceLimits": {
+        "addressSpaceBytesPerGitChild": 536870912,
+        "aggregatePatchBytes": 262144,
+        "capturedOutputBytes": 8388608,
+        "changedPaths": 16,
+        "concurrentGitWorkers": 2,
+        "gitCommands": 128,
+        "operations": 4,
+        "perCommandOutputBytes": 2097152,
+        "temporaryDataBytes": 33554432,
+        "temporaryDataPollMilliseconds": 50,
+        "wallSeconds": 30.0
+      },
+      "serialPreparations": [
+        {
+          "elapsedNanoseconds": 33340125,
+          "matchesSourceTree": true,
+          "operationId": "m2-counterexample-reducer",
+          "preparedTree": "b8aef4d88103ef3e0347fe8e7175e6b0768366ed",
+          "sourceTree": "b8aef4d88103ef3e0347fe8e7175e6b0768366ed",
+          "status": "complete"
+        },
+        {
+          "elapsedNanoseconds": 22963875,
+          "matchesSourceTree": true,
+          "operationId": "m2-observation-normalizer",
+          "preparedTree": "b16f489d71347bf3db20fe1ba53485c0b9dcd433",
+          "sourceTree": "b16f489d71347bf3db20fe1ba53485c0b9dcd433",
+          "status": "complete"
+        }
+      ],
+      "serialReference": {
+        "failure": null,
+        "finalTree": "fbc0d05bb42d2d94bb237d7f0b846457d0bd5940",
+        "status": "complete",
+        "steps": [
+          {
+            "operationId": "m2-counterexample-reducer",
+            "status": "merged",
+            "temporaryCommit": "33ead793fab4f83648037f27428d9c258f003745",
+            "tree": "b8aef4d88103ef3e0347fe8e7175e6b0768366ed"
+          },
+          {
+            "operationId": "m2-observation-normalizer",
+            "status": "merged",
+            "temporaryCommit": "d0df125a3fcd2698d05c147680808d0edf4584ad",
+            "tree": "fbc0d05bb42d2d94bb237d7f0b846457d0bd5940"
+          }
+        ]
+      },
+      "sourceTargetRefMatchesPinnedBaseAtFinalCheck": true,
+      "status": "completed",
+      "targetCommit": "f3c734a1f42d6d5962cfedc57d7f6c1efe40e0a6",
+      "targetCommitAtFinalCheck": "f3c734a1f42d6d5962cfedc57d7f6c1efe40e0a6",
+      "targetRef": "refs/heads/develop",
+      "unsafeAdmissionCount": 0
+    },
+    {
+      "analysisDigest": "sha256:d213609bd98cab6d2f59dcb678b0d41c0d584b7afd631e94e74622da3add2c2d",
+      "baseCommit": "f3c734a1f42d6d5962cfedc57d7f6c1efe40e0a6",
+      "baseTree": "13946242fcc6309b0e9ef75869a7cbe5cd6847d9",
+      "candidateIntegration": {
+        "failure": null,
+        "finalTree": "fbc0d05bb42d2d94bb237d7f0b846457d0bd5940",
+        "status": "complete",
+        "steps": [
+          {
+            "operationId": "m2-counterexample-reducer",
+            "status": "merged",
+            "temporaryCommit": "33ead793fab4f83648037f27428d9c258f003745",
+            "tree": "b8aef4d88103ef3e0347fe8e7175e6b0768366ed"
+          },
+          {
+            "operationId": "m2-observation-normalizer",
+            "status": "merged",
+            "temporaryCommit": "d0df125a3fcd2698d05c147680808d0edf4584ad",
+            "tree": "fbc0d05bb42d2d94bb237d7f0b846457d0bd5940"
+          }
+        ]
+      },
+      "candidateWaves": [
+        [
+          "m2-counterexample-reducer",
+          "m2-observation-normalizer"
+        ]
+      ],
+      "comparison": {
+        "status": "match",
+        "treesEqual": true
+      },
+      "declaredTrackedTreeCheck": {
+        "expectedTree": null,
+        "status": "not-declared"
+      },
+      "executionAuthorization": false,
+      "footprintContract": "declared-static-read-write-and-shared-resource-v1",
+      "footprintsDynamicallyObserved": false,
+      "gitIntegrationPrototypeReportVersion": "0.1.0-alpha",
+      "limits": [
+        "Runs allowlisted Git plumbing only; no repository commands, tests, hooks, agents, network effects, or ref promotion.",
+        "Operation footprints are declared inputs and are not dynamically observed because repository code is never run.",
+        "Serial and candidate tree agreement covers this fixture protocol only; it does not establish semantic safety or production concurrency.",
+        "Temporary data is sampled every 50 ms; an in-flight write may overshoot before termination.",
+        "Each Git child is capped at 512 MiB address space; peak RSS is reported from the process child-usage counter.",
+        "The target ref is sampled at defined phase boundaries; a transient move and restore between samples may go undetected.",
+        "Patch preparation can run concurrently; candidate tree integration remains serial in this prototype."
+      ],
+      "metrics": {
+        "candidateCommitMaterializationGitCommands": 2,
+        "candidateCommitMaterializationGitUserCpuSeconds": 0.014054,
+        "candidateIntegrationGitCommands": 7,
+        "candidateIntegrationGitUserCpuSeconds": 0.051383,
+        "candidateIntegrationWallNanoseconds": 125034042,
+        "candidateOperationCommitMaterializationWallNanoseconds": 34052583,
+        "candidatePreparationGitCommands": 4,
+        "candidatePreparationGitUserCpuSeconds": 0.038701,
+        "candidatePreparationWallNanoseconds": 48281083,
+        "candidateTotalGitCommands": 13,
+        "candidateTotalWallNanoseconds": 207367708,
+        "capturedOutputBytes": 431453,
+        "gitChildSystemCpuSeconds": 0.294604,
+        "gitChildUserCpuSeconds": 0.797849,
+        "processPeakChildRssBytes": 37892096,
+        "processPeakChildRssScope": "process-lifetime peak; standalone CLI starts a fresh process",
+        "sampledPeakTemporaryDataBytes": 6509175,
+        "serialCommitMaterializationGitCommands": 2,
+        "serialCommitMaterializationGitUserCpuSeconds": 0.014089,
+        "serialIntegrationGitCommands": 7,
+        "serialIntegrationGitUserCpuSeconds": 0.048241,
+        "serialIntegrationWallNanoseconds": 95308041,
+        "serialOperationCommitMaterializationWallNanoseconds": 23003000,
+        "serialPreparationGitCommands": 4,
+        "serialPreparationGitUserCpuSeconds": 0.028747,
+        "serialPreparationWallNanoseconds": 66603500,
+        "serialTotalGitCommands": 13,
+        "serialTotalWallNanoseconds": 184914541,
+        "wallNanoseconds": 1947578167
+      },
+      "observationContract": "private-tracked-tree-v1",
+      "operationDeclarations": [
+        {
+          "actualChangedPaths": [
+            "agent_braid/git_replay.py",
+            "specs/014-m2-observation-normalizer/assurance.json",
+            "tests/test_git_replay.py"
+          ],
+          "attemptId": "t003-m2-observation-normalizer",
+          "dependencies": [],
+          "footprintComplete": true,
+          "operationId": "m2-observation-normalizer",
+          "patchDigest": "sha256:9d86eaa4f146adb08e8bda0f0654ae95c099b00a91974092bc7e94fa38845ffb",
+          "reads": [
+            "agent_braid/git_replay.py",
+            "specs/014-m2-observation-normalizer/assurance.json",
+            "tests/test_git_replay.py"
+          ],
+          "sharedResources": [],
+          "sourceCommit": "58351f812614058e53a8ee6aef1dd458f1bb70fc",
+          "writes": [
+            "agent_braid/git_replay.py",
+            "specs/014-m2-observation-normalizer/assurance.json",
+            "tests/test_git_replay.py"
+          ]
+        },
+        {
+          "actualChangedPaths": [
+            "agent_braid/git_counterexamples.py",
+            "specs/015-m2-counterexample-reducer/assurance.json",
+            "specs/015-m2-counterexample-reducer/quickstart.md",
+            "specs/015-m2-counterexample-reducer/tasks.md",
+            "tests/test_git_counterexamples.py"
+          ],
+          "attemptId": "t003-m2-counterexample-reducer",
+          "dependencies": [],
+          "footprintComplete": true,
+          "operationId": "m2-counterexample-reducer",
+          "patchDigest": "sha256:af0188709566b4c915e7142177abbd79a161f7249960772dd20346afef831f72",
+          "reads": [
+            "agent_braid/git_counterexamples.py",
+            "specs/015-m2-counterexample-reducer/assurance.json",
+            "specs/015-m2-counterexample-reducer/quickstart.md",
+            "specs/015-m2-counterexample-reducer/tasks.md",
+            "tests/test_git_counterexamples.py"
+          ],
+          "sharedResources": [],
+          "sourceCommit": "083f1a390988a9527a5aaeb19133401243b1d714",
+          "writes": [
+            "agent_braid/git_counterexamples.py",
+            "specs/015-m2-counterexample-reducer/assurance.json",
+            "specs/015-m2-counterexample-reducer/quickstart.md",
+            "specs/015-m2-counterexample-reducer/tasks.md",
+            "tests/test_git_counterexamples.py"
+          ]
+        }
+      ],
+      "operationOrder": [
+        "m2-counterexample-reducer",
+        "m2-observation-normalizer"
+      ],
+      "operationPreparations": [
+        {
+          "elapsedNanoseconds": 48089959,
+          "matchesSourceTree": true,
+          "operationId": "m2-counterexample-reducer",
+          "preparedTree": "b8aef4d88103ef3e0347fe8e7175e6b0768366ed",
+          "sourceTree": "b8aef4d88103ef3e0347fe8e7175e6b0768366ed",
+          "status": "complete"
+        },
+        {
+          "elapsedNanoseconds": 44423875,
+          "matchesSourceTree": true,
+          "operationId": "m2-observation-normalizer",
+          "preparedTree": "b16f489d71347bf3db20fe1ba53485c0b9dcd433",
+          "sourceTree": "b16f489d71347bf3db20fe1ba53485c0b9dcd433",
+          "status": "complete"
+        }
+      ],
+      "promotionPerformed": false,
+      "provenanceDigest": "sha256:89d6a35211dd080752481ee608ac69317427922795fee7e50e9e06f45072a471",
+      "reportDigest": "sha256:05c2a91900cd1df826e08b36f100aa4c37f203c4a99256eb4661c6046402aa2f",
+      "repositoryId": "sha256:06a9ead4bc73a4a1079d74ad3b328e0063ed19b2bd1bfac1539fefb0f56a642d",
+      "resourceLimits": {
+        "addressSpaceBytesPerGitChild": 536870912,
+        "aggregatePatchBytes": 262144,
+        "capturedOutputBytes": 8388608,
+        "changedPaths": 16,
+        "concurrentGitWorkers": 2,
+        "gitCommands": 128,
+        "operations": 4,
+        "perCommandOutputBytes": 2097152,
+        "temporaryDataBytes": 33554432,
+        "temporaryDataPollMilliseconds": 50,
+        "wallSeconds": 30.0
+      },
+      "serialPreparations": [
+        {
+          "elapsedNanoseconds": 33214500,
+          "matchesSourceTree": true,
+          "operationId": "m2-counterexample-reducer",
+          "preparedTree": "b8aef4d88103ef3e0347fe8e7175e6b0768366ed",
+          "sourceTree": "b8aef4d88103ef3e0347fe8e7175e6b0768366ed",
+          "status": "complete"
+        },
+        {
+          "elapsedNanoseconds": 33383417,
+          "matchesSourceTree": true,
+          "operationId": "m2-observation-normalizer",
+          "preparedTree": "b16f489d71347bf3db20fe1ba53485c0b9dcd433",
+          "sourceTree": "b16f489d71347bf3db20fe1ba53485c0b9dcd433",
+          "status": "complete"
+        }
+      ],
+      "serialReference": {
+        "failure": null,
+        "finalTree": "fbc0d05bb42d2d94bb237d7f0b846457d0bd5940",
+        "status": "complete",
+        "steps": [
+          {
+            "operationId": "m2-counterexample-reducer",
+            "status": "merged",
+            "temporaryCommit": "33ead793fab4f83648037f27428d9c258f003745",
+            "tree": "b8aef4d88103ef3e0347fe8e7175e6b0768366ed"
+          },
+          {
+            "operationId": "m2-observation-normalizer",
+            "status": "merged",
+            "temporaryCommit": "d0df125a3fcd2698d05c147680808d0edf4584ad",
+            "tree": "fbc0d05bb42d2d94bb237d7f0b846457d0bd5940"
+          }
+        ]
+      },
+      "sourceTargetRefMatchesPinnedBaseAtFinalCheck": true,
+      "status": "completed",
+      "targetCommit": "f3c734a1f42d6d5962cfedc57d7f6c1efe40e0a6",
+      "targetCommitAtFinalCheck": "f3c734a1f42d6d5962cfedc57d7f6c1efe40e0a6",
+      "targetRef": "refs/heads/develop",
+      "unsafeAdmissionCount": 0
+    }
+  ],
+  "image": "sha256:edddb1cbcbccb0e1af6505f9ff9938905da6f79303c97d1d12092ef61508f005",
+  "limits": [
+    "Finite static tracked-path and unit-test observation only.",
+    "No live agents, dynamic external-effect discovery or runtime admission.",
+    "Container test output digest and bounded tail retained; full output is ephemeral.",
+    "Source ref checks are snapshots and cannot detect transient move-and-restore."
+  ],
+  "m2Closure": false,
+  "manifestFileSha256": "5bd3dbd8c1170d8b0a2498b3b6830177dc5476a5ab4f99cfed0052ea88192107",
+  "negativeControls": {
+    "selection": [
+      "moved-base",
+      "substituted-source",
+      "duplicate-pr",
+      "undeclared-tracked-write"
+    ],
+    "stage": [
+      "missing-lane",
+      "failed-test",
+      "tree-mismatch",
+      "nonrepeatable-tree",
+      "remote-ref-moved"
+    ]
+  },
+  "privateTreeArchives": {
+    "0": {
+      "candidate": {
+        "bytes": 8396800,
+        "sha256": "f7f25d98710f473fb09c92423fde2489008f54031300ca0db02cbe2cb1b92f21",
+        "tree": "fbc0d05bb42d2d94bb237d7f0b846457d0bd5940"
+      },
+      "serial": {
+        "bytes": 8396800,
+        "sha256": "f7f25d98710f473fb09c92423fde2489008f54031300ca0db02cbe2cb1b92f21",
+        "tree": "fbc0d05bb42d2d94bb237d7f0b846457d0bd5940"
+      }
+    },
+    "1": {
+      "candidate": {
+        "bytes": 8396800,
+        "sha256": "dabe4df54a4aa058b00c73ed52fa725559c16d5af23aa79354df89e61882d943",
+        "tree": "fbc0d05bb42d2d94bb237d7f0b846457d0bd5940"
+      },
+      "serial": {
+        "bytes": 8396800,
+        "sha256": "dabe4df54a4aa058b00c73ed52fa725559c16d5af23aa79354df89e61882d943",
+        "tree": "fbc0d05bb42d2d94bb237d7f0b846457d0bd5940"
+      }
+    }
+  },
+  "promotionPerformed": false,
+  "reason": null,
+  "remoteRefsAfterGit": {
+    "refs/heads/014-m2-observation-normalizer": "58351f812614058e53a8ee6aef1dd458f1bb70fc",
+    "refs/heads/015-m2-counterexample-reducer": "083f1a390988a9527a5aaeb19133401243b1d714",
+    "refs/heads/develop": "f3c734a1f42d6d5962cfedc57d7f6c1efe40e0a6"
+  },
+  "remoteRefsBefore": {
+    "refs/heads/014-m2-observation-normalizer": "58351f812614058e53a8ee6aef1dd458f1bb70fc",
+    "refs/heads/015-m2-counterexample-reducer": "083f1a390988a9527a5aaeb19133401243b1d714",
+    "refs/heads/develop": "f3c734a1f42d6d5962cfedc57d7f6c1efe40e0a6"
+  },
+  "remoteRefsFinal": {
+    "refs/heads/014-m2-observation-normalizer": "58351f812614058e53a8ee6aef1dd458f1bb70fc",
+    "refs/heads/015-m2-counterexample-reducer": "083f1a390988a9527a5aaeb19133401243b1d714",
+    "refs/heads/develop": "f3c734a1f42d6d5962cfedc57d7f6c1efe40e0a6"
+  },
+  "resourceLimits": {
+    "capturedOutputBytesPerLane": 8388608,
+    "cpus": 2,
+    "hostWrites": false,
+    "memoryBytes": 2147483648,
+    "network": "none",
+    "pids": 512,
+    "secondsPerLane": 180
+  },
+  "selectionFileSha256": "978a40379b049d023be95d8eae652d7bbd06ea07942ce5776d40d2b0ad0b9737",
+  "status": "completed",
+  "testLanes": {
+    "candidate": [
+      {
+        "capturedOutputBytes": 391,
+        "capturedOutputSha256": "815ddc321e6834c28b9839b7447a87933063d2bd933fecf05bb5e96855933695",
+        "cgroupPeakMemoryBytes": 125165568,
+        "childSystemCpuSeconds": 10.927471,
+        "childUserCpuSeconds": 20.534881,
+        "command": "python -m unittest discover -s tests",
+        "containerExitCode": 0,
+        "containerWallSeconds": 75.990461,
+        "elapsedSeconds": 75.301284,
+        "exitCode": 0,
+        "expectedTree": "fbc0d05bb42d2d94bb237d7f0b846457d0bd5940",
+        "observedTree": "fbc0d05bb42d2d94bb237d7f0b846457d0bd5940",
+        "outputTail": null,
+        "outputTruncated": false,
+        "peakChildRssBytes": 49156096,
+        "reason": null,
+        "status": "passed",
+        "temporaryDataBytes": 16523044,
+        "testCount": 204,
+        "unexpectedWorktreeWrite": false
+      },
+      {
+        "capturedOutputBytes": 391,
+        "capturedOutputSha256": "2e2ac77ab7b8b46c5d16cbac06337a9e67d4c918295f786836c6b836349ac6bd",
+        "cgroupPeakMemoryBytes": 123523072,
+        "childSystemCpuSeconds": 10.861744,
+        "childUserCpuSeconds": 20.419458,
+        "command": "python -m unittest discover -s tests",
+        "containerExitCode": 0,
+        "containerWallSeconds": 76.002539,
+        "elapsedSeconds": 75.309289,
+        "exitCode": 0,
+        "expectedTree": "fbc0d05bb42d2d94bb237d7f0b846457d0bd5940",
+        "observedTree": "fbc0d05bb42d2d94bb237d7f0b846457d0bd5940",
+        "outputTail": null,
+        "outputTruncated": false,
+        "peakChildRssBytes": 46329856,
+        "reason": null,
+        "status": "passed",
+        "temporaryDataBytes": 16523044,
+        "testCount": 204,
+        "unexpectedWorktreeWrite": false
+      }
+    ],
+    "serial": [
+      {
+        "capturedOutputBytes": 391,
+        "capturedOutputSha256": "06acd0c353230f852af795719a0a1ceebb6091773ec552d94ea19d643c9b6a04",
+        "cgroupPeakMemoryBytes": 126951424,
+        "childSystemCpuSeconds": 10.693598,
+        "childUserCpuSeconds": 20.461537,
+        "command": "python -m unittest discover -s tests",
+        "containerExitCode": 0,
+        "containerWallSeconds": 76.336424,
+        "elapsedSeconds": 75.52157,
+        "exitCode": 0,
+        "expectedTree": "fbc0d05bb42d2d94bb237d7f0b846457d0bd5940",
+        "observedTree": "fbc0d05bb42d2d94bb237d7f0b846457d0bd5940",
+        "outputTail": null,
+        "outputTruncated": false,
+        "peakChildRssBytes": 49479680,
+        "reason": null,
+        "status": "passed",
+        "temporaryDataBytes": 16523044,
+        "testCount": 204,
+        "unexpectedWorktreeWrite": false
+      },
+      {
+        "capturedOutputBytes": 391,
+        "capturedOutputSha256": "d7edea7cea01c32a53f9324a87181830e818542a7093edb87a3c581e0f38f673",
+        "cgroupPeakMemoryBytes": 121257984,
+        "childSystemCpuSeconds": 10.571605,
+        "childUserCpuSeconds": 20.253963,
+        "command": "python -m unittest discover -s tests",
+        "containerExitCode": 0,
+        "containerWallSeconds": 75.395812,
+        "elapsedSeconds": 74.740066,
+        "exitCode": 0,
+        "expectedTree": "fbc0d05bb42d2d94bb237d7f0b846457d0bd5940",
+        "observedTree": "fbc0d05bb42d2d94bb237d7f0b846457d0bd5940",
+        "outputTail": null,
+        "outputTruncated": false,
+        "peakChildRssBytes": 48254976,
+        "reason": null,
+        "status": "passed",
+        "temporaryDataBytes": 16523044,
+        "testCount": 204,
+        "unexpectedWorktreeWrite": false
+      }
+    ]
+  },
+  "workstreams": [
+    {
+      "dependencies": [],
+      "instanceId": "m2-observation-normalizer",
+      "pullRequest": "https://github.com/jayanez/agent-braid/pull/137",
+      "sourceCommit": "58351f812614058e53a8ee6aef1dd458f1bb70fc"
+    },
+    {
+      "dependencies": [],
+      "instanceId": "m2-counterexample-reducer",
+      "pullRequest": "https://github.com/jayanez/agent-braid/pull/138",
+      "sourceCommit": "083f1a390988a9527a5aaeb19133401243b1d714"
+    }
+  ]
+}

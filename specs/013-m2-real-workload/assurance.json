@@ -90,7 +90,9 @@
     "specs/013-m2-real-workload/t003-founder-proposal.md",
     "specs/013-m2-real-workload/m2-t003-inputs.json",
     "specs/013-m2-real-workload/m2-corpus-manifest.json",
-    "specs/013-m2-real-workload/m2-corpus-selection.json"
+    "specs/013-m2-real-workload/m2-corpus-selection.json",
+    "specs/013-m2-real-workload/evidence/README.md",
+    "specs/013-m2-real-workload/evidence/reproduction.json"
   ],
   "requirements": [
     {
@@ -99,7 +101,15 @@
         {
           "given": "Two distinct, registered descendant workstream commits share a pinned develop base",
           "id": "SC-043",
-          "obtained_evidence": [],
+          "obtained_evidence": [
+            {
+              "command": "python3 scripts/validate_real_workload_manifest.py specs/013-m2-real-workload/m2-corpus-manifest.json --repository /tmp/agent-braid-m2-repro-cd14c50",
+              "limits": "Git identity and ancestry only; does not approve PRs or execute project code.",
+              "outcome": "preflight-valid; no project validation executed",
+              "path": "specs/013-m2-real-workload/m2-official-preflight.json",
+              "sha256": "9427bb42495008e58ab2960fa7fbd5eaa11da882af4442a9563ec151c015e677"
+            }
+          ],
           "planned_evidence": "Executed test and, after approval, registered real-workload clean-room report; skipped future-stage tests remain pending.",
           "test_file": "tests/test_real_workload_manifest.py",
           "test_name": "RealWorkloadManifestTests.test_binds_distinct_descendant_commits_without_execution",
@@ -109,7 +119,15 @@
         {
           "given": "The base moved or an input is missing, duplicate or unsupported",
           "id": "SC-044",
-          "obtained_evidence": [],
+          "obtained_evidence": [
+            {
+              "command": "/opt/homebrew/bin/python3.13 /Users/juanyanez/.codex/visualizations/2026/09/25/01a0d702-0202-7183-81d0-cee1a7d67ab6/verify_m2_corpus.py specs/013-m2-real-workload/m2-corpus-selection.json --repository /tmp/agent-braid-m2-repro-cd14c50",
+              "limits": "Static fixed-patch tracked-path footprints; no runtime or external effects observed.",
+              "outcome": "four negative selection controls rejected",
+              "path": "specs/013-m2-real-workload/evidence/cleanroom-preflight.json",
+              "sha256": "407982c18398540995a536dfb4ef3b81d41c2ab5549c9876bf8b2c93b513b431"
+            }
+          ],
           "planned_evidence": "Executed test and, after approval, registered real-workload clean-room report; skipped future-stage tests remain pending.",
           "test_file": "tests/test_real_workload_manifest.py",
           "test_name": "RealWorkloadManifestTests.test_rejects_stale_base_and_missing_commits",
@@ -125,7 +143,15 @@
         {
           "given": "The founder separately accepted the exact compatible real corpus, base, image and dependency set under the accepted profile",
           "id": "SC-045",
-          "obtained_evidence": [],
+          "obtained_evidence": [
+            {
+              "command": "/opt/homebrew/bin/python3.13 scripts/run_m2_real_workload.py --repository /tmp/agent-braid-m2-repro-cd14c50 --output /tmp/agent-braid-m2-cleanroom-cd14c50-with-history.json",
+              "limits": "Finite corpus and fixed unit-test command; no semantic or independent validation claim.",
+              "outcome": "two equal Git trees and four passing test lanes",
+              "path": "specs/013-m2-real-workload/evidence/cleanroom-complete.json",
+              "sha256": "96e11f103a5294abbbe67c392599a4aad24ba6de2b8182a96c5685b245352566"
+            }
+          ],
           "planned_evidence": "Executed test and, after approval, registered real-workload clean-room report; skipped future-stage tests remain pending.",
           "test_file": "tests/test_m2_real_workload.py",
           "test_name": "M2RealWorkloadTests.test_candidate_and_serial_project_validation",
@@ -135,7 +161,22 @@
         {
           "given": "A stale base, test failure, undeclared effect, resource breach or missing lane occurs",
           "id": "SC-046",
-          "obtained_evidence": [],
+          "obtained_evidence": [
+            {
+              "command": "/opt/homebrew/bin/python3.13 scripts/run_m2_real_workload.py --repository /tmp/agent-braid-m2-repro-cd14c50 --output /tmp/agent-braid-m2-cleanroom-cd14c50.json",
+              "limits": "Historical test prerequisite absent in first fresh clone; retained as an inconclusive run.",
+              "outcome": "inconclusive due missing historical PR #104 test ref; no unsafe admission",
+              "path": "specs/013-m2-real-workload/evidence/cleanroom-missing-history.json",
+              "sha256": "e9fb3f4646d3b460c7478be669e58fba418d9dc41374dad14ab33193b10862a5"
+            },
+            {
+              "command": "/opt/homebrew/bin/python3.13 scripts/run_m2_real_workload.py --repository /tmp/agent-braid-m2-repro-cd14c50 --output /tmp/agent-braid-m2-cleanroom-cd14c50-with-history.json",
+              "limits": "Fail-closed classifier tests are in the pr validation log; no general runtime safety claim.",
+              "outcome": "no observed stale base, tree mismatch, test failure or resource breach",
+              "path": "specs/013-m2-real-workload/evidence/cleanroom-complete.json",
+              "sha256": "96e11f103a5294abbbe67c392599a4aad24ba6de2b8182a96c5685b245352566"
+            }
+          ],
           "planned_evidence": "Executed test and, after approval, registered real-workload clean-room report; skipped future-stage tests remain pending.",
           "test_file": "tests/test_m2_real_workload.py",
           "test_name": "M2RealWorkloadTests.test_project_validation_fails_closed",
@@ -151,7 +192,15 @@
         {
           "given": "A real corpus and negative controls have reproducible serial and parallel observations",
           "id": "SC-047",
-          "obtained_evidence": [],
+          "obtained_evidence": [
+            {
+              "command": "/opt/homebrew/bin/python3.13 scripts/run_m2_real_workload.py --repository /tmp/agent-braid-m2-repro-cd14c50 --output /tmp/agent-braid-m2-cleanroom-cd14c50-with-history.json",
+              "limits": "No speedup shown; external human validation and M2 closure pending.",
+              "outcome": "bounded clean-room result and slower candidate Git preparation recorded",
+              "path": "specs/013-m2-real-workload/evidence/reproduction.json",
+              "sha256": "baf1c05f6348f5c70bc5710800290d249d7ad3ff3fe7366b245277ecc79d95f3"
+            }
+          ],
           "planned_evidence": "Executed test and, after approval, registered real-workload clean-room report; skipped future-stage tests remain pending.",
           "test_file": "tests/test_m2_real_workload.py",
           "test_name": "M2RealWorkloadTests.test_real_workload_comparison_and_claim",
@@ -164,5 +213,5 @@
   ],
   "scientific_limits": "Finite observed trees and test outcomes do not establish contextual equivalence, full effect discovery, general confluence, live-agent safety or production speedup.",
   "scope": "A local, bounded experiment over the exact T003 Agent Braid workstream commits and pinned private candidate and serial test lanes.",
-  "stage": "draft"
+  "stage": "validated"
 }
