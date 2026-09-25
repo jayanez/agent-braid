@@ -318,14 +318,24 @@ def phase_exit_code(status: str, internal_phase: str | None) -> int:
     return 0 if status in {"completed", "negative-performance"} else 1
 
 
-def run(repository: Path, output: Path) -> dict:
-    decision, proposal, _ = verify_decision()
+def validate_output_path(output: Path, repository: Path,
+                         internal_phase: str | None) -> None:
     require(output.parent.is_dir() and not output.is_symlink(),
             "explicit evidence artifact directory required")
-    target = output.resolve()
-    require(ROOT.resolve() not in (target, *target.parents)
-            and repository.resolve() not in (target, *target.parents),
-            "evidence must be outside the harness and source repositories")
+    if internal_phase:
+        require(output.parent == Path("/artifacts")
+                and Path("/artifacts") in output.resolve().parents,
+                "internal phase needs the designated artifact directory")
+    else:
+        target = output.resolve()
+        require(ROOT.resolve() not in (target, *target.parents)
+                and repository.resolve() not in (target, *target.parents),
+                "evidence must be outside the harness and source repositories")
+
+
+def run(repository: Path, output: Path) -> dict:
+    decision, proposal, _ = verify_decision()
+    validate_output_path(output, repository, None)
     started = time.monotonic()
     preflights = []
     batches = []
@@ -401,11 +411,12 @@ def main() -> int:
     args = parser.parse_args()
     repository = args.repository.resolve()
     try:
+        validate_output_path(args.output, repository, args.internal_phase)
+    except RetestRejected as exc:
+        parser.exit(1, f"M2 retest rejected: {exc}\n")
+    try:
         if args.internal_phase:
             _, proposal, selection = verify_decision()
-            require(str(args.output).startswith("/artifacts/")
-                    and args.output.parent == Path("/artifacts"),
-                    "internal phase needs the designated artifact directory")
             if args.internal_phase == "batch":
                 report = measure_batch(repository, proposal, selection, args.batch_index)
             else:
