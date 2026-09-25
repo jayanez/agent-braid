@@ -1,0 +1,62 @@
+{
+  "manifest": {
+    "version": "0.1.0-draft",
+    "repository": "jayanez/agent-braid",
+    "baseCommit": "f3c734a1f42d6d5962cfedc57d7f6c1efe40e0a6",
+    "targetRef": "refs/heads/develop",
+    "operations": [
+      {
+        "instanceId": "m2-observation-normalizer",
+        "sourceCommit": "58351f812614058e53a8ee6aef1dd458f1bb70fc",
+        "workstreamUrl": "https://github.com/jayanez/agent-braid/pull/137",
+        "dependencies": []
+      },
+      {
+        "instanceId": "m2-counterexample-reducer",
+        "sourceCommit": "083f1a390988a9527a5aaeb19133401243b1d714",
+        "workstreamUrl": "https://github.com/jayanez/agent-braid/pull/138",
+        "dependencies": []
+      }
+    ],
+    "validationProfile": "m2-real-read-only-v1"
+  },
+  "branches": {
+    "m2-observation-normalizer": "014-m2-observation-normalizer",
+    "m2-counterexample-reducer": "015-m2-counterexample-reducer"
+  },
+  "footprintScope": "Static fixed-patch tracked-path reads and writes for each source commit relative to the frozen base. Does not assert complete agent-development, test-runtime, generated-file or external effects.",
+  "footprints": {
+    "m2-observation-normalizer": {
+      "reads": [
+        "agent_braid/git_replay.py",
+        "specs/014-m2-observation-normalizer/assurance.json",
+        "tests/test_git_replay.py"
+      ],
+      "writes": [
+        "agent_braid/git_replay.py",
+        "specs/014-m2-observation-normalizer/assurance.json",
+        "tests/test_git_replay.py"
+      ],
+      "sharedResources": [],
+      "footprintComplete": true
+    },
+    "m2-counterexample-reducer": {
+      "reads": [
+        "agent_braid/git_counterexamples.py",
+        "specs/015-m2-counterexample-reducer/assurance.json",
+        "specs/015-m2-counterexample-reducer/quickstart.md",
+        "specs/015-m2-counterexample-reducer/tasks.md",
+        "tests/test_git_counterexamples.py"
+      ],
+      "writes": [
+        "agent_braid/git_counterexamples.py",
+        "specs/015-m2-counterexample-reducer/assurance.json",
+        "specs/015-m2-counterexample-reducer/quickstart.md",
+        "specs/015-m2-counterexample-reducer/tasks.md",
+        "tests/test_git_counterexamples.py"
+      ],
+      "sharedResources": [],
+      "footprintComplete": true
+    }
+  }
+}

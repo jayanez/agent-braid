@@ -145,18 +145,5 @@ class RealWorkloadManifestTests(unittest.TestCase):
         with self.assertRaisesRegex(InvalidRealWorkloadManifest, "public repository root"):
             validate_manifest(self.manifest(), self.repository)
 
-    @unittest.skip("SC-045 awaits ADR 0015 acceptance and a registered real corpus")
-    def test_candidate_and_serial_project_validation(self) -> None:
-        pass
-
-    @unittest.skip("SC-046 awaits ADR 0015 acceptance and the isolated command stage")
-    def test_project_validation_fails_closed(self) -> None:
-        pass
-
-    @unittest.skip("SC-047 awaits registered real-workload benchmark evidence")
-    def test_real_workload_comparison_and_claim(self) -> None:
-        pass
-
-
 if __name__ == "__main__":
     unittest.main()

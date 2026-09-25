@@ -6,9 +6,9 @@ Test whether the read-only Git integration prototype remains useful when its
 source operations come from actual Agent Braid workstreams and a private
 candidate tree is subjected to a pinned project test command. The experiment
 does not run agents, merge to `develop`, promote refs or authorize concurrent
-integration. ADR 0015 is accepted as a validation profile only; the exact
-corpus, frozen base, image digest and dependency set require a separate founder
-decision before any repository-code command is run under it.
+integration. ADR 0015 defines the accepted validation profile. The separate
+T003 founder decision accepts only the registered corpus, frozen base, image
+and dependency bytes for this bounded experiment.
 
 ## Requirements and scenarios
 

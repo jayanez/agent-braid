@@ -1,0 +1,24 @@
+{
+  "executionAuthorization": false,
+  "footprintReadsDynamicallyObserved": false,
+  "negativeControls": {
+    "duplicate_pr": "workstreamUrl must identify a distinct repository PR",
+    "moved_base": "target branch has moved from the pinned base",
+    "substituted_commit": "source PR branch head differs from substituted commit",
+    "undeclared_write": "write footprint mismatch: m2-observation-normalizer"
+  },
+  "preflight": {
+    "baseCommit": "f3c734a1f42d6d5962cfedc57d7f6c1efe40e0a6",
+    "executionAuthorization": false,
+    "projectValidationExecuted": false,
+    "sourceCommits": [
+      "083f1a390988a9527a5aaeb19133401243b1d714",
+      "58351f812614058e53a8ee6aef1dd458f1bb70fc"
+    ],
+    "status": "preflight-valid",
+    "validationProfile": "m2-real-read-only-v1"
+  },
+  "projectValidationExecuted": false,
+  "selectionSha256": "1ea5bc98d0daccc841f0ffcc9554fb84a5468e26dc504548d5a39042866d63a9",
+  "status": "selection-preflight-valid"
+}
