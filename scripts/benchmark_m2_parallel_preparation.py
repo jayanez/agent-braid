@@ -22,7 +22,7 @@ sys.path.insert(0, str(ROOT))
 
 from agent_braid.git_integration_prototype import run_prototype
 from scripts.run_git_integration_benchmark import (
-    commit_change, make_repository, request, source_state,
+    commit_change, git, git_text, make_repository, request, source_state,
 )
 
 
@@ -72,6 +72,31 @@ def load_frozen_prototype(path: Path):
     module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(module)
     return module
+
+
+def shape_proxy_fixture(repository: Path, base: str) -> tuple[list[str], list[list[str]], list[int]]:
+    """Use tracked path counts and patch byte sizes near the reviewed two-workstream corpus."""
+    writes = [[f"normalizer-{index}.txt" for index in range(3)],
+              [f"reducer-{index}.txt" for index in range(5)]]
+    counts = [(24, 7, 33), (470, 16, 21, 18, 474)]
+    widths = (110, 54)
+    revisions = []
+    for operation, (paths, rows, width) in enumerate(zip(writes, counts, widths, strict=True)):
+        git(repository, "checkout", "--quiet", "-B", f"shape-{operation}", base)
+        for path, count in zip(paths, rows, strict=True):
+            content = "".join(
+                (hashlib.sha256(f"{path}:{index}:first".encode()).hexdigest()
+                 + hashlib.sha256(f"{path}:{index}:second".encode()).hexdigest())[:width]
+                + "\n" for index in range(count)
+            )
+            (repository / path).write_text(content)
+        git(repository, "add", "--", *paths)
+        git(repository, "commit", "--quiet", "-m", f"shape-{operation}")
+        revisions.append(git_text(repository, "rev-parse", "HEAD"))
+        git(repository, "checkout", "--quiet", "main")
+    patch_bytes = [len(git(repository, "diff", "--binary", base, revision))
+                   for revision in revisions]
+    return revisions, writes, patch_bytes
 
 
 def median_interval(values: list[float]) -> tuple[float, float, float]:
@@ -133,20 +158,27 @@ def cost_breakdown(samples: list[dict]) -> dict:
             "pairedMedianCandidateMinusBaselineMilliseconds": paired_differences}
 
 
-def measure(frozen_module, samples_per_scenario: int = 30) -> dict:
+def measure(frozen_module, samples_per_scenario: int = 30,
+            *, shape_proxy: bool = False) -> dict:
     if samples_per_scenario < 2:
         raise ValueError("at least two samples are required")
     scenarios = []
     with tempfile.TemporaryDirectory(prefix="agent-braid-m2-performance-") as folder:
-        for operation_count in (2, 3):
+        for operation_count in ((2,) if shape_proxy else (2, 3)):
             scenario_root = Path(folder) / str(operation_count)
             scenario_root.mkdir()
             repository, base = make_repository(scenario_root)
-            names = ["left.txt", "right.txt", "third.txt"][:operation_count]
-            revisions = [commit_change(repository, base, f"op-{index}", name,
-                                       f"operation-{index}\n")
-                         for index, name in enumerate(names)]
-            job = request(repository, base, revisions, [[name] for name in names])
+            if shape_proxy:
+                revisions, writes, patch_bytes = shape_proxy_fixture(repository, base)
+            else:
+                names = ["left.txt", "right.txt", "third.txt"][:operation_count]
+                revisions = [commit_change(repository, base, f"op-{index}", name,
+                                           f"operation-{index}\n")
+                             for index, name in enumerate(names)]
+                writes = [[name] for name in names]
+                patch_bytes = [len(git(repository, "diff", "--binary", base, revision))
+                               for revision in revisions]
+            job = request(repository, base, revisions, writes)
             before = source_state(repository)
             samples = []
             expected_tree = None
@@ -198,6 +230,8 @@ def measure(frozen_module, samples_per_scenario: int = 30) -> dict:
             summary = summarize(samples)
             scenarios.append({
                 "operationCount": operation_count,
+                "patchBytes": patch_bytes,
+                "changedPathCounts": [len(paths) for paths in writes],
                 "sampleCount": len(samples),
                 "candidateWaves": report["candidateWaves"],
                 "pathOverlapWaves": path_report["candidateWaves"],
@@ -209,6 +243,7 @@ def measure(frozen_module, samples_per_scenario: int = 30) -> dict:
             })
     return {
         "benchmarkVersion": "agent-braid-m2-parallel-preparation-v1",
+        "workloadShape": "two-workstream-proxy" if shape_proxy else "small-fixed-patch",
         "status": "measurement-complete",
         "frozenBaselineCommit": FROZEN_COMMIT,
         "frozenPrototypeSha256": FROZEN_PROTOTYPE_SHA256,
@@ -240,9 +275,11 @@ def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--frozen-module", type=Path, required=True)
     parser.add_argument("--samples", type=int, default=30)
+    parser.add_argument("--shape-proxy", action="store_true")
     parser.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
-    report = measure(load_frozen_prototype(args.frozen_module), args.samples)
+    report = measure(load_frozen_prototype(args.frozen_module), args.samples,
+                     shape_proxy=args.shape_proxy)
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text(json.dumps(report, sort_keys=True, indent=2) + "\n")
     print(json.dumps({"status": report["status"],

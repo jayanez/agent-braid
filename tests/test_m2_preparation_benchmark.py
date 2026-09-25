@@ -6,8 +6,10 @@ import tempfile
 import unittest
 
 from scripts.benchmark_m2_parallel_preparation import (
-    cost_breakdown, load_frozen_prototype, path_overlap_waves, summarize, timed_phases,
+    cost_breakdown, load_frozen_prototype, path_overlap_waves, shape_proxy_fixture,
+    summarize, timed_phases,
 )
+from scripts.run_git_integration_benchmark import git_text, make_repository
 
 
 class M2PreparationBenchmarkTests(unittest.TestCase):
@@ -71,6 +73,17 @@ class M2PreparationBenchmarkTests(unittest.TestCase):
         )}
         with self.assertRaisesRegex(ValueError, "phase times do not account"):
             timed_phases({"metrics": metrics}, "candidate")
+
+    def test_shape_proxy_matches_reviewed_path_and_patch_dimensions(self):
+        with tempfile.TemporaryDirectory() as folder:
+            repository, base = make_repository(Path(folder))
+            revisions, writes, patch_bytes = shape_proxy_fixture(repository, base)
+            self.assertEqual(len(revisions), 2)
+            self.assertEqual([len(paths) for paths in writes], [3, 5])
+            self.assertEqual(len(set().union(*map(set, writes))), 8)
+            for actual, reviewed in zip(patch_bytes, (7872, 55208), strict=True):
+                self.assertLessEqual(abs(actual - reviewed), reviewed * 0.05)
+            self.assertEqual(git_text(repository, "rev-parse", "refs/heads/main"), base)
 
 
 if __name__ == "__main__":

@@ -1,0 +1,949 @@
+{
+  "benchmarkVersion": "agent-braid-m2-parallel-preparation-v1",
+  "bootstrap": {
+    "confidence": 0.95,
+    "samples": 10000,
+    "seed": 20260925,
+    "statistic": "median paired fractional improvement"
+  },
+  "candidatePrototypeSha256": "8e77bf6a27993be13188249bab64c1ec331c120438dc170cc47e323fb3854c4e",
+  "environment": {
+    "git": "git version 2.47.3",
+    "machine": "aarch64",
+    "platform": "Linux-7.0.12-linuxkit-aarch64-with-glibc2.41",
+    "python": "3.12.13"
+  },
+  "executionAuthorization": false,
+  "frozenBaselineCommit": "60d6bcaba7245e9864298321b1038cddfde6fd9e",
+  "frozenPrototypeSha256": "3daf9c4ae946ab9a59fb4c2711492468ffdb6455a0bf04f6318a99b7664db860",
+  "goalMetOnAllScenarios": true,
+  "limits": [
+    "Synthetic fixed-patch Git workloads only; no project tests or live agents.",
+    "The frozen path-only baseline uses the reviewed T003 module with a conservative write-path scheduler.",
+    "On disjoint paths, candidate and path-only schedules are identical; any timing gain is implementation cost reduction, not a scheduling advantage.",
+    "The prior T003 real-corpus result remains unchanged. A changed real-workload protocol requires a new founder decision."
+  ],
+  "promotionPerformed": false,
+  "scenarios": [
+    {
+      "candidateWaves": [
+        [
+          "op-0",
+          "op-1"
+        ]
+      ],
+      "changedPathCounts": [
+        3,
+        5
+      ],
+      "comparisons": {
+        "pathOverlap": {
+          "confidence95": [
+            0.350042,
+            0.410033
+          ],
+          "medianImprovement": 0.373862,
+          "meetsTenPercentAndPositiveInterval": true
+        },
+        "serial": {
+          "confidence95": [
+            0.115959,
+            0.157062
+          ],
+          "medianImprovement": 0.136393,
+          "meetsTenPercentAndPositiveInterval": true
+        }
+      },
+      "costBreakdown": {
+        "pairedMedianCandidateMinusBaselineMilliseconds": {
+          "pathOverlap": {
+            "fixtureCommitMaterialization": -1.102,
+            "patchPreparation": -15.602,
+            "treeIntegration": -43.879
+          },
+          "serial": {
+            "fixtureCommitMaterialization": 0.073,
+            "patchPreparation": -16.224,
+            "treeIntegration": -0.403
+          }
+        },
+        "phaseMediansMilliseconds": {
+          "candidate": {
+            "fixtureCommitMaterialization": 23.678,
+            "patchPreparation": 32.353,
+            "treeIntegration": 47.247
+          },
+          "pathOverlap": {
+            "fixtureCommitMaterialization": 24.8,
+            "patchPreparation": 48.578,
+            "treeIntegration": 91.372
+          },
+          "serial": {
+            "fixtureCommitMaterialization": 23.439,
+            "patchPreparation": 47.151,
+            "treeIntegration": 47.52
+          }
+        }
+      },
+      "finalTree": "15d2155af5c532ceef5550696b74ab59ab41b62e",
+      "goalMet": true,
+      "operationCount": 2,
+      "patchBytes": [
+        7608,
+        56636
+      ],
+      "pathOverlapWaves": [
+        [
+          "op-0",
+          "op-1"
+        ]
+      ],
+      "pathScheduleMatchesCandidate": true,
+      "sampleCount": 30,
+      "samplesNanoseconds": [
+        {
+          "candidate": 112689332,
+          "candidateGitCommands": 10,
+          "currentLaneOrder": "candidate-first",
+          "executionOrder": "current-first",
+          "pathOverlap": 166761167,
+          "pathOverlapGitCommands": 13,
+          "phases": {
+            "candidate": {
+              "fixtureCommitMaterialization": 24476583,
+              "patchPreparation": 38123083,
+              "treeIntegration": 50089666
+            },
+            "pathOverlap": {
+              "fixtureCommitMaterialization": 22865042,
+              "patchPreparation": 48388542,
+              "treeIntegration": 95507583
+            },
+            "serial": {
+              "fixtureCommitMaterialization": 24959792,
+              "patchPreparation": 49136667,
+              "treeIntegration": 50453834
+            }
+          },
+          "sample": 1,
+          "serial": 124550293,
+          "serialGitCommands": 10
+        },
+        {
+          "candidate": 104088999,
+          "candidateGitCommands": 10,
+          "currentLaneOrder": "serial-first",
+          "executionOrder": "path-first",
+          "pathOverlap": 191261292,
+          "pathOverlapGitCommands": 13,
+          "phases": {
+            "candidate": {
+              "fixtureCommitMaterialization": 24525250,
+              "patchPreparation": 30460958,
+              "treeIntegration": 49102791
+            },
+            "pathOverlap": {
+              "fixtureCommitMaterialization": 25868916,
+              "patchPreparation": 48983667,
+              "treeIntegration": 116408709
+            },
+            "serial": {
+              "fixtureCommitMaterialization": 22792833,
+              "patchPreparation": 46670876,
+              "treeIntegration": 51103083
+            }
+          },
+          "sample": 2,
+          "serial": 120566792,
+          "serialGitCommands": 10
+        },
+        {
+          "candidate": 102442501,
+          "candidateGitCommands": 10,
+          "currentLaneOrder": "candidate-first",
+          "executionOrder": "current-first",
+          "pathOverlap": 159284334,
+          "pathOverlapGitCommands": 13,
+          "phases": {
+            "candidate": {
+              "fixtureCommitMaterialization": 22897667,
+              "patchPreparation": 33619625,
+              "treeIntegration": 45925209
+            },
+            "pathOverlap": {
+              "fixtureCommitMaterialization": 22783542,
+              "patchPreparation": 47092208,
+              "treeIntegration": 89408584
+            },
+            "serial": {
+              "fixtureCommitMaterialization": 23536667,
+              "patchPreparation": 45753917,
+              "treeIntegration": 45806375
+            }
+          },
+          "sample": 3,
+          "serial": 115096959,
+          "serialGitCommands": 10
+        },
+        {
+          "candidate": 106623042,
+          "candidateGitCommands": 10,
+          "currentLaneOrder": "serial-first",
+          "executionOrder": "path-first",
+          "pathOverlap": 151963583,
+          "pathOverlapGitCommands": 13,
+          "phases": {
+            "candidate": {
+              "fixtureCommitMaterialization": 26282375,
+              "patchPreparation": 33782458,
+              "treeIntegration": 46558209
+            },
+            "pathOverlap": {
+              "fixtureCommitMaterialization": 22591875,
+              "patchPreparation": 49467083,
+              "treeIntegration": 79904625
+            },
+            "serial": {
+              "fixtureCommitMaterialization": 22385875,
+              "patchPreparation": 47508375,
+              "treeIntegration": 48637791
+            }
+          },
+          "sample": 4,
+          "serial": 118532041,
+          "serialGitCommands": 10
+        },
+        {
+          "candidate": 104015999,
+          "candidateGitCommands": 10,
+          "currentLaneOrder": "candidate-first",
+          "executionOrder": "current-first",
+          "pathOverlap": 156807291,
+          "pathOverlapGitCommands": 13,
+          "phases": {
+            "candidate": {
+              "fixtureCommitMaterialization": 22808541,
+              "patchPreparation": 31483125,
+              "treeIntegration": 49724333
+            },
+            "pathOverlap": {
+              "fixtureCommitMaterialization": 23967833,
+              "patchPreparation": 49688916,
+              "treeIntegration": 83150542
+            },
+            "serial": {
+              "fixtureCommitMaterialization": 24378917,
+              "patchPreparation": 48137958,
+              "treeIntegration": 50972375
+            }
+          },
+          "sample": 5,
+          "serial": 123489250,
+          "serialGitCommands": 10
+        },
+        {
+          "candidate": 105720459,
+          "candidateGitCommands": 10,
+          "currentLaneOrder": "serial-first",
+          "executionOrder": "path-first",
+          "pathOverlap": 177320792,
+          "pathOverlapGitCommands": 13,
+          "phases": {
+            "candidate": {
+              "fixtureCommitMaterialization": 24931917,
+              "patchPreparation": 31209250,
+              "treeIntegration": 49579292
+            },
+            "pathOverlap": {
+              "fixtureCommitMaterialization": 47203083,
+              "patchPreparation": 48617042,
+              "treeIntegration": 81500667
+            },
+            "serial": {
+              "fixtureCommitMaterialization": 24945208,
+              "patchPreparation": 53218750,
+              "treeIntegration": 50020125
+            }
+          },
+          "sample": 6,
+          "serial": 128184083,
+          "serialGitCommands": 10
+        },
+        {
+          "candidate": 100273583,
+          "candidateGitCommands": 10,
+          "currentLaneOrder": "candidate-first",
+          "executionOrder": "current-first",
+          "pathOverlap": 153740875,
+          "pathOverlapGitCommands": 13,
+          "phases": {
+            "candidate": {
+              "fixtureCommitMaterialization": 23736750,
+              "patchPreparation": 29941708,
+              "treeIntegration": 46595125
+            },
+            "pathOverlap": {
+              "fixtureCommitMaterialization": 24688167,
+              "patchPreparation": 47005958,
+              "treeIntegration": 82046750
+            },
+            "serial": {
+              "fixtureCommitMaterialization": 25039791,
+              "patchPreparation": 55777875,
+              "treeIntegration": 46828916
+            }
+          },
+          "sample": 7,
+          "serial": 127646582,
+          "serialGitCommands": 10
+        },
+        {
+          "candidate": 121201043,
+          "candidateGitCommands": 10,
+          "currentLaneOrder": "serial-first",
+          "executionOrder": "path-first",
+          "pathOverlap": 154058375,
+          "pathOverlapGitCommands": 13,
+          "phases": {
+            "candidate": {
+              "fixtureCommitMaterialization": 22736417,
+              "patchPreparation": 38800709,
+              "treeIntegration": 59663917
+            },
+            "pathOverlap": {
+              "fixtureCommitMaterialization": 23363250,
+              "patchPreparation": 47495833,
+              "treeIntegration": 83199292
+            },
+            "serial": {
+              "fixtureCommitMaterialization": 23084042,
+              "patchPreparation": 47289875,
+              "treeIntegration": 48004500
+            }
+          },
+          "sample": 8,
+          "serial": 118378417,
+          "serialGitCommands": 10
+        },
+        {
+          "candidate": 107571584,
+          "candidateGitCommands": 10,
+          "currentLaneOrder": "candidate-first",
+          "executionOrder": "current-first",
+          "pathOverlap": 211858084,
+          "pathOverlapGitCommands": 13,
+          "phases": {
+            "candidate": {
+              "fixtureCommitMaterialization": 23928000,
+              "patchPreparation": 34101250,
+              "treeIntegration": 49542334
+            },
+            "pathOverlap": {
+              "fixtureCommitMaterialization": 46862334,
+              "patchPreparation": 49351125,
+              "treeIntegration": 115644625
+            },
+            "serial": {
+              "fixtureCommitMaterialization": 24336250,
+              "patchPreparation": 51355708,
+              "treeIntegration": 49016833
+            }
+          },
+          "sample": 9,
+          "serial": 124708791,
+          "serialGitCommands": 10
+        },
+        {
+          "candidate": 99898250,
+          "candidateGitCommands": 10,
+          "currentLaneOrder": "serial-first",
+          "executionOrder": "path-first",
+          "pathOverlap": 186838250,
+          "pathOverlapGitCommands": 13,
+          "phases": {
+            "candidate": {
+              "fixtureCommitMaterialization": 23619667,
+              "patchPreparation": 30101541,
+              "treeIntegration": 46177042
+            },
+            "pathOverlap": {
+              "fixtureCommitMaterialization": 24185000,
+              "patchPreparation": 48316833,
+              "treeIntegration": 114336417
+            },
+            "serial": {
+              "fixtureCommitMaterialization": 22996625,
+              "patchPreparation": 48202167,
+              "treeIntegration": 47224833
+            }
+          },
+          "sample": 10,
+          "serial": 118423625,
+          "serialGitCommands": 10
+        },
+        {
+          "candidate": 99303168,
+          "candidateGitCommands": 10,
+          "currentLaneOrder": "candidate-first",
+          "executionOrder": "current-first",
+          "pathOverlap": 162905334,
+          "pathOverlapGitCommands": 13,
+          "phases": {
+            "candidate": {
+              "fixtureCommitMaterialization": 22728792,
+              "patchPreparation": 30606834,
+              "treeIntegration": 45967542
+            },
+            "pathOverlap": {
+              "fixtureCommitMaterialization": 33436333,
+              "patchPreparation": 46126417,
+              "treeIntegration": 83342584
+            },
+            "serial": {
+              "fixtureCommitMaterialization": 22464750,
+              "patchPreparation": 47015958,
+              "treeIntegration": 48751042
+            }
+          },
+          "sample": 11,
+          "serial": 118231750,
+          "serialGitCommands": 10
+        },
+        {
+          "candidate": 107690042,
+          "candidateGitCommands": 10,
+          "currentLaneOrder": "serial-first",
+          "executionOrder": "path-first",
+          "pathOverlap": 175865082,
+          "pathOverlapGitCommands": 13,
+          "phases": {
+            "candidate": {
+              "fixtureCommitMaterialization": 24699792,
+              "patchPreparation": 36947250,
+              "treeIntegration": 46043000
+            },
+            "pathOverlap": {
+              "fixtureCommitMaterialization": 35824208,
+              "patchPreparation": 38463416,
+              "treeIntegration": 101577458
+            },
+            "serial": {
+              "fixtureCommitMaterialization": 23457458,
+              "patchPreparation": 46554541,
+              "treeIntegration": 47201875
+            }
+          },
+          "sample": 12,
+          "serial": 117213874,
+          "serialGitCommands": 10
+        },
+        {
+          "candidate": 102888041,
+          "candidateGitCommands": 10,
+          "currentLaneOrder": "candidate-first",
+          "executionOrder": "current-first",
+          "pathOverlap": 153965750,
+          "pathOverlapGitCommands": 13,
+          "phases": {
+            "candidate": {
+              "fixtureCommitMaterialization": 24097625,
+              "patchPreparation": 31187958,
+              "treeIntegration": 47602458
+            },
+            "pathOverlap": {
+              "fixtureCommitMaterialization": 23885084,
+              "patchPreparation": 37035750,
+              "treeIntegration": 93044916
+            },
+            "serial": {
+              "fixtureCommitMaterialization": 23933750,
+              "patchPreparation": 47714167,
+              "treeIntegration": 47451417
+            }
+          },
+          "sample": 13,
+          "serial": 119099334,
+          "serialGitCommands": 10
+        },
+        {
+          "candidate": 101853999,
+          "candidateGitCommands": 10,
+          "currentLaneOrder": "serial-first",
+          "executionOrder": "path-first",
+          "pathOverlap": 210169500,
+          "pathOverlapGitCommands": 13,
+          "phases": {
+            "candidate": {
+              "fixtureCommitMaterialization": 23534000,
+              "patchPreparation": 32655166,
+              "treeIntegration": 45664833
+            },
+            "pathOverlap": {
+              "fixtureCommitMaterialization": 24894375,
+              "patchPreparation": 47633042,
+              "treeIntegration": 137642083
+            },
+            "serial": {
+              "fixtureCommitMaterialization": 22740375,
+              "patchPreparation": 46776541,
+              "treeIntegration": 47129500
+            }
+          },
+          "sample": 14,
+          "serial": 116646416,
+          "serialGitCommands": 10
+        },
+        {
+          "candidate": 119800875,
+          "candidateGitCommands": 10,
+          "currentLaneOrder": "candidate-first",
+          "executionOrder": "current-first",
+          "pathOverlap": 154350875,
+          "pathOverlapGitCommands": 13,
+          "phases": {
+            "candidate": {
+              "fixtureCommitMaterialization": 25949875,
+              "patchPreparation": 37692625,
+              "treeIntegration": 56158375
+            },
+            "pathOverlap": {
+              "fixtureCommitMaterialization": 22704541,
+              "patchPreparation": 48739667,
+              "treeIntegration": 82906667
+            },
+            "serial": {
+              "fixtureCommitMaterialization": 23492917,
+              "patchPreparation": 45743208,
+              "treeIntegration": 52113958
+            }
+          },
+          "sample": 15,
+          "serial": 121350083,
+          "serialGitCommands": 10
+        },
+        {
+          "candidate": 99128624,
+          "candidateGitCommands": 10,
+          "currentLaneOrder": "serial-first",
+          "executionOrder": "path-first",
+          "pathOverlap": 214208083,
+          "pathOverlapGitCommands": 13,
+          "phases": {
+            "candidate": {
+              "fixtureCommitMaterialization": 22091416,
+              "patchPreparation": 30594958,
+              "treeIntegration": 46442250
+            },
+            "pathOverlap": {
+              "fixtureCommitMaterialization": 35674000,
+              "patchPreparation": 49170583,
+              "treeIntegration": 129363500
+            },
+            "serial": {
+              "fixtureCommitMaterialization": 24235500,
+              "patchPreparation": 45818667,
+              "treeIntegration": 46800583
+            }
+          },
+          "sample": 16,
+          "serial": 116854750,
+          "serialGitCommands": 10
+        },
+        {
+          "candidate": 105726500,
+          "candidateGitCommands": 10,
+          "currentLaneOrder": "candidate-first",
+          "executionOrder": "current-first",
+          "pathOverlap": 162313374,
+          "pathOverlapGitCommands": 13,
+          "phases": {
+            "candidate": {
+              "fixtureCommitMaterialization": 22716458,
+              "patchPreparation": 36009667,
+              "treeIntegration": 47000375
+            },
+            "pathOverlap": {
+              "fixtureCommitMaterialization": 22927791,
+              "patchPreparation": 47885458,
+              "treeIntegration": 91500125
+            },
+            "serial": {
+              "fixtureCommitMaterialization": 22998750,
+              "patchPreparation": 45607292,
+              "treeIntegration": 57373709
+            }
+          },
+          "sample": 17,
+          "serial": 125979751,
+          "serialGitCommands": 10
+        },
+        {
+          "candidate": 97548084,
+          "candidateGitCommands": 10,
+          "currentLaneOrder": "serial-first",
+          "executionOrder": "path-first",
+          "pathOverlap": 167113500,
+          "pathOverlapGitCommands": 13,
+          "phases": {
+            "candidate": {
+              "fixtureCommitMaterialization": 22509167,
+              "patchPreparation": 29392875,
+              "treeIntegration": 45646042
+            },
+            "pathOverlap": {
+              "fixtureCommitMaterialization": 35851667,
+              "patchPreparation": 48554750,
+              "treeIntegration": 82707083
+            },
+            "serial": {
+              "fixtureCommitMaterialization": 22090542,
+              "patchPreparation": 47245750,
+              "treeIntegration": 46816959
+            }
+          },
+          "sample": 18,
+          "serial": 116153251,
+          "serialGitCommands": 10
+        },
+        {
+          "candidate": 102290166,
+          "candidateGitCommands": 10,
+          "currentLaneOrder": "candidate-first",
+          "executionOrder": "current-first",
+          "pathOverlap": 161570418,
+          "pathOverlapGitCommands": 13,
+          "phases": {
+            "candidate": {
+              "fixtureCommitMaterialization": 22281625,
+              "patchPreparation": 33533833,
+              "treeIntegration": 46474708
+            },
+            "pathOverlap": {
+              "fixtureCommitMaterialization": 23325709,
+              "patchPreparation": 46797959,
+              "treeIntegration": 91446750
+            },
+            "serial": {
+              "fixtureCommitMaterialization": 22740708,
+              "patchPreparation": 46171208,
+              "treeIntegration": 47588084
+            }
+          },
+          "sample": 19,
+          "serial": 116500000,
+          "serialGitCommands": 10
+        },
+        {
+          "candidate": 103238583,
+          "candidateGitCommands": 10,
+          "currentLaneOrder": "serial-first",
+          "executionOrder": "path-first",
+          "pathOverlap": 177282041,
+          "pathOverlapGitCommands": 13,
+          "phases": {
+            "candidate": {
+              "fixtureCommitMaterialization": 22774958,
+              "patchPreparation": 30309166,
+              "treeIntegration": 50154459
+            },
+            "pathOverlap": {
+              "fixtureCommitMaterialization": 24889083,
+              "patchPreparation": 48848542,
+              "treeIntegration": 103544416
+            },
+            "serial": {
+              "fixtureCommitMaterialization": 22949042,
+              "patchPreparation": 49453666,
+              "treeIntegration": 46904333
+            }
+          },
+          "sample": 20,
+          "serial": 119307041,
+          "serialGitCommands": 10
+        },
+        {
+          "candidate": 106342833,
+          "candidateGitCommands": 10,
+          "currentLaneOrder": "candidate-first",
+          "executionOrder": "current-first",
+          "pathOverlap": 164492251,
+          "pathOverlapGitCommands": 13,
+          "phases": {
+            "candidate": {
+              "fixtureCommitMaterialization": 25242708,
+              "patchPreparation": 34079125,
+              "treeIntegration": 47021000
+            },
+            "pathOverlap": {
+              "fixtureCommitMaterialization": 24049792,
+              "patchPreparation": 49146167,
+              "treeIntegration": 91296292
+            },
+            "serial": {
+              "fixtureCommitMaterialization": 22789541,
+              "patchPreparation": 45985625,
+              "treeIntegration": 45291917
+            }
+          },
+          "sample": 21,
+          "serial": 114067083,
+          "serialGitCommands": 10
+        },
+        {
+          "candidate": 105593334,
+          "candidateGitCommands": 10,
+          "currentLaneOrder": "serial-first",
+          "executionOrder": "path-first",
+          "pathOverlap": 162816250,
+          "pathOverlapGitCommands": 13,
+          "phases": {
+            "candidate": {
+              "fixtureCommitMaterialization": 23465417,
+              "patchPreparation": 34654709,
+              "treeIntegration": 47473208
+            },
+            "pathOverlap": {
+              "fixtureCommitMaterialization": 32656792,
+              "patchPreparation": 48055375,
+              "treeIntegration": 82104083
+            },
+            "serial": {
+              "fixtureCommitMaterialization": 23305167,
+              "patchPreparation": 59375792,
+              "treeIntegration": 45781583
+            }
+          },
+          "sample": 22,
+          "serial": 128462542,
+          "serialGitCommands": 10
+        },
+        {
+          "candidate": 98832959,
+          "candidateGitCommands": 10,
+          "currentLaneOrder": "candidate-first",
+          "executionOrder": "current-first",
+          "pathOverlap": 163052876,
+          "pathOverlapGitCommands": 13,
+          "phases": {
+            "candidate": {
+              "fixtureCommitMaterialization": 22060125,
+              "patchPreparation": 30074084,
+              "treeIntegration": 46698750
+            },
+            "pathOverlap": {
+              "fixtureCommitMaterialization": 34273250,
+              "patchPreparation": 47229292,
+              "treeIntegration": 81550334
+            },
+            "serial": {
+              "fixtureCommitMaterialization": 24647250,
+              "patchPreparation": 46719500,
+              "treeIntegration": 47688500
+            }
+          },
+          "sample": 23,
+          "serial": 119055250,
+          "serialGitCommands": 10
+        },
+        {
+          "candidate": 103248750,
+          "candidateGitCommands": 10,
+          "currentLaneOrder": "serial-first",
+          "executionOrder": "path-first",
+          "pathOverlap": 166751792,
+          "pathOverlapGitCommands": 13,
+          "phases": {
+            "candidate": {
+              "fixtureCommitMaterialization": 23263250,
+              "patchPreparation": 31711375,
+              "treeIntegration": 48274125
+            },
+            "pathOverlap": {
+              "fixtureCommitMaterialization": 23217792,
+              "patchPreparation": 48684334,
+              "treeIntegration": 94849666
+            },
+            "serial": {
+              "fixtureCommitMaterialization": 23046500,
+              "patchPreparation": 46738167,
+              "treeIntegration": 45911375
+            }
+          },
+          "sample": 24,
+          "serial": 115696042,
+          "serialGitCommands": 10
+        },
+        {
+          "candidate": 105371209,
+          "candidateGitCommands": 10,
+          "currentLaneOrder": "candidate-first",
+          "executionOrder": "current-first",
+          "pathOverlap": 165246626,
+          "pathOverlapGitCommands": 13,
+          "phases": {
+            "candidate": {
+              "fixtureCommitMaterialization": 24166125,
+              "patchPreparation": 35284667,
+              "treeIntegration": 45920417
+            },
+            "pathOverlap": {
+              "fixtureCommitMaterialization": 25424792,
+              "patchPreparation": 53176667,
+              "treeIntegration": 86645167
+            },
+            "serial": {
+              "fixtureCommitMaterialization": 23876125,
+              "patchPreparation": 46398667,
+              "treeIntegration": 46424250
+            }
+          },
+          "sample": 25,
+          "serial": 116699042,
+          "serialGitCommands": 10
+        },
+        {
+          "candidate": 121235208,
+          "candidateGitCommands": 10,
+          "currentLaneOrder": "serial-first",
+          "executionOrder": "path-first",
+          "pathOverlap": 161875333,
+          "pathOverlapGitCommands": 13,
+          "phases": {
+            "candidate": {
+              "fixtureCommitMaterialization": 23741333,
+              "patchPreparation": 35908083,
+              "treeIntegration": 61585792
+            },
+            "pathOverlap": {
+              "fixtureCommitMaterialization": 22569416,
+              "patchPreparation": 48600709,
+              "treeIntegration": 90705208
+            },
+            "serial": {
+              "fixtureCommitMaterialization": 24632375,
+              "patchPreparation": 46796750,
+              "treeIntegration": 49182000
+            }
+          },
+          "sample": 26,
+          "serial": 120611125,
+          "serialGitCommands": 10
+        },
+        {
+          "candidate": 105314000,
+          "candidateGitCommands": 10,
+          "currentLaneOrder": "candidate-first",
+          "executionOrder": "current-first",
+          "pathOverlap": 241333542,
+          "pathOverlapGitCommands": 13,
+          "phases": {
+            "candidate": {
+              "fixtureCommitMaterialization": 23516750,
+              "patchPreparation": 32050000,
+              "treeIntegration": 49747250
+            },
+            "pathOverlap": {
+              "fixtureCommitMaterialization": 44526833,
+              "patchPreparation": 51002125,
+              "treeIntegration": 145804584
+            },
+            "serial": {
+              "fixtureCommitMaterialization": 23790875,
+              "patchPreparation": 53644625,
+              "treeIntegration": 48978584
+            }
+          },
+          "sample": 27,
+          "serial": 126414084,
+          "serialGitCommands": 10
+        },
+        {
+          "candidate": 103638084,
+          "candidateGitCommands": 10,
+          "currentLaneOrder": "serial-first",
+          "executionOrder": "path-first",
+          "pathOverlap": 179780084,
+          "pathOverlapGitCommands": 13,
+          "phases": {
+            "candidate": {
+              "fixtureCommitMaterialization": 23750791,
+              "patchPreparation": 30583834,
+              "treeIntegration": 49303459
+            },
+            "pathOverlap": {
+              "fixtureCommitMaterialization": 44173709,
+              "patchPreparation": 49102167,
+              "treeIntegration": 86504208
+            },
+            "serial": {
+              "fixtureCommitMaterialization": 23421458,
+              "patchPreparation": 48409500,
+              "treeIntegration": 46997625
+            }
+          },
+          "sample": 28,
+          "serial": 118828583,
+          "serialGitCommands": 10
+        },
+        {
+          "candidate": 247538667,
+          "candidateGitCommands": 10,
+          "currentLaneOrder": "candidate-first",
+          "executionOrder": "current-first",
+          "pathOverlap": 177596874,
+          "pathOverlapGitCommands": 13,
+          "phases": {
+            "candidate": {
+              "fixtureCommitMaterialization": 46081375,
+              "patchPreparation": 106036167,
+              "treeIntegration": 95421125
+            },
+            "pathOverlap": {
+              "fixtureCommitMaterialization": 33293000,
+              "patchPreparation": 48452708,
+              "treeIntegration": 95851166
+            },
+            "serial": {
+              "fixtureCommitMaterialization": 56763209,
+              "patchPreparation": 249081667,
+              "treeIntegration": 110288333
+            }
+          },
+          "sample": 29,
+          "serial": 416133209,
+          "serialGitCommands": 10
+        },
+        {
+          "candidate": 100716666,
+          "candidateGitCommands": 10,
+          "currentLaneOrder": "serial-first",
+          "executionOrder": "path-first",
+          "pathOverlap": 177240792,
+          "pathOverlapGitCommands": 13,
+          "phases": {
+            "candidate": {
+              "fixtureCommitMaterialization": 23797458,
+              "patchPreparation": 30818375,
+              "treeIntegration": 46100833
+            },
+            "pathOverlap": {
+              "fixtureCommitMaterialization": 24710417,
+              "patchPreparation": 58331583,
+              "treeIntegration": 94198792
+            },
+            "serial": {
+              "fixtureCommitMaterialization": 23054500,
+              "patchPreparation": 47057125,
+              "treeIntegration": 47246333
+            }
+          },
+          "sample": 30,
+          "serial": 117357958,
+          "serialGitCommands": 10
+        }
+      ]
+    }
+  ],
+  "status": "measurement-complete",
+  "workloadShape": "two-workstream-proxy"
+}
