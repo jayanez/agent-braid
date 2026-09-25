@@ -11,11 +11,22 @@ import unittest
 from unittest.mock import patch
 
 from scripts.run_m2_real_workload import (
-    COMMAND, FEATURE, IMAGE, LANE_CODE, classify, run, run_lane,
+    COMMAND, FEATURE, IMAGE, LANE_CODE, ExperimentRejected, classify, run,
+    run_lane, sha, verify_inputs,
 )
 
 
 class M2RealWorkloadTests(unittest.TestCase):
+    def test_old_t003_decision_rejects_changed_prototype_before_execution(self) -> None:
+        def changed_prototype(path: Path) -> str:
+            if path.name == "git_integration_prototype.py":
+                return "0" * 64
+            return sha(path)
+
+        with patch("scripts.run_m2_real_workload.sha", side_effect=changed_prototype):
+            with self.assertRaisesRegex(ExperimentRejected, "renewed founder decision"):
+                verify_inputs(FEATURE.parent.parent)
+
     def fixture(self) -> tuple[list[dict], dict[str, list[dict]]]:
         report = {
             "status": "completed",
