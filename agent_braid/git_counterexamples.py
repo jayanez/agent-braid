@@ -12,6 +12,7 @@ never a minimality claim. See specs/015-m2-counterexample-reducer/spec.md.
 
 from __future__ import annotations
 
+import ctypes
 import itertools
 import json
 import os
@@ -33,6 +34,7 @@ MAX_CANDIDATE_ATTEMPTS = 10
 DEADLINE_SECONDS = 120.0
 SUPERVISOR_GRACE_SECONDS = 5.0
 MAX_PAYLOAD_BYTES = 8 * 1024 * 1024
+_SYSTEM_POPEN = subprocess.Popen
 
 POSITIVE_STATUSES = frozenset({"reduced", "unchanged"})
 
@@ -287,6 +289,47 @@ def _run_worker(
     )
 
 
+def _process_identity(pid: int) -> str | None:
+    """Bind a PID to its OS-reported birth, not just its reusable number."""
+    proc_stat = Path(f"/proc/{pid}/stat")
+    if Path("/proc").is_dir():
+        try:
+            # The second field is parenthesized and may contain spaces or ')'.
+            fields = proc_stat.read_text().rsplit(") ", 1)[1].split()
+            return f"linux:{fields[19]}"  # starttime, field 22
+        except (OSError, IndexError):
+            return None
+    if sys.platform != "darwin":
+        return None
+
+    class BSDInfo(ctypes.Structure):
+        _fields_ = [
+            ("flags", ctypes.c_uint32), ("status", ctypes.c_uint32),
+            ("xstatus", ctypes.c_uint32), ("pid", ctypes.c_uint32),
+            ("ppid", ctypes.c_uint32),
+            *[(name, ctypes.c_uint32) for name in
+              ("uid", "gid", "ruid", "rgid", "svuid", "svgid", "reserved")],
+            ("comm", ctypes.c_char * 16), ("name", ctypes.c_char * 32),
+            *[(name, ctypes.c_uint32) for name in
+              ("nfiles", "pgid", "pjobc", "tdev", "tpgid")],
+            ("nice", ctypes.c_int32),
+            ("start_sec", ctypes.c_uint64), ("start_usec", ctypes.c_uint64),
+        ]
+
+    try:
+        function = ctypes.CDLL("libproc.dylib").proc_pidinfo
+        function.argtypes = [ctypes.c_int, ctypes.c_int, ctypes.c_uint64,
+                             ctypes.c_void_p, ctypes.c_int]
+        function.restype = ctypes.c_int
+        info = BSDInfo()
+        returned = function(pid, 3, 0, ctypes.byref(info), ctypes.sizeof(info))
+        if returned != ctypes.sizeof(info) or info.pid != pid:
+            return None
+        return f"darwin:{info.start_sec}:{info.start_usec}"
+    except (OSError, AttributeError):
+        return None
+
+
 def _registered_child_groups(registry_path: Path | None) -> set[int]:
     """Resolve child sessions even after their worker has exited."""
     if registry_path is None:
@@ -298,7 +341,10 @@ def _registered_child_groups(registry_path: Path | None) -> set[int]:
     groups = set()
     for line in lines:
         try:
-            pid = int(line)
+            pid_text, identity = line.split(" ", 1)
+            pid = int(pid_text)
+            if _process_identity(pid) != identity:
+                continue
             group = os.getpgid(pid)
         except (OSError, ValueError):
             continue
@@ -494,13 +540,18 @@ def _register_worker_children() -> None:
     registry = os.environ.get("AGENT_BRAID_REDUCER_CHILD_REGISTRY")
     if not registry:
         raise OSError("reduction worker has no child-process registry")
-    original_popen = subprocess.Popen
+    original_popen = _SYSTEM_POPEN
 
     def registered_popen(*args, **kwargs):
         child = original_popen(*args, **kwargs)
         try:
+            identity = _process_identity(child.pid)
+            if identity is None:
+                if child.poll() is None:
+                    raise OSError("cannot identify a running Git child")
+                return child
             with open(registry, "a", encoding="ascii") as stream:
-                stream.write(f"{child.pid}\n")
+                stream.write(f"{child.pid} {identity}\n")
                 stream.flush()
         except OSError:
             try:
