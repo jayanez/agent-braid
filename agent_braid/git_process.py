@@ -185,6 +185,7 @@ def run_git(
     input_bytes: bytes | None = None,
     allow_failure: bool = False,
     command_timeout: float = 30.0,
+    poll_interval: float = 0.01,
 ) -> GitCommandResult:
     """Run Git with bounded streamed output and shared end-to-end limits."""
     timeout = budget.begin_command(command_timeout)
@@ -284,7 +285,7 @@ def run_git(
             next_scratch_check = time.monotonic() + 0.05
         if overflow:
             break
-        time.sleep(0.01)
+        time.sleep(poll_interval)
 
     try:
         process.wait(timeout=1.0)
