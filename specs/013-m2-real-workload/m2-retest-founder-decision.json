@@ -1,0 +1,17 @@
+{
+  "recordVersion": "agent-braid-m2-performance-retest-founder-decision-1",
+  "reviewedAt": "2026-09-25",
+  "reviewer": {"name": "Juan Antonio Yáñez García", "role": "founder"},
+  "decision": "accepted-exact-experiment",
+  "decisionText": "Implement the proposed plan.",
+  "decisionContext": "Founder response to the exact PR #141 proposal at commit 87640e950d0ac3231a93446225ef7608ebe3d980. Approval applies to that proposed ADR 0015 retest and its immutable inputs only.",
+  "reviewedProposalCommit": "87640e950d0ac3231a93446225ef7608ebe3d980",
+  "reviewedProposalPath": "docs/experiments/M2_REAL_CORPUS_RETEST_PROPOSAL.md",
+  "reviewedProposalSha256": "5c5eb4384fd8e5978a2bbe5da0212aa7796f7e7f0badbba2b42784e70093bcc9",
+  "approvedInputsPath": "docs/experiments/m2-real-corpus-retest-inputs.json",
+  "reviewedInputFileSha256": "fcf9ce54184e4e0528f46b3ef0da2be4c9678a940cdf99d6afa58a805ee5ff31",
+  "scope": "Implement the fail-closed retest harness and run only the two specified real-corpus Git batches and, if they pass all gates, two candidate/serial test pairs using the exact code, image, dependencies, command, limits and measurement protocol in the approved input file.",
+  "executionAuthorization": false,
+  "externalHumanValidation": "pending",
+  "m2Closure": false
+}
