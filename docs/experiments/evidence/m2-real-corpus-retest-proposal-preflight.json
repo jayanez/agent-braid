@@ -1,0 +1,65 @@
+{
+  "baseCommit": "f3c734a1f42d6d5962cfedc57d7f6c1efe40e0a6",
+  "candidateCodeCommit": "7d1a07775c2663da93e369ceccf5a8b352c28e78",
+  "capturedAt": "2026-09-25T19:22:35.037548+00:00",
+  "containerImage": {
+    "architecture": "arm64",
+    "id": "sha256:edddb1cbcbccb0e1af6505f9ff9938905da6f79303c97d1d12092ef61508f005",
+    "os": "linux"
+  },
+  "dependencyFilesSha256": {
+    "requirements-dev.txt": "24a8316f230a1f408b5c953bf0217968f7ccab452594e774a1771ae28df86448",
+    "requirements-speckit.txt": "daa35d1e5551fba64cada1787b2646c283f9fb56ddc00b48f9b596b68134c392",
+    "scripts/docker/t013/Dockerfile": "d96d3e097d01b98bb7cc40f5575cb0d1b7b23a4ae66a6882b41196b0284b12f5",
+    "scripts/docker/t013/apt-packages.lock": "db23b2947328c4407d0d055c4ef9081e584b0662ec0102a8b2d5281457bd335c",
+    "scripts/docker/t013/constraints-t013.txt": "b12b51229e18fa1ca35c7bd1404f2359debb1d877203c1e37bab685111accad5"
+  },
+  "executionAuthorization": false,
+  "inputProposalSha256": "fcf9ce54184e4e0528f46b3ef0da2be4c9678a940cdf99d6afa58a805ee5ff31",
+  "limits": "Read-only proposal snapshot; repeat all checks and negative controls after a separate founder decision and before any experiment.",
+  "manifestFileSha256": "5bd3dbd8c1170d8b0a2498b3b6830177dc5476a5ab4f99cfed0052ea88192107",
+  "manifestPreflightStatus": "preflight-valid",
+  "negativeControlsExecuted": false,
+  "priorT003Outcome": "no-performance-improvement-on-reviewed-corpus",
+  "projectValidationExecuted": false,
+  "proposalDocumentSha256": "14a91dfea7e1474b8c8e72b39c1eed3e7bfc898b1ce7aeed773a667c4d393e9a",
+  "pullRequests": [
+    {
+      "baseRefOid": "f3c734a1f42d6d5962cfedc57d7f6c1efe40e0a6",
+      "headRefOid": "58351f812614058e53a8ee6aef1dd458f1bb70fc",
+      "isDraft": false,
+      "number": 137,
+      "state": "OPEN",
+      "url": "https://github.com/jayanez/agent-braid/pull/137"
+    },
+    {
+      "baseRefOid": "f3c734a1f42d6d5962cfedc57d7f6c1efe40e0a6",
+      "headRefOid": "083f1a390988a9527a5aaeb19133401243b1d714",
+      "isDraft": false,
+      "number": 138,
+      "state": "OPEN",
+      "url": "https://github.com/jayanez/agent-braid/pull/138"
+    },
+    {
+      "baseRefOid": "3b51fb6335400c5673f1ba40cf028a6ac6d525ca",
+      "headRefOid": "7d1a07775c2663da93e369ceccf5a8b352c28e78",
+      "isDraft": true,
+      "number": 140,
+      "state": "OPEN",
+      "url": "https://github.com/jayanez/agent-braid/pull/140"
+    }
+  ],
+  "recordVersion": "agent-braid-m2-retest-proposal-preflight-1",
+  "remoteRefs": {
+    "refs/heads/014-m2-observation-normalizer": "58351f812614058e53a8ee6aef1dd458f1bb70fc",
+    "refs/heads/015-m2-counterexample-reducer": "083f1a390988a9527a5aaeb19133401243b1d714",
+    "refs/heads/develop": "f3c734a1f42d6d5962cfedc57d7f6c1efe40e0a6",
+    "refs/heads/work/m2-parallel-prep-performance-20260925": "7d1a07775c2663da93e369ceccf5a8b352c28e78"
+  },
+  "selectionFileSha256": "978a40379b049d023be95d8eae652d7bbd06ea07942ce5776d40d2b0ad0b9737",
+  "status": "proposal-preflight-valid",
+  "workstreamCommits": [
+    "58351f812614058e53a8ee6aef1dd458f1bb70fc",
+    "083f1a390988a9527a5aaeb19133401243b1d714"
+  ]
+}

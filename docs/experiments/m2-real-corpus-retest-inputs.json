@@ -1,0 +1,93 @@
+{
+  "recordVersion": "agent-braid-m2-real-corpus-retest-input-proposal-1",
+  "status": "pending-founder-decision",
+  "repository": "jayanez/agent-braid",
+  "targetRef": "refs/heads/develop",
+  "baseCommit": "f3c734a1f42d6d5962cfedc57d7f6c1efe40e0a6",
+  "workstreams": [
+    {
+      "instanceId": "m2-observation-normalizer",
+      "pullRequest": "https://github.com/jayanez/agent-braid/pull/137",
+      "branch": "014-m2-observation-normalizer",
+      "sourceCommit": "58351f812614058e53a8ee6aef1dd458f1bb70fc",
+      "dependencies": []
+    },
+    {
+      "instanceId": "m2-counterexample-reducer",
+      "pullRequest": "https://github.com/jayanez/agent-braid/pull/138",
+      "branch": "015-m2-counterexample-reducer",
+      "sourceCommit": "083f1a390988a9527a5aaeb19133401243b1d714",
+      "dependencies": []
+    }
+  ],
+  "manifestFileSha256": "5bd3dbd8c1170d8b0a2498b3b6830177dc5476a5ab4f99cfed0052ea88192107",
+  "selectionFileSha256": "978a40379b049d023be95d8eae652d7bbd06ea07942ce5776d40d2b0ad0b9737",
+  "canonicalSelectionSha256": "1ea5bc98d0daccc841f0ffcc9554fb84a5468e26dc504548d5a39042866d63a9",
+  "candidate": {
+    "pullRequest": "https://github.com/jayanez/agent-braid/pull/140",
+    "branch": "work/m2-parallel-prep-performance-20260925",
+    "codeCommit": "7d1a07775c2663da93e369ceccf5a8b352c28e78",
+    "prototypeSha256": "8e77bf6a27993be13188249bab64c1ec331c120438dc170cc47e323fb3854c4e",
+    "gitProcessSha256": "3247ac861404cfb68f08939770a5048294b45ddc984a1379ca9eb2091ad48668",
+    "benchmarkScriptSha256": "c277952b9b17ba93db5970716f30dff45bf7cad0c66b9df27b5b13583f381111"
+  },
+  "pathOverlapBaseline": {
+    "prototypeCommit": "60d6bcaba7245e9864298321b1038cddfde6fd9e",
+    "prototypeSha256": "3daf9c4ae946ab9a59fb4c2711492468ffdb6455a0bf04f6318a99b7664db860",
+    "scheduler": "conservative-tracked-write-overlap-v1",
+    "gitProcessHelperSha256": "3247ac861404cfb68f08939770a5048294b45ddc984a1379ca9eb2091ad48668",
+    "gitProcessPollSeconds": 0.01
+  },
+  "priorT003": {
+    "reviewedCommit": "60d6bcaba7245e9864298321b1038cddfde6fd9e",
+    "founderReviewSha256": "cdb8d6565f590722e004ffce1a62ec831d74aefe368a8768a04cc3d41a5f9ae1",
+    "reproductionSha256": "baf1c05f6348f5c70bc5710800290d249d7ad3ff3fe7366b245277ecc79d95f3",
+    "outcome": "no-performance-improvement-on-reviewed-corpus"
+  },
+  "validationProfile": "m2-real-read-only-v1",
+  "containerImage": {
+    "os": "linux",
+    "architecture": "arm64",
+    "id": "sha256:edddb1cbcbccb0e1af6505f9ff9938905da6f79303c97d1d12092ef61508f005"
+  },
+  "dependencyFilesSha256": {
+    "scripts/docker/t013/Dockerfile": "d96d3e097d01b98bb7cc40f5575cb0d1b7b23a4ae66a6882b41196b0284b12f5",
+    "scripts/docker/t013/apt-packages.lock": "db23b2947328c4407d0d055c4ef9081e584b0662ec0102a8b2d5281457bd335c",
+    "scripts/docker/t013/constraints-t013.txt": "b12b51229e18fa1ca35c7bd1404f2359debb1d877203c1e37bab685111accad5",
+    "requirements-dev.txt": "24a8316f230a1f408b5c953bf0217968f7ccab452594e774a1771ae28df86448",
+    "requirements-speckit.txt": "daa35d1e5551fba64cada1787b2646c283f9fb56ddc00b48f9b596b68134c392"
+  },
+  "measurementProtocol": {
+    "version": "m2-real-corpus-performance-retest-v1",
+    "gitOnlyBatches": 2,
+    "pairedSamplesPerBatch": 30,
+    "order": "alternate-current-vs-path-and-candidate-vs-serial-each-pair",
+    "statistic": "median-of-paired-fractional-improvements",
+    "bootstrapResamples": 10000,
+    "bootstrapSeed": 20260925,
+    "confidence": 0.95,
+    "requiredMedianImprovementPerBatch": 0.1,
+    "requiredBootstrapLowerBoundPerBatch": "greater-than-zero",
+    "requiredComparisons": ["serial", "timed-path-overlap"],
+    "fullProjectValidationPairs": 2,
+    "requiredTreeChecks": "candidate-serial-path-equal-and-source-unchanged-in-every-pair",
+    "unsafeAdmissionCount": 0
+  },
+  "allowlistedCommand": "python -m unittest discover -s tests",
+  "resourceLimits": {
+    "cpusPerContainer": 2,
+    "memoryBytesPerContainer": 2147483648,
+    "pidsPerContainer": 512,
+    "secondsPerContainer": 180,
+    "capturedOutputBytesPerLane": 8388608,
+    "network": "none",
+    "hostWrites": false,
+    "sourceRepositoryReadOnly": true,
+    "explicitEvidenceArtifactDirectoryOnly": true,
+    "repositoryRefPromotion": false
+  },
+  "executionAuthorization": false,
+  "projectValidationExecuted": false,
+  "externalHumanValidation": "pending",
+  "m2Closure": false
+}
