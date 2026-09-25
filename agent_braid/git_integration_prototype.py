@@ -264,7 +264,7 @@ def _operation_commit(worktree: Path, tree: str, base: str, identifier: str,
 
 
 def _integrate_lane(scratch: Path, base: str, order: list[str], operation_commits: dict[str, str],
-                    target_ref: str, source: Path, env: dict[str, str],
+                    operation_trees: dict[str, str], target_ref: str, source: Path, env: dict[str, str],
                     budget: GitCommandBudget) -> dict:
     current = base
     steps = []
@@ -273,6 +273,19 @@ def _integrate_lane(scratch: Path, base: str, order: list[str], operation_commit
         if observed_target != base:
             return {"status": "stale-base", "finalTree": None, "steps": steps,
                     "failure": "target-ref-changed-before-integration"}
+        if not steps:
+            # Every prepared tree was already checked against the source tree,
+            # and its fixture commit has base as its parent. Merging that first
+            # commit into base repeats a verified fast-forward and cannot find
+            # an additional conflict.
+            tree = operation_trees[identifier]
+            commit = operation_commits[identifier]
+            _require(bool(OID.fullmatch(tree) and OID.fullmatch(commit)),
+                     "invalid verified first operation")
+            steps.append({"operationId": identifier, "status": "merged",
+                          "tree": tree, "temporaryCommit": commit})
+            current = commit
+            continue
         result = _git(scratch, env, "merge-tree", "--write-tree", current,
                       operation_commits[identifier], budget=budget, allow_failure=True)
         if result.returncode != 0:
@@ -289,8 +302,7 @@ def _integrate_lane(scratch: Path, base: str, order: list[str], operation_commit
         steps.append({"operationId": identifier, "status": "merged",
                       "tree": tree, "temporaryCommit": commit})
         current = commit
-    final_tree = _git(scratch, env, "rev-parse", f"{current}^{{tree}}",
-                      budget=budget).stdout.decode().strip()
+    final_tree = steps[-1]["tree"]
     return {"status": "complete", "finalTree": final_tree, "steps": steps,
             "failure": None}
 
@@ -342,10 +354,12 @@ def _unstarted_report(status: str, base: str, target_ref: str, target_commit: st
 
 
 def run_prototype(request: object, *, cancel_event: threading.Event | None = None,
-                  tree_consumer: Callable[[Path, str, str], None] | None = None) -> dict:
+                  tree_consumer: Callable[[Path, str, str], None] | None = None,
+                  benchmark_serial_first: bool = False) -> dict:
     """Prepare fixed Git patches concurrently in private worktrees and compare
     private merge results with a serial reference. Never update source refs.
     """
+    _require(type(benchmark_serial_first) is bool, "invalid benchmark lane order")
     run_started = time.perf_counter_ns()
     m1_request, footprints = _validate_request(request)
     source = Path(m1_request["repository"])
@@ -452,75 +466,91 @@ def run_prototype(request: object, *, cancel_event: threading.Event | None = Non
                 _new_worktree(scratch, worktree, base, env, budget)
                 lane_worktrees[lane][identifier] = worktree
 
-        candidate_prep_before = _resource_metrics(budget)
-        start_candidate = time.perf_counter_ns()
-        candidate_preparations: dict[str, dict] = {}
-        for wave in waves:
-            # Dependencies gate the next preparation wave. Every member of the
-            # current wave receives a private worktree and index.
-            with ThreadPoolExecutor(max_workers=min(MAX_WORKERS, len(wave))) as pool:
-                futures = {
-                    identifier: pool.submit(
-                        _prepare_one, lane_worktrees["candidate"][identifier], identifier,
-                        patches[identifier], source_trees[identifier], env, budget
-                    )
-                    for identifier in wave
+        def prepare_candidate():
+            prep_before = _resource_metrics(budget)
+            start = time.perf_counter_ns()
+            preparations: dict[str, dict] = {}
+            for wave in waves:
+                # Dependencies gate the next preparation wave. Every member
+                # receives a private worktree and index.
+                with ThreadPoolExecutor(max_workers=min(MAX_WORKERS, len(wave))) as pool:
+                    futures = {
+                        identifier: pool.submit(
+                            _prepare_one, lane_worktrees["candidate"][identifier], identifier,
+                            patches[identifier], source_trees[identifier], env, budget
+                        ) for identifier in wave
+                    }
+                    for identifier in wave:
+                        preparations[identifier] = futures[identifier].result()
+                if any(preparations[item]["status"] != "complete" for item in wave):
+                    break
+            for identifier in order:
+                preparations.setdefault(identifier, {
+                    "operationId": identifier, "status": "not-run",
+                    "preparedTree": None, "sourceTree": source_trees[identifier],
+                    "matchesSourceTree": False, "elapsedNanoseconds": 0,
+                })
+            prep_wall = time.perf_counter_ns() - start
+            prep_usage = _resource_metrics(budget)
+            bad = any(item["status"] != "complete" for item in preparations.values())
+            commits: dict[str, str] = {}
+            materialize_before = _resource_metrics(budget)
+            materialize_start = time.perf_counter_ns()
+            if not bad:
+                commits = {
+                    identifier: _operation_commit(
+                        lane_worktrees["candidate"][identifier],
+                        preparations[identifier]["preparedTree"], base,
+                        identifier, env, budget
+                    ) for identifier in operation_ids
                 }
-                for identifier in wave:
-                    candidate_preparations[identifier] = futures[identifier].result()
-            if any(candidate_preparations[item]["status"] != "complete" for item in wave):
-                break
-        for identifier in order:
-            candidate_preparations.setdefault(identifier, {
-                "operationId": identifier, "status": "not-run",
-                "preparedTree": None, "sourceTree": source_trees[identifier],
-                "matchesSourceTree": False, "elapsedNanoseconds": 0,
-            })
-        candidate_prep_wall = time.perf_counter_ns() - start_candidate
-        candidate_prep_usage = _resource_metrics(budget)
+            materialize_wall = time.perf_counter_ns() - materialize_start
+            materialize_usage = _resource_metrics(budget)
+            return (preparations, bad, commits, prep_before, prep_wall, prep_usage,
+                    materialize_before, materialize_wall, materialize_usage)
 
-        candidate_bad = (len(candidate_preparations) != len(operation_ids)
-                         or any(item["status"] != "complete"
-                                for item in candidate_preparations.values()))
-        candidate_commits: dict[str, str] = {}
-        candidate_materialize_before = _resource_metrics(budget)
-        candidate_materialize_start = time.perf_counter_ns()
-        if not candidate_bad:
-            candidate_commits = {
-                identifier: _operation_commit(
-                    lane_worktrees["candidate"][identifier],
-                    candidate_preparations[identifier]["preparedTree"], base,
-                    identifier, env, budget
-                ) for identifier in operation_ids
+        def prepare_serial():
+            prep_before = _resource_metrics(budget)
+            start = time.perf_counter_ns()
+            preparations = {
+                identifier: _prepare_one(
+                    lane_worktrees["serial"][identifier], identifier, patches[identifier],
+                    source_trees[identifier], env, budget
+                ) for identifier in order
             }
-        candidate_materialize_wall = time.perf_counter_ns() - candidate_materialize_start
-        candidate_materialize_usage = _resource_metrics(budget)
+            prep_wall = time.perf_counter_ns() - start
+            prep_usage = _resource_metrics(budget)
+            bad = any(item["status"] != "complete" for item in preparations.values())
+            commits: dict[str, str] = {}
+            materialize_before = _resource_metrics(budget)
+            materialize_start = time.perf_counter_ns()
+            if not bad:
+                commits = {
+                    identifier: _operation_commit(
+                        lane_worktrees["serial"][identifier],
+                        preparations[identifier]["preparedTree"], base,
+                        identifier, env, budget
+                    ) for identifier in operation_ids
+                }
+            materialize_wall = time.perf_counter_ns() - materialize_start
+            materialize_usage = _resource_metrics(budget)
+            return (preparations, bad, commits, prep_before, prep_wall, prep_usage,
+                    materialize_before, materialize_wall, materialize_usage)
 
-        serial_prep_before = _resource_metrics(budget)
-        start_serial = time.perf_counter_ns()
-        serial_preparations = {}
-        for identifier in order:
-            serial_preparations[identifier] = _prepare_one(
-                lane_worktrees["serial"][identifier], identifier, patches[identifier],
-                source_trees[identifier], env, budget
-            )
-        serial_prep_wall = time.perf_counter_ns() - start_serial
-        serial_prep_usage = _resource_metrics(budget)
-
-        serial_bad = any(item["status"] != "complete" for item in serial_preparations.values())
-        serial_commits: dict[str, str] = {}
-        serial_materialize_before = _resource_metrics(budget)
-        serial_materialize_start = time.perf_counter_ns()
-        if not serial_bad:
-            serial_commits = {
-                identifier: _operation_commit(
-                    lane_worktrees["serial"][identifier],
-                    serial_preparations[identifier]["preparedTree"], base,
-                    identifier, env, budget
-                ) for identifier in operation_ids
-            }
-        serial_materialize_wall = time.perf_counter_ns() - serial_materialize_start
-        serial_materialize_usage = _resource_metrics(budget)
+        if benchmark_serial_first:
+            (serial_preparations, serial_bad, serial_commits, serial_prep_before,
+             serial_prep_wall, serial_prep_usage, serial_materialize_before,
+             serial_materialize_wall, serial_materialize_usage) = prepare_serial()
+            (candidate_preparations, candidate_bad, candidate_commits, candidate_prep_before,
+             candidate_prep_wall, candidate_prep_usage, candidate_materialize_before,
+             candidate_materialize_wall, candidate_materialize_usage) = prepare_candidate()
+        else:
+            (candidate_preparations, candidate_bad, candidate_commits, candidate_prep_before,
+             candidate_prep_wall, candidate_prep_usage, candidate_materialize_before,
+             candidate_materialize_wall, candidate_materialize_usage) = prepare_candidate()
+            (serial_preparations, serial_bad, serial_commits, serial_prep_before,
+             serial_prep_wall, serial_prep_usage, serial_materialize_before,
+             serial_materialize_wall, serial_materialize_usage) = prepare_serial()
 
         target_after_prepare = _target_commit(source, target_ref, env, budget)
         if target_after_prepare != base:
@@ -535,28 +565,28 @@ def run_prototype(request: object, *, cancel_event: threading.Event | None = Non
             report.pop("reportDigest", None)
             report["reportDigest"] = _digest(report)
             return report
-        candidate_integrate_before = _resource_metrics(budget)
-        candidate_start = time.perf_counter_ns()
-        candidate_integration = (
-            _integrate_lane(scratch, base, order, candidate_commits, target_ref,
-                            source, env, budget)
-            if not candidate_bad else
-            {"status": "inconclusive", "finalTree": None, "steps": [],
-             "failure": "candidate-preparation-incomplete"}
-        )
-        candidate_integrate_wall = time.perf_counter_ns() - candidate_start
-        candidate_total_usage = _resource_metrics(budget)
-        serial_integrate_before = _resource_metrics(budget)
-        serial_start = time.perf_counter_ns()
-        serial_integration = (
-            _integrate_lane(scratch, base, order, serial_commits, target_ref,
-                            source, env, budget)
-            if not serial_bad else
-            {"status": "inconclusive", "finalTree": None, "steps": [],
-             "failure": "serial-preparation-incomplete"}
-        )
-        serial_integrate_wall = time.perf_counter_ns() - serial_start
-        serial_integrate_usage = _resource_metrics(budget)
+        def integrate(commits: dict[str, str], bad: bool, lane: str):
+            before = _resource_metrics(budget)
+            start = time.perf_counter_ns()
+            result = (
+                _integrate_lane(scratch, base, order, commits, source_trees, target_ref,
+                                source, env, budget)
+                if not bad else
+                {"status": "inconclusive", "finalTree": None, "steps": [],
+                 "failure": lane + "-preparation-incomplete"}
+            )
+            return result, time.perf_counter_ns() - start, before, _resource_metrics(budget)
+
+        if benchmark_serial_first:
+            (serial_integration, serial_integrate_wall, serial_integrate_before,
+             serial_integrate_usage) = integrate(serial_commits, serial_bad, "serial")
+            (candidate_integration, candidate_integrate_wall, candidate_integrate_before,
+             candidate_total_usage) = integrate(candidate_commits, candidate_bad, "candidate")
+        else:
+            (candidate_integration, candidate_integrate_wall, candidate_integrate_before,
+             candidate_total_usage) = integrate(candidate_commits, candidate_bad, "candidate")
+            (serial_integration, serial_integrate_wall, serial_integrate_before,
+             serial_integrate_usage) = integrate(serial_commits, serial_bad, "serial")
         target_final = _target_commit(source, target_ref, env, budget)
         final_usage = _resource_metrics(budget)
         if target_final != base:
