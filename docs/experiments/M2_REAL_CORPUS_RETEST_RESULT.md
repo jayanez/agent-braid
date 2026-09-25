@@ -11,6 +11,10 @@ was captured from the checker/runner branch at
 `98e68d01e31e8addee6afc5b8813963ac96b0292` in the pinned offline Linux
 ARM64 image. Its SHA-256 is
 `0b3b5c3496bcc9de9d6c324d3ca2765fbad19868755f89e5a8f5253a4f0e962f`.
+After capture, commit `e77ef61ae7bf6611048c2b0ca9cf55cedec97929`
+strengthened rejection-path output location checks. It did not change the
+candidate implementation or the measured runner at the recorded commit; no
+new experiment is claimed for that later commit.
 
 ## Paired Git preparation
 
