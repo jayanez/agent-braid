@@ -5,8 +5,8 @@
 - [ ] T002 (REQ-001/SC-043–044): register two or three actual reviewed
   workstream PR commits from one frozen `develop` base and verify their
   declared footprints and preflight result.
-- [ ] T003 (REQ-002/SC-045–046): obtain founder acceptance of the exact profile
-  and corpus before executing project code.
+- [ ] T003 (REQ-002/SC-045–046): obtain separate founder acceptance of the exact
+  corpus, frozen base and image digest before executing project code.
 - [ ] T004 (REQ-002/SC-045–046): implement the isolated candidate/serial unit-test
   stage and fail-closed negative controls within the reviewed profile.
 - [ ] T005 (REQ-003/SC-047): benchmark the real corpus against serial and

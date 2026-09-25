@@ -1,7 +1,9 @@
-# ADR 0015: Proposed real-repository M2 validation profile
+# ADR 0015: Real-repository M2 validation profile
 
-- **Status:** Proposed; founder review pending. No repository-code execution is authorized by this draft.
-- **Date:** 2026-09-25
+- **Status:** Accepted by explicit founder decision on 2026-09-25 for the
+  validation profile only. Repository-code execution remains unauthorized
+  pending a separate decision on exact inputs.
+- **Date:** 2026-09-25; accepted 2026-09-25
 - **Deciders:** Juan Antonio Yáñez García, founder
 - **Constitutional articles:** 2, 4, 6, 7, 9, 12–14, 19–20, 23
 
@@ -41,11 +43,25 @@ cases. Test failure, hidden effects, stale base, missing input, resource breach
 or non-repeatability must not be converted into a successful parallelism claim.
 No result may promote a ref or set `executionAuthorization` to true.
 
+## Founder decision
+
+The founder accepted this validation profile on 2026-09-25, including its
+allowlisted command, isolation policy, resource caps, observation contract and
+fail-closed outcomes. The [decision record](../../specs/013-m2-real-workload/adr-0015-founder-decision.json)
+binds the reviewed proposal bytes and the exact scope of that approval.
+
+No real-workstream corpus, frozen base, image digest or dependency set was
+approved in this decision. Repository-code execution, the container command
+stage and the experiment require a separate founder decision binding those
+exact inputs. Acceptance of this profile is not a positive scientific result,
+an M2 closure decision or execution authorization.
+
 ## Consequences and review boundary
 
 The preflight checker may be implemented and tested without executing project
 code. The container command stage, registered real corpus and actual experiment
-remain pending until the founder approves this ADR and the exact experiment
-inputs. Changing the command, image, resources, observation contract or target
-repository requires renewed review. Even a positive result supports only the
-registered finite workload and does not close M2 or establish live-agent safety.
+remain pending until the founder separately approves the exact experiment
+inputs under this accepted profile. Changing the command, image, resources,
+observation contract or target repository requires renewed review. Even a
+positive result supports only the registered finite workload and does not
+close M2 or establish live-agent safety.

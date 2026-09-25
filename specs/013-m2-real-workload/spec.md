@@ -6,7 +6,8 @@ Test whether the read-only Git integration prototype remains useful when its
 source operations come from actual Agent Braid workstreams and a private
 candidate tree is subjected to a pinned project test command. The experiment
 does not run agents, merge to `develop`, promote refs or authorize concurrent
-integration. ADR 0015 is a proposed profile and must be accepted before any
+integration. ADR 0015 is accepted as a validation profile only; the exact
+corpus, frozen base and image require a separate founder decision before any
 repository-code command is run under it.
 
 ## Requirements and scenarios
@@ -19,9 +20,10 @@ repository-code command is run under it.
     preflight record and do not change the source repository.
   - **SC-044:** A moved base, unavailable commit, duplicate source, unsupported
     profile or wrong repository fails before experiment execution.
-- **REQ-002 — reviewed, isolated validation.** After explicit founder acceptance
-  of the profile and corpus, compare private candidate and serial lanes from
-  the same base in the pinned Docker runtime. Run only the declared unit-test
+- **REQ-002 — reviewed, isolated validation.** After separate founder acceptance
+  of the exact corpus, base and image under the accepted profile, compare
+  private candidate and serial lanes from the same base in the pinned Docker
+  runtime. Run only the declared unit-test
   command with network and host writes disabled. Report both Git and test
   outcomes; any failed, incomplete or mismatched lane is inconclusive.
   - **SC-045:** A registered compatible case produces equal tracked trees and

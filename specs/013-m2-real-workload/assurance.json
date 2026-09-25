@@ -40,7 +40,7 @@
       "docs/adr/0012-vendored-python-skills-license-boundary.md": "e98b19c465689190265ed410b9226d60d52f00a8abf95410f5aa0a567aa80fea",
       "docs/adr/0013-isolated-git-replay-and-advisory-planning.md": "1c291cb527825864520075edc2ae7c84bafb07f66790f9fc29b0149a07024d24",
       "docs/adr/0014-parallel-integration-contract.md": "2481e93cf1e392887f2ee74e39efec7dfee0a9c52340fccd491903fd4292f679",
-      "docs/adr/0015-real-repository-validation-profile.md": "b4ac30643451bd73f7982951161679523dbf752eba2a8decf45ed656c9bfde0b",
+      "docs/adr/0015-real-repository-validation-profile.md": "43e05f6fa96b5b3a8a8a83ddc922d8bced11b89a3f88263760b83b358febde99",
       "docs/architecture/AGENT_INTERACTION_METADATA.md": "0118d7f16c390fc4c1ff027b503a4eaba8a747edf3f6d7b088559f8870e27780",
       "docs/architecture/ASSURANCE_LEVELS.md": "102d0df0dc6fc0ec114d92fe1ef053b375bd9704d0af6a048affe36900d77512",
       "docs/architecture/CONFLUENCE_CERTIFICATE.md": "fd12a8f1a1477835848581b0f4ccd52f76d3f22dd96a3abaccb9074733464a8e",
@@ -72,7 +72,7 @@
     "commit": null,
     "mode": "current"
   },
-  "execution_contract": "Preflight is read-only and non-authorizing. Repository test execution is prohibited until ADR 0015 and the exact corpus receive founder acceptance; later runs stay isolated, offline and non-promoting.",
+  "execution_contract": "Preflight is read-only and non-authorizing. ADR 0015 is accepted for the profile only. Repository test execution is prohibited until the exact corpus, base and image digest receive separate founder acceptance; later runs stay isolated, offline and non-promoting.",
   "human_review": "pending",
   "hypotheses": "Parallel preparation may reduce elapsed time on registered real workstreams without false admission under the reviewed finite observation contract; a negative result is valid.",
   "observation_contract": "Tracked Git trees, immutable identities, source-ref freshness, bounded unit-test exit status and output, timing and resource metrics.",
@@ -83,6 +83,7 @@
     "ROADMAP.md",
     "docs/adr/0014-parallel-integration-contract.md",
     "docs/adr/0015-real-repository-validation-profile.md",
+    "specs/013-m2-real-workload/adr-0015-founder-decision.json",
     "docs/architecture/PARALLEL_INTEGRATION.md",
     "specs/012-m2-git-replay-planner/spec.md"
   ],
@@ -117,7 +118,7 @@
       "id": "REQ-002",
       "scenarios": [
         {
-          "given": "The founder accepted the exact profile and a registered compatible real corpus",
+          "given": "The founder separately accepted the exact compatible real corpus, base and image under the accepted profile",
           "id": "SC-045",
           "obtained_evidence": [],
           "planned_evidence": "Executed test and, after approval, registered real-workload clean-room report; skipped future-stage tests remain pending.",
@@ -137,7 +138,7 @@
           "when": "The isolated experiment attempts validation"
         }
       ],
-      "text": "After separate founder approval, compare isolated candidate and serial project validation under one pinned command profile."
+      "text": "After separate founder approval of the exact corpus, base and image, compare isolated candidate and serial project validation under the accepted command profile."
     },
     {
       "id": "REQ-003",
