@@ -200,6 +200,17 @@ def measure_batch(repository: Path, proposal: dict, selection: dict,
     }
 
 
+def archive_tree_atomically(scratch: Path, tree: str, output: Path) -> None:
+    with tempfile.NamedTemporaryFile(dir=output.parent, prefix=f".{output.name}.",
+                                     delete=False) as temporary:
+        temporary_path = Path(temporary.name)
+    try:
+        archive_tree(scratch, tree, temporary_path)
+        os.replace(temporary_path, output)
+    finally:
+        temporary_path.unlink(missing_ok=True)
+
+
 def materialize(repository: Path, selection: dict, directory: Path,
                 expected_tree: str) -> dict:
     request = prototype_request(repository, selection)
@@ -211,8 +222,8 @@ def materialize(repository: Path, selection: dict, directory: Path,
                  for lane in ("candidate", "serial")}
 
         def consume(scratch: Path, candidate: str, serial: str) -> None:
-            archive_tree(scratch, candidate, paths["candidate"])
-            archive_tree(scratch, serial, paths["serial"])
+            archive_tree_atomically(scratch, candidate, paths["candidate"])
+            archive_tree_atomically(scratch, serial, paths["serial"])
 
         report = run_prototype(request, tree_consumer=consume,
                                benchmark_serial_first=bool(pair % 2))
