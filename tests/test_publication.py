@@ -16,7 +16,7 @@ from scripts.closure_anchors import validate_closure_anchor
 from scripts.create_public_export import create_export
 from scripts.publication import (
     ADDENDUM, MANIFEST, canonical_manifest, redact_local_paths,
-    root_manifest_payload, validate_portable_root,
+    root_manifest_payload, validate_addendum, validate_portable_root,
 )
 from scripts.validate_publication import (
     PUBLIC_INPUTS,
@@ -231,6 +231,70 @@ class PublicationTests(unittest.TestCase):
             write(public / MANIFEST, json.dumps(data, indent=2, sort_keys=True) + "\n")
             with self.assertRaisesRegex(ValueError, "independent validation|unchanged"):
                 validate_portable_root(public)
+
+    def test_post_root_addendum_rejects_bad_identity_and_reintroduction(self):
+        with tempfile.TemporaryDirectory() as directory:
+            base = Path(directory)
+            source, public = base / "source", base / "public"
+            source.mkdir()
+            git(source, "init", "-b", "main")
+            write(source / "README.md", "public\n")
+            write(source / "specs/001-example/evidence.json",
+                  '{"runner":"/' + 'Users/test/private/python"}\n')
+            evidence_hash = hashlib.sha256(
+                (source / "specs/001-example/evidence.json").read_bytes()
+            ).hexdigest()
+            write(source / "docs/releases/closure-anchors.json", json.dumps({
+                "recordVersion": "0.1.0", "milestones": {
+                    name: {"candidateCommit": "1" * 40, "closureCommit": "2" * 40,
+                           "closureTree": "3" * 40,
+                           "changedPaths": ["specs/001-example/evidence.json"],
+                           "protectedPaths": {"specs/001-example/evidence.json": evidence_hash}}
+                    for name in ("M0", "M0.5", "M1")
+                },
+            }))
+            exact = commit(source, "source")
+            with mock.patch("scripts.create_public_export.ROOT", source):
+                create_export(exact, public)
+            git(public, "init", "-b", "main")
+            commit(public, "clean root")
+            write(public / "later.txt", "later\n")
+            snapshot = commit(public, "later public file")
+            blob = (public / "later.txt").read_bytes()
+            valid = {
+                "recordVersion": "0.1.0",
+                "baseManifestSha256": hashlib.sha256((public / MANIFEST).read_bytes()).hexdigest(),
+                "snapshotCommit": snapshot,
+                "snapshotTree": git(public, "rev-parse", f"{snapshot}^{{tree}}"),
+                "files": [{"path": "later.txt", "sha256": hashlib.sha256(blob).hexdigest(),
+                           "size": len(blob)}],
+                "limits": ["Public snapshot only."],
+            }
+            cases = (
+                ("wrong base", {**valid, "baseManifestSha256": "0" * 64}, "identity"),
+                ("wrong tree", {**valid, "snapshotTree": "0" * 40}, "ancestry"),
+                ("unknown snapshot", {**valid, "snapshotCommit": "f" * 40}, "ancestry"),
+                ("duplicate path", {**valid, "files": valid["files"] * 2}, "unique"),
+                ("wrong payload", {**valid, "files": [{**valid["files"][0],
+                                                        "sha256": "0" * 64}]}, "payload"),
+            )
+            for title, candidate, error in cases:
+                with self.subTest(title=title):
+                    (public / ADDENDUM).parent.mkdir(parents=True, exist_ok=True)
+                    (public / ADDENDUM).write_bytes(canonical_manifest(candidate))
+                    commit(public, title)
+                    with self.assertRaisesRegex(ValueError, error):
+                        validate_addendum(public)
+                    git(public, "reset", "--hard", snapshot)
+            (public / ADDENDUM).write_bytes(canonical_manifest(valid))
+            commit(public, "valid addendum")
+            validate_addendum(public)
+            git(public, "rm", ADDENDUM)
+            commit(public, "remove addendum")
+            (public / ADDENDUM).write_bytes(canonical_manifest(valid))
+            commit(public, "reintroduce addendum")
+            with self.assertRaisesRegex(ValueError, "unchanged since introduction"):
+                validate_addendum(public)
 
     def test_release_readiness_rejects_stale_or_overclaimed_evidence(self):
         with tempfile.TemporaryDirectory() as directory:
