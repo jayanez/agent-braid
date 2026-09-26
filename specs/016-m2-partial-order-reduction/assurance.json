@@ -13,7 +13,7 @@
   ],
   "assumptions": "Immutable commit sources and M1 Git provenance describe the fixed patches; uncertain or unsupported operations are dependent on all others.",
   "authority_snapshot": {
-    "commit": null,
+    "commit": "cde6b8acfbee7e0c3b96557f6eb5d298f3ca9f02",
     "hashes": {
       "ARCHITECTURE.md": "94e5114eb799b25ca666ef728f84ab1c88e6ad1b342e30a9e99276b8f44c30c2",
       "CONSTITUTION.md": "ff7196976a1736a639947c2ab26e8da157fef23c89ba9881312f2a36459964eb",
@@ -63,13 +63,13 @@
       "schemas/governance/public-export-manifest.schema.json": "11eb7f2594939ae9fd0c9e6cfe4423a80aba686d6cdfdd8b73b0fb84b0840aa8",
       "schemas/governance/release-validation-record.schema.json": "d9943f0c9f5520ea52e3b12bfba88240d03f8011b433fc5e35cb49549ab6e819"
     },
-    "mode": "current"
+    "mode": "historical"
   },
   "compatibility": "Private experiment only. Existing 0.1.0-alpha Git replay evidence, advisory plan, CLI, schemas, producer and verifier remain exhaustive and unchanged.",
   "domain": "Two to four immutable base-to-commit Git patches and their declared dependency graph, with at most 24 admissible orders.",
   "evidence_snapshot": {
-    "commit": null,
-    "mode": "current"
+    "commit": "cde6b8acfbee7e0c3b96557f6eb5d298f3ca9f02",
+    "mode": "historical"
   },
   "execution_contract": "Isolated Git bare scratch and fresh index for every selected order; existing per-call Git budgets apply. No source mutation, ref promotion, project-code execution or execution authorization.",
   "human_review": "pending",
