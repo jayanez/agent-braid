@@ -1,0 +1,193 @@
+{
+  "baseManifestSha256": "6ed49fcba3503ebd362ec478977697d7bbab9b3ea99846cd408c9e00de7b656d",
+  "files": [
+    {
+      "path": "agent_braid/git_integration_prototype.py",
+      "sha256": "8e77bf6a27993be13188249bab64c1ec331c120438dc170cc47e323fb3854c4e",
+      "size": 40215
+    },
+    {
+      "path": "agent_braid/git_replay.py",
+      "sha256": "79e59b0ecbac4f398fe98835e9a2b753d145462628e0e99b6fe09668c650d293",
+      "size": 31040
+    },
+    {
+      "path": "docs/adr/0013-isolated-git-replay-and-advisory-planning.md",
+      "sha256": "1c291cb527825864520075edc2ae7c84bafb07f66790f9fc29b0149a07024d24",
+      "size": 4930
+    },
+    {
+      "path": "docs/adr/0014-parallel-integration-contract.md",
+      "sha256": "2481e93cf1e392887f2ee74e39efec7dfee0a9c52340fccd491903fd4292f679",
+      "size": 3001
+    },
+    {
+      "path": "docs/adr/0015-real-repository-validation-profile.md",
+      "sha256": "43e05f6fa96b5b3a8a8a83ddc922d8bced11b89a3f88263760b83b358febde99",
+      "size": 3762
+    },
+    {
+      "path": "docs/architecture/GIT_REPLAY.md",
+      "sha256": "365fe948089b374856d1423d69b73d1e3efa540b9d1e88f3fc5439c91d8a031d",
+      "size": 3120
+    },
+    {
+      "path": "docs/architecture/PARALLEL_INTEGRATION.md",
+      "sha256": "14a55efe552cb0b5a90e8112260af681b303b9ce2e0fd0b49c7024ab4b15843b",
+      "size": 4972
+    },
+    {
+      "path": "docs/development/github-tracking.json",
+      "sha256": "93486f993bea50268783f726f5e74159f763d114dfbe6e7b74ce7d4450728032",
+      "size": 2393
+    },
+    {
+      "path": "examples/analysis/git-replay-benchmark.json",
+      "sha256": "d503f0534cf703978e85b679af67e39fb4d68641d7ffdaec9f78a7b4f7f64d9f",
+      "size": 1041
+    },
+    {
+      "path": "schemas/0.1.0-alpha/git-plan.schema.json",
+      "sha256": "3519d38b395974c3261fbb9243dd2fcbf1d0f08086c2164d64d7ebfb9a726972",
+      "size": 1567
+    },
+    {
+      "path": "schemas/0.1.0-alpha/git-replay-evidence.schema.json",
+      "sha256": "46560e30af74daf22d816130590d7bc596a9ae4fe1060ff4709e76f19487d137",
+      "size": 3505
+    },
+    {
+      "path": "scripts/docker/t013/Dockerfile",
+      "sha256": "d96d3e097d01b98bb7cc40f5575cb0d1b7b23a4ae66a6882b41196b0284b12f5",
+      "size": 1281
+    },
+    {
+      "path": "scripts/docker/t013/apt-packages.lock",
+      "sha256": "db23b2947328c4407d0d055c4ef9081e584b0662ec0102a8b2d5281457bd335c",
+      "size": 1071
+    },
+    {
+      "path": "scripts/docker/t013/constraints-t013.txt",
+      "sha256": "b12b51229e18fa1ca35c7bd1404f2359debb1d877203c1e37bab685111accad5",
+      "size": 192
+    },
+    {
+      "path": "scripts/run_git_replay_benchmark.py",
+      "sha256": "c0e215a53074c581fa0c263cc56c6c33b7809543c7f222726891796744a2fab8",
+      "size": 11691
+    },
+    {
+      "path": "scripts/run_m2_real_workload.py",
+      "sha256": "f603d1db381f8604bfa7b146bc329ad68cb4e1d6444919b4d6f93a05e16ab56f",
+      "size": 24158
+    },
+    {
+      "path": "specs/012-m2-git-replay-planner/evidence.json",
+      "sha256": "cc242eb32ae0b3575318a57ef035854a80928e0137855187df99527efd93a43f",
+      "size": 9320
+    },
+    {
+      "path": "specs/012-m2-git-replay-planner/founder-review.json",
+      "sha256": "05f6bc76309799fe47f71acc3fa8aaa725b2919b0da25cd9cfae135c128af4fb",
+      "size": 2919
+    },
+    {
+      "path": "specs/012-m2-git-replay-planner/plan.md",
+      "sha256": "cae3f5b522b34da33f4a5d3c85bd7c4994c332cf15790b7c5ef526213561439b",
+      "size": 12282
+    },
+    {
+      "path": "specs/012-m2-git-replay-planner/quickstart.md",
+      "sha256": "72d76ce0157ef8025ab14acc7adea22fd127a2c6b84808e96d9b69f271be6a60",
+      "size": 5153
+    },
+    {
+      "path": "specs/012-m2-git-replay-planner/spec.md",
+      "sha256": "52e591a3eb29d2da8f70285cfe360ebd9e0959814897ba696b7bab05ad6d8618",
+      "size": 5405
+    },
+    {
+      "path": "specs/013-m2-real-workload/adr-0015-founder-decision.json",
+      "sha256": "b2a42f3ca92e8df7fa3b71c9695bd4a02bdc03f1e1ca471506228f0c93ad0cfb",
+      "size": 1594
+    },
+    {
+      "path": "specs/013-m2-real-workload/evidence/README.md",
+      "sha256": "58f379a9746627b146c47f1f6313e3a4d35cc1a567d428277d5fea1c6b30f6e1",
+      "size": 2112
+    },
+    {
+      "path": "specs/013-m2-real-workload/evidence/cleanroom-complete.json",
+      "sha256": "96e11f103a5294abbbe67c392599a4aad24ba6de2b8182a96c5685b245352566",
+      "size": 27722
+    },
+    {
+      "path": "specs/013-m2-real-workload/evidence/cleanroom-missing-history.json",
+      "sha256": "e9fb3f4646d3b460c7478be669e58fba418d9dc41374dad14ab33193b10862a5",
+      "size": 34089
+    },
+    {
+      "path": "specs/013-m2-real-workload/evidence/cleanroom-preflight.json",
+      "sha256": "407982c18398540995a536dfb4ef3b81d41c2ab5549c9876bf8b2c93b513b431",
+      "size": 955
+    },
+    {
+      "path": "specs/013-m2-real-workload/evidence/reproduction.json",
+      "sha256": "baf1c05f6348f5c70bc5710800290d249d7ad3ff3fe7366b245277ecc79d95f3",
+      "size": 7379
+    },
+    {
+      "path": "specs/013-m2-real-workload/m2-corpus-manifest.json",
+      "sha256": "5bd3dbd8c1170d8b0a2498b3b6830177dc5476a5ab4f99cfed0052ea88192107",
+      "size": 690
+    },
+    {
+      "path": "specs/013-m2-real-workload/m2-corpus-selection.json",
+      "sha256": "978a40379b049d023be95d8eae652d7bbd06ea07942ce5776d40d2b0ad0b9737",
+      "size": 2258
+    },
+    {
+      "path": "specs/013-m2-real-workload/m2-official-preflight.json",
+      "sha256": "9427bb42495008e58ab2960fa7fbd5eaa11da882af4442a9563ec151c015e677",
+      "size": 335
+    },
+    {
+      "path": "specs/013-m2-real-workload/m2-t003-inputs.json",
+      "sha256": "f9827da49b59fac594be0760f692dce2168607370be10d12bf58c217bf97f388",
+      "size": 1941
+    },
+    {
+      "path": "specs/013-m2-real-workload/t003-founder-decision.json",
+      "sha256": "22061b62dfdd69fbfe0bd466d8d71fb264624512196712ffb9e7e2d656086372",
+      "size": 877
+    },
+    {
+      "path": "specs/013-m2-real-workload/t003-founder-proposal.md",
+      "sha256": "daf7f83243809a6f04e419659935c6dbc9a345cd196e0c3555a25b57778b9e0a",
+      "size": 4880
+    },
+    {
+      "path": "specs/013-m2-real-workload/t006-founder-review.json",
+      "sha256": "cdb8d6565f590722e004ffce1a62ec831d74aefe368a8768a04cc3d41a5f9ae1",
+      "size": 2167
+    },
+    {
+      "path": "tests/test_git_replay.py",
+      "sha256": "e88c0bb3fefc47967421be011c40ca0e32635551b632b8f691b2b840cc35cc66",
+      "size": 19901
+    },
+    {
+      "path": "tests/test_github_tracking.py",
+      "sha256": "3e4a686142837340cf5872354ee57f3f53a030aebf9ded9f1de36105b968e4d7",
+      "size": 3203
+    }
+  ],
+  "limits": [
+    "This supplement binds selected public file representations, not private Git ancestry or original private bytes.",
+    "Historical evidence input hashes without their private source bytes remain unverifiable in the public clone.",
+    "This supplement does not imply independent validation, scientific approval, M2 closure or execution authorization."
+  ],
+  "recordVersion": "0.1.0",
+  "snapshotCommit": "47917a906aa6af851899c8d1ff1c9d67bd1b035b",
+  "snapshotTree": "c8ce511ad2ce03fed82a7a3f6c7a13eb170d5338"
+}
