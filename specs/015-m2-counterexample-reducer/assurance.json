@@ -72,7 +72,7 @@
     "mode": "historical"
   },
   "execution_contract": "Read-only bounded Git replay in private scratch. A supervisor enforces one monotonic 120-second deadline and at most ten candidate subsets across input verification and replay, terminating the private worker process group on timeout. Existing Git budgets are per replay, not shared aggregate quotas. No project-code command, repository ref update or execution authorization.",
-  "human_review": "pending",
+  "human_review": "approved",
   "hypotheses": "A bounded subset search may retain a smaller witness for some verified divergent fixed-patch workloads.",
   "observation_contract": "tracked-tree-v1 divergence preserved for an independently replayed and verified operation subset.",
   "references": [
@@ -197,5 +197,6 @@
   ],
   "scientific_limits": "Minimality is only over the enumerated dependency-closed operation subsets in the fixed-patch tracked-tree domain; no patch-hunk, semantic-effect, or arbitrary-workload claim is made.",
   "scope": "Internal deterministic operation-subset reduction of verified divergent fixed-patch Git replay evidence.",
+  "review_record": "specs/015-m2-counterexample-reducer/founder-review-restored-history.json",
   "stage": "validated"
 }
