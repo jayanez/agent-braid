@@ -122,15 +122,22 @@ replay and `tracked-tree-v1`. The private
 [`016-m2-partial-order-reduction`](specs/016-m2-partial-order-reduction/spec.md)
 candidate compares selected replays with the exhaustive 2–4 operation oracle.
 Its repeated-context real-Git fixture also supplies the positive end-to-end
-reduction absent from SPEC-015's original review. These finite observations
-remain pending scoped human review and independent validation. M2 remains open.
+reduction absent from SPEC-015's original review. Its bounded internal review
+was approved on 2026-09-26; the approval confirms that the oracle is regenerated
+and checked by the existing verifier, not by an independent replay engine, and
+that uncertain paths prevent interchange. A clean-room reproduction and
+independent external validation remain pending. M2 remains open.
 
-**Next priority:** review the bounded private reduction and its real-Git
-counterexample evidence, then reassess broader workload adapters and the
-scheduler's remaining exit criteria. The public evidence and plan contracts
-remain exhaustive; promotion of the private reducer needs a separate contract.
-Any executable integration or ref promotion requires a separately reviewed
-execution contract and authorization; it is not implied by advisory preparation.
+**Next priority:** complete the M2 closure-readiness review in
+[`M2_READINESS_REVIEW.md`](docs/releases/M2_READINESS_REVIEW.md), then bind a
+final frozen candidate to a clean-room reproduction and a separate founder
+closure decision. The review finds bounded evidence for all four published
+exit criteria; SPEC-016 remains a private experiment until its clean-room
+reproduction and any separate promotion contract are complete. Independent
+external validation remains pending and is not a milestone gate. Broader
+workload adapters are deferred until this closure decision. Any executable
+integration or ref promotion requires a separately reviewed execution contract
+and authorization; it is not implied by advisory preparation.
 
 Deliverables:
 
