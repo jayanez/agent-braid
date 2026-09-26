@@ -2,8 +2,11 @@
 
 ## Status
 
-Proposed for founder review on 2026-09-26. This records the local repair candidate;
-it does not approve a release, remote history operation or scientific claim.
+Accepted by explicit founder decision on 2026-09-26 for the local provenance
+supplement and portable validation boundary. The
+[decision record](../releases/publication/adr-0016-founder-decision.json) binds
+the reviewed proposal bytes and approval scope. This does not approve a release,
+remote history operation, SPEC-014/015 review or scientific claim.
 
 ## Context
 

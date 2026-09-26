@@ -1,0 +1,25 @@
+{
+  "recordVersion": "agent-braid-adr-0016-founder-decision-1",
+  "adr": "docs/adr/0016-post-root-public-provenance.md",
+  "reviewedAt": "2026-09-26",
+  "reviewer": {
+    "name": "Juan Antonio Yáñez García",
+    "role": "founder"
+  },
+  "decision": "accepted",
+  "reviewedCommit": "ad44137d55592a1c494b2dcf3f19767d755bba6c",
+  "reviewedProposalSha256": "361fdc332decaa51cbed486988d0750bee03f6aea5f570107cc58cc4c429e560",
+  "decisionText": "Approve ADR 0016 as presented: preserve the existing public root, main and tag identities and use the immutable post-root provenance supplement with its stated validation and evidence limits.",
+  "scope": {
+    "authorized": [
+      "Adopt the post-root supplement as the local provenance and portable validation design.",
+      "Continue local validation and prepare the repair for normal publication review."
+    ],
+    "separateDecisions": [
+      "Internal human review of the restored-history SPEC-014/015 candidate.",
+      "Any remote publication, pull request, merge or history operation.",
+      "External validation or M2 closure."
+    ]
+  },
+  "independentValidation": "pending"
+}
