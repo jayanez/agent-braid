@@ -5,8 +5,8 @@
 Use the existing 2–4 operation Git request, M1 provenance and fixed patches.
 Keep `produce`, `verify`, the CLI, evidence and advisory plan schemas exhaustive.
 Add a private order reducer and comparison function that runs selected orders
-in isolated scratch state and checks them against independently verified full
-replay evidence.
+in isolated scratch state and checks them against the full exhaustive baseline,
+which the existing verifier regenerates with the same replay implementation.
 
 ## Constitution check before research
 
@@ -20,7 +20,8 @@ The private experiment changes none of these boundaries.
 See `research.md`. The selected equivalence is generated only by adjacent
 swaps of conservative path-disjoint operations. Unlike a sleep-set search, the
 algorithm still enumerates at most 24 topological orders and reduces only the
-number of Git replays. The exhaustive engine remains an independent oracle.
+number of Git replays. The exhaustive engine is a separately executed baseline,
+not an independently implemented oracle.
 
 ## Design and compatibility
 
@@ -33,7 +34,7 @@ number of Git replays. The exhaustive engine remains an independent oracle.
    a complete coverage map.
 3. Add a private selected-order replay path using the existing sanitized Git
    environment, fresh index, patch application and resource bounds. Compare
-   those schedules against independently verified exhaustive evidence. Never
+   those schedules against the replay-verified exhaustive baseline. Never
    serialize a partial schedule list as public evidence.
 4. Use a repeated-context real-Git divergence plus one disjoint patch to
    exercise SPEC-015's verified positive reduction path.
