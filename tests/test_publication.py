@@ -14,7 +14,10 @@ from unittest import mock
 
 from scripts.closure_anchors import validate_closure_anchor
 from scripts.create_public_export import create_export
-from scripts.publication import MANIFEST, redact_local_paths, validate_portable_root
+from scripts.publication import (
+    ADDENDUM, MANIFEST, canonical_manifest, redact_local_paths,
+    root_manifest_payload, validate_portable_root,
+)
 from scripts.validate_publication import (
     PUBLIC_INPUTS,
     PUBLIC_OBSERVATIONS,
@@ -198,8 +201,31 @@ class PublicationTests(unittest.TestCase):
             )
             self.assertNotIn("specs/009-public/spec.md", manifest["protectedPaths"])
             write(public / "README.md", "future public change\n")
-            commit(public, "later public work")
+            write(public / "later.txt", "later public evidence\n")
+            snapshot = commit(public, "later public work")
             validate_portable_root(public)
+            later = (public / "later.txt").read_bytes()
+            addendum = {
+                "recordVersion": "0.1.0",
+                "baseManifestSha256": hashlib.sha256((public / MANIFEST).read_bytes()).hexdigest(),
+                "snapshotCommit": snapshot,
+                "snapshotTree": git(public, "rev-parse", f"{snapshot}^{{tree}}"),
+                "files": [{"path": "later.txt", "sha256": hashlib.sha256(later).hexdigest(),
+                           "size": len(later)}],
+                "limits": ["Public snapshot only; private ancestry unavailable."],
+            }
+            (public / ADDENDUM).parent.mkdir(parents=True, exist_ok=True)
+            (public / ADDENDUM).write_bytes(canonical_manifest(addendum))
+            commit(public, "bind later public evidence")
+            validate_portable_root(public)
+            self.assertEqual(root_manifest_payload(public, "later.txt"), later)
+            write(public / "later.txt", "changed after snapshot\n")
+            self.assertEqual(root_manifest_payload(public, "later.txt"), later)
+            original_addendum = (public / ADDENDUM).read_bytes()
+            (public / ADDENDUM).write_bytes(original_addendum + b" ")
+            with self.assertRaisesRegex(ValueError, "canonical|unchanged"):
+                validate_portable_root(public)
+            (public / ADDENDUM).write_bytes(original_addendum)
             data = json.loads((public / MANIFEST).read_text())
             data["independentValidation"] = "completed"
             write(public / MANIFEST, json.dumps(data, indent=2, sort_keys=True) + "\n")

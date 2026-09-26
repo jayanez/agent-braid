@@ -254,11 +254,11 @@ def validate_portable_record(root, path, bind_manifest=True):
             and all(isinstance(item.get("commit"), str)
                     and re.fullmatch(r"[0-9a-f]{40}", item["commit"])
                     for item in (authority_candidate, evidence_candidate)):
-        commits_available = all(subprocess.run(
-            ["git", "-C", str(root), "cat-file", "-e", f"{item['commit']}^{{commit}}"],
-            capture_output=True, check=False,
+        commits_in_public_history = all(subprocess.run(
+            ["git", "-C", str(root), "merge-base", "--is-ancestor",
+             item["commit"], "HEAD"], capture_output=True, check=False,
         ).returncode == 0 for item in (authority_candidate, evidence_candidate))
-        if commits_available:
+        if commits_in_public_history:
             validate_record(root, path)
             return
     if "authority_hashes" in record:
