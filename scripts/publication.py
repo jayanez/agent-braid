@@ -258,6 +258,10 @@ def validate_addendum(root: Path, base: dict | None = None) -> dict | None:
     root = root.resolve()
     path = root / ADDENDUM
     if not path.is_file():
+        introduced = _git(root, "log", "--format=%H", "--diff-filter=A", "HEAD",
+                          "--", ADDENDUM).stdout.decode("ascii").splitlines()
+        if introduced:
+            raise ValueError("public export addendum is missing after introduction")
         return None
     if base is None:
         base = load_manifest(root)
