@@ -51,6 +51,11 @@ class ValidationProfileTests(unittest.TestCase):
         self.assertIn("git-replay-tests", replay.commands)
         self.assertIn("contracts", replay.commands)
 
+        reduction = validation.build_plan(["agent_braid/git_partial_order.py"], "quick")
+        self.assertEqual(reduction.effective_profile, "quick")
+        self.assertIn("git-partial-order-tests", reduction.commands)
+        self.assertIn("contracts", reduction.commands)
+
         issue_template = validation.build_plan([".github/ISSUE_TEMPLATE/bug.yml"], "quick")
         self.assertEqual(issue_template.effective_profile, "quick")
         self.assertNotIn("spec-kit-integration", issue_template.commands)

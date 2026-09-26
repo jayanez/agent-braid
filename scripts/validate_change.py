@@ -88,6 +88,9 @@ RULES = (
         "examples/analysis/git-replay-benchmark.json",
         "scripts/run_git_replay_benchmark.py",
     ), ("contracts", "git-replay-tests")),
+    Rule("git-partial-order", (
+        "agent_braid/git_partial_order.py", "tests/test_git_partial_order.py",
+    ), ("contracts", "git-partial-order-tests")),
     Rule("scientific-laboratory", (
         "research/lab/**", "research/counterexamples/**", "examples/lab/**",
         "tests/test_lab.py",
@@ -290,6 +293,7 @@ def command_argv(identifier: str, base: str, head: str | None, root: Path = ROOT
         "analysis-tests": [python, "-m", "unittest", "tests.test_analysis", "-v"],
         "git-adapter-tests": [python, "-m", "unittest", "tests.test_git_adapter", "-v"],
         "git-replay-tests": [python, "-m", "unittest", "tests.test_git_replay", "-v"],
+        "git-partial-order-tests": [python, "-m", "unittest", "tests.test_git_partial_order", "-v"],
         "lab-tests": [python, "-m", "unittest", "tests.test_lab", "-v"],
         "strategy-tests": [python, "-m", "unittest", "tests.test_strategy", "-v"],
         "governance-tests": [python, "-m", "unittest", "tests.test_m0_closure",
