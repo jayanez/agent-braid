@@ -41,6 +41,32 @@ guidance remains in `AGENTS.md`; if unavailable, report the limitation and use
 primary documentation without pretending the Context7 check ran. No executable
 correctness gate depends on an agent-exclusive tool.
 
+### Shared Git object-store recovery
+
+The portable-root gate rejects unreachable Git objects. Worktrees share one
+object store, so commits left by deleted or squash-merged branches can make a
+local worktree fail the preflight even when its tracked files are clean. Record
+the failure and inspect `git worktree list --porcelain` and
+`git fsck --unreachable --no-reflogs` before changing anything. Do not prune,
+rewrite history, disable the check, or regenerate skills to hide the failure.
+
+For this specific failure, start a new workflow in a full, independent clone
+of the current public `develop` branch. A new worktree or copy of the old
+`.git` retains the same object-store problem. After setting up the isolated
+Python 3.12+ environment above, run in the new clone:
+
+```sh
+.venv-speckit/bin/python scripts/restore_public_spec_history.py
+git fsck --unreachable --no-reflogs
+.venv-speckit/bin/python -m scripts.validate_spec_kit
+```
+
+The restoration tool fetches the exact reviewed SPEC-012 candidate and anchors
+it to a local ref. Require zero unreachable objects, one public root and a
+passing preflight. If any check still fails, stop there and report the actual
+failure. The old object store remains available for a separate history and
+worktree audit.
+
 ## Equivalent journey
 
 | Phase | Codex | Claude Code |
