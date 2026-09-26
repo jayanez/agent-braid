@@ -1,0 +1,34 @@
+{
+  "recordVersion": "agent-braid-internal-evidence-review-1",
+  "feature": "SPEC-014 M2 observation normalization",
+  "reviewedAt": "2026-09-26",
+  "reviewedCommit": "390fd7bd992f1ffb88ec3e52ac664e752d4d731e",
+  "reviewer": {
+    "name": "Juan Antonio Yáñez García",
+    "role": "founder"
+  },
+  "conflictsOfInterest": "The founder is the project maintainer; this internal review is not independent external validation.",
+  "decision": "approved-internal-result-review",
+  "decisionText": "Apruebo la revisión interna de SPEC-014 y SPEC-015 sobre 390fd7b, aceptando el límite del caso positivo de SPEC-015; mantengo pendiente la validación externa y no cierro M2",
+  "scope": "Private, behavior-preserving normalization of complete bounded Git replay schedules.",
+  "rationale": "The 16 focused tests passed for tracked-tree-v1 equivalence, divergence, incomplete schedules and existing replay/verification compatibility. All six evidence input digests match both the public base and the reviewed commit. The twelve-command internal clean-room reproduction passed on ancestor 613b529; subsequent changes through the reviewed commit only packaged governance, reproduction and assurance records.",
+  "reviewedArtifacts": [
+    {
+      "path": "specs/014-m2-observation-normalizer/evidence.json",
+      "sha256AtReviewedCommit": "2e0771d1bd1ab7cd1d2d6ad9a75fd8584b6a6b3220274237f492f9551e997722"
+    },
+    {
+      "path": "docs/releases/publication/reproduction-613b529.json",
+      "sha256AtReviewedCommit": "a3333be99e003a3330586ce97e35770df64097809efe5672b5b3be106e4c4d73"
+    }
+  ],
+  "limits": [
+    "Approval applies only to the frozen reviewed commit and the prepared internal evidence.",
+    "Tracked-tree equality is a finite syntactic observation, not semantic equivalence, hidden-effect independence, general confluence or production safety.",
+    "The clean-room reproduction is internal; independent external validation remains pending."
+  ],
+  "independentValidation": "pending",
+  "externalHumanValidation": "pending",
+  "mergeAuthorization": false,
+  "m2Closure": false
+}
