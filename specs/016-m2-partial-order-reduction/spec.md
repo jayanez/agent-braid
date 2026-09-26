@@ -40,9 +40,12 @@ evidence remain authoritative for this experiment.
   - **SC-004:** Three disjoint operations require one representative replay
     instead of six, while a fully dependent case replays every admissible
     order.
-- **REQ-003 — exhaustive oracle comparison.** Independently produce and verify
-  the existing full replay evidence. Compare each representative's fresh
-  isolated replay with its oracle schedule, then compare the complete/incomplete
+- **REQ-003 — exhaustive oracle comparison.** Produce the existing full replay
+  evidence and have the existing verifier regenerate and check it. The
+  verifier reruns the replay through the same replay implementation; it is a
+  separate verification pass, not an independently implemented engine.
+  Compare each representative's fresh isolated replay with its baseline
+  schedule, then compare the complete/incomplete
   status and terminal `tracked-tree-v1` observation of every oracle order in
   each class. A mismatch, unverified oracle or unavailable input is
   inconclusive for the reduction. Preserve raw exhaustive traces and the
@@ -57,8 +60,8 @@ evidence remain authoritative for this experiment.
   reducer with a verified divergent Git fixture containing a redundant third
   operation. Do not use a controlled backend result as a substitute for the
   real fixture.
-  - **SC-007:** The real fixture reduces to independently verified divergent
-    two-operation evidence.
+  - **SC-007:** The real fixture reduces to a two-operation divergent witness
+    verified by the existing verifier.
 
 ## Scientific boundaries and compatibility
 
