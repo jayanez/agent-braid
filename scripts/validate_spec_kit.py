@@ -270,6 +270,10 @@ def validate_portable_record(root, path, bind_manifest=True):
         if commits_in_public_history:
             validate_record(root, path)
             return
+        if _matches_reviewed_candidate_tag(
+                root, relative_record, path, record, authority_candidate["commit"]):
+            validate_record(root, path)
+            return
     if "authority_hashes" in record:
         raise ValueError("Legacy authority_hashes must be migrated to authority_snapshot")
     authority = record.get("authority_snapshot")
@@ -390,6 +394,31 @@ def validate_portable_record(root, path, bind_manifest=True):
                             raise ValueError(f"Stale evidence input: {name}")
                 for field in ("command", "outcome", "limits"):
                     nonempty(item.get(field), field)
+
+
+def _matches_reviewed_candidate_tag(root, relative_record, path, record, commit):
+    """Accept a frozen private record only when its exact reviewed bytes are tagged."""
+    if record.get("human_review") != "approved":
+        return False
+    evidence = record.get("evidence_snapshot", {})
+    if evidence.get("commit") != commit:
+        return False
+    match = re.fullmatch(r"specs/(\d{3})-[^/]+/assurance\.json", relative_record)
+    if not match:
+        return False
+    tag_ref = f"refs/tags/spec-{match.group(1)}-reviewed-{commit[:7]}"
+    try:
+        if git(root, "cat-file", "-t", tag_ref).decode("ascii").strip() != "tag":
+            return False
+        tagged_commit = git(root, "rev-parse", f"{tag_ref}^{{commit}}").decode(
+            "ascii").strip()
+        if tagged_commit != commit:
+            return False
+        review_name = safe_name(root, record.get("review_record", ""))
+        review = json.loads(local(root, review_name).read_text())
+    except (ValueError, OSError, json.JSONDecodeError, UnicodeDecodeError):
+        return False
+    return review.get("reviewedCommit") == commit
 
 
 def check(root=ROOT, require_both=True):
