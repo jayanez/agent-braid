@@ -13,7 +13,7 @@
   ],
   "assumptions": "The existing replay producer and verifier can independently reconstruct bounded subsets from immutable source commits.",
   "authority_snapshot": {
-    "commit": "f5958595f44837a578a9c51f4b0d9f2056323056",
+    "commit": "6b2192a7527e78950faca2086ebc16306684dfc5",
     "hashes": {
       "ARCHITECTURE.md": "94e5114eb799b25ca666ef728f84ab1c88e6ad1b342e30a9e99276b8f44c30c2",
       "CONSTITUTION.md": "ff7196976a1736a639947c2ab26e8da157fef23c89ba9881312f2a36459964eb",
@@ -68,7 +68,7 @@
   "compatibility": "The reducer is internal and consumes existing 0.1.0-alpha evidence without changing public CLI, schemas or replay engine.",
   "domain": "Verified divergent evidence for two to four operations from one Git base; subsets retain at least two operations.",
   "evidence_snapshot": {
-    "commit": "f5958595f44837a578a9c51f4b0d9f2056323056",
+    "commit": "6b2192a7527e78950faca2086ebc16306684dfc5",
     "mode": "historical"
   },
   "execution_contract": "Read-only bounded Git replay in private scratch. A supervisor enforces one monotonic 120-second deadline and at most ten candidate subsets across input verification and replay, terminating the private worker process group on timeout. Existing Git budgets are per replay, not shared aggregate quotas. No project-code command, repository ref update or execution authorization.",
