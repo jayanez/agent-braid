@@ -1,7 +1,9 @@
 # M2 closure-readiness review
 
-**Review date:** 2026-09-26  
-**Repository candidate inspected:** `893e90b903b0a49db3f8baf5f1185a7def7e850e` (`origin/develop`)  
+**Review date:** 2026-09-26
+
+**Repository candidate inspected:** `893e90b903b0a49db3f8baf5f1185a7def7e850e` (`origin/develop`)
+
 **Status:** evidence supports a bounded closure review after final clean-room reproduction; M2 is not closed by this document.
 
 This review maps the M2 exit criteria in [the roadmap](../../ROADMAP.md) to
