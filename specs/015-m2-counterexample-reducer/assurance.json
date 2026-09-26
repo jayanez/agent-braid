@@ -13,7 +13,7 @@
   ],
   "assumptions": "The existing replay producer and verifier can independently reconstruct bounded subsets from immutable source commits.",
   "authority_snapshot": {
-    "commit": "6b2192a7527e78950faca2086ebc16306684dfc5",
+    "commit": "390fd7bd992f1ffb88ec3e52ac664e752d4d731e",
     "hashes": {
       "ARCHITECTURE.md": "94e5114eb799b25ca666ef728f84ab1c88e6ad1b342e30a9e99276b8f44c30c2",
       "CONSTITUTION.md": "ff7196976a1736a639947c2ab26e8da157fef23c89ba9881312f2a36459964eb",
@@ -39,7 +39,7 @@
       "docs/adr/0013-isolated-git-replay-and-advisory-planning.md": "1c291cb527825864520075edc2ae7c84bafb07f66790f9fc29b0149a07024d24",
       "docs/adr/0014-parallel-integration-contract.md": "2481e93cf1e392887f2ee74e39efec7dfee0a9c52340fccd491903fd4292f679",
       "docs/adr/0015-real-repository-validation-profile.md": "43e05f6fa96b5b3a8a8a83ddc922d8bced11b89a3f88263760b83b358febde99",
-      "docs/adr/0016-post-root-public-provenance.md": "361fdc332decaa51cbed486988d0750bee03f6aea5f570107cc58cc4c429e560",
+      "docs/adr/0016-post-root-public-provenance.md": "e3c001cc23b64db5362ed0274af21d1d5a42b27d2bff68654db51498fbfb142a",
       "docs/architecture/AGENT_INTERACTION_METADATA.md": "0118d7f16c390fc4c1ff027b503a4eaba8a747edf3f6d7b088559f8870e27780",
       "docs/architecture/ASSURANCE_LEVELS.md": "102d0df0dc6fc0ec114d92fe1ef053b375bd9704d0af6a048affe36900d77512",
       "docs/architecture/CONFLUENCE_CERTIFICATE.md": "fd12a8f1a1477835848581b0f4ccd52f76d3f22dd96a3abaccb9074733464a8e",
@@ -68,7 +68,7 @@
   "compatibility": "The reducer is internal and consumes existing 0.1.0-alpha evidence without changing public CLI, schemas or replay engine.",
   "domain": "Verified divergent evidence for two to four operations from one Git base; subsets retain at least two operations.",
   "evidence_snapshot": {
-    "commit": "6b2192a7527e78950faca2086ebc16306684dfc5",
+    "commit": "390fd7bd992f1ffb88ec3e52ac664e752d4d731e",
     "mode": "historical"
   },
   "execution_contract": "Read-only bounded Git replay in private scratch. A supervisor enforces one monotonic 120-second deadline and at most ten candidate subsets across input verification and replay, terminating the private worker process group on timeout. Existing Git budgets are per replay, not shared aggregate quotas. No project-code command, repository ref update or execution authorization.",
