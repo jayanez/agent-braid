@@ -1,0 +1,43 @@
+{
+  "recordVersion": "agent-braid-internal-evidence-review-1",
+  "feature": "SPEC-016 M2 bounded Git partial-order experiment",
+  "reviewedAt": "2026-09-26",
+  "reviewedCommit": "0974739ae4dc6784ff3c21a34745655a38dd4943",
+  "reviewer": {
+    "name": "Juan Antonio Yáñez García",
+    "role": "founder"
+  },
+  "conflictsOfInterest": "The founder is the project maintainer. This internal review is not independent external validation.",
+  "decision": "approved-internal-result-review",
+  "decisionText": "**Veredicto: favorable, con alcance acotado.** Apruebo SPEC-016 como experimento privado de M2. La relación de independencia se mantiene sintáctica y conservadora; el fixture de Git real aporta evidencia concreta para el reductor de SPEC-015; y los límites científicos están expresados con claridad. Antes de considerar esta aprobación suficiente para fusionar, solicito dos ajustes: (1) aclarar que el oráculo se vuelve a generar y el verificador existente lo reproduce; no son implementaciones independientes del motor de replay; (2) añadir una prueba directa que confirme que una operación con `uncertainPaths` no se considera intercambiable. Esta aprobación cubre el experimento finito y privado. No avala una mejora de rendimiento en producción, conmutatividad semántica, confluencia general ni autorización de ejecución.",
+  "conditionsResolved": [
+    "SPEC-016 now states that the existing verifier regenerates and checks the exhaustive baseline using the same replay implementation; no independent replay engine is claimed.",
+    "A real-Git test supplies uncertainPaths on a disjoint-path operation and confirms both admissible orders remain selected with no independent pair."
+  ],
+  "scope": "Private finite partial-order reduction experiment for fixed Git commit patches, its replay-verified exhaustive baseline, and the tested uncertain-path control.",
+  "rationale": "The focused suite passed 24 tests. Quick and PR validation each passed 241 tests with one expected skip; Spec Kit validation, scientific controls, contract checks and render checks passed. The approval applies only to the bounded experiment and its stated observations.",
+  "reviewedArtifacts": [
+    {
+      "path": "specs/016-m2-partial-order-reduction/spec.md",
+      "sha256AtReviewedCommit": "1ac24410795ced2a74b5b1b294fef8b700474709d566b4bcfb3a4999625227e6"
+    },
+    {
+      "path": "specs/016-m2-partial-order-reduction/evidence.json",
+      "sha256AtReviewedCommit": "69d4dbb7fc87f1693c84dfbebb199bdc35a9232a852f093c5fcc6ceb3023d53e"
+    },
+    {
+      "path": "specs/016-m2-partial-order-reduction/tasks.md",
+      "sha256AtReviewedCommit": "172d92f6e8edd905a6745c7152448dde085cc56411eb6edb35349a5ac994f424"
+    }
+  ],
+  "limits": [
+    "The verifier repeats the exhaustive replay using the same replay implementation; this is not independent implementation diversity.",
+    "The finite path relation does not prove semantic commutation, arbitrary-workload confluence or production speedup.",
+    "No execution, integration, ref-promotion or M2-closure authority is granted.",
+    "Clean-room reproduction and independent external validation remain pending."
+  ],
+  "independentValidation": "pending",
+  "externalHumanValidation": "pending",
+  "mergeAuthorization": true,
+  "m2Closure": false
+}
