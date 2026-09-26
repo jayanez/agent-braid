@@ -12,7 +12,7 @@
   ],
   "assumptions": "The existing tracked-tree-v1 final-tree OID is the complete observation for the current fixed-patch replay domain.",
   "authority_snapshot": {
-    "commit": "f5958595f44837a578a9c51f4b0d9f2056323056",
+    "commit": "6b2192a7527e78950faca2086ebc16306684dfc5",
     "hashes": {
       "ARCHITECTURE.md": "94e5114eb799b25ca666ef728f84ab1c88e6ad1b342e30a9e99276b8f44c30c2",
       "CONSTITUTION.md": "ff7196976a1736a639947c2ab26e8da157fef23c89ba9881312f2a36459964eb",
@@ -67,7 +67,7 @@
   "compatibility": "Existing Git replay evidence, advisory-plan schema, CLI output and deterministic digests remain unchanged.",
   "domain": "Two to four immutable Git commit patches and the existing complete and incomplete schedule records.",
   "evidence_snapshot": {
-    "commit": "f5958595f44837a578a9c51f4b0d9f2056323056",
+    "commit": "6b2192a7527e78950faca2086ebc16306684dfc5",
     "mode": "historical"
   },
   "execution_contract": "Existing isolated-index-patch-v1 read-only replay; no repository-code command, ref update or execution authorization.",
