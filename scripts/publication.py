@@ -6,12 +6,14 @@ from __future__ import annotations
 
 import hashlib
 import json
+from functools import lru_cache
 from pathlib import Path, PurePosixPath
 import re
 import subprocess
 
 
 MANIFEST = "docs/releases/public-export.json"
+ADDENDUM = "docs/releases/public-export-addendum-m2.json"
 MANIFEST_VERSION = "0.1.0"
 MANIFEST_FIELDS = {
     "recordVersion", "sourceCommit", "sourceTree", "publicationMode",
@@ -247,6 +249,83 @@ def validate_portable_root(root: Path) -> dict:
     unreachable = _git(root, "fsck", "--unreachable", "--no-reflogs", allow_failure=True)
     if unreachable.returncode not in (0, 1) or b"unreachable " in unreachable.stdout + unreachable.stderr:
         raise ValueError("public repository contains unreachable objects")
+    validate_addendum(root, data)
+    return data
+
+
+def validate_addendum(root: Path, base: dict | None = None) -> dict | None:
+    """Bind post-root public files to one reachable, immutable snapshot."""
+    root = root.resolve()
+    path = root / ADDENDUM
+    if not path.is_file():
+        return None
+    if base is None:
+        base = load_manifest(root)
+    payload = path.read_bytes()
+    head = _git(root, "rev-parse", "HEAD").stdout.decode("ascii").strip()
+    return _validated_addendum(str(root), head, digest_bytes(payload),
+                               digest(root / MANIFEST))
+
+
+@lru_cache(maxsize=16)
+def _validated_addendum(root_name: str, head: str, addendum_hash: str,
+                        base_hash: str) -> dict:
+    root = Path(root_name)
+    path = root / ADDENDUM
+    payload = path.read_bytes()
+    if digest_bytes(payload) != addendum_hash:
+        raise ValueError("public export addendum changed during validation")
+    try:
+        data = json.loads(payload)
+    except (UnicodeError, json.JSONDecodeError) as exc:
+        raise ValueError("public export addendum is invalid") from exc
+    if set(data) != {"recordVersion", "baseManifestSha256", "snapshotCommit",
+                     "snapshotTree", "files", "limits"} \
+            or data.get("recordVersion") != "0.1.0" \
+            or data.get("baseManifestSha256") != base_hash \
+            or not HEX40.fullmatch(str(data.get("snapshotCommit", ""))) \
+            or not HEX40.fullmatch(str(data.get("snapshotTree", ""))):
+        raise ValueError("public export addendum identity is invalid")
+    if payload != canonical_manifest(data):
+        raise ValueError("public export addendum is not canonical JSON")
+    if not isinstance(data.get("limits"), list) or not data["limits"] \
+            or any(not isinstance(item, str) or not item.strip() for item in data["limits"]):
+        raise ValueError("public export addendum limits are required")
+    files = data.get("files")
+    if not isinstance(files, list) or not files:
+        raise ValueError("public export addendum inventory is empty")
+    base_paths = {item["path"] for item in load_manifest(root)["files"]}
+    names = []
+    for item in files:
+        if not isinstance(item, dict) or set(item) != {"path", "sha256", "size"}:
+            raise ValueError("public export addendum file record is invalid")
+        relative = safe_relative(item.get("path", ""))
+        if relative in base_paths or relative in {MANIFEST, ADDENDUM} \
+                or not HEX64.fullmatch(str(item.get("sha256", ""))) \
+                or type(item.get("size")) is not int or item["size"] < 0:
+            raise ValueError(f"public export addendum file metadata is invalid: {relative}")
+        names.append(relative)
+    if names != sorted(set(names)):
+        raise ValueError("public export addendum paths must be unique and sorted")
+    introduced = _git(root, "log", "--format=%H", "--diff-filter=A", head,
+                      "--", ADDENDUM).stdout.decode("ascii").splitlines()
+    if len(introduced) != 1 \
+            or _git(root, "show", f"{introduced[0]}:{ADDENDUM}").stdout != payload:
+        raise ValueError("public export addendum must be unchanged since introduction")
+    snapshot = data["snapshotCommit"]
+    if _git(root, "merge-base", "--is-ancestor", snapshot, introduced[0],
+            allow_failure=True).returncode != 0 \
+            or _git(root, "merge-base", "--is-ancestor", snapshot, head,
+                    allow_failure=True).returncode != 0 \
+            or _git(root, "rev-parse", f"{snapshot}^{{tree}}").stdout.decode("ascii").strip() \
+            != data["snapshotTree"]:
+        raise ValueError("public export addendum snapshot is not in public ancestry")
+    for item in files:
+        relative = item["path"]
+        blob = _git(root, "show", f"{snapshot}:{relative}").stdout
+        if len(blob) != item["size"] or digest_bytes(blob) != item["sha256"] \
+                or any(pattern.search(blob) for pattern in PROHIBITED_TEXT):
+            raise ValueError(f"public export addendum payload is invalid: {relative}")
     return data
 
 
@@ -266,9 +345,22 @@ def manifest_entry(root: Path, relative: str) -> dict:
 
 
 def root_manifest_payload(root: Path, relative: str) -> bytes:
-    """Read one manifest-bound file from the immutable public root commit."""
+    """Read one manifest-bound file from an immutable public commit."""
     relative = safe_relative(relative)
-    entry = manifest_record(root, relative)
+    base = load_manifest(root)
+    matches = [item for item in base["files"] if item["path"] == relative]
+    if not matches:
+        addendum = validate_addendum(root, base)
+        matches = [item for item in addendum["files"] if item["path"] == relative] \
+            if addendum is not None else []
+        if len(matches) != 1:
+            raise ValueError(f"export manifest does not bind required file: {relative}")
+        entry = matches[0]
+        payload = _git(root, "show", f"{addendum['snapshotCommit']}:{relative}").stdout
+        if digest_bytes(payload) != entry["sha256"] or len(payload) != entry["size"]:
+            raise ValueError(f"public snapshot payload does not match manifest: {relative}")
+        return payload
+    entry = matches[0]
     roots = _git(root, "rev-list", "--max-parents=0", "--all").stdout.decode("ascii").split()
     if len(roots) != 1:
         raise ValueError("public repository must have exactly one clean root")
