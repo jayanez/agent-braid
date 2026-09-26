@@ -225,6 +225,14 @@ def _tree(repo: Path, env: dict[str, str], budget: GitCommandBudget) -> str:
 def _replay_all(request: dict, provenance: dict, patches: dict[str, bytes],
                 source_env: dict[str, str], temp_root: Path,
                 budget: GitCommandBudget) -> list[dict]:
+    return _replay_orders(request, provenance, patches, source_env, temp_root,
+                          budget, _topological_orders(request["operations"]))
+
+
+def _replay_orders(request: dict, provenance: dict, patches: dict[str, bytes],
+                   source_env: dict[str, str], temp_root: Path,
+                   budget: GitCommandBudget, orders: list[list[str]]) -> list[dict]:
+    """Replay caller-selected orders privately; public evidence still uses all orders."""
     root = Path(request["repository"]).expanduser().resolve()
     scratch = temp_root / "scratch.git"
     _git(temp_root, source_env, "init", "--bare", "--quiet", str(scratch), budget=budget)
@@ -240,7 +248,7 @@ def _replay_all(request: dict, provenance: dict, patches: dict[str, bytes],
     _require(bool(OID.fullmatch(base_tree)), "unexpected base tree ID")
 
     result: list[dict] = []
-    for index, order in enumerate(_topological_orders(request["operations"])):
+    for index, order in enumerate(orders):
         index_path = temp_root / f"schedule-{index}.index"
         schedule_env = dict(scratch_env)
         schedule_env["GIT_INDEX_FILE"] = str(index_path)
@@ -310,7 +318,7 @@ def _bundle_digest(bundle: dict) -> str:
     return _hash_digest(payload)
 
 
-def _build_evidence(request: dict) -> dict:
+def _build_evidence(request: dict, *, order_selector=None) -> dict:
     _validate_request(request)
     source_root = Path(request["repository"]).expanduser().resolve()
     normalized = deepcopy(request)
@@ -345,7 +353,15 @@ def _build_evidence(request: dict) -> dict:
             _require(path_count <= MAX_PATHS, "changed path count exceeds 64")
             patches = _patches(normalized, provenance, env, budget)
             _mark_unsupported_binary_patches(provenance, patches, supported, reasons)
-            schedules = _replay_all(normalized, provenance, patches, env, temp_root, budget)
+            if order_selector is None:
+                schedules = _replay_all(normalized, provenance, patches, env,
+                                        temp_root, budget)
+            else:
+                # The partial bundle is private experiment data, never a public
+                # replay evidence record or an input to the public verifier.
+                orders = order_selector(normalized, provenance, patches, supported)
+                schedules = _replay_orders(normalized, provenance, patches, env,
+                                           temp_root, budget, orders)
             operations = []
             resolved_by_id = {item["instanceId"]: item for item in provenance["operations"]}
             for operation in normalized["operations"]:
