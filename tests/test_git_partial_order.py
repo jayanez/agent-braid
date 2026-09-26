@@ -158,6 +158,20 @@ class PartialOrderRealGitTests(unittest.TestCase):
         self.assertFalse(plan["executionAuthorization"])
         self.assertFalse(result["executionAuthorization"])
 
+    def test_declared_uncertain_path_prevents_replay_reduction(self):
+        revisions = {name: self.commit(name, name.lower() + ".txt", name + "\n")
+                     for name in "AB"}
+        request = self.request(revisions)
+        request["operations"][0]["uncertainPaths"] = ["a.txt"]
+
+        result = compare(request)
+
+        self.assertEqual(result["status"], "matched")
+        self.assertEqual(result["partition"]["orderCount"], 2)
+        self.assertEqual(result["partition"]["replayCount"], 2)
+        self.assertEqual(result["partition"]["independentPairs"], [])
+        self.assertFalse(result["executionAuthorization"])
+
     def test_incomplete_and_tampered_oracle_are_not_positive(self):
         left = self.commit("left", "overlap.txt", "left\n")
         right = self.commit("right", "overlap.txt", "right\n")
