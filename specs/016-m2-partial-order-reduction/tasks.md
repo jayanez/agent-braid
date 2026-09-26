@@ -10,6 +10,6 @@
   producer/verifier/plan outputs and fail-closed behavior.
 - [x] T004 (REQ-004/SC-007): record the real-Git divergent redundant-operation
   fixture for SPEC-015 and its replay-verified smaller witness.
-- [ ] T005 (REQ-001–004/SC-001–007): run focused and repository validation,
+- [x] T005 (REQ-001–004/SC-001–007): run focused and repository validation,
   capture bounded evidence, freeze a candidate and request scoped human review;
   leave external validation pending.
