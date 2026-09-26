@@ -291,6 +291,8 @@ class PublicationTests(unittest.TestCase):
             validate_addendum(public)
             git(public, "rm", ADDENDUM)
             commit(public, "remove addendum")
+            with self.assertRaisesRegex(ValueError, "missing after introduction"):
+                validate_addendum(public)
             (public / ADDENDUM).write_bytes(canonical_manifest(valid))
             commit(public, "reintroduce addendum")
             with self.assertRaisesRegex(ValueError, "unchanged since introduction"):
