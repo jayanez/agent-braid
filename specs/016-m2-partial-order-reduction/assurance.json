@@ -13,7 +13,7 @@
   ],
   "assumptions": "Immutable commit sources and M1 Git provenance describe the fixed patches; uncertain or unsupported operations are dependent on all others.",
   "authority_snapshot": {
-    "commit": "cde6b8acfbee7e0c3b96557f6eb5d298f3ca9f02",
+    "commit": null,
     "hashes": {
       "ARCHITECTURE.md": "94e5114eb799b25ca666ef728f84ab1c88e6ad1b342e30a9e99276b8f44c30c2",
       "CONSTITUTION.md": "ff7196976a1736a639947c2ab26e8da157fef23c89ba9881312f2a36459964eb",
@@ -63,13 +63,13 @@
       "schemas/governance/public-export-manifest.schema.json": "11eb7f2594939ae9fd0c9e6cfe4423a80aba686d6cdfdd8b73b0fb84b0840aa8",
       "schemas/governance/release-validation-record.schema.json": "d9943f0c9f5520ea52e3b12bfba88240d03f8011b433fc5e35cb49549ab6e819"
     },
-    "mode": "historical"
+    "mode": "current"
   },
   "compatibility": "Private experiment only. Existing 0.1.0-alpha Git replay evidence, advisory plan, CLI, schemas, producer and verifier remain exhaustive and unchanged.",
   "domain": "Two to four immutable base-to-commit Git patches and their declared dependency graph, with at most 24 admissible orders.",
   "evidence_snapshot": {
-    "commit": "cde6b8acfbee7e0c3b96557f6eb5d298f3ca9f02",
-    "mode": "historical"
+    "commit": null,
+    "mode": "current"
   },
   "execution_contract": "Isolated Git bare scratch and fresh index for every selected order; existing per-call Git budgets apply. No source mutation, ref promotion, project-code execution or execution authorization.",
   "human_review": "pending",
@@ -93,10 +93,10 @@
           "obtained_evidence": [
             {
               "command": "/Users/juanyanez/.codex/worktrees/fbe15bfb-b771-402b-888d-763a5b1234c0/agent-braid/.venv-validation/bin/python -m unittest tests.test_git_partial_order tests.test_github_tracking tests.test_validation_profiles -v",
-              "limits": "Local finite fixtures and repository validation only. The real-Git divergent fixture supports a bounded SPEC-015 positive path. Syntactic path disjointness does not prove semantic commutation, arbitrary-workload confluence, speedup or execution safety. Human review, clean-room reproduction and independent external validation remain pending.",
-              "outcome": "The focused suite passed all 23 tests, including PartialOrderRelationTests.test_disjoint_siblings_are_independent; quick and PR repository profiles passed 240 tests with one expected skip each.",
+              "limits": "Local finite fixtures and repository validation only. The verifier repeats the exhaustive replay using the same implementation; this is not independent implementation diversity. Syntactic path disjointness does not prove semantic commutation, arbitrary-workload confluence, production speedup or execution safety. Founder review is internal; clean-room reproduction and independent external validation remain pending.",
+              "outcome": "The focused suite passed all 24 tests, including the real-Git uncertain-path check; quick and PR repository profiles each passed 241 tests with one expected skip.",
               "path": "specs/016-m2-partial-order-reduction/evidence.json",
-              "sha256": "f3b5789d376983ddd588b227fc5ebcb62f01207a7787ff2be73aefa02c515983"
+              "sha256": "69d4dbb7fc87f1693c84dfbebb199bdc35a9232a852f093c5fcc6ceb3023d53e"
             }
           ],
           "planned_evidence": "Focused finite relation test and captured command output",
@@ -111,10 +111,10 @@
           "obtained_evidence": [
             {
               "command": "/Users/juanyanez/.codex/worktrees/fbe15bfb-b771-402b-888d-763a5b1234c0/agent-braid/.venv-validation/bin/python -m unittest tests.test_git_partial_order tests.test_github_tracking tests.test_validation_profiles -v",
-              "limits": "Local finite fixtures and repository validation only. The real-Git divergent fixture supports a bounded SPEC-015 positive path. Syntactic path disjointness does not prove semantic commutation, arbitrary-workload confluence, speedup or execution safety. Human review, clean-room reproduction and independent external validation remain pending.",
-              "outcome": "The focused suite passed all 23 tests, including PartialOrderRelationTests.test_overlap_prefix_dependency_and_unsupported_pairs_are_not_swapped; quick and PR repository profiles passed 240 tests with one expected skip each.",
+              "limits": "Local finite fixtures and repository validation only. The verifier repeats the exhaustive replay using the same implementation; this is not independent implementation diversity. Syntactic path disjointness does not prove semantic commutation, arbitrary-workload confluence, production speedup or execution safety. Founder review is internal; clean-room reproduction and independent external validation remain pending.",
+              "outcome": "The focused suite passed all 24 tests, including the real-Git uncertain-path check; quick and PR repository profiles each passed 241 tests with one expected skip.",
               "path": "specs/016-m2-partial-order-reduction/evidence.json",
-              "sha256": "f3b5789d376983ddd588b227fc5ebcb62f01207a7787ff2be73aefa02c515983"
+              "sha256": "69d4dbb7fc87f1693c84dfbebb199bdc35a9232a852f093c5fcc6ceb3023d53e"
             }
           ],
           "planned_evidence": "Negative relation controls, including a real-Git uncertain-path request, and captured command output",
@@ -135,10 +135,10 @@
           "obtained_evidence": [
             {
               "command": "/Users/juanyanez/.codex/worktrees/fbe15bfb-b771-402b-888d-763a5b1234c0/agent-braid/.venv-validation/bin/python -m unittest tests.test_git_partial_order tests.test_github_tracking tests.test_validation_profiles -v",
-              "limits": "Local finite fixtures and repository validation only. The real-Git divergent fixture supports a bounded SPEC-015 positive path. Syntactic path disjointness does not prove semantic commutation, arbitrary-workload confluence, speedup or execution safety. Human review, clean-room reproduction and independent external validation remain pending.",
-              "outcome": "The focused suite passed all 23 tests, including PartialOrderRelationTests.test_partition_is_deterministic_and_covers_every_order; quick and PR repository profiles passed 240 tests with one expected skip each.",
+              "limits": "Local finite fixtures and repository validation only. The verifier repeats the exhaustive replay using the same implementation; this is not independent implementation diversity. Syntactic path disjointness does not prove semantic commutation, arbitrary-workload confluence, production speedup or execution safety. Founder review is internal; clean-room reproduction and independent external validation remain pending.",
+              "outcome": "The focused suite passed all 24 tests, including the real-Git uncertain-path check; quick and PR repository profiles each passed 241 tests with one expected skip.",
               "path": "specs/016-m2-partial-order-reduction/evidence.json",
-              "sha256": "f3b5789d376983ddd588b227fc5ebcb62f01207a7787ff2be73aefa02c515983"
+              "sha256": "69d4dbb7fc87f1693c84dfbebb199bdc35a9232a852f093c5fcc6ceb3023d53e"
             }
           ],
           "planned_evidence": "Finite partition coverage test and captured command output",
@@ -153,10 +153,10 @@
           "obtained_evidence": [
             {
               "command": "/Users/juanyanez/.codex/worktrees/fbe15bfb-b771-402b-888d-763a5b1234c0/agent-braid/.venv-validation/bin/python -m unittest tests.test_git_partial_order tests.test_github_tracking tests.test_validation_profiles -v",
-              "limits": "Local finite fixtures and repository validation only. The real-Git divergent fixture supports a bounded SPEC-015 positive path. Syntactic path disjointness does not prove semantic commutation, arbitrary-workload confluence, speedup or execution safety. Human review, clean-room reproduction and independent external validation remain pending.",
-              "outcome": "The focused suite passed all 23 tests, including PartialOrderRelationTests.test_disjoint_and_same_path_replay_counts; quick and PR repository profiles passed 240 tests with one expected skip each.",
+              "limits": "Local finite fixtures and repository validation only. The verifier repeats the exhaustive replay using the same implementation; this is not independent implementation diversity. Syntactic path disjointness does not prove semantic commutation, arbitrary-workload confluence, production speedup or execution safety. Founder review is internal; clean-room reproduction and independent external validation remain pending.",
+              "outcome": "The focused suite passed all 24 tests, including the real-Git uncertain-path check; quick and PR repository profiles each passed 241 tests with one expected skip.",
               "path": "specs/016-m2-partial-order-reduction/evidence.json",
-              "sha256": "f3b5789d376983ddd588b227fc5ebcb62f01207a7787ff2be73aefa02c515983"
+              "sha256": "69d4dbb7fc87f1693c84dfbebb199bdc35a9232a852f093c5fcc6ceb3023d53e"
             }
           ],
           "planned_evidence": "Representative-count controls and captured command output",
@@ -177,10 +177,10 @@
           "obtained_evidence": [
             {
               "command": "/Users/juanyanez/.codex/worktrees/fbe15bfb-b771-402b-888d-763a5b1234c0/agent-braid/.venv-validation/bin/python -m unittest tests.test_git_partial_order tests.test_github_tracking tests.test_validation_profiles -v",
-              "limits": "Local finite fixtures and repository validation only. The real-Git divergent fixture supports a bounded SPEC-015 positive path. Syntactic path disjointness does not prove semantic commutation, arbitrary-workload confluence, speedup or execution safety. Human review, clean-room reproduction and independent external validation remain pending.",
-              "outcome": "The focused suite passed all 23 tests, including PartialOrderRealGitTests.test_selected_real_git_replay_matches_exhaustive_evidence; quick and PR repository profiles passed 240 tests with one expected skip each.",
+              "limits": "Local finite fixtures and repository validation only. The verifier repeats the exhaustive replay using the same implementation; this is not independent implementation diversity. Syntactic path disjointness does not prove semantic commutation, arbitrary-workload confluence, production speedup or execution safety. Founder review is internal; clean-room reproduction and independent external validation remain pending.",
+              "outcome": "The focused suite passed all 24 tests, including the real-Git uncertain-path check; quick and PR repository profiles each passed 241 tests with one expected skip.",
               "path": "specs/016-m2-partial-order-reduction/evidence.json",
-              "sha256": "f3b5789d376983ddd588b227fc5ebcb62f01207a7787ff2be73aefa02c515983"
+              "sha256": "69d4dbb7fc87f1693c84dfbebb199bdc35a9232a852f093c5fcc6ceb3023d53e"
             }
           ],
           "planned_evidence": "Real-Git comparison with the replay-verified exhaustive baseline, source-state snapshot and captured command output",
@@ -195,10 +195,10 @@
           "obtained_evidence": [
             {
               "command": "/Users/juanyanez/.codex/worktrees/fbe15bfb-b771-402b-888d-763a5b1234c0/agent-braid/.venv-validation/bin/python -m unittest tests.test_git_partial_order tests.test_github_tracking tests.test_validation_profiles -v",
-              "limits": "Local finite fixtures and repository validation only. The real-Git divergent fixture supports a bounded SPEC-015 positive path. Syntactic path disjointness does not prove semantic commutation, arbitrary-workload confluence, speedup or execution safety. Human review, clean-room reproduction and independent external validation remain pending.",
-              "outcome": "The focused suite passed all 23 tests, including PartialOrderRealGitTests.test_incomplete_and_tampered_oracle_are_not_positive; quick and PR repository profiles passed 240 tests with one expected skip each.",
+              "limits": "Local finite fixtures and repository validation only. The verifier repeats the exhaustive replay using the same implementation; this is not independent implementation diversity. Syntactic path disjointness does not prove semantic commutation, arbitrary-workload confluence, production speedup or execution safety. Founder review is internal; clean-room reproduction and independent external validation remain pending.",
+              "outcome": "The focused suite passed all 24 tests, including the real-Git uncertain-path check; quick and PR repository profiles each passed 241 tests with one expected skip.",
               "path": "specs/016-m2-partial-order-reduction/evidence.json",
-              "sha256": "f3b5789d376983ddd588b227fc5ebcb62f01207a7787ff2be73aefa02c515983"
+              "sha256": "69d4dbb7fc87f1693c84dfbebb199bdc35a9232a852f093c5fcc6ceb3023d53e"
             }
           ],
           "planned_evidence": "Negative real-Git, tamper and class-mismatch controls with captured command output",
@@ -219,10 +219,10 @@
           "obtained_evidence": [
             {
               "command": "/Users/juanyanez/.codex/worktrees/fbe15bfb-b771-402b-888d-763a5b1234c0/agent-braid/.venv-validation/bin/python -m unittest tests.test_git_partial_order tests.test_github_tracking tests.test_validation_profiles -v",
-              "limits": "Local finite fixtures and repository validation only. The real-Git divergent fixture supports a bounded SPEC-015 positive path. Syntactic path disjointness does not prove semantic commutation, arbitrary-workload confluence, speedup or execution safety. Human review, clean-room reproduction and independent external validation remain pending.",
-              "outcome": "The focused suite passed all 23 tests, including PartialOrderRealGitTests.test_verified_real_git_divergence_reduces_redundant_operation; quick and PR repository profiles passed 240 tests with one expected skip each.",
+              "limits": "Local finite fixtures and repository validation only. The verifier repeats the exhaustive replay using the same implementation; this is not independent implementation diversity. Syntactic path disjointness does not prove semantic commutation, arbitrary-workload confluence, production speedup or execution safety. Founder review is internal; clean-room reproduction and independent external validation remain pending.",
+              "outcome": "The focused suite passed all 24 tests, including the real-Git uncertain-path check; quick and PR repository profiles each passed 241 tests with one expected skip.",
               "path": "specs/016-m2-partial-order-reduction/evidence.json",
-              "sha256": "f3b5789d376983ddd588b227fc5ebcb62f01207a7787ff2be73aefa02c515983"
+              "sha256": "69d4dbb7fc87f1693c84dfbebb199bdc35a9232a852f093c5fcc6ceb3023d53e"
             }
           ],
           "planned_evidence": "Real-Git divergent replay, verified smaller witness and captured command output",
