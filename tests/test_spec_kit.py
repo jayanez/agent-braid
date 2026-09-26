@@ -153,6 +153,14 @@ class SpecKitTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             self.validate_test_record()
 
+    def test_post_root_review_uses_bound_public_snapshot(self):
+        if not self.portable:
+            self.skipTest("post-root public supplement is not present")
+        record = self.root / "specs/012-m2-git-replay-planner/assurance.json"
+        review = self.root / "specs/012-m2-git-replay-planner/founder-review.json"
+        review.write_text("not the reviewed bytes")
+        validate_portable_record(self.root, record)
+
     def test_each_integration_drift_and_override_drift(self):
         for relative in (".agents/skills/speckit-constitution/SKILL.md",
                          ".claude/skills/speckit-plan/SKILL.md",

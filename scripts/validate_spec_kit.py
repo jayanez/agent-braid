@@ -236,14 +236,23 @@ def validate_record(root, path):
 def validate_portable_record(root, path, bind_manifest=True):
     """Validate exported record structure without pretending private Git is present."""
     try:
-        from scripts.publication import load_manifest, manifest_entry, root_manifest_payload
+        from scripts.publication import (
+            load_manifest, manifest_entry, root_manifest_payload, validate_addendum,
+        )
     except ModuleNotFoundError:
-        from publication import load_manifest, manifest_entry, root_manifest_payload
+        from publication import (
+            load_manifest, manifest_entry, root_manifest_payload, validate_addendum,
+        )
 
     root = root.resolve()
     relative_record = path.resolve().relative_to(root).as_posix()
     manifest = load_manifest(root)
     protected = set(manifest["protectedPaths"])
+    bound = {item["path"] for item in manifest["files"]}
+    if bind_manifest:
+        addendum = validate_addendum(root, manifest)
+        if addendum is not None:
+            bound.update(item["path"] for item in addendum["files"])
     if bind_manifest and relative_record in protected:
         manifest_entry(root, relative_record)
     record = json.loads(path.read_text())
@@ -297,7 +306,7 @@ def validate_portable_record(root, path, bind_manifest=True):
         review_name = safe_name(root, record.get("review_record", ""))
         if authority["mode"] != "historical" or evidence_snapshot["mode"] != "historical":
             raise ValueError("Approval requires frozen historical snapshot identities")
-        if bind_manifest and review_name in protected:
+        if bind_manifest and review_name in bound:
             review_bytes = root_manifest_payload(root, review_name)
         else:
             review_bytes = local(root, review_name).read_bytes()
