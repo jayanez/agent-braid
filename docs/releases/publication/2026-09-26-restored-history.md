@@ -22,3 +22,10 @@ on `47917a9` when input digests still match, but their current `human_review`
 remains `pending` until a new exact candidate is reviewed. Publication integrity,
 internal feature review and independent external validation are separate.
 External validation remains pending and M2 remains open.
+
+The new internal clean-room reproduction for the repaired-history candidate
+`613b529b7eab20f42d6e9d7eb0480ef1748a80d2` is stored separately as
+`docs/releases/publication/reproduction-613b529.json` (SHA-256
+`a3333be99e003a3330586ce97e35770df64097809efe5672b5b3be106e4c4d73`).
+Its twelve recorded commands passed in a fresh clone and Python environment.
+This run has not received a new founder result review.
