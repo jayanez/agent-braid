@@ -106,15 +106,28 @@ commutation or correctness beyond the declared corpus.
 The first implementation cut is tracked by
 [`012-m2-git-replay-planner`](specs/012-m2-git-replay-planner/spec.md). It replays
 all admissible orders for 2–4 fixed commit patches in a temporary bare repository
-and fresh index, observing `tracked-tree-v1`. Preparation waves remain advisory;
-integration is serial and every plan has `executionAuthorization: false`. M2 stays
-open for order reduction, other workload adapters and an executable scheduler.
+and fresh index, observing `tracked-tree-v1`. Follow-up work added bounded Git
+resource controls, a read-only parallel-integration prototype and synthetic
+benchmarking. Preparation waves remain advisory; integration is serial and every
+plan has `executionAuthorization: false`.
 
-The proposed next increment, [`013-m2-real-workload`](specs/013-m2-real-workload/spec.md),
-registers real Agent Braid workstream commits for a bounded private validation
-experiment. Its preflight is read-only; accepted ADR 0015 governs the profile,
-while repository-code execution awaits separate founder acceptance of the exact
-corpus, base, image and dependencies. Neither increment closes M2.
+The real-workload experiment in
+[`013-m2-real-workload`](specs/013-m2-real-workload/spec.md) is complete under
+its separately approved corpus and ADR 0015 profile. The internal normalizer and
+counterexample-reduction increments in
+[`014-m2-observation-normalizer`](specs/014-m2-observation-normalizer/spec.md)
+and [`015-m2-counterexample-reducer`](specs/015-m2-counterexample-reducer/spec.md)
+are also merged and reviewed. Their evidence remains limited to fixed-patch Git
+replay and `tracked-tree-v1`; SPEC-015 has no positive end-to-end reduction from
+a real divergent Git fixture. M2 remains open.
+
+**Next implementation priority:** specify bounded partial-order reduction for
+fixed Git patches, using the existing exhaustive enumerator as the oracle on the
+supported 2–4 operation domain. Preserve the current evidence and plan contracts,
+and report the finite workload and syntactic independence limits. After that,
+reassess broader workload adapters and the scheduler's remaining exit criteria.
+Any executable integration or ref promotion requires a separately reviewed
+execution contract and authorization; it is not implied by advisory preparation.
 
 Deliverables:
 
