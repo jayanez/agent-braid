@@ -6,8 +6,14 @@ not authorship of these project policies. See docs/development/THIRD_PARTY.md. -
 
 Read `AGENTS.md`, `CONSTITUTION.md`, and `docs/development/SPEC_KIT.md` before
 work. Paths in these instructions are relative to the repository root.
-Run `python3 -m scripts.validate_spec_kit` before making changes; if it fails,
-report the failure and stop this workflow. Do not regenerate to hide drift.
+Run `python3 -m scripts.validate_spec_kit` before making changes. On failure,
+report it and stop work in that checkout; do not regenerate to hide drift. Only
+when the failure is `public repository contains unreachable objects` in a
+shared local Git object store, restart the workflow in a fresh full clone of
+the public `develop` branch with its own `.git`. Restore the reviewed SPEC-012
+history using the command in `docs/development/SPEC_KIT.md`, then rerun the complete
+preflight in that clone. Never prune the shared object store or suppress the
+portable-root check as part of this recovery.
 
 The root Constitution is the sole normative authority. The memory file is an
 exact, generated replica, not an editable constitution template. Feature specs
