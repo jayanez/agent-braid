@@ -3,6 +3,7 @@
 import json
 from pathlib import Path
 import shutil
+import subprocess
 import tempfile
 import unittest
 
@@ -160,6 +161,37 @@ class SpecKitTests(unittest.TestCase):
         review = self.root / "specs/012-m2-git-replay-planner/founder-review.json"
         review.write_text("not the reviewed bytes")
         validate_portable_record(self.root, record)
+
+    def test_reviewed_private_candidate_uses_annotated_tag_without_exporting_dependency(self):
+        if not self.portable:
+            self.skipTest("public export manifest is not present")
+        record = self.root / "specs/016-m2-partial-order-reduction/assurance.json"
+        private_reference = "specs/015-m2-counterexample-reducer/spec.md"
+        manifest = json.loads(
+            (self.root / "docs/releases/public-export.json").read_text()
+        )
+        exported = {item["path"] for item in manifest["files"]}
+        self.assertNotIn(private_reference, exported)
+        validate_portable_record(self.root, record)
+
+    def test_lightweight_tag_cannot_authorize_a_private_historical_record(self):
+        if not self.portable:
+            self.skipTest("public export manifest is not present")
+        record = self.root / "specs/016-m2-partial-order-reduction/assurance.json"
+        data = json.loads(record.read_text())
+        commit = data["authority_snapshot"]["commit"]
+        tag_ref = f"refs/tags/spec-016-reviewed-{commit[:7]}"
+        subprocess.run(
+            ["git", "-C", str(self.root), "update-ref", "-d", tag_ref],
+            check=True, capture_output=True,
+        )
+        subprocess.run(
+            ["git", "-C", str(self.root), "update-ref", tag_ref, commit],
+            check=True, capture_output=True,
+        )
+        with self.assertRaisesRegex(
+                ValueError, "export manifest does not bind required file"):
+            validate_portable_record(self.root, record)
 
     def test_each_integration_drift_and_override_drift(self):
         for relative in (".agents/skills/speckit-constitution/SKILL.md",
