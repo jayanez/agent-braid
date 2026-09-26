@@ -1,0 +1,34 @@
+{
+  "conflictsOfInterest": "The founder is the project maintainer; this internal review is not independent external validation.",
+  "decision": "approved-internal-result-review",
+  "decisionText": "Apruebo la revisi\u00f3n interna de SPEC-014 y SPEC-015 en las evidencias preparadas, manteniendo pendiente la validaci\u00f3n externa y sin cerrar M2. Autorizo reemplazar la historia remota de develop por el root 5a89ed5090d4275c793521ff58102a6f7289baa9 y publicar despu\u00e9s el commit de reproducci\u00f3n 6bba071dc887f298deeb45affaf8180993e2da8a",
+  "externalHumanValidation": "pending",
+  "feature": "SPEC-015 M2 counterexample reduction",
+  "independentValidation": "pending",
+  "limits": [
+    "Approval applies only to the prepared internal evidence and reviewed commit.",
+    "The clean-room reproduction is founder-supervised internal validation, not independent validation.",
+    "Finite tracked-tree replay evidence does not establish semantic equivalence, general confluence, production safety, or universal performance improvement."
+  ],
+  "m2Closure": false,
+  "mergeAuthorization": false,
+  "rationale": "Accepted the prepared feature evidence and the successful clean-room validation on the exact clean-export root. This decision records internal review only; independent external validation remains pending and M2 remains open.",
+  "recordVersion": "agent-braid-internal-evidence-review-1",
+  "reviewedArtifacts": [
+    {
+      "path": "specs/015-m2-counterexample-reducer/evidence.json",
+      "sha256AtReviewedCommit": "4f95e0d725badc2fc5353a9c73089642c70f95491ea039f28eb5d64221060475"
+    },
+    {
+      "path": "docs/releases/publication/reproduction.json",
+      "sha256AtReviewedCommit": "a4284ac86d1519705b2a51d6c26655c40bacb18e61d20ce3f48dfa97c2f4bb23"
+    }
+  ],
+  "reviewedAt": "2026-09-26T08:12:16.636988+00:00",
+  "reviewedCommit": "6bba071dc887f298deeb45affaf8180993e2da8a",
+  "reviewer": {
+    "name": "Juan Antonio Y\u00e1\u00f1ez Garc\u00eda",
+    "role": "founder"
+  },
+  "scope": "Internal deterministic operation-subset reduction of verified divergent fixed-patch Git replay evidence."
+}

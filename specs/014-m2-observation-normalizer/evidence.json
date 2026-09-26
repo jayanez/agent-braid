@@ -1,0 +1,23 @@
+{
+  "candidate_commit": "47917a906aa6af851899c8d1ff1c9d67bd1b035b",
+  "captured_at": "2026-09-26T07:05:46.581751+00:00",
+  "human_review": "pending",
+  "inputs": {
+    "agent_braid/git_replay.py": "79e59b0ecbac4f398fe98835e9a2b753d145462628e0e99b6fe09668c650d293",
+    "docs/adr/0013-isolated-git-replay-and-advisory-planning.md": "1c291cb527825864520075edc2ae7c84bafb07f66790f9fc29b0149a07024d24",
+    "docs/architecture/GIT_REPLAY.md": "365fe948089b374856d1423d69b73d1e3efa540b9d1e88f3fc5439c91d8a031d",
+    "specs/014-m2-observation-normalizer/plan.md": "b660df7b55a525353a6092521b17bf52296efc34517face03447b02776df45f1",
+    "specs/014-m2-observation-normalizer/spec.md": "7406e0119e51e4456a28c836a05141692c09e5fef0a532b02d277dbab6facaf3",
+    "tests/test_git_replay.py": "e88c0bb3fefc47967421be011c40ca0e32635551b632b8f691b2b840cc35cc66"
+  },
+  "observations": [
+    {
+      "command": "/tmp/agent-braid-validation-venv/bin/python -m unittest tests.test_git_replay -v",
+      "exit_code": 0,
+      "stderr": "test_advisory_waves_preserve_dependencies_and_demonstrate_gain (tests.test_git_replay.GitReplayTests.test_advisory_waves_preserve_dependencies_and_demonstrate_gain) ... ok\ntest_benchmark_thresholds_and_baselines (tests.test_git_replay.GitReplayTests.test_benchmark_thresholds_and_baselines) ... ok\ntest_cli_and_schemas (tests.test_git_replay.GitReplayTests.test_cli_and_schemas) ... ok\ntest_concurrent_replays_do_not_mutate_process_environment (tests.test_git_replay.GitReplayTests.test_concurrent_replays_do_not_mutate_process_environment) ... ok\ntest_divergent_and_failed_orders_are_not_candidates (tests.test_git_replay.GitReplayTests.test_divergent_and_failed_orders_are_not_candidates) ... ok\ntest_enforces_changed_path_and_aggregate_patch_bounds (tests.test_git_replay.GitReplayTests.test_enforces_changed_path_and_aggregate_patch_bounds) ... ok\ntest_evidence_is_canonical_for_input_operation_order (tests.test_git_replay.GitReplayTests.test_evidence_is_canonical_for_input_operation_order) ... ok\ntest_plan_replay_two_immutable_commits (tests.test_git_replay.GitReplayTests.test_plan_replay_two_immutable_commits) ... ok\ntest_plan_verifier_regenerates_from_verified_evidence (tests.test_git_replay.GitReplayTests.test_plan_verifier_regenerates_from_verified_evidence) ... ok\ntest_rejects_worktree_batch_limits_and_invalid_graph (tests.test_git_replay.GitReplayTests.test_rejects_worktree_batch_limits_and_invalid_graph) ... ok\ntest_replays_disjoint_and_different_hunk_patches (tests.test_git_replay.GitReplayTests.test_replays_disjoint_and_different_hunk_patches) ... ok\ntest_resource_budget_bounds_time_output_temp_data_and_start_errors (tests.test_git_replay.GitReplayTests.test_resource_budget_bounds_time_output_temp_data_and_start_errors) ... ok\ntest_tracked_tree_observation_classifies_complete_and_incomplete_schedules (tests.test_git_replay.GitReplayTests.test_tracked_tree_observation_classifies_complete_and_incomplete_schedules) ... ok\ntest_tracked_tree_observation_rejects_malformed_internal_schedules (tests.test_git_replay.GitReplayTests.test_tracked_tree_observation_rejects_malformed_internal_schedules) ... ok\ntest_unknown_and_inconclusive_inputs_never_make_candidate_waves (tests.test_git_replay.GitReplayTests.test_unknown_and_inconclusive_inputs_never_make_candidate_waves) ... ok\ntest_verifier_rejects_tampering_and_omitted_orders (tests.test_git_replay.GitReplayTests.test_verifier_rejects_tampering_and_omitted_orders) ... ok\n\n----------------------------------------------------------------------\nRan 16 tests in 85.773s\n\nOK\n",
+      "stdout": ""
+    }
+  ],
+  "platform": "macOS-26.6.2-arm64-arm-64bit",
+  "python": "3.13.11"
+}

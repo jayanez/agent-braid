@@ -91,7 +91,15 @@
         {
           "given": "Complete schedules share one final tree",
           "id": "SC-001",
-          "obtained_evidence": [],
+          "obtained_evidence": [
+            {
+              "command": "/tmp/agent-braid-validation-venv/bin/python -m unittest tests.test_git_replay -v",
+              "limits": "Local Python 3.13 unittest evidence on the recorded candidate commit; finite fixed-patch Git replay and tracked-tree observations only. Does not establish semantic equivalence, hidden-effect independence, general confluence, production safety, founder approval or independent external validation.",
+              "outcome": "Complete replay suite passed, including tracked-tree-v1 equivalence, divergence and incomplete-schedule outcomes, plus verified-evidence and advisory-plan compatibility regressions.",
+              "path": "specs/014-m2-observation-normalizer/evidence.json",
+              "sha256": "2e0771d1bd1ab7cd1d2d6ad9a75fd8584b6a6b3220274237f492f9551e997722"
+            }
+          ],
           "planned_evidence": "Focused classification regression and full replay suite in the implementation PR.",
           "test_file": "tests/test_git_replay.py",
           "test_name": "GitReplayTests.test_tracked_tree_observation_classifies_complete_and_incomplete_schedules",
@@ -101,7 +109,15 @@
         {
           "given": "Complete schedules have distinct final trees",
           "id": "SC-002",
-          "obtained_evidence": [],
+          "obtained_evidence": [
+            {
+              "command": "/tmp/agent-braid-validation-venv/bin/python -m unittest tests.test_git_replay -v",
+              "limits": "Local Python 3.13 unittest evidence on the recorded candidate commit; finite fixed-patch Git replay and tracked-tree observations only. Does not establish semantic equivalence, hidden-effect independence, general confluence, production safety, founder approval or independent external validation.",
+              "outcome": "Complete replay suite passed, including tracked-tree-v1 equivalence, divergence and incomplete-schedule outcomes, plus verified-evidence and advisory-plan compatibility regressions.",
+              "path": "specs/014-m2-observation-normalizer/evidence.json",
+              "sha256": "2e0771d1bd1ab7cd1d2d6ad9a75fd8584b6a6b3220274237f492f9551e997722"
+            }
+          ],
           "planned_evidence": "Focused classification regression and full replay suite in the implementation PR.",
           "test_file": "tests/test_git_replay.py",
           "test_name": "GitReplayTests.test_tracked_tree_observation_classifies_complete_and_incomplete_schedules",
@@ -111,7 +127,15 @@
         {
           "given": "At least one schedule is incomplete",
           "id": "SC-003",
-          "obtained_evidence": [],
+          "obtained_evidence": [
+            {
+              "command": "/tmp/agent-braid-validation-venv/bin/python -m unittest tests.test_git_replay -v",
+              "limits": "Local Python 3.13 unittest evidence on the recorded candidate commit; finite fixed-patch Git replay and tracked-tree observations only. Does not establish semantic equivalence, hidden-effect independence, general confluence, production safety, founder approval or independent external validation.",
+              "outcome": "Complete replay suite passed, including tracked-tree-v1 equivalence, divergence and incomplete-schedule outcomes, plus verified-evidence and advisory-plan compatibility regressions.",
+              "path": "specs/014-m2-observation-normalizer/evidence.json",
+              "sha256": "2e0771d1bd1ab7cd1d2d6ad9a75fd8584b6a6b3220274237f492f9551e997722"
+            }
+          ],
           "planned_evidence": "Focused classification regression and full replay suite in the implementation PR.",
           "test_file": "tests/test_git_replay.py",
           "test_name": "GitReplayTests.test_tracked_tree_observation_classifies_complete_and_incomplete_schedules",
@@ -127,7 +151,15 @@
         {
           "given": "An existing replay fixture and its verified report",
           "id": "SC-004",
-          "obtained_evidence": [],
+          "obtained_evidence": [
+            {
+              "command": "/tmp/agent-braid-validation-venv/bin/python -m unittest tests.test_git_replay -v",
+              "limits": "Local Python 3.13 unittest evidence on the recorded candidate commit; finite fixed-patch Git replay and tracked-tree observations only. Does not establish semantic equivalence, hidden-effect independence, general confluence, production safety, founder approval or independent external validation.",
+              "outcome": "Complete replay suite passed, including tracked-tree-v1 equivalence, divergence and incomplete-schedule outcomes, plus verified-evidence and advisory-plan compatibility regressions.",
+              "path": "specs/014-m2-observation-normalizer/evidence.json",
+              "sha256": "2e0771d1bd1ab7cd1d2d6ad9a75fd8584b6a6b3220274237f492f9551e997722"
+            }
+          ],
           "planned_evidence": "Existing verified-evidence and plan regression in the implementation PR.",
           "test_file": "tests/test_git_replay.py",
           "test_name": "GitReplayTests.test_plan_verifier_regenerates_from_verified_evidence",
@@ -140,5 +172,5 @@
   ],
   "scientific_limits": "Tree equality is a finite syntactic observation, not semantic equivalence, hidden-effect independence or confluence proof.",
   "scope": "Private, behavior-preserving normalization of complete bounded Git replay schedules.",
-  "stage": "draft"
+  "stage": "validated"
 }

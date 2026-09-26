@@ -92,7 +92,15 @@
         {
           "given": "A verified divergent evidence bundle",
           "id": "SC-001",
-          "obtained_evidence": [],
+          "obtained_evidence": [
+            {
+              "command": "/tmp/agent-braid-validation-venv/bin/python -m unittest tests.test_git_counterexamples -v",
+              "limits": "Local Python 3.13 unittest evidence on the recorded candidate commit. Controlled backends plus synthetic local Git inputs; finite dependency-closed operation subsets only. Does not establish arbitrary-workload minimality, semantic effects, production safety, founder approval or independent external validation.",
+              "outcome": "Complete reducer test module passed, including verified/tampered input, deterministic smaller-witness selection, irreducible witness retention, attempt/deadline exhaustion and supervised timeout controls.",
+              "path": "specs/015-m2-counterexample-reducer/evidence.json",
+              "sha256": "4f95e0d725badc2fc5353a9c73089642c70f95491ea039f28eb5d64221060475"
+            }
+          ],
           "planned_evidence": "The focused reducer suite exercises input eligibility with a controlled divergent backend; capture a frozen feature evidence artifact and obtain human review in T003.",
           "test_file": "tests/test_git_counterexamples.py",
           "test_name": "GitCounterexampleReductionAlgorithmTests.test_two_operation_minimum_is_unchanged_without_any_search",
@@ -102,7 +110,15 @@
         {
           "given": "An altered bundle or unavailable Git input",
           "id": "SC-002",
-          "obtained_evidence": [],
+          "obtained_evidence": [
+            {
+              "command": "/tmp/agent-braid-validation-venv/bin/python -m unittest tests.test_git_counterexamples -v",
+              "limits": "Local Python 3.13 unittest evidence on the recorded candidate commit. Controlled backends plus synthetic local Git inputs; finite dependency-closed operation subsets only. Does not establish arbitrary-workload minimality, semantic effects, production safety, founder approval or independent external validation.",
+              "outcome": "Complete reducer test module passed, including verified/tampered input, deterministic smaller-witness selection, irreducible witness retention, attempt/deadline exhaustion and supervised timeout controls.",
+              "path": "specs/015-m2-counterexample-reducer/evidence.json",
+              "sha256": "4f95e0d725badc2fc5353a9c73089642c70f95491ea039f28eb5d64221060475"
+            }
+          ],
           "planned_evidence": "The focused reducer suite covers tampered evidence, missing source objects and invalid input with real Git; capture a frozen feature evidence artifact and obtain human review in T003.",
           "test_file": "tests/test_git_counterexamples.py",
           "test_name": "GitCounterexampleRealGitTests.test_rejects_tampered_evidence_end_to_end",
@@ -118,7 +134,15 @@
         {
           "given": "A divergent case with a redundant operation",
           "id": "SC-003",
-          "obtained_evidence": [],
+          "obtained_evidence": [
+            {
+              "command": "/tmp/agent-braid-validation-venv/bin/python -m unittest tests.test_git_counterexamples -v",
+              "limits": "Local Python 3.13 unittest evidence on the recorded candidate commit. Controlled backends plus synthetic local Git inputs; finite dependency-closed operation subsets only. Does not establish arbitrary-workload minimality, semantic effects, production safety, founder approval or independent external validation.",
+              "outcome": "Complete reducer test module passed, including verified/tampered input, deterministic smaller-witness selection, irreducible witness retention, attempt/deadline exhaustion and supervised timeout controls.",
+              "path": "specs/015-m2-counterexample-reducer/evidence.json",
+              "sha256": "4f95e0d725badc2fc5353a9c73089642c70f95491ea039f28eb5d64221060475"
+            }
+          ],
           "planned_evidence": "The reduction search is tested with a controlled divergent backend; bounded local probes found no real all-complete divergent fixture, and no impossibility is claimed. Capture a frozen feature evidence artifact and obtain human review in T003.",
           "test_file": "tests/test_git_counterexamples.py",
           "test_name": "GitCounterexampleReductionAlgorithmTests.test_redundant_operation_is_removed_when_a_smaller_divergent_subset_exists",
@@ -128,7 +152,15 @@
         {
           "given": "A divergent case with no smaller qualifying subset",
           "id": "SC-004",
-          "obtained_evidence": [],
+          "obtained_evidence": [
+            {
+              "command": "/tmp/agent-braid-validation-venv/bin/python -m unittest tests.test_git_counterexamples -v",
+              "limits": "Local Python 3.13 unittest evidence on the recorded candidate commit. Controlled backends plus synthetic local Git inputs; finite dependency-closed operation subsets only. Does not establish arbitrary-workload minimality, semantic effects, production safety, founder approval or independent external validation.",
+              "outcome": "Complete reducer test module passed, including verified/tampered input, deterministic smaller-witness selection, irreducible witness retention, attempt/deadline exhaustion and supervised timeout controls.",
+              "path": "specs/015-m2-counterexample-reducer/evidence.json",
+              "sha256": "4f95e0d725badc2fc5353a9c73089642c70f95491ea039f28eb5d64221060475"
+            }
+          ],
           "planned_evidence": "The focused reducer suite covers ordered dependency-closed subsets and an irreducible controlled case; capture a frozen feature evidence artifact and obtain human review in T003.",
           "test_file": "tests/test_git_counterexamples.py",
           "test_name": "GitCounterexampleReductionAlgorithmTests.test_no_smaller_qualifying_subset_leaves_the_original_witness_unchanged",
@@ -144,7 +176,15 @@
         {
           "given": "The 120-second deadline or ten-subset attempt limit is exhausted before a minimal witness is established",
           "id": "SC-005",
-          "obtained_evidence": [],
+          "obtained_evidence": [
+            {
+              "command": "/tmp/agent-braid-validation-venv/bin/python -m unittest tests.test_git_counterexamples -v",
+              "limits": "Local Python 3.13 unittest evidence on the recorded candidate commit. Controlled backends plus synthetic local Git inputs; finite dependency-closed operation subsets only. Does not establish arbitrary-workload minimality, semantic effects, production safety, founder approval or independent external validation.",
+              "outcome": "Complete reducer test module passed, including verified/tampered input, deterministic smaller-witness selection, irreducible witness retention, attempt/deadline exhaustion and supervised timeout controls.",
+              "path": "specs/015-m2-counterexample-reducer/evidence.json",
+              "sha256": "4f95e0d725badc2fc5353a9c73089642c70f95491ea039f28eb5d64221060475"
+            }
+          ],
           "planned_evidence": "The focused reducer suite covers candidate and deadline exhaustion, replay failure, independent candidate verification, and process-group cleanup; capture a frozen feature evidence artifact and obtain human review in T003.",
           "test_file": "tests/test_git_counterexamples.py",
           "test_name": "GitCounterexampleReductionAlgorithmTests.test_budget_exhaustion_by_attempt_cap_is_inconclusive_never_a_minimality_claim",
@@ -157,5 +197,5 @@
   ],
   "scientific_limits": "Minimality is only over the enumerated dependency-closed operation subsets in the fixed-patch tracked-tree domain; no patch-hunk, semantic-effect, or arbitrary-workload claim is made.",
   "scope": "Internal deterministic operation-subset reduction of verified divergent fixed-patch Git replay evidence.",
-  "stage": "draft"
+  "stage": "validated"
 }
