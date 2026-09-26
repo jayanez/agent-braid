@@ -71,7 +71,7 @@
     "mode": "historical"
   },
   "execution_contract": "Existing isolated-index-patch-v1 read-only replay; no repository-code command, ref update or execution authorization.",
-  "human_review": "pending",
+  "human_review": "approved",
   "hypotheses": "Explicit normalization can preserve every existing classification while making the observation boundary inspectable.",
   "observation_contract": "tracked-tree-v1; normalize only complete schedules with a valid final tracked-tree OID.",
   "references": [
@@ -172,5 +172,6 @@
   ],
   "scientific_limits": "Tree equality is a finite syntactic observation, not semantic equivalence, hidden-effect independence or confluence proof.",
   "scope": "Private, behavior-preserving normalization of complete bounded Git replay schedules.",
+  "review_record": "specs/014-m2-observation-normalizer/founder-review-restored-history.json",
   "stage": "validated"
 }
