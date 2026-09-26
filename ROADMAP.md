@@ -118,14 +118,17 @@ counterexample-reduction increments in
 [`014-m2-observation-normalizer`](specs/014-m2-observation-normalizer/spec.md)
 and [`015-m2-counterexample-reducer`](specs/015-m2-counterexample-reducer/spec.md)
 are also merged and reviewed. Their evidence remains limited to fixed-patch Git
-replay and `tracked-tree-v1`; SPEC-015 has no positive end-to-end reduction from
-a real divergent Git fixture. M2 remains open.
+replay and `tracked-tree-v1`. The private
+[`016-m2-partial-order-reduction`](specs/016-m2-partial-order-reduction/spec.md)
+candidate compares selected replays with the exhaustive 2–4 operation oracle.
+Its repeated-context real-Git fixture also supplies the positive end-to-end
+reduction absent from SPEC-015's original review. These finite observations
+remain pending scoped human review and independent validation. M2 remains open.
 
-**Next implementation priority:** specify bounded partial-order reduction for
-fixed Git patches, using the existing exhaustive enumerator as the oracle on the
-supported 2–4 operation domain. Preserve the current evidence and plan contracts,
-and report the finite workload and syntactic independence limits. After that,
-reassess broader workload adapters and the scheduler's remaining exit criteria.
+**Next priority:** review the bounded private reduction and its real-Git
+counterexample evidence, then reassess broader workload adapters and the
+scheduler's remaining exit criteria. The public evidence and plan contracts
+remain exhaustive; promotion of the private reducer needs a separate contract.
 Any executable integration or ref promotion requires a separately reviewed
 execution contract and authorization; it is not implied by advisory preparation.
 

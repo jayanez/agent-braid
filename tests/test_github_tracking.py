@@ -9,9 +9,9 @@ from scripts.sync_github_tracking import build_plan, source_inventory
 class TrackingTests(unittest.TestCase):
     def test_committed_spec_inventory_is_complete(self):
         config, desired = source_inventory()
-        self.assertEqual(15, sum(item["kind"] == "spec" for item in desired))
-        self.assertEqual(113, sum(item["kind"] == "task" for item in desired))
-        self.assertEqual(3, sum(item["state"] == "open" and item["kind"] == "task" for item in desired))
+        self.assertEqual(16, sum(item["kind"] == "spec" for item in desired))
+        self.assertEqual(118, sum(item["kind"] == "task" for item in desired))
+        self.assertEqual(4, sum(item["state"] == "open" and item["kind"] == "task" for item in desired))
         self.assertEqual({"SPEC-004/T005"}, set(config["task_state_overrides"]))
 
     def test_plan_is_empty_for_matching_relationships(self):
