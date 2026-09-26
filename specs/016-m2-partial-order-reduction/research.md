@@ -9,9 +9,12 @@
   independent swaps, with a lexicographically first representative. At most 24
   orders are enumerated, so the measurable benefit is fewer Git replays rather
   than cheaper order generation.
-- **Oracle:** the existing exhaustive producer and verifier run independently;
-  terminal status and observation must agree within each component. Raw traces
-  are not quotient observations and remain in the full evidence.
+- **Exhaustive baseline:** the existing producer builds every schedule, then
+  the existing verifier regenerates and checks that bundle. Both passes use the
+  same replay implementation; this is a separate verification pass, not an
+  independent implementation. Terminal status and observation must agree
+  within each component. Raw traces are not quotient observations and remain
+  in the full evidence.
 - **Alternative deferred:** sleep sets or a changed public evidence schema
   could avoid constructing all orders, but would add proof and verification
   obligations without a measurable need in this four-operation domain.

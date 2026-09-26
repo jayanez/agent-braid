@@ -2,7 +2,8 @@
 """Private finite partial-order experiment for fixed Git patch replay.
 
 The public replay evidence and advisory planner remain exhaustive. This module
-measures selected Git replays against that independently verified oracle only.
+measures selected Git replays against a separately regenerated baseline using
+the existing verifier and shared replay implementation.
 """
 
 from __future__ import annotations
@@ -132,7 +133,7 @@ def compare(request: object) -> dict:
         repository = request["repository"]
         verification = git_replay.verify(oracle, repository)
         if verification.get("status") != "verified":
-            return _inconclusive("exhaustive oracle did not independently verify", oracle)
+            return _inconclusive("existing verifier did not reproduce exhaustive evidence", oracle)
 
         pinned = git_replay._normalized_request({**oracle, "repositoryPath": repository})
         selected: dict = {}
@@ -172,7 +173,7 @@ def compare(request: object) -> dict:
 
         return {
             "status": "matched" if oracle["result"] != "inconclusive" else "oracle-inconclusive",
-            "reason": "selected replays and every finite oracle class agree",
+            "reason": "selected replays and every finite exhaustive-baseline class agree",
             "oracleResult": oracle["result"],
             "oracleEvidence": oracle,
             "partition": partition,
