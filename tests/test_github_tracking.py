@@ -11,7 +11,7 @@ class TrackingTests(unittest.TestCase):
         config, desired = source_inventory()
         self.assertEqual(16, sum(item["kind"] == "spec" for item in desired))
         self.assertEqual(118, sum(item["kind"] == "task" for item in desired))
-        self.assertEqual(4, sum(item["state"] == "open" and item["kind"] == "task" for item in desired))
+        self.assertEqual(3, sum(item["state"] == "open" and item["kind"] == "task" for item in desired))
         self.assertEqual({"SPEC-004/T005"}, set(config["task_state_overrides"]))
 
     def test_plan_is_empty_for_matching_relationships(self):
