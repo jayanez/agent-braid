@@ -40,11 +40,14 @@ class M2ClosureTests(unittest.TestCase):
         radar.parent.mkdir(parents=True)
         radar.write_text(json.dumps({"review": {
             "kind": "milestone", "milestones": ["M2"],
+            "reviewer": "Test Founder",
             "decision": "approved", "decisionRecord": closure.RADAR_REVIEW,
         }}))
         decision = self.root / closure.RADAR_REVIEW
         decision.parent.mkdir(parents=True)
-        decision.write_text("# Bounded M2 radar decision\n")
+        decision.write_text("# Bounded M2 radar decision\n\n"
+                            "**Founder decision:** approved\n"
+                            "**Founder reviewer:** Test Founder\n")
 
     def tearDown(self):
         self.temporary.cleanup()
@@ -57,6 +60,12 @@ class M2ClosureTests(unittest.TestCase):
         radar["review"]["decision"] = "pending"
         (self.root / closure.RADAR).write_text(json.dumps(radar))
         with self.assertRaisesRegex(ValueError, "radar"):
+            closure.validate_source_evidence(self.root)
+
+    def test_source_evidence_rejects_conflicting_radar_review(self):
+        (self.root / closure.RADAR_REVIEW).write_text(
+            "**Founder decision:** pending\n**Founder reviewer:** Test Founder\n")
+        with self.assertRaisesRegex(ValueError, "radar decision record contradicts"):
             closure.validate_source_evidence(self.root)
 
     def test_rejects_changed_retest_manifest_or_incomplete_batch(self):
@@ -131,6 +140,10 @@ class M2ClosureTests(unittest.TestCase):
         with patch.object(closure, "validate_closure_anchor",
                           side_effect=ValueError("protected closure record changed")):
             with self.assertRaisesRegex(ValueError, "protected closure"):
+                closure.validate_candidate_unchanged(self.root, "a" * 40)
+        with patch.object(closure, "validate_closure_anchor", return_value={
+                "changedPaths": ["agent_braid/git_replay.py"]}):
+            with self.assertRaisesRegex(ValueError, "post-freeze implementation"):
                 closure.validate_candidate_unchanged(self.root, "a" * 40)
 
     def test_observation_inventory_rejects_prefix_and_extra_args(self):

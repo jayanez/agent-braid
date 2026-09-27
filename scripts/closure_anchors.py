@@ -73,6 +73,22 @@ def validate_closure_anchor(root: Path, milestone: str, candidate: str | None = 
            for value in protected.values()):
         raise ValueError(f"{milestone} closure anchor contains an invalid digest")
 
+    # The registry is committed after the closure commit because its entry
+    # contains that commit's identity. Bind each entry to its first published
+    # appearance in this ancestry so later edits cannot shrink protection.
+    historical_anchor = None
+    for revision in _git(root, "rev-list", "--reverse", "HEAD", "--", ANCHORS).decode("ascii").splitlines():
+        try:
+            historical_registry = json.loads(_git(root, "show", f"{revision}:{ANCHORS}"))
+        except (ValueError, json.JSONDecodeError):
+            continue
+        historical_anchor = historical_registry.get("milestones", {}).get(milestone)
+        if historical_anchor is not None:
+            _git(root, "merge-base", "--is-ancestor", anchor["closureCommit"], revision)
+            break
+    if historical_anchor is None or historical_anchor != anchor:
+        raise ValueError(f"{milestone} closure anchor differs from its first recorded entry")
+
     candidate_commit = anchor["candidateCommit"]
     closure_commit = anchor["closureCommit"]
     _git(root, "cat-file", "-e", f"{candidate_commit}^{{commit}}")

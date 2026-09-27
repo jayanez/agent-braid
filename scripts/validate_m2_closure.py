@@ -150,8 +150,17 @@ def validate_source_evidence(root: Path = ROOT) -> dict:
             or radar.get("decision") != "approved"
             or radar.get("decisionRecord") != RADAR_REVIEW):
         raise ValueError("M2 radar lacks a bounded approved milestone decision")
-    if not (root / RADAR_REVIEW).is_file():
-        raise ValueError("M2 radar decision record is unavailable")
+    reviewer = radar.get("reviewer")
+    if (not isinstance(reviewer, str) or not reviewer.strip()
+            or "pending" in reviewer.lower()):
+        raise ValueError("M2 radar lacks an identified approving founder")
+    try:
+        radar_review = (root / RADAR_REVIEW).read_text(encoding="utf-8")
+    except (OSError, UnicodeError) as exc:
+        raise ValueError("M2 radar decision record is unavailable") from exc
+    if ("**Founder decision:** approved" not in radar_review
+            or f"**Founder reviewer:** {reviewer}" not in radar_review):
+        raise ValueError("M2 radar decision record contradicts its approval")
 
     retest = _load(root, RETEST)
     decision = _load(root, RETEST_DECISION)
@@ -415,7 +424,18 @@ def validate_founder_review(root: Path, candidate: str) -> None:
 
 
 def validate_candidate_unchanged(root: Path, candidate: str) -> None:
-    validate_closure_anchor(root, "M2", candidate)
+    anchor = validate_closure_anchor(root, "M2", candidate)
+    allowed = {
+        "README.md", "ROADMAP.md", "docs/development/github-tracking.json",
+        "docs/releases/M2_CLOSURE.md", "docs/releases/records/M2.json",
+        "specs/017-m2-closure/assurance.json",
+        "specs/017-m2-closure/founder-review.json",
+        "specs/017-m2-closure/reproduction.json",
+        "specs/017-m2-closure/tasks.md",
+    }
+    unexpected = set(anchor["changedPaths"]) - allowed
+    if unexpected:
+        raise ValueError(f"M2 post-freeze implementation or unreviewed path changed: {sorted(unexpected)}")
 
 
 def check(root: Path = ROOT, closure: bool = False) -> None:
