@@ -1,0 +1,21 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/jayanez/agent-braid/schemas/0.3.0-experimental/structured-exchange-evidence.schema.json",
+  "title": "Consultative anchored sequence exchange evidence",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["format", "request", "requestHash", "kind", "paths", "proposal", "property", "observation", "evidenceMethod", "executionAuthorization"],
+  "properties": {
+    "format": {"const": "structured-exchange-evidence-v1"},
+    "request": {"$ref": "structured-exchange-request.schema.json"},
+    "requestHash": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "kind": {"enum": ["pair", "braid"]},
+    "paths": {"type": "object"},
+    "proposal": {"enum": ["propose-swap", "keep-order", "review"]},
+    "property": {"const": "semantic-final-sequence-equality"},
+    "observation": {"const": "final ordered id/value sequence; chronological steps retained"},
+    "evidenceMethod": {"const": "deterministic-finite-replay"},
+    "executionAuthorization": {"const": false}
+  },
+  "$comment": "The verifier must regenerate and compare every nested path and step; this structural schema alone is not a certificate."
+}
