@@ -1,15 +1,24 @@
 {
   "articles": [
     0,
+    2,
+    3,
+    4,
+    6,
+    8,
+    9,
+    10,
     13,
     14,
     17,
+    18,
     19,
-    21,
+    20,
     23,
+    24,
     25
   ],
-  "assumptions": "The committed radar records source claims honestly, the adoption registry is governance metadata, and later adapters can project into existing AIM without creating a parallel semantic model.",
+  "assumptions": "Pure deterministic sequence operations with immutable anchors, fresh IDs and complete finite inputs.",
   "authority_snapshot": {
     "commit": null,
     "hashes": {
@@ -67,127 +76,98 @@
     },
     "mode": "current"
   },
-  "compatibility": "No change to Constitution, AIM, certificates, assurance classes, analyzer report, CLI or runtime behavior.",
-  "domain": "Committed radar and adoption-track governance records in the public repository.",
+  "compatibility": "No current contract changes or M3 closure dependency; future model artifact/version needs separate review.",
+  "domain": "Future structural feature corpus derived from reviewed M3 cases with family-separated holdout.",
   "evidence_snapshot": {
     "commit": null,
     "mode": "current"
   },
-  "execution_contract": "Local dependency-free validation only; no source browsing, provider execution, network calls, writes to external systems, publication or execution authority.",
+  "execution_contract": "Read-only local analysis; no Git source mutation, live agents, external effects or execution authorization.",
   "human_review": "pending",
-  "hypotheses": "A staged adoption pathline can identify material capability gains without turning weekly surveillance into automatic implementation or overclaiming superiority.",
-  "observation_contract": "JSON records, source provenance, stage transitions, artifact existence, validator outputs and negative cases.",
+  "hypotheses": "A local linear advisor may improve useful verifier proposals or reduce cost against the rule baseline.",
+  "observation_contract": "Final ordered ID/value sequence; intermediate chronological trace and physical residual indices retained but not equated.",
   "references": [
     "CONSTITUTION.md",
     "GOVERNANCE.md",
-    "ARCHITECTURE.md",
     "ROADMAP.md",
-    "research/adoption/ADOPTION_PATHLINE.md",
-    "docs/strategy/ECOSYSTEM.md",
-    "docs/strategy/COMMUNITY.md",
-    "research/radar/README.md",
-    "research/radar/2026-09-18-m0.5.json",
-    "research/adoption/adoption-track.schema.json"
+    "docs/adr/0017-bounded-structured-exchange.md",
+    "docs/theory/OPERATIONAL_SEMANTICS.md",
+    "docs/theory/CLAIM_DISCIPLINE.md",
+    "docs/theory/STRUCTURED_EXCHANGE.md",
+    "specs/018-structured-exchange/spec.md",
+    "specs/019-native-predictor/spec.md"
   ],
   "requirements": [
     {
       "id": "REQ-001",
       "scenarios": [
         {
-          "given": "A radar candidate is considered for project work",
-          "id": "SC-037",
+          "given": "Versioned feature vector and weights",
+          "id": "SC-001",
           "obtained_evidence": [],
-          "planned_evidence": "Run the seeded registry and missing-field tests",
-          "test_file": "tests/test_adoption_pathline.py",
-          "test_name": "AdoptionPathlineTests.test_seeded_registry_is_valid_and_has_no_adoption",
-          "then": "It contains a stable track, stage, owner history, artifacts, evidence plan and next decision",
-          "when": "The adoption registry is validated"
+          "planned_evidence": "Focused unittest result and bounded evidence artifact; record actual command, hash, outcome and limits after execution.",
+          "test_file": "tests/test_native_predictor_contract.py",
+          "test_name": "NativePredictorContractTests.test_versioned_local_inference_and_tamper",
+          "then": "a deterministic proposal or abstention carries provenance",
+          "when": "local inference runs"
+        },
+        {
+          "given": "Tampered weights or unknown features",
+          "id": "SC-002",
+          "obtained_evidence": [],
+          "planned_evidence": "Focused unittest result and bounded evidence artifact; record actual command, hash, outcome and limits after execution.",
+          "test_file": "tests/test_native_predictor_contract.py",
+          "test_name": "NativePredictorContractTests.test_versioned_local_inference_and_tamper",
+          "then": "it fails closed without certificate",
+          "when": "inference is requested"
         }
       ],
-      "text": "Every material radar signal has a stable adoption track and next decision before implementation work can be created."
+      "text": "Native offline linear proposal model with versioned local inference."
     },
     {
       "id": "REQ-002",
       "scenarios": [
         {
-          "given": "A candidate track claims a material gain",
-          "id": "SC-038",
+          "given": "Family-separated held-out data",
+          "id": "SC-003",
           "obtained_evidence": [],
-          "planned_evidence": "Run the missing differentiation metric negative test",
-          "test_file": "tests/test_adoption_pathline.py",
-          "test_name": "AdoptionPathlineTests.test_rejects_missing_differentiation_metric",
-          "then": "Missing metrics or hypotheses are rejected",
-          "when": "Its differentiation record is validated"
+          "planned_evidence": "Focused unittest result and bounded evidence artifact; record actual command, hash, outcome and limits after execution.",
+          "test_file": "tests/test_native_predictor_contract.py",
+          "test_name": "NativePredictorContractTests.test_held_out_evaluation_and_negative_outcome",
+          "then": "calibration, abstention, usefulness and cost are reported",
+          "when": "candidate is evaluated"
+        },
+        {
+          "given": "Leakage or no gain",
+          "id": "SC-004",
+          "obtained_evidence": [],
+          "planned_evidence": "Focused unittest result and bounded evidence artifact; record actual command, hash, outcome and limits after execution.",
+          "test_file": "tests/test_native_predictor_contract.py",
+          "test_name": "NativePredictorContractTests.test_held_out_evaluation_and_negative_outcome",
+          "then": "limitation is reported",
+          "when": "evaluation is reviewed"
         }
       ],
-      "text": "A candidate beyond triage states a baseline, alternative, measurable capability delta and falsifiable hypothesis."
+      "text": "Held-out evaluation against rule baseline with negative outcomes."
     },
     {
       "id": "REQ-003",
       "scenarios": [
         {
-          "given": "A track has a recorded stage history",
-          "id": "SC-039",
+          "given": "High predictor score without verifier agreement",
+          "id": "SC-005",
           "obtained_evidence": [],
-          "planned_evidence": "Run transition and negative-outcome tests",
-          "test_file": "tests/test_adoption_pathline.py",
-          "test_name": "AdoptionPathlineTests.test_rejects_backward_stage_history",
-          "then": "Backward transitions fail while research-only negative outcomes remain valid",
-          "when": "The pathline is validated"
+          "planned_evidence": "Focused unittest result and bounded evidence artifact; record actual command, hash, outcome and limits after execution.",
+          "test_file": "tests/test_native_predictor_contract.py",
+          "test_name": "NativePredictorContractTests.test_verifier_remains_sole_certificate_source",
+          "then": "no bounded certificate or execution permission follows",
+          "when": "exchange is assessed"
         }
       ],
-      "text": "Stage transitions are conservative and permit negative or inconclusive outcomes."
-    },
-    {
-      "id": "REQ-004",
-      "scenarios": [
-        {
-          "given": "A seeded track describes a future adapter",
-          "id": "SC-040",
-          "obtained_evidence": [],
-          "planned_evidence": "Review the architecture pathline and seeded mapping fields",
-          "test_file": "tests/test_adoption_pathline.py",
-          "test_name": "AdoptionPathlineTests.test_seeded_registry_is_valid_and_has_no_adoption",
-          "then": "It names preservation, unknown handling and affected AIM artifacts without adding a provider dependency",
-          "when": "The governance record is inspected"
-        }
-      ],
-      "text": "Future provider evidence maps one-way into AIM and preserves uncertainty."
-    },
-    {
-      "id": "REQ-005",
-      "scenarios": [
-        {
-          "given": "A track is marked adopted",
-          "id": "SC-041",
-          "obtained_evidence": [],
-          "planned_evidence": "Run the adopted-without-feature negative test",
-          "test_file": "tests/test_adoption_pathline.py",
-          "test_name": "AdoptionPathlineTests.test_rejects_adopted_track_without_feature_reference",
-          "then": "A separate feature reference is required",
-          "when": "Its decision record is validated"
-        }
-      ],
-      "text": "Adoption cannot silently change a public contract, dependency, security boundary, runtime or scientific claim."
-    },
-    {
-      "id": "REQ-006",
-      "scenarios": [
-        {
-          "given": "The seeded tracks reference historical and current source records",
-          "id": "SC-042",
-          "obtained_evidence": [],
-          "planned_evidence": "Run registry validation and inspect the immutable seed record",
-          "test_file": "tests/test_adoption_pathline.py",
-          "test_name": "AdoptionPathlineTests.test_seeded_registry_is_valid_and_has_no_adoption",
-          "then": "No historical radar file is rewritten and each track retains its stage history and limits",
-          "when": "The registry is validated"
-        }
-      ],
-      "text": "Historical radar snapshots and prior adoption decisions remain auditable when a source changes."
+      "text": "Deterministic verifier remains sole bounded evidence source."
     }
   ],
-  "scientific_limits": "The pathline does not prove market superiority, scientific novelty, production safety, general confluence, contextual equivalence or Yang-Baxter validity. It records source claims and bounded project evidence separately.",
-  "scope": "Radar-to-adoption governance registry, seeded candidate tracks, deterministic validation and negative tests.",
+  "scientific_limits": "Finite corpus and shared producer/verifier replay engine do not prove general OT, contextual equivalence, confluence, Yang-Baxter, production performance or safe parallel execution.",
+  "scope": "M3.5 draft only; no trained or integrated predictor.",
   "stage": "draft"
 }

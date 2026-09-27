@@ -1,0 +1,117 @@
+{
+  "evidenceMethod": "deterministic-finite-replay",
+  "executionAuthorization": false,
+  "format": "structured-exchange-evidence-v1",
+  "kind": "pair",
+  "observation": "final ordered id/value sequence; chronological steps retained",
+  "paths": {
+    "equivalent": true,
+    "exchanged": {
+      "final": [
+        {
+          "id": "b0",
+          "value": "base"
+        },
+        {
+          "id": "a",
+          "value": "A"
+        },
+        {
+          "id": "z",
+          "value": "Z"
+        }
+      ],
+      "observationHash": "b10baa2774cf1d0d98f6e245c76a64bc0a7a40eb028cb2da47b684750d5e23c4",
+      "order": [
+        "second",
+        "first"
+      ],
+      "steps": [
+        {
+          "afterHash": "c061ff4a1eb828eda589f54ecc8f096f7115a48f63cd39f5ac0c75ed407492bc",
+          "anchorId": "b0",
+          "beforeHash": "fd92dacf8fbc7b38f161487cfe90042b966ef2d3be7bfca61224ceab6a470dff",
+          "newId": "a",
+          "operationId": "second",
+          "residualIndex": 1
+        },
+        {
+          "afterHash": "b10baa2774cf1d0d98f6e245c76a64bc0a7a40eb028cb2da47b684750d5e23c4",
+          "anchorId": "b0",
+          "beforeHash": "c061ff4a1eb828eda589f54ecc8f096f7115a48f63cd39f5ac0c75ed407492bc",
+          "newId": "z",
+          "operationId": "first",
+          "residualIndex": 2
+        }
+      ]
+    },
+    "forward": {
+      "final": [
+        {
+          "id": "b0",
+          "value": "base"
+        },
+        {
+          "id": "a",
+          "value": "A"
+        },
+        {
+          "id": "z",
+          "value": "Z"
+        }
+      ],
+      "observationHash": "b10baa2774cf1d0d98f6e245c76a64bc0a7a40eb028cb2da47b684750d5e23c4",
+      "order": [
+        "first",
+        "second"
+      ],
+      "steps": [
+        {
+          "afterHash": "919d11cc5c41b789b97b91f097340fca37a2e419f56186e5bdbc5151a0f86ea4",
+          "anchorId": "b0",
+          "beforeHash": "fd92dacf8fbc7b38f161487cfe90042b966ef2d3be7bfca61224ceab6a470dff",
+          "newId": "z",
+          "operationId": "first",
+          "residualIndex": 1
+        },
+        {
+          "afterHash": "b10baa2774cf1d0d98f6e245c76a64bc0a7a40eb028cb2da47b684750d5e23c4",
+          "anchorId": "b0",
+          "beforeHash": "919d11cc5c41b789b97b91f097340fca37a2e419f56186e5bdbc5151a0f86ea4",
+          "newId": "a",
+          "operationId": "second",
+          "residualIndex": 1
+        }
+      ]
+    },
+    "residualChanged": true
+  },
+  "property": "semantic-final-sequence-equality",
+  "proposal": "propose-swap",
+  "request": {
+    "base": [
+      {
+        "id": "b0",
+        "value": "base"
+      }
+    ],
+    "model": "anchored-sequence-v1",
+    "operations": [
+      {
+        "anchorId": "b0",
+        "id": "first",
+        "kind": "insert",
+        "newId": "z",
+        "value": "Z"
+      },
+      {
+        "anchorId": "b0",
+        "id": "second",
+        "kind": "insert",
+        "newId": "a",
+        "value": "A"
+      }
+    ]
+  },
+  "requestHash": "a4cbb108ce00237eca90d7ff8180b1aed9eb7e13db17af292a7ea74e78ecbaad"
+}

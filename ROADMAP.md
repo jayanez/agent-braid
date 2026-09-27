@@ -166,6 +166,13 @@ until reproduced. No weekly radar signal changes M2 contracts automatically.
 
 **Objective:** test whether meaningful exchange operators exist beyond independent swaps.
 
+The first candidate is [SPEC-018](specs/018-structured-exchange/spec.md):
+bounded anchored-sequence insertion with context-dependent residual positions.
+Its experimental evidence is consultative and its architectural ADR remains
+proposed. Finite success and a candidate mathematical argument do not close
+M3; scientific interpretation, clean-room reproduction and founder review are
+separate gates. M2 fixed-patch evidence is not promoted to this new domain.
+
 Deliverables:
 
 - residual-operation interface;
@@ -180,6 +187,15 @@ Exit criteria:
 - braid tests are reproducible and convention-explicit;
 - claims distinguish empirical, exhaustive finite, and proved results;
 - runtime consequences are quantified.
+
+## M3.5 — Native specialized proposal predictor
+
+**Objective:** test whether a small, local learned advisor improves selection
+of candidates for the deterministic M3 verifier. [SPEC-019](specs/019-native-predictor/spec.md)
+is a draft for offline training, versioned structural features, held-out
+evaluation and abstention. It is independent of M3 closure. A score is
+heuristic; the verifier remains the only source of bounded exchange evidence.
+No external Laya/Jev service is required or integrated.
 
 ## M4 — Agent Braid Runtime
 
