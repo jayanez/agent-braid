@@ -27,6 +27,9 @@ from .git_replay import (
     verify as verify_git_replay,
     verify_plan as verify_git_plan,
 )
+from .structured_exchange import (
+    InvalidExchange, produce as propose_exchange, verify as verify_exchange,
+)
 
 
 def _read(path: Path) -> object:
@@ -109,9 +112,31 @@ def main(argv: list[str] | None = None) -> int:
     prototype_parser.add_argument("input", type=Path, help="parallel integration prototype request JSON")
     prototype_parser.add_argument("--report-output", type=Path, required=True,
                                   help="explicit path for the local prototype report")
+    exchange_parser = subparsers.add_parser(
+        "propose-exchange", help="produce consultative anchored-sequence exchange evidence"
+    )
+    exchange_parser.add_argument("input", type=Path)
+    exchange_parser.add_argument("--evidence-output", type=Path, required=True)
+    exchange_verify_parser = subparsers.add_parser(
+        "verify-exchange", help="regenerate bounded structured exchange paths"
+    )
+    exchange_verify_parser.add_argument("input", type=Path)
     args = parser.parse_args(argv)
     try:
         data = _read(args.input)
+        if args.command == "propose-exchange":
+            bundle = propose_exchange(data)
+            args.evidence_output.write_text(
+                json.dumps(bundle, sort_keys=True, indent=2) + "\n", encoding="utf-8"
+            )
+            print(json.dumps({"status": "proposed", "proposal": bundle["proposal"],
+                              "requestHash": bundle["requestHash"],
+                              "executionAuthorization": False}, sort_keys=True))
+            return 0
+        if args.command == "verify-exchange":
+            result = verify_exchange(data)
+            print(json.dumps(result, sort_keys=True, indent=2))
+            return 0 if result["status"] == "verified-bounded" else 1
         if args.command == "plan-git":
             bundle, plan = produce_git_replay(data)
             args.evidence_output.write_text(
@@ -151,7 +176,7 @@ def main(argv: list[str] | None = None) -> int:
         print(json.dumps({"status": "infrastructure-failure", "category": exc.category,
                           "reason": str(exc)}, sort_keys=True))
         return 3
-    except (Invalid, InvalidAnalysis, InvalidGitAnalysis, InvalidGitReplay,
+    except (Invalid, InvalidAnalysis, InvalidGitAnalysis, InvalidGitReplay, InvalidExchange,
             InvalidGitIntegrationPrototype, OSError, UnicodeError) as exc:
         print(json.dumps({"status": "rejected", "reason": str(exc)}, sort_keys=True))
         return 2
