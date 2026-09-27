@@ -1,0 +1,53 @@
+{
+  "recordVersion": "0.1.0",
+  "feature": "M2",
+  "reviewedCommit": "a5f7d08185cc688101b006d1975ad9eaeb776b93",
+  "reviewer": {
+    "name": "Juan Antonio Yáñez García",
+    "role": "founder"
+  },
+  "conflictsOfInterest": "The reviewer is the project founder and maintainer. The clean-room automation and adversarial assessment were executed within the founder-led project. This is internal review, not independent external validation.",
+  "scientificReview": {
+    "decision": "approved",
+    "date": "2026-09-27",
+    "rationale": "The founder approved the adversarial scientific review of the frozen M2 candidate after inspecting its bounded evidence and limits. The 17/17 internal clean-room observations support four exit criteria only for finite fixed-patch Git replay and read-only preparation. The two registered 30-pair batches support bounded parallel-preparation gains, not a scheduling-wave advantage or production speedup. SPEC-016 remains a private syntactic experiment whose regenerated oracle and verifier share the replay engine. No semantic commutation, contextual equivalence, general confluence, live-agent safety or execution authorization is inferred."
+  },
+  "milestoneClosure": {
+    "decision": "pending",
+    "date": "",
+    "rationale": "A separate founder decision has been requested; scientific approval does not close M2."
+  },
+  "independentValidation": "pending",
+  "evidence": [
+    {
+      "path": "specs/017-m2-closure/reproduction.json",
+      "sha256": "9791fa1c91fc718bd1e3314b645b57680bbfe48993a3eabbf0edadb013be92eb"
+    },
+    {
+      "path": "research/radar/2026-09-27-m2.json",
+      "sha256": "18ba7f86be9b37f531351f219662693161e9fab5d00f099fd372ff21b54e5029"
+    },
+    {
+      "path": "research/reviews/2026-09-27-m2-radar.md",
+      "sha256": "41ed23396097121355550b7ebb73447cea60e74cca69df828c6a735eb8abb638"
+    },
+    {
+      "path": "research/reviews/2026-09-27-m2-adversarial-science.md",
+      "sha256": "147bf40c9b9316ee889a86c40b618ce17c5058a6af8f33601d0fbc0d02d51f7f"
+    },
+    {
+      "path": "docs/experiments/evidence/m2-real-corpus-performance-retest.json",
+      "sha256": "0b3b5c3496bcc9de9d6c324d3ca2765fbad19868755f89e5a8f5253a4f0e962f"
+    },
+    {
+      "path": "specs/016-m2-partial-order-reduction/evidence.json",
+      "sha256": "69d4dbb7fc87f1693c84dfbebb199bdc35a9232a852f093c5fcc6ceb3023d53e"
+    }
+  ],
+  "limits": [
+    "Finite fixed-patch Git replay and tracked-tree-v1 do not establish semantic commutation, contextual equivalence or general confluence.",
+    "SPEC-016 is a private syntactic reduction; oracle regeneration and verification share the replay engine.",
+    "Two registered 30-pair batches show bounded parallel patch-preparation gains, not scheduling-wave advantage or production performance.",
+    "No live-agent safety, execution or merge authorization, external validation, package release or repository-visibility decision follows."
+  ]
+}
