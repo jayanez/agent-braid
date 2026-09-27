@@ -1,0 +1,43 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/jayanez/agent-braid/schemas/0.3.0-experimental/structured-exchange-request.schema.json",
+  "title": "Anchored sequence exchange request",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["model", "base", "operations"],
+  "properties": {
+    "model": {"const": "anchored-sequence-v1"},
+    "base": {
+      "type": "array",
+      "maxItems": 3,
+      "items": {"$ref": "#/$defs/element"}
+    },
+    "operations": {
+      "type": "array",
+      "minItems": 2,
+      "maxItems": 4,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "kind", "anchorId", "newId", "value"],
+        "properties": {
+          "id": {"$ref": "#/$defs/id"},
+          "kind": {"const": "insert"},
+          "anchorId": {"type": "string"},
+          "newId": {"$ref": "#/$defs/id"},
+          "value": {"type": "string", "maxLength": 256}
+        }
+      }
+    }
+  },
+  "$defs": {
+    "id": {"type": "string", "minLength": 1, "maxLength": 64, "not": {"const": "$root"}},
+    "element": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "value"],
+      "properties": {"id": {"$ref": "#/$defs/id"}, "value": {"type": "string", "maxLength": 256}}
+    }
+  },
+  "$comment": "Cross-field uniqueness and immutable-base anchor constraints are enforced by the implementation."
+}
