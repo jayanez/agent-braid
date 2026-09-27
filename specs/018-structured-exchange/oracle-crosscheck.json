@@ -1,0 +1,20 @@
+{
+  "format": "m3-oracle-crosscheck-v1",
+  "inputs": {
+    "agent_braid/structured_exchange.py": "dfca087646898d5bfb816a6a473c7135827d3886512f29bcc39899610b232cc9",
+    "scripts/crosscheck_m3_oracle.py": "0ccef95159c8054c105a66173bc4b0e9685940571bda955b4a4ec4e4364079a8"
+  },
+  "limits": [
+    "Fixed 0..3 base / 2..4 insert topology corpus plus 1000 seeded bounded cases.",
+    "Oracle uses rank keys instead of the production anchor buckets.",
+    "Same author and machine; not independent scientific validation.",
+    "Only the named pure model, final sequence and physical residual trace are checked."
+  ],
+  "mismatches": 0,
+  "platform": "macOS-26.6.2-arm64-arm-64bit-Mach-O",
+  "python": "3.13.11",
+  "seededCases": 1000,
+  "seededOrders": 10650,
+  "topologyCases": 484,
+  "topologyOrders": 9156
+}

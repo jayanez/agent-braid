@@ -20,7 +20,7 @@
   ],
   "assumptions": "Pure deterministic sequence operations with immutable anchors, fresh IDs and complete finite inputs.",
   "authority_snapshot": {
-    "commit": "f5909f6dbec7f1e506844bdb1fa93d566382e756",
+    "commit": null,
     "hashes": {
       "ARCHITECTURE.md": "94e5114eb799b25ca666ef728f84ab1c88e6ad1b342e30a9e99276b8f44c30c2",
       "CONSTITUTION.md": "ff7196976a1736a639947c2ab26e8da157fef23c89ba9881312f2a36459964eb",
@@ -74,13 +74,13 @@
       "schemas/governance/public-export-manifest.schema.json": "11eb7f2594939ae9fd0c9e6cfe4423a80aba686d6cdfdd8b73b0fb84b0840aa8",
       "schemas/governance/release-validation-record.schema.json": "d9943f0c9f5520ea52e3b12bfba88240d03f8011b433fc5e35cb49549ab6e819"
     },
-    "mode": "historical"
+    "mode": "current"
   },
   "compatibility": "New 0.3.0-experimental request/evidence contracts; M2 AIM and Git contracts unchanged.",
   "domain": "Base size 0\u20133; 2\u20134 pure inserts anchored to immutable base/root; all anchor assignments, fixed IDs/values and all orders.",
   "evidence_snapshot": {
-    "commit": "f5909f6dbec7f1e506844bdb1fa93d566382e756",
-    "mode": "historical"
+    "commit": null,
+    "mode": "current"
   },
   "execution_contract": "Read-only local analysis; no Git source mutation, live agents, external effects or execution authorization.",
   "human_review": "pending",
@@ -221,6 +221,13 @@
               "outcome": "484 cases; 10 overlapping pair cases; zero false certificates",
               "path": "specs/018-structured-exchange/finite-corpus.json",
               "sha256": "4e5ab2ec10f7cdd79ebb96e6ce930045508d8e3702e20b423f3b60f3ea87f979"
+            },
+            {
+              "command": "/tmp/agent-braid-m3-venv/bin/python -m scripts.crosscheck_m3_oracle > specs/018-structured-exchange/oracle-crosscheck.json",
+              "limits": "Separate rank-key implementation by the same author on the same machine; fixed topology and 1000 seeded bounded cases; not independent scientific validation.",
+              "outcome": "484 topology cases and 1000 seeded cases; 19806 replay orders; zero mismatches in final observations, residual positions and step hashes",
+              "path": "specs/018-structured-exchange/oracle-crosscheck.json",
+              "sha256": "d6b1f5f80bdc55ea5430692f3587b3d87f6a36e3fbb968ce5c350835c07e2b10"
             }
           ],
           "planned_evidence": "Focused unittest result and bounded evidence artifact; record actual command, hash, outcome and limits after execution.",
