@@ -4,8 +4,8 @@
     "date": "2026-09-27",
     "kind": "milestone",
     "milestones": ["M2"],
-    "reviewer": "project preparation; founder review pending",
-    "decision": "pending",
+    "reviewer": "Juan Antonio Yáñez García (founder)",
+    "decision": "approved",
     "decisionRecord": "research/reviews/2026-09-27-m2-radar.md",
     "scopeSnapshot": "research/radar/2026-09-18-m0.5.json"
   },
@@ -22,7 +22,7 @@
       "relationship": "An adjacent advisory concurrency-control proposal reports serializability and workload results under its own assumptions. Its model, tool inverses and measurements have not been reproduced against Agent Braid's M2 Git path.",
       "affectedArtifacts": ["docs/strategy/ECOSYSTEM.md", "research/REFERENCES.md", "research/adoption/2026-09-initial-triage.json"],
       "status": "watch",
-      "decision": "Proposed: retain as a research comparator; require a bounded semantics and artifact comparison before novelty or relative-performance claims. Founder decision pending."
+      "decision": "Approved bounded M2 disposition: retain as a research comparator; require a bounded semantics and artifact comparison before novelty or relative-performance claims."
     },
     {
       "id": "RAD-2026-012",
@@ -36,7 +36,7 @@
       "relationship": "An adjacent argumentative position argues for explicit concurrency control. The available unreproduced-result schema label is a conservative fallback, not a claim that this position reports an empirical result. It does not establish Agent Braid's correctness, demand, novelty or performance.",
       "affectedArtifacts": ["docs/strategy/OPEN_TOOLING_STRATEGY.md", "research/REFERENCES.md"],
       "status": "watch",
-      "decision": "Proposed: retain only as problem-framing context, with no M2 evidence upgrade. Founder decision pending."
+      "decision": "Approved bounded M2 disposition: retain only as problem-framing context, with no M2 evidence upgrade."
     },
     {
       "id": "RAD-2026-008",
@@ -50,7 +50,7 @@
       "relationship": "Task, artifact and update-event identities could inform a future trace adapter, but protocol conformance alone cannot establish semantic independence or safe schedule exchange.",
       "affectedArtifacts": ["docs/strategy/ECOSYSTEM.md", "research/adoption/2026-09-initial-triage.json"],
       "status": "watch",
-      "decision": "Proposed: keep version-pinned adapter and conformance evaluation outside M2 closure; no implementation adoption. Founder decision pending."
+      "decision": "Approved bounded M2 disposition: keep version-pinned adapter and conformance evaluation outside M2 closure; no implementation adoption."
     },
     {
       "id": "RAD-2026-009",
@@ -64,7 +64,7 @@
       "relationship": "Authorization, session, SSRF and local-server risks reinforce the existing boundary against external traces and write-capable adapters in the bounded M2 Git experiment.",
       "affectedArtifacts": ["SECURITY.md", "docs/strategy/ECOSYSTEM.md"],
       "status": "adopted",
-      "decision": "M0.5 previously adopted these threat classes only as future adapter requirements. Proposed M2 disposition carries that narrow decision forward; no adapter or external execution is authorized. Founder M2 radar decision pending."
+      "decision": "M0.5 previously adopted these threat classes only as future adapter requirements. Approved bounded M2 disposition carries that narrow decision forward; no adapter or external execution is authorized."
     }
   ]
 }
