@@ -1,8 +1,10 @@
 # M3 internal closure decision packet
 
-**Prepared:** 2026-09-27  
-**Status:** evidence assembled for review; M3 closure is not approved.  
-**Merged starting revision:** `d567958dbe5d93583456ec33c3a0da4e8e29874c` (`develop`).  
+**Prepared:** 2026-09-27
+
+**Status:** evidence assembled for review; M3 closure is not approved.
+
+**Merged starting revision:** `d567958dbe5d93583456ec33c3a0da4e8e29874c` (`develop`).
 **Reviewed experiment candidate:** `2656924e51cccf4017a31563ae044c47efcc395d` (`spec-018-reviewed-2656924`).
 
 The founder approved [ADR 0017](../adr/0017-bounded-structured-exchange.md)
