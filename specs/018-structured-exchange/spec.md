@@ -9,7 +9,7 @@ execution runtime. SPEC-019 contains the separate M3.5 predictor.
 ## Authorities
 
 Constitutional clause zero and Articles 2–4, 6–10, 13–14, 17–20, 23–25;
-GOVERNANCE.md; proposed ADR 0017; operational semantics and claim discipline.
+GOVERNANCE.md; accepted bounded ADR 0017; operational semantics and claim discipline.
 Positive experiments cannot approve the ADR or milestone closure.
 
 ## Requirements and acceptance scenarios
@@ -48,5 +48,5 @@ executionAuthorization: false.
 ## Evidence and unresolved questions
 
 Tests, corpus output and clean-room checks are planned in assurance.json.
-Formal proof review, runtime transfer, real workloads, ADR acceptance and
-founder M3 closure remain separate.
+Formal proof review, runtime transfer, real workloads and founder M3 closure
+remain separate from this bounded experiment approval.

@@ -1,0 +1,48 @@
+{
+  "recordVersion": "agent-braid-internal-evidence-review-1",
+  "feature": "SPEC-018 M3 bounded structured exchange experiment and ADR 0017",
+  "reviewedAt": "2026-09-27",
+  "reviewedCommit": "2656924e51cccf4017a31563ae044c47efcc395d",
+  "reviewer": {
+    "name": "Juan Antonio Yáñez García",
+    "role": "founder"
+  },
+  "conflictsOfInterest": "The founder is the project maintainer. This is internal review, not independent external validation.",
+  "decision": "approved-bounded-experiment",
+  "question": "¿Apruebas ADR 0017 y SPEC-018 de la PR #169 como experimento acotado de M3, con sus límites científicos y sin autorizar ejecución ni cerrar aún M3?",
+  "decisionText": "Sí, apruebo el experimento acotado",
+  "scope": "The pure anchored-sequence-v1 insert domain, its context-dependent residual replay, finite pair and braid paths, bounded verifier, experimental schemas and the proposed ADR 0017 as reviewed at the frozen commit.",
+  "reviewedArtifacts": [
+    {
+      "path": "docs/adr/0017-bounded-structured-exchange.md",
+      "sha256AtReviewedCommit": "bc50ac4b621c9aeb855d772effcabfb4e7cf2ed1eabcb78c8fed076d18e370d1"
+    },
+    {
+      "path": "specs/018-structured-exchange/spec.md",
+      "sha256AtReviewedCommit": "c74d2e1dd7b1b865b493530a5637dedc4f6419525ef44b01501119d71ffaee89"
+    },
+    {
+      "path": "specs/018-structured-exchange/assurance.json",
+      "sha256AtReviewedCommit": "4c4745ca90310aa8db584e717c751f2ee27dadd809dfdf05b2a119780462f429"
+    },
+    {
+      "path": "specs/018-structured-exchange/oracle-crosscheck.json",
+      "sha256AtReviewedCommit": "d6b1f5f80bdc55ea5430692f3587b3d87f6a36e3fbb968ce5c350835c07e2b10"
+    },
+    {
+      "path": "specs/018-structured-exchange/tasks.md",
+      "sha256AtReviewedCommit": "1f879b227112ba14ff2e6cbcda3b24027e8b1a78ddd51aa5982d764041a15748"
+    }
+  ],
+  "limits": [
+    "The rank-key cross-check is a second implementation by the same author and is not independent scientific validation.",
+    "The fixed topology corpus and 1000 seeded cases do not prove a universal algebraic relation, contextual equivalence, general OT correctness, Git patch equivalence or production performance.",
+    "The verifier grants no execution authorization; the result does not close M3 or approve M3.5 training."
+  ],
+  "independentValidation": "pending",
+  "externalHumanValidation": "pending",
+  "mergeAuthorization": true,
+  "mergeAuthorizationBasis": "The founder previously instructed Codex to create and merge a PR when ready; this review approves the bounded M3 experiment, while all applicable PR checks remain required.",
+  "m3Closure": false,
+  "executionAuthorization": false
+}
