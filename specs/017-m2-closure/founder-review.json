@@ -8,14 +8,14 @@
   },
   "conflictsOfInterest": "The reviewer is the project founder and maintainer. The clean-room automation and adversarial assessment were executed within the founder-led project. This is internal review, not independent external validation.",
   "scientificReview": {
-    "decision": "pending",
-    "date": "",
-    "rationale": "The founder ratified the earlier efc4b4c candidate. A separate exact-candidate ratification has been requested after the tracking-test fix and new 17/17 clean-room reproduction of 61e731a."
+    "decision": "approved",
+    "date": "2026-09-27",
+    "rationale": "The founder explicitly ratified the favorable adversarial scientific review for final develop-lineage candidate 61e731aeb1cb631b9c0d083f71d38ca620cc4742 after its 17/17 internal clean-room reproduction. All 53 selected input hashes and the scientific limits match the previously reviewed candidate; the only intervening tree change corrected a GitHub tracking inventory test. The four M2 criteria are supported only in the fixed-patch Git and read-only preparation domain. The two registered 30-pair batches show bounded preparation gains, not a scheduling-wave advantage or production speedup. SPEC-016 remains a private syntactic experiment whose regenerated oracle and verifier share the replay implementation. No semantic commutation, contextual equivalence, general confluence, live-agent safety or execution authorization is inferred."
   },
   "milestoneClosure": {
-    "decision": "pending",
-    "date": "",
-    "rationale": "Internal M2 closure was approved for the earlier efc4b4c candidate; confirmation against the replacement 61e731a candidate is pending."
+    "decision": "approved",
+    "date": "2026-09-27",
+    "rationale": "The founder separately approved internal M2 closure against final candidate 61e731aeb1cb631b9c0d083f71d38ca620cc4742 and its clean-room record. Closure is limited to the bounded fixed-patch Git laboratory, tracked-tree-v1 observation and consultative read-only patch preparation. Independent external validation remains pending. This decision does not authorize agent execution, ref promotion, a package release, repository-visibility changes, public-contract expansion or stronger scientific claims."
   },
   "independentValidation": "pending",
   "evidence": [
