@@ -25,6 +25,7 @@ REPRODUCTION = f"{FEATURE}/reproduction.json"
 VERSION = "m2-internal-cleanroom-v1"
 RADAR = "research/radar/2026-09-27-m2.json"
 RADAR_REVIEW = "research/reviews/2026-09-27-m2-radar.md"
+ADVERSARIAL_REVIEW = "research/reviews/2026-09-27-m2-adversarial-science.md"
 RETEST = "docs/experiments/evidence/m2-real-corpus-performance-retest.json"
 RETEST_INPUTS = "docs/experiments/m2-real-corpus-retest-inputs.json"
 RETEST_DECISION = "specs/013-m2-real-workload/m2-retest-founder-decision.json"
@@ -33,7 +34,8 @@ MINIMUM_BASE = "ecfaf24601154b0eaf4998e4d6c6a77b490cd093"
 INPUTS = (
     "CONSTITUTION.md", "GOVERNANCE.md", "ROADMAP.md",
     "requirements-dev.txt", "requirements-speckit.txt",
-    RADAR, RADAR_REVIEW, RETEST, RETEST_INPUTS, RETEST_DECISION, RETEST_REVIEW,
+    RADAR, RADAR_REVIEW, ADVERSARIAL_REVIEW,
+    RETEST, RETEST_INPUTS, RETEST_DECISION, RETEST_REVIEW,
     "docs/experiments/M2_REAL_CORPUS_RETEST_RESULT.md",
     "docs/experiments/evidence/m2-real-corpus-performance-attempt-1-batch.json",
     "docs/experiments/evidence/m2-real-corpus-performance-attempt-1-result.json",
@@ -412,7 +414,7 @@ def validate_founder_review(root: Path, candidate: str) -> None:
                    for item in review["limits"])):
         raise ValueError("M2 founder review limits are missing")
     evidence = review["evidence"]
-    expected = {REPRODUCTION, RADAR, RADAR_REVIEW, RETEST,
+    expected = {REPRODUCTION, RADAR, RADAR_REVIEW, ADVERSARIAL_REVIEW, RETEST,
                 "specs/016-m2-partial-order-reduction/evidence.json"}
     if (not isinstance(evidence, list) or len(evidence) != len(expected)
             or {item.get("path") for item in evidence} != expected):
