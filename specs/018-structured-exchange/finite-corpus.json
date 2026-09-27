@@ -1,0 +1,30 @@
+{
+  "elapsedSeconds": 3.722239,
+  "format": "m3-finite-corpus-v1",
+  "inputs": {
+    "agent_braid/structured_exchange.py": "dfca087646898d5bfb816a6a473c7135827d3886512f29bcc39899610b232cc9",
+    "docs/theory/STRUCTURED_EXCHANGE.md": "abd0a00b754b6be60b834ae4604551ffbb24936686fdecf99bd09735951cc90a",
+    "specs/018-structured-exchange/fixtures/same-anchor.json": "7e69109be4adf71091d214a752938777f85744c090b099f7ff3f3b9169cf8bd3"
+  },
+  "limits": [
+    "Fixed IDs and payloads; anchor topology exhaustive only.",
+    "Producer and verifier use the same replay implementation.",
+    "Elapsed time and tracked memory are one local observation, not production claims."
+  ],
+  "peakTrackedBytes": 89991,
+  "platform": "macOS-26.6.2-arm64-arm-64bit-Mach-O",
+  "python": "3.13.11",
+  "result": {
+    "allOrdersStepBaseline": 35904,
+    "braidCases": 100,
+    "cases": 484,
+    "domain": "base-size-0..3; inserts-2..4; all base/root anchor assignments; fixed ids and payloads",
+    "executionAuthorization": false,
+    "falseCertificates": 0,
+    "fourOperationCases": 354,
+    "overlappingPairCases": 10,
+    "pairCases": 30,
+    "pathDisjointPairCases": 20,
+    "serialStepBaseline": 1776
+  }
+}

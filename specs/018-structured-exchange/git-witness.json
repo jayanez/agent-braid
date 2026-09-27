@@ -1,0 +1,32 @@
+{
+  "claim": "temporary serialization of pure terminal sequences only; not an M2 fixed-patch certificate",
+  "executionAuthorization": false,
+  "format": "m3-git-serialization-witness-v1",
+  "inputs": {
+    "agent_braid/structured_exchange.py": "dfca087646898d5bfb816a6a473c7135827d3886512f29bcc39899610b232cc9",
+    "scripts/run_m3_git_witness.py": "d1f53403d58f7054234123561375b251bbd57fe54457fdc081f78bff036559c1",
+    "specs/018-structured-exchange/fixtures/same-anchor.json": "7e69109be4adf71091d214a752938777f85744c090b099f7ff3f3b9169cf8bd3"
+  },
+  "paths": [
+    {
+      "blob": "cca1f594cf3f70932156e8f6a0a9d4fde545df16",
+      "observationHash": "b10baa2774cf1d0d98f6e245c76a64bc0a7a40eb028cb2da47b684750d5e23c4",
+      "order": [
+        "first",
+        "second"
+      ],
+      "tree": "07d1c6d85120cecb6042736384dd10716f371e59"
+    },
+    {
+      "blob": "cca1f594cf3f70932156e8f6a0a9d4fde545df16",
+      "observationHash": "b10baa2774cf1d0d98f6e245c76a64bc0a7a40eb028cb2da47b684750d5e23c4",
+      "order": [
+        "second",
+        "first"
+      ],
+      "tree": "07d1c6d85120cecb6042736384dd10716f371e59"
+    }
+  ],
+  "requestHash": "a4cbb108ce00237eca90d7ff8180b1aed9eb7e13db17af292a7ea74e78ecbaad",
+  "sameTree": true
+}
