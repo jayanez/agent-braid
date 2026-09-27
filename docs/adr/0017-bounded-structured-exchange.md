@@ -1,6 +1,7 @@
 # ADR 0017: Bounded structured exchange laboratory
 
-- **Status:** Proposed; founder review pending
+- **Status:** Accepted as a bounded experiment by the founder on 2026-09-27;
+  [review record](../../specs/018-structured-exchange/founder-review.json).
 - **Date:** 2026-09-27
 - **Decider:** Juan Antonio Yáñez García, founder
 - **Constitutional articles:** 0, 2–4, 6–10, 13–14, 17–20, 23–25
@@ -11,7 +12,7 @@ M2 fixed-patch Git replay and path-disjoint reduction do not establish an
 exchange rule for overlapping structured edits. M3 needs a falsifiable finite
 operator whose transformed operations and observation are explicit.
 
-## Proposed decision
+## Decision
 
 Introduce an isolated `anchored-sequence-v1` laboratory. A base sequence has
 unique element IDs. An insert names either `$root` or an immutable base element

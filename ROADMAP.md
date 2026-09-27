@@ -168,10 +168,11 @@ until reproduced. No weekly radar signal changes M2 contracts automatically.
 
 The first candidate is [SPEC-018](specs/018-structured-exchange/spec.md):
 bounded anchored-sequence insertion with context-dependent residual positions.
-Its experimental evidence is consultative and its architectural ADR remains
-proposed. Finite success and a candidate mathematical argument do not close
-M3; scientific interpretation, clean-room reproduction and founder review are
-separate gates. M2 fixed-patch evidence is not promoted to this new domain.
+Its experimental evidence is consultative, and ADR 0017 has founder approval
+only for this bounded experiment. Finite success and a candidate mathematical
+argument do not close M3; milestone closure and any general scientific claim
+remain separate decisions. M2 fixed-patch evidence is not promoted to this new
+domain.
 
 Deliverables:
 
