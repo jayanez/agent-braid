@@ -39,7 +39,9 @@ def load_anchors(root: Path) -> dict:
         raise ValueError("closure anchor registry is missing or invalid") from exc
     if set(data) != {"recordVersion", "milestones"} \
             or data["recordVersion"] != "0.1.0" \
-            or set(data["milestones"]) != {"M0", "M0.5", "M1"}:
+            or set(data["milestones"]) not in (
+                {"M0", "M0.5", "M1"}, {"M0", "M0.5", "M1", "M2"}
+            ):
         raise ValueError("closure anchor registry fields or version are invalid")
     return data["milestones"]
 

@@ -78,10 +78,12 @@ class PublicationTests(unittest.TestCase):
             }
             write(root / "docs/releases/closure-anchors.json", json.dumps({
                 "recordVersion": "0.1.0",
-                "milestones": {"M0": anchor, "M0.5": anchor, "M1": anchor},
+                "milestones": {"M0": anchor, "M0.5": anchor,
+                               "M1": anchor, "M2": anchor},
             }))
             commit(root, "anchor registry")
             validate_closure_anchor(root, "M0", candidate)
+            validate_closure_anchor(root, "M2", candidate)
             write(root / "protected.txt", "altered\n")
             with self.assertRaisesRegex(ValueError, "protected closure record changed"):
                 validate_closure_anchor(root, "M0", candidate)
