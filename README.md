@@ -170,7 +170,7 @@ exhaustive-finite or formal results. See the
 | M0 — foundation | Closed internally | Canonical semantics, contracts, governance and bounded laboratory. |
 | M0.5 — open strategy | Closed internally | Research-preview proposal approved; the later public cutover is recorded separately. |
 | M1 — analyzer | Closed internally | Deterministic AIM analysis and experimental read-only Git/worktree adapter. |
-| M2 — confluence laboratory and scheduler | In progress | First cut: exhaustive replay of 2–4 fixed Git commit patches and consultative preparation waves. Integration remains serial; execution authorization is always false. |
+| M2 — confluence laboratory and scheduler | Closed internally | Bounded fixed-patch Git replay and consultative read-only preparation; integration remains serial and execution authorization is false. |
 
 Independent validation remains **pending**. The evidence has been reproduced
 internally and reviewed by the founder, who has an explicit conflict of interest;
@@ -179,7 +179,8 @@ published protocols. Start with the [external reproduction guide](docs/releases/
 and see the [validation policy](docs/releases/VALIDATION_POLICY.md),
 [M0 closure](docs/releases/M0_CLOSURE.md),
 [M0.5 closure](docs/releases/M0_5_CLOSURE.md) and
-[M1 closure](docs/releases/M1_CLOSURE.md).
+[M1 closure](docs/releases/M1_CLOSURE.md) and
+[M2 closure](docs/releases/M2_CLOSURE.md).
 
 The [v0.1.0-alpha.1 research preview](https://github.com/jayanez/agent-braid/releases/tag/v0.1.0-alpha.1)
 was published from a clean public root. The earlier

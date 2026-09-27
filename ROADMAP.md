@@ -125,19 +125,18 @@ Its repeated-context real-Git fixture also supplies the positive end-to-end
 reduction absent from SPEC-015's original review. Its bounded internal review
 was approved on 2026-09-26; the approval confirms that the oracle is regenerated
 and checked by the existing verifier, not by an independent replay engine, and
-that uncertain paths prevent interchange. A clean-room reproduction and
-independent external validation remain pending. M2 remains open.
+that uncertain paths prevent interchange. The final M2 candidate
+`61e731aeb1cb631b9c0d083f71d38ca620cc4742` passed 17/17 internal
+clean-room observations. The founder separately ratified its bounded scientific
+review and approved internal M2 closure on 2026-09-27. Independent external
+validation remains pending; see the [closure record](docs/releases/M2_CLOSURE.md).
 
-**Next priority:** complete the M2 closure-readiness review in
-[`M2_READINESS_REVIEW.md`](docs/releases/M2_READINESS_REVIEW.md), then bind a
-final frozen candidate to a clean-room reproduction and a separate founder
-closure decision. The review finds bounded evidence for all four published
-exit criteria; SPEC-016 remains a private experiment until its clean-room
-reproduction and any separate promotion contract are complete. Independent
-external validation remains pending and is not a milestone gate. Broader
-workload adapters are deferred until this closure decision. Any executable
-integration or ref promotion requires a separately reviewed execution contract
-and authorization; it is not implied by advisory preparation.
+The [readiness review](docs/releases/M2_READINESS_REVIEW.md) and final
+candidate-bound record support all four M2 exit criteria only within their
+declared finite Git and read-only preparation domains. SPEC-016 remains a
+private experiment; its promotion requires a separate contract. Broader
+workload adapters, executable integration and ref promotion require their own
+reviewed contracts and authorization. M2 closure supplies none of these.
 
 Deliverables:
 
