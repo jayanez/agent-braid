@@ -1,8 +1,9 @@
 # Anchored sequence exchange, version 1
 
 **Claim level:** executable finite model and a candidate mathematical class.
-ADR 0017 remains proposed. This document defines a restricted operational
-semantics; its general mathematical statement has not received proof review.
+ADR 0017 is accepted as a bounded experiment. This document defines a
+restricted operational semantics; its general mathematical statement has not
+received proof review.
 
 Let the base be a sequence `B=(b1,...,bm)` of distinct IDs, with root `$root`
 before `b1`. Let an operation be `I=(opId, anchorId, newId, value)`, where the
