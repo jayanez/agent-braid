@@ -78,13 +78,23 @@ class PublicationTests(unittest.TestCase):
             }
             write(root / "docs/releases/closure-anchors.json", json.dumps({
                 "recordVersion": "0.1.0",
-                "milestones": {"M0": anchor, "M0.5": anchor, "M1": anchor},
+                "milestones": {"M0": anchor, "M0.5": anchor,
+                               "M1": anchor, "M2": anchor},
             }))
             commit(root, "anchor registry")
             validate_closure_anchor(root, "M0", candidate)
+            validate_closure_anchor(root, "M2", candidate)
             write(root / "protected.txt", "altered\n")
             with self.assertRaisesRegex(ValueError, "protected closure record changed"):
                 validate_closure_anchor(root, "M0", candidate)
+            git(root, "checkout", "--", "protected.txt")
+            registry = root / "docs/releases/closure-anchors.json"
+            weakened = json.loads(registry.read_text(encoding="utf-8"))
+            weakened["milestones"]["M2"]["changedPaths"] = []
+            registry.write_text(json.dumps(weakened), encoding="utf-8")
+            commit(root, "weaken M2 anchor")
+            with self.assertRaisesRegex(ValueError, "first recorded entry"):
+                validate_closure_anchor(root, "M2", candidate)
 
     def test_export_is_deterministic_and_rejects_unsafe_inputs(self):
         with tempfile.TemporaryDirectory() as directory:

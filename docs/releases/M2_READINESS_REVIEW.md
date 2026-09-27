@@ -2,9 +2,12 @@
 
 **Review date:** 2026-09-26
 
+**Radar-gate correction:** 2026-09-27; the original readiness review omitted the
+required M2 milestone radar review.
+
 **Repository candidate inspected:** `893e90b903b0a49db3f8baf5f1185a7def7e850e` (`origin/develop`)
 
-**Status:** evidence supports a bounded closure review after final clean-room reproduction; M2 is not closed by this document.
+**Status:** evidence supports a bounded closure review after final clean-room reproduction and founder review of the M2 radar; M2 is not closed by this document.
 
 This review maps the M2 exit criteria in [the roadmap](../../ROADMAP.md) to
 recorded evidence. It is a readiness assessment, not a scientific review,
@@ -21,6 +24,11 @@ founder closure decision, release authorization or execution authorization.
 
 ## Remaining gates and tracking
 
+- Complete the [M2 milestone radar review](../../research/reviews/2026-09-27-m2-radar.md)
+  with an explicit founder decision before M2 closure. The dated source
+  assessment is prepared, but its decision remains pending. The radar checks
+  adjacent research and protocol signals within its stated scope; it does not
+  upgrade the Git experiment's scientific evidence or adopt those signals.
 - Run the feature-specific clean-room reproduction for the final frozen M2
   candidate before treating this readiness review as a closure package. Include
   SPEC-016 only within its reviewed private scope; its verifier uses the same
@@ -41,8 +49,8 @@ founder closure decision, release authorization or execution authorization.
 
 ## Decision boundary
 
-This review recommends proceeding to the frozen-candidate clean-room gate and
-then a separate founder review of M2 closure. It does not itself declare the
-milestone ready to close, approve broader workload adapters, or establish
-general confluence, semantic commutativity, production performance or execution
-safety.
+This review recommends completing the pending radar decision and frozen-candidate
+clean-room gate before a separate founder review of M2 closure. It does not
+itself declare the milestone ready to close, approve broader workload adapters,
+or establish general confluence, semantic commutativity, production performance
+or execution safety.
