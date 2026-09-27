@@ -1,7 +1,7 @@
 {
   "recordVersion": "0.1.0",
   "feature": "M2",
-  "reviewedCommit": "a5f7d08185cc688101b006d1975ad9eaeb776b93",
+  "reviewedCommit": "61e731aeb1cb631b9c0d083f71d38ca620cc4742",
   "reviewer": {
     "name": "Juan Antonio Yáñez García",
     "role": "founder"
@@ -10,18 +10,18 @@
   "scientificReview": {
     "decision": "approved",
     "date": "2026-09-27",
-    "rationale": "The founder approved the adversarial scientific review of the frozen M2 candidate after inspecting its bounded evidence and limits. The 17/17 internal clean-room observations support four exit criteria only for finite fixed-patch Git replay and read-only preparation. The two registered 30-pair batches support bounded parallel-preparation gains, not a scheduling-wave advantage or production speedup. SPEC-016 remains a private syntactic experiment whose regenerated oracle and verifier share the replay engine. No semantic commutation, contextual equivalence, general confluence, live-agent safety or execution authorization is inferred."
+    "rationale": "The founder explicitly ratified the favorable adversarial scientific review for final develop-lineage candidate 61e731aeb1cb631b9c0d083f71d38ca620cc4742 after its 17/17 internal clean-room reproduction. All 53 selected input hashes and the scientific limits match the previously reviewed candidate; the only intervening tree change corrected a GitHub tracking inventory test. The four M2 criteria are supported only in the fixed-patch Git and read-only preparation domain. The two registered 30-pair batches show bounded preparation gains, not a scheduling-wave advantage or production speedup. SPEC-016 remains a private syntactic experiment whose regenerated oracle and verifier share the replay implementation. No semantic commutation, contextual equivalence, general confluence, live-agent safety or execution authorization is inferred."
   },
   "milestoneClosure": {
-    "decision": "pending",
-    "date": "",
-    "rationale": "A separate founder decision has been requested; scientific approval does not close M2."
+    "decision": "approved",
+    "date": "2026-09-27",
+    "rationale": "The founder separately approved internal M2 closure against final candidate 61e731aeb1cb631b9c0d083f71d38ca620cc4742 and its clean-room record. Closure is limited to the bounded fixed-patch Git laboratory, tracked-tree-v1 observation and consultative read-only patch preparation. Independent external validation remains pending. This decision does not authorize agent execution, ref promotion, a package release, repository-visibility changes, public-contract expansion or stronger scientific claims."
   },
   "independentValidation": "pending",
   "evidence": [
     {
       "path": "specs/017-m2-closure/reproduction.json",
-      "sha256": "9791fa1c91fc718bd1e3314b645b57680bbfe48993a3eabbf0edadb013be92eb"
+      "sha256": "cae021bacc5078ebe7275cf8753212712d5c4e0ce4d6d5ac7d07370a17158f86"
     },
     {
       "path": "research/radar/2026-09-27-m2.json",

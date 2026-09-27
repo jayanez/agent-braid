@@ -4,10 +4,11 @@
 - [x] T002: Implement the isolated candidate-bound reproduction runner (REQ-001–005).
 - [x] T003: Implement provenance, radar, retest and negative-gate validation (REQ-001–006).
 - [x] T004: Integrate the M2 radar record, freeze the complete candidate and run clean-room reproduction (REQ-001–005).
-- [ ] T005: Obtain separate founder scientific-review and closure decisions (REQ-006).
-- [ ] T006: Publish closure record and reconcile issue, milestone and Project state after approval (REQ-006).
+- [x] T005: Obtain separate founder scientific-review and closure decisions (REQ-006).
+- [x] T006: Publish closure record and reconcile issue, milestone and Project state after approval (REQ-006).
 
-T004 is bound to frozen candidate `a5f7d08185cc688101b006d1975ad9eaeb776b93`
-and `reproduction.json`. T005–T006 require actual founder decisions; their
-unchecked status is intentional. External independent validation remains a
-visible, nonblocking follow-up.
+T004 is bound to frozen candidate `61e731aeb1cb631b9c0d083f71d38ca620cc4742`
+and `reproduction.json`. T005 records two explicit founder decisions for this candidate. T006 publishes
+the internal closure source; remote tracking reconciliation is verified
+separately after merge. External independent validation remains a visible,
+nonblocking follow-up.

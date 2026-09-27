@@ -5,13 +5,13 @@
     "M0": "Bounded operational foundation and internal closure.",
     "M0.5": "Research-preview preparation and bounded internal closure.",
     "M1": "Read-only analyzer and internal closure.",
-    "M2": "Confluence laboratory; bounded Git patch replay and advisory preparation planning, with milestone closure still open.",
+    "M2": "Confluence laboratory; bounded Git patch replay and advisory preparation planning, closed internally.",
     "M3": "Braid structure; no implementation tasks are inferred from this heading.",
     "M4": "Formal research; no implementation tasks are inferred from this heading.",
     "Public research preview": "Public publication and cutover verification.",
     "Cross-cutting governance": "Governance and adoption work spanning release milestones."
   },
-  "closed_milestones": ["M0", "M0.5", "M1"],
+  "closed_milestones": ["M0", "M0.5", "M1", "M2"],
   "specs": {
     "001-certificate-verifier-pilot": {"milestone": "M0", "state": "closed"},
     "002-open-tooling-strategy": {"milestone": "M0.5", "state": "open"},
@@ -24,12 +24,12 @@
     "009-public-research-preview": {"milestone": "Public research preview", "state": "open"},
     "010-risk-validation": {"milestone": "Cross-cutting governance", "state": "closed"},
     "011-adoption-pathline": {"milestone": "Cross-cutting governance", "state": "open"},
-    "012-m2-git-replay-planner": {"milestone": "M2", "state": "open"},
-    "013-m2-real-workload": {"milestone": "M2", "state": "open"},
-    "014-m2-observation-normalizer": {"milestone": "M2", "state": "open"},
-    "015-m2-counterexample-reducer": {"milestone": "M2", "state": "open"},
-    "016-m2-partial-order-reduction": {"milestone": "M2", "state": "open"},
-    "017-m2-closure": {"milestone": "M2", "state": "open"}
+    "012-m2-git-replay-planner": {"milestone": "M2", "state": "closed"},
+    "013-m2-real-workload": {"milestone": "M2", "state": "closed"},
+    "014-m2-observation-normalizer": {"milestone": "M2", "state": "closed"},
+    "015-m2-counterexample-reducer": {"milestone": "M2", "state": "closed"},
+    "016-m2-partial-order-reduction": {"milestone": "M2", "state": "closed"},
+    "017-m2-closure": {"milestone": "M2", "state": "closed"}
   },
   "task_state_overrides": {
     "SPEC-004/T005": "The frozen M0 task checkbox predates closure. Same-commit Codex and Claude reports are bound by specs/004-m0-closure/founder-review.json, which separately approves M0 closure; the published historical task file remains unchanged."
@@ -38,13 +38,6 @@
     "SPEC-002",
     "SPEC-002/T006",
     "SPEC-011",
-    "SPEC-011/T008",
-    "SPEC-012",
-    "SPEC-013",
-    "SPEC-014",
-    "SPEC-015",
-    "SPEC-016",
-    "SPEC-017",
-    "SPEC-017/T005"
+    "SPEC-011/T008"
   ]
 }
