@@ -20,7 +20,7 @@
   ],
   "assumptions": "Pure deterministic sequence operations with immutable anchors, fresh IDs and complete finite inputs.",
   "authority_snapshot": {
-    "commit": null,
+    "commit": "2656924e51cccf4017a31563ae044c47efcc395d",
     "hashes": {
       "ARCHITECTURE.md": "94e5114eb799b25ca666ef728f84ab1c88e6ad1b342e30a9e99276b8f44c30c2",
       "CONSTITUTION.md": "ff7196976a1736a639947c2ab26e8da157fef23c89ba9881312f2a36459964eb",
@@ -74,13 +74,13 @@
       "schemas/governance/public-export-manifest.schema.json": "11eb7f2594939ae9fd0c9e6cfe4423a80aba686d6cdfdd8b73b0fb84b0840aa8",
       "schemas/governance/release-validation-record.schema.json": "d9943f0c9f5520ea52e3b12bfba88240d03f8011b433fc5e35cb49549ab6e819"
     },
-    "mode": "current"
+    "mode": "historical"
   },
   "compatibility": "New 0.3.0-experimental request/evidence contracts; M2 AIM and Git contracts unchanged.",
   "domain": "Base size 0\u20133; 2\u20134 pure inserts anchored to immutable base/root; all anchor assignments, fixed IDs/values and all orders.",
   "evidence_snapshot": {
-    "commit": null,
-    "mode": "current"
+    "commit": "2656924e51cccf4017a31563ae044c47efcc395d",
+    "mode": "historical"
   },
   "execution_contract": "Read-only local analysis; no Git source mutation, live agents, external effects or execution authorization.",
   "human_review": "pending",
