@@ -61,19 +61,22 @@ input order. Compare it with a small local linear ranker trained only on the
 training partition. Feature version, weight artifact, probability calibration,
 decision threshold and abstention rule must be frozen using calibration data
 only. Proposed features are base size, same-anchor indicator, relative
-base-anchor distance, insertion
-lengths and bounded lexical overlap; no repository identity, source path,
+base-anchor distance, insertion lengths and bounded lexical overlap; no
+repository identity, source path,
 person identifier, target label or verifier outcome is an input feature.
 
 At verifier-call ceilings of 25%, 50% and 100% of all assigned holdout pairs,
-rank pairs by each policy and call the unchanged verifier until its ceiling is
-reached or eligible proposals are exhausted. An abstention consumes no call;
-continue down the ranking and report unused calls if the ceiling cannot be
-filled. Report useful verified proposals, precision, recall, abstention,
-actual verifier calls, wall-clock time and model inference cost for both
+set each ceiling to `floor(budget_fraction * N)`, where `N` is the number of
+assigned holdout pairs. Break equal priority scores by the inventory order
+frozen before labels. Rank pairs by each policy and call the unchanged verifier
+until its ceiling is reached or eligible proposals are exhausted. An abstention
+consumes no call; continue down the ranking and report unused calls if the
+ceiling cannot be filled. Report useful verified proposals, precision, recall,
+abstention, actual verifier calls, wall-clock time and model inference cost for
+both
 policies. Report Brier score and five equal-frequency reliability bins for
-calibrated utility estimates;
-uncalibrated raw scores must not be described as probabilities. Also report
+calibrated utility estimates; uncalibrated raw scores must not be described as
+probabilities. Also report
 per-family differences, class prevalence and all unknown labels. For each
 budget, report the number of verified proposals with known useful, known
 not-useful and unknown utility labels. The known-label precision denominator
@@ -87,8 +90,8 @@ bounds express missing-label uncertainty, not statistical confidence. The
 first cohort is descriptive: with only three holdout families it cannot
 support a 95% family-bootstrap interval or a confirmatory claim of
 improvement. Report the direction and magnitude at the prespecified 50%
-budget, including whether
-the model exceeds the baseline in useful verified proposals without exceeding
+budget, including whether the model exceeds the baseline in useful verified
+proposals without exceeding
 total analysis time. The 25% and 100% budgets are sensitivity checks, not
 alternative success criteria. A null, negative or inconclusive result is valid.
 
@@ -98,8 +101,8 @@ and a cluster-aware analysis reviewed before holdout labels are inspected.
 That plan must also preregister how unresolved utility labels affect the
 primary comparison; complete-case metrics alone cannot establish superiority
 if unknown labels could reverse it. Do not infer validity from an arbitrary
-number of bootstrap replications:
-cluster-bootstrap intervals can have poor coverage when the number of families
+number of bootstrap replications: cluster-bootstrap intervals can have poor
+coverage when the number of families
 is small. The [Cameron, Gelbach and Miller working paper](https://www.nber.org/papers/t0344)
 motivates this restriction; it is methodological context, not evidence that
 this particular predictor works.
