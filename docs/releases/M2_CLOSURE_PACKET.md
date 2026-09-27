@@ -69,8 +69,9 @@ visibility changes, public contract expansion or ref promotion.
 At preparation time, GitHub milestone M2 (#4) was open with five open parent
 issues for SPEC-012 through SPEC-016 and 30 closed task issues. The
 [tracking source](../development/github-tracking.json) likewise keeps M2 and
-those parents open. SPEC-017 will be registered open after its stable IDs are
-integrated. Parent and milestone closure belongs after the separate founder
+those parents open. SPEC-017 is registered open in the tracking source after
+its stable IDs were integrated; its GitHub issue has not yet been created.
+Parent and milestone closure belongs after the separate founder
 decision. The five M2 parents were inspected in the private Project's **Specs
 and tasks** view and set to **Review pending** on 2026-09-27. Their task progress
 remained 13/13, 6/6, 3/3, 3/3 and 5/5 respectively. The available CLI token
