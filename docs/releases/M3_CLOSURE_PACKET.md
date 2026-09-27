@@ -2,7 +2,7 @@
 
 **Prepared:** 2026-09-27
 
-**Status:** evidence assembled for review; M3 closure is not approved.
+**Status:** founder reviewed; internal M3 closure approved on 2026-09-27.
 
 **Merged starting revision:** `d567958dbe5d93583456ec33c3a0da4e8e29874c` (`develop`).
 **Reviewed experiment candidate:** `2656924e51cccf4017a31563ae044c47efcc395d` (`spec-018-reviewed-2656924`).
@@ -10,9 +10,9 @@
 The founder approved [ADR 0017](../adr/0017-bounded-structured-exchange.md)
 and [SPEC-018](../../specs/018-structured-exchange/spec.md) as a bounded M3
 experiment in [the recorded review](../../specs/018-structured-exchange/founder-review.json).
-That decision did not close M3 or authorize execution. This packet presents the
-remaining milestone question against the exact merged candidate. M3.5 is a
-separate track.
+That first decision did not close M3 or authorize execution. The founder later
+approved bounded internal closure against this packet in a [separate review](M3_FOUNDER_REVIEW.json).
+M3.5 is a separate track.
 
 ## Exit criteria and claim limits
 
@@ -49,10 +49,10 @@ internal and on one machine; external independent validation remains pending.
 
 ## Decision boundary
 
-The founder may approve, request changes to, or reject **internal M3 closure**
-for the bounded `anchored-sequence-v1` deliverable and the claim limits above.
-The decision must name the merged revision and this packet. Approval would not
+The founder approved **internal M3 closure** for the bounded
+`anchored-sequence-v1` deliverable and the claim limits above. The decision
+binds the merged revision and this packet. Approval does not
 authorize execution, production performance claims, broader mathematical
 claims, M3.5 training, or M3.5 closure. Update the M3 tracking source and
-GitHub milestone only after an explicit closure decision and a fresh tracking
-audit; Project custom status remains a separate UI check.
+GitHub milestone through guarded reconciliation; Project custom status remains
+a separate UI check.

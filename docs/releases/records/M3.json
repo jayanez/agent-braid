@@ -1,0 +1,26 @@
+{
+  "recordVersion": "0.2.0",
+  "release": "M3",
+  "softwareMaturity": "alpha",
+  "independent_validation": {
+    "status": "pending",
+    "conflictOfInterest": "The evidence and internal closure review were produced within the founder-led project; no external reviewer participated.",
+    "reproductionProtocol": "specs/018-structured-exchange/quickstart.md",
+    "invitation": "External reviewers are invited to reproduce the bounded anchored-sequence-v1 corpus and report positive, negative or inconclusive results."
+  },
+  "internalEvidence": [
+    "specs/018-structured-exchange/finite-corpus.json",
+    "specs/018-structured-exchange/oracle-crosscheck.json",
+    "specs/018-structured-exchange/git-witness.json",
+    "specs/018-structured-exchange/founder-review.json",
+    "docs/releases/M3_CLOSURE_PACKET.md",
+    "docs/releases/M3_FOUNDER_REVIEW.json"
+  ],
+  "scientificOrBenchmarkClaims": true,
+  "limits": [
+    "Internal alpha evidence covers pure anchored-sequence-v1 insertion and final ordered-sequence observation only.",
+    "The second replay implementation has the same author and machine; the producer and verifier share replay.",
+    "No general OT, contextual equivalence, confluence, Yang-Baxter, arbitrary Git patch equivalence or safe parallel execution result is established.",
+    "No production-performance, execution-authorization, M3.5 training or M3.5 closure claim follows."
+  ]
+}
