@@ -1,0 +1,8 @@
+{
+  "model": "anchored-sequence-v1",
+  "base": [{"id": "b0", "value": "base"}],
+  "operations": [
+    {"id": "first", "kind": "insert", "anchorId": "b0", "newId": "z", "value": "Z"},
+    {"id": "second", "kind": "insert", "anchorId": "b0", "newId": "a", "value": "A"}
+  ]
+}
