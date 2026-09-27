@@ -6,7 +6,7 @@
     "M0.5": "Research-preview preparation and bounded internal closure.",
     "M1": "Read-only analyzer and internal closure.",
     "M2": "Confluence laboratory; bounded Git patch replay and advisory preparation planning, closed internally.",
-    "M3": "Braid structure; SPEC-018 bounded structured exchange under review.",
+    "M3": "Braid structure; SPEC-018 bounded structured exchange approved internally, milestone closure pending.",
     "M3.5": "Native specialized proposal predictor; separate draft research track.",
     "M4": "Formal research; no implementation tasks are inferred from this heading.",
     "Public research preview": "Public publication and cutover verification.",
@@ -31,7 +31,7 @@
     "015-m2-counterexample-reducer": {"milestone": "M2", "state": "closed"},
     "016-m2-partial-order-reduction": {"milestone": "M2", "state": "closed"},
     "017-m2-closure": {"milestone": "M2", "state": "closed"},
-    "018-structured-exchange": {"milestone": "M3", "state": "open"},
+    "018-structured-exchange": {"milestone": "M3", "state": "closed"},
     "019-native-predictor": {"milestone": "M3.5", "state": "open"}
   },
   "task_state_overrides": {
