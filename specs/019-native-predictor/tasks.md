@@ -1,7 +1,13 @@
 # SPEC-019 deferred tasks
 
-- [ ] T001 (REQ-001/002, SC-001..004): Preregister data, features, labels,
-  family splits, baseline and thresholds after M3 review.
+The founder chose workload utility prioritization after the
+[feasibility audit](feasibility-audit.md). The detailed
+[workload protocol](workload-protocol.md) and its actual data remain pending
+before T001 can be completed. The bounded M3 experiment has founder review;
+no model or M3.5 benefit is reported.
+
+- [ ] T001 (REQ-001/002, SC-001..004): Review and freeze actual data, features,
+  utility labels, family splits, baseline and thresholds before training.
 - [ ] T002 (REQ-001, SC-001/002): Implement offline trainer and versioned
   local inference with negative controls.
 - [ ] T003 (REQ-002, SC-003/004): Evaluate held-out calibration, abstention,

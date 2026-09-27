@@ -77,14 +77,14 @@
     "mode": "current"
   },
   "compatibility": "No current contract changes or M3 closure dependency; future model artifact/version needs separate review.",
-  "domain": "Future structural feature corpus derived from reviewed M3 cases with family-separated holdout.",
+  "domain": "Prospective real editing sessions mapped without guesswork to reviewed M3 anchored-sequence pairs; family-separated holdout and separately adjudicated utility labels.",
   "evidence_snapshot": {
     "commit": null,
     "mode": "current"
   },
   "execution_contract": "Read-only local analysis; no Git source mutation, live agents, external effects or execution authorization.",
   "human_review": "pending",
-  "hypotheses": "A local linear advisor may improve useful verifier proposals or reduce cost against the rule baseline.",
+  "hypotheses": "At a fixed verifier-call budget, a local linear advisor may surface more useful verified proposals than the rule baseline on held-out real workload families.",
   "observation_contract": "Final ordered ID/value sequence; intermediate chronological trace and physical residual indices retained but not equated.",
   "references": [
     "CONSTITUTION.md",
@@ -95,7 +95,8 @@
     "docs/theory/CLAIM_DISCIPLINE.md",
     "docs/theory/STRUCTURED_EXCHANGE.md",
     "specs/018-structured-exchange/spec.md",
-    "specs/019-native-predictor/spec.md"
+    "specs/019-native-predictor/spec.md",
+    "specs/019-native-predictor/workload-protocol.md"
   ],
   "requirements": [
     {
@@ -122,7 +123,7 @@
           "when": "inference is requested"
         }
       ],
-      "text": "Native offline linear proposal model with versioned local inference."
+      "text": "Native offline linear workload-utility ranker with versioned local inference."
     },
     {
       "id": "REQ-002",
@@ -148,7 +149,7 @@
           "when": "evaluation is reviewed"
         }
       ],
-      "text": "Held-out evaluation against rule baseline with negative outcomes."
+      "text": "Family-separated real-workload evaluation against the rule baseline with negative outcomes."
     },
     {
       "id": "REQ-003",
@@ -168,6 +169,6 @@
     }
   ],
   "scientific_limits": "Finite corpus and shared producer/verifier replay engine do not prove general OT, contextual equivalence, confluence, Yang-Baxter, production performance or safe parallel execution.",
-  "scope": "M3.5 draft only; no trained or integrated predictor.",
+  "scope": "M3.5 real-workload utility target selected; detailed protocol pending review; no source dataset, trained or integrated predictor.",
   "stage": "draft"
 }
