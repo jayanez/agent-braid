@@ -15,10 +15,11 @@ class TrackingTests(unittest.TestCase):
                       if item["state"] == "open" and item["kind"] == "task"}
         expected_open = {
             "SPEC-002/T006", "SPEC-009/T009", "SPEC-011/T008",
-            "SPEC-017/T005", "SPEC-017/T006",
         }
-        if "- [ ] T004:" in (ROOT / "specs/017-m2-closure/tasks.md").read_text():
-            expected_open.add("SPEC-017/T004")
+        closure_tasks = (ROOT / "specs/017-m2-closure/tasks.md").read_text()
+        for task_id in ("T004", "T005", "T006"):
+            if f"- [ ] {task_id}:" in closure_tasks:
+                expected_open.add(f"SPEC-017/{task_id}")
         self.assertEqual(expected_open, open_tasks)
         self.assertEqual({"SPEC-004/T005"}, set(config["task_state_overrides"]))
 
