@@ -1,0 +1,25 @@
+{
+  "recordVersion": "0.2.0",
+  "release": "M2",
+  "softwareMaturity": "alpha",
+  "independent_validation": {
+    "status": "pending",
+    "conflictOfInterest": "The evidence and scientific review were produced within the founder-led project; no external reviewer participated.",
+    "reproductionProtocol": "specs/017-m2-closure/quickstart.md",
+    "invitation": "External reviewers are invited to rerun the frozen protocol and report positive, negative or inconclusive results."
+  },
+  "internalEvidence": [
+    "specs/017-m2-closure/reproduction.json",
+    "specs/017-m2-closure/founder-review.json",
+    "research/reviews/2026-09-27-m2-radar.md",
+    "research/reviews/2026-09-27-m2-adversarial-science.md",
+    "docs/experiments/evidence/m2-real-corpus-performance-retest.json"
+  ],
+  "scientificOrBenchmarkClaims": true,
+  "limits": [
+    "Internal alpha evidence covers finite fixed-patch Git replay and read-only patch preparation only.",
+    "No semantic commutation, contextual equivalence, general confluence or Yang-Baxter result is established.",
+    "The private syntactic reduction shares its replay engine with the regenerated oracle and verifier.",
+    "No production-performance, live-agent safety, execution-authorization, ref-promotion or package-release claim follows."
+  ]
+}
