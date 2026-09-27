@@ -83,7 +83,7 @@
     "mode": "historical"
   },
   "execution_contract": "Read-only local analysis; no Git source mutation, live agents, external effects or execution authorization.",
-  "human_review": "pending",
+  "human_review": "approved",
   "hypotheses": "Same-anchor overlapping inserts may admit deterministic residual exchange and a bounded braid-path observation.",
   "observation_contract": "Final ordered ID/value sequence; intermediate chronological trace and physical residual indices retained but not equated.",
   "references": [
@@ -258,7 +258,8 @@
       "text": "Finite exhaustive anchor topology and explicit baselines."
     }
   ],
-  "scientific_limits": "Finite corpus and shared producer/verifier replay engine do not prove general OT, contextual equivalence, confluence, Yang-Baxter, production performance or safe parallel execution.",
-  "scope": "M3 finite anchored-sequence exchange experiment and consultative evidence. Internal checks obtained; human scientific and ADR review pending.",
+  "review_record": "specs/018-structured-exchange/founder-review.json",
+  "scientific_limits": "Finite corpus, a second rank-key implementation by the same author, and shared producer/verifier replay engine do not prove general OT, contextual equivalence, confluence, Yang-Baxter, production performance or safe parallel execution.",
+  "scope": "M3 finite anchored-sequence exchange experiment and consultative evidence. Founder internal review approved the bounded experiment; M3 closure remains pending.",
   "stage": "validated"
 }
