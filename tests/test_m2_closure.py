@@ -104,6 +104,7 @@ class M2ClosureTests(unittest.TestCase):
         self.assertIn("reachable-objects", observed)
         self.assertIn("tests/test_git_partial_order.py", closure.INPUTS)
         self.assertIn(closure.RADAR, closure.INPUTS)
+        self.assertIn(closure.ADVERSARIAL_REVIEW, closure.INPUTS)
 
     def test_clean_room_environment_drops_host_overrides(self):
         env = _environment({
