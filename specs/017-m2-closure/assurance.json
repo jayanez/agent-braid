@@ -69,8 +69,8 @@
   "compatibility": "No public AIM, replay, plan, certificate or execution contract change. SPEC-016 stays private and exhaustive public outputs remain unchanged.",
   "domain": "M2 fixed-patch Git replay, finite reduction fixtures and the registered two-batch read-only preparation retest.",
   "evidence_snapshot": {
-    "commit": "163c9fb4c71d6dc2ac3232ea27dcbcf12cc0c0b5",
-    "mode": "historical"
+    "mode": "current",
+    "commit": null
   },
   "execution_contract": "Fresh local clone and Python 3.12+ environment for read-only validation and scratch Git replay; no live agents, source ref promotion or external effects.",
   "human_review": "pending",
