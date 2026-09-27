@@ -1,0 +1,37 @@
+{
+  "recordVersion": "agent-braid-internal-evidence-review-1",
+  "feature": "M3 bounded internal closure",
+  "reviewedAt": "2026-09-27",
+  "reviewedPullRequest": "https://github.com/jayanez/agent-braid/pull/171",
+  "reviewedCommit": "014f9f11e426811ffe006a766a41d9149c860f2a",
+  "reviewedTag": "m3-closure-packet-reviewed-014f9f1",
+  "mergedCommit": "fab03f7c0aa7b5055b30bd54393ca8fc67f9f342",
+  "reviewer": {
+    "name": "Juan Antonio Yáñez García",
+    "role": "founder"
+  },
+  "conflictsOfInterest": "The founder is the project maintainer. The experiment, reproduction and closure packet are internal project work, not independent external validation.",
+  "decision": "approved-bounded-internal-closure",
+  "question": "La PR #171 presenta el cierre interno de M3 limitado a `anchored-sequence-v1`: clase de intercambio solapado, pruebas finitas reproducibles, límites de las afirmaciones y costes locales medidos. ¿Apruebas cerrar internamente M3 con ese alcance, dejando pendientes la validación externa, la ejecución y cualquier afirmación general o de rendimiento en producción? La decisión se registrará solo después de completar las comprobaciones de la PR.",
+  "decisionText": "Sí, apruebo el cierre acotado de M3",
+  "reviewedArtifacts": [
+    {
+      "path": "docs/releases/M3_CLOSURE_PACKET.md",
+      "sha256AtReviewedCommit": "f84d0d89825315c17f70e19398747369e7a854cfa07589215534b8bab1343ec4"
+    }
+  ],
+  "basis": [
+    "The previously approved bounded ADR 0017 and SPEC-018 experiment is preserved at spec-018-reviewed-2656924.",
+    "The merged M3 experiment was reproduced internally on develop; the rank-key oracle matched byte for byte across 19,806 orders with zero mismatches, the finite corpus had zero false certificates, and the isolated Git witness produced equal trees.",
+    "PR #171 passed local quick and PR profiles with 266 tests and four skips each, and all applicable GitHub checks passed before this decision was recorded."
+  ],
+  "limits": [
+    "Closure is restricted to pure anchored-sequence-v1 inserts with immutable base/root anchors, fresh IDs and final ordered-sequence observation.",
+    "The oracle is a separate implementation by the same author and machine; producer and verifier share replay; independent external validation and formal proof review remain pending.",
+    "No general OT, contextual equivalence, confluence, Yang-Baxter, arbitrary Git patch equivalence, production performance or safe parallel execution claim follows.",
+    "No execution authorization, M3.5 training authorization or M3.5 closure follows."
+  ],
+  "independentValidation": "pending",
+  "executionAuthorization": false,
+  "m35Closure": false
+}

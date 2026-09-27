@@ -6,13 +6,13 @@
     "M0.5": "Research-preview preparation and bounded internal closure.",
     "M1": "Read-only analyzer and internal closure.",
     "M2": "Confluence laboratory; bounded Git patch replay and advisory preparation planning, closed internally.",
-    "M3": "Braid structure; SPEC-018 bounded structured exchange approved internally, milestone closure pending.",
+    "M3": "Braid structure; bounded structured exchange closed internally.",
     "M3.5": "Native specialized proposal predictor; separate draft research track.",
     "M4": "Formal research; no implementation tasks are inferred from this heading.",
     "Public research preview": "Public publication and cutover verification.",
     "Cross-cutting governance": "Governance and adoption work spanning release milestones."
   },
-  "closed_milestones": ["M0", "M0.5", "M1", "M2"],
+  "closed_milestones": ["M0", "M0.5", "M1", "M2", "M3"],
   "specs": {
     "001-certificate-verifier-pilot": {"milestone": "M0", "state": "closed"},
     "002-open-tooling-strategy": {"milestone": "M0.5", "state": "open"},
