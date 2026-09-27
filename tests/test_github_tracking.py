@@ -15,7 +15,7 @@ class TrackingTests(unittest.TestCase):
                       if item["state"] == "open" and item["kind"] == "task"}
         expected_open = {
             "SPEC-002/T006", "SPEC-009/T009", "SPEC-011/T008",
-            "SPEC-018/T005", "SPEC-018/T006",
+            "SPEC-018/T006",
             "SPEC-019/T001", "SPEC-019/T002", "SPEC-019/T003",
             "SPEC-019/T004", "SPEC-019/T005",
         }

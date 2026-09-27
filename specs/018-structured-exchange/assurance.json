@@ -106,7 +106,15 @@
         {
           "given": "Two valid same-anchor inserts",
           "id": "SC-001",
-          "obtained_evidence": [],
+          "obtained_evidence": [
+            {
+              "command": "python3 -m agent_braid propose-exchange specs/018-structured-exchange/fixtures/same-anchor.json --evidence-output specs/018-structured-exchange/pair-evidence.json && python3 -m agent_braid verify-exchange specs/018-structured-exchange/pair-evidence.json",
+              "limits": "Pure anchored inserts; producer and verifier share replay code.",
+              "outcome": "verified-bounded; final sequences equal with changed residual index",
+              "path": "specs/018-structured-exchange/pair-evidence.json",
+              "sha256": "3a013c4587954588349865df012cba7cf12f88b38a7b4a4b5400b80986813db0"
+            }
+          ],
           "planned_evidence": "Focused unittest result and bounded evidence artifact; record actual command, hash, outcome and limits after execution.",
           "test_file": "tests/test_structured_exchange.py",
           "test_name": "StructuredExchangeTests.test_same_anchor_residual_and_final_observation",
@@ -116,7 +124,15 @@
         {
           "given": "Unknown anchor, delete or duplicate ID",
           "id": "SC-002",
-          "obtained_evidence": [],
+          "obtained_evidence": [
+            {
+              "command": "python3 scripts/validate_change.py --base develop --profile pr",
+              "limits": "Only named malformed inputs; no classification of excluded models.",
+              "outcome": "negative controls passed in full suite",
+              "path": "specs/018-structured-exchange/pr-validation.log",
+              "sha256": "1845c66624e8125456ed9e01ebfa9adec110ef99d8917a000792696833e218e5"
+            }
+          ],
           "planned_evidence": "Focused unittest result and bounded evidence artifact; record actual command, hash, outcome and limits after execution.",
           "test_file": "tests/test_structured_exchange.py",
           "test_name": "StructuredExchangeTests.test_unknown_anchor_delete_and_duplicate_id_fail_closed",
@@ -132,7 +148,15 @@
         {
           "given": "Three valid inserts",
           "id": "SC-003",
-          "obtained_evidence": [],
+          "obtained_evidence": [
+            {
+              "command": "python3 scripts/validate_change.py --base develop --profile pr",
+              "limits": "Final-sequence observation only; chronological traces retained.",
+              "outcome": "three-insert braid-path test passed",
+              "path": "specs/018-structured-exchange/pr-validation.log",
+              "sha256": "1845c66624e8125456ed9e01ebfa9adec110ef99d8917a000792696833e218e5"
+            }
+          ],
           "planned_evidence": "Focused unittest result and bounded evidence artifact; record actual command, hash, outcome and limits after execution.",
           "test_file": "tests/test_structured_exchange.py",
           "test_name": "StructuredExchangeTests.test_braid_paths_are_complete_and_agree",
@@ -148,7 +172,15 @@
         {
           "given": "Complete pair evidence",
           "id": "SC-004",
-          "obtained_evidence": [],
+          "obtained_evidence": [
+            {
+              "command": "python3 -m agent_braid propose-exchange specs/018-structured-exchange/fixtures/same-anchor.json --evidence-output /tmp/agent-braid-m3-clean-pair.json && python3 -m agent_braid verify-exchange /tmp/agent-braid-m3-clean-pair.json",
+              "limits": "Same implementation in both passes; no independent scientific validation.",
+              "outcome": "producer and verifier passed in clean clone",
+              "path": "specs/018-structured-exchange/clean-room.json",
+              "sha256": "d236771f1bde0c35626a769aad9717acf869ca729794023a43ec1c9e065f7886"
+            }
+          ],
           "planned_evidence": "Focused unittest result and bounded evidence artifact; record actual command, hash, outcome and limits after execution.",
           "test_file": "tests/test_structured_exchange.py",
           "test_name": "StructuredExchangeTests.test_same_anchor_residual_and_final_observation",
@@ -158,7 +190,15 @@
         {
           "given": "Altered or missing evidence",
           "id": "SC-005",
-          "obtained_evidence": [],
+          "obtained_evidence": [
+            {
+              "command": "python3 scripts/validate_change.py --base develop --profile pr",
+              "limits": "Finite malformed-evidence controls only.",
+              "outcome": "tamper and omitted-path test passed",
+              "path": "specs/018-structured-exchange/pr-validation.log",
+              "sha256": "1845c66624e8125456ed9e01ebfa9adec110ef99d8917a000792696833e218e5"
+            }
+          ],
           "planned_evidence": "Focused unittest result and bounded evidence artifact; record actual command, hash, outcome and limits after execution.",
           "test_file": "tests/test_structured_exchange.py",
           "test_name": "StructuredExchangeTests.test_tamper_and_missing_path_are_inconclusive",
@@ -174,7 +214,15 @@
         {
           "given": "Base sizes zero to three and two to four inserts",
           "id": "SC-006",
-          "obtained_evidence": [],
+          "obtained_evidence": [
+            {
+              "command": "python3 -m scripts.run_m3_experiment",
+              "limits": "Fixed IDs and payloads; anchor topology exhaustive only; one local timing.",
+              "outcome": "484 cases; 10 overlapping pair cases; zero false certificates",
+              "path": "specs/018-structured-exchange/finite-corpus.json",
+              "sha256": "4e5ab2ec10f7cdd79ebb96e6ce930045508d8e3702e20b423f3b60f3ea87f979"
+            }
+          ],
           "planned_evidence": "Focused unittest result and bounded evidence artifact; record actual command, hash, outcome and limits after execution.",
           "test_file": "tests/test_structured_exchange.py",
           "test_name": "StructuredExchangeTests.test_finite_corpus",
@@ -184,7 +232,15 @@
         {
           "given": "Two pure same-anchor terminal sequences",
           "id": "SC-007",
-          "obtained_evidence": [],
+          "obtained_evidence": [
+            {
+              "command": "python3 -m scripts.run_m3_git_witness specs/018-structured-exchange/fixtures/same-anchor.json",
+              "limits": "Serialization witness only; not an M2 fixed-patch certificate.",
+              "outcome": "two temporary Git tree IDs equal",
+              "path": "specs/018-structured-exchange/git-witness.json",
+              "sha256": "32424947a0ff2f9b688e8c737d9175138fa04f24e40d3bcf4fcdd91bd2a2759d"
+            }
+          ],
           "planned_evidence": "Store temporary Git tree IDs, exact input hashes and focused test output.",
           "test_file": "tests/test_structured_exchange.py",
           "test_name": "StructuredExchangeTests.test_temporary_git_serialization_is_only_a_witness",
@@ -196,6 +252,6 @@
     }
   ],
   "scientific_limits": "Finite corpus and shared producer/verifier replay engine do not prove general OT, contextual equivalence, confluence, Yang-Baxter, production performance or safe parallel execution.",
-  "scope": "M3 finite anchored-sequence exchange experiment and consultative evidence.",
-  "stage": "draft"
+  "scope": "M3 finite anchored-sequence exchange experiment and consultative evidence. Internal checks obtained; human scientific and ADR review pending.",
+  "stage": "validated"
 }
