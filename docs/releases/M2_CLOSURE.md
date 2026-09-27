@@ -2,15 +2,15 @@
 
 **Status:** awaiting a separate founder milestone-closure decision
 
-**Candidate:** `efc4b4c1f9c1eb82088c5bdff0d1ea9b84a26074`
+**Candidate:** `61e731aeb1cb631b9c0d083f71d38ca620cc4742`
 
-The founder approved the bounded adversarial scientific review on 2026-09-27
-for the earlier frozen candidate `a5f7d08`. The develop-lineage candidate above
-retains the same implementation and scientific-source bytes; its assurance and
-task records changed. It requires an explicit ratification
-of that approval against its own clean-room record. The
-[founder review](../../specs/017-m2-closure/founder-review.json) keeps both
-decisions pending for this candidate.
+The founder approved the bounded adversarial scientific review for `a5f7d08`
+and ratified it with an internal M2 closure decision for `efc4b4c`. A tracking
+test correction required another develop-lineage candidate. The new clean-room
+record retains all 53 input hashes and the same scientific limits, but this
+exact SHA still requires explicit ratification of both decisions. The
+[founder review](../../specs/017-m2-closure/founder-review.json) keeps them
+pending for this candidate.
 
 ## Evidence available for the closure decision
 

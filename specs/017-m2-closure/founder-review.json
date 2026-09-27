@@ -1,7 +1,7 @@
 {
   "recordVersion": "0.1.0",
   "feature": "M2",
-  "reviewedCommit": "efc4b4c1f9c1eb82088c5bdff0d1ea9b84a26074",
+  "reviewedCommit": "61e731aeb1cb631b9c0d083f71d38ca620cc4742",
   "reviewer": {
     "name": "Juan Antonio Yáñez García",
     "role": "founder"
@@ -10,18 +10,18 @@
   "scientificReview": {
     "decision": "pending",
     "date": "",
-    "rationale": "The founder approved the earlier a5f7d08 candidate. Ratification has been requested for the develop-lineage efc4b4c candidate and its new clean-room record."
+    "rationale": "The founder ratified the earlier efc4b4c candidate. A separate exact-candidate ratification has been requested after the tracking-test fix and new 17/17 clean-room reproduction of 61e731a."
   },
   "milestoneClosure": {
     "decision": "pending",
     "date": "",
-    "rationale": "A separate founder M2 milestone-closure decision has been requested for the efc4b4c candidate."
+    "rationale": "Internal M2 closure was approved for the earlier efc4b4c candidate; confirmation against the replacement 61e731a candidate is pending."
   },
   "independentValidation": "pending",
   "evidence": [
     {
       "path": "specs/017-m2-closure/reproduction.json",
-      "sha256": "4bdb39e2a4522845bd8d8a80fbc93a7105794909c2939030472d76a8ea136897"
+      "sha256": "cae021bacc5078ebe7275cf8753212712d5c4e0ce4d6d5ac7d07370a17158f86"
     },
     {
       "path": "research/radar/2026-09-27-m2.json",
