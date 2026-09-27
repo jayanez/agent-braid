@@ -49,6 +49,29 @@ Unsupported operations provide `inconclusive` negative controls for the
 verifier, but a model that merely learns their syntax cannot establish
 semantic exchange utility and cannot replace deterministic validation.
 
+## Real-workload acquisition boundary
+
+The current [M3 request validator](../../agent_braid/structured_exchange.py)
+accepts at most three immutable base elements and two to four pure inserts.
+Each value has at most 256 characters and each identifier at most 64. The
+versioned [data model](../018-structured-exchange/data-model.md) records the
+same finite boundary. A real session with a larger base, a delete, a
+replacement or an anchor created by another insert is ineligible as-is.
+Cropping a larger session to fit the bound cannot be assumed to preserve its
+context; it needs a separately documented and validated projection before
+it could count as an eligible real session. Merely obtaining the same terminal
+sequence on the crop is insufficient.
+
+A repository inventory on 2026-09-27 found no checked-in prospective editing
+sessions or annotation records mapped to `anchored-sequence-v1`. The M2 real
+Git workload manifests and the M3 finite corpus are different evidence
+domains. The proposed five-family, 100-adjudicated-pair cohort therefore has
+no established acquisition path yet. The [workload protocol](workload-protocol.md)
+already requires a documented adapter, exclusion counts and an inconclusive
+result if its thresholds are not met; this audit makes the practical risk
+explicit. No dataset, labels, model fit or performance result is supplied by
+this inventory.
+
 ## Target decision and remaining prerequisites
 
 The founder chose direction 1 on 2026-09-27. The detailed
@@ -67,8 +90,7 @@ and their differing evidence needs are retained here for provenance:
    This would be new semantic work, not an interpretation of the current
    anchored-insert evidence.
 
-The bounded M3 verifier now has founder approval as an experiment. Until the
-chosen path has a reviewed dataset protocol and actual data, SPEC-019 T001–T005
-remain pending. A null result is
-acceptable after a valid protocol; it is not a substitute for an identifiable
-target here.
+The bounded M3 verifier has founder approval and M3 is closed internally.
+Until the chosen path has a reviewed dataset protocol and actual data,
+SPEC-019 T001–T005 remain pending. A null result is acceptable after a valid
+protocol; it is not a substitute for an identifiable target here.
