@@ -2,12 +2,15 @@
 
 **Status:** awaiting a separate founder milestone-closure decision
 
-**Candidate:** `a5f7d08185cc688101b006d1975ad9eaeb776b93`
+**Candidate:** `efc4b4c1f9c1eb82088c5bdff0d1ea9b84a26074`
 
-The founder approved the bounded adversarial scientific review on 2026-09-27.
-That approval concerns the frozen candidate and the limits in the
-[founder review](../../specs/017-m2-closure/founder-review.json). It is not the
-separate M2 closure decision.
+The founder approved the bounded adversarial scientific review on 2026-09-27
+for the earlier frozen candidate `a5f7d08`. The develop-lineage candidate above
+retains the same implementation and scientific-source bytes; its assurance and
+task records changed. It requires an explicit ratification
+of that approval against its own clean-room record. The
+[founder review](../../specs/017-m2-closure/founder-review.json) keeps both
+decisions pending for this candidate.
 
 ## Evidence available for the closure decision
 

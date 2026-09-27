@@ -1,27 +1,27 @@
 {
   "recordVersion": "0.1.0",
   "feature": "M2",
-  "reviewedCommit": "a5f7d08185cc688101b006d1975ad9eaeb776b93",
+  "reviewedCommit": "efc4b4c1f9c1eb82088c5bdff0d1ea9b84a26074",
   "reviewer": {
     "name": "Juan Antonio Yáñez García",
     "role": "founder"
   },
   "conflictsOfInterest": "The reviewer is the project founder and maintainer. The clean-room automation and adversarial assessment were executed within the founder-led project. This is internal review, not independent external validation.",
   "scientificReview": {
-    "decision": "approved",
-    "date": "2026-09-27",
-    "rationale": "The founder approved the adversarial scientific review of the frozen M2 candidate after inspecting its bounded evidence and limits. The 17/17 internal clean-room observations support four exit criteria only for finite fixed-patch Git replay and read-only preparation. The two registered 30-pair batches support bounded parallel-preparation gains, not a scheduling-wave advantage or production speedup. SPEC-016 remains a private syntactic experiment whose regenerated oracle and verifier share the replay engine. No semantic commutation, contextual equivalence, general confluence, live-agent safety or execution authorization is inferred."
+    "decision": "pending",
+    "date": "",
+    "rationale": "The founder approved the earlier a5f7d08 candidate. Ratification has been requested for the develop-lineage efc4b4c candidate and its new clean-room record."
   },
   "milestoneClosure": {
     "decision": "pending",
     "date": "",
-    "rationale": "A separate founder decision has been requested; scientific approval does not close M2."
+    "rationale": "A separate founder M2 milestone-closure decision has been requested for the efc4b4c candidate."
   },
   "independentValidation": "pending",
   "evidence": [
     {
       "path": "specs/017-m2-closure/reproduction.json",
-      "sha256": "9791fa1c91fc718bd1e3314b645b57680bbfe48993a3eabbf0edadb013be92eb"
+      "sha256": "4bdb39e2a4522845bd8d8a80fbc93a7105794909c2939030472d76a8ea136897"
     },
     {
       "path": "research/radar/2026-09-27-m2.json",
