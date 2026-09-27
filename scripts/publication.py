@@ -195,6 +195,37 @@ def _git(root: Path, *args: str, allow_failure: bool = False) -> subprocess.Comp
     return process
 
 
+def _validate_post_root_anchor_registry(root: Path, root_payload: bytes) -> None:
+    """Allow the M2 entry while preserving every exported anchor."""
+    relative = "docs/releases/closure-anchors.json"
+    try:
+        original = json.loads(root_payload)
+        current = json.loads((root / relative).read_bytes())
+    except (OSError, UnicodeError, json.JSONDecodeError) as exc:
+        raise ValueError("post-root closure anchor registry is invalid") from exc
+    if (set(original) != {"recordVersion", "milestones"}
+            or set(current) != set(original)
+            or current["recordVersion"] != original["recordVersion"]
+            or not isinstance(original["milestones"], dict)
+            or not isinstance(current["milestones"], dict)
+            or set(current["milestones"]) != set(original["milestones"]) | {"M2"}
+            or any(current["milestones"].get(name) != anchor
+                   for name, anchor in original["milestones"].items())):
+        raise ValueError("inherited closure anchors changed after export")
+    revisions = _git(root, "rev-list", "--reverse", "HEAD", "--", relative).stdout.decode("ascii").splitlines()
+    for revision in revisions:
+        try:
+            recorded_payload = _git(root, "show", f"{revision}:{relative}").stdout
+            recorded = json.loads(recorded_payload)
+        except (ValueError, json.JSONDecodeError):
+            continue
+        if isinstance(recorded, dict) and "M2" in recorded.get("milestones", {}):
+            if recorded_payload != (root / relative).read_bytes():
+                raise ValueError("post-root M2 closure anchor changed after introduction")
+            return
+    raise ValueError("post-root M2 closure anchor has no committed introduction")
+
+
 def validate_portable_root(root: Path) -> dict:
     data = load_manifest(root)
     if not (root / ".git").exists():
@@ -229,20 +260,25 @@ def validate_portable_root(root: Path) -> dict:
         current = root / relative
         historical = _git(root, "show", f"{root_commit}:{relative}").stdout
         if not current.is_file() or current.read_bytes() != historical:
-            raise ValueError(f"inherited historical record changed after export: {relative}")
+            if relative != "docs/releases/closure-anchors.json":
+                raise ValueError(f"inherited historical record changed after export: {relative}")
+            _validate_post_root_anchor_registry(root, historical)
     if _git(root, "cat-file", "-e", f"{data['sourceCommit']}^{{commit}}", allow_failure=True).returncode == 0:
         raise ValueError("public repository contains the private source commit")
     try:
-        from scripts.closure_anchors import load_anchors
+        from scripts.closure_anchors import load_anchors, validate_closure_anchor
     except ModuleNotFoundError:
-        from closure_anchors import load_anchors
-    for anchor in load_anchors(root).values():
+        from closure_anchors import load_anchors, validate_closure_anchor
+    for milestone, anchor in load_anchors(root).items():
         for relative, checksum in anchor["protectedPaths"].items():
             current = root / safe_relative(relative)
             if not current.is_file() or digest(current) != checksum:
                 raise ValueError(
                     f"public historical representation changed: {relative}"
                 )
+        if milestone == "M2":
+            validate_closure_anchor(root, milestone)
+            continue
         for name in ("candidateCommit", "closureCommit"):
             if _git(root, "cat-file", "-e", f"{anchor[name]}^{{commit}}", allow_failure=True).returncode == 0:
                 raise ValueError("public repository contains a private milestone commit")
