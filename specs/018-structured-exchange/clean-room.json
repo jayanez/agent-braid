@@ -1,0 +1,86 @@
+{
+  "candidateCommit": "efb16047609de90a0d288f6a1b12ae13b3f58ab0",
+  "cleanStatus": "",
+  "commands": [
+    {
+      "argv": [
+        "python3",
+        "-m",
+        "unittest",
+        "tests.test_structured_exchange",
+        "tests.test_github_tracking"
+      ],
+      "exitCode": 0,
+      "stderr": ".............\n----------------------------------------------------------------------\nRan 13 tests in 0.558s\n\nOK\n",
+      "stdout": ""
+    },
+    {
+      "argv": [
+        "python3",
+        "-m",
+        "scripts.run_m3_experiment"
+      ],
+      "exitCode": 0,
+      "stderr": "",
+      "stdout": "{\n  \"elapsedSeconds\": 3.981745,\n  \"format\": \"m3-finite-corpus-v1\",\n  \"inputs\": {\n    \"agent_braid/structured_exchange.py\": \"dfca087646898d5bfb816a6a473c7135827d3886512f29bcc39899610b232cc9\",\n    \"docs/theory/STRUCTURED_EXCHANGE.md\": \"abd0a00b754b6be60b834ae4604551ffbb24936686fdecf99bd09735951cc90a\",\n    \"specs/018-structured-exchange/fixtures/same-anchor.json\": \"7e69109be4adf71091d214a752938777f85744c090b099f7ff3f3b9169cf8bd3\"\n  },\n  \"limits\": [\n    \"Fixed IDs and payloads; anchor topology exhaustive only.\",\n    \"Producer and verifier use the same replay implementation.\",\n    \"Elapsed time and tracked memory are one local observation, not production claims.\"\n  ],\n  \"peakTrackedBytes\": 93807,\n  \"platform\": \"macOS-26.6.2-arm64-arm-64bit-Mach-O\",\n  \"python\": \"3.13.11\",\n  \"result\": {\n    \"allOrdersStepBaseline\": 35904,\n    \"braidCases\": 100,\n    \"cases\": 484,\n    \"domain\": \"base-size-0..3; inserts-2..4; all base/root anchor assignments; fixed ids and payloads\",\n    \"executionAuthorization\": false,\n    \"falseCertificates\": 0,\n    \"fourOperationCases\": 354,\n    \"overlappingPairCases\": 10,\n    \"pairCases\": 30,\n    \"pathDisjointPairCases\": 20,\n    \"serialStepBaseline\": 1776\n  }\n}\n"
+    },
+    {
+      "argv": [
+        "python3",
+        "-m",
+        "scripts.run_m3_git_witness",
+        "specs/018-structured-exchange/fixtures/same-anchor.json"
+      ],
+      "exitCode": 0,
+      "stderr": "",
+      "stdout": "{\n  \"claim\": \"temporary serialization of pure terminal sequences only; not an M2 fixed-patch certificate\",\n  \"executionAuthorization\": false,\n  \"format\": \"m3-git-serialization-witness-v1\",\n  \"inputs\": {\n    \"agent_braid/structured_exchange.py\": \"dfca087646898d5bfb816a6a473c7135827d3886512f29bcc39899610b232cc9\",\n    \"scripts/run_m3_git_witness.py\": \"d1f53403d58f7054234123561375b251bbd57fe54457fdc081f78bff036559c1\",\n    \"specs/018-structured-exchange/fixtures/same-anchor.json\": \"7e69109be4adf71091d214a752938777f85744c090b099f7ff3f3b9169cf8bd3\"\n  },\n  \"paths\": [\n    {\n      \"blob\": \"cca1f594cf3f70932156e8f6a0a9d4fde545df16\",\n      \"observationHash\": \"b10baa2774cf1d0d98f6e245c76a64bc0a7a40eb028cb2da47b684750d5e23c4\",\n      \"order\": [\n        \"first\",\n        \"second\"\n      ],\n      \"tree\": \"07d1c6d85120cecb6042736384dd10716f371e59\"\n    },\n    {\n      \"blob\": \"cca1f594cf3f70932156e8f6a0a9d4fde545df16\",\n      \"observationHash\": \"b10baa2774cf1d0d98f6e245c76a64bc0a7a40eb028cb2da47b684750d5e23c4\",\n      \"order\": [\n        \"second\",\n        \"first\"\n      ],\n      \"tree\": \"07d1c6d85120cecb6042736384dd10716f371e59\"\n    }\n  ],\n  \"requestHash\": \"a4cbb108ce00237eca90d7ff8180b1aed9eb7e13db17af292a7ea74e78ecbaad\",\n  \"sameTree\": true\n}\n"
+    },
+    {
+      "argv": [
+        "python3",
+        "-m",
+        "agent_braid",
+        "propose-exchange",
+        "specs/018-structured-exchange/fixtures/same-anchor.json",
+        "--evidence-output",
+        "/tmp/agent-braid-m3-clean-pair.json"
+      ],
+      "exitCode": 0,
+      "stderr": "",
+      "stdout": "{\"executionAuthorization\": false, \"proposal\": \"propose-swap\", \"requestHash\": \"a4cbb108ce00237eca90d7ff8180b1aed9eb7e13db17af292a7ea74e78ecbaad\", \"status\": \"proposed\"}\n"
+    },
+    {
+      "argv": [
+        "python3",
+        "-m",
+        "agent_braid",
+        "verify-exchange",
+        "/tmp/agent-braid-m3-clean-pair.json"
+      ],
+      "exitCode": 0,
+      "stderr": "",
+      "stdout": "{\n  \"executionAuthorization\": false,\n  \"kind\": \"pair\",\n  \"proposal\": \"propose-swap\",\n  \"requestHash\": \"a4cbb108ce00237eca90d7ff8180b1aed9eb7e13db17af292a7ea74e78ecbaad\",\n  \"status\": \"verified-bounded\"\n}\n"
+    },
+    {
+      "argv": [
+        "python3",
+        "-m",
+        "scripts.validate_spec_kit"
+      ],
+      "exitCode": 0,
+      "stderr": "",
+      "stdout": "Spec Kit structural gates passed; semantic/human review remains separate.\n"
+    }
+  ],
+  "executionAuthorization": false,
+  "format": "m3-clean-room-v1",
+  "inputs": {
+    "agent_braid/structured_exchange.py": "dfca087646898d5bfb816a6a473c7135827d3886512f29bcc39899610b232cc9",
+    "docs/theory/STRUCTURED_EXCHANGE.md": "abd0a00b754b6be60b834ae4604551ffbb24936686fdecf99bd09735951cc90a",
+    "scripts/run_m3_experiment.py": "886f3a15b8e2879bfe4e104e1f54706f179752d04af34517ae41a59fa3425ad3",
+    "scripts/run_m3_git_witness.py": "d1f53403d58f7054234123561375b251bbd57fe54457fdc081f78bff036559c1",
+    "specs/018-structured-exchange/fixtures/same-anchor.json": "7e69109be4adf71091d214a752938777f85744c090b099f7ff3f3b9169cf8bd3"
+  },
+  "limits": "Same implementation and local environment; not independent semantic validation or production safety.",
+  "python": "3.13.11"
+}
