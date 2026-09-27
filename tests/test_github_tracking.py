@@ -3,7 +3,7 @@
 
 import unittest
 
-from scripts.sync_github_tracking import build_plan, source_inventory
+from scripts.sync_github_tracking import ROOT, build_plan, source_inventory
 
 
 class TrackingTests(unittest.TestCase):
@@ -11,7 +11,15 @@ class TrackingTests(unittest.TestCase):
         config, desired = source_inventory()
         self.assertEqual(17, sum(item["kind"] == "spec" for item in desired))
         self.assertEqual(124, sum(item["kind"] == "task" for item in desired))
-        self.assertEqual(6, sum(item["state"] == "open" and item["kind"] == "task" for item in desired))
+        open_tasks = {item["key"] for item in desired
+                      if item["state"] == "open" and item["kind"] == "task"}
+        expected_open = {
+            "SPEC-002/T006", "SPEC-009/T009", "SPEC-011/T008",
+            "SPEC-017/T005", "SPEC-017/T006",
+        }
+        if "- [ ] T004:" in (ROOT / "specs/017-m2-closure/tasks.md").read_text():
+            expected_open.add("SPEC-017/T004")
+        self.assertEqual(expected_open, open_tasks)
         self.assertEqual({"SPEC-004/T005"}, set(config["task_state_overrides"]))
 
     def test_plan_is_empty_for_matching_relationships(self):
