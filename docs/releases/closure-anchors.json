@@ -86,6 +86,30 @@
         "specs/007-m1-closure/reproduction.json": "c703516eaf3235b37fe114c776a24842f32df184597e6e8af6a184c3442b1116",
         "specs/007-m1-closure/tasks.md": "ad18e1076bebc6e5d811ea3446b6978a3bd2c755065a766e8438e708c9b5bfdf"
       }
+    },
+    "M2": {
+      "candidateCommit": "61e731aeb1cb631b9c0d083f71d38ca620cc4742",
+      "closureCommit": "c5a303d9099032fc7933470089d7b3705b065ca9",
+      "closureTree": "f20da052d83a8cf712c16b045035fcb45a724ff7",
+      "changedPaths": [
+        "README.md",
+        "ROADMAP.md",
+        "docs/development/github-tracking.json",
+        "docs/releases/M2_CLOSURE.md",
+        "docs/releases/records/M2.json",
+        "specs/017-m2-closure/assurance.json",
+        "specs/017-m2-closure/founder-review.json",
+        "specs/017-m2-closure/reproduction.json",
+        "specs/017-m2-closure/tasks.md"
+      ],
+      "protectedPaths": {
+        "docs/releases/M2_CLOSURE.md": "aecaa416200b62acb577f36a3ef984d4bb804ef56d64f496ac492fe9be59de6b",
+        "docs/releases/records/M2.json": "c1f482d8bd11c47b5c03ac8c15950cc9ce9c59cb9c67a71f922fe58c7b1d6ac5",
+        "specs/017-m2-closure/assurance.json": "435cf4433d4b3431397f3bad979a638ec6578c2af49fce2d636a5704f7ea81f2",
+        "specs/017-m2-closure/founder-review.json": "7665fb05b93861fa184d7b9fc57d917fbcdc44a216d2df6713e4545a3ce17e53",
+        "specs/017-m2-closure/reproduction.json": "cae021bacc5078ebe7275cf8753212712d5c4e0ce4d6d5ac7d07370a17158f86",
+        "specs/017-m2-closure/tasks.md": "857d62f261094e633a04bf427895313db2d144d05bb387d1c0cc949c792a0c40"
+      }
     }
   }
 }
