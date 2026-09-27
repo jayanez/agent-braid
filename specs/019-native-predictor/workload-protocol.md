@@ -63,13 +63,23 @@ At matched verifier-call budgets of 25%, 50% and 100% of holdout pairs, report
 useful verified proposals, precision, recall, abstention, verifier calls,
 wall-clock time and model inference cost for both policies. Report Brier score
 and five equal-frequency reliability bins for calibrated utility estimates;
-uncalibrated raw scores must not be described as probabilities. Also report the
-per-family results, class prevalence, 95% family-bootstrap intervals and all
-unknown labels. A positive result requires the lower interval bound on useful
-verified proposals at the 50% budget to exceed the baseline by at least one
-proposal, without exceeding its total analysis time. If that bar is not met,
-record no demonstrated gain. The 25% and 100% budgets are sensitivity checks,
-not alternative success criteria.
+uncalibrated raw scores must not be described as probabilities. Also report
+per-family differences, class prevalence and all unknown labels. The first
+cohort is descriptive: with only three holdout families it cannot support a
+95% family-bootstrap interval or a confirmatory claim of improvement. Report
+the direction and magnitude at the prespecified 50% budget, including whether
+the model exceeds the baseline in useful verified proposals without exceeding
+total analysis time. The 25% and 100% budgets are sensitivity checks, not
+alternative success criteria. A null, negative or inconclusive result is valid.
+
+A positive inferential claim requires a separately preregistered confirmatory
+cohort with independent families, a sample size justified from pilot variation
+and a cluster-aware analysis reviewed before holdout labels are inspected.
+Do not infer validity from an arbitrary number of bootstrap replications:
+cluster-bootstrap intervals can have poor coverage when the number of families
+is small. The [Cameron, Gelbach and Miller working paper](https://www.nber.org/papers/t0344)
+motivates this restriction; it is methodological context, not evidence that
+this particular predictor works.
 
 ## Controls and stop conditions
 
