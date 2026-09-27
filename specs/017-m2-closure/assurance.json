@@ -14,7 +14,7 @@
   ],
   "assumptions": "The reviewed Git and benchmark records remain available as immutable candidate bytes; tests establish only their finite declared domains.",
   "authority_snapshot": {
-    "commit": "5e50639160109d2956154a9cb68403c4f4c27c59",
+    "commit": "163c9fb4c71d6dc2ac3232ea27dcbcf12cc0c0b5",
     "hashes": {
       "ARCHITECTURE.md": "94e5114eb799b25ca666ef728f84ab1c88e6ad1b342e30a9e99276b8f44c30c2",
       "CONSTITUTION.md": "ff7196976a1736a639947c2ab26e8da157fef23c89ba9881312f2a36459964eb",
@@ -69,7 +69,7 @@
   "compatibility": "No public AIM, replay, plan, certificate or execution contract change. SPEC-016 stays private and exhaustive public outputs remain unchanged.",
   "domain": "M2 fixed-patch Git replay, finite reduction fixtures and the registered two-batch read-only preparation retest.",
   "evidence_snapshot": {
-    "commit": "5e50639160109d2956154a9cb68403c4f4c27c59",
+    "commit": "163c9fb4c71d6dc2ac3232ea27dcbcf12cc0c0b5",
     "mode": "historical"
   },
   "execution_contract": "Fresh local clone and Python 3.12+ environment for read-only validation and scratch Git replay; no live agents, source ref promotion or external effects.",
