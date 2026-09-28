@@ -77,7 +77,7 @@
     "mode": "current"
   },
   "compatibility": "No current contract changes or M3 closure dependency; future model artifact/version needs separate review.",
-  "domain": "Prospective real editing sessions mapped without guesswork to reviewed M3 anchored-sequence pairs; family-separated holdout and separately adjudicated utility labels.",
+  "domain": "Prospective consent-reviewed editing sessions mapped without guesswork to M3 anchored-sequence pairs; fixed source windows, family-separated holdout and policy-blind separately adjudicated utility proxy labels. No admitted real pair yet.",
   "evidence_snapshot": {
     "commit": null,
     "mode": "current"
@@ -96,7 +96,10 @@
     "docs/theory/STRUCTURED_EXCHANGE.md",
     "specs/018-structured-exchange/spec.md",
     "specs/019-native-predictor/spec.md",
-    "specs/019-native-predictor/workload-protocol.md"
+    "specs/019-native-predictor/workload-protocol.md",
+    "specs/019-native-predictor/source-audit.md",
+    "specs/019-native-predictor/annotation-rubric.md",
+    "specs/019-native-predictor/checklists/protocol-review.md"
   ],
   "requirements": [
     {
@@ -132,7 +135,7 @@
           "given": "Family-separated held-out data",
           "id": "SC-003",
           "obtained_evidence": [],
-          "planned_evidence": "Focused unittest result and bounded evidence artifact; record actual command, hash, outcome and limits after execution.",
+          "planned_evidence": "Consented source register, frozen sampling and rubric records, policy-blind annotation coverage, family and class counts, matched-budget baseline, calibration feasibility and total-analysis-time accounting, plus focused unittest result and bounded evidence artifact; record actual command, hash, outcome and limits after execution.",
           "test_file": "tests/test_native_predictor_contract.py",
           "test_name": "NativePredictorContractTests.test_held_out_evaluation_and_negative_outcome",
           "then": "calibration, abstention, usefulness and cost are reported",
@@ -142,7 +145,7 @@
           "given": "Leakage or no gain",
           "id": "SC-004",
           "obtained_evidence": [],
-          "planned_evidence": "Focused unittest result and bounded evidence artifact; record actual command, hash, outcome and limits after execution.",
+          "planned_evidence": "Reviewer disagreement, unknown-label bounds, leakage and negative-outcome report, plus focused unittest result and bounded evidence artifact; record actual command, hash, outcome and limits after execution.",
           "test_file": "tests/test_native_predictor_contract.py",
           "test_name": "NativePredictorContractTests.test_held_out_evaluation_and_negative_outcome",
           "then": "limitation is reported",
@@ -168,7 +171,7 @@
       "text": "Deterministic verifier remains sole bounded evidence source."
     }
   ],
-  "scientific_limits": "Finite corpus and shared producer/verifier replay engine do not prove general OT, contextual equivalence, confluence, Yang-Baxter, production performance or safe parallel execution.",
-  "scope": "M3.5 real-workload utility target selected; detailed protocol pending review; no source dataset, trained or integrated predictor.",
+  "scientific_limits": "Human assessed-usefulness is an indirect proxy, not observed time saved or conflict prevention. A three-family holdout supports description only; incomplete labels and source scarcity may make the comparison inconclusive. Finite corpus and shared producer/verifier replay engine do not prove general OT, contextual equivalence, confluence, Yang-Baxter, production performance or safe parallel execution.",
+  "scope": "M3.5 real-workload utility target selected and limited source feasibility approved. Detailed protocol and rubric pending review; no admitted real pair dataset, trained or integrated predictor.",
   "stage": "draft"
 }

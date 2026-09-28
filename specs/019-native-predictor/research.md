@@ -1,11 +1,11 @@
 # M3.5 research questions
 
-Can a native linear predictor increase useful verified proposals at a fixed
+Can a native linear predictor increase assessed-useful verified proposals at a fixed
 verifier-call budget compared with the rule advisor on held-out workload
 families? The null or negative result is acceptable. Human utility labels
-require separate provenance; verifier status retains its own exact input
-hashes. Calibration and abstention must be measured separately from final
-verification. The proposed prospective protocol is in
+are blinded expert proxies with separate provenance, not observed savings;
+verifier status retains its own exact input hashes. Calibration and abstention
+must be measured separately from final verification. The proposed prospective protocol is in
 [workload-protocol.md](workload-protocol.md).
 
 The [pretraining feasibility audit](feasibility-audit.md) finds that the
@@ -14,3 +14,14 @@ cases. Its variable rule proposals are fully determined by public structural
 features. Consequently, verifier status alone is not a learnable usefulness
 target for an improvement claim. A reviewed target and dataset protocol are
 required before preregistration, fitting weights or reporting model benefit.
+
+The [source register](source-audit.md) records zero admitted real pair sessions
+among the inspected public artifacts and does not estimate prevalence in
+unseen workloads. The proposed [human rubric](annotation-rubric.md) separates
+decision aid from conflict-review aid, preserves disagreement and unknowns,
+and does not infer actual conflict prevention. Policy-independent annotation
+of every holdout pair is required to avoid selection-dependent missing labels.
+The first three-family holdout remains descriptive. The [NIST study of
+incomplete relevance judgments](https://www.nist.gov/publications/reliable-information-retrieval-evaluation-incomplete-and-biased-judgements)
+is methodological context for the missing-label risk, not evidence of this
+predictor's performance.

@@ -3,6 +3,9 @@
 Tasks use stable IDs, dependencies, target files, requirement and scenario IDs,
 verification commands and planned evidence. Parallelizable does not authorize
 concurrent agents. Mark completion only against obtained evidence.
+For empirical protocols, make source permission/yield, rubric review, unbiased
+holdout labeling, split/class coverage and frozen comparison rules explicit
+pre-fit tasks. An unmet feasibility gate leaves training pending.
 
 - [ ] T001 Record authorities, assumptions, domain and compatibility.
 - [ ] T002 Pair each requirement and acceptance scenario with a test.

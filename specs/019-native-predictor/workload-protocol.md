@@ -21,24 +21,35 @@ content without permission and Git patches that cannot be mapped without
 guesswork are excluded with reason counts. The M2 Git workload corpus is not
 silently reused as an M3.5 dataset.
 
+The [source feasibility register](source-audit.md) has found no admitted real
+session pair. Before opening any new source payload, record its owner and
+permission, participant/data rights, privacy decision, editing workflow and
+immutable event feed. A family is a repository plus editing workflow. For
+each approved family, freeze a contiguous collection window by start/end
+event IDs or UTC timestamps before seeing utility labels. Enumerate every
+session in the window and every unordered pair of concurrent pure inserts
+from the same immutable base. Sort by source event ID, then operation ID;
+assign one primary exclusion reason to every rejected session or pair and
+report counts at both levels. Never sample only pairs proposed by either
+policy, extend a window to meet class quotas, or silently reuse the M2 corpus.
+Source hashes, exclusions and family split assignments are frozen before
+opening holdout labels. Collection and privacy review remain pending.
+
 Collect prospective sessions from at least five separately identified
-workload families before model fitting. A family is a repository plus editing
-workflow, with related sessions kept in one partition. Freeze the inventory,
-source hashes, exclusions and split assignment before opening holdout labels.
-No source data or human utility annotations are presently available in this
-repository. Collection and privacy review remain pending.
+eligible workload families before model fitting. A failed source screen is a
+feasibility result, not permission to project or crop a larger edit domain.
 
 ## Labels and boundaries
 
 The deterministic M3 verifier supplies `verified-bounded`, `divergent` or
-`inconclusive` for its declared model only. Separately, a blinded human
-adjudication records whether proposing this exchange would have saved a
-reviewer a meaningful decision or avoided a conflict in that session. The
-annotator must see the original editing context, not the predictor score.
-Record the rubric, pseudonymous reviewer IDs, timestamps, disagreements and
-unresolved cases. Unresolved cases are retained as unknown and never silently
-made negative. A usefulness label cannot be inferred from the M3 rule proposal
-or verifier status.
+`inconclusive` for its declared model only. Separately, the proposed
+[annotation rubric](annotation-rubric.md) asks two blinded reviewers about a
+specific manual order decision and a separately documented conflict-review
+step. A third reviewer adjudicates disagreement; unresolved or insufficiently
+documented cases stay unknown. The primary assessed-usefulness label is an
+expert proxy, not an observed time saving or avoided conflict. Report both
+dimensions, raw disagreement and unresolved rates by family. A usefulness
+label cannot be inferred from the M3 rule proposal or verifier status.
 
 The model ranks which candidate pairs merit verifier work. Any reported
 proposal must still pass the unchanged deterministic verifier. Neither a
@@ -54,16 +65,40 @@ family and three untouched holdout families, at least 100 adjudicated pairs
 with known positive or negative utility labels overall, and at least 20 useful
 and 20 not-useful cases in the untouched holdout. If those conditions cannot
 be met, report the experiment as inconclusive and do not fit or tune on the
-holdout.
+holdout. Both known classes must occur in the training and calibration
+partitions as well; if either is absent, do not fit or calibrate. Report the
+counts by family and partition. All admitted pairs, including every holdout
+pair, receive policy-blind annotation attempts before either policy scores
+them. Seal holdout labels and do not expose them to feature selection, fitting,
+calibration, threshold selection or protocol changes. Record attempted,
+resolved and unknown labels and reasons by family; do not select which cases
+to label from either policy's ranking.
 
-The baseline is the M3 advisor's `propose-swap` priority followed by stable
-input order. Compare it with a small local linear ranker trained only on the
-training partition. Feature version, weight artifact, probability calibration,
-decision threshold and abstention rule must be frozen using calibration data
-only. Proposed features are base size, same-anchor indicator, relative
+The baseline ranks M3 `propose-swap` before `keep-order`, breaking ties by the
+frozen inventory order. `keep-order` remains eligible for verifier work after
+higher-priority pairs; it is advisory, not a veto or a verified negative.
+Compare this baseline with a small local linear ranker trained only on the
+training partition. Proposed features are base size, same-anchor indicator, relative
 base-anchor distance, insertion lengths and bounded lexical overlap; no
 repository identity, source path,
 person identifier, target label or verifier outcome is an input feature.
+
+The model's raw score is not a probability. The proposed calibration method
+standardizes raw scores using the known-label calibration family's mean and
+population standard deviation, then applies a monotone sigmoid
+`1 / (1 + exp(-(a + b*z)))` with intercept `a` and slope `b >= 0`.
+Choose `a` from `[-8, 8]` and `b` from `[0, 8]`, both in steps of `0.02`, by
+minimum mean logistic loss plus `0.01*b*b` on the calibration family alone;
+break exact objective ties by smaller `b`, then smaller `a`. Store the
+normalization values, grid/version and selected parameters with the feature
+version and weight artifact before holdout evaluation. This coarse fixed-grid
+fit is descriptive and may be poorly calibrated with one small family. If
+calibration scores have zero variance, fitting fails, or either class is
+absent, report no calibrated probability and no Brier result. The model
+abstains on invalid,
+unknown or unavailable features or artifact/provenance mismatch; no score
+threshold may be tuned on the holdout. Any optional score threshold and its
+selection rule need a separate frozen protocol revision before fitting.
 
 At verifier-call ceilings of 25%, 50% and 100% of all assigned holdout pairs,
 set each ceiling to `floor(budget_fraction * N)`, where `N` is the number of
@@ -71,12 +106,18 @@ assigned holdout pairs. Break equal priority scores by the inventory order
 frozen before labels. Rank pairs by each policy and call the unchanged verifier
 until its ceiling is reached or eligible proposals are exhausted. An abstention
 consumes no call; continue down the ranking and report unused calls if the
-ceiling cannot be filled. Report useful verified proposals, precision, recall,
-abstention, actual verifier calls, wall-clock time and model inference cost for
-both
-policies. Report Brier score and five equal-frequency reliability bins for
-calibrated utility estimates; uncalibrated raw scores must not be described as
-probabilities. Also report
+ceiling cannot be filled. Report assessed-useful verified proposals, precision,
+recall, abstention, actual verifier calls and cost for both policies. The
+operational total analysis time includes source-to-feature extraction, rule
+or model scoring, ranking, unchanged verifier calls and result serialization;
+report one-time training and annotation effort separately. Measure both
+policies on the same pinned hardware and Python version, alternate their run
+order after three warm-ups, and report median and range over 20 measured
+repetitions using a monotonic clock. Record model inference time separately.
+If probabilities were calibrated, report descriptive Brier score and five
+equal-frequency reliability bins with the known-label count in every bin;
+mark bins with fewer than ten known labels too sparse for interpretation.
+Uncalibrated raw scores must not be described as probabilities. Also report
 per-family differences, class prevalence and all unknown labels. For each
 budget, report the number of verified proposals with known useful, known
 not-useful and unknown utility labels. The known-label precision denominator
@@ -90,9 +131,9 @@ bounds express missing-label uncertainty, not statistical confidence. The
 first cohort is descriptive: with only three holdout families it cannot
 support a 95% family-bootstrap interval or a confirmatory claim of
 improvement. Report the direction and magnitude at the prespecified 50%
-budget, including whether the model exceeds the baseline in useful verified
-proposals without exceeding
-total analysis time. The 25% and 100% budgets are sensitivity checks, not
+budget, including whether the model exceeds the baseline in assessed-useful
+verified proposals without exceeding total analysis time. The 25% and 100%
+budgets are sensitivity checks, not
 alternative success criteria. A null, negative or inconclusive result is valid.
 
 A positive inferential claim requires a separately preregistered confirmatory
@@ -110,7 +151,8 @@ this particular predictor works.
 ## Controls and stop conditions
 
 Before training, audit source consent, label provenance, class balance,
-family leakage and feature availability at prediction time. Randomly permuted
+family leakage, policy-blind annotation and feature availability at prediction
+time. Randomly permuted
 utility labels are a negative control and must not be presented as useful
 prediction. A model that reproduces the same-anchor rule without incremental
 utility is a null result. Record hardware, Python version and timing method

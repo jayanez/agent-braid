@@ -62,19 +62,22 @@ context; it needs a separately documented and validated projection before
 it could count as an eligible real session. Merely obtaining the same terminal
 sequence on the crop is insufficient.
 
-A repository inventory on 2026-09-27 found no checked-in prospective editing
-sessions or annotation records mapped to `anchored-sequence-v1`. The M2 real
-Git workload manifests and the M3 finite corpus are different evidence
-domains. The proposed five-family, 100-adjudicated-pair cohort therefore has
-no established acquisition path yet. The [workload protocol](workload-protocol.md)
-already requires a documented adapter, exclusion counts and an inconclusive
-result if its thresholds are not met; this audit makes the practical risk
-explicit. No dataset, labels, model fit or performance result is supplied by
-this inventory.
+An initial repository inventory on 2026-09-27 found no checked-in prospective
+editing sessions or annotations mapped to `anchored-sequence-v1`. The
+[2026-09-28 source register](source-audit.md) screened the two published M2
+source-commit artifacts and excluded both as file-patch workstreams, not
+anchored insert sessions. It recorded zero admitted real pairs in that limited
+screen, with no inference about unseen workloads. The M3 finite corpus is
+synthetic. The proposed five-family, 100-adjudicated-pair cohort therefore
+has no established acquisition path. The [workload protocol](workload-protocol.md)
+requires registered source windows, pair-level exclusion counts and an
+inconclusive result if its thresholds are not met. No dataset, labels, model
+fit or performance result is supplied by this inventory.
 
 ## Target decision and remaining prerequisites
 
-The founder chose direction 1 on 2026-09-27. The detailed
+The founder chose direction 1 on 2026-09-27 and approved only source
+feasibility work on 2026-09-28. The detailed
 [workload protocol](workload-protocol.md), source data, privacy review and
 family-separated holdout still need review before training. The two directions
 and their differing evidence needs are retained here for provenance:

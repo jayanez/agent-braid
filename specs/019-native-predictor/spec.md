@@ -16,19 +16,23 @@ determines bounded evidence. Prediction never authorizes execution.
 ## Requirements and acceptance scenarios
 
 - **REQ-001 — native proposal only.** Train an offline linear ranker on
-  versioned local features and separately adjudicated workload utility
-  labels, serialize versioned weights and
+  versioned local features and separately adjudicated, policy-blind
+  assessed-usefulness labels, serialize versioned weights and
   perform local standard-library inference. No Laya/Jev or remote provider.
   - **SC-001:** A fixed artifact and feature vector produce deterministic
     proposal, abstention and model/version provenance.
   - **SC-002:** Changed weights, unknown features or missing provenance fail
     closed and do not create a certificate.
-- **REQ-002 — valid evaluation.** Split by workload family before training;
-  compare with rule-based M3 advisor on untouched holdout data.
-  - **SC-003:** Report calibration, abstention, useful proposals, verifier
-    workload and cost with uncertainty and negative controls.
-  - **SC-004:** Leakage, class imbalance and no-gain outcomes are reported,
-    not hidden or converted into a success claim.
+- **REQ-002 — valid evaluation.** Admit only consent-reviewed sessions mapped
+  without guesswork to the M3 pair domain; register consecutive source windows,
+  exclusions and the human utility rubric before labels. Split by repository
+  and workflow family before training, annotate every holdout pair independently
+  of policy scores, and compare with the rule-based M3 advisor.
+  - **SC-003:** Report assessed-useful proposals, calibration when estimable,
+    abstention, verifier workload and the prespecified cost boundary on an
+    untouched holdout.
+  - **SC-004:** Missing labels, reviewer disagreement, leakage, class imbalance,
+    no-gain and inconclusive outcomes are reported without a success claim.
 - **REQ-003 — strict separation.** The deterministic SPEC-018 verifier remains
   the only source of bounded exchange status.
   - **SC-005:** A high model score without verifier agreement cannot yield
@@ -36,21 +40,26 @@ determines bounded evidence. Prediction never authorizes execution.
 
 ## Scientific boundaries and compatibility
 
-Scores are heuristic, not probabilities of semantic truth unless calibrated
-for a stated distribution, and never guarantees. A learned model cannot
+Scores are heuristic, not probabilities of semantic truth; any calibrated
+probability concerns the stated human utility proxy in the sampled workload,
+not semantic validity. Reviewer judgments do not measure observed time saved
+or conflicts prevented. A learned model cannot
 establish a braid relation, general confluence or runtime safety. Existing M2
 and proposed M3 evidence contracts remain unchanged. No positive result is
 assumed. The dataset, labels, feature version and splits must be reproducible.
 
 ## Evidence and unresolved questions
 
-All obtained evidence is empty pending M3.5 implementation.
-Target distribution, useful-proposal threshold, calibration method and cost
-budget require preregistration before training.
+All model/evaluation evidence is empty pending M3.5 implementation. The
+[source audit](source-audit.md) found no admitted session pairs in the inspected
+public artifacts. The [annotation rubric](annotation-rubric.md) and revised
+[workload protocol](workload-protocol.md) remain candidates for review before
+label collection or training.
 The founder selected real-workload utility prioritization as the target
-direction on 2026-09-27. The detailed
-[workload protocol](workload-protocol.md), data provenance, privacy review and
-metric thresholds require review before training.
+direction on 2026-09-27 and approved only source feasibility work on
+2026-09-28. A consented source, data provenance, privacy review, actual label
+distribution and the final protocol still require review before training.
 The [pretraining feasibility audit](feasibility-audit.md) identifies a
 degenerate verifier-status target in the current valid corpus and two possible
-routes to a useful comparison. Neither route is approved by this draft.
+routes to a useful comparison. Source discovery does not approve the model or
+an improvement claim.

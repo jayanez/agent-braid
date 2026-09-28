@@ -1,0 +1,46 @@
+# SPEC-019 source feasibility register
+
+**Observed on:** 2026-09-28. **Decision boundary:** the founder approved source
+discovery and an eligibility audit, not a dataset, model fit or M3.5 result.
+This register covers public repository metadata and already published Agent
+Braid artifacts. It contains no private session payloads or utility labels.
+
+## Discovery frame and reproducibility
+
+The read-only inventory used `gh repo list jayanez --visibility public --limit
+100 --json nameWithOwner,url,updatedAt,description`, `gh repo view` for fork
+status, the committed M2 corpus manifest, and `git diff --name-status` from
+its frozen base to each registered source commit. Repository file discovery
+used `rg --files`; a search for `anchorId`, `anchored-sequence-v1`, `utility`
+and `annotator` in checked-in JSON/JSONL/CSV/NDJSON found M3 synthetic
+fixtures and evidence, but no real session or annotation records. The search
+excludes private repositories, ignored files,
+unpublished editor logs and uninspected public history. Public visibility is
+not a consent record for editing-session data.
+
+| Source considered | Unit inspected | Outcome and reason |
+| --- | --- | --- |
+| `jayanez/agent-braid` | One directly owned public repository | Potential source owner only. No consent-reviewed `anchored-sequence-v1` session feed or utility annotations identified in checked-in artifacts; no session pair can be counted. |
+| `jayanez/azure-sdk-for-net` and `jayanez/azure-functions-extension` | Two public fork metadata records | Upstream projects belong to Azure. No editor-session rights or matching event feed established; payloads were not inspected or admitted. |
+| M2 corpus, PRs #137 and #138 at base `f3c734a1f42d6d5962cfedc57d7f6c1efe40e0a6` | Two registered source-commit workstreams (`58351f812614058e53a8ee6aef1dd458f1bb70fc`, `083f1a390988a9527a5aaeb19133401243b1d714`) | **2 source artifacts excluded, 0 admitted session records.** Their recorded units are tracked-file patches, without the immutable sequence base, two insert events, fresh IDs and anchors required for one M3 pair. The two commits must not be relabeled as two sequence inserts. |
+| SPEC-018 finite corpus | 130 fixed two/three-operation topology cases | Synthetic laboratory cases; **0 real workload pairs admitted**. |
+| `examples/workloads/` | Two declarative AIM fixtures | Illustrative records, not observed editing sessions; **0 real workload pairs admitted**. |
+
+The counts distinguish source artifacts from candidate pairs. Among the two
+M2 source-commit artifacts screened for session shape, both are excluded and
+none is an eligible pair. This does not estimate the prevalence of eligible
+pairs in all Agent Braid history or in any unexamined source. No approved
+workload family, prospective session window, adjudicated pair, model training
+sample or holdout has been established.
+
+## Admission gate for a future source
+
+Before inspecting session payloads, register the source owner and permission,
+editing workflow, participant/data rights, privacy decision, immutable event
+feed, and a contiguous collection window with fixed start and end event IDs
+or UTC timestamps. The [workload protocol](workload-protocol.md) defines how to
+enumerate every session and pair in that window, assign one primary exclusion
+reason, freeze family splits and report counts. Do not extend a window to
+reach a desired class count; a changed population needs a new reviewed
+protocol. If five eligible families or the preregistered label thresholds
+cannot be obtained, report feasibility as inconclusive before training.
