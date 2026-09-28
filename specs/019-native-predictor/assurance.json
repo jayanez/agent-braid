@@ -20,7 +20,7 @@
   ],
   "assumptions": "Pure deterministic sequence operations with immutable anchors, fresh IDs and complete finite inputs.",
   "authority_snapshot": {
-    "commit": "9945b3ca34b44712b2ad4e516f1e39ec30b19e61",
+    "commit": null,
     "hashes": {
       "ARCHITECTURE.md": "94e5114eb799b25ca666ef728f84ab1c88e6ad1b342e30a9e99276b8f44c30c2",
       "CONSTITUTION.md": "ff7196976a1736a639947c2ab26e8da157fef23c89ba9881312f2a36459964eb",
@@ -74,13 +74,13 @@
       "schemas/governance/public-export-manifest.schema.json": "11eb7f2594939ae9fd0c9e6cfe4423a80aba686d6cdfdd8b73b0fb84b0840aa8",
       "schemas/governance/release-validation-record.schema.json": "d9943f0c9f5520ea52e3b12bfba88240d03f8011b433fc5e35cb49549ab6e819"
     },
-    "mode": "historical"
+    "mode": "current"
   },
   "compatibility": "No current contract changes or M3 closure dependency; future model artifact/version needs separate review.",
   "domain": "Prospective consent-reviewed editing sessions mapped without guesswork to M3 anchored-sequence pairs; fixed source windows, family-separated holdout and policy-blind separately adjudicated utility proxy labels. No admitted real pair yet.",
   "evidence_snapshot": {
-    "commit": "9945b3ca34b44712b2ad4e516f1e39ec30b19e61",
-    "mode": "historical"
+    "commit": null,
+    "mode": "current"
   },
   "execution_contract": "Local synthetic capture creates a new output file exclusively and audit reads it without changing source input; no Git source mutation, live agents, external effects or execution authorization.",
   "human_review": "pending",
@@ -153,21 +153,28 @@
           "when": "evaluation is reviewed"
         },
         {
-          "given": "Five synthetic sessions with one valid pair and four specified exclusions",
+          "given": "Six synthetic sessions over a declared 18-event window with one valid pair and five specified exclusions",
           "id": "SC-006",
           "obtained_evidence": [
             {
               "command": "python3 -m scripts.instrument_m35_flow audit examples/m35/m35-synthetic-capture.jsonl --output examples/m35/m35-synthetic-report.json",
-              "limits": "Synthetic adapter and count check only; no consented source, real yield, utility labels, training or runtime execution.",
-              "outcome": "Five synthetic sessions and pairs examined; one synthetic pair admitted; four specified exclusions; zero real pairs; executionAuthorization false.",
+              "limits": "Synthetic adapter, event-integrity and count checks only; hash chain is not a signature and does not prove upstream feed completeness; no consented source, real yield, utility labels, training or runtime execution.",
+              "outcome": "18 events in sequence window 100..117; six synthetic sessions and pairs examined; one synthetic pair admitted; five specified exclusions; zero real pairs; executionAuthorization false.",
               "path": "examples/m35/m35-synthetic-report.json",
-              "sha256": "2bf0d891d0a2aa66e639d69460d8e84d77bcdbb0777258c27dc80fd24ebc3108"
+              "sha256": "0b1d768e9c3a595e190d689885f8202601d969f5cd314e2f53d44af913f9b96e"
+            },
+            {
+              "command": "python3 -m unittest -v tests.test_m35_source_capture > examples/m35/m35-source-capture-tests.txt 2>&1",
+              "limits": "Adversarial software checks against the supplied synthetic window; hash recomputation is not authenticity proof and no real-source completeness is established.",
+              "outcome": "13 focused tests passed, covering deterministic counts, omitted/added/tampered/reordered events, sequence gaps, duplicate event and session IDs, family inconsistency, required explicit base references, base-before-operation ordering, mismatched base and previousHash tampering.",
+              "path": "examples/m35/m35-source-capture-tests.txt",
+              "sha256": "1e6f3f05e610e8cce28d33703c6dbd7a8896be31710c34d00296421223b68f5b"
             }
           ],
-          "planned_evidence": "Canonical synthetic capture and deterministic session/pair exclusion report, focused unittest result and hashes; no real-source claim.",
+          "planned_evidence": "Canonical synthetic capture with sequence window and event hash chain; adversarial tests for gaps, missing/added/reordered/changed/duplicate events, session/family/base mismatch, explicit base references and base-before-operation order; deterministic session/pair exclusion report and hashes; no real-source claim.",
           "test_file": "tests/test_m35_source_capture.py",
           "test_name": "M35SourceCaptureTests.test_fixture_counts_and_reproduction",
-          "then": "admission and exclusion counts reproduce and zero real pairs and no execution authorization are reported",
+          "then": "the declared event window and hash chain validate, adversarial corruptions fail closed, and deterministic counts report zero real pairs and no execution authorization",
           "when": "the source instrument captures and audits its event log"
         }
       ],
@@ -190,7 +197,7 @@
       "text": "Deterministic verifier remains sole bounded evidence source."
     }
   ],
-  "scientific_limits": "Human assessed-usefulness is an indirect proxy, not observed time saved or conflict prevention. A three-family holdout supports description only; incomplete labels and source scarcity may make the comparison inconclusive. Finite corpus and shared producer/verifier replay engine do not prove general OT, contextual equivalence, confluence, Yang-Baxter, production performance or safe parallel execution.",
+  "scientific_limits": "Human assessed-usefulness is an indirect proxy, not observed time saved or conflict prevention. Synthetic sequence and hash-chain checks cover the supplied fixture only; hashes are not signatures and do not establish source authenticity or upstream completeness. A three-family holdout supports description only; incomplete labels and source scarcity may make the comparison inconclusive. Finite corpus and shared producer/verifier replay engine do not prove general OT, contextual equivalence, confluence, Yang-Baxter, production performance or safe parallel execution.",
   "scope": "M3.5 real-workload utility target selected and limited source feasibility approved. Synthetic capture and exclusion accounting exercised with zero real pairs. Detailed protocol and rubric pending review; no admitted real pair dataset, trained or integrated predictor.",
   "stage": "draft"
 }

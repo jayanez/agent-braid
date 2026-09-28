@@ -37,11 +37,12 @@ sample or holdout has been established.
 
 The [local instrumentation demonstration](instrumentation.md) generates a
 synthetic event log and applies the M3 request validator without transforming
-the proposed operations. Its frozen fixture contains five synthetic sessions
-and five candidate pairs: one admissible pair and four exclusions, one each
-for an excessive base, unsupported operation, invalid anchor and missing
-provenance. Its report states **zero admitted real pairs**. These counts test
-the adapter and exclusion accounting; they do not estimate real-source yield
+the proposed operations. Its frozen window covers 18 events in six synthetic
+sessions and candidate pairs: one admissible pair and five exclusions, one
+each for a wrong base reference, an excessive base, an unsupported operation,
+an invalid anchor and missing provenance. Its report states **zero admitted
+real pairs**. These counts test sequence, integrity and exclusion accounting;
+they do not establish upstream feed completeness, estimate real-source yield
 or change the P019-01 gate.
 
 ## Admission gate for a future source

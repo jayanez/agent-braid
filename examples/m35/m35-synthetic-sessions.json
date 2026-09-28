@@ -1,43 +1,273 @@
-[
-  {
-    "sourceKind": "synthetic", "familyId": "local-script", "sessionId": "eligible",
-    "baseEventId": "eligible-base", "sourceRef": "synthetic://eligible", "base": [{"id": "b0", "value": "A"}],
-    "events": [
-      {"eventId": "eligible-1", "sourceRef": "synthetic://eligible/1", "operation": {"id": "o1", "kind": "insert", "anchorId": "b0", "newId": "n1", "value": "B"}},
-      {"eventId": "eligible-2", "sourceRef": "synthetic://eligible/2", "operation": {"id": "o2", "kind": "insert", "anchorId": "b0", "newId": "n2", "value": "C"}}
-    ]
+{
+  "format": "m35-synthetic-window-v1",
+  "window": {
+    "startSequence": 100,
+    "endSequence": 117
   },
-  {
-    "sourceKind": "synthetic", "familyId": "local-script", "sessionId": "oversize-base",
-    "baseEventId": "oversize-base-0", "sourceRef": "synthetic://oversize-base",
-    "base": [{"id": "b0", "value": "A"}, {"id": "b1", "value": "B"}, {"id": "b2", "value": "C"}, {"id": "b3", "value": "D"}],
-    "events": [
-      {"eventId": "oversize-base-1", "sourceRef": "synthetic://oversize-base/1", "operation": {"id": "o1", "kind": "insert", "anchorId": "b0", "newId": "n1", "value": "E"}},
-      {"eventId": "oversize-base-2", "sourceRef": "synthetic://oversize-base/2", "operation": {"id": "o2", "kind": "insert", "anchorId": "b0", "newId": "n2", "value": "F"}}
-    ]
-  },
-  {
-    "sourceKind": "synthetic", "familyId": "local-script", "sessionId": "delete",
-    "baseEventId": "delete-base", "sourceRef": "synthetic://delete", "base": [{"id": "b0", "value": "A"}],
-    "events": [
-      {"eventId": "delete-1", "sourceRef": "synthetic://delete/1", "operation": {"id": "o1", "kind": "delete", "anchorId": "b0", "newId": "n1", "value": "B"}},
-      {"eventId": "delete-2", "sourceRef": "synthetic://delete/2", "operation": {"id": "o2", "kind": "insert", "anchorId": "b0", "newId": "n2", "value": "C"}}
-    ]
-  },
-  {
-    "sourceKind": "synthetic", "familyId": "local-script", "sessionId": "invalid-anchor",
-    "baseEventId": "invalid-anchor-base", "sourceRef": "synthetic://invalid-anchor", "base": [{"id": "b0", "value": "A"}],
-    "events": [
-      {"eventId": "invalid-anchor-1", "sourceRef": "synthetic://invalid-anchor/1", "operation": {"id": "o1", "kind": "insert", "anchorId": "missing", "newId": "n1", "value": "B"}},
-      {"eventId": "invalid-anchor-2", "sourceRef": "synthetic://invalid-anchor/2", "operation": {"id": "o2", "kind": "insert", "anchorId": "b0", "newId": "n2", "value": "C"}}
-    ]
-  },
-  {
-    "sourceKind": "synthetic", "familyId": "local-script", "sessionId": "missing-provenance",
-    "baseEventId": "missing-provenance-base", "sourceRef": "synthetic://missing-provenance", "base": [{"id": "b0", "value": "A"}],
-    "events": [
-      {"eventId": "missing-provenance-1", "sourceRef": "", "operation": {"id": "o1", "kind": "insert", "anchorId": "b0", "newId": "n1", "value": "B"}},
-      {"eventId": "missing-provenance-2", "sourceRef": "synthetic://missing-provenance/2", "operation": {"id": "o2", "kind": "insert", "anchorId": "b0", "newId": "n2", "value": "C"}}
-    ]
-  }
-]
+  "sessions": [
+    {
+      "sourceKind": "synthetic",
+      "familyId": "local-script",
+      "sessionId": "eligible",
+      "baseEventId": "eligible-base",
+      "sourceRef": "synthetic://eligible",
+      "base": [
+        {
+          "id": "b0",
+          "value": "A"
+        }
+      ],
+      "events": [
+        {
+          "eventId": "eligible-1",
+          "sourceRef": "synthetic://eligible/1",
+          "operation": {
+            "id": "o1",
+            "kind": "insert",
+            "anchorId": "b0",
+            "newId": "n1",
+            "value": "B"
+          },
+          "sourceSequence": 101,
+          "baseEventId": "eligible-base"
+        },
+        {
+          "eventId": "eligible-2",
+          "sourceRef": "synthetic://eligible/2",
+          "operation": {
+            "id": "o2",
+            "kind": "insert",
+            "anchorId": "b0",
+            "newId": "n2",
+            "value": "C"
+          },
+          "sourceSequence": 102,
+          "baseEventId": "eligible-base"
+        }
+      ],
+      "baseSequence": 100
+    },
+    {
+      "sourceKind": "synthetic",
+      "familyId": "local-script",
+      "sessionId": "oversize-base",
+      "baseEventId": "oversize-base-0",
+      "sourceRef": "synthetic://oversize-base",
+      "base": [
+        {
+          "id": "b0",
+          "value": "A"
+        },
+        {
+          "id": "b1",
+          "value": "B"
+        },
+        {
+          "id": "b2",
+          "value": "C"
+        },
+        {
+          "id": "b3",
+          "value": "D"
+        }
+      ],
+      "events": [
+        {
+          "eventId": "oversize-base-1",
+          "sourceRef": "synthetic://oversize-base/1",
+          "operation": {
+            "id": "o1",
+            "kind": "insert",
+            "anchorId": "b0",
+            "newId": "n1",
+            "value": "E"
+          },
+          "sourceSequence": 104,
+          "baseEventId": "oversize-base-0"
+        },
+        {
+          "eventId": "oversize-base-2",
+          "sourceRef": "synthetic://oversize-base/2",
+          "operation": {
+            "id": "o2",
+            "kind": "insert",
+            "anchorId": "b0",
+            "newId": "n2",
+            "value": "F"
+          },
+          "sourceSequence": 105,
+          "baseEventId": "oversize-base-0"
+        }
+      ],
+      "baseSequence": 103
+    },
+    {
+      "sourceKind": "synthetic",
+      "familyId": "local-script",
+      "sessionId": "delete",
+      "baseEventId": "delete-base",
+      "sourceRef": "synthetic://delete",
+      "base": [
+        {
+          "id": "b0",
+          "value": "A"
+        }
+      ],
+      "events": [
+        {
+          "eventId": "delete-1",
+          "sourceRef": "synthetic://delete/1",
+          "operation": {
+            "id": "o1",
+            "kind": "delete",
+            "anchorId": "b0",
+            "newId": "n1",
+            "value": "B"
+          },
+          "sourceSequence": 107,
+          "baseEventId": "delete-base"
+        },
+        {
+          "eventId": "delete-2",
+          "sourceRef": "synthetic://delete/2",
+          "operation": {
+            "id": "o2",
+            "kind": "insert",
+            "anchorId": "b0",
+            "newId": "n2",
+            "value": "C"
+          },
+          "sourceSequence": 108,
+          "baseEventId": "delete-base"
+        }
+      ],
+      "baseSequence": 106
+    },
+    {
+      "sourceKind": "synthetic",
+      "familyId": "local-script",
+      "sessionId": "invalid-anchor",
+      "baseEventId": "invalid-anchor-base",
+      "sourceRef": "synthetic://invalid-anchor",
+      "base": [
+        {
+          "id": "b0",
+          "value": "A"
+        }
+      ],
+      "events": [
+        {
+          "eventId": "invalid-anchor-1",
+          "sourceRef": "synthetic://invalid-anchor/1",
+          "operation": {
+            "id": "o1",
+            "kind": "insert",
+            "anchorId": "missing",
+            "newId": "n1",
+            "value": "B"
+          },
+          "sourceSequence": 110,
+          "baseEventId": "invalid-anchor-base"
+        },
+        {
+          "eventId": "invalid-anchor-2",
+          "sourceRef": "synthetic://invalid-anchor/2",
+          "operation": {
+            "id": "o2",
+            "kind": "insert",
+            "anchorId": "b0",
+            "newId": "n2",
+            "value": "C"
+          },
+          "sourceSequence": 111,
+          "baseEventId": "invalid-anchor-base"
+        }
+      ],
+      "baseSequence": 109
+    },
+    {
+      "sourceKind": "synthetic",
+      "familyId": "local-script",
+      "sessionId": "missing-provenance",
+      "baseEventId": "missing-provenance-base",
+      "sourceRef": "synthetic://missing-provenance",
+      "base": [
+        {
+          "id": "b0",
+          "value": "A"
+        }
+      ],
+      "events": [
+        {
+          "eventId": "missing-provenance-1",
+          "sourceRef": "",
+          "operation": {
+            "id": "o1",
+            "kind": "insert",
+            "anchorId": "b0",
+            "newId": "n1",
+            "value": "B"
+          },
+          "sourceSequence": 113,
+          "baseEventId": "missing-provenance-base"
+        },
+        {
+          "eventId": "missing-provenance-2",
+          "sourceRef": "synthetic://missing-provenance/2",
+          "operation": {
+            "id": "o2",
+            "kind": "insert",
+            "anchorId": "b0",
+            "newId": "n2",
+            "value": "C"
+          },
+          "sourceSequence": 114,
+          "baseEventId": "missing-provenance-base"
+        }
+      ],
+      "baseSequence": 112
+    },
+    {
+      "sourceKind": "synthetic",
+      "familyId": "local-script",
+      "sessionId": "base-mismatch",
+      "baseEventId": "base-mismatch-base",
+      "baseSequence": 115,
+      "sourceRef": "synthetic://base-mismatch",
+      "base": [
+        {
+          "id": "b0",
+          "value": "A"
+        }
+      ],
+      "events": [
+        {
+          "eventId": "base-mismatch-1",
+          "sourceRef": "synthetic://base-mismatch/1",
+          "sourceSequence": 116,
+          "baseEventId": "not-the-declared-base",
+          "operation": {
+            "id": "o1",
+            "kind": "insert",
+            "anchorId": "b0",
+            "newId": "n1",
+            "value": "B"
+          }
+        },
+        {
+          "eventId": "base-mismatch-2",
+          "sourceRef": "synthetic://base-mismatch/2",
+          "sourceSequence": 117,
+          "operation": {
+            "id": "o2",
+            "kind": "insert",
+            "anchorId": "b0",
+            "newId": "n2",
+            "value": "C"
+          },
+          "baseEventId": "base-mismatch-base"
+        }
+      ]
+    }
+  ]
+}

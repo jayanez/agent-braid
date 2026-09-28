@@ -1,11 +1,14 @@
 {
-  "captureSha256": "a34f8ff651b48a8dfe340f5cdefb4bcd088230faaa0fdb1076fdfcb8c1cfa81c",
+  "captureSha256": "7e3b1b8bd51224ffd20ec13728c83c3100e23af6a3dca3e8420b352582be43db",
+  "eventsObserved": 18,
   "evidenceClass": "synthetic-adapter-demonstration",
   "executionAuthorization": false,
+  "expectedEvents": 18,
   "format": "m35-source-feasibility-report-v1",
   "pairsAdmitted": 1,
-  "pairsExamined": 5,
+  "pairsExamined": 6,
   "pairsExcludedByReason": {
+    "base-mismatch": 1,
     "invalid-anchor": 1,
     "invalid-base": 1,
     "missing-provenance": 1,
@@ -13,12 +16,17 @@
   },
   "realPairsAdmitted": 0,
   "sessionsAdmitted": 1,
-  "sessionsExamined": 5,
+  "sessionsExamined": 6,
   "sessionsExcludedByReason": {
+    "base-mismatch": 1,
     "invalid-anchor": 1,
     "invalid-base": 1,
     "missing-provenance": 1,
     "unsupported-operation": 1
   },
-  "sourceKind": "synthetic"
+  "sourceKind": "synthetic",
+  "window": {
+    "endSequence": 117,
+    "startSequence": 100
+  }
 }
