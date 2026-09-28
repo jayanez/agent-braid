@@ -1,0 +1,43 @@
+[
+  {
+    "sourceKind": "synthetic", "familyId": "local-script", "sessionId": "eligible",
+    "baseEventId": "eligible-base", "sourceRef": "synthetic://eligible", "base": [{"id": "b0", "value": "A"}],
+    "events": [
+      {"eventId": "eligible-1", "sourceRef": "synthetic://eligible/1", "operation": {"id": "o1", "kind": "insert", "anchorId": "b0", "newId": "n1", "value": "B"}},
+      {"eventId": "eligible-2", "sourceRef": "synthetic://eligible/2", "operation": {"id": "o2", "kind": "insert", "anchorId": "b0", "newId": "n2", "value": "C"}}
+    ]
+  },
+  {
+    "sourceKind": "synthetic", "familyId": "local-script", "sessionId": "oversize-base",
+    "baseEventId": "oversize-base-0", "sourceRef": "synthetic://oversize-base",
+    "base": [{"id": "b0", "value": "A"}, {"id": "b1", "value": "B"}, {"id": "b2", "value": "C"}, {"id": "b3", "value": "D"}],
+    "events": [
+      {"eventId": "oversize-base-1", "sourceRef": "synthetic://oversize-base/1", "operation": {"id": "o1", "kind": "insert", "anchorId": "b0", "newId": "n1", "value": "E"}},
+      {"eventId": "oversize-base-2", "sourceRef": "synthetic://oversize-base/2", "operation": {"id": "o2", "kind": "insert", "anchorId": "b0", "newId": "n2", "value": "F"}}
+    ]
+  },
+  {
+    "sourceKind": "synthetic", "familyId": "local-script", "sessionId": "delete",
+    "baseEventId": "delete-base", "sourceRef": "synthetic://delete", "base": [{"id": "b0", "value": "A"}],
+    "events": [
+      {"eventId": "delete-1", "sourceRef": "synthetic://delete/1", "operation": {"id": "o1", "kind": "delete", "anchorId": "b0", "newId": "n1", "value": "B"}},
+      {"eventId": "delete-2", "sourceRef": "synthetic://delete/2", "operation": {"id": "o2", "kind": "insert", "anchorId": "b0", "newId": "n2", "value": "C"}}
+    ]
+  },
+  {
+    "sourceKind": "synthetic", "familyId": "local-script", "sessionId": "invalid-anchor",
+    "baseEventId": "invalid-anchor-base", "sourceRef": "synthetic://invalid-anchor", "base": [{"id": "b0", "value": "A"}],
+    "events": [
+      {"eventId": "invalid-anchor-1", "sourceRef": "synthetic://invalid-anchor/1", "operation": {"id": "o1", "kind": "insert", "anchorId": "missing", "newId": "n1", "value": "B"}},
+      {"eventId": "invalid-anchor-2", "sourceRef": "synthetic://invalid-anchor/2", "operation": {"id": "o2", "kind": "insert", "anchorId": "b0", "newId": "n2", "value": "C"}}
+    ]
+  },
+  {
+    "sourceKind": "synthetic", "familyId": "local-script", "sessionId": "missing-provenance",
+    "baseEventId": "missing-provenance-base", "sourceRef": "synthetic://missing-provenance", "base": [{"id": "b0", "value": "A"}],
+    "events": [
+      {"eventId": "missing-provenance-1", "sourceRef": "", "operation": {"id": "o1", "kind": "insert", "anchorId": "b0", "newId": "n1", "value": "B"}},
+      {"eventId": "missing-provenance-2", "sourceRef": "synthetic://missing-provenance/2", "operation": {"id": "o2", "kind": "insert", "anchorId": "b0", "newId": "n2", "value": "C"}}
+    ]
+  }
+]

@@ -1,0 +1,24 @@
+{
+  "captureSha256": "a34f8ff651b48a8dfe340f5cdefb4bcd088230faaa0fdb1076fdfcb8c1cfa81c",
+  "evidenceClass": "synthetic-adapter-demonstration",
+  "executionAuthorization": false,
+  "format": "m35-source-feasibility-report-v1",
+  "pairsAdmitted": 1,
+  "pairsExamined": 5,
+  "pairsExcludedByReason": {
+    "invalid-anchor": 1,
+    "invalid-base": 1,
+    "missing-provenance": 1,
+    "unsupported-operation": 1
+  },
+  "realPairsAdmitted": 0,
+  "sessionsAdmitted": 1,
+  "sessionsExamined": 5,
+  "sessionsExcludedByReason": {
+    "invalid-anchor": 1,
+    "invalid-base": 1,
+    "missing-provenance": 1,
+    "unsupported-operation": 1
+  },
+  "sourceKind": "synthetic"
+}

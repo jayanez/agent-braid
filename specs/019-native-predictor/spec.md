@@ -33,6 +33,8 @@ determines bounded evidence. Prediction never authorizes execution.
     untouched holdout.
   - **SC-004:** Missing labels, reviewer disagreement, leakage, class imbalance,
     no-gain and inconclusive outcomes are reported without a success claim.
+  - **SC-006:** A synthetic owned-flow capture reproduces session/pair admission
+    and exclusion counts, records zero real pairs and never grants execution.
 - **REQ-003 — strict separation.** The deterministic SPEC-018 verifier remains
   the only source of bounded exchange status.
   - **SC-005:** A high model score without verifier agreement cannot yield
@@ -55,6 +57,8 @@ All model/evaluation evidence is empty pending M3.5 implementation. The
 public artifacts. The [annotation rubric](annotation-rubric.md) and revised
 [workload protocol](workload-protocol.md) remain candidates for review before
 label collection or training.
+The [synthetic source instrument](instrumentation.md) exercises capture and
+exclusion accounting only; its one admitted pair is not a real workload pair.
 The founder selected real-workload utility prioritization as the target
 direction on 2026-09-27 and approved only source feasibility work on
 2026-09-28. A consented source, data provenance, privacy review, actual label

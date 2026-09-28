@@ -10,7 +10,8 @@ source feasibility work; the full protocol needs a new review.
   fixed collection window, complete session/pair counts and primary exclusion
   causes by family. The limited public screen admits zero real pairs. Do not
   lower the five-family or 100-known-label threshold or crop sessions to fill
-  a quota without a newly reviewed domain decision.
+  a quota without a newly reviewed domain decision. The synthetic capture
+  demonstration checks accounting only and contributes zero real pairs.
 - [ ] **P019-02 — human label construct (high).** The
   [rubric](../annotation-rubric.md) must be reviewed with examples and reviewer
   instructions before labels are opened. Record both dimensions, two blinded

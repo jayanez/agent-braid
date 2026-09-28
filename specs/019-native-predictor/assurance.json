@@ -20,7 +20,7 @@
   ],
   "assumptions": "Pure deterministic sequence operations with immutable anchors, fresh IDs and complete finite inputs.",
   "authority_snapshot": {
-    "commit": "a93f62358cacf65845f81c15d57b8f0d20a2e2aa",
+    "commit": null,
     "hashes": {
       "ARCHITECTURE.md": "94e5114eb799b25ca666ef728f84ab1c88e6ad1b342e30a9e99276b8f44c30c2",
       "CONSTITUTION.md": "ff7196976a1736a639947c2ab26e8da157fef23c89ba9881312f2a36459964eb",
@@ -74,15 +74,15 @@
       "schemas/governance/public-export-manifest.schema.json": "11eb7f2594939ae9fd0c9e6cfe4423a80aba686d6cdfdd8b73b0fb84b0840aa8",
       "schemas/governance/release-validation-record.schema.json": "d9943f0c9f5520ea52e3b12bfba88240d03f8011b433fc5e35cb49549ab6e819"
     },
-    "mode": "historical"
+    "mode": "current"
   },
   "compatibility": "No current contract changes or M3 closure dependency; future model artifact/version needs separate review.",
   "domain": "Prospective consent-reviewed editing sessions mapped without guesswork to M3 anchored-sequence pairs; fixed source windows, family-separated holdout and policy-blind separately adjudicated utility proxy labels. No admitted real pair yet.",
   "evidence_snapshot": {
-    "commit": "a93f62358cacf65845f81c15d57b8f0d20a2e2aa",
-    "mode": "historical"
+    "commit": null,
+    "mode": "current"
   },
-  "execution_contract": "Read-only local analysis; no Git source mutation, live agents, external effects or execution authorization.",
+  "execution_contract": "Local synthetic capture creates a new output file exclusively and audit reads it without changing source input; no Git source mutation, live agents, external effects or execution authorization.",
   "human_review": "pending",
   "hypotheses": "At a fixed verifier-call budget, a local linear advisor may surface more useful verified proposals than the rule baseline on held-out real workload families.",
   "observation_contract": "Final ordered ID/value sequence; intermediate chronological trace and physical residual indices retained but not equated.",
@@ -98,6 +98,7 @@
     "specs/019-native-predictor/spec.md",
     "specs/019-native-predictor/workload-protocol.md",
     "specs/019-native-predictor/source-audit.md",
+    "specs/019-native-predictor/instrumentation.md",
     "specs/019-native-predictor/annotation-rubric.md",
     "specs/019-native-predictor/checklists/protocol-review.md"
   ],
@@ -150,6 +151,24 @@
           "test_name": "NativePredictorContractTests.test_held_out_evaluation_and_negative_outcome",
           "then": "limitation is reported",
           "when": "evaluation is reviewed"
+        },
+        {
+          "given": "Five synthetic sessions with one valid pair and four specified exclusions",
+          "id": "SC-006",
+          "obtained_evidence": [
+            {
+              "command": "python3 -m scripts.instrument_m35_flow audit examples/m35/m35-synthetic-capture.jsonl --output examples/m35/m35-synthetic-report.json",
+              "limits": "Synthetic adapter and count check only; no consented source, real yield, utility labels, training or runtime execution.",
+              "outcome": "Five synthetic sessions and pairs examined; one synthetic pair admitted; four specified exclusions; zero real pairs; executionAuthorization false.",
+              "path": "examples/m35/m35-synthetic-report.json",
+              "sha256": "2bf0d891d0a2aa66e639d69460d8e84d77bcdbb0777258c27dc80fd24ebc3108"
+            }
+          ],
+          "planned_evidence": "Canonical synthetic capture and deterministic session/pair exclusion report, focused unittest result and hashes; no real-source claim.",
+          "test_file": "tests/test_m35_source_capture.py",
+          "test_name": "M35SourceCaptureTests.test_fixture_counts_and_reproduction",
+          "then": "admission and exclusion counts reproduce and zero real pairs and no execution authorization are reported",
+          "when": "the source instrument captures and audits its event log"
         }
       ],
       "text": "Family-separated real-workload evaluation against the rule baseline with negative outcomes."
@@ -172,6 +191,6 @@
     }
   ],
   "scientific_limits": "Human assessed-usefulness is an indirect proxy, not observed time saved or conflict prevention. A three-family holdout supports description only; incomplete labels and source scarcity may make the comparison inconclusive. Finite corpus and shared producer/verifier replay engine do not prove general OT, contextual equivalence, confluence, Yang-Baxter, production performance or safe parallel execution.",
-  "scope": "M3.5 real-workload utility target selected and limited source feasibility approved. Detailed protocol and rubric pending review; no admitted real pair dataset, trained or integrated predictor.",
+  "scope": "M3.5 real-workload utility target selected and limited source feasibility approved. Synthetic capture and exclusion accounting exercised with zero real pairs. Detailed protocol and rubric pending review; no admitted real pair dataset, trained or integrated predictor.",
   "stage": "draft"
 }

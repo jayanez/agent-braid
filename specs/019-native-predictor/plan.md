@@ -30,6 +30,13 @@ freeze the model artifact.
 Inference emits a proposal with version and no certificate. Existing verifier
 must independently accept any selected candidate.
 
+Before real-source onboarding, the local synthetic instrument records a base
+event and two operation events per session in an exclusive, hashed JSONL log.
+Its audit calls the unchanged M3 request validator and reports complete
+session/pair admission and exclusion counts. This verifies only the capture
+adapter and accounting. A later phase inspects existing event feeds after
+permission and privacy decisions; Git patch histories alone are ineligible.
+
 The [feasibility audit](feasibility-audit.md) and
 [source register](source-audit.md) are gates before that preregistration. The
 present valid corpus has no divergent verifier labels, while the M3 proposal
@@ -43,6 +50,8 @@ counterexamples.
 ## Validation strategy
 
 Pair SC-001..005 with deterministic tests and held-out metrics in M3.5 work.
+SC-006 binds the synthetic capture fixture, report, focused regression test
+and their hashes, with zero admitted real pairs.
 Before that, record source permissions and session/pair exclusion counts,
 reviewer disagreement, class coverage and policy-blind annotation coverage.
 Compare against the rule baseline at matched verifier budgets and record the

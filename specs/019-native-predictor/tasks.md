@@ -13,6 +13,18 @@ or M3.5 benefit is reported.
   features, family splits, baseline, calibration, cost rules and thresholds
   before training. The limited public screen is recorded; a consented source
   and eligible pair yield are still missing.
+- [x] T006 (REQ-002, SC-006): Instrument an owned local flow with
+  immutable base/operation events, stable IDs and provenance. Publish a
+  deterministic synthetic capture and session/pair exclusion report, including
+  invalid-base, unsupported-operation, invalid-anchor and missing-provenance
+  cases. Record zero real admitted pairs; this demonstration cannot complete
+  P019-01 or T001.
+- [ ] T007 (REQ-002, SC-003/004): In a later source-feasibility phase, audit
+  existing session feeds only after owner permission, participant/data rights
+  and privacy review. Fix a contiguous window, enumerate all sessions and
+  candidate pairs, report eligibility and exclusions by family, and reject
+  Git-only histories that lack the shared-base event relation. No company
+  payload enters the public repository.
 - [ ] T002 (REQ-001, SC-001/002): Implement offline trainer and versioned
   local inference with negative controls.
 - [ ] T003 (REQ-002, SC-003/004): Evaluate held-out calibration when feasible,
