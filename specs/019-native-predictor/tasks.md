@@ -21,10 +21,14 @@ or M3.5 benefit is reported.
   P019-01 or T001.
 - [ ] T007 (REQ-002, SC-003/004): In a later source-feasibility phase, audit
   existing session feeds only after owner permission, participant/data rights
-  and privacy review. Fix a contiguous window, enumerate all sessions and
-  candidate pairs, report eligibility and exclusions by family, and reject
-  Git-only histories that lack the shared-base event relation. No company
-  payload enters the public repository.
+  and privacy review. Kinetiq and SmartNotes are candidate owned-repository
+  families from the 2026-09-29 structural screen; neither has an observed feed
+  or eligible pair yet. Preserve the separate repo-level feasibility records,
+  fix a contiguous window only after all gates pass, enumerate all sessions
+  and candidate pairs, report eligibility and exclusions by family, and reject
+  Git-only histories that lack the shared-base event relation. SmartNotes
+  patient and clinical payloads, Kinetiq athlete/customer data, and all
+  private content stay excluded and outside this repository.
 - [ ] T002 (REQ-001, SC-001/002): Implement offline trainer and versioned
   local inference with negative controls.
 - [ ] T003 (REQ-002, SC-003/004): Evaluate held-out calibration when feasible,

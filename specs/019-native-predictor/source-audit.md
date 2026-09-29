@@ -5,6 +5,29 @@ discovery and an eligibility audit, not a dataset, model fit or M3.5 result.
 This register covers public repository metadata and already published Agent
 Braid artifacts. It contains no private session payloads or utility labels.
 
+## Candidate owned repositories: Kinetiq and SmartNotes
+
+**Screened on:** 2026-09-29, at repository/schema/specification level only.
+The owners authorized planning these two repositories as candidate workflow
+families. This authorization does not grant access to session payloads,
+patient records, editor logs, ignored files, or external capture services.
+Neither repository supplied an immutable shared-base event feed or observed
+candidate pair in this screen. Therefore each contributes **zero observed
+sessions and zero eligible pairs**; these are screening counts, not estimates
+of future yield.
+
+| Candidate | Workflow families worth a later, separately authorized screen | Excluded material and current disposition |
+| --- | --- | --- |
+| Kinetiq | Authored expert rules/decision tables; specifications, ADRs, methodology and contracts; task or roadmap decisions only if a first-party event feed records concurrent edits against one immutable base. | Gait sessions, video, keypoints, biometrics, athlete/client material and processing traces are excluded. Git commits/diffs alone do not establish concurrent insert events. No feed or eligible pair was observed. |
+| SmartNotes | Specifications, ADRs, operational docs and task decisions in non-clinical repository authoring workflows, subject to a future opt-in local capture design. | All patient records, `PA-NNNN` material, audio, transcripts, clinical drafts, review/audit events and production traces are excluded. No feed or eligible pair was observed. |
+
+This inventory is based on repository-level architecture, schema, workflow
+and policy documents only. It does not inspect patient records, patient event
+payloads, private logs, or local application state. Before any capture is
+opened, each repository needs its own named source owner, rights/privacy
+decision, reviewed capture contract, and a fixed contiguous window. A local
+design or synthetic demonstration cannot satisfy those gates.
+
 ## Discovery frame and reproducibility
 
 The read-only inventory used `gh repo list jayanez --visibility public --limit
