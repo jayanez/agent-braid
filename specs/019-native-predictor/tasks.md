@@ -23,7 +23,13 @@ or M3.5 benefit is reported.
   existing session feeds only after owner permission, participant/data rights
   and privacy review. Kinetiq and SmartNotes are candidate owned-repository
   families from the 2026-09-29 structural screen; neither has an observed feed
-  or eligible pair yet. Preserve the separate repo-level feasibility records,
+  or eligible pair yet. First review the proposed local sidecar signals
+  (`session-open`, actor `base-seen`, `insert-proposed`, `session-close`) against
+  a real authoring boundary; prove shared-base independent intent from
+  contemporaneous receipts and reconcile journal completeness with the source
+  admission register. Version an adapter for all sessions, operations and
+  unordered pairs: T006's exactly-two-operation synthetic CLI is not that
+  adapter. Preserve the separate repo-level feasibility records,
   fix a contiguous window only after all gates pass, enumerate all sessions
   and candidate pairs, report eligibility and exclusions by family, and reject
   Git-only histories that lack the shared-base event relation. SmartNotes

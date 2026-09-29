@@ -75,6 +75,89 @@ of a real source feed.
 
 ## Gate for a real owned workflow
 
+### Recommended signaling boundary for Kinetiq and SmartNotes
+
+Use an opt-in **Agent Braid local sidecar at the authoring boundary**, before a
+proposal is incorporated into a document or pull request. An editor/plugin is
+not required for the first pilot: a small authoring wrapper presents the base
+through the sidecar and submits each proposal through it. A manual statement
+that an actor saw a base is not an acceptable substitute for that read event.
+The sidecar owns the append-only event journal and the eligibility adapter;
+the host repositories keep their normal files and review process. Git hooks,
+commit timestamps, Issues, final diffs and product audit logs are downstream
+corroboration only, never the source of the shared-base relation.
+
+The proposed real-source contract is distinct from the synthetic
+`m35-synthetic-window-v1` format above. Before any real capture, version and
+review a `source-window` contract with these signals:
+
+| Signal | Required evidence at emission time |
+| --- | --- |
+| `session-open` | Repository/workflow family, opt-in participants, source list identity, complete ordered base (including an empty base), immutable item IDs and values, base version/digest, source reference and capture-window sequence. |
+| `base-seen` | Participant/actor pseudonym, the exact base event/version presented to that actor, and a source receipt. Merely sharing a hash in a later PR does not prove what was seen. |
+| `insert-proposed` | Unique event/operation/new-item IDs, actor, base event ID, base/root anchor, value, source reference and journal sequence. Emit on proposal submission, before another proposal can be folded into that actor's view. |
+| `session-close` | All proposals and non-insert edits, cancellations, accepted/rejected outcomes, final source reference, sequence and completeness reconciliation against the authoring process. Do not drop unsuccessful proposals. |
+
+Concurrent intent here means two proposals were made from the same **observed**
+immutable base, with neither actor observing or depending on the other's
+proposal before submission. Sequential journal writes can record such intents;
+wall-clock overlap alone cannot establish them. A second actor who refreshed
+after the first proposal is a dependency and must be excluded. The process
+must provide the two `base-seen` receipts and independence evidence; if those
+are unavailable, record `concurrency-unproven`. Do not have an agent recreate
+the receipts after the fact. `sourceRef` and hashes prove neither participant
+identity nor upstream completeness; separately reconcile journal sequence and
+session IDs with the process's own admission register.
+
+The real adapter must enumerate **every** session opened in the frozen window,
+all its proposals and every unordered same-base candidate pair. It must retain
+sessions with zero, one or more than two proposals and count them with a
+primary exclusion reason where appropriate. Pairs sharing a base but lacking
+independence evidence are excluded; cancellations and unsupported edits remain
+visible. Only then does it pass unmodified pure-insert pairs to the M3 request
+validator. The current synthetic CLI requires exactly two operations per
+session, accepts only `sourceKind: synthetic` and groups three adjacent events;
+it is an integrity rehearsal, **not** an adapter for these real signals.
+
+For Kinetiq, pilot the evidence pipeline's **ordered shortlist of candidate
+literature/measurement decisions** before promotion into a ruleset or ADR.
+Instrument a naturally occurring shortlist with at most three existing items;
+each independently proposed new item needs a stable ID and an anchor. Keep
+threshold values, athlete material, goldens and customer data outside this
+pilot. The versioned ruleset JSON and its PR remain output artifacts, not the
+source event feed. A full ruleset or long task list is not a three-item base.
+
+For SmartNotes, pilot **non-clinical architecture or Spec Kit decision-option
+lists** before they become an ADR/spec. Record only repository engineering
+options; never use consultation worklists, patient tasks, review actions,
+STT corrections, clinical drafts, `PA-NNNN` or product audit events. The
+existing ADR and spec are output artifacts. Do not slice a longer decision
+list or invent a second actor to obtain a pair.
+
+The same contract can cover further workflows, but each repository plus
+workflow is a separate family only after its source and sampling rule are
+reviewed. These two pilots alone cannot satisfy the five-family protocol, and
+neither is claimed to yield any pair. A dry run using invented content can
+exercise signal ordering and failures; it remains synthetic even when emitted
+through the future real-source adapter.
+
+### Scenario coverage to measure, not manufacture
+
+| Observed signal pattern | Audit disposition |
+| --- | --- |
+| Two independent pure inserts from the same base, same anchor | Admit if the entire base and both payloads satisfy `anchored-sequence-v1`; record the verifier's bounded result separately. |
+| Two independent pure inserts from the same base, distinct root/base anchors | Admit under the same checks; preserve the exact anchors so policy and verifier can distinguish topology. |
+| Second actor saw the first proposal or the two operations reference different bases | Exclude as dependent/base mismatch; chronological closeness is insufficient. |
+| A delete, replacement, nested anchor, reused item ID or invalid root/base anchor | Retain in the session ledger, exclude the invalid pair with a primary reason; do not translate to a pure insert. |
+| More than three base items, one/no proposal, missing receipt/provenance, or an unreconciled sequence gap | Count the session and all applicable attempts; exclude or fail the window integrity audit as appropriate. Never select a three-item slice. |
+
+After source admission, the separate human rubric still needs policy-blind
+attempts on every holdout pair, including cases the baseline would keep in
+order. Neither Kinetiq nor SmartNotes has supplied observed positive/negative
+utility labels, class coverage, five families or 100 adjudicated pairs. A
+capture pilot can establish whether those requirements are feasible; it must
+not tune the workflow to meet them.
+
 Before opening session payloads, record the source owner and explicit use
 permission, participant/data rights, privacy decision, editing workflow,
 immutable event feed and fixed contiguous window with start/end sequence or

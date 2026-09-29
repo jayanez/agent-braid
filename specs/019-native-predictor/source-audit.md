@@ -28,6 +28,16 @@ opened, each repository needs its own named source owner, rights/privacy
 decision, reviewed capture contract, and a fixed contiguous window. A local
 design or synthetic demonstration cannot satisfy those gates.
 
+**Signaling design:** The [instrumentation note](instrumentation.md#recommended-signaling-boundary-for-kinetiq-and-smartnotes)
+selects an opt-in Agent Braid sidecar at the proposal boundary. The initial
+Kinetiq candidate is an ordered evidence-pipeline decision shortlist; the
+initial SmartNotes candidate is an ordered non-clinical architecture/Spec Kit
+decision-option list. Each needs a recorded base seen by each real participant
+and independent insert proposals before document/PR incorporation. These are
+proposed process boundaries, not observed feeds or eligible families. The
+current synthetic capture format is insufficient for real sessions and must
+not be relabeled as one.
+
 ## Discovery frame and reproducibility
 
 The read-only inventory used `gh repo list jayanez --visibility public --limit
