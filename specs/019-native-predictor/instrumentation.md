@@ -122,10 +122,12 @@ it is an integrity rehearsal, **not** an adapter for these real signals.
 For Kinetiq, pilot the evidence pipeline's **ordered shortlist of candidate
 literature/measurement decisions** before promotion into a ruleset or ADR.
 Instrument a naturally occurring shortlist with at most three existing items;
-each independently proposed new item needs a stable ID and an anchor. Keep
-threshold values, athlete material, goldens and customer data outside this
-pilot. The versioned ruleset JSON and its PR remain output artifacts, not the
-source event feed. A full ruleset or long task list is not a three-item base.
+each independently proposed new item needs a stable ID and an anchor. Use
+the exact non-personal item text seen by participants, not a shortened label
+created to pass the 256-character bound. An overlong item is excluded. Keep
+athlete material, goldens and customer data outside this pilot. The versioned
+ruleset JSON and its PR remain output artifacts, not the source event feed. A
+full ruleset or long task list is not a three-item base.
 
 For SmartNotes, pilot **non-clinical architecture or Spec Kit decision-option
 lists** before they become an ADR/spec. Record only repository engineering
@@ -133,6 +135,13 @@ options; never use consultation worklists, patient tasks, review actions,
 STT corrections, clinical drafts, `PA-NNNN` or product audit events. The
 existing ADR and spec are output artifacts. Do not slice a longer decision
 list or invent a second actor to obtain a pair.
+
+Keep the journal and source register local under access controls. Plain
+SHA-256 digests of short option text may be guessable; publish aggregate
+counts and a reviewed capture-level commitment only, with no item text,
+per-item digest, participant mapping or private source reference in a public
+PR. The complete private journal is retained only under the separately
+approved source and privacy decision.
 
 The same contract can cover further workflows, but each repository plus
 workflow is a separate family only after its source and sampling rule are
