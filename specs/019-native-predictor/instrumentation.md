@@ -1,5 +1,9 @@
 # M3.5 owned-flow source instrumentation
 
+The [prospective owned-flow runbook](prospective-pilot.md) describes the T008
+sidecar, disposable labs, exact-file sync and remote aggregate seals. These
+are tooling and operational gates, not evidence of a real source window.
+
 **Status:** synthetic feasibility demonstration. It contains no real editing
 sessions, consent record, utility labels or model evidence.
 

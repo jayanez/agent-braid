@@ -47,11 +47,22 @@ and privacy clearance. This plan does not authorize fitting a model to a
 degenerate label or counting syntactically invalid inputs as semantic
 counterexamples.
 
+For the owned-flow route, use the T008 local sidecar and two disposable private
+lab repositories documented in [instrumentation](instrumentation.md). Register
+one immutable 14-day UTC window per workflow only after rights/privacy review
+and a successful audit-repository runner. Pin exact engineering document blobs
+for `lab/main` and `lab/develop`; changes stop sync until reviewed. The local
+journal and keyed seal secret never enter GitHub. Run the prospective audit and
+compare observed yield only after all gates; two workflows do not satisfy the
+five-family target.
+
 ## Validation strategy
 
 Pair SC-001..005 with deterministic tests and held-out metrics in M3.5 work.
 SC-006 binds the synthetic capture fixture, report, focused regression test
 and their hashes, with zero admitted real pairs.
+SC-007 binds sidecar, filtered export and remote-seal adversarial tests. A
+successful software check is not an upstream-completeness or real-yield result.
 Before that, record source permissions and session/pair exclusion counts,
 reviewer disagreement, class coverage and policy-blind annotation coverage.
 Compare against the rule baseline at matched verifier budgets and record the

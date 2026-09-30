@@ -1,0 +1,24 @@
+test_admission_mismatch_and_partial_event_fail_closed (tests.test_m35_source_window.M35SourceWindowTests.test_admission_mismatch_and_partial_event_fail_closed) ... ok
+test_duplicate_actor_proposal_and_out_of_window_fail (tests.test_m35_source_window.M35SourceWindowTests.test_duplicate_actor_proposal_and_out_of_window_fail) ... ok
+test_exclusions_keep_full_sessions_and_primary_reasons (tests.test_m35_source_window.M35SourceWindowTests.test_exclusions_keep_full_sessions_and_primary_reasons) ... ok
+test_independent_proposals_are_counted_and_hidden_until_barrier (tests.test_m35_source_window.M35SourceWindowTests.test_independent_proposals_are_counted_and_hidden_until_barrier) ... ok
+test_prospective_initialization_needs_both_gates (tests.test_m35_source_window.M35SourceWindowTests.test_prospective_initialization_needs_both_gates) ... ok
+test_three_actors_enumerate_every_unordered_pair (tests.test_m35_source_window.M35SourceWindowTests.test_three_actors_enumerate_every_unordered_pair) ... ok
+test_filtered_snapshot_contains_only_approved_file_and_provenance (tests.test_m35_lab_export.M35LabExportTests.test_filtered_snapshot_contains_only_approved_file_and_provenance) ... ok
+test_path_escape_and_unlisted_branch_are_rejected (tests.test_m35_lab_export.M35LabExportTests.test_path_escape_and_unlisted_branch_are_rejected) ... ok
+test_publish_creates_disposable_branch_without_source_history (tests.test_m35_lab_export.M35LabExportTests.test_publish_creates_disposable_branch_without_source_history) ... ok
+test_source_change_blocks_sync_until_new_blob_is_reviewed (tests.test_m35_lab_export.M35LabExportTests.test_source_change_blocks_sync_until_new_blob_is_reviewed) ... ok
+test_symlink_in_snapshot_is_rejected_before_publication (tests.test_m35_lab_export.M35LabExportTests.test_symlink_in_snapshot_is_rejected_before_publication) ... ok
+test_decreasing_counts_and_private_fields_fail (tests.test_m35_seal_validate.M35SealValidateTests.test_decreasing_counts_and_private_fields_fail) ... ok
+test_early_or_retargeted_seal_fails (tests.test_m35_seal_validate.M35SealValidateTests.test_early_or_retargeted_seal_fails) ... ok
+test_final_requires_day14_and_exact_partition (tests.test_m35_seal_validate.M35SealValidateTests.test_final_requires_day14_and_exact_partition) ... ok
+test_full_chain_with_complete_final_aggregate (tests.test_m35_seal_validate.M35SealValidateTests.test_full_chain_with_complete_final_aggregate) ... ok
+test_future_dated_permission_record_is_not_accepted (tests.test_m35_seal_validate.M35SealValidateTests.test_future_dated_permission_record_is_not_accepted) ... ok
+test_registration_lead_time_and_shape (tests.test_m35_seal_validate.M35SealValidateTests.test_registration_lead_time_and_shape) ... ok
+test_skipped_day_wrong_family_and_replayed_predecessor_fail (tests.test_m35_seal_validate.M35SealValidateTests.test_skipped_day_wrong_family_and_replayed_predecessor_fail) ... ok
+test_skipped_or_runnerless_registration_cannot_open_capture (tests.test_m35_seal_validate.M35SealValidateTests.test_skipped_or_runnerless_registration_cannot_open_capture) ... ok
+
+----------------------------------------------------------------------
+Ran 19 tests in 1.204s
+
+OK

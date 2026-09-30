@@ -1,32 +1,46 @@
-# Revisión de preparación de fuentes de repositorios propios
+# Owned-repository source readiness review
 
-Estado: **pendiente**. Esta lista evalúa si una fuente puede entrar en una
-auditoría de eventos; no autoriza acceso, captura, corpus ni entrenamiento.
+**Status: pending.** This checklist assesses whether a source can enter an
+event audit. It grants no access, capture, corpus, model training or execution.
 
-## Por fuente y flujo
+## Preparation completed
 
-- [x] La pantalla inicial se limitó a arquitectura, esquemas, specs y docs.
-- [x] Kinetiq se limita a flujos no clínicos de autoría; se excluyen vídeo,
-  keypoints, biometría y material de atletas/clientes.
-- [x] SmartNotes se limita a autoría documental no clínica; se excluyen
-  pacientes, `PA-NNNN`, datos clínicos, actividad STT, audio y transcripciones.
-- [x] Los commits, diffs, Issues y trazas de procesamiento no se tratan como
-  eventos concurrentes de inserción.
-- [ ] Responsable del feed y autorización de captura optativa identificados.
-- [ ] Derechos y privacidad revisados antes de abrir cualquier registro.
-- [ ] Feed inmutable con base compartida, operaciones, anclas y procedencia
-  documentado y probado para completitud.
-- [ ] Ventana contigua y regla de muestreo congeladas antes de inspeccionar
-  eventos candidatos.
-- [ ] Todas las sesiones y parejas enumeradas, con exclusiones por causa.
-- [ ] Adaptador validado contra `anchored-sequence-v1` sin reconstrucción ni
-  recorte de sesiones.
-- [ ] Revisión de salida confirma que no se publica contenido privado ni datos
-  que permitan recuperar contenido.
+- [x] The initial screen was limited to architecture, schemas, specifications
+  and engineering documents.
+- [x] Kinetiq excludes video, keypoints, biometrics, athlete and customer
+  material. SmartNotes excludes patients, `PA-NNNN`, clinical activity, STT,
+  audio and transcripts.
+- [x] Commits, diffs, Issues and processing traces are not treated as
+  independent shared-base insertion events.
+- [x] The opt-in local sidecar, full-session admission ledger, all-pair
+  structural adapter and synthetic adversarial tests are prepared.
+- [x] Separate private Kinetiq and SmartNotes labs contain only reviewed,
+  exact-file `lab/main` and `lab/develop` snapshots, without source history.
+  Changed Git blobs block the next sync until reviewed.
+- [x] A separate private audit repository contains the metadata-only
+  registration and seal workflow. A synthetic dispatch was attempted.
 
-## Resultado actual
+## Gates still open for each source and workflow
 
-El inventario encontró **0 sesiones reales y 0 pares elegibles** en cada uno
-de los dos repositorios. Son recuentos de la pantalla estructural, no de una
-ventana de captura ni una estimación de rendimiento. No se ha abierto ningún
-registro real. P019-01 y T001 permanecen abiertos; no entrenar ni calibrar.
+- [ ] Record the source owner, authorized participants, optional capture
+  permission, rights and privacy decision before opening any real record.
+- [ ] Install the source-reading GitHub App with only `Contents:read` on the
+  selected source repositories, then verify both lab syncs on actual runners.
+- [ ] Obtain one successful audit registration run with a runner and steps,
+  at least 24 hours before each separate, fixed 14-day UTC window. The
+  synthetic dispatch on 2026-09-30 did not start a runner and is not a seal.
+- [ ] Reconcile the complete sidecar admission register against each source
+  workflow's independent completeness control, including bypasses.
+- [ ] Freeze sampling and enumerate every session and unordered candidate
+  pair with primary exclusion reasons; validate against
+  `anchored-sequence-v1` without reconstruction or trimming.
+- [ ] Review actual yield, source provenance and the safe aggregate before
+  calling any pair real or publishing results. Keep local journal content
+  outside GitHub and apply the reviewed retention rule.
+
+## Current result
+
+The repository-level screen found **zero observed real sessions and zero
+eligible pairs** in each source. These are screening counts, not a measured
+yield from a prospective window. No real journal has been opened. P019-01
+and T001 remain open; no calibration or training is authorized.

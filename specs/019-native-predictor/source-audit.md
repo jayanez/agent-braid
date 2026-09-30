@@ -7,6 +7,12 @@ Braid artifacts. It contains no private session payloads or utility labels.
 
 ## Candidate owned repositories: Kinetiq and SmartNotes
 
+The [prospective pilot runbook](prospective-pilot.md) defines the proposed
+implementation route for private disposable labs and an opt-in local sidecar.
+As of 2026-09-30 these are tooling preparations: no registration run, real
+capture window, actual eligible pair or source-yield estimate exists. The
+repo-level screen below remains the only observed count.
+
 **Screened on:** 2026-09-29, at repository/schema/specification level only.
 The owners authorized planning these two repositories as candidate workflow
 families. This authorization does not grant access to session payloads,

@@ -10,7 +10,7 @@ class TrackingTests(unittest.TestCase):
     def test_committed_spec_inventory_is_complete(self):
         config, desired = source_inventory()
         self.assertEqual(19, sum(item["kind"] == "spec" for item in desired))
-        self.assertEqual(137, sum(item["kind"] == "task" for item in desired))
+        self.assertEqual(138, sum(item["kind"] == "task" for item in desired))
         open_tasks = {item["key"] for item in desired
                       if item["state"] == "open" and item["kind"] == "task"}
         expected_open = {

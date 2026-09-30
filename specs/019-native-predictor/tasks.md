@@ -19,17 +19,25 @@ or M3.5 benefit is reported.
   invalid-base, unsupported-operation, invalid-anchor and missing-provenance
   cases. Record zero real admitted pairs; this demonstration cannot complete
   P019-01 or T001.
+- [x] T008 (REQ-002, SC-007): Build a prospective local authoring sidecar,
+  admission ledger and all-pairs adapter, plus exact-file filtered lab
+  exporter and metadata-only remote seal validator. Exercise synthetic
+  adversarial cases and document the two private lab and audit repositories.
+  This completes tooling only: no real source window, admitted real pair,
+  utility label or upstream completeness finding is asserted. The GitHub App
+  and successful Actions runs are separate operational gates.
 - [ ] T007 (REQ-002, SC-003/004): In a later source-feasibility phase, audit
   existing session feeds only after owner permission, participant/data rights
   and privacy review. Kinetiq and SmartNotes are candidate owned-repository
   families from the 2026-09-29 structural screen; neither has an observed feed
   or eligible pair yet. First review the proposed local sidecar signals
   (`session-open`, actor `base-seen`, `insert-proposed`, `session-close`) against
-  a real authoring boundary; prove shared-base independent intent from
+  a real authoring boundary; verify shared-base independent intent from
   contemporaneous receipts and reconcile journal completeness with the source
   admission register. Version an adapter for all sessions, operations and
-  unordered pairs: T006's exactly-two-operation synthetic CLI is not that
-  adapter. Preserve the separate repo-level feasibility records,
+  unordered pairs with T008's prospective adapter rather than treating
+  T006's exactly-two-operation synthetic CLI as a real feed. Preserve the
+  separate repo-level feasibility records,
   fix a contiguous window only after all gates pass, enumerate all sessions
   and candidate pairs, report eligibility and exclusions by family, and reject
   Git-only histories that lack the shared-base event relation. SmartNotes
