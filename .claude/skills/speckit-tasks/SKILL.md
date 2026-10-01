@@ -79,3 +79,6 @@ target files, dependencies, verification commands and evidence obligations. Incl
 negative controls and scientific limitations. Mark parallelizable work as a
 dependency property, not authorization to run agents concurrently. Distinguish
 research completion from a hypothesis being supported. Do not implement tasks.
+For empirical work, order consent and source yield, frozen sampling and label
+rules, complete holdout annotation attempts, class/split checks, calibration
+feasibility and cost accounting before training or claims.

@@ -1,0 +1,53 @@
+# SPDX-License-Identifier: AGPL-3.0-only
+name: Register and seal M3.5 source windows
+
+on:
+  workflow_dispatch:
+    inputs:
+      payload:
+        description: Allowlisted registration or aggregate seal JSON only
+        required: true
+        type: string
+
+permissions:
+  contents: read
+  actions: read
+
+concurrency:
+  group: m35-seal-${{ fromJSON(inputs.payload).windowId }}
+  cancel-in-progress: false
+
+jobs:
+  validate-and-seal:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Check out private audit validator
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+      - name: Download predecessor commitment
+        if: fromJSON(inputs.payload).mode != 'register'
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
+        with:
+          name: m35-seal
+          run-id: ${{ fromJSON(inputs.payload).previousRunId }}
+          github-token: ${{ github.token }}
+          path: ${{ runner.temp }}/m35-previous
+      - name: Validate metadata and chain
+        env:
+          M35_SEAL_PAYLOAD: ${{ inputs.payload }}
+          GH_TOKEN: ${{ github.token }}
+          PREVIOUS_MODE: ${{ fromJSON(inputs.payload).mode }}
+        run: |
+          if [ "$PREVIOUS_MODE" = register ]; then
+            python3 scripts/m35_seal_validate.py --output "$RUNNER_TEMP/m35-current/seal.json"
+          else
+            python3 scripts/m35_seal_validate.py --previous "$RUNNER_TEMP/m35-previous/seal.json" --output "$RUNNER_TEMP/m35-current/seal.json"
+          fi
+      - name: Retain only the safe seal
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: m35-seal
+          path: ${{ runner.temp }}/m35-current/seal.json
+          retention-days: 180
+          if-no-files-found: error
