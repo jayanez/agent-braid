@@ -21,6 +21,11 @@ secrets. A deploy key is scoped to one repository, has no expiry and cannot
 call GitHub's API; record and later revoke its ID. The lab's own `GITHUB_TOKEN`
 has `contents:write` in the lab only. No personal access token or source
 credential is placed in a lab Git tree, artifact or log.
+GitHub may delete a deploy key created through an OAuth app token if that
+token is revoked. After changing the operator's GitHub CLI authentication,
+check each recorded key ID with `gh api repos/$SOURCE/keys/KEY_ID`; reissue
+the key and lab secret if it disappeared. A successful old run does not
+prove that a later scheduled run will retain access.
 
 For the first pass set `SOURCE=jayanez/kinetiq-core` and
 `LAB=jayanez/kinetiq-braid-lab`; for the second set
