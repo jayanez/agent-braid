@@ -24,8 +24,10 @@ or M3.5 benefit is reported.
   exporter and metadata-only remote seal validator. Exercise synthetic
   adversarial cases and document the two private lab and audit repositories.
   This completes tooling only: no real source window, admitted real pair,
-  utility label or upstream completeness finding is asserted. The GitHub App
-  and successful Actions runs are separate operational gates.
+  utility label or upstream completeness finding is asserted. The two
+  read-only source deploy keys and lab Actions syncs were verified on actual
+  runners on 2026-10-01; those operational results do not register a real
+  source window or complete T001/P019-01.
 - [ ] T007 (REQ-002, SC-003/004): In a later source-feasibility phase, audit
   existing session feeds only after owner permission, participant/data rights
   and privacy review. Kinetiq and SmartNotes are candidate owned-repository

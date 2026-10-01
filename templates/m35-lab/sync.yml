@@ -15,7 +15,7 @@ concurrency:
 
 jobs:
   sync:
-    if: vars.M35_SOURCE_APP_CLIENT_ID != ''
+    if: vars.M35_SYNC_ENABLED == 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
@@ -23,21 +23,12 @@ jobs:
         uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
         with:
           fetch-depth: 0
-      - name: Create read-only source token
-        id: source-token
-        uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3
-        with:
-          client-id: ${{ vars.M35_SOURCE_APP_CLIENT_ID }}
-          private-key: ${{ secrets.M35_SOURCE_APP_PRIVATE_KEY }}
-          owner: jayanez
-          repositories: __SOURCE_NAME__
-          permission-contents: read
       - name: Read source main
         uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
         with:
           repository: jayanez/__SOURCE_NAME__
           ref: main
-          token: ${{ steps.source-token.outputs.token }}
+          ssh-key: ${{ secrets.M35_SOURCE_DEPLOY_KEY }}
           persist-credentials: false
           path: source-main
       - name: Read source develop
@@ -45,7 +36,7 @@ jobs:
         with:
           repository: jayanez/__SOURCE_NAME__
           ref: develop
-          token: ${{ steps.source-token.outputs.token }}
+          ssh-key: ${{ secrets.M35_SOURCE_DEPLOY_KEY }}
           persist-credentials: false
           path: source-develop
       - name: Export only pinned decision files

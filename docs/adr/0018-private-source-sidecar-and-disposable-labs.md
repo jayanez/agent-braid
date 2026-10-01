@@ -39,8 +39,13 @@ source Git ancestry. Each changed blob requires review before the next sync.
 Experiments work on `experiment/*` lab branches. These branches and repos are
 not production mirrors and cannot validate naturally occurring production
 concurrency. No original Kinetiq or SmartNotes workflow or experiment commit
-is required. The source-reading GitHub App is limited to `Contents:read` on
-the two source repositories; the lab's own token writes only its lab repo.
+is required. Each source has its own read-only SSH deploy key, available only
+as an Actions secret in its corresponding lab. The keys grant Git read access
+to one source repository apiece, cannot call the GitHub API and must be
+explicitly revoked after the pilot. The lab's own token writes only its lab
+repo. A CLI-managed deploy key avoids requiring a GitHub App credential or
+installation for this two-repository pilot; any broader source integration
+would need a new credential decision.
 
 ## Alternatives considered
 

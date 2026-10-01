@@ -19,16 +19,22 @@ event audit. It grants no access, capture, corpus, model training or execution.
   Changed Git blobs block the next sync until reviewed.
 - [x] A separate private audit repository contains the metadata-only
   registration and seal workflow. A synthetic dispatch was attempted.
+- [x] Separate read-only deploy keys were installed on the selected source
+  repositories and their private halves stored only in the matching lab
+  Actions secrets. Both lab syncs completed on actual private runners on
+  2026-10-01. The exact files and four filtered snapshot trees were checked;
+  this is operational evidence, not source-session evidence.
 
 ## Gates still open for each source and workflow
 
 - [ ] Record the source owner, authorized participants, optional capture
   permission, rights and privacy decision before opening any real record.
-- [ ] Install the source-reading GitHub App with only `Contents:read` on the
-  selected source repositories, then verify both lab syncs on actual runners.
 - [ ] Obtain one successful audit registration run with a runner and steps,
   at least 24 hours before each separate, fixed 14-day UTC window. The
   synthetic dispatch on 2026-09-30 did not start a runner and is not a seal.
+  An intentionally invalid diagnostic dispatch on 2026-10-01 did start a
+  runner but was rejected before publishing any seal; it is also not a
+  registration.
 - [ ] Reconcile the complete sidecar admission register against each source
   workflow's independent completeness control, including bypasses.
 - [ ] Freeze sampling and enumerate every session and unordered candidate

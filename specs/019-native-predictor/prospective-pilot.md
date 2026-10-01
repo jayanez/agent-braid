@@ -1,9 +1,10 @@
 # M3.5 prospective owned-flow pilot runbook
 
-**State:** tooling prepared; no real window registered or opened. Kinetiq and
-SmartNotes each currently contribute zero observed eligible pairs. This
-runbook implements only source feasibility under proposed ADR 0018. P019-01,
-the complete evaluation protocol and T001 remain open.
+**State:** tooling and both private lab syncs exercised; no real window
+registered or opened. Kinetiq and SmartNotes each currently contribute zero
+observed eligible pairs. This runbook implements only source feasibility
+under proposed ADR 0018. P019-01, the complete evaluation protocol and T001
+remain open.
 
 ## Trust boundaries and source families
 
@@ -24,13 +25,15 @@ SHAs per branch**; even an approved source edit stops the next Action until
 someone reviews and updates the matching pin. No live application code,
 datasets, secret files or whole-repository mirror enters the lab branches.
 
-The lab Actions run only after a GitHub App is installed on the specific
-source repo with `Contents:read`; `M35_SOURCE_APP_CLIENT_ID` is a lab variable
-and `M35_SOURCE_APP_PRIVATE_KEY` a lab secret. The lab's own `GITHUB_TOKEN`
-has `Contents:write` only in that lab. Check actual runner and steps after
-billing becomes available. Scheduled runs may be delayed or missed; a missing
-sync must be reported as a gap. Manual dispatch is available. A pin mismatch
-is a review request, not an occasion to auto-approve changed content.
+The lab Actions use one read-only SSH deploy key per source repository,
+stored as `M35_SOURCE_DEPLOY_KEY` only in the corresponding lab's Actions
+secrets. Set the lab variable `M35_SYNC_ENABLED=true` only after the key and
+reviewed workflow are present. The lab's own `GITHUB_TOKEN` has
+`Contents:write` only in that lab. Follow the
+[CLI synchronization runbook](lab-sync-cli-runbook.md) for setup, manual
+verification, failure recovery, rotation and revocation. Scheduled runs may
+be delayed or missed; a missing sync must be reported as a gap. A pin
+mismatch is a review request, not an occasion to auto-approve changed content.
 
 `jayanez/agent-braid-m35-audit` is a separate private metadata repository.
 Its `m35-seal.yml` accepts only versioned registration and aggregate seal
@@ -137,7 +140,7 @@ missing or excluded case and actual yield by family. Record reviewer decision
 before any controlled aggregate publication. Retain the journal only as long
 as the reviewed privacy decision permits; the proposed limit is deletion 90
 days after that review. Confirm deletion of local copies and separately
-assess backup retention. Optional lab-repo removal and GitHub App revocation
+assess backup retention. Optional lab-repo removal and deploy-key revocation
 follow evidence review; deletion does not guarantee immediate removal of
 GitHub PR metadata or backups.
 
