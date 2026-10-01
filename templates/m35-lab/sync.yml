@@ -1,0 +1,54 @@
+# SPDX-License-Identifier: AGPL-3.0-only
+name: Sync reviewed M3.5 decision context
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '17 3 * * *'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: m35-lab-context-sync
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    if: vars.M35_SYNC_ENABLED == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Check out lab control branch
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          fetch-depth: 0
+      - name: Read source main
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          repository: jayanez/__SOURCE_NAME__
+          ref: main
+          ssh-key: ${{ secrets.M35_SOURCE_DEPLOY_KEY }}
+          persist-credentials: false
+          path: source-main
+      - name: Read source develop
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          repository: jayanez/__SOURCE_NAME__
+          ref: develop
+          ssh-key: ${{ secrets.M35_SOURCE_DEPLOY_KEY }}
+          persist-credentials: false
+          path: source-develop
+      - name: Export only pinned decision files
+        env:
+          EXPORT_ROOT: ${{ runner.temp }}/m35-exports
+        run: |
+          mkdir -p "$EXPORT_ROOT"
+          python3 scripts/m35_lab_export.py source-main allowlist.json main "$EXPORT_ROOT/main" --expected-repo jayanez/__SOURCE_NAME__
+          python3 scripts/m35_lab_export.py source-develop allowlist.json develop "$EXPORT_ROOT/develop" --expected-repo jayanez/__SOURCE_NAME__
+      - name: Publish filtered snapshots
+        env:
+          EXPORT_ROOT: ${{ runner.temp }}/m35-exports
+        run: |
+          python3 -m scripts.m35_lab_publish . "$EXPORT_ROOT/main" main
+          python3 -m scripts.m35_lab_publish . "$EXPORT_ROOT/develop" develop

@@ -10,13 +10,13 @@ class TrackingTests(unittest.TestCase):
     def test_committed_spec_inventory_is_complete(self):
         config, desired = source_inventory()
         self.assertEqual(19, sum(item["kind"] == "spec" for item in desired))
-        self.assertEqual(135, sum(item["kind"] == "task" for item in desired))
+        self.assertEqual(138, sum(item["kind"] == "task" for item in desired))
         open_tasks = {item["key"] for item in desired
                       if item["state"] == "open" and item["kind"] == "task"}
         expected_open = {
             "SPEC-002/T006", "SPEC-009/T009", "SPEC-011/T008",
             "SPEC-019/T001", "SPEC-019/T002", "SPEC-019/T003",
-            "SPEC-019/T004", "SPEC-019/T005",
+            "SPEC-019/T004", "SPEC-019/T005", "SPEC-019/T007",
         }
         closure_tasks = (ROOT / "specs/017-m2-closure/tasks.md").read_text()
         for task_id in ("T004", "T005", "T006"):

@@ -1,0 +1,52 @@
+{
+  "recordVersion": "agent-braid-adr-0018-founder-decision-1",
+  "adr": "docs/adr/0018-private-source-sidecar-and-disposable-labs.md",
+  "reviewedAt": "2026-10-01",
+  "reviewer": {
+    "name": "Juan Antonio Yáñez García",
+    "role": "founder"
+  },
+  "decision": "accepted-bounded-source-feasibility-preparation",
+  "reviewedCommit": "8f7d531d8c7ada9cf14639491f07bf126e79da41",
+  "reviewedArtifacts": [
+    {
+      "path": "docs/adr/0018-private-source-sidecar-and-disposable-labs.md",
+      "sha256": "305206760b5cf3f57b285b4c8dd75057921a47f29178d79e45735ba41fc8c1ba"
+    },
+    {
+      "path": "specs/019-native-predictor/checklists/owned-repo-source-readiness.md",
+      "sha256": "ac6d634da135833a0609e20800ed82aed888e01f21215a2c9ad841c39f5a5c7f"
+    },
+    {
+      "path": "specs/019-native-predictor/prospective-pilot.md",
+      "sha256": "ca030771b6959a19dd98b3a940f9e18ae0e68e806e61ceb2ecd68d941781d6cc"
+    },
+    {
+      "path": "specs/019-native-predictor/source-audit.md",
+      "sha256": "2b53622e9eee9662492d6e311fdd3de5f1d46c725b3438520a922be5bb5f2867"
+    },
+    {
+      "path": "specs/019-native-predictor/lab-sync-cli-runbook.md",
+      "sha256": "a715a7a0fcec84a4552232bc6e063c72b4b630e3cb476753f577de4f2c1bcabf"
+    }
+  ],
+  "decisionText": "Approve ADR 0018 and bounded preparation of Kinetiq and SmartNotes as candidate sources for an M3.5 feasibility audit, with the reviewed data, capture, lab, credential and scientific limits. This is not a finding that either source is viable or complete.",
+  "scope": {
+    "authorized": [
+      "Maintain the opt-in local sidecar, filtered private labs and metadata-only audit tooling for non-clinical engineering decision workflows.",
+      "Prepare separate Kinetiq and SmartNotes source-feasibility audits under the exact-file and privacy boundaries in ADR 0018.",
+      "Integrate the bounded preparation and this decision record while SPEC-019 remains a draft protocol."
+    ],
+    "sourceSpecificGates": [
+      "Record the owner, participants, data rights, privacy decision and capture permission for each selected workflow outside Git.",
+      "Obtain a successful metadata-only registration at least 24 hours before each separate fixed 14-day UTC window.",
+      "Reconcile all opened sessions and proposal pairs against an independent completeness control, then review exclusions, real yield and safe aggregate publication."
+    ],
+    "notApproved": [
+      "Opening a real source window or treating the current screening count as a prospective yield estimate.",
+      "A definitive corpus, utility labels, model training, measured improvement or execution of exchanges.",
+      "Approving the complete SPEC-019 protocol, satisfying P019-01 or T001, or closing M3.5."
+    ]
+  },
+  "independentValidation": "pending"
+}

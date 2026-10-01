@@ -11,6 +11,9 @@ description, using the script's help for naming options; do not overwrite an
 existing feature. Use `.specify/templates/overrides/spec-template.md` to populate
 the feature's `spec.md`. Record user scenarios, stable requirements, exclusions,
 ambiguities and measurable acceptance criteria without inventing implementation.
+For empirical research, elicit the data source and rights, complete sampling
+frame, eligibility/exclusions, label construct and planned negative or
+inconclusive reports; do not infer real workload data from synthetic fixtures.
 Create `assurance.json` as documented, with planned evidence and empty obtained
 evidence at draft stage. Ask about material unknowns; do not silently assume
 scientific claims. Report the feature identifier, actual checkout branch, artifacts
