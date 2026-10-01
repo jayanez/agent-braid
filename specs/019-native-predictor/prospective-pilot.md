@@ -26,8 +26,10 @@ someone reviews and updates the matching pin. No live application code,
 datasets, secret files or whole-repository mirror enters the lab branches.
 
 The lab Actions use one read-only SSH deploy key per source repository,
-stored as `M35_SOURCE_DEPLOY_KEY` only in the corresponding lab's Actions
-secrets. Set the lab variable `M35_SYNC_ENABLED=true` only after the key and
+stored as `M35_SOURCE_DEPLOY_KEY` only in the corresponding lab's
+`m35-source-read` Environment secret, whose deployment policy admits only
+`main`. No repository-level copy may remain. Set the lab variable
+`M35_SYNC_ENABLED=true` only after the key and
 reviewed workflow are present. The lab's own `GITHUB_TOKEN` has
 `Contents:write` only in that lab. Follow the
 [CLI synchronization runbook](lab-sync-cli-runbook.md) for setup, manual
@@ -110,12 +112,12 @@ the separately controlled workflow register and record any bypass. A bypass
 or unreconciled upstream count is an integrity limitation; do not present the
 local hash chain as independent completeness evidence.
 
-An interrupted `session-open` may have committed even if the CLI did not return
-a receipt. The next sidecar access completes its pending journal transaction
-under the capture lock, including a torn append only when its bytes match the
-expected record prefix; unrelated journal corruption still fails closed.
-After an interruption, run `audit` and inspect the
-session ID before retrying; never create a replacement session to hide the
+An interrupted event may have committed even if the CLI did not return a
+receipt. The next sidecar access completes its pending journal transaction
+under the capture lock. This includes a torn append only when its bytes match
+the expected record prefix; unrelated journal corruption still fails closed.
+After an interruption, run `audit` and inspect the session and event IDs before
+retrying; never create a replacement session or proposal to hide the
 interruption. A session without `session-close` remains in the report, but all
 of its proposal pairs are excluded as `session-not-closed` until it is closed.
 
