@@ -40,7 +40,8 @@ permission and privacy decisions; Git patch histories alone are ineligible.
 The [feasibility audit](feasibility-audit.md) and
 [source register](source-audit.md) are gates before that preregistration. The
 present valid corpus has no divergent verifier labels, while the M3 proposal
-is an exact structural rule. The founder approved source discovery only;
+is an exact structural rule. The founder approved source discovery and later
+bounded ADR 0018 preparation;
 the proposed [workload protocol](workload-protocol.md) and
 [annotation rubric](annotation-rubric.md) still require review, actual data
 and privacy clearance. This plan does not authorize fitting a model to a

@@ -1,7 +1,10 @@
 # Owned-repository source readiness review
 
-**Status: pending.** This checklist assesses whether a source can enter an
-event audit. It grants no access, capture, corpus, model training or execution.
+**Status: bounded preparation approved; source admission pending.** The
+[founder decision](../adr-0018-founder-decision.json) accepts ADR 0018 and
+preparation of Kinetiq and SmartNotes as candidate sources. This checklist
+assesses whether each source can enter an event audit. The decision grants no
+real capture, corpus, model training or execution.
 
 ## Preparation completed
 

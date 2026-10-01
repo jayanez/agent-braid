@@ -63,12 +63,13 @@ public artifacts. The [annotation rubric](annotation-rubric.md) and revised
 label collection or training.
 The [synthetic source instrument](instrumentation.md) exercises capture and
 exclusion accounting only; its one admitted pair is not a real workload pair.
-The proposed [sidecar and disposable lab decision](../../docs/adr/0018-private-source-sidecar-and-disposable-labs.md)
+The bounded, accepted [sidecar and disposable lab decision](../../docs/adr/0018-private-source-sidecar-and-disposable-labs.md)
 adds tooling for a future prospective window. Its synthetic tests and lab
 snapshots do not constitute real pairs or permission to fit a predictor.
 The founder selected real-workload utility prioritization as the target
-direction on 2026-09-27 and approved only source feasibility work on
-2026-09-28. A consented source, data provenance, privacy review, actual label
+direction on 2026-09-27 and approved source feasibility work on
+2026-09-28, then limited ADR 0018 preparation on 2026-10-01. A consented source,
+data provenance, privacy review, actual label
 distribution and the final protocol still require review before training.
 The [pretraining feasibility audit](feasibility-audit.md) identifies a
 degenerate verifier-status target in the current valid corpus and two possible

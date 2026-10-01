@@ -35,7 +35,7 @@ GitHub's [deploy-key API](https://docs.github.com/en/rest/deploy-keys/deploy-key
 [key limitations](https://docs.github.com/en/authentication/connecting-to-github-with-ssh/managing-deploy-keys)
 and [checkout SSH input](https://github.com/actions/checkout/blob/v6/README.md)
 define these permissions. The earlier GitHub App proposal is superseded for
-this two-source pilot by proposed ADR 0018's CLI-managed deploy-key decision.
+this two-source pilot by accepted ADR 0018's bounded CLI-managed deploy-key decision.
 
 ## 1. Check the exact scope before creating a credential
 

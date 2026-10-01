@@ -1,6 +1,6 @@
 # ADR 0018: Private authoring sidecar and disposable decision labs
 
-- **Status:** proposed for M3.5 source-feasibility review; no real capture approved by this ADR
+- **Status:** accepted for bounded M3.5 source-feasibility preparation by the founder on 2026-10-01; [decision record](../../specs/019-native-predictor/adr-0018-founder-decision.json). No real capture approved by this ADR.
 - **Date:** 2026-09-30
 - **Decider:** Juan Antonio Yáñez García, founder, after source and privacy review
 - **Constitutional articles:** 0, 6, 9, 13–14, 17–20, 23–25

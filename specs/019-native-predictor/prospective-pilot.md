@@ -3,7 +3,7 @@
 **State:** tooling and both private lab syncs exercised; no real window
 registered or opened. Kinetiq and SmartNotes each currently contribute zero
 observed eligible pairs. This runbook implements only source feasibility
-under proposed ADR 0018. P019-01, the complete evaluation protocol and T001
+under bounded, accepted ADR 0018. P019-01, the complete evaluation protocol and T001
 remain open.
 
 ## Trust boundaries and source families

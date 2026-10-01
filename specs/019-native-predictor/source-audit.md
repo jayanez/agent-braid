@@ -17,6 +17,10 @@ repo-level screen below remains the only observed count.
 The owners authorized planning these two repositories as candidate workflow
 families. This authorization does not grant access to session payloads,
 patient records, editor logs, ignored files, or external capture services.
+The founder subsequently approved the bounded ADR 0018 architecture and
+candidate-source preparation on 2026-10-01; the
+[decision record](adr-0018-founder-decision.json) leaves source-specific
+permission, privacy, registration and yield gates open.
 Neither repository supplied an immutable shared-base event feed or observed
 candidate pair in this screen. Therefore each contributes **zero observed
 sessions and zero eligible pairs**; these are screening counts, not estimates
