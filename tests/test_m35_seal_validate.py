@@ -75,6 +75,15 @@ class M35SealValidateTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             validate_link(candidate, daily(13, 113), 114, now=AFTER_WINDOW)
 
+    def test_final_accepts_unclosed_session_exclusion(self) -> None:
+        final = {**daily(14, 114, events=4), "mode": "final", "sessionCount": 1,
+                 "pairsExamined": 1, "pairsStructurallyAdmitted": 0,
+                 "sessionsExcludedByReason": {"session-not-closed": 1},
+                 "pairsExcludedByReason": {"session-not-closed": 1},
+                 "reportCommitment": "c" * 64}
+        previous = {**daily(14, 113, events=4), "sessionCount": 1}
+        validate_link(final, previous, 114, now=AFTER_WINDOW)
+
     def test_early_or_retargeted_seal_fails(self) -> None:
         with self.assertRaisesRegex(ValueError, "before the completed UTC day"):
             validate_link(daily(1, 100), REGISTER, 100,

@@ -112,7 +112,9 @@ local hash chain as independent completeness evidence.
 
 An interrupted `session-open` may have committed even if the CLI did not return
 a receipt. The next sidecar access completes its pending journal transaction
-under the capture lock. After an interruption, run `audit` and inspect the
+under the capture lock, including a torn append only when its bytes match the
+expected record prefix; unrelated journal corruption still fails closed.
+After an interruption, run `audit` and inspect the
 session ID before retrying; never create a replacement session to hide the
 interruption. A session without `session-close` remains in the report, but all
 of its proposal pairs are excluded as `session-not-closed` until it is closed.

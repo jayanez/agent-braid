@@ -16,7 +16,7 @@ FORMAT = "m35-seal-v1"
 SAFE_ID = re.compile(r"^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$")
 HEX64 = re.compile(r"^[0-9a-f]{64}$")
 HEX40 = re.compile(r"^[0-9a-f]{40}$")
-REASONS = {"insufficient-proposals", "dependent-observation", "missing-receipt",
+REASONS = {"insufficient-proposals", "session-not-closed", "dependent-observation", "missing-receipt",
            "missing-provenance", "invalid-base", "unsupported-operation", "invalid-anchor",
            "outside-model-contract", "base-mismatch", "same-actor", "no-candidate-pair"}
 

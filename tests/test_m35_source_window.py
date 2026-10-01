@@ -14,6 +14,7 @@ from agent_braid.m35_source_window import (
     audit_window, close_session, create_window, final_seal_payload,
     mark_external_observation, open_session, propose, reveal, seal_payload, view_base,
 )
+from scripts.m35_seal_validate import validate_payload
 
 
 START = datetime(2026, 9, 20, tzinfo=timezone.utc)
@@ -95,6 +96,20 @@ class M35SourceWindowTests(unittest.TestCase):
             close_session(directory, "s1", "accepted", now=NOW)
             self.assertEqual(audit_window(directory)["pairsStructurallyAdmitted"], 1)
 
+    def test_unclosed_prospective_session_has_valid_final_seal(self) -> None:
+        with TemporaryDirectory() as root:
+            directory = Path(root) / "capture"
+            create_window(directory, manifest("prospective"), registration_verified=True,
+                          permission_reviewed=True)
+            self._open(directory)
+            for index, actor in enumerate(("actor-a", "actor-b"), 1):
+                view_base(directory, "s1", actor, now=NOW)
+                propose(directory, "s1", actor, operation(index), f"lab://{actor}", now=NOW)
+            payload = final_seal_payload(directory, now=START + timedelta(days=14))
+            payload["previousRunId"] = 114
+            validate_payload(payload)
+            self.assertEqual(payload["pairsExcludedByReason"], {"session-not-closed": 1})
+
     def test_exclusions_keep_full_sessions_and_primary_reasons(self) -> None:
         with TemporaryDirectory() as root:
             directory = self._new(root)
@@ -164,6 +179,52 @@ class M35SourceWindowTests(unittest.TestCase):
             self.assertEqual(len((directory / "admissions.jsonl").read_bytes().splitlines()), 1)
             with self.assertRaisesRegex(ValueError, "duplicate session ID"):
                 self._open(directory)
+
+    def test_partial_open_append_recovers_only_the_expected_tail(self) -> None:
+        for interrupted_name in ("admissions.jsonl", "events.jsonl"):
+            with self.subTest(interrupted_name=interrupted_name), TemporaryDirectory() as root:
+                directory = self._new(root)
+                append = source_window._append
+
+                def interrupt_mid_record(path: Path, record: dict) -> None:
+                    if path.name == interrupted_name:
+                        with path.open("ab") as stream:
+                            stream.write(source_window.canonical(record)[:17])
+                        raise OSError("simulated torn append")
+                    append(path, record)
+
+                with patch.object(source_window, "_append", side_effect=interrupt_mid_record):
+                    with self.assertRaisesRegex(OSError, "simulated torn append"):
+                        self._open(directory)
+                self.assertTrue((directory / "session-open.pending").exists())
+                report = audit_window(directory)
+                self.assertEqual(report["sessionsExamined"], 1)
+                self.assertFalse((directory / "session-open.pending").exists())
+                self.assertEqual(len((directory / "events.jsonl").read_bytes().splitlines()), 1)
+                self.assertEqual(len((directory / "admissions.jsonl").read_bytes().splitlines()), 1)
+
+    def test_orphaned_partial_staging_file_has_no_admission(self) -> None:
+        with TemporaryDirectory() as root:
+            directory = self._new(root)
+            staging = directory / "session-open.pending.tmp"
+            staging.write_bytes(b'{"incomplete":')
+            self.assertEqual(audit_window(directory)["sessionsExamined"], 0)
+            self.assertFalse(staging.exists())
+            self._open(directory)
+            self.assertEqual(audit_window(directory)["sessionsExamined"], 1)
+
+    def test_pending_open_rejects_unrelated_journal_tail(self) -> None:
+        with TemporaryDirectory() as root:
+            directory = self._new(root)
+            with patch.object(source_window, "_append", side_effect=OSError("interrupted")):
+                with self.assertRaisesRegex(OSError, "interrupted"):
+                    self._open(directory)
+            events = directory / "events.jsonl"
+            events.write_bytes(events.read_bytes() + b"unrelated")
+            with self.assertRaisesRegex(ValueError, "disagrees with the journals"):
+                audit_window(directory)
+            self.assertEqual(events.read_bytes(), b"unrelated")
+            self.assertTrue((directory / "session-open.pending").exists())
 
     def test_prospective_initialization_needs_both_gates(self) -> None:
         with TemporaryDirectory() as root:

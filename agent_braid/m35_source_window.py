@@ -126,17 +126,20 @@ def locked(directory: Path, *, shared: bool = False) -> Iterator[None]:
 
 
 def _lines(path: Path) -> list[dict]:
-    raw = path.read_bytes()
+    return _parse_lines(path.read_bytes(), path.name)
+
+
+def _parse_lines(raw: bytes, name: str) -> list[dict]:
     if raw and not raw.endswith(b"\n"):
-        raise ValueError(f"{path.name} ends with an incomplete record")
+        raise ValueError(f"{name} ends with an incomplete record")
     records = []
     for line in raw.splitlines():
         try:
             record = json.loads(line)
         except (UnicodeDecodeError, json.JSONDecodeError) as exc:
-            raise ValueError(f"{path.name} contains malformed JSON") from exc
+            raise ValueError(f"{name} contains malformed JSON") from exc
         if type(record) is not dict or canonical(record) != line:
-            raise ValueError(f"{path.name} contains a noncanonical record")
+            raise ValueError(f"{name} contains a noncanonical record")
         records.append(record)
     return records
 
@@ -161,8 +164,36 @@ def _sync_directory(directory: Path) -> None:
         os.close(descriptor)
 
 
+def _journal_tail(path: Path, offset: int, prefix_hash: str, expected: bytes) -> bool:
+    raw = path.read_bytes()
+    if (type(offset) is not int or offset < 0 or len(raw) < offset or
+            type(prefix_hash) is not str or
+            sha256(raw[:offset]).hexdigest() != prefix_hash):
+        raise ValueError("session-open transaction disagrees with the journals")
+    tail = raw[offset:]
+    if tail == expected:
+        return True
+    if len(tail) >= len(expected) or not expected.startswith(tail):
+        raise ValueError("session-open transaction disagrees with the journals")
+    return False
+
+
+def _repair_tail(path: Path, offset: int, expected: bytes) -> None:
+    with path.open("r+b") as stream:
+        stream.truncate(offset)
+        stream.seek(offset)
+        stream.write(expected)
+        stream.flush()
+        os.fsync(stream.fileno())
+
+
 def _recover_open(directory: Path) -> None:
     pending = directory / "session-open.pending"
+    staging = directory / "session-open.pending.tmp"
+    if staging.exists():
+        # No journal append begins before the staged intent is renamed.
+        staging.unlink()
+        _sync_directory(directory)
     if not pending.exists():
         return
     raw = pending.read_bytes()
@@ -170,7 +201,9 @@ def _recover_open(directory: Path) -> None:
         transaction = json.loads(raw)
     except (UnicodeDecodeError, json.JSONDecodeError) as exc:
         raise ValueError("session-open transaction is malformed") from exc
-    if (type(transaction) is not dict or set(transaction) != {"event", "admission"} or
+    fields = {"event", "admission", "eventOffset", "admissionOffset",
+              "eventPrefixSha256", "admissionPrefixSha256"}
+    if (type(transaction) is not dict or set(transaction) != fields or
             canonical(transaction) + b"\n" != raw):
         raise ValueError("session-open transaction is malformed")
     event, admission = transaction["event"], transaction["admission"]
@@ -183,23 +216,25 @@ def _recover_open(directory: Path) -> None:
     body = {key: value for key, value in event.items() if key != "eventHash"}
     if event.get("eventHash") != digest(body):
         raise ValueError("session-open transaction has an invalid hash")
-    events = _lines(directory / "events.jsonl")
-    admissions = _lines(directory / "admissions.jsonl")
-    event_written = bool(events and events[-1] == event)
-    admission_written = bool(admissions and admissions[-1] == admission)
-    if (event_written and not admission_written or
-            any(item.get("eventId") == event["eventId"] for item in events[:-1]) or
-            any(item.get("eventId") == event["eventId"] for item in admissions[:-1])):
+    event_path = directory / "events.jsonl"
+    admission_path = directory / "admissions.jsonl"
+    event_line = canonical(event) + b"\n"
+    admission_line = canonical(admission) + b"\n"
+    event_written = _journal_tail(event_path, transaction["eventOffset"],
+                                  transaction["eventPrefixSha256"], event_line)
+    admission_written = _journal_tail(admission_path, transaction["admissionOffset"],
+                                      transaction["admissionPrefixSha256"], admission_line)
+    events = _parse_lines(event_path.read_bytes()[:transaction["eventOffset"]], event_path.name)
+    admissions = _parse_lines(admission_path.read_bytes()[:transaction["admissionOffset"]],
+                              admission_path.name)
+    if (event.get("sequence") != len(events) or
+            event.get("previousHash") != (events[-1]["eventHash"] if events else None) or
+            len(admissions) != sum(item.get("kind") == "session-open" for item in events)):
         raise ValueError("session-open transaction disagrees with the journals")
+    if not admission_written:
+        _repair_tail(admission_path, transaction["admissionOffset"], admission_line)
     if not event_written:
-        if (event.get("sequence") != len(events) or
-                event.get("previousHash") != (events[-1]["eventHash"] if events else None) or
-                len(admissions) != sum(item.get("kind") == "session-open" for item in events)
-                + int(admission_written)):
-            raise ValueError("session-open transaction disagrees with the journals")
-        if not admission_written:
-            _append(directory / "admissions.jsonl", admission)
-        _append(directory / "events.jsonl", event)
+        _repair_tail(event_path, transaction["eventOffset"], event_line)
     pending.unlink()
     _sync_directory(directory)
 
@@ -276,8 +311,18 @@ def _record(directory: Path, kind: str, session_id: str, data: dict,
     if kind == "session-open":
         admission = {"sessionId": session_id, "eventId": record["eventId"],
                      "timestampUtc": record["timestampUtc"]}
-        _private_file(directory / "session-open.pending",
-                      canonical({"event": record, "admission": admission}) + b"\n")
+        event_prefix = (directory / "events.jsonl").read_bytes()
+        admission_prefix = (directory / "admissions.jsonl").read_bytes()
+        intent = {"event": record, "admission": admission,
+                  "eventOffset": len(event_prefix), "admissionOffset": len(admission_prefix),
+                  "eventPrefixSha256": sha256(event_prefix).hexdigest(),
+                  "admissionPrefixSha256": sha256(admission_prefix).hexdigest()}
+        staging = directory / "session-open.pending.tmp"
+        pending = directory / "session-open.pending"
+        _private_file(staging, canonical(intent) + b"\n")
+        if pending.exists():
+            raise ValueError("session-open transaction is already pending")
+        os.replace(staging, pending)
         _sync_directory(directory)
         _append(directory / "admissions.jsonl", admission)
     _append(directory / "events.jsonl", record)
