@@ -91,6 +91,14 @@ After a spec or task change is merged, use the
 review issue, milestone and Project updates. This tracking step remains separate
 from feature assurance and approval.
 
+For empirical protocols, the shared templates and commands prompt authors to
+register source permission and yield before fitting, distinguish human proxy
+labels from observed outcomes, predefine reviewer adjudication and annotation
+of the complete holdout independently of method rankings, and specify missing
+labels, class/group coverage, calibration and total cost. These are review
+questions and planning obligations. Rendering and structural validation do
+not verify consent, label quality, statistical validity or a positive result.
+
 ## Assurance record
 
 Each `specs/<feature>/spec.md` requires a sibling `assurance.json`. Use the pilot's

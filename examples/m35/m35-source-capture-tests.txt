@@ -1,0 +1,18 @@
+test_added_event_fails_closed_against_frozen_manifest_count (tests.test_m35_source_capture.M35SourceCaptureTests) ... ok
+test_base_event_must_precede_both_operations (tests.test_m35_source_capture.M35SourceCaptureTests) ... ok
+test_capture_requires_explicit_base_reference_for_each_operation (tests.test_m35_source_capture.M35SourceCaptureTests) ... ok
+test_deleted_event_fails_closed_instead_of_admitting_partial_pairs (tests.test_m35_source_capture.M35SourceCaptureTests) ... ok
+test_duplicate_event_id_across_sessions_fails_closed (tests.test_m35_source_capture.M35SourceCaptureTests) ... ok
+test_duplicate_session_id_fails_closed (tests.test_m35_source_capture.M35SourceCaptureTests) ... ok
+test_event_payload_change_without_new_hash_fails_closed (tests.test_m35_source_capture.M35SourceCaptureTests) ... ok
+test_family_mismatch_within_session_fails_closed (tests.test_m35_source_capture.M35SourceCaptureTests) ... ok
+test_fixture_counts_and_reproduction (tests.test_m35_source_capture.M35SourceCaptureTests) ... ok
+test_operation_with_mismatched_base_is_excluded_not_admitted (tests.test_m35_source_capture.M35SourceCaptureTests) ... ok
+test_previous_hash_tampering_fails_closed (tests.test_m35_source_capture.M35SourceCaptureTests) ... ok
+test_reordered_event_lines_fail_closed (tests.test_m35_source_capture.M35SourceCaptureTests) ... ok
+test_sequence_gap_fails_closed (tests.test_m35_source_capture.M35SourceCaptureTests) ... ok
+
+----------------------------------------------------------------------
+Ran 13 tests in 0.021s
+
+OK
