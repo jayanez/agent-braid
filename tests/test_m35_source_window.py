@@ -6,6 +6,9 @@ import json
 from pathlib import Path
 from tempfile import TemporaryDirectory
 import unittest
+from unittest.mock import patch
+
+import agent_braid.m35_source_window as source_window
 
 from agent_braid.m35_source_window import (
     audit_window, close_session, create_window, final_seal_payload,
@@ -70,9 +73,27 @@ class M35SourceWindowTests(unittest.TestCase):
             for index, actor in enumerate(("a", "b", "c"), 1):
                 view_base(directory, "s1", actor, now=NOW)
                 propose(directory, "s1", actor, operation(index), f"lab://{actor}", now=NOW)
+            close_session(directory, "s1", "accepted", now=NOW)
             report = audit_window(directory)
             self.assertEqual(report["pairsExamined"], 3)
             self.assertEqual(report["pairsStructurallyAdmitted"], 3)
+
+    def test_unclosed_session_keeps_pairs_but_excludes_them(self) -> None:
+        with TemporaryDirectory() as root:
+            directory = self._new(root)
+            self._open(directory)
+            for index, actor in enumerate(("actor-a", "actor-b"), 1):
+                view_base(directory, "s1", actor, now=NOW)
+                propose(directory, "s1", actor, operation(index), f"lab://{actor}", now=NOW)
+            report = audit_window(directory)
+            self.assertEqual(report["sessionsExamined"], 1)
+            self.assertEqual(report["sessionsAdmitted"], 0)
+            self.assertEqual(report["pairsExamined"], 1)
+            self.assertEqual(report["pairsStructurallyAdmitted"], 0)
+            self.assertEqual(report["sessionsExcludedByReason"], {"session-not-closed": 1})
+            self.assertEqual(report["pairsExcludedByReason"], {"session-not-closed": 1})
+            close_session(directory, "s1", "accepted", now=NOW)
+            self.assertEqual(audit_window(directory)["pairsStructurallyAdmitted"], 1)
 
     def test_exclusions_keep_full_sessions_and_primary_reasons(self) -> None:
         with TemporaryDirectory() as root:
@@ -93,6 +114,8 @@ class M35SourceWindowTests(unittest.TestCase):
                                    anchor="absent" if session == "anchor" else "$root")
                 propose(directory, session, "actor-b", second,
                         "" if session == "missing" else "lab://b", now=NOW)
+            for session in ("empty", "large", "delete", "anchor", "observed", "missing"):
+                close_session(directory, session, "unresolved", now=NOW)
             report = audit_window(directory)
             self.assertEqual(report["sessionsExamined"], 6)
             self.assertEqual(report["pairsExamined"], 5)
@@ -118,6 +141,29 @@ class M35SourceWindowTests(unittest.TestCase):
                 stream.write(b'{"unfinished":')
             with self.assertRaisesRegex(ValueError, "incomplete record"):
                 audit_window(directory)
+
+    def test_interrupted_open_recovers_both_journals(self) -> None:
+        with TemporaryDirectory() as root:
+            directory = self._new(root)
+            append = source_window._append
+
+            def interrupt_before_event(path: Path, record: dict) -> None:
+                if path.name == "events.jsonl":
+                    raise OSError("simulated interruption between journal writes")
+                append(path, record)
+
+            with patch.object(source_window, "_append", side_effect=interrupt_before_event):
+                with self.assertRaisesRegex(OSError, "simulated interruption"):
+                    self._open(directory)
+            self.assertTrue((directory / "session-open.pending").exists())
+            report = audit_window(directory)
+            self.assertEqual(report["sessionsExamined"], 1)
+            self.assertEqual(report["sessionsExcludedByReason"], {"session-not-closed": 1})
+            self.assertFalse((directory / "session-open.pending").exists())
+            self.assertEqual(len((directory / "events.jsonl").read_bytes().splitlines()), 1)
+            self.assertEqual(len((directory / "admissions.jsonl").read_bytes().splitlines()), 1)
+            with self.assertRaisesRegex(ValueError, "duplicate session ID"):
+                self._open(directory)
 
     def test_prospective_initialization_needs_both_gates(self) -> None:
         with TemporaryDirectory() as root:

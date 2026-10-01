@@ -114,7 +114,11 @@ def create_window(directory: Path, manifest: dict, *, registration_verified: boo
 def locked(directory: Path, *, shared: bool = False) -> Iterator[None]:
     descriptor = os.open(directory / "capture.lock", os.O_RDONLY)
     try:
-        fcntl.flock(descriptor, fcntl.LOCK_SH if shared else fcntl.LOCK_EX)
+        # A reader may be the first process after an interrupted session-open.
+        fcntl.flock(descriptor, fcntl.LOCK_EX)
+        _recover_open(directory)
+        if shared:
+            fcntl.flock(descriptor, fcntl.LOCK_SH)
         yield
     finally:
         fcntl.flock(descriptor, fcntl.LOCK_UN)
@@ -147,6 +151,57 @@ def _append(path: Path, record: dict) -> None:
             os.fsync(stream.fileno())
     except BaseException:
         raise
+
+
+def _sync_directory(directory: Path) -> None:
+    descriptor = os.open(directory, os.O_RDONLY)
+    try:
+        os.fsync(descriptor)
+    finally:
+        os.close(descriptor)
+
+
+def _recover_open(directory: Path) -> None:
+    pending = directory / "session-open.pending"
+    if not pending.exists():
+        return
+    raw = pending.read_bytes()
+    try:
+        transaction = json.loads(raw)
+    except (UnicodeDecodeError, json.JSONDecodeError) as exc:
+        raise ValueError("session-open transaction is malformed") from exc
+    if (type(transaction) is not dict or set(transaction) != {"event", "admission"} or
+            canonical(transaction) + b"\n" != raw):
+        raise ValueError("session-open transaction is malformed")
+    event, admission = transaction["event"], transaction["admission"]
+    if (type(event) is not dict or type(admission) is not dict or
+            event.get("format") != EVENT_FORMAT or event.get("kind") != "session-open" or
+            set(admission) != {"sessionId", "eventId", "timestampUtc"} or
+            admission != {"sessionId": event.get("sessionId"), "eventId": event.get("eventId"),
+                          "timestampUtc": event.get("timestampUtc")}):
+        raise ValueError("session-open transaction is invalid")
+    body = {key: value for key, value in event.items() if key != "eventHash"}
+    if event.get("eventHash") != digest(body):
+        raise ValueError("session-open transaction has an invalid hash")
+    events = _lines(directory / "events.jsonl")
+    admissions = _lines(directory / "admissions.jsonl")
+    event_written = bool(events and events[-1] == event)
+    admission_written = bool(admissions and admissions[-1] == admission)
+    if (event_written and not admission_written or
+            any(item.get("eventId") == event["eventId"] for item in events[:-1]) or
+            any(item.get("eventId") == event["eventId"] for item in admissions[:-1])):
+        raise ValueError("session-open transaction disagrees with the journals")
+    if not event_written:
+        if (event.get("sequence") != len(events) or
+                event.get("previousHash") != (events[-1]["eventHash"] if events else None) or
+                len(admissions) != sum(item.get("kind") == "session-open" for item in events)
+                + int(admission_written)):
+            raise ValueError("session-open transaction disagrees with the journals")
+        if not admission_written:
+            _append(directory / "admissions.jsonl", admission)
+        _append(directory / "events.jsonl", event)
+    pending.unlink()
+    _sync_directory(directory)
 
 
 def _load(directory: Path) -> tuple[dict, list[dict], list[dict]]:
@@ -219,9 +274,16 @@ def _record(directory: Path, kind: str, session_id: str, data: dict,
             "data": data, "previousHash": events[-1]["eventHash"] if events else None}
     record = {**body, "eventHash": digest(body)}
     if kind == "session-open":
-        _append(directory / "admissions.jsonl", {"sessionId": session_id, "eventId": record["eventId"],
-                                                     "timestampUtc": record["timestampUtc"]})
+        admission = {"sessionId": session_id, "eventId": record["eventId"],
+                     "timestampUtc": record["timestampUtc"]}
+        _private_file(directory / "session-open.pending",
+                      canonical({"event": record, "admission": admission}) + b"\n")
+        _sync_directory(directory)
+        _append(directory / "admissions.jsonl", admission)
     _append(directory / "events.jsonl", record)
+    if kind == "session-open":
+        (directory / "session-open.pending").unlink()
+        _sync_directory(directory)
     return record
 
 
@@ -373,6 +435,7 @@ def audit_window(directory: Path) -> dict:
             opened = records[0]
             if opened["kind"] != "session-open" or sum(item["kind"] == "session-open" for item in records) != 1:
                 raise ValueError("invalid session-open ordering")
+            closed = records[-1]["kind"] == "session-close"
             if (sum(item["kind"] == "session-close" for item in records) > 1 or
                     any(item["kind"] == "session-close" for item in records[:-1])):
                 raise ValueError("invalid session-close ordering")
@@ -380,6 +443,12 @@ def audit_window(directory: Path) -> dict:
             actors = [item["data"].get("actorId") for item in proposals]
             if len(set(actors)) != len(actors):
                 raise ValueError("actor submitted multiple proposals")
+            if not closed:
+                session_reasons["session-not-closed"] += 1
+                pairs = len(proposals) * (len(proposals) - 1) // 2
+                pairs_examined += pairs
+                pair_reasons["session-not-closed"] += pairs
+                continue
             if len(proposals) < 2:
                 session_reasons["insufficient-proposals"] += 1
                 continue

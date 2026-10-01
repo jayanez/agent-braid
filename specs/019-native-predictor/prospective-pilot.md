@@ -110,6 +110,13 @@ the separately controlled workflow register and record any bypass. A bypass
 or unreconciled upstream count is an integrity limitation; do not present the
 local hash chain as independent completeness evidence.
 
+An interrupted `session-open` may have committed even if the CLI did not return
+a receipt. The next sidecar access completes its pending journal transaction
+under the capture lock. After an interruption, run `audit` and inspect the
+session ID before retrying; never create a replacement session to hide the
+interruption. A session without `session-close` remains in the report, but all
+of its proposal pairs are excluded as `session-not-closed` until it is closed.
+
 Run `audit` at any point to enumerate all local sessions and all unordered
 proposal pairs. A base over three elements, invalid anchor, non-insert,
 missing provenance or dependent observation remains in the ledger and is
