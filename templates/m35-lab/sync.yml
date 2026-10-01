@@ -15,7 +15,10 @@ concurrency:
 
 jobs:
   sync:
-    if: vars.M35_SYNC_ENABLED == 'true'
+    if: github.ref == 'refs/heads/main' && vars.M35_SYNC_ENABLED == 'true'
+    environment:
+      name: m35-source-read
+      deployment: false
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:

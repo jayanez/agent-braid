@@ -17,6 +17,12 @@ def git(root: Path, *args: str) -> str:
 
 
 class M35LabExportTests(unittest.TestCase):
+    def test_sync_template_restricts_credentialed_job_to_main(self) -> None:
+        template = (Path(__file__).resolve().parents[1] / "templates/m35-lab/sync.yml")
+        self.assertIn("if: github.ref == 'refs/heads/main' && vars.M35_SYNC_ENABLED == 'true'",
+                      template.read_text(encoding="utf-8"))
+        self.assertIn("name: m35-source-read", template.read_text(encoding="utf-8"))
+
     def _source(self, root: Path) -> tuple[Path, Path]:
         source = root / "source"
         source.mkdir()
