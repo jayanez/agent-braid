@@ -79,3 +79,7 @@ planned versus obtained evidence. Report a finding ID, severity, exact location,
 authority and proposed remediation for each issue. Constitutional MUST conflicts
 block implementation; missing human review stays pending. Do not change files or
 reinterpret a scientific hypothesis as a mandatory positive result.
+For empirical comparisons, flag unknown source rights/yield, proxy labels
+presented as observed benefit, method-dependent holdout annotation, unresolved
+missingness or absent class coverage, and undefined baseline, calibration or
+cost boundaries. A structural check cannot establish scientific validity.
