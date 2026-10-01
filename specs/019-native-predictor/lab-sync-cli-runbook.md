@@ -16,8 +16,11 @@ Run every command once per row with `SOURCE` and `LAB` set to the exact values
 above. The authenticated operator needs administration access to the source
 and write access to its lab. Use a **different** Ed25519 deploy key for each
 source. Create it with `read_only=true` through GitHub's REST API, then upload
-only its private half to `M35_SOURCE_DEPLOY_KEY` in the matching lab's Actions
-secrets. A deploy key is scoped to one repository, has no expiry and cannot
+only its private half to `M35_SOURCE_DEPLOY_KEY` in the matching lab's
+`m35-source-read` Environment secrets. Configure that Environment to admit
+only the exact `main` branch; a repository-level copy would be available to
+other branch workflows and is prohibited. A deploy key is scoped to one
+repository, has no expiry and cannot
 call GitHub's API; record and later revoke its ID. The lab's own `GITHUB_TOKEN`
 has `contents:write` in the lab only. No personal access token or source
 credential is placed in a lab Git tree, artifact or log.
@@ -42,8 +45,10 @@ this two-source pilot by accepted ADR 0018's bounded CLI-managed deploy-key deci
 From an authenticated terminal, check `gh auth status`. For each row, inspect
 the two repositories with `gh api repos/$SOURCE` and `gh api repos/$LAB`:
 both must be private, active and show the operator's expected permissions.
-List existing deploy keys with `gh api repos/$SOURCE/keys` and lab secrets and
-variables with `gh secret list -R "$LAB"` and `gh variable list -R "$LAB"`.
+List existing deploy keys with `gh api repos/$SOURCE/keys`, lab repository and
+Environment secrets with `gh secret list -R "$LAB"` and
+`gh secret list --env m35-source-read -R "$LAB"`, and variables with
+`gh variable list -R "$LAB"`.
 Do not replace an unrelated key or secret. Set the explicit job gate to off:
 
 ```sh
@@ -54,7 +59,12 @@ Confirm that the lab `main` branch contains the reviewed `allowlist.json`,
 `scripts/m35_lab_export.py`, `scripts/m35_lab_publish.py` and the rendered
 `.github/workflows/sync.yml`. The template in Agent Braid is
 `templates/m35-lab/sync.yml`; replace only `__SOURCE_NAME__` with the row's
-source repository name. The job uses two `actions/checkout` steps with
+source repository name. The job must also require `github.ref ==
+'refs/heads/main'` before any step receives a source credential; a manual
+dispatch from another branch must remain skipped. Its
+`m35-source-read` Environment independently restricts secret access to `main`,
+even if a branch modifies its own workflow. The job uses two
+`actions/checkout` steps with
 `ssh-key: ${{ secrets.M35_SOURCE_DEPLOY_KEY }}` and does not retain source
 credentials. From the Agent Braid candidate checkout, publish only that
 reviewed workflow change to the matching private lab control branch:
@@ -76,7 +86,26 @@ git -C "$LAB_DIR/repo" push origin main
 Check that this diff changes authentication only. Keep the private control
 clone outside other repositories and remove it after verifying the push.
 
-## 2. Create one read-only key and Actions secret
+## 2. Protect the Environment and create one read-only key
+
+Before adding a secret, create `m35-source-read` with a custom deployment
+branch policy and the single exact branch `main`. Confirm the policy through
+the REST API. The job references this Environment with `deployment: false`;
+this avoids creating a deployment record while retaining its protection rules.
+Do not continue if private-repository Environment secrets are unavailable on
+the account plan. Keep `M35_SYNC_ENABLED=false` and no repository-level key.
+
+```sh
+gh api --method PUT "repos/$LAB/environments/m35-source-read" \
+  -F 'deployment_branch_policy[protected_branches]=false' \
+  -F 'deployment_branch_policy[custom_branch_policies]=true'
+gh api --method POST "repos/$LAB/environments/m35-source-read/deployment-branch-policies" \
+  -f name=main -f type=branch
+gh api "repos/$LAB/environments/m35-source-read" \
+  --jq '.deployment_branch_policy'
+gh api "repos/$LAB/environments/m35-source-read/deployment-branch-policies" \
+  --jq '[.branch_policies[] | {name,type}]'
+```
 
 Use a fresh private temporary directory (`umask 077`) outside any Git
 checkout. Never print the private key or pass it as a CLI argument. The public
@@ -93,11 +122,13 @@ gh api --method POST "repos/$SOURCE/keys" \
   -f title="m35-lab-readonly-20261001" \
   -f key="$(cat "$KEY_DIR/source.pub")" \
   -F read_only=true --jq '{id,title,read_only,enabled}'
-gh secret set M35_SOURCE_DEPLOY_KEY -R "$LAB" < "$KEY_DIR/source"
+gh secret set M35_SOURCE_DEPLOY_KEY --env m35-source-read -R "$LAB" < "$KEY_DIR/source"
+gh secret list --env m35-source-read -R "$LAB"
 gh secret list -R "$LAB"
 ```
 
-Require `read_only: true`, `enabled: true` and a visible lab secret before
+Require `read_only: true`, `enabled: true`, exactly one allowed branch `main`,
+a visible Environment secret and no repository-level secret before
 continuing. If secret upload fails, retain the private temporary key only
 while retrying; if abandoning setup, delete the newly created remote key by
 its exact ID. Once the lab secret is confirmed, remove the temporary key
@@ -148,9 +179,10 @@ that a private runner started, but published no seal and registered no window.
 
 At pilot retirement, set `M35_SYNC_ENABLED=false`, confirm no run is active,
 delete the exact deploy-key ID from the source with `gh api --method DELETE
-"repos/$SOURCE/keys/KEY_ID"`, and delete the lab secret with `gh secret
-delete M35_SOURCE_DEPLOY_KEY -R "$LAB"`. Verify the key and secret are gone.
-Rotate by creating a new key and lab secret, proving a successful sync, then
+"repos/$SOURCE/keys/KEY_ID"`, and delete the Environment secret with
+`gh secret delete M35_SOURCE_DEPLOY_KEY --env m35-source-read -R "$LAB"`.
+Verify the key and secret are gone. Rotate by creating a new key and
+Environment secret, proving a successful sync, then
 revoking the old ID. Review evidence retention before deleting any lab branch
 or repository; branch deletion alone does not erase GitHub metadata or backups.
 
@@ -166,3 +198,16 @@ separately. The private operations register holds the exact key IDs,
 fingerprints, source SHAs and lab commit SHAs. These runs prove the
 synchronization path on those inputs only; they contain no local authoring
 session, real eligible pair or audit registration.
+
+## Credential containment check, 2026-10-01
+
+The repository-level `M35_SOURCE_DEPLOY_KEY` secrets were removed from both
+labs. Each source key was rotated into its own `m35-source-read` Environment,
+whose sole allowed branch policy is the exact `main` branch; the previous
+deploy keys were revoked. The updated lab workflows also check `github.ref`
+before their credentialed job starts. Kinetiq run `36848633738` and
+SmartNotes run `36848662275` completed successfully on named runners with
+all ten steps successful, including both source checkouts, export and
+publication. This verifies credential availability on the permitted branch;
+the Environment policy, not the mutable workflow condition alone, protects
+the source key from a dispatch on another branch. No real session was opened.

@@ -226,6 +226,90 @@ class M35SourceWindowTests(unittest.TestCase):
             self.assertEqual(events.read_bytes(), b"unrelated")
             self.assertTrue((directory / "session-open.pending").exists())
 
+    def test_partial_non_open_events_recover_only_the_expected_tail(self) -> None:
+        for kind in ("base-seen", "proposal", "external-observation", "proposals-seen",
+                     "session-close"):
+            with self.subTest(kind=kind), TemporaryDirectory() as root:
+                directory = self._new(root)
+                self._open(directory)
+                if kind in ("proposal", "proposals-seen"):
+                    view_base(directory, "s1", "actor-a", now=NOW)
+                if kind == "proposals-seen":
+                    view_base(directory, "s1", "actor-b", now=NOW)
+                    propose(directory, "s1", "actor-a", operation(1), "lab://a", now=NOW)
+                    propose(directory, "s1", "actor-b", operation(2), "lab://b", now=NOW)
+                actions = {
+                    "base-seen": lambda: view_base(directory, "s1", "actor-a", now=NOW),
+                    "proposal": lambda: propose(directory, "s1", "actor-a", operation(1),
+                                                "lab://a", now=NOW),
+                    "external-observation": lambda: mark_external_observation(
+                        directory, "s1", "actor-a", now=NOW),
+                    "proposals-seen": lambda: reveal(directory, "s1", "actor-a", now=NOW),
+                    "session-close": lambda: close_session(directory, "s1", "cancelled", now=NOW),
+                }
+                before = len((directory / "events.jsonl").read_bytes().splitlines())
+                append = source_window._append
+
+                def interrupt_mid_record(path: Path, record: dict) -> None:
+                    if path.name == "events.jsonl" and record["kind"] == kind:
+                        with path.open("ab") as stream:
+                            stream.write(source_window.canonical(record)[:17])
+                        raise OSError("simulated torn append")
+                    append(path, record)
+
+                with patch.object(source_window, "_append", side_effect=interrupt_mid_record):
+                    with self.assertRaisesRegex(OSError, "simulated torn append"):
+                        actions[kind]()
+                self.assertTrue((directory / "event.pending").exists())
+                audit_window(directory)
+                self.assertFalse((directory / "event.pending").exists())
+                events = source_window._lines(directory / "events.jsonl")
+                self.assertEqual(len(events), before + 1)
+                self.assertEqual(events[-1]["kind"], kind)
+
+    def test_pending_non_open_event_rejects_unrelated_tail(self) -> None:
+        with TemporaryDirectory() as root:
+            directory = self._new(root)
+            self._open(directory)
+            with patch.object(source_window, "_append", side_effect=OSError("interrupted")):
+                with self.assertRaisesRegex(OSError, "interrupted"):
+                    view_base(directory, "s1", "actor-a", now=NOW)
+            events = directory / "events.jsonl"
+            original = events.read_bytes()
+            events.write_bytes(original + b"unrelated")
+            with self.assertRaisesRegex(ValueError, "disagrees with the journals"):
+                audit_window(directory)
+            self.assertEqual(events.read_bytes(), original + b"unrelated")
+            self.assertTrue((directory / "event.pending").exists())
+
+    def test_completed_non_open_append_recovers_without_duplicate(self) -> None:
+        with TemporaryDirectory() as root:
+            directory = self._new(root)
+            self._open(directory)
+            append = source_window._append
+
+            def interrupt_after_append(path: Path, record: dict) -> None:
+                append(path, record)
+                if record["kind"] == "base-seen":
+                    raise OSError("simulated interruption after append")
+
+            with patch.object(source_window, "_append", side_effect=interrupt_after_append):
+                with self.assertRaisesRegex(OSError, "after append"):
+                    view_base(directory, "s1", "actor-a", now=NOW)
+            self.assertTrue((directory / "event.pending").exists())
+            self.assertEqual(audit_window(directory)["eventsObserved"], 2)
+            self.assertFalse((directory / "event.pending").exists())
+            self.assertEqual(len(source_window._lines(directory / "events.jsonl")), 2)
+
+    def test_orphaned_non_open_staging_file_has_no_event(self) -> None:
+        with TemporaryDirectory() as root:
+            directory = self._new(root)
+            self._open(directory)
+            staging = directory / "event.pending.tmp"
+            staging.write_bytes(b'{"incomplete":')
+            self.assertEqual(audit_window(directory)["eventsObserved"], 1)
+            self.assertFalse(staging.exists())
+
     def test_prospective_initialization_needs_both_gates(self) -> None:
         with TemporaryDirectory() as root:
             target = Path(root) / "capture"
