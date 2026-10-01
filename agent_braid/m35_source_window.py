@@ -116,7 +116,11 @@ def locked(directory: Path, *, shared: bool = False) -> Iterator[None]:
     try:
         # A reader may be the first process after an interrupted session-open.
         fcntl.flock(descriptor, fcntl.LOCK_EX)
+        if ((directory / "session-open.pending").exists() and
+                (directory / "event.pending").exists()):
+            raise ValueError("multiple capture transactions are pending")
         _recover_open(directory)
+        _recover_event(directory)
         if shared:
             fcntl.flock(descriptor, fcntl.LOCK_SH)
         yield
@@ -239,6 +243,52 @@ def _recover_open(directory: Path) -> None:
     _sync_directory(directory)
 
 
+def _recover_event(directory: Path) -> None:
+    """Finish one interrupted non-opening event without accepting arbitrary tail bytes."""
+    pending = directory / "event.pending"
+    staging = directory / "event.pending.tmp"
+    if staging.exists():
+        # Journal writes start only after the complete intent is renamed.
+        staging.unlink()
+        _sync_directory(directory)
+    if not pending.exists():
+        return
+    raw = pending.read_bytes()
+    try:
+        transaction = json.loads(raw)
+    except (UnicodeDecodeError, json.JSONDecodeError) as exc:
+        raise ValueError("event transaction is malformed") from exc
+    fields = {"event", "eventOffset", "eventPrefixSha256", "admissionSha256"}
+    if (type(transaction) is not dict or set(transaction) != fields or
+            canonical(transaction) + b"\n" != raw):
+        raise ValueError("event transaction is malformed")
+    event = transaction["event"]
+    if (type(event) is not dict or event.get("format") != EVENT_FORMAT or
+            event.get("kind") not in {"base-seen", "proposal", "external-observation",
+                                      "proposals-seen", "session-close"} or
+            event.get("eventHash") != digest({key: value for key, value in event.items()
+                                              if key != "eventHash"})):
+        raise ValueError("event transaction is invalid")
+    admission_raw = (directory / "admissions.jsonl").read_bytes()
+    if (type(transaction["admissionSha256"]) is not str or
+            sha256(admission_raw).hexdigest() != transaction["admissionSha256"]):
+        raise ValueError("event transaction disagrees with the admission register")
+    event_path = directory / "events.jsonl"
+    offset = transaction["eventOffset"]
+    event_line = canonical(event) + b"\n"
+    written = _journal_tail(event_path, offset, transaction["eventPrefixSha256"], event_line)
+    events = _parse_lines(event_path.read_bytes()[:offset], event_path.name)
+    if (event.get("sequence") != len(events) or
+            event.get("previousHash") != (events[-1]["eventHash"] if events else None) or
+            event.get("sessionId") not in {entry["sessionId"] for entry in
+                                           _parse_lines(admission_raw, "admissions.jsonl")}):
+        raise ValueError("event transaction disagrees with the journals")
+    if not written:
+        _repair_tail(event_path, offset, event_line)
+    pending.unlink()
+    _sync_directory(directory)
+
+
 def _load(directory: Path) -> tuple[dict, list[dict], list[dict]]:
     manifest_raw = (directory / "window.json").read_bytes()
     if not manifest_raw.endswith(b"\n") or manifest_raw.count(b"\n") != 1:
@@ -325,9 +375,25 @@ def _record(directory: Path, kind: str, session_id: str, data: dict,
         os.replace(staging, pending)
         _sync_directory(directory)
         _append(directory / "admissions.jsonl", admission)
+    else:
+        event_prefix = (directory / "events.jsonl").read_bytes()
+        admission_raw = (directory / "admissions.jsonl").read_bytes()
+        intent = {"event": record, "eventOffset": len(event_prefix),
+                  "eventPrefixSha256": sha256(event_prefix).hexdigest(),
+                  "admissionSha256": sha256(admission_raw).hexdigest()}
+        staging = directory / "event.pending.tmp"
+        pending = directory / "event.pending"
+        _private_file(staging, canonical(intent) + b"\n")
+        if pending.exists():
+            raise ValueError("event transaction is already pending")
+        os.replace(staging, pending)
+        _sync_directory(directory)
     _append(directory / "events.jsonl", record)
     if kind == "session-open":
         (directory / "session-open.pending").unlink()
+        _sync_directory(directory)
+    else:
+        (directory / "event.pending").unlink()
         _sync_directory(directory)
     return record
 
