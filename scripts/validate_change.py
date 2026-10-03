@@ -88,6 +88,11 @@ RULES = (
         "examples/analysis/git-replay-benchmark.json",
         "scripts/run_git_replay_benchmark.py",
     ), ("contracts", "git-replay-tests")),
+    Rule("git-runtime", (
+        "agent_braid/git_runtime.py", "tests/test_git_runtime.py",
+        "scripts/reproduce_m4_runtime.py", "examples/runtime/**",
+    ), ("contracts", "git-runtime-tests"), True,
+        boundary="Private runtime evidence reproduction, independent review and founder acceptance"),
     Rule("git-partial-order", (
         "agent_braid/git_partial_order.py", "tests/test_git_partial_order.py",
     ), ("contracts", "git-partial-order-tests")),
@@ -291,6 +296,7 @@ def command_argv(identifier: str, base: str, head: str | None, root: Path = ROOT
         "contracts": [python, "scripts/validate_contracts.py"],
         "contract-tests": [python, "-m", "unittest", "tests.test_contracts", "-v"],
         "analysis-tests": [python, "-m", "unittest", "tests.test_analysis", "-v"],
+        "git-runtime-tests": [python, "-m", "unittest", "tests.test_git_runtime", "-v"],
         "git-adapter-tests": [python, "-m", "unittest", "tests.test_git_adapter", "-v"],
         "git-replay-tests": [python, "-m", "unittest", "tests.test_git_replay", "-v"],
         "git-partial-order-tests": [python, "-m", "unittest", "tests.test_git_partial_order", "-v"],

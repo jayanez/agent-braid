@@ -66,6 +66,18 @@ class ValidationProfileTests(unittest.TestCase):
                 self.assertEqual(validation.execute(editorial, "develop", None), 7)
             self.assertEqual(run.call_count, 1)
 
+    def test_runtime_paths_select_owned_sensitive_checks(self):
+        paths = ["agent_braid/git_runtime.py", "tests/test_git_runtime.py",
+                 "scripts/reproduce_m4_runtime.py", "examples/runtime/reproduction.json"]
+        impact = validation.classify(paths)
+        self.assertIn("git-runtime", impact.domains)
+        self.assertFalse(impact.unknown_paths)
+        self.assertFalse(impact.spec_kit_integration)
+        plan = validation.build_plan(paths, "quick")
+        self.assertEqual(plan.effective_profile, "sensitive")
+        self.assertIn("full-tests", plan.commands)
+        self.assertNotIn("spec-kit-integration", plan.commands)
+
     def test_pr_profile_retains_complete_repository_gate(self):
         plan = validation.build_plan(["README.md"], "pr")
         required = {

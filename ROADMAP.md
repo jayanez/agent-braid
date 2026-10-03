@@ -204,6 +204,13 @@ No external Laya/Jev service is required or integrated.
 
 **Objective:** integrate analysis, scheduling, execution, and certificates in a model-agnostic runtime.
 
+The first bounded increment is [SPEC-020](specs/020-m4-local-git-runtime/spec.md):
+a separately authorized private Git result, serial isolated fixed-patch execution,
+per-step effect/result checks and process-crash recovery. It has no dependency
+on M3/M3.5 data. Proposed ADR 0019 and founder acceptance of its exact candidate
+remain pending; source promotion, repository-code execution and external adapters
+remain separate contracts. This does not close the full M4 milestone.
+
 Candidate deliverables:
 
 - MCP and host-runtime adapters;

@@ -1,0 +1,93 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://agent-braid.org/schemas/0.1.0-alpha/git-runtime-report.schema.json",
+  "title": "Bounded local Git runtime report",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "gitRuntimeReportVersion": {
+      "const": "0.1.0-alpha"
+    },
+    "status": {
+      "enum": [
+        "completed",
+        "interrupted",
+        "aborted",
+        "verified-completed",
+        "verified-prefix",
+        "verified-aborted"
+      ]
+    },
+    "phase": {
+      "enum": [
+        "initializing",
+        "ready",
+        "applying",
+        "completed",
+        "aborting",
+        "aborted"
+      ]
+    },
+    "manifestDigest": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$"
+    },
+    "runDirectory": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 1024
+    },
+    "resultCommit": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{40}$"
+    },
+    "resultTree": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{40}$"
+    },
+    "completedOperations": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 256
+      },
+      "maxItems": 4,
+      "uniqueItems": true
+    },
+    "authorizationScope": {
+      "const": "private-run-only"
+    },
+    "sourcePromotion": {
+      "const": false
+    },
+    "observationContract": {
+      "const": "runtime-private-tracked-tree-v1"
+    },
+    "executionContract": {
+      "const": "authorized-serial-index-patch-v1"
+    },
+    "limits": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "minItems": 1
+    }
+  },
+  "required": [
+    "gitRuntimeReportVersion",
+    "status",
+    "phase",
+    "manifestDigest",
+    "runDirectory",
+    "resultCommit",
+    "resultTree",
+    "completedOperations",
+    "authorizationScope",
+    "sourcePromotion",
+    "observationContract",
+    "executionContract",
+    "limits"
+  ]
+}

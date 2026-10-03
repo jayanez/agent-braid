@@ -1,15 +1,26 @@
 {
   "articles": [
     0,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    9,
+    12,
     13,
     14,
-    17,
+    15,
+    16,
     19,
+    20,
     21,
     23,
+    24,
     25
   ],
-  "assumptions": "The committed radar records source claims honestly, the adoption registry is governance metadata, and later adapters can project into existing AIM without creating a parallel semantic model.",
+  "assumptions": "Owned POSIX filesystem and installed Git; immutable available SHA-1 commit objects; fixed ordinary text patches; no repository code execution.",
   "authority_snapshot": {
     "commit": null,
     "hashes": {
@@ -73,127 +84,127 @@
     },
     "mode": "current"
   },
-  "compatibility": "No change to Constitution, AIM, certificates, assurance classes, analyzer report, CLI or runtime behavior.",
-  "domain": "Committed radar and adoption-track governance records in the public repository.",
+  "compatibility": "Additive private-runtime records and CLI; existing AIM/M1/M2 contracts and consultative executionAuthorization false unchanged.",
+  "domain": "2-4 fixed Git patches, 16 changed paths, 256 KiB aggregate patches, serial order and one private destination.",
   "evidence_snapshot": {
     "commit": null,
     "mode": "current"
   },
-  "execution_contract": "Local dependency-free validation only; no source browsing, provider execution, network calls, writes to external systems, publication or execution authority.",
+  "execution_contract": "authorized-serial-index-patch-v1: digest acknowledgement, isolated private index, serial CAS checkpoints, owned-prefix resume/abort.",
   "human_review": "pending",
-  "hypotheses": "A staged adoption pathline can identify material capability gains without turning weekly surveillance into automatic implementation or overclaiming superiority.",
-  "observation_contract": "JSON records, source provenance, stage transitions, artifact existence, validator outputs and negative cases.",
+  "hypotheses": "A durable local fixed-patch consumer can provide inspectable results and recover interrupted private transitions; no throughput or scientific hypothesis tested.",
+  "observation_contract": "runtime-private-tracked-tree-v1 including private checkpoint commits, ordered operation results, state phase and admitted path/mode/blob transitions.",
   "references": [
     "CONSTITUTION.md",
     "GOVERNANCE.md",
-    "ARCHITECTURE.md",
-    "ROADMAP.md",
-    "research/adoption/ADOPTION_PATHLINE.md",
-    "docs/strategy/ECOSYSTEM.md",
-    "docs/strategy/COMMUNITY.md",
-    "research/radar/README.md",
-    "research/radar/2026-09-18-m0.5.json",
-    "research/adoption/adoption-track.schema.json"
+    "docs/adr/0019-bounded-local-git-runtime.md",
+    "docs/adr/0013-isolated-git-replay-and-advisory-planning.md",
+    "docs/adr/0014-parallel-integration-contract.md",
+    "docs/theory/OPERATIONAL_SEMANTICS.md"
   ],
   "requirements": [
     {
       "id": "REQ-001",
       "scenarios": [
         {
-          "given": "A radar candidate is considered for project work",
-          "id": "SC-037",
+          "given": "Owned deterministic local Git fixture with stated positive or adversarial condition.",
+          "id": "SC-001",
           "obtained_evidence": [],
-          "planned_evidence": "Run the seeded registry and missing-field tests",
-          "test_file": "tests/test_adoption_pathline.py",
-          "test_name": "AdoptionPathlineTests.test_seeded_registry_is_valid_and_has_no_adoption",
-          "then": "It contains a stable track, stage, owner history, artifacts, evidence plan and next decision",
-          "when": "The adoption registry is validated"
+          "planned_evidence": "Focused unittest raw output plus fresh-process reproduction record with command, hashes and environment.",
+          "test_file": "tests/test_git_runtime.py",
+          "test_name": "GitRuntimeTests.test_prepare_is_read_only",
+          "then": "The required runtime behavior holds or fails closed without modifying source state.",
+          "when": "The paired runtime acceptance test executes."
+        },
+        {
+          "given": "Owned deterministic local Git fixture with stated positive or adversarial condition.",
+          "id": "SC-002",
+          "obtained_evidence": [],
+          "planned_evidence": "Focused unittest raw output plus fresh-process reproduction record with command, hashes and environment.",
+          "test_file": "tests/test_git_runtime.py",
+          "test_name": "GitRuntimeTests.test_invalid_inputs",
+          "then": "The required runtime behavior holds or fails closed without modifying source state.",
+          "when": "The paired runtime acceptance test executes."
         }
       ],
-      "text": "Every material radar signal has a stable adoption track and next decision before implementation work can be created."
+      "text": "Bounded immutable input and declared effect admission."
     },
     {
       "id": "REQ-002",
       "scenarios": [
         {
-          "given": "A candidate track claims a material gain",
-          "id": "SC-038",
+          "given": "Owned deterministic local Git fixture with stated positive or adversarial condition.",
+          "id": "SC-003",
           "obtained_evidence": [],
-          "planned_evidence": "Run the missing differentiation metric negative test",
-          "test_file": "tests/test_adoption_pathline.py",
-          "test_name": "AdoptionPathlineTests.test_rejects_missing_differentiation_metric",
-          "then": "Missing metrics or hypotheses are rejected",
-          "when": "Its differentiation record is validated"
+          "planned_evidence": "Focused unittest raw output plus fresh-process reproduction record with command, hashes and environment.",
+          "test_file": "tests/test_git_runtime.py",
+          "test_name": "GitRuntimeTests.test_authorization_and_destination",
+          "then": "The required runtime behavior holds or fails closed without modifying source state.",
+          "when": "The paired runtime acceptance test executes."
         }
       ],
-      "text": "A candidate beyond triage states a baseline, alternative, measurable capability delta and falsifiable hypothesis."
+      "text": "Manifest-bound explicit private-run authorization."
     },
     {
       "id": "REQ-003",
       "scenarios": [
         {
-          "given": "A track has a recorded stage history",
-          "id": "SC-039",
+          "given": "Owned deterministic local Git fixture with stated positive or adversarial condition.",
+          "id": "SC-004",
           "obtained_evidence": [],
-          "planned_evidence": "Run transition and negative-outcome tests",
-          "test_file": "tests/test_adoption_pathline.py",
-          "test_name": "AdoptionPathlineTests.test_rejects_backward_stage_history",
-          "then": "Backward transitions fail while research-only negative outcomes remain valid",
-          "when": "The pathline is validated"
+          "planned_evidence": "Focused unittest raw output plus fresh-process reproduction record with command, hashes and environment.",
+          "test_file": "tests/test_git_runtime.py",
+          "test_name": "GitRuntimeTests.test_execute_and_verify",
+          "then": "The required runtime behavior holds or fails closed without modifying source state.",
+          "when": "The paired runtime acceptance test executes."
         }
       ],
-      "text": "Stage transitions are conservative and permit negative or inconclusive outcomes."
+      "text": "Serial verified private Git execution."
     },
     {
       "id": "REQ-004",
       "scenarios": [
         {
-          "given": "A seeded track describes a future adapter",
-          "id": "SC-040",
+          "given": "Owned deterministic local Git fixture with stated positive or adversarial condition.",
+          "id": "SC-005",
           "obtained_evidence": [],
-          "planned_evidence": "Review the architecture pathline and seeded mapping fields",
-          "test_file": "tests/test_adoption_pathline.py",
-          "test_name": "AdoptionPathlineTests.test_seeded_registry_is_valid_and_has_no_adoption",
-          "then": "It names preservation, unknown handling and affected AIM artifacts without adding a provider dependency",
-          "when": "The governance record is inspected"
+          "planned_evidence": "Focused unittest raw output plus fresh-process reproduction record with command, hashes and environment.",
+          "test_file": "tests/test_git_runtime.py",
+          "test_name": "GitRuntimeTests.test_process_crash_recovery",
+          "then": "The required runtime behavior holds or fails closed without modifying source state.",
+          "when": "The paired runtime acceptance test executes."
+        },
+        {
+          "given": "Owned deterministic local Git fixture with stated positive or adversarial condition.",
+          "id": "SC-006",
+          "obtained_evidence": [],
+          "planned_evidence": "Focused unittest raw output plus fresh-process reproduction record with command, hashes and environment.",
+          "test_file": "tests/test_git_runtime.py",
+          "test_name": "GitRuntimeTests.test_tamper_and_lock",
+          "then": "The required runtime behavior holds or fails closed without modifying source state.",
+          "when": "The paired runtime acceptance test executes."
         }
       ],
-      "text": "Future provider evidence maps one-way into AIM and preserves uncertainty."
+      "text": "Crash recovery, ownership and bounded failure."
     },
     {
       "id": "REQ-005",
       "scenarios": [
         {
-          "given": "A track is marked adopted",
-          "id": "SC-041",
+          "given": "Owned deterministic local Git fixture with stated positive or adversarial condition.",
+          "id": "SC-007",
           "obtained_evidence": [],
-          "planned_evidence": "Run the adopted-without-feature negative test",
-          "test_file": "tests/test_adoption_pathline.py",
-          "test_name": "AdoptionPathlineTests.test_rejects_adopted_track_without_feature_reference",
-          "then": "A separate feature reference is required",
-          "when": "Its decision record is validated"
+          "planned_evidence": "Focused unittest raw output plus fresh-process reproduction record with command, hashes and environment.",
+          "test_file": "tests/test_git_runtime.py",
+          "test_name": "GitRuntimeTests.test_cli_and_forged_terminal",
+          "then": "The required runtime behavior holds or fails closed without modifying source state.",
+          "when": "The paired runtime acceptance test executes."
         }
       ],
-      "text": "Adoption cannot silently change a public contract, dependency, security boundary, runtime or scientific claim."
-    },
-    {
-      "id": "REQ-006",
-      "scenarios": [
-        {
-          "given": "The seeded tracks reference historical and current source records",
-          "id": "SC-042",
-          "obtained_evidence": [],
-          "planned_evidence": "Run registry validation and inspect the immutable seed record",
-          "test_file": "tests/test_adoption_pathline.py",
-          "test_name": "AdoptionPathlineTests.test_seeded_registry_is_valid_and_has_no_adoption",
-          "then": "No historical radar file is rewritten and each track retains its stage history and limits",
-          "when": "The registry is validated"
-        }
-      ],
-      "text": "Historical radar snapshots and prior adoption decisions remain auditable when a source changes."
+      "text": "Read-only verification and CLI compatibility."
     }
   ],
-  "scientific_limits": "The pathline does not prove market superiority, scientific novelty, production safety, general confluence, contextual equivalence or Yang-Baxter validity. It records source claims and bounded project evidence separately.",
-  "scope": "Radar-to-adoption governance registry, seeded candidate tracks, deterministic validation and negative tests.",
+  "scientific_limits": "No source-code correctness, arbitrary-agent effects, external-write safety, production concurrency, independent scientific validation, Yang-Baxter or M4-wide closure. Process crash controls do not establish power-loss guarantees.",
+  "scope": "First M4 private local Git runtime increment; full M4 closure excluded.",
   "stage": "draft"
 }

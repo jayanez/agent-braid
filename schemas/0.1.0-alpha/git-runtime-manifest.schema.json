@@ -1,0 +1,321 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://agent-braid.org/schemas/0.1.0-alpha/git-runtime-manifest.schema.json",
+  "title": "Bounded local Git runtime manifest",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "gitRuntimeManifestVersion": {
+      "const": "0.1.0-alpha"
+    },
+    "request": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "gitRuntimeRequestVersion": {
+          "const": "0.1.0-alpha"
+        },
+        "repository": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 1024
+        },
+        "baseRevision": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{40}$"
+        },
+        "operations": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "instanceId": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 256
+              },
+              "attemptId": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 256
+              },
+              "source": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "kind": {
+                    "const": "commit"
+                  },
+                  "revision": {
+                    "type": "string",
+                    "pattern": "^[0-9a-f]{40}$"
+                  }
+                },
+                "required": [
+                  "kind",
+                  "revision"
+                ]
+              },
+              "dependencies": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 256
+                },
+                "maxItems": 4,
+                "uniqueItems": true
+              },
+              "uncertainPaths": {
+                "type": "array",
+                "maxItems": 0
+              },
+              "declaredWrites": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 1024
+                },
+                "maxItems": 16,
+                "uniqueItems": true
+              }
+            },
+            "required": [
+              "instanceId",
+              "attemptId",
+              "source",
+              "dependencies",
+              "uncertainPaths",
+              "declaredWrites"
+            ]
+          },
+          "minItems": 2,
+          "maxItems": 4
+        },
+        "order": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 256
+          },
+          "maxItems": 4,
+          "uniqueItems": true,
+          "minItems": 2
+        },
+        "expectedFinalTree": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{40}$"
+        }
+      },
+      "required": [
+        "gitRuntimeRequestVersion",
+        "repository",
+        "baseRevision",
+        "operations",
+        "order",
+        "expectedFinalTree"
+      ]
+    },
+    "runDirectory": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 1024
+    },
+    "repositoryId": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$"
+    },
+    "baseTree": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{40}$"
+    },
+    "steps": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "operationId": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 256
+          },
+          "attemptId": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 256
+          },
+          "sourceCommit": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{40}$"
+          },
+          "patchDigest": {
+            "type": "string",
+            "pattern": "^sha256:[0-9a-f]{64}$"
+          },
+          "inputTree": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{40}$"
+          },
+          "outputTree": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{40}$"
+          },
+          "parentCommit": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{40}$"
+          },
+          "commit": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{40}$"
+          },
+          "effects": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "path": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 1024
+                },
+                "status": {
+                  "enum": [
+                    "A",
+                    "M"
+                  ]
+                },
+                "beforeMode": {
+                  "enum": [
+                    "000000",
+                    "100644",
+                    "100755"
+                  ]
+                },
+                "afterMode": {
+                  "enum": [
+                    "100644",
+                    "100755"
+                  ]
+                },
+                "beforeBlob": {
+                  "type": "string",
+                  "pattern": "^[0-9a-f]{40}$"
+                },
+                "afterBlob": {
+                  "type": "string",
+                  "pattern": "^[0-9a-f]{40}$"
+                }
+              },
+              "required": [
+                "path",
+                "status",
+                "beforeMode",
+                "afterMode",
+                "beforeBlob",
+                "afterBlob"
+              ]
+            },
+            "maxItems": 16
+          }
+        },
+        "required": [
+          "operationId",
+          "attemptId",
+          "sourceCommit",
+          "patchDigest",
+          "inputTree",
+          "outputTree",
+          "parentCommit",
+          "commit",
+          "effects"
+        ]
+      },
+      "minItems": 2,
+      "maxItems": 4
+    },
+    "resourceLimits": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "operations": {
+          "const": 4
+        },
+        "changedPaths": {
+          "const": 16
+        },
+        "patchBytes": {
+          "const": 262144
+        },
+        "wallSeconds": {
+          "const": 60
+        },
+        "gitCommands": {
+          "const": 256
+        },
+        "outputBytes": {
+          "const": 8388608
+        },
+        "commandOutputBytes": {
+          "const": 2097152
+        },
+        "scratchBytes": {
+          "const": 67108864
+        },
+        "childAddressSpaceBytes": {
+          "type": "null"
+        }
+      },
+      "required": [
+        "operations",
+        "changedPaths",
+        "patchBytes",
+        "wallSeconds",
+        "gitCommands",
+        "outputBytes",
+        "commandOutputBytes",
+        "scratchBytes",
+        "childAddressSpaceBytes"
+      ]
+    },
+    "observationContract": {
+      "const": "runtime-private-tracked-tree-v1"
+    },
+    "executionContract": {
+      "const": "authorized-serial-index-patch-v1"
+    },
+    "authorizationScope": {
+      "const": "private-run-only"
+    },
+    "sourcePromotion": {
+      "const": false
+    },
+    "manifestDigest": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$"
+    },
+    "privateConfigDigest": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$"
+    }
+  },
+  "required": [
+    "gitRuntimeManifestVersion",
+    "request",
+    "runDirectory",
+    "repositoryId",
+    "baseTree",
+    "steps",
+    "resourceLimits",
+    "observationContract",
+    "executionContract",
+    "authorizationScope",
+    "sourcePromotion",
+    "manifestDigest",
+    "privateConfigDigest"
+  ]
+}
