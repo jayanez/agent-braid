@@ -91,7 +91,7 @@
     "mode": "historical"
   },
   "execution_contract": "authorized-serial-index-patch-v1: digest acknowledgement, isolated private index, serial CAS checkpoints, owned-prefix resume/abort.",
-  "human_review": "pending",
+  "human_review": "approved",
   "hypotheses": "A durable local fixed-patch consumer can provide inspectable results and recover interrupted private transitions; no throughput or scientific hypothesis tested.",
   "observation_contract": "runtime-private-tracked-tree-v1 including private checkpoint commits, ordered operation results, state phase and admitted path/mode/blob transitions.",
   "previous_acceptance": "specs/020-m4-local-git-runtime/accepted-assurance-4dd52c8.json",
@@ -261,6 +261,7 @@
       "text": "Read-only verification and CLI compatibility."
     }
   ],
+  "review_record": "specs/020-m4-local-git-runtime/founder-review-corrected.json",
   "scientific_limits": "No source-code correctness, arbitrary-agent effects, external-write safety, production concurrency, independent scientific validation, Yang-Baxter or M4-wide closure. Process crash controls do not establish power-loss guarantees.",
   "scope": "First M4 private local Git runtime increment; full M4 closure excluded.",
   "stage": "validated"

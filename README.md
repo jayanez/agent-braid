@@ -297,3 +297,7 @@ refs or runs repository code. Child memory is not hard-capped.
 were [accepted by the founder](specs/020-m4-local-git-runtime/founder-review.json)
 against frozen candidate `4dd52c8` on 2026-10-03. This increment does not close
 the whole M4 milestone.
+
+The [pre-PR corrections](specs/020-m4-local-git-runtime/remediation.md) were
+separately [accepted](specs/020-m4-local-git-runtime/founder-review-corrected.json)
+against frozen candidate `853df74` on 2026-10-03.
