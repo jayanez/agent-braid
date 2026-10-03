@@ -1,0 +1,53 @@
+{
+  "recordVersion": "agent-braid-spec-020-corrected-founder-review-1",
+  "reviewedAt": "2026-10-03",
+  "reviewedCommit": "853df7432dd4700aa411f1f13b324a0b7beecd02",
+  "reviewer": {
+    "name": "Juan Antonio Yáñez García",
+    "role": "founder"
+  },
+  "decision": "approved-corrected-first-m4-increment",
+  "decisionText": "Approve corrected frozen SPEC-020 candidate 853df74 with the existing scope and limits; proceed with branch publication and pull request to develop.",
+  "originalStatement": "Ok apruebo m. Adelante",
+  "decisionSource": {
+    "type": "explicit-human-message-in-context",
+    "threadId": "01a10240-2fb5-7e21-8f39-020a74c64a8a",
+    "approvalQuestion": "Apruebas el candidato corregido 853df74?",
+    "deliveryContext": "Pre-PR review, requested defect fixes, corrected candidate acceptance."
+  },
+  "reviewedArtifacts": [
+    {
+      "path": "specs/020-m4-local-git-runtime/spec.md",
+      "sha256": "c290c8def979aeb62eb85763c5cc5372693f95ef0643ffea495c0e9e45287d59"
+    },
+    {
+      "path": "specs/020-m4-local-git-runtime/remediation.md",
+      "sha256": "8c33fdb419b9f3f94f88d13643928b6f2c56be14c27ec4514484bfa4f2649e39"
+    },
+    {
+      "path": "specs/020-m4-local-git-runtime/remediation-verification.json",
+      "sha256": "90de7d050698440bd98e5a7f2bd0604d77d9479a1f8689fb6730f1399e82ff0c"
+    },
+    {
+      "path": "examples/runtime/m4-corrected-reproduction.json",
+      "sha256": "a2278bf1c604675731117e1ab628ea4ce989b256f9d6f6f8d5b6510f7c9ef83c"
+    },
+    {
+      "path": "agent_braid/git_runtime.py",
+      "sha256": "91e124c6e80dacf97232215c8ba9749b472d2ed03b2c7c5367ad6f98aa41ff50"
+    },
+    {
+      "path": "tests/test_git_runtime.py",
+      "sha256": "3f4e15687b04a2f9d0da63b0222f0158a85a74bb22f87a9dffb84dbca58b1566"
+    }
+  ],
+  "scope": "Correct the abandoned result-ref lock recovery and cumulative invocation budgets within the adopted ADR 0019 bounded local Git runtime.",
+  "previousAcceptance": "specs/020-m4-local-git-runtime/founder-review.json",
+  "fullM4Closure": false,
+  "scientificValidation": "not-established-by-this-decision",
+  "m3M35Verification": "unchanged",
+  "publicationAuthorization": "feature-branch-and-pull-request-only",
+  "pullRequestAuthorization": true,
+  "mergeAuthorization": false,
+  "perRunAuthorization": "Separate matching manifest acknowledgement remains required."
+}

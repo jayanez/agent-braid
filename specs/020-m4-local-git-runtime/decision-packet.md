@@ -3,7 +3,8 @@
 The acceptance below concerns original candidate `4dd52c8`. Subsequent pre-PR
 review found two P2 defects; the [correction packet](remediation.md) records
 their fixes and fresh evidence. Current assurance binds the corrected candidate
-and is human-review pending; the original acceptance is preserved separately.
+and is [approved](founder-review-corrected.json) against `853df74`; the original
+acceptance is preserved separately.
 
 The bounded local Git runtime is implemented, independently reviewed and locally
 validated. SPEC-020 technical tasks T001–T007 are complete. The founder accepted the cut and adopted ADR 0019 on 2026-10-03 against frozen
