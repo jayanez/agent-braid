@@ -89,7 +89,7 @@ RULES = (
         "scripts/run_git_replay_benchmark.py",
     ), ("contracts", "git-replay-tests")),
     Rule("git-runtime", (
-        "agent_braid/git_runtime.py", "tests/test_git_runtime.py",
+        "agent_braid/git_runtime.py", "agent_braid/git_runtime_process.py", "tests/test_git_runtime.py",
         "scripts/reproduce_m4_runtime.py", "examples/runtime/**",
     ), ("contracts", "git-runtime-tests"), True,
         boundary="Private runtime evidence reproduction, independent review and founder acceptance"),
