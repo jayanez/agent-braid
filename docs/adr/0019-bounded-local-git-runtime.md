@@ -1,6 +1,6 @@
 # ADR 0019: Bounded authorized local Git runtime
 
-- **Status:** Proposed; founder adoption pending against the final candidate.
+- **Status:** Accepted by the founder on 2026-10-03 against frozen candidate `4dd52c8d1e54a8813e6113e09a772a371856f9a8`; [decision record](../../specs/020-m4-local-git-runtime/founder-review.json).
 - **Date:** 2026-10-03
 - **Constitutional articles:** 6, 7, 12–16, 19–25
 
@@ -10,7 +10,7 @@ M1/M2 analyze and rehearse immutable fixed patches. Their consultative records
 cannot authorize execution. M4 needs a separately authorized, durable local
 consumer with enforced effects and recovery. M3/M3.5 are independent tracks.
 
-## Proposed decision
+## Decision
 
 Implement SPEC-020 as an opt-in standard-library local Git runtime. A reviewed
 manifest and explicit matching digest acknowledgement admit one batch into one
@@ -40,7 +40,8 @@ scope is private-run-only, never general permission from an analyzer verdict.
 
 SPEC-020 defines adversarial controls, real process-crash reproduction, bounded
 resource failures and source immutability. Luna review and founder adoption are
-separate. This proposed ADR does not close M4 or accept itself through CI.
+separate. Founder adoption is recorded against the frozen candidate above. This ADR does
+not close the full M4 milestone; CI does not grant human approval.
 
 ## References
 

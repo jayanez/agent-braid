@@ -1,0 +1,52 @@
+{
+  "recordVersion": "agent-braid-spec-020-founder-review-1",
+  "reviewedAt": "2026-10-03",
+  "reviewedCommit": "4dd52c8d1e54a8813e6113e09a772a371856f9a8",
+  "reviewer": {
+    "name": "Juan Antonio Yáñez García",
+    "role": "founder"
+  },
+  "decision": "approved-bounded-first-m4-increment-and-adopted-adr-0019",
+  "decisionText": "Approve the first M4 increment, SPEC-020, against the frozen candidate 4dd52c8, and adopt ADR 0019 with the documented scope and limits.",
+  "originalStatement": "Apruebo el primer corte de M4, SPEC-020, sobre el candidato congelado 4dd52c8, y adopto ADR 0019 con el alcance y los límites documentados",
+  "decisionSource": {
+    "type": "explicit-human-message",
+    "threadId": "01a10240-2fb5-7e21-8f39-020a74c64a8a"
+  },
+  "reviewedArtifacts": [
+    {
+      "path": "specs/020-m4-local-git-runtime/spec.md",
+      "sha256": "c290c8def979aeb62eb85763c5cc5372693f95ef0643ffea495c0e9e45287d59"
+    },
+    {
+      "path": "specs/020-m4-local-git-runtime/decision-packet.md",
+      "sha256": "7e633dd4c83778d43acaa3b5a63dc33d982dff64ff6ad2092c97c117dc7f8e7d"
+    },
+    {
+      "path": "docs/adr/0019-bounded-local-git-runtime.md",
+      "sha256": "66f6c92e88c37a17ff17d60ad9d4e7111c0c466235a630cd73057f9e992783f3"
+    },
+    {
+      "path": "specs/020-m4-local-git-runtime/implementation-review.json",
+      "sha256": "1e5b939f1967ac59e5293b39ec1e4f63a6812533a6d005923e3821539aa0595f"
+    },
+    {
+      "path": "examples/runtime/m4-local-git-reproduction.json",
+      "sha256": "a2547acb42b5337d915f0d8eb3b430508dbabe7c323330179f046df19e764f57"
+    }
+  ],
+  "scope": "Bounded owned local Git runtime: 2–4 ordinary-text patches, serial authorized private execution, effect/result verification and process-interruption recovery.",
+  "acceptedLimits": [
+    "Darwin arm64 reproduction; Linux host reproduction pending.",
+    "No hard child-memory cap; sampled scratch can overshoot.",
+    "Hostile same-UID interference and power-loss guarantees excluded.",
+    "No arbitrary code, external effects or source-ref promotion."
+  ],
+  "fullM4Closure": false,
+  "scientificValidation": "not-established-by-this-decision",
+  "m3M35Verification": "unchanged",
+  "publicationAuthorization": false,
+  "pullRequestAuthorization": false,
+  "mergeAuthorization": false,
+  "perRunAuthorization": "Separate matching manifest acknowledgement remains required."
+}
