@@ -30,8 +30,8 @@ limited to 60 seconds.
 ## Corrected candidate acceptance
 
 The corrected executable candidate and fresh reproduction are recorded separately
-from the original accepted candidate. Updated assurance is human-review pending
-until an explicit decision on the corrected frozen candidate is recorded.
+from the original accepted candidate. The founder approved corrected frozen candidate `853df74` on 2026-10-03;
+[decision record](founder-review-corrected.json).
 
 ## Obtained correction evidence
 
@@ -42,11 +42,12 @@ The quick profile escalated to sensitive validation and passed 330 tests, with
 4 disclosed skips, plus all selected controls. See
 [verification record](remediation-verification.json).
 The earlier approval is preserved in [accepted-assurance-4dd52c8.json](accepted-assurance-4dd52c8.json)
-and [founder-review.json](founder-review.json); current assurance is pending review
-of the corrected frozen candidate.
+and [founder-review.json](founder-review.json). The corrected frozen candidate
+was separately [approved](founder-review-corrected.json) on 2026-10-03.
 
 The final PR profile passed all selected controls: 330 tests in 557.028 seconds,
 4 disclosed skips. [Raw PR log](../../examples/runtime/m4-corrections-pr-validation.txt).
 Corrected acceptance candidate: `853df7432dd4700aa411f1f13b324a0b7beecd02`. The assurance record binds this
 packaging commit to the same executable inputs as `fb613da`. Original ADR adoption
-remains recorded; acceptance of the corrected frozen software candidate is pending.
+remains recorded; the corrected frozen software candidate was separately
+[accepted by the founder](founder-review-corrected.json). M4 remains open.
