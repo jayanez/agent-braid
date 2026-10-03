@@ -1,0 +1,45 @@
+{
+  "executedChecks": [
+    "python3 -m unittest tests.test_git_runtime -v: 14 tests, 13 passed and ELOOP regression failed before fix",
+    "python3 -m unittest tests.test_git_runtime.GitRuntimeTests.test_tamper_and_lock tests.test_git_runtime.GitRuntimeTests.test_recovery_does_not_adopt_unsealed_foreign_directory -v: passed after fix"
+  ],
+  "finalReport": "The symlink regression is corrected: test_tamper_and_lock passes. test_recovery_does_not_adopt_unsealed_foreign_directory also passes and confirms recovery adds no files to an unrelated destination. In the previous complete suite execution the other 13 tests passed, including atomic publication, crash recovery, orphan-child lock retention and source immutability. No other reproducible defects found within the reviewed scope. The complete suite was not rerun by the reviewer after the exception-translation fix.",
+  "findings": [
+    {
+      "id": "M4-R1",
+      "problem": "Process death after destination mkdir and before ownership records strands the run.",
+      "resolution": "Seal records before native atomic exclusive directory publication; retain child-held coordinator lock.",
+      "status": "fixed-and-independently-verified"
+    },
+    {
+      "id": "M4-R2",
+      "problem": "O_NOFOLLOW ELOOP leaked OSError from recovery instead of the documented runtime rejection.",
+      "resolution": "Translate ELOOP to InvalidGitRuntime and reject unsealed foreign directories before any writes.",
+      "status": "fixed-and-independently-verified"
+    }
+  ],
+  "limits": "Software/code review only. Does not establish independent scientific validation, Linux host reproduction, founder approval, ADR adoption or full M4 closure.",
+  "reviewType": "independent-code-security-domain-review",
+  "reviewVersion": "0.1.0",
+  "reviewedFileHashes": {
+    "agent_braid/cli.py": "0d96d30f957e0ef22475e7bdba0d15deefa641a4663c6518eb5f059a7554ea2e",
+    "agent_braid/git_process.py": "b372ba0f28f3108cbf6e13539f583ee2297d954ed4c1c85132b2b44d9ec3e7dc",
+    "agent_braid/git_runtime.py": "84fcdf8308b895dceddad29b9566665062abedbe82a812d164532753e736fe52",
+    "schemas/0.1.0-alpha/git-runtime-manifest.schema.json": "a302dec5d42d61d72128798a8e08f7a7ad5b1b6024d18f3e89e6ef6abe3f868c",
+    "schemas/0.1.0-alpha/git-runtime-report.schema.json": "b2b1833e43c3b8429f9cc20a2a632a27214f8d2acd59a3e9ce5f0243579af73b",
+    "schemas/0.1.0-alpha/git-runtime-request.schema.json": "a83873e072ea357b29331e74e42b5a075769d939bcfba69f458712876b187f5d",
+    "schemas/0.1.0-alpha/git-runtime-state.schema.json": "6ce9a56e6493e10938eaf60dfc6501d52cd59af240e9f0bb5a0a8c036677d75a",
+    "tests/test_git_runtime.py": "ada7cf09f47b45a2594842773ab314d601ed959546d55223668bc3d5ca853098"
+  },
+  "reviewerModel": "gpt-6-luna",
+  "scope": [
+    "agent_braid/git_runtime.py",
+    "agent_braid/git_process.py",
+    "agent_braid/cli.py",
+    "tests/test_git_runtime.py",
+    "schemas/0.1.0-alpha/git-runtime-request.schema.json",
+    "schemas/0.1.0-alpha/git-runtime-manifest.schema.json",
+    "schemas/0.1.0-alpha/git-runtime-state.schema.json",
+    "schemas/0.1.0-alpha/git-runtime-report.schema.json"
+  ]
+}
