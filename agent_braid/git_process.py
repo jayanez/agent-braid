@@ -68,6 +68,7 @@ class GitCommandBudget:
     max_scratch_bytes: int = 64 * 1024 * 1024
     max_process_address_space_bytes: int | None = None
     cancel_event: threading.Event | None = None
+    ownership_fd: int | None = None
     started_at: float = field(default_factory=time.monotonic)
     commands: int = 0
     output_bytes: int = 0
@@ -206,6 +207,7 @@ def run_git(
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
             start_new_session=(os.name == "posix"),
+            pass_fds=(budget.ownership_fd,) if budget.ownership_fd is not None else (),
         )
     except OSError as exc:
         raise GitProcessStartFailure(

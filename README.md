@@ -283,3 +283,15 @@ See [`LICENSE`](LICENSE) for the exact path mapping and [`NOTICE`](NOTICE) for
 foundational attribution. These licenses do not grant rights to present an
 unofficial fork, product or service as Agent Braid. Truthful referential use
 remains permitted under the [trademark policy](TRADEMARKS.md).
+
+## First M4 local runtime increment
+
+[SPEC-020](specs/020-m4-local-git-runtime/spec.md) implements an opt-in private
+Git runtime, separately authorized from the read-only analyzer. It serially
+applies 2–4 immutable text patches in an owned persistent bare repository,
+checks path/mode/blob effects and intermediate trees, and supports process-crash
+resume or abort. [Usage and limits](specs/020-m4-local-git-runtime/quickstart.md)
+include the explicit manifest-digest acknowledgement. It never promotes source
+refs or runs repository code. Child memory is not hard-capped. Proposed
+[ADR 0019](docs/adr/0019-bounded-local-git-runtime.md) and founder acceptance
+remain separate gates; this increment does not close the whole M4 milestone.
