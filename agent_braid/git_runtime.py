@@ -203,12 +203,13 @@ def _init(repo: Path, source: Path, base: str, env: dict, budget: GitCommandBudg
 
 
 def _prepare(request: object, run_directory: str | Path, temp: Path,
-             cancel_event: threading.Event | None = None) -> tuple[dict, dict[str, bytes]]:
+             cancel_event: threading.Event | None = None, *,
+             budget: GitCommandBudget | None = None) -> tuple[dict, dict[str, bytes]]:
     req = _request(request)
     source = Path(req["repository"])
     dest = _destination(run_directory, source)
     env = _environment(temp / "home")
-    budget = _budget(temp, cancel_event)
+    budget = budget if budget is not None else _budget(temp, cancel_event)
     common = _git(source, env, budget, "rev-parse", "--git-common-dir").decode().strip()
     common_path = (source / common).resolve()
     _require(not dest.is_relative_to(common_path), "run destination is inside source Git storage")
@@ -354,7 +355,8 @@ def _checkpoint(manifest: dict, index: int) -> tuple[str, str]:
     return step["commit"], step["outputTree"]
 
 
-def _inspect(root: Path, manifest: dict, env: dict, budget: GitCommandBudget) -> tuple[dict, str]:
+def _inspect(root: Path, manifest: dict, env: dict, budget: GitCommandBudget, *,
+             recover_locks: bool = False) -> tuple[dict, str]:
     _layout(root)
     _require(_read_record(root / "manifest.json") == manifest, "stored manifest differs from reconstructed input")
     state = _read_record(root / "state.json")
@@ -375,7 +377,6 @@ def _inspect(root: Path, manifest: dict, env: dict, budget: GitCommandBudget) ->
              "private Git configuration differs from owned initialization")
     _require(not (repo / "refs/heads/result").read_text().startswith("ref:"),
              "private result ref is symbolic")
-    _git(repo, env, budget, "fsck", "--strict", "--no-reflogs")
     head = _head(repo, env, budget)
     before, _ = _checkpoint(manifest, index)
     admitted = {before}
@@ -386,6 +387,9 @@ def _inspect(root: Path, manifest: dict, env: dict, budget: GitCommandBudget) ->
     _require(head in admitted, "private ref does not match owned checkpoint")
     if phase == "aborted":
         _require(head == manifest["request"]["baseRevision"], "abort did not restore base")
+    if recover_locks:
+        _clear_owned_git_locks(repo)
+    _git(repo, env, budget, "fsck", "--strict", "--no-reflogs")
     # Validate the entire observed chain by recomputing commit IDs from contents.
     committed = index + (phase == "applying" and head != before)
     if phase in {"aborting", "aborted"} and head == manifest["request"]["baseRevision"]:
@@ -424,11 +428,16 @@ def _report(manifest: dict, state: dict, head: str, verified: bool = False) -> d
                        "Tree observations do not establish semantic correctness or safe concurrency."]}
 
 
-def _clear_owned_index_lock(repo: Path) -> None:
-    lock = repo / "index.lock"
-    if lock.exists():
-        _require(lock.is_file() and not lock.is_symlink(), "unsafe abandoned private index lock")
-        lock.unlink()
+def _clear_owned_git_locks(repo: Path) -> None:
+    # A surviving Git child retains this FD and prevents another coordinator.
+    # Only remove known scratch locks after validating the sealed state/config/ref.
+    _require(_OWNERSHIP_FD.get() is not None, "private lock recovery requires coordinator ownership")
+    for relative in ("index.lock", RESULT_REF + ".lock"):
+        lock = repo / relative
+        if lock.exists():
+            _require(lock.is_file() and not lock.is_symlink(), "unsafe abandoned private Git lock")
+            lock.unlink()
+            _fsync_dir(lock.parent)
 
 
 def _bootstrap(root: Path, manifest: dict, env: dict, budget: GitCommandBudget) -> None:
@@ -458,18 +467,17 @@ def _bootstrap(root: Path, manifest: dict, env: dict, budget: GitCommandBudget) 
 
 def _drive(root: Path, manifest: dict, patches: dict[str, bytes], env: dict,
            budget: GitCommandBudget, action: str) -> dict:
+    _require(action in {"resume", "abort"}, "invalid recovery action")
     _storage(root)
     _require(_read_record(root / "manifest.json") == manifest,
              "stored manifest differs from reconstructed input")
     initial = _read_record(root / "state.json")
     if initial == _state(manifest, "initializing", 0):
         _bootstrap(root, manifest, env, budget)
-    state, head = _inspect(root, manifest, env, budget)
+    state, head = _inspect(root, manifest, env, budget, recover_locks=True)
     phase, index = state["phase"], state["nextIndex"]
     repo = root / "result.git"
-    _require(action in {"resume", "abort"}, "invalid recovery action")
     _require(action != "resume" or phase not in {"aborting", "aborted"}, "aborted run cannot resume")
-    _clear_owned_index_lock(repo)
     if action == "abort":
         if phase == "applying" and head == manifest["steps"][index]["commit"]:
             index += 1
@@ -538,7 +546,8 @@ def execute_run(request: object, run_directory: str | Path, authorization: str, 
                 cancel_event: threading.Event | None = None) -> dict:
     """Allocate and execute a new private run after matching explicit acknowledgement."""
     with tempfile.TemporaryDirectory(prefix="agent-braid-runtime-admission-") as directory:
-        manifest, patches = _prepare(request, run_directory, Path(directory), cancel_event)
+        budget = _budget(Path(directory), cancel_event)
+        manifest, patches = _prepare(request, run_directory, Path(directory), cancel_event, budget=budget)
     _require(authorization == manifest["manifestDigest"], "missing or mismatched runtime authorization")
     root = Path(manifest["runDirectory"])
     # Prepare the ownership seal before one atomic, exclusive publication. An
@@ -550,7 +559,7 @@ def execute_run(request: object, run_directory: str | Path, authorization: str, 
             _atomic_json(stage, "state.json", _state(manifest, "initializing", 0))
             _publish_directory(stage, root)
             env = _environment(root / "home")
-            budget = _budget(root, cancel_event)
+            budget.temp_root = root
             return _drive(root, manifest, patches, env, budget, "resume")
 
 
@@ -558,7 +567,8 @@ def recover_run(request: object, run_directory: str | Path, authorization: str,
                 action: str = "resume", *, cancel_event: threading.Event | None = None) -> dict:
     """Reconstruct authority and reconcile only an owned private checkpoint."""
     with tempfile.TemporaryDirectory(prefix="agent-braid-runtime-recovery-") as directory:
-        manifest, patches = _prepare(request, run_directory, Path(directory), cancel_event)
+        budget = _budget(Path(directory), cancel_event)
+        manifest, patches = _prepare(request, run_directory, Path(directory), cancel_event, budget=budget)
     _require(authorization == manifest["manifestDigest"], "missing or mismatched runtime authorization")
     root = Path(manifest["runDirectory"])
     _require(_read_record(root / "manifest.json") == manifest, "stored manifest differs from reconstructed input")
@@ -566,7 +576,7 @@ def recover_run(request: object, run_directory: str | Path, authorization: str,
     with _lock(root, create=False):
         _storage(root)
         env = _environment(root / "home")
-        budget = _budget(root, cancel_event)
+        budget.temp_root = root
         return _drive(root, manifest, patches, env, budget, action)
 
 
@@ -574,7 +584,8 @@ def verify_run(request: object, run_directory: str | Path) -> dict:
     """Read-only reconstruction; never accepts a producer's claimed completion."""
     with tempfile.TemporaryDirectory(prefix="agent-braid-runtime-verifier-") as directory:
         temp = Path(directory)
-        manifest, _ = _prepare(request, run_directory, temp)
+        budget = _budget(temp)
+        manifest, _ = _prepare(request, run_directory, temp, budget=budget)
         root = Path(manifest["runDirectory"])
         # Existing lock must exist: verifier never creates an artifact in the run.
         _require((root / "coordinator.lock").is_file(), "missing coordinator lock")
@@ -585,7 +596,7 @@ def verify_run(request: object, run_directory: str | Path) -> dict:
             if initial == _state(manifest, "initializing", 0):
                 _require(_read_record(root / "manifest.json") == manifest, "stored manifest differs")
                 if (root / "result.git").exists():
-                    _inspect(root, manifest, env, _budget(temp))
+                    _inspect(root, manifest, env, budget)
                 return _report(manifest, initial, manifest["request"]["baseRevision"], verified=True)
-            state, head = _inspect(root, manifest, env, _budget(temp))
+            state, head = _inspect(root, manifest, env, budget)
             return _report(manifest, state, head, verified=True)
