@@ -397,9 +397,17 @@ else: r.recover_run(req,sys.argv[2],sys.argv[3],"abort")
                 self.assertTrue(abandoned.exists())
                 # Verification remains read-only, even with a stranded ref lock.
                 before = self.snapshot(self.dest)
-                with self.assertRaises(runtime.InvalidGitRuntime):
-                    runtime.verify_run(self.request, self.dest)
+                try:
+                    prefix = runtime.verify_run(self.request, self.dest)
+                except runtime.InvalidGitRuntime as exc:
+                    # Git versions differ in whether fsck treats *.lock as refs.
+                    self.assertIn('fsck', str(exc))
+                else:
+                    self.assertEqual(prefix['status'], 'verified-prefix')
+                    self.assertEqual(prefix['completedOperations'], [])
+                    self.assertEqual(prefix['resultCommit'], self.base)
                 self.assertEqual(self.snapshot(self.dest), before)
+                self.assertTrue(abandoned.exists())
                 report = runtime.recover_run(self.request, self.dest, manifest['manifestDigest'], action)
                 self.assertEqual(report['status'], 'completed' if action == 'resume' else 'aborted')
                 self.assertFalse(abandoned.exists())
