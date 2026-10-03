@@ -10,8 +10,8 @@
   versioned runtime schemas; preserve existing analyzer APIs.
 - [x] T005 (REQ-001..005, SC-001..007): Add adversarial unittest and subprocess
   crash cases; register proportional validation coverage.
-- [ ] T006 (REQ-001..005, SC-001..007): Run local quick/PR and separate fresh
+- [x] T006 (REQ-001..005, SC-001..007): Run local quick/PR and separate fresh
   reproduction; capture actual commands, outcomes, hashes and limitations.
-- [ ] T007 (REQ-001..005): Obtain independent Luna review, fix confirmed
+- [x] T007 (REQ-001..005): Obtain independent Luna review, fix confirmed
   findings, freeze candidate and prepare founder decision packet. Human
   acceptance of ADR/cut remains pending until separately recorded.
