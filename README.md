@@ -292,6 +292,8 @@ applies 2–4 immutable text patches in an owned persistent bare repository,
 checks path/mode/blob effects and intermediate trees, and supports process-crash
 resume or abort. [Usage and limits](specs/020-m4-local-git-runtime/quickstart.md)
 include the explicit manifest-digest acknowledgement. It never promotes source
-refs or runs repository code. Child memory is not hard-capped. Proposed
-[ADR 0019](docs/adr/0019-bounded-local-git-runtime.md) and founder acceptance
-remain separate gates; this increment does not close the whole M4 milestone.
+refs or runs repository code. Child memory is not hard-capped.
+[ADR 0019](docs/adr/0019-bounded-local-git-runtime.md) and the first increment
+were [accepted by the founder](specs/020-m4-local-git-runtime/founder-review.json)
+against frozen candidate `4dd52c8` on 2026-10-03. This increment does not close
+the whole M4 milestone.
