@@ -29,10 +29,17 @@
   },
   "limits": "Local software regression verification; historical Luna review and founder acceptance remain attached to their original bytes.",
   "originalReviewTarget": "02cae5c",
+  "postFixAssessment": "No additional actionable findings in the reviewed correction diff. Lock removal is coordinator-owned after sealed state/config/ref validation; verification is read-only; budget counters and elapsed time are shared across preparation and consumption. This is main-session review, not a new independent Luna review.",
   "recordVersion": "m4-pre-pr-remediation-1",
   "reviewedCommit": "fb613da6db069b5d5fe101b82a7c089f9c4b5e7c",
   "validation": {
     "freshReproduction": "examples/runtime/m4-corrected-reproduction.json",
+    "prCandidateCommit": "1727c2f7c8506a9af44c86b90c30bb31f15a4a56",
+    "prLog": {
+      "path": "examples/runtime/m4-corrections-pr-validation.txt",
+      "sha256": "4b684b90d7bba0a9191c387bb538a95350ef739f3dbfa8f2543241126a6cd09d"
+    },
+    "prOutcome": "Exit 0; 330 tests in 557.028 seconds, 4 disclosed skips; every selected PR control passed.",
     "quickEffectiveProfile": "sensitive",
     "quickOutcome": "330 tests, 4 skipped, complete selected profile exit 0",
     "runtimeTests": 19

@@ -44,3 +44,9 @@ The quick profile escalated to sensitive validation and passed 330 tests, with
 The earlier approval is preserved in [accepted-assurance-4dd52c8.json](accepted-assurance-4dd52c8.json)
 and [founder-review.json](founder-review.json); current assurance is pending review
 of the corrected frozen candidate.
+
+The final PR profile passed all selected controls: 330 tests in 557.028 seconds,
+4 disclosed skips. [Raw PR log](../../examples/runtime/m4-corrections-pr-validation.txt).
+Corrected acceptance candidate: `853df7432dd4700aa411f1f13b324a0b7beecd02`. The assurance record binds this
+packaging commit to the same executable inputs as `fb613da`. Original ADR adoption
+remains recorded; acceptance of the corrected frozen software candidate is pending.
