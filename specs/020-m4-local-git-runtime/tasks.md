@@ -14,4 +14,5 @@
   reproduction; capture actual commands, outcomes, hashes and limitations.
 - [x] T007 (REQ-001..005): Obtain independent Luna review, fix confirmed
   findings, freeze candidate and prepare founder decision packet. Human
-  acceptance of ADR/cut remains pending until separately recorded.
+  acceptance of ADR/cut is recorded in founder-review.json against frozen
+  candidate 4dd52c8; the full M4 milestone remains open.

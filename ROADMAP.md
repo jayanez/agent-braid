@@ -207,8 +207,9 @@ No external Laya/Jev service is required or integrated.
 The first bounded increment is [SPEC-020](specs/020-m4-local-git-runtime/spec.md):
 a separately authorized private Git result, serial isolated fixed-patch execution,
 per-step effect/result checks and process-crash recovery. It has no dependency
-on M3/M3.5 data. Proposed ADR 0019 and founder acceptance of its exact candidate
-remain pending; source promotion, repository-code execution and external adapters
+on M3/M3.5 data. ADR 0019 and this bounded increment were
+[accepted by the founder](specs/020-m4-local-git-runtime/founder-review.json)
+against frozen candidate `4dd52c8` on 2026-10-03; source promotion, repository-code execution and external adapters
 remain separate contracts. This does not close the full M4 milestone.
 
 Candidate deliverables:
