@@ -1,0 +1,114 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://agent-braid.org/schemas/0.1.0-alpha/git-runtime-request.schema.json",
+  "title": "Bounded local Git runtime request",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "gitRuntimeRequestVersion": {
+      "const": "0.1.0-alpha"
+    },
+    "repository": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 1024
+    },
+    "baseRevision": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{40}$"
+    },
+    "operations": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "instanceId": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 256
+          },
+          "attemptId": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 256
+          },
+          "source": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "kind": {
+                "const": "commit"
+              },
+              "revision": {
+                "type": "string",
+                "pattern": "^[0-9a-f]{40}$"
+              }
+            },
+            "required": [
+              "kind",
+              "revision"
+            ]
+          },
+          "dependencies": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 256
+            },
+            "maxItems": 4,
+            "uniqueItems": true
+          },
+          "uncertainPaths": {
+            "type": "array",
+            "maxItems": 0
+          },
+          "declaredWrites": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 1024
+            },
+            "maxItems": 16,
+            "uniqueItems": true
+          }
+        },
+        "required": [
+          "instanceId",
+          "attemptId",
+          "source",
+          "dependencies",
+          "uncertainPaths",
+          "declaredWrites"
+        ]
+      },
+      "minItems": 2,
+      "maxItems": 4
+    },
+    "order": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 256
+      },
+      "maxItems": 4,
+      "uniqueItems": true,
+      "minItems": 2
+    },
+    "expectedFinalTree": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{40}$"
+    }
+  },
+  "required": [
+    "gitRuntimeRequestVersion",
+    "repository",
+    "baseRevision",
+    "operations",
+    "order",
+    "expectedFinalTree"
+  ]
+}

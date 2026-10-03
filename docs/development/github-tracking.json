@@ -8,7 +8,7 @@
     "M2": "Confluence laboratory; bounded Git patch replay and advisory preparation planning, closed internally.",
     "M3": "Braid structure; bounded structured exchange closed internally.",
     "M3.5": "Native specialized proposal predictor; separate draft research track.",
-    "M4": "Formal research; no implementation tasks are inferred from this heading.",
+    "M4": "Agent Braid Runtime; bounded local Git execution increment, separate from formal research and whole-milestone closure.",
     "Public research preview": "Public publication and cutover verification.",
     "Cross-cutting governance": "Governance and adoption work spanning release milestones."
   },
@@ -32,7 +32,8 @@
     "016-m2-partial-order-reduction": {"milestone": "M2", "state": "closed"},
     "017-m2-closure": {"milestone": "M2", "state": "closed"},
     "018-structured-exchange": {"milestone": "M3", "state": "closed"},
-    "019-native-predictor": {"milestone": "M3.5", "state": "open"}
+    "019-native-predictor": {"milestone": "M3.5", "state": "open"},
+    "020-m4-local-git-runtime": {"milestone": "M4", "state": "open"}
   },
   "task_state_overrides": {
     "SPEC-004/T005": "The frozen M0 task checkbox predates closure. Same-commit Codex and Claude reports are bound by specs/004-m0-closure/founder-review.json, which separately approves M0 closure; the published historical task file remains unchanged."
