@@ -1,8 +1,9 @@
 # First M4 increment: acceptance packet
 
 The bounded local Git runtime is implemented, independently reviewed and locally
-validated. SPEC-020 technical tasks T001–T007 are complete. Founder acceptance
-remains pending; ADR 0019 is Proposed, and M4 remains open.
+validated. SPEC-020 technical tasks T001–T007 are complete. The founder accepted the cut and adopted ADR 0019 on 2026-10-03 against frozen
+candidate `4dd52c8d1e54a8813e6113e09a772a371856f9a8`; see the
+[permanent decision record](founder-review.json). M4 remains open.
 
 ## Candidate and scope
 
@@ -53,9 +54,9 @@ excluded. Time, command, output and sampled scratch limits are enforced within
 the stated contract. M3/M3.5 real verification scenarios remain separately
 blocked and were not required or claimed by this increment.
 
-The proposed founder decision is to accept the first SPEC-020 cut and adopt
-ADR 0019 against the frozen candidate. Human review remains `pending` until an
-explicit decision is permanently recorded. No external publication, remote
+The founder decision accepts the first SPEC-020 cut and adopts ADR 0019 against
+the frozen candidate `4dd52c8`. Human review is `approved` and permanently
+recorded in [founder-review.json](founder-review.json). No external publication, remote
 tracking synchronization, pull request or merge has been performed by this
 local delivery. Any public integration requires its reviewed PR and versioning
 record under GOVERNANCE.md.
