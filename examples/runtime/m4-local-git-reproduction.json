@@ -1,0 +1,43 @@
+{
+  "candidateCommit": "7abe73ee27f0d469b78a1a01320ab5acd9d5aa0a",
+  "candidateInputsChangedDuringRun": false,
+  "candidateWorkingTreeDirty": false,
+  "command": "python -m unittest -v tests.test_git_runtime",
+  "environment": {
+    "git": "git version 2.54.0 (Apple Git-157)",
+    "machine": "arm64",
+    "platform": "Darwin",
+    "python": "3.13.11"
+  },
+  "exitCode": 0,
+  "inputs": {
+    "agent_braid/analysis.py": "a96e24ffffd303b60ae2da3f8e676c7d71b0f6f4372950e8b705c365ab8f751a",
+    "agent_braid/cli.py": "0d96d30f957e0ef22475e7bdba0d15deefa641a4663c6518eb5f059a7554ea2e",
+    "agent_braid/git_adapter.py": "4548eb96849e2d0ed1eaefc53579d065651b00a2c6ae5b1aef6e2bdc5ae3dc45",
+    "agent_braid/git_exec.py": "ce5e348f355ca5f73f1095ee4cbab8779c224cce7c8ac326a5376be69d416853",
+    "agent_braid/git_process.py": "3247ac861404cfb68f08939770a5048294b45ddc984a1379ca9eb2091ad48668",
+    "agent_braid/git_replay.py": "29cdbca88c9168829a0fcaae497d5c6805cd84ae5fd19649a7631f266c2759a8",
+    "agent_braid/git_runtime.py": "7db72b98f42a42ccca952ffa77f9fc671fa9da23e1d1f93d9707a34463b976b3",
+    "agent_braid/git_runtime_process.py": "6cde49846602aec8b18a3df141c8f77ff2bb66badd098d149393e900c44c0da4",
+    "docs/adr/0019-bounded-local-git-runtime.md": "66f6c92e88c37a17ff17d60ad9d4e7111c0c466235a630cd73057f9e992783f3",
+    "research/lab/model.py": "f39040b5476d663f6e7384e65d00073b084df6c8958b38bff45e4d6b19da010f",
+    "schemas/0.1.0-alpha/git-runtime-manifest.schema.json": "a302dec5d42d61d72128798a8e08f7a7ad5b1b6024d18f3e89e6ef6abe3f868c",
+    "schemas/0.1.0-alpha/git-runtime-report.schema.json": "b2b1833e43c3b8429f9cc20a2a632a27214f8d2acd59a3e9ce5f0243579af73b",
+    "schemas/0.1.0-alpha/git-runtime-request.schema.json": "a83873e072ea357b29331e74e42b5a075769d939bcfba69f458712876b187f5d",
+    "schemas/0.1.0-alpha/git-runtime-state.schema.json": "6ce9a56e6493e10938eaf60dfc6501d52cd59af240e9f0bb5a0a8c036677d75a",
+    "scripts/reproduce_m4_runtime.py": "5b1fb7b9b1a94c12db6bdf65f9ecc3bfcc84bb4faf0024eddb2374c54584f3f4",
+    "specs/020-m4-local-git-runtime/plan.md": "2a2e4cd28b94fd7a4fba3b605046ee9f6815447fe265d9b0d170d7ecf02bd3b2",
+    "specs/020-m4-local-git-runtime/spec.md": "c290c8def979aeb62eb85763c5cc5372693f95ef0643ffea495c0e9e45287d59",
+    "tests/test_git_runtime.py": "686b499cbe61ff0652b34843e935bc612af0d46b822b19a1ddc32c0fd60fb129"
+  },
+  "limits": [
+    "Owned local fixed-patch software tests; no external-source corpus or semantic code correctness.",
+    "Fresh Python/subprocess reproduction on recorded host, not independent external validation.",
+    "Process interruption controls; power loss and malicious same-UID interference excluded.",
+    "No hard child memory cap; bounded time/commands/output and sampled scratch.",
+    "Passing tests neither adopt ADR 0019 nor record founder acceptance or whole M4 closure."
+  ],
+  "logSha256": "45410cffad15b9eaed152b82e7c066abd213f1175bb0d1ed679836ca24eaa9c1",
+  "m4ReproductionVersion": "0.1.0-alpha",
+  "status": "passed"
+}
