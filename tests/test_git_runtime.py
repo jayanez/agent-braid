@@ -439,7 +439,7 @@ root=Path(sys.argv[1])
 with r._lock(root):
     env=r._environment(root/"home")
     env["PATH"]=sys.argv[2]
-    run_git(root,("fixture",),env=env,budget=r._budget(root))
+    r.run_owned_git(root,("fixture",),env=env,budget=r._budget(root), ownership_fd=r._OWNERSHIP_FD.get())
 '''
         parent = subprocess.Popen([sys.executable, '-c', script, str(owned), str(binary)],
                                   cwd=ROOT, stdout=subprocess.DEVNULL, stderr=subprocess.PIPE)
