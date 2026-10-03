@@ -109,7 +109,15 @@
         {
           "given": "Owned deterministic local Git fixture with stated positive or adversarial condition.",
           "id": "SC-001",
-          "obtained_evidence": [],
+          "obtained_evidence": [
+            {
+              "command": "python -m scripts.reproduce_m4_runtime --output /tmp/m4-final-reproduction.json",
+              "limits": "Darwin arm64 owned local Git software tests; no Linux host reproduction, power-loss or hostile same-UID guarantee, hard child memory cap, scientific validation or founder acceptance.",
+              "outcome": "Passed all 15 real Git runtime tests in a clean independent clone at 7abe73ee27f0d469b78a1a01320ab5acd9d5aa0a; inputs unchanged.",
+              "path": "examples/runtime/m4-local-git-reproduction.json",
+              "sha256": "a2547acb42b5337d915f0d8eb3b430508dbabe7c323330179f046df19e764f57"
+            }
+          ],
           "planned_evidence": "Focused unittest raw output plus fresh-process reproduction record with command, hashes and environment.",
           "test_file": "tests/test_git_runtime.py",
           "test_name": "GitRuntimeTests.test_prepare_is_read_only",
@@ -119,7 +127,15 @@
         {
           "given": "Owned deterministic local Git fixture with stated positive or adversarial condition.",
           "id": "SC-002",
-          "obtained_evidence": [],
+          "obtained_evidence": [
+            {
+              "command": "python -m scripts.reproduce_m4_runtime --output /tmp/m4-final-reproduction.json",
+              "limits": "Darwin arm64 owned local Git software tests; no Linux host reproduction, power-loss or hostile same-UID guarantee, hard child memory cap, scientific validation or founder acceptance.",
+              "outcome": "Passed all 15 real Git runtime tests in a clean independent clone at 7abe73ee27f0d469b78a1a01320ab5acd9d5aa0a; inputs unchanged.",
+              "path": "examples/runtime/m4-local-git-reproduction.json",
+              "sha256": "a2547acb42b5337d915f0d8eb3b430508dbabe7c323330179f046df19e764f57"
+            }
+          ],
           "planned_evidence": "Focused unittest raw output plus fresh-process reproduction record with command, hashes and environment.",
           "test_file": "tests/test_git_runtime.py",
           "test_name": "GitRuntimeTests.test_invalid_inputs",
@@ -135,7 +151,15 @@
         {
           "given": "Owned deterministic local Git fixture with stated positive or adversarial condition.",
           "id": "SC-003",
-          "obtained_evidence": [],
+          "obtained_evidence": [
+            {
+              "command": "python -m scripts.reproduce_m4_runtime --output /tmp/m4-final-reproduction.json",
+              "limits": "Darwin arm64 owned local Git software tests; no Linux host reproduction, power-loss or hostile same-UID guarantee, hard child memory cap, scientific validation or founder acceptance.",
+              "outcome": "Passed all 15 real Git runtime tests in a clean independent clone at 7abe73ee27f0d469b78a1a01320ab5acd9d5aa0a; inputs unchanged.",
+              "path": "examples/runtime/m4-local-git-reproduction.json",
+              "sha256": "a2547acb42b5337d915f0d8eb3b430508dbabe7c323330179f046df19e764f57"
+            }
+          ],
           "planned_evidence": "Focused unittest raw output plus fresh-process reproduction record with command, hashes and environment.",
           "test_file": "tests/test_git_runtime.py",
           "test_name": "GitRuntimeTests.test_authorization_and_destination",
@@ -151,7 +175,15 @@
         {
           "given": "Owned deterministic local Git fixture with stated positive or adversarial condition.",
           "id": "SC-004",
-          "obtained_evidence": [],
+          "obtained_evidence": [
+            {
+              "command": "python -m scripts.reproduce_m4_runtime --output /tmp/m4-final-reproduction.json",
+              "limits": "Darwin arm64 owned local Git software tests; no Linux host reproduction, power-loss or hostile same-UID guarantee, hard child memory cap, scientific validation or founder acceptance.",
+              "outcome": "Passed all 15 real Git runtime tests in a clean independent clone at 7abe73ee27f0d469b78a1a01320ab5acd9d5aa0a; inputs unchanged.",
+              "path": "examples/runtime/m4-local-git-reproduction.json",
+              "sha256": "a2547acb42b5337d915f0d8eb3b430508dbabe7c323330179f046df19e764f57"
+            }
+          ],
           "planned_evidence": "Focused unittest raw output plus fresh-process reproduction record with command, hashes and environment.",
           "test_file": "tests/test_git_runtime.py",
           "test_name": "GitRuntimeTests.test_execute_and_verify",
@@ -167,7 +199,15 @@
         {
           "given": "Owned deterministic local Git fixture with stated positive or adversarial condition.",
           "id": "SC-005",
-          "obtained_evidence": [],
+          "obtained_evidence": [
+            {
+              "command": "python -m scripts.reproduce_m4_runtime --output /tmp/m4-final-reproduction.json",
+              "limits": "Darwin arm64 owned local Git software tests; no Linux host reproduction, power-loss or hostile same-UID guarantee, hard child memory cap, scientific validation or founder acceptance.",
+              "outcome": "Passed all 15 real Git runtime tests in a clean independent clone at 7abe73ee27f0d469b78a1a01320ab5acd9d5aa0a; inputs unchanged.",
+              "path": "examples/runtime/m4-local-git-reproduction.json",
+              "sha256": "a2547acb42b5337d915f0d8eb3b430508dbabe7c323330179f046df19e764f57"
+            }
+          ],
           "planned_evidence": "Focused unittest raw output plus fresh-process reproduction record with command, hashes and environment.",
           "test_file": "tests/test_git_runtime.py",
           "test_name": "GitRuntimeTests.test_process_crash_recovery",
@@ -177,7 +217,15 @@
         {
           "given": "Owned deterministic local Git fixture with stated positive or adversarial condition.",
           "id": "SC-006",
-          "obtained_evidence": [],
+          "obtained_evidence": [
+            {
+              "command": "python -m scripts.reproduce_m4_runtime --output /tmp/m4-final-reproduction.json",
+              "limits": "Darwin arm64 owned local Git software tests; no Linux host reproduction, power-loss or hostile same-UID guarantee, hard child memory cap, scientific validation or founder acceptance.",
+              "outcome": "Passed all 15 real Git runtime tests in a clean independent clone at 7abe73ee27f0d469b78a1a01320ab5acd9d5aa0a; inputs unchanged.",
+              "path": "examples/runtime/m4-local-git-reproduction.json",
+              "sha256": "a2547acb42b5337d915f0d8eb3b430508dbabe7c323330179f046df19e764f57"
+            }
+          ],
           "planned_evidence": "Focused unittest raw output plus fresh-process reproduction record with command, hashes and environment.",
           "test_file": "tests/test_git_runtime.py",
           "test_name": "GitRuntimeTests.test_tamper_and_lock",
@@ -193,7 +241,15 @@
         {
           "given": "Owned deterministic local Git fixture with stated positive or adversarial condition.",
           "id": "SC-007",
-          "obtained_evidence": [],
+          "obtained_evidence": [
+            {
+              "command": "python -m scripts.reproduce_m4_runtime --output /tmp/m4-final-reproduction.json",
+              "limits": "Darwin arm64 owned local Git software tests; no Linux host reproduction, power-loss or hostile same-UID guarantee, hard child memory cap, scientific validation or founder acceptance.",
+              "outcome": "Passed all 15 real Git runtime tests in a clean independent clone at 7abe73ee27f0d469b78a1a01320ab5acd9d5aa0a; inputs unchanged.",
+              "path": "examples/runtime/m4-local-git-reproduction.json",
+              "sha256": "a2547acb42b5337d915f0d8eb3b430508dbabe7c323330179f046df19e764f57"
+            }
+          ],
           "planned_evidence": "Focused unittest raw output plus fresh-process reproduction record with command, hashes and environment.",
           "test_file": "tests/test_git_runtime.py",
           "test_name": "GitRuntimeTests.test_cli_and_forged_terminal",
@@ -206,5 +262,5 @@
   ],
   "scientific_limits": "No source-code correctness, arbitrary-agent effects, external-write safety, production concurrency, independent scientific validation, Yang-Baxter or M4-wide closure. Process crash controls do not establish power-loss guarantees.",
   "scope": "First M4 private local Git runtime increment; full M4 closure excluded.",
-  "stage": "draft"
+  "stage": "validated"
 }
