@@ -29,7 +29,7 @@ def run(output: Path) -> int:
     before = {name: hashlib.sha256((ROOT / name).read_bytes()).hexdigest() for name in INPUTS}
     command = [sys.executable, '-m', 'unittest', '-v', 'tests.test_git_runtime']
     process = subprocess.run(command, cwd=ROOT, stdout=subprocess.PIPE,
-                             stderr=subprocess.STDOUT, timeout=240)
+                             stderr=subprocess.STDOUT, timeout=600)
     # Preserve raw output alongside the machine-readable reproduction record.
     output.parent.mkdir(parents=True, exist_ok=True)
     log = output.with_suffix('.txt')

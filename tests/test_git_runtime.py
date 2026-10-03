@@ -367,6 +367,111 @@ else: r.recover_run(req,sys.argv[2],sys.argv[3],"abort")
         self.assertFalse(lock.exists())
         self.assertEqual(runtime.verify_run(self.request, self.dest)['status'], 'verified-completed')
 
+    def test_killed_ref_transaction_is_recovered(self):
+        for action in ['resume', 'abort']:
+            with self.subTest(action=action):
+                self.dest = self.root / ('ref-lock-' + action)
+                manifest = self.crash('intent')
+                repo = self.dest / 'result.git'
+                with runtime._lock(self.dest):
+                    process = subprocess.Popen(
+                        ['git', '-C', str(repo), 'update-ref', '--stdin'],
+                        env=runtime._environment(self.root / 'transaction-home'),
+                        stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+                        pass_fds=(runtime._OWNERSHIP_FD.get(),))
+                    try:
+                        process.stdin.write(('start\nupdate ' + runtime.RESULT_REF + ' ' +
+                                             self.base + ' ' + self.base + '\nprepare\n').encode())
+                        process.stdin.flush()
+                        self.assertEqual(process.stdout.readline(), b'start: ok\n')
+                        self.assertEqual(process.stdout.readline(), b'prepare: ok\n')
+                        process.kill()
+                        process.wait(timeout=5)
+                    finally:
+                        if process.poll() is None:
+                            process.kill()
+                            process.wait(timeout=5)
+                        for stream in (process.stdin, process.stdout, process.stderr):
+                            stream.close()
+                abandoned = repo / (runtime.RESULT_REF + '.lock')
+                self.assertTrue(abandoned.exists())
+                # Verification remains read-only, even with a stranded ref lock.
+                before = self.snapshot(self.dest)
+                with self.assertRaises(runtime.InvalidGitRuntime):
+                    runtime.verify_run(self.request, self.dest)
+                self.assertEqual(self.snapshot(self.dest), before)
+                report = runtime.recover_run(self.request, self.dest, manifest['manifestDigest'], action)
+                self.assertEqual(report['status'], 'completed' if action == 'resume' else 'aborted')
+                self.assertFalse(abandoned.exists())
+                self.assertEqual(runtime.verify_run(self.request, self.dest)['status'],
+                                 'verified-completed' if action == 'resume' else 'verified-aborted')
+
+    def test_invalid_state_does_not_remove_ref_lock(self):
+        manifest = self.crash('intent')
+        lock = self.dest / 'result.git' / (runtime.RESULT_REF + '.lock')
+        lock.write_bytes(b'preserve rejected state')
+        state = json.loads((self.dest / 'state.json').read_text())
+        state['nextIndex'] = 99
+        (self.dest / 'state.json').write_text(json.dumps(state))
+        with self.assertRaises(runtime.InvalidGitRuntime):
+            runtime.recover_run(self.request, self.dest, manifest['manifestDigest'])
+        self.assertEqual(lock.read_bytes(), b'preserve rejected state')
+
+    def test_invocation_budget_is_cumulative(self):
+        from agent_braid.git_process import GitExecutionTimeout
+        manifest, _ = self.execute()
+        new_dest = self.root / 'budget-run'
+        other = runtime.prepare_run(self.request, new_dest)
+        prepared = runtime._prepare
+        inspected = runtime._inspect
+        driven = runtime._drive
+        # Model 31 seconds in each phase without slow wall-clock sleeps. Each
+        # phase fits 60 seconds on its own; together they must time out.
+        def preparation(*args, **kwargs):
+            result = prepared(*args, **kwargs)
+            kwargs['budget'].started_at -= 31
+            return result
+        def inspection(root, manifest, env, budget, **kwargs):
+            budget.started_at -= 31
+            return inspected(root, manifest, env, budget, **kwargs)
+        def execution(root, manifest, patches, env, budget, action):
+            budget.started_at -= 31
+            return driven(root, manifest, patches, env, budget, action)
+        for operation in ['execute', 'recover', 'verify']:
+            with self.subTest(operation=operation), patch.object(runtime, '_prepare', side_effect=preparation):
+                if operation == 'verify':
+                    with patch.object(runtime, '_inspect', side_effect=inspection):
+                        with self.assertRaises(GitExecutionTimeout):
+                            runtime.verify_run(self.request, self.dest)
+                else:
+                    with patch.object(runtime, '_drive', side_effect=execution):
+                        with self.assertRaises(GitExecutionTimeout):
+                            if operation == 'execute':
+                                runtime.execute_run(self.request, new_dest, other['manifestDigest'])
+                            else:
+                                runtime.recover_run(self.request, self.dest, manifest['manifestDigest'])
+        self.assertEqual(runtime.verify_run(self.request, self.dest)['status'], 'verified-completed')
+
+    def test_command_and_output_budgets_are_cumulative(self):
+        from agent_braid.git_process import GitCommandLimitExceeded, GitOutputLimitExceeded
+        prepared = runtime._prepare
+        for resource, error in [('commands', GitCommandLimitExceeded), ('output_bytes', GitOutputLimitExceeded)]:
+            with self.subTest(resource=resource):
+                dest = self.root / resource
+                manifest = runtime.prepare_run(self.request, dest)
+                def exhaustion(*args, **kwargs):
+                    result = prepared(*args, **kwargs)
+                    budget = kwargs['budget']
+                    setattr(budget, resource, budget.max_commands if resource == 'commands'
+                            else budget.max_output_bytes)
+                    return result
+                with patch.object(runtime, '_prepare', side_effect=exhaustion):
+                    with self.assertRaises(error):
+                        runtime.execute_run(self.request, dest, manifest['manifestDigest'])
+                self.assertEqual(runtime.verify_run(self.request, dest)['status'], 'verified-prefix')
+                self.assertEqual(runtime.recover_run(self.request, dest, manifest['manifestDigest'])['status'],
+                                 'completed')
+
     def test_exclusive_sealed_directory_publication(self):
         manifest = self.crash('before-publication')
         self.assertFalse(self.dest.exists())
