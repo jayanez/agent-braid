@@ -32,3 +32,15 @@ limited to 60 seconds.
 The corrected executable candidate and fresh reproduction are recorded separately
 from the original accepted candidate. Updated assurance is human-review pending
 until an explicit decision on the corrected frozen candidate is recorded.
+
+## Obtained correction evidence
+
+Executable candidate: `fb613da6db069b5d5fe101b82a7c089f9c4b5e7c`.
+The [clean reproduction](../../examples/runtime/m4-corrected-reproduction.json)
+passed all 19 tests in 126.510 seconds, with clean inputs unchanged during the run.
+The quick profile escalated to sensitive validation and passed 330 tests, with
+4 disclosed skips, plus all selected controls. See
+[verification record](remediation-verification.json).
+The earlier approval is preserved in [accepted-assurance-4dd52c8.json](accepted-assurance-4dd52c8.json)
+and [founder-review.json](founder-review.json); current assurance is pending review
+of the corrected frozen candidate.

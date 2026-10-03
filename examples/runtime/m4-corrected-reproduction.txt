@@ -1,0 +1,24 @@
+test_abandoned_index_lock_is_recovered_under_ownership (tests.test_git_runtime.GitRuntimeTests.test_abandoned_index_lock_is_recovered_under_ownership) ... ok
+test_authorization_and_destination (tests.test_git_runtime.GitRuntimeTests.test_authorization_and_destination) ... ok
+test_cancellation_and_bounded_failure (tests.test_git_runtime.GitRuntimeTests.test_cancellation_and_bounded_failure) ... ok
+test_cli_and_forged_terminal (tests.test_git_runtime.GitRuntimeTests.test_cli_and_forged_terminal) ... ok
+test_command_and_output_budgets_are_cumulative (tests.test_git_runtime.GitRuntimeTests.test_command_and_output_budgets_are_cumulative) ... ok
+test_corrupt_objects_and_configuration_are_rejected (tests.test_git_runtime.GitRuntimeTests.test_corrupt_objects_and_configuration_are_rejected) ... ok
+test_exclusive_sealed_directory_publication (tests.test_git_runtime.GitRuntimeTests.test_exclusive_sealed_directory_publication) ... ok
+test_execute_and_verify (tests.test_git_runtime.GitRuntimeTests.test_execute_and_verify) ... ok
+test_four_operation_boundary_and_resource_limits (tests.test_git_runtime.GitRuntimeTests.test_four_operation_boundary_and_resource_limits) ... ok
+test_invalid_inputs (tests.test_git_runtime.GitRuntimeTests.test_invalid_inputs) ... ok
+test_invalid_state_does_not_remove_ref_lock (tests.test_git_runtime.GitRuntimeTests.test_invalid_state_does_not_remove_ref_lock) ... ok
+test_invocation_budget_is_cumulative (tests.test_git_runtime.GitRuntimeTests.test_invocation_budget_is_cumulative) ... ok
+test_killed_ref_transaction_is_recovered (tests.test_git_runtime.GitRuntimeTests.test_killed_ref_transaction_is_recovered) ... ok
+test_orphan_git_child_retains_coordinator_lock (tests.test_git_runtime.GitRuntimeTests.test_orphan_git_child_retains_coordinator_lock) ... ok
+test_prepare_is_read_only (tests.test_git_runtime.GitRuntimeTests.test_prepare_is_read_only) ... ok
+test_process_crash_recovery (tests.test_git_runtime.GitRuntimeTests.test_process_crash_recovery) ... ok
+test_recovery_does_not_adopt_unsealed_foreign_directory (tests.test_git_runtime.GitRuntimeTests.test_recovery_does_not_adopt_unsealed_foreign_directory) ... ok
+test_schemas_and_supported_dependencies (tests.test_git_runtime.GitRuntimeTests.test_schemas_and_supported_dependencies) ... ok
+test_tamper_and_lock (tests.test_git_runtime.GitRuntimeTests.test_tamper_and_lock) ... ok
+
+----------------------------------------------------------------------
+Ran 19 tests in 126.510s
+
+OK
