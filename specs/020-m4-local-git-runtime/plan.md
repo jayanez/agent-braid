@@ -62,3 +62,8 @@ The new ADR/schema inventory requires refreshing the current draft authority
 snapshots of SPEC-011 and SPEC-019. Both remain human-review pending; their
 existing evidence and historical reviewed decisions are unchanged. No adoption
 or predictor review is inferred from this inventory refresh.
+
+The approved M2 retest binds the shared git_process.py bytes. Leave that file
+unchanged and use a separately reviewed M4-owned process-runner variant that
+inherits the coordinator lock FD. This avoids retroactively changing M2 evidence
+or extending its approval to the new runtime.
