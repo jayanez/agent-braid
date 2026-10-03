@@ -13,7 +13,7 @@ import sys
 
 ROOT = Path(__file__).resolve().parents[1]
 INPUTS = [
-    'agent_braid/git_runtime.py', 'agent_braid/git_process.py', 'agent_braid/git_exec.py',
+    'agent_braid/git_runtime.py', 'agent_braid/git_runtime_process.py', 'agent_braid/git_process.py', 'agent_braid/git_exec.py',
     'agent_braid/git_adapter.py', 'agent_braid/git_replay.py', 'agent_braid/analysis.py',
     'agent_braid/cli.py', 'research/lab/model.py', 'tests/test_git_runtime.py',
     'scripts/reproduce_m4_runtime.py', 'specs/020-m4-local-git-runtime/spec.md',

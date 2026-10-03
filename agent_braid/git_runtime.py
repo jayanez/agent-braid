@@ -22,7 +22,8 @@ import sys
 
 from .analysis import _canonical, _digest
 from .git_adapter import analyze_git_with_provenance
-from .git_process import GitCommandBudget, GitCommandFailure, run_git
+from .git_process import GitCommandBudget, GitCommandFailure
+from .git_runtime_process import run_owned_git
 from .git_replay import (
     OID, _patches, _sanitized_environment, _supported_operations,
     _mark_unsupported_binary_patches, _topological_orders, _validate_request,
@@ -58,9 +59,10 @@ def _require(condition: bool, reason: str) -> None:
 def _git(repo: Path, env: dict, budget: GitCommandBudget, *args: str,
          input_bytes: bytes | None = None) -> bytes:
     try:
-        return run_git(repo, ("-c", "core.hooksPath=/dev/null", "-c",
+        return run_owned_git(repo, ("-c", "core.hooksPath=/dev/null", "-c",
                              "core.fsync=objects,reference", *args),
-                       env=env, budget=budget, input_bytes=input_bytes).stdout
+                       env=env, budget=budget, input_bytes=input_bytes,
+                             ownership_fd=_OWNERSHIP_FD.get()).stdout
     except GitCommandFailure as exc:
         raise InvalidGitRuntime("runtime Git command failed: " + args[0]) from exc
 
@@ -86,7 +88,7 @@ def _budget(root: Path, cancel_event: threading.Event | None = None) -> GitComma
                             max_command_output_bytes=LIMITS["commandOutputBytes"],
                             max_scratch_bytes=LIMITS["scratchBytes"],
                             max_process_address_space_bytes=LIMITS["childAddressSpaceBytes"],
-                            cancel_event=cancel_event, ownership_fd=_OWNERSHIP_FD.get())
+                            cancel_event=cancel_event)
 
 
 def _destination(value: str | Path, source: Path) -> Path:
