@@ -49,3 +49,12 @@ and a deterministic core/protocol Linux reproduction. Claims name this exact mat
 Measure correctness and overhead on frozen owned fixtures. Performance outcomes
 may be negative or inconclusive. These records do not establish arbitrary-agent
 safety or validate M3/M3.5 hypotheses.
+
+## G1 observed compatibility and pin
+
+See g1-contract.md, g1-review.json and g1-evidence/. Both installed clients
+accepted 2025-11-25 and listed tools using a local no-effect server. No model
+call, private runtime execution or persistent host configuration change occurred.
+The implementation preflight chooses stdlib transport, zero new dependencies,
+explicit phase budgets and purpose-bound operator grants. Paid/model-backed host
+exercises remain gated on a separately agreed consumption budget.
