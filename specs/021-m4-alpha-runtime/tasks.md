@@ -1,6 +1,6 @@
 # Tasks
 
-All tasks are open. This document assigns dependencies, not concurrent-agent authority.
+G0 is recorded; implementation tasks remain open. This document assigns dependencies, not concurrent-agent authority.
 No implementation or real-host evidence is claimed by the proposal.
 
 Each implementation task runs `.venv-speckit/bin/python -m scripts.validate_change
@@ -8,22 +8,22 @@ Each implementation task runs `.venv-speckit/bin/python -m scripts.validate_chan
 test/evidence references. Stable candidates run `--profile pr` once before review.
 Fresh reproduction and human gates remain separate.
 
-- [ ] T001: G0 Record exact-candidate founder scope and ADR 0020 decision before expanded implementation.
+- [x] T001: G0 Record exact-candidate founder scope and ADR 0020 decision before expanded implementation.
   - Trace: all. Dependencies: none.
   - Targets: `specs/021-m4-alpha-runtime/founder-review.json; docs/adr/0020-bounded-m4-alpha-runtime.md`.
   - Verification/evidence: Founder decision plus explicit authority-drift review; preserve SPEC-020 acceptance.
 
-- [ ] T002: G1 Pin host versions, common protocol/schema, grant policy, numeric budgets and optional SDK/license choice.
+- [x] T002: G1 Pin host versions, common protocol/schema, grant policy, numeric budgets and optional SDK/license choice.
   - Trace: REQ-002,003,006,007. Dependencies: T001.
   - Targets: `specs/021-m4-alpha-runtime/research.md; contracts and pyproject.toml if justified`.
   - Verification/evidence: Document compatibility probes and explicit host-fixture access/cost boundary before execution.
 
-- [ ] T003: C1 Implement unified verified policy pipeline and separate versioned contracts.
+- [x] T003: C1 Implement unified verified policy pipeline and separate versioned contracts.
   - Trace: REQ-001 / SC-001,002. Dependencies: T002.
   - Targets: `agent_braid/runtime_policy.py; schemas/0.1.0-alpha/runtime-policy.schema.json`.
   - Verification/evidence: Actual pipeline tests reject forged/missing evidence; preserve legacy analysis authorization false.
 
-- [ ] T004: C1 Implement operator grants outside model tools and idempotent run admission.
+- [x] T004: C1 Implement operator grants outside model tools and idempotent run admission.
   - Trace: REQ-002 / SC-003,004. Dependencies: T003.
   - Targets: `agent_braid/runtime_policy.py; agent_braid/cli.py; grant schema`.
   - Verification/evidence: Actual tests cover stale/expired/consumed grants, changed manifests/destinations and retries.
