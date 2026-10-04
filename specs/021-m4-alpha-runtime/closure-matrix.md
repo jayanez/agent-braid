@@ -1,6 +1,6 @@
 # Proposed M4 alpha exit matrix
 
-All rows are **open**. Acceptance of this proposal approves criteria, not results.
+All rows remain **open for final M4 acceptance**. Partial obtained evidence is recorded below. G0 accepted criteria and implementation scope, not final results.
 M4 remains open until a separate exact-candidate closure decision.
 
 | Roadmap deliverable | Required exit evidence | Requirements | Cut |
@@ -22,3 +22,13 @@ result agreement, replayability, diagnostic usefulness and measured overhead.
 A positive speedup is not presupposed. Negative/inconclusive utility is disclosed
 and requires explicit founder go/no-go before claiming complete bounded M4 alpha.
 No production, arbitrary-agent, external-write, scientific or formal guarantee.
+
+## Obtained implementation evidence at 67b8b521d0d18ebe679a905c3ed559d2f4a0119a
+
+- C1/C2/C3 local sensitive checks: 372 tests, four skips (three SPEC-019 deferred implementation, one unavailable private-history test); no alpha-test skips.
+- Fresh Darwin checkout/process reproduction: 61 tests, no skips; reused isolated interpreter.
+- Actual Codex bridge: all six tools, refusal, disconnect/resume/read-only retry/abort; zero model calls. Full Claude exercise remains pending.
+- Six paired cost trials: verified serial/parallel tree agreement in all pairs; median serial/parallel wall ratio 0.5581, negative-or-null-descriptive. Worker overlap remains observation rather than CPU proof.
+- Two independent gpt-6-luna implementation reviews: no findings.
+
+Evidence artifacts are bound to the implementation candidate and inputs; later record packaging does not extend their domain. Linux, full Claude and founder G4 remain open. The PR profile has passed; see c4-evidence/pr-validation.json for its exact binding. No M3/M3.5 scientific gate is changed.

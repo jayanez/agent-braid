@@ -1,0 +1,25 @@
+{
+  "alphaReproductionSkipped": 0,
+  "prPassed": 368,
+  "prSkipped": 4,
+  "scope": "Correction of inaccurate earlier summaries assigning all four skips to SPEC-019; raw logs and historical assurance snapshots remain unchanged.",
+  "skippedTests": [
+    {
+      "reason": "SPEC-019 M3.5 implementation is deferred",
+      "test": "NativePredictorContractTests.test_held_out_evaluation_and_negative_outcome"
+    },
+    {
+      "reason": "SPEC-019 M3.5 implementation is deferred",
+      "test": "NativePredictorContractTests.test_verifier_remains_sole_certificate_source"
+    },
+    {
+      "reason": "SPEC-019 M3.5 implementation is deferred",
+      "test": "NativePredictorContractTests.test_versioned_local_inference_and_tamper"
+    },
+    {
+      "reason": "private historical commit objects are intentionally unavailable",
+      "test": "SpecKitTests.test_historical_snapshot_must_match_available_commit"
+    }
+  ],
+  "wholeM4Acceptance": false
+}
