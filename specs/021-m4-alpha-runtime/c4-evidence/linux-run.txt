@@ -1,0 +1,273 @@
+Fresh-process Linux alpha core and protocol reproduction	Set up job	﻿2026-10-04T11:04:15.0800029Z Current runner version: '2.337.0'
+Fresh-process Linux alpha core and protocol reproduction	Set up job	2026-10-04T11:04:15.0825665Z ##[group]Runner Image Provisioner
+Fresh-process Linux alpha core and protocol reproduction	Set up job	2026-10-04T11:04:15.0826788Z Hosted Compute Agent
+Fresh-process Linux alpha core and protocol reproduction	Set up job	2026-10-04T11:04:15.0827381Z Version: 20260901.588
+Fresh-process Linux alpha core and protocol reproduction	Set up job	2026-10-04T11:04:15.0828047Z Commit: f88ec8081b781fac6c440065ac7ff9e710ce3d0b
+Fresh-process Linux alpha core and protocol reproduction	Set up job	2026-10-04T11:04:15.0828835Z Build Date: 2026-09-01T19:56:44Z
+Fresh-process Linux alpha core and protocol reproduction	Set up job	2026-10-04T11:04:15.0829607Z Worker ID: {bf7853de-2743-4adf-8382-40e5b144ffe1}
+Fresh-process Linux alpha core and protocol reproduction	Set up job	2026-10-04T11:04:15.0830383Z Azure Region: westus
+Fresh-process Linux alpha core and protocol reproduction	Set up job	2026-10-04T11:04:15.0830953Z ##[endgroup]
+Fresh-process Linux alpha core and protocol reproduction	Set up job	2026-10-04T11:04:15.0832770Z ##[group]Operating System
+Fresh-process Linux alpha core and protocol reproduction	Set up job	2026-10-04T11:04:15.0833556Z Ubuntu
+Fresh-process Linux alpha core and protocol reproduction	Set up job	2026-10-04T11:04:15.0834117Z 24.04.5
+Fresh-process Linux alpha core and protocol reproduction	Set up job	2026-10-04T11:04:15.0834710Z LTS
+Fresh-process Linux alpha core and protocol reproduction	Set up job	2026-10-04T11:04:15.0835224Z ##[endgroup]
+Fresh-process Linux alpha core and protocol reproduction	Set up job	2026-10-04T11:04:15.0835756Z ##[group]Runner Image
+Fresh-process Linux alpha core and protocol reproduction	Set up job	2026-10-04T11:04:15.0836443Z Image: ubuntu-24.04
+Fresh-process Linux alpha core and protocol reproduction	Set up job	2026-10-04T11:04:15.0837030Z Version: 20260927.320.1
+Fresh-process Linux alpha core and protocol reproduction	Set up job	2026-10-04T11:04:15.0838123Z Included Software: https://github.com/actions/runner-images/blob/ubuntu24/20260927.320/images/ubuntu/Ubuntu2404-Readme.md
+Fresh-process Linux alpha core and protocol reproduction	Set up job	2026-10-04T11:04:15.0839894Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu24%2F20260927.320
+Fresh-process Linux alpha core and protocol reproduction	Set up job	2026-10-04T11:04:15.0840971Z ##[endgroup]
+Fresh-process Linux alpha core and protocol reproduction	Set up job	2026-10-04T11:04:15.0842040Z ##[group]GITHUB_TOKEN Permissions
+Fresh-process Linux alpha core and protocol reproduction	Set up job	2026-10-04T11:04:15.0844900Z Contents: read
+Fresh-process Linux alpha core and protocol reproduction	Set up job	2026-10-04T11:04:15.0845521Z Metadata: read
+Fresh-process Linux alpha core and protocol reproduction	Set up job	2026-10-04T11:04:15.0846138Z ##[endgroup]
+Fresh-process Linux alpha core and protocol reproduction	Set up job	2026-10-04T11:04:15.0848242Z Secret source: Actions
+Fresh-process Linux alpha core and protocol reproduction	Set up job	2026-10-04T11:04:15.0849277Z Cache mode: write
+Fresh-process Linux alpha core and protocol reproduction	Set up job	2026-10-04T11:04:15.0850029Z Prepare workflow directory
+Fresh-process Linux alpha core and protocol reproduction	Set up job	2026-10-04T11:04:15.1299664Z Prepare all required actions
+Fresh-process Linux alpha core and protocol reproduction	Set up job	2026-10-04T11:04:15.1346675Z Getting action download info
+Fresh-process Linux alpha core and protocol reproduction	Set up job	2026-10-04T11:04:15.5323218Z Download action repository 'actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683' (SHA:11bd71901bbe5b1630ceea73d27597364c9af683)
+Fresh-process Linux alpha core and protocol reproduction	Set up job	2026-10-04T11:04:16.2324700Z Download action repository 'actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97' (SHA:5fda3b95a4ea91299a34e894583c3862153e4b97)
+Fresh-process Linux alpha core and protocol reproduction	Set up job	2026-10-04T11:04:16.3070485Z Download action repository 'actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02' (SHA:ea165f8d65b6e75b540449e92b4886f43607fa02)
+Fresh-process Linux alpha core and protocol reproduction	Set up job	2026-10-04T11:04:16.5163776Z Complete job name: Fresh-process Linux alpha core and protocol reproduction
+Fresh-process Linux alpha core and protocol reproduction	Require an immutable candidate identity	﻿2026-10-04T11:04:16.5856712Z ##[group]Run test "$CANDIDATE_COMMIT" = "9108a206d76c4ffb8f253b68cc4c60d977382394"
+Fresh-process Linux alpha core and protocol reproduction	Require an immutable candidate identity	2026-10-04T11:04:16.5857802Z ^[[36;1mtest "$CANDIDATE_COMMIT" = "9108a206d76c4ffb8f253b68cc4c60d977382394"^[[0m
+Fresh-process Linux alpha core and protocol reproduction	Require an immutable candidate identity	2026-10-04T11:04:16.6138205Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+Fresh-process Linux alpha core and protocol reproduction	Require an immutable candidate identity	2026-10-04T11:04:16.6139206Z env:
+Fresh-process Linux alpha core and protocol reproduction	Require an immutable candidate identity	2026-10-04T11:04:16.6139788Z   CANDIDATE_COMMIT: 9108a206d76c4ffb8f253b68cc4c60d977382394
+Fresh-process Linux alpha core and protocol reproduction	Require an immutable candidate identity	2026-10-04T11:04:16.6140494Z ##[endgroup]
+Fresh-process Linux alpha core and protocol reproduction	Check out the public candidate	﻿2026-10-04T11:04:16.6486556Z ##[group]Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+Fresh-process Linux alpha core and protocol reproduction	Check out the public candidate	2026-10-04T11:04:16.6487330Z with:
+Fresh-process Linux alpha core and protocol reproduction	Check out the public candidate	2026-10-04T11:04:16.6487782Z   ref: 9108a206d76c4ffb8f253b68cc4c60d977382394
+Fresh-process Linux alpha core and protocol reproduction	Check out the public candidate	2026-10-04T11:04:16.6488359Z   fetch-depth: 0
+Fresh-process Linux alpha core and protocol reproduction	Check out the public candidate	2026-10-04T11:04:16.6488808Z   persist-credentials: false
+Fresh-process Linux alpha core and protocol reproduction	Check out the public candidate	2026-10-04T11:04:16.6489325Z   repository: jayanez/agent-braid
+Fresh-process Linux alpha core and protocol reproduction	Check out the public candidate	2026-10-04T11:04:16.6493551Z   token: ***
+Fresh-process Linux alpha core and protocol reproduction	Check out the public candidate	2026-10-04T11:04:16.6493986Z   ssh-strict: true
+Fresh-process Linux alpha core and protocol reproduction	Check out the public candidate	2026-10-04T11:04:16.6494411Z   ssh-user: git
+Fresh-process Linux alpha core and protocol reproduction	Check out the public candidate	2026-10-04T11:04:16.6494830Z   clean: true
+Fresh-process Linux alpha core and protocol reproduction	Check out the public candidate	2026-10-04T11:04:16.6495267Z   sparse-checkout-cone-mode: true
+Fresh-process Linux alpha core and protocol reproduction	Check out the public candidate	2026-10-04T11:04:16.6495794Z   fetch-tags: false
+Fresh-process Linux alpha core and protocol reproduction	Check out the public candidate	2026-10-04T11:04:16.6496236Z   show-progress: true
+Fresh-process Linux alpha core and protocol reproduction	Check out the public candidate	2026-10-04T11:04:16.6496676Z   lfs: false
+Fresh-process Linux alpha core and protocol reproduction	Check out the public candidate	2026-10-04T11:04:16.6497077Z   submodules: false
+Fresh-process Linux alpha core and protocol reproduction	Check out the public candidate	2026-10-04T11:04:16.6497515Z   set-safe-directory: true
+Fresh-process Linux alpha core and protocol reproduction	Check out the public candidate	2026-10-04T11:04:16.6498047Z ##[endgroup]
+Fresh-process Linux alpha core and protocol reproduction	Check out the public candidate	2026-10-04T11:04:16.7455010Z Syncing repository: jayanez/agent-braid
+Fresh-process Linux alpha core and protocol reproduction	Check out the public candidate	2026-10-04T11:04:16.7457544Z ##[group]Getting Git version info
+Fresh-process Linux alpha core and protocol reproduction	Check out the public candidate	2026-10-04T11:04:16.7458836Z Working directory is '/home/runner/work/agent-braid/agent-braid'
+Fresh-process Linux alpha core and protocol reproduction	Check out the public candidate	2026-10-04T11:04:16.7460495Z [command]/usr/bin/git version
+Fresh-process Linux alpha core and protocol reproduction	Check out the public candidate	2026-10-04T11:04:16.7517543Z git version 2.55.0
+Fresh-process Linux alpha core and protocol reproduction	Check out the public candidate	2026-10-04T11:04:16.7540188Z ##[endgroup]
+Fresh-process Linux alpha core and protocol reproduction	Check out the public candidate	2026-10-04T11:04:16.7557440Z Temporarily overriding HOME='/home/runner/work/_temp/ad9ac5ce-da56-4c79-a285-af6b52c76159' before making global git config changes
+Fresh-process Linux alpha core and protocol reproduction	Check out the public candidate	2026-10-04T11:04:16.7560278Z Adding repository directory to the temporary git global config as a safe directory
+Fresh-process Linux alpha core and protocol reproduction	Check out the public candidate	2026-10-04T11:04:16.7564636Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/agent-braid/agent-braid
+Fresh-process Linux alpha core and protocol reproduction	Check out the public candidate	2026-10-04T11:04:16.7624943Z Deleting the contents of '/home/runner/work/agent-braid/agent-braid'
+Fresh-process Linux alpha core and protocol reproduction	Check out the public candidate	2026-10-04T11:04:16.7628921Z ##[group]Initializing the repository
+Fresh-process Linux alpha core and protocol reproduction	Check out the public candidate	2026-10-04T11:04:16.7633802Z [command]/usr/bin/git init /home/runner/work/agent-braid/agent-braid
+Fresh-process Linux alpha core and protocol reproduction	Check out the public candidate	2026-10-04T11:04:16.7746198Z hint: Using 'master' as the name for the initial branch. This default branch name
+Fresh-process Linux alpha core and protocol reproduction	Check out the public candidate	2026-10-04T11:04:16.7747889Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+Fresh-process Linux alpha core and protocol reproduction	Check out the public candidate	2026-10-04T11:04:16.7748862Z hint: to use in all of your new repositories, which will suppress this warning,
+Fresh-process Linux alpha core and protocol reproduction	Check out the public candidate	2026-10-04T11:04:16.7749608Z hint: call:
+Fresh-process Linux alpha core and protocol reproduction	Check out the public candidate	2026-10-04T11:04:16.7750001Z hint:
+Fresh-process Linux alpha core and protocol reproduction	Check out the public candidate	2026-10-04T11:04:16.7750525Z hint: 	git config --global init.defaultBranch <name>
+Fresh-process Linux alpha core and protocol reproduction	Check out the public candidate	2026-10-04T11:04:16.7751160Z hint:
+Fresh-process Linux alpha core and protocol reproduction	Check out the public candidate	2026-10-04T11:04:16.7751789Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+Fresh-process Linux alpha core and protocol reproduction	Check out the public candidate	2026-10-04T11:04:16.7753119Z hint: 'development'. The just-created branch can be renamed via this command:
+Fresh-process Linux alpha core and protocol reproduction	Check out the public candidate	2026-10-04T11:04:16.7753877Z hint:
+Fresh-process Linux alpha core and protocol reproduction	Check out the public candidate	2026-10-04T11:04:16.7754296Z hint: 	git branch -m <name>
+Fresh-process Linux alpha core and protocol reproduction	Check out the public candidate	2026-10-04T11:04:16.7754825Z hint:
+Fresh-process Linux alpha core and protocol reproduction	Check out the public candidate	2026-10-04T11:04:16.7755469Z hint: Disable this message with "git config set advice.defaultBranchName false"
+Fresh-process Linux alpha core and protocol reproduction	Check out the public candidate	2026-10-04T11:04:16.7761268Z Initialized empty Git repository in /home/runner/work/agent-braid/agent-braid/.git/
+Fresh-process Linux alpha core and protocol reproduction	Check out the public candidate	2026-10-04T11:04:16.7771845Z [command]/usr/bin/git remote add origin https://github.com/jayanez/agent-braid
+Fresh-process Linux alpha core and protocol reproduction	Check out the public candidate	2026-10-04T11:04:16.7818775Z ##[endgroup]
+Fresh-process Linux alpha core and protocol reproduction	Check out the public candidate	2026-10-04T11:04:16.7820063Z ##[group]Disabling automatic garbage collection
+Fresh-process Linux alpha core and protocol reproduction	Check out the public candidate	2026-10-04T11:04:16.7822743Z [command]/usr/bin/git config --local gc.auto 0
+Fresh-process Linux alpha core and protocol reproduction	Check out the public candidate	2026-10-04T11:04:16.7854511Z ##[endgroup]
+Fresh-process Linux alpha core and protocol reproduction	Check out the public candidate	2026-10-04T11:04:16.7855788Z ##[group]Setting up auth
+Fresh-process Linux alpha core and protocol reproduction	Check out the public candidate	2026-10-04T11:04:16.7860885Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+Fresh-process Linux alpha core and protocol reproduction	Check out the public candidate	2026-10-04T11:04:16.7893445Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+Fresh-process Linux alpha core and protocol reproduction	Check out the public candidate	2026-10-04T11:04:16.8281241Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+Fresh-process Linux alpha core and protocol reproduction	Check out the public candidate	2026-10-04T11:04:16.8321808Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+Fresh-process Linux alpha core and protocol reproduction	Check out the public candidate	2026-10-04T11:04:16.8547757Z [command]/usr/bin/git config --local http.https://github.com/.extraheader AUTHORIZATION: basic ***
+Fresh-process Linux alpha core and protocol reproduction	Check out the public candidate	2026-10-04T11:04:16.8589466Z ##[endgroup]
+Fresh-process Linux alpha core and protocol reproduction	Check out the public candidate	2026-10-04T11:04:16.8590322Z ##[group]Fetching the repository
+Fresh-process Linux alpha core and protocol reproduction	Check out the public candidate	2026-10-04T11:04:16.8600339Z [command]/usr/bin/git -c protocol.version=2 fetch --prune --no-recurse-submodules origin +refs/heads/*:refs/remotes/origin/* +refs/tags/*:refs/tags/*
+Fresh-process Linux alpha core and protocol reproduction	Check out the public candidate	2026-10-04T11:04:17.5843278Z From https://github.com/jayanez/agent-braid
+Fresh-process Linux alpha core and protocol reproduction	Check out the public candidate	2026-10-04T11:04:17.5844467Z  * [new branch]      014-m2-observation-normalizer -> origin/014-m2-observation-normalizer
+Fresh-process Linux alpha core and protocol reproduction	Check out the public candidate	2026-10-04T11:04:17.5845617Z  * [new branch]      015-m2-counterexample-reducer -> origin/015-m2-counterexample-reducer
+Fresh-process Linux alpha core and protocol reproduction	Check out the public candidate	2026-10-04T11:04:17.5846810Z  * [new branch]      021-m4-alpha-linux-dispatch -> origin/021-m4-alpha-linux-dispatch
+Fresh-process Linux alpha core and protocol reproduction	Check out the public candidate	2026-10-04T11:04:17.5848002Z  * [new branch]      021-m4-alpha-ready        -> origin/021-m4-alpha-ready
+Fresh-process Linux alpha core and protocol reproduction	Check out the public candidate	2026-10-04T11:04:17.5848833Z  * [new branch]      develop                   -> origin/develop
+Fresh-process Linux alpha core and protocol reproduction	Check out the public candidate	2026-10-04T11:04:17.5849699Z  * [new branch]      main                      -> origin/main
+Fresh-process Linux alpha core and protocol reproduction	Check out the public candidate	2026-10-04T11:04:17.5850704Z  * [new branch]      work/m2-frozen-candidate-v2-20260927 -> origin/work/m2-frozen-candidate-v2-20260927
+Fresh-process Linux alpha core and protocol reproduction	Check out the public candidate	2026-10-04T11:04:17.5851973Z  * [new branch]      work/m2-frozen-candidate-v3-20260927 -> origin/work/m2-frozen-candidate-v3-20260927
+Fresh-process Linux alpha core and protocol reproduction	Check out the public candidate	2026-10-04T11:04:17.5854058Z  * [new branch]      work/m2-frozen-candidate-v4-20260927 -> origin/work/m2-frozen-candidate-v4-20260927
+Fresh-process Linux alpha core and protocol reproduction	Check out the public candidate	2026-10-04T11:04:17.5855389Z  * [new branch]      work/m2-frozen-candidate-v5-20260927 -> origin/work/m2-frozen-candidate-v5-20260927
+Fresh-process Linux alpha core and protocol reproduction	Check out the public candidate	2026-10-04T11:04:17.5856982Z  * [new branch]      work/m2-parallel-prep-performance-20260925 -> origin/work/m2-parallel-prep-performance-20260925
+Fresh-process Linux alpha core and protocol reproduction	Check out the public candidate	2026-10-04T11:04:17.5859530Z  * [new branch]      work/m2-performance-retest-decision-20260925 -> origin/work/m2-performance-retest-decision-20260925
+Fresh-process Linux alpha core and protocol reproduction	Check out the public candidate	2026-10-04T11:04:17.5861955Z  * [new branch]      work/m2-radar-approved-science-20260927 -> origin/work/m2-radar-approved-science-20260927
+Fresh-process Linux alpha core and protocol reproduction	Check out the public candidate	2026-10-04T11:04:17.5863531Z  * [new branch]      work/m2-retest-preflight-20260925 -> origin/work/m2-retest-preflight-20260925
+Fresh-process Linux alpha core and protocol reproduction	Check out the public candidate	2026-10-04T11:04:17.5864699Z  * [new branch]      work/m2-t003-experiment-20260925 -> origin/work/m2-t003-experiment-20260925
+Fresh-process Linux alpha core and protocol reproduction	Check out the public candidate	2026-10-04T11:04:17.5865983Z  * [new tag]         m3-closure-packet-reviewed-014f9f1 -> m3-closure-packet-reviewed-014f9f1
+Fresh-process Linux alpha core and protocol reproduction	Check out the public candidate	2026-10-04T11:04:17.5867014Z  * [new tag]         spec-016-reviewed-0974739 -> spec-016-reviewed-0974739
+Fresh-process Linux alpha core and protocol reproduction	Check out the public candidate	2026-10-04T11:04:17.5867895Z  * [new tag]         spec-018-reviewed-2656924 -> spec-018-reviewed-2656924
+Fresh-process Linux alpha core and protocol reproduction	Check out the public candidate	2026-10-04T11:04:17.5868970Z  * [new tag]         spec-020-corrected-reviewed-853df74 -> spec-020-corrected-reviewed-853df74
+Fresh-process Linux alpha core and protocol reproduction	Check out the public candidate	2026-10-04T11:04:17.5870132Z  * [new tag]         spec-020-initial-reviewed-4dd52c8 -> spec-020-initial-reviewed-4dd52c8
+Fresh-process Linux alpha core and protocol reproduction	Check out the public candidate	2026-10-04T11:04:17.5871150Z  * [new tag]         spec-020-pr-190-13df5d5   -> spec-020-pr-190-13df5d5
+Fresh-process Linux alpha core and protocol reproduction	Check out the public candidate	2026-10-04T11:04:17.5872077Z  * [new tag]         spec-020-reviewed-853df74 -> spec-020-reviewed-853df74
+Fresh-process Linux alpha core and protocol reproduction	Check out the public candidate	2026-10-04T11:04:17.5873345Z  * [new tag]         v0.1.0-alpha.1            -> v0.1.0-alpha.1
+Fresh-process Linux alpha core and protocol reproduction	Check out the public candidate	2026-10-04T11:04:17.5875332Z [command]/usr/bin/git rev-parse --verify --quiet 9108a206d76c4ffb8f253b68cc4c60d977382394^{object}
+Fresh-process Linux alpha core and protocol reproduction	Check out the public candidate	2026-10-04T11:04:17.5886832Z 9108a206d76c4ffb8f253b68cc4c60d977382394
+Fresh-process Linux alpha core and protocol reproduction	Check out the public candidate	2026-10-04T11:04:17.5893454Z ##[endgroup]
+Fresh-process Linux alpha core and protocol reproduction	Check out the public candidate	2026-10-04T11:04:17.5894581Z ##[group]Determining the checkout info
+Fresh-process Linux alpha core and protocol reproduction	Check out the public candidate	2026-10-04T11:04:17.5895620Z ##[endgroup]
+Fresh-process Linux alpha core and protocol reproduction	Check out the public candidate	2026-10-04T11:04:17.5901809Z [command]/usr/bin/git sparse-checkout disable
+Fresh-process Linux alpha core and protocol reproduction	Check out the public candidate	2026-10-04T11:04:17.5993947Z [command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+Fresh-process Linux alpha core and protocol reproduction	Check out the public candidate	2026-10-04T11:04:17.6027564Z ##[group]Checking out the ref
+Fresh-process Linux alpha core and protocol reproduction	Check out the public candidate	2026-10-04T11:04:17.6033065Z [command]/usr/bin/git checkout --progress --force 9108a206d76c4ffb8f253b68cc4c60d977382394
+Fresh-process Linux alpha core and protocol reproduction	Check out the public candidate	2026-10-04T11:04:17.6621839Z Note: switching to '9108a206d76c4ffb8f253b68cc4c60d977382394'.
+Fresh-process Linux alpha core and protocol reproduction	Check out the public candidate	2026-10-04T11:04:17.6622968Z 
+Fresh-process Linux alpha core and protocol reproduction	Check out the public candidate	2026-10-04T11:04:17.6623705Z You are in 'detached HEAD' state. You can look around, make experimental
+Fresh-process Linux alpha core and protocol reproduction	Check out the public candidate	2026-10-04T11:04:17.6624710Z changes and commit them, and you can discard any commits you make in this
+Fresh-process Linux alpha core and protocol reproduction	Check out the public candidate	2026-10-04T11:04:17.6625669Z state without impacting any branches by switching back to a branch.
+Fresh-process Linux alpha core and protocol reproduction	Check out the public candidate	2026-10-04T11:04:17.6626212Z 
+Fresh-process Linux alpha core and protocol reproduction	Check out the public candidate	2026-10-04T11:04:17.6626653Z If you want to create a new branch to retain commits you create, you may
+Fresh-process Linux alpha core and protocol reproduction	Check out the public candidate	2026-10-04T11:04:17.6627577Z do so (now or later) by using -c with the switch command. Example:
+Fresh-process Linux alpha core and protocol reproduction	Check out the public candidate	2026-10-04T11:04:17.6628084Z 
+Fresh-process Linux alpha core and protocol reproduction	Check out the public candidate	2026-10-04T11:04:17.6628342Z   git switch -c <new-branch-name>
+Fresh-process Linux alpha core and protocol reproduction	Check out the public candidate	2026-10-04T11:04:17.6628760Z 
+Fresh-process Linux alpha core and protocol reproduction	Check out the public candidate	2026-10-04T11:04:17.6629018Z Or undo this operation with:
+Fresh-process Linux alpha core and protocol reproduction	Check out the public candidate	2026-10-04T11:04:17.6629372Z 
+Fresh-process Linux alpha core and protocol reproduction	Check out the public candidate	2026-10-04T11:04:17.6629619Z   git switch -
+Fresh-process Linux alpha core and protocol reproduction	Check out the public candidate	2026-10-04T11:04:17.6629894Z 
+Fresh-process Linux alpha core and protocol reproduction	Check out the public candidate	2026-10-04T11:04:17.6630330Z Turn off this advice by setting config variable advice.detachedHead to false
+Fresh-process Linux alpha core and protocol reproduction	Check out the public candidate	2026-10-04T11:04:17.6630921Z 
+Fresh-process Linux alpha core and protocol reproduction	Check out the public candidate	2026-10-04T11:04:17.6631297Z HEAD is now at 9108a20 Freeze final bounded alpha review packet
+Fresh-process Linux alpha core and protocol reproduction	Check out the public candidate	2026-10-04T11:04:17.6637170Z ##[endgroup]
+Fresh-process Linux alpha core and protocol reproduction	Check out the public candidate	2026-10-04T11:04:17.6684351Z [command]/usr/bin/git log -1 --format=%H
+Fresh-process Linux alpha core and protocol reproduction	Check out the public candidate	2026-10-04T11:04:17.6712851Z 9108a206d76c4ffb8f253b68cc4c60d977382394
+Fresh-process Linux alpha core and protocol reproduction	Check out the public candidate	2026-10-04T11:04:17.6725266Z ##[group]Removing auth
+Fresh-process Linux alpha core and protocol reproduction	Check out the public candidate	2026-10-04T11:04:17.6727720Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+Fresh-process Linux alpha core and protocol reproduction	Check out the public candidate	2026-10-04T11:04:17.6760882Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+Fresh-process Linux alpha core and protocol reproduction	Check out the public candidate	2026-10-04T11:04:17.6982658Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+Fresh-process Linux alpha core and protocol reproduction	Check out the public candidate	2026-10-04T11:04:17.7010036Z http.https://github.com/.extraheader
+Fresh-process Linux alpha core and protocol reproduction	Check out the public candidate	2026-10-04T11:04:17.7017690Z [command]/usr/bin/git config --local --unset-all http.https://github.com/.extraheader
+Fresh-process Linux alpha core and protocol reproduction	Check out the public candidate	2026-10-04T11:04:17.7054478Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+Fresh-process Linux alpha core and protocol reproduction	Check out the public candidate	2026-10-04T11:04:17.7280517Z ##[endgroup]
+Fresh-process Linux alpha core and protocol reproduction	Set up Python 3.12	﻿2026-10-04T11:04:17.7500752Z ##[group]Run actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97
+Fresh-process Linux alpha core and protocol reproduction	Set up Python 3.12	2026-10-04T11:04:17.7501633Z with:
+Fresh-process Linux alpha core and protocol reproduction	Set up Python 3.12	2026-10-04T11:04:17.7502116Z   python-version: 3.12
+Fresh-process Linux alpha core and protocol reproduction	Set up Python 3.12	2026-10-04T11:04:17.7503004Z   check-latest: false
+Fresh-process Linux alpha core and protocol reproduction	Set up Python 3.12	2026-10-04T11:04:17.7507010Z   token: ***
+Fresh-process Linux alpha core and protocol reproduction	Set up Python 3.12	2026-10-04T11:04:17.7507512Z   update-environment: true
+Fresh-process Linux alpha core and protocol reproduction	Set up Python 3.12	2026-10-04T11:04:17.7508067Z   allow-prereleases: false
+Fresh-process Linux alpha core and protocol reproduction	Set up Python 3.12	2026-10-04T11:04:17.7508609Z   freethreaded: false
+Fresh-process Linux alpha core and protocol reproduction	Set up Python 3.12	2026-10-04T11:04:17.7509106Z ##[endgroup]
+Fresh-process Linux alpha core and protocol reproduction	Set up Python 3.12	2026-10-04T11:04:17.8647189Z ##[group]Installed versions
+Fresh-process Linux alpha core and protocol reproduction	Set up Python 3.12	2026-10-04T11:04:17.8739846Z Successfully set up CPython (3.12.14)
+Fresh-process Linux alpha core and protocol reproduction	Set up Python 3.12	2026-10-04T11:04:17.8741304Z ##[endgroup]
+Fresh-process Linux alpha core and protocol reproduction	Install development-only schema validator	﻿2026-10-04T11:04:17.8888015Z ##[group]Run python3 -m pip install --no-cache-dir -r requirements-dev.txt
+Fresh-process Linux alpha core and protocol reproduction	Install development-only schema validator	2026-10-04T11:04:17.8889086Z ^[[36;1mpython3 -m pip install --no-cache-dir -r requirements-dev.txt^[[0m
+Fresh-process Linux alpha core and protocol reproduction	Install development-only schema validator	2026-10-04T11:04:17.8964687Z shell: /usr/bin/bash -e {0}
+Fresh-process Linux alpha core and protocol reproduction	Install development-only schema validator	2026-10-04T11:04:17.8965253Z env:
+Fresh-process Linux alpha core and protocol reproduction	Install development-only schema validator	2026-10-04T11:04:17.8965823Z   pythonLocation: /opt/hostedtoolcache/Python/3.12.14/x64
+Fresh-process Linux alpha core and protocol reproduction	Install development-only schema validator	2026-10-04T11:04:17.8966727Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.12.14/x64/lib/pkgconfig
+Fresh-process Linux alpha core and protocol reproduction	Install development-only schema validator	2026-10-04T11:04:17.8967595Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.14/x64
+Fresh-process Linux alpha core and protocol reproduction	Install development-only schema validator	2026-10-04T11:04:17.8968406Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.14/x64
+Fresh-process Linux alpha core and protocol reproduction	Install development-only schema validator	2026-10-04T11:04:17.8969188Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.14/x64
+Fresh-process Linux alpha core and protocol reproduction	Install development-only schema validator	2026-10-04T11:04:17.8969976Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.12.14/x64/lib
+Fresh-process Linux alpha core and protocol reproduction	Install development-only schema validator	2026-10-04T11:04:17.8970656Z ##[endgroup]
+Fresh-process Linux alpha core and protocol reproduction	Install development-only schema validator	2026-10-04T11:04:18.7124923Z Collecting jsonschema==4.25.1 (from -r requirements-dev.txt (line 2))
+Fresh-process Linux alpha core and protocol reproduction	Install development-only schema validator	2026-10-04T11:04:18.7582257Z   Downloading jsonschema-4.25.1-py3-none-any.whl.metadata (7.6 kB)
+Fresh-process Linux alpha core and protocol reproduction	Install development-only schema validator	2026-10-04T11:04:18.7695940Z Collecting attrs>=22.2.0 (from jsonschema==4.25.1->-r requirements-dev.txt (line 2))
+Fresh-process Linux alpha core and protocol reproduction	Install development-only schema validator	2026-10-04T11:04:18.7724228Z   Downloading attrs-26.1.0-py3-none-any.whl.metadata (8.8 kB)
+Fresh-process Linux alpha core and protocol reproduction	Install development-only schema validator	2026-10-04T11:04:18.7810090Z Collecting jsonschema-specifications>=2023.03.6 (from jsonschema==4.25.1->-r requirements-dev.txt (line 2))
+Fresh-process Linux alpha core and protocol reproduction	Install development-only schema validator	2026-10-04T11:04:18.7837998Z   Downloading jsonschema_specifications-2025.9.1-py3-none-any.whl.metadata (2.9 kB)
+Fresh-process Linux alpha core and protocol reproduction	Install development-only schema validator	2026-10-04T11:04:18.7986282Z Collecting referencing>=0.28.4 (from jsonschema==4.25.1->-r requirements-dev.txt (line 2))
+Fresh-process Linux alpha core and protocol reproduction	Install development-only schema validator	2026-10-04T11:04:18.8015692Z   Downloading referencing-0.37.0-py3-none-any.whl.metadata (2.8 kB)
+Fresh-process Linux alpha core and protocol reproduction	Install development-only schema validator	2026-10-04T11:04:19.0540741Z Collecting rpds-py>=0.7.1 (from jsonschema==4.25.1->-r requirements-dev.txt (line 2))
+Fresh-process Linux alpha core and protocol reproduction	Install development-only schema validator	2026-10-04T11:04:19.0572998Z   Downloading rpds_py-2026.6.3-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (4.1 kB)
+Fresh-process Linux alpha core and protocol reproduction	Install development-only schema validator	2026-10-04T11:04:19.0739790Z Collecting typing-extensions>=4.4.0 (from referencing>=0.28.4->jsonschema==4.25.1->-r requirements-dev.txt (line 2))
+Fresh-process Linux alpha core and protocol reproduction	Install development-only schema validator	2026-10-04T11:04:19.0766928Z   Downloading typing_extensions-4.16.0-py3-none-any.whl.metadata (3.3 kB)
+Fresh-process Linux alpha core and protocol reproduction	Install development-only schema validator	2026-10-04T11:04:19.0815915Z Downloading jsonschema-4.25.1-py3-none-any.whl (90 kB)
+Fresh-process Linux alpha core and protocol reproduction	Install development-only schema validator	2026-10-04T11:04:19.0915729Z Downloading attrs-26.1.0-py3-none-any.whl (67 kB)
+Fresh-process Linux alpha core and protocol reproduction	Install development-only schema validator	2026-10-04T11:04:19.0951578Z Downloading jsonschema_specifications-2025.9.1-py3-none-any.whl (18 kB)
+Fresh-process Linux alpha core and protocol reproduction	Install development-only schema validator	2026-10-04T11:04:19.0981796Z Downloading referencing-0.37.0-py3-none-any.whl (26 kB)
+Fresh-process Linux alpha core and protocol reproduction	Install development-only schema validator	2026-10-04T11:04:19.1015009Z Downloading rpds_py-2026.6.3-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (366 kB)
+Fresh-process Linux alpha core and protocol reproduction	Install development-only schema validator	2026-10-04T11:04:19.1077522Z Downloading typing_extensions-4.16.0-py3-none-any.whl (45 kB)
+Fresh-process Linux alpha core and protocol reproduction	Install development-only schema validator	2026-10-04T11:04:19.1619825Z Installing collected packages: typing-extensions, rpds-py, attrs, referencing, jsonschema-specifications, jsonschema
+Fresh-process Linux alpha core and protocol reproduction	Install development-only schema validator	2026-10-04T11:04:19.3559862Z 
+Fresh-process Linux alpha core and protocol reproduction	Install development-only schema validator	2026-10-04T11:04:19.3576191Z Successfully installed attrs-26.1.0 jsonschema-4.25.1 jsonschema-specifications-2025.9.1 referencing-0.37.0 rpds-py-2026.6.3 typing-extensions-4.16.0
+Fresh-process Linux alpha core and protocol reproduction	Confirm the clean candidate and Linux x86_64	﻿2026-10-04T11:04:19.4117366Z ##[group]Run test "$(git rev-parse HEAD)" = "$CANDIDATE_COMMIT"
+Fresh-process Linux alpha core and protocol reproduction	Confirm the clean candidate and Linux x86_64	2026-10-04T11:04:19.4117999Z ^[[36;1mtest "$(git rev-parse HEAD)" = "$CANDIDATE_COMMIT"^[[0m
+Fresh-process Linux alpha core and protocol reproduction	Confirm the clean candidate and Linux x86_64	2026-10-04T11:04:19.4118473Z ^[[36;1mtest -z "$(git status --porcelain)"^[[0m
+Fresh-process Linux alpha core and protocol reproduction	Confirm the clean candidate and Linux x86_64	2026-10-04T11:04:19.4118866Z ^[[36;1mtest "$(uname -s)" = "Linux"^[[0m
+Fresh-process Linux alpha core and protocol reproduction	Confirm the clean candidate and Linux x86_64	2026-10-04T11:04:19.4119223Z ^[[36;1mtest "$(uname -m)" = "x86_64"^[[0m
+Fresh-process Linux alpha core and protocol reproduction	Confirm the clean candidate and Linux x86_64	2026-10-04T11:04:19.4186599Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+Fresh-process Linux alpha core and protocol reproduction	Confirm the clean candidate and Linux x86_64	2026-10-04T11:04:19.4187082Z env:
+Fresh-process Linux alpha core and protocol reproduction	Confirm the clean candidate and Linux x86_64	2026-10-04T11:04:19.4187438Z   pythonLocation: /opt/hostedtoolcache/Python/3.12.14/x64
+Fresh-process Linux alpha core and protocol reproduction	Confirm the clean candidate and Linux x86_64	2026-10-04T11:04:19.4188080Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.12.14/x64/lib/pkgconfig
+Fresh-process Linux alpha core and protocol reproduction	Confirm the clean candidate and Linux x86_64	2026-10-04T11:04:19.4188652Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.14/x64
+Fresh-process Linux alpha core and protocol reproduction	Confirm the clean candidate and Linux x86_64	2026-10-04T11:04:19.4189170Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.14/x64
+Fresh-process Linux alpha core and protocol reproduction	Confirm the clean candidate and Linux x86_64	2026-10-04T11:04:19.4189668Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.14/x64
+Fresh-process Linux alpha core and protocol reproduction	Confirm the clean candidate and Linux x86_64	2026-10-04T11:04:19.4190182Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.12.14/x64/lib
+Fresh-process Linux alpha core and protocol reproduction	Confirm the clean candidate and Linux x86_64	2026-10-04T11:04:19.4190740Z   CANDIDATE_COMMIT: 9108a206d76c4ffb8f253b68cc4c60d977382394
+Fresh-process Linux alpha core and protocol reproduction	Confirm the clean candidate and Linux x86_64	2026-10-04T11:04:19.4191156Z ##[endgroup]
+Fresh-process Linux alpha core and protocol reproduction	Capture bounded alpha reproduction without model credentials	﻿2026-10-04T11:04:19.4789161Z ##[group]Run python3 -m scripts.reproduce_m4_alpha --output "$RUNNER_TEMP/m4-alpha-evidence/reproduction.json"
+Fresh-process Linux alpha core and protocol reproduction	Capture bounded alpha reproduction without model credentials	2026-10-04T11:04:19.4790194Z ^[[36;1mpython3 -m scripts.reproduce_m4_alpha --output "$RUNNER_TEMP/m4-alpha-evidence/reproduction.json"^[[0m
+Fresh-process Linux alpha core and protocol reproduction	Capture bounded alpha reproduction without model credentials	2026-10-04T11:04:19.4854204Z shell: /usr/bin/bash -e {0}
+Fresh-process Linux alpha core and protocol reproduction	Capture bounded alpha reproduction without model credentials	2026-10-04T11:04:19.4854552Z env:
+Fresh-process Linux alpha core and protocol reproduction	Capture bounded alpha reproduction without model credentials	2026-10-04T11:04:19.4854905Z   pythonLocation: /opt/hostedtoolcache/Python/3.12.14/x64
+Fresh-process Linux alpha core and protocol reproduction	Capture bounded alpha reproduction without model credentials	2026-10-04T11:04:19.4855470Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.12.14/x64/lib/pkgconfig
+Fresh-process Linux alpha core and protocol reproduction	Capture bounded alpha reproduction without model credentials	2026-10-04T11:04:19.4856029Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.14/x64
+Fresh-process Linux alpha core and protocol reproduction	Capture bounded alpha reproduction without model credentials	2026-10-04T11:04:19.4856539Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.14/x64
+Fresh-process Linux alpha core and protocol reproduction	Capture bounded alpha reproduction without model credentials	2026-10-04T11:04:19.4857038Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.14/x64
+Fresh-process Linux alpha core and protocol reproduction	Capture bounded alpha reproduction without model credentials	2026-10-04T11:04:19.4857546Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.12.14/x64/lib
+Fresh-process Linux alpha core and protocol reproduction	Capture bounded alpha reproduction without model credentials	2026-10-04T11:04:19.4857966Z ##[endgroup]
+Fresh-process Linux alpha core and protocol reproduction	Capture bounded alpha reproduction without model credentials	2026-10-04T11:08:35.0599723Z {"status": "passed", "exitCode": 0, "output": "/home/runner/work/_temp/m4-alpha-evidence/reproduction.json"}
+Fresh-process Linux alpha core and protocol reproduction	Preserve the record and raw test output	﻿2026-10-04T11:08:35.0763016Z ##[group]Run actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+Fresh-process Linux alpha core and protocol reproduction	Preserve the record and raw test output	2026-10-04T11:08:35.0763486Z with:
+Fresh-process Linux alpha core and protocol reproduction	Preserve the record and raw test output	2026-10-04T11:08:35.0763722Z   name: m4-alpha-linux-37197461233-1
+Fresh-process Linux alpha core and protocol reproduction	Preserve the record and raw test output	2026-10-04T11:08:35.0764077Z   path: /home/runner/work/_temp/m4-alpha-evidence/
+Fresh-process Linux alpha core and protocol reproduction	Preserve the record and raw test output	2026-10-04T11:08:35.0764416Z   if-no-files-found: error
+Fresh-process Linux alpha core and protocol reproduction	Preserve the record and raw test output	2026-10-04T11:08:35.0764654Z   retention-days: 30
+Fresh-process Linux alpha core and protocol reproduction	Preserve the record and raw test output	2026-10-04T11:08:35.0764876Z   compression-level: 6
+Fresh-process Linux alpha core and protocol reproduction	Preserve the record and raw test output	2026-10-04T11:08:35.0765096Z   overwrite: false
+Fresh-process Linux alpha core and protocol reproduction	Preserve the record and raw test output	2026-10-04T11:08:35.0765343Z   include-hidden-files: false
+Fresh-process Linux alpha core and protocol reproduction	Preserve the record and raw test output	2026-10-04T11:08:35.0765592Z env:
+Fresh-process Linux alpha core and protocol reproduction	Preserve the record and raw test output	2026-10-04T11:08:35.0765868Z   pythonLocation: /opt/hostedtoolcache/Python/3.12.14/x64
+Fresh-process Linux alpha core and protocol reproduction	Preserve the record and raw test output	2026-10-04T11:08:35.0766308Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.12.14/x64/lib/pkgconfig
+Fresh-process Linux alpha core and protocol reproduction	Preserve the record and raw test output	2026-10-04T11:08:35.0766735Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.14/x64
+Fresh-process Linux alpha core and protocol reproduction	Preserve the record and raw test output	2026-10-04T11:08:35.0767125Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.14/x64
+Fresh-process Linux alpha core and protocol reproduction	Preserve the record and raw test output	2026-10-04T11:08:35.0767521Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.14/x64
+Fresh-process Linux alpha core and protocol reproduction	Preserve the record and raw test output	2026-10-04T11:08:35.0767965Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.12.14/x64/lib
+Fresh-process Linux alpha core and protocol reproduction	Preserve the record and raw test output	2026-10-04T11:08:35.0768301Z ##[endgroup]
+Fresh-process Linux alpha core and protocol reproduction	Preserve the record and raw test output	2026-10-04T11:08:35.2461405Z (node:76207) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+Fresh-process Linux alpha core and protocol reproduction	Preserve the record and raw test output	2026-10-04T11:08:35.2463445Z (Use `node --trace-deprecation ...` to show where the warning was created)
+Fresh-process Linux alpha core and protocol reproduction	Preserve the record and raw test output	2026-10-04T11:08:35.2536879Z With the provided path, there will be 2 files uploaded
+Fresh-process Linux alpha core and protocol reproduction	Preserve the record and raw test output	2026-10-04T11:08:35.2538410Z Artifact name is valid!
+Fresh-process Linux alpha core and protocol reproduction	Preserve the record and raw test output	2026-10-04T11:08:35.2539046Z Root directory input is valid!
+Fresh-process Linux alpha core and protocol reproduction	Preserve the record and raw test output	2026-10-04T11:08:35.6342859Z Beginning upload of artifact content to blob storage
+Fresh-process Linux alpha core and protocol reproduction	Preserve the record and raw test output	2026-10-04T11:08:35.6549561Z (node:76207) [DEP0169] DeprecationWarning: `url.parse()` behavior is not standardized and prone to errors that have security implications. Use the WHATWG URL API instead. CVEs are not issued for `url.parse()` vulnerabilities.
+Fresh-process Linux alpha core and protocol reproduction	Preserve the record and raw test output	2026-10-04T11:08:35.9274582Z Uploaded bytes 5621
+Fresh-process Linux alpha core and protocol reproduction	Preserve the record and raw test output	2026-10-04T11:08:35.9999973Z Finished uploading artifact content to blob storage!
+Fresh-process Linux alpha core and protocol reproduction	Preserve the record and raw test output	2026-10-04T11:08:36.0000845Z SHA256 digest of uploaded artifact zip is 8167ac18a882ce639bf960b828952b252478e19d81e4ae20ce53dde3927c71fa
+Fresh-process Linux alpha core and protocol reproduction	Preserve the record and raw test output	2026-10-04T11:08:36.0003257Z Finalizing artifact upload
+Fresh-process Linux alpha core and protocol reproduction	Preserve the record and raw test output	2026-10-04T11:08:36.2539255Z Artifact m4-alpha-linux-37197461233-1.zip successfully finalized. Artifact ID 11301602465
+Fresh-process Linux alpha core and protocol reproduction	Preserve the record and raw test output	2026-10-04T11:08:36.2540873Z Artifact m4-alpha-linux-37197461233-1 has been successfully uploaded! Final size is 5621 bytes. Artifact ID is 11301602465
+Fresh-process Linux alpha core and protocol reproduction	Preserve the record and raw test output	2026-10-04T11:08:36.2548252Z Artifact download URL: https://github.com/jayanez/agent-braid/actions/runs/37197461233/artifacts/11301602465
+Fresh-process Linux alpha core and protocol reproduction	Post Set up Python 3.12	﻿2026-10-04T11:08:36.2714089Z Post job cleanup.
+Fresh-process Linux alpha core and protocol reproduction	Post Check out the public candidate	﻿2026-10-04T11:08:36.3989527Z Post job cleanup.
+Fresh-process Linux alpha core and protocol reproduction	Post Check out the public candidate	2026-10-04T11:08:36.4904290Z [command]/usr/bin/git version
+Fresh-process Linux alpha core and protocol reproduction	Post Check out the public candidate	2026-10-04T11:08:36.4950033Z git version 2.55.0
+Fresh-process Linux alpha core and protocol reproduction	Post Check out the public candidate	2026-10-04T11:08:36.5007423Z Temporarily overriding HOME='/home/runner/work/_temp/761c6617-0085-4430-ae21-5617b685529d' before making global git config changes
+Fresh-process Linux alpha core and protocol reproduction	Post Check out the public candidate	2026-10-04T11:08:36.5008251Z Adding repository directory to the temporary git global config as a safe directory
+Fresh-process Linux alpha core and protocol reproduction	Post Check out the public candidate	2026-10-04T11:08:36.5008942Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/agent-braid/agent-braid
+Fresh-process Linux alpha core and protocol reproduction	Post Check out the public candidate	2026-10-04T11:08:36.5045743Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+Fresh-process Linux alpha core and protocol reproduction	Post Check out the public candidate	2026-10-04T11:08:36.5086769Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+Fresh-process Linux alpha core and protocol reproduction	Post Check out the public candidate	2026-10-04T11:08:36.5372794Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+Fresh-process Linux alpha core and protocol reproduction	Post Check out the public candidate	2026-10-04T11:08:36.5412450Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+Fresh-process Linux alpha core and protocol reproduction	Complete job	﻿2026-10-04T11:08:36.5795545Z Cleaning up orphan processes
+Fresh-process Linux alpha core and protocol reproduction	Complete job	2026-10-04T11:08:36.6141657Z ##[warning]Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683, actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/

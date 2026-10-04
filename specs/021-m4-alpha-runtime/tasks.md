@@ -1,7 +1,6 @@
 # Tasks
 
-G0 is recorded; C1/C2/C3 implementation tasks passed local validation. Host, Linux
-and whole-M4 gates remain open. This document assigns dependencies, not concurrent-agent authority.
+G0 is recorded; C1/C2/C3 implementation tasks passed local validation. Full Claude host and whole-M4 gates remain open. This document assigns dependencies, not concurrent-agent authority.
 Implementation evidence below is separate from the historically approved scope proposal.
 
 Each implementation task runs `.venv-speckit/bin/python -m scripts.validate_change
@@ -59,12 +58,12 @@ Fresh reproduction and human gates remain separate.
   - Targets: `host launch recipes; specs/021-m4-alpha-runtime/host-evidence/`.
   - Verification/evidence: Both actual clients perform prepare, authorized execute, refusal and disconnect/recovery; independently verify results.
 
-- [ ] T011: C4 Add deterministic CI policy/transport checks and fresh Darwin/Linux reproduction.
+- [x] T011: C4 Add deterministic CI policy/transport checks and fresh Darwin/Linux reproduction.
   - Trace: REQ-008 / SC-015,016. Dependencies: T009.
   - Targets: `scripts/reproduce_m4_alpha.py; .github/workflows/m4-alpha-reproduction.yml`.
   - Verification/evidence: Execute reproductions; bind source/candidate/version/platform/output hashes; CI uses no live-model credentials.
 
-- [ ] T012: C4 Freeze measurement protocol and capture bounded safety/utility/cost comparisons.
+- [x] T012: C4 Freeze measurement protocol and capture bounded safety/utility/cost comparisons.
   - Trace: REQ-003,008 / SC-005,006,015,016. Dependencies: T008,T011.
   - Targets: `specs/021-m4-alpha-runtime/measurement-protocol.md; measurement evidence`.
   - Verification/evidence: Freeze corpus, repeats and cold/warm policy before runs. Measure overlap, conflicts, diagnostics and full cost; retain null/inconclusive outcomes.
@@ -79,10 +78,10 @@ Fresh reproduction and human gates remain separate.
   - Targets: `closure record/anchor; ROADMAP.md; docs/development/github-tracking.json`.
   - Verification/evidence: All six obtained-evidence rows complete; disclose utility outcome and unresolved gates. Remote tracking/publication needs its own authorized apply.
 
-## Obtained partial progress on open tasks
+## Obtained progress and remaining gates
 
 T010: actual Codex six-tool/refusal/disconnect/recovery capture passed with zero model calls; Claude full exercise pending.
-T011: workflow and actionlint passed; fresh Darwin checkout/process passed 61 tests without skips; Linux pending.
-T012: frozen measurement protocol executed, six paired trials captured; Linux prerequisite and final utility decision remain pending.
-T013: two independent Luna implementation reviews report no findings; remaining host/platform dependencies stay open. The stable PR profile passed; final record-only binding checks are separate.
-T014: whole-M4 founder decision and remote apply remain pending; no publication or merge authorization is inferred.
+T011: workflow and actionlint passed; fresh Darwin and hosted Linux checkout/process reproductions each passed 61 tests without skips; Linux evidence and CI are obtained.
+T012: frozen measurement protocol executed, six paired trials captured; Linux prerequisite obtained; founder G4 utility decision remains separate.
+T013: two independent Luna implementation reviews report no findings; remaining full Claude host dependency stays open. The stable PR profile passed; final record-only binding checks are separate.
+T014: whole-M4 founder decision and remote apply remain pending; publication and Linux execution were explicitly authorized separately; merge remains unapproved.

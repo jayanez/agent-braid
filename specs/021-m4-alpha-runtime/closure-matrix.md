@@ -31,4 +31,8 @@ No production, arbitrary-agent, external-write, scientific or formal guarantee.
 - Six paired cost trials: verified serial/parallel tree agreement in all pairs; median serial/parallel wall ratio 0.5581, negative-or-null-descriptive. Worker overlap remains observation rather than CPU proof.
 - Two independent gpt-6-luna implementation reviews: no findings.
 
-Evidence artifacts are bound to the implementation candidate and inputs; later record packaging does not extend their domain. Linux, full Claude and founder G4 remain open. The PR profile has passed; see c4-evidence/pr-validation.json for its exact binding. No M3/M3.5 scientific gate is changed.
+Evidence artifacts are bound to the implementation candidate and inputs; later record packaging does not extend their domain. Full Claude and founder G4 remain open; Linux is obtained in the addendum. The PR profile has passed; see c4-evidence/pr-validation.json for its exact binding. No M3/M3.5 scientific gate is changed.
+
+## Authorized Linux and CI addendum
+
+Linux reproduction obtained at 9108a20 via run 37197461233: 61 tests, no skips; source/input/log bindings verified. PR CI run 37197290307 succeeded with 367 pass/five skips and an explicitly skipped integration matrix. Earlier pending-Linux statements describe the prior capture stage and are superseded by this addendum. All final-acceptance rows remain open pending full Claude evidence, final reconciliation and founder G4.
