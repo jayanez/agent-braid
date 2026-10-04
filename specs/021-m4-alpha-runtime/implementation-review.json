@@ -1,0 +1,20 @@
+{
+  "candidateCommit": "67b8b521d0d18ebe679a905c3ed559d2f4a0119a",
+  "independentScientificValidation": false,
+  "reviewType": "Independent read-only local implementation review",
+  "reviews": [
+    {
+      "model": "gpt-6-luna",
+      "rawReport": "No findings.\n\nThe C1/C2 grant, reconstruction, scheduler admission, isolated worker, serial publication, retry, and recovery paths match the stated implementation boundary. The review covered the merge-base diff through candidate `67b8b52`.\n\nResidual limits remain: no hard child-memory cap, scratch usage is sampled, worker interval overlap does not prove CPU parallelism, and recovery depends on owned local state. I did not run tests because the main agent is handling local validation. This review does not endorse whole-M4 closure.",
+      "reviewer": "/root/m4_alpha_policy_review",
+      "scope": "C1/C2 grants, scheduler, CLI and schemas"
+    },
+    {
+      "model": "gpt-6-luna",
+      "rawReport": "No findings.\n\nThe transport, scope checks, interruption handling, evidence capture, and measurement reporting align with the reviewed G1 and C3 boundaries. Claude\u2019s full host exercise and fresh Linux reproduction remain pending; this review does not establish M4 closure.",
+      "reviewer": "/root/m4_alpha_transport_review",
+      "scope": "MCP, actual-host capture, reproduction and measurement tools"
+    }
+  ],
+  "wholeM4Acceptance": false
+}
