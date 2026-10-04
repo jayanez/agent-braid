@@ -29,3 +29,5 @@ Implementation was authorized by G0. PR publication, remote tracking apply, Linu
 ## 7. Published observation views and preservation
 
 Codex transcript and measurement records replace local temporary paths and ephemeral host thread identifiers with stable placeholders. Original observed digests refer to original bytes, not pseudonymized paths; these published views are not runnable grants or independent replay inputs. Each view retains the raw record hash, and originals remain operator-local outside the repository. The publication branch starts from the capture candidate and contains only sanitized packaging; the earlier local packaging branch is preserved without rewriting or deleting its history. Raw measurement quantities, outcomes and all bound source inputs are unchanged.
+
+Independent packaging re-review passed at a54f9d6. The P2 transcript-redaction finding is resolved; raw final report is retained in packaging-review.json. Final metadata packaging preserves all bound implementation inputs.
