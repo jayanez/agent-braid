@@ -26,7 +26,10 @@
       "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
     },
     "policyRevision": {
-      "const": "owned-operator-grant-v1"
+      "enum": [
+        "owned-operator-grant-v1",
+        "parallel-owned-operator-grant-v1"
+      ]
     },
     "planDigest": {
       "type": "string",

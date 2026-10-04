@@ -1,7 +1,8 @@
 # Prospective validation procedures
 
-Status: planning only. These procedures exist as traceability targets for draft
-assurance; none is executable evidence. Each implementation task must create actual
+This is the original planning catalogue, retained for scope traceability. Current
+implemented test targets and obtained records are in assurance.json and the cut
+implementation documents. This catalogue itself is not executable evidence. Each implementation task must create actual
 tests, replace these references, and record results before stage validated.
 
 ## SC-001 — Unified policy pipeline

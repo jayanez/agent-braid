@@ -23,12 +23,17 @@ Each existing M2 replay/verification phase retains its existing pinned budget:
 64 MiB sampled scratch. Each existing serial-runtime admission/execute/recovery/
 verification invocation retains 60 s, 256 commands, 8 MiB aggregate capture,
 2 MiB per command and 64 MiB sampled scratch. No hard child memory cap is claimed.
-The policy path calls at most one replay consumer verification and one runtime
-preparation before dispatch. It does not claim a shared hard deadline across these
-independent stages. Expose stage limits in the bound policy and report stage costs.
+C1 calls one replay consumer verification and one runtime preparation before
+dispatch. C2 also runs a separately bounded serial worker reference when preparing
+or reconstructing a parallel policy, and again when independently verifying its
+receipt. Each reference uses the same worker-stage budget; recorded path scopes
+receive a separate bounded Git-common-directory inspection. There is no shared
+hard deadline across these independent stages. Expose stage limits in the bound policy and report stage costs.
 C2 worker preparation has one shared 60 s / 256-command / 8 MiB capture /
 2 MiB-command / 64 MiB sampled scratch budget across at most four workers.
-Coordinator execution remains a separate existing SPEC-020 invocation.
+Coordinator execution and its independent result verification remain separate
+existing SPEC-020 invocations. Parallel completion includes both worker-reference
+replay and private-result verification; these costs are not described as free.
 A caller must acknowledge the entire stage-budget policy. Repeated invocations
 consume new bounded work and are reported separately, not described as free.
 MCP frame/result cap: 1 MiB each; in-flight operations: one; tool timeout 360 s.

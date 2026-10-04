@@ -23,7 +23,7 @@
   ],
   "assumptions": "Trusted owned POSIX filesystem/Git and immutable fixed patches; installed host paths do not establish compatibility.",
   "authority_snapshot": {
-    "commit": null,
+    "commit": "8dbde4934e245ee20f03d1fc33cc8247f5dcea6b",
     "hashes": {
       "ARCHITECTURE.md": "94e5114eb799b25ca666ef728f84ab1c88e6ad1b342e30a9e99276b8f44c30c2",
       "CONSTITUTION.md": "ff7196976a1736a639947c2ab26e8da157fef23c89ba9881312f2a36459964eb",
@@ -75,10 +75,8 @@
       "schemas/0.1.0-alpha/git-runtime-report.schema.json": "b2b1833e43c3b8429f9cc20a2a632a27214f8d2acd59a3e9ce5f0243579af73b",
       "schemas/0.1.0-alpha/git-runtime-request.schema.json": "a83873e072ea357b29331e74e42b5a075769d939bcfba69f458712876b187f5d",
       "schemas/0.1.0-alpha/git-runtime-state.schema.json": "6ce9a56e6493e10938eaf60dfc6501d52cd59af240e9f0bb5a0a8c036677d75a",
-      "schemas/0.1.0-alpha/runtime-operator-grant.schema.json": "0a49f4800ed40873022eaa14d37e12eacb5790f71197ac1013766f4742162b8d",
-      "schemas/0.1.0-alpha/runtime-policy.schema.json": "dc88b1e7de631c797002ad29276a4eeccf8f2a1bbbb3a48c41dd4f82ea6f8c17",
-      "schemas/0.1.0-alpha/runtime-preparation-evidence.schema.json": "1989267da48fa7ad3432b67d0767e2f702381773edb02aff7bd8a9ad37a3229f",
-      "schemas/0.1.0-alpha/runtime-schedule.schema.json": "0bd21c877e5f594e7710085d4232b5b095683e1239277a7b322f0890d4b28f64",
+      "schemas/0.1.0-alpha/runtime-operator-grant.schema.json": "fa88d7b9c335e417bae1df8da5d294dab2259a6f57b8c54baba9e313be264786",
+      "schemas/0.1.0-alpha/runtime-policy.schema.json": "e3a6d80ea5725a7fd58e01e8229cbf671a59aca51fee11c1631b0f5528339d4c",
       "schemas/0.2.0-draft/agent-interaction-metadata.schema.json": "9d2ff528d0d3f02ba5bce63181e88732eecef96e90fabb5898b3314abd554900",
       "schemas/0.2.0-draft/confluence-certificate.schema.json": "8e375fdc57fbd3b9f15544f2079c8f92633ec1def660f3eabed77feb784f34f0",
       "schemas/0.3.0-experimental/structured-exchange-evidence.schema.json": "1cb4e536d89b519b3a5ffc70421a6ec561b06e1826b22c69b9e9cc01cca4c767",
@@ -88,13 +86,13 @@
       "schemas/governance/public-export-manifest.schema.json": "11eb7f2594939ae9fd0c9e6cfe4423a80aba686d6cdfdd8b73b0fb84b0840aa8",
       "schemas/governance/release-validation-record.schema.json": "d9943f0c9f5520ea52e3b12bfba88240d03f8011b433fc5e35cb49549ab6e819"
     },
-    "mode": "current"
+    "mode": "historical"
   },
   "compatibility": "Zero core runtime dependencies; separate opt-in runtime/transport contracts; legacy executionAuthorization false.",
   "domain": "2\u20134 fixed ordinary-text A/M patches; private Git tracked-tree effects and bounded stdio transport.",
   "evidence_snapshot": {
-    "commit": null,
-    "mode": "current"
+    "commit": "8dbde4934e245ee20f03d1fc33cc8247f5dcea6b",
+    "mode": "historical"
   },
   "execution_contract": "Existing serial contract unchanged; expanded isolated parallel preparation and coordinator publication contract proposed, not adopted.",
   "human_review": "pending",
@@ -124,13 +122,6 @@
               "outcome": "18 tests passed; serial C1 policy scope only.",
               "path": "specs/021-m4-alpha-runtime/c1-evidence/policy-tests.txt",
               "sha256": "ba267c3b0b62eeaac7977e4c30e8c8e6146632d84cab6e10d0d8abbc40fc033d"
-            },
-            {
-              "command": ".venv-speckit/bin/python -m scripts.validate_change --base develop --profile quick",
-              "limits": "Local executable C1/C2 validation; not MCP/real-host/Linux reproduction, independent review, measurement or whole-M4 acceptance.",
-              "outcome": "Sensitive validation passed: 361 tests, 4 skips for deferred SPEC-019 implementation; 31 C1/C2 tests execute without skips.",
-              "path": "specs/021-m4-alpha-runtime/c2-evidence/validation.txt",
-              "sha256": "032ade631384b8d80659e3c96ab4d21bff55eb3353e05dfaf6fee9bc3cc103b4"
             }
           ],
           "planned_evidence": "Actual automated tests for pipeline, candidate-bound captures and independent verifier outcomes; procedure currently planning only.",
@@ -149,13 +140,6 @@
               "outcome": "18 tests passed; serial C1 policy scope only.",
               "path": "specs/021-m4-alpha-runtime/c1-evidence/policy-tests.txt",
               "sha256": "ba267c3b0b62eeaac7977e4c30e8c8e6146632d84cab6e10d0d8abbc40fc033d"
-            },
-            {
-              "command": ".venv-speckit/bin/python -m scripts.validate_change --base develop --profile quick",
-              "limits": "Local executable C1/C2 validation; not MCP/real-host/Linux reproduction, independent review, measurement or whole-M4 acceptance.",
-              "outcome": "Sensitive validation passed: 361 tests, 4 skips for deferred SPEC-019 implementation; 31 C1/C2 tests execute without skips.",
-              "path": "specs/021-m4-alpha-runtime/c2-evidence/validation.txt",
-              "sha256": "032ade631384b8d80659e3c96ab4d21bff55eb3353e05dfaf6fee9bc3cc103b4"
             }
           ],
           "planned_evidence": "Actual automated tests for pipeline, candidate-bound captures and independent verifier outcomes; procedure currently planning only.",
@@ -180,13 +164,6 @@
               "outcome": "18 tests passed; serial C1 policy scope only.",
               "path": "specs/021-m4-alpha-runtime/c1-evidence/policy-tests.txt",
               "sha256": "ba267c3b0b62eeaac7977e4c30e8c8e6146632d84cab6e10d0d8abbc40fc033d"
-            },
-            {
-              "command": ".venv-speckit/bin/python -m scripts.validate_change --base develop --profile quick",
-              "limits": "Local executable C1/C2 validation; not MCP/real-host/Linux reproduction, independent review, measurement or whole-M4 acceptance.",
-              "outcome": "Sensitive validation passed: 361 tests, 4 skips for deferred SPEC-019 implementation; 31 C1/C2 tests execute without skips.",
-              "path": "specs/021-m4-alpha-runtime/c2-evidence/validation.txt",
-              "sha256": "032ade631384b8d80659e3c96ab4d21bff55eb3353e05dfaf6fee9bc3cc103b4"
             }
           ],
           "planned_evidence": "Actual automated tests for authorization, candidate-bound captures and independent verifier outcomes; procedure currently planning only.",
@@ -205,13 +182,6 @@
               "outcome": "18 tests passed; serial C1 policy scope only.",
               "path": "specs/021-m4-alpha-runtime/c1-evidence/policy-tests.txt",
               "sha256": "ba267c3b0b62eeaac7977e4c30e8c8e6146632d84cab6e10d0d8abbc40fc033d"
-            },
-            {
-              "command": ".venv-speckit/bin/python -m scripts.validate_change --base develop --profile quick",
-              "limits": "Local executable C1/C2 validation; not MCP/real-host/Linux reproduction, independent review, measurement or whole-M4 acceptance.",
-              "outcome": "Sensitive validation passed: 361 tests, 4 skips for deferred SPEC-019 implementation; 31 C1/C2 tests execute without skips.",
-              "path": "specs/021-m4-alpha-runtime/c2-evidence/validation.txt",
-              "sha256": "032ade631384b8d80659e3c96ab4d21bff55eb3353e05dfaf6fee9bc3cc103b4"
             }
           ],
           "planned_evidence": "Actual automated tests for authorization, candidate-bound captures and independent verifier outcomes; procedure currently planning only.",
@@ -229,36 +199,20 @@
         {
           "given": "The bounded inputs and preconditions described in the specification.",
           "id": "SC-005",
-          "obtained_evidence": [
-            {
-              "command": ".venv-speckit/bin/python -m scripts.validate_change --base develop --profile quick",
-              "limits": "Local executable C1/C2 validation; not MCP/real-host/Linux reproduction, independent review, measurement or whole-M4 acceptance.",
-              "outcome": "Sensitive validation passed: 361 tests, 4 skips for deferred SPEC-019 implementation; 31 C1/C2 tests execute without skips.",
-              "path": "specs/021-m4-alpha-runtime/c2-evidence/validation.txt",
-              "sha256": "032ade631384b8d80659e3c96ab4d21bff55eb3353e05dfaf6fee9bc3cc103b4"
-            }
-          ],
-          "planned_evidence": "Actual C2 local tests plus frozen fresh-process reproduction; host/disconnect and independent review gates remain separate.",
-          "test_file": "tests/test_m4_alpha_scheduler.py",
-          "test_name": "RuntimeSchedulerTests.test_real_overlap_isolated_resources_and_serial_effect_agreement",
+          "obtained_evidence": [],
+          "planned_evidence": "Actual automated tests for scheduler, candidate-bound captures and independent verifier outcomes; procedure currently planning only.",
+          "test_file": "specs/021-m4-alpha-runtime/validation-plan.md",
+          "test_name": "SC-005",
           "then": "Given 2\u20134 fixed operations with complete dependencies and adapter-verified footprints, when a ready wave is admitted, then isolated workers may prepare concurrently and one coordinator alone publishes checkpoints.",
           "when": "The prospective procedure is implemented and executed against a frozen candidate."
         },
         {
           "given": "The bounded inputs and preconditions described in the specification.",
           "id": "SC-006",
-          "obtained_evidence": [
-            {
-              "command": ".venv-speckit/bin/python -m scripts.validate_change --base develop --profile quick",
-              "limits": "Local executable C1/C2 validation; not MCP/real-host/Linux reproduction, independent review, measurement or whole-M4 acceptance.",
-              "outcome": "Sensitive validation passed: 361 tests, 4 skips for deferred SPEC-019 implementation; 31 C1/C2 tests execute without skips.",
-              "path": "specs/021-m4-alpha-runtime/c2-evidence/validation.txt",
-              "sha256": "032ade631384b8d80659e3c96ab4d21bff55eb3353e05dfaf6fee9bc3cc103b4"
-            }
-          ],
-          "planned_evidence": "Actual C2 local tests plus frozen fresh-process reproduction; host/disconnect and independent review gates remain separate.",
-          "test_file": "tests/test_m4_alpha_scheduler.py",
-          "test_name": "RuntimeSchedulerTests.test_changed_footprints_limits_and_stale_inputs_never_start_workers",
+          "obtained_evidence": [],
+          "planned_evidence": "Actual automated tests for scheduler, candidate-bound captures and independent verifier outcomes; procedure currently planning only.",
+          "test_file": "specs/021-m4-alpha-runtime/validation-plan.md",
+          "test_name": "SC-006",
           "then": "Overlap, unknown reads, shared resources, stale bases, altered dependencies and incomplete traces cause serialization under a separately acknowledged plan or rejection, never implicit parallel admission.",
           "when": "The prospective procedure is implemented and executed against a frozen candidate."
         }
@@ -271,36 +225,20 @@
         {
           "given": "The bounded inputs and preconditions described in the specification.",
           "id": "SC-007",
-          "obtained_evidence": [
-            {
-              "command": ".venv-speckit/bin/python -m scripts.validate_change --base develop --profile quick",
-              "limits": "Local executable C1/C2 validation; not MCP/real-host/Linux reproduction, independent review, measurement or whole-M4 acceptance.",
-              "outcome": "Sensitive validation passed: 361 tests, 4 skips for deferred SPEC-019 implementation; 31 C1/C2 tests execute without skips.",
-              "path": "specs/021-m4-alpha-runtime/c2-evidence/validation.txt",
-              "sha256": "032ade631384b8d80659e3c96ab4d21bff55eb3353e05dfaf6fee9bc3cc103b4"
-            }
-          ],
-          "planned_evidence": "Actual C2 local tests plus frozen fresh-process reproduction; host/disconnect and independent review gates remain separate.",
-          "test_file": "tests/test_m4_alpha_scheduler.py",
-          "test_name": "RuntimeSchedulerTests.test_parallel_policy_dispatch_then_retry_inspects_without_worker_rerun",
+          "obtained_evidence": [],
+          "planned_evidence": "Actual automated tests for effects, candidate-bound captures and independent verifier outcomes; procedure currently planning only.",
+          "test_file": "specs/021-m4-alpha-runtime/validation-plan.md",
+          "test_name": "SC-007",
           "then": "Given admitted workers, when actual path/mode/blob effects or result trees differ from the manifest, then publication stops and a read-only consumer rejects completion.",
           "when": "The prospective procedure is implemented and executed against a frozen candidate."
         },
         {
           "given": "The bounded inputs and preconditions described in the specification.",
           "id": "SC-008",
-          "obtained_evidence": [
-            {
-              "command": ".venv-speckit/bin/python -m scripts.validate_change --base develop --profile quick",
-              "limits": "Local executable C1/C2 validation; not MCP/real-host/Linux reproduction, independent review, measurement or whole-M4 acceptance.",
-              "outcome": "Sensitive validation passed: 361 tests, 4 skips for deferred SPEC-019 implementation; 31 C1/C2 tests execute without skips.",
-              "path": "specs/021-m4-alpha-runtime/c2-evidence/validation.txt",
-              "sha256": "032ade631384b8d80659e3c96ab4d21bff55eb3353e05dfaf6fee9bc3cc103b4"
-            }
-          ],
-          "planned_evidence": "Actual C2 local tests plus frozen fresh-process reproduction; host/disconnect and independent review gates remain separate.",
-          "test_file": "tests/test_m4_alpha_scheduler.py",
-          "test_name": "RuntimeSchedulerTests.test_trace_corruption_is_refused_even_with_recomputed_digest",
+          "obtained_evidence": [],
+          "planned_evidence": "Actual automated tests for effects, candidate-bound captures and independent verifier outcomes; procedure currently planning only.",
+          "test_file": "specs/021-m4-alpha-runtime/validation-plan.md",
+          "test_name": "SC-008",
           "then": "Forged terminal reports and altered private objects/state are refused; declared metadata never substitutes for observed adapter evidence.",
           "when": "The prospective procedure is implemented and executed against a frozen candidate."
         }
@@ -313,36 +251,20 @@
         {
           "given": "The bounded inputs and preconditions described in the specification.",
           "id": "SC-009",
-          "obtained_evidence": [
-            {
-              "command": ".venv-speckit/bin/python -m scripts.validate_change --base develop --profile quick",
-              "limits": "Local executable C1/C2 validation; not MCP/real-host/Linux reproduction, independent review, measurement or whole-M4 acceptance.",
-              "outcome": "Sensitive validation passed: 361 tests, 4 skips for deferred SPEC-019 implementation; 31 C1/C2 tests execute without skips.",
-              "path": "specs/021-m4-alpha-runtime/c2-evidence/validation.txt",
-              "sha256": "032ade631384b8d80659e3c96ab4d21bff55eb3353e05dfaf6fee9bc3cc103b4"
-            }
-          ],
-          "planned_evidence": "Actual C2 local tests plus frozen fresh-process reproduction; host/disconnect and independent review gates remain separate.",
-          "test_file": "tests/test_m4_alpha_scheduler.py",
-          "test_name": "RuntimeSchedulerTests.test_fresh_process_kill_preserves_prefix_and_resume_does_not_rerun_workers",
+          "obtained_evidence": [],
+          "planned_evidence": "Actual automated tests for recovery, candidate-bound captures and independent verifier outcomes; procedure currently planning only.",
+          "test_file": "specs/021-m4-alpha-runtime/validation-plan.md",
+          "test_name": "SC-009",
           "then": "Given process death, cancellation or host disconnect, when the run is inspected or explicitly resumed, then an independently verified prefix is retained and completed logical operations are not duplicated.",
           "when": "The prospective procedure is implemented and executed against a frozen candidate."
         },
         {
           "given": "The bounded inputs and preconditions described in the specification.",
           "id": "SC-010",
-          "obtained_evidence": [
-            {
-              "command": ".venv-speckit/bin/python -m scripts.validate_change --base develop --profile quick",
-              "limits": "Local executable C1/C2 validation; not MCP/real-host/Linux reproduction, independent review, measurement or whole-M4 acceptance.",
-              "outcome": "Sensitive validation passed: 361 tests, 4 skips for deferred SPEC-019 implementation; 31 C1/C2 tests execute without skips.",
-              "path": "specs/021-m4-alpha-runtime/c2-evidence/validation.txt",
-              "sha256": "032ade631384b8d80659e3c96ab4d21bff55eb3353e05dfaf6fee9bc3cc103b4"
-            }
-          ],
-          "planned_evidence": "Actual C2 local tests plus frozen fresh-process reproduction; host/disconnect and independent review gates remain separate.",
-          "test_file": "tests/test_m4_alpha_scheduler.py",
-          "test_name": "RuntimeSchedulerTests.test_new_recovery_grant_preserves_worker_journal_without_rerun",
+          "obtained_evidence": [],
+          "planned_evidence": "Actual automated tests for recovery, candidate-bound captures and independent verifier outcomes; procedure currently planning only.",
+          "test_file": "specs/021-m4-alpha-runtime/validation-plan.md",
+          "test_name": "SC-010",
           "then": "Repeated delivery, worker failure, interrupted publication and abort are tested; unknown outcome remains unknown until verified.",
           "when": "The prospective procedure is implemented and executed against a frozen candidate."
         }
@@ -429,6 +351,6 @@
     }
   ],
   "scientific_limits": "No arbitrary-agent safety, production, source promotion, external independent scientific validation, formal result or M3/M3.5 admission.",
-  "scope": "Approved bounded M4 alpha engineering implementation; C1/C2 local work in progress, host/reproduction/review/whole-M4 gates remain open.",
+  "scope": "Complete bounded M4 alpha engineering proposal; implementation and closure pending.",
   "stage": "draft"
 }

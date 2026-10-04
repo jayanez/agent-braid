@@ -1,6 +1,7 @@
 # Tasks
 
-G0 is recorded; implementation tasks remain open. This document assigns dependencies, not concurrent-agent authority.
+G0 is recorded; C1/C2 implementation tasks passed local validation. Later cuts and
+whole-M4 gates remain open. This document assigns dependencies, not concurrent-agent authority.
 No implementation or real-host evidence is claimed by the proposal.
 
 Each implementation task runs `.venv-speckit/bin/python -m scripts.validate_change
@@ -28,22 +29,22 @@ Fresh reproduction and human gates remain separate.
   - Targets: `agent_braid/runtime_policy.py; agent_braid/cli.py; grant schema`.
   - Verification/evidence: Actual tests cover stale/expired/consumed grants, changed manifests/destinations and retries.
 
-- [ ] T005: C2 Define adapter-verified reads/writes/shared resources and private worker isolation.
+- [x] T005: C2 Define adapter-verified reads/writes/shared resources and private worker isolation.
   - Trace: REQ-003 / SC-005,006. Dependencies: T004.
   - Targets: `agent_braid/runtime_scheduler.py; reviewed execution contract`.
   - Verification/evidence: Actual isolation/footprint tests; unknown reads cannot qualify for parallel admission.
 
-- [ ] T006: C2 Implement dependency-ready bounded waves and exclusive coordinator publication.
+- [x] T006: C2 Implement dependency-ready bounded waves and exclusive coordinator publication.
   - Trace: REQ-003 / SC-005,006. Dependencies: T005.
   - Targets: `agent_braid/runtime_scheduler.py; agent_braid/git_runtime.py`.
   - Verification/evidence: Actual overlap and all supported schedule comparisons against serial reference; zero unsafe admissions.
 
-- [ ] T007: C2 Verify observed effects and consumer certificates before reporting completion.
+- [x] T007: C2 Verify observed effects and consumer certificates before reporting completion.
   - Trace: REQ-004 / SC-007,008. Dependencies: T006.
   - Targets: `agent_braid/git_runtime.py; runtime report contracts`.
   - Verification/evidence: Actual drift/forgery/partial-state tests; independent consumer rejects unsupported completion.
 
-- [ ] T008: C2 Extend crash/cancellation/abort recovery to owned worker state.
+- [x] T008: C2 Extend crash/cancellation/abort recovery to owned worker state.
   - Trace: REQ-005 / SC-009,010. Dependencies: T007.
   - Targets: `agent_braid/runtime_scheduler.py; agent_braid/git_runtime.py`.
   - Verification/evidence: Fresh-process kill/abort/resume and duplicate delivery tests; retain verified prefix without duplicate steps.

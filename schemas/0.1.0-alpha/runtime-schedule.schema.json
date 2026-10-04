@@ -1,0 +1,243 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "runtimeScheduleVersion": {
+      "const": "0.1.0-alpha"
+    },
+    "executionContract": {
+      "const": "isolated-preparation-serial-publication-v1"
+    },
+    "manifestDigest": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$"
+    },
+    "waves": {
+      "type": "array",
+      "items": {
+        "type": "array",
+        "items": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256
+        },
+        "minItems": 1,
+        "maxItems": 4
+      },
+      "minItems": 1,
+      "maxItems": 4
+    },
+    "workers": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "operationId": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 256
+          },
+          "attemptId": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 256
+          },
+          "sourceCommit": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{40}$"
+          },
+          "patchDigest": {
+            "type": "string",
+            "pattern": "^sha256:[0-9a-f]{64}$"
+          },
+          "wave": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 3
+          },
+          "inputCommit": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{40}$"
+          },
+          "inputTree": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{40}$"
+          },
+          "reads": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "path": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 1024
+                },
+                "mode": {
+                  "enum": [
+                    "000000",
+                    "100644",
+                    "100755"
+                  ]
+                },
+                "blob": {
+                  "type": "string",
+                  "pattern": "^[0-9a-f]{40}$"
+                }
+              },
+              "required": [
+                "path",
+                "mode",
+                "blob"
+              ]
+            },
+            "minItems": 0,
+            "maxItems": 16
+          },
+          "writes": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 1024
+            },
+            "minItems": 0,
+            "maxItems": 16
+          },
+          "sharedResources": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "kind": {
+                  "const": "immutable-git-objects"
+                },
+                "repositoryId": {
+                  "type": "string",
+                  "pattern": "^sha256:[0-9a-f]{64}$"
+                },
+                "inputCommit": {
+                  "type": "string",
+                  "pattern": "^[0-9a-f]{40}$"
+                },
+                "access": {
+                  "const": "read"
+                }
+              },
+              "required": [
+                "kind",
+                "repositoryId",
+                "inputCommit",
+                "access"
+              ]
+            },
+            "minItems": 1,
+            "maxItems": 1
+          },
+          "expectedEffects": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "path": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 1024
+                },
+                "status": {
+                  "enum": [
+                    "A",
+                    "M"
+                  ]
+                },
+                "beforeMode": {
+                  "enum": [
+                    "000000",
+                    "100644",
+                    "100755"
+                  ]
+                },
+                "afterMode": {
+                  "enum": [
+                    "100644",
+                    "100755"
+                  ]
+                },
+                "beforeBlob": {
+                  "type": "string",
+                  "pattern": "^[0-9a-f]{40}$"
+                },
+                "afterBlob": {
+                  "type": "string",
+                  "pattern": "^[0-9a-f]{40}$"
+                }
+              },
+              "required": [
+                "path",
+                "status",
+                "beforeMode",
+                "afterMode",
+                "beforeBlob",
+                "afterBlob"
+              ]
+            },
+            "maxItems": 16
+          },
+          "expectedTree": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{40}$"
+          }
+        },
+        "required": [
+          "operationId",
+          "attemptId",
+          "sourceCommit",
+          "patchDigest",
+          "wave",
+          "inputCommit",
+          "inputTree",
+          "reads",
+          "writes",
+          "sharedResources",
+          "expectedEffects",
+          "expectedTree"
+        ]
+      },
+      "minItems": 2,
+      "maxItems": 4
+    },
+    "resourceLimits": {
+      "const": {
+        "operations": 4,
+        "changedPaths": 16,
+        "patchBytes": 262144,
+        "wallSeconds": 60,
+        "gitCommands": 256,
+        "outputBytes": 8388608,
+        "commandOutputBytes": 2097152,
+        "scratchBytes": 67108864,
+        "childAddressSpaceBytes": null,
+        "workers": 4
+      }
+    },
+    "scheduleDigest": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$"
+    }
+  },
+  "required": [
+    "runtimeScheduleVersion",
+    "executionContract",
+    "manifestDigest",
+    "waves",
+    "workers",
+    "resourceLimits",
+    "scheduleDigest"
+  ],
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://agent-braid.org/schemas/0.1.0-alpha/runtime-schedule.schema.json"
+}

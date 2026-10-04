@@ -15,6 +15,7 @@ from research.lab.certificates import verify
 from research.lab.model import Invalid, loads, require
 
 from .git_runtime import InvalidGitRuntime, prepare_run, execute_run, recover_run, verify_run
+from .runtime_scheduler import InvalidRuntimeSchedule
 from .runtime_policy import (InvalidRuntimePolicy, prepare_policy_run, verify_policy_plan,
                              issue_operator_grant, execute_policy_run, recover_policy_run)
 from .analysis import InvalidAnalysis, analyze, render_text
@@ -140,6 +141,7 @@ def main(argv: list[str] | None = None) -> int:
             policy_parser.add_argument("--run-directory", type=Path, required=True)
             policy_parser.add_argument("--evidence", type=Path, required=True)
             policy_parser.add_argument("--advisory-plan", type=Path, required=True)
+            policy_parser.add_argument("--mode", choices=("serial", "parallel"), default="serial")
         if command in {"grant-policy-run", "execute-policy-run", "recover-policy-run"}:
             policy_parser.add_argument("--grant-store", type=Path, required=True)
         if command == "grant-policy-run":
@@ -166,7 +168,7 @@ def main(argv: list[str] | None = None) -> int:
                 if args.command == "prepare-policy-run":
                     result = prepare_policy_run(data, args.run_directory,
                                                 replay_evidence=_read(args.evidence),
-                                                advisory_plan=_read(args.advisory_plan),
+                                                advisory_plan=_read(args.advisory_plan), mode=args.mode,
                                                 cancel_event=cancellation)
                 elif args.command == "verify-policy-plan":
                     result = verify_policy_plan(data, cancel_event=cancellation)
@@ -262,7 +264,7 @@ def main(argv: list[str] | None = None) -> int:
                           "reason": str(exc)}, sort_keys=True))
         return 3
     except (Invalid, InvalidAnalysis, InvalidGitAnalysis, InvalidGitReplay, InvalidExchange,
-            InvalidGitIntegrationPrototype, InvalidGitRuntime, InvalidRuntimePolicy, OSError, UnicodeError) as exc:
+            InvalidGitIntegrationPrototype, InvalidGitRuntime, InvalidRuntimePolicy, InvalidRuntimeSchedule, OSError, UnicodeError) as exc:
         print(json.dumps({"status": "rejected", "reason": str(exc)}, sort_keys=True))
         return 2
 
