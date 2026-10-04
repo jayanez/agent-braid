@@ -1,0 +1,112 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "$id": "https://agent-braid.org/schemas/0.1.0-alpha/runtime-policy.schema.json",
+  "title": "Verified serial runtime operator policy plan (C1)",
+  "required": [
+    "runtimePolicyPlanVersion",
+    "policy",
+    "runtimeManifest",
+    "replayEvidence",
+    "advisoryPlan",
+    "consumerVerification",
+    "sourceGitCommonDirectory",
+    "planDigest"
+  ],
+  "properties": {
+    "runtimePolicyPlanVersion": {
+      "const": "0.1.0-alpha"
+    },
+    "policy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "revision",
+        "scope",
+        "sourcePromotion",
+        "runtimeStageLimits",
+        "replayVerificationStageLimits",
+        "sharedHardDeadline",
+        "grantTtlSeconds",
+        "grantMaxTtlSeconds",
+        "maxGrantRecords"
+      ],
+      "properties": {
+        "revision": {
+          "const": "owned-operator-grant-v1"
+        },
+        "scope": {
+          "const": "private-run-only"
+        },
+        "sourcePromotion": {
+          "const": false
+        },
+        "runtimeStageLimits": {
+          "type": "object"
+        },
+        "replayVerificationStageLimits": {
+          "type": "object"
+        },
+        "sharedHardDeadline": {
+          "const": false
+        },
+        "grantTtlSeconds": {
+          "const": 300
+        },
+        "grantMaxTtlSeconds": {
+          "const": 900
+        },
+        "maxGrantRecords": {
+          "const": 128
+        }
+      }
+    },
+    "runtimeManifest": {
+      "$ref": "https://agent-braid.org/schemas/0.1.0-alpha/git-runtime-manifest.schema.json"
+    },
+    "replayEvidence": {
+      "$ref": "https://agent-braid.dev/schemas/0.1.0-alpha/git-replay-evidence.schema.json"
+    },
+    "advisoryPlan": {
+      "$ref": "https://agent-braid.dev/schemas/0.1.0-alpha/git-plan.schema.json"
+    },
+    "consumerVerification": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "status",
+        "reason",
+        "checkedClaim"
+      ],
+      "properties": {
+        "status": {
+          "const": "verified"
+        },
+        "reason": {
+          "type": "string"
+        },
+        "checkedClaim": {
+          "type": "object",
+          "required": [
+            "executionAuthorization"
+          ],
+          "properties": {
+            "executionAuthorization": {
+              "const": false
+            }
+          }
+        }
+      }
+    },
+    "sourceGitCommonDirectory": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 1024
+    },
+    "planDigest": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$"
+    }
+  }
+}

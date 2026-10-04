@@ -26,7 +26,7 @@ class TrackingTests(unittest.TestCase):
         for task_id in ("T001", "T002", "T003", "T004", "T005", "T006", "T007"):
             if f"- [ ] {task_id} " in runtime_tasks:
                 expected_open.add(f"SPEC-020/{task_id}")
-        expected_open.update(f"SPEC-021/T{i:03d}" for i in range(1, 15))
+        expected_open.update(f"SPEC-021/T{i:03d}" for i in range(5, 15))
         self.assertEqual("open", config["specs"]["021-m4-alpha-runtime"]["state"])
         self.assertEqual("M4", config["specs"]["021-m4-alpha-runtime"]["milestone"])
         self.assertEqual("M4", config["specs"]["020-m4-local-git-runtime"]["milestone"])

@@ -23,7 +23,7 @@
   ],
   "assumptions": "Trusted owned POSIX filesystem/Git and immutable fixed patches; installed host paths do not establish compatibility.",
   "authority_snapshot": {
-    "commit": null,
+    "commit": "0de9d31ae2cd6479b43a5d630e2932f5997f6235",
     "hashes": {
       "ARCHITECTURE.md": "94e5114eb799b25ca666ef728f84ab1c88e6ad1b342e30a9e99276b8f44c30c2",
       "CONSTITUTION.md": "ff7196976a1736a639947c2ab26e8da157fef23c89ba9881312f2a36459964eb",
@@ -53,7 +53,6 @@
       "docs/adr/0017-bounded-structured-exchange.md": "72cecb595605a16eaa5de7a88e960492205d82a300af2f6fb4451263f7e780c4",
       "docs/adr/0018-private-source-sidecar-and-disposable-labs.md": "487c48e8ed4296bb4120e32e9d7e75724c76da88ebb6435396cb7fdcf7d317ad",
       "docs/adr/0019-bounded-local-git-runtime.md": "9023b6176762885ce291721633f686ae2c4d3a4c1404f3ee164e7414a69b5fd3",
-      "docs/adr/0020-bounded-m4-alpha-runtime.md": "b91615158b29902237ce638d659bc30484562766a0f2607a38fcc4bd717fda28",
       "docs/architecture/AGENT_INTERACTION_METADATA.md": "0118d7f16c390fc4c1ff027b503a4eaba8a747edf3f6d7b088559f8870e27780",
       "docs/architecture/ASSURANCE_LEVELS.md": "102d0df0dc6fc0ec114d92fe1ef053b375bd9704d0af6a048affe36900d77512",
       "docs/architecture/CONFLUENCE_CERTIFICATE.md": "fd12a8f1a1477835848581b0f4ccd52f76d3f22dd96a3abaccb9074733464a8e",
@@ -75,8 +74,6 @@
       "schemas/0.1.0-alpha/git-runtime-report.schema.json": "b2b1833e43c3b8429f9cc20a2a632a27214f8d2acd59a3e9ce5f0243579af73b",
       "schemas/0.1.0-alpha/git-runtime-request.schema.json": "a83873e072ea357b29331e74e42b5a075769d939bcfba69f458712876b187f5d",
       "schemas/0.1.0-alpha/git-runtime-state.schema.json": "6ce9a56e6493e10938eaf60dfc6501d52cd59af240e9f0bb5a0a8c036677d75a",
-      "schemas/0.1.0-alpha/runtime-operator-grant.schema.json": "fa88d7b9c335e417bae1df8da5d294dab2259a6f57b8c54baba9e313be264786",
-      "schemas/0.1.0-alpha/runtime-policy.schema.json": "e3a6d80ea5725a7fd58e01e8229cbf671a59aca51fee11c1631b0f5528339d4c",
       "schemas/0.2.0-draft/agent-interaction-metadata.schema.json": "9d2ff528d0d3f02ba5bce63181e88732eecef96e90fabb5898b3314abd554900",
       "schemas/0.2.0-draft/confluence-certificate.schema.json": "8e375fdc57fbd3b9f15544f2079c8f92633ec1def660f3eabed77feb784f34f0",
       "schemas/0.3.0-experimental/structured-exchange-evidence.schema.json": "1cb4e536d89b519b3a5ffc70421a6ec561b06e1826b22c69b9e9cc01cca4c767",
@@ -86,16 +83,16 @@
       "schemas/governance/public-export-manifest.schema.json": "11eb7f2594939ae9fd0c9e6cfe4423a80aba686d6cdfdd8b73b0fb84b0840aa8",
       "schemas/governance/release-validation-record.schema.json": "d9943f0c9f5520ea52e3b12bfba88240d03f8011b433fc5e35cb49549ab6e819"
     },
-    "mode": "current"
+    "mode": "historical"
   },
   "compatibility": "Zero core runtime dependencies; separate opt-in runtime/transport contracts; legacy executionAuthorization false.",
   "domain": "2\u20134 fixed ordinary-text A/M patches; private Git tracked-tree effects and bounded stdio transport.",
   "evidence_snapshot": {
-    "commit": null,
-    "mode": "current"
+    "commit": "0de9d31ae2cd6479b43a5d630e2932f5997f6235",
+    "mode": "historical"
   },
   "execution_contract": "Existing serial contract unchanged; expanded isolated parallel preparation and coordinator publication contract proposed, not adopted.",
-  "human_review": "pending",
+  "human_review": "approved",
   "hypotheses": "H1 useful bounded parallelism and tolerable overhead; negative/inconclusive outcomes are valid and require usefulness go/no-go before closure.",
   "observation_contract": "Existing private tracked-tree semantics plus proposed adapter footprints and transport records; new revisions pending G1.",
   "references": [
@@ -115,36 +112,20 @@
         {
           "given": "The bounded inputs and preconditions described in the specification.",
           "id": "SC-001",
-          "obtained_evidence": [
-            {
-              "command": ".venv-speckit/bin/python -m unittest tests.test_m4_alpha_policy.RuntimePolicyTests -v",
-              "limits": "C1 owned fixed-patch fixtures; does not cover scheduler/MCP/real-host tool exercise/whole-M4 closure. Revalidate changed implementation before final acceptance.",
-              "outcome": "18 tests passed; serial C1 policy scope only.",
-              "path": "specs/021-m4-alpha-runtime/c1-evidence/policy-tests.txt",
-              "sha256": "ba267c3b0b62eeaac7977e4c30e8c8e6146632d84cab6e10d0d8abbc40fc033d"
-            }
-          ],
+          "obtained_evidence": [],
           "planned_evidence": "Actual automated tests for pipeline, candidate-bound captures and independent verifier outcomes; procedure currently planning only.",
-          "test_file": "tests/test_m4_alpha_policy.py",
-          "test_name": "RuntimePolicyTests.test_read_only_pipeline_and_legacy_authority",
+          "test_file": "specs/021-m4-alpha-runtime/validation-plan.md",
+          "test_name": "SC-001",
           "then": "Given a fixed-patch request and independently verified analysis, when a candidate is planned, then the runtime preserves the existing portable semantics, contracts and uncertainty and keeps analysis authorization false.",
           "when": "The prospective procedure is implemented and executed against a frozen candidate."
         },
         {
           "given": "The bounded inputs and preconditions described in the specification.",
           "id": "SC-002",
-          "obtained_evidence": [
-            {
-              "command": ".venv-speckit/bin/python -m unittest tests.test_m4_alpha_policy.RuntimePolicyTests -v",
-              "limits": "C1 owned fixed-patch fixtures; does not cover scheduler/MCP/real-host tool exercise/whole-M4 closure. Revalidate changed implementation before final acceptance.",
-              "outcome": "18 tests passed; serial C1 policy scope only.",
-              "path": "specs/021-m4-alpha-runtime/c1-evidence/policy-tests.txt",
-              "sha256": "ba267c3b0b62eeaac7977e4c30e8c8e6146632d84cab6e10d0d8abbc40fc033d"
-            }
-          ],
+          "obtained_evidence": [],
           "planned_evidence": "Actual automated tests for pipeline, candidate-bound captures and independent verifier outcomes; procedure currently planning only.",
-          "test_file": "tests/test_m4_alpha_policy.py",
-          "test_name": "RuntimePolicyTests.test_forged_evidence_is_refused_even_with_recomputed_producer_digest",
+          "test_file": "specs/021-m4-alpha-runtime/validation-plan.md",
+          "test_name": "SC-002",
           "then": "Forged certificates, missing coverage and changed inputs are rejected before run allocation.",
           "when": "The prospective procedure is implemented and executed against a frozen candidate."
         }
@@ -157,36 +138,20 @@
         {
           "given": "The bounded inputs and preconditions described in the specification.",
           "id": "SC-003",
-          "obtained_evidence": [
-            {
-              "command": ".venv-speckit/bin/python -m unittest tests.test_m4_alpha_policy.RuntimePolicyTests -v",
-              "limits": "C1 owned fixed-patch fixtures; does not cover scheduler/MCP/real-host tool exercise/whole-M4 closure. Revalidate changed implementation before final acceptance.",
-              "outcome": "18 tests passed; serial C1 policy scope only.",
-              "path": "specs/021-m4-alpha-runtime/c1-evidence/policy-tests.txt",
-              "sha256": "ba267c3b0b62eeaac7977e4c30e8c8e6146632d84cab6e10d0d8abbc40fc033d"
-            }
-          ],
+          "obtained_evidence": [],
           "planned_evidence": "Actual automated tests for authorization, candidate-bound captures and independent verifier outcomes; procedure currently planning only.",
-          "test_file": "tests/test_m4_alpha_policy.py",
-          "test_name": "RuntimePolicyTests.test_grant_executes_once_and_retries_independently_verify",
+          "test_file": "specs/021-m4-alpha-runtime/validation-plan.md",
+          "test_name": "SC-003",
           "then": "Given a prepared immutable plan, when the model invokes execution without a separately recorded operator grant, then no durable run is allocated.",
           "when": "The prospective procedure is implemented and executed against a frozen candidate."
         },
         {
           "given": "The bounded inputs and preconditions described in the specification.",
           "id": "SC-004",
-          "obtained_evidence": [
-            {
-              "command": ".venv-speckit/bin/python -m unittest tests.test_m4_alpha_policy.RuntimePolicyTests -v",
-              "limits": "C1 owned fixed-patch fixtures; does not cover scheduler/MCP/real-host tool exercise/whole-M4 closure. Revalidate changed implementation before final acceptance.",
-              "outcome": "18 tests passed; serial C1 policy scope only.",
-              "path": "specs/021-m4-alpha-runtime/c1-evidence/policy-tests.txt",
-              "sha256": "ba267c3b0b62eeaac7977e4c30e8c8e6146632d84cab6e10d0d8abbc40fc033d"
-            }
-          ],
+          "obtained_evidence": [],
           "planned_evidence": "Actual automated tests for authorization, candidate-bound captures and independent verifier outcomes; procedure currently planning only.",
-          "test_file": "tests/test_m4_alpha_policy.py",
-          "test_name": "RuntimePolicyTests.test_expired_and_wrong_action_grants_do_not_allocate_run",
+          "test_file": "specs/021-m4-alpha-runtime/validation-plan.md",
+          "test_name": "SC-004",
           "then": "Missing, expired, consumed, wrong-destination and changed-plan grants are refused; a tool annotation or returned digest cannot grant authority.",
           "when": "The prospective procedure is implemented and executed against a frozen candidate."
         }
@@ -350,6 +315,7 @@
       "text": "Reproducible bounded M4 closure"
     }
   ],
+  "review_record": "specs/021-m4-alpha-runtime/founder-review.json",
   "scientific_limits": "No arbitrary-agent safety, production, source promotion, external independent scientific validation, formal result or M3/M3.5 admission.",
   "scope": "Complete bounded M4 alpha engineering proposal; implementation and closure pending.",
   "stage": "draft"

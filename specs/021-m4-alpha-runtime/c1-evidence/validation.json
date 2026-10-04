@@ -1,0 +1,9 @@
+{
+  "profile": "quick (sensitive escalation)",
+  "base": "develop",
+  "exitCode": 0,
+  "tests": 348,
+  "skips": 4,
+  "logSha256": "77341584bee9ea3b0998d6f20e72849ac4a11367073d67687e56fa6fe81422f3",
+  "boundary": "C1 local executable validation only; C2-C4, independent review and whole-M4 founder closure remain open."
+}

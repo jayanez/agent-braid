@@ -214,8 +214,10 @@ remain separate contracts. This does not close the full M4 milestone.
 
 The proposed completion track is [SPEC-021](specs/021-m4-alpha-runtime/spec.md),
 with a [six-row alpha exit matrix](specs/021-m4-alpha-runtime/closure-matrix.md).
-Its scope and ADR proposal are pending founder review; no implementation or
-whole-M4 acceptance is inferred from this proposal.
+The founder approved its scope against frozen candidate `0de9d31` and adopted
+[ADR 0020](docs/adr/0020-bounded-m4-alpha-runtime.md) on 2026-10-04.
+Implementation is authorized within the documented gates; whole-M4 acceptance
+remains a separate decision.
 
 Candidate deliverables:
 
