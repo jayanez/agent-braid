@@ -32,6 +32,10 @@ class ValidationProfileTests(unittest.TestCase):
         self.assertTrue(validation.classify(
             ["scripts/restore_public_spec_history.py"]
         ).spec_kit_integration)
+        ci_tests = validation.classify(["tests/test_ci_validation.py"])
+        self.assertEqual(ci_tests.domains, ("validation-process",))
+        self.assertTrue(ci_tests.sensitive)
+        self.assertFalse(ci_tests.spec_kit_integration)
 
     def test_quick_profile_runs_only_invariants_and_affected_domains(self):
         editorial = validation.build_plan(["README.md"], "quick")
@@ -140,13 +144,13 @@ class ValidationProfileTests(unittest.TestCase):
                     "spec_kit:", "spec_kit_integration:", "validate:"):
             self.assertIn(job, workflow)
         self.assertIn("python3 -m unittest discover -s tests -v", workflow)
-        self.assertIn("needs.classify.outputs.spec_kit_integration == 'true'", workflow)
+        self.assertIn("needs.classify.outputs.spec_kit_integration != 'false'", workflow)
         self.assertIn("scripts/test_spec_kit_integration.py", workflow)
         self.assertEqual(3, workflow.count("run: python3 scripts/restore_public_spec_history.py"))
         integration = workflow.index("spec_kit_integration:")
-        condition = workflow.index("needs.classify.outputs.spec_kit_integration == 'true'")
+        condition = workflow.index("needs.classify.outputs.spec_kit_integration != 'false'")
         self.assertGreater(condition, integration)
-        self.assertIn("needs.spec_kit_integration.result != 'success'", workflow)
+        self.assertIn('allowed = ("success",) if selected == "true"', workflow)
         self.assertIn("name: validate", workflow)
 
     def test_explicit_paths_bypass_git_and_github_output_is_stable(self):
