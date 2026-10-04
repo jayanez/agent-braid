@@ -23,7 +23,7 @@
   ],
   "assumptions": "Trusted owned POSIX filesystem/Git and immutable fixed patches; installed host paths do not establish compatibility.",
   "authority_snapshot": {
-    "commit": "fbb53fdea0461de773814bee5241129a986a9729",
+    "commit": null,
     "hashes": {
       "ARCHITECTURE.md": "94e5114eb799b25ca666ef728f84ab1c88e6ad1b342e30a9e99276b8f44c30c2",
       "CONSTITUTION.md": "ff7196976a1736a639947c2ab26e8da157fef23c89ba9881312f2a36459964eb",
@@ -88,13 +88,13 @@
       "schemas/governance/public-export-manifest.schema.json": "11eb7f2594939ae9fd0c9e6cfe4423a80aba686d6cdfdd8b73b0fb84b0840aa8",
       "schemas/governance/release-validation-record.schema.json": "d9943f0c9f5520ea52e3b12bfba88240d03f8011b433fc5e35cb49549ab6e819"
     },
-    "mode": "historical"
+    "mode": "current"
   },
   "compatibility": "Zero core runtime dependencies; separate opt-in runtime/transport contracts; legacy executionAuthorization false.",
   "domain": "2\u20134 fixed ordinary-text A/M patches; private Git tracked-tree effects and bounded stdio transport.",
   "evidence_snapshot": {
-    "commit": "fbb53fdea0461de773814bee5241129a986a9729",
-    "mode": "historical"
+    "commit": null,
+    "mode": "current"
   },
   "execution_contract": "Existing serial contract unchanged; expanded isolated parallel preparation and coordinator publication contract proposed, not adopted.",
   "human_review": "pending",
@@ -172,7 +172,7 @@
               "limits": "CI is separate from fresh reproduction and host observations. Spec Kit integration matrix skipped by selection condition; formal closure provenance steps retain their own selection gates.",
               "outcome": "Completed success: 372 tests, 367 pass, five audited skips; selected integration matrix explicitly skipped.",
               "path": "specs/021-m4-alpha-runtime/c4-evidence/ci-9108a20.json",
-              "sha256": "42f7dca52570d24f78df0729ff87c606dc23bcd42c0026d5aafbf143de64d22c"
+              "sha256": "b8e8ac923087022aa59de761ecb9e4c1d06fa7ec092c2cf36a182a9508300ebb"
             }
           ],
           "planned_evidence": "Local automated checks and Darwin reproduction obtained; full Claude host and final founder gates remain separate.",
@@ -239,7 +239,7 @@
               "limits": "CI is separate from fresh reproduction and host observations. Spec Kit integration matrix skipped by selection condition; formal closure provenance steps retain their own selection gates.",
               "outcome": "Completed success: 372 tests, 367 pass, five audited skips; selected integration matrix explicitly skipped.",
               "path": "specs/021-m4-alpha-runtime/c4-evidence/ci-9108a20.json",
-              "sha256": "42f7dca52570d24f78df0729ff87c606dc23bcd42c0026d5aafbf143de64d22c"
+              "sha256": "b8e8ac923087022aa59de761ecb9e4c1d06fa7ec092c2cf36a182a9508300ebb"
             }
           ],
           "planned_evidence": "Local automated checks and Darwin reproduction obtained; full Claude host and final founder gates remain separate.",
@@ -312,7 +312,7 @@
               "limits": "CI is separate from fresh reproduction and host observations. Spec Kit integration matrix skipped by selection condition; formal closure provenance steps retain their own selection gates.",
               "outcome": "Completed success: 372 tests, 367 pass, five audited skips; selected integration matrix explicitly skipped.",
               "path": "specs/021-m4-alpha-runtime/c4-evidence/ci-9108a20.json",
-              "sha256": "42f7dca52570d24f78df0729ff87c606dc23bcd42c0026d5aafbf143de64d22c"
+              "sha256": "b8e8ac923087022aa59de761ecb9e4c1d06fa7ec092c2cf36a182a9508300ebb"
             }
           ],
           "planned_evidence": "Local automated checks and Darwin reproduction obtained; full Claude host and final founder gates remain separate.",
@@ -379,7 +379,7 @@
               "limits": "CI is separate from fresh reproduction and host observations. Spec Kit integration matrix skipped by selection condition; formal closure provenance steps retain their own selection gates.",
               "outcome": "Completed success: 372 tests, 367 pass, five audited skips; selected integration matrix explicitly skipped.",
               "path": "specs/021-m4-alpha-runtime/c4-evidence/ci-9108a20.json",
-              "sha256": "42f7dca52570d24f78df0729ff87c606dc23bcd42c0026d5aafbf143de64d22c"
+              "sha256": "b8e8ac923087022aa59de761ecb9e4c1d06fa7ec092c2cf36a182a9508300ebb"
             }
           ],
           "planned_evidence": "Local automated checks and Darwin reproduction obtained; full Claude host and final founder gates remain separate.",
@@ -445,7 +445,7 @@
               "limits": "CI is separate from fresh reproduction and host observations. Spec Kit integration matrix skipped by selection condition; formal closure provenance steps retain their own selection gates.",
               "outcome": "Completed success: 372 tests, 367 pass, five audited skips; selected integration matrix explicitly skipped.",
               "path": "specs/021-m4-alpha-runtime/c4-evidence/ci-9108a20.json",
-              "sha256": "42f7dca52570d24f78df0729ff87c606dc23bcd42c0026d5aafbf143de64d22c"
+              "sha256": "b8e8ac923087022aa59de761ecb9e4c1d06fa7ec092c2cf36a182a9508300ebb"
             }
           ],
           "planned_evidence": "Local automated checks and Darwin reproduction obtained; full Claude host and final founder gates remain separate.",
@@ -505,7 +505,7 @@
               "limits": "CI is separate from fresh reproduction and host observations. Spec Kit integration matrix skipped by selection condition; formal closure provenance steps retain their own selection gates.",
               "outcome": "Completed success: 372 tests, 367 pass, five audited skips; selected integration matrix explicitly skipped.",
               "path": "specs/021-m4-alpha-runtime/c4-evidence/ci-9108a20.json",
-              "sha256": "42f7dca52570d24f78df0729ff87c606dc23bcd42c0026d5aafbf143de64d22c"
+              "sha256": "b8e8ac923087022aa59de761ecb9e4c1d06fa7ec092c2cf36a182a9508300ebb"
             }
           ],
           "planned_evidence": "Local automated checks and Darwin reproduction obtained; full Claude host and final founder gates remain separate.",
@@ -571,7 +571,7 @@
               "limits": "CI is separate from fresh reproduction and host observations. Spec Kit integration matrix skipped by selection condition; formal closure provenance steps retain their own selection gates.",
               "outcome": "Completed success: 372 tests, 367 pass, five audited skips; selected integration matrix explicitly skipped.",
               "path": "specs/021-m4-alpha-runtime/c4-evidence/ci-9108a20.json",
-              "sha256": "42f7dca52570d24f78df0729ff87c606dc23bcd42c0026d5aafbf143de64d22c"
+              "sha256": "b8e8ac923087022aa59de761ecb9e4c1d06fa7ec092c2cf36a182a9508300ebb"
             }
           ],
           "planned_evidence": "Local automated checks and Darwin reproduction obtained; full Claude host and final founder gates remain separate.",
@@ -631,7 +631,7 @@
               "limits": "CI is separate from fresh reproduction and host observations. Spec Kit integration matrix skipped by selection condition; formal closure provenance steps retain their own selection gates.",
               "outcome": "Completed success: 372 tests, 367 pass, five audited skips; selected integration matrix explicitly skipped.",
               "path": "specs/021-m4-alpha-runtime/c4-evidence/ci-9108a20.json",
-              "sha256": "42f7dca52570d24f78df0729ff87c606dc23bcd42c0026d5aafbf143de64d22c"
+              "sha256": "b8e8ac923087022aa59de761ecb9e4c1d06fa7ec092c2cf36a182a9508300ebb"
             }
           ],
           "planned_evidence": "Local automated checks and Darwin reproduction obtained; full Claude host and final founder gates remain separate.",
@@ -697,7 +697,7 @@
               "limits": "CI is separate from fresh reproduction and host observations. Spec Kit integration matrix skipped by selection condition; formal closure provenance steps retain their own selection gates.",
               "outcome": "Completed success: 372 tests, 367 pass, five audited skips; selected integration matrix explicitly skipped.",
               "path": "specs/021-m4-alpha-runtime/c4-evidence/ci-9108a20.json",
-              "sha256": "42f7dca52570d24f78df0729ff87c606dc23bcd42c0026d5aafbf143de64d22c"
+              "sha256": "b8e8ac923087022aa59de761ecb9e4c1d06fa7ec092c2cf36a182a9508300ebb"
             }
           ],
           "planned_evidence": "Local automated checks and Darwin reproduction obtained; full Claude host and final founder gates remain separate.",
@@ -757,7 +757,7 @@
               "limits": "CI is separate from fresh reproduction and host observations. Spec Kit integration matrix skipped by selection condition; formal closure provenance steps retain their own selection gates.",
               "outcome": "Completed success: 372 tests, 367 pass, five audited skips; selected integration matrix explicitly skipped.",
               "path": "specs/021-m4-alpha-runtime/c4-evidence/ci-9108a20.json",
-              "sha256": "42f7dca52570d24f78df0729ff87c606dc23bcd42c0026d5aafbf143de64d22c"
+              "sha256": "b8e8ac923087022aa59de761ecb9e4c1d06fa7ec092c2cf36a182a9508300ebb"
             }
           ],
           "planned_evidence": "Local automated checks and Darwin reproduction obtained; full Claude host and final founder gates remain separate.",
@@ -823,7 +823,7 @@
               "limits": "CI is separate from fresh reproduction and host observations. Spec Kit integration matrix skipped by selection condition; formal closure provenance steps retain their own selection gates.",
               "outcome": "Completed success: 372 tests, 367 pass, five audited skips; selected integration matrix explicitly skipped.",
               "path": "specs/021-m4-alpha-runtime/c4-evidence/ci-9108a20.json",
-              "sha256": "42f7dca52570d24f78df0729ff87c606dc23bcd42c0026d5aafbf143de64d22c"
+              "sha256": "b8e8ac923087022aa59de761ecb9e4c1d06fa7ec092c2cf36a182a9508300ebb"
             }
           ],
           "planned_evidence": "Local automated checks and Darwin reproduction obtained; full Claude host and final founder gates remain separate.",
@@ -883,7 +883,7 @@
               "limits": "CI is separate from fresh reproduction and host observations. Spec Kit integration matrix skipped by selection condition; formal closure provenance steps retain their own selection gates.",
               "outcome": "Completed success: 372 tests, 367 pass, five audited skips; selected integration matrix explicitly skipped.",
               "path": "specs/021-m4-alpha-runtime/c4-evidence/ci-9108a20.json",
-              "sha256": "42f7dca52570d24f78df0729ff87c606dc23bcd42c0026d5aafbf143de64d22c"
+              "sha256": "b8e8ac923087022aa59de761ecb9e4c1d06fa7ec092c2cf36a182a9508300ebb"
             }
           ],
           "planned_evidence": "Local automated checks and Darwin reproduction obtained; full Claude host and final founder gates remain separate.",
@@ -1040,7 +1040,7 @@
               "limits": "CI is separate from fresh reproduction and host observations. Spec Kit integration matrix skipped by selection condition; formal closure provenance steps retain their own selection gates.",
               "outcome": "Completed success: 372 tests, 367 pass, five audited skips; selected integration matrix explicitly skipped.",
               "path": "specs/021-m4-alpha-runtime/c4-evidence/ci-9108a20.json",
-              "sha256": "42f7dca52570d24f78df0729ff87c606dc23bcd42c0026d5aafbf143de64d22c"
+              "sha256": "b8e8ac923087022aa59de761ecb9e4c1d06fa7ec092c2cf36a182a9508300ebb"
             }
           ],
           "planned_evidence": "Partial C4 evidence obtained; Full Claude exercise and founder G4 remain pending; stable PR profile obtained. No closure claim.",
@@ -1107,7 +1107,7 @@
               "limits": "CI is separate from fresh reproduction and host observations. Spec Kit integration matrix skipped by selection condition; formal closure provenance steps retain their own selection gates.",
               "outcome": "Completed success: 372 tests, 367 pass, five audited skips; selected integration matrix explicitly skipped.",
               "path": "specs/021-m4-alpha-runtime/c4-evidence/ci-9108a20.json",
-              "sha256": "42f7dca52570d24f78df0729ff87c606dc23bcd42c0026d5aafbf143de64d22c"
+              "sha256": "b8e8ac923087022aa59de761ecb9e4c1d06fa7ec092c2cf36a182a9508300ebb"
             }
           ],
           "planned_evidence": "Partial C4 evidence obtained; Full Claude exercise and founder G4 remain pending; stable PR profile obtained. No closure claim.",
