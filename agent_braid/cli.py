@@ -17,7 +17,7 @@ from research.lab.model import Invalid, loads, require
 from .git_runtime import InvalidGitRuntime, prepare_run, execute_run, recover_run, verify_run
 from .runtime_scheduler import InvalidRuntimeSchedule
 from .runtime_policy import (InvalidRuntimePolicy, prepare_policy_run, verify_policy_plan,
-                             issue_operator_grant, execute_policy_run, recover_policy_run)
+                             issue_operator_grant, execute_policy_run, recover_policy_run, inspect_policy_run)
 from .analysis import InvalidAnalysis, analyze, render_text
 from .git_adapter import InvalidGitAnalysis, analyze_git_with_provenance
 from .git_process import GitExecutionCancelled, GitInfrastructureFailure
@@ -134,7 +134,7 @@ def main(argv: list[str] | None = None) -> int:
         if command == "recover-git-run":
             runtime_parser.add_argument("--action", choices=("resume", "abort"), required=True)
     for command in ("prepare-policy-run", "verify-policy-plan", "grant-policy-run",
-                    "execute-policy-run", "recover-policy-run"):
+                    "execute-policy-run", "recover-policy-run", "inspect-policy-run"):
         policy_parser = subparsers.add_parser(command, help="verified local operator policy")
         policy_parser.add_argument("input", type=Path)
         if command == "prepare-policy-run":
@@ -142,7 +142,7 @@ def main(argv: list[str] | None = None) -> int:
             policy_parser.add_argument("--evidence", type=Path, required=True)
             policy_parser.add_argument("--advisory-plan", type=Path, required=True)
             policy_parser.add_argument("--mode", choices=("serial", "parallel"), default="serial")
-        if command in {"grant-policy-run", "execute-policy-run", "recover-policy-run"}:
+        if command in {"grant-policy-run", "execute-policy-run", "recover-policy-run", "inspect-policy-run"}:
             policy_parser.add_argument("--grant-store", type=Path, required=True)
         if command == "grant-policy-run":
             policy_parser.add_argument("--acknowledge", required=True,
@@ -157,7 +157,7 @@ def main(argv: list[str] | None = None) -> int:
     try:
         data = _read(args.input)
         if args.command in {"prepare-policy-run", "verify-policy-plan", "grant-policy-run",
-                            "execute-policy-run", "recover-policy-run"}:
+                            "execute-policy-run", "recover-policy-run", "inspect-policy-run"}:
             cancellation = threading.Event()
             previous = {}
             try:
@@ -172,6 +172,8 @@ def main(argv: list[str] | None = None) -> int:
                                                 cancel_event=cancellation)
                 elif args.command == "verify-policy-plan":
                     result = verify_policy_plan(data, cancel_event=cancellation)
+                elif args.command == "inspect-policy-run":
+                    result = inspect_policy_run(data, args.grant_store, cancel_event=cancellation)
                 elif args.command == "grant-policy-run":
                     result = issue_operator_grant(data, args.grant_store,
                                                  acknowledge=args.acknowledge, action=args.action,

@@ -44,7 +44,7 @@ premise hidden inside the product.
 ## What works today
 
 Agent Braid is `0.1.0-alpha`. The current implementation requires Python 3.12,
-uses only the standard library at runtime and provides seven local commands:
+uses only the standard library at runtime and provides local analysis commands:
 
 | Command | Current capability |
 |---|---|
@@ -301,3 +301,14 @@ the whole M4 milestone.
 The [pre-PR corrections](specs/020-m4-local-git-runtime/remediation.md) were
 separately [accepted](specs/020-m4-local-git-runtime/founder-review-corrected.json)
 against frozen candidate `853df74` on 2026-10-03.
+
+### Bounded M4 alpha implementation track
+
+The scope of [SPEC-021](specs/021-m4-alpha-runtime/spec.md) and
+[ADR 0020](docs/adr/0020-bounded-m4-alpha-runtime.md) is adopted. The implementation
+adds verified operator grants, isolated fixed-patch preparation with serial private
+publication, and a pinned stdio MCP adapter. The
+[local commands and evidence gates](specs/021-m4-alpha-runtime/quickstart.md) retain
+read-only source storage and separate operator authority. Implementation acceptance,
+actual two-host/Linux evidence, independent review and whole-M4 closure remain
+separate pending gates. No arbitrary-agent, production or scientific guarantee.
