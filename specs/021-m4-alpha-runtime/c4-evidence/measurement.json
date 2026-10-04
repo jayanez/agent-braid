@@ -1,0 +1,2020 @@
+{
+  "candidateCommit": "67b8b521d0d18ebe679a905c3ed559d2f4a0119a",
+  "candidateInputsChangedDuringRun": false,
+  "candidateWorkingTreeChangedDuringRun": false,
+  "environment": {
+    "git": "git version 2.54.0 (Apple Git-157)",
+    "machine": "arm64",
+    "platform": "Darwin",
+    "python": "3.13.11"
+  },
+  "inputs": {
+    "agent_braid/analysis.py": "a96e24ffffd303b60ae2da3f8e676c7d71b0f6f4372950e8b705c365ab8f751a",
+    "agent_braid/git_adapter.py": "4548eb96849e2d0ed1eaefc53579d065651b00a2c6ae5b1aef6e2bdc5ae3dc45",
+    "agent_braid/git_exec.py": "ce5e348f355ca5f73f1095ee4cbab8779c224cce7c8ac326a5376be69d416853",
+    "agent_braid/git_process.py": "3247ac861404cfb68f08939770a5048294b45ddc984a1379ca9eb2091ad48668",
+    "agent_braid/git_replay.py": "29cdbca88c9168829a0fcaae497d5c6805cd84ae5fd19649a7631f266c2759a8",
+    "agent_braid/git_runtime.py": "91e124c6e80dacf97232215c8ba9749b472d2ed03b2c7c5367ad6f98aa41ff50",
+    "agent_braid/git_runtime_process.py": "6cde49846602aec8b18a3df141c8f77ff2bb66badd098d149393e900c44c0da4",
+    "agent_braid/runtime_policy.py": "08b7de7f0f4220e1b830a7d58c25f77a2ae9890573ed90c582d7c4d5fca63f41",
+    "agent_braid/runtime_scheduler.py": "e651781eb013cb9921d3e2ce1bd6ffb2679a9209a7b0fafc41c518226e043a86",
+    "research/lab/model.py": "f39040b5476d663f6e7384e65d00073b084df6c8958b38bff45e4d6b19da010f",
+    "scripts/measure_m4_alpha.py": "1ab117a56359f81edefe8cc2d40b3fb9b96f4bc79dfb2b3ccfe442209cc52937",
+    "specs/021-m4-alpha-runtime/measurement-protocol.md": "1126512a847abc9c1d28e1dbc0f0c93a2c36d433d3979c26079055b71601e866",
+    "tests/test_git_runtime.py": "70e0655241bb64b4fb620309b0897c350b077a46db57be142f000a2e0d46fe47"
+  },
+  "limits": [
+    "Six descriptive pairs only; uncontrolled OS caches/background activity.",
+    "Constructor instrumentation captures all bounded phase counts/output; overhead is included.",
+    "RSS is a process-lifetime maximum, not a per-run allocation peak.",
+    "Worker interval overlap is observational, not simultaneous CPU proof.",
+    "Safety controls and four-worker/dependency probes belong to separate reproduction records.",
+    "No host/model calls, semantic correctness, scientific result or whole-M4 acceptance."
+  ],
+  "m4AlphaMeasurementVersion": "0.1.0-alpha",
+  "medianSerialOverParallelWallRatio": {
+    "denominator": 165312087388233569,
+    "numerator": 92254941374629289
+  },
+  "pairs": [
+    {
+      "equivalentFinalTree": true,
+      "exposure": "first",
+      "order": [
+        "a",
+        "b"
+      ],
+      "repetition": 1,
+      "samples": {
+        "parallel": {
+          "boundedPhaseCount": 20,
+          "capturedOutputBytes": 36703,
+          "childSystemCpuNs": 4711719000,
+          "childUserCpuNs": 5314698999,
+          "gitCommands": 821,
+          "manifestDigest": "sha256:8bf8693539b1cbf998066a4ac24b5edcbd2c417331231a27063c66cb7eb6f552",
+          "mode": "parallel",
+          "observedPeakWorkerIntervals": 2,
+          "parentCpuNs": 1689515000,
+          "planDigest": "sha256:31a443b1b76f7402c6534e17a52920f11fe311271074657dbef4c7da7021c09f",
+          "preparationEvidence": {
+            "evidenceDigest": "sha256:9d782659f4730ae3d6b7690e68cb44d582b04c5fa716f2b10a4f2a3be6ae8eee",
+            "executionContract": "isolated-preparation-serial-publication-v1",
+            "limits": [
+              "Observed preparation intervals are not a CPU parallelism guarantee.",
+              "Trees/effects are independently replayable; recorded timings are observations.",
+              "Trusted Git and owned scratch; no arbitrary code or hostile same-UID isolation."
+            ],
+            "manifestDigest": "sha256:8bf8693539b1cbf998066a4ac24b5edcbd2c417331231a27063c66cb7eb6f552",
+            "metrics": {
+              "capturedOutputBytes": 2519,
+              "childSystemCpuNs": 349647000,
+              "childUserCpuNs": 385963000,
+              "gitCommands": 57,
+              "processLifetimePeakChildRssBytes": 6062080,
+              "sampledPeakScratchBytes": 3363
+            },
+            "observedPeakWorkerIntervals": 2,
+            "runtimePreparationEvidenceVersion": "0.1.0-alpha",
+            "scheduleDigest": "sha256:85639d8a9c6545a0387fcfcd23735071815b3e38c9faf824cdb209d12e9fcb18",
+            "wallNs": 1321836875,
+            "workers": [
+              {
+                "attemptId": "a-attempt",
+                "effects": [
+                  {
+                    "afterBlob": "78981922613b2afb6025042ff6bd878ac1994e85",
+                    "afterMode": "100644",
+                    "beforeBlob": "df967b96a579e45a18b8251732d16804b2e56a55",
+                    "beforeMode": "100644",
+                    "path": "a.txt",
+                    "status": "M"
+                  }
+                ],
+                "finishedNs": 1321697625,
+                "inputTree": "562d3d0a571a697990fbf60a7db0338349836782",
+                "operationId": "a",
+                "outputTree": "b2cc846ba303ed8a3e9f7f5fdd027d799b9f18f6",
+                "patchDigest": "sha256:8c3977006118ad8a901a073b66d561e9d65ee62d82db5426b7d4b4b020609778",
+                "startedNs": 990046625,
+                "wave": 0,
+                "writableIndex": "/REDACTED-TEMP-001/REDACTED-DIRECTORY-014/worker-0/worker.git/index",
+                "writableRepository": "/REDACTED-TEMP-001/REDACTED-DIRECTORY-014/worker-0/worker.git"
+              },
+              {
+                "attemptId": "b-attempt",
+                "effects": [
+                  {
+                    "afterBlob": "61780798228d17af2d34fce4cfbdf35556832472",
+                    "afterMode": "100644",
+                    "beforeBlob": "df967b96a579e45a18b8251732d16804b2e56a55",
+                    "beforeMode": "100644",
+                    "path": "b.txt",
+                    "status": "M"
+                  }
+                ],
+                "finishedNs": 1254903125,
+                "inputTree": "562d3d0a571a697990fbf60a7db0338349836782",
+                "operationId": "b",
+                "outputTree": "10aa6b85847c2f4dfd5e43afaa74318191dbd403",
+                "patchDigest": "sha256:bd6ccd8802bc42f626b49e90c021e3f5f0b58cab90f66f7b56130c5fbb29cf7d",
+                "startedNs": 989999917,
+                "wave": 0,
+                "writableIndex": "/REDACTED-TEMP-001/REDACTED-DIRECTORY-014/worker-1/worker.git/index",
+                "writableRepository": "/REDACTED-TEMP-001/REDACTED-DIRECTORY-014/worker-1/worker.git"
+              }
+            ]
+          },
+          "processLifetimePeakChildRssBytes": 6062080,
+          "resultTree": "f4b354863caa9cea99b95422c9dab70465757d87",
+          "runtimeManifest": {
+            "authorizationScope": "private-run-only",
+            "baseTree": "562d3d0a571a697990fbf60a7db0338349836782",
+            "executionContract": "authorized-serial-index-patch-v1",
+            "gitRuntimeManifestVersion": "0.1.0-alpha",
+            "manifestDigest": "sha256:8bf8693539b1cbf998066a4ac24b5edcbd2c417331231a27063c66cb7eb6f552",
+            "observationContract": "runtime-private-tracked-tree-v1",
+            "privateConfigDigest": "sha256:3c5cc3e72b5473d08433171d50fc687ac3aa2a6a3f4c20b97f5b66f581b0fec9",
+            "repositoryId": "sha256:4f6fe576cd7ba3d00ab8e591e29d8805e8deaea92f963d539db142ec5933bf30",
+            "request": {
+              "baseRevision": "2aec8d9089770f6e477c3e748ffe301583ab2e04",
+              "expectedFinalTree": "f4b354863caa9cea99b95422c9dab70465757d87",
+              "gitRuntimeRequestVersion": "0.1.0-alpha",
+              "operations": [
+                {
+                  "attemptId": "a-attempt",
+                  "declaredWrites": [
+                    "a.txt"
+                  ],
+                  "dependencies": [],
+                  "instanceId": "a",
+                  "source": {
+                    "kind": "commit",
+                    "revision": "83b2ec754a3a119ead022fc64aa80a80a60119f8"
+                  },
+                  "uncertainPaths": []
+                },
+                {
+                  "attemptId": "b-attempt",
+                  "declaredWrites": [
+                    "b.txt"
+                  ],
+                  "dependencies": [],
+                  "instanceId": "b",
+                  "source": {
+                    "kind": "commit",
+                    "revision": "76661359f59a8598ce6972aa34a4ef86087f6b14"
+                  },
+                  "uncertainPaths": []
+                }
+              ],
+              "order": [
+                "a",
+                "b"
+              ],
+              "repository": "/REDACTED-TEMP-001/REDACTED-DIRECTORY-019/source"
+            },
+            "resourceLimits": {
+              "changedPaths": 16,
+              "childAddressSpaceBytes": null,
+              "commandOutputBytes": 2097152,
+              "gitCommands": 256,
+              "operations": 4,
+              "outputBytes": 8388608,
+              "patchBytes": 262144,
+              "scratchBytes": 67108864,
+              "wallSeconds": 60
+            },
+            "runDirectory": "/REDACTED-TEMP-001/REDACTED-DIRECTORY-019/REDACTED-DIRECTORY-010/result",
+            "sourcePromotion": false,
+            "steps": [
+              {
+                "attemptId": "a-attempt",
+                "commit": "baf56e2676293d367e2df3ea31320ab9cea51aa4",
+                "effects": [
+                  {
+                    "afterBlob": "78981922613b2afb6025042ff6bd878ac1994e85",
+                    "afterMode": "100644",
+                    "beforeBlob": "df967b96a579e45a18b8251732d16804b2e56a55",
+                    "beforeMode": "100644",
+                    "path": "a.txt",
+                    "status": "M"
+                  }
+                ],
+                "inputTree": "562d3d0a571a697990fbf60a7db0338349836782",
+                "operationId": "a",
+                "outputTree": "b2cc846ba303ed8a3e9f7f5fdd027d799b9f18f6",
+                "parentCommit": "2aec8d9089770f6e477c3e748ffe301583ab2e04",
+                "patchDigest": "sha256:8c3977006118ad8a901a073b66d561e9d65ee62d82db5426b7d4b4b020609778",
+                "sourceCommit": "83b2ec754a3a119ead022fc64aa80a80a60119f8"
+              },
+              {
+                "attemptId": "b-attempt",
+                "commit": "f977e88125c7a5eb7e500111c4edc97b4354ecad",
+                "effects": [
+                  {
+                    "afterBlob": "61780798228d17af2d34fce4cfbdf35556832472",
+                    "afterMode": "100644",
+                    "beforeBlob": "df967b96a579e45a18b8251732d16804b2e56a55",
+                    "beforeMode": "100644",
+                    "path": "b.txt",
+                    "status": "M"
+                  }
+                ],
+                "inputTree": "b2cc846ba303ed8a3e9f7f5fdd027d799b9f18f6",
+                "operationId": "b",
+                "outputTree": "f4b354863caa9cea99b95422c9dab70465757d87",
+                "parentCommit": "baf56e2676293d367e2df3ea31320ab9cea51aa4",
+                "patchDigest": "sha256:bd6ccd8802bc42f626b49e90c021e3f5f0b58cab90f66f7b56130c5fbb29cf7d",
+                "sourceCommit": "76661359f59a8598ce6972aa34a4ef86087f6b14"
+              }
+            ]
+          },
+          "sampledPeakPhaseScratchBytes": 28827,
+          "wallNs": 19001704958,
+          "workerEvidenceDigest": "sha256:9d782659f4730ae3d6b7690e68cb44d582b04c5fa716f2b10a4f2a3be6ae8eee"
+        },
+        "serial": {
+          "boundedPhaseCount": 13,
+          "capturedOutputBytes": 20963,
+          "childSystemCpuNs": 2718315999,
+          "childUserCpuNs": 3080608000,
+          "gitCommands": 485,
+          "manifestDigest": "sha256:27f305f1510fa0c9da9e8e6ec520e5271c4b86079a464e7fa916ce426af7da07",
+          "mode": "serial",
+          "observedPeakWorkerIntervals": 1,
+          "parentCpuNs": 950817000,
+          "planDigest": "sha256:429baf8648aabc07d59a39de064dd9effb45ffbc5a2680af8039232d39e482dd",
+          "preparationEvidence": null,
+          "processLifetimePeakChildRssBytes": 6062080,
+          "resultTree": "f4b354863caa9cea99b95422c9dab70465757d87",
+          "runtimeManifest": {
+            "authorizationScope": "private-run-only",
+            "baseTree": "562d3d0a571a697990fbf60a7db0338349836782",
+            "executionContract": "authorized-serial-index-patch-v1",
+            "gitRuntimeManifestVersion": "0.1.0-alpha",
+            "manifestDigest": "sha256:27f305f1510fa0c9da9e8e6ec520e5271c4b86079a464e7fa916ce426af7da07",
+            "observationContract": "runtime-private-tracked-tree-v1",
+            "privateConfigDigest": "sha256:3c5cc3e72b5473d08433171d50fc687ac3aa2a6a3f4c20b97f5b66f581b0fec9",
+            "repositoryId": "sha256:4f6fe576cd7ba3d00ab8e591e29d8805e8deaea92f963d539db142ec5933bf30",
+            "request": {
+              "baseRevision": "2aec8d9089770f6e477c3e748ffe301583ab2e04",
+              "expectedFinalTree": "f4b354863caa9cea99b95422c9dab70465757d87",
+              "gitRuntimeRequestVersion": "0.1.0-alpha",
+              "operations": [
+                {
+                  "attemptId": "a-attempt",
+                  "declaredWrites": [
+                    "a.txt"
+                  ],
+                  "dependencies": [],
+                  "instanceId": "a",
+                  "source": {
+                    "kind": "commit",
+                    "revision": "83b2ec754a3a119ead022fc64aa80a80a60119f8"
+                  },
+                  "uncertainPaths": []
+                },
+                {
+                  "attemptId": "b-attempt",
+                  "declaredWrites": [
+                    "b.txt"
+                  ],
+                  "dependencies": [],
+                  "instanceId": "b",
+                  "source": {
+                    "kind": "commit",
+                    "revision": "76661359f59a8598ce6972aa34a4ef86087f6b14"
+                  },
+                  "uncertainPaths": []
+                }
+              ],
+              "order": [
+                "a",
+                "b"
+              ],
+              "repository": "/REDACTED-TEMP-001/REDACTED-DIRECTORY-019/source"
+            },
+            "resourceLimits": {
+              "changedPaths": 16,
+              "childAddressSpaceBytes": null,
+              "commandOutputBytes": 2097152,
+              "gitCommands": 256,
+              "operations": 4,
+              "outputBytes": 8388608,
+              "patchBytes": 262144,
+              "scratchBytes": 67108864,
+              "wallSeconds": 60
+            },
+            "runDirectory": "/REDACTED-TEMP-001/REDACTED-DIRECTORY-019/REDACTED-DIRECTORY-004/result",
+            "sourcePromotion": false,
+            "steps": [
+              {
+                "attemptId": "a-attempt",
+                "commit": "baf56e2676293d367e2df3ea31320ab9cea51aa4",
+                "effects": [
+                  {
+                    "afterBlob": "78981922613b2afb6025042ff6bd878ac1994e85",
+                    "afterMode": "100644",
+                    "beforeBlob": "df967b96a579e45a18b8251732d16804b2e56a55",
+                    "beforeMode": "100644",
+                    "path": "a.txt",
+                    "status": "M"
+                  }
+                ],
+                "inputTree": "562d3d0a571a697990fbf60a7db0338349836782",
+                "operationId": "a",
+                "outputTree": "b2cc846ba303ed8a3e9f7f5fdd027d799b9f18f6",
+                "parentCommit": "2aec8d9089770f6e477c3e748ffe301583ab2e04",
+                "patchDigest": "sha256:8c3977006118ad8a901a073b66d561e9d65ee62d82db5426b7d4b4b020609778",
+                "sourceCommit": "83b2ec754a3a119ead022fc64aa80a80a60119f8"
+              },
+              {
+                "attemptId": "b-attempt",
+                "commit": "f977e88125c7a5eb7e500111c4edc97b4354ecad",
+                "effects": [
+                  {
+                    "afterBlob": "61780798228d17af2d34fce4cfbdf35556832472",
+                    "afterMode": "100644",
+                    "beforeBlob": "df967b96a579e45a18b8251732d16804b2e56a55",
+                    "beforeMode": "100644",
+                    "path": "b.txt",
+                    "status": "M"
+                  }
+                ],
+                "inputTree": "b2cc846ba303ed8a3e9f7f5fdd027d799b9f18f6",
+                "operationId": "b",
+                "outputTree": "f4b354863caa9cea99b95422c9dab70465757d87",
+                "parentCommit": "baf56e2676293d367e2df3ea31320ab9cea51aa4",
+                "patchDigest": "sha256:bd6ccd8802bc42f626b49e90c021e3f5f0b58cab90f66f7b56130c5fbb29cf7d",
+                "sourceCommit": "76661359f59a8598ce6972aa34a4ef86087f6b14"
+              }
+            ]
+          },
+          "sampledPeakPhaseScratchBytes": 28827,
+          "wallNs": 10598436208,
+          "workerEvidenceDigest": null
+        }
+      },
+      "serialOverParallelWallRatio": {
+        "denominator": 9500852479,
+        "numerator": 5299218104
+      },
+      "treatmentOrder": [
+        "serial",
+        "parallel"
+      ]
+    },
+    {
+      "equivalentFinalTree": true,
+      "exposure": "subsequent",
+      "order": [
+        "a",
+        "b"
+      ],
+      "repetition": 2,
+      "samples": {
+        "parallel": {
+          "boundedPhaseCount": 20,
+          "capturedOutputBytes": 36703,
+          "childSystemCpuNs": 4726466000,
+          "childUserCpuNs": 5336434000,
+          "gitCommands": 821,
+          "manifestDigest": "sha256:1cd467e069fdd8e1920d4e573dd18419d1534132d06728d80350b799005ad3ab",
+          "mode": "parallel",
+          "observedPeakWorkerIntervals": 2,
+          "parentCpuNs": 1706779000,
+          "planDigest": "sha256:ccded1c43acff0a18e60f9fe59b8109bb75ee0f95b9b9c9898bcf48cdb0c3baf",
+          "preparationEvidence": {
+            "evidenceDigest": "sha256:3b142bbac77abb7c164ec7a6fb1f6ea28b26ced84bdd5d02d9c5da5ad48faa3b",
+            "executionContract": "isolated-preparation-serial-publication-v1",
+            "limits": [
+              "Observed preparation intervals are not a CPU parallelism guarantee.",
+              "Trees/effects are independently replayable; recorded timings are observations.",
+              "Trusted Git and owned scratch; no arbitrary code or hostile same-UID isolation."
+            ],
+            "manifestDigest": "sha256:1cd467e069fdd8e1920d4e573dd18419d1534132d06728d80350b799005ad3ab",
+            "metrics": {
+              "capturedOutputBytes": 2519,
+              "childSystemCpuNs": 351013000,
+              "childUserCpuNs": 391320999,
+              "gitCommands": 57,
+              "processLifetimePeakChildRssBytes": 6062080,
+              "sampledPeakScratchBytes": 3363
+            },
+            "observedPeakWorkerIntervals": 2,
+            "runtimePreparationEvidenceVersion": "0.1.0-alpha",
+            "scheduleDigest": "sha256:8e8d9cb93744e3e0731db7b539afbf783eda1922c195ba2753cc3f541c0c3146",
+            "wallNs": 1357591375,
+            "workers": [
+              {
+                "attemptId": "a-attempt",
+                "effects": [
+                  {
+                    "afterBlob": "78981922613b2afb6025042ff6bd878ac1994e85",
+                    "afterMode": "100644",
+                    "beforeBlob": "df967b96a579e45a18b8251732d16804b2e56a55",
+                    "beforeMode": "100644",
+                    "path": "a.txt",
+                    "status": "M"
+                  }
+                ],
+                "finishedNs": 1282196708,
+                "inputTree": "562d3d0a571a697990fbf60a7db0338349836782",
+                "operationId": "a",
+                "outputTree": "b2cc846ba303ed8a3e9f7f5fdd027d799b9f18f6",
+                "patchDigest": "sha256:8c3977006118ad8a901a073b66d561e9d65ee62d82db5426b7d4b4b020609778",
+                "startedNs": 994724208,
+                "wave": 0,
+                "writableIndex": "/REDACTED-TEMP-001/REDACTED-DIRECTORY-015/worker-0/worker.git/index",
+                "writableRepository": "/REDACTED-TEMP-001/REDACTED-DIRECTORY-015/worker-0/worker.git"
+              },
+              {
+                "attemptId": "b-attempt",
+                "effects": [
+                  {
+                    "afterBlob": "61780798228d17af2d34fce4cfbdf35556832472",
+                    "afterMode": "100644",
+                    "beforeBlob": "df967b96a579e45a18b8251732d16804b2e56a55",
+                    "beforeMode": "100644",
+                    "path": "b.txt",
+                    "status": "M"
+                  }
+                ],
+                "finishedNs": 1357446875,
+                "inputTree": "562d3d0a571a697990fbf60a7db0338349836782",
+                "operationId": "b",
+                "outputTree": "10aa6b85847c2f4dfd5e43afaa74318191dbd403",
+                "patchDigest": "sha256:bd6ccd8802bc42f626b49e90c021e3f5f0b58cab90f66f7b56130c5fbb29cf7d",
+                "startedNs": 994672125,
+                "wave": 0,
+                "writableIndex": "/REDACTED-TEMP-001/REDACTED-DIRECTORY-015/worker-1/worker.git/index",
+                "writableRepository": "/REDACTED-TEMP-001/REDACTED-DIRECTORY-015/worker-1/worker.git"
+              }
+            ]
+          },
+          "processLifetimePeakChildRssBytes": 6062080,
+          "resultTree": "f4b354863caa9cea99b95422c9dab70465757d87",
+          "runtimeManifest": {
+            "authorizationScope": "private-run-only",
+            "baseTree": "562d3d0a571a697990fbf60a7db0338349836782",
+            "executionContract": "authorized-serial-index-patch-v1",
+            "gitRuntimeManifestVersion": "0.1.0-alpha",
+            "manifestDigest": "sha256:1cd467e069fdd8e1920d4e573dd18419d1534132d06728d80350b799005ad3ab",
+            "observationContract": "runtime-private-tracked-tree-v1",
+            "privateConfigDigest": "sha256:3c5cc3e72b5473d08433171d50fc687ac3aa2a6a3f4c20b97f5b66f581b0fec9",
+            "repositoryId": "sha256:4f6fe576cd7ba3d00ab8e591e29d8805e8deaea92f963d539db142ec5933bf30",
+            "request": {
+              "baseRevision": "2aec8d9089770f6e477c3e748ffe301583ab2e04",
+              "expectedFinalTree": "f4b354863caa9cea99b95422c9dab70465757d87",
+              "gitRuntimeRequestVersion": "0.1.0-alpha",
+              "operations": [
+                {
+                  "attemptId": "a-attempt",
+                  "declaredWrites": [
+                    "a.txt"
+                  ],
+                  "dependencies": [],
+                  "instanceId": "a",
+                  "source": {
+                    "kind": "commit",
+                    "revision": "83b2ec754a3a119ead022fc64aa80a80a60119f8"
+                  },
+                  "uncertainPaths": []
+                },
+                {
+                  "attemptId": "b-attempt",
+                  "declaredWrites": [
+                    "b.txt"
+                  ],
+                  "dependencies": [],
+                  "instanceId": "b",
+                  "source": {
+                    "kind": "commit",
+                    "revision": "76661359f59a8598ce6972aa34a4ef86087f6b14"
+                  },
+                  "uncertainPaths": []
+                }
+              ],
+              "order": [
+                "a",
+                "b"
+              ],
+              "repository": "/REDACTED-TEMP-001/REDACTED-DIRECTORY-019/source"
+            },
+            "resourceLimits": {
+              "changedPaths": 16,
+              "childAddressSpaceBytes": null,
+              "commandOutputBytes": 2097152,
+              "gitCommands": 256,
+              "operations": 4,
+              "outputBytes": 8388608,
+              "patchBytes": 262144,
+              "scratchBytes": 67108864,
+              "wallSeconds": 60
+            },
+            "runDirectory": "/REDACTED-TEMP-001/REDACTED-DIRECTORY-019/REDACTED-DIRECTORY-006/result",
+            "sourcePromotion": false,
+            "steps": [
+              {
+                "attemptId": "a-attempt",
+                "commit": "baf56e2676293d367e2df3ea31320ab9cea51aa4",
+                "effects": [
+                  {
+                    "afterBlob": "78981922613b2afb6025042ff6bd878ac1994e85",
+                    "afterMode": "100644",
+                    "beforeBlob": "df967b96a579e45a18b8251732d16804b2e56a55",
+                    "beforeMode": "100644",
+                    "path": "a.txt",
+                    "status": "M"
+                  }
+                ],
+                "inputTree": "562d3d0a571a697990fbf60a7db0338349836782",
+                "operationId": "a",
+                "outputTree": "b2cc846ba303ed8a3e9f7f5fdd027d799b9f18f6",
+                "parentCommit": "2aec8d9089770f6e477c3e748ffe301583ab2e04",
+                "patchDigest": "sha256:8c3977006118ad8a901a073b66d561e9d65ee62d82db5426b7d4b4b020609778",
+                "sourceCommit": "83b2ec754a3a119ead022fc64aa80a80a60119f8"
+              },
+              {
+                "attemptId": "b-attempt",
+                "commit": "f977e88125c7a5eb7e500111c4edc97b4354ecad",
+                "effects": [
+                  {
+                    "afterBlob": "61780798228d17af2d34fce4cfbdf35556832472",
+                    "afterMode": "100644",
+                    "beforeBlob": "df967b96a579e45a18b8251732d16804b2e56a55",
+                    "beforeMode": "100644",
+                    "path": "b.txt",
+                    "status": "M"
+                  }
+                ],
+                "inputTree": "b2cc846ba303ed8a3e9f7f5fdd027d799b9f18f6",
+                "operationId": "b",
+                "outputTree": "f4b354863caa9cea99b95422c9dab70465757d87",
+                "parentCommit": "baf56e2676293d367e2df3ea31320ab9cea51aa4",
+                "patchDigest": "sha256:bd6ccd8802bc42f626b49e90c021e3f5f0b58cab90f66f7b56130c5fbb29cf7d",
+                "sourceCommit": "76661359f59a8598ce6972aa34a4ef86087f6b14"
+              }
+            ]
+          },
+          "sampledPeakPhaseScratchBytes": 28827,
+          "wallNs": 18950415875,
+          "workerEvidenceDigest": "sha256:3b142bbac77abb7c164ec7a6fb1f6ea28b26ced84bdd5d02d9c5da5ad48faa3b"
+        },
+        "serial": {
+          "boundedPhaseCount": 13,
+          "capturedOutputBytes": 20963,
+          "childSystemCpuNs": 2736342999,
+          "childUserCpuNs": 3102969000,
+          "gitCommands": 485,
+          "manifestDigest": "sha256:ffafb4fac068d2e65305b7536f18060f7bd041d0f987a1a8c9cff94906b5736d",
+          "mode": "serial",
+          "observedPeakWorkerIntervals": 1,
+          "parentCpuNs": 964747000,
+          "planDigest": "sha256:40d836591c388ff37ce812b99a9987233cc5039ee7c600a4f5f9b29a358e39d2",
+          "preparationEvidence": null,
+          "processLifetimePeakChildRssBytes": 6062080,
+          "resultTree": "f4b354863caa9cea99b95422c9dab70465757d87",
+          "runtimeManifest": {
+            "authorizationScope": "private-run-only",
+            "baseTree": "562d3d0a571a697990fbf60a7db0338349836782",
+            "executionContract": "authorized-serial-index-patch-v1",
+            "gitRuntimeManifestVersion": "0.1.0-alpha",
+            "manifestDigest": "sha256:ffafb4fac068d2e65305b7536f18060f7bd041d0f987a1a8c9cff94906b5736d",
+            "observationContract": "runtime-private-tracked-tree-v1",
+            "privateConfigDigest": "sha256:3c5cc3e72b5473d08433171d50fc687ac3aa2a6a3f4c20b97f5b66f581b0fec9",
+            "repositoryId": "sha256:4f6fe576cd7ba3d00ab8e591e29d8805e8deaea92f963d539db142ec5933bf30",
+            "request": {
+              "baseRevision": "2aec8d9089770f6e477c3e748ffe301583ab2e04",
+              "expectedFinalTree": "f4b354863caa9cea99b95422c9dab70465757d87",
+              "gitRuntimeRequestVersion": "0.1.0-alpha",
+              "operations": [
+                {
+                  "attemptId": "a-attempt",
+                  "declaredWrites": [
+                    "a.txt"
+                  ],
+                  "dependencies": [],
+                  "instanceId": "a",
+                  "source": {
+                    "kind": "commit",
+                    "revision": "83b2ec754a3a119ead022fc64aa80a80a60119f8"
+                  },
+                  "uncertainPaths": []
+                },
+                {
+                  "attemptId": "b-attempt",
+                  "declaredWrites": [
+                    "b.txt"
+                  ],
+                  "dependencies": [],
+                  "instanceId": "b",
+                  "source": {
+                    "kind": "commit",
+                    "revision": "76661359f59a8598ce6972aa34a4ef86087f6b14"
+                  },
+                  "uncertainPaths": []
+                }
+              ],
+              "order": [
+                "a",
+                "b"
+              ],
+              "repository": "/REDACTED-TEMP-001/REDACTED-DIRECTORY-019/source"
+            },
+            "resourceLimits": {
+              "changedPaths": 16,
+              "childAddressSpaceBytes": null,
+              "commandOutputBytes": 2097152,
+              "gitCommands": 256,
+              "operations": 4,
+              "outputBytes": 8388608,
+              "patchBytes": 262144,
+              "scratchBytes": 67108864,
+              "wallSeconds": 60
+            },
+            "runDirectory": "/REDACTED-TEMP-001/REDACTED-DIRECTORY-019/REDACTED-DIRECTORY-011/result",
+            "sourcePromotion": false,
+            "steps": [
+              {
+                "attemptId": "a-attempt",
+                "commit": "baf56e2676293d367e2df3ea31320ab9cea51aa4",
+                "effects": [
+                  {
+                    "afterBlob": "78981922613b2afb6025042ff6bd878ac1994e85",
+                    "afterMode": "100644",
+                    "beforeBlob": "df967b96a579e45a18b8251732d16804b2e56a55",
+                    "beforeMode": "100644",
+                    "path": "a.txt",
+                    "status": "M"
+                  }
+                ],
+                "inputTree": "562d3d0a571a697990fbf60a7db0338349836782",
+                "operationId": "a",
+                "outputTree": "b2cc846ba303ed8a3e9f7f5fdd027d799b9f18f6",
+                "parentCommit": "2aec8d9089770f6e477c3e748ffe301583ab2e04",
+                "patchDigest": "sha256:8c3977006118ad8a901a073b66d561e9d65ee62d82db5426b7d4b4b020609778",
+                "sourceCommit": "83b2ec754a3a119ead022fc64aa80a80a60119f8"
+              },
+              {
+                "attemptId": "b-attempt",
+                "commit": "f977e88125c7a5eb7e500111c4edc97b4354ecad",
+                "effects": [
+                  {
+                    "afterBlob": "61780798228d17af2d34fce4cfbdf35556832472",
+                    "afterMode": "100644",
+                    "beforeBlob": "df967b96a579e45a18b8251732d16804b2e56a55",
+                    "beforeMode": "100644",
+                    "path": "b.txt",
+                    "status": "M"
+                  }
+                ],
+                "inputTree": "b2cc846ba303ed8a3e9f7f5fdd027d799b9f18f6",
+                "operationId": "b",
+                "outputTree": "f4b354863caa9cea99b95422c9dab70465757d87",
+                "parentCommit": "baf56e2676293d367e2df3ea31320ab9cea51aa4",
+                "patchDigest": "sha256:bd6ccd8802bc42f626b49e90c021e3f5f0b58cab90f66f7b56130c5fbb29cf7d",
+                "sourceCommit": "76661359f59a8598ce6972aa34a4ef86087f6b14"
+              }
+            ]
+          },
+          "sampledPeakPhaseScratchBytes": 28827,
+          "wallNs": 10767452917,
+          "workerEvidenceDigest": null
+        }
+      },
+      "serialOverParallelWallRatio": {
+        "denominator": 18950415875,
+        "numerator": 10767452917
+      },
+      "treatmentOrder": [
+        "parallel",
+        "serial"
+      ]
+    },
+    {
+      "equivalentFinalTree": true,
+      "exposure": "subsequent",
+      "order": [
+        "a",
+        "b"
+      ],
+      "repetition": 3,
+      "samples": {
+        "parallel": {
+          "boundedPhaseCount": 20,
+          "capturedOutputBytes": 36703,
+          "childSystemCpuNs": 4745439000,
+          "childUserCpuNs": 5366848000,
+          "gitCommands": 821,
+          "manifestDigest": "sha256:0fe033067069c7758dcb976b7e951f1f145c5f4fcd76421d1ccc8c33a23baf2e",
+          "mode": "parallel",
+          "observedPeakWorkerIntervals": 2,
+          "parentCpuNs": 1721964000,
+          "planDigest": "sha256:747e2debec8926571111ed680726742c35fa65a292ada245ef4e79a4cf123817",
+          "preparationEvidence": {
+            "evidenceDigest": "sha256:31fb8dae8cc54dc8c9ed7b35a8000b9b0deab9e7bbf60d05691c4808f3df4a85",
+            "executionContract": "isolated-preparation-serial-publication-v1",
+            "limits": [
+              "Observed preparation intervals are not a CPU parallelism guarantee.",
+              "Trees/effects are independently replayable; recorded timings are observations.",
+              "Trusted Git and owned scratch; no arbitrary code or hostile same-UID isolation."
+            ],
+            "manifestDigest": "sha256:0fe033067069c7758dcb976b7e951f1f145c5f4fcd76421d1ccc8c33a23baf2e",
+            "metrics": {
+              "capturedOutputBytes": 2519,
+              "childSystemCpuNs": 347301999,
+              "childUserCpuNs": 386115999,
+              "gitCommands": 57,
+              "processLifetimePeakChildRssBytes": 6062080,
+              "sampledPeakScratchBytes": 3363
+            },
+            "observedPeakWorkerIntervals": 2,
+            "runtimePreparationEvidenceVersion": "0.1.0-alpha",
+            "scheduleDigest": "sha256:2f436f51f21f1bc1d7f1a35b63befbd2e3ebe2e78cc08e026b37ea85c5503911",
+            "wallNs": 1280012417,
+            "workers": [
+              {
+                "attemptId": "a-attempt",
+                "effects": [
+                  {
+                    "afterBlob": "78981922613b2afb6025042ff6bd878ac1994e85",
+                    "afterMode": "100644",
+                    "beforeBlob": "df967b96a579e45a18b8251732d16804b2e56a55",
+                    "beforeMode": "100644",
+                    "path": "a.txt",
+                    "status": "M"
+                  }
+                ],
+                "finishedNs": 1231186750,
+                "inputTree": "562d3d0a571a697990fbf60a7db0338349836782",
+                "operationId": "a",
+                "outputTree": "b2cc846ba303ed8a3e9f7f5fdd027d799b9f18f6",
+                "patchDigest": "sha256:8c3977006118ad8a901a073b66d561e9d65ee62d82db5426b7d4b4b020609778",
+                "startedNs": 963902584,
+                "wave": 0,
+                "writableIndex": "/REDACTED-TEMP-001/REDACTED-DIRECTORY-016/worker-0/worker.git/index",
+                "writableRepository": "/REDACTED-TEMP-001/REDACTED-DIRECTORY-016/worker-0/worker.git"
+              },
+              {
+                "attemptId": "b-attempt",
+                "effects": [
+                  {
+                    "afterBlob": "61780798228d17af2d34fce4cfbdf35556832472",
+                    "afterMode": "100644",
+                    "beforeBlob": "df967b96a579e45a18b8251732d16804b2e56a55",
+                    "beforeMode": "100644",
+                    "path": "b.txt",
+                    "status": "M"
+                  }
+                ],
+                "finishedNs": 1279876959,
+                "inputTree": "562d3d0a571a697990fbf60a7db0338349836782",
+                "operationId": "b",
+                "outputTree": "10aa6b85847c2f4dfd5e43afaa74318191dbd403",
+                "patchDigest": "sha256:bd6ccd8802bc42f626b49e90c021e3f5f0b58cab90f66f7b56130c5fbb29cf7d",
+                "startedNs": 963850000,
+                "wave": 0,
+                "writableIndex": "/REDACTED-TEMP-001/REDACTED-DIRECTORY-016/worker-1/worker.git/index",
+                "writableRepository": "/REDACTED-TEMP-001/REDACTED-DIRECTORY-016/worker-1/worker.git"
+              }
+            ]
+          },
+          "processLifetimePeakChildRssBytes": 6062080,
+          "resultTree": "f4b354863caa9cea99b95422c9dab70465757d87",
+          "runtimeManifest": {
+            "authorizationScope": "private-run-only",
+            "baseTree": "562d3d0a571a697990fbf60a7db0338349836782",
+            "executionContract": "authorized-serial-index-patch-v1",
+            "gitRuntimeManifestVersion": "0.1.0-alpha",
+            "manifestDigest": "sha256:0fe033067069c7758dcb976b7e951f1f145c5f4fcd76421d1ccc8c33a23baf2e",
+            "observationContract": "runtime-private-tracked-tree-v1",
+            "privateConfigDigest": "sha256:3c5cc3e72b5473d08433171d50fc687ac3aa2a6a3f4c20b97f5b66f581b0fec9",
+            "repositoryId": "sha256:4f6fe576cd7ba3d00ab8e591e29d8805e8deaea92f963d539db142ec5933bf30",
+            "request": {
+              "baseRevision": "2aec8d9089770f6e477c3e748ffe301583ab2e04",
+              "expectedFinalTree": "f4b354863caa9cea99b95422c9dab70465757d87",
+              "gitRuntimeRequestVersion": "0.1.0-alpha",
+              "operations": [
+                {
+                  "attemptId": "a-attempt",
+                  "declaredWrites": [
+                    "a.txt"
+                  ],
+                  "dependencies": [],
+                  "instanceId": "a",
+                  "source": {
+                    "kind": "commit",
+                    "revision": "83b2ec754a3a119ead022fc64aa80a80a60119f8"
+                  },
+                  "uncertainPaths": []
+                },
+                {
+                  "attemptId": "b-attempt",
+                  "declaredWrites": [
+                    "b.txt"
+                  ],
+                  "dependencies": [],
+                  "instanceId": "b",
+                  "source": {
+                    "kind": "commit",
+                    "revision": "76661359f59a8598ce6972aa34a4ef86087f6b14"
+                  },
+                  "uncertainPaths": []
+                }
+              ],
+              "order": [
+                "a",
+                "b"
+              ],
+              "repository": "/REDACTED-TEMP-001/REDACTED-DIRECTORY-019/source"
+            },
+            "resourceLimits": {
+              "changedPaths": 16,
+              "childAddressSpaceBytes": null,
+              "commandOutputBytes": 2097152,
+              "gitCommands": 256,
+              "operations": 4,
+              "outputBytes": 8388608,
+              "patchBytes": 262144,
+              "scratchBytes": 67108864,
+              "wallSeconds": 60
+            },
+            "runDirectory": "/REDACTED-TEMP-001/REDACTED-DIRECTORY-019/REDACTED-DIRECTORY-012/result",
+            "sourcePromotion": false,
+            "steps": [
+              {
+                "attemptId": "a-attempt",
+                "commit": "baf56e2676293d367e2df3ea31320ab9cea51aa4",
+                "effects": [
+                  {
+                    "afterBlob": "78981922613b2afb6025042ff6bd878ac1994e85",
+                    "afterMode": "100644",
+                    "beforeBlob": "df967b96a579e45a18b8251732d16804b2e56a55",
+                    "beforeMode": "100644",
+                    "path": "a.txt",
+                    "status": "M"
+                  }
+                ],
+                "inputTree": "562d3d0a571a697990fbf60a7db0338349836782",
+                "operationId": "a",
+                "outputTree": "b2cc846ba303ed8a3e9f7f5fdd027d799b9f18f6",
+                "parentCommit": "2aec8d9089770f6e477c3e748ffe301583ab2e04",
+                "patchDigest": "sha256:8c3977006118ad8a901a073b66d561e9d65ee62d82db5426b7d4b4b020609778",
+                "sourceCommit": "83b2ec754a3a119ead022fc64aa80a80a60119f8"
+              },
+              {
+                "attemptId": "b-attempt",
+                "commit": "f977e88125c7a5eb7e500111c4edc97b4354ecad",
+                "effects": [
+                  {
+                    "afterBlob": "61780798228d17af2d34fce4cfbdf35556832472",
+                    "afterMode": "100644",
+                    "beforeBlob": "df967b96a579e45a18b8251732d16804b2e56a55",
+                    "beforeMode": "100644",
+                    "path": "b.txt",
+                    "status": "M"
+                  }
+                ],
+                "inputTree": "b2cc846ba303ed8a3e9f7f5fdd027d799b9f18f6",
+                "operationId": "b",
+                "outputTree": "f4b354863caa9cea99b95422c9dab70465757d87",
+                "parentCommit": "baf56e2676293d367e2df3ea31320ab9cea51aa4",
+                "patchDigest": "sha256:bd6ccd8802bc42f626b49e90c021e3f5f0b58cab90f66f7b56130c5fbb29cf7d",
+                "sourceCommit": "76661359f59a8598ce6972aa34a4ef86087f6b14"
+              }
+            ]
+          },
+          "sampledPeakPhaseScratchBytes": 28827,
+          "wallNs": 19276656542,
+          "workerEvidenceDigest": "sha256:31fb8dae8cc54dc8c9ed7b35a8000b9b0deab9e7bbf60d05691c4808f3df4a85"
+        },
+        "serial": {
+          "boundedPhaseCount": 13,
+          "capturedOutputBytes": 20963,
+          "childSystemCpuNs": 2736556999,
+          "childUserCpuNs": 3098883999,
+          "gitCommands": 485,
+          "manifestDigest": "sha256:987dc4e832115af37bc16c0aa52c81637707da1e762b599b3b7b27e0dc7bee73",
+          "mode": "serial",
+          "observedPeakWorkerIntervals": 1,
+          "parentCpuNs": 972367000,
+          "planDigest": "sha256:01cf991cb1d0326b4b8468262f29b2dda80f433899cc01d6251f646209e375d9",
+          "preparationEvidence": null,
+          "processLifetimePeakChildRssBytes": 6062080,
+          "resultTree": "f4b354863caa9cea99b95422c9dab70465757d87",
+          "runtimeManifest": {
+            "authorizationScope": "private-run-only",
+            "baseTree": "562d3d0a571a697990fbf60a7db0338349836782",
+            "executionContract": "authorized-serial-index-patch-v1",
+            "gitRuntimeManifestVersion": "0.1.0-alpha",
+            "manifestDigest": "sha256:987dc4e832115af37bc16c0aa52c81637707da1e762b599b3b7b27e0dc7bee73",
+            "observationContract": "runtime-private-tracked-tree-v1",
+            "privateConfigDigest": "sha256:3c5cc3e72b5473d08433171d50fc687ac3aa2a6a3f4c20b97f5b66f581b0fec9",
+            "repositoryId": "sha256:4f6fe576cd7ba3d00ab8e591e29d8805e8deaea92f963d539db142ec5933bf30",
+            "request": {
+              "baseRevision": "2aec8d9089770f6e477c3e748ffe301583ab2e04",
+              "expectedFinalTree": "f4b354863caa9cea99b95422c9dab70465757d87",
+              "gitRuntimeRequestVersion": "0.1.0-alpha",
+              "operations": [
+                {
+                  "attemptId": "a-attempt",
+                  "declaredWrites": [
+                    "a.txt"
+                  ],
+                  "dependencies": [],
+                  "instanceId": "a",
+                  "source": {
+                    "kind": "commit",
+                    "revision": "83b2ec754a3a119ead022fc64aa80a80a60119f8"
+                  },
+                  "uncertainPaths": []
+                },
+                {
+                  "attemptId": "b-attempt",
+                  "declaredWrites": [
+                    "b.txt"
+                  ],
+                  "dependencies": [],
+                  "instanceId": "b",
+                  "source": {
+                    "kind": "commit",
+                    "revision": "76661359f59a8598ce6972aa34a4ef86087f6b14"
+                  },
+                  "uncertainPaths": []
+                }
+              ],
+              "order": [
+                "a",
+                "b"
+              ],
+              "repository": "/REDACTED-TEMP-001/REDACTED-DIRECTORY-019/source"
+            },
+            "resourceLimits": {
+              "changedPaths": 16,
+              "childAddressSpaceBytes": null,
+              "commandOutputBytes": 2097152,
+              "gitCommands": 256,
+              "operations": 4,
+              "outputBytes": 8388608,
+              "patchBytes": 262144,
+              "scratchBytes": 67108864,
+              "wallSeconds": 60
+            },
+            "runDirectory": "/REDACTED-TEMP-001/REDACTED-DIRECTORY-019/REDACTED-DIRECTORY-009/result",
+            "sourcePromotion": false,
+            "steps": [
+              {
+                "attemptId": "a-attempt",
+                "commit": "baf56e2676293d367e2df3ea31320ab9cea51aa4",
+                "effects": [
+                  {
+                    "afterBlob": "78981922613b2afb6025042ff6bd878ac1994e85",
+                    "afterMode": "100644",
+                    "beforeBlob": "df967b96a579e45a18b8251732d16804b2e56a55",
+                    "beforeMode": "100644",
+                    "path": "a.txt",
+                    "status": "M"
+                  }
+                ],
+                "inputTree": "562d3d0a571a697990fbf60a7db0338349836782",
+                "operationId": "a",
+                "outputTree": "b2cc846ba303ed8a3e9f7f5fdd027d799b9f18f6",
+                "parentCommit": "2aec8d9089770f6e477c3e748ffe301583ab2e04",
+                "patchDigest": "sha256:8c3977006118ad8a901a073b66d561e9d65ee62d82db5426b7d4b4b020609778",
+                "sourceCommit": "83b2ec754a3a119ead022fc64aa80a80a60119f8"
+              },
+              {
+                "attemptId": "b-attempt",
+                "commit": "f977e88125c7a5eb7e500111c4edc97b4354ecad",
+                "effects": [
+                  {
+                    "afterBlob": "61780798228d17af2d34fce4cfbdf35556832472",
+                    "afterMode": "100644",
+                    "beforeBlob": "df967b96a579e45a18b8251732d16804b2e56a55",
+                    "beforeMode": "100644",
+                    "path": "b.txt",
+                    "status": "M"
+                  }
+                ],
+                "inputTree": "b2cc846ba303ed8a3e9f7f5fdd027d799b9f18f6",
+                "operationId": "b",
+                "outputTree": "f4b354863caa9cea99b95422c9dab70465757d87",
+                "parentCommit": "baf56e2676293d367e2df3ea31320ab9cea51aa4",
+                "patchDigest": "sha256:bd6ccd8802bc42f626b49e90c021e3f5f0b58cab90f66f7b56130c5fbb29cf7d",
+                "sourceCommit": "76661359f59a8598ce6972aa34a4ef86087f6b14"
+              }
+            ]
+          },
+          "sampledPeakPhaseScratchBytes": 28827,
+          "wallNs": 10724382709,
+          "workerEvidenceDigest": null
+        }
+      },
+      "serialOverParallelWallRatio": {
+        "denominator": 19276656542,
+        "numerator": 10724382709
+      },
+      "treatmentOrder": [
+        "serial",
+        "parallel"
+      ]
+    },
+    {
+      "equivalentFinalTree": true,
+      "exposure": "first",
+      "order": [
+        "b",
+        "a"
+      ],
+      "repetition": 1,
+      "samples": {
+        "parallel": {
+          "boundedPhaseCount": 20,
+          "capturedOutputBytes": 36703,
+          "childSystemCpuNs": 4771241000,
+          "childUserCpuNs": 5379877000,
+          "gitCommands": 821,
+          "manifestDigest": "sha256:5d9e1431aeaab933d504f977bf73dfeaa5b43eed5e4f44b8e6c9fc7fc6762ef1",
+          "mode": "parallel",
+          "observedPeakWorkerIntervals": 2,
+          "parentCpuNs": 1709812000,
+          "planDigest": "sha256:4294698e9d44239ce5815c283ffd32647d598622586b944d81013d744ce7e396",
+          "preparationEvidence": {
+            "evidenceDigest": "sha256:34db38b7dcc0553d242b01596f7033244a78eb60d324d1216ebce9313a4a53c5",
+            "executionContract": "isolated-preparation-serial-publication-v1",
+            "limits": [
+              "Observed preparation intervals are not a CPU parallelism guarantee.",
+              "Trees/effects are independently replayable; recorded timings are observations.",
+              "Trusted Git and owned scratch; no arbitrary code or hostile same-UID isolation."
+            ],
+            "manifestDigest": "sha256:5d9e1431aeaab933d504f977bf73dfeaa5b43eed5e4f44b8e6c9fc7fc6762ef1",
+            "metrics": {
+              "capturedOutputBytes": 2519,
+              "childSystemCpuNs": 353459999,
+              "childUserCpuNs": 389297999,
+              "gitCommands": 57,
+              "processLifetimePeakChildRssBytes": 6062080,
+              "sampledPeakScratchBytes": 3364
+            },
+            "observedPeakWorkerIntervals": 2,
+            "runtimePreparationEvidenceVersion": "0.1.0-alpha",
+            "scheduleDigest": "sha256:22e4bec763add0ca846376bca8afe94f0a256cc3a5194d9029dba0cedc8b27d9",
+            "wallNs": 1372557542,
+            "workers": [
+              {
+                "attemptId": "b-attempt",
+                "effects": [
+                  {
+                    "afterBlob": "61780798228d17af2d34fce4cfbdf35556832472",
+                    "afterMode": "100644",
+                    "beforeBlob": "df967b96a579e45a18b8251732d16804b2e56a55",
+                    "beforeMode": "100644",
+                    "path": "b.txt",
+                    "status": "M"
+                  }
+                ],
+                "finishedNs": 1372438958,
+                "inputTree": "562d3d0a571a697990fbf60a7db0338349836782",
+                "operationId": "b",
+                "outputTree": "10aa6b85847c2f4dfd5e43afaa74318191dbd403",
+                "patchDigest": "sha256:bd6ccd8802bc42f626b49e90c021e3f5f0b58cab90f66f7b56130c5fbb29cf7d",
+                "startedNs": 1011363333,
+                "wave": 0,
+                "writableIndex": "/REDACTED-TEMP-001/REDACTED-DIRECTORY-018/worker-0/worker.git/index",
+                "writableRepository": "/REDACTED-TEMP-001/REDACTED-DIRECTORY-018/worker-0/worker.git"
+              },
+              {
+                "attemptId": "a-attempt",
+                "effects": [
+                  {
+                    "afterBlob": "78981922613b2afb6025042ff6bd878ac1994e85",
+                    "afterMode": "100644",
+                    "beforeBlob": "df967b96a579e45a18b8251732d16804b2e56a55",
+                    "beforeMode": "100644",
+                    "path": "a.txt",
+                    "status": "M"
+                  }
+                ],
+                "finishedNs": 1279836583,
+                "inputTree": "562d3d0a571a697990fbf60a7db0338349836782",
+                "operationId": "a",
+                "outputTree": "b2cc846ba303ed8a3e9f7f5fdd027d799b9f18f6",
+                "patchDigest": "sha256:8c3977006118ad8a901a073b66d561e9d65ee62d82db5426b7d4b4b020609778",
+                "startedNs": 1011304000,
+                "wave": 0,
+                "writableIndex": "/REDACTED-TEMP-001/REDACTED-DIRECTORY-018/worker-1/worker.git/index",
+                "writableRepository": "/REDACTED-TEMP-001/REDACTED-DIRECTORY-018/worker-1/worker.git"
+              }
+            ]
+          },
+          "processLifetimePeakChildRssBytes": 6062080,
+          "resultTree": "f4b354863caa9cea99b95422c9dab70465757d87",
+          "runtimeManifest": {
+            "authorizationScope": "private-run-only",
+            "baseTree": "562d3d0a571a697990fbf60a7db0338349836782",
+            "executionContract": "authorized-serial-index-patch-v1",
+            "gitRuntimeManifestVersion": "0.1.0-alpha",
+            "manifestDigest": "sha256:5d9e1431aeaab933d504f977bf73dfeaa5b43eed5e4f44b8e6c9fc7fc6762ef1",
+            "observationContract": "runtime-private-tracked-tree-v1",
+            "privateConfigDigest": "sha256:3c5cc3e72b5473d08433171d50fc687ac3aa2a6a3f4c20b97f5b66f581b0fec9",
+            "repositoryId": "sha256:4f6fe576cd7ba3d00ab8e591e29d8805e8deaea92f963d539db142ec5933bf30",
+            "request": {
+              "baseRevision": "2aec8d9089770f6e477c3e748ffe301583ab2e04",
+              "expectedFinalTree": "f4b354863caa9cea99b95422c9dab70465757d87",
+              "gitRuntimeRequestVersion": "0.1.0-alpha",
+              "operations": [
+                {
+                  "attemptId": "a-attempt",
+                  "declaredWrites": [
+                    "a.txt"
+                  ],
+                  "dependencies": [],
+                  "instanceId": "a",
+                  "source": {
+                    "kind": "commit",
+                    "revision": "83b2ec754a3a119ead022fc64aa80a80a60119f8"
+                  },
+                  "uncertainPaths": []
+                },
+                {
+                  "attemptId": "b-attempt",
+                  "declaredWrites": [
+                    "b.txt"
+                  ],
+                  "dependencies": [],
+                  "instanceId": "b",
+                  "source": {
+                    "kind": "commit",
+                    "revision": "76661359f59a8598ce6972aa34a4ef86087f6b14"
+                  },
+                  "uncertainPaths": []
+                }
+              ],
+              "order": [
+                "b",
+                "a"
+              ],
+              "repository": "/REDACTED-TEMP-001/REDACTED-DIRECTORY-019/source"
+            },
+            "resourceLimits": {
+              "changedPaths": 16,
+              "childAddressSpaceBytes": null,
+              "commandOutputBytes": 2097152,
+              "gitCommands": 256,
+              "operations": 4,
+              "outputBytes": 8388608,
+              "patchBytes": 262144,
+              "scratchBytes": 67108864,
+              "wallSeconds": 60
+            },
+            "runDirectory": "/REDACTED-TEMP-001/REDACTED-DIRECTORY-019/REDACTED-DIRECTORY-002/result",
+            "sourcePromotion": false,
+            "steps": [
+              {
+                "attemptId": "b-attempt",
+                "commit": "f54240d08d44f1c8dcdb7692eb0161caaf343d1f",
+                "effects": [
+                  {
+                    "afterBlob": "61780798228d17af2d34fce4cfbdf35556832472",
+                    "afterMode": "100644",
+                    "beforeBlob": "df967b96a579e45a18b8251732d16804b2e56a55",
+                    "beforeMode": "100644",
+                    "path": "b.txt",
+                    "status": "M"
+                  }
+                ],
+                "inputTree": "562d3d0a571a697990fbf60a7db0338349836782",
+                "operationId": "b",
+                "outputTree": "10aa6b85847c2f4dfd5e43afaa74318191dbd403",
+                "parentCommit": "2aec8d9089770f6e477c3e748ffe301583ab2e04",
+                "patchDigest": "sha256:bd6ccd8802bc42f626b49e90c021e3f5f0b58cab90f66f7b56130c5fbb29cf7d",
+                "sourceCommit": "76661359f59a8598ce6972aa34a4ef86087f6b14"
+              },
+              {
+                "attemptId": "a-attempt",
+                "commit": "d70c54c03c7583a4063bc9592a39f756f30db160",
+                "effects": [
+                  {
+                    "afterBlob": "78981922613b2afb6025042ff6bd878ac1994e85",
+                    "afterMode": "100644",
+                    "beforeBlob": "df967b96a579e45a18b8251732d16804b2e56a55",
+                    "beforeMode": "100644",
+                    "path": "a.txt",
+                    "status": "M"
+                  }
+                ],
+                "inputTree": "10aa6b85847c2f4dfd5e43afaa74318191dbd403",
+                "operationId": "a",
+                "outputTree": "f4b354863caa9cea99b95422c9dab70465757d87",
+                "parentCommit": "f54240d08d44f1c8dcdb7692eb0161caaf343d1f",
+                "patchDigest": "sha256:8c3977006118ad8a901a073b66d561e9d65ee62d82db5426b7d4b4b020609778",
+                "sourceCommit": "83b2ec754a3a119ead022fc64aa80a80a60119f8"
+              }
+            ]
+          },
+          "sampledPeakPhaseScratchBytes": 28827,
+          "wallNs": 19545283583,
+          "workerEvidenceDigest": "sha256:34db38b7dcc0553d242b01596f7033244a78eb60d324d1216ebce9313a4a53c5"
+        },
+        "serial": {
+          "boundedPhaseCount": 13,
+          "capturedOutputBytes": 20963,
+          "childSystemCpuNs": 2732792000,
+          "childUserCpuNs": 3108853000,
+          "gitCommands": 485,
+          "manifestDigest": "sha256:55d514ea08506e1f59a634c3d9ab863b5934bacc0e32cebf95b65b53c7daae61",
+          "mode": "serial",
+          "observedPeakWorkerIntervals": 1,
+          "parentCpuNs": 964487000,
+          "planDigest": "sha256:0812644d665483ed37e06a243a0f46f98b7f2b4d8f2ec57b6043f2bcf684511c",
+          "preparationEvidence": null,
+          "processLifetimePeakChildRssBytes": 6062080,
+          "resultTree": "f4b354863caa9cea99b95422c9dab70465757d87",
+          "runtimeManifest": {
+            "authorizationScope": "private-run-only",
+            "baseTree": "562d3d0a571a697990fbf60a7db0338349836782",
+            "executionContract": "authorized-serial-index-patch-v1",
+            "gitRuntimeManifestVersion": "0.1.0-alpha",
+            "manifestDigest": "sha256:55d514ea08506e1f59a634c3d9ab863b5934bacc0e32cebf95b65b53c7daae61",
+            "observationContract": "runtime-private-tracked-tree-v1",
+            "privateConfigDigest": "sha256:3c5cc3e72b5473d08433171d50fc687ac3aa2a6a3f4c20b97f5b66f581b0fec9",
+            "repositoryId": "sha256:4f6fe576cd7ba3d00ab8e591e29d8805e8deaea92f963d539db142ec5933bf30",
+            "request": {
+              "baseRevision": "2aec8d9089770f6e477c3e748ffe301583ab2e04",
+              "expectedFinalTree": "f4b354863caa9cea99b95422c9dab70465757d87",
+              "gitRuntimeRequestVersion": "0.1.0-alpha",
+              "operations": [
+                {
+                  "attemptId": "a-attempt",
+                  "declaredWrites": [
+                    "a.txt"
+                  ],
+                  "dependencies": [],
+                  "instanceId": "a",
+                  "source": {
+                    "kind": "commit",
+                    "revision": "83b2ec754a3a119ead022fc64aa80a80a60119f8"
+                  },
+                  "uncertainPaths": []
+                },
+                {
+                  "attemptId": "b-attempt",
+                  "declaredWrites": [
+                    "b.txt"
+                  ],
+                  "dependencies": [],
+                  "instanceId": "b",
+                  "source": {
+                    "kind": "commit",
+                    "revision": "76661359f59a8598ce6972aa34a4ef86087f6b14"
+                  },
+                  "uncertainPaths": []
+                }
+              ],
+              "order": [
+                "b",
+                "a"
+              ],
+              "repository": "/REDACTED-TEMP-001/REDACTED-DIRECTORY-019/source"
+            },
+            "resourceLimits": {
+              "changedPaths": 16,
+              "childAddressSpaceBytes": null,
+              "commandOutputBytes": 2097152,
+              "gitCommands": 256,
+              "operations": 4,
+              "outputBytes": 8388608,
+              "patchBytes": 262144,
+              "scratchBytes": 67108864,
+              "wallSeconds": 60
+            },
+            "runDirectory": "/REDACTED-TEMP-001/REDACTED-DIRECTORY-019/REDACTED-DIRECTORY-005/result",
+            "sourcePromotion": false,
+            "steps": [
+              {
+                "attemptId": "b-attempt",
+                "commit": "f54240d08d44f1c8dcdb7692eb0161caaf343d1f",
+                "effects": [
+                  {
+                    "afterBlob": "61780798228d17af2d34fce4cfbdf35556832472",
+                    "afterMode": "100644",
+                    "beforeBlob": "df967b96a579e45a18b8251732d16804b2e56a55",
+                    "beforeMode": "100644",
+                    "path": "b.txt",
+                    "status": "M"
+                  }
+                ],
+                "inputTree": "562d3d0a571a697990fbf60a7db0338349836782",
+                "operationId": "b",
+                "outputTree": "10aa6b85847c2f4dfd5e43afaa74318191dbd403",
+                "parentCommit": "2aec8d9089770f6e477c3e748ffe301583ab2e04",
+                "patchDigest": "sha256:bd6ccd8802bc42f626b49e90c021e3f5f0b58cab90f66f7b56130c5fbb29cf7d",
+                "sourceCommit": "76661359f59a8598ce6972aa34a4ef86087f6b14"
+              },
+              {
+                "attemptId": "a-attempt",
+                "commit": "d70c54c03c7583a4063bc9592a39f756f30db160",
+                "effects": [
+                  {
+                    "afterBlob": "78981922613b2afb6025042ff6bd878ac1994e85",
+                    "afterMode": "100644",
+                    "beforeBlob": "df967b96a579e45a18b8251732d16804b2e56a55",
+                    "beforeMode": "100644",
+                    "path": "a.txt",
+                    "status": "M"
+                  }
+                ],
+                "inputTree": "10aa6b85847c2f4dfd5e43afaa74318191dbd403",
+                "operationId": "a",
+                "outputTree": "f4b354863caa9cea99b95422c9dab70465757d87",
+                "parentCommit": "f54240d08d44f1c8dcdb7692eb0161caaf343d1f",
+                "patchDigest": "sha256:8c3977006118ad8a901a073b66d561e9d65ee62d82db5426b7d4b4b020609778",
+                "sourceCommit": "83b2ec754a3a119ead022fc64aa80a80a60119f8"
+              }
+            ]
+          },
+          "sampledPeakPhaseScratchBytes": 28827,
+          "wallNs": 10821693334,
+          "workerEvidenceDigest": null
+        }
+      },
+      "serialOverParallelWallRatio": {
+        "denominator": 19545283583,
+        "numerator": 10821693334
+      },
+      "treatmentOrder": [
+        "serial",
+        "parallel"
+      ]
+    },
+    {
+      "equivalentFinalTree": true,
+      "exposure": "subsequent",
+      "order": [
+        "b",
+        "a"
+      ],
+      "repetition": 2,
+      "samples": {
+        "parallel": {
+          "boundedPhaseCount": 20,
+          "capturedOutputBytes": 36703,
+          "childSystemCpuNs": 4794162000,
+          "childUserCpuNs": 5406397999,
+          "gitCommands": 821,
+          "manifestDigest": "sha256:9dd8b5d5a0ebbb2f780c9403afe4ecc81dbea0b9173fa1552100f0765d012189",
+          "mode": "parallel",
+          "observedPeakWorkerIntervals": 2,
+          "parentCpuNs": 1704864000,
+          "planDigest": "sha256:d7a11519e90805a590f54e5fc5f3e43d73ffb4c5433a325193587efdb8261ada",
+          "preparationEvidence": {
+            "evidenceDigest": "sha256:b6a7457a7e020a35331dcaec854a72d268a63f68e87771e8a71787b8255e7904",
+            "executionContract": "isolated-preparation-serial-publication-v1",
+            "limits": [
+              "Observed preparation intervals are not a CPU parallelism guarantee.",
+              "Trees/effects are independently replayable; recorded timings are observations.",
+              "Trusted Git and owned scratch; no arbitrary code or hostile same-UID isolation."
+            ],
+            "manifestDigest": "sha256:9dd8b5d5a0ebbb2f780c9403afe4ecc81dbea0b9173fa1552100f0765d012189",
+            "metrics": {
+              "capturedOutputBytes": 2519,
+              "childSystemCpuNs": 354739000,
+              "childUserCpuNs": 392572000,
+              "gitCommands": 57,
+              "processLifetimePeakChildRssBytes": 6062080,
+              "sampledPeakScratchBytes": 3364
+            },
+            "observedPeakWorkerIntervals": 2,
+            "runtimePreparationEvidenceVersion": "0.1.0-alpha",
+            "scheduleDigest": "sha256:2e78410f72993a6ed67d20436e4cdbb7b2e15d23d55272e5c790b3381e064bc8",
+            "wallNs": 1375857750,
+            "workers": [
+              {
+                "attemptId": "b-attempt",
+                "effects": [
+                  {
+                    "afterBlob": "61780798228d17af2d34fce4cfbdf35556832472",
+                    "afterMode": "100644",
+                    "beforeBlob": "df967b96a579e45a18b8251732d16804b2e56a55",
+                    "beforeMode": "100644",
+                    "path": "b.txt",
+                    "status": "M"
+                  }
+                ],
+                "finishedNs": 1375719625,
+                "inputTree": "562d3d0a571a697990fbf60a7db0338349836782",
+                "operationId": "b",
+                "outputTree": "10aa6b85847c2f4dfd5e43afaa74318191dbd403",
+                "patchDigest": "sha256:bd6ccd8802bc42f626b49e90c021e3f5f0b58cab90f66f7b56130c5fbb29cf7d",
+                "startedNs": 1049002584,
+                "wave": 0,
+                "writableIndex": "/REDACTED-TEMP-001/REDACTED-DIRECTORY-017/worker-0/worker.git/index",
+                "writableRepository": "/REDACTED-TEMP-001/REDACTED-DIRECTORY-017/worker-0/worker.git"
+              },
+              {
+                "attemptId": "a-attempt",
+                "effects": [
+                  {
+                    "afterBlob": "78981922613b2afb6025042ff6bd878ac1994e85",
+                    "afterMode": "100644",
+                    "beforeBlob": "df967b96a579e45a18b8251732d16804b2e56a55",
+                    "beforeMode": "100644",
+                    "path": "a.txt",
+                    "status": "M"
+                  }
+                ],
+                "finishedNs": 1323958667,
+                "inputTree": "562d3d0a571a697990fbf60a7db0338349836782",
+                "operationId": "a",
+                "outputTree": "b2cc846ba303ed8a3e9f7f5fdd027d799b9f18f6",
+                "patchDigest": "sha256:8c3977006118ad8a901a073b66d561e9d65ee62d82db5426b7d4b4b020609778",
+                "startedNs": 1048944750,
+                "wave": 0,
+                "writableIndex": "/REDACTED-TEMP-001/REDACTED-DIRECTORY-017/worker-1/worker.git/index",
+                "writableRepository": "/REDACTED-TEMP-001/REDACTED-DIRECTORY-017/worker-1/worker.git"
+              }
+            ]
+          },
+          "processLifetimePeakChildRssBytes": 6062080,
+          "resultTree": "f4b354863caa9cea99b95422c9dab70465757d87",
+          "runtimeManifest": {
+            "authorizationScope": "private-run-only",
+            "baseTree": "562d3d0a571a697990fbf60a7db0338349836782",
+            "executionContract": "authorized-serial-index-patch-v1",
+            "gitRuntimeManifestVersion": "0.1.0-alpha",
+            "manifestDigest": "sha256:9dd8b5d5a0ebbb2f780c9403afe4ecc81dbea0b9173fa1552100f0765d012189",
+            "observationContract": "runtime-private-tracked-tree-v1",
+            "privateConfigDigest": "sha256:3c5cc3e72b5473d08433171d50fc687ac3aa2a6a3f4c20b97f5b66f581b0fec9",
+            "repositoryId": "sha256:4f6fe576cd7ba3d00ab8e591e29d8805e8deaea92f963d539db142ec5933bf30",
+            "request": {
+              "baseRevision": "2aec8d9089770f6e477c3e748ffe301583ab2e04",
+              "expectedFinalTree": "f4b354863caa9cea99b95422c9dab70465757d87",
+              "gitRuntimeRequestVersion": "0.1.0-alpha",
+              "operations": [
+                {
+                  "attemptId": "a-attempt",
+                  "declaredWrites": [
+                    "a.txt"
+                  ],
+                  "dependencies": [],
+                  "instanceId": "a",
+                  "source": {
+                    "kind": "commit",
+                    "revision": "83b2ec754a3a119ead022fc64aa80a80a60119f8"
+                  },
+                  "uncertainPaths": []
+                },
+                {
+                  "attemptId": "b-attempt",
+                  "declaredWrites": [
+                    "b.txt"
+                  ],
+                  "dependencies": [],
+                  "instanceId": "b",
+                  "source": {
+                    "kind": "commit",
+                    "revision": "76661359f59a8598ce6972aa34a4ef86087f6b14"
+                  },
+                  "uncertainPaths": []
+                }
+              ],
+              "order": [
+                "b",
+                "a"
+              ],
+              "repository": "/REDACTED-TEMP-001/REDACTED-DIRECTORY-019/source"
+            },
+            "resourceLimits": {
+              "changedPaths": 16,
+              "childAddressSpaceBytes": null,
+              "commandOutputBytes": 2097152,
+              "gitCommands": 256,
+              "operations": 4,
+              "outputBytes": 8388608,
+              "patchBytes": 262144,
+              "scratchBytes": 67108864,
+              "wallSeconds": 60
+            },
+            "runDirectory": "/REDACTED-TEMP-001/REDACTED-DIRECTORY-019/REDACTED-DIRECTORY-008/result",
+            "sourcePromotion": false,
+            "steps": [
+              {
+                "attemptId": "b-attempt",
+                "commit": "f54240d08d44f1c8dcdb7692eb0161caaf343d1f",
+                "effects": [
+                  {
+                    "afterBlob": "61780798228d17af2d34fce4cfbdf35556832472",
+                    "afterMode": "100644",
+                    "beforeBlob": "df967b96a579e45a18b8251732d16804b2e56a55",
+                    "beforeMode": "100644",
+                    "path": "b.txt",
+                    "status": "M"
+                  }
+                ],
+                "inputTree": "562d3d0a571a697990fbf60a7db0338349836782",
+                "operationId": "b",
+                "outputTree": "10aa6b85847c2f4dfd5e43afaa74318191dbd403",
+                "parentCommit": "2aec8d9089770f6e477c3e748ffe301583ab2e04",
+                "patchDigest": "sha256:bd6ccd8802bc42f626b49e90c021e3f5f0b58cab90f66f7b56130c5fbb29cf7d",
+                "sourceCommit": "76661359f59a8598ce6972aa34a4ef86087f6b14"
+              },
+              {
+                "attemptId": "a-attempt",
+                "commit": "d70c54c03c7583a4063bc9592a39f756f30db160",
+                "effects": [
+                  {
+                    "afterBlob": "78981922613b2afb6025042ff6bd878ac1994e85",
+                    "afterMode": "100644",
+                    "beforeBlob": "df967b96a579e45a18b8251732d16804b2e56a55",
+                    "beforeMode": "100644",
+                    "path": "a.txt",
+                    "status": "M"
+                  }
+                ],
+                "inputTree": "10aa6b85847c2f4dfd5e43afaa74318191dbd403",
+                "operationId": "a",
+                "outputTree": "f4b354863caa9cea99b95422c9dab70465757d87",
+                "parentCommit": "f54240d08d44f1c8dcdb7692eb0161caaf343d1f",
+                "patchDigest": "sha256:8c3977006118ad8a901a073b66d561e9d65ee62d82db5426b7d4b4b020609778",
+                "sourceCommit": "83b2ec754a3a119ead022fc64aa80a80a60119f8"
+              }
+            ]
+          },
+          "sampledPeakPhaseScratchBytes": 28827,
+          "wallNs": 19574674875,
+          "workerEvidenceDigest": "sha256:b6a7457a7e020a35331dcaec854a72d268a63f68e87771e8a71787b8255e7904"
+        },
+        "serial": {
+          "boundedPhaseCount": 13,
+          "capturedOutputBytes": 20963,
+          "childSystemCpuNs": 2750275999,
+          "childUserCpuNs": 3129359000,
+          "gitCommands": 485,
+          "manifestDigest": "sha256:7fa653fc6dc7cad0c0015a8ca42f5698e518d8f6993a490620f691db4d0e68da",
+          "mode": "serial",
+          "observedPeakWorkerIntervals": 1,
+          "parentCpuNs": 954577000,
+          "planDigest": "sha256:ddd6ea1595ebe98a1ae9f946b66c823adfb5a4cb9315d3f54856db5b0bd580a2",
+          "preparationEvidence": null,
+          "processLifetimePeakChildRssBytes": 6062080,
+          "resultTree": "f4b354863caa9cea99b95422c9dab70465757d87",
+          "runtimeManifest": {
+            "authorizationScope": "private-run-only",
+            "baseTree": "562d3d0a571a697990fbf60a7db0338349836782",
+            "executionContract": "authorized-serial-index-patch-v1",
+            "gitRuntimeManifestVersion": "0.1.0-alpha",
+            "manifestDigest": "sha256:7fa653fc6dc7cad0c0015a8ca42f5698e518d8f6993a490620f691db4d0e68da",
+            "observationContract": "runtime-private-tracked-tree-v1",
+            "privateConfigDigest": "sha256:3c5cc3e72b5473d08433171d50fc687ac3aa2a6a3f4c20b97f5b66f581b0fec9",
+            "repositoryId": "sha256:4f6fe576cd7ba3d00ab8e591e29d8805e8deaea92f963d539db142ec5933bf30",
+            "request": {
+              "baseRevision": "2aec8d9089770f6e477c3e748ffe301583ab2e04",
+              "expectedFinalTree": "f4b354863caa9cea99b95422c9dab70465757d87",
+              "gitRuntimeRequestVersion": "0.1.0-alpha",
+              "operations": [
+                {
+                  "attemptId": "a-attempt",
+                  "declaredWrites": [
+                    "a.txt"
+                  ],
+                  "dependencies": [],
+                  "instanceId": "a",
+                  "source": {
+                    "kind": "commit",
+                    "revision": "83b2ec754a3a119ead022fc64aa80a80a60119f8"
+                  },
+                  "uncertainPaths": []
+                },
+                {
+                  "attemptId": "b-attempt",
+                  "declaredWrites": [
+                    "b.txt"
+                  ],
+                  "dependencies": [],
+                  "instanceId": "b",
+                  "source": {
+                    "kind": "commit",
+                    "revision": "76661359f59a8598ce6972aa34a4ef86087f6b14"
+                  },
+                  "uncertainPaths": []
+                }
+              ],
+              "order": [
+                "b",
+                "a"
+              ],
+              "repository": "/REDACTED-TEMP-001/REDACTED-DIRECTORY-019/source"
+            },
+            "resourceLimits": {
+              "changedPaths": 16,
+              "childAddressSpaceBytes": null,
+              "commandOutputBytes": 2097152,
+              "gitCommands": 256,
+              "operations": 4,
+              "outputBytes": 8388608,
+              "patchBytes": 262144,
+              "scratchBytes": 67108864,
+              "wallSeconds": 60
+            },
+            "runDirectory": "/REDACTED-TEMP-001/REDACTED-DIRECTORY-019/REDACTED-DIRECTORY-003/result",
+            "sourcePromotion": false,
+            "steps": [
+              {
+                "attemptId": "b-attempt",
+                "commit": "f54240d08d44f1c8dcdb7692eb0161caaf343d1f",
+                "effects": [
+                  {
+                    "afterBlob": "61780798228d17af2d34fce4cfbdf35556832472",
+                    "afterMode": "100644",
+                    "beforeBlob": "df967b96a579e45a18b8251732d16804b2e56a55",
+                    "beforeMode": "100644",
+                    "path": "b.txt",
+                    "status": "M"
+                  }
+                ],
+                "inputTree": "562d3d0a571a697990fbf60a7db0338349836782",
+                "operationId": "b",
+                "outputTree": "10aa6b85847c2f4dfd5e43afaa74318191dbd403",
+                "parentCommit": "2aec8d9089770f6e477c3e748ffe301583ab2e04",
+                "patchDigest": "sha256:bd6ccd8802bc42f626b49e90c021e3f5f0b58cab90f66f7b56130c5fbb29cf7d",
+                "sourceCommit": "76661359f59a8598ce6972aa34a4ef86087f6b14"
+              },
+              {
+                "attemptId": "a-attempt",
+                "commit": "d70c54c03c7583a4063bc9592a39f756f30db160",
+                "effects": [
+                  {
+                    "afterBlob": "78981922613b2afb6025042ff6bd878ac1994e85",
+                    "afterMode": "100644",
+                    "beforeBlob": "df967b96a579e45a18b8251732d16804b2e56a55",
+                    "beforeMode": "100644",
+                    "path": "a.txt",
+                    "status": "M"
+                  }
+                ],
+                "inputTree": "10aa6b85847c2f4dfd5e43afaa74318191dbd403",
+                "operationId": "a",
+                "outputTree": "f4b354863caa9cea99b95422c9dab70465757d87",
+                "parentCommit": "f54240d08d44f1c8dcdb7692eb0161caaf343d1f",
+                "patchDigest": "sha256:8c3977006118ad8a901a073b66d561e9d65ee62d82db5426b7d4b4b020609778",
+                "sourceCommit": "83b2ec754a3a119ead022fc64aa80a80a60119f8"
+              }
+            ]
+          },
+          "sampledPeakPhaseScratchBytes": 28827,
+          "wallNs": 10929876750,
+          "workerEvidenceDigest": null
+        }
+      },
+      "serialOverParallelWallRatio": {
+        "denominator": 17399711,
+        "numerator": 9715446
+      },
+      "treatmentOrder": [
+        "parallel",
+        "serial"
+      ]
+    },
+    {
+      "equivalentFinalTree": true,
+      "exposure": "subsequent",
+      "order": [
+        "b",
+        "a"
+      ],
+      "repetition": 3,
+      "samples": {
+        "parallel": {
+          "boundedPhaseCount": 20,
+          "capturedOutputBytes": 36703,
+          "childSystemCpuNs": 4790688000,
+          "childUserCpuNs": 5423014000,
+          "gitCommands": 821,
+          "manifestDigest": "sha256:20239839e99c5fed5a9c288b025b405e79517e267390bfc5c9ba496c20def14c",
+          "mode": "parallel",
+          "observedPeakWorkerIntervals": 2,
+          "parentCpuNs": 1708540000,
+          "planDigest": "sha256:295f1b43da9af54f29760289dd66e4b01713ae4c48af2cd9e7c2b7b05f57040f",
+          "preparationEvidence": {
+            "evidenceDigest": "sha256:bf36f04b14f2199626faaf294f63b1cb64d6ee074a70698815f261f6e48cdf84",
+            "executionContract": "isolated-preparation-serial-publication-v1",
+            "limits": [
+              "Observed preparation intervals are not a CPU parallelism guarantee.",
+              "Trees/effects are independently replayable; recorded timings are observations.",
+              "Trusted Git and owned scratch; no arbitrary code or hostile same-UID isolation."
+            ],
+            "manifestDigest": "sha256:20239839e99c5fed5a9c288b025b405e79517e267390bfc5c9ba496c20def14c",
+            "metrics": {
+              "capturedOutputBytes": 2519,
+              "childSystemCpuNs": 355077999,
+              "childUserCpuNs": 391643000,
+              "gitCommands": 57,
+              "processLifetimePeakChildRssBytes": 6062080,
+              "sampledPeakScratchBytes": 3364
+            },
+            "observedPeakWorkerIntervals": 2,
+            "runtimePreparationEvidenceVersion": "0.1.0-alpha",
+            "scheduleDigest": "sha256:22adf71e7451e9ef87fa75f23d1277871ff162c9ed6e1922f97b52db0b8f88e8",
+            "wallNs": 1313730875,
+            "workers": [
+              {
+                "attemptId": "b-attempt",
+                "effects": [
+                  {
+                    "afterBlob": "61780798228d17af2d34fce4cfbdf35556832472",
+                    "afterMode": "100644",
+                    "beforeBlob": "df967b96a579e45a18b8251732d16804b2e56a55",
+                    "beforeMode": "100644",
+                    "path": "b.txt",
+                    "status": "M"
+                  }
+                ],
+                "finishedNs": 1313592041,
+                "inputTree": "562d3d0a571a697990fbf60a7db0338349836782",
+                "operationId": "b",
+                "outputTree": "10aa6b85847c2f4dfd5e43afaa74318191dbd403",
+                "patchDigest": "sha256:bd6ccd8802bc42f626b49e90c021e3f5f0b58cab90f66f7b56130c5fbb29cf7d",
+                "startedNs": 983568666,
+                "wave": 0,
+                "writableIndex": "/REDACTED-TEMP-001/REDACTED-DIRECTORY-013/worker-0/worker.git/index",
+                "writableRepository": "/REDACTED-TEMP-001/REDACTED-DIRECTORY-013/worker-0/worker.git"
+              },
+              {
+                "attemptId": "a-attempt",
+                "effects": [
+                  {
+                    "afterBlob": "78981922613b2afb6025042ff6bd878ac1994e85",
+                    "afterMode": "100644",
+                    "beforeBlob": "df967b96a579e45a18b8251732d16804b2e56a55",
+                    "beforeMode": "100644",
+                    "path": "a.txt",
+                    "status": "M"
+                  }
+                ],
+                "finishedNs": 1261705166,
+                "inputTree": "562d3d0a571a697990fbf60a7db0338349836782",
+                "operationId": "a",
+                "outputTree": "b2cc846ba303ed8a3e9f7f5fdd027d799b9f18f6",
+                "patchDigest": "sha256:8c3977006118ad8a901a073b66d561e9d65ee62d82db5426b7d4b4b020609778",
+                "startedNs": 983519333,
+                "wave": 0,
+                "writableIndex": "/REDACTED-TEMP-001/REDACTED-DIRECTORY-013/worker-1/worker.git/index",
+                "writableRepository": "/REDACTED-TEMP-001/REDACTED-DIRECTORY-013/worker-1/worker.git"
+              }
+            ]
+          },
+          "processLifetimePeakChildRssBytes": 6062080,
+          "resultTree": "f4b354863caa9cea99b95422c9dab70465757d87",
+          "runtimeManifest": {
+            "authorizationScope": "private-run-only",
+            "baseTree": "562d3d0a571a697990fbf60a7db0338349836782",
+            "executionContract": "authorized-serial-index-patch-v1",
+            "gitRuntimeManifestVersion": "0.1.0-alpha",
+            "manifestDigest": "sha256:20239839e99c5fed5a9c288b025b405e79517e267390bfc5c9ba496c20def14c",
+            "observationContract": "runtime-private-tracked-tree-v1",
+            "privateConfigDigest": "sha256:3c5cc3e72b5473d08433171d50fc687ac3aa2a6a3f4c20b97f5b66f581b0fec9",
+            "repositoryId": "sha256:4f6fe576cd7ba3d00ab8e591e29d8805e8deaea92f963d539db142ec5933bf30",
+            "request": {
+              "baseRevision": "2aec8d9089770f6e477c3e748ffe301583ab2e04",
+              "expectedFinalTree": "f4b354863caa9cea99b95422c9dab70465757d87",
+              "gitRuntimeRequestVersion": "0.1.0-alpha",
+              "operations": [
+                {
+                  "attemptId": "a-attempt",
+                  "declaredWrites": [
+                    "a.txt"
+                  ],
+                  "dependencies": [],
+                  "instanceId": "a",
+                  "source": {
+                    "kind": "commit",
+                    "revision": "83b2ec754a3a119ead022fc64aa80a80a60119f8"
+                  },
+                  "uncertainPaths": []
+                },
+                {
+                  "attemptId": "b-attempt",
+                  "declaredWrites": [
+                    "b.txt"
+                  ],
+                  "dependencies": [],
+                  "instanceId": "b",
+                  "source": {
+                    "kind": "commit",
+                    "revision": "76661359f59a8598ce6972aa34a4ef86087f6b14"
+                  },
+                  "uncertainPaths": []
+                }
+              ],
+              "order": [
+                "b",
+                "a"
+              ],
+              "repository": "/REDACTED-TEMP-001/REDACTED-DIRECTORY-019/source"
+            },
+            "resourceLimits": {
+              "changedPaths": 16,
+              "childAddressSpaceBytes": null,
+              "commandOutputBytes": 2097152,
+              "gitCommands": 256,
+              "operations": 4,
+              "outputBytes": 8388608,
+              "patchBytes": 262144,
+              "scratchBytes": 67108864,
+              "wallSeconds": 60
+            },
+            "runDirectory": "/REDACTED-TEMP-001/REDACTED-DIRECTORY-019/REDACTED-DIRECTORY-001/result",
+            "sourcePromotion": false,
+            "steps": [
+              {
+                "attemptId": "b-attempt",
+                "commit": "f54240d08d44f1c8dcdb7692eb0161caaf343d1f",
+                "effects": [
+                  {
+                    "afterBlob": "61780798228d17af2d34fce4cfbdf35556832472",
+                    "afterMode": "100644",
+                    "beforeBlob": "df967b96a579e45a18b8251732d16804b2e56a55",
+                    "beforeMode": "100644",
+                    "path": "b.txt",
+                    "status": "M"
+                  }
+                ],
+                "inputTree": "562d3d0a571a697990fbf60a7db0338349836782",
+                "operationId": "b",
+                "outputTree": "10aa6b85847c2f4dfd5e43afaa74318191dbd403",
+                "parentCommit": "2aec8d9089770f6e477c3e748ffe301583ab2e04",
+                "patchDigest": "sha256:bd6ccd8802bc42f626b49e90c021e3f5f0b58cab90f66f7b56130c5fbb29cf7d",
+                "sourceCommit": "76661359f59a8598ce6972aa34a4ef86087f6b14"
+              },
+              {
+                "attemptId": "a-attempt",
+                "commit": "d70c54c03c7583a4063bc9592a39f756f30db160",
+                "effects": [
+                  {
+                    "afterBlob": "78981922613b2afb6025042ff6bd878ac1994e85",
+                    "afterMode": "100644",
+                    "beforeBlob": "df967b96a579e45a18b8251732d16804b2e56a55",
+                    "beforeMode": "100644",
+                    "path": "a.txt",
+                    "status": "M"
+                  }
+                ],
+                "inputTree": "10aa6b85847c2f4dfd5e43afaa74318191dbd403",
+                "operationId": "a",
+                "outputTree": "f4b354863caa9cea99b95422c9dab70465757d87",
+                "parentCommit": "f54240d08d44f1c8dcdb7692eb0161caaf343d1f",
+                "patchDigest": "sha256:8c3977006118ad8a901a073b66d561e9d65ee62d82db5426b7d4b4b020609778",
+                "sourceCommit": "83b2ec754a3a119ead022fc64aa80a80a60119f8"
+              }
+            ]
+          },
+          "sampledPeakPhaseScratchBytes": 28827,
+          "wallNs": 19292136375,
+          "workerEvidenceDigest": "sha256:bf36f04b14f2199626faaf294f63b1cb64d6ee074a70698815f261f6e48cdf84"
+        },
+        "serial": {
+          "boundedPhaseCount": 13,
+          "capturedOutputBytes": 20963,
+          "childSystemCpuNs": 2741374000,
+          "childUserCpuNs": 3117293000,
+          "gitCommands": 485,
+          "manifestDigest": "sha256:d521e191f5e27faad2a729a9fb1116a1255324d6650897ca5011e17f8ba70e9c",
+          "mode": "serial",
+          "observedPeakWorkerIntervals": 1,
+          "parentCpuNs": 960254000,
+          "planDigest": "sha256:5e5aa2922e8f010e79b0b5c05f451508c347dab62ac3e80aa0d19332af7d1273",
+          "preparationEvidence": null,
+          "processLifetimePeakChildRssBytes": 6062080,
+          "resultTree": "f4b354863caa9cea99b95422c9dab70465757d87",
+          "runtimeManifest": {
+            "authorizationScope": "private-run-only",
+            "baseTree": "562d3d0a571a697990fbf60a7db0338349836782",
+            "executionContract": "authorized-serial-index-patch-v1",
+            "gitRuntimeManifestVersion": "0.1.0-alpha",
+            "manifestDigest": "sha256:d521e191f5e27faad2a729a9fb1116a1255324d6650897ca5011e17f8ba70e9c",
+            "observationContract": "runtime-private-tracked-tree-v1",
+            "privateConfigDigest": "sha256:3c5cc3e72b5473d08433171d50fc687ac3aa2a6a3f4c20b97f5b66f581b0fec9",
+            "repositoryId": "sha256:4f6fe576cd7ba3d00ab8e591e29d8805e8deaea92f963d539db142ec5933bf30",
+            "request": {
+              "baseRevision": "2aec8d9089770f6e477c3e748ffe301583ab2e04",
+              "expectedFinalTree": "f4b354863caa9cea99b95422c9dab70465757d87",
+              "gitRuntimeRequestVersion": "0.1.0-alpha",
+              "operations": [
+                {
+                  "attemptId": "a-attempt",
+                  "declaredWrites": [
+                    "a.txt"
+                  ],
+                  "dependencies": [],
+                  "instanceId": "a",
+                  "source": {
+                    "kind": "commit",
+                    "revision": "83b2ec754a3a119ead022fc64aa80a80a60119f8"
+                  },
+                  "uncertainPaths": []
+                },
+                {
+                  "attemptId": "b-attempt",
+                  "declaredWrites": [
+                    "b.txt"
+                  ],
+                  "dependencies": [],
+                  "instanceId": "b",
+                  "source": {
+                    "kind": "commit",
+                    "revision": "76661359f59a8598ce6972aa34a4ef86087f6b14"
+                  },
+                  "uncertainPaths": []
+                }
+              ],
+              "order": [
+                "b",
+                "a"
+              ],
+              "repository": "/REDACTED-TEMP-001/REDACTED-DIRECTORY-019/source"
+            },
+            "resourceLimits": {
+              "changedPaths": 16,
+              "childAddressSpaceBytes": null,
+              "commandOutputBytes": 2097152,
+              "gitCommands": 256,
+              "operations": 4,
+              "outputBytes": 8388608,
+              "patchBytes": 262144,
+              "scratchBytes": 67108864,
+              "wallSeconds": 60
+            },
+            "runDirectory": "/REDACTED-TEMP-001/REDACTED-DIRECTORY-019/REDACTED-DIRECTORY-007/result",
+            "sourcePromotion": false,
+            "steps": [
+              {
+                "attemptId": "b-attempt",
+                "commit": "f54240d08d44f1c8dcdb7692eb0161caaf343d1f",
+                "effects": [
+                  {
+                    "afterBlob": "61780798228d17af2d34fce4cfbdf35556832472",
+                    "afterMode": "100644",
+                    "beforeBlob": "df967b96a579e45a18b8251732d16804b2e56a55",
+                    "beforeMode": "100644",
+                    "path": "b.txt",
+                    "status": "M"
+                  }
+                ],
+                "inputTree": "562d3d0a571a697990fbf60a7db0338349836782",
+                "operationId": "b",
+                "outputTree": "10aa6b85847c2f4dfd5e43afaa74318191dbd403",
+                "parentCommit": "2aec8d9089770f6e477c3e748ffe301583ab2e04",
+                "patchDigest": "sha256:bd6ccd8802bc42f626b49e90c021e3f5f0b58cab90f66f7b56130c5fbb29cf7d",
+                "sourceCommit": "76661359f59a8598ce6972aa34a4ef86087f6b14"
+              },
+              {
+                "attemptId": "a-attempt",
+                "commit": "d70c54c03c7583a4063bc9592a39f756f30db160",
+                "effects": [
+                  {
+                    "afterBlob": "78981922613b2afb6025042ff6bd878ac1994e85",
+                    "afterMode": "100644",
+                    "beforeBlob": "df967b96a579e45a18b8251732d16804b2e56a55",
+                    "beforeMode": "100644",
+                    "path": "a.txt",
+                    "status": "M"
+                  }
+                ],
+                "inputTree": "10aa6b85847c2f4dfd5e43afaa74318191dbd403",
+                "operationId": "a",
+                "outputTree": "f4b354863caa9cea99b95422c9dab70465757d87",
+                "parentCommit": "f54240d08d44f1c8dcdb7692eb0161caaf343d1f",
+                "patchDigest": "sha256:8c3977006118ad8a901a073b66d561e9d65ee62d82db5426b7d4b4b020609778",
+                "sourceCommit": "83b2ec754a3a119ead022fc64aa80a80a60119f8"
+              }
+            ]
+          },
+          "sampledPeakPhaseScratchBytes": 28827,
+          "wallNs": 10815613125,
+          "workerEvidenceDigest": null
+        }
+      },
+      "serialOverParallelWallRatio": {
+        "denominator": 51445697,
+        "numerator": 28841635
+      },
+      "treatmentOrder": [
+        "serial",
+        "parallel"
+      ]
+    }
+  ],
+  "redaction": {
+    "hostThreadIdentifiersReplaced": 0,
+    "kind": "published-observation-view-with-stable-placeholders",
+    "limits": "Paths and host thread IDs are pseudonymized consistently, including embedded JSON text. Original manifest/plan/evidence digests identify original observed bytes and cannot be recomputed from this redacted view. Candidate, source input hashes, operation IDs, outcomes, times and measurements are unchanged. This view is not a runnable grant or independent replay input.",
+    "localTempRootsReplaced": 2,
+    "rawRetained": "Operator-local file outside repository; not included in publication history.",
+    "rawSha256": "829017d0507517f60402f2be58c7e6cb2264dfb5df2259a070b898e632cacb58",
+    "temporaryDirectoryIdentifiersReplaced": 19
+  },
+  "status": "captured",
+  "utilityOutcome": "negative-or-null-descriptive"
+}

@@ -11,7 +11,7 @@ Given a fixed-patch request and independently verified analysis, when a candidat
 
 Planned automated target: `tests/test_m4_alpha_pipeline.py`; stable procedure `SC-001`.
 Retain exact candidate/input hashes, observed output, verifier status and refusal
-or prefix details. Obtained evidence: none.
+or prefix details. Obtained evidence and pending portions are recorded in assurance.json and closure-matrix.md.
 
 ## SC-002 — Unified policy pipeline
 
@@ -19,7 +19,7 @@ Forged certificates, missing coverage and changed inputs are rejected before run
 
 Planned automated target: `tests/test_m4_alpha_pipeline.py`; stable procedure `SC-002`.
 Retain exact candidate/input hashes, observed output, verifier status and refusal
-or prefix details. Obtained evidence: none.
+or prefix details. Obtained evidence and pending portions are recorded in assurance.json and closure-matrix.md.
 
 ## SC-003 — Separate operator authority
 
@@ -27,7 +27,7 @@ Given a prepared immutable plan, when the model invokes execution without a sepa
 
 Planned automated target: `tests/test_m4_alpha_authorization.py`; stable procedure `SC-003`.
 Retain exact candidate/input hashes, observed output, verifier status and refusal
-or prefix details. Obtained evidence: none.
+or prefix details. Obtained evidence and pending portions are recorded in assurance.json and closure-matrix.md.
 
 ## SC-004 — Separate operator authority
 
@@ -35,7 +35,7 @@ Missing, expired, consumed, wrong-destination and changed-plan grants are refuse
 
 Planned automated target: `tests/test_m4_alpha_authorization.py`; stable procedure `SC-004`.
 Retain exact candidate/input hashes, observed output, verifier status and refusal
-or prefix details. Obtained evidence: none.
+or prefix details. Obtained evidence and pending portions are recorded in assurance.json and closure-matrix.md.
 
 ## SC-005 — Bounded scheduling and isolation
 
@@ -43,7 +43,7 @@ Given 2–4 fixed operations with complete dependencies and adapter-verified foo
 
 Planned automated target: `tests/test_m4_alpha_scheduler.py`; stable procedure `SC-005`.
 Retain exact candidate/input hashes, observed output, verifier status and refusal
-or prefix details. Obtained evidence: none.
+or prefix details. Obtained evidence and pending portions are recorded in assurance.json and closure-matrix.md.
 
 ## SC-006 — Bounded scheduling and isolation
 
@@ -51,7 +51,7 @@ Overlap, unknown reads, shared resources, stale bases, altered dependencies and 
 
 Planned automated target: `tests/test_m4_alpha_scheduler.py`; stable procedure `SC-006`.
 Retain exact candidate/input hashes, observed output, verifier status and refusal
-or prefix details. Obtained evidence: none.
+or prefix details. Obtained evidence and pending portions are recorded in assurance.json and closure-matrix.md.
 
 ## SC-007 — Observed effects and consumer verification
 
@@ -59,7 +59,7 @@ Given admitted workers, when actual path/mode/blob effects or result trees diffe
 
 Planned automated target: `tests/test_m4_alpha_effects.py`; stable procedure `SC-007`.
 Retain exact candidate/input hashes, observed output, verifier status and refusal
-or prefix details. Obtained evidence: none.
+or prefix details. Obtained evidence and pending portions are recorded in assurance.json and closure-matrix.md.
 
 ## SC-008 — Observed effects and consumer verification
 
@@ -67,7 +67,7 @@ Forged terminal reports and altered private objects/state are refused; declared 
 
 Planned automated target: `tests/test_m4_alpha_effects.py`; stable procedure `SC-008`.
 Retain exact candidate/input hashes, observed output, verifier status and refusal
-or prefix details. Obtained evidence: none.
+or prefix details. Obtained evidence and pending portions are recorded in assurance.json and closure-matrix.md.
 
 ## SC-009 — Recovery and transport interruption
 
@@ -75,7 +75,7 @@ Given process death, cancellation or host disconnect, when the run is inspected 
 
 Planned automated target: `tests/test_m4_alpha_recovery.py`; stable procedure `SC-009`.
 Retain exact candidate/input hashes, observed output, verifier status and refusal
-or prefix details. Obtained evidence: none.
+or prefix details. Obtained evidence and pending portions are recorded in assurance.json and closure-matrix.md.
 
 ## SC-010 — Recovery and transport interruption
 
@@ -83,7 +83,7 @@ Repeated delivery, worker failure, interrupted publication and abort are tested;
 
 Planned automated target: `tests/test_m4_alpha_recovery.py`; stable procedure `SC-010`.
 Retain exact candidate/input hashes, observed output, verifier status and refusal
-or prefix details. Obtained evidence: none.
+or prefix details. Obtained evidence and pending portions are recorded in assurance.json and closure-matrix.md.
 
 ## SC-011 — Versioned MCP transport
 
@@ -91,7 +91,7 @@ Given a pinned supported protocol revision and deterministic peer, when discover
 
 Planned automated target: `tests/test_m4_alpha_mcp.py`; stable procedure `SC-011`.
 Retain exact candidate/input hashes, observed output, verifier status and refusal
-or prefix details. Obtained evidence: none.
+or prefix details. Obtained evidence and pending portions are recorded in assurance.json and closure-matrix.md.
 
 ## SC-012 — Versioned MCP transport
 
@@ -99,7 +99,7 @@ Unsupported versions, malformed/oversized messages, unknown tools, invalid argum
 
 Planned automated target: `tests/test_m4_alpha_mcp.py`; stable procedure `SC-012`.
 Retain exact candidate/input hashes, observed output, verifier status and refusal
-or prefix details. Obtained evidence: none.
+or prefix details. Obtained evidence and pending portions are recorded in assurance.json and closure-matrix.md.
 
 ## SC-013 — Real host compatibility
 
@@ -107,7 +107,7 @@ Given installed Codex and Claude Code versions and approved disposable fixtures,
 
 Planned automated target: `tests/test_m4_alpha_hosts.py`; stable procedure `SC-013`.
 Retain exact candidate/input hashes, observed output, verifier status and refusal
-or prefix details. Obtained evidence: none.
+or prefix details. Obtained evidence and pending portions are recorded in assurance.json and closure-matrix.md.
 
 ## SC-014 — Real host compatibility
 
@@ -115,7 +115,7 @@ A simulated peer or Spec Kit test is not a real host observation. Record host ve
 
 Planned automated target: `tests/test_m4_alpha_hosts.py`; stable procedure `SC-014`.
 Retain exact candidate/input hashes, observed output, verifier status and refusal
-or prefix details. Obtained evidence: none.
+or prefix details. Obtained evidence and pending portions are recorded in assurance.json and closure-matrix.md.
 
 ## SC-015 — Reproducible bounded M4 closure
 
@@ -123,7 +123,7 @@ Given all six roadmap deliverables and a frozen candidate, when closure is revie
 
 Planned automated target: `tests/test_m4_alpha_closure.py`; stable procedure `SC-015`.
 Retain exact candidate/input hashes, observed output, verifier status and refusal
-or prefix details. Obtained evidence: none.
+or prefix details. Obtained evidence and pending portions are recorded in assurance.json and closure-matrix.md.
 
 ## SC-016 — Reproducible bounded M4 closure
 
@@ -131,7 +131,7 @@ Unexecuted or externally blocked checks keep the affected exit row open. Report 
 
 Planned automated target: `tests/test_m4_alpha_closure.py`; stable procedure `SC-016`.
 Retain exact candidate/input hashes, observed output, verifier status and refusal
-or prefix details. Obtained evidence: none.
+or prefix details. Obtained evidence and pending portions are recorded in assurance.json and closure-matrix.md.
 
 ## Measurement protocol
 
