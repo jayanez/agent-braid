@@ -1,0 +1,546 @@
+{
+  "conclusion": "success",
+  "createdAt": "2026-10-04T11:01:12Z",
+  "databaseId": 37197290307,
+  "event": "pull_request",
+  "headSha": "9108a206d76c4ffb8f253b68cc4c60d977382394",
+  "jobs": [
+    {
+      "completedAt": "2026-10-04T11:08:12Z",
+      "conclusion": "success",
+      "databaseId": 111421667340,
+      "name": "Complete Python test suite",
+      "startedAt": "2026-10-04T11:01:14Z",
+      "status": "completed",
+      "steps": [
+        {
+          "completedAt": "2026-10-04T11:01:16Z",
+          "conclusion": "success",
+          "name": "Set up job",
+          "number": 1,
+          "startedAt": "2026-10-04T11:01:15Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-04T11:01:18Z",
+          "conclusion": "success",
+          "name": "Check out repository",
+          "number": 2,
+          "startedAt": "2026-10-04T11:01:16Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-04T11:01:20Z",
+          "conclusion": "success",
+          "name": "Set up Python 3.12",
+          "number": 3,
+          "startedAt": "2026-10-04T11:01:18Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-04T11:01:23Z",
+          "conclusion": "success",
+          "name": "Install test dependencies",
+          "number": 4,
+          "startedAt": "2026-10-04T11:01:20Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-04T11:01:23Z",
+          "conclusion": "success",
+          "name": "Restore reviewed public SPEC-012 history",
+          "number": 5,
+          "startedAt": "2026-10-04T11:01:23Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-04T11:08:10Z",
+          "conclusion": "success",
+          "name": "Run complete bounded and negative test suite",
+          "number": 6,
+          "startedAt": "2026-10-04T11:01:23Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-04T11:08:10Z",
+          "conclusion": "success",
+          "name": "Post Set up Python 3.12",
+          "number": 11,
+          "startedAt": "2026-10-04T11:08:10Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-04T11:08:10Z",
+          "conclusion": "success",
+          "name": "Post Check out repository",
+          "number": 12,
+          "startedAt": "2026-10-04T11:08:10Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-04T11:08:10Z",
+          "conclusion": "success",
+          "name": "Complete job",
+          "number": 13,
+          "startedAt": "2026-10-04T11:08:10Z",
+          "status": "completed"
+        }
+      ],
+      "url": "https://github.com/jayanez/agent-braid/actions/runs/37197290307/job/111421667340"
+    },
+    {
+      "completedAt": "2026-10-04T11:01:25Z",
+      "conclusion": "success",
+      "databaseId": 111421667350,
+      "name": "Governance, contracts and scientific controls",
+      "startedAt": "2026-10-04T11:01:15Z",
+      "status": "completed",
+      "steps": [
+        {
+          "completedAt": "2026-10-04T11:01:16Z",
+          "conclusion": "success",
+          "name": "Set up job",
+          "number": 1,
+          "startedAt": "2026-10-04T11:01:15Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-04T11:01:17Z",
+          "conclusion": "success",
+          "name": "Check out repository",
+          "number": 2,
+          "startedAt": "2026-10-04T11:01:16Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-04T11:01:19Z",
+          "conclusion": "success",
+          "name": "Set up Python 3.12",
+          "number": 3,
+          "startedAt": "2026-10-04T11:01:17Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-04T11:01:20Z",
+          "conclusion": "success",
+          "name": "Install development-only contract validator",
+          "number": 4,
+          "startedAt": "2026-10-04T11:01:19Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-04T11:01:21Z",
+          "conclusion": "success",
+          "name": "Validate versioned contract corpus",
+          "number": 5,
+          "startedAt": "2026-10-04T11:01:20Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-04T11:01:21Z",
+          "conclusion": "skipped",
+          "name": "Validate formal M0 closure provenance",
+          "number": 6,
+          "startedAt": "2026-10-04T11:01:21Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-04T11:01:21Z",
+          "conclusion": "skipped",
+          "name": "Validate formal M1 closure provenance",
+          "number": 7,
+          "startedAt": "2026-10-04T11:01:21Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-04T11:01:21Z",
+          "conclusion": "skipped",
+          "name": "Validate M0.5 candidate or closure provenance",
+          "number": 8,
+          "startedAt": "2026-10-04T11:01:21Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-04T11:01:22Z",
+          "conclusion": "success",
+          "name": "Validate publication provenance boundary",
+          "number": 9,
+          "startedAt": "2026-10-04T11:01:21Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-04T11:01:22Z",
+          "conclusion": "success",
+          "name": "Validate release validation status records",
+          "number": 10,
+          "startedAt": "2026-10-04T11:01:22Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-04T11:01:22Z",
+          "conclusion": "success",
+          "name": "Validate research radar provenance and milestone review",
+          "number": 11,
+          "startedAt": "2026-10-04T11:01:22Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-04T11:01:22Z",
+          "conclusion": "success",
+          "name": "Validate reproducible market scenarios",
+          "number": 12,
+          "startedAt": "2026-10-04T11:01:22Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-04T11:01:22Z",
+          "conclusion": "success",
+          "name": "Check finite algebraic controls",
+          "number": 13,
+          "startedAt": "2026-10-04T11:01:22Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-04T11:01:22Z",
+          "conclusion": "success",
+          "name": "Post Set up Python 3.12",
+          "number": 25,
+          "startedAt": "2026-10-04T11:01:22Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-04T11:01:22Z",
+          "conclusion": "success",
+          "name": "Post Check out repository",
+          "number": 26,
+          "startedAt": "2026-10-04T11:01:22Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-04T11:01:22Z",
+          "conclusion": "success",
+          "name": "Complete job",
+          "number": 27,
+          "startedAt": "2026-10-04T11:01:22Z",
+          "status": "completed"
+        }
+      ],
+      "url": "https://github.com/jayanez/agent-braid/actions/runs/37197290307/job/111421667350"
+    },
+    {
+      "completedAt": "2026-10-04T11:01:47Z",
+      "conclusion": "success",
+      "databaseId": 111421667402,
+      "name": "Spec Kit structure and render",
+      "startedAt": "2026-10-04T11:01:15Z",
+      "status": "completed",
+      "steps": [
+        {
+          "completedAt": "2026-10-04T11:01:17Z",
+          "conclusion": "success",
+          "name": "Set up job",
+          "number": 1,
+          "startedAt": "2026-10-04T11:01:16Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-04T11:01:18Z",
+          "conclusion": "success",
+          "name": "Check out repository",
+          "number": 2,
+          "startedAt": "2026-10-04T11:01:17Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-04T11:01:21Z",
+          "conclusion": "success",
+          "name": "Set up Python 3.12",
+          "number": 3,
+          "startedAt": "2026-10-04T11:01:18Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-04T11:01:24Z",
+          "conclusion": "success",
+          "name": "Install pinned Spec Kit tooling",
+          "number": 4,
+          "startedAt": "2026-10-04T11:01:21Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-04T11:01:25Z",
+          "conclusion": "success",
+          "name": "Restore reviewed public SPEC-012 history",
+          "number": 5,
+          "startedAt": "2026-10-04T11:01:24Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-04T11:01:42Z",
+          "conclusion": "success",
+          "name": "Validate shared Spec Kit structural gates",
+          "number": 6,
+          "startedAt": "2026-10-04T11:01:25Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-04T11:01:44Z",
+          "conclusion": "success",
+          "name": "Re-render both official integrations",
+          "number": 7,
+          "startedAt": "2026-10-04T11:01:42Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-04T11:01:44Z",
+          "conclusion": "success",
+          "name": "Post Set up Python 3.12",
+          "number": 13,
+          "startedAt": "2026-10-04T11:01:44Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-04T11:01:44Z",
+          "conclusion": "success",
+          "name": "Post Check out repository",
+          "number": 14,
+          "startedAt": "2026-10-04T11:01:44Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-04T11:01:44Z",
+          "conclusion": "success",
+          "name": "Complete job",
+          "number": 15,
+          "startedAt": "2026-10-04T11:01:44Z",
+          "status": "completed"
+        }
+      ],
+      "url": "https://github.com/jayanez/agent-braid/actions/runs/37197290307/job/111421667402"
+    },
+    {
+      "completedAt": "2026-10-04T11:01:22Z",
+      "conclusion": "success",
+      "databaseId": 111421667481,
+      "name": "Fast repository invariants",
+      "startedAt": "2026-10-04T11:01:15Z",
+      "status": "completed",
+      "steps": [
+        {
+          "completedAt": "2026-10-04T11:01:16Z",
+          "conclusion": "success",
+          "name": "Set up job",
+          "number": 1,
+          "startedAt": "2026-10-04T11:01:16Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-04T11:01:17Z",
+          "conclusion": "success",
+          "name": "Check out repository",
+          "number": 2,
+          "startedAt": "2026-10-04T11:01:16Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-04T11:01:17Z",
+          "conclusion": "success",
+          "name": "Set up Python 3.12",
+          "number": 3,
+          "startedAt": "2026-10-04T11:01:17Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-04T11:01:18Z",
+          "conclusion": "success",
+          "name": "Validate foundational invariants",
+          "number": 4,
+          "startedAt": "2026-10-04T11:01:17Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-04T11:01:18Z",
+          "conclusion": "success",
+          "name": "Check Constitution replica",
+          "number": 5,
+          "startedAt": "2026-10-04T11:01:18Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-04T11:01:21Z",
+          "conclusion": "success",
+          "name": "Install and smoke-test the alpha CLI",
+          "number": 6,
+          "startedAt": "2026-10-04T11:01:18Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-04T11:01:21Z",
+          "conclusion": "success",
+          "name": "Check whitespace",
+          "number": 7,
+          "startedAt": "2026-10-04T11:01:21Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-04T11:01:21Z",
+          "conclusion": "success",
+          "name": "Post Set up Python 3.12",
+          "number": 13,
+          "startedAt": "2026-10-04T11:01:21Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-04T11:01:21Z",
+          "conclusion": "success",
+          "name": "Post Check out repository",
+          "number": 14,
+          "startedAt": "2026-10-04T11:01:21Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-04T11:01:21Z",
+          "conclusion": "success",
+          "name": "Complete job",
+          "number": 15,
+          "startedAt": "2026-10-04T11:01:21Z",
+          "status": "completed"
+        }
+      ],
+      "url": "https://github.com/jayanez/agent-braid/actions/runs/37197290307/job/111421667481"
+    },
+    {
+      "completedAt": "2026-10-04T11:01:20Z",
+      "conclusion": "success",
+      "databaseId": 111421667501,
+      "name": "Classify validation impact",
+      "startedAt": "2026-10-04T11:01:14Z",
+      "status": "completed",
+      "steps": [
+        {
+          "completedAt": "2026-10-04T11:01:16Z",
+          "conclusion": "success",
+          "name": "Set up job",
+          "number": 1,
+          "startedAt": "2026-10-04T11:01:15Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-04T11:01:17Z",
+          "conclusion": "success",
+          "name": "Check out repository",
+          "number": 2,
+          "startedAt": "2026-10-04T11:01:16Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-04T11:01:17Z",
+          "conclusion": "success",
+          "name": "Set up Python 3.12",
+          "number": 3,
+          "startedAt": "2026-10-04T11:01:17Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-04T11:01:18Z",
+          "conclusion": "success",
+          "name": "Plan validation impact",
+          "number": 4,
+          "startedAt": "2026-10-04T11:01:17Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-04T11:01:18Z",
+          "conclusion": "success",
+          "name": "Post Set up Python 3.12",
+          "number": 7,
+          "startedAt": "2026-10-04T11:01:18Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-04T11:01:18Z",
+          "conclusion": "success",
+          "name": "Post Check out repository",
+          "number": 8,
+          "startedAt": "2026-10-04T11:01:18Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-04T11:01:18Z",
+          "conclusion": "success",
+          "name": "Complete job",
+          "number": 9,
+          "startedAt": "2026-10-04T11:01:18Z",
+          "status": "completed"
+        }
+      ],
+      "url": "https://github.com/jayanez/agent-braid/actions/runs/37197290307/job/111421667501"
+    },
+    {
+      "completedAt": "2026-10-04T11:01:21Z",
+      "conclusion": "skipped",
+      "databaseId": 111421691621,
+      "name": "Spec Kit solo and dual integration matrix",
+      "startedAt": "2026-10-04T11:01:21Z",
+      "status": "completed",
+      "steps": [],
+      "url": "https://github.com/jayanez/agent-braid/actions/runs/37197290307/job/111421691621"
+    },
+    {
+      "completedAt": "2026-10-04T11:08:19Z",
+      "conclusion": "success",
+      "databaseId": 111422860469,
+      "name": "validate",
+      "startedAt": "2026-10-04T11:08:15Z",
+      "status": "completed",
+      "steps": [
+        {
+          "completedAt": "2026-10-04T11:08:16Z",
+          "conclusion": "success",
+          "name": "Set up job",
+          "number": 1,
+          "startedAt": "2026-10-04T11:08:16Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-04T11:08:16Z",
+          "conclusion": "skipped",
+          "name": "Require every mandatory gate",
+          "number": 2,
+          "startedAt": "2026-10-04T11:08:16Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-04T11:08:16Z",
+          "conclusion": "success",
+          "name": "Confirm aggregate validation",
+          "number": 3,
+          "startedAt": "2026-10-04T11:08:16Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-04T11:08:16Z",
+          "conclusion": "success",
+          "name": "Complete job",
+          "number": 4,
+          "startedAt": "2026-10-04T11:08:16Z",
+          "status": "completed"
+        }
+      ],
+      "url": "https://github.com/jayanez/agent-braid/actions/runs/37197290307/job/111422860469"
+    }
+  ],
+  "limits": "CI is separate from fresh reproduction and host observations. Spec Kit integration matrix skipped by selection condition; formal closure provenance steps retain their own selection gates.",
+  "passed": 367,
+  "rawLogSha256": "62a32225a60daa3441f350556f2c801cdf966e1c603ae4fa98d00b39b708c3db",
+  "skipReasons": [
+    "Three deferred SPEC-019 implementation tests",
+    "One unavailable private-history test",
+    "One unavailable-hard-memory-limit negative test skipped because this Linux host can enforce the production limit"
+  ],
+  "skipped": 5,
+  "status": "completed",
+  "tests": 372,
+  "updatedAt": "2026-10-04T11:08:19Z",
+  "url": "https://github.com/jayanez/agent-braid/actions/runs/37197290307"
+}

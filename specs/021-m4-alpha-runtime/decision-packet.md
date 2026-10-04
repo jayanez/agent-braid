@@ -20,14 +20,26 @@ Six paired two-edit trials, both admitted orders, yielded matching independently
 
 ## 5. Remaining acceptance gates
 
-Full actual Claude exercise and fresh Linux x86_64 core/protocol reproduction are still required. The manual Linux workflow is prepared and actionlint passed, but no remote dispatch is claimed. T010–T014 remain open with partial progress documented. G4 requires all six exit rows and an explicit utility go/no-go, including negative or inconclusive outcomes. No scientific, production or whole-M4 closure follows from these tests.
+Full actual Claude exercise is still required. Fresh Linux x86_64 core/protocol reproduction has passed on 9108a20; exact provenance is in section 8. T010, T013 and T014 remain open. G4 requires all six exit rows and an explicit utility go/no-go, including negative or inconclusive outcomes. No scientific, production or whole-M4 closure follows from these tests.
 
 ## 6. Approval boundaries
 
-Implementation was authorized by G0. PR publication, remote tracking apply, Linux remote dispatch and merge require their separate authority; founder-review.json records publication and merge as false. The next review can authorize publication of this bounded implementation and the manual Linux evidence run. That does not accept M4 as complete. Full M4 acceptance follows the outstanding evidence and a separate exact-candidate G4 decision.
+Implementation was authorized by G0. Historical founder-review.json records G0 publication and merge as false. Subsequent explicit authorization permits PR publication, Linux dispatch and included-only Claude use; see execution-authorization.json. PR #201 is open and Linux has passed. Merge, remote tracking apply and whole-M4 acceptance remain separate. Full M4 acceptance follows the outstanding evidence and a separate exact-candidate G4 decision.
 
 ## 7. Published observation views and preservation
 
 Codex transcript and measurement records replace local temporary paths and ephemeral host thread identifiers with stable placeholders. Original observed digests refer to original bytes, not pseudonymized paths; these published views are not runnable grants or independent replay inputs. Each view retains the raw record hash, and originals remain operator-local outside the repository. The publication branch starts from the capture candidate and contains only sanitized packaging; the earlier local packaging branch is preserved without rewriting or deleting its history. Raw measurement quantities, outcomes and all bound source inputs are unchanged.
 
 Independent packaging re-review passed at a54f9d6. The P2 transcript-redaction finding is resolved; raw final report is retained in packaging-review.json. Final metadata packaging preserves all bound implementation inputs.
+
+## 8. Authorized publication and obtained Linux addendum
+
+The founder explicitly authorized PR publication, Linux reproduction and included-subscription-only Claude use. PR #201 is open on the reviewed implementation candidate 9108a20. Execution authorization is recorded separately from historical G0; merge and whole-M4 acceptance remain unapproved.
+
+GitHub run 37197461233 reproduced that exact clean candidate on fresh hosted Linux x86_64 (Python 3.12.14, Git 2.55.0): 61 tests, no skips. The auxiliary workflow commit ab9107d uses the already registered manual workflow and restricts its input to 9108a20, leaving the reviewed PR workflow/candidate untouched during execution. Candidate/input/log hashes and actual run provenance passed local verification.
+
+PR CI run 37197290307 completed successfully: 367 passing tests and five audited skips among 372 tests; its selected integration matrix was skipped. This is distinct from Darwin’s four skips and Linux reproduction’s zero skips. T011 and T012 now have obtained evidence; T010, T013 and T014 remain open.
+
+Claude Code 2.1.236 reports no signed-in subscription. No Claude model call has occurred. Full Claude tool/refusal/disconnect/recovery still requires user login and confirmation that additional usage credits are disabled. No API fallback is authorized. M4 remains open, including its separate utility go/no-go.
+
+The prior implementation assurance at 9108a20 is archived unchanged with its historical source/evidence binding. This new draft updates evidence and the tracking test’s expected task states, without changing runtime, schemas or frozen experiment inputs. Record-only checks and independent packaging review cover this delta.
