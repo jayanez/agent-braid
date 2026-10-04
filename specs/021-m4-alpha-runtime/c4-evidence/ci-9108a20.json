@@ -532,6 +532,8 @@
   ],
   "limits": "CI is separate from fresh reproduction and host observations. Spec Kit integration matrix skipped by selection condition; formal closure provenance steps retain their own selection gates.",
   "passed": 367,
+  "rawLogArtifact": "specs/021-m4-alpha-runtime/c4-evidence/ci-9108a20.log.json",
+  "rawLogArtifactSha256": "b4ad522e2a46d26556a604f7e0a4acd9db69adf4fa0f072a89d2c5b859f5eb01",
   "rawLogSha256": "62a32225a60daa3441f350556f2c801cdf966e1c603ae4fa98d00b39b708c3db",
   "skipReasons": [
     "Three deferred SPEC-019 implementation tests",
