@@ -289,10 +289,13 @@ def _preparation_name(plan: dict) -> str:
     return 'preparation-' + plan['planDigest'].removeprefix('sha256:') + '.json'
 
 
-def _report(plan: dict, root: Path, identifier: str, dispatch: str, result: dict,
+def _report(plan: dict, root: Path | None, identifier: str | None, dispatch: str, result: dict,
             cancel_event) -> dict:
-    report = {'grantId': identifier, 'dispatch': dispatch, 'runtime': result}
+    report = {'dispatch': dispatch, 'runtime': result}
+    if identifier is not None:
+        report['grantId'] = identifier
     if plan['policy']['revision'] == PARALLEL_POLICY:
+        _require(root is not None, 'parallel report needs its owned preparation store')
         path = root / _preparation_name(plan)
         _require(path.exists() and not path.is_symlink(), 'missing preparation journal; inspect owned state')
         # Same bounded, owned-file rules as grants; historical timing remains observational.
@@ -323,3 +326,20 @@ def recover_policy_run(plan: object, grant_store: str | Path, grant_id: str, *, 
     """Resume/abort only through a separately issued purpose-bound grant."""
     _require(isinstance(action, str) and action in {'resume', 'abort'}, "invalid policy recovery action")
     return _dispatch(plan, grant_store, grant_id, action, cancel_event=cancel_event)
+
+
+def inspect_policy_run(plan: object, grant_store: str | Path, *, cancel_event=None) -> dict:
+    """Read-only combined consumer verification; no grant is consumed or issued."""
+    verified = verify_policy_plan(plan, cancel_event=cancel_event)
+    _check_cancel(cancel_event)
+    manifest = verified['runtimeManifest']
+    if not Path(manifest['runDirectory']).exists():
+        return {'status': 'no-private-run', 'planDigest': verified['planDigest'],
+                'dispatchHistory': 'not-established-by-private-run-inspection',
+                'executionAuthorization': False}
+    parallel = verified['policy']['revision'] == PARALLEL_POLICY
+    root = _store(verified, grant_store, create=False) if parallel else None
+    result = {} if parallel else git_runtime.verify_run(manifest['request'], manifest['runDirectory'])
+    report = _report(verified, root, None, 'not-dispatched', result, cancel_event)
+    report['executionAuthorization'] = False
+    return report

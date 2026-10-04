@@ -92,6 +92,8 @@ RULES = (
         "agent_braid/git_runtime.py", "agent_braid/git_runtime_process.py", "tests/test_git_runtime.py",
         "agent_braid/runtime_policy.py", "tests/test_m4_alpha_policy.py",
         "agent_braid/runtime_scheduler.py", "tests/test_m4_alpha_scheduler.py",
+        "agent_braid/mcp_runtime.py", "tests/test_m4_alpha_mcp.py",
+        "scripts/reproduce_m4_alpha.py", "scripts/measure_m4_alpha.py", "scripts/capture_m4_codex.py",
         "scripts/reproduce_m4_runtime.py", "examples/runtime/**",
     ), ("contracts", "git-runtime-tests"), True,
         boundary="Private runtime evidence reproduction, independent review and founder acceptance"),
