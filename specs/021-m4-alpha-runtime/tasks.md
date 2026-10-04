@@ -1,8 +1,8 @@
 # Tasks
 
-G0 is recorded; C1/C2 implementation tasks passed local validation. Later cuts and
-whole-M4 gates remain open. This document assigns dependencies, not concurrent-agent authority.
-No implementation or real-host evidence is claimed by the proposal.
+G0 is recorded; C1/C2/C3 implementation tasks passed local validation. Host, Linux
+and whole-M4 gates remain open. This document assigns dependencies, not concurrent-agent authority.
+Implementation evidence below is separate from the historically approved scope proposal.
 
 Each implementation task runs `.venv-speckit/bin/python -m scripts.validate_change
 --base develop --profile quick` after a coherent increment and updates actual
@@ -49,7 +49,7 @@ Fresh reproduction and human gates remain separate.
   - Targets: `agent_braid/runtime_scheduler.py; agent_braid/git_runtime.py`.
   - Verification/evidence: Fresh-process kill/abort/resume and duplicate delivery tests; retain verified prefix without duplicate steps.
 
-- [ ] T009: C3 Implement pinned bounded stdio MCP adapter with no authorize tool.
+- [x] T009: C3 Implement pinned bounded stdio MCP adapter with no authorize tool.
   - Trace: REQ-006 / SC-011,012. Dependencies: T004,T008.
   - Targets: `agent_braid/mcp_runtime.py; optional package metadata; tests/test_m4_alpha_mcp.py`.
   - Verification/evidence: Deterministic protocol peer tests for lifecycle, errors, message budgets, cancellation and identity preservation.
@@ -78,3 +78,11 @@ Fresh reproduction and human gates remain separate.
   - Trace: REQ-008 / SC-015,016. Dependencies: T013.
   - Targets: `closure record/anchor; ROADMAP.md; docs/development/github-tracking.json`.
   - Verification/evidence: All six obtained-evidence rows complete; disclose utility outcome and unresolved gates. Remote tracking/publication needs its own authorized apply.
+
+## Obtained partial progress on open tasks
+
+T010: actual Codex six-tool/refusal/disconnect/recovery capture passed with zero model calls; Claude full exercise pending.
+T011: workflow and actionlint passed; fresh Darwin checkout/process passed 61 tests without skips; Linux pending.
+T012: frozen measurement protocol executed, six paired trials captured; Linux prerequisite and final utility decision remain pending.
+T013: two independent Luna implementation reviews report no findings; remaining host/platform dependencies stay open. The stable PR profile passed; final record-only binding checks are separate.
+T014: whole-M4 founder decision and remote apply remain pending; no publication or merge authorization is inferred.

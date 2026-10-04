@@ -1,53 +1,31 @@
-# M4 alpha scope decision packet
+# M4 alpha implementation review packet
 
-Status: proposal only. SPEC-020 acceptance and ADR 0019 remain intact. M4 is open.
+G0 was approved on frozen 0de9d31 and canonical ADR 0020 adopted on 2026-10-04. Historical scope provenance is preserved in founder-review.json and accepted-assurance-0de9d31.json. SPEC-020 acceptance remains intact. M4 remains open.
 
-## 1. Meaning of complete bounded M4 alpha
+## 1. Implemented scope
 
-Approve the six mandatory exit rows in closure-matrix.md: MCP/hosts, isolation,
-observed effects, recovery, CI/policy and portability. No row may be omitted or
-marked complete on planned evidence. Final closure is a separate exact-candidate
-decision after actual evidence and independent review.
+C1: verified policy pipeline and one-use operator grants outside model tools. C2: dependency-ready isolated preparation, fixed text patches only, exclusive serial coordinator publication, live effects and independent consumer verification. C3: pinned 2025-11-25 stdio MCP with analyze, prepare, status, execute, recover and verify; no grant-creation tool. Bounds, exclusions and observed-state semantics follow G1 and c2-execution-contract.md.
 
-## 2. Admitted execution and exclusions
+## 2. Candidate and actual checks
 
-Approve the existing 2–4 immutable fixed-text-patch language, 16 paths / 256 KiB,
-private result only, plus verified concurrent preparation with serialized private
-publication. Exclude repository code, arbitrary agent actions, source promotion,
-deployment, network services and hostile same-UID isolation. Numerical resource
-budgets require G1 pinning before execution.
+Implementation/capture candidate: 67b8b521d0d18ebe679a905c3ed559d2f4a0119a. Local sensitive profile passed 372 tests with four skips (three SPEC-019 deferred implementation, one unavailable private-history test). Fresh Darwin checkout/process passed 61 alpha/core tests with no skips, using existing isolated Python. Two independent gpt-6-luna implementation reviewers reported no findings; raw reports are retained. PR profile passed on preserved implementation-equivalent local candidate 41ee2b6: 368 passed, four explicitly audited skips. Record-only packaging checks remain separate; see c4-evidence/pr-validation.json and skip-audit.json.
 
-## 3. Consent and policy
+## 3. Actual host evidence
 
-Approve a local operator grant bound to the exact manifest and policy, outside
-model-callable tools. A prepared digest, certificate, MCP description or host name
-cannot grant execution authority. Changed plan, destination, ordering or limits
-needs a new matching grant; transport retries preserve one logical run.
+Installed Codex 0.159.0-alpha.12.1 used its actual MCP tool bridge for all six tools, missing-grant refusal, verified interruption prefix, resume, read-only retry and abort. Source and candidate inputs remained unchanged. Zero model calls; no persistent host configuration changes. Claude Code 2.1.236 has G1 handshake evidence only. Full Claude tool/refusal/disconnect/recovery evidence remains pending the requested consumption boundary. No model budget answer is inferred.
 
-## 4. Host and platform evidence
+## 4. Measurement and limitations
 
-Proposed primary/contrast pair: Codex / Claude Code. Both actual clients must pass
-owned-fixture observations on Darwin arm64. Linux x86_64 independently reproduces
-the core/protocol. Other host/platform combinations remain unclaimed. Exact protocol,
-host versions, optional SDK and host-call budget/access are G1 decisions.
+Six paired two-edit trials, both admitted orders, yielded matching independently verified final trees in every pair. Median serial/parallel total wall ratio: 0.5581; outcome: negative-or-null-descriptive. Full evidence production, grants, rehearsal, verification and cleanup are included. Raw ratios and costs are in c4-evidence/measurement.json. This small descriptive corpus does not establish population benefit; overlap does not prove simultaneous CPU execution. Scratch is sampled; there is no hard child-memory cap or hostile same-UID isolation claim.
 
-## 5. Implementation cuts and evidence
+## 5. Remaining acceptance gates
 
-C1 policy pipeline; C2 isolated scheduler/effect checks/recovery; C3 MCP and real
-hosts; C4 fresh reproduction, measurement, independent review and closure packet.
-Tasks and assurance distinguish planned procedures from actual tests and results.
-Null speedup is allowed as an observation; usefulness needs explicit go/no-go then.
-M3/M3.5 real-data blocks do not block these engineering tasks.
+Full actual Claude exercise and fresh Linux x86_64 core/protocol reproduction are still required. The manual Linux workflow is prepared and actionlint passed, but no remote dispatch is claimed. T010–T014 remain open with partial progress documented. G4 requires all six exit rows and an explicit utility go/no-go, including negative or inconclusive outcomes. No scientific, production or whole-M4 closure follows from these tests.
 
-## 6. ADR and approvals
+## 6. Approval boundaries
 
-ADR 0020 is currently a feature-local proposal, avoiding unintended changes to the
-canonical authority inventory before its decision. Adoption must preserve this
-reviewed text, record exact-candidate founder provenance and visibly re-review
-current assurance records affected by the new authority. Historical records retain
-their old approved bindings.
+Implementation was authorized by G0. PR publication, remote tracking apply, Linux remote dispatch and merge require their separate authority; founder-review.json records publication and merge as false. The next review can authorize publication of this bounded implementation and the manual Linux evidence run. That does not accept M4 as complete. Full M4 acceptance follows the outstanding evidence and a separate exact-candidate G4 decision.
 
-G0 approval accepts this scope and authorizes bounded implementation; it does not
-close M4 or approve later evidence. G4 is the separate final acceptance gate.
-A suggested G0 decision is: approve SPEC-021's bounded M4 alpha scope and exit
-matrix, and adopt its ADR 0020 proposal for implementation with the stated G1 gates.
+## 7. Published observation views and preservation
+
+Codex transcript and measurement records replace local temporary paths and ephemeral host thread identifiers with stable placeholders. Original observed digests refer to original bytes, not pseudonymized paths; these published views are not runnable grants or independent replay inputs. Each view retains the raw record hash, and originals remain operator-local outside the repository. The publication branch starts from the capture candidate and contains only sanitized packaging; the earlier local packaging branch is preserved without rewriting or deleting its history. Raw measurement quantities, outcomes and all bound source inputs are unchanged.
