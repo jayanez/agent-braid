@@ -23,7 +23,7 @@
   ],
   "assumptions": "Trusted owned POSIX filesystem/Git and immutable fixed patches; installed host paths do not establish compatibility.",
   "authority_snapshot": {
-    "commit": "4ad062d8921809e977834550874c79fab67d350a",
+    "commit": null,
     "hashes": {
       "ARCHITECTURE.md": "94e5114eb799b25ca666ef728f84ab1c88e6ad1b342e30a9e99276b8f44c30c2",
       "CONSTITUTION.md": "ff7196976a1736a639947c2ab26e8da157fef23c89ba9881312f2a36459964eb",
@@ -88,13 +88,13 @@
       "schemas/governance/public-export-manifest.schema.json": "11eb7f2594939ae9fd0c9e6cfe4423a80aba686d6cdfdd8b73b0fb84b0840aa8",
       "schemas/governance/release-validation-record.schema.json": "d9943f0c9f5520ea52e3b12bfba88240d03f8011b433fc5e35cb49549ab6e819"
     },
-    "mode": "historical"
+    "mode": "current"
   },
   "compatibility": "Zero core runtime dependencies; separate opt-in runtime/transport contracts; legacy executionAuthorization false.",
   "domain": "2\u20134 fixed ordinary-text A/M patches; private Git tracked-tree effects and bounded stdio transport.",
   "evidence_snapshot": {
-    "commit": "4ad062d8921809e977834550874c79fab67d350a",
-    "mode": "historical"
+    "commit": null,
+    "mode": "current"
   },
   "execution_contract": "Existing serial contract unchanged; expanded isolated parallel preparation and coordinator publication contract proposed, not adopted.",
   "human_review": "pending",
@@ -663,6 +663,13 @@
               "outcome": "PR profile passed: 368 tests passed and four explicitly audited skips.",
               "path": "specs/021-m4-alpha-runtime/c4-evidence/pr-validation.json",
               "sha256": "8f445ae04ec37e9d3f0766588a34f0c6b838750791d070cff6b48dc9f9e919a3"
+            },
+            {
+              "command": "Independent read-only gpt-6-luna re-review of sanitized candidate a54f9d6",
+              "limits": "Record-only audit. Prior implementation reviews and complete PR profile remain separately bound. Claude, Linux and founder G4 remain open.",
+              "outcome": "Prior P2 resolved; no findings. Original observation hashes and all 140 PR inputs independently checked; intermediate local refs preserved outside publication ancestry.",
+              "path": "specs/021-m4-alpha-runtime/packaging-review.json",
+              "sha256": "4b4730a096ffe28187ce33e04a86c2ac71eb3476aa28758549c778a8317ca9a6"
             }
           ],
           "planned_evidence": "Local automated checks and Darwin reproduction obtained; Linux, host and final founder gates remain separate.",
@@ -702,6 +709,13 @@
               "outcome": "PR profile passed: 368 tests passed and four explicitly audited skips.",
               "path": "specs/021-m4-alpha-runtime/c4-evidence/pr-validation.json",
               "sha256": "8f445ae04ec37e9d3f0766588a34f0c6b838750791d070cff6b48dc9f9e919a3"
+            },
+            {
+              "command": "Independent read-only gpt-6-luna re-review of sanitized candidate a54f9d6",
+              "limits": "Record-only audit. Prior implementation reviews and complete PR profile remain separately bound. Claude, Linux and founder G4 remain open.",
+              "outcome": "Prior P2 resolved; no findings. Original observation hashes and all 140 PR inputs independently checked; intermediate local refs preserved outside publication ancestry.",
+              "path": "specs/021-m4-alpha-runtime/packaging-review.json",
+              "sha256": "4b4730a096ffe28187ce33e04a86c2ac71eb3476aa28758549c778a8317ca9a6"
             }
           ],
           "planned_evidence": "Local automated checks and Darwin reproduction obtained; Linux, host and final founder gates remain separate.",
@@ -740,6 +754,13 @@
               "outcome": "PR profile passed: 368 tests passed and four explicitly audited skips.",
               "path": "specs/021-m4-alpha-runtime/c4-evidence/pr-validation.json",
               "sha256": "8f445ae04ec37e9d3f0766588a34f0c6b838750791d070cff6b48dc9f9e919a3"
+            },
+            {
+              "command": "Independent read-only gpt-6-luna re-review of sanitized candidate a54f9d6",
+              "limits": "Record-only audit. Prior implementation reviews and complete PR profile remain separately bound. Claude, Linux and founder G4 remain open.",
+              "outcome": "Prior P2 resolved; no findings. Original observation hashes and all 140 PR inputs independently checked; intermediate local refs preserved outside publication ancestry.",
+              "path": "specs/021-m4-alpha-runtime/packaging-review.json",
+              "sha256": "4b4730a096ffe28187ce33e04a86c2ac71eb3476aa28758549c778a8317ca9a6"
             }
           ],
           "planned_evidence": "Actual Codex obtained; full actual Claude Code tool/refusal/disconnect/recovery exercise remains pending an explicit consumption boundary.",
@@ -772,6 +793,13 @@
               "outcome": "PR profile passed: 368 tests passed and four explicitly audited skips.",
               "path": "specs/021-m4-alpha-runtime/c4-evidence/pr-validation.json",
               "sha256": "8f445ae04ec37e9d3f0766588a34f0c6b838750791d070cff6b48dc9f9e919a3"
+            },
+            {
+              "command": "Independent read-only gpt-6-luna re-review of sanitized candidate a54f9d6",
+              "limits": "Record-only audit. Prior implementation reviews and complete PR profile remain separately bound. Claude, Linux and founder G4 remain open.",
+              "outcome": "Prior P2 resolved; no findings. Original observation hashes and all 140 PR inputs independently checked; intermediate local refs preserved outside publication ancestry.",
+              "path": "specs/021-m4-alpha-runtime/packaging-review.json",
+              "sha256": "4b4730a096ffe28187ce33e04a86c2ac71eb3476aa28758549c778a8317ca9a6"
             }
           ],
           "planned_evidence": "Actual Codex obtained; full actual Claude Code tool/refusal/disconnect/recovery exercise remains pending an explicit consumption boundary.",
@@ -824,6 +852,13 @@
               "outcome": "PR profile passed: 368 tests passed and four explicitly audited skips.",
               "path": "specs/021-m4-alpha-runtime/c4-evidence/pr-validation.json",
               "sha256": "8f445ae04ec37e9d3f0766588a34f0c6b838750791d070cff6b48dc9f9e919a3"
+            },
+            {
+              "command": "Independent read-only gpt-6-luna re-review of sanitized candidate a54f9d6",
+              "limits": "Record-only audit. Prior implementation reviews and complete PR profile remain separately bound. Claude, Linux and founder G4 remain open.",
+              "outcome": "Prior P2 resolved; no findings. Original observation hashes and all 140 PR inputs independently checked; intermediate local refs preserved outside publication ancestry.",
+              "path": "specs/021-m4-alpha-runtime/packaging-review.json",
+              "sha256": "4b4730a096ffe28187ce33e04a86c2ac71eb3476aa28758549c778a8317ca9a6"
             }
           ],
           "planned_evidence": "Partial C4 evidence obtained; Linux reproduction, full Claude exercise and founder G4 remain pending; stable PR profile obtained. No closure claim.",
@@ -870,6 +905,13 @@
               "outcome": "PR profile passed: 368 tests passed and four explicitly audited skips.",
               "path": "specs/021-m4-alpha-runtime/c4-evidence/pr-validation.json",
               "sha256": "8f445ae04ec37e9d3f0766588a34f0c6b838750791d070cff6b48dc9f9e919a3"
+            },
+            {
+              "command": "Independent read-only gpt-6-luna re-review of sanitized candidate a54f9d6",
+              "limits": "Record-only audit. Prior implementation reviews and complete PR profile remain separately bound. Claude, Linux and founder G4 remain open.",
+              "outcome": "Prior P2 resolved; no findings. Original observation hashes and all 140 PR inputs independently checked; intermediate local refs preserved outside publication ancestry.",
+              "path": "specs/021-m4-alpha-runtime/packaging-review.json",
+              "sha256": "4b4730a096ffe28187ce33e04a86c2ac71eb3476aa28758549c778a8317ca9a6"
             }
           ],
           "planned_evidence": "Partial C4 evidence obtained; Linux reproduction, full Claude exercise and founder G4 remain pending; stable PR profile obtained. No closure claim.",
