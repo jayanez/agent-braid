@@ -1,0 +1,66 @@
+{
+  "recordVersion": "agent-braid-spec-021-scope-founder-review-1",
+  "reviewedAt": "2026-10-04",
+  "reviewedCommit": "0de9d31ae2cd6479b43a5d630e2932f5997f6235",
+  "reviewer": {
+    "name": "Juan Antonio Yáñez García",
+    "role": "founder"
+  },
+  "decision": "approved-bounded-m4-alpha-scope-and-adopt-adr-0020",
+  "originalStatement": "Apruebo SPEC-021 sobre el candidato congelado 0de9d31 y adopto la propuesta ADR 0020, con su alcance, límites y gates documentados, para comenzar la implementación",
+  "decisionSource": {
+    "type": "explicit-human-message",
+    "threadId": "01a10240-2fb5-7e21-8f39-020a74c64a8a"
+  },
+  "reviewedArtifacts": [
+    {
+      "path": "specs/021-m4-alpha-runtime/adr-0020-proposal.md",
+      "sha256": "8d560aec08867a29ca28256e23093eea67b31b46bad40ea266968ab85d85c878"
+    },
+    {
+      "path": "specs/021-m4-alpha-runtime/assurance.json",
+      "sha256": "2a19f84587756740778c02acc5a2b194b6b24276e11b418c8001d13db7858152"
+    },
+    {
+      "path": "specs/021-m4-alpha-runtime/closure-matrix.md",
+      "sha256": "47ff662550e1d36e215ec236f2cefee3ef77c332c63b3917017f44310595ca40"
+    },
+    {
+      "path": "specs/021-m4-alpha-runtime/decision-packet.md",
+      "sha256": "fdce1db15ce51e08d6f1925c36776c420eaaa019d3f9516acfdee90efd62bd08"
+    },
+    {
+      "path": "specs/021-m4-alpha-runtime/plan.md",
+      "sha256": "92a9ac9f39d898ce935de2a734183ea44c71c209af9e784a7e6ff2cd576606f2"
+    },
+    {
+      "path": "specs/021-m4-alpha-runtime/quickstart.md",
+      "sha256": "19a9abe16be71543fc6024c4c2c2b1a9e706eadb50047c21bfefc35215881745"
+    },
+    {
+      "path": "specs/021-m4-alpha-runtime/research.md",
+      "sha256": "beea396194ad1c753c09a5edcea38bf5461fe15b96c4808640ec93506ce578fd"
+    },
+    {
+      "path": "specs/021-m4-alpha-runtime/spec.md",
+      "sha256": "e34f2fec9fc423e993c36648b64e42e951c8a414b2b26d4aa88cae0be4e16709"
+    },
+    {
+      "path": "specs/021-m4-alpha-runtime/tasks.md",
+      "sha256": "757a8f6cf66d3a589dcbbb87ad003ac0cc824bd08eecc24e7414b67bbfecfa19"
+    },
+    {
+      "path": "specs/021-m4-alpha-runtime/validation-plan.md",
+      "sha256": "fdf28a78e75caae9da8251dc25224b5b664f78c3062e5d656fd2e5ca3d2ce819"
+    }
+  ],
+  "scope": "SPEC-021 bounded implementation with documented G1/G2/G3/G4 gates.",
+  "implementationAuthorization": true,
+  "fullM4Closure": false,
+  "perRunAuthorization": "Separate operator grant required; G1 before expanded execution.",
+  "paidHostExercises": "No new paid model exercise without agreed budget.",
+  "publicationAuthorization": false,
+  "mergeAuthorization": false,
+  "independentValidation": "not-established",
+  "previousAcceptance": "specs/020-m4-local-git-runtime/founder-review-corrected.json"
+}
