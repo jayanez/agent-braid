@@ -2,7 +2,14 @@ name: Validate repository
 
 on:
   push:
+    branches: [develop, main]
   pull_request:
+
+# Supersede only PR validation. Unique non-PR groups preserve every post-merge run,
+# including pending runs that a shared cancel-in-progress: false group could evict.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event_name }}-${{ github.event_name == 'pull_request' && github.event.pull_request.number || github.run_id }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 permissions:
   contents: read
@@ -197,7 +204,14 @@ jobs:
   spec_kit_integration:
     name: Spec Kit solo and dual integration matrix
     needs: classify
-    if: ${{ needs.classify.outputs.spec_kit_integration == 'true' }}
+    # Only a known unselected classification can skip the specialist matrix.
+    if: >-
+      ${{
+        needs.classify.outputs.spec_kit_integration != 'false' ||
+        needs.classify.outputs.unknown_paths != 'false' ||
+        (needs.classify.outputs.effective_profile != 'quick' &&
+         needs.classify.outputs.effective_profile != 'sensitive')
+      }}
     runs-on: ubuntu-latest
     steps:
       - name: Check out repository
@@ -233,18 +247,66 @@ jobs:
     if: ${{ always() }}
     runs-on: ubuntu-latest
     steps:
-      - name: Require every mandatory gate
-        if: >-
-          ${{
-            needs.classify.result != 'success' ||
-            needs.invariants.result != 'success' ||
-            needs.tests.result != 'success' ||
-            needs.governance_science.result != 'success' ||
-            needs.spec_kit.result != 'success' ||
-            (needs.classify.outputs.spec_kit_integration == 'true' &&
-             needs.spec_kit_integration.result != 'success')
-          }}
+      - name: Reject cancellation before aggregation
+        id: cancellation
+        if: ${{ cancelled() }}
         run: exit 1
 
+      - name: Require every mandatory gate
+        if: ${{ always() }}
+        env:
+          NEEDS_JSON: ${{ toJSON(needs) }}
+          WORKFLOW_CANCELLED: ${{ steps.cancellation.outcome != 'skipped' }}
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import json
+          import os
+          import sys
+
+          def reject(message):
+              print(f"Aggregate validation rejected: {message}", file=sys.stderr)
+              sys.exit(1)
+
+          if os.environ.get("WORKFLOW_CANCELLED") != "false":
+              reject("workflow cancelled or cancellation status missing")
+          try:
+              needs = json.loads(os.environ["NEEDS_JSON"])
+          except (KeyError, ValueError):
+              reject("missing or malformed prerequisite results")
+          if not isinstance(needs, dict):
+              reject("prerequisite results must be an object")
+          mandatory = ("classify", "invariants", "tests", "governance_science", "spec_kit")
+          for name in mandatory:
+              job = needs.get(name)
+              if not isinstance(job, dict) or job.get("result") != "success":
+                  reject(f"mandatory prerequisite {name} did not succeed")
+          outputs = needs["classify"].get("outputs")
+          fields = {"spec_kit_integration", "effective_profile", "unknown_paths"}
+          if not isinstance(outputs, dict) or set(outputs) != fields:
+              reject("classification output fields are missing or unknown")
+          selected = outputs["spec_kit_integration"]
+          unknown = outputs["unknown_paths"]
+          profile = outputs["effective_profile"]
+          if (selected not in ("true", "false") or unknown not in ("true", "false")
+                  or profile not in ("quick", "sensitive")):
+              reject("classification output values are malformed")
+          if ((unknown == "true" and selected != "true")
+                  or ((unknown == "true" or selected == "true") and profile != "sensitive")):
+              reject("classification uncertainty did not select sensitive specialist validation")
+          specialist = needs.get("spec_kit_integration")
+          allowed = ("success",) if selected == "true" else ("success", "skipped")
+          if not isinstance(specialist, dict) or specialist.get("result") not in allowed:
+              reject("specialist did not succeed or was skipped without permission")
+          PY
+
       - name: Confirm aggregate validation
+        if: ${{ success() && !cancelled() }}
         run: echo "All mandatory validation jobs passed; conditional specialist status remains visible separately."
+
+      # Re-read cancellation after the guard/confirmation; cancellation can arrive
+      # after their environment/conditions were evaluated. Completed runs still
+      # describe only their own SHA, never a newer candidate or semantic approval.
+      - name: Reject cancellation during aggregation
+        if: ${{ cancelled() }}
+        run: exit 1
