@@ -9,8 +9,8 @@ from scripts.sync_github_tracking import ROOT, build_plan, source_inventory
 class TrackingTests(unittest.TestCase):
     def test_committed_spec_inventory_is_complete(self):
         config, desired = source_inventory()
-        self.assertEqual(20, sum(item["kind"] == "spec" for item in desired))
-        self.assertEqual(145, sum(item["kind"] == "task" for item in desired))
+        self.assertEqual(21, sum(item["kind"] == "spec" for item in desired))
+        self.assertEqual(159, sum(item["kind"] == "task" for item in desired))
         open_tasks = {item["key"] for item in desired
                       if item["state"] == "open" and item["kind"] == "task"}
         expected_open = {
@@ -26,6 +26,9 @@ class TrackingTests(unittest.TestCase):
         for task_id in ("T001", "T002", "T003", "T004", "T005", "T006", "T007"):
             if f"- [ ] {task_id} " in runtime_tasks:
                 expected_open.add(f"SPEC-020/{task_id}")
+        expected_open.update(f"SPEC-021/T{i:03d}" for i in range(1, 15))
+        self.assertEqual("open", config["specs"]["021-m4-alpha-runtime"]["state"])
+        self.assertEqual("M4", config["specs"]["021-m4-alpha-runtime"]["milestone"])
         self.assertEqual("M4", config["specs"]["020-m4-local-git-runtime"]["milestone"])
         self.assertNotIn("M4", config["closed_milestones"])
         self.assertEqual(expected_open, open_tasks)
