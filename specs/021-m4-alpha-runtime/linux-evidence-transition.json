@@ -1,0 +1,10 @@
+{
+  "changedAuthorities": [],
+  "changedImplementationSources": [],
+  "founderApprovalInherited": false,
+  "oldPrProfileBinding": "Preserved in historical archived assurance; not silently refreshed to new test bytes.",
+  "priorAssurance": "implementation-assurance-9108a20.json",
+  "priorCandidate": "9108a206d76c4ffb8f253b68cc4c60d977382394",
+  "trackingTestDelta": "Expected open SPEC-021 tasks become T010/T013/T014 after obtained T011/T012 evidence.",
+  "wholeM4Acceptance": false
+}
