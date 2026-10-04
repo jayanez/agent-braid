@@ -212,6 +212,11 @@ on M3/M3.5 data. ADR 0019 and this bounded increment were
 against frozen candidate `4dd52c8` on 2026-10-03; source promotion, repository-code execution and external adapters
 remain separate contracts. This does not close the full M4 milestone.
 
+The proposed completion track is [SPEC-021](specs/021-m4-alpha-runtime/spec.md),
+with a [six-row alpha exit matrix](specs/021-m4-alpha-runtime/closure-matrix.md).
+Its scope and ADR proposal are pending founder review; no implementation or
+whole-M4 acceptance is inferred from this proposal.
+
 Candidate deliverables:
 
 - MCP and host-runtime adapters;
