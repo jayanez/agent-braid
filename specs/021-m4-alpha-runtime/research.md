@@ -1,7 +1,9 @@
 # Research and design decisions
 
 Engineering design research, not a new scientific study. Obtained runtime or host
-compatibility evidence for this expansion: none.
+compatibility evidence is now limited to the G1 no-model handshakes and local
+C1/C2 implementation tests. Whole-M4 acceptance and actual tool-host exercises
+remain pending.
 
 ## MCP revision compatibility
 
@@ -42,7 +44,8 @@ execution contract is a reviewed change, not an implementation convenience.
 
 ## Portability and measurement
 
-Installed CLI paths were observed, but no live host exercise has occurred. Proposed
+Installed CLI paths and no-model handshake compatibility were observed; actual
+host tool execution/recovery has not yet occurred. Proposed
 primary host: Codex; contrast: Claude Code. Actual version/protocol support remains
 an implementation gate. The minimal alpha coverage is two real clients on Darwin
 and a deterministic core/protocol Linux reproduction. Claims name this exact matrix.

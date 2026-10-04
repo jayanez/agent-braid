@@ -17,10 +17,11 @@ import uuid
 
 from .analysis import _canonical, _digest
 from research.lab.model import loads
-from . import git_replay, git_runtime
+from . import git_replay, git_runtime, runtime_scheduler
 
 VERSION = "0.1.0-alpha"
 POLICY = "owned-operator-grant-v1"
+PARALLEL_POLICY = "parallel-owned-operator-grant-v1"
 MAX_RECORD_BYTES = 1024 * 1024
 MAX_GRANTS = 128
 PLAN_KEYS = {"runtimePolicyPlanVersion", "policy", "runtimeManifest", "replayEvidence",
@@ -50,9 +51,10 @@ def _bounded(value: object) -> None:
         raise InvalidRuntimePolicy("invalid or oversized policy record") from exc
 
 
-def policy_definition() -> dict:
+def policy_definition(mode: str = "serial") -> dict:
     """Return a copy of the pinned per-phase policy, never execution authority."""
-    return {"revision": POLICY, "scope": "private-run-only", "sourcePromotion": False,
+    _require(mode in {"serial", "parallel"}, "unsupported preparation mode")
+    result = {"revision": POLICY if mode == "serial" else PARALLEL_POLICY, "scope": "private-run-only", "sourcePromotion": False,
             "runtimeStageLimits": deepcopy(git_runtime.LIMITS),
             "replayVerificationStageLimits": {
                 "wallSeconds": git_replay.MAX_REPLAY_SECONDS,
@@ -62,6 +64,10 @@ def policy_definition() -> dict:
                 "scratchBytes": git_replay.MAX_REPLAY_SCRATCH},
             "sharedHardDeadline": False, "grantTtlSeconds": 300,
             "grantMaxTtlSeconds": 900, "maxGrantRecords": MAX_GRANTS}
+    if mode == "parallel":
+        result["workerStageLimits"] = {**deepcopy(git_runtime.LIMITS), "workers": 4}
+        result["executionContract"] = runtime_scheduler.EXECUTION
+    return result
 
 
 def _common_directory(repository: str, cancel_event=None) -> str:
@@ -73,12 +79,13 @@ def _common_directory(repository: str, cancel_event=None) -> str:
 
 
 def prepare_policy_run(request: object, run_directory: str | Path, *,
-                       replay_evidence: object, advisory_plan: object, cancel_event=None) -> dict:
+                       replay_evidence: object, advisory_plan: object, mode: str = "serial",
+                       cancel_event=None) -> dict:
     """Independently verify portable evidence, then rehearse an existing serial run.
 
-    This first cut does not admit parallel execution. New scheduler policy will
-    require a new bound policy revision rather than changing an issued grant.
+    Parallel preparation has a separate policy revision; publication remains serial.
     """
+    definition = policy_definition(mode)
     _check_cancel(cancel_event)
     _bounded({"request": request, "evidence": replay_evidence, "plan": advisory_plan})
     try:
@@ -96,27 +103,34 @@ def prepare_policy_run(request: object, run_directory: str | Path, *,
         _check_cancel(cancel_event)
         manifest = git_runtime.prepare_run(req, run_directory, cancel_event=cancel_event)
         _check_cancel(cancel_event)
-        result = {"runtimePolicyPlanVersion": VERSION, "policy": policy_definition(),
+        result = {"runtimePolicyPlanVersion": VERSION, "policy": definition,
                   "runtimeManifest": manifest, "replayEvidence": deepcopy(replay_evidence),
                   "advisoryPlan": deepcopy(advisory_plan), "consumerVerification": verification,
                   "sourceGitCommonDirectory": _common_directory(req['repository'], cancel_event)}
+        if mode == 'parallel':
+            result['schedule'] = runtime_scheduler.prepare_schedule(manifest, cancel_event=cancel_event)
         result['planDigest'] = _digest(result)
         _bounded(result)
         return result
     except (git_runtime.InvalidGitRuntime, git_replay.InvalidGitReplay,
-            KeyError, TypeError, UnicodeError) as exc:
+            runtime_scheduler.InvalidRuntimeSchedule, KeyError, TypeError, UnicodeError) as exc:
         raise InvalidRuntimePolicy("invalid policy inputs: " + str(exc)) from exc
 
 
 def verify_policy_plan(value: object, *, cancel_event=None) -> dict:
     """Reconstruct a complete policy plan; a producer's digest is insufficient."""
-    _require(isinstance(value, dict) and set(value) == PLAN_KEYS, "invalid policy plan fields")
+    _require(isinstance(value, dict), "invalid policy plan")
+    revision = value.get("policy", {}).get("revision") if isinstance(value.get("policy"), dict) else None
+    _require(revision in {POLICY, PARALLEL_POLICY}, "unsupported policy revision")
+    mode = "parallel" if revision == PARALLEL_POLICY else "serial"
+    _require(set(value) == (PLAN_KEYS | {"schedule"} if mode == "parallel" else PLAN_KEYS),
+             "invalid policy plan fields")
     _bounded(value)
     try:
         manifest = value['runtimeManifest']
         expected = prepare_policy_run(manifest['request'], manifest['runDirectory'],
                                       replay_evidence=value['replayEvidence'],
-                                      advisory_plan=value['advisoryPlan'], cancel_event=cancel_event)
+                                      advisory_plan=value['advisoryPlan'], mode=mode, cancel_event=cancel_event)
         _require(_canonical(value) == _canonical(expected), "policy plan differs from reconstructed inputs, policy or limits")
         return expected
     except (KeyError, TypeError) as exc:
@@ -211,7 +225,7 @@ def issue_operator_grant(plan: object, grant_store: str | Path, *, acknowledge: 
         now = int(time.time())
         manifest = verified['runtimeManifest']
         grant = {'runtimeOperatorGrantVersion': VERSION, 'grantId': str(uuid.uuid4()),
-                 'policyRevision': POLICY, 'planDigest': verified['planDigest'],
+                 'policyRevision': verified['policy']['revision'], 'planDigest': verified['planDigest'],
                  'manifestDigest': manifest['manifestDigest'], 'runDirectory': manifest['runDirectory'],
                  'action': action, 'issuedAt': now, 'expiresAt': now + ttl_seconds}
         grant['grantDigest'] = _digest(grant)
@@ -238,7 +252,7 @@ def _dispatch(plan: object, grant_store: str | Path, grant_id: str, action: str,
     root = _store(verified, grant_store, create=False)
     with _store_lock(root):
         grant = _read_grant(root, identifier)
-        _require(grant['runtimeOperatorGrantVersion'] == VERSION and grant['policyRevision'] == POLICY
+        _require(grant['runtimeOperatorGrantVersion'] == VERSION and grant['policyRevision'] == verified['policy']['revision']
                  and grant['grantId'] == identifier and grant['planDigest'] == verified['planDigest']
                  and grant['manifestDigest'] == manifest['manifestDigest']
                  and grant['runDirectory'] == manifest['runDirectory'] and grant['action'] == action,
@@ -250,19 +264,53 @@ def _dispatch(plan: object, grant_store: str | Path, grant_id: str, action: str,
         if grant['state'] == 'consumed':
             _require(destination.exists(), "consumed grant has no inspectable run; operator inspection required")
             result = git_runtime.verify_run(request, destination)
-            return {'grantId': identifier, 'dispatch': 'not-repeated', 'runtime': result}
+            return _report(verified, root, identifier, 'not-repeated', result, cancel_event)
         _require(grant['state'] == 'issued', "invalid operator grant state")
         if cancel_event is not None:
             _require(not cancel_event.is_set(), "policy dispatch cancelled before grant consumption")
         grant['state'] = 'consumed'
         git_runtime._atomic_json(root, identifier + '.json', grant)
         if action == 'execute':
+            if verified['policy']['revision'] == PARALLEL_POLICY:
+                _require(not destination.exists(), 'parallel execute requires a new private destination')
+                observations = runtime_scheduler.run_preparations(manifest, verified['schedule'],
+                                                                   cancel_event=cancel_event)
+                _check_cancel(cancel_event)
+                git_runtime._atomic_json(root, _preparation_name(verified), observations)
             result = git_runtime.execute_run(request, destination, manifest['manifestDigest'],
                                               cancel_event=cancel_event)
         else:
             result = git_runtime.recover_run(request, destination, manifest['manifestDigest'],
                                               action, cancel_event=cancel_event)
-        return {'grantId': identifier, 'dispatch': 'performed', 'runtime': result}
+        return _report(verified, root, identifier, 'performed', result, cancel_event)
+
+
+def _preparation_name(plan: dict) -> str:
+    return 'preparation-' + plan['planDigest'].removeprefix('sha256:') + '.json'
+
+
+def _report(plan: dict, root: Path, identifier: str, dispatch: str, result: dict,
+            cancel_event) -> dict:
+    report = {'grantId': identifier, 'dispatch': dispatch, 'runtime': result}
+    if plan['policy']['revision'] == PARALLEL_POLICY:
+        path = root / _preparation_name(plan)
+        _require(path.exists() and not path.is_symlink(), 'missing preparation journal; inspect owned state')
+        # Same bounded, owned-file rules as grants; historical timing remains observational.
+        fd = os.open(path, os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK)
+        with os.fdopen(fd, 'rb') as stream:
+            info = os.fstat(stream.fileno())
+            _require(stat.S_ISREG(info.st_mode) and info.st_uid == os.getuid()
+                     and stat.S_IMODE(info.st_mode) == 0o600 and info.st_size <= MAX_RECORD_BYTES,
+                     'unsafe preparation journal')
+            evidence = loads(stream.read(MAX_RECORD_BYTES + 1).decode('utf-8'))
+        _check_cancel(cancel_event)
+        report['runtime'] = git_runtime.verify_run(plan['runtimeManifest']['request'],
+                                                  plan['runtimeManifest']['runDirectory'])
+        _check_cancel(cancel_event)
+        verification = runtime_scheduler.verify_preparations(plan['runtimeManifest'], plan['schedule'],
+                                                            evidence, cancel_event=cancel_event)
+        report.update(preparation=evidence, preparationVerification=verification)
+    return report
 
 
 def execute_policy_run(plan: object, grant_store: str | Path, grant_id: str, *, cancel_event=None) -> dict:
