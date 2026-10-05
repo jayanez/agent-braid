@@ -935,7 +935,7 @@
               "limits": "Actual model-backed Claude.ai Max client on Darwin arm64; one owned two-edit fixture; usage credits disabled by operator confirmation; no API/provider fallback; no scientific, production, or whole-M4 acceptance.",
               "outcome": "Passed actual prepare/verify, missing-grant refusal, separately granted execution, controlled disconnect after operation a, same-session resume with a new local grant, independent final-tree verification, and non-repeat retry of the consumed grant. Incomplete tool arguments were refused without side effects and corrected.",
               "path": "specs/021-m4-alpha-runtime/host-evidence/claude.json",
-              "sha256": "d0f3f485c8dc000cb18e12784b98322768a680abc13c7c9e85e58d3a99476e6c"
+              "sha256": "7cc71e31c3ef01722f3e1da26cb638247b7dc8ff93bc5d5b7c09abab4ee8e79b"
             }
           ],
           "planned_evidence": "Actual Codex and Claude Code host exercises obtained; final combined evidence/authority reconciliation and founder G4 remain separate.",
@@ -981,7 +981,7 @@
               "limits": "Actual model-backed Claude.ai Max client on Darwin arm64; one owned two-edit fixture; usage credits disabled by operator confirmation; no API/provider fallback; no scientific, production, or whole-M4 acceptance.",
               "outcome": "Passed actual prepare/verify, missing-grant refusal, separately granted execution, controlled disconnect after operation a, same-session resume with a new local grant, independent final-tree verification, and non-repeat retry of the consumed grant. Incomplete tool arguments were refused without side effects and corrected.",
               "path": "specs/021-m4-alpha-runtime/host-evidence/claude.json",
-              "sha256": "d0f3f485c8dc000cb18e12784b98322768a680abc13c7c9e85e58d3a99476e6c"
+              "sha256": "7cc71e31c3ef01722f3e1da26cb638247b7dc8ff93bc5d5b7c09abab4ee8e79b"
             }
           ],
           "planned_evidence": "Actual Codex and Claude Code host exercises obtained; final combined evidence/authority reconciliation and founder G4 remain separate.",

@@ -363,7 +363,7 @@
           "method": "tools/call",
           "params": {
             "_meta": {
-              "claudecode/toolUseId": "toolu_011QJzKEapmre9TYvYUHvgpy",
+              "claudecode/toolUseId": "<tool-call-01>",
               "progressToken": 2
             },
             "arguments": {
@@ -555,7 +555,7 @@
           "method": "tools/call",
           "params": {
             "_meta": {
-              "claudecode/toolUseId": "toolu_01AhWrmGSB9S8KBiBFd2ipkL",
+              "claudecode/toolUseId": "<tool-call-02>",
               "progressToken": 3
             },
             "arguments": {
@@ -1006,7 +1006,7 @@
           "method": "tools/call",
           "params": {
             "_meta": {
-              "claudecode/toolUseId": "toolu_01LRXjD4psgw42eMSDfFaNvj",
+              "claudecode/toolUseId": "<tool-call-03>",
               "progressToken": 4
             },
             "arguments": {
@@ -1060,7 +1060,7 @@
           "method": "tools/call",
           "params": {
             "_meta": {
-              "claudecode/toolUseId": "toolu_01EzTJhecLiom9DBwwKkMPeV",
+              "claudecode/toolUseId": "<tool-call-04>",
               "progressToken": 5
             },
             "arguments": {
@@ -1477,7 +1477,7 @@
           "method": "tools/call",
           "params": {
             "_meta": {
-              "claudecode/toolUseId": "toolu_01Jr1x8pDXLdYC9ZqUkPWsGm",
+              "claudecode/toolUseId": "<tool-call-05>",
               "progressToken": 6
             },
             "arguments": {
@@ -1514,7 +1514,7 @@
           "method": "tools/call",
           "params": {
             "_meta": {
-              "claudecode/toolUseId": "toolu_01QoJvNfdMh7ZWRKmgfKCm7o",
+              "claudecode/toolUseId": "<tool-call-06>",
               "progressToken": 7
             },
             "arguments": {
@@ -1926,7 +1926,7 @@
           "method": "tools/call",
           "params": {
             "_meta": {
-              "claudecode/toolUseId": "toolu_012J7ZctDKuku6fiE4165izD",
+              "claudecode/toolUseId": "<tool-call-07>",
               "progressToken": 8
             },
             "arguments": {
@@ -2542,7 +2542,7 @@
           "method": "tools/call",
           "params": {
             "_meta": {
-              "claudecode/toolUseId": "toolu_01D7Wxx8LsqFT4CAvcMeREYP",
+              "claudecode/toolUseId": "<tool-call-08>",
               "progressToken": 2
             },
             "arguments": {
@@ -2578,7 +2578,7 @@
           "method": "tools/call",
           "params": {
             "_meta": {
-              "claudecode/toolUseId": "toolu_01GZtVP4LtV2j9jx3ZNvdqaZ",
+              "claudecode/toolUseId": "<tool-call-09>",
               "progressToken": 3
             },
             "arguments": {
@@ -3091,7 +3091,7 @@
           "method": "tools/call",
           "params": {
             "_meta": {
-              "claudecode/toolUseId": "toolu_017WpmdH2hsFUS2uzMZCcEsk",
+              "claudecode/toolUseId": "<tool-call-10>",
               "progressToken": 4
             },
             "arguments": {
@@ -3488,7 +3488,7 @@
           "result": {
             "content": [
               {
-                "text": "{\"dispatch\":\"performed\",\"runtime\":{\"gitRuntimeReportVersion\":\"0.1.0-alpha\",\"status\":\"verified-completed\",\"phase\":\"completed\",\"manifestDigest\":\"sha256:334b621178e92ca3d421eedbe93e1e2de24bef05fe6dc2ef4e0d85ba0ab3ae4f\",\"runDirectory\":\"/REDACTED-TEMP-001/claude-host/results/claude-stream-owned-run\",\"resultCommit\":\"f977e88125c7a5eb7e500111c4edc97b4354ecad\",\"resultTree\":\"f4b354863caa9cea99b95422c9dab70465757d87\",\"completedOperations\":[\"a\",\"b\"],\"authorizationScope\":\"private-run-only\",\"sourcePromotion\":false,\"observationContract\":\"runtime-private-tracked-tree-v1\",\"executionContract\":\"authorized-serial-index-patch-v1\",\"limits\":[\"Fixed text patches and private Git storage only; no repository code or source promotion.\",\"Digest acknowledgement is not authentication; owned POSIX filesystem/Git are trusted.\",\"Process interruption recovery; no power-loss, hostile same-UID or production-safety guarantee.\",\"No hard child memory cap; scratch is sampled and can overshoot between checks.\",\"Tree observations do not establish semantic correctness or safe concurrency.\"]},\"grantId\":\"b6cb4b33-204c-4c81-a367-797c092c96e7\",\"preparation\":{\"evidenceDigest\":\"sha256:f34f061b37816be8fb4117073e68b1bb48b62c9670202eb6ab4106fb2d3de073\",\"executionContract\":\"isolated-preparation-serial-publication-v1\",\"limits\":[\"Observed preparation intervals are not a CPU parallelism guarantee.\",\"Trees/effects are independently replayable; recorded timings are observations.\",\"Trusted Git and owned scratch; no arbitrary code or hostile same-UID isolation.\"],\"manifestDigest\":\"sha256:334b621178e92ca3d421eedbe93e1e2de24bef05fe6dc2ef4e0d85ba0ab3ae4f\",\"metrics\":{\"capturedOutputBytes\":2519,\"childSystemCpuNs\":788534000,\"childUserCpuNs\":699458000,\"gitCommands\":57,\"processLifetimePeakChildRssBytes\":5554176,\"sampledPeakScratchBytes\":3363},\"observedPeakWorkerIntervals\":2,\"runtimePreparationEvidenceVersion\":\"0.1.0-alpha\",\"scheduleDigest\":\"sha256:a781fdec65f61147ff18fbc4c4b6d546cb380cec948a61f726deec9ac413c8d7\",\"wallNs\":4455059875,\"workers\":[{\"attemptId\":\"a-attempt\",\"effects\":[{\"afterBlob\":\"78981922613b2afb6025042ff6bd878ac1994e85\",\"afterMode\":\"100644\",\"beforeBlob\":\"df967b96a579e45a18b8251732d16804b2e56a55\",\"beforeMode\":\"100644\",\"path\":\"a.txt\",\"status\":\"M\"}],\"finishedNs\":4453455125,\"inputTree\":\"562d3d0a571a697990fbf60a7db0338349836782\",\"operationId\":\"a\",\"outputTree\":\"b2cc846ba303ed8a3e9f7f5fdd027d799b9f18f6\",\"patchDigest\":\"sha256:8c3977006118ad8a901a073b66d561e9d65ee62d82db5426b7d4b4b020609778\",\"startedNs\":3523576667,\"wave\":0,\"writableIndex\":\"/REDACTED-TEMP-002/worker-0/worker.git/index\",\"writableRepository\":\"/REDACTED-TEMP-002/worker-0/worker.git\"},{\"attemptId\":\"b-attempt\",\"effects\":[{\"afterBlob\":\"61780798228d17af2d34fce4cfbdf35556832472\",\"afterMode\":\"100644\",\"beforeBlob\":\"df967b96a579e45a18b8251732d16804b2e56a55\",\"beforeMode\":\"100644\",\"path\":\"b.txt\",\"status\":\"M\"}],\"finishedNs\":4330386750,\"inputTree\":\"562d3d0a571a697990fbf60a7db0338349836782\",\"operationId\":\"b\",\"outputTree\":\"10aa6b85847c2f4dfd5e43afaa74318191dbd403\",\"patchDigest\":\"sha256:bd6ccd8802bc42f626b49e90c021e3f5f0b58cab90f66f7b56130c5fbb29cf7d\",\"startedNs\":3522939167,\"wave\":0,\"writableIndex\":\"/REDACTED-TEMP-002/worker-1/worker.git/index\",\"writableRepository\":\"/REDACTED-TEMP-002/worker-1/worker.git\"}]},\"preparationVerification\":{\"status\":\"verified-worker-trees-and-effects\",\"scheduleDigest\":\"sha256:a781fdec65f61147ff18fbc4c4b6d546cb380cec948a61f726deec9ac413c8d7\",\"timingStatus\":\"recorded-observations-only\",\"isolationStatus\":\"recorded-owned-scratch-scopes\",\"executionAuthorization\":false}}",
+                "text": "{\"dispatch\":\"performed\",\"runtime\":{\"gitRuntimeReportVersion\":\"0.1.0-alpha\",\"status\":\"verified-completed\",\"phase\":\"completed\",\"manifestDigest\":\"sha256:334b621178e92ca3d421eedbe93e1e2de24bef05fe6dc2ef4e0d85ba0ab3ae4f\",\"runDirectory\":\"/REDACTED-TEMP-001/claude-host/results/claude-stream-owned-run\",\"resultCommit\":\"f977e88125c7a5eb7e500111c4edc97b4354ecad\",\"resultTree\":\"f4b354863caa9cea99b95422c9dab70465757d87\",\"completedOperations\":[\"a\",\"b\"],\"authorizationScope\":\"private-run-only\",\"sourcePromotion\":false,\"observationContract\":\"runtime-private-tracked-tree-v1\",\"executionContract\":\"authorized-serial-index-patch-v1\",\"limits\":[\"Fixed text patches and private Git storage only; no repository code or source promotion.\",\"Digest acknowledgement is not authentication; owned POSIX filesystem/Git are trusted.\",\"Process interruption recovery; no power-loss, hostile same-UID or production-safety guarantee.\",\"No hard child memory cap; scratch is sampled and can overshoot between checks.\",\"Tree observations do not establish semantic correctness or safe concurrency.\"]},\"grantId\":\"<grant-2>\",\"preparation\":{\"evidenceDigest\":\"sha256:f34f061b37816be8fb4117073e68b1bb48b62c9670202eb6ab4106fb2d3de073\",\"executionContract\":\"isolated-preparation-serial-publication-v1\",\"limits\":[\"Observed preparation intervals are not a CPU parallelism guarantee.\",\"Trees/effects are independently replayable; recorded timings are observations.\",\"Trusted Git and owned scratch; no arbitrary code or hostile same-UID isolation.\"],\"manifestDigest\":\"sha256:334b621178e92ca3d421eedbe93e1e2de24bef05fe6dc2ef4e0d85ba0ab3ae4f\",\"metrics\":{\"capturedOutputBytes\":2519,\"childSystemCpuNs\":788534000,\"childUserCpuNs\":699458000,\"gitCommands\":57,\"processLifetimePeakChildRssBytes\":5554176,\"sampledPeakScratchBytes\":3363},\"observedPeakWorkerIntervals\":2,\"runtimePreparationEvidenceVersion\":\"0.1.0-alpha\",\"scheduleDigest\":\"sha256:a781fdec65f61147ff18fbc4c4b6d546cb380cec948a61f726deec9ac413c8d7\",\"wallNs\":4455059875,\"workers\":[{\"attemptId\":\"a-attempt\",\"effects\":[{\"afterBlob\":\"78981922613b2afb6025042ff6bd878ac1994e85\",\"afterMode\":\"100644\",\"beforeBlob\":\"df967b96a579e45a18b8251732d16804b2e56a55\",\"beforeMode\":\"100644\",\"path\":\"a.txt\",\"status\":\"M\"}],\"finishedNs\":4453455125,\"inputTree\":\"562d3d0a571a697990fbf60a7db0338349836782\",\"operationId\":\"a\",\"outputTree\":\"b2cc846ba303ed8a3e9f7f5fdd027d799b9f18f6\",\"patchDigest\":\"sha256:8c3977006118ad8a901a073b66d561e9d65ee62d82db5426b7d4b4b020609778\",\"startedNs\":3523576667,\"wave\":0,\"writableIndex\":\"/REDACTED-TEMP-002/worker-0/worker.git/index\",\"writableRepository\":\"/REDACTED-TEMP-002/worker-0/worker.git\"},{\"attemptId\":\"b-attempt\",\"effects\":[{\"afterBlob\":\"61780798228d17af2d34fce4cfbdf35556832472\",\"afterMode\":\"100644\",\"beforeBlob\":\"df967b96a579e45a18b8251732d16804b2e56a55\",\"beforeMode\":\"100644\",\"path\":\"b.txt\",\"status\":\"M\"}],\"finishedNs\":4330386750,\"inputTree\":\"562d3d0a571a697990fbf60a7db0338349836782\",\"operationId\":\"b\",\"outputTree\":\"10aa6b85847c2f4dfd5e43afaa74318191dbd403\",\"patchDigest\":\"sha256:bd6ccd8802bc42f626b49e90c021e3f5f0b58cab90f66f7b56130c5fbb29cf7d\",\"startedNs\":3522939167,\"wave\":0,\"writableIndex\":\"/REDACTED-TEMP-002/worker-1/worker.git/index\",\"writableRepository\":\"/REDACTED-TEMP-002/worker-1/worker.git\"}]},\"preparationVerification\":{\"status\":\"verified-worker-trees-and-effects\",\"scheduleDigest\":\"sha256:a781fdec65f61147ff18fbc4c4b6d546cb380cec948a61f726deec9ac413c8d7\",\"timingStatus\":\"recorded-observations-only\",\"isolationStatus\":\"recorded-owned-scratch-scopes\",\"executionAuthorization\":false}}",
                 "type": "text"
               }
             ],
@@ -3607,7 +3607,7 @@
           "method": "tools/call",
           "params": {
             "_meta": {
-              "claudecode/toolUseId": "toolu_01CDPy5PRqzLyJ6EcwteYyUV",
+              "claudecode/toolUseId": "<tool-call-11>",
               "progressToken": 5
             },
             "arguments": {
@@ -4121,7 +4121,7 @@
           "method": "tools/call",
           "params": {
             "_meta": {
-              "claudecode/toolUseId": "toolu_01NxvDCExfJFoaGnsjbTvEfj",
+              "claudecode/toolUseId": "<tool-call-12>",
               "progressToken": 6
             },
             "arguments": {
@@ -4517,7 +4517,7 @@
           "result": {
             "content": [
               {
-                "text": "{\"dispatch\":\"not-repeated\",\"runtime\":{\"gitRuntimeReportVersion\":\"0.1.0-alpha\",\"status\":\"verified-completed\",\"phase\":\"completed\",\"manifestDigest\":\"sha256:334b621178e92ca3d421eedbe93e1e2de24bef05fe6dc2ef4e0d85ba0ab3ae4f\",\"runDirectory\":\"/REDACTED-TEMP-001/claude-host/results/claude-stream-owned-run\",\"resultCommit\":\"f977e88125c7a5eb7e500111c4edc97b4354ecad\",\"resultTree\":\"f4b354863caa9cea99b95422c9dab70465757d87\",\"completedOperations\":[\"a\",\"b\"],\"authorizationScope\":\"private-run-only\",\"sourcePromotion\":false,\"observationContract\":\"runtime-private-tracked-tree-v1\",\"executionContract\":\"authorized-serial-index-patch-v1\",\"limits\":[\"Fixed text patches and private Git storage only; no repository code or source promotion.\",\"Digest acknowledgement is not authentication; owned POSIX filesystem/Git are trusted.\",\"Process interruption recovery; no power-loss, hostile same-UID or production-safety guarantee.\",\"No hard child memory cap; scratch is sampled and can overshoot between checks.\",\"Tree observations do not establish semantic correctness or safe concurrency.\"]},\"grantId\":\"e98692e1-1d86-4049-87b0-312d1cd4f4c1\",\"preparation\":{\"evidenceDigest\":\"sha256:f34f061b37816be8fb4117073e68b1bb48b62c9670202eb6ab4106fb2d3de073\",\"executionContract\":\"isolated-preparation-serial-publication-v1\",\"limits\":[\"Observed preparation intervals are not a CPU parallelism guarantee.\",\"Trees/effects are independently replayable; recorded timings are observations.\",\"Trusted Git and owned scratch; no arbitrary code or hostile same-UID isolation.\"],\"manifestDigest\":\"sha256:334b621178e92ca3d421eedbe93e1e2de24bef05fe6dc2ef4e0d85ba0ab3ae4f\",\"metrics\":{\"capturedOutputBytes\":2519,\"childSystemCpuNs\":788534000,\"childUserCpuNs\":699458000,\"gitCommands\":57,\"processLifetimePeakChildRssBytes\":5554176,\"sampledPeakScratchBytes\":3363},\"observedPeakWorkerIntervals\":2,\"runtimePreparationEvidenceVersion\":\"0.1.0-alpha\",\"scheduleDigest\":\"sha256:a781fdec65f61147ff18fbc4c4b6d546cb380cec948a61f726deec9ac413c8d7\",\"wallNs\":4455059875,\"workers\":[{\"attemptId\":\"a-attempt\",\"effects\":[{\"afterBlob\":\"78981922613b2afb6025042ff6bd878ac1994e85\",\"afterMode\":\"100644\",\"beforeBlob\":\"df967b96a579e45a18b8251732d16804b2e56a55\",\"beforeMode\":\"100644\",\"path\":\"a.txt\",\"status\":\"M\"}],\"finishedNs\":4453455125,\"inputTree\":\"562d3d0a571a697990fbf60a7db0338349836782\",\"operationId\":\"a\",\"outputTree\":\"b2cc846ba303ed8a3e9f7f5fdd027d799b9f18f6\",\"patchDigest\":\"sha256:8c3977006118ad8a901a073b66d561e9d65ee62d82db5426b7d4b4b020609778\",\"startedNs\":3523576667,\"wave\":0,\"writableIndex\":\"/REDACTED-TEMP-002/worker-0/worker.git/index\",\"writableRepository\":\"/REDACTED-TEMP-002/worker-0/worker.git\"},{\"attemptId\":\"b-attempt\",\"effects\":[{\"afterBlob\":\"61780798228d17af2d34fce4cfbdf35556832472\",\"afterMode\":\"100644\",\"beforeBlob\":\"df967b96a579e45a18b8251732d16804b2e56a55\",\"beforeMode\":\"100644\",\"path\":\"b.txt\",\"status\":\"M\"}],\"finishedNs\":4330386750,\"inputTree\":\"562d3d0a571a697990fbf60a7db0338349836782\",\"operationId\":\"b\",\"outputTree\":\"10aa6b85847c2f4dfd5e43afaa74318191dbd403\",\"patchDigest\":\"sha256:bd6ccd8802bc42f626b49e90c021e3f5f0b58cab90f66f7b56130c5fbb29cf7d\",\"startedNs\":3522939167,\"wave\":0,\"writableIndex\":\"/REDACTED-TEMP-002/worker-1/worker.git/index\",\"writableRepository\":\"/REDACTED-TEMP-002/worker-1/worker.git\"}]},\"preparationVerification\":{\"status\":\"verified-worker-trees-and-effects\",\"scheduleDigest\":\"sha256:a781fdec65f61147ff18fbc4c4b6d546cb380cec948a61f726deec9ac413c8d7\",\"timingStatus\":\"recorded-observations-only\",\"isolationStatus\":\"recorded-owned-scratch-scopes\",\"executionAuthorization\":false}}",
+                "text": "{\"dispatch\":\"not-repeated\",\"runtime\":{\"gitRuntimeReportVersion\":\"0.1.0-alpha\",\"status\":\"verified-completed\",\"phase\":\"completed\",\"manifestDigest\":\"sha256:334b621178e92ca3d421eedbe93e1e2de24bef05fe6dc2ef4e0d85ba0ab3ae4f\",\"runDirectory\":\"/REDACTED-TEMP-001/claude-host/results/claude-stream-owned-run\",\"resultCommit\":\"f977e88125c7a5eb7e500111c4edc97b4354ecad\",\"resultTree\":\"f4b354863caa9cea99b95422c9dab70465757d87\",\"completedOperations\":[\"a\",\"b\"],\"authorizationScope\":\"private-run-only\",\"sourcePromotion\":false,\"observationContract\":\"runtime-private-tracked-tree-v1\",\"executionContract\":\"authorized-serial-index-patch-v1\",\"limits\":[\"Fixed text patches and private Git storage only; no repository code or source promotion.\",\"Digest acknowledgement is not authentication; owned POSIX filesystem/Git are trusted.\",\"Process interruption recovery; no power-loss, hostile same-UID or production-safety guarantee.\",\"No hard child memory cap; scratch is sampled and can overshoot between checks.\",\"Tree observations do not establish semantic correctness or safe concurrency.\"]},\"grantId\":\"<grant-1>\",\"preparation\":{\"evidenceDigest\":\"sha256:f34f061b37816be8fb4117073e68b1bb48b62c9670202eb6ab4106fb2d3de073\",\"executionContract\":\"isolated-preparation-serial-publication-v1\",\"limits\":[\"Observed preparation intervals are not a CPU parallelism guarantee.\",\"Trees/effects are independently replayable; recorded timings are observations.\",\"Trusted Git and owned scratch; no arbitrary code or hostile same-UID isolation.\"],\"manifestDigest\":\"sha256:334b621178e92ca3d421eedbe93e1e2de24bef05fe6dc2ef4e0d85ba0ab3ae4f\",\"metrics\":{\"capturedOutputBytes\":2519,\"childSystemCpuNs\":788534000,\"childUserCpuNs\":699458000,\"gitCommands\":57,\"processLifetimePeakChildRssBytes\":5554176,\"sampledPeakScratchBytes\":3363},\"observedPeakWorkerIntervals\":2,\"runtimePreparationEvidenceVersion\":\"0.1.0-alpha\",\"scheduleDigest\":\"sha256:a781fdec65f61147ff18fbc4c4b6d546cb380cec948a61f726deec9ac413c8d7\",\"wallNs\":4455059875,\"workers\":[{\"attemptId\":\"a-attempt\",\"effects\":[{\"afterBlob\":\"78981922613b2afb6025042ff6bd878ac1994e85\",\"afterMode\":\"100644\",\"beforeBlob\":\"df967b96a579e45a18b8251732d16804b2e56a55\",\"beforeMode\":\"100644\",\"path\":\"a.txt\",\"status\":\"M\"}],\"finishedNs\":4453455125,\"inputTree\":\"562d3d0a571a697990fbf60a7db0338349836782\",\"operationId\":\"a\",\"outputTree\":\"b2cc846ba303ed8a3e9f7f5fdd027d799b9f18f6\",\"patchDigest\":\"sha256:8c3977006118ad8a901a073b66d561e9d65ee62d82db5426b7d4b4b020609778\",\"startedNs\":3523576667,\"wave\":0,\"writableIndex\":\"/REDACTED-TEMP-002/worker-0/worker.git/index\",\"writableRepository\":\"/REDACTED-TEMP-002/worker-0/worker.git\"},{\"attemptId\":\"b-attempt\",\"effects\":[{\"afterBlob\":\"61780798228d17af2d34fce4cfbdf35556832472\",\"afterMode\":\"100644\",\"beforeBlob\":\"df967b96a579e45a18b8251732d16804b2e56a55\",\"beforeMode\":\"100644\",\"path\":\"b.txt\",\"status\":\"M\"}],\"finishedNs\":4330386750,\"inputTree\":\"562d3d0a571a697990fbf60a7db0338349836782\",\"operationId\":\"b\",\"outputTree\":\"10aa6b85847c2f4dfd5e43afaa74318191dbd403\",\"patchDigest\":\"sha256:bd6ccd8802bc42f626b49e90c021e3f5f0b58cab90f66f7b56130c5fbb29cf7d\",\"startedNs\":3522939167,\"wave\":0,\"writableIndex\":\"/REDACTED-TEMP-002/worker-1/worker.git/index\",\"writableRepository\":\"/REDACTED-TEMP-002/worker-1/worker.git\"}]},\"preparationVerification\":{\"status\":\"verified-worker-trees-and-effects\",\"scheduleDigest\":\"sha256:a781fdec65f61147ff18fbc4c4b6d546cb380cec948a61f726deec9ac413c8d7\",\"timingStatus\":\"recorded-observations-only\",\"isolationStatus\":\"recorded-owned-scratch-scopes\",\"executionAuthorization\":false}}",
                 "type": "text"
               }
             ],
