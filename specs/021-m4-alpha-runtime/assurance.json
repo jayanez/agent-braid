@@ -93,7 +93,7 @@
   "compatibility": "Zero core runtime dependencies; separate opt-in runtime/transport contracts; legacy executionAuthorization false.",
   "domain": "2\u20134 fixed ordinary-text A/M patches; private Git tracked-tree effects and bounded stdio transport.",
   "evidence_snapshot": {
-    "commit": "b987efed87132a11d011745525796875271eb446",
+    "commit": "b1d602e1b96591fe693b0f9112b43bb4b98baaaa",
     "mode": "historical"
   },
   "execution_contract": "Existing serial contract unchanged; expanded isolated parallel preparation and coordinator publication contract proposed, not adopted.",
@@ -1062,9 +1062,16 @@
               "outcome": "No findings; 58 Linux inputs, provenance and lossless log/assurance hashes independently checked.",
               "path": "specs/021-m4-alpha-runtime/linux-packaging-review.json",
               "sha256": "202de6f1f60dea0565a2f2d633a40208dfadd3b2ba57eea73458e0b20c882ae4"
+            },
+            {
+              "command": "Hash-bound six-row evidence and authority reconciliation for the G4 decision packet.",
+              "limits": "Record-only T013 reconciliation; the descriptive utility result still requires a separate founder G4 GO/NO-GO. No M3/M3.5 scientific gate is changed.",
+              "outcome": "Six exit rows mapped to their scenarios, frozen source candidates, platform evidence, 56 artifact references and explicit limits; independent Luna review of the exact reconciliation commit found no actionable findings.",
+              "path": "specs/021-m4-alpha-runtime/t013-reconciliation.json",
+              "sha256": "d1d670a91cee8e0e862c01554298e2528323954cbf9ef2d814d8b1323779ca24"
             }
           ],
-          "planned_evidence": "All six C4 evidence rows are assembled with candidate, input and limit bindings; the final independent Luna review is pending. Founder G4 remains a separate go/no-go decision; no closure claim is made.",
+          "planned_evidence": "All six C4 evidence rows are reconciled with candidate, hash, review and limit bindings; the independent gpt-6-luna review found no actionable findings. Founder G4 remains a separate go/no-go decision; no whole-M4 closure is claimed.",
           "test_file": "specs/021-m4-alpha-runtime/validation-plan.md",
           "test_name": "SC-015",
           "then": "Given all six roadmap deliverables and a frozen candidate, when closure is reviewed, then every exit row has obtained evidence, independent review and a separate founder decision.",
@@ -1136,9 +1143,16 @@
               "outcome": "No findings; 58 Linux inputs, provenance and lossless log/assurance hashes independently checked.",
               "path": "specs/021-m4-alpha-runtime/linux-packaging-review.json",
               "sha256": "202de6f1f60dea0565a2f2d633a40208dfadd3b2ba57eea73458e0b20c882ae4"
+            },
+            {
+              "command": "Hash-bound six-row evidence and authority reconciliation for the G4 decision packet.",
+              "limits": "Record-only T013 reconciliation; the descriptive utility result still requires a separate founder G4 GO/NO-GO. No M3/M3.5 scientific gate is changed.",
+              "outcome": "Six exit rows mapped to their scenarios, frozen source candidates, platform evidence, 56 artifact references and explicit limits; independent Luna review of the exact reconciliation commit found no actionable findings.",
+              "path": "specs/021-m4-alpha-runtime/t013-reconciliation.json",
+              "sha256": "d1d670a91cee8e0e862c01554298e2528323954cbf9ef2d814d8b1323779ca24"
             }
           ],
-          "planned_evidence": "All six C4 evidence rows are assembled with candidate, input and limit bindings; the final independent Luna review is pending. Founder G4 remains a separate go/no-go decision; no closure claim is made.",
+          "planned_evidence": "All six C4 evidence rows are reconciled with candidate, hash, review and limit bindings; the independent gpt-6-luna review found no actionable findings. Founder G4 remains a separate go/no-go decision; no whole-M4 closure is claimed.",
           "test_file": "specs/021-m4-alpha-runtime/validation-plan.md",
           "test_name": "SC-016",
           "then": "Unexecuted or externally blocked checks keep the affected exit row open. Report serial/parallel agreement, unsafe admissions, actual worker overlap, diagnostic quality and all measured cost components.",
@@ -1149,6 +1163,6 @@
     }
   ],
   "scientific_limits": "No arbitrary-agent safety, production, source promotion, external independent scientific validation, formal result or M3/M3.5 admission.",
-  "scope": "Approved bounded SPEC-021 implementation with obtained Darwin/Linux reproduction, actual Codex and Claude host exercises, measurement and implementation reviews. T013 final record reconciliation/review and the separate founder G4 decision remain open.",
+  "scope": "Approved bounded SPEC-021 implementation with obtained Darwin/Linux reproduction, actual Codex and Claude host exercises, measurement and implementation reviews. T013 evidence reconciliation and independent Luna review are complete; the separate founder G4 decision remains open.",
   "stage": "draft"
 }
