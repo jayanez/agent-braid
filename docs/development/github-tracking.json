@@ -33,7 +33,8 @@
     "017-m2-closure": {"milestone": "M2", "state": "closed"},
     "018-structured-exchange": {"milestone": "M3", "state": "closed"},
     "019-native-predictor": {"milestone": "M3.5", "state": "open"},
-    "020-m4-local-git-runtime": {"milestone": "M4", "state": "closed"}
+    "020-m4-local-git-runtime": {"milestone": "M4", "state": "closed"},
+    "021-m4-alpha-runtime": {"milestone": "M4", "state": "open"}
   },
   "task_state_overrides": {
     "SPEC-004/T005": "The frozen M0 task checkbox predates closure. Same-commit Codex and Claude reports are bound by specs/004-m0-closure/founder-review.json, which separately approves M0 closure; the published historical task file remains unchanged."

@@ -1,0 +1,14 @@
+{
+  "additionalChargesAuthorization": false,
+  "claudeIncludedSubscriptionOnly": true,
+  "contextualQuestion": "\u00bfAutorizas crear la PR y ejecutar la reproducci\u00f3n Linux, y usar para Claude \u00fanicamente cuota incluida, sin cargos adicionales?",
+  "limits": "Preserves the original G0 decision without retroactively editing its scope. Claude exercise still requires actual subscription login and assurance that additional usage is disabled.",
+  "linuxReproductionAuthorization": true,
+  "mergeAuthorization": false,
+  "publicationAuthorization": true,
+  "recordVersion": "m4-alpha-publication-linux-included-host-1",
+  "reviewedCandidate": "9108a206d76c4ffb8f253b68cc4c60d977382394",
+  "source": "Explicit human response in the current task",
+  "statement": "S\u00ed autorizo",
+  "wholeM4Acceptance": false
+}
