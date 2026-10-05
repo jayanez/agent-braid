@@ -1,6 +1,6 @@
 # Tasks
 
-G0 is recorded; bounded implementation, actual host capture and C4 reproductions are obtained. T013 reconciliation and independent review are complete; final M4 acceptance remains open at T014/G4. This document assigns dependencies, not concurrent-agent authority.
+G0 is recorded; bounded implementation, actual host capture and C4 reproductions are obtained. T013 reconciliation and independent review are complete. The founder recorded G4 NO-GO on utility under current evidence; whole-M4 acceptance was not granted. T014 remains open for the separately authorized governed tracking apply. This document assigns dependencies, not concurrent-agent authority.
 Implementation evidence below is separate from the historically approved scope proposal.
 
 Each implementation task runs `.venv-speckit/bin/python -m scripts.validate_change
@@ -75,13 +75,13 @@ Fresh reproduction and human gates remain separate.
 
 - [ ] T014: G4 Record separate founder whole-M4 alpha decision and governed tracking update.
   - Trace: REQ-008 / SC-015,016. Dependencies: T013.
-  - Targets: `closure record/anchor; ROADMAP.md; docs/development/github-tracking.json`.
-  - Verification/evidence: All six obtained-evidence rows complete; disclose utility outcome and unresolved gates. Remote tracking/publication needs its own authorized apply.
+  - Targets: `specs/021-m4-alpha-runtime/g4-decision.json; ROADMAP.md; docs/development/github-tracking.json`.
+  - Verification/evidence: Founder NO-GO is recorded in `g4-decision.json`; SPEC-021 and M4 remain open. The current tracking source already preserves those open states. Remote tracking apply is a separate operation and remains pending explicit authorization.
 
 ## Obtained progress and remaining gates
 
 T010: actual Codex six-tool/refusal/disconnect/recovery capture passed with zero model calls. Actual Claude Code 2.1.236 on Claude.ai Max completed prepare, missing-grant refusal, authorized execute, controlled disconnect after `a`, resumed recovery, final verification, and non-repeat retry on frozen candidate `d46fc52`; usage credits were disabled by operator confirmation. The MCP server rejected incomplete argument attempts without allocating a run; the corrected calls passed. No source or candidate changes occurred.
 T011: workflow and actionlint passed; fresh Darwin and hosted Linux checkout/process reproductions each passed 61 tests without skips; Linux evidence and CI are obtained.
-T012: frozen measurement protocol executed, six paired trials captured; Linux prerequisite obtained; founder G4 utility decision remains separate.
+T012: frozen measurement protocol executed, six paired trials captured; Linux prerequisite obtained; the founder later recorded G4 NO-GO on utility under the current evidence.
 T013: complete. The six-row reconciliation `specs/021-m4-alpha-runtime/t013-reconciliation.json` (SHA-256 `d1d670a91cee8e0e862c01554298e2528323954cbf9ef2d814d8b1323779ca24`) was independently reviewed with no findings at commit `b1d602e1b96591fe693b0f9112b43bb4b98baaaa`; review record `specs/021-m4-alpha-runtime/t013-luna-review.json` (SHA-256 `b5e7b3bb9d0c4bc098b3b4770e26a4f3334b4e200c3c947f174dd121557d26f2`).
-T014: whole-M4 founder decision and remote apply remain pending; publication and Linux execution were explicitly authorized separately; merge remains unapproved.
+T014: G4 NO-GO recorded on 2026-10-05; the task remains open for the separate governed tracking apply. M4 acceptance was not granted. Publication and Linux execution were explicitly authorized separately; merge remains unapproved.

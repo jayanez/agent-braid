@@ -175,7 +175,7 @@
               "sha256": "b8e8ac923087022aa59de761ecb9e4c1d06fa7ec092c2cf36a182a9508300ebb"
             }
           ],
-          "planned_evidence": "Obtained: automated policy, transport and scheduler tests; Darwin and Linux core/protocol reproductions; actual Codex and Claude host exercises; and the six-pair measurement. T013 record reconciliation and independent review are being completed; founder G4 remains separate.",
+          "planned_evidence": "Obtained: relevant implementation and host evidence is recorded; T013 evidence reconciliation and independent review are complete. The founder G4 NO-GO on usefulness under current evidence is recorded in g4-decision.json. It does not accept whole M4 or change M3/M3.5 scientific gates.",
           "test_file": "tests/test_m4_alpha_policy.py",
           "test_name": "RuntimePolicyTests.test_read_only_pipeline_and_legacy_authority",
           "then": "Given a fixed-patch request and independently verified analysis, when a candidate is planned, then the runtime preserves the existing portable semantics, contracts and uncertainty and keeps analysis authorization false.",
@@ -242,7 +242,7 @@
               "sha256": "b8e8ac923087022aa59de761ecb9e4c1d06fa7ec092c2cf36a182a9508300ebb"
             }
           ],
-          "planned_evidence": "Obtained: automated policy, transport and scheduler tests; Darwin and Linux core/protocol reproductions; actual Codex and Claude host exercises; and the six-pair measurement. T013 record reconciliation and independent review are being completed; founder G4 remains separate.",
+          "planned_evidence": "Obtained: relevant implementation and host evidence is recorded; T013 evidence reconciliation and independent review are complete. The founder G4 NO-GO on usefulness under current evidence is recorded in g4-decision.json. It does not accept whole M4 or change M3/M3.5 scientific gates.",
           "test_file": "tests/test_m4_alpha_policy.py",
           "test_name": "RuntimePolicyTests.test_forged_evidence_is_refused_even_with_recomputed_producer_digest",
           "then": "Forged certificates, missing coverage and changed inputs are rejected before run allocation.",
@@ -315,7 +315,7 @@
               "sha256": "b8e8ac923087022aa59de761ecb9e4c1d06fa7ec092c2cf36a182a9508300ebb"
             }
           ],
-          "planned_evidence": "Obtained: automated policy, transport and scheduler tests; Darwin and Linux core/protocol reproductions; actual Codex and Claude host exercises; and the six-pair measurement. T013 record reconciliation and independent review are being completed; founder G4 remains separate.",
+          "planned_evidence": "Obtained: relevant implementation and host evidence is recorded; T013 evidence reconciliation and independent review are complete. The founder G4 NO-GO on usefulness under current evidence is recorded in g4-decision.json. It does not accept whole M4 or change M3/M3.5 scientific gates.",
           "test_file": "tests/test_m4_alpha_policy.py",
           "test_name": "RuntimePolicyTests.test_grant_executes_once_and_retries_independently_verify",
           "then": "Given a prepared immutable plan, when the model invokes execution without a separately recorded operator grant, then no durable run is allocated.",
@@ -382,7 +382,7 @@
               "sha256": "b8e8ac923087022aa59de761ecb9e4c1d06fa7ec092c2cf36a182a9508300ebb"
             }
           ],
-          "planned_evidence": "Obtained: automated policy, transport and scheduler tests; Darwin and Linux core/protocol reproductions; actual Codex and Claude host exercises; and the six-pair measurement. T013 record reconciliation and independent review are being completed; founder G4 remains separate.",
+          "planned_evidence": "Obtained: relevant implementation and host evidence is recorded; T013 evidence reconciliation and independent review are complete. The founder G4 NO-GO on usefulness under current evidence is recorded in g4-decision.json. It does not accept whole M4 or change M3/M3.5 scientific gates.",
           "test_file": "tests/test_m4_alpha_policy.py",
           "test_name": "RuntimePolicyTests.test_expired_and_wrong_action_grants_do_not_allocate_run",
           "then": "Missing, expired, consumed, wrong-destination and changed-plan grants are refused; a tool annotation or returned digest cannot grant authority.",
@@ -448,7 +448,7 @@
               "sha256": "b8e8ac923087022aa59de761ecb9e4c1d06fa7ec092c2cf36a182a9508300ebb"
             }
           ],
-          "planned_evidence": "Obtained: automated policy, transport and scheduler tests; Darwin and Linux core/protocol reproductions; actual Codex and Claude host exercises; and the six-pair measurement. T013 record reconciliation and independent review are being completed; founder G4 remains separate.",
+          "planned_evidence": "Obtained: relevant implementation and host evidence is recorded; T013 evidence reconciliation and independent review are complete. The founder G4 NO-GO on usefulness under current evidence is recorded in g4-decision.json. It does not accept whole M4 or change M3/M3.5 scientific gates.",
           "test_file": "tests/test_m4_alpha_scheduler.py",
           "test_name": "RuntimeSchedulerTests.test_real_overlap_isolated_resources_and_serial_effect_agreement",
           "then": "Given 2\u20134 fixed operations with complete dependencies and adapter-verified footprints, when a ready wave is admitted, then isolated workers may prepare concurrently and one coordinator alone publishes checkpoints.",
@@ -508,7 +508,7 @@
               "sha256": "b8e8ac923087022aa59de761ecb9e4c1d06fa7ec092c2cf36a182a9508300ebb"
             }
           ],
-          "planned_evidence": "Obtained: automated policy, transport and scheduler tests; Darwin and Linux core/protocol reproductions; actual Codex and Claude host exercises; and the six-pair measurement. T013 record reconciliation and independent review are being completed; founder G4 remains separate.",
+          "planned_evidence": "Obtained: relevant implementation and host evidence is recorded; T013 evidence reconciliation and independent review are complete. The founder G4 NO-GO on usefulness under current evidence is recorded in g4-decision.json. It does not accept whole M4 or change M3/M3.5 scientific gates.",
           "test_file": "tests/test_m4_alpha_scheduler.py",
           "test_name": "RuntimeSchedulerTests.test_changed_footprints_limits_and_stale_inputs_never_start_workers",
           "then": "Overlap, unknown reads, shared resources, stale bases, altered dependencies and incomplete traces cause serialization under a separately acknowledged plan or rejection, never implicit parallel admission.",
@@ -574,7 +574,7 @@
               "sha256": "b8e8ac923087022aa59de761ecb9e4c1d06fa7ec092c2cf36a182a9508300ebb"
             }
           ],
-          "planned_evidence": "Obtained: automated policy, transport and scheduler tests; Darwin and Linux core/protocol reproductions; actual Codex and Claude host exercises; and the six-pair measurement. T013 record reconciliation and independent review are being completed; founder G4 remains separate.",
+          "planned_evidence": "Obtained: relevant implementation and host evidence is recorded; T013 evidence reconciliation and independent review are complete. The founder G4 NO-GO on usefulness under current evidence is recorded in g4-decision.json. It does not accept whole M4 or change M3/M3.5 scientific gates.",
           "test_file": "tests/test_m4_alpha_scheduler.py",
           "test_name": "RuntimeSchedulerTests.test_parallel_policy_dispatch_then_retry_inspects_without_worker_rerun",
           "then": "Given admitted workers, when actual path/mode/blob effects or result trees differ from the manifest, then publication stops and a read-only consumer rejects completion.",
@@ -634,7 +634,7 @@
               "sha256": "b8e8ac923087022aa59de761ecb9e4c1d06fa7ec092c2cf36a182a9508300ebb"
             }
           ],
-          "planned_evidence": "Obtained: automated policy, transport and scheduler tests; Darwin and Linux core/protocol reproductions; actual Codex and Claude host exercises; and the six-pair measurement. T013 record reconciliation and independent review are being completed; founder G4 remains separate.",
+          "planned_evidence": "Obtained: relevant implementation and host evidence is recorded; T013 evidence reconciliation and independent review are complete. The founder G4 NO-GO on usefulness under current evidence is recorded in g4-decision.json. It does not accept whole M4 or change M3/M3.5 scientific gates.",
           "test_file": "tests/test_m4_alpha_scheduler.py",
           "test_name": "RuntimeSchedulerTests.test_trace_corruption_is_refused_even_with_recomputed_digest",
           "then": "Forged terminal reports and altered private objects/state are refused; declared metadata never substitutes for observed adapter evidence.",
@@ -700,7 +700,7 @@
               "sha256": "b8e8ac923087022aa59de761ecb9e4c1d06fa7ec092c2cf36a182a9508300ebb"
             }
           ],
-          "planned_evidence": "Obtained: automated policy, transport and scheduler tests; Darwin and Linux core/protocol reproductions; actual Codex and Claude host exercises; and the six-pair measurement. T013 record reconciliation and independent review are being completed; founder G4 remains separate.",
+          "planned_evidence": "Obtained: relevant implementation and host evidence is recorded; T013 evidence reconciliation and independent review are complete. The founder G4 NO-GO on usefulness under current evidence is recorded in g4-decision.json. It does not accept whole M4 or change M3/M3.5 scientific gates.",
           "test_file": "tests/test_m4_alpha_scheduler.py",
           "test_name": "RuntimeSchedulerTests.test_fresh_process_kill_preserves_prefix_and_resume_does_not_rerun_workers",
           "then": "Given process death, cancellation or host disconnect, when the run is inspected or explicitly resumed, then an independently verified prefix is retained and completed logical operations are not duplicated.",
@@ -760,7 +760,7 @@
               "sha256": "b8e8ac923087022aa59de761ecb9e4c1d06fa7ec092c2cf36a182a9508300ebb"
             }
           ],
-          "planned_evidence": "Obtained: automated policy, transport and scheduler tests; Darwin and Linux core/protocol reproductions; actual Codex and Claude host exercises; and the six-pair measurement. T013 record reconciliation and independent review are being completed; founder G4 remains separate.",
+          "planned_evidence": "Obtained: relevant implementation and host evidence is recorded; T013 evidence reconciliation and independent review are complete. The founder G4 NO-GO on usefulness under current evidence is recorded in g4-decision.json. It does not accept whole M4 or change M3/M3.5 scientific gates.",
           "test_file": "tests/test_m4_alpha_scheduler.py",
           "test_name": "RuntimeSchedulerTests.test_new_recovery_grant_preserves_worker_journal_without_rerun",
           "then": "Repeated delivery, worker failure, interrupted publication and abort are tested; unknown outcome remains unknown until verified.",
@@ -826,7 +826,7 @@
               "sha256": "b8e8ac923087022aa59de761ecb9e4c1d06fa7ec092c2cf36a182a9508300ebb"
             }
           ],
-          "planned_evidence": "Obtained: automated policy, transport and scheduler tests; Darwin and Linux core/protocol reproductions; actual Codex and Claude host exercises; and the six-pair measurement. T013 record reconciliation and independent review are being completed; founder G4 remains separate.",
+          "planned_evidence": "Obtained: relevant implementation and host evidence is recorded; T013 evidence reconciliation and independent review are complete. The founder G4 NO-GO on usefulness under current evidence is recorded in g4-decision.json. It does not accept whole M4 or change M3/M3.5 scientific gates.",
           "test_file": "tests/test_m4_alpha_mcp.py",
           "test_name": "OwnedMcpTests.test_owned_roundtrip_refusal_separate_grant_and_independent_verifier",
           "then": "Given a pinned supported protocol revision and deterministic peer, when discovery/initialization and tool calls occur, then bounded stdio messages preserve operation identity, evidence and precise refusals.",
@@ -886,7 +886,7 @@
               "sha256": "b8e8ac923087022aa59de761ecb9e4c1d06fa7ec092c2cf36a182a9508300ebb"
             }
           ],
-          "planned_evidence": "Obtained: automated policy, transport and scheduler tests; Darwin and Linux core/protocol reproductions; actual Codex and Claude host exercises; and the six-pair measurement. T013 record reconciliation and independent review are being completed; founder G4 remains separate.",
+          "planned_evidence": "Obtained: relevant implementation and host evidence is recorded; T013 evidence reconciliation and independent review are complete. The founder G4 NO-GO on usefulness under current evidence is recorded in g4-decision.json. It does not accept whole M4 or change M3/M3.5 scientific gates.",
           "test_file": "tests/test_m4_alpha_mcp.py",
           "test_name": "ProtocolTests.test_parse_envelope_parameter_and_unknown_tool_errors_are_distinct",
           "then": "Unsupported versions, malformed/oversized messages, unknown tools, invalid arguments and cancellation fail according to the pinned revision without starting unauthorized work.",
@@ -938,7 +938,7 @@
               "sha256": "7cc71e31c3ef01722f3e1da26cb638247b7dc8ff93bc5d5b7c09abab4ee8e79b"
             }
           ],
-          "planned_evidence": "Actual Codex and Claude Code host exercises obtained. The final evidence/authority reconciliation is prepared for independent Luna review; the separate founder G4 decision remains open.",
+          "planned_evidence": "Obtained: relevant implementation and host evidence is recorded; T013 evidence reconciliation and independent review are complete. The founder G4 NO-GO on usefulness under current evidence is recorded in g4-decision.json. It does not accept whole M4 or change M3/M3.5 scientific gates.",
           "test_file": "specs/021-m4-alpha-runtime/validation-plan.md",
           "test_name": "SC-013",
           "then": "Given installed Codex and Claude Code versions and approved disposable fixtures, when each actual host invokes the adapter, then prepare, authorized execution, refusal and recovery produce independently verifiable records.",
@@ -984,7 +984,7 @@
               "sha256": "7cc71e31c3ef01722f3e1da26cb638247b7dc8ff93bc5d5b7c09abab4ee8e79b"
             }
           ],
-          "planned_evidence": "Actual Codex and Claude Code host exercises obtained. The final evidence/authority reconciliation is prepared for independent Luna review; the separate founder G4 decision remains open.",
+          "planned_evidence": "Obtained: relevant implementation and host evidence is recorded; T013 evidence reconciliation and independent review are complete. The founder G4 NO-GO on usefulness under current evidence is recorded in g4-decision.json. It does not accept whole M4 or change M3/M3.5 scientific gates.",
           "test_file": "specs/021-m4-alpha-runtime/validation-plan.md",
           "test_name": "SC-014",
           "then": "A simulated peer or Spec Kit test is not a real host observation. Record host version, negotiated protocol, candidate, platform, transcript redactions and verifier result.",
@@ -1071,7 +1071,7 @@
               "sha256": "d1d670a91cee8e0e862c01554298e2528323954cbf9ef2d814d8b1323779ca24"
             }
           ],
-          "planned_evidence": "All six C4 evidence rows are reconciled with candidate, hash, review and limit bindings; the independent gpt-6-luna review found no actionable findings. Founder G4 remains a separate go/no-go decision; no whole-M4 closure is claimed.",
+          "planned_evidence": "T013 evidence reconciliation and independent Luna review are complete. The founder G4 NO-GO on usefulness under current evidence is recorded in g4-decision.json; whole-M4 acceptance is not claimed.",
           "test_file": "specs/021-m4-alpha-runtime/validation-plan.md",
           "test_name": "SC-015",
           "then": "Given all six roadmap deliverables and a frozen candidate, when closure is reviewed, then every exit row has obtained evidence, independent review and a separate founder decision.",
@@ -1152,7 +1152,7 @@
               "sha256": "d1d670a91cee8e0e862c01554298e2528323954cbf9ef2d814d8b1323779ca24"
             }
           ],
-          "planned_evidence": "All six C4 evidence rows are reconciled with candidate, hash, review and limit bindings; the independent gpt-6-luna review found no actionable findings. Founder G4 remains a separate go/no-go decision; no whole-M4 closure is claimed.",
+          "planned_evidence": "Report all obtained serial/parallel, safety, overlap, recovery and cost outcomes and retain the founder G4 NO-GO record. The conditional Spec Kit integration matrix was skipped; the affected check remains unexecuted and no whole-M4 acceptance is claimed.",
           "test_file": "specs/021-m4-alpha-runtime/validation-plan.md",
           "test_name": "SC-016",
           "then": "Unexecuted or externally blocked checks keep the affected exit row open. Report serial/parallel agreement, unsafe admissions, actual worker overlap, diagnostic quality and all measured cost components.",
@@ -1163,6 +1163,6 @@
     }
   ],
   "scientific_limits": "No arbitrary-agent safety, production, source promotion, external independent scientific validation, formal result or M3/M3.5 admission.",
-  "scope": "Approved bounded SPEC-021 implementation with obtained Darwin/Linux reproduction, actual Codex and Claude host exercises, measurement and implementation reviews. T013 evidence reconciliation and independent Luna review are complete; the separate founder G4 decision remains open.",
+  "scope": "Approved bounded SPEC-021 implementation with obtained Darwin/Linux reproduction, actual Codex and Claude host exercises, measurement and implementation reviews. T013 evidence reconciliation and independent Luna review are complete. The founder recorded G4 NO-GO on usefulness under current evidence; SPEC-021 and M4 remain open, with no whole-M4 acceptance.",
   "stage": "draft"
 }

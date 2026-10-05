@@ -1,7 +1,6 @@
 # Proposed M4 alpha exit matrix
 
-All rows remain **open for final M4 acceptance**. Partial obtained evidence is recorded below. G0 accepted criteria and implementation scope, not final results.
-M4 remains open until a separate exact-candidate closure decision.
+All rows remain **open for final M4 acceptance**. Evidence is assembled below, with unexecuted checks and limitations called out. G0 accepted criteria and implementation scope, not final results. On 2026-10-05 the founder recorded a G4 NO-GO for accepting SPEC-021 as a useful speedup capability under the current evidence. This does not close M4; the milestone remains open.
 
 | Roadmap deliverable | Required exit evidence | Requirements | Cut |
 | --- | --- | --- | --- |
@@ -34,11 +33,11 @@ statement is retained as a historical observation, not the current state.
 - Six paired cost trials: verified serial/parallel tree agreement in all pairs; median serial/parallel wall ratio 0.5581, negative-or-null-descriptive. Worker overlap remains observation rather than CPU proof.
 - Two independent gpt-6-luna implementation reviews: no findings.
 
-Evidence artifacts are bound to the implementation candidate and inputs; later record packaging does not extend their domain. Actual Claude host evidence was added on `d46fc52`; the separate founder G4 decision remains open. Linux is obtained in the addendum. The historical PR profile binding is in c4-evidence/pr-validation.txt; current PR checks are recorded in the T013 reconciliation. No M3/M3.5 scientific gate is changed.
+Evidence artifacts are bound to the implementation candidate and inputs; later record packaging does not extend their domain. Actual Claude host evidence was added on `d46fc52`; Linux is obtained in the addendum. The historical PR profile binding is in c4-evidence/pr-validation.txt; current PR checks are recorded in the T013 reconciliation and decision packet. The G4 NO-GO is recorded in `g4-decision.json`; it does not change any M3/M3.5 scientific gate.
 
 ## Authorized Linux and CI addendum
 
-Linux reproduction obtained at 9108a20 via run 37197461233: 61 tests, no skips; source/input/log bindings verified. PR CI run 37197290307 succeeded with 367 pass/five skips and an explicitly skipped integration matrix. Earlier pending-Linux statements describe the prior capture stage and are superseded by this addendum. T010 is now complete from the Claude evidence addendum below; final reconciliation and founder G4 remain open.
+Linux reproduction obtained at 9108a20 via run 37197461233: 61 tests, no skips; source/input/log bindings verified. PR CI run 37197290307 succeeded with 367 pass/five skips and an explicitly skipped integration matrix. Earlier pending-Linux statements describe the prior capture stage and are superseded by this addendum. At this 2026-10-04 snapshot, T010 was complete from the Claude evidence addendum below; final reconciliation and founder G4 were still open.
 
 ## Actual Claude host addendum (2026-10-05)
 
@@ -49,4 +48,15 @@ Claude Code 2.1.236 on Darwin arm64 completed the actual bounded MCP tool exerci
 The six deliverable rows map to assurance scenarios SC-001 through SC-016 (with some
 scenarios supporting multiple rows) and their hash-bound artifacts in `assurance.json`. The consolidated candidate/platform map,
 PR check results for reconciliation baseline head `f5d6b21` and explicit limits are in `t013-reconciliation.json`; post-T013 closure-candidate checks are recorded in `decision-packet.md`.
-Fresh independent gpt-6-luna review of exact record commit `b1d602e1b96591fe693b0f9112b43bb4b98baaaa` found no actionable findings and verified all 56 artifact path/hash references across 13 unique files. Reconciliation SHA-256: `d1d670a91cee8e0e862c01554298e2528323954cbf9ef2d814d8b1323779ca24`; review record SHA-256: `b5e7b3bb9d0c4bc098b3b4770e26a4f3334b4e200c3c947f174dd121557d26f2`. T013 is complete. The founder G4 GO/NO-GO and T014 remain open.
+Fresh independent gpt-6-luna review of exact record commit `b1d602e1b96591fe693b0f9112b43bb4b98baaaa` found no actionable findings and verified all 56 artifact path/hash references across 13 unique files. Reconciliation SHA-256: `d1d670a91cee8e0e862c01554298e2528323954cbf9ef2d814d8b1323779ca24`; review record SHA-256: `b5e7b3bb9d0c4bc098b3b4770e26a4f3334b4e200c3c947f174dd121557d26f2`. T013 is complete. At that historical T013 snapshot, the founder G4 decision and T014 were still open.
+
+## G4 founder decision (2026-10-05)
+
+The founder recorded **NO-GO for accepting SPEC-021 as a useful speedup capability
+under the current evidence**. Six pairs produced equivalent verified trees, while
+the median serial/parallel total-wall ratio of `0.5581` favored serial execution
+in this small, uncontrolled sample. This decision does not claim that parallelism
+is generally unhelpful and does not accept or close whole M4. SPEC-021 and M4 remain
+open. The conditional Spec Kit integration matrix was skipped in the current PR
+workflows. See `g4-decision.json` for the decision source, exact candidate bindings,
+evidence hashes and boundaries. M3/M3.5 scientific gates remain unchanged.
