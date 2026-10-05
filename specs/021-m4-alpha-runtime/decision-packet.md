@@ -18,13 +18,13 @@ Installed Codex 0.159.0-alpha.12.1 used its actual MCP tool bridge for all six t
 
 Six paired two-edit trials, both admitted orders, yielded matching independently verified final trees in every pair. Median serial/parallel total wall ratio: 0.5581; outcome: negative-or-null-descriptive. Full evidence production, grants, rehearsal, verification and cleanup are included. Raw ratios and costs are in c4-evidence/measurement.json. This small descriptive corpus does not establish population benefit; overlap does not prove simultaneous CPU execution. Scratch is sampled; there is no hard child-memory cap or hostile same-UID isolation claim.
 
-## 5. Remaining acceptance gates
+## 5. G4 status
 
-T010 actual-host capture is complete. T013’s six-row evidence/authority reconciliation and independent Luna review are complete. Luna reviewed `b1d602e1b96591fe693b0f9112b43bb4b98baaaa` with no findings; the review record SHA-256 is `b5e7b3bb9d0c4bc098b3b4770e26a4f3334b4e200c3c947f174dd121557d26f2`. T014 is the separate founder whole-M4 decision plus governed tracking update. G4 requires all six exit rows and an explicit utility go/no-go, including negative or inconclusive outcomes. No scientific, production or whole-M4 closure follows from these tests.
+T010 actual-host capture and T013’s six-row evidence/authority reconciliation are complete. Luna reviewed `b1d602e1b96591fe693b0f9112b43bb4b98baaaa` with no findings; the review record SHA-256 is `b5e7b3bb9d0c4bc098b3b4770e26a4f3334b4e200c3c947f174dd121557d26f2`. The founder recorded a G4 NO-GO on usefulness under the current evidence on 2026-10-05; the decision is bound in `g4-decision.json`. It does not accept whole M4 or close the M4 milestone. The conditional Spec Kit integration matrix remains skipped, and the governed remote tracking apply remains pending its own authorization.
 
 ## 6. Approval boundaries
 
-Implementation was authorized by G0. Historical founder-review.json records G0 publication and merge as false. Subsequent explicit authorization permits PR publication, Linux dispatch and included-only Claude use; see execution-authorization.json. PR #201 is open and Linux has passed. Merge, remote tracking apply and whole-M4 acceptance remain separate. Full M4 acceptance follows the outstanding evidence and a separate exact-candidate G4 decision.
+Implementation was authorized by G0. Historical founder-review.json records G0 publication and merge as false. Subsequent explicit authorization permits PR publication, Linux dispatch and included-only Claude use; see execution-authorization.json. PR #201 is open and Linux has passed. The founder’s G4 NO-GO records that current evidence does not support accepting M4 as a useful speedup capability. The M4 milestone remains open; merge and remote tracking apply remain separate actions requiring their applicable authorization.
 
 ## 7. Published observation views and preservation
 
@@ -48,9 +48,9 @@ The prior implementation assurance at 9108a20 is archived unchanged with its his
 
 The operator signed in with Claude.ai Max and confirmed Usage credits were disabled before any model-backed test. Claude Code 2.1.236 negotiated MCP 2025-11-25 through a one-server temporary config with `--strict-mcp-config`; built-in tools were disabled and API/provider environment overrides were removed. The owned two-edit fixture produced plan digest `sha256:27e444c1435f5872ef25e51036b77bbe83a86e9a6fd8ee4790ce727c03faca5d`, with writes limited to `a.txt` and `b.txt` and no execution authority in preparation. An empty grant store refused execute without allocating a run. After operator review, a local one-use grant authorized execution; the host was deliberately interrupted after `a`, its prefix independently verified, and the same Claude session resumed with a new local grant. Recovery completed `a` and `b`; final tree `f4b354863caa9cea99b95422c9dab70465757d87` matched the expected tree, and retrying the consumed grant returned `not-repeated`. Initial incomplete tool arguments were rejected without side effects and corrected in the same session.
 
-The sanitized request/result transcript, raw log hash, host identity, candidate/input bindings and independent verifier results are in `host-evidence/claude.json`. T010 is complete. T013’s consolidated evidence and authority map is `t013-reconciliation.json` (SHA-256 `d1d670a91cee8e0e862c01554298e2528323954cbf9ef2d814d8b1323779ca24`). Fresh independent Luna review of `b1d602e1b96591fe693b0f9112b43bb4b98baaaa` found no actionable findings; see `t013-luna-review.json` (SHA-256 `b5e7b3bb9d0c4bc098b3b4770e26a4f3334b4e200c3c947f174dd121557d26f2`). T014 still needs the founder’s separate G4 utility/go/no-go decision and an authorized tracking apply. PR #201 remains open and unmerged; no whole-M4, scientific or production closure is claimed.
+The sanitized request/result transcript, raw log hash, host identity, candidate/input bindings and independent verifier results are in `host-evidence/claude.json`. T010 is complete. T013’s consolidated evidence and authority map is `t013-reconciliation.json` (SHA-256 `d1d670a91cee8e0e862c01554298e2528323954cbf9ef2d814d8b1323779ca24`). Fresh independent Luna review of `b1d602e1b96591fe693b0f9112b43bb4b98baaaa` found no actionable findings; see `t013-luna-review.json` (SHA-256 `b5e7b3bb9d0c4bc098b3b4770e26a4f3334b4e200c3c947f174dd121557d26f2`). The founder’s G4 NO-GO on usefulness is now recorded; T014 remains open for the separately authorized tracking apply. PR #201 remains open and unmerged; no whole-M4, scientific or production closure is claimed.
 
-## 10. G4 decision packet (prepared; no decision recorded)
+## 10. G4 decision packet and founder outcome
 
 | Exit row | Evidence assembled | Candidate/platform binding | Remaining boundary |
 | --- | --- | --- | --- |
@@ -58,12 +58,20 @@ The sanitized request/result transcript, raw log hash, host identity, candidate/
 | Transactional/isolation policies | SC-003–006; grant, footprint, scheduling, private worker and serial agreement checks | Core source `9108a20`; six-pair measurement source `67b8b52` | Fixed ordinary-text patches; no hard child-memory cap or hostile same-UID isolation claim |
 | Live effect verification | SC-007–008; observed path/mode/blob effects and tamper/consumer refusal controls | Bound source and input digests in `assurance.json` | Tracked-tree evidence does not establish semantic correctness |
 | Replay and recovery | SC-009–010 plus actual Codex/Claude interruption, resume and retry checks | Codex `67b8b52`, Claude `d46fc52`, and Linux reproduction `9108a20` | Process-interruption boundary only; no power-loss guarantee |
-| CI and policy gates | Current PR checks, local PR profile and fresh Darwin/Linux reproductions | PR head `f5d6b21`; Linux x86_64 / Python 3.12.14; Darwin arm64 / Python 3.13.11 | Current CI matrix was skipped; final acceptance remains separate |
+| CI and policy gates | Local PR profile, fresh Darwin/Linux reproductions, GitHub runs `37303046833` (372 tests, five skips) and `37303052926` (385 tests, five skips) | Decision-time PR head `3b776ea` (before this G4 record); Linux x86_64 / Python 3.12.14; Darwin arm64 / Python 3.13.11 | Conditional Spec Kit integration matrix was skipped in both runs; the G4 documentation delta still needs its own CI |
 | Portability across agent environments | Actual Codex and Claude observations on Darwin; independent Linux core/protocol reproduction | Host candidates above; Linux run 37197461233 on `9108a20` | No other host/platform combinations are claimed |
 
 Six paired trials produced equivalent verified trees in every pair. The median
 serial/parallel total-wall ratio is `0.5581`, so this descriptive sample measured
 serial at about 56% of parallel wall time (parallel about 1.79x serial). The corpus
 is small and uncontrolled; this is not a population estimate or general speedup
-claim. The founder must record GO or NO-GO at G4 after reviewing this evidence and
-the stated limits. No decision is implied here.
+claim. On 2026-10-05, the founder recorded **NO-GO for accepting SPEC-021 as a
+useful speedup capability under the current evidence**. Six paired trials produced
+equivalent verified trees, but the median serial/parallel total-wall ratio was
+`0.5581`; the small, uncontrolled sample did not demonstrate useful acceleration.
+This rejects the current utility case only. It does not establish that parallelism
+is generally unhelpful, validate M4 scientifically or formally, or close the M4
+milestone. The conditional Spec Kit integration matrix was skipped in the current
+PR workflows and remains an unexecuted check. SPEC-021 and M4 remain open. The
+decision source, candidate bindings and limits are recorded in
+`g4-decision.json`; remote tracking apply and merge remain separate.
