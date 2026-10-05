@@ -44,10 +44,9 @@ Linux reproduction obtained at 9108a20 via run 37197461233: 61 tests, no skips; 
 
 Claude Code 2.1.236 on Darwin arm64 completed the actual bounded MCP tool exercise on the same owned two-edit fixture family, using Claude.ai Max with usage credits disabled by operator confirmation. Preparation had no execution authority; an empty grant store refused execution; a separately issued local grant ran the fixture; an intentional disconnect preserved a verified prefix after `a`; a new resume grant completed `b`; the independent verifier matched the expected final tree; and retrying the consumed grant did not repeat execution. The transcript, redactions and exact candidate/input bindings are in `host-evidence/claude.json`. This closes T010 only; it does not constitute independent scientific validation, founder G4 acceptance, merge authority, or M3/M3.5 verification.
 
-## T013 evidence reconciliation in progress
+## T013 evidence reconciliation complete
 
-The six deliverable rows map to assurance scenarios SC-005 through SC-016 and their
-hash-bound artifacts in `assurance.json`. The consolidated candidate/platform map,
+The six deliverable rows map to assurance scenarios SC-001 through SC-016 (with some
+scenarios supporting multiple rows) and their hash-bound artifacts in `assurance.json`. The consolidated candidate/platform map,
 current PR check results and explicit limits are in `t013-reconciliation.json`.
-Independent Luna review of that exact record candidate is pending; T013 and G4
-remain open until it is recorded and T014 receives a separate founder decision.
+Fresh independent gpt-6-luna review of exact record commit `b1d602e1b96591fe693b0f9112b43bb4b98baaaa` found no actionable findings and verified all 56 artifact path/hash references across 13 unique files. Reconciliation SHA-256: `d1d670a91cee8e0e862c01554298e2528323954cbf9ef2d814d8b1323779ca24`; review record SHA-256: `b5e7b3bb9d0c4bc098b3b4770e26a4f3334b4e200c3c947f174dd121557d26f2`. T013 is complete. The founder G4 GO/NO-GO and T014 remain open.
