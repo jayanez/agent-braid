@@ -219,6 +219,15 @@ The founder approved its scope against frozen candidate `0de9d31` and adopted
 Implementation is authorized within the documented gates; whole-M4 acceptance
 remains a separate decision.
 
+On 2026-10-05 the founder recorded a G4 NO-GO for accepting SPEC-021 as a useful
+speedup capability under the current evidence. Six paired trials produced
+equivalent verified trees, but their median serial/parallel total-wall ratio was
+0.5581 in a small, uncontrolled sample. This does not show that parallelism is
+generally unhelpful and does not close M4. SPEC-021 and the M4 milestone remain
+open; the decision and its limits are recorded in
+[`g4-decision.json`](specs/021-m4-alpha-runtime/g4-decision.json). M3/M3.5
+scientific gates are unchanged.
+
 Candidate deliverables:
 
 - MCP and host-runtime adapters;
