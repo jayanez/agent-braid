@@ -1,0 +1,10 @@
+{
+  "candidateCommit": "acdf92e86eda65440bfe106823ff5df0a3415a46",
+  "model": "gpt-6-luna",
+  "rawReport": "No findings on `acdf92e`. The CI and Linux run logs are preserved losslessly in JSON wrappers: their decoded bytes match the original raw hashes, and wrapper and assurance hashes match. The Linux reproduction outputs are unchanged from `8800f01`; all 58 candidate input hashes match `9108a20`. `git diff --check origin/develop` passes.\n\nThe records keep the PR CI result at 372 tests (367 passed, five audited skips) and explicitly mark the Spec Kit matrix skipped. The archived assurance and historical PR profile binding remain intact; the tracking-test update is separate. Claude access and login, merge, tracking apply, and G4 remain pending. No M4 closure is implied.",
+  "result": "no-findings",
+  "reviewer": "/root/m4_alpha_transport_review",
+  "scope": "Independent read-only Linux/CI evidence, log preservation, task states and historical-binding reconciliation",
+  "sourceRuntimeChanges": false,
+  "wholeM4Acceptance": false
+}
