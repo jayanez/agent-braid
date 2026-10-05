@@ -91,9 +91,9 @@
     "mode": "historical"
   },
   "compatibility": "Zero core runtime dependencies; separate opt-in runtime/transport contracts; legacy executionAuthorization false.",
-  "domain": "2–4 fixed ordinary-text A/M patches; private Git tracked-tree effects and bounded stdio transport.",
+  "domain": "2\u20134 fixed ordinary-text A/M patches; private Git tracked-tree effects and bounded stdio transport.",
   "evidence_snapshot": {
-    "commit": "53f87bc94db32a93b3c8fee74d3fb3f3e2abe4d8",
+    "commit": "8b4d6c2384016283381fd6f9ca42667947b86a5c",
     "mode": "historical"
   },
   "execution_contract": "Existing serial contract unchanged; expanded isolated parallel preparation and coordinator publication contract proposed, not adopted.",
@@ -451,7 +451,7 @@
           "planned_evidence": "Local automated checks and Darwin reproduction obtained; full Claude host and final founder gates remain separate.",
           "test_file": "tests/test_m4_alpha_scheduler.py",
           "test_name": "RuntimeSchedulerTests.test_real_overlap_isolated_resources_and_serial_effect_agreement",
-          "then": "Given 2–4 fixed operations with complete dependencies and adapter-verified footprints, when a ready wave is admitted, then isolated workers may prepare concurrently and one coordinator alone publishes checkpoints.",
+          "then": "Given 2\u20134 fixed operations with complete dependencies and adapter-verified footprints, when a ready wave is admitted, then isolated workers may prepare concurrently and one coordinator alone publishes checkpoints.",
           "when": "The prospective procedure is implemented and executed against a frozen candidate."
         },
         {
