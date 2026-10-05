@@ -134,14 +134,14 @@
             },
             {
               "command": ".venv-speckit/bin/python -m scripts.validate_change --base develop --profile quick",
-              "limits": "Local engineering validation; no external scientific validation, whole-M4 acceptance, Linux or full Claude exercise.",
+              "limits": "This earlier local engineering validation did not include external scientific validation, Linux reproduction, or host exercises; separate Linux and Claude evidence is recorded below. It does not establish whole-M4 acceptance.",
               "outcome": "Passed: 372 tests, four skips: three deferred SPEC-019 implementation tests and one unavailable private-history test; all 42 C1/C2/MCP tests execute.",
               "path": "specs/021-m4-alpha-runtime/c3-evidence/validation.txt",
               "sha256": "953ae5cd4130bd71f82ae9efe7a1d6d5f9646315858002234bafb79d8f7f8ed1"
             },
             {
               "command": "Absolute isolated Python -m scripts.reproduce_m4_alpha --output /tmp/m4-alpha-darwin-67b8b52.json from fresh checkout",
-              "limits": "Darwin arm64 with existing isolated Python 3.13.11; no fresh dependency environment or external independent validation; Linux pending.",
+              "limits": "Darwin arm64 with existing isolated Python 3.13.11; no fresh dependency environment or external independent validation. This earlier Darwin record did not include Linux; separate Linux reproduction is recorded below.",
               "outcome": "Passed: 61 tests, no skips; fresh checkout/process, bound inputs and working tree unchanged.",
               "path": "specs/021-m4-alpha-runtime/c4-evidence/darwin.json",
               "sha256": "7cd268f16eee50c824415775eef3a465cdd0099e38143e43a66be8cfe25f135b"
@@ -175,7 +175,7 @@
               "sha256": "b8e8ac923087022aa59de761ecb9e4c1d06fa7ec092c2cf36a182a9508300ebb"
             }
           ],
-          "planned_evidence": "Local automated checks and Darwin reproduction obtained; full Claude host and final founder gates remain separate.",
+          "planned_evidence": "Obtained: automated policy, transport and scheduler tests; Darwin and Linux core/protocol reproductions; actual Codex and Claude host exercises; and the six-pair measurement. T013 record reconciliation and independent review are being completed; founder G4 remains separate.",
           "test_file": "tests/test_m4_alpha_policy.py",
           "test_name": "RuntimePolicyTests.test_read_only_pipeline_and_legacy_authority",
           "then": "Given a fixed-patch request and independently verified analysis, when a candidate is planned, then the runtime preserves the existing portable semantics, contracts and uncertainty and keeps analysis authorization false.",
@@ -201,14 +201,14 @@
             },
             {
               "command": ".venv-speckit/bin/python -m scripts.validate_change --base develop --profile quick",
-              "limits": "Local engineering validation; no external scientific validation, whole-M4 acceptance, Linux or full Claude exercise.",
+              "limits": "This earlier local engineering validation did not include external scientific validation, Linux reproduction, or host exercises; separate Linux and Claude evidence is recorded below. It does not establish whole-M4 acceptance.",
               "outcome": "Passed: 372 tests, four skips: three deferred SPEC-019 implementation tests and one unavailable private-history test; all 42 C1/C2/MCP tests execute.",
               "path": "specs/021-m4-alpha-runtime/c3-evidence/validation.txt",
               "sha256": "953ae5cd4130bd71f82ae9efe7a1d6d5f9646315858002234bafb79d8f7f8ed1"
             },
             {
               "command": "Absolute isolated Python -m scripts.reproduce_m4_alpha --output /tmp/m4-alpha-darwin-67b8b52.json from fresh checkout",
-              "limits": "Darwin arm64 with existing isolated Python 3.13.11; no fresh dependency environment or external independent validation; Linux pending.",
+              "limits": "Darwin arm64 with existing isolated Python 3.13.11; no fresh dependency environment or external independent validation. This earlier Darwin record did not include Linux; separate Linux reproduction is recorded below.",
               "outcome": "Passed: 61 tests, no skips; fresh checkout/process, bound inputs and working tree unchanged.",
               "path": "specs/021-m4-alpha-runtime/c4-evidence/darwin.json",
               "sha256": "7cd268f16eee50c824415775eef3a465cdd0099e38143e43a66be8cfe25f135b"
@@ -242,7 +242,7 @@
               "sha256": "b8e8ac923087022aa59de761ecb9e4c1d06fa7ec092c2cf36a182a9508300ebb"
             }
           ],
-          "planned_evidence": "Local automated checks and Darwin reproduction obtained; full Claude host and final founder gates remain separate.",
+          "planned_evidence": "Obtained: automated policy, transport and scheduler tests; Darwin and Linux core/protocol reproductions; actual Codex and Claude host exercises; and the six-pair measurement. T013 record reconciliation and independent review are being completed; founder G4 remains separate.",
           "test_file": "tests/test_m4_alpha_policy.py",
           "test_name": "RuntimePolicyTests.test_forged_evidence_is_refused_even_with_recomputed_producer_digest",
           "then": "Forged certificates, missing coverage and changed inputs are rejected before run allocation.",
@@ -274,14 +274,14 @@
             },
             {
               "command": ".venv-speckit/bin/python -m scripts.validate_change --base develop --profile quick",
-              "limits": "Local engineering validation; no external scientific validation, whole-M4 acceptance, Linux or full Claude exercise.",
+              "limits": "This earlier local engineering validation did not include external scientific validation, Linux reproduction, or host exercises; separate Linux and Claude evidence is recorded below. It does not establish whole-M4 acceptance.",
               "outcome": "Passed: 372 tests, four skips: three deferred SPEC-019 implementation tests and one unavailable private-history test; all 42 C1/C2/MCP tests execute.",
               "path": "specs/021-m4-alpha-runtime/c3-evidence/validation.txt",
               "sha256": "953ae5cd4130bd71f82ae9efe7a1d6d5f9646315858002234bafb79d8f7f8ed1"
             },
             {
               "command": "Absolute isolated Python -m scripts.reproduce_m4_alpha --output /tmp/m4-alpha-darwin-67b8b52.json from fresh checkout",
-              "limits": "Darwin arm64 with existing isolated Python 3.13.11; no fresh dependency environment or external independent validation; Linux pending.",
+              "limits": "Darwin arm64 with existing isolated Python 3.13.11; no fresh dependency environment or external independent validation. This earlier Darwin record did not include Linux; separate Linux reproduction is recorded below.",
               "outcome": "Passed: 61 tests, no skips; fresh checkout/process, bound inputs and working tree unchanged.",
               "path": "specs/021-m4-alpha-runtime/c4-evidence/darwin.json",
               "sha256": "7cd268f16eee50c824415775eef3a465cdd0099e38143e43a66be8cfe25f135b"
@@ -315,7 +315,7 @@
               "sha256": "b8e8ac923087022aa59de761ecb9e4c1d06fa7ec092c2cf36a182a9508300ebb"
             }
           ],
-          "planned_evidence": "Local automated checks and Darwin reproduction obtained; full Claude host and final founder gates remain separate.",
+          "planned_evidence": "Obtained: automated policy, transport and scheduler tests; Darwin and Linux core/protocol reproductions; actual Codex and Claude host exercises; and the six-pair measurement. T013 record reconciliation and independent review are being completed; founder G4 remains separate.",
           "test_file": "tests/test_m4_alpha_policy.py",
           "test_name": "RuntimePolicyTests.test_grant_executes_once_and_retries_independently_verify",
           "then": "Given a prepared immutable plan, when the model invokes execution without a separately recorded operator grant, then no durable run is allocated.",
@@ -341,14 +341,14 @@
             },
             {
               "command": ".venv-speckit/bin/python -m scripts.validate_change --base develop --profile quick",
-              "limits": "Local engineering validation; no external scientific validation, whole-M4 acceptance, Linux or full Claude exercise.",
+              "limits": "This earlier local engineering validation did not include external scientific validation, Linux reproduction, or host exercises; separate Linux and Claude evidence is recorded below. It does not establish whole-M4 acceptance.",
               "outcome": "Passed: 372 tests, four skips: three deferred SPEC-019 implementation tests and one unavailable private-history test; all 42 C1/C2/MCP tests execute.",
               "path": "specs/021-m4-alpha-runtime/c3-evidence/validation.txt",
               "sha256": "953ae5cd4130bd71f82ae9efe7a1d6d5f9646315858002234bafb79d8f7f8ed1"
             },
             {
               "command": "Absolute isolated Python -m scripts.reproduce_m4_alpha --output /tmp/m4-alpha-darwin-67b8b52.json from fresh checkout",
-              "limits": "Darwin arm64 with existing isolated Python 3.13.11; no fresh dependency environment or external independent validation; Linux pending.",
+              "limits": "Darwin arm64 with existing isolated Python 3.13.11; no fresh dependency environment or external independent validation. This earlier Darwin record did not include Linux; separate Linux reproduction is recorded below.",
               "outcome": "Passed: 61 tests, no skips; fresh checkout/process, bound inputs and working tree unchanged.",
               "path": "specs/021-m4-alpha-runtime/c4-evidence/darwin.json",
               "sha256": "7cd268f16eee50c824415775eef3a465cdd0099e38143e43a66be8cfe25f135b"
@@ -382,7 +382,7 @@
               "sha256": "b8e8ac923087022aa59de761ecb9e4c1d06fa7ec092c2cf36a182a9508300ebb"
             }
           ],
-          "planned_evidence": "Local automated checks and Darwin reproduction obtained; full Claude host and final founder gates remain separate.",
+          "planned_evidence": "Obtained: automated policy, transport and scheduler tests; Darwin and Linux core/protocol reproductions; actual Codex and Claude host exercises; and the six-pair measurement. T013 record reconciliation and independent review are being completed; founder G4 remains separate.",
           "test_file": "tests/test_m4_alpha_policy.py",
           "test_name": "RuntimePolicyTests.test_expired_and_wrong_action_grants_do_not_allocate_run",
           "then": "Missing, expired, consumed, wrong-destination and changed-plan grants are refused; a tool annotation or returned digest cannot grant authority.",
@@ -407,14 +407,14 @@
             },
             {
               "command": ".venv-speckit/bin/python -m scripts.validate_change --base develop --profile quick",
-              "limits": "Local engineering validation; no external scientific validation, whole-M4 acceptance, Linux or full Claude exercise.",
+              "limits": "This earlier local engineering validation did not include external scientific validation, Linux reproduction, or host exercises; separate Linux and Claude evidence is recorded below. It does not establish whole-M4 acceptance.",
               "outcome": "Passed: 372 tests, four skips: three deferred SPEC-019 implementation tests and one unavailable private-history test; all 42 C1/C2/MCP tests execute.",
               "path": "specs/021-m4-alpha-runtime/c3-evidence/validation.txt",
               "sha256": "953ae5cd4130bd71f82ae9efe7a1d6d5f9646315858002234bafb79d8f7f8ed1"
             },
             {
               "command": "Absolute isolated Python -m scripts.reproduce_m4_alpha --output /tmp/m4-alpha-darwin-67b8b52.json from fresh checkout",
-              "limits": "Darwin arm64 with existing isolated Python 3.13.11; no fresh dependency environment or external independent validation; Linux pending.",
+              "limits": "Darwin arm64 with existing isolated Python 3.13.11; no fresh dependency environment or external independent validation. This earlier Darwin record did not include Linux; separate Linux reproduction is recorded below.",
               "outcome": "Passed: 61 tests, no skips; fresh checkout/process, bound inputs and working tree unchanged.",
               "path": "specs/021-m4-alpha-runtime/c4-evidence/darwin.json",
               "sha256": "7cd268f16eee50c824415775eef3a465cdd0099e38143e43a66be8cfe25f135b"
@@ -448,7 +448,7 @@
               "sha256": "b8e8ac923087022aa59de761ecb9e4c1d06fa7ec092c2cf36a182a9508300ebb"
             }
           ],
-          "planned_evidence": "Local automated checks and Darwin reproduction obtained; full Claude host and final founder gates remain separate.",
+          "planned_evidence": "Obtained: automated policy, transport and scheduler tests; Darwin and Linux core/protocol reproductions; actual Codex and Claude host exercises; and the six-pair measurement. T013 record reconciliation and independent review are being completed; founder G4 remains separate.",
           "test_file": "tests/test_m4_alpha_scheduler.py",
           "test_name": "RuntimeSchedulerTests.test_real_overlap_isolated_resources_and_serial_effect_agreement",
           "then": "Given 2\u20134 fixed operations with complete dependencies and adapter-verified footprints, when a ready wave is admitted, then isolated workers may prepare concurrently and one coordinator alone publishes checkpoints.",
@@ -467,14 +467,14 @@
             },
             {
               "command": ".venv-speckit/bin/python -m scripts.validate_change --base develop --profile quick",
-              "limits": "Local engineering validation; no external scientific validation, whole-M4 acceptance, Linux or full Claude exercise.",
+              "limits": "This earlier local engineering validation did not include external scientific validation, Linux reproduction, or host exercises; separate Linux and Claude evidence is recorded below. It does not establish whole-M4 acceptance.",
               "outcome": "Passed: 372 tests, four skips: three deferred SPEC-019 implementation tests and one unavailable private-history test; all 42 C1/C2/MCP tests execute.",
               "path": "specs/021-m4-alpha-runtime/c3-evidence/validation.txt",
               "sha256": "953ae5cd4130bd71f82ae9efe7a1d6d5f9646315858002234bafb79d8f7f8ed1"
             },
             {
               "command": "Absolute isolated Python -m scripts.reproduce_m4_alpha --output /tmp/m4-alpha-darwin-67b8b52.json from fresh checkout",
-              "limits": "Darwin arm64 with existing isolated Python 3.13.11; no fresh dependency environment or external independent validation; Linux pending.",
+              "limits": "Darwin arm64 with existing isolated Python 3.13.11; no fresh dependency environment or external independent validation. This earlier Darwin record did not include Linux; separate Linux reproduction is recorded below.",
               "outcome": "Passed: 61 tests, no skips; fresh checkout/process, bound inputs and working tree unchanged.",
               "path": "specs/021-m4-alpha-runtime/c4-evidence/darwin.json",
               "sha256": "7cd268f16eee50c824415775eef3a465cdd0099e38143e43a66be8cfe25f135b"
@@ -508,7 +508,7 @@
               "sha256": "b8e8ac923087022aa59de761ecb9e4c1d06fa7ec092c2cf36a182a9508300ebb"
             }
           ],
-          "planned_evidence": "Local automated checks and Darwin reproduction obtained; full Claude host and final founder gates remain separate.",
+          "planned_evidence": "Obtained: automated policy, transport and scheduler tests; Darwin and Linux core/protocol reproductions; actual Codex and Claude host exercises; and the six-pair measurement. T013 record reconciliation and independent review are being completed; founder G4 remains separate.",
           "test_file": "tests/test_m4_alpha_scheduler.py",
           "test_name": "RuntimeSchedulerTests.test_changed_footprints_limits_and_stale_inputs_never_start_workers",
           "then": "Overlap, unknown reads, shared resources, stale bases, altered dependencies and incomplete traces cause serialization under a separately acknowledged plan or rejection, never implicit parallel admission.",
@@ -533,14 +533,14 @@
             },
             {
               "command": ".venv-speckit/bin/python -m scripts.validate_change --base develop --profile quick",
-              "limits": "Local engineering validation; no external scientific validation, whole-M4 acceptance, Linux or full Claude exercise.",
+              "limits": "This earlier local engineering validation did not include external scientific validation, Linux reproduction, or host exercises; separate Linux and Claude evidence is recorded below. It does not establish whole-M4 acceptance.",
               "outcome": "Passed: 372 tests, four skips: three deferred SPEC-019 implementation tests and one unavailable private-history test; all 42 C1/C2/MCP tests execute.",
               "path": "specs/021-m4-alpha-runtime/c3-evidence/validation.txt",
               "sha256": "953ae5cd4130bd71f82ae9efe7a1d6d5f9646315858002234bafb79d8f7f8ed1"
             },
             {
               "command": "Absolute isolated Python -m scripts.reproduce_m4_alpha --output /tmp/m4-alpha-darwin-67b8b52.json from fresh checkout",
-              "limits": "Darwin arm64 with existing isolated Python 3.13.11; no fresh dependency environment or external independent validation; Linux pending.",
+              "limits": "Darwin arm64 with existing isolated Python 3.13.11; no fresh dependency environment or external independent validation. This earlier Darwin record did not include Linux; separate Linux reproduction is recorded below.",
               "outcome": "Passed: 61 tests, no skips; fresh checkout/process, bound inputs and working tree unchanged.",
               "path": "specs/021-m4-alpha-runtime/c4-evidence/darwin.json",
               "sha256": "7cd268f16eee50c824415775eef3a465cdd0099e38143e43a66be8cfe25f135b"
@@ -574,7 +574,7 @@
               "sha256": "b8e8ac923087022aa59de761ecb9e4c1d06fa7ec092c2cf36a182a9508300ebb"
             }
           ],
-          "planned_evidence": "Local automated checks and Darwin reproduction obtained; full Claude host and final founder gates remain separate.",
+          "planned_evidence": "Obtained: automated policy, transport and scheduler tests; Darwin and Linux core/protocol reproductions; actual Codex and Claude host exercises; and the six-pair measurement. T013 record reconciliation and independent review are being completed; founder G4 remains separate.",
           "test_file": "tests/test_m4_alpha_scheduler.py",
           "test_name": "RuntimeSchedulerTests.test_parallel_policy_dispatch_then_retry_inspects_without_worker_rerun",
           "then": "Given admitted workers, when actual path/mode/blob effects or result trees differ from the manifest, then publication stops and a read-only consumer rejects completion.",
@@ -593,14 +593,14 @@
             },
             {
               "command": ".venv-speckit/bin/python -m scripts.validate_change --base develop --profile quick",
-              "limits": "Local engineering validation; no external scientific validation, whole-M4 acceptance, Linux or full Claude exercise.",
+              "limits": "This earlier local engineering validation did not include external scientific validation, Linux reproduction, or host exercises; separate Linux and Claude evidence is recorded below. It does not establish whole-M4 acceptance.",
               "outcome": "Passed: 372 tests, four skips: three deferred SPEC-019 implementation tests and one unavailable private-history test; all 42 C1/C2/MCP tests execute.",
               "path": "specs/021-m4-alpha-runtime/c3-evidence/validation.txt",
               "sha256": "953ae5cd4130bd71f82ae9efe7a1d6d5f9646315858002234bafb79d8f7f8ed1"
             },
             {
               "command": "Absolute isolated Python -m scripts.reproduce_m4_alpha --output /tmp/m4-alpha-darwin-67b8b52.json from fresh checkout",
-              "limits": "Darwin arm64 with existing isolated Python 3.13.11; no fresh dependency environment or external independent validation; Linux pending.",
+              "limits": "Darwin arm64 with existing isolated Python 3.13.11; no fresh dependency environment or external independent validation. This earlier Darwin record did not include Linux; separate Linux reproduction is recorded below.",
               "outcome": "Passed: 61 tests, no skips; fresh checkout/process, bound inputs and working tree unchanged.",
               "path": "specs/021-m4-alpha-runtime/c4-evidence/darwin.json",
               "sha256": "7cd268f16eee50c824415775eef3a465cdd0099e38143e43a66be8cfe25f135b"
@@ -634,7 +634,7 @@
               "sha256": "b8e8ac923087022aa59de761ecb9e4c1d06fa7ec092c2cf36a182a9508300ebb"
             }
           ],
-          "planned_evidence": "Local automated checks and Darwin reproduction obtained; full Claude host and final founder gates remain separate.",
+          "planned_evidence": "Obtained: automated policy, transport and scheduler tests; Darwin and Linux core/protocol reproductions; actual Codex and Claude host exercises; and the six-pair measurement. T013 record reconciliation and independent review are being completed; founder G4 remains separate.",
           "test_file": "tests/test_m4_alpha_scheduler.py",
           "test_name": "RuntimeSchedulerTests.test_trace_corruption_is_refused_even_with_recomputed_digest",
           "then": "Forged terminal reports and altered private objects/state are refused; declared metadata never substitutes for observed adapter evidence.",
@@ -659,14 +659,14 @@
             },
             {
               "command": ".venv-speckit/bin/python -m scripts.validate_change --base develop --profile quick",
-              "limits": "Local engineering validation; no external scientific validation, whole-M4 acceptance, Linux or full Claude exercise.",
+              "limits": "This earlier local engineering validation did not include external scientific validation, Linux reproduction, or host exercises; separate Linux and Claude evidence is recorded below. It does not establish whole-M4 acceptance.",
               "outcome": "Passed: 372 tests, four skips: three deferred SPEC-019 implementation tests and one unavailable private-history test; all 42 C1/C2/MCP tests execute.",
               "path": "specs/021-m4-alpha-runtime/c3-evidence/validation.txt",
               "sha256": "953ae5cd4130bd71f82ae9efe7a1d6d5f9646315858002234bafb79d8f7f8ed1"
             },
             {
               "command": "Absolute isolated Python -m scripts.reproduce_m4_alpha --output /tmp/m4-alpha-darwin-67b8b52.json from fresh checkout",
-              "limits": "Darwin arm64 with existing isolated Python 3.13.11; no fresh dependency environment or external independent validation; Linux pending.",
+              "limits": "Darwin arm64 with existing isolated Python 3.13.11; no fresh dependency environment or external independent validation. This earlier Darwin record did not include Linux; separate Linux reproduction is recorded below.",
               "outcome": "Passed: 61 tests, no skips; fresh checkout/process, bound inputs and working tree unchanged.",
               "path": "specs/021-m4-alpha-runtime/c4-evidence/darwin.json",
               "sha256": "7cd268f16eee50c824415775eef3a465cdd0099e38143e43a66be8cfe25f135b"
@@ -700,7 +700,7 @@
               "sha256": "b8e8ac923087022aa59de761ecb9e4c1d06fa7ec092c2cf36a182a9508300ebb"
             }
           ],
-          "planned_evidence": "Local automated checks and Darwin reproduction obtained; full Claude host and final founder gates remain separate.",
+          "planned_evidence": "Obtained: automated policy, transport and scheduler tests; Darwin and Linux core/protocol reproductions; actual Codex and Claude host exercises; and the six-pair measurement. T013 record reconciliation and independent review are being completed; founder G4 remains separate.",
           "test_file": "tests/test_m4_alpha_scheduler.py",
           "test_name": "RuntimeSchedulerTests.test_fresh_process_kill_preserves_prefix_and_resume_does_not_rerun_workers",
           "then": "Given process death, cancellation or host disconnect, when the run is inspected or explicitly resumed, then an independently verified prefix is retained and completed logical operations are not duplicated.",
@@ -719,14 +719,14 @@
             },
             {
               "command": ".venv-speckit/bin/python -m scripts.validate_change --base develop --profile quick",
-              "limits": "Local engineering validation; no external scientific validation, whole-M4 acceptance, Linux or full Claude exercise.",
+              "limits": "This earlier local engineering validation did not include external scientific validation, Linux reproduction, or host exercises; separate Linux and Claude evidence is recorded below. It does not establish whole-M4 acceptance.",
               "outcome": "Passed: 372 tests, four skips: three deferred SPEC-019 implementation tests and one unavailable private-history test; all 42 C1/C2/MCP tests execute.",
               "path": "specs/021-m4-alpha-runtime/c3-evidence/validation.txt",
               "sha256": "953ae5cd4130bd71f82ae9efe7a1d6d5f9646315858002234bafb79d8f7f8ed1"
             },
             {
               "command": "Absolute isolated Python -m scripts.reproduce_m4_alpha --output /tmp/m4-alpha-darwin-67b8b52.json from fresh checkout",
-              "limits": "Darwin arm64 with existing isolated Python 3.13.11; no fresh dependency environment or external independent validation; Linux pending.",
+              "limits": "Darwin arm64 with existing isolated Python 3.13.11; no fresh dependency environment or external independent validation. This earlier Darwin record did not include Linux; separate Linux reproduction is recorded below.",
               "outcome": "Passed: 61 tests, no skips; fresh checkout/process, bound inputs and working tree unchanged.",
               "path": "specs/021-m4-alpha-runtime/c4-evidence/darwin.json",
               "sha256": "7cd268f16eee50c824415775eef3a465cdd0099e38143e43a66be8cfe25f135b"
@@ -760,7 +760,7 @@
               "sha256": "b8e8ac923087022aa59de761ecb9e4c1d06fa7ec092c2cf36a182a9508300ebb"
             }
           ],
-          "planned_evidence": "Local automated checks and Darwin reproduction obtained; full Claude host and final founder gates remain separate.",
+          "planned_evidence": "Obtained: automated policy, transport and scheduler tests; Darwin and Linux core/protocol reproductions; actual Codex and Claude host exercises; and the six-pair measurement. T013 record reconciliation and independent review are being completed; founder G4 remains separate.",
           "test_file": "tests/test_m4_alpha_scheduler.py",
           "test_name": "RuntimeSchedulerTests.test_new_recovery_grant_preserves_worker_journal_without_rerun",
           "then": "Repeated delivery, worker failure, interrupted publication and abort are tested; unknown outcome remains unknown until verified.",
@@ -778,14 +778,14 @@
           "obtained_evidence": [
             {
               "command": ".venv-speckit/bin/python -m scripts.validate_change --base develop --profile quick",
-              "limits": "Local engineering validation; no external scientific validation, whole-M4 acceptance, Linux or full Claude exercise.",
+              "limits": "This earlier local engineering validation did not include external scientific validation, Linux reproduction, or host exercises; separate Linux and Claude evidence is recorded below. It does not establish whole-M4 acceptance.",
               "outcome": "Passed: 372 tests, four skips: three deferred SPEC-019 implementation tests and one unavailable private-history test; all 42 C1/C2/MCP tests execute.",
               "path": "specs/021-m4-alpha-runtime/c3-evidence/validation.txt",
               "sha256": "953ae5cd4130bd71f82ae9efe7a1d6d5f9646315858002234bafb79d8f7f8ed1"
             },
             {
               "command": "Absolute isolated Python -m scripts.reproduce_m4_alpha --output /tmp/m4-alpha-darwin-67b8b52.json from fresh checkout",
-              "limits": "Darwin arm64 with existing isolated Python 3.13.11; no fresh dependency environment or external independent validation; Linux pending.",
+              "limits": "Darwin arm64 with existing isolated Python 3.13.11; no fresh dependency environment or external independent validation. This earlier Darwin record did not include Linux; separate Linux reproduction is recorded below.",
               "outcome": "Passed: 61 tests, no skips; fresh checkout/process, bound inputs and working tree unchanged.",
               "path": "specs/021-m4-alpha-runtime/c4-evidence/darwin.json",
               "sha256": "7cd268f16eee50c824415775eef3a465cdd0099e38143e43a66be8cfe25f135b"
@@ -806,7 +806,7 @@
             },
             {
               "command": "Independent read-only gpt-6-luna re-review of sanitized candidate a54f9d6",
-              "limits": "Record-only audit. Prior implementation reviews and complete PR profile remain separately bound. Claude, Linux and founder G4 remain open.",
+              "limits": "At this historical record-only audit, prior implementation reviews and the complete PR profile remained separately bound; Claude and Linux evidence were added in later records. Founder G4 remains open.",
               "outcome": "Prior P2 resolved; no findings. Original observation hashes and all 140 PR inputs independently checked; intermediate local refs preserved outside publication ancestry.",
               "path": "specs/021-m4-alpha-runtime/packaging-review.json",
               "sha256": "4b4730a096ffe28187ce33e04a86c2ac71eb3476aa28758549c778a8317ca9a6"
@@ -826,7 +826,7 @@
               "sha256": "b8e8ac923087022aa59de761ecb9e4c1d06fa7ec092c2cf36a182a9508300ebb"
             }
           ],
-          "planned_evidence": "Local automated checks and Darwin reproduction obtained; full Claude host and final founder gates remain separate.",
+          "planned_evidence": "Obtained: automated policy, transport and scheduler tests; Darwin and Linux core/protocol reproductions; actual Codex and Claude host exercises; and the six-pair measurement. T013 record reconciliation and independent review are being completed; founder G4 remains separate.",
           "test_file": "tests/test_m4_alpha_mcp.py",
           "test_name": "OwnedMcpTests.test_owned_roundtrip_refusal_separate_grant_and_independent_verifier",
           "then": "Given a pinned supported protocol revision and deterministic peer, when discovery/initialization and tool calls occur, then bounded stdio messages preserve operation identity, evidence and precise refusals.",
@@ -838,14 +838,14 @@
           "obtained_evidence": [
             {
               "command": ".venv-speckit/bin/python -m scripts.validate_change --base develop --profile quick",
-              "limits": "Local engineering validation; no external scientific validation, whole-M4 acceptance, Linux or full Claude exercise.",
+              "limits": "This earlier local engineering validation did not include external scientific validation, Linux reproduction, or host exercises; separate Linux and Claude evidence is recorded below. It does not establish whole-M4 acceptance.",
               "outcome": "Passed: 372 tests, four skips: three deferred SPEC-019 implementation tests and one unavailable private-history test; all 42 C1/C2/MCP tests execute.",
               "path": "specs/021-m4-alpha-runtime/c3-evidence/validation.txt",
               "sha256": "953ae5cd4130bd71f82ae9efe7a1d6d5f9646315858002234bafb79d8f7f8ed1"
             },
             {
               "command": "Absolute isolated Python -m scripts.reproduce_m4_alpha --output /tmp/m4-alpha-darwin-67b8b52.json from fresh checkout",
-              "limits": "Darwin arm64 with existing isolated Python 3.13.11; no fresh dependency environment or external independent validation; Linux pending.",
+              "limits": "Darwin arm64 with existing isolated Python 3.13.11; no fresh dependency environment or external independent validation. This earlier Darwin record did not include Linux; separate Linux reproduction is recorded below.",
               "outcome": "Passed: 61 tests, no skips; fresh checkout/process, bound inputs and working tree unchanged.",
               "path": "specs/021-m4-alpha-runtime/c4-evidence/darwin.json",
               "sha256": "7cd268f16eee50c824415775eef3a465cdd0099e38143e43a66be8cfe25f135b"
@@ -866,7 +866,7 @@
             },
             {
               "command": "Independent read-only gpt-6-luna re-review of sanitized candidate a54f9d6",
-              "limits": "Record-only audit. Prior implementation reviews and complete PR profile remain separately bound. Claude, Linux and founder G4 remain open.",
+              "limits": "At this historical record-only audit, prior implementation reviews and the complete PR profile remained separately bound; Claude and Linux evidence were added in later records. Founder G4 remains open.",
               "outcome": "Prior P2 resolved; no findings. Original observation hashes and all 140 PR inputs independently checked; intermediate local refs preserved outside publication ancestry.",
               "path": "specs/021-m4-alpha-runtime/packaging-review.json",
               "sha256": "4b4730a096ffe28187ce33e04a86c2ac71eb3476aa28758549c778a8317ca9a6"
@@ -886,7 +886,7 @@
               "sha256": "b8e8ac923087022aa59de761ecb9e4c1d06fa7ec092c2cf36a182a9508300ebb"
             }
           ],
-          "planned_evidence": "Local automated checks and Darwin reproduction obtained; full Claude host and final founder gates remain separate.",
+          "planned_evidence": "Obtained: automated policy, transport and scheduler tests; Darwin and Linux core/protocol reproductions; actual Codex and Claude host exercises; and the six-pair measurement. T013 record reconciliation and independent review are being completed; founder G4 remains separate.",
           "test_file": "tests/test_m4_alpha_mcp.py",
           "test_name": "ProtocolTests.test_parse_envelope_parameter_and_unknown_tool_errors_are_distinct",
           "then": "Unsupported versions, malformed/oversized messages, unknown tools, invalid arguments and cancellation fail according to the pinned revision without starting unauthorized work.",
@@ -904,7 +904,7 @@
           "obtained_evidence": [
             {
               "command": ".venv-speckit/bin/python -m scripts.capture_m4_codex --output /tmp/m4-alpha-codex-67b8b52.json",
-              "limits": "Actual installed client bridge only, no model turn; Claude full exercise pending; owned fixture only.",
+              "limits": "This earlier Codex capture exercised the installed client bridge without a model turn and did not include the later Claude host exercise; owned fixture only.",
               "outcome": "Passed actual Codex 0.159.0-alpha.12.1 MCP bridge: six tools, missing-grant refusal, interrupted prefix, resume, read-only retry and abort; zero model calls.",
               "path": "specs/021-m4-alpha-runtime/host-evidence/codex.json",
               "sha256": "270913b17639942bf9c79a78ba64c642e7553814f899db0aac2fa226ff46887f"
@@ -925,7 +925,7 @@
             },
             {
               "command": "Independent read-only gpt-6-luna re-review of sanitized candidate a54f9d6",
-              "limits": "Record-only audit. Prior implementation reviews and complete PR profile remain separately bound. Claude, Linux and founder G4 remain open.",
+              "limits": "At this historical record-only audit, prior implementation reviews and the complete PR profile remained separately bound; Claude and Linux evidence were added in later records. Founder G4 remains open.",
               "outcome": "Prior P2 resolved; no findings. Original observation hashes and all 140 PR inputs independently checked; intermediate local refs preserved outside publication ancestry.",
               "path": "specs/021-m4-alpha-runtime/packaging-review.json",
               "sha256": "4b4730a096ffe28187ce33e04a86c2ac71eb3476aa28758549c778a8317ca9a6"
@@ -938,7 +938,7 @@
               "sha256": "7cc71e31c3ef01722f3e1da26cb638247b7dc8ff93bc5d5b7c09abab4ee8e79b"
             }
           ],
-          "planned_evidence": "Actual Codex and Claude Code host exercises obtained; final combined evidence/authority reconciliation and founder G4 remain separate.",
+          "planned_evidence": "Actual Codex and Claude Code host exercises obtained. The final evidence/authority reconciliation is prepared for independent Luna review; the separate founder G4 decision remains open.",
           "test_file": "specs/021-m4-alpha-runtime/validation-plan.md",
           "test_name": "SC-013",
           "then": "Given installed Codex and Claude Code versions and approved disposable fixtures, when each actual host invokes the adapter, then prepare, authorized execution, refusal and recovery produce independently verifiable records.",
@@ -950,7 +950,7 @@
           "obtained_evidence": [
             {
               "command": ".venv-speckit/bin/python -m scripts.capture_m4_codex --output /tmp/m4-alpha-codex-67b8b52.json",
-              "limits": "Actual installed client bridge only, no model turn; Claude full exercise pending; owned fixture only.",
+              "limits": "This earlier Codex capture exercised the installed client bridge without a model turn and did not include the later Claude host exercise; owned fixture only.",
               "outcome": "Passed actual Codex 0.159.0-alpha.12.1 MCP bridge: six tools, missing-grant refusal, interrupted prefix, resume, read-only retry and abort; zero model calls.",
               "path": "specs/021-m4-alpha-runtime/host-evidence/codex.json",
               "sha256": "270913b17639942bf9c79a78ba64c642e7553814f899db0aac2fa226ff46887f"
@@ -971,7 +971,7 @@
             },
             {
               "command": "Independent read-only gpt-6-luna re-review of sanitized candidate a54f9d6",
-              "limits": "Record-only audit. Prior implementation reviews and complete PR profile remain separately bound. Claude, Linux and founder G4 remain open.",
+              "limits": "At this historical record-only audit, prior implementation reviews and the complete PR profile remained separately bound; Claude and Linux evidence were added in later records. Founder G4 remains open.",
               "outcome": "Prior P2 resolved; no findings. Original observation hashes and all 140 PR inputs independently checked; intermediate local refs preserved outside publication ancestry.",
               "path": "specs/021-m4-alpha-runtime/packaging-review.json",
               "sha256": "4b4730a096ffe28187ce33e04a86c2ac71eb3476aa28758549c778a8317ca9a6"
@@ -984,7 +984,7 @@
               "sha256": "7cc71e31c3ef01722f3e1da26cb638247b7dc8ff93bc5d5b7c09abab4ee8e79b"
             }
           ],
-          "planned_evidence": "Actual Codex and Claude Code host exercises obtained; final combined evidence/authority reconciliation and founder G4 remain separate.",
+          "planned_evidence": "Actual Codex and Claude Code host exercises obtained. The final evidence/authority reconciliation is prepared for independent Luna review; the separate founder G4 decision remains open.",
           "test_file": "specs/021-m4-alpha-runtime/validation-plan.md",
           "test_name": "SC-014",
           "then": "A simulated peer or Spec Kit test is not a real host observation. Record host version, negotiated protocol, candidate, platform, transcript redactions and verifier result.",
@@ -1002,14 +1002,14 @@
           "obtained_evidence": [
             {
               "command": ".venv-speckit/bin/python -m scripts.validate_change --base develop --profile quick",
-              "limits": "Local engineering validation; no external scientific validation, whole-M4 acceptance, Linux or full Claude exercise.",
+              "limits": "This earlier local engineering validation did not include external scientific validation, Linux reproduction, or host exercises; separate Linux and Claude evidence is recorded below. It does not establish whole-M4 acceptance.",
               "outcome": "Passed: 372 tests, four skips: three deferred SPEC-019 implementation tests and one unavailable private-history test; all 42 C1/C2/MCP tests execute.",
               "path": "specs/021-m4-alpha-runtime/c3-evidence/validation.txt",
               "sha256": "953ae5cd4130bd71f82ae9efe7a1d6d5f9646315858002234bafb79d8f7f8ed1"
             },
             {
               "command": "Absolute isolated Python -m scripts.reproduce_m4_alpha --output /tmp/m4-alpha-darwin-67b8b52.json from fresh checkout",
-              "limits": "Darwin arm64 with existing isolated Python 3.13.11; no fresh dependency environment or external independent validation; Linux pending.",
+              "limits": "Darwin arm64 with existing isolated Python 3.13.11; no fresh dependency environment or external independent validation. This earlier Darwin record did not include Linux; separate Linux reproduction is recorded below.",
               "outcome": "Passed: 61 tests, no skips; fresh checkout/process, bound inputs and working tree unchanged.",
               "path": "specs/021-m4-alpha-runtime/c4-evidence/darwin.json",
               "sha256": "7cd268f16eee50c824415775eef3a465cdd0099e38143e43a66be8cfe25f135b"
@@ -1037,7 +1037,7 @@
             },
             {
               "command": "Independent read-only gpt-6-luna re-review of sanitized candidate a54f9d6",
-              "limits": "Record-only audit. Prior implementation reviews and complete PR profile remain separately bound. Claude, Linux and founder G4 remain open.",
+              "limits": "At this historical record-only audit, prior implementation reviews and the complete PR profile remained separately bound; Claude and Linux evidence were added in later records. Founder G4 remains open.",
               "outcome": "Prior P2 resolved; no findings. Original observation hashes and all 140 PR inputs independently checked; intermediate local refs preserved outside publication ancestry.",
               "path": "specs/021-m4-alpha-runtime/packaging-review.json",
               "sha256": "4b4730a096ffe28187ce33e04a86c2ac71eb3476aa28758549c778a8317ca9a6"
@@ -1058,13 +1058,13 @@
             },
             {
               "command": "Independent read-only gpt-6-luna review of 9108a20..acdf92e",
-              "limits": "Evidence-only review; no full Claude observation, merge or G4 acceptance.",
+              "limits": "This historical evidence-only review predates the separate Claude host observation; no merge or G4 acceptance was included.",
               "outcome": "No findings; 58 Linux inputs, provenance and lossless log/assurance hashes independently checked.",
               "path": "specs/021-m4-alpha-runtime/linux-packaging-review.json",
               "sha256": "202de6f1f60dea0565a2f2d633a40208dfadd3b2ba57eea73458e0b20c882ae4"
             }
           ],
-          "planned_evidence": "Partial C4 evidence obtained; Full Claude exercise and founder G4 remain pending; stable PR profile obtained. No closure claim.",
+          "planned_evidence": "All six C4 evidence rows are assembled with candidate, input and limit bindings; the final independent Luna review is pending. Founder G4 remains a separate go/no-go decision; no closure claim is made.",
           "test_file": "specs/021-m4-alpha-runtime/validation-plan.md",
           "test_name": "SC-015",
           "then": "Given all six roadmap deliverables and a frozen candidate, when closure is reviewed, then every exit row has obtained evidence, independent review and a separate founder decision.",
@@ -1076,14 +1076,14 @@
           "obtained_evidence": [
             {
               "command": ".venv-speckit/bin/python -m scripts.validate_change --base develop --profile quick",
-              "limits": "Local engineering validation; no external scientific validation, whole-M4 acceptance, Linux or full Claude exercise.",
+              "limits": "This earlier local engineering validation did not include external scientific validation, Linux reproduction, or host exercises; separate Linux and Claude evidence is recorded below. It does not establish whole-M4 acceptance.",
               "outcome": "Passed: 372 tests, four skips: three deferred SPEC-019 implementation tests and one unavailable private-history test; all 42 C1/C2/MCP tests execute.",
               "path": "specs/021-m4-alpha-runtime/c3-evidence/validation.txt",
               "sha256": "953ae5cd4130bd71f82ae9efe7a1d6d5f9646315858002234bafb79d8f7f8ed1"
             },
             {
               "command": "Absolute isolated Python -m scripts.reproduce_m4_alpha --output /tmp/m4-alpha-darwin-67b8b52.json from fresh checkout",
-              "limits": "Darwin arm64 with existing isolated Python 3.13.11; no fresh dependency environment or external independent validation; Linux pending.",
+              "limits": "Darwin arm64 with existing isolated Python 3.13.11; no fresh dependency environment or external independent validation. This earlier Darwin record did not include Linux; separate Linux reproduction is recorded below.",
               "outcome": "Passed: 61 tests, no skips; fresh checkout/process, bound inputs and working tree unchanged.",
               "path": "specs/021-m4-alpha-runtime/c4-evidence/darwin.json",
               "sha256": "7cd268f16eee50c824415775eef3a465cdd0099e38143e43a66be8cfe25f135b"
@@ -1111,7 +1111,7 @@
             },
             {
               "command": "Independent read-only gpt-6-luna re-review of sanitized candidate a54f9d6",
-              "limits": "Record-only audit. Prior implementation reviews and complete PR profile remain separately bound. Claude, Linux and founder G4 remain open.",
+              "limits": "At this historical record-only audit, prior implementation reviews and the complete PR profile remained separately bound; Claude and Linux evidence were added in later records. Founder G4 remains open.",
               "outcome": "Prior P2 resolved; no findings. Original observation hashes and all 140 PR inputs independently checked; intermediate local refs preserved outside publication ancestry.",
               "path": "specs/021-m4-alpha-runtime/packaging-review.json",
               "sha256": "4b4730a096ffe28187ce33e04a86c2ac71eb3476aa28758549c778a8317ca9a6"
@@ -1132,13 +1132,13 @@
             },
             {
               "command": "Independent read-only gpt-6-luna review of 9108a20..acdf92e",
-              "limits": "Evidence-only review; no full Claude observation, merge or G4 acceptance.",
+              "limits": "This historical evidence-only review predates the separate Claude host observation; no merge or G4 acceptance was included.",
               "outcome": "No findings; 58 Linux inputs, provenance and lossless log/assurance hashes independently checked.",
               "path": "specs/021-m4-alpha-runtime/linux-packaging-review.json",
               "sha256": "202de6f1f60dea0565a2f2d633a40208dfadd3b2ba57eea73458e0b20c882ae4"
             }
           ],
-          "planned_evidence": "Partial C4 evidence obtained; Full Claude exercise and founder G4 remain pending; stable PR profile obtained. No closure claim.",
+          "planned_evidence": "All six C4 evidence rows are assembled with candidate, input and limit bindings; the final independent Luna review is pending. Founder G4 remains a separate go/no-go decision; no closure claim is made.",
           "test_file": "specs/021-m4-alpha-runtime/validation-plan.md",
           "test_name": "SC-016",
           "then": "Unexecuted or externally blocked checks keep the affected exit row open. Report serial/parallel agreement, unsafe admissions, actual worker overlap, diagnostic quality and all measured cost components.",
@@ -1149,6 +1149,6 @@
     }
   ],
   "scientific_limits": "No arbitrary-agent safety, production, source promotion, external independent scientific validation, formal result or M3/M3.5 admission.",
-  "scope": "Approved bounded SPEC-021 C1/C2/C3 implementation with obtained Darwin/Linux reproduction, actual Codex, measurement and independent review. Full Claude host exercise, final reconciliation and founder G4 remain open.",
+  "scope": "Approved bounded SPEC-021 implementation with obtained Darwin/Linux reproduction, actual Codex and Claude host exercises, measurement and implementation reviews. T013 final record reconciliation/review and the separate founder G4 decision remain open.",
   "stage": "draft"
 }
