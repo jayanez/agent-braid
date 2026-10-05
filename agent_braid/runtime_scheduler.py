@@ -7,6 +7,7 @@ are distinct from independently replayable tree/effect claims.
 from __future__ import annotations
 
 from concurrent.futures import ThreadPoolExecutor, as_completed
+from contextlib import ExitStack
 from copy import deepcopy
 from pathlib import Path
 import tempfile
@@ -91,20 +92,25 @@ def _geometry(manifest: dict) -> tuple[list[list[str]], list[dict]]:
     return waves, workers
 
 
-def _preview(manifest: dict, temp: Path, cancel_event):
-    budget = runtime._budget(temp, cancel_event)
-    computed, patches = runtime._prepare(manifest['request'], manifest['runDirectory'], temp,
-                                         cancel_event, budget=budget)
-    _require(_canonical(computed) == _canonical(manifest), 'runtime manifest changed at worker admission')
+def _wave_preview(manifest: dict, temp: Path, budget):
     source = temp / 'rehearsal.git'
     env = runtime._environment(temp / 'preview-home')
-    waves, workers = _geometry(computed)
+    waves, workers = _geometry(manifest)
     # Advertise each fixed wave input before workers start. This owned preview is
     # immutable for the duration of worker fetches; workers never publish its refs.
     for number, wave in enumerate(waves):
         entry = next(w for w in workers if w['operationId'] == wave[0])
         runtime._git(source, env, budget, 'update-ref', 'refs/heads/wave-' + str(number),
                      entry['inputCommit'])
+    return source, waves, workers
+
+
+def _preview(manifest: dict, temp: Path, cancel_event):
+    budget = runtime._budget(temp, cancel_event)
+    computed, patches = runtime._prepare(manifest['request'], manifest['runDirectory'], temp,
+                                         cancel_event, budget=budget)
+    _require(_canonical(computed) == _canonical(manifest), 'runtime manifest changed at worker admission')
+    source, waves, workers = _wave_preview(computed, temp, budget)
     return computed, patches, source, budget, waves, workers
 
 
@@ -136,21 +142,43 @@ def _worker(source: Path, patches: dict, entry: dict, root: Path, budget,
             'startedNs': start, 'finishedNs': time.monotonic_ns() - origin_ns}
 
 
+def _serial_reference(manifest: dict, patches: dict, source: Path, budget,
+                      waves: list, workers: list, temp: Path) -> dict:
+    origin = time.monotonic_ns()
+    for index, entry in enumerate(workers):
+        actual = _worker(source, patches, entry, temp / ('reference-' + str(index)), budget, origin)
+        entry['expectedTree'] = actual['outputTree']
+    schedule = {'runtimeScheduleVersion': VERSION, 'executionContract': EXECUTION,
+                'manifestDigest': manifest['manifestDigest'], 'waves': waves, 'workers': workers,
+                'resourceLimits': {**deepcopy(runtime.LIMITS), 'workers': 4}}
+    schedule['scheduleDigest'] = _digest(schedule)
+    return schedule
+
+
 def prepare_schedule(manifest: dict, *, cancel_event=None) -> dict:
     """Compute deterministic expected worker results through a serial reference."""
     _require(isinstance(manifest, dict), 'runtime manifest must be an object')
     with tempfile.TemporaryDirectory(prefix='agent-braid-schedule-reference-') as directory:
         temp = Path(directory)
         _, patches, source, budget, waves, workers = _preview(manifest, temp, cancel_event)
-        origin = time.monotonic_ns()
-        for index, entry in enumerate(workers):
-            actual = _worker(source, patches, entry, temp / ('reference-' + str(index)), budget, origin)
-            entry['expectedTree'] = actual['outputTree']
-    schedule = {'runtimeScheduleVersion': VERSION, 'executionContract': EXECUTION,
-                'manifestDigest': manifest['manifestDigest'], 'waves': waves, 'workers': workers,
-                'resourceLimits': {**deepcopy(runtime.LIMITS), 'workers': 4}}
-    schedule['scheduleDigest'] = _digest(schedule)
-    return schedule
+        return _serial_reference(manifest, patches, source, budget, waves, workers, temp)
+
+
+def _prepare_policy_schedule(request: object, run_directory: str | Path, *,
+                             cancel_event=None) -> tuple[dict, dict]:
+    """Share one freshly validated producer scratch within this invocation only.
+
+    No caller-supplied manifest, digest or context is reused. The reference has a
+    separate unchanged phase budget covering the retained scratch and workers.
+    Public schedule reconstruction/receipt verification still rebuild independently.
+    """
+    with tempfile.TemporaryDirectory(prefix='agent-braid-policy-reference-') as directory:
+        temp = Path(directory)
+        manifest, patches = runtime._prepare(request, run_directory, temp, cancel_event)
+        budget = runtime._budget(temp, cancel_event)
+        source, waves, workers = _wave_preview(manifest, temp, budget)
+        schedule = _serial_reference(manifest, patches, source, budget, waves, workers, temp)
+        return manifest, schedule
 
 
 def _schedule_shape(schedule: object) -> dict:
@@ -187,9 +215,25 @@ def run_preparations(manifest: dict, schedule: object, *, cancel_event=None) -> 
         by_id = {entry['operationId']: entry for entry in schedule['workers']}
         observations = {}
         try:
-            for wave in waves:
-                barrier = threading.Barrier(len(wave))
-                with ThreadPoolExecutor(max_workers=len(wave), thread_name_prefix='braid-fixed-patch') as pool:
+            # The pool is local to this run and created only when a wave can
+            # overlap. Singleton waves remain synchronous in the same owned scope.
+            with ExitStack() as resources:
+                pool = None
+                for wave in waves:
+                    if len(wave) == 1:
+                        identifier = wave[0]
+                        entry = by_id[identifier]
+                        result = _worker(source, patches, entry,
+                                         temp / ('worker-' + str(manifest['request']['order'].index(identifier))),
+                                         budget, origin)
+                        _require(result['outputTree'] == entry['expectedTree'],
+                                 'worker differs from serial reference')
+                        observations[identifier] = result
+                        continue
+                    if pool is None:
+                        pool = resources.enter_context(ThreadPoolExecutor(
+                            max_workers=max(map(len, waves)), thread_name_prefix='braid-fixed-patch'))
+                    barrier = threading.Barrier(len(wave))
                     futures = {pool.submit(_worker, source, patches, by_id[identifier],
                                            temp / ('worker-' + str(manifest['request']['order'].index(identifier))),
                                            budget, origin, barrier): identifier for identifier in wave}
