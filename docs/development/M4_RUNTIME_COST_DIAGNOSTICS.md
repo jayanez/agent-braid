@@ -53,6 +53,11 @@ Each record binds the candidate SHA, frozen input hashes, environment and the
 diagnostic script hash. Changes during capture invalidate the record. A comparison
 requires matching interpreter/OS/architecture/Git, instrument, fixture and frozen
 measurement/protocol hashes, pair identities and equivalent verified result trees.
+Before computing medians, it rejects invalidated/drifted captures, negative or
+non-integer metrics (including booleans), zero wall times, incomplete phases and
+totals that disagree with the uniquely recorded bounded budgets. Zero CPU/RSS
+observations remain valid. These consistency checks do not authenticate a record
+or substitute for independent runtime verification.
 
 ## Read the sidecar
 

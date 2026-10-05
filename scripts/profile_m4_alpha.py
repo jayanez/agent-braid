@@ -11,6 +11,7 @@ from functools import wraps
 import hashlib
 import importlib.util
 import json
+import math
 import os
 from pathlib import Path
 import platform
@@ -23,6 +24,9 @@ from unittest.mock import patch
 
 ROOT = Path(__file__).resolve().parents[1]
 VERSION = 'm4-cost-profile-1'
+SAMPLE_METRICS = ('wallNs', 'parentCpuNs', 'childUserCpuNs', 'childSystemCpuNs',
+                  'processLifetimePeakChildRssBytes', 'gitCommands', 'capturedOutputBytes',
+                  'sampledPeakPhaseScratchBytes', 'boundedPhaseCount', 'observedPeakWorkerIntervals')
 LIMITS = [
     'Diagnostic sidecar; the frozen measurement script/protocol and historical evidence are unchanged.',
     'Six descriptive owned-fixture pairs with uncontrolled caches/background activity.',
@@ -199,11 +203,81 @@ def _ratio(value: Fraction) -> dict:
     return {'numerator': value.numerator, 'denominator': value.denominator}
 
 
+def _integer(value: object, name: str, *, positive: bool = False) -> int:
+    if type(value) is not int or value < (1 if positive else 0):
+        raise ValueError(name + ' must be a ' + ('positive' if positive else 'nonnegative') + ' integer')
+    return value
+
+
+def _validate_sample(sample: object, mode: str) -> None:
+    if not isinstance(sample, dict) or sample.get('mode') != mode:
+        raise ValueError('sample mode differs from its treatment')
+    for name in SAMPLE_METRICS:
+        _integer(sample.get(name), 'sample.' + name,
+                 positive=name in {'wallNs', 'boundedPhaseCount', 'observedPeakWorkerIntervals'})
+    diagnostic = sample.get('diagnostic')
+    if not isinstance(diagnostic, dict) or not isinstance(diagnostic.get('budgets'), list):
+        raise ValueError('sample has no diagnostic budget coverage')
+    budgets = diagnostic['budgets']
+    if len(budgets) != sample['boundedPhaseCount']:
+        raise ValueError('diagnostic budget count differs from sample')
+    for budget in budgets:
+        if not isinstance(budget, dict) or not isinstance(budget.get('limits'), dict):
+            raise ValueError('invalid diagnostic budget')
+        for name in ('gitCommands', 'capturedOutputBytes', 'sampledPeakScratchBytes'):
+            _integer(budget.get(name), 'budget.' + name)
+        limits = budget['limits']
+        for name in ('gitCommands', 'outputBytes', 'commandOutputBytes', 'scratchBytes'):
+            _integer(limits.get(name), 'budget.limits.' + name, positive=True)
+        wall = limits.get('wallSeconds')
+        if (type(wall) not in (int, float) or wall <= 0
+                or type(wall) is float and not math.isfinite(wall)):
+            raise ValueError('invalid diagnostic wall limit')
+        if limits.get('childAddressSpaceBytes') is not None:
+            _integer(limits['childAddressSpaceBytes'], 'budget.limits.childAddressSpaceBytes', positive=True)
+        for observed, maximum in (('gitCommands', 'gitCommands'), ('capturedOutputBytes', 'outputBytes'),
+                                   ('sampledPeakScratchBytes', 'scratchBytes')):
+            if budget[observed] > limits[maximum]:
+                raise ValueError('diagnostic budget exceeds its limit')
+    if (sum(b['gitCommands'] for b in budgets) != sample['gitCommands']
+            or sum(b['capturedOutputBytes'] for b in budgets) != sample['capturedOutputBytes']
+            or max(b['sampledPeakScratchBytes'] for b in budgets) != sample['sampledPeakPhaseScratchBytes']):
+        raise ValueError('diagnostic budget counters differ from sample')
+    phases, summary = diagnostic.get('phases'), diagnostic.get('phaseSummary')
+    if not isinstance(phases, list) or not phases or not isinstance(summary, dict):
+        raise ValueError('missing diagnostic phase coverage')
+    expected_summary = {}
+    for index, phase in enumerate(phases):
+        if (not isinstance(phase, dict) or not isinstance(phase.get('phase'), str)
+                or not phase['phase'] or phase.get('status') != 'completed'):
+            raise ValueError('invalid or incomplete diagnostic phase')
+        for name in ('id', 'startedNs', 'wallNs', 'gitCommands', 'capturedOutputBytes'):
+            _integer(phase.get(name), 'phase.' + name)
+        if phase['id'] != index:
+            raise ValueError('invalid diagnostic phase identity')
+        parent = phase.get('parentId')
+        if parent is not None and _integer(parent, 'phase.parentId') >= index:
+            raise ValueError('invalid diagnostic phase parent')
+        expected = expected_summary.setdefault(phase['phase'], {'invocations': 0, 'wallNs': 0,
+                                                               'gitCommands': 0, 'capturedOutputBytes': 0})
+        expected['invocations'] += 1
+        for name in ('wallNs', 'gitCommands', 'capturedOutputBytes'):
+            expected[name] += phase[name]
+    for values in summary.values():
+        if not isinstance(values, dict) or set(values) != {'invocations', 'wallNs', 'gitCommands', 'capturedOutputBytes'}:
+            raise ValueError('invalid diagnostic phase summary')
+        for name in values:
+            _integer(values[name], 'phaseSummary.' + name, positive=name == 'invocations')
+    if summary != expected_summary:
+        raise ValueError('diagnostic phase summary differs from its invocations')
+
+
 def compare_profiles(baseline: dict, candidate: dict) -> dict:
     """Compare medians on matching descriptive corpus/platform, without inference."""
     for value in (baseline, candidate):
-        if (value.get('profileVersion') != VERSION or value.get('status') != 'captured'
-                or value.get('candidateChangedDuringRun') is not False or len(value.get('pairs', [])) != 6):
+        if (not isinstance(value, dict) or value.get('profileVersion') != VERSION or value.get('status') != 'captured'
+                or value.get('candidateChangedDuringRun') is not False
+                or not isinstance(value.get('pairs'), list) or len(value['pairs']) != 6):
             raise ValueError('comparison requires two valid six-pair frozen profiles')
     if (baseline['environment'] != candidate['environment']
             or baseline['profilerSha256'] != candidate['profilerSha256']):
@@ -220,6 +294,10 @@ def compare_profiles(baseline: dict, candidate: dict) -> dict:
             if (value['order'] != order or value['repetition'] != repetition
                     or value['treatmentOrder'] != expected_modes or value.get('equivalentFinalTree') is not True):
                 raise ValueError('comparison pair identities or equivalence differ')
+            if not isinstance(value.get('samples'), dict) or set(value['samples']) != {'serial', 'parallel'}:
+                raise ValueError('invalid treatment coverage')
+            for mode in ('serial', 'parallel'):
+                _validate_sample(value['samples'][mode], mode)
         trees = {value['samples'][mode]['resultTree'] for value in (left, right) for mode in ('serial', 'parallel')}
         if len(trees) != 1:
             raise ValueError('baseline/candidate results differ')
