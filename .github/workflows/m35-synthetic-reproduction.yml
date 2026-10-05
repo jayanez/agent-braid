@@ -1,10 +1,16 @@
-name: Reproduce bounded M4 runtime
+name: Reproduce synthetic M3.5 preparation
 
 on:
   workflow_dispatch:
     inputs:
       candidate_commit:
-        description: Full public commit SHA to reproduce
+        description: Full public commit SHA to reproduce (public synthetic fixtures only)
+        required: true
+        type: string
+  workflow_call:
+    inputs:
+      candidate_commit:
+        description: Full public commit SHA to reproduce (public synthetic fixtures only)
         required: true
         type: string
 
@@ -13,7 +19,7 @@ permissions:
 
 jobs:
   reproduce:
-    name: Fresh-process Linux runtime reproduction
+    name: Linux x64 synthetic journals, labs and seal controls
     runs-on: ubuntu-24.04
     timeout-minutes: 15
     steps:
@@ -38,7 +44,7 @@ jobs:
         with:
           python-version: "3.12"
 
-      - name: Install development-only schema validator
+      - name: Install development-only schema validator without cache storage
         run: python3 -m pip install --no-cache-dir -r requirements-dev.txt
 
       - name: Confirm the clean candidate and Linux x86_64
@@ -51,9 +57,9 @@ jobs:
           test "$(uname -s)" = "Linux"
           test "$(uname -m)" = "x86_64"
 
-      - name: Capture bounded runtime reproduction
-        run: python3 -m scripts.reproduce_m4_runtime --output "$RUNNER_TEMP/m4-evidence/reproduction.json"
+      - name: Reproduce public synthetic preparation without source or model credentials
+        run: python3 -m scripts.reproduce_m35_synthetic --output "$RUNNER_TEMP/m35-synthetic-evidence/reproduction.json"
 
       - name: Publish the public record in logs and job summary
         if: ${{ always() }}
-        run: python3 -m scripts.summarize_public_experiment --record "$RUNNER_TEMP/m4-evidence/reproduction.json"
+        run: python3 -m scripts.summarize_public_experiment --record "$RUNNER_TEMP/m35-synthetic-evidence/reproduction.json"
