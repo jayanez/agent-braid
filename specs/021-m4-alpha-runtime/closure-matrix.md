@@ -31,8 +31,12 @@ No production, arbitrary-agent, external-write, scientific or formal guarantee.
 - Six paired cost trials: verified serial/parallel tree agreement in all pairs; median serial/parallel wall ratio 0.5581, negative-or-null-descriptive. Worker overlap remains observation rather than CPU proof.
 - Two independent gpt-6-luna implementation reviews: no findings.
 
-Evidence artifacts are bound to the implementation candidate and inputs; later record packaging does not extend their domain. Full Claude and founder G4 remain open; Linux is obtained in the addendum. The PR profile has passed; see c4-evidence/pr-validation.json for its exact binding. No M3/M3.5 scientific gate is changed.
+Evidence artifacts are bound to the implementation candidate and inputs; later record packaging does not extend their domain. Actual Claude host evidence was added on `d46fc52`; the separate founder G4 decision remains open. Linux is obtained in the addendum. The PR profile has passed; see c4-evidence/pr-validation.json for its exact binding. No M3/M3.5 scientific gate is changed.
 
 ## Authorized Linux and CI addendum
 
-Linux reproduction obtained at 9108a20 via run 37197461233: 61 tests, no skips; source/input/log bindings verified. PR CI run 37197290307 succeeded with 367 pass/five skips and an explicitly skipped integration matrix. Earlier pending-Linux statements describe the prior capture stage and are superseded by this addendum. All final-acceptance rows remain open pending full Claude evidence, final reconciliation and founder G4.
+Linux reproduction obtained at 9108a20 via run 37197461233: 61 tests, no skips; source/input/log bindings verified. PR CI run 37197290307 succeeded with 367 pass/five skips and an explicitly skipped integration matrix. Earlier pending-Linux statements describe the prior capture stage and are superseded by this addendum. T010 is now complete from the Claude evidence addendum below; final reconciliation and founder G4 remain open.
+
+## Actual Claude host addendum (2026-10-05)
+
+Claude Code 2.1.236 on Darwin arm64 completed the actual bounded MCP tool exercise on the same owned two-edit fixture family, using Claude.ai Max with usage credits disabled by operator confirmation. Preparation had no execution authority; an empty grant store refused execution; a separately issued local grant ran the fixture; an intentional disconnect preserved a verified prefix after `a`; a new resume grant completed `b`; the independent verifier matched the expected final tree; and retrying the consumed grant did not repeat execution. The transcript, redactions and exact candidate/input bindings are in `host-evidence/claude.json`. This closes T010 only; it does not constitute independent scientific validation, founder G4 acceptance, merge authority, or M3/M3.5 verification.

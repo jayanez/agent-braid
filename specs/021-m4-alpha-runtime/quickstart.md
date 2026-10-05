@@ -64,8 +64,33 @@ python -m scripts.capture_m4_codex --codex-path /path/to/pinned/codex \
 Codex capture uses its actual direct MCP bridge, ephemeral sessions, owned fixtures
 and no model turn. It tests refusal, controlled checkpoint disconnect, new-grant
 resume, duplicate delivery and abort. It does not modify persistent host config.
-Claude model-backed tool exercises require the separately agreed consumption budget.
-No new hosts, credentials or dependencies are installed by these commands.
+Claude Code host capture uses a temporary MCP JSON config containing only `m4_alpha`
+and `--strict-mcp-config`; disable built-in tools so the model can reach only the
+bounded adapter. Authenticate with `claude.ai` (`claude auth status` should identify
+the subscription provider), turn usage credits off under Claude Settings > Usage,
+and remove API/provider overrides from the capture process environment. Do not
+continue through Console/API fallback when the included subscription limit is met.
+
+The CLI supports a streaming, multi-turn session so the operator can inspect the
+prepared plan before issuing a local grant and can resume the same session after an
+intentional disconnect:
+
+```sh
+claude --model sonnet --mcp-config "$M4_TEMP_CONFIG" --strict-mcp-config \
+  --tools "" \
+  --allowedTools mcp__m4_alpha__analyze mcp__m4_alpha__prepare \
+    mcp__m4_alpha__status mcp__m4_alpha__verify \
+    mcp__m4_alpha__execute mcp__m4_alpha__recover \
+  --input-format stream-json --output-format stream-json --verbose \
+  --permission-mode acceptEdits --max-turns 5 -p
+```
+
+Send each user turn as one JSONL `user` message. Keep execute/recover grants out of
+MCP: after inspecting the exact plan digest, the operator issues the one-use grant
+through the local path; recovery needs a separate resume/abort grant. Evidence for
+the actual Claude Code 2.1.236 exercise is in `host-evidence/claude.json`. The
+capture changed no persistent host MCP configuration or candidate source. No new
+hosts, credentials or dependencies are installed by these commands.
 
 The manual Linux workflow is prepared for publication only after separate authority
 is given. It uses no live-model credentials. A successful profile, local reproduction
