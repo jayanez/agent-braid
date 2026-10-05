@@ -23,15 +23,18 @@ A positive speedup is not presupposed. Negative/inconclusive utility is disclose
 and requires explicit founder go/no-go before claiming complete bounded M4 alpha.
 No production, arbitrary-agent, external-write, scientific or formal guarantee.
 
-## Obtained implementation evidence at 67b8b521d0d18ebe679a905c3ed559d2f4a0119a
+## Historical implementation evidence snapshot at 67b8b521d0d18ebe679a905c3ed559d2f4a0119a
+
+This earlier capture predates the full Claude host exercise below; its host-status
+statement is retained as a historical observation, not the current state.
 
 - C1/C2/C3 local sensitive checks: 372 tests, four skips (three SPEC-019 deferred implementation, one unavailable private-history test); no alpha-test skips.
 - Fresh Darwin checkout/process reproduction: 61 tests, no skips; reused isolated interpreter.
-- Actual Codex bridge: all six tools, refusal, disconnect/resume/read-only retry/abort; zero model calls. Full Claude exercise remains pending.
+- Historical Codex capture: all six tools, refusal, disconnect/resume/read-only retry/abort; zero model calls. That capture predates the separate full Claude exercise recorded below.
 - Six paired cost trials: verified serial/parallel tree agreement in all pairs; median serial/parallel wall ratio 0.5581, negative-or-null-descriptive. Worker overlap remains observation rather than CPU proof.
 - Two independent gpt-6-luna implementation reviews: no findings.
 
-Evidence artifacts are bound to the implementation candidate and inputs; later record packaging does not extend their domain. Actual Claude host evidence was added on `d46fc52`; the separate founder G4 decision remains open. Linux is obtained in the addendum. The PR profile has passed; see c4-evidence/pr-validation.json for its exact binding. No M3/M3.5 scientific gate is changed.
+Evidence artifacts are bound to the implementation candidate and inputs; later record packaging does not extend their domain. Actual Claude host evidence was added on `d46fc52`; the separate founder G4 decision remains open. Linux is obtained in the addendum. The historical PR profile binding is in c4-evidence/pr-validation.txt; current PR checks are recorded in the T013 reconciliation. No M3/M3.5 scientific gate is changed.
 
 ## Authorized Linux and CI addendum
 
@@ -40,3 +43,11 @@ Linux reproduction obtained at 9108a20 via run 37197461233: 61 tests, no skips; 
 ## Actual Claude host addendum (2026-10-05)
 
 Claude Code 2.1.236 on Darwin arm64 completed the actual bounded MCP tool exercise on the same owned two-edit fixture family, using Claude.ai Max with usage credits disabled by operator confirmation. Preparation had no execution authority; an empty grant store refused execution; a separately issued local grant ran the fixture; an intentional disconnect preserved a verified prefix after `a`; a new resume grant completed `b`; the independent verifier matched the expected final tree; and retrying the consumed grant did not repeat execution. The transcript, redactions and exact candidate/input bindings are in `host-evidence/claude.json`. This closes T010 only; it does not constitute independent scientific validation, founder G4 acceptance, merge authority, or M3/M3.5 verification.
+
+## T013 evidence reconciliation in progress
+
+The six deliverable rows map to assurance scenarios SC-005 through SC-016 and their
+hash-bound artifacts in `assurance.json`. The consolidated candidate/platform map,
+current PR check results and explicit limits are in `t013-reconciliation.json`.
+Independent Luna review of that exact record candidate is pending; T013 and G4
+remain open until it is recorded and T014 receives a separate founder decision.

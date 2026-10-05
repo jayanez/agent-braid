@@ -8,7 +8,7 @@ C1: verified policy pipeline and one-use operator grants outside model tools. C2
 
 ## 2. Candidate and actual checks
 
-Implementation/capture candidate: implementation-equivalent source `9108a20`; current PR head `d46fc52`. Local sensitive profile passed 372 tests with four skips (three SPEC-019 deferred implementation, one unavailable private-history test). Fresh Darwin and hosted Linux checkout/process reproductions passed 61 alpha/core tests with no skips. Two independent gpt-6-luna implementation reviewers reported no findings; raw reports are retained. PR profile passed on preserved implementation-equivalent local candidate 41ee2b6: 368 passed, four explicitly audited skips. Record-only packaging checks remain separate; see c4-evidence/pr-validation.json and skip-audit.json.
+Implementation source candidate: `9108a20`; Codex and measurement candidate: `67b8b52`; Claude host candidate: `d46fc52`; current PR head: `f5d6b21`. Fresh Darwin and hosted Linux checkout/process reproductions passed 61 alpha/core tests with no skips. The historical local PR profile on `41ee2b6` remains bound in `c4-evidence/pr-validation.txt`. The current head’s local PR profile passed 372 tests with four skips; both current GitHub validation runs passed 372 tests with five audited skips. Their selected Spec Kit integration matrix was skipped. See the T013 reconciliation for exact commit and workflow identities.
 
 ## 3. Actual host evidence
 
@@ -20,7 +20,7 @@ Six paired two-edit trials, both admitted orders, yielded matching independently
 
 ## 5. Remaining acceptance gates
 
-T010 actual-host capture is complete. Final combined evidence/authority reconciliation (T013) and the separate founder whole-M4 decision plus governed tracking update (T014) remain open. G4 requires all six exit rows and an explicit utility go/no-go, including negative or inconclusive outcomes. No scientific, production or whole-M4 closure follows from these tests.
+T010 actual-host capture is complete. T013’s six-row evidence/authority reconciliation is prepared; its independent Luna review is pending. T014 is the separate founder whole-M4 decision plus governed tracking update. G4 requires all six exit rows and an explicit utility go/no-go, including negative or inconclusive outcomes. No scientific, production or whole-M4 closure follows from these tests.
 
 ## 6. Approval boundaries
 
@@ -48,4 +48,22 @@ The prior implementation assurance at 9108a20 is archived unchanged with its his
 
 The operator signed in with Claude.ai Max and confirmed Usage credits were disabled before any model-backed test. Claude Code 2.1.236 negotiated MCP 2025-11-25 through a one-server temporary config with `--strict-mcp-config`; built-in tools were disabled and API/provider environment overrides were removed. The owned two-edit fixture produced plan digest `sha256:27e444c1435f5872ef25e51036b77bbe83a86e9a6fd8ee4790ce727c03faca5d`, with writes limited to `a.txt` and `b.txt` and no execution authority in preparation. An empty grant store refused execute without allocating a run. After operator review, a local one-use grant authorized execution; the host was deliberately interrupted after `a`, its prefix independently verified, and the same Claude session resumed with a new local grant. Recovery completed `a` and `b`; final tree `f4b354863caa9cea99b95422c9dab70465757d87` matched the expected tree, and retrying the consumed grant returned `not-repeated`. Initial incomplete tool arguments were rejected without side effects and corrected in the same session.
 
-The sanitized request/result transcript, raw log hash, host identity, candidate/input bindings and independent verifier results are in `host-evidence/claude.json`. T010 is complete. T013 still needs final independent evidence/authority reconciliation; T014 still needs the founder's separate G4 utility/go-no-go decision and an authorized tracking apply. PR #201 remains open and unmerged; no whole-M4, scientific or production closure is claimed.
+The sanitized request/result transcript, raw log hash, host identity, candidate/input bindings and independent verifier results are in `host-evidence/claude.json`. T010 is complete. T013’s consolidated evidence and authority map is `t013-reconciliation.json`; its independent review is pending. T014 still needs the founder’s separate G4 utility/go/no-go decision and an authorized tracking apply. PR #201 remains open and unmerged; no whole-M4, scientific or production closure is claimed.
+
+## 10. G4 decision packet (prepared; no decision recorded)
+
+| Exit row | Evidence assembled | Candidate/platform binding | Remaining boundary |
+| --- | --- | --- | --- |
+| MCP and host-runtime adapters | SC-011–014; actual Codex and Claude host transcripts and independent verification | Codex `67b8b52` and Claude `d46fc52`, both Darwin arm64 | Only these two clients and the pinned protocol are observed |
+| Transactional/isolation policies | SC-003–006; grant, footprint, scheduling, private worker and serial agreement checks | Core source `9108a20`; six-pair measurement source `67b8b52` | Fixed ordinary-text patches; no hard child-memory cap or hostile same-UID isolation claim |
+| Live effect verification | SC-007–008; observed path/mode/blob effects and tamper/consumer refusal controls | Bound source and input digests in `assurance.json` | Tracked-tree evidence does not establish semantic correctness |
+| Replay and recovery | SC-009–010 plus actual Codex/Claude interruption, resume and retry checks | Codex `67b8b52`, Claude `d46fc52`, and Linux reproduction `9108a20` | Process-interruption boundary only; no power-loss guarantee |
+| CI and policy gates | Current PR checks, local PR profile and fresh Darwin/Linux reproductions | PR head `f5d6b21`; Linux x86_64 / Python 3.12.14; Darwin arm64 / Python 3.13.11 | Current CI matrix was skipped; final acceptance remains separate |
+| Portability across agent environments | Actual Codex and Claude observations on Darwin; independent Linux core/protocol reproduction | Host candidates above; Linux run 37197461233 on `9108a20` | No other host/platform combinations are claimed |
+
+Six paired trials produced equivalent verified trees in every pair. The median
+serial/parallel total-wall ratio is `0.5581`, so this descriptive sample measured
+serial at about 56% of parallel wall time (parallel about 1.79x serial). The corpus
+is small and uncontrolled; this is not a population estimate or general speedup
+claim. The founder must record GO or NO-GO at G4 after reviewing this evidence and
+the stated limits. No decision is implied here.
