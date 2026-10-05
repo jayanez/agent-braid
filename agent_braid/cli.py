@@ -15,6 +15,9 @@ from research.lab.certificates import verify
 from research.lab.model import Invalid, loads, require
 
 from .git_runtime import InvalidGitRuntime, prepare_run, execute_run, recover_run, verify_run
+from .runtime_scheduler import InvalidRuntimeSchedule
+from .runtime_policy import (InvalidRuntimePolicy, prepare_policy_run, verify_policy_plan,
+                             issue_operator_grant, execute_policy_run, recover_policy_run, inspect_policy_run)
 from .analysis import InvalidAnalysis, analyze, render_text
 from .git_adapter import InvalidGitAnalysis, analyze_git_with_provenance
 from .git_process import GitExecutionCancelled, GitInfrastructureFailure
@@ -130,9 +133,62 @@ def main(argv: list[str] | None = None) -> int:
             runtime_parser.add_argument("--authorize", required=True, help="explicit prepared manifest digest")
         if command == "recover-git-run":
             runtime_parser.add_argument("--action", choices=("resume", "abort"), required=True)
+    for command in ("prepare-policy-run", "verify-policy-plan", "grant-policy-run",
+                    "execute-policy-run", "recover-policy-run", "inspect-policy-run"):
+        policy_parser = subparsers.add_parser(command, help="verified local operator policy")
+        policy_parser.add_argument("input", type=Path)
+        if command == "prepare-policy-run":
+            policy_parser.add_argument("--run-directory", type=Path, required=True)
+            policy_parser.add_argument("--evidence", type=Path, required=True)
+            policy_parser.add_argument("--advisory-plan", type=Path, required=True)
+            policy_parser.add_argument("--mode", choices=("serial", "parallel"), default="serial")
+        if command in {"grant-policy-run", "execute-policy-run", "recover-policy-run", "inspect-policy-run"}:
+            policy_parser.add_argument("--grant-store", type=Path, required=True)
+        if command == "grant-policy-run":
+            policy_parser.add_argument("--acknowledge", required=True,
+                                       help="operator acknowledgement of exact policy plan digest")
+            policy_parser.add_argument("--action", choices=("execute", "resume", "abort"), default="execute")
+            policy_parser.add_argument("--ttl-seconds", type=int, default=300)
+        if command in {"execute-policy-run", "recover-policy-run"}:
+            policy_parser.add_argument("--grant-id", required=True)
+        if command == "recover-policy-run":
+            policy_parser.add_argument("--action", choices=("resume", "abort"), required=True)
     args = parser.parse_args(argv)
     try:
         data = _read(args.input)
+        if args.command in {"prepare-policy-run", "verify-policy-plan", "grant-policy-run",
+                            "execute-policy-run", "recover-policy-run", "inspect-policy-run"}:
+            cancellation = threading.Event()
+            previous = {}
+            try:
+                if threading.current_thread() is threading.main_thread():
+                    for signum in (signal.SIGINT, signal.SIGTERM):
+                        previous[signum] = signal.getsignal(signum)
+                        signal.signal(signum, lambda _signum, _frame: cancellation.set())
+                if args.command == "prepare-policy-run":
+                    result = prepare_policy_run(data, args.run_directory,
+                                                replay_evidence=_read(args.evidence),
+                                                advisory_plan=_read(args.advisory_plan), mode=args.mode,
+                                                cancel_event=cancellation)
+                elif args.command == "verify-policy-plan":
+                    result = verify_policy_plan(data, cancel_event=cancellation)
+                elif args.command == "inspect-policy-run":
+                    result = inspect_policy_run(data, args.grant_store, cancel_event=cancellation)
+                elif args.command == "grant-policy-run":
+                    result = issue_operator_grant(data, args.grant_store,
+                                                 acknowledge=args.acknowledge, action=args.action,
+                                                 ttl_seconds=args.ttl_seconds, cancel_event=cancellation)
+                elif args.command == "execute-policy-run":
+                    result = execute_policy_run(data, args.grant_store, args.grant_id,
+                                                cancel_event=cancellation)
+                else:
+                    result = recover_policy_run(data, args.grant_store, args.grant_id,
+                                                action=args.action, cancel_event=cancellation)
+            finally:
+                for signum, callback in previous.items():
+                    signal.signal(signum, callback)
+            print(json.dumps(result, sort_keys=True, indent=2))
+            return 0
         if args.command.endswith("-git-run"):
             if args.command == "verify-git-run":
                 result = verify_run(data, args.run_directory)
@@ -210,7 +266,7 @@ def main(argv: list[str] | None = None) -> int:
                           "reason": str(exc)}, sort_keys=True))
         return 3
     except (Invalid, InvalidAnalysis, InvalidGitAnalysis, InvalidGitReplay, InvalidExchange,
-            InvalidGitIntegrationPrototype, InvalidGitRuntime, OSError, UnicodeError) as exc:
+            InvalidGitIntegrationPrototype, InvalidGitRuntime, InvalidRuntimePolicy, InvalidRuntimeSchedule, OSError, UnicodeError) as exc:
         print(json.dumps({"status": "rejected", "reason": str(exc)}, sort_keys=True))
         return 2
 

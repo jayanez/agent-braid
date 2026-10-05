@@ -1,0 +1,25 @@
+{
+  "changedAuthorities": {
+    "schemas/0.1.0-alpha/runtime-operator-grant.schema.json": {
+      "c1Sha256": "fa88d7b9c335e417bae1df8da5d294dab2259a6f57b8c54baba9e313be264786",
+      "c2Sha256": "0a49f4800ed40873022eaa14d37e12eacb5790f71197ac1013766f4742162b8d"
+    },
+    "schemas/0.1.0-alpha/runtime-policy.schema.json": {
+      "c1Sha256": "e3a6d80ea5725a7fd58e01e8229cbf671a59aca51fee11c1631b0f5528339d4c",
+      "c2Sha256": "dc88b1e7de631c797002ad29276a4eeccf8f2a1bbbb3a48c41dd4f82ea6f8c17"
+    },
+    "schemas/0.1.0-alpha/runtime-preparation-evidence.schema.json": {
+      "c1Sha256": null,
+      "c2Sha256": "1989267da48fa7ad3432b67d0767e2f702381773edb02aff7bd8a9ad37a3229f"
+    },
+    "schemas/0.1.0-alpha/runtime-schedule.schema.json": {
+      "c1Sha256": null,
+      "c2Sha256": "0bd21c877e5f594e7710085d4232b5b095683e1239277a7b322f0890d4b28f64"
+    }
+  },
+  "compatibility": "C1 serial revision and syntax preserved; separate parallel revision binds added schedule. Fixed-patch language and private-only authority unchanged.",
+  "humanReview": "pending",
+  "priorSnapshot": "c1-assurance-8dbde49.json",
+  "scope": "C2 derived contract draft under approved SPEC-021 and ADR 0020; no approval inherited from C1.",
+  "wholeM4Acceptance": false
+}
