@@ -20,7 +20,7 @@ Six paired two-edit trials, both admitted orders, yielded matching independently
 
 ## 5. Remaining acceptance gates
 
-T010 actual-host capture is complete. T013’s six-row evidence/authority reconciliation is prepared; its independent Luna review is pending. T014 is the separate founder whole-M4 decision plus governed tracking update. G4 requires all six exit rows and an explicit utility go/no-go, including negative or inconclusive outcomes. No scientific, production or whole-M4 closure follows from these tests.
+T010 actual-host capture is complete. T013’s six-row evidence/authority reconciliation and independent Luna review are complete. Luna reviewed `b1d602e1b96591fe693b0f9112b43bb4b98baaaa` with no findings; the review record SHA-256 is `b5e7b3bb9d0c4bc098b3b4770e26a4f3334b4e200c3c947f174dd121557d26f2`. T014 is the separate founder whole-M4 decision plus governed tracking update. G4 requires all six exit rows and an explicit utility go/no-go, including negative or inconclusive outcomes. No scientific, production or whole-M4 closure follows from these tests.
 
 ## 6. Approval boundaries
 
@@ -48,7 +48,7 @@ The prior implementation assurance at 9108a20 is archived unchanged with its his
 
 The operator signed in with Claude.ai Max and confirmed Usage credits were disabled before any model-backed test. Claude Code 2.1.236 negotiated MCP 2025-11-25 through a one-server temporary config with `--strict-mcp-config`; built-in tools were disabled and API/provider environment overrides were removed. The owned two-edit fixture produced plan digest `sha256:27e444c1435f5872ef25e51036b77bbe83a86e9a6fd8ee4790ce727c03faca5d`, with writes limited to `a.txt` and `b.txt` and no execution authority in preparation. An empty grant store refused execute without allocating a run. After operator review, a local one-use grant authorized execution; the host was deliberately interrupted after `a`, its prefix independently verified, and the same Claude session resumed with a new local grant. Recovery completed `a` and `b`; final tree `f4b354863caa9cea99b95422c9dab70465757d87` matched the expected tree, and retrying the consumed grant returned `not-repeated`. Initial incomplete tool arguments were rejected without side effects and corrected in the same session.
 
-The sanitized request/result transcript, raw log hash, host identity, candidate/input bindings and independent verifier results are in `host-evidence/claude.json`. T010 is complete. T013’s consolidated evidence and authority map is `t013-reconciliation.json`; its independent review is pending. T014 still needs the founder’s separate G4 utility/go/no-go decision and an authorized tracking apply. PR #201 remains open and unmerged; no whole-M4, scientific or production closure is claimed.
+The sanitized request/result transcript, raw log hash, host identity, candidate/input bindings and independent verifier results are in `host-evidence/claude.json`. T010 is complete. T013’s consolidated evidence and authority map is `t013-reconciliation.json` (SHA-256 `d1d670a91cee8e0e862c01554298e2528323954cbf9ef2d814d8b1323779ca24`). Fresh independent Luna review of `b1d602e1b96591fe693b0f9112b43bb4b98baaaa` found no actionable findings; see `t013-luna-review.json` (SHA-256 `b5e7b3bb9d0c4bc098b3b4770e26a4f3334b4e200c3c947f174dd121557d26f2`). T014 still needs the founder’s separate G4 utility/go/no-go decision and an authorized tracking apply. PR #201 remains open and unmerged; no whole-M4, scientific or production closure is claimed.
 
 ## 10. G4 decision packet (prepared; no decision recorded)
 

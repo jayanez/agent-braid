@@ -1,0 +1,33 @@
+{
+  "recordVersion": "agent-braid-spec-021-t013-independent-review-1",
+  "reviewDate": "2026-10-05",
+  "reviewedCommit": "b1d602e1b96591fe693b0f9112b43bb4b98baaaa",
+  "reviewedDiff": {
+    "base": "f5d6b219a5b2b0526c2154135156a08d868504b5",
+    "head": "b1d602e1b96591fe693b0f9112b43bb4b98baaaa"
+  },
+  "reviewer": {
+    "model": "gpt-6-luna",
+    "mode": "fresh independent read-only review"
+  },
+  "outcome": "no-findings",
+  "scope": [
+    "six-row T013 reconciliation and all referenced artifact paths and hashes",
+    "cross-links to assurance scenarios",
+    "frozen implementation, measurement, Codex, Claude and packaging candidate identities",
+    "G4 utility metric and claim boundary",
+    "historical Claude wording and separate M3/M3.5, T014 and merge gates"
+  ],
+  "checks": {
+    "exitRows": 6,
+    "artifactPathHashReferences": 56,
+    "uniqueArtifactFiles": 13,
+    "artifactHashes": "all match",
+    "scenarioCrossLinks": "all resolve",
+    "sourceCandidateBindings": "verified",
+    "generalSpeedupClaim": false,
+    "g4DecisionRecorded": false,
+    "m3M35ScientificGatesChanged": false
+  },
+  "report": "No findings. Reviewed exact commit `b1d602e1b96591fe693b0f9112b43bb4b98baaaa` with gpt-6-luna. All 56 reconciliation artifact references resolve and match their hashes, and cross-link to the assurance scenarios. Candidate bindings are consistent.\n\nThe G4 packet labels the 0.5581 ratio as descriptive, makes no general speedup claim, and records no decision. T013 review, T014/G4, and merge remain open; M3/M3.5 gates are unchanged. Historical Claude-pending statements are clearly qualified as snapshots preceding the later capture."
+}
