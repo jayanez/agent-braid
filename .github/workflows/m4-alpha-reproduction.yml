@@ -1,0 +1,61 @@
+name: Reproduce bounded M4 alpha
+
+on:
+  workflow_dispatch:
+    inputs:
+      candidate_commit:
+        description: Full public commit SHA to reproduce
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  reproduce:
+    name: Fresh-process Linux alpha core and protocol reproduction
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    steps:
+      - name: Require an immutable candidate identity
+        shell: bash
+        env:
+          CANDIDATE_COMMIT: ${{ inputs.candidate_commit }}
+        run: '[[ "$CANDIDATE_COMMIT" =~ ^[0-9a-f]{40}$ ]]'
+
+      - name: Check out the public candidate
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          ref: ${{ inputs.candidate_commit }}
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: "3.12"
+
+      - name: Install development-only schema validator
+        run: python3 -m pip install --no-cache-dir -r requirements-dev.txt
+
+      - name: Confirm the clean candidate and Linux x86_64
+        shell: bash
+        env:
+          CANDIDATE_COMMIT: ${{ inputs.candidate_commit }}
+        run: |
+          test "$(git rev-parse HEAD)" = "$CANDIDATE_COMMIT"
+          test -z "$(git status --porcelain)"
+          test "$(uname -s)" = "Linux"
+          test "$(uname -m)" = "x86_64"
+
+      - name: Capture bounded alpha reproduction without model credentials
+        run: python3 -m scripts.reproduce_m4_alpha --output "$RUNNER_TEMP/m4-alpha-evidence/reproduction.json"
+
+      - name: Preserve the record and raw test output
+        if: ${{ always() }}
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: m4-alpha-linux-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/m4-alpha-evidence/
+          if-no-files-found: error
+          retention-days: 30

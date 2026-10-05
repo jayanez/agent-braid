@@ -1,0 +1,73 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "$id": "https://agent-braid.org/schemas/0.1.0-alpha/runtime-operator-grant.schema.json",
+  "title": "Owned local operator grant; trusted state, not authentication",
+  "required": [
+    "runtimeOperatorGrantVersion",
+    "grantId",
+    "policyRevision",
+    "planDigest",
+    "manifestDigest",
+    "runDirectory",
+    "action",
+    "issuedAt",
+    "expiresAt",
+    "state",
+    "grantDigest"
+  ],
+  "properties": {
+    "runtimeOperatorGrantVersion": {
+      "const": "0.1.0-alpha"
+    },
+    "grantId": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+    },
+    "policyRevision": {
+      "enum": [
+        "owned-operator-grant-v1",
+        "parallel-owned-operator-grant-v1"
+      ]
+    },
+    "planDigest": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$"
+    },
+    "manifestDigest": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$"
+    },
+    "runDirectory": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 1024
+    },
+    "action": {
+      "enum": [
+        "execute",
+        "resume",
+        "abort"
+      ]
+    },
+    "issuedAt": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "expiresAt": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "state": {
+      "enum": [
+        "issued",
+        "consumed"
+      ]
+    },
+    "grantDigest": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$"
+    }
+  }
+}

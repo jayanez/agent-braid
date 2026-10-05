@@ -1,0 +1,18 @@
+{
+  "candidateCommit": "a54f9d6234a09991fcc5b8f0cf88ebc74a95d214",
+  "finding": {
+    "resolution": "Both macOS temporary-root aliases and ephemeral identifiers are replaced consistently, including embedded JSON. Raw observation hashes are retained; originals and intermediate local refs stay outside publication ancestry.",
+    "severity": "P2",
+    "status": "resolved",
+    "subject": "Unredacted temporary paths and ephemeral host thread identifiers"
+  },
+  "implementationCandidate": "67b8b521d0d18ebe679a905c3ed559d2f4a0119a",
+  "independentScientificValidation": false,
+  "limits": "Record-only audit. Prior implementation reviews and complete PR profile remain separately bound. Claude, Linux and founder G4 remain open.",
+  "model": "gpt-6-luna",
+  "rawFinalReport": "No findings. The remaining path disclosure is fixed: both evidence views redact the full macOS temporary root, including embedded JSON strings. Their raw SHA-256 bindings still match the original records, and all 140 PR-profile input hashes match the preserved `41ee2b6` candidate. The final branch starts at `67b8b52`; the prior packaging refs remain preserved.",
+  "result": "no-findings",
+  "reviewType": "Independent read-only evidence packaging re-review",
+  "reviewer": "/root/m4_alpha_transport_review",
+  "wholeM4Acceptance": false
+}

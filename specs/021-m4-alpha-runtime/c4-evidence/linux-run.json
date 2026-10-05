@@ -1,0 +1,34 @@
+{
+  "candidateCommit": "9108a206d76c4ffb8f253b68cc4c60d977382394",
+  "conclusion": "success",
+  "environment": {
+    "git": "git version 2.55.0",
+    "machine": "x86_64",
+    "platform": "Linux",
+    "python": "3.12.14"
+  },
+  "event": "workflow_dispatch",
+  "independentEngineeringReview": {
+    "model": "gpt-6-luna",
+    "rawReport": "No findings in the workflow diff. It pins execution to candidate `9108a206`, checks out that commit without persisted credentials, verifies a clean Linux x86_64 runner, uses read-only repository permission, and uploads the reproduction record and raw log.\n\nThe auxiliary branch does not itself establish a run; dispatch still depends on the workflow version being available under GitHub\u2019s default-branch rules. I did not dispatch, and this review does not imply merge or M4 closure."
+  },
+  "limits": "Fresh hosted Linux core/protocol engineering reproduction only; no Claude host observation, external scientific validation, merge or founder G4 approval.",
+  "rawLogArtifact": "specs/021-m4-alpha-runtime/c4-evidence/linux-run.log.json",
+  "rawLogArtifactSha256": "6f4e1fe9030350b7fe4ddcf4e84671d9c0552fc69f41fb4004aceb946c2213f5",
+  "rawTestLogSha256": "eebfaf8f50976e94dfd972c19ca2cca9faa8de91a48f73b07efb172451e59812",
+  "recordVersion": "m4-alpha-linux-dispatch-1",
+  "reproductionSha256": "7d354e11bf8aef461c3345af57533cc53d83a78a227bf59f2478e65258853c87",
+  "runId": 37197461233,
+  "runLogSha256": "d00143311ae6986d4389fd80c2146d52f3d4dc69cfa38f39349ddc444dfefb96",
+  "skipped": [],
+  "status": "completed",
+  "tests": 61,
+  "url": "https://github.com/jayanez/agent-braid/actions/runs/37197461233",
+  "verification": "Candidate SHA, every producer input hash, platform, raw log hash and GitHub run provenance independently checked locally.",
+  "workflow": {
+    "commit": "ab9107ddf17f625dd56c6f3dbe99b82e5672715c",
+    "path": ".github/workflows/m4-reproduction.yml",
+    "reason": "New alpha workflow is not yet on default branch; use the already registered manual workflow on an auxiliary branch, with exact candidate guard.",
+    "sha256": "29e0b785ea63331d78f6cf86715864c6b49d5b189c89bcb8e875b0b7fef0ec9e"
+  }
+}

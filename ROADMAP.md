@@ -212,6 +212,22 @@ on M3/M3.5 data. ADR 0019 and this bounded increment were
 against frozen candidate `4dd52c8` on 2026-10-03; source promotion, repository-code execution and external adapters
 remain separate contracts. This does not close the full M4 milestone.
 
+The proposed completion track is [SPEC-021](specs/021-m4-alpha-runtime/spec.md),
+with a [six-row alpha exit matrix](specs/021-m4-alpha-runtime/closure-matrix.md).
+The founder approved its scope against frozen candidate `0de9d31` and adopted
+[ADR 0020](docs/adr/0020-bounded-m4-alpha-runtime.md) on 2026-10-04.
+Implementation is authorized within the documented gates; whole-M4 acceptance
+remains a separate decision.
+
+On 2026-10-05 the founder recorded a G4 NO-GO for accepting SPEC-021 as a useful
+speedup capability under the current evidence. Six paired trials produced
+equivalent verified trees, but their median serial/parallel total-wall ratio was
+0.5581 in a small, uncontrolled sample. This does not show that parallelism is
+generally unhelpful and does not close M4. SPEC-021 and the M4 milestone remain
+open; the decision and its limits are recorded in
+[`g4-decision.json`](specs/021-m4-alpha-runtime/g4-decision.json). M3/M3.5
+scientific gates are unchanged.
+
 Candidate deliverables:
 
 - MCP and host-runtime adapters;

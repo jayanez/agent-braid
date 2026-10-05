@@ -1,0 +1,149 @@
+{
+  "recordVersion": "m4-g1-handshake-probe-1",
+  "protocolReply": "2025-11-25",
+  "modelCalls": 0,
+  "runtimeExecution": false,
+  "persistentHostConfigChanges": false,
+  "hosts": {
+    "codex": {
+      "version": "codex-cli 0.159.0-alpha.12.1",
+      "statusResponse": {
+        "id": 2,
+        "result": {
+          "data": [
+            {
+              "name": "m4_g1",
+              "runtimeStatus": null,
+              "pluginId": null,
+              "httpOrigin": null,
+              "serverInfo": {
+                "name": "m4-g1-handshake-only",
+                "title": null,
+                "version": "0.1.0",
+                "description": null,
+                "icons": null,
+                "websiteUrl": null
+              },
+              "serverCapabilities": {
+                "tools": {}
+              },
+              "tools": {
+                "m4_probe": {
+                  "name": "m4_probe",
+                  "description": "Local no-effect handshake probe",
+                  "inputSchema": {
+                    "type": "object",
+                    "properties": {},
+                    "additionalProperties": false
+                  }
+                }
+              },
+              "toolsError": null,
+              "resources": [],
+              "resourceTemplates": [],
+              "authStatus": "unsupported"
+            }
+          ],
+          "nextCursor": null
+        }
+      },
+      "observedRequests": [
+        {
+          "jsonrpc": "2.0",
+          "id": 0,
+          "method": "initialize",
+          "params": {
+            "protocolVersion": "2025-06-18",
+            "capabilities": {
+              "elicitation": {
+                "form": {},
+                "url": {}
+              }
+            },
+            "clientInfo": {
+              "name": "codex-mcp-client",
+              "title": "Codex",
+              "version": "0.159.0-alpha.12.1"
+            }
+          }
+        },
+        {
+          "jsonrpc": "2.0",
+          "method": "notifications/initialized"
+        },
+        {
+          "jsonrpc": "2.0",
+          "id": 1,
+          "method": "tools/list",
+          "params": {
+            "_meta": {
+              "progressToken": 0
+            }
+          }
+        }
+      ]
+    },
+    "claudeCode": {
+      "version": "2.1.236 (Claude Code)",
+      "exitCode": 0,
+      "connected": true,
+      "output": "m4_g1:\n  Scope: Project config (shared via .mcp.json)\n  Status: \u2714 Connected\n\nTo remove this server, run: claude mcp remove m4_g1 -s project\n",
+      "stderr": "",
+      "observedRequests": [
+        {
+          "jsonrpc": "2.0",
+          "id": "server-discover-probe-1",
+          "method": "server/discover",
+          "params": {
+            "_meta": {
+              "io.modelcontextprotocol/protocolVersion": "2026-07-28",
+              "io.modelcontextprotocol/clientInfo": {
+                "name": "claude-code",
+                "title": "Claude Code",
+                "version": "2.1.236",
+                "description": "Anthropic's agentic coding tool",
+                "websiteUrl": "https://claude.com/claude-code"
+              },
+              "io.modelcontextprotocol/clientCapabilities": {
+                "roots": {
+                  "listChanged": true
+                },
+                "elicitation": {}
+              }
+            }
+          }
+        },
+        {
+          "method": "initialize",
+          "params": {
+            "protocolVersion": "2025-11-25",
+            "capabilities": {
+              "roots": {
+                "listChanged": true
+              },
+              "elicitation": {}
+            },
+            "clientInfo": {
+              "name": "claude-code",
+              "title": "Claude Code",
+              "version": "2.1.236",
+              "description": "Anthropic's agentic coding tool",
+              "websiteUrl": "https://claude.com/claude-code"
+            }
+          },
+          "jsonrpc": "2.0",
+          "id": 0
+        },
+        {
+          "jsonrpc": "2.0",
+          "method": "notifications/initialized"
+        },
+        {
+          "method": "tools/list",
+          "jsonrpc": "2.0",
+          "id": 1
+        }
+      ]
+    }
+  }
+}

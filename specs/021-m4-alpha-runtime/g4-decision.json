@@ -1,0 +1,60 @@
+{
+  "recordVersion": "agent-braid-spec-021-g4-decision-1",
+  "decidedAt": "2026-10-05",
+  "decider": {
+    "name": "Juan Antonio Yáñez García",
+    "role": "founder"
+  },
+  "decision": "NO-GO",
+  "decisionText": "Do not accept SPEC-021 as a useful speedup capability under the current evidence. This is a decision about the bounded M4 utility hypothesis and evidence available for this candidate; it does not establish that parallelism is generally unhelpful.",
+  "decisionSource": {
+    "type": "explicit-human-message-accepting-recommendation",
+    "threadId": "01a10240-2fb5-7e21-8f39-020a74c64a8a",
+    "statement": "OK, vamos con tus recomendaciones",
+    "context": "Accepted the recommendation to record NO-GO on usefulness under the current hypothesis, without a general claim about parallelism."
+  },
+  "decisionBasis": {
+    "packetHead": "3b776eaf776d7753027dcb39b76203ecdd4a5a27",
+    "implementationCandidate": "9108a206d76c4ffb8f253b68cc4c60d977382394",
+    "codexAndMeasurementCandidate": "67b8b521d0d18ebe679a905c3ed559d2f4a0119a",
+    "claudeHostCandidate": "d46fc52beb005a5a2fb9020bee7d36d8a4b753cb",
+    "independentReconciliationReviewCandidate": "b1d602e1b96591fe693b0f9112b43bb4b98baaaa"
+  },
+  "rationale": {
+    "pairedTrials": 6,
+    "equivalentVerifiedTrees": 6,
+    "medianSerialOverParallelTotalWallRatio": 0.5581,
+    "interpretation": "In this small descriptive sample, serial execution took about 55.81% of parallel total wall time; the sample does not demonstrate useful acceleration.",
+    "measurementLimits": "Two-edit corpus with uncontrolled cache and background conditions. This is descriptive evidence, not a population estimate or a general speedup claim."
+  },
+  "reviewedEvidence": [
+    {
+      "path": "specs/021-m4-alpha-runtime/c4-evidence/measurement.json",
+      "sha256": "6c76adc79310aa35d33c7d6c23ba0b63bd6fbe7a0a507744ed086f1c1990e76b"
+    },
+    {
+      "path": "specs/021-m4-alpha-runtime/t013-reconciliation.json",
+      "sha256": "d1d670a91cee8e0e862c01554298e2528323954cbf9ef2d814d8b1323779ca24"
+    },
+    {
+      "path": "specs/021-m4-alpha-runtime/t013-luna-review.json",
+      "sha256": "b5e7b3bb9d0c4bc098b3b4770e26a4f3334b4e200c3c947f174dd121557d26f2"
+    }
+  ],
+  "decisionBoundaries": {
+    "wholeM4Acceptance": false,
+    "spec021Status": "open; M4 alpha usefulness not accepted",
+    "m4MilestoneStatus": "open",
+    "t014Status": "founder decision recorded; governed tracking apply remains pending",
+    "m3AndM35ScientificGates": "unchanged",
+    "spec020Acceptance": "unchanged",
+    "scientificOrFormalValidation": "not established",
+    "productionReadiness": "not established",
+    "unexecutedChecks": "The conditional Spec Kit integration matrix was skipped in the current PR workflows; no result is claimed for that matrix."
+  },
+  "tracking": {
+    "sourceOfTruth": "SPEC-021 remains open and M4 remains open in docs/development/github-tracking.json because this NO-GO does not accept or close M4.",
+    "remoteApply": "not run",
+    "reason": "The current repository-wide audit proposes creation of 21 SPEC issues and 159 task issues, along with links and state changes; the apply remains a separate explicitly authorized action."
+  }
+}

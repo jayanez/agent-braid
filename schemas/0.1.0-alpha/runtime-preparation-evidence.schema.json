@@ -1,0 +1,217 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "runtimePreparationEvidenceVersion": {
+      "const": "0.1.0-alpha"
+    },
+    "executionContract": {
+      "const": "isolated-preparation-serial-publication-v1"
+    },
+    "manifestDigest": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$"
+    },
+    "scheduleDigest": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$"
+    },
+    "workers": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "operationId": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 256
+          },
+          "attemptId": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 256
+          },
+          "wave": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 3
+          },
+          "inputTree": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{40}$"
+          },
+          "patchDigest": {
+            "type": "string",
+            "pattern": "^sha256:[0-9a-f]{64}$"
+          },
+          "outputTree": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{40}$"
+          },
+          "effects": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "path": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 1024
+                },
+                "status": {
+                  "enum": [
+                    "A",
+                    "M"
+                  ]
+                },
+                "beforeMode": {
+                  "enum": [
+                    "000000",
+                    "100644",
+                    "100755"
+                  ]
+                },
+                "afterMode": {
+                  "enum": [
+                    "100644",
+                    "100755"
+                  ]
+                },
+                "beforeBlob": {
+                  "type": "string",
+                  "pattern": "^[0-9a-f]{40}$"
+                },
+                "afterBlob": {
+                  "type": "string",
+                  "pattern": "^[0-9a-f]{40}$"
+                }
+              },
+              "required": [
+                "path",
+                "status",
+                "beforeMode",
+                "afterMode",
+                "beforeBlob",
+                "afterBlob"
+              ]
+            },
+            "maxItems": 16
+          },
+          "writableRepository": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 1024
+          },
+          "writableIndex": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 1024
+          },
+          "startedNs": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "finishedNs": {
+            "type": "integer",
+            "minimum": 0
+          }
+        },
+        "required": [
+          "operationId",
+          "attemptId",
+          "wave",
+          "inputTree",
+          "patchDigest",
+          "outputTree",
+          "effects",
+          "writableRepository",
+          "writableIndex",
+          "startedNs",
+          "finishedNs"
+        ]
+      },
+      "minItems": 2,
+      "maxItems": 4
+    },
+    "observedPeakWorkerIntervals": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 4
+    },
+    "wallNs": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "metrics": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "gitCommands": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 256
+        },
+        "capturedOutputBytes": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 8388608
+        },
+        "sampledPeakScratchBytes": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 67108864
+        },
+        "childUserCpuNs": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "childSystemCpuNs": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "processLifetimePeakChildRssBytes": {
+          "type": "integer",
+          "minimum": 0
+        }
+      },
+      "required": [
+        "gitCommands",
+        "capturedOutputBytes",
+        "sampledPeakScratchBytes",
+        "childUserCpuNs",
+        "childSystemCpuNs",
+        "processLifetimePeakChildRssBytes"
+      ]
+    },
+    "limits": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 4096
+      },
+      "minItems": 1,
+      "maxItems": 16
+    },
+    "evidenceDigest": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$"
+    }
+  },
+  "required": [
+    "runtimePreparationEvidenceVersion",
+    "executionContract",
+    "manifestDigest",
+    "scheduleDigest",
+    "workers",
+    "observedPeakWorkerIntervals",
+    "wallNs",
+    "metrics",
+    "limits",
+    "evidenceDigest"
+  ],
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://agent-braid.org/schemas/0.1.0-alpha/runtime-preparation-evidence.schema.json"
+}

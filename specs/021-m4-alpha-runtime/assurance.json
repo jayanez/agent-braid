@@ -1,0 +1,1168 @@
+{
+  "articles": [
+    0,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    9,
+    12,
+    13,
+    14,
+    15,
+    16,
+    19,
+    20,
+    21,
+    22,
+    23,
+    24,
+    25
+  ],
+  "assumptions": "Trusted owned POSIX filesystem/Git and immutable fixed patches; installed host paths do not establish compatibility.",
+  "authority_snapshot": {
+    "commit": "53f87bc94db32a93b3c8fee74d3fb3f3e2abe4d8",
+    "hashes": {
+      "ARCHITECTURE.md": "94e5114eb799b25ca666ef728f84ab1c88e6ad1b342e30a9e99276b8f44c30c2",
+      "CONSTITUTION.md": "ff7196976a1736a639947c2ab26e8da157fef23c89ba9881312f2a36459964eb",
+      "GOVERNANCE.md": "c8eda331d97c42e54be4730ef906dfaad9ae2814e36704302f97afceff037d82",
+      "LICENSE": "340d66a837b3a1617645d00622a46d1bcbf3534bedd997b6461d16d2e08b374f",
+      "MATHEMATICAL_FOUNDATIONS.md": "8c56b59b20ca5f9bc7464b458f980e51e05c0820645cf86181cf08883acd5ca4",
+      "RESEARCH.md": "a3e9668e2c1b80024a6ce9024b7558d31f0d3d2d1e22fa89f460a70beefdd56d",
+      "TERMINOLOGY.md": "4b52b621900a413f58fa920254c2d36df849bda906e9989f0e49b0a43aaf503c",
+      "TRADEMARKS.md": "be084562378235f7c72b4a16e9d0f37b01e7e2b035291eceb4f6478048a517b8",
+      "docs/adr/0000-template.md": "546bd5098b2f8f07804253f0b1fd2c893264d4519644ccd93913956056fac8f4",
+      "docs/adr/0001-formalization-before-implementation.md": "c68d05ee8abb12932acaebee8b95ef4873172a97f93a8dae2187b84b63a29188",
+      "docs/adr/0002-yang-baxter-is-a-hypothesis.md": "8f72ec03ea85a5cef1bed08b04c871bca5930a70e2c313f01124d4a0c194efef",
+      "docs/adr/0003-copyleft-and-trademark-protection.md": "174745a166b4f521fab0f1a043d5c96b8b4b6a626b344245d8b89616d919f8c6",
+      "docs/adr/0004-scientific-constitutional-clarifications.md": "eaf956ab7a8daae2b5ea75d5ae8832a039ef2c6d18bf2e0e27e9b2b964e0fd71",
+      "docs/adr/0005-evidence-contracts-and-bounded-laboratory.md": "a35504083c719993a8c9a460d579c9017871b20bd65760f9f2534de2d7f27f6b",
+      "docs/adr/0006-shared-spec-kit-guardrails.md": "b02e0844e311e0364b40d06e2de3c1c73628247625d20c534a644ff8d9387cb7",
+      "docs/adr/0007-read-only-python-analyzer.md": "c864497da1a8172826d1b96b728b03d16272396c53dc194680d646301c4d07f3",
+      "docs/adr/0008-read-only-git-worktree-adapter.md": "8915605500bb4fa0150ff2fe576482db8a55bd29fb53a17788a51f8671a52e76",
+      "docs/adr/0009-transparent-validation-status.md": "7e329563e069e972ef2febcf64e0fec29255c0c9af29e331a1d5beb7f382e60d",
+      "docs/adr/0010-clean-publication-provenance.md": "6481cf11e2daf5d307928310763ae82889b280cea215126ebae3b32a708f3994",
+      "docs/adr/0011-risk-based-validation-gates.md": "3aa363f808821ead18d830e931e476a0d790106112ef637875428f322d321531",
+      "docs/adr/0012-vendored-python-skills-license-boundary.md": "e98b19c465689190265ed410b9226d60d52f00a8abf95410f5aa0a567aa80fea",
+      "docs/adr/0013-isolated-git-replay-and-advisory-planning.md": "1c291cb527825864520075edc2ae7c84bafb07f66790f9fc29b0149a07024d24",
+      "docs/adr/0014-parallel-integration-contract.md": "2481e93cf1e392887f2ee74e39efec7dfee0a9c52340fccd491903fd4292f679",
+      "docs/adr/0015-real-repository-validation-profile.md": "43e05f6fa96b5b3a8a8a83ddc922d8bced11b89a3f88263760b83b358febde99",
+      "docs/adr/0016-post-root-public-provenance.md": "e3c001cc23b64db5362ed0274af21d1d5a42b27d2bff68654db51498fbfb142a",
+      "docs/adr/0017-bounded-structured-exchange.md": "72cecb595605a16eaa5de7a88e960492205d82a300af2f6fb4451263f7e780c4",
+      "docs/adr/0018-private-source-sidecar-and-disposable-labs.md": "487c48e8ed4296bb4120e32e9d7e75724c76da88ebb6435396cb7fdcf7d317ad",
+      "docs/adr/0019-bounded-local-git-runtime.md": "9023b6176762885ce291721633f686ae2c4d3a4c1404f3ee164e7414a69b5fd3",
+      "docs/adr/0020-bounded-m4-alpha-runtime.md": "b91615158b29902237ce638d659bc30484562766a0f2607a38fcc4bd717fda28",
+      "docs/architecture/AGENT_INTERACTION_METADATA.md": "0118d7f16c390fc4c1ff027b503a4eaba8a747edf3f6d7b088559f8870e27780",
+      "docs/architecture/ASSURANCE_LEVELS.md": "102d0df0dc6fc0ec114d92fe1ef053b375bd9704d0af6a048affe36900d77512",
+      "docs/architecture/CONFLUENCE_CERTIFICATE.md": "fd12a8f1a1477835848581b0f4ccd52f76d3f22dd96a3abaccb9074733464a8e",
+      "docs/architecture/DRAFT_0_2.md": "ae2bc09d941537eec6ea05edb69e4402d5c17dae0585b4add0825d6a01fdc29f",
+      "docs/architecture/GIT_REPLAY.md": "365fe948089b374856d1423d69b73d1e3efa540b9d1e88f3fc5439c91d8a031d",
+      "docs/architecture/PARALLEL_INTEGRATION.md": "14a55efe552cb0b5a90e8112260af681b303b9ce2e0fd0b49c7024ab4b15843b",
+      "docs/theory/CLAIM_DISCIPLINE.md": "0fcd89ae045e017f62cbe0b7a83a9a9c107770856bba12a340e77f06576db053",
+      "docs/theory/OPERATIONAL_SEMANTICS.md": "7e83813d138dde064f85aafee1ba20302d55ede768d35d26340abd522ecce1f7",
+      "docs/theory/SCIENTIFIC_INTEGRATION.md": "bf4dba9119006a9261b45415edfe52b92d226648ab21aa3fd2e4a7f4822faf8c",
+      "docs/theory/STRUCTURED_EXCHANGE.md": "522fa1e4f2be6a0873c00ba2f503f475fa04833292a6684620ec01ef725bb710",
+      "schemas/0.1.0-alpha/analysis-report.schema.json": "91c759ad0d28de0b4e68f5bd3958de37ff2e6c102ecd8c6c2f0083e0151ad578",
+      "schemas/0.1.0-alpha/git-analysis-provenance.schema.json": "403b2e61ff7a7700c0db05df4ac3b11504e2c69e2bab9161b4a9ceb156b1316c",
+      "schemas/0.1.0-alpha/git-analysis-request.schema.json": "928c777ae68a184fae172a7cb2b172ba283b5af912edaf6c4b389bd8bf767a96",
+      "schemas/0.1.0-alpha/git-integration-prototype-report.schema.json": "417e5ae3f27083dfa0592589bf229fa9db8bd66cd20a29d472d9c0a83509b22e",
+      "schemas/0.1.0-alpha/git-integration-prototype-request.schema.json": "3dcde3972f3ab99939bec923416e5be57f9a6c0a2fc73a281830a20f6998222b",
+      "schemas/0.1.0-alpha/git-plan.schema.json": "3519d38b395974c3261fbb9243dd2fcbf1d0f08086c2164d64d7ebfb9a726972",
+      "schemas/0.1.0-alpha/git-replay-evidence.schema.json": "46560e30af74daf22d816130590d7bc596a9ae4fe1060ff4709e76f19487d137",
+      "schemas/0.1.0-alpha/git-runtime-manifest.schema.json": "a302dec5d42d61d72128798a8e08f7a7ad5b1b6024d18f3e89e6ef6abe3f868c",
+      "schemas/0.1.0-alpha/git-runtime-report.schema.json": "b2b1833e43c3b8429f9cc20a2a632a27214f8d2acd59a3e9ce5f0243579af73b",
+      "schemas/0.1.0-alpha/git-runtime-request.schema.json": "a83873e072ea357b29331e74e42b5a075769d939bcfba69f458712876b187f5d",
+      "schemas/0.1.0-alpha/git-runtime-state.schema.json": "6ce9a56e6493e10938eaf60dfc6501d52cd59af240e9f0bb5a0a8c036677d75a",
+      "schemas/0.1.0-alpha/runtime-operator-grant.schema.json": "0a49f4800ed40873022eaa14d37e12eacb5790f71197ac1013766f4742162b8d",
+      "schemas/0.1.0-alpha/runtime-policy.schema.json": "dc88b1e7de631c797002ad29276a4eeccf8f2a1bbbb3a48c41dd4f82ea6f8c17",
+      "schemas/0.1.0-alpha/runtime-preparation-evidence.schema.json": "1989267da48fa7ad3432b67d0767e2f702381773edb02aff7bd8a9ad37a3229f",
+      "schemas/0.1.0-alpha/runtime-schedule.schema.json": "0bd21c877e5f594e7710085d4232b5b095683e1239277a7b322f0890d4b28f64",
+      "schemas/0.2.0-draft/agent-interaction-metadata.schema.json": "9d2ff528d0d3f02ba5bce63181e88732eecef96e90fabb5898b3314abd554900",
+      "schemas/0.2.0-draft/confluence-certificate.schema.json": "8e375fdc57fbd3b9f15544f2079c8f92633ec1def660f3eabed77feb784f34f0",
+      "schemas/0.3.0-experimental/structured-exchange-evidence.schema.json": "1cb4e536d89b519b3a5ffc70421a6ec561b06e1826b22c69b9e9cc01cca4c767",
+      "schemas/0.3.0-experimental/structured-exchange-request.schema.json": "5b2065b94fa50570ecfe5392551d87f1f1fd31cff8dc4b840045e1c13e3aaabb",
+      "schemas/agent-interaction-metadata.schema.json": "44b60956817cbcd92e0802dfe99ca537b20768f53472f04afd1dcc502f53cd5c",
+      "schemas/confluence-certificate.schema.json": "ea68bf94f6767d615881167d8f7dd28359e6c399edd66935ba17b88b2b1cf785",
+      "schemas/governance/public-export-manifest.schema.json": "11eb7f2594939ae9fd0c9e6cfe4423a80aba686d6cdfdd8b73b0fb84b0840aa8",
+      "schemas/governance/release-validation-record.schema.json": "d9943f0c9f5520ea52e3b12bfba88240d03f8011b433fc5e35cb49549ab6e819"
+    },
+    "mode": "historical"
+  },
+  "compatibility": "Zero core runtime dependencies; separate opt-in runtime/transport contracts; legacy executionAuthorization false.",
+  "domain": "2\u20134 fixed ordinary-text A/M patches; private Git tracked-tree effects and bounded stdio transport.",
+  "evidence_snapshot": {
+    "commit": "b1d602e1b96591fe693b0f9112b43bb4b98baaaa",
+    "mode": "historical"
+  },
+  "execution_contract": "Existing serial contract unchanged; expanded isolated parallel preparation and coordinator publication contract proposed, not adopted.",
+  "human_review": "pending",
+  "hypotheses": "H1 useful bounded parallelism and tolerable overhead; negative/inconclusive outcomes are valid and require usefulness go/no-go before closure.",
+  "observation_contract": "Existing private tracked-tree semantics plus proposed adapter footprints and transport records; new revisions pending G1.",
+  "references": [
+    "CONSTITUTION.md",
+    "GOVERNANCE.md",
+    "ROADMAP.md",
+    "docs/adr/0014-parallel-integration-contract.md",
+    "docs/adr/0019-bounded-local-git-runtime.md",
+    "specs/021-m4-alpha-runtime/adr-0020-proposal.md",
+    "specs/021-m4-alpha-runtime/closure-matrix.md",
+    "specs/021-m4-alpha-runtime/validation-plan.md"
+  ],
+  "requirements": [
+    {
+      "id": "REQ-001",
+      "scenarios": [
+        {
+          "given": "The bounded inputs and preconditions described in the specification.",
+          "id": "SC-001",
+          "obtained_evidence": [
+            {
+              "command": ".venv-speckit/bin/python -m unittest tests.test_m4_alpha_policy.RuntimePolicyTests -v",
+              "limits": "C1 owned fixed-patch fixtures; does not cover scheduler/MCP/real-host tool exercise/whole-M4 closure. Revalidate changed implementation before final acceptance.",
+              "outcome": "18 tests passed; serial C1 policy scope only.",
+              "path": "specs/021-m4-alpha-runtime/c1-evidence/policy-tests.txt",
+              "sha256": "ba267c3b0b62eeaac7977e4c30e8c8e6146632d84cab6e10d0d8abbc40fc033d"
+            },
+            {
+              "command": ".venv-speckit/bin/python -m scripts.validate_change --base develop --profile quick",
+              "limits": "Local executable C1/C2 validation; not MCP/real-host/Linux reproduction, independent review, measurement or whole-M4 acceptance.",
+              "outcome": "Sensitive validation passed: 361 tests, 4 skips: three deferred SPEC-019 implementation tests and one unavailable private-history test; 31 C1/C2 tests execute without skips.",
+              "path": "specs/021-m4-alpha-runtime/c2-evidence/validation.txt",
+              "sha256": "032ade631384b8d80659e3c96ab4d21bff55eb3353e05dfaf6fee9bc3cc103b4"
+            },
+            {
+              "command": ".venv-speckit/bin/python -m scripts.validate_change --base develop --profile quick",
+              "limits": "This earlier local engineering validation did not include external scientific validation, Linux reproduction, or host exercises; separate Linux and Claude evidence is recorded below. It does not establish whole-M4 acceptance.",
+              "outcome": "Passed: 372 tests, four skips: three deferred SPEC-019 implementation tests and one unavailable private-history test; all 42 C1/C2/MCP tests execute.",
+              "path": "specs/021-m4-alpha-runtime/c3-evidence/validation.txt",
+              "sha256": "953ae5cd4130bd71f82ae9efe7a1d6d5f9646315858002234bafb79d8f7f8ed1"
+            },
+            {
+              "command": "Absolute isolated Python -m scripts.reproduce_m4_alpha --output /tmp/m4-alpha-darwin-67b8b52.json from fresh checkout",
+              "limits": "Darwin arm64 with existing isolated Python 3.13.11; no fresh dependency environment or external independent validation. This earlier Darwin record did not include Linux; separate Linux reproduction is recorded below.",
+              "outcome": "Passed: 61 tests, no skips; fresh checkout/process, bound inputs and working tree unchanged.",
+              "path": "specs/021-m4-alpha-runtime/c4-evidence/darwin.json",
+              "sha256": "7cd268f16eee50c824415775eef3a465cdd0099e38143e43a66be8cfe25f135b"
+            },
+            {
+              "command": "Two fresh independent read-only review agents using gpt-6-luna on develop merge-base through 67b8b52",
+              "limits": "Implementation review, no tests executed by reviewers, no whole-M4 or scientific acceptance. Later evidence packaging separately checked.",
+              "outcome": "Both reviews completed with no findings; raw reports preserved.",
+              "path": "specs/021-m4-alpha-runtime/implementation-review.json",
+              "sha256": "27c3eeaa534776bd60605d62fd5ace6da4c442853495f47d029f3d697ec10d9c"
+            },
+            {
+              "command": ".venv-speckit/bin/python -m scripts.validate_change --base develop --profile pr",
+              "limits": "Historical local PR profile on preserved 41ee2b6. Its complete source binding remains in implementation-assurance-9108a20.json; this later record only updates tracking metadata and evidence. New tracking test checked separately.",
+              "outcome": "PR profile passed: 368 tests passed and four explicitly audited skips.",
+              "path": "specs/021-m4-alpha-runtime/c4-evidence/pr-validation.txt",
+              "sha256": "eee49d79607d2b3d4703a29a7f080eb03813910da0b14afb82ca74d764c2f800"
+            },
+            {
+              "command": "Reviewed auxiliary GitHub workflow run 37197461233: python3 -m scripts.reproduce_m4_alpha",
+              "limits": "Fresh hosted Linux core/protocol engineering reproduction only; no Claude host observation, external scientific validation, merge or founder G4 approval.",
+              "outcome": "Passed on frozen 9108a20: Linux x86_64, Python 3.12.14, Git 2.55.0; 61 tests, no skips; candidate/source/log bindings verified.",
+              "path": "specs/021-m4-alpha-runtime/c4-evidence/linux.json",
+              "sha256": "7d354e11bf8aef461c3345af57533cc53d83a78a227bf59f2478e65258853c87"
+            },
+            {
+              "command": "GitHub PR CI run 37197290307",
+              "limits": "CI is separate from fresh reproduction and host observations. Spec Kit integration matrix skipped by selection condition; formal closure provenance steps retain their own selection gates.",
+              "outcome": "Completed success: 372 tests, 367 pass, five audited skips; selected integration matrix explicitly skipped.",
+              "path": "specs/021-m4-alpha-runtime/c4-evidence/ci-9108a20.json",
+              "sha256": "b8e8ac923087022aa59de761ecb9e4c1d06fa7ec092c2cf36a182a9508300ebb"
+            }
+          ],
+          "planned_evidence": "Obtained: relevant implementation and host evidence is recorded; T013 evidence reconciliation and independent review are complete. The founder G4 NO-GO on usefulness under current evidence is recorded in g4-decision.json. It does not accept whole M4 or change M3/M3.5 scientific gates.",
+          "test_file": "tests/test_m4_alpha_policy.py",
+          "test_name": "RuntimePolicyTests.test_read_only_pipeline_and_legacy_authority",
+          "then": "Given a fixed-patch request and independently verified analysis, when a candidate is planned, then the runtime preserves the existing portable semantics, contracts and uncertainty and keeps analysis authorization false.",
+          "when": "The prospective procedure is implemented and executed against a frozen candidate."
+        },
+        {
+          "given": "The bounded inputs and preconditions described in the specification.",
+          "id": "SC-002",
+          "obtained_evidence": [
+            {
+              "command": ".venv-speckit/bin/python -m unittest tests.test_m4_alpha_policy.RuntimePolicyTests -v",
+              "limits": "C1 owned fixed-patch fixtures; does not cover scheduler/MCP/real-host tool exercise/whole-M4 closure. Revalidate changed implementation before final acceptance.",
+              "outcome": "18 tests passed; serial C1 policy scope only.",
+              "path": "specs/021-m4-alpha-runtime/c1-evidence/policy-tests.txt",
+              "sha256": "ba267c3b0b62eeaac7977e4c30e8c8e6146632d84cab6e10d0d8abbc40fc033d"
+            },
+            {
+              "command": ".venv-speckit/bin/python -m scripts.validate_change --base develop --profile quick",
+              "limits": "Local executable C1/C2 validation; not MCP/real-host/Linux reproduction, independent review, measurement or whole-M4 acceptance.",
+              "outcome": "Sensitive validation passed: 361 tests, 4 skips: three deferred SPEC-019 implementation tests and one unavailable private-history test; 31 C1/C2 tests execute without skips.",
+              "path": "specs/021-m4-alpha-runtime/c2-evidence/validation.txt",
+              "sha256": "032ade631384b8d80659e3c96ab4d21bff55eb3353e05dfaf6fee9bc3cc103b4"
+            },
+            {
+              "command": ".venv-speckit/bin/python -m scripts.validate_change --base develop --profile quick",
+              "limits": "This earlier local engineering validation did not include external scientific validation, Linux reproduction, or host exercises; separate Linux and Claude evidence is recorded below. It does not establish whole-M4 acceptance.",
+              "outcome": "Passed: 372 tests, four skips: three deferred SPEC-019 implementation tests and one unavailable private-history test; all 42 C1/C2/MCP tests execute.",
+              "path": "specs/021-m4-alpha-runtime/c3-evidence/validation.txt",
+              "sha256": "953ae5cd4130bd71f82ae9efe7a1d6d5f9646315858002234bafb79d8f7f8ed1"
+            },
+            {
+              "command": "Absolute isolated Python -m scripts.reproduce_m4_alpha --output /tmp/m4-alpha-darwin-67b8b52.json from fresh checkout",
+              "limits": "Darwin arm64 with existing isolated Python 3.13.11; no fresh dependency environment or external independent validation. This earlier Darwin record did not include Linux; separate Linux reproduction is recorded below.",
+              "outcome": "Passed: 61 tests, no skips; fresh checkout/process, bound inputs and working tree unchanged.",
+              "path": "specs/021-m4-alpha-runtime/c4-evidence/darwin.json",
+              "sha256": "7cd268f16eee50c824415775eef3a465cdd0099e38143e43a66be8cfe25f135b"
+            },
+            {
+              "command": "Two fresh independent read-only review agents using gpt-6-luna on develop merge-base through 67b8b52",
+              "limits": "Implementation review, no tests executed by reviewers, no whole-M4 or scientific acceptance. Later evidence packaging separately checked.",
+              "outcome": "Both reviews completed with no findings; raw reports preserved.",
+              "path": "specs/021-m4-alpha-runtime/implementation-review.json",
+              "sha256": "27c3eeaa534776bd60605d62fd5ace6da4c442853495f47d029f3d697ec10d9c"
+            },
+            {
+              "command": ".venv-speckit/bin/python -m scripts.validate_change --base develop --profile pr",
+              "limits": "Historical local PR profile on preserved 41ee2b6. Its complete source binding remains in implementation-assurance-9108a20.json; this later record only updates tracking metadata and evidence. New tracking test checked separately.",
+              "outcome": "PR profile passed: 368 tests passed and four explicitly audited skips.",
+              "path": "specs/021-m4-alpha-runtime/c4-evidence/pr-validation.txt",
+              "sha256": "eee49d79607d2b3d4703a29a7f080eb03813910da0b14afb82ca74d764c2f800"
+            },
+            {
+              "command": "Reviewed auxiliary GitHub workflow run 37197461233: python3 -m scripts.reproduce_m4_alpha",
+              "limits": "Fresh hosted Linux core/protocol engineering reproduction only; no Claude host observation, external scientific validation, merge or founder G4 approval.",
+              "outcome": "Passed on frozen 9108a20: Linux x86_64, Python 3.12.14, Git 2.55.0; 61 tests, no skips; candidate/source/log bindings verified.",
+              "path": "specs/021-m4-alpha-runtime/c4-evidence/linux.json",
+              "sha256": "7d354e11bf8aef461c3345af57533cc53d83a78a227bf59f2478e65258853c87"
+            },
+            {
+              "command": "GitHub PR CI run 37197290307",
+              "limits": "CI is separate from fresh reproduction and host observations. Spec Kit integration matrix skipped by selection condition; formal closure provenance steps retain their own selection gates.",
+              "outcome": "Completed success: 372 tests, 367 pass, five audited skips; selected integration matrix explicitly skipped.",
+              "path": "specs/021-m4-alpha-runtime/c4-evidence/ci-9108a20.json",
+              "sha256": "b8e8ac923087022aa59de761ecb9e4c1d06fa7ec092c2cf36a182a9508300ebb"
+            }
+          ],
+          "planned_evidence": "Obtained: relevant implementation and host evidence is recorded; T013 evidence reconciliation and independent review are complete. The founder G4 NO-GO on usefulness under current evidence is recorded in g4-decision.json. It does not accept whole M4 or change M3/M3.5 scientific gates.",
+          "test_file": "tests/test_m4_alpha_policy.py",
+          "test_name": "RuntimePolicyTests.test_forged_evidence_is_refused_even_with_recomputed_producer_digest",
+          "then": "Forged certificates, missing coverage and changed inputs are rejected before run allocation.",
+          "when": "The prospective procedure is implemented and executed against a frozen candidate."
+        }
+      ],
+      "text": "Unified policy pipeline"
+    },
+    {
+      "id": "REQ-002",
+      "scenarios": [
+        {
+          "given": "The bounded inputs and preconditions described in the specification.",
+          "id": "SC-003",
+          "obtained_evidence": [
+            {
+              "command": ".venv-speckit/bin/python -m unittest tests.test_m4_alpha_policy.RuntimePolicyTests -v",
+              "limits": "C1 owned fixed-patch fixtures; does not cover scheduler/MCP/real-host tool exercise/whole-M4 closure. Revalidate changed implementation before final acceptance.",
+              "outcome": "18 tests passed; serial C1 policy scope only.",
+              "path": "specs/021-m4-alpha-runtime/c1-evidence/policy-tests.txt",
+              "sha256": "ba267c3b0b62eeaac7977e4c30e8c8e6146632d84cab6e10d0d8abbc40fc033d"
+            },
+            {
+              "command": ".venv-speckit/bin/python -m scripts.validate_change --base develop --profile quick",
+              "limits": "Local executable C1/C2 validation; not MCP/real-host/Linux reproduction, independent review, measurement or whole-M4 acceptance.",
+              "outcome": "Sensitive validation passed: 361 tests, 4 skips: three deferred SPEC-019 implementation tests and one unavailable private-history test; 31 C1/C2 tests execute without skips.",
+              "path": "specs/021-m4-alpha-runtime/c2-evidence/validation.txt",
+              "sha256": "032ade631384b8d80659e3c96ab4d21bff55eb3353e05dfaf6fee9bc3cc103b4"
+            },
+            {
+              "command": ".venv-speckit/bin/python -m scripts.validate_change --base develop --profile quick",
+              "limits": "This earlier local engineering validation did not include external scientific validation, Linux reproduction, or host exercises; separate Linux and Claude evidence is recorded below. It does not establish whole-M4 acceptance.",
+              "outcome": "Passed: 372 tests, four skips: three deferred SPEC-019 implementation tests and one unavailable private-history test; all 42 C1/C2/MCP tests execute.",
+              "path": "specs/021-m4-alpha-runtime/c3-evidence/validation.txt",
+              "sha256": "953ae5cd4130bd71f82ae9efe7a1d6d5f9646315858002234bafb79d8f7f8ed1"
+            },
+            {
+              "command": "Absolute isolated Python -m scripts.reproduce_m4_alpha --output /tmp/m4-alpha-darwin-67b8b52.json from fresh checkout",
+              "limits": "Darwin arm64 with existing isolated Python 3.13.11; no fresh dependency environment or external independent validation. This earlier Darwin record did not include Linux; separate Linux reproduction is recorded below.",
+              "outcome": "Passed: 61 tests, no skips; fresh checkout/process, bound inputs and working tree unchanged.",
+              "path": "specs/021-m4-alpha-runtime/c4-evidence/darwin.json",
+              "sha256": "7cd268f16eee50c824415775eef3a465cdd0099e38143e43a66be8cfe25f135b"
+            },
+            {
+              "command": "Two fresh independent read-only review agents using gpt-6-luna on develop merge-base through 67b8b52",
+              "limits": "Implementation review, no tests executed by reviewers, no whole-M4 or scientific acceptance. Later evidence packaging separately checked.",
+              "outcome": "Both reviews completed with no findings; raw reports preserved.",
+              "path": "specs/021-m4-alpha-runtime/implementation-review.json",
+              "sha256": "27c3eeaa534776bd60605d62fd5ace6da4c442853495f47d029f3d697ec10d9c"
+            },
+            {
+              "command": ".venv-speckit/bin/python -m scripts.validate_change --base develop --profile pr",
+              "limits": "Historical local PR profile on preserved 41ee2b6. Its complete source binding remains in implementation-assurance-9108a20.json; this later record only updates tracking metadata and evidence. New tracking test checked separately.",
+              "outcome": "PR profile passed: 368 tests passed and four explicitly audited skips.",
+              "path": "specs/021-m4-alpha-runtime/c4-evidence/pr-validation.txt",
+              "sha256": "eee49d79607d2b3d4703a29a7f080eb03813910da0b14afb82ca74d764c2f800"
+            },
+            {
+              "command": "Reviewed auxiliary GitHub workflow run 37197461233: python3 -m scripts.reproduce_m4_alpha",
+              "limits": "Fresh hosted Linux core/protocol engineering reproduction only; no Claude host observation, external scientific validation, merge or founder G4 approval.",
+              "outcome": "Passed on frozen 9108a20: Linux x86_64, Python 3.12.14, Git 2.55.0; 61 tests, no skips; candidate/source/log bindings verified.",
+              "path": "specs/021-m4-alpha-runtime/c4-evidence/linux.json",
+              "sha256": "7d354e11bf8aef461c3345af57533cc53d83a78a227bf59f2478e65258853c87"
+            },
+            {
+              "command": "GitHub PR CI run 37197290307",
+              "limits": "CI is separate from fresh reproduction and host observations. Spec Kit integration matrix skipped by selection condition; formal closure provenance steps retain their own selection gates.",
+              "outcome": "Completed success: 372 tests, 367 pass, five audited skips; selected integration matrix explicitly skipped.",
+              "path": "specs/021-m4-alpha-runtime/c4-evidence/ci-9108a20.json",
+              "sha256": "b8e8ac923087022aa59de761ecb9e4c1d06fa7ec092c2cf36a182a9508300ebb"
+            }
+          ],
+          "planned_evidence": "Obtained: relevant implementation and host evidence is recorded; T013 evidence reconciliation and independent review are complete. The founder G4 NO-GO on usefulness under current evidence is recorded in g4-decision.json. It does not accept whole M4 or change M3/M3.5 scientific gates.",
+          "test_file": "tests/test_m4_alpha_policy.py",
+          "test_name": "RuntimePolicyTests.test_grant_executes_once_and_retries_independently_verify",
+          "then": "Given a prepared immutable plan, when the model invokes execution without a separately recorded operator grant, then no durable run is allocated.",
+          "when": "The prospective procedure is implemented and executed against a frozen candidate."
+        },
+        {
+          "given": "The bounded inputs and preconditions described in the specification.",
+          "id": "SC-004",
+          "obtained_evidence": [
+            {
+              "command": ".venv-speckit/bin/python -m unittest tests.test_m4_alpha_policy.RuntimePolicyTests -v",
+              "limits": "C1 owned fixed-patch fixtures; does not cover scheduler/MCP/real-host tool exercise/whole-M4 closure. Revalidate changed implementation before final acceptance.",
+              "outcome": "18 tests passed; serial C1 policy scope only.",
+              "path": "specs/021-m4-alpha-runtime/c1-evidence/policy-tests.txt",
+              "sha256": "ba267c3b0b62eeaac7977e4c30e8c8e6146632d84cab6e10d0d8abbc40fc033d"
+            },
+            {
+              "command": ".venv-speckit/bin/python -m scripts.validate_change --base develop --profile quick",
+              "limits": "Local executable C1/C2 validation; not MCP/real-host/Linux reproduction, independent review, measurement or whole-M4 acceptance.",
+              "outcome": "Sensitive validation passed: 361 tests, 4 skips: three deferred SPEC-019 implementation tests and one unavailable private-history test; 31 C1/C2 tests execute without skips.",
+              "path": "specs/021-m4-alpha-runtime/c2-evidence/validation.txt",
+              "sha256": "032ade631384b8d80659e3c96ab4d21bff55eb3353e05dfaf6fee9bc3cc103b4"
+            },
+            {
+              "command": ".venv-speckit/bin/python -m scripts.validate_change --base develop --profile quick",
+              "limits": "This earlier local engineering validation did not include external scientific validation, Linux reproduction, or host exercises; separate Linux and Claude evidence is recorded below. It does not establish whole-M4 acceptance.",
+              "outcome": "Passed: 372 tests, four skips: three deferred SPEC-019 implementation tests and one unavailable private-history test; all 42 C1/C2/MCP tests execute.",
+              "path": "specs/021-m4-alpha-runtime/c3-evidence/validation.txt",
+              "sha256": "953ae5cd4130bd71f82ae9efe7a1d6d5f9646315858002234bafb79d8f7f8ed1"
+            },
+            {
+              "command": "Absolute isolated Python -m scripts.reproduce_m4_alpha --output /tmp/m4-alpha-darwin-67b8b52.json from fresh checkout",
+              "limits": "Darwin arm64 with existing isolated Python 3.13.11; no fresh dependency environment or external independent validation. This earlier Darwin record did not include Linux; separate Linux reproduction is recorded below.",
+              "outcome": "Passed: 61 tests, no skips; fresh checkout/process, bound inputs and working tree unchanged.",
+              "path": "specs/021-m4-alpha-runtime/c4-evidence/darwin.json",
+              "sha256": "7cd268f16eee50c824415775eef3a465cdd0099e38143e43a66be8cfe25f135b"
+            },
+            {
+              "command": "Two fresh independent read-only review agents using gpt-6-luna on develop merge-base through 67b8b52",
+              "limits": "Implementation review, no tests executed by reviewers, no whole-M4 or scientific acceptance. Later evidence packaging separately checked.",
+              "outcome": "Both reviews completed with no findings; raw reports preserved.",
+              "path": "specs/021-m4-alpha-runtime/implementation-review.json",
+              "sha256": "27c3eeaa534776bd60605d62fd5ace6da4c442853495f47d029f3d697ec10d9c"
+            },
+            {
+              "command": ".venv-speckit/bin/python -m scripts.validate_change --base develop --profile pr",
+              "limits": "Historical local PR profile on preserved 41ee2b6. Its complete source binding remains in implementation-assurance-9108a20.json; this later record only updates tracking metadata and evidence. New tracking test checked separately.",
+              "outcome": "PR profile passed: 368 tests passed and four explicitly audited skips.",
+              "path": "specs/021-m4-alpha-runtime/c4-evidence/pr-validation.txt",
+              "sha256": "eee49d79607d2b3d4703a29a7f080eb03813910da0b14afb82ca74d764c2f800"
+            },
+            {
+              "command": "Reviewed auxiliary GitHub workflow run 37197461233: python3 -m scripts.reproduce_m4_alpha",
+              "limits": "Fresh hosted Linux core/protocol engineering reproduction only; no Claude host observation, external scientific validation, merge or founder G4 approval.",
+              "outcome": "Passed on frozen 9108a20: Linux x86_64, Python 3.12.14, Git 2.55.0; 61 tests, no skips; candidate/source/log bindings verified.",
+              "path": "specs/021-m4-alpha-runtime/c4-evidence/linux.json",
+              "sha256": "7d354e11bf8aef461c3345af57533cc53d83a78a227bf59f2478e65258853c87"
+            },
+            {
+              "command": "GitHub PR CI run 37197290307",
+              "limits": "CI is separate from fresh reproduction and host observations. Spec Kit integration matrix skipped by selection condition; formal closure provenance steps retain their own selection gates.",
+              "outcome": "Completed success: 372 tests, 367 pass, five audited skips; selected integration matrix explicitly skipped.",
+              "path": "specs/021-m4-alpha-runtime/c4-evidence/ci-9108a20.json",
+              "sha256": "b8e8ac923087022aa59de761ecb9e4c1d06fa7ec092c2cf36a182a9508300ebb"
+            }
+          ],
+          "planned_evidence": "Obtained: relevant implementation and host evidence is recorded; T013 evidence reconciliation and independent review are complete. The founder G4 NO-GO on usefulness under current evidence is recorded in g4-decision.json. It does not accept whole M4 or change M3/M3.5 scientific gates.",
+          "test_file": "tests/test_m4_alpha_policy.py",
+          "test_name": "RuntimePolicyTests.test_expired_and_wrong_action_grants_do_not_allocate_run",
+          "then": "Missing, expired, consumed, wrong-destination and changed-plan grants are refused; a tool annotation or returned digest cannot grant authority.",
+          "when": "The prospective procedure is implemented and executed against a frozen candidate."
+        }
+      ],
+      "text": "Separate operator authority"
+    },
+    {
+      "id": "REQ-003",
+      "scenarios": [
+        {
+          "given": "The bounded inputs and preconditions described in the specification.",
+          "id": "SC-005",
+          "obtained_evidence": [
+            {
+              "command": ".venv-speckit/bin/python -m scripts.validate_change --base develop --profile quick",
+              "limits": "Local executable C1/C2 validation; not MCP/real-host/Linux reproduction, independent review, measurement or whole-M4 acceptance.",
+              "outcome": "Sensitive validation passed: 361 tests, 4 skips: three deferred SPEC-019 implementation tests and one unavailable private-history test; 31 C1/C2 tests execute without skips.",
+              "path": "specs/021-m4-alpha-runtime/c2-evidence/validation.txt",
+              "sha256": "032ade631384b8d80659e3c96ab4d21bff55eb3353e05dfaf6fee9bc3cc103b4"
+            },
+            {
+              "command": ".venv-speckit/bin/python -m scripts.validate_change --base develop --profile quick",
+              "limits": "This earlier local engineering validation did not include external scientific validation, Linux reproduction, or host exercises; separate Linux and Claude evidence is recorded below. It does not establish whole-M4 acceptance.",
+              "outcome": "Passed: 372 tests, four skips: three deferred SPEC-019 implementation tests and one unavailable private-history test; all 42 C1/C2/MCP tests execute.",
+              "path": "specs/021-m4-alpha-runtime/c3-evidence/validation.txt",
+              "sha256": "953ae5cd4130bd71f82ae9efe7a1d6d5f9646315858002234bafb79d8f7f8ed1"
+            },
+            {
+              "command": "Absolute isolated Python -m scripts.reproduce_m4_alpha --output /tmp/m4-alpha-darwin-67b8b52.json from fresh checkout",
+              "limits": "Darwin arm64 with existing isolated Python 3.13.11; no fresh dependency environment or external independent validation. This earlier Darwin record did not include Linux; separate Linux reproduction is recorded below.",
+              "outcome": "Passed: 61 tests, no skips; fresh checkout/process, bound inputs and working tree unchanged.",
+              "path": "specs/021-m4-alpha-runtime/c4-evidence/darwin.json",
+              "sha256": "7cd268f16eee50c824415775eef3a465cdd0099e38143e43a66be8cfe25f135b"
+            },
+            {
+              "command": "Two fresh independent read-only review agents using gpt-6-luna on develop merge-base through 67b8b52",
+              "limits": "Implementation review, no tests executed by reviewers, no whole-M4 or scientific acceptance. Later evidence packaging separately checked.",
+              "outcome": "Both reviews completed with no findings; raw reports preserved.",
+              "path": "specs/021-m4-alpha-runtime/implementation-review.json",
+              "sha256": "27c3eeaa534776bd60605d62fd5ace6da4c442853495f47d029f3d697ec10d9c"
+            },
+            {
+              "command": ".venv-speckit/bin/python -m scripts.validate_change --base develop --profile pr",
+              "limits": "Historical local PR profile on preserved 41ee2b6. Its complete source binding remains in implementation-assurance-9108a20.json; this later record only updates tracking metadata and evidence. New tracking test checked separately.",
+              "outcome": "PR profile passed: 368 tests passed and four explicitly audited skips.",
+              "path": "specs/021-m4-alpha-runtime/c4-evidence/pr-validation.txt",
+              "sha256": "eee49d79607d2b3d4703a29a7f080eb03813910da0b14afb82ca74d764c2f800"
+            },
+            {
+              "command": "Reviewed auxiliary GitHub workflow run 37197461233: python3 -m scripts.reproduce_m4_alpha",
+              "limits": "Fresh hosted Linux core/protocol engineering reproduction only; no Claude host observation, external scientific validation, merge or founder G4 approval.",
+              "outcome": "Passed on frozen 9108a20: Linux x86_64, Python 3.12.14, Git 2.55.0; 61 tests, no skips; candidate/source/log bindings verified.",
+              "path": "specs/021-m4-alpha-runtime/c4-evidence/linux.json",
+              "sha256": "7d354e11bf8aef461c3345af57533cc53d83a78a227bf59f2478e65258853c87"
+            },
+            {
+              "command": "GitHub PR CI run 37197290307",
+              "limits": "CI is separate from fresh reproduction and host observations. Spec Kit integration matrix skipped by selection condition; formal closure provenance steps retain their own selection gates.",
+              "outcome": "Completed success: 372 tests, 367 pass, five audited skips; selected integration matrix explicitly skipped.",
+              "path": "specs/021-m4-alpha-runtime/c4-evidence/ci-9108a20.json",
+              "sha256": "b8e8ac923087022aa59de761ecb9e4c1d06fa7ec092c2cf36a182a9508300ebb"
+            }
+          ],
+          "planned_evidence": "Obtained: relevant implementation and host evidence is recorded; T013 evidence reconciliation and independent review are complete. The founder G4 NO-GO on usefulness under current evidence is recorded in g4-decision.json. It does not accept whole M4 or change M3/M3.5 scientific gates.",
+          "test_file": "tests/test_m4_alpha_scheduler.py",
+          "test_name": "RuntimeSchedulerTests.test_real_overlap_isolated_resources_and_serial_effect_agreement",
+          "then": "Given 2\u20134 fixed operations with complete dependencies and adapter-verified footprints, when a ready wave is admitted, then isolated workers may prepare concurrently and one coordinator alone publishes checkpoints.",
+          "when": "The prospective procedure is implemented and executed against a frozen candidate."
+        },
+        {
+          "given": "The bounded inputs and preconditions described in the specification.",
+          "id": "SC-006",
+          "obtained_evidence": [
+            {
+              "command": ".venv-speckit/bin/python -m scripts.validate_change --base develop --profile quick",
+              "limits": "Local executable C1/C2 validation; not MCP/real-host/Linux reproduction, independent review, measurement or whole-M4 acceptance.",
+              "outcome": "Sensitive validation passed: 361 tests, 4 skips: three deferred SPEC-019 implementation tests and one unavailable private-history test; 31 C1/C2 tests execute without skips.",
+              "path": "specs/021-m4-alpha-runtime/c2-evidence/validation.txt",
+              "sha256": "032ade631384b8d80659e3c96ab4d21bff55eb3353e05dfaf6fee9bc3cc103b4"
+            },
+            {
+              "command": ".venv-speckit/bin/python -m scripts.validate_change --base develop --profile quick",
+              "limits": "This earlier local engineering validation did not include external scientific validation, Linux reproduction, or host exercises; separate Linux and Claude evidence is recorded below. It does not establish whole-M4 acceptance.",
+              "outcome": "Passed: 372 tests, four skips: three deferred SPEC-019 implementation tests and one unavailable private-history test; all 42 C1/C2/MCP tests execute.",
+              "path": "specs/021-m4-alpha-runtime/c3-evidence/validation.txt",
+              "sha256": "953ae5cd4130bd71f82ae9efe7a1d6d5f9646315858002234bafb79d8f7f8ed1"
+            },
+            {
+              "command": "Absolute isolated Python -m scripts.reproduce_m4_alpha --output /tmp/m4-alpha-darwin-67b8b52.json from fresh checkout",
+              "limits": "Darwin arm64 with existing isolated Python 3.13.11; no fresh dependency environment or external independent validation. This earlier Darwin record did not include Linux; separate Linux reproduction is recorded below.",
+              "outcome": "Passed: 61 tests, no skips; fresh checkout/process, bound inputs and working tree unchanged.",
+              "path": "specs/021-m4-alpha-runtime/c4-evidence/darwin.json",
+              "sha256": "7cd268f16eee50c824415775eef3a465cdd0099e38143e43a66be8cfe25f135b"
+            },
+            {
+              "command": "Two fresh independent read-only review agents using gpt-6-luna on develop merge-base through 67b8b52",
+              "limits": "Implementation review, no tests executed by reviewers, no whole-M4 or scientific acceptance. Later evidence packaging separately checked.",
+              "outcome": "Both reviews completed with no findings; raw reports preserved.",
+              "path": "specs/021-m4-alpha-runtime/implementation-review.json",
+              "sha256": "27c3eeaa534776bd60605d62fd5ace6da4c442853495f47d029f3d697ec10d9c"
+            },
+            {
+              "command": ".venv-speckit/bin/python -m scripts.validate_change --base develop --profile pr",
+              "limits": "Historical local PR profile on preserved 41ee2b6. Its complete source binding remains in implementation-assurance-9108a20.json; this later record only updates tracking metadata and evidence. New tracking test checked separately.",
+              "outcome": "PR profile passed: 368 tests passed and four explicitly audited skips.",
+              "path": "specs/021-m4-alpha-runtime/c4-evidence/pr-validation.txt",
+              "sha256": "eee49d79607d2b3d4703a29a7f080eb03813910da0b14afb82ca74d764c2f800"
+            },
+            {
+              "command": "Reviewed auxiliary GitHub workflow run 37197461233: python3 -m scripts.reproduce_m4_alpha",
+              "limits": "Fresh hosted Linux core/protocol engineering reproduction only; no Claude host observation, external scientific validation, merge or founder G4 approval.",
+              "outcome": "Passed on frozen 9108a20: Linux x86_64, Python 3.12.14, Git 2.55.0; 61 tests, no skips; candidate/source/log bindings verified.",
+              "path": "specs/021-m4-alpha-runtime/c4-evidence/linux.json",
+              "sha256": "7d354e11bf8aef461c3345af57533cc53d83a78a227bf59f2478e65258853c87"
+            },
+            {
+              "command": "GitHub PR CI run 37197290307",
+              "limits": "CI is separate from fresh reproduction and host observations. Spec Kit integration matrix skipped by selection condition; formal closure provenance steps retain their own selection gates.",
+              "outcome": "Completed success: 372 tests, 367 pass, five audited skips; selected integration matrix explicitly skipped.",
+              "path": "specs/021-m4-alpha-runtime/c4-evidence/ci-9108a20.json",
+              "sha256": "b8e8ac923087022aa59de761ecb9e4c1d06fa7ec092c2cf36a182a9508300ebb"
+            }
+          ],
+          "planned_evidence": "Obtained: relevant implementation and host evidence is recorded; T013 evidence reconciliation and independent review are complete. The founder G4 NO-GO on usefulness under current evidence is recorded in g4-decision.json. It does not accept whole M4 or change M3/M3.5 scientific gates.",
+          "test_file": "tests/test_m4_alpha_scheduler.py",
+          "test_name": "RuntimeSchedulerTests.test_changed_footprints_limits_and_stale_inputs_never_start_workers",
+          "then": "Overlap, unknown reads, shared resources, stale bases, altered dependencies and incomplete traces cause serialization under a separately acknowledged plan or rejection, never implicit parallel admission.",
+          "when": "The prospective procedure is implemented and executed against a frozen candidate."
+        }
+      ],
+      "text": "Bounded scheduling and isolation"
+    },
+    {
+      "id": "REQ-004",
+      "scenarios": [
+        {
+          "given": "The bounded inputs and preconditions described in the specification.",
+          "id": "SC-007",
+          "obtained_evidence": [
+            {
+              "command": ".venv-speckit/bin/python -m scripts.validate_change --base develop --profile quick",
+              "limits": "Local executable C1/C2 validation; not MCP/real-host/Linux reproduction, independent review, measurement or whole-M4 acceptance.",
+              "outcome": "Sensitive validation passed: 361 tests, 4 skips: three deferred SPEC-019 implementation tests and one unavailable private-history test; 31 C1/C2 tests execute without skips.",
+              "path": "specs/021-m4-alpha-runtime/c2-evidence/validation.txt",
+              "sha256": "032ade631384b8d80659e3c96ab4d21bff55eb3353e05dfaf6fee9bc3cc103b4"
+            },
+            {
+              "command": ".venv-speckit/bin/python -m scripts.validate_change --base develop --profile quick",
+              "limits": "This earlier local engineering validation did not include external scientific validation, Linux reproduction, or host exercises; separate Linux and Claude evidence is recorded below. It does not establish whole-M4 acceptance.",
+              "outcome": "Passed: 372 tests, four skips: three deferred SPEC-019 implementation tests and one unavailable private-history test; all 42 C1/C2/MCP tests execute.",
+              "path": "specs/021-m4-alpha-runtime/c3-evidence/validation.txt",
+              "sha256": "953ae5cd4130bd71f82ae9efe7a1d6d5f9646315858002234bafb79d8f7f8ed1"
+            },
+            {
+              "command": "Absolute isolated Python -m scripts.reproduce_m4_alpha --output /tmp/m4-alpha-darwin-67b8b52.json from fresh checkout",
+              "limits": "Darwin arm64 with existing isolated Python 3.13.11; no fresh dependency environment or external independent validation. This earlier Darwin record did not include Linux; separate Linux reproduction is recorded below.",
+              "outcome": "Passed: 61 tests, no skips; fresh checkout/process, bound inputs and working tree unchanged.",
+              "path": "specs/021-m4-alpha-runtime/c4-evidence/darwin.json",
+              "sha256": "7cd268f16eee50c824415775eef3a465cdd0099e38143e43a66be8cfe25f135b"
+            },
+            {
+              "command": "Two fresh independent read-only review agents using gpt-6-luna on develop merge-base through 67b8b52",
+              "limits": "Implementation review, no tests executed by reviewers, no whole-M4 or scientific acceptance. Later evidence packaging separately checked.",
+              "outcome": "Both reviews completed with no findings; raw reports preserved.",
+              "path": "specs/021-m4-alpha-runtime/implementation-review.json",
+              "sha256": "27c3eeaa534776bd60605d62fd5ace6da4c442853495f47d029f3d697ec10d9c"
+            },
+            {
+              "command": ".venv-speckit/bin/python -m scripts.validate_change --base develop --profile pr",
+              "limits": "Historical local PR profile on preserved 41ee2b6. Its complete source binding remains in implementation-assurance-9108a20.json; this later record only updates tracking metadata and evidence. New tracking test checked separately.",
+              "outcome": "PR profile passed: 368 tests passed and four explicitly audited skips.",
+              "path": "specs/021-m4-alpha-runtime/c4-evidence/pr-validation.txt",
+              "sha256": "eee49d79607d2b3d4703a29a7f080eb03813910da0b14afb82ca74d764c2f800"
+            },
+            {
+              "command": "Reviewed auxiliary GitHub workflow run 37197461233: python3 -m scripts.reproduce_m4_alpha",
+              "limits": "Fresh hosted Linux core/protocol engineering reproduction only; no Claude host observation, external scientific validation, merge or founder G4 approval.",
+              "outcome": "Passed on frozen 9108a20: Linux x86_64, Python 3.12.14, Git 2.55.0; 61 tests, no skips; candidate/source/log bindings verified.",
+              "path": "specs/021-m4-alpha-runtime/c4-evidence/linux.json",
+              "sha256": "7d354e11bf8aef461c3345af57533cc53d83a78a227bf59f2478e65258853c87"
+            },
+            {
+              "command": "GitHub PR CI run 37197290307",
+              "limits": "CI is separate from fresh reproduction and host observations. Spec Kit integration matrix skipped by selection condition; formal closure provenance steps retain their own selection gates.",
+              "outcome": "Completed success: 372 tests, 367 pass, five audited skips; selected integration matrix explicitly skipped.",
+              "path": "specs/021-m4-alpha-runtime/c4-evidence/ci-9108a20.json",
+              "sha256": "b8e8ac923087022aa59de761ecb9e4c1d06fa7ec092c2cf36a182a9508300ebb"
+            }
+          ],
+          "planned_evidence": "Obtained: relevant implementation and host evidence is recorded; T013 evidence reconciliation and independent review are complete. The founder G4 NO-GO on usefulness under current evidence is recorded in g4-decision.json. It does not accept whole M4 or change M3/M3.5 scientific gates.",
+          "test_file": "tests/test_m4_alpha_scheduler.py",
+          "test_name": "RuntimeSchedulerTests.test_parallel_policy_dispatch_then_retry_inspects_without_worker_rerun",
+          "then": "Given admitted workers, when actual path/mode/blob effects or result trees differ from the manifest, then publication stops and a read-only consumer rejects completion.",
+          "when": "The prospective procedure is implemented and executed against a frozen candidate."
+        },
+        {
+          "given": "The bounded inputs and preconditions described in the specification.",
+          "id": "SC-008",
+          "obtained_evidence": [
+            {
+              "command": ".venv-speckit/bin/python -m scripts.validate_change --base develop --profile quick",
+              "limits": "Local executable C1/C2 validation; not MCP/real-host/Linux reproduction, independent review, measurement or whole-M4 acceptance.",
+              "outcome": "Sensitive validation passed: 361 tests, 4 skips: three deferred SPEC-019 implementation tests and one unavailable private-history test; 31 C1/C2 tests execute without skips.",
+              "path": "specs/021-m4-alpha-runtime/c2-evidence/validation.txt",
+              "sha256": "032ade631384b8d80659e3c96ab4d21bff55eb3353e05dfaf6fee9bc3cc103b4"
+            },
+            {
+              "command": ".venv-speckit/bin/python -m scripts.validate_change --base develop --profile quick",
+              "limits": "This earlier local engineering validation did not include external scientific validation, Linux reproduction, or host exercises; separate Linux and Claude evidence is recorded below. It does not establish whole-M4 acceptance.",
+              "outcome": "Passed: 372 tests, four skips: three deferred SPEC-019 implementation tests and one unavailable private-history test; all 42 C1/C2/MCP tests execute.",
+              "path": "specs/021-m4-alpha-runtime/c3-evidence/validation.txt",
+              "sha256": "953ae5cd4130bd71f82ae9efe7a1d6d5f9646315858002234bafb79d8f7f8ed1"
+            },
+            {
+              "command": "Absolute isolated Python -m scripts.reproduce_m4_alpha --output /tmp/m4-alpha-darwin-67b8b52.json from fresh checkout",
+              "limits": "Darwin arm64 with existing isolated Python 3.13.11; no fresh dependency environment or external independent validation. This earlier Darwin record did not include Linux; separate Linux reproduction is recorded below.",
+              "outcome": "Passed: 61 tests, no skips; fresh checkout/process, bound inputs and working tree unchanged.",
+              "path": "specs/021-m4-alpha-runtime/c4-evidence/darwin.json",
+              "sha256": "7cd268f16eee50c824415775eef3a465cdd0099e38143e43a66be8cfe25f135b"
+            },
+            {
+              "command": "Two fresh independent read-only review agents using gpt-6-luna on develop merge-base through 67b8b52",
+              "limits": "Implementation review, no tests executed by reviewers, no whole-M4 or scientific acceptance. Later evidence packaging separately checked.",
+              "outcome": "Both reviews completed with no findings; raw reports preserved.",
+              "path": "specs/021-m4-alpha-runtime/implementation-review.json",
+              "sha256": "27c3eeaa534776bd60605d62fd5ace6da4c442853495f47d029f3d697ec10d9c"
+            },
+            {
+              "command": ".venv-speckit/bin/python -m scripts.validate_change --base develop --profile pr",
+              "limits": "Historical local PR profile on preserved 41ee2b6. Its complete source binding remains in implementation-assurance-9108a20.json; this later record only updates tracking metadata and evidence. New tracking test checked separately.",
+              "outcome": "PR profile passed: 368 tests passed and four explicitly audited skips.",
+              "path": "specs/021-m4-alpha-runtime/c4-evidence/pr-validation.txt",
+              "sha256": "eee49d79607d2b3d4703a29a7f080eb03813910da0b14afb82ca74d764c2f800"
+            },
+            {
+              "command": "Reviewed auxiliary GitHub workflow run 37197461233: python3 -m scripts.reproduce_m4_alpha",
+              "limits": "Fresh hosted Linux core/protocol engineering reproduction only; no Claude host observation, external scientific validation, merge or founder G4 approval.",
+              "outcome": "Passed on frozen 9108a20: Linux x86_64, Python 3.12.14, Git 2.55.0; 61 tests, no skips; candidate/source/log bindings verified.",
+              "path": "specs/021-m4-alpha-runtime/c4-evidence/linux.json",
+              "sha256": "7d354e11bf8aef461c3345af57533cc53d83a78a227bf59f2478e65258853c87"
+            },
+            {
+              "command": "GitHub PR CI run 37197290307",
+              "limits": "CI is separate from fresh reproduction and host observations. Spec Kit integration matrix skipped by selection condition; formal closure provenance steps retain their own selection gates.",
+              "outcome": "Completed success: 372 tests, 367 pass, five audited skips; selected integration matrix explicitly skipped.",
+              "path": "specs/021-m4-alpha-runtime/c4-evidence/ci-9108a20.json",
+              "sha256": "b8e8ac923087022aa59de761ecb9e4c1d06fa7ec092c2cf36a182a9508300ebb"
+            }
+          ],
+          "planned_evidence": "Obtained: relevant implementation and host evidence is recorded; T013 evidence reconciliation and independent review are complete. The founder G4 NO-GO on usefulness under current evidence is recorded in g4-decision.json. It does not accept whole M4 or change M3/M3.5 scientific gates.",
+          "test_file": "tests/test_m4_alpha_scheduler.py",
+          "test_name": "RuntimeSchedulerTests.test_trace_corruption_is_refused_even_with_recomputed_digest",
+          "then": "Forged terminal reports and altered private objects/state are refused; declared metadata never substitutes for observed adapter evidence.",
+          "when": "The prospective procedure is implemented and executed against a frozen candidate."
+        }
+      ],
+      "text": "Observed effects and consumer verification"
+    },
+    {
+      "id": "REQ-005",
+      "scenarios": [
+        {
+          "given": "The bounded inputs and preconditions described in the specification.",
+          "id": "SC-009",
+          "obtained_evidence": [
+            {
+              "command": ".venv-speckit/bin/python -m scripts.validate_change --base develop --profile quick",
+              "limits": "Local executable C1/C2 validation; not MCP/real-host/Linux reproduction, independent review, measurement or whole-M4 acceptance.",
+              "outcome": "Sensitive validation passed: 361 tests, 4 skips: three deferred SPEC-019 implementation tests and one unavailable private-history test; 31 C1/C2 tests execute without skips.",
+              "path": "specs/021-m4-alpha-runtime/c2-evidence/validation.txt",
+              "sha256": "032ade631384b8d80659e3c96ab4d21bff55eb3353e05dfaf6fee9bc3cc103b4"
+            },
+            {
+              "command": ".venv-speckit/bin/python -m scripts.validate_change --base develop --profile quick",
+              "limits": "This earlier local engineering validation did not include external scientific validation, Linux reproduction, or host exercises; separate Linux and Claude evidence is recorded below. It does not establish whole-M4 acceptance.",
+              "outcome": "Passed: 372 tests, four skips: three deferred SPEC-019 implementation tests and one unavailable private-history test; all 42 C1/C2/MCP tests execute.",
+              "path": "specs/021-m4-alpha-runtime/c3-evidence/validation.txt",
+              "sha256": "953ae5cd4130bd71f82ae9efe7a1d6d5f9646315858002234bafb79d8f7f8ed1"
+            },
+            {
+              "command": "Absolute isolated Python -m scripts.reproduce_m4_alpha --output /tmp/m4-alpha-darwin-67b8b52.json from fresh checkout",
+              "limits": "Darwin arm64 with existing isolated Python 3.13.11; no fresh dependency environment or external independent validation. This earlier Darwin record did not include Linux; separate Linux reproduction is recorded below.",
+              "outcome": "Passed: 61 tests, no skips; fresh checkout/process, bound inputs and working tree unchanged.",
+              "path": "specs/021-m4-alpha-runtime/c4-evidence/darwin.json",
+              "sha256": "7cd268f16eee50c824415775eef3a465cdd0099e38143e43a66be8cfe25f135b"
+            },
+            {
+              "command": "Two fresh independent read-only review agents using gpt-6-luna on develop merge-base through 67b8b52",
+              "limits": "Implementation review, no tests executed by reviewers, no whole-M4 or scientific acceptance. Later evidence packaging separately checked.",
+              "outcome": "Both reviews completed with no findings; raw reports preserved.",
+              "path": "specs/021-m4-alpha-runtime/implementation-review.json",
+              "sha256": "27c3eeaa534776bd60605d62fd5ace6da4c442853495f47d029f3d697ec10d9c"
+            },
+            {
+              "command": ".venv-speckit/bin/python -m scripts.validate_change --base develop --profile pr",
+              "limits": "Historical local PR profile on preserved 41ee2b6. Its complete source binding remains in implementation-assurance-9108a20.json; this later record only updates tracking metadata and evidence. New tracking test checked separately.",
+              "outcome": "PR profile passed: 368 tests passed and four explicitly audited skips.",
+              "path": "specs/021-m4-alpha-runtime/c4-evidence/pr-validation.txt",
+              "sha256": "eee49d79607d2b3d4703a29a7f080eb03813910da0b14afb82ca74d764c2f800"
+            },
+            {
+              "command": "Reviewed auxiliary GitHub workflow run 37197461233: python3 -m scripts.reproduce_m4_alpha",
+              "limits": "Fresh hosted Linux core/protocol engineering reproduction only; no Claude host observation, external scientific validation, merge or founder G4 approval.",
+              "outcome": "Passed on frozen 9108a20: Linux x86_64, Python 3.12.14, Git 2.55.0; 61 tests, no skips; candidate/source/log bindings verified.",
+              "path": "specs/021-m4-alpha-runtime/c4-evidence/linux.json",
+              "sha256": "7d354e11bf8aef461c3345af57533cc53d83a78a227bf59f2478e65258853c87"
+            },
+            {
+              "command": "GitHub PR CI run 37197290307",
+              "limits": "CI is separate from fresh reproduction and host observations. Spec Kit integration matrix skipped by selection condition; formal closure provenance steps retain their own selection gates.",
+              "outcome": "Completed success: 372 tests, 367 pass, five audited skips; selected integration matrix explicitly skipped.",
+              "path": "specs/021-m4-alpha-runtime/c4-evidence/ci-9108a20.json",
+              "sha256": "b8e8ac923087022aa59de761ecb9e4c1d06fa7ec092c2cf36a182a9508300ebb"
+            }
+          ],
+          "planned_evidence": "Obtained: relevant implementation and host evidence is recorded; T013 evidence reconciliation and independent review are complete. The founder G4 NO-GO on usefulness under current evidence is recorded in g4-decision.json. It does not accept whole M4 or change M3/M3.5 scientific gates.",
+          "test_file": "tests/test_m4_alpha_scheduler.py",
+          "test_name": "RuntimeSchedulerTests.test_fresh_process_kill_preserves_prefix_and_resume_does_not_rerun_workers",
+          "then": "Given process death, cancellation or host disconnect, when the run is inspected or explicitly resumed, then an independently verified prefix is retained and completed logical operations are not duplicated.",
+          "when": "The prospective procedure is implemented and executed against a frozen candidate."
+        },
+        {
+          "given": "The bounded inputs and preconditions described in the specification.",
+          "id": "SC-010",
+          "obtained_evidence": [
+            {
+              "command": ".venv-speckit/bin/python -m scripts.validate_change --base develop --profile quick",
+              "limits": "Local executable C1/C2 validation; not MCP/real-host/Linux reproduction, independent review, measurement or whole-M4 acceptance.",
+              "outcome": "Sensitive validation passed: 361 tests, 4 skips: three deferred SPEC-019 implementation tests and one unavailable private-history test; 31 C1/C2 tests execute without skips.",
+              "path": "specs/021-m4-alpha-runtime/c2-evidence/validation.txt",
+              "sha256": "032ade631384b8d80659e3c96ab4d21bff55eb3353e05dfaf6fee9bc3cc103b4"
+            },
+            {
+              "command": ".venv-speckit/bin/python -m scripts.validate_change --base develop --profile quick",
+              "limits": "This earlier local engineering validation did not include external scientific validation, Linux reproduction, or host exercises; separate Linux and Claude evidence is recorded below. It does not establish whole-M4 acceptance.",
+              "outcome": "Passed: 372 tests, four skips: three deferred SPEC-019 implementation tests and one unavailable private-history test; all 42 C1/C2/MCP tests execute.",
+              "path": "specs/021-m4-alpha-runtime/c3-evidence/validation.txt",
+              "sha256": "953ae5cd4130bd71f82ae9efe7a1d6d5f9646315858002234bafb79d8f7f8ed1"
+            },
+            {
+              "command": "Absolute isolated Python -m scripts.reproduce_m4_alpha --output /tmp/m4-alpha-darwin-67b8b52.json from fresh checkout",
+              "limits": "Darwin arm64 with existing isolated Python 3.13.11; no fresh dependency environment or external independent validation. This earlier Darwin record did not include Linux; separate Linux reproduction is recorded below.",
+              "outcome": "Passed: 61 tests, no skips; fresh checkout/process, bound inputs and working tree unchanged.",
+              "path": "specs/021-m4-alpha-runtime/c4-evidence/darwin.json",
+              "sha256": "7cd268f16eee50c824415775eef3a465cdd0099e38143e43a66be8cfe25f135b"
+            },
+            {
+              "command": "Two fresh independent read-only review agents using gpt-6-luna on develop merge-base through 67b8b52",
+              "limits": "Implementation review, no tests executed by reviewers, no whole-M4 or scientific acceptance. Later evidence packaging separately checked.",
+              "outcome": "Both reviews completed with no findings; raw reports preserved.",
+              "path": "specs/021-m4-alpha-runtime/implementation-review.json",
+              "sha256": "27c3eeaa534776bd60605d62fd5ace6da4c442853495f47d029f3d697ec10d9c"
+            },
+            {
+              "command": ".venv-speckit/bin/python -m scripts.validate_change --base develop --profile pr",
+              "limits": "Historical local PR profile on preserved 41ee2b6. Its complete source binding remains in implementation-assurance-9108a20.json; this later record only updates tracking metadata and evidence. New tracking test checked separately.",
+              "outcome": "PR profile passed: 368 tests passed and four explicitly audited skips.",
+              "path": "specs/021-m4-alpha-runtime/c4-evidence/pr-validation.txt",
+              "sha256": "eee49d79607d2b3d4703a29a7f080eb03813910da0b14afb82ca74d764c2f800"
+            },
+            {
+              "command": "Reviewed auxiliary GitHub workflow run 37197461233: python3 -m scripts.reproduce_m4_alpha",
+              "limits": "Fresh hosted Linux core/protocol engineering reproduction only; no Claude host observation, external scientific validation, merge or founder G4 approval.",
+              "outcome": "Passed on frozen 9108a20: Linux x86_64, Python 3.12.14, Git 2.55.0; 61 tests, no skips; candidate/source/log bindings verified.",
+              "path": "specs/021-m4-alpha-runtime/c4-evidence/linux.json",
+              "sha256": "7d354e11bf8aef461c3345af57533cc53d83a78a227bf59f2478e65258853c87"
+            },
+            {
+              "command": "GitHub PR CI run 37197290307",
+              "limits": "CI is separate from fresh reproduction and host observations. Spec Kit integration matrix skipped by selection condition; formal closure provenance steps retain their own selection gates.",
+              "outcome": "Completed success: 372 tests, 367 pass, five audited skips; selected integration matrix explicitly skipped.",
+              "path": "specs/021-m4-alpha-runtime/c4-evidence/ci-9108a20.json",
+              "sha256": "b8e8ac923087022aa59de761ecb9e4c1d06fa7ec092c2cf36a182a9508300ebb"
+            }
+          ],
+          "planned_evidence": "Obtained: relevant implementation and host evidence is recorded; T013 evidence reconciliation and independent review are complete. The founder G4 NO-GO on usefulness under current evidence is recorded in g4-decision.json. It does not accept whole M4 or change M3/M3.5 scientific gates.",
+          "test_file": "tests/test_m4_alpha_scheduler.py",
+          "test_name": "RuntimeSchedulerTests.test_new_recovery_grant_preserves_worker_journal_without_rerun",
+          "then": "Repeated delivery, worker failure, interrupted publication and abort are tested; unknown outcome remains unknown until verified.",
+          "when": "The prospective procedure is implemented and executed against a frozen candidate."
+        }
+      ],
+      "text": "Recovery and transport interruption"
+    },
+    {
+      "id": "REQ-006",
+      "scenarios": [
+        {
+          "given": "The bounded inputs and preconditions described in the specification.",
+          "id": "SC-011",
+          "obtained_evidence": [
+            {
+              "command": ".venv-speckit/bin/python -m scripts.validate_change --base develop --profile quick",
+              "limits": "This earlier local engineering validation did not include external scientific validation, Linux reproduction, or host exercises; separate Linux and Claude evidence is recorded below. It does not establish whole-M4 acceptance.",
+              "outcome": "Passed: 372 tests, four skips: three deferred SPEC-019 implementation tests and one unavailable private-history test; all 42 C1/C2/MCP tests execute.",
+              "path": "specs/021-m4-alpha-runtime/c3-evidence/validation.txt",
+              "sha256": "953ae5cd4130bd71f82ae9efe7a1d6d5f9646315858002234bafb79d8f7f8ed1"
+            },
+            {
+              "command": "Absolute isolated Python -m scripts.reproduce_m4_alpha --output /tmp/m4-alpha-darwin-67b8b52.json from fresh checkout",
+              "limits": "Darwin arm64 with existing isolated Python 3.13.11; no fresh dependency environment or external independent validation. This earlier Darwin record did not include Linux; separate Linux reproduction is recorded below.",
+              "outcome": "Passed: 61 tests, no skips; fresh checkout/process, bound inputs and working tree unchanged.",
+              "path": "specs/021-m4-alpha-runtime/c4-evidence/darwin.json",
+              "sha256": "7cd268f16eee50c824415775eef3a465cdd0099e38143e43a66be8cfe25f135b"
+            },
+            {
+              "command": "Two fresh independent read-only review agents using gpt-6-luna on develop merge-base through 67b8b52",
+              "limits": "Implementation review, no tests executed by reviewers, no whole-M4 or scientific acceptance. Later evidence packaging separately checked.",
+              "outcome": "Both reviews completed with no findings; raw reports preserved.",
+              "path": "specs/021-m4-alpha-runtime/implementation-review.json",
+              "sha256": "27c3eeaa534776bd60605d62fd5ace6da4c442853495f47d029f3d697ec10d9c"
+            },
+            {
+              "command": ".venv-speckit/bin/python -m scripts.validate_change --base develop --profile pr",
+              "limits": "Historical local PR profile on preserved 41ee2b6. Its complete source binding remains in implementation-assurance-9108a20.json; this later record only updates tracking metadata and evidence. New tracking test checked separately.",
+              "outcome": "PR profile passed: 368 tests passed and four explicitly audited skips.",
+              "path": "specs/021-m4-alpha-runtime/c4-evidence/pr-validation.txt",
+              "sha256": "eee49d79607d2b3d4703a29a7f080eb03813910da0b14afb82ca74d764c2f800"
+            },
+            {
+              "command": "Independent read-only gpt-6-luna re-review of sanitized candidate a54f9d6",
+              "limits": "At this historical record-only audit, prior implementation reviews and the complete PR profile remained separately bound; Claude and Linux evidence were added in later records. Founder G4 remains open.",
+              "outcome": "Prior P2 resolved; no findings. Original observation hashes and all 140 PR inputs independently checked; intermediate local refs preserved outside publication ancestry.",
+              "path": "specs/021-m4-alpha-runtime/packaging-review.json",
+              "sha256": "4b4730a096ffe28187ce33e04a86c2ac71eb3476aa28758549c778a8317ca9a6"
+            },
+            {
+              "command": "Reviewed auxiliary GitHub workflow run 37197461233: python3 -m scripts.reproduce_m4_alpha",
+              "limits": "Fresh hosted Linux core/protocol engineering reproduction only; no Claude host observation, external scientific validation, merge or founder G4 approval.",
+              "outcome": "Passed on frozen 9108a20: Linux x86_64, Python 3.12.14, Git 2.55.0; 61 tests, no skips; candidate/source/log bindings verified.",
+              "path": "specs/021-m4-alpha-runtime/c4-evidence/linux.json",
+              "sha256": "7d354e11bf8aef461c3345af57533cc53d83a78a227bf59f2478e65258853c87"
+            },
+            {
+              "command": "GitHub PR CI run 37197290307",
+              "limits": "CI is separate from fresh reproduction and host observations. Spec Kit integration matrix skipped by selection condition; formal closure provenance steps retain their own selection gates.",
+              "outcome": "Completed success: 372 tests, 367 pass, five audited skips; selected integration matrix explicitly skipped.",
+              "path": "specs/021-m4-alpha-runtime/c4-evidence/ci-9108a20.json",
+              "sha256": "b8e8ac923087022aa59de761ecb9e4c1d06fa7ec092c2cf36a182a9508300ebb"
+            }
+          ],
+          "planned_evidence": "Obtained: relevant implementation and host evidence is recorded; T013 evidence reconciliation and independent review are complete. The founder G4 NO-GO on usefulness under current evidence is recorded in g4-decision.json. It does not accept whole M4 or change M3/M3.5 scientific gates.",
+          "test_file": "tests/test_m4_alpha_mcp.py",
+          "test_name": "OwnedMcpTests.test_owned_roundtrip_refusal_separate_grant_and_independent_verifier",
+          "then": "Given a pinned supported protocol revision and deterministic peer, when discovery/initialization and tool calls occur, then bounded stdio messages preserve operation identity, evidence and precise refusals.",
+          "when": "The prospective procedure is implemented and executed against a frozen candidate."
+        },
+        {
+          "given": "The bounded inputs and preconditions described in the specification.",
+          "id": "SC-012",
+          "obtained_evidence": [
+            {
+              "command": ".venv-speckit/bin/python -m scripts.validate_change --base develop --profile quick",
+              "limits": "This earlier local engineering validation did not include external scientific validation, Linux reproduction, or host exercises; separate Linux and Claude evidence is recorded below. It does not establish whole-M4 acceptance.",
+              "outcome": "Passed: 372 tests, four skips: three deferred SPEC-019 implementation tests and one unavailable private-history test; all 42 C1/C2/MCP tests execute.",
+              "path": "specs/021-m4-alpha-runtime/c3-evidence/validation.txt",
+              "sha256": "953ae5cd4130bd71f82ae9efe7a1d6d5f9646315858002234bafb79d8f7f8ed1"
+            },
+            {
+              "command": "Absolute isolated Python -m scripts.reproduce_m4_alpha --output /tmp/m4-alpha-darwin-67b8b52.json from fresh checkout",
+              "limits": "Darwin arm64 with existing isolated Python 3.13.11; no fresh dependency environment or external independent validation. This earlier Darwin record did not include Linux; separate Linux reproduction is recorded below.",
+              "outcome": "Passed: 61 tests, no skips; fresh checkout/process, bound inputs and working tree unchanged.",
+              "path": "specs/021-m4-alpha-runtime/c4-evidence/darwin.json",
+              "sha256": "7cd268f16eee50c824415775eef3a465cdd0099e38143e43a66be8cfe25f135b"
+            },
+            {
+              "command": "Two fresh independent read-only review agents using gpt-6-luna on develop merge-base through 67b8b52",
+              "limits": "Implementation review, no tests executed by reviewers, no whole-M4 or scientific acceptance. Later evidence packaging separately checked.",
+              "outcome": "Both reviews completed with no findings; raw reports preserved.",
+              "path": "specs/021-m4-alpha-runtime/implementation-review.json",
+              "sha256": "27c3eeaa534776bd60605d62fd5ace6da4c442853495f47d029f3d697ec10d9c"
+            },
+            {
+              "command": ".venv-speckit/bin/python -m scripts.validate_change --base develop --profile pr",
+              "limits": "Historical local PR profile on preserved 41ee2b6. Its complete source binding remains in implementation-assurance-9108a20.json; this later record only updates tracking metadata and evidence. New tracking test checked separately.",
+              "outcome": "PR profile passed: 368 tests passed and four explicitly audited skips.",
+              "path": "specs/021-m4-alpha-runtime/c4-evidence/pr-validation.txt",
+              "sha256": "eee49d79607d2b3d4703a29a7f080eb03813910da0b14afb82ca74d764c2f800"
+            },
+            {
+              "command": "Independent read-only gpt-6-luna re-review of sanitized candidate a54f9d6",
+              "limits": "At this historical record-only audit, prior implementation reviews and the complete PR profile remained separately bound; Claude and Linux evidence were added in later records. Founder G4 remains open.",
+              "outcome": "Prior P2 resolved; no findings. Original observation hashes and all 140 PR inputs independently checked; intermediate local refs preserved outside publication ancestry.",
+              "path": "specs/021-m4-alpha-runtime/packaging-review.json",
+              "sha256": "4b4730a096ffe28187ce33e04a86c2ac71eb3476aa28758549c778a8317ca9a6"
+            },
+            {
+              "command": "Reviewed auxiliary GitHub workflow run 37197461233: python3 -m scripts.reproduce_m4_alpha",
+              "limits": "Fresh hosted Linux core/protocol engineering reproduction only; no Claude host observation, external scientific validation, merge or founder G4 approval.",
+              "outcome": "Passed on frozen 9108a20: Linux x86_64, Python 3.12.14, Git 2.55.0; 61 tests, no skips; candidate/source/log bindings verified.",
+              "path": "specs/021-m4-alpha-runtime/c4-evidence/linux.json",
+              "sha256": "7d354e11bf8aef461c3345af57533cc53d83a78a227bf59f2478e65258853c87"
+            },
+            {
+              "command": "GitHub PR CI run 37197290307",
+              "limits": "CI is separate from fresh reproduction and host observations. Spec Kit integration matrix skipped by selection condition; formal closure provenance steps retain their own selection gates.",
+              "outcome": "Completed success: 372 tests, 367 pass, five audited skips; selected integration matrix explicitly skipped.",
+              "path": "specs/021-m4-alpha-runtime/c4-evidence/ci-9108a20.json",
+              "sha256": "b8e8ac923087022aa59de761ecb9e4c1d06fa7ec092c2cf36a182a9508300ebb"
+            }
+          ],
+          "planned_evidence": "Obtained: relevant implementation and host evidence is recorded; T013 evidence reconciliation and independent review are complete. The founder G4 NO-GO on usefulness under current evidence is recorded in g4-decision.json. It does not accept whole M4 or change M3/M3.5 scientific gates.",
+          "test_file": "tests/test_m4_alpha_mcp.py",
+          "test_name": "ProtocolTests.test_parse_envelope_parameter_and_unknown_tool_errors_are_distinct",
+          "then": "Unsupported versions, malformed/oversized messages, unknown tools, invalid arguments and cancellation fail according to the pinned revision without starting unauthorized work.",
+          "when": "The prospective procedure is implemented and executed against a frozen candidate."
+        }
+      ],
+      "text": "Versioned MCP transport"
+    },
+    {
+      "id": "REQ-007",
+      "scenarios": [
+        {
+          "given": "The bounded inputs and preconditions described in the specification.",
+          "id": "SC-013",
+          "obtained_evidence": [
+            {
+              "command": ".venv-speckit/bin/python -m scripts.capture_m4_codex --output /tmp/m4-alpha-codex-67b8b52.json",
+              "limits": "This earlier Codex capture exercised the installed client bridge without a model turn and did not include the later Claude host exercise; owned fixture only.",
+              "outcome": "Passed actual Codex 0.159.0-alpha.12.1 MCP bridge: six tools, missing-grant refusal, interrupted prefix, resume, read-only retry and abort; zero model calls.",
+              "path": "specs/021-m4-alpha-runtime/host-evidence/codex.json",
+              "sha256": "270913b17639942bf9c79a78ba64c642e7553814f899db0aac2fa226ff46887f"
+            },
+            {
+              "command": "Two fresh independent read-only review agents using gpt-6-luna on develop merge-base through 67b8b52",
+              "limits": "Implementation review, no tests executed by reviewers, no whole-M4 or scientific acceptance. Later evidence packaging separately checked.",
+              "outcome": "Both reviews completed with no findings; raw reports preserved.",
+              "path": "specs/021-m4-alpha-runtime/implementation-review.json",
+              "sha256": "27c3eeaa534776bd60605d62fd5ace6da4c442853495f47d029f3d697ec10d9c"
+            },
+            {
+              "command": ".venv-speckit/bin/python -m scripts.validate_change --base develop --profile pr",
+              "limits": "Historical local PR profile on preserved 41ee2b6. Its complete source binding remains in implementation-assurance-9108a20.json; this later record only updates tracking metadata and evidence. New tracking test checked separately.",
+              "outcome": "PR profile passed: 368 tests passed and four explicitly audited skips.",
+              "path": "specs/021-m4-alpha-runtime/c4-evidence/pr-validation.txt",
+              "sha256": "eee49d79607d2b3d4703a29a7f080eb03813910da0b14afb82ca74d764c2f800"
+            },
+            {
+              "command": "Independent read-only gpt-6-luna re-review of sanitized candidate a54f9d6",
+              "limits": "At this historical record-only audit, prior implementation reviews and the complete PR profile remained separately bound; Claude and Linux evidence were added in later records. Founder G4 remains open.",
+              "outcome": "Prior P2 resolved; no findings. Original observation hashes and all 140 PR inputs independently checked; intermediate local refs preserved outside publication ancestry.",
+              "path": "specs/021-m4-alpha-runtime/packaging-review.json",
+              "sha256": "4b4730a096ffe28187ce33e04a86c2ac71eb3476aa28758549c778a8317ca9a6"
+            },
+            {
+              "command": "Claude Code 2.1.236 with --mcp-config, --strict-mcp-config, --input-format stream-json and --output-format stream-json",
+              "limits": "Actual model-backed Claude.ai Max client on Darwin arm64; one owned two-edit fixture; usage credits disabled by operator confirmation; no API/provider fallback; no scientific, production, or whole-M4 acceptance.",
+              "outcome": "Passed actual prepare/verify, missing-grant refusal, separately granted execution, controlled disconnect after operation a, same-session resume with a new local grant, independent final-tree verification, and non-repeat retry of the consumed grant. Incomplete tool arguments were refused without side effects and corrected.",
+              "path": "specs/021-m4-alpha-runtime/host-evidence/claude.json",
+              "sha256": "7cc71e31c3ef01722f3e1da26cb638247b7dc8ff93bc5d5b7c09abab4ee8e79b"
+            }
+          ],
+          "planned_evidence": "Obtained: relevant implementation and host evidence is recorded; T013 evidence reconciliation and independent review are complete. The founder G4 NO-GO on usefulness under current evidence is recorded in g4-decision.json. It does not accept whole M4 or change M3/M3.5 scientific gates.",
+          "test_file": "specs/021-m4-alpha-runtime/validation-plan.md",
+          "test_name": "SC-013",
+          "then": "Given installed Codex and Claude Code versions and approved disposable fixtures, when each actual host invokes the adapter, then prepare, authorized execution, refusal and recovery produce independently verifiable records.",
+          "when": "The prospective procedure is implemented and executed against a frozen candidate."
+        },
+        {
+          "given": "The bounded inputs and preconditions described in the specification.",
+          "id": "SC-014",
+          "obtained_evidence": [
+            {
+              "command": ".venv-speckit/bin/python -m scripts.capture_m4_codex --output /tmp/m4-alpha-codex-67b8b52.json",
+              "limits": "This earlier Codex capture exercised the installed client bridge without a model turn and did not include the later Claude host exercise; owned fixture only.",
+              "outcome": "Passed actual Codex 0.159.0-alpha.12.1 MCP bridge: six tools, missing-grant refusal, interrupted prefix, resume, read-only retry and abort; zero model calls.",
+              "path": "specs/021-m4-alpha-runtime/host-evidence/codex.json",
+              "sha256": "270913b17639942bf9c79a78ba64c642e7553814f899db0aac2fa226ff46887f"
+            },
+            {
+              "command": "Two fresh independent read-only review agents using gpt-6-luna on develop merge-base through 67b8b52",
+              "limits": "Implementation review, no tests executed by reviewers, no whole-M4 or scientific acceptance. Later evidence packaging separately checked.",
+              "outcome": "Both reviews completed with no findings; raw reports preserved.",
+              "path": "specs/021-m4-alpha-runtime/implementation-review.json",
+              "sha256": "27c3eeaa534776bd60605d62fd5ace6da4c442853495f47d029f3d697ec10d9c"
+            },
+            {
+              "command": ".venv-speckit/bin/python -m scripts.validate_change --base develop --profile pr",
+              "limits": "Historical local PR profile on preserved 41ee2b6. Its complete source binding remains in implementation-assurance-9108a20.json; this later record only updates tracking metadata and evidence. New tracking test checked separately.",
+              "outcome": "PR profile passed: 368 tests passed and four explicitly audited skips.",
+              "path": "specs/021-m4-alpha-runtime/c4-evidence/pr-validation.txt",
+              "sha256": "eee49d79607d2b3d4703a29a7f080eb03813910da0b14afb82ca74d764c2f800"
+            },
+            {
+              "command": "Independent read-only gpt-6-luna re-review of sanitized candidate a54f9d6",
+              "limits": "At this historical record-only audit, prior implementation reviews and the complete PR profile remained separately bound; Claude and Linux evidence were added in later records. Founder G4 remains open.",
+              "outcome": "Prior P2 resolved; no findings. Original observation hashes and all 140 PR inputs independently checked; intermediate local refs preserved outside publication ancestry.",
+              "path": "specs/021-m4-alpha-runtime/packaging-review.json",
+              "sha256": "4b4730a096ffe28187ce33e04a86c2ac71eb3476aa28758549c778a8317ca9a6"
+            },
+            {
+              "command": "Claude Code 2.1.236 with --mcp-config, --strict-mcp-config, --input-format stream-json and --output-format stream-json",
+              "limits": "Actual model-backed Claude.ai Max client on Darwin arm64; one owned two-edit fixture; usage credits disabled by operator confirmation; no API/provider fallback; no scientific, production, or whole-M4 acceptance.",
+              "outcome": "Passed actual prepare/verify, missing-grant refusal, separately granted execution, controlled disconnect after operation a, same-session resume with a new local grant, independent final-tree verification, and non-repeat retry of the consumed grant. Incomplete tool arguments were refused without side effects and corrected.",
+              "path": "specs/021-m4-alpha-runtime/host-evidence/claude.json",
+              "sha256": "7cc71e31c3ef01722f3e1da26cb638247b7dc8ff93bc5d5b7c09abab4ee8e79b"
+            }
+          ],
+          "planned_evidence": "Obtained: relevant implementation and host evidence is recorded; T013 evidence reconciliation and independent review are complete. The founder G4 NO-GO on usefulness under current evidence is recorded in g4-decision.json. It does not accept whole M4 or change M3/M3.5 scientific gates.",
+          "test_file": "specs/021-m4-alpha-runtime/validation-plan.md",
+          "test_name": "SC-014",
+          "then": "A simulated peer or Spec Kit test is not a real host observation. Record host version, negotiated protocol, candidate, platform, transcript redactions and verifier result.",
+          "when": "The prospective procedure is implemented and executed against a frozen candidate."
+        }
+      ],
+      "text": "Real host compatibility"
+    },
+    {
+      "id": "REQ-008",
+      "scenarios": [
+        {
+          "given": "The bounded inputs and preconditions described in the specification.",
+          "id": "SC-015",
+          "obtained_evidence": [
+            {
+              "command": ".venv-speckit/bin/python -m scripts.validate_change --base develop --profile quick",
+              "limits": "This earlier local engineering validation did not include external scientific validation, Linux reproduction, or host exercises; separate Linux and Claude evidence is recorded below. It does not establish whole-M4 acceptance.",
+              "outcome": "Passed: 372 tests, four skips: three deferred SPEC-019 implementation tests and one unavailable private-history test; all 42 C1/C2/MCP tests execute.",
+              "path": "specs/021-m4-alpha-runtime/c3-evidence/validation.txt",
+              "sha256": "953ae5cd4130bd71f82ae9efe7a1d6d5f9646315858002234bafb79d8f7f8ed1"
+            },
+            {
+              "command": "Absolute isolated Python -m scripts.reproduce_m4_alpha --output /tmp/m4-alpha-darwin-67b8b52.json from fresh checkout",
+              "limits": "Darwin arm64 with existing isolated Python 3.13.11; no fresh dependency environment or external independent validation. This earlier Darwin record did not include Linux; separate Linux reproduction is recorded below.",
+              "outcome": "Passed: 61 tests, no skips; fresh checkout/process, bound inputs and working tree unchanged.",
+              "path": "specs/021-m4-alpha-runtime/c4-evidence/darwin.json",
+              "sha256": "7cd268f16eee50c824415775eef3a465cdd0099e38143e43a66be8cfe25f135b"
+            },
+            {
+              "command": ".venv-speckit/bin/python -m scripts.measure_m4_alpha --output /tmp/m4-alpha-measurement-67b8b52.json",
+              "limits": "Descriptive two-edit corpus, uncontrolled caches/background, all verification and cleanup included. Safety and four-worker probes are in reproduction; no general speedup claim. Founder G4 go/no-go remains required.",
+              "outcome": "Captured six paired trials, equivalent verified trees in all pairs; median serial/parallel wall ratio 0.5581; negative-or-null-descriptive.",
+              "path": "specs/021-m4-alpha-runtime/c4-evidence/measurement.json",
+              "sha256": "6c76adc79310aa35d33c7d6c23ba0b63bd6fbe7a0a507744ed086f1c1990e76b"
+            },
+            {
+              "command": "Two fresh independent read-only review agents using gpt-6-luna on develop merge-base through 67b8b52",
+              "limits": "Implementation review, no tests executed by reviewers, no whole-M4 or scientific acceptance. Later evidence packaging separately checked.",
+              "outcome": "Both reviews completed with no findings; raw reports preserved.",
+              "path": "specs/021-m4-alpha-runtime/implementation-review.json",
+              "sha256": "27c3eeaa534776bd60605d62fd5ace6da4c442853495f47d029f3d697ec10d9c"
+            },
+            {
+              "command": ".venv-speckit/bin/python -m scripts.validate_change --base develop --profile pr",
+              "limits": "Historical local PR profile on preserved 41ee2b6. Its complete source binding remains in implementation-assurance-9108a20.json; this later record only updates tracking metadata and evidence. New tracking test checked separately.",
+              "outcome": "PR profile passed: 368 tests passed and four explicitly audited skips.",
+              "path": "specs/021-m4-alpha-runtime/c4-evidence/pr-validation.txt",
+              "sha256": "eee49d79607d2b3d4703a29a7f080eb03813910da0b14afb82ca74d764c2f800"
+            },
+            {
+              "command": "Independent read-only gpt-6-luna re-review of sanitized candidate a54f9d6",
+              "limits": "At this historical record-only audit, prior implementation reviews and the complete PR profile remained separately bound; Claude and Linux evidence were added in later records. Founder G4 remains open.",
+              "outcome": "Prior P2 resolved; no findings. Original observation hashes and all 140 PR inputs independently checked; intermediate local refs preserved outside publication ancestry.",
+              "path": "specs/021-m4-alpha-runtime/packaging-review.json",
+              "sha256": "4b4730a096ffe28187ce33e04a86c2ac71eb3476aa28758549c778a8317ca9a6"
+            },
+            {
+              "command": "Reviewed auxiliary GitHub workflow run 37197461233: python3 -m scripts.reproduce_m4_alpha",
+              "limits": "Fresh hosted Linux core/protocol engineering reproduction only; no Claude host observation, external scientific validation, merge or founder G4 approval.",
+              "outcome": "Passed on frozen 9108a20: Linux x86_64, Python 3.12.14, Git 2.55.0; 61 tests, no skips; candidate/source/log bindings verified.",
+              "path": "specs/021-m4-alpha-runtime/c4-evidence/linux.json",
+              "sha256": "7d354e11bf8aef461c3345af57533cc53d83a78a227bf59f2478e65258853c87"
+            },
+            {
+              "command": "GitHub PR CI run 37197290307",
+              "limits": "CI is separate from fresh reproduction and host observations. Spec Kit integration matrix skipped by selection condition; formal closure provenance steps retain their own selection gates.",
+              "outcome": "Completed success: 372 tests, 367 pass, five audited skips; selected integration matrix explicitly skipped.",
+              "path": "specs/021-m4-alpha-runtime/c4-evidence/ci-9108a20.json",
+              "sha256": "b8e8ac923087022aa59de761ecb9e4c1d06fa7ec092c2cf36a182a9508300ebb"
+            },
+            {
+              "command": "Independent read-only gpt-6-luna review of 9108a20..acdf92e",
+              "limits": "This historical evidence-only review predates the separate Claude host observation; no merge or G4 acceptance was included.",
+              "outcome": "No findings; 58 Linux inputs, provenance and lossless log/assurance hashes independently checked.",
+              "path": "specs/021-m4-alpha-runtime/linux-packaging-review.json",
+              "sha256": "202de6f1f60dea0565a2f2d633a40208dfadd3b2ba57eea73458e0b20c882ae4"
+            },
+            {
+              "command": "Hash-bound six-row evidence and authority reconciliation for the G4 decision packet.",
+              "limits": "Record-only T013 reconciliation; the descriptive utility result still requires a separate founder G4 GO/NO-GO. No M3/M3.5 scientific gate is changed.",
+              "outcome": "Six exit rows mapped to their scenarios, frozen source candidates, platform evidence, 56 artifact references and explicit limits; independent Luna review of the exact reconciliation commit found no actionable findings.",
+              "path": "specs/021-m4-alpha-runtime/t013-reconciliation.json",
+              "sha256": "d1d670a91cee8e0e862c01554298e2528323954cbf9ef2d814d8b1323779ca24"
+            }
+          ],
+          "planned_evidence": "T013 evidence reconciliation and independent Luna review are complete. The founder G4 NO-GO on usefulness under current evidence is recorded in g4-decision.json; whole-M4 acceptance is not claimed.",
+          "test_file": "specs/021-m4-alpha-runtime/validation-plan.md",
+          "test_name": "SC-015",
+          "then": "Given all six roadmap deliverables and a frozen candidate, when closure is reviewed, then every exit row has obtained evidence, independent review and a separate founder decision.",
+          "when": "The prospective procedure is implemented and executed against a frozen candidate."
+        },
+        {
+          "given": "The bounded inputs and preconditions described in the specification.",
+          "id": "SC-016",
+          "obtained_evidence": [
+            {
+              "command": ".venv-speckit/bin/python -m scripts.validate_change --base develop --profile quick",
+              "limits": "This earlier local engineering validation did not include external scientific validation, Linux reproduction, or host exercises; separate Linux and Claude evidence is recorded below. It does not establish whole-M4 acceptance.",
+              "outcome": "Passed: 372 tests, four skips: three deferred SPEC-019 implementation tests and one unavailable private-history test; all 42 C1/C2/MCP tests execute.",
+              "path": "specs/021-m4-alpha-runtime/c3-evidence/validation.txt",
+              "sha256": "953ae5cd4130bd71f82ae9efe7a1d6d5f9646315858002234bafb79d8f7f8ed1"
+            },
+            {
+              "command": "Absolute isolated Python -m scripts.reproduce_m4_alpha --output /tmp/m4-alpha-darwin-67b8b52.json from fresh checkout",
+              "limits": "Darwin arm64 with existing isolated Python 3.13.11; no fresh dependency environment or external independent validation. This earlier Darwin record did not include Linux; separate Linux reproduction is recorded below.",
+              "outcome": "Passed: 61 tests, no skips; fresh checkout/process, bound inputs and working tree unchanged.",
+              "path": "specs/021-m4-alpha-runtime/c4-evidence/darwin.json",
+              "sha256": "7cd268f16eee50c824415775eef3a465cdd0099e38143e43a66be8cfe25f135b"
+            },
+            {
+              "command": ".venv-speckit/bin/python -m scripts.measure_m4_alpha --output /tmp/m4-alpha-measurement-67b8b52.json",
+              "limits": "Descriptive two-edit corpus, uncontrolled caches/background, all verification and cleanup included. Safety and four-worker probes are in reproduction; no general speedup claim. Founder G4 go/no-go remains required.",
+              "outcome": "Captured six paired trials, equivalent verified trees in all pairs; median serial/parallel wall ratio 0.5581; negative-or-null-descriptive.",
+              "path": "specs/021-m4-alpha-runtime/c4-evidence/measurement.json",
+              "sha256": "6c76adc79310aa35d33c7d6c23ba0b63bd6fbe7a0a507744ed086f1c1990e76b"
+            },
+            {
+              "command": "Two fresh independent read-only review agents using gpt-6-luna on develop merge-base through 67b8b52",
+              "limits": "Implementation review, no tests executed by reviewers, no whole-M4 or scientific acceptance. Later evidence packaging separately checked.",
+              "outcome": "Both reviews completed with no findings; raw reports preserved.",
+              "path": "specs/021-m4-alpha-runtime/implementation-review.json",
+              "sha256": "27c3eeaa534776bd60605d62fd5ace6da4c442853495f47d029f3d697ec10d9c"
+            },
+            {
+              "command": ".venv-speckit/bin/python -m scripts.validate_change --base develop --profile pr",
+              "limits": "Historical local PR profile on preserved 41ee2b6. Its complete source binding remains in implementation-assurance-9108a20.json; this later record only updates tracking metadata and evidence. New tracking test checked separately.",
+              "outcome": "PR profile passed: 368 tests passed and four explicitly audited skips.",
+              "path": "specs/021-m4-alpha-runtime/c4-evidence/pr-validation.txt",
+              "sha256": "eee49d79607d2b3d4703a29a7f080eb03813910da0b14afb82ca74d764c2f800"
+            },
+            {
+              "command": "Independent read-only gpt-6-luna re-review of sanitized candidate a54f9d6",
+              "limits": "At this historical record-only audit, prior implementation reviews and the complete PR profile remained separately bound; Claude and Linux evidence were added in later records. Founder G4 remains open.",
+              "outcome": "Prior P2 resolved; no findings. Original observation hashes and all 140 PR inputs independently checked; intermediate local refs preserved outside publication ancestry.",
+              "path": "specs/021-m4-alpha-runtime/packaging-review.json",
+              "sha256": "4b4730a096ffe28187ce33e04a86c2ac71eb3476aa28758549c778a8317ca9a6"
+            },
+            {
+              "command": "Reviewed auxiliary GitHub workflow run 37197461233: python3 -m scripts.reproduce_m4_alpha",
+              "limits": "Fresh hosted Linux core/protocol engineering reproduction only; no Claude host observation, external scientific validation, merge or founder G4 approval.",
+              "outcome": "Passed on frozen 9108a20: Linux x86_64, Python 3.12.14, Git 2.55.0; 61 tests, no skips; candidate/source/log bindings verified.",
+              "path": "specs/021-m4-alpha-runtime/c4-evidence/linux.json",
+              "sha256": "7d354e11bf8aef461c3345af57533cc53d83a78a227bf59f2478e65258853c87"
+            },
+            {
+              "command": "GitHub PR CI run 37197290307",
+              "limits": "CI is separate from fresh reproduction and host observations. Spec Kit integration matrix skipped by selection condition; formal closure provenance steps retain their own selection gates.",
+              "outcome": "Completed success: 372 tests, 367 pass, five audited skips; selected integration matrix explicitly skipped.",
+              "path": "specs/021-m4-alpha-runtime/c4-evidence/ci-9108a20.json",
+              "sha256": "b8e8ac923087022aa59de761ecb9e4c1d06fa7ec092c2cf36a182a9508300ebb"
+            },
+            {
+              "command": "Independent read-only gpt-6-luna review of 9108a20..acdf92e",
+              "limits": "This historical evidence-only review predates the separate Claude host observation; no merge or G4 acceptance was included.",
+              "outcome": "No findings; 58 Linux inputs, provenance and lossless log/assurance hashes independently checked.",
+              "path": "specs/021-m4-alpha-runtime/linux-packaging-review.json",
+              "sha256": "202de6f1f60dea0565a2f2d633a40208dfadd3b2ba57eea73458e0b20c882ae4"
+            },
+            {
+              "command": "Hash-bound six-row evidence and authority reconciliation for the G4 decision packet.",
+              "limits": "Record-only T013 reconciliation; the descriptive utility result still requires a separate founder G4 GO/NO-GO. No M3/M3.5 scientific gate is changed.",
+              "outcome": "Six exit rows mapped to their scenarios, frozen source candidates, platform evidence, 56 artifact references and explicit limits; independent Luna review of the exact reconciliation commit found no actionable findings.",
+              "path": "specs/021-m4-alpha-runtime/t013-reconciliation.json",
+              "sha256": "d1d670a91cee8e0e862c01554298e2528323954cbf9ef2d814d8b1323779ca24"
+            }
+          ],
+          "planned_evidence": "Report all obtained serial/parallel, safety, overlap, recovery and cost outcomes and retain the founder G4 NO-GO record. The conditional Spec Kit integration matrix was skipped; the affected check remains unexecuted and no whole-M4 acceptance is claimed.",
+          "test_file": "specs/021-m4-alpha-runtime/validation-plan.md",
+          "test_name": "SC-016",
+          "then": "Unexecuted or externally blocked checks keep the affected exit row open. Report serial/parallel agreement, unsafe admissions, actual worker overlap, diagnostic quality and all measured cost components.",
+          "when": "The prospective procedure is implemented and executed against a frozen candidate."
+        }
+      ],
+      "text": "Reproducible bounded M4 closure"
+    }
+  ],
+  "scientific_limits": "No arbitrary-agent safety, production, source promotion, external independent scientific validation, formal result or M3/M3.5 admission.",
+  "scope": "Approved bounded SPEC-021 implementation with obtained Darwin/Linux reproduction, actual Codex and Claude host exercises, measurement and implementation reviews. T013 evidence reconciliation and independent Luna review are complete. The founder recorded G4 NO-GO on usefulness under current evidence; SPEC-021 and M4 remain open, with no whole-M4 acceptance.",
+  "stage": "draft"
+}

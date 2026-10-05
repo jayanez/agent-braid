@@ -1,0 +1,15 @@
+{
+  "budget": "Included quota only, no additional charges; no API or provider fallback. Additional-usage disablement confirmation pending.",
+  "claim": "Access preflight only; does not discharge actual Claude tool/refusal/disconnect/recovery requirements.",
+  "command": "claude auth status",
+  "exitCode": 1,
+  "host": "Claude Code",
+  "modelCalls": 0,
+  "result": {
+    "apiProvider": "firstParty",
+    "authMethod": "none",
+    "loggedIn": false
+  },
+  "status": "pending-subscription-login",
+  "version": "2.1.236"
+}

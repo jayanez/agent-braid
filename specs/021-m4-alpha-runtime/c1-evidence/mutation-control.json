@@ -1,0 +1,8 @@
+{
+  "mutation": "Canonical JSON equality replaced by Python dictionary equality",
+  "isolatedCopy": true,
+  "test": "RuntimePolicyTests.test_policy_or_limit_changes_are_refused_after_digest_recomputation",
+  "outcome": "Expected failure detected for boolean-type corruption; active checkout unchanged.",
+  "exitCode": 1,
+  "output": "test_policy_or_limit_changes_are_refused_after_digest_recomputation (tests.test_m4_alpha_policy.RuntimePolicyTests.test_policy_or_limit_changes_are_refused_after_digest_recomputation) ... \n  test_policy_or_limit_changes_are_refused_after_digest_recomputation (tests.test_m4_alpha_policy.RuntimePolicyTests.test_policy_or_limit_changes_are_refused_after_digest_recomputation) (change='boolean-type') ... FAIL\n\n======================================================================\nFAIL: test_policy_or_limit_changes_are_refused_after_digest_recomputation (tests.test_m4_alpha_policy.RuntimePolicyTests.test_policy_or_limit_changes_are_refused_after_digest_recomputation) (change='boolean-type')\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/Users/juanyanez/Repos/Personal/agent-braid-m4-first-cut-20261003/tests/test_m4_alpha_policy.py\", line 76, in test_policy_or_limit_changes_are_refused_after_digest_recomputation\n    with self.assertRaises(policy.InvalidRuntimePolicy): policy.verify_policy_plan(bad)\n         ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: InvalidRuntimePolicy not raised\n\n----------------------------------------------------------------------\nRan 1 test in 20.861s\n\nFAILED (failures=1)\n"
+}

@@ -1,0 +1,29 @@
+{
+  "recordVersion": "m4-g1-implementation-preflight-1",
+  "reviewedAt": "2026-10-04",
+  "reviewKind": "implementation-compatibility-and-boundary-review",
+  "independentReview": false,
+  "founderScopeRecord": "specs/021-m4-alpha-runtime/founder-review.json",
+  "protocol": "2025-11-25",
+  "optionalSdk": "none; stdlib transport",
+  "coreRuntimeDependencies": [],
+  "artifacts": [
+    {
+      "path": "specs/021-m4-alpha-runtime/g1-evidence/host-handshakes.json",
+      "sha256": "1fe2fa29170c68d0b95c0477a58d238a0f5bfc09ef5ed84e58171769800d76f1"
+    },
+    {
+      "path": "specs/021-m4-alpha-runtime/g1-evidence/protocol-pin.json",
+      "sha256": "21998652ae4d1726f60588452369daa63b2603ff67a3e2c3102871d388a04e95"
+    }
+  ],
+  "executionBoundary": "Owned fixed-patch fixtures only, within recorded phase budgets and explicit per-run grants.",
+  "modelSpendAuthorized": 0,
+  "pending": [
+    "Real-host tool execution and recovery evidence",
+    "Independent Luna review",
+    "Fresh Linux expanded-runtime reproduction",
+    "Whole-M4 founder decision"
+  ],
+  "result": "G1 pinned for local deterministic implementation; model-backed host exercises retain a budget gate."
+}
