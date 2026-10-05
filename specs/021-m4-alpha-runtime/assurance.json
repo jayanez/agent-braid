@@ -91,7 +91,7 @@
     "mode": "historical"
   },
   "compatibility": "Zero core runtime dependencies; separate opt-in runtime/transport contracts; legacy executionAuthorization false.",
-  "domain": "2\u20134 fixed ordinary-text A/M patches; private Git tracked-tree effects and bounded stdio transport.",
+  "domain": "2–4 fixed ordinary-text A/M patches; private Git tracked-tree effects and bounded stdio transport.",
   "evidence_snapshot": {
     "commit": "53f87bc94db32a93b3c8fee74d3fb3f3e2abe4d8",
     "mode": "historical"
@@ -451,7 +451,7 @@
           "planned_evidence": "Local automated checks and Darwin reproduction obtained; full Claude host and final founder gates remain separate.",
           "test_file": "tests/test_m4_alpha_scheduler.py",
           "test_name": "RuntimeSchedulerTests.test_real_overlap_isolated_resources_and_serial_effect_agreement",
-          "then": "Given 2\u20134 fixed operations with complete dependencies and adapter-verified footprints, when a ready wave is admitted, then isolated workers may prepare concurrently and one coordinator alone publishes checkpoints.",
+          "then": "Given 2–4 fixed operations with complete dependencies and adapter-verified footprints, when a ready wave is admitted, then isolated workers may prepare concurrently and one coordinator alone publishes checkpoints.",
           "when": "The prospective procedure is implemented and executed against a frozen candidate."
         },
         {
@@ -929,9 +929,16 @@
               "outcome": "Prior P2 resolved; no findings. Original observation hashes and all 140 PR inputs independently checked; intermediate local refs preserved outside publication ancestry.",
               "path": "specs/021-m4-alpha-runtime/packaging-review.json",
               "sha256": "4b4730a096ffe28187ce33e04a86c2ac71eb3476aa28758549c778a8317ca9a6"
+            },
+            {
+              "command": "Claude Code 2.1.236 with --mcp-config, --strict-mcp-config, --input-format stream-json and --output-format stream-json",
+              "limits": "Actual model-backed Claude.ai Max client on Darwin arm64; one owned two-edit fixture; usage credits disabled by operator confirmation; no API/provider fallback; no scientific, production, or whole-M4 acceptance.",
+              "outcome": "Passed actual prepare/verify, missing-grant refusal, separately granted execution, controlled disconnect after operation a, same-session resume with a new local grant, independent final-tree verification, and non-repeat retry of the consumed grant. Incomplete tool arguments were refused without side effects and corrected.",
+              "path": "specs/021-m4-alpha-runtime/host-evidence/claude.json",
+              "sha256": "d0f3f485c8dc000cb18e12784b98322768a680abc13c7c9e85e58d3a99476e6c"
             }
           ],
-          "planned_evidence": "Actual Codex obtained; full actual Claude Code tool/refusal/disconnect/recovery exercise remains pending an explicit consumption boundary.",
+          "planned_evidence": "Actual Codex and Claude Code host exercises obtained; final combined evidence/authority reconciliation and founder G4 remain separate.",
           "test_file": "specs/021-m4-alpha-runtime/validation-plan.md",
           "test_name": "SC-013",
           "then": "Given installed Codex and Claude Code versions and approved disposable fixtures, when each actual host invokes the adapter, then prepare, authorized execution, refusal and recovery produce independently verifiable records.",
@@ -968,9 +975,16 @@
               "outcome": "Prior P2 resolved; no findings. Original observation hashes and all 140 PR inputs independently checked; intermediate local refs preserved outside publication ancestry.",
               "path": "specs/021-m4-alpha-runtime/packaging-review.json",
               "sha256": "4b4730a096ffe28187ce33e04a86c2ac71eb3476aa28758549c778a8317ca9a6"
+            },
+            {
+              "command": "Claude Code 2.1.236 with --mcp-config, --strict-mcp-config, --input-format stream-json and --output-format stream-json",
+              "limits": "Actual model-backed Claude.ai Max client on Darwin arm64; one owned two-edit fixture; usage credits disabled by operator confirmation; no API/provider fallback; no scientific, production, or whole-M4 acceptance.",
+              "outcome": "Passed actual prepare/verify, missing-grant refusal, separately granted execution, controlled disconnect after operation a, same-session resume with a new local grant, independent final-tree verification, and non-repeat retry of the consumed grant. Incomplete tool arguments were refused without side effects and corrected.",
+              "path": "specs/021-m4-alpha-runtime/host-evidence/claude.json",
+              "sha256": "d0f3f485c8dc000cb18e12784b98322768a680abc13c7c9e85e58d3a99476e6c"
             }
           ],
-          "planned_evidence": "Actual Codex obtained; full actual Claude Code tool/refusal/disconnect/recovery exercise remains pending an explicit consumption boundary.",
+          "planned_evidence": "Actual Codex and Claude Code host exercises obtained; final combined evidence/authority reconciliation and founder G4 remain separate.",
           "test_file": "specs/021-m4-alpha-runtime/validation-plan.md",
           "test_name": "SC-014",
           "then": "A simulated peer or Spec Kit test is not a real host observation. Record host version, negotiated protocol, candidate, platform, transcript redactions and verifier result.",

@@ -53,10 +53,10 @@ Fresh reproduction and human gates remain separate.
   - Targets: `agent_braid/mcp_runtime.py; optional package metadata; tests/test_m4_alpha_mcp.py`.
   - Verification/evidence: Deterministic protocol peer tests for lifecycle, errors, message budgets, cancellation and identity preservation.
 
-- [ ] T010: C3 Capture actual Codex and Claude Code owned-fixture exercise records.
+- [x] T010: C3 Capture actual Codex and Claude Code owned-fixture exercise records.
   - Trace: REQ-007 / SC-013,014. Dependencies: T009.
   - Targets: `host launch recipes; specs/021-m4-alpha-runtime/host-evidence/`.
-  - Verification/evidence: Both actual clients perform prepare, authorized execute, refusal and disconnect/recovery; independently verify results.
+  - Verification/evidence: Both actual clients perform prepare, authorized execute, refusal and disconnect/recovery; independently verify results. Claude record is bound to candidate `d46fc52` in `host-evidence/claude.json`.
 
 - [x] T011: C4 Add deterministic CI policy/transport checks and fresh Darwin/Linux reproduction.
   - Trace: REQ-008 / SC-015,016. Dependencies: T009.
@@ -80,8 +80,8 @@ Fresh reproduction and human gates remain separate.
 
 ## Obtained progress and remaining gates
 
-T010: actual Codex six-tool/refusal/disconnect/recovery capture passed with zero model calls; Claude full exercise pending.
+T010: actual Codex six-tool/refusal/disconnect/recovery capture passed with zero model calls. Actual Claude Code 2.1.236 on Claude.ai Max completed prepare, missing-grant refusal, authorized execute, controlled disconnect after `a`, resumed recovery, final verification, and non-repeat retry on frozen candidate `d46fc52`; usage credits were disabled by operator confirmation. The MCP server rejected incomplete argument attempts without allocating a run; the corrected calls passed. No source or candidate changes occurred.
 T011: workflow and actionlint passed; fresh Darwin and hosted Linux checkout/process reproductions each passed 61 tests without skips; Linux evidence and CI are obtained.
 T012: frozen measurement protocol executed, six paired trials captured; Linux prerequisite obtained; founder G4 utility decision remains separate.
-T013: two independent Luna implementation reviews report no findings; remaining full Claude host dependency stays open. The stable PR profile passed; final record-only binding checks are separate.
+T013: two independent Luna implementation reviews report no findings, the stable PR profile passed, and record-only Linux reconciliation is recorded. Final combined review/binding of the new Claude evidence and authority reconciliation remain open.
 T014: whole-M4 founder decision and remote apply remain pending; publication and Linux execution were explicitly authorized separately; merge remains unapproved.
