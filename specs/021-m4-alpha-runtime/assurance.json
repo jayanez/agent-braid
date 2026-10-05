@@ -93,7 +93,7 @@
   "compatibility": "Zero core runtime dependencies; separate opt-in runtime/transport contracts; legacy executionAuthorization false.",
   "domain": "2\u20134 fixed ordinary-text A/M patches; private Git tracked-tree effects and bounded stdio transport.",
   "evidence_snapshot": {
-    "commit": "8b4d6c2384016283381fd6f9ca42667947b86a5c",
+    "commit": "b987efed87132a11d011745525796875271eb446",
     "mode": "historical"
   },
   "execution_contract": "Existing serial contract unchanged; expanded isolated parallel preparation and coordinator publication contract proposed, not adopted.",
