@@ -1,6 +1,6 @@
 # Tasks
 
-G0 is recorded; bounded implementation, actual host capture and C4 reproductions are obtained. T013 reconciliation and independent review are complete. The founder recorded G4 NO-GO on utility under current evidence; whole-M4 acceptance was not granted. T014 remains open for the separately authorized governed tracking apply. This document assigns dependencies, not concurrent-agent authority.
+G0 is recorded; bounded implementation, actual host capture and C4 reproductions are obtained. T013 reconciliation and independent review are complete. The founder recorded G4 NO-GO on utility under current evidence; whole-M4 acceptance was not granted. T014's administrative tracking work is complete; its checkbox update is proposed for review and its issue remains open until merged-source reconciliation. This document assigns dependencies, not concurrent-agent authority.
 Implementation evidence below is separate from the historically approved scope proposal.
 
 Each implementation task runs `.venv-speckit/bin/python -m scripts.validate_change
@@ -73,10 +73,10 @@ Fresh reproduction and human gates remain separate.
   - Targets: `specs/021-m4-alpha-runtime/assurance.json; t013-reconciliation.json; t013-luna-review.json; decision-packet.md`.
   - Verification/evidence: PR profile and current PR checks passed on head `f5d6b21`; record-only delta passed the planner-selected sensitive profile (372 tests, four audited skips). Fresh independent gpt-6-luna review of `b1d602e1b96591fe693b0f9112b43bb4b98baaaa` found no findings and verified all 56 path/hash references across 13 unique files. Reconciliation SHA-256 `d1d670a91cee8e0e862c01554298e2528323954cbf9ef2d814d8b1323779ca24`; review record SHA-256 `b5e7b3bb9d0c4bc098b3b4770e26a4f3334b4e200c3c947f174dd121557d26f2`. T014 remains separate.
 
-- [ ] T014: G4 Record separate founder whole-M4 alpha decision and governed tracking update.
+- [x] T014: G4 Record separate founder whole-M4 alpha decision and governed tracking update.
   - Trace: REQ-008 / SC-015,016. Dependencies: T013.
   - Targets: `specs/021-m4-alpha-runtime/g4-decision.json; ROADMAP.md; docs/development/github-tracking.json`.
-  - Verification/evidence: Founder NO-GO is recorded in `g4-decision.json`; SPEC-021 and M4 remain open. The current tracking source already preserves those open states. Remote tracking apply is a separate operation and remains pending explicit authorization.
+  - Verification/evidence: Founder NO-GO remains recorded in `g4-decision.json`; SPEC-021 and M4 remain open. The separately authorized merged-source tracking apply completed 42 reviewed operations, followed by `operations: []`; all three private Project views and the four mapped Review pending entries were verified. The non-normative operations receipt is `docs/experiments/evidence/autonomous-delivery-2026-10-06/tracking-receipt.json`; interpretation and source/issue boundaries are recorded in `docs/development/autonomous-delivery.md`. This amendment grants no new founder or milestone acceptance, and issue T014 remains open until this source is merged and separately reconciled.
 
 ## Obtained progress and remaining gates
 
@@ -84,4 +84,4 @@ T010: actual Codex six-tool/refusal/disconnect/recovery capture passed with zero
 T011: workflow and actionlint passed; fresh Darwin and hosted Linux checkout/process reproductions each passed 61 tests without skips; Linux evidence and CI are obtained.
 T012: frozen measurement protocol executed, six paired trials captured; Linux prerequisite obtained; the founder later recorded G4 NO-GO on utility under the current evidence.
 T013: complete. The six-row reconciliation `specs/021-m4-alpha-runtime/t013-reconciliation.json` (SHA-256 `d1d670a91cee8e0e862c01554298e2528323954cbf9ef2d814d8b1323779ca24`) was independently reviewed with no findings at commit `b1d602e1b96591fe693b0f9112b43bb4b98baaaa`; review record `specs/021-m4-alpha-runtime/t013-luna-review.json` (SHA-256 `b5e7b3bb9d0c4bc098b3b4770e26a4f3334b4e200c3c947f174dd121557d26f2`).
-T014: G4 NO-GO recorded on 2026-10-05; the task remains open for the separate governed tracking apply. M4 acceptance was not granted. Publication and Linux execution were explicitly authorized separately; merge remains unapproved.
+T014: G4 NO-GO recorded on 2026-10-05; the separately authorized governed tracking apply and Project verification completed on 2026-10-06. Administrative completion is proposed in this task list; the issue stays open until merged-source reconciliation. M4 acceptance was not granted. Publication and Linux execution were explicitly authorized separately; merge remains unapproved.
