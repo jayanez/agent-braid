@@ -1,0 +1,237 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Feature-local trace-provenance 0.1.0-experimental",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "traceProvenanceVersion": {
+      "const": "0.1.0-experimental"
+    },
+    "mapper": {
+      "const": "generic-metadata-v1"
+    },
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "const": "generic-metadata"
+        },
+        "schemaVersion": {
+          "const": "0.1.0-experimental"
+        },
+        "contentDigest": {
+          "type": "string",
+          "pattern": "^sha256:[0-9a-f]{64}$"
+        }
+      },
+      "required": [
+        "kind",
+        "schemaVersion",
+        "contentDigest"
+      ]
+    },
+    "admission": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "const": "synthetic"
+        }
+      },
+      "required": [
+        "kind"
+      ]
+    },
+    "sourceFileDigest": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$"
+    },
+    "sourceFileDigestMethod": {
+      "const": "local-sha256-raw-file"
+    },
+    "sourceContentDigestMethod": {
+      "const": "source-declared-sha256-canonical-recorded-metadata-verified-locally"
+    },
+    "projectionDigest": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$"
+    },
+    "reportDigest": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$"
+    },
+    "reportInputDigest": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$"
+    },
+    "mappings": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "instanceId": {
+            "type": "string",
+            "maxLength": 256,
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/@+-]{0,255}$"
+          },
+          "attemptId": {
+            "type": "string",
+            "maxLength": 256,
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/@+-]{0,255}$"
+          },
+          "definitionId": {
+            "type": "string",
+            "maxLength": 256,
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/@+-]{0,255}$"
+          },
+          "definitionDigest": {
+            "type": "string",
+            "pattern": "^sha256:[0-9a-f]{64}$"
+          },
+          "inputDigest": {
+            "type": "string",
+            "pattern": "^sha256:[0-9a-f]{64}$"
+          },
+          "losses": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "maxLength": 256,
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/@+-]{0,255}$"
+            }
+          },
+          "coverage": {
+            "enum": [
+              "complete",
+              "partial",
+              "unknown"
+            ]
+          }
+        },
+        "required": [
+          "instanceId",
+          "attemptId",
+          "definitionId",
+          "definitionDigest",
+          "inputDigest",
+          "losses",
+          "coverage"
+        ]
+      },
+      "maxItems": 64,
+      "minItems": 1
+    },
+    "events": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "eventId": {
+            "type": "string",
+            "maxLength": 256,
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/@+-]{0,255}$"
+          },
+          "instanceId": {
+            "type": "string",
+            "maxLength": 256,
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/@+-]{0,255}$"
+          },
+          "attemptId": {
+            "type": "string",
+            "maxLength": 256,
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/@+-]{0,255}$"
+          },
+          "status": {
+            "enum": [
+              "completed",
+              "started",
+              "approved",
+              "rejected",
+              "paused",
+              "resumed",
+              "deferred",
+              "unknown"
+            ]
+          },
+          "timestamp": {
+            "type": "string",
+            "maxLength": 256,
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/@+-]{0,255}$"
+          }
+        },
+        "required": [
+          "eventId",
+          "instanceId",
+          "attemptId",
+          "status"
+        ]
+      },
+      "maxItems": 512
+    },
+    "limits": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "maxBytes": {
+          "const": 1048576
+        },
+        "maxOperations": {
+          "const": 64
+        },
+        "maxEvents": {
+          "const": 512
+        },
+        "maxDepth": {
+          "const": 16
+        },
+        "maxString": {
+          "const": 256
+        },
+        "attemptsPerInstance": {
+          "const": 1
+        },
+        "realSourceAdmission": {
+          "const": false
+        }
+      },
+      "required": [
+        "maxBytes",
+        "maxOperations",
+        "maxEvents",
+        "maxDepth",
+        "maxString",
+        "attemptsPerInstance",
+        "realSourceAdmission"
+      ]
+    },
+    "executionAuthorization": {
+      "const": false
+    },
+    "scientificLimits": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  },
+  "required": [
+    "traceProvenanceVersion",
+    "mapper",
+    "source",
+    "admission",
+    "sourceFileDigest",
+    "sourceFileDigestMethod",
+    "sourceContentDigestMethod",
+    "projectionDigest",
+    "reportDigest",
+    "reportInputDigest",
+    "mappings",
+    "events",
+    "limits",
+    "executionAuthorization",
+    "scientificLimits"
+  ]
+}

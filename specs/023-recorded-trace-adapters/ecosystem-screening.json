@@ -1,0 +1,101 @@
+{
+  "ecosystemScreeningVersion": "0.1.0-experimental",
+  "sourcePins": "source-pins.json",
+  "records": [
+    {
+      "candidate": "A2A",
+      "selectedVersion": "v1.0.1",
+      "sourcePin": "a2a",
+      "conformance": {
+        "artifactPin": "a2a-tck-discovery",
+        "availability": "primary TCK README describes three transports and generated SUTs",
+        "selectedVersionMatch": "pending",
+        "executed": false,
+        "result": "not-established"
+      },
+      "license": {
+        "source": "Apache-2.0",
+        "dependencyClosure": "not-installed; per-SDK/transitive review pending"
+      },
+      "dependencyImpact": "Protocol-only metadata screening adds no dependency; future TCK/SDK would require an isolated dependency decision.",
+      "privacyRisks": [
+        "Message/artifact parts may contain personal text/files; exclude bodies and remote URLs",
+        "Authentication/push credentials require separate admission"
+      ],
+      "aimLoss": [
+        "task/context/message identities are not one operation/attempt by default",
+        "Task status and streaming ordering do not certify effects/dependency edges/read versions",
+        "Exact footprint/version completeness absent without source declarations"
+      ],
+      "baseline": "Same manually prepared AIM and bounded analyzer; no A2A workload benchmark executed",
+      "nextDecision": "watch",
+      "decisionStatus": "proposed-screening-only",
+      "reason": "Protocol and TCK discovered, but selected v1.0.1 conformance execution and operation refinement absent."
+    },
+    {
+      "candidate": "NeMo Agent Toolkit",
+      "selectedVersion": "v1.9.0",
+      "sourcePin": "nemo",
+      "conformance": {
+        "availability": "Pinned toolkit README and telemetry exporter docs; no general recorded-AIM conformance artifact established",
+        "executed": false,
+        "result": "inconclusive"
+      },
+      "license": {
+        "source": "Apache-2.0 from pinned LICENSE.md/pyproject",
+        "dependencyClosure": "Plugins and transitive distributions require separate license review; no installation"
+      },
+      "dependencyImpact": "Toolkit/exporters integrate optional plugins and collector/provider clients; unnecessary for pure importer and excluded here.",
+      "privacyRisks": [
+        "Exporters may send spans/intermediate steps to external services",
+        "Raw tool/model input/output can contain sensitive bodies"
+      ],
+      "aimLoss": [
+        "Trace execution flow/profiling data is not complete resource effects",
+        "Span hierarchy cannot replace explicit operation dependencies",
+        "Operation attempt/version ownership needs adapter-specific contract"
+      ],
+      "baseline": "Manual AIM for the same future synthetic metadata; no SDK workload evaluation",
+      "nextDecision": "research-only",
+      "decisionStatus": "proposed-screening-only",
+      "reason": "Offline documented exporter metadata may justify a future bounded spike; no toolkit dependency or live compatibility justified."
+    },
+    {
+      "candidate": "OpenTelemetry",
+      "selectedVersion": "v1.44.0",
+      "sourcePin": "otel",
+      "followupPin": "otel-genai-followup",
+      "conformance": {
+        "availability": "Semantic convention model/docs and unreleased GenAI source; no recorded-AIM consumer conformance established",
+        "executed": false,
+        "result": "inconclusive"
+      },
+      "license": {
+        "source": "Apache-2.0 from pinned LICENSE",
+        "dependencyClosure": "No instrumentation/collector installed; per-instrumentation dependencies pending"
+      },
+      "dependencyImpact": "Metadata-only screening needs no collector/SDK/exporter; none introduced.",
+      "privacyRisks": [
+        "GenAI message attributes can contain raw prompts/tool arguments/output",
+        "Export transport and span baggage need separate retention/admission review"
+      ],
+      "aimLoss": [
+        "Span/trace correlation does not identify AIM attempt or certify dependency semantics",
+        "Effect footprints/read versions are not established by GenAI operation names",
+        "Relevant GenAI model moved from selected release to development commit; stable selected version unresolved"
+      ],
+      "baseline": "Manual AIM on fixed future cases; no OTel timing/safety comparison",
+      "nextDecision": "watch",
+      "decisionStatus": "proposed-screening-only",
+      "reason": "Selected v1.44.0 deprecates/moves GenAI attributes. Followup commit is pinned but no stable released GenAI contract selected."
+    }
+  ],
+  "historicalRegistryModified": false,
+  "historicalRadarModified": false,
+  "providerAdoption": "pending",
+  "realSourceAdmission": "pending",
+  "publication": "pending",
+  "executionAuthorization": false,
+  "dependencyInstallations": 0,
+  "conformanceRuns": 0
+}

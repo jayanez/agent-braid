@@ -1,0 +1,300 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Feature-local trace-import 0.1.0-experimental",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "traceImportVersion": {
+      "const": "0.1.0-experimental"
+    },
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "const": "generic-metadata"
+        },
+        "schemaVersion": {
+          "const": "0.1.0-experimental"
+        },
+        "contentDigest": {
+          "type": "string",
+          "pattern": "^sha256:[0-9a-f]{64}$"
+        }
+      },
+      "required": [
+        "kind",
+        "schemaVersion",
+        "contentDigest"
+      ]
+    },
+    "mapper": {
+      "const": "generic-metadata-v1"
+    },
+    "admission": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "const": "synthetic"
+        }
+      },
+      "required": [
+        "kind"
+      ]
+    },
+    "operations": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "instanceId": {
+            "type": "string",
+            "maxLength": 256,
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/@+-]{0,255}$"
+          },
+          "attemptId": {
+            "type": "string",
+            "maxLength": 256,
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/@+-]{0,255}$"
+          },
+          "definition": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "id": {
+                "type": "string",
+                "maxLength": 256,
+                "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/@+-]{0,255}$"
+              },
+              "digest": {
+                "type": "string",
+                "pattern": "^sha256:[0-9a-f]{64}$"
+              }
+            },
+            "required": [
+              "id",
+              "digest"
+            ]
+          },
+          "inputDigest": {
+            "type": "string",
+            "pattern": "^sha256:[0-9a-f]{64}$"
+          },
+          "dependencies": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "maxLength": 256,
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/@+-]{0,255}$"
+            },
+            "uniqueItems": true
+          },
+          "readVersions": {
+            "type": "object",
+            "propertyNames": {
+              "type": "string",
+              "maxLength": 256,
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/@+-]{0,255}$"
+            },
+            "additionalProperties": {
+              "type": "integer",
+              "minimum": 0
+            }
+          },
+          "effects": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "declared": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "kind": {
+                      "enum": [
+                        "read",
+                        "write",
+                        "call",
+                        "transform",
+                        "emit",
+                        "delete",
+                        "deploy",
+                        "unknown"
+                      ]
+                    },
+                    "resource": {
+                      "type": "string",
+                      "maxLength": 256,
+                      "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/@+-]{0,255}$"
+                    }
+                  },
+                  "required": [
+                    "kind",
+                    "resource"
+                  ]
+                }
+              },
+              "inferred": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "kind": {
+                      "enum": [
+                        "read",
+                        "write",
+                        "call",
+                        "transform",
+                        "emit",
+                        "delete",
+                        "deploy",
+                        "unknown"
+                      ]
+                    },
+                    "resource": {
+                      "type": "string",
+                      "maxLength": 256,
+                      "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/@+-]{0,255}$"
+                    }
+                  },
+                  "required": [
+                    "kind",
+                    "resource"
+                  ]
+                }
+              },
+              "observed": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "kind": {
+                      "enum": [
+                        "read",
+                        "write",
+                        "call",
+                        "transform",
+                        "emit",
+                        "delete",
+                        "deploy",
+                        "unknown"
+                      ]
+                    },
+                    "resource": {
+                      "type": "string",
+                      "maxLength": 256,
+                      "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/@+-]{0,255}$"
+                    }
+                  },
+                  "required": [
+                    "kind",
+                    "resource"
+                  ]
+                }
+              },
+              "coverage": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "status": {
+                    "enum": [
+                      "complete",
+                      "partial",
+                      "unknown"
+                    ]
+                  },
+                  "domain": {
+                    "type": "string",
+                    "maxLength": 256,
+                    "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/@+-]{0,255}$"
+                  },
+                  "method": {
+                    "type": "string",
+                    "maxLength": 256,
+                    "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/@+-]{0,255}$"
+                  }
+                },
+                "required": [
+                  "status",
+                  "domain",
+                  "method"
+                ]
+              }
+            },
+            "required": []
+          }
+        },
+        "required": [
+          "instanceId",
+          "attemptId",
+          "definition",
+          "inputDigest"
+        ]
+      },
+      "maxItems": 64,
+      "minItems": 1
+    },
+    "events": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "eventId": {
+            "type": "string",
+            "maxLength": 256,
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/@+-]{0,255}$"
+          },
+          "instanceId": {
+            "type": "string",
+            "maxLength": 256,
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/@+-]{0,255}$"
+          },
+          "attemptId": {
+            "type": "string",
+            "maxLength": 256,
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/@+-]{0,255}$"
+          },
+          "status": {
+            "enum": [
+              "completed",
+              "started",
+              "approved",
+              "rejected",
+              "paused",
+              "resumed",
+              "deferred",
+              "unknown"
+            ]
+          },
+          "timestamp": {
+            "type": "string",
+            "maxLength": 256,
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/@+-]{0,255}$"
+          }
+        },
+        "required": [
+          "eventId",
+          "instanceId",
+          "attemptId",
+          "status"
+        ]
+      },
+      "maxItems": 512
+    }
+  },
+  "required": [
+    "traceImportVersion",
+    "source",
+    "mapper",
+    "admission",
+    "operations",
+    "events"
+  ],
+  "description": "Synthetic metadata only, maximum UTF-8 file 1 MiB and depth 16 enforced by importer. Source contentDigest binds canonical operations/events; definition/input digests remain source digests, never reconstructed from missing bodies."
+}
