@@ -24,7 +24,7 @@
   ],
   "assumptions": "Owned disposable fixtures and trusted current Git boundary; any installed isolation capabilities require explicit verification.",
   "authority_snapshot": {
-    "commit": null,
+    "commit": "cb314395ae677a12996dc05fe1d83ea97bd96b67",
     "hashes": {
       "ARCHITECTURE.md": "94e5114eb799b25ca666ef728f84ab1c88e6ad1b342e30a9e99276b8f44c30c2",
       "CONSTITUTION.md": "ff7196976a1736a639947c2ab26e8da157fef23c89ba9881312f2a36459964eb",
@@ -89,13 +89,13 @@
       "schemas/governance/public-export-manifest.schema.json": "11eb7f2594939ae9fd0c9e6cfe4423a80aba686d6cdfdd8b73b0fb84b0840aa8",
       "schemas/governance/release-validation-record.schema.json": "d9943f0c9f5520ea52e3b12bfba88240d03f8011b433fc5e35cb49549ab6e819"
     },
-    "mode": "current"
+    "mode": "historical"
   },
   "compatibility": "Draft proposals under this spec only; current public schemas, CLI and accepted ADRs unchanged.",
   "domain": "Contract assessment, private dry-runs and abstract external-effect simulations only.",
   "evidence_snapshot": {
-    "mode": "current",
-    "commit": null
+    "mode": "historical",
+    "commit": "cb314395ae677a12996dc05fe1d83ea97bd96b67"
   },
   "execution_contract": "No caller source promotion, project code or real external write; current grants and private-run restrictions unchanged.",
   "human_review": "pending",
