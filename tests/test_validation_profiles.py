@@ -19,6 +19,9 @@ ROOT = Path(__file__).resolve().parents[1]
 class ValidationProfileTests(unittest.TestCase):
     def test_decision_and_contextual_changes_select_full_sensitive_controls(self):
         for path, domain in (("agent_braid/system_one_cli.py", "system-one-core"),
+                             ("agent_braid/_advice_scope.py", "system-one-core"),
+                             ("agent_braid/_system_one_stage_manifest.py", "system-one-core"),
+                             ("agent_braid/mcp_advice.py", "system-one-core"),
                              ("agent_braid/cli.py", "system-one-core"),
                              ("tests/test_system_one_concurrency.py", "system-one-core"),
                              ("research/contextual_lab/checker.py", "contextual-finite-checker"),
