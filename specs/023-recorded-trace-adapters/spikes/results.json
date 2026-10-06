@@ -1,0 +1,744 @@
+{
+  "casesExcluded": 0,
+  "corpusDigest": "sha256:e0adc4e8f1c0ff9c2e6e7235104d646b8ba6036ec17c52d71393bc2db21b59a2",
+  "executionAuthorization": false,
+  "modelCalls": 0,
+  "providerAdoption": "pending",
+  "providerCalls": 0,
+  "providers": [
+    {
+      "analyzerRecomputeConsistencyCount": 4,
+      "caseCount": 5,
+      "falseSafeCount": 0,
+      "limits": "Timeline retained in private spike packet; AIM has no lifecycle/task handle or multiple-attempt representation. Synthetic fixtures do not validate actual provider behavior.",
+      "mappedCount": 4,
+      "nextDecision": "research-only",
+      "outcome": "negative-for-complete-provider-projection",
+      "provider": "openai",
+      "unknownCount": 4,
+      "unsupportedCount": 1,
+      "version": "v0.23.1"
+    },
+    {
+      "analyzerRecomputeConsistencyCount": 3,
+      "caseCount": 5,
+      "falseSafeCount": 0,
+      "limits": "Timeline retained in private spike packet; AIM has no lifecycle/task handle or multiple-attempt representation. Synthetic fixtures do not validate actual provider behavior.",
+      "mappedCount": 3,
+      "nextDecision": "research-only",
+      "outcome": "negative-for-complete-provider-projection",
+      "provider": "mcp",
+      "unknownCount": 3,
+      "unsupportedCount": 2,
+      "version": "2025-11-25"
+    }
+  ],
+  "realSourceAdmission": "pending",
+  "results": [
+    {
+      "analyzerRecomputeConsistency": true,
+      "analyzerRecomputeLimits": "Same-engine consistency only; not an independent mapping baseline or provider conformance control.",
+      "caseId": "openai-approval",
+      "classification": "unknown",
+      "executionAuthorization": false,
+      "falseSafe": false,
+      "mappedEvents": [
+        {
+          "attemptId": "left-1",
+          "eventId": "openai-approval-0",
+          "instanceId": "left",
+          "status": "approved",
+          "timestamp": "2026-10-06T10:00:00Z"
+        }
+      ],
+      "mappings": [
+        {
+          "attemptId": "left-1",
+          "coverage": "unknown",
+          "definitionDigest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+          "definitionId": "edit-left",
+          "inputDigest": "sha256:3333333333333333333333333333333333333333333333333333333333333333",
+          "instanceId": "left",
+          "losses": [
+            "lifecycle-not-an-effect-certificate"
+          ]
+        },
+        {
+          "attemptId": "right-1",
+          "coverage": "complete",
+          "definitionDigest": "sha256:2222222222222222222222222222222222222222222222222222222222222222",
+          "definitionId": "edit-right",
+          "inputDigest": "sha256:4444444444444444444444444444444444444444444444444444444444444444",
+          "instanceId": "right",
+          "losses": []
+        }
+      ],
+      "notRepresentedInAim": [
+        "lifecycleTimeline",
+        "sourceProtocolVersion"
+      ],
+      "outcome": "mapped",
+      "projectionDigest": "sha256:9cee42442639d0e5f661a648d4100aebe1f911e5bd73f3ba0391bc74e624379c",
+      "provider": "openai",
+      "providerCalls": 0,
+      "reportDigest": "sha256:b08158c841e7b390cae7b49329a2e162e585460982c000d5ef317af3f76f7185",
+      "retainedInPacket": [
+        "instanceId",
+        "attemptId",
+        "definition",
+        "inputDigest",
+        "timeline"
+      ],
+      "sourceCaseDigest": "sha256:3bc16d54b4b839d46e35f18897828ad5b26c32ee7b7ae0359dc854f94fc74d46",
+      "sourceVersion": "v0.23.1",
+      "timeline": [
+        {
+          "attemptId": "left-1",
+          "eventId": "openai-approval-0",
+          "instanceId": "left",
+          "status": "approved",
+          "timestamp": "2026-10-06T10:00:00Z"
+        }
+      ]
+    },
+    {
+      "analyzerRecomputeConsistency": true,
+      "analyzerRecomputeLimits": "Same-engine consistency only; not an independent mapping baseline or provider conformance control.",
+      "caseId": "openai-rejection",
+      "classification": "unknown",
+      "executionAuthorization": false,
+      "falseSafe": false,
+      "mappedEvents": [
+        {
+          "attemptId": "left-1",
+          "eventId": "openai-rejection-0",
+          "instanceId": "left",
+          "status": "rejected",
+          "timestamp": "2026-10-06T10:00:00Z"
+        }
+      ],
+      "mappings": [
+        {
+          "attemptId": "left-1",
+          "coverage": "unknown",
+          "definitionDigest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+          "definitionId": "edit-left",
+          "inputDigest": "sha256:3333333333333333333333333333333333333333333333333333333333333333",
+          "instanceId": "left",
+          "losses": [
+            "lifecycle-not-an-effect-certificate"
+          ]
+        },
+        {
+          "attemptId": "right-1",
+          "coverage": "complete",
+          "definitionDigest": "sha256:2222222222222222222222222222222222222222222222222222222222222222",
+          "definitionId": "edit-right",
+          "inputDigest": "sha256:4444444444444444444444444444444444444444444444444444444444444444",
+          "instanceId": "right",
+          "losses": []
+        }
+      ],
+      "notRepresentedInAim": [
+        "lifecycleTimeline",
+        "sourceProtocolVersion"
+      ],
+      "outcome": "mapped",
+      "projectionDigest": "sha256:9cee42442639d0e5f661a648d4100aebe1f911e5bd73f3ba0391bc74e624379c",
+      "provider": "openai",
+      "providerCalls": 0,
+      "reportDigest": "sha256:b08158c841e7b390cae7b49329a2e162e585460982c000d5ef317af3f76f7185",
+      "retainedInPacket": [
+        "instanceId",
+        "attemptId",
+        "definition",
+        "inputDigest",
+        "timeline"
+      ],
+      "sourceCaseDigest": "sha256:c685619387c9eb411c9c3487ab57e3543235828eec7fcf26a800ff66e37e23e6",
+      "sourceVersion": "v0.23.1",
+      "timeline": [
+        {
+          "attemptId": "left-1",
+          "eventId": "openai-rejection-0",
+          "instanceId": "left",
+          "status": "rejected",
+          "timestamp": "2026-10-06T10:00:00Z"
+        }
+      ]
+    },
+    {
+      "analyzerRecomputeConsistency": true,
+      "analyzerRecomputeLimits": "Same-engine consistency only; not an independent mapping baseline or provider conformance control.",
+      "caseId": "openai-pause-resume",
+      "classification": "unknown",
+      "executionAuthorization": false,
+      "falseSafe": false,
+      "mappedEvents": [
+        {
+          "attemptId": "left-1",
+          "eventId": "openai-pause-resume-0",
+          "instanceId": "left",
+          "status": "paused",
+          "timestamp": "2026-10-06T10:00:00Z"
+        },
+        {
+          "attemptId": "left-1",
+          "eventId": "openai-pause-resume-1",
+          "instanceId": "left",
+          "status": "resumed",
+          "timestamp": "2026-10-06T10:00:01Z"
+        },
+        {
+          "attemptId": "left-1",
+          "eventId": "openai-pause-resume-2",
+          "instanceId": "left",
+          "status": "completed",
+          "timestamp": "2026-10-06T10:00:02Z"
+        }
+      ],
+      "mappings": [
+        {
+          "attemptId": "left-1",
+          "coverage": "unknown",
+          "definitionDigest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+          "definitionId": "edit-left",
+          "inputDigest": "sha256:3333333333333333333333333333333333333333333333333333333333333333",
+          "instanceId": "left",
+          "losses": [
+            "lifecycle-not-an-effect-certificate"
+          ]
+        },
+        {
+          "attemptId": "right-1",
+          "coverage": "complete",
+          "definitionDigest": "sha256:2222222222222222222222222222222222222222222222222222222222222222",
+          "definitionId": "edit-right",
+          "inputDigest": "sha256:4444444444444444444444444444444444444444444444444444444444444444",
+          "instanceId": "right",
+          "losses": []
+        }
+      ],
+      "notRepresentedInAim": [
+        "lifecycleTimeline",
+        "sourceProtocolVersion"
+      ],
+      "outcome": "mapped",
+      "projectionDigest": "sha256:9cee42442639d0e5f661a648d4100aebe1f911e5bd73f3ba0391bc74e624379c",
+      "provider": "openai",
+      "providerCalls": 0,
+      "reportDigest": "sha256:b08158c841e7b390cae7b49329a2e162e585460982c000d5ef317af3f76f7185",
+      "retainedInPacket": [
+        "instanceId",
+        "attemptId",
+        "definition",
+        "inputDigest",
+        "timeline"
+      ],
+      "sourceCaseDigest": "sha256:68899975f7108b6dba02684aa1bb653710288167929e7315a51d64ead9ad05fd",
+      "sourceVersion": "v0.23.1",
+      "timeline": [
+        {
+          "attemptId": "left-1",
+          "eventId": "openai-pause-resume-0",
+          "instanceId": "left",
+          "status": "paused",
+          "timestamp": "2026-10-06T10:00:00Z"
+        },
+        {
+          "attemptId": "left-1",
+          "eventId": "openai-pause-resume-1",
+          "instanceId": "left",
+          "status": "resumed",
+          "timestamp": "2026-10-06T10:00:01Z"
+        },
+        {
+          "attemptId": "left-1",
+          "eventId": "openai-pause-resume-2",
+          "instanceId": "left",
+          "status": "completed",
+          "timestamp": "2026-10-06T10:00:02Z"
+        }
+      ]
+    },
+    {
+      "analyzerRecomputeConsistency": true,
+      "analyzerRecomputeLimits": "Same-engine consistency only; not an independent mapping baseline or provider conformance control.",
+      "caseId": "openai-completion-no-effect",
+      "classification": "unknown",
+      "executionAuthorization": false,
+      "falseSafe": false,
+      "mappedEvents": [
+        {
+          "attemptId": "left-1",
+          "eventId": "openai-completion-no-effect-0",
+          "instanceId": "left",
+          "status": "completed",
+          "timestamp": "2026-10-06T10:00:00Z"
+        }
+      ],
+      "mappings": [
+        {
+          "attemptId": "left-1",
+          "coverage": "unknown",
+          "definitionDigest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+          "definitionId": "edit-left",
+          "inputDigest": "sha256:3333333333333333333333333333333333333333333333333333333333333333",
+          "instanceId": "left",
+          "losses": [
+            "lifecycle-not-an-effect-certificate",
+            "no-known-effect"
+          ]
+        },
+        {
+          "attemptId": "right-1",
+          "coverage": "complete",
+          "definitionDigest": "sha256:2222222222222222222222222222222222222222222222222222222222222222",
+          "definitionId": "edit-right",
+          "inputDigest": "sha256:4444444444444444444444444444444444444444444444444444444444444444",
+          "instanceId": "right",
+          "losses": []
+        }
+      ],
+      "notRepresentedInAim": [
+        "lifecycleTimeline",
+        "sourceProtocolVersion"
+      ],
+      "outcome": "mapped",
+      "projectionDigest": "sha256:564782343b24a831316dc9613904522f62ab3bda763d1498b5539b1c045c2e11",
+      "provider": "openai",
+      "providerCalls": 0,
+      "reportDigest": "sha256:87008a506e4bb4433096700863615d5fc211ddd28684563d5fb70a623ff3015b",
+      "retainedInPacket": [
+        "instanceId",
+        "attemptId",
+        "definition",
+        "inputDigest",
+        "timeline"
+      ],
+      "sourceCaseDigest": "sha256:7170c999efe00e52051c8d7d4e544df8e37644927c8e8f056690bf62ddf3ea17",
+      "sourceVersion": "v0.23.1",
+      "timeline": [
+        {
+          "attemptId": "left-1",
+          "eventId": "openai-completion-no-effect-0",
+          "instanceId": "left",
+          "status": "completed",
+          "timestamp": "2026-10-06T10:00:00Z"
+        }
+      ]
+    },
+    {
+      "analyzerRecomputeConsistency": null,
+      "analyzerRecomputeLimits": "Same-engine consistency only; not an independent mapping baseline or provider conformance control.",
+      "caseId": "openai-multiple-attempts",
+      "classification": null,
+      "executionAuthorization": false,
+      "falseSafe": false,
+      "notRepresentedInAim": [
+        "lifecycleTimeline",
+        "sourceProtocolVersion"
+      ],
+      "outcome": "unsupported",
+      "provider": "openai",
+      "providerCalls": 0,
+      "reason": "duplicate-instance-or-attempt",
+      "retainedInPacket": [
+        "instanceId",
+        "attemptId",
+        "definition",
+        "inputDigest",
+        "timeline"
+      ],
+      "sourceCaseDigest": "sha256:fd3d7c61b4d1c3b27379a0dcd3a3241ab86743b40c68caf8e5186d38bd1685de",
+      "sourceVersion": "v0.23.1",
+      "timeline": [
+        {
+          "attemptId": "left-1",
+          "eventId": "openai-multiple-attempts-0",
+          "instanceId": "left",
+          "status": "paused",
+          "timestamp": "2026-10-06T10:00:00Z"
+        },
+        {
+          "attemptId": "left-1",
+          "eventId": "openai-multiple-attempts-1",
+          "instanceId": "left",
+          "status": "resumed",
+          "timestamp": "2026-10-06T10:00:01Z"
+        }
+      ]
+    },
+    {
+      "analyzerRecomputeConsistency": true,
+      "analyzerRecomputeLimits": "Same-engine consistency only; not an independent mapping baseline or provider conformance control.",
+      "caseId": "mcp-deferred-task",
+      "classification": "unknown",
+      "executionAuthorization": false,
+      "falseSafe": false,
+      "mappedEvents": [
+        {
+          "attemptId": "left-1",
+          "eventId": "mcp-deferred-task-0",
+          "instanceId": "left",
+          "status": "started",
+          "timestamp": "2026-10-06T10:00:00Z"
+        }
+      ],
+      "mappings": [
+        {
+          "attemptId": "left-1",
+          "coverage": "unknown",
+          "definitionDigest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+          "definitionId": "edit-left",
+          "inputDigest": "sha256:3333333333333333333333333333333333333333333333333333333333333333",
+          "instanceId": "left",
+          "losses": [
+            "lifecycle-not-an-effect-certificate"
+          ]
+        },
+        {
+          "attemptId": "right-1",
+          "coverage": "complete",
+          "definitionDigest": "sha256:2222222222222222222222222222222222222222222222222222222222222222",
+          "definitionId": "edit-right",
+          "inputDigest": "sha256:4444444444444444444444444444444444444444444444444444444444444444",
+          "instanceId": "right",
+          "losses": []
+        }
+      ],
+      "notRepresentedInAim": [
+        "lifecycleTimeline",
+        "sourceProtocolVersion",
+        "taskId"
+      ],
+      "outcome": "mapped",
+      "projectionDigest": "sha256:9cee42442639d0e5f661a648d4100aebe1f911e5bd73f3ba0391bc74e624379c",
+      "provider": "mcp",
+      "providerCalls": 0,
+      "reportDigest": "sha256:b08158c841e7b390cae7b49329a2e162e585460982c000d5ef317af3f76f7185",
+      "retainedInPacket": [
+        "instanceId",
+        "attemptId",
+        "definition",
+        "inputDigest",
+        "timeline",
+        "taskId"
+      ],
+      "sourceCaseDigest": "sha256:611485de2a2f2bcc5281e534151f4c8d88cb0601333c541f64959e4cede8df55",
+      "sourceVersion": "2025-11-25",
+      "stateHandles": [
+        {
+          "decoded": false,
+          "digest": "sha256:3991229a0b98e76fb9b4bc652166699e525c800cb75a8326fc1901f85c3b841d",
+          "digestMethod": "local-sha256-synthetic-task-handle",
+          "kind": "taskId"
+        }
+      ],
+      "timeline": [
+        {
+          "attemptId": "left-1",
+          "eventId": "mcp-deferred-task-0",
+          "instanceId": "left",
+          "status": "working",
+          "taskId": "synthetic-task-1",
+          "timestamp": "2026-10-06T10:00:00Z"
+        }
+      ]
+    },
+    {
+      "analyzerRecomputeConsistency": true,
+      "analyzerRecomputeLimits": "Same-engine consistency only; not an independent mapping baseline or provider conformance control.",
+      "caseId": "mcp-input-required",
+      "classification": "unknown",
+      "executionAuthorization": false,
+      "falseSafe": false,
+      "mappedEvents": [
+        {
+          "attemptId": "left-1",
+          "eventId": "mcp-input-required-0",
+          "instanceId": "left",
+          "status": "started",
+          "timestamp": "2026-10-06T10:00:00Z"
+        },
+        {
+          "attemptId": "left-1",
+          "eventId": "mcp-input-required-1",
+          "instanceId": "left",
+          "status": "deferred",
+          "timestamp": "2026-10-06T10:00:01Z"
+        },
+        {
+          "attemptId": "left-1",
+          "eventId": "mcp-input-required-2",
+          "instanceId": "left",
+          "status": "completed",
+          "timestamp": "2026-10-06T10:00:02Z"
+        }
+      ],
+      "mappings": [
+        {
+          "attemptId": "left-1",
+          "coverage": "unknown",
+          "definitionDigest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+          "definitionId": "edit-left",
+          "inputDigest": "sha256:3333333333333333333333333333333333333333333333333333333333333333",
+          "instanceId": "left",
+          "losses": [
+            "lifecycle-not-an-effect-certificate"
+          ]
+        },
+        {
+          "attemptId": "right-1",
+          "coverage": "complete",
+          "definitionDigest": "sha256:2222222222222222222222222222222222222222222222222222222222222222",
+          "definitionId": "edit-right",
+          "inputDigest": "sha256:4444444444444444444444444444444444444444444444444444444444444444",
+          "instanceId": "right",
+          "losses": []
+        }
+      ],
+      "notRepresentedInAim": [
+        "lifecycleTimeline",
+        "sourceProtocolVersion",
+        "taskId"
+      ],
+      "outcome": "mapped",
+      "projectionDigest": "sha256:9cee42442639d0e5f661a648d4100aebe1f911e5bd73f3ba0391bc74e624379c",
+      "provider": "mcp",
+      "providerCalls": 0,
+      "reportDigest": "sha256:b08158c841e7b390cae7b49329a2e162e585460982c000d5ef317af3f76f7185",
+      "retainedInPacket": [
+        "instanceId",
+        "attemptId",
+        "definition",
+        "inputDigest",
+        "timeline",
+        "taskId"
+      ],
+      "sourceCaseDigest": "sha256:f9eb8f14b608127fb85fcc8302a28a5df6fd1c346591e6f465c623fa135eb421",
+      "sourceVersion": "2025-11-25",
+      "stateHandles": [
+        {
+          "decoded": false,
+          "digest": "sha256:3991229a0b98e76fb9b4bc652166699e525c800cb75a8326fc1901f85c3b841d",
+          "digestMethod": "local-sha256-synthetic-task-handle",
+          "kind": "taskId"
+        },
+        {
+          "decoded": false,
+          "digest": "sha256:3991229a0b98e76fb9b4bc652166699e525c800cb75a8326fc1901f85c3b841d",
+          "digestMethod": "local-sha256-synthetic-task-handle",
+          "kind": "taskId"
+        },
+        {
+          "decoded": false,
+          "digest": "sha256:3991229a0b98e76fb9b4bc652166699e525c800cb75a8326fc1901f85c3b841d",
+          "digestMethod": "local-sha256-synthetic-task-handle",
+          "kind": "taskId"
+        }
+      ],
+      "timeline": [
+        {
+          "attemptId": "left-1",
+          "eventId": "mcp-input-required-0",
+          "instanceId": "left",
+          "status": "working",
+          "taskId": "synthetic-task-1",
+          "timestamp": "2026-10-06T10:00:00Z"
+        },
+        {
+          "attemptId": "left-1",
+          "eventId": "mcp-input-required-1",
+          "instanceId": "left",
+          "status": "input_required",
+          "taskId": "synthetic-task-1",
+          "timestamp": "2026-10-06T10:00:01Z"
+        },
+        {
+          "attemptId": "left-1",
+          "eventId": "mcp-input-required-2",
+          "instanceId": "left",
+          "status": "completed",
+          "taskId": "synthetic-task-1",
+          "timestamp": "2026-10-06T10:00:02Z"
+        }
+      ]
+    },
+    {
+      "analyzerRecomputeConsistency": true,
+      "analyzerRecomputeLimits": "Same-engine consistency only; not an independent mapping baseline or provider conformance control.",
+      "caseId": "mcp-completed-no-effect",
+      "classification": "unknown",
+      "executionAuthorization": false,
+      "falseSafe": false,
+      "mappedEvents": [
+        {
+          "attemptId": "left-1",
+          "eventId": "mcp-completed-no-effect-0",
+          "instanceId": "left",
+          "status": "completed",
+          "timestamp": "2026-10-06T10:00:00Z"
+        }
+      ],
+      "mappings": [
+        {
+          "attemptId": "left-1",
+          "coverage": "unknown",
+          "definitionDigest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+          "definitionId": "edit-left",
+          "inputDigest": "sha256:3333333333333333333333333333333333333333333333333333333333333333",
+          "instanceId": "left",
+          "losses": [
+            "lifecycle-not-an-effect-certificate",
+            "no-known-effect"
+          ]
+        },
+        {
+          "attemptId": "right-1",
+          "coverage": "complete",
+          "definitionDigest": "sha256:2222222222222222222222222222222222222222222222222222222222222222",
+          "definitionId": "edit-right",
+          "inputDigest": "sha256:4444444444444444444444444444444444444444444444444444444444444444",
+          "instanceId": "right",
+          "losses": []
+        }
+      ],
+      "notRepresentedInAim": [
+        "lifecycleTimeline",
+        "sourceProtocolVersion",
+        "taskId"
+      ],
+      "outcome": "mapped",
+      "projectionDigest": "sha256:564782343b24a831316dc9613904522f62ab3bda763d1498b5539b1c045c2e11",
+      "provider": "mcp",
+      "providerCalls": 0,
+      "reportDigest": "sha256:87008a506e4bb4433096700863615d5fc211ddd28684563d5fb70a623ff3015b",
+      "retainedInPacket": [
+        "instanceId",
+        "attemptId",
+        "definition",
+        "inputDigest",
+        "timeline",
+        "taskId"
+      ],
+      "sourceCaseDigest": "sha256:8b46d79c2980e10f97c4166c28595227d868ffebf4148182fb73ca170a7b3ed7",
+      "sourceVersion": "2025-11-25",
+      "stateHandles": [
+        {
+          "decoded": false,
+          "digest": "sha256:3991229a0b98e76fb9b4bc652166699e525c800cb75a8326fc1901f85c3b841d",
+          "digestMethod": "local-sha256-synthetic-task-handle",
+          "kind": "taskId"
+        }
+      ],
+      "timeline": [
+        {
+          "attemptId": "left-1",
+          "eventId": "mcp-completed-no-effect-0",
+          "instanceId": "left",
+          "status": "completed",
+          "taskId": "synthetic-task-1",
+          "timestamp": "2026-10-06T10:00:00Z"
+        }
+      ]
+    },
+    {
+      "analyzerRecomputeConsistency": null,
+      "analyzerRecomputeLimits": "Same-engine consistency only; not an independent mapping baseline or provider conformance control.",
+      "caseId": "mcp-multiple-attempts",
+      "classification": null,
+      "executionAuthorization": false,
+      "falseSafe": false,
+      "notRepresentedInAim": [
+        "lifecycleTimeline",
+        "sourceProtocolVersion",
+        "taskId"
+      ],
+      "outcome": "unsupported",
+      "provider": "mcp",
+      "providerCalls": 0,
+      "reason": "duplicate-instance-or-attempt",
+      "retainedInPacket": [
+        "instanceId",
+        "attemptId",
+        "definition",
+        "inputDigest",
+        "timeline",
+        "taskId"
+      ],
+      "sourceCaseDigest": "sha256:cc860251bee6ed0ac7d23ca8814f8b86b792445481e2f6d625e7dd2cfd51453d",
+      "sourceVersion": "2025-11-25",
+      "stateHandles": [
+        {
+          "decoded": false,
+          "digest": "sha256:3991229a0b98e76fb9b4bc652166699e525c800cb75a8326fc1901f85c3b841d",
+          "digestMethod": "local-sha256-synthetic-task-handle",
+          "kind": "taskId"
+        },
+        {
+          "decoded": false,
+          "digest": "sha256:3991229a0b98e76fb9b4bc652166699e525c800cb75a8326fc1901f85c3b841d",
+          "digestMethod": "local-sha256-synthetic-task-handle",
+          "kind": "taskId"
+        }
+      ],
+      "timeline": [
+        {
+          "attemptId": "left-1",
+          "eventId": "mcp-multiple-attempts-0",
+          "instanceId": "left",
+          "status": "working",
+          "taskId": "synthetic-task-1",
+          "timestamp": "2026-10-06T10:00:00Z"
+        },
+        {
+          "attemptId": "left-1",
+          "eventId": "mcp-multiple-attempts-1",
+          "instanceId": "left",
+          "status": "completed",
+          "taskId": "synthetic-task-1",
+          "timestamp": "2026-10-06T10:00:01Z"
+        }
+      ]
+    },
+    {
+      "analyzerRecomputeConsistency": null,
+      "analyzerRecomputeLimits": "Same-engine consistency only; not an independent mapping baseline or provider conformance control.",
+      "caseId": "mcp-newer-state-dialect",
+      "classification": null,
+      "executionAuthorization": false,
+      "falseSafe": false,
+      "notRepresentedInAim": [
+        "lifecycleTimeline",
+        "sourceProtocolVersion"
+      ],
+      "outcome": "unsupported",
+      "provider": "mcp",
+      "providerCalls": 0,
+      "reason": "unselected-request-state-dialect",
+      "retainedInPacket": [
+        "instanceId",
+        "attemptId",
+        "definition",
+        "inputDigest",
+        "timeline"
+      ],
+      "sourceCaseDigest": "sha256:ced9e1f366a7fb1305be1daf7fb372a6b2edd38624095b84dbb976f9a0eb4005",
+      "sourceVersion": "2025-11-25",
+      "timeline": [
+        {
+          "attemptId": "left-1",
+          "eventId": "mcp-newer-state-dialect-0",
+          "instanceId": "left",
+          "requestState": "synthetic-opaque-state-handle",
+          "status": "input_required",
+          "timestamp": "2026-10-06T10:00:00Z"
+        }
+      ]
+    }
+  ],
+  "scientificReview": "pending",
+  "sourcePinsDigest": "sha256:7ff27a1333ecc99b84ef8a29d949b28e1df8fadf693e6c7f2c5a14104e59c99f",
+  "spikeResultVersion": "0.1.0-experimental"
+}

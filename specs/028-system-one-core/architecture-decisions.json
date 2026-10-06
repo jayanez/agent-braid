@@ -1,0 +1,54 @@
+{
+  "format": "spec028-feature-local-decisions-v1",
+  "date": "2026-10-06",
+  "status": "provisional-technical-resolution-awaiting-luna-review",
+  "task": "SPEC-028/T001",
+  "contract": "contracts/stdlib-v1.md",
+  "reviewContext": "Initial technical Luna review was conditional: budget units and ceilings, finite canonical JSON, response invariants, monotonic deadline and cancellation publication needed resolution.",
+  "decisions": [
+    {
+      "id": "D001",
+      "choice": "Hard inclusive 1048576 raw UTF-8 bytes before parsing and canonical bytes after validation; bounded read of limit plus one."
+    },
+    {
+      "id": "D002",
+      "choice": "Python stdlib finite JSON, sorted object keys, arrays preserved, UTF-8 without Unicode normalization, SHA256, container depth 16; no cross-language canonical-number guarantee."
+    },
+    {
+      "id": "D003",
+      "choice": "Explicit required integer caller budgets: maxInputBytes 1..1048576, maxQuestions 1..32, maxOptions 2..32, maxTokens 1..1048576 character-token units, deadlineMs 1..5000; booleans/unknown fields rejected."
+    },
+    {
+      "id": "D004",
+      "choice": "Offline stdlib-rule-fixture-v1 backend with synthetic-reference-v1 capability and hand-authored one-hot fixture mappings; no natural-language inference, source collection or trained model."
+    },
+    {
+      "id": "D005",
+      "choice": "Default strict-uncalibrated-v1 abstains; explicit synthetic-diagnostic-v1 may answer fixtures. Calibration absent, calibratedProbability omitted, authority always denied."
+    },
+    {
+      "id": "D006",
+      "choice": "Answered publishes the complete batch and distribution; abstain/defer/refused publish no answers. Input refusal before full validation has null caller identities/digests and sanitized reason codes."
+    },
+    {
+      "id": "D007",
+      "choice": "Deep immutable request records, one active request/eight waiting, no retries/cache; monotonic ingress deadline, request-local irreversible cancellation, publication lock suppresses late answers without claiming hard compute termination."
+    },
+    {
+      "id": "D008",
+      "choice": "Reference renders the whole canonical request and advertises character-token-v1, binary64 and explicit context cap; neural tokenizer/device/memory/rights envelopes remain separate gates."
+    },
+    {
+      "id": "D009",
+      "choice": "T002\u2013T008 implement only the exact stdlib profile; neural worker/device limits are future only. API ingress is materialized bounded bytes before parse; CLI bounded regular-file I/O excluded from core deadline, no stdin/socket or hard filesystem read claim."
+    }
+  ],
+  "reviewRequired": "Fresh independent Luna technical review bound to exact contract bytes before code; unresolved findings retain the implementation stop gate.",
+  "founderAcceptance": "pending",
+  "canonicalAdrAdoption": false,
+  "implementationAccepted": false,
+  "scientificAcceptance": false,
+  "trainingAuthorization": false,
+  "executionAuthorization": false,
+  "limits": "Technical proposals only. No task or assurance status is changed; no human review, workload benefit, calibration, source permission, model/device support or capability promotion follows."
+}

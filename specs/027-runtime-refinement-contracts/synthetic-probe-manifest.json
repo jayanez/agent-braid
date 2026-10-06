@@ -1,0 +1,18 @@
+{
+  "version": "runtime-isolation-probe-proposal-v1",
+  "status": "proposal-not-executed",
+  "capability": "code-check",
+  "probes": [
+    {"id": "private-write", "premise": "Only a newly owned scratch directory is writable; parent/source/host writes are denied", "fixture": "disposable nonsensitive sentinel", "budget": "one attempted write, at most 64 bytes"},
+    {"id": "network-denial", "premise": "Network is denied including descendant processes", "fixture": "owned local endpoint selected only in a separately reviewed disposable boundary", "budget": "one connection attempt, no payload"},
+    {"id": "credential-exclusion", "premise": "No host environment, credentials, sockets or private mounts are inherited", "fixture": "synthetic environment sentinel only", "budget": "read synthetic named sentinel without exposing value"},
+    {"id": "descendant-cancellation", "premise": "All descendants stop on cancellation before resources are released", "fixture": "owned bounded harmless child process", "budget": "one child, one-second proposed ceiling"},
+    {"id": "resource-exhaustion", "premise": "Memory, process, output and scratch ceilings are enforced", "fixture": "bounded synthetic allocations/counters with no project code", "budget": "exact limits must be approved for selected backend before execution"}
+  ],
+  "exactArgvApproved": false,
+  "backendEnforcementVerified": false,
+  "executionAuthorization": false,
+  "probesExecuted": 0,
+  "remainingGate": "Select exact installed backend, owned fixture paths and harmless argv/resource limits for independent review and operator execution authority. Do not install or execute to satisfy this proposal.",
+  "assessment": "NO-GO-until-enforcement-demonstrated"
+}
