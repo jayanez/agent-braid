@@ -180,7 +180,7 @@ remains pending. The
 records the outstanding authorization reconciliation separately from public
 repository availability.
 
-The next work is mapped in the [foundational implementation portfolio](docs/development/FOUNDATION_IMPLEMENTATION_PORTFOLIO.md): full-cost utility follow-up, offline trace adapters, simulated effectful workloads, contextual/proof obligations, adoption evidence and runtime refinement contracts. These six specs are **draft plans with human review pending**; their commands and artifacts are future targets. See the [portfolio roadmap](ROADMAP.md#foundational-implementation-portfolio--2026-10-05) and [M3.5 offline preparation map](specs/019-native-predictor/implementation-readiness.md).
+The next work is mapped in the [foundational implementation portfolio](docs/development/FOUNDATION_IMPLEMENTATION_PORTFOLIO.md): full-cost utility follow-up, offline trace adapters, simulated effectful workloads, contextual/proof obligations, adoption evidence and runtime refinement contracts. These six specs are **draft plans with human review pending**; their commands and artifacts are future targets. See the [portfolio roadmap](ROADMAP.md) and [M3.5 offline preparation map](specs/019-native-predictor/implementation-readiness.md).
 
 ## Scientific contract
 

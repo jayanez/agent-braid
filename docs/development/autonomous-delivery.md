@@ -172,6 +172,29 @@ families cannot satisfy the proposed five-family evaluation threshold. No real
 capture, labels, training, predictor benefit, scientific closure or M4 acceptance
 is obtained by this delivery.
 
+## Integration of subsequently merged planning
+
+While the delivery PR was being validated, upstream [PR #219](https://github.com/jayanez/agent-braid/pull/219)
+added the foundational portfolio, followed by [PR #221](https://github.com/jayanez/agent-braid/pull/221)
+binding its six draft assurance records to public commit `cb31439`. This delivery
+integrates those changes from `53faa6a` and preserves their assurance bindings.
+README presents the six specifications as future targets with human review
+pending. Their new tasks are outside the completed implementation tracks.
+
+All inputs bound by the archived M3.5 and M4 experiment records still match the
+integrated tree. Those records continue to describe `734feca`; the final
+integrated candidate receives separate PR validation and hosted checks. Earlier
+validation results do not certify that later candidate.
+
+The [tracking extension receipt](../experiments/evidence/autonomous-delivery-2026-10-06/tracking-extension-receipt.json)
+records an empty repository audit against the subsequently merged source
+(27 specifications, 205 tasks and 12 milestones) and six custom Project status
+updates: SPEC-022 through SPEC-027 now show **Review pending**, consistent with
+their canonical mapping. Their existing issue creation and linking were performed
+separately. Additional unmerged planning issues were visible in the Project, so
+this extension asserts no global item counts. The original receipt remains a
+dated observation; no new draft task or milestone was closed.
+
 ## README editorial references
 
 The README was checked against the project's architecture, contracts, ADRs,
