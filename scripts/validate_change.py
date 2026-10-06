@@ -106,6 +106,24 @@ RULES = (
         "tests/test_lab.py",
     ), ("lab-tests", "scientific-controls", "contracts"), True,
         boundary="Scientific evidence capture or reproduction, when claims are refreshed"),
+    Rule("predictor-preparation", (
+        "scripts/check_predictor_readiness.py", "agent_braid/native_predictor.py",
+        "tests/test_predictor_readiness.py", "tests/test_native_predictor.py",
+    ), ("full-tests",), True,
+        boundary="Real-source permission, preregistration, training and human M3.5 review"),
+    Rule("recorded-trace-import", (
+        "agent_braid/trace_adapter.py", "agent_braid/cli.py", "tests/test_trace_adapter.py",
+        "tests/test_trace_lifecycle_spikes.py",
+    ), ("contracts", "full-tests"), True,
+        boundary="Real-source rights, provider adoption and contract acceptance"),
+    Rule("adoption-evidence-program", (
+        "research/adoption/evidence-program/**", "tests/test_adoption_evidence.py",
+    ), ("full-tests",), True,
+        boundary="Real pilot, external reproduction, founder and publication decisions"),
+    Rule("runtime-refinement-assessment", (
+        "scripts/check_runtime_refinement.py", "tests/test_runtime_refinement.py",
+    ), ("full-tests",), True,
+        boundary="Expanded capability ADR, exact probes and operation-specific grants"),
     Rule("strategy", (
         "docs/strategy/**", "research/adoption/**", "research/radar/**",
         "research/market/**", "reports/**",

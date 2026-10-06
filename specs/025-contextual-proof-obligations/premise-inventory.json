@@ -1,0 +1,99 @@
+{
+  "baselineCommit": "a5c12adada404cc9ef372528500caae29f21947a",
+  "candidates": [
+    {
+      "carrier": "Configurations (state, versions, pending instance IDs, per-instance results, chronological events) of integer-batch-v1",
+      "claimLevel": "candidate",
+      "gaps": [
+        "prove effect completeness for closed expression grammar",
+        "prove guard/version and dependency enabledness preservation",
+        "prove proposed event quotient congruence; exact chronological observations can differ",
+        "bounded integer/version overflow must be excluded or both paths kept inconclusive"
+      ],
+      "id": "T1",
+      "observation": "equal terminal state, versions and per-instance results; chronological events deliberately excluded from this proposed quotient",
+      "premises": [
+        "complete data and control/guard/version reads",
+        "write(A) disjoint read(B) union write(B), symmetrically",
+        "existing resources and valid bounded arithmetic on both orders",
+        "no external effects or hidden writes",
+        "dependency enabledness preserved",
+        "per-instance identity and result mapping preserved"
+      ],
+      "quantifier": "Every valid common configuration and two distinct initially enabled deterministic atomic instances satisfying all premises",
+      "sourceMapping": {
+        "observation": "research/lab/model.py:observe",
+        "transition": "research/lab/model.py:run",
+        "validation": "research/lab/model.py:validate_fixture"
+      }
+    },
+    {
+      "carrier": "Linear extensions of one fixed finite acyclic operation dependency partial order",
+      "claimLevel": "candidate",
+      "gaps": [
+        "prove connectivity by admissible adjacent incomparable swaps",
+        "prove context stability and suffix congruence",
+        "chronological event equality generally fails; quotient needs separate proof"
+      ],
+      "id": "T2",
+      "observation": "selected named configuration equivalence, not terminal projection alone",
+      "premises": [
+        "fixed retry-free instance set",
+        "initial configuration common",
+        "T1 in every reachable context rather than only initial state",
+        "swaps preserve admissibility and initially enabled operations",
+        "equivalence congruent under every admitted remaining suffix",
+        "explicit event observation quotient compatible with continuations"
+      ],
+      "quantifier": "Every pair of valid linear extensions with every swapped incomparable pair satisfying T1 in each reachable configuration",
+      "sourceMapping": {
+        "execution": "research/lab/model.py:run",
+        "orders": "research/lab/model.py:schedules"
+      }
+    },
+    {
+      "carrier": "Immutable finite base distinct IDs plus root anchor; sets of fresh inserted ID/value pairs per base/root anchor",
+      "claimLevel": "candidate-not-theorem",
+      "gaps": [
+        "prove closure/fresh-ID preservation in mathematical carrier",
+        "prove set-union/flattening argument and implementation mapping independently",
+        "prove residual intent/result preservation under pair exchanges",
+        "prove adjacent/far/involutive relations in stated carrier",
+        "delete/nested-anchor/nondeterministic extensions excluded"
+      ],
+      "id": "anchored-insert",
+      "observation": "flattened ordered ID/value sequence; chronological trace differences retained",
+      "premises": [
+        "globally fresh inserted IDs, all distinct from base/root",
+        "anchors only immutable base/root IDs",
+        "canonical lexical sibling order",
+        "one insertion per operation instance, no retries",
+        "set-union application and deterministic flattening",
+        "residual index recomputed from prefix before each exchanged pair",
+        "left-to-right adjacent crossings convention"
+      ],
+      "quantifier": "Every finite valid insert family in mathematical carrier; executable mapping separately limited to base0..3 and operations2..4",
+      "sourceMapping": {
+        "flattening": "agent_braid/structured_exchange.py:_flatten",
+        "paths": "agent_braid/structured_exchange.py:_braid",
+        "transition": "agent_braid/structured_exchange.py:replay",
+        "typing": "agent_braid/structured_exchange.py:validate_request"
+      }
+    }
+  ],
+  "executionAuthorization": false,
+  "finiteChecksExecuted": false,
+  "humanReview": "pending",
+  "proofAccepted": false,
+  "sources": {
+    "agent_braid/structured_exchange.py": "dfca087646898d5bfb816a6a473c7135827d3886512f29bcc39899610b232cc9",
+    "docs/adr/0017-bounded-structured-exchange.md": "72cecb595605a16eaa5de7a88e960492205d82a300af2f6fb4451263f7e780c4",
+    "docs/theory/OPERATIONAL_SEMANTICS.md": "7e83813d138dde064f85aafee1ba20302d55ede768d35d26340abd522ecce1f7",
+    "docs/theory/SCIENTIFIC_INTEGRATION.md": "3bdb0e13edf1e7666902c426df864cb51219d33e762f6bd87e8d2702bb1642eb",
+    "docs/theory/STRUCTURED_EXCHANGE.md": "522fa1e4f2be6a0873c00ba2f503f475fa04833292a6684620ec01ef725bb710",
+    "research/lab/certificates.py": "f4545aeeb15e3f0a9023ffdfc5ac96cb09479a4039ba0b4be55e7195efb8b842",
+    "research/lab/model.py": "f39040b5476d663f6e7384e65d00073b084df6c8958b38bff45e4d6b19da010f"
+  },
+  "status": "candidate-not-accepted-proof",
+  "version": "restricted-premise-inventory-v1"
+}

@@ -64,3 +64,22 @@ raw top probability is 0.9 for the false answer. Neither value means a 90% guara
 that all arguments or effects are valid. The deterministic argument validator and
 the independently bound operator authority are still required. A rule-derived row
 does not become calibrated merely by returning a normalized distribution.
+
+## Standard-library v1 technical resolution
+
+The bounded first implementation is specified in the
+[standard-library reference profile](stdlib-v1.md). This resolves T001's
+conditional technical gaps: exact raw/canonical budgets, finite JSON and depth
+handling, status/distribution invariants, synthetic-only rule capability,
+separate default/diagnostic policies and monotonic cancellation publication.
+These are provisional feature-local choices pending fresh Luna review, not
+founder acceptance or canonical ADR adoption. T001 remains pending.
+
+The initial 1 MiB bound applies to raw UTF-8 bytes **before parsing** and also
+to canonical output. The reference's character-token unit is explicit and
+counts the entire rendered envelope. Binary64 standard-library reference
+arithmetic meets the general fp32-or-stronger minimum without implying neural
+hardware support. Unknown numeric/token/device envelopes cannot be inferred
+from this reference profile. No neural backend is implemented under it.
+
+For SPEC-028/T002–T008, the linked `stdlib-v1.md` profile is the exact implementation scope. The generic neural-worker/device ceilings above describe a future profile only; this cut has no neural backend. Core ingress accepts already-materialized bounded UTF-8 bytes. CLI source-file I/O is separately bounded and is outside the core deadline guarantee; no stdin/socket ingress or interruptible filesystem-read guarantee is shipped.

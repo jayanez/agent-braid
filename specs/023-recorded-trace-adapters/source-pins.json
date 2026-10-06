@@ -1,0 +1,257 @@
+{
+  "sourcePinsVersion": "0.1.0-experimental",
+  "retrievedAt": "2026-10-06T21:36:12.408394+00:00",
+  "method": "Context7 discovery and primary GitHub API/raw immutable byte retrieval; documentation only",
+  "context7Queries": [
+    "/openai/openai-agents-python/v0.7.0",
+    "/websites/modelcontextprotocol_io_specification_2026-07-28",
+    "/a2aproject/a2a",
+    "/nvidia/nemo-agent-toolkit",
+    "/open-telemetry/semantic-conventions"
+  ],
+  "context7Limits": "Some queried version results linked moving main/develop. Immutable raw primary pins below override discovery snippets.",
+  "currentMcpDiscovery": {
+    "version": "2026-07-28",
+    "commit": "5f5440bb26a62e2cf3440b92da5a667efa03b267",
+    "selectedTasksVersion": "2025-11-25",
+    "reason": "The taskId/status experiment selects the explicit historical experimental tasks contract; requestState multi-round-trip semantics from 2026-07-28 are not blended into it."
+  },
+  "sources": [
+    {
+      "id": "openai",
+      "repository": "openai/openai-agents-python",
+      "selectedVersion": "v0.23.1",
+      "commit": "c4a1d047b22488234b2ba81056e1b9b8db2127a5",
+      "primarySource": true,
+      "documents": [
+        {
+          "path": "docs/human_in_the_loop.md",
+          "url": "https://raw.githubusercontent.com/openai/openai-agents-python/c4a1d047b22488234b2ba81056e1b9b8db2127a5/docs/human_in_the_loop.md",
+          "bytes": 19472,
+          "sha256": "4a3e1a1dc3f0dd505cfc91c4c91e0a1d1d690ef276fc03e524dc6c00732ba499",
+          "status": "retrieved",
+          "shortExcerpt": "Use the human-in-the-loop (HITL) flow to pause agent execution"
+        },
+        {
+          "path": "src/agents/run_state.py",
+          "url": "https://raw.githubusercontent.com/openai/openai-agents-python/c4a1d047b22488234b2ba81056e1b9b8db2127a5/src/agents/run_state.py",
+          "bytes": 227149,
+          "sha256": "f120113f8dbba44025b0d3ba2efefe01d649661ee4d11ec769286b9533856ba6",
+          "status": "retrieved"
+        },
+        {
+          "path": "LICENSE",
+          "url": "https://raw.githubusercontent.com/openai/openai-agents-python/c4a1d047b22488234b2ba81056e1b9b8db2127a5/LICENSE",
+          "bytes": 1063,
+          "sha256": "13df7812ca53ecaae1cb4a868844bb598373047ae1d580e4debfbef1dd5b6915",
+          "status": "retrieved"
+        }
+      ]
+    },
+    {
+      "id": "mcp",
+      "repository": "modelcontextprotocol/modelcontextprotocol",
+      "selectedVersion": "2025-11-25",
+      "commit": "38c84e9f93ad191d9eb26d92b945d17bd0efcaf3",
+      "primarySource": true,
+      "documents": [
+        {
+          "path": "docs/specification/2025-11-25/basic/utilities/tasks.mdx",
+          "url": "https://raw.githubusercontent.com/modelcontextprotocol/modelcontextprotocol/38c84e9f93ad191d9eb26d92b945d17bd0efcaf3/docs/specification/2025-11-25/basic/utilities/tasks.mdx",
+          "bytes": 35792,
+          "sha256": "6afbdf560a2f0740f6f168b40b3f36a9bee522c4d3c6037373fc48b54aa8e462",
+          "status": "retrieved"
+        },
+        {
+          "path": "schema/2025-11-25/schema.ts",
+          "url": "https://raw.githubusercontent.com/modelcontextprotocol/modelcontextprotocol/38c84e9f93ad191d9eb26d92b945d17bd0efcaf3/schema/2025-11-25/schema.ts",
+          "bytes": 66523,
+          "sha256": "0845473b20273dae35df6651b831540be3d5866a42d0ad324e4a06caaa398a07",
+          "status": "retrieved",
+          "shortExcerpt": "The status of a task."
+        },
+        {
+          "path": "LICENSE",
+          "url": "https://raw.githubusercontent.com/modelcontextprotocol/modelcontextprotocol/38c84e9f93ad191d9eb26d92b945d17bd0efcaf3/LICENSE",
+          "bytes": 1095,
+          "sha256": "346e57dc40801e3d58165e97f64d45b42c4571a68a76ecb10c3c12858acecb3f",
+          "status": "retrieved"
+        }
+      ]
+    },
+    {
+      "id": "a2a",
+      "repository": "a2aproject/A2A",
+      "selectedVersion": "v1.0.1",
+      "commit": "3303592588e388e62e0f69f701af531d2f4e3991",
+      "primarySource": true,
+      "documents": [
+        {
+          "path": "docs/specification.md",
+          "url": "https://raw.githubusercontent.com/a2aproject/A2A/3303592588e388e62e0f69f701af531d2f4e3991/docs/specification.md",
+          "bytes": 155498,
+          "sha256": "627ccfe6ffb1be2c56811c3dcc18780deb419f41cdc98248095c939b2d9dc9cb",
+          "status": "retrieved"
+        },
+        {
+          "path": "LICENSE",
+          "url": "https://raw.githubusercontent.com/a2aproject/A2A/3303592588e388e62e0f69f701af531d2f4e3991/LICENSE",
+          "bytes": 11358,
+          "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
+          "status": "retrieved"
+        },
+        {
+          "path": "README.md",
+          "url": "https://raw.githubusercontent.com/a2aproject/A2A/3303592588e388e62e0f69f701af531d2f4e3991/README.md",
+          "bytes": 8429,
+          "sha256": "a3dfbcd026a1cb85370397b84a3f7df26403539aa8c44ed02a1afac4390516b1",
+          "status": "retrieved",
+          "shortExcerpt": "It is licensed under the [Apache License 2.0](LICENSE)"
+        }
+      ]
+    },
+    {
+      "id": "nemo",
+      "repository": "NVIDIA/NeMo-Agent-Toolkit",
+      "selectedVersion": "v1.9.0",
+      "commit": "baffefc68315b93e363cfd986c8f7e8dd45ce5e7",
+      "primarySource": true,
+      "documents": [
+        {
+          "path": "README.md",
+          "url": "https://raw.githubusercontent.com/NVIDIA/NeMo-Agent-Toolkit/baffefc68315b93e363cfd986c8f7e8dd45ce5e7/README.md",
+          "bytes": 17602,
+          "sha256": "ff8fd02ba7a70aa5f00435a4ec82d1a3143b8a9996dc212f3c4cb5bea21b7e90",
+          "status": "retrieved"
+        },
+        {
+          "path": "LICENSE",
+          "url": "https://raw.githubusercontent.com/NVIDIA/NeMo-Agent-Toolkit/baffefc68315b93e363cfd986c8f7e8dd45ce5e7/LICENSE",
+          "status": "unavailable",
+          "error": "HTTPError"
+        },
+        {
+          "path": "pyproject.toml",
+          "url": "https://raw.githubusercontent.com/NVIDIA/NeMo-Agent-Toolkit/baffefc68315b93e363cfd986c8f7e8dd45ce5e7/pyproject.toml",
+          "bytes": 17236,
+          "sha256": "071647fbbe6fc99dee0442d8ebe30bc5c48cfd2740e238e5987a70249638c8b2",
+          "status": "retrieved",
+          "shortExcerpt": "license = { text = \"Apache-2.0\" }"
+        },
+        {
+          "path": "docs/source/extend/custom-components/telemetry-exporters.md",
+          "url": "https://raw.githubusercontent.com/NVIDIA/NeMo-Agent-Toolkit/baffefc68315b93e363cfd986c8f7e8dd45ce5e7/docs/source/extend/custom-components/telemetry-exporters.md",
+          "bytes": 59851,
+          "sha256": "c351535e8364f9b25914dd9f0c74e389ff063efd488ea50edc50b62e192738ae",
+          "status": "retrieved"
+        },
+        {
+          "path": "LICENSE.md",
+          "url": "https://raw.githubusercontent.com/NVIDIA/NeMo-Agent-Toolkit/baffefc68315b93e363cfd986c8f7e8dd45ce5e7/LICENSE.md",
+          "bytes": 11356,
+          "sha256": "43070e2d4e532684de521b885f385d0841030efa2b1a20bafb76133a5e1379c1",
+          "status": "retrieved"
+        }
+      ]
+    },
+    {
+      "id": "otel",
+      "repository": "open-telemetry/semantic-conventions",
+      "selectedVersion": "v1.44.0",
+      "commit": "e10a930844c6951757a43b849d364f7d056ac32b",
+      "primarySource": true,
+      "documents": [
+        {
+          "path": "docs/registry/attributes/gen-ai.md",
+          "url": "https://raw.githubusercontent.com/open-telemetry/semantic-conventions/e10a930844c6951757a43b849d364f7d056ac32b/docs/registry/attributes/gen-ai.md",
+          "bytes": 47520,
+          "sha256": "cb4252779ffcce5cde9214013b40f607b67208f14d71950061800f7fc2bb3d41",
+          "status": "retrieved"
+        },
+        {
+          "path": "model/gen-ai/deprecated/registry-deprecated.yaml",
+          "url": "https://raw.githubusercontent.com/open-telemetry/semantic-conventions/e10a930844c6951757a43b849d364f7d056ac32b/model/gen-ai/deprecated/registry-deprecated.yaml",
+          "bytes": 55327,
+          "sha256": "4b489db09547f7300701f6e02385cfa3f1df0c25a48212aad8209ee03b3c84e6",
+          "status": "retrieved",
+          "shortExcerpt": "stability: development"
+        },
+        {
+          "path": "LICENSE",
+          "url": "https://raw.githubusercontent.com/open-telemetry/semantic-conventions/e10a930844c6951757a43b849d364f7d056ac32b/LICENSE",
+          "bytes": 11357,
+          "sha256": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4",
+          "status": "retrieved"
+        }
+      ]
+    },
+    {
+      "id": "otel-genai-followup",
+      "repository": "open-telemetry/semantic-conventions-genai",
+      "selectedVersion": "unreleased-commit",
+      "commit": "4f85037ef86e92c510d2ef881a58f1076f6fc0e4",
+      "primarySource": true,
+      "documents": [
+        {
+          "path": "README.md",
+          "url": "https://raw.githubusercontent.com/open-telemetry/semantic-conventions-genai/4f85037ef86e92c510d2ef881a58f1076f6fc0e4/README.md",
+          "bytes": 1232,
+          "sha256": "8ab882b40b743b3474de8d651671e0421e82dd0a8a48967d1bd0d7b06380b46d",
+          "status": "retrieved"
+        },
+        {
+          "path": "LICENSE",
+          "url": "https://raw.githubusercontent.com/open-telemetry/semantic-conventions-genai/4f85037ef86e92c510d2ef881a58f1076f6fc0e4/LICENSE",
+          "bytes": 11357,
+          "sha256": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4",
+          "status": "retrieved"
+        },
+        {
+          "path": "model/gen-ai/registry.yaml",
+          "url": "https://raw.githubusercontent.com/open-telemetry/semantic-conventions-genai/4f85037ef86e92c510d2ef881a58f1076f6fc0e4/model/gen-ai/registry.yaml",
+          "bytes": 46869,
+          "sha256": "fc7326952a9666e791a0af0ea3e07c9bdde4c46a526d36c2057685518ef37f1e",
+          "status": "retrieved",
+          "shortExcerpt": "stability: development"
+        },
+        {
+          "path": "docs/gen-ai/README.md",
+          "url": "https://raw.githubusercontent.com/open-telemetry/semantic-conventions-genai/4f85037ef86e92c510d2ef881a58f1076f6fc0e4/docs/gen-ai/README.md",
+          "bytes": 1617,
+          "sha256": "e78dca1c37b3dfafcf555f1ba2678a3b967c50687b04940ef725840faaa9f53d",
+          "status": "retrieved"
+        }
+      ],
+      "versionDecision": "inconclusive; no stable released GenAI contract selected"
+    },
+    {
+      "id": "a2a-tck-discovery",
+      "repository": "a2aproject/a2a-tck",
+      "selectedVersion": "commit-only-discovery",
+      "commit": "263b9cfaf16a554bdfb166a7ba5b67716e946349",
+      "primarySource": true,
+      "documents": [
+        {
+          "path": "README.md",
+          "url": "https://raw.githubusercontent.com/a2aproject/a2a-tck/263b9cfaf16a554bdfb166a7ba5b67716e946349/README.md",
+          "bytes": 6297,
+          "sha256": "ef32b440b50fcb33849051114b99bd72c866c6cc56820dd89ee333998007db0e",
+          "status": "retrieved",
+          "shortExcerpt": "# A2A Protocol Technology Compatibility Kit (TCK)"
+        },
+        {
+          "path": "LICENSE",
+          "url": "https://raw.githubusercontent.com/a2aproject/a2a-tck/263b9cfaf16a554bdfb166a7ba5b67716e946349/LICENSE",
+          "bytes": 11357,
+          "sha256": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4",
+          "status": "retrieved"
+        }
+      ],
+      "versionDecision": "Conformance kit discovered; compatibility with selected protocol v1.0.1 and execution results not established."
+    }
+  ],
+  "executionAuthorization": false,
+  "providerCalls": 0,
+  "dependencyInstallations": 0,
+  "sourceBodyStorage": "No copied documentation/source bodies retained; hashes and independently authored summaries only."
+}

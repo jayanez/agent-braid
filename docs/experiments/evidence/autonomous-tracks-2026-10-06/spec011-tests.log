@@ -1,0 +1,13 @@
+test_negative_or_inconclusive_research_is_a_valid_terminal_decision (tests.test_adoption_pathline.AdoptionPathlineTests.test_negative_or_inconclusive_research_is_a_valid_terminal_decision) ... ok
+test_rejects_adopted_track_without_feature_reference (tests.test_adoption_pathline.AdoptionPathlineTests.test_rejects_adopted_track_without_feature_reference) ... ok
+test_rejects_backward_stage_history (tests.test_adoption_pathline.AdoptionPathlineTests.test_rejects_backward_stage_history) ... ok
+test_rejects_missing_differentiation_metric (tests.test_adoption_pathline.AdoptionPathlineTests.test_rejects_missing_differentiation_metric) ... ok
+test_rejects_missing_owner_or_next_decision (tests.test_adoption_pathline.AdoptionPathlineTests.test_rejects_missing_owner_or_next_decision) ... ok
+test_rejects_schema_shape_drift (tests.test_adoption_pathline.AdoptionPathlineTests.test_rejects_schema_shape_drift) ... ok
+test_rejects_unknown_committed_radar_id (tests.test_adoption_pathline.AdoptionPathlineTests.test_rejects_unknown_committed_radar_id) ... ok
+test_seeded_registry_is_valid_and_has_no_adoption (tests.test_adoption_pathline.AdoptionPathlineTests.test_seeded_registry_is_valid_and_has_no_adoption) ... ok
+
+----------------------------------------------------------------------
+Ran 8 tests in 0.024s
+
+OK

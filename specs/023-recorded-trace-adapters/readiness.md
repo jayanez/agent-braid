@@ -14,5 +14,10 @@ provider implementations require later evidence-backed adoption decisions.
 
 There is no prerequisite on positive M4 speedup, M3.5 training or a Yang–Baxter
 result. Provider uncertainty cannot hold the synthetic generic implementation
-hostage or justify stronger semantics. This draft has empty obtained evidence
-and human review pending.
+hostage or justify stronger semantics. The implementation's focused evidence is
+recorded in `evidence.json`: 19 generic controls and three lifecycle/source-screen
+controls passed, including a separately fixed direct-AIM baseline. The ten-case
+lifecycle corpus yields seven unknown mappings and three unsupported cases, with
+zero false-safe classifications in that finite corpus. Same-engine lifecycle
+regeneration is consistency only. Full-profile evidence and the clean candidate
+freeze are recorded separately; human review remains pending.
