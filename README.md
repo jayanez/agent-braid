@@ -180,6 +180,8 @@ remains pending. The
 records the outstanding authorization reconciliation separately from public
 repository availability.
 
+The next work is mapped in the [foundational implementation portfolio](docs/development/FOUNDATION_IMPLEMENTATION_PORTFOLIO.md): full-cost utility follow-up, offline trace adapters, simulated effectful workloads, contextual/proof obligations, adoption evidence and runtime refinement contracts. These six specs are **draft plans with human review pending**; their commands and artifacts are future targets. See the [portfolio roadmap](ROADMAP.md#foundational-implementation-portfolio--2026-10-05) and [M3.5 offline preparation map](specs/019-native-predictor/implementation-readiness.md).
+
 ## Scientific contract
 
 The [Constitution](CONSTITUTION.md) is the sole normative authority. Its clause zero:
@@ -208,7 +210,7 @@ Start with [claim discipline](docs/theory/CLAIM_DISCIPLINE.md),
 | Prepare M3.5 sources | [Technical readiness](docs/development/m35-technical-readiness.md) · [Prospective pilot](specs/019-native-predictor/prospective-pilot.md) |
 | Run Linux checks and inspect cost | [Linux execution](docs/development/linux-experiments.md) · [Cost diagnostics](docs/development/M4_RUNTIME_COST_DIAGNOSTICS.md) · [Delivery record](docs/development/autonomous-delivery.md) |
 | Explore the research programme | [Research](RESEARCH.md) · [Mathematical foundations](MATHEMATICAL_FOUNDATIONS.md) · [References](research/REFERENCES.md) |
-| Follow project direction | [Roadmap](ROADMAP.md) · [Open-tooling strategy](docs/strategy/OPEN_TOOLING_STRATEGY.md) · [Ecosystem](docs/strategy/ECOSYSTEM.md) |
+| Follow project direction | [Roadmap](ROADMAP.md) · [Implementation portfolio](docs/development/FOUNDATION_IMPLEMENTATION_PORTFOLIO.md) · [Open-tooling strategy](docs/strategy/OPEN_TOOLING_STRATEGY.md) · [Ecosystem](docs/strategy/ECOSYSTEM.md) |
 | Contribute under the project rules | [Contributing](CONTRIBUTING.md) · [Governance](GOVERNANCE.md) · [Spec Kit](docs/development/SPEC_KIT.md) · [Terminology](TERMINOLOGY.md) |
 
 ## Contributing

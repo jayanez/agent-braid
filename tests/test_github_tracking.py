@@ -1,6 +1,7 @@
 # SPDX-License-Identifier: AGPL-3.0-only
 """Deterministic tests for source coverage and safe tracking plans."""
 
+import re
 import unittest
 
 from scripts.sync_github_tracking import ROOT, build_plan, source_inventory
@@ -9,30 +10,54 @@ from scripts.sync_github_tracking import ROOT, build_plan, source_inventory
 class TrackingTests(unittest.TestCase):
     def test_committed_spec_inventory_is_complete(self):
         config, desired = source_inventory()
-        self.assertEqual(21, sum(item["kind"] == "spec" for item in desired))
-        self.assertEqual(159, sum(item["kind"] == "task" for item in desired))
+        folders = sorted(path for path in (ROOT / "specs").iterdir()
+                         if path.name[:3].isdigit() and (path / "spec.md").is_file())
+        self.assertTrue(folders)
+        self.assertEqual({path.name for path in folders}, set(config["specs"]))
+        source_specs = [f"SPEC-{path.name[:3]}" for path in folders]
+        self.assertEqual(len(source_specs), len(set(source_specs)))
+        source_tasks = {}
+        for folder, spec_id in zip(folders, source_specs):
+            task_lines = re.findall(r"^- \[([ x])\] (T\d{3})\b",
+                                    (folder / "tasks.md").read_text(), re.MULTILINE)
+            self.assertTrue(task_lines, folder.name)
+            for checked, task_id in task_lines:
+                key = f"{spec_id}/{task_id}"
+                self.assertNotIn(key, source_tasks, f"duplicate source task: {key}")
+                source_tasks[key] = {
+                    "parent": spec_id,
+                    "milestone": config["specs"][folder.name]["milestone"],
+                    "state": "closed" if checked == "x" or key in config["task_state_overrides"] else "open",
+                }
+        keys = [item["key"] for item in desired]
+        self.assertEqual(len(keys), len(set(keys)), "duplicate tracking identity")
+        self.assertEqual(set(source_specs), {item["key"] for item in desired if item["kind"] == "spec"})
+        self.assertEqual(set(source_tasks), {item["key"] for item in desired if item["kind"] == "task"})
+        self.assertEqual(set(source_specs) | set(source_tasks), set(keys))
+        for item in desired:
+            with self.subTest(key=item["key"]):
+                if item["kind"] == "task":
+                    expected = source_tasks[item["key"]]
+                else:
+                    folder = next(path for path in folders if f"SPEC-{path.name[:3]}" == item["key"])
+                    expected = {"parent": None, **config["specs"][folder.name]}
+                for field in ("parent", "milestone", "state"):
+                    self.assertEqual(expected[field], item[field])
         open_tasks = {item["key"] for item in desired
                       if item["state"] == "open" and item["kind"] == "task"}
-        expected_open = {
+        required_open = {
             "SPEC-002/T006", "SPEC-009/T009", "SPEC-011/T008",
             "SPEC-019/T001", "SPEC-019/T002", "SPEC-019/T003",
             "SPEC-019/T004", "SPEC-019/T005", "SPEC-019/T007",
         }
-        closure_tasks = (ROOT / "specs/017-m2-closure/tasks.md").read_text()
-        for task_id in ("T004", "T005", "T006"):
-            if f"- [ ] {task_id}:" in closure_tasks:
-                expected_open.add(f"SPEC-017/{task_id}")
-        runtime_tasks = (ROOT / "specs/020-m4-local-git-runtime/tasks.md").read_text()
-        for task_id in ("T001", "T002", "T003", "T004", "T005", "T006", "T007"):
-            if f"- [ ] {task_id} " in runtime_tasks:
-                expected_open.add(f"SPEC-020/{task_id}")
+        self.assertTrue(required_open <= open_tasks)
         self.assertEqual("closed", next(item["state"] for item in desired
                                         if item["key"] == "SPEC-021/T014"))
         self.assertEqual("open", config["specs"]["021-m4-alpha-runtime"]["state"])
         self.assertEqual("M4", config["specs"]["021-m4-alpha-runtime"]["milestone"])
         self.assertEqual("M4", config["specs"]["020-m4-local-git-runtime"]["milestone"])
         self.assertNotIn("M4", config["closed_milestones"])
-        self.assertEqual(expected_open, open_tasks)
+        self.assertEqual({key for key, task in source_tasks.items() if task["state"] == "open"}, open_tasks)
         self.assertEqual({"SPEC-004/T005"}, set(config["task_state_overrides"]))
 
     def test_plan_is_empty_for_matching_relationships(self):

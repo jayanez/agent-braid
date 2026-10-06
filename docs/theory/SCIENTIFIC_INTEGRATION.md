@@ -32,5 +32,9 @@ partial-order reduction are prior art, not discoveries of this project.
 No LLM judgment supplies proof, permission or complete effect coverage. A
 certificate may establish agreement in one finite model without establishing
 contextual equivalence, successful task completion, security or safe concurrency.
-No real tool execution, remote writes, residual synthesis or proof assistant is
-included. Negative braid results do not block a sound practical analyzer.
+The `integer-batch-v1` laboratory includes no real tool execution, remote writes,
+residual synthesis or proof assistant. The separate bounded
+[SPEC-020](../../specs/020-m4-local-git-runtime/spec.md) and
+[SPEC-021](../../specs/021-m4-alpha-runtime/spec.md) runtime evidence does not
+extend that laboratory model or establish general adapter refinement. Negative
+braid results do not block a sound practical analyzer.

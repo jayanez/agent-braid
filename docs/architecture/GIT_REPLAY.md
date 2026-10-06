@@ -45,7 +45,10 @@ when the selected order replays; unverified evidence requires manual review.
 
 This cut does not establish semantic commutation, source-code correctness,
 contextual equivalence, arbitrary interleaving safety or production safety.
-M2 remains open for reduction, broader replay adapters and any future execution
-contract. See the proposed [parallel integration contract](PARALLEL_INTEGRATION.md)
-and [ADR 0014](../adr/0014-parallel-integration-contract.md); the contract
-requires human review before the gated prototype starts.
+M2 is [closed internally](../releases/M2_CLOSURE.md) within its declared Git
+domain. Normalizer, reduction and bounded preparation follow-ups are recorded in
+SPEC-014–017. The separate [SPEC-020](../../specs/020-m4-local-git-runtime/spec.md)
+and [SPEC-021](../../specs/021-m4-alpha-runtime/spec.md) contracts add bounded
+private execution; this advisory replay contract still grants no execution
+authority. Broader adapters and source promotion require their own reviewed
+contracts under [ADR 0014](../adr/0014-parallel-integration-contract.md).
