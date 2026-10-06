@@ -307,6 +307,8 @@ The [review and implementation portfolio](docs/development/FOUNDATION_IMPLEMENTA
 
 The three new milestones are capability/exit driven and have no calendar deadline. Platform runtime expansion, source promotion, arbitrary-code isolation, real databases/API/deploy execution, new paid services and proof-assistant dependencies need separate reviewed contracts and authorization. Their next step is a feasibility/contract decision in the relevant package rather than implicit implementation authority. Existing adoption tracks retain `watch` and `research-only` dispositions until a new recorded decision.
 
+<a id="proposed-native-system-1-track"></a>
+
 ## Native System 1 implementation track
 
 The [System 1 planning program](specs/028-system-one-core/program.md) contains
