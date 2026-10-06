@@ -27,7 +27,7 @@ is methodological context for the missing-label risk, not evidence of this
 predictor's performance.
 
 The [owned-flow synthetic instrument](instrumentation.md) exercises event
-capture and admission accounting with one eligible synthetic pair and four
-excluded synthetic pairs. It contributes zero real pairs. Existing-source
+capture and admission accounting with one eligible synthetic pair and five
+excluded synthetic pairs across six sessions. It contributes zero real pairs. Existing-source
 logs are a later feasibility phase, subject to source rights and a fixed
 collection window; Git commits alone are insufficient session records.

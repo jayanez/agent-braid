@@ -2,7 +2,7 @@
 
 ## Current status
 
-Agent Braid is in pre-implementation formalization. No production runtime or stable security boundary exists yet.
+Agent Braid contains a read-only analyzer and a bounded experimental private Git runtime. The accepted execution domain, authorization and trust assumptions are recorded in [SPEC-020](specs/020-m4-local-git-runtime/spec.md) and [SPEC-021](specs/021-m4-alpha-runtime/spec.md). Production readiness and whole-M4 acceptance are not established. Source-ref promotion, arbitrary repository-code execution and external write adapters remain excluded; owned POSIX filesystem and Git are trusted, and hostile same-UID interference is outside the stated boundary.
 
 ## Reporting a vulnerability
 
