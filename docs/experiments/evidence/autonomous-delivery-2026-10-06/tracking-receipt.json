@@ -1,0 +1,70 @@
+{
+  "recordVersion": "governed-tracking-reconciliation-1",
+  "observedAt": "2026-10-06T05:14:17+00:00",
+  "authority": "Non-normative operations receipt for the already merged tracking source.",
+  "sourceCommit": "f1bc304827b26c2cc3e02d5488ff2f82daa5453d",
+  "repository": "jayanez/agent-braid",
+  "reviewedPlanSha256": "ce4dd4ea4270e0b00be7d8349438554ac2c814dd83e5c1d92fa5ef0682477c18",
+  "appliedOperations": {
+    "total": 42,
+    "createIssue": 15,
+    "linkSubissue": 14,
+    "closeTaskIssue": 13
+  },
+  "repositoryAuditAfter": {
+    "repository": "jayanez/agent-braid",
+    "plan_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "operations": []
+  },
+  "projectVerification": {
+    "method": "Read the signed-in GitHub Project through its existing browser session; no token scope or Project field changes.",
+    "views": [
+      "Specs and tasks",
+      "By milestone",
+      "By status"
+    ],
+    "counts": {
+      "total": 180,
+      "Todo": 11,
+      "In Progress": 0,
+      "Done": 165,
+      "Review pending": 4
+    },
+    "spec021": {
+      "parentIssue": 204,
+      "parentStatus": "Todo",
+      "milestone": "M4",
+      "taskIssuesClosed": [
+        205,
+        206,
+        207,
+        208,
+        209,
+        210,
+        211,
+        212,
+        213,
+        214,
+        215,
+        216,
+        217
+      ],
+      "taskStatus": "Done",
+      "task014Issue": 218,
+      "task014Status": "Todo"
+    },
+    "reviewPending": [
+      "SPEC-002",
+      "SPEC-002/T006",
+      "SPEC-011",
+      "SPEC-011/T008"
+    ],
+    "viewFilterRestored": true
+  },
+  "limits": [
+    "Counts and issue states describe the recorded observation; later reconciliations may change them.",
+    "Issue closure is bounded tracking state, not scientific validity or founder milestone acceptance.",
+    "SPEC-021 and M4 remain open; G4 NO-GO is unchanged.",
+    "The proposed T014 checkbox amendment must merge before its separate governed issue reconciliation."
+  ]
+}

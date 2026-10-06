@@ -1,0 +1,86 @@
+{
+  "receiptVersion": "autonomous-engineering-evidence-1",
+  "observedAt": "2026-10-06T05:14:17+00:00",
+  "authority": "Non-normative public engineering reproduction receipt; no scientific or founder approval.",
+  "repository": "jayanez/agent-braid",
+  "candidateCommit": "734feca3e32b8e729a894a6089838a6de2e8ddb8",
+  "baselineCommit": "f1bc304827b26c2cc3e02d5488ff2f82daa5453d",
+  "workflowCommit": "734feca3e32b8e729a894a6089838a6de2e8ddb8",
+  "workflowRef": "work/autonomous-delivery-20261005",
+  "workflowPath": ".github/workflows/m4-alpha-reproduction.yml",
+  "runId": 37416200890,
+  "runAttempt": 1,
+  "runUrl": "https://github.com/jayanez/agent-braid/actions/runs/37416200890",
+  "event": "workflow_dispatch",
+  "conclusion": "success",
+  "startedAt": "2026-10-06T04:57:58Z",
+  "completedAt": "2026-10-06T05:05:07Z",
+  "jobs": [
+    {
+      "conclusion": "success",
+      "id": 112115248209,
+      "labels": [
+        "ubuntu-24.04"
+      ],
+      "name": "Fresh-process Linux alpha core and protocol reproduction",
+      "runner_group_name": "GitHub Actions",
+      "runner_name": "GitHub Actions 1000009405",
+      "status": "completed",
+      "stepsExecuted": 16
+    },
+    {
+      "conclusion": "success",
+      "id": 112115248446,
+      "labels": [
+        "ubuntu-24.04"
+      ],
+      "name": "Public synthetic M3.5 controls / Linux x64 synthetic journals, labs and seal controls",
+      "runner_group_name": "GitHub Actions",
+      "runner_name": "GitHub Actions 1000009406",
+      "status": "completed",
+      "stepsExecuted": 11
+    }
+  ],
+  "records": [
+    {
+      "path": "m35-synthetic-reproduction.json",
+      "sha256": "5857379f943feac7bc30644e2f62399398dc7c5f4ddc9da202704ce71b44d866"
+    },
+    {
+      "path": "m35-synthetic-reproduction.txt",
+      "sha256": "71d08e4d5e9fb238e7fcb3fa0d083188d8b106525bb900631e0fd08119e52956"
+    },
+    {
+      "path": "m4-alpha-reproduction.json",
+      "sha256": "1d1ee255c03e2f70bdead2600d6f13ec846560ceeef32a879afceebdf44be350"
+    },
+    {
+      "path": "m4-alpha-reproduction.txt",
+      "sha256": "7e0450b33e642631da315ae5c7bce23ff3cb8fd8e5e6720d9c3c10fb91f72635"
+    },
+    {
+      "path": "m4-baseline-cost-profile.json",
+      "sha256": "78a320ecbd0bec584ab65f1c561a8dd45e377c42e7145520aa0059e59685358e"
+    },
+    {
+      "path": "m4-candidate-cost-profile.json",
+      "sha256": "3521cf8d241f4f85ba5bd15bdae9c3bb7bb4d0ee232b4794b1f04c12f1156335"
+    },
+    {
+      "path": "m4-cost-comparison.json",
+      "sha256": "ed7e90e63037be89af6308a1c781143f37c79403399ce23469a418daa806c63f"
+    }
+  ],
+  "transportVerification": {
+    "method": "Download public job logs; remove the per-line runner timestamp; extract complete BEGIN/END blocks; verify each advertised SHA-256 before saving.",
+    "comparisonReconstructedByteExactly": true,
+    "rawTestLogsMatchBoundSha256": true
+  },
+  "limits": [
+    "Only the named candidate is reproduced; later documentation or tracking-source commits require their own validation.",
+    "Public synthetic owned fixtures only; no private content, credentials, real pairs or model calls.",
+    "The two six-pair captures ran candidate first, baseline second on the same VM; cache and background state were uncontrolled.",
+    "A descriptive reduction in parallel overhead is not general speedup, external validation or whole-M4 acceptance.",
+    "The historical G4 NO-GO remains authoritative."
+  ]
+}
