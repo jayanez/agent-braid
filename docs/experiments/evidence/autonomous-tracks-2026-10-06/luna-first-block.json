@@ -1,0 +1,64 @@
+{
+  "baselineCommit": "a5c12adada404cc9ef372528500caae29f21947a",
+  "date": "2026-10-06",
+  "executedFocusedChecks": [
+    {
+      "command": ".venv-speckit/bin/python -m unittest tests.test_adoption_evidence tests.test_trace_adapter tests.test_runtime_refinement tests.test_validation_profiles",
+      "outcome": "61 tests passed after fixes"
+    }
+  ],
+  "executionAuthorization": false,
+  "finalActionableFindings": [],
+  "findings": [
+    {
+      "finding": "Isolated analyze-trace CLI change could omit CLI controls in quick profile.",
+      "priority": "P2",
+      "resolution": "CLI explicitly belongs to sensitive recorded-trace-import rule, classifier regression added.",
+      "status": "verified-fixed"
+    },
+    {
+      "finding": "Renamed duplicate episode could inflate adoption denominators.",
+      "priority": "P2",
+      "resolution": "Bound semantic episode identity now rejects alias/renamed/contradictory duplicate copies.",
+      "status": "verified-fixed"
+    },
+    {
+      "finding": "Huge JSON integer escaped sanitized adoption CLI refusal with OverflowError.",
+      "priority": "P2",
+      "resolution": "Integer magnitude checked before floating conversion; 400-digit CLI regression returns sanitized exit2.",
+      "status": "verified-fixed"
+    }
+  ],
+  "format": "autonomous-track-code-review-v1",
+  "humanApproval": false,
+  "limits": "Independent agent technical review only, not human/scientific approval, theorem proof or external reproduction. Provider spikes and S1 contract have separate review records. Historical authority and acceptance unchanged.",
+  "reviewModel": "gpt-6-luna",
+  "reviewType": "independent-code-security-domain",
+  "reviewedHashes": {
+    "agent_braid/cli.py": "1335b6f26df0103084527bcfa5069bb67da456ef343f46bcc3105bc2280f21d9",
+    "agent_braid/native_predictor.py": "9207966d8fd554a528dab313e978064cc8a4701a905fdb9a4335c1dfc7de39dc",
+    "agent_braid/trace_adapter.py": "4da8a0cb5b4885df80681c9005ec82b0ff685d7dd9ed1d577eac3655af637332",
+    "research/adoption/evidence-program/README.md": "ebe39e287cd5574e20fa09b82be32f173b1c6b82062574e1d14ecc586d5bf2d8",
+    "research/adoption/evidence-program/contracts/contract-v1.md": "c9cb39736eeb389d0d8be9153d98328ad396fb325d65836a89e79587e986f559",
+    "research/adoption/evidence-program/fixtures/expected.json": "f3e7af1bc0236448bc347e743d8ec00e18cc692b9b8b20484822262df647be8c",
+    "research/adoption/evidence-program/fixtures/frozen.json": "973b42be8f99f4bb5f5bfe9f655f7bbbb0dee70dc9dfa3283a5d839b9d935766",
+    "research/adoption/evidence-program/fixtures/register.json": "748b80fe66c6e439ebfad0fac075010c5770fd9bb0ae44379a6b50ff6a1b17ee",
+    "research/adoption/evidence-program/program.py": "b30ca0fffe7634599692cdff911b7c6af963b4caddd119ab5673a3cfeb632232",
+    "scripts/check_predictor_readiness.py": "b8068659a10675815cfeb87457d6e95f5fa17bfaf7d6d2970a0564b12390d13b",
+    "scripts/check_runtime_refinement.py": "4d896804e6823c12c708ebc1cca9f4811d90d619532573fd64fbb346bb00dcf3",
+    "scripts/validate_change.py": "831169991eb673570b177b7a46c8ed1eccc92d4859bf831be8d19df42ebecc46",
+    "specs/027-runtime-refinement-contracts/code-isolation-assessment.md": "954cffa91821ebd03b167d7b675eea98b1cd5e5972b78c130eb10bedf46b1a92",
+    "specs/027-runtime-refinement-contracts/decision-packets.md": "c40ae23ad1e5f0ceb39415edaef011be4a52902009582328debfbc8a3cbb23b9",
+    "specs/027-runtime-refinement-contracts/external-effect-contract.md": "a38242b776c2c59d2a55948912fa7ea685b334d0eebb6fceaaeac539a808e48b",
+    "specs/027-runtime-refinement-contracts/promotion-contract.md": "ec4ffc2b0b7cd90b52558522c0ad913e8e26224314c0905d2f68f13a33ad05e6",
+    "specs/027-runtime-refinement-contracts/proposed-adr.md": "d6b63d26f4cf97f790e93f163b1f9d4ca61505005d30b787224878eca0496d5a",
+    "specs/027-runtime-refinement-contracts/refinement-matrix.md": "7aac5fdfa700f31664d63698733213d698f822b4774d3d7ee908d828ecd0950a",
+    "specs/027-runtime-refinement-contracts/research.md": "2ca00ea036033ad4e635e466d603f5d36958b1ba4d8b51da7cf782a43dec686c",
+    "tests/test_adoption_evidence.py": "7bdddc5eed3a1ae8bd955342f7dde07a4f411dd19cdcb07b87dac5363b578b5d",
+    "tests/test_native_predictor.py": "3a685456125bcfae67086e9a63959359cb7b79e29e4ebc4d3a9096eddc1dbfda",
+    "tests/test_predictor_readiness.py": "5a14dc3a7296e6c471acee12207aaeb5e3f0e696f8738ea2b59ba101b5f7b06e",
+    "tests/test_runtime_refinement.py": "578ab9b8921509be026b41708e70593b82a0d1a7bec1c7fd7524f2cc29860477",
+    "tests/test_trace_adapter.py": "59245e466e20b124be50e20951025c9d41ddfaaa18b6190b03598be8abce50d3",
+    "tests/test_validation_profiles.py": "3e51752e38995593509e9906214cda3c09ec0cc0fe3353426b42b69a29dab2d5"
+  }
+}

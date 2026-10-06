@@ -82,6 +82,26 @@ class ValidationProfileTests(unittest.TestCase):
         self.assertIn("full-tests", plan.commands)
         self.assertNotIn("spec-kit-integration", plan.commands)
 
+    def test_autonomous_tracks_keep_sensitive_boundaries_without_agent_matrix(self):
+        paths = {
+            "scripts/check_predictor_readiness.py": "predictor-preparation",
+            "agent_braid/native_predictor.py": "predictor-preparation",
+            "agent_braid/trace_adapter.py": "recorded-trace-import",
+            "agent_braid/cli.py": "recorded-trace-import",
+            "research/adoption/evidence-program/program.py": "adoption-evidence-program",
+            "scripts/check_runtime_refinement.py": "runtime-refinement-assessment",
+        }
+        for path, domain in paths.items():
+            with self.subTest(path=path):
+                plan = validation.build_plan([path], "quick")
+                self.assertIn(domain, plan.impact.domains)
+                self.assertFalse(plan.impact.unknown_paths)
+                self.assertFalse(plan.impact.spec_kit_integration)
+                self.assertTrue(plan.impact.boundaries)
+                self.assertEqual(plan.effective_profile, "sensitive")
+                self.assertIn("full-tests", plan.commands)
+                self.assertNotIn("spec-kit-integration", plan.commands)
+
     def test_pr_profile_retains_complete_repository_gate(self):
         plan = validation.build_plan(["README.md"], "pr")
         required = {

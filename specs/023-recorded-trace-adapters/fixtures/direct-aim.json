@@ -1,0 +1,82 @@
+[
+  {
+    "aimVersion": "0.2.0-draft",
+    "instanceId": "left",
+    "attemptId": "left-1",
+    "definition": {
+      "id": "edit-left",
+      "digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111"
+    },
+    "inputDigest": "sha256:3333333333333333333333333333333333333333333333333333333333333333",
+    "dependencies": [],
+    "readVersions": {},
+    "effects": {
+      "declared": [
+        {
+          "kind": "write",
+          "resource": "file:a"
+        }
+      ],
+      "inferred": [],
+      "observed": [],
+      "coverage": {
+        "status": "complete",
+        "domain": "exact-resource",
+        "method": "declared"
+      }
+    },
+    "evidence": [
+      {
+        "property": "independence",
+        "method": "declared",
+        "domain": "synthetic-recorded-metadata",
+        "assumptions": [
+          "source-metadata-is-declared-not-verified"
+        ],
+        "observationContract": "exact-resource-footprints-v1",
+        "executionContract": "read-only-no-execution",
+        "assuranceClass": 0
+      }
+    ]
+  },
+  {
+    "aimVersion": "0.2.0-draft",
+    "instanceId": "right",
+    "attemptId": "right-1",
+    "definition": {
+      "id": "edit-right",
+      "digest": "sha256:2222222222222222222222222222222222222222222222222222222222222222"
+    },
+    "inputDigest": "sha256:4444444444444444444444444444444444444444444444444444444444444444",
+    "dependencies": [],
+    "readVersions": {},
+    "effects": {
+      "declared": [
+        {
+          "kind": "write",
+          "resource": "file:b"
+        }
+      ],
+      "inferred": [],
+      "observed": [],
+      "coverage": {
+        "status": "complete",
+        "domain": "exact-resource",
+        "method": "declared"
+      }
+    },
+    "evidence": [
+      {
+        "property": "independence",
+        "method": "declared",
+        "domain": "synthetic-recorded-metadata",
+        "assumptions": [
+          "source-metadata-is-declared-not-verified"
+        ],
+        "observationContract": "exact-resource-footprints-v1",
+        "executionContract": "read-only-no-execution",
+        "assuranceClass": 0
+      }
+    ]
+  }
+]
