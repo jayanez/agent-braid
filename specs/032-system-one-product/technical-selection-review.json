@@ -1,0 +1,15 @@
+{
+  "executionAuthorization": false,
+  "format": "system-one-deterministic-selection-review-v1",
+  "humanReview": "pending",
+  "implementationStarted": false,
+  "limits": "Technical proposals only; implementation waits for core T008. Real prospective utility, model/data/source review, human acceptance and SPEC033 promotion remain separate. Deferred learned branches stay unchecked.",
+  "reviewModel": "gpt-6-luna",
+  "reviewType": "independent-technical-contract-selection",
+  "reviewedHashes": {
+    "specs/032-system-one-product/contracts/product.md": "48fbfae2244f1fccaab8b89a910122efc33d71d6e1be9fdb402da542de60e48f",
+    "specs/032-system-one-product/product-decisions.md": "99198082b3dbdb39cf833dbd4db03419ddc5dae80498f26c547579bec07938a6"
+  },
+  "technicalDecision": "GO-exact-proposal-after-SPEC-028-T008",
+  "utilityAcceptance": false
+}

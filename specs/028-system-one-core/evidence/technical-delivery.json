@@ -1,0 +1,80 @@
+{
+  "cleanCandidateFreeze": "See supported assurance.json historical authority/evidence snapshot; no human approval.",
+  "developmentQuick": {
+    "command": "<isolated-python-3.13>/bin/python scripts/validate_change.py --base develop --profile quick",
+    "effectiveProfile": "sensitive",
+    "exitCode": 0,
+    "path": "specs/028-system-one-core/evidence/quick-profile.log",
+    "seconds": 831.428,
+    "sha256": "9252f31884b8ff692aa7e39c5008d88aa2fc2b0475f308ac0355c7ff2d28b2e0",
+    "skipped": 4,
+    "tests": 558
+  },
+  "executionAuthorization": false,
+  "format": "system-one-technical-delivery-v1",
+  "humanReview": "pending",
+  "limits": "Synthetic stdlib reference engineering; full quick/sensitive and stable PR profiles passed. Clean freeze is recorded separately in assurance.json. No model utility, scientific acceptance, human/founder approval or execution authority.",
+  "records": [
+    "specs/028-system-one-core/evidence/luna-core-cli.json",
+    "specs/028-system-one-core/evidence/offline-wheel.json"
+  ],
+  "scenarios": {
+    "SC-001": {
+      "outcome": "Typed synthetic decisions, complete distributions and immutable copies verified.",
+      "testFile": "tests/test_system_one_core.py",
+      "testName": "SystemOneCoreTests.test_every_primitive_answer_and_immutable_data"
+    },
+    "SC-002": {
+      "outcome": "Exact admission limits and malformed inputs fail closed before backend allocation.",
+      "testFile": "tests/test_system_one_core.py",
+      "testName": "SystemOneCoreTests.test_parser_rejects_ambiguity_depth_and_nonfinite_before_backend"
+    },
+    "SC-003": {
+      "outcome": "All identity digests and distinct concentration/probability fields verified; calibration absent.",
+      "testFile": "tests/test_system_one_core.py",
+      "testName": "SystemOneCoreTests.test_digest_mutations_bind_all_identities_and_array_order"
+    },
+    "SC-004": {
+      "outcome": "Forged authority and unknown response fields rejected; no grants minted.",
+      "testFile": "tests/test_system_one_core.py",
+      "testName": "SystemOneCoreTests.test_response_output_and_authority_forgery_fail_closed"
+    },
+    "SC-005": {
+      "outcome": "Offline installed package smoke and recorded legacy analyze byte parity; provider-free discovery.",
+      "testFile": "tests/test_system_one_cli.py",
+      "testName": "SystemOneCliTests.test_legacy_help_does_not_load_decision_command"
+    },
+    "SC-006": {
+      "outcome": "Bounded admission, queue/cancellation/deadline and request-local identity controls passed.",
+      "testFile": "tests/test_system_one_concurrency.py",
+      "testName": "SystemOneConcurrencyTests.test_interleaved_inputs_keep_their_own_state_and_one_active_slot"
+    }
+  },
+  "sourceBindings": {
+    "agent_braid/cli.py": "427455747a82fb0d355191a3fdfbde11dc916b8a0c1e1e6f0d04b93cc55f05c3",
+    "agent_braid/system_one.py": "8a52a047bc72ba4f1099df60c1051178fbcb7735ee4d6e615d9b8052bbb31f44",
+    "agent_braid/system_one_backends.py": "e3d49bac70ef6904bddefdb1562e1961c98af0c8b7e81655affd94eca169a305",
+    "agent_braid/system_one_cli.py": "f19965e8f8dc4c0d45c2ce728cfb45721b740319bb1fb6c2c865aa5e3defc0c4",
+    "agent_braid/system_one_policy.py": "12f09b48fe916f03c17faf18726c15ad862779ab0dcf4fdb81d5a42dc9212f31",
+    "specs/028-system-one-core/evidence/candidate-profiles.json": "1946dba226c4b491d101bfac0cbcf32abf4bf61bfde76b820c0c683e342bd744",
+    "specs/028-system-one-core/evidence/focused-tests.log": "cf2480d941f72e59305293aee8755d58df5b7c075234fd56b0b2c62a8ac30fc7",
+    "specs/028-system-one-core/evidence/luna-core-cli.json": "f2d7014fbf229330d000f8fb188b59e48f05454155825dfadcf8b9ec82e77037",
+    "specs/028-system-one-core/evidence/offline-wheel.json": "23f88452a338901fa25a74f9d031adb93644e4322c012e2b8cb6adfb022f6de1",
+    "tests/test_system_one_backends.py": "442dc877c441e43d1c8abdb889fed3b94b7f2d753efabd28cfbde814dba7691f",
+    "tests/test_system_one_cli.py": "db8b80d4435218c0fb4d5679db7de6e8a66808931a6c3685461fd9787b7f4e13",
+    "tests/test_system_one_concurrency.py": "3be7d3e980d33725dbb0dfb8fa26afa1f6f9c07ae574b2b7ea45c078f4bebbda",
+    "tests/test_system_one_core.py": "db692c76cc62eb05f05b2b7529199f819aba485ccdfd5c9bef75e999d2d9724a",
+    "tests/test_system_one_policy.py": "6d021a247b7051ec4c625af75fe3275922cd3f610f080e1a0258e1febadea552"
+  },
+  "stablePrProfile": {
+    "command": "<isolated-python-3.13>/bin/python scripts/validate_change.py --base develop --profile pr",
+    "effectiveProfile": "pr",
+    "exitCode": 0,
+    "path": "specs/028-system-one-core/evidence/pr-profile.log",
+    "seconds": 871.465,
+    "sha256": "9bb6b6f01b4a457bcfe6028b49fb9a8410b71405a35326d85d284b6e02b0fc88",
+    "skipped": 4,
+    "tests": 558
+  },
+  "validationCandidate": "abeca31e88baeabbb74a7cffa3b0767e870d4ac7"
+}

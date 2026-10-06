@@ -1,0 +1,18 @@
+{
+  "recordVersion": "technical-interface-review-v1",
+  "interface": "specs/025-contextual-proof-obligations/contracts/continuations-v1.md",
+  "sha256": "4bae1481bfd2a9247eb53f6a6fd4ff161e90ee428b0a4aaae83a5f1c980d70ab",
+  "reviewerModel": "gpt-6-luna",
+  "decision": "conditional-technical-go",
+  "conditions": [
+    "Logical checks count cache hits separately from actual replays.",
+    "Bound the full report and verifier recomputation to 16000000 bytes.",
+    "Reserve conservative bytes before accumulating raw outcome/probe blocks; exhausted capacity is inconclusive.",
+    "Coverage may use bounded index references; reject an oversized minimum envelope before work.",
+    "Restore full original pending inventory before exact observation; preserve canonical fragment outcome semantics."
+  ],
+  "proofAccepted": false,
+  "humanScientificReview": "pending",
+  "executionAuthorization": false,
+  "limits": "Technical interface review and constraints conveyed by root; no theorem or scientific acceptance. Implementation still requires code review."
+}
