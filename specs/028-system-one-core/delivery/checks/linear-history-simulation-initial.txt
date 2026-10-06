@@ -1,0 +1,1 @@
+Spec Kit validation failed: export manifest does not bind required file: specs/015-m2-counterexample-reducer/spec.md

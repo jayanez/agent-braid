@@ -1,0 +1,1 @@
+Spec Kit structural gates passed; semantic/human review remains separate.
