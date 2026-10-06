@@ -1,7 +1,8 @@
 # Assurance Compatibility Classes
 
-These historical labels are not a total order of safety. The proposed Article 13
-amendment separates property, method, domain, assumptions, observation and
+These historical labels are not a total order of safety. The adopted Article 13
+clarification in [ADR 0004](../adr/0004-scientific-constitutional-clarifications.md)
+separates property, method, domain, assumptions, observation and
 execution contracts, and independently computed verification status. A producer
 claim is never authorization. See [draft 0.2](DRAFT_0_2.md).
 

@@ -1,0 +1,35 @@
+# Implementation plan
+
+## Technical context and scope
+
+Use the standard-library runtime and the existing `scripts/measure_m4_alpha.py` implementation as the starting point after verifying its actual entrypoint. Add a separate `scripts/measure_m4_utility.py` follow-up harness and phase counters at existing coordinator boundaries. No core dependencies or runtime contract changes. Keep SPEC-021 measurements immutable.
+
+## Constitution check before research
+
+Articles 6/12 require point-of-use correctness and isolation; 13/14 require inspectable uncertainty; 19 requires useful workloads and costs; 20 keeps analysis authority separate. Mandatory checks cannot be cached away, sampled away or omitted to manufacture speedup.
+
+## Research, assumptions and alternatives
+
+Compare serial and the current admitted parallel mode first. Use phase measurements to choose at most one cost improvement before the registered evaluation, documenting its code delta and expected effect. If no contract-preserving improvement is justified, evaluate the unchanged implementation and report that result. Retain serial policy as the operational fallback. Adaptive admission is a later contract, not an inferred consequence of this experiment.
+
+## Design and compatibility
+
+Implement private owned deterministic fixtures: 2 and 4 independent operations, each editing a distinct file; and a 4-operation dependency chain. Cross these with inserted payload sizes 1 KiB, 64 KiB and 1 MiB per operation, provided existing aggregate request/output/scratch caps admit the complete fixture. A refused size is a reported exclusion, never a reason to widen budgets. Generate immutable base/commit/patch identities once per block.
+
+Freeze the manifest and instrumentation on a clean candidate before timing. For each admitted block run 2 unmeasured warm-up pairs followed by 20 measured pairs. Alternate serial-first and parallel-first by repetition parity. Use fresh run/grant directories for each treatment, identical fixture and a fixed ordered workload manifest. Do not claim controlled OS cold caches. Record hardware, platform, Git/Python versions, background-load observations and all errors. No replacement trials or deletion of outliers.
+
+Primary outcome is median paired serial/parallel full-wall ratio per independent block. The descriptive usefulness target is >=1.10 with zero unsafe admissions and equivalent verified trees for every admitted run. Chain controls must preserve dependency order and serial outcomes; they are not pooled into the independent-workload utility metric. Report each block, invalid pairs and first/subsequent exposures. An invalid treatment leaves its pair visible and makes the block's utility decision inconclusive; do not compute a favourable complete-case acceptance. These 20 local pairs are descriptive engineering observations, not a population or causal speedup claim. A founder decides whether any bounded practical result warrants acceptance.
+
+Record per-phase wall and CPU, command count, bytes and actual overlapping intervals where the existing process runner exposes them; mark unavailable values explicitly. Include timing instrumentation overhead. Retain existing scratch/RSS measurement limitations. Never add artificial sleeps or unrelated workload work to obtain a speedup.
+
+## Validation strategy
+
+Map SC-001..004 to `quickstart.md` and planned `tests/test_m4_utility.py`. Replay forged grants/evidence, stale inputs, unknown footprints, missing traces, interruption and duplicate delivery controls using the current runtime tests. Run quick after coherent implementation and PR once stable. Fresh process reproduction and measurement are separate commands bound to the clean candidate.
+
+## Constitution check after design
+
+No execution capability is added. The observation remains tracked trees and explicit runtime effects. Any proposal to skip consumer verification, weaken refusal or change authorization is rejected from this feature.
+
+## Human review and unresolved decisions
+
+Technical review precedes implementation of contract-sensitive instrumentation. Founder utility decision follows obtained results; NO-GO and M4-open status remain unchanged before that decision. No scientific or independent validation is implied.

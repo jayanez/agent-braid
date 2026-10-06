@@ -10,31 +10,127 @@
     "M3.5": "Native specialized proposal predictor; separate draft research track.",
     "M4": "Agent Braid Runtime; bounded local Git execution increment, separate from formal research and whole-milestone closure.",
     "Public research preview": "Public publication and cutover verification.",
-    "Cross-cutting governance": "Governance and adoption work spanning release milestones."
+    "Cross-cutting governance": "Governance and adoption work spanning release milestones.",
+    "Platform evidence adapters": "Read-only recorded trace import and bounded adapter spikes; adoption and runtime authorization remain separate.",
+    "Workload evidence laboratory": "Bounded simulated non-Git effectful workloads and conservative analysis; no real external execution.",
+    "Formal interaction research": "Contextual and trace-safety obligations, restricted proof review and comparator feasibility; separate from M4 runtime."
   },
-  "closed_milestones": ["M0", "M0.5", "M1", "M2", "M3"],
+  "closed_milestones": [
+    "M0",
+    "M0.5",
+    "M1",
+    "M2",
+    "M3"
+  ],
   "specs": {
-    "001-certificate-verifier-pilot": {"milestone": "M0", "state": "closed"},
-    "002-open-tooling-strategy": {"milestone": "M0.5", "state": "open"},
-    "003-read-only-analyzer": {"milestone": "M1", "state": "closed"},
-    "004-m0-closure": {"milestone": "M0", "state": "closed"},
-    "005-git-worktree-adapter": {"milestone": "M1", "state": "closed"},
-    "006-validation-status-policy": {"milestone": "Cross-cutting governance", "state": "closed"},
-    "007-m1-closure": {"milestone": "M1", "state": "closed"},
-    "008-m0.5-closure": {"milestone": "M0.5", "state": "closed"},
-    "009-public-research-preview": {"milestone": "Public research preview", "state": "open"},
-    "010-risk-validation": {"milestone": "Cross-cutting governance", "state": "closed"},
-    "011-adoption-pathline": {"milestone": "Cross-cutting governance", "state": "open"},
-    "012-m2-git-replay-planner": {"milestone": "M2", "state": "closed"},
-    "013-m2-real-workload": {"milestone": "M2", "state": "closed"},
-    "014-m2-observation-normalizer": {"milestone": "M2", "state": "closed"},
-    "015-m2-counterexample-reducer": {"milestone": "M2", "state": "closed"},
-    "016-m2-partial-order-reduction": {"milestone": "M2", "state": "closed"},
-    "017-m2-closure": {"milestone": "M2", "state": "closed"},
-    "018-structured-exchange": {"milestone": "M3", "state": "closed"},
-    "019-native-predictor": {"milestone": "M3.5", "state": "open"},
-    "020-m4-local-git-runtime": {"milestone": "M4", "state": "closed"},
-    "021-m4-alpha-runtime": {"milestone": "M4", "state": "open"}
+    "001-certificate-verifier-pilot": {
+      "milestone": "M0",
+      "state": "closed"
+    },
+    "002-open-tooling-strategy": {
+      "milestone": "M0.5",
+      "state": "open"
+    },
+    "003-read-only-analyzer": {
+      "milestone": "M1",
+      "state": "closed"
+    },
+    "004-m0-closure": {
+      "milestone": "M0",
+      "state": "closed"
+    },
+    "005-git-worktree-adapter": {
+      "milestone": "M1",
+      "state": "closed"
+    },
+    "006-validation-status-policy": {
+      "milestone": "Cross-cutting governance",
+      "state": "closed"
+    },
+    "007-m1-closure": {
+      "milestone": "M1",
+      "state": "closed"
+    },
+    "008-m0.5-closure": {
+      "milestone": "M0.5",
+      "state": "closed"
+    },
+    "009-public-research-preview": {
+      "milestone": "Public research preview",
+      "state": "open"
+    },
+    "010-risk-validation": {
+      "milestone": "Cross-cutting governance",
+      "state": "closed"
+    },
+    "011-adoption-pathline": {
+      "milestone": "Cross-cutting governance",
+      "state": "open"
+    },
+    "012-m2-git-replay-planner": {
+      "milestone": "M2",
+      "state": "closed"
+    },
+    "013-m2-real-workload": {
+      "milestone": "M2",
+      "state": "closed"
+    },
+    "014-m2-observation-normalizer": {
+      "milestone": "M2",
+      "state": "closed"
+    },
+    "015-m2-counterexample-reducer": {
+      "milestone": "M2",
+      "state": "closed"
+    },
+    "016-m2-partial-order-reduction": {
+      "milestone": "M2",
+      "state": "closed"
+    },
+    "017-m2-closure": {
+      "milestone": "M2",
+      "state": "closed"
+    },
+    "018-structured-exchange": {
+      "milestone": "M3",
+      "state": "closed"
+    },
+    "019-native-predictor": {
+      "milestone": "M3.5",
+      "state": "open"
+    },
+    "020-m4-local-git-runtime": {
+      "milestone": "M4",
+      "state": "closed"
+    },
+    "021-m4-alpha-runtime": {
+      "milestone": "M4",
+      "state": "open"
+    },
+    "022-m4-utility-followup": {
+      "milestone": "M4",
+      "state": "open"
+    },
+    "023-recorded-trace-adapters": {
+      "milestone": "Platform evidence adapters",
+      "state": "open"
+    },
+    "024-effectful-workload-lab": {
+      "milestone": "Workload evidence laboratory",
+      "state": "open"
+    },
+    "025-contextual-proof-obligations": {
+      "milestone": "Formal interaction research",
+      "state": "open"
+    },
+    "026-adoption-evidence-program": {
+      "milestone": "Cross-cutting governance",
+      "state": "open"
+    },
+    "027-runtime-refinement-contracts": {
+      "milestone": "M4",
+      "state": "open"
+    }
   },
   "task_state_overrides": {
     "SPEC-004/T005": "The frozen M0 task checkbox predates closure. Same-commit Codex and Claude reports are bound by specs/004-m0-closure/founder-review.json, which separately approves M0 closure; the published historical task file remains unchanged."
@@ -43,6 +139,14 @@
     "SPEC-002",
     "SPEC-002/T006",
     "SPEC-011",
-    "SPEC-011/T008"
+    "SPEC-011/T008",
+    "SPEC-019",
+    "SPEC-021",
+    "SPEC-022",
+    "SPEC-023",
+    "SPEC-024",
+    "SPEC-025",
+    "SPEC-026",
+    "SPEC-027"
   ]
 }
