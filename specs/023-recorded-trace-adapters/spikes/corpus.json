@@ -1,0 +1,830 @@
+{
+  "corpusVersion": "0.1.0-experimental",
+  "sourcePins": "source-pins.json",
+  "predeclared": true,
+  "inputShape": "Feature-local normalized synthetic lifecycle metadata; not provider raw export or protocol conformance fixture.",
+  "cases": [
+    {
+      "caseId": "openai-approval",
+      "provider": "openai",
+      "sourceVersion": "v0.23.1",
+      "admission": "synthetic",
+      "operations": [
+        {
+          "instanceId": "left",
+          "attemptId": "left-1",
+          "definition": {
+            "id": "edit-left",
+            "digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111"
+          },
+          "inputDigest": "sha256:3333333333333333333333333333333333333333333333333333333333333333",
+          "dependencies": [],
+          "readVersions": {},
+          "effects": {
+            "declared": [
+              {
+                "kind": "write",
+                "resource": "file:a"
+              }
+            ],
+            "inferred": [],
+            "observed": [],
+            "coverage": {
+              "status": "complete",
+              "domain": "exact-resource",
+              "method": "declared"
+            }
+          }
+        },
+        {
+          "instanceId": "right",
+          "attemptId": "right-1",
+          "definition": {
+            "id": "edit-right",
+            "digest": "sha256:2222222222222222222222222222222222222222222222222222222222222222"
+          },
+          "inputDigest": "sha256:4444444444444444444444444444444444444444444444444444444444444444",
+          "dependencies": [],
+          "readVersions": {},
+          "effects": {
+            "declared": [
+              {
+                "kind": "write",
+                "resource": "file:b"
+              }
+            ],
+            "inferred": [],
+            "observed": [],
+            "coverage": {
+              "status": "complete",
+              "domain": "exact-resource",
+              "method": "declared"
+            }
+          }
+        }
+      ],
+      "timeline": [
+        {
+          "eventId": "openai-approval-0",
+          "instanceId": "left",
+          "attemptId": "left-1",
+          "status": "approved",
+          "timestamp": "2026-10-06T10:00:00Z"
+        }
+      ],
+      "expected": {
+        "outcome": "mapped",
+        "classification": "unknown"
+      }
+    },
+    {
+      "caseId": "openai-rejection",
+      "provider": "openai",
+      "sourceVersion": "v0.23.1",
+      "admission": "synthetic",
+      "operations": [
+        {
+          "instanceId": "left",
+          "attemptId": "left-1",
+          "definition": {
+            "id": "edit-left",
+            "digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111"
+          },
+          "inputDigest": "sha256:3333333333333333333333333333333333333333333333333333333333333333",
+          "dependencies": [],
+          "readVersions": {},
+          "effects": {
+            "declared": [
+              {
+                "kind": "write",
+                "resource": "file:a"
+              }
+            ],
+            "inferred": [],
+            "observed": [],
+            "coverage": {
+              "status": "complete",
+              "domain": "exact-resource",
+              "method": "declared"
+            }
+          }
+        },
+        {
+          "instanceId": "right",
+          "attemptId": "right-1",
+          "definition": {
+            "id": "edit-right",
+            "digest": "sha256:2222222222222222222222222222222222222222222222222222222222222222"
+          },
+          "inputDigest": "sha256:4444444444444444444444444444444444444444444444444444444444444444",
+          "dependencies": [],
+          "readVersions": {},
+          "effects": {
+            "declared": [
+              {
+                "kind": "write",
+                "resource": "file:b"
+              }
+            ],
+            "inferred": [],
+            "observed": [],
+            "coverage": {
+              "status": "complete",
+              "domain": "exact-resource",
+              "method": "declared"
+            }
+          }
+        }
+      ],
+      "timeline": [
+        {
+          "eventId": "openai-rejection-0",
+          "instanceId": "left",
+          "attemptId": "left-1",
+          "status": "rejected",
+          "timestamp": "2026-10-06T10:00:00Z"
+        }
+      ],
+      "expected": {
+        "outcome": "mapped",
+        "classification": "unknown"
+      }
+    },
+    {
+      "caseId": "openai-pause-resume",
+      "provider": "openai",
+      "sourceVersion": "v0.23.1",
+      "admission": "synthetic",
+      "operations": [
+        {
+          "instanceId": "left",
+          "attemptId": "left-1",
+          "definition": {
+            "id": "edit-left",
+            "digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111"
+          },
+          "inputDigest": "sha256:3333333333333333333333333333333333333333333333333333333333333333",
+          "dependencies": [],
+          "readVersions": {},
+          "effects": {
+            "declared": [
+              {
+                "kind": "write",
+                "resource": "file:a"
+              }
+            ],
+            "inferred": [],
+            "observed": [],
+            "coverage": {
+              "status": "complete",
+              "domain": "exact-resource",
+              "method": "declared"
+            }
+          }
+        },
+        {
+          "instanceId": "right",
+          "attemptId": "right-1",
+          "definition": {
+            "id": "edit-right",
+            "digest": "sha256:2222222222222222222222222222222222222222222222222222222222222222"
+          },
+          "inputDigest": "sha256:4444444444444444444444444444444444444444444444444444444444444444",
+          "dependencies": [],
+          "readVersions": {},
+          "effects": {
+            "declared": [
+              {
+                "kind": "write",
+                "resource": "file:b"
+              }
+            ],
+            "inferred": [],
+            "observed": [],
+            "coverage": {
+              "status": "complete",
+              "domain": "exact-resource",
+              "method": "declared"
+            }
+          }
+        }
+      ],
+      "timeline": [
+        {
+          "eventId": "openai-pause-resume-0",
+          "instanceId": "left",
+          "attemptId": "left-1",
+          "status": "paused",
+          "timestamp": "2026-10-06T10:00:00Z"
+        },
+        {
+          "eventId": "openai-pause-resume-1",
+          "instanceId": "left",
+          "attemptId": "left-1",
+          "status": "resumed",
+          "timestamp": "2026-10-06T10:00:01Z"
+        },
+        {
+          "eventId": "openai-pause-resume-2",
+          "instanceId": "left",
+          "attemptId": "left-1",
+          "status": "completed",
+          "timestamp": "2026-10-06T10:00:02Z"
+        }
+      ],
+      "expected": {
+        "outcome": "mapped",
+        "classification": "unknown"
+      }
+    },
+    {
+      "caseId": "openai-completion-no-effect",
+      "provider": "openai",
+      "sourceVersion": "v0.23.1",
+      "admission": "synthetic",
+      "operations": [
+        {
+          "instanceId": "left",
+          "attemptId": "left-1",
+          "definition": {
+            "id": "edit-left",
+            "digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111"
+          },
+          "inputDigest": "sha256:3333333333333333333333333333333333333333333333333333333333333333",
+          "dependencies": [],
+          "readVersions": {},
+          "effects": {
+            "declared": [],
+            "inferred": [],
+            "observed": [],
+            "coverage": {
+              "status": "complete",
+              "domain": "exact-resource",
+              "method": "declared"
+            }
+          }
+        },
+        {
+          "instanceId": "right",
+          "attemptId": "right-1",
+          "definition": {
+            "id": "edit-right",
+            "digest": "sha256:2222222222222222222222222222222222222222222222222222222222222222"
+          },
+          "inputDigest": "sha256:4444444444444444444444444444444444444444444444444444444444444444",
+          "dependencies": [],
+          "readVersions": {},
+          "effects": {
+            "declared": [
+              {
+                "kind": "write",
+                "resource": "file:b"
+              }
+            ],
+            "inferred": [],
+            "observed": [],
+            "coverage": {
+              "status": "complete",
+              "domain": "exact-resource",
+              "method": "declared"
+            }
+          }
+        }
+      ],
+      "timeline": [
+        {
+          "eventId": "openai-completion-no-effect-0",
+          "instanceId": "left",
+          "attemptId": "left-1",
+          "status": "completed",
+          "timestamp": "2026-10-06T10:00:00Z"
+        }
+      ],
+      "expected": {
+        "outcome": "mapped",
+        "classification": "unknown"
+      }
+    },
+    {
+      "caseId": "openai-multiple-attempts",
+      "provider": "openai",
+      "sourceVersion": "v0.23.1",
+      "admission": "synthetic",
+      "operations": [
+        {
+          "instanceId": "left",
+          "attemptId": "left-1",
+          "definition": {
+            "id": "edit-left",
+            "digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111"
+          },
+          "inputDigest": "sha256:3333333333333333333333333333333333333333333333333333333333333333",
+          "dependencies": [],
+          "readVersions": {},
+          "effects": {
+            "declared": [
+              {
+                "kind": "write",
+                "resource": "file:a"
+              }
+            ],
+            "inferred": [],
+            "observed": [],
+            "coverage": {
+              "status": "complete",
+              "domain": "exact-resource",
+              "method": "declared"
+            }
+          }
+        },
+        {
+          "instanceId": "right",
+          "attemptId": "right-1",
+          "definition": {
+            "id": "edit-right",
+            "digest": "sha256:2222222222222222222222222222222222222222222222222222222222222222"
+          },
+          "inputDigest": "sha256:4444444444444444444444444444444444444444444444444444444444444444",
+          "dependencies": [],
+          "readVersions": {},
+          "effects": {
+            "declared": [
+              {
+                "kind": "write",
+                "resource": "file:b"
+              }
+            ],
+            "inferred": [],
+            "observed": [],
+            "coverage": {
+              "status": "complete",
+              "domain": "exact-resource",
+              "method": "declared"
+            }
+          }
+        },
+        {
+          "instanceId": "left",
+          "attemptId": "left-2",
+          "definition": {
+            "id": "edit-left",
+            "digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111"
+          },
+          "inputDigest": "sha256:3333333333333333333333333333333333333333333333333333333333333333",
+          "dependencies": [],
+          "readVersions": {},
+          "effects": {
+            "declared": [
+              {
+                "kind": "write",
+                "resource": "file:a"
+              }
+            ],
+            "inferred": [],
+            "observed": [],
+            "coverage": {
+              "status": "complete",
+              "domain": "exact-resource",
+              "method": "declared"
+            }
+          }
+        }
+      ],
+      "timeline": [
+        {
+          "eventId": "openai-multiple-attempts-0",
+          "instanceId": "left",
+          "attemptId": "left-1",
+          "status": "paused",
+          "timestamp": "2026-10-06T10:00:00Z"
+        },
+        {
+          "eventId": "openai-multiple-attempts-1",
+          "instanceId": "left",
+          "attemptId": "left-1",
+          "status": "resumed",
+          "timestamp": "2026-10-06T10:00:01Z"
+        }
+      ],
+      "expected": {
+        "outcome": "unsupported",
+        "classification": null
+      }
+    },
+    {
+      "caseId": "mcp-deferred-task",
+      "provider": "mcp",
+      "sourceVersion": "2025-11-25",
+      "admission": "synthetic",
+      "operations": [
+        {
+          "instanceId": "left",
+          "attemptId": "left-1",
+          "definition": {
+            "id": "edit-left",
+            "digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111"
+          },
+          "inputDigest": "sha256:3333333333333333333333333333333333333333333333333333333333333333",
+          "dependencies": [],
+          "readVersions": {},
+          "effects": {
+            "declared": [
+              {
+                "kind": "write",
+                "resource": "file:a"
+              }
+            ],
+            "inferred": [],
+            "observed": [],
+            "coverage": {
+              "status": "complete",
+              "domain": "exact-resource",
+              "method": "declared"
+            }
+          }
+        },
+        {
+          "instanceId": "right",
+          "attemptId": "right-1",
+          "definition": {
+            "id": "edit-right",
+            "digest": "sha256:2222222222222222222222222222222222222222222222222222222222222222"
+          },
+          "inputDigest": "sha256:4444444444444444444444444444444444444444444444444444444444444444",
+          "dependencies": [],
+          "readVersions": {},
+          "effects": {
+            "declared": [
+              {
+                "kind": "write",
+                "resource": "file:b"
+              }
+            ],
+            "inferred": [],
+            "observed": [],
+            "coverage": {
+              "status": "complete",
+              "domain": "exact-resource",
+              "method": "declared"
+            }
+          }
+        }
+      ],
+      "timeline": [
+        {
+          "eventId": "mcp-deferred-task-0",
+          "instanceId": "left",
+          "attemptId": "left-1",
+          "status": "working",
+          "timestamp": "2026-10-06T10:00:00Z",
+          "taskId": "synthetic-task-1"
+        }
+      ],
+      "expected": {
+        "outcome": "mapped",
+        "classification": "unknown"
+      }
+    },
+    {
+      "caseId": "mcp-input-required",
+      "provider": "mcp",
+      "sourceVersion": "2025-11-25",
+      "admission": "synthetic",
+      "operations": [
+        {
+          "instanceId": "left",
+          "attemptId": "left-1",
+          "definition": {
+            "id": "edit-left",
+            "digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111"
+          },
+          "inputDigest": "sha256:3333333333333333333333333333333333333333333333333333333333333333",
+          "dependencies": [],
+          "readVersions": {},
+          "effects": {
+            "declared": [
+              {
+                "kind": "write",
+                "resource": "file:a"
+              }
+            ],
+            "inferred": [],
+            "observed": [],
+            "coverage": {
+              "status": "complete",
+              "domain": "exact-resource",
+              "method": "declared"
+            }
+          }
+        },
+        {
+          "instanceId": "right",
+          "attemptId": "right-1",
+          "definition": {
+            "id": "edit-right",
+            "digest": "sha256:2222222222222222222222222222222222222222222222222222222222222222"
+          },
+          "inputDigest": "sha256:4444444444444444444444444444444444444444444444444444444444444444",
+          "dependencies": [],
+          "readVersions": {},
+          "effects": {
+            "declared": [
+              {
+                "kind": "write",
+                "resource": "file:b"
+              }
+            ],
+            "inferred": [],
+            "observed": [],
+            "coverage": {
+              "status": "complete",
+              "domain": "exact-resource",
+              "method": "declared"
+            }
+          }
+        }
+      ],
+      "timeline": [
+        {
+          "eventId": "mcp-input-required-0",
+          "instanceId": "left",
+          "attemptId": "left-1",
+          "status": "working",
+          "timestamp": "2026-10-06T10:00:00Z",
+          "taskId": "synthetic-task-1"
+        },
+        {
+          "eventId": "mcp-input-required-1",
+          "instanceId": "left",
+          "attemptId": "left-1",
+          "status": "input_required",
+          "timestamp": "2026-10-06T10:00:01Z",
+          "taskId": "synthetic-task-1"
+        },
+        {
+          "eventId": "mcp-input-required-2",
+          "instanceId": "left",
+          "attemptId": "left-1",
+          "status": "completed",
+          "timestamp": "2026-10-06T10:00:02Z",
+          "taskId": "synthetic-task-1"
+        }
+      ],
+      "expected": {
+        "outcome": "mapped",
+        "classification": "unknown"
+      }
+    },
+    {
+      "caseId": "mcp-completed-no-effect",
+      "provider": "mcp",
+      "sourceVersion": "2025-11-25",
+      "admission": "synthetic",
+      "operations": [
+        {
+          "instanceId": "left",
+          "attemptId": "left-1",
+          "definition": {
+            "id": "edit-left",
+            "digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111"
+          },
+          "inputDigest": "sha256:3333333333333333333333333333333333333333333333333333333333333333",
+          "dependencies": [],
+          "readVersions": {},
+          "effects": {
+            "declared": [],
+            "inferred": [],
+            "observed": [],
+            "coverage": {
+              "status": "complete",
+              "domain": "exact-resource",
+              "method": "declared"
+            }
+          }
+        },
+        {
+          "instanceId": "right",
+          "attemptId": "right-1",
+          "definition": {
+            "id": "edit-right",
+            "digest": "sha256:2222222222222222222222222222222222222222222222222222222222222222"
+          },
+          "inputDigest": "sha256:4444444444444444444444444444444444444444444444444444444444444444",
+          "dependencies": [],
+          "readVersions": {},
+          "effects": {
+            "declared": [
+              {
+                "kind": "write",
+                "resource": "file:b"
+              }
+            ],
+            "inferred": [],
+            "observed": [],
+            "coverage": {
+              "status": "complete",
+              "domain": "exact-resource",
+              "method": "declared"
+            }
+          }
+        }
+      ],
+      "timeline": [
+        {
+          "eventId": "mcp-completed-no-effect-0",
+          "instanceId": "left",
+          "attemptId": "left-1",
+          "status": "completed",
+          "timestamp": "2026-10-06T10:00:00Z",
+          "taskId": "synthetic-task-1"
+        }
+      ],
+      "expected": {
+        "outcome": "mapped",
+        "classification": "unknown"
+      }
+    },
+    {
+      "caseId": "mcp-multiple-attempts",
+      "provider": "mcp",
+      "sourceVersion": "2025-11-25",
+      "admission": "synthetic",
+      "operations": [
+        {
+          "instanceId": "left",
+          "attemptId": "left-1",
+          "definition": {
+            "id": "edit-left",
+            "digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111"
+          },
+          "inputDigest": "sha256:3333333333333333333333333333333333333333333333333333333333333333",
+          "dependencies": [],
+          "readVersions": {},
+          "effects": {
+            "declared": [
+              {
+                "kind": "write",
+                "resource": "file:a"
+              }
+            ],
+            "inferred": [],
+            "observed": [],
+            "coverage": {
+              "status": "complete",
+              "domain": "exact-resource",
+              "method": "declared"
+            }
+          }
+        },
+        {
+          "instanceId": "right",
+          "attemptId": "right-1",
+          "definition": {
+            "id": "edit-right",
+            "digest": "sha256:2222222222222222222222222222222222222222222222222222222222222222"
+          },
+          "inputDigest": "sha256:4444444444444444444444444444444444444444444444444444444444444444",
+          "dependencies": [],
+          "readVersions": {},
+          "effects": {
+            "declared": [
+              {
+                "kind": "write",
+                "resource": "file:b"
+              }
+            ],
+            "inferred": [],
+            "observed": [],
+            "coverage": {
+              "status": "complete",
+              "domain": "exact-resource",
+              "method": "declared"
+            }
+          }
+        },
+        {
+          "instanceId": "left",
+          "attemptId": "left-2",
+          "definition": {
+            "id": "edit-left",
+            "digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111"
+          },
+          "inputDigest": "sha256:3333333333333333333333333333333333333333333333333333333333333333",
+          "dependencies": [],
+          "readVersions": {},
+          "effects": {
+            "declared": [
+              {
+                "kind": "write",
+                "resource": "file:a"
+              }
+            ],
+            "inferred": [],
+            "observed": [],
+            "coverage": {
+              "status": "complete",
+              "domain": "exact-resource",
+              "method": "declared"
+            }
+          }
+        }
+      ],
+      "timeline": [
+        {
+          "eventId": "mcp-multiple-attempts-0",
+          "instanceId": "left",
+          "attemptId": "left-1",
+          "status": "working",
+          "timestamp": "2026-10-06T10:00:00Z",
+          "taskId": "synthetic-task-1"
+        },
+        {
+          "eventId": "mcp-multiple-attempts-1",
+          "instanceId": "left",
+          "attemptId": "left-1",
+          "status": "completed",
+          "timestamp": "2026-10-06T10:00:01Z",
+          "taskId": "synthetic-task-1"
+        }
+      ],
+      "expected": {
+        "outcome": "unsupported",
+        "classification": null
+      }
+    },
+    {
+      "caseId": "mcp-newer-state-dialect",
+      "provider": "mcp",
+      "sourceVersion": "2025-11-25",
+      "admission": "synthetic",
+      "operations": [
+        {
+          "instanceId": "left",
+          "attemptId": "left-1",
+          "definition": {
+            "id": "edit-left",
+            "digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111"
+          },
+          "inputDigest": "sha256:3333333333333333333333333333333333333333333333333333333333333333",
+          "dependencies": [],
+          "readVersions": {},
+          "effects": {
+            "declared": [
+              {
+                "kind": "write",
+                "resource": "file:a"
+              }
+            ],
+            "inferred": [],
+            "observed": [],
+            "coverage": {
+              "status": "complete",
+              "domain": "exact-resource",
+              "method": "declared"
+            }
+          }
+        },
+        {
+          "instanceId": "right",
+          "attemptId": "right-1",
+          "definition": {
+            "id": "edit-right",
+            "digest": "sha256:2222222222222222222222222222222222222222222222222222222222222222"
+          },
+          "inputDigest": "sha256:4444444444444444444444444444444444444444444444444444444444444444",
+          "dependencies": [],
+          "readVersions": {},
+          "effects": {
+            "declared": [
+              {
+                "kind": "write",
+                "resource": "file:b"
+              }
+            ],
+            "inferred": [],
+            "observed": [],
+            "coverage": {
+              "status": "complete",
+              "domain": "exact-resource",
+              "method": "declared"
+            }
+          }
+        }
+      ],
+      "timeline": [
+        {
+          "eventId": "mcp-newer-state-dialect-0",
+          "instanceId": "left",
+          "attemptId": "left-1",
+          "status": "input_required",
+          "timestamp": "2026-10-06T10:00:00Z",
+          "requestState": "synthetic-opaque-state-handle"
+        }
+      ],
+      "expected": {
+        "outcome": "unsupported",
+        "classification": null
+      }
+    }
+  ]
+}

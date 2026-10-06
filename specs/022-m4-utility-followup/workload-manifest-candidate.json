@@ -1,0 +1,19 @@
+{
+  "version": "m4-utility-protocol-candidate-v1",
+  "status": "draft-human-technical-review-pending",
+  "sourceKind": "synthetic-owned",
+  "blocks": [
+    {"family": "independent", "operations": 2, "payloadBytes": [1024, 65536, 1048576]},
+    {"family": "independent", "operations": 4, "payloadBytes": [1024, 65536, 1048576]},
+    {"family": "dependency-chain", "operations": 4, "payloadBytes": [1024, 65536, 1048576]}
+  ],
+  "warmupPairs": 2,
+  "measuredPairs": 20,
+  "treatmentOrder": "serial-first-on-even-repetition-parallel-first-on-odd",
+  "descriptiveRatioThreshold": 1.10,
+  "existingCapsOnly": true,
+  "invalidPairDisposition": "retain-and-mark-block-inconclusive",
+  "fixtureObjectsGenerated": false,
+  "measurementExecuted": false,
+  "executionAuthorization": false
+}

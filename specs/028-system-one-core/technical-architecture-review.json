@@ -1,0 +1,30 @@
+{
+  "baselineCommit": "a5c12adada404cc9ef372528500caae29f21947a",
+  "canonicalAdrAdoption": false,
+  "date": "2026-10-06",
+  "executionAuthorization": false,
+  "format": "spec028-technical-architecture-review-v1",
+  "humanAcceptance": "pending",
+  "implementationExists": false,
+  "limits": "Independent agent architecture review authorizes no scientific or founder acceptance. User separately authorized implementation/review/PR/merge; actual core implementation still requires tests and code review.",
+  "modelDataRights": "not-admitted",
+  "remainingTechnicalBlockers": [],
+  "resolvedItems": [
+    "Exact raw/canonical bounds, JSON/number behavior and SHA256 input coverage",
+    "Required integer budgets, per-field schema and reference character token scope",
+    "Full answered batch and empty abstain/defer/refused response invariants",
+    "Strict uncalibrated default and explicit synthetic diagnostic policy",
+    "Deep request isolation, one active/eight waiting and cooperative cancellation publication",
+    "Future-only neural envelope; materialized-byte core ingress, CLI source I/O excluded from core deadline"
+  ],
+  "reviewModel": "gpt-6-luna",
+  "reviewedHashes": {
+    "specs/028-system-one-core/architecture-decisions.json": "980c02fe5c2884f61d6ae26d420c594d8d6599ca67570cd4b15e694c5bb5b9b8",
+    "specs/028-system-one-core/contracts/decision-api.md": "4dc2bd5212ab90c5b3c6b217a9c7433231f92ea4b2c5de7b53fa49b50a3e5809",
+    "specs/028-system-one-core/contracts/stdlib-v1.md": "5cfd2bcc1dd19577bc236f82c5d40503a96fe19546043f4e5de7828b3c7fa7bc"
+  },
+  "scientificAcceptance": "pending",
+  "scope": "SPEC028/T002-T008 within exact stdlib-v1 profile, synthetic fixture-only, no learned backend or real source",
+  "testsExecuted": [],
+  "verdict": "GO-technical-stdlib-profile-only"
+}

@@ -1,0 +1,53 @@
+{
+  "captureState": "Working tree after implementation commit; exact inputs hashed. Clean candidate freeze is recorded separately.",
+  "captured_at": "2026-10-06T22:26:06.143794+00:00",
+  "developmentQuick": {
+    "command": ".venv-speckit/bin/python scripts/validate_change.py --base develop --profile quick",
+    "effectiveProfile": "sensitive",
+    "exitCode": 1,
+    "failure": "New obtained artifacts still referenced the old historical snapshot. Repaired with explicit current snapshots; targeted structure and subsequent full PR profile passed.",
+    "log": "docs/experiments/evidence/autonomous-tracks-2026-10-06/development-quick-profile.log",
+    "skipped": 4,
+    "testsPassed": 498
+  },
+  "expectedSkippedBoundary": "Three deferred learned SPEC019 contracts and one intentionally unavailable private historical-object test. No training, external scientific review or skipped specialist matrix is represented as passed.",
+  "human_review": "pending",
+  "implementationBaseCommit": "7614daa445d5852d455502c3d36efa73d3f7d12a",
+  "inputs": {
+    "research/adoption/evidence-program/contracts/contract-v1.md": "c9cb39736eeb389d0d8be9153d98328ad396fb325d65836a89e79587e986f559",
+    "research/adoption/evidence-program/fixtures/expected.json": "f3e7af1bc0236448bc347e743d8ec00e18cc692b9b8b20484822262df647be8c",
+    "research/adoption/evidence-program/fixtures/frozen.json": "973b42be8f99f4bb5f5bfe9f655f7bbbb0dee70dc9dfa3283a5d839b9d935766",
+    "research/adoption/evidence-program/fixtures/register.json": "748b80fe66c6e439ebfad0fac075010c5770fd9bb0ae44379a6b50ff6a1b17ee",
+    "research/adoption/evidence-program/program.py": "b30ca0fffe7634599692cdff911b7c6af963b4caddd119ab5673a3cfeb632232",
+    "specs/026-adoption-evidence-program/legacy-status-reconciliation.json": "37a3e54af0d1ac28f32d954c6d964d832aa36309ab6b9af529e7293a8a6c3aa9",
+    "tests/test_adoption_evidence.py": "7bdddc5eed3a1ae8bd955342f7dde07a4f411dd19cdcb07b87dac5363b578b5d"
+  },
+  "limits": "Executed bounded synthetic/disposable technical controls and read-only assessment only; not empirical adoption, independent external reproduction, scientific proof, human/founder approval, publication or expanded execution authority. Stable full PR profile completed on the bound implementation candidate. Human/founder acceptance and expanded execution remain pending.",
+  "observations": [
+    {
+      "command": ".venv-speckit/bin/python -m unittest tests.test_adoption_evidence tests.test_trace_adapter tests.test_runtime_refinement tests.test_validation_profiles tests.test_trace_lifecycle_spikes tests.test_native_predictor tests.test_predictor_readiness -v",
+      "exit_code": 0,
+      "log": "docs/experiments/evidence/autonomous-tracks-2026-10-06/final-focused-tests.log",
+      "logSha256": "5a6db014150fe67ec22a9378190f7ac8a398d0b22525fab631cdaf24091b7a6e",
+      "outcome": "83 tests passed in 6.880s"
+    }
+  ],
+  "outcome": "Twenty synthetic controls passed: canonical units/deduplication, independently fixed arithmetic, missingness/costs, contribution/reproduction refusal and historical obligation audit; real admitted organizations/episodes and qualifying external reproductions remain zero.",
+  "platform": "Darwin",
+  "python": "3.13.11",
+  "repairedStructure": {
+    "command": ".venv-speckit/bin/python scripts/validate_spec_kit.py",
+    "exitCode": 0,
+    "log": "docs/experiments/evidence/autonomous-tracks-2026-10-06/repaired-structure.log"
+  },
+  "review": "docs/experiments/evidence/autonomous-tracks-2026-10-06/luna-first-block.json",
+  "stablePrProfile": {
+    "command": ".venv-speckit/bin/python scripts/validate_change.py --base develop --profile pr",
+    "exitCode": 0,
+    "log": "docs/experiments/evidence/autonomous-tracks-2026-10-06/stable-pr-profile.log",
+    "sha256": "60c3427a66aff7cd64fc5c3fc17370c3788f4ee8f3f50d01fc470eeaed724ded",
+    "skipped": 4,
+    "tests": 504
+  },
+  "validationCandidateCommit": "3236edce53156b6a0f3d1a385e9f69e0274b5aaf"
+}

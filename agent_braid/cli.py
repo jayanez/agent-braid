@@ -18,6 +18,7 @@ from .git_runtime import InvalidGitRuntime, prepare_run, execute_run, recover_ru
 from .runtime_scheduler import InvalidRuntimeSchedule
 from .runtime_policy import (InvalidRuntimePolicy, prepare_policy_run, verify_policy_plan,
                              issue_operator_grant, execute_policy_run, recover_policy_run, inspect_policy_run)
+from .trace_adapter import InvalidTrace, import_trace, read_trace, validate_destination
 from .analysis import InvalidAnalysis, analyze, render_text
 from .git_adapter import InvalidGitAnalysis, analyze_git_with_provenance
 from .git_process import GitExecutionCancelled, GitInfrastructureFailure
@@ -82,6 +83,11 @@ def main(argv: list[str] | None = None) -> int:
     analyze_parser = subparsers.add_parser("analyze", help="analyze AIM 0.2 records")
     analyze_parser.add_argument("input", type=Path)
     analyze_parser.add_argument("--format", choices=("json", "text"), default="json")
+    trace_parser = subparsers.add_parser("analyze-trace", help="analyze synthetic recorded metadata with explicit loss")
+    trace_parser.add_argument("input", type=Path)
+    trace_parser.add_argument("--mapper", choices=("generic-metadata-v1",), required=True)
+    trace_parser.add_argument("--provenance-output", type=Path, required=True)
+    trace_parser.add_argument("--format", choices=("json", "text"), default="json")
     git_parser = subparsers.add_parser("analyze-git", help="analyze stable Git snapshots")
     git_parser.add_argument("input", type=Path)
     git_parser.add_argument("--format", choices=("json", "text"), default="json")
@@ -155,6 +161,20 @@ def main(argv: list[str] | None = None) -> int:
             policy_parser.add_argument("--action", choices=("resume", "abort"), required=True)
     args = parser.parse_args(argv)
     try:
+        if args.command == "analyze-trace":
+            destination = validate_destination(args.input, args.provenance_output)
+            artifacts = import_trace(read_trace(args.input), mapper=args.mapper)
+            descriptor = os.open(destination, os.O_WRONLY | os.O_CREAT | os.O_EXCL | os.O_NOFOLLOW, 0o600)
+            try:
+                with os.fdopen(descriptor, "wb") as stream:
+                    stream.write(artifacts.provenance_bytes)
+                    stream.flush()
+                    os.fsync(stream.fileno())
+            except BaseException:
+                destination.unlink(missing_ok=True)
+                raise
+            print(render_text(artifacts.report) if args.format == "text" else artifacts.report_bytes.decode("utf-8"), end="\n" if args.format == "text" else "")
+            return 0
         data = _read(args.input)
         if args.command in {"prepare-policy-run", "verify-policy-plan", "grant-policy-run",
                             "execute-policy-run", "recover-policy-run", "inspect-policy-run"}:
@@ -261,6 +281,15 @@ def main(argv: list[str] | None = None) -> int:
         result = verify(data)
         print(json.dumps(result, sort_keys=True, indent=2))
         return 0 if result["status"] == "verified" else 1
+    except InvalidTrace as exc:
+        print(json.dumps({"status": "rejected", "reason": str(exc), "executionAuthorization": False}, sort_keys=True))
+        return 2
+    except OSError as exc:
+        if args.command == "analyze-trace":
+            print(json.dumps({"status": "rejected", "reason": "trace-io-failed", "executionAuthorization": False}, sort_keys=True))
+            return 2
+        print(json.dumps({"status": "rejected", "reason": str(exc)}, sort_keys=True))
+        return 2
     except GitInfrastructureFailure as exc:
         print(json.dumps({"status": "infrastructure-failure", "category": exc.category,
                           "reason": str(exc)}, sort_keys=True))

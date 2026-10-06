@@ -1,0 +1,144 @@
+{
+  "currentRemoteVerified": false,
+  "limits": [
+    "Dated remote observations are reported from the pinned audit, not independently rechecked today.",
+    "No historical task, authority, release or tracking record was changed.",
+    "Visibility and observed completed actions never establish authorization or independent scientific validation."
+  ],
+  "obligations": [
+    {
+      "authorization": "task-specific decision unavailable",
+      "evidence": [
+        "specs/002-open-tooling-strategy/assurance.json"
+      ],
+      "id": "SPEC-002/T006-review",
+      "obligation": "Complete human strategy review",
+      "observedState": "Assurance still records human_review pending.",
+      "originalTask": "SPEC-002/T006",
+      "proposedDisposition": "pending-founder-reconciliation",
+      "remainingDecision": "Recorded bounded human/founder reconciliation"
+    },
+    {
+      "authorization": "task-specific decision unavailable",
+      "evidence": [
+        "specs/002-open-tooling-strategy/tasks.md"
+      ],
+      "id": "SPEC-002/T006-founder",
+      "obligation": "Obtain separate founder decisions",
+      "observedState": "Task remains unchecked; no task-specific decision inferred from later adoption.",
+      "originalTask": "SPEC-002/T006",
+      "proposedDisposition": "pending-founder-reconciliation",
+      "remainingDecision": "Recorded bounded human/founder reconciliation"
+    },
+    {
+      "authorization": "Frozen pre-publication records unauthorized; later state audit does not establish authority.",
+      "evidence": [
+        "docs/releases/publication/CUTOVER_AUDIT_2026-09-25.md",
+        "docs/releases/publication-cutover.json",
+        "specs/009-public-research-preview/founder-review.json"
+      ],
+      "id": "SPEC-009/T009-rename-private-repository",
+      "obligation": "rename-private-repository",
+      "observedState": "Private archived destination observed; rename operation authorship not established.",
+      "originalTask": "SPEC-009/T009",
+      "proposedDisposition": "pending-founder-reconciliation",
+      "remainingDecision": "Explicit founder decision bound to this reconciliation; refresh remote evidence separately if needed."
+    },
+    {
+      "authorization": "Frozen pre-publication records unauthorized; later state audit does not establish authority.",
+      "evidence": [
+        "docs/releases/publication/CUTOVER_AUDIT_2026-09-25.md",
+        "docs/releases/publication-cutover.json",
+        "specs/009-public-research-preview/founder-review.json"
+      ],
+      "id": "SPEC-009/T009-create-clean-public-repository",
+      "obligation": "create-clean-public-repository",
+      "observedState": "Clean public destination observed in the dated audit.",
+      "originalTask": "SPEC-009/T009",
+      "proposedDisposition": "pending-founder-reconciliation",
+      "remainingDecision": "Explicit founder decision bound to this reconciliation; refresh remote evidence separately if needed."
+    },
+    {
+      "authorization": "Frozen pre-publication records unauthorized; later state audit does not establish authority.",
+      "evidence": [
+        "docs/releases/publication/CUTOVER_AUDIT_2026-09-25.md",
+        "docs/releases/publication-cutover.json",
+        "specs/009-public-research-preview/founder-review.json"
+      ],
+      "id": "SPEC-009/T009-push-clean-branches-and-tag",
+      "obligation": "push-clean-branches-and-tag",
+      "observedState": "develop/main and v0.1.0-alpha.1 tag observed in the dated audit.",
+      "originalTask": "SPEC-009/T009",
+      "proposedDisposition": "pending-founder-reconciliation",
+      "remainingDecision": "Explicit founder decision bound to this reconciliation; refresh remote evidence separately if needed."
+    },
+    {
+      "authorization": "Frozen pre-publication records unauthorized; later state audit does not establish authority.",
+      "evidence": [
+        "docs/releases/publication/CUTOVER_AUDIT_2026-09-25.md",
+        "docs/releases/publication-cutover.json",
+        "specs/009-public-research-preview/founder-review.json"
+      ],
+      "id": "SPEC-009/T009-configure-rules-and-security",
+      "obligation": "configure-rules-and-security",
+      "observedState": "Branch protection and listed security settings observed in the dated audit.",
+      "originalTask": "SPEC-009/T009",
+      "proposedDisposition": "pending-founder-reconciliation",
+      "remainingDecision": "Explicit founder decision bound to this reconciliation; refresh remote evidence separately if needed."
+    },
+    {
+      "authorization": "Frozen pre-publication records unauthorized; later state audit does not establish authority.",
+      "evidence": [
+        "docs/releases/publication/CUTOVER_AUDIT_2026-09-25.md",
+        "docs/releases/publication-cutover.json",
+        "specs/009-public-research-preview/founder-review.json"
+      ],
+      "id": "SPEC-009/T009-change-visibility-to-public",
+      "obligation": "change-visibility-to-public",
+      "observedState": "Public destination visibility observed in the dated audit.",
+      "originalTask": "SPEC-009/T009",
+      "proposedDisposition": "pending-founder-reconciliation",
+      "remainingDecision": "Explicit founder decision bound to this reconciliation; refresh remote evidence separately if needed."
+    },
+    {
+      "authorization": "Frozen pre-publication records unauthorized; later state audit does not establish authority.",
+      "evidence": [
+        "docs/releases/publication/CUTOVER_AUDIT_2026-09-25.md",
+        "docs/releases/publication-cutover.json",
+        "specs/009-public-research-preview/founder-review.json"
+      ],
+      "id": "SPEC-009/T009-publish-github-prerelease",
+      "obligation": "publish-github-prerelease",
+      "observedState": "2026-09-21 prerelease observed; independent validation pending.",
+      "originalTask": "SPEC-009/T009",
+      "proposedDisposition": "pending-founder-reconciliation",
+      "remainingDecision": "Explicit founder decision bound to this reconciliation; refresh remote evidence separately if needed."
+    },
+    {
+      "authorization": "Frozen pre-publication records unauthorized; later state audit does not establish authority.",
+      "evidence": [
+        "docs/releases/publication/CUTOVER_AUDIT_2026-09-25.md",
+        "docs/releases/publication-cutover.json",
+        "specs/009-public-research-preview/founder-review.json"
+      ],
+      "id": "SPEC-009/T009-archive-private-repository",
+      "obligation": "archive-private-repository",
+      "observedState": "Private repository archived state observed in the dated audit.",
+      "originalTask": "SPEC-009/T009",
+      "proposedDisposition": "pending-founder-reconciliation",
+      "remainingDecision": "Explicit founder decision bound to this reconciliation; refresh remote evidence separately if needed."
+    }
+  ],
+  "observationDate": "2026-09-25",
+  "recordVersion": "synthetic-adoption-evidence-v1",
+  "scope": "Read-only audit of repository records; original obligations and bytes preserved.",
+  "sources": {
+    "docs/releases/VALIDATION_POLICY.md": "1b67727859b9b6c8c0a12ef27c42bf807d29df5b7a41b28b55a848e7951fe80f",
+    "docs/releases/publication-cutover.json": "22023b5ec4f0ea82bb434fe221237afab6d0db7fabba996c5eccbeb813ca223b",
+    "docs/releases/publication/CUTOVER_AUDIT_2026-09-25.md": "2158bc9eb2794e8a88e3b041673935586105b046c1d31429dbc5acc8c00e47d1",
+    "specs/002-open-tooling-strategy/assurance.json": "f81c8c48de7826ff03042ca1c33b214426b8e47a5ba1e154e2aac393400fe1d2",
+    "specs/002-open-tooling-strategy/tasks.md": "f5966c412e5c801c2db152a93de68f79887faed1b5b13154a48646f2b82e93f4",
+    "specs/009-public-research-preview/founder-review.json": "bf997c268aad937ecb0b3e88b8ab75c686880666be2a4a598c48b2e2c2c1da64",
+    "specs/009-public-research-preview/tasks.md": "c51d7b6ae1a3201660ec8a32a5aa6944b6a187ea56e63cd99659f87082351ef0"
+  }
+}

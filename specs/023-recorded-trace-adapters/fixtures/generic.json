@@ -1,0 +1,67 @@
+{
+  "traceImportVersion": "0.1.0-experimental",
+  "source": {
+    "kind": "generic-metadata",
+    "schemaVersion": "0.1.0-experimental",
+    "contentDigest": "sha256:115e44abd23b82dc03df68c9ba9299fa8fc84f301efaf6e0a3ec2c02732978bf"
+  },
+  "mapper": "generic-metadata-v1",
+  "admission": {
+    "kind": "synthetic"
+  },
+  "operations": [
+    {
+      "instanceId": "left",
+      "attemptId": "left-1",
+      "definition": {
+        "id": "edit-left",
+        "digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111"
+      },
+      "inputDigest": "sha256:3333333333333333333333333333333333333333333333333333333333333333",
+      "dependencies": [],
+      "readVersions": {},
+      "effects": {
+        "declared": [
+          {
+            "kind": "write",
+            "resource": "file:a"
+          }
+        ],
+        "inferred": [],
+        "observed": [],
+        "coverage": {
+          "status": "complete",
+          "domain": "exact-resource",
+          "method": "declared"
+        }
+      }
+    },
+    {
+      "instanceId": "right",
+      "attemptId": "right-1",
+      "definition": {
+        "id": "edit-right",
+        "digest": "sha256:2222222222222222222222222222222222222222222222222222222222222222"
+      },
+      "inputDigest": "sha256:4444444444444444444444444444444444444444444444444444444444444444",
+      "dependencies": [],
+      "readVersions": {},
+      "effects": {
+        "declared": [
+          {
+            "kind": "write",
+            "resource": "file:b"
+          }
+        ],
+        "inferred": [],
+        "observed": [],
+        "coverage": {
+          "status": "complete",
+          "domain": "exact-resource",
+          "method": "declared"
+        }
+      }
+    }
+  ],
+  "events": []
+}

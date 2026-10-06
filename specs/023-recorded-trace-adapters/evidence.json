@@ -1,0 +1,65 @@
+{
+  "captureState": "Working tree after implementation commit; exact inputs hashed. Clean candidate freeze is recorded separately.",
+  "captured_at": "2026-10-06T22:26:06.142332+00:00",
+  "developmentQuick": {
+    "command": ".venv-speckit/bin/python scripts/validate_change.py --base develop --profile quick",
+    "effectiveProfile": "sensitive",
+    "exitCode": 1,
+    "failure": "New obtained artifacts still referenced the old historical snapshot. Repaired with explicit current snapshots; targeted structure and subsequent full PR profile passed.",
+    "log": "docs/experiments/evidence/autonomous-tracks-2026-10-06/development-quick-profile.log",
+    "skipped": 4,
+    "testsPassed": 498
+  },
+  "expectedSkippedBoundary": "Three deferred learned SPEC019 contracts and one intentionally unavailable private historical-object test. No training, external scientific review or skipped specialist matrix is represented as passed.",
+  "human_review": "pending",
+  "implementationBaseCommit": "7614daa445d5852d455502c3d36efa73d3f7d12a",
+  "inputs": {
+    "agent_braid/cli.py": "1335b6f26df0103084527bcfa5069bb67da456ef343f46bcc3105bc2280f21d9",
+    "agent_braid/trace_adapter.py": "4da8a0cb5b4885df80681c9005ec82b0ff685d7dd9ed1d577eac3655af637332",
+    "specs/023-recorded-trace-adapters/contracts/0.1.0-experimental/trace-import.schema.json": "b78bd8b4ee10a655d0c37517ace1cee0dab451a73de6cd33fa969817b1636bc0",
+    "specs/023-recorded-trace-adapters/contracts/0.1.0-experimental/trace-provenance.schema.json": "33f25deb903142f5a8e8fef254d986487a79c9089387410ac472e59eec0273c1",
+    "specs/023-recorded-trace-adapters/ecosystem-screening.json": "13d32bc22bd9907f64c3a6013719c72531a7c1c915dd02ab1aee11f6940a64cc",
+    "specs/023-recorded-trace-adapters/fixtures/direct-aim.json": "5e075b3907e086a16867257429f5e5c9118daa812d072b121585dedd24b0de93",
+    "specs/023-recorded-trace-adapters/fixtures/generic.json": "c08156f0f57bc2ba1e331a2d4050af3c78de3d3b01de6ed253a1008c893af387",
+    "specs/023-recorded-trace-adapters/migration.md": "ac6978ecd875ff7c3f5615670559e47d412875fc88de2679429fde2e8af28907",
+    "specs/023-recorded-trace-adapters/plan.md": "4da13747d5fe4be957aaf575bccc0b5697e181bab0bc4a47f88bb61dcc3f0ead",
+    "specs/023-recorded-trace-adapters/quickstart.md": "2018b8f58e63e1868b34e56576fd22f811acf57e6073a4da57de5feaf1bc7b33",
+    "specs/023-recorded-trace-adapters/research.md": "0871d5811561f41af148fd07d3f18c4eca43b7abd94895c6d6a0f46a19307a95",
+    "specs/023-recorded-trace-adapters/source-pins.json": "7ff27a1333ecc99b84ef8a29d949b28e1df8fadf693e6c7f2c5a14104e59c99f",
+    "specs/023-recorded-trace-adapters/spec.md": "1af4a29d6539fdd411801718e5eba6f9baa1aa66948860ae91e098e51a3e61c3",
+    "specs/023-recorded-trace-adapters/spikes/README.md": "1b693ba3be1cbb530cc1aa665b92b7ab4b919d3da80b1a05b02b1aa66a86df10",
+    "specs/023-recorded-trace-adapters/spikes/corpus.json": "e0adc4e8f1c0ff9c2e6e7235104d646b8ba6036ec17c52d71393bc2db21b59a2",
+    "specs/023-recorded-trace-adapters/spikes/results.json": "bbb1d29f4b9dbbfc00036296fe54feeabdf074c27c7796295a9c0821e53c1330",
+    "specs/023-recorded-trace-adapters/spikes/run_lifecycle.py": "ec71084a0537b5f4665097c9b7fca199b49a7f4b419b97543e46ccd92b322084",
+    "tests/test_trace_adapter.py": "59245e466e20b124be50e20951025c9d41ddfaaa18b6190b03598be8abce50d3",
+    "tests/test_trace_lifecycle_spikes.py": "bc977c189c5d0789ba627f3050cb4ed872a2487964298f43c8946e920e17b7ce"
+  },
+  "limits": "Executed bounded synthetic/disposable technical controls and read-only assessment only; not empirical adoption, independent external reproduction, scientific proof, human/founder approval, publication or expanded execution authority. Stable full PR profile completed on the bound implementation candidate. Human/founder acceptance and expanded execution remain pending.",
+  "observations": [
+    {
+      "command": ".venv-speckit/bin/python -m unittest tests.test_adoption_evidence tests.test_trace_adapter tests.test_runtime_refinement tests.test_validation_profiles tests.test_trace_lifecycle_spikes tests.test_native_predictor tests.test_predictor_readiness -v",
+      "exit_code": 0,
+      "log": "docs/experiments/evidence/autonomous-tracks-2026-10-06/final-focused-tests.log",
+      "logSha256": "5a6db014150fe67ec22a9378190f7ac8a398d0b22525fab631cdaf24091b7a6e",
+      "outcome": "83 tests passed in 6.880s"
+    }
+  ],
+  "outcome": "Synthetic generic importer, independent fixed direct-AIM parity, bounded parser/path/privacy controls passed; ten pinned lifecycle controls yield seven unknown mappings and three unsupported cases, zero false-safe classifications within this corpus; compatibility screening has no adoption/conformance claim.",
+  "platform": "Darwin",
+  "python": "3.13.11",
+  "repairedStructure": {
+    "command": ".venv-speckit/bin/python scripts/validate_spec_kit.py",
+    "exitCode": 0,
+    "log": "docs/experiments/evidence/autonomous-tracks-2026-10-06/repaired-structure.log"
+  },
+  "review": "docs/experiments/evidence/autonomous-tracks-2026-10-06/luna-first-block.json",
+  "stablePrProfile": {
+    "command": ".venv-speckit/bin/python scripts/validate_change.py --base develop --profile pr",
+    "exitCode": 0,
+    "log": "docs/experiments/evidence/autonomous-tracks-2026-10-06/stable-pr-profile.log",
+    "sha256": "60c3427a66aff7cd64fc5c3fc17370c3788f4ee8f3f50d01fc470eeaed724ded",
+    "skipped": 4,
+    "tests": 504
+  },
+  "validationCandidateCommit": "3236edce53156b6a0f3d1a385e9f69e0274b5aaf"
+}
