@@ -7,6 +7,16 @@ on:
         description: Full public commit SHA to reproduce
         required: true
         type: string
+      profile_cost:
+        description: Also capture the descriptive M4 cost sidecar (public owned fixtures only)
+        required: false
+        default: false
+        type: boolean
+      baseline_commit:
+        description: Optional full public baseline SHA for the same-host descriptive cost comparison
+        required: false
+        default: ""
+        type: string
 
 permissions:
   contents: read
@@ -14,17 +24,26 @@ permissions:
 jobs:
   reproduce:
     name: Fresh-process Linux alpha core and protocol reproduction
-    runs-on: ubuntu-latest
-    timeout-minutes: 35
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
     steps:
-      - name: Require an immutable candidate identity
+      - name: Require a public immutable candidate
         shell: bash
         env:
           CANDIDATE_COMMIT: ${{ inputs.candidate_commit }}
-        run: '[[ "$CANDIDATE_COMMIT" =~ ^[0-9a-f]{40}$ ]]'
+          REPOSITORY_PRIVATE: ${{ github.event.repository.private }}
+          BASELINE_COMMIT: ${{ inputs.baseline_commit }}
+          PROFILE_COST: ${{ inputs.profile_cost }}
+        run: |
+          [[ "$CANDIDATE_COMMIT" =~ ^[0-9a-f]{40}$ ]] || exit 1
+          test "$REPOSITORY_PRIVATE" = "false"
+          if [[ -n "$BASELINE_COMMIT" ]]; then
+            [[ "$BASELINE_COMMIT" =~ ^[0-9a-f]{40}$ ]] || exit 1
+            test "$PROFILE_COST" = "true"
+          fi
 
       - name: Check out the public candidate
-        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1 (Node 24)
         with:
           ref: ${{ inputs.candidate_commit }}
           fetch-depth: 0
@@ -51,11 +70,45 @@ jobs:
       - name: Capture bounded alpha reproduction without model credentials
         run: python3 -m scripts.reproduce_m4_alpha --output "$RUNNER_TEMP/m4-alpha-evidence/reproduction.json"
 
-      - name: Preserve the record and raw test output
+      - name: Capture descriptive cost sidecar without changing the measurement protocol
+        if: ${{ inputs.profile_cost }}
+        run: python3 scripts/profile_m4_alpha.py --output "$RUNNER_TEMP/m4-alpha-evidence/cost-profile.json"
+
+      - name: Reproduce the public baseline and compare full cost on the same host
+        if: ${{ inputs.profile_cost && inputs.baseline_commit != '' }}
+        shell: bash
+        env:
+          BASELINE_COMMIT: ${{ inputs.baseline_commit }}
+        run: |
+          git clone --no-local --no-checkout -- . "$RUNNER_TEMP/m4-baseline"
+          git -C "$RUNNER_TEMP/m4-baseline" checkout --detach "$BASELINE_COMMIT"
+          test "$(git -C "$RUNNER_TEMP/m4-baseline" rev-parse HEAD)" = "$BASELINE_COMMIT"
+          test -z "$(git -C "$RUNNER_TEMP/m4-baseline" status --porcelain)"
+          python3 scripts/profile_m4_alpha.py --checkout "$RUNNER_TEMP/m4-baseline" \
+            --output "$RUNNER_TEMP/m4-alpha-evidence/baseline-cost-profile.json"
+          python3 scripts/profile_m4_alpha.py \
+            --compare "$RUNNER_TEMP/m4-alpha-evidence/baseline-cost-profile.json" \
+              "$RUNNER_TEMP/m4-alpha-evidence/cost-profile.json" \
+            --output "$RUNNER_TEMP/m4-alpha-evidence/cost-comparison.json"
+
+      - name: Publish the public record in logs and job summary
         if: ${{ always() }}
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
-        with:
-          name: m4-alpha-linux-${{ github.run_id }}-${{ github.run_attempt }}
-          path: ${{ runner.temp }}/m4-alpha-evidence/
-          if-no-files-found: error
-          retention-days: 30
+        run: python3 -m scripts.summarize_public_experiment --record "$RUNNER_TEMP/m4-alpha-evidence/reproduction.json"
+
+      - name: Publish the public cost sidecar in logs and job summary
+        if: ${{ always() && inputs.profile_cost }}
+        run: python3 -m scripts.summarize_public_experiment --record "$RUNNER_TEMP/m4-alpha-evidence/cost-profile.json"
+
+      - name: Publish the public baseline cost sidecar in logs and job summary
+        if: ${{ always() && inputs.profile_cost && inputs.baseline_commit != '' }}
+        run: python3 -m scripts.summarize_public_experiment --record "$RUNNER_TEMP/m4-alpha-evidence/baseline-cost-profile.json"
+
+      - name: Publish the descriptive cost comparison in public logs
+        if: ${{ always() && inputs.profile_cost && inputs.baseline_commit != '' }}
+        run: python3 -m scripts.summarize_public_experiment --record "$RUNNER_TEMP/m4-alpha-evidence/cost-comparison.json"
+
+  m35_synthetic:
+    name: Public synthetic M3.5 controls
+    uses: ./.github/workflows/m35-synthetic-reproduction.yml
+    with:
+      candidate_commit: ${{ inputs.candidate_commit }}

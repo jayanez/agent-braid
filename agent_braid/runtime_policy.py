@@ -101,14 +101,18 @@ def prepare_policy_run(request: object, run_directory: str | Path, *,
         _require(advisory_plan.get('executionAuthorization') is False,
                  "advisory evidence cannot grant execution authority")
         _check_cancel(cancel_event)
-        manifest = git_runtime.prepare_run(req, run_directory, cancel_event=cancel_event)
+        if mode == 'parallel':
+            manifest, schedule = runtime_scheduler._prepare_policy_schedule(
+                req, run_directory, cancel_event=cancel_event)
+        else:
+            manifest = git_runtime.prepare_run(req, run_directory, cancel_event=cancel_event)
         _check_cancel(cancel_event)
         result = {"runtimePolicyPlanVersion": VERSION, "policy": definition,
                   "runtimeManifest": manifest, "replayEvidence": deepcopy(replay_evidence),
                   "advisoryPlan": deepcopy(advisory_plan), "consumerVerification": verification,
                   "sourceGitCommonDirectory": _common_directory(req['repository'], cancel_event)}
         if mode == 'parallel':
-            result['schedule'] = runtime_scheduler.prepare_schedule(manifest, cancel_event=cancel_event)
+            result['schedule'] = schedule
         result['planDigest'] = _digest(result)
         _bounded(result)
         return result
