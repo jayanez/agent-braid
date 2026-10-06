@@ -22,6 +22,8 @@ ROOT = Path(__file__).resolve().parents[1]
 CONFIG = ROOT / "docs/development/github-tracking.json"
 TASK_LINE = re.compile(r"^- \[([ x])\] (T\d{3})(?: \(([^)]+)\))?: (.*)$")
 MARKER = re.compile(r"<!-- agent-braid-(?:spec|task)-id: ([^ ]+) -->")
+TRACE_FALLBACK = "- Trace: See the parent issue and assurance record."
+LEGACY_TRACE_FALLBACK = "- Trace: No direct REQ/SC reference in tasks.md; see the parent issue and assurance record."
 
 
 def validate_milestone_numbers(config: dict) -> dict:
@@ -242,10 +244,18 @@ def build_plan(config: dict, desired: list[dict], milestones: dict,
             if item["kind"] == "task":
                 body = issue.get("body") or ""
                 task_match = re.search(r"## Task\n\n(.*?)\n\n- Source:", body, re.S)
-                if not task_match:
+                expected_trace = re.search(r"^- Trace: .*$", item.get("body", ""), re.M)
+                actual_traces = re.findall(r"^- Trace: .*$", body, re.M)
+                trace_changed = expected_trace and actual_traces != [expected_trace.group()] and not (
+                    expected_trace.group() == TRACE_FALLBACK and actual_traces == [LEGACY_TRACE_FALLBACK]
+                )
+                if not task_match or (expected_trace and len(actual_traces) != 1):
                     operations.append({"action": "review_body", "key": key})
-                elif task_match.group(1) != item["task_text"]:
-                    operations.append({"action": "update_task_text", "key": key})
+                elif task_match.group(1) != item["task_text"] or trace_changed:
+                    operation = {"action": "update_task_text", "key": key}
+                    if trace_changed:
+                        operation.update(trace_from=actual_traces[0], trace_to=expected_trace.group())
+                    operations.append(operation)
         if item["parent"]:
             parent = issues.get(item["parent"])
             if parent is None or issue is None or issue["id"] not in extra["children"].get(item["parent"], set()):
@@ -303,6 +313,13 @@ def apply_plan(repo: str, config: dict, desired: list[dict], milestones: dict,
                 original = issue["body"]
                 updated = re.sub(r"(## Task\n\n).*?(\n\n- Source:)",
                                  lambda m: m.group(1) + item["task_text"] + m.group(2), original, count=1, flags=re.S)
+                if "trace_to" in operation:
+                    expected_trace = re.search(r"^- Trace: .*$", item["body"], re.M)
+                    if not expected_trace or expected_trace.group() != operation["trace_to"] \
+                            or re.findall(r"^- Trace: .*$", original, re.M) != [operation["trace_from"]]:
+                        raise ValueError(f"reviewed task trace changed before apply: {key}")
+                    updated = re.sub(r"^- Trace: .*$", lambda m: operation["trace_to"],
+                                     updated, count=1, flags=re.M)
                 payload = {"body": updated}
             issues[key] = gh_api(f"repos/{repo}/issues/{issue['number']}", method="PATCH", body=payload)
         elif action == "link_subissue":

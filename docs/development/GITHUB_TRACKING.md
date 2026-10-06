@@ -96,7 +96,13 @@ Private Project membership and custom status remain a separate verification.
    validation gates still apply.
 3. After merge to `develop`, run `python3 scripts/sync_github_tracking.py audit`
    with an authenticated `gh` CLI. The read-only audit lists missing milestones,
-   issues, subissue links, title/task-text drift and milestone/state differences.
+   issues, subissue links, title/task-text/requirement-trace drift and
+   milestone/state differences. A task update can replace its generated `Trace`
+   line while preserving source/state-basis lines and appended reviewer notes.
+   Missing or duplicate trace lines require manual review; trace replacements
+   are included explicitly in the reviewed plan digest.
+   The legacy unreferenced-task fallback is equivalent to the current parent
+   reference and is retained without rewriting historical issues.
    A weekly GitHub Actions run also audits repository tracking with
    `contents:read` and `issues:read`. A failed audit requires reconciliation; it
    does not authorize automatic writes.

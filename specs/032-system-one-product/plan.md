@@ -38,6 +38,22 @@ unknown domains, cancellation and forged-authority controls. Synthetic checks ar
 structural/software evidence; workload gains require the prospective paired protocol.
 Record full cost, sparse groups, proxy labels and null/negative outcomes.
 
+## Optional branch ordering and exits
+
+T001 reviews the subset after SPEC-028/T001, without waiting for model selection.
+Implement only selected extensions against the accepted core boundary. The schema
+compiler and core hooks need no neural model. Export and model lifecycle require
+selection of the exact model; learned routing/catalogue use has the same gate.
+Routing, exports and catalogue are prerequisites of another extension only when
+that extension actually uses them. Wheel validation covers its selected contents.
+
+T008 requires the selected implementation branches and their own evidence, rather
+than every advanced feature. A deferred branch records its reason and reconsideration
+condition while its task stays pending and its scenarios remain draft with empty
+obtained evidence. A schema-only or hooks-only packet can proceed while model research
+is blocked; an all-deferred packet is a feasibility result. Packet completion does
+not accept the whole spec, waive workload/calibration gates or authorize promotion.
+
 ## Constitution check after design
 
 Advice stays heuristic and executionAuthorization false; deterministic verification,
