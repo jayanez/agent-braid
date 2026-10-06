@@ -1,0 +1,22 @@
+{
+  "capturedAt": "2026-10-06T23:56:06.517962+00:00",
+  "executionAuthorization": false,
+  "format": "selected-subset-profiles-v1",
+  "humanReview": "pending",
+  "pr": {
+    "status": "pending"
+  },
+  "quick": {
+    "base": "a5eaa04939eabaa654d54654e2ab4ea68d3a224b",
+    "command": "<isolated-python-3.13>/bin/python scripts/validate_change.py --base develop --profile quick",
+    "effectiveProfile": "sensitive",
+    "exitCode": 0,
+    "limits": "Full selected engineering checks. Four documented boundary skips; no human/empirical/model/proof acceptance.",
+    "requestedProfile": "quick",
+    "seconds": 828.151,
+    "sha256": "9c10033e7d4a3659a97524219dcf47290a7b44c990e4432af4bfa538490f8ccf",
+    "skipped": 4,
+    "sourceCandidate": "4a432b1cac60fb0f85a13c563f4d9387b6869f67",
+    "tests": 643
+  }
+}

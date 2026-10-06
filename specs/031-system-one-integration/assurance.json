@@ -22,9 +22,9 @@
   ],
   "assumptions": "Trusted local context and existing deterministic verifiers; no available workload corpus, training budget or device coverage assumed.",
   "authority_snapshot": {
-    "commit": "53faa6aed5426f0c84f0ed0ec7a92c073512ee2b",
+    "commit": null,
     "hashes": {
-      "ARCHITECTURE.md": "94e5114eb799b25ca666ef728f84ab1c88e6ad1b342e30a9e99276b8f44c30c2",
+      "ARCHITECTURE.md": "e26135a1037c232ff953710e5de52abef8cf1cad47a8822fe63a565bc9ad9555",
       "CONSTITUTION.md": "ff7196976a1736a639947c2ab26e8da157fef23c89ba9881312f2a36459964eb",
       "GOVERNANCE.md": "c8eda331d97c42e54be4730ef906dfaad9ae2814e36704302f97afceff037d82",
       "LICENSE": "340d66a837b3a1617645d00622a46d1bcbf3534bedd997b6461d16d2e08b374f",
@@ -87,7 +87,7 @@
       "schemas/governance/public-export-manifest.schema.json": "11eb7f2594939ae9fd0c9e6cfe4423a80aba686d6cdfdd8b73b0fb84b0840aa8",
       "schemas/governance/release-validation-record.schema.json": "d9943f0c9f5520ea52e3b12bfba88240d03f8011b433fc5e35cb49549ab6e819"
     },
-    "mode": "historical"
+    "mode": "current"
   },
   "compatibility": "Additive opt-in capability; Python core keeps zero dependencies. SPEC-019, SPEC-021 G4 NO-GO and historical evidence remain unchanged.",
   "domain": "Bounded advisory typed decisions in separately registered Agent Braid capabilities; existing semantic domains unchanged.",
@@ -112,16 +112,28 @@
     "specs/021-m4-alpha-runtime/g4-decision.json",
     "specs/028-system-one-core/reference-analysis.md",
     "specs/031-system-one-integration/spec.md",
-    "specs/031-system-one-integration/validation-plan.md"
+    "specs/031-system-one-integration/validation-plan.md",
+    "specs/031-system-one-integration/evidence/technical-delivery.json",
+    "specs/031-system-one-integration/evidence/luna-final-code-review.json",
+    "specs/031-system-one-integration/evidence/offline-wheel.json"
   ],
   "requirements": [
     {
       "id": "REQ-001",
       "scenarios": [
         {
+          "engineering_stage": "validated-selected-synthetic-controls",
           "given": "a request for an unsupported operation/tool/effect domain",
           "id": "SC-001",
-          "obtained_evidence": [],
+          "obtained_evidence": [
+            {
+              "command": "<isolated-python-3.13>/bin/python scripts/validate_change.py --base develop --profile quick",
+              "limits": "Synthetic bounded engineering only. No real shadow utility, scientific/proof/human/founder acceptance, admitted data/models, automatic export or expanded runtime authority.",
+              "outcome": "Selected synthetic software controls, focused tests, Luna review and exact offline installed-wheel checks passed; broader original acceptance remains pending.",
+              "path": "specs/031-system-one-integration/evidence/technical-delivery.json",
+              "sha256": "56cc7db0485b4ea53018f646a0a58d86ed00264f4f7c03df561e0df36553ba2f"
+            }
+          ],
           "planned_evidence": "specs/031-system-one-integration/evidence/sc-001.json with candidate/input hashes, exact command, environment, raw outcome and limits",
           "test_file": "specs/031-system-one-integration/validation-plan.md",
           "test_name": "procedure_001",
@@ -135,9 +147,18 @@
       "id": "REQ-002",
       "scenarios": [
         {
+          "engineering_stage": "validated-selected-synthetic-controls",
           "given": "a candidate recommendation and stale resources or incomplete effects",
           "id": "SC-002",
-          "obtained_evidence": [],
+          "obtained_evidence": [
+            {
+              "command": "<isolated-python-3.13>/bin/python scripts/validate_change.py --base develop --profile quick",
+              "limits": "Synthetic bounded engineering only. No real shadow utility, scientific/proof/human/founder acceptance, admitted data/models, automatic export or expanded runtime authority.",
+              "outcome": "Selected synthetic software controls, focused tests, Luna review and exact offline installed-wheel checks passed; broader original acceptance remains pending.",
+              "path": "specs/031-system-one-integration/evidence/technical-delivery.json",
+              "sha256": "56cc7db0485b4ea53018f646a0a58d86ed00264f4f7c03df561e0df36553ba2f"
+            }
+          ],
           "planned_evidence": "specs/031-system-one-integration/evidence/sc-002.json with candidate/input hashes, exact command, environment, raw outcome and limits",
           "test_file": "specs/031-system-one-integration/validation-plan.md",
           "test_name": "procedure_002",
@@ -151,9 +172,18 @@
       "id": "REQ-003",
       "scenarios": [
         {
+          "engineering_stage": "validated-selected-synthetic-controls",
           "given": "eligible SPEC-018 pairs or fixed-patch SPEC-012 analysis inputs",
           "id": "SC-003",
-          "obtained_evidence": [],
+          "obtained_evidence": [
+            {
+              "command": "<isolated-python-3.13>/bin/python scripts/validate_change.py --base develop --profile quick",
+              "limits": "Synthetic bounded engineering only. No real shadow utility, scientific/proof/human/founder acceptance, admitted data/models, automatic export or expanded runtime authority.",
+              "outcome": "Selected synthetic software controls, focused tests, Luna review and exact offline installed-wheel checks passed; broader original acceptance remains pending.",
+              "path": "specs/031-system-one-integration/evidence/technical-delivery.json",
+              "sha256": "56cc7db0485b4ea53018f646a0a58d86ed00264f4f7c03df561e0df36553ba2f"
+            }
+          ],
           "planned_evidence": "specs/031-system-one-integration/evidence/sc-003.json with candidate/input hashes, exact command, environment, raw outcome and limits",
           "test_file": "specs/031-system-one-integration/validation-plan.md",
           "test_name": "procedure_003",
@@ -167,9 +197,18 @@
       "id": "REQ-004",
       "scenarios": [
         {
+          "engineering_stage": "validated-selected-synthetic-controls",
           "given": "a malicious recommendation or repeated decision during recovery",
           "id": "SC-004",
-          "obtained_evidence": [],
+          "obtained_evidence": [
+            {
+              "command": "<isolated-python-3.13>/bin/python scripts/validate_change.py --base develop --profile quick",
+              "limits": "Synthetic bounded engineering only. No real shadow utility, scientific/proof/human/founder acceptance, admitted data/models, automatic export or expanded runtime authority.",
+              "outcome": "Selected synthetic software controls, focused tests, Luna review and exact offline installed-wheel checks passed; broader original acceptance remains pending.",
+              "path": "specs/031-system-one-integration/evidence/technical-delivery.json",
+              "sha256": "56cc7db0485b4ea53018f646a0a58d86ed00264f4f7c03df561e0df36553ba2f"
+            }
+          ],
           "planned_evidence": "specs/031-system-one-integration/evidence/sc-004.json with candidate/input hashes, exact command, environment, raw outcome and limits",
           "test_file": "specs/031-system-one-integration/validation-plan.md",
           "test_name": "procedure_004",
@@ -183,9 +222,18 @@
       "id": "REQ-005",
       "scenarios": [
         {
+          "engineering_stage": "validated-selected-synthetic-controls",
           "given": "a supported bounded request or unsupported protocol revision",
           "id": "SC-005",
-          "obtained_evidence": [],
+          "obtained_evidence": [
+            {
+              "command": "<isolated-python-3.13>/bin/python scripts/validate_change.py --base develop --profile quick",
+              "limits": "Synthetic bounded engineering only. No real shadow utility, scientific/proof/human/founder acceptance, admitted data/models, automatic export or expanded runtime authority.",
+              "outcome": "Selected synthetic software controls, focused tests, Luna review and exact offline installed-wheel checks passed; broader original acceptance remains pending.",
+              "path": "specs/031-system-one-integration/evidence/technical-delivery.json",
+              "sha256": "56cc7db0485b4ea53018f646a0a58d86ed00264f4f7c03df561e0df36553ba2f"
+            }
+          ],
           "planned_evidence": "specs/031-system-one-integration/evidence/sc-005.json with candidate/input hashes, exact command, environment, raw outcome and limits",
           "test_file": "specs/031-system-one-integration/validation-plan.md",
           "test_name": "procedure_005",
@@ -199,6 +247,7 @@
       "id": "REQ-006",
       "scenarios": [
         {
+          "engineering_stage": "pending",
           "given": "shadow advice that disagrees with observed outcomes",
           "id": "SC-006",
           "obtained_evidence": [],
@@ -214,5 +263,10 @@
   ],
   "scientific_limits": "Source inspection is not reproduced performance. Synthetic conformance is not real utility. Confidence is heuristic, never proof. Negative/inconclusive protocol outcomes are valid.",
   "scope": "Expose native System 1 recommendations for every architectural stage through an explicit registry of capabilities. Only enabled, evidenced consumers are integrated; arbitrary host actions and runtime scope expansion are excluded.",
-  "stage": "draft"
+  "stage": "draft",
+  "technical_delivery": {
+    "path": "specs/031-system-one-integration/evidence/technical-delivery.json",
+    "scope": "Selected deterministic engineering only; entire feature remains pending",
+    "sha256": "56cc7db0485b4ea53018f646a0a58d86ed00264f4f7c03df561e0df36553ba2f"
+  }
 }
