@@ -7,6 +7,10 @@ are boolean/choice/score; an optional adapter may translate `noul` explicitly.
 
 Feature boundary: Independently implement useful product patterns observed in Laya: CPU optimization, multilingual routing, schema-derived questions, large-catalogue retrieval, batching, lifecycle control and telemetry hooks. Defer browser automation, vision, email parsing, multiple language SDKs and framework-specific adapters until demand and evidence justify separate specs.
 Dependencies: SPEC-028/029 contracts and evaluation; learned extensions require SPEC-030 selection. No advanced feature is an MVP prerequisite.
+Selection and acceptance follow the independent branch rules in [tasks.md](../tasks.md).
+Schema compilation and core hooks do not require model selection. Deferred branches
+retain pending tasks and draft scenarios; a selected-subset packet cannot accept
+unimplemented features or authorize promotion.
 Every returned decision identifies model, calibration, context and policy; unsupported
 versions/fields or stale resources refuse. Decisions cannot change existing certificate,
 execution grant, manifest, scheduler, observation or recovery contract. Legacy commands
