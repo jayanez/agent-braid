@@ -1,0 +1,211 @@
+{
+  "fixtureVersion": "s1-product-controls-v1",
+  "predeclared": true,
+  "oracle": "Manually specified boundary/host controls; recipes materialize synthetic bytes only and are never feature execution.",
+  "cases": [
+    {
+      "caseId": "router-duplicate-json-key",
+      "target": "router",
+      "rawInput": "{\"contractVersion\":\"s1-metadata-router-v1\",\"contractVersion\":\"s1-metadata-router-v1\"}",
+      "expectedStatus": "refused",
+      "expectedReason": "invalid-router-request",
+      "expectedRoute": null
+    },
+    {
+      "caseId": "compiler-duplicate-json-key",
+      "target": "compiler",
+      "rawInput": "{\"type\":\"boolean\",\"type\":\"boolean\"}",
+      "expectedReason": "invalid-schema",
+      "expectedQuestionCount": 0
+    },
+    {
+      "caseId": "hook-duplicate-json-key",
+      "target": "hooks",
+      "rawInput": "{\"status\":\"refused\",\"status\":\"refused\"}",
+      "expectedReason": "invalid-observation",
+      "expectedInserted": false
+    },
+    {
+      "caseId": "raw-byte-limit-plus-one",
+      "targets": [
+        "router",
+        "compiler",
+        "hooks"
+      ],
+      "byteRecipe": {
+        "byte": "20",
+        "repeat": 1048577
+      },
+      "expectedRouterStatus": "refused",
+      "expectedRouterReason": "router-budget-exceeded",
+      "expectedCompilerReason": "compiler-budget-exceeded",
+      "expectedHookReason": "invalid-observation",
+      "expectedFeatureDispatchCount": 0
+    },
+    {
+      "caseId": "compiler-33-questions",
+      "target": "compiler",
+      "schemaRecipe": {
+        "type": "object",
+        "propertyNames": [
+          "q00",
+          "q01",
+          "q02",
+          "q03",
+          "q04",
+          "q05",
+          "q06",
+          "q07",
+          "q08",
+          "q09",
+          "q10",
+          "q11",
+          "q12",
+          "q13",
+          "q14",
+          "q15",
+          "q16",
+          "q17",
+          "q18",
+          "q19",
+          "q20",
+          "q21",
+          "q22",
+          "q23",
+          "q24",
+          "q25",
+          "q26",
+          "q27",
+          "q28",
+          "q29",
+          "q30",
+          "q31",
+          "q32"
+        ],
+        "everyPropertySchema": {
+          "type": "boolean"
+        },
+        "everyPropertyRequired": true,
+        "additionalProperties": false
+      },
+      "expectedReason": "compiler-budget-exceeded",
+      "expectedQuestionCount": 0
+    },
+    {
+      "caseId": "compiler-depth17",
+      "target": "compiler",
+      "rawRecipe": {
+        "prefix": "[[[[[[[[[[[[[[[[[",
+        "middle": "0",
+        "suffix": "]]]]]]]]]]]]]]]]]"
+      },
+      "expectedReason": "invalid-schema",
+      "expectedQuestionCount": 0
+    },
+    {
+      "caseId": "nonfinite-cost-hook",
+      "target": "hooks",
+      "baseResponse": "pull-hooks.json/responses/A",
+      "responseMutation": {
+        "path": [
+          "usage",
+          "totalMs"
+        ],
+        "rawJsonValue": "NaN",
+        "recomputeDigest": false
+      },
+      "expectedReason": "invalid-observation",
+      "expectedInserted": false
+    },
+    {
+      "caseId": "oversized-hook-metadata",
+      "target": "hooks",
+      "baseResponse": "pull-hooks.json/responses/A",
+      "responseMutation": {
+        "path": [
+          "reasonCodes"
+        ],
+        "value": [
+          "invalid-backend-output",
+          "invalid-backend-output",
+          "invalid-backend-output",
+          "invalid-backend-output",
+          "invalid-backend-output",
+          "invalid-backend-output",
+          "invalid-backend-output",
+          "invalid-backend-output",
+          "invalid-backend-output",
+          "invalid-backend-output",
+          "invalid-backend-output",
+          "invalid-backend-output",
+          "invalid-backend-output",
+          "invalid-backend-output",
+          "invalid-backend-output",
+          "invalid-backend-output",
+          "invalid-backend-output",
+          "invalid-backend-output",
+          "invalid-backend-output",
+          "invalid-backend-output",
+          "invalid-backend-output",
+          "invalid-backend-output",
+          "invalid-backend-output",
+          "invalid-backend-output",
+          "invalid-backend-output",
+          "invalid-backend-output",
+          "invalid-backend-output",
+          "invalid-backend-output",
+          "invalid-backend-output",
+          "invalid-backend-output",
+          "invalid-backend-output",
+          "invalid-backend-output",
+          "invalid-backend-output",
+          "invalid-backend-output",
+          "invalid-backend-output",
+          "invalid-backend-output",
+          "invalid-backend-output",
+          "invalid-backend-output",
+          "invalid-backend-output",
+          "invalid-backend-output",
+          "invalid-backend-output",
+          "invalid-backend-output",
+          "invalid-backend-output",
+          "invalid-backend-output",
+          "invalid-backend-output",
+          "invalid-backend-output",
+          "invalid-backend-output",
+          "invalid-backend-output",
+          "invalid-backend-output",
+          "invalid-backend-output",
+          "invalid-backend-output",
+          "invalid-backend-output",
+          "invalid-backend-output",
+          "invalid-backend-output",
+          "invalid-backend-output",
+          "invalid-backend-output",
+          "invalid-backend-output",
+          "invalid-backend-output",
+          "invalid-backend-output",
+          "invalid-backend-output",
+          "invalid-backend-output",
+          "invalid-backend-output",
+          "invalid-backend-output",
+          "invalid-backend-output"
+        ],
+        "recomputeDigestWithStdlibOnly": true
+      },
+      "expectedReason": "invalid-observation",
+      "expectedInserted": false,
+      "expectedBufferUnchanged": true
+    }
+  ],
+  "requiredSpies": [
+    "noBackendAdmission",
+    "noDynamicImport",
+    "noNetwork",
+    "noProvider",
+    "noSubprocess",
+    "noModel",
+    "noAutomaticExport"
+  ],
+  "futureVerification": "Recipes are test-harness inputs only; all output checks await reviewed feature implementation."
+}
