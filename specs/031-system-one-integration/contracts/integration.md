@@ -401,3 +401,18 @@ runtime/provider/network/process tool. For T007 test metadata field allowlist,
 private prompt/answer/resource sentinels, NaN/unknown cost, whole-chain unavailable
 cost, size/overflow/busy/deep-mutation refusal and no implicit export. Structural
 parity and these negative controls are engineering evidence, never model utility.
+
+
+### Bound transport failure observations
+
+For a fully validated original stage request, a bound refusal is permitted only
+with exactly `reasonCodes: [stage-budget-exceeded]`: the contracted complete
+transport-frame replacement (or pure packet-size ceiling). Other refusal codes
+cannot be attached to a valid bound request. Structural packet validation binds
+request/pins and this closed outcome; it does not authenticate transport provenance
+or independently prove the observed serialization size, cancellation or timing.
+Consumers retain their original-order fallback and no execution authority. Internal
+advisor or encoding exceptions suppress the whole result and release the owned
+scope; they never fabricate a bound invalid-stage-request packet or echo exceptions.
+External consumer-side binding failures return unbound refusals because those
+consumer bindings never became validated stage-request bindings.

@@ -220,7 +220,7 @@ class AdviceStdioServer:
                     if (set(params) <= {'requestId','reason'} and self._id(params.get('requestId'))
                             and ('reason' not in params or (type(params['reason']) is str
                                  and len(params['reason'].encode()) <= 256))):
-                        self._registry.cancel(params['requestId'])
+                        self._cancel_request(params['requestId'])
                 return
             if method == 'initialize':
                 if (self.initializing or set(params) != {'protocolVersion','capabilities','clientInfo'}
@@ -279,27 +279,31 @@ class AdviceStdioServer:
             except (InvalidAdviceScope,InvalidDecision):
                 self._error(identifier,-32600)
                 return
+            overloaded = False
             with self._condition:
                 if self.closed:
                     self._registry.complete(scope)
                     return
                 if self._active is not None:
                     if len(self._waiting) == 8:
-                        self._publish(scope,self._scope_refusal(scope,'overloaded',status='defer'))
-                        self._registry.complete(scope)
+                        overloaded = True
                     else:
                         self._waiting.append((scope,name,identifier))
-                    return
-                self._active = scope
-                self._thread = threading.Thread(target=self._run,args=((scope,name,identifier),),
-                                                daemon=True,name='braid-advice-only')
-                self._thread.start()
+                else:
+                    self._active = scope
+                    self._thread = threading.Thread(target=self._run,args=((scope,name,identifier),),
+                                                    daemon=True,name='braid-advice-only')
+                    self._thread.start()
+            if overloaded:
+                try:self._publish(scope,self._scope_refusal(scope,'overloaded',status='defer'))
+                finally:self._registry.complete(scope)
         finally:
             self._registry.discard_ingress(ticket)
 
     def _scope_refusal(self, scope, reason, *, status='refused'):
         if not scope.stage:
             return _refusal(reason,status=status)
+
         try:
             from .system_one_advisors import validate_stage_request
             request=validate_stage_request(scope.request_bytes,
@@ -315,6 +319,21 @@ class AdviceStdioServer:
             return _refusal(reason,status=status,bound=bound)
         except (ValueError,TypeError,KeyError,OverflowError):
             return _refusal(reason,status=status)
+
+    def _cancel_request(self, identifier):
+        removed = None
+        typed_id = (type(identifier),identifier)
+        with self._condition:
+            for entry in self._waiting:
+                if entry[0].request_id == typed_id:
+                    self._waiting.remove(entry)
+                    removed = entry[0]
+                    break
+        if removed is None:
+            self._registry.cancel(identifier)
+        else:
+            removed.cancellation.cancel()
+            self._registry.complete(removed)
 
     def _publish(self, scope, value):
         raw = self._encoded(scope.request_id[1],value)
@@ -333,13 +352,13 @@ class AdviceStdioServer:
                     value = self.tools.advise(scope)
             except Exception:
                 # No collaborator exception, rejected text or stack reaches the wire.
-                value = self._scope_refusal(scope,'invalid-stage-request')
+                value = None
             try:
                 if value is not None:
                     try:
                         self._publish(scope,value)
                     except (ValueError,TypeError,KeyError,OverflowError):
-                        self._publish(scope,self._scope_refusal(scope,'invalid-stage-request'))
+                        pass
             except (BrokenPipeError,OSError):
                 self.close()
             finally:

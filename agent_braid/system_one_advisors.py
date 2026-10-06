@@ -258,7 +258,7 @@ def validate_stage_packet(packet, *, request_bytes, expected_context_digest, exp
             if value['status'] not in ('refused','defer') or any(value[k] is not None for k in ('requestId','requestDigest','contextDigest','generation','registryDigest','stage')) or value['advice'] is not None or not value['reasonCodes'] or value['usage']['inputBytes'] or value['usage']['candidateCount']: raise InvalidStage()
         else:
             request=validate_stage_request(request_bytes,expected_context_digest=expected_context_digest,expected_registry_digest=expected_registry_digest); v=request.envelope
-            if value['status']=='refused': raise InvalidStage()
+            if value['status']=='refused' and value['reasonCodes']!=['stage-budget-exceeded']: raise InvalidStage()
             expected={'requestId':v['requestId'],'requestDigest':digest(v),'contextDigest':v['contextDigest'],'generation':v['context']['generation'],'registryDigest':v['registryDigest'],'stage':v['stage']}
             if any(value[k]!=x for k,x in expected.items()) or value['usage']['inputBytes']!=request.input_bytes or value['usage']['candidateCount']!=request.candidate_count: raise InvalidStage()
             advice,_=_rule(v['stage'],thaw(v['payload']),thaw(stage_registry_manifest()))
@@ -295,5 +295,6 @@ def advise_bound_stage(raw, *, expected_context_digest, expected_registry_digest
         return _run(raw,pins,token,started,started+5_000_000_000,monotonic_ns)
     except (InvalidStage,KeyError) as exc:
         code=exc.code if isinstance(exc,InvalidStage) else 'invalid-stage-request'
-        return _packet(request,'refused',None,[code],started=started,clock=monotonic_ns)
+        # External consumer bindings never became validated request bindings.
+        return _packet(None,'refused',None,[code],started=started,clock=monotonic_ns)
     finally: token.release()

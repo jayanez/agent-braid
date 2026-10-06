@@ -113,6 +113,7 @@ class SystemOneAdvisorTests(unittest.TestCase):
         value=request('triage',{'caseIds':['x'],'categories':[{'caseId':'x','category':'unknown'}]})
         packet=invoke(value)
         for reason in a.REASONS:
+            if reason=='stage-budget-exceeded':continue
             forged=thaw(packet);forged.update(status='refused',advice=None,reasonCodes=[reason])
             forged['packetDigest']=digest({k:v for k,v in forged.items() if k!='packetDigest'})
             with self.subTest(reason=reason),self.assertRaises(a.InvalidStage):validate(forged,value)

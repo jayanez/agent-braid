@@ -168,8 +168,38 @@ class SystemOneMcpTests(unittest.TestCase):
         self.call(1);self.assertEqual(self.frames()[-1]['error']['code'],-32600)
         self.send('tools/list',1);self.assertEqual(self.frames()[-1]['error']['code'],-32600)
         self.send('notifications/cancelled',notification=True,params={'requestId':2,'reason':'PRIVATE-REASON'})
+        self.assertEqual(len(self.server._waiting),7)
+        self.assertFalse(self.server._registry.active_identifier(2))
+        self.call(11)
+        self.assertEqual(len(self.server._waiting),8)
         release.set();self.assertTrue(self.server.wait_idle())
         self.assertNotIn(2,calls);self.assertNotIn(2,[f['id'] for f in self.frames()]);self.assertNotIn('PRIVATE-REASON',self.output.getvalue().decode())
+        self.assertIn(11,calls)
+
+    def test_real_large_effect_packet_budget_refusal_stays_bound_and_valid(self):
+        self.initialize()
+        effects=[{'kind':'write','resource':'r'*64} for _ in range(64)]
+        value=stage_request('effect-review',{'comparisons':[
+            {'comparisonId':'c'+str(i),'declared':effects,'observed':effects,
+             'declaredCoverage':'complete','observedCoverage':'complete'} for i in range(64)]})
+        packet=invoke(value);self.assertEqual(packet['status'],'advised')
+        raw=self.server._encoded(1,packet);self.assertLessEqual(len(raw)-1,1048576)
+        refused=json.loads(raw)['result']['structuredContent']
+        self.assertEqual(refused['reasonCodes'],['stage-budget-exceeded'])
+        self.assertEqual(refused['requestDigest'],digest(value))
+        advisors.validate_stage_packet(refused,request_bytes=canonical(value),
+            expected_context_digest=value['contextDigest'],expected_registry_digest=value['registryDigest'])
+
+    def test_internal_advice_or_encoding_failure_suppresses_output_and_releases(self):
+        self.initialize()
+        with patch.object(self.server.tools,'advise',side_effect=RuntimeError('PRIVATE')):
+            self.call(1);self.assertTrue(self.server.wait_idle())
+        self.assertEqual(self.output.getvalue(),b'')
+        self.assertFalse(self.server._registry.active_identifier(1))
+        with patch.object(self.server,'_encoded',side_effect=ValueError('PRIVATE')):
+            self.call(2);self.assertTrue(self.server.wait_idle())
+        self.assertEqual(self.output.getvalue(),b'')
+        self.assertEqual(self.server._registry._records,{})
     def test_output_lock_wait_expiry_and_cancel_prevent_late_write(self):
         self.initialize();now=[0];self.server.close();self.output=io.BytesIO()
         self.server=m.AdviceStdioServer(self.output,_clock=lambda:now[0]);self.initialize()
