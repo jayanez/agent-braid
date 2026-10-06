@@ -2,162 +2,162 @@
   "repository": "jayanez/agent-braid",
   "project_url": "https://github.com/users/jayanez/projects/6",
   "milestones": {
-    "M0": "Bounded operational foundation and internal closure.",
-    "M0.5": "Research-preview preparation and bounded internal closure.",
-    "M1": "Read-only analyzer and internal closure.",
-    "M2": "Confluence laboratory; bounded Git patch replay and advisory preparation planning, closed internally.",
-    "M3": "Braid structure; bounded structured exchange closed internally.",
-    "M3.5": "Native specialized proposal predictor; separate draft research track.",
-    "M4": "Agent Braid Runtime; bounded local Git execution increment, separate from formal research and whole-milestone closure.",
-    "Public research preview": "Public publication and cutover verification.",
-    "Cross-cutting governance": "Governance and adoption work spanning release milestones.",
-    "Platform evidence adapters": "Read-only recorded trace import and bounded adapter spikes; adoption and runtime authorization remain separate.",
-    "Workload evidence laboratory": "Bounded simulated non-Git effectful workloads and conservative analysis; no real external execution.",
-    "Formal interaction research": "Contextual and trace-safety obligations, restricted proof review and comparator feasibility; separate from M4 runtime.",
-    "S1.0 \u2014 Contracts": "Native typed advisory decision foundation; draft implementation track, no accepted utility claim.",
-    "S1.1 \u2014 Evidence": "Prospective corpus and unbiased decision evaluation; draft implementation track, no accepted utility claim.",
-    "S1.2 \u2014 Native model": "Own non-generative neural decision experiment; draft implementation track, no accepted utility claim.",
-    "S1.3 \u2014 Integration": "Advisory integration across Agent Braid decision stages; draft implementation track, no accepted utility claim.",
-    "S1.4 \u2014 Product and promotion": "Per-feature advanced capability acceptance plus separately governed shadow, promotion, drift, rollback and closure."
+    "M0 — Operational foundations": "Bounded operational foundation and internal closure.",
+    "M0.5 — Open strategy and preview preparation": "Research-preview preparation and bounded internal closure.",
+    "M1 — Observable interaction analyzer": "Read-only analyzer and internal closure.",
+    "M2 — Confluence lab and scheduler": "Confluence laboratory; bounded Git patch replay and advisory preparation planning, closed internally.",
+    "M3 — Braid semantics": "Braid structure; bounded structured exchange closed internally.",
+    "M3.5 — Native proposal predictor": "Native specialized proposal predictor; separate draft research track.",
+    "M4 — Agent Braid runtime": "Agent Braid Runtime; bounded local Git execution increment, separate from formal research and whole-milestone closure.",
+    "PUB.1 — Public research preview": "Public publication and cutover verification.",
+    "GOV.1 — Governance and adoption": "Governance and adoption work spanning release milestones.",
+    "ADP.1 — Recorded-trace adapters": "Read-only recorded trace import and bounded adapter spikes; adoption and runtime authorization remain separate.",
+    "LAB.1 — Effectful workload lab": "Bounded simulated non-Git effectful workloads and conservative analysis; no real external execution.",
+    "RES.1 — Formal interaction research": "Contextual and trace-safety obligations, restricted proof review and comparator feasibility; separate from M4 runtime.",
+    "S1.0 — Decision contracts": "Native typed advisory decision foundation; draft implementation track, no accepted utility claim.",
+    "S1.1 — Decision evaluation": "Prospective corpus and unbiased decision evaluation; draft implementation track, no accepted utility claim.",
+    "S1.2 — Native decision model": "Own non-generative neural decision experiment; draft implementation track, no accepted utility claim.",
+    "S1.3 — Advisory integration": "Advisory integration across Agent Braid decision stages; draft implementation track, no accepted utility claim.",
+    "S1.4 — Product capabilities and promotion": "Per-feature advanced capability acceptance plus separately governed shadow, promotion, drift, rollback and closure."
   },
   "closed_milestones": [
-    "M0",
-    "M0.5",
-    "M1",
-    "M2",
-    "M3"
+    "M0 — Operational foundations",
+    "M0.5 — Open strategy and preview preparation",
+    "M1 — Observable interaction analyzer",
+    "M2 — Confluence lab and scheduler",
+    "M3 — Braid semantics"
   ],
   "specs": {
     "001-certificate-verifier-pilot": {
-      "milestone": "M0",
+      "milestone": "M0 — Operational foundations",
       "state": "closed"
     },
     "002-open-tooling-strategy": {
-      "milestone": "M0.5",
+      "milestone": "M0.5 — Open strategy and preview preparation",
       "state": "open"
     },
     "003-read-only-analyzer": {
-      "milestone": "M1",
+      "milestone": "M1 — Observable interaction analyzer",
       "state": "closed"
     },
     "004-m0-closure": {
-      "milestone": "M0",
+      "milestone": "M0 — Operational foundations",
       "state": "closed"
     },
     "005-git-worktree-adapter": {
-      "milestone": "M1",
+      "milestone": "M1 — Observable interaction analyzer",
       "state": "closed"
     },
     "006-validation-status-policy": {
-      "milestone": "Cross-cutting governance",
+      "milestone": "GOV.1 — Governance and adoption",
       "state": "closed"
     },
     "007-m1-closure": {
-      "milestone": "M1",
+      "milestone": "M1 — Observable interaction analyzer",
       "state": "closed"
     },
     "008-m0.5-closure": {
-      "milestone": "M0.5",
+      "milestone": "M0.5 — Open strategy and preview preparation",
       "state": "closed"
     },
     "009-public-research-preview": {
-      "milestone": "Public research preview",
+      "milestone": "PUB.1 — Public research preview",
       "state": "open"
     },
     "010-risk-validation": {
-      "milestone": "Cross-cutting governance",
+      "milestone": "GOV.1 — Governance and adoption",
       "state": "closed"
     },
     "011-adoption-pathline": {
-      "milestone": "Cross-cutting governance",
+      "milestone": "GOV.1 — Governance and adoption",
       "state": "open"
     },
     "012-m2-git-replay-planner": {
-      "milestone": "M2",
+      "milestone": "M2 — Confluence lab and scheduler",
       "state": "closed"
     },
     "013-m2-real-workload": {
-      "milestone": "M2",
+      "milestone": "M2 — Confluence lab and scheduler",
       "state": "closed"
     },
     "014-m2-observation-normalizer": {
-      "milestone": "M2",
+      "milestone": "M2 — Confluence lab and scheduler",
       "state": "closed"
     },
     "015-m2-counterexample-reducer": {
-      "milestone": "M2",
+      "milestone": "M2 — Confluence lab and scheduler",
       "state": "closed"
     },
     "016-m2-partial-order-reduction": {
-      "milestone": "M2",
+      "milestone": "M2 — Confluence lab and scheduler",
       "state": "closed"
     },
     "017-m2-closure": {
-      "milestone": "M2",
+      "milestone": "M2 — Confluence lab and scheduler",
       "state": "closed"
     },
     "018-structured-exchange": {
-      "milestone": "M3",
+      "milestone": "M3 — Braid semantics",
       "state": "closed"
     },
     "019-native-predictor": {
-      "milestone": "M3.5",
+      "milestone": "M3.5 — Native proposal predictor",
       "state": "open"
     },
     "020-m4-local-git-runtime": {
-      "milestone": "M4",
+      "milestone": "M4 — Agent Braid runtime",
       "state": "closed"
     },
     "021-m4-alpha-runtime": {
-      "milestone": "M4",
+      "milestone": "M4 — Agent Braid runtime",
       "state": "open"
     },
     "022-m4-utility-followup": {
-      "milestone": "M4",
+      "milestone": "M4 — Agent Braid runtime",
       "state": "open"
     },
     "023-recorded-trace-adapters": {
-      "milestone": "Platform evidence adapters",
+      "milestone": "ADP.1 — Recorded-trace adapters",
       "state": "open"
     },
     "024-effectful-workload-lab": {
-      "milestone": "Workload evidence laboratory",
+      "milestone": "LAB.1 — Effectful workload lab",
       "state": "open"
     },
     "025-contextual-proof-obligations": {
-      "milestone": "Formal interaction research",
+      "milestone": "RES.1 — Formal interaction research",
       "state": "open"
     },
     "026-adoption-evidence-program": {
-      "milestone": "Cross-cutting governance",
+      "milestone": "GOV.1 — Governance and adoption",
       "state": "open"
     },
     "027-runtime-refinement-contracts": {
-      "milestone": "M4",
+      "milestone": "M4 — Agent Braid runtime",
       "state": "open"
     },
     "028-system-one-core": {
-      "milestone": "S1.0 \u2014 Contracts",
+      "milestone": "S1.0 — Decision contracts",
       "state": "open"
     },
     "029-system-one-evaluation": {
-      "milestone": "S1.1 \u2014 Evidence",
+      "milestone": "S1.1 — Decision evaluation",
       "state": "open"
     },
     "030-system-one-model": {
-      "milestone": "S1.2 \u2014 Native model",
+      "milestone": "S1.2 — Native decision model",
       "state": "open"
     },
     "031-system-one-integration": {
-      "milestone": "S1.3 \u2014 Integration",
+      "milestone": "S1.3 — Advisory integration",
       "state": "open"
     },
     "032-system-one-product": {
-      "milestone": "S1.4 \u2014 Product and promotion",
+      "milestone": "S1.4 — Product capabilities and promotion",
       "state": "open"
     },
     "033-system-one-promotion": {
-      "milestone": "S1.4 \u2014 Product and promotion",
+      "milestone": "S1.4 — Product capabilities and promotion",
       "state": "open"
     }
   },
@@ -183,5 +183,24 @@
     "SPEC-031",
     "SPEC-032",
     "SPEC-033"
-  ]
+  ],
+  "milestone_numbers": {
+    "M0 — Operational foundations": 1,
+    "M0.5 — Open strategy and preview preparation": 2,
+    "M1 — Observable interaction analyzer": 3,
+    "M2 — Confluence lab and scheduler": 4,
+    "M3 — Braid semantics": 5,
+    "M4 — Agent Braid runtime": 6,
+    "PUB.1 — Public research preview": 7,
+    "GOV.1 — Governance and adoption": 8,
+    "M3.5 — Native proposal predictor": 9,
+    "ADP.1 — Recorded-trace adapters": 10,
+    "LAB.1 — Effectful workload lab": 11,
+    "RES.1 — Formal interaction research": 12,
+    "S1.0 — Decision contracts": 13,
+    "S1.1 — Decision evaluation": 14,
+    "S1.2 — Native decision model": 15,
+    "S1.3 — Advisory integration": 16,
+    "S1.4 — Product capabilities and promotion": 17
+  }
 }

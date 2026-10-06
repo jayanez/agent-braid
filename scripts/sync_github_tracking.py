@@ -24,8 +24,43 @@ TASK_LINE = re.compile(r"^- \[([ x])\] (T\d{3})(?: \(([^)]+)\))?: (.*)$")
 MARKER = re.compile(r"<!-- agent-braid-(?:spec|task)-id: ([^ ]+) -->")
 
 
+def validate_milestone_numbers(config: dict) -> dict:
+    numbers = config.get("milestone_numbers", {})
+    if not isinstance(numbers, dict) or not set(numbers) <= set(config["milestones"]):
+        raise ValueError("milestone numbers must name declared milestones")
+    if any(type(number) is not int or number <= 0 for number in numbers.values()):
+        raise ValueError("milestone numbers must be positive integers")
+    if len(set(numbers.values())) != len(numbers):
+        raise ValueError("duplicate configured milestone number")
+    return numbers
+
+
+def resolve_milestones(config: dict, milestones: dict) -> dict:
+    numbers = validate_milestone_numbers(config)
+    by_number = {item["number"]: item for item in milestones.values()}
+    if len(by_number) != len(milestones):
+        raise ValueError("duplicate remote milestone number")
+    resolved = {}
+    for name in config["milestones"]:
+        if name in numbers:
+            number = numbers[name]
+            if number not in by_number:
+                raise ValueError(f"registered milestone #{number} is missing; never recreate it")
+            milestone = by_number[number]
+            if name in milestones and milestones[name]["number"] != number:
+                raise ValueError(f"milestone title collision: {name!r}")
+        else:
+            milestone = milestones.get(name)
+        if milestone is not None:
+            resolved[name] = milestone
+    if len({item["number"] for item in resolved.values()}) != len(resolved):
+        raise ValueError("multiple configured names resolve to one milestone")
+    return resolved
+
+
 def source_inventory(root: Path = ROOT, config_path: Path = CONFIG) -> tuple[dict, list[dict]]:
     config = json.loads(config_path.read_text(encoding="utf-8"))
+    validate_milestone_numbers(config)
     folders = sorted(path for path in (root / "specs").glob("[0-9]*") if (path / "spec.md").is_file())
     configured = set(config["specs"])
     actual = {path.name for path in folders}
@@ -135,8 +170,13 @@ def pages(path: str) -> list[dict]:
         page += 1
 
 
-def remote_inventory(repo: str) -> tuple[dict, dict, dict]:
-    milestones = {m["title"]: m for m in pages(f"repos/{repo}/milestones?state=all")}
+def remote_inventory(repo: str, *, milestone_titles_only: bool = False) -> tuple[dict, dict, dict]:
+    records = pages(f"repos/{repo}/milestones?state=all")
+    milestones = {m["title"]: m for m in records}
+    if len(milestones) != len(records):
+        raise ValueError("duplicate remote milestone title")
+    if milestone_titles_only:
+        return milestones, {}, {}
     issues: dict[str, dict] = {}
     title_without_marker: set[str] = set()
     for issue in pages(f"repos/{repo}/issues?state=all"):
@@ -158,15 +198,26 @@ def remote_inventory(repo: str) -> tuple[dict, dict, dict]:
 
 
 def build_plan(config: dict, desired: list[dict], milestones: dict,
-               issues: dict, extra: dict) -> list[dict]:
+               issues: dict, extra: dict, *, milestone_titles_only: bool = False) -> list[dict]:
     operations: list[dict] = []
+    numbers = validate_milestone_numbers(config)
+    if milestone_titles_only and set(numbers) != set(config["milestones"]):
+        raise ValueError("title-only reconciliation requires a number for every milestone")
+    resolved = resolve_milestones(config, milestones)
     for name in config["milestones"]:
-        if name not in milestones:
+        milestone = resolved.get(name)
+        if milestone is None:
             operations.append({"action": "create_milestone", "name": name})
-        elif milestones[name]["state"] != ("closed" if name in config["closed_milestones"] else "open"):
+            continue
+        if milestone.get("title", name) != name:
+            operations.append({"action": "rename_milestone", "number": milestone["number"],
+                               "from": milestone["title"], "to": name})
+        if not milestone_titles_only and milestone["state"] != ("closed" if name in config["closed_milestones"] else "open"):
             operations.append({"action": "set_milestone_state", "name": name,
-                               "from": milestones[name]["state"],
+                               "from": milestone["state"],
                                "to": "closed" if name in config["closed_milestones"] else "open"})
+    if milestone_titles_only:
+        return operations
     desired_keys = {item["key"] for item in desired}
     for key in sorted(set(issues) - desired_keys):
         operations.append({"action": "review_orphan", "key": key, "issue": issues[key]["number"]})
@@ -180,8 +231,11 @@ def build_plan(config: dict, desired: list[dict], milestones: dict,
         else:
             if issue["title"] != item["title"]:
                 operations.append({"action": "update_title", "key": key, "from": issue["title"], "to": item["title"]})
-            actual_milestone = (issue.get("milestone") or {}).get("title")
-            if actual_milestone != item["milestone"]:
+            actual = issue.get("milestone") or {}
+            actual_milestone = actual.get("title")
+            matches = (actual.get("number") == numbers[item["milestone"]]
+                       if item["milestone"] in numbers else actual_milestone == item["milestone"])
+            if not matches:
                 operations.append({"action": "update_milestone", "key": key, "from": actual_milestone, "to": item["milestone"]})
             if issue["state"] != item["state"]:
                 operations.append({"action": "set_state", "key": key, "from": issue["state"], "to": item["state"]})
@@ -204,13 +258,18 @@ def build_plan(config: dict, desired: list[dict], milestones: dict,
 def apply_plan(repo: str, config: dict, desired: list[dict], milestones: dict,
                issues: dict, operations: list[dict]) -> None:
     by_key = {item["key"]: item for item in desired}
+    milestones = resolve_milestones(config, milestones)
     for operation in operations:
         action = operation["action"]
         if action.startswith("review_"):
             raise ValueError(f"manual review required before apply: {operation}")
     for operation in operations:
         action = operation["action"]
-        if action == "create_milestone":
+        if action == "rename_milestone":
+            milestones[operation["to"]] = gh_api(
+                f"repos/{repo}/milestones/{operation['number']}", method="PATCH",
+                body={"title": operation["to"]})
+        elif action == "create_milestone":
             name = operation["name"]
             milestones[name] = gh_api(f"repos/{repo}/milestones", method="POST",
                                       body={"title": name, "description": config["milestones"][name],
@@ -251,7 +310,7 @@ def apply_plan(repo: str, config: dict, desired: list[dict], milestones: dict,
             child = issues[operation["key"]]
             gh_api(f"repos/{repo}/issues/{parent['number']}/sub_issues", method="POST",
                    body={"sub_issue_id": child["id"]})
-        print(f"applied {action}: {operation.get('key', operation.get('name'))}", flush=True)
+        print(f"applied {action}: {operation.get('key', operation.get('name', operation.get('to')))}", flush=True)
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -259,7 +318,11 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("mode", choices=["source", "audit", "apply"])
     parser.add_argument("--confirm-repository", help="Required exact owner/repo for remote writes")
     parser.add_argument("--plan-sha256", help="Digest from a reviewed audit; required for apply")
+    parser.add_argument("--milestone-titles-only", action="store_true",
+                        help="Audit/apply only registered milestone titles; never write issues or states")
     args = parser.parse_args(argv)
+    if args.mode == "source" and args.milestone_titles_only:
+        parser.error("--milestone-titles-only is available only for audit/apply")
     config, desired = source_inventory()
     if args.mode == "source":
         print(json.dumps({"specs": sum(x["kind"] == "spec" for x in desired),
@@ -269,11 +332,15 @@ def main(argv: list[str] | None = None) -> int:
                           "project_url": config["project_url"]}, indent=2))
         return 0
     repo = config["repository"]
-    milestones, issues, extra = remote_inventory(repo)
-    operations = build_plan(config, desired, milestones, issues, extra)
-    plan_digest = hashlib.sha256(json.dumps(operations, sort_keys=True, ensure_ascii=False,
+    milestones, issues, extra = remote_inventory(repo, milestone_titles_only=args.milestone_titles_only)
+    operations = build_plan(config, desired, milestones, issues, extra,
+                            milestone_titles_only=args.milestone_titles_only)
+    scope = "milestone-titles" if args.milestone_titles_only else "full"
+    plan_digest = hashlib.sha256(json.dumps({"repository": repo, "scope": scope, "operations": operations},
+                                            sort_keys=True, ensure_ascii=False,
                                             separators=(",", ":")).encode("utf-8")).hexdigest()
     print(json.dumps({"repository": repo, "project_url": config["project_url"],
+                      "scope": scope,
                       "plan_sha256": plan_digest, "operations": operations}, indent=2, ensure_ascii=False))
     if args.mode == "audit":
         return 1 if operations else 0
@@ -288,7 +355,10 @@ def main(argv: list[str] | None = None) -> int:
     if branch != "develop" or dirty:
         parser.error("apply requires a clean develop checkout containing the reviewed source records")
     apply_plan(repo, config, desired, milestones, issues, operations)
-    print("Repository issues and milestones reconciled. Verify private Project membership and Review pending status in the Project UI.")
+    if args.milestone_titles_only:
+        print("Registered milestone titles reconciled; issue and milestone states were outside this scope.")
+    else:
+        print("Repository issues and milestones reconciled. Verify private Project membership and Review pending status in the Project UI.")
     return 0
 
 
