@@ -24,6 +24,7 @@
   },
   "stderr": "",
   "stdout": "{\"offlineInstalledCore\": \"passed\", \"sourceLocation\": \"isolated-site-packages\", \"forgedAuthority\": \"refused\", \"customBackendInjection\": \"refused\", \"optionalModelPackagesLoaded\": false}\n",
+  "syntheticRequestPath": "specs/028-system-one-core/evidence/offline-request.json",
   "syntheticRequestSha256": "f8b4dd2032722a3c423f9559a54b97ebde0460d201137b1e9d5ced06a7a19877",
   "wheelFile": "agent_braid-0.1.0a1-py3-none-any.whl",
   "wheelSha256": "f64a13cd1dbc3d1dac5cfb86c6aeb052f596a5156a90a42cb4e3586eb4015b66"
