@@ -1,0 +1,45 @@
+{
+  "abstractAssessment": "Conditionally sound under reachable configurations formed from applying a subset of one fixed family of pairwise globally fresh inserts over immutable base/root anchors. Partial-map extensions commute; deterministic flattening agrees; schedule transpositions satisfy involution, far commutation and braid coherence.",
+  "candidate": "abeca31e88baeabbb74a7cffa3b0767e870d4ac7",
+  "capturedAt": "2026-10-06T23:09:39.952549+00:00",
+  "executionAuthorization": false,
+  "findings": [
+    {
+      "claimImpact": "Does not invalidate the abstract argument or three fixed ASCII fixtures. Universal source correspondence remains open.",
+      "compatibilityAssessment": "Fail-closed tightening is consistent with the existing UTF-8 canonicalization path; explicitly clarify malformed scalar strings in the implementation note without changing schemas or ADRs.",
+      "finding": "Validator accepts lone-surrogate strings that cannot be encoded by the existing UTF-8 canonical-byte path. Replay may raise UnicodeEncodeError.",
+      "plannedFixBlock": "SPEC-031 deterministic integration",
+      "priority": "P2",
+      "requiredControls": [
+        "ID fields",
+        "insert values",
+        "base values",
+        "valid non-ASCII Unicode parity"
+      ],
+      "scope": "Pre-existing structured_exchange malformed-input validation",
+      "status": "open-follow-on-implementation"
+    }
+  ],
+  "finiteAssessment": "Three fixed ASCII mapping fixtures remain valid finite diagnostics. Neither finite fixtures nor this LLM technical inspection supplies the specific independent proof-review gate in the candidate.",
+  "format": "contextual-mathematical-technical-inspection-v1",
+  "founderApproval": "pending",
+  "humanReview": "pending",
+  "limits": "Technical source inspection only. No theorem acceptance, universal implementation mapping, scientific/human/founder approval, external independence, tool adoption or expanded execution.",
+  "observationBoundary": "Flattened ID/value equality does not identify chronology or prove preservation of unrepresented per-instance results; residual indexes are recomputed annotations.",
+  "probeLimit": "Reviewer reported a direct validation/replay probe; raw command transcript was not captured. Follow-on regression is required.",
+  "proofAccepted": false,
+  "reviewModel": "gpt-6-luna",
+  "reviewerExecutedSuite": false,
+  "reviewerReportedSourceProbe": true,
+  "sourceBindings": {
+    "CONSTITUTION.md": "ff7196976a1736a639947c2ab26e8da157fef23c89ba9881312f2a36459964eb",
+    "agent_braid/structured_exchange.py": "dfca087646898d5bfb816a6a473c7135827d3886512f29bcc39899610b232cc9",
+    "docs/adr/0017-bounded-structured-exchange.md": "72cecb595605a16eaa5de7a88e960492205d82a300af2f6fb4451263f7e780c4",
+    "research/lab/model.py": "f39040b5476d663f6e7384e65d00073b084df6c8958b38bff45e4d6b19da010f",
+    "research/proofs/contextual-candidates/anchored-candidate.md": "f7b3eb0fc553ff12a49f9a35a993261351210f8e9a7ef80d29a36e83a0b65816",
+    "scripts/crosscheck_contextual_proof_mapping.py": "642a387eb5d20f977de85e6b30b9410a8a21c0f931036c0c52332335e0ef57f2",
+    "specs/025-contextual-proof-obligations/premise-inventory.json": "25c9a7ab8594c03d7bb865607d660cb5c42b8251d6d8f287ddec173e518af979",
+    "specs/025-contextual-proof-obligations/proof-tool-assessment.md": "d8c2ca1fc8712353683ce14322ebbc8532a944c0779e5748824fff03d172f6fe"
+  },
+  "specificIndependentProofReview": "pending"
+}

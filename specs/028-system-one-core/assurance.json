@@ -123,11 +123,11 @@
           "id": "SC-001",
           "obtained_evidence": [
             {
-              "command": "<isolated-python-3.13>/bin/python -m unittest tests.test_system_one_core tests.test_system_one_backends tests.test_system_one_policy tests.test_system_one_concurrency tests.test_system_one_cli -v",
-              "limits": "Synthetic stdlib reference engineering only; not model utility, scientific acceptance, human/founder approval or execution authority. Stable PR profile and final clean-candidate freeze pending.",
-              "outcome": "Typed synthetic decisions, complete distributions and immutable copies verified.",
+              "command": "<isolated-python-3.13>/bin/python scripts/validate_change.py --base develop --profile pr",
+              "limits": "Synthetic stdlib reference engineering; full quick/sensitive and stable PR profiles passed. Clean freeze is recorded separately in assurance.json. No model utility, scientific acceptance, human/founder approval or execution authority.",
+              "outcome": "Typed synthetic decisions, complete distributions and immutable copies verified. Full PR profile: 558 tests passed, 4 documented skips.",
               "path": "specs/028-system-one-core/evidence/technical-delivery.json",
-              "sha256": "63327681fc135ddeaf0c5b9da4adb3c3a2aeafb0f2dcf09f69d91735f75d938f"
+              "sha256": "30a289c930811af2b2e7e8d960bfdf81120238e526c979028b1698b0948b24f9"
             }
           ],
           "planned_evidence": "specs/028-system-one-core/evidence/sc-001.json with candidate/input hashes, exact command, environment, raw outcome and limits",
@@ -147,11 +147,11 @@
           "id": "SC-002",
           "obtained_evidence": [
             {
-              "command": "<isolated-python-3.13>/bin/python -m unittest tests.test_system_one_core tests.test_system_one_backends tests.test_system_one_policy tests.test_system_one_concurrency tests.test_system_one_cli -v",
-              "limits": "Synthetic stdlib reference engineering only; not model utility, scientific acceptance, human/founder approval or execution authority. Stable PR profile and final clean-candidate freeze pending.",
-              "outcome": "Exact admission limits and malformed inputs fail closed before backend allocation.",
+              "command": "<isolated-python-3.13>/bin/python scripts/validate_change.py --base develop --profile pr",
+              "limits": "Synthetic stdlib reference engineering; full quick/sensitive and stable PR profiles passed. Clean freeze is recorded separately in assurance.json. No model utility, scientific acceptance, human/founder approval or execution authority.",
+              "outcome": "Exact admission limits and malformed inputs fail closed before backend allocation. Full PR profile: 558 tests passed, 4 documented skips.",
               "path": "specs/028-system-one-core/evidence/technical-delivery.json",
-              "sha256": "63327681fc135ddeaf0c5b9da4adb3c3a2aeafb0f2dcf09f69d91735f75d938f"
+              "sha256": "30a289c930811af2b2e7e8d960bfdf81120238e526c979028b1698b0948b24f9"
             }
           ],
           "planned_evidence": "specs/028-system-one-core/evidence/sc-002.json with candidate/input hashes, exact command, environment, raw outcome and limits",
@@ -171,11 +171,11 @@
           "id": "SC-003",
           "obtained_evidence": [
             {
-              "command": "<isolated-python-3.13>/bin/python -m unittest tests.test_system_one_core tests.test_system_one_backends tests.test_system_one_policy tests.test_system_one_concurrency tests.test_system_one_cli -v",
-              "limits": "Synthetic stdlib reference engineering only; not model utility, scientific acceptance, human/founder approval or execution authority. Stable PR profile and final clean-candidate freeze pending.",
-              "outcome": "All identity digests and distinct concentration/probability fields verified; calibration absent.",
+              "command": "<isolated-python-3.13>/bin/python scripts/validate_change.py --base develop --profile pr",
+              "limits": "Synthetic stdlib reference engineering; full quick/sensitive and stable PR profiles passed. Clean freeze is recorded separately in assurance.json. No model utility, scientific acceptance, human/founder approval or execution authority.",
+              "outcome": "All identity digests and distinct concentration/probability fields verified; calibration absent. Full PR profile: 558 tests passed, 4 documented skips.",
               "path": "specs/028-system-one-core/evidence/technical-delivery.json",
-              "sha256": "63327681fc135ddeaf0c5b9da4adb3c3a2aeafb0f2dcf09f69d91735f75d938f"
+              "sha256": "30a289c930811af2b2e7e8d960bfdf81120238e526c979028b1698b0948b24f9"
             }
           ],
           "planned_evidence": "specs/028-system-one-core/evidence/sc-003.json with candidate/input hashes, exact command, environment, raw outcome and limits",
@@ -195,11 +195,11 @@
           "id": "SC-004",
           "obtained_evidence": [
             {
-              "command": "<isolated-python-3.13>/bin/python -m unittest tests.test_system_one_core tests.test_system_one_backends tests.test_system_one_policy tests.test_system_one_concurrency tests.test_system_one_cli -v",
-              "limits": "Synthetic stdlib reference engineering only; not model utility, scientific acceptance, human/founder approval or execution authority. Stable PR profile and final clean-candidate freeze pending.",
-              "outcome": "Forged authority and unknown response fields rejected; no grants minted.",
+              "command": "<isolated-python-3.13>/bin/python scripts/validate_change.py --base develop --profile pr",
+              "limits": "Synthetic stdlib reference engineering; full quick/sensitive and stable PR profiles passed. Clean freeze is recorded separately in assurance.json. No model utility, scientific acceptance, human/founder approval or execution authority.",
+              "outcome": "Forged authority and unknown response fields rejected; no grants minted. Full PR profile: 558 tests passed, 4 documented skips.",
               "path": "specs/028-system-one-core/evidence/technical-delivery.json",
-              "sha256": "63327681fc135ddeaf0c5b9da4adb3c3a2aeafb0f2dcf09f69d91735f75d938f"
+              "sha256": "30a289c930811af2b2e7e8d960bfdf81120238e526c979028b1698b0948b24f9"
             }
           ],
           "planned_evidence": "specs/028-system-one-core/evidence/sc-004.json with candidate/input hashes, exact command, environment, raw outcome and limits",
@@ -219,11 +219,11 @@
           "id": "SC-005",
           "obtained_evidence": [
             {
-              "command": "<isolated-python-3.13>/bin/python -m unittest tests.test_system_one_core tests.test_system_one_backends tests.test_system_one_policy tests.test_system_one_concurrency tests.test_system_one_cli -v",
-              "limits": "Synthetic stdlib reference engineering only; not model utility, scientific acceptance, human/founder approval or execution authority. Stable PR profile and final clean-candidate freeze pending.",
-              "outcome": "Offline installed package smoke and recorded legacy analyze byte parity; provider-free discovery.",
+              "command": "<isolated-python-3.13>/bin/python scripts/validate_change.py --base develop --profile pr",
+              "limits": "Synthetic stdlib reference engineering; full quick/sensitive and stable PR profiles passed. Clean freeze is recorded separately in assurance.json. No model utility, scientific acceptance, human/founder approval or execution authority.",
+              "outcome": "Offline installed package smoke and recorded legacy analyze byte parity; provider-free discovery. Full PR profile: 558 tests passed, 4 documented skips.",
               "path": "specs/028-system-one-core/evidence/technical-delivery.json",
-              "sha256": "63327681fc135ddeaf0c5b9da4adb3c3a2aeafb0f2dcf09f69d91735f75d938f"
+              "sha256": "30a289c930811af2b2e7e8d960bfdf81120238e526c979028b1698b0948b24f9"
             }
           ],
           "planned_evidence": "specs/028-system-one-core/evidence/sc-005.json with candidate/input hashes, exact command, environment, raw outcome and limits",
@@ -243,11 +243,11 @@
           "id": "SC-006",
           "obtained_evidence": [
             {
-              "command": "<isolated-python-3.13>/bin/python -m unittest tests.test_system_one_core tests.test_system_one_backends tests.test_system_one_policy tests.test_system_one_concurrency tests.test_system_one_cli -v",
-              "limits": "Synthetic stdlib reference engineering only; not model utility, scientific acceptance, human/founder approval or execution authority. Stable PR profile and final clean-candidate freeze pending.",
-              "outcome": "Bounded admission, queue/cancellation/deadline and request-local identity controls passed.",
+              "command": "<isolated-python-3.13>/bin/python scripts/validate_change.py --base develop --profile pr",
+              "limits": "Synthetic stdlib reference engineering; full quick/sensitive and stable PR profiles passed. Clean freeze is recorded separately in assurance.json. No model utility, scientific acceptance, human/founder approval or execution authority.",
+              "outcome": "Bounded admission, queue/cancellation/deadline and request-local identity controls passed. Full PR profile: 558 tests passed, 4 documented skips.",
               "path": "specs/028-system-one-core/evidence/technical-delivery.json",
-              "sha256": "63327681fc135ddeaf0c5b9da4adb3c3a2aeafb0f2dcf09f69d91735f75d938f"
+              "sha256": "30a289c930811af2b2e7e8d960bfdf81120238e526c979028b1698b0948b24f9"
             }
           ],
           "planned_evidence": "specs/028-system-one-core/evidence/sc-006.json with candidate/input hashes, exact command, environment, raw outcome and limits",
@@ -262,5 +262,5 @@
   ],
   "scientific_limits": "Source inspection is not reproduced performance. Synthetic conformance is not real utility. Confidence is heuristic, never proof. Negative/inconclusive protocol outcomes are valid.",
   "scope": "Engineering foundation for a local, non-generative, typed decision API with a deterministic reference backend. This milestone does not ship a pretrained general-purpose model.",
-  "stage": "draft"
+  "stage": "validated"
 }

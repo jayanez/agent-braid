@@ -1,5 +1,16 @@
 {
   "candidate": "aaa45c5ce7484420793d653e171e6a663a9eedab",
+  "cleanCandidateFreeze": "See supported assurance historical commit fields; no proof acceptance.",
+  "developmentQuick": {
+    "command": "<isolated-python-3.13>/bin/python scripts/validate_change.py --base develop --profile quick",
+    "effectiveProfile": "sensitive",
+    "exitCode": 0,
+    "path": "specs/028-system-one-core/evidence/quick-profile.log",
+    "seconds": 831.428,
+    "sha256": "9252f31884b8ff692aa7e39c5008d88aa2fc2b0475f308ac0355c7ff2d28b2e0",
+    "skipped": 4,
+    "tests": 558
+  },
   "executedEvidence": {
     "commandCount": 10,
     "continuationBytesEqual": true,
@@ -20,7 +31,8 @@
   "founderApproval": "pending",
   "humanReview": "pending",
   "independentExternalReproduction": false,
-  "limits": "Bounded technical delivery only. Internal same-maintainer/same-host clean clone is not external reproduction. No accepted proof, universal equivalence, scientific/human/founder approval, tool adoption or expanded execution authority. Stable PR profile and final candidate freeze pending.",
+  "limits": "Bounded technical delivery only. Full engineering profiles passed; same-host/same-maintainer clean clone is not external reproduction. No accepted proof, universal correspondence, scientific/human/founder approval, tool adoption or expanded execution. Specific independent proof review remains pending; pre-existing Unicode mapping defect is tracked for the next integration block.",
+  "mathematicalTechnicalInspection": "specs/025-contextual-proof-obligations/evidence/luna-mathematical-inspection.json",
   "proofAccepted": false,
   "recordVersion": "contextual-technical-delivery-v1",
   "reviewedCodeCandidate": "d2c0e7f",
@@ -110,7 +122,7 @@
     },
     "SC-007": {
       "limits": "Bounded technical delivery only. Internal same-maintainer/same-host clean clone is not external reproduction. No accepted proof, universal equivalence, scientific/human/founder approval, tool adoption or expanded execution authority. Stable PR profile and final candidate freeze pending.",
-      "outcome": "Named source-mapping gap and handwritten/no-tool alternatives assessed. Independent technical Luna review and internal repetition obtained; specific independent proof review, final PR/freeze and human acceptance pending.",
+      "outcome": "Bounded engineering profiles, internal repetition, no-tool assessment and separate Luna mathematical technical inspection captured. Candidate explicitly excludes LLM review from its specific independent proof gate; that gate and human acceptance remain pending.",
       "paths": [
         "specs/025-contextual-proof-obligations/proof-tool-assessment.md",
         "specs/025-contextual-proof-obligations/evidence/luna-checker-mapping.json",
@@ -140,11 +152,22 @@
     "specs/025-contextual-proof-obligations/contracts/continuations-v1.md": "4bae1481bfd2a9247eb53f6a6fd4ff161e90ee428b0a4aaae83a5f1c980d70ab",
     "specs/025-contextual-proof-obligations/evidence/internal-clean-clone.json": "44863c9da73361e3d0e92da652fb9caa79f50851050bef0a98f9d490079f0329",
     "specs/025-contextual-proof-obligations/evidence/luna-checker-mapping.json": "350168b3653912b7dfcd8aec50c319f1b28e6190357b425e5eaafd37daeb1b01",
+    "specs/025-contextual-proof-obligations/evidence/luna-mathematical-inspection.json": "b4f9f14dc4a086f5bbcda9057243cae6efd3041ea12370f51c88622c436d52d8",
     "specs/025-contextual-proof-obligations/premise-inventory.json": "25c9a7ab8594c03d7bb865607d660cb5c42b8251d6d8f287ddec173e518af979",
     "specs/025-contextual-proof-obligations/premise-inventory.md": "1fb3abe8f900524a946e613c3d7238b8ef4f79c2ddaf8c69308b12fcf9bc770c",
     "specs/025-contextual-proof-obligations/proof-tool-assessment.md": "d8c2ca1fc8712353683ce14322ebbc8532a944c0779e5748824fff03d172f6fe",
     "specs/025-contextual-proof-obligations/technical-interface-review.json": "2050cde93dbf37fcb374b5edb7249442dab78101c77f0d52e324a26006e77e99",
     "tests/test_contextual_lab.py": "aa8f33ba47d79a6418d7d1f3d1a570782561ced894dbf24ada03cda5679e674b"
+  },
+  "stablePrProfile": {
+    "command": "<isolated-python-3.13>/bin/python scripts/validate_change.py --base develop --profile pr",
+    "effectiveProfile": "pr",
+    "exitCode": 0,
+    "path": "specs/028-system-one-core/evidence/pr-profile.log",
+    "seconds": 871.465,
+    "sha256": "9bb6b6f01b4a457bcfe6028b49fb9a8410b71405a35326d85d284b6e02b0fc88",
+    "skipped": 4,
+    "tests": 558
   },
   "taskStatus": {
     "T001": "technical-complete",
