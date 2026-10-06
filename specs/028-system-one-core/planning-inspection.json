@@ -39,7 +39,7 @@
   "issueDrafts": 55,
   "milestoneDrafts": 5,
   "featureAcceptance": "not executed; all draft/pending",
-  "localLinkCount": 88,
+  "localLinkCount": 89,
   "scenarioProcedureCount": 36,
   "sourceDigestCount": 43,
   "conditionalDependencies": {
@@ -48,6 +48,43 @@
         "SPEC-030/T006"
       ],
       "infeasibility": []
+    },
+    "SPEC-032/T002": {
+      "selectedExport": [
+        "SPEC-030/T008"
+      ]
+    },
+    "SPEC-032/T003": {
+      "learnedRouting": [
+        "SPEC-030/T008"
+      ],
+      "rulesOrMetadataRouting": []
+    },
+    "SPEC-032/T005": {
+      "usesRouter": [
+        "SPEC-032/T003"
+      ],
+      "usesLearnedScorer": [
+        "SPEC-030/T008"
+      ]
+    },
+    "SPEC-032/T006": {
+      "selectedModelLifecycle": [
+        "SPEC-030/T008"
+      ],
+      "usesExport": [
+        "SPEC-032/T002"
+      ],
+      "usesRouter": [
+        "SPEC-032/T003"
+      ]
+    },
+    "SPEC-032/T007": {
+      "selectedWheelContents": "Only implementation tasks for extensions included in the wheel; no deferred branch prerequisites"
+    },
+    "SPEC-032/T008": {
+      "selectedExtensions": "Only selected implementation tasks among SPEC-032/T002 through T007 and their own prerequisites",
+      "allDeferred": []
     }
   },
   "infeasibilityExit": {
@@ -57,5 +94,24 @@
     "blockedTrainingRequired": false,
     "modelTasksRemainPending": true,
     "acceptanceOrPromotionImplied": false
+  },
+  "productSubsetExit": {
+    "requires": [
+      "SPEC-032/T001"
+    ],
+    "selectedBranchTasksRequired": true,
+    "deferredTasksRemainPending": true,
+    "deferredScenariosRemainDraft": true,
+    "obtainedEvidenceForDeferredScenarios": 0,
+    "wholeSpecAcceptanceOrPromotionImplied": false
+  },
+  "authorityEditorialReview": {
+    "authority": "ARCHITECTURE.md",
+    "previousCommit": "c055910de7d4091ef6edfe9decf75b0926bf5f18",
+    "previousSha256": "94e5114eb799b25ca666ef728f84ab1c88e6ad1b342e30a9e99276b8f44c30c2",
+    "currentSha256": "e26135a1037c232ff953710e5de52abef8cf1cad47a8822fe63a565bc9ad9555",
+    "scope": "Existing bounded runtime/status and planned extensions; no new architecture choice, execution contract or research claim",
+    "historicalAssuranceSnapshots": "unchanged; frozen authorities remain explicitly outside later editorial changes",
+    "featureAcceptance": "not executed; human review pending"
   }
 }

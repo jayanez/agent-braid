@@ -20,7 +20,7 @@ tracking and README work followed the obtained results.
 | A — M3.5 readiness | Synthetic capture, recovery, pair accounting, filtered-lab and seal checks; read-only private metadata audit | 44 focused tests passed; exact fixture reproduction and all-pairs rehearsal obtained. [Readiness and remaining gates](m35-technical-readiness.md). |
 | B — M4 cost | Invocation-local preparation reuse, run-local executor reuse, direct singleton waves and diagnostic profiling | Budgets and independent consumer reconstruction retained; regression and forged-record controls added. [Cost diagnostics](M4_RUNTIME_COST_DIAGNOSTICS.md). |
 | C — Linux execution | Public hosted x64 workflows, synthetic reproduction, optional same-host cost comparison and log transport | M3.5 and M4 Linux jobs executed successfully at exact candidate `734feca`; [runbook](linux-experiments.md) and permanent public records obtained. |
-| D — Governed tracking | Apply the reviewed merged-source audit; verify private Project views and custom statuses | 42 operations applied; subsequent repository audit reported no operations. All three Project views and four Review pending entries verified. T014 source completion is proposed in this PR. |
+| D — Governed tracking | Apply the reviewed merged-source audit; verify private Project views and custom statuses | 42 operations applied; subsequent repository audit reported no operations. All three Project views and four Review pending entries verified at the captured baseline. T014 source completion subsequently merged; see the post-merge status below. |
 | E — Documentation | Working capability map, tested runtime-only tutorial, architecture diagram, evidence boundaries and README | [Owned tutorial](../../examples/runtime/README.md) reproduced with no development dependencies; README finalized after experiment results. |
 
 The work changed no runtime dependencies, model-host credentials, private
@@ -136,7 +136,7 @@ binds the applied merged source to `f1bc304`. Reviewed plan SHA-256
 created 15 SPEC-021 issues, linked 14 subissues and closed 13 completed task
 issues. The post-apply repository audit reported `operations: []`.
 
-The existing signed-in browser session verified **Specs and tasks**, **By
+At the captured baseline, the existing signed-in browser session verified **Specs and tasks**, **By
 milestone** and **By status** in the private Project. Its 180 items comprised
 165 Done, 11 Todo, zero In Progress and four Review pending. SPEC-021's
 [parent #204](https://github.com/jayanez/agent-braid/issues/204) and
@@ -147,11 +147,21 @@ lacked `read:project`; browser verification obtained the required observation
 without changing credentials, scopes or Project fields. Temporary filters were
 restored.
 
-The T014 checkbox amendment records completion of the already obtained founder
-**NO-GO** decision and this authorized administrative reconciliation. It does
-not record a new founder decision. Its issue stays open until the amended source
-is merged and separately reconciled under [the tracking workflow](GITHUB_TRACKING.md).
+The T014 checkbox amendment recorded completion of the already obtained founder
+**NO-GO** decision and this authorized administrative reconciliation. It did
+not record a new founder decision. At that baseline its issue stayed open until
+the amended source merged and was separately reconciled under
+[the tracking workflow](GITHUB_TRACKING.md).
 SPEC-021 and M4 remain open even when that administrative task is complete.
+
+### Post-merge administrative status — 2026-10-06
+
+[PR #220](https://github.com/jayanez/agent-braid/pull/220) merged at
+`d53314706d065247735ae09d5deed60a1365bbbb` on `2026-10-06T13:10:55Z`.
+[T014 #218](https://github.com/jayanez/agent-braid/issues/218) then closed at
+`2026-10-06T13:12:34Z`. This updates the source/issue status; the original receipt
+and Project counts above remain dated observations. It does not establish a new
+Project readback or change the G4 NO-GO, SPEC-021's open parent or M4's open state.
 
 The six audited personal repositories had **zero registered self-hosted
 runners**. Existing local runner images are Linux ARM64 preparation, not active

@@ -14,8 +14,11 @@ records retain their original names, scope and decisions.
 **Status:** closed internally on 2026-09-19 against candidate
 `d7bff443729571e031180b4c31920632e2a7d3ae`; see the
 [closure record](docs/releases/M0_5_CLOSURE.md). The research-preview proposal is
-approved, but publication, repository visibility and history operations remain
-unauthorized. Independent validation remains `pending`.
+approved; publication, repository visibility and history operations were outside
+that closure's authorization. The later
+[cutover audit](docs/releases/publication/CUTOVER_AUDIT_2026-09-25.md) records public
+availability and the separate historical authorization-reconciliation gate.
+Independent validation remains `pending`.
 
 **Objective:** turn the validated foundation into an inspectable open-tooling
 thesis without weakening the scientific boundary.
@@ -246,7 +249,8 @@ obtained fresh hosted Linux x64 controls (44 M3.5 synthetic tests and 68 M4
 runtime/protocol tests), reduced redundant preparation and retained a separate
 descriptive cost record. Parallel execution still cost more than serial on the
 owned fixture. Governed tracking was reconciled; administrative T014 completion
-is proposed in the task list, with issue reconciliation following source merge.
+merged in [PR #220](https://github.com/jayanez/agent-braid/pull/220) and
+[issue #218](https://github.com/jayanez/agent-braid/issues/218) closed on 2026-10-06.
 This delivery leaves the G4 NO-GO, SPEC-021's open state and M4's open milestone
 in effect.
 
