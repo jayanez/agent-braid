@@ -13,7 +13,12 @@
     "Cross-cutting governance": "Governance and adoption work spanning release milestones.",
     "Platform evidence adapters": "Read-only recorded trace import and bounded adapter spikes; adoption and runtime authorization remain separate.",
     "Workload evidence laboratory": "Bounded simulated non-Git effectful workloads and conservative analysis; no real external execution.",
-    "Formal interaction research": "Contextual and trace-safety obligations, restricted proof review and comparator feasibility; separate from M4 runtime."
+    "Formal interaction research": "Contextual and trace-safety obligations, restricted proof review and comparator feasibility; separate from M4 runtime.",
+    "S1.0 \u2014 Contracts": "Native typed advisory decision foundation; draft implementation track, no accepted utility claim.",
+    "S1.1 \u2014 Evidence": "Prospective corpus and unbiased decision evaluation; draft implementation track, no accepted utility claim.",
+    "S1.2 \u2014 Native model": "Own non-generative neural decision experiment; draft implementation track, no accepted utility claim.",
+    "S1.3 \u2014 Integration": "Advisory integration across Agent Braid decision stages; draft implementation track, no accepted utility claim.",
+    "S1.4 \u2014 Product and promotion": "Per-feature advanced capability acceptance plus separately governed shadow, promotion, drift, rollback and closure."
   },
   "closed_milestones": [
     "M0",
@@ -130,6 +135,30 @@
     "027-runtime-refinement-contracts": {
       "milestone": "M4",
       "state": "open"
+    },
+    "028-system-one-core": {
+      "milestone": "S1.0 \u2014 Contracts",
+      "state": "open"
+    },
+    "029-system-one-evaluation": {
+      "milestone": "S1.1 \u2014 Evidence",
+      "state": "open"
+    },
+    "030-system-one-model": {
+      "milestone": "S1.2 \u2014 Native model",
+      "state": "open"
+    },
+    "031-system-one-integration": {
+      "milestone": "S1.3 \u2014 Integration",
+      "state": "open"
+    },
+    "032-system-one-product": {
+      "milestone": "S1.4 \u2014 Product and promotion",
+      "state": "open"
+    },
+    "033-system-one-promotion": {
+      "milestone": "S1.4 \u2014 Product and promotion",
+      "state": "open"
     }
   },
   "task_state_overrides": {
@@ -147,6 +176,12 @@
     "SPEC-024",
     "SPEC-025",
     "SPEC-026",
-    "SPEC-027"
+    "SPEC-027",
+    "SPEC-028",
+    "SPEC-029",
+    "SPEC-030",
+    "SPEC-031",
+    "SPEC-032",
+    "SPEC-033"
   ]
 }
