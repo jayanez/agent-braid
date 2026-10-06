@@ -21,32 +21,38 @@
     {
       "spec": "SPEC-022",
       "parentIssue": 224,
-      "status": "Review pending"
+      "status": "Review pending",
+      "milestone": "M4"
     },
     {
       "spec": "SPEC-023",
       "parentIssue": 231,
-      "status": "Review pending"
+      "status": "Review pending",
+      "milestone": "Platform evidence adapters"
     },
     {
       "spec": "SPEC-024",
       "parentIssue": 240,
-      "status": "Review pending"
+      "status": "Review pending",
+      "milestone": "Workload evidence laboratory"
     },
     {
       "spec": "SPEC-025",
       "parentIssue": 249,
-      "status": "Review pending"
+      "status": "Review pending",
+      "milestone": "Formal interaction research"
     },
     {
       "spec": "SPEC-026",
       "parentIssue": 257,
-      "status": "Review pending"
+      "status": "Review pending",
+      "milestone": "Cross-cutting governance"
     },
     {
       "spec": "SPEC-027",
       "parentIssue": 266,
-      "status": "Review pending"
+      "status": "Review pending",
+      "milestone": "M4"
     }
   ],
   "projectVerification": {
