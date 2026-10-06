@@ -17,8 +17,12 @@ it does not mean fitting Chronos or continual self-training.
 | [036](../036-forecast-parallelism-experiment/spec.md) | Rolling-origin forecast and complete-cost policy experiment | Supported, negative, inconclusive or infeasible decision; positive result is not mandatory |
 | [037](../037-forecast-advisory-integration/spec.md) | Read-only advice, shadow, System 1 bridge and exact promotion/rollback | Separate utility and founder capability decisions; independent operator grant for execution |
 
-One dedicated milestone contains all four parent specs and 33 implementation/gate
-tasks. The tasks remain open. Completion of a research protocol with no benefit
+The dedicated [FC.1 milestone](https://github.com/jayanez/agent-braid/milestone/18)
+contains four parent specs and 33 implementation/gate tasks. Parent issues:
+[034](https://github.com/jayanez/agent-braid/issues/335),
+[035](https://github.com/jayanez/agent-braid/issues/344),
+[036](https://github.com/jayanez/agent-braid/issues/353) and
+[037](https://github.com/jayanez/agent-braid/issues/363). The tasks remain open. Completion of a research protocol with no benefit
 does not accept an operational forecasting capability or close M4/M3.5.
 
 ## Supported when and where

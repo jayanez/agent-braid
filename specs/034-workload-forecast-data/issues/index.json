@@ -10,259 +10,335 @@
       "kind": "spec",
       "parent": null,
       "title": "[SPEC-034] SPEC-034: Permissioned workload telemetry and prospective forecast data",
-      "draft": "SPEC-034.md"
+      "draft": "SPEC-034.md",
+      "issueNumber": 335,
+      "issueUrl": "https://github.com/jayanez/agent-braid/issues/335"
     },
     {
       "key": "SPEC-034/T001",
       "kind": "task",
       "parent": "SPEC-034",
       "title": "[SPEC-034 T001] Review source, privacy, telemetry and local resource boundaries. Dependencies: none. Target files: sou...",
-      "draft": "SPEC-034-T001.md"
+      "draft": "SPEC-034-T001.md",
+      "issueNumber": 336,
+      "issueUrl": "https://github.com/jayanez/agent-braid/issues/336"
     },
     {
       "key": "SPEC-034/T002",
       "kind": "task",
       "parent": "SPEC-034",
       "title": "[SPEC-034 T002] Implement bounded telemetry records and synthetic negative fixtures. Dependencies: T001 technical boun...",
-      "draft": "SPEC-034-T002.md"
+      "draft": "SPEC-034-T002.md",
+      "issueNumber": 337,
+      "issueUrl": "https://github.com/jayanez/agent-braid/issues/337"
     },
     {
       "key": "SPEC-034/T003",
       "kind": "task",
       "parent": "SPEC-034",
       "title": "[SPEC-034 T003] Add permissioned runtime metadata capture hooks. Dependencies: T002; separate source-window/operator a...",
-      "draft": "SPEC-034-T003.md"
+      "draft": "SPEC-034-T003.md",
+      "issueNumber": 338,
+      "issueUrl": "https://github.com/jayanez/agent-braid/issues/338"
     },
     {
       "key": "SPEC-034/T004",
       "kind": "task",
       "parent": "SPEC-034",
       "title": "[SPEC-034 T004] Implement cutoff-aware series compilation and split purging. Dependencies: T002. Target files: agent_b...",
-      "draft": "SPEC-034-T004.md"
+      "draft": "SPEC-034-T004.md",
+      "issueNumber": 339,
+      "issueUrl": "https://github.com/jayanez/agent-braid/issues/339"
     },
     {
       "key": "SPEC-034/T005",
       "kind": "task",
       "parent": "SPEC-034",
       "title": "[SPEC-034 T005] Implement reviewed local resource eligibility receipts. Dependencies: T001 T002. Target files: agent_b...",
-      "draft": "SPEC-034-T005.md"
+      "draft": "SPEC-034-T005.md",
+      "issueNumber": 340,
+      "issueUrl": "https://github.com/jayanez/agent-braid/issues/340"
     },
     {
       "key": "SPEC-034/T006",
       "kind": "task",
       "parent": "SPEC-034",
       "title": "[SPEC-034 T006] Freeze and collect the approved prospective source window. Dependencies: T003 T004 T005; source rights...",
-      "draft": "SPEC-034-T006.md"
+      "draft": "SPEC-034-T006.md",
+      "issueNumber": 341,
+      "issueUrl": "https://github.com/jayanez/agent-braid/issues/341"
     },
     {
       "key": "SPEC-034/T007",
       "kind": "task",
       "parent": "SPEC-034",
       "title": "[SPEC-034 T007] Audit yield and record the experiment data-readiness decision. Dependencies: T006. Target files: specs...",
-      "draft": "SPEC-034-T007.md"
+      "draft": "SPEC-034-T007.md",
+      "issueNumber": 342,
+      "issueUrl": "https://github.com/jayanez/agent-braid/issues/342"
     },
     {
       "key": "SPEC-034/T008",
       "kind": "task",
       "parent": "SPEC-034",
       "title": "[SPEC-034 T008] Capture data-contract validation and bounded human review packet. Dependencies: T007. Target files: sp...",
-      "draft": "SPEC-034-T008.md"
+      "draft": "SPEC-034-T008.md",
+      "issueNumber": 343,
+      "issueUrl": "https://github.com/jayanez/agent-braid/issues/343"
     },
     {
       "key": "SPEC-035",
       "kind": "spec",
       "parent": null,
       "title": "[SPEC-035] SPEC-035: Optional local Chronos-2 forecast adapter",
-      "draft": "SPEC-035.md"
+      "draft": "SPEC-035.md",
+      "issueNumber": 344,
+      "issueUrl": "https://github.com/jayanez/agent-braid/issues/344"
     },
     {
       "key": "SPEC-035/T001",
       "kind": "task",
       "parent": "SPEC-035",
       "title": "[SPEC-035 T001] Review the Chronos-2 artifact, package closure and CPU envelope. Dependencies: SPEC-034/T001; model/de...",
-      "draft": "SPEC-035-T001.md"
+      "draft": "SPEC-035-T001.md",
+      "issueNumber": 345,
+      "issueUrl": "https://github.com/jayanez/agent-braid/issues/345"
     },
     {
       "key": "SPEC-035/T002",
       "kind": "task",
       "parent": "SPEC-035",
       "title": "[SPEC-035 T002] Implement the lazy optional adapter interface with stubs. Dependencies: T001 interface review; SPEC-03...",
-      "draft": "SPEC-035-T002.md"
+      "draft": "SPEC-035-T002.md",
+      "issueNumber": 346,
+      "issueUrl": "https://github.com/jayanez/agent-braid/issues/346"
     },
     {
       "key": "SPEC-035/T003",
       "kind": "task",
       "parent": "SPEC-035",
       "title": "[SPEC-035 T003] Implement target, covariate and missingness translation. Dependencies: T002; SPEC-034/T004. Target fil...",
-      "draft": "SPEC-035-T003.md"
+      "draft": "SPEC-035-T003.md",
+      "issueNumber": 347,
+      "issueUrl": "https://github.com/jayanez/agent-braid/issues/347"
     },
     {
       "key": "SPEC-035/T004",
       "kind": "task",
       "parent": "SPEC-035",
       "title": "[SPEC-035 T004] Implement typed quantile outputs and median labeling. Dependencies: T003. Target files: agent_braid/fo...",
-      "draft": "SPEC-035-T004.md"
+      "draft": "SPEC-035-T004.md",
+      "issueNumber": 348,
+      "issueUrl": "https://github.com/jayanez/agent-braid/issues/348"
     },
     {
       "key": "SPEC-035/T005",
       "kind": "task",
       "parent": "SPEC-035",
       "title": "[SPEC-035 T005] Implement the reviewed bounded offline CPU worker. Dependencies: T002; exact lifecycle/enforcement rev...",
-      "draft": "SPEC-035-T005.md"
+      "draft": "SPEC-035-T005.md",
+      "issueNumber": 349,
+      "issueUrl": "https://github.com/jayanez/agent-braid/issues/349"
     },
     {
       "key": "SPEC-035/T006",
       "kind": "task",
       "parent": "SPEC-035",
       "title": "[SPEC-035 T006] Implement receipt-bound reuse and request isolation. Dependencies: T004 T005; SPEC-034/T005. Target fi...",
-      "draft": "SPEC-035-T006.md"
+      "draft": "SPEC-035-T006.md",
+      "issueNumber": 350,
+      "issueUrl": "https://github.com/jayanez/agent-braid/issues/350"
     },
     {
       "key": "SPEC-035/T007",
       "kind": "task",
       "parent": "SPEC-035",
       "title": "[SPEC-035 T007] Validate the installed optional wheel and adapter controls. Dependencies: T004 T005 T006. Target files...",
-      "draft": "SPEC-035-T007.md"
+      "draft": "SPEC-035-T007.md",
+      "issueNumber": 351,
+      "issueUrl": "https://github.com/jayanez/agent-braid/issues/351"
     },
     {
       "key": "SPEC-035/T008",
       "kind": "task",
       "parent": "SPEC-035",
       "title": "[SPEC-035 T008] Run approved real Chronos-2 CPU conformance and cost capture. Dependencies: T007; separate approved pr...",
-      "draft": "SPEC-035-T008.md"
+      "draft": "SPEC-035-T008.md",
+      "issueNumber": 352,
+      "issueUrl": "https://github.com/jayanez/agent-braid/issues/352"
     },
     {
       "key": "SPEC-036",
       "kind": "spec",
       "parent": null,
       "title": "[SPEC-036] SPEC-036: Prospective forecast-guided parallelism utility experiment",
-      "draft": "SPEC-036.md"
+      "draft": "SPEC-036.md",
+      "issueNumber": 353,
+      "issueUrl": "https://github.com/jayanez/agent-braid/issues/353"
     },
     {
       "key": "SPEC-036/T001",
       "kind": "task",
       "parent": "SPEC-036",
       "title": "[SPEC-036 T001] Review and freeze the prospective experiment registration. Dependencies: SPEC-034/T007; SPEC-035/T001;...",
-      "draft": "SPEC-036-T001.md"
+      "draft": "SPEC-036-T001.md",
+      "issueNumber": 354,
+      "issueUrl": "https://github.com/jayanez/agent-braid/issues/354"
     },
     {
       "key": "SPEC-036/T002",
       "kind": "task",
       "parent": "SPEC-036",
       "title": "[SPEC-036 T002] Implement inexpensive baselines and complete accounting controls. Dependencies: T001 protocol review;...",
-      "draft": "SPEC-036-T002.md"
+      "draft": "SPEC-036-T002.md",
+      "issueNumber": 355,
+      "issueUrl": "https://github.com/jayanez/agent-braid/issues/355"
     },
     {
       "key": "SPEC-036/T003",
       "kind": "task",
       "parent": "SPEC-036",
       "title": "[SPEC-036 T003] Implement immutable rolling-origin forecast evaluation. Dependencies: T002; SPEC-035/T007. Target file...",
-      "draft": "SPEC-036-T003.md"
+      "draft": "SPEC-036-T003.md",
+      "issueNumber": 356,
+      "issueUrl": "https://github.com/jayanez/agent-braid/issues/356"
     },
     {
       "key": "SPEC-036/T004",
       "kind": "task",
       "parent": "SPEC-036",
       "title": "[SPEC-036 T004] Bind the frozen admissible action mapper to each decision. Dependencies: T002; SPEC-037/T003. Target f...",
-      "draft": "SPEC-036-T004.md"
+      "draft": "SPEC-036-T004.md",
+      "issueNumber": 357,
+      "issueUrl": "https://github.com/jayanez/agent-braid/issues/357"
     },
     {
       "key": "SPEC-036/T005",
       "kind": "task",
       "parent": "SPEC-036",
       "title": "[SPEC-036 T005] Implement the owned paired policy measurement harness. Dependencies: T003 T004; existing runtime measu...",
-      "draft": "SPEC-036-T005.md"
+      "draft": "SPEC-036-T005.md",
+      "issueNumber": 358,
+      "issueUrl": "https://github.com/jayanez/agent-braid/issues/358"
     },
     {
       "key": "SPEC-036/T006",
       "kind": "task",
       "parent": "SPEC-036",
       "title": "[SPEC-036 T006] Run leakage, authority, drift and recovery negative controls. Dependencies: T005. Target files: tests/...",
-      "draft": "SPEC-036-T006.md"
+      "draft": "SPEC-036-T006.md",
+      "issueNumber": 359,
+      "issueUrl": "https://github.com/jayanez/agent-braid/issues/359"
     },
     {
       "key": "SPEC-036/T007",
       "kind": "task",
       "parent": "SPEC-036",
       "title": "[SPEC-036 T007] Execute the approved frozen real-workload holdout comparison. Dependencies: T006; SPEC-034/T008; SPEC-...",
-      "draft": "SPEC-036-T007.md"
+      "draft": "SPEC-036-T007.md",
+      "issueNumber": 360,
+      "issueUrl": "https://github.com/jayanez/agent-braid/issues/360"
     },
     {
       "key": "SPEC-036/T008",
       "kind": "task",
       "parent": "SPEC-036",
       "title": "[SPEC-036 T008] Produce the complete uncertainty and utility decision packet. Dependencies: T007 or a recorded pre-lau...",
-      "draft": "SPEC-036-T008.md"
+      "draft": "SPEC-036-T008.md",
+      "issueNumber": 361,
+      "issueUrl": "https://github.com/jayanez/agent-braid/issues/361"
     },
     {
       "key": "SPEC-036/T009",
       "kind": "task",
       "parent": "SPEC-036",
       "title": "[SPEC-036 T009] Obtain the bounded experiment interpretation and adoption decision. Dependencies: T008. Target files:...",
-      "draft": "SPEC-036-T009.md"
+      "draft": "SPEC-036-T009.md",
+      "issueNumber": 362,
+      "issueUrl": "https://github.com/jayanez/agent-braid/issues/362"
     },
     {
       "key": "SPEC-037",
       "kind": "spec",
       "parent": null,
       "title": "[SPEC-037] SPEC-037: Bounded forecast advice, shadow integration and promotion",
-      "draft": "SPEC-037.md"
+      "draft": "SPEC-037.md",
+      "issueNumber": 363,
+      "issueUrl": "https://github.com/jayanez/agent-braid/issues/363"
     },
     {
       "key": "SPEC-037/T001",
       "kind": "task",
       "parent": "SPEC-037",
       "title": "[SPEC-037 T001] Review the separate forecast/advice contract and runtime boundary. Dependencies: SPEC-034/T001; SPEC-0...",
-      "draft": "SPEC-037-T001.md"
+      "draft": "SPEC-037-T001.md",
+      "issueNumber": 364,
+      "issueUrl": "https://github.com/jayanez/agent-braid/issues/364"
     },
     {
       "key": "SPEC-037/T002",
       "kind": "task",
       "parent": "SPEC-037",
       "title": "[SPEC-037 T002] Implement default-off read-only forecast library and CLI discovery. Dependencies: T001; SPEC-035/T007....",
-      "draft": "SPEC-037-T002.md"
+      "draft": "SPEC-037-T002.md",
+      "issueNumber": 365,
+      "issueUrl": "https://github.com/jayanez/agent-braid/issues/365"
     },
     {
       "key": "SPEC-037/T003",
       "kind": "task",
       "parent": "SPEC-037",
       "title": "[SPEC-037 T003] Implement immutable admissible action mapping and grant controls. Dependencies: T001; SPEC-034/T005; S...",
-      "draft": "SPEC-037-T003.md"
+      "draft": "SPEC-037-T003.md",
+      "issueNumber": 366,
+      "issueUrl": "https://github.com/jayanez/agent-braid/issues/366"
     },
     {
       "key": "SPEC-037/T004",
       "kind": "task",
       "parent": "SPEC-037",
       "title": "[SPEC-037 T004] Implement or explicitly defer the optional typed System 1 bridge. Dependencies: T003; independently ac...",
-      "draft": "SPEC-037-T004.md"
+      "draft": "SPEC-037-T004.md",
+      "issueNumber": 367,
+      "issueUrl": "https://github.com/jayanez/agent-braid/issues/367"
     },
     {
       "key": "SPEC-037/T005",
       "kind": "task",
       "parent": "SPEC-037",
       "title": "[SPEC-037 T005] Add shadow-mode observations and complete fallback traces. Dependencies: T002 T003. Target files: agen...",
-      "draft": "SPEC-037-T005.md"
+      "draft": "SPEC-037-T005.md",
+      "issueNumber": 368,
+      "issueUrl": "https://github.com/jayanez/agent-braid/issues/368"
     },
     {
       "key": "SPEC-037/T006",
       "kind": "task",
       "parent": "SPEC-037",
       "title": "[SPEC-037 T006] Validate authority, drift, cancellation and rollback boundaries. Dependencies: T005. Target files: tes...",
-      "draft": "SPEC-037-T006.md"
+      "draft": "SPEC-037-T006.md",
+      "issueNumber": 369,
+      "issueUrl": "https://github.com/jayanez/agent-braid/issues/369"
     },
     {
       "key": "SPEC-037/T007",
       "kind": "task",
       "parent": "SPEC-037",
       "title": "[SPEC-037 T007] Prepare the exact-capability promotion or defer packet. Dependencies: T006; SPEC-036/T009 accepted pos...",
-      "draft": "SPEC-037-T007.md"
+      "draft": "SPEC-037-T007.md",
+      "issueNumber": 370,
+      "issueUrl": "https://github.com/jayanez/agent-braid/issues/370"
     },
     {
       "key": "SPEC-037/T008",
       "kind": "task",
       "parent": "SPEC-037",
       "title": "[SPEC-037 T008] Record founder capability adoption or no-go and milestone interpretation. Dependencies: T007. Target f...",
-      "draft": "SPEC-037-T008.md"
+      "draft": "SPEC-037-T008.md",
+      "issueNumber": 371,
+      "issueUrl": "https://github.com/jayanez/agent-braid/issues/371"
     }
-  ]
+  ],
+  "milestoneNumber": 18,
+  "milestoneUrl": "https://github.com/jayanez/agent-braid/milestone/18"
 }
