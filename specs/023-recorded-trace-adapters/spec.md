@@ -1,5 +1,7 @@
 # Recorded-trace adapters
 
+Tracking milestone: **ADP.1 — Recorded-trace adapters**.
+
 ## Purpose and scope
 
 SPEC-023 makes the read-only analyzer usable on bounded, recorded operation

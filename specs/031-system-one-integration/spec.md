@@ -5,7 +5,7 @@
 Expose native System 1 recommendations for every architectural stage through an explicit registry of capabilities. Only enabled, evidenced consumers are integrated; arbitrary host actions and runtime scope expansion are excluded.
 
 Status: draft planning, human review pending. Dependencies: SPEC-028 accepted contracts; implementation can use a rule backend while SPEC-030 research remains pending. Live learned use waits for SPEC-030 selection and SPEC-033 promotion.
-Milestone: S1.3 — Integration. See the [program](../028-system-one-core/program.md)
+Milestone: S1.3 — Advisory integration. See the [program](../028-system-one-core/program.md)
 and [source-backed analysis](../028-system-one-core/reference-analysis.md).
 
 User scenarios: an analyzer operator requests bounded advice and inspectable reasons;
