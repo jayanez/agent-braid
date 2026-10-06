@@ -6,7 +6,7 @@ Implement a bounded continuation checker for `integer-batch-v1` and prepare
 reviewable candidate statements/premises for T1 independence, T2 schedule
 equivalence and the anchored-sequence exchange class. This addresses scientific
 integration F2/F4 and the outstanding restricted-theorem targets without claiming
-an accepted theorem today. Proposed milestone: **Formal interaction research**,
+an accepted theorem today. Tracking milestone: **RES.1 — Formal interaction research**,
 separate from runtime utility or admission.
 
 A complete protocol can find counterexamples, reject a premise or conclude that

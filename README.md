@@ -180,7 +180,11 @@ remains pending. The
 records the outstanding authorization reconciliation separately from public
 repository availability.
 
-The next work is mapped in the [foundational implementation portfolio](docs/development/FOUNDATION_IMPLEMENTATION_PORTFOLIO.md): full-cost utility follow-up, offline trace adapters, simulated effectful workloads, contextual/proof obligations, adoption evidence and runtime refinement contracts. These six specs are **draft plans with human review pending**; their commands and artifacts are future targets. See the [portfolio roadmap](ROADMAP.md) and [M3.5 offline preparation map](specs/019-native-predictor/implementation-readiness.md).
+The next work is mapped in the [foundational implementation portfolio](docs/development/FOUNDATION_IMPLEMENTATION_PORTFOLIO.md): full-cost utility follow-up, offline trace adapters, simulated effectful workloads, contextual/proof obligations, adoption evidence and runtime refinement contracts. These six specs are **draft plans with human review pending**; their commands and artifacts are future targets. The [System 1 program](specs/028-system-one-core/program.md) adds six draft specs
+for typed decision contracts, evaluation, a native model, advisory integration and
+separately governed product capabilities/promotion. The
+[spec and milestone index](docs/development/SPEC_MILESTONE_INDEX.md) maps all 33
+specs to their registered milestones. See the [portfolio roadmap](ROADMAP.md) and [M3.5 offline preparation map](specs/019-native-predictor/implementation-readiness.md).
 
 ## Scientific contract
 

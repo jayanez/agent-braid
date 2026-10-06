@@ -5,7 +5,7 @@
 Engineering foundation for a local, non-generative, typed decision API with a deterministic reference backend. This milestone does not ship a pretrained general-purpose model.
 
 Status: draft planning, human review pending. Dependencies: None; preserve SPEC-018/019/020/021 boundaries.
-Milestone: S1.0 — Contracts. See the [program](../028-system-one-core/program.md)
+Milestone: S1.0 — Decision contracts. See the [program](../028-system-one-core/program.md)
 and [source-backed analysis](../028-system-one-core/reference-analysis.md).
 
 User scenarios: an analyzer operator requests bounded advice and inspectable reasons;

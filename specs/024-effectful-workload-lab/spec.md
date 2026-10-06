@@ -8,7 +8,7 @@ executable research protocol: a counterexample or inconclusive coverage report
 is a valid result. It does not implement a database, API, deployment adapter,
 consumer runtime admission or real external action.
 
-Proposed milestone: **Workload evidence laboratory**. SPEC-020/021's accepted Git
+Tracking milestone: **LAB.1 — Effectful workload lab**. SPEC-020/021's accepted Git
 execution domains and SPEC-018's pure exchange evidence remain unchanged.
 
 ## Authorities

@@ -15,8 +15,8 @@ metric manifest, validator, synthetic intake fixtures and repeatable report.
 Real evidence intake and external participation are later gated increments.
 Stars, downloads, market proxies and technology counts are contextual signals;
 they cannot demonstrate usefulness, independent validation or research novelty.
-Prefer the existing cross-cutting governance milestone for this program rather
-than inventing a new product or research phase.
+Tracking milestone: **GOV.1 — Governance and adoption**; this assignment does not
+invent a new product or research phase.
 
 ## Authorities
 
