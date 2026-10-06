@@ -22,7 +22,7 @@
   ],
   "assumptions": "Owned/permissioned metadata and existing bounded runtime contracts; no usable history, labels, approved artifacts, enforceable hardware envelope or positive utility assumed.",
   "authority_snapshot": {
-    "commit": null,
+    "commit": "611e461b8e239e2cee5227004b6e70df181b9aa0",
     "hashes": {
       "ARCHITECTURE.md": "e26135a1037c232ff953710e5de52abef8cf1cad47a8822fe63a565bc9ad9555",
       "CONSTITUTION.md": "ff7196976a1736a639947c2ab26e8da157fef23c89ba9881312f2a36459964eb",
@@ -87,13 +87,13 @@
       "schemas/governance/public-export-manifest.schema.json": "11eb7f2594939ae9fd0c9e6cfe4423a80aba686d6cdfdd8b73b0fb84b0840aa8",
       "schemas/governance/release-validation-record.schema.json": "d9943f0c9f5520ea52e3b12bfba88240d03f8011b433fc5e35cb49549ab6e819"
     },
-    "mode": "current"
+    "mode": "historical"
   },
   "compatibility": "Additive default-off feature; core dependencies stay empty. Existing runtime/grant/certificate schemas, SPEC-019, System 1 own model experiment and historical decisions remain unchanged.",
   "domain": "Bounded univariate/multivariate numeric histories and allowlisted covariates from SPEC-034, initially one request at a time on an explicitly measured CPU profile.",
   "evidence_snapshot": {
-    "commit": null,
-    "mode": "current"
+    "commit": "611e461b8e239e2cee5227004b6e70df181b9aa0",
+    "mode": "historical"
   },
   "execution_contract": "Planning only; future advice executionAuthorization false. Real model loading/source collection/experiment execution require separate gates and unchanged independent operator grants. No runtime or host scope expansion.",
   "human_review": "pending",
