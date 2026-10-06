@@ -100,6 +100,66 @@ class TrackingTests(unittest.TestCase):
                            "from": "open", "to": "closed"}], operations)
 
 
+class TaskTraceTests(unittest.TestCase):
+    def setUp(self):
+        self.config = {"milestones": {"M4": "bounded runtime"}, "closed_milestones": []}
+        self.milestones = {"M4": {"number": 6, "state": "open"}}
+        self.old_trace = "- Trace: REQ-001 / SC-001"
+        self.new_trace = "- Trace: REQ-001 REQ-002 / SC-001 SC-002"
+        body = "## Task\n\nSelect subset.\n\n- Source: source\n" + self.new_trace + "\n- State basis: checkbox.\n"
+        self.item = {"key": "SPEC-032/T001", "kind": "task", "parent": None,
+                     "title": "Task", "state": "open", "milestone": "M4",
+                     "task_text": "Select subset.", "body": body}
+        self.issues = {self.item["key"]: {"number": 99, "title": "Task", "state": "open",
+                                       "milestone": {"title": "M4", "number": 6},
+                                       "body": body.replace(self.new_trace, self.old_trace)}}
+        self.extra = {"children": {}, "unmarked_titles": set()}
+
+    def plan(self):
+        return build_plan(self.config, [self.item], self.milestones, self.issues, self.extra)
+
+    def test_trace_only_change_is_audited_applied_and_idempotent_with_notes_retained(self):
+        notes = "\nReviewer note: retain this annotation.\n"
+        self.issues[self.item["key"]]["body"] += notes
+        operations = self.plan()
+        self.assertEqual([{"action": "update_task_text", "key": self.item["key"],
+                           "trace_from": self.old_trace, "trace_to": self.new_trace}], operations)
+        updated = {**self.issues[self.item["key"]], "body": self.item["body"] + notes}
+        with patch("scripts.sync_github_tracking.gh_api", return_value=updated) as api:
+            apply_plan("owner/repo", self.config, [self.item], self.milestones, self.issues, operations)
+        api.assert_called_once_with("repos/owner/repo/issues/99", method="PATCH",
+                                    body={"body": self.item["body"] + notes})
+        self.assertEqual([], self.plan())
+
+    def test_missing_or_duplicate_trace_requires_review_before_any_write(self):
+        original = self.issues[self.item["key"]]["body"]
+        for body in (original.replace(self.old_trace + "\n", ""), original + self.old_trace + "\n"):
+            with self.subTest(body=body):
+                self.issues[self.item["key"]]["body"] = body
+                operations = self.plan()
+                self.assertEqual([{"action": "review_body", "key": self.item["key"]}], operations)
+                with patch("scripts.sync_github_tracking.gh_api") as api:
+                    with self.assertRaisesRegex(ValueError, "manual review"):
+                        apply_plan("owner/repo", self.config, [self.item], self.milestones, self.issues, operations)
+                    api.assert_not_called()
+
+    def test_equivalent_legacy_unreferenced_trace_is_retained_without_operations(self):
+        canonical = "- Trace: See the parent issue and assurance record."
+        legacy = "- Trace: No direct REQ/SC reference in tasks.md; see the parent issue and assurance record."
+        self.item["body"] = self.item["body"].replace(self.new_trace, canonical)
+        self.issues[self.item["key"]]["body"] = self.item["body"].replace(canonical, legacy)
+        self.assertEqual([], self.plan())
+
+    def test_trace_drift_after_review_is_rejected_without_writing(self):
+        operations = self.plan()
+        self.issues[self.item["key"]]["body"] = self.issues[self.item["key"]]["body"].replace(
+            self.old_trace, "- Trace: another candidate")
+        with patch("scripts.sync_github_tracking.gh_api") as api:
+            with self.assertRaisesRegex(ValueError, "trace changed"):
+                apply_plan("owner/repo", self.config, [self.item], self.milestones, self.issues, operations)
+            api.assert_not_called()
+
+
 class MilestoneNamingTests(unittest.TestCase):
     def setUp(self):
         self.name = "M0 — Operational foundations"
