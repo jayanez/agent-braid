@@ -1,0 +1,252 @@
+{
+  "recordVersion": "system-one-reference-inspection-1",
+  "inspectedAt": "2026-10-05",
+  "method": "Source inspection; full source files available in isolated reference clones; not benchmark reproduction or line-by-line audit. Paths below identify selected inspected evidence, not claims of executing it.",
+  "sources": [
+    {
+      "name": "laya",
+      "url": "https://github.com/NandhaKishorM/laya",
+      "commit": "a4a8921afebfd852bba0000475cfb6ab737a124c",
+      "files": [
+        {
+          "path": "LICENSE",
+          "url": "https://github.com/NandhaKishorM/laya/blob/a4a8921afebfd852bba0000475cfb6ab737a124c/LICENSE",
+          "sha256": "a6cba85bc92e0cff7a450b1d873c0eaa2e9fc96bf472df0247a26bec77bf3ff9"
+        },
+        {
+          "path": "README.md",
+          "url": "https://github.com/NandhaKishorM/laya/blob/a4a8921afebfd852bba0000475cfb6ab737a124c/README.md",
+          "sha256": "fbed4fa9646487d47739d52b6ee3f74433a80d2495c71b9c30ee8c668e8f9ddc"
+        },
+        {
+          "path": "pyproject.toml",
+          "url": "https://github.com/NandhaKishorM/laya/blob/a4a8921afebfd852bba0000475cfb6ab737a124c/pyproject.toml",
+          "sha256": "a85350450c067120b040cf6ce08f660156e6264f1fed0d24748035f1caed6fe8"
+        },
+        {
+          "path": "laya/common.py",
+          "url": "https://github.com/NandhaKishorM/laya/blob/a4a8921afebfd852bba0000475cfb6ab737a124c/laya/common.py",
+          "sha256": "09367ede4c900fba2116e3dfdfe857dce63aa717e773b63f91051a1bc1191e7f"
+        },
+        {
+          "path": "laya/agent.py",
+          "url": "https://github.com/NandhaKishorM/laya/blob/a4a8921afebfd852bba0000475cfb6ab737a124c/laya/agent.py",
+          "sha256": "eb90f7bda2802df65f82d06619b6a3a630a32931317ceb936ebde2e19c2bb0c4"
+        },
+        {
+          "path": "laya/router.py",
+          "url": "https://github.com/NandhaKishorM/laya/blob/a4a8921afebfd852bba0000475cfb6ab737a124c/laya/router.py",
+          "sha256": "3c7295150eafd15719410977e02310c6bdfc8bf726eee27eb373fe581458a9f2"
+        },
+        {
+          "path": "laya/confidence.py",
+          "url": "https://github.com/NandhaKishorM/laya/blob/a4a8921afebfd852bba0000475cfb6ab737a124c/laya/confidence.py",
+          "sha256": "37ddd611706b85971e8e98dc40d28306a7aa36c78f358e5e584772b960f7d690"
+        },
+        {
+          "path": "laya/calibrate.py",
+          "url": "https://github.com/NandhaKishorM/laya/blob/a4a8921afebfd852bba0000475cfb6ab737a124c/laya/calibrate.py",
+          "sha256": "47fa2432429df481a953ef8f3115144e248694311d522432c06f1d5fcfdbbff3"
+        },
+        {
+          "path": "laya/shortlist.py",
+          "url": "https://github.com/NandhaKishorM/laya/blob/a4a8921afebfd852bba0000475cfb6ab737a124c/laya/shortlist.py",
+          "sha256": "9e403ca1b36addb27cd1d015fa3889f750b59fce3ee628d191f35350ee5d764f"
+        },
+        {
+          "path": "laya/serve.py",
+          "url": "https://github.com/NandhaKishorM/laya/blob/a4a8921afebfd852bba0000475cfb6ab737a124c/laya/serve.py",
+          "sha256": "571d1f49c74fabfb4450c6ecf5b96514cfc9eb85e1dedcff90f6228340287bbf"
+        },
+        {
+          "path": "laya/train.py",
+          "url": "https://github.com/NandhaKishorM/laya/blob/a4a8921afebfd852bba0000475cfb6ab737a124c/laya/train.py",
+          "sha256": "f47cafba33377aaae907cbf2dbc7167570fb810654f81755144eaacc54dd44f9"
+        },
+        {
+          "path": "laya/structured.py",
+          "url": "https://github.com/NandhaKishorM/laya/blob/a4a8921afebfd852bba0000475cfb6ab737a124c/laya/structured.py",
+          "sha256": "acd3feafb7584e8b08bc129e1e3e59895dffb3b929565fdd15bea0c7855964b0"
+        },
+        {
+          "path": "laya/hooks.py",
+          "url": "https://github.com/NandhaKishorM/laya/blob/a4a8921afebfd852bba0000475cfb6ab737a124c/laya/hooks.py",
+          "sha256": "61f034082d0cf9e9b4f83212bf9b547adb7269a1adda14a8ad3d77d76077cb7b"
+        }
+      ]
+    },
+    {
+      "name": "strands-decider",
+      "url": "https://github.com/strands-labs/strands-decider",
+      "commit": "3e94e9d84c620ed5a95f1a3310c3decb971e261c",
+      "files": [
+        {
+          "path": "LICENSE",
+          "url": "https://github.com/strands-labs/strands-decider/blob/3e94e9d84c620ed5a95f1a3310c3decb971e261c/LICENSE",
+          "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30"
+        },
+        {
+          "path": "README.md",
+          "url": "https://github.com/strands-labs/strands-decider/blob/3e94e9d84c620ed5a95f1a3310c3decb971e261c/README.md",
+          "sha256": "989cc3b54967c42311011fd4091aa08003929f4b53448aec82c1ac38220bad22"
+        },
+        {
+          "path": "pyproject.toml",
+          "url": "https://github.com/strands-labs/strands-decider/blob/3e94e9d84c620ed5a95f1a3310c3decb971e261c/pyproject.toml",
+          "sha256": "1de004ddeda3c920286be71e1780bc0eaa80fa1fa371bcf0fe64f68009b60b71"
+        },
+        {
+          "path": "src/strands_decider/schema.py",
+          "url": "https://github.com/strands-labs/strands-decider/blob/3e94e9d84c620ed5a95f1a3310c3decb971e261c/src/strands_decider/schema.py",
+          "sha256": "a4b0e9081064f3be9e15fced49328ca78c3acc9a86183b3bd77fd282684748a8"
+        },
+        {
+          "path": "src/strands_decider/modeling.py",
+          "url": "https://github.com/strands-labs/strands-decider/blob/3e94e9d84c620ed5a95f1a3310c3decb971e261c/src/strands_decider/modeling.py",
+          "sha256": "09a44ae91b8e157e6985bafaab7fd6ccc3485c7b8700ebfcbba6276a357a2f50"
+        },
+        {
+          "path": "src/strands_decider/prompting.py",
+          "url": "https://github.com/strands-labs/strands-decider/blob/3e94e9d84c620ed5a95f1a3310c3decb971e261c/src/strands_decider/prompting.py",
+          "sha256": "5ac5b772795dfa5790504b4956d73abdcd09862cd0603dcda4a1df660808faec"
+        },
+        {
+          "path": "src/strands_decider/infer.py",
+          "url": "https://github.com/strands-labs/strands-decider/blob/3e94e9d84c620ed5a95f1a3310c3decb971e261c/src/strands_decider/infer.py",
+          "sha256": "0fa73e62f5656c21e9f7bcae8957c01671d076532435064fe93c70e32af3b578"
+        },
+        {
+          "path": "src/strands_decider/server.py",
+          "url": "https://github.com/strands-labs/strands-decider/blob/3e94e9d84c620ed5a95f1a3310c3decb971e261c/src/strands_decider/server.py",
+          "sha256": "0aa7883747b4eff211b162a208f1994b01e09450558396e1c4ff483b37f47271"
+        },
+        {
+          "path": "docs/architecture.md",
+          "url": "https://github.com/strands-labs/strands-decider/blob/3e94e9d84c620ed5a95f1a3310c3decb971e261c/docs/architecture.md",
+          "sha256": "7a700d483b2a10cbdcc532483c42f81d98b2cf1369a3ef55447872544567b7d9"
+        },
+        {
+          "path": "docs/inference.md",
+          "url": "https://github.com/strands-labs/strands-decider/blob/3e94e9d84c620ed5a95f1a3310c3decb971e261c/docs/inference.md",
+          "sha256": "95a5274ca66095121e0f5b70c96371996e342d93e274b1c3c462533fdb69c52f"
+        },
+        {
+          "path": "data/sources.md",
+          "url": "https://github.com/strands-labs/strands-decider/blob/3e94e9d84c620ed5a95f1a3310c3decb971e261c/data/sources.md",
+          "sha256": "c67f6411937867c9909ece5ff3e02d67c2b0cbe424fc0df6ea3b95a0f040488d"
+        },
+        {
+          "path": "evaluation/README.md",
+          "url": "https://github.com/strands-labs/strands-decider/blob/3e94e9d84c620ed5a95f1a3310c3decb971e261c/evaluation/README.md",
+          "sha256": "9684a873763bae4c12f1c99a88610514c8171c1a0c8d463f51b612bb1f55669b"
+        }
+      ]
+    },
+    {
+      "name": "agent-braid",
+      "url": "https://github.com/jayanez/agent-braid",
+      "commit": "f1bc304827b26c2cc3e02d5488ff2f82daa5453d",
+      "files": [
+        {
+          "path": "AGENTS.md",
+          "url": "https://github.com/jayanez/agent-braid/blob/f1bc304827b26c2cc3e02d5488ff2f82daa5453d/AGENTS.md",
+          "sha256": "daf70a44a56b7d0edcbf279924859f393f488d44e6761f54e8c94db25990245e"
+        },
+        {
+          "path": "CONSTITUTION.md",
+          "url": "https://github.com/jayanez/agent-braid/blob/f1bc304827b26c2cc3e02d5488ff2f82daa5453d/CONSTITUTION.md",
+          "sha256": "ff7196976a1736a639947c2ab26e8da157fef23c89ba9881312f2a36459964eb"
+        },
+        {
+          "path": "GOVERNANCE.md",
+          "url": "https://github.com/jayanez/agent-braid/blob/f1bc304827b26c2cc3e02d5488ff2f82daa5453d/GOVERNANCE.md",
+          "sha256": "c8eda331d97c42e54be4730ef906dfaad9ae2814e36704302f97afceff037d82"
+        },
+        {
+          "path": "ARCHITECTURE.md",
+          "url": "https://github.com/jayanez/agent-braid/blob/f1bc304827b26c2cc3e02d5488ff2f82daa5453d/ARCHITECTURE.md",
+          "sha256": "94e5114eb799b25ca666ef728f84ab1c88e6ad1b342e30a9e99276b8f44c30c2"
+        },
+        {
+          "path": "pyproject.toml",
+          "url": "https://github.com/jayanez/agent-braid/blob/f1bc304827b26c2cc3e02d5488ff2f82daa5453d/pyproject.toml",
+          "sha256": "24928aeb9102bc9379ed441a3317fdd3fc79532a9641f70a83f3b312a1805cc5"
+        },
+        {
+          "path": "docs/development/SPEC_KIT.md",
+          "url": "https://github.com/jayanez/agent-braid/blob/f1bc304827b26c2cc3e02d5488ff2f82daa5453d/docs/development/SPEC_KIT.md",
+          "sha256": "f2bd7cbe6ea2125c1745596baf0d884e774b7875d125a8c7c1549fda9ef927f3"
+        },
+        {
+          "path": "docs/development/GITHUB_TRACKING.md",
+          "url": "https://github.com/jayanez/agent-braid/blob/f1bc304827b26c2cc3e02d5488ff2f82daa5453d/docs/development/GITHUB_TRACKING.md",
+          "sha256": "47bcff6e8b1bdb91ef25506bea944f344637ae13b9cfee9af17e5280ce2da568"
+        },
+        {
+          "path": "docs/development/VALIDATION_PROFILES.md",
+          "url": "https://github.com/jayanez/agent-braid/blob/f1bc304827b26c2cc3e02d5488ff2f82daa5453d/docs/development/VALIDATION_PROFILES.md",
+          "sha256": "9744c6fbc610cb4e362d7b66e419943f6d3719c8f4b85f9736b09c806e393564"
+        },
+        {
+          "path": "specs/019-native-predictor/spec.md",
+          "url": "https://github.com/jayanez/agent-braid/blob/f1bc304827b26c2cc3e02d5488ff2f82daa5453d/specs/019-native-predictor/spec.md",
+          "sha256": "a210aba9d41a24a0e2e647fe525a8b069a4d2a44ddf0416d53ce9e17622b98c1"
+        },
+        {
+          "path": "specs/019-native-predictor/plan.md",
+          "url": "https://github.com/jayanez/agent-braid/blob/f1bc304827b26c2cc3e02d5488ff2f82daa5453d/specs/019-native-predictor/plan.md",
+          "sha256": "f9505186c13c5a5843c2c0453596eb79c95bc6b87bc4e4a2e4db390f2acfb840"
+        },
+        {
+          "path": "specs/021-m4-alpha-runtime/spec.md",
+          "url": "https://github.com/jayanez/agent-braid/blob/f1bc304827b26c2cc3e02d5488ff2f82daa5453d/specs/021-m4-alpha-runtime/spec.md",
+          "sha256": "e34f2fec9fc423e993c36648b64e42e951c8a414b2b26d4aa88cae0be4e16709"
+        },
+        {
+          "path": "specs/021-m4-alpha-runtime/closure-matrix.md",
+          "url": "https://github.com/jayanez/agent-braid/blob/f1bc304827b26c2cc3e02d5488ff2f82daa5453d/specs/021-m4-alpha-runtime/closure-matrix.md",
+          "sha256": "c9932cf95e1f077fd5211d8d73ec103d09729d0836bbfdbc283010306a265ddd"
+        },
+        {
+          "path": "specs/021-m4-alpha-runtime/g4-decision.json",
+          "url": "https://github.com/jayanez/agent-braid/blob/f1bc304827b26c2cc3e02d5488ff2f82daa5453d/specs/021-m4-alpha-runtime/g4-decision.json",
+          "sha256": "ac3f4a6ae43097d6dc4c3abf9aba3bd09e8076206c036bfa466e6a063bd91a7e"
+        },
+        {
+          "path": "agent_braid/structured_exchange.py",
+          "url": "https://github.com/jayanez/agent-braid/blob/f1bc304827b26c2cc3e02d5488ff2f82daa5453d/agent_braid/structured_exchange.py",
+          "sha256": "dfca087646898d5bfb816a6a473c7135827d3886512f29bcc39899610b232cc9"
+        },
+        {
+          "path": "agent_braid/runtime_policy.py",
+          "url": "https://github.com/jayanez/agent-braid/blob/f1bc304827b26c2cc3e02d5488ff2f82daa5453d/agent_braid/runtime_policy.py",
+          "sha256": "08b7de7f0f4220e1b830a7d58c25f77a2ae9890573ed90c582d7c4d5fca63f41"
+        },
+        {
+          "path": "docs/adr/0020-bounded-m4-alpha-runtime.md",
+          "url": "https://github.com/jayanez/agent-braid/blob/f1bc304827b26c2cc3e02d5488ff2f82daa5453d/docs/adr/0020-bounded-m4-alpha-runtime.md",
+          "sha256": "b91615158b29902237ce638d659bc30484562766a0f2607a38fcc4bd717fda28"
+        },
+        {
+          "path": "agent_braid/runtime_scheduler.py",
+          "url": "https://github.com/jayanez/agent-braid/blob/f1bc304827b26c2cc3e02d5488ff2f82daa5453d/agent_braid/runtime_scheduler.py",
+          "sha256": "e651781eb013cb9921d3e2ce1bd6ffb2679a9209a7b0fafc41c518226e043a86"
+        },
+        {
+          "path": "agent_braid/mcp_runtime.py",
+          "url": "https://github.com/jayanez/agent-braid/blob/f1bc304827b26c2cc3e02d5488ff2f82daa5453d/agent_braid/mcp_runtime.py",
+          "sha256": "32d30a6a167235e1ab8ca89acdc32b23eb74412e2ac0555fe7c9118d1d816d83"
+        }
+      ]
+    }
+  ],
+  "webReads": [
+    "https://github.com/NandhaKishorM/laya",
+    "https://github.com/strands-labs/strands-decider"
+  ],
+  "tooling": {
+    "specKit": "1.0.7",
+    "revision": "fe1d00e3ccaf495880aaf90fb0e17679e82f065b",
+    "context7": "/github/spec-kit; upstream discovery only, local pinned overrides authoritative"
+  }
+}
