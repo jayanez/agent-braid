@@ -1,0 +1,31 @@
+{
+  "buildCommand": "<isolated-build-env>/bin/python -m pip wheel --no-index --no-deps --no-build-isolation --wheel-dir <owned-wheel-directory> .",
+  "buildTooling": {
+    "isolated": true,
+    "setuptools": "68.2.2",
+    "wheel": "0.45.1"
+  },
+  "executionAuthorization": false,
+  "exitCode": 0,
+  "format": "system-one-offline-wheel-check-v1",
+  "humanReview": "pending",
+  "installCommand": "<fresh-reviewed-env>/bin/python -m pip install --no-index --no-deps <owned-wheel>",
+  "limits": "Fresh isolated Python environment installed exact wheel without dependency resolution/network. This verifies only the synthetic reference package, not model backends, throughput, empirical utility, external reproduction or acceptance.",
+  "platform": "Darwin",
+  "python": "3.13.11",
+  "smokeCommand": "<fresh-reviewed-env>/bin/python -I -c <recorded-smoke-source>",
+  "smokeSource": "from pathlib import Path\nimport json,sys,agent_braid\nfrom agent_braid.system_one import validate_request,validate_response,evaluate,InvalidDecision\nfrom agent_braid.system_one_backends import capabilities,DecisionRuntime\nraw=Path('<owned-synthetic-request.json>').read_bytes()\nrequest=validate_request(raw); response=evaluate(raw)\nassert response['status']=='answered' and response['executionAuthorization'] is False\nvalidate_response(response,request=request)\nresponse['executionAuthorization']=True\ntry: validate_response(response,request=request)\nexcept InvalidDecision: pass\nelse: raise AssertionError('forged authority accepted')\ntry: DecisionRuntime(backend=object())\nexcept TypeError: pass\nelse: raise AssertionError('custom backend injection accepted')\nassert evaluate(b'{}')['status']=='refused'\nassert capabilities()['maxWaiting']==8\nassert not any(name in sys.modules for name in ('torch','transformers','openai','onnxruntime'))\nassert 'site-packages' in str(agent_braid.__file__)\nprint(json.dumps({'offlineInstalledCore':'passed','sourceLocation':'isolated-site-packages','forgedAuthority':'refused','customBackendInjection':'refused','optionalModelPackagesLoaded':False}))\n",
+  "sourceBindings": {
+    "agent_braid/cli.py": "427455747a82fb0d355191a3fdfbde11dc916b8a0c1e1e6f0d04b93cc55f05c3",
+    "agent_braid/system_one.py": "8a52a047bc72ba4f1099df60c1051178fbcb7735ee4d6e615d9b8052bbb31f44",
+    "agent_braid/system_one_backends.py": "e3d49bac70ef6904bddefdb1562e1961c98af0c8b7e81655affd94eca169a305",
+    "agent_braid/system_one_cli.py": "f19965e8f8dc4c0d45c2ce728cfb45721b740319bb1fb6c2c865aa5e3defc0c4",
+    "agent_braid/system_one_policy.py": "12f09b48fe916f03c17faf18726c15ad862779ab0dcf4fdb81d5a42dc9212f31"
+  },
+  "stderr": "",
+  "stdout": "{\"offlineInstalledCore\": \"passed\", \"sourceLocation\": \"isolated-site-packages\", \"forgedAuthority\": \"refused\", \"customBackendInjection\": \"refused\", \"optionalModelPackagesLoaded\": false}\n",
+  "syntheticRequestPath": "specs/028-system-one-core/evidence/offline-request.json",
+  "syntheticRequestSha256": "f8b4dd2032722a3c423f9559a54b97ebde0460d201137b1e9d5ced06a7a19877",
+  "wheelFile": "agent_braid-0.1.0a1-py3-none-any.whl",
+  "wheelSha256": "f64a13cd1dbc3d1dac5cfb86c6aeb052f596a5156a90a42cb4e3586eb4015b66"
+}

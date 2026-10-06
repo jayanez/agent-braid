@@ -22,9 +22,9 @@
   ],
   "assumptions": "Trusted local context and existing deterministic verifiers; no available workload corpus, training budget or device coverage assumed.",
   "authority_snapshot": {
-    "commit": "53faa6aed5426f0c84f0ed0ec7a92c073512ee2b",
+    "commit": "0e17c4d9b119837f4d618cb9842dbe7d2e5d5772",
     "hashes": {
-      "ARCHITECTURE.md": "94e5114eb799b25ca666ef728f84ab1c88e6ad1b342e30a9e99276b8f44c30c2",
+      "ARCHITECTURE.md": "e26135a1037c232ff953710e5de52abef8cf1cad47a8822fe63a565bc9ad9555",
       "CONSTITUTION.md": "ff7196976a1736a639947c2ab26e8da157fef23c89ba9881312f2a36459964eb",
       "GOVERNANCE.md": "c8eda331d97c42e54be4730ef906dfaad9ae2814e36704302f97afceff037d82",
       "LICENSE": "340d66a837b3a1617645d00622a46d1bcbf3534bedd997b6461d16d2e08b374f",
@@ -92,8 +92,8 @@
   "compatibility": "Additive opt-in capability; Python core keeps zero dependencies. SPEC-019, SPEC-021 G4 NO-GO and historical evidence remain unchanged.",
   "domain": "Bounded advisory typed decisions in separately registered Agent Braid capabilities; existing semantic domains unchanged.",
   "evidence_snapshot": {
-    "commit": null,
-    "mode": "current"
+    "commit": "0e17c4d9b119837f4d618cb9842dbe7d2e5d5772",
+    "mode": "historical"
   },
   "execution_contract": "Planning only; future advice executionAuthorization false; no operator grant, runtime scope or public contract changes.",
   "human_review": "pending",
@@ -121,10 +121,18 @@
         {
           "given": "a valid request and a pinned backend",
           "id": "SC-001",
-          "obtained_evidence": [],
+          "obtained_evidence": [
+            {
+              "command": "<isolated-python-3.13>/bin/python scripts/validate_change.py --base develop --profile pr",
+              "limits": "Synthetic stdlib reference engineering; full quick/sensitive and stable PR profiles passed. Clean freeze is recorded separately in assurance.json. No model utility, scientific acceptance, human/founder approval or execution authority.",
+              "outcome": "Typed synthetic decisions, complete distributions and immutable copies verified. Full PR profile: 558 tests passed, 4 documented skips.",
+              "path": "specs/028-system-one-core/evidence/technical-delivery.json",
+              "sha256": "30a289c930811af2b2e7e8d960bfdf81120238e526c979028b1698b0948b24f9"
+            }
+          ],
           "planned_evidence": "specs/028-system-one-core/evidence/sc-001.json with candidate/input hashes, exact command, environment, raw outcome and limits",
-          "test_file": "specs/028-system-one-core/validation-plan.md",
-          "test_name": "procedure_001",
+          "test_file": "tests/test_system_one_core.py",
+          "test_name": "SystemOneCoreTests.test_every_primitive_answer_and_immutable_data",
           "then": "boolean P(true), choice distribution and score expected value are returned with stable identities; no generated text or arbitrary numeric regression",
           "when": "each primitive is evaluated"
         }
@@ -137,10 +145,18 @@
         {
           "given": "duplicate IDs, NaN, bool-as-number, empty rubrics or over-budget input",
           "id": "SC-002",
-          "obtained_evidence": [],
+          "obtained_evidence": [
+            {
+              "command": "<isolated-python-3.13>/bin/python scripts/validate_change.py --base develop --profile pr",
+              "limits": "Synthetic stdlib reference engineering; full quick/sensitive and stable PR profiles passed. Clean freeze is recorded separately in assurance.json. No model utility, scientific acceptance, human/founder approval or execution authority.",
+              "outcome": "Exact admission limits and malformed inputs fail closed before backend allocation. Full PR profile: 558 tests passed, 4 documented skips.",
+              "path": "specs/028-system-one-core/evidence/technical-delivery.json",
+              "sha256": "30a289c930811af2b2e7e8d960bfdf81120238e526c979028b1698b0948b24f9"
+            }
+          ],
           "planned_evidence": "specs/028-system-one-core/evidence/sc-002.json with candidate/input hashes, exact command, environment, raw outcome and limits",
-          "test_file": "specs/028-system-one-core/validation-plan.md",
-          "test_name": "procedure_002",
+          "test_file": "tests/test_system_one_core.py",
+          "test_name": "SystemOneCoreTests.test_parser_rejects_ambiguity_depth_and_nonfinite_before_backend",
           "then": "an explicit refusal identifies the boundary and the backend is never called",
           "when": "validation runs"
         }
@@ -153,10 +169,18 @@
         {
           "given": "uncalibrated logits or a changed artifact",
           "id": "SC-003",
-          "obtained_evidence": [],
+          "obtained_evidence": [
+            {
+              "command": "<isolated-python-3.13>/bin/python scripts/validate_change.py --base develop --profile pr",
+              "limits": "Synthetic stdlib reference engineering; full quick/sensitive and stable PR profiles passed. Clean freeze is recorded separately in assurance.json. No model utility, scientific acceptance, human/founder approval or execution authority.",
+              "outcome": "All identity digests and distinct concentration/probability fields verified; calibration absent. Full PR profile: 558 tests passed, 4 documented skips.",
+              "path": "specs/028-system-one-core/evidence/technical-delivery.json",
+              "sha256": "30a289c930811af2b2e7e8d960bfdf81120238e526c979028b1698b0948b24f9"
+            }
+          ],
           "planned_evidence": "specs/028-system-one-core/evidence/sc-003.json with candidate/input hashes, exact command, environment, raw outcome and limits",
-          "test_file": "specs/028-system-one-core/validation-plan.md",
-          "test_name": "procedure_003",
+          "test_file": "tests/test_system_one_core.py",
+          "test_name": "SystemOneCoreTests.test_digest_mutations_bind_all_identities_and_array_order",
           "then": "calibratedProbability is absent unless supported and response digests bind all decision inputs",
           "when": "a response is constructed"
         }
@@ -169,10 +193,18 @@
         {
           "given": "a confidence of 1.0 and a forged verified field",
           "id": "SC-004",
-          "obtained_evidence": [],
+          "obtained_evidence": [
+            {
+              "command": "<isolated-python-3.13>/bin/python scripts/validate_change.py --base develop --profile pr",
+              "limits": "Synthetic stdlib reference engineering; full quick/sensitive and stable PR profiles passed. Clean freeze is recorded separately in assurance.json. No model utility, scientific acceptance, human/founder approval or execution authority.",
+              "outcome": "Forged authority and unknown response fields rejected; no grants minted. Full PR profile: 558 tests passed, 4 documented skips.",
+              "path": "specs/028-system-one-core/evidence/technical-delivery.json",
+              "sha256": "30a289c930811af2b2e7e8d960bfdf81120238e526c979028b1698b0948b24f9"
+            }
+          ],
           "planned_evidence": "specs/028-system-one-core/evidence/sc-004.json with candidate/input hashes, exact command, environment, raw outcome and limits",
-          "test_file": "specs/028-system-one-core/validation-plan.md",
-          "test_name": "procedure_004",
+          "test_file": "tests/test_system_one_core.py",
+          "test_name": "SystemOneCoreTests.test_response_output_and_authority_forgery_fail_closed",
           "then": "executionAuthorization remains false and existing semantic verification is still required",
           "when": "a consumer inspects the response"
         }
@@ -185,10 +217,18 @@
         {
           "given": "an offline base install with System 1 disabled",
           "id": "SC-005",
-          "obtained_evidence": [],
+          "obtained_evidence": [
+            {
+              "command": "<isolated-python-3.13>/bin/python scripts/validate_change.py --base develop --profile pr",
+              "limits": "Synthetic stdlib reference engineering; full quick/sensitive and stable PR profiles passed. Clean freeze is recorded separately in assurance.json. No model utility, scientific acceptance, human/founder approval or execution authority.",
+              "outcome": "Offline installed package smoke and recorded legacy analyze byte parity; provider-free discovery. Full PR profile: 558 tests passed, 4 documented skips.",
+              "path": "specs/028-system-one-core/evidence/technical-delivery.json",
+              "sha256": "30a289c930811af2b2e7e8d960bfdf81120238e526c979028b1698b0948b24f9"
+            }
+          ],
           "planned_evidence": "specs/028-system-one-core/evidence/sc-005.json with candidate/input hashes, exact command, environment, raw outcome and limits",
-          "test_file": "specs/028-system-one-core/validation-plan.md",
-          "test_name": "procedure_005",
+          "test_file": "tests/test_system_one_cli.py",
+          "test_name": "SystemOneCliTests.test_legacy_help_does_not_load_decision_command",
           "then": "their outputs and failure behavior remain unchanged and optional backend imports are not attempted",
           "when": "legacy commands run"
         }
@@ -201,10 +241,18 @@
         {
           "given": "two interleaved requests with different options",
           "id": "SC-006",
-          "obtained_evidence": [],
+          "obtained_evidence": [
+            {
+              "command": "<isolated-python-3.13>/bin/python scripts/validate_change.py --base develop --profile pr",
+              "limits": "Synthetic stdlib reference engineering; full quick/sensitive and stable PR profiles passed. Clean freeze is recorded separately in assurance.json. No model utility, scientific acceptance, human/founder approval or execution authority.",
+              "outcome": "Bounded admission, queue/cancellation/deadline and request-local identity controls passed. Full PR profile: 558 tests passed, 4 documented skips.",
+              "path": "specs/028-system-one-core/evidence/technical-delivery.json",
+              "sha256": "30a289c930811af2b2e7e8d960bfdf81120238e526c979028b1698b0948b24f9"
+            }
+          ],
           "planned_evidence": "specs/028-system-one-core/evidence/sc-006.json with candidate/input hashes, exact command, environment, raw outcome and limits",
-          "test_file": "specs/028-system-one-core/validation-plan.md",
-          "test_name": "procedure_006",
+          "test_file": "tests/test_system_one_concurrency.py",
+          "test_name": "SystemOneConcurrencyTests.test_interleaved_inputs_keep_their_own_state_and_one_active_slot",
           "then": "responses retain the correct request identities; ties use declared stable option-ID ordering",
           "when": "backend calls are overlapped or cancelled"
         }
@@ -214,5 +262,5 @@
   ],
   "scientific_limits": "Source inspection is not reproduced performance. Synthetic conformance is not real utility. Confidence is heuristic, never proof. Negative/inconclusive protocol outcomes are valid.",
   "scope": "Engineering foundation for a local, non-generative, typed decision API with a deterministic reference backend. This milestone does not ship a pretrained general-purpose model.",
-  "stage": "draft"
+  "stage": "validated"
 }

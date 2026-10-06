@@ -21,9 +21,9 @@
   ],
   "assumptions": "Closed synthetic fixtures and explicit finite models; complete effect and contextual/proof premises are stated, never inferred from tests.",
   "authority_snapshot": {
-    "commit": "cb314395ae677a12996dc05fe1d83ea97bd96b67",
+    "commit": "0e17c4d9b119837f4d618cb9842dbe7d2e5d5772",
     "hashes": {
-      "ARCHITECTURE.md": "94e5114eb799b25ca666ef728f84ab1c88e6ad1b342e30a9e99276b8f44c30c2",
+      "ARCHITECTURE.md": "e26135a1037c232ff953710e5de52abef8cf1cad47a8822fe63a565bc9ad9555",
       "CONSTITUTION.md": "ff7196976a1736a639947c2ab26e8da157fef23c89ba9881312f2a36459964eb",
       "GOVERNANCE.md": "c8eda331d97c42e54be4730ef906dfaad9ae2814e36704302f97afceff037d82",
       "LICENSE": "340d66a837b3a1617645d00622a46d1bcbf3534bedd997b6461d16d2e08b374f",
@@ -91,8 +91,8 @@
   "compatibility": "Separate experimental research interfaces; existing AIM/Git/M3/runtime contracts and historical approvals unchanged; tool/provider adoption remains gated.",
   "domain": "Existing integer-batch-v1 <=6 operation source-bound prefixes and listed suffixes; separate anchored candidate proof and research-only feasibility.",
   "evidence_snapshot": {
-    "mode": "historical",
-    "commit": "cb314395ae677a12996dc05fe1d83ea97bd96b67"
+    "commit": "0e17c4d9b119837f4d618cb9842dbe7d2e5d5772",
+    "mode": "historical"
   },
   "execution_contract": "Private standard-library model checks and inert report files only; no real services, project code, model calls, source promotion or runtime grants.",
   "human_review": "pending",
@@ -118,10 +118,18 @@
         {
           "given": "T1/T2 sketches and anchored semantics",
           "id": "SC-001",
-          "obtained_evidence": [],
-          "planned_evidence": "Future scenario-specific controls, frozen bounded outputs and separate review/decision packet defined in quickstart.md; no obtained feature evidence yet.",
-          "test_file": "specs/025-contextual-proof-obligations/quickstart.md",
-          "test_name": "SC-001",
+          "obtained_evidence": [
+            {
+              "command": "Recorded exact argv and raw outputs in evidence/internal-clean-clone.json; documentary assessment and Luna technical review separately source-bound.",
+              "limits": "Bounded technical delivery only. Full engineering profiles passed; same-host/same-maintainer clean clone is not external reproduction. No accepted proof, universal correspondence, scientific/human/founder approval, tool adoption or expanded execution. Specific independent proof review remains pending; pre-existing Unicode mapping defect is tracked for the next integration block.",
+              "outcome": "Candidate carriers, quantifiers, observations, premises, source hashes and unproved gaps recorded; proof remains unaccepted.",
+              "path": "specs/025-contextual-proof-obligations/evidence/technical-delivery.json",
+              "sha256": "753ae8d7696017f453744a0bd0006071191e3347547c2504c8d9c135e730820a"
+            }
+          ],
+          "planned_evidence": "Final stable PR profile/candidate freeze and specific independent proof/scientific review remain separate pending gates.",
+          "test_file": "specs/025-contextual-proof-obligations/premise-inventory.json",
+          "test_name": "SC-001 documentary packet review",
           "then": "every premise, quantifier and equivalence is explicit, source mappings and unproved gaps are listed, and no current theorem claim appears.",
           "when": "statements are drafted"
         }
@@ -134,20 +142,36 @@
         {
           "given": "terminally matching prefixes and a suffix that observes hidden state or changed enabledness/returned values",
           "id": "SC-002",
-          "obtained_evidence": [],
-          "planned_evidence": "Future scenario-specific controls, frozen bounded outputs and separate review/decision packet defined in quickstart.md; no obtained feature evidence yet.",
-          "test_file": "specs/025-contextual-proof-obligations/quickstart.md",
-          "test_name": "SC-002",
+          "obtained_evidence": [
+            {
+              "command": "Recorded exact argv and raw outputs in evidence/internal-clean-clone.json; documentary assessment and Luna technical review separately source-bound.",
+              "limits": "Bounded technical delivery only. Full engineering profiles passed; same-host/same-maintainer clean clone is not external reproduction. No accepted proof, universal correspondence, scientific/human/founder approval, tool adoption or expanded execution. Specific independent proof review remains pending; pre-existing Unicode mapping defect is tracked for the next integration block.",
+              "outcome": "Hidden-state distinguishing registered suffix retained with full raw configurations; witness minimal only within listed suffixes.",
+              "path": "specs/025-contextual-proof-obligations/evidence/technical-delivery.json",
+              "sha256": "753ae8d7696017f453744a0bd0006071191e3347547c2504c8d9c135e730820a"
+            }
+          ],
+          "planned_evidence": "Final stable PR profile/candidate freeze and specific independent proof/scientific review remain separate pending gates.",
+          "test_file": "tests/test_contextual_lab.py",
+          "test_name": "ContextualChecksTests.test_terminal_match_with_distinguishing_suffix",
           "then": "a minimal suffix witness is produced with full configurations; terminal matching cannot imply contextual universal equivalence.",
           "when": "checked"
         },
         {
           "given": "valid matching listed continuations, omitted/altered suffixes, >6 operations or exhausted bounds",
           "id": "SC-003",
-          "obtained_evidence": [],
-          "planned_evidence": "Future scenario-specific controls, frozen bounded outputs and separate review/decision packet defined in quickstart.md; no obtained feature evidence yet.",
-          "test_file": "specs/025-contextual-proof-obligations/quickstart.md",
-          "test_name": "SC-003",
+          "obtained_evidence": [
+            {
+              "command": "Recorded exact argv and raw outputs in evidence/internal-clean-clone.json; documentary assessment and Luna technical review separately source-bound.",
+              "limits": "Bounded technical delivery only. Full engineering profiles passed; same-host/same-maintainer clean clone is not external reproduction. No accepted proof, universal correspondence, scientific/human/founder approval, tool adoption or expanded execution. Specific independent proof review remains pending; pre-existing Unicode mapping defect is tracked for the next integration block.",
+              "outcome": "Registered-domain matching only; invalid, tampered, unsupported or capped requests reject or remain inconclusive. Byte-identical repeated CLI reports verified.",
+              "path": "specs/025-contextual-proof-obligations/evidence/technical-delivery.json",
+              "sha256": "753ae8d7696017f453744a0bd0006071191e3347547c2504c8d9c135e730820a"
+            }
+          ],
+          "planned_evidence": "Final stable PR profile/candidate freeze and specific independent proof/scientific review remain separate pending gates.",
+          "test_file": "tests/test_contextual_lab.py",
+          "test_name": "ContextualChecksTests.test_suffix_binding_and_bounds",
           "then": "only complete bound-matched evidence yields `equivalent-for-listed-continuations`; unsupported, tampered or capped evidence is rejected/inconclusive, never universal.",
           "when": "checked/replayed"
         }
@@ -160,10 +184,18 @@
         {
           "given": "each omitted-premise control and disjoint positive controls",
           "id": "SC-004",
-          "obtained_evidence": [],
-          "planned_evidence": "Future scenario-specific controls, frozen bounded outputs and separate review/decision packet defined in quickstart.md; no obtained feature evidence yet.",
-          "test_file": "specs/025-contextual-proof-obligations/quickstart.md",
-          "test_name": "SC-004",
+          "obtained_evidence": [
+            {
+              "command": "Recorded exact argv and raw outputs in evidence/internal-clean-clone.json; documentary assessment and Luna technical review separately source-bound.",
+              "limits": "Bounded technical delivery only. Full engineering profiles passed; same-host/same-maintainer clean clone is not external reproduction. No accepted proof, universal correspondence, scientific/human/founder approval, tool adoption or expanded execution. Specific independent proof review remains pending; pre-existing Unicode mapping defect is tracked for the next integration block.",
+              "outcome": "Pinned omitted-premise and chronology controls passed; raw event differences, partial effects and unavailable coverage remain visible.",
+              "path": "specs/025-contextual-proof-obligations/evidence/technical-delivery.json",
+              "sha256": "753ae8d7696017f453744a0bd0006071191e3347547c2504c8d9c135e730820a"
+            }
+          ],
+          "planned_evidence": "Final stable PR profile/candidate freeze and specific independent proof/scientific review remain separate pending gates.",
+          "test_file": "tests/test_contextual_lab.py",
+          "test_name": "ContextualControlsTests.test_omitted_premises_and_event_order",
           "then": "the omitted premise has a reproducible witness, outcomes remain scoped and no finite result is described as a proof of T1/T2.",
           "when": "checked"
         }
@@ -176,10 +208,18 @@
         {
           "given": "the current insert class and unsupported extensions",
           "id": "SC-005",
-          "obtained_evidence": [],
-          "planned_evidence": "Future scenario-specific controls, frozen bounded outputs and separate review/decision packet defined in quickstart.md; no obtained feature evidence yet.",
-          "test_file": "specs/025-contextual-proof-obligations/quickstart.md",
-          "test_name": "SC-005",
+          "obtained_evidence": [
+            {
+              "command": "Recorded exact argv and raw outputs in evidence/internal-clean-clone.json; documentary assessment and Luna technical review separately source-bound.",
+              "limits": "Bounded technical delivery only. Full engineering profiles passed; same-host/same-maintainer clean clone is not external reproduction. No accepted proof, universal correspondence, scientific/human/founder approval, tool adoption or expanded execution. Specific independent proof review remains pending; pre-existing Unicode mapping defect is tracked for the next integration block.",
+              "outcome": "Independent finite oracle matched 32 orders, 86 involutive, 30 adjacent and 24 far checks; four excluded extensions refused. Chronological traces and missing per-instance result mapping remain explicit; no formal acceptance.",
+              "path": "specs/025-contextual-proof-obligations/evidence/technical-delivery.json",
+              "sha256": "753ae8d7696017f453744a0bd0006071191e3347547c2504c8d9c135e730820a"
+            }
+          ],
+          "planned_evidence": "Final stable PR profile/candidate freeze and specific independent proof/scientific review remain separate pending gates.",
+          "test_file": "tests/test_contextual_lab.py",
+          "test_name": "ContextualProofMappingTests.test_anchored_relations_and_exclusions",
           "then": "premises/relations/source bindings agree with ADR 0017, unsupported inputs stay excluded and formal acceptance remains pending until specific independent proof review.",
           "when": "the packet/cross-check is produced"
         }
@@ -192,10 +232,18 @@
         {
           "given": "the adopted research-only disposition",
           "id": "SC-006",
-          "obtained_evidence": [],
-          "planned_evidence": "Future scenario-specific controls, frozen bounded outputs and separate review/decision packet defined in quickstart.md; no obtained feature evidence yet.",
-          "test_file": "specs/025-contextual-proof-obligations/quickstart.md",
-          "test_name": "SC-006",
+          "obtained_evidence": [
+            {
+              "command": "Recorded exact argv and raw outputs in evidence/internal-clean-clone.json; documentary assessment and Luna technical review separately source-bound.",
+              "limits": "Bounded technical delivery only. Full engineering profiles passed; same-host/same-maintainer clean clone is not external reproduction. No accepted proof, universal correspondence, scientific/human/founder approval, tool adoption or expanded execution. Specific independent proof review remains pending; pre-existing Unicode mapping defect is tracked for the next integration block.",
+              "outcome": "Pinned primary paper read-only assessment completed with unavailable executable revision/rights and semantic mismatches; feasibility inconclusive, adoption research-only, no download/install/execution.",
+              "path": "specs/025-contextual-proof-obligations/evidence/technical-delivery.json",
+              "sha256": "753ae8d7696017f453744a0bd0006071191e3347547c2504c8d9c135e730820a"
+            }
+          ],
+          "planned_evidence": "Final stable PR profile/candidate freeze and specific independent proof/scientific review remain separate pending gates.",
+          "test_file": "specs/025-contextual-proof-obligations/coagent-feasibility.json",
+          "test_name": "SC-006 documentary packet review",
           "then": "availability/rights/semantic gaps are explicit and unsupported comparisons abstain; no paper measurement is treated as reproduced evidence.",
           "when": "feasibility is recorded"
         }
@@ -208,10 +256,18 @@
         {
           "given": "completed artifacts and possible negative findings",
           "id": "SC-007",
-          "obtained_evidence": [],
-          "planned_evidence": "Future scenario-specific controls, frozen bounded outputs and separate review/decision packet defined in quickstart.md; no obtained feature evidence yet.",
-          "test_file": "specs/025-contextual-proof-obligations/quickstart.md",
-          "test_name": "SC-007",
+          "obtained_evidence": [
+            {
+              "command": "Recorded exact argv and raw outputs in evidence/internal-clean-clone.json; documentary assessment and Luna technical review separately source-bound.",
+              "limits": "Bounded technical delivery only. Full engineering profiles passed; same-host/same-maintainer clean clone is not external reproduction. No accepted proof, universal correspondence, scientific/human/founder approval, tool adoption or expanded execution. Specific independent proof review remains pending; pre-existing Unicode mapping defect is tracked for the next integration block.",
+              "outcome": "Named source-mapping gap and handwritten/no-tool alternatives assessed. Independent technical Luna review and internal repetition obtained; specific independent proof review, final PR/freeze and human acceptance pending.",
+              "path": "specs/025-contextual-proof-obligations/evidence/technical-delivery.json",
+              "sha256": "753ae8d7696017f453744a0bd0006071191e3347547c2504c8d9c135e730820a"
+            }
+          ],
+          "planned_evidence": "Final stable PR profile/candidate freeze and specific independent proof/scientific review remain separate pending gates.",
+          "test_file": "specs/025-contextual-proof-obligations/proof-tool-assessment.md",
+          "test_name": "SC-007 documentary packet review",
           "then": "proof status, bounded experimental status and human approval are distinct; a reviewed proof may be unmechanized, and tool infeasibility does not force dependency adoption or a theorem claim.",
           "when": "reviewed"
         }
@@ -221,5 +277,15 @@
   ],
   "scientific_limits": "Finite controls are not universal proof, real adapter correctness, production safety or independent validation. Negative/inconclusive protocols may complete without adoption.",
   "scope": "Bounded integer continuations, explicit T1/T2 and anchored proof premises, and gated comparator/tool feasibility.",
-  "stage": "draft"
+  "stage": "draft",
+  "technical_delivery": {
+    "candidate_freeze": "See supported historical snapshot fields; independent proof gate still pending",
+    "human_review": "pending",
+    "independent_external_reproduction": false,
+    "path": "specs/025-contextual-proof-obligations/evidence/technical-delivery.json",
+    "proof_accepted": false,
+    "sha256": "753ae8d7696017f453744a0bd0006071191e3347547c2504c8d9c135e730820a",
+    "stable_pr_profile": "passed on bound candidate; full results in evidence/candidate-profiles.json",
+    "status": "technical-complete-T001-T006; T007 pending"
+  }
 }

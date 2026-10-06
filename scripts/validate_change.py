@@ -124,6 +124,15 @@ RULES = (
         "scripts/check_runtime_refinement.py", "tests/test_runtime_refinement.py",
     ), ("full-tests",), True,
         boundary="Expanded capability ADR, exact probes and operation-specific grants"),
+    Rule("system-one-core", (
+        "agent_braid/system_one*.py", "agent_braid/cli.py", "tests/test_system_one*.py",
+    ), ("full-tests",), True,
+        boundary="Synthetic diagnostic contract only; model/data/human acceptance and promotion remain separate"),
+    Rule("contextual-finite-checker", (
+        "research/contextual_lab/**", "examples/contextual-lab/**", "tests/test_contextual_lab.py",
+        "research/proofs/**", "scripts/crosscheck_contextual_proof_mapping.py",
+    ), ("full-tests", "scientific-controls"), True,
+        boundary="Bounded registered continuations only; proof acceptance and external comparator execution remain separate"),
     Rule("strategy", (
         "docs/strategy/**", "research/adoption/**", "research/radar/**",
         "research/market/**", "reports/**",

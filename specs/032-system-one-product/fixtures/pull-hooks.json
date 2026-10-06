@@ -1,0 +1,443 @@
+{
+  "fixtureVersion": "s1-product-controls-v1",
+  "predeclared": true,
+  "oracle": "Literal core prevalidation-refusal envelopes and allowlisted expected metadata; no backend/evaluator/hook implementation executed.",
+  "responses": {
+    "A": {
+      "contractVersion": "decision-stdlib-v1",
+      "requestId": null,
+      "requestDigest": null,
+      "stateDigest": null,
+      "questionsDigest": null,
+      "backendId": null,
+      "capabilityId": null,
+      "capabilityVersion": "synthetic-reference-v1",
+      "contextVersion": null,
+      "policyId": null,
+      "status": "refused",
+      "answers": [],
+      "calibrationStatus": "absent",
+      "reasonCodes": [
+        "invalid-envelope"
+      ],
+      "inputCoverage": 0.0,
+      "usage": {
+        "queueMs": 0.0,
+        "loadMs": 0.0,
+        "renderMs": 0.0,
+        "inferenceMs": 0.0,
+        "totalMs": 0.0,
+        "inputBytes": 0,
+        "renderTokens": 0
+      },
+      "modelManifestDigest": null,
+      "calibrationManifestDigest": null,
+      "policyDigest": null,
+      "evidenceClass": "heuristic",
+      "executionAuthorization": false,
+      "responseDigest": "177386de394173b6c2e1c802886d152f1a65a27866eaf673ba158dd45b76ef6a"
+    },
+    "B": {
+      "contractVersion": "decision-stdlib-v1",
+      "requestId": null,
+      "requestDigest": null,
+      "stateDigest": null,
+      "questionsDigest": null,
+      "backendId": null,
+      "capabilityId": null,
+      "capabilityVersion": "synthetic-reference-v1",
+      "contextVersion": null,
+      "policyId": null,
+      "status": "refused",
+      "answers": [],
+      "calibrationStatus": "absent",
+      "reasonCodes": [
+        "unsupported-identity"
+      ],
+      "inputCoverage": 0.0,
+      "usage": {
+        "queueMs": 0.0,
+        "loadMs": 0.0,
+        "renderMs": 0.0,
+        "inferenceMs": 0.0,
+        "totalMs": 0.0,
+        "inputBytes": 0,
+        "renderTokens": 0
+      },
+      "modelManifestDigest": null,
+      "calibrationManifestDigest": null,
+      "policyDigest": null,
+      "evidenceClass": "heuristic",
+      "executionAuthorization": false,
+      "responseDigest": "6bbbbc162e479d0ba5dab4cb6c87d10519912e91f7c105caa5157f93b432d8e2"
+    },
+    "forgedAuthority": {
+      "contractVersion": "decision-stdlib-v1",
+      "requestId": null,
+      "requestDigest": null,
+      "stateDigest": null,
+      "questionsDigest": null,
+      "backendId": null,
+      "capabilityId": null,
+      "capabilityVersion": "synthetic-reference-v1",
+      "contextVersion": null,
+      "policyId": null,
+      "status": "refused",
+      "answers": [],
+      "calibrationStatus": "absent",
+      "reasonCodes": [
+        "invalid-envelope"
+      ],
+      "inputCoverage": 0.0,
+      "usage": {
+        "queueMs": 0.0,
+        "loadMs": 0.0,
+        "renderMs": 0.0,
+        "inferenceMs": 0.0,
+        "totalMs": 0.0,
+        "inputBytes": 0,
+        "renderTokens": 0
+      },
+      "modelManifestDigest": null,
+      "calibrationManifestDigest": null,
+      "policyDigest": null,
+      "evidenceClass": "heuristic",
+      "executionAuthorization": true,
+      "responseDigest": "77d5294c5e81c0d940bcad15023891ff97c67181c9f77718a833e5ec18ec0319"
+    },
+    "privateExtra": {
+      "contractVersion": "decision-stdlib-v1",
+      "requestId": null,
+      "requestDigest": null,
+      "stateDigest": null,
+      "questionsDigest": null,
+      "backendId": null,
+      "capabilityId": null,
+      "capabilityVersion": "synthetic-reference-v1",
+      "contextVersion": null,
+      "policyId": null,
+      "status": "refused",
+      "answers": [],
+      "calibrationStatus": "absent",
+      "reasonCodes": [
+        "invalid-envelope"
+      ],
+      "inputCoverage": 0.0,
+      "usage": {
+        "queueMs": 0.0,
+        "loadMs": 0.0,
+        "renderMs": 0.0,
+        "inferenceMs": 0.0,
+        "totalMs": 0.0,
+        "inputBytes": 0,
+        "renderTokens": 0
+      },
+      "modelManifestDigest": null,
+      "calibrationManifestDigest": null,
+      "policyDigest": null,
+      "evidenceClass": "heuristic",
+      "executionAuthorization": false,
+      "responseDigest": "353e8701732a1264eb46d7568e04823b0549048307a24603d70ff4c9e711dc5f",
+      "prompt": "SYNTHETIC_PRIVATE_SENTINEL"
+    }
+  },
+  "requestBytes": null,
+  "expectedStoredMetadata": {
+    "A": {
+      "contractVersion": "decision-stdlib-v1",
+      "responseDigest": "177386de394173b6c2e1c802886d152f1a65a27866eaf673ba158dd45b76ef6a",
+      "backendId": null,
+      "capabilityId": null,
+      "policyId": null,
+      "status": "refused",
+      "reasonCodes": [
+        "invalid-envelope"
+      ],
+      "usage": {
+        "queueMs": 0.0,
+        "loadMs": 0.0,
+        "renderMs": 0.0,
+        "inferenceMs": 0.0,
+        "totalMs": 0.0,
+        "inputBytes": 0,
+        "renderTokens": 0
+      },
+      "evidenceClass": "heuristic",
+      "executionAuthorization": false
+    },
+    "B": {
+      "contractVersion": "decision-stdlib-v1",
+      "responseDigest": "6bbbbc162e479d0ba5dab4cb6c87d10519912e91f7c105caa5157f93b432d8e2",
+      "backendId": null,
+      "capabilityId": null,
+      "policyId": null,
+      "status": "refused",
+      "reasonCodes": [
+        "unsupported-identity"
+      ],
+      "usage": {
+        "queueMs": 0.0,
+        "loadMs": 0.0,
+        "renderMs": 0.0,
+        "inferenceMs": 0.0,
+        "totalMs": 0.0,
+        "inputBytes": 0,
+        "renderTokens": 0
+      },
+      "evidenceClass": "heuristic",
+      "executionAuthorization": false
+    }
+  },
+  "cases": [
+    {
+      "caseId": "record-drain",
+      "capacity": 1,
+      "steps": [
+        {
+          "operation": "record",
+          "response": "A",
+          "expectedInserted": true
+        },
+        {
+          "operation": "drain",
+          "expectedRecords": [
+            "A"
+          ],
+          "expectedDropped": 0
+        },
+        {
+          "operation": "drain",
+          "expectedRecords": [],
+          "expectedDropped": 0
+        }
+      ]
+    },
+    {
+      "caseId": "overflow-preserve-oldest",
+      "capacity": 1,
+      "steps": [
+        {
+          "operation": "record",
+          "response": "A",
+          "expectedInserted": true
+        },
+        {
+          "operation": "record",
+          "response": "B",
+          "expectedInserted": false,
+          "expectedCapacityDropped": 1
+        },
+        {
+          "operation": "drain",
+          "expectedRecords": [
+            "A"
+          ],
+          "expectedDropped": 1
+        }
+      ]
+    },
+    {
+      "caseId": "two-records-in-order",
+      "capacity": 2,
+      "steps": [
+        {
+          "operation": "record",
+          "response": "A",
+          "expectedInserted": true
+        },
+        {
+          "operation": "record",
+          "response": "B",
+          "expectedInserted": true
+        },
+        {
+          "operation": "drain",
+          "expectedRecords": [
+            "A",
+            "B"
+          ],
+          "expectedDropped": 0
+        }
+      ]
+    },
+    {
+      "caseId": "busy-does-not-capture",
+      "capacity": 1,
+      "steps": [
+        {
+          "operation": "record",
+          "response": "A",
+          "controls": {
+            "holdBufferLock": true
+          },
+          "expectedStatus": "busy",
+          "expectedInserted": false,
+          "expectedCounterChange": 0
+        },
+        {
+          "operation": "drain",
+          "expectedRecords": [],
+          "expectedDropped": 0
+        }
+      ]
+    },
+    {
+      "caseId": "busy-drain-preserves",
+      "capacity": 1,
+      "steps": [
+        {
+          "operation": "record",
+          "response": "A",
+          "expectedInserted": true
+        },
+        {
+          "operation": "drain",
+          "controls": {
+            "holdBufferLock": true
+          },
+          "expectedStatus": "busy",
+          "expectedRecords": null,
+          "expectedDropped": null
+        },
+        {
+          "operation": "drain",
+          "expectedRecords": [
+            "A"
+          ],
+          "expectedDropped": 0
+        }
+      ]
+    },
+    {
+      "caseId": "forged-authority",
+      "capacity": 1,
+      "steps": [
+        {
+          "operation": "record",
+          "response": "forgedAuthority",
+          "expectedInserted": false,
+          "expectedReason": "invalid-observation"
+        },
+        {
+          "operation": "drain",
+          "expectedRecords": [],
+          "expectedDropped": 0
+        }
+      ]
+    },
+    {
+      "caseId": "private-extra-field",
+      "capacity": 1,
+      "steps": [
+        {
+          "operation": "record",
+          "response": "privateExtra",
+          "expectedInserted": false,
+          "expectedReason": "invalid-observation",
+          "mustNotEcho": [
+            "SYNTHETIC_PRIVATE_SENTINEL"
+          ]
+        },
+        {
+          "operation": "drain",
+          "expectedRecords": [],
+          "expectedDropped": 0
+        }
+      ]
+    },
+    {
+      "caseId": "cancel-before-insertion",
+      "capacity": 1,
+      "steps": [
+        {
+          "operation": "record",
+          "response": "A",
+          "controls": {
+            "cancelBeforeInsert": true
+          },
+          "expectedInserted": false,
+          "expectedReason": "cancelled"
+        },
+        {
+          "operation": "drain",
+          "expectedRecords": [],
+          "expectedDropped": 0
+        }
+      ]
+    },
+    {
+      "caseId": "deadline-equality",
+      "capacity": 1,
+      "steps": [
+        {
+          "operation": "record",
+          "response": "A",
+          "controls": {
+            "monotonicIngressMs": 0,
+            "monotonicBeforeInsertMs": 5000
+          },
+          "expectedInserted": false,
+          "expectedReason": "deadline-exceeded"
+        },
+        {
+          "operation": "drain",
+          "expectedRecords": [],
+          "expectedDropped": 0
+        }
+      ]
+    },
+    {
+      "caseId": "caller-mutation-after-capture",
+      "capacity": 1,
+      "steps": [
+        {
+          "operation": "record",
+          "response": "A",
+          "expectedInserted": true
+        },
+        {
+          "operation": "mutateCallerResponse",
+          "response": "A",
+          "path": [
+            "reasonCodes",
+            0
+          ],
+          "value": "unsupported-identity"
+        },
+        {
+          "operation": "drain",
+          "expectedRecords": [
+            "A"
+          ],
+          "expectedDropped": 0,
+          "expectedUsesOriginalMetadata": true
+        }
+      ]
+    }
+  ],
+  "constructionRefusals": [
+    {
+      "capacity": 0,
+      "expectedRefused": true
+    },
+    {
+      "capacity": 65,
+      "expectedRefused": true
+    },
+    {
+      "capacity": true,
+      "expectedRefused": true
+    }
+  ],
+  "metadataForbiddenKeys": [
+    "state",
+    "instructions",
+    "descriptions",
+    "options",
+    "answers",
+    "operationIds",
+    "resourceIds",
+    "prompt",
+    "path"
+  ]
+}

@@ -1,0 +1,710 @@
+{
+  "fixtureVersion": "s1-product-controls-v1",
+  "predeclared": true,
+  "oracle": "Hand-declared contract cases; stdlib JSON/SHA256 used only to bind fixture identities, no feature implementation imported/executed.",
+  "syntheticRegistryBody": {
+    "version": "s1-metadata-router-v1",
+    "routes": [
+      {
+        "languageTag": "en",
+        "taskId": "boolean-fixture",
+        "capabilityId": "synthetic-reference-v1",
+        "backendId": "stdlib-rule-fixture-v1",
+        "policyId": "strict-uncalibrated-v1",
+        "installedManifestDigest": "49f9022082fd12eda9ae1e0cd86ff827ca0c41dded4a52c618357cc9e525a3ca",
+        "supported": true
+      },
+      {
+        "languageTag": "en",
+        "taskId": "choice-fixture",
+        "capabilityId": "synthetic-reference-v1",
+        "backendId": "stdlib-rule-fixture-v1",
+        "policyId": "strict-uncalibrated-v1",
+        "installedManifestDigest": "49f9022082fd12eda9ae1e0cd86ff827ca0c41dded4a52c618357cc9e525a3ca",
+        "supported": true
+      },
+      {
+        "languageTag": "en",
+        "taskId": "score-fixture",
+        "capabilityId": "synthetic-reference-v1",
+        "backendId": "stdlib-rule-fixture-v1",
+        "policyId": "strict-uncalibrated-v1",
+        "installedManifestDigest": "49f9022082fd12eda9ae1e0cd86ff827ca0c41dded4a52c618357cc9e525a3ca",
+        "supported": true
+      },
+      {
+        "languageTag": "en",
+        "taskId": "schema-compile-fixture",
+        "capabilityId": "s1-schema-synthetic-v1",
+        "backendId": null,
+        "policyId": null,
+        "installedManifestDigest": "13037970f7342d7df5caebda33eb95d84b1377aca303f637506c08b7cac0ed4e",
+        "supported": true
+      },
+      {
+        "languageTag": "es",
+        "taskId": "boolean-fixture",
+        "capabilityId": "synthetic-reference-v1",
+        "backendId": "stdlib-rule-fixture-v1",
+        "policyId": "strict-uncalibrated-v1",
+        "installedManifestDigest": "49f9022082fd12eda9ae1e0cd86ff827ca0c41dded4a52c618357cc9e525a3ca",
+        "supported": true
+      },
+      {
+        "languageTag": "es",
+        "taskId": "choice-fixture",
+        "capabilityId": "synthetic-reference-v1",
+        "backendId": "stdlib-rule-fixture-v1",
+        "policyId": "strict-uncalibrated-v1",
+        "installedManifestDigest": "49f9022082fd12eda9ae1e0cd86ff827ca0c41dded4a52c618357cc9e525a3ca",
+        "supported": true
+      },
+      {
+        "languageTag": "es",
+        "taskId": "score-fixture",
+        "capabilityId": "synthetic-reference-v1",
+        "backendId": "stdlib-rule-fixture-v1",
+        "policyId": "strict-uncalibrated-v1",
+        "installedManifestDigest": "49f9022082fd12eda9ae1e0cd86ff827ca0c41dded4a52c618357cc9e525a3ca",
+        "supported": true
+      },
+      {
+        "languageTag": "es",
+        "taskId": "schema-compile-fixture",
+        "capabilityId": "s1-schema-synthetic-v1",
+        "backendId": null,
+        "policyId": null,
+        "installedManifestDigest": "13037970f7342d7df5caebda33eb95d84b1377aca303f637506c08b7cac0ed4e",
+        "supported": true
+      }
+    ]
+  },
+  "registryDigest": "3d25836f90d3f050868da8592083b81bce34105af3498d247c6f65cba44df520",
+  "registryDigestRule": "Canonical version/routes body excludes any digest field; illustrative synthetic installed inventory, not current installation evidence.",
+  "syntheticManifestBodies": {
+    "core": {
+      "backendId": "stdlib-rule-fixture-v1",
+      "version": "decision-stdlib-v1",
+      "capability": "synthetic-reference-v1",
+      "numericRepresentation": "binary64",
+      "tokenUnit": "character-token-v1",
+      "calibration": "absent"
+    },
+    "compiler": {
+      "capabilityId": "s1-schema-synthetic-v1",
+      "contractVersion": "s1-schema-synthetic-v1",
+      "evidenceClass": "heuristic",
+      "executionAuthorization": false
+    }
+  },
+  "registryVariants": {
+    "compiler-not-installed": {
+      "version": "s1-metadata-router-v1",
+      "routes": [
+        {
+          "languageTag": "en",
+          "taskId": "boolean-fixture",
+          "capabilityId": "synthetic-reference-v1",
+          "backendId": "stdlib-rule-fixture-v1",
+          "policyId": "strict-uncalibrated-v1",
+          "installedManifestDigest": "49f9022082fd12eda9ae1e0cd86ff827ca0c41dded4a52c618357cc9e525a3ca",
+          "supported": true
+        },
+        {
+          "languageTag": "en",
+          "taskId": "choice-fixture",
+          "capabilityId": "synthetic-reference-v1",
+          "backendId": "stdlib-rule-fixture-v1",
+          "policyId": "strict-uncalibrated-v1",
+          "installedManifestDigest": "49f9022082fd12eda9ae1e0cd86ff827ca0c41dded4a52c618357cc9e525a3ca",
+          "supported": true
+        },
+        {
+          "languageTag": "en",
+          "taskId": "score-fixture",
+          "capabilityId": "synthetic-reference-v1",
+          "backendId": "stdlib-rule-fixture-v1",
+          "policyId": "strict-uncalibrated-v1",
+          "installedManifestDigest": "49f9022082fd12eda9ae1e0cd86ff827ca0c41dded4a52c618357cc9e525a3ca",
+          "supported": true
+        },
+        {
+          "languageTag": "en",
+          "taskId": "schema-compile-fixture",
+          "capabilityId": "s1-schema-synthetic-v1",
+          "backendId": null,
+          "policyId": null,
+          "installedManifestDigest": "13037970f7342d7df5caebda33eb95d84b1377aca303f637506c08b7cac0ed4e",
+          "supported": false
+        },
+        {
+          "languageTag": "es",
+          "taskId": "boolean-fixture",
+          "capabilityId": "synthetic-reference-v1",
+          "backendId": "stdlib-rule-fixture-v1",
+          "policyId": "strict-uncalibrated-v1",
+          "installedManifestDigest": "49f9022082fd12eda9ae1e0cd86ff827ca0c41dded4a52c618357cc9e525a3ca",
+          "supported": true
+        },
+        {
+          "languageTag": "es",
+          "taskId": "choice-fixture",
+          "capabilityId": "synthetic-reference-v1",
+          "backendId": "stdlib-rule-fixture-v1",
+          "policyId": "strict-uncalibrated-v1",
+          "installedManifestDigest": "49f9022082fd12eda9ae1e0cd86ff827ca0c41dded4a52c618357cc9e525a3ca",
+          "supported": true
+        },
+        {
+          "languageTag": "es",
+          "taskId": "score-fixture",
+          "capabilityId": "synthetic-reference-v1",
+          "backendId": "stdlib-rule-fixture-v1",
+          "policyId": "strict-uncalibrated-v1",
+          "installedManifestDigest": "49f9022082fd12eda9ae1e0cd86ff827ca0c41dded4a52c618357cc9e525a3ca",
+          "supported": true
+        },
+        {
+          "languageTag": "es",
+          "taskId": "schema-compile-fixture",
+          "capabilityId": "s1-schema-synthetic-v1",
+          "backendId": null,
+          "policyId": null,
+          "installedManifestDigest": "13037970f7342d7df5caebda33eb95d84b1377aca303f637506c08b7cac0ed4e",
+          "supported": false
+        }
+      ]
+    }
+  },
+  "cases": [
+    {
+      "caseId": "en-boolean-fixture",
+      "request": {
+        "contractVersion": "s1-metadata-router-v1",
+        "requestId": "fixture-route",
+        "sourceKind": "synthetic",
+        "languageTag": "en",
+        "taskId": "boolean-fixture",
+        "registryDigest": "3d25836f90d3f050868da8592083b81bce34105af3498d247c6f65cba44df520",
+        "deadlineMs": 5000
+      },
+      "expectedRegistryDigest": "3d25836f90d3f050868da8592083b81bce34105af3498d247c6f65cba44df520",
+      "controls": {},
+      "expected": {
+        "status": "matched",
+        "route": {
+          "languageTag": "en",
+          "taskId": "boolean-fixture",
+          "capabilityId": "synthetic-reference-v1",
+          "backendId": "stdlib-rule-fixture-v1",
+          "policyId": "strict-uncalibrated-v1",
+          "installedManifestDigest": "49f9022082fd12eda9ae1e0cd86ff827ca0c41dded4a52c618357cc9e525a3ca",
+          "supported": true
+        },
+        "executionAuthorization": false,
+        "reasonCodes": []
+      }
+    },
+    {
+      "caseId": "es-choice-fixture",
+      "request": {
+        "contractVersion": "s1-metadata-router-v1",
+        "requestId": "fixture-route",
+        "sourceKind": "synthetic",
+        "languageTag": "es",
+        "taskId": "choice-fixture",
+        "registryDigest": "3d25836f90d3f050868da8592083b81bce34105af3498d247c6f65cba44df520",
+        "deadlineMs": 5000
+      },
+      "expectedRegistryDigest": "3d25836f90d3f050868da8592083b81bce34105af3498d247c6f65cba44df520",
+      "controls": {},
+      "expected": {
+        "status": "matched",
+        "route": {
+          "languageTag": "es",
+          "taskId": "choice-fixture",
+          "capabilityId": "synthetic-reference-v1",
+          "backendId": "stdlib-rule-fixture-v1",
+          "policyId": "strict-uncalibrated-v1",
+          "installedManifestDigest": "49f9022082fd12eda9ae1e0cd86ff827ca0c41dded4a52c618357cc9e525a3ca",
+          "supported": true
+        },
+        "executionAuthorization": false,
+        "reasonCodes": []
+      }
+    },
+    {
+      "caseId": "en-score-fixture",
+      "request": {
+        "contractVersion": "s1-metadata-router-v1",
+        "requestId": "fixture-route",
+        "sourceKind": "synthetic",
+        "languageTag": "en",
+        "taskId": "score-fixture",
+        "registryDigest": "3d25836f90d3f050868da8592083b81bce34105af3498d247c6f65cba44df520",
+        "deadlineMs": 5000
+      },
+      "expectedRegistryDigest": "3d25836f90d3f050868da8592083b81bce34105af3498d247c6f65cba44df520",
+      "controls": {},
+      "expected": {
+        "status": "matched",
+        "route": {
+          "languageTag": "en",
+          "taskId": "score-fixture",
+          "capabilityId": "synthetic-reference-v1",
+          "backendId": "stdlib-rule-fixture-v1",
+          "policyId": "strict-uncalibrated-v1",
+          "installedManifestDigest": "49f9022082fd12eda9ae1e0cd86ff827ca0c41dded4a52c618357cc9e525a3ca",
+          "supported": true
+        },
+        "executionAuthorization": false,
+        "reasonCodes": []
+      }
+    },
+    {
+      "caseId": "es-schema-compile-fixture",
+      "request": {
+        "contractVersion": "s1-metadata-router-v1",
+        "requestId": "fixture-route",
+        "sourceKind": "synthetic",
+        "languageTag": "es",
+        "taskId": "schema-compile-fixture",
+        "registryDigest": "3d25836f90d3f050868da8592083b81bce34105af3498d247c6f65cba44df520",
+        "deadlineMs": 5000
+      },
+      "expectedRegistryDigest": "3d25836f90d3f050868da8592083b81bce34105af3498d247c6f65cba44df520",
+      "controls": {},
+      "expected": {
+        "status": "matched",
+        "route": {
+          "languageTag": "es",
+          "taskId": "schema-compile-fixture",
+          "capabilityId": "s1-schema-synthetic-v1",
+          "backendId": null,
+          "policyId": null,
+          "installedManifestDigest": "13037970f7342d7df5caebda33eb95d84b1377aca303f637506c08b7cac0ed4e",
+          "supported": true
+        },
+        "executionAuthorization": false,
+        "reasonCodes": []
+      }
+    },
+    {
+      "caseId": "tag-null",
+      "request": {
+        "contractVersion": "s1-metadata-router-v1",
+        "requestId": "fixture-route",
+        "sourceKind": "synthetic",
+        "languageTag": null,
+        "taskId": "boolean-fixture",
+        "registryDigest": "3d25836f90d3f050868da8592083b81bce34105af3498d247c6f65cba44df520",
+        "deadlineMs": 5000
+      },
+      "expectedRegistryDigest": "3d25836f90d3f050868da8592083b81bce34105af3498d247c6f65cba44df520",
+      "controls": {},
+      "expected": {
+        "status": "unavailable",
+        "route": null,
+        "reasonCodes": [
+          "unsupported-language-tag"
+        ],
+        "executionAuthorization": false
+      }
+    },
+    {
+      "caseId": "tag-empty",
+      "request": {
+        "contractVersion": "s1-metadata-router-v1",
+        "requestId": "fixture-route",
+        "sourceKind": "synthetic",
+        "languageTag": "",
+        "taskId": "boolean-fixture",
+        "registryDigest": "3d25836f90d3f050868da8592083b81bce34105af3498d247c6f65cba44df520",
+        "deadlineMs": 5000
+      },
+      "expectedRegistryDigest": "3d25836f90d3f050868da8592083b81bce34105af3498d247c6f65cba44df520",
+      "controls": {},
+      "expected": {
+        "status": "unavailable",
+        "route": null,
+        "reasonCodes": [
+          "unsupported-language-tag"
+        ],
+        "executionAuthorization": false
+      }
+    },
+    {
+      "caseId": "tag-fr",
+      "request": {
+        "contractVersion": "s1-metadata-router-v1",
+        "requestId": "fixture-route",
+        "sourceKind": "synthetic",
+        "languageTag": "fr",
+        "taskId": "boolean-fixture",
+        "registryDigest": "3d25836f90d3f050868da8592083b81bce34105af3498d247c6f65cba44df520",
+        "deadlineMs": 5000
+      },
+      "expectedRegistryDigest": "3d25836f90d3f050868da8592083b81bce34105af3498d247c6f65cba44df520",
+      "controls": {},
+      "expected": {
+        "status": "unavailable",
+        "route": null,
+        "reasonCodes": [
+          "unsupported-language-tag"
+        ],
+        "executionAuthorization": false
+      }
+    },
+    {
+      "caseId": "tag-mixed",
+      "request": {
+        "contractVersion": "s1-metadata-router-v1",
+        "requestId": "fixture-route",
+        "sourceKind": "synthetic",
+        "languageTag": "mixed",
+        "taskId": "boolean-fixture",
+        "registryDigest": "3d25836f90d3f050868da8592083b81bce34105af3498d247c6f65cba44df520",
+        "deadlineMs": 5000
+      },
+      "expectedRegistryDigest": "3d25836f90d3f050868da8592083b81bce34105af3498d247c6f65cba44df520",
+      "controls": {},
+      "expected": {
+        "status": "unavailable",
+        "route": null,
+        "reasonCodes": [
+          "unsupported-language-tag"
+        ],
+        "executionAuthorization": false
+      }
+    },
+    {
+      "caseId": "tag-und",
+      "request": {
+        "contractVersion": "s1-metadata-router-v1",
+        "requestId": "fixture-route",
+        "sourceKind": "synthetic",
+        "languageTag": "und",
+        "taskId": "boolean-fixture",
+        "registryDigest": "3d25836f90d3f050868da8592083b81bce34105af3498d247c6f65cba44df520",
+        "deadlineMs": 5000
+      },
+      "expectedRegistryDigest": "3d25836f90d3f050868da8592083b81bce34105af3498d247c6f65cba44df520",
+      "controls": {},
+      "expected": {
+        "status": "unavailable",
+        "route": null,
+        "reasonCodes": [
+          "unsupported-language-tag"
+        ],
+        "executionAuthorization": false
+      }
+    },
+    {
+      "caseId": "tag-en-US",
+      "request": {
+        "contractVersion": "s1-metadata-router-v1",
+        "requestId": "fixture-route",
+        "sourceKind": "synthetic",
+        "languageTag": "en-US",
+        "taskId": "boolean-fixture",
+        "registryDigest": "3d25836f90d3f050868da8592083b81bce34105af3498d247c6f65cba44df520",
+        "deadlineMs": 5000
+      },
+      "expectedRegistryDigest": "3d25836f90d3f050868da8592083b81bce34105af3498d247c6f65cba44df520",
+      "controls": {},
+      "expected": {
+        "status": "unavailable",
+        "route": null,
+        "reasonCodes": [
+          "unsupported-language-tag"
+        ],
+        "executionAuthorization": false
+      }
+    },
+    {
+      "caseId": "tag-en,es",
+      "request": {
+        "contractVersion": "s1-metadata-router-v1",
+        "requestId": "fixture-route",
+        "sourceKind": "synthetic",
+        "languageTag": "en,es",
+        "taskId": "boolean-fixture",
+        "registryDigest": "3d25836f90d3f050868da8592083b81bce34105af3498d247c6f65cba44df520",
+        "deadlineMs": 5000
+      },
+      "expectedRegistryDigest": "3d25836f90d3f050868da8592083b81bce34105af3498d247c6f65cba44df520",
+      "controls": {},
+      "expected": {
+        "status": "unavailable",
+        "route": null,
+        "reasonCodes": [
+          "unsupported-language-tag"
+        ],
+        "executionAuthorization": false
+      }
+    },
+    {
+      "caseId": "tag-print(1)",
+      "request": {
+        "contractVersion": "s1-metadata-router-v1",
+        "requestId": "fixture-route",
+        "sourceKind": "synthetic",
+        "languageTag": "print(1)",
+        "taskId": "boolean-fixture",
+        "registryDigest": "3d25836f90d3f050868da8592083b81bce34105af3498d247c6f65cba44df520",
+        "deadlineMs": 5000
+      },
+      "expectedRegistryDigest": "3d25836f90d3f050868da8592083b81bce34105af3498d247c6f65cba44df520",
+      "controls": {},
+      "expected": {
+        "status": "unavailable",
+        "route": null,
+        "reasonCodes": [
+          "unsupported-language-tag"
+        ],
+        "executionAuthorization": false
+      }
+    },
+    {
+      "caseId": "tag-es-漢字",
+      "request": {
+        "contractVersion": "s1-metadata-router-v1",
+        "requestId": "fixture-route",
+        "sourceKind": "synthetic",
+        "languageTag": "es-漢字",
+        "taskId": "boolean-fixture",
+        "registryDigest": "3d25836f90d3f050868da8592083b81bce34105af3498d247c6f65cba44df520",
+        "deadlineMs": 5000
+      },
+      "expectedRegistryDigest": "3d25836f90d3f050868da8592083b81bce34105af3498d247c6f65cba44df520",
+      "controls": {},
+      "expected": {
+        "status": "unavailable",
+        "route": null,
+        "reasonCodes": [
+          "unsupported-language-tag"
+        ],
+        "executionAuthorization": false
+      }
+    },
+    {
+      "caseId": "task-null",
+      "request": {
+        "contractVersion": "s1-metadata-router-v1",
+        "requestId": "fixture-route",
+        "sourceKind": "synthetic",
+        "languageTag": "en",
+        "taskId": null,
+        "registryDigest": "3d25836f90d3f050868da8592083b81bce34105af3498d247c6f65cba44df520",
+        "deadlineMs": 5000
+      },
+      "expectedRegistryDigest": "3d25836f90d3f050868da8592083b81bce34105af3498d247c6f65cba44df520",
+      "controls": {},
+      "expected": {
+        "status": "unavailable",
+        "route": null,
+        "reasonCodes": [
+          "unsupported-task-id"
+        ]
+      }
+    },
+    {
+      "caseId": "task-unknown",
+      "request": {
+        "contractVersion": "s1-metadata-router-v1",
+        "requestId": "fixture-route",
+        "sourceKind": "synthetic",
+        "languageTag": "en",
+        "taskId": "unknown",
+        "registryDigest": "3d25836f90d3f050868da8592083b81bce34105af3498d247c6f65cba44df520",
+        "deadlineMs": 5000
+      },
+      "expectedRegistryDigest": "3d25836f90d3f050868da8592083b81bce34105af3498d247c6f65cba44df520",
+      "controls": {},
+      "expected": {
+        "status": "unavailable",
+        "route": null,
+        "reasonCodes": [
+          "unsupported-task-id"
+        ]
+      }
+    },
+    {
+      "caseId": "real-source",
+      "request": {
+        "contractVersion": "s1-metadata-router-v1",
+        "requestId": "fixture-route",
+        "sourceKind": "real",
+        "languageTag": "en",
+        "taskId": "boolean-fixture",
+        "registryDigest": "3d25836f90d3f050868da8592083b81bce34105af3498d247c6f65cba44df520",
+        "deadlineMs": 5000
+      },
+      "expectedRegistryDigest": "3d25836f90d3f050868da8592083b81bce34105af3498d247c6f65cba44df520",
+      "controls": {},
+      "expected": {
+        "status": "refused",
+        "route": null,
+        "reasonCodes": [
+          "unsupported-source"
+        ]
+      }
+    },
+    {
+      "caseId": "stale-pin",
+      "request": {
+        "contractVersion": "s1-metadata-router-v1",
+        "requestId": "fixture-route",
+        "sourceKind": "synthetic",
+        "languageTag": "en",
+        "taskId": "boolean-fixture",
+        "registryDigest": "0000000000000000000000000000000000000000000000000000000000000000",
+        "deadlineMs": 5000
+      },
+      "expectedRegistryDigest": "3d25836f90d3f050868da8592083b81bce34105af3498d247c6f65cba44df520",
+      "controls": {},
+      "expected": {
+        "status": "refused",
+        "route": null,
+        "reasonCodes": [
+          "registry-pin-mismatch"
+        ]
+      }
+    },
+    {
+      "caseId": "extra-text",
+      "request": {
+        "contractVersion": "s1-metadata-router-v1",
+        "requestId": "fixture-route",
+        "sourceKind": "synthetic",
+        "languageTag": "en",
+        "taskId": "boolean-fixture",
+        "registryDigest": "3d25836f90d3f050868da8592083b81bce34105af3498d247c6f65cba44df520",
+        "deadlineMs": 5000,
+        "text": "SYNTHETIC_PRIVATE_SENTINEL"
+      },
+      "expectedRegistryDigest": "3d25836f90d3f050868da8592083b81bce34105af3498d247c6f65cba44df520",
+      "controls": {},
+      "expected": {
+        "status": "refused",
+        "route": null,
+        "reasonCodes": [
+          "invalid-router-request"
+        ],
+        "mustNotEcho": [
+          "SYNTHETIC_PRIVATE_SENTINEL"
+        ]
+      }
+    },
+    {
+      "caseId": "boolean-deadline",
+      "request": {
+        "contractVersion": "s1-metadata-router-v1",
+        "requestId": "fixture-route",
+        "sourceKind": "synthetic",
+        "languageTag": "en",
+        "taskId": "boolean-fixture",
+        "registryDigest": "3d25836f90d3f050868da8592083b81bce34105af3498d247c6f65cba44df520",
+        "deadlineMs": true
+      },
+      "expectedRegistryDigest": "3d25836f90d3f050868da8592083b81bce34105af3498d247c6f65cba44df520",
+      "controls": {},
+      "expected": {
+        "status": "refused",
+        "route": null,
+        "reasonCodes": [
+          "invalid-router-request"
+        ]
+      }
+    },
+    {
+      "caseId": "cancelled",
+      "request": {
+        "contractVersion": "s1-metadata-router-v1",
+        "requestId": "fixture-route",
+        "sourceKind": "synthetic",
+        "languageTag": "en",
+        "taskId": "boolean-fixture",
+        "registryDigest": "3d25836f90d3f050868da8592083b81bce34105af3498d247c6f65cba44df520",
+        "deadlineMs": 5000
+      },
+      "expectedRegistryDigest": "3d25836f90d3f050868da8592083b81bce34105af3498d247c6f65cba44df520",
+      "controls": {
+        "cancelBeforePublication": true
+      },
+      "expected": {
+        "status": "defer",
+        "route": null,
+        "reasonCodes": [
+          "cancelled"
+        ]
+      }
+    },
+    {
+      "caseId": "deadline-equality",
+      "request": {
+        "contractVersion": "s1-metadata-router-v1",
+        "requestId": "fixture-route",
+        "sourceKind": "synthetic",
+        "languageTag": "en",
+        "taskId": "boolean-fixture",
+        "registryDigest": "3d25836f90d3f050868da8592083b81bce34105af3498d247c6f65cba44df520",
+        "deadlineMs": 5000
+      },
+      "expectedRegistryDigest": "3d25836f90d3f050868da8592083b81bce34105af3498d247c6f65cba44df520",
+      "controls": {
+        "monotonicIngressMs": 0,
+        "monotonicBeforePublicationMs": 5000
+      },
+      "expected": {
+        "status": "defer",
+        "route": null,
+        "reasonCodes": [
+          "deadline-exceeded"
+        ]
+      }
+    },
+    {
+      "caseId": "compiler-not-installed",
+      "request": {
+        "contractVersion": "s1-metadata-router-v1",
+        "requestId": "fixture-route",
+        "sourceKind": "synthetic",
+        "languageTag": "en",
+        "taskId": "schema-compile-fixture",
+        "registryDigest": "b0a31cdbbc2a4ebec163169327476102247c48fae690e92488240801a77b6c17",
+        "deadlineMs": 5000
+      },
+      "expectedRegistryDigest": "b0a31cdbbc2a4ebec163169327476102247c48fae690e92488240801a77b6c17",
+      "registryVariant": "compiler-not-installed",
+      "controls": {},
+      "expected": {
+        "status": "unavailable",
+        "route": null,
+        "reasonCodes": [
+          "capability-not-installed"
+        ]
+      }
+    },
+    {
+      "caseId": "missing-tag-key",
+      "request": {
+        "contractVersion": "s1-metadata-router-v1",
+        "requestId": "fixture-route",
+        "sourceKind": "synthetic",
+        "taskId": "boolean-fixture",
+        "registryDigest": "3d25836f90d3f050868da8592083b81bce34105af3498d247c6f65cba44df520",
+        "deadlineMs": 5000
+      },
+      "expectedRegistryDigest": "3d25836f90d3f050868da8592083b81bce34105af3498d247c6f65cba44df520",
+      "controls": {},
+      "expected": {
+        "status": "refused",
+        "route": null,
+        "reasonCodes": [
+          "invalid-router-request"
+        ]
+      }
+    }
+  ]
+}

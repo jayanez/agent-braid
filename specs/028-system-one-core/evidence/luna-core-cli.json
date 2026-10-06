@@ -1,0 +1,73 @@
+{
+  "additionalRegression": {
+    "cases": [
+      "verified=true",
+      "grant={executionAuthorization:true}"
+    ],
+    "outcome": "33 focused tests passed; explicit forged fields refused",
+    "review": "gpt-6-luna independently inspected both new subcases and verified test/log SHA; no additional suite execution claimed",
+    "sha256": "db692c76cc62eb05f05b2b7529199f819aba485ccdfd5c9bef75e999d2d9724a",
+    "testFile": "tests/test_system_one_core.py"
+  },
+  "capturedAt": "2026-10-06T22:02:58.369512+00:00",
+  "executionAuthorization": false,
+  "finalActionableFindings": [],
+  "findings": [
+    {
+      "finding": "Policy work could cross deadline/cancellation before backend call",
+      "priority": "P2",
+      "resolution": "Recheck immediately before evaluation; injected-clock/cancellation regression suppresses backend admission.",
+      "status": "verified-fixed"
+    },
+    {
+      "finding": "Public custom backend injection could publish arbitrary masses under reference provenance",
+      "priority": "P2",
+      "resolution": "Removed public injection; private test collaborators are unsupported API; regression rejects constructor injection.",
+      "status": "verified-fixed"
+    }
+  ],
+  "format": "system-one-technical-code-review-v1",
+  "humanReview": "pending",
+  "legacyParity": {
+    "baselineCommit": "7614daa445d5852d455502c3d36efa73d3f7d12a",
+    "byteEqual": true,
+    "command": "python -m agent_braid analyze examples/analysis/file-edits.json",
+    "exitCodes": [
+      0,
+      0
+    ]
+  },
+  "limits": "Technical review is not human/model/data approval, canonical ADR adoption, scientific validation or workload utility. PR profile/freeze are separate.",
+  "parentExecutedTests": {
+    "command": "<isolated-python-3.13>/bin/python -m unittest tests.test_system_one_core tests.test_system_one_backends tests.test_system_one_policy tests.test_system_one_concurrency tests.test_system_one_cli -v",
+    "log": "specs/028-system-one-core/evidence/focused-tests.log",
+    "outcome": "33 passed",
+    "sha256": "cf2480d941f72e59305293aee8755d58df5b7c075234fd56b0b2c62a8ac30fc7"
+  },
+  "reviewModel": "gpt-6-luna",
+  "reviewType": "independent-code-security-domain",
+  "reviewedHashes": {
+    "agent_braid/cli.py": "427455747a82fb0d355191a3fdfbde11dc916b8a0c1e1e6f0d04b93cc55f05c3",
+    "agent_braid/system_one.py": "8a52a047bc72ba4f1099df60c1051178fbcb7735ee4d6e615d9b8052bbb31f44",
+    "agent_braid/system_one_backends.py": "e3d49bac70ef6904bddefdb1562e1961c98af0c8b7e81655affd94eca169a305",
+    "agent_braid/system_one_cli.py": "f19965e8f8dc4c0d45c2ce728cfb45721b740319bb1fb6c2c865aa5e3defc0c4",
+    "agent_braid/system_one_policy.py": "12f09b48fe916f03c17faf18726c15ad862779ab0dcf4fdb81d5a42dc9212f31",
+    "specs/028-system-one-core/cli-reference.md": "8e0fafcb69c5b7c3c95c73644badef88002ed20abc81d878fb329d8a8558de05",
+    "specs/028-system-one-core/contracts/decision-api.md": "4dc2bd5212ab90c5b3c6b217a9c7433231f92ea4b2c5de7b53fa49b50a3e5809",
+    "specs/028-system-one-core/contracts/stdlib-v1.md": "5cfd2bcc1dd19577bc236f82c5d40503a96fe19546043f4e5de7828b3c7fa7bc",
+    "specs/028-system-one-core/implementation.md": "682b2078542e8f5f89cb0c4b30252037f93238b7df7a60f6f55fe35fa657066e",
+    "tests/test_system_one_backends.py": "442dc877c441e43d1c8abdb889fed3b94b7f2d753efabd28cfbde814dba7691f",
+    "tests/test_system_one_cli.py": "db8b80d4435218c0fb4d5679db7de6e8a66808931a6c3685461fd9787b7f4e13",
+    "tests/test_system_one_concurrency.py": "3be7d3e980d33725dbb0dfb8fa26afa1f6f9c07ae574b2b7ea45c078f4bebbda",
+    "tests/test_system_one_core.py": "18f078098ae73c8a44e27425f490774bdb444eb5e648bd52260a9a1806939c5f",
+    "tests/test_system_one_policy.py": "6d021a247b7051ec4c625af75fe3275922cd3f610f080e1a0258e1febadea552"
+  },
+  "reviewerExecutedChecks": {
+    "command": "<isolated-python>/bin/python -m unittest tests.test_system_one_core tests.test_system_one_backends tests.test_system_one_policy tests.test_system_one_concurrency tests.test_system_one_cli -v",
+    "outcome": "33 tests passed independently; same current source hashes. Temporary wheel SHA and five archive source entries independently byte-verified against offline-wheel.json; artifact remains unpublished.",
+    "python": "3.13.11"
+  },
+  "reviewerExecutedTests": true,
+  "scope": "Synthetic stdlib core and opt-in CLI; validation classifier reviewed separately.",
+  "technicalDecision": "conditional-GO-exact-synthetic-reference"
+}

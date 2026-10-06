@@ -80,6 +80,11 @@ def _write_prototype_report(path: Path, serialized: str) -> None:
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     subparsers = parser.add_subparsers(dest="command", required=True)
+    decision_parser = subparsers.add_parser("system-one", help="opt-in offline synthetic decision diagnostics")
+    decision_commands = decision_parser.add_subparsers(dest="decision_command", required=True)
+    decision_commands.add_parser("capabilities", help="list local immutable reference capabilities")
+    decide_parser = decision_commands.add_parser("decide", help="evaluate a bounded local synthetic request")
+    decide_parser.add_argument("input", type=Path)
     analyze_parser = subparsers.add_parser("analyze", help="analyze AIM 0.2 records")
     analyze_parser.add_argument("input", type=Path)
     analyze_parser.add_argument("--format", choices=("json", "text"), default="json")
@@ -160,6 +165,9 @@ def main(argv: list[str] | None = None) -> int:
         if command == "recover-policy-run":
             policy_parser.add_argument("--action", choices=("resume", "abort"), required=True)
     args = parser.parse_args(argv)
+    if args.command == "system-one":
+        from .system_one_cli import run
+        return run(args)
     try:
         if args.command == "analyze-trace":
             destination = validate_destination(args.input, args.provenance_output)

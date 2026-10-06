@@ -1,0 +1,44 @@
+{
+  "base": "25a3d8d984abd23deb414fa815c4a7e5fee4b52e",
+  "candidate": "abeca31e88baeabbb74a7cffa3b0767e870d4ac7",
+  "capturedAt": "2026-10-06T23:21:48.738762+00:00",
+  "cleanCandidateFreezeReference": "The supported clean-candidate authority/evidence freeze is identified by assurance.json historical commit fields; it does not supply human approval.",
+  "earlierEnvironmentFailure": {
+    "cause": "Spec Kit test fixture assumes .git is a directory; linked worktree unsupported. Repeated in an independent full clone without changing code or weakening tests.",
+    "errors": 19,
+    "exitCode": 1,
+    "path": "specs/028-system-one-core/evidence/unsupported-worktree-profile.log",
+    "sha256": "165b623ea1bde5a2a949d49fcd227a008023c0fead90465fc3ba836a9fe026ca",
+    "skipped": 3,
+    "testsRun": 558
+  },
+  "executed": {
+    "pr": {
+      "command": "<isolated-python-3.13>/bin/python scripts/validate_change.py --base develop --profile pr",
+      "effectiveProfile": "pr",
+      "exitCode": 0,
+      "path": "specs/028-system-one-core/evidence/pr-profile.log",
+      "seconds": 871.465,
+      "sha256": "9bb6b6f01b4a457bcfe6028b49fb9a8410b71405a35326d85d284b6e02b0fc88",
+      "skipped": 4,
+      "tests": 558
+    },
+    "quick": {
+      "command": "<isolated-python-3.13>/bin/python scripts/validate_change.py --base develop --profile quick",
+      "effectiveProfile": "sensitive",
+      "exitCode": 0,
+      "path": "specs/028-system-one-core/evidence/quick-profile.log",
+      "seconds": 831.428,
+      "sha256": "9252f31884b8ff692aa7e39c5008d88aa2fc2b0475f308ac0355c7ff2d28b2e0",
+      "skipped": 4,
+      "tests": 558
+    }
+  },
+  "executionAuthorization": false,
+  "format": "system-one-candidate-profiles-v1",
+  "humanReview": "pending",
+  "limits": "Executed synthetic engineering checks only; no proof acceptance, scientific/human/founder review, real-source/model approval, empirical utility, expanded execution or external reproduction.",
+  "platform": "macOS-26.6.2-arm64-arm-64bit-Mach-O",
+  "python": "3.13.11",
+  "skipBoundary": "Three deferred learned SPEC019 contracts and one intentionally unavailable private historical-object test. Specialist hosted scaffold matrix is classified skipped, not passed."
+}

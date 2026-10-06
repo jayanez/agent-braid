@@ -1,0 +1,42 @@
+{
+  "artifactLicense": null,
+  "artifactRevision": null,
+  "comparisonOutcome": "inconclusive-availability-and-semantics",
+  "dataLicense": null,
+  "disposition": "research-only",
+  "installed": false,
+  "limits": "Paper claims are not reproduced results. No code/data rights inferred from paper access; existing adoption disposition unchanged.",
+  "paperLicenseObserved": "arXiv perpetual non-exclusive license",
+  "primarySources": [
+    {
+      "retrieval": "read-only web open; primary versioned abstract",
+      "url": "https://arxiv.org/abs/2606.15376v1",
+      "version": "2606.15376v1"
+    },
+    {
+      "retrieval": "read-only web open/find; primary versioned HTML, sections 5/6 and links inspected",
+      "url": "https://arxiv.org/html/2606.15376v1",
+      "version": "2606.15376v1"
+    }
+  ],
+  "proofAccepted": false,
+  "recordVersion": "coagent-feasibility-v1",
+  "remainingGates": [
+    "immutable author artifact/data revision",
+    "distinct source/data license and rights review",
+    "typed matched-semantics protocol",
+    "isolated execution authority and budget",
+    "scientific interpretation/review"
+  ],
+  "retrievedDate": "2026-10-07",
+  "runtimeAdopted": false,
+  "searchBoundary": "Inspected versioned abstract/HTML; no author artifact link found. Global artifact absence is not established.",
+  "sources": {
+    "docs/theory/OPERATIONAL_SEMANTICS.md": "7e83813d138dde064f85aafee1ba20302d55ede768d35d26340abd522ecce1f7",
+    "research/REFERENCES.md": "980b61bd4870398a47026a6bbe63110240a1d868a40bb51980dc10baf2cca725",
+    "research/adoption/2026-09-initial-triage.json": "9bcf78c4bce390480ea50f46d2501b611123cbc89c27c79a34798f7da5274cef",
+    "research/adoption/2026-10-foundation-followup.md": "48957b9a005ecc667b29301054b7c7055900413d2751b024fe7e1e5b59b26658"
+  },
+  "thirdPartyExecuted": false,
+  "trackId": "AT-2026-005-coagent-comparator"
+}
