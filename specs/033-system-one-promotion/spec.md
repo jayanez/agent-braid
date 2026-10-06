@@ -5,7 +5,7 @@
 Operational engineering for opt-in shadow decisions, per-capability promotion, drift monitoring, rollback and bounded closure. No automatic online learning, external telemetry export, paid model calls or milestone closure.
 
 Status: draft planning, human review pending. Dependencies: SPEC-029 registered evaluation and SPEC-031 consumers; advanced SPEC-032 features promote independently and may stay deferred.
-Milestone: S1.4 — Product and promotion. See the [program](../028-system-one-core/program.md)
+Milestone: S1.4 — Product capabilities and promotion. See the [program](../028-system-one-core/program.md)
 and [source-backed analysis](../028-system-one-core/reference-analysis.md).
 
 User scenarios: an analyzer operator requests bounded advice and inspectable reasons;

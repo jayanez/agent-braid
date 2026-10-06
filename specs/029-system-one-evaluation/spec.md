@@ -5,7 +5,7 @@
 Research protocol and tooling for permissioned, representative decision data and paired comparisons. Synthetic conformance cases are never counted as real workload utility.
 
 Status: draft planning, human review pending. Dependencies: SPEC-028 contracts; SPEC-019 source feasibility is reusable only inside its original eligible population.
-Milestone: S1.1 — Evidence. See the [program](../028-system-one-core/program.md)
+Milestone: S1.1 — Decision evaluation. See the [program](../028-system-one-core/program.md)
 and [source-backed analysis](../028-system-one-core/reference-analysis.md).
 
 User scenarios: an analyzer operator requests bounded advice and inspectable reasons;

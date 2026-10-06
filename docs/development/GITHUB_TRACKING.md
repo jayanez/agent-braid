@@ -66,7 +66,10 @@ The naming migration preserves these historical aliases:
 | 17 | S1.4 — Product and promotion | S1.4 — Product capabilities and promotion |
 
 Frozen evidence, closure records and historical reviews retain their original
-names and scope. Current assignments use the canonical titles.
+names and scope. Current assignments use the canonical titles. The
+[spec and milestone index](SPEC_MILESTONE_INDEX.md) lists every current spec
+assignment. Current spec headers, planning programs and issue-draft metadata use
+these titles; frozen delivery receipts remain historical.
 
 For an authorized naming-only migration, follow the review/merge path below,
 then use `audit --milestone-titles-only` and

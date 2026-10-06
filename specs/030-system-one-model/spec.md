@@ -5,7 +5,7 @@
 Implement and compare native decoder/pointer and encoder/option-scoring prototypes using approved base models. No Laya or Strands package, checkpoint, adapter, runtime service or copied corpus is a product dependency.
 
 Status: draft planning, human review pending. Dependencies: SPEC-028 core and SPEC-029/T008 pre-fit review; SPEC-019 remains an independent linear baseline, not silently expanded.
-Milestone: S1.2 — Native model. See the [program](../028-system-one-core/program.md)
+Milestone: S1.2 — Native decision model. See the [program](../028-system-one-core/program.md)
 and [source-backed analysis](../028-system-one-core/reference-analysis.md).
 
 User scenarios: an analyzer operator requests bounded advice and inspectable reasons;

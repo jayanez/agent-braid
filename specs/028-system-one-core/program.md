@@ -14,11 +14,11 @@ that decoder models are better than encoder models.
 
 | Milestone | Spec | Delivery and exit gate | Dependencies |
 |---|---|---|---|
-| S1.0 — Contracts | [028](spec.md) | Typed local API, rule backend, provenance, refusal, no authority escalation; reviewed offline boundary evidence | Existing verifier/runtime contracts |
-| S1.1 — Evidence | [029](../029-system-one-evaluation/spec.md) | Permissioned source/yield, blind labels, grouped splits, calibration and paired cost harness; report infeasibility if needed | 028 contracts; model comparison follows 030 prototypes |
-| S1.2 — Native model | [030](../030-system-one-model/spec.md) | Own decoder/pointer and compact encoder prototypes; reproducible own artifacts; evidence-based architecture go/no-go | 029 pre-fit gate, then 029 common evaluation |
-| S1.3 — Integration | [031](../031-system-one-integration/spec.md) | Per-stage advisory adapters, same verifier/grants, separate read-only transport and complete chain costs | 028; rules can support engineering before model selection |
-| S1.4 — Product and promotion | [032](../032-system-one-product/spec.md), [033](../033-system-one-promotion/spec.md) | Accept/defer CPU/language/schema/catalogue/lifecycle features independently; shadow, drift, rollback and exact-capability founder decision | 029/030/031; optional 032 features are not promotion prerequisites |
+| S1.0 — Decision contracts | [028](spec.md) | Typed local API, rule backend, provenance, refusal, no authority escalation; reviewed offline boundary evidence | Existing verifier/runtime contracts |
+| S1.1 — Decision evaluation | [029](../029-system-one-evaluation/spec.md) | Permissioned source/yield, blind labels, grouped splits, calibration and paired cost harness; report infeasibility if needed | 028 contracts; model comparison follows 030 prototypes |
+| S1.2 — Native decision model | [030](../030-system-one-model/spec.md) | Own decoder/pointer and compact encoder prototypes; reproducible own artifacts; evidence-based architecture go/no-go | 029 pre-fit gate, then 029 common evaluation |
+| S1.3 — Advisory integration | [031](../031-system-one-integration/spec.md) | Per-stage advisory adapters, same verifier/grants, separate read-only transport and complete chain costs | 028; rules can support engineering before model selection |
+| S1.4 — Product capabilities and promotion | [032](../032-system-one-product/spec.md), [033](../033-system-one-promotion/spec.md) | Accept/defer CPU/language/schema/catalogue/lifecycle features independently; shadow, drift, rollback and exact-capability founder decision | 029/030/031; optional 032 features are not promotion prerequisites |
 
 There are 36 requirements, 36 Given/When/Then acceptance scenarios and 49 implementation
 tasks. Each spec contains spec, plan, research, data model, interface contract,
