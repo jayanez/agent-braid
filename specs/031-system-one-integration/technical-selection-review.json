@@ -6,9 +6,10 @@
   "limits": "Technical proposals only; implementation waits for core T008. Real prospective utility, model/data/source review, human acceptance and SPEC033 promotion remain separate. Deferred learned branches stay unchecked.",
   "reviewModel": "gpt-6-luna",
   "reviewType": "independent-technical-contract-selection",
+  "reviewedAmendment": "Empty installed inventory is valid shape but unavailable; static source/version/entry/manifest pins explicit; no dynamic discovery/import.",
   "reviewedHashes": {
     "specs/031-system-one-integration/capability-map.md": "e41a2db813366138309269ef82a68a9909b299675651c09f4b02f698a0799336",
-    "specs/031-system-one-integration/contracts/integration.md": "a7ced18f87b5066eae1a537149a8a2409e21e7302d3900c8c802651b8668582c"
+    "specs/031-system-one-integration/contracts/integration.md": "bcd06fa408af65fed00d1fd9e285a7304d696a67c427f85fd0692852f2d31f0a"
   },
   "technicalDecision": "GO-exact-proposal-after-SPEC-028-T008",
   "utilityAcceptance": false

@@ -236,7 +236,7 @@ verification. A declaration/observation mismatch remains visible and never turns
 unknown coverage into commuting, certainty or authorization.
 
 `shortlist` payload is exactly `registryEntries`, `requestedCapabilities`,
-`argumentNames`. Entries are 1..32 pinned locally installed metadata records,
+`argumentNames`. Entries are 0..32 pinned locally installed metadata records,
 each exactly `entryId`, `kind` (`tool-metadata`, `model-metadata` or
 `reference-rule`), `capabilities`, `requiredArgumentNames`, `allowedArgumentNames`,
 `manifestDigest`. Each name array is unique and has at most 32 core-format IDs;
@@ -249,7 +249,36 @@ requested capabilities are a subset of declared capabilities and argument names
 satisfy required <= supplied <= allowed. Nonmatching entries are retained as
 `excludedIds` with fixed `capability-missing` or `argument-shape-mismatch` reasons;
 no payload/code is evaluated. Metadata compatibility is neither semantic argument
-judgment, model quality nor executable support; missing inventory is unavailable.
+judgment, model quality nor executable support. The empty inventory is valid syntax
+but yields unavailable with null advice and unknown-metadata; it cannot invent a
+model/tool match or publish an empty successful shortlist as evidence of support.
+
+The minimal recommended static inventory contains exactly the real local analyzer
+entry `exact-resource-footprints-v1` with kind `tool-metadata`, declared capability
+`aim-analysis`, requiredArgumentNames [`aimRecords`], allowedArgumentNames
+[`aimRecords`]. It is metadata about the installed local analyzer, not a callable
+or new model. No nonexistent neural model, placeholder package or runtime tool
+is advertised. Implementation freezes a stage registry manifest exactly `version:
+s1-stage-registry-v1`, `stages`, `rules`, `inventory`. Stages is the ordered installed
+stage-name array; rules contains one exact record per stage with `stage`, `ruleId`,
+`implementationSourceDigest` binding reviewed implementation bytes. Unsupported or
+missing stage modules are not listed. Inventory is exactly `entries`, `sources`;
+its entries is the pinned payload inventory above. Each inventory source is exactly `entryId`,
+`module: agent_braid.analysis`, `analyzerVersion: 0.1.0-alpha`,
+`ruleSet: exact-resource-footprints-v1`, `moduleSourceDigest` (SHA-256 hex of exact
+candidate source bytes), `entryManifestDigest` (SHA-256 hex of canonical entry
+fields excluding manifestDigest). Entry manifestDigest must equal that recomputed
+source entryManifestDigest. Freeze source/version/entry bytes alongside the
+candidate; installed-wheel checks compare packaged analyzer bytes and inventory
+against those pins. No dynamic import or file read occurs during shortlist advice:
+build/install preparation supplies the immutable candidate-bound inventory and
+installed capability status. If the advertised module is absent/unmatched, discovery
+uses empty inventory entries/sources and unavailable shortlist status rather than asserting support.
+Registry digest is SHA-256 of the complete canonical manifest (there is no digest
+field inside that manifest); it must match both the local installed static pin and
+explicit expected_registry_digest before payload entries are compared for exact
+canonical equality. Module source digests establish artifact consistency only,
+not tool correctness, real effect completeness or authorization.
 
 `adequacy` payload is exactly `requiredFields`, `presentFields`, `schemaDigest`,
 `expectedSchemaDigest`, `rubric`: unique arrays of at most 32 core-format field

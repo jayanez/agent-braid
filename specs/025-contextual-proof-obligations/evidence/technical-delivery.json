@@ -1,0 +1,164 @@
+{
+  "candidate": "aaa45c5ce7484420793d653e171e6a663a9eedab",
+  "executedEvidence": {
+    "commandCount": 10,
+    "continuationBytesEqual": true,
+    "environment": {
+      "machine": "arm64",
+      "platform": "macOS-26.6.2-arm64-arm-64bit-Mach-O",
+      "pythonEnvironment": "Existing shared isolated environment; not fresh and not independently provisioned.",
+      "pythonExecutable": "/tmp/agent-braid-parallel-20261006/.venv-speckit/bin/python",
+      "pythonVersion": "3.13.11 (main, Dec  5 2025, 16:06:33) [Clang 17.0.0 (clang-1700.4.4.1)]",
+      "sameHost": true,
+      "sameMaintainer": true
+    },
+    "focusedTestCount": 20,
+    "outcome": "passed",
+    "record": "specs/025-contextual-proof-obligations/evidence/internal-clean-clone.json"
+  },
+  "executionAuthorization": false,
+  "founderApproval": "pending",
+  "humanReview": "pending",
+  "independentExternalReproduction": false,
+  "limits": "Bounded technical delivery only. Internal same-maintainer/same-host clean clone is not external reproduction. No accepted proof, universal equivalence, scientific/human/founder approval, tool adoption or expanded execution authority. Stable PR profile and final candidate freeze pending.",
+  "proofAccepted": false,
+  "recordVersion": "contextual-technical-delivery-v1",
+  "reviewedCodeCandidate": "d2c0e7f",
+  "scenarios": {
+    "SC-001": {
+      "limits": "Bounded technical delivery only. Internal same-maintainer/same-host clean clone is not external reproduction. No accepted proof, universal equivalence, scientific/human/founder approval, tool adoption or expanded execution authority. Stable PR profile and final candidate freeze pending.",
+      "outcome": "Candidate carriers, quantifiers, observations, premises, source hashes and unproved gaps recorded; proof remains unaccepted.",
+      "paths": [
+        "specs/025-contextual-proof-obligations/premise-inventory.json",
+        "specs/025-contextual-proof-obligations/premise-inventory.md",
+        "research/proofs/contextual-candidates/anchored-candidate.md"
+      ],
+      "status": "technical-complete",
+      "tests": []
+    },
+    "SC-002": {
+      "limits": "Bounded technical delivery only. Internal same-maintainer/same-host clean clone is not external reproduction. No accepted proof, universal equivalence, scientific/human/founder approval, tool adoption or expanded execution authority. Stable PR profile and final candidate freeze pending.",
+      "outcome": "Hidden-state distinguishing registered suffix retained with full raw configurations; witness minimal only within listed suffixes.",
+      "paths": [
+        "research/contextual_lab/checker.py",
+        "examples/contextual-lab/manifest.json"
+      ],
+      "status": "technical-complete",
+      "tests": [
+        "ContextualChecksTests.test_terminal_match_with_distinguishing_suffix",
+        "ContextualChecksTests.test_exact_observation_restores_pending_before_observe"
+      ]
+    },
+    "SC-003": {
+      "limits": "Bounded technical delivery only. Internal same-maintainer/same-host clean clone is not external reproduction. No accepted proof, universal equivalence, scientific/human/founder approval, tool adoption or expanded execution authority. Stable PR profile and final candidate freeze pending.",
+      "outcome": "Registered-domain matching only; invalid, tampered, unsupported or capped requests reject or remain inconclusive. Byte-identical repeated CLI reports verified.",
+      "paths": [
+        "specs/025-contextual-proof-obligations/contracts/continuations-v1.md",
+        "specs/025-contextual-proof-obligations/technical-interface-review.json"
+      ],
+      "status": "technical-complete",
+      "tests": [
+        "ContextualChecksTests.test_suffix_binding_and_bounds",
+        "ContextualChecksTests.test_caps_logical_cache_hits_and_steps",
+        "ContextualChecksTests.test_report_byte_reservation_exhaustion_and_minimum_envelope",
+        "ContextualChecksTests.test_prelude_exhaustion_has_explicit_unavailable_placeholders",
+        "ContextualCliTests.test_cli_check_verify_paths_and_invalid_parser"
+      ]
+    },
+    "SC-004": {
+      "limits": "Bounded technical delivery only. Internal same-maintainer/same-host clean clone is not external reproduction. No accepted proof, universal equivalence, scientific/human/founder approval, tool adoption or expanded execution authority. Stable PR profile and final candidate freeze pending.",
+      "outcome": "Pinned omitted-premise and chronology controls passed; raw event differences, partial effects and unavailable coverage remain visible.",
+      "paths": [
+        "examples/contextual-lab/manifest.json",
+        "examples/contextual-lab/expected.json",
+        "tests/test_contextual_lab.py"
+      ],
+      "status": "technical-complete",
+      "tests": [
+        "ContextualControlsTests.test_omitted_premises_and_event_order",
+        "ContextualControlsTests.test_guard_enabledness_and_stale_version_failures_are_inconclusive",
+        "ContextualControlsTests.test_return_values_remain_raw_under_projection",
+        "ContextualControlsTests.test_initial_only_pair_match_does_not_cover_reachable_context",
+        "ContextualControlsTests.test_errors_and_failed_pending_inventory_retain_partial_effects"
+      ]
+    },
+    "SC-005": {
+      "limits": "Bounded technical delivery only. Internal same-maintainer/same-host clean clone is not external reproduction. No accepted proof, universal equivalence, scientific/human/founder approval, tool adoption or expanded execution authority. Stable PR profile and final candidate freeze pending.",
+      "outcome": "Independent finite oracle matched 32 orders, 86 involutive, 30 adjacent and 24 far checks; four excluded extensions refused. Chronological traces and missing per-instance result mapping remain explicit; no formal acceptance.",
+      "paths": [
+        "research/proofs/contextual-candidates/anchored-candidate.md",
+        "scripts/crosscheck_contextual_proof_mapping.py",
+        "examples/contextual-lab/anchored-manifest.json",
+        "specs/025-contextual-proof-obligations/evidence/luna-checker-mapping.json"
+      ],
+      "status": "technical-complete",
+      "tests": [
+        "ContextualProofMappingTests.test_anchored_relations_and_exclusions",
+        "ContextualProofMappingTests.test_mapping_oracle_detects_corrupted_implementation",
+        "ContextualProofMappingTests.test_mapping_cli_and_determinism"
+      ]
+    },
+    "SC-006": {
+      "limits": "Bounded technical delivery only. Internal same-maintainer/same-host clean clone is not external reproduction. No accepted proof, universal equivalence, scientific/human/founder approval, tool adoption or expanded execution authority. Stable PR profile and final candidate freeze pending.",
+      "outcome": "Pinned primary paper read-only assessment completed with unavailable executable revision/rights and semantic mismatches; feasibility inconclusive, adoption research-only, no download/install/execution.",
+      "paths": [
+        "specs/025-contextual-proof-obligations/coagent-feasibility.json",
+        "specs/025-contextual-proof-obligations/coagent-feasibility.md"
+      ],
+      "status": "technical-complete",
+      "tests": []
+    },
+    "SC-007": {
+      "limits": "Bounded technical delivery only. Internal same-maintainer/same-host clean clone is not external reproduction. No accepted proof, universal equivalence, scientific/human/founder approval, tool adoption or expanded execution authority. Stable PR profile and final candidate freeze pending.",
+      "outcome": "Named source-mapping gap and handwritten/no-tool alternatives assessed. Independent technical Luna review and internal repetition obtained; specific independent proof review, final PR/freeze and human acceptance pending.",
+      "paths": [
+        "specs/025-contextual-proof-obligations/proof-tool-assessment.md",
+        "specs/025-contextual-proof-obligations/evidence/luna-checker-mapping.json",
+        "specs/025-contextual-proof-obligations/evidence/internal-clean-clone.json"
+      ],
+      "status": "partial-pending-review-and-final-validation",
+      "tests": []
+    }
+  },
+  "scope": "SPEC-025 bounded technical tasks T001-T006; partial T007 packet",
+  "sourceBindings": {
+    "CONSTITUTION.md": "ff7196976a1736a639947c2ab26e8da157fef23c89ba9881312f2a36459964eb",
+    "docs/adr/0005-evidence-contracts-and-bounded-laboratory.md": "a35504083c719993a8c9a460d579c9017871b20bd65760f9f2534de2d7f27f6b",
+    "docs/adr/0017-bounded-structured-exchange.md": "72cecb595605a16eaa5de7a88e960492205d82a300af2f6fb4451263f7e780c4",
+    "docs/theory/OPERATIONAL_SEMANTICS.md": "7e83813d138dde064f85aafee1ba20302d55ede768d35d26340abd522ecce1f7",
+    "examples/contextual-lab/anchored-manifest.json": "e169a8be3c0da6b67c53af31a9d1effb45e19adfe7abf29638675dd5b3ff368a",
+    "examples/contextual-lab/expected.json": "0d55121d29fe57f640927bc29b31dbe3cbcafac93447c584f4f8e730b96d0f46",
+    "examples/contextual-lab/manifest.json": "5b55897bc6eeb6359bab6940aedb144b3103e80ef390a28439e7f9aff34f7c60",
+    "research/contextual_lab/__init__.py": "b47b50e317f912ceb915b51f87446eb8ac356d88ac1d8d7a6e654dc48688c278",
+    "research/contextual_lab/__main__.py": "a1feebe76446e8ee17b76cc4d50d401f07134855af18dc5d02e036f03d264d28",
+    "research/contextual_lab/checker.py": "56c63276cd7c9036a4447cd4443bfeb307ba231a5cf34d5b0945a5fe98ea0c73",
+    "research/lab/model.py": "f39040b5476d663f6e7384e65d00073b084df6c8958b38bff45e4d6b19da010f",
+    "research/proofs/contextual-candidates/anchored-candidate.md": "f7b3eb0fc553ff12a49f9a35a993261351210f8e9a7ef80d29a36e83a0b65816",
+    "scripts/crosscheck_contextual_proof_mapping.py": "642a387eb5d20f977de85e6b30b9410a8a21c0f931036c0c52332335e0ef57f2",
+    "specs/025-contextual-proof-obligations/coagent-feasibility.json": "ae0cd4eeb2db7816aac1abd66c5e580c1b89a9f90720197224bd91b1209af588",
+    "specs/025-contextual-proof-obligations/coagent-feasibility.md": "55cc7111f9dbcd93cf31980c0be1eba2491ecee69a794dd4668c29397c31a36f",
+    "specs/025-contextual-proof-obligations/contracts/continuations-v1.md": "4bae1481bfd2a9247eb53f6a6fd4ff161e90ee428b0a4aaae83a5f1c980d70ab",
+    "specs/025-contextual-proof-obligations/evidence/internal-clean-clone.json": "44863c9da73361e3d0e92da652fb9caa79f50851050bef0a98f9d490079f0329",
+    "specs/025-contextual-proof-obligations/evidence/luna-checker-mapping.json": "350168b3653912b7dfcd8aec50c319f1b28e6190357b425e5eaafd37daeb1b01",
+    "specs/025-contextual-proof-obligations/premise-inventory.json": "25c9a7ab8594c03d7bb865607d660cb5c42b8251d6d8f287ddec173e518af979",
+    "specs/025-contextual-proof-obligations/premise-inventory.md": "1fb3abe8f900524a946e613c3d7238b8ef4f79c2ddaf8c69308b12fcf9bc770c",
+    "specs/025-contextual-proof-obligations/proof-tool-assessment.md": "d8c2ca1fc8712353683ce14322ebbc8532a944c0779e5748824fff03d172f6fe",
+    "specs/025-contextual-proof-obligations/technical-interface-review.json": "2050cde93dbf37fcb374b5edb7249442dab78101c77f0d52e324a26006e77e99",
+    "tests/test_contextual_lab.py": "aa8f33ba47d79a6418d7d1f3d1a570782561ced894dbf24ada03cda5679e674b"
+  },
+  "taskStatus": {
+    "T001": "technical-complete",
+    "T002": "technical-complete",
+    "T003": "technical-complete",
+    "T004": "technical-complete",
+    "T005": "technical-complete",
+    "T006": "technical-complete",
+    "T007": "pending-final-profile-freeze-and-specific-proof-review"
+  },
+  "validation": {
+    "candidateFreeze": "pending",
+    "focused": "passed",
+    "preflight": "passed",
+    "stablePrProfile": "pending"
+  }
+}

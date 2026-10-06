@@ -1,0 +1,834 @@
+{
+  "fixtureVersion": "s1-product-controls-v1",
+  "predeclared": true,
+  "oracle": "Expected question/option types, scalar values, property/pointer order and mapping were manually declared; SHA256 only binds those declared JSON values. No feature compiler imported/executed.",
+  "scalarKindConvention": "boolean distinct from integer/number; schema numeric literals 1 and 1.0 are equal for enum uniqueness.",
+  "cases": [
+    {
+      "caseId": "root-boolean",
+      "schema": {
+        "type": "boolean"
+      },
+      "expected": {
+        "contractVersion": "s1-schema-synthetic-v1",
+        "schemaDigest": "7cb541e84f226754a46c21c79f131fa2898354e1242456e6fd1c162bce319553",
+        "questions": [
+          {
+            "id": "0edbde21a086e3275f51bc5029131e6ecd86fa838cbdd77e3688075ea4f892cc",
+            "type": "boolean",
+            "instructions": "Select the explicit schema value.",
+            "options": [
+              {
+                "id": "false",
+                "description": "false"
+              },
+              {
+                "id": "true",
+                "description": "true"
+              }
+            ]
+          }
+        ],
+        "bindings": [
+          {
+            "questionId": "0edbde21a086e3275f51bc5029131e6ecd86fa838cbdd77e3688075ea4f892cc",
+            "instancePointer": "",
+            "schemaPointer": "",
+            "resolvedSchemaPointer": "",
+            "options": [
+              {
+                "optionId": "false",
+                "scalarKind": "boolean",
+                "value": false
+              },
+              {
+                "optionId": "true",
+                "scalarKind": "boolean",
+                "value": true
+              }
+            ]
+          }
+        ],
+        "evidenceClass": "heuristic",
+        "executionAuthorization": false,
+        "packetDigest": "9a3c76d0ac4c12ab036482f3d242becd8fd8eaac18d7c5b71530c556206c51dd"
+      }
+    },
+    {
+      "caseId": "nullable-enum",
+      "schema": {
+        "type": [
+          "string",
+          "null"
+        ],
+        "enum": [
+          "ready",
+          null
+        ]
+      },
+      "expected": {
+        "contractVersion": "s1-schema-synthetic-v1",
+        "schemaDigest": "e83a2870cea94124a4db510358efdfca5f40b0a66f26576d5683af03a4e808c4",
+        "questions": [
+          {
+            "id": "0edbde21a086e3275f51bc5029131e6ecd86fa838cbdd77e3688075ea4f892cc",
+            "type": "choice",
+            "instructions": "Select the explicit schema value.",
+            "options": [
+              {
+                "id": "e60fb226a42b6f883c3645b2d7630cbd4a96a32aed143b8582a1ec8d31fa1ec0",
+                "description": "\"ready\""
+              },
+              {
+                "id": "415f6399633611eef48590fbd8943d9e46a6f970a7a8b0a6bcf36e4c5f64b6ff",
+                "description": "null"
+              }
+            ]
+          }
+        ],
+        "bindings": [
+          {
+            "questionId": "0edbde21a086e3275f51bc5029131e6ecd86fa838cbdd77e3688075ea4f892cc",
+            "instancePointer": "",
+            "schemaPointer": "",
+            "resolvedSchemaPointer": "",
+            "options": [
+              {
+                "optionId": "e60fb226a42b6f883c3645b2d7630cbd4a96a32aed143b8582a1ec8d31fa1ec0",
+                "scalarKind": "string",
+                "value": "ready"
+              },
+              {
+                "optionId": "415f6399633611eef48590fbd8943d9e46a6f970a7a8b0a6bcf36e4c5f64b6ff",
+                "scalarKind": "null",
+                "value": null
+              }
+            ]
+          }
+        ],
+        "evidenceClass": "heuristic",
+        "executionAuthorization": false,
+        "packetDigest": "cfd78ecc9b1ce6d6fbdca6429a9310cce2ae090c3b8c89506156d1401e72edee"
+      }
+    },
+    {
+      "caseId": "ordinal-preserves-values",
+      "schema": {
+        "type": "number",
+        "enum": [
+          -2,
+          0,
+          5
+        ],
+        "x-agent-braid-ordinal": true
+      },
+      "expected": {
+        "contractVersion": "s1-schema-synthetic-v1",
+        "schemaDigest": "149e4b74bbf34602c08727ddf30d79bf264792ba7c4657944c3f0fbb43444c42",
+        "questions": [
+          {
+            "id": "0edbde21a086e3275f51bc5029131e6ecd86fa838cbdd77e3688075ea4f892cc",
+            "type": "score",
+            "instructions": "Select the explicit schema value.",
+            "options": [
+              {
+                "id": "0f9f472c1e537411919fbe7ec727135cccc169a8a731b59062b1844f5f4a7031",
+                "description": "-2",
+                "value": -2
+              },
+              {
+                "id": "6cfeba8be3cd181a8f055b30a1f0a4849b3171f9b1c29d0fb3978096167efce1",
+                "description": "0",
+                "value": 0
+              },
+              {
+                "id": "736b2df8ecb9eb2c080abd227fc7adb611bc7904b18a92be57b630da445eee65",
+                "description": "5",
+                "value": 5
+              }
+            ]
+          }
+        ],
+        "bindings": [
+          {
+            "questionId": "0edbde21a086e3275f51bc5029131e6ecd86fa838cbdd77e3688075ea4f892cc",
+            "instancePointer": "",
+            "schemaPointer": "",
+            "resolvedSchemaPointer": "",
+            "options": [
+              {
+                "optionId": "0f9f472c1e537411919fbe7ec727135cccc169a8a731b59062b1844f5f4a7031",
+                "scalarKind": "integer",
+                "value": -2
+              },
+              {
+                "optionId": "6cfeba8be3cd181a8f055b30a1f0a4849b3171f9b1c29d0fb3978096167efce1",
+                "scalarKind": "integer",
+                "value": 0
+              },
+              {
+                "optionId": "736b2df8ecb9eb2c080abd227fc7adb611bc7904b18a92be57b630da445eee65",
+                "scalarKind": "integer",
+                "value": 5
+              }
+            ]
+          }
+        ],
+        "evidenceClass": "heuristic",
+        "executionAuthorization": false,
+        "packetDigest": "006166e52725501b680c6e98e50882d3e872dd6030d9b3d79dd791fca6a2082a"
+      }
+    },
+    {
+      "caseId": "boolean-enum-is-choice",
+      "schema": {
+        "type": "boolean",
+        "enum": [
+          true,
+          false
+        ]
+      },
+      "expected": {
+        "contractVersion": "s1-schema-synthetic-v1",
+        "schemaDigest": "a9ba72e4b575a9fa0f4fe02beb8b3395a50b4027cdd30843316f4b609eb005db",
+        "questions": [
+          {
+            "id": "0edbde21a086e3275f51bc5029131e6ecd86fa838cbdd77e3688075ea4f892cc",
+            "type": "choice",
+            "instructions": "Select the explicit schema value.",
+            "options": [
+              {
+                "id": "c1466d227c8330ba7021438b7e54a2ec8cc07c6fe2155a9afa8992ba4329ab1b",
+                "description": "true"
+              },
+              {
+                "id": "2f4a086d1a347063b02c63aa13852c5eae4523f5c97953f1bc9573998a642e63",
+                "description": "false"
+              }
+            ]
+          }
+        ],
+        "bindings": [
+          {
+            "questionId": "0edbde21a086e3275f51bc5029131e6ecd86fa838cbdd77e3688075ea4f892cc",
+            "instancePointer": "",
+            "schemaPointer": "",
+            "resolvedSchemaPointer": "",
+            "options": [
+              {
+                "optionId": "c1466d227c8330ba7021438b7e54a2ec8cc07c6fe2155a9afa8992ba4329ab1b",
+                "scalarKind": "boolean",
+                "value": true
+              },
+              {
+                "optionId": "2f4a086d1a347063b02c63aa13852c5eae4523f5c97953f1bc9573998a642e63",
+                "scalarKind": "boolean",
+                "value": false
+              }
+            ]
+          }
+        ],
+        "evidenceClass": "heuristic",
+        "executionAuthorization": false,
+        "packetDigest": "1af6a1d933f3b683b0b39d5751295665fdbcd2d7a76dc99c9744d91b00a98c81"
+      }
+    },
+    {
+      "caseId": "mixed-scalars-distinct",
+      "schema": {
+        "enum": [
+          true,
+          1,
+          "1",
+          null
+        ]
+      },
+      "expected": {
+        "contractVersion": "s1-schema-synthetic-v1",
+        "schemaDigest": "33ec9357926499fc064799bc830b2c4f0aca0ac4ebdeb951701f0551ca5b3edf",
+        "questions": [
+          {
+            "id": "0edbde21a086e3275f51bc5029131e6ecd86fa838cbdd77e3688075ea4f892cc",
+            "type": "choice",
+            "instructions": "Select the explicit schema value.",
+            "options": [
+              {
+                "id": "c1466d227c8330ba7021438b7e54a2ec8cc07c6fe2155a9afa8992ba4329ab1b",
+                "description": "true"
+              },
+              {
+                "id": "4b0c8f0bb0e2278e0bedafa5adccb445e423b869581c69aa3bf84c232ab975ad",
+                "description": "1"
+              },
+              {
+                "id": "8c4ec109aca6b555bb6c42dd4d4479b74821ec4a8a90ff599780a6c1893ec07d",
+                "description": "\"1\""
+              },
+              {
+                "id": "415f6399633611eef48590fbd8943d9e46a6f970a7a8b0a6bcf36e4c5f64b6ff",
+                "description": "null"
+              }
+            ]
+          }
+        ],
+        "bindings": [
+          {
+            "questionId": "0edbde21a086e3275f51bc5029131e6ecd86fa838cbdd77e3688075ea4f892cc",
+            "instancePointer": "",
+            "schemaPointer": "",
+            "resolvedSchemaPointer": "",
+            "options": [
+              {
+                "optionId": "c1466d227c8330ba7021438b7e54a2ec8cc07c6fe2155a9afa8992ba4329ab1b",
+                "scalarKind": "boolean",
+                "value": true
+              },
+              {
+                "optionId": "4b0c8f0bb0e2278e0bedafa5adccb445e423b869581c69aa3bf84c232ab975ad",
+                "scalarKind": "integer",
+                "value": 1
+              },
+              {
+                "optionId": "8c4ec109aca6b555bb6c42dd4d4479b74821ec4a8a90ff599780a6c1893ec07d",
+                "scalarKind": "string",
+                "value": "1"
+              },
+              {
+                "optionId": "415f6399633611eef48590fbd8943d9e46a6f970a7a8b0a6bcf36e4c5f64b6ff",
+                "scalarKind": "null",
+                "value": null
+              }
+            ]
+          }
+        ],
+        "evidenceClass": "heuristic",
+        "executionAuthorization": false,
+        "packetDigest": "0bdfd68287f6d43a7919ebb08b88a025aaae1b5bd96d2a9f4815c3101635d9d6"
+      }
+    },
+    {
+      "caseId": "pointer-escaping-sorted-properties",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "z": {
+            "type": "boolean"
+          },
+          "a/b~": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "z",
+          "a/b~"
+        ],
+        "additionalProperties": false
+      },
+      "expected": {
+        "contractVersion": "s1-schema-synthetic-v1",
+        "schemaDigest": "ddb069934f056fabb92a28d036b8c2d4dae5b64b5aea8e7a2512dddd2a3aed00",
+        "questions": [
+          {
+            "id": "4a036c7921d988dc036d8f57c9ca5354bac8dacf07c6d949d04c37b27a11f49c",
+            "type": "boolean",
+            "instructions": "Select the explicit schema value.",
+            "options": [
+              {
+                "id": "false",
+                "description": "false"
+              },
+              {
+                "id": "true",
+                "description": "true"
+              }
+            ]
+          },
+          {
+            "id": "14ee4bfa59ab1f2a0e1d13153e0f0852731a2239f0e70cacf281b6d9a3d7800e",
+            "type": "boolean",
+            "instructions": "Select the explicit schema value.",
+            "options": [
+              {
+                "id": "false",
+                "description": "false"
+              },
+              {
+                "id": "true",
+                "description": "true"
+              }
+            ]
+          }
+        ],
+        "bindings": [
+          {
+            "questionId": "4a036c7921d988dc036d8f57c9ca5354bac8dacf07c6d949d04c37b27a11f49c",
+            "instancePointer": "/a~1b~0",
+            "schemaPointer": "/properties/a~1b~0",
+            "resolvedSchemaPointer": "/properties/a~1b~0",
+            "options": [
+              {
+                "optionId": "false",
+                "scalarKind": "boolean",
+                "value": false
+              },
+              {
+                "optionId": "true",
+                "scalarKind": "boolean",
+                "value": true
+              }
+            ]
+          },
+          {
+            "questionId": "14ee4bfa59ab1f2a0e1d13153e0f0852731a2239f0e70cacf281b6d9a3d7800e",
+            "instancePointer": "/z",
+            "schemaPointer": "/properties/z",
+            "resolvedSchemaPointer": "/properties/z",
+            "options": [
+              {
+                "optionId": "false",
+                "scalarKind": "boolean",
+                "value": false
+              },
+              {
+                "optionId": "true",
+                "scalarKind": "boolean",
+                "value": true
+              }
+            ]
+          }
+        ],
+        "evidenceClass": "heuristic",
+        "executionAuthorization": false,
+        "packetDigest": "3cf6b8c61ddb2d45853c85e0e31593fb8eaf536f741adae0a8a6d6e992764fa6"
+      }
+    },
+    {
+      "caseId": "local-reference",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "choice": {
+            "$ref": "#/$defs/Choice"
+          }
+        },
+        "required": [
+          "choice"
+        ],
+        "additionalProperties": false,
+        "$defs": {
+          "Choice": {
+            "enum": [
+              "first",
+              "second"
+            ]
+          }
+        }
+      },
+      "expected": {
+        "contractVersion": "s1-schema-synthetic-v1",
+        "schemaDigest": "0629a8fa902afea81aa0278ef4c081951e4dd08e4b95760b653d952f262f9c63",
+        "questions": [
+          {
+            "id": "e6c0346d08cb0db510c865edf07bb1ecee6212b6df8f3d8b496e97227ac57460",
+            "type": "choice",
+            "instructions": "Select the explicit schema value.",
+            "options": [
+              {
+                "id": "8e597f9850324c5ade67ad12f3bd595ee7e0c241f8166ea7605e6972e8ff8f6e",
+                "description": "\"first\""
+              },
+              {
+                "id": "6945a18538e54ee20863a49deedef963367fd02ef218293748158b3e413cbc65",
+                "description": "\"second\""
+              }
+            ]
+          }
+        ],
+        "bindings": [
+          {
+            "questionId": "e6c0346d08cb0db510c865edf07bb1ecee6212b6df8f3d8b496e97227ac57460",
+            "instancePointer": "/choice",
+            "schemaPointer": "/properties/choice",
+            "resolvedSchemaPointer": "/$defs/Choice",
+            "options": [
+              {
+                "optionId": "8e597f9850324c5ade67ad12f3bd595ee7e0c241f8166ea7605e6972e8ff8f6e",
+                "scalarKind": "string",
+                "value": "first"
+              },
+              {
+                "optionId": "6945a18538e54ee20863a49deedef963367fd02ef218293748158b3e413cbc65",
+                "scalarKind": "string",
+                "value": "second"
+              }
+            ]
+          }
+        ],
+        "evidenceClass": "heuristic",
+        "executionAuthorization": false,
+        "packetDigest": "51c159b6e17ded919b5d63431195d56b48e5c1d395c1effc618e556337e5a482"
+      }
+    },
+    {
+      "caseId": "nested-object",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "inner": {
+            "type": "object",
+            "properties": {
+              "flag": {
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "flag"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "required": [
+          "inner"
+        ],
+        "additionalProperties": false
+      },
+      "expected": {
+        "contractVersion": "s1-schema-synthetic-v1",
+        "schemaDigest": "8d749402184a2040e2ab01928e9b5eb4e963c82bb4cbf0b78a80c54a8c34200c",
+        "questions": [
+          {
+            "id": "60ff152e34bbc9a73b1329cd2367ed1e3baa90be06f42016817d39afd9b28512",
+            "type": "boolean",
+            "instructions": "Select the explicit schema value.",
+            "options": [
+              {
+                "id": "false",
+                "description": "false"
+              },
+              {
+                "id": "true",
+                "description": "true"
+              }
+            ]
+          }
+        ],
+        "bindings": [
+          {
+            "questionId": "60ff152e34bbc9a73b1329cd2367ed1e3baa90be06f42016817d39afd9b28512",
+            "instancePointer": "/inner/flag",
+            "schemaPointer": "/properties/inner/properties/flag",
+            "resolvedSchemaPointer": "/properties/inner/properties/flag",
+            "options": [
+              {
+                "optionId": "false",
+                "scalarKind": "boolean",
+                "value": false
+              },
+              {
+                "optionId": "true",
+                "scalarKind": "boolean",
+                "value": true
+              }
+            ]
+          }
+        ],
+        "evidenceClass": "heuristic",
+        "executionAuthorization": false,
+        "packetDigest": "69c355e976830d70ff991e19dff0b1ec13456e75b0754fc1984a78aff1a812a1"
+      }
+    },
+    {
+      "caseId": "free-string",
+      "schema": {
+        "type": "string"
+      },
+      "controls": {},
+      "expected": {
+        "questions": [],
+        "bindings": [],
+        "reasonCodes": [
+          "unsupported-shape"
+        ],
+        "executionAuthorization": false
+      }
+    },
+    {
+      "caseId": "singleton-enum",
+      "schema": {
+        "enum": [
+          "one"
+        ]
+      },
+      "controls": {},
+      "expected": {
+        "questions": [],
+        "bindings": [],
+        "reasonCodes": [
+          "unsupported-shape"
+        ],
+        "executionAuthorization": false
+      }
+    },
+    {
+      "caseId": "numeric-equality-duplicate",
+      "schema": {
+        "enum": [
+          1,
+          1.0
+        ]
+      },
+      "controls": {},
+      "expected": {
+        "questions": [],
+        "bindings": [],
+        "reasonCodes": [
+          "unsupported-shape"
+        ],
+        "executionAuthorization": false
+      }
+    },
+    {
+      "caseId": "null-only",
+      "schema": {
+        "enum": [
+          null
+        ]
+      },
+      "controls": {},
+      "expected": {
+        "questions": [],
+        "bindings": [],
+        "reasonCodes": [
+          "unsupported-shape"
+        ],
+        "executionAuthorization": false
+      }
+    },
+    {
+      "caseId": "unordered-ordinal",
+      "schema": {
+        "type": "number",
+        "enum": [
+          2,
+          1
+        ],
+        "x-agent-braid-ordinal": true
+      },
+      "controls": {},
+      "expected": {
+        "questions": [],
+        "bindings": [],
+        "reasonCodes": [
+          "unsupported-shape"
+        ],
+        "executionAuthorization": false
+      }
+    },
+    {
+      "caseId": "boolean-ordinal",
+      "schema": {
+        "type": "number",
+        "enum": [
+          false,
+          2
+        ],
+        "x-agent-braid-ordinal": true
+      },
+      "controls": {},
+      "expected": {
+        "questions": [],
+        "bindings": [],
+        "reasonCodes": [
+          "unsupported-shape"
+        ],
+        "executionAuthorization": false
+      }
+    },
+    {
+      "caseId": "optional-field",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "x": {
+            "type": "boolean"
+          }
+        },
+        "required": [],
+        "additionalProperties": false
+      },
+      "controls": {},
+      "expected": {
+        "questions": [],
+        "bindings": [],
+        "reasonCodes": [
+          "unsupported-shape"
+        ],
+        "executionAuthorization": false
+      }
+    },
+    {
+      "caseId": "unknown-description",
+      "schema": {
+        "type": "boolean",
+        "description": "SYNTHETIC_PRIVATE_SENTINEL"
+      },
+      "controls": {},
+      "expected": {
+        "questions": [],
+        "bindings": [],
+        "reasonCodes": [
+          "unsupported-keyword"
+        ],
+        "executionAuthorization": false
+      }
+    },
+    {
+      "caseId": "remote-reference",
+      "schema": {
+        "$ref": "https://example.invalid/schema"
+      },
+      "controls": {},
+      "expected": {
+        "questions": [],
+        "bindings": [],
+        "reasonCodes": [
+          "invalid-local-reference"
+        ],
+        "executionAuthorization": false
+      }
+    },
+    {
+      "caseId": "invalid-pointer-escape",
+      "schema": {
+        "$ref": "#/$defs/a~2"
+      },
+      "controls": {},
+      "expected": {
+        "questions": [],
+        "bindings": [],
+        "reasonCodes": [
+          "invalid-local-reference"
+        ],
+        "executionAuthorization": false
+      }
+    },
+    {
+      "caseId": "reference-siblings",
+      "schema": {
+        "$ref": "#/$defs/X",
+        "type": "boolean"
+      },
+      "controls": {},
+      "expected": {
+        "questions": [],
+        "bindings": [],
+        "reasonCodes": [
+          "unsupported-shape"
+        ],
+        "executionAuthorization": false
+      }
+    },
+    {
+      "caseId": "array",
+      "schema": {
+        "type": "array"
+      },
+      "controls": {},
+      "expected": {
+        "questions": [],
+        "bindings": [],
+        "reasonCodes": [
+          "unsupported-shape"
+        ],
+        "executionAuthorization": false
+      }
+    },
+    {
+      "caseId": "numeric-over-rubric",
+      "schema": {
+        "type": "number",
+        "enum": [
+          0,
+          1000001
+        ],
+        "x-agent-braid-ordinal": true
+      },
+      "controls": {},
+      "expected": {
+        "questions": [],
+        "bindings": [],
+        "reasonCodes": [
+          "unsupported-shape"
+        ],
+        "executionAuthorization": false
+      }
+    },
+    {
+      "caseId": "reference-cycle",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "x": {
+            "$ref": "#/$defs/A"
+          }
+        },
+        "required": [
+          "x"
+        ],
+        "additionalProperties": false,
+        "$defs": {
+          "A": {
+            "$ref": "#/$defs/B"
+          },
+          "B": {
+            "$ref": "#/$defs/A"
+          }
+        }
+      },
+      "controls": {},
+      "expected": {
+        "questions": [],
+        "bindings": [],
+        "reasonCodes": [
+          "reference-cycle"
+        ],
+        "executionAuthorization": false
+      }
+    },
+    {
+      "caseId": "cancelled",
+      "schema": {
+        "type": "boolean"
+      },
+      "controls": {
+        "cancelBeforePublication": true
+      },
+      "expected": {
+        "questions": [],
+        "bindings": [],
+        "reasonCodes": [
+          "cancelled"
+        ],
+        "executionAuthorization": false
+      }
+    },
+    {
+      "caseId": "deadline-equality",
+      "schema": {
+        "type": "boolean"
+      },
+      "controls": {
+        "monotonicIngressMs": 0,
+        "monotonicBeforePublicationMs": 5000
+      },
+      "expected": {
+        "questions": [],
+        "bindings": [],
+        "reasonCodes": [
+          "deadline-exceeded"
+        ],
+        "executionAuthorization": false
+      }
+    }
+  ]
+}

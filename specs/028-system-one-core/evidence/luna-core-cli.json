@@ -1,4 +1,14 @@
 {
+  "additionalRegression": {
+    "cases": [
+      "verified=true",
+      "grant={executionAuthorization:true}"
+    ],
+    "outcome": "33 focused tests passed; explicit forged fields refused",
+    "review": "gpt-6-luna independently inspected both new subcases and verified test/log SHA; no additional suite execution claimed",
+    "sha256": "db692c76cc62eb05f05b2b7529199f819aba485ccdfd5c9bef75e999d2d9724a",
+    "testFile": "tests/test_system_one_core.py"
+  },
   "capturedAt": "2026-10-06T22:02:58.369512+00:00",
   "executionAuthorization": false,
   "finalActionableFindings": [],
@@ -32,7 +42,7 @@
     "command": "<isolated-python-3.13>/bin/python -m unittest tests.test_system_one_core tests.test_system_one_backends tests.test_system_one_policy tests.test_system_one_concurrency tests.test_system_one_cli -v",
     "log": "specs/028-system-one-core/evidence/focused-tests.log",
     "outcome": "33 passed",
-    "sha256": "5cf7c7ed6b0d08b9b20263b70fa12cc9704bcc116ec10aa661f3dec40cbf9ee6"
+    "sha256": "cf2480d941f72e59305293aee8755d58df5b7c075234fd56b0b2c62a8ac30fc7"
   },
   "reviewModel": "gpt-6-luna",
   "reviewType": "independent-code-security-domain",
@@ -52,7 +62,12 @@
     "tests/test_system_one_core.py": "18f078098ae73c8a44e27425f490774bdb444eb5e648bd52260a9a1806939c5f",
     "tests/test_system_one_policy.py": "6d021a247b7051ec4c625af75fe3275922cd3f610f080e1a0258e1febadea552"
   },
-  "reviewerExecutedTests": false,
+  "reviewerExecutedChecks": {
+    "command": "<isolated-python>/bin/python -m unittest tests.test_system_one_core tests.test_system_one_backends tests.test_system_one_policy tests.test_system_one_concurrency tests.test_system_one_cli -v",
+    "outcome": "33 tests passed independently; same current source hashes. Temporary wheel SHA and five archive source entries independently byte-verified against offline-wheel.json; artifact remains unpublished.",
+    "python": "3.13.11"
+  },
+  "reviewerExecutedTests": true,
   "scope": "Synthetic stdlib core and opt-in CLI; validation classifier reviewed separately.",
   "technicalDecision": "conditional-GO-exact-synthetic-reference"
 }

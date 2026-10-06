@@ -158,6 +158,8 @@ class SystemOneCoreTests(unittest.TestCase):
         request = validate_request(encoded(value))
         baseline = evaluate(encoded(value))
         for mutate in (lambda x: x.update(executionAuthorization=True),
+                       lambda x: x.update(verified=True),
+                       lambda x: x.update(grant={"executionAuthorization": True}),
                        lambda x: x.update(calibratedProbability=1),
                        lambda x: x.update(certificate={"verified": True}),
                        lambda x: x["answers"][0].update(pTrue=True),
