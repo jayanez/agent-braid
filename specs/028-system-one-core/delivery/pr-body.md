@@ -48,3 +48,10 @@ SPEC-029/T009 requires the pre-fit decision for both branches and trained candid
 only for comparison. A pre-fit NO-GO can produce an infeasibility report while
 model-training tasks remain pending. Generated task drafts and both dependency
 graphs were checked for consistency; no implementation task is marked complete.
+
+Linear-history integration: GitHub rejected merge commits. The six pending
+drafts now bind authority hashes to the already integrated develop base
+53faa6aed5426f0c84f0ed0ec7a92c073512ee2b, whose authority bytes match the original
+feature candidate. Empty acceptance evidence remains in current mode so
+feature-local references survive squash/rebase integration. All reviews remain
+pending; future approval requires a fresh freeze and separate review record.

@@ -114,5 +114,44 @@
       "55 source-generated issue drafts; 49 implementation tasks unchecked"
     ],
     "featureAcceptance": "not implied; human review remains pending"
+  },
+  "linearHistoryIntegrationChecks": {
+    "at": "2026-10-06T09:09:55.351317+00:00",
+    "scope": "Six draft assurance bindings and independent linear-history preflight; no feature acceptance or review approval.",
+    "priorPlanningHead": "ce3201c1a8ca3451929f2e653292f162e68d6e8f",
+    "authoritySnapshotCommit": "53faa6aed5426f0c84f0ed0ec7a92c073512ee2b",
+    "priorDraftCandidate": "24403cc56192ff9964ffb72561acfc901b327fcf",
+    "authorityInventoryAndHashesUnchanged": true,
+    "draftRecordsValidated": 6,
+    "evidenceSnapshotMode": "current",
+    "obtainedAcceptanceEvidence": 0,
+    "humanReviews": "pending",
+    "independentClone": "Only develop ancestry and published review tags; a local single-parent integration commit contains the packet. Original feature candidate is absent from the object store.",
+    "command": "python3 scripts/validate_spec_kit.py",
+    "exitCode": 0,
+    "initialFailure": "Single-branch clone omitted published reviewed-candidate tags required by existing SPEC-016; normal tag fetch restored them.",
+    "logs": [
+      {
+        "log": "specs/028-system-one-core/delivery/checks/linear-history-simulation-initial.txt",
+        "exitCode": 1,
+        "sha256": "244b51c588c8faf5337d41abc6a8ad18ab3a6ab5fdad8529f163685c0bd103d8"
+      },
+      {
+        "log": "specs/028-system-one-core/delivery/checks/linear-history-simulation.txt",
+        "exitCode": 0,
+        "sha256": "b28f0f3bd337a6cae29938ed6ec99ef7ecf3c0005cc38370479d91ec923e04ac"
+      }
+    ],
+    "futureApproval": "Fresh freeze against an integrated candidate and separate human review remain required.",
+    "prProfile": {
+      "at": "2026-10-06T09:13:58.046167+00:00",
+      "command": "umask 0022 && .venv-speckit/bin/python scripts/validate_change.py --base origin/develop --profile pr",
+      "exitCode": 0,
+      "testsRun": 385,
+      "testsPassed": 380,
+      "testsSkipped": 5,
+      "log": "specs/028-system-one-core/delivery/checks/linear-history-pr.txt",
+      "sha256": "3fc569853fe4b4516f7aac16341d3f771b5bd68b9ca7a751b0108e47c42bef35"
+    }
   }
 }

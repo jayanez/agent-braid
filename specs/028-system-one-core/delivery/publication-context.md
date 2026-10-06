@@ -25,3 +25,23 @@ No task in this program supplies missing upstream permission or acceptance evide
 The user explicitly authorized the PR, five S1 milestones and 55 issues with
 “OK lo autorizo. Adelante” on 2026-10-06. This authorizes scoped publication, not
 architecture adoption, model fitting, runtime promotion or merging the planning PR.
+
+## Linear-history integration
+
+The user separately authorized merging PR #274 on 2026-10-06 with
+“OK, fusiona”. GitHub rejected ordinary merge commits. Squash or rebase would
+replace the feature commits, including the original draft snapshot candidate
+24403cc56192ff9964ffb72561acfc901b327fcf, in develop ancestry.
+
+To keep these unapproved drafts valid after linear-history integration, all six
+authority snapshots now bind the already public base
+53faa6aed5426f0c84f0ed0ec7a92c073512ee2b. Its complete authority inventory and
+hashes are identical to the original candidate; no authority drift is hidden.
+Evidence snapshots use current mode because all obtained acceptance evidence
+is empty and the feature-local references first appear in this PR. Every record
+remains draft/pending. Future approval requires a fresh freeze against an
+integrated candidate and a separate review record.
+
+The original publication receipt and validation records retain their historical
+scope. This integration adjustment does not grant architecture adoption, source
+collection, model fitting, runtime promotion or scientific acceptance.
