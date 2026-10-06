@@ -1,0 +1,577 @@
+{
+  "repository": "jayanez/agent-braid",
+  "publicationStatus": "authorized scoped publication; receipt pending",
+  "milestones": {
+    "S1.0 \u2014 Contracts": {
+      "description": "Native typed advisory decision foundation; draft implementation track, no accepted utility claim.",
+      "state": "open",
+      "due_on": null
+    },
+    "S1.1 \u2014 Evidence": {
+      "description": "Prospective corpus and unbiased decision evaluation; draft implementation track, no accepted utility claim.",
+      "state": "open",
+      "due_on": null
+    },
+    "S1.2 \u2014 Native model": {
+      "description": "Own non-generative neural decision experiment; draft implementation track, no accepted utility claim.",
+      "state": "open",
+      "due_on": null
+    },
+    "S1.3 \u2014 Integration": {
+      "description": "Advisory integration across Agent Braid decision stages; draft implementation track, no accepted utility claim.",
+      "state": "open",
+      "due_on": null
+    },
+    "S1.4 \u2014 Product and promotion": {
+      "description": "Per-feature advanced capability acceptance plus separately governed shadow, promotion, drift, rollback and closure.",
+      "state": "open",
+      "due_on": null
+    }
+  },
+  "issues": [
+    {
+      "key": "SPEC-028",
+      "kind": "spec",
+      "parent": null,
+      "title": "[SPEC-028] SPEC-028: Native typed advisory decision foundation",
+      "body": "<!-- agent-braid-spec-id: SPEC-028 -->\n\nSource: [spec.md](https://github.com/jayanez/agent-braid/blob/develop/specs/028-system-one-core/spec.md) \u00b7 [tasks.md](https://github.com/jayanez/agent-braid/blob/develop/specs/028-system-one-core/tasks.md) \u00b7 [assurance.json](https://github.com/jayanez/agent-braid/blob/develop/specs/028-system-one-core/assurance.json)\n\nRequirements: REQ-001, REQ-002, REQ-003, REQ-004, REQ-005, REQ-006.\n\nIssue state is a bounded tracking record, not a scientific or founder approval.\n",
+      "milestone": "S1.0 \u2014 Contracts",
+      "state": "open"
+    },
+    {
+      "key": "SPEC-028/T001",
+      "kind": "task",
+      "parent": "SPEC-028",
+      "title": "[SPEC-028 T001] Review the feature-local architecture decision and freeze v1 limits. Dependencies: none. Target files:...",
+      "body": "<!-- agent-braid-task-id: SPEC-028/T001 -->\n\n## Task\n\nReview the feature-local architecture decision and freeze v1 limits. Dependencies: none. Target files: adr-proposal.md, contracts/decision-api.md. Planned command after implementation: `.venv-speckit/bin/python -m unittest discover -s tests -p \"test_system_one*.py\" -v`; for manual source/budget/review gates, capture an actual reviewer decision rather than substituting a test result. Verification: Review record binds contract, threat boundary and defaults before implementation. Planned evidence: candidate-bound report under specs/028-system-one-core/evidence/t001.json; obtained: none.\n\n- Source: [spec.md](https://github.com/jayanez/agent-braid/blob/develop/specs/028-system-one-core/spec.md) \u00b7 [tasks.md](https://github.com/jayanez/agent-braid/blob/develop/specs/028-system-one-core/tasks.md) \u00b7 [assurance.json](https://github.com/jayanez/agent-braid/blob/develop/specs/028-system-one-core/assurance.json)\n- Trace: REQ-001 REQ-002 REQ-004 / SC-001 SC-002 SC-004\n- State basis: Source checkbox in tasks.md.\n\nPlanned and obtained evidence are separate in assurance.json. Closing this issue does not imply human review or scientific proof.\n",
+      "milestone": "S1.0 \u2014 Contracts",
+      "state": "open",
+      "task_text": "Review the feature-local architecture decision and freeze v1 limits. Dependencies: none. Target files: adr-proposal.md, contracts/decision-api.md. Planned command after implementation: `.venv-speckit/bin/python -m unittest discover -s tests -p \"test_system_one*.py\" -v`; for manual source/budget/review gates, capture an actual reviewer decision rather than substituting a test result. Verification: Review record binds contract, threat boundary and defaults before implementation. Planned evidence: candidate-bound report under specs/028-system-one-core/evidence/t001.json; obtained: none."
+    },
+    {
+      "key": "SPEC-028/T002",
+      "kind": "task",
+      "parent": "SPEC-028",
+      "title": "[SPEC-028 T002] Implement immutable typed request and response validation. Dependencies: T001. Target files: agent_bra...",
+      "body": "<!-- agent-braid-task-id: SPEC-028/T002 -->\n\n## Task\n\nImplement immutable typed request and response validation. Dependencies: T001. Target files: agent_braid/system_one.py, tests/test_system_one_core.py. Planned command after implementation: `.venv-speckit/bin/python -m unittest tests.test_system_one_core -v`; for manual source/budget/review gates, capture an actual reviewer decision rather than substituting a test result. Verification: Run malformed-input, finite-number, option-identity and exact-budget boundary tests. Planned evidence: candidate-bound report under specs/028-system-one-core/evidence/t002.json; obtained: none.\n\n- Source: [spec.md](https://github.com/jayanez/agent-braid/blob/develop/specs/028-system-one-core/spec.md) \u00b7 [tasks.md](https://github.com/jayanez/agent-braid/blob/develop/specs/028-system-one-core/tasks.md) \u00b7 [assurance.json](https://github.com/jayanez/agent-braid/blob/develop/specs/028-system-one-core/assurance.json)\n- Trace: REQ-001 REQ-002 / SC-001 SC-002\n- State basis: Source checkbox in tasks.md.\n\nPlanned and obtained evidence are separate in assurance.json. Closing this issue does not imply human review or scientific proof.\n",
+      "milestone": "S1.0 \u2014 Contracts",
+      "state": "open",
+      "task_text": "Implement immutable typed request and response validation. Dependencies: T001. Target files: agent_braid/system_one.py, tests/test_system_one_core.py. Planned command after implementation: `.venv-speckit/bin/python -m unittest tests.test_system_one_core -v`; for manual source/budget/review gates, capture an actual reviewer decision rather than substituting a test result. Verification: Run malformed-input, finite-number, option-identity and exact-budget boundary tests. Planned evidence: candidate-bound report under specs/028-system-one-core/evidence/t002.json; obtained: none."
+    },
+    {
+      "key": "SPEC-028/T003",
+      "kind": "task",
+      "parent": "SPEC-028",
+      "title": "[SPEC-028 T003] Implement rule backend, backend protocol and offline capability discovery. Dependencies: T002. Target...",
+      "body": "<!-- agent-braid-task-id: SPEC-028/T003 -->\n\n## Task\n\nImplement rule backend, backend protocol and offline capability discovery. Dependencies: T002. Target files: agent_braid/system_one_backends.py, tests/test_system_one_backends.py. Planned command after implementation: `.venv-speckit/bin/python -m unittest tests.test_system_one_backends -v`; for manual source/budget/review gates, capture an actual reviewer decision rather than substituting a test result. Verification: Verify no Torch/provider imports in base package and unknown is explicit. Planned evidence: candidate-bound report under specs/028-system-one-core/evidence/t003.json; obtained: none.\n\n- Source: [spec.md](https://github.com/jayanez/agent-braid/blob/develop/specs/028-system-one-core/spec.md) \u00b7 [tasks.md](https://github.com/jayanez/agent-braid/blob/develop/specs/028-system-one-core/tasks.md) \u00b7 [assurance.json](https://github.com/jayanez/agent-braid/blob/develop/specs/028-system-one-core/assurance.json)\n- Trace: REQ-001 REQ-005 / SC-001 SC-005\n- State basis: Source checkbox in tasks.md.\n\nPlanned and obtained evidence are separate in assurance.json. Closing this issue does not imply human review or scientific proof.\n",
+      "milestone": "S1.0 \u2014 Contracts",
+      "state": "open",
+      "task_text": "Implement rule backend, backend protocol and offline capability discovery. Dependencies: T002. Target files: agent_braid/system_one_backends.py, tests/test_system_one_backends.py. Planned command after implementation: `.venv-speckit/bin/python -m unittest tests.test_system_one_backends -v`; for manual source/budget/review gates, capture an actual reviewer decision rather than substituting a test result. Verification: Verify no Torch/provider imports in base package and unknown is explicit. Planned evidence: candidate-bound report under specs/028-system-one-core/evidence/t003.json; obtained: none."
+    },
+    {
+      "key": "SPEC-028/T004",
+      "kind": "task",
+      "parent": "SPEC-028",
+      "title": "[SPEC-028 T004] Implement provenance digests and distinct probability fields. Dependencies: T002. Target files: agent_...",
+      "body": "<!-- agent-braid-task-id: SPEC-028/T004 -->\n\n## Task\n\nImplement provenance digests and distinct probability fields. Dependencies: T002. Target files: agent_braid/system_one.py, tests/test_system_one_core.py. Planned command after implementation: `.venv-speckit/bin/python -m unittest tests.test_system_one_core -v`; for manual source/budget/review gates, capture an actual reviewer decision rather than substituting a test result. Verification: Mutate every identity component and verify binding; test uniform and forced distributions. Planned evidence: candidate-bound report under specs/028-system-one-core/evidence/t004.json; obtained: none.\n\n- Source: [spec.md](https://github.com/jayanez/agent-braid/blob/develop/specs/028-system-one-core/spec.md) \u00b7 [tasks.md](https://github.com/jayanez/agent-braid/blob/develop/specs/028-system-one-core/tasks.md) \u00b7 [assurance.json](https://github.com/jayanez/agent-braid/blob/develop/specs/028-system-one-core/assurance.json)\n- Trace: REQ-003 / SC-003\n- State basis: Source checkbox in tasks.md.\n\nPlanned and obtained evidence are separate in assurance.json. Closing this issue does not imply human review or scientific proof.\n",
+      "milestone": "S1.0 \u2014 Contracts",
+      "state": "open",
+      "task_text": "Implement provenance digests and distinct probability fields. Dependencies: T002. Target files: agent_braid/system_one.py, tests/test_system_one_core.py. Planned command after implementation: `.venv-speckit/bin/python -m unittest tests.test_system_one_core -v`; for manual source/budget/review gates, capture an actual reviewer decision rather than substituting a test result. Verification: Mutate every identity component and verify binding; test uniform and forced distributions. Planned evidence: candidate-bound report under specs/028-system-one-core/evidence/t004.json; obtained: none."
+    },
+    {
+      "key": "SPEC-028/T005",
+      "kind": "task",
+      "parent": "SPEC-028",
+      "title": "[SPEC-028 T005] Implement abstain, defer and refuse outcomes without authorization. Dependencies: T003 T004. Target fi...",
+      "body": "<!-- agent-braid-task-id: SPEC-028/T005 -->\n\n## Task\n\nImplement abstain, defer and refuse outcomes without authorization. Dependencies: T003 T004. Target files: agent_braid/system_one_policy.py, tests/test_system_one_policy.py. Planned command after implementation: `.venv-speckit/bin/python -m unittest tests.test_system_one_policy -v`; for manual source/budget/review gates, capture an actual reviewer decision rather than substituting a test result. Verification: Forged confidence, grants and certificate fields never create execution authority. Planned evidence: candidate-bound report under specs/028-system-one-core/evidence/t005.json; obtained: none.\n\n- Source: [spec.md](https://github.com/jayanez/agent-braid/blob/develop/specs/028-system-one-core/spec.md) \u00b7 [tasks.md](https://github.com/jayanez/agent-braid/blob/develop/specs/028-system-one-core/tasks.md) \u00b7 [assurance.json](https://github.com/jayanez/agent-braid/blob/develop/specs/028-system-one-core/assurance.json)\n- Trace: REQ-003 REQ-004 / SC-003 SC-004\n- State basis: Source checkbox in tasks.md.\n\nPlanned and obtained evidence are separate in assurance.json. Closing this issue does not imply human review or scientific proof.\n",
+      "milestone": "S1.0 \u2014 Contracts",
+      "state": "open",
+      "task_text": "Implement abstain, defer and refuse outcomes without authorization. Dependencies: T003 T004. Target files: agent_braid/system_one_policy.py, tests/test_system_one_policy.py. Planned command after implementation: `.venv-speckit/bin/python -m unittest tests.test_system_one_policy -v`; for manual source/budget/review gates, capture an actual reviewer decision rather than substituting a test result. Verification: Forged confidence, grants and certificate fields never create execution authority. Planned evidence: candidate-bound report under specs/028-system-one-core/evidence/t005.json; obtained: none."
+    },
+    {
+      "key": "SPEC-028/T006",
+      "kind": "task",
+      "parent": "SPEC-028",
+      "title": "[SPEC-028 T006] Implement bounded admission and request-local backend state. Dependencies: T003 T005. Target files: ag...",
+      "body": "<!-- agent-braid-task-id: SPEC-028/T006 -->\n\n## Task\n\nImplement bounded admission and request-local backend state. Dependencies: T003 T005. Target files: agent_braid/system_one_backends.py, tests/test_system_one_concurrency.py. Planned command after implementation: `.venv-speckit/bin/python -m unittest tests.test_system_one_concurrency -v`; for manual source/budget/review gates, capture an actual reviewer decision rather than substituting a test result. Verification: Use barrier-driven interleaving, overload and cancellation; check no cross-request state. Planned evidence: candidate-bound report under specs/028-system-one-core/evidence/t006.json; obtained: none.\n\n- Source: [spec.md](https://github.com/jayanez/agent-braid/blob/develop/specs/028-system-one-core/spec.md) \u00b7 [tasks.md](https://github.com/jayanez/agent-braid/blob/develop/specs/028-system-one-core/tasks.md) \u00b7 [assurance.json](https://github.com/jayanez/agent-braid/blob/develop/specs/028-system-one-core/assurance.json)\n- Trace: REQ-002 REQ-006 / SC-002 SC-006\n- State basis: Source checkbox in tasks.md.\n\nPlanned and obtained evidence are separate in assurance.json. Closing this issue does not imply human review or scientific proof.\n",
+      "milestone": "S1.0 \u2014 Contracts",
+      "state": "open",
+      "task_text": "Implement bounded admission and request-local backend state. Dependencies: T003 T005. Target files: agent_braid/system_one_backends.py, tests/test_system_one_concurrency.py. Planned command after implementation: `.venv-speckit/bin/python -m unittest tests.test_system_one_concurrency -v`; for manual source/budget/review gates, capture an actual reviewer decision rather than substituting a test result. Verification: Use barrier-driven interleaving, overload and cancellation; check no cross-request state. Planned evidence: candidate-bound report under specs/028-system-one-core/evidence/t006.json; obtained: none."
+    },
+    {
+      "key": "SPEC-028/T007",
+      "kind": "task",
+      "parent": "SPEC-028",
+      "title": "[SPEC-028 T007] Add opt-in CLI decision namespace and compatibility checks. Dependencies: T005 T006. Target files: age...",
+      "body": "<!-- agent-braid-task-id: SPEC-028/T007 -->\n\n## Task\n\nAdd opt-in CLI decision namespace and compatibility checks. Dependencies: T005 T006. Target files: agent_braid/cli.py, tests/test_system_one_cli.py. Planned command after implementation: `.venv-speckit/bin/python -m unittest tests.test_system_one_cli -v`; for manual source/budget/review gates, capture an actual reviewer decision rather than substituting a test result. Verification: Compare legacy fixtures byte-for-byte; no default behavior change. Planned evidence: candidate-bound report under specs/028-system-one-core/evidence/t007.json; obtained: none.\n\n- Source: [spec.md](https://github.com/jayanez/agent-braid/blob/develop/specs/028-system-one-core/spec.md) \u00b7 [tasks.md](https://github.com/jayanez/agent-braid/blob/develop/specs/028-system-one-core/tasks.md) \u00b7 [assurance.json](https://github.com/jayanez/agent-braid/blob/develop/specs/028-system-one-core/assurance.json)\n- Trace: REQ-001 REQ-005 / SC-001 SC-005\n- State basis: Source checkbox in tasks.md.\n\nPlanned and obtained evidence are separate in assurance.json. Closing this issue does not imply human review or scientific proof.\n",
+      "milestone": "S1.0 \u2014 Contracts",
+      "state": "open",
+      "task_text": "Add opt-in CLI decision namespace and compatibility checks. Dependencies: T005 T006. Target files: agent_braid/cli.py, tests/test_system_one_cli.py. Planned command after implementation: `.venv-speckit/bin/python -m unittest tests.test_system_one_cli -v`; for manual source/budget/review gates, capture an actual reviewer decision rather than substituting a test result. Verification: Compare legacy fixtures byte-for-byte; no default behavior change. Planned evidence: candidate-bound report under specs/028-system-one-core/evidence/t007.json; obtained: none."
+    },
+    {
+      "key": "SPEC-028/T008",
+      "kind": "task",
+      "parent": "SPEC-028",
+      "title": "[SPEC-028 T008] Capture core boundary evidence and request contract review. Dependencies: T007. Target files: specs/02...",
+      "body": "<!-- agent-braid-task-id: SPEC-028/T008 -->\n\n## Task\n\nCapture core boundary evidence and request contract review. Dependencies: T007. Target files: specs/028-system-one-core/assurance.json, evidence/. Planned command after implementation: `.venv-speckit/bin/python -m unittest discover -s tests -p \"test_system_one*.py\" -v`; for manual source/budget/review gates, capture an actual reviewer decision rather than substituting a test result. Verification: Run feature tests, PR profile and fresh offline install; human acceptance remains separate. Planned evidence: candidate-bound report under specs/028-system-one-core/evidence/t008.json; obtained: none.\n\n- Source: [spec.md](https://github.com/jayanez/agent-braid/blob/develop/specs/028-system-one-core/spec.md) \u00b7 [tasks.md](https://github.com/jayanez/agent-braid/blob/develop/specs/028-system-one-core/tasks.md) \u00b7 [assurance.json](https://github.com/jayanez/agent-braid/blob/develop/specs/028-system-one-core/assurance.json)\n- Trace: REQ-001 REQ-002 REQ-003 REQ-004 REQ-005 REQ-006 / SC-001 SC-002 SC-003 SC-004 SC-005 SC-006\n- State basis: Source checkbox in tasks.md.\n\nPlanned and obtained evidence are separate in assurance.json. Closing this issue does not imply human review or scientific proof.\n",
+      "milestone": "S1.0 \u2014 Contracts",
+      "state": "open",
+      "task_text": "Capture core boundary evidence and request contract review. Dependencies: T007. Target files: specs/028-system-one-core/assurance.json, evidence/. Planned command after implementation: `.venv-speckit/bin/python -m unittest discover -s tests -p \"test_system_one*.py\" -v`; for manual source/budget/review gates, capture an actual reviewer decision rather than substituting a test result. Verification: Run feature tests, PR profile and fresh offline install; human acceptance remains separate. Planned evidence: candidate-bound report under specs/028-system-one-core/evidence/t008.json; obtained: none."
+    },
+    {
+      "key": "SPEC-029",
+      "kind": "spec",
+      "parent": null,
+      "title": "[SPEC-029] SPEC-029: Prospective corpus and unbiased decision evaluation",
+      "body": "<!-- agent-braid-spec-id: SPEC-029 -->\n\nSource: [spec.md](https://github.com/jayanez/agent-braid/blob/develop/specs/029-system-one-evaluation/spec.md) \u00b7 [tasks.md](https://github.com/jayanez/agent-braid/blob/develop/specs/029-system-one-evaluation/tasks.md) \u00b7 [assurance.json](https://github.com/jayanez/agent-braid/blob/develop/specs/029-system-one-evaluation/assurance.json)\n\nRequirements: REQ-001, REQ-002, REQ-003, REQ-004, REQ-005, REQ-006.\n\nIssue state is a bounded tracking record, not a scientific or founder approval.\n",
+      "milestone": "S1.1 \u2014 Evidence",
+      "state": "open"
+    },
+    {
+      "key": "SPEC-029/T001",
+      "kind": "task",
+      "parent": "SPEC-029",
+      "title": "[SPEC-029 T001] Review source permissions, sampling frame and prospective yield. Dependencies: SPEC-028/T001. Target f...",
+      "body": "<!-- agent-braid-task-id: SPEC-029/T001 -->\n\n## Task\n\nReview source permissions, sampling frame and prospective yield. Dependencies: SPEC-028/T001. Target files: research/system_one/source-register.json, source-audit.md. Planned command after implementation: `.venv-speckit/bin/python -m unittest discover -s tests -p \"test_system_one*.py\" -v`; for manual source/budget/review gates, capture an actual reviewer decision rather than substituting a test result. Verification: Record permission decisions, eligibility/exclusion counts and zero-yield outcomes before fitting. Planned evidence: candidate-bound report under specs/029-system-one-evaluation/evidence/t001.json; obtained: none.\n\n- Source: [spec.md](https://github.com/jayanez/agent-braid/blob/develop/specs/029-system-one-evaluation/spec.md) \u00b7 [tasks.md](https://github.com/jayanez/agent-braid/blob/develop/specs/029-system-one-evaluation/tasks.md) \u00b7 [assurance.json](https://github.com/jayanez/agent-braid/blob/develop/specs/029-system-one-evaluation/assurance.json)\n- Trace: REQ-001 / SC-001\n- State basis: Source checkbox in tasks.md.\n\nPlanned and obtained evidence are separate in assurance.json. Closing this issue does not imply human review or scientific proof.\n",
+      "milestone": "S1.1 \u2014 Evidence",
+      "state": "open",
+      "task_text": "Review source permissions, sampling frame and prospective yield. Dependencies: SPEC-028/T001. Target files: research/system_one/source-register.json, source-audit.md. Planned command after implementation: `.venv-speckit/bin/python -m unittest discover -s tests -p \"test_system_one*.py\" -v`; for manual source/budget/review gates, capture an actual reviewer decision rather than substituting a test result. Verification: Record permission decisions, eligibility/exclusion counts and zero-yield outcomes before fitting. Planned evidence: candidate-bound report under specs/029-system-one-evaluation/evidence/t001.json; obtained: none."
+    },
+    {
+      "key": "SPEC-029/T002",
+      "kind": "task",
+      "parent": "SPEC-029",
+      "title": "[SPEC-029 T002] Freeze label rubric, two-reviewer adjudication and missing-label policy. Dependencies: T001. Target fi...",
+      "body": "<!-- agent-braid-task-id: SPEC-029/T002 -->\n\n## Task\n\nFreeze label rubric, two-reviewer adjudication and missing-label policy. Dependencies: T001. Target files: research/system_one/rubric.md, preregistration.json. Planned command after implementation: `.venv-speckit/bin/python -m unittest discover -s tests -p \"test_system_one*.py\" -v`; for manual source/budget/review gates, capture an actual reviewer decision rather than substituting a test result. Verification: Seal policy-blind labels including disputed and unresolved cases; no teacher label is truth. Planned evidence: candidate-bound report under specs/029-system-one-evaluation/evidence/t002.json; obtained: none.\n\n- Source: [spec.md](https://github.com/jayanez/agent-braid/blob/develop/specs/029-system-one-evaluation/spec.md) \u00b7 [tasks.md](https://github.com/jayanez/agent-braid/blob/develop/specs/029-system-one-evaluation/tasks.md) \u00b7 [assurance.json](https://github.com/jayanez/agent-braid/blob/develop/specs/029-system-one-evaluation/assurance.json)\n- Trace: REQ-002 / SC-002\n- State basis: Source checkbox in tasks.md.\n\nPlanned and obtained evidence are separate in assurance.json. Closing this issue does not imply human review or scientific proof.\n",
+      "milestone": "S1.1 \u2014 Evidence",
+      "state": "open",
+      "task_text": "Freeze label rubric, two-reviewer adjudication and missing-label policy. Dependencies: T001. Target files: research/system_one/rubric.md, preregistration.json. Planned command after implementation: `.venv-speckit/bin/python -m unittest discover -s tests -p \"test_system_one*.py\" -v`; for manual source/budget/review gates, capture an actual reviewer decision rather than substituting a test result. Verification: Seal policy-blind labels including disputed and unresolved cases; no teacher label is truth. Planned evidence: candidate-bound report under specs/029-system-one-evaluation/evidence/t002.json; obtained: none."
+    },
+    {
+      "key": "SPEC-029/T003",
+      "kind": "task",
+      "parent": "SPEC-029",
+      "title": "[SPEC-029 T003] Implement group split and near-duplicate contamination audit. Dependencies: T002. Target files: resear...",
+      "body": "<!-- agent-braid-task-id: SPEC-029/T003 -->\n\n## Task\n\nImplement group split and near-duplicate contamination audit. Dependencies: T002. Target files: research/system_one/corpus.py, tests/test_system_one_corpus.py. Planned command after implementation: `.venv-speckit/bin/python -m unittest tests.test_system_one_corpus -v`; for manual source/budget/review gates, capture an actual reviewer decision rather than substituting a test result. Verification: Test session/repository/workflow grouping, duplicates, embargo and held-out leakage. Planned evidence: candidate-bound report under specs/029-system-one-evaluation/evidence/t003.json; obtained: none.\n\n- Source: [spec.md](https://github.com/jayanez/agent-braid/blob/develop/specs/029-system-one-evaluation/spec.md) \u00b7 [tasks.md](https://github.com/jayanez/agent-braid/blob/develop/specs/029-system-one-evaluation/tasks.md) \u00b7 [assurance.json](https://github.com/jayanez/agent-braid/blob/develop/specs/029-system-one-evaluation/assurance.json)\n- Trace: REQ-002 REQ-005 / SC-002 SC-005\n- State basis: Source checkbox in tasks.md.\n\nPlanned and obtained evidence are separate in assurance.json. Closing this issue does not imply human review or scientific proof.\n",
+      "milestone": "S1.1 \u2014 Evidence",
+      "state": "open",
+      "task_text": "Implement group split and near-duplicate contamination audit. Dependencies: T002. Target files: research/system_one/corpus.py, tests/test_system_one_corpus.py. Planned command after implementation: `.venv-speckit/bin/python -m unittest tests.test_system_one_corpus -v`; for manual source/budget/review gates, capture an actual reviewer decision rather than substituting a test result. Verification: Test session/repository/workflow grouping, duplicates, embargo and held-out leakage. Planned evidence: candidate-bound report under specs/029-system-one-evaluation/evidence/t003.json; obtained: none."
+    },
+    {
+      "key": "SPEC-029/T004",
+      "kind": "task",
+      "parent": "SPEC-029",
+      "title": "[SPEC-029 T004] Build deterministic adversarial conformance and sensitivity suites. Dependencies: T002. Target files:...",
+      "body": "<!-- agent-braid-task-id: SPEC-029/T004 -->\n\n## Task\n\nBuild deterministic adversarial conformance and sensitivity suites. Dependencies: T002. Target files: examples/system_one/adversarial.jsonl, tests/test_system_one_sensitivity.py. Planned command after implementation: `.venv-speckit/bin/python -m unittest tests.test_system_one_sensitivity -v`; for manual source/budget/review gates, capture an actual reviewer decision rather than substituting a test result. Verification: Cover English/Spanish negation and code-mix, label ordering, injected instructions and option collapse. Planned evidence: candidate-bound report under specs/029-system-one-evaluation/evidence/t004.json; obtained: none.\n\n- Source: [spec.md](https://github.com/jayanez/agent-braid/blob/develop/specs/029-system-one-evaluation/spec.md) \u00b7 [tasks.md](https://github.com/jayanez/agent-braid/blob/develop/specs/029-system-one-evaluation/tasks.md) \u00b7 [assurance.json](https://github.com/jayanez/agent-braid/blob/develop/specs/029-system-one-evaluation/assurance.json)\n- Trace: REQ-005 / SC-005\n- State basis: Source checkbox in tasks.md.\n\nPlanned and obtained evidence are separate in assurance.json. Closing this issue does not imply human review or scientific proof.\n",
+      "milestone": "S1.1 \u2014 Evidence",
+      "state": "open",
+      "task_text": "Build deterministic adversarial conformance and sensitivity suites. Dependencies: T002. Target files: examples/system_one/adversarial.jsonl, tests/test_system_one_sensitivity.py. Planned command after implementation: `.venv-speckit/bin/python -m unittest tests.test_system_one_sensitivity -v`; for manual source/budget/review gates, capture an actual reviewer decision rather than substituting a test result. Verification: Cover English/Spanish negation and code-mix, label ordering, injected instructions and option collapse. Planned evidence: candidate-bound report under specs/029-system-one-evaluation/evidence/t004.json; obtained: none."
+    },
+    {
+      "key": "SPEC-029/T005",
+      "kind": "task",
+      "parent": "SPEC-029",
+      "title": "[SPEC-029 T005] Freeze candidate roster, resource budgets and paired evaluation plan. Dependencies: T003 T004. Target...",
+      "body": "<!-- agent-braid-task-id: SPEC-029/T005 -->\n\n## Task\n\nFreeze candidate roster, resource budgets and paired evaluation plan. Dependencies: T003 T004. Target files: research/system_one/preregistration.json, evaluation-protocol.md. Planned command after implementation: `.venv-speckit/bin/python -m unittest discover -s tests -p \"test_system_one*.py\" -v`; for manual source/budget/review gates, capture an actual reviewer decision rather than substituting a test result. Verification: Record hardware matrix, latency/memory envelopes, seeds and stop rules before fitting. Planned evidence: candidate-bound report under specs/029-system-one-evaluation/evidence/t005.json; obtained: none.\n\n- Source: [spec.md](https://github.com/jayanez/agent-braid/blob/develop/specs/029-system-one-evaluation/spec.md) \u00b7 [tasks.md](https://github.com/jayanez/agent-braid/blob/develop/specs/029-system-one-evaluation/tasks.md) \u00b7 [assurance.json](https://github.com/jayanez/agent-braid/blob/develop/specs/029-system-one-evaluation/assurance.json)\n- Trace: REQ-003 REQ-006 / SC-003 SC-006\n- State basis: Source checkbox in tasks.md.\n\nPlanned and obtained evidence are separate in assurance.json. Closing this issue does not imply human review or scientific proof.\n",
+      "milestone": "S1.1 \u2014 Evidence",
+      "state": "open",
+      "task_text": "Freeze candidate roster, resource budgets and paired evaluation plan. Dependencies: T003 T004. Target files: research/system_one/preregistration.json, evaluation-protocol.md. Planned command after implementation: `.venv-speckit/bin/python -m unittest discover -s tests -p \"test_system_one*.py\" -v`; for manual source/budget/review gates, capture an actual reviewer decision rather than substituting a test result. Verification: Record hardware matrix, latency/memory envelopes, seeds and stop rules before fitting. Planned evidence: candidate-bound report under specs/029-system-one-evaluation/evidence/t005.json; obtained: none."
+    },
+    {
+      "key": "SPEC-029/T006",
+      "kind": "task",
+      "parent": "SPEC-029",
+      "title": "[SPEC-029 T006] Implement metrics and calibration/threshold split enforcement. Dependencies: T005. Target files: resea...",
+      "body": "<!-- agent-braid-task-id: SPEC-029/T006 -->\n\n## Task\n\nImplement metrics and calibration/threshold split enforcement. Dependencies: T005. Target files: research/system_one/metrics.py, tests/test_system_one_metrics.py. Planned command after implementation: `.venv-speckit/bin/python -m unittest tests.test_system_one_metrics -v`; for manual source/budget/review gates, capture an actual reviewer decision rather than substituting a test result. Verification: Compare analytic fixtures; reject non-finite metrics and test-label threshold tuning. Planned evidence: candidate-bound report under specs/029-system-one-evaluation/evidence/t006.json; obtained: none.\n\n- Source: [spec.md](https://github.com/jayanez/agent-braid/blob/develop/specs/029-system-one-evaluation/spec.md) \u00b7 [tasks.md](https://github.com/jayanez/agent-braid/blob/develop/specs/029-system-one-evaluation/tasks.md) \u00b7 [assurance.json](https://github.com/jayanez/agent-braid/blob/develop/specs/029-system-one-evaluation/assurance.json)\n- Trace: REQ-004 / SC-004\n- State basis: Source checkbox in tasks.md.\n\nPlanned and obtained evidence are separate in assurance.json. Closing this issue does not imply human review or scientific proof.\n",
+      "milestone": "S1.1 \u2014 Evidence",
+      "state": "open",
+      "task_text": "Implement metrics and calibration/threshold split enforcement. Dependencies: T005. Target files: research/system_one/metrics.py, tests/test_system_one_metrics.py. Planned command after implementation: `.venv-speckit/bin/python -m unittest tests.test_system_one_metrics -v`; for manual source/budget/review gates, capture an actual reviewer decision rather than substituting a test result. Verification: Compare analytic fixtures; reject non-finite metrics and test-label threshold tuning. Planned evidence: candidate-bound report under specs/029-system-one-evaluation/evidence/t006.json; obtained: none."
+    },
+    {
+      "key": "SPEC-029/T007",
+      "kind": "task",
+      "parent": "SPEC-029",
+      "title": "[SPEC-029 T007] Implement common baseline runners and complete cost accounting. Dependencies: T005 T006. Target files:...",
+      "body": "<!-- agent-braid-task-id: SPEC-029/T007 -->\n\n## Task\n\nImplement common baseline runners and complete cost accounting. Dependencies: T005 T006. Target files: research/system_one/evaluate.py, tests/test_system_one_evaluation.py. Planned command after implementation: `.venv-speckit/bin/python -m unittest tests.test_system_one_evaluation -v`; for manual source/budget/review gates, capture an actual reviewer decision rather than substituting a test result. Verification: Preserve refusals, fallback/verifier costs, cold starts and all attempted requests. Planned evidence: candidate-bound report under specs/029-system-one-evaluation/evidence/t007.json; obtained: none.\n\n- Source: [spec.md](https://github.com/jayanez/agent-braid/blob/develop/specs/029-system-one-evaluation/spec.md) \u00b7 [tasks.md](https://github.com/jayanez/agent-braid/blob/develop/specs/029-system-one-evaluation/tasks.md) \u00b7 [assurance.json](https://github.com/jayanez/agent-braid/blob/develop/specs/029-system-one-evaluation/assurance.json)\n- Trace: REQ-003 REQ-006 / SC-003 SC-006\n- State basis: Source checkbox in tasks.md.\n\nPlanned and obtained evidence are separate in assurance.json. Closing this issue does not imply human review or scientific proof.\n",
+      "milestone": "S1.1 \u2014 Evidence",
+      "state": "open",
+      "task_text": "Implement common baseline runners and complete cost accounting. Dependencies: T005 T006. Target files: research/system_one/evaluate.py, tests/test_system_one_evaluation.py. Planned command after implementation: `.venv-speckit/bin/python -m unittest tests.test_system_one_evaluation -v`; for manual source/budget/review gates, capture an actual reviewer decision rather than substituting a test result. Verification: Preserve refusals, fallback/verifier costs, cold starts and all attempted requests. Planned evidence: candidate-bound report under specs/029-system-one-evaluation/evidence/t007.json; obtained: none."
+    },
+    {
+      "key": "SPEC-029/T008",
+      "kind": "task",
+      "parent": "SPEC-029",
+      "title": "[SPEC-029 T008] Review pre-fit feasibility and seal untouched test manifest. Dependencies: T007. Target files: researc...",
+      "body": "<!-- agent-braid-task-id: SPEC-029/T008 -->\n\n## Task\n\nReview pre-fit feasibility and seal untouched test manifest. Dependencies: T007. Target files: research/system_one/manifests/, prefit-review.md. Planned command after implementation: `.venv-speckit/bin/python -m unittest discover -s tests -p \"test_system_one*.py\" -v`; for manual source/budget/review gates, capture an actual reviewer decision rather than substituting a test result. Verification: Check class/group coverage and calibration feasibility; founder data/budget decision is pending. Planned evidence: candidate-bound report under specs/029-system-one-evaluation/evidence/t008.json; obtained: none.\n\n- Source: [spec.md](https://github.com/jayanez/agent-braid/blob/develop/specs/029-system-one-evaluation/spec.md) \u00b7 [tasks.md](https://github.com/jayanez/agent-braid/blob/develop/specs/029-system-one-evaluation/tasks.md) \u00b7 [assurance.json](https://github.com/jayanez/agent-braid/blob/develop/specs/029-system-one-evaluation/assurance.json)\n- Trace: REQ-001 REQ-002 REQ-004 / SC-001 SC-002 SC-004\n- State basis: Source checkbox in tasks.md.\n\nPlanned and obtained evidence are separate in assurance.json. Closing this issue does not imply human review or scientific proof.\n",
+      "milestone": "S1.1 \u2014 Evidence",
+      "state": "open",
+      "task_text": "Review pre-fit feasibility and seal untouched test manifest. Dependencies: T007. Target files: research/system_one/manifests/, prefit-review.md. Planned command after implementation: `.venv-speckit/bin/python -m unittest discover -s tests -p \"test_system_one*.py\" -v`; for manual source/budget/review gates, capture an actual reviewer decision rather than substituting a test result. Verification: Check class/group coverage and calibration feasibility; founder data/budget decision is pending. Planned evidence: candidate-bound report under specs/029-system-one-evaluation/evidence/t008.json; obtained: none."
+    },
+    {
+      "key": "SPEC-029/T009",
+      "kind": "task",
+      "parent": "SPEC-029",
+      "title": "[SPEC-029 T009] Execute registered comparison or document infeasibility and null results. Dependencies: T008 SPEC-030/...",
+      "body": "<!-- agent-braid-task-id: SPEC-029/T009 -->\n\n## Task\n\nExecute registered comparison or document infeasibility and null results. Dependencies: T008 SPEC-030/T006. Target files: research/system_one/results/, specs/029-system-one-evaluation/assurance.json. Planned command after implementation: `.venv-speckit/bin/python -m unittest discover -s tests -p \"test_system_one*.py\" -v`; for manual source/budget/review gates, capture an actual reviewer decision rather than substituting a test result. Verification: Report paired group bootstrap and all seeds without selecting favorable runs or silently changing scope. Planned evidence: candidate-bound report under specs/029-system-one-evaluation/evidence/t009.json; obtained: none.\n\n- Source: [spec.md](https://github.com/jayanez/agent-braid/blob/develop/specs/029-system-one-evaluation/spec.md) \u00b7 [tasks.md](https://github.com/jayanez/agent-braid/blob/develop/specs/029-system-one-evaluation/tasks.md) \u00b7 [assurance.json](https://github.com/jayanez/agent-braid/blob/develop/specs/029-system-one-evaluation/assurance.json)\n- Trace: REQ-003 REQ-004 REQ-005 REQ-006 / SC-003 SC-004 SC-005 SC-006\n- State basis: Source checkbox in tasks.md.\n\nPlanned and obtained evidence are separate in assurance.json. Closing this issue does not imply human review or scientific proof.\n",
+      "milestone": "S1.1 \u2014 Evidence",
+      "state": "open",
+      "task_text": "Execute registered comparison or document infeasibility and null results. Dependencies: T008 SPEC-030/T006. Target files: research/system_one/results/, specs/029-system-one-evaluation/assurance.json. Planned command after implementation: `.venv-speckit/bin/python -m unittest discover -s tests -p \"test_system_one*.py\" -v`; for manual source/budget/review gates, capture an actual reviewer decision rather than substituting a test result. Verification: Report paired group bootstrap and all seeds without selecting favorable runs or silently changing scope. Planned evidence: candidate-bound report under specs/029-system-one-evaluation/evidence/t009.json; obtained: none."
+    },
+    {
+      "key": "SPEC-030",
+      "kind": "spec",
+      "parent": null,
+      "title": "[SPEC-030] SPEC-030: Own non-generative neural decision experiment",
+      "body": "<!-- agent-braid-spec-id: SPEC-030 -->\n\nSource: [spec.md](https://github.com/jayanez/agent-braid/blob/develop/specs/030-system-one-model/spec.md) \u00b7 [tasks.md](https://github.com/jayanez/agent-braid/blob/develop/specs/030-system-one-model/tasks.md) \u00b7 [assurance.json](https://github.com/jayanez/agent-braid/blob/develop/specs/030-system-one-model/assurance.json)\n\nRequirements: REQ-001, REQ-002, REQ-003, REQ-004, REQ-005, REQ-006.\n\nIssue state is a bounded tracking record, not a scientific or founder approval.\n",
+      "milestone": "S1.2 \u2014 Native model",
+      "state": "open"
+    },
+    {
+      "key": "SPEC-030/T001",
+      "kind": "task",
+      "parent": "SPEC-030",
+      "title": "[SPEC-030 T001] Approve base model and corpus rights plus immutable revision manifests. Dependencies: SPEC-029/T008. T...",
+      "body": "<!-- agent-braid-task-id: SPEC-030/T001 -->\n\n## Task\n\nApprove base model and corpus rights plus immutable revision manifests. Dependencies: SPEC-029/T008. Target files: research/system_one/model-sources.json, training-protocol.md. Planned command after implementation: `.venv-speckit/bin/python -m unittest discover -s tests -p \"test_system_one*.py\" -v`; for manual source/budget/review gates, capture an actual reviewer decision rather than substituting a test result. Verification: Record base-weight license separately from code/dataset licenses and approved download/training budget. Planned evidence: candidate-bound report under specs/030-system-one-model/evidence/t001.json; obtained: none.\n\n- Source: [spec.md](https://github.com/jayanez/agent-braid/blob/develop/specs/030-system-one-model/spec.md) \u00b7 [tasks.md](https://github.com/jayanez/agent-braid/blob/develop/specs/030-system-one-model/tasks.md) \u00b7 [assurance.json](https://github.com/jayanez/agent-braid/blob/develop/specs/030-system-one-model/assurance.json)\n- Trace: REQ-001 REQ-004 / SC-001 SC-004\n- State basis: Source checkbox in tasks.md.\n\nPlanned and obtained evidence are separate in assurance.json. Closing this issue does not imply human review or scientific proof.\n",
+      "milestone": "S1.2 \u2014 Native model",
+      "state": "open",
+      "task_text": "Approve base model and corpus rights plus immutable revision manifests. Dependencies: SPEC-029/T008. Target files: research/system_one/model-sources.json, training-protocol.md. Planned command after implementation: `.venv-speckit/bin/python -m unittest discover -s tests -p \"test_system_one*.py\" -v`; for manual source/budget/review gates, capture an actual reviewer decision rather than substituting a test result. Verification: Record base-weight license separately from code/dataset licenses and approved download/training budget. Planned evidence: candidate-bound report under specs/030-system-one-model/evidence/t001.json; obtained: none."
+    },
+    {
+      "key": "SPEC-030/T002",
+      "kind": "task",
+      "parent": "SPEC-030",
+      "title": "[SPEC-030 T002] Implement native decoder pointer scorer with tiny offline fixtures. Dependencies: T001 SPEC-028/T008....",
+      "body": "<!-- agent-braid-task-id: SPEC-030/T002 -->\n\n## Task\n\nImplement native decoder pointer scorer with tiny offline fixtures. Dependencies: T001 SPEC-028/T008. Target files: agent_braid_system_one/decoder.py, tests/test_system_one_decoder.py. Planned command after implementation: `.venv-speckit/bin/python -m unittest tests.test_system_one_decoder -v`; for manual source/budget/review gates, capture an actual reviewer decision rather than substituting a test result. Verification: Verify dynamic masks, unseen option IDs, no generate call and fp32 probability math. Planned evidence: candidate-bound report under specs/030-system-one-model/evidence/t002.json; obtained: none.\n\n- Source: [spec.md](https://github.com/jayanez/agent-braid/blob/develop/specs/030-system-one-model/spec.md) \u00b7 [tasks.md](https://github.com/jayanez/agent-braid/blob/develop/specs/030-system-one-model/tasks.md) \u00b7 [assurance.json](https://github.com/jayanez/agent-braid/blob/develop/specs/030-system-one-model/assurance.json)\n- Trace: REQ-002 / SC-002\n- State basis: Source checkbox in tasks.md.\n\nPlanned and obtained evidence are separate in assurance.json. Closing this issue does not imply human review or scientific proof.\n",
+      "milestone": "S1.2 \u2014 Native model",
+      "state": "open",
+      "task_text": "Implement native decoder pointer scorer with tiny offline fixtures. Dependencies: T001 SPEC-028/T008. Target files: agent_braid_system_one/decoder.py, tests/test_system_one_decoder.py. Planned command after implementation: `.venv-speckit/bin/python -m unittest tests.test_system_one_decoder -v`; for manual source/budget/review gates, capture an actual reviewer decision rather than substituting a test result. Verification: Verify dynamic masks, unseen option IDs, no generate call and fp32 probability math. Planned evidence: candidate-bound report under specs/030-system-one-model/evidence/t002.json; obtained: none."
+    },
+    {
+      "key": "SPEC-030/T003",
+      "kind": "task",
+      "parent": "SPEC-030",
+      "title": "[SPEC-030 T003] Implement native encoder scorer and linear model comparator. Dependencies: T001 SPEC-028/T008. Target...",
+      "body": "<!-- agent-braid-task-id: SPEC-030/T003 -->\n\n## Task\n\nImplement native encoder scorer and linear model comparator. Dependencies: T001 SPEC-028/T008. Target files: agent_braid_system_one/encoder.py, tests/test_system_one_encoder.py. Planned command after implementation: `.venv-speckit/bin/python -m unittest tests.test_system_one_encoder -v`; for manual source/budget/review gates, capture an actual reviewer decision rather than substituting a test result. Verification: Test marker identity, option permutation and frozen-backbone baseline at common budgets. Planned evidence: candidate-bound report under specs/030-system-one-model/evidence/t003.json; obtained: none.\n\n- Source: [spec.md](https://github.com/jayanez/agent-braid/blob/develop/specs/030-system-one-model/spec.md) \u00b7 [tasks.md](https://github.com/jayanez/agent-braid/blob/develop/specs/030-system-one-model/tasks.md) \u00b7 [assurance.json](https://github.com/jayanez/agent-braid/blob/develop/specs/030-system-one-model/assurance.json)\n- Trace: REQ-002 REQ-006 / SC-002 SC-006\n- State basis: Source checkbox in tasks.md.\n\nPlanned and obtained evidence are separate in assurance.json. Closing this issue does not imply human review or scientific proof.\n",
+      "milestone": "S1.2 \u2014 Native model",
+      "state": "open",
+      "task_text": "Implement native encoder scorer and linear model comparator. Dependencies: T001 SPEC-028/T008. Target files: agent_braid_system_one/encoder.py, tests/test_system_one_encoder.py. Planned command after implementation: `.venv-speckit/bin/python -m unittest tests.test_system_one_encoder -v`; for manual source/budget/review gates, capture an actual reviewer decision rather than substituting a test result. Verification: Test marker identity, option permutation and frozen-backbone baseline at common budgets. Planned evidence: candidate-bound report under specs/030-system-one-model/evidence/t003.json; obtained: none."
+    },
+    {
+      "key": "SPEC-030/T004",
+      "kind": "task",
+      "parent": "SPEC-030",
+      "title": "[SPEC-030 T004] Implement cache fork and uncached-equivalence checks. Dependencies: T002. Target files: agent_braid_sy...",
+      "body": "<!-- agent-braid-task-id: SPEC-030/T004 -->\n\n## Task\n\nImplement cache fork and uncached-equivalence checks. Dependencies: T002. Target files: agent_braid_system_one/cache.py, tests/test_system_one_cache.py. Planned command after implementation: `.venv-speckit/bin/python -m unittest tests.test_system_one_cache -v`; for manual source/budget/review gates, capture an actual reviewer decision rather than substituting a test result. Verification: Test recurrent/attention layouts, batch sizes, cancellation and fp32 tolerance; refuse unknown mutable layouts. Planned evidence: candidate-bound report under specs/030-system-one-model/evidence/t004.json; obtained: none.\n\n- Source: [spec.md](https://github.com/jayanez/agent-braid/blob/develop/specs/030-system-one-model/spec.md) \u00b7 [tasks.md](https://github.com/jayanez/agent-braid/blob/develop/specs/030-system-one-model/tasks.md) \u00b7 [assurance.json](https://github.com/jayanez/agent-braid/blob/develop/specs/030-system-one-model/assurance.json)\n- Trace: REQ-003 / SC-003\n- State basis: Source checkbox in tasks.md.\n\nPlanned and obtained evidence are separate in assurance.json. Closing this issue does not imply human review or scientific proof.\n",
+      "milestone": "S1.2 \u2014 Native model",
+      "state": "open",
+      "task_text": "Implement cache fork and uncached-equivalence checks. Dependencies: T002. Target files: agent_braid_system_one/cache.py, tests/test_system_one_cache.py. Planned command after implementation: `.venv-speckit/bin/python -m unittest tests.test_system_one_cache -v`; for manual source/budget/review gates, capture an actual reviewer decision rather than substituting a test result. Verification: Test recurrent/attention layouts, batch sizes, cancellation and fp32 tolerance; refuse unknown mutable layouts. Planned evidence: candidate-bound report under specs/030-system-one-model/evidence/t004.json; obtained: none."
+    },
+    {
+      "key": "SPEC-030/T005",
+      "kind": "task",
+      "parent": "SPEC-030",
+      "title": "[SPEC-030 T005] Implement offline training, export and calibrated artifact verification. Dependencies: T002 T003 T004....",
+      "body": "<!-- agent-braid-task-id: SPEC-030/T005 -->\n\n## Task\n\nImplement offline training, export and calibrated artifact verification. Dependencies: T002 T003 T004. Target files: research/system_one/train.py, agent_braid_system_one/artifact.py. Planned command after implementation: `.venv-speckit/bin/python -m unittest discover -s tests -p \"test_system_one*.py\" -v`; for manual source/budget/review gates, capture an actual reviewer decision rather than substituting a test result. Verification: Manifest exact hashes, objectives and splits; no unsafe pickle or trust_remote_code; tampering fails closed. Planned evidence: candidate-bound report under specs/030-system-one-model/evidence/t005.json; obtained: none.\n\n- Source: [spec.md](https://github.com/jayanez/agent-braid/blob/develop/specs/030-system-one-model/spec.md) \u00b7 [tasks.md](https://github.com/jayanez/agent-braid/blob/develop/specs/030-system-one-model/tasks.md) \u00b7 [assurance.json](https://github.com/jayanez/agent-braid/blob/develop/specs/030-system-one-model/assurance.json)\n- Trace: REQ-001 REQ-004 / SC-001 SC-004\n- State basis: Source checkbox in tasks.md.\n\nPlanned and obtained evidence are separate in assurance.json. Closing this issue does not imply human review or scientific proof.\n",
+      "milestone": "S1.2 \u2014 Native model",
+      "state": "open",
+      "task_text": "Implement offline training, export and calibrated artifact verification. Dependencies: T002 T003 T004. Target files: research/system_one/train.py, agent_braid_system_one/artifact.py. Planned command after implementation: `.venv-speckit/bin/python -m unittest discover -s tests -p \"test_system_one*.py\" -v`; for manual source/budget/review gates, capture an actual reviewer decision rather than substituting a test result. Verification: Manifest exact hashes, objectives and splits; no unsafe pickle or trust_remote_code; tampering fails closed. Planned evidence: candidate-bound report under specs/030-system-one-model/evidence/t005.json; obtained: none."
+    },
+    {
+      "key": "SPEC-030/T006",
+      "kind": "task",
+      "parent": "SPEC-030",
+      "title": "[SPEC-030 T006] Execute preregistered training ablations within approved budget. Dependencies: T005 SPEC-029/T008. Tar...",
+      "body": "<!-- agent-braid-task-id: SPEC-030/T006 -->\n\n## Task\n\nExecute preregistered training ablations within approved budget. Dependencies: T005 SPEC-029/T008. Target files: research/system_one/runs/, training-protocol.md. Planned command after implementation: `.venv-speckit/bin/python -m unittest discover -s tests -p \"test_system_one*.py\" -v`; for manual source/budget/review gates, capture an actual reviewer decision rather than substituting a test result. Verification: Retain every seed and stopping reason; reward/distillation are conditional ablations, not assumed improvements. Planned evidence: candidate-bound report under specs/030-system-one-model/evidence/t006.json; obtained: none.\n\n- Source: [spec.md](https://github.com/jayanez/agent-braid/blob/develop/specs/030-system-one-model/spec.md) \u00b7 [tasks.md](https://github.com/jayanez/agent-braid/blob/develop/specs/030-system-one-model/tasks.md) \u00b7 [assurance.json](https://github.com/jayanez/agent-braid/blob/develop/specs/030-system-one-model/assurance.json)\n- Trace: REQ-004 REQ-006 / SC-004 SC-006\n- State basis: Source checkbox in tasks.md.\n\nPlanned and obtained evidence are separate in assurance.json. Closing this issue does not imply human review or scientific proof.\n",
+      "milestone": "S1.2 \u2014 Native model",
+      "state": "open",
+      "task_text": "Execute preregistered training ablations within approved budget. Dependencies: T005 SPEC-029/T008. Target files: research/system_one/runs/, training-protocol.md. Planned command after implementation: `.venv-speckit/bin/python -m unittest discover -s tests -p \"test_system_one*.py\" -v`; for manual source/budget/review gates, capture an actual reviewer decision rather than substituting a test result. Verification: Retain every seed and stopping reason; reward/distillation are conditional ablations, not assumed improvements. Planned evidence: candidate-bound report under specs/030-system-one-model/evidence/t006.json; obtained: none."
+    },
+    {
+      "key": "SPEC-030/T007",
+      "kind": "task",
+      "parent": "SPEC-030",
+      "title": "[SPEC-030 T007] Run device, precision, caching and failure parity matrix. Dependencies: T006. Target files: research/s...",
+      "body": "<!-- agent-braid-task-id: SPEC-030/T007 -->\n\n## Task\n\nRun device, precision, caching and failure parity matrix. Dependencies: T006. Target files: research/system_one/parity/, tests/test_system_one_parity.py. Planned command after implementation: `.venv-speckit/bin/python -m unittest tests.test_system_one_parity -v`; for manual source/budget/review gates, capture an actual reviewer decision rather than substituting a test result. Verification: Record threshold crossing and decision changes, peak memory, OOM and unsupported devices. Planned evidence: candidate-bound report under specs/030-system-one-model/evidence/t007.json; obtained: none.\n\n- Source: [spec.md](https://github.com/jayanez/agent-braid/blob/develop/specs/030-system-one-model/spec.md) \u00b7 [tasks.md](https://github.com/jayanez/agent-braid/blob/develop/specs/030-system-one-model/tasks.md) \u00b7 [assurance.json](https://github.com/jayanez/agent-braid/blob/develop/specs/030-system-one-model/assurance.json)\n- Trace: REQ-003 REQ-005 / SC-003 SC-005\n- State basis: Source checkbox in tasks.md.\n\nPlanned and obtained evidence are separate in assurance.json. Closing this issue does not imply human review or scientific proof.\n",
+      "milestone": "S1.2 \u2014 Native model",
+      "state": "open",
+      "task_text": "Run device, precision, caching and failure parity matrix. Dependencies: T006. Target files: research/system_one/parity/, tests/test_system_one_parity.py. Planned command after implementation: `.venv-speckit/bin/python -m unittest tests.test_system_one_parity -v`; for manual source/budget/review gates, capture an actual reviewer decision rather than substituting a test result. Verification: Record threshold crossing and decision changes, peak memory, OOM and unsupported devices. Planned evidence: candidate-bound report under specs/030-system-one-model/evidence/t007.json; obtained: none."
+    },
+    {
+      "key": "SPEC-030/T008",
+      "kind": "task",
+      "parent": "SPEC-030",
+      "title": "[SPEC-030 T008] Record architecture go/no-go from common paired evaluation. Dependencies: T007 SPEC-029/T009. Target f...",
+      "body": "<!-- agent-braid-task-id: SPEC-030/T008 -->\n\n## Task\n\nRecord architecture go/no-go from common paired evaluation. Dependencies: T007 SPEC-029/T009. Target files: specs/030-system-one-model/selection.md, assurance.json. Planned command after implementation: `.venv-speckit/bin/python -m unittest discover -s tests -p \"test_system_one*.py\" -v`; for manual source/budget/review gates, capture an actual reviewer decision rather than substituting a test result. Verification: Bind the exact model/evaluation candidate; permit no-model result and require separate promotion review. Planned evidence: candidate-bound report under specs/030-system-one-model/evidence/t008.json; obtained: none.\n\n- Source: [spec.md](https://github.com/jayanez/agent-braid/blob/develop/specs/030-system-one-model/spec.md) \u00b7 [tasks.md](https://github.com/jayanez/agent-braid/blob/develop/specs/030-system-one-model/tasks.md) \u00b7 [assurance.json](https://github.com/jayanez/agent-braid/blob/develop/specs/030-system-one-model/assurance.json)\n- Trace: REQ-006 / SC-006\n- State basis: Source checkbox in tasks.md.\n\nPlanned and obtained evidence are separate in assurance.json. Closing this issue does not imply human review or scientific proof.\n",
+      "milestone": "S1.2 \u2014 Native model",
+      "state": "open",
+      "task_text": "Record architecture go/no-go from common paired evaluation. Dependencies: T007 SPEC-029/T009. Target files: specs/030-system-one-model/selection.md, assurance.json. Planned command after implementation: `.venv-speckit/bin/python -m unittest discover -s tests -p \"test_system_one*.py\" -v`; for manual source/budget/review gates, capture an actual reviewer decision rather than substituting a test result. Verification: Bind the exact model/evaluation candidate; permit no-model result and require separate promotion review. Planned evidence: candidate-bound report under specs/030-system-one-model/evidence/t008.json; obtained: none."
+    },
+    {
+      "key": "SPEC-031",
+      "kind": "spec",
+      "parent": null,
+      "title": "[SPEC-031] SPEC-031: Advisory integration across Agent Braid decision stages",
+      "body": "<!-- agent-braid-spec-id: SPEC-031 -->\n\nSource: [spec.md](https://github.com/jayanez/agent-braid/blob/develop/specs/031-system-one-integration/spec.md) \u00b7 [tasks.md](https://github.com/jayanez/agent-braid/blob/develop/specs/031-system-one-integration/tasks.md) \u00b7 [assurance.json](https://github.com/jayanez/agent-braid/blob/develop/specs/031-system-one-integration/assurance.json)\n\nRequirements: REQ-001, REQ-002, REQ-003, REQ-004, REQ-005, REQ-006.\n\nIssue state is a bounded tracking record, not a scientific or founder approval.\n",
+      "milestone": "S1.3 \u2014 Integration",
+      "state": "open"
+    },
+    {
+      "key": "SPEC-031/T001",
+      "kind": "task",
+      "parent": "SPEC-031",
+      "title": "[SPEC-031 T001] Review capability-by-capability contracts and rollout order. Dependencies: SPEC-028/T001. Target files...",
+      "body": "<!-- agent-braid-task-id: SPEC-031/T001 -->\n\n## Task\n\nReview capability-by-capability contracts and rollout order. Dependencies: SPEC-028/T001. Target files: capability-map.md, contracts/integration.md. Planned command after implementation: `.venv-speckit/bin/python -m unittest discover -s tests -p \"test_system_one*.py\" -v`; for manual source/budget/review gates, capture an actual reviewer decision rather than substituting a test result. Verification: Classify every stage as implemented/planned/advisory/unavailable and identify the unchanged verifier. Planned evidence: candidate-bound report under specs/031-system-one-integration/evidence/t001.json; obtained: none.\n\n- Source: [spec.md](https://github.com/jayanez/agent-braid/blob/develop/specs/031-system-one-integration/spec.md) \u00b7 [tasks.md](https://github.com/jayanez/agent-braid/blob/develop/specs/031-system-one-integration/tasks.md) \u00b7 [assurance.json](https://github.com/jayanez/agent-braid/blob/develop/specs/031-system-one-integration/assurance.json)\n- Trace: REQ-001 / SC-001\n- State basis: Source checkbox in tasks.md.\n\nPlanned and obtained evidence are separate in assurance.json. Closing this issue does not imply human review or scientific proof.\n",
+      "milestone": "S1.3 \u2014 Integration",
+      "state": "open",
+      "task_text": "Review capability-by-capability contracts and rollout order. Dependencies: SPEC-028/T001. Target files: capability-map.md, contracts/integration.md. Planned command after implementation: `.venv-speckit/bin/python -m unittest discover -s tests -p \"test_system_one*.py\" -v`; for manual source/budget/review gates, capture an actual reviewer decision rather than substituting a test result. Verification: Classify every stage as implemented/planned/advisory/unavailable and identify the unchanged verifier. Planned evidence: candidate-bound report under specs/031-system-one-integration/evidence/t001.json; obtained: none."
+    },
+    {
+      "key": "SPEC-031/T002",
+      "kind": "task",
+      "parent": "SPEC-031",
+      "title": "[SPEC-031 T002] Implement immutable context extraction and version binding. Dependencies: T001 SPEC-028/T008. Target f...",
+      "body": "<!-- agent-braid-task-id: SPEC-031/T002 -->\n\n## Task\n\nImplement immutable context extraction and version binding. Dependencies: T001 SPEC-028/T008. Target files: agent_braid/system_one_context.py, tests/test_system_one_context.py. Planned command after implementation: `.venv-speckit/bin/python -m unittest tests.test_system_one_context -v`; for manual source/budget/review gates, capture an actual reviewer decision rather than substituting a test result. Verification: Reject stale/mismatched operation sets; preserve declaration-observation conflicts. Planned evidence: candidate-bound report under specs/031-system-one-integration/evidence/t002.json; obtained: none.\n\n- Source: [spec.md](https://github.com/jayanez/agent-braid/blob/develop/specs/031-system-one-integration/spec.md) \u00b7 [tasks.md](https://github.com/jayanez/agent-braid/blob/develop/specs/031-system-one-integration/tasks.md) \u00b7 [assurance.json](https://github.com/jayanez/agent-braid/blob/develop/specs/031-system-one-integration/assurance.json)\n- Trace: REQ-002 / SC-002\n- State basis: Source checkbox in tasks.md.\n\nPlanned and obtained evidence are separate in assurance.json. Closing this issue does not imply human review or scientific proof.\n",
+      "milestone": "S1.3 \u2014 Integration",
+      "state": "open",
+      "task_text": "Implement immutable context extraction and version binding. Dependencies: T001 SPEC-028/T008. Target files: agent_braid/system_one_context.py, tests/test_system_one_context.py. Planned command after implementation: `.venv-speckit/bin/python -m unittest tests.test_system_one_context -v`; for manual source/budget/review gates, capture an actual reviewer decision rather than substituting a test result. Verification: Reject stale/mismatched operation sets; preserve declaration-observation conflicts. Planned evidence: candidate-bound report under specs/031-system-one-integration/evidence/t002.json; obtained: none."
+    },
+    {
+      "key": "SPEC-031/T003",
+      "kind": "task",
+      "parent": "SPEC-031",
+      "title": "[SPEC-031 T003] Integrate read-only analyzer choice and candidate priority hints. Dependencies: T002. Target files: ag...",
+      "body": "<!-- agent-braid-task-id: SPEC-031/T003 -->\n\n## Task\n\nIntegrate read-only analyzer choice and candidate priority hints. Dependencies: T002. Target files: agent_braid/analysis.py, agent_braid/structured_exchange.py. Planned command after implementation: `.venv-speckit/bin/python -m unittest discover -s tests -p \"test_system_one*.py\" -v`; for manual source/budget/review gates, capture an actual reviewer decision rather than substituting a test result. Verification: Verify same semantic outputs at matched budgets; exact SPEC-019 eligibility cannot be expanded by advice. Planned evidence: candidate-bound report under specs/031-system-one-integration/evidence/t003.json; obtained: none.\n\n- Source: [spec.md](https://github.com/jayanez/agent-braid/blob/develop/specs/031-system-one-integration/spec.md) \u00b7 [tasks.md](https://github.com/jayanez/agent-braid/blob/develop/specs/031-system-one-integration/tasks.md) \u00b7 [assurance.json](https://github.com/jayanez/agent-braid/blob/develop/specs/031-system-one-integration/assurance.json)\n- Trace: REQ-002 REQ-003 / SC-002 SC-003\n- State basis: Source checkbox in tasks.md.\n\nPlanned and obtained evidence are separate in assurance.json. Closing this issue does not imply human review or scientific proof.\n",
+      "milestone": "S1.3 \u2014 Integration",
+      "state": "open",
+      "task_text": "Integrate read-only analyzer choice and candidate priority hints. Dependencies: T002. Target files: agent_braid/analysis.py, agent_braid/structured_exchange.py. Planned command after implementation: `.venv-speckit/bin/python -m unittest discover -s tests -p \"test_system_one*.py\" -v`; for manual source/budget/review gates, capture an actual reviewer decision rather than substituting a test result. Verification: Verify same semantic outputs at matched budgets; exact SPEC-019 eligibility cannot be expanded by advice. Planned evidence: candidate-bound report under specs/031-system-one-integration/evidence/t003.json; obtained: none."
+    },
+    {
+      "key": "SPEC-031/T004",
+      "kind": "task",
+      "parent": "SPEC-031",
+      "title": "[SPEC-031 T004] Add effect-review, tool/model shortlist and adequacy advice adapters. Dependencies: T002. Target files...",
+      "body": "<!-- agent-braid-task-id: SPEC-031/T004 -->\n\n## Task\n\nAdd effect-review, tool/model shortlist and adequacy advice adapters. Dependencies: T002. Target files: agent_braid/system_one_advisors.py, tests/test_system_one_advisors.py. Planned command after implementation: `.venv-speckit/bin/python -m unittest tests.test_system_one_advisors -v`; for manual source/budget/review gates, capture an actual reviewer decision rather than substituting a test result. Verification: Unsupported domains abstain; model argument judgment never replaces deterministic validation. Planned evidence: candidate-bound report under specs/031-system-one-integration/evidence/t004.json; obtained: none.\n\n- Source: [spec.md](https://github.com/jayanez/agent-braid/blob/develop/specs/031-system-one-integration/spec.md) \u00b7 [tasks.md](https://github.com/jayanez/agent-braid/blob/develop/specs/031-system-one-integration/tasks.md) \u00b7 [assurance.json](https://github.com/jayanez/agent-braid/blob/develop/specs/031-system-one-integration/assurance.json)\n- Trace: REQ-001 REQ-006 / SC-001 SC-006\n- State basis: Source checkbox in tasks.md.\n\nPlanned and obtained evidence are separate in assurance.json. Closing this issue does not imply human review or scientific proof.\n",
+      "milestone": "S1.3 \u2014 Integration",
+      "state": "open",
+      "task_text": "Add effect-review, tool/model shortlist and adequacy advice adapters. Dependencies: T002. Target files: agent_braid/system_one_advisors.py, tests/test_system_one_advisors.py. Planned command after implementation: `.venv-speckit/bin/python -m unittest tests.test_system_one_advisors -v`; for manual source/budget/review gates, capture an actual reviewer decision rather than substituting a test result. Verification: Unsupported domains abstain; model argument judgment never replaces deterministic validation. Planned evidence: candidate-bound report under specs/031-system-one-integration/evidence/t004.json; obtained: none."
+    },
+    {
+      "key": "SPEC-031/T005",
+      "kind": "task",
+      "parent": "SPEC-031",
+      "title": "[SPEC-031 T005] Add constrained scheduler hints with authorization negative controls. Dependencies: T003. Target files...",
+      "body": "<!-- agent-braid-task-id: SPEC-031/T005 -->\n\n## Task\n\nAdd constrained scheduler hints with authorization negative controls. Dependencies: T003. Target files: agent_braid/runtime_scheduler.py, tests/test_system_one_runtime_boundary.py. Planned command after implementation: `.venv-speckit/bin/python -m unittest tests.test_system_one_runtime_boundary -v`; for manual source/budget/review gates, capture an actual reviewer decision rather than substituting a test result. Verification: Inject high-confidence forged grants, altered plans and unknown footprints; verify no execution escalation. Planned evidence: candidate-bound report under specs/031-system-one-integration/evidence/t005.json; obtained: none.\n\n- Source: [spec.md](https://github.com/jayanez/agent-braid/blob/develop/specs/031-system-one-integration/spec.md) \u00b7 [tasks.md](https://github.com/jayanez/agent-braid/blob/develop/specs/031-system-one-integration/tasks.md) \u00b7 [assurance.json](https://github.com/jayanez/agent-braid/blob/develop/specs/031-system-one-integration/assurance.json)\n- Trace: REQ-002 REQ-004 / SC-002 SC-004\n- State basis: Source checkbox in tasks.md.\n\nPlanned and obtained evidence are separate in assurance.json. Closing this issue does not imply human review or scientific proof.\n",
+      "milestone": "S1.3 \u2014 Integration",
+      "state": "open",
+      "task_text": "Add constrained scheduler hints with authorization negative controls. Dependencies: T003. Target files: agent_braid/runtime_scheduler.py, tests/test_system_one_runtime_boundary.py. Planned command after implementation: `.venv-speckit/bin/python -m unittest tests.test_system_one_runtime_boundary -v`; for manual source/budget/review gates, capture an actual reviewer decision rather than substituting a test result. Verification: Inject high-confidence forged grants, altered plans and unknown footprints; verify no execution escalation. Planned evidence: candidate-bound report under specs/031-system-one-integration/evidence/t005.json; obtained: none."
+    },
+    {
+      "key": "SPEC-031/T006",
+      "kind": "task",
+      "parent": "SPEC-031",
+      "title": "[SPEC-031 T006] Expose separate bounded read-only MCP advice tools. Dependencies: T004 T005. Target files: agent_braid...",
+      "body": "<!-- agent-braid-task-id: SPEC-031/T006 -->\n\n## Task\n\nExpose separate bounded read-only MCP advice tools. Dependencies: T004 T005. Target files: agent_braid/mcp_runtime.py, tests/test_system_one_mcp.py. Planned command after implementation: `.venv-speckit/bin/python -m unittest tests.test_system_one_mcp -v`; for manual source/budget/review gates, capture an actual reviewer decision rather than substituting a test result. Verification: Preserve pinned host protocol, cancellation and tool permissions; no extra execution capability. Planned evidence: candidate-bound report under specs/031-system-one-integration/evidence/t006.json; obtained: none.\n\n- Source: [spec.md](https://github.com/jayanez/agent-braid/blob/develop/specs/031-system-one-integration/spec.md) \u00b7 [tasks.md](https://github.com/jayanez/agent-braid/blob/develop/specs/031-system-one-integration/tasks.md) \u00b7 [assurance.json](https://github.com/jayanez/agent-braid/blob/develop/specs/031-system-one-integration/assurance.json)\n- Trace: REQ-004 REQ-005 / SC-004 SC-005\n- State basis: Source checkbox in tasks.md.\n\nPlanned and obtained evidence are separate in assurance.json. Closing this issue does not imply human review or scientific proof.\n",
+      "milestone": "S1.3 \u2014 Integration",
+      "state": "open",
+      "task_text": "Expose separate bounded read-only MCP advice tools. Dependencies: T004 T005. Target files: agent_braid/mcp_runtime.py, tests/test_system_one_mcp.py. Planned command after implementation: `.venv-speckit/bin/python -m unittest tests.test_system_one_mcp -v`; for manual source/budget/review gates, capture an actual reviewer decision rather than substituting a test result. Verification: Preserve pinned host protocol, cancellation and tool permissions; no extra execution capability. Planned evidence: candidate-bound report under specs/031-system-one-integration/evidence/t006.json; obtained: none."
+    },
+    {
+      "key": "SPEC-031/T007",
+      "kind": "task",
+      "parent": "SPEC-031",
+      "title": "[SPEC-031 T007] Add fallback-chain and decision-stage telemetry. Dependencies: T006. Target files: agent_braid/system_...",
+      "body": "<!-- agent-braid-task-id: SPEC-031/T007 -->\n\n## Task\n\nAdd fallback-chain and decision-stage telemetry. Dependencies: T006. Target files: agent_braid/system_one_trace.py, tests/test_system_one_trace.py. Planned command after implementation: `.venv-speckit/bin/python -m unittest tests.test_system_one_trace -v`; for manual source/budget/review gates, capture an actual reviewer decision rather than substituting a test result. Verification: Record cost and disagreement per stage without exporting private prompt content. Planned evidence: candidate-bound report under specs/031-system-one-integration/evidence/t007.json; obtained: none.\n\n- Source: [spec.md](https://github.com/jayanez/agent-braid/blob/develop/specs/031-system-one-integration/spec.md) \u00b7 [tasks.md](https://github.com/jayanez/agent-braid/blob/develop/specs/031-system-one-integration/tasks.md) \u00b7 [assurance.json](https://github.com/jayanez/agent-braid/blob/develop/specs/031-system-one-integration/assurance.json)\n- Trace: REQ-006 / SC-006\n- State basis: Source checkbox in tasks.md.\n\nPlanned and obtained evidence are separate in assurance.json. Closing this issue does not imply human review or scientific proof.\n",
+      "milestone": "S1.3 \u2014 Integration",
+      "state": "open",
+      "task_text": "Add fallback-chain and decision-stage telemetry. Dependencies: T006. Target files: agent_braid/system_one_trace.py, tests/test_system_one_trace.py. Planned command after implementation: `.venv-speckit/bin/python -m unittest tests.test_system_one_trace -v`; for manual source/budget/review gates, capture an actual reviewer decision rather than substituting a test result. Verification: Record cost and disagreement per stage without exporting private prompt content. Planned evidence: candidate-bound report under specs/031-system-one-integration/evidence/t007.json; obtained: none."
+    },
+    {
+      "key": "SPEC-031/T008",
+      "kind": "task",
+      "parent": "SPEC-031",
+      "title": "[SPEC-031 T008] Capture integration parity and shadow utility results. Dependencies: T007 SPEC-029/T009. Target files:...",
+      "body": "<!-- agent-braid-task-id: SPEC-031/T008 -->\n\n## Task\n\nCapture integration parity and shadow utility results. Dependencies: T007 SPEC-029/T009. Target files: specs/031-system-one-integration/evidence/, assurance.json. Planned command after implementation: `.venv-speckit/bin/python -m unittest discover -s tests -p \"test_system_one*.py\" -v`; for manual source/budget/review gates, capture an actual reviewer decision rather than substituting a test result. Verification: Run existing runtime/verifier tests plus fresh host exercises only after fixture and cost review. Planned evidence: candidate-bound report under specs/031-system-one-integration/evidence/t008.json; obtained: none.\n\n- Source: [spec.md](https://github.com/jayanez/agent-braid/blob/develop/specs/031-system-one-integration/spec.md) \u00b7 [tasks.md](https://github.com/jayanez/agent-braid/blob/develop/specs/031-system-one-integration/tasks.md) \u00b7 [assurance.json](https://github.com/jayanez/agent-braid/blob/develop/specs/031-system-one-integration/assurance.json)\n- Trace: REQ-001 REQ-002 REQ-003 REQ-004 REQ-005 REQ-006 / SC-001 SC-002 SC-003 SC-004 SC-005 SC-006\n- State basis: Source checkbox in tasks.md.\n\nPlanned and obtained evidence are separate in assurance.json. Closing this issue does not imply human review or scientific proof.\n",
+      "milestone": "S1.3 \u2014 Integration",
+      "state": "open",
+      "task_text": "Capture integration parity and shadow utility results. Dependencies: T007 SPEC-029/T009. Target files: specs/031-system-one-integration/evidence/, assurance.json. Planned command after implementation: `.venv-speckit/bin/python -m unittest discover -s tests -p \"test_system_one*.py\" -v`; for manual source/budget/review gates, capture an actual reviewer decision rather than substituting a test result. Verification: Run existing runtime/verifier tests plus fresh host exercises only after fixture and cost review. Planned evidence: candidate-bound report under specs/031-system-one-integration/evidence/t008.json; obtained: none."
+    },
+    {
+      "key": "SPEC-032",
+      "kind": "spec",
+      "parent": null,
+      "title": "[SPEC-032] SPEC-032: CPU, multilingual and structured decision capabilities",
+      "body": "<!-- agent-braid-spec-id: SPEC-032 -->\n\nSource: [spec.md](https://github.com/jayanez/agent-braid/blob/develop/specs/032-system-one-product/spec.md) \u00b7 [tasks.md](https://github.com/jayanez/agent-braid/blob/develop/specs/032-system-one-product/tasks.md) \u00b7 [assurance.json](https://github.com/jayanez/agent-braid/blob/develop/specs/032-system-one-product/assurance.json)\n\nRequirements: REQ-001, REQ-002, REQ-003, REQ-004, REQ-005, REQ-006.\n\nIssue state is a bounded tracking record, not a scientific or founder approval.\n",
+      "milestone": "S1.4 \u2014 Product and promotion",
+      "state": "open"
+    },
+    {
+      "key": "SPEC-032/T001",
+      "kind": "task",
+      "parent": "SPEC-032",
+      "title": "[SPEC-032 T001] Review supported feature subset and CPU/device budget matrix. Dependencies: SPEC-030/T008. Target file...",
+      "body": "<!-- agent-braid-task-id: SPEC-032/T001 -->\n\n## Task\n\nReview supported feature subset and CPU/device budget matrix. Dependencies: SPEC-030/T008. Target files: product-decisions.md, contracts/product.md. Planned command after implementation: `.venv-speckit/bin/python -m unittest discover -s tests -p \"test_system_one*.py\" -v`; for manual source/budget/review gates, capture an actual reviewer decision rather than substituting a test result. Verification: Record supported languages/tasks and deployment envelopes; defer optional features explicitly. Planned evidence: candidate-bound report under specs/032-system-one-product/evidence/t001.json; obtained: none.\n\n- Source: [spec.md](https://github.com/jayanez/agent-braid/blob/develop/specs/032-system-one-product/spec.md) \u00b7 [tasks.md](https://github.com/jayanez/agent-braid/blob/develop/specs/032-system-one-product/tasks.md) \u00b7 [assurance.json](https://github.com/jayanez/agent-braid/blob/develop/specs/032-system-one-product/assurance.json)\n- Trace: REQ-001 REQ-002 / SC-001 SC-002\n- State basis: Source checkbox in tasks.md.\n\nPlanned and obtained evidence are separate in assurance.json. Closing this issue does not imply human review or scientific proof.\n",
+      "milestone": "S1.4 \u2014 Product and promotion",
+      "state": "open",
+      "task_text": "Review supported feature subset and CPU/device budget matrix. Dependencies: SPEC-030/T008. Target files: product-decisions.md, contracts/product.md. Planned command after implementation: `.venv-speckit/bin/python -m unittest discover -s tests -p \"test_system_one*.py\" -v`; for manual source/budget/review gates, capture an actual reviewer decision rather than substituting a test result. Verification: Record supported languages/tasks and deployment envelopes; defer optional features explicitly. Planned evidence: candidate-bound report under specs/032-system-one-product/evidence/t001.json; obtained: none."
+    },
+    {
+      "key": "SPEC-032/T002",
+      "kind": "task",
+      "parent": "SPEC-032",
+      "title": "[SPEC-032 T002] Implement optional export/quantization with CPU reference parity. Dependencies: T001. Target files: ag...",
+      "body": "<!-- agent-braid-task-id: SPEC-032/T002 -->\n\n## Task\n\nImplement optional export/quantization with CPU reference parity. Dependencies: T001. Target files: agent_braid_system_one/export.py, tests/test_system_one_export.py. Planned command after implementation: `.venv-speckit/bin/python -m unittest tests.test_system_one_export -v`; for manual source/budget/review gates, capture an actual reviewer decision rather than substituting a test result. Verification: Measure probability/decision changes, cold/warm latency and peak RSS; no blanket speed claims. Planned evidence: candidate-bound report under specs/032-system-one-product/evidence/t002.json; obtained: none.\n\n- Source: [spec.md](https://github.com/jayanez/agent-braid/blob/develop/specs/032-system-one-product/spec.md) \u00b7 [tasks.md](https://github.com/jayanez/agent-braid/blob/develop/specs/032-system-one-product/tasks.md) \u00b7 [assurance.json](https://github.com/jayanez/agent-braid/blob/develop/specs/032-system-one-product/assurance.json)\n- Trace: REQ-001 / SC-001\n- State basis: Source checkbox in tasks.md.\n\nPlanned and obtained evidence are separate in assurance.json. Closing this issue does not imply human review or scientific proof.\n",
+      "milestone": "S1.4 \u2014 Product and promotion",
+      "state": "open",
+      "task_text": "Implement optional export/quantization with CPU reference parity. Dependencies: T001. Target files: agent_braid_system_one/export.py, tests/test_system_one_export.py. Planned command after implementation: `.venv-speckit/bin/python -m unittest tests.test_system_one_export -v`; for manual source/budget/review gates, capture an actual reviewer decision rather than substituting a test result. Verification: Measure probability/decision changes, cold/warm latency and peak RSS; no blanket speed claims. Planned evidence: candidate-bound report under specs/032-system-one-product/evidence/t002.json; obtained: none."
+    },
+    {
+      "key": "SPEC-032/T003",
+      "kind": "task",
+      "parent": "SPEC-032",
+      "title": "[SPEC-032 T003] Implement evidence-bound language/task/model routing. Dependencies: T001. Target files: agent_braid/sy...",
+      "body": "<!-- agent-braid-task-id: SPEC-032/T003 -->\n\n## Task\n\nImplement evidence-bound language/task/model routing. Dependencies: T001. Target files: agent_braid/system_one_router.py, tests/test_system_one_router.py. Planned command after implementation: `.venv-speckit/bin/python -m unittest tests.test_system_one_router -v`; for manual source/budget/review gates, capture an actual reviewer decision rather than substituting a test result. Verification: Test Spanish, English, unknown languages, short code and mixed-script input before confidence routing. Planned evidence: candidate-bound report under specs/032-system-one-product/evidence/t003.json; obtained: none.\n\n- Source: [spec.md](https://github.com/jayanez/agent-braid/blob/develop/specs/032-system-one-product/spec.md) \u00b7 [tasks.md](https://github.com/jayanez/agent-braid/blob/develop/specs/032-system-one-product/tasks.md) \u00b7 [assurance.json](https://github.com/jayanez/agent-braid/blob/develop/specs/032-system-one-product/assurance.json)\n- Trace: REQ-002 / SC-002\n- State basis: Source checkbox in tasks.md.\n\nPlanned and obtained evidence are separate in assurance.json. Closing this issue does not imply human review or scientific proof.\n",
+      "milestone": "S1.4 \u2014 Product and promotion",
+      "state": "open",
+      "task_text": "Implement evidence-bound language/task/model routing. Dependencies: T001. Target files: agent_braid/system_one_router.py, tests/test_system_one_router.py. Planned command after implementation: `.venv-speckit/bin/python -m unittest tests.test_system_one_router -v`; for manual source/budget/review gates, capture an actual reviewer decision rather than substituting a test result. Verification: Test Spanish, English, unknown languages, short code and mixed-script input before confidence routing. Planned evidence: candidate-bound report under specs/032-system-one-product/evidence/t003.json; obtained: none."
+    },
+    {
+      "key": "SPEC-032/T004",
+      "kind": "task",
+      "parent": "SPEC-032",
+      "title": "[SPEC-032 T004] Implement bounded schema-to-question compiler. Dependencies: SPEC-028/T008 T001. Target files: agent_b...",
+      "body": "<!-- agent-braid-task-id: SPEC-032/T004 -->\n\n## Task\n\nImplement bounded schema-to-question compiler. Dependencies: SPEC-028/T008 T001. Target files: agent_braid/system_one_schema.py, tests/test_system_one_schema.py. Planned command after implementation: `.venv-speckit/bin/python -m unittest tests.test_system_one_schema -v`; for manual source/budget/review gates, capture an actual reviewer decision rather than substituting a test result. Verification: Cover nested local refs, enums, nullability, cycles, ordering and refusal of free-form generation. Planned evidence: candidate-bound report under specs/032-system-one-product/evidence/t004.json; obtained: none.\n\n- Source: [spec.md](https://github.com/jayanez/agent-braid/blob/develop/specs/032-system-one-product/spec.md) \u00b7 [tasks.md](https://github.com/jayanez/agent-braid/blob/develop/specs/032-system-one-product/tasks.md) \u00b7 [assurance.json](https://github.com/jayanez/agent-braid/blob/develop/specs/032-system-one-product/assurance.json)\n- Trace: REQ-003 / SC-003\n- State basis: Source checkbox in tasks.md.\n\nPlanned and obtained evidence are separate in assurance.json. Closing this issue does not imply human review or scientific proof.\n",
+      "milestone": "S1.4 \u2014 Product and promotion",
+      "state": "open",
+      "task_text": "Implement bounded schema-to-question compiler. Dependencies: SPEC-028/T008 T001. Target files: agent_braid/system_one_schema.py, tests/test_system_one_schema.py. Planned command after implementation: `.venv-speckit/bin/python -m unittest tests.test_system_one_schema -v`; for manual source/budget/review gates, capture an actual reviewer decision rather than substituting a test result. Verification: Cover nested local refs, enums, nullability, cycles, ordering and refusal of free-form generation. Planned evidence: candidate-bound report under specs/032-system-one-product/evidence/t004.json; obtained: none."
+    },
+    {
+      "key": "SPEC-032/T005",
+      "kind": "task",
+      "parent": "SPEC-032",
+      "title": "[SPEC-032 T005] Implement shortlist and tournament with subset provenance. Dependencies: T003 SPEC-029/T009. Target fi...",
+      "body": "<!-- agent-braid-task-id: SPEC-032/T005 -->\n\n## Task\n\nImplement shortlist and tournament with subset provenance. Dependencies: T003 SPEC-029/T009. Target files: agent_braid/system_one_catalogue.py, tests/test_system_one_catalogue.py. Planned command after implementation: `.venv-speckit/bin/python -m unittest tests.test_system_one_catalogue -v`; for manual source/budget/review gates, capture an actual reviewer decision rather than substituting a test result. Verification: Compare recall@k and tournament group/order sensitivity; calibrate final chain separately. Planned evidence: candidate-bound report under specs/032-system-one-product/evidence/t005.json; obtained: none.\n\n- Source: [spec.md](https://github.com/jayanez/agent-braid/blob/develop/specs/032-system-one-product/spec.md) \u00b7 [tasks.md](https://github.com/jayanez/agent-braid/blob/develop/specs/032-system-one-product/tasks.md) \u00b7 [assurance.json](https://github.com/jayanez/agent-braid/blob/develop/specs/032-system-one-product/assurance.json)\n- Trace: REQ-004 / SC-004\n- State basis: Source checkbox in tasks.md.\n\nPlanned and obtained evidence are separate in assurance.json. Closing this issue does not imply human review or scientific proof.\n",
+      "milestone": "S1.4 \u2014 Product and promotion",
+      "state": "open",
+      "task_text": "Implement shortlist and tournament with subset provenance. Dependencies: T003 SPEC-029/T009. Target files: agent_braid/system_one_catalogue.py, tests/test_system_one_catalogue.py. Planned command after implementation: `.venv-speckit/bin/python -m unittest tests.test_system_one_catalogue -v`; for manual source/budget/review gates, capture an actual reviewer decision rather than substituting a test result. Verification: Compare recall@k and tournament group/order sensitivity; calibrate final chain separately. Planned evidence: candidate-bound report under specs/032-system-one-product/evidence/t005.json; obtained: none."
+    },
+    {
+      "key": "SPEC-032/T006",
+      "kind": "task",
+      "parent": "SPEC-032",
+      "title": "[SPEC-032 T006] Implement token-budget batching and reference-counted model lifecycle. Dependencies: T002 T003. Target...",
+      "body": "<!-- agent-braid-task-id: SPEC-032/T006 -->\n\n## Task\n\nImplement token-budget batching and reference-counted model lifecycle. Dependencies: T002 T003. Target files: agent_braid_system_one/worker.py, tests/test_system_one_lifecycle.py. Planned command after implementation: `.venv-speckit/bin/python -m unittest tests.test_system_one_lifecycle -v`; for manual source/budget/review gates, capture an actual reviewer decision rather than substituting a test result. Verification: Barrier tests cover unload-during-inference, cancellation, overload and cross-request contamination. Planned evidence: candidate-bound report under specs/032-system-one-product/evidence/t006.json; obtained: none.\n\n- Source: [spec.md](https://github.com/jayanez/agent-braid/blob/develop/specs/032-system-one-product/spec.md) \u00b7 [tasks.md](https://github.com/jayanez/agent-braid/blob/develop/specs/032-system-one-product/tasks.md) \u00b7 [assurance.json](https://github.com/jayanez/agent-braid/blob/develop/specs/032-system-one-product/assurance.json)\n- Trace: REQ-005 / SC-005\n- State basis: Source checkbox in tasks.md.\n\nPlanned and obtained evidence are separate in assurance.json. Closing this issue does not imply human review or scientific proof.\n",
+      "milestone": "S1.4 \u2014 Product and promotion",
+      "state": "open",
+      "task_text": "Implement token-budget batching and reference-counted model lifecycle. Dependencies: T002 T003. Target files: agent_braid_system_one/worker.py, tests/test_system_one_lifecycle.py. Planned command after implementation: `.venv-speckit/bin/python -m unittest tests.test_system_one_lifecycle -v`; for manual source/budget/review gates, capture an actual reviewer decision rather than substituting a test result. Verification: Barrier tests cover unload-during-inference, cancellation, overload and cross-request contamination. Planned evidence: candidate-bound report under specs/032-system-one-product/evidence/t006.json; obtained: none."
+    },
+    {
+      "key": "SPEC-032/T007",
+      "kind": "task",
+      "parent": "SPEC-032",
+      "title": "[SPEC-032 T007] Implement observer hooks and fresh offline wheel install checks. Dependencies: T004 T005 T006. Target...",
+      "body": "<!-- agent-braid-task-id: SPEC-032/T007 -->\n\n## Task\n\nImplement observer hooks and fresh offline wheel install checks. Dependencies: T004 T005 T006. Target files: agent_braid/system_one_hooks.py, tests/test_system_one_packaging.py. Planned command after implementation: `.venv-speckit/bin/python -m unittest tests.test_system_one_packaging -v`; for manual source/budget/review gates, capture an actual reviewer decision rather than substituting a test result. Verification: Test sealed-input mutation, blocked hooks and installed extras in a clean environment. Planned evidence: candidate-bound report under specs/032-system-one-product/evidence/t007.json; obtained: none.\n\n- Source: [spec.md](https://github.com/jayanez/agent-braid/blob/develop/specs/032-system-one-product/spec.md) \u00b7 [tasks.md](https://github.com/jayanez/agent-braid/blob/develop/specs/032-system-one-product/tasks.md) \u00b7 [assurance.json](https://github.com/jayanez/agent-braid/blob/develop/specs/032-system-one-product/assurance.json)\n- Trace: REQ-006 / SC-006\n- State basis: Source checkbox in tasks.md.\n\nPlanned and obtained evidence are separate in assurance.json. Closing this issue does not imply human review or scientific proof.\n",
+      "milestone": "S1.4 \u2014 Product and promotion",
+      "state": "open",
+      "task_text": "Implement observer hooks and fresh offline wheel install checks. Dependencies: T004 T005 T006. Target files: agent_braid/system_one_hooks.py, tests/test_system_one_packaging.py. Planned command after implementation: `.venv-speckit/bin/python -m unittest tests.test_system_one_packaging -v`; for manual source/budget/review gates, capture an actual reviewer decision rather than substituting a test result. Verification: Test sealed-input mutation, blocked hooks and installed extras in a clean environment. Planned evidence: candidate-bound report under specs/032-system-one-product/evidence/t007.json; obtained: none."
+    },
+    {
+      "key": "SPEC-032/T008",
+      "kind": "task",
+      "parent": "SPEC-032",
+      "title": "[SPEC-032 T008] Capture per-feature evaluation and accept or defer each extension. Dependencies: T007. Target files: s...",
+      "body": "<!-- agent-braid-task-id: SPEC-032/T008 -->\n\n## Task\n\nCapture per-feature evaluation and accept or defer each extension. Dependencies: T007. Target files: specs/032-system-one-product/feature-acceptance.md, assurance.json. Planned command after implementation: `.venv-speckit/bin/python -m unittest discover -s tests -p \"test_system_one*.py\" -v`; for manual source/budget/review gates, capture an actual reviewer decision rather than substituting a test result. Verification: Retain negative recall/language/parity findings; no all-or-nothing feature adoption. Planned evidence: candidate-bound report under specs/032-system-one-product/evidence/t008.json; obtained: none.\n\n- Source: [spec.md](https://github.com/jayanez/agent-braid/blob/develop/specs/032-system-one-product/spec.md) \u00b7 [tasks.md](https://github.com/jayanez/agent-braid/blob/develop/specs/032-system-one-product/tasks.md) \u00b7 [assurance.json](https://github.com/jayanez/agent-braid/blob/develop/specs/032-system-one-product/assurance.json)\n- Trace: REQ-001 REQ-002 REQ-003 REQ-004 REQ-005 REQ-006 / SC-001 SC-002 SC-003 SC-004 SC-005 SC-006\n- State basis: Source checkbox in tasks.md.\n\nPlanned and obtained evidence are separate in assurance.json. Closing this issue does not imply human review or scientific proof.\n",
+      "milestone": "S1.4 \u2014 Product and promotion",
+      "state": "open",
+      "task_text": "Capture per-feature evaluation and accept or defer each extension. Dependencies: T007. Target files: specs/032-system-one-product/feature-acceptance.md, assurance.json. Planned command after implementation: `.venv-speckit/bin/python -m unittest discover -s tests -p \"test_system_one*.py\" -v`; for manual source/budget/review gates, capture an actual reviewer decision rather than substituting a test result. Verification: Retain negative recall/language/parity findings; no all-or-nothing feature adoption. Planned evidence: candidate-bound report under specs/032-system-one-product/evidence/t008.json; obtained: none."
+    },
+    {
+      "key": "SPEC-033",
+      "kind": "spec",
+      "parent": null,
+      "title": "[SPEC-033] SPEC-033: Shadow validation, promotion, drift and rollback",
+      "body": "<!-- agent-braid-spec-id: SPEC-033 -->\n\nSource: [spec.md](https://github.com/jayanez/agent-braid/blob/develop/specs/033-system-one-promotion/spec.md) \u00b7 [tasks.md](https://github.com/jayanez/agent-braid/blob/develop/specs/033-system-one-promotion/tasks.md) \u00b7 [assurance.json](https://github.com/jayanez/agent-braid/blob/develop/specs/033-system-one-promotion/assurance.json)\n\nRequirements: REQ-001, REQ-002, REQ-003, REQ-004, REQ-005, REQ-006.\n\nIssue state is a bounded tracking record, not a scientific or founder approval.\n",
+      "milestone": "S1.4 \u2014 Product and promotion",
+      "state": "open"
+    },
+    {
+      "key": "SPEC-033/T001",
+      "kind": "task",
+      "parent": "SPEC-033",
+      "title": "[SPEC-033 T001] Review capability-specific promotion and rollback criteria. Dependencies: SPEC-029/T008 SPEC-031/T001....",
+      "body": "<!-- agent-braid-task-id: SPEC-033/T001 -->\n\n## Task\n\nReview capability-specific promotion and rollback criteria. Dependencies: SPEC-029/T008 SPEC-031/T001. Target files: promotion-protocol.md, contracts/promotion.md. Planned command after implementation: `.venv-speckit/bin/python -m unittest discover -s tests -p \"test_system_one*.py\" -v`; for manual source/budget/review gates, capture an actual reviewer decision rather than substituting a test result. Verification: Freeze risk/quality/cost envelopes and responsible reviewers before observing candidate rankings. Planned evidence: candidate-bound report under specs/033-system-one-promotion/evidence/t001.json; obtained: none.\n\n- Source: [spec.md](https://github.com/jayanez/agent-braid/blob/develop/specs/033-system-one-promotion/spec.md) \u00b7 [tasks.md](https://github.com/jayanez/agent-braid/blob/develop/specs/033-system-one-promotion/tasks.md) \u00b7 [assurance.json](https://github.com/jayanez/agent-braid/blob/develop/specs/033-system-one-promotion/assurance.json)\n- Trace: REQ-002 REQ-006 / SC-002 SC-006\n- State basis: Source checkbox in tasks.md.\n\nPlanned and obtained evidence are separate in assurance.json. Closing this issue does not imply human review or scientific proof.\n",
+      "milestone": "S1.4 \u2014 Product and promotion",
+      "state": "open",
+      "task_text": "Review capability-specific promotion and rollback criteria. Dependencies: SPEC-029/T008 SPEC-031/T001. Target files: promotion-protocol.md, contracts/promotion.md. Planned command after implementation: `.venv-speckit/bin/python -m unittest discover -s tests -p \"test_system_one*.py\" -v`; for manual source/budget/review gates, capture an actual reviewer decision rather than substituting a test result. Verification: Freeze risk/quality/cost envelopes and responsible reviewers before observing candidate rankings. Planned evidence: candidate-bound report under specs/033-system-one-promotion/evidence/t001.json; obtained: none."
+    },
+    {
+      "key": "SPEC-033/T002",
+      "kind": "task",
+      "parent": "SPEC-033",
+      "title": "[SPEC-033 T002] Implement shadow-only trace capture and retention controls. Dependencies: T001 SPEC-031/T007. Target f...",
+      "body": "<!-- agent-braid-task-id: SPEC-033/T002 -->\n\n## Task\n\nImplement shadow-only trace capture and retention controls. Dependencies: T001 SPEC-031/T007. Target files: agent_braid/system_one_trace.py, tests/test_system_one_shadow.py. Planned command after implementation: `.venv-speckit/bin/python -m unittest tests.test_system_one_shadow -v`; for manual source/budget/review gates, capture an actual reviewer decision rather than substituting a test result. Verification: Prove identical legacy outputs under shadow, bounded storage and privacy-preserving metadata. Planned evidence: candidate-bound report under specs/033-system-one-promotion/evidence/t002.json; obtained: none.\n\n- Source: [spec.md](https://github.com/jayanez/agent-braid/blob/develop/specs/033-system-one-promotion/spec.md) \u00b7 [tasks.md](https://github.com/jayanez/agent-braid/blob/develop/specs/033-system-one-promotion/tasks.md) \u00b7 [assurance.json](https://github.com/jayanez/agent-braid/blob/develop/specs/033-system-one-promotion/assurance.json)\n- Trace: REQ-001 / SC-001\n- State basis: Source checkbox in tasks.md.\n\nPlanned and obtained evidence are separate in assurance.json. Closing this issue does not imply human review or scientific proof.\n",
+      "milestone": "S1.4 \u2014 Product and promotion",
+      "state": "open",
+      "task_text": "Implement shadow-only trace capture and retention controls. Dependencies: T001 SPEC-031/T007. Target files: agent_braid/system_one_trace.py, tests/test_system_one_shadow.py. Planned command after implementation: `.venv-speckit/bin/python -m unittest tests.test_system_one_shadow -v`; for manual source/budget/review gates, capture an actual reviewer decision rather than substituting a test result. Verification: Prove identical legacy outputs under shadow, bounded storage and privacy-preserving metadata. Planned evidence: candidate-bound report under specs/033-system-one-promotion/evidence/t002.json; obtained: none."
+    },
+    {
+      "key": "SPEC-033/T003",
+      "kind": "task",
+      "parent": "SPEC-033",
+      "title": "[SPEC-033 T003] Implement immutable artifact/capability promotion registry. Dependencies: T002. Target files: agent_br...",
+      "body": "<!-- agent-braid-task-id: SPEC-033/T003 -->\n\n## Task\n\nImplement immutable artifact/capability promotion registry. Dependencies: T002. Target files: agent_braid/system_one_registry.py, tests/test_system_one_registry.py. Planned command after implementation: `.venv-speckit/bin/python -m unittest tests.test_system_one_registry -v`; for manual source/budget/review gates, capture an actual reviewer decision rather than substituting a test result. Verification: Bind exact candidate and review scope; test altered calibration, policy and optional backend. Planned evidence: candidate-bound report under specs/033-system-one-promotion/evidence/t003.json; obtained: none.\n\n- Source: [spec.md](https://github.com/jayanez/agent-braid/blob/develop/specs/033-system-one-promotion/spec.md) \u00b7 [tasks.md](https://github.com/jayanez/agent-braid/blob/develop/specs/033-system-one-promotion/tasks.md) \u00b7 [assurance.json](https://github.com/jayanez/agent-braid/blob/develop/specs/033-system-one-promotion/assurance.json)\n- Trace: REQ-002 REQ-004 / SC-002 SC-004\n- State basis: Source checkbox in tasks.md.\n\nPlanned and obtained evidence are separate in assurance.json. Closing this issue does not imply human review or scientific proof.\n",
+      "milestone": "S1.4 \u2014 Product and promotion",
+      "state": "open",
+      "task_text": "Implement immutable artifact/capability promotion registry. Dependencies: T002. Target files: agent_braid/system_one_registry.py, tests/test_system_one_registry.py. Planned command after implementation: `.venv-speckit/bin/python -m unittest tests.test_system_one_registry -v`; for manual source/budget/review gates, capture an actual reviewer decision rather than substituting a test result. Verification: Bind exact candidate and review scope; test altered calibration, policy and optional backend. Planned evidence: candidate-bound report under specs/033-system-one-promotion/evidence/t003.json; obtained: none."
+    },
+    {
+      "key": "SPEC-033/T004",
+      "kind": "task",
+      "parent": "SPEC-033",
+      "title": "[SPEC-033 T004] Implement domain drift checks and label-aware monitoring. Dependencies: T003. Target files: agent_brai...",
+      "body": "<!-- agent-braid-task-id: SPEC-033/T004 -->\n\n## Task\n\nImplement domain drift checks and label-aware monitoring. Dependencies: T003. Target files: agent_braid/system_one_monitor.py, tests/test_system_one_drift.py. Planned command after implementation: `.venv-speckit/bin/python -m unittest tests.test_system_one_drift -v`; for manual source/budget/review gates, capture an actual reviewer decision rather than substituting a test result. Verification: Unknown/unlabeled drift stays unknown; affected domains deterministically defer. Planned evidence: candidate-bound report under specs/033-system-one-promotion/evidence/t004.json; obtained: none.\n\n- Source: [spec.md](https://github.com/jayanez/agent-braid/blob/develop/specs/033-system-one-promotion/spec.md) \u00b7 [tasks.md](https://github.com/jayanez/agent-braid/blob/develop/specs/033-system-one-promotion/tasks.md) \u00b7 [assurance.json](https://github.com/jayanez/agent-braid/blob/develop/specs/033-system-one-promotion/assurance.json)\n- Trace: REQ-003 / SC-003\n- State basis: Source checkbox in tasks.md.\n\nPlanned and obtained evidence are separate in assurance.json. Closing this issue does not imply human review or scientific proof.\n",
+      "milestone": "S1.4 \u2014 Product and promotion",
+      "state": "open",
+      "task_text": "Implement domain drift checks and label-aware monitoring. Dependencies: T003. Target files: agent_braid/system_one_monitor.py, tests/test_system_one_drift.py. Planned command after implementation: `.venv-speckit/bin/python -m unittest tests.test_system_one_drift -v`; for manual source/budget/review gates, capture an actual reviewer decision rather than substituting a test result. Verification: Unknown/unlabeled drift stays unknown; affected domains deterministically defer. Planned evidence: candidate-bound report under specs/033-system-one-promotion/evidence/t004.json; obtained: none."
+    },
+    {
+      "key": "SPEC-033/T005",
+      "kind": "task",
+      "parent": "SPEC-033",
+      "title": "[SPEC-033 T005] Implement atomic rollback and bounded fallback chains. Dependencies: T003 T004. Target files: agent_br...",
+      "body": "<!-- agent-braid-task-id: SPEC-033/T005 -->\n\n## Task\n\nImplement atomic rollback and bounded fallback chains. Dependencies: T003 T004. Target files: agent_braid/system_one_policy.py, tests/test_system_one_rollback.py. Planned command after implementation: `.venv-speckit/bin/python -m unittest tests.test_system_one_rollback -v`; for manual source/budget/review gates, capture an actual reviewer decision rather than substituting a test result. Verification: Inject outages, OOM, stale manifests and deadline exhaustion; verify no paid/provider call by default. Planned evidence: candidate-bound report under specs/033-system-one-promotion/evidence/t005.json; obtained: none.\n\n- Source: [spec.md](https://github.com/jayanez/agent-braid/blob/develop/specs/033-system-one-promotion/spec.md) \u00b7 [tasks.md](https://github.com/jayanez/agent-braid/blob/develop/specs/033-system-one-promotion/tasks.md) \u00b7 [assurance.json](https://github.com/jayanez/agent-braid/blob/develop/specs/033-system-one-promotion/assurance.json)\n- Trace: REQ-004 REQ-005 / SC-004 SC-005\n- State basis: Source checkbox in tasks.md.\n\nPlanned and obtained evidence are separate in assurance.json. Closing this issue does not imply human review or scientific proof.\n",
+      "milestone": "S1.4 \u2014 Product and promotion",
+      "state": "open",
+      "task_text": "Implement atomic rollback and bounded fallback chains. Dependencies: T003 T004. Target files: agent_braid/system_one_policy.py, tests/test_system_one_rollback.py. Planned command after implementation: `.venv-speckit/bin/python -m unittest tests.test_system_one_rollback -v`; for manual source/budget/review gates, capture an actual reviewer decision rather than substituting a test result. Verification: Inject outages, OOM, stale manifests and deadline exhaustion; verify no paid/provider call by default. Planned evidence: candidate-bound report under specs/033-system-one-promotion/evidence/t005.json; obtained: none."
+    },
+    {
+      "key": "SPEC-033/T006",
+      "kind": "task",
+      "parent": "SPEC-033",
+      "title": "[SPEC-033 T006] Run paired shadow pilot with complete chain costs. Dependencies: T005 SPEC-029/T009 SPEC-031/T008. Tar...",
+      "body": "<!-- agent-braid-task-id: SPEC-033/T006 -->\n\n## Task\n\nRun paired shadow pilot with complete chain costs. Dependencies: T005 SPEC-029/T009 SPEC-031/T008. Target files: research/system_one/shadow-results/, shadow-protocol.md. Planned command after implementation: `.venv-speckit/bin/python -m unittest discover -s tests -p \"test_system_one*.py\" -v`; for manual source/budget/review gates, capture an actual reviewer decision rather than substituting a test result. Verification: Record actual permissions, label coverage, total costs and conflicts; no generic throughput claim. Planned evidence: candidate-bound report under specs/033-system-one-promotion/evidence/t006.json; obtained: none.\n\n- Source: [spec.md](https://github.com/jayanez/agent-braid/blob/develop/specs/033-system-one-promotion/spec.md) \u00b7 [tasks.md](https://github.com/jayanez/agent-braid/blob/develop/specs/033-system-one-promotion/tasks.md) \u00b7 [assurance.json](https://github.com/jayanez/agent-braid/blob/develop/specs/033-system-one-promotion/assurance.json)\n- Trace: REQ-001 REQ-002 REQ-006 / SC-001 SC-002 SC-006\n- State basis: Source checkbox in tasks.md.\n\nPlanned and obtained evidence are separate in assurance.json. Closing this issue does not imply human review or scientific proof.\n",
+      "milestone": "S1.4 \u2014 Product and promotion",
+      "state": "open",
+      "task_text": "Run paired shadow pilot with complete chain costs. Dependencies: T005 SPEC-029/T009 SPEC-031/T008. Target files: research/system_one/shadow-results/, shadow-protocol.md. Planned command after implementation: `.venv-speckit/bin/python -m unittest discover -s tests -p \"test_system_one*.py\" -v`; for manual source/budget/review gates, capture an actual reviewer decision rather than substituting a test result. Verification: Record actual permissions, label coverage, total costs and conflicts; no generic throughput claim. Planned evidence: candidate-bound report under specs/033-system-one-promotion/evidence/t006.json; obtained: none."
+    },
+    {
+      "key": "SPEC-033/T007",
+      "kind": "task",
+      "parent": "SPEC-033",
+      "title": "[SPEC-033 T007] Build exact-candidate closure packet with fresh reproduction. Dependencies: T006. Target files: specs/...",
+      "body": "<!-- agent-braid-task-id: SPEC-033/T007 -->\n\n## Task\n\nBuild exact-candidate closure packet with fresh reproduction. Dependencies: T006. Target files: specs/033-system-one-promotion/closure.md, assurance.json. Planned command after implementation: `.venv-speckit/bin/python -m unittest discover -s tests -p \"test_system_one*.py\" -v`; for manual source/budget/review gates, capture an actual reviewer decision rather than substituting a test result. Verification: Separate software passing, utility/no-gain, host/hardware coverage and pending independent review. Planned evidence: candidate-bound report under specs/033-system-one-promotion/evidence/t007.json; obtained: none.\n\n- Source: [spec.md](https://github.com/jayanez/agent-braid/blob/develop/specs/033-system-one-promotion/spec.md) \u00b7 [tasks.md](https://github.com/jayanez/agent-braid/blob/develop/specs/033-system-one-promotion/tasks.md) \u00b7 [assurance.json](https://github.com/jayanez/agent-braid/blob/develop/specs/033-system-one-promotion/assurance.json)\n- Trace: REQ-002 REQ-006 / SC-002 SC-006\n- State basis: Source checkbox in tasks.md.\n\nPlanned and obtained evidence are separate in assurance.json. Closing this issue does not imply human review or scientific proof.\n",
+      "milestone": "S1.4 \u2014 Product and promotion",
+      "state": "open",
+      "task_text": "Build exact-candidate closure packet with fresh reproduction. Dependencies: T006. Target files: specs/033-system-one-promotion/closure.md, assurance.json. Planned command after implementation: `.venv-speckit/bin/python -m unittest discover -s tests -p \"test_system_one*.py\" -v`; for manual source/budget/review gates, capture an actual reviewer decision rather than substituting a test result. Verification: Separate software passing, utility/no-gain, host/hardware coverage and pending independent review. Planned evidence: candidate-bound report under specs/033-system-one-promotion/evidence/t007.json; obtained: none."
+    },
+    {
+      "key": "SPEC-033/T008",
+      "kind": "task",
+      "parent": "SPEC-033",
+      "title": "[SPEC-033 T008] Record founder per-capability go/no-go and reconcile tracking. Dependencies: T007. Target files: specs...",
+      "body": "<!-- agent-braid-task-id: SPEC-033/T008 -->\n\n## Task\n\nRecord founder per-capability go/no-go and reconcile tracking. Dependencies: T007. Target files: specs/033-system-one-promotion/founder-review.json, docs/development/github-tracking.json. Planned command after implementation: `.venv-speckit/bin/python -m unittest discover -s tests -p \"test_system_one*.py\" -v`; for manual source/budget/review gates, capture an actual reviewer decision rather than substituting a test result. Verification: Only an actual decision changes adoption/tracking; do not auto-close M3.5 or M4. Planned evidence: candidate-bound report under specs/033-system-one-promotion/evidence/t008.json; obtained: none.\n\n- Source: [spec.md](https://github.com/jayanez/agent-braid/blob/develop/specs/033-system-one-promotion/spec.md) \u00b7 [tasks.md](https://github.com/jayanez/agent-braid/blob/develop/specs/033-system-one-promotion/tasks.md) \u00b7 [assurance.json](https://github.com/jayanez/agent-braid/blob/develop/specs/033-system-one-promotion/assurance.json)\n- Trace: REQ-002 REQ-006 / SC-002 SC-006\n- State basis: Source checkbox in tasks.md.\n\nPlanned and obtained evidence are separate in assurance.json. Closing this issue does not imply human review or scientific proof.\n",
+      "milestone": "S1.4 \u2014 Product and promotion",
+      "state": "open",
+      "task_text": "Record founder per-capability go/no-go and reconcile tracking. Dependencies: T007. Target files: specs/033-system-one-promotion/founder-review.json, docs/development/github-tracking.json. Planned command after implementation: `.venv-speckit/bin/python -m unittest discover -s tests -p \"test_system_one*.py\" -v`; for manual source/budget/review gates, capture an actual reviewer decision rather than substituting a test result. Verification: Only an actual decision changes adoption/tracking; do not auto-close M3.5 or M4. Planned evidence: candidate-bound report under specs/033-system-one-promotion/evidence/t008.json; obtained: none."
+    }
+  ]
+}

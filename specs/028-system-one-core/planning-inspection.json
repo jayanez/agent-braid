@@ -1,0 +1,45 @@
+{
+  "structuralInspection": "passed",
+  "featureCount": 6,
+  "coverage": {
+    "SPEC-028": {
+      "requirements": 6,
+      "scenarios": 6,
+      "tasks": 8
+    },
+    "SPEC-029": {
+      "requirements": 6,
+      "scenarios": 6,
+      "tasks": 9
+    },
+    "SPEC-030": {
+      "requirements": 6,
+      "scenarios": 6,
+      "tasks": 8
+    },
+    "SPEC-031": {
+      "requirements": 6,
+      "scenarios": 6,
+      "tasks": 8
+    },
+    "SPEC-032": {
+      "requirements": 6,
+      "scenarios": 6,
+      "tasks": 8
+    },
+    "SPEC-033": {
+      "requirements": 6,
+      "scenarios": 6,
+      "tasks": 8
+    }
+  },
+  "taskCount": 49,
+  "dependencyGraph": "acyclic with no missing references",
+  "localLinks": "all resolved",
+  "issueDrafts": 55,
+  "milestoneDrafts": 5,
+  "featureAcceptance": "not executed; all draft/pending",
+  "localLinkCount": 82,
+  "scenarioProcedureCount": 36,
+  "sourceDigestCount": 43
+}

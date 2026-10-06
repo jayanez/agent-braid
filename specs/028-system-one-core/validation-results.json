@@ -1,0 +1,82 @@
+{
+  "recordVersion": "system-one-planning-validation-1",
+  "validatedAt": "2026-10-05",
+  "checkoutCommit": "f1bc304827b26c2cc3e02d5488ff2f82daa5453d",
+  "checkoutBranch": "develop",
+  "planningStatus": "complete draft packet; no implementation acceptance",
+  "commands": [
+    {
+      "command": "umask 0022 && .venv-speckit/bin/python scripts/validate_change.py --base develop --profile pr",
+      "exitCode": 0,
+      "profile": "pr",
+      "testsRun": 385,
+      "testsPassed": 380,
+      "testsSkipped": 5,
+      "log": "specs/028-system-one-core/delivery/checks/pr-final.txt"
+    },
+    {
+      "command": ".venv-speckit/bin/python scripts/validate_spec_kit.py",
+      "exitCode": 0,
+      "log": "specs/028-system-one-core/delivery/checks/spec-kit-structure.txt"
+    },
+    {
+      "command": ".venv-speckit/bin/python scripts/sync_github_tracking.py source",
+      "exitCode": 0,
+      "newSpecs": 6,
+      "newTasks": 49,
+      "newMilestones": 5,
+      "issueDrafts": 55
+    },
+    {
+      "command": "Local source-inventory, REQ/SC coverage, task dependency DAG and link inspection",
+      "exitCode": 0,
+      "artifact": "specs/028-system-one-core/planning-inspection.json"
+    }
+  ],
+  "initialFailures": {
+    "count": 2,
+    "explanation": "Existing tracking inventory test expected 21 specs/159 tasks; updated to 27/208 while preserving historical assertions and explicitly asserting 49 pending tasks. Existing permissions fixture expected mkdir(0755) to remain 0755, but inherited umask 0077 changed it to 0700; the unchanged test passes under scoped umask 0022. No runtime permission check or test assertion was weakened.",
+    "log": "specs/028-system-one-core/delivery/checks/pr-initial.txt"
+  },
+  "notExecuted": [
+    "Upstream model tests or benchmark reproduction",
+    "Source collection, annotation or native model training",
+    "Feature-specific System 1 acceptance tests (not implemented)",
+    "Spec Kit solo/dual integration matrix (scaffolding/pins unchanged)",
+    "Human/founder architecture and capability approval",
+    "Remote PR/issue/milestone publication"
+  ],
+  "remotePublication": "pending exact-repository/scope authorization; no remote mutations",
+  "featureAssurance": "All six draft/pending; all obtained acceptance evidence empty",
+  "files": [
+    {
+      "path": "specs/028-system-one-core/delivery/checks/pr-final.txt",
+      "sha256": "c5bfad5c0c8b7d05a751263c35e936aa61c069189d9dbdbc1bd2d38bed5d48b0"
+    },
+    {
+      "path": "specs/028-system-one-core/delivery/checks/pr-initial.txt",
+      "sha256": "23d69ad7ad1e6dea4b638129e81ec22d2078278885f876f7b5df6078d99d8dd2"
+    },
+    {
+      "path": "specs/028-system-one-core/delivery/checks/spec-kit-render-initial.txt",
+      "sha256": "75a647f1f04405c440e23095be6f4af499bd1ac53e0169235d8aed0f764636de"
+    },
+    {
+      "path": "specs/028-system-one-core/delivery/checks/spec-kit-structure.txt",
+      "sha256": "b28f0f3bd337a6cae29938ed6ec99ef7ecf3c0005cc38370479d91ec923e04ac"
+    }
+  ],
+  "historicalScope": "Original draft validation before publication rebase and numbering relocation; not validation of new develop base.",
+  "publicationValidation": {
+    "at": "2026-10-06T06:21:52.309420+00:00",
+    "base": "53faa6aed5426f0c84f0ed0ec7a92c073512ee2b",
+    "branch": "planning/native-system-one",
+    "command": "umask 0022 && .venv-speckit/bin/python scripts/validate_change.py --base origin/develop --profile pr",
+    "exitCode": 0,
+    "testsRun": 385,
+    "testsPassed": 380,
+    "testsSkipped": 5,
+    "log": "specs/028-system-one-core/delivery/checks/publication-pr.txt",
+    "sha256": "d17e3ea0c17a4bc25ce28d409743b0cbddd2462224da8fc717b15b63d6acbd63"
+  }
+}
