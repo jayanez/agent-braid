@@ -52,3 +52,12 @@ or M3.5 benefit is reported.
   and total analysis cost against the rule baseline.
 - [ ] T004 (REQ-003, SC-005): Confirm verifier and execution boundaries.
 - [ ] T005 (REQ-001..003): Capture evidence and request M3.5 review.
+
+## Offline preparation follow-up
+
+See [implementation readiness](implementation-readiness.md). These draft tasks preserve existing source/training gates and cannot complete T001 by synthetic demonstration.
+
+- [ ] T009 (REQ-002/SC-003,SC-004): Implement a read-only metadata/synthetic preregistration readiness checker that reports missing permissions, real yield, family/split/class coverage, blinding and rubric approval without admitting data or opening new source payloads.
+  Dependencies: existing protocol/rubric candidates; human review before real-source use, T001/T007 before fit. Targets: `scripts/check_predictor_readiness.py`, `tests/test_predictor_readiness.py`, `implementation-readiness.md`. Verification/evidence: missing-rights, zero-yield, leakage, absent-class, unapproved-rubric and stale-hash controls; run quick then PR; obtained evidence stays empty until executed.
+- [ ] T010 (REQ-001,REQ-003/SC-001,SC-005): Prepare synthetic feature extraction, model-artifact serialization, deterministic ranking and abstention interfaces with hand-authored test doubles; do not fit weights, calibrate or report predictor benefit.
+  Dependencies: T009 and review of unchanged prediction/verifier boundary; T001/T007 still gate fitting and T002 retains actual training ownership. Targets: `agent_braid/native_predictor.py`, `tests/test_native_predictor.py`. Verification/evidence: absent/unknown features, stale artifact versions, identity/hash mismatch, deterministic ties and verifier/authorization separation; record synthetic controls only.

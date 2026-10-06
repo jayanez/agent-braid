@@ -268,3 +268,19 @@ The technical milestones remain authoritative. Adoption is a second dimension:
 M3 remains an independent research line. Platform adapters translate into AIM;
 they do not fork the semantics. Enterprise progression additionally requires
 authorization, idempotency, isolation, privacy, guardrails, and recovery review.
+
+## Foundational implementation portfolio — 2026-10-05
+
+The [review and implementation portfolio](docs/development/FOUNDATION_IMPLEMENTATION_PORTFOLIO.md) maps foundational obligations to existing and proposed work. The new packages are drafts with human review pending; creating tasks does not adopt their execution contracts or promise a positive research result. Closed milestones retain their historical scope.
+
+| Milestone / track | Executable next package | Exit boundary |
+|---|---|---|
+| M3.5 | [SPEC-019 preparation](specs/019-native-predictor/implementation-readiness.md) | Metadata/synthetic tooling first; real-source rights, yield, protocol and labels before fitting |
+| M4 | [SPEC-022 utility follow-up](specs/022-m4-utility-followup/spec.md) | Prespecified full-cost comparison and explicit new utility decision; preserve SPEC-021 NO-GO |
+| M4 refinement contracts | [SPEC-027](specs/027-runtime-refinement-contracts/spec.md) | Source promotion, code isolation and external-effect assessment; each capability needs separate adoption and execution authority |
+| Platform evidence adapters | [SPEC-023](specs/023-recorded-trace-adapters/spec.md) | Conservative offline trace mappings and reviewed spike/adoption decisions; no execution authority |
+| Workload evidence laboratory | [SPEC-024](specs/024-effectful-workload-lab/spec.md) | Reproducible finite simulated effects, failures and nondeterminism; no real external adapters |
+| Formal interaction research | [SPEC-025](specs/025-contextual-proof-obligations/spec.md) | Bounded contextual controls, explicit proof premises and reviewed restricted claims/comparator feasibility |
+| Cross-cutting governance | [SPEC-026](specs/026-adoption-evidence-program/spec.md) | Auditable adoption/impact and reproduction intake, plus current historical-tracking reconciliation |
+
+The three new milestones are capability/exit driven and have no calendar deadline. Platform runtime expansion, source promotion, arbitrary-code isolation, real databases/API/deploy execution, new paid services and proof-assistant dependencies need separate reviewed contracts and authorization. Their next step is a feasibility/contract decision in the relevant package rather than implicit implementation authority. Existing adoption tracks retain `watch` and `research-only` dispositions until a new recorded decision.

@@ -62,9 +62,21 @@ The T013 prototype runs only allowlisted Git plumbing: patch preparation may
 overlap in isolated temporary indexes, while candidate and reference tree
 integration both remain serial. It writes no source-repository refs or files.
 
+The opt-in private Git runtime additionally provides `prepare-git-run`,
+`execute-git-run`, `recover-git-run`, `verify-git-run` and the separate
+`prepare-policy-run`, `verify-policy-plan`, `grant-policy-run`,
+`execute-policy-run`, `recover-policy-run`, `inspect-policy-run` path.
+[SPEC-020](specs/020-m4-local-git-runtime/spec.md) records the accepted bounded
+serial contract; [SPEC-021](specs/021-m4-alpha-runtime/spec.md) records isolated
+preparation, stdio MCP and actual host exercises. Execution requires the exact
+operator authorization defined by those contracts. Their results stay private;
+source promotion and arbitrary repository-code execution remain excluded.
+
 The repository also contains versioned schemas, positive and negative fixtures,
 a bounded schedule laboratory, Git benchmarks, scientific controls and frozen
-milestone evidence. There is no production scheduler or runtime yet.
+milestone evidence. A bounded experimental runtime exists; production readiness and whole-M4
+acceptance are not established. The current usefulness decision is
+[NO-GO](specs/021-m4-alpha-runtime/g4-decision.json).
 
 ## Quick start
 
@@ -172,6 +184,8 @@ exhaustive-finite or formal results. See the
 | M1 — analyzer | Closed internally | Deterministic AIM analysis and experimental read-only Git/worktree adapter. |
 | M2 — confluence laboratory and scheduler | Closed internally | Bounded fixed-patch Git replay and consultative read-only preparation; integration remains serial and execution authorization is false. |
 | M3 — braid semantics | Closed internally | Pure `anchored-sequence-v1` structured exchange experiment; no execution or general braid theorem. |
+| M3.5 — predictor | Open draft | Real source, utility labels and protocol approval pending. |
+| M4 — runtime | Open | Accepted SPEC-020 bounded serial contract; SPEC-021 implemented with useful-acceleration NO-GO under current evidence. |
 
 Independent validation remains **pending**. The evidence has been reproduced
 internally and reviewed by the founder, who has an explicit conflict of interest;
@@ -224,7 +238,7 @@ constitutes proof by itself or grants execution authority.
 
 ```text
 .
-├── agent_braid/          # read-only alpha analyzer and Git adapter
+├── agent_braid/          # analyzer, bounded laboratory and opt-in private Git runtime
 ├── docs/                 # architecture, ADRs, releases, strategy and theory
 ├── examples/             # positive, negative and portable workload fixtures
 ├── research/             # laboratory, benchmarks, hypotheses and radar
@@ -309,6 +323,9 @@ The scope of [SPEC-021](specs/021-m4-alpha-runtime/spec.md) and
 adds verified operator grants, isolated fixed-patch preparation with serial private
 publication, and a pinned stdio MCP adapter. The
 [local commands and evidence gates](specs/021-m4-alpha-runtime/quickstart.md) retain
-read-only source storage and separate operator authority. Implementation acceptance,
-actual two-host/Linux evidence, independent review and whole-M4 closure remain
-separate pending gates. No arbitrary-agent, production or scientific guarantee.
+read-only source storage and separate operator authority. Actual Codex/Claude
+host capture, Darwin/Linux core reproduction and independent Luna review are
+recorded in the [task evidence](specs/021-m4-alpha-runtime/tasks.md). The founder
+recorded [G4 NO-GO](specs/021-m4-alpha-runtime/g4-decision.json) on useful
+acceleration under the current evidence. SPEC-021 and M4 remain open; these
+records establish no arbitrary-agent, production or general scientific guarantee.
