@@ -284,7 +284,7 @@
     "independent_external_reproduction": false,
     "path": "specs/025-contextual-proof-obligations/evidence/technical-delivery.json",
     "proof_accepted": false,
-    "sha256": "53ba02b4c1bb7220e6f957ed13eeeac1f699767e5672c46938942d7c4f6a42a0",
+    "sha256": "753ae8d7696017f453744a0bd0006071191e3347547c2504c8d9c135e730820a",
     "stable_pr_profile": "passed on bound candidate; full results in evidence/candidate-profiles.json",
     "status": "technical-complete-T001-T006; T007 pending"
   }
