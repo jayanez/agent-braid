@@ -293,3 +293,14 @@ The [review and implementation portfolio](docs/development/FOUNDATION_IMPLEMENTA
 | Cross-cutting governance | [SPEC-026](specs/026-adoption-evidence-program/spec.md) | Auditable adoption/impact and reproduction intake, plus current historical-tracking reconciliation |
 
 The three new milestones are capability/exit driven and have no calendar deadline. Platform runtime expansion, source promotion, arbitrary-code isolation, real databases/API/deploy execution, new paid services and proof-assistant dependencies need separate reviewed contracts and authorization. Their next step is a feasibility/contract decision in the relevant package rather than implicit implementation authority. Existing adoption tracks retain `watch` and `research-only` dispositions until a new recorded decision.
+
+## Proposed native System 1 track
+
+The [System 1 planning program](specs/028-system-one-core/program.md) contains
+SPEC-028–033: typed advisory contracts, prospective evaluation, an own neural
+decision experiment, bounded integration, advanced product capabilities and
+separate promotion/rollback. The [reference analysis](specs/028-system-one-core/reference-analysis.md)
+compares Strands Decider and Laya without integrating either project. Five proposed
+S1 milestones and 49 pending tasks complement existing tracks; they do not replace
+SPEC-019 or reopen SPEC-021's M4 utility NO-GO. Architecture, data, budgets and
+per-capability acceptance remain explicit review gates.
