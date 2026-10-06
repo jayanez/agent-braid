@@ -42,3 +42,9 @@ Milestones: [S1.0](https://github.com/jayanez/agent-braid/milestone/13), [S1.1](
 All 49 task issues are linked as subissues. The publication receipt records the
 scoped readback. Private user-Project membership/status could not be verified:
 the integration cannot access user.projectV2.
+
+Review corrections: the active workspace uses the published SPEC-028–033 mapping.
+SPEC-029/T009 requires the pre-fit decision for both branches and trained candidates
+only for comparison. A pre-fit NO-GO can produce an infeasibility report while
+model-training tasks remain pending. Generated task drafts and both dependency
+graphs were checked for consistency; no implementation task is marked complete.

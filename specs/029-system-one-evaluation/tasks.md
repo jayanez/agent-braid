@@ -39,9 +39,10 @@ All evidence records include command, input/candidate hashes, environment and li
   Planned command after implementation: `.venv-speckit/bin/python -m unittest discover -s tests -p "test_system_one*.py" -v`; for manual source/budget/review gates, capture an actual reviewer decision rather than substituting a test result.
   Verification: Check class/group coverage and calibration feasibility; founder data/budget decision is pending. Planned evidence: candidate-bound report under specs/029-system-one-evaluation/evidence/t008.json; obtained: none.
 - [ ] T009 (REQ-003 REQ-004 REQ-005 REQ-006 / SC-003 SC-004 SC-005 SC-006): Execute registered comparison or document infeasibility and null results.
-  Dependencies: T008 SPEC-030/T006. Target files: research/system_one/results/, specs/029-system-one-evaluation/assurance.json.
+  Dependencies: T008. Target files: research/system_one/results/, specs/029-system-one-evaluation/assurance.json.
+  Branch requirements: The comparison branch additionally requires SPEC-030/T006. A recorded pre-fit NO-GO at T008 permits the infeasibility-report branch without training; blocked SPEC-030 tasks remain pending.
   Planned command after implementation: `.venv-speckit/bin/python -m unittest discover -s tests -p "test_system_one*.py" -v`; for manual source/budget/review gates, capture an actual reviewer decision rather than substituting a test result.
-  Verification: Report paired group bootstrap and all seeds without selecting favorable runs or silently changing scope. Planned evidence: candidate-bound report under specs/029-system-one-evaluation/evidence/t009.json; obtained: none.
+  Verification: For comparison, report paired group bootstrap and all seeds without selecting favorable runs or silently changing scope. For infeasibility, bind the T008 NO-GO, actual source/yield counts and missing permissions or budget; leave unexecuted model metrics unavailable and training tasks pending. Completing this report does not approve training, architecture selection or promotion. Planned evidence: candidate-bound report under specs/029-system-one-evaluation/evidence/t009.json; obtained: none.
 
 Final candidate verification: `.venv-speckit/bin/python scripts/validate_change.py
 --base develop --profile pr`. Tests/procedures and feature evidence do not substitute

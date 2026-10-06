@@ -34,9 +34,12 @@ from the repository's existing tracking format. Issue closure never implies appr
    roster and the deployment/cost envelope before model fitting (029 T001–T008).
 3. Implement small offline native model fixtures, cache correctness and export checks
    (030 T001–T005), then train only within approved source and compute boundaries.
-4. Execute common paired evaluation (029 T009 depends on 030 T006), then choose/no-go
-   the model (030 T008). This two-way relationship is not a dependency cycle: selection
-   waits for evaluation, while evaluation waits only for trained candidates.
+4. After the pre-fit decision (029 T008), either execute common paired evaluation
+   with trained candidates (029 T009 additionally requires 030 T006), then choose/no-go
+   the model (030 T008), or record pre-fit infeasibility directly in 029 T009. The
+   infeasibility exit does not require training; blocked model tasks stay pending.
+   Both dependency branches are acyclic. A feasibility report does not accept an
+   architecture or promote a capability.
 5. Integrate rules and model advice behind explicit capability switches (031). Actual
    neural traffic stays shadow/pending until 033 exact-capability promotion. Read-only
    advice does not create grants or expand current fixed-patch execution.

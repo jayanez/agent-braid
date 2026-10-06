@@ -73,3 +73,12 @@ Missing labels: never drop from the denominator silently; report attempted/admit
 labeled/accepted counts, unresolved fractions and best/worst-case sensitivity. Stop
 on leakage, source-rights failure or exhausted budget. Infeasibility, no gain, negative
 and inconclusive outcomes complete the registered investigation without adoption.
+
+Branch exit: SPEC-029/T009 always requires the pre-fit decision at T008. Its
+comparison branch additionally requires completed SPEC-030/T006 training. If T008
+records NO-GO for source rights, eligible yield, calibration coverage or budget,
+T009 can instead produce a candidate-bound infeasibility report. Record actual
+admission/label counts, the blocking decision and the activities not executed;
+unmeasured model-quality, cost and bootstrap results remain unavailable. Keep
+blocked SPEC-030 tasks pending. This closes the feasibility investigation only,
+without claiming a trained model, architecture acceptance or capability promotion.

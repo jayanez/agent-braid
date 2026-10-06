@@ -95,5 +95,24 @@
       "humanReviews": "pending"
     },
     "assurance": "six historical authority/evidence snapshots at review candidate; human review remains pending"
+  },
+  "reviewFixValidation": {
+    "at": "2026-10-06T07:06:51.289406+00:00",
+    "base": "53faa6aed5426f0c84f0ed0ec7a92c073512ee2b",
+    "priorPlanningCommit": "51e254c8b5280f5f5f5f793d7f311791bf1660db",
+    "command": "umask 0022 && .venv-speckit/bin/python scripts/validate_change.py --base origin/develop --profile pr",
+    "exitCode": 0,
+    "testsRun": 385,
+    "testsPassed": 380,
+    "testsSkipped": 5,
+    "log": "specs/028-system-one-core/delivery/checks/review-fixes-pr.txt",
+    "sha256": "cbe081b6c7701c246fb7be75ca75ed5fa487fa36b60720b217e4dbbe362ca73a",
+    "reviewFixChecks": [
+      "unique SPEC-028\u2013033 native tracking IDs; unrelated specs preserved",
+      "mandatory and comparison dependency graphs acyclic",
+      "infeasibility reporting remains available with training blocked; comparison remains blocked",
+      "55 source-generated issue drafts; 49 implementation tasks unchecked"
+    ],
+    "featureAcceptance": "not implied; human review remains pending"
   }
 }

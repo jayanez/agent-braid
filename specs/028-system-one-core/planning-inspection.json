@@ -34,12 +34,28 @@
     }
   },
   "taskCount": 49,
-  "dependencyGraph": "acyclic with no missing references",
+  "dependencyGraph": "mandatory and comparison branch graphs acyclic with no missing references",
   "localLinks": "all resolved",
   "issueDrafts": 55,
   "milestoneDrafts": 5,
   "featureAcceptance": "not executed; all draft/pending",
-  "localLinkCount": 82,
+  "localLinkCount": 88,
   "scenarioProcedureCount": 36,
-  "sourceDigestCount": 43
+  "sourceDigestCount": 43,
+  "conditionalDependencies": {
+    "SPEC-029/T009": {
+      "comparison": [
+        "SPEC-030/T006"
+      ],
+      "infeasibility": []
+    }
+  },
+  "infeasibilityExit": {
+    "requires": [
+      "SPEC-029/T008"
+    ],
+    "blockedTrainingRequired": false,
+    "modelTasksRemainPending": true,
+    "acceptanceOrPromotionImplied": false
+  }
 }
