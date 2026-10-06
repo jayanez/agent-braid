@@ -11,7 +11,7 @@
   ],
   "assumptions": "Synthetic fixtures can exercise governance intake. Real source rights, eligibility, window and yield precede collection. Organization/workload identity can be explicitly resolved, and external reviewer independence requires declaration and evidence rather than environment separation.",
   "authority_snapshot": {
-    "commit": null,
+    "commit": "cb314395ae677a12996dc05fe1d83ea97bd96b67",
     "hashes": {
       "ARCHITECTURE.md": "94e5114eb799b25ca666ef728f84ab1c88e6ad1b342e30a9e99276b8f44c30c2",
       "CONSTITUTION.md": "ff7196976a1736a639947c2ab26e8da157fef23c89ba9881312f2a36459964eb",
@@ -76,13 +76,13 @@
       "schemas/governance/public-export-manifest.schema.json": "11eb7f2594939ae9fd0c9e6cfe4423a80aba686d6cdfdd8b73b0fb84b0840aa8",
       "schemas/governance/release-validation-record.schema.json": "d9943f0c9f5520ea52e3b12bfba88240d03f8011b433fc5e35cb49549ab6e819"
     },
-    "mode": "current"
+    "mode": "historical"
   },
   "compatibility": "No current market, adoption-track or release schema changes. Later versioned governance intake contracts have migration/review notes; independent-validation semantics and frozen historical decisions are preserved.",
   "domain": "Offline synthetic organizations and 1-3 workload families with distinct organization, environment, workload, episode, contribution and reproduction units; future admitted local pilots remain prospectively bounded.",
   "evidence_snapshot": {
-    "mode": "current",
-    "commit": null
+    "mode": "historical",
+    "commit": "cb314395ae677a12996dc05fe1d83ea97bd96b67"
   },
   "execution_contract": "Future local stdlib-only intake/validator/report and reviewed decision proposals; no outreach, interviews, remote mutation, provider/network calls, automatic release-status change, research approval or publication.",
   "human_review": "pending",
