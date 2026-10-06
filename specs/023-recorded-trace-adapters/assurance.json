@@ -16,9 +16,9 @@
   ],
   "assumptions": "Existing AIM 0.2.0-draft and analysis-report 0.1.0-alpha remain the baseline; metadata-only synthetic inputs are available, real sources require separately reviewed rights/privacy admission, and selected provider versions are discovered before spikes.",
   "authority_snapshot": {
-    "commit": "cb314395ae677a12996dc05fe1d83ea97bd96b67",
+    "commit": null,
     "hashes": {
-      "ARCHITECTURE.md": "94e5114eb799b25ca666ef728f84ab1c88e6ad1b342e30a9e99276b8f44c30c2",
+      "ARCHITECTURE.md": "e26135a1037c232ff953710e5de52abef8cf1cad47a8822fe63a565bc9ad9555",
       "CONSTITUTION.md": "ff7196976a1736a639947c2ab26e8da157fef23c89ba9881312f2a36459964eb",
       "GOVERNANCE.md": "c8eda331d97c42e54be4730ef906dfaad9ae2814e36704302f97afceff037d82",
       "LICENSE": "340d66a837b3a1617645d00622a46d1bcbf3534bedd997b6461d16d2e08b374f",
@@ -81,13 +81,13 @@
       "schemas/governance/public-export-manifest.schema.json": "11eb7f2594939ae9fd0c9e6cfe4423a80aba686d6cdfdd8b73b0fb84b0840aa8",
       "schemas/governance/release-validation-record.schema.json": "d9943f0c9f5520ea52e3b12bfba88240d03f8011b433fc5e35cb49549ab6e819"
     },
-    "mode": "historical"
+    "mode": "current"
   },
   "compatibility": "This draft changes no implementation or schema. Later additive import/provenance contracts and analyze-trace require version/migration notes and review; existing AIM/report rules and M4 stdio runtime domain stay intact.",
   "domain": "One local bounded synthetic metadata file with at most 1 MiB, 64 operations, 512 events, depth 16 and 256-character metadata strings; one attempt per instance for the generic MVP; provider lifecycle timelines are offline spike evidence.",
   "evidence_snapshot": {
-    "mode": "historical",
-    "commit": "cb314395ae677a12996dc05fe1d83ea97bd96b67"
+    "commit": null,
+    "mode": "current"
   },
   "execution_contract": "Future local stdlib-only parser and pure mapping to existing analyzer; explicit safe local provenance output only, no network/process/model/provider/SDK/runtime/grant dispatch, real trace capture or publication.",
   "human_review": "pending",
@@ -121,10 +121,18 @@
         {
           "given": "Synthetic generic records and malformed or stale-version counterparts",
           "id": "SC-001",
-          "obtained_evidence": [],
+          "obtained_evidence": [
+            {
+              "command": ".venv-speckit/bin/python -m unittest tests.test_adoption_evidence tests.test_trace_adapter tests.test_runtime_refinement tests.test_validation_profiles tests.test_trace_lifecycle_spikes tests.test_native_predictor tests.test_predictor_readiness -v",
+              "limits": "Executed bounded synthetic/disposable technical controls and read-only assessment only; not empirical adoption, independent external reproduction, scientific proof, human/founder approval, publication or expanded execution authority. Quick/PR profile completion recorded separately; evidence does not yet complete packet task.",
+              "outcome": "Synthetic generic importer, independent fixed direct-AIM parity, bounded parser/path/privacy controls passed; ten pinned lifecycle controls yield seven unknown mappings and three unsupported cases, zero false-safe classifications within this corpus; compatibility screening has no adoption/conformance claim.",
+              "path": "specs/023-recorded-trace-adapters/evidence.json",
+              "sha256": "af3af5ce784f7d9670dabf69df39dc5405a14a82bfc28bc94c44860ef02d2594"
+            }
+          ],
           "planned_evidence": "SC-001 future tests: source/projection/provenance hashes, expected identity maps, bounded rejection outputs and reviewed interface version.",
-          "test_file": "specs/023-recorded-trace-adapters/quickstart.md",
-          "test_name": "SC-001 acceptance contract for future implementation tests",
+          "test_file": "tests/test_trace_adapter.py",
+          "test_name": "TraceAdapterTests.test_schema_baseline_identity_and_digest_parity",
           "then": "Valid mappings are auditable and required gaps, collisions, cycles and unsupported versions reject",
           "when": "The future importer maps the fixed corpus"
         }
@@ -137,10 +145,18 @@
         {
           "given": "Unknown coverage/versions, unsupported lifecycle and repeated attempts",
           "id": "SC-002",
-          "obtained_evidence": [],
+          "obtained_evidence": [
+            {
+              "command": ".venv-speckit/bin/python -m unittest tests.test_adoption_evidence tests.test_trace_adapter tests.test_runtime_refinement tests.test_validation_profiles tests.test_trace_lifecycle_spikes tests.test_native_predictor tests.test_predictor_readiness -v",
+              "limits": "Executed bounded synthetic/disposable technical controls and read-only assessment only; not empirical adoption, independent external reproduction, scientific proof, human/founder approval, publication or expanded execution authority. Quick/PR profile completion recorded separately; evidence does not yet complete packet task.",
+              "outcome": "Synthetic generic importer, independent fixed direct-AIM parity, bounded parser/path/privacy controls passed; ten pinned lifecycle controls yield seven unknown mappings and three unsupported cases, zero false-safe classifications within this corpus; compatibility screening has no adoption/conformance claim.",
+              "path": "specs/023-recorded-trace-adapters/evidence.json",
+              "sha256": "af3af5ce784f7d9670dabf69df39dc5405a14a82bfc28bc94c44860ef02d2594"
+            }
+          ],
           "planned_evidence": "SC-002 future tests: fixed loss tables, unknown classification controls, rejection outputs and source identity preservation.",
-          "test_file": "specs/023-recorded-trace-adapters/quickstart.md",
-          "test_name": "SC-002 acceptance contract for future implementation tests",
+          "test_file": "tests/test_trace_adapter.py",
+          "test_name": "TraceAdapterTests.test_missing_optional_knowledge_never_becomes_independence",
           "then": "Missing semantics remain explicit unknown/loss; timestamps and approval do not invent dependencies/effects; generic multiple attempts reject",
           "when": "Mapping and classification are compared with fixed direct-AIM controls"
         }
@@ -153,10 +169,18 @@
         {
           "given": "Forbidden executable, network, model, plugin or grant fields",
           "id": "SC-003",
-          "obtained_evidence": [],
+          "obtained_evidence": [
+            {
+              "command": ".venv-speckit/bin/python -m unittest tests.test_adoption_evidence tests.test_trace_adapter tests.test_runtime_refinement tests.test_validation_profiles tests.test_trace_lifecycle_spikes tests.test_native_predictor tests.test_predictor_readiness -v",
+              "limits": "Executed bounded synthetic/disposable technical controls and read-only assessment only; not empirical adoption, independent external reproduction, scientific proof, human/founder approval, publication or expanded execution authority. Quick/PR profile completion recorded separately; evidence does not yet complete packet task.",
+              "outcome": "Synthetic generic importer, independent fixed direct-AIM parity, bounded parser/path/privacy controls passed; ten pinned lifecycle controls yield seven unknown mappings and three unsupported cases, zero false-safe classifications within this corpus; compatibility screening has no adoption/conformance claim.",
+              "path": "specs/023-recorded-trace-adapters/evidence.json",
+              "sha256": "af3af5ce784f7d9670dabf69df39dc5405a14a82bfc28bc94c44860ef02d2594"
+            }
+          ],
           "planned_evidence": "SC-003 future tests: zero-dispatch spy counts, bounded diagnostic/exit results and non-authorizing report fields.",
-          "test_file": "specs/023-recorded-trace-adapters/quickstart.md",
-          "test_name": "SC-003 acceptance contract for future implementation tests",
+          "test_file": "tests/test_trace_adapter.py",
+          "test_name": "TraceAdapterCliTests.test_cli_json_digest_permissions_and_zero_dispatch",
           "then": "No process/network/model calls occur, forbidden instructions reject and reports remain non-authorizing",
           "when": "The future CLI/library processes admitted and rejected cases with spies"
         }
@@ -169,10 +193,18 @@
         {
           "given": "Sensitive synthetic sentinels, rights gaps, malformed/bounded input and destination attacks",
           "id": "SC-004",
-          "obtained_evidence": [],
+          "obtained_evidence": [
+            {
+              "command": ".venv-speckit/bin/python -m unittest tests.test_adoption_evidence tests.test_trace_adapter tests.test_runtime_refinement tests.test_validation_profiles tests.test_trace_lifecycle_spikes tests.test_native_predictor tests.test_predictor_readiness -v",
+              "limits": "Executed bounded synthetic/disposable technical controls and read-only assessment only; not empirical adoption, independent external reproduction, scientific proof, human/founder approval, publication or expanded execution authority. Quick/PR profile completion recorded separately; evidence does not yet complete packet task.",
+              "outcome": "Synthetic generic importer, independent fixed direct-AIM parity, bounded parser/path/privacy controls passed; ten pinned lifecycle controls yield seven unknown mappings and three unsupported cases, zero false-safe classifications within this corpus; compatibility screening has no adoption/conformance claim.",
+              "path": "specs/023-recorded-trace-adapters/evidence.json",
+              "sha256": "af3af5ce784f7d9670dabf69df39dc5405a14a82bfc28bc94c44860ef02d2594"
+            }
+          ],
           "planned_evidence": "SC-004 future tests: allowlist/right-admission controls, sanitized outputs, bound/parser/destination refusal and before/after filesystem assertions.",
-          "test_file": "specs/023-recorded-trace-adapters/quickstart.md",
-          "test_name": "SC-004 acceptance contract for future implementation tests",
+          "test_file": "tests/test_trace_adapter.py",
+          "test_name": "TraceAdapterTests.test_forbidden_payload_and_real_source_fail_without_disclosure_or_dispatch",
           "then": "Input rejects before echo/persistence and no sensitive sentinel or partial success escapes",
           "when": "Parser/privacy/path admission is tested"
         }
@@ -185,10 +217,18 @@
         {
           "given": "The same mapped operations in direct AIM and generic import",
           "id": "SC-005",
-          "obtained_evidence": [],
+          "obtained_evidence": [
+            {
+              "command": ".venv-speckit/bin/python -m unittest tests.test_adoption_evidence tests.test_trace_adapter tests.test_runtime_refinement tests.test_validation_profiles tests.test_trace_lifecycle_spikes tests.test_native_predictor tests.test_predictor_readiness -v",
+              "limits": "Executed bounded synthetic/disposable technical controls and read-only assessment only; not empirical adoption, independent external reproduction, scientific proof, human/founder approval, publication or expanded execution authority. Quick/PR profile completion recorded separately; evidence does not yet complete packet task.",
+              "outcome": "Synthetic generic importer, independent fixed direct-AIM parity, bounded parser/path/privacy controls passed; ten pinned lifecycle controls yield seven unknown mappings and three unsupported cases, zero false-safe classifications within this corpus; compatibility screening has no adoption/conformance claim.",
+              "path": "specs/023-recorded-trace-adapters/evidence.json",
+              "sha256": "af3af5ce784f7d9670dabf69df39dc5405a14a82bfc28bc94c44860ef02d2594"
+            }
+          ],
           "planned_evidence": "SC-005 future tests: twice-run artifacts, byte and classification comparisons, source/projection/report digest chain and fixed corpus denominators.",
-          "test_file": "specs/023-recorded-trace-adapters/quickstart.md",
-          "test_name": "SC-005 acceptance contract for future implementation tests",
+          "test_file": "tests/test_trace_adapter.py",
+          "test_name": "TraceAdapterTests.test_determinism_and_no_mutation",
           "then": "Classifications/constraints agree, existing versions remain unchanged and output/provenance are deterministic",
           "when": "Both paths run twice and schema/digests are checked"
         }
@@ -201,10 +241,18 @@
         {
           "given": "Pinned primary versions and predeclared lifecycle cases",
           "id": "SC-006",
-          "obtained_evidence": [],
+          "obtained_evidence": [
+            {
+              "command": ".venv-speckit/bin/python -m unittest tests.test_adoption_evidence tests.test_trace_adapter tests.test_runtime_refinement tests.test_validation_profiles tests.test_trace_lifecycle_spikes tests.test_native_predictor tests.test_predictor_readiness -v",
+              "limits": "Executed bounded synthetic/disposable technical controls and read-only assessment only; not empirical adoption, independent external reproduction, scientific proof, human/founder approval, publication or expanded execution authority. Quick/PR profile completion recorded separately; evidence does not yet complete packet task.",
+              "outcome": "Synthetic generic importer, independent fixed direct-AIM parity, bounded parser/path/privacy controls passed; ten pinned lifecycle controls yield seven unknown mappings and three unsupported cases, zero false-safe classifications within this corpus; compatibility screening has no adoption/conformance claim.",
+              "path": "specs/023-recorded-trace-adapters/evidence.json",
+              "sha256": "af3af5ce784f7d9670dabf69df39dc5405a14a82bfc28bc94c44860ef02d2594"
+            }
+          ],
           "planned_evidence": "SC-006 future spike packets: primary source pins, fixed corpus/expected outcomes, raw results and complete denominators/limits with zero provider calls.",
-          "test_file": "specs/023-recorded-trace-adapters/quickstart.md",
-          "test_name": "SC-006 acceptance contract for future implementation tests",
+          "test_file": "tests/test_trace_lifecycle_spikes.py",
+          "test_name": "TraceLifecycleSpikeTests.test_predeclared_cases_regenerate_exact_results_without_dispatch",
           "then": "Retention/loss/unsupported/unknown/false-safe counts and positive/negative/inconclusive outcomes are recorded without adoption",
           "when": "Offline lifecycle spikes compare preservation and classifications"
         }
@@ -217,10 +265,18 @@
         {
           "given": "Three ecosystem candidates with possible incomplete sources",
           "id": "SC-007",
-          "obtained_evidence": [],
+          "obtained_evidence": [
+            {
+              "command": ".venv-speckit/bin/python -m unittest tests.test_adoption_evidence tests.test_trace_adapter tests.test_runtime_refinement tests.test_validation_profiles tests.test_trace_lifecycle_spikes tests.test_native_predictor tests.test_predictor_readiness -v",
+              "limits": "Executed bounded synthetic/disposable technical controls and read-only assessment only; not empirical adoption, independent external reproduction, scientific proof, human/founder approval, publication or expanded execution authority. Quick/PR profile completion recorded separately; evidence does not yet complete packet task.",
+              "outcome": "Synthetic generic importer, independent fixed direct-AIM parity, bounded parser/path/privacy controls passed; ten pinned lifecycle controls yield seven unknown mappings and three unsupported cases, zero false-safe classifications within this corpus; compatibility screening has no adoption/conformance claim.",
+              "path": "specs/023-recorded-trace-adapters/evidence.json",
+              "sha256": "af3af5ce784f7d9670dabf69df39dc5405a14a82bfc28bc94c44860ef02d2594"
+            }
+          ],
           "planned_evidence": "SC-007 future records: source/retrieval/version pins, conformance availability, license/privacy/AIM-loss assessment and decisions.",
-          "test_file": "specs/023-recorded-trace-adapters/quickstart.md",
-          "test_name": "SC-007 acceptance contract for future implementation tests",
+          "test_file": "tests/test_trace_lifecycle_spikes.py",
+          "test_name": "TraceLifecycleSpikeTests.test_pins_screening_and_privacy_status_do_not_promote_adoption",
           "then": "Each gets explicit next disposition; ambiguity stays pending/inconclusive and no dependency or live compatibility is adopted",
           "when": "Version/conformance/license/dependency/privacy mapping screening is recorded"
         }
@@ -245,6 +301,6 @@
     }
   ],
   "scientific_limits": "Synthetic mapping/retention checks do not establish complete real effects, live protocol conformance, provider correctness, production safety, independent scientific validation, general confluence or Yang-Baxter results. False-safe counts apply only to fixed finite controls.",
-  "scope": "A planned provider-neutral synthetic recorded-trace importer into existing AIM/report, additive offline CLI, two lifecycle spikes and ecosystem screening; no implementation or provider adoption in this draft.",
+  "scope": "The bounded generic synthetic importer, additive offline CLI, two pin-backed lifecycle spikes and read-only ecosystem screening are implemented; human interface acceptance, provider adoption and real-source admission remain pending.",
   "stage": "draft"
 }

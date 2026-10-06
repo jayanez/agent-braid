@@ -14,5 +14,7 @@ product phase or declare community/market adoption.
 
 No task can require positive demand, favorable usability, accepted counterexamples
 or independent validation to appear. Negative/inconclusive evidence completes a
-sound protocol within its domain. This draft has empty obtained evidence and
-human review pending.
+sound protocol within its domain. `evidence.json` binds 20 executed synthetic
+controls, fixed inputs and the historical reconciliation. Real admitted episodes
+and qualifying external reproductions remain zero. Full-profile capture and the
+clean candidate freeze are recorded separately; human review remains pending.

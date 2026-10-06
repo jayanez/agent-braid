@@ -1,10 +1,11 @@
 {
+  "additionalReviewedCorrection": "Provider baselineParity renamed analyzerRecomputeConsistency: same-engine regeneration is not independent baseline/conformance. Independent direct AIM fixture remains separate.",
   "baselineCommit": "a5c12adada404cc9ef372528500caae29f21947a",
   "date": "2026-10-06",
   "executedFocusedChecks": [
     {
-      "command": ".venv-speckit/bin/python -m unittest tests.test_adoption_evidence tests.test_trace_adapter tests.test_runtime_refinement tests.test_validation_profiles",
-      "outcome": "61 tests passed after fixes"
+      "command": ".venv-speckit/bin/python -m unittest tests.test_adoption_evidence tests.test_trace_adapter tests.test_runtime_refinement tests.test_validation_profiles tests.test_trace_lifecycle_spikes -v",
+      "outcome": "Independent Luna re-review: 64 tests passed; no P1/P2 remaining."
     }
   ],
   "executionAuthorization": false,
@@ -34,6 +35,7 @@
   "limits": "Independent agent technical review only, not human/scientific approval, theorem proof or external reproduction. Provider spikes and S1 contract have separate review records. Historical authority and acceptance unchanged.",
   "reviewModel": "gpt-6-luna",
   "reviewType": "independent-code-security-domain",
+  "reviewedCandidateCommit": "7614daa445d5852d455502c3d36efa73d3f7d12a",
   "reviewedHashes": {
     "agent_braid/cli.py": "1335b6f26df0103084527bcfa5069bb67da456ef343f46bcc3105bc2280f21d9",
     "agent_braid/native_predictor.py": "9207966d8fd554a528dab313e978064cc8a4701a905fdb9a4335c1dfc7de39dc",
@@ -46,7 +48,9 @@
     "research/adoption/evidence-program/program.py": "b30ca0fffe7634599692cdff911b7c6af963b4caddd119ab5673a3cfeb632232",
     "scripts/check_predictor_readiness.py": "b8068659a10675815cfeb87457d6e95f5fa17bfaf7d6d2970a0564b12390d13b",
     "scripts/check_runtime_refinement.py": "4d896804e6823c12c708ebc1cca9f4811d90d619532573fd64fbb346bb00dcf3",
-    "scripts/validate_change.py": "831169991eb673570b177b7a46c8ed1eccc92d4859bf831be8d19df42ebecc46",
+    "scripts/validate_change.py": "fcb0965b7f9117a147e597ed8a4e6f9f28b5f6b3956303d6e990fe434c50a37f",
+    "specs/023-recorded-trace-adapters/spikes/results.json": "bbb1d29f4b9dbbfc00036296fe54feeabdf074c27c7796295a9c0821e53c1330",
+    "specs/023-recorded-trace-adapters/spikes/run_lifecycle.py": "ec71084a0537b5f4665097c9b7fca199b49a7f4b419b97543e46ccd92b322084",
     "specs/027-runtime-refinement-contracts/code-isolation-assessment.md": "954cffa91821ebd03b167d7b675eea98b1cd5e5972b78c130eb10bedf46b1a92",
     "specs/027-runtime-refinement-contracts/decision-packets.md": "c40ae23ad1e5f0ceb39415edaef011be4a52902009582328debfbc8a3cbb23b9",
     "specs/027-runtime-refinement-contracts/external-effect-contract.md": "a38242b776c2c59d2a55948912fa7ea685b334d0eebb6fceaaeac539a808e48b",
@@ -59,6 +63,7 @@
     "tests/test_predictor_readiness.py": "5a14dc3a7296e6c471acee12207aaeb5e3f0e696f8738ea2b59ba101b5f7b06e",
     "tests/test_runtime_refinement.py": "578ab9b8921509be026b41708e70593b82a0d1a7bec1c7fd7524f2cc29860477",
     "tests/test_trace_adapter.py": "59245e466e20b124be50e20951025c9d41ddfaaa18b6190b03598be8abce50d3",
+    "tests/test_trace_lifecycle_spikes.py": "bc977c189c5d0789ba627f3050cb4ed872a2487964298f43c8946e920e17b7ce",
     "tests/test_validation_profiles.py": "3e51752e38995593509e9906214cda3c09ec0cc0fe3353426b42b69a29dab2d5"
   }
 }
