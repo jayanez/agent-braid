@@ -1,0 +1,68 @@
+{
+  "baselineCommit": "f1bc304827b26c2cc3e02d5488ff2f82daa5453d",
+  "candidateCommit": "734feca3e32b8e729a894a6089838a6de2e8ddb8",
+  "candidateParallelImprovedObserved": true,
+  "candidateSerialNotRegressedObserved": true,
+  "environment": {
+    "git": "git version 2.55.0",
+    "machine": "x86_64",
+    "platform": "Linux",
+    "python": "3.12.14"
+  },
+  "limits": [
+    "Diagnostic sidecar; the frozen measurement script/protocol and historical evidence are unchanged.",
+    "Six descriptive owned-fixture pairs with uncontrolled caches/background activity.",
+    "Phase wall/counters are inclusive and nested: do not sum different phase labels.",
+    "Each budget is listed once; shared worker counters are attributed to their coordinator phase.",
+    "Profiling/instrumentation overhead and treatment cleanup are included in total wall time.",
+    "RSS is a process-lifetime maximum; sampled scratch peaks are not simultaneous storage.",
+    "No model/host calls, external workload, scientific result or whole-M4 acceptance.",
+    "Observed median differences do not establish causality or general speedup."
+  ],
+  "modes": {
+    "parallel": {
+      "candidateGitCommandsSaved": 126.0,
+      "candidateOverBaselineWallRatio": {
+        "denominator": 18235622032,
+        "numerator": 15294543663
+      },
+      "medians": {
+        "baseline": {
+          "boundedPhaseCount": 20.0,
+          "capturedOutputBytes": 34547.0,
+          "gitCommands": 821.0,
+          "wallNs": 9117811016.0
+        },
+        "candidate": {
+          "boundedPhaseCount": 20.0,
+          "capturedOutputBytes": 29486.0,
+          "gitCommands": 695.0,
+          "wallNs": 7647271831.5
+        }
+      }
+    },
+    "serial": {
+      "candidateGitCommandsSaved": 0.0,
+      "candidateOverBaselineWallRatio": {
+        "denominator": 10719456264,
+        "numerator": 10647496333
+      },
+      "medians": {
+        "baseline": {
+          "boundedPhaseCount": 13.0,
+          "capturedOutputBytes": 19871.0,
+          "gitCommands": 485.0,
+          "wallNs": 5359728132.0
+        },
+        "candidate": {
+          "boundedPhaseCount": 13.0,
+          "capturedOutputBytes": 19871.0,
+          "gitCommands": 485.0,
+          "wallNs": 5323748166.5
+        }
+      }
+    }
+  },
+  "profileComparisonVersion": "m4-cost-profile-1",
+  "status": "descriptive-comparison"
+}
