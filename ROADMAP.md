@@ -2,7 +2,14 @@
 
 The roadmap follows evidence, not calendar promises. Milestones are exit-criterion driven.
 
-## M0.5 — Open strategy and research preview preparation
+The [spec and milestone index](docs/development/SPEC_MILESTONE_INDEX.md) maps all
+33 specs to the 17 registered GitHub milestones. Titles follow `ID — Capability`;
+track prefixes do not establish an implementation sequence. Historical closure
+records retain their original names, scope and decisions.
+
+<a id="m05--open-strategy-and-research-preview-preparation"></a>
+
+## M0.5 — Open strategy and preview preparation
 
 **Status:** closed internally on 2026-09-19 against candidate
 `d7bff443729571e031180b4c31920632e2a7d3ae`; see the
@@ -34,7 +41,9 @@ Exit criteria:
 - market scenarios expose assumptions, units, uncertainty, and double-counting rules;
 - no artifact claims production safety or general Yang–Baxter validity.
 
-## M0 — Formalization before implementation
+<a id="m0--formalization-before-implementation"></a>
+
+## M0 — Operational foundations
 
 **Status:** closed internally on 2026-09-18; see the
 [closure record](docs/releases/M0_CLOSURE.md). This is not a claim of
@@ -99,7 +108,9 @@ The Git/worktree adapter architecture is accepted in ADR 0008. Its first corpus
 measures syntactic path observations only; M1 closure does not establish semantic
 commutation or correctness beyond the declared corpus.
 
-## M2 — Confluence laboratory and scheduler
+<a id="m2--confluence-laboratory-and-scheduler"></a>
+
+## M2 — Confluence lab and scheduler
 
 **Objective:** explore schedules in isolation and convert evidence into consultative preparation plans.
 
@@ -191,7 +202,9 @@ Exit criteria:
 - claims distinguish empirical, exhaustive finite, and proved results;
 - runtime consequences are quantified.
 
-## M3.5 — Native specialized proposal predictor
+<a id="m35--native-specialized-proposal-predictor"></a>
+
+## M3.5 — Native proposal predictor
 
 **Objective:** test whether a small, local learned advisor improves selection
 of candidates for the deterministic M3 verifier. [SPEC-019](specs/019-native-predictor/spec.md)
@@ -200,7 +213,7 @@ evaluation and abstention. It is independent of M3 closure. A score is
 heuristic; the verifier remains the only source of bounded exchange evidence.
 No external Laya/Jev service is required or integrated.
 
-## M4 — Agent Braid Runtime
+## M4 — Agent Braid runtime
 
 **Objective:** integrate analysis, scheduling, execution, and certificates in a model-agnostic runtime.
 
@@ -287,20 +300,22 @@ The [review and implementation portfolio](docs/development/FOUNDATION_IMPLEMENTA
 | M3.5 | [SPEC-019 preparation](specs/019-native-predictor/implementation-readiness.md) | Metadata/synthetic tooling first; real-source rights, yield, protocol and labels before fitting |
 | M4 | [SPEC-022 utility follow-up](specs/022-m4-utility-followup/spec.md) | Prespecified full-cost comparison and explicit new utility decision; preserve SPEC-021 NO-GO |
 | M4 refinement contracts | [SPEC-027](specs/027-runtime-refinement-contracts/spec.md) | Source promotion, code isolation and external-effect assessment; each capability needs separate adoption and execution authority |
-| Platform evidence adapters | [SPEC-023](specs/023-recorded-trace-adapters/spec.md) | Conservative offline trace mappings and reviewed spike/adoption decisions; no execution authority |
-| Workload evidence laboratory | [SPEC-024](specs/024-effectful-workload-lab/spec.md) | Reproducible finite simulated effects, failures and nondeterminism; no real external adapters |
-| Formal interaction research | [SPEC-025](specs/025-contextual-proof-obligations/spec.md) | Bounded contextual controls, explicit proof premises and reviewed restricted claims/comparator feasibility |
-| Cross-cutting governance | [SPEC-026](specs/026-adoption-evidence-program/spec.md) | Auditable adoption/impact and reproduction intake, plus current historical-tracking reconciliation |
+| ADP.1 — Recorded-trace adapters | [SPEC-023](specs/023-recorded-trace-adapters/spec.md) | Conservative offline trace mappings and reviewed spike/adoption decisions; no execution authority |
+| LAB.1 — Effectful workload lab | [SPEC-024](specs/024-effectful-workload-lab/spec.md) | Reproducible finite simulated effects, failures and nondeterminism; no real external adapters |
+| RES.1 — Formal interaction research | [SPEC-025](specs/025-contextual-proof-obligations/spec.md) | Bounded contextual controls, explicit proof premises and reviewed restricted claims/comparator feasibility |
+| GOV.1 — Governance and adoption | [SPEC-026](specs/026-adoption-evidence-program/spec.md) | Auditable adoption/impact and reproduction intake, plus current historical-tracking reconciliation |
 
 The three new milestones are capability/exit driven and have no calendar deadline. Platform runtime expansion, source promotion, arbitrary-code isolation, real databases/API/deploy execution, new paid services and proof-assistant dependencies need separate reviewed contracts and authorization. Their next step is a feasibility/contract decision in the relevant package rather than implicit implementation authority. Existing adoption tracks retain `watch` and `research-only` dispositions until a new recorded decision.
 
-## Proposed native System 1 track
+<a id="proposed-native-system-1-track"></a>
+
+## Native System 1 implementation track
 
 The [System 1 planning program](specs/028-system-one-core/program.md) contains
 SPEC-028–033: typed advisory contracts, prospective evaluation, an own neural
 decision experiment, bounded integration, advanced product capabilities and
 separate promotion/rollback. The [reference analysis](specs/028-system-one-core/reference-analysis.md)
-compares Strands Decider and Laya without integrating either project. Five proposed
+compares Strands Decider and Laya without integrating either project. Five registered
 S1 milestones and 49 pending tasks complement existing tracks; they do not replace
 SPEC-019 or reopen SPEC-021's M4 utility NO-GO. Architecture, data, budgets and
 per-capability acceptance remain explicit review gates.
