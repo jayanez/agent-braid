@@ -17,6 +17,24 @@ ROOT = Path(__file__).resolve().parents[1]
 
 
 class ValidationProfileTests(unittest.TestCase):
+    def test_decision_and_contextual_changes_select_full_sensitive_controls(self):
+        for path, domain in (("agent_braid/system_one_cli.py", "system-one-core"),
+                             ("agent_braid/cli.py", "system-one-core"),
+                             ("tests/test_system_one_concurrency.py", "system-one-core"),
+                             ("research/contextual_lab/checker.py", "contextual-finite-checker"),
+                             ("research/proofs/anchored.md", "contextual-finite-checker")):
+            with self.subTest(path=path):
+                plan = validation.build_plan([path], "quick")
+                self.assertIn(domain, plan.impact.domains)
+                self.assertEqual(plan.effective_profile, "sensitive")
+                self.assertIn("full-tests", plan.commands)
+                self.assertTrue(plan.impact.boundaries)
+                self.assertFalse(plan.impact.unknown_paths)
+                self.assertFalse(plan.impact.spec_kit_integration)
+                self.assertNotIn("spec-kit-integration", plan.commands)
+                if domain == "contextual-finite-checker":
+                    self.assertIn("scientific-controls", plan.commands)
+
     def test_classification_is_deterministic_and_unknown_paths_fail_closed(self):
         first = validation.classify(["README.md", "new-area/input.bin", "README.md"])
         second = validation.classify(["new-area/input.bin", "README.md"])

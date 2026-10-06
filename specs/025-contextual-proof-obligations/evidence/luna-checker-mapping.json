@@ -1,0 +1,39 @@
+{
+  "excludedObservation": "Earlier 16 tests on system Python3.9.6 are outside supported >=3.12 and are not counted as applicable evidence.",
+  "executionAuthorization": false,
+  "finalActionableFindings": [],
+  "findings": [
+    {
+      "finding": "Prelude exhaustion omitted explicit unavailable prefix/probe entries",
+      "priority": "P2",
+      "resolution": "Bounded placeholders, prelude coverage and cap location; zero-check and prelude report-reservation controls.",
+      "status": "verified-fixed"
+    }
+  ],
+  "format": "contextual-technical-code-review-v1",
+  "humanReview": "pending",
+  "limits": "Finite registered continuations and separate finite anchored mapping only. No universal theorem, independent formal proof acceptance, external artifact execution or scientific/human acceptance.",
+  "proofAccepted": false,
+  "reviewModel": "gpt-6-luna",
+  "reviewType": "independent-code-domain-source-mapping",
+  "reviewedHashes": {
+    "examples/contextual-lab/anchored-manifest.json": "e169a8be3c0da6b67c53af31a9d1effb45e19adfe7abf29638675dd5b3ff368a",
+    "examples/contextual-lab/expected.json": "0d55121d29fe57f640927bc29b31dbe3cbcafac93447c584f4f8e730b96d0f46",
+    "examples/contextual-lab/manifest.json": "5b55897bc6eeb6359bab6940aedb144b3103e80ef390a28439e7f9aff34f7c60",
+    "research/contextual_lab/__init__.py": "b47b50e317f912ceb915b51f87446eb8ac356d88ac1d8d7a6e654dc48688c278",
+    "research/contextual_lab/__main__.py": "a1feebe76446e8ee17b76cc4d50d401f07134855af18dc5d02e036f03d264d28",
+    "research/contextual_lab/checker.py": "56c63276cd7c9036a4447cd4443bfeb307ba231a5cf34d5b0945a5fe98ea0c73",
+    "research/proofs/contextual-candidates/anchored-candidate.md": "f7b3eb0fc553ff12a49f9a35a993261351210f8e9a7ef80d29a36e83a0b65816",
+    "scripts/crosscheck_contextual_proof_mapping.py": "642a387eb5d20f977de85e6b30b9410a8a21c0f931036c0c52332335e0ef57f2",
+    "scripts/validate_change.py": "8f91656e7945365eba0d55332d2448af302775b4e5b0fb7695d6d94115ec3d4e",
+    "specs/025-contextual-proof-obligations/contracts/continuations-v1.md": "4bae1481bfd2a9247eb53f6a6fd4ff161e90ee428b0a4aaae83a5f1c980d70ab",
+    "tests/test_contextual_lab.py": "aa8f33ba47d79a6418d7d1f3d1a570782561ced894dbf24ada03cda5679e674b",
+    "tests/test_validation_profiles.py": "d2b32c050b66e058940941a7da91d34f98590450903b0c7de24c5c29d7c1ac83"
+  },
+  "reviewerExecutedChecks": {
+    "command": "<isolated-python>/bin/python -m unittest tests.test_contextual_lab tests.test_validation_profiles -v",
+    "outcome": "34 tests passed: 20 contextual, 14 classifier; independent mapping finite-mapping-match, four exclusions refused",
+    "python": "3.13.11"
+  },
+  "technicalDecision": "conditional-GO-bounded-checker-and-candidate-mapping"
+}
