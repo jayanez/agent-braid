@@ -21,7 +21,7 @@
   ],
   "assumptions": "Closed synthetic fixtures and explicit finite models; complete effect and contextual/proof premises are stated, never inferred from tests.",
   "authority_snapshot": {
-    "commit": null,
+    "commit": "0e17c4d9b119837f4d618cb9842dbe7d2e5d5772",
     "hashes": {
       "ARCHITECTURE.md": "e26135a1037c232ff953710e5de52abef8cf1cad47a8822fe63a565bc9ad9555",
       "CONSTITUTION.md": "ff7196976a1736a639947c2ab26e8da157fef23c89ba9881312f2a36459964eb",
@@ -86,13 +86,13 @@
       "schemas/governance/public-export-manifest.schema.json": "11eb7f2594939ae9fd0c9e6cfe4423a80aba686d6cdfdd8b73b0fb84b0840aa8",
       "schemas/governance/release-validation-record.schema.json": "d9943f0c9f5520ea52e3b12bfba88240d03f8011b433fc5e35cb49549ab6e819"
     },
-    "mode": "current"
+    "mode": "historical"
   },
   "compatibility": "Separate experimental research interfaces; existing AIM/Git/M3/runtime contracts and historical approvals unchanged; tool/provider adoption remains gated.",
   "domain": "Existing integer-batch-v1 <=6 operation source-bound prefixes and listed suffixes; separate anchored candidate proof and research-only feasibility.",
   "evidence_snapshot": {
-    "commit": null,
-    "mode": "current"
+    "commit": "0e17c4d9b119837f4d618cb9842dbe7d2e5d5772",
+    "mode": "historical"
   },
   "execution_contract": "Private standard-library model checks and inert report files only; no real services, project code, model calls, source promotion or runtime grants.",
   "human_review": "pending",

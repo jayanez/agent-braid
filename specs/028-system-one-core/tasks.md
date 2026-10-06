@@ -34,7 +34,7 @@ All evidence records include command, input/candidate hashes, environment and li
   Dependencies: T005 T006. Target files: agent_braid/cli.py, tests/test_system_one_cli.py.
   Planned command after implementation: `.venv-speckit/bin/python -m unittest tests.test_system_one_cli -v`; for manual source/budget/review gates, capture an actual reviewer decision rather than substituting a test result.
   Verification: Compare legacy fixtures byte-for-byte; no default behavior change. Planned evidence: candidate-bound report under specs/028-system-one-core/evidence/t007.json; obtained: none.
-- [ ] T008 (REQ-001 REQ-002 REQ-003 REQ-004 REQ-005 REQ-006 / SC-001 SC-002 SC-003 SC-004 SC-005 SC-006): Capture core boundary evidence and request contract review.
+- [x] T008 (REQ-001 REQ-002 REQ-003 REQ-004 REQ-005 REQ-006 / SC-001 SC-002 SC-003 SC-004 SC-005 SC-006): Capture core boundary evidence and request contract review.
   Dependencies: T007. Target files: specs/028-system-one-core/assurance.json, evidence/.
   Planned command after implementation: `.venv-speckit/bin/python -m unittest discover -s tests -p "test_system_one*.py" -v`; for manual source/budget/review gates, capture an actual reviewer decision rather than substituting a test result.
   Verification: Run feature tests, PR profile and fresh offline install; human acceptance remains separate. Planned evidence: candidate-bound report under specs/028-system-one-core/evidence/t008.json; obtained: none.
@@ -47,5 +47,8 @@ for human review, scientific interpretation, explicit source rights or promotion
 
 T001–T007 are bound by `evidence/luna-core-cli.json`, the 33-test focused
 log and the fresh offline wheel check. These are synthetic software checks.
-T008 remains pending until the stable PR profile and clean candidate packet
-are captured; human/model/data/founder acceptance remains separate.
+T008 completed the bounded engineering packet: quick/sensitive and stable PR
+profiles each passed 558 tests with four documented skips on `abeca31`; the
+supported clean authority/evidence freeze binds `0e17c4d`. Exact offline wheel
+installation and Luna contract/core/CLI review are recorded. Human/model/data/
+founder acceptance remains separate.
