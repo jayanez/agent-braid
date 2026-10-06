@@ -29,6 +29,59 @@ it does not establish scientific validity or grant human or founder approval.
   markers. Do not delete or reuse these markers. The linked repository files
   are current; issue prose may include historical reconciliation context.
 
+## Milestone names and identity
+
+Milestone titles use `ID — Capability` in English and sentence case. Keep the
+historic M and S1 IDs stable. PUB, GOV, ADP, LAB and RES identify independent
+publication, governance, adapter, workload-laboratory and research tracks; their
+numbers do not establish a global implementation sequence. States, dates,
+acceptance criteria and approval boundaries belong in fields and descriptions.
+
+`milestone_numbers` binds each existing canonical title to its GitHub repository
+milestone number. Renames preserve that identity, URL and issue associations.
+A missing registered number, duplicate binding or occupied target title fails
+closed. Future milestones without a number retain the existing creation path;
+after creation, record their number before using title-only reconciliation.
+
+The naming migration preserves these historical aliases:
+
+| GitHub number | Previous title | Canonical title |
+|---|---|---|
+| 1 | M0 | M0 — Operational foundations |
+| 2 | M0.5 | M0.5 — Open strategy and preview preparation |
+| 3 | M1 | M1 — Observable interaction analyzer |
+| 4 | M2 | M2 — Confluence lab and scheduler |
+| 5 | M3 | M3 — Braid semantics |
+| 6 | M4 | M4 — Agent Braid runtime |
+| 7 | Public research preview | PUB.1 — Public research preview |
+| 8 | Cross-cutting governance | GOV.1 — Governance and adoption |
+| 9 | M3.5 | M3.5 — Native proposal predictor |
+| 10 | Platform evidence adapters | ADP.1 — Recorded-trace adapters |
+| 11 | Workload evidence laboratory | LAB.1 — Effectful workload lab |
+| 12 | Formal interaction research | RES.1 — Formal interaction research |
+| 13 | S1.0 — Contracts | S1.0 — Decision contracts |
+| 14 | S1.1 — Evidence | S1.1 — Decision evaluation |
+| 15 | S1.2 — Native model | S1.2 — Native decision model |
+| 16 | S1.3 — Integration | S1.3 — Advisory integration |
+| 17 | S1.4 — Product and promotion | S1.4 — Product capabilities and promotion |
+
+Frozen evidence, closure records and historical reviews retain their original
+names and scope. Current assignments use the canonical titles.
+
+For an authorized naming-only migration, follow the review/merge path below,
+then use `audit --milestone-titles-only` and
+`apply --milestone-titles-only --confirm-repository jayanez/agent-braid
+--plan-sha256 <digest>`. This mode reads only remote milestones and writes only
+their titles; unrelated issue text, assignments and state differences are
+outside its scope. The digest binds the repository, scope and exact operations;
+a full-audit digest cannot authorize a title-only apply or vice versa. Old digests
+must be regenerated after upgrading the synchronizer.
+
+Capture all milestone identities, states, descriptions and dates plus issue
+milestone numbers before and after the migration. Require equality except for
+the approved titles, and a second title-only audit with `operations: []`.
+Private Project membership and custom status remain a separate verification.
+
 ## Change path
 
 1. Change the spec, task list and assurance record through the usual Spec Kit
