@@ -117,11 +117,11 @@
           "id": "SC-001",
           "obtained_evidence": [
             {
-              "command": ".venv-speckit/bin/python -m unittest tests.test_adoption_evidence tests.test_trace_adapter tests.test_runtime_refinement tests.test_validation_profiles tests.test_trace_lifecycle_spikes tests.test_native_predictor tests.test_predictor_readiness -v",
-              "limits": "Executed bounded synthetic/disposable technical controls and read-only assessment only; not empirical adoption, independent external reproduction, scientific proof, human/founder approval, publication or expanded execution authority. Quick/PR profile completion recorded separately; evidence does not yet complete packet task.",
-              "outcome": "Twenty synthetic controls passed: canonical units/deduplication, independently fixed arithmetic, missingness/costs, contribution/reproduction refusal and historical obligation audit; real admitted organizations/episodes and qualifying external reproductions remain zero.",
+              "command": ".venv-speckit/bin/python scripts/validate_change.py --base develop --profile pr",
+              "limits": "Executed bounded synthetic/disposable technical controls and read-only assessment only; not empirical adoption, independent external reproduction, scientific proof, human/founder approval, publication or expanded execution authority. Stable full PR profile completed on the bound implementation candidate. Human/founder acceptance and expanded execution remain pending.",
+              "outcome": "Twenty synthetic controls passed: canonical units/deduplication, independently fixed arithmetic, missingness/costs, contribution/reproduction refusal and historical obligation audit; real admitted organizations/episodes and qualifying external reproductions remain zero. Full PR profile passed: 504 tests, four explicitly bounded skips.",
               "path": "specs/026-adoption-evidence-program/evidence.json",
-              "sha256": "57fb0a65e6ab32c1e2efc0dad70226a86810999a31c72a63d915e5e5816ffe50"
+              "sha256": "fb08a9e11688dafad603569dae1b0cc72621f4dab7b601e88501a9f8e6760230"
             }
           ],
           "planned_evidence": "SC-001 future tests: frame/window hashes, independent unit counts, aliases/cross-labels and rights-gap rejection outputs.",
@@ -141,11 +141,11 @@
           "id": "SC-002",
           "obtained_evidence": [
             {
-              "command": ".venv-speckit/bin/python -m unittest tests.test_adoption_evidence tests.test_trace_adapter tests.test_runtime_refinement tests.test_validation_profiles tests.test_trace_lifecycle_spikes tests.test_native_predictor tests.test_predictor_readiness -v",
-              "limits": "Executed bounded synthetic/disposable technical controls and read-only assessment only; not empirical adoption, independent external reproduction, scientific proof, human/founder approval, publication or expanded execution authority. Quick/PR profile completion recorded separately; evidence does not yet complete packet task.",
-              "outcome": "Twenty synthetic controls passed: canonical units/deduplication, independently fixed arithmetic, missingness/costs, contribution/reproduction refusal and historical obligation audit; real admitted organizations/episodes and qualifying external reproductions remain zero.",
+              "command": ".venv-speckit/bin/python scripts/validate_change.py --base develop --profile pr",
+              "limits": "Executed bounded synthetic/disposable technical controls and read-only assessment only; not empirical adoption, independent external reproduction, scientific proof, human/founder approval, publication or expanded execution authority. Stable full PR profile completed on the bound implementation candidate. Human/founder acceptance and expanded execution remain pending.",
+              "outcome": "Twenty synthetic controls passed: canonical units/deduplication, independently fixed arithmetic, missingness/costs, contribution/reproduction refusal and historical obligation audit; real admitted organizations/episodes and qualifying external reproductions remain zero. Full PR profile passed: 504 tests, four explicitly bounded skips.",
               "path": "specs/026-adoption-evidence-program/evidence.json",
-              "sha256": "57fb0a65e6ab32c1e2efc0dad70226a86810999a31c72a63d915e5e5816ffe50"
+              "sha256": "fb08a9e11688dafad603569dae1b0cc72621f4dab7b601e88501a9f8e6760230"
             }
           ],
           "planned_evidence": "SC-002 future tests: independently fixed arithmetic, manifest/source/output hashes and unit/proxy/missingness controls.",
@@ -165,11 +165,11 @@
           "id": "SC-003",
           "obtained_evidence": [
             {
-              "command": ".venv-speckit/bin/python -m unittest tests.test_adoption_evidence tests.test_trace_adapter tests.test_runtime_refinement tests.test_validation_profiles tests.test_trace_lifecycle_spikes tests.test_native_predictor tests.test_predictor_readiness -v",
-              "limits": "Executed bounded synthetic/disposable technical controls and read-only assessment only; not empirical adoption, independent external reproduction, scientific proof, human/founder approval, publication or expanded execution authority. Quick/PR profile completion recorded separately; evidence does not yet complete packet task.",
-              "outcome": "Twenty synthetic controls passed: canonical units/deduplication, independently fixed arithmetic, missingness/costs, contribution/reproduction refusal and historical obligation audit; real admitted organizations/episodes and qualifying external reproductions remain zero.",
+              "command": ".venv-speckit/bin/python scripts/validate_change.py --base develop --profile pr",
+              "limits": "Executed bounded synthetic/disposable technical controls and read-only assessment only; not empirical adoption, independent external reproduction, scientific proof, human/founder approval, publication or expanded execution authority. Stable full PR profile completed on the bound implementation candidate. Human/founder acceptance and expanded execution remain pending.",
+              "outcome": "Twenty synthetic controls passed: canonical units/deduplication, independently fixed arithmetic, missingness/costs, contribution/reproduction refusal and historical obligation audit; real admitted organizations/episodes and qualifying external reproductions remain zero. Full PR profile passed: 504 tests, four explicitly bounded skips.",
               "path": "specs/026-adoption-evidence-program/evidence.json",
-              "sha256": "57fb0a65e6ab32c1e2efc0dad70226a86810999a31c72a63d915e5e5816ffe50"
+              "sha256": "fb08a9e11688dafad603569dae1b0cc72621f4dab7b601e88501a9f8e6760230"
             }
           ],
           "planned_evidence": "SC-003 future tests: synthetic episode expected outcomes, full-cost/missingness evidence and prospectively frozen real-pilot permission/yield/rubric/assignment/adjudication rules.",
@@ -189,11 +189,11 @@
           "id": "SC-004",
           "obtained_evidence": [
             {
-              "command": ".venv-speckit/bin/python -m unittest tests.test_adoption_evidence tests.test_trace_adapter tests.test_runtime_refinement tests.test_validation_profiles tests.test_trace_lifecycle_spikes tests.test_native_predictor tests.test_predictor_readiness -v",
-              "limits": "Executed bounded synthetic/disposable technical controls and read-only assessment only; not empirical adoption, independent external reproduction, scientific proof, human/founder approval, publication or expanded execution authority. Quick/PR profile completion recorded separately; evidence does not yet complete packet task.",
-              "outcome": "Twenty synthetic controls passed: canonical units/deduplication, independently fixed arithmetic, missingness/costs, contribution/reproduction refusal and historical obligation audit; real admitted organizations/episodes and qualifying external reproductions remain zero.",
+              "command": ".venv-speckit/bin/python scripts/validate_change.py --base develop --profile pr",
+              "limits": "Executed bounded synthetic/disposable technical controls and read-only assessment only; not empirical adoption, independent external reproduction, scientific proof, human/founder approval, publication or expanded execution authority. Stable full PR profile completed on the bound implementation candidate. Human/founder acceptance and expanded execution remain pending.",
+              "outcome": "Twenty synthetic controls passed: canonical units/deduplication, independently fixed arithmetic, missingness/costs, contribution/reproduction refusal and historical obligation audit; real admitted organizations/episodes and qualifying external reproductions remain zero. Full PR profile passed: 504 tests, four explicitly bounded skips.",
               "path": "specs/026-adoption-evidence-program/evidence.json",
-              "sha256": "57fb0a65e6ab32c1e2efc0dad70226a86810999a31c72a63d915e5e5816ffe50"
+              "sha256": "fb08a9e11688dafad603569dae1b0cc72621f4dab7b601e88501a9f8e6760230"
             }
           ],
           "planned_evidence": "SC-004 future tests: replay inputs/commands/results, expected divergence and intake disposition/rights/duplicate controls.",
@@ -213,11 +213,11 @@
           "id": "SC-005",
           "obtained_evidence": [
             {
-              "command": ".venv-speckit/bin/python -m unittest tests.test_adoption_evidence tests.test_trace_adapter tests.test_runtime_refinement tests.test_validation_profiles tests.test_trace_lifecycle_spikes tests.test_native_predictor tests.test_predictor_readiness -v",
-              "limits": "Executed bounded synthetic/disposable technical controls and read-only assessment only; not empirical adoption, independent external reproduction, scientific proof, human/founder approval, publication or expanded execution authority. Quick/PR profile completion recorded separately; evidence does not yet complete packet task.",
-              "outcome": "Twenty synthetic controls passed: canonical units/deduplication, independently fixed arithmetic, missingness/costs, contribution/reproduction refusal and historical obligation audit; real admitted organizations/episodes and qualifying external reproductions remain zero.",
+              "command": ".venv-speckit/bin/python scripts/validate_change.py --base develop --profile pr",
+              "limits": "Executed bounded synthetic/disposable technical controls and read-only assessment only; not empirical adoption, independent external reproduction, scientific proof, human/founder approval, publication or expanded execution authority. Stable full PR profile completed on the bound implementation candidate. Human/founder acceptance and expanded execution remain pending.",
+              "outcome": "Twenty synthetic controls passed: canonical units/deduplication, independently fixed arithmetic, missingness/costs, contribution/reproduction refusal and historical obligation audit; real admitted organizations/episodes and qualifying external reproductions remain zero. Full PR profile passed: 504 tests, four explicitly bounded skips.",
               "path": "specs/026-adoption-evidence-program/evidence.json",
-              "sha256": "57fb0a65e6ab32c1e2efc0dad70226a86810999a31c72a63d915e5e5816ffe50"
+              "sha256": "fb08a9e11688dafad603569dae1b0cc72621f4dab7b601e88501a9f8e6760230"
             }
           ],
           "planned_evidence": "SC-005 future tests: identity/affiliation/externality/conflict and command/environment/hash controls, negative outcomes and reviewed proposal outputs.",
@@ -237,11 +237,11 @@
           "id": "SC-006",
           "obtained_evidence": [
             {
-              "command": ".venv-speckit/bin/python -m unittest tests.test_adoption_evidence tests.test_trace_adapter tests.test_runtime_refinement tests.test_validation_profiles tests.test_trace_lifecycle_spikes tests.test_native_predictor tests.test_predictor_readiness -v",
-              "limits": "Executed bounded synthetic/disposable technical controls and read-only assessment only; not empirical adoption, independent external reproduction, scientific proof, human/founder approval, publication or expanded execution authority. Quick/PR profile completion recorded separately; evidence does not yet complete packet task.",
-              "outcome": "Twenty synthetic controls passed: canonical units/deduplication, independently fixed arithmetic, missingness/costs, contribution/reproduction refusal and historical obligation audit; real admitted organizations/episodes and qualifying external reproductions remain zero.",
+              "command": ".venv-speckit/bin/python scripts/validate_change.py --base develop --profile pr",
+              "limits": "Executed bounded synthetic/disposable technical controls and read-only assessment only; not empirical adoption, independent external reproduction, scientific proof, human/founder approval, publication or expanded execution authority. Stable full PR profile completed on the bound implementation candidate. Human/founder acceptance and expanded execution remain pending.",
+              "outcome": "Twenty synthetic controls passed: canonical units/deduplication, independently fixed arithmetic, missingness/costs, contribution/reproduction refusal and historical obligation audit; real admitted organizations/episodes and qualifying external reproductions remain zero. Full PR profile passed: 504 tests, four explicitly bounded skips.",
               "path": "specs/026-adoption-evidence-program/evidence.json",
-              "sha256": "57fb0a65e6ab32c1e2efc0dad70226a86810999a31c72a63d915e5e5816ffe50"
+              "sha256": "fb08a9e11688dafad603569dae1b0cc72621f4dab7b601e88501a9f8e6760230"
             }
           ],
           "planned_evidence": "SC-006 future audit: original before/after hashes, exact current evidence bindings and obligation-specific proposed dispositions.",
@@ -261,11 +261,11 @@
           "id": "SC-007",
           "obtained_evidence": [
             {
-              "command": ".venv-speckit/bin/python -m unittest tests.test_adoption_evidence tests.test_trace_adapter tests.test_runtime_refinement tests.test_validation_profiles tests.test_trace_lifecycle_spikes tests.test_native_predictor tests.test_predictor_readiness -v",
-              "limits": "Executed bounded synthetic/disposable technical controls and read-only assessment only; not empirical adoption, independent external reproduction, scientific proof, human/founder approval, publication or expanded execution authority. Quick/PR profile completion recorded separately; evidence does not yet complete packet task.",
-              "outcome": "Twenty synthetic controls passed: canonical units/deduplication, independently fixed arithmetic, missingness/costs, contribution/reproduction refusal and historical obligation audit; real admitted organizations/episodes and qualifying external reproductions remain zero.",
+              "command": ".venv-speckit/bin/python scripts/validate_change.py --base develop --profile pr",
+              "limits": "Executed bounded synthetic/disposable technical controls and read-only assessment only; not empirical adoption, independent external reproduction, scientific proof, human/founder approval, publication or expanded execution authority. Stable full PR profile completed on the bound implementation candidate. Human/founder acceptance and expanded execution remain pending.",
+              "outcome": "Twenty synthetic controls passed: canonical units/deduplication, independently fixed arithmetic, missingness/costs, contribution/reproduction refusal and historical obligation audit; real admitted organizations/episodes and qualifying external reproductions remain zero. Full PR profile passed: 504 tests, four explicitly bounded skips.",
               "path": "specs/026-adoption-evidence-program/evidence.json",
-              "sha256": "57fb0a65e6ab32c1e2efc0dad70226a86810999a31c72a63d915e5e5816ffe50"
+              "sha256": "fb08a9e11688dafad603569dae1b0cc72621f4dab7b601e88501a9f8e6760230"
             }
           ],
           "planned_evidence": "SC-007 future tests: twice-run byte parity, fixed audit counts, hash/window/rights/missingness negative-case diagnostics.",
@@ -283,10 +283,18 @@
         {
           "given": "Program outputs and current historical reconciliation",
           "id": "SC-008",
-          "obtained_evidence": [],
+          "obtained_evidence": [
+            {
+              "command": ".venv-speckit/bin/python scripts/validate_change.py --base develop --profile pr",
+              "limits": "Executed bounded synthetic/disposable technical controls and read-only assessment only; not empirical adoption, independent external reproduction, scientific proof, human/founder approval, publication or expanded execution authority. Stable full PR profile completed on the bound implementation candidate. Human/founder acceptance and expanded execution remain pending.",
+              "outcome": "Twenty synthetic controls passed: canonical units/deduplication, independently fixed arithmetic, missingness/costs, contribution/reproduction refusal and historical obligation audit; real admitted organizations/episodes and qualifying external reproductions remain zero. Full PR profile passed: 504 tests, four explicitly bounded skips.",
+              "path": "specs/026-adoption-evidence-program/evidence.json",
+              "sha256": "fb08a9e11688dafad603569dae1b0cc72621f4dab7b601e88501a9f8e6760230"
+            }
+          ],
           "planned_evidence": "SC-008 future packet: requirement/test/evidence matrix, actual candidate/check results, raw input/manifest links and explicit contact/research/publication gates.",
-          "test_file": "specs/026-adoption-evidence-program/quickstart.md",
-          "test_name": "SC-008 acceptance contract for future implementation tests",
+          "test_file": "scripts/validate_spec_kit.py",
+          "test_name": "check",
           "then": "Observed/proxy/hypothesis and independence/claim limits remain explicit with raw links and pending decisions",
           "when": "A current milestone packet is assembled"
         }
@@ -296,5 +304,5 @@
   ],
   "scientific_limits": "Synthetic registers do not establish real adoption, demand, causal benefit, billed savings, scientific novelty or independent validation. Small/self-selected clusters, founder participation and missing data bound future inference; no general confluence or Yang-Baxter claim follows.",
   "scope": "Implemented offline synthetic frame, metrics, pilot plumbing, contribution/reproduction checks and historical audit; no real participant intake, adoption benefit, external validation or publication acceptance.",
-  "stage": "draft"
+  "stage": "validated"
 }

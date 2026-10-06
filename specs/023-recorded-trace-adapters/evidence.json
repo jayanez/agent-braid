@@ -1,6 +1,16 @@
 {
   "captureState": "Working tree after implementation commit; exact inputs hashed. Clean candidate freeze is recorded separately.",
-  "captured_at": "2026-10-06",
+  "captured_at": "2026-10-06T22:26:06.142332+00:00",
+  "developmentQuick": {
+    "command": ".venv-speckit/bin/python scripts/validate_change.py --base develop --profile quick",
+    "effectiveProfile": "sensitive",
+    "exitCode": 1,
+    "failure": "New obtained artifacts still referenced the old historical snapshot. Repaired with explicit current snapshots; targeted structure and subsequent full PR profile passed.",
+    "log": "docs/experiments/evidence/autonomous-tracks-2026-10-06/development-quick-profile.log",
+    "skipped": 4,
+    "testsPassed": 498
+  },
+  "expectedSkippedBoundary": "Three deferred learned SPEC019 contracts and one intentionally unavailable private historical-object test. No training, external scientific review or skipped specialist matrix is represented as passed.",
   "human_review": "pending",
   "implementationBaseCommit": "7614daa445d5852d455502c3d36efa73d3f7d12a",
   "inputs": {
@@ -24,7 +34,7 @@
     "tests/test_trace_adapter.py": "59245e466e20b124be50e20951025c9d41ddfaaa18b6190b03598be8abce50d3",
     "tests/test_trace_lifecycle_spikes.py": "bc977c189c5d0789ba627f3050cb4ed872a2487964298f43c8946e920e17b7ce"
   },
-  "limits": "Executed bounded synthetic/disposable technical controls and read-only assessment only; not empirical adoption, independent external reproduction, scientific proof, human/founder approval, publication or expanded execution authority. Quick/PR profile completion recorded separately; evidence does not yet complete packet task.",
+  "limits": "Executed bounded synthetic/disposable technical controls and read-only assessment only; not empirical adoption, independent external reproduction, scientific proof, human/founder approval, publication or expanded execution authority. Stable full PR profile completed on the bound implementation candidate. Human/founder acceptance and expanded execution remain pending.",
   "observations": [
     {
       "command": ".venv-speckit/bin/python -m unittest tests.test_adoption_evidence tests.test_trace_adapter tests.test_runtime_refinement tests.test_validation_profiles tests.test_trace_lifecycle_spikes tests.test_native_predictor tests.test_predictor_readiness -v",
@@ -37,5 +47,19 @@
   "outcome": "Synthetic generic importer, independent fixed direct-AIM parity, bounded parser/path/privacy controls passed; ten pinned lifecycle controls yield seven unknown mappings and three unsupported cases, zero false-safe classifications within this corpus; compatibility screening has no adoption/conformance claim.",
   "platform": "Darwin",
   "python": "3.13.11",
-  "review": "docs/experiments/evidence/autonomous-tracks-2026-10-06/luna-first-block.json"
+  "repairedStructure": {
+    "command": ".venv-speckit/bin/python scripts/validate_spec_kit.py",
+    "exitCode": 0,
+    "log": "docs/experiments/evidence/autonomous-tracks-2026-10-06/repaired-structure.log"
+  },
+  "review": "docs/experiments/evidence/autonomous-tracks-2026-10-06/luna-first-block.json",
+  "stablePrProfile": {
+    "command": ".venv-speckit/bin/python scripts/validate_change.py --base develop --profile pr",
+    "exitCode": 0,
+    "log": "docs/experiments/evidence/autonomous-tracks-2026-10-06/stable-pr-profile.log",
+    "sha256": "60c3427a66aff7cd64fc5c3fc17370c3788f4ee8f3f50d01fc470eeaed724ded",
+    "skipped": 4,
+    "tests": 504
+  },
+  "validationCandidateCommit": "3236edce53156b6a0f3d1a385e9f69e0274b5aaf"
 }

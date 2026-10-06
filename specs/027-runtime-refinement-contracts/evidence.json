@@ -1,6 +1,16 @@
 {
   "captureState": "Working tree after implementation commit; exact inputs hashed. Clean candidate freeze is recorded separately.",
-  "captured_at": "2026-10-06",
+  "captured_at": "2026-10-06T22:26:06.144815+00:00",
+  "developmentQuick": {
+    "command": ".venv-speckit/bin/python scripts/validate_change.py --base develop --profile quick",
+    "effectiveProfile": "sensitive",
+    "exitCode": 1,
+    "failure": "New obtained artifacts still referenced the old historical snapshot. Repaired with explicit current snapshots; targeted structure and subsequent full PR profile passed.",
+    "log": "docs/experiments/evidence/autonomous-tracks-2026-10-06/development-quick-profile.log",
+    "skipped": 4,
+    "testsPassed": 498
+  },
+  "expectedSkippedBoundary": "Three deferred learned SPEC019 contracts and one intentionally unavailable private historical-object test. No training, external scientific review or skipped specialist matrix is represented as passed.",
   "human_review": "pending",
   "implementationBaseCommit": "7614daa445d5852d455502c3d36efa73d3f7d12a",
   "inputs": {
@@ -18,7 +28,7 @@
     "specs/027-runtime-refinement-contracts/synthetic-probe-manifest.json": "2f5248c60b2d1cb40bc8bc04bf5c27672decb07bfa0c4a40e684119acbf8db6f",
     "tests/test_runtime_refinement.py": "578ab9b8921509be026b41708e70593b82a0d1a7bec1c7fd7524f2cc29860477"
   },
-  "limits": "Executed bounded synthetic/disposable technical controls and read-only assessment only; not empirical adoption, independent external reproduction, scientific proof, human/founder approval, publication or expanded execution authority. Quick/PR profile completion recorded separately; evidence does not yet complete packet task.",
+  "limits": "Executed bounded synthetic/disposable technical controls and read-only assessment only; not empirical adoption, independent external reproduction, scientific proof, human/founder approval, publication or expanded execution authority. Stable full PR profile completed on the bound implementation candidate. Human/founder acceptance and expanded execution remain pending.",
   "observations": [
     {
       "command": ".venv-speckit/bin/python -m unittest tests.test_adoption_evidence tests.test_trace_adapter tests.test_runtime_refinement tests.test_validation_profiles tests.test_trace_lifecycle_spikes tests.test_native_predictor tests.test_predictor_readiness -v",
@@ -31,5 +41,19 @@
   "outcome": "Nine disposable read-only Git and abstract external-effect controls passed; no source CAS, no project-code/probe execution, no installed isolation enforcement or actual provider effects established.",
   "platform": "Darwin",
   "python": "3.13.11",
-  "review": "docs/experiments/evidence/autonomous-tracks-2026-10-06/luna-first-block.json"
+  "repairedStructure": {
+    "command": ".venv-speckit/bin/python scripts/validate_spec_kit.py",
+    "exitCode": 0,
+    "log": "docs/experiments/evidence/autonomous-tracks-2026-10-06/repaired-structure.log"
+  },
+  "review": "docs/experiments/evidence/autonomous-tracks-2026-10-06/luna-first-block.json",
+  "stablePrProfile": {
+    "command": ".venv-speckit/bin/python scripts/validate_change.py --base develop --profile pr",
+    "exitCode": 0,
+    "log": "docs/experiments/evidence/autonomous-tracks-2026-10-06/stable-pr-profile.log",
+    "sha256": "60c3427a66aff7cd64fc5c3fc17370c3788f4ee8f3f50d01fc470eeaed724ded",
+    "skipped": 4,
+    "tests": 504
+  },
+  "validationCandidateCommit": "3236edce53156b6a0f3d1a385e9f69e0274b5aaf"
 }

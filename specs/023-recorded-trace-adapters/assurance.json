@@ -123,11 +123,11 @@
           "id": "SC-001",
           "obtained_evidence": [
             {
-              "command": ".venv-speckit/bin/python -m unittest tests.test_adoption_evidence tests.test_trace_adapter tests.test_runtime_refinement tests.test_validation_profiles tests.test_trace_lifecycle_spikes tests.test_native_predictor tests.test_predictor_readiness -v",
-              "limits": "Executed bounded synthetic/disposable technical controls and read-only assessment only; not empirical adoption, independent external reproduction, scientific proof, human/founder approval, publication or expanded execution authority. Quick/PR profile completion recorded separately; evidence does not yet complete packet task.",
-              "outcome": "Synthetic generic importer, independent fixed direct-AIM parity, bounded parser/path/privacy controls passed; ten pinned lifecycle controls yield seven unknown mappings and three unsupported cases, zero false-safe classifications within this corpus; compatibility screening has no adoption/conformance claim.",
+              "command": ".venv-speckit/bin/python scripts/validate_change.py --base develop --profile pr",
+              "limits": "Executed bounded synthetic/disposable technical controls and read-only assessment only; not empirical adoption, independent external reproduction, scientific proof, human/founder approval, publication or expanded execution authority. Stable full PR profile completed on the bound implementation candidate. Human/founder acceptance and expanded execution remain pending.",
+              "outcome": "Synthetic generic importer, independent fixed direct-AIM parity, bounded parser/path/privacy controls passed; ten pinned lifecycle controls yield seven unknown mappings and three unsupported cases, zero false-safe classifications within this corpus; compatibility screening has no adoption/conformance claim. Full PR profile passed: 504 tests, four explicitly bounded skips.",
               "path": "specs/023-recorded-trace-adapters/evidence.json",
-              "sha256": "af3af5ce784f7d9670dabf69df39dc5405a14a82bfc28bc94c44860ef02d2594"
+              "sha256": "600f1bdc4b23e6aca6e1b7dfa191183d949c2037c5c0219872745f4cae9ec241"
             }
           ],
           "planned_evidence": "SC-001 future tests: source/projection/provenance hashes, expected identity maps, bounded rejection outputs and reviewed interface version.",
@@ -147,11 +147,11 @@
           "id": "SC-002",
           "obtained_evidence": [
             {
-              "command": ".venv-speckit/bin/python -m unittest tests.test_adoption_evidence tests.test_trace_adapter tests.test_runtime_refinement tests.test_validation_profiles tests.test_trace_lifecycle_spikes tests.test_native_predictor tests.test_predictor_readiness -v",
-              "limits": "Executed bounded synthetic/disposable technical controls and read-only assessment only; not empirical adoption, independent external reproduction, scientific proof, human/founder approval, publication or expanded execution authority. Quick/PR profile completion recorded separately; evidence does not yet complete packet task.",
-              "outcome": "Synthetic generic importer, independent fixed direct-AIM parity, bounded parser/path/privacy controls passed; ten pinned lifecycle controls yield seven unknown mappings and three unsupported cases, zero false-safe classifications within this corpus; compatibility screening has no adoption/conformance claim.",
+              "command": ".venv-speckit/bin/python scripts/validate_change.py --base develop --profile pr",
+              "limits": "Executed bounded synthetic/disposable technical controls and read-only assessment only; not empirical adoption, independent external reproduction, scientific proof, human/founder approval, publication or expanded execution authority. Stable full PR profile completed on the bound implementation candidate. Human/founder acceptance and expanded execution remain pending.",
+              "outcome": "Synthetic generic importer, independent fixed direct-AIM parity, bounded parser/path/privacy controls passed; ten pinned lifecycle controls yield seven unknown mappings and three unsupported cases, zero false-safe classifications within this corpus; compatibility screening has no adoption/conformance claim. Full PR profile passed: 504 tests, four explicitly bounded skips.",
               "path": "specs/023-recorded-trace-adapters/evidence.json",
-              "sha256": "af3af5ce784f7d9670dabf69df39dc5405a14a82bfc28bc94c44860ef02d2594"
+              "sha256": "600f1bdc4b23e6aca6e1b7dfa191183d949c2037c5c0219872745f4cae9ec241"
             }
           ],
           "planned_evidence": "SC-002 future tests: fixed loss tables, unknown classification controls, rejection outputs and source identity preservation.",
@@ -171,11 +171,11 @@
           "id": "SC-003",
           "obtained_evidence": [
             {
-              "command": ".venv-speckit/bin/python -m unittest tests.test_adoption_evidence tests.test_trace_adapter tests.test_runtime_refinement tests.test_validation_profiles tests.test_trace_lifecycle_spikes tests.test_native_predictor tests.test_predictor_readiness -v",
-              "limits": "Executed bounded synthetic/disposable technical controls and read-only assessment only; not empirical adoption, independent external reproduction, scientific proof, human/founder approval, publication or expanded execution authority. Quick/PR profile completion recorded separately; evidence does not yet complete packet task.",
-              "outcome": "Synthetic generic importer, independent fixed direct-AIM parity, bounded parser/path/privacy controls passed; ten pinned lifecycle controls yield seven unknown mappings and three unsupported cases, zero false-safe classifications within this corpus; compatibility screening has no adoption/conformance claim.",
+              "command": ".venv-speckit/bin/python scripts/validate_change.py --base develop --profile pr",
+              "limits": "Executed bounded synthetic/disposable technical controls and read-only assessment only; not empirical adoption, independent external reproduction, scientific proof, human/founder approval, publication or expanded execution authority. Stable full PR profile completed on the bound implementation candidate. Human/founder acceptance and expanded execution remain pending.",
+              "outcome": "Synthetic generic importer, independent fixed direct-AIM parity, bounded parser/path/privacy controls passed; ten pinned lifecycle controls yield seven unknown mappings and three unsupported cases, zero false-safe classifications within this corpus; compatibility screening has no adoption/conformance claim. Full PR profile passed: 504 tests, four explicitly bounded skips.",
               "path": "specs/023-recorded-trace-adapters/evidence.json",
-              "sha256": "af3af5ce784f7d9670dabf69df39dc5405a14a82bfc28bc94c44860ef02d2594"
+              "sha256": "600f1bdc4b23e6aca6e1b7dfa191183d949c2037c5c0219872745f4cae9ec241"
             }
           ],
           "planned_evidence": "SC-003 future tests: zero-dispatch spy counts, bounded diagnostic/exit results and non-authorizing report fields.",
@@ -195,11 +195,11 @@
           "id": "SC-004",
           "obtained_evidence": [
             {
-              "command": ".venv-speckit/bin/python -m unittest tests.test_adoption_evidence tests.test_trace_adapter tests.test_runtime_refinement tests.test_validation_profiles tests.test_trace_lifecycle_spikes tests.test_native_predictor tests.test_predictor_readiness -v",
-              "limits": "Executed bounded synthetic/disposable technical controls and read-only assessment only; not empirical adoption, independent external reproduction, scientific proof, human/founder approval, publication or expanded execution authority. Quick/PR profile completion recorded separately; evidence does not yet complete packet task.",
-              "outcome": "Synthetic generic importer, independent fixed direct-AIM parity, bounded parser/path/privacy controls passed; ten pinned lifecycle controls yield seven unknown mappings and three unsupported cases, zero false-safe classifications within this corpus; compatibility screening has no adoption/conformance claim.",
+              "command": ".venv-speckit/bin/python scripts/validate_change.py --base develop --profile pr",
+              "limits": "Executed bounded synthetic/disposable technical controls and read-only assessment only; not empirical adoption, independent external reproduction, scientific proof, human/founder approval, publication or expanded execution authority. Stable full PR profile completed on the bound implementation candidate. Human/founder acceptance and expanded execution remain pending.",
+              "outcome": "Synthetic generic importer, independent fixed direct-AIM parity, bounded parser/path/privacy controls passed; ten pinned lifecycle controls yield seven unknown mappings and three unsupported cases, zero false-safe classifications within this corpus; compatibility screening has no adoption/conformance claim. Full PR profile passed: 504 tests, four explicitly bounded skips.",
               "path": "specs/023-recorded-trace-adapters/evidence.json",
-              "sha256": "af3af5ce784f7d9670dabf69df39dc5405a14a82bfc28bc94c44860ef02d2594"
+              "sha256": "600f1bdc4b23e6aca6e1b7dfa191183d949c2037c5c0219872745f4cae9ec241"
             }
           ],
           "planned_evidence": "SC-004 future tests: allowlist/right-admission controls, sanitized outputs, bound/parser/destination refusal and before/after filesystem assertions.",
@@ -219,11 +219,11 @@
           "id": "SC-005",
           "obtained_evidence": [
             {
-              "command": ".venv-speckit/bin/python -m unittest tests.test_adoption_evidence tests.test_trace_adapter tests.test_runtime_refinement tests.test_validation_profiles tests.test_trace_lifecycle_spikes tests.test_native_predictor tests.test_predictor_readiness -v",
-              "limits": "Executed bounded synthetic/disposable technical controls and read-only assessment only; not empirical adoption, independent external reproduction, scientific proof, human/founder approval, publication or expanded execution authority. Quick/PR profile completion recorded separately; evidence does not yet complete packet task.",
-              "outcome": "Synthetic generic importer, independent fixed direct-AIM parity, bounded parser/path/privacy controls passed; ten pinned lifecycle controls yield seven unknown mappings and three unsupported cases, zero false-safe classifications within this corpus; compatibility screening has no adoption/conformance claim.",
+              "command": ".venv-speckit/bin/python scripts/validate_change.py --base develop --profile pr",
+              "limits": "Executed bounded synthetic/disposable technical controls and read-only assessment only; not empirical adoption, independent external reproduction, scientific proof, human/founder approval, publication or expanded execution authority. Stable full PR profile completed on the bound implementation candidate. Human/founder acceptance and expanded execution remain pending.",
+              "outcome": "Synthetic generic importer, independent fixed direct-AIM parity, bounded parser/path/privacy controls passed; ten pinned lifecycle controls yield seven unknown mappings and three unsupported cases, zero false-safe classifications within this corpus; compatibility screening has no adoption/conformance claim. Full PR profile passed: 504 tests, four explicitly bounded skips.",
               "path": "specs/023-recorded-trace-adapters/evidence.json",
-              "sha256": "af3af5ce784f7d9670dabf69df39dc5405a14a82bfc28bc94c44860ef02d2594"
+              "sha256": "600f1bdc4b23e6aca6e1b7dfa191183d949c2037c5c0219872745f4cae9ec241"
             }
           ],
           "planned_evidence": "SC-005 future tests: twice-run artifacts, byte and classification comparisons, source/projection/report digest chain and fixed corpus denominators.",
@@ -243,11 +243,11 @@
           "id": "SC-006",
           "obtained_evidence": [
             {
-              "command": ".venv-speckit/bin/python -m unittest tests.test_adoption_evidence tests.test_trace_adapter tests.test_runtime_refinement tests.test_validation_profiles tests.test_trace_lifecycle_spikes tests.test_native_predictor tests.test_predictor_readiness -v",
-              "limits": "Executed bounded synthetic/disposable technical controls and read-only assessment only; not empirical adoption, independent external reproduction, scientific proof, human/founder approval, publication or expanded execution authority. Quick/PR profile completion recorded separately; evidence does not yet complete packet task.",
-              "outcome": "Synthetic generic importer, independent fixed direct-AIM parity, bounded parser/path/privacy controls passed; ten pinned lifecycle controls yield seven unknown mappings and three unsupported cases, zero false-safe classifications within this corpus; compatibility screening has no adoption/conformance claim.",
+              "command": ".venv-speckit/bin/python scripts/validate_change.py --base develop --profile pr",
+              "limits": "Executed bounded synthetic/disposable technical controls and read-only assessment only; not empirical adoption, independent external reproduction, scientific proof, human/founder approval, publication or expanded execution authority. Stable full PR profile completed on the bound implementation candidate. Human/founder acceptance and expanded execution remain pending.",
+              "outcome": "Synthetic generic importer, independent fixed direct-AIM parity, bounded parser/path/privacy controls passed; ten pinned lifecycle controls yield seven unknown mappings and three unsupported cases, zero false-safe classifications within this corpus; compatibility screening has no adoption/conformance claim. Full PR profile passed: 504 tests, four explicitly bounded skips.",
               "path": "specs/023-recorded-trace-adapters/evidence.json",
-              "sha256": "af3af5ce784f7d9670dabf69df39dc5405a14a82bfc28bc94c44860ef02d2594"
+              "sha256": "600f1bdc4b23e6aca6e1b7dfa191183d949c2037c5c0219872745f4cae9ec241"
             }
           ],
           "planned_evidence": "SC-006 future spike packets: primary source pins, fixed corpus/expected outcomes, raw results and complete denominators/limits with zero provider calls.",
@@ -267,11 +267,11 @@
           "id": "SC-007",
           "obtained_evidence": [
             {
-              "command": ".venv-speckit/bin/python -m unittest tests.test_adoption_evidence tests.test_trace_adapter tests.test_runtime_refinement tests.test_validation_profiles tests.test_trace_lifecycle_spikes tests.test_native_predictor tests.test_predictor_readiness -v",
-              "limits": "Executed bounded synthetic/disposable technical controls and read-only assessment only; not empirical adoption, independent external reproduction, scientific proof, human/founder approval, publication or expanded execution authority. Quick/PR profile completion recorded separately; evidence does not yet complete packet task.",
-              "outcome": "Synthetic generic importer, independent fixed direct-AIM parity, bounded parser/path/privacy controls passed; ten pinned lifecycle controls yield seven unknown mappings and three unsupported cases, zero false-safe classifications within this corpus; compatibility screening has no adoption/conformance claim.",
+              "command": ".venv-speckit/bin/python scripts/validate_change.py --base develop --profile pr",
+              "limits": "Executed bounded synthetic/disposable technical controls and read-only assessment only; not empirical adoption, independent external reproduction, scientific proof, human/founder approval, publication or expanded execution authority. Stable full PR profile completed on the bound implementation candidate. Human/founder acceptance and expanded execution remain pending.",
+              "outcome": "Synthetic generic importer, independent fixed direct-AIM parity, bounded parser/path/privacy controls passed; ten pinned lifecycle controls yield seven unknown mappings and three unsupported cases, zero false-safe classifications within this corpus; compatibility screening has no adoption/conformance claim. Full PR profile passed: 504 tests, four explicitly bounded skips.",
               "path": "specs/023-recorded-trace-adapters/evidence.json",
-              "sha256": "af3af5ce784f7d9670dabf69df39dc5405a14a82bfc28bc94c44860ef02d2594"
+              "sha256": "600f1bdc4b23e6aca6e1b7dfa191183d949c2037c5c0219872745f4cae9ec241"
             }
           ],
           "planned_evidence": "SC-007 future records: source/retrieval/version pins, conformance availability, license/privacy/AIM-loss assessment and decisions.",
@@ -289,10 +289,18 @@
         {
           "given": "Generic, lifecycle and screening packets",
           "id": "SC-008",
-          "obtained_evidence": [],
+          "obtained_evidence": [
+            {
+              "command": ".venv-speckit/bin/python scripts/validate_change.py --base develop --profile pr",
+              "limits": "Executed bounded synthetic/disposable technical controls and read-only assessment only; not empirical adoption, independent external reproduction, scientific proof, human/founder approval, publication or expanded execution authority. Stable full PR profile completed on the bound implementation candidate. Human/founder acceptance and expanded execution remain pending.",
+              "outcome": "Synthetic generic importer, independent fixed direct-AIM parity, bounded parser/path/privacy controls passed; ten pinned lifecycle controls yield seven unknown mappings and three unsupported cases, zero false-safe classifications within this corpus; compatibility screening has no adoption/conformance claim. Full PR profile passed: 504 tests, four explicitly bounded skips.",
+              "path": "specs/023-recorded-trace-adapters/evidence.json",
+              "sha256": "600f1bdc4b23e6aca6e1b7dfa191183d949c2037c5c0219872745f4cae9ec241"
+            }
+          ],
           "planned_evidence": "SC-008 future readiness packet: requirement/test/evidence matrix, actual candidate/check results, separate decision status and preserved historical hashes.",
-          "test_file": "specs/023-recorded-trace-adapters/quickstart.md",
-          "test_name": "SC-008 acceptance contract for future implementation tests",
+          "test_file": "scripts/validate_spec_kit.py",
+          "test_name": "check",
           "then": "Traceable distinct outcomes and pending human/founder gates exist without historical track promotion",
           "when": "A current decision packet is reviewed against SPEC-011"
         }
@@ -302,5 +310,5 @@
   ],
   "scientific_limits": "Synthetic mapping/retention checks do not establish complete real effects, live protocol conformance, provider correctness, production safety, independent scientific validation, general confluence or Yang-Baxter results. False-safe counts apply only to fixed finite controls.",
   "scope": "The bounded generic synthetic importer, additive offline CLI, two pin-backed lifecycle spikes and read-only ecosystem screening are implemented; human interface acceptance, provider adoption and real-source admission remain pending.",
-  "stage": "draft"
+  "stage": "validated"
 }

@@ -120,11 +120,11 @@
           "id": "SC-001",
           "obtained_evidence": [
             {
-              "command": ".venv-speckit/bin/python -m unittest tests.test_adoption_evidence tests.test_trace_adapter tests.test_runtime_refinement tests.test_validation_profiles tests.test_trace_lifecycle_spikes tests.test_native_predictor tests.test_predictor_readiness -v",
-              "limits": "Executed bounded synthetic/disposable technical controls and read-only assessment only; not empirical adoption, independent external reproduction, scientific proof, human/founder approval, publication or expanded execution authority. Quick/PR profile completion recorded separately; evidence does not yet complete packet task.",
-              "outcome": "Nine disposable read-only Git and abstract external-effect controls passed; no source CAS, no project-code/probe execution, no installed isolation enforcement or actual provider effects established.",
+              "command": ".venv-speckit/bin/python scripts/validate_change.py --base develop --profile pr",
+              "limits": "Executed bounded synthetic/disposable technical controls and read-only assessment only; not empirical adoption, independent external reproduction, scientific proof, human/founder approval, publication or expanded execution authority. Stable full PR profile completed on the bound implementation candidate. Human/founder acceptance and expanded execution remain pending.",
+              "outcome": "Nine disposable read-only Git and abstract external-effect controls passed; no source CAS, no project-code/probe execution, no installed isolation enforcement or actual provider effects established. Full PR profile passed: 504 tests, four explicitly bounded skips.",
               "path": "specs/027-runtime-refinement-contracts/evidence.json",
-              "sha256": "6b0bec2c25e6b55d8de9800ab07acf2b70b816fca63fddbcc3eaf8f2a0f00096"
+              "sha256": "18fe1610b3d3a94775080fce962533ff900f0e6767a0885880a58d06a3be18d7"
             }
           ],
           "planned_evidence": "Future read-only assessment controls and separately reviewed capability decision packets described in quickstart.md.",
@@ -144,11 +144,11 @@
           "id": "SC-002",
           "obtained_evidence": [
             {
-              "command": ".venv-speckit/bin/python -m unittest tests.test_adoption_evidence tests.test_trace_adapter tests.test_runtime_refinement tests.test_validation_profiles tests.test_trace_lifecycle_spikes tests.test_native_predictor tests.test_predictor_readiness -v",
-              "limits": "Executed bounded synthetic/disposable technical controls and read-only assessment only; not empirical adoption, independent external reproduction, scientific proof, human/founder approval, publication or expanded execution authority. Quick/PR profile completion recorded separately; evidence does not yet complete packet task.",
-              "outcome": "Nine disposable read-only Git and abstract external-effect controls passed; no source CAS, no project-code/probe execution, no installed isolation enforcement or actual provider effects established.",
+              "command": ".venv-speckit/bin/python scripts/validate_change.py --base develop --profile pr",
+              "limits": "Executed bounded synthetic/disposable technical controls and read-only assessment only; not empirical adoption, independent external reproduction, scientific proof, human/founder approval, publication or expanded execution authority. Stable full PR profile completed on the bound implementation candidate. Human/founder acceptance and expanded execution remain pending.",
+              "outcome": "Nine disposable read-only Git and abstract external-effect controls passed; no source CAS, no project-code/probe execution, no installed isolation enforcement or actual provider effects established. Full PR profile passed: 504 tests, four explicitly bounded skips.",
               "path": "specs/027-runtime-refinement-contracts/evidence.json",
-              "sha256": "6b0bec2c25e6b55d8de9800ab07acf2b70b816fca63fddbcc3eaf8f2a0f00096"
+              "sha256": "18fe1610b3d3a94775080fce962533ff900f0e6767a0885880a58d06a3be18d7"
             }
           ],
           "planned_evidence": "Future read-only assessment controls and separately reviewed capability decision packets described in quickstart.md.",
@@ -168,11 +168,11 @@
           "id": "SC-003",
           "obtained_evidence": [
             {
-              "command": ".venv-speckit/bin/python -m unittest tests.test_adoption_evidence tests.test_trace_adapter tests.test_runtime_refinement tests.test_validation_profiles tests.test_trace_lifecycle_spikes tests.test_native_predictor tests.test_predictor_readiness -v",
-              "limits": "Executed bounded synthetic/disposable technical controls and read-only assessment only; not empirical adoption, independent external reproduction, scientific proof, human/founder approval, publication or expanded execution authority. Quick/PR profile completion recorded separately; evidence does not yet complete packet task.",
-              "outcome": "Nine disposable read-only Git and abstract external-effect controls passed; no source CAS, no project-code/probe execution, no installed isolation enforcement or actual provider effects established.",
+              "command": ".venv-speckit/bin/python scripts/validate_change.py --base develop --profile pr",
+              "limits": "Executed bounded synthetic/disposable technical controls and read-only assessment only; not empirical adoption, independent external reproduction, scientific proof, human/founder approval, publication or expanded execution authority. Stable full PR profile completed on the bound implementation candidate. Human/founder acceptance and expanded execution remain pending.",
+              "outcome": "Nine disposable read-only Git and abstract external-effect controls passed; no source CAS, no project-code/probe execution, no installed isolation enforcement or actual provider effects established. Full PR profile passed: 504 tests, four explicitly bounded skips.",
               "path": "specs/027-runtime-refinement-contracts/evidence.json",
-              "sha256": "6b0bec2c25e6b55d8de9800ab07acf2b70b816fca63fddbcc3eaf8f2a0f00096"
+              "sha256": "18fe1610b3d3a94775080fce962533ff900f0e6767a0885880a58d06a3be18d7"
             }
           ],
           "planned_evidence": "Future read-only assessment controls and separately reviewed capability decision packets described in quickstart.md.",
@@ -192,11 +192,11 @@
           "id": "SC-004",
           "obtained_evidence": [
             {
-              "command": ".venv-speckit/bin/python -m unittest tests.test_adoption_evidence tests.test_trace_adapter tests.test_runtime_refinement tests.test_validation_profiles tests.test_trace_lifecycle_spikes tests.test_native_predictor tests.test_predictor_readiness -v",
-              "limits": "Executed bounded synthetic/disposable technical controls and read-only assessment only; not empirical adoption, independent external reproduction, scientific proof, human/founder approval, publication or expanded execution authority. Quick/PR profile completion recorded separately; evidence does not yet complete packet task.",
-              "outcome": "Nine disposable read-only Git and abstract external-effect controls passed; no source CAS, no project-code/probe execution, no installed isolation enforcement or actual provider effects established.",
+              "command": ".venv-speckit/bin/python scripts/validate_change.py --base develop --profile pr",
+              "limits": "Executed bounded synthetic/disposable technical controls and read-only assessment only; not empirical adoption, independent external reproduction, scientific proof, human/founder approval, publication or expanded execution authority. Stable full PR profile completed on the bound implementation candidate. Human/founder acceptance and expanded execution remain pending.",
+              "outcome": "Nine disposable read-only Git and abstract external-effect controls passed; no source CAS, no project-code/probe execution, no installed isolation enforcement or actual provider effects established. Full PR profile passed: 504 tests, four explicitly bounded skips.",
               "path": "specs/027-runtime-refinement-contracts/evidence.json",
-              "sha256": "6b0bec2c25e6b55d8de9800ab07acf2b70b816fca63fddbcc3eaf8f2a0f00096"
+              "sha256": "18fe1610b3d3a94775080fce962533ff900f0e6767a0885880a58d06a3be18d7"
             }
           ],
           "planned_evidence": "Future read-only assessment controls and separately reviewed capability decision packets described in quickstart.md.",
@@ -214,10 +214,18 @@
         {
           "given": "the dry-run evidence and proposed ADR text",
           "id": "SC-005",
-          "obtained_evidence": [],
+          "obtained_evidence": [
+            {
+              "command": ".venv-speckit/bin/python scripts/validate_change.py --base develop --profile pr",
+              "limits": "Executed bounded synthetic/disposable technical controls and read-only assessment only; not empirical adoption, independent external reproduction, scientific proof, human/founder approval, publication or expanded execution authority. Stable full PR profile completed on the bound implementation candidate. Human/founder acceptance and expanded execution remain pending.",
+              "outcome": "Nine disposable read-only Git and abstract external-effect controls passed; no source CAS, no project-code/probe execution, no installed isolation enforcement or actual provider effects established. Full PR profile passed: 504 tests, four explicitly bounded skips.",
+              "path": "specs/027-runtime-refinement-contracts/evidence.json",
+              "sha256": "18fe1610b3d3a94775080fce962533ff900f0e6767a0885880a58d06a3be18d7"
+            }
+          ],
           "planned_evidence": "Future read-only assessment controls and separately reviewed capability decision packets described in quickstart.md.",
-          "test_file": "specs/027-runtime-refinement-contracts/quickstart.md",
-          "test_name": "SC-005",
+          "test_file": "scripts/validate_spec_kit.py",
+          "test_name": "check",
           "then": "GO requires a separately adopted ADR, versioned contracts and authorization; NO-GO/watch/rejected is an actionable final assessment and cannot close M4",
           "when": "the decision packet is reviewed"
         }
@@ -227,5 +235,5 @@
   ],
   "scientific_limits": "No production safety, general confluence, proof, hostile same-UID or external adapter correctness claims.",
   "scope": "Implemented read-only promotion assessment, installed executable inventory and abstract external-effect simulation with candidate capability contracts; expanded runtime and founder adoption remain pending.",
-  "stage": "draft"
+  "stage": "validated"
 }

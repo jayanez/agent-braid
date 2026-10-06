@@ -56,3 +56,21 @@ Mark tasks complete only when their full contract and executed evidence are met.
 Mixed tasks report a completed technical portion with human acceptance pending.
 Preserve all historical approvals, NO-GO, source windows, schemas and frozen radar.
 Fresh reproduction, public claims, rights and founder decisions have their own gates.
+
+## Delivery checkpoint (2026-10-07)
+
+PR #333 delivers T009/T010 synthetic preparation (SPEC-019), all technical
+implementation/packet tasks in SPEC-023 and SPEC-026, and T001–T006 assessment
+work in SPEC-027. Luna findings were fixed. Its stable PR profile passed 504
+tests with four documented boundary skips; all executed hosted checks passed; the specialist solo/dual matrix was skipped by the classifier on the bound
+implementation candidate. Human acceptance, real sources and expanded execution
+remain pending.
+
+PR #334 stacks the technically reviewed SPEC-028 stdlib core/CLI and SPEC-025
+finite checker/candidate mapping. Core/CLI 33 controls, contextual 20 controls,
+classifier 14 controls, exact offline wheel bytes and internal clean-clone
+repetition passed. Full profiles and final evidence binding are still pending.
+SPEC-031 T002–T007 and SPEC-032 T003/T004/T007 are selected for the next
+deterministic increment after core T008; trained branches and real utility stay
+gated. Prior evidence is frozen before shared-interface changes, without
+refreshing historical human approval or replacing current-interface controls.
