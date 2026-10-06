@@ -1,0 +1,68 @@
+{
+  "recordVersion": "governed-tracking-extension-1",
+  "observedAt": "2026-10-06T07:19:43.744164+00:00",
+  "authority": "Non-normative observation and custom-status reconciliation; no feature acceptance.",
+  "sourceCommit": "53faa6aed5426f0c84f0ed0ec7a92c073512ee2b",
+  "repository": "jayanez/agent-braid",
+  "inheritedPortfolio": {
+    "mergedPullRequests": [
+      219,
+      221
+    ],
+    "specifications": 27,
+    "tasks": 205,
+    "milestones": 12
+  },
+  "repositoryAudit": {
+    "plan_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "operations": []
+  },
+  "appliedProjectStatusUpdates": [
+    {
+      "spec": "SPEC-022",
+      "parentIssue": 224,
+      "status": "Review pending",
+      "milestone": "M4"
+    },
+    {
+      "spec": "SPEC-023",
+      "parentIssue": 231,
+      "status": "Review pending",
+      "milestone": "Platform evidence adapters"
+    },
+    {
+      "spec": "SPEC-024",
+      "parentIssue": 240,
+      "status": "Review pending",
+      "milestone": "Workload evidence laboratory"
+    },
+    {
+      "spec": "SPEC-025",
+      "parentIssue": 249,
+      "status": "Review pending",
+      "milestone": "Formal interaction research"
+    },
+    {
+      "spec": "SPEC-026",
+      "parentIssue": 257,
+      "status": "Review pending",
+      "milestone": "Cross-cutting governance"
+    },
+    {
+      "spec": "SPEC-027",
+      "parentIssue": 266,
+      "status": "Review pending",
+      "milestone": "M4"
+    }
+  ],
+  "projectVerification": {
+    "method": "Existing signed-in browser session; observed all six parent statuses and their assigned milestones in Specs and tasks.",
+    "viewFilterRestored": true
+  },
+  "limits": [
+    "Creation and linking of the inherited portfolio were performed separately and are not attributed to this delivery.",
+    "Additional unmerged planning issues were visible; global Project counts are not asserted by this extension.",
+    "The original receipt remains a dated observation of its earlier source and Project state.",
+    "No new draft task was implemented or closed; SPEC-021 and M4 remain open and G4 NO-GO is unchanged."
+  ]
+}

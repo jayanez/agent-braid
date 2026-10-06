@@ -228,6 +228,15 @@ open; the decision and its limits are recorded in
 [`g4-decision.json`](specs/021-m4-alpha-runtime/g4-decision.json). M3/M3.5
 scientific gates are unchanged.
 
+The [2026-10-06 engineering delivery](docs/development/autonomous-delivery.md)
+obtained fresh hosted Linux x64 controls (44 M3.5 synthetic tests and 68 M4
+runtime/protocol tests), reduced redundant preparation and retained a separate
+descriptive cost record. Parallel execution still cost more than serial on the
+owned fixture. Governed tracking was reconciled; administrative T014 completion
+is proposed in the task list, with issue reconciliation following source merge.
+This delivery leaves the G4 NO-GO, SPEC-021's open state and M4's open milestone
+in effect.
+
 Candidate deliverables:
 
 - MCP and host-runtime adapters;

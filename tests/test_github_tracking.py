@@ -49,9 +49,10 @@ class TrackingTests(unittest.TestCase):
             "SPEC-002/T006", "SPEC-009/T009", "SPEC-011/T008",
             "SPEC-019/T001", "SPEC-019/T002", "SPEC-019/T003",
             "SPEC-019/T004", "SPEC-019/T005", "SPEC-019/T007",
-            "SPEC-021/T014",
         }
         self.assertTrue(required_open <= open_tasks)
+        self.assertEqual("closed", next(item["state"] for item in desired
+                                        if item["key"] == "SPEC-021/T014"))
         self.assertEqual("open", config["specs"]["021-m4-alpha-runtime"]["state"])
         self.assertEqual("M4", config["specs"]["021-m4-alpha-runtime"]["milestone"])
         self.assertEqual("M4", config["specs"]["020-m4-local-git-runtime"]["milestone"])
