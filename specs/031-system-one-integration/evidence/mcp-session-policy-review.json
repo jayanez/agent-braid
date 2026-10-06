@@ -1,0 +1,16 @@
+{
+  "documentationProvider": "Context7",
+  "executionAuthorization": false,
+  "format": "mcp-session-policy-review-v1",
+  "libraryId": "/websites/modelcontextprotocol_io_specification_2025-11-25",
+  "limits": "Pinned primary protocol interpretation and bounded engineering policy; no independent generic protocol conformance, host performance, human acceptance or execution authority.",
+  "policy": "All syntactically accepted request IDs non-reused per server instance; 1024 typed-ID bound; explicit replacement session after exhaustion; notifications allocate no identity storage.",
+  "protocol": "2025-11-25",
+  "retrieved": "2026-10-07",
+  "reviewerModel": "gpt-6-luna",
+  "sources": [
+    "https://modelcontextprotocol.io/specification/2025-11-25/basic",
+    "https://modelcontextprotocol.io/specification/2025-11-25/basic/utilities/cancellation"
+  ],
+  "technicalDecision": "GO before policy implementation"
+}

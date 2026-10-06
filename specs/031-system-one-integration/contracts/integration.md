@@ -416,3 +416,20 @@ advisor or encoding exceptions suppress the whole result and release the owned
 scope; they never fabricate a bound invalid-stage-request packet or echo exceptions.
 External consumer-side binding failures return unbound refusals because those
 consumer bindings never became validated stage-request bindings.
+
+
+### Session request identity bound
+
+The pinned MCP 2025-11-25 Basic protocol requires session-wide non-reuse of
+request IDs. This separate server records at most 1,024 typed string/integer IDs
+per server instance under its owner condition lock. Every syntactically accepted
+non-notification request burns its ID before parameter or method dispatch,
+including initialize/list/call and requests that subsequently fail validation.
+Duplicate IDs and new IDs after this bound receive fixed sanitized -32600 errors.
+After exhaustion no further request is admitted in that instance; the caller must
+explicitly create a replacement session/server instance. No automatic launch,
+retry, clearing of tombstones or generation inference is performed. Notifications
+consume no ID storage. Completed-call cancellation finds no active registration
+and cannot target a later call using that ID, since reuse is never admitted.
+This bounds identity memory and closes delayed-cancellation races; it is not
+independent general MCP conformance or hard transport termination evidence.

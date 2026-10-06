@@ -106,8 +106,8 @@ class SystemOneMcpTests(unittest.TestCase):
         frame={'jsonrpc':'2.0','method':method,'params':{} if params is None else params}
         if not notification:frame['id']=identifier
         self.server.receive(canonical(frame))
-    def initialize(self):
-        self.send('initialize',0,{'protocolVersion':m.PROTOCOL,'capabilities':{},'clientInfo':{'name':'test','version':'1'}})
+    def initialize(self, identifier=0):
+        self.send('initialize',identifier,{'protocolVersion':m.PROTOCOL,'capabilities':{},'clientInfo':{'name':'test','version':'1'}})
         self.send('notifications/initialized',notification=True)
         self.output.seek(0);self.output.truncate()
     def call(self,identifier,value=None):
@@ -120,7 +120,7 @@ class SystemOneMcpTests(unittest.TestCase):
     def test_initialize_protocol_catalog_and_no_execution_aliases(self):
         self.send('initialize',0,{'protocolVersion':'old','capabilities':{},'clientInfo':{'name':'x','version':'1'}})
         self.assertEqual(self.frames()[0]['error']['code'],-32602)
-        self.output.seek(0);self.output.truncate();self.initialize();self.send('tools/list',1)
+        self.output.seek(0);self.output.truncate();self.initialize(3);self.send('tools/list',1)
         tools=self.frames()[0]['result']['tools'];self.assertEqual([x['name'] for x in tools],list(m.TOOLS))
         for tool in tools:
             self.assertTrue(tool['annotations']['readOnlyHint']);self.assertFalse(tool['inputSchema']['additionalProperties']);self.assertFalse(tool['outputSchema']['additionalProperties'])
@@ -200,6 +200,30 @@ class SystemOneMcpTests(unittest.TestCase):
             self.call(2);self.assertTrue(self.server.wait_idle())
         self.assertEqual(self.output.getvalue(),b'')
         self.assertEqual(self.server._registry._records,{})
+
+    def test_completed_id_reuse_denied_and_delayed_cancel_cannot_cross_calls(self):
+        self.initialize();self.call(1);self.assertTrue(self.server.wait_idle())
+        self.call(1);self.assertEqual(self.frames()[-1]['error']['code'],-32600)
+        entered=threading.Event();release=threading.Event();original=self.server.tools.advise
+        def held(scope):
+            entered.set();self.assertTrue(release.wait(5));return original(scope)
+        self.server.tools.advise=held
+        self.call('1');self.assertTrue(entered.wait(5))
+        self.send('notifications/cancelled',notification=True,params={'requestId':1})
+        self.assertFalse(self.server._active.cancellation.cancelled)
+        release.set();self.assertTrue(self.server.wait_idle())
+        self.assertEqual(self.frames()[-1]['id'],'1')
+        self.assertEqual(self.frames()[-1]['result']['structuredContent']['status'],'advised')
+
+    def test_session_ids_burn_invalid_params_and_stop_at_exact_bounded_capacity(self):
+        self.initialize()
+        self.send('tools/list',1,{'invalid':True})
+        self.send('tools/list',1);self.assertEqual(self.frames()[-1]['error']['code'],-32600)
+        for identifier in range(2,1024):self.send('unknown',identifier)
+        self.assertEqual(len(self.server._session_ids),1024)
+        self.send('tools/list',1024);self.assertEqual(self.frames()[-1]['error']['code'],-32600)
+        self.send('notifications/cancelled',notification=True,params={'requestId':9999})
+        self.assertEqual(len(self.server._session_ids),1024)
     def test_output_lock_wait_expiry_and_cancel_prevent_late_write(self):
         self.initialize();now=[0];self.server.close();self.output=io.BytesIO()
         self.server=m.AdviceStdioServer(self.output,_clock=lambda:now[0]);self.initialize()

@@ -138,6 +138,7 @@ class AdviceStdioServer:
                           else _TransportScopeRegistry(clock=_clock))
         self._output_lock = threading.Lock()
         self._condition = threading.Condition()
+        self._session_ids = set()
         self._waiting = deque()
         self._active = None
         self._thread = None
@@ -205,9 +206,14 @@ class AdviceStdioServer:
                 self._error(None, -32600)
                 return
             notification = 'id' not in frame
-            if not notification and self._registry.active_identifier(identifier):
-                self._error(identifier,-32600)
-                return
+            if not notification:
+                with self._condition:
+                    identity = (type(identifier),identifier)
+                    denied = identity in self._session_ids or len(self._session_ids) >= 1024
+                    if not denied:self._session_ids.add(identity)
+                if denied:
+                    self._error(identifier,-32600)
+                    return
             method, params = frame['method'], frame.get('params', {})
             if type(params) is not dict:
                 if not notification:
