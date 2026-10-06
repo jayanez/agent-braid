@@ -3,7 +3,7 @@
 From repository root, with pinned isolated tooling installed:
 
 ```sh
-SPECIFY_FEATURE=033-system-one-promotion python3 .specify/scripts/python/check_prerequisites.py --json --require-tasks --include-tasks
+SPECIFY_FEATURE_DIRECTORY="$PWD/specs/033-system-one-promotion" python3 .specify/scripts/python/check_prerequisites.py --json --require-tasks --include-tasks
 python3 scripts/validate_spec_kit.py
 python3 scripts/sync_github_tracking.py source
 (umask 0022 && .venv-speckit/bin/python scripts/validate_change.py --base develop --profile pr)

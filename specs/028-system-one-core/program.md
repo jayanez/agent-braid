@@ -43,7 +43,10 @@ from the repository's existing tracking format. Issue closure never implies appr
 5. Integrate rules and model advice behind explicit capability switches (031). Actual
    neural traffic stays shadow/pending until 033 exact-capability promotion. Read-only
    advice does not create grants or expand current fixed-patch execution.
-6. Evaluate advanced features (032) separately. Promote only eligible capabilities
+6. Select advanced features at 032/T001 before model selection; implement and evaluate
+   only selected branches. Schema compilation and core hooks can proceed without a
+   learned model. Deferred tasks stay pending; 032/T008 requires only the selected
+   branches and cannot imply whole-spec acceptance. Promote only eligible capabilities
    with full chain evidence, immutable manifests and rollback (033). Preserve negative
    utility findings and unsupported devices/languages as explicit limits.
 
@@ -97,7 +100,8 @@ no upstream workflow, extension, preset or scaffold regeneration was introduced.
 
 See [quickstart.md](quickstart.md) for local validators and planning-only limitations.
 The tracking mapping includes open new specs/milestones and review-pending parents;
-existing milestones, issues and checkbox history are unchanged. GitHub's governed
+existing milestone numbers, issue identities and checkbox history are retained.
+Current titles follow the canonical tracking convention. GitHub's governed
 sync apply requires reviewed records on clean develop after merge. Pre-merge drafts
 must link the proposal candidate, not pretend the files already exist on develop.
 Do not run a whole-repository apply to publish this scope: it can reconcile historical
@@ -107,6 +111,11 @@ Implementation review must bind the exact candidate and obtain source/model righ
 deployment budgets and capability acceptance. Later canonical ADR adoption changes
 authority inventory and requires visible drift review for current assurance snapshots.
 Neither a merged planning PR nor open issues accept the architecture or reopen M4.
+
+The current architecture/status clarification is editorial. Historical assurance
+snapshots remain bound to their frozen authority bytes; implementation review must
+check the current authority inventory and any intervening changes explicitly.
+The dependency/quickstart corrections do not grant feature acceptance.
 
 Scoped publication completed in [PR #274](https://github.com/jayanez/agent-braid/pull/274).
 All five milestones, six parents and 49 linked tasks remain open.
