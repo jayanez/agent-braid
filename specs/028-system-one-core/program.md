@@ -24,7 +24,7 @@ There are 36 requirements, 36 Given/When/Then acceptance scenarios and 49 implem
 tasks. Each spec contains spec, plan, research, data model, interface contract,
 quickstart, task list, quality checklist, prospective validation and assurance record.
 Stable IDs use SPEC-nnn / REQ-nnn / SC-nnn / Tnnn. Every implementation checkbox is
-pending. Five milestone drafts and 55 issue drafts (six parents + 49 tasks) are generated
+pending. Five milestones and 55 issues (six parents + 49 tasks) are published; drafts were generated
 from the repository's existing tracking format. Issue closure never implies approval.
 
 ## Critical path and work ordering
@@ -104,3 +104,9 @@ Implementation review must bind the exact candidate and obtain source/model righ
 deployment budgets and capability acceptance. Later canonical ADR adoption changes
 authority inventory and requires visible drift review for current assurance snapshots.
 Neither a merged planning PR nor open issues accept the architecture or reopen M4.
+
+Scoped publication completed in [PR #274](https://github.com/jayanez/agent-braid/pull/274).
+All five milestones, six parents and 49 linked tasks remain open.
+The [publication receipt](delivery/publication.json) records actual URLs and readback
+verification. Private user-Project verification was blocked by integration access;
+the published spec/task labels support its existing automatic workflows.

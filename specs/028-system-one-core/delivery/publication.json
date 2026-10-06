@@ -1,0 +1,436 @@
+{
+  "repository": "jayanez/agent-braid",
+  "authorization": {
+    "date": "2026-10-06",
+    "text": "OK lo autorizo. Adelante",
+    "scope": "one planning PR, five S1 milestones and 55 issues; no merge or implementation approval"
+  },
+  "milestones": {
+    "S1.0 \u2014 Contracts": {
+      "number": 13,
+      "url": "https://github.com/jayanez/agent-braid/milestone/13"
+    },
+    "S1.1 \u2014 Evidence": {
+      "number": 14,
+      "url": "https://github.com/jayanez/agent-braid/milestone/14"
+    },
+    "S1.2 \u2014 Native model": {
+      "number": 15,
+      "url": "https://github.com/jayanez/agent-braid/milestone/15"
+    },
+    "S1.3 \u2014 Integration": {
+      "number": 16,
+      "url": "https://github.com/jayanez/agent-braid/milestone/16"
+    },
+    "S1.4 \u2014 Product and promotion": {
+      "number": 17,
+      "url": "https://github.com/jayanez/agent-braid/milestone/17"
+    }
+  },
+  "issues": {
+    "SPEC-028": {
+      "number": 275,
+      "id": 5723965193,
+      "url": "https://github.com/jayanez/agent-braid/issues/275",
+      "parent": null,
+      "milestone": "S1.0 \u2014 Contracts"
+    },
+    "SPEC-028/T001": {
+      "number": 276,
+      "id": 5723965513,
+      "url": "https://github.com/jayanez/agent-braid/issues/276",
+      "parent": "SPEC-028",
+      "milestone": "S1.0 \u2014 Contracts"
+    },
+    "SPEC-028/T002": {
+      "number": 277,
+      "id": 5723965808,
+      "url": "https://github.com/jayanez/agent-braid/issues/277",
+      "parent": "SPEC-028",
+      "milestone": "S1.0 \u2014 Contracts"
+    },
+    "SPEC-028/T003": {
+      "number": 278,
+      "id": 5723966085,
+      "url": "https://github.com/jayanez/agent-braid/issues/278",
+      "parent": "SPEC-028",
+      "milestone": "S1.0 \u2014 Contracts"
+    },
+    "SPEC-028/T004": {
+      "number": 279,
+      "id": 5723966366,
+      "url": "https://github.com/jayanez/agent-braid/issues/279",
+      "parent": "SPEC-028",
+      "milestone": "S1.0 \u2014 Contracts"
+    },
+    "SPEC-028/T005": {
+      "number": 280,
+      "id": 5723966681,
+      "url": "https://github.com/jayanez/agent-braid/issues/280",
+      "parent": "SPEC-028",
+      "milestone": "S1.0 \u2014 Contracts"
+    },
+    "SPEC-028/T006": {
+      "number": 281,
+      "id": 5723967011,
+      "url": "https://github.com/jayanez/agent-braid/issues/281",
+      "parent": "SPEC-028",
+      "milestone": "S1.0 \u2014 Contracts"
+    },
+    "SPEC-028/T007": {
+      "number": 282,
+      "id": 5723967268,
+      "url": "https://github.com/jayanez/agent-braid/issues/282",
+      "parent": "SPEC-028",
+      "milestone": "S1.0 \u2014 Contracts"
+    },
+    "SPEC-028/T008": {
+      "number": 283,
+      "id": 5723967591,
+      "url": "https://github.com/jayanez/agent-braid/issues/283",
+      "parent": "SPEC-028",
+      "milestone": "S1.0 \u2014 Contracts"
+    },
+    "SPEC-029": {
+      "number": 284,
+      "id": 5723967918,
+      "url": "https://github.com/jayanez/agent-braid/issues/284",
+      "parent": null,
+      "milestone": "S1.1 \u2014 Evidence"
+    },
+    "SPEC-029/T001": {
+      "number": 285,
+      "id": 5723968236,
+      "url": "https://github.com/jayanez/agent-braid/issues/285",
+      "parent": "SPEC-029",
+      "milestone": "S1.1 \u2014 Evidence"
+    },
+    "SPEC-029/T002": {
+      "number": 286,
+      "id": 5723968480,
+      "url": "https://github.com/jayanez/agent-braid/issues/286",
+      "parent": "SPEC-029",
+      "milestone": "S1.1 \u2014 Evidence"
+    },
+    "SPEC-029/T003": {
+      "number": 287,
+      "id": 5723968764,
+      "url": "https://github.com/jayanez/agent-braid/issues/287",
+      "parent": "SPEC-029",
+      "milestone": "S1.1 \u2014 Evidence"
+    },
+    "SPEC-029/T004": {
+      "number": 288,
+      "id": 5723969052,
+      "url": "https://github.com/jayanez/agent-braid/issues/288",
+      "parent": "SPEC-029",
+      "milestone": "S1.1 \u2014 Evidence"
+    },
+    "SPEC-029/T005": {
+      "number": 289,
+      "id": 5723969339,
+      "url": "https://github.com/jayanez/agent-braid/issues/289",
+      "parent": "SPEC-029",
+      "milestone": "S1.1 \u2014 Evidence"
+    },
+    "SPEC-029/T006": {
+      "number": 290,
+      "id": 5723969599,
+      "url": "https://github.com/jayanez/agent-braid/issues/290",
+      "parent": "SPEC-029",
+      "milestone": "S1.1 \u2014 Evidence"
+    },
+    "SPEC-029/T007": {
+      "number": 291,
+      "id": 5723969872,
+      "url": "https://github.com/jayanez/agent-braid/issues/291",
+      "parent": "SPEC-029",
+      "milestone": "S1.1 \u2014 Evidence"
+    },
+    "SPEC-029/T008": {
+      "number": 292,
+      "id": 5723970173,
+      "url": "https://github.com/jayanez/agent-braid/issues/292",
+      "parent": "SPEC-029",
+      "milestone": "S1.1 \u2014 Evidence"
+    },
+    "SPEC-029/T009": {
+      "number": 293,
+      "id": 5723970463,
+      "url": "https://github.com/jayanez/agent-braid/issues/293",
+      "parent": "SPEC-029",
+      "milestone": "S1.1 \u2014 Evidence"
+    },
+    "SPEC-030": {
+      "number": 294,
+      "id": 5723970752,
+      "url": "https://github.com/jayanez/agent-braid/issues/294",
+      "parent": null,
+      "milestone": "S1.2 \u2014 Native model"
+    },
+    "SPEC-030/T001": {
+      "number": 295,
+      "id": 5723971067,
+      "url": "https://github.com/jayanez/agent-braid/issues/295",
+      "parent": "SPEC-030",
+      "milestone": "S1.2 \u2014 Native model"
+    },
+    "SPEC-030/T002": {
+      "number": 296,
+      "id": 5723971346,
+      "url": "https://github.com/jayanez/agent-braid/issues/296",
+      "parent": "SPEC-030",
+      "milestone": "S1.2 \u2014 Native model"
+    },
+    "SPEC-030/T003": {
+      "number": 297,
+      "id": 5723971678,
+      "url": "https://github.com/jayanez/agent-braid/issues/297",
+      "parent": "SPEC-030",
+      "milestone": "S1.2 \u2014 Native model"
+    },
+    "SPEC-030/T004": {
+      "number": 298,
+      "id": 5723971977,
+      "url": "https://github.com/jayanez/agent-braid/issues/298",
+      "parent": "SPEC-030",
+      "milestone": "S1.2 \u2014 Native model"
+    },
+    "SPEC-030/T005": {
+      "number": 299,
+      "id": 5723972337,
+      "url": "https://github.com/jayanez/agent-braid/issues/299",
+      "parent": "SPEC-030",
+      "milestone": "S1.2 \u2014 Native model"
+    },
+    "SPEC-030/T006": {
+      "number": 300,
+      "id": 5723972655,
+      "url": "https://github.com/jayanez/agent-braid/issues/300",
+      "parent": "SPEC-030",
+      "milestone": "S1.2 \u2014 Native model"
+    },
+    "SPEC-030/T007": {
+      "number": 301,
+      "id": 5723973029,
+      "url": "https://github.com/jayanez/agent-braid/issues/301",
+      "parent": "SPEC-030",
+      "milestone": "S1.2 \u2014 Native model"
+    },
+    "SPEC-030/T008": {
+      "number": 302,
+      "id": 5723973354,
+      "url": "https://github.com/jayanez/agent-braid/issues/302",
+      "parent": "SPEC-030",
+      "milestone": "S1.2 \u2014 Native model"
+    },
+    "SPEC-031": {
+      "number": 303,
+      "id": 5723973678,
+      "url": "https://github.com/jayanez/agent-braid/issues/303",
+      "parent": null,
+      "milestone": "S1.3 \u2014 Integration"
+    },
+    "SPEC-031/T001": {
+      "number": 304,
+      "id": 5723973955,
+      "url": "https://github.com/jayanez/agent-braid/issues/304",
+      "parent": "SPEC-031",
+      "milestone": "S1.3 \u2014 Integration"
+    },
+    "SPEC-031/T002": {
+      "number": 305,
+      "id": 5723974179,
+      "url": "https://github.com/jayanez/agent-braid/issues/305",
+      "parent": "SPEC-031",
+      "milestone": "S1.3 \u2014 Integration"
+    },
+    "SPEC-031/T003": {
+      "number": 306,
+      "id": 5723974496,
+      "url": "https://github.com/jayanez/agent-braid/issues/306",
+      "parent": "SPEC-031",
+      "milestone": "S1.3 \u2014 Integration"
+    },
+    "SPEC-031/T004": {
+      "number": 307,
+      "id": 5723974815,
+      "url": "https://github.com/jayanez/agent-braid/issues/307",
+      "parent": "SPEC-031",
+      "milestone": "S1.3 \u2014 Integration"
+    },
+    "SPEC-031/T005": {
+      "number": 308,
+      "id": 5723975133,
+      "url": "https://github.com/jayanez/agent-braid/issues/308",
+      "parent": "SPEC-031",
+      "milestone": "S1.3 \u2014 Integration"
+    },
+    "SPEC-031/T006": {
+      "number": 309,
+      "id": 5723975405,
+      "url": "https://github.com/jayanez/agent-braid/issues/309",
+      "parent": "SPEC-031",
+      "milestone": "S1.3 \u2014 Integration"
+    },
+    "SPEC-031/T007": {
+      "number": 310,
+      "id": 5723975721,
+      "url": "https://github.com/jayanez/agent-braid/issues/310",
+      "parent": "SPEC-031",
+      "milestone": "S1.3 \u2014 Integration"
+    },
+    "SPEC-031/T008": {
+      "number": 311,
+      "id": 5723976015,
+      "url": "https://github.com/jayanez/agent-braid/issues/311",
+      "parent": "SPEC-031",
+      "milestone": "S1.3 \u2014 Integration"
+    },
+    "SPEC-032": {
+      "number": 312,
+      "id": 5723976285,
+      "url": "https://github.com/jayanez/agent-braid/issues/312",
+      "parent": null,
+      "milestone": "S1.4 \u2014 Product and promotion"
+    },
+    "SPEC-032/T001": {
+      "number": 313,
+      "id": 5723976556,
+      "url": "https://github.com/jayanez/agent-braid/issues/313",
+      "parent": "SPEC-032",
+      "milestone": "S1.4 \u2014 Product and promotion"
+    },
+    "SPEC-032/T002": {
+      "number": 314,
+      "id": 5723976868,
+      "url": "https://github.com/jayanez/agent-braid/issues/314",
+      "parent": "SPEC-032",
+      "milestone": "S1.4 \u2014 Product and promotion"
+    },
+    "SPEC-032/T003": {
+      "number": 315,
+      "id": 5723977191,
+      "url": "https://github.com/jayanez/agent-braid/issues/315",
+      "parent": "SPEC-032",
+      "milestone": "S1.4 \u2014 Product and promotion"
+    },
+    "SPEC-032/T004": {
+      "number": 316,
+      "id": 5723977475,
+      "url": "https://github.com/jayanez/agent-braid/issues/316",
+      "parent": "SPEC-032",
+      "milestone": "S1.4 \u2014 Product and promotion"
+    },
+    "SPEC-032/T005": {
+      "number": 317,
+      "id": 5723977791,
+      "url": "https://github.com/jayanez/agent-braid/issues/317",
+      "parent": "SPEC-032",
+      "milestone": "S1.4 \u2014 Product and promotion"
+    },
+    "SPEC-032/T006": {
+      "number": 318,
+      "id": 5723978104,
+      "url": "https://github.com/jayanez/agent-braid/issues/318",
+      "parent": "SPEC-032",
+      "milestone": "S1.4 \u2014 Product and promotion"
+    },
+    "SPEC-032/T007": {
+      "number": 319,
+      "id": 5723978395,
+      "url": "https://github.com/jayanez/agent-braid/issues/319",
+      "parent": "SPEC-032",
+      "milestone": "S1.4 \u2014 Product and promotion"
+    },
+    "SPEC-032/T008": {
+      "number": 320,
+      "id": 5723978646,
+      "url": "https://github.com/jayanez/agent-braid/issues/320",
+      "parent": "SPEC-032",
+      "milestone": "S1.4 \u2014 Product and promotion"
+    },
+    "SPEC-033": {
+      "number": 321,
+      "id": 5723979079,
+      "url": "https://github.com/jayanez/agent-braid/issues/321",
+      "parent": null,
+      "milestone": "S1.4 \u2014 Product and promotion"
+    },
+    "SPEC-033/T001": {
+      "number": 322,
+      "id": 5723979353,
+      "url": "https://github.com/jayanez/agent-braid/issues/322",
+      "parent": "SPEC-033",
+      "milestone": "S1.4 \u2014 Product and promotion"
+    },
+    "SPEC-033/T002": {
+      "number": 323,
+      "id": 5723979658,
+      "url": "https://github.com/jayanez/agent-braid/issues/323",
+      "parent": "SPEC-033",
+      "milestone": "S1.4 \u2014 Product and promotion"
+    },
+    "SPEC-033/T003": {
+      "number": 324,
+      "id": 5723979959,
+      "url": "https://github.com/jayanez/agent-braid/issues/324",
+      "parent": "SPEC-033",
+      "milestone": "S1.4 \u2014 Product and promotion"
+    },
+    "SPEC-033/T004": {
+      "number": 325,
+      "id": 5723980280,
+      "url": "https://github.com/jayanez/agent-braid/issues/325",
+      "parent": "SPEC-033",
+      "milestone": "S1.4 \u2014 Product and promotion"
+    },
+    "SPEC-033/T005": {
+      "number": 326,
+      "id": 5723980724,
+      "url": "https://github.com/jayanez/agent-braid/issues/326",
+      "parent": "SPEC-033",
+      "milestone": "S1.4 \u2014 Product and promotion"
+    },
+    "SPEC-033/T006": {
+      "number": 327,
+      "id": 5723981016,
+      "url": "https://github.com/jayanez/agent-braid/issues/327",
+      "parent": "SPEC-033",
+      "milestone": "S1.4 \u2014 Product and promotion"
+    },
+    "SPEC-033/T007": {
+      "number": 328,
+      "id": 5723981306,
+      "url": "https://github.com/jayanez/agent-braid/issues/328",
+      "parent": "SPEC-033",
+      "milestone": "S1.4 \u2014 Product and promotion"
+    },
+    "SPEC-033/T008": {
+      "number": 329,
+      "id": 5723981606,
+      "url": "https://github.com/jayanez/agent-braid/issues/329",
+      "parent": "SPEC-033",
+      "milestone": "S1.4 \u2014 Product and promotion"
+    }
+  },
+  "sourceCommit": "6a37e38f17b2b4d750f47710ad1eb530373d39bb",
+  "pullRequest": {
+    "number": 274,
+    "state": "OPEN",
+    "url": "https://github.com/jayanez/agent-braid/pull/274"
+  },
+  "verification": {
+    "at": "2026-10-06T06:27:17.132744+00:00",
+    "openIssues": 55,
+    "parents": 6,
+    "tasks": 49,
+    "linkedSubIssues": 49,
+    "openMilestones": 5,
+    "unrelatedRecordsModified": false,
+    "privateProjectVerification": "blocked: GitHub integration cannot access user.projectV2; spec/task labels are present for existing auto-add workflows",
+    "independentReadback": "55 unique stable markers, exact titles/task source, labels, milestones, open states and immutable commit links verified"
+  },
+  "publicationTransport": "GitHub Git database API; local tree and commit hashes preserved byte-for-byte; branch update does not merge develop",
+  "assuranceReviewCommit": "24403cc56192ff9964ffb72561acfc901b327fcf"
+}

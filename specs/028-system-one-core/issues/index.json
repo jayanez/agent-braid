@@ -1,6 +1,6 @@
 {
   "repository": "jayanez/agent-braid",
-  "publicationStatus": "authorized scoped publication; receipt pending",
+  "publicationStatus": "published; 55 open issues in five open milestones; implementation and review pending",
   "milestones": {
     "S1.0 \u2014 Contracts": {
       "description": "Native typed advisory decision foundation; draft implementation track, no accepted utility claim.",
@@ -573,5 +573,6 @@
       "state": "open",
       "task_text": "Record founder per-capability go/no-go and reconcile tracking. Dependencies: T007. Target files: specs/033-system-one-promotion/founder-review.json, docs/development/github-tracking.json. Planned command after implementation: `.venv-speckit/bin/python -m unittest discover -s tests -p \"test_system_one*.py\" -v`; for manual source/budget/review gates, capture an actual reviewer decision rather than substituting a test result. Verification: Only an actual decision changes adoption/tracking; do not auto-close M3.5 or M4. Planned evidence: candidate-bound report under specs/033-system-one-promotion/evidence/t008.json; obtained: none."
     }
-  ]
+  ],
+  "publicationReceipt": "../delivery/publication.json"
 }

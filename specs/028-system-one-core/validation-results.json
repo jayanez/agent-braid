@@ -78,5 +78,22 @@
     "testsSkipped": 5,
     "log": "specs/028-system-one-core/delivery/checks/publication-pr.txt",
     "sha256": "d17e3ea0c17a4bc25ce28d409743b0cbddd2462224da8fc717b15b63d6acbd63"
+  },
+  "publicationMetadataChecks": {
+    "scope": "published tracking receipt, index status and review links; substantive planning validation remains the recorded full PR run",
+    "specKitStructure": "passed",
+    "specKitRender": "passed; 0 generated changes",
+    "sourceReadback": "55 issue IDs, exact task source, milestones, labels, open states and candidate links verified",
+    "inspection": {
+      "specs": 6,
+      "requirements": 36,
+      "scenarios": 36,
+      "pendingTasks": 49,
+      "draftIssues": 55,
+      "localLinksResolved": 88,
+      "historicalSnapshots": 6,
+      "humanReviews": "pending"
+    },
+    "assurance": "six historical authority/evidence snapshots at review candidate; human review remains pending"
   }
 }

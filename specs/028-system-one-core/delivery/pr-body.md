@@ -25,3 +25,20 @@ scoped umask 0022 in this cloud environment; no runtime rule or test was weakene
 Publication of this PR, 55 System 1 issues and five milestones was explicitly
 authorized on 2026-10-06. SPEC-028–033 avoid upstream numbering collisions. Do not run historical whole-repo
 tracking apply or claim planning merge is architecture/promotion approval.
+
+Tracking is published and remains open:
+
+| Spec | Scope | Parent issue |
+|---|---|---|
+| SPEC-028 | Typed core and contracts | [#275](https://github.com/jayanez/agent-braid/issues/275) |
+| SPEC-029 | Evidence and unbiased evaluation | [#284](https://github.com/jayanez/agent-braid/issues/284) |
+| SPEC-030 | Native model experiment | [#294](https://github.com/jayanez/agent-braid/issues/294) |
+| SPEC-031 | Advisory integration | [#303](https://github.com/jayanez/agent-braid/issues/303) |
+| SPEC-032 | Advanced product capabilities | [#312](https://github.com/jayanez/agent-braid/issues/312) |
+| SPEC-033 | Promotion, drift and rollback | [#321](https://github.com/jayanez/agent-braid/issues/321) |
+
+Milestones: [S1.0](https://github.com/jayanez/agent-braid/milestone/13), [S1.1](https://github.com/jayanez/agent-braid/milestone/14), [S1.2](https://github.com/jayanez/agent-braid/milestone/15), [S1.3](https://github.com/jayanez/agent-braid/milestone/16), [S1.4](https://github.com/jayanez/agent-braid/milestone/17).
+
+All 49 task issues are linked as subissues. The publication receipt records the
+scoped readback. Private user-Project membership/status could not be verified:
+the integration cannot access user.projectV2.
