@@ -1,5 +1,20 @@
 # Foundational review and implementation portfolio
 
+## Current navigation — 2026-10-07
+
+The audit below is a historical snapshot; its counts, findings and baseline remain
+unchanged. For the current inventory of 38 specs and 18 milestones, use the
+[spec and milestone index](SPEC_MILESTONE_INDEX.md) and [roadmap](../../ROADMAP.md).
+SPEC-022 now includes implemented full-cost instrumentation and an owner-approved
+[180-minute successor preparation](../../specs/022-m4-utility-followup/successor-protocol-180m.md);
+registered capture and a new utility decision remain pending. SPEC-027 provides
+[read-only refinement assessments](../../specs/027-runtime-refinement-contracts/quickstart.md),
+with capability decisions and adoption still pending. SPEC-028 has a synthetic
+reference core. [SPEC-038](../../specs/038-m4-real-workload-closure/spec.md) proposes
+a permissioned current-runtime study: source-use rights, exact protocol/capture
+approval and whole-M4 founder acceptance remain pending. These developments do
+not rewrite SPEC-021's historical G4 NO-GO.
+
 ## Audit boundary and result
 
 Started 2026-10-05 against public `develop` commit `f1bc304827b26c2cc3e02d5488ff2f82daa5453d`; packaged 2026-10-06. [The source inventory](foundation-review-inventory.json) binds baseline document/contract bytes. This is a repository-content and implementation-coverage review, not a refreshed literature/market review, independent reproduction or founder scientific approval. Provider versions and sources must be rechecked in their implementation tasks.
