@@ -1,0 +1,1 @@
+{"status": "prepared-or-diagnosed", "output": "/private/tmp/agent-braid-spec022-candidate-diagnostics-20261007/independent-2-65536.json", "observerReceipt": "/private/tmp/agent-braid-spec022-candidate-diagnostics-20261007/independent-2-65536.json.observer.json", "registeredMeasurementExecuted": false}

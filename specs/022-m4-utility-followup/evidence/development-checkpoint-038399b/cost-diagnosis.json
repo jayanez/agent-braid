@@ -1,0 +1,190 @@
+{
+  "diagnosticBlocks": [
+    {
+      "blockId": "independent-2-1024",
+      "diagnosticPath": "specs/022-m4-utility-followup/evidence/diagnostics/independent-2-1024.json",
+      "samples": [
+        {
+          "mode": "serial",
+          "topPhases": [
+            {
+              "name": "execution",
+              "wallSeconds": 3.220095333
+            },
+            {
+              "name": "grant",
+              "wallSeconds": 2.010693584
+            }
+          ],
+          "wallSeconds": 10.085934292
+        },
+        {
+          "mode": "parallel",
+          "topPhases": [
+            {
+              "name": "execution",
+              "wallSeconds": 7.736628041
+            },
+            {
+              "name": "preparation",
+              "wallSeconds": 2.485151875
+            }
+          ],
+          "wallSeconds": 15.561650666
+        }
+      ],
+      "sha256": "6836e579025afe9da7f436a69137bc88c8491ac0954393885802ce2cd3a20ad8"
+    },
+    {
+      "blockId": "independent-2-65536",
+      "diagnosticPath": "specs/022-m4-utility-followup/evidence/diagnostics/independent-2-65536.json",
+      "samples": [
+        {
+          "mode": "serial",
+          "topPhases": [
+            {
+              "name": "execution",
+              "wallSeconds": 3.406829041
+            },
+            {
+              "name": "grant",
+              "wallSeconds": 2.167864
+            }
+          ],
+          "wallSeconds": 10.47131225
+        },
+        {
+          "mode": "parallel",
+          "topPhases": [
+            {
+              "name": "execution",
+              "wallSeconds": 7.861115417
+            },
+            {
+              "name": "preparation",
+              "wallSeconds": 2.513801
+            }
+          ],
+          "wallSeconds": 16.001946459
+        }
+      ],
+      "sha256": "03a2fe52c4de2389074ffd8c4eb6eb13270985d6faf2bc5136da7de6a386d2f0"
+    },
+    {
+      "blockId": "independent-4-1024",
+      "diagnosticPath": "specs/022-m4-utility-followup/evidence/diagnostics/independent-4-1024.json",
+      "samples": [
+        {
+          "mode": "serial",
+          "topPhases": [
+            {
+              "name": "replay",
+              "wallSeconds": 15.334009958
+            },
+            {
+              "name": "execution",
+              "wallSeconds": 11.10241025
+            }
+          ],
+          "wallSeconds": 46.4052185
+        },
+        {
+          "mode": "parallel",
+          "topPhases": [
+            {
+              "name": "execution",
+              "wallSeconds": 18.671287042
+            },
+            {
+              "name": "replay",
+              "wallSeconds": 14.898177292
+            }
+          ],
+          "wallSeconds": 55.565585584
+        }
+      ],
+      "sha256": "a82631fb528f63995aeb089bf01ced8c6018c2d68b5539c7d0cec8936cabcb5d"
+    },
+    {
+      "blockId": "dependency-chain-4-1024",
+      "diagnosticPath": "specs/022-m4-utility-followup/evidence/diagnostics/dependency-chain-4-1024.json",
+      "samples": [
+        {
+          "mode": "serial",
+          "topPhases": [
+            {
+              "name": "execution",
+              "wallSeconds": 4.9151505
+            },
+            {
+              "name": "preparation",
+              "wallSeconds": 2.886355833
+            }
+          ],
+          "wallSeconds": 15.362141042
+        },
+        {
+          "mode": "parallel",
+          "topPhases": [
+            {
+              "name": "execution",
+              "wallSeconds": 13.053263042
+            },
+            {
+              "name": "grant",
+              "wallSeconds": 4.017833042
+            }
+          ],
+          "wallSeconds": 25.52815125
+        }
+      ],
+      "sha256": "057056987d32744ec908deafc4dd7d088327bc5297c3625cd71e65b8d8cb8b18"
+    }
+  ],
+  "diagnosticCandidateCommit": "038399b72ace750556e010ad934e69d899bf1e57",
+  "inputs": {
+    "agent_braid/analysis.py": "fadfb6f6d3d6f89002df519bbcc86d839724f243e2c8e52732ef57e555abfe00",
+    "agent_braid/git_adapter.py": "4548eb96849e2d0ed1eaefc53579d065651b00a2c6ae5b1aef6e2bdc5ae3dc45",
+    "agent_braid/git_exec.py": "ce5e348f355ca5f73f1095ee4cbab8779c224cce7c8ac326a5376be69d416853",
+    "agent_braid/git_process.py": "fb201a0a1f53aeb48c3c0632fc11741435752e538bf69c1b75cd837b1fda413a",
+    "agent_braid/git_replay.py": "29cdbca88c9168829a0fcaae497d5c6805cd84ae5fd19649a7631f266c2759a8",
+    "agent_braid/git_runtime.py": "91e124c6e80dacf97232215c8ba9749b472d2ed03b2c7c5367ad6f98aa41ff50",
+    "agent_braid/git_runtime_process.py": "6cde49846602aec8b18a3df141c8f77ff2bb66badd098d149393e900c44c0da4",
+    "agent_braid/runtime_policy.py": "930ead80e4085301e6337af58660665219da3d3b40b72cfca8b803cebfa09188",
+    "agent_braid/runtime_scheduler.py": "47bb371c88726793d207a59bb85cb6911d86e00a44694b37934805d9fa2462a9",
+    "agent_braid/utility_accounting.py": "218c82bc34e41f17dbca69ff3bb6df2f8143cd43e95a0b7d3a4374b97e628058",
+    "agent_braid/utility_fixtures.py": "ea3ecb2bda7e6909f5307232dcc6b13953e4ac560eab9144dd0f566d90de8119",
+    "research/lab/model.py": "f39040b5476d663f6e7384e65d00073b084df6c8958b38bff45e4d6b19da010f",
+    "scripts/measure_m4_utility.py": "7e6674d30415f565cc34e973b0df30bcc0810020fdc8d0d90c30365b05912200",
+    "specs/022-m4-utility-followup/evidence/prepared-fixture-manifest.json": "ec8f36b21dd745df8443acd6035ff75a4b01bd61fd004470ce0315a655908734",
+    "specs/022-m4-utility-followup/technical-review-packet.md": "6e5a2bd790fb789926007e11f33af40df2ed494d3e8464b13f114523120b282b"
+  },
+  "limits": [
+    "Local exploratory synthetic diagnosis only, one serial-first pair per block, no warm-up protocol or registered repetitions.",
+    "Five direct numeric exclusions retained; four additional admission observations support preparing the stable manifest, not broad runtime safety.",
+    "Selected code inputs match dated checkpoint 038399b, not subsequent current-candidate bytes; diagnostic candidate commit is dated local provenance, not a public historical approval snapshot.",
+    "Registered stable harness review, actual-workload utility acceptance and G4/M4 closure remain pending."
+  ],
+  "observedDiagnosticTreatments": 8,
+  "planningProjection": {
+    "approvedDispatchBudgetMinutes": 45,
+    "linear22PairPerBlockMinutes": 71.49337801576667,
+    "observedFourPairWallSeconds": 194.981940043,
+    "scope": "Rough capacity projection from one serial-first diagnostic pair per block, not a measured registered duration or controlled forecast; registered dispatch may stop incomplete."
+  },
+  "postRunHostObservation": {
+    "cpuCount": 12,
+    "loadAverage": [
+      4.9658203125,
+      4.767578125,
+      7.49951171875
+    ],
+    "os": "macOS-26.6.2-arm64-arm-64bit",
+    "scope": "Post-diagnostic snapshot only; capture-time background load and OS caches were uncontrolled."
+  },
+  "reason": "One exploratory pair per admitted block exposes required replay/reconstruction/verification overhead, but does not justify weakening or caching mandatory checks or selecting an unverified optimization. Preserve the existing runtime for the registered candidate.",
+  "recordVersion": "spec022-exploratory-cost-diagnosis-v1",
+  "registeredMeasurementExecuted": false,
+  "runtimeContractChanged": false,
+  "selectedImprovement": "no-change"
+}

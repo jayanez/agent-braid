@@ -1,0 +1,28 @@
+{
+  "authorizationSource": "Explicit owner message in the current Codex task; not an agent inference or cryptographic signature.",
+  "decision": "approved",
+  "decisionDate": "2026-10-07",
+  "frozenAssurancePath": "specs/022-m4-utility-followup/protocol-assurance-3777e578.json",
+  "frozenAssuranceSha256": "09b047320d9c631a7abb766947368a5838cf3e4ec51bcfdc48154a9267d15355",
+  "notApproved": [
+    "Registered measurements before separate stable harness/manifest review",
+    "Actual-workload utility acceptance",
+    "G4 or M4 closure",
+    "Whole-feature human assurance approval",
+    "Expanded runtime authority or bypass of grants/verification"
+  ],
+  "ownerStatement": "Apruebo el protocolo diagnóstico de SPEC-022 congelado en 3777e578, con el corpus, exclusiones, contabilidad de costes, presupuesto y reglas de fallo descritos. Autoriza cerrar T001 e iniciar T002 y la preparación de la evaluación. Mantengo pendientes la revisión del harness estable, la aceptación de utilidad real y el cierre de G4/M4",
+  "proposalPath": "specs/022-m4-utility-followup/technical-review-packet.md",
+  "proposalSha256": "6e5a2bd790fb789926007e11f33af40df2ed494d3e8464b13f114523120b282b",
+  "recordVersion": "spec022-scoped-human-protocol-review-v1",
+  "registeredMeasurementAuthorization": false,
+  "reviewedCommit": "3777e578ba3f8130d6f284acf54898198a45e0f0",
+  "reviewer": "Juan Antonio Yáñez García (@jayanez)",
+  "runtimeExecutionAuthorization": false,
+  "scope": [
+    "Close T001 exact protocol technical review",
+    "Implement T002 accounting and instrumentation under unchanged runtime contracts",
+    "Prepare diagnostic evaluation and stable harness for later review"
+  ],
+  "wholeFeatureHumanReview": "pending"
+}

@@ -17,7 +17,7 @@
   ],
   "assumptions": "Owned POSIX Git fixtures; complete current-runtime verification and grants remain enforced; OS cache state is uncontrolled.",
   "authority_snapshot": {
-    "commit": null,
+    "commit": "3777e578ba3f8130d6f284acf54898198a45e0f0",
     "hashes": {
       "ARCHITECTURE.md": "e26135a1037c232ff953710e5de52abef8cf1cad47a8822fe63a565bc9ad9555",
       "CONSTITUTION.md": "ff7196976a1736a639947c2ab26e8da157fef23c89ba9881312f2a36459964eb",
@@ -82,13 +82,13 @@
       "schemas/governance/public-export-manifest.schema.json": "11eb7f2594939ae9fd0c9e6cfe4423a80aba686d6cdfdd8b73b0fb84b0840aa8",
       "schemas/governance/release-validation-record.schema.json": "d9943f0c9f5520ea52e3b12bfba88240d03f8011b433fc5e35cb49549ab6e819"
     },
-    "mode": "current"
+    "mode": "historical"
   },
   "compatibility": "No current public API/schema/version changes; future diagnostic harness remains separate from accepted reports.",
   "domain": "Existing 2\u20134 immutable ordinary-text A/M patch domain; local descriptive measurement only.",
   "evidence_snapshot": {
-    "commit": null,
-    "mode": "current"
+    "commit": "3777e578ba3f8130d6f284acf54898198a45e0f0",
+    "mode": "historical"
   },
   "execution_contract": "No new authority or capability. Fixture runs require current exact operator grant and existing private-run restrictions.",
   "human_review": "pending",
@@ -112,22 +112,7 @@
         {
           "given": "a valid private Git fixture and serial/parallel treatment",
           "id": "SC-001",
-          "obtained_evidence": [
-            {
-              "command": "/tmp/agent-braid-parallel-20261006/.venv-speckit/bin/python -m unittest tests.test_utility_accounting tests.test_utility_fixtures tests.test_m4_utility tests.test_utility_trials tests.test_m4_utility_preparation",
-              "limits": "Engineering tests or one-pair exploratory diagnosis only; full repository gates, registered measurements and human/founder decisions remain separate.",
-              "outcome": "Focal engineering tests passed; exact count and log hash are recorded in the referenced receipt",
-              "path": "specs/022-m4-utility-followup/evidence/phase-accounting-test-receipt.json",
-              "sha256": "001a552cc5a5ecdcb06bd15384719e4f8ca5f481ab9d27d13f792f4a80e1e791"
-            },
-            {
-              "command": "Four clean-candidate diagnostic-only invocations of scripts/measure_m4_utility.py; exact commands in evidence/final-guarded-diagnostics/execution-receipt.json",
-              "limits": "Engineering tests or one-pair exploratory diagnosis only; full repository gates, registered measurements and human/founder decisions remain separate.",
-              "outcome": "Eight exploratory treatments completed with independent verification and full accounting",
-              "path": "specs/022-m4-utility-followup/cost-diagnosis.json",
-              "sha256": "8ace1f15917dfd48b892ef3eef3030a2aa88a43b46f271656e98d99aca8b32df"
-            }
-          ],
+          "obtained_evidence": [],
           "planned_evidence": "Future frozen phase/accounting tests, raw paired measurements and scoped decision packet defined in quickstart.md.",
           "test_file": "specs/022-m4-utility-followup/quickstart.md",
           "test_name": "SC-001",
@@ -143,22 +128,7 @@
         {
           "given": "the frozen corpus, treatment order and declared limits",
           "id": "SC-002",
-          "obtained_evidence": [
-            {
-              "command": "/tmp/agent-braid-parallel-20261006/.venv-speckit/bin/python -m unittest tests.test_utility_accounting tests.test_utility_fixtures tests.test_m4_utility tests.test_utility_trials tests.test_m4_utility_preparation",
-              "limits": "Engineering tests or one-pair exploratory diagnosis only; full repository gates, registered measurements and human/founder decisions remain separate.",
-              "outcome": "Focal engineering tests passed; exact count and log hash are recorded in the referenced receipt",
-              "path": "specs/022-m4-utility-followup/evidence/phase-accounting-test-receipt.json",
-              "sha256": "001a552cc5a5ecdcb06bd15384719e4f8ca5f481ab9d27d13f792f4a80e1e791"
-            },
-            {
-              "command": "Four clean-candidate diagnostic-only invocations of scripts/measure_m4_utility.py; exact commands in evidence/final-guarded-diagnostics/execution-receipt.json",
-              "limits": "Engineering tests or one-pair exploratory diagnosis only; full repository gates, registered measurements and human/founder decisions remain separate.",
-              "outcome": "Eight exploratory treatments completed with independent verification and full accounting",
-              "path": "specs/022-m4-utility-followup/cost-diagnosis.json",
-              "sha256": "8ace1f15917dfd48b892ef3eef3030a2aa88a43b46f271656e98d99aca8b32df"
-            }
-          ],
+          "obtained_evidence": [],
           "planned_evidence": "Future frozen phase/accounting tests, raw paired measurements and scoped decision packet defined in quickstart.md.",
           "test_file": "specs/022-m4-utility-followup/quickstart.md",
           "test_name": "SC-002",
@@ -174,22 +144,7 @@
         {
           "given": "an optimization candidate and forged, stale, unknown or interrupted controls",
           "id": "SC-003",
-          "obtained_evidence": [
-            {
-              "command": "/tmp/agent-braid-parallel-20261006/.venv-speckit/bin/python -m unittest tests.test_utility_accounting tests.test_utility_fixtures tests.test_m4_utility tests.test_utility_trials tests.test_m4_utility_preparation",
-              "limits": "Engineering tests or one-pair exploratory diagnosis only; full repository gates, registered measurements and human/founder decisions remain separate.",
-              "outcome": "Focal engineering tests passed; exact count and log hash are recorded in the referenced receipt",
-              "path": "specs/022-m4-utility-followup/evidence/phase-accounting-test-receipt.json",
-              "sha256": "001a552cc5a5ecdcb06bd15384719e4f8ca5f481ab9d27d13f792f4a80e1e791"
-            },
-            {
-              "command": "Four clean-candidate diagnostic-only invocations of scripts/measure_m4_utility.py; exact commands in evidence/final-guarded-diagnostics/execution-receipt.json",
-              "limits": "Engineering tests or one-pair exploratory diagnosis only; full repository gates, registered measurements and human/founder decisions remain separate.",
-              "outcome": "Eight exploratory treatments completed with independent verification and full accounting",
-              "path": "specs/022-m4-utility-followup/cost-diagnosis.json",
-              "sha256": "8ace1f15917dfd48b892ef3eef3030a2aa88a43b46f271656e98d99aca8b32df"
-            }
-          ],
+          "obtained_evidence": [],
           "planned_evidence": "Future frozen phase/accounting tests, raw paired measurements and scoped decision packet defined in quickstart.md.",
           "test_file": "specs/022-m4-utility-followup/quickstart.md",
           "test_name": "SC-003",
@@ -221,16 +176,13 @@
   "stage": "draft",
   "technical_review_preparation": {
     "executionAuthorization": false,
-    "implementationStatus": "T002-T004 engineering complete with 74 focal tests, final eight diagnostic treatments and Luna engineering GO; full repository gates are reported separately; human registered harness/manifest review pending",
     "localFrozenPreparationCommit": "9f347e803401c04af61e6662ccc5756578805b23",
-    "ownerReviewRecord": "specs/022-m4-utility-followup/protocol-review-3777e578.json",
-    "ownerReviewSha256": "1d6065eca4f6959570163ce8a3a25ac94ca34b2d7425009167ef3e9f4673e783",
     "proposalSha256": "6e5a2bd790fb789926007e11f33af40df2ed494d3e8464b13f114523120b282b",
-    "publicFreeze": "Protocol review binds durable public commit 3777e578ba3f8130d6f284acf54898198a45e0f0; whole-feature assurance remains pending.",
+    "publicFreeze": "Pending durable merged-candidate snapshot before human technical decision; no private PR snapshot is published as a public ancestor.",
     "registeredMeasurementExecuted": false,
     "reviewRecord": "specs/022-m4-utility-followup/evidence/luna-protocol-review.json",
     "sha256": "73abcaff381730f9b22ea0b0d3d799d40c769df5c98c9df077cd429a97431b14",
-    "status": "protocol-approved-instrumentation-authorized",
-    "taskT001Complete": true
+    "status": "ready-for-human-review-only",
+    "taskT001Complete": false
   }
 }
