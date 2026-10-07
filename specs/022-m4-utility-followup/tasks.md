@@ -1,8 +1,8 @@
 # Tasks
 
-All tasks are prospective. Dependencies sequence work; they grant no concurrent-agent or execution authority.
+T001 protocol review was explicitly approved by the owner on 2026-10-07 against public commit `3777e578`; see `protocol-review-3777e578.json`. Remaining tasks are prospective. Dependencies sequence work; they grant no execution authority.
 
-- [ ] T001 (REQ-001,REQ-002/SC-001,SC-002): Freeze the follow-up cost boundaries, corpus, budgets and technical review.
+- [x] T001 (REQ-001,REQ-002/SC-001,SC-002): Freeze the follow-up cost boundaries, corpus, budgets and technical review.
   Dependencies: none. Targets: `specs/022-m4-utility-followup/measurement-protocol.md; frozen workload manifest`.
   Verification and planned evidence: Review the exact prospective manifest, 1.10 descriptive threshold and whole-cost boundary; retain SPEC-021 NO-GO. Record technical review before implementing contract-sensitive instrumentation.
 
