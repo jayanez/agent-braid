@@ -21,7 +21,7 @@
   ],
   "assumptions": "The SPEC-013 public commits are candidate source provenance only. New source rights and M4 protocol/source approval are pending. Their static source shape is within the existing caps, but current runtime preparation admission remains unverified. Stable harness review, capture authorization, and whole-M4 founder decision are pending. No source code, tests, probes, providers, or actual workload were executed during specification preparation.",
   "authority_snapshot": {
-    "commit": "e1a559e68f10d221362e6dc5a1466488473380a7",
+    "commit": null,
     "hashes": {
       "ARCHITECTURE.md": "e26135a1037c232ff953710e5de52abef8cf1cad47a8822fe63a565bc9ad9555",
       "CONSTITUTION.md": "ff7196976a1736a639947c2ab26e8da157fef23c89ba9881312f2a36459964eb",
@@ -86,13 +86,13 @@
       "schemas/governance/public-export-manifest.schema.json": "11eb7f2594939ae9fd0c9e6cfe4423a80aba686d6cdfdd8b73b0fb84b0840aa8",
       "schemas/governance/release-validation-record.schema.json": "d9943f0c9f5520ea52e3b12bfba88240d03f8011b433fc5e35cb49549ab6e819"
     },
-    "mode": "historical"
+    "mode": "current"
   },
   "compatibility": "Documentation-only successor research protocol. No runtime, public API/schema, grant, effect, verifier, host, promotion, or execution-contract change. Existing SPEC-020 fixed-patch limits remain binding. SPEC-021 historical G4 NO-GO, SPEC-022 synthetic evidence, M4-open status, and M3/M3.5 gates remain unchanged.",
   "domain": "One prospective, newly permissioned actual Agent Braid repository task frame under unchanged SPEC-020. The exact SPEC-013 M2 commits are statically eligible source leads but are not runtime-admitted or rights-approved. A finite task frame does not support population-level claims.",
   "evidence_snapshot": {
-    "commit": "e1a559e68f10d221362e6dc5a1466488473380a7",
-    "mode": "historical"
+    "commit": null,
+    "mode": "current"
   },
   "execution_contract": "This feature authorizes no execution. Any future C09 activity requires exact source/protocol review, a separately implemented and independently reviewed stable harness/manifest, and distinct exact capture authorization. Only existing authorized-serial-index-patch-v1 fixed patches, grants, private destinations, and verifier are in scope. No repository code/tests/hooks/network/provider calls/ref promotion/installation/new host.",
   "human_review": "pending",
