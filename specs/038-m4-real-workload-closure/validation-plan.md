@@ -1,7 +1,14 @@
 # SPEC-038 validation procedures
 
+## Development status — 2026-10-08
+
+Exact source rights and protocol are approved for bounded implementation and
+preparation. See [implementation readiness](implementation-readiness.md) for the
+scoped decision and current gates. Earlier proposal descriptions below retain
+their design-time context; stable review, capture and whole-M4 acceptance remain pending.
+
 These named procedures are planned evidence obligations, not executed tests.
-No source execution is authorized by this file.
+No source-project execution is authorized by this file.
 
 - `procedure_sc001`: verify named rightsholder, exact rights scope/term,
   provenance and retention against exact frozen inputs; missing or ambiguous
@@ -32,6 +39,15 @@ No source execution is authorized by this file.
 - `procedure_sc008`: audit final packet against all six SPEC-021 closure rows,
   preserve historical G4 NO-GO, and require a separate whole-M4 founder record.
 
-Future code tests belong to C08 only if review finds a novel harness invariant;
-this spec does not claim such tests exist. Future source operation code and test
-commands remain prohibited by this protocol.
+## C08 engineering controls
+
+`tests/test_m4_real_workload_preparation.py` covers exact manifest bytes and
+schedule, immutable source inspection, hostile ambient Git configuration and
+private destination containment. `tests/test_m4_real_workload_trials.py` covers
+authority before dispatch, accounting, deadlines, denominator reconciliation,
+retained outcomes, fresh-process inspection and conditional final cleanup.
+These controls use owned synthetic repositories. Their execution receipts belong
+to the implementation candidate; passing them does not supply registered
+actual-workload evidence or satisfy the separate capture approval.
+
+Source-project code and test commands remain prohibited by this protocol.
