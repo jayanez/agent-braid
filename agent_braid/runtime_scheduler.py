@@ -349,3 +349,61 @@ def verify_preparations(manifest: dict, schedule: object, evidence: object, *, c
     return {'status':'verified-worker-trees-and-effects', 'scheduleDigest':schedule['scheduleDigest'],
             'timingStatus':'recorded-observations-only', 'isolationStatus':'recorded-owned-scratch-scopes',
             'executionAuthorization':False}
+
+
+def select_ready_rank_hint(request_bytes, packet_bytes, *, expected_context_digest,
+                           expected_registry_digest, ready_ids,
+                           scheduler_constraints_digest, grant_binding_digest,
+                           cancellation=None):
+    """Validate synthetic ranking into a pure sidecar; never changes dispatch.
+
+    All existing preparation, dependency, budget, isolation, cancellation, plan,
+    grant, stale-input and recovery gates remain in their unchanged execution path.
+    Digests here pin caller-owned metadata; they do not certify a live grant.
+    """
+    from .system_one import CancellationToken, HASH, digest, freeze
+    from .system_one_advisors import validate_stage_request, validate_stage_packet
+    identifiers = list(ready_ids) if type(ready_ids) in (list,tuple) else []
+    if (not 1 <= len(identifiers) <= 64
+            or any(type(item) is not str or not 1 <= len(item.encode('utf-8')) <= 64
+                   or any(ord(c)<32 or 127<=ord(c)<=159 for c in item) for item in identifiers)
+            or len(set(identifiers)) != len(identifiers)
+            or any(type(pin) is not str or not HASH.fullmatch(pin)
+                   for pin in (scheduler_constraints_digest,grant_binding_digest))):
+        raise InvalidRuntimeSchedule('invalid-advice-context')
+    token = CancellationToken() if cancellation is None else cancellation
+    if type(token) is not CancellationToken:
+        raise InvalidRuntimeSchedule('invalid-advice-context')
+    status, reason, ordered = 'fallback','invalid-hint',identifiers
+    try:
+        request = validate_stage_request(request_bytes,
+            expected_context_digest=expected_context_digest,
+            expected_registry_digest=expected_registry_digest)
+        envelope = request.to_dict()
+        packet = validate_stage_packet(packet_bytes,request_bytes=request_bytes,
+            expected_context_digest=expected_context_digest,
+            expected_registry_digest=expected_registry_digest)
+        payload = envelope['payload']
+        if (envelope['stage'] == 'ready-rank' and packet['stage']=='ready-rank'
+                and packet['status']=='advised' and payload['readyIds']==identifiers
+                and payload['readySetDigest']==digest(identifiers)
+                and payload['schedulerConstraintsDigest']==scheduler_constraints_digest
+                and payload['grantBindingDigest']==grant_binding_digest):
+            advice = packet['advice']
+            candidate = list(advice['orderedReadyIds'])
+            if (len(candidate)==len(identifiers) and set(candidate)==set(identifiers)
+                    and advice['readySetDigest']==digest(identifiers)
+                    and advice['schedulerConstraintsDigest']==scheduler_constraints_digest
+                    and advice['grantBindingDigest']==grant_binding_digest):
+                ordered, status, reason = candidate, 'hinted', None
+    except (ValueError,TypeError,KeyError,OverflowError):
+        pass
+    def result(cancelled):
+        return freeze({'status':'fallback' if cancelled else status,
+            'orderedReadyIds':identifiers if cancelled else ordered,
+            'reasonCodes':['cancelled'] if cancelled else ([] if reason is None else [reason]),
+            'fallback':'keep-original-order-and-use-existing-consumer',
+            'readySetDigest':digest(identifiers),'schedulerConstraintsDigest':scheduler_constraints_digest,
+            'grantBindingDigest':grant_binding_digest,'evidenceClass':'heuristic',
+            'executionAuthorization':False,'consumerGates':'unchanged-existing-runtime-required'})
+    return token.publish(result)

@@ -161,14 +161,13 @@ digest is recomputed locally. Unknown/stale registry/context pins refuse advice.
 Registry discovery imports no dynamic package and neither installs nor launches
 anything. This is structural/synthetic advice, not admitted real-source processing.
 
-Budgets are exactly `maxInputBytes` (1..1,048,576), `maxCandidates` (1..64),
-`deadlineMs` (1..5,000), all integers excluding booleans. Raw/canonical size,
-container-depth-16/finite parser constraints and hard ceilings apply before rule
-work. Begin the monotonic deadline before parsing, tighten without resetting after
-validation; check cancellation/expiry in bounded loops and immediately before
-publication. There are no retries, background queues or caches. Every stage is
-linear bounded metadata processing or at most 64-item stable sorting; it executes
-no consumer action. Consumer callbacks and source paths are outside the interface.
+Budgets are exactly `maxInputBytes` (1..1,048,576), `maxCandidates` (1..64), `deadlineMs` (1..5,000), all integers excluding booleans. Raw/canonical size, container-depth-16/finite parser constraints and hard ceilings apply before rule work. Public `advise_stage` starts one monotonic deadline before parsing, tightens it to the validated original request ceiling without resetting its start, claims its request-local cancellation token once, and releases that claim on every terminal path. Check cancellation/expiry during parsing/validation and bounded rule loops and immediately before publication. There are no retries, background queues or caches in the pure stage library. Every stage is linear bounded metadata processing or at most 64-item stable sorting; it executes no consumer action. Consumer callbacks and source paths are outside the interface.
+
+The separate MCP transport delegates only through private `_advise_stage_in_scope(scope)`. Its sole argument is an opaque immutable private transport-call scope created and registered by that transport admission path. The scope binds the exact transport-owner identity, typed request ID, registered token identity and claim owner, original validated canonical request bytes and digest, explicit context/registry pins, and trusted monotonic ingress origin/effective absolute deadline. The transport-owned factory captures the ingress clock before frame parsing and computes the final ceiling from its captured origin and validated original request; it never accepts caller-supplied timestamps. The ceiling is the minimum of the transport ingress deadline, `ingress_started_ns + 5,000,000,000`, and `ingress_started_ns + original validated budgets.deadlineMs * 1,000,000`. No stage field or digest is rewritten. A scope is immutable; lifecycle state lives separately in the transport registry. Scope construction, registration, token claim and deadline computation are private admission operations, not caller-selectable arguments or JSON fields.
+
+Before rule work, the helper asks the owning registry to validate exact object identity and its live registration, active lifecycle state, frozen parameters, canonical request digest, context/registry pins and request-local token/claim owner. A copied, fabricated, unregistered, stale, completed, reused or mismatched scope refuses without rule work or output; impossible future/reversed timestamps or a ceiling outside the computed ingress bounds refuse. Valid scope timestamps are obtained from the same monotonic clock. Full original stage validation and pin checks remain mandatory; ownership validation is additional and cannot stand in for them. The helper never claims/releases a token, installs another token, resets an origin, allocates a queue slot or mutates a deadline. The scope is inaccessible through the wire envelope. Private same-process object/registry checks are engineering ownership controls, not a security boundary against arbitrary same-process Python code. Public direct `advise_stage` continues to own its own token scope and cannot reuse a transport scope.
+
+Queue waiting, parsing, context/registry validation, rule work and packet validation all consume that same absolute transport budget. Expired queued work produces no rule advice. No remaining-budget rewrite, digest substitution, hidden request state or extra packet field is permitted on this stage path. Diagnostic `advise_synthetic` retains its separately specified original/delegated request binding and deadline-tightened copy; these stage rules do not alter that interface.
 
 A stage packet has exactly `contractVersion: s1-stage-advice-v1`, `requestId`,
 `requestDigest`, `contextDigest`, `generation`, `registryDigest`, `stage`, `status`,
@@ -351,17 +350,13 @@ JSON-RPC result including both text and structuredContent; if it exceeds the
 1,048,576-byte frame limit, return a complete small refused/stage-budget-exceeded
 packet instead, never truncate or emit a partial structured result.
 
-Allow one active tools/call and at most eight waiting validated calls; overflow
-returns bounded defer/overloaded without allocating work. MCP waiting time consumes
-the same ingress deadline; preserve it via remaining-budget delegation and final
-server publication checks, never resetting at library entry. Cancellation notification
-contains requestId and optional bounded reason (<=256 UTF-8 bytes); discard the
-reason without echo/log/storage, mark that request's irreversible local token and
-suppress answers if cancellation wins publication. No response is sent to the
-notification. Unknown/completed request cancellation cannot affect another request.
-There is no hard thread/process termination claim or client-auto-launch mechanism.
-Source stdio blocking read is outside materialized-frame advice deadline, as with
-core local-file ingress; never claim a total wall-clock transport-read deadline.
+Allow one active `tools/call` and at most eight waiting validated calls in an explicitly bounded transport-owned queue; overflow returns bounded `defer/overloaded` without allocating queued work. A request-local irreversible cancellation token is created and claimed once at materialized-frame admission, before queueing, and remains transport-owned through queue removal, delegation and final publication. Request ID registration remains active for that whole scope. Duplicate active IDs refuse; integer and string IDs have distinct typed identities. The mutable owner registry tracks lifecycle separately from the immutable scope. Only the registered active scope may enter delegation/publication; transitioning it to completed permanently consumes it. Mark completed and release the token claim/active-ID registration exactly once on every completion, refusal, cancellation, expiry or shutdown path. A finally cleanup operation is idempotent against a registered completed state and cannot release another scope or token. Transport shutdown cancels each owned token and prevents publication; it makes no hard thread/process termination claim.
+
+The monotonic ingress origin is captured before frame parsing; the initial transport ceiling is at most 5,000 ms. After stage validation its absolute deadline is additionally tightened to the original request's `deadlineMs` measured from that same ingress origin. Queue waiting consumes the budget. Delegation uses only the private `_advise_stage_in_scope(scope)` helper above with the exact admission-registered immutable scope and unchanged original envelope. Pure direct `advise_stage` owns a distinct direct-call scope; neither path nests token claims or resets the ingress clock. Capability discovery obeys the same bounded transport admission and cancellation/publication checks and performs no backend admission.
+
+A cancellation notification contains `requestId` and an optional bounded reason (<=256 UTF-8 bytes). Discard the reason without echo, logging or storage, mark only that registered request's irreversible token, and send no response to the notification. Unknown/completed cancellation cannot affect another request. Cancelled queued work is removed without running stage rules. Cancellation/expiry observed during active work stops cooperative processing and suppresses any late advice packet; it cannot terminate Python work forcibly.
+
+Serialize and size-check the complete JSON-RPC result before publication, including duplicate text and structured packet content and any bounded replacement refusal. Obtain the transport output lock, then enter the token's cancellation/publication lock. Under that same publication boundary, validate exact live scope ownership/state and recheck cancellation, absolute deadline and server-open state, then atomically change the owner-registry lifecycle from `active` to `publishing` immediately before the first output write. This is the write-begin linearization point. No other path may publish or begin a write for this scope. If cancellation or expiry wins this publication boundary, suppress the whole result, including any previously prepared advice or replacement packet. The private helper may construct a `defer` for internal accounting, but transport cancellation/expiry at its final boundary cannot publish late advice. No other path writes a result for that request. Where the owner registry needs its own lock, the simultaneous lock order is output lock, token publication lock, then registry lock. Cancellation/shutdown obtain the token reference under the registry lock and release that lock before calling token cancellation; cleanup never holds a registry lock while acquiring a token/output lock. Cancellation and shutdown must not take locks in the reverse order or wait for the output lock while holding a token lock. If cancellation or expiry precedes the `active` to `publishing` transition, output is wholly suppressed. If publication wins that transition, that single bounded result is final; later cancellation cannot retract bytes or create another result. Complete and release the scope exactly once after the attempted write, including broken-pipe/write-error paths. Blocking transport writes are not hard-terminated and imply no total write wall-clock guarantee. Source stdio blocking read is outside the materialized-frame advice deadline, as with core local-file ingress; never claim a total wall-clock transport-read deadline. There is no client-auto-launch mechanism.
 
 ### Stage and fallback telemetry (T007)
 
@@ -406,3 +401,35 @@ runtime/provider/network/process tool. For T007 test metadata field allowlist,
 private prompt/answer/resource sentinels, NaN/unknown cost, whole-chain unavailable
 cost, size/overflow/busy/deep-mutation refusal and no implicit export. Structural
 parity and these negative controls are engineering evidence, never model utility.
+
+
+### Bound transport failure observations
+
+For a fully validated original stage request, a bound refusal is permitted only
+with exactly `reasonCodes: [stage-budget-exceeded]`: the contracted complete
+transport-frame replacement (or pure packet-size ceiling). Other refusal codes
+cannot be attached to a valid bound request. Structural packet validation binds
+request/pins and this closed outcome; it does not authenticate transport provenance
+or independently prove the observed serialization size, cancellation or timing.
+Consumers retain their original-order fallback and no execution authority. Internal
+advisor or encoding exceptions suppress the whole result and release the owned
+scope; they never fabricate a bound invalid-stage-request packet or echo exceptions.
+External consumer-side binding failures return unbound refusals because those
+consumer bindings never became validated stage-request bindings.
+
+
+### Session request identity bound
+
+The pinned MCP 2025-11-25 Basic protocol requires session-wide non-reuse of
+request IDs. This separate server records at most 1,024 typed string/integer IDs
+per server instance under its owner condition lock. Every syntactically accepted
+non-notification request burns its ID before parameter or method dispatch,
+including initialize/list/call and requests that subsequently fail validation.
+Duplicate IDs and new IDs after this bound receive fixed sanitized -32600 errors.
+After exhaustion no further request is admitted in that instance; the caller must
+explicitly create a replacement session/server instance. No automatic launch,
+retry, clearing of tombstones or generation inference is performed. Notifications
+consume no ID storage. Completed-call cancellation finds no active registration
+and cannot target a later call using that ID, since reuse is never admitted.
+This bounds identity memory and closes delayed-cancellation races; it is not
+independent general MCP conformance or hard transport termination evidence.

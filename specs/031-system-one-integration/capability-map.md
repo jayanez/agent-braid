@@ -1,6 +1,7 @@
 # SPEC-031 bounded capability decisions
 
-Status: proposed selected subset, not implementation acceptance or task completion.
+Status: selected deterministic subset implemented and technically reviewed;
+engineering evidence is captured separately from human or empirical acceptance.
 The [integration contract](contracts/integration.md) is the exact candidate for
 technical review. Core support is the synthetic stdlib reference fixture backend;
 it has no language understanding, calibrated confidence, trained model or admitted
@@ -30,7 +31,8 @@ library/consumer controls can implement and verify those engineering boundaries
 without waiting for neural selection, real-source yield or a positive utility result.
 T008 still additionally requires SPEC-029/T009 and actual evidence of its own
 parity/shadow scope; missing real utility remains unavailable, not fabricated from
-fixture distributions. No checkbox or assurance stage changes with this proposal.
+fixture distributions. T001–T007 engineering completion is recorded in tasks/evidence; T008 and
+whole-spec assurance remain draft pending actual shadow evidence.
 
 ## Remaining nonhuman work in SPEC-029 through SPEC-033
 

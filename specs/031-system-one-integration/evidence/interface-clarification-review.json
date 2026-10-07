@@ -1,0 +1,14 @@
+{
+  "contractBindings": {
+    "specs/031-system-one-integration/contracts/integration.md": "6cb71288ceab060eaeddd3e0960d7391ca316815dce54eb5b6cdaf1c967d12d2",
+    "specs/031-system-one-integration/contracts/interface.md": "d6eee1d3bb9db2ab43b60f73669550a68d4a5be65782524c707bc8a3039359d2"
+  },
+  "coreTechnicalPrerequisite": "SPEC-028/T008 completed on ae97c7e; frozen evidence at 0e17c4d",
+  "decision": "GO",
+  "executionAuthorization": false,
+  "format": "technical-interface-clarification-v1",
+  "limits": "Independent technical interface review only; no human/scientific/founder approval, empirical utility or execution authority.",
+  "originalCandidate": "abeca31e88baeabbb74a7cffa3b0767e870d4ac7",
+  "proposalSha256": "a3286f712aabad687e8f739a1fb61d3259295b6d3c3c426e6d66459d4c1291e8",
+  "reviewerModel": "gpt-6-luna"
+}

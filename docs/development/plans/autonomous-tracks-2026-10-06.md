@@ -59,7 +59,7 @@ Fresh reproduction, public claims, rights and founder decisions have their own g
 
 ## Delivery checkpoint (2026-10-07)
 
-PR #333 delivers T009/T010 synthetic preparation (SPEC-019), all technical
+PR #333 merged at `25a3d8d` and delivers T009/T010 synthetic preparation (SPEC-019), all technical
 implementation/packet tasks in SPEC-023 and SPEC-026, and T001–T006 assessment
 work in SPEC-027. Luna findings were fixed. Its stable PR profile passed 504
 tests with four documented boundary skips; all executed hosted checks passed; the specialist solo/dual matrix was skipped by the classifier on the bound
@@ -69,8 +69,54 @@ remain pending.
 PR #334 stacks the technically reviewed SPEC-028 stdlib core/CLI and SPEC-025
 finite checker/candidate mapping. Core/CLI 33 controls, contextual 20 controls,
 classifier 14 controls, exact offline wheel bytes and internal clean-clone
-repetition passed. Full profiles and final evidence binding are still pending.
-SPEC-031 T002–T007 and SPEC-032 T003/T004/T007 are selected for the next
-deterministic increment after core T008; trained branches and real utility stay
-gated. Prior evidence is frozen before shared-interface changes, without
+repetition passed. Both local full profiles passed 558 tests with four documented skips on
+`abeca31`. The clean engineering evidence freeze binds `0e17c4d`; technical
+core T008 is complete and the final metadata candidate `44f615c` has Luna GO.
+PR #334 merged at `a5eaa049` after all executed hosted checks passed.
+The specialist scaffold matrix was classifier-skipped. Prior core/contextual
+evidence is frozen to that durable merged snapshot before shared integration edits. SPEC-025/T007 still
+requires its specific independent proof review; neither the finite checker nor
+Luna technical inspection supplies that gate.
+At that checkpoint, SPEC-031 T002–T007 and SPEC-032 T003/T004/T007 were selected
+for the next deterministic increment. The delivery below supersedes that selection;
+trained branches and real utility stay gated. Prior evidence is frozen before shared-interface changes, without
 refreshing historical human approval or replacing current-interface controls.
+
+
+## Parallel integration/product wave
+
+Three workers own disjoint modules: context/advisors and opt-in analysis/exchange
+wrappers; private transport scopes, separate MCP, scheduler sidecars and stage
+telemetry; declared-metadata router and structural compiler. The coordinator owns
+core observation hooks, frozen installed manifests, packaging, shared evidence and
+one complete validation profile at a time. Reviewed interface deltas were applied
+before implementation. No stage is consumed as runtime execution authority.
+
+Live GitHub milestone inventory is recorded in
+[the dated snapshot](../../../specs/032-system-one-product/evidence/milestones-20261007.json).
+Closed milestones retain any residual human/tracking issues; no issues or
+milestones are closed by this implementation. Data/source/label/model/promotion
+branches in SPEC-029, SPEC-030 and SPEC-033 remain gated; deterministic schema,
+hooks and declared routing proceed under the completed core engineering gate.
+
+## Final deterministic engineering delivery
+
+PR #373 implements SPEC-031/T001–T007 and the selected SPEC-032/T001/T003/T004/T007
+engineering scope. Quick escalated to sensitive and the stable PR profile both
+passed 643 tests with four documented boundary skips. The 85 focused synthetic
+controls and a fresh offline installed stdlib wheel passed. Independent Luna
+reviews covered source contracts, cancellation/queue/session-ID races, product
+boundaries, exact wheel/source bytes and evidence metadata.
+
+The stable PR profile binds metadata candidate `2e9e7001`; source and wheel bind
+`4a432b1`. SPEC-031 evidence is frozen to clean candidate `8104963`; SPEC-032's
+selected engineering/defer packet, including T008, is frozen to `593e30c`.
+Both assurances remain draft with human review pending. Final hosted checks and
+protected merge are evaluated on the final pushed head.
+
+SPEC-031/T008 real shadow utility and SPEC-032/T002/T005/T006 remain pending or
+deferred. Source permissions, prospective data/labels, model/corpus rights and
+budgets, explicit technical/proof review, independent external reproduction,
+founder decisions and capability promotion remain their own gates. No milestone
+or issue closure, trained-model support, live probe, publication, entire feature
+acceptance or scientific result follows from this selected engineering delivery.
