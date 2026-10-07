@@ -4,8 +4,6 @@
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from contextlib import contextmanager
-from contextvars import ContextVar
 import os
 from pathlib import Path
 import signal
@@ -58,19 +56,6 @@ class GitCommandFailure(RuntimeError):
     """A started Git command returned a non-zero exit status."""
 
 
-_budget_observer: ContextVar[object | None] = ContextVar("git_budget_observer", default=None)
-
-
-@contextmanager
-def observe_git_budgets(callback):
-    """Opt-in coordinator observation; observers never authorize execution."""
-    token = _budget_observer.set(callback)
-    try:
-        yield
-    finally:
-        _budget_observer.reset(token)
-
-
 @dataclass
 class GitCommandBudget:
     """Wall-clock, command-count, captured-output and sampled scratch budgets."""
@@ -92,7 +77,6 @@ class GitCommandBudget:
     peak_scratch_bytes: int = 0
     _last_child_user_cpu: float = field(default=0.0, repr=False)
     _last_child_system_cpu: float = field(default=0.0, repr=False)
-    _scratch_samples: int = field(default=0, repr=False)
     lock: threading.Lock = field(default_factory=threading.Lock, repr=False)
 
     def __post_init__(self) -> None:
@@ -103,13 +87,6 @@ class GitCommandBudget:
                     "hard Git child address-space limits are unavailable on this platform"
                 )
         self._initialize_child_usage()
-        observer = _budget_observer.get()
-        if observer is not None:
-            try:
-                observer(self)
-            except Exception:
-                # Diagnostic instrumentation cannot change runtime behavior.
-                pass
 
     def _initialize_child_usage(self) -> None:
         if resource is None or not hasattr(resource, "RUSAGE_CHILDREN"):
@@ -177,7 +154,6 @@ class GitCommandBudget:
             return True
         with self.lock:
             self.peak_scratch_bytes = max(self.peak_scratch_bytes, total)
-            self._scratch_samples += 1
         return total > self.max_scratch_bytes
 
 

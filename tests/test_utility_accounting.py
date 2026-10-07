@@ -6,8 +6,14 @@ import tempfile
 import threading
 import unittest
 
-from agent_braid.git_process import GitCommandBudget, observe_git_budgets
+from agent_braid.git_process import GitCommandBudget
+from agent_braid.utility_budget_observer import observe_git_budget, observe_git_budgets
 from agent_braid.utility_accounting import AccountingError, PHASES, UtilityAccounting
+from agent_braid.git_runtime import _budget as runtime_budget
+
+
+def observed_budget(*args, **kwargs):
+    return observe_git_budget(GitCommandBudget(*args, **kwargs))
 
 
 class Clock:
@@ -174,13 +180,13 @@ class AccountingTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
             with self.collector.activate_git_budget_registry():
-                budget = GitCommandBudget(root)
+                budget = observed_budget(root)
                 self.collector._register_budget(budget)
                 budget.commands = 3
                 budget.output_bytes = 11
                 budget.child_user_cpu_seconds = 999
                 budget.scratch_exceeds_limit()
-                other = GitCommandBudget(root)
+                other = observed_budget(root)
                 other.commands = 2
                 other.output_bytes = 7
             self.complete_phases()
@@ -189,7 +195,8 @@ class AccountingTests(unittest.TestCase):
             self.assertEqual(record['gitBudgetCount'], 2)
             self.assertEqual(record['gitCommands'], 5)
             self.assertEqual(record['acceptedBudgetOutputBytes'], 18)
-            self.assertEqual(record['sampledScratchPeakBytes'], 0)
+            self.assertIsNone(record['sampledScratchPeakBytes'])
+            self.assertIn('does not expose', record['optionalReasons']['sampledScratchPeakBytes'])
             self.assertEqual(record['outer']['completedChildUserCpuSeconds'], 1.0)
             self.assertEqual(self.collector.snapshot()['gitCommands'], 5)
 
@@ -197,8 +204,8 @@ class AccountingTests(unittest.TestCase):
         self.collector.max_budgets = 1
         with tempfile.TemporaryDirectory() as directory:
             with self.collector.activate_git_budget_registry():
-                first = GitCommandBudget(Path(directory))
-                second = GitCommandBudget(Path(directory))
+                first = observed_budget(Path(directory))
+                second = observed_budget(Path(directory))
             self.assertIsNot(first, second)
         self.complete_phases()
         record = self.collector.finish()
@@ -238,14 +245,47 @@ class AccountingTests(unittest.TestCase):
             raise ValueError('observer failed')
         with tempfile.TemporaryDirectory() as directory:
             with observe_git_budgets(broken):
-                budget = GitCommandBudget(Path(directory))
+                budget = observed_budget(Path(directory))
             self.assertEqual(budget.commands, 0)
+
+    def test_budget_observer_returns_same_object_and_restores_context(self):
+        seen = []
+        other = []
+        with tempfile.TemporaryDirectory() as directory:
+            budget = GitCommandBudget(Path(directory))
+            self.assertIs(observe_git_budget(budget), budget)
+            with observe_git_budgets(seen.append):
+                self.assertIs(observe_git_budget(budget), budget)
+                with observe_git_budgets(other.append):
+                    self.assertIs(observe_git_budget(budget), budget)
+                self.assertIs(observe_git_budget(budget), budget)
+            self.assertIs(observe_git_budget(budget), budget)
+        self.assertEqual(seen, [budget, budget])
+        self.assertEqual(other, [budget])
+
+    def test_observer_base_exception_cannot_change_budget_execution_identity(self):
+        def interrupt(_budget):
+            raise KeyboardInterrupt('observer must not interrupt execution')
+        with tempfile.TemporaryDirectory() as directory:
+            budget = GitCommandBudget(Path(directory))
+            with observe_git_budgets(interrupt):
+                self.assertIs(observe_git_budget(budget), budget)
+            self.assertEqual(budget.commands, 0)
+
+    def test_runtime_factory_registers_unchanged_budget(self):
+        seen = []
+        with tempfile.TemporaryDirectory() as directory:
+            with observe_git_budgets(seen.append):
+                budget = runtime_budget(Path(directory))
+            self.assertEqual(seen, [budget])
+            self.assertEqual(budget.commands, 0)
+            self.assertEqual(budget.max_commands, 256)
 
     def test_phase_budget_deltas_include_new_and_shared_worker_budgets_once(self):
         with tempfile.TemporaryDirectory() as directory:
             with self.collector.activate_git_budget_registry():
                 with self.collector.phase('input'):
-                    budget = GitCommandBudget(Path(directory))
+                    budget = observed_budget(Path(directory))
                     budget.commands = 1
                     budget.output_bytes = 11
                 with self.collector.phase('replay'):
@@ -256,7 +296,7 @@ class AccountingTests(unittest.TestCase):
                     thread = threading.Thread(target=worker)
                     thread.start()
                     thread.join()
-                    other = GitCommandBudget(Path(directory))
+                    other = observed_budget(Path(directory))
                     other.commands = 3
                     other.output_bytes = 12
                     self.collector._register_budget(budget)
@@ -279,7 +319,7 @@ class AccountingTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as directory:
             with self.collector.activate_git_budget_registry():
                 with self.collector.phase('replay'):
-                    budget = GitCommandBudget(Path(directory))
+                    budget = observed_budget(Path(directory))
                     budget.commands = -1
                 with self.collector.phase('preparation'):
                     pass
@@ -297,7 +337,7 @@ class AccountingTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as directory:
             with self.collector.activate_git_budget_registry():
                 with self.collector.phase('input'):
-                    budget = GitCommandBudget(Path(directory), max_output_bytes=10)
+                    budget = observed_budget(Path(directory), max_output_bytes=10)
                     self.assertTrue(budget.record_output(7))
                     self.assertFalse(budget.record_output(5))
                     self.assertEqual(budget.output_bytes, 7)

@@ -14,7 +14,7 @@ import sys
 import threading
 import time
 
-from agent_braid.git_process import observe_git_budgets
+from agent_braid.utility_budget_observer import observe_git_budgets
 
 PHASES = ("input", "replay", "preparation", "grant", "execution",
           "independent_verification", "report_serialization", "cleanup")
@@ -274,28 +274,8 @@ class UtilityAccounting:
         if any(p["outcome"] == "failure" for p in self._phases):
             self._errors.append("one or more required phases failed")
         commands, captured, budget_reason = self._budget_snapshot(require_active=False)
-        scratch = 0
-        scratch_samples = 0
-        scratch_reason = None
-        with self._lock:
-            for budget, baseline in self._budgets.values():
-                try:
-                    with budget.lock:
-                        command_delta = budget.commands - baseline[0]
-                        byte_delta = budget.output_bytes - baseline[1]
-                        peak = budget.peak_scratch_bytes
-                        samples = budget._scratch_samples
-                    if any(not isinstance(v, int) or isinstance(v, bool) or v < 0
-                           for v in (command_delta, byte_delta, peak)):
-                        raise ValueError("invalid budget counters")
-                    scratch = max(scratch, peak)
-                    scratch_samples += samples
-                except Exception as exc:
-                    self._budget_valid = False
-                    self._errors.append(f"budget observation invalid: {type(exc).__name__}")
-                    scratch_reason = "invalid budget observation"
-        if not scratch_samples:
-            scratch_reason = "no sampled budget scratch observations"
+        scratch_reason = (
+            "frozen budget does not expose whether sampled scratch high-water was observed; allocation unavailable")
         if not self._budget_valid:
             budget_reason = "incomplete or invalid budget observations"
         if budget_reason:
@@ -309,7 +289,7 @@ class UtilityAccounting:
                         "gitCommands": commands if self._budget_valid else None,
                         "acceptedBudgetOutputBytes": captured if self._budget_valid else None,
                         "observedCapturedOutputBytes": None,
-                        "sampledScratchPeakBytes": None if scratch_reason else scratch,
+                        "sampledScratchPeakBytes": None,
                         "processLifetimeRssBytes": rss,
                         "optionalReasons": {"sampledScratchPeakBytes": scratch_reason,
                                             "gitCommands": budget_reason,
@@ -320,7 +300,7 @@ class UtilityAccounting:
                         "workerIntervals": worker,
                         "scopes": {"parentCpu": "process including threads",
                                    "childCpu": "process-global completed children; not per-worker",
-                                   "scratch": "maximum sampled budget footprint, not simultaneous sum",
+                                   "scratch": "unavailable; frozen budgets expose no reliable sample-presence counter",
                                    "rss": "process lifetime high-water, not treatment delta",
                                    "bytes": (
                                        "accepted budget-counted Git output; discarded overflow chunks excluded; total bytes read unavailable"),

@@ -28,6 +28,7 @@ PROTOCOL_SHA256 = "6e5a2bd790fb789926007e11f33af40df2ed494d3e8464b13f114523120b2
 DEFAULT_MANIFEST = ROOT / "specs/022-m4-utility-followup/evidence/prepared-fixture-manifest.json"
 INPUT_PATHS = (
     "agent_braid/utility_accounting.py", "agent_braid/utility_fixtures.py",
+    "agent_braid/utility_budget_observer.py",
     "agent_braid/git_process.py", "agent_braid/git_runtime_process.py",
     "agent_braid/git_runtime.py", "agent_braid/git_replay.py",
     "agent_braid/git_adapter.py", "agent_braid/runtime_policy.py",
