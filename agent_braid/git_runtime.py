@@ -23,6 +23,7 @@ import sys
 from .analysis import _canonical, _digest
 from .git_adapter import analyze_git_with_provenance
 from .git_process import GitCommandBudget, GitCommandFailure
+from .utility_budget_observer import observe_git_budget
 from .git_runtime_process import run_owned_git
 from .git_replay import (
     OID, _patches, _sanitized_environment, _supported_operations,
@@ -82,13 +83,14 @@ def _environment(home: Path) -> dict:
 
 def _budget(root: Path, cancel_event: threading.Event | None = None) -> GitCommandBudget:
     _require(fcntl is not None and os.name == "posix", "runtime requires POSIX advisory locking")
-    return GitCommandBudget(temp_root=root, wall_seconds=LIMITS["wallSeconds"],
+    budget = GitCommandBudget(temp_root=root, wall_seconds=LIMITS["wallSeconds"],
                             max_commands=LIMITS["gitCommands"],
                             max_output_bytes=LIMITS["outputBytes"],
                             max_command_output_bytes=LIMITS["commandOutputBytes"],
                             max_scratch_bytes=LIMITS["scratchBytes"],
                             max_process_address_space_bytes=LIMITS["childAddressSpaceBytes"],
                             cancel_event=cancel_event)
+    return observe_git_budget(budget)
 
 
 def _destination(value: str | Path, source: Path) -> Path:
