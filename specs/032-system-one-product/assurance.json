@@ -144,11 +144,11 @@
           "id": "SC-002",
           "obtained_evidence": [
             {
-              "command": "<isolated-python-3.13>/bin/python scripts/validate_change.py --base develop --profile quick",
+              "command": "<isolated-python-3.13>/bin/python scripts/validate_change.py --base develop --profile pr",
               "limits": "Synthetic bounded engineering only. No real shadow utility, scientific/proof/human/founder acceptance, admitted data/models, automatic export or expanded runtime authority.",
-              "outcome": "Selected synthetic software controls, focused tests, Luna review and exact offline installed-wheel checks passed; broader original acceptance remains pending.",
+              "outcome": "Full selected engineering profiles, focused synthetic controls, independent Luna review and exact offline installed-wheel checks passed; broader original acceptance remains pending.",
               "path": "specs/032-system-one-product/evidence/technical-delivery.json",
-              "sha256": "5d6976ac188bed1c8f44fdecfa063ed0dc3d9d539b29d6c4ff0deffbe408531e"
+              "sha256": "0ec8e07f316e4ff1c12c6dcc82174c27f959d3e2ce3df7fda4e6d25fcad1143b"
             }
           ],
           "planned_evidence": "specs/032-system-one-product/evidence/sc-002.json with candidate/input hashes, exact command, environment, raw outcome and limits",
@@ -169,11 +169,11 @@
           "id": "SC-003",
           "obtained_evidence": [
             {
-              "command": "<isolated-python-3.13>/bin/python scripts/validate_change.py --base develop --profile quick",
+              "command": "<isolated-python-3.13>/bin/python scripts/validate_change.py --base develop --profile pr",
               "limits": "Synthetic bounded engineering only. No real shadow utility, scientific/proof/human/founder acceptance, admitted data/models, automatic export or expanded runtime authority.",
-              "outcome": "Selected synthetic software controls, focused tests, Luna review and exact offline installed-wheel checks passed; broader original acceptance remains pending.",
+              "outcome": "Full selected engineering profiles, focused synthetic controls, independent Luna review and exact offline installed-wheel checks passed; broader original acceptance remains pending.",
               "path": "specs/032-system-one-product/evidence/technical-delivery.json",
-              "sha256": "5d6976ac188bed1c8f44fdecfa063ed0dc3d9d539b29d6c4ff0deffbe408531e"
+              "sha256": "0ec8e07f316e4ff1c12c6dcc82174c27f959d3e2ce3df7fda4e6d25fcad1143b"
             }
           ],
           "planned_evidence": "specs/032-system-one-product/evidence/sc-003.json with candidate/input hashes, exact command, environment, raw outcome and limits",
@@ -228,11 +228,11 @@
           "id": "SC-006",
           "obtained_evidence": [
             {
-              "command": "<isolated-python-3.13>/bin/python scripts/validate_change.py --base develop --profile quick",
+              "command": "<isolated-python-3.13>/bin/python scripts/validate_change.py --base develop --profile pr",
               "limits": "Synthetic bounded engineering only. No real shadow utility, scientific/proof/human/founder acceptance, admitted data/models, automatic export or expanded runtime authority.",
-              "outcome": "Selected synthetic software controls, focused tests, Luna review and exact offline installed-wheel checks passed; broader original acceptance remains pending.",
+              "outcome": "Full selected engineering profiles, focused synthetic controls, independent Luna review and exact offline installed-wheel checks passed; broader original acceptance remains pending.",
               "path": "specs/032-system-one-product/evidence/technical-delivery.json",
-              "sha256": "5d6976ac188bed1c8f44fdecfa063ed0dc3d9d539b29d6c4ff0deffbe408531e"
+              "sha256": "0ec8e07f316e4ff1c12c6dcc82174c27f959d3e2ce3df7fda4e6d25fcad1143b"
             }
           ],
           "planned_evidence": "specs/032-system-one-product/evidence/sc-006.json with candidate/input hashes, exact command, environment, raw outcome and limits",
@@ -251,6 +251,6 @@
   "technical_delivery": {
     "path": "specs/032-system-one-product/evidence/technical-delivery.json",
     "scope": "Selected deterministic engineering only; entire feature remains pending",
-    "sha256": "5d6976ac188bed1c8f44fdecfa063ed0dc3d9d539b29d6c4ff0deffbe408531e"
+    "sha256": "0ec8e07f316e4ff1c12c6dcc82174c27f959d3e2ce3df7fda4e6d25fcad1143b"
   }
 }

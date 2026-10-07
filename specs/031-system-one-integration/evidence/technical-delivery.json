@@ -1,6 +1,6 @@
 {
   "artifactBindings": {
-    "specs/031-system-one-integration/evidence/candidate-profiles.json": "af1e277eb064b1e63aea9680a8a390dd819d4b99b65495ee5e0d9444f9929e6b",
+    "specs/031-system-one-integration/evidence/candidate-profiles.json": "7aa8a01b46d61afa2f8570fe7b65f31f55ec6684d19eee36f143fcf48fb9327a",
     "specs/031-system-one-integration/evidence/focused-controls.log": "7f52046e82adc5b0f1285682cefd5db6419bdb41da99d13b90c91f89df4a1819",
     "specs/031-system-one-integration/evidence/interface-clarification-review.json": "2bb9dd528707f44e093bc45083a86da7fb23ea07fbde011b7efbe3244d4aeda4",
     "specs/031-system-one-integration/evidence/luna-final-code-review.json": "96ba9ba1b0ee84f1c66bb7b1ff1a34c31709c98a21af8671238378e8a0600d35",
@@ -8,9 +8,11 @@
     "specs/031-system-one-integration/evidence/offline-smoke.py": "31b2f78a90a0b2b54c47ed53afef7f8e622127fcc4331e78126edf9ee5f9fe65",
     "specs/031-system-one-integration/evidence/offline-source-bindings.json": "6eeaa532ea22692229abe9ff28ee1d956090c5b7411b8554c3a67945c73bbe1b",
     "specs/031-system-one-integration/evidence/offline-wheel.json": "05de45c5eb8560ade9e04eede31a79b571a137f4ee925b7c59ea5eb66af4591a",
+    "specs/031-system-one-integration/evidence/pr-profile.log": "85e2a15594a7e4361a6f32ad6d8f7464a62b9fcd55ac9bcc60bec428e21c9f6c",
     "specs/031-system-one-integration/evidence/quick-profile.log": "9c10033e7d4a3659a97524219dcf47290a7b44c990e4432af4bfa538490f8ccf"
   },
   "base": "a5eaa04939eabaa654d54654e2ab4ea68d3a224b",
+  "cleanCandidateFreeze": "Supported clean-candidate authority/evidence snapshot is recorded in assurance.json; human review pending.",
   "executionAuthorization": false,
   "focusedTests": 85,
   "format": "selected-subset-technical-delivery-v1",
@@ -37,7 +39,7 @@
     "specs/031-system-one-integration/capability-map.md": "e1da6628f88fff79c0022a4571255995646824dbf90dde328f935b9ac3b0b8ca",
     "specs/031-system-one-integration/contracts/integration.md": "e62cdb2785553b15994ec51529d25de834044c8ad7101d399e235c74006af07d",
     "specs/031-system-one-integration/contracts/interface.md": "d6eee1d3bb9db2ab43b60f73669550a68d4a5be65782524c707bc8a3039359d2",
-    "specs/031-system-one-integration/tasks.md": "991d8c53d8a2e3d90679807d8c75852e5464e357e5da5c61821acf1dd59210db",
+    "specs/031-system-one-integration/tasks.md": "20a28ce938f04be8c5c5b7a97c8aa013f85c03725e6bad87946eac99b3db93d6",
     "tests/test_system_one_advisors.py": "b712dcd1281f31e98c2b0abeec940266f37367516b4eed1b66edf0950ec31a14",
     "tests/test_system_one_backends.py": "442dc877c441e43d1c8abdb889fed3b94b7f2d753efabd28cfbde814dba7691f",
     "tests/test_system_one_cli.py": "db8b80d4435218c0fb4d5679db7de6e8a66808931a6c3685461fd9787b7f4e13",
@@ -68,6 +70,18 @@
     "tests": 643
   },
   "sourceCandidate": "4a432b1cac60fb0f85a13c563f4d9387b6869f67",
-  "stablePrProfile": "pending",
+  "stablePrProfile": {
+    "base": "a5eaa04939eabaa654d54654e2ab4ea68d3a224b",
+    "command": "<isolated-python-3.13>/bin/python scripts/validate_change.py --base develop --profile pr",
+    "effectiveProfile": "pr",
+    "exitCode": 0,
+    "limits": "Selected executable engineering validation; four documented boundary skips. No external reproduction, real utility, proof/scientific/human/model/founder acceptance.",
+    "metadataCandidate": "2e9e7001ba660bf74e437dec657bcd85b6fd0057",
+    "requestedProfile": "pr",
+    "seconds": 831.202,
+    "skipped": 4,
+    "sourceCandidate": "4a432b1cac60fb0f85a13c563f4d9387b6869f67",
+    "tests": 643
+  },
   "wholeSpecAccepted": false
 }

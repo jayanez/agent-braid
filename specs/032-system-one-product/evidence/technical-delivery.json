@@ -1,6 +1,6 @@
 {
   "artifactBindings": {
-    "specs/032-system-one-product/evidence/candidate-profiles.json": "1ece110d5b61aef44bdc0aabdc359faf9f5116784e93d031a1a41853e8753f02",
+    "specs/032-system-one-product/evidence/candidate-profiles.json": "73775c5df31068d68696d7ab7675c21681dbfb79c19468098f4064d3370e881e",
     "specs/032-system-one-product/evidence/check-selection.py": "cf9a70f5e0e0e17f6ea60e47c42dc203751261a30c6040481573c773cf5f2f88",
     "specs/032-system-one-product/evidence/focused-controls.log": "7f52046e82adc5b0f1285682cefd5db6419bdb41da99d13b90c91f89df4a1819",
     "specs/032-system-one-product/evidence/interface-clarification-review.json": "32dbe12e12e3d68ab97e12585b35337611b5575df51c207da6bfdc648a2d5554",
@@ -9,10 +9,12 @@
     "specs/032-system-one-product/evidence/offline-smoke.py": "31b2f78a90a0b2b54c47ed53afef7f8e622127fcc4331e78126edf9ee5f9fe65",
     "specs/032-system-one-product/evidence/offline-source-bindings.json": "6eeaa532ea22692229abe9ff28ee1d956090c5b7411b8554c3a67945c73bbe1b",
     "specs/032-system-one-product/evidence/offline-wheel.json": "05de45c5eb8560ade9e04eede31a79b571a137f4ee925b7c59ea5eb66af4591a",
+    "specs/032-system-one-product/evidence/pr-profile.log": "85e2a15594a7e4361a6f32ad6d8f7464a62b9fcd55ac9bcc60bec428e21c9f6c",
     "specs/032-system-one-product/evidence/quick-profile.log": "9c10033e7d4a3659a97524219dcf47290a7b44c990e4432af4bfa538490f8ccf",
     "specs/032-system-one-product/evidence/selection-controls.json": "0ce6f9a6878687b6664be0d3e474e51e323a84631f1b5a7f7432bc14ed305a5d"
   },
   "base": "a5eaa04939eabaa654d54654e2ab4ea68d3a224b",
+  "cleanCandidateFreeze": "Supported clean-candidate authority/evidence snapshot is recorded in assurance.json; human review pending.",
   "executionAuthorization": false,
   "focusedTests": 85,
   "format": "selected-subset-technical-delivery-v1",
@@ -48,7 +50,7 @@
     "specs/032-system-one-product/fixtures/pull-hooks.json": "9934d688fcfe008a8424ef39950d6a0170ba48f9587dd8db6fab7d2ef7320b37",
     "specs/032-system-one-product/fixtures/schema-compiler.json": "3fd582a94b69ebd2fbf0e4158c7b9ac7dcaf90ebd602e63588114c4a9d5e4a41",
     "specs/032-system-one-product/product-decisions.md": "59d1b3a53516b0b723a2f833a02f4c56d5da8bb0b016cd3ccd281d270f6563fa",
-    "specs/032-system-one-product/tasks.md": "ff5e315524d32be830434e239a9bbe53fcea5c8fc1ed70ef8325e00faed70746",
+    "specs/032-system-one-product/tasks.md": "7d747de28d6842eb6a2b929f3362af80741d76343482afecfea4c36c98a085f8",
     "tests/test_system_one_advisors.py": "b712dcd1281f31e98c2b0abeec940266f37367516b4eed1b66edf0950ec31a14",
     "tests/test_system_one_backends.py": "442dc877c441e43d1c8abdb889fed3b94b7f2d753efabd28cfbde814dba7691f",
     "tests/test_system_one_cli.py": "db8b80d4435218c0fb4d5679db7de6e8a66808931a6c3685461fd9787b7f4e13",
@@ -79,6 +81,18 @@
     "tests": 643
   },
   "sourceCandidate": "4a432b1cac60fb0f85a13c563f4d9387b6869f67",
-  "stablePrProfile": "pending",
+  "stablePrProfile": {
+    "base": "a5eaa04939eabaa654d54654e2ab4ea68d3a224b",
+    "command": "<isolated-python-3.13>/bin/python scripts/validate_change.py --base develop --profile pr",
+    "effectiveProfile": "pr",
+    "exitCode": 0,
+    "limits": "Selected executable engineering validation; four documented boundary skips. No external reproduction, real utility, proof/scientific/human/model/founder acceptance.",
+    "metadataCandidate": "2e9e7001ba660bf74e437dec657bcd85b6fd0057",
+    "requestedProfile": "pr",
+    "seconds": 831.202,
+    "skipped": 4,
+    "sourceCandidate": "4a432b1cac60fb0f85a13c563f4d9387b6869f67",
+    "tests": 643
+  },
   "wholeSpecAccepted": false
 }
