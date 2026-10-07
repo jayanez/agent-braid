@@ -45,8 +45,12 @@ assurance record and the [roadmap](../../ROADMAP.md) for those boundaries.
 | [SPEC-031: system-one-integration](../../specs/031-system-one-integration/spec.md) | [S1.3 — Advisory integration](https://github.com/jayanez/agent-braid/milestone/16) |
 | [SPEC-032: system-one-product](../../specs/032-system-one-product/spec.md) | [S1.4 — Product capabilities and promotion](https://github.com/jayanez/agent-braid/milestone/17) |
 | [SPEC-033: system-one-promotion](../../specs/033-system-one-promotion/spec.md) | [S1.4 — Product capabilities and promotion](https://github.com/jayanez/agent-braid/milestone/17) |
+| [SPEC-034: workload-forecast-data](../../specs/034-workload-forecast-data/spec.md) | [FC.1 — Forecast-guided parallelism experiment](https://github.com/jayanez/agent-braid/milestone/18) |
+| [SPEC-035: chronos2-forecast-adapter](../../specs/035-chronos2-forecast-adapter/spec.md) | [FC.1 — Forecast-guided parallelism experiment](https://github.com/jayanez/agent-braid/milestone/18) |
+| [SPEC-036: forecast-parallelism-experiment](../../specs/036-forecast-parallelism-experiment/spec.md) | [FC.1 — Forecast-guided parallelism experiment](https://github.com/jayanez/agent-braid/milestone/18) |
+| [SPEC-037: forecast-advisory-integration](../../specs/037-forecast-advisory-integration/spec.md) | [FC.1 — Forecast-guided parallelism experiment](https://github.com/jayanez/agent-braid/milestone/18) |
 
-All 33 specs have an assignment to one of the 17 registered milestones.
+All 37 specs have an assignment to one of the 18 registered milestones.
 Frozen publication receipts, assurance/evidence records, founder decisions and
 dated audits retain their captured titles and counts. Resolve those historical
 names through the tracking crosswalk; do not rewrite their bound contents.

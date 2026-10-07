@@ -18,7 +18,8 @@
     "S1.1 — Decision evaluation": "Prospective corpus and unbiased decision evaluation; draft implementation track, no accepted utility claim.",
     "S1.2 — Native decision model": "Own non-generative neural decision experiment; draft implementation track, no accepted utility claim.",
     "S1.3 — Advisory integration": "Advisory integration across Agent Braid decision stages; draft implementation track, no accepted utility claim.",
-    "S1.4 — Product capabilities and promotion": "Per-feature advanced capability acceptance plus separately governed shadow, promotion, drift, rollback and closure."
+    "S1.4 — Product capabilities and promotion": "Per-feature advanced capability acceptance plus separately governed shadow, promotion, drift, rollback and closure.",
+    "FC.1 — Forecast-guided parallelism experiment": "Permissioned workload telemetry, optional local Chronos-2, prospective forecasting/complete-cost parallelism experiment and separately governed shadow/promotion. Negative or infeasible outcomes are valid; no new execution domain or M4 closure."
   },
   "closed_milestones": [
     "M0 — Operational foundations",
@@ -159,6 +160,22 @@
     "033-system-one-promotion": {
       "milestone": "S1.4 — Product capabilities and promotion",
       "state": "open"
+    },
+    "034-workload-forecast-data": {
+      "milestone": "FC.1 — Forecast-guided parallelism experiment",
+      "state": "open"
+    },
+    "035-chronos2-forecast-adapter": {
+      "milestone": "FC.1 — Forecast-guided parallelism experiment",
+      "state": "open"
+    },
+    "036-forecast-parallelism-experiment": {
+      "milestone": "FC.1 — Forecast-guided parallelism experiment",
+      "state": "open"
+    },
+    "037-forecast-advisory-integration": {
+      "milestone": "FC.1 — Forecast-guided parallelism experiment",
+      "state": "open"
     }
   },
   "task_state_overrides": {
@@ -182,7 +199,11 @@
     "SPEC-030",
     "SPEC-031",
     "SPEC-032",
-    "SPEC-033"
+    "SPEC-033",
+    "SPEC-034",
+    "SPEC-035",
+    "SPEC-036",
+    "SPEC-037"
   ],
   "milestone_numbers": {
     "M0 — Operational foundations": 1,
@@ -201,6 +222,7 @@
     "S1.1 — Decision evaluation": 14,
     "S1.2 — Native decision model": 15,
     "S1.3 — Advisory integration": 16,
-    "S1.4 — Product capabilities and promotion": 17
+    "S1.4 — Product capabilities and promotion": 17,
+    "FC.1 — Forecast-guided parallelism experiment": 18
   }
 }
