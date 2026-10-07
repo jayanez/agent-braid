@@ -1,41 +1,45 @@
-# Prospective bounded utility measurement protocol
+# Prospective bounded synthetic diagnostic protocol
 
-Status: candidate for human technical review. Not frozen or approved; no harness
-instrumentation or registered measurement has executed for SPEC-022. Historical
-SPEC-021 G4 NO-GO remains unchanged.
+Status: draft for human technical review. T001 remains unchecked. No harness
+instrumentation, runtime admission, grants or registered measurements have executed
+for SPEC-022. Historical SPEC-021 G4 NO-GO and M4-open status remain unchanged.
 
-Population: owned synthetic ordinary-text A/M immutable fixed patches admitted
-by existing SPEC-020/021 validation. Corpus blocks: independent 2-operation,
-independent 4-operation, dependency-chain 4-operation; payload sizes 1 KiB, 64 KiB,
-1 MiB per operation. Existing aggregate caps control admission. Keep any refused
-block and its reason; never enlarge a runtime budget to include it.
+The exact [technical review packet](technical-review-packet.md) supersedes the
+previous coarse corpus and phase descriptions for this proposed evaluation. It
+defines the ordered nine-cell inventory, immutable identities, numeric exclusions,
+45-minute dispatch budget, denominators, invalid-pair and stop rules, non-overlapping
+wall phases, optional counter attribution and observer boundary. Human technical
+review must cover that exact packet before T002 instrumentation. A later stable
+harness/manifest freeze and review precede registered measurement.
 
-Each admitted block has one base/commit/patch identity set, two unmeasured warm-up
-pairs and 20 measured pairs. Alternate serial-first/parallel-first by repetition
-parity. Fresh private run/grant destinations per treatment. Never replace trials,
-remove outliers or claim controlled cold OS caches. Chain controls stay separate
-from independent-block utility. Freeze exact generated manifest, harness/source,
-observation and environment/cost boundary on a clean candidate after review and
-before registered results.
+The [derived workload inventory](workload-manifest-candidate.json) identifies nine
+exact payload/count/family blocks; [prepared fixtures](evidence/prepared-fixture-manifest.json)
+bind their base, operation, tree and patch identities. Five blocks are directly
+excluded by existing aggregate patch caps; four only avoid those numeric exclusions
+and remain untested for admission. Expected trees were constructed from owned blobs,
+not verified by execution. No cap, source policy or mandatory verification changes.
 
-Primary outcome: each independent block's median paired serial/parallel total wall
-ratio; descriptive target >=1.10, zero unsafe admissions and equivalent independently
-verified trees for every admitted run. Any invalid treatment remains in its pair
-and makes the affected utility block inconclusive. No complete-case favorable
-acceptance, pooling chains, causal claim or inferred general workload benefit.
+The repeated-character, file-disjoint synthetic corpus supports synthetic performance
+diagnostics only. Its declared dependency chain tests ordering, not cumulative commit
+ancestry or overlapping edits. Each finally admitted block receives two warm-up pairs
+and twenty measured pairs, retaining invalid, failed and unexecuted pairs. No favorable
+complete-case acceptance or pooling chains into independent-block ratios.
 
-Whole wall boundary starts before input loading and ends after cleanup. Retain
-input/evidence loading, replay, preparation, grant issuance, execution, independent
-verification, report serialization and cleanup; include instrumentation overhead.
-Phase measurements reconcile to total with explicit residual, never overlapping
-phase sums as a purported whole total. Capture wall/CPU/command/byte/worker-overlap
-counters only when actually available; unavailable RSS/scratch/counters stay null
-with reason. Record hardware, OS, Git/Python, background-load observations, first
-and subsequent exposures, failures and exclusions.
+The outer treatment interval includes input loading, replay, preparation, grant,
+execution, independent verification, operational report serialization and cleanup,
+with explicit residual coordinator/observer gaps. Nested views are never summed twice.
+Final observer sealing/output and shared artifact writing are separately reported
+outside the operational interval; they are not included costs or free work.
 
-Review checklist: fixed corpus identities and order, numeric caps, full cost
-accounting, invalid-pair rule, diagnostic-vs-registered separation, forged/stale/
-unknown/refusal/recovery controls, candidate freeze and independent-result checks.
-An optimization may be chosen only after diagnostic runs, at most one, recorded
-before registered freeze. No semantic/grant/consumer check can be removed. Human
-technical review precedes instrumentation; founder utility decision follows results.
+A descriptive ratio >=1.10 cannot by itself establish Article 19 actual-workload
+benefit, practical utility, G4 or M4 acceptance. Actual workload/source-rights evidence
+and a separate founder decision remain necessary. Negative or inconclusive results
+are legitimate; no scientific, causal, population or independent-validation claim.
+
+Preparation provenance is retained verbatim: the copied V2 manifest still records
+its historical draft/preflight-blocked status. That status describes preparation,
+not the subsequent documentation checkout preflight. The byte-exact preparation
+script retains its original absolute private paths and requires those paths and a
+fresh output destination for rerun; it is an archived preparation command, not an
+installed runtime or portable harness. Its receipt records the observed preparation
+exit code only. Original V1 scratch artifacts remain preserved separately.

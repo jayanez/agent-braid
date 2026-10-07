@@ -1,0 +1,36 @@
+{
+  "checks": [
+    "Nine patch/commit/tree identities and sizes matched generated private objects.",
+    "All V2 block objects equal preserved V1.",
+    "Five direct patch-cap exclusions; four blocks not admitted.",
+    "Phase/observer, failure and dispatch-budget rules reviewed."
+  ],
+  "codeInputCandidate": "cfa6b7b264ebd8c472efc564946e9ce54979e242",
+  "decision": "GO-for-exact-human-technical-review-proposal",
+  "findingsClosed": [
+    "Explicit nine-cell identity/order inventory.",
+    "Pinned numeric exclusions and denominator.",
+    "Disjoint phase and optional CPU/counter semantics.",
+    "Global candidate safety NO-GO and retained invalid pairs.",
+    "Preparation-vs-code source commit distinction.",
+    "Manual cap reconciliation wording.",
+    "Synthetic-diagnostic-only actual-workload claim boundary."
+  ],
+  "inputs": {
+    "specs/022-m4-utility-followup/evidence/preparation-execution-receipt.json": "7d229f181a240ece06a3bd4815eb93cd2d5544bc8890c6e5426d7bf4dce42f22",
+    "specs/022-m4-utility-followup/evidence/prepare-fixtures-v2.py": "3b2a1d9df9b569f0b3087bf1fc851f7563f388a865af8c63d190419f10155225",
+    "specs/022-m4-utility-followup/evidence/prepared-fixture-manifest.json": "ec8f36b21dd745df8443acd6035ff75a4b01bd61fd004470ce0315a655908734",
+    "specs/022-m4-utility-followup/measurement-protocol.md": "0459d09a2e8d43ca2e4d723bc2d765054f31c35d56a053e5d5cf37aacc393a88",
+    "specs/022-m4-utility-followup/plan.md": "7495c2d795e57d3d20f25c6dc08f03fdc1ab71be04d0c536130cfd16f902a75d",
+    "specs/022-m4-utility-followup/technical-review-packet.md": "6e5a2bd790fb789926007e11f33af40df2ed494d3e8464b13f114523120b282b",
+    "specs/022-m4-utility-followup/workload-manifest-candidate.json": "77f93d977f44f01002e58a5cb4f98dfb06b7081086fcd77bf2b8e3bfe67c3ff2"
+  },
+  "limits": [
+    "No reviewer tests, runtime admission, grants or measurement.",
+    "This is not human approval, founder acceptance or actual-workload utility."
+  ],
+  "method": "Independent read-only source, private object identity, cap and metadata inspection",
+  "preparationCheckout": "985165f68b63ecafaa1a02b501aeba071deb50c9",
+  "preparationObservedExitCode": 0,
+  "reviewerModel": "gpt-6-luna"
+}
