@@ -23,7 +23,7 @@ from agent_braid.utility_trials import (
     build_trial_plan, derive_admission_records, encode_trial_plan,
 )
 from scripts.measure_m4_utility import (
-    DEFAULT_MANIFEST, INPUT_PATHS, PROTOCOL_SHA256, UnsafeDiagnostic,
+    DEFAULT_MANIFEST, INPUT_PATHS, PROTOCOL_SHA256, InvalidatedDiagnostic, UnsafeDiagnostic,
     run_treatment, source_fingerprint,
 )
 
@@ -154,37 +154,57 @@ def prepare_runtime_callback(plan: dict, controlled_child_scope: bool = False):
         if type(descriptor) is not dict:
             return {'status': 'invalidated', 'reason': 'descriptor-invalid'}
         key = descriptor.get('fixturePath')
-        if type(key) is not str or key not in fixtures or descriptor != descriptors[key] or key in used:
-            return {'status': 'invalidated', 'reason': 'descriptor-unbound-or-reused'}
-        used.add(key)
+        if type(key) is not str or key not in fixtures:
+            return {'status': 'invalidated', 'reason': 'descriptor-unbound'}
         fixture = fixtures[key]
-        try:
+        bound = descriptors[key]
+        run_path, grant_path = Path(bound['runPath']), Path(bound['grantPath'])
+        runtime_root = run_path.parent
+        guard_calls = 0
+
+        def identity_guard():
+            # Both expensive checks run inside run_treatment's outer interval:
+            # initial validation in input, closing validation in residual after
+            # owned cleanup and before its closing tick.
+            nonlocal guard_calls
+            first = guard_calls == 0
+            guard_calls += 1
+            if first:
+                if descriptor != bound or key in used:
+                    raise InvalidatedDiagnostic('descriptor-unbound-or-reused')
+                used.add(key)
+                try:
+                    fresh_root = _destination(runtime_root)
+                except InvalidUtilityFixture as exc:
+                    raise UnsafeDiagnostic('fresh runtime scope refused') from exc
+                if grant_path.parent != fresh_root:
+                    raise InvalidatedDiagnostic('runtime-path-binding-differs')
             if not unchanged():
-                return {'status': 'invalidated', 'reason': 'candidate-or-manifest-drift'}
+                raise InvalidatedDiagnostic('candidate-or-manifest-drift')
             if source_fingerprint(Path(fixture['repository'])) != fingerprints[key]:
-                return {'status': 'no-go', 'reason': 'prepared-source-mutation'}
-            run_path, grant_path = Path(descriptor['runPath']), Path(descriptor['grantPath'])
-            runtime_root = _destination(run_path.parent)
-            if grant_path.parent != runtime_root:
-                return {'status': 'invalidated', 'reason': 'runtime-path-binding-differs'}
-            result = run_treatment(deepcopy(fixture), descriptor['mode'],
+                raise UnsafeDiagnostic('prepared-source-mutation')
+
+        try:
+            # No deepcopy or candidate/source checks before the opening tick.
+            result = run_treatment(fixture, bound['mode'],
                                    controlled_child_scope=controlled_child_scope,
                                    treatment_root=runtime_root, run_leaf=run_path.name,
-                                   grant_leaf=grant_path.name)
-            if not unchanged():
-                return {'status': 'invalidated', 'reason': 'candidate-or-manifest-drift', 'retainedSample': result}
-            if source_fingerprint(Path(fixture['repository'])) != fingerprints[key]:
-                return {'status': 'no-go', 'reason': 'prepared-source-mutation', 'retainedSample': result}
+                                   grant_leaf=grant_path.name, identity_guard=identity_guard)
+            if result.get('status') == 'completed' and guard_calls < 2:
+                return {'status': 'invalidated', 'reason': 'mandatory-identity-guard-omitted', 'retainedSample': result}
             return result
+        except InvalidatedDiagnostic as exc:
+            return {'status': 'invalidated', 'reason': str(exc)}
         except (UnsafeDiagnostic, InvalidUtilityFixture) as exc:
             return {'status': 'no-go', 'reason': str(exc)}
         except Exception as exc:
             error = {'type': type(exc).__name__, 'message': str(exc)}
-            if not unchanged():
-                return {'status': 'invalidated', 'reason': 'candidate-or-manifest-drift', 'error': error}
             try:
-                if source_fingerprint(Path(fixture['repository'])) != fingerprints[key]:
-                    return {'status': 'no-go', 'reason': 'prepared-source-mutation-on-error', 'error': error}
+                # Timing is unavailable after an unexpected escaping pipeline
+                # error; this fallback can only reject, never yield a ratio.
+                identity_guard()
+            except InvalidatedDiagnostic as safety_error:
+                return {'status': 'invalidated', 'reason': str(safety_error), 'error': error}
             except (UnsafeDiagnostic, OSError) as safety_error:
                 return {'status': 'no-go', 'reason': str(safety_error), 'error': error}
             return {'status': 'inconclusive', 'error': error}

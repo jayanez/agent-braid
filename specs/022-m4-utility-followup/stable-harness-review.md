@@ -8,7 +8,7 @@ After the implementation is reviewed, validated and merged, prepare the exact pa
 
 ## Accounting to inspect
 
-Inspect the eight required disjoint phases, residual reconciliation, authoritative whole-wall cost and final closing status. Grants, replay, policy reconstruction, execution, independent verification and cleanup are included. Exact operational serialization bytes are retained; observer sealing and shared output are separately timed. Unavailable observations have reasons. Accepted budget-output bytes do not assert total process bytes read; child CPU scope and process-lifetime RSS limitations are explicit.
+Inspect the eight required disjoint phases, residual reconciliation, authoritative whole-wall cost and final closing status. Recurring candidate/manifest/source identity checks are measured in input and the closing residual after cleanup, before the outer end tick. Grants, replay, policy reconstruction, execution, independent verification and cleanup are included. Exact operational serialization bytes are retained; observer sealing and shared output are separately timed. Unavailable observations have reasons. Accepted budget-output bytes do not assert total process bytes read; child CPU scope and process-lifetime RSS limitations are explicit.
 
 ## Trial plan to inspect
 

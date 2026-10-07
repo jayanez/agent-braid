@@ -1,7 +1,8 @@
 {
+  "childPythonExecutable": "/tmp/agent-braid-parallel-20261006/.venv-speckit/bin/python3",
   "command": "/tmp/agent-braid-parallel-20261006/.venv-speckit/bin/python -m unittest tests.test_utility_accounting tests.test_utility_fixtures tests.test_m4_utility tests.test_utility_trials tests.test_m4_utility_preparation",
   "developmentReviewModel": "gpt-6-luna",
-  "developmentReviewOutcome": "Luna final engineering GO after phase reconciliation, exact source inventory, admission source/grant proof, canonical plan fixes and observer relocation out of frozen process-runner bytes. The trial/accounting reviewer executed 32 focal tests; other reviewers executed no suites or diagnostics. Human stable-harness/manifest approval remains pending.",
+  "developmentReviewOutcome": "Luna engineering GO including observer relocation and recurring identity guards inside operational input/closing residual. Root executed 74 focal tests on this source; other earlier checks are dated development evidence.",
   "inputs": {
     "agent_braid/analysis.py": "fadfb6f6d3d6f89002df519bbcc86d839724f243e2c8e52732ef57e555abfe00",
     "agent_braid/git_adapter.py": "4548eb96849e2d0ed1eaefc53579d065651b00a2c6ae5b1aef6e2bdc5ae3dc45",
@@ -17,16 +18,17 @@
     "agent_braid/utility_fixtures.py": "ea3ecb2bda7e6909f5307232dcc6b13953e4ac560eab9144dd0f566d90de8119",
     "agent_braid/utility_trials.py": "1f41e65b892fb607e887b486042f19d3a4a6dc5db1e1dcaca46930e6e554dce2",
     "research/lab/model.py": "f39040b5476d663f6e7384e65d00073b084df6c8958b38bff45e4d6b19da010f",
-    "scripts/measure_m4_utility.py": "33630ecdd5cb01b6cf4e2b39b82a31093fa769d803e7a7ee1ffc0c060c8c9baf",
-    "scripts/prepare_m4_utility_trials.py": "054fe8aa3d733aee48fb5802260aae5824f9013c61cb4de10b013d7d4407b213",
+    "scripts/measure_m4_utility.py": "60ad14fa39b31e2af67b8987a3f8e544bf884a1e47e23f1bd69ada6285b82a08",
+    "scripts/prepare_m4_utility_trials.py": "2decd580864e97558a69c6b385d2b43d7657dc7f7e214c4b12f5936d2529544f",
     "specs/022-m4-utility-followup/evidence/prepared-fixture-manifest.json": "ec8f36b21dd745df8443acd6035ff75a4b01bd61fd004470ce0315a655908734",
     "specs/022-m4-utility-followup/technical-review-packet.md": "6e5a2bd790fb789926007e11f33af40df2ed494d3e8464b13f114523120b282b"
   },
   "limits": "Development tests and code review only; repository delivery gates reported separately. No registered measurement, stable human harness approval, utility acceptance, G4 or M4 closure.",
   "observedExitCode": 0,
+  "pythonExecutable": "/private/tmp/agent-braid-parallel-20261006/.venv-speckit/bin/python",
   "recordVersion": "spec022-phase-accounting-development-tests-v1",
   "skipped": 0,
-  "testCount": 70,
+  "testCount": 74,
   "testLog": "specs/022-m4-utility-followup/evidence/phase-accounting-tests.txt",
-  "testLogSha256": "7d5d799811ddfdc2a977db84d0a1295f9af51011c89c146f51b7457570627908"
+  "testLogSha256": "d50697acb7d02d8f49cafdb7743616afd92a70833d99d8ef42cdf3dec13388ed"
 }

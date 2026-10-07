@@ -99,6 +99,11 @@ class UtilityPreparationTests(unittest.TestCase):
                 'pairIndex': pair['pairIndex'], 'category': pair['category'],
                 'preparedBlock': deepcopy(block['preparedBlock'])}
 
+    def fake_guarded_treatment(self, fixture, mode, **kwargs):
+        kwargs['identity_guard']()
+        kwargs['identity_guard']()
+        return {'status': 'completed', 'syntheticTestOnly': True}
+
     def callback_scope(self):
         return patch.multiple(prepare, _candidate_state=lambda: deepcopy(self.state),
                               build_fixture=self.fake_builder)
@@ -162,10 +167,12 @@ class UtilityPreparationTests(unittest.TestCase):
     def test_all_fixture_copies_precede_callback_and_runtime_paths_are_bound(self):
         calls = []
         def treatment(fixture, mode, **kwargs):
+            kwargs['identity_guard']()
             calls.append(kwargs)
             self.assertEqual(fixture['preparedSourceFingerprint'], prepare.source_fingerprint(Path(fixture['repository'])))
             self.assertEqual(kwargs['run_leaf'], 'run')
             self.assertEqual(kwargs['grant_leaf'], 'grants')
+            kwargs['identity_guard']()
             return {'status': 'completed', 'syntheticTestOnly': True}
         with self.callback_scope(), patch.object(prepare, 'run_treatment', side_effect=treatment):
             callback, record = prepare.prepare_runtime_callback(self.plan)
@@ -182,7 +189,7 @@ class UtilityPreparationTests(unittest.TestCase):
             self.assertEqual(len(calls), 1)
 
     def test_source_mutation_descriptor_tamper_and_candidate_drift_never_dispatch(self):
-        with self.callback_scope(), patch.object(prepare, 'run_treatment') as treatment:
+        with self.callback_scope(), patch.object(prepare, 'run_treatment', side_effect=self.fake_guarded_treatment) as treatment:
             callback, _ = prepare.prepare_runtime_callback(self.plan)
             tampered = self.descriptor()
             tampered['runPath'] += '-tampered'
@@ -192,10 +199,10 @@ class UtilityPreparationTests(unittest.TestCase):
             self.assertEqual(callback(descriptor)['status'], 'no-go')
             with patch.object(prepare, '_candidate_state', side_effect=ValueError('dirty')):
                 self.assertEqual(callback(self.descriptor(0, 0, 1))['status'], 'invalidated')
-            treatment.assert_not_called()
+            self.assertEqual(treatment.call_count, 3)
 
     def test_existing_runtime_directory_is_never_adopted_or_removed(self):
-        with self.callback_scope(), patch.object(prepare, 'run_treatment') as treatment:
+        with self.callback_scope(), patch.object(prepare, 'run_treatment', side_effect=self.fake_guarded_treatment) as treatment:
             callback, _ = prepare.prepare_runtime_callback(self.plan)
             descriptor = self.descriptor()
             runtime = Path(descriptor['runPath']).parent
@@ -203,18 +210,29 @@ class UtilityPreparationTests(unittest.TestCase):
             sentinel = runtime / 'preserve.txt'
             sentinel.write_bytes(b'preserve')
             self.assertEqual(callback(descriptor)['status'], 'no-go')
-            treatment.assert_not_called()
+            self.assertEqual(treatment.call_count, 1)
             self.assertEqual(sentinel.read_bytes(), b'preserve')
 
     def test_source_change_after_treatment_retains_sample_and_stops(self):
         def treatment(fixture, mode, **kwargs):
+            kwargs['identity_guard']()
+            encoded = json.dumps({'status': 'completed', 'syntheticTestOnly': True})
+            # Simulated owned cleanup mutation occurs after operational encoding,
+            # before the fake pipeline's closing tick, exactly like the real path.
             (Path(fixture['repository']) / 'owned.txt').write_bytes(b'unsafe fake mutation')
-            return {'status': 'completed', 'syntheticTestOnly': True}
+            try:
+                kwargs['identity_guard']()
+            except prepare.UnsafeDiagnostic as exc:
+                return {'status': 'no-go', 'operationalEncoded': encoded,
+                        'identityGuardError': {'message': str(exc)}}
+            return {'status': 'completed', 'operationalEncoded': encoded}
         with self.callback_scope(), patch.object(prepare, 'run_treatment', side_effect=treatment):
             callback, _ = prepare.prepare_runtime_callback(self.plan)
             result = callback(self.descriptor())
         self.assertEqual(result['status'], 'no-go')
-        self.assertTrue(result['retainedSample']['syntheticTestOnly'])
+        self.assertTrue(json.loads(result['operationalEncoded'])['syntheticTestOnly'])
+        self.assertEqual(json.loads(result['operationalEncoded'])['status'], 'completed')
+        self.assertEqual(result['identityGuardError']['message'], 'prepared-source-mutation')
 
     def test_existing_symlink_and_git_ancestor_roots_reject_before_builder(self):
         destination = self.root / 'future'
@@ -240,14 +258,43 @@ class UtilityPreparationTests(unittest.TestCase):
 
     def test_source_mutation_with_unexpected_error_cannot_be_hidden_as_inconclusive(self):
         def treatment(fixture, mode, **kwargs):
+            kwargs['identity_guard']()
             (Path(fixture['repository']) / 'owned.txt').write_bytes(b'changed on error')
             raise RuntimeError('fake unexpected error')
         with self.callback_scope(), patch.object(prepare, 'run_treatment', side_effect=treatment):
             callback, _ = prepare.prepare_runtime_callback(self.plan)
             result = callback(self.descriptor())
         self.assertEqual(result['status'], 'no-go')
-        self.assertEqual(result['reason'], 'prepared-source-mutation-on-error')
+        self.assertEqual(result['reason'], 'prepared-source-mutation')
         self.assertEqual(result['error']['type'], 'RuntimeError')
+
+    def test_completed_pipeline_omitting_identity_guards_cannot_report_ratio(self):
+        with self.callback_scope(), patch.object(prepare, 'run_treatment', return_value={'status': 'completed'}):
+            callback, _ = prepare.prepare_runtime_callback(self.plan)
+            result = callback(self.descriptor())
+        self.assertEqual(result['status'], 'invalidated')
+        self.assertEqual(result['reason'], 'mandatory-identity-guard-omitted')
+
+    def test_successful_candidate_guards_execute_only_inside_pipeline_interval(self):
+        active, dispatched, outside = [False], [False], []
+        def state():
+            if dispatched[0] and not active[0]:
+                outside.append('candidate-check-outside-clock')
+            return deepcopy(self.state)
+        def treatment(fixture, mode, **kwargs):
+            dispatched[0] = True
+            active[0] = True
+            try:
+                kwargs['identity_guard']()
+                kwargs['identity_guard']()
+            finally:
+                active[0] = False
+            return {'status': 'completed'}
+        with patch.object(prepare, '_candidate_state', side_effect=state), patch.object(prepare, 'build_fixture', side_effect=self.fake_builder), patch.object(prepare, 'run_treatment', side_effect=treatment):
+            callback, _ = prepare.prepare_runtime_callback(self.plan)
+            result = callback(self.descriptor())
+        self.assertEqual(result['status'], 'completed')
+        self.assertEqual(outside, [])
 
 
 if __name__ == '__main__':

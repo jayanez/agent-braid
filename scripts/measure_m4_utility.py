@@ -45,6 +45,16 @@ class UnsafeDiagnostic(RuntimeError):
     """Safety or immutable identity failure: stop subsequent diagnostics."""
 
 
+class InvalidatedDiagnostic(UnsafeDiagnostic):
+    """The reviewed code/manifest identity drifted: require a fresh freeze."""
+
+
+def _failure_status(error):
+    if isinstance(error, InvalidatedDiagnostic):
+        return "invalidated"
+    return "no-go" if isinstance(error, UnsafeDiagnostic) else "inconclusive"
+
+
 class _OwnedTreatmentDirectory:
     """Fresh caller-bound private scope; never adopt or remove an existing root."""
 
@@ -119,7 +129,7 @@ def worker_overlap(preparation: dict | None) -> dict:
 def run_treatment(fixture: dict, mode: str, *, accounting_factory=UtilityAccounting,
                   cancel_event=None, controlled_child_scope: bool = False,
                   treatment_root: Path | None = None, run_leaf: str = "result",
-                  grant_leaf: str = "grants") -> dict:
+                  grant_leaf: str = "grants", identity_guard=None) -> dict:
     """Run the complete existing grant/verification path in owned private storage."""
     if mode not in {"serial", "parallel"}:
         raise ValueError("unsupported treatment mode")
@@ -132,12 +142,16 @@ def run_treatment(fixture: dict, mode: str, *, accounting_factory=UtilityAccount
                    "immutableSourceUnchanged": None}
     private = None
     cleanup_error = None
+    guard_error = None
+    guard_status = None
     source = Path(fixture["repository"])
     before = None
     accounting.start()
     with accounting.activate_git_budget_registry():
         try:
             with accounting.phase("input"):
+                if identity_guard is not None:
+                    identity_guard()
                 request, replay_request = _load_fixture_inputs(fixture)
                 before = source_fingerprint(source)
                 if ("preparedSourceFingerprint" in fixture
@@ -173,7 +187,7 @@ def run_treatment(fixture: dict, mode: str, *, accounting_factory=UtilityAccount
                                    independentVerification=verification,
                                    workerOverlap=worker_overlap(report.get("preparation")))
         except Exception as exc:
-            operational.update(status="no-go" if isinstance(exc, UnsafeDiagnostic) else "inconclusive",
+            operational.update(status=_failure_status(exc),
                                error={"type": type(exc).__name__, "message": str(exc),
                                       "category": getattr(exc, "category", None)})
             # A failure before final verification must not conceal source mutation.
@@ -199,8 +213,21 @@ def run_treatment(fixture: dict, mode: str, *, accounting_factory=UtilityAccount
                             private.cleanup()
                         except OSError as exc:
                             cleanup_error = {"type": type(exc).__name__, "message": str(exc)}
+            # Recurring wrapper identity checks are mandatory treatment work.
+            # The closing check follows cleanup inside the explicit residual,
+            # before finish; its later status never rewrites encoded bytes.
+            if identity_guard is not None:
+                try:
+                    identity_guard()
+                except Exception as exc:
+                    guard_status = _failure_status(exc)
+                    guard_error = {"type": type(exc).__name__, "message": str(exc)}
     final_status = operational["status"]
-    if cleanup_error is not None and final_status != "no-go":
+    if guard_status is not None:
+        rank = {"completed": 0, "incomplete": 0, "inconclusive": 1, "invalidated": 2, "no-go": 3}
+        if rank[guard_status] > rank[final_status]:
+            final_status = guard_status
+    if cleanup_error is not None and final_status not in {"no-go", "invalidated"}:
         final_status = "inconclusive"
     observation = accounting.finish(
         outcome="success" if final_status == "completed" else "failure")
@@ -212,7 +239,7 @@ def run_treatment(fixture: dict, mode: str, *, accounting_factory=UtilityAccount
     result, observer = accounting.seal(lambda closed: {
         "operational": deepcopy(operational), "operationalEncoded": raw_operational.decode(),
         "operationalEncodedBytes": len(raw_operational), "status": final_status,
-        "cleanupError": cleanup_error, "accounting": closed,
+        "cleanupError": cleanup_error, "identityGuardError": guard_error, "accounting": closed,
         "boundary": "operational report bytes precede cleanup; closing status/accounting envelope and final output are separately observed"})
     result["observerFinalization"] = observer
     return result

@@ -100,6 +100,42 @@ class UtilityHarnessTests(unittest.TestCase):
         self.assertEqual(result["operationalEncodedBytes"], len(result["operationalEncoded"].encode()))
         self.assertEqual(result["observerFinalization"]["startWallNs"], observation["outer"]["endWallNs"])
 
+    def test_wrapper_guards_are_inside_input_and_closing_residual(self):
+        self.pipeline()
+        clock = [0.0]
+        count = [0]
+        def guard():
+            count[0] += 1
+            clock[0] += 2.0 if count[0] == 1 else 3.0
+            if count[0] == 2:
+                self.assertFalse(self.destinations[0].exists())
+        def factory(**kwargs):
+            return UtilityAccounting(monotonic=lambda: clock[0], parent_cpu=lambda: 0.0,
+                                     child_cpu=lambda: (0.0, 0.0), lifetime_rss=lambda: 0, **kwargs)
+        result = utility.run_treatment(self.fixture, "serial", accounting_factory=factory,
+                                       identity_guard=guard)
+        self.assertEqual(count[0], 2)
+        self.assertEqual(result["status"], "completed")
+        self.assertEqual(result["accounting"]["outer"]["wallNs"], 5_000_000_000)
+        self.assertEqual(result["accounting"]["phases"][0]["wallNs"], 2_000_000_000)
+        self.assertEqual(result["accounting"]["residualWallNs"], 3_000_000_000)
+
+    def test_closing_identity_drift_invalidates_without_rewriting_encoded_report(self):
+        self.pipeline()
+        count = [0]
+        def guard():
+            count[0] += 1
+            if count[0] == 2:
+                raise utility.InvalidatedDiagnostic("code changed after cleanup")
+        result = utility.run_treatment(self.fixture, "serial", accounting_factory=self.accounting,
+                                       identity_guard=guard)
+        self.assertEqual(result["status"], "invalidated")
+        self.assertEqual(result["operational"]["status"], "completed")
+        self.assertEqual(json.loads(result["operationalEncoded"]), result["operational"])
+        self.assertFalse(result["accounting"]["complete"])
+        self.assertEqual(result["identityGuardError"]["message"], "code changed after cleanup")
+        self.assertFalse(self.destinations[0].exists())
+
     def test_request_drift_refuses_before_any_runtime_boundary(self):
         self.pipeline()
         Path(self.fixture["runtimeRequestPath"]).write_bytes(b"tampered")
@@ -243,8 +279,13 @@ class UtilityRealBoundaryTests(unittest.TestCase):
                 with self.subTest(mode=mode):
                     runtime_root = Path(directory) / ("runtime-" + mode)
                     fixture["preparedSourceFingerprint"] = before
+                    guard_calls = []
+                    def guard():
+                        guard_calls.append(True)
+                        self.assertEqual(before, utility.source_fingerprint(Path(fixture["repository"])))
                     sample = utility.run_treatment(fixture, mode, treatment_root=runtime_root,
-                                                   run_leaf="run", grant_leaf="grants")
+                                                   run_leaf="run", grant_leaf="grants", identity_guard=guard)
+                    self.assertEqual(len(guard_calls), 2)
                     self.assertEqual(Path(sample["operational"]["independentVerification"]["runDirectory"]),
                                      (runtime_root / "run").resolve())
                     self.assertFalse(runtime_root.exists())

@@ -2,11 +2,13 @@
 
 Protocol T001 was approved against public `3777e578`. Whole-feature human review, stable harness/registered manifest review, actual-workload utility acceptance and G4/M4 closure remain pending. The implementation does not turn protocol approval into registered-execution approval.
 
+Run commands in an isolated Python 3.12+ environment with its `bin` directory first in `PATH`, including child interpreters.
+
 ## SC-001 — Cost accounting
 
 `tests/test_utility_accounting.py` and `tests/test_m4_utility.py` exercise injectable clocks, disjoint required phases, explicit residuals, omitted counters, grant/verification/cleanup and source integrity. The real boundary test runs an owned pinned two-operation fixture through both complete serial and parallel paths. Optional unavailable observations have explicit reasons; accepted budget-output bytes are distinct from unknown total captured bytes.
 
-The outer interval includes input loading, replay, preparation, grants, execution, independent verification, operational serialization and cleanup. Closing envelope construction and shared output are separately observed. Exact operational encoded bytes are retained alongside the later authoritative closing status.
+Recurring registered-wrapper candidate, manifest and source checks occur in input and closing residual before the outer tick closes. The outer interval includes input loading, replay, preparation, grants, execution, independent verification, operational serialization and cleanup. Closing envelope construction and shared output are separately observed. Exact operational encoded bytes are retained alongside the later authoritative closing status.
 
 ## SC-002 — Immutable paired evaluation
 
