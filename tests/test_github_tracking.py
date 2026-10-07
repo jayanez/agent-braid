@@ -3,6 +3,7 @@
 
 from contextlib import redirect_stdout
 from copy import deepcopy
+import hashlib
 import io
 import json
 import re
@@ -11,6 +12,7 @@ import unittest
 from unittest.mock import patch
 
 from scripts.sync_github_tracking import (ROOT, apply_plan, build_plan, main,
+                                          milestone_plan,
                                           remote_inventory, source_inventory,
                                           validate_milestone_numbers)
 
@@ -278,6 +280,238 @@ class MilestoneNamingTests(unittest.TestCase):
                                      "--plan-sha256", digest]))
         inventory.assert_called_once_with("owner/repo", milestone_titles_only=True)
         apply.assert_called_once_with("owner/repo", self.config, [], self.remote, {}, [self.rename])
+
+
+class ScopedMilestoneTests(unittest.TestCase):
+    def setUp(self):
+        self.name = "M4 — Agent Braid runtime"
+        self.other = "M3 — Braid semantics"
+        self.config = {"repository": "owner/repo", "project_url": "https://example.test/project",
+                       "milestones": {self.name: "runtime", self.other: "semantics"},
+                       "closed_milestones": [], "milestone_numbers": {self.name: 6, self.other: 5}}
+        self.milestones = {self.name: {"number": 6, "title": self.name, "state": "open"},
+                           self.other: {"number": 5, "title": self.other, "state": "open"}}
+        self.desired = []
+        self.issues = {}
+        self.extra = {"children": {}, "unmarked_titles": set()}
+        for idx in range(14):
+            key = f"SPEC-022/T{idx + 1:03}"
+            task_text = f"Selected task {idx}"
+            body = f"## Task\n\n{task_text}\n\n- Source: source\n- Trace: REQ-001 / SC-001\n"
+            item = {"key": key, "kind": "task", "parent": None,
+                    "title": f"[{key.replace('/', ' ')}] {task_text}", "state": "closed",
+                    "milestone": self.name, "task_text": task_text, "body": body}
+            issue = {"number": 100 + idx, "id": 1000 + idx, "title": item["title"],
+                     "state": "open" if idx < 10 else "closed",
+                     "milestone": {"number": 6, "title": self.name}, "body": body}
+            if idx in {10, 11}:
+                issue["title"] = f"stale title {idx}"
+            if idx in {12, 13}:
+                issue["body"] = body.replace(task_text, f"stale task {idx}")
+            self.desired.append(item)
+            self.issues[key] = issue
+        # Deliberately noisy records outside M4 must not leak into its plan.
+        for idx in range(56):
+            key = f"SPEC-001/T{idx + 1:03}"
+            self.desired.append({"key": key, "kind": "task", "parent": None,
+                                 "title": f"desired {key}", "state": "closed",
+                                 "milestone": self.other, "task_text": "other", "body": ""})
+            self.issues[key] = {"number": 200 + idx, "id": 2000 + idx, "title": f"stale {key}",
+                                "state": "open", "milestone": {"number": 5, "title": self.other},
+                                "body": ""}
+
+    def test_exactly_fourteen_selected_operations_exclude_fifty_six_unrelated(self):
+        _, _, _, operations = milestone_plan(self.config, self.desired, self.milestones,
+                                             self.issues, self.extra, 6)
+        self.assertEqual(14, len(operations))
+        self.assertEqual(10, sum(op["action"] == "set_state" for op in operations))
+        self.assertEqual(2, sum(op["action"] == "update_title" for op in operations))
+        self.assertEqual(2, sum(op["action"] == "update_task_text" for op in operations))
+        self.assertTrue(all(op.get("key", "").startswith("SPEC-022/") for op in operations))
+
+    def test_missing_moved_and_unknown_assigned_records_fail_closed(self):
+        missing = deepcopy(self.issues)
+        del missing["SPEC-022/T001"]
+        with self.assertRaisesRegex(ValueError, "missing"):
+            milestone_plan(self.config, self.desired, self.milestones, missing, self.extra, 6)
+        moved = deepcopy(self.issues)
+        moved["SPEC-022/T001"]["milestone"] = {"number": 5, "title": self.other}
+        with self.assertRaisesRegex(ValueError, "moved"):
+            milestone_plan(self.config, self.desired, self.milestones, moved, self.extra, 6)
+        unknown = deepcopy(self.issues)
+        unknown["SPEC-999/T001"] = {"number": 999, "milestone": {"number": 6}}
+        with self.assertRaisesRegex(ValueError, "unknown or out-of-scope"):
+            milestone_plan(self.config, self.desired, self.milestones, unknown, self.extra, 6)
+
+    def test_only_selected_milestone_title_and_configured_state_are_included(self):
+        config = deepcopy(self.config)
+        config["closed_milestones"] = [self.name]
+        milestones = deepcopy(self.milestones)
+        milestones[self.name]["title"] = "M4"
+        _, _, _, operations = milestone_plan(config, self.desired, milestones,
+                                             self.issues, self.extra, 6)
+        milestone_operations = [op for op in operations if op["action"].endswith("milestone")
+                                or op["action"] in {"rename_milestone", "set_milestone_state"}]
+        self.assertEqual(["rename_milestone", "set_milestone_state"],
+                         [op["action"] for op in milestone_operations])
+        self.assertTrue(all(op.get("number", 6) == 6 for op in milestone_operations))
+
+    def test_digest_binds_selected_number_and_rejects_other_scope_replay(self):
+        def digest(extra_args):
+            output = io.StringIO()
+            with patch("scripts.sync_github_tracking.source_inventory",
+                       return_value=(self.config, self.desired)), \
+                 patch("scripts.sync_github_tracking.remote_inventory",
+                       return_value=(self.milestones, self.issues, self.extra)), \
+                 redirect_stdout(output):
+                self.assertIn(main(["audit", *extra_args]), (0, 1))
+            return json.loads(output.getvalue())
+        selected = digest(["--milestone-number", "6"])
+        other = digest(["--milestone-number", "5"])
+        full = digest([])
+        title_only = digest(["--milestone-titles-only"])
+        self.assertEqual("milestone:6", selected["scope"])
+        self.assertEqual(6, selected["milestone_number"])
+        self.assertNotEqual(selected["plan_sha256"], other["plan_sha256"])
+        self.assertNotEqual(selected["plan_sha256"], full["plan_sha256"])
+        self.assertNotEqual(selected["plan_sha256"], title_only["plan_sha256"])
+
+    def test_scope_flags_are_mutually_exclusive_and_task_registration_is_dynamic(self):
+        with patch("scripts.sync_github_tracking.source_inventory", return_value=(self.config, self.desired)), \
+             patch("scripts.sync_github_tracking.remote_inventory", return_value=(self.milestones, self.issues, self.extra)), \
+             redirect_stdout(io.StringIO()), patch("sys.stderr", new_callable=io.StringIO), \
+             self.assertRaises(SystemExit):
+            main(["audit", "--milestone-number", "6", "--milestone-titles-only"])
+        key = "SPEC-022/T015"
+        body = f"## Task\n\n{key}\n\n- Source: source\n- Trace: See the parent issue and assurance record.\n"
+        self.desired.append({"key": key, "kind": "task", "parent": None, "title": key,
+                             "state": "open", "milestone": self.name, "task_text": key, "body": body})
+        self.issues[key] = {"number": 999, "milestone": {"number": 6, "title": self.name},
+                            "title": key, "state": "open", "body": body}
+        _, selected, _, operations = milestone_plan(self.config, self.desired, self.milestones,
+                                                    self.issues, self.extra, 6)
+        self.assertIn(key, {item["key"] for item in selected})
+        self.assertEqual([], [op for op in operations if op.get("key") == key])
+
+    def test_apply_rejects_plan_drift_and_passes_only_scoped_records(self):
+        def audit_digest():
+            output = io.StringIO()
+            with patch("scripts.sync_github_tracking.source_inventory", return_value=(self.config, self.desired)), \
+                 patch("scripts.sync_github_tracking.remote_inventory", return_value=(self.milestones, self.issues, self.extra)), \
+                 redirect_stdout(output):
+                main(["audit", "--milestone-number", "6"])
+            return json.loads(output.getvalue())["plan_sha256"]
+
+        digest = audit_digest()
+        changed_issues = deepcopy(self.issues)
+        changed_issues["SPEC-022/T001"]["title"] = "concurrent remote change"
+        for issues in (changed_issues, self.issues):
+            with patch("scripts.sync_github_tracking.source_inventory", return_value=(self.config, self.desired)), \
+                 patch("scripts.sync_github_tracking.remote_inventory", return_value=(self.milestones, issues, self.extra)), \
+                 patch("scripts.sync_github_tracking.subprocess.run", side_effect=[SimpleNamespace(stdout="develop"), SimpleNamespace(stdout="")]), \
+                 patch("scripts.sync_github_tracking.apply_plan") as apply, \
+                 redirect_stdout(io.StringIO()), patch("sys.stderr", new_callable=io.StringIO):
+                if issues is changed_issues:
+                    with self.assertRaises(SystemExit):
+                        main(["apply", "--milestone-number", "6", "--confirm-repository", "owner/repo",
+                              "--plan-sha256", digest])
+                    apply.assert_not_called()
+                else:
+                    self.assertEqual(0, main(["apply", "--milestone-number", "6", "--confirm-repository",
+                                              "owner/repo", "--plan-sha256", digest]))
+                    _, selected, selected_issues, _ = milestone_plan(self.config, self.desired, self.milestones,
+                                                                     self.issues, self.extra, 6)
+                    self.assertEqual({item["key"] for item in selected}, set(selected_issues))
+                    apply.assert_called_once()
+                    args = apply.call_args.args
+                    self.assertEqual({item["key"] for item in selected}, {item["key"] for item in args[2]})
+                    self.assertEqual(set(selected_issues), set(args[4]))
+
+    def new_spec_fixture(self):
+        name = self.name
+        spec_key = "SPEC-038"
+        desired = [{"key": spec_key, "kind": "spec", "parent": None, "title": "[SPEC-038] Closure",
+                    "state": "open", "milestone": name, "body": "spec body"}]
+        for idx in range(1, 9):
+            key = f"SPEC-038/T{idx:03}"
+            task_text = f"Work package {idx}"
+            desired.append({"key": key, "kind": "task", "parent": spec_key,
+                            "title": f"[SPEC-038 T{idx:03}] {task_text}", "state": "open",
+                            "milestone": name, "task_text": task_text,
+                            "body": f"## Task\n\n{task_text}\n\n- Source: source\n- Trace: See the parent issue and assurance record.\n"})
+        return desired
+
+    def test_new_spec_bootstrap_requires_exact_allowlist_and_plans_only_creates(self):
+        desired = self.new_spec_fixture()
+        keys = {item["key"] for item in desired}
+        with self.assertRaisesRegex(ValueError, "missing for selected"):
+            milestone_plan(self.config, desired, self.milestones, {}, self.extra, 6)
+        _, _, selected_issues, operations = milestone_plan(
+            self.config, desired, self.milestones, {}, self.extra, 6, keys)
+        self.assertEqual({}, selected_issues)
+        self.assertEqual(9, sum(op["action"] == "create_issue" for op in operations))
+        self.assertEqual(8, sum(op["action"] == "link_subissue" for op in operations))
+        self.assertTrue(all(op["action"] not in {"update_title", "update_milestone", "set_state"}
+                            for op in operations))
+
+    def test_registered_spec038_source_records_can_be_bootstrapped_explicitly(self):
+        config, all_desired = source_inventory()
+        desired = [item for item in all_desired if item["key"] == "SPEC-038"
+                   or item["key"].startswith("SPEC-038/")]
+        self.assertTrue(desired)
+        name = config["specs"]["038-m4-real-workload-closure"]["milestone"]
+        milestone_number = config["milestone_numbers"][name]
+        milestones = {name: {"number": milestone_number, "title": name, "state": "open"}}
+        allowlist = {item["key"] for item in desired}
+        with self.assertRaisesRegex(ValueError, "missing for selected"):
+            milestone_plan(config, desired, milestones, {}, self.extra, milestone_number)
+        _, _, _, operations = milestone_plan(config, desired, milestones, {}, self.extra,
+                                             milestone_number, allowlist)
+        self.assertEqual(len(desired), sum(op["action"] == "create_issue" for op in operations))
+        self.assertEqual(len(desired) - 1, sum(op["action"] == "link_subissue" for op in operations))
+
+    def test_new_record_allowlist_rejects_unknown_present_and_unselected_keys(self):
+        desired = self.new_spec_fixture()
+        with self.assertRaisesRegex(ValueError, "unknown source record"):
+            milestone_plan(self.config, desired, self.milestones, {}, self.extra, 6, {"SPEC-999/T001"})
+        existing = {"SPEC-038": {"number": 400, "milestone": {"number": 6}}}
+        with self.assertRaisesRegex(ValueError, "already exists remotely"):
+            milestone_plan(self.config, desired, self.milestones, existing, self.extra, 6, {"SPEC-038"})
+        other = {"key": "SPEC-001/T001", "kind": "task", "parent": None, "title": "Other",
+                 "state": "open", "milestone": self.other, "task_text": "Other", "body": ""}
+        with self.assertRaisesRegex(ValueError, "outside milestone"):
+            milestone_plan(self.config, [*desired, other], self.milestones, {}, self.extra, 6,
+                           {"SPEC-001/T001"})
+        with patch("scripts.sync_github_tracking.source_inventory", return_value=(self.config, desired)), \
+             redirect_stdout(io.StringIO()), patch("sys.stderr", new_callable=io.StringIO):
+            with self.assertRaises(SystemExit):
+                main(["audit", "--milestone-number", "6", "--new-record-key", "SPEC-038",
+                      "--new-record-key", "SPEC-038"])
+
+    def test_allowlist_is_sorted_in_output_and_bound_to_apply_digest(self):
+        desired = self.new_spec_fixture()
+        keys = {item["key"] for item in desired}
+        output = io.StringIO()
+        with patch("scripts.sync_github_tracking.source_inventory", return_value=(self.config, desired)), \
+             patch("scripts.sync_github_tracking.remote_inventory",
+                   return_value=(self.milestones, {}, self.extra)), redirect_stdout(output):
+            self.assertEqual(1, main(["audit", "--milestone-number", "6", *sum(
+                (["--new-record-key", key] for key in reversed(sorted(keys))), [])]))
+        audited = json.loads(output.getvalue())
+        self.assertEqual(sorted(keys), audited["new_record_keys"])
+        # A digest from an allowlist that omits one creation cannot authorize this plan.
+        altered = {"repository": "owner/repo", "scope": "milestone:6", "milestone_number": 6,
+                   "new_record_keys": sorted(keys)[:-1], "operations": audited["operations"]}
+        stale_digest = hashlib.sha256(json.dumps(altered, sort_keys=True, ensure_ascii=False,
+                                                  separators=(",", ":")).encode("utf-8")).hexdigest()
+        with patch("scripts.sync_github_tracking.source_inventory", return_value=(self.config, desired)), \
+             patch("scripts.sync_github_tracking.remote_inventory",
+                   return_value=(self.milestones, {}, self.extra)), \
+             redirect_stdout(io.StringIO()), patch("sys.stderr", new_callable=io.StringIO), \
+             self.assertRaises(SystemExit):
+            main(["apply", "--milestone-number", "6",
+                  *sum((["--new-record-key", key] for key in sorted(keys)), []),
+                  "--confirm-repository", "owner/repo", "--plan-sha256", stale_digest])
 
 
 if __name__ == "__main__":

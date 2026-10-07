@@ -34,4 +34,4 @@ The hypothesis is that bounded workloads may amortize preparation overhead; it m
 
 ## Evidence and unresolved questions
 
-Planned evidence: frozen manifest, raw phase counters and paired costs, actual control outputs and a decision packet. Obtained evidence for this feature is empty. Existing SPEC-021 results are historical context. Human technical review, new candidate-bound measurement and founder utility acceptance are separate. The decision to adopt any optimized execution policy remains open until evidence exists.
+Planned registered evidence: frozen manifest, raw phase counters and paired costs, actual fresh-process control outputs and a decision packet. Engineering checks and exploratory diagnostics for T001–T004 are obtained in the assurance record and evidence receipts; registered measurement remains unexecuted. Existing SPEC-021 results are historical context. The scoped protocol review, later exact stable-harness/manifest review, whole-feature human review and founder utility acceptance are separate. No runtime optimization was selected from the exploratory diagnosis; accepting a useful execution policy remains a later evidence-backed decision.

@@ -80,6 +80,27 @@ outside its scope. The digest binds the repository, scope and exact operations;
 a full-audit digest cannot authorize a title-only apply or vice versa. Old digests
 must be regenerated after upgrading the synchronizer.
 
+For a reviewed single-milestone reconciliation, use `audit --milestone-number
+<registered-number>` and then `apply --milestone-number <registered-number>
+--confirm-repository jayanez/agent-braid --plan-sha256 <digest>`. The scope
+includes source specs and tasks assigned to that registered milestone, together
+with that milestone's title and configured state operation. It reads the full
+repository issue inventory before narrowing operations. Duplicate markers,
+missing selected issues, selected issues moved away from the milestone, or
+unknown managed issues assigned to it fail closed. Newly registered source
+records assigned to the milestone are included automatically once their managed
+issues exist. To bootstrap newly registered records with no remote issue yet,
+pass `--new-record-key <stable-id>` once per exact missing ID to both the audit
+and reviewed apply. Without this explicit allowlist, every missing selected issue
+still fails closed. Allowlist entries must identify known source records assigned
+to the selected milestone and absent from the full remote inventory; present,
+unselected or unknown IDs are rejected. The sorted allowlist is printed and
+bound into the digest, which also binds repository, scope, immutable milestone
+number and exact operations. It cannot authorize a full, title-only or
+different-milestone apply. The apply still requires a clean `develop` checkout.
+This mode does not infer parent closure from child states. `--milestone-number`
+and `--milestone-titles-only` cannot be combined.
+
 Capture all milestone identities, states, descriptions and dates plus issue
 milestone numbers before and after the migration. Require equality except for
 the approved titles, and a second title-only audit with `operations: []`.

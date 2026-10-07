@@ -49,8 +49,9 @@ assurance record and the [roadmap](../../ROADMAP.md) for those boundaries.
 | [SPEC-035: chronos2-forecast-adapter](../../specs/035-chronos2-forecast-adapter/spec.md) | [FC.1 — Forecast-guided parallelism experiment](https://github.com/jayanez/agent-braid/milestone/18) |
 | [SPEC-036: forecast-parallelism-experiment](../../specs/036-forecast-parallelism-experiment/spec.md) | [FC.1 — Forecast-guided parallelism experiment](https://github.com/jayanez/agent-braid/milestone/18) |
 | [SPEC-037: forecast-advisory-integration](../../specs/037-forecast-advisory-integration/spec.md) | [FC.1 — Forecast-guided parallelism experiment](https://github.com/jayanez/agent-braid/milestone/18) |
+| [SPEC-038: m4-real-workload-closure](../../specs/038-m4-real-workload-closure/spec.md) | [M4 — Agent Braid runtime](https://github.com/jayanez/agent-braid/milestone/6) |
 
-All 37 specs have an assignment to one of the 18 registered milestones.
+All 38 specs have an assignment to one of the 18 registered milestones.
 Frozen publication receipts, assurance/evidence records, founder decisions and
 dated audits retain their captured titles and counts. Resolve those historical
 names through the tracking crosswalk; do not rewrite their bound contents.

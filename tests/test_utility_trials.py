@@ -150,6 +150,23 @@ class UtilityTrialsTests(unittest.TestCase):
         self.assertEqual(len(result['blocks']), 9)
         self.assertTrue(all(b['medianPairedRatio'] is None for b in result['blocks']))
 
+    def test_last_treatment_crossing_budget_cannot_complete_positive_protocol(self):
+        now, calls = [0], []
+
+        def callback(descriptor):
+            calls.append(descriptor)
+            if len(calls) == 176:
+                now[0] = DISPATCH_BUDGET_NS
+            return self.callback(descriptor)
+
+        result = self.run_plan(callback, lambda: now[0])
+        self.assertEqual(len(calls), 176)
+        self.assertEqual(result['status'], 'incomplete')
+        self.assertEqual(result['stopReason'], 'dispatch-budget-exhausted')
+        rows = [t for b in result['blocks'] for p in b['pairs'] for t in p['treatments']]
+        self.assertTrue(all(t['status'] == 'valid' for t in rows))
+        self.assertNotIn('positive-synthetic-diagnostic', [b['outcome'] for b in result['blocks']])
+
     def test_unsafe_tree_missing_verifier_paths_source_and_reused_grant_stop_global(self):
         for mutation in ['tree', 'verifier', 'path', 'source', 'grant']:
             calls = []

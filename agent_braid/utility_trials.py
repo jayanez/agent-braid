@@ -412,6 +412,14 @@ def run_trial_plan(plan: dict, treatment_callback, *, registration_review: dict,
                         stop = 'unsafe-treatment' if disposition == 'no-go' else 'identity-drift'
                     if not unchanged():
                         stop = 'identity-drift'
+                    if stop is None:
+                        # Let active work finish, but observe its closing cost even
+                        # when no subsequent dispatch remains to check the clock.
+                        now = monotonic_ns()
+                        _require(type(now) is int and now >= previous, 'dispatch clock must be monotonic')
+                        previous = now
+                        if now - start >= DISPATCH_BUDGET_NS:
+                            stop = 'dispatch-budget-exhausted'
                 elif row['status'] == 'unexecuted':
                     row['reason'] = stop
                 recorded_pair['treatments'].append(row)
