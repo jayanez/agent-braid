@@ -25,11 +25,13 @@ one-use operator grant and publishes into private local storage. Runtime
 dependencies: **Python's standard library**. Git workflows additionally require
 Git; execution requires Linux or macOS with POSIX locking.
 
-**[Quick start](#quick-start) · [Owned runtime demo](examples/runtime/README.md) ·
-[Architecture](ARCHITECTURE.md) · [Evidence and status](#evidence-and-project-status) ·
-[Documentation](#documentation)**
+**[Quick start](#-quick-start) · [CLI reference](#-cli-reference) ·
+[Owned runtime demo](examples/runtime/README.md) · [Architecture](ARCHITECTURE.md) ·
+[Evidence and status](#-evidence-and-project-status) · [Documentation](#-documentation)**
 
-## What you can do
+<a id="what-you-can-do"></a>
+
+## ✨ What you can do
 
 | Capability | Working surface | What the evidence covers |
 | --- | --- | --- |
@@ -38,7 +40,8 @@ Git; execution requires Linux or macOS with POSIX locking.
 | **Check structured exchanges** | `anchored-sequence-v1` producer and consumer | Context-dependent insert residuals, retained intermediate paths and bounded braid-relation controls. |
 | **Run an owned Git pipeline** | Verified policy plans, local grants, isolated preparation and serial publication | Fixed text patches, checked paths/modes/blobs, private results and process-interruption resume/abort. |
 | **Connect through stdio MCP** | Six bounded tools: `analyze`, `prepare`, `status`, `execute`, `recover`, `verify` | Configured source/result roots and the same local policy; grant issuance stays with the operator. |
-| **Prepare prospective M3.5 studies** | Hidden-proposal journals, complete session/pair accounting, filtered labs and aggregate seals | Synthetic software checks. **Zero admitted real pairs**; source/protocol approval and training remain pending. |
+| **Prepare prospective M3.5 studies** | Hidden-proposal journals, complete session/pair accounting, filtered labs and aggregate seals | Synthetic software checks. **Zero admitted real pairs**; source rights, exact protocol approval, capture and training remain gated. |
+| **Inspect local System 1 decisions** | Opt-in `system-one` diagnostics with a standard-library reference backend | Synthetic requests only; no learned model, calibration, accepted utility or execution authority. |
 
 The runtime executes allowlisted Git plumbing. Repository code, source-ref
 promotion and broader agent/provider adapters require additional contracts and
@@ -46,9 +49,14 @@ authority. The [runtime demo](examples/runtime/README.md) gives you a complete
 owned fixture; the [alpha quickstart](specs/021-m4-alpha-runtime/quickstart.md)
 covers grants, recovery and MCP configuration.
 
-## Quick start
+<a id="quick-start"></a>
 
-Requires **Python 3.12+**. Install from source in an isolated environment:
+## 🚀 Quick start
+
+Requires **Python 3.12+**. The analyzer and decision diagnostics use the Python
+standard library. Git analysis/replay and the owned runtime also require Git;
+private runtime execution is supported on Linux and macOS with POSIX file locking.
+Install from source in an isolated environment:
 
 ```bash
 git clone https://github.com/jayanez/agent-braid.git
@@ -89,121 +97,152 @@ two independent commits, replay them, inspect a policy, issue an exact-digest
 grant and verify the resulting private tree. It needs no model, API key or
 development dependency.
 
-## From analysis to a verified private result
+<a id="from-analysis-to-a-verified-private-result"></a>
 
-```mermaid
-flowchart LR
-    A["AIM metadata"] --> B["Effect / dependency analysis"]
-    B --> C["Advisory report"]
-    G["Immutable Git inputs"] --> R["Finite replay + advisory plan"]
-    R --> V["Consumer reconstruction"]
-    V --> P["Verified local policy plan"]
-    O["Local operator"] --> K["One-use digest-bound grant"]
-    P --> W["Isolated Git preparation"]
-    K --> W
-    W --> S["Serial private publication"]
-    S --> E["Checked result + recovery journal"]
-```
+## 🔀 From analysis to a verified private result
 
-Each layer carries its own inputs, observation and limits. Analysis cannot
-silently authorize the next layer. Workers have private writable repositories
-and indexes; one coordinator publishes checkpoints. The consumer regenerates
-the relevant replay, policy and tree/effect checks instead of trusting a
-producer's verdict. Producer and consumer share reference implementations;
-independent consumption does not mean independently implemented semantics.
+![From advisory analysis and immutable Git inputs through consumer reconstruction and operator authorization to isolated preparation and a checked private result](reports/assets/agent-braid-private-result-flow.svg)
+
+[Open the editable Mermaid source](reports/assets/agent-braid-private-result-flow.mmd).
+
+The advisory AIM report remains separate from the bounded Git replay path. A
+consumer reconstructs replay, policy and tree claims before an operator grants
+the exact plan digest. The runtime rechecks the plan, prepares in isolated
+scratch and publishes checkpoints serially to a private result repository. The
+checked result includes runtime state and a recovery journal; no source ref is
+published. Producer and consumer share reference implementations, so
+reconstruction is not independently implemented semantics.
+
+<a id="reading-an-analysis"></a>
 
 ### Reading an analysis
 
-| Classification | Meaning within the observed domain |
-| --- | --- |
-| `independent-candidate` | Complete exact-resource footprints show no write conflict; an execution contract is still needed. |
-| `ordered` | An explicit dependency path requires an order. |
-| `conflicting` | A shared exact resource has at least one write-like effect. |
-| `unknown` | Coverage or adapter semantics do not support a stronger result. |
+A report describes evidence about the inputs and declared effects it actually
+observed. `independent-candidate` means complete exact-resource footprints show
+no write conflict in that domain; an execution contract is still required.
+`ordered` records an explicit dependency path. `conflicting` means a shared
+exact resource has a write-like effect. `unknown` means coverage or adapter
+semantics do not justify a stronger result. None is an execution verdict.
 
-Reports bind inputs, name their rule set and method, retain assumptions and
+Reports bind inputs, name the rule set and method, retain assumptions and
 point-of-use constraints, and set `executionAuthorization: false`. See the
 [analysis contract](schemas/0.1.0-alpha/analysis-report.schema.json) and
 [AIM draft 0.2](docs/architecture/DRAFT_0_2.md).
 
-<details>
-<summary><strong>CLI reference at a glance</strong></summary>
+<a id="cli-reference"></a>
 
-| Commands | Purpose |
+## 🛠 CLI reference
+
+The command surface is visible here; `agent-braid <command> --help` lists each
+command's required artifacts, destinations and acknowledgements.
+
+| Command | Purpose |
 | --- | --- |
-| `analyze`, `verify` | Analyze AIM records and verify finite certificates. |
-| `analyze-git` | Observe stable commit/worktree snapshots with an explicit provenance artifact. |
-| `plan-git`, `verify-git`, `verify-plan` | Produce and independently reconstruct bounded Git replay and advisory plans. |
-| `prototype-git` | Compare isolated patch preparation and serial integration in disposable state. |
+| `analyze`, `analyze-trace`, `analyze-git` | Analyze AIM records, explicitly mapped trace metadata, or stable Git snapshots with provenance. |
+| `verify` | Verify a bounded certificate bundle. |
+| `plan-git`, `verify-git`, `verify-plan` | Produce and reconstruct bounded Git replay evidence and advisory plans. |
+| `prototype-git` | Compare isolated patch preparation with serial scratch integration in disposable state. |
 | `propose-exchange`, `verify-exchange` | Produce and regenerate restricted anchored-sequence exchange evidence. |
-| `prepare-policy-run`, `verify-policy-plan` | Prepare and reconstruct an opt-in serial/parallel policy. |
-| `grant-policy-run` | Issue an operator-acknowledged grant outside the MCP tool path. |
-| `execute-policy-run`, `inspect-policy-run`, `recover-policy-run` | Execute, inspect, resume or abort an owned result under the policy. |
-| `prepare-git-run`, `execute-git-run`, `recover-git-run`, `verify-git-run` | Use or verify the first bounded serial-runtime contract. |
+| `prepare-git-run`, `execute-git-run`, `recover-git-run`, `verify-git-run` | Prepare, explicitly authorize, recover or verify the bounded local Git runtime. |
+| `prepare-policy-run`, `verify-policy-plan`, `grant-policy-run`, `execute-policy-run`, `inspect-policy-run`, `recover-policy-run` | Prepare and reconstruct an operator policy, issue a digest-bound grant, then execute or inspect/recover the private result. |
+| `system-one capabilities`, `system-one decide` | Inspect or run opt-in offline synthetic decision diagnostics. |
 
-Use `agent-braid <command> --help` for required artifacts, destinations and
-acknowledgements. Contracts are versioned: analyzer/runtime `0.1.0-alpha`,
-AIM/certificate `0.2.0-draft`. Package metadata is `0.1.0a1`.
+The analyzer/runtime contract is `0.1.0-alpha`; AIM and certificate contracts
+are `0.2.0-draft`; the package version is `0.1.0a1`. The public CLI does not
+expose source-ref promotion, arbitrary repository code execution, or provider
+calls through the owned runtime.
 
-</details>
+<a id="evidence-and-project-status"></a>
 
-## Evidence and project status
+## 🧭 Evidence and project status
 
-| Milestone | Obtained | Boundary still open |
+**Project status on 2026-10-07:** research alpha. The table below includes all
+18 registered GitHub milestones and the repository's 38 current specs. “Closed”
+is the remote milestone state; internal closure, obtained implementation,
+scientific acceptance and external review are separate facts. The
+[spec and milestone index](docs/development/SPEC_MILESTONE_INDEX.md) lists every
+current assignment.
+
+| Track | Registered milestone | State and evidence boundary |
 | --- | --- | --- |
-| **M0–M1** | Operational foundation, governance, deterministic analyzer and read-only Git adapter; internally closed. | Independent external validation. |
-| **M2** | Bounded Git replay, normalization/reduction experiments and consultative preparation; internally closed. | Broader observation/execution domains. |
-| **M3** | Restricted anchored-sequence exchange experiment; internally closed. | General mathematical claims and external proof review. |
-| **M3.5** | Synthetic capture, recovery, accounting, lab export and seal tooling. | Approved real sources, prospective registration, corpus, labels and predictor evaluation. |
-| **M4** | Founder-accepted first serial increment; alpha grants, isolated preparation, stdio MCP, recorded Codex/Claude host exercises and Linux reproduction. | **Whole M4 remains open.** Founder G4 **NO-GO** on utility under the frozen evidence. |
+| Foundations | [M0 — Operational foundations](https://github.com/jayanez/agent-braid/milestone/1) | Closed; internally closed. Independent external validation remains pending. |
+| Foundations | [M0.5 — Open strategy and preview preparation](https://github.com/jayanez/agent-braid/milestone/2) | Closed; internally closed. Two historical review items remain open in tracking. |
+| Foundations | [M1 — Observable interaction analyzer](https://github.com/jayanez/agent-braid/milestone/3) | Closed internally against the reviewed candidate; independent external validation remains pending. |
+| Research | [M2 — Confluence lab and scheduler](https://github.com/jayanez/agent-braid/milestone/4) | Closed internally. Bounded replay and finite observations do not establish general confluence. |
+| Research | [M3 — Braid semantics](https://github.com/jayanez/agent-braid/milestone/5) | Closed internally for `anchored-sequence-v1`; no general braid or Yang–Baxter theorem is claimed. |
+| Runtime | [M4 — Agent Braid runtime](https://github.com/jayanez/agent-braid/milestone/6) | **Open.** The bounded alpha includes local grants, isolated preparation, stdio MCP and Linux reproduction; whole-milestone acceptance is pending. SPEC-021 G4 remains **NO-GO** on useful speedup under its frozen evidence. |
+| Publication | [PUB.1 — Public research preview](https://github.com/jayanez/agent-braid/milestone/7) | **Open.** The preview is public; historical publication authorization reconciliation remains separately tracked. |
+| Governance | [GOV.1 — Governance and adoption](https://github.com/jayanez/agent-braid/milestone/8) | **Open.** Governance and adoption evidence work continues; issue state does not confer human or founder approval. |
+| Research | [M3.5 — Native proposal predictor](https://github.com/jayanez/agent-braid/milestone/9) | **Open.** Synthetic capture and readiness tooling exist; zero real pairs are admitted. Rights, exact protocol/review, real capture and training remain gated. |
+| Adoption | [ADP.1 — Recorded-trace adapters](https://github.com/jayanez/agent-braid/milestone/10) | **Open.** Generic synthetic metadata import and bounded lifecycle spikes provide engineering evidence; real-source admission and provider adoption remain pending. |
+| Research | [LAB.1 — Effectful workload lab](https://github.com/jayanez/agent-braid/milestone/11) | **Open.** Contract and design work is in progress; no real external execution is authorized. |
+| Research | [RES.1 — Formal interaction research](https://github.com/jayanez/agent-braid/milestone/12) | **Open.** Contextual and proof-obligation work remains bounded research; finite checking is not a proof of generality. |
+| System 1 | [S1.0 — Decision contracts](https://github.com/jayanez/agent-braid/milestone/13) | **Open.** SPEC-028's standard-library synthetic reference core is implemented and technically reviewed; human review and feature acceptance remain pending. |
+| System 1 | [S1.1 — Decision evaluation](https://github.com/jayanez/agent-braid/milestone/14) | **Open.** Prospective, permissioned corpus and evaluation gates are planned; no accepted utility claim. |
+| System 1 | [S1.2 — Native decision model](https://github.com/jayanez/agent-braid/milestone/15) | **Open.** Model experiments remain gated by rights, feasibility and common evaluation; no learned model is accepted. |
+| System 1 | [S1.3 — Advisory integration](https://github.com/jayanez/agent-braid/milestone/16) | **Open.** Integration remains advisory and gated by core evidence; no authority escalation. |
+| System 1 | [S1.4 — Product capabilities and promotion](https://github.com/jayanez/agent-braid/milestone/17) | **Open.** Capability choices and promotion are separate decisions; no capability promotion is implied. |
+| Forecasting | [FC.1 — Forecast-guided parallelism experiment](https://github.com/jayanez/agent-braid/milestone/18) | **Open.** Four forecast-program specs define permissioned telemetry, optional local forecasting and complete-cost experiments; no execution-domain expansion or utility acceptance. |
 
-The historical M4 experiment obtained equal verified trees in six paired trials
-but a median serial/parallel total-wall ratio of **0.5581**. That small,
-uncontrolled sample did not support accepting a useful speedup capability. The
-[G4 decision](specs/021-m4-alpha-runtime/g4-decision.json) remains authoritative;
-new optimizations and descriptive comparisons have their
-[own engineering record](docs/development/autonomous-delivery.md).
+### Runtime and evidence boundaries
 
-Reproduction runs bind exact candidate commits and input hashes. Public Linux
-experiments use owned synthetic fixtures and retain results in logs/job summaries;
-private source permissions and prospective-window registration remain separate.
-Follow the [Linux runbook](docs/development/linux-experiments.md),
-[M3.5 readiness note](docs/development/m35-technical-readiness.md) and
-[M4 cost diagnostics](docs/development/M4_RUNTIME_COST_DIAGNOSTICS.md).
+SPEC-021's historical study found equal verified trees in six paired trials,
+with a median serial/parallel total-wall ratio of **0.5581**. In that small,
+uncontrolled sample, serial execution took about 55.81% of parallel total wall
+time. This is descriptive evidence, not a population estimate or a general
+claim about parallelism. The [G4 decision](specs/021-m4-alpha-runtime/g4-decision.json)
+remains authoritative.
 
-The [research preview](https://github.com/jayanez/agent-braid/releases/tag/v0.1.0-alpha.1)
-and [internal closure records](docs/releases/) preserve historical claims.
-Historical milestone closures were produced internally and reviewed by the
-founder, who has an explicit conflict of interest. Independent external validation
-remains pending. The
-[public cutover audit](docs/releases/publication/CUTOVER_AUDIT_2026-09-25.md)
-records the outstanding authorization reconciliation separately from public
-repository availability.
+SPEC-022 has implemented measurement instrumentation and owner-approved
+180-minute successor preparation; engineering diagnostics are not its registered experiment.
+Registered measurement, human review of the stable harness/manifest and any
+future utility decision remain pending. SPEC-027 has implemented read-only
+refinement assessments and synthetic/disposable controls; capability decisions,
+founder acceptance and expanded execution authority remain pending. SPEC-038 is
+a source-rights and real-workload protocol proposal: exact source rights and
+protocol review are pending. The owner confirmed capacity only; exact source use
+and terms are not approved. SPEC-038 records no obtained M4 real-workload evidence.
 
-The next work is mapped in the [foundational implementation portfolio](docs/development/FOUNDATION_IMPLEMENTATION_PORTFOLIO.md): full-cost utility follow-up, offline trace adapters, simulated effectful workloads, contextual/proof obligations, adoption evidence and runtime refinement contracts. These six specs are **draft plans with human review pending**; their commands and artifacts are future targets. The [System 1 program](specs/028-system-one-core/program.md) adds six draft specs
-for typed decision contracts, evaluation, a native model, advisory integration and
-separately governed product capabilities/promotion. The
-[spec and milestone index](docs/development/SPEC_MILESTONE_INDEX.md) maps all 33
-specs to their registered milestones. See the [portfolio roadmap](ROADMAP.md) and [M3.5 offline preparation map](specs/019-native-predictor/implementation-readiness.md).
+M3.5 synthetic checks demonstrate tooling only. They do not establish real-source
+rights, prospective registration, capture, training authorization, predictor
+benefit or scientific validation. See the [M3.5 readiness note](docs/development/m35-technical-readiness.md),
+[Linux runbook](docs/development/linux-experiments.md), [M4 cost diagnostics](docs/development/M4_RUNTIME_COST_DIAGNOSTICS.md)
+and [delivery record](docs/development/autonomous-delivery.md).
 
-## Scientific contract
+Historical internal closure records and their limits are in [release records](docs/releases/).
+The founder reviewed those closures and has an explicit conflict of interest;
+independent external validation remains pending. The [public cutover audit](docs/releases/publication/CUTOVER_AUDIT_2026-09-25.md)
+tracks historical authorization reconciliation separately from repository
+availability. For the complete future work inventory, see the [foundational
+implementation portfolio](docs/development/FOUNDATION_IMPLEMENTATION_PORTFOLIO.md),
+[System 1 program](specs/028-system-one-core/program.md), [forecast program](specs/034-workload-forecast-data/spec.md)
+and [roadmap](ROADMAP.md).
 
-The [Constitution](CONSTITUTION.md) is the sole normative authority. Its clause zero:
+<a id="scientific-contract"></a>
 
-> Agent Braid does not assume that Yang–Baxter applies to AI agents. It exists to investigate whether useful classes of agent interactions can be given an algebraic structure in which braid relations, confluence, and eventually Yang–Baxter-type conditions emerge as verifiable properties.
+## 🧪 Scientific contract
+
+The [Constitution](CONSTITUTION.md) is the sole normative authority. Agent Braid
+takes inspiration from Yang–Baxter and braid theory to ask whether carefully
+defined classes of agent interactions can support useful, verifiable exchange
+properties. Each claim is earned by defining its objects, operators, equivalence,
+domain and evidence. This work may reveal useful behavior without a
+Yang–Baxter result; any theorem must remain within the structure and scope it proves.
 
 Claims distinguish analogy, hypothesis, heuristic, empirical, exhaustive-finite
-and formal results. Finite replay and structural checks support their declared
-domains; they establish neither production safety, hidden-effect completeness,
-general confluence nor a general Yang–Baxter theorem. The six assurance labels
-are [compatibility classes](docs/architecture/ASSURANCE_LEVELS.md), with the
-property, method, observation and execution contract stated separately.
+and formal results. Finite replay and structural checks support only their
+declared domains; they establish neither production safety, hidden-effect
+completeness, general confluence nor a general Yang–Baxter theorem. The six
+assurance labels are [compatibility classes](docs/architecture/ASSURANCE_LEVELS.md),
+with the property, method, observation and execution contract stated separately.
 
 Start with [claim discipline](docs/theory/CLAIM_DISCIPLINE.md),
 [operational semantics](docs/theory/OPERATIONAL_SEMANTICS.md) and
 [structured exchange semantics](docs/theory/STRUCTURED_EXCHANGE.md).
 
-## Documentation
+<a id="documentation"></a>
+
+## 📚 Documentation
 
 | Your next step | Start here |
 | --- | --- |
@@ -217,7 +256,9 @@ Start with [claim discipline](docs/theory/CLAIM_DISCIPLINE.md),
 | Follow project direction | [Roadmap](ROADMAP.md) · [Implementation portfolio](docs/development/FOUNDATION_IMPLEMENTATION_PORTFOLIO.md) · [Open-tooling strategy](docs/strategy/OPEN_TOOLING_STRATEGY.md) · [Ecosystem](docs/strategy/ECOSYSTEM.md) |
 | Contribute under the project rules | [Contributing](CONTRIBUTING.md) · [Governance](GOVERNANCE.md) · [Spec Kit](docs/development/SPEC_KIT.md) · [Terminology](TERMINOLOGY.md) |
 
-## Contributing
+<a id="contributing"></a>
+
+## 🤝 Contributing
 
 Work on bounded adapters, reproducible controls, counterexamples, interoperability,
 concurrency semantics, Git internals or precise documentation. Follow
@@ -251,7 +292,9 @@ specs/         Feature plans, frozen evidence, assurance and review records
 
 </details>
 
-## Citation and licensing
+<a id="citation-and-licensing"></a>
+
+## 📄 Citation and licensing
 
 Cite the relevant release or frozen evidence record alongside the repository;
 machine-readable metadata is in [CITATION.cff](CITATION.cff).
