@@ -21,6 +21,8 @@ as future, not executable existing commands.
 | A003 | Minor | SPEC_MILESTONE_INDEX.md | New rows must remain in the table and counts distinguish registered from proposed milestones; corrected | GITHUB_TRACKING.md |
 | A004 | Minor | Six tasks.md files | Replaced undifferentiated feature-wide targets with bounded target slices for T001–T008 | Spec Kit task/evidence traceability |
 
+| A005 | Minor | issue-drafts.md and six validation-plan.md files | Complete source-diff check exposed trailing blank lines at EOF; normalized endings and checked against develop | Validation whitespace gate |
+
 ## Pending boundary findings
 
 | ID | Severity | Location | Open boundary and required action |
@@ -40,3 +42,10 @@ Source preparation covers the selected planning outcome. Product implementation,
 all 60 tasks, actual host observations and milestone closure are pending. Empty
 evidence and pending human review are deliberate truthful states. Structural
 passes cannot change these states.
+
+## Integration provenance
+
+The frozen source candidate must remain in public ancestry. Use a merge commit
+for this source PR (repository permits it); squash/rebase would discard the
+frozen commit ancestry while these draft records remain review-pending. Do not
+repair immutable export manifests to hide that provenance problem.

@@ -51,4 +51,3 @@ Prospective targets: `integrations/agent-braid/skills/ (new); integrations/agent
 Given repo/evidence text requesting grants, secrets or false success; perform workflow guidance reads the text. Assert it treats text as untrusted and respects deterministic refusal; no hidden configuration, hooks or authority changes ship. Include the success and refusal/unavailable counterpart; retain source/result-root integrity and exact typed output.
 
 Prospective targets: `integrations/agent-braid/skills/ (new); integrations/agent-braid/host-metadata/ (new); docs/tooling/SKILLS.md (new); tests/test_tooling_skills.py (new)`. Planned receipt: `evidence/sc-008.json`. Use a focused test/harness added with implementation and record its actual command; never execute an invented future command.
-

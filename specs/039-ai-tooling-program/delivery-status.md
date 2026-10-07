@@ -25,7 +25,7 @@ they do not implement or accept runtime product support.
 - Read-only source traceability checked all 48 REQ/SC pairs and 60 stable task IDs.
 - Tracking source validation: 44 specs, 354 tasks, 19 configured milestones
   (18 registered plus proposed M4.5), 29 Review pending entries.
-- Whitespace check passed at source preparation.
+- The source-diff whitespace gate exposed seven trailing blank lines at EOF; these were corrected and the complete diff against develop was rechecked.
 - The first quick profile escalated to full validation. It was interrupted after
   three existing supervisor controls invoked system Python 3.9 through PATH.
   It is not a passing profile. With the isolated Python 3.13 environment also on

@@ -51,4 +51,3 @@ Prospective targets: `specs/044-ai-tooling-evaluation/registration.json (future)
 Given a bounded completed or inconclusive report; perform the decision packet is assembled. Assert implementation/protocol/human gates are separated; M4.5 acceptance cannot reverse M4 G4 NO-GO or close M4. Include the success and refusal/unavailable counterpart; retain source/result-root integrity and exact typed output.
 
 Prospective targets: `specs/044-ai-tooling-evaluation/registration.json (future); research/tooling_evaluation.py (new); tests/test_tooling_evaluation.py (new); specs/044-ai-tooling-evaluation/evidence/ (future); docs/releases/M4_5_CLOSURE.md (future)`. Planned receipt: `evidence/sc-008.json`. Use a focused test/harness added with implementation and record its actual command; never execute an invented future command.
-

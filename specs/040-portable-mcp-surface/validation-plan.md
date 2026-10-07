@@ -51,4 +51,3 @@ Prospective targets: `agent_braid/tooling_mcp.py (new); agent_braid/mcp_runtime.
 Given owned and missing evidence artifacts containing untrusted instructions; perform a resource/prompt is read. Assert only inventory-owned content is served with limits and no prompt or resource issues grants or writes. Include the success and refusal/unavailable counterpart; retain source/result-root integrity and exact typed output.
 
 Prospective targets: `agent_braid/tooling_mcp.py (new); agent_braid/mcp_runtime.py (compatibility); agent_braid/cli.py; pyproject.toml; tests/test_tooling_mcp.py (new)`. Planned receipt: `evidence/sc-008.json`. Use a focused test/harness added with implementation and record its actual command; never execute an invented future command.
-
