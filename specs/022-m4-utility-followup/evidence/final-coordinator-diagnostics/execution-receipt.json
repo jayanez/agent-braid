@@ -1,0 +1,59 @@
+{
+  "recordVersion": "spec022-exploratory-command-exits-v1",
+  "commands": [
+    {
+      "blockId": "independent-2-1024",
+      "command": [
+        "/tmp/agent-braid-parallel-20261006/.venv-speckit/bin/python",
+        "scripts/measure_m4_utility.py",
+        "--diagnostic-block",
+        "independent-2-1024",
+        "--output",
+        "/tmp/agent-braid-spec022-coordinator-diagnostics-20261007/independent-2-1024.json"
+      ],
+      "observedExitCode": 0,
+      "wallNs": 42406793791
+    },
+    {
+      "blockId": "independent-2-65536",
+      "command": [
+        "/tmp/agent-braid-parallel-20261006/.venv-speckit/bin/python",
+        "scripts/measure_m4_utility.py",
+        "--diagnostic-block",
+        "independent-2-65536",
+        "--output",
+        "/tmp/agent-braid-spec022-coordinator-diagnostics-20261007/independent-2-65536.json"
+      ],
+      "observedExitCode": 0,
+      "wallNs": 39892283250
+    },
+    {
+      "blockId": "independent-4-1024",
+      "command": [
+        "/tmp/agent-braid-parallel-20261006/.venv-speckit/bin/python",
+        "scripts/measure_m4_utility.py",
+        "--diagnostic-block",
+        "independent-4-1024",
+        "--output",
+        "/tmp/agent-braid-spec022-coordinator-diagnostics-20261007/independent-4-1024.json"
+      ],
+      "observedExitCode": 0,
+      "wallNs": 149738653791
+    },
+    {
+      "blockId": "dependency-chain-4-1024",
+      "command": [
+        "/tmp/agent-braid-parallel-20261006/.venv-speckit/bin/python",
+        "scripts/measure_m4_utility.py",
+        "--diagnostic-block",
+        "dependency-chain-4-1024",
+        "--output",
+        "/tmp/agent-braid-spec022-coordinator-diagnostics-20261007/dependency-chain-4-1024.json"
+      ],
+      "observedExitCode": 0,
+      "wallNs": 62072457375
+    }
+  ],
+  "registeredMeasurementExecuted": false,
+  "wallNs": 294111278208
+}

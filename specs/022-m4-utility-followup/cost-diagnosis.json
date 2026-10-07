@@ -2,161 +2,162 @@
   "diagnosticBlocks": [
     {
       "blockId": "independent-2-1024",
-      "diagnosticPath": "specs/022-m4-utility-followup/evidence/final-diagnostics/independent-2-1024.json",
+      "diagnosticPath": "specs/022-m4-utility-followup/evidence/final-coordinator-diagnostics/independent-2-1024.json",
       "samples": [
         {
           "mode": "serial",
           "topPhases": [
             {
               "name": "execution",
-              "wallSeconds": 3.875684334
+              "wallSeconds": 4.357237
             },
             {
-              "name": "grant",
-              "wallSeconds": 2.581620542
+              "name": "replay",
+              "wallSeconds": 3.008139292
             }
           ],
-          "wallSeconds": 11.974323209
+          "wallSeconds": 14.234736875
         },
         {
           "mode": "parallel",
           "topPhases": [
             {
               "name": "execution",
-              "wallSeconds": 8.550701583
+              "wallSeconds": 13.519471542
             },
             {
-              "name": "preparation",
-              "wallSeconds": 3.225328833
+              "name": "grant",
+              "wallSeconds": 4.963814333
             }
           ],
-          "wallSeconds": 18.072905292
+          "wallSeconds": 27.59513075
         }
       ],
-      "sha256": "e0f36229841cf408aea6614dc3b5156f09a52fccb882924736215ef47eb52455"
+      "sha256": "32a790433e96f65ca88f107a5106e018f158701d2f8519ecd5b3aa7180223042"
     },
     {
       "blockId": "independent-2-65536",
-      "diagnosticPath": "specs/022-m4-utility-followup/evidence/final-diagnostics/independent-2-65536.json",
+      "diagnosticPath": "specs/022-m4-utility-followup/evidence/final-coordinator-diagnostics/independent-2-65536.json",
       "samples": [
         {
           "mode": "serial",
           "topPhases": [
             {
               "name": "execution",
-              "wallSeconds": 3.859736375
+              "wallSeconds": 4.720588334
+            },
+            {
+              "name": "replay",
+              "wallSeconds": 3.534157916
+            }
+          ],
+          "wallSeconds": 15.518620542
+        },
+        {
+          "mode": "parallel",
+          "topPhases": [
+            {
+              "name": "execution",
+              "wallSeconds": 11.420454542
             },
             {
               "name": "preparation",
-              "wallSeconds": 2.332801917
+              "wallSeconds": 3.91221075
             }
           ],
-          "wallSeconds": 11.429829334
-        },
-        {
-          "mode": "parallel",
-          "topPhases": [
-            {
-              "name": "execution",
-              "wallSeconds": 10.10857775
-            },
-            {
-              "name": "grant",
-              "wallSeconds": 3.129513417
-            }
-          ],
-          "wallSeconds": 19.455497042
+          "wallSeconds": 23.30904425
         }
       ],
-      "sha256": "ab59cfea86248f20c9ecaf161f4b724aab431af384452dc61de680dad2f699da"
+      "sha256": "74e00a335b57f704f93ca29a3f5b3d8dcbdb4e900f1e2f3ab20bff212f3bbb6b"
     },
     {
       "blockId": "independent-4-1024",
-      "diagnosticPath": "specs/022-m4-utility-followup/evidence/final-diagnostics/independent-4-1024.json",
+      "diagnosticPath": "specs/022-m4-utility-followup/evidence/final-coordinator-diagnostics/independent-4-1024.json",
       "samples": [
         {
           "mode": "serial",
           "topPhases": [
             {
               "name": "replay",
-              "wallSeconds": 20.311328417
+              "wallSeconds": 22.766511917
             },
             {
               "name": "execution",
-              "wallSeconds": 15.958934292
+              "wallSeconds": 16.099548375
             }
           ],
-          "wallSeconds": 61.821808334
+          "wallSeconds": 67.616784375
         },
         {
           "mode": "parallel",
           "topPhases": [
             {
               "name": "execution",
-              "wallSeconds": 24.183120167
+              "wallSeconds": 27.100396792
             },
             {
               "name": "replay",
-              "wallSeconds": 19.633997333
+              "wallSeconds": 22.012021834
             }
           ],
-          "wallSeconds": 70.916509541
+          "wallSeconds": 81.392028125
         }
       ],
-      "sha256": "65ca3b2e61c53531f62d1030c5b6a4c70edabd7b19b35182d027cbf4d110bb69"
+      "sha256": "bba4505d16aa3dba6b3b8e14b74e664f0ca483aff5479b79ed604dc49121241a"
     },
     {
       "blockId": "dependency-chain-4-1024",
-      "diagnosticPath": "specs/022-m4-utility-followup/evidence/final-diagnostics/dependency-chain-4-1024.json",
+      "diagnosticPath": "specs/022-m4-utility-followup/evidence/final-coordinator-diagnostics/dependency-chain-4-1024.json",
       "samples": [
         {
           "mode": "serial",
           "topPhases": [
             {
               "name": "execution",
-              "wallSeconds": 6.166517916
+              "wallSeconds": 7.509835375
             },
             {
               "name": "grant",
-              "wallSeconds": 4.016754917
+              "wallSeconds": 5.218731625
             }
           ],
-          "wallSeconds": 18.958460333
+          "wallSeconds": 24.073486375
         },
         {
           "mode": "parallel",
           "topPhases": [
             {
               "name": "execution",
-              "wallSeconds": 16.1705155
+              "wallSeconds": 18.845450458
             },
             {
               "name": "grant",
-              "wallSeconds": 4.750574417
+              "wallSeconds": 5.9273045
             }
           ],
-          "wallSeconds": 30.947386084
+          "wallSeconds": 37.318378041
         }
       ],
-      "sha256": "80b1e2ed011e6d08e0fc4f83956cc29a87d4ea90dbc76b4ce8ee5b3c73680848"
+      "sha256": "ef09997b5c6a40e97c3da72153d2b21a1343c15ba0cca231b08fc395777e92b7"
     }
   ],
-  "diagnosticCandidateCommit": "b3c41f338110bd3493f7a640e6a0e926d67e12f6",
+  "diagnosticCandidateCommit": "cc9dbb5d27cf2ff5d7f24c607aec8d12625c8065",
   "inputs": {
     "agent_braid/analysis.py": "fadfb6f6d3d6f89002df519bbcc86d839724f243e2c8e52732ef57e555abfe00",
     "agent_braid/git_adapter.py": "4548eb96849e2d0ed1eaefc53579d065651b00a2c6ae5b1aef6e2bdc5ae3dc45",
     "agent_braid/git_exec.py": "ce5e348f355ca5f73f1095ee4cbab8779c224cce7c8ac326a5376be69d416853",
-    "agent_braid/git_process.py": "fb201a0a1f53aeb48c3c0632fc11741435752e538bf69c1b75cd837b1fda413a",
-    "agent_braid/git_replay.py": "29cdbca88c9168829a0fcaae497d5c6805cd84ae5fd19649a7631f266c2759a8",
-    "agent_braid/git_runtime.py": "91e124c6e80dacf97232215c8ba9749b472d2ed03b2c7c5367ad6f98aa41ff50",
+    "agent_braid/git_process.py": "3247ac861404cfb68f08939770a5048294b45ddc984a1379ca9eb2091ad48668",
+    "agent_braid/git_replay.py": "62a2c461902e30d874dfe82bed77ab79075f33cb0e56f1e543fd9d317f1d571e",
+    "agent_braid/git_runtime.py": "ceb4469906b6c97a6f03faf3cc1b4ea8387df937c06b8ccd49984eaf2dff4d4e",
     "agent_braid/git_runtime_process.py": "6cde49846602aec8b18a3df141c8f77ff2bb66badd098d149393e900c44c0da4",
     "agent_braid/runtime_policy.py": "930ead80e4085301e6337af58660665219da3d3b40b72cfca8b803cebfa09188",
     "agent_braid/runtime_scheduler.py": "47bb371c88726793d207a59bb85cb6911d86e00a44694b37934805d9fa2462a9",
-    "agent_braid/utility_accounting.py": "218c82bc34e41f17dbca69ff3bb6df2f8143cd43e95a0b7d3a4374b97e628058",
+    "agent_braid/utility_accounting.py": "402c77255209cfeddfbad0123b39dcfe7aa1bec8ce560e50ed339e6b54a7006b",
+    "agent_braid/utility_budget_observer.py": "611624b8734b342016e0f8fbc19a912422d3ff42fd98bce1ca941c90ed005568",
     "agent_braid/utility_fixtures.py": "ea3ecb2bda7e6909f5307232dcc6b13953e4ac560eab9144dd0f566d90de8119",
     "agent_braid/utility_trials.py": "1f41e65b892fb607e887b486042f19d3a4a6dc5db1e1dcaca46930e6e554dce2",
     "research/lab/model.py": "f39040b5476d663f6e7384e65d00073b084df6c8958b38bff45e4d6b19da010f",
-    "scripts/measure_m4_utility.py": "a106b4cbff745a5ae7ad6471011143ace92befeff6153ecd4f9a17c6d81cb859",
+    "scripts/measure_m4_utility.py": "33630ecdd5cb01b6cf4e2b39b82a31093fa769d803e7a7ee1ffc0c060c8c9baf",
     "scripts/prepare_m4_utility_trials.py": "054fe8aa3d733aee48fb5802260aae5824f9013c61cb4de10b013d7d4407b213",
     "specs/022-m4-utility-followup/evidence/prepared-fixture-manifest.json": "ec8f36b21dd745df8443acd6035ff75a4b01bd61fd004470ce0315a655908734",
     "specs/022-m4-utility-followup/technical-review-packet.md": "6e5a2bd790fb789926007e11f33af40df2ed494d3e8464b13f114523120b282b"
@@ -170,16 +171,16 @@
   "observedDiagnosticTreatments": 8,
   "planningProjection": {
     "approvedDispatchBudgetMinutes": 45,
-    "linear22PairPerBlockMinutes": 89.3114636953,
-    "observedFourPairWallSeconds": 243.576719169,
+    "linear22PairPerBlockMinutes": 106.72134342209999,
+    "observedFourPairWallSeconds": 291.058209333,
     "scope": "Rough capacity projection from one serial-first diagnostic pair per block, not a measured registered duration or controlled forecast; registered dispatch may stop incomplete."
   },
   "postRunHostObservation": {
     "cpuCount": 12,
     "loadAverage": [
-      3.33837890625,
-      4.1728515625,
-      4.19873046875
+      6.94384765625,
+      10.4130859375,
+      20.39501953125
     ],
     "os": "macOS-26.6.2-arm64-arm-64bit-Mach-O",
     "scope": "Post-diagnostic snapshot only; capture-time background load and OS caches were uncontrolled."

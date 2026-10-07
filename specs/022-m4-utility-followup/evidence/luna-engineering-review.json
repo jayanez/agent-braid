@@ -1,7 +1,14 @@
 {
-  "command": "/tmp/agent-braid-parallel-20261006/.venv-speckit/bin/python -m unittest tests.test_utility_accounting tests.test_utility_fixtures tests.test_m4_utility tests.test_utility_trials tests.test_m4_utility_preparation",
-  "developmentReviewModel": "gpt-6-luna",
-  "developmentReviewOutcome": "Luna final engineering GO after phase reconciliation, exact source inventory, admission source/grant proof, canonical plan fixes and observer relocation out of frozen process-runner bytes. The trial/accounting reviewer executed 32 focal tests; other reviewers executed no suites or diagnostics. Human stable-harness/manifest approval remains pending.",
+  "closedFindings": [
+    "Explicit cap-excluded treatment refusal",
+    "Authoritative encoded operational bytes and separately observed closing envelope",
+    "Accepted budget-output byte label distinct from unknown actual captured bytes",
+    "Required phase and residual reconciliation before admission",
+    "Canonical admission/block plan consistency",
+    "Exact full code-input inventory equality",
+    "Mandatory source-integrity, valid and unique grant/plan proof before admission",
+    "Observer relocation out of frozen M2 process-runner bytes"
+  ],
   "inputs": {
     "agent_braid/analysis.py": "fadfb6f6d3d6f89002df519bbcc86d839724f243e2c8e52732ef57e555abfe00",
     "agent_braid/git_adapter.py": "4548eb96849e2d0ed1eaefc53579d065651b00a2c6ae5b1aef6e2bdc5ae3dc45",
@@ -22,11 +29,10 @@
     "specs/022-m4-utility-followup/evidence/prepared-fixture-manifest.json": "ec8f36b21dd745df8443acd6035ff75a4b01bd61fd004470ce0315a655908734",
     "specs/022-m4-utility-followup/technical-review-packet.md": "6e5a2bd790fb789926007e11f33af40df2ed494d3e8464b13f114523120b282b"
   },
-  "limits": "Development tests and code review only; repository delivery gates reported separately. No registered measurement, stable human harness approval, utility acceptance, G4 or M4 closure.",
-  "observedExitCode": 0,
-  "recordVersion": "spec022-phase-accounting-development-tests-v1",
-  "skipped": 0,
-  "testCount": 70,
-  "testLog": "specs/022-m4-utility-followup/evidence/phase-accounting-tests.txt",
-  "testLogSha256": "7d5d799811ddfdc2a977db84d0a1295f9af51011c89c146f51b7457570627908"
+  "limits": "Engineering review only; does not approve registered harness/manifest, real utility, G4 or M4 closure. Full profile outcomes are delivery gates recorded separately.",
+  "model": "gpt-6-luna",
+  "outcome": "GO for engineering and fresh diagnostic/profile freeze",
+  "recordVersion": "spec022-luna-engineering-review-v1",
+  "reviewerExecution": "Trial/accounting reviewer executed 32 earlier focal tests. Other code/evidence reviewers executed no suites or runtime diagnostics. Root and implementation worker execution is recorded separately.",
+  "scope": "T001 scoped approval metadata; T002 phase accounting; T003 no-change diagnostic choice; T004 immutable paired validator and preparation adapter"
 }

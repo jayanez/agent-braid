@@ -115,17 +115,17 @@
           "obtained_evidence": [
             {
               "command": "/tmp/agent-braid-parallel-20261006/.venv-speckit/bin/python -m unittest tests.test_utility_accounting tests.test_utility_fixtures tests.test_m4_utility tests.test_utility_trials tests.test_m4_utility_preparation",
-              "limits": "Engineering checks only; full profiles and registered evidence remain separate; source bindings will be refreshed after observer relocation.",
-              "outcome": "67 focal tests passed on the dated development candidate",
+              "limits": "Engineering tests or one-pair exploratory diagnosis only; full repository gates, registered measurements and human/founder decisions remain separate.",
+              "outcome": "Focal engineering tests passed; exact count and log hash are recorded in the referenced receipt",
               "path": "specs/022-m4-utility-followup/evidence/phase-accounting-test-receipt.json",
-              "sha256": "64676495f8e9539998595931a414d0a1b80219333220ae09fa36368d600d6a1a"
+              "sha256": "65eb640f4c79b3d6cbb2ac5eabdba1ea49a4286b795879e144656d43c97b1075"
             },
             {
-              "command": "Four clean-candidate diagnostic-only invocations of scripts/measure_m4_utility.py; exact commands in evidence/final-diagnostics/execution-receipt.json",
-              "limits": "One serial-first pair per synthetic block, not registered measurement or utility acceptance; bindings will be refreshed after observer relocation.",
+              "command": "Four clean-candidate diagnostic-only invocations of scripts/measure_m4_utility.py; exact commands in evidence/final-coordinator-diagnostics/execution-receipt.json",
+              "limits": "Engineering tests or one-pair exploratory diagnosis only; full repository gates, registered measurements and human/founder decisions remain separate.",
               "outcome": "Eight exploratory treatments completed with independent verification and full accounting",
               "path": "specs/022-m4-utility-followup/cost-diagnosis.json",
-              "sha256": "7edbd13336c357077b77df00ae78028f45056daeaa952e7906b2546ca920600a"
+              "sha256": "ae484ff6a945628c44a515caba7e888c80a7464564207dc5c346f539d8600569"
             }
           ],
           "planned_evidence": "Future frozen phase/accounting tests, raw paired measurements and scoped decision packet defined in quickstart.md.",
@@ -146,17 +146,17 @@
           "obtained_evidence": [
             {
               "command": "/tmp/agent-braid-parallel-20261006/.venv-speckit/bin/python -m unittest tests.test_utility_accounting tests.test_utility_fixtures tests.test_m4_utility tests.test_utility_trials tests.test_m4_utility_preparation",
-              "limits": "Engineering checks only; full profiles and registered evidence remain separate; source bindings will be refreshed after observer relocation.",
-              "outcome": "67 focal tests passed on the dated development candidate",
+              "limits": "Engineering tests or one-pair exploratory diagnosis only; full repository gates, registered measurements and human/founder decisions remain separate.",
+              "outcome": "Focal engineering tests passed; exact count and log hash are recorded in the referenced receipt",
               "path": "specs/022-m4-utility-followup/evidence/phase-accounting-test-receipt.json",
-              "sha256": "64676495f8e9539998595931a414d0a1b80219333220ae09fa36368d600d6a1a"
+              "sha256": "65eb640f4c79b3d6cbb2ac5eabdba1ea49a4286b795879e144656d43c97b1075"
             },
             {
-              "command": "Four clean-candidate diagnostic-only invocations of scripts/measure_m4_utility.py; exact commands in evidence/final-diagnostics/execution-receipt.json",
-              "limits": "One serial-first pair per synthetic block, not registered measurement or utility acceptance; bindings will be refreshed after observer relocation.",
+              "command": "Four clean-candidate diagnostic-only invocations of scripts/measure_m4_utility.py; exact commands in evidence/final-coordinator-diagnostics/execution-receipt.json",
+              "limits": "Engineering tests or one-pair exploratory diagnosis only; full repository gates, registered measurements and human/founder decisions remain separate.",
               "outcome": "Eight exploratory treatments completed with independent verification and full accounting",
               "path": "specs/022-m4-utility-followup/cost-diagnosis.json",
-              "sha256": "7edbd13336c357077b77df00ae78028f45056daeaa952e7906b2546ca920600a"
+              "sha256": "ae484ff6a945628c44a515caba7e888c80a7464564207dc5c346f539d8600569"
             }
           ],
           "planned_evidence": "Future frozen phase/accounting tests, raw paired measurements and scoped decision packet defined in quickstart.md.",
@@ -177,17 +177,17 @@
           "obtained_evidence": [
             {
               "command": "/tmp/agent-braid-parallel-20261006/.venv-speckit/bin/python -m unittest tests.test_utility_accounting tests.test_utility_fixtures tests.test_m4_utility tests.test_utility_trials tests.test_m4_utility_preparation",
-              "limits": "Engineering checks only; full profiles and registered evidence remain separate; source bindings will be refreshed after observer relocation.",
-              "outcome": "67 focal tests passed on the dated development candidate",
+              "limits": "Engineering tests or one-pair exploratory diagnosis only; full repository gates, registered measurements and human/founder decisions remain separate.",
+              "outcome": "Focal engineering tests passed; exact count and log hash are recorded in the referenced receipt",
               "path": "specs/022-m4-utility-followup/evidence/phase-accounting-test-receipt.json",
-              "sha256": "64676495f8e9539998595931a414d0a1b80219333220ae09fa36368d600d6a1a"
+              "sha256": "65eb640f4c79b3d6cbb2ac5eabdba1ea49a4286b795879e144656d43c97b1075"
             },
             {
-              "command": "Four clean-candidate diagnostic-only invocations of scripts/measure_m4_utility.py; exact commands in evidence/final-diagnostics/execution-receipt.json",
-              "limits": "One serial-first pair per synthetic block, not registered measurement or utility acceptance; bindings will be refreshed after observer relocation.",
+              "command": "Four clean-candidate diagnostic-only invocations of scripts/measure_m4_utility.py; exact commands in evidence/final-coordinator-diagnostics/execution-receipt.json",
+              "limits": "Engineering tests or one-pair exploratory diagnosis only; full repository gates, registered measurements and human/founder decisions remain separate.",
               "outcome": "Eight exploratory treatments completed with independent verification and full accounting",
               "path": "specs/022-m4-utility-followup/cost-diagnosis.json",
-              "sha256": "7edbd13336c357077b77df00ae78028f45056daeaa952e7906b2546ca920600a"
+              "sha256": "ae484ff6a945628c44a515caba7e888c80a7464564207dc5c346f539d8600569"
             }
           ],
           "planned_evidence": "Future frozen phase/accounting tests, raw paired measurements and scoped decision packet defined in quickstart.md.",
@@ -221,7 +221,7 @@
   "stage": "draft",
   "technical_review_preparation": {
     "executionAuthorization": false,
-    "implementationStatus": "T002-T004 engineering implemented; full quick exposed frozen M2 dependency and assurance metadata issues being corrected; human registered harness/manifest review pending",
+    "implementationStatus": "T002-T004 engineering complete with 70 focal tests, final eight diagnostic treatments and Luna engineering GO; full repository gates are reported separately; human registered harness/manifest review pending",
     "localFrozenPreparationCommit": "9f347e803401c04af61e6662ccc5756578805b23",
     "ownerReviewRecord": "specs/022-m4-utility-followup/protocol-review-3777e578.json",
     "ownerReviewSha256": "1d6065eca4f6959570163ce8a3a25ac94ca34b2d7425009167ef3e9f4673e783",
