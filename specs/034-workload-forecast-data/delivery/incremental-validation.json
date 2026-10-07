@@ -1,0 +1,14 @@
+{
+  "command": ".venv-speckit/bin/python scripts/validate_change.py --base develop --profile quick",
+  "requestedProfile": "quick",
+  "effectiveProfile": "sensitive",
+  "exitCode": 0,
+  "fullSuite": {
+    "tests": 504,
+    "skipped": 4,
+    "result": "OK"
+  },
+  "inputBinding": "Incremental working-tree check; not an immutable feature acceptance result",
+  "endCommit": "0ccb04706a5bf610c5e2bc88c7da7bf71cd1ccb7",
+  "limits": "Existing repository checks; no future forecast implementation, installed-model conformance, permissioned utility, independent review or founder acceptance. Final immutable PR-profile result is recorded in the PR description."
+}

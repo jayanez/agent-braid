@@ -1,0 +1,82 @@
+{
+  "status": "draft-unapproved",
+  "launchAuthorized": false,
+  "baseCommit": "25a3d8d984abd23deb414fa815c4a7e5fee4b52e",
+  "sourceRegisterDigest": null,
+  "sourceRightsDecision": null,
+  "privacyDecision": null,
+  "consecutiveSourceWindow": null,
+  "dataReadinessDecision": null,
+  "population": "permissioned existing 2–4 immutable ordinary-text A/M local Git batches",
+  "independentUnit": "non-overlapping workload episode; timing repeats are nested",
+  "primaryGroups": null,
+  "resourceProfileDigests": null,
+  "partitionDigest": null,
+  "proposedSeries": {
+    "stepMs": 100,
+    "contextBins": 128,
+    "horizonBins": [
+      1,
+      5,
+      10
+    ],
+    "minimumObservedHistoryBins": 64,
+    "maximumMissingTargetFraction": 0.2,
+    "quantiles": [
+      0.1,
+      0.5,
+      0.9
+    ]
+  },
+  "mandatoryRoster": [
+    "persistence",
+    "development-selected EWMA",
+    "operation-feature regularized linear regression",
+    "pinned zero-shot Chronos-2"
+  ],
+  "optionalTotoSelection": "pending pre-holdout decision; absent until explicitly selected and budgeted",
+  "referencePolicy": "strongest deployment-costed non-model policy selected on development data; serial also reported",
+  "proposedTiming": {
+    "warmupCyclesPerEpisode": 2,
+    "measuredCyclesPerEpisode": 5,
+    "minimumIndependentHoldoutEpisodesPerPrimaryGroup": 30,
+    "treatmentOrder": "rotated preregistered permutation",
+    "orderSeed": null
+  },
+  "proposedUtility": {
+    "medianFullWallReferenceOverCandidateMinimum": 1.1,
+    "confidenceLevel": 0.95,
+    "episodeClusterLowerBoundMinimum": 1.0,
+    "bootstrapSeed": null,
+    "bootstrapReplicates": null,
+    "multipleGroupRule": null,
+    "invalidMatchedArm": "primary group inconclusive",
+    "safetyFailure": "no promotion"
+  },
+  "launchBudget": {
+    "maximumEpisodes": null,
+    "windowDurationNs": null,
+    "storageBytes": null,
+    "maximumRuns": null,
+    "totalWallNs": null,
+    "totalCpuNs": null,
+    "scratchBytes": null,
+    "reviewRecord": null
+  },
+  "candidateDigests": {
+    "source": null,
+    "artifacts": null,
+    "adapter": null,
+    "transforms": null,
+    "actionMapper": null,
+    "referencePolicy": null,
+    "harness": null
+  },
+  "requiredLaunchGates": [
+    "G1 permissioned window/yield and immutable protocol",
+    "G2 approved actual Chronos CPU conformance",
+    "G3 frozen candidate, complete numerical budgets and independent per-run operator authority"
+  ],
+  "obtainedEvidence": [],
+  "historicalDecision": "SPEC-021 G4 NO-GO unchanged"
+}
