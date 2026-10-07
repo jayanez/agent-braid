@@ -21,7 +21,7 @@
   ],
   "assumptions": "Closed synthetic fixtures and explicit finite models; complete effect and contextual/proof premises are stated, never inferred from tests.",
   "authority_snapshot": {
-    "commit": "0e17c4d9b119837f4d618cb9842dbe7d2e5d5772",
+    "commit": "a5eaa04939eabaa654d54654e2ab4ea68d3a224b",
     "hashes": {
       "ARCHITECTURE.md": "e26135a1037c232ff953710e5de52abef8cf1cad47a8822fe63a565bc9ad9555",
       "CONSTITUTION.md": "ff7196976a1736a639947c2ab26e8da157fef23c89ba9881312f2a36459964eb",
@@ -91,7 +91,7 @@
   "compatibility": "Separate experimental research interfaces; existing AIM/Git/M3/runtime contracts and historical approvals unchanged; tool/provider adoption remains gated.",
   "domain": "Existing integer-batch-v1 <=6 operation source-bound prefixes and listed suffixes; separate anchored candidate proof and research-only feasibility.",
   "evidence_snapshot": {
-    "commit": "0e17c4d9b119837f4d618cb9842dbe7d2e5d5772",
+    "commit": "a5eaa04939eabaa654d54654e2ab4ea68d3a224b",
     "mode": "historical"
   },
   "execution_contract": "Private standard-library model checks and inert report files only; no real services, project code, model calls, source promotion or runtime grants.",

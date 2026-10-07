@@ -126,6 +126,8 @@ RULES = (
         boundary="Expanded capability ADR, exact probes and operation-specific grants"),
     Rule("system-one-core", (
         "agent_braid/system_one*.py", "agent_braid/cli.py", "tests/test_system_one*.py",
+        "agent_braid/_system_one_stage_manifest.py", "agent_braid/_advice_scope.py",
+        "agent_braid/mcp_advice.py",
     ), ("full-tests",), True,
         boundary="Synthetic diagnostic contract only; model/data/human acceptance and promotion remain separate"),
     Rule("contextual-finite-checker", (

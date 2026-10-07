@@ -1,0 +1,21 @@
+{
+  "contractBindings": {
+    "specs/032-system-one-product/contracts/api-details.md": "32c97082e96a109f3e1d614bde34f426a6433dbdf998963e5a1bf7f5f79b9681",
+    "specs/032-system-one-product/contracts/interface.md": "cb30415449645a790edfcc6bedb04c1424505cbe884b5d0e5583022ddbaea3cb",
+    "specs/032-system-one-product/contracts/product.md": "74f65d3575606613e37dc6f6faa733ecc42ac5ecc9a46f5108020db310958da3"
+  },
+  "coreTechnicalPrerequisite": "SPEC-028/T008 completed on ae97c7e; frozen evidence at 0e17c4d",
+  "decision": "GO",
+  "executionAuthorization": false,
+  "format": "technical-interface-clarification-v1",
+  "limits": "Independent technical interface review only; no human/scientific/founder approval, empirical utility or execution authority.",
+  "originalCandidate": "abeca31e88baeabbb74a7cffa3b0767e870d4ac7",
+  "pointerClarification": {
+    "controls": "Existing frozen leaf-reference and direct-leaf pointers preserved; nested original reference origin and actual resolved leaf fixed before code.",
+    "reviewDecision": "GO",
+    "sha256": "387d19f7bf0cfd5f2ace92f7a9b28f7b7080e9f8db6b11e5e0bd2d8431900de0",
+    "text": "For expansion without a reference, schemaPointer is the actual leaf node's canonical document pointer, equal to resolvedSchemaPointer. On entering the first $ref during an instance-path expansion, capture that reference node's document pointer as the original source. Preserve this captured schemaPointer through chained references and every descendant emitted from a referenced object, including descendants reached through further references. resolvedSchemaPointer always names the final actual leaf node in the supplied document. The capture ends when that referenced subtree's expansion returns; a sibling expansion establishes its own origin. Never synthesize a document pointer by appending property segments to a reference node. instancePointer follows the emitted instance path and, with schemaPointer, binds each question ID; resolving a reference never changes the instance path."
+  },
+  "proposalSha256": "33c6129736e22a7bfae97bc1bbd3753dc1bb317ee5d823e5fe0891f9243c7149",
+  "reviewerModel": "gpt-6-luna"
+}
