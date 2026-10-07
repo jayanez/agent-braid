@@ -14,6 +14,7 @@ import tempfile
 
 from .analysis import _canonical, _digest
 from .git_adapter import InvalidGitAnalysis, analyze_git_with_provenance
+from .utility_budget_observer import observe_git_budget
 from .git_process import (
     GitCommandBudget,
     GitCommandFailure,
@@ -340,6 +341,7 @@ def _build_evidence(request: dict, *, order_selector=None) -> dict:
             max_command_output_bytes=MAX_GIT_OUTPUT,
             max_scratch_bytes=MAX_REPLAY_SCRATCH,
         )
+        observe_git_budget(budget)
         try:
             # M1 remains the authority for request normalization and Git provenance.
             # Its subprocesses receive this request's sanitized environment and
