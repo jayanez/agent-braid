@@ -32,4 +32,4 @@ No execution capability is added. The observation remains tracked trees and expl
 
 ## Human review and unresolved decisions
 
-The exact `technical-review-packet.md` supersedes prior vague corpus/phase descriptions and awaits human technical review. T001 and assurance remain pending/draft. Technical review precedes implementation of contract-sensitive instrumentation. Founder utility decision follows obtained results; NO-GO and M4-open status remain unchanged before that decision. No scientific or independent validation is implied.
+The exact `technical-review-packet.md` supersedes prior vague corpus/phase descriptions. The owner approved its frozen public candidate `3777e578` on 2026-10-07; `protocol-review-3777e578.json` records the scoped decision and T001 is complete. Instrumentation and evaluation preparation are authorized; whole-feature assurance remains draft/human-review pending. Registered measurements require a separately reviewed stable harness/manifest freeze. Founder utility decision follows obtained results; NO-GO and M4-open status remain unchanged before that decision. No scientific or independent validation is implied.

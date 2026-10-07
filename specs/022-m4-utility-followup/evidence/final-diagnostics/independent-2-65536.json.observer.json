@@ -1,0 +1,12 @@
+{
+  "observation": {
+    "bytes": 89949,
+    "parentCpuNs": 581000,
+    "scope": "shared final envelope encoding/output outside all operational ratios",
+    "sha256": "ab59cfea86248f20c9ecaf161f4b724aab431af384452dc61de680dad2f699da",
+    "wallNs": 612417
+  },
+  "output": "/private/tmp/agent-braid-spec022-final-diagnostics-20261007/independent-2-65536.json",
+  "receiptWriteBoundary": "subsequent publication, outside the closed observer span",
+  "recordVersion": "spec022-observer-receipt-v1"
+}

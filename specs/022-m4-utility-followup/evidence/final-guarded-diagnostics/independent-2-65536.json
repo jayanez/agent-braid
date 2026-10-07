@@ -1,0 +1,1228 @@
+{
+  "approvedProtocolCommit": "3777e578ba3f8130d6f284acf54898198a45e0f0",
+  "approvedProtocolSha256": "6e5a2bd790fb789926007e11f33af40df2ed494d3e8464b13f114523120b282b",
+  "candidateCommit": "dd8ea6dc852c17e01803c8c4c63f644c9479cb33",
+  "candidateInputsChangedDuringRun": false,
+  "diagnosticPairs": [
+    {
+      "blockId": "independent-2-65536",
+      "registration": "not-registered; exploratory diagnostic only",
+      "samples": [
+        {
+          "accounting": {
+            "acceptedBudgetOutputBytes": 6636936,
+            "complete": true,
+            "errors": [],
+            "gitBudgetCount": 13,
+            "gitCommands": 485,
+            "observedCapturedOutputBytes": null,
+            "optionalReasons": {
+              "acceptedBudgetOutputBytes": null,
+              "gitCommands": null,
+              "observedCapturedOutputBytes": "runner does not expose rejected or discarded output bytes; total bytes read unavailable",
+              "processLifetimeRssBytes": null,
+              "sampledScratchPeakBytes": "frozen budget does not expose whether sampled scratch high-water was observed; allocation unavailable"
+            },
+            "outcome": "success",
+            "outer": {
+              "completedChildSystemCpuSeconds": 3.8052499999999996,
+              "completedChildUserCpuSeconds": 3.745613,
+              "counterReasons": {},
+              "endWallNs": 427653387361041,
+              "parentCpuSeconds": 1.091911,
+              "startWallNs": 427637447560416,
+              "wallNs": 15939800625
+            },
+            "phases": [
+              {
+                "acceptedBudgetOutputBytes": 0,
+                "completedChildSystemCpuSeconds": 0.0,
+                "completedChildUserCpuSeconds": 0.0,
+                "counterReasons": {
+                  "observedCapturedOutputBytes": "runner does not expose rejected or discarded output bytes; total bytes read unavailable",
+                  "sampledScratchPeakBytes": "budget scratch is a cumulative sampled high-water; no isolated phase allocation"
+                },
+                "endWallNs": 427637449900791,
+                "gitCommands": 0,
+                "name": "input",
+                "observedCapturedOutputBytes": null,
+                "outcome": "success",
+                "parentCpuSeconds": 0.0022050000000000125,
+                "sampledScratchPeakBytes": null,
+                "startWallNs": 427637447608625,
+                "wallNs": 2292166
+              },
+              {
+                "acceptedBudgetOutputBytes": 1327210,
+                "completedChildSystemCpuSeconds": 0.694914,
+                "completedChildUserCpuSeconds": 0.706653,
+                "counterReasons": {
+                  "observedCapturedOutputBytes": "runner does not expose rejected or discarded output bytes; total bytes read unavailable",
+                  "sampledScratchPeakBytes": "budget scratch is a cumulative sampled high-water; no isolated phase allocation"
+                },
+                "endWallNs": 427640317918916,
+                "gitCommands": 98,
+                "name": "replay",
+                "observedCapturedOutputBytes": null,
+                "outcome": "success",
+                "parentCpuSeconds": 0.206242,
+                "sampledScratchPeakBytes": null,
+                "startWallNs": 427637449923041,
+                "wallNs": 2867995875
+              },
+              {
+                "acceptedBudgetOutputBytes": 1326991,
+                "completedChildSystemCpuSeconds": 0.6331519999999999,
+                "completedChildUserCpuSeconds": 0.665437,
+                "counterReasons": {
+                  "observedCapturedOutputBytes": "runner does not expose rejected or discarded output bytes; total bytes read unavailable",
+                  "sampledScratchPeakBytes": "budget scratch is a cumulative sampled high-water; no isolated phase allocation"
+                },
+                "endWallNs": 427643098949875,
+                "gitCommands": 92,
+                "name": "preparation",
+                "observedCapturedOutputBytes": null,
+                "outcome": "success",
+                "parentCpuSeconds": 0.18021299999999996,
+                "sampledScratchPeakBytes": null,
+                "startWallNs": 427640317960375,
+                "wallNs": 2780989500
+              },
+              {
+                "acceptedBudgetOutputBytes": 1326991,
+                "completedChildSystemCpuSeconds": 0.7182850000000003,
+                "completedChildUserCpuSeconds": 0.6894399999999998,
+                "counterReasons": {
+                  "observedCapturedOutputBytes": "runner does not expose rejected or discarded output bytes; total bytes read unavailable",
+                  "sampledScratchPeakBytes": "budget scratch is a cumulative sampled high-water; no isolated phase allocation"
+                },
+                "endWallNs": 427646245504666,
+                "gitCommands": 92,
+                "name": "grant",
+                "observedCapturedOutputBytes": null,
+                "outcome": "success",
+                "parentCpuSeconds": 0.199938,
+                "sampledScratchPeakBytes": null,
+                "startWallNs": 427643098988958,
+                "wallNs": 3146515708
+              },
+              {
+                "acceptedBudgetOutputBytes": 1991018,
+                "completedChildSystemCpuSeconds": 1.3676199999999996,
+                "completedChildUserCpuSeconds": 1.2953490000000003,
+                "counterReasons": {
+                  "observedCapturedOutputBytes": "runner does not expose rejected or discarded output bytes; total bytes read unavailable",
+                  "sampledScratchPeakBytes": "budget scratch is a cumulative sampled high-water; no isolated phase allocation"
+                },
+                "endWallNs": 427651726216083,
+                "gitCommands": 153,
+                "name": "execution",
+                "observedCapturedOutputBytes": null,
+                "outcome": "success",
+                "parentCpuSeconds": 0.3902129999999999,
+                "sampledScratchPeakBytes": null,
+                "startWallNs": 427646245534916,
+                "wallNs": 5480681167
+              },
+              {
+                "acceptedBudgetOutputBytes": 664726,
+                "completedChildSystemCpuSeconds": 0.39127899999999993,
+                "completedChildUserCpuSeconds": 0.3887339999999999,
+                "counterReasons": {
+                  "observedCapturedOutputBytes": "runner does not expose rejected or discarded output bytes; total bytes read unavailable",
+                  "sampledScratchPeakBytes": "budget scratch is a cumulative sampled high-water; no isolated phase allocation"
+                },
+                "endWallNs": 427653384739375,
+                "gitCommands": 50,
+                "name": "independent_verification",
+                "observedCapturedOutputBytes": null,
+                "outcome": "success",
+                "parentCpuSeconds": 0.1102860000000001,
+                "sampledScratchPeakBytes": null,
+                "startWallNs": 427651726253166,
+                "wallNs": 1658486209
+              },
+              {
+                "acceptedBudgetOutputBytes": 0,
+                "completedChildSystemCpuSeconds": 0.0,
+                "completedChildUserCpuSeconds": 0.0,
+                "counterReasons": {
+                  "observedCapturedOutputBytes": "runner does not expose rejected or discarded output bytes; total bytes read unavailable",
+                  "sampledScratchPeakBytes": "budget scratch is a cumulative sampled high-water; no isolated phase allocation"
+                },
+                "endWallNs": 427653384952125,
+                "gitCommands": 0,
+                "name": "report_serialization",
+                "observedCapturedOutputBytes": null,
+                "outcome": "success",
+                "parentCpuSeconds": 0.00017700000000009375,
+                "sampledScratchPeakBytes": null,
+                "startWallNs": 427653384775916,
+                "wallNs": 176209
+              },
+              {
+                "acceptedBudgetOutputBytes": 0,
+                "completedChildSystemCpuSeconds": 0.0,
+                "completedChildUserCpuSeconds": 0.0,
+                "counterReasons": {
+                  "observedCapturedOutputBytes": "runner does not expose rejected or discarded output bytes; total bytes read unavailable",
+                  "sampledScratchPeakBytes": "budget scratch is a cumulative sampled high-water; no isolated phase allocation"
+                },
+                "endWallNs": 427653387342875,
+                "gitCommands": 0,
+                "name": "cleanup",
+                "observedCapturedOutputBytes": null,
+                "outcome": "success",
+                "parentCpuSeconds": 0.002383000000000024,
+                "sampledScratchPeakBytes": null,
+                "startWallNs": 427653384960958,
+                "wallNs": 2381917
+              }
+            ],
+            "processLifetimeRssBytes": 28966912,
+            "residualWallNs": 281874,
+            "sampledScratchPeakBytes": null,
+            "scopes": {
+              "bytes": "accepted budget-counted Git output; discarded overflow chunks excluded; total bytes read unavailable",
+              "childCpu": "process-global completed children; not per-worker",
+              "commands": "Git command budget charges, including refused launches",
+              "observer": "sealing and output excluded from operational outer",
+              "parentCpu": "process including threads",
+              "rss": "process lifetime high-water, not treatment delta",
+              "scratch": "unavailable; frozen budgets expose no reliable sample-presence counter",
+              "workerOverlap": "observed wall intervals, not CPU parallelism"
+            },
+            "workerIntervals": {
+              "peakOccupancy": null,
+              "reason": "no worker interval observations",
+              "unionWallNs": null
+            }
+          },
+          "boundary": "operational report bytes precede cleanup; closing status/accounting envelope and final output are separately observed",
+          "cleanupError": null,
+          "identityGuardError": null,
+          "observerFinalization": {
+            "complete": true,
+            "completedChildSystemCpuSeconds": 0.0,
+            "completedChildUserCpuSeconds": 0.0,
+            "counterReasons": {},
+            "endWallNs": 427653387698125,
+            "errors": [],
+            "parentCpuSeconds": 0.00033799999999994945,
+            "scope": "observer sealing/output outside operational outer",
+            "startWallNs": 427653387361041,
+            "wallNs": 337084
+          },
+          "operational": {
+            "accountingPreview": {
+              "activePhase": "report_serialization",
+              "errors": [],
+              "phases": [
+                {
+                  "acceptedBudgetOutputBytes": 0,
+                  "completedChildSystemCpuSeconds": 0.0,
+                  "completedChildUserCpuSeconds": 0.0,
+                  "counterReasons": {
+                    "observedCapturedOutputBytes": "runner does not expose rejected or discarded output bytes; total bytes read unavailable",
+                    "sampledScratchPeakBytes": "budget scratch is a cumulative sampled high-water; no isolated phase allocation"
+                  },
+                  "endWallNs": 427637449900791,
+                  "gitCommands": 0,
+                  "name": "input",
+                  "observedCapturedOutputBytes": null,
+                  "outcome": "success",
+                  "parentCpuSeconds": 0.0022050000000000125,
+                  "sampledScratchPeakBytes": null,
+                  "startWallNs": 427637447608625,
+                  "wallNs": 2292166
+                },
+                {
+                  "acceptedBudgetOutputBytes": 1327210,
+                  "completedChildSystemCpuSeconds": 0.694914,
+                  "completedChildUserCpuSeconds": 0.706653,
+                  "counterReasons": {
+                    "observedCapturedOutputBytes": "runner does not expose rejected or discarded output bytes; total bytes read unavailable",
+                    "sampledScratchPeakBytes": "budget scratch is a cumulative sampled high-water; no isolated phase allocation"
+                  },
+                  "endWallNs": 427640317918916,
+                  "gitCommands": 98,
+                  "name": "replay",
+                  "observedCapturedOutputBytes": null,
+                  "outcome": "success",
+                  "parentCpuSeconds": 0.206242,
+                  "sampledScratchPeakBytes": null,
+                  "startWallNs": 427637449923041,
+                  "wallNs": 2867995875
+                },
+                {
+                  "acceptedBudgetOutputBytes": 1326991,
+                  "completedChildSystemCpuSeconds": 0.6331519999999999,
+                  "completedChildUserCpuSeconds": 0.665437,
+                  "counterReasons": {
+                    "observedCapturedOutputBytes": "runner does not expose rejected or discarded output bytes; total bytes read unavailable",
+                    "sampledScratchPeakBytes": "budget scratch is a cumulative sampled high-water; no isolated phase allocation"
+                  },
+                  "endWallNs": 427643098949875,
+                  "gitCommands": 92,
+                  "name": "preparation",
+                  "observedCapturedOutputBytes": null,
+                  "outcome": "success",
+                  "parentCpuSeconds": 0.18021299999999996,
+                  "sampledScratchPeakBytes": null,
+                  "startWallNs": 427640317960375,
+                  "wallNs": 2780989500
+                },
+                {
+                  "acceptedBudgetOutputBytes": 1326991,
+                  "completedChildSystemCpuSeconds": 0.7182850000000003,
+                  "completedChildUserCpuSeconds": 0.6894399999999998,
+                  "counterReasons": {
+                    "observedCapturedOutputBytes": "runner does not expose rejected or discarded output bytes; total bytes read unavailable",
+                    "sampledScratchPeakBytes": "budget scratch is a cumulative sampled high-water; no isolated phase allocation"
+                  },
+                  "endWallNs": 427646245504666,
+                  "gitCommands": 92,
+                  "name": "grant",
+                  "observedCapturedOutputBytes": null,
+                  "outcome": "success",
+                  "parentCpuSeconds": 0.199938,
+                  "sampledScratchPeakBytes": null,
+                  "startWallNs": 427643098988958,
+                  "wallNs": 3146515708
+                },
+                {
+                  "acceptedBudgetOutputBytes": 1991018,
+                  "completedChildSystemCpuSeconds": 1.3676199999999996,
+                  "completedChildUserCpuSeconds": 1.2953490000000003,
+                  "counterReasons": {
+                    "observedCapturedOutputBytes": "runner does not expose rejected or discarded output bytes; total bytes read unavailable",
+                    "sampledScratchPeakBytes": "budget scratch is a cumulative sampled high-water; no isolated phase allocation"
+                  },
+                  "endWallNs": 427651726216083,
+                  "gitCommands": 153,
+                  "name": "execution",
+                  "observedCapturedOutputBytes": null,
+                  "outcome": "success",
+                  "parentCpuSeconds": 0.3902129999999999,
+                  "sampledScratchPeakBytes": null,
+                  "startWallNs": 427646245534916,
+                  "wallNs": 5480681167
+                },
+                {
+                  "acceptedBudgetOutputBytes": 664726,
+                  "completedChildSystemCpuSeconds": 0.39127899999999993,
+                  "completedChildUserCpuSeconds": 0.3887339999999999,
+                  "counterReasons": {
+                    "observedCapturedOutputBytes": "runner does not expose rejected or discarded output bytes; total bytes read unavailable",
+                    "sampledScratchPeakBytes": "budget scratch is a cumulative sampled high-water; no isolated phase allocation"
+                  },
+                  "endWallNs": 427653384739375,
+                  "gitCommands": 50,
+                  "name": "independent_verification",
+                  "observedCapturedOutputBytes": null,
+                  "outcome": "success",
+                  "parentCpuSeconds": 0.1102860000000001,
+                  "sampledScratchPeakBytes": null,
+                  "startWallNs": 427651726253166,
+                  "wallNs": 1658486209
+                }
+              ],
+              "sealed": false,
+              "startWallNs": 427637447560416
+            },
+            "blockId": "independent-2-65536",
+            "grantId": "f1a4fadb-c175-432d-82f4-fcadb3437451",
+            "immutableSourceUnchanged": true,
+            "independentVerification": {
+              "authorizationScope": "private-run-only",
+              "completedOperations": [
+                "a",
+                "b"
+              ],
+              "executionContract": "authorized-serial-index-patch-v1",
+              "gitRuntimeReportVersion": "0.1.0-alpha",
+              "limits": [
+                "Fixed text patches and private Git storage only; no repository code or source promotion.",
+                "Digest acknowledgement is not authentication; owned POSIX filesystem/Git are trusted.",
+                "Process interruption recovery; no power-loss, hostile same-UID or production-safety guarantee.",
+                "No hard child memory cap; scratch is sampled and can overshoot between checks.",
+                "Tree observations do not establish semantic correctness or safe concurrency."
+              ],
+              "manifestDigest": "sha256:1403f1cb6c817843dbb6d0c6572a879bfe76f7c6b77f3c23dabe3d0c3f4ee5c2",
+              "observationContract": "runtime-private-tracked-tree-v1",
+              "phase": "completed",
+              "resultCommit": "e7877ae4d2673a1510116232a9345c4133b2d483",
+              "resultTree": "d4e84508f4636c14ff92e803d9f3035619215741",
+              "runDirectory": "/private/var/folders/81/gs00m_mx6wv4746w6ttwb7240000gp/T/agent-braid-utility-treatment-zbdesxqv/result",
+              "sourcePromotion": false,
+              "status": "verified-completed"
+            },
+            "mode": "serial",
+            "planDigest": "sha256:dcabb038ecbee05fc858f83caa04d6420062ad3dd861ae503ff7ae89a1c32a1a",
+            "resultTree": "d4e84508f4636c14ff92e803d9f3035619215741",
+            "runtimeManifest": {
+              "authorizationScope": "private-run-only",
+              "baseTree": "562d3d0a571a697990fbf60a7db0338349836782",
+              "executionContract": "authorized-serial-index-patch-v1",
+              "gitRuntimeManifestVersion": "0.1.0-alpha",
+              "manifestDigest": "sha256:1403f1cb6c817843dbb6d0c6572a879bfe76f7c6b77f3c23dabe3d0c3f4ee5c2",
+              "observationContract": "runtime-private-tracked-tree-v1",
+              "privateConfigDigest": "sha256:3c5cc3e72b5473d08433171d50fc687ac3aa2a6a3f4c20b97f5b66f581b0fec9",
+              "repositoryId": "sha256:9216680f6a327cd59e44546cd8bddd630c1e2543a868d88f715c562d822e143e",
+              "request": {
+                "baseRevision": "efac4659ec0161e9865fe431b0a367d77f6db3ac",
+                "expectedFinalTree": "d4e84508f4636c14ff92e803d9f3035619215741",
+                "gitRuntimeRequestVersion": "0.1.0-alpha",
+                "operations": [
+                  {
+                    "attemptId": "a-attempt",
+                    "declaredWrites": [
+                      "a.txt"
+                    ],
+                    "dependencies": [],
+                    "instanceId": "a",
+                    "source": {
+                      "kind": "commit",
+                      "revision": "894d804428e37bc34ba4324ede0a0c1051a43ddb"
+                    },
+                    "uncertainPaths": []
+                  },
+                  {
+                    "attemptId": "b-attempt",
+                    "declaredWrites": [
+                      "b.txt"
+                    ],
+                    "dependencies": [],
+                    "instanceId": "b",
+                    "source": {
+                      "kind": "commit",
+                      "revision": "2e44e76c9ba59ee35754ee32caad8a224f02120f"
+                    },
+                    "uncertainPaths": []
+                  }
+                ],
+                "order": [
+                  "a",
+                  "b"
+                ],
+                "repository": "/private/var/folders/81/gs00m_mx6wv4746w6ttwb7240000gp/T/agent-braid-utility-fixture-lhwi6xby/fixture/source"
+              },
+              "resourceLimits": {
+                "changedPaths": 16,
+                "childAddressSpaceBytes": null,
+                "commandOutputBytes": 2097152,
+                "gitCommands": 256,
+                "operations": 4,
+                "outputBytes": 8388608,
+                "patchBytes": 262144,
+                "scratchBytes": 67108864,
+                "wallSeconds": 60
+              },
+              "runDirectory": "/private/var/folders/81/gs00m_mx6wv4746w6ttwb7240000gp/T/agent-braid-utility-treatment-zbdesxqv/result",
+              "sourcePromotion": false,
+              "steps": [
+                {
+                  "attemptId": "a-attempt",
+                  "commit": "9b27b946f1ff8e046f1a7d2eec42738db82b416c",
+                  "effects": [
+                    {
+                      "afterBlob": "380d4b407e5bf815a9e3f04d4b549c79b93a5cb4",
+                      "afterMode": "100644",
+                      "beforeBlob": "df967b96a579e45a18b8251732d16804b2e56a55",
+                      "beforeMode": "100644",
+                      "path": "a.txt",
+                      "status": "M"
+                    }
+                  ],
+                  "inputTree": "562d3d0a571a697990fbf60a7db0338349836782",
+                  "operationId": "a",
+                  "outputTree": "4c306c8553a1b04f876425b31559bbfd5765fc0b",
+                  "parentCommit": "efac4659ec0161e9865fe431b0a367d77f6db3ac",
+                  "patchDigest": "sha256:5aa4ac5b0c83746d44df0064a406f767151fb192a9cb014a1ad93d7a79cb363f",
+                  "sourceCommit": "894d804428e37bc34ba4324ede0a0c1051a43ddb"
+                },
+                {
+                  "attemptId": "b-attempt",
+                  "commit": "e7877ae4d2673a1510116232a9345c4133b2d483",
+                  "effects": [
+                    {
+                      "afterBlob": "7995fc5a1ff1ce6a00faf26042385f237d9124dd",
+                      "afterMode": "100644",
+                      "beforeBlob": "df967b96a579e45a18b8251732d16804b2e56a55",
+                      "beforeMode": "100644",
+                      "path": "b.txt",
+                      "status": "M"
+                    }
+                  ],
+                  "inputTree": "4c306c8553a1b04f876425b31559bbfd5765fc0b",
+                  "operationId": "b",
+                  "outputTree": "d4e84508f4636c14ff92e803d9f3035619215741",
+                  "parentCommit": "9b27b946f1ff8e046f1a7d2eec42738db82b416c",
+                  "patchDigest": "sha256:24ed0214a7fee513e5b36a613b7ebf92a9b7f6d8a6eff36e5c7d8c7aa99d67e5",
+                  "sourceCommit": "2e44e76c9ba59ee35754ee32caad8a224f02120f"
+                }
+              ]
+            },
+            "runtimeReport": {
+              "dispatch": "performed",
+              "grantId": "f1a4fadb-c175-432d-82f4-fcadb3437451",
+              "runtime": {
+                "authorizationScope": "private-run-only",
+                "completedOperations": [
+                  "a",
+                  "b"
+                ],
+                "executionContract": "authorized-serial-index-patch-v1",
+                "gitRuntimeReportVersion": "0.1.0-alpha",
+                "limits": [
+                  "Fixed text patches and private Git storage only; no repository code or source promotion.",
+                  "Digest acknowledgement is not authentication; owned POSIX filesystem/Git are trusted.",
+                  "Process interruption recovery; no power-loss, hostile same-UID or production-safety guarantee.",
+                  "No hard child memory cap; scratch is sampled and can overshoot between checks.",
+                  "Tree observations do not establish semantic correctness or safe concurrency."
+                ],
+                "manifestDigest": "sha256:1403f1cb6c817843dbb6d0c6572a879bfe76f7c6b77f3c23dabe3d0c3f4ee5c2",
+                "observationContract": "runtime-private-tracked-tree-v1",
+                "phase": "completed",
+                "resultCommit": "e7877ae4d2673a1510116232a9345c4133b2d483",
+                "resultTree": "d4e84508f4636c14ff92e803d9f3035619215741",
+                "runDirectory": "/private/var/folders/81/gs00m_mx6wv4746w6ttwb7240000gp/T/agent-braid-utility-treatment-zbdesxqv/result",
+                "sourcePromotion": false,
+                "status": "completed"
+              }
+            },
+            "status": "completed",
+            "workerOverlap": {
+              "peakIntervals": null,
+              "reason": "serial policy exposes no worker preparation intervals",
+              "unionNs": null
+            }
+          },
+          "operationalEncoded": "{\n  \"accountingPreview\": {\n    \"activePhase\": \"report_serialization\",\n    \"errors\": [],\n    \"phases\": [\n      {\n        \"acceptedBudgetOutputBytes\": 0,\n        \"completedChildSystemCpuSeconds\": 0.0,\n        \"completedChildUserCpuSeconds\": 0.0,\n        \"counterReasons\": {\n          \"observedCapturedOutputBytes\": \"runner does not expose rejected or discarded output bytes; total bytes read unavailable\",\n          \"sampledScratchPeakBytes\": \"budget scratch is a cumulative sampled high-water; no isolated phase allocation\"\n        },\n        \"endWallNs\": 427637449900791,\n        \"gitCommands\": 0,\n        \"name\": \"input\",\n        \"observedCapturedOutputBytes\": null,\n        \"outcome\": \"success\",\n        \"parentCpuSeconds\": 0.0022050000000000125,\n        \"sampledScratchPeakBytes\": null,\n        \"startWallNs\": 427637447608625,\n        \"wallNs\": 2292166\n      },\n      {\n        \"acceptedBudgetOutputBytes\": 1327210,\n        \"completedChildSystemCpuSeconds\": 0.694914,\n        \"completedChildUserCpuSeconds\": 0.706653,\n        \"counterReasons\": {\n          \"observedCapturedOutputBytes\": \"runner does not expose rejected or discarded output bytes; total bytes read unavailable\",\n          \"sampledScratchPeakBytes\": \"budget scratch is a cumulative sampled high-water; no isolated phase allocation\"\n        },\n        \"endWallNs\": 427640317918916,\n        \"gitCommands\": 98,\n        \"name\": \"replay\",\n        \"observedCapturedOutputBytes\": null,\n        \"outcome\": \"success\",\n        \"parentCpuSeconds\": 0.206242,\n        \"sampledScratchPeakBytes\": null,\n        \"startWallNs\": 427637449923041,\n        \"wallNs\": 2867995875\n      },\n      {\n        \"acceptedBudgetOutputBytes\": 1326991,\n        \"completedChildSystemCpuSeconds\": 0.6331519999999999,\n        \"completedChildUserCpuSeconds\": 0.665437,\n        \"counterReasons\": {\n          \"observedCapturedOutputBytes\": \"runner does not expose rejected or discarded output bytes; total bytes read unavailable\",\n          \"sampledScratchPeakBytes\": \"budget scratch is a cumulative sampled high-water; no isolated phase allocation\"\n        },\n        \"endWallNs\": 427643098949875,\n        \"gitCommands\": 92,\n        \"name\": \"preparation\",\n        \"observedCapturedOutputBytes\": null,\n        \"outcome\": \"success\",\n        \"parentCpuSeconds\": 0.18021299999999996,\n        \"sampledScratchPeakBytes\": null,\n        \"startWallNs\": 427640317960375,\n        \"wallNs\": 2780989500\n      },\n      {\n        \"acceptedBudgetOutputBytes\": 1326991,\n        \"completedChildSystemCpuSeconds\": 0.7182850000000003,\n        \"completedChildUserCpuSeconds\": 0.6894399999999998,\n        \"counterReasons\": {\n          \"observedCapturedOutputBytes\": \"runner does not expose rejected or discarded output bytes; total bytes read unavailable\",\n          \"sampledScratchPeakBytes\": \"budget scratch is a cumulative sampled high-water; no isolated phase allocation\"\n        },\n        \"endWallNs\": 427646245504666,\n        \"gitCommands\": 92,\n        \"name\": \"grant\",\n        \"observedCapturedOutputBytes\": null,\n        \"outcome\": \"success\",\n        \"parentCpuSeconds\": 0.199938,\n        \"sampledScratchPeakBytes\": null,\n        \"startWallNs\": 427643098988958,\n        \"wallNs\": 3146515708\n      },\n      {\n        \"acceptedBudgetOutputBytes\": 1991018,\n        \"completedChildSystemCpuSeconds\": 1.3676199999999996,\n        \"completedChildUserCpuSeconds\": 1.2953490000000003,\n        \"counterReasons\": {\n          \"observedCapturedOutputBytes\": \"runner does not expose rejected or discarded output bytes; total bytes read unavailable\",\n          \"sampledScratchPeakBytes\": \"budget scratch is a cumulative sampled high-water; no isolated phase allocation\"\n        },\n        \"endWallNs\": 427651726216083,\n        \"gitCommands\": 153,\n        \"name\": \"execution\",\n        \"observedCapturedOutputBytes\": null,\n        \"outcome\": \"success\",\n        \"parentCpuSeconds\": 0.3902129999999999,\n        \"sampledScratchPeakBytes\": null,\n        \"startWallNs\": 427646245534916,\n        \"wallNs\": 5480681167\n      },\n      {\n        \"acceptedBudgetOutputBytes\": 664726,\n        \"completedChildSystemCpuSeconds\": 0.39127899999999993,\n        \"completedChildUserCpuSeconds\": 0.3887339999999999,\n        \"counterReasons\": {\n          \"observedCapturedOutputBytes\": \"runner does not expose rejected or discarded output bytes; total bytes read unavailable\",\n          \"sampledScratchPeakBytes\": \"budget scratch is a cumulative sampled high-water; no isolated phase allocation\"\n        },\n        \"endWallNs\": 427653384739375,\n        \"gitCommands\": 50,\n        \"name\": \"independent_verification\",\n        \"observedCapturedOutputBytes\": null,\n        \"outcome\": \"success\",\n        \"parentCpuSeconds\": 0.1102860000000001,\n        \"sampledScratchPeakBytes\": null,\n        \"startWallNs\": 427651726253166,\n        \"wallNs\": 1658486209\n      }\n    ],\n    \"sealed\": false,\n    \"startWallNs\": 427637447560416\n  },\n  \"blockId\": \"independent-2-65536\",\n  \"grantId\": \"f1a4fadb-c175-432d-82f4-fcadb3437451\",\n  \"immutableSourceUnchanged\": true,\n  \"independentVerification\": {\n    \"authorizationScope\": \"private-run-only\",\n    \"completedOperations\": [\n      \"a\",\n      \"b\"\n    ],\n    \"executionContract\": \"authorized-serial-index-patch-v1\",\n    \"gitRuntimeReportVersion\": \"0.1.0-alpha\",\n    \"limits\": [\n      \"Fixed text patches and private Git storage only; no repository code or source promotion.\",\n      \"Digest acknowledgement is not authentication; owned POSIX filesystem/Git are trusted.\",\n      \"Process interruption recovery; no power-loss, hostile same-UID or production-safety guarantee.\",\n      \"No hard child memory cap; scratch is sampled and can overshoot between checks.\",\n      \"Tree observations do not establish semantic correctness or safe concurrency.\"\n    ],\n    \"manifestDigest\": \"sha256:1403f1cb6c817843dbb6d0c6572a879bfe76f7c6b77f3c23dabe3d0c3f4ee5c2\",\n    \"observationContract\": \"runtime-private-tracked-tree-v1\",\n    \"phase\": \"completed\",\n    \"resultCommit\": \"e7877ae4d2673a1510116232a9345c4133b2d483\",\n    \"resultTree\": \"d4e84508f4636c14ff92e803d9f3035619215741\",\n    \"runDirectory\": \"/private/var/folders/81/gs00m_mx6wv4746w6ttwb7240000gp/T/agent-braid-utility-treatment-zbdesxqv/result\",\n    \"sourcePromotion\": false,\n    \"status\": \"verified-completed\"\n  },\n  \"mode\": \"serial\",\n  \"planDigest\": \"sha256:dcabb038ecbee05fc858f83caa04d6420062ad3dd861ae503ff7ae89a1c32a1a\",\n  \"resultTree\": \"d4e84508f4636c14ff92e803d9f3035619215741\",\n  \"runtimeManifest\": {\n    \"authorizationScope\": \"private-run-only\",\n    \"baseTree\": \"562d3d0a571a697990fbf60a7db0338349836782\",\n    \"executionContract\": \"authorized-serial-index-patch-v1\",\n    \"gitRuntimeManifestVersion\": \"0.1.0-alpha\",\n    \"manifestDigest\": \"sha256:1403f1cb6c817843dbb6d0c6572a879bfe76f7c6b77f3c23dabe3d0c3f4ee5c2\",\n    \"observationContract\": \"runtime-private-tracked-tree-v1\",\n    \"privateConfigDigest\": \"sha256:3c5cc3e72b5473d08433171d50fc687ac3aa2a6a3f4c20b97f5b66f581b0fec9\",\n    \"repositoryId\": \"sha256:9216680f6a327cd59e44546cd8bddd630c1e2543a868d88f715c562d822e143e\",\n    \"request\": {\n      \"baseRevision\": \"efac4659ec0161e9865fe431b0a367d77f6db3ac\",\n      \"expectedFinalTree\": \"d4e84508f4636c14ff92e803d9f3035619215741\",\n      \"gitRuntimeRequestVersion\": \"0.1.0-alpha\",\n      \"operations\": [\n        {\n          \"attemptId\": \"a-attempt\",\n          \"declaredWrites\": [\n            \"a.txt\"\n          ],\n          \"dependencies\": [],\n          \"instanceId\": \"a\",\n          \"source\": {\n            \"kind\": \"commit\",\n            \"revision\": \"894d804428e37bc34ba4324ede0a0c1051a43ddb\"\n          },\n          \"uncertainPaths\": []\n        },\n        {\n          \"attemptId\": \"b-attempt\",\n          \"declaredWrites\": [\n            \"b.txt\"\n          ],\n          \"dependencies\": [],\n          \"instanceId\": \"b\",\n          \"source\": {\n            \"kind\": \"commit\",\n            \"revision\": \"2e44e76c9ba59ee35754ee32caad8a224f02120f\"\n          },\n          \"uncertainPaths\": []\n        }\n      ],\n      \"order\": [\n        \"a\",\n        \"b\"\n      ],\n      \"repository\": \"/private/var/folders/81/gs00m_mx6wv4746w6ttwb7240000gp/T/agent-braid-utility-fixture-lhwi6xby/fixture/source\"\n    },\n    \"resourceLimits\": {\n      \"changedPaths\": 16,\n      \"childAddressSpaceBytes\": null,\n      \"commandOutputBytes\": 2097152,\n      \"gitCommands\": 256,\n      \"operations\": 4,\n      \"outputBytes\": 8388608,\n      \"patchBytes\": 262144,\n      \"scratchBytes\": 67108864,\n      \"wallSeconds\": 60\n    },\n    \"runDirectory\": \"/private/var/folders/81/gs00m_mx6wv4746w6ttwb7240000gp/T/agent-braid-utility-treatment-zbdesxqv/result\",\n    \"sourcePromotion\": false,\n    \"steps\": [\n      {\n        \"attemptId\": \"a-attempt\",\n        \"commit\": \"9b27b946f1ff8e046f1a7d2eec42738db82b416c\",\n        \"effects\": [\n          {\n            \"afterBlob\": \"380d4b407e5bf815a9e3f04d4b549c79b93a5cb4\",\n            \"afterMode\": \"100644\",\n            \"beforeBlob\": \"df967b96a579e45a18b8251732d16804b2e56a55\",\n            \"beforeMode\": \"100644\",\n            \"path\": \"a.txt\",\n            \"status\": \"M\"\n          }\n        ],\n        \"inputTree\": \"562d3d0a571a697990fbf60a7db0338349836782\",\n        \"operationId\": \"a\",\n        \"outputTree\": \"4c306c8553a1b04f876425b31559bbfd5765fc0b\",\n        \"parentCommit\": \"efac4659ec0161e9865fe431b0a367d77f6db3ac\",\n        \"patchDigest\": \"sha256:5aa4ac5b0c83746d44df0064a406f767151fb192a9cb014a1ad93d7a79cb363f\",\n        \"sourceCommit\": \"894d804428e37bc34ba4324ede0a0c1051a43ddb\"\n      },\n      {\n        \"attemptId\": \"b-attempt\",\n        \"commit\": \"e7877ae4d2673a1510116232a9345c4133b2d483\",\n        \"effects\": [\n          {\n            \"afterBlob\": \"7995fc5a1ff1ce6a00faf26042385f237d9124dd\",\n            \"afterMode\": \"100644\",\n            \"beforeBlob\": \"df967b96a579e45a18b8251732d16804b2e56a55\",\n            \"beforeMode\": \"100644\",\n            \"path\": \"b.txt\",\n            \"status\": \"M\"\n          }\n        ],\n        \"inputTree\": \"4c306c8553a1b04f876425b31559bbfd5765fc0b\",\n        \"operationId\": \"b\",\n        \"outputTree\": \"d4e84508f4636c14ff92e803d9f3035619215741\",\n        \"parentCommit\": \"9b27b946f1ff8e046f1a7d2eec42738db82b416c\",\n        \"patchDigest\": \"sha256:24ed0214a7fee513e5b36a613b7ebf92a9b7f6d8a6eff36e5c7d8c7aa99d67e5\",\n        \"sourceCommit\": \"2e44e76c9ba59ee35754ee32caad8a224f02120f\"\n      }\n    ]\n  },\n  \"runtimeReport\": {\n    \"dispatch\": \"performed\",\n    \"grantId\": \"f1a4fadb-c175-432d-82f4-fcadb3437451\",\n    \"runtime\": {\n      \"authorizationScope\": \"private-run-only\",\n      \"completedOperations\": [\n        \"a\",\n        \"b\"\n      ],\n      \"executionContract\": \"authorized-serial-index-patch-v1\",\n      \"gitRuntimeReportVersion\": \"0.1.0-alpha\",\n      \"limits\": [\n        \"Fixed text patches and private Git storage only; no repository code or source promotion.\",\n        \"Digest acknowledgement is not authentication; owned POSIX filesystem/Git are trusted.\",\n        \"Process interruption recovery; no power-loss, hostile same-UID or production-safety guarantee.\",\n        \"No hard child memory cap; scratch is sampled and can overshoot between checks.\",\n        \"Tree observations do not establish semantic correctness or safe concurrency.\"\n      ],\n      \"manifestDigest\": \"sha256:1403f1cb6c817843dbb6d0c6572a879bfe76f7c6b77f3c23dabe3d0c3f4ee5c2\",\n      \"observationContract\": \"runtime-private-tracked-tree-v1\",\n      \"phase\": \"completed\",\n      \"resultCommit\": \"e7877ae4d2673a1510116232a9345c4133b2d483\",\n      \"resultTree\": \"d4e84508f4636c14ff92e803d9f3035619215741\",\n      \"runDirectory\": \"/private/var/folders/81/gs00m_mx6wv4746w6ttwb7240000gp/T/agent-braid-utility-treatment-zbdesxqv/result\",\n      \"sourcePromotion\": false,\n      \"status\": \"completed\"\n    }\n  },\n  \"status\": \"completed\",\n  \"workerOverlap\": {\n    \"peakIntervals\": null,\n    \"reason\": \"serial policy exposes no worker preparation intervals\",\n    \"unionNs\": null\n  }\n}\n",
+          "operationalEncodedBytes": 11812,
+          "status": "completed"
+        },
+        {
+          "accounting": {
+            "acceptedBudgetOutputBytes": 8632085,
+            "complete": true,
+            "errors": [],
+            "gitBudgetCount": 20,
+            "gitCommands": 695,
+            "observedCapturedOutputBytes": null,
+            "optionalReasons": {
+              "acceptedBudgetOutputBytes": null,
+              "gitCommands": null,
+              "observedCapturedOutputBytes": "runner does not expose rejected or discarded output bytes; total bytes read unavailable",
+              "processLifetimeRssBytes": null,
+              "sampledScratchPeakBytes": "frozen budget does not expose whether sampled scratch high-water was observed; allocation unavailable"
+            },
+            "outcome": "success",
+            "outer": {
+              "completedChildSystemCpuSeconds": 5.706428000000001,
+              "completedChildUserCpuSeconds": 5.4773060000000005,
+              "counterReasons": {},
+              "endWallNs": 427676669007208,
+              "parentCpuSeconds": 1.6913520000000002,
+              "startWallNs": 427653387748791,
+              "wallNs": 23281258417
+            },
+            "phases": [
+              {
+                "acceptedBudgetOutputBytes": 0,
+                "completedChildSystemCpuSeconds": 0.0,
+                "completedChildUserCpuSeconds": 0.0,
+                "counterReasons": {
+                  "observedCapturedOutputBytes": "runner does not expose rejected or discarded output bytes; total bytes read unavailable",
+                  "sampledScratchPeakBytes": "budget scratch is a cumulative sampled high-water; no isolated phase allocation"
+                },
+                "endWallNs": 427653390091000,
+                "gitCommands": 0,
+                "name": "input",
+                "observedCapturedOutputBytes": null,
+                "outcome": "success",
+                "parentCpuSeconds": 0.002191000000000054,
+                "sampledScratchPeakBytes": null,
+                "startWallNs": 427653387757833,
+                "wallNs": 2333167
+              },
+              {
+                "acceptedBudgetOutputBytes": 1327210,
+                "completedChildSystemCpuSeconds": 0.7188829999999999,
+                "completedChildUserCpuSeconds": 0.734283,
+                "counterReasons": {
+                  "observedCapturedOutputBytes": "runner does not expose rejected or discarded output bytes; total bytes read unavailable",
+                  "sampledScratchPeakBytes": "budget scratch is a cumulative sampled high-water; no isolated phase allocation"
+                },
+                "endWallNs": 427656223849625,
+                "gitCommands": 98,
+                "name": "replay",
+                "observedCapturedOutputBytes": null,
+                "outcome": "success",
+                "parentCpuSeconds": 0.21662700000000013,
+                "sampledScratchPeakBytes": null,
+                "startWallNs": 427653390101833,
+                "wallNs": 2833747792
+              },
+              {
+                "acceptedBudgetOutputBytes": 1327721,
+                "completedChildSystemCpuSeconds": 0.9074550000000006,
+                "completedChildUserCpuSeconds": 0.8656870000000003,
+                "counterReasons": {
+                  "observedCapturedOutputBytes": "runner does not expose rejected or discarded output bytes; total bytes read unavailable",
+                  "sampledScratchPeakBytes": "budget scratch is a cumulative sampled high-water; no isolated phase allocation"
+                },
+                "endWallNs": 427659913025958,
+                "gitCommands": 107,
+                "name": "preparation",
+                "observedCapturedOutputBytes": null,
+                "outcome": "success",
+                "parentCpuSeconds": 0.27154199999999995,
+                "sampledScratchPeakBytes": null,
+                "startWallNs": 427656223899041,
+                "wallNs": 3689126917
+              },
+              {
+                "acceptedBudgetOutputBytes": 1327721,
+                "completedChildSystemCpuSeconds": 0.9571610000000002,
+                "completedChildUserCpuSeconds": 0.8788999999999998,
+                "counterReasons": {
+                  "observedCapturedOutputBytes": "runner does not expose rejected or discarded output bytes; total bytes read unavailable",
+                  "sampledScratchPeakBytes": "budget scratch is a cumulative sampled high-water; no isolated phase allocation"
+                },
+                "endWallNs": 427663871261000,
+                "gitCommands": 107,
+                "name": "grant",
+                "observedCapturedOutputBytes": null,
+                "outcome": "success",
+                "parentCpuSeconds": 0.29730600000000007,
+                "sampledScratchPeakBytes": null,
+                "startWallNs": 427659913064916,
+                "wallNs": 3958196084
+              },
+              {
+                "acceptedBudgetOutputBytes": 3984707,
+                "completedChildSystemCpuSeconds": 2.765484,
+                "completedChildUserCpuSeconds": 2.6295649999999995,
+                "counterReasons": {
+                  "observedCapturedOutputBytes": "runner does not expose rejected or discarded output bytes; total bytes read unavailable",
+                  "sampledScratchPeakBytes": "budget scratch is a cumulative sampled high-water; no isolated phase allocation"
+                },
+                "endWallNs": 427675131125541,
+                "gitCommands": 333,
+                "name": "execution",
+                "observedCapturedOutputBytes": null,
+                "outcome": "success",
+                "parentCpuSeconds": 0.800325,
+                "sampledScratchPeakBytes": null,
+                "startWallNs": 427663871289291,
+                "wallNs": 11259836250
+              },
+              {
+                "acceptedBudgetOutputBytes": 664726,
+                "completedChildSystemCpuSeconds": 0.35744500000000023,
+                "completedChildUserCpuSeconds": 0.3688710000000004,
+                "counterReasons": {
+                  "observedCapturedOutputBytes": "runner does not expose rejected or discarded output bytes; total bytes read unavailable",
+                  "sampledScratchPeakBytes": "budget scratch is a cumulative sampled high-water; no isolated phase allocation"
+                },
+                "endWallNs": 427676666133083,
+                "gitCommands": 50,
+                "name": "independent_verification",
+                "observedCapturedOutputBytes": null,
+                "outcome": "success",
+                "parentCpuSeconds": 0.10035299999999969,
+                "sampledScratchPeakBytes": null,
+                "startWallNs": 427675131154166,
+                "wallNs": 1534978917
+              },
+              {
+                "acceptedBudgetOutputBytes": 0,
+                "completedChildSystemCpuSeconds": 0.0,
+                "completedChildUserCpuSeconds": 0.0,
+                "counterReasons": {
+                  "observedCapturedOutputBytes": "runner does not expose rejected or discarded output bytes; total bytes read unavailable",
+                  "sampledScratchPeakBytes": "budget scratch is a cumulative sampled high-water; no isolated phase allocation"
+                },
+                "endWallNs": 427676666378041,
+                "gitCommands": 0,
+                "name": "report_serialization",
+                "observedCapturedOutputBytes": null,
+                "outcome": "success",
+                "parentCpuSeconds": 0.00020499999999978868,
+                "sampledScratchPeakBytes": null,
+                "startWallNs": 427676666172875,
+                "wallNs": 205166
+              },
+              {
+                "acceptedBudgetOutputBytes": 0,
+                "completedChildSystemCpuSeconds": 0.0,
+                "completedChildUserCpuSeconds": 0.0,
+                "counterReasons": {
+                  "observedCapturedOutputBytes": "runner does not expose rejected or discarded output bytes; total bytes read unavailable",
+                  "sampledScratchPeakBytes": "budget scratch is a cumulative sampled high-water; no isolated phase allocation"
+                },
+                "endWallNs": 427676668970458,
+                "gitCommands": 0,
+                "name": "cleanup",
+                "observedCapturedOutputBytes": null,
+                "outcome": "success",
+                "parentCpuSeconds": 0.0025850000000002815,
+                "sampledScratchPeakBytes": null,
+                "startWallNs": 427676666387500,
+                "wallNs": 2582958
+              }
+            ],
+            "processLifetimeRssBytes": 28966912,
+            "residualWallNs": 251166,
+            "sampledScratchPeakBytes": null,
+            "scopes": {
+              "bytes": "accepted budget-counted Git output; discarded overflow chunks excluded; total bytes read unavailable",
+              "childCpu": "process-global completed children; not per-worker",
+              "commands": "Git command budget charges, including refused launches",
+              "observer": "sealing and output excluded from operational outer",
+              "parentCpu": "process including threads",
+              "rss": "process lifetime high-water, not treatment delta",
+              "scratch": "unavailable; frozen budgets expose no reliable sample-presence counter",
+              "workerOverlap": "observed wall intervals, not CPU parallelism"
+            },
+            "workerIntervals": {
+              "peakOccupancy": null,
+              "reason": "no worker interval observations",
+              "unionWallNs": null
+            }
+          },
+          "boundary": "operational report bytes precede cleanup; closing status/accounting envelope and final output are separately observed",
+          "cleanupError": null,
+          "identityGuardError": null,
+          "observerFinalization": {
+            "complete": true,
+            "completedChildSystemCpuSeconds": 0.0,
+            "completedChildUserCpuSeconds": 0.0,
+            "counterReasons": {},
+            "endWallNs": 427676669399666,
+            "errors": [],
+            "parentCpuSeconds": 0.0003919999999997259,
+            "scope": "observer sealing/output outside operational outer",
+            "startWallNs": 427676669007208,
+            "wallNs": 392458
+          },
+          "operational": {
+            "accountingPreview": {
+              "activePhase": "report_serialization",
+              "errors": [],
+              "phases": [
+                {
+                  "acceptedBudgetOutputBytes": 0,
+                  "completedChildSystemCpuSeconds": 0.0,
+                  "completedChildUserCpuSeconds": 0.0,
+                  "counterReasons": {
+                    "observedCapturedOutputBytes": "runner does not expose rejected or discarded output bytes; total bytes read unavailable",
+                    "sampledScratchPeakBytes": "budget scratch is a cumulative sampled high-water; no isolated phase allocation"
+                  },
+                  "endWallNs": 427653390091000,
+                  "gitCommands": 0,
+                  "name": "input",
+                  "observedCapturedOutputBytes": null,
+                  "outcome": "success",
+                  "parentCpuSeconds": 0.002191000000000054,
+                  "sampledScratchPeakBytes": null,
+                  "startWallNs": 427653387757833,
+                  "wallNs": 2333167
+                },
+                {
+                  "acceptedBudgetOutputBytes": 1327210,
+                  "completedChildSystemCpuSeconds": 0.7188829999999999,
+                  "completedChildUserCpuSeconds": 0.734283,
+                  "counterReasons": {
+                    "observedCapturedOutputBytes": "runner does not expose rejected or discarded output bytes; total bytes read unavailable",
+                    "sampledScratchPeakBytes": "budget scratch is a cumulative sampled high-water; no isolated phase allocation"
+                  },
+                  "endWallNs": 427656223849625,
+                  "gitCommands": 98,
+                  "name": "replay",
+                  "observedCapturedOutputBytes": null,
+                  "outcome": "success",
+                  "parentCpuSeconds": 0.21662700000000013,
+                  "sampledScratchPeakBytes": null,
+                  "startWallNs": 427653390101833,
+                  "wallNs": 2833747792
+                },
+                {
+                  "acceptedBudgetOutputBytes": 1327721,
+                  "completedChildSystemCpuSeconds": 0.9074550000000006,
+                  "completedChildUserCpuSeconds": 0.8656870000000003,
+                  "counterReasons": {
+                    "observedCapturedOutputBytes": "runner does not expose rejected or discarded output bytes; total bytes read unavailable",
+                    "sampledScratchPeakBytes": "budget scratch is a cumulative sampled high-water; no isolated phase allocation"
+                  },
+                  "endWallNs": 427659913025958,
+                  "gitCommands": 107,
+                  "name": "preparation",
+                  "observedCapturedOutputBytes": null,
+                  "outcome": "success",
+                  "parentCpuSeconds": 0.27154199999999995,
+                  "sampledScratchPeakBytes": null,
+                  "startWallNs": 427656223899041,
+                  "wallNs": 3689126917
+                },
+                {
+                  "acceptedBudgetOutputBytes": 1327721,
+                  "completedChildSystemCpuSeconds": 0.9571610000000002,
+                  "completedChildUserCpuSeconds": 0.8788999999999998,
+                  "counterReasons": {
+                    "observedCapturedOutputBytes": "runner does not expose rejected or discarded output bytes; total bytes read unavailable",
+                    "sampledScratchPeakBytes": "budget scratch is a cumulative sampled high-water; no isolated phase allocation"
+                  },
+                  "endWallNs": 427663871261000,
+                  "gitCommands": 107,
+                  "name": "grant",
+                  "observedCapturedOutputBytes": null,
+                  "outcome": "success",
+                  "parentCpuSeconds": 0.29730600000000007,
+                  "sampledScratchPeakBytes": null,
+                  "startWallNs": 427659913064916,
+                  "wallNs": 3958196084
+                },
+                {
+                  "acceptedBudgetOutputBytes": 3984707,
+                  "completedChildSystemCpuSeconds": 2.765484,
+                  "completedChildUserCpuSeconds": 2.6295649999999995,
+                  "counterReasons": {
+                    "observedCapturedOutputBytes": "runner does not expose rejected or discarded output bytes; total bytes read unavailable",
+                    "sampledScratchPeakBytes": "budget scratch is a cumulative sampled high-water; no isolated phase allocation"
+                  },
+                  "endWallNs": 427675131125541,
+                  "gitCommands": 333,
+                  "name": "execution",
+                  "observedCapturedOutputBytes": null,
+                  "outcome": "success",
+                  "parentCpuSeconds": 0.800325,
+                  "sampledScratchPeakBytes": null,
+                  "startWallNs": 427663871289291,
+                  "wallNs": 11259836250
+                },
+                {
+                  "acceptedBudgetOutputBytes": 664726,
+                  "completedChildSystemCpuSeconds": 0.35744500000000023,
+                  "completedChildUserCpuSeconds": 0.3688710000000004,
+                  "counterReasons": {
+                    "observedCapturedOutputBytes": "runner does not expose rejected or discarded output bytes; total bytes read unavailable",
+                    "sampledScratchPeakBytes": "budget scratch is a cumulative sampled high-water; no isolated phase allocation"
+                  },
+                  "endWallNs": 427676666133083,
+                  "gitCommands": 50,
+                  "name": "independent_verification",
+                  "observedCapturedOutputBytes": null,
+                  "outcome": "success",
+                  "parentCpuSeconds": 0.10035299999999969,
+                  "sampledScratchPeakBytes": null,
+                  "startWallNs": 427675131154166,
+                  "wallNs": 1534978917
+                }
+              ],
+              "sealed": false,
+              "startWallNs": 427653387748791
+            },
+            "blockId": "independent-2-65536",
+            "grantId": "165e8823-87f4-4a06-a9cb-6cb654018fcc",
+            "immutableSourceUnchanged": true,
+            "independentVerification": {
+              "authorizationScope": "private-run-only",
+              "completedOperations": [
+                "a",
+                "b"
+              ],
+              "executionContract": "authorized-serial-index-patch-v1",
+              "gitRuntimeReportVersion": "0.1.0-alpha",
+              "limits": [
+                "Fixed text patches and private Git storage only; no repository code or source promotion.",
+                "Digest acknowledgement is not authentication; owned POSIX filesystem/Git are trusted.",
+                "Process interruption recovery; no power-loss, hostile same-UID or production-safety guarantee.",
+                "No hard child memory cap; scratch is sampled and can overshoot between checks.",
+                "Tree observations do not establish semantic correctness or safe concurrency."
+              ],
+              "manifestDigest": "sha256:c94805c5eab44be542e925ce550f56af0e254d0a1d735c4f64c5dc6add780c0c",
+              "observationContract": "runtime-private-tracked-tree-v1",
+              "phase": "completed",
+              "resultCommit": "e7877ae4d2673a1510116232a9345c4133b2d483",
+              "resultTree": "d4e84508f4636c14ff92e803d9f3035619215741",
+              "runDirectory": "/private/var/folders/81/gs00m_mx6wv4746w6ttwb7240000gp/T/agent-braid-utility-treatment-7680sben/result",
+              "sourcePromotion": false,
+              "status": "verified-completed"
+            },
+            "mode": "parallel",
+            "planDigest": "sha256:42f801d754bdeb201445317aaf5f9cc684edd4c095687fd969b56fe44765a253",
+            "resultTree": "d4e84508f4636c14ff92e803d9f3035619215741",
+            "runtimeManifest": {
+              "authorizationScope": "private-run-only",
+              "baseTree": "562d3d0a571a697990fbf60a7db0338349836782",
+              "executionContract": "authorized-serial-index-patch-v1",
+              "gitRuntimeManifestVersion": "0.1.0-alpha",
+              "manifestDigest": "sha256:c94805c5eab44be542e925ce550f56af0e254d0a1d735c4f64c5dc6add780c0c",
+              "observationContract": "runtime-private-tracked-tree-v1",
+              "privateConfigDigest": "sha256:3c5cc3e72b5473d08433171d50fc687ac3aa2a6a3f4c20b97f5b66f581b0fec9",
+              "repositoryId": "sha256:9216680f6a327cd59e44546cd8bddd630c1e2543a868d88f715c562d822e143e",
+              "request": {
+                "baseRevision": "efac4659ec0161e9865fe431b0a367d77f6db3ac",
+                "expectedFinalTree": "d4e84508f4636c14ff92e803d9f3035619215741",
+                "gitRuntimeRequestVersion": "0.1.0-alpha",
+                "operations": [
+                  {
+                    "attemptId": "a-attempt",
+                    "declaredWrites": [
+                      "a.txt"
+                    ],
+                    "dependencies": [],
+                    "instanceId": "a",
+                    "source": {
+                      "kind": "commit",
+                      "revision": "894d804428e37bc34ba4324ede0a0c1051a43ddb"
+                    },
+                    "uncertainPaths": []
+                  },
+                  {
+                    "attemptId": "b-attempt",
+                    "declaredWrites": [
+                      "b.txt"
+                    ],
+                    "dependencies": [],
+                    "instanceId": "b",
+                    "source": {
+                      "kind": "commit",
+                      "revision": "2e44e76c9ba59ee35754ee32caad8a224f02120f"
+                    },
+                    "uncertainPaths": []
+                  }
+                ],
+                "order": [
+                  "a",
+                  "b"
+                ],
+                "repository": "/private/var/folders/81/gs00m_mx6wv4746w6ttwb7240000gp/T/agent-braid-utility-fixture-lhwi6xby/fixture/source"
+              },
+              "resourceLimits": {
+                "changedPaths": 16,
+                "childAddressSpaceBytes": null,
+                "commandOutputBytes": 2097152,
+                "gitCommands": 256,
+                "operations": 4,
+                "outputBytes": 8388608,
+                "patchBytes": 262144,
+                "scratchBytes": 67108864,
+                "wallSeconds": 60
+              },
+              "runDirectory": "/private/var/folders/81/gs00m_mx6wv4746w6ttwb7240000gp/T/agent-braid-utility-treatment-7680sben/result",
+              "sourcePromotion": false,
+              "steps": [
+                {
+                  "attemptId": "a-attempt",
+                  "commit": "9b27b946f1ff8e046f1a7d2eec42738db82b416c",
+                  "effects": [
+                    {
+                      "afterBlob": "380d4b407e5bf815a9e3f04d4b549c79b93a5cb4",
+                      "afterMode": "100644",
+                      "beforeBlob": "df967b96a579e45a18b8251732d16804b2e56a55",
+                      "beforeMode": "100644",
+                      "path": "a.txt",
+                      "status": "M"
+                    }
+                  ],
+                  "inputTree": "562d3d0a571a697990fbf60a7db0338349836782",
+                  "operationId": "a",
+                  "outputTree": "4c306c8553a1b04f876425b31559bbfd5765fc0b",
+                  "parentCommit": "efac4659ec0161e9865fe431b0a367d77f6db3ac",
+                  "patchDigest": "sha256:5aa4ac5b0c83746d44df0064a406f767151fb192a9cb014a1ad93d7a79cb363f",
+                  "sourceCommit": "894d804428e37bc34ba4324ede0a0c1051a43ddb"
+                },
+                {
+                  "attemptId": "b-attempt",
+                  "commit": "e7877ae4d2673a1510116232a9345c4133b2d483",
+                  "effects": [
+                    {
+                      "afterBlob": "7995fc5a1ff1ce6a00faf26042385f237d9124dd",
+                      "afterMode": "100644",
+                      "beforeBlob": "df967b96a579e45a18b8251732d16804b2e56a55",
+                      "beforeMode": "100644",
+                      "path": "b.txt",
+                      "status": "M"
+                    }
+                  ],
+                  "inputTree": "4c306c8553a1b04f876425b31559bbfd5765fc0b",
+                  "operationId": "b",
+                  "outputTree": "d4e84508f4636c14ff92e803d9f3035619215741",
+                  "parentCommit": "9b27b946f1ff8e046f1a7d2eec42738db82b416c",
+                  "patchDigest": "sha256:24ed0214a7fee513e5b36a613b7ebf92a9b7f6d8a6eff36e5c7d8c7aa99d67e5",
+                  "sourceCommit": "2e44e76c9ba59ee35754ee32caad8a224f02120f"
+                }
+              ]
+            },
+            "runtimeReport": {
+              "dispatch": "performed",
+              "grantId": "165e8823-87f4-4a06-a9cb-6cb654018fcc",
+              "preparation": {
+                "evidenceDigest": "sha256:f9b84df9684a6deb06c3bde0526856bba6e9c8b26499cd57c150816504be559e",
+                "executionContract": "isolated-preparation-serial-publication-v1",
+                "limits": [
+                  "Observed preparation intervals are not a CPU parallelism guarantee.",
+                  "Trees/effects are independently replayable; recorded timings are observations.",
+                  "Trusted Git and owned scratch; no arbitrary code or hostile same-UID isolation."
+                ],
+                "manifestDigest": "sha256:c94805c5eab44be542e925ce550f56af0e254d0a1d735c4f64c5dc6add780c0c",
+                "metrics": {
+                  "capturedOutputBytes": 664113,
+                  "childSystemCpuNs": 466937999,
+                  "childUserCpuNs": 453367000,
+                  "gitCommands": 57,
+                  "processLifetimePeakChildRssBytes": 6176768,
+                  "sampledPeakScratchBytes": 5645
+                },
+                "observedPeakWorkerIntervals": 2,
+                "runtimePreparationEvidenceVersion": "0.1.0-alpha",
+                "scheduleDigest": "sha256:b761c91b540ce783f62961be62df807fb7fbd08ed5e1aff084af28cd4f05594a",
+                "wallNs": 1743743667,
+                "workers": [
+                  {
+                    "attemptId": "a-attempt",
+                    "effects": [
+                      {
+                        "afterBlob": "380d4b407e5bf815a9e3f04d4b549c79b93a5cb4",
+                        "afterMode": "100644",
+                        "beforeBlob": "df967b96a579e45a18b8251732d16804b2e56a55",
+                        "beforeMode": "100644",
+                        "path": "a.txt",
+                        "status": "M"
+                      }
+                    ],
+                    "finishedNs": 1743588250,
+                    "inputTree": "562d3d0a571a697990fbf60a7db0338349836782",
+                    "operationId": "a",
+                    "outputTree": "4c306c8553a1b04f876425b31559bbfd5765fc0b",
+                    "patchDigest": "sha256:5aa4ac5b0c83746d44df0064a406f767151fb192a9cb014a1ad93d7a79cb363f",
+                    "startedNs": 1341502125,
+                    "wave": 0,
+                    "writableIndex": "/var/folders/81/gs00m_mx6wv4746w6ttwb7240000gp/T/agent-braid-scheduled-workers-nf4rmeoy/worker-0/worker.git/index",
+                    "writableRepository": "/var/folders/81/gs00m_mx6wv4746w6ttwb7240000gp/T/agent-braid-scheduled-workers-nf4rmeoy/worker-0/worker.git"
+                  },
+                  {
+                    "attemptId": "b-attempt",
+                    "effects": [
+                      {
+                        "afterBlob": "7995fc5a1ff1ce6a00faf26042385f237d9124dd",
+                        "afterMode": "100644",
+                        "beforeBlob": "df967b96a579e45a18b8251732d16804b2e56a55",
+                        "beforeMode": "100644",
+                        "path": "b.txt",
+                        "status": "M"
+                      }
+                    ],
+                    "finishedNs": 1660578459,
+                    "inputTree": "562d3d0a571a697990fbf60a7db0338349836782",
+                    "operationId": "b",
+                    "outputTree": "ece3af14a0578de356f45f64fafbe54a1a2704c4",
+                    "patchDigest": "sha256:24ed0214a7fee513e5b36a613b7ebf92a9b7f6d8a6eff36e5c7d8c7aa99d67e5",
+                    "startedNs": 1341451125,
+                    "wave": 0,
+                    "writableIndex": "/var/folders/81/gs00m_mx6wv4746w6ttwb7240000gp/T/agent-braid-scheduled-workers-nf4rmeoy/worker-1/worker.git/index",
+                    "writableRepository": "/var/folders/81/gs00m_mx6wv4746w6ttwb7240000gp/T/agent-braid-scheduled-workers-nf4rmeoy/worker-1/worker.git"
+                  }
+                ]
+              },
+              "preparationVerification": {
+                "executionAuthorization": false,
+                "isolationStatus": "recorded-owned-scratch-scopes",
+                "scheduleDigest": "sha256:b761c91b540ce783f62961be62df807fb7fbd08ed5e1aff084af28cd4f05594a",
+                "status": "verified-worker-trees-and-effects",
+                "timingStatus": "recorded-observations-only"
+              },
+              "runtime": {
+                "authorizationScope": "private-run-only",
+                "completedOperations": [
+                  "a",
+                  "b"
+                ],
+                "executionContract": "authorized-serial-index-patch-v1",
+                "gitRuntimeReportVersion": "0.1.0-alpha",
+                "limits": [
+                  "Fixed text patches and private Git storage only; no repository code or source promotion.",
+                  "Digest acknowledgement is not authentication; owned POSIX filesystem/Git are trusted.",
+                  "Process interruption recovery; no power-loss, hostile same-UID or production-safety guarantee.",
+                  "No hard child memory cap; scratch is sampled and can overshoot between checks.",
+                  "Tree observations do not establish semantic correctness or safe concurrency."
+                ],
+                "manifestDigest": "sha256:c94805c5eab44be542e925ce550f56af0e254d0a1d735c4f64c5dc6add780c0c",
+                "observationContract": "runtime-private-tracked-tree-v1",
+                "phase": "completed",
+                "resultCommit": "e7877ae4d2673a1510116232a9345c4133b2d483",
+                "resultTree": "d4e84508f4636c14ff92e803d9f3035619215741",
+                "runDirectory": "/private/var/folders/81/gs00m_mx6wv4746w6ttwb7240000gp/T/agent-braid-utility-treatment-7680sben/result",
+                "sourcePromotion": false,
+                "status": "verified-completed"
+              }
+            },
+            "status": "completed",
+            "workerOverlap": {
+              "peakIntervals": 2,
+              "scope": "scheduler-relative interval union and peak occupancy, not CPU parallelism",
+              "unionNs": 402137125
+            }
+          },
+          "operationalEncoded": "{\n  \"accountingPreview\": {\n    \"activePhase\": \"report_serialization\",\n    \"errors\": [],\n    \"phases\": [\n      {\n        \"acceptedBudgetOutputBytes\": 0,\n        \"completedChildSystemCpuSeconds\": 0.0,\n        \"completedChildUserCpuSeconds\": 0.0,\n        \"counterReasons\": {\n          \"observedCapturedOutputBytes\": \"runner does not expose rejected or discarded output bytes; total bytes read unavailable\",\n          \"sampledScratchPeakBytes\": \"budget scratch is a cumulative sampled high-water; no isolated phase allocation\"\n        },\n        \"endWallNs\": 427653390091000,\n        \"gitCommands\": 0,\n        \"name\": \"input\",\n        \"observedCapturedOutputBytes\": null,\n        \"outcome\": \"success\",\n        \"parentCpuSeconds\": 0.002191000000000054,\n        \"sampledScratchPeakBytes\": null,\n        \"startWallNs\": 427653387757833,\n        \"wallNs\": 2333167\n      },\n      {\n        \"acceptedBudgetOutputBytes\": 1327210,\n        \"completedChildSystemCpuSeconds\": 0.7188829999999999,\n        \"completedChildUserCpuSeconds\": 0.734283,\n        \"counterReasons\": {\n          \"observedCapturedOutputBytes\": \"runner does not expose rejected or discarded output bytes; total bytes read unavailable\",\n          \"sampledScratchPeakBytes\": \"budget scratch is a cumulative sampled high-water; no isolated phase allocation\"\n        },\n        \"endWallNs\": 427656223849625,\n        \"gitCommands\": 98,\n        \"name\": \"replay\",\n        \"observedCapturedOutputBytes\": null,\n        \"outcome\": \"success\",\n        \"parentCpuSeconds\": 0.21662700000000013,\n        \"sampledScratchPeakBytes\": null,\n        \"startWallNs\": 427653390101833,\n        \"wallNs\": 2833747792\n      },\n      {\n        \"acceptedBudgetOutputBytes\": 1327721,\n        \"completedChildSystemCpuSeconds\": 0.9074550000000006,\n        \"completedChildUserCpuSeconds\": 0.8656870000000003,\n        \"counterReasons\": {\n          \"observedCapturedOutputBytes\": \"runner does not expose rejected or discarded output bytes; total bytes read unavailable\",\n          \"sampledScratchPeakBytes\": \"budget scratch is a cumulative sampled high-water; no isolated phase allocation\"\n        },\n        \"endWallNs\": 427659913025958,\n        \"gitCommands\": 107,\n        \"name\": \"preparation\",\n        \"observedCapturedOutputBytes\": null,\n        \"outcome\": \"success\",\n        \"parentCpuSeconds\": 0.27154199999999995,\n        \"sampledScratchPeakBytes\": null,\n        \"startWallNs\": 427656223899041,\n        \"wallNs\": 3689126917\n      },\n      {\n        \"acceptedBudgetOutputBytes\": 1327721,\n        \"completedChildSystemCpuSeconds\": 0.9571610000000002,\n        \"completedChildUserCpuSeconds\": 0.8788999999999998,\n        \"counterReasons\": {\n          \"observedCapturedOutputBytes\": \"runner does not expose rejected or discarded output bytes; total bytes read unavailable\",\n          \"sampledScratchPeakBytes\": \"budget scratch is a cumulative sampled high-water; no isolated phase allocation\"\n        },\n        \"endWallNs\": 427663871261000,\n        \"gitCommands\": 107,\n        \"name\": \"grant\",\n        \"observedCapturedOutputBytes\": null,\n        \"outcome\": \"success\",\n        \"parentCpuSeconds\": 0.29730600000000007,\n        \"sampledScratchPeakBytes\": null,\n        \"startWallNs\": 427659913064916,\n        \"wallNs\": 3958196084\n      },\n      {\n        \"acceptedBudgetOutputBytes\": 3984707,\n        \"completedChildSystemCpuSeconds\": 2.765484,\n        \"completedChildUserCpuSeconds\": 2.6295649999999995,\n        \"counterReasons\": {\n          \"observedCapturedOutputBytes\": \"runner does not expose rejected or discarded output bytes; total bytes read unavailable\",\n          \"sampledScratchPeakBytes\": \"budget scratch is a cumulative sampled high-water; no isolated phase allocation\"\n        },\n        \"endWallNs\": 427675131125541,\n        \"gitCommands\": 333,\n        \"name\": \"execution\",\n        \"observedCapturedOutputBytes\": null,\n        \"outcome\": \"success\",\n        \"parentCpuSeconds\": 0.800325,\n        \"sampledScratchPeakBytes\": null,\n        \"startWallNs\": 427663871289291,\n        \"wallNs\": 11259836250\n      },\n      {\n        \"acceptedBudgetOutputBytes\": 664726,\n        \"completedChildSystemCpuSeconds\": 0.35744500000000023,\n        \"completedChildUserCpuSeconds\": 0.3688710000000004,\n        \"counterReasons\": {\n          \"observedCapturedOutputBytes\": \"runner does not expose rejected or discarded output bytes; total bytes read unavailable\",\n          \"sampledScratchPeakBytes\": \"budget scratch is a cumulative sampled high-water; no isolated phase allocation\"\n        },\n        \"endWallNs\": 427676666133083,\n        \"gitCommands\": 50,\n        \"name\": \"independent_verification\",\n        \"observedCapturedOutputBytes\": null,\n        \"outcome\": \"success\",\n        \"parentCpuSeconds\": 0.10035299999999969,\n        \"sampledScratchPeakBytes\": null,\n        \"startWallNs\": 427675131154166,\n        \"wallNs\": 1534978917\n      }\n    ],\n    \"sealed\": false,\n    \"startWallNs\": 427653387748791\n  },\n  \"blockId\": \"independent-2-65536\",\n  \"grantId\": \"165e8823-87f4-4a06-a9cb-6cb654018fcc\",\n  \"immutableSourceUnchanged\": true,\n  \"independentVerification\": {\n    \"authorizationScope\": \"private-run-only\",\n    \"completedOperations\": [\n      \"a\",\n      \"b\"\n    ],\n    \"executionContract\": \"authorized-serial-index-patch-v1\",\n    \"gitRuntimeReportVersion\": \"0.1.0-alpha\",\n    \"limits\": [\n      \"Fixed text patches and private Git storage only; no repository code or source promotion.\",\n      \"Digest acknowledgement is not authentication; owned POSIX filesystem/Git are trusted.\",\n      \"Process interruption recovery; no power-loss, hostile same-UID or production-safety guarantee.\",\n      \"No hard child memory cap; scratch is sampled and can overshoot between checks.\",\n      \"Tree observations do not establish semantic correctness or safe concurrency.\"\n    ],\n    \"manifestDigest\": \"sha256:c94805c5eab44be542e925ce550f56af0e254d0a1d735c4f64c5dc6add780c0c\",\n    \"observationContract\": \"runtime-private-tracked-tree-v1\",\n    \"phase\": \"completed\",\n    \"resultCommit\": \"e7877ae4d2673a1510116232a9345c4133b2d483\",\n    \"resultTree\": \"d4e84508f4636c14ff92e803d9f3035619215741\",\n    \"runDirectory\": \"/private/var/folders/81/gs00m_mx6wv4746w6ttwb7240000gp/T/agent-braid-utility-treatment-7680sben/result\",\n    \"sourcePromotion\": false,\n    \"status\": \"verified-completed\"\n  },\n  \"mode\": \"parallel\",\n  \"planDigest\": \"sha256:42f801d754bdeb201445317aaf5f9cc684edd4c095687fd969b56fe44765a253\",\n  \"resultTree\": \"d4e84508f4636c14ff92e803d9f3035619215741\",\n  \"runtimeManifest\": {\n    \"authorizationScope\": \"private-run-only\",\n    \"baseTree\": \"562d3d0a571a697990fbf60a7db0338349836782\",\n    \"executionContract\": \"authorized-serial-index-patch-v1\",\n    \"gitRuntimeManifestVersion\": \"0.1.0-alpha\",\n    \"manifestDigest\": \"sha256:c94805c5eab44be542e925ce550f56af0e254d0a1d735c4f64c5dc6add780c0c\",\n    \"observationContract\": \"runtime-private-tracked-tree-v1\",\n    \"privateConfigDigest\": \"sha256:3c5cc3e72b5473d08433171d50fc687ac3aa2a6a3f4c20b97f5b66f581b0fec9\",\n    \"repositoryId\": \"sha256:9216680f6a327cd59e44546cd8bddd630c1e2543a868d88f715c562d822e143e\",\n    \"request\": {\n      \"baseRevision\": \"efac4659ec0161e9865fe431b0a367d77f6db3ac\",\n      \"expectedFinalTree\": \"d4e84508f4636c14ff92e803d9f3035619215741\",\n      \"gitRuntimeRequestVersion\": \"0.1.0-alpha\",\n      \"operations\": [\n        {\n          \"attemptId\": \"a-attempt\",\n          \"declaredWrites\": [\n            \"a.txt\"\n          ],\n          \"dependencies\": [],\n          \"instanceId\": \"a\",\n          \"source\": {\n            \"kind\": \"commit\",\n            \"revision\": \"894d804428e37bc34ba4324ede0a0c1051a43ddb\"\n          },\n          \"uncertainPaths\": []\n        },\n        {\n          \"attemptId\": \"b-attempt\",\n          \"declaredWrites\": [\n            \"b.txt\"\n          ],\n          \"dependencies\": [],\n          \"instanceId\": \"b\",\n          \"source\": {\n            \"kind\": \"commit\",\n            \"revision\": \"2e44e76c9ba59ee35754ee32caad8a224f02120f\"\n          },\n          \"uncertainPaths\": []\n        }\n      ],\n      \"order\": [\n        \"a\",\n        \"b\"\n      ],\n      \"repository\": \"/private/var/folders/81/gs00m_mx6wv4746w6ttwb7240000gp/T/agent-braid-utility-fixture-lhwi6xby/fixture/source\"\n    },\n    \"resourceLimits\": {\n      \"changedPaths\": 16,\n      \"childAddressSpaceBytes\": null,\n      \"commandOutputBytes\": 2097152,\n      \"gitCommands\": 256,\n      \"operations\": 4,\n      \"outputBytes\": 8388608,\n      \"patchBytes\": 262144,\n      \"scratchBytes\": 67108864,\n      \"wallSeconds\": 60\n    },\n    \"runDirectory\": \"/private/var/folders/81/gs00m_mx6wv4746w6ttwb7240000gp/T/agent-braid-utility-treatment-7680sben/result\",\n    \"sourcePromotion\": false,\n    \"steps\": [\n      {\n        \"attemptId\": \"a-attempt\",\n        \"commit\": \"9b27b946f1ff8e046f1a7d2eec42738db82b416c\",\n        \"effects\": [\n          {\n            \"afterBlob\": \"380d4b407e5bf815a9e3f04d4b549c79b93a5cb4\",\n            \"afterMode\": \"100644\",\n            \"beforeBlob\": \"df967b96a579e45a18b8251732d16804b2e56a55\",\n            \"beforeMode\": \"100644\",\n            \"path\": \"a.txt\",\n            \"status\": \"M\"\n          }\n        ],\n        \"inputTree\": \"562d3d0a571a697990fbf60a7db0338349836782\",\n        \"operationId\": \"a\",\n        \"outputTree\": \"4c306c8553a1b04f876425b31559bbfd5765fc0b\",\n        \"parentCommit\": \"efac4659ec0161e9865fe431b0a367d77f6db3ac\",\n        \"patchDigest\": \"sha256:5aa4ac5b0c83746d44df0064a406f767151fb192a9cb014a1ad93d7a79cb363f\",\n        \"sourceCommit\": \"894d804428e37bc34ba4324ede0a0c1051a43ddb\"\n      },\n      {\n        \"attemptId\": \"b-attempt\",\n        \"commit\": \"e7877ae4d2673a1510116232a9345c4133b2d483\",\n        \"effects\": [\n          {\n            \"afterBlob\": \"7995fc5a1ff1ce6a00faf26042385f237d9124dd\",\n            \"afterMode\": \"100644\",\n            \"beforeBlob\": \"df967b96a579e45a18b8251732d16804b2e56a55\",\n            \"beforeMode\": \"100644\",\n            \"path\": \"b.txt\",\n            \"status\": \"M\"\n          }\n        ],\n        \"inputTree\": \"4c306c8553a1b04f876425b31559bbfd5765fc0b\",\n        \"operationId\": \"b\",\n        \"outputTree\": \"d4e84508f4636c14ff92e803d9f3035619215741\",\n        \"parentCommit\": \"9b27b946f1ff8e046f1a7d2eec42738db82b416c\",\n        \"patchDigest\": \"sha256:24ed0214a7fee513e5b36a613b7ebf92a9b7f6d8a6eff36e5c7d8c7aa99d67e5\",\n        \"sourceCommit\": \"2e44e76c9ba59ee35754ee32caad8a224f02120f\"\n      }\n    ]\n  },\n  \"runtimeReport\": {\n    \"dispatch\": \"performed\",\n    \"grantId\": \"165e8823-87f4-4a06-a9cb-6cb654018fcc\",\n    \"preparation\": {\n      \"evidenceDigest\": \"sha256:f9b84df9684a6deb06c3bde0526856bba6e9c8b26499cd57c150816504be559e\",\n      \"executionContract\": \"isolated-preparation-serial-publication-v1\",\n      \"limits\": [\n        \"Observed preparation intervals are not a CPU parallelism guarantee.\",\n        \"Trees/effects are independently replayable; recorded timings are observations.\",\n        \"Trusted Git and owned scratch; no arbitrary code or hostile same-UID isolation.\"\n      ],\n      \"manifestDigest\": \"sha256:c94805c5eab44be542e925ce550f56af0e254d0a1d735c4f64c5dc6add780c0c\",\n      \"metrics\": {\n        \"capturedOutputBytes\": 664113,\n        \"childSystemCpuNs\": 466937999,\n        \"childUserCpuNs\": 453367000,\n        \"gitCommands\": 57,\n        \"processLifetimePeakChildRssBytes\": 6176768,\n        \"sampledPeakScratchBytes\": 5645\n      },\n      \"observedPeakWorkerIntervals\": 2,\n      \"runtimePreparationEvidenceVersion\": \"0.1.0-alpha\",\n      \"scheduleDigest\": \"sha256:b761c91b540ce783f62961be62df807fb7fbd08ed5e1aff084af28cd4f05594a\",\n      \"wallNs\": 1743743667,\n      \"workers\": [\n        {\n          \"attemptId\": \"a-attempt\",\n          \"effects\": [\n            {\n              \"afterBlob\": \"380d4b407e5bf815a9e3f04d4b549c79b93a5cb4\",\n              \"afterMode\": \"100644\",\n              \"beforeBlob\": \"df967b96a579e45a18b8251732d16804b2e56a55\",\n              \"beforeMode\": \"100644\",\n              \"path\": \"a.txt\",\n              \"status\": \"M\"\n            }\n          ],\n          \"finishedNs\": 1743588250,\n          \"inputTree\": \"562d3d0a571a697990fbf60a7db0338349836782\",\n          \"operationId\": \"a\",\n          \"outputTree\": \"4c306c8553a1b04f876425b31559bbfd5765fc0b\",\n          \"patchDigest\": \"sha256:5aa4ac5b0c83746d44df0064a406f767151fb192a9cb014a1ad93d7a79cb363f\",\n          \"startedNs\": 1341502125,\n          \"wave\": 0,\n          \"writableIndex\": \"/var/folders/81/gs00m_mx6wv4746w6ttwb7240000gp/T/agent-braid-scheduled-workers-nf4rmeoy/worker-0/worker.git/index\",\n          \"writableRepository\": \"/var/folders/81/gs00m_mx6wv4746w6ttwb7240000gp/T/agent-braid-scheduled-workers-nf4rmeoy/worker-0/worker.git\"\n        },\n        {\n          \"attemptId\": \"b-attempt\",\n          \"effects\": [\n            {\n              \"afterBlob\": \"7995fc5a1ff1ce6a00faf26042385f237d9124dd\",\n              \"afterMode\": \"100644\",\n              \"beforeBlob\": \"df967b96a579e45a18b8251732d16804b2e56a55\",\n              \"beforeMode\": \"100644\",\n              \"path\": \"b.txt\",\n              \"status\": \"M\"\n            }\n          ],\n          \"finishedNs\": 1660578459,\n          \"inputTree\": \"562d3d0a571a697990fbf60a7db0338349836782\",\n          \"operationId\": \"b\",\n          \"outputTree\": \"ece3af14a0578de356f45f64fafbe54a1a2704c4\",\n          \"patchDigest\": \"sha256:24ed0214a7fee513e5b36a613b7ebf92a9b7f6d8a6eff36e5c7d8c7aa99d67e5\",\n          \"startedNs\": 1341451125,\n          \"wave\": 0,\n          \"writableIndex\": \"/var/folders/81/gs00m_mx6wv4746w6ttwb7240000gp/T/agent-braid-scheduled-workers-nf4rmeoy/worker-1/worker.git/index\",\n          \"writableRepository\": \"/var/folders/81/gs00m_mx6wv4746w6ttwb7240000gp/T/agent-braid-scheduled-workers-nf4rmeoy/worker-1/worker.git\"\n        }\n      ]\n    },\n    \"preparationVerification\": {\n      \"executionAuthorization\": false,\n      \"isolationStatus\": \"recorded-owned-scratch-scopes\",\n      \"scheduleDigest\": \"sha256:b761c91b540ce783f62961be62df807fb7fbd08ed5e1aff084af28cd4f05594a\",\n      \"status\": \"verified-worker-trees-and-effects\",\n      \"timingStatus\": \"recorded-observations-only\"\n    },\n    \"runtime\": {\n      \"authorizationScope\": \"private-run-only\",\n      \"completedOperations\": [\n        \"a\",\n        \"b\"\n      ],\n      \"executionContract\": \"authorized-serial-index-patch-v1\",\n      \"gitRuntimeReportVersion\": \"0.1.0-alpha\",\n      \"limits\": [\n        \"Fixed text patches and private Git storage only; no repository code or source promotion.\",\n        \"Digest acknowledgement is not authentication; owned POSIX filesystem/Git are trusted.\",\n        \"Process interruption recovery; no power-loss, hostile same-UID or production-safety guarantee.\",\n        \"No hard child memory cap; scratch is sampled and can overshoot between checks.\",\n        \"Tree observations do not establish semantic correctness or safe concurrency.\"\n      ],\n      \"manifestDigest\": \"sha256:c94805c5eab44be542e925ce550f56af0e254d0a1d735c4f64c5dc6add780c0c\",\n      \"observationContract\": \"runtime-private-tracked-tree-v1\",\n      \"phase\": \"completed\",\n      \"resultCommit\": \"e7877ae4d2673a1510116232a9345c4133b2d483\",\n      \"resultTree\": \"d4e84508f4636c14ff92e803d9f3035619215741\",\n      \"runDirectory\": \"/private/var/folders/81/gs00m_mx6wv4746w6ttwb7240000gp/T/agent-braid-utility-treatment-7680sben/result\",\n      \"sourcePromotion\": false,\n      \"status\": \"verified-completed\"\n    }\n  },\n  \"status\": \"completed\",\n  \"workerOverlap\": {\n    \"peakIntervals\": 2,\n    \"scope\": \"scheduler-relative interval union and peak occupancy, not CPU parallelism\",\n    \"unionNs\": 402137125\n  }\n}\n",
+          "operationalEncodedBytes": 15390,
+          "status": "completed"
+        }
+      ],
+      "treatmentOrder": [
+        "serial",
+        "parallel"
+      ]
+    }
+  ],
+  "environment": {
+    "backgroundLoad": "not controlled; no cold-cache claim",
+    "childCpuAttribution": "dedicated CLI process; only its own foreground fixture/Git children",
+    "git": "git version 2.54.0 (Apple Git-157)",
+    "machine": "arm64",
+    "platform": "macOS-26.6.2-arm64-arm-64bit-Mach-O",
+    "python": "3.13.11"
+  },
+  "fixturePreparation": {
+    "parentCpuNs": 20836000,
+    "scope": "outside operational treatment interval",
+    "wallNs": 365489750
+  },
+  "g4Decision": "historical-no-go-preserved",
+  "inputs": {
+    "agent_braid/analysis.py": "fadfb6f6d3d6f89002df519bbcc86d839724f243e2c8e52732ef57e555abfe00",
+    "agent_braid/git_adapter.py": "4548eb96849e2d0ed1eaefc53579d065651b00a2c6ae5b1aef6e2bdc5ae3dc45",
+    "agent_braid/git_exec.py": "ce5e348f355ca5f73f1095ee4cbab8779c224cce7c8ac326a5376be69d416853",
+    "agent_braid/git_process.py": "3247ac861404cfb68f08939770a5048294b45ddc984a1379ca9eb2091ad48668",
+    "agent_braid/git_replay.py": "62a2c461902e30d874dfe82bed77ab79075f33cb0e56f1e543fd9d317f1d571e",
+    "agent_braid/git_runtime.py": "ceb4469906b6c97a6f03faf3cc1b4ea8387df937c06b8ccd49984eaf2dff4d4e",
+    "agent_braid/git_runtime_process.py": "6cde49846602aec8b18a3df141c8f77ff2bb66badd098d149393e900c44c0da4",
+    "agent_braid/runtime_policy.py": "930ead80e4085301e6337af58660665219da3d3b40b72cfca8b803cebfa09188",
+    "agent_braid/runtime_scheduler.py": "47bb371c88726793d207a59bb85cb6911d86e00a44694b37934805d9fa2462a9",
+    "agent_braid/utility_accounting.py": "402c77255209cfeddfbad0123b39dcfe7aa1bec8ce560e50ed339e6b54a7006b",
+    "agent_braid/utility_budget_observer.py": "611624b8734b342016e0f8fbc19a912422d3ff42fd98bce1ca941c90ed005568",
+    "agent_braid/utility_fixtures.py": "ea3ecb2bda7e6909f5307232dcc6b13953e4ac560eab9144dd0f566d90de8119",
+    "agent_braid/utility_trials.py": "1f41e65b892fb607e887b486042f19d3a4a6dc5db1e1dcaca46930e6e554dce2",
+    "research/lab/model.py": "f39040b5476d663f6e7384e65d00073b084df6c8958b38bff45e4d6b19da010f",
+    "scripts/measure_m4_utility.py": "60ad14fa39b31e2af67b8987a3f8e544bf884a1e47e23f1bd69ada6285b82a08",
+    "scripts/prepare_m4_utility_trials.py": "2decd580864e97558a69c6b385d2b43d7657dc7f7e214c4b12f5936d2529544f",
+    "specs/022-m4-utility-followup/evidence/prepared-fixture-manifest.json": "ec8f36b21dd745df8443acd6035ff75a4b01bd61fd004470ce0315a655908734",
+    "specs/022-m4-utility-followup/technical-review-packet.md": "6e5a2bd790fb789926007e11f33af40df2ed494d3e8464b13f114523120b282b"
+  },
+  "inventory": [
+    {
+      "blockId": "independent-2-1024",
+      "exclusions": [],
+      "status": "admission-pending"
+    },
+    {
+      "blockId": "independent-2-65536",
+      "exclusions": [],
+      "status": "admission-pending"
+    },
+    {
+      "blockId": "independent-2-1048576",
+      "exclusions": [
+        {
+          "actualBytes": 2130130,
+          "capBytes": 262144,
+          "reason": "runtime patch limit exceeded",
+          "validator": "git_runtime._prepare"
+        },
+        {
+          "actualBytes": 2130130,
+          "capBytes": 1048576,
+          "reason": "aggregate patch bytes exceed 1 MiB",
+          "validator": "git_replay._patches"
+        }
+      ],
+      "status": "excluded-by-pinned-cap"
+    },
+    {
+      "blockId": "independent-4-1024",
+      "exclusions": [],
+      "status": "admission-pending"
+    },
+    {
+      "blockId": "independent-4-65536",
+      "exclusions": [
+        {
+          "actualBytes": 266656,
+          "capBytes": 262144,
+          "reason": "runtime patch limit exceeded",
+          "validator": "git_runtime._prepare"
+        }
+      ],
+      "status": "excluded-by-pinned-cap"
+    },
+    {
+      "blockId": "independent-4-1048576",
+      "exclusions": [
+        {
+          "actualBytes": 4260260,
+          "capBytes": 262144,
+          "reason": "runtime patch limit exceeded",
+          "validator": "git_runtime._prepare"
+        },
+        {
+          "actualBytes": 4260260,
+          "capBytes": 1048576,
+          "reason": "aggregate patch bytes exceed 1 MiB",
+          "validator": "git_replay._patches"
+        }
+      ],
+      "status": "excluded-by-pinned-cap"
+    },
+    {
+      "blockId": "dependency-chain-4-1024",
+      "exclusions": [],
+      "status": "admission-pending"
+    },
+    {
+      "blockId": "dependency-chain-4-65536",
+      "exclusions": [
+        {
+          "actualBytes": 266656,
+          "capBytes": 262144,
+          "reason": "runtime patch limit exceeded",
+          "validator": "git_runtime._prepare"
+        }
+      ],
+      "status": "excluded-by-pinned-cap"
+    },
+    {
+      "blockId": "dependency-chain-4-1048576",
+      "exclusions": [
+        {
+          "actualBytes": 4260260,
+          "capBytes": 262144,
+          "reason": "runtime patch limit exceeded",
+          "validator": "git_runtime._prepare"
+        },
+        {
+          "actualBytes": 4260260,
+          "capBytes": 1048576,
+          "reason": "aggregate patch bytes exceed 1 MiB",
+          "validator": "git_replay._patches"
+        }
+      ],
+      "status": "excluded-by-pinned-cap"
+    }
+  ],
+  "limits": [
+    "Synthetic repeated text and file-disjoint patches only.",
+    "No registered results, actual-workload utility or milestone acceptance.",
+    "Fixture generation and aggregate observer output are separately timed.",
+    "Budget command charges and accepted output bytes exclude refused/discarded chunks; total read bytes are unavailable."
+  ],
+  "m4Status": "open",
+  "manifestSha256": "ec8f36b21dd745df8443acd6035ff75a4b01bd61fd004470ce0315a655908734",
+  "purpose": "diagnostic-only",
+  "recordVersion": "spec022-diagnostic-preparation-v1",
+  "registeredMeasurementExecuted": false,
+  "status": "prepared-or-diagnosed",
+  "utilityAcceptance": "pending"
+}

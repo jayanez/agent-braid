@@ -1,15 +1,17 @@
 # Prospective bounded synthetic diagnostic protocol
 
-Status: draft for human technical review. T001 remains unchecked. No harness
-instrumentation, runtime admission, grants or registered measurements have executed
-for SPEC-022. Historical SPEC-021 G4 NO-GO and M4-open status remain unchanged.
+Status: exact protocol technically approved by the owner on 2026-10-07 against
+public commit `3777e578`; see [scoped decision](protocol-review-3777e578.json).
+T001 is complete. T002 instrumentation and evaluation preparation are authorized.
+No registered measurements or whole-feature utility acceptance have executed.
+Historical SPEC-021 G4 NO-GO and M4-open status remain unchanged.
 
 The exact [technical review packet](technical-review-packet.md) supersedes the
 previous coarse corpus and phase descriptions for this proposed evaluation. It
 defines the ordered nine-cell inventory, immutable identities, numeric exclusions,
 45-minute dispatch budget, denominators, invalid-pair and stop rules, non-overlapping
-wall phases, optional counter attribution and observer boundary. Human technical
-review must cover that exact packet before T002 instrumentation. A later stable
+wall phases, optional counter attribution and observer boundary. The recorded human technical
+review covers that exact packet before T002 instrumentation. A later stable
 harness/manifest freeze and review precede registered measurement.
 
 The [derived workload inventory](workload-manifest-candidate.json) identifies nine

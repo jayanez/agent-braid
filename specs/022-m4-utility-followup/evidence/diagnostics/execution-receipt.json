@@ -1,0 +1,62 @@
+{
+  "purpose": "exploratory-diagnostics-only",
+  "registeredMeasurementExecuted": false,
+  "runs": [
+    {
+      "blockId": "independent-2-1024",
+      "command": [
+        "/tmp/agent-braid-parallel-20261006/.venv-speckit/bin/python",
+        "scripts/measure_m4_utility.py",
+        "--diagnostic-block",
+        "independent-2-1024",
+        "--output",
+        "/tmp/agent-braid-spec022-diagnostics-20261007/independent-2-1024.json"
+      ],
+      "observedExitCode": 0,
+      "output": "/tmp/agent-braid-spec022-diagnostics-20261007/independent-2-1024.json",
+      "status": "prepared-or-diagnosed"
+    },
+    {
+      "blockId": "independent-2-65536",
+      "command": [
+        "/tmp/agent-braid-parallel-20261006/.venv-speckit/bin/python",
+        "scripts/measure_m4_utility.py",
+        "--diagnostic-block",
+        "independent-2-65536",
+        "--output",
+        "/tmp/agent-braid-spec022-diagnostics-20261007/independent-2-65536.json"
+      ],
+      "observedExitCode": 0,
+      "output": "/tmp/agent-braid-spec022-diagnostics-20261007/independent-2-65536.json",
+      "status": "prepared-or-diagnosed"
+    },
+    {
+      "blockId": "independent-4-1024",
+      "command": [
+        "/tmp/agent-braid-parallel-20261006/.venv-speckit/bin/python",
+        "scripts/measure_m4_utility.py",
+        "--diagnostic-block",
+        "independent-4-1024",
+        "--output",
+        "/tmp/agent-braid-spec022-diagnostics-20261007/independent-4-1024.json"
+      ],
+      "observedExitCode": 0,
+      "output": "/tmp/agent-braid-spec022-diagnostics-20261007/independent-4-1024.json",
+      "status": "prepared-or-diagnosed"
+    },
+    {
+      "blockId": "dependency-chain-4-1024",
+      "command": [
+        "/tmp/agent-braid-parallel-20261006/.venv-speckit/bin/python",
+        "scripts/measure_m4_utility.py",
+        "--diagnostic-block",
+        "dependency-chain-4-1024",
+        "--output",
+        "/tmp/agent-braid-spec022-diagnostics-20261007/dependency-chain-4-1024.json"
+      ],
+      "observedExitCode": 0,
+      "output": "/tmp/agent-braid-spec022-diagnostics-20261007/dependency-chain-4-1024.json",
+      "status": "prepared-or-diagnosed"
+    }
+  ]
+}
