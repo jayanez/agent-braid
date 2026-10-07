@@ -1,0 +1,32 @@
+{
+  "recordVersion": "spec022-scoped-successor-protocol-review-v1",
+  "decision": "approved",
+  "decisionDate": "2026-10-07",
+  "reviewer": "Juan Antonio Yáñez García (@jayanez)",
+  "authorizationSource": "Explicit written owner approval in the current Codex chat after reissuing the question and recommendation; any previous accidental selection was revoked.",
+  "ownerStatement": "OK, pues adelante con la opción 1",
+  "approvedOption": "180 minutes for implementation and preparation only",
+  "proposalPath": "specs/022-m4-utility-followup/capture-feasibility-packet.md",
+  "proposalSha256": "b9d4eb949a9d664857b6520dccf288a0d88dc31a55f249a674fa03010a8809e1",
+  "reviewedProposalCommit": "e4f021082c6358585db7269a448987cca563cac2",
+  "durableProposalRef": "m4-owner-review-draft-20261007",
+  "integratedPublicCommitAtDecision": "6b6cf2b2d9ca172e0d7c350f2b9d571e208c0d41",
+  "dispatchBudgetMinutes": 180,
+  "scope": [
+    "Implement a distinct prospective 180-minute successor; preserve original 45-minute v1 behavior",
+    "Evaluation preparation and fresh candidate-bound diagnostics/manifest for later review",
+    "Keep nine corpus cells, five exclusions, 22 pairs per admitted block, treatment order, caps, grants, verification, accounting and refusal rules unchanged"
+  ],
+  "notApproved": [
+    "Registered dispatch or capture-specific runtime grants",
+    "Stable harness/manifest acceptance by this decision alone",
+    "SPEC-038 actual-workload source rights or protocol",
+    "Capability adoption",
+    "Synthetic utility acceptance, G4 or whole-M4 closure",
+    "Paid/model/provider/host calls"
+  ],
+  "registeredMeasurementAuthorization": false,
+  "runtimeExecutionAuthorization": false,
+  "wholeFeatureHumanReview": "pending",
+  "historicalEvidence": "Existing diagnostic/manifest bytes remain historical; changed preparation/trial inputs require fresh matching diagnostic records."
+}
