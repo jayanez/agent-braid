@@ -265,6 +265,65 @@ def build_plan(config: dict, desired: list[dict], milestones: dict,
     return operations
 
 
+def milestone_plan(config: dict, desired: list[dict], milestones: dict,
+                  issues: dict, extra: dict, milestone_number: int,
+                  new_record_keys: set[str] | None = None) -> tuple[dict, list[dict], dict, list[dict]]:
+    """Build a fail-closed plan for one registered milestone and its managed issues."""
+    names = [name for name, number in validate_milestone_numbers(config).items()
+             if number == milestone_number]
+    if len(names) != 1:
+        raise ValueError(f"milestone number #{milestone_number} is not uniquely registered")
+    name = names[0]
+    selected = [item for item in desired if item["milestone"] == name]
+    selected_keys = {item["key"] for item in selected}
+    new_record_keys = new_record_keys or set()
+    desired_by_key = {item["key"]: item for item in desired}
+    if not selected:
+        raise ValueError(f"milestone #{milestone_number} has no configured source records")
+    for key in sorted(new_record_keys):
+        if key not in desired_by_key:
+            raise ValueError(f"new-record allowlist contains unknown source record: {key}")
+        if key not in selected_keys:
+            raise ValueError(f"new-record allowlist contains a record outside milestone #{milestone_number}: {key}")
+        if key in issues:
+            raise ValueError(f"new-record allowlist entry already exists remotely: {key}")
+
+    # The remote inventory is intentionally complete. Check every issue currently
+    # assigned here before narrowing, so a moved/deleted/unknown managed ID cannot
+    # disappear behind the selected source filter.
+    for key, issue in issues.items():
+        actual = issue.get("milestone") or {}
+        if actual.get("number") == milestone_number and key not in selected_keys:
+            raise ValueError(f"unknown or out-of-scope managed issue #{issue['number']} is assigned to milestone #{milestone_number}: {key}")
+    for item in selected:
+        issue = issues.get(item["key"])
+        if issue is None:
+            if item["key"] not in new_record_keys:
+                raise ValueError(f"managed issue is missing for selected source record {item['key']}")
+            continue
+        actual = issue.get("milestone") or {}
+        if actual.get("number") != milestone_number:
+            raise ValueError(f"selected issue {item['key']} moved from registered milestone #{milestone_number}")
+
+    scoped_config = {
+        **config,
+        "milestones": {name: config["milestones"][name]},
+        "closed_milestones": [name] if name in config["closed_milestones"] else [],
+        "milestone_numbers": {name: milestone_number},
+    }
+    scoped_desired = selected
+    scoped_issues = {key: issues[key] for key in selected_keys if key in issues}
+    scoped_extra = {
+        "children": {key: value for key, value in extra.get("children", {}).items() if key in selected_keys},
+        "unmarked_titles": extra.get("unmarked_titles", set()),
+    }
+    scoped_milestones = {title: milestone for title, milestone in milestones.items()
+                         if milestone.get("number") == milestone_number}
+    operations = build_plan(scoped_config, scoped_desired, scoped_milestones,
+                            scoped_issues, scoped_extra)
+    return scoped_config, scoped_desired, scoped_issues, operations
+
+
 def apply_plan(repo: str, config: dict, desired: list[dict], milestones: dict,
                issues: dict, operations: list[dict]) -> None:
     by_key = {item["key"]: item for item in desired}
@@ -337,9 +396,21 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--plan-sha256", help="Digest from a reviewed audit; required for apply")
     parser.add_argument("--milestone-titles-only", action="store_true",
                         help="Audit/apply only registered milestone titles; never write issues or states")
+    parser.add_argument("--milestone-number", type=int,
+                        help="Audit/apply only source records assigned to this registered milestone number")
+    parser.add_argument("--new-record-key", action="append", default=[], metavar="ID",
+                        help="Explicitly authorize creation of this missing managed ID within --milestone-number (repeatable)")
     args = parser.parse_args(argv)
-    if args.mode == "source" and args.milestone_titles_only:
-        parser.error("--milestone-titles-only is available only for audit/apply")
+    if args.mode == "source" and (args.milestone_titles_only or args.milestone_number is not None):
+        parser.error("milestone scopes are available only for audit/apply")
+    if args.milestone_titles_only and args.milestone_number is not None:
+        parser.error("--milestone-titles-only and --milestone-number are mutually exclusive")
+    if args.new_record_key and args.milestone_number is None:
+        parser.error("--new-record-key requires --milestone-number")
+    if len(args.new_record_key) != len(set(args.new_record_key)):
+        parser.error("--new-record-key entries must be unique")
+    if args.milestone_number is not None and args.milestone_number <= 0:
+        parser.error("--milestone-number must be a positive integer")
     config, desired = source_inventory()
     if args.mode == "source":
         print(json.dumps({"specs": sum(x["kind"] == "spec" for x in desired),
@@ -350,14 +421,29 @@ def main(argv: list[str] | None = None) -> int:
         return 0
     repo = config["repository"]
     milestones, issues, extra = remote_inventory(repo, milestone_titles_only=args.milestone_titles_only)
-    operations = build_plan(config, desired, milestones, issues, extra,
-                            milestone_titles_only=args.milestone_titles_only)
-    scope = "milestone-titles" if args.milestone_titles_only else "full"
-    plan_digest = hashlib.sha256(json.dumps({"repository": repo, "scope": scope, "operations": operations},
+    if args.milestone_number is not None:
+        scoped_config, scoped_desired, scoped_issues, operations = milestone_plan(
+            config, desired, milestones, issues, extra, args.milestone_number,
+            set(args.new_record_key))
+        scoped_milestones = {title: milestone for title, milestone in milestones.items()
+                             if milestone.get("number") == args.milestone_number}
+        scope = f"milestone:{args.milestone_number}"
+        digest_payload = {"repository": repo, "scope": scope,
+                          "milestone_number": args.milestone_number,
+                          "new_record_keys": sorted(args.new_record_key), "operations": operations}
+    else:
+        scoped_config, scoped_desired, scoped_issues, scoped_milestones = config, desired, issues, milestones
+        operations = build_plan(config, desired, milestones, issues, extra,
+                                milestone_titles_only=args.milestone_titles_only)
+        scope = "milestone-titles" if args.milestone_titles_only else "full"
+        digest_payload = {"repository": repo, "scope": scope, "operations": operations}
+    plan_digest = hashlib.sha256(json.dumps(digest_payload,
                                             sort_keys=True, ensure_ascii=False,
                                             separators=(",", ":")).encode("utf-8")).hexdigest()
     print(json.dumps({"repository": repo, "project_url": config["project_url"],
                       "scope": scope,
+                      **({"milestone_number": args.milestone_number} if args.milestone_number is not None else {}),
+                      **({"new_record_keys": sorted(args.new_record_key)} if args.milestone_number is not None else {}),
                       "plan_sha256": plan_digest, "operations": operations}, indent=2, ensure_ascii=False))
     if args.mode == "audit":
         return 1 if operations else 0
@@ -371,9 +457,11 @@ def main(argv: list[str] | None = None) -> int:
                            capture_output=True, check=True).stdout.strip()
     if branch != "develop" or dirty:
         parser.error("apply requires a clean develop checkout containing the reviewed source records")
-    apply_plan(repo, config, desired, milestones, issues, operations)
+    apply_plan(repo, scoped_config, scoped_desired, scoped_milestones, scoped_issues, operations)
     if args.milestone_titles_only:
         print("Registered milestone titles reconciled; issue and milestone states were outside this scope.")
+    elif args.milestone_number is not None:
+        print(f"Registered milestone #{args.milestone_number} reconciled within its reviewed scope.")
     else:
         print("Repository issues and milestones reconciled. Verify private Project membership and Review pending status in the Project UI.")
     return 0

@@ -1,0 +1,29 @@
+{
+  "recordVersion": "agent-braid-m4-protocol-design-review-1",
+  "reviewer": "Independent Codex reviewer",
+  "model": "gpt-6-luna",
+  "reasoningEffort": "medium",
+  "inputs": {
+    "specs/038-m4-real-workload-closure/assurance.json": "838c0724b2f92c84f3104e9917c93ee811123cf87f08dfb256da7ece541d2a9e",
+    "specs/038-m4-real-workload-closure/plan.md": "04778d1d08f614ee473fd57b7fea525cbdc86e9412c72c208c913a4bd37d8de5",
+    "specs/038-m4-real-workload-closure/protocol-review-packet.md": "656f0b67958e6cf0857bcf3a2908b8235eb2ea43a9a44a8ae18e1c6905790fd2",
+    "specs/038-m4-real-workload-closure/quickstart.md": "95cdbd75f43fd56d7f350c17bd53723f591ddd07bb9f43229b5e87a2fac9e951",
+    "specs/038-m4-real-workload-closure/research.md": "7376140504d63eac1f08fb9ef4d476862217196fe42fa48bfae5b65b0f620571",
+    "specs/038-m4-real-workload-closure/source-rights-manifest.json": "8f1707b2ae5fc66b5ed5e45fa21d70b9e02a1765ec51c242db96c11bd1e1766d",
+    "specs/038-m4-real-workload-closure/spec.md": "3b705e47b13c497220cd19aa304a39f897e62c87efb1dd69cfbe8a23fc4c327b",
+    "specs/038-m4-real-workload-closure/tasks.md": "b5d030832d6dd2b2d4261820ea3ba80c82d4bdaea8973b266a9ddae9b456e9c0",
+    "specs/038-m4-real-workload-closure/validation-plan.md": "0b405cf03fb08a8a3e46eaecdf9d6151730f257ffb7fc61177cb50b7c4968a47"
+  },
+  "findingsResolved": [
+    "Explicit IDs and global dispatch order for all four warm-up pairs",
+    "C08 authority after exact T002 approval matches existing user implementation goal",
+    "No-experiment statement scoped to design increment; future measurements retain exact gates"
+  ],
+  "remainingP1P2": [],
+  "staticSourceCheck": "Both commits descend from common base; 2 disjoint ordinary-text A/M operations, 8 paths, 63080 diff bytes",
+  "scheduleCheck": "Seed digest and six measured pair order verified; all ten pair slots explicit",
+  "testsExecuted": false,
+  "captureExecuted": false,
+  "humanApproval": false,
+  "limits": "Static independent protocol design review only. Rights, runtime admission, exact stable capture authority, empirical evidence and whole-M4 founder acceptance remain pending."
+}

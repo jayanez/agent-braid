@@ -1,0 +1,47 @@
+{
+  "type": "planning-artifact-checks-v1",
+  "candidate": "5cb144e1193a266645e012a7f31224d846ea7003",
+  "plan_sha256": "76ef4ac9e85f5787753bf8e6316f15a85d86ab9722c70d056558d0afa29c7d54",
+  "local_markdown_links_valid": true,
+  "broken_links": [],
+  "work_packages": [
+    "M4-C01",
+    "M4-C02",
+    "M4-C03",
+    "M4-C04",
+    "M4-C05",
+    "M4-C06",
+    "M4-C07",
+    "M4-C08",
+    "M4-C09",
+    "M4-C10",
+    "M4-C11",
+    "M4-C12",
+    "M4-C13"
+  ],
+  "expected_work_packages": 13,
+  "read_only_inventory_valid_json": true,
+  "registered_execution": false,
+  "runtime_tests_executed_in_planning": false,
+  "remote_writes": false,
+  "limits": [
+    "Planning artifact checks only; not implementation/experiment/founder approval."
+  ],
+  "independent_plan_review_path": "tasks/evidence/m4-luna-plan-review-20261007.json",
+  "independent_plan_review_outcome": "no-actionable-P1-P2-findings",
+  "spec_kit_preflight": "passed in full independent public clone after documented SPEC-012 restoration",
+  "feature_prerequisites": [
+    "SPEC-021 passed",
+    "SPEC-022 passed",
+    "SPEC-027 passed"
+  ],
+  "tracking_source_check": "passed: 37 specs, 287 tasks, 18 milestones",
+  "tracking_read_only_audit": "exit 1: 70 drift operations, 14 in M4; no apply",
+  "validation_profile_execution": "plan-only; quick request selects sensitive due new inventory/receipt paths; no runtime/profile checks executed",
+  "original_worktree": "unchanged; shared-store preflight blocked by unreachable objects",
+  "planning_artifacts_only": true,
+  "final_spec_kit_preflight": "passed after planning artifacts",
+  "final_spec_kit_stdout": "Spec Kit structural gates passed; semantic/human review remains separate.",
+  "planning_artifact_whitespace": "passed including untracked files",
+  "final_origin_develop": "5cb144e1193a266645e012a7f31224d846ea7003"
+}
