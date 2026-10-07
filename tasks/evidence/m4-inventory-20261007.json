@@ -1,0 +1,482 @@
+{
+  "record_type": "read-only-m4-planning-inventory-v1",
+  "captured_at_utc": "2026-10-07T12:46:12.023917+00:00",
+  "user_date": "2026-10-07",
+  "candidate": "5cb144e1193a266645e012a7f31224d846ea7003",
+  "repository": "jayanez/agent-braid",
+  "milestone": {
+    "url": "https://api.github.com/repos/jayanez/agent-braid/milestones/6",
+    "html_url": "https://github.com/jayanez/agent-braid/milestone/6",
+    "labels_url": "https://api.github.com/repos/jayanez/agent-braid/milestones/6/labels",
+    "id": 18020951,
+    "node_id": "MI_kwDOUkDWXM4BEvpX",
+    "number": 6,
+    "title": "M4 — Agent Braid runtime",
+    "description": "Agent Braid Runtime. Conditional on validated M1-M2 engineering results and explicit execution contracts.",
+    "creator": {
+      "login": "jayanez",
+      "id": 7823750,
+      "node_id": "MDQ6VXNlcjc4MjM3NTA=",
+      "avatar_url": "https://avatars.githubusercontent.com/u/7823750?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/jayanez",
+      "html_url": "https://github.com/jayanez",
+      "followers_url": "https://api.github.com/users/jayanez/followers",
+      "following_url": "https://api.github.com/users/jayanez/following{/other_user}",
+      "gists_url": "https://api.github.com/users/jayanez/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/jayanez/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/jayanez/subscriptions",
+      "organizations_url": "https://api.github.com/users/jayanez/orgs",
+      "repos_url": "https://api.github.com/users/jayanez/repos",
+      "events_url": "https://api.github.com/users/jayanez/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/jayanez/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "open_issues": 16,
+    "closed_issues": 22,
+    "state": "open",
+    "created_at": "2026-09-23T12:31:30Z",
+    "updated_at": "2026-10-06T15:40:58Z",
+    "due_on": null,
+    "closed_at": null
+  },
+  "issues": [
+    {
+      "number": 273,
+      "title": "[SPEC-027 T007] Record founder capability decisions and create separate implementation work only for adopted contracts...",
+      "state": "open",
+      "updated_at": "2026-10-06T05:47:51Z",
+      "closed_at": null,
+      "html_url": "https://github.com/jayanez/agent-braid/issues/273"
+    },
+    {
+      "number": 272,
+      "title": "[SPEC-027 T006] Capture feasibility evidence and prepare capability-specific ADR/GO-NO-GO packets. Dependencies: T003,...",
+      "state": "open",
+      "updated_at": "2026-10-06T05:47:47Z",
+      "closed_at": null,
+      "html_url": "https://github.com/jayanez/agent-braid/issues/272"
+    },
+    {
+      "number": 271,
+      "title": "[SPEC-027 T005] Specify external request/result/failure contracts and simulate retry/partial-effect controls. Dependen...",
+      "state": "open",
+      "updated_at": "2026-10-06T05:47:42Z",
+      "closed_at": null,
+      "html_url": "https://github.com/jayanez/agent-braid/issues/271"
+    },
+    {
+      "number": 270,
+      "title": "[SPEC-027 T004] Assess installed isolation capabilities and propose bounded code-check probes. Dependencies: T001. Tar...",
+      "state": "open",
+      "updated_at": "2026-10-06T05:47:38Z",
+      "closed_at": null,
+      "html_url": "https://github.com/jayanez/agent-braid/issues/270"
+    },
+    {
+      "number": 269,
+      "title": "[SPEC-027 T003] Implement read-only promotion assessment and disposable negative-control dry-runs. Dependencies: T002....",
+      "state": "open",
+      "updated_at": "2026-10-06T05:47:34Z",
+      "closed_at": null,
+      "html_url": "https://github.com/jayanez/agent-braid/issues/269"
+    },
+    {
+      "number": 268,
+      "title": "[SPEC-027 T002] Draft promotion-specific scope, exclusive validation/CAS and recovery contract. Dependencies: T001. Ta...",
+      "state": "open",
+      "updated_at": "2026-10-06T05:47:29Z",
+      "closed_at": null,
+      "html_url": "https://github.com/jayanez/agent-braid/issues/268"
+    },
+    {
+      "number": 267,
+      "title": "[SPEC-027 T001] Inventory existing private-runtime boundaries and write the capability refinement matrix. Dependencies...",
+      "state": "open",
+      "updated_at": "2026-10-06T05:47:25Z",
+      "closed_at": null,
+      "html_url": "https://github.com/jayanez/agent-braid/issues/267"
+    },
+    {
+      "number": 266,
+      "title": "[SPEC-027] SPEC-027: Runtime execution refinement contracts",
+      "state": "open",
+      "updated_at": "2026-10-06T05:47:23Z",
+      "closed_at": null,
+      "html_url": "https://github.com/jayanez/agent-braid/issues/266"
+    },
+    {
+      "number": 230,
+      "title": "[SPEC-022 T006] Prepare bounded utility decision and reconcile tracking only from an explicit new decision. Dependenci...",
+      "state": "open",
+      "updated_at": "2026-10-06T05:44:54Z",
+      "closed_at": null,
+      "html_url": "https://github.com/jayanez/agent-braid/issues/230"
+    },
+    {
+      "number": 229,
+      "title": "[SPEC-022 T005] Freeze a stable candidate and capture full-cost results and fresh process controls. Dependencies: T004...",
+      "state": "open",
+      "updated_at": "2026-10-06T05:44:49Z",
+      "closed_at": null,
+      "html_url": "https://github.com/jayanez/agent-braid/issues/229"
+    },
+    {
+      "number": 228,
+      "title": "[SPEC-022 T004] Implement the immutable workload manifest and complete paired runner. Dependencies: T003. Targets: scr...",
+      "state": "open",
+      "updated_at": "2026-10-06T05:44:45Z",
+      "closed_at": null,
+      "html_url": "https://github.com/jayanez/agent-braid/issues/228"
+    },
+    {
+      "number": 227,
+      "title": "[SPEC-022 T003] Diagnose baseline costs and select at most one contract-preserving improvement. Dependencies: T002. Ta...",
+      "state": "open",
+      "updated_at": "2026-10-06T05:44:40Z",
+      "closed_at": null,
+      "html_url": "https://github.com/jayanez/agent-braid/issues/227"
+    },
+    {
+      "number": 226,
+      "title": "[SPEC-022 T002] Implement reconciled phase accounting and diagnostic output. Dependencies: T001. Targets: scripts/meas...",
+      "state": "open",
+      "updated_at": "2026-10-06T05:44:36Z",
+      "closed_at": null,
+      "html_url": "https://github.com/jayanez/agent-braid/issues/226"
+    },
+    {
+      "number": 225,
+      "title": "[SPEC-022 T001] Freeze the follow-up cost boundaries, corpus, budgets and technical review. Dependencies: none. Target...",
+      "state": "open",
+      "updated_at": "2026-10-06T05:44:31Z",
+      "closed_at": null,
+      "html_url": "https://github.com/jayanez/agent-braid/issues/225"
+    },
+    {
+      "number": 224,
+      "title": "[SPEC-022] SPEC-022: Bounded M4 utility and cost follow-up",
+      "state": "open",
+      "updated_at": "2026-10-06T05:44:29Z",
+      "closed_at": null,
+      "html_url": "https://github.com/jayanez/agent-braid/issues/224"
+    },
+    {
+      "number": 218,
+      "title": "[SPEC-021 T014] G4 Record separate founder whole-M4 alpha decision and governed tracking update. - Trace: REQ-008 / SC...",
+      "state": "closed",
+      "updated_at": "2026-10-06T21:17:53Z",
+      "closed_at": "2026-10-06T13:12:34Z",
+      "html_url": "https://github.com/jayanez/agent-braid/issues/218"
+    },
+    {
+      "number": 217,
+      "title": "[SPEC-021 T013] C4 Complete independent Luna review and evidence/authority reconciliation. - Trace: all. Dependencies:...",
+      "state": "closed",
+      "updated_at": "2026-10-05T21:46:02Z",
+      "closed_at": "2026-10-05T21:46:02Z",
+      "html_url": "https://github.com/jayanez/agent-braid/issues/217"
+    },
+    {
+      "number": 216,
+      "title": "[SPEC-021 T012] C4 Freeze measurement protocol and capture bounded safety/utility/cost comparisons. - Trace: REQ-003,0...",
+      "state": "closed",
+      "updated_at": "2026-10-05T21:45:59Z",
+      "closed_at": "2026-10-05T21:45:59Z",
+      "html_url": "https://github.com/jayanez/agent-braid/issues/216"
+    },
+    {
+      "number": 215,
+      "title": "[SPEC-021 T011] C4 Add deterministic CI policy/transport checks and fresh Darwin/Linux reproduction. - Trace: REQ-008...",
+      "state": "closed",
+      "updated_at": "2026-10-05T21:45:56Z",
+      "closed_at": "2026-10-05T21:45:56Z",
+      "html_url": "https://github.com/jayanez/agent-braid/issues/215"
+    },
+    {
+      "number": 214,
+      "title": "[SPEC-021 T010] C3 Capture actual Codex and Claude Code owned-fixture exercise records. - Trace: REQ-007 / SC-013,014....",
+      "state": "closed",
+      "updated_at": "2026-10-05T21:45:53Z",
+      "closed_at": "2026-10-05T21:45:53Z",
+      "html_url": "https://github.com/jayanez/agent-braid/issues/214"
+    },
+    {
+      "number": 213,
+      "title": "[SPEC-021 T009] C3 Implement pinned bounded stdio MCP adapter with no authorize tool. - Trace: REQ-006 / SC-011,012. D...",
+      "state": "closed",
+      "updated_at": "2026-10-05T21:45:49Z",
+      "closed_at": "2026-10-05T21:45:49Z",
+      "html_url": "https://github.com/jayanez/agent-braid/issues/213"
+    },
+    {
+      "number": 212,
+      "title": "[SPEC-021 T008] C2 Extend crash/cancellation/abort recovery to owned worker state. - Trace: REQ-005 / SC-009,010. Depe...",
+      "state": "closed",
+      "updated_at": "2026-10-05T21:45:45Z",
+      "closed_at": "2026-10-05T21:45:45Z",
+      "html_url": "https://github.com/jayanez/agent-braid/issues/212"
+    },
+    {
+      "number": 211,
+      "title": "[SPEC-021 T007] C2 Verify observed effects and consumer certificates before reporting completion. - Trace: REQ-004 / S...",
+      "state": "closed",
+      "updated_at": "2026-10-05T21:45:42Z",
+      "closed_at": "2026-10-05T21:45:42Z",
+      "html_url": "https://github.com/jayanez/agent-braid/issues/211"
+    },
+    {
+      "number": 210,
+      "title": "[SPEC-021 T006] C2 Implement dependency-ready bounded waves and exclusive coordinator publication. - Trace: REQ-003 /...",
+      "state": "closed",
+      "updated_at": "2026-10-05T21:45:39Z",
+      "closed_at": "2026-10-05T21:45:39Z",
+      "html_url": "https://github.com/jayanez/agent-braid/issues/210"
+    },
+    {
+      "number": 209,
+      "title": "[SPEC-021 T005] C2 Define adapter-verified reads/writes/shared resources and private worker isolation. - Trace: REQ-00...",
+      "state": "closed",
+      "updated_at": "2026-10-05T21:45:36Z",
+      "closed_at": "2026-10-05T21:45:36Z",
+      "html_url": "https://github.com/jayanez/agent-braid/issues/209"
+    },
+    {
+      "number": 208,
+      "title": "[SPEC-021 T004] C1 Implement operator grants outside model tools and idempotent run admission. - Trace: REQ-002 / SC-0...",
+      "state": "closed",
+      "updated_at": "2026-10-05T21:45:33Z",
+      "closed_at": "2026-10-05T21:45:33Z",
+      "html_url": "https://github.com/jayanez/agent-braid/issues/208"
+    },
+    {
+      "number": 207,
+      "title": "[SPEC-021 T003] C1 Implement unified verified policy pipeline and separate versioned contracts. - Trace: REQ-001 / SC-...",
+      "state": "closed",
+      "updated_at": "2026-10-05T21:45:30Z",
+      "closed_at": "2026-10-05T21:45:30Z",
+      "html_url": "https://github.com/jayanez/agent-braid/issues/207"
+    },
+    {
+      "number": 206,
+      "title": "[SPEC-021 T002] G1 Pin host versions, common protocol/schema, grant policy, numeric budgets and optional SDK/license c...",
+      "state": "closed",
+      "updated_at": "2026-10-05T21:45:27Z",
+      "closed_at": "2026-10-05T21:45:27Z",
+      "html_url": "https://github.com/jayanez/agent-braid/issues/206"
+    },
+    {
+      "number": 205,
+      "title": "[SPEC-021 T001] G0 Record exact-candidate founder scope and ADR 0020 decision before expanded implementation. - Trace:...",
+      "state": "closed",
+      "updated_at": "2026-10-05T21:45:24Z",
+      "closed_at": "2026-10-05T21:45:24Z",
+      "html_url": "https://github.com/jayanez/agent-braid/issues/205"
+    },
+    {
+      "number": 204,
+      "title": "[SPEC-021] SPEC-021: Complete bounded M4 alpha runtime",
+      "state": "open",
+      "updated_at": "2026-10-05T21:45:21Z",
+      "closed_at": null,
+      "html_url": "https://github.com/jayanez/agent-braid/issues/204"
+    },
+    {
+      "number": 198,
+      "title": "[SPEC-020 T007] Obtain independent Luna review, fix confirmed findings, freeze candidate and prepare founder decision...",
+      "state": "closed",
+      "updated_at": "2026-10-03T22:23:52Z",
+      "closed_at": "2026-10-03T22:23:52Z",
+      "html_url": "https://github.com/jayanez/agent-braid/issues/198"
+    },
+    {
+      "number": 197,
+      "title": "[SPEC-020 T006] Run local quick/PR and separate fresh reproduction; capture actual commands, outcomes, hashes and limi...",
+      "state": "closed",
+      "updated_at": "2026-10-03T22:23:49Z",
+      "closed_at": "2026-10-03T22:23:49Z",
+      "html_url": "https://github.com/jayanez/agent-braid/issues/197"
+    },
+    {
+      "number": 196,
+      "title": "[SPEC-020 T005] Add adversarial unittest and subprocess crash cases; register proportional validation coverage",
+      "state": "closed",
+      "updated_at": "2026-10-03T22:23:46Z",
+      "closed_at": "2026-10-03T22:23:46Z",
+      "html_url": "https://github.com/jayanez/agent-braid/issues/196"
+    },
+    {
+      "number": 195,
+      "title": "[SPEC-020 T004] Add read-only verification, CLI and isolated versioned runtime schemas; preserve existing analyzer APIs",
+      "state": "closed",
+      "updated_at": "2026-10-03T22:23:43Z",
+      "closed_at": "2026-10-03T22:23:43Z",
+      "html_url": "https://github.com/jayanez/agent-braid/issues/195"
+    },
+    {
+      "number": 194,
+      "title": "[SPEC-020 T003] Implement durable serial checkpoints, coordinator lock, crash reconciliation, abort and bounded failures",
+      "state": "closed",
+      "updated_at": "2026-10-03T22:23:40Z",
+      "closed_at": "2026-10-03T22:23:40Z",
+      "html_url": "https://github.com/jayanez/agent-braid/issues/194"
+    },
+    {
+      "number": 193,
+      "title": "[SPEC-020 T002] Implement bounded input preparation and digest-bound local authorization in agent_braid/git_runtime.py",
+      "state": "closed",
+      "updated_at": "2026-10-03T22:23:37Z",
+      "closed_at": "2026-10-03T22:23:37Z",
+      "html_url": "https://github.com/jayanez/agent-braid/issues/193"
+    },
+    {
+      "number": 192,
+      "title": "[SPEC-020 T001] Draft SPEC-020 and ADR 0019 with authorization, effects, ownership, serial execution and recovery boun...",
+      "state": "closed",
+      "updated_at": "2026-10-03T22:23:34Z",
+      "closed_at": "2026-10-03T22:23:34Z",
+      "html_url": "https://github.com/jayanez/agent-braid/issues/192"
+    },
+    {
+      "number": 191,
+      "title": "[SPEC-020] SPEC-020: Bounded local Git runtime",
+      "state": "closed",
+      "updated_at": "2026-10-03T22:23:31Z",
+      "closed_at": "2026-10-03T22:23:31Z",
+      "html_url": "https://github.com/jayanez/agent-braid/issues/191"
+    }
+  ],
+  "source_hashes": {
+    "CONSTITUTION.md": "ff7196976a1736a639947c2ab26e8da157fef23c89ba9881312f2a36459964eb",
+    "GOVERNANCE.md": "c8eda331d97c42e54be4730ef906dfaad9ae2814e36704302f97afceff037d82",
+    "ROADMAP.md": "15750cb3f00fd7bb6805be117d39942e283f3edd133d81a9348a858dd443b827",
+    "docs/development/SPEC_KIT.md": "f2bd7cbe6ea2125c1745596baf0d884e774b7875d125a8c7c1549fda9ef927f3",
+    "docs/development/VALIDATION_PROFILES.md": "9744c6fbc610cb4e362d7b66e419943f6d3719c8f4b85f9736b09c806e393564",
+    "docs/development/GITHUB_TRACKING.md": "ec4086f5b66fc5aaf082dd7d790bbbd3473d61b654c6dfb05a8471f4d91faf09",
+    "docs/development/github-tracking.json": "20d5e64e54dcef6d81b350934d48da45e2e2507b94733cfce99e3fce6c9ea4e8",
+    "specs/021-m4-alpha-runtime/g4-decision.json": "ac3f4a6ae43097d6dc4c3abf9aba3bd09e8076206c036bfa466e6a063bd91a7e",
+    "specs/022-m4-utility-followup/tasks.md": "c28e838031ec9bc5d19dbddeb64242eebf7445b19e237e870857e00d47f9a8f7",
+    "specs/022-m4-utility-followup/measurement-protocol.md": "b0d7f0253599a82ef3df4da8e25d268ed19e467c1ec202389e267f6f15eec61e",
+    "specs/022-m4-utility-followup/technical-review-packet.md": "6e5a2bd790fb789926007e11f33af40df2ed494d3e8464b13f114523120b282b",
+    "specs/022-m4-utility-followup/stable-harness-review.md": "bf8802a836784a057296bdd0770ea8ecec250535e680888462733d69b1c34217",
+    "specs/022-m4-utility-followup/cost-diagnosis.json": "8ace1f15917dfd48b892ef3eef3030a2aa88a43b46f271656e98d99aca8b32df",
+    "specs/022-m4-utility-followup/protocol-review-3777e578.json": "1d6065eca4f6959570163ce8a3a25ac94ca34b2d7425009167ef3e9f4673e783",
+    "specs/027-runtime-refinement-contracts/tasks.md": "afdc143a10931cafbed11bf2c5e687d46ecf7066d085c085a74971be8d7e240c",
+    "specs/027-runtime-refinement-contracts/decision-packets.md": "c40ae23ad1e5f0ceb39415edaef011be4a52902009582328debfbc8a3cbb23b9"
+  },
+  "tracking_audit": {
+    "read_only": true,
+    "scope": "full",
+    "full_plan_sha256": "bd9c7c12986a6d835f0b8d6b60f9d614f4bc06101fcfe86217f2503afc3beb2d",
+    "total_operations": 70,
+    "m4_operations": [
+      {
+        "action": "set_state",
+        "key": "SPEC-022/T001",
+        "from": "open",
+        "to": "closed"
+      },
+      {
+        "action": "update_title",
+        "key": "SPEC-022/T002",
+        "from": "[SPEC-022 T002] Implement reconciled phase accounting and diagnostic output. Dependencies: T001. Targets: scripts/meas...",
+        "to": "[SPEC-022 T002] Implement reconciled phase accounting and diagnostic output. Dependencies: T001. Targets: agent_braid/..."
+      },
+      {
+        "action": "set_state",
+        "key": "SPEC-022/T002",
+        "from": "open",
+        "to": "closed"
+      },
+      {
+        "action": "update_task_text",
+        "key": "SPEC-022/T002"
+      },
+      {
+        "action": "set_state",
+        "key": "SPEC-022/T003",
+        "from": "open",
+        "to": "closed"
+      },
+      {
+        "action": "update_title",
+        "key": "SPEC-022/T004",
+        "from": "[SPEC-022 T004] Implement the immutable workload manifest and complete paired runner. Dependencies: T003. Targets: scr...",
+        "to": "[SPEC-022 T004] Implement the immutable workload manifest and complete paired runner. Dependencies: T003. Targets: age..."
+      },
+      {
+        "action": "set_state",
+        "key": "SPEC-022/T004",
+        "from": "open",
+        "to": "closed"
+      },
+      {
+        "action": "update_task_text",
+        "key": "SPEC-022/T004"
+      },
+      {
+        "action": "set_state",
+        "key": "SPEC-027/T001",
+        "from": "open",
+        "to": "closed"
+      },
+      {
+        "action": "set_state",
+        "key": "SPEC-027/T002",
+        "from": "open",
+        "to": "closed"
+      },
+      {
+        "action": "set_state",
+        "key": "SPEC-027/T003",
+        "from": "open",
+        "to": "closed"
+      },
+      {
+        "action": "set_state",
+        "key": "SPEC-027/T004",
+        "from": "open",
+        "to": "closed"
+      },
+      {
+        "action": "set_state",
+        "key": "SPEC-027/T005",
+        "from": "open",
+        "to": "closed"
+      },
+      {
+        "action": "set_state",
+        "key": "SPEC-027/T006",
+        "from": "open",
+        "to": "closed"
+      }
+    ],
+    "out_of_scope_operation_count": 56,
+    "remote_apply_executed": false,
+    "full_digest_is_not_m4_only_authorization": true
+  },
+  "current_completed_source_tasks": [
+    "SPEC-022/T001",
+    "SPEC-022/T002",
+    "SPEC-022/T003",
+    "SPEC-022/T004",
+    "SPEC-027/T001",
+    "SPEC-027/T002",
+    "SPEC-027/T003",
+    "SPEC-027/T004",
+    "SPEC-027/T005",
+    "SPEC-027/T006"
+  ],
+  "current_pending_source_tasks": [
+    "SPEC-022/T005",
+    "SPEC-022/T006",
+    "SPEC-027/T007"
+  ],
+  "limits": [
+    "Planning inventory only; no milestone acceptance, registered capture, expanded execution or new founder decision.",
+    "The private Project membership and custom status were not inspected.",
+    "All existing accepted evidence retains its historical candidate and scope."
+  ]
+}

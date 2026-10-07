@@ -176,6 +176,10 @@
     "037-forecast-advisory-integration": {
       "milestone": "FC.1 — Forecast-guided parallelism experiment",
       "state": "open"
+    },
+    "038-m4-real-workload-closure": {
+      "milestone": "M4 — Agent Braid runtime",
+      "state": "open"
     }
   },
   "task_state_overrides": {
@@ -203,7 +207,8 @@
     "SPEC-034",
     "SPEC-035",
     "SPEC-036",
-    "SPEC-037"
+    "SPEC-037",
+    "SPEC-038"
   ],
   "milestone_numbers": {
     "M0 — Operational foundations": 1,
