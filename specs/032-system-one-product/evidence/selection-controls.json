@@ -1,0 +1,109 @@
+{
+  "cases": [
+    {
+      "case": "schema-only",
+      "outcome": "passed",
+      "required": {
+        "tasks": [
+          "T001",
+          "T004"
+        ],
+        "upstream": [
+          "SPEC-028/T008"
+        ]
+      },
+      "selected": [
+        "schema"
+      ]
+    },
+    {
+      "case": "hooks-only",
+      "outcome": "passed",
+      "required": {
+        "tasks": [
+          "T001",
+          "T007"
+        ],
+        "upstream": [
+          "SPEC-028/T008"
+        ]
+      },
+      "selected": [
+        "hooks"
+      ]
+    },
+    {
+      "case": "deferred-export-reference-lifecycle",
+      "outcome": "passed",
+      "required": {
+        "tasks": [
+          "T001",
+          "T006"
+        ],
+        "upstream": [
+          "SPEC-028/T008",
+          "SPEC-030/T008"
+        ]
+      },
+      "selected": [
+        "lifecycle"
+      ]
+    },
+    {
+      "case": "all-deferred",
+      "outcome": "passed",
+      "required": {
+        "tasks": [
+          "T001"
+        ],
+        "upstream": []
+      },
+      "selected": []
+    },
+    {
+      "case": "selected-deterministic-cut",
+      "outcome": "passed",
+      "required": {
+        "tasks": [
+          "T001",
+          "T003",
+          "T004",
+          "T007"
+        ],
+        "upstream": [
+          "SPEC-028/T008"
+        ]
+      },
+      "selected": [
+        "hooks",
+        "router",
+        "schema"
+      ]
+    },
+    {
+      "case": "catalogue-without-router",
+      "outcome": "passed",
+      "required": {
+        "tasks": [
+          "T001",
+          "T005"
+        ],
+        "upstream": [
+          "SPEC-028/T008",
+          "SPEC-029/T009"
+        ]
+      },
+      "selected": [
+        "catalogue"
+      ]
+    }
+  ],
+  "executionAuthorization": false,
+  "extraControls": [
+    "learned-router requires model gate",
+    "learned-catalogue requires data and model gates"
+  ],
+  "format": "selected-product-planning-controls-v1",
+  "humanReview": "pending",
+  "limits": "Reference dependency closures transcribed from SPEC-032 tasks; no accepted implementation, trained model, empirical evidence, human acceptance or promotion inferred. Reference lifecycle may omit export/router but still requires its served model gate."
+}

@@ -22,7 +22,7 @@
   ],
   "assumptions": "Trusted local context and existing deterministic verifiers; no available workload corpus, training budget or device coverage assumed.",
   "authority_snapshot": {
-    "commit": "0e17c4d9b119837f4d618cb9842dbe7d2e5d5772",
+    "commit": "a5eaa04939eabaa654d54654e2ab4ea68d3a224b",
     "hashes": {
       "ARCHITECTURE.md": "e26135a1037c232ff953710e5de52abef8cf1cad47a8822fe63a565bc9ad9555",
       "CONSTITUTION.md": "ff7196976a1736a639947c2ab26e8da157fef23c89ba9881312f2a36459964eb",
@@ -92,7 +92,7 @@
   "compatibility": "Additive opt-in capability; Python core keeps zero dependencies. SPEC-019, SPEC-021 G4 NO-GO and historical evidence remain unchanged.",
   "domain": "Bounded advisory typed decisions in separately registered Agent Braid capabilities; existing semantic domains unchanged.",
   "evidence_snapshot": {
-    "commit": "0e17c4d9b119837f4d618cb9842dbe7d2e5d5772",
+    "commit": "a5eaa04939eabaa654d54654e2ab4ea68d3a224b",
     "mode": "historical"
   },
   "execution_contract": "Planning only; future advice executionAuthorization false; no operator grant, runtime scope or public contract changes.",

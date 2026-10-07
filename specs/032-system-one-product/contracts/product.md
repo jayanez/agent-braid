@@ -1,7 +1,7 @@
 # Deterministic product subset contract v1
 
-Status: proposed technical contract for exact-byte Luna review; no implementation
-or acceptance evidence. This proposal selects declared-metadata routing, schema compilation and data-only
+Status: technically reviewed contract with selected implementation under validation;
+no human acceptance or empirical utility evidence. This proposal selects declared-metadata routing, schema compilation and data-only
 hooks/offline packaging from SPEC-032's independent branches. It uses SPEC-028's
 [stdlib profile](../../028-system-one-core/contracts/stdlib-v1.md) without changing
 existing decision versions, identities, manifests, strict abstention or authority.
@@ -56,6 +56,8 @@ one scalar type plus null and only when both occur in the enum.
 Traverse object property names in Unicode code-point order, preserving enum and
 ordinal array order. Emit canonical escaped JSON instance pointers (`~` -> `~0`,
 `/` -> `~1`) and original schema pointers, including the referenced target pointer.
+For expansion without a reference, schemaPointer is the actual leaf node's canonical document pointer, equal to resolvedSchemaPointer. On entering the first $ref during an instance-path expansion, capture that reference node's document pointer as the original source. Preserve this captured schemaPointer through chained references and every descendant emitted from a referenced object, including descendants reached through further references. resolvedSchemaPointer always names the final actual leaf node in the supplied document. The capture ends when that referenced subtree's expansion returns; a sibling expansion establishes its own origin. Never synthesize a document pointer by appending property segments to a reference node. instancePointer follows the emitted instance path and, with schemaPointer, binds each question ID; resolving a reference never changes the instance path.
+
 A question ID is the full 64-character lowercase SHA-256 hex digest of canonical
 `{"instancePointer": ..., "schemaPointer": ...}`. Enum/score option IDs are the
 full SHA-256 hex digest of canonical `{"type": <scalar-kind>, "value": ...}`;
@@ -213,3 +215,6 @@ text), malformed/extra text fields, unavailable installed module, forged/stale
 manifest/registry, deep mutation, deadline/cancellation and zero import/network/model/
 process dispatch. Fresh wheel checks include installed router discovery parity.
 Learned routing and real-language validation remain separate SPEC-029/030/033 gates.
+
+Exact public signatures, refusal envelopes, cancellation/publication, metadata
+registry and observation outcomes are fixed by [API details](api-details.md).

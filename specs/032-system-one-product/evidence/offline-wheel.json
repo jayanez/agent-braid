@@ -1,0 +1,51 @@
+{
+  "buildCommand": "<isolated-build-env>/bin/python -m pip wheel --no-index --no-deps --no-build-isolation --wheel-dir <owned-wheel-directory> <git-archive-candidate>",
+  "buildTooling": {
+    "isolated": true,
+    "setuptools": "68.2.2",
+    "wheel": "0.45.1"
+  },
+  "cwd": "outside repository",
+  "executionAuthorization": false,
+  "exitCode": 0,
+  "format": "selected-subset-offline-wheel-v1",
+  "humanReview": "pending",
+  "independentReview": {
+    "decision": "GO",
+    "executed": "Archive testzip and all RECORD sizes/hashes; 17 source candidate/archive/installed matches; independently executed smoke with installed Python3.13.11 -I -B from /tmp; actual installed analyzer and stage source pins; Requires-Dist None.",
+    "limits": "Same-host isolated software parity, not external reproduction or empirical/model/human acceptance.",
+    "model": "gpt-6-luna",
+    "sourceCandidate": "4a432b1cac60fb0f85a13c563f4d9387b6869f67"
+  },
+  "inputs": {
+    "agent_braid/_advice_scope.py": "cc1899293ea5f0a27b0bc6dcbfc84c2383dc43dafdcea21fa23d428fa34646af",
+    "agent_braid/_system_one_stage_manifest.py": "91064a168971b7b4035cf670452ea1ea4ffbb0434866ab5f2bbc15db65658b20",
+    "agent_braid/analysis.py": "fadfb6f6d3d6f89002df519bbcc86d839724f243e2c8e52732ef57e555abfe00",
+    "agent_braid/mcp_advice.py": "74b2a62a6e4665e9d3beca9cf9abf7e9e017d6353a670f5b047dbf27c928c1a9",
+    "agent_braid/runtime_scheduler.py": "47bb371c88726793d207a59bb85cb6911d86e00a44694b37934805d9fa2462a9",
+    "agent_braid/structured_exchange.py": "f43079b348c78e9e1a994492fb14754e1771533771e009b1186ff54bb3efa396",
+    "agent_braid/system_one.py": "8a52a047bc72ba4f1099df60c1051178fbcb7735ee4d6e615d9b8052bbb31f44",
+    "agent_braid/system_one_advisors.py": "9cc017b13c6ba36ded431b19494a2f4991e1090d1aafab546aa20a4852dd3922",
+    "agent_braid/system_one_backends.py": "e3d49bac70ef6904bddefdb1562e1961c98af0c8b7e81655affd94eca169a305",
+    "agent_braid/system_one_cli.py": "f19965e8f8dc4c0d45c2ce728cfb45721b740319bb1fb6c2c865aa5e3defc0c4",
+    "agent_braid/system_one_context.py": "cdda801f1561d508c7fa2c5f5c2d8f926fc9c3bc906b1a16a2b7a8c5bfdff3f0",
+    "agent_braid/system_one_hooks.py": "4fda66beafd10a076931ea5b43ceda68c012a8b9a84475da966f8056bef44417",
+    "agent_braid/system_one_policy.py": "12f09b48fe916f03c17faf18726c15ad862779ab0dcf4fdb81d5a42dc9212f31",
+    "agent_braid/system_one_product_metadata.py": "54e5a9e26804172f2f83c1e68d1722bf8ac344cab8eee8641976fd301532716f",
+    "agent_braid/system_one_router.py": "1a4c0f86667d58290f4f6395481ec3de7a9edc223f04dce80bc3c37e855b16e2",
+    "agent_braid/system_one_schema.py": "995ef38bc3cf9cf71dbd491e09b3ea4091157c382ca3bb8b6ba91095fec88929",
+    "agent_braid/system_one_trace.py": "bc69c1027aa829935979304538a8fd63dcd1be6af0757a86fc3fb9afe0509b50"
+  },
+  "installCommand": "<fresh-env>/bin/python -m pip install --no-index --no-deps <exact-wheel>",
+  "limits": "Fresh isolated same-host software installation/source parity only; no external reproduction, model availability, measured utility, scientific/human/founder acceptance or execution authority. No index, dependencies or network resolution.",
+  "pathResolution": "Placeholders represent absolute owned paths; actual smoke ran from /tmp. Committed evidence copies have byte-identical recorded source/bindings.",
+  "platform": "macOS-26.6.2-arm64-arm-64bit-Mach-O",
+  "python": "3.13.11",
+  "smokeCommand": "<fresh-env>/bin/python -I <owned-smoke-source.py> <owned-source-bindings.json> <candidate>/specs/028-system-one-core/evidence/offline-request.json <candidate>/examples/analysis/file-edits.json",
+  "smokeSourceSha256": "31b2f78a90a0b2b54c47ed53afef7f8e622127fcc4331e78126edf9ee5f9fe65",
+  "sourceCandidate": "4a432b1cac60fb0f85a13c563f4d9387b6869f67",
+  "stdout": "{\"compiler\": \"passed\", \"declaredRouter\": \"passed\", \"executionAuthorization\": false, \"humanReview\": \"pending\", \"legacyAuthority\": \"unchanged\", \"observationPrivacyOverflow\": \"passed\", \"offlineInstalledSelectedSubset\": \"passed\", \"optionalModelPackagesLoaded\": false, \"pureStageValidation\": \"passed\", \"python\": \"3.13.11\", \"sourceModulesCompared\": 17, \"sourceOrigin\": \"fresh-isolated-site-packages\", \"stageRegistrySourcePins\": \"passed\", \"stageTelemetryPrivacy\": \"passed\", \"strictAbstention\": \"passed\", \"syntheticDiagnostic\": \"passed\", \"syntheticWrapper\": \"passed\"}\n",
+  "wheelBytes": 145455,
+  "wheelFile": "agent_braid-0.1.0a1-py3-none-any.whl",
+  "wheelSha256": "82974b6a5c84b6f6f223e64866cbaecf2d140333d03544f6943631d02be355e7"
+}

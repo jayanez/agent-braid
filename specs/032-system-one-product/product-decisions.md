@@ -1,10 +1,10 @@
 # SPEC-032 deterministic product subset
 
-Status: feature-local proposal awaiting byte-bound Luna review. This document
-selects branches for a future implementation, not task completion, human review,
-utility acceptance or capability promotion. The exact boundary is the
-[product contract](contracts/product.md). SPEC-028 architecture review does not
-complete its still-required T008 PR profile and fresh installed-wheel checks.
+Status: selected deterministic branches implemented and technically reviewed.
+Task evidence is scoped engineering evidence, not human review, utility acceptance
+or capability promotion. The exact boundary is the
+[product contract](contracts/product.md). SPEC-028 technical T008 completed both full profiles and fresh installed-wheel
+checks in merged PR #334; model/data/human acceptance remains separate.
 
 | Extension | Disposition | Supported domain / envelope | Prerequisites and reconsideration |
 |---|---|---|---|

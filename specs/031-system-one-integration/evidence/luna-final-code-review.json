@@ -1,0 +1,43 @@
+{
+  "confirmedFindingsClosed": [
+    "Valid bound requests cannot carry fabricated input refusals; only fixed packet/frame-budget observations remain",
+    "Falsey accepted cancellation token preserved",
+    "Cancelled waiters immediately release queue capacity",
+    "Overload publication outside queue lock; internal failures suppress malformed outcomes",
+    "MCP session-wide non-reuse enforced with 1024 typed-ID bound"
+  ],
+  "decision": "GO",
+  "executionAuthorization": false,
+  "executionBoundary": "Reviewer source/policy checks and specific issue reproductions are separate from the coordinator-supported-interpreter suite. No broad profile was independently run by reviewers. Earlier worker log had no interpreter stamp; supported fresh focal log is explicit.",
+  "focusedCandidateControls": {
+    "command": "<isolated-python-3.13>/bin/python -m unittest tests.test_system_one_context tests.test_system_one_advisors tests.test_system_one_hooks tests.test_system_one_schema tests.test_system_one_router tests.test_system_one_mcp tests.test_system_one_runtime_boundary tests.test_system_one_trace -v",
+    "exitCode": 0,
+    "logSha256": "7f52046e82adc5b0f1285682cefd5db6419bdb41da99d13b90c91f89df4a1819",
+    "python": "3.13.11",
+    "tests": 85
+  },
+  "format": "selected-integration-code-review-v1",
+  "inputs": {
+    "agent_braid/_advice_scope.py": "cc1899293ea5f0a27b0bc6dcbfc84c2383dc43dafdcea21fa23d428fa34646af",
+    "agent_braid/_system_one_stage_manifest.py": "91064a168971b7b4035cf670452ea1ea4ffbb0434866ab5f2bbc15db65658b20",
+    "agent_braid/analysis.py": "fadfb6f6d3d6f89002df519bbcc86d839724f243e2c8e52732ef57e555abfe00",
+    "agent_braid/mcp_advice.py": "74b2a62a6e4665e9d3beca9cf9abf7e9e017d6353a670f5b047dbf27c928c1a9",
+    "agent_braid/runtime_scheduler.py": "47bb371c88726793d207a59bb85cb6911d86e00a44694b37934805d9fa2462a9",
+    "agent_braid/structured_exchange.py": "f43079b348c78e9e1a994492fb14754e1771533771e009b1186ff54bb3efa396",
+    "agent_braid/system_one.py": "8a52a047bc72ba4f1099df60c1051178fbcb7735ee4d6e615d9b8052bbb31f44",
+    "agent_braid/system_one_advisors.py": "9cc017b13c6ba36ded431b19494a2f4991e1090d1aafab546aa20a4852dd3922",
+    "agent_braid/system_one_backends.py": "e3d49bac70ef6904bddefdb1562e1961c98af0c8b7e81655affd94eca169a305",
+    "agent_braid/system_one_cli.py": "f19965e8f8dc4c0d45c2ce728cfb45721b740319bb1fb6c2c865aa5e3defc0c4",
+    "agent_braid/system_one_context.py": "cdda801f1561d508c7fa2c5f5c2d8f926fc9c3bc906b1a16a2b7a8c5bfdff3f0",
+    "agent_braid/system_one_hooks.py": "4fda66beafd10a076931ea5b43ceda68c012a8b9a84475da966f8056bef44417",
+    "agent_braid/system_one_policy.py": "12f09b48fe916f03c17faf18726c15ad862779ab0dcf4fdb81d5a42dc9212f31",
+    "agent_braid/system_one_product_metadata.py": "54e5a9e26804172f2f83c1e68d1722bf8ac344cab8eee8641976fd301532716f",
+    "agent_braid/system_one_router.py": "1a4c0f86667d58290f4f6395481ec3de7a9edc223f04dce80bc3c37e855b16e2",
+    "agent_braid/system_one_schema.py": "995ef38bc3cf9cf71dbd491e09b3ea4091157c382ca3bb8b6ba91095fec88929",
+    "agent_braid/system_one_trace.py": "bc69c1027aa829935979304538a8fd63dcd1be6af0757a86fc3fb9afe0509b50"
+  },
+  "limits": "Technical code review only; no human approval, empirical utility or generic protocol conformance.",
+  "reviewScope": "031 pure/advisory/scopes/MCP/scheduler/trace",
+  "reviewerModel": "gpt-6-luna",
+  "sourceCandidate": "4a432b1cac60fb0f85a13c563f4d9387b6869f67"
+}

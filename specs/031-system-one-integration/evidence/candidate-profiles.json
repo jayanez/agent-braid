@@ -1,0 +1,33 @@
+{
+  "capturedAt": "2026-10-06T23:56:06.516668+00:00",
+  "executionAuthorization": false,
+  "format": "selected-subset-profiles-v1",
+  "humanReview": "pending",
+  "pr": {
+    "base": "a5eaa04939eabaa654d54654e2ab4ea68d3a224b",
+    "command": "<isolated-python-3.13>/bin/python scripts/validate_change.py --base develop --profile pr",
+    "effectiveProfile": "pr",
+    "exitCode": 0,
+    "limits": "Selected executable engineering validation; four documented boundary skips. No external reproduction, real utility, proof/scientific/human/model/founder acceptance.",
+    "metadataCandidate": "2e9e7001ba660bf74e437dec657bcd85b6fd0057",
+    "requestedProfile": "pr",
+    "seconds": 831.202,
+    "sha256": "85e2a15594a7e4361a6f32ad6d8f7464a62b9fcd55ac9bcc60bec428e21c9f6c",
+    "skipped": 4,
+    "sourceCandidate": "4a432b1cac60fb0f85a13c563f4d9387b6869f67",
+    "tests": 643
+  },
+  "quick": {
+    "base": "a5eaa04939eabaa654d54654e2ab4ea68d3a224b",
+    "command": "<isolated-python-3.13>/bin/python scripts/validate_change.py --base develop --profile quick",
+    "effectiveProfile": "sensitive",
+    "exitCode": 0,
+    "limits": "Full selected engineering checks. Four documented boundary skips; no human/empirical/model/proof acceptance.",
+    "requestedProfile": "quick",
+    "seconds": 828.151,
+    "sha256": "9c10033e7d4a3659a97524219dcf47290a7b44c990e4432af4bfa538490f8ccf",
+    "skipped": 4,
+    "sourceCandidate": "4a432b1cac60fb0f85a13c563f4d9387b6869f67",
+    "tests": 643
+  }
+}

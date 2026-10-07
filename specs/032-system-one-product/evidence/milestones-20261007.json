@@ -1,0 +1,145 @@
+{
+  "capturedAt": "2026-10-06T22:54:08.413899+00:00",
+  "executionAuthorization": false,
+  "format": "read-only-milestone-inventory-v1",
+  "limits": "Read-only GitHub tracking snapshot. Issue and milestone closure do not establish scientific acceptance or human/founder approval. No tracking mutations executed.",
+  "milestones": [
+    {
+      "closed_issues": 14,
+      "html_url": "https://github.com/jayanez/agent-braid/milestone/1",
+      "number": 1,
+      "open_issues": 0,
+      "state": "closed",
+      "title": "M0 \u2014 Operational foundations"
+    },
+    {
+      "closed_issues": 14,
+      "html_url": "https://github.com/jayanez/agent-braid/milestone/2",
+      "number": 2,
+      "open_issues": 2,
+      "state": "closed",
+      "title": "M0.5 \u2014 Open strategy and preview preparation"
+    },
+    {
+      "closed_issues": 33,
+      "html_url": "https://github.com/jayanez/agent-braid/milestone/3",
+      "number": 3,
+      "open_issues": 0,
+      "state": "closed",
+      "title": "M1 \u2014 Observable interaction analyzer"
+    },
+    {
+      "closed_issues": 42,
+      "html_url": "https://github.com/jayanez/agent-braid/milestone/4",
+      "number": 4,
+      "open_issues": 0,
+      "state": "closed",
+      "title": "M2 \u2014 Confluence lab and scheduler"
+    },
+    {
+      "closed_issues": 7,
+      "html_url": "https://github.com/jayanez/agent-braid/milestone/5",
+      "number": 5,
+      "open_issues": 0,
+      "state": "closed",
+      "title": "M3 \u2014 Braid semantics"
+    },
+    {
+      "closed_issues": 22,
+      "html_url": "https://github.com/jayanez/agent-braid/milestone/6",
+      "number": 6,
+      "open_issues": 16,
+      "state": "open",
+      "title": "M4 \u2014 Agent Braid runtime"
+    },
+    {
+      "closed_issues": 8,
+      "html_url": "https://github.com/jayanez/agent-braid/milestone/7",
+      "number": 7,
+      "open_issues": 2,
+      "state": "open",
+      "title": "PUB.1 \u2014 Public research preview"
+    },
+    {
+      "closed_issues": 24,
+      "html_url": "https://github.com/jayanez/agent-braid/milestone/8",
+      "number": 8,
+      "open_issues": 11,
+      "state": "open",
+      "title": "GOV.1 \u2014 Governance and adoption"
+    },
+    {
+      "closed_issues": 2,
+      "html_url": "https://github.com/jayanez/agent-braid/milestone/9",
+      "number": 9,
+      "open_issues": 9,
+      "state": "open",
+      "title": "M3.5 \u2014 Native proposal predictor"
+    },
+    {
+      "closed_issues": 0,
+      "html_url": "https://github.com/jayanez/agent-braid/milestone/10",
+      "number": 10,
+      "open_issues": 9,
+      "state": "open",
+      "title": "ADP.1 \u2014 Recorded-trace adapters"
+    },
+    {
+      "closed_issues": 0,
+      "html_url": "https://github.com/jayanez/agent-braid/milestone/11",
+      "number": 11,
+      "open_issues": 9,
+      "state": "open",
+      "title": "LAB.1 \u2014 Effectful workload lab"
+    },
+    {
+      "closed_issues": 0,
+      "html_url": "https://github.com/jayanez/agent-braid/milestone/12",
+      "number": 12,
+      "open_issues": 8,
+      "state": "open",
+      "title": "RES.1 \u2014 Formal interaction research"
+    },
+    {
+      "closed_issues": 0,
+      "html_url": "https://github.com/jayanez/agent-braid/milestone/13",
+      "number": 13,
+      "open_issues": 9,
+      "state": "open",
+      "title": "S1.0 \u2014 Decision contracts"
+    },
+    {
+      "closed_issues": 0,
+      "html_url": "https://github.com/jayanez/agent-braid/milestone/14",
+      "number": 14,
+      "open_issues": 10,
+      "state": "open",
+      "title": "S1.1 \u2014 Decision evaluation"
+    },
+    {
+      "closed_issues": 0,
+      "html_url": "https://github.com/jayanez/agent-braid/milestone/15",
+      "number": 15,
+      "open_issues": 9,
+      "state": "open",
+      "title": "S1.2 \u2014 Native decision model"
+    },
+    {
+      "closed_issues": 0,
+      "html_url": "https://github.com/jayanez/agent-braid/milestone/16",
+      "number": 16,
+      "open_issues": 9,
+      "state": "open",
+      "title": "S1.3 \u2014 Advisory integration"
+    },
+    {
+      "closed_issues": 0,
+      "html_url": "https://github.com/jayanez/agent-braid/milestone/17",
+      "number": 17,
+      "open_issues": 18,
+      "state": "open",
+      "title": "S1.4 \u2014 Product capabilities and promotion"
+    }
+  ],
+  "source": "https://api.github.com/repos/jayanez/agent-braid/milestones?state=all&per_page=100"
+}
