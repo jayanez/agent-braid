@@ -19,7 +19,7 @@
     24,
     25
   ],
-  "assumptions": "The SPEC-013 public commits are candidate source provenance only. New source rights and M4 protocol/source approval are pending. Their static source shape is within the existing caps, but current runtime preparation admission remains unverified. Stable harness review, capture authorization, and whole-M4 founder decision are pending. No source code, tests, probes, providers, or actual workload were executed during specification preparation.",
+  "assumptions": "Exact source rights and protocol approved by nine explicit owner decisions on 2026-10-07/08. Static shape within current caps; runtime preparation admission pending. Narrow harness implementation/evaluation preparation authorized only; stable harness/manifest review, capture authorization and whole-M4 acceptance remain pending. Historical authority/evidence snapshots preserve original proposal boundaries.",
   "authority_snapshot": {
     "commit": "15e49bc8647898e37b3ffd11a6d1905eaba5b148",
     "hashes": {
@@ -88,13 +88,13 @@
     },
     "mode": "historical"
   },
-  "compatibility": "Documentation-only successor research protocol. No runtime, public API/schema, grant, effect, verifier, host, promotion, or execution-contract change. Existing SPEC-020 fixed-patch limits remain binding. SPEC-021 historical G4 NO-GO, SPEC-022 synthetic evidence, M4-open status, and M3/M3.5 gates remain unchanged.",
-  "domain": "One prospective, newly permissioned actual Agent Braid repository task frame under unchanged SPEC-020. The exact SPEC-013 M2 commits are statically eligible source leads but are not runtime-admitted or rights-approved. A finite task frame does not support population-level claims.",
+  "compatibility": "Bounded current-runtime harness implementation and preparation; no public API/schema, grants, effects, verifier, host, promotion or runtime contract changes. Historical G4NO-GO and other milestones unchanged.",
+  "domain": "Exact owner-permissioned PR137/138 frozen source frame from common base; current runtime admission pending. One finite task frame, no population claims.",
   "evidence_snapshot": {
     "commit": "15e49bc8647898e37b3ffd11a6d1905eaba5b148",
     "mode": "historical"
   },
-  "execution_contract": "This feature authorizes no execution. Any future C09 activity requires exact source/protocol review, a separately implemented and independently reviewed stable harness/manifest, and distinct exact capture authorization. Only existing authorized-serial-index-patch-v1 fixed patches, grants, private destinations, and verifier are in scope. No repository code/tests/hooks/network/provider calls/ref promotion/installation/new host.",
+  "execution_contract": "Implementation/static admission/evaluation preparation approved; registered capture requires separately reviewed stable harness/manifest and exact human authorization. Existing fixed patches, grants, private destinations and verifier only; no source code/tests/hooks/network/providers/ref promotion.",
   "human_review": "pending",
   "hypotheses": "For one permissioned actual repository task, the unchanged local runtime may provide useful verified/recoverable outcomes relative to its complete cost. Negative, null, inconclusive, and infeasible outcomes are valid; no positive utility is presumed.",
   "observation_contract": "Existing tracked-tree-v1 and independent SPEC-021 verifier only. Compare actual SPEC-021 policy coordinator serial and parallel modes with 4 unscored warm-up pairs and 6 measured pairs across AB/BA operation orders. Each treatment uses full total-wall timing through consumer verification, report serialization and cleanup with disjoint phases/residual. Report fresh-process verification separately. Historical synthetic/M2 evidence is not M4 actual-workload evidence.",
@@ -231,6 +231,6 @@
     }
   ],
   "scientific_limits": "One finite task frame cannot establish population utility, general runtime safety, confluence, causality, or Yang-Baxter properties. Static Git metadata does not establish source rights, runtime admission, or verified results. Negative, null, inconclusive, and infeasible outcomes are valid.",
-  "scope": "Prepare a bounded actual-workload protocol and source-rights review packet for a single real Agent Braid repository task using only the existing SPEC-020 fixed-patch runtime contract; no implementation or capture is authorized here.",
+  "scope": "Implement and prepare the approved bounded SPEC038 real-workload harness using unchanged SPEC020/021 contracts; no registered capture authorization.",
   "stage": "draft"
 }

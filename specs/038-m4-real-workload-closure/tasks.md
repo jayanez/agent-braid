@@ -1,5 +1,12 @@
 # Tasks
 
+## Development status — 2026-10-08
+
+Exact source rights and protocol are approved for bounded implementation and
+preparation. See [implementation readiness](implementation-readiness.md) for the
+scoped decision and current gates. Earlier proposal descriptions below retain
+their design-time context; stable review, capture and whole-M4 acceptance remain pending.
+
 T002 approval of the exact source/protocol permits bounded C08 implementation
 and evaluation preparation under the user-authorized goal. It does not permit
 registered capture. T004 requires a separately reviewed stable candidate and
@@ -12,7 +19,7 @@ do not change those boundaries.
 
 - [ ] T002 (REQ-001,REQ-002,REQ-003/SC-001,SC-002,SC-003,SC-004,SC-005): Obtain exact protocol/source-rights review.
   Dependencies: T001. Targets: `protocol-review-packet.md; separate exact human decision record`.
-  Verification and planned evidence: Review exact source/rights, task relevance, frame, current limits, denominator, order, costs, refusals, recovery, budgets and stops. An approved decision permits only the bounded C08 harness and evaluation-preparation work; no registered capture. Planned: `evidence/sc-007.json`. Obtained: none.
+  Verification and planned evidence: Review exact source/rights, task relevance, frame, current limits, denominator, order, costs, refusals, recovery, budgets and stops. An approved decision permits only the bounded C08 harness and evaluation-preparation work; no registered capture. Planned: `evidence/sc-007.json`. Obtained: nine written owner decisions, consolidated in the separate local `spec038-exact-source-protocol-decision-20261008.json` receipt; public evidence packaging and dependency admission remain pending.
 
 - [ ] T003 (REQ-002,REQ-003/SC-003,SC-004,SC-005): Implement the narrow harness slice and prepare a candidate manifest.
   Dependencies: approved T002 and confirmed exact source feasibility. Targets: `one narrow runner; focused novel-invariant tests; successor plan.md, tasks.md and quickstart.md; candidate manifest`.
