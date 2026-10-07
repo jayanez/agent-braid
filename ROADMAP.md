@@ -323,3 +323,27 @@ compares Strands Decider and Laya without integrating either project. Five regis
 S1 milestones and 49 pending tasks complement existing tracks; they do not replace
 SPEC-019 or reopen SPEC-021's M4 utility NO-GO. Architecture, data, budgets and
 per-capability acceptance remain explicit review gates.
+
+## FC.1 — Forecast-guided parallelism experiment
+
+The [forecasting program](specs/034-workload-forecast-data/program.md) contains
+SPEC-034–037 in one dedicated milestone: permissioned numeric workload telemetry,
+an optional local Chronos-2 adapter, prospective forecast and complete-cost
+parallelism evaluation, and separate read-only/shadow integration plus exact
+capability promotion/rollback. Four specs and 33 implementation/gate tasks are
+drafts with human review pending; no model or workload experiment has run.
+
+The target is to learn when and where admitted preparation is economically
+worthwhile on Agent Braid's own permissioned workloads. Initial choices retain
+the existing serial/parallel fixed-patch contracts and one reviewed local
+resource profile; distributed placement, new hosts, paid services, arbitrary
+repository-code execution and model fitting are deferred. Chronos-2 is the
+selected zero-shot integration; cheap baselines remain mandatory and an optional
+Toto comparator needs pre-holdout selection and its own approved budget.
+
+Source/rights/yield, artifact/deployment approval, frozen budgets/holdout, actual
+operator authority, complete utility interpretation and operational promotion
+remain distinct gates. Negative, inconclusive and infeasible research outcomes
+are valid. Forecast quality does not establish scheduling benefit or semantics;
+SPEC-019, native System 1 model gates, SPEC-021 G4 NO-GO and M4 open status remain
+unchanged. Milestone creation does not accept any capability or execute its tasks.

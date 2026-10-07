@@ -1,0 +1,54 @@
+{
+  "accessed": "2026-10-07",
+  "agent_braid_base": "25a3d8d984abd23deb414fa815c4a7e5fee4b52e",
+  "context7": {
+    "library_id": "/amazon-science/chronos-forecasting",
+    "queried": true,
+    "scope": "local Chronos-2 inputs, covariates, missingness, quantiles and deployment boundaries"
+  },
+  "sources": [
+    {
+      "kind": "released-package-source",
+      "url": "https://github.com/amazon-science/chronos-forecasting/tree/0aba28e9360b6355d5a919596c90b16c25939f02",
+      "tag": "v2.3.2",
+      "commit": "0aba28e9360b6355d5a919596c90b16c25939f02",
+      "status": "candidate-not-approved"
+    },
+    {
+      "kind": "pipeline-source",
+      "url": "https://github.com/amazon-science/chronos-forecasting/blob/0aba28e9360b6355d5a919596c90b16c25939f02/src/chronos/chronos2/pipeline.py",
+      "observations": [
+        "quantile output axes target/horizon/quantile",
+        "mean-named second output is median"
+      ]
+    },
+    {
+      "kind": "model-identity",
+      "url": "https://huggingface.co/amazon/chronos-2/tree/29ec3766d36d6f73f0696f85560a422f50e8498c",
+      "revision": "29ec3766d36d6f73f0696f85560a422f50e8498c",
+      "model_card_license": "apache-2.0",
+      "status": "candidate-not-approved"
+    },
+    {
+      "kind": "model-config",
+      "url": "https://huggingface.co/amazon/chronos-2/blob/29ec3766d36d6f73f0696f85560a422f50e8498c/config.json",
+      "context_length": 8192,
+      "output_patch_size": 16,
+      "max_output_patches": 64
+    },
+    {
+      "kind": "optional-comparator",
+      "url": "https://github.com/DataDog/toto",
+      "selection": "deferred-until-roster-review",
+      "limits": "Toto 2.0 lacks exogenous-variable/fine-tuning support in inspected README; no adapter or artifact accepted"
+    },
+    {
+      "kind": "deferred-alternative-license",
+      "url": "https://huggingface.co/google/timesfm-3.0-pytorch/blob/main/LICENSE",
+      "selection": "not-integrated",
+      "limits": "Downloaded weights restricted to non-commercial/non-production use"
+    }
+  ],
+  "obtained_acceptance_evidence": [],
+  "limits": "Documentation/source/config metadata inspection only; no weight download, model execution, transitive lock, rights approval, installed parity or workload benefit."
+}

@@ -1,0 +1,625 @@
+{
+  "repository": "jayanez/agent-braid",
+  "scope": "FC.1 planning: one new milestone, four spec parents, 33 task issues and their subissue links only",
+  "milestone": {
+    "number": 18,
+    "title": "FC.1 — Forecast-guided parallelism experiment",
+    "url": "https://github.com/jayanez/agent-braid/milestone/18"
+  },
+  "sourceBranch": "planning/forecast-guided-parallelism",
+  "issues": [
+    {
+      "key": "SPEC-034",
+      "kind": "spec",
+      "parent": null,
+      "number": 335,
+      "globalIssueId": 5736681487,
+      "url": "https://github.com/jayanez/agent-braid/issues/335",
+      "state": "open",
+      "title": "[SPEC-034] SPEC-034: Permissioned workload telemetry and prospective forecast data",
+      "createdThisRun": true,
+      "bodySha256": "8f80d452d4d64919e54189f2948206fd6b50093fa42ea87d3e52cc9da2f1b14e"
+    },
+    {
+      "key": "SPEC-034/T001",
+      "kind": "task",
+      "parent": "SPEC-034",
+      "number": 336,
+      "globalIssueId": 5736681759,
+      "url": "https://github.com/jayanez/agent-braid/issues/336",
+      "state": "open",
+      "title": "[SPEC-034 T001] Review source, privacy, telemetry and local resource boundaries. Dependencies: none. Target files: sou...",
+      "createdThisRun": true,
+      "bodySha256": "4edcc8d2963c8e2e532176f0df50567445e83e189f552225bc9a65677391c533"
+    },
+    {
+      "key": "SPEC-034/T002",
+      "kind": "task",
+      "parent": "SPEC-034",
+      "number": 337,
+      "globalIssueId": 5736682038,
+      "url": "https://github.com/jayanez/agent-braid/issues/337",
+      "state": "open",
+      "title": "[SPEC-034 T002] Implement bounded telemetry records and synthetic negative fixtures. Dependencies: T001 technical boun...",
+      "createdThisRun": true,
+      "bodySha256": "7b6069c454c542d3a7b2338dffae715656a4bdf10102a0db01633d9b2a3840f8"
+    },
+    {
+      "key": "SPEC-034/T003",
+      "kind": "task",
+      "parent": "SPEC-034",
+      "number": 338,
+      "globalIssueId": 5736682315,
+      "url": "https://github.com/jayanez/agent-braid/issues/338",
+      "state": "open",
+      "title": "[SPEC-034 T003] Add permissioned runtime metadata capture hooks. Dependencies: T002; separate source-window/operator a...",
+      "createdThisRun": true,
+      "bodySha256": "d9857cd32f4f58b75e141c68223db1a2d122764514aabdedff197d02de885879"
+    },
+    {
+      "key": "SPEC-034/T004",
+      "kind": "task",
+      "parent": "SPEC-034",
+      "number": 339,
+      "globalIssueId": 5736682631,
+      "url": "https://github.com/jayanez/agent-braid/issues/339",
+      "state": "open",
+      "title": "[SPEC-034 T004] Implement cutoff-aware series compilation and split purging. Dependencies: T002. Target files: agent_b...",
+      "createdThisRun": true,
+      "bodySha256": "87b97d6da510d11ce4866df9bd310c853f44724f886adba55d37af999830a3c9"
+    },
+    {
+      "key": "SPEC-034/T005",
+      "kind": "task",
+      "parent": "SPEC-034",
+      "number": 340,
+      "globalIssueId": 5736682900,
+      "url": "https://github.com/jayanez/agent-braid/issues/340",
+      "state": "open",
+      "title": "[SPEC-034 T005] Implement reviewed local resource eligibility receipts. Dependencies: T001 T002. Target files: agent_b...",
+      "createdThisRun": true,
+      "bodySha256": "4cd0c69046da49710d796c61d4300c7b2f22ae53bbeb72a93e7d8d1d6a439772"
+    },
+    {
+      "key": "SPEC-034/T006",
+      "kind": "task",
+      "parent": "SPEC-034",
+      "number": 341,
+      "globalIssueId": 5736683167,
+      "url": "https://github.com/jayanez/agent-braid/issues/341",
+      "state": "open",
+      "title": "[SPEC-034 T006] Freeze and collect the approved prospective source window. Dependencies: T003 T004 T005; source rights...",
+      "createdThisRun": true,
+      "bodySha256": "bb5e28cfc53bfbd6f626fe27bcbbd9a37cc72b106afa5de0f6c5339db5c37f52"
+    },
+    {
+      "key": "SPEC-034/T007",
+      "kind": "task",
+      "parent": "SPEC-034",
+      "number": 342,
+      "globalIssueId": 5736683443,
+      "url": "https://github.com/jayanez/agent-braid/issues/342",
+      "state": "open",
+      "title": "[SPEC-034 T007] Audit yield and record the experiment data-readiness decision. Dependencies: T006. Target files: specs...",
+      "createdThisRun": true,
+      "bodySha256": "de0a995b58c12502155303554867e7072c10dcf086b8c799e26261764a7498c4"
+    },
+    {
+      "key": "SPEC-034/T008",
+      "kind": "task",
+      "parent": "SPEC-034",
+      "number": 343,
+      "globalIssueId": 5736683688,
+      "url": "https://github.com/jayanez/agent-braid/issues/343",
+      "state": "open",
+      "title": "[SPEC-034 T008] Capture data-contract validation and bounded human review packet. Dependencies: T007. Target files: sp...",
+      "createdThisRun": true,
+      "bodySha256": "749c87365e3df3802d2aa02b72a2cb086fb92e9ccd76c09c2b5f34822e2a7590"
+    },
+    {
+      "key": "SPEC-035",
+      "kind": "spec",
+      "parent": null,
+      "number": 344,
+      "globalIssueId": 5736683958,
+      "url": "https://github.com/jayanez/agent-braid/issues/344",
+      "state": "open",
+      "title": "[SPEC-035] SPEC-035: Optional local Chronos-2 forecast adapter",
+      "createdThisRun": true,
+      "bodySha256": "b3b24747f23189a2c68b27fd180cd7f673ee139d35f3f15856fd9fcfb5526315"
+    },
+    {
+      "key": "SPEC-035/T001",
+      "kind": "task",
+      "parent": "SPEC-035",
+      "number": 345,
+      "globalIssueId": 5736684220,
+      "url": "https://github.com/jayanez/agent-braid/issues/345",
+      "state": "open",
+      "title": "[SPEC-035 T001] Review the Chronos-2 artifact, package closure and CPU envelope. Dependencies: SPEC-034/T001; model/de...",
+      "createdThisRun": true,
+      "bodySha256": "9089da642d86337285e6a949078503548ae136611d920d6eef46a4479b0a4424"
+    },
+    {
+      "key": "SPEC-035/T002",
+      "kind": "task",
+      "parent": "SPEC-035",
+      "number": 346,
+      "globalIssueId": 5736684467,
+      "url": "https://github.com/jayanez/agent-braid/issues/346",
+      "state": "open",
+      "title": "[SPEC-035 T002] Implement the lazy optional adapter interface with stubs. Dependencies: T001 interface review; SPEC-03...",
+      "createdThisRun": true,
+      "bodySha256": "3d362473d6124db5a2418fd37d85a327bbc2d213d4b1f1f16ad4a3c08ed551e8"
+    },
+    {
+      "key": "SPEC-035/T003",
+      "kind": "task",
+      "parent": "SPEC-035",
+      "number": 347,
+      "globalIssueId": 5736684757,
+      "url": "https://github.com/jayanez/agent-braid/issues/347",
+      "state": "open",
+      "title": "[SPEC-035 T003] Implement target, covariate and missingness translation. Dependencies: T002; SPEC-034/T004. Target fil...",
+      "createdThisRun": true,
+      "bodySha256": "ef37df9a99c297b5aecb16681c889d7554f33719faf6a84575473bfb441243b1"
+    },
+    {
+      "key": "SPEC-035/T004",
+      "kind": "task",
+      "parent": "SPEC-035",
+      "number": 348,
+      "globalIssueId": 5736685021,
+      "url": "https://github.com/jayanez/agent-braid/issues/348",
+      "state": "open",
+      "title": "[SPEC-035 T004] Implement typed quantile outputs and median labeling. Dependencies: T003. Target files: agent_braid/fo...",
+      "createdThisRun": true,
+      "bodySha256": "bb096e4ada7ee185663d9afb4cedba1193d1d39196e96f484c697c038dd004df"
+    },
+    {
+      "key": "SPEC-035/T005",
+      "kind": "task",
+      "parent": "SPEC-035",
+      "number": 349,
+      "globalIssueId": 5736685278,
+      "url": "https://github.com/jayanez/agent-braid/issues/349",
+      "state": "open",
+      "title": "[SPEC-035 T005] Implement the reviewed bounded offline CPU worker. Dependencies: T002; exact lifecycle/enforcement rev...",
+      "createdThisRun": true,
+      "bodySha256": "21ed276066af9cd04fdbfeb1d0b856c421a5f2ee9178c315b34f3fe7ac5f10eb"
+    },
+    {
+      "key": "SPEC-035/T006",
+      "kind": "task",
+      "parent": "SPEC-035",
+      "number": 350,
+      "globalIssueId": 5736685535,
+      "url": "https://github.com/jayanez/agent-braid/issues/350",
+      "state": "open",
+      "title": "[SPEC-035 T006] Implement receipt-bound reuse and request isolation. Dependencies: T004 T005; SPEC-034/T005. Target fi...",
+      "createdThisRun": true,
+      "bodySha256": "e16f887c44bf684e5efd3b1d4b84503421915d180322ae5a91d75e383557dacb"
+    },
+    {
+      "key": "SPEC-035/T007",
+      "kind": "task",
+      "parent": "SPEC-035",
+      "number": 351,
+      "globalIssueId": 5736685770,
+      "url": "https://github.com/jayanez/agent-braid/issues/351",
+      "state": "open",
+      "title": "[SPEC-035 T007] Validate the installed optional wheel and adapter controls. Dependencies: T004 T005 T006. Target files...",
+      "createdThisRun": true,
+      "bodySha256": "14b86ae836261ff6be37e8ba9f0245ac7c9781a5e039314aed6fed0436618e7a"
+    },
+    {
+      "key": "SPEC-035/T008",
+      "kind": "task",
+      "parent": "SPEC-035",
+      "number": 352,
+      "globalIssueId": 5736686052,
+      "url": "https://github.com/jayanez/agent-braid/issues/352",
+      "state": "open",
+      "title": "[SPEC-035 T008] Run approved real Chronos-2 CPU conformance and cost capture. Dependencies: T007; separate approved pr...",
+      "createdThisRun": true,
+      "bodySha256": "9d9ca33b8f7fd86eeadae079749f489090d58fd638b1af46a08dbc2fe39cde50"
+    },
+    {
+      "key": "SPEC-036",
+      "kind": "spec",
+      "parent": null,
+      "number": 353,
+      "globalIssueId": 5736686316,
+      "url": "https://github.com/jayanez/agent-braid/issues/353",
+      "state": "open",
+      "title": "[SPEC-036] SPEC-036: Prospective forecast-guided parallelism utility experiment",
+      "createdThisRun": true,
+      "bodySha256": "db5750a5306180cbd0636b39e75ba09229586ecbda8ad2974a9a3dbd7024026c"
+    },
+    {
+      "key": "SPEC-036/T001",
+      "kind": "task",
+      "parent": "SPEC-036",
+      "number": 354,
+      "globalIssueId": 5736686577,
+      "url": "https://github.com/jayanez/agent-braid/issues/354",
+      "state": "open",
+      "title": "[SPEC-036 T001] Review and freeze the prospective experiment registration. Dependencies: SPEC-034/T007; SPEC-035/T001;...",
+      "createdThisRun": true,
+      "bodySha256": "7dd773bf7171f3b6347d6e43f2826e19780d3e7bb6feff3754372c173f5f8cda"
+    },
+    {
+      "key": "SPEC-036/T002",
+      "kind": "task",
+      "parent": "SPEC-036",
+      "number": 355,
+      "globalIssueId": 5736686911,
+      "url": "https://github.com/jayanez/agent-braid/issues/355",
+      "state": "open",
+      "title": "[SPEC-036 T002] Implement inexpensive baselines and complete accounting controls. Dependencies: T001 protocol review;...",
+      "createdThisRun": true,
+      "bodySha256": "5fb3d6f4a3023392b7d0aa5fb097441d64125924c424ef2eefe430b6df833448"
+    },
+    {
+      "key": "SPEC-036/T003",
+      "kind": "task",
+      "parent": "SPEC-036",
+      "number": 356,
+      "globalIssueId": 5736687184,
+      "url": "https://github.com/jayanez/agent-braid/issues/356",
+      "state": "open",
+      "title": "[SPEC-036 T003] Implement immutable rolling-origin forecast evaluation. Dependencies: T002; SPEC-035/T007. Target file...",
+      "createdThisRun": true,
+      "bodySha256": "cc56915fe09102476ef54bc7a8d6767f4f3d2f105fa038f11833b51c3f46834c"
+    },
+    {
+      "key": "SPEC-036/T004",
+      "kind": "task",
+      "parent": "SPEC-036",
+      "number": 357,
+      "globalIssueId": 5736687456,
+      "url": "https://github.com/jayanez/agent-braid/issues/357",
+      "state": "open",
+      "title": "[SPEC-036 T004] Bind the frozen admissible action mapper to each decision. Dependencies: T002; SPEC-037/T003. Target f...",
+      "createdThisRun": true,
+      "bodySha256": "8ff6386e8b32f0b03f50547b6c9161e9261e1887a4e7c25063bc0efc7150cc06"
+    },
+    {
+      "key": "SPEC-036/T005",
+      "kind": "task",
+      "parent": "SPEC-036",
+      "number": 358,
+      "globalIssueId": 5736687686,
+      "url": "https://github.com/jayanez/agent-braid/issues/358",
+      "state": "open",
+      "title": "[SPEC-036 T005] Implement the owned paired policy measurement harness. Dependencies: T003 T004; existing runtime measu...",
+      "createdThisRun": true,
+      "bodySha256": "fae4eb21c3d2daccb67644984943d0b1d5d24761a57e35fb30390466c5bbedd9"
+    },
+    {
+      "key": "SPEC-036/T006",
+      "kind": "task",
+      "parent": "SPEC-036",
+      "number": 359,
+      "globalIssueId": 5736687924,
+      "url": "https://github.com/jayanez/agent-braid/issues/359",
+      "state": "open",
+      "title": "[SPEC-036 T006] Run leakage, authority, drift and recovery negative controls. Dependencies: T005. Target files: tests/...",
+      "createdThisRun": true,
+      "bodySha256": "8439699eb9bdc1731d6995ca9cc32c91d3f0a477955e5aef9c087fc572755a71"
+    },
+    {
+      "key": "SPEC-036/T007",
+      "kind": "task",
+      "parent": "SPEC-036",
+      "number": 360,
+      "globalIssueId": 5736688224,
+      "url": "https://github.com/jayanez/agent-braid/issues/360",
+      "state": "open",
+      "title": "[SPEC-036 T007] Execute the approved frozen real-workload holdout comparison. Dependencies: T006; SPEC-034/T008; SPEC-...",
+      "createdThisRun": true,
+      "bodySha256": "de9ae55e7810d5962405d589e4c7f169e3a440e0ff45a9f1bf2cc6ad58dc9273"
+    },
+    {
+      "key": "SPEC-036/T008",
+      "kind": "task",
+      "parent": "SPEC-036",
+      "number": 361,
+      "globalIssueId": 5736688547,
+      "url": "https://github.com/jayanez/agent-braid/issues/361",
+      "state": "open",
+      "title": "[SPEC-036 T008] Produce the complete uncertainty and utility decision packet. Dependencies: T007 or a recorded pre-lau...",
+      "createdThisRun": true,
+      "bodySha256": "a3a9264e73a310e5f174642b35d3981288f0f0cb8fba33adf61591fdf40c196f"
+    },
+    {
+      "key": "SPEC-036/T009",
+      "kind": "task",
+      "parent": "SPEC-036",
+      "number": 362,
+      "globalIssueId": 5736688861,
+      "url": "https://github.com/jayanez/agent-braid/issues/362",
+      "state": "open",
+      "title": "[SPEC-036 T009] Obtain the bounded experiment interpretation and adoption decision. Dependencies: T008. Target files:...",
+      "createdThisRun": true,
+      "bodySha256": "ed7a414979f3afbe667b5868a9397dd715f29884cabcdd105b14894aafee610a"
+    },
+    {
+      "key": "SPEC-037",
+      "kind": "spec",
+      "parent": null,
+      "number": 363,
+      "globalIssueId": 5736689120,
+      "url": "https://github.com/jayanez/agent-braid/issues/363",
+      "state": "open",
+      "title": "[SPEC-037] SPEC-037: Bounded forecast advice, shadow integration and promotion",
+      "createdThisRun": true,
+      "bodySha256": "198058b96a1128676d54ac3d0acaf92f990f464f3a7081b8a98e377581d00daf"
+    },
+    {
+      "key": "SPEC-037/T001",
+      "kind": "task",
+      "parent": "SPEC-037",
+      "number": 364,
+      "globalIssueId": 5736689342,
+      "url": "https://github.com/jayanez/agent-braid/issues/364",
+      "state": "open",
+      "title": "[SPEC-037 T001] Review the separate forecast/advice contract and runtime boundary. Dependencies: SPEC-034/T001; SPEC-0...",
+      "createdThisRun": true,
+      "bodySha256": "1bb897b4e2bfade26cd0c84077817360fc9adafe52e9d6ad89fbab367deebc05"
+    },
+    {
+      "key": "SPEC-037/T002",
+      "kind": "task",
+      "parent": "SPEC-037",
+      "number": 365,
+      "globalIssueId": 5736689596,
+      "url": "https://github.com/jayanez/agent-braid/issues/365",
+      "state": "open",
+      "title": "[SPEC-037 T002] Implement default-off read-only forecast library and CLI discovery. Dependencies: T001; SPEC-035/T007....",
+      "createdThisRun": true,
+      "bodySha256": "45735d975ffc4c2345a42b071a81c80996ee95e02705da77a8ceff170bedcc8d"
+    },
+    {
+      "key": "SPEC-037/T003",
+      "kind": "task",
+      "parent": "SPEC-037",
+      "number": 366,
+      "globalIssueId": 5736689832,
+      "url": "https://github.com/jayanez/agent-braid/issues/366",
+      "state": "open",
+      "title": "[SPEC-037 T003] Implement immutable admissible action mapping and grant controls. Dependencies: T001; SPEC-034/T005; S...",
+      "createdThisRun": true,
+      "bodySha256": "12640091bb0fdbb7b622a5be89da8c937838922fc5e9665837e3d9f3164e514f"
+    },
+    {
+      "key": "SPEC-037/T004",
+      "kind": "task",
+      "parent": "SPEC-037",
+      "number": 367,
+      "globalIssueId": 5736690087,
+      "url": "https://github.com/jayanez/agent-braid/issues/367",
+      "state": "open",
+      "title": "[SPEC-037 T004] Implement or explicitly defer the optional typed System 1 bridge. Dependencies: T003; independently ac...",
+      "createdThisRun": true,
+      "bodySha256": "f07ca4a4b37c3060368a4c66d17e907c41c8d710f9d162bce672c8fdee4d91c6"
+    },
+    {
+      "key": "SPEC-037/T005",
+      "kind": "task",
+      "parent": "SPEC-037",
+      "number": 368,
+      "globalIssueId": 5736690358,
+      "url": "https://github.com/jayanez/agent-braid/issues/368",
+      "state": "open",
+      "title": "[SPEC-037 T005] Add shadow-mode observations and complete fallback traces. Dependencies: T002 T003. Target files: agen...",
+      "createdThisRun": true,
+      "bodySha256": "9945c7880eb945e9faafbdac0f1289eb934007ea519619a8646cc798da1b0cc1"
+    },
+    {
+      "key": "SPEC-037/T006",
+      "kind": "task",
+      "parent": "SPEC-037",
+      "number": 369,
+      "globalIssueId": 5736690609,
+      "url": "https://github.com/jayanez/agent-braid/issues/369",
+      "state": "open",
+      "title": "[SPEC-037 T006] Validate authority, drift, cancellation and rollback boundaries. Dependencies: T005. Target files: tes...",
+      "createdThisRun": true,
+      "bodySha256": "f17ba33763271e1fbd187a8cf17547f96f184bc52c88a413b88c9054967ca5e4"
+    },
+    {
+      "key": "SPEC-037/T007",
+      "kind": "task",
+      "parent": "SPEC-037",
+      "number": 370,
+      "globalIssueId": 5736690860,
+      "url": "https://github.com/jayanez/agent-braid/issues/370",
+      "state": "open",
+      "title": "[SPEC-037 T007] Prepare the exact-capability promotion or defer packet. Dependencies: T006; SPEC-036/T009 accepted pos...",
+      "createdThisRun": true,
+      "bodySha256": "88a160fae35252638d49fb20414021ad9aad6be9d305488862fd9eddba85e2b4"
+    },
+    {
+      "key": "SPEC-037/T008",
+      "kind": "task",
+      "parent": "SPEC-037",
+      "number": 371,
+      "globalIssueId": 5736691117,
+      "url": "https://github.com/jayanez/agent-braid/issues/371",
+      "state": "open",
+      "title": "[SPEC-037 T008] Record founder capability adoption or no-go and milestone interpretation. Dependencies: T007. Target f...",
+      "createdThisRun": true,
+      "bodySha256": "9d92264e1d874dd4f2f03ea178d9104a68ae2c990cc923a70fd43189ed94202e"
+    }
+  ],
+  "links": [
+    {
+      "parent": "SPEC-034",
+      "child": "SPEC-034/T001",
+      "createdThisRun": true
+    },
+    {
+      "parent": "SPEC-034",
+      "child": "SPEC-034/T002",
+      "createdThisRun": true
+    },
+    {
+      "parent": "SPEC-034",
+      "child": "SPEC-034/T003",
+      "createdThisRun": true
+    },
+    {
+      "parent": "SPEC-034",
+      "child": "SPEC-034/T004",
+      "createdThisRun": true
+    },
+    {
+      "parent": "SPEC-034",
+      "child": "SPEC-034/T005",
+      "createdThisRun": true
+    },
+    {
+      "parent": "SPEC-034",
+      "child": "SPEC-034/T006",
+      "createdThisRun": true
+    },
+    {
+      "parent": "SPEC-034",
+      "child": "SPEC-034/T007",
+      "createdThisRun": true
+    },
+    {
+      "parent": "SPEC-034",
+      "child": "SPEC-034/T008",
+      "createdThisRun": true
+    },
+    {
+      "parent": "SPEC-035",
+      "child": "SPEC-035/T001",
+      "createdThisRun": true
+    },
+    {
+      "parent": "SPEC-035",
+      "child": "SPEC-035/T002",
+      "createdThisRun": true
+    },
+    {
+      "parent": "SPEC-035",
+      "child": "SPEC-035/T003",
+      "createdThisRun": true
+    },
+    {
+      "parent": "SPEC-035",
+      "child": "SPEC-035/T004",
+      "createdThisRun": true
+    },
+    {
+      "parent": "SPEC-035",
+      "child": "SPEC-035/T005",
+      "createdThisRun": true
+    },
+    {
+      "parent": "SPEC-035",
+      "child": "SPEC-035/T006",
+      "createdThisRun": true
+    },
+    {
+      "parent": "SPEC-035",
+      "child": "SPEC-035/T007",
+      "createdThisRun": true
+    },
+    {
+      "parent": "SPEC-035",
+      "child": "SPEC-035/T008",
+      "createdThisRun": true
+    },
+    {
+      "parent": "SPEC-036",
+      "child": "SPEC-036/T001",
+      "createdThisRun": true
+    },
+    {
+      "parent": "SPEC-036",
+      "child": "SPEC-036/T002",
+      "createdThisRun": true
+    },
+    {
+      "parent": "SPEC-036",
+      "child": "SPEC-036/T003",
+      "createdThisRun": true
+    },
+    {
+      "parent": "SPEC-036",
+      "child": "SPEC-036/T004",
+      "createdThisRun": true
+    },
+    {
+      "parent": "SPEC-036",
+      "child": "SPEC-036/T005",
+      "createdThisRun": true
+    },
+    {
+      "parent": "SPEC-036",
+      "child": "SPEC-036/T006",
+      "createdThisRun": true
+    },
+    {
+      "parent": "SPEC-036",
+      "child": "SPEC-036/T007",
+      "createdThisRun": true
+    },
+    {
+      "parent": "SPEC-036",
+      "child": "SPEC-036/T008",
+      "createdThisRun": true
+    },
+    {
+      "parent": "SPEC-036",
+      "child": "SPEC-036/T009",
+      "createdThisRun": true
+    },
+    {
+      "parent": "SPEC-037",
+      "child": "SPEC-037/T001",
+      "createdThisRun": true
+    },
+    {
+      "parent": "SPEC-037",
+      "child": "SPEC-037/T002",
+      "createdThisRun": true
+    },
+    {
+      "parent": "SPEC-037",
+      "child": "SPEC-037/T003",
+      "createdThisRun": true
+    },
+    {
+      "parent": "SPEC-037",
+      "child": "SPEC-037/T004",
+      "createdThisRun": true
+    },
+    {
+      "parent": "SPEC-037",
+      "child": "SPEC-037/T005",
+      "createdThisRun": true
+    },
+    {
+      "parent": "SPEC-037",
+      "child": "SPEC-037/T006",
+      "createdThisRun": true
+    },
+    {
+      "parent": "SPEC-037",
+      "child": "SPEC-037/T007",
+      "createdThisRun": true
+    },
+    {
+      "parent": "SPEC-037",
+      "child": "SPEC-037/T008",
+      "createdThisRun": true
+    }
+  ],
+  "verification": "37 open issues on milestone 18; all 33 parent links read back; exact draft bodies and labels checked",
+  "privateProjectVerification": "not performed; no project membership/custom status claim"
+}
