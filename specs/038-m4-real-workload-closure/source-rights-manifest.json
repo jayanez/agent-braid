@@ -1,0 +1,55 @@
+{
+  "recordVersion": "agent-braid-m4-source-rights-candidate-1",
+  "status": "statically-eligible-source-candidate-pending-new-rights-and-m4-review",
+  "purpose": "Identify one public SPEC-013 source lead for a prospective M4 protocol review; not an authorization or capture manifest.",
+  "repository": "jayanez/agent-braid",
+  "baseCommit": "f3c734a1f42d6d5962cfedc57d7f6c1efe40e0a6",
+  "sourceCandidates": [
+    {
+      "operationId": "m2-observation-normalizer",
+      "pullRequest": 137,
+      "sourceCommit": "58351f812614058e53a8ee6aef1dd458f1bb70fc",
+      "changedPaths": 3,
+      "changedLines": 64,
+      "newM4RightsApproval": "pending",
+      "m4Eligibility": "not-admitted",
+      "staticDiffBytes": 7872
+    },
+    {
+      "operationId": "m2-counterexample-reducer",
+      "pullRequest": 138,
+      "sourceCommit": "083f1a390988a9527a5aaeb19133401243b1d714",
+      "changedPaths": 5,
+      "changedLines": 999,
+      "newM4RightsApproval": "pending",
+      "m4Eligibility": "not-admitted",
+      "staticDiffBytes": 55208
+    }
+  ],
+  "priorRecords": {
+    "m2Selection": "specs/013-m2-real-workload/m2-corpus-selection.json",
+    "m2Manifest": "specs/013-m2-real-workload/m2-corpus-manifest.json",
+    "m2FounderDecision": "specs/013-m2-real-workload/t003-founder-decision.json",
+    "m2FounderReview": "specs/013-m2-real-workload/t006-founder-review.json",
+    "m2ExecutionAuthorization": false,
+    "remotePullRequestProvenance": "Parent performed live GitHub metadata check: PRs #137/#138 show user.login jayanez, merged 2026-09-25, and exact head/base match the listed commit hashes. Commit author/committer are Juan Antonio Y\u00e1\u00f1ez Garc\u00eda (jayanez@users.noreply.github.com). This establishes provenance/authorship evidence only; it is not an exact M4 permission or rights decision."
+  },
+  "rightsRequired": {
+    "sourceOwnerOrRightsholder": "Commit author/committer and PR submitter metadata identify Juan Antonio Y\u00e1\u00f1ez Garc\u00eda / jayanez for both candidate commits. Source-rights holder capacity and exact new M4 permission remain pending explicit confirmation.",
+    "authorshipAndProvenanceEvidence": "public PR/commit provenance identified; authorship rights confirmation pending",
+    "permissionScope": "pending exact written M4 permission covering the frozen source, local fixed-patch preparation/execution, observation, retention, and reporting",
+    "termAndRevocation": "pending",
+    "redistributionAndRetention": "pending",
+    "reviewerAndOperatorConflicts": "must be declared in the future review packet"
+  },
+  "eligibility": {
+    "runtimeContract": "unchanged SPEC-020 / authorized-serial-index-patch-v1",
+    "requirements": "2-4 immutable ordinary-text A/M operations, common base, complete dependencies/paths, existing caps and verifier",
+    "status": "read-only static candidate check passed basic shape/count ceilings: two operations, 8 total disjoint paths, 63080 diff bytes, regular 100644 A/M files, common base; runtime preparation admission and tree verification not executed",
+    "substitutionAllowed": false
+  },
+  "executionAuthorization": false,
+  "captureAuthorization": false,
+  "m4Decision": "pending",
+  "notes": "Public availability and exact M2 approval do not imply current M4 source rights, experiment approval, execution authority, or M4 acceptance."
+}

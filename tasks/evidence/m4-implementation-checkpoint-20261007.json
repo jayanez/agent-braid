@@ -1,0 +1,54 @@
+{
+  "recordVersion": "agent-braid-m4-implementation-checkpoint-1",
+  "goalStatus": "active-m4-open",
+  "baseCommit": "5cb144e1193a266645e012a7f31224d846ea7003",
+  "changes": [
+    "Scope tracking by immutable milestone number with digest-bound explicit new-record bootstrap",
+    "Prevent final-treatment budget crossing from reporting complete synthetic utility",
+    "Draft SPEC-038 actual-workload protocol and source-rights frame",
+    "Draft SPEC-022 budget feasibility and SPEC-027 capability decision packets"
+  ],
+  "executedChecks": [
+    {
+      "command": "python -m unittest tests.test_utility_trials -v",
+      "outcome": "15 tests passed",
+      "logSha256": "8407cb1dda5c114fd880c49b1fd98c09cf67bfa05ac8de4caaded718a1f872f0",
+      "inputs": {
+        "agent_braid/utility_trials.py": "065c9db2ecad538ae1f10b5d29afdf97f5b639c3190fe7780a4575ed1d3e400c",
+        "tests/test_utility_trials.py": "3665ad7cf247dc08e5663eef2e88a763be82ae978947814c3dd0b6815c918e07"
+      },
+      "limits": "Pure engineered callback/clock tests; no runtime capture, source rights, scientific validity or founder approval"
+    },
+    {
+      "command": "python -m unittest tests.test_github_tracking -v",
+      "outcome": "30 tests passed in isolated worker environment",
+      "limits": "Mocked remote inventory/application; no GitHub writes; independent review and integrated candidate validation remain separate"
+    },
+    {
+      "command": "python scripts/validate_change.py --base develop --profile pr",
+      "candidate": "5cb144e1193a266645e012a7f31224d846ea7003",
+      "outcome": "All selected executable gates passed; 717 unit tests, 4 skips",
+      "logSha256": "6a77f57da040347d9a0e34cb4b29f4059d970206a4e1916aa3e0c0fb1daa16d2",
+      "limits": "Clean baseline full-clone validation only; does not cover changed implementation, clean-room reproduction, measurement, scientific or human approval"
+    },
+    {
+      "command": "python scripts/validate_spec_kit.py",
+      "outcome": "Integrated structural gates passed",
+      "limits": "Structure and provenance binding; human review and scientific validity separate"
+    }
+  ],
+  "pendingChecks": [
+    "Stable integrated quick and PR profiles",
+    "Independent Luna medium final diff review",
+    "Fresh current-candidate diagnostic preparation and exact stable manifest review"
+  ],
+  "pendingHumanGates": [
+    "Exact SPEC-022 successor protocol decision; later exact registered capture approval",
+    "SPEC-038 exact source rights and prospective protocol; later stable harness/manifest and capture approval",
+    "SPEC-027 capability dispositions",
+    "New explicit whole-M4 founder decision after evidence"
+  ],
+  "registeredCaptureExecuted": false,
+  "githubTrackingWritesExecuted": false,
+  "milestoneClosed": false
+}

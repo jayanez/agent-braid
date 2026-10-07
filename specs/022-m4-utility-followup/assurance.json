@@ -17,7 +17,7 @@
   ],
   "assumptions": "Owned POSIX Git fixtures; complete current-runtime verification and grants remain enforced; OS cache state is uncontrolled.",
   "authority_snapshot": {
-    "commit": null,
+    "commit": "5cb144e1193a266645e012a7f31224d846ea7003",
     "hashes": {
       "ARCHITECTURE.md": "e26135a1037c232ff953710e5de52abef8cf1cad47a8822fe63a565bc9ad9555",
       "CONSTITUTION.md": "ff7196976a1736a639947c2ab26e8da157fef23c89ba9881312f2a36459964eb",
@@ -82,13 +82,13 @@
       "schemas/governance/public-export-manifest.schema.json": "11eb7f2594939ae9fd0c9e6cfe4423a80aba686d6cdfdd8b73b0fb84b0840aa8",
       "schemas/governance/release-validation-record.schema.json": "d9943f0c9f5520ea52e3b12bfba88240d03f8011b433fc5e35cb49549ab6e819"
     },
-    "mode": "current"
+    "mode": "historical"
   },
   "compatibility": "No current public API/schema/version changes; future diagnostic harness remains separate from accepted reports.",
   "domain": "Existing 2\u20134 immutable ordinary-text A/M patch domain; local descriptive measurement only.",
   "evidence_snapshot": {
-    "commit": null,
-    "mode": "current"
+    "commit": "5cb144e1193a266645e012a7f31224d846ea7003",
+    "mode": "historical"
   },
   "execution_contract": "No new authority or capability. Fixture runs require current exact operator grant and existing private-run restrictions.",
   "human_review": "pending",
@@ -220,6 +220,7 @@
   "scope": "Bounded current-contract M4 phase-cost diagnosis and paired utility follow-up.",
   "stage": "draft",
   "technical_review_preparation": {
+    "currentCorrectionStatus": "Final-treatment dispatch-budget correction is under engineering validation. Existing obtained evidence remains bound to public 5cb144e1193a266645e012a7f31224d846ea7003 and does not validate changed trial code; fresh candidate-bound diagnosis, manifest and capture review remain pending.",
     "executionAuthorization": false,
     "implementationStatus": "T002-T004 engineering complete with 74 focal tests, final eight diagnostic treatments and Luna engineering GO; full repository gates are reported separately; human registered harness/manifest review pending",
     "localFrozenPreparationCommit": "9f347e803401c04af61e6662ccc5756578805b23",
