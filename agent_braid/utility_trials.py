@@ -21,7 +21,12 @@ from .utility_fixtures import (
     validate_prepared_manifest,
 )
 
+PLAN_VERSION_V1 = 'spec022-paired-evaluation-plan-v1'
+PLAN_VERSION_V2 = 'spec022-paired-evaluation-plan-v2'
 DISPATCH_BUDGET_NS = 45 * 60 * 1_000_000_000
+DISPATCH_BUDGET_V2_NS = 180 * 60 * 1_000_000_000
+_PLAN_BUDGETS = {PLAN_VERSION_V1: DISPATCH_BUDGET_NS,
+                 PLAN_VERSION_V2: DISPATCH_BUDGET_V2_NS}
 _OID = re.compile(r'[0-9a-f]{40}')
 _PHASES = ('input', 'replay', 'preparation', 'grant', 'execution',
            'independent_verification', 'report_serialization', 'cleanup')
@@ -243,13 +248,17 @@ def derive_admission_records(prepared_manifest: bytes, diagnostics: dict[str, by
 
 
 def build_trial_plan(prepared_manifest: bytes, admissions: list[dict], *,
-                     candidate_commit: str, destination_root: str) -> dict:
+                     candidate_commit: str, destination_root: str,
+                     plan_version: str = PLAN_VERSION_V1) -> dict:
     prepared = validate_prepared_manifest(prepared_manifest)
     return _build_from_prepared(prepared, admissions, candidate_commit=candidate_commit,
-                                destination_root=destination_root)
+                                destination_root=destination_root, plan_version=plan_version)
 
 
-def _build_from_prepared(prepared, admissions, *, candidate_commit, destination_root):
+def _build_from_prepared(prepared, admissions, *, candidate_commit, destination_root,
+                         plan_version=PLAN_VERSION_V1):
+    _require(type(plan_version) is str and plan_version in _PLAN_BUDGETS,
+             'unknown trial plan version')
     _require(type(candidate_commit) is str and bool(_OID.fullmatch(candidate_commit)), 'candidate must be full commit ID')
     _require(type(destination_root) is str and destination_root.startswith('/')
              and '\\' not in destination_root and '\0' not in destination_root
@@ -289,9 +298,9 @@ def _build_from_prepared(prepared, admissions, *, candidate_commit, destination_
                               'treatmentOrder': order, 'treatments': treatments})
         blocks.append({'blockId': block['blockId'], 'family': block['family'], 'status': status,
                        'preparedBlock': deepcopy(block), 'exclusions': deepcopy(admission['exclusions']), 'pairs': pairs})
-    plan = {'version': 'spec022-paired-evaluation-plan-v1', 'candidateCommit': candidate_commit,
+    plan = {'version': plan_version, 'candidateCommit': candidate_commit,
             'preparedManifestSha256': PREPARED_MANIFEST_SHA256, 'admissionRecords': deepcopy(admissions),
-            'destinationRoot': str(root), 'dispatchBudgetNs': DISPATCH_BUDGET_NS,
+            'destinationRoot': str(root), 'dispatchBudgetNs': _PLAN_BUDGETS[plan_version],
             'blocks': blocks, 'registrationReview': 'separate-matching-stable-harness-review-required',
             'claimBoundary': 'Synthetic diagnostic observations only; no actual-workload utility, G4 or M4 acceptance.'}
     plan['planDigest'] = _sha(_encode(plan))
@@ -303,11 +312,13 @@ def encode_trial_plan(plan: dict) -> bytes:
     _require(type(plan) is dict, 'plan must be an object')
     body = {k: v for k, v in plan.items() if k != 'planDigest'}
     _require(plan.get('planDigest') == _sha(_encode(body)), 'trial plan identity drift')
-    _require(plan.get('version') == 'spec022-paired-evaluation-plan-v1'
+    version = plan.get('version')
+    _require(type(version) is str and version in _PLAN_BUDGETS
              and type(plan.get('candidateCommit')) is str and bool(_OID.fullmatch(plan['candidateCommit']))
              and plan.get('preparedManifestSha256') == PREPARED_MANIFEST_SHA256,
              'trial plan candidate or manifest differs')
-    _require(plan.get('dispatchBudgetNs') == DISPATCH_BUDGET_NS and type(plan['dispatchBudgetNs']) is int,
+    _require(type(plan.get('dispatchBudgetNs')) is int
+             and plan['dispatchBudgetNs'] == _PLAN_BUDGETS[version],
              'dispatch budget differs')
     blocks = plan.get('blocks')
     _require(type(blocks) is list and len(blocks) == 9 and all(type(b) is dict for b in blocks)
@@ -335,7 +346,7 @@ def encode_trial_plan(plan: dict) -> bytes:
                               'treatmentOrder': order, 'treatments': treatments}, 'pair order or destination differs')
     rebuilt = _build_from_prepared({'blocks': [b['preparedBlock'] for b in blocks]},
                                    plan.get('admissionRecords'), candidate_commit=plan['candidateCommit'],
-                                   destination_root=plan['destinationRoot'])
+                                   destination_root=plan['destinationRoot'], plan_version=version)
     _require(plan == rebuilt, 'trial blocks contradict admission records or canonical inventory')
     return _encode(plan)
 
@@ -348,16 +359,26 @@ def run_trial_plan(plan: dict, treatment_callback, *, registration_review: dict,
     identity/authentication and private preparation/cleanup; unit tests inject fakes.
     """
     raw = encode_trial_plan(plan)
+    version = plan['version']
+    review_version = registration_review.get('reviewedPlanVersion') if type(registration_review) is dict else None
+    version_binding_valid = (type(registration_review) is dict
+                             and ('reviewedPlanVersion' not in registration_review
+                                  or review_version == version))
+    if version == PLAN_VERSION_V2:
+        version_binding_valid = review_version == version
     _require(type(registration_review) is dict and registration_review.get('decision') == 'approved'
              and registration_review.get('reviewedManifestSha256') == _sha(raw)
              and registration_review.get('reviewedCandidateCommit') == plan['candidateCommit'],
              'matching separate registration review required')
+    _require(version_binding_valid, 'registration review plan version differs')
     _require(callable(treatment_callback), 'treatment callback required')
     frozen = deepcopy(plan)
     start = monotonic_ns()
     _require(type(start) is int and start >= 0, 'invalid dispatch clock')
     previous, stop = start, None
-    output = {'version': 'spec022-paired-evaluation-record-v1', 'manifestSha256': _sha(raw),
+    output = {'version': ('spec022-paired-evaluation-record-v1' if version == PLAN_VERSION_V1
+                         else 'spec022-paired-evaluation-record-v2'),
+              'manifestSha256': _sha(raw),
               'candidateCommit': frozen['candidateCommit'], 'status': 'complete',
               'blocks': [], 'claimBoundary': frozen['claimBoundary']}
     seen_grants, seen_plans = set(), set()
@@ -381,7 +402,7 @@ def run_trial_plan(plan: dict, treatment_callback, *, registration_review: dict,
                         now = monotonic_ns()
                         _require(type(now) is int and now >= previous, 'dispatch clock must be monotonic')
                         previous = now
-                        if now - start >= DISPATCH_BUDGET_NS:
+                        if now - start >= frozen['dispatchBudgetNs']:
                             stop = 'dispatch-budget-exhausted'
                 if stop is None:
                     call = {**deepcopy(descriptor), 'blockId': block['blockId'],
@@ -418,7 +439,7 @@ def run_trial_plan(plan: dict, treatment_callback, *, registration_review: dict,
                         now = monotonic_ns()
                         _require(type(now) is int and now >= previous, 'dispatch clock must be monotonic')
                         previous = now
-                        if now - start >= DISPATCH_BUDGET_NS:
+                        if now - start >= frozen['dispatchBudgetNs']:
                             stop = 'dispatch-budget-exhausted'
                 elif row['status'] == 'unexecuted':
                     row['reason'] = stop
