@@ -7,7 +7,8 @@
     "Canonical admission/block plan consistency",
     "Exact full code-input inventory equality",
     "Mandatory source-integrity, valid and unique grant/plan proof before admission",
-    "Observer relocation out of frozen M2 process-runner bytes"
+    "Observer relocation out of frozen M2 process-runner bytes",
+    "Recurring registered identity guards included in input and closing residual before outer end; immutable encoded report retained on closing invalidation"
   ],
   "inputs": {
     "agent_braid/analysis.py": "fadfb6f6d3d6f89002df519bbcc86d839724f243e2c8e52732ef57e555abfe00",
@@ -24,8 +25,8 @@
     "agent_braid/utility_fixtures.py": "ea3ecb2bda7e6909f5307232dcc6b13953e4ac560eab9144dd0f566d90de8119",
     "agent_braid/utility_trials.py": "1f41e65b892fb607e887b486042f19d3a4a6dc5db1e1dcaca46930e6e554dce2",
     "research/lab/model.py": "f39040b5476d663f6e7384e65d00073b084df6c8958b38bff45e4d6b19da010f",
-    "scripts/measure_m4_utility.py": "33630ecdd5cb01b6cf4e2b39b82a31093fa769d803e7a7ee1ffc0c060c8c9baf",
-    "scripts/prepare_m4_utility_trials.py": "054fe8aa3d733aee48fb5802260aae5824f9013c61cb4de10b013d7d4407b213",
+    "scripts/measure_m4_utility.py": "60ad14fa39b31e2af67b8987a3f8e544bf884a1e47e23f1bd69ada6285b82a08",
+    "scripts/prepare_m4_utility_trials.py": "2decd580864e97558a69c6b385d2b43d7657dc7f7e214c4b12f5936d2529544f",
     "specs/022-m4-utility-followup/evidence/prepared-fixture-manifest.json": "ec8f36b21dd745df8443acd6035ff75a4b01bd61fd004470ce0315a655908734",
     "specs/022-m4-utility-followup/technical-review-packet.md": "6e5a2bd790fb789926007e11f33af40df2ed494d3e8464b13f114523120b282b"
   },

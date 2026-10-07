@@ -2,146 +2,146 @@
   "diagnosticBlocks": [
     {
       "blockId": "independent-2-1024",
-      "diagnosticPath": "specs/022-m4-utility-followup/evidence/final-coordinator-diagnostics/independent-2-1024.json",
+      "diagnosticPath": "specs/022-m4-utility-followup/evidence/final-guarded-diagnostics/independent-2-1024.json",
       "samples": [
         {
           "mode": "serial",
           "topPhases": [
             {
               "name": "execution",
-              "wallSeconds": 4.357237
+              "wallSeconds": 4.779852875
             },
             {
               "name": "replay",
-              "wallSeconds": 3.008139292
+              "wallSeconds": 2.8110275
             }
           ],
-          "wallSeconds": 14.234736875
+          "wallSeconds": 14.6838835
         },
         {
           "mode": "parallel",
           "topPhases": [
             {
               "name": "execution",
-              "wallSeconds": 13.519471542
-            },
-            {
-              "name": "grant",
-              "wallSeconds": 4.963814333
-            }
-          ],
-          "wallSeconds": 27.59513075
-        }
-      ],
-      "sha256": "32a790433e96f65ca88f107a5106e018f158701d2f8519ecd5b3aa7180223042"
-    },
-    {
-      "blockId": "independent-2-65536",
-      "diagnosticPath": "specs/022-m4-utility-followup/evidence/final-coordinator-diagnostics/independent-2-65536.json",
-      "samples": [
-        {
-          "mode": "serial",
-          "topPhases": [
-            {
-              "name": "execution",
-              "wallSeconds": 4.720588334
-            },
-            {
-              "name": "replay",
-              "wallSeconds": 3.534157916
-            }
-          ],
-          "wallSeconds": 15.518620542
-        },
-        {
-          "mode": "parallel",
-          "topPhases": [
-            {
-              "name": "execution",
-              "wallSeconds": 11.420454542
+              "wallSeconds": 11.301053625
             },
             {
               "name": "preparation",
-              "wallSeconds": 3.91221075
+              "wallSeconds": 3.812332291
             }
           ],
-          "wallSeconds": 23.30904425
+          "wallSeconds": 23.721022125
         }
       ],
-      "sha256": "74e00a335b57f704f93ca29a3f5b3d8dcbdb4e900f1e2f3ab20bff212f3bbb6b"
+      "sha256": "e8b026e5749f5db302188f3f718e472a29884e220f299dd7780b419505273a53"
+    },
+    {
+      "blockId": "independent-2-65536",
+      "diagnosticPath": "specs/022-m4-utility-followup/evidence/final-guarded-diagnostics/independent-2-65536.json",
+      "samples": [
+        {
+          "mode": "serial",
+          "topPhases": [
+            {
+              "name": "execution",
+              "wallSeconds": 5.480681167
+            },
+            {
+              "name": "grant",
+              "wallSeconds": 3.146515708
+            }
+          ],
+          "wallSeconds": 15.939800625
+        },
+        {
+          "mode": "parallel",
+          "topPhases": [
+            {
+              "name": "execution",
+              "wallSeconds": 11.25983625
+            },
+            {
+              "name": "grant",
+              "wallSeconds": 3.958196084
+            }
+          ],
+          "wallSeconds": 23.281258417
+        }
+      ],
+      "sha256": "14e53e8eb651b8013de6fcb7c7d54cff58b2b5d00b74eea69df8fcce47c7095b"
     },
     {
       "blockId": "independent-4-1024",
-      "diagnosticPath": "specs/022-m4-utility-followup/evidence/final-coordinator-diagnostics/independent-4-1024.json",
+      "diagnosticPath": "specs/022-m4-utility-followup/evidence/final-guarded-diagnostics/independent-4-1024.json",
       "samples": [
         {
           "mode": "serial",
           "topPhases": [
             {
               "name": "replay",
-              "wallSeconds": 22.766511917
+              "wallSeconds": 24.16558075
             },
             {
               "name": "execution",
-              "wallSeconds": 16.099548375
+              "wallSeconds": 17.021385958
             }
           ],
-          "wallSeconds": 67.616784375
+          "wallSeconds": 72.378994291
         },
         {
           "mode": "parallel",
           "topPhases": [
             {
               "name": "execution",
-              "wallSeconds": 27.100396792
+              "wallSeconds": 29.379120459
             },
             {
               "name": "replay",
-              "wallSeconds": 22.012021834
+              "wallSeconds": 24.677324625
             }
           ],
-          "wallSeconds": 81.392028125
+          "wallSeconds": 89.807470833
         }
       ],
-      "sha256": "bba4505d16aa3dba6b3b8e14b74e664f0ca483aff5479b79ed604dc49121241a"
+      "sha256": "b1e7d9d471d2fa800d2c45fb0c3b143c4664917145431f9dae417e74e2f1ec63"
     },
     {
       "blockId": "dependency-chain-4-1024",
-      "diagnosticPath": "specs/022-m4-utility-followup/evidence/final-coordinator-diagnostics/dependency-chain-4-1024.json",
+      "diagnosticPath": "specs/022-m4-utility-followup/evidence/final-guarded-diagnostics/dependency-chain-4-1024.json",
       "samples": [
         {
           "mode": "serial",
           "topPhases": [
             {
               "name": "execution",
-              "wallSeconds": 7.509835375
+              "wallSeconds": 7.58017225
             },
             {
-              "name": "grant",
-              "wallSeconds": 5.218731625
+              "name": "replay",
+              "wallSeconds": 4.70452175
             }
           ],
-          "wallSeconds": 24.073486375
+          "wallSeconds": 24.129490459
         },
         {
           "mode": "parallel",
           "topPhases": [
             {
               "name": "execution",
-              "wallSeconds": 18.845450458
+              "wallSeconds": 20.136492041
             },
             {
-              "name": "grant",
-              "wallSeconds": 5.9273045
+              "name": "preparation",
+              "wallSeconds": 6.106997959
             }
           ],
-          "wallSeconds": 37.318378041
+          "wallSeconds": 39.251867542
         }
       ],
-      "sha256": "ef09997b5c6a40e97c3da72153d2b21a1343c15ba0cca231b08fc395777e92b7"
+      "sha256": "a4ef1cebb2f3b6e1590cfa39e200bdb74949f9d99ef37c3caac04b5235560074"
     }
   ],
-  "diagnosticCandidateCommit": "cc9dbb5d27cf2ff5d7f24c607aec8d12625c8065",
+  "diagnosticCandidateCommit": "dd8ea6dc852c17e01803c8c4c63f644c9479cb33",
   "inputs": {
     "agent_braid/analysis.py": "fadfb6f6d3d6f89002df519bbcc86d839724f243e2c8e52732ef57e555abfe00",
     "agent_braid/git_adapter.py": "4548eb96849e2d0ed1eaefc53579d065651b00a2c6ae5b1aef6e2bdc5ae3dc45",
@@ -157,8 +157,8 @@
     "agent_braid/utility_fixtures.py": "ea3ecb2bda7e6909f5307232dcc6b13953e4ac560eab9144dd0f566d90de8119",
     "agent_braid/utility_trials.py": "1f41e65b892fb607e887b486042f19d3a4a6dc5db1e1dcaca46930e6e554dce2",
     "research/lab/model.py": "f39040b5476d663f6e7384e65d00073b084df6c8958b38bff45e4d6b19da010f",
-    "scripts/measure_m4_utility.py": "33630ecdd5cb01b6cf4e2b39b82a31093fa769d803e7a7ee1ffc0c060c8c9baf",
-    "scripts/prepare_m4_utility_trials.py": "054fe8aa3d733aee48fb5802260aae5824f9013c61cb4de10b013d7d4407b213",
+    "scripts/measure_m4_utility.py": "60ad14fa39b31e2af67b8987a3f8e544bf884a1e47e23f1bd69ada6285b82a08",
+    "scripts/prepare_m4_utility_trials.py": "2decd580864e97558a69c6b385d2b43d7657dc7f7e214c4b12f5936d2529544f",
     "specs/022-m4-utility-followup/evidence/prepared-fixture-manifest.json": "ec8f36b21dd745df8443acd6035ff75a4b01bd61fd004470ce0315a655908734",
     "specs/022-m4-utility-followup/technical-review-packet.md": "6e5a2bd790fb789926007e11f33af40df2ed494d3e8464b13f114523120b282b"
   },
@@ -171,16 +171,16 @@
   "observedDiagnosticTreatments": 8,
   "planningProjection": {
     "approvedDispatchBudgetMinutes": 45,
-    "linear22PairPerBlockMinutes": 106.72134342209999,
-    "observedFourPairWallSeconds": 291.058209333,
+    "linear22PairPerBlockMinutes": 111.17105552373333,
+    "observedFourPairWallSeconds": 303.193787792,
     "scope": "Rough capacity projection from one serial-first diagnostic pair per block, not a measured registered duration or controlled forecast; registered dispatch may stop incomplete."
   },
   "postRunHostObservation": {
     "cpuCount": 12,
     "loadAverage": [
-      6.94384765625,
-      10.4130859375,
-      20.39501953125
+      9.39404296875,
+      10.1962890625,
+      9.716796875
     ],
     "os": "macOS-26.6.2-arm64-arm-64bit-Mach-O",
     "scope": "Post-diagnostic snapshot only; capture-time background load and OS caches were uncontrolled."

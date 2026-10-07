@@ -118,14 +118,14 @@
               "limits": "Engineering tests or one-pair exploratory diagnosis only; full repository gates, registered measurements and human/founder decisions remain separate.",
               "outcome": "Focal engineering tests passed; exact count and log hash are recorded in the referenced receipt",
               "path": "specs/022-m4-utility-followup/evidence/phase-accounting-test-receipt.json",
-              "sha256": "65eb640f4c79b3d6cbb2ac5eabdba1ea49a4286b795879e144656d43c97b1075"
+              "sha256": "001a552cc5a5ecdcb06bd15384719e4f8ca5f481ab9d27d13f792f4a80e1e791"
             },
             {
-              "command": "Four clean-candidate diagnostic-only invocations of scripts/measure_m4_utility.py; exact commands in evidence/final-coordinator-diagnostics/execution-receipt.json",
+              "command": "Four clean-candidate diagnostic-only invocations of scripts/measure_m4_utility.py; exact commands in evidence/final-guarded-diagnostics/execution-receipt.json",
               "limits": "Engineering tests or one-pair exploratory diagnosis only; full repository gates, registered measurements and human/founder decisions remain separate.",
               "outcome": "Eight exploratory treatments completed with independent verification and full accounting",
               "path": "specs/022-m4-utility-followup/cost-diagnosis.json",
-              "sha256": "ae484ff6a945628c44a515caba7e888c80a7464564207dc5c346f539d8600569"
+              "sha256": "8ace1f15917dfd48b892ef3eef3030a2aa88a43b46f271656e98d99aca8b32df"
             }
           ],
           "planned_evidence": "Future frozen phase/accounting tests, raw paired measurements and scoped decision packet defined in quickstart.md.",
@@ -149,14 +149,14 @@
               "limits": "Engineering tests or one-pair exploratory diagnosis only; full repository gates, registered measurements and human/founder decisions remain separate.",
               "outcome": "Focal engineering tests passed; exact count and log hash are recorded in the referenced receipt",
               "path": "specs/022-m4-utility-followup/evidence/phase-accounting-test-receipt.json",
-              "sha256": "65eb640f4c79b3d6cbb2ac5eabdba1ea49a4286b795879e144656d43c97b1075"
+              "sha256": "001a552cc5a5ecdcb06bd15384719e4f8ca5f481ab9d27d13f792f4a80e1e791"
             },
             {
-              "command": "Four clean-candidate diagnostic-only invocations of scripts/measure_m4_utility.py; exact commands in evidence/final-coordinator-diagnostics/execution-receipt.json",
+              "command": "Four clean-candidate diagnostic-only invocations of scripts/measure_m4_utility.py; exact commands in evidence/final-guarded-diagnostics/execution-receipt.json",
               "limits": "Engineering tests or one-pair exploratory diagnosis only; full repository gates, registered measurements and human/founder decisions remain separate.",
               "outcome": "Eight exploratory treatments completed with independent verification and full accounting",
               "path": "specs/022-m4-utility-followup/cost-diagnosis.json",
-              "sha256": "ae484ff6a945628c44a515caba7e888c80a7464564207dc5c346f539d8600569"
+              "sha256": "8ace1f15917dfd48b892ef3eef3030a2aa88a43b46f271656e98d99aca8b32df"
             }
           ],
           "planned_evidence": "Future frozen phase/accounting tests, raw paired measurements and scoped decision packet defined in quickstart.md.",
@@ -180,14 +180,14 @@
               "limits": "Engineering tests or one-pair exploratory diagnosis only; full repository gates, registered measurements and human/founder decisions remain separate.",
               "outcome": "Focal engineering tests passed; exact count and log hash are recorded in the referenced receipt",
               "path": "specs/022-m4-utility-followup/evidence/phase-accounting-test-receipt.json",
-              "sha256": "65eb640f4c79b3d6cbb2ac5eabdba1ea49a4286b795879e144656d43c97b1075"
+              "sha256": "001a552cc5a5ecdcb06bd15384719e4f8ca5f481ab9d27d13f792f4a80e1e791"
             },
             {
-              "command": "Four clean-candidate diagnostic-only invocations of scripts/measure_m4_utility.py; exact commands in evidence/final-coordinator-diagnostics/execution-receipt.json",
+              "command": "Four clean-candidate diagnostic-only invocations of scripts/measure_m4_utility.py; exact commands in evidence/final-guarded-diagnostics/execution-receipt.json",
               "limits": "Engineering tests or one-pair exploratory diagnosis only; full repository gates, registered measurements and human/founder decisions remain separate.",
               "outcome": "Eight exploratory treatments completed with independent verification and full accounting",
               "path": "specs/022-m4-utility-followup/cost-diagnosis.json",
-              "sha256": "ae484ff6a945628c44a515caba7e888c80a7464564207dc5c346f539d8600569"
+              "sha256": "8ace1f15917dfd48b892ef3eef3030a2aa88a43b46f271656e98d99aca8b32df"
             }
           ],
           "planned_evidence": "Future frozen phase/accounting tests, raw paired measurements and scoped decision packet defined in quickstart.md.",
@@ -221,7 +221,7 @@
   "stage": "draft",
   "technical_review_preparation": {
     "executionAuthorization": false,
-    "implementationStatus": "T002-T004 engineering complete with 70 focal tests, final eight diagnostic treatments and Luna engineering GO; full repository gates are reported separately; human registered harness/manifest review pending",
+    "implementationStatus": "T002-T004 engineering complete with 74 focal tests, final eight diagnostic treatments and Luna engineering GO; full repository gates are reported separately; human registered harness/manifest review pending",
     "localFrozenPreparationCommit": "9f347e803401c04af61e6662ccc5756578805b23",
     "ownerReviewRecord": "specs/022-m4-utility-followup/protocol-review-3777e578.json",
     "ownerReviewSha256": "1d6065eca4f6959570163ce8a3a25ac94ca34b2d7425009167ef3e9f4673e783",
