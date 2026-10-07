@@ -75,9 +75,8 @@ def prepare_plan(manifest: Path, diagnostics: Path, destination_root: Path, outp
                    for b in prepared['blocks'] if not b['directNumericExclusions']}
     admissions = derive_admission_records(raw_manifest, raw_records)
     for admission in admissions:
-        for name, digest in admission.get('diagnosticInputHashes', {}).items():
-            if state['inputs'].get(name) != digest:
-                raise ValueError('diagnostic code inputs do not match this candidate')
+        if admission['status'] != 'excluded-by-pinned-cap' and admission.get('diagnosticInputHashes') != state['inputs']:
+            raise ValueError('diagnostic code inputs do not match this candidate exactly')
     plan = build_trial_plan(raw_manifest, admissions, candidate_commit=state['candidateCommit'],
                             destination_root=str(future_root))
     raw = encode_trial_plan(plan)
@@ -111,9 +110,8 @@ def prepare_runtime_callback(plan: dict, controlled_child_scope: bool = False):
     if plan['candidateCommit'] != state['candidateCommit']:
         raise ValueError('trial plan candidate differs from current code')
     for row in plan['admissionRecords']:
-        for name, digest in row.get('diagnosticInputHashes', {}).items():
-            if state['inputs'].get(name) != digest:
-                raise ValueError('admission code inputs differ')
+        if row['status'] != 'excluded-by-pinned-cap' and row.get('diagnosticInputHashes') != state['inputs']:
+            raise ValueError('admission code inputs differ from exact candidate inventory')
     root = _destination(Path(plan['destinationRoot']))
     if root.is_relative_to(ROOT.resolve()):
         raise ValueError('private preparation root is inside candidate')

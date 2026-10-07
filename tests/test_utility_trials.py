@@ -5,6 +5,7 @@ import hashlib
 import json
 from pathlib import Path
 import unittest
+import uuid
 
 from agent_braid.utility_fixtures import validate_prepared_manifest
 from agent_braid.utility_trials import (
@@ -44,10 +45,10 @@ def sample(block, mode, descriptor=None, serial_wall=200, parallel_wall=100):
                    'dependencies': i['dependencies'], 'uncertainPaths': [], 'declaredWrites': [i['path']]}
                   for i in block['operationIdentities']]
     path = descriptor['runPath'] if descriptor else '/synthetic-diagnostic-only/run'
-    key = hashlib.sha256(path.encode()).hexdigest()
+    key = hashlib.sha256((path + block['blockId'] + mode).encode()).hexdigest()
     return {'status': 'completed', 'operational': {
         'status': 'completed', 'blockId': block['blockId'], 'mode': mode,
-        'resultTree': block['expectedFinalTree'], 'grantId': 'synthetic-grant-' + key,
+        'resultTree': block['expectedFinalTree'], 'grantId': str(uuid.uuid5(uuid.NAMESPACE_URL, key)),
         'planDigest': 'sha256:' + key, 'immutableSourceUnchanged': True,
         'runtimeManifest': {'request': {'gitRuntimeRequestVersion': '0.1.0-alpha',
           'repository': '/synthetic-private-source', 'baseRevision': block['baseCommit'],
@@ -160,7 +161,7 @@ class UtilityTrialsTests(unittest.TestCase):
                 if mutation == 'verifier': op.pop('independentVerification')
                 if mutation == 'path': op['independentVerification']['runDirectory'] = '/wrong'
                 if mutation == 'source': op['immutableSourceUnchanged'] = False
-                if mutation == 'grant': op['grantId'] = 'reused-grant'
+                if mutation == 'grant': op['grantId'] = '00000000-0000-4000-8000-000000000001'
                 return value
             with self.subTest(mutation=mutation):
                 result = self.run_plan(callback)
@@ -214,6 +215,19 @@ class UtilityTrialsTests(unittest.TestCase):
             if mutation == 'unsafe': record['diagnosticPairs'][0]['samples'][0]['status'] = 'no-go'
             if mutation == 'changed': record['candidateInputsChangedDuringRun'] = True
             if mutation == 'missing-mode': record['diagnosticPairs'][0]['samples'].pop()
+            with self.subTest(mutation=mutation), self.assertRaises(InvalidUtilityTrials):
+                derive_admission_records(self.raw, {**self.diagnostics, 'independent-2-1024': json.dumps(record).encode()})
+
+    def test_completed_diagnosis_requires_source_and_private_grant_plan_proofs(self):
+        for mutation in ['missing-source', 'false-source', 'grant', 'plan', 'reuse-grant', 'reuse-plan']:
+            record = json.loads(self.diagnostics['independent-2-1024'])
+            first, second = [s['operational'] for s in record['diagnosticPairs'][0]['samples']]
+            if mutation == 'missing-source': first.pop('immutableSourceUnchanged')
+            if mutation == 'false-source': first['immutableSourceUnchanged'] = False
+            if mutation == 'grant': first['grantId'] = 'invalid UUID'
+            if mutation == 'plan': first['planDigest'] = 'unbound plan'
+            if mutation == 'reuse-grant': second['grantId'] = first['grantId']
+            if mutation == 'reuse-plan': second['planDigest'] = first['planDigest']
             with self.subTest(mutation=mutation), self.assertRaises(InvalidUtilityTrials):
                 derive_admission_records(self.raw, {**self.diagnostics, 'independent-2-1024': json.dumps(record).encode()})
 

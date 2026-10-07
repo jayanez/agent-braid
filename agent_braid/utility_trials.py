@@ -14,6 +14,7 @@ from pathlib import Path
 import re
 import statistics
 import time
+import uuid
 
 from .utility_fixtures import (
     PREPARED_MANIFEST_SHA256, _BLOCK_HASHES, _validate_block,
@@ -46,6 +47,15 @@ def _encode(value):
 
 def _sha(value):
     return hashlib.sha256(value).hexdigest()
+
+
+def _valid_grant(value):
+    if type(value) is not str:
+        return False
+    try:
+        return str(uuid.UUID(value)) == value
+    except ValueError:
+        return False
 
 
 def _request_matches(request, block):
@@ -149,6 +159,11 @@ def _sample_disposition(sample, block, mode):
     operational = sample.get('operational')
     if type(operational) is not dict or operational.get('blockId') != block['blockId'] or operational.get('mode') != mode:
         return 'invalidated', 'treatment-identity-mismatch'
+    digest = operational.get('planDigest')
+    if (operational.get('immutableSourceUnchanged') is not True
+            or not _valid_grant(operational.get('grantId'))
+            or type(digest) is not str or not re.fullmatch(r'sha256:[0-9a-f]{64}', digest)):
+        return 'no-go', 'mandatory-source-or-grant-proof-failure'
     manifest = operational.get('runtimeManifest')
     if type(manifest) is not dict or not _request_matches(manifest.get('request'), block):
         return 'invalidated', 'runtime-input-identity-mismatch'
@@ -175,6 +190,7 @@ def derive_admission_records(prepared_manifest: bytes, diagnostics: dict[str, by
     eligible = {b['blockId'] for b in prepared['blocks'] if not b['directNumericExclusions']}
     _require(set(diagnostics) == eligible, 'all four eligible diagnostic records are required')
     rows, common_candidate, common_inputs = [], None, None
+    grants, plans = set(), set()
     for block in prepared['blocks']:
         name = block['blockId']
         if block['directNumericExclusions']:
@@ -208,6 +224,14 @@ def derive_admission_records(prepared_manifest: bytes, diagnostics: dict[str, by
         dispositions = [_sample_disposition(s, block, mode) for s, mode in zip(samples, ['serial', 'parallel'])]
         _require(not any(d in {'no-go', 'invalidated'} for d, _ in dispositions),
                  'unsafe or invalidated diagnosis cannot become an exclusion')
+        for sample, (disposition, _) in zip(samples, dispositions):
+            if disposition == 'valid':
+                grant = sample['operational']['grantId']
+                digest = sample['operational']['planDigest']
+                _require(grant not in grants and digest not in plans,
+                         'diagnostic grants or plans reused across private treatments')
+                grants.add(grant)
+                plans.add(digest)
         admitted = all(d == 'valid' for d, _ in dispositions)
         _require(record.get('status') == ('prepared-or-diagnosed' if admitted else 'inconclusive'),
                  'diagnostic closing status differs')
@@ -373,7 +397,7 @@ def run_trial_plan(plan: dict, treatment_callback, *, registration_review: dict,
                             digest = operation.get('planDigest')
                             if (operation['independentVerification'].get('runDirectory') != descriptor['runPath']
                                     or operation.get('immutableSourceUnchanged') is not True
-                                    or type(grant) is not str or not grant or grant in seen_grants
+                                    or not _valid_grant(grant) or grant in seen_grants
                                     or type(digest) is not str or not re.fullmatch(r'sha256:[0-9a-f]{64}', digest)
                                     or digest in seen_plans):
                                 disposition, reason = 'no-go', 'private-destination-source-or-grant-proof-failure'

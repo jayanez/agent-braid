@@ -1,0 +1,12 @@
+{
+  "observation": {
+    "bytes": 106553,
+    "parentCpuNs": 550000,
+    "scope": "shared final envelope encoding/output outside all operational ratios",
+    "sha256": "2c7060c7d9aced5a2b4cc02d033056dfc8a250832ada8009942a781eab5e0eb5",
+    "wallNs": 616625
+  },
+  "output": "/private/tmp/agent-braid-spec022-candidate-diagnostics-20261007/dependency-chain-4-1024.json",
+  "receiptWriteBoundary": "subsequent publication, outside the closed observer span",
+  "recordVersion": "spec022-observer-receipt-v1"
+}

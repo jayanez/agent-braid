@@ -10,6 +10,7 @@ import subprocess
 import sys
 import tempfile
 import unittest
+import uuid
 from unittest.mock import patch
 
 from agent_braid.utility_fixtures import validate_prepared_manifest
@@ -64,6 +65,9 @@ class UtilityPreparationTests(unittest.TestCase):
                        'order': block['plannedOrder'], 'operations': ops}
             samples = [{'status': 'completed', 'accounting': fake_accounting(),
                         'operational': {'blockId': block['blockId'], 'mode': mode,
+                                        'immutableSourceUnchanged': True,
+                                        'grantId': str(uuid.uuid5(uuid.NAMESPACE_URL, block['blockId'] + mode)),
+                                        'planDigest': 'sha256:' + hashlib.sha256((block['blockId'] + mode).encode()).hexdigest(),
                                         'resultTree': block['expectedFinalTree'], 'runtimeManifest': {'request': request},
                                         'independentVerification': {'status': 'verified-completed',
                                           'resultTree': block['expectedFinalTree'], 'completedOperations': block['plannedOrder']}}}
@@ -138,6 +142,22 @@ class UtilityPreparationTests(unittest.TestCase):
             with self.assertRaises(ValueError):
                 prepare.prepare_plan(prepare.DEFAULT_MANIFEST, self.diagnostics, self.root / 'future', existing)
         self.assertEqual(existing.read_bytes(), b'preserve')
+
+    def test_omitted_diagnostic_input_cannot_prepare_plan_or_runtime_callback(self):
+        for path in self.diagnostics.glob('*.json'):
+            record = json.loads(path.read_bytes())
+            record['inputs'].pop('synthetic-test-only-source')
+            path.write_bytes(json.dumps(record).encode())
+        with patch.object(prepare, '_candidate_state', return_value=self.state):
+            with self.assertRaisesRegex(ValueError, 'inputs.*exactly'):
+                prepare.prepare_plan(prepare.DEFAULT_MANIFEST, self.diagnostics, self.root / 'future', self.root / 'plan.json')
+        rows = derive_admission_records(self.raw, {name: (self.diagnostics / (name + '.json')).read_bytes() for name in self.records})
+        plan = build_trial_plan(self.raw, rows, candidate_commit=self.state['candidateCommit'], destination_root=str(self.root / 'future'))
+        with self.callback_scope(), patch.object(prepare, 'build_fixture') as builder:
+            with self.assertRaisesRegex(ValueError, 'exact candidate inventory'):
+                prepare.prepare_runtime_callback(plan)
+            builder.assert_not_called()
+        self.assertFalse((self.root / 'future').exists())
 
     def test_all_fixture_copies_precede_callback_and_runtime_paths_are_bound(self):
         calls = []

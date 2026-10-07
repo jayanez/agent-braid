@@ -1,7 +1,7 @@
 {
   "command": "/tmp/agent-braid-parallel-20261006/.venv-speckit/bin/python -m unittest tests.test_utility_accounting tests.test_utility_fixtures tests.test_m4_utility tests.test_utility_trials tests.test_m4_utility_preparation",
   "developmentReviewModel": "gpt-6-luna",
-  "developmentReviewOutcome": "T002 and preparation CLI/adapter GO; paired validator P2 fixes under final development review. No reviewer executed tests or diagnostics.",
+  "developmentReviewOutcome": "Luna development GO for T002, preparation CLI/adapter and paired validator after two P2 fixes. Trial/accounting reviewer additionally executed 32 focal tests; other reviews executed no tests or diagnostics.",
   "inputs": {
     "agent_braid/analysis.py": "fadfb6f6d3d6f89002df519bbcc86d839724f243e2c8e52732ef57e555abfe00",
     "agent_braid/git_adapter.py": "4548eb96849e2d0ed1eaefc53579d065651b00a2c6ae5b1aef6e2bdc5ae3dc45",
@@ -14,10 +14,10 @@
     "agent_braid/runtime_scheduler.py": "47bb371c88726793d207a59bb85cb6911d86e00a44694b37934805d9fa2462a9",
     "agent_braid/utility_accounting.py": "218c82bc34e41f17dbca69ff3bb6df2f8143cd43e95a0b7d3a4374b97e628058",
     "agent_braid/utility_fixtures.py": "ea3ecb2bda7e6909f5307232dcc6b13953e4ac560eab9144dd0f566d90de8119",
-    "agent_braid/utility_trials.py": "1b61909a5e58e4a7303c8639f69ca6d1da572419ef507e0b883e583f7683c829",
+    "agent_braid/utility_trials.py": "1f41e65b892fb607e887b486042f19d3a4a6dc5db1e1dcaca46930e6e554dce2",
     "research/lab/model.py": "f39040b5476d663f6e7384e65d00073b084df6c8958b38bff45e4d6b19da010f",
     "scripts/measure_m4_utility.py": "a106b4cbff745a5ae7ad6471011143ace92befeff6153ecd4f9a17c6d81cb859",
-    "scripts/prepare_m4_utility_trials.py": "4ccb10d3aaf4b281e3c4ca3e503f65ea11de903ad5a49271cd2481fab09b3cec",
+    "scripts/prepare_m4_utility_trials.py": "054fe8aa3d733aee48fb5802260aae5824f9013c61cb4de10b013d7d4407b213",
     "specs/022-m4-utility-followup/evidence/prepared-fixture-manifest.json": "ec8f36b21dd745df8443acd6035ff75a4b01bd61fd004470ce0315a655908734",
     "specs/022-m4-utility-followup/technical-review-packet.md": "6e5a2bd790fb789926007e11f33af40df2ed494d3e8464b13f114523120b282b"
   },
@@ -25,7 +25,7 @@
   "observedExitCode": 0,
   "recordVersion": "spec022-phase-accounting-development-tests-v1",
   "skipped": 0,
-  "testCount": 65,
+  "testCount": 67,
   "testLog": "specs/022-m4-utility-followup/evidence/phase-accounting-tests.txt",
-  "testLogSha256": "6b148cc102fe929d81558597cadcde1c8b39a6f8dea153bad0442a62c008838d"
+  "testLogSha256": "693b9a94c3fe402c326a86485280ed0d6e6e7189af072307d835eea48e691447"
 }

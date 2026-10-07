@@ -112,7 +112,16 @@
         {
           "given": "a valid private Git fixture and serial/parallel treatment",
           "id": "SC-001",
-          "obtained_evidence": [],
+          "obtained_evidence": [
+            {
+              "path": "specs/022-m4-utility-followup/evidence/phase-accounting-test-receipt.json",
+              "sha256": "cc1be21d59b9785323efebbc5d543aac0fe06c769d0a82a55165a73f459eff0a"
+            },
+            {
+              "path": "specs/022-m4-utility-followup/cost-diagnosis.json",
+              "sha256": "ae1525c424eb4af1342af8acae63134c1d9c7a55a1c09a7ae028681f8279cbfb"
+            }
+          ],
           "planned_evidence": "Future frozen phase/accounting tests, raw paired measurements and scoped decision packet defined in quickstart.md.",
           "test_file": "specs/022-m4-utility-followup/quickstart.md",
           "test_name": "SC-001",
@@ -128,7 +137,16 @@
         {
           "given": "the frozen corpus, treatment order and declared limits",
           "id": "SC-002",
-          "obtained_evidence": [],
+          "obtained_evidence": [
+            {
+              "path": "specs/022-m4-utility-followup/evidence/phase-accounting-test-receipt.json",
+              "sha256": "cc1be21d59b9785323efebbc5d543aac0fe06c769d0a82a55165a73f459eff0a"
+            },
+            {
+              "path": "specs/022-m4-utility-followup/cost-diagnosis.json",
+              "sha256": "ae1525c424eb4af1342af8acae63134c1d9c7a55a1c09a7ae028681f8279cbfb"
+            }
+          ],
           "planned_evidence": "Future frozen phase/accounting tests, raw paired measurements and scoped decision packet defined in quickstart.md.",
           "test_file": "specs/022-m4-utility-followup/quickstart.md",
           "test_name": "SC-002",
@@ -144,7 +162,16 @@
         {
           "given": "an optimization candidate and forged, stale, unknown or interrupted controls",
           "id": "SC-003",
-          "obtained_evidence": [],
+          "obtained_evidence": [
+            {
+              "path": "specs/022-m4-utility-followup/evidence/phase-accounting-test-receipt.json",
+              "sha256": "cc1be21d59b9785323efebbc5d543aac0fe06c769d0a82a55165a73f459eff0a"
+            },
+            {
+              "path": "specs/022-m4-utility-followup/cost-diagnosis.json",
+              "sha256": "ae1525c424eb4af1342af8acae63134c1d9c7a55a1c09a7ae028681f8279cbfb"
+            }
+          ],
           "planned_evidence": "Future frozen phase/accounting tests, raw paired measurements and scoped decision packet defined in quickstart.md.",
           "test_file": "specs/022-m4-utility-followup/quickstart.md",
           "test_name": "SC-003",
@@ -176,6 +203,7 @@
   "stage": "draft",
   "technical_review_preparation": {
     "executionAuthorization": false,
+    "implementationStatus": "T002-T004 engineering implemented; full profiles pending; registered stable harness review pending",
     "localFrozenPreparationCommit": "9f347e803401c04af61e6662ccc5756578805b23",
     "ownerReviewRecord": "specs/022-m4-utility-followup/protocol-review-3777e578.json",
     "ownerReviewSha256": "1d6065eca4f6959570163ce8a3a25ac94ca34b2d7425009167ef3e9f4673e783",
