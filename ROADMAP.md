@@ -3,7 +3,7 @@
 The roadmap follows evidence, not calendar promises. Milestones are exit-criterion driven.
 
 The [spec and milestone index](docs/development/SPEC_MILESTONE_INDEX.md) maps all
-33 specs to the 17 registered GitHub milestones. Titles follow `ID — Capability`;
+38 specs to the 18 registered GitHub milestones. Titles follow `ID — Capability`;
 track prefixes do not establish an implementation sequence. Historical closure
 records retain their original names, scope and decisions.
 
@@ -297,14 +297,14 @@ authorization, idempotency, isolation, privacy, guardrails, and recovery review.
 
 ## Foundational implementation portfolio — 2026-10-05
 
-The [review and implementation portfolio](docs/development/FOUNDATION_IMPLEMENTATION_PORTFOLIO.md) maps foundational obligations to existing and proposed work. The new packages are drafts with human review pending; creating tasks does not adopt their execution contracts or promise a positive research result. Closed milestones retain their historical scope.
+The [review and implementation portfolio](docs/development/FOUNDATION_IMPLEMENTATION_PORTFOLIO.md) maps foundational obligations to existing and proposed work. This portfolio began as a dated proposal. As of 2026-10-07, SPEC-022 measurement instrumentation and its 180-minute successor preparation are implemented, SPEC-027 provides read-only refinement assessments, and SPEC-028 provides a synthetic System 1 reference core. Registered capture, capability adoption and human acceptance retain their separate gates; creating tasks does not adopt execution contracts or promise a positive research result. Closed milestones retain their historical scope.
 
-| Milestone / track | Executable next package | Exit boundary |
+| Milestone / track | Implementation or next package | Exit boundary |
 |---|---|---|
 | M3.5 | [SPEC-019 preparation](specs/019-native-predictor/implementation-readiness.md) | Metadata/synthetic tooling first; real-source rights, yield, protocol and labels before fitting |
-| M4 | [SPEC-022 utility follow-up](specs/022-m4-utility-followup/spec.md) | Prespecified full-cost comparison and explicit new utility decision; preserve SPEC-021 NO-GO |
+| M4 | [SPEC-022 utility follow-up](specs/022-m4-utility-followup/spec.md) | Instrumentation and owner-approved 180-minute successor preparation implemented; exact stable-harness/capture review, registered comparison and a new utility decision remain pending; preserve SPEC-021 NO-GO |
 | M4 real workload | [SPEC-038](specs/038-m4-real-workload-closure/spec.md) | Draft permissioned current-runtime comparison; source rights, exact protocol/capture review and a new whole-M4 founder decision remain pending |
-| M4 refinement contracts | [SPEC-027](specs/027-runtime-refinement-contracts/spec.md) | Source promotion, code isolation and external-effect assessment; each capability needs separate adoption and execution authority |
+| M4 refinement contracts | [SPEC-027](specs/027-runtime-refinement-contracts/spec.md) | Read-only source-promotion, code-isolation and external-effect assessments implemented; each capability still needs a recorded disposition, separate adoption and execution authority |
 | ADP.1 — Recorded-trace adapters | [SPEC-023](specs/023-recorded-trace-adapters/spec.md) | Conservative offline trace mappings and reviewed spike/adoption decisions; no execution authority |
 | LAB.1 — Effectful workload lab | [SPEC-024](specs/024-effectful-workload-lab/spec.md) | Reproducible finite simulated effects, failures and nondeterminism; no real external adapters |
 | RES.1 — Formal interaction research | [SPEC-025](specs/025-contextual-proof-obligations/spec.md) | Bounded contextual controls, explicit proof premises and reviewed restricted claims/comparator feasibility |

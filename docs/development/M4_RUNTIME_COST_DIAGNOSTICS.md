@@ -79,3 +79,17 @@ per-treatment allocation peak, and phase scratch peaks are not simultaneous
 storage. OS caches/background load are uncontrolled, so these small descriptive
 samples establish neither causality nor general speedup. Safety reproduction,
 independent review, human/founder gates and scientific validation stay separate.
+
+## Current follow-up — 2026-10-07
+
+This guide profiles the frozen SPEC-021 corpus; its six-pair observations and
+historical G4 NO-GO retain their original boundary. The subsequent
+[SPEC-022 quickstart](../../specs/022-m4-utility-followup/quickstart.md) documents
+full-cost instrumentation and the registered comparison workflow. The
+[180-minute successor](../../specs/022-m4-utility-followup/successor-protocol-180m.md)
+is implemented for preparation after owner review; it preserves the original
+45-minute plan version and does not authorize capture. Exact stable-harness and
+manifest review, registered measurement and any new utility decision remain
+separate pending gates. Engineering preparation diagnostics are not registered
+measurement evidence. The proposed [SPEC-038 real-workload study](../../specs/038-m4-real-workload-closure/spec.md)
+also requires exact source-use rights and protocol/capture approval.

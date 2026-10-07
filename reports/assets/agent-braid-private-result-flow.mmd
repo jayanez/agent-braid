@@ -1,0 +1,58 @@
+---
+config:
+  theme: base
+  htmlLabels: false
+  fontFamily: "Inter, Arial, sans-serif"
+  flowchart:
+    useMaxWidth: true
+    nodeSpacing: 48
+    rankSpacing: 72
+  themeVariables:
+    fontSize: 16px
+    primaryTextColor: "#152946"
+    lineColor: "#63738a"
+    clusterBkg: "#f6f8fb"
+    clusterBorder: "#b7c5d8"
+---
+flowchart LR
+  accTitle: From analysis to a verified private result
+  accDescr: Advisory AIM analysis remains separate from the bounded Git replay path. A consumer reconstructs replay, policy and tree claims into a verified local policy plan. An operator explicitly grants the exact plan digest. Execution rechecks the plan, prepares in isolated scratch and publishes checkpoints serially to a private result repository. The checked result includes runtime state and a recovery journal; no source ref is published.
+
+  subgraph analysis["ADVISORY ANALYSIS · SEPARATE FROM AUTHORIZATION"]
+    direction LR
+    aim["AIM metadata"] --> effects["Effect + dependency analysis"]
+    effects --> report["Advisory report<br/>no execution authority"]
+  end
+
+  subgraph verify["01 · REPLAY + CONSUMER VERIFICATION"]
+    direction TB
+    git["Immutable Git inputs<br/>base revision · operations · patches"] --> consumer["Bounded replay + consumer reconstruction<br/>replay evidence · advisory plan · policy · limits · tree/effects"]
+    consumer --> plan["Verified local policy plan<br/>exact manifest + plan digests"]
+  end
+
+  subgraph runtime["02 · EXPLICIT AUTHORIZATION + PRIVATE EXECUTION"]
+    direction TB
+    grant["Operator acknowledges exact plan digest<br/>explicit one-use grant binds destination + action"] --> prepare["Recheck plan + prepare in<br/>isolated scratch"]
+    prepare --> publish["Serial private publication<br/>private checkpoints · source ref untouched"]
+    publish --> result["Read-only consumer check<br/>result tree + recovery journal"]
+  end
+
+  plan --> grant
+
+  classDef analysisNode fill:#f3efff,stroke:#7554b8,color:#241a3a,stroke-width:1.5px;
+  classDef sourceNode fill:#eaf2ff,stroke:#4778c4,color:#152946,stroke-width:1.5px;
+  classDef verifyNode fill:#e9f1ff,stroke:#4778c4,color:#152946,stroke-width:1.5px;
+  classDef authNode fill:#fff2dc,stroke:#b77917,color:#3f2b0a,stroke-width:1.5px;
+  classDef runtimeNode fill:#e8f5ee,stroke:#34845a,color:#173b28,stroke-width:1.5px;
+
+  class aim,effects,report analysisNode;
+  class git sourceNode;
+  class consumer,plan verifyNode;
+  class grant authNode;
+  class prepare,publish,result runtimeNode;
+
+  style analysis fill:#faf8ff,stroke:#c9b9e8,stroke-width:1px
+  style verify fill:#f5f8ff,stroke:#b5c9e8,stroke-width:1px
+  style runtime fill:#f7fbf7,stroke:#b4d5bd,stroke-width:1px
+
+  linkStyle default stroke:#63738a,stroke-width:1.6px
