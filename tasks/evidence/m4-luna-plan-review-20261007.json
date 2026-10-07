@@ -1,0 +1,26 @@
+{
+  "record_type": "independent-m4-plan-review-v1",
+  "model": "gpt-6-luna",
+  "reasoning_effort": "medium",
+  "scope": "Implementation plan correctness, priority, dependency order, evidence and authorization boundaries",
+  "candidate": "5cb144e1193a266645e012a7f31224d846ea7003",
+  "plan_sha256": "76ef4ac9e85f5787753bf8e6316f15a85d86ab9722c70d056558d0afa29c7d54",
+  "review_date": "2026-10-07",
+  "outcome": "no-actionable-P1-P2-findings",
+  "findings": [],
+  "checked": [
+    "38 issues, 22 closed and 16 open at captured baseline",
+    "10 completed-source but open-child tracking discrepancies",
+    "14 M4 audit operations and 56 out-of-scope operations",
+    "Historical G4 NO-GO and six-row whole-M4 acceptance",
+    "45-minute dispatch budget, estimated 111.17-minute capture feasibility and incomplete timeout status",
+    "Synthetic diagnostics do not satisfy Article 19 actual-workload evidence",
+    "Exact rights/candidate/manifest/capture and founder decision gates",
+    "SPEC-027 capability adoption is conditional, not implied by assessment completion",
+    "Scoped remote audit and whole-M4 GO before milestone closure"
+  ],
+  "limits": [
+    "Read-only plan review; not executed runtime tests, experiment evidence, human/founder approval or independent external reproduction.",
+    "Workload availability/rights and capture feasibility remain open execution-phase gates."
+  ]
+}
