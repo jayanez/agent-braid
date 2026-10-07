@@ -9,7 +9,8 @@ import uuid
 
 from agent_braid.utility_fixtures import validate_prepared_manifest
 from agent_braid.utility_trials import (
-    DISPATCH_BUDGET_NS, InvalidUtilityTrials, build_trial_plan,
+    DISPATCH_BUDGET_NS, DISPATCH_BUDGET_V2_NS, PLAN_VERSION_V1, PLAN_VERSION_V2,
+    InvalidUtilityTrials, build_trial_plan,
     derive_admission_records, encode_trial_plan, run_trial_plan,
 )
 
@@ -88,6 +89,8 @@ class UtilityTrialsTests(unittest.TestCase):
                               registration_review=self.review, monotonic_ns=clock or (lambda: 0))
 
     def test_fixed_inventory_and_all_parity_destinations_are_retained(self):
+        self.assertEqual(self.plan['version'], PLAN_VERSION_V1)
+        self.assertEqual(self.plan['dispatchBudgetNs'], DISPATCH_BUDGET_NS)
         self.assertEqual(len(self.plan['blocks']), 9)
         self.assertEqual(sum(bool(b['pairs']) for b in self.plan['blocks']), 4)
         paths = []
@@ -100,6 +103,37 @@ class UtilityTrialsTests(unittest.TestCase):
         self.assertEqual(len(paths), 528)
         self.assertEqual(len(set(paths)), 528)
 
+    def test_successor_plan_keeps_canonical_inventory_and_exact_horizon(self):
+        plan = build_trial_plan(self.raw, self.admissions, candidate_commit='2' * 40,
+                                destination_root='/synthetic-test-never-created',
+                                plan_version=PLAN_VERSION_V2)
+        self.assertEqual(plan['version'], PLAN_VERSION_V2)
+        self.assertEqual(plan['dispatchBudgetNs'], DISPATCH_BUDGET_V2_NS)
+        legacy_default = build_trial_plan(self.raw, self.admissions, candidate_commit='2' * 40,
+                                          destination_root='/synthetic-test-never-created')
+        explicit_v1 = build_trial_plan(self.raw, self.admissions, candidate_commit='2' * 40,
+                                       destination_root='/synthetic-test-never-created',
+                                       plan_version=PLAN_VERSION_V1)
+        self.assertEqual(encode_trial_plan(legacy_default), encode_trial_plan(explicit_v1))
+        self.assertEqual(len(plan['blocks']), 9)
+        self.assertEqual(sum(b['status'] == 'excluded-by-pinned-cap' for b in plan['blocks']), 5)
+        self.assertEqual(sum(len(b['pairs']) for b in plan['blocks']), 88)
+        self.assertEqual([b['blockId'] for b in plan['blocks']], [b['blockId'] for b in self.plan['blocks']])
+        self.assertEqual(encode_trial_plan(plan), encode_trial_plan(deepcopy(plan)))
+
+    def test_unknown_plan_version_or_version_horizon_mismatch_fails_closed(self):
+        for version, budget in [('spec022-paired-evaluation-plan-v3', DISPATCH_BUDGET_V2_NS),
+                                (PLAN_VERSION_V1, DISPATCH_BUDGET_V2_NS),
+                                (PLAN_VERSION_V2, DISPATCH_BUDGET_NS)]:
+            plan = deepcopy(self.plan)
+            plan['version'] = version
+            plan['dispatchBudgetNs'] = budget
+            body = {k: v for k, v in plan.items() if k != 'planDigest'}
+            plan['planDigest'] = hashlib.sha256(json.dumps(body, sort_keys=True, separators=(',', ':'),
+                                                          allow_nan=False, ensure_ascii=True).encode()).hexdigest()
+            with self.subTest(version=version, budget=budget), self.assertRaises(InvalidUtilityTrials):
+                encode_trial_plan(plan)
+
     def test_matching_separate_review_required_before_any_callback(self):
         for review in [None, {}, {**self.review, 'decision': 'pending'},
                        {**self.review, 'reviewedManifestSha256': '0' * 64},
@@ -108,6 +142,58 @@ class UtilityTrialsTests(unittest.TestCase):
             with self.subTest(review=review), self.assertRaisesRegex(InvalidUtilityTrials, 'review required'):
                 run_trial_plan(self.plan, lambda d: called.append(d), registration_review=review)
             self.assertEqual(called, [])
+
+    def test_cross_version_review_replay_and_explicit_v1_mismatch_are_rejected(self):
+        explicit_bad_v1 = {**self.review, 'reviewedPlanVersion': None}
+        with self.assertRaisesRegex(InvalidUtilityTrials, 'review plan version'):
+            run_trial_plan(self.plan, self.callback, registration_review=explicit_bad_v1)
+        plan = build_trial_plan(self.raw, self.admissions, candidate_commit='2' * 40,
+                                destination_root='/synthetic-test-never-created', plan_version=PLAN_VERSION_V2)
+        raw = encode_trial_plan(plan)
+        with self.assertRaisesRegex(InvalidUtilityTrials, 'matching separate registration review'):
+            run_trial_plan(plan, self.callback, registration_review=self.review)
+        base = {'decision': 'approved', 'reviewedCandidateCommit': plan['candidateCommit'],
+                'reviewedManifestSha256': hashlib.sha256(raw).hexdigest()}
+        calls = []
+        for review in [base, {**base, 'reviewedPlanVersion': PLAN_VERSION_V1},
+                       {**base, 'reviewedPlanVersion': 'spec022-paired-evaluation-plan-v3'},
+                       {**base, 'reviewedPlanVersion': None}, {**base, 'reviewedPlanVersion': 3}]:
+            with self.subTest(review=review), self.assertRaisesRegex(InvalidUtilityTrials, 'review plan version'):
+                run_trial_plan(plan, lambda d: calls.append(d), registration_review=review)
+        self.assertEqual(calls, [])
+        mismatched_v1 = {**self.review, 'reviewedPlanVersion': PLAN_VERSION_V2}
+        with self.assertRaisesRegex(InvalidUtilityTrials, 'review plan version'):
+            run_trial_plan(self.plan, self.callback, registration_review=mismatched_v1)
+
+    def test_successor_horizon_is_checked_at_start_and_after_final_treatment(self):
+        plan = build_trial_plan(self.raw, self.admissions, candidate_commit='2' * 40,
+                                destination_root='/synthetic-test-never-created', plan_version=PLAN_VERSION_V2)
+        raw = encode_trial_plan(plan)
+        review = {'decision': 'approved', 'reviewedCandidateCommit': plan['candidateCommit'],
+                  'reviewedManifestSha256': hashlib.sha256(raw).hexdigest(),
+                  'reviewedPlanVersion': PLAN_VERSION_V2}
+        calls = []
+        start_clock = iter([0, DISPATCH_BUDGET_V2_NS])
+        at_start = run_trial_plan(plan, lambda d: calls.append(d), registration_review=review,
+                                  monotonic_ns=lambda: next(start_clock))
+        self.assertEqual(calls, [])
+        self.assertEqual(at_start['stopReason'], 'dispatch-budget-exhausted')
+        self.assertEqual(at_start['status'], 'incomplete')
+
+        now, final_calls = [0], []
+        def callback(descriptor):
+            final_calls.append(descriptor)
+            if len(final_calls) == 176:
+                now[0] = DISPATCH_BUDGET_V2_NS
+            return self.callback(descriptor)
+        result = run_trial_plan(plan, callback, registration_review=review, monotonic_ns=lambda: now[0])
+        self.assertEqual(len(final_calls), 176)
+        self.assertEqual(result['version'], 'spec022-paired-evaluation-record-v2')
+        self.assertEqual(result['status'], 'incomplete')
+        self.assertEqual(result['stopReason'], 'dispatch-budget-exhausted')
+        rows = [t for b in result['blocks'] for p in b['pairs'] for t in p['treatments']]
+        self.assertTrue(all(t['status'] == 'valid' for t in rows))
+        self.assertNotIn('positive-synthetic-diagnostic', [b['outcome'] for b in result['blocks']])
 
     def test_complete_positive_and_negative_are_synthetic_chains_not_pooled(self):
         result = self.run_plan()

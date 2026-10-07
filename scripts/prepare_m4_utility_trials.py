@@ -20,7 +20,8 @@ from agent_braid.utility_fixtures import (
     InvalidUtilityFixture, _destination, build_fixture, validate_prepared_manifest,
 )
 from agent_braid.utility_trials import (
-    build_trial_plan, derive_admission_records, encode_trial_plan,
+    PLAN_VERSION_V1, PLAN_VERSION_V2, build_trial_plan, derive_admission_records,
+    encode_trial_plan,
 )
 from scripts.measure_m4_utility import (
     DEFAULT_MANIFEST, INPUT_PATHS, PROTOCOL_SHA256, InvalidatedDiagnostic, UnsafeDiagnostic,
@@ -59,7 +60,8 @@ def _fresh_file(value: Path):
     return path
 
 
-def prepare_plan(manifest: Path, diagnostics: Path, destination_root: Path, output: Path) -> int:
+def prepare_plan(manifest: Path, diagnostics: Path, destination_root: Path, output: Path,
+                 *, plan_version: str = PLAN_VERSION_V1) -> int:
     """Write a reviewable manifest and receipt, without constructing trial copies."""
     state = _candidate_state()
     raw_manifest = manifest.read_bytes()
@@ -78,7 +80,7 @@ def prepare_plan(manifest: Path, diagnostics: Path, destination_root: Path, outp
         if admission['status'] != 'excluded-by-pinned-cap' and admission.get('diagnosticInputHashes') != state['inputs']:
             raise ValueError('diagnostic code inputs do not match this candidate exactly')
     plan = build_trial_plan(raw_manifest, admissions, candidate_commit=state['candidateCommit'],
-                            destination_root=str(future_root))
+                            destination_root=str(future_root), plan_version=plan_version)
     raw = encode_trial_plan(plan)
     if _candidate_state() != state:
         raise ValueError('candidate changed during preparation')
@@ -88,6 +90,9 @@ def prepare_plan(manifest: Path, diagnostics: Path, destination_root: Path, outp
                'diagnosticSha256': {name: hashlib.sha256(data).hexdigest() for name, data in raw_records.items()},
                'registeredExecution': False, 'reviewDecision': 'pending-separate-stable-harness-manifest-review',
                'boundary': 'Plan preparation only; no fixture copies, grants, runtime calls or registered measurements.'}
+    if plan['version'] != PLAN_VERSION_V1:
+        receipt['planVersion'] = plan['version']
+        receipt['dispatchBudgetNs'] = plan['dispatchBudgetNs']
     with target.open('xb') as stream:
         stream.write(raw)
     with receipt_path.open('xb') as stream:
@@ -133,11 +138,12 @@ def prepare_runtime_callback(plan: dict, controlled_child_scope: bool = False):
                 fixtures[key], descriptors[key], fingerprints[key] = fixture, expected, fingerprint
     if _candidate_state() != state or encode_trial_plan(plan) != raw_plan:
         raise ValueError('candidate or manifest changed during fixture preparation')
+    dispatch_minutes = plan['dispatchBudgetNs'] // (60 * 1_000_000_000)
     record = {'version': 'spec022-private-trial-preparation-v1', **deepcopy(state),
               'manifestSha256': hashlib.sha256(raw_plan).hexdigest(), 'fixtureCopies': len(fixtures),
               'wallNs': time.monotonic_ns() - start, 'parentCpuNs': time.process_time_ns() - cpu,
               'sourceFingerprints': deepcopy(fingerprints), 'ownedRoot': str(root),
-              'boundary': 'All fixture reconstruction is outside operational treatment intervals and 45-minute dispatch budget.',
+              'boundary': f'All fixture reconstruction is outside operational treatment intervals and {dispatch_minutes}-minute dispatch budget.',
               'retention': 'Prepared fixture inputs remain in owned root; runtime cleanup is limited to fresh sibling runtime roots.',
               'trustScope': 'Trusted local POSIX filesystem; no hostile same-UID guarantee.'}
     used = set()
@@ -218,16 +224,21 @@ def main(argv=None):
     parser.add_argument('--diagnostics', type=Path)
     parser.add_argument('--destination-root', type=Path)
     parser.add_argument('--output', type=Path)
+    parser.add_argument('--plan-version', choices=('v1', 'v2'), default='v1',
+                        help='prospective plan protocol version (default: v1; v2 uses a 180-minute horizon)')
+    parser.add_argument('--run', action='store_true', help='refused: this CLI prepares plans only')
     parser.add_argument('--execute', action='store_true', help='refused: separate stable harness review is required')
     parser.add_argument('--registered', action='store_true', help='refused: this CLI prepares plans only')
     args = parser.parse_args(argv)
-    if args.execute or args.registered:
+    if args.run or args.execute or args.registered:
         print(json.dumps({'status': 'refused', 'reason': 'registered execution requires separate reviewed stable harness/manifest; this CLI prepares only'}), file=sys.stderr)
         return 2
     if any(value is None for value in (args.diagnostics, args.destination_root, args.output)):
         parser.error('--diagnostics, --destination-root and --output are required for preparation')
     try:
-        return prepare_plan(args.manifest, args.diagnostics, args.destination_root, args.output)
+        plan_version = {'v1': PLAN_VERSION_V1, 'v2': PLAN_VERSION_V2}[args.plan_version]
+        return prepare_plan(args.manifest, args.diagnostics, args.destination_root, args.output,
+                            plan_version=plan_version)
     except (ValueError, OSError, subprocess.SubprocessError) as exc:
         print(json.dumps({'status': 'refused', 'reason': str(exc)}), file=sys.stderr)
         return 2
