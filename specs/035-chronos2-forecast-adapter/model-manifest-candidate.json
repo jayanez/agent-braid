@@ -1,0 +1,62 @@
+{
+  "status": "draft-not-approved",
+  "provisioningAuthorized": false,
+  "library": {
+    "name": "chronos-forecasting",
+    "version": "2.3.2",
+    "sourceCommit": "0aba28e9360b6355d5a919596c90b16c25939f02",
+    "dependencyLockDigest": null
+  },
+  "checkpoint": {
+    "id": "amazon/chronos-2",
+    "revision": "29ec3766d36d6f73f0696f85560a422f50e8498c",
+    "modelCardLicense": "Apache-2.0",
+    "fileHashes": null,
+    "localPath": null
+  },
+  "deployment": {
+    "device": "cpu",
+    "precision": "float32-reference",
+    "hardwareProfile": null,
+    "budgetReview": null,
+    "offline": true,
+    "remoteCode": false,
+    "fineTuning": false,
+    "cloudEndpoint": null
+  },
+  "upstreamCeilings": {
+    "contextBins": 8192,
+    "horizonBins": 1024
+  },
+  "proposedEnvelope": {
+    "inputBytes": 1048576,
+    "activeRequests": 1,
+    "queuedRequests": 0,
+    "batchItems": 1,
+    "targetChannels": 8,
+    "covariateChannels": 8,
+    "contextBins": 128,
+    "horizonBins": [
+      1,
+      5,
+      10
+    ],
+    "quantiles": [
+      0.1,
+      0.5,
+      0.9
+    ],
+    "cpuThreads": 1,
+    "workerRssBytes": 2147483648,
+    "residentDeadlineMs": 1000,
+    "coldStartDeadlineMs": 30000
+  },
+  "pointOutputSemantics": "median-p50-despite-upstream-mean-variable",
+  "requiredBeforeLoad": [
+    "exact artifact and full dependency/license review",
+    "approved local file hashes",
+    "installed hardware/enforcement capability",
+    "explicit provisioning and numerical compute approval"
+  ],
+  "obtainedEvidence": []
+}

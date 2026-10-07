@@ -1,0 +1,131 @@
+{
+  "scope": "SPEC-034-037 structural planning audit",
+  "requirements": 27,
+  "tasks": 33,
+  "dependencies": {
+    "SPEC-034/T001": [],
+    "SPEC-034/T002": [
+      "SPEC-034/T001"
+    ],
+    "SPEC-034/T003": [
+      "SPEC-034/T002"
+    ],
+    "SPEC-034/T004": [
+      "SPEC-034/T002"
+    ],
+    "SPEC-034/T005": [
+      "SPEC-034/T001",
+      "SPEC-034/T002"
+    ],
+    "SPEC-034/T006": [
+      "SPEC-034/T003",
+      "SPEC-034/T004",
+      "SPEC-034/T005"
+    ],
+    "SPEC-034/T007": [
+      "SPEC-034/T006"
+    ],
+    "SPEC-034/T008": [
+      "SPEC-034/T007"
+    ],
+    "SPEC-035/T001": [
+      "SPEC-034/T001"
+    ],
+    "SPEC-035/T002": [
+      "SPEC-034/T002",
+      "SPEC-035/T001"
+    ],
+    "SPEC-035/T003": [
+      "SPEC-034/T004",
+      "SPEC-035/T002"
+    ],
+    "SPEC-035/T004": [
+      "SPEC-035/T003"
+    ],
+    "SPEC-035/T005": [
+      "SPEC-035/T002"
+    ],
+    "SPEC-035/T006": [
+      "SPEC-034/T005",
+      "SPEC-035/T004",
+      "SPEC-035/T005"
+    ],
+    "SPEC-035/T007": [
+      "SPEC-035/T004",
+      "SPEC-035/T005",
+      "SPEC-035/T006"
+    ],
+    "SPEC-035/T008": [
+      "SPEC-035/T007"
+    ],
+    "SPEC-036/T001": [
+      "SPEC-034/T007",
+      "SPEC-035/T001"
+    ],
+    "SPEC-036/T002": [
+      "SPEC-034/T004",
+      "SPEC-036/T001"
+    ],
+    "SPEC-036/T003": [
+      "SPEC-035/T007",
+      "SPEC-036/T002"
+    ],
+    "SPEC-036/T004": [
+      "SPEC-036/T002",
+      "SPEC-037/T003"
+    ],
+    "SPEC-036/T005": [
+      "SPEC-036/T003",
+      "SPEC-036/T004"
+    ],
+    "SPEC-036/T006": [
+      "SPEC-036/T005"
+    ],
+    "SPEC-036/T007": [
+      "SPEC-034/T008",
+      "SPEC-035/T008",
+      "SPEC-036/T006"
+    ],
+    "SPEC-036/T008": [
+      "SPEC-036/T001",
+      "SPEC-036/T007"
+    ],
+    "SPEC-036/T009": [
+      "SPEC-036/T008"
+    ],
+    "SPEC-037/T001": [
+      "SPEC-034/T001",
+      "SPEC-035/T002"
+    ],
+    "SPEC-037/T002": [
+      "SPEC-035/T007",
+      "SPEC-037/T001"
+    ],
+    "SPEC-037/T003": [
+      "SPEC-034/T005",
+      "SPEC-035/T007",
+      "SPEC-037/T001"
+    ],
+    "SPEC-037/T004": [
+      "SPEC-037/T003"
+    ],
+    "SPEC-037/T005": [
+      "SPEC-037/T002",
+      "SPEC-037/T003"
+    ],
+    "SPEC-037/T006": [
+      "SPEC-037/T005"
+    ],
+    "SPEC-037/T007": [
+      "SPEC-036/T009",
+      "SPEC-037/T006"
+    ],
+    "SPEC-037/T008": [
+      "SPEC-037/T007"
+    ]
+  },
+  "graph": "acyclic",
+  "priorSourceTrackingStates": "unchanged",
+  "originalCheckout": "untouched; isolated full clone used for unreachable-object preflight recovery",
+  "baseCommit": "25a3d8d984abd23deb414fa815c4a7e5fee4b52e"
+}
