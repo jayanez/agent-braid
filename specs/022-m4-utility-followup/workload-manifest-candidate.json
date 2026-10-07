@@ -1,19 +1,207 @@
 {
-  "version": "m4-utility-protocol-candidate-v1",
-  "status": "draft-human-technical-review-pending",
-  "sourceKind": "synthetic-owned",
+  "admissionStatus": "not-tested",
   "blocks": [
-    {"family": "independent", "operations": 2, "payloadBytes": [1024, 65536, 1048576]},
-    {"family": "independent", "operations": 4, "payloadBytes": [1024, 65536, 1048576]},
-    {"family": "dependency-chain", "operations": 4, "payloadBytes": [1024, 65536, 1048576]}
+    {
+      "admissionStatus": "not-tested",
+      "aggregatePatchBytes": 2284,
+      "blockId": "independent-2-1024",
+      "directNumericExclusions": [],
+      "family": "independent",
+      "operations": 2,
+      "payloadBytes": 1024,
+      "plannedOrder": [
+        "a",
+        "b"
+      ]
+    },
+    {
+      "admissionStatus": "not-tested",
+      "aggregatePatchBytes": 133328,
+      "blockId": "independent-2-65536",
+      "directNumericExclusions": [],
+      "family": "independent",
+      "operations": 2,
+      "payloadBytes": 65536,
+      "plannedOrder": [
+        "a",
+        "b"
+      ]
+    },
+    {
+      "admissionStatus": "not-tested",
+      "aggregatePatchBytes": 2130130,
+      "blockId": "independent-2-1048576",
+      "directNumericExclusions": [
+        {
+          "actualBytes": 2130130,
+          "capBytes": 262144,
+          "reason": "runtime patch limit exceeded",
+          "validator": "git_runtime._prepare"
+        },
+        {
+          "actualBytes": 2130130,
+          "capBytes": 1048576,
+          "reason": "aggregate patch bytes exceed 1 MiB",
+          "validator": "git_replay._patches"
+        }
+      ],
+      "family": "independent",
+      "operations": 2,
+      "payloadBytes": 1048576,
+      "plannedOrder": [
+        "a",
+        "b"
+      ]
+    },
+    {
+      "admissionStatus": "not-tested",
+      "aggregatePatchBytes": 4568,
+      "blockId": "independent-4-1024",
+      "directNumericExclusions": [],
+      "family": "independent",
+      "operations": 4,
+      "payloadBytes": 1024,
+      "plannedOrder": [
+        "a",
+        "b",
+        "c",
+        "d"
+      ]
+    },
+    {
+      "admissionStatus": "not-tested",
+      "aggregatePatchBytes": 266656,
+      "blockId": "independent-4-65536",
+      "directNumericExclusions": [
+        {
+          "actualBytes": 266656,
+          "capBytes": 262144,
+          "reason": "runtime patch limit exceeded",
+          "validator": "git_runtime._prepare"
+        }
+      ],
+      "family": "independent",
+      "operations": 4,
+      "payloadBytes": 65536,
+      "plannedOrder": [
+        "a",
+        "b",
+        "c",
+        "d"
+      ]
+    },
+    {
+      "admissionStatus": "not-tested",
+      "aggregatePatchBytes": 4260260,
+      "blockId": "independent-4-1048576",
+      "directNumericExclusions": [
+        {
+          "actualBytes": 4260260,
+          "capBytes": 262144,
+          "reason": "runtime patch limit exceeded",
+          "validator": "git_runtime._prepare"
+        },
+        {
+          "actualBytes": 4260260,
+          "capBytes": 1048576,
+          "reason": "aggregate patch bytes exceed 1 MiB",
+          "validator": "git_replay._patches"
+        }
+      ],
+      "family": "independent",
+      "operations": 4,
+      "payloadBytes": 1048576,
+      "plannedOrder": [
+        "a",
+        "b",
+        "c",
+        "d"
+      ]
+    },
+    {
+      "admissionStatus": "not-tested",
+      "aggregatePatchBytes": 4568,
+      "blockId": "dependency-chain-4-1024",
+      "directNumericExclusions": [],
+      "family": "dependency-chain",
+      "operations": 4,
+      "payloadBytes": 1024,
+      "plannedOrder": [
+        "a",
+        "b",
+        "c",
+        "d"
+      ]
+    },
+    {
+      "admissionStatus": "not-tested",
+      "aggregatePatchBytes": 266656,
+      "blockId": "dependency-chain-4-65536",
+      "directNumericExclusions": [
+        {
+          "actualBytes": 266656,
+          "capBytes": 262144,
+          "reason": "runtime patch limit exceeded",
+          "validator": "git_runtime._prepare"
+        }
+      ],
+      "family": "dependency-chain",
+      "operations": 4,
+      "payloadBytes": 65536,
+      "plannedOrder": [
+        "a",
+        "b",
+        "c",
+        "d"
+      ]
+    },
+    {
+      "admissionStatus": "not-tested",
+      "aggregatePatchBytes": 4260260,
+      "blockId": "dependency-chain-4-1048576",
+      "directNumericExclusions": [
+        {
+          "actualBytes": 4260260,
+          "capBytes": 262144,
+          "reason": "runtime patch limit exceeded",
+          "validator": "git_runtime._prepare"
+        },
+        {
+          "actualBytes": 4260260,
+          "capBytes": 1048576,
+          "reason": "aggregate patch bytes exceed 1 MiB",
+          "validator": "git_replay._patches"
+        }
+      ],
+      "family": "dependency-chain",
+      "operations": 4,
+      "payloadBytes": 1048576,
+      "plannedOrder": [
+        "a",
+        "b",
+        "c",
+        "d"
+      ]
+    }
   ],
-  "warmupPairs": 2,
-  "measuredPairs": 20,
-  "treatmentOrder": "serial-first-on-even-repetition-parallel-first-on-odd",
-  "descriptiveRatioThreshold": 1.10,
+  "descriptiveRatioThreshold": 1.1,
+  "executionAuthorization": false,
   "existingCapsOnly": true,
+  "fixtureObjectsGenerated": true,
   "invalidPairDisposition": "retain-and-mark-block-inconclusive",
-  "fixtureObjectsGenerated": false,
+  "measuredPairs": 20,
   "measurementExecuted": false,
-  "executionAuthorization": false
+  "observerBoundary": "Final sealing/output and shared artifact writing separately reported outside operational treatment interval.",
+  "populationBoundary": "Repeated-character synthetic text in distinct files; declared-order chain only. Synthetic diagnostics do not close Article 19 actual-workload evidence, G4, practical utility or M4 acceptance.",
+  "preparedFixtureManifest": {
+    "path": "evidence/prepared-fixture-manifest.json",
+    "sha256": "ec8f36b21dd745df8443acd6035ff75a4b01bd61fd004470ce0315a655908734"
+  },
+  "registeredDispatchBudgetMinutes": 45,
+  "sourceKind": "synthetic-owned",
+  "status": "draft-human-technical-review-pending",
+  "technicalReviewPacket": "technical-review-packet.md",
+  "treatmentOrder": "serial-first-on-even-repetition-parallel-first-on-odd",
+  "version": "m4-utility-protocol-candidate-v2",
+  "warmupPairs": 2
 }

@@ -1,0 +1,12 @@
+{
+  "command": [
+    "/tmp/agent-braid-parallel-20261006/.venv-speckit/bin/python3.13",
+    "/tmp/prepare-m4-utility-fixtures-v2-20261007.py"
+  ],
+  "observedToolExitCode": 0,
+  "manifestSha256": "ec8f36b21dd745df8443acd6035ff75a4b01bd61fd004470ce0315a655908734",
+  "scriptSha256": "sha256:3b2a1d9df9b569f0b3087bf1fc851f7563f388a865af8c63d190419f10155225",
+  "priorManifestSha256": "677e8cb834c3fc30bdc482d2d78e313cc5f89b10587b3b86313eefd20016b51f",
+  "identityComparison": "All nine complete block records byte-equivalent after JSON parsing against v1; unchanged commits/trees/patches/order/exclusions.",
+  "receiptBoundary": "Preparation process only; no runtime admission, grants, measurements, tests or T002 instrumentation."
+}
