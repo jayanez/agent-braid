@@ -39,12 +39,16 @@ def _keys(value: Any, keys: set[str], name: str) -> dict:
 def _identifier(value: Any, name: str) -> str:
     if type(value) is not str or not value or len(value) > 64 or value == ROOT:
         raise InvalidExchange(f"{name} must be a nonempty identifier of at most 64 characters")
+    if any(0xD800 <= ord(char) <= 0xDFFF for char in value):
+        raise InvalidExchange("identifier must be valid Unicode")
     return value
 
 
 def _value(value: Any, name: str) -> str:
     if type(value) is not str or len(value) > 256:
         raise InvalidExchange(f"{name} must be a string of at most 256 characters")
+    if any(0xD800 <= ord(char) <= 0xDFFF for char in value):
+        raise InvalidExchange("value must be valid Unicode")
     return value
 
 
@@ -225,3 +229,34 @@ def exhaustive_corpus() -> dict:
             "allOrdersStepBaseline": exhaustive_steps,
             "falseCertificates": false_certificates,
             "executionAuthorization": False}
+
+
+def verify_candidates_with_advice(candidates: list[dict], *, advice_request_bytes: bytes,
+                                 expected_context_digest: str, expected_registry_digest: str,
+                                 cancellation=None) -> tuple[list[dict], object]:
+    """Verify every supplied eligible pair; advice is returned as a sidecar.
+
+    Candidates are exactly candidateId/request records. The unchanged native
+    eligibility requires two inserts. This wrapper uses original order even when
+    advice suggests another order; it never omits a negative or unknown result.
+    """
+    from agent_braid.system_one_advisors import advise_bound_stage
+    if type(candidates) is not list or not len(candidates) <= 64:
+        raise InvalidExchange('invalid candidate inventory')
+    identifiers = []
+    for item in candidates:
+        _keys(item, {'candidateId','request'}, 'candidate')
+        identifiers.append(_identifier(item['candidateId'], 'candidate id'))
+        request = validate_request(item['request'])
+        if len(request['operations']) != 2:
+            raise InvalidExchange('native eligibility requires exactly two inserts')
+    if len(set(identifiers)) != len(identifiers):
+        raise InvalidExchange('duplicate candidate id')
+    advice = advise_bound_stage(advice_request_bytes,
+        expected_context_digest=expected_context_digest,
+        expected_registry_digest=expected_registry_digest,
+        stage='candidate-priority', population_ids=identifiers,
+        domain='spec018-prefiltered', cancellation=cancellation)
+    results = [{'candidateId': item['candidateId'], 'verification': verify(produce(item['request']))}
+               for item in candidates]
+    return results, advice

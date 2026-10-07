@@ -290,3 +290,22 @@ def render_text(report: dict) -> str:
     lines.append("Execution authorization: false")
     return "\n".join(lines) + "\n"
 
+
+
+def analyze_with_advice(value: object, *, advice_request_bytes: bytes,
+                        expected_context_digest: str, expected_registry_digest: str,
+                        cancellation=None) -> tuple[dict, object]:
+    """Opt-in sidecar; preserve the complete legacy report and analysis budget.
+
+    The analyzer-choice packet is metadata only. It cannot select a different
+    analyzer, prune operations or change the report's shape or digest.
+    """
+    from agent_braid.system_one_advisors import advise_bound_stage
+    records, _ = _records(value)
+    report = analyze(value)
+    advice = advise_bound_stage(advice_request_bytes,
+        expected_context_digest=expected_context_digest,
+        expected_registry_digest=expected_registry_digest,
+        stage='analyzer-choice', population_ids=[r['instanceId'] for r in records],
+        operations=records, cancellation=cancellation)
+    return report, advice
