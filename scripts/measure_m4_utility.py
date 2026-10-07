@@ -10,6 +10,7 @@ import json
 import os
 from pathlib import Path
 import platform
+import shutil
 import subprocess
 import sys
 import tempfile
@@ -20,7 +21,7 @@ sys.path.insert(0, str(ROOT))
 
 from agent_braid import git_replay, git_runtime, runtime_policy
 from agent_braid.utility_accounting import UtilityAccounting
-from agent_braid.utility_fixtures import build_fixture, validate_prepared_manifest
+from agent_braid.utility_fixtures import _destination, build_fixture, validate_prepared_manifest
 
 PROTOCOL_COMMIT = "3777e578ba3f8130d6f284acf54898198a45e0f0"
 PROTOCOL_SHA256 = "6e5a2bd790fb789926007e11f33af40df2ed494d3e8464b13f114523120b282b"
@@ -32,7 +33,8 @@ INPUT_PATHS = (
     "agent_braid/git_adapter.py", "agent_braid/runtime_policy.py",
     "agent_braid/runtime_scheduler.py", "agent_braid/analysis.py",
     "agent_braid/git_exec.py", "research/lab/model.py",
-    "scripts/measure_m4_utility.py",
+    "scripts/measure_m4_utility.py", "agent_braid/utility_trials.py",
+    "scripts/prepare_m4_utility_trials.py",
     "specs/022-m4-utility-followup/technical-review-packet.md",
     "specs/022-m4-utility-followup/evidence/prepared-fixture-manifest.json",
 )
@@ -40,6 +42,18 @@ INPUT_PATHS = (
 
 class UnsafeDiagnostic(RuntimeError):
     """Safety or immutable identity failure: stop subsequent diagnostics."""
+
+
+class _OwnedTreatmentDirectory:
+    """Fresh caller-bound private scope; never adopt or remove an existing root."""
+
+    def __init__(self, path: Path):
+        self.path = _destination(path)
+        self.path.mkdir(mode=0o700, exist_ok=False)
+        self.name = str(self.path)
+
+    def cleanup(self):
+        shutil.rmtree(self.path)
 
 
 def encode(value: object) -> bytes:
@@ -52,7 +66,7 @@ def inventory() -> dict:
 
 
 def source_fingerprint(repository: Path) -> dict:
-    """All owned bare-source bytes, not only its visible refs or final tree."""
+    """All owned source bytes, not only its visible refs or final tree."""
     result = {}
     for path in sorted(repository.rglob("*")):
         if path.is_symlink():
@@ -102,12 +116,19 @@ def worker_overlap(preparation: dict | None) -> dict:
 
 
 def run_treatment(fixture: dict, mode: str, *, accounting_factory=UtilityAccounting,
-                  cancel_event=None, controlled_child_scope: bool = False) -> dict:
+                  cancel_event=None, controlled_child_scope: bool = False,
+                  treatment_root: Path | None = None, run_leaf: str = "result",
+                  grant_leaf: str = "grants") -> dict:
     """Run the complete existing grant/verification path in owned private storage."""
     if mode not in {"serial", "parallel"}:
         raise ValueError("unsupported treatment mode")
+    if any(not isinstance(name, str) or name in {"", ".", ".."}
+           or Path(name).name != name or "/" in name or "\\" in name
+           for name in (run_leaf, grant_leaf)) or run_leaf == grant_leaf:
+        raise ValueError("run and grant leaves must be distinct ordinary names")
     accounting = accounting_factory(child_attribution_valid=controlled_child_scope)
-    operational = {"mode": mode, "blockId": fixture["blockId"], "status": "incomplete"}
+    operational = {"mode": mode, "blockId": fixture["blockId"], "status": "incomplete",
+                   "immutableSourceUnchanged": None}
     private = None
     cleanup_error = None
     source = Path(fixture["repository"])
@@ -118,29 +139,34 @@ def run_treatment(fixture: dict, mode: str, *, accounting_factory=UtilityAccount
             with accounting.phase("input"):
                 request, replay_request = _load_fixture_inputs(fixture)
                 before = source_fingerprint(source)
-                private = tempfile.TemporaryDirectory(prefix="agent-braid-utility-treatment-")
+                if ("preparedSourceFingerprint" in fixture
+                        and fixture["preparedSourceFingerprint"] != before):
+                    raise UnsafeDiagnostic("immutable source differs from preparation fingerprint")
+                private = (_OwnedTreatmentDirectory(treatment_root) if treatment_root is not None
+                           else tempfile.TemporaryDirectory(prefix="agent-braid-utility-treatment-"))
                 destination = Path(private.name)
             with accounting.phase("replay"):
                 evidence, advisory = git_replay.produce(replay_request)
             with accounting.phase("preparation"):
                 plan = runtime_policy.prepare_policy_run(
-                    request, destination / "result", replay_evidence=evidence,
+                    request, destination / run_leaf, replay_evidence=evidence,
                     advisory_plan=advisory, mode=mode, cancel_event=cancel_event)
             with accounting.phase("grant"):
                 grant = runtime_policy.issue_operator_grant(
-                    plan, destination / "grants", acknowledge=plan["planDigest"],
+                    plan, destination / grant_leaf, acknowledge=plan["planDigest"],
                     cancel_event=cancel_event)
             with accounting.phase("execution"):
                 report = runtime_policy.execute_policy_run(
-                    plan, destination / "grants", grant["grantId"], cancel_event=cancel_event)
+                    plan, destination / grant_leaf, grant["grantId"], cancel_event=cancel_event)
             with accounting.phase("independent_verification"):
-                verification = git_runtime.verify_run(request, destination / "result")
+                verification = git_runtime.verify_run(request, destination / run_leaf)
                 if (verification.get("status") != "verified-completed"
                         or verification.get("resultTree") != fixture["expectedFinalTree"]):
                     raise UnsafeDiagnostic("final tree or mandatory verification differs")
                 if source_fingerprint(source) != before:
                     raise UnsafeDiagnostic("immutable source bytes changed")
                 operational.update(status="completed", resultTree=verification["resultTree"],
+                                   grantId=grant["grantId"], immutableSourceUnchanged=True,
                                    runtimeManifest=deepcopy(plan["runtimeManifest"]),
                                    planDigest=plan["planDigest"], runtimeReport=report,
                                    independentVerification=verification,

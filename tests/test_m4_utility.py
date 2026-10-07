@@ -109,6 +109,35 @@ class UtilityHarnessTests(unittest.TestCase):
         self.assertFalse(result["accounting"]["complete"])
         self.assertEqual((self.source / "owned").read_bytes(), b"immutable")
 
+    def test_preparation_source_drift_stops_before_runtime(self):
+        self.pipeline()
+        self.fixture["preparedSourceFingerprint"] = utility.source_fingerprint(self.source)
+        (self.source / "owned").write_bytes(b"changed-before-input")
+        result = utility.run_treatment(self.fixture, "serial", accounting_factory=self.accounting)
+        self.assertEqual(result["status"], "no-go")
+        self.assertEqual(self.calls, [])
+
+    def test_existing_caller_scope_is_preserved(self):
+        self.pipeline()
+        existing = self.root / "existing"
+        existing.mkdir()
+        marker = existing / "keep"
+        marker.write_bytes(b"owned-by-caller")
+        result = utility.run_treatment(self.fixture, "serial", accounting_factory=self.accounting,
+                                       treatment_root=existing)
+        self.assertNotEqual(result["status"], "completed")
+        self.assertEqual(self.calls, [])
+        self.assertEqual(marker.read_bytes(), b"owned-by-caller")
+
+    def test_invalid_or_overlapping_leaves_refuse_before_dispatch(self):
+        self.pipeline()
+        for run_leaf, grant_leaf in (("../run", "grants"), ("run", "run"), ("run", "/grants")):
+            with self.subTest(run_leaf=run_leaf, grant_leaf=grant_leaf):
+                with self.assertRaises(ValueError):
+                    utility.run_treatment(self.fixture, "serial", run_leaf=run_leaf,
+                                          grant_leaf=grant_leaf)
+        self.assertEqual(self.calls, [])
+
     def test_wrong_tree_is_no_go_and_owned_destination_is_cleaned(self):
         self.pipeline(tree="wrong-tree")
         result = utility.run_treatment(self.fixture, "parallel", accounting_factory=self.accounting)
@@ -212,7 +241,13 @@ class UtilityRealBoundaryTests(unittest.TestCase):
             before = utility.source_fingerprint(Path(fixture["repository"]))
             for mode in ("serial", "parallel"):
                 with self.subTest(mode=mode):
-                    sample = utility.run_treatment(fixture, mode)
+                    runtime_root = Path(directory) / ("runtime-" + mode)
+                    fixture["preparedSourceFingerprint"] = before
+                    sample = utility.run_treatment(fixture, mode, treatment_root=runtime_root,
+                                                   run_leaf="run", grant_leaf="grants")
+                    self.assertEqual(Path(sample["operational"]["independentVerification"]["runDirectory"]),
+                                     (runtime_root / "run").resolve())
+                    self.assertFalse(runtime_root.exists())
                     self.assertEqual(sample["operational"]["status"], "completed", sample)
                     self.assertEqual(sample["operational"]["resultTree"], fixture["expectedFinalTree"])
                     self.assertTrue(sample["accounting"]["complete"])
