@@ -1,0 +1,1365 @@
+{
+  "blocks": [
+    {
+      "admissionStatus": "not-tested",
+      "aggregatePatchBytes": 2284,
+      "baseCommit": "efac4659ec0161e9865fe431b0a367d77f6db3ac",
+      "baseTree": "562d3d0a571a697990fbf60a7db0338349836782",
+      "blockId": "independent-2-1024",
+      "dependencyRespectingOrders": [
+        [
+          "a",
+          "b"
+        ],
+        [
+          "b",
+          "a"
+        ]
+      ],
+      "directNumericExclusions": [],
+      "expectedFinalTree": "be2cf65c914c969ba582bab4a4fb7e37b9ed88a3",
+      "expectedTreeMethod": "Direct construction from owned declared final file blobs; no patch execution or runtime verification.",
+      "family": "independent",
+      "grantIssued": false,
+      "invariants": [
+        "All source commits have the common immutable base as parent.",
+        "Each source differs from base in exactly one distinct ordinary text file.",
+        "Declared dependency chain is an ordering control, not cumulative commit ancestry.",
+        "Every planned block is retained, including directly excluded sizes."
+      ],
+      "measurementExecuted": false,
+      "operationCount": 2,
+      "operationIdentities": [
+        {
+          "blobId": "5044a5f4683810c6ec5fef912157523131a7c820",
+          "contentBytes": 1029,
+          "contentSha256": "sha256:c05171348caa0ef0638c318c06346e36a1964cf895ce96125f6e6c25f93e3d7c",
+          "dependencies": [],
+          "gitChangeStatus": "M",
+          "instanceId": "a",
+          "parentCommit": "efac4659ec0161e9865fe431b0a367d77f6db3ac",
+          "patchBytes": 1142,
+          "patchFile": "a.patch",
+          "patchSha256": "sha256:3baa6e8168c9d5fdb6c2c3c2ffd7adab3f277a80e405b8acc8dc1ceb220b4176",
+          "path": "a.txt",
+          "payloadBytes": 1024,
+          "sourceCommit": "f685d1a49629b07cc25a4d0c62f04527d2333d32",
+          "sourceTree": "81b4e8eec5998e4052aaf7415a058bb2e456e9db"
+        },
+        {
+          "blobId": "78c44858bc039bae4e36d024232e2f5e8112220c",
+          "contentBytes": 1029,
+          "contentSha256": "sha256:46ea07763b68307151229bd152e8ee304e6e55e28aad75a895df2066c9ea55b6",
+          "dependencies": [],
+          "gitChangeStatus": "M",
+          "instanceId": "b",
+          "parentCommit": "efac4659ec0161e9865fe431b0a367d77f6db3ac",
+          "patchBytes": 1142,
+          "patchFile": "b.patch",
+          "patchSha256": "sha256:1d2861511c1f5960d001202c93c1fa6986d5d55d759043fbe81b2669ba67f0b6",
+          "path": "b.txt",
+          "payloadBytes": 1024,
+          "sourceCommit": "a9863dbb56c910b65fe59a2c04e3bcc32f5139a5",
+          "sourceTree": "92ac2635f275b6fd0190aa84dcf0dfb328425d24"
+        }
+      ],
+      "payloadBytesPerOperation": 1024,
+      "plannedOrder": [
+        "a",
+        "b"
+      ],
+      "runtimeExecuted": false
+    },
+    {
+      "admissionStatus": "not-tested",
+      "aggregatePatchBytes": 133328,
+      "baseCommit": "efac4659ec0161e9865fe431b0a367d77f6db3ac",
+      "baseTree": "562d3d0a571a697990fbf60a7db0338349836782",
+      "blockId": "independent-2-65536",
+      "dependencyRespectingOrders": [
+        [
+          "a",
+          "b"
+        ],
+        [
+          "b",
+          "a"
+        ]
+      ],
+      "directNumericExclusions": [],
+      "expectedFinalTree": "d4e84508f4636c14ff92e803d9f3035619215741",
+      "expectedTreeMethod": "Direct construction from owned declared final file blobs; no patch execution or runtime verification.",
+      "family": "independent",
+      "grantIssued": false,
+      "invariants": [
+        "All source commits have the common immutable base as parent.",
+        "Each source differs from base in exactly one distinct ordinary text file.",
+        "Declared dependency chain is an ordering control, not cumulative commit ancestry.",
+        "Every planned block is retained, including directly excluded sizes."
+      ],
+      "measurementExecuted": false,
+      "operationCount": 2,
+      "operationIdentities": [
+        {
+          "blobId": "380d4b407e5bf815a9e3f04d4b549c79b93a5cb4",
+          "contentBytes": 65541,
+          "contentSha256": "sha256:100b5b257beec5e516177eba775c7d28398a0b6cdf30a2be354f868d0c91c592",
+          "dependencies": [],
+          "gitChangeStatus": "M",
+          "instanceId": "a",
+          "parentCommit": "efac4659ec0161e9865fe431b0a367d77f6db3ac",
+          "patchBytes": 66664,
+          "patchFile": "a.patch",
+          "patchSha256": "sha256:5aa4ac5b0c83746d44df0064a406f767151fb192a9cb014a1ad93d7a79cb363f",
+          "path": "a.txt",
+          "payloadBytes": 65536,
+          "sourceCommit": "894d804428e37bc34ba4324ede0a0c1051a43ddb",
+          "sourceTree": "4c306c8553a1b04f876425b31559bbfd5765fc0b"
+        },
+        {
+          "blobId": "7995fc5a1ff1ce6a00faf26042385f237d9124dd",
+          "contentBytes": 65541,
+          "contentSha256": "sha256:82c305857dbc95881be31c84c885eaf86a50c2f47867c1cd5b25e0c3c2449eb4",
+          "dependencies": [],
+          "gitChangeStatus": "M",
+          "instanceId": "b",
+          "parentCommit": "efac4659ec0161e9865fe431b0a367d77f6db3ac",
+          "patchBytes": 66664,
+          "patchFile": "b.patch",
+          "patchSha256": "sha256:24ed0214a7fee513e5b36a613b7ebf92a9b7f6d8a6eff36e5c7d8c7aa99d67e5",
+          "path": "b.txt",
+          "payloadBytes": 65536,
+          "sourceCommit": "2e44e76c9ba59ee35754ee32caad8a224f02120f",
+          "sourceTree": "ece3af14a0578de356f45f64fafbe54a1a2704c4"
+        }
+      ],
+      "payloadBytesPerOperation": 65536,
+      "plannedOrder": [
+        "a",
+        "b"
+      ],
+      "runtimeExecuted": false
+    },
+    {
+      "admissionStatus": "not-tested",
+      "aggregatePatchBytes": 2130130,
+      "baseCommit": "efac4659ec0161e9865fe431b0a367d77f6db3ac",
+      "baseTree": "562d3d0a571a697990fbf60a7db0338349836782",
+      "blockId": "independent-2-1048576",
+      "dependencyRespectingOrders": [
+        [
+          "a",
+          "b"
+        ],
+        [
+          "b",
+          "a"
+        ]
+      ],
+      "directNumericExclusions": [
+        {
+          "actualBytes": 2130130,
+          "capBytes": 262144,
+          "reason": "runtime patch limit exceeded",
+          "validator": "git_runtime._prepare"
+        },
+        {
+          "actualBytes": 2130130,
+          "capBytes": 1048576,
+          "reason": "aggregate patch bytes exceed 1 MiB",
+          "validator": "git_replay._patches"
+        }
+      ],
+      "expectedFinalTree": "7269b5f5a290a7125027cf32062ff0c86dea1eb7",
+      "expectedTreeMethod": "Direct construction from owned declared final file blobs; no patch execution or runtime verification.",
+      "family": "independent",
+      "grantIssued": false,
+      "invariants": [
+        "All source commits have the common immutable base as parent.",
+        "Each source differs from base in exactly one distinct ordinary text file.",
+        "Declared dependency chain is an ordering control, not cumulative commit ancestry.",
+        "Every planned block is retained, including directly excluded sizes."
+      ],
+      "measurementExecuted": false,
+      "operationCount": 2,
+      "operationIdentities": [
+        {
+          "blobId": "786280d7a8410c113516799c7978cb18e71dfa65",
+          "contentBytes": 1048581,
+          "contentSha256": "sha256:a4f947534e95f6ea7d3e20dd7d82242c451db017b70311e0ab14983d199c8652",
+          "dependencies": [],
+          "gitChangeStatus": "M",
+          "instanceId": "a",
+          "parentCommit": "efac4659ec0161e9865fe431b0a367d77f6db3ac",
+          "patchBytes": 1065065,
+          "patchFile": "a.patch",
+          "patchSha256": "sha256:55cf0fc350fddb02363aea5d6ff06aa948b113b243fe0aea7894edd4ef4a69c8",
+          "path": "a.txt",
+          "payloadBytes": 1048576,
+          "sourceCommit": "cf6d76c1509ea87aff7b06f7f23bea9e295613e0",
+          "sourceTree": "77a2432b1f4fb7961f433a99fe42ee7d94a3c107"
+        },
+        {
+          "blobId": "007afa9342afdb5e844fec581063e5afe688e216",
+          "contentBytes": 1048581,
+          "contentSha256": "sha256:4e3fd61db510ccc9814a0f213ba27285ed5418ded8a217eac5d2d43e80ce936c",
+          "dependencies": [],
+          "gitChangeStatus": "M",
+          "instanceId": "b",
+          "parentCommit": "efac4659ec0161e9865fe431b0a367d77f6db3ac",
+          "patchBytes": 1065065,
+          "patchFile": "b.patch",
+          "patchSha256": "sha256:070f91f546bf40a6579fb430388ca11131371faf534bd8b5ed3bf9bed0a7716b",
+          "path": "b.txt",
+          "payloadBytes": 1048576,
+          "sourceCommit": "0078dcbd0343490fac736c41bec2e75064998cc8",
+          "sourceTree": "1fee666c1088f7e2865ce26eb4e2dc59b6a5f7f1"
+        }
+      ],
+      "payloadBytesPerOperation": 1048576,
+      "plannedOrder": [
+        "a",
+        "b"
+      ],
+      "runtimeExecuted": false
+    },
+    {
+      "admissionStatus": "not-tested",
+      "aggregatePatchBytes": 4568,
+      "baseCommit": "256a3b37de8bfe83dc3811f57c77f0e647306278",
+      "baseTree": "47eb9d0d86f2e587258a53c0afc6382888a98d20",
+      "blockId": "independent-4-1024",
+      "dependencyRespectingOrders": [
+        [
+          "a",
+          "b",
+          "c",
+          "d"
+        ],
+        [
+          "a",
+          "b",
+          "d",
+          "c"
+        ],
+        [
+          "a",
+          "c",
+          "b",
+          "d"
+        ],
+        [
+          "a",
+          "c",
+          "d",
+          "b"
+        ],
+        [
+          "a",
+          "d",
+          "b",
+          "c"
+        ],
+        [
+          "a",
+          "d",
+          "c",
+          "b"
+        ],
+        [
+          "b",
+          "a",
+          "c",
+          "d"
+        ],
+        [
+          "b",
+          "a",
+          "d",
+          "c"
+        ],
+        [
+          "b",
+          "c",
+          "a",
+          "d"
+        ],
+        [
+          "b",
+          "c",
+          "d",
+          "a"
+        ],
+        [
+          "b",
+          "d",
+          "a",
+          "c"
+        ],
+        [
+          "b",
+          "d",
+          "c",
+          "a"
+        ],
+        [
+          "c",
+          "a",
+          "b",
+          "d"
+        ],
+        [
+          "c",
+          "a",
+          "d",
+          "b"
+        ],
+        [
+          "c",
+          "b",
+          "a",
+          "d"
+        ],
+        [
+          "c",
+          "b",
+          "d",
+          "a"
+        ],
+        [
+          "c",
+          "d",
+          "a",
+          "b"
+        ],
+        [
+          "c",
+          "d",
+          "b",
+          "a"
+        ],
+        [
+          "d",
+          "a",
+          "b",
+          "c"
+        ],
+        [
+          "d",
+          "a",
+          "c",
+          "b"
+        ],
+        [
+          "d",
+          "b",
+          "a",
+          "c"
+        ],
+        [
+          "d",
+          "b",
+          "c",
+          "a"
+        ],
+        [
+          "d",
+          "c",
+          "a",
+          "b"
+        ],
+        [
+          "d",
+          "c",
+          "b",
+          "a"
+        ]
+      ],
+      "directNumericExclusions": [],
+      "expectedFinalTree": "598e25d62521f94c33de14e2b2bdb355662331de",
+      "expectedTreeMethod": "Direct construction from owned declared final file blobs; no patch execution or runtime verification.",
+      "family": "independent",
+      "grantIssued": false,
+      "invariants": [
+        "All source commits have the common immutable base as parent.",
+        "Each source differs from base in exactly one distinct ordinary text file.",
+        "Declared dependency chain is an ordering control, not cumulative commit ancestry.",
+        "Every planned block is retained, including directly excluded sizes."
+      ],
+      "measurementExecuted": false,
+      "operationCount": 4,
+      "operationIdentities": [
+        {
+          "blobId": "5044a5f4683810c6ec5fef912157523131a7c820",
+          "contentBytes": 1029,
+          "contentSha256": "sha256:c05171348caa0ef0638c318c06346e36a1964cf895ce96125f6e6c25f93e3d7c",
+          "dependencies": [],
+          "gitChangeStatus": "M",
+          "instanceId": "a",
+          "parentCommit": "256a3b37de8bfe83dc3811f57c77f0e647306278",
+          "patchBytes": 1142,
+          "patchFile": "a.patch",
+          "patchSha256": "sha256:3baa6e8168c9d5fdb6c2c3c2ffd7adab3f277a80e405b8acc8dc1ceb220b4176",
+          "path": "a.txt",
+          "payloadBytes": 1024,
+          "sourceCommit": "9e760cf9df5c15df7862f51b4e1bc7123b8bc18a",
+          "sourceTree": "48cc49987e88693855994a5d1b286269559362a9"
+        },
+        {
+          "blobId": "78c44858bc039bae4e36d024232e2f5e8112220c",
+          "contentBytes": 1029,
+          "contentSha256": "sha256:46ea07763b68307151229bd152e8ee304e6e55e28aad75a895df2066c9ea55b6",
+          "dependencies": [],
+          "gitChangeStatus": "M",
+          "instanceId": "b",
+          "parentCommit": "256a3b37de8bfe83dc3811f57c77f0e647306278",
+          "patchBytes": 1142,
+          "patchFile": "b.patch",
+          "patchSha256": "sha256:1d2861511c1f5960d001202c93c1fa6986d5d55d759043fbe81b2669ba67f0b6",
+          "path": "b.txt",
+          "payloadBytes": 1024,
+          "sourceCommit": "23f7400ce502f73e76a3f1637ffa9ff0ef2e69c6",
+          "sourceTree": "e27421287fa819d9ec188357212075091a795b92"
+        },
+        {
+          "blobId": "66cd336a8df30100671f3ee1581ce5e55b3e9ae8",
+          "contentBytes": 1029,
+          "contentSha256": "sha256:626a56967f7f46fa92d6f709d80ee2deebff3e83ec9fd58289f9fb6bbb2e5654",
+          "dependencies": [],
+          "gitChangeStatus": "M",
+          "instanceId": "c",
+          "parentCommit": "256a3b37de8bfe83dc3811f57c77f0e647306278",
+          "patchBytes": 1142,
+          "patchFile": "c.patch",
+          "patchSha256": "sha256:c71615a87ef14ce3044a61aa14180c59c0767a97cb5f90c6298dd08b75b63aba",
+          "path": "c.txt",
+          "payloadBytes": 1024,
+          "sourceCommit": "d844a7c6f68191125b6713a7c3f94c360cd00e49",
+          "sourceTree": "58e1181d13c959d38cc80e89a3018868d41c29fb"
+        },
+        {
+          "blobId": "7871da81edda1a282fce91084dbc442485a9fc25",
+          "contentBytes": 1029,
+          "contentSha256": "sha256:c3e4f4b2115ddd2e881be5c76309b8f0e294a7ddf16bf7fd837897bd87760933",
+          "dependencies": [],
+          "gitChangeStatus": "M",
+          "instanceId": "d",
+          "parentCommit": "256a3b37de8bfe83dc3811f57c77f0e647306278",
+          "patchBytes": 1142,
+          "patchFile": "d.patch",
+          "patchSha256": "sha256:5ad8e235406e3709ca9c49aeaa8548d8954f227484c925a0cb3d74ca7e0418b0",
+          "path": "d.txt",
+          "payloadBytes": 1024,
+          "sourceCommit": "7ace16adb01c4a70f22237fdfb82e007164ed5d7",
+          "sourceTree": "080c56cdbaa41f9d0d8ed8fb12ee44f082d47114"
+        }
+      ],
+      "payloadBytesPerOperation": 1024,
+      "plannedOrder": [
+        "a",
+        "b",
+        "c",
+        "d"
+      ],
+      "runtimeExecuted": false
+    },
+    {
+      "admissionStatus": "not-tested",
+      "aggregatePatchBytes": 266656,
+      "baseCommit": "256a3b37de8bfe83dc3811f57c77f0e647306278",
+      "baseTree": "47eb9d0d86f2e587258a53c0afc6382888a98d20",
+      "blockId": "independent-4-65536",
+      "dependencyRespectingOrders": [
+        [
+          "a",
+          "b",
+          "c",
+          "d"
+        ],
+        [
+          "a",
+          "b",
+          "d",
+          "c"
+        ],
+        [
+          "a",
+          "c",
+          "b",
+          "d"
+        ],
+        [
+          "a",
+          "c",
+          "d",
+          "b"
+        ],
+        [
+          "a",
+          "d",
+          "b",
+          "c"
+        ],
+        [
+          "a",
+          "d",
+          "c",
+          "b"
+        ],
+        [
+          "b",
+          "a",
+          "c",
+          "d"
+        ],
+        [
+          "b",
+          "a",
+          "d",
+          "c"
+        ],
+        [
+          "b",
+          "c",
+          "a",
+          "d"
+        ],
+        [
+          "b",
+          "c",
+          "d",
+          "a"
+        ],
+        [
+          "b",
+          "d",
+          "a",
+          "c"
+        ],
+        [
+          "b",
+          "d",
+          "c",
+          "a"
+        ],
+        [
+          "c",
+          "a",
+          "b",
+          "d"
+        ],
+        [
+          "c",
+          "a",
+          "d",
+          "b"
+        ],
+        [
+          "c",
+          "b",
+          "a",
+          "d"
+        ],
+        [
+          "c",
+          "b",
+          "d",
+          "a"
+        ],
+        [
+          "c",
+          "d",
+          "a",
+          "b"
+        ],
+        [
+          "c",
+          "d",
+          "b",
+          "a"
+        ],
+        [
+          "d",
+          "a",
+          "b",
+          "c"
+        ],
+        [
+          "d",
+          "a",
+          "c",
+          "b"
+        ],
+        [
+          "d",
+          "b",
+          "a",
+          "c"
+        ],
+        [
+          "d",
+          "b",
+          "c",
+          "a"
+        ],
+        [
+          "d",
+          "c",
+          "a",
+          "b"
+        ],
+        [
+          "d",
+          "c",
+          "b",
+          "a"
+        ]
+      ],
+      "directNumericExclusions": [
+        {
+          "actualBytes": 266656,
+          "capBytes": 262144,
+          "reason": "runtime patch limit exceeded",
+          "validator": "git_runtime._prepare"
+        }
+      ],
+      "expectedFinalTree": "7308d729adff9f8acb627c209ab1ed37d9060368",
+      "expectedTreeMethod": "Direct construction from owned declared final file blobs; no patch execution or runtime verification.",
+      "family": "independent",
+      "grantIssued": false,
+      "invariants": [
+        "All source commits have the common immutable base as parent.",
+        "Each source differs from base in exactly one distinct ordinary text file.",
+        "Declared dependency chain is an ordering control, not cumulative commit ancestry.",
+        "Every planned block is retained, including directly excluded sizes."
+      ],
+      "measurementExecuted": false,
+      "operationCount": 4,
+      "operationIdentities": [
+        {
+          "blobId": "380d4b407e5bf815a9e3f04d4b549c79b93a5cb4",
+          "contentBytes": 65541,
+          "contentSha256": "sha256:100b5b257beec5e516177eba775c7d28398a0b6cdf30a2be354f868d0c91c592",
+          "dependencies": [],
+          "gitChangeStatus": "M",
+          "instanceId": "a",
+          "parentCommit": "256a3b37de8bfe83dc3811f57c77f0e647306278",
+          "patchBytes": 66664,
+          "patchFile": "a.patch",
+          "patchSha256": "sha256:5aa4ac5b0c83746d44df0064a406f767151fb192a9cb014a1ad93d7a79cb363f",
+          "path": "a.txt",
+          "payloadBytes": 65536,
+          "sourceCommit": "d7c029fe096d413eea9966d22beb03bca0166873",
+          "sourceTree": "a041f1888abe03042f15743e1b9c65732029e9aa"
+        },
+        {
+          "blobId": "7995fc5a1ff1ce6a00faf26042385f237d9124dd",
+          "contentBytes": 65541,
+          "contentSha256": "sha256:82c305857dbc95881be31c84c885eaf86a50c2f47867c1cd5b25e0c3c2449eb4",
+          "dependencies": [],
+          "gitChangeStatus": "M",
+          "instanceId": "b",
+          "parentCommit": "256a3b37de8bfe83dc3811f57c77f0e647306278",
+          "patchBytes": 66664,
+          "patchFile": "b.patch",
+          "patchSha256": "sha256:24ed0214a7fee513e5b36a613b7ebf92a9b7f6d8a6eff36e5c7d8c7aa99d67e5",
+          "path": "b.txt",
+          "payloadBytes": 65536,
+          "sourceCommit": "f908fc3b53d20b525ef740618e96a62ef69d3015",
+          "sourceTree": "98d7b1dba14f2f3e687690d84ce9504c00c48d79"
+        },
+        {
+          "blobId": "26091e4946444abfb6ade4483fbc169b7355bf0f",
+          "contentBytes": 65541,
+          "contentSha256": "sha256:aea6e0453e796369011306d1f91542026032a968d71fd0c4f1030c694b0a7ccb",
+          "dependencies": [],
+          "gitChangeStatus": "M",
+          "instanceId": "c",
+          "parentCommit": "256a3b37de8bfe83dc3811f57c77f0e647306278",
+          "patchBytes": 66664,
+          "patchFile": "c.patch",
+          "patchSha256": "sha256:ab3421f8721c1e16dc683869731e0782f7aa897c819e37417074b724eba1f3a8",
+          "path": "c.txt",
+          "payloadBytes": 65536,
+          "sourceCommit": "3b2403a10242ebddeacb0737f8ae7220c6648787",
+          "sourceTree": "03fc3856cd7e6b89500f39aed9d074cbf31ffcfd"
+        },
+        {
+          "blobId": "f94b4b21804044e9471aa963ea42ab2ee1e0ef0b",
+          "contentBytes": 65541,
+          "contentSha256": "sha256:4cbb7779f27c9a008d2182f29145fa80c51018358acd58d8634a917a578c2610",
+          "dependencies": [],
+          "gitChangeStatus": "M",
+          "instanceId": "d",
+          "parentCommit": "256a3b37de8bfe83dc3811f57c77f0e647306278",
+          "patchBytes": 66664,
+          "patchFile": "d.patch",
+          "patchSha256": "sha256:8b6ca0fa594632954c88913679f0d6d8699182c185de7ff9300e5b4e7e7a5efc",
+          "path": "d.txt",
+          "payloadBytes": 65536,
+          "sourceCommit": "4cf0536de7bc0cdf51f3a688337ee3007d813660",
+          "sourceTree": "d401c4833209f4d6a079be98931c5784d018fc97"
+        }
+      ],
+      "payloadBytesPerOperation": 65536,
+      "plannedOrder": [
+        "a",
+        "b",
+        "c",
+        "d"
+      ],
+      "runtimeExecuted": false
+    },
+    {
+      "admissionStatus": "not-tested",
+      "aggregatePatchBytes": 4260260,
+      "baseCommit": "256a3b37de8bfe83dc3811f57c77f0e647306278",
+      "baseTree": "47eb9d0d86f2e587258a53c0afc6382888a98d20",
+      "blockId": "independent-4-1048576",
+      "dependencyRespectingOrders": [
+        [
+          "a",
+          "b",
+          "c",
+          "d"
+        ],
+        [
+          "a",
+          "b",
+          "d",
+          "c"
+        ],
+        [
+          "a",
+          "c",
+          "b",
+          "d"
+        ],
+        [
+          "a",
+          "c",
+          "d",
+          "b"
+        ],
+        [
+          "a",
+          "d",
+          "b",
+          "c"
+        ],
+        [
+          "a",
+          "d",
+          "c",
+          "b"
+        ],
+        [
+          "b",
+          "a",
+          "c",
+          "d"
+        ],
+        [
+          "b",
+          "a",
+          "d",
+          "c"
+        ],
+        [
+          "b",
+          "c",
+          "a",
+          "d"
+        ],
+        [
+          "b",
+          "c",
+          "d",
+          "a"
+        ],
+        [
+          "b",
+          "d",
+          "a",
+          "c"
+        ],
+        [
+          "b",
+          "d",
+          "c",
+          "a"
+        ],
+        [
+          "c",
+          "a",
+          "b",
+          "d"
+        ],
+        [
+          "c",
+          "a",
+          "d",
+          "b"
+        ],
+        [
+          "c",
+          "b",
+          "a",
+          "d"
+        ],
+        [
+          "c",
+          "b",
+          "d",
+          "a"
+        ],
+        [
+          "c",
+          "d",
+          "a",
+          "b"
+        ],
+        [
+          "c",
+          "d",
+          "b",
+          "a"
+        ],
+        [
+          "d",
+          "a",
+          "b",
+          "c"
+        ],
+        [
+          "d",
+          "a",
+          "c",
+          "b"
+        ],
+        [
+          "d",
+          "b",
+          "a",
+          "c"
+        ],
+        [
+          "d",
+          "b",
+          "c",
+          "a"
+        ],
+        [
+          "d",
+          "c",
+          "a",
+          "b"
+        ],
+        [
+          "d",
+          "c",
+          "b",
+          "a"
+        ]
+      ],
+      "directNumericExclusions": [
+        {
+          "actualBytes": 4260260,
+          "capBytes": 262144,
+          "reason": "runtime patch limit exceeded",
+          "validator": "git_runtime._prepare"
+        },
+        {
+          "actualBytes": 4260260,
+          "capBytes": 1048576,
+          "reason": "aggregate patch bytes exceed 1 MiB",
+          "validator": "git_replay._patches"
+        }
+      ],
+      "expectedFinalTree": "ba14b0ad203e257d1b3884fa8018b962212a141b",
+      "expectedTreeMethod": "Direct construction from owned declared final file blobs; no patch execution or runtime verification.",
+      "family": "independent",
+      "grantIssued": false,
+      "invariants": [
+        "All source commits have the common immutable base as parent.",
+        "Each source differs from base in exactly one distinct ordinary text file.",
+        "Declared dependency chain is an ordering control, not cumulative commit ancestry.",
+        "Every planned block is retained, including directly excluded sizes."
+      ],
+      "measurementExecuted": false,
+      "operationCount": 4,
+      "operationIdentities": [
+        {
+          "blobId": "786280d7a8410c113516799c7978cb18e71dfa65",
+          "contentBytes": 1048581,
+          "contentSha256": "sha256:a4f947534e95f6ea7d3e20dd7d82242c451db017b70311e0ab14983d199c8652",
+          "dependencies": [],
+          "gitChangeStatus": "M",
+          "instanceId": "a",
+          "parentCommit": "256a3b37de8bfe83dc3811f57c77f0e647306278",
+          "patchBytes": 1065065,
+          "patchFile": "a.patch",
+          "patchSha256": "sha256:55cf0fc350fddb02363aea5d6ff06aa948b113b243fe0aea7894edd4ef4a69c8",
+          "path": "a.txt",
+          "payloadBytes": 1048576,
+          "sourceCommit": "6f35d4aae1d7204f38b100b05123cf94cea02a42",
+          "sourceTree": "b7d9a7f744e204f6a8ec48c2214797fc7f277e7c"
+        },
+        {
+          "blobId": "007afa9342afdb5e844fec581063e5afe688e216",
+          "contentBytes": 1048581,
+          "contentSha256": "sha256:4e3fd61db510ccc9814a0f213ba27285ed5418ded8a217eac5d2d43e80ce936c",
+          "dependencies": [],
+          "gitChangeStatus": "M",
+          "instanceId": "b",
+          "parentCommit": "256a3b37de8bfe83dc3811f57c77f0e647306278",
+          "patchBytes": 1065065,
+          "patchFile": "b.patch",
+          "patchSha256": "sha256:070f91f546bf40a6579fb430388ca11131371faf534bd8b5ed3bf9bed0a7716b",
+          "path": "b.txt",
+          "payloadBytes": 1048576,
+          "sourceCommit": "2efd759062042e920c49505fab2087d011d87c54",
+          "sourceTree": "b81d89bb1f09967ba364a22bda9eb0e4772a00a7"
+        },
+        {
+          "blobId": "99519f7fbc3c0fe03a4ed8e45230e6c6eae4d878",
+          "contentBytes": 1048581,
+          "contentSha256": "sha256:d3fe775402351ce458b6e3eff24a261ba4934d06c68522d9b7c480cfc97ab2a0",
+          "dependencies": [],
+          "gitChangeStatus": "M",
+          "instanceId": "c",
+          "parentCommit": "256a3b37de8bfe83dc3811f57c77f0e647306278",
+          "patchBytes": 1065065,
+          "patchFile": "c.patch",
+          "patchSha256": "sha256:33da58cf20bcf8859054309ed763cfef0078826c7145bad9b6aee047c3193969",
+          "path": "c.txt",
+          "payloadBytes": 1048576,
+          "sourceCommit": "e5a530afb2324a6c77722fee5a442a0f4040c29c",
+          "sourceTree": "88881e7742cab4e579cde2716e5036626d3f7f87"
+        },
+        {
+          "blobId": "54788c2c147fd81ae3a0c0d4633432bddbcbb00c",
+          "contentBytes": 1048581,
+          "contentSha256": "sha256:60d1d86263edb56dc4b15a6cc5c8d95abcf17cfc56b4cff1ecc916be80ac5919",
+          "dependencies": [],
+          "gitChangeStatus": "M",
+          "instanceId": "d",
+          "parentCommit": "256a3b37de8bfe83dc3811f57c77f0e647306278",
+          "patchBytes": 1065065,
+          "patchFile": "d.patch",
+          "patchSha256": "sha256:30b38c080805f5823107e96ec4791ac968861e8611a5d50da25d9d5c0371ccbb",
+          "path": "d.txt",
+          "payloadBytes": 1048576,
+          "sourceCommit": "6f276067b0b0f3a072cad46eafee8ec5407124ae",
+          "sourceTree": "25ce21e48eb199bf7f3717e5e58b0cf74ae4d3c1"
+        }
+      ],
+      "payloadBytesPerOperation": 1048576,
+      "plannedOrder": [
+        "a",
+        "b",
+        "c",
+        "d"
+      ],
+      "runtimeExecuted": false
+    },
+    {
+      "admissionStatus": "not-tested",
+      "aggregatePatchBytes": 4568,
+      "baseCommit": "256a3b37de8bfe83dc3811f57c77f0e647306278",
+      "baseTree": "47eb9d0d86f2e587258a53c0afc6382888a98d20",
+      "blockId": "dependency-chain-4-1024",
+      "dependencyRespectingOrders": [
+        [
+          "a",
+          "b",
+          "c",
+          "d"
+        ]
+      ],
+      "directNumericExclusions": [],
+      "expectedFinalTree": "598e25d62521f94c33de14e2b2bdb355662331de",
+      "expectedTreeMethod": "Direct construction from owned declared final file blobs; no patch execution or runtime verification.",
+      "family": "dependency-chain",
+      "grantIssued": false,
+      "invariants": [
+        "All source commits have the common immutable base as parent.",
+        "Each source differs from base in exactly one distinct ordinary text file.",
+        "Declared dependency chain is an ordering control, not cumulative commit ancestry.",
+        "Every planned block is retained, including directly excluded sizes."
+      ],
+      "measurementExecuted": false,
+      "operationCount": 4,
+      "operationIdentities": [
+        {
+          "blobId": "5044a5f4683810c6ec5fef912157523131a7c820",
+          "contentBytes": 1029,
+          "contentSha256": "sha256:c05171348caa0ef0638c318c06346e36a1964cf895ce96125f6e6c25f93e3d7c",
+          "dependencies": [],
+          "gitChangeStatus": "M",
+          "instanceId": "a",
+          "parentCommit": "256a3b37de8bfe83dc3811f57c77f0e647306278",
+          "patchBytes": 1142,
+          "patchFile": "a.patch",
+          "patchSha256": "sha256:3baa6e8168c9d5fdb6c2c3c2ffd7adab3f277a80e405b8acc8dc1ceb220b4176",
+          "path": "a.txt",
+          "payloadBytes": 1024,
+          "sourceCommit": "9e760cf9df5c15df7862f51b4e1bc7123b8bc18a",
+          "sourceTree": "48cc49987e88693855994a5d1b286269559362a9"
+        },
+        {
+          "blobId": "78c44858bc039bae4e36d024232e2f5e8112220c",
+          "contentBytes": 1029,
+          "contentSha256": "sha256:46ea07763b68307151229bd152e8ee304e6e55e28aad75a895df2066c9ea55b6",
+          "dependencies": [
+            "a"
+          ],
+          "gitChangeStatus": "M",
+          "instanceId": "b",
+          "parentCommit": "256a3b37de8bfe83dc3811f57c77f0e647306278",
+          "patchBytes": 1142,
+          "patchFile": "b.patch",
+          "patchSha256": "sha256:1d2861511c1f5960d001202c93c1fa6986d5d55d759043fbe81b2669ba67f0b6",
+          "path": "b.txt",
+          "payloadBytes": 1024,
+          "sourceCommit": "23f7400ce502f73e76a3f1637ffa9ff0ef2e69c6",
+          "sourceTree": "e27421287fa819d9ec188357212075091a795b92"
+        },
+        {
+          "blobId": "66cd336a8df30100671f3ee1581ce5e55b3e9ae8",
+          "contentBytes": 1029,
+          "contentSha256": "sha256:626a56967f7f46fa92d6f709d80ee2deebff3e83ec9fd58289f9fb6bbb2e5654",
+          "dependencies": [
+            "b"
+          ],
+          "gitChangeStatus": "M",
+          "instanceId": "c",
+          "parentCommit": "256a3b37de8bfe83dc3811f57c77f0e647306278",
+          "patchBytes": 1142,
+          "patchFile": "c.patch",
+          "patchSha256": "sha256:c71615a87ef14ce3044a61aa14180c59c0767a97cb5f90c6298dd08b75b63aba",
+          "path": "c.txt",
+          "payloadBytes": 1024,
+          "sourceCommit": "d844a7c6f68191125b6713a7c3f94c360cd00e49",
+          "sourceTree": "58e1181d13c959d38cc80e89a3018868d41c29fb"
+        },
+        {
+          "blobId": "7871da81edda1a282fce91084dbc442485a9fc25",
+          "contentBytes": 1029,
+          "contentSha256": "sha256:c3e4f4b2115ddd2e881be5c76309b8f0e294a7ddf16bf7fd837897bd87760933",
+          "dependencies": [
+            "c"
+          ],
+          "gitChangeStatus": "M",
+          "instanceId": "d",
+          "parentCommit": "256a3b37de8bfe83dc3811f57c77f0e647306278",
+          "patchBytes": 1142,
+          "patchFile": "d.patch",
+          "patchSha256": "sha256:5ad8e235406e3709ca9c49aeaa8548d8954f227484c925a0cb3d74ca7e0418b0",
+          "path": "d.txt",
+          "payloadBytes": 1024,
+          "sourceCommit": "7ace16adb01c4a70f22237fdfb82e007164ed5d7",
+          "sourceTree": "080c56cdbaa41f9d0d8ed8fb12ee44f082d47114"
+        }
+      ],
+      "payloadBytesPerOperation": 1024,
+      "plannedOrder": [
+        "a",
+        "b",
+        "c",
+        "d"
+      ],
+      "runtimeExecuted": false
+    },
+    {
+      "admissionStatus": "not-tested",
+      "aggregatePatchBytes": 266656,
+      "baseCommit": "256a3b37de8bfe83dc3811f57c77f0e647306278",
+      "baseTree": "47eb9d0d86f2e587258a53c0afc6382888a98d20",
+      "blockId": "dependency-chain-4-65536",
+      "dependencyRespectingOrders": [
+        [
+          "a",
+          "b",
+          "c",
+          "d"
+        ]
+      ],
+      "directNumericExclusions": [
+        {
+          "actualBytes": 266656,
+          "capBytes": 262144,
+          "reason": "runtime patch limit exceeded",
+          "validator": "git_runtime._prepare"
+        }
+      ],
+      "expectedFinalTree": "7308d729adff9f8acb627c209ab1ed37d9060368",
+      "expectedTreeMethod": "Direct construction from owned declared final file blobs; no patch execution or runtime verification.",
+      "family": "dependency-chain",
+      "grantIssued": false,
+      "invariants": [
+        "All source commits have the common immutable base as parent.",
+        "Each source differs from base in exactly one distinct ordinary text file.",
+        "Declared dependency chain is an ordering control, not cumulative commit ancestry.",
+        "Every planned block is retained, including directly excluded sizes."
+      ],
+      "measurementExecuted": false,
+      "operationCount": 4,
+      "operationIdentities": [
+        {
+          "blobId": "380d4b407e5bf815a9e3f04d4b549c79b93a5cb4",
+          "contentBytes": 65541,
+          "contentSha256": "sha256:100b5b257beec5e516177eba775c7d28398a0b6cdf30a2be354f868d0c91c592",
+          "dependencies": [],
+          "gitChangeStatus": "M",
+          "instanceId": "a",
+          "parentCommit": "256a3b37de8bfe83dc3811f57c77f0e647306278",
+          "patchBytes": 66664,
+          "patchFile": "a.patch",
+          "patchSha256": "sha256:5aa4ac5b0c83746d44df0064a406f767151fb192a9cb014a1ad93d7a79cb363f",
+          "path": "a.txt",
+          "payloadBytes": 65536,
+          "sourceCommit": "d7c029fe096d413eea9966d22beb03bca0166873",
+          "sourceTree": "a041f1888abe03042f15743e1b9c65732029e9aa"
+        },
+        {
+          "blobId": "7995fc5a1ff1ce6a00faf26042385f237d9124dd",
+          "contentBytes": 65541,
+          "contentSha256": "sha256:82c305857dbc95881be31c84c885eaf86a50c2f47867c1cd5b25e0c3c2449eb4",
+          "dependencies": [
+            "a"
+          ],
+          "gitChangeStatus": "M",
+          "instanceId": "b",
+          "parentCommit": "256a3b37de8bfe83dc3811f57c77f0e647306278",
+          "patchBytes": 66664,
+          "patchFile": "b.patch",
+          "patchSha256": "sha256:24ed0214a7fee513e5b36a613b7ebf92a9b7f6d8a6eff36e5c7d8c7aa99d67e5",
+          "path": "b.txt",
+          "payloadBytes": 65536,
+          "sourceCommit": "f908fc3b53d20b525ef740618e96a62ef69d3015",
+          "sourceTree": "98d7b1dba14f2f3e687690d84ce9504c00c48d79"
+        },
+        {
+          "blobId": "26091e4946444abfb6ade4483fbc169b7355bf0f",
+          "contentBytes": 65541,
+          "contentSha256": "sha256:aea6e0453e796369011306d1f91542026032a968d71fd0c4f1030c694b0a7ccb",
+          "dependencies": [
+            "b"
+          ],
+          "gitChangeStatus": "M",
+          "instanceId": "c",
+          "parentCommit": "256a3b37de8bfe83dc3811f57c77f0e647306278",
+          "patchBytes": 66664,
+          "patchFile": "c.patch",
+          "patchSha256": "sha256:ab3421f8721c1e16dc683869731e0782f7aa897c819e37417074b724eba1f3a8",
+          "path": "c.txt",
+          "payloadBytes": 65536,
+          "sourceCommit": "3b2403a10242ebddeacb0737f8ae7220c6648787",
+          "sourceTree": "03fc3856cd7e6b89500f39aed9d074cbf31ffcfd"
+        },
+        {
+          "blobId": "f94b4b21804044e9471aa963ea42ab2ee1e0ef0b",
+          "contentBytes": 65541,
+          "contentSha256": "sha256:4cbb7779f27c9a008d2182f29145fa80c51018358acd58d8634a917a578c2610",
+          "dependencies": [
+            "c"
+          ],
+          "gitChangeStatus": "M",
+          "instanceId": "d",
+          "parentCommit": "256a3b37de8bfe83dc3811f57c77f0e647306278",
+          "patchBytes": 66664,
+          "patchFile": "d.patch",
+          "patchSha256": "sha256:8b6ca0fa594632954c88913679f0d6d8699182c185de7ff9300e5b4e7e7a5efc",
+          "path": "d.txt",
+          "payloadBytes": 65536,
+          "sourceCommit": "4cf0536de7bc0cdf51f3a688337ee3007d813660",
+          "sourceTree": "d401c4833209f4d6a079be98931c5784d018fc97"
+        }
+      ],
+      "payloadBytesPerOperation": 65536,
+      "plannedOrder": [
+        "a",
+        "b",
+        "c",
+        "d"
+      ],
+      "runtimeExecuted": false
+    },
+    {
+      "admissionStatus": "not-tested",
+      "aggregatePatchBytes": 4260260,
+      "baseCommit": "256a3b37de8bfe83dc3811f57c77f0e647306278",
+      "baseTree": "47eb9d0d86f2e587258a53c0afc6382888a98d20",
+      "blockId": "dependency-chain-4-1048576",
+      "dependencyRespectingOrders": [
+        [
+          "a",
+          "b",
+          "c",
+          "d"
+        ]
+      ],
+      "directNumericExclusions": [
+        {
+          "actualBytes": 4260260,
+          "capBytes": 262144,
+          "reason": "runtime patch limit exceeded",
+          "validator": "git_runtime._prepare"
+        },
+        {
+          "actualBytes": 4260260,
+          "capBytes": 1048576,
+          "reason": "aggregate patch bytes exceed 1 MiB",
+          "validator": "git_replay._patches"
+        }
+      ],
+      "expectedFinalTree": "ba14b0ad203e257d1b3884fa8018b962212a141b",
+      "expectedTreeMethod": "Direct construction from owned declared final file blobs; no patch execution or runtime verification.",
+      "family": "dependency-chain",
+      "grantIssued": false,
+      "invariants": [
+        "All source commits have the common immutable base as parent.",
+        "Each source differs from base in exactly one distinct ordinary text file.",
+        "Declared dependency chain is an ordering control, not cumulative commit ancestry.",
+        "Every planned block is retained, including directly excluded sizes."
+      ],
+      "measurementExecuted": false,
+      "operationCount": 4,
+      "operationIdentities": [
+        {
+          "blobId": "786280d7a8410c113516799c7978cb18e71dfa65",
+          "contentBytes": 1048581,
+          "contentSha256": "sha256:a4f947534e95f6ea7d3e20dd7d82242c451db017b70311e0ab14983d199c8652",
+          "dependencies": [],
+          "gitChangeStatus": "M",
+          "instanceId": "a",
+          "parentCommit": "256a3b37de8bfe83dc3811f57c77f0e647306278",
+          "patchBytes": 1065065,
+          "patchFile": "a.patch",
+          "patchSha256": "sha256:55cf0fc350fddb02363aea5d6ff06aa948b113b243fe0aea7894edd4ef4a69c8",
+          "path": "a.txt",
+          "payloadBytes": 1048576,
+          "sourceCommit": "6f35d4aae1d7204f38b100b05123cf94cea02a42",
+          "sourceTree": "b7d9a7f744e204f6a8ec48c2214797fc7f277e7c"
+        },
+        {
+          "blobId": "007afa9342afdb5e844fec581063e5afe688e216",
+          "contentBytes": 1048581,
+          "contentSha256": "sha256:4e3fd61db510ccc9814a0f213ba27285ed5418ded8a217eac5d2d43e80ce936c",
+          "dependencies": [
+            "a"
+          ],
+          "gitChangeStatus": "M",
+          "instanceId": "b",
+          "parentCommit": "256a3b37de8bfe83dc3811f57c77f0e647306278",
+          "patchBytes": 1065065,
+          "patchFile": "b.patch",
+          "patchSha256": "sha256:070f91f546bf40a6579fb430388ca11131371faf534bd8b5ed3bf9bed0a7716b",
+          "path": "b.txt",
+          "payloadBytes": 1048576,
+          "sourceCommit": "2efd759062042e920c49505fab2087d011d87c54",
+          "sourceTree": "b81d89bb1f09967ba364a22bda9eb0e4772a00a7"
+        },
+        {
+          "blobId": "99519f7fbc3c0fe03a4ed8e45230e6c6eae4d878",
+          "contentBytes": 1048581,
+          "contentSha256": "sha256:d3fe775402351ce458b6e3eff24a261ba4934d06c68522d9b7c480cfc97ab2a0",
+          "dependencies": [
+            "b"
+          ],
+          "gitChangeStatus": "M",
+          "instanceId": "c",
+          "parentCommit": "256a3b37de8bfe83dc3811f57c77f0e647306278",
+          "patchBytes": 1065065,
+          "patchFile": "c.patch",
+          "patchSha256": "sha256:33da58cf20bcf8859054309ed763cfef0078826c7145bad9b6aee047c3193969",
+          "path": "c.txt",
+          "payloadBytes": 1048576,
+          "sourceCommit": "e5a530afb2324a6c77722fee5a442a0f4040c29c",
+          "sourceTree": "88881e7742cab4e579cde2716e5036626d3f7f87"
+        },
+        {
+          "blobId": "54788c2c147fd81ae3a0c0d4633432bddbcbb00c",
+          "contentBytes": 1048581,
+          "contentSha256": "sha256:60d1d86263edb56dc4b15a6cc5c8d95abcf17cfc56b4cff1ecc916be80ac5919",
+          "dependencies": [
+            "c"
+          ],
+          "gitChangeStatus": "M",
+          "instanceId": "d",
+          "parentCommit": "256a3b37de8bfe83dc3811f57c77f0e647306278",
+          "patchBytes": 1065065,
+          "patchFile": "d.patch",
+          "patchSha256": "sha256:30b38c080805f5823107e96ec4791ac968861e8611a5d50da25d9d5c0371ccbb",
+          "path": "d.txt",
+          "payloadBytes": 1048576,
+          "sourceCommit": "6f276067b0b0f3a072cad46eafee8ec5407124ae",
+          "sourceTree": "25ce21e48eb199bf7f3717e5e58b0cf74ae4d3c1"
+        }
+      ],
+      "payloadBytesPerOperation": 1048576,
+      "plannedOrder": [
+        "a",
+        "b",
+        "c",
+        "d"
+      ],
+      "runtimeExecuted": false
+    }
+  ],
+  "boundary": "External private object preparation only; no validated evidence, runtime admission, grant, measurement, or T002 instrumentation.",
+  "capsReconciliation": "Declared numerics manually compared by Luna against bound source constants; not runtime-read.",
+  "environment": {
+    "dependenciesInstalled": false,
+    "executable": "/private/tmp/agent-braid-parallel-20261006/.venv-speckit/bin/python3.13",
+    "git": "git version 2.54.0 (Apple Git-157)",
+    "gitConfig": "No system/global config or templates; hooks disabled.",
+    "gitIdentityDate": "2000-01-01T00:00:00+00:00",
+    "machine": "arm64",
+    "os": "macOS-26.6.2-arm64-arm-64bit-Mach-O",
+    "python": "3.13.11 (main, Dec  5 2025, 16:06:33) [Clang 17.0.0 (clang-1700.4.4.1)]"
+  },
+  "pinnedContractCaps": {
+    "adapterCommandOutputBytes": 8000000,
+    "replay": {
+      "changedPaths": 64,
+      "commandOutputBytes": 8388608,
+      "gitCommands": 512,
+      "operations": 4,
+      "outputBytes": 16777216,
+      "patchBytes": 1048576,
+      "scratchBytes": 67108864,
+      "wallSeconds": 120
+    },
+    "runtime": {
+      "changedPaths": 16,
+      "childAddressSpaceBytes": null,
+      "commandOutputBytes": 2097152,
+      "gitCommands": 256,
+      "operations": 4,
+      "outputBytes": 8388608,
+      "patchBytes": 262144,
+      "recordBytes": 1048576,
+      "scratchBytes": 67108864,
+      "wallSeconds": 60,
+      "workers": 4
+    }
+  },
+  "preparationScriptSha256": "sha256:3b2a1d9df9b569f0b3087bf1fc851f7563f388a865af8c63d190419f10155225",
+  "sourceCheckoutCommit": "985165f68b63ecafaa1a02b501aeba071deb50c9",
+  "sourceHashes": {
+    "agent_braid/git_adapter.py": "sha256:4548eb96849e2d0ed1eaefc53579d065651b00a2c6ae5b1aef6e2bdc5ae3dc45",
+    "agent_braid/git_replay.py": "sha256:29cdbca88c9168829a0fcaae497d5c6805cd84ae5fd19649a7631f266c2759a8",
+    "agent_braid/git_runtime.py": "sha256:91e124c6e80dacf97232215c8ba9749b472d2ed03b2c7c5367ad6f98aa41ff50",
+    "agent_braid/runtime_scheduler.py": "sha256:47bb371c88726793d207a59bb85cb6911d86e00a44694b37934805d9fa2462a9",
+    "specs/022-m4-utility-followup/measurement-protocol.md": "sha256:9e5ef095753b068133e1739fcd3f7dbfac89532b0c8c07897f483d6f08e42458",
+    "specs/022-m4-utility-followup/workload-manifest-candidate.json": "sha256:719d633a2d7ece53aa61a3e302be66394a39ddf2529fc63c0221be000c463ca7",
+    "tests/test_git_runtime.py": "sha256:70e0655241bb64b4fb620309b0897c350b077a46db57be142f000a2e0d46fe47"
+  },
+  "status": "draft-preflight-blocked-human-review-pending",
+  "unobserved": [
+    "Runtime admission, output/scratch/time/command budget consumption and actual final-tree verification are not executed."
+  ],
+  "version": "m4-owned-fixture-preparation-draft-v2"
+}
