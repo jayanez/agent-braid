@@ -120,3 +120,21 @@ budgets, explicit technical/proof review, independent external reproduction,
 founder decisions and capability promotion remain their own gates. No milestone
 or issue closure, trained-model support, live probe, publication, entire feature
 acceptance or scientific result follows from this selected engineering delivery.
+
+### Durable public evidence snapshots after squash merge
+
+PR #373 squash-merged as `cfa6b7b264ebd8c472efc564946e9ce54979e242`.
+Its pre-merge snapshots referred to reviewed PR commits that are not ancestors
+of public develop after squash. SPEC-031 and SPEC-032 evidence is re-frozen to
+that durable public merge commit, preserving every recorded command, profile,
+source/wheel binding, task disposition and pending human-review status.
+This corrects public-history portability; it does not rerun an experiment or
+refresh human approval. The earlier candidate snapshots above remain the dated
+pre-merge provenance.
+
+The concurrent FC.1 planning PR #372 merged as
+`3a6e3c54e44f064092cf0a228689190ae76fa1f2`. SPEC-034–037 carried the same
+post-squash private-snapshot issue. Only their snapshot commit bindings are
+re-frozen to that public merge: all 62 authority hashes are unchanged, obtained
+scenario evidence remains empty, and draft/human-pending status is preserved.
+The FC.1 planning, tracking and source/budget/approval gates are unchanged.
