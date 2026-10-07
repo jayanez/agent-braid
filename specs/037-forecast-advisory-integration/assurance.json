@@ -22,7 +22,7 @@
   ],
   "assumptions": "Owned/permissioned metadata and existing bounded runtime contracts; no usable history, labels, approved artifacts, enforceable hardware envelope or positive utility assumed.",
   "authority_snapshot": {
-    "commit": "611e461b8e239e2cee5227004b6e70df181b9aa0",
+    "commit": "3a6e3c54e44f064092cf0a228689190ae76fa1f2",
     "hashes": {
       "ARCHITECTURE.md": "e26135a1037c232ff953710e5de52abef8cf1cad47a8822fe63a565bc9ad9555",
       "CONSTITUTION.md": "ff7196976a1736a639947c2ab26e8da157fef23c89ba9881312f2a36459964eb",
@@ -92,7 +92,7 @@
   "compatibility": "Additive default-off feature; core dependencies stay empty. Existing runtime/grant/certificate schemas, SPEC-019, System 1 own model experiment and historical decisions remain unchanged.",
   "domain": "Read-only recommendations over the current finite admissible serial/parallel preparation options and registered local resource profile; actual execution remains the existing separately authorized fixed-patch runtime.",
   "evidence_snapshot": {
-    "commit": "611e461b8e239e2cee5227004b6e70df181b9aa0",
+    "commit": "3a6e3c54e44f064092cf0a228689190ae76fa1f2",
     "mode": "historical"
   },
   "execution_contract": "Planning only; future advice executionAuthorization false. Real model loading/source collection/experiment execution require separate gates and unchanged independent operator grants. No runtime or host scope expansion.",
