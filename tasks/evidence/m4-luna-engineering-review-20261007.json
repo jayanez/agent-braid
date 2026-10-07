@@ -1,0 +1,31 @@
+{
+  "recordVersion": "agent-braid-m4-static-engineering-review-1",
+  "reviewer": "Codex independent reviewer",
+  "model": "gpt-6-luna",
+  "reasoningEffort": "medium",
+  "baseCommit": "5cb144e1193a266645e012a7f31224d846ea7003",
+  "inputs": {
+    "agent_braid/utility_trials.py": "065c9db2ecad538ae1f10b5d29afdf97f5b639c3190fe7780a4575ed1d3e400c",
+    "tests/test_utility_trials.py": "3665ad7cf247dc08e5663eef2e88a763be82ae978947814c3dd0b6815c918e07",
+    "scripts/sync_github_tracking.py": "a21dae0688047f63829c672338f93002ba77c74706f12224956acf017bcae750",
+    "tests/test_github_tracking.py": "e792f909a509d2b0b3fd55bc489e43c0d57f46471e36c9f77df3847d9e3a05bd",
+    "docs/development/GITHUB_TRACKING.md": "16a30c8b35f7111f806654f745d64980d1e1055df4e3ac34cb43c90cd8f0179c",
+    "docs/development/github-tracking.json": "3d3adfe0ee99231b49937ba48cf3a9b911c7f39337b722a6415b97945bf4ec4d",
+    "docs/development/SPEC_MILESTONE_INDEX.md": "89608c503b856bb97b9fc7afcc6a5b475c9059e4846fb1d27597d7c72783eb34",
+    "ROADMAP.md": "9adc29f94fb0d243d3f6412137b9c2aa75106d56c8ed7f5a90cd9d1c83bde118",
+    "specs/022-m4-utility-followup/assurance.json": "83cba1a16d50a8034db252740ff8b9250578324e50c1540f87d9a783874d52d9",
+    "specs/022-m4-utility-followup/spec.md": "4e815cc2bd2e0efde19ccfd5fbb97566af6806cdedbe0cf35133caeb5e5708f8",
+    "specs/022-m4-utility-followup/capture-feasibility-packet.md": "b9d4eb949a9d664857b6520dccf288a0d88dc31a55f249a674fa03010a8809e1",
+    "specs/027-runtime-refinement-contracts/capability-disposition-packet.md": "df291bdc6779fa291b75bc405d6e9374297d2da162b0b9a635315631edc3d7a2"
+  },
+  "findingDisposition": "No P1 or P2 findings after final-treatment budget correction and explicit new-record-key allowlist",
+  "scope": "Static review of budget refusal, tracking digest/scope/bootstrap, public historical evidence binding, and draft owner decision proposals",
+  "testsExecutedByReviewer": false,
+  "excluded": [
+    "specs/038-m4-real-workload-closure",
+    "Registered or actual-workload capture",
+    "Remote state mutation",
+    "Scientific validity and human/founder approval"
+  ],
+  "limits": "Read-only static engineering review, not exact capture authorization, independent empirical replication or M4 acceptance"
+}

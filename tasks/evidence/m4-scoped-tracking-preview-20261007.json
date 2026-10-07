@@ -1,0 +1,167 @@
+{
+  "repository": "jayanez/agent-braid",
+  "project_url": "https://github.com/users/jayanez/projects/6",
+  "scope": "milestone:6",
+  "milestone_number": 6,
+  "new_record_keys": [
+    "SPEC-038",
+    "SPEC-038/T001",
+    "SPEC-038/T002",
+    "SPEC-038/T003",
+    "SPEC-038/T004",
+    "SPEC-038/T005",
+    "SPEC-038/T006",
+    "SPEC-038/T007"
+  ],
+  "plan_sha256": "8da12dac0c0d17a15fa3db287026b1aa82ccca7a0b2845c15b8252f3d19446e6",
+  "operations": [
+    {
+      "action": "set_state",
+      "key": "SPEC-022/T001",
+      "from": "open",
+      "to": "closed"
+    },
+    {
+      "action": "update_title",
+      "key": "SPEC-022/T002",
+      "from": "[SPEC-022 T002] Implement reconciled phase accounting and diagnostic output. Dependencies: T001. Targets: scripts/meas...",
+      "to": "[SPEC-022 T002] Implement reconciled phase accounting and diagnostic output. Dependencies: T001. Targets: agent_braid/..."
+    },
+    {
+      "action": "set_state",
+      "key": "SPEC-022/T002",
+      "from": "open",
+      "to": "closed"
+    },
+    {
+      "action": "update_task_text",
+      "key": "SPEC-022/T002"
+    },
+    {
+      "action": "set_state",
+      "key": "SPEC-022/T003",
+      "from": "open",
+      "to": "closed"
+    },
+    {
+      "action": "update_title",
+      "key": "SPEC-022/T004",
+      "from": "[SPEC-022 T004] Implement the immutable workload manifest and complete paired runner. Dependencies: T003. Targets: scr...",
+      "to": "[SPEC-022 T004] Implement the immutable workload manifest and complete paired runner. Dependencies: T003. Targets: age..."
+    },
+    {
+      "action": "set_state",
+      "key": "SPEC-022/T004",
+      "from": "open",
+      "to": "closed"
+    },
+    {
+      "action": "update_task_text",
+      "key": "SPEC-022/T004"
+    },
+    {
+      "action": "set_state",
+      "key": "SPEC-027/T001",
+      "from": "open",
+      "to": "closed"
+    },
+    {
+      "action": "set_state",
+      "key": "SPEC-027/T002",
+      "from": "open",
+      "to": "closed"
+    },
+    {
+      "action": "set_state",
+      "key": "SPEC-027/T003",
+      "from": "open",
+      "to": "closed"
+    },
+    {
+      "action": "set_state",
+      "key": "SPEC-027/T004",
+      "from": "open",
+      "to": "closed"
+    },
+    {
+      "action": "set_state",
+      "key": "SPEC-027/T005",
+      "from": "open",
+      "to": "closed"
+    },
+    {
+      "action": "set_state",
+      "key": "SPEC-027/T006",
+      "from": "open",
+      "to": "closed"
+    },
+    {
+      "action": "create_issue",
+      "key": "SPEC-038"
+    },
+    {
+      "action": "create_issue",
+      "key": "SPEC-038/T001"
+    },
+    {
+      "action": "link_subissue",
+      "key": "SPEC-038/T001",
+      "parent": "SPEC-038"
+    },
+    {
+      "action": "create_issue",
+      "key": "SPEC-038/T002"
+    },
+    {
+      "action": "link_subissue",
+      "key": "SPEC-038/T002",
+      "parent": "SPEC-038"
+    },
+    {
+      "action": "create_issue",
+      "key": "SPEC-038/T003"
+    },
+    {
+      "action": "link_subissue",
+      "key": "SPEC-038/T003",
+      "parent": "SPEC-038"
+    },
+    {
+      "action": "create_issue",
+      "key": "SPEC-038/T004"
+    },
+    {
+      "action": "link_subissue",
+      "key": "SPEC-038/T004",
+      "parent": "SPEC-038"
+    },
+    {
+      "action": "create_issue",
+      "key": "SPEC-038/T005"
+    },
+    {
+      "action": "link_subissue",
+      "key": "SPEC-038/T005",
+      "parent": "SPEC-038"
+    },
+    {
+      "action": "create_issue",
+      "key": "SPEC-038/T006"
+    },
+    {
+      "action": "link_subissue",
+      "key": "SPEC-038/T006",
+      "parent": "SPEC-038"
+    },
+    {
+      "action": "create_issue",
+      "key": "SPEC-038/T007"
+    },
+    {
+      "action": "link_subissue",
+      "key": "SPEC-038/T007",
+      "parent": "SPEC-038"
+    }
+  ],
+  "limits": "Read-only pre-integration audit. Digest invalidated by any source/remote plan change. No GitHub write or Project-state verification."
+}
