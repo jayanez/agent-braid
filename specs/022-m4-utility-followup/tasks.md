@@ -1,6 +1,6 @@
 # Tasks
 
-T001 protocol review was explicitly approved by the owner on 2026-10-07 against public commit `3777e578`; see `protocol-review-3777e578.json`. T002–T004 engineering is implemented and development-reviewed; full repository profiles remain pending. T005 registered capture and T006 decision remain prospective. Dependencies sequence work; they grant no execution authority.
+T001 protocol review was explicitly approved by the owner on 2026-10-07 against public commit `3777e578`; see `protocol-review-3777e578.json`. T002–T004 v1 engineering is implemented and reviewed; repository profiles and hosted checks for the integrated v1 candidate are reported separately in PRs #376, #385 and #386. On 2026-10-07 the owner separately approved implementation and evaluation preparation of the prospective 180-minute successor in `successor-protocol-review-20261007.json`; its new candidate validation and preparation remain pending. The frozen 45-minute proposal and historical records are preserved. T005 registered capture and T006 decision remain prospective. Dependencies sequence work; they grant no execution authority.
 
 - [x] T001 (REQ-001,REQ-002/SC-001,SC-002): Freeze the follow-up cost boundaries, corpus, budgets and technical review.
   Dependencies: none. Targets: `specs/022-m4-utility-followup/measurement-protocol.md; frozen workload manifest`.

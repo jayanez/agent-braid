@@ -33,3 +33,7 @@ No execution capability is added. The observation remains tracked trees and expl
 ## Human review and unresolved decisions
 
 The exact `technical-review-packet.md` supersedes prior vague corpus/phase descriptions. The owner approved its frozen public candidate `3777e578` on 2026-10-07; `protocol-review-3777e578.json` records the scoped decision and T001 is complete. Instrumentation and evaluation preparation are authorized; whole-feature assurance remains draft/human-review pending. Registered measurements require a separately reviewed stable harness/manifest freeze. Founder utility decision follows obtained results; NO-GO and M4-open status remain unchanged before that decision. No scientific or independent validation is implied.
+
+## Prospective 180-minute successor
+
+On 2026-10-07 the owner selected option 1 of the byte-frozen `capture-feasibility-packet.md`: implementation and preparation of a distinct 180-minute version only. `successor-protocol-review-20261007.json` records the actual statement and proposal identity. Preserve v1 at 45 minutes, all corpus/sample/resource/grant/verifier rules and the negative/incomplete outcomes. `successor-protocol-180m.md` describes explicit version selection and future exact review; new preparation/trial inputs require fresh candidate-bound diagnostics. This scoped decision does not complete T005 or T006 and grants no registered dispatch or whole-M4 acceptance.

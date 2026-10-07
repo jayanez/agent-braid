@@ -1,6 +1,6 @@
 # Verification and evaluation preparation
 
-Protocol T001 was approved against public `3777e578`. Whole-feature human review, stable harness/registered manifest review, actual-workload utility acceptance and G4/M4 closure remain pending. The implementation does not turn protocol approval into registered-execution approval.
+Protocol T001 was approved against public `3777e578`. The owner separately approved the 180-minute successor for implementation and preparation only; see `successor-protocol-review-20261007.json`. Whole-feature human review, stable harness/registered manifest review, actual-workload utility acceptance and G4/M4 closure remain pending. The implementation does not turn protocol approval into registered-execution approval.
 
 Run commands in an isolated Python 3.12+ environment with its `bin` directory first in `PATH`, including child interpreters.
 
@@ -24,7 +24,9 @@ This runs one serial-first diagnostic pair; it is not registered evaluation. The
 python3 scripts/prepare_m4_utility_trials.py --diagnostics /absolute/diagnostics --destination-root /absolute/fresh/private-trials --output /absolute/fresh/registered-manifest.json
 ```
 
-Preparation writes exact immutable plan bytes and provenance. It creates no grants and executes no treatment. CLI `--execute` and `--registered` are refused. The library runner requires a separate approval bound to the exact manifest SHA-256 and stable candidate. Each admitted block has two warm-up and twenty measured pairs, with parity-alternated order and unique private destinations. All fixture copies are reconstructed separately before the runner's 45-minute dispatch clock starts. Failures and unexecuted treatments are retained; no favorable complete-case result is produced for an incomplete block.
+Preparation writes exact immutable plan bytes and provenance. It creates no grants and executes no treatment. CLI `--execute` and `--registered` are refused. The library runner requires a separate approval bound to the exact manifest SHA-256 and stable candidate. Each admitted block has two warm-up and twenty measured pairs, with parity-alternated order and unique private destinations. The default `--plan-version v1` retains the original 45-minute dispatch horizon. The distinct successor is prepared explicitly with `--plan-version v2`, using exactly 180 minutes. All fixture copies are reconstructed separately before the selected plan's dispatch clock starts. A v2 registration review also requires `reviewedPlanVersion: "spec022-paired-evaluation-plan-v2"`; neither the old protocol review nor a v1 manifest review authorizes v2 dispatch. Failures and unexecuted treatments are retained; no favorable complete-case result is produced for an incomplete block.
+
+For the approved preparation scope, use the same preparation command with `--plan-version v2`. Changed preparation/trial inputs require fresh matching diagnostic records before it can succeed; the existing v1 manifests and diagnostic hashes are historical, not silently refreshed. See `successor-protocol-180m.md` for compatibility and the later review boundary.
 
 ## SC-003 — Existing execution boundaries
 
