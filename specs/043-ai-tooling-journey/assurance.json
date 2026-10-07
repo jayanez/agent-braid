@@ -21,7 +21,7 @@
   ],
   "assumptions": "Owned trusted local roots, separately reviewed contracts and exact host/source/cost decisions; no universal compatibility, positive utility or available provider budget assumed.",
   "authority_snapshot": {
-    "commit": null,
+    "commit": "0973ae322ee394b8773806526f75edbddaa5f7c1",
     "hashes": {
       "ARCHITECTURE.md": "87d09e9b3f9aa7fff1b0a994f8c1cc9dba2c9ca5015d5b8bd53afc21af6f51e5",
       "CONSTITUTION.md": "ff7196976a1736a639947c2ab26e8da157fef23c89ba9881312f2a36459964eb",
@@ -87,13 +87,13 @@
       "schemas/governance/public-export-manifest.schema.json": "11eb7f2594939ae9fd0c9e6cfe4423a80aba686d6cdfdd8b73b0fb84b0840aa8",
       "schemas/governance/release-validation-record.schema.json": "d9943f0c9f5520ea52e3b12bfba88240d03f8011b433fc5e35cb49549ab6e819"
     },
-    "mode": "current"
+    "mode": "historical"
   },
   "compatibility": "Additive experimental tooling envelope with optional pinned SDK; core dependencies empty. Codex and Claude Code v1 only, exact versions selected before observation. Existing contracts and historical records unchanged.",
   "domain": "Presentation of existing bounded typed results and selected owned evidence; output generation does not expand runtime authority or observation.",
   "evidence_snapshot": {
-    "commit": null,
-    "mode": "current"
+    "commit": "0973ae322ee394b8773806526f75edbddaa5f7c1",
+    "mode": "historical"
   },
   "execution_contract": "Source planning only. Future server defaults to analysis; execution/recovery delegate existing independent exact operator grants and private fixed-patch runtime. Installation writes only explicitly selected receipt-owned entries. No new effects.",
   "human_review": "pending",
