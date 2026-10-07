@@ -17,7 +17,7 @@
   ],
   "assumptions": "Owned POSIX Git fixtures; complete current-runtime verification and grants remain enforced; OS cache state is uncontrolled.",
   "authority_snapshot": {
-    "commit": "9f347e803401c04af61e6662ccc5756578805b23",
+    "commit": null,
     "hashes": {
       "ARCHITECTURE.md": "e26135a1037c232ff953710e5de52abef8cf1cad47a8822fe63a565bc9ad9555",
       "CONSTITUTION.md": "ff7196976a1736a639947c2ab26e8da157fef23c89ba9881312f2a36459964eb",
@@ -82,13 +82,13 @@
       "schemas/governance/public-export-manifest.schema.json": "11eb7f2594939ae9fd0c9e6cfe4423a80aba686d6cdfdd8b73b0fb84b0840aa8",
       "schemas/governance/release-validation-record.schema.json": "d9943f0c9f5520ea52e3b12bfba88240d03f8011b433fc5e35cb49549ab6e819"
     },
-    "mode": "historical"
+    "mode": "current"
   },
   "compatibility": "No current public API/schema/version changes; future diagnostic harness remains separate from accepted reports.",
   "domain": "Existing 2\u20134 immutable ordinary-text A/M patch domain; local descriptive measurement only.",
   "evidence_snapshot": {
-    "commit": "9f347e803401c04af61e6662ccc5756578805b23",
-    "mode": "historical"
+    "commit": null,
+    "mode": "current"
   },
   "execution_contract": "No new authority or capability. Fixture runs require current exact operator grant and existing private-run restrictions.",
   "human_review": "pending",
@@ -176,7 +176,9 @@
   "stage": "draft",
   "technical_review_preparation": {
     "executionAuthorization": false,
+    "localFrozenPreparationCommit": "9f347e803401c04af61e6662ccc5756578805b23",
     "proposalSha256": "6e5a2bd790fb789926007e11f33af40df2ed494d3e8464b13f114523120b282b",
+    "publicFreeze": "Pending durable merged-candidate snapshot before human technical decision; no private PR snapshot is published as a public ancestor.",
     "registeredMeasurementExecuted": false,
     "reviewRecord": "specs/022-m4-utility-followup/evidence/luna-protocol-review.json",
     "sha256": "73abcaff381730f9b22ea0b0d3d799d40c769df5c98c9df077cd429a97431b14",
