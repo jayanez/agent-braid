@@ -13,7 +13,9 @@ verified plans under an explicit operator policy and grants.
 | Structured exchange | Restricted `anchored-sequence-v1` producer/consumer and finite controls; M3 internally closed | [SPEC-018](specs/018-structured-exchange/spec.md) |
 | Local Git runtime and stdio MCP | Owned private results, fixed text patches, policy/grants, isolated preparation, serial publication and process-interruption recovery | [SPEC-020](specs/020-m4-local-git-runtime/spec.md), [SPEC-021](specs/021-m4-alpha-runtime/spec.md) |
 | Predictor preparation | Synthetic capture, recovery, accounting and filtered-lab tooling; real-source admission and fitting remain gated | [SPEC-019](specs/019-native-predictor/implementation-readiness.md) |
-| Further research and product capabilities | Draft contracts/tasks with human review pending, including offline adapters and native System 1; no feature acceptance inferred | [SPEC-022–033](docs/development/SPEC_MILESTONE_INDEX.md) |
+| Runtime utility and refinement preparation | Full-cost instrumentation, owner-approved 180-minute successor preparation and read-only refinement assessments; registered capture, utility acceptance and capability adoption remain pending | [SPEC-022](specs/022-m4-utility-followup/successor-protocol-180m.md), [SPEC-027](specs/027-runtime-refinement-contracts/quickstart.md) |
+| System 1 reference core | Opt-in standard-library synthetic decisions and diagnostics; no learned model, accepted utility or execution authority | [SPEC-028](specs/028-system-one-core/spec.md) |
+| Further research and product capabilities | Recorded-trace, effectful-lab, formal-research, adoption, System 1 and forecast programmes; exact real-workload rights/protocol and broader feature acceptance remain gated | [SPEC-023–026 and SPEC-029–038](docs/development/SPEC_MILESTONE_INDEX.md) |
 
 Whole M4 remains open. The recorded [G4 NO-GO](specs/021-m4-alpha-runtime/g4-decision.json)
 did not accept a useful speedup capability under its frozen evidence. Parallel
