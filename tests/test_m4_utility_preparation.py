@@ -14,7 +14,10 @@ import uuid
 from unittest.mock import patch
 
 from agent_braid.utility_fixtures import validate_prepared_manifest
-from agent_braid.utility_trials import build_trial_plan, derive_admission_records, encode_trial_plan
+from agent_braid.utility_trials import (
+    PLAN_VERSION_V1, PLAN_VERSION_V2, build_trial_plan,
+    derive_admission_records, encode_trial_plan,
+)
 from scripts import prepare_m4_utility_trials as prepare
 
 
@@ -121,9 +124,48 @@ class UtilityPreparationTests(unittest.TestCase):
         self.assertEqual(receipt['manifestSha256'], hashlib.sha256(output.read_bytes()).hexdigest())
         self.assertFalse(receipt['registeredExecution'])
         self.assertEqual(receipt['reviewDecision'], 'pending-separate-stable-harness-manifest-review')
+        self.assertNotIn('planVersion', receipt)
+
+    def test_explicit_v2_preparation_binds_version_and_180_minute_horizon(self):
+        output = self.root / 'plan-v2.json'
+        with patch.object(prepare, '_candidate_state', return_value=self.state), \
+             patch.object(prepare, 'build_fixture') as builder, \
+             patch.object(prepare, 'run_treatment') as treatment, redirect_stdout(io.StringIO()):
+            result = prepare.prepare_plan(prepare.DEFAULT_MANIFEST, self.diagnostics,
+                                          self.root / 'future-v2', output, plan_version=PLAN_VERSION_V2)
+        self.assertEqual(result, 0)
+        builder.assert_not_called()
+        treatment.assert_not_called()
+        plan = json.loads(output.read_bytes())
+        self.assertEqual(plan['version'], PLAN_VERSION_V2)
+        self.assertEqual(plan['dispatchBudgetNs'], 180 * 60 * 1_000_000_000)
+        receipt = json.loads(Path(str(output) + '.provenance.json').read_bytes())
+        self.assertEqual(receipt['planVersion'], PLAN_VERSION_V2)
+        self.assertEqual(receipt['dispatchBudgetNs'], plan['dispatchBudgetNs'])
+        self.assertFalse(receipt['registeredExecution'])
+
+    def test_cli_plan_version_selector_maps_v2_and_execution_stays_refused(self):
+        args = ['--manifest', str(prepare.DEFAULT_MANIFEST), '--diagnostics', str(self.diagnostics),
+                '--destination-root', str(self.root / 'future'), '--output', str(self.root / 'plan.json'),
+                '--plan-version', 'v2']
+        with patch.object(prepare, 'prepare_plan', return_value=0) as prepare_call:
+            self.assertEqual(prepare.main(args), 0)
+        self.assertEqual(prepare_call.call_args.kwargs['plan_version'], PLAN_VERSION_V2)
+        with patch.object(prepare, 'prepare_plan') as prepare_call, redirect_stderr(io.StringIO()):
+            self.assertEqual(prepare.main(args + ['--registered']), 2)
+        prepare_call.assert_not_called()
+
+    def test_default_preparation_keeps_v1_plan_version(self):
+        output = self.root / 'default-v1.json'
+        with patch.object(prepare, '_candidate_state', return_value=self.state), \
+             patch.object(prepare, 'build_fixture'), patch.object(prepare, 'run_treatment'), \
+             redirect_stdout(io.StringIO()):
+            prepare.prepare_plan(prepare.DEFAULT_MANIFEST, self.diagnostics,
+                                 self.root / 'future-v1', output)
+        self.assertEqual(json.loads(output.read_bytes())['version'], PLAN_VERSION_V1)
 
     def test_cli_execute_and_registered_are_refused_through_actual_entrypoint(self):
-        for flag in ['--execute', '--registered']:
+        for flag in ['--run', '--execute', '--registered']:
             process = subprocess.run([sys.executable, str(prepare.ROOT / 'scripts/prepare_m4_utility_trials.py'), flag],
                                      capture_output=True, timeout=30)
             self.assertEqual(process.returncode, 2)
@@ -179,6 +221,7 @@ class UtilityPreparationTests(unittest.TestCase):
             self.assertEqual(calls, [])
             self.assertEqual(record['fixtureCopies'], 176)
             self.assertEqual(len(record['sourceFingerprints']), 176)
+            self.assertEqual(record['boundary'], 'All fixture reconstruction is outside operational treatment intervals and 45-minute dispatch budget.')
             self.assertTrue(record['wallNs'] >= 0 and record['parentCpuNs'] >= 0)
             descriptor = self.descriptor()
             result = callback(descriptor)
@@ -187,6 +230,16 @@ class UtilityPreparationTests(unittest.TestCase):
             self.assertFalse(calls[0]['treatment_root'].exists())
             self.assertEqual(callback(descriptor)['status'], 'invalidated')
             self.assertEqual(len(calls), 1)
+
+    def test_successor_preparation_provenance_names_selected_180_minute_horizon(self):
+        plan = build_trial_plan(self.raw, self.plan['admissionRecords'],
+                                candidate_commit=self.state['candidateCommit'],
+                                destination_root=str(self.root / 'future-v2'),
+                                plan_version=PLAN_VERSION_V2)
+        with self.callback_scope(), patch.object(prepare, 'run_treatment') as treatment:
+            _callback, record = prepare.prepare_runtime_callback(plan)
+        treatment.assert_not_called()
+        self.assertEqual(record['boundary'], 'All fixture reconstruction is outside operational treatment intervals and 180-minute dispatch budget.')
 
     def test_source_mutation_descriptor_tamper_and_candidate_drift_never_dispatch(self):
         with self.callback_scope(), patch.object(prepare, 'run_treatment', side_effect=self.fake_guarded_treatment) as treatment:
