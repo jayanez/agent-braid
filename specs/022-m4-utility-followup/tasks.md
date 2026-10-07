@@ -7,7 +7,7 @@ T001 protocol review was explicitly approved by the owner on 2026-10-07 against 
   Verification and planned evidence: Review the exact prospective manifest, 1.10 descriptive threshold and whole-cost boundary; retain SPEC-021 NO-GO. Record technical review before implementing contract-sensitive instrumentation.
 
 - [x] T002 (REQ-001/SC-001): Implement reconciled phase accounting and diagnostic output.
-  Dependencies: T001. Targets: `agent_braid/utility_accounting.py; agent_braid/git_process.py; scripts/measure_m4_utility.py; tests/test_utility_accounting.py; tests/test_m4_utility.py`.
+  Dependencies: T001. Targets: `agent_braid/utility_accounting.py; agent_braid/utility_budget_observer.py; agent_braid/git_replay.py; agent_braid/git_runtime.py; scripts/measure_m4_utility.py; tests/test_utility_accounting.py; tests/test_m4_utility.py`.
   Verification and planned evidence: Run future phase-accounting tests and existing policy/scheduler suites; capture omitted or unavailable counters explicitly. No grant/evidence check may be bypassed.
 
 - [x] T003 (REQ-003/SC-003): Diagnose baseline costs and select at most one contract-preserving improvement.

@@ -12,7 +12,7 @@ Inspect the eight required disjoint phases, residual reconciliation, authoritati
 
 ## Trial plan to inspect
 
-All nine blocks remain visible. Five cap exclusions are fixed; four admitted diagnostic blocks each have 22 pairs: two warmups followed by twenty measured, alternating treatment order by pair parity. Every treatment has a distinct private fixture/run/grant destination. The preconstruction of all 176 fixture copies is separately timed before the registered dispatch clock starts. No runtime optimization was selected.
+All nine blocks remain visible. Five cap exclusions are fixed; four admitted diagnostic blocks would each have 22 pairs: two warmups followed by twenty measured, alternating treatment order by pair parity. Every treatment has a distinct private fixture/run/grant destination. The preconstruction of all 176 fixture copies is separately timed before the registered dispatch clock starts. No runtime optimization was selected.
 
 ## Failure and budget rules
 
