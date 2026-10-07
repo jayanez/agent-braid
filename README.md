@@ -199,9 +199,9 @@ Registered measurement, human review of the stable harness/manifest and any
 future utility decision remain pending. SPEC-027 has implemented read-only
 refinement assessments and synthetic/disposable controls; capability decisions,
 founder acceptance and expanded execution authority remain pending. SPEC-038 is
-a source-rights and real-workload protocol proposal: exact source rights and
-protocol review are pending. The owner confirmed capacity only; exact source use
-and terms are not approved. SPEC-038 records no obtained M4 real-workload evidence.
+an owner-approved source-rights and real-workload protocol: the bounded harness is
+implemented, with validation and evaluation preparation in progress. Exact stable-harness
+and capture review remain pending. SPEC-038 records no obtained M4 real-workload evidence.
 
 M3.5 synthetic checks demonstrate tooling only. They do not establish real-source
 rights, prospective registration, capture, training authorization, predictor

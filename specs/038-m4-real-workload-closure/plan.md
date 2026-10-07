@@ -1,5 +1,12 @@
 # Implementation and evidence plan
 
+## Development status — 2026-10-08
+
+Exact source rights and protocol are approved for bounded implementation and
+preparation. See [implementation readiness](implementation-readiness.md) for the
+scoped decision and current gates. Earlier proposal descriptions below retain
+their design-time context; stable review, capture and whole-M4 acceptance remain pending.
+
 ## Technical context and scope
 
 This feature defines a successor actual-workload protocol and bounded C08
@@ -94,7 +101,7 @@ that these candidate sources are authorized or eligible.
 
 ## Human review and unresolved decisions
 
-Pending: source owner/rightsholder and exact permissions; exact eligible
-operation yield under current caps; protocol/source approval; later stable
-harness/manifest review; capture-specific authorization; independent evidence
-review; and founder whole-M4 decision. No approvals are represented as obtained.
+Source-rights and exact protocol approval are obtained as recorded above.
+Pending: exact eligible operation yield under current caps; stable harness/manifest
+review; capture-specific authorization; independent evidence review; and a new
+founder whole-M4 decision. Implementation authorization is not capture approval.
