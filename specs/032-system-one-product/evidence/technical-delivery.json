@@ -50,7 +50,7 @@
     "specs/032-system-one-product/fixtures/pull-hooks.json": "9934d688fcfe008a8424ef39950d6a0170ba48f9587dd8db6fab7d2ef7320b37",
     "specs/032-system-one-product/fixtures/schema-compiler.json": "3fd582a94b69ebd2fbf0e4158c7b9ac7dcaf90ebd602e63588114c4a9d5e4a41",
     "specs/032-system-one-product/product-decisions.md": "59d1b3a53516b0b723a2f833a02f4c56d5da8bb0b016cd3ccd281d270f6563fa",
-    "specs/032-system-one-product/tasks.md": "7d747de28d6842eb6a2b929f3362af80741d76343482afecfea4c36c98a085f8",
+    "specs/032-system-one-product/tasks.md": "241bf264ab382a4c508a5f23f225e641a8091a7d2d8fb970041ecd43d5720e85",
     "tests/test_system_one_advisors.py": "b712dcd1281f31e98c2b0abeec940266f37367516b4eed1b66edf0950ec31a14",
     "tests/test_system_one_backends.py": "442dc877c441e43d1c8abdb889fed3b94b7f2d753efabd28cfbde814dba7691f",
     "tests/test_system_one_cli.py": "db8b80d4435218c0fb4d5679db7de6e8a66808931a6c3685461fd9787b7f4e13",
@@ -80,6 +80,7 @@
     "sourceCandidate": "4a432b1cac60fb0f85a13c563f4d9387b6869f67",
     "tests": 643
   },
+  "selectedPacketDisposition": "SPEC-032/T008 selected engineering/defer packet complete after executable PR profile and supported clean candidate freeze; no entire feature/human/model acceptance.",
   "sourceCandidate": "4a432b1cac60fb0f85a13c563f4d9387b6869f67",
   "stablePrProfile": {
     "base": "a5eaa04939eabaa654d54654e2ab4ea68d3a224b",
