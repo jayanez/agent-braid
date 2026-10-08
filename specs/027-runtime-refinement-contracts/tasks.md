@@ -26,7 +26,7 @@ Draft contract/assessment work only. No new execution scope follows from this ta
   Dependencies: T003,T004,T005. Targets: `decision-packets.md; assurance.json; proposed-adr.md`.
   Verification and planned evidence: Run quick/PR and bind obtained outputs with limitations; refused/unknown capabilities have fallbacks and reconsideration triggers.
 
-- [ ] T007 (REQ-005/SC-005): Record founder capability decisions and create separate implementation work only for adopted contracts.
+- [x] T007 (REQ-005/SC-005): Record founder capability decisions and create separate implementation work only for adopted contracts.
   Dependencies: T006. Targets: `future decision records; ROADMAP.md; separate feature/contract versions`.
   Verification and planned evidence: Founder adoption is explicit. Preserve current M4 open/NO-GO and legacy grants. No new runtime capability is implemented by closing assessment tasks.
 
@@ -36,5 +36,11 @@ The implementation and packet tasks above are complete within their explicit
 synthetic/read-only domain. `evidence.json` binds focused controls, independent
 Luna review and the stable 504-test PR profile (four documented skips). Human
 acceptance, source rights, empirical interpretation, external reproduction and
-publication/expanded-capability decisions remain separate. The checked packet
-task records preparation and submission, not approval.
+publication/expanded-capability decisions remain separate. The checked packet task records preparation and submission, not approval. T007 was
+subsequently completed only for the three bounded-M4-alpha deferrals recorded in
+[`evidence/founder-capability-dispositions-20261008.json`](evidence/founder-capability-dispositions-20261008.json)
+(SHA-256 `c5a12182ba037420dac09661205636f027db4b72899bb84265c30265e7b0e42f`). No capability was adopted. Source promotion, arbitrary-code
+execution, real external effects, probes, provider calls, new grants, capture,
+scientific acceptance and whole-M4 acceptance remain unauthorized or pending as
+applicable; any capability adoption requires a separate reviewed feature/contract
+and exact authority.

@@ -234,6 +234,26 @@
     }
   ],
   "scientific_limits": "No production safety, general confluence, proof, hostile same-UID or external adapter correctness claims.",
-  "scope": "Implemented read-only promotion assessment, installed executable inventory and abstract external-effect simulation with candidate capability contracts; expanded runtime and founder adoption remain pending.",
-  "stage": "validated"
+  "scope": "Implemented read-only promotion assessment, installed executable inventory and abstract external-effect simulation with candidate capability contracts; founder recorded NO-GO/defer for all three expansions within bounded M4 alpha. No capability adoption or expanded runtime authority; broader human/scientific review and whole-M4 acceptance remain pending.",
+  "stage": "validated",
+  "current_founder_disposition": {
+    "status": "recorded-three-bounded-m4-alpha-deferrals",
+    "record": "specs/027-runtime-refinement-contracts/evidence/founder-capability-dispositions-20261008.json",
+    "sha256": "c5a12182ba037420dac09661205636f027db4b72899bb84265c30265e7b0e42f",
+    "sourceReceiptSha256": "c2764bb9d0b9c4a9c7763dba8c4ffed1e0f0768425a5d258e3257ceac889d32e",
+    "reviewedPacketSha256": "df291bdc6779fa291b75bc405d6e9374297d2da162b0b9a635315631edc3d7a2",
+    "reviewedCandidateCommit": "7d0985dfb3a406debfc534746b769d0d729caabe",
+    "capabilities": [
+      "source-ref promotion",
+      "arbitrary repository-code execution",
+      "real external effects"
+    ],
+    "decision": "approved-NO-GO-defer-for-bounded-M4-alpha",
+    "implementationAdopted": false,
+    "newGrantsAuthorized": false,
+    "registeredCaptureAuthorized": false,
+    "wholeM4Accepted": false,
+    "historicalAuthorityAndEvidenceSnapshotsPreserved": true,
+    "limits": "This current decision reference is separate from historical obtained_evidence and does not change human_review for broader assurance, scientific interpretation, source rights or whole-M4 acceptance."
+  }
 }
