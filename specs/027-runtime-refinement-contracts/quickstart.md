@@ -1,10 +1,12 @@
 # Implemented assessment verification
 
-The read-only assessment CLI and synthetic controls are implemented. No expanded
-operation is authorized: source promotion, code-check execution and real external
-effects still require their separate contracts, grants and founder decisions.
+The read-only assessment CLI and synthetic controls are implemented. No expanded operation is authorized by this assessment. The founder has recorded
+NO-GO/defer dispositions for source promotion, arbitrary code execution and real
+external effects by the bounded M4 alpha runtime. Those decisions preserve ordinary
+authorized project delivery/testing and do not adopt capabilities or issue grants.
+See the [derived decision record](evidence/founder-capability-dispositions-20261008.json).
 See `evidence.json` and `tasks.md` for the candidate-bound obtained evidence;
-assessment completion does not close T007 or M4.
+assessment completion alone did not close T007; its three bounded-M4-alpha disposition decisions are now recorded. This does not close M4.
 
 ## SC-001 — Separate grant scope
 
@@ -64,8 +66,10 @@ python3 -m unittest tests.test_runtime_refinement
 ```
 
 Inspect each packet's capability scope, prerequisites, evidence, restrictions,
-fallback and pending founder decision. `capability-disposition-packet.md` contains
-the proposed bounded-alpha dispositions; the founder has not adopted them.
+fallback and decision scope. The frozen `capability-disposition-packet.md` remains
+the recommendation presented to the founder; its pending language is superseded by
+the derived decision record, which records three NO-GO/defer dispositions for bounded
+M4 alpha only. No capability was adopted into M4 or a future implementation track.
 Repository quick/PR profiles validate executable checks and artifacts, not ADR
 adoption, source permission, expanded execution or whole-M4 acceptance. Historical
 candidate-bound review and evidence records retain their original observations.
