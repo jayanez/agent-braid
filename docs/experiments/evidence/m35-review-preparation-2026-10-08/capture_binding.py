@@ -18,6 +18,7 @@ def main() -> None:
         "scripts/check_m35_review_packet.py",
         "tests/test_m35_review_packet.py",
         "specs/019-native-predictor/completion-plan.md",
+        "specs/019-native-predictor/candidate-review-decisions.template.md",
         "docs/experiments/evidence/m35-review-preparation-2026-10-08/capture_binding.py",
         "docs/experiments/evidence/m35-review-preparation-2026-10-08/adversarial-regression-review.md",
     ):

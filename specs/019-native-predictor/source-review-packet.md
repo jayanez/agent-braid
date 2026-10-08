@@ -20,29 +20,40 @@ or quotas to retain a target number of rows or increase yield.
 The exact machine-readable candidate inventory is
 [`source-candidates.json`](source-candidates.json). Its current five records
 mark distinctness, permission and eligibility review as pending. Reviewers may
-reject or merge records based on evidence. Record those dispositions and their
-rationale in the human review record; this inventory contains only current
+reject or merge records based on evidence. Record each disposition and its
+rationale in the separate
+[`candidate-review-decisions.template.md`](candidate-review-decisions.template.md)
+human review record; this inventory contains only current
 proposals, not approval or rejection decisions. The checker accepts 0–100
 proposal rows as a bounded metadata packet; candidate count is separate from
 the experiment's minimum of five eligible admitted families. The entries are
 not windows, registrations, admissions, or a sampling frame.
 
-## Decisions requested before any source inspection
+## Staged source review and authorization gates
 
-For each proposed family, reviewers should record a separate decision on:
+Keep these stages separate for each proposed family. Until Stage 1 is recorded,
+do not open file contents, journals, sessions or other source payloads.
 
-1. Whether the workflow naturally occurs and is meaningfully distinct from
+1. **Metadata-only screening and permission to inspect.** Decide whether the
+   described workflow naturally occurs and may be meaningfully distinct from
    every other retained family, including the other proposed Agent Braid
-   workflows. Identify the evidence boundary for that determination without
-   using Git commits, timestamps or document diffs as proof of independent
-   intent.
-2. The named source owner, authorized participants, participant notice,
-   source/data rights, privacy review, capture permission, allowed publication
-   level, and excluded material. Review the exact source-file/content allowlist
-   and full text before any export. Kinetiq's athlete/client and gait material
+   workflows. Record the named source owner, potential participants and notice,
+   source/data-rights basis, initial privacy decision, and permission for named
+   reviewers to inspect exact pinned files. This stage may use workflow
+   descriptions and repository path/blob metadata only; Git commits, timestamps
+   and document diffs do not prove independent intent. Record immutable source
+   revision and path/blob pins without reading blob contents. Stage 1 grants no
+   export, collection, journal, registration or capture permission.
+2. **Authorized content review.** Only after Stage 1 permission, named reviewers
+   may open the exact pinned file contents within the approved local boundary.
+   Review the complete text, confirm the exact content allowlist, excluded
+   material, privacy and publication level, and record any revised permission
+   decision before export or capture. Kinetiq's athlete/client and gait material
    and SmartNotes' patient, clinical, audio, transcript, review/audit and
    production material remain excluded. Agent Braid content and credentials
-   need their own explicit boundaries.
+   need their own explicit boundaries. Content-review permission is not capture
+   permission; any capture requires a subsequent, explicit source-specific
+   approval.
 3. Whether an authoring-boundary adapter can present one immutable base to
    each participant, capture independent proposal receipts before disclosure,
    and record cancellations, rejections, and all opened sessions. Define an
