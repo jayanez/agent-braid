@@ -242,7 +242,11 @@ class ToolingServiceTests(unittest.TestCase):
     def test_server_requires_exact_pinned_sdk_distribution_before_construction(self):
         from agent_braid.tooling_mcp import create_server
         with patch("importlib.metadata.version", return_value="2.3.0"):
-            self.assertIsNotNone(create_server(self.config))
+            if importlib.util.find_spec("mcp"):
+                self.assertIsNotNone(create_server(self.config))
+            else:
+                with self.assertRaisesRegex(RuntimeError, "optional 'tooling' extra"):
+                    create_server(self.config)
         with patch("importlib.metadata.version", return_value="1.0.0"):
             with self.assertRaisesRegex(RuntimeError, "Unsupported MCP SDK version"):
                 create_server(self.config)
