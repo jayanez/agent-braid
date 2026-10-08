@@ -1,6 +1,6 @@
 # Verification and evaluation preparation
 
-Protocol T001 was approved against public `3777e578`. The owner separately approved the 180-minute successor for implementation and preparation; its exact stable candidate and manifest were subsequently reviewed and authorized for registered capture. The registered synthetic capture completed on candidate `b85f7e5`; see the [derived result](evidence/registered-capture-summary-b85f7e5.json). T006 interpretation, human utility acceptance and G4/M4 closure remain pending. The result does not establish actual-workload utility or a general speedup.
+Protocol T001 was approved against public `3777e578`. The owner separately approved the 180-minute successor for implementation and preparation; its exact stable candidate and manifest were subsequently reviewed and authorized for registered capture. The registered synthetic capture completed on candidate `b85f7e5`; see the [derived result](evidence/registered-capture-summary-b85f7e5.json). The owner approved a bounded T006 interpretation; see the [decision packet](decision-packet.md) and [decision record](utility-decision-20261008.json). This interpretation supports no useful-speedup claim or parallel performance default for the measured families; it is not a general claim about parallelism. Whole-feature assurance review, tracking reconciliation, the historical G4 NO-GO and whole-M4 acceptance remain separate; the feature remains open.
 
 Run commands in an isolated Python 3.12+ environment with its `bin` directory first in `PATH`, including child interpreters.
 
