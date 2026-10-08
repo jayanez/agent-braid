@@ -1,0 +1,20 @@
+{
+  "recordVersion": "spec038-obtained-evidence-v1",
+  "scenario": "SC-004",
+  "status": "satisfied-with-limits",
+  "candidateCommit": "e66f9a1b94fc5ebfbf784d9c48a76f53c1a656ee",
+  "captureSummary": "specs/038-m4-real-workload-closure/evidence/registered-capture-summary-e66f9a1.json",
+  "captureSummarySha256": "7e2e948aa9252270eb495364d86d66e75c03e1acb578d60079244c7fbcc7c1cc",
+  "contextReferences": [
+    {
+      "path": "specs/038-m4-real-workload-closure/evidence/pre-dispatch-attempt-summary.json",
+      "sha256": "dcc39b49c6b0df19fe2e9915889732fb0320e38ed9db08930e2ac3e206a70ec7",
+      "use": "immutable history of two earlier attempts that stopped before dispatch"
+    }
+  ],
+  "obtainedEvidence": "All 10 original pairs and 20 treatment slots remain visible in the frozen schedule with no replacement: four warm-up and six measured pairs. All 20 dispositions were valid; invalid, failed, refused, interrupted, recovered, and unexecuted counts were zero.",
+  "scopeLimits": [
+    "The earlier failed-before-dispatch attempts remain separate historical records.",
+    "Whole-M4 acceptance remains pending and SPEC-021 G4 NO-GO is unchanged."
+  ]
+}

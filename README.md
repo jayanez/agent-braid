@@ -224,13 +224,19 @@ refinement assessments and synthetic/disposable controls. The founder recorded
 NO-GO/defer dispositions for source promotion, arbitrary code execution and real
 external effects by the bounded M4 alpha runtime; no capability was adopted and no
 expanded execution authority was granted. Whole-M4 and scientific acceptance remain
-separate and pending. SPEC-038's historically reviewed candidate failed twice
-before dispatch, so zero actual source treatments ran. Both failures are
-preserved. Any repair requires a new stable candidate and source manifest, with
-fresh exact owner review and capture authorization; approvals for the old
-candidate do not carry forward. See the [attempt summary](specs/038-m4-real-workload-closure/evidence/pre-dispatch-attempt-summary.json).
-SPEC-021 G4 remains NO-GO, and M4 remains open pending separate whole-milestone
-acceptance. No actual-workload outcome has been obtained.
+separate and pending. SPEC-038 completed a bounded registered capture on
+candidate `e66f9a1`: all 20 treatment slots were valid (eight warm-up and 12
+measured treatments across ten pairs, of which six were measured), and the mandatory fresh-process
+verifier reported `verified` for all 20 before conditional cleanup. The six
+measured serial/parallel total-wall ratios were below one (median
+`0.6538998702917553`; AB median `0.6530442113`, BA median `0.6547555293`), a
+finite negative result for parallel utility on this exact two-operation source
+frame. The checks establish tracked Git-tree equality for the admitted orders,
+not semantic equivalence or native-code validity. No real-source
+interruption/recovery controls were run. See the [derived capture
+summary](specs/038-m4-real-workload-closure/evidence/registered-capture-summary-e66f9a1.json)
+for bounded evidence and limits. SPEC-021 G4 remains NO-GO, and M4 remains open
+pending its separate whole-milestone decision.
 
 M3.5 synthetic checks demonstrate tooling only. They do not establish real-source
 rights, prospective registration, capture, training authorization, predictor
