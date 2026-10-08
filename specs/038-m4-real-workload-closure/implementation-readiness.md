@@ -31,13 +31,23 @@ limits. Raw sources, manifests, receipts and observations stay private/local.
 The existing historical authority record is preserved; the new partial evidence
 uses a current evidence binding and does not approve the feature as a whole.
 
-The historical `b85f7e5` candidate received stable-candidate review and exact
-capture authorization, then failed twice before dispatch. Zero actual-source
-treatments ran and no source grants or persistent runs were issued. A repaired
-harness needs a new candidate and source manifest plus fresh exact owner review
-and capture authorization. Whole-M4 acceptance remains pending. No source-project
-code or test commands may be run; engineering tests on owned synthetic
-repositories remain separate from actual-workload evidence.
+The exact successor candidate `e66f9a1b94fc5ebfbf784d9c48a76f53c1a656ee`
+and manifest received independent review, owner stable-candidate approval
+(item 18) and separate capture authorization (item 19). The single registered
+capture completed all 20 treatments: 10 complete pairs, including four warm-up
+and six measured pairs. All treatments were valid; the separate fresh-process
+verifier inspected all 20 before conditional cleanup removed 40 run/grant paths.
+The measured median serial/parallel total-wall ratio was `0.6538998702917553`,
+favoring serial execution in this finite, uncontrolled sample.
+
+See the [derived registered capture summary](evidence/registered-capture-summary-e66f9a1.json)
+for exact bindings, complete denominators, costs, controls and unavailable
+observations. The two historical `b85f7e5` pre-dispatch failures remain retained
+in the [attempt summary](evidence/pre-dispatch-attempt-summary.json). No capture
+was retried or resumed. Historical SPEC-021 G4 NO-GO remains visible and
+whole-M4 founder acceptance remains pending. Source-project code and tests
+were not executed under this protocol.
+
 
 ## Retained outcomes and recovery
 
