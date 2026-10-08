@@ -156,7 +156,7 @@ calls through the owned runtime.
 
 ## 🧭 Evidence and project status
 
-**Project status on 2026-10-07:** research alpha. The table below includes all
+**Project status on 2026-10-08:** research alpha. The table below includes all
 18 registered GitHub milestones and the repository's 38 current specs. “Closed”
 is the remote milestone state; internal closure, obtained implementation,
 scientific acceptance and external review are separate facts. The
@@ -193,21 +193,27 @@ time. This is descriptive evidence, not a population estimate or a general
 claim about parallelism. The [G4 decision](specs/021-m4-alpha-runtime/g4-decision.json)
 remains authoritative.
 
-SPEC-022 has implemented measurement instrumentation and owner-approved
-180-minute successor preparation; engineering diagnostics are not its registered experiment.
-Registered measurement, human review of the stable harness/manifest and any
-future utility decision remain pending. SPEC-027 has implemented read-only
+SPEC-022 completed its registered synthetic capture on candidate `b85f7e5`:
+88/88 valid pairs (8 warm-up, 80 measured; 176 treatments), with five blocks
+excluded by pinned caps. Required in-treatment verification completed; fresh
+inspection verified capture structure and bounded replay, and four fresh control
+suites passed (76 tests). All three admitted independent diagnostic blocks were
+negative; the dependency-chain block was an order control. These fixture results
+do not establish general speedup or utility. See the [derived capture summary](specs/022-m4-utility-followup/evidence/registered-capture-summary-b85f7e5.json)
+for ratios, full costs and inspection limits.
+
+SPEC-027 has implemented read-only
 refinement assessments and synthetic/disposable controls. The founder recorded
 NO-GO/defer dispositions for source promotion, arbitrary code execution and real
 external effects by the bounded M4 alpha runtime; no capability was adopted and no
 expanded execution authority was granted. Whole-M4 and scientific acceptance remain
-separate and pending. SPEC-038 has
-owner-approved source rights and protocol, a merged bounded harness, and
-[static admission evidence](specs/038-m4-real-workload-closure/evidence/sc-002.json)
-for two frozen operations and 20 treatment slots. Local and exact-candidate CI
-validation passed; technical review found no actionable findings. Owner review of
-the stable candidate/manifest and separate capture authorization remain pending.
-There are no registered M4 actual-workload outcomes.
+separate and pending. SPEC-038's historically reviewed candidate failed twice
+before dispatch, so zero actual source treatments ran. Both failures are
+preserved. Any repair requires a new stable candidate and source manifest, with
+fresh exact owner review and capture authorization; approvals for the old
+candidate do not carry forward. See the [attempt summary](specs/038-m4-real-workload-closure/evidence/pre-dispatch-attempt-summary.json).
+SPEC-021 G4 remains NO-GO, and M4 remains open pending separate whole-milestone
+acceptance. No actual-workload outcome has been obtained.
 
 M3.5 synthetic checks demonstrate tooling only. They do not establish real-source
 rights, prospective registration, capture, training authorization, predictor

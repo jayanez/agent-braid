@@ -2,12 +2,12 @@
 
 ## Development status — 2026-10-08
 
-Exact source rights and protocol are approved. The bounded harness is merged and
-validated; static admission and technical review cover two frozen operations and
-20 treatment slots. See [implementation readiness](implementation-readiness.md)
-for the evidence and scope. Earlier proposal descriptions retain their design-time
-context. Owner stable-candidate/manifest review, capture and whole-M4 acceptance
-remain pending.
+Exact source rights, protocol, stable-candidate review and capture authorization
+were granted for historical candidate `b85f7e5`. Two pre-dispatch failures then
+produced zero actual source treatments. Both failures and process costs are
+preserved in the [derived attempt summary](evidence/pre-dispatch-attempt-summary.json).
+Any harness repair requires a new candidate and source manifest with fresh exact
+owner review and authorization. Whole-M4 acceptance remains pending.
 
 ## Purpose and scope
 
@@ -16,8 +16,9 @@ workload to evaluate the bounded local runtime in SPEC-020/ADR 0019. This is a
 research protocol and source-feasibility packet. It authorizes no capture,
 repository code or tests, grants, provider calls, installation, ref promotion,
 or execution by itself. Exact source rights and protocol are approved through
-the separate owner decision; static runtime admission has passed for the exact
-frozen frame. Capture remains pending.
+the separate owner decision; static runtime admission passed for the exact frozen
+frame. The authorized historical candidate failed before dispatch, so no actual
+source workload outcome was obtained.
 A completed evaluation may validly conclude infeasible, negative, or inconclusive.
 
 Owner-permissioned source frame, subject to runtime feasibility review: the

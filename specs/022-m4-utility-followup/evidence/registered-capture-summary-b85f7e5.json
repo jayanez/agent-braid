@@ -1,0 +1,186 @@
+{
+  "recordVersion": "m4-spec022-public-derived-capture-summary-v1",
+  "candidateCommit": "b85f7e5f5031315fb8eef4b90f2100b071a10ad7",
+  "manifestSha256": "59890d866f72f09d1919620bd77fb9e333d82712bd2293f4a54e7846bc43e78f",
+  "capture": {
+    "status": "complete",
+    "intendedPairs": 88,
+    "validPairs": 88,
+    "invalidPairs": 0,
+    "unexecutedPairs": 0,
+    "warmupPairs": 8,
+    "measuredPairs": 80,
+    "treatments": 176
+  },
+  "freshControls": {
+    "status": "passed",
+    "suites": 4,
+    "tests": 76,
+    "suiteCounts": [
+      19,
+      18,
+      20,
+      19
+    ]
+  },
+  "blocks": [
+    {
+      "id": "independent-2-1024",
+      "status": "admitted-negative-synthetic-diagnostic",
+      "validPairs": 22,
+      "medianSerialParallelRatio": 0.6399138360865928,
+      "exclusions": []
+    },
+    {
+      "id": "independent-2-65536",
+      "status": "admitted-negative-synthetic-diagnostic",
+      "validPairs": 22,
+      "medianSerialParallelRatio": 0.6459474868836734,
+      "exclusions": []
+    },
+    {
+      "id": "independent-2-1048576",
+      "status": "excluded-by-pinned-cap",
+      "validPairs": 0,
+      "medianSerialParallelRatio": null,
+      "exclusions": [
+        {
+          "actualBytes": 2130130,
+          "capBytes": 262144,
+          "reason": "runtime patch limit exceeded",
+          "validator": "git_runtime._prepare"
+        },
+        {
+          "actualBytes": 2130130,
+          "capBytes": 1048576,
+          "reason": "aggregate patch bytes exceed 1 MiB",
+          "validator": "git_replay._patches"
+        }
+      ]
+    },
+    {
+      "id": "independent-4-1024",
+      "status": "admitted-negative-synthetic-diagnostic",
+      "validPairs": 22,
+      "medianSerialParallelRatio": 0.8480100360844282,
+      "exclusions": []
+    },
+    {
+      "id": "independent-4-65536",
+      "status": "excluded-by-pinned-cap",
+      "validPairs": 0,
+      "medianSerialParallelRatio": null,
+      "exclusions": [
+        {
+          "actualBytes": 266656,
+          "capBytes": 262144,
+          "reason": "runtime patch limit exceeded",
+          "validator": "git_runtime._prepare"
+        }
+      ]
+    },
+    {
+      "id": "independent-4-1048576",
+      "status": "excluded-by-pinned-cap",
+      "validPairs": 0,
+      "medianSerialParallelRatio": null,
+      "exclusions": [
+        {
+          "actualBytes": 4260260,
+          "capBytes": 262144,
+          "reason": "runtime patch limit exceeded",
+          "validator": "git_runtime._prepare"
+        },
+        {
+          "actualBytes": 4260260,
+          "capBytes": 1048576,
+          "reason": "aggregate patch bytes exceed 1 MiB",
+          "validator": "git_replay._patches"
+        }
+      ]
+    },
+    {
+      "id": "dependency-chain-4-1024",
+      "status": "complete-order-control",
+      "validPairs": 22,
+      "medianSerialParallelRatio": null,
+      "exclusions": []
+    },
+    {
+      "id": "dependency-chain-4-65536",
+      "status": "excluded-by-pinned-cap",
+      "validPairs": 0,
+      "medianSerialParallelRatio": null,
+      "exclusions": [
+        {
+          "actualBytes": 266656,
+          "capBytes": 262144,
+          "reason": "runtime patch limit exceeded",
+          "validator": "git_runtime._prepare"
+        }
+      ]
+    },
+    {
+      "id": "dependency-chain-4-1048576",
+      "status": "excluded-by-pinned-cap",
+      "validPairs": 0,
+      "medianSerialParallelRatio": null,
+      "exclusions": [
+        {
+          "actualBytes": 4260260,
+          "capBytes": 262144,
+          "reason": "runtime patch limit exceeded",
+          "validator": "git_runtime._prepare"
+        },
+        {
+          "actualBytes": 4260260,
+          "capBytes": 1048576,
+          "reason": "aggregate patch bytes exceed 1 MiB",
+          "validator": "git_replay._patches"
+        }
+      ]
+    }
+  ],
+  "excludedBlocks": {
+    "count": 5,
+    "intendedPairs": 0,
+    "intendedTreatments": 0,
+    "reason": "Pinned per-patch or aggregate patch-size caps. Five excluded block rows remain in the nine-row inventory; they are not treatment pairs and remain visible rather than being silently removed."
+  },
+  "cost": {
+    "dispatchWallNs": 5631755831875,
+    "wholeInvocationWallNs": 6262184712292,
+    "wholeInvocationWallMinutes": 104.36974520486666,
+    "aggregationRule": "Whole-invocation wall includes overlapping component costs; do not add component costs to it.",
+    "finalObserverSelfPersistence": null
+  },
+  "inspection": {
+    "freshInspector": "verified-complete-capture-structure-and-bounded-replay",
+    "limits": "Treatment cleanup removed run/grant receipts. Fresh inspection verified structure and bounded replay but could not re-inspect those deleted receipts."
+  },
+  "independentOutcomeReview": {
+    "model": "gpt-6-luna",
+    "reasoningEffort": "medium",
+    "result": "complete-no-actionable-inconsistency",
+    "scope": "Read-only JSON, raw hashes and arithmetic; no runtime, replay, tests, or reinspection of deleted run/grant receipts."
+  },
+  "claimBoundary": "Three independent synthetic blocks were negative descriptive observations. The chain block is an order control, not independent utility evidence. This does not establish actual-workload utility, general speedup, scientific validation, whole-feature acceptance, SPEC-021 G4 acceptance, or M4 closure.",
+  "plannedBlockInventoryCount": 9,
+  "environmentObservation": {
+    "source": "Fresh control recorded in reproduce.json after the registered treatments; this environment is not backfilled as the historical treatment environment.",
+    "git": "2.54.0 (Apple Git-157)",
+    "python": "3.13.11",
+    "platform": "Darwin",
+    "machine": "arm64",
+    "notCaptured": [
+      "CPU model/count",
+      "RAM",
+      "background load"
+    ],
+    "uncontrolled": [
+      "OS caches",
+      "background activity"
+    ],
+    "limits": "The fresh-control environment does not establish the historical treatment environment or support causal attribution. These limits do not invalidate the 176 structurally recorded treatment dispositions."
+  }
+}

@@ -19,11 +19,11 @@
     24,
     25
   ],
-  "assumptions": "Exact frozen source rights and protocol were approved by nine item-by-item decisions, bound to the unchanged candidate hashes in SC-001. Approval covers bounded implementation, static admission and evaluation preparation only. Static admission passed for the exact two-operation frame at merged candidate 7d73c80f; local quick/PR profiles passed on its tree-identical predecessor 915e90fc. Hosted PR and post-merge validation succeeded for selected checks; the special integration matrix was explicitly skipped. Independent C08 technical and manifest reviews found no actionable findings within their distinct scopes. Owner stable-candidate/manifest review, registered capture and whole-M4 acceptance remain pending.",
+  "assumptions": "Exact frozen source rights and protocol were approved by nine item-by-item decisions, bound to the unchanged candidate hashes in SC-001. Approval covers bounded implementation, static admission and evaluation preparation only. Static admission passed for the exact two-operation frame at merged candidate 7d73c80f; local quick/PR profiles passed on its tree-identical predecessor 915e90fc. Hosted PR and post-merge validation succeeded for selected checks; the special integration matrix was explicitly skipped. Independent C08 technical and manifest reviews found no actionable findings within their distinct scopes. Owner stable-candidate/manifest review, registered capture and whole-M4 acceptance remain pending. The historical b85f7e5 candidate was reviewed and capture-authorized, but two pre-dispatch failures produced zero actual treatments; no successor candidate is yet authorized.",
   "authority_snapshot": {
-    "commit": "15e49bc8647898e37b3ffd11a6d1905eaba5b148",
+    "commit": null,
     "hashes": {
-      "ARCHITECTURE.md": "e26135a1037c232ff953710e5de52abef8cf1cad47a8822fe63a565bc9ad9555",
+      "ARCHITECTURE.md": "acf61a2912cb0b3a12eeea8ed0b3d62d6487d8246a260280c591e905c6a96e6f",
       "CONSTITUTION.md": "ff7196976a1736a639947c2ab26e8da157fef23c89ba9881312f2a36459964eb",
       "GOVERNANCE.md": "c8eda331d97c42e54be4730ef906dfaad9ae2814e36704302f97afceff037d82",
       "LICENSE": "340d66a837b3a1617645d00622a46d1bcbf3534bedd997b6461d16d2e08b374f",
@@ -86,15 +86,15 @@
       "schemas/governance/public-export-manifest.schema.json": "11eb7f2594939ae9fd0c9e6cfe4423a80aba686d6cdfdd8b73b0fb84b0840aa8",
       "schemas/governance/release-validation-record.schema.json": "d9943f0c9f5520ea52e3b12bfba88240d03f8011b433fc5e35cb49549ab6e819"
     },
-    "mode": "historical"
+    "mode": "current"
   },
   "compatibility": "Bounded current-runtime harness implementation and preparation; no public API/schema, grants, effects, verifier, host, promotion or runtime contract changes. Historical G4NO-GO and other milestones unchanged.",
-  "domain": "Exact owner-permissioned PR137/138 frozen source frame from common base; static replay/runtime admission passed for the exact two-operation frame at merged candidate 7d73c80f. One finite task frame, no population claims.",
+  "domain": "Exact owner-permissioned PR137/138 frozen source frame from common base; static replay/runtime admission passed for the exact two-operation frame at merged candidate 7d73c80f. One finite task frame, no population claims. Candidate-specific attempts stopped before dispatch; no actual source treatments occurred.",
   "evidence_snapshot": {
-    "mode": "current",
-    "commit": null
+    "commit": null,
+    "mode": "current"
   },
-  "execution_contract": "Implementation/static admission/evaluation preparation approved; registered capture requires separately reviewed stable harness/manifest and exact human authorization. Existing fixed patches, grants, private destinations and verifier only; no source code/tests/hooks/network/providers/ref promotion.",
+  "execution_contract": "Implementation/static admission/evaluation preparation approved; registered capture requires separately reviewed stable harness/manifest and exact human authorization. Existing fixed patches, grants, private destinations and verifier only; no source code/tests/hooks/network/providers/ref promotion. Historical approval binds only the reviewed b85f7e5 candidate and manifest; changed harness bytes require new exact review and capture authorization.",
   "human_review": "pending",
   "hypotheses": "For one permissioned actual repository task, the unchanged local runtime may provide useful verified/recoverable outcomes relative to its complete cost. Negative, null, inconclusive, and infeasible outcomes are valid; no positive utility is presumed.",
   "observation_contract": "Existing tracked-tree-v1 and independent SPEC-021 verifier only. Compare actual SPEC-021 policy coordinator serial and parallel modes with 4 unscored warm-up pairs and 6 measured pairs across AB/BA operation orders. Each treatment uses full total-wall timing through consumer verification, report serialization and cleanup with disjoint phases/residual. Report fresh-process verification separately. Historical synthetic/M2 evidence is not M4 actual-workload evidence.",
@@ -127,11 +127,11 @@
           "id": "SC-001",
           "obtained_evidence": [
             {
-              "path": "specs/038-m4-real-workload-closure/evidence/sc-001.json",
-              "sha256": "fbe83689316edd8b794b85ca97c29226ea87cfdc0420d0b54eaf6d37a542f3b6",
-              "command": "Owner decision record reviewed manually; private record paths and raw statements withheld.",
-              "outcome": "Nine exact rights/protocol decisions support bounded implementation and evaluation preparation.",
-              "limits": "No source code/test execution or registered capture authority; synthetic refusal controls do not reproduce an actual capture."
+              "path": "specs/038-m4-real-workload-closure/evidence/historical-evidence-binding-7d73c80.json",
+              "sha256": "ba7423cd6791178d264960752d4169268fe1446b97c37cec67353a4644dafa82",
+              "command": "Read-only historical input-hash verification with `git show 7d73c80f1b8c23a65b33bf584abac29a2e097417:<path>`; exact source-rights and protocol bytes checked unchanged.",
+              "outcome": "The exact source-rights and protocol decisions remain bound to the unchanged source frame; original engineering-control inputs are historically verified against the reviewed candidate.",
+              "limits": "Historical engineering tests do not establish current repaired-harness correctness or authorize capture."
             }
           ],
           "planned_evidence": "specs/038-m4-real-workload-closure/evidence/sc-001.json; exact rights and provenance decision required",
@@ -151,11 +151,11 @@
           "id": "SC-002",
           "obtained_evidence": [
             {
-              "path": "specs/038-m4-real-workload-closure/evidence/sc-002.json",
-              "sha256": "6dc49e5f0ea4d106b8901ddcd877d8107b283f9c85f12121fa81c73c69d65b20",
-              "command": ".venv-speckit/bin/python scripts/prepare_m4_real_workload.py --source-repository <private-source> --approval-receipt <private-exact-decision> --destination-root <fresh-private-root> --output <new-private-manifest>; paths are redacted, and the full literal invocation is retained in private provenance.",
-              "outcome": "Exact two-operation frame admitted; 20 slots and 40 future paths recorded.",
-              "limits": "Static admission only; no grants, source execution, treatments or capture."
+              "path": "specs/038-m4-real-workload-closure/evidence/historical-evidence-binding-7d73c80.json",
+              "sha256": "ba7423cd6791178d264960752d4169268fe1446b97c37cec67353a4644dafa82",
+              "command": "Read-only historical input-hash verification with `git show 7d73c80f1b8c23a65b33bf584abac29a2e097417:<path>` for the original static-admission record.",
+              "outcome": "Static admission of the exact two-operation frame passed on historical candidate 7d73c80f1b8c23a65b33bf584abac29a2e097417; all 18 input hashes were independently confirmed against that commit.",
+              "limits": "The old admission does not cover the repaired trial engine. New candidate-bound static preparation remains pending; no treatments were authorized by this record."
             }
           ],
           "planned_evidence": "specs/038-m4-real-workload-closure/evidence/sc-002.json; current limits and exact admission evidence required",
@@ -183,7 +183,15 @@
         {
           "given": "four warm-up pairs, six measured pairs, exact deterministic order, and an intended-slot inventory",
           "id": "SC-004",
-          "obtained_evidence": [],
+          "obtained_evidence": [
+            {
+              "command": "Two candidate-bound launch attempts; both stopped before treatment dispatch.",
+              "limits": "No actual source outcomes or workload evidence were obtained.",
+              "outcome": "Both attempts and costs were retained; zero treatments started, so no denominator row was replaced or consumed.",
+              "path": "specs/038-m4-real-workload-closure/evidence/pre-dispatch-attempt-summary.json",
+              "sha256": "dcc39b49c6b0df19fe2e9915889732fb0320e38ed9db08930e2ac3e206a70ec7"
+            }
+          ],
           "planned_evidence": "specs/038-m4-real-workload-closure/evidence/sc-004.json; future denominator audit",
           "test_file": "specs/038-m4-real-workload-closure/validation-plan.md",
           "test_name": "procedure_sc004",
@@ -209,7 +217,15 @@
         {
           "given": "a bounded result or documented feasibility failure",
           "id": "SC-006",
-          "obtained_evidence": [],
+          "obtained_evidence": [
+            {
+              "command": "Two candidate-bound launch attempts; derived result summary reviewed against retained records.",
+              "limits": "No outcome interpretation about actual-workload utility is possible because zero treatments started.",
+              "outcome": "Both attempts failed before dispatch. Historical SPEC-021 G4 NO-GO and M4 open status are unchanged.",
+              "path": "specs/038-m4-real-workload-closure/evidence/pre-dispatch-attempt-summary.json",
+              "sha256": "dcc39b49c6b0df19fe2e9915889732fb0320e38ed9db08930e2ac3e206a70ec7"
+            }
+          ],
           "planned_evidence": "specs/038-m4-real-workload-closure/evidence/sc-006.json; future independent interpretation review",
           "test_file": "specs/038-m4-real-workload-closure/validation-plan.md",
           "test_name": "procedure_sc006",
@@ -225,7 +241,15 @@
         {
           "given": "either protocol/source-rights review or stable candidate/manifest review is absent",
           "id": "SC-007",
-          "obtained_evidence": [],
+          "obtained_evidence": [
+            {
+              "command": "Candidate and manifest identity checked against retained pre-dispatch records.",
+              "limits": "This record does not grant or imply approval for any successor candidate.",
+              "outcome": "The old candidate had exact owner reviews and capture authorization, but those decisions do not cover a repaired harness candidate. The changed candidate remains blocked pending fresh exact review and authorization.",
+              "path": "specs/038-m4-real-workload-closure/evidence/pre-dispatch-attempt-summary.json",
+              "sha256": "dcc39b49c6b0df19fe2e9915889732fb0320e38ed9db08930e2ac3e206a70ec7"
+            }
+          ],
           "planned_evidence": "specs/038-m4-real-workload-closure/evidence/sc-007.json; separate exact human records required",
           "test_file": "specs/038-m4-real-workload-closure/validation-plan.md",
           "test_name": "procedure_sc007",
@@ -247,6 +271,6 @@
     }
   ],
   "scientific_limits": "One finite task frame cannot establish population utility, general runtime safety, confluence, causality, or Yang-Baxter properties. Static Git metadata does not establish source rights, runtime admission, or verified results. Negative, null, inconclusive, and infeasible outcomes are valid.",
-  "scope": "Implement and prepare the approved bounded SPEC038 real-workload harness using unchanged SPEC020/021 contracts; no registered capture authorization.",
+  "scope": "Implement and prepare the bounded SPEC038 real-workload harness using unchanged SPEC020/021 contracts; the historical b85f7e5 candidate was reviewed and capture-authorized, but two pre-dispatch failures yielded zero actual treatments. Any changed candidate requires fresh exact owner review and capture authorization.",
   "stage": "draft"
 }

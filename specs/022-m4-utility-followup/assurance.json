@@ -17,9 +17,9 @@
   ],
   "assumptions": "Owned POSIX Git fixtures; complete current-runtime verification and grants remain enforced; OS cache state is uncontrolled.",
   "authority_snapshot": {
-    "commit": "5cb144e1193a266645e012a7f31224d846ea7003",
+    "commit": null,
     "hashes": {
-      "ARCHITECTURE.md": "e26135a1037c232ff953710e5de52abef8cf1cad47a8822fe63a565bc9ad9555",
+      "ARCHITECTURE.md": "acf61a2912cb0b3a12eeea8ed0b3d62d6487d8246a260280c591e905c6a96e6f",
       "CONSTITUTION.md": "ff7196976a1736a639947c2ab26e8da157fef23c89ba9881312f2a36459964eb",
       "GOVERNANCE.md": "c8eda331d97c42e54be4730ef906dfaad9ae2814e36704302f97afceff037d82",
       "LICENSE": "340d66a837b3a1617645d00622a46d1bcbf3534bedd997b6461d16d2e08b374f",
@@ -82,13 +82,13 @@
       "schemas/governance/public-export-manifest.schema.json": "11eb7f2594939ae9fd0c9e6cfe4423a80aba686d6cdfdd8b73b0fb84b0840aa8",
       "schemas/governance/release-validation-record.schema.json": "d9943f0c9f5520ea52e3b12bfba88240d03f8011b433fc5e35cb49549ab6e819"
     },
-    "mode": "historical"
+    "mode": "current"
   },
   "compatibility": "No current public API/schema/version changes; future diagnostic harness remains separate from accepted reports.",
-  "domain": "Existing 2\u20134 immutable ordinary-text A/M patch domain; local descriptive measurement only.",
+  "domain": "Existing 2–4 immutable ordinary-text A/M patch domain; local descriptive measurement only.",
   "evidence_snapshot": {
-    "commit": "5cb144e1193a266645e012a7f31224d846ea7003",
-    "mode": "historical"
+    "commit": null,
+    "mode": "current"
   },
   "execution_contract": "No new authority or capability. Fixture runs require current exact operator grant and existing private-run restrictions.",
   "human_review": "pending",
@@ -205,7 +205,15 @@
         {
           "given": "the registered results and SPEC-021 NO-GO",
           "id": "SC-004",
-          "obtained_evidence": [],
+          "obtained_evidence": [
+            {
+              "command": "Registered capture on frozen candidate b85f7e5; fresh structural/replay inspection and independent read-only outcome review.",
+              "limits": "No general utility or speedup claim, no actual-workload evidence, no human utility acceptance, and no M4 closure.",
+              "outcome": "88/88 valid synthetic pairs completed; three independent diagnostic blocks were negative and the dependency-chain block was an order control.",
+              "path": "specs/022-m4-utility-followup/evidence/registered-capture-summary-b85f7e5.json",
+              "sha256": "96d0c67e711be91958bb08f915c36d7444692f4d2f6327da8b5ce04738302e20"
+            }
+          ],
           "planned_evidence": "Future frozen phase/accounting tests, raw paired measurements and scoped decision packet defined in quickstart.md.",
           "test_file": "specs/022-m4-utility-followup/quickstart.md",
           "test_name": "SC-004",
@@ -220,18 +228,18 @@
   "scope": "Bounded current-contract M4 phase-cost diagnosis and paired utility follow-up.",
   "stage": "draft",
   "technical_review_preparation": {
-    "currentCorrectionStatus": "Final-treatment dispatch-budget correction is under engineering validation. Existing obtained evidence remains bound to public 5cb144e1193a266645e012a7f31224d846ea7003 and does not validate changed trial code; fresh candidate-bound diagnosis, manifest and capture review remain pending.",
+    "currentCorrectionStatus": "Registered synthetic capture completed on frozen candidate b85f7e5f5031315fb8eef4b90f2100b071a10ad7. The derived summary binds the 9-block inventory, 88 valid pairs and independent read-only arithmetic review. Human utility decision, tracking reconciliation and whole-M4 acceptance remain pending.",
     "executionAuthorization": false,
-    "implementationStatus": "T002-T004 engineering complete with 74 focal tests, final eight diagnostic treatments and Luna engineering GO; full repository gates are reported separately; human registered harness/manifest review pending",
+    "implementationStatus": "T002-T005 engineering and registered synthetic capture complete; 76 fresh focused control tests passed. Negative diagnostic outcomes and excluded blocks are recorded; human utility decision and whole-M4 acceptance remain pending.",
     "localFrozenPreparationCommit": "9f347e803401c04af61e6662ccc5756578805b23",
     "ownerReviewRecord": "specs/022-m4-utility-followup/protocol-review-3777e578.json",
     "ownerReviewSha256": "1d6065eca4f6959570163ce8a3a25ac94ca34b2d7425009167ef3e9f4673e783",
     "proposalSha256": "6e5a2bd790fb789926007e11f33af40df2ed494d3e8464b13f114523120b282b",
     "publicFreeze": "Protocol review binds durable public commit 3777e578ba3f8130d6f284acf54898198a45e0f0; whole-feature assurance remains pending.",
-    "registeredMeasurementExecuted": false,
+    "registeredMeasurementExecuted": true,
     "reviewRecord": "specs/022-m4-utility-followup/evidence/luna-protocol-review.json",
     "sha256": "73abcaff381730f9b22ea0b0d3d799d40c769df5c98c9df077cd429a97431b14",
-    "status": "protocol-approved-instrumentation-authorized",
+    "status": "registered-synthetic-capture-complete-utility-decision-pending",
     "taskT001Complete": true
   }
 }
