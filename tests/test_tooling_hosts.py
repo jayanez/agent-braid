@@ -9,6 +9,7 @@ import json
 from pathlib import Path
 import sys
 import tempfile
+import tomllib
 import types
 import unittest
 from unittest import mock
@@ -49,6 +50,16 @@ def _inputs(tmp_path: Path, **updates) -> tuple[AttemptAdmission, HostLaunchConf
     output.mkdir()
     work = tmp_path / "work"
     work.mkdir()
+    source = tmp_path / "source"
+    source.mkdir(mode=0o700)
+    mcp_results = tmp_path / "mcp-results"
+    mcp_results.mkdir(mode=0o700)
+    mcp_executable = tmp_path / "agent-braid-mcp"
+    mcp_executable.write_bytes(b"synthetic Agent Braid console executable")
+    mcp_executable.chmod(0o755)
+    mcp_args = ["-m", "agent_braid", "tooling", "serve", "--source-root", str(source),
+                "--result-root", str(mcp_results)]
+    args_toml = ", ".join(json.dumps(arg) for arg in mcp_args)
     admission = AttemptAdmission("attempt-123", "slot-123", tmp_path / "admission.json",
                                  "b" * 64, "a" * 64)
     evidence = LaunchEvidence("route-test", "c" * 64, "d" * 64, "e" * 64,
@@ -56,12 +67,15 @@ def _inputs(tmp_path: Path, **updates) -> tuple[AttemptAdmission, HostLaunchConf
     config = HostLaunchConfig(
         host="codex", arm="mcp-only", executable=exe, executable_sha256=_sha(exe),
         version="0.162.0-alpha.2", model="registered-model", effort="medium",
-        config_files=(), codex_config_overrides=(
-            'mcp_servers.test = { command = "fake-mcp", args = [], enabled_tools = ["lookup"] }',
+        config_files=(FilePin(mcp_executable, _sha(mcp_executable)),), codex_config_overrides=(
+            f'mcp_servers.test = {{ command = {json.dumps(str(mcp_executable))}, '
+            f'args = [{args_toml}], enabled_tools = ["lookup"] }}',
             "skills.config = []",
-        ), config_dir=cfg_dir, cwd=work, output_root=output, source_roots=(work,),
+        ), config_dir=cfg_dir, cwd=work, mcp_result_root=mcp_results,
+        output_root=output, source_roots=(source,),
         grant_root=tmp_path / "grants", prompt=b"synthetic prompt", environment={},
-        mcp_servers=("test",), expected_tools=("lookup",), evidence=evidence,
+        mcp_servers=("test",), expected_tools=("lookup",), runtime_enabled=False,
+        evidence=evidence,
     )
     return admission, config.__class__(**{**config.__dict__, **updates})
 
@@ -116,6 +130,27 @@ class HostAdapterTests(unittest.TestCase):
             prepare_host_launch(admission, config.__class__(**{**config.__dict__, "expected_tools": ("wrong",)}))
         with self.assertRaisesRegex(HostPreparationError, "caller-supplied"):
             prepare_host_launch(admission, config.__class__(**{**config.__dict__, "codex_config_overrides": ()}))
+
+    def test_accepts_only_registered_runtime_and_grant_store_arguments(self):
+        tmp_path = self.with_temp()
+        admission, config = _inputs(tmp_path)
+        grant_store = tmp_path / "grants"
+        grant_store.mkdir(mode=0o700)
+        args = ["-m", "agent_braid", "tooling", "serve", "--source-root",
+                str(config.source_roots[0]), "--result-root", str(config.mcp_result_root),
+                "--enable-runtime", "--grant-store", str(grant_store)]
+        args_toml = ", ".join(json.dumps(arg) for arg in args)
+        override = config.__class__(**{
+            **config.__dict__, "runtime_enabled": True, "grant_root": grant_store,
+            "codex_config_overrides": (
+                f'mcp_servers.test = {{ command = {json.dumps(str(config.config_files[0].path))}, '
+                f'args = [{args_toml}], enabled_tools = ["lookup"] }}',
+                "skills.config = []",
+            ),
+        })
+        plan = prepare_host_launch(admission, override)
+        self.assertTrue(plan.runtime_enabled)
+        self.assertIn("--enable-runtime", plan.codex_config_overrides[0])
 
     def test_binary_pin_is_rechecked_before_supervisor(self):
         tmp_path = self.with_temp()
@@ -185,14 +220,16 @@ class HostAdapterTests(unittest.TestCase):
         executable.write_bytes(b"synthetic claude")
         executable.chmod(0o755)
         config_file = tmp_path / "mcp.json"
-        config_file.write_text('{"mcpServers":{"test":{"command":"fake-mcp","args":[]}}}')
+        server = tomllib.loads(base.codex_config_overrides[0])["mcp_servers"]["test"]
+        server = {key: server[key] for key in ("command", "args")}
+        config_file.write_text(json.dumps({"mcpServers": {"test": server}}))
         pin = FilePin(config_file, _sha(config_file))
         evidence = LaunchEvidence("claude-route", "1" * 64, "2" * 64, "3" * 64,
                                   settings_support_attestation_sha256="4" * 64)
         config = base.__class__(**{
             **base.__dict__, "host": "claude-code", "executable": executable,
             "executable_sha256": _sha(executable), "version": "2.1.294",
-            "config_files": (pin,), "codex_config_overrides": (),
+            "config_files": (pin, *base.config_files), "codex_config_overrides": (),
             "environment": {"CLAUDE_CONFIG_DIR": str(base.config_dir)},
             "expected_tools": (), "evidence": evidence,
         })
@@ -227,10 +264,11 @@ class HostAdapterTests(unittest.TestCase):
             pins.append(FilePin(file, _sha(file)))
             entries.append(f'{{name="{name}",path="{directory}",enabled=true}}')
         config = base.__class__(**{
-            **base.__dict__, "arm": "mcp-plus-skills", "config_files": tuple(pins),
+            **base.__dict__, "arm": "mcp-plus-skills",
+            "config_files": (*base.config_files, *pins),
             "expected_skill_bundle_sha256": "a" * 64,
             "codex_config_overrides": (
-                'mcp_servers.test = { command = "fake-mcp", args = [], enabled_tools = ["lookup"] }',
+                base.codex_config_overrides[0],
                 "skills.config = [" + ",".join(entries) + "]",
             ),
             "evidence": LaunchEvidence("route-test", "c" * 64, "d" * 64, "e" * 64,
@@ -278,15 +316,9 @@ class HostAdapterTests(unittest.TestCase):
             })
             with self.assertRaises(HostPreparationError):
                 prepare_host_launch(admission, candidate)
-        opaque = config.__class__(**{
-            **config.__dict__, "codex_config_overrides": (
-                'mcp_servers.test = { command="opaque-sentinel", args=[], '
-                'enabled_tools=["lookup"] }',
-                "skills.config = []",
-            ),
-        })
-        safe_plan = prepare_host_launch(admission, opaque)
-        self.assertNotIn("opaque-sentinel", repr(safe_plan))
+        safe_plan = prepare_host_launch(admission, config)
+        self.assertNotIn(config.codex_config_overrides[0], repr(config))
+        self.assertNotIn(config.codex_config_overrides[0], repr(safe_plan))
 
     def test_real_supervisor_composes_with_fake_host_executable_only(self):
         tmp_path = self.with_temp()
@@ -301,7 +333,6 @@ class HostAdapterTests(unittest.TestCase):
         script.chmod(0o755)
         work = base.cwd
         source = tmp_path / "source"
-        source.mkdir(mode=0o700)
         out = base.output_root
         work.chmod(0o700)
         out.chmod(0o700)
@@ -337,18 +368,19 @@ class HostAdapterTests(unittest.TestCase):
         tmp_path = self.with_temp()
         admission, base = _inputs(tmp_path)
         config_file = tmp_path / "claude-mcp.json"
-        config_file.write_text('{"mcpServers":{"test":{"command":"fake-mcp","args":[]}}}')
+        server = tomllib.loads(base.codex_config_overrides[0])["mcp_servers"]["test"]
+        server = {key: server[key] for key in ("command", "args")}
+        config_file.write_text(json.dumps({"mcpServers": {"test": server}}))
         executable = tmp_path / "fake-claude"
         executable.write_text("#!/bin/sh\nexit 0\n")
         executable.chmod(0o755)
         source = tmp_path / "source"
-        source.mkdir(mode=0o700)
         base.cwd.chmod(0o700)
         base.output_root.chmod(0o700)
         config = base.__class__(**{
             **base.__dict__, "host": "claude-code", "arm": "mcp-only",
             "executable": executable, "executable_sha256": _sha(executable),
-            "version": "2.1.294", "config_files": (FilePin(config_file, _sha(config_file)),),
+            "version": "2.1.294", "config_files": (FilePin(config_file, _sha(config_file)), *base.config_files),
             "codex_config_overrides": (), "environment": {"CLAUDE_CONFIG_DIR": str(base.config_dir)},
             "expected_tools": (), "source_roots": (source,),
             "poll_interval_seconds": 0.05, "observation_max_age_seconds": 5,
