@@ -11,7 +11,8 @@ import sys
 import tempfile
 import unittest
 
-from scripts.check_m35_review_packet import FILES, PacketError, check_packet, main
+from scripts.check_m35_review_packet import (FILES, PacketError,
+                                             check_packet, main, read_auxiliary_file)
 
 
 def candidate_manifest() -> dict:
@@ -77,7 +78,6 @@ class M35ReviewPacketTests(unittest.TestCase):
             lambda value: value["families"][0].update(permissionReview="approved"),
             lambda value: value["families"][0].update(repository="evil/private"),
             lambda value: value["families"][1].update(familyId=value["families"][0]["familyId"]),
-            lambda value: value["families"].pop(),
             lambda value: value.update(basedOnCommit="bad"),
             lambda value: value["families"][0].update(workflow=" " * 3),
             lambda value: value["families"][0].update(permissionReview=[]),
@@ -89,6 +89,26 @@ class M35ReviewPacketTests(unittest.TestCase):
                 (self.root / FILES[0]).write_text(json.dumps(value), encoding="utf-8")
                 with self.assertRaises(PacketError):
                     check_packet(self.root)
+
+    def test_candidate_roster_is_variable_and_empty_after_rejections(self) -> None:
+        path = self.root / FILES[0]
+        for count in (0, 2, 7, 100):
+            value = candidate_manifest()
+            families = value["families"]
+            value["families"] = families[:count] if count <= len(families) else families + [
+                {**families[0], "familyId": f"family-extra-{index}"}
+                for index in range(count - len(families))
+            ]
+            path.write_text(json.dumps(value), encoding="utf-8")
+            self.assertEqual(len(check_packet(self.root)["families"]), count)
+        value = candidate_manifest()
+        value["families"] = [
+            {**value["families"][0], "familyId": f"bounded-{index}"}
+            for index in range(101)
+        ]
+        path.write_text(json.dumps(value), encoding="utf-8")
+        with self.assertRaisesRegex(PacketError, "candidate-family-roster-invalid"):
+            check_packet(self.root)
 
     def test_duplicate_json_and_nonfinite_values_rejected(self) -> None:
         path = self.root / FILES[0]
@@ -173,6 +193,38 @@ class M35ReviewPacketTests(unittest.TestCase):
         self.assertIn("required-input-missing", error.getvalue())
         self.assertNotIn(str(self.root), error.getvalue())
         self.assertNotIn("private snippet", error.getvalue())
+
+    def test_auxiliary_reader_rejects_nonallowlisted_symlink_fifo_and_oversize(self) -> None:
+        relative = "specs/019-native-predictor/completion-plan.md"
+        target = self.root / relative
+        target.parent.mkdir(parents=True, exist_ok=True)
+        target.write_text("ordinary metadata", encoding="utf-8")
+        self.assertEqual(read_auxiliary_file(self.root, relative), b"ordinary metadata")
+        with self.assertRaisesRegex(PacketError, "auxiliary-input-not-allowlisted"):
+            read_auxiliary_file(self.root, "private/payload")
+        with tempfile.TemporaryDirectory() as outside_directory:
+            outside = Path(outside_directory) / "payload"
+            outside.write_text("must not be opened", encoding="utf-8")
+            target.unlink()
+            target.symlink_to(outside)
+            with self.assertRaisesRegex(PacketError, "input-symlink-rejected"):
+                read_auxiliary_file(self.root, relative)
+        target.unlink(missing_ok=True)
+        if hasattr(os, "mkfifo"):
+            os.mkfifo(target)
+            with self.assertRaisesRegex(PacketError, "input-not-regular-file"):
+                read_auxiliary_file(self.root, relative)
+            target.unlink()
+        target.write_bytes(b"x" * (1024 * 1024 + 1))
+        with self.assertRaisesRegex(PacketError, "input-size-limit"):
+            read_auxiliary_file(self.root, relative)
+
+    def test_hardlinked_fixed_input_rejected(self) -> None:
+        target = self.root / FILES[1]
+        alias = self.root / "hardlink-alias"
+        os.link(target, alias)
+        with self.assertRaisesRegex(PacketError, "input-hardlink-rejected"):
+            check_packet(self.root)
 
     def test_checker_does_not_change_packet_inputs(self) -> None:
         before = {relative: hashlib.sha256((self.root / relative).read_bytes()).hexdigest()

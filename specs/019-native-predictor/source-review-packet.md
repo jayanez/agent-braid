@@ -1,7 +1,7 @@
 # SPEC-019 proposed source-family review packet
 
 **Status: proposal for human review only.** This metadata-only packet records
-five candidate workflow descriptions and requests decisions. It does not
+the current candidate workflow descriptions and requests decisions. It does not
 identify eligible families, establish observed yield, authorize source access,
 or approve data collection. The source screen remains **zero observed real
 sessions and zero eligible pairs**. No source payload was opened to prepare
@@ -15,11 +15,16 @@ form candidate families. Their natural occurrence, distinctness, independence,
 rights and eligibility are unverified. A repository is not automatically a
 distinct family, and the three Agent Braid candidates may be duplicates or
 unusable. Do not manufacture tasks, changes, decisions, participant activity,
-or quotas to obtain five rows or increase yield.
+or quotas to retain a target number of rows or increase yield.
 
 The exact machine-readable candidate inventory is
-[`source-candidates.json`](source-candidates.json). All five records mark
-distinctness, permission and eligibility review as pending. The entries are
+[`source-candidates.json`](source-candidates.json). Its current five records
+mark distinctness, permission and eligibility review as pending. Reviewers may
+reject or merge records based on evidence. Record those dispositions and their
+rationale in the human review record; this inventory contains only current
+proposals, not approval or rejection decisions. The checker accepts 0–100
+proposal rows as a bounded metadata packet; candidate count is separate from
+the experiment's minimum of five eligible admitted families. The entries are
 not windows, registrations, admissions, or a sampling frame.
 
 ## Decisions requested before any source inspection
@@ -90,7 +95,7 @@ services, private lab, or source access.
 
 ## Current disposition
 
-All five candidates remain proposals. Preserve actual zero observed pairs.
+All current candidates remain proposals. Preserve actual zero observed pairs.
 T001, T007 and P019-01 remain open; T002/T003 and human M3.5 review remain
 gated. Nothing here closes SPEC-019, changes its assurance record, or implies
 M4, System 1, or forecast-track acceptance.

@@ -31,6 +31,13 @@ FILES = (
     "specs/019-native-predictor/adr-extension-proposal.md",
     "specs/019-native-predictor/source-review-packet.md",
 )
+AUXILIARY_FILES = frozenset({
+    "scripts/check_m35_review_packet.py",
+    "tests/test_m35_review_packet.py",
+    "specs/019-native-predictor/completion-plan.md",
+    "docs/experiments/evidence/m35-review-preparation-2026-10-08/capture_binding.py",
+    "docs/experiments/evidence/m35-review-preparation-2026-10-08/adversarial-regression-review.md",
+})
 FAMILY_KEYS = {
     "familyId", "repository", "workflow", "decisionContext", "naturalTrigger",
     "distinctnessReview", "permissionReview", "eligibilityReview",
@@ -122,6 +129,8 @@ def _read_fixed_file(root: Path, relative: str) -> bytes:
         info = os.fstat(descriptor)
         if not stat.S_ISREG(info.st_mode):
             raise PacketError("input-not-regular-file")
+        if info.st_nlink != 1:
+            raise PacketError("input-hardlink-rejected")
         if info.st_size > MAX_FILE_BYTES:
             raise PacketError("input-size-limit")
         with os.fdopen(descriptor, "rb", closefd=False) as stream:
@@ -143,6 +152,13 @@ def _read_fixed_file(root: Path, relative: str) -> bytes:
     return raw
 
 
+def read_auxiliary_file(root: str | Path, relative: str) -> bytes:
+    """Read a bounded, single-link auxiliary input from the fixed allowlist."""
+    if type(relative) is not str or relative not in AUXILIARY_FILES:
+        raise PacketError("auxiliary-input-not-allowlisted")
+    return _read_fixed_file(Path(root), relative)
+
+
 def _validate_candidates(value: Any) -> list[dict[str, str]]:
     if type(value) is not dict or set(value) != {"format", "sourceKind", "basedOnCommit", "families"}:
         raise PacketError("candidate-manifest-shape-invalid")
@@ -151,8 +167,8 @@ def _validate_candidates(value: Any) -> list[dict[str, str]]:
     if type(value["basedOnCommit"]) is not str or COMMIT.fullmatch(value["basedOnCommit"]) is None:
         raise PacketError("candidate-base-commit-invalid")
     families = value["families"]
-    if type(families) is not list or len(families) != 5:
-        raise PacketError("candidate-family-roster-must-have-five")
+    if type(families) is not list or len(families) > 100:
+        raise PacketError("candidate-family-roster-invalid")
     seen: set[str] = set()
     public: list[dict[str, str]] = []
     for family in families:
