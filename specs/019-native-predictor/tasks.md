@@ -77,9 +77,13 @@ defines the candidate trainer/adapter/evaluator contracts before their review.
 The [ADR-extension proposal](adr-extension-proposal.md) is not an adopted ADR.
 
 The read-only `scripts/check_m35_review_packet.py` and its adversarial tests
-check fixed packet inputs, strict candidate shape and byte drift. Their
-synthetic/software evidence cannot check T001, T007, T002, T003, T004 or T005.
-No prospective window or pair dataset was admitted, no human label was
-collected, and no fit/calibration/evaluation was executed in this increment.
-The three deferred native predictor contract acceptance tests remain pending;
-removing their skips requires actual eligible implementations and evidence.
+check fixed packet inputs, strict candidate shape and byte drift. Separate
+synthetic predictor tests exercise portions of T002–T004 software behavior but
+cannot establish real-source eligibility or complete T001, T007, T002, T003,
+T004 or T005. No prospective window or pair dataset was admitted, no human
+label was collected, and no real-data fit/calibration/evaluation was executed
+in this increment. The three former native predictor contract anchors now run
+synthetic checks for versioned inference/tamper rejection, holdout
+evaluation/no-gain, and verifier separation. They establish software behavior
+only; a real trained artifact, eligible human-reviewed holdout, and experiment
+evidence remain deferred.
