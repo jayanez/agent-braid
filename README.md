@@ -59,11 +59,11 @@ proposed work to planning, executing an already granted bounded batch, recoverin
 an interruption and inspecting the verified result.
 
 The first targets are **Codex local CLI and Claude Code local CLI**. M4.5 product
-implementation and acceptance remain pending. SPEC-021 has one bounded Codex CLI
-host observation; current Claude observation and cross-client support remain
-pending. Cursor, VS Code/GitHub Copilot, OpenCode and pi are future routes. Start
-with the [integration guide](docs/tooling/README.md) for the spec, contract and
-task map.
+implementation and acceptance remain pending. Separate bounded SPEC-021 host
+observations for Codex and Claude are linked below; they do not establish M4.5
+product support or acceptance. Cursor, VS Code/GitHub Copilot, OpenCode and pi are
+future routes. Start with the [integration guide](docs/tooling/README.md) for the
+spec, contract and task map.
 
 <a id="quick-start"></a>
 
@@ -189,7 +189,7 @@ current assignment.
 | Research | [M2 — Confluence lab and scheduler](https://github.com/jayanez/agent-braid/milestone/4) | Closed internally. Bounded replay and finite observations do not establish general confluence. |
 | Research | [M3 — Braid semantics](https://github.com/jayanez/agent-braid/milestone/5) | Closed internally for `anchored-sequence-v1`; no general braid or Yang–Baxter theorem is claimed. |
 | Runtime | [M4 — Agent Braid runtime](https://github.com/jayanez/agent-braid/milestone/6) | **Open.** The bounded alpha includes local grants, isolated preparation, stdio MCP and Linux reproduction; whole-milestone acceptance is pending. SPEC-021 G4 remains **NO-GO** on useful speedup under its frozen evidence. |
-| Integration | [M4.5 — AI tooling integrations for Codex and Claude Code](https://github.com/jayanez/agent-braid/milestone/19) | **Open.** Six draft specs cover MCP, skills, lifecycle, presentation and evaluation. Product support and host evidence remain pending. |
+| Integration | [M4.5 — AI tooling integrations for Codex and Claude Code](https://github.com/jayanez/agent-braid/milestone/19) | **Open.** Six draft specs cover MCP, skills, lifecycle, presentation and evaluation. Product implementation, support and acceptance remain pending; separate SPEC-021 host observations are linked below. |
 | Publication | [PUB.1 — Public research preview](https://github.com/jayanez/agent-braid/milestone/7) | **Open.** The preview is public; historical publication authorization reconciliation remains separately tracked. |
 | Governance | [GOV.1 — Governance and adoption](https://github.com/jayanez/agent-braid/milestone/8) | **Open.** Governance and adoption evidence work continues; issue state does not confer human or founder approval. |
 | Research | [M3.5 — Native proposal predictor](https://github.com/jayanez/agent-braid/milestone/9) | **Open.** Synthetic capture and readiness tooling exist; zero real pairs are admitted. Rights, exact protocol/review, real capture and training remain gated. |
@@ -243,12 +243,16 @@ pending its separate whole-milestone decision.
 On candidate `e66f9a1`, Codex CLI 0.162.0-alpha.2 completed a bounded Darwin
 arm64 direct-tool-bridge observation with zero model calls. It exercised all six
 MCP tools, refusal, disconnect recovery, independent-prefix verification,
-completion, duplicate suppression and abort. The run matched 80 runtime input
+completion, duplicate suppression and abort. The Codex run matched 80 runtime input
 hashes; a separate 201-file pre-import guard has a different scope. Linux
 reproduced 68 core, policy, scheduler and protocol tests with no skips on the same
-candidate. Source, candidate, client binary and persistent host configuration
-remained unchanged. Neither observation establishes current Claude behavior or
-changes the G4 NO-GO. See the [Codex host record](specs/021-m4-alpha-runtime/evidence/current-codex-host-e66f9a1.md),
+candidate. Source, candidate, client binary and persistent host configuration were
+unchanged. A separate model-mediated Claude Code 2.1.285 capture recorded missing-grant
+refusal, a verified checkpoint interruption and recovery, completion, and consumed-grant
+retry suppression; its 201-file pre-import guard is a distinct check. Independent Luna review found no findings within the stated capture scope; the capture did not test abort. These observations
+remain bounded to their stated host and fixture scopes and do not change the G4 NO-GO.
+See the [Codex host record](specs/021-m4-alpha-runtime/evidence/current-codex-host-e66f9a1.md),
+[current Claude host record](specs/021-m4-alpha-runtime/evidence/current-claude-host-e66f9a1.md),
 [Linux reproduction record](specs/021-m4-alpha-runtime/evidence/current-linux-core-protocol-e66f9a1.md)
 and [six-row exit matrix](specs/021-m4-alpha-runtime/closure-matrix.md).
 
