@@ -16,6 +16,7 @@ import unittest
 from agent_braid import tooling_capture as capture
 from agent_braid.tooling_supervisor import (
     BudgetCaps,
+    FilePin,
     ProcessRequest,
     SupervisorError,
     TelemetrySnapshot,
@@ -190,6 +191,102 @@ class ToolingSupervisorTests(unittest.TestCase):
         self.assertNotIn("private collector detail", result.receipt_path.read_text())
         self.assertGreaterEqual(calls["count"], 2)
 
+    def test_blocked_prelaunch_observer_times_out_without_start_marker(self):
+        entered = threading.Event()
+        release = threading.Event()
+        callback_done = threading.Event()
+
+        def observer(identity, elapsed):
+            entered.set()
+            release.wait(2)
+            callback_done.set()
+            return _snapshot()
+
+        request = self.request("raise SystemExit(0)")
+        request = ProcessRequest(**{**request.__dict__, "observation_max_age_seconds": 0.08})
+        began = time.monotonic()
+        result = run_supervised(request, self.caps, observer)
+        self.assertTrue(entered.is_set())
+        self.assertLess(time.monotonic() - began, 0.8)
+        self.assertEqual("measurement-unknown", result.status)
+        self.assertFalse(result.launched)
+        self.assertFalse((request.output_root / "started.json").exists())
+        self.assertFalse(callback_done.is_set())
+        release.set()
+        self.assertTrue(callback_done.wait(0.5))
+
+    def test_blocked_live_observer_stops_child_and_is_not_retried(self):
+        entered = threading.Event()
+        release = threading.Event()
+        callback_done = threading.Event()
+        identities = []
+
+        def observer(identity, elapsed):
+            identities.append(identity)
+            if identity is not None:
+                entered.set()
+                release.wait(2)
+                callback_done.set()
+            return _snapshot(wall=0.1 + elapsed)
+
+        request = self.request("import time; time.sleep(10)", timeout=5)
+        request = ProcessRequest(**{**request.__dict__, "observation_max_age_seconds": 0.08,
+                                    "poll_interval_seconds": 0.02})
+        began = time.monotonic()
+        result = run_supervised(request, self.caps, observer)
+        self.assertTrue(entered.is_set())
+        self.assertLess(time.monotonic() - began, 1.5)
+        self.assertEqual("measurement-unknown", result.status)
+        self.assertTrue(result.launched)
+        self.assertIsNotNone(result.returncode)
+        self.assertEqual(2, len(identities))
+        self.assertFalse(callback_done.is_set())
+        release.set()
+        self.assertTrue(callback_done.wait(0.5))
+
+    def test_blocked_final_observer_leaves_completed_process_unverified(self):
+        entered = threading.Event()
+        release = threading.Event()
+        callback_done = threading.Event()
+        calls = {"count": 0}
+
+        def observer(identity, elapsed):
+            calls["count"] += 1
+            if calls["count"] == 2:
+                entered.set()
+                release.wait(2)
+                callback_done.set()
+            return _snapshot(wall=0.1 + elapsed)
+
+        request = self.request("import time; time.sleep(0.03)", timeout=2)
+        request = ProcessRequest(**{**request.__dict__, "observation_max_age_seconds": 0.15,
+                                    "poll_interval_seconds": 0.1})
+        began = time.monotonic()
+        result = run_supervised(request, self.caps, observer)
+        self.assertTrue(entered.is_set())
+        self.assertLess(time.monotonic() - began, 1.5)
+        self.assertEqual("measurement-unknown", result.status)
+        self.assertNotEqual("completed", result.status)
+        self.assertEqual(2, calls["count"])
+        self.assertFalse(callback_done.is_set())
+        release.set()
+        self.assertTrue(callback_done.wait(0.5))
+
+    def test_cumulative_wall_snapshot_is_not_double_counted_with_local_elapsed(self):
+        calls = {"count": 0}
+
+        def observer(identity, elapsed):
+            calls["count"] += 1
+            wall = 9.8 if calls["count"] == 1 else 9.99
+            return _snapshot(wall=wall)
+
+        caps = BudgetCaps(25.0, 4_000_000, 10.0, 4 * 1024**3, 5 * 1024**3)
+        request = self.request("import time; time.sleep(0.06)", timeout=2)
+        request = ProcessRequest(**{**request.__dict__, "poll_interval_seconds": 0.02})
+        result = run_supervised(request, caps, observer)
+        self.assertTrue(result.completed, result)
+        self.assertGreaterEqual(calls["count"], 3)
+
     def test_live_cap_reached_stops_without_claiming_success(self):
         def observer(identity, elapsed):
             return _snapshot(tokens=4_000_000 if identity is not None else 0,
@@ -217,6 +314,23 @@ class ToolingSupervisorTests(unittest.TestCase):
         self.assertEqual("start-drift", result.status)
         self.assertFalse(result.launched)
         self.assertFalse((req.output_root / "started.json").exists())
+
+    def test_configuration_pin_drift_during_observer_refuses_before_launch(self):
+        config = self.source / "host-config.json"
+        config.write_text('{"mode":"synthetic"}')
+        expected = _sha(config.read_bytes())
+        request = self.request("raise SystemExit(0)")
+        request = ProcessRequest(**{**request.__dict__,
+                                    "file_pins": (FilePin(config, expected),)})
+
+        def mutate_config(_identity, _elapsed):
+            config.write_text('{"mode":"changed"}')
+            return _snapshot()
+
+        result = run_supervised(request, self.caps, mutate_config)
+        self.assertEqual("start-drift", result.status)
+        self.assertFalse(result.launched)
+        self.assertFalse((request.output_root / "started.json").exists())
 
     def test_one_shot_receipts_prevent_silent_retry(self):
         request = self.request("raise SystemExit(0)")

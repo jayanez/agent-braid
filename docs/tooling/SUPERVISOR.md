@@ -12,7 +12,13 @@ The caller provides a `ProcessRequest`, frozen `BudgetCaps`, and an observer
 that returns `TelemetrySnapshot` values containing cumulative measured costs
 and externally observed stop state. The supervisor refuses before launch when
 the executable pin, path separation, initial measurement, freshness, stop
-state, or registered caps fail. During execution it polls that observer and
+state, or registered caps fail. Observer callbacks execute in a bounded daemon
+thread. A pre-dispatch timeout refuses before launch; a live timeout stops the
+process group; a final timeout leaves the result unverified. Calls are never
+retried or overlapped after timeout. Since Python cannot safely cancel a
+callback thread, a timed-out callback may continue until it returns. The
+callback must not itself perform provider/host actions, and the caller must
+preserve the timeout as unknown. During execution the supervisor polls that observer and
 checks the wall clock, output bound, and optional operator cancellation. On a
 stop condition it sends SIGTERM to the process group, then SIGKILL after the
 configured grace period, drains pipes within fixed bounds, and attempts to reap
@@ -45,7 +51,14 @@ if not outcome.completed:
 No raw environment values, argument strings, or stdin contents are copied into
 receipts. The receipt records the executable and argument hashes, stdin byte
 count, environment entry count, measurements and their source hashes, output
-hashes, and bounded status metadata. The output files remain private and may
+hashes, and bounded status metadata. Optional `FilePin` entries bind
+configuration/skill pathnames to SHA-256 observations before and after the
+pre-dispatch callback, immediately before `Popen`, and again after process
+launch. Paths are hashed in the
+receipt. These are pathname observations, not an atomic `fexec` guarantee: a
+file may change between the final hash and the operating system opening it.
+The external verifier must still establish source/configuration identity and
+actual host provenance. The output files remain private and may
 contain sensitive session output; callers must retain them only in the
 registered private artifact boundary.
 
