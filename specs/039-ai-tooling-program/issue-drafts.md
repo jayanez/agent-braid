@@ -1,6 +1,6 @@
 # M4.5 issue drafts
 
-Prepared from source; no remote record has been created by this file. Creation follows reviewed source integration and GITHUB_TRACKING.md. Scope: jayanez/agent-braid, one new milestone, six spec parents and 60 task subissues. All remain open/Review pending.
+Source drafts materialized under GITHUB_TRACKING.md as [Open milestone #19](https://github.com/jayanez/agent-braid/milestone/19) with six spec parents and 60 task subissues. See [administrative-registration.md](administrative-registration.md) for issue links and reconciliation evidence. All issues are open; the six parents are Review pending in the private Project and the tasks are Todo.
 
 ## Milestone
 

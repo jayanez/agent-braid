@@ -1,0 +1,563 @@
+{
+  "repository": "jayanez/agent-braid",
+  "milestone": {
+    "number": 19,
+    "title": "M4.5 — AI tooling integrations for Codex and Claude Code",
+    "url": "https://github.com/jayanez/agent-braid/milestone/19",
+    "state": "open"
+  },
+  "source_commit": "c06a7839ff722f8721d6d958d652c702d1d0667f",
+  "parents": [
+    {
+      "key": "SPEC-039",
+      "number": 395,
+      "url": "https://github.com/jayanez/agent-braid/issues/395",
+      "tasks": 10
+    },
+    {
+      "key": "SPEC-040",
+      "number": 406,
+      "url": "https://github.com/jayanez/agent-braid/issues/406",
+      "tasks": 10
+    },
+    {
+      "key": "SPEC-041",
+      "number": 417,
+      "url": "https://github.com/jayanez/agent-braid/issues/417",
+      "tasks": 10
+    },
+    {
+      "key": "SPEC-042",
+      "number": 428,
+      "url": "https://github.com/jayanez/agent-braid/issues/428",
+      "tasks": 10
+    },
+    {
+      "key": "SPEC-043",
+      "number": 439,
+      "url": "https://github.com/jayanez/agent-braid/issues/439",
+      "tasks": 10
+    },
+    {
+      "key": "SPEC-044",
+      "number": 450,
+      "url": "https://github.com/jayanez/agent-braid/issues/450",
+      "tasks": 10
+    }
+  ],
+  "records": [
+    {
+      "key": "SPEC-039",
+      "number": 395,
+      "url": "https://github.com/jayanez/agent-braid/issues/395",
+      "state": "open",
+      "parent": null
+    },
+    {
+      "key": "SPEC-039/T001",
+      "number": 396,
+      "url": "https://github.com/jayanez/agent-braid/issues/396",
+      "state": "open",
+      "parent": "SPEC-039"
+    },
+    {
+      "key": "SPEC-039/T002",
+      "number": 397,
+      "url": "https://github.com/jayanez/agent-braid/issues/397",
+      "state": "open",
+      "parent": "SPEC-039"
+    },
+    {
+      "key": "SPEC-039/T003",
+      "number": 398,
+      "url": "https://github.com/jayanez/agent-braid/issues/398",
+      "state": "open",
+      "parent": "SPEC-039"
+    },
+    {
+      "key": "SPEC-039/T004",
+      "number": 399,
+      "url": "https://github.com/jayanez/agent-braid/issues/399",
+      "state": "open",
+      "parent": "SPEC-039"
+    },
+    {
+      "key": "SPEC-039/T005",
+      "number": 400,
+      "url": "https://github.com/jayanez/agent-braid/issues/400",
+      "state": "open",
+      "parent": "SPEC-039"
+    },
+    {
+      "key": "SPEC-039/T006",
+      "number": 401,
+      "url": "https://github.com/jayanez/agent-braid/issues/401",
+      "state": "open",
+      "parent": "SPEC-039"
+    },
+    {
+      "key": "SPEC-039/T007",
+      "number": 402,
+      "url": "https://github.com/jayanez/agent-braid/issues/402",
+      "state": "open",
+      "parent": "SPEC-039"
+    },
+    {
+      "key": "SPEC-039/T008",
+      "number": 403,
+      "url": "https://github.com/jayanez/agent-braid/issues/403",
+      "state": "open",
+      "parent": "SPEC-039"
+    },
+    {
+      "key": "SPEC-039/T009",
+      "number": 404,
+      "url": "https://github.com/jayanez/agent-braid/issues/404",
+      "state": "open",
+      "parent": "SPEC-039"
+    },
+    {
+      "key": "SPEC-039/T010",
+      "number": 405,
+      "url": "https://github.com/jayanez/agent-braid/issues/405",
+      "state": "open",
+      "parent": "SPEC-039"
+    },
+    {
+      "key": "SPEC-040",
+      "number": 406,
+      "url": "https://github.com/jayanez/agent-braid/issues/406",
+      "state": "open",
+      "parent": null
+    },
+    {
+      "key": "SPEC-040/T001",
+      "number": 407,
+      "url": "https://github.com/jayanez/agent-braid/issues/407",
+      "state": "open",
+      "parent": "SPEC-040"
+    },
+    {
+      "key": "SPEC-040/T002",
+      "number": 408,
+      "url": "https://github.com/jayanez/agent-braid/issues/408",
+      "state": "open",
+      "parent": "SPEC-040"
+    },
+    {
+      "key": "SPEC-040/T003",
+      "number": 409,
+      "url": "https://github.com/jayanez/agent-braid/issues/409",
+      "state": "open",
+      "parent": "SPEC-040"
+    },
+    {
+      "key": "SPEC-040/T004",
+      "number": 410,
+      "url": "https://github.com/jayanez/agent-braid/issues/410",
+      "state": "open",
+      "parent": "SPEC-040"
+    },
+    {
+      "key": "SPEC-040/T005",
+      "number": 411,
+      "url": "https://github.com/jayanez/agent-braid/issues/411",
+      "state": "open",
+      "parent": "SPEC-040"
+    },
+    {
+      "key": "SPEC-040/T006",
+      "number": 412,
+      "url": "https://github.com/jayanez/agent-braid/issues/412",
+      "state": "open",
+      "parent": "SPEC-040"
+    },
+    {
+      "key": "SPEC-040/T007",
+      "number": 413,
+      "url": "https://github.com/jayanez/agent-braid/issues/413",
+      "state": "open",
+      "parent": "SPEC-040"
+    },
+    {
+      "key": "SPEC-040/T008",
+      "number": 414,
+      "url": "https://github.com/jayanez/agent-braid/issues/414",
+      "state": "open",
+      "parent": "SPEC-040"
+    },
+    {
+      "key": "SPEC-040/T009",
+      "number": 415,
+      "url": "https://github.com/jayanez/agent-braid/issues/415",
+      "state": "open",
+      "parent": "SPEC-040"
+    },
+    {
+      "key": "SPEC-040/T010",
+      "number": 416,
+      "url": "https://github.com/jayanez/agent-braid/issues/416",
+      "state": "open",
+      "parent": "SPEC-040"
+    },
+    {
+      "key": "SPEC-041",
+      "number": 417,
+      "url": "https://github.com/jayanez/agent-braid/issues/417",
+      "state": "open",
+      "parent": null
+    },
+    {
+      "key": "SPEC-041/T001",
+      "number": 418,
+      "url": "https://github.com/jayanez/agent-braid/issues/418",
+      "state": "open",
+      "parent": "SPEC-041"
+    },
+    {
+      "key": "SPEC-041/T002",
+      "number": 419,
+      "url": "https://github.com/jayanez/agent-braid/issues/419",
+      "state": "open",
+      "parent": "SPEC-041"
+    },
+    {
+      "key": "SPEC-041/T003",
+      "number": 420,
+      "url": "https://github.com/jayanez/agent-braid/issues/420",
+      "state": "open",
+      "parent": "SPEC-041"
+    },
+    {
+      "key": "SPEC-041/T004",
+      "number": 421,
+      "url": "https://github.com/jayanez/agent-braid/issues/421",
+      "state": "open",
+      "parent": "SPEC-041"
+    },
+    {
+      "key": "SPEC-041/T005",
+      "number": 422,
+      "url": "https://github.com/jayanez/agent-braid/issues/422",
+      "state": "open",
+      "parent": "SPEC-041"
+    },
+    {
+      "key": "SPEC-041/T006",
+      "number": 423,
+      "url": "https://github.com/jayanez/agent-braid/issues/423",
+      "state": "open",
+      "parent": "SPEC-041"
+    },
+    {
+      "key": "SPEC-041/T007",
+      "number": 424,
+      "url": "https://github.com/jayanez/agent-braid/issues/424",
+      "state": "open",
+      "parent": "SPEC-041"
+    },
+    {
+      "key": "SPEC-041/T008",
+      "number": 425,
+      "url": "https://github.com/jayanez/agent-braid/issues/425",
+      "state": "open",
+      "parent": "SPEC-041"
+    },
+    {
+      "key": "SPEC-041/T009",
+      "number": 426,
+      "url": "https://github.com/jayanez/agent-braid/issues/426",
+      "state": "open",
+      "parent": "SPEC-041"
+    },
+    {
+      "key": "SPEC-041/T010",
+      "number": 427,
+      "url": "https://github.com/jayanez/agent-braid/issues/427",
+      "state": "open",
+      "parent": "SPEC-041"
+    },
+    {
+      "key": "SPEC-042",
+      "number": 428,
+      "url": "https://github.com/jayanez/agent-braid/issues/428",
+      "state": "open",
+      "parent": null
+    },
+    {
+      "key": "SPEC-042/T001",
+      "number": 429,
+      "url": "https://github.com/jayanez/agent-braid/issues/429",
+      "state": "open",
+      "parent": "SPEC-042"
+    },
+    {
+      "key": "SPEC-042/T002",
+      "number": 430,
+      "url": "https://github.com/jayanez/agent-braid/issues/430",
+      "state": "open",
+      "parent": "SPEC-042"
+    },
+    {
+      "key": "SPEC-042/T003",
+      "number": 431,
+      "url": "https://github.com/jayanez/agent-braid/issues/431",
+      "state": "open",
+      "parent": "SPEC-042"
+    },
+    {
+      "key": "SPEC-042/T004",
+      "number": 432,
+      "url": "https://github.com/jayanez/agent-braid/issues/432",
+      "state": "open",
+      "parent": "SPEC-042"
+    },
+    {
+      "key": "SPEC-042/T005",
+      "number": 433,
+      "url": "https://github.com/jayanez/agent-braid/issues/433",
+      "state": "open",
+      "parent": "SPEC-042"
+    },
+    {
+      "key": "SPEC-042/T006",
+      "number": 434,
+      "url": "https://github.com/jayanez/agent-braid/issues/434",
+      "state": "open",
+      "parent": "SPEC-042"
+    },
+    {
+      "key": "SPEC-042/T007",
+      "number": 435,
+      "url": "https://github.com/jayanez/agent-braid/issues/435",
+      "state": "open",
+      "parent": "SPEC-042"
+    },
+    {
+      "key": "SPEC-042/T008",
+      "number": 436,
+      "url": "https://github.com/jayanez/agent-braid/issues/436",
+      "state": "open",
+      "parent": "SPEC-042"
+    },
+    {
+      "key": "SPEC-042/T009",
+      "number": 437,
+      "url": "https://github.com/jayanez/agent-braid/issues/437",
+      "state": "open",
+      "parent": "SPEC-042"
+    },
+    {
+      "key": "SPEC-042/T010",
+      "number": 438,
+      "url": "https://github.com/jayanez/agent-braid/issues/438",
+      "state": "open",
+      "parent": "SPEC-042"
+    },
+    {
+      "key": "SPEC-043",
+      "number": 439,
+      "url": "https://github.com/jayanez/agent-braid/issues/439",
+      "state": "open",
+      "parent": null
+    },
+    {
+      "key": "SPEC-043/T001",
+      "number": 440,
+      "url": "https://github.com/jayanez/agent-braid/issues/440",
+      "state": "open",
+      "parent": "SPEC-043"
+    },
+    {
+      "key": "SPEC-043/T002",
+      "number": 441,
+      "url": "https://github.com/jayanez/agent-braid/issues/441",
+      "state": "open",
+      "parent": "SPEC-043"
+    },
+    {
+      "key": "SPEC-043/T003",
+      "number": 442,
+      "url": "https://github.com/jayanez/agent-braid/issues/442",
+      "state": "open",
+      "parent": "SPEC-043"
+    },
+    {
+      "key": "SPEC-043/T004",
+      "number": 443,
+      "url": "https://github.com/jayanez/agent-braid/issues/443",
+      "state": "open",
+      "parent": "SPEC-043"
+    },
+    {
+      "key": "SPEC-043/T005",
+      "number": 444,
+      "url": "https://github.com/jayanez/agent-braid/issues/444",
+      "state": "open",
+      "parent": "SPEC-043"
+    },
+    {
+      "key": "SPEC-043/T006",
+      "number": 445,
+      "url": "https://github.com/jayanez/agent-braid/issues/445",
+      "state": "open",
+      "parent": "SPEC-043"
+    },
+    {
+      "key": "SPEC-043/T007",
+      "number": 446,
+      "url": "https://github.com/jayanez/agent-braid/issues/446",
+      "state": "open",
+      "parent": "SPEC-043"
+    },
+    {
+      "key": "SPEC-043/T008",
+      "number": 447,
+      "url": "https://github.com/jayanez/agent-braid/issues/447",
+      "state": "open",
+      "parent": "SPEC-043"
+    },
+    {
+      "key": "SPEC-043/T009",
+      "number": 448,
+      "url": "https://github.com/jayanez/agent-braid/issues/448",
+      "state": "open",
+      "parent": "SPEC-043"
+    },
+    {
+      "key": "SPEC-043/T010",
+      "number": 449,
+      "url": "https://github.com/jayanez/agent-braid/issues/449",
+      "state": "open",
+      "parent": "SPEC-043"
+    },
+    {
+      "key": "SPEC-044",
+      "number": 450,
+      "url": "https://github.com/jayanez/agent-braid/issues/450",
+      "state": "open",
+      "parent": null
+    },
+    {
+      "key": "SPEC-044/T001",
+      "number": 451,
+      "url": "https://github.com/jayanez/agent-braid/issues/451",
+      "state": "open",
+      "parent": "SPEC-044"
+    },
+    {
+      "key": "SPEC-044/T002",
+      "number": 452,
+      "url": "https://github.com/jayanez/agent-braid/issues/452",
+      "state": "open",
+      "parent": "SPEC-044"
+    },
+    {
+      "key": "SPEC-044/T003",
+      "number": 453,
+      "url": "https://github.com/jayanez/agent-braid/issues/453",
+      "state": "open",
+      "parent": "SPEC-044"
+    },
+    {
+      "key": "SPEC-044/T004",
+      "number": 454,
+      "url": "https://github.com/jayanez/agent-braid/issues/454",
+      "state": "open",
+      "parent": "SPEC-044"
+    },
+    {
+      "key": "SPEC-044/T005",
+      "number": 455,
+      "url": "https://github.com/jayanez/agent-braid/issues/455",
+      "state": "open",
+      "parent": "SPEC-044"
+    },
+    {
+      "key": "SPEC-044/T006",
+      "number": 456,
+      "url": "https://github.com/jayanez/agent-braid/issues/456",
+      "state": "open",
+      "parent": "SPEC-044"
+    },
+    {
+      "key": "SPEC-044/T007",
+      "number": 457,
+      "url": "https://github.com/jayanez/agent-braid/issues/457",
+      "state": "open",
+      "parent": "SPEC-044"
+    },
+    {
+      "key": "SPEC-044/T008",
+      "number": 458,
+      "url": "https://github.com/jayanez/agent-braid/issues/458",
+      "state": "open",
+      "parent": "SPEC-044"
+    },
+    {
+      "key": "SPEC-044/T009",
+      "number": 459,
+      "url": "https://github.com/jayanez/agent-braid/issues/459",
+      "state": "open",
+      "parent": "SPEC-044"
+    },
+    {
+      "key": "SPEC-044/T010",
+      "number": 460,
+      "url": "https://github.com/jayanez/agent-braid/issues/460",
+      "state": "open",
+      "parent": "SPEC-044"
+    }
+  ],
+  "date": "2026-10-08",
+  "reviewed_plan_sha256": "d63699229fdb4fc87994e181939b349962184835847f1343f98494b1f538e9ca",
+  "reconciliation_audit": {
+    "repository": "jayanez/agent-braid",
+    "project_url": "https://github.com/users/jayanez/projects/6",
+    "scope": "milestone:19",
+    "milestone_number": 19,
+    "new_record_keys": [],
+    "plan_sha256": "3d9804f37e3bb7f008f340c99052fb3729ed12194617f2d16ed0d047053329dd",
+    "operations": []
+  },
+  "project": {
+    "url": "https://github.com/users/jayanez/projects/6",
+    "method": "Owner-authenticated browser UI; Specs and tasks, By milestone and By status views",
+    "matching_items": 66,
+    "statuses": {
+      "Todo": 60,
+      "Review pending": 6,
+      "In Progress": 0,
+      "Done": 0
+    },
+    "review_pending_keys": [
+      "SPEC-039",
+      "SPEC-040",
+      "SPEC-041",
+      "SPEC-042",
+      "SPEC-043",
+      "SPEC-044"
+    ]
+  },
+  "preserved_inventory": {
+    "preexisting_milestones": 18,
+    "preexisting_issues": 332,
+    "milestone_fields": [
+      "id",
+      "number",
+      "title",
+      "state",
+      "description",
+      "due_on",
+      "created_at",
+      "closed_at"
+    ],
+    "issue_fields": [
+      "title",
+      "body",
+      "state",
+      "milestone_number",
+      "labels"
+    ]
+  }
+}
