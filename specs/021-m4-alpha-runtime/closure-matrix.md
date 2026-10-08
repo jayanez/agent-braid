@@ -60,3 +60,48 @@ is generally unhelpful and does not accept or close whole M4. SPEC-021 and M4 re
 open. The conditional Spec Kit integration matrix was skipped in the current PR
 workflows. See `g4-decision.json` for the decision source, exact candidate bindings,
 evidence hashes and boundaries. M3/M3.5 scientific gates remain unchanged.
+
+## Candidate-bound platform evidence on e66f9a1 (2026-10-08)
+
+The current records add bounded platform observations for candidate
+`e66f9a1b94fc5ebfbf784d9c48a76f53c1a656ee` / tree
+`36821ee4685f583e97fede0e3c627dcf7d85bd07`. They do not replace the historical
+snapshots above or close any exit row.
+
+The [current Codex addendum](evidence/current-codex-host-e66f9a1.md) and
+[summary JSON](evidence/current-codex-host-e66f9a1.json) document one Darwin arm64
+Codex CLI 0.162.0-alpha.2 direct no-model bridge observation. It
+exercised six MCP tools, missing-grant refusal, controlled disconnect and
+recovery, independent prefix verification, verified completion, duplicate
+suppression and abort, with zero model calls. The record matched 80 runtime input
+hashes. Source, candidate, client binary and persistent host configuration were
+unchanged. A distinct private 201-file pre-import guard was checked separately.
+The temporary synthetic fixture was cleaned by the original harness at process exit; the
+filesystem fixture is unavailable for later re-verification. The retained private
+capture includes its 29-message transcript and outcome records. This is not a
+model-mediated workload or a current Claude observation.
+
+The distinct [Darwin core-suite addendum](evidence/current-darwin-core-e66f9a1.md)
+and [summary JSON](evidence/current-darwin-core-e66f9a1.json) preserve three
+executions on the same candidate. The original full run failed:
+67 of 68 tests passed and one errored when a temporary repository lacked its
+hooks directory. A focused 1-test diagnostic then passed, followed by a corrected
+full run with 68 passes, zero skips and no timeout. The original run records its
+80-input reproduction fingerprint and unchanged candidate/worktree state. The
+separate 201-file candidate guard applies only to the focused diagnostic and
+corrected full run. Each used a fresh Python process but the existing isolated
+Python 3.13.11 environment, not a clean-room dependency setup. The added runs do
+not erase the original failure or establish host-adapter behavior.
+
+The [current Linux addendum](evidence/current-linux-core-protocol-e66f9a1.md) and
+[summary JSON](evidence/current-linux-core-protocol-e66f9a1.json) document a
+fresh-process reproduction of 68 core, policy, scheduler and
+deterministic stdio-protocol tests, with zero skips, on Linux x86_64, Python
+3.12.14 and Git 2.55.0. All 80 public-record input hashes matched candidate
+objects. This covers only the Linux core/protocol sub-scope; it does not establish
+Codex or Claude Linux host-adapter behavior. No cost result is claimed.
+
+These records add evidence to the Codex host/protocol and Linux core/protocol
+slices. The Claude current-host observation and the remaining six-row exit
+criteria remain open. G4 NO-GO, SPEC-021's open state and M4's open milestone are
+unchanged; the founder's whole-M4 decision remains separate.

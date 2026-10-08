@@ -1,0 +1,70 @@
+{
+  "recordVersion": "spec021-current-codex-host-public-summary-v1",
+  "candidate": {
+    "commit": "e66f9a1b94fc5ebfbf784d9c48a76f53c1a656ee",
+    "tree": "36821ee4685f583e97fede0e3c627dcf7d85bd07",
+    "scope": "Frozen candidate-bound actual Codex current-client observation; this does not bind to any later/current working tree."
+  },
+  "observation": {
+    "host": "Codex CLI 0.162.0-alpha.2",
+    "hostBinarySha256": "cb4e4994627e770800a940b42969c77855a3fc09a6e60b02aa6319f670d6b6ab",
+    "platform": "Darwin arm64",
+    "python": "3.13.11",
+    "mcpProtocol": "2025-11-25",
+    "enabledMcpServerCount": 1,
+    "mcpClientRequestSchemaSha256": "9be20dabc0516c68cbe7ad4480affd2953c43ad0e7770a3949663967c00f5ca5",
+    "mcpPreflightSha256": "1d1e2348c459a64af9a35aeb57289c9ae9ee15177864d63b1d489e6d315e6c97",
+    "status": "passed",
+    "modelCalls": 0,
+    "candidateRuntimeInputs": {
+      "count": 80,
+      "hashesMatched": true,
+      "mismatchCount": 0
+    },
+    "independentPreImportGuard": {
+      "count": 201,
+      "inputMapSha256": "40e089bf3632edca48ef39c3f47f50bad6ffce2a938a34b00f556c8fa366d0b8",
+      "hashesMatched": true
+    },
+    "denominatorNote": "The 80 runtime inputs and 201-file pre-import guard are separate, differently scoped integrity checks; do not add them or treat them as one file set."
+  },
+  "observedCoverage": {
+    "tools": [
+      "analyze",
+      "prepare",
+      "status",
+      "verify",
+      "execute",
+      "recover"
+    ],
+    "missingGrantRefusal": true,
+    "controlledDisconnectAndRecovery": true,
+    "independentPrefix": true,
+    "completedAndVerified": true,
+    "duplicateDeliveryNotRepeated": true,
+    "abort": true,
+    "sourceUnchanged": true,
+    "candidateUnchanged": true,
+    "failure": null
+  },
+  "interpretation": {
+    "population": "One bounded actual-client observation on one Darwin arm64 host using a fixed owned synthetic two-edit fixture and direct no-model tool bridge.",
+    "claim": "The retained observation supports the listed protocol and fixture outcomes for this candidate and host configuration only.",
+    "notEstablished": [
+      "Claude or Linux current-client behavior",
+      "model-mediated use or a live user-agent workload",
+      "generalized performance or causal benefit",
+      "arbitrary-code or hostile same-user isolation",
+      "semantic correctness of application changes",
+      "utility acceptance or whole-M4 acceptance",
+      "source promotion or production readiness"
+    ],
+    "cleanupAndRetention": "The raw private capture (including its 29-message stdio transcript) is retained under restricted local evidence custody. The original reviewed Codex harness cleaned its temporary synthetic fixture at process exit. That filesystem fixture is no longer available for independent re-verification; the retained capture preserves the observed prefix, completion, and abort records. No cleanup-time re-verification is claimed. This derivative contains no fixture payload, local path, account/session/grant identifier, or private permission receipt."
+  },
+  "provenanceHashes": {
+    "privateCaptureSha256": "63364a7515096d77ce4cddaef4e886b47cc02f325cedc2092dc88d5e3595b176",
+    "independentReviewSha256": "84d1dcdbb1c0d8f5c373d0d393eefc2f2d5893d6febc6440d2c8266cfc44c2ba",
+    "mcpPreflightSha256": "1d1e2348c459a64af9a35aeb57289c9ae9ee15177864d63b1d489e6d315e6c97"
+  },
+  "publication": "Public-candidate derivative only; creation of this file does not authorize publication or merge."
+}

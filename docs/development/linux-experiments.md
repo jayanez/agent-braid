@@ -80,6 +80,21 @@ platform, counts and limits. Preserve the run ID/attempt, caller workflow SHA,
 candidate SHA and downloaded raw log. This temporary transport is not a permanent
 evidence archive or independent external validation.
 
+## Current e66 core and protocol reproduction
+
+The completed [e66 Linux reproduction](https://github.com/jayanez/agent-braid/actions/runs/37778187088)
+ran 68 core, policy, scheduler and deterministic stdio-protocol tests in a fresh
+process on Linux x86_64, Python 3.12.14 and Git 2.55.0. All tests passed, with no
+skips or timeout. The public record binds 80 candidate inputs and the run's public
+test transcript. A separate read-only check matched those 80 hashes to candidate
+objects without rerunning tests. See the [e66 Linux evidence record](../../specs/021-m4-alpha-runtime/evidence/current-linux-core-protocol-e66f9a1.md)
+for provenance and limits.
+
+This run covers the Linux core/protocol slice only. It does not exercise Codex or
+Claude host adapters, measure utility or cost, or close the SPEC-021 portability
+row. Current Codex Darwin host and core-suite evidence are recorded separately;
+current Claude host evidence remains pending.
+
 ## Existing local Linux environment
 
 Use an independent full clone with the reviewed public history restored and a
