@@ -1,0 +1,27 @@
+# Bounded utility decision — SPEC-022 T006 (2026-10-08)
+
+## Decision and authority boundary
+
+The owner approved the bounded T006 interpretation recorded in the [decision record](utility-decision-20261008.json). The approved recommendation is not to claim useful speedup or make parallel execution the performance default for the workload families measured here. Keep serial execution as the recommendation for those measured families until representative, paired, full-cost evidence demonstrates an advantage. This is a bounded interpretation, not a general finding that parallelism is ineffective.
+
+The decision binds the exact private proposal by SHA-256 `8f29403f6b4cb3462e98f6f0fb44672779ac7255ec9c560bea15735cf31c8ca5` and its evidence-binding record by SHA-256 `4503a672c4c0e797d63cab92489e88eacb3aaf09aa867e3929fd3930f8059f32`. The owner decision record is bound by SHA-256 `e87e27816675457da7e953190850ac1689a37840c430334c29a67c66621c7b15`. This decision does not alter the historical SPEC-021 G4 NO-GO, accept SPEC-021, or accept whole M4. It authorizes no new capture or execution capability. Whole-feature assurance review and whole-M4 acceptance remain separate and pending; tracking reconciliation is a later, separately governed operation and has not been applied here.
+
+## Results interpreted
+
+The registered SPEC-022 synthetic capture is bound to candidate `b85f7e5f5031315fb8eef4b90f2100b071a10ad7` and manifest SHA-256 `59890d866f72f09d1919620bd77fb9e333d82712bd2293f4a54e7846bc43e78f`. It completed 88/88 valid pairs (8 warm-up and 80 measured), 176 treatments, with no invalid or unexecuted pairs. Of nine planned blocks, four were admitted and five were excluded by the fixed size caps. Three admitted independent blocks had median serial/parallel outer-wall ratios of `0.6399138361`, `0.6459474869`, and `0.8480100361`. The fourth admitted block was a dependency-chain order control, not independent utility evidence. All three independent medians were below 1.10, the protocol's descriptive threshold for a favorable signal, and below 1. They describe lower serial outer wall in those finite observations. Four fresh control suites passed (76 tests). The retained review recalculated the medians; it did not repeat treatments and could not re-inspect execution/grant paths removed after verification.
+
+The separate registered SPEC-038 source capture used candidate `e66f9a1b94fc5ebfbf784d9c48a76f53c1a656ee`, manifest SHA-256 `6cc2715f99c5e1eb47fa90e9ccb85388c7bc157f995c404660255c5608f60577`, and a different corpus. It completed 20/20 treatments and 10/10 valid pairs (4 warm-up and 6 measured), with no invalid, rejected, failed, interrupted, recovered, or unexecuted pairs. The median serial/parallel outer-wall ratio was `0.6538998703`; AB was `0.6530442113` and BA was `0.6547555293`. A fresh-process verifier checked all 20 treatments before cleanup removed 40 execution/grant paths; post-cleanup re-verification is unavailable.
+
+These captures are not pooled. They have distinct candidates, domains, corpora, and denominators. Neither is a population estimate; caches and background activity were uncontrolled. The ratios do not establish causality, semantic commutation, application correctness, or a general parallelism rule. SPEC-038's tracked-tree result does not establish native-code or semantic validity.
+
+## Cost and accounting limits
+
+Both ratios use recorded outer wall covering input, replay, preparation, grant, execution, independent verification, report serialization, cleanup, and residual. Component spans such as dispatch, invocation, verification, preparation, and publication can be nested or overlapping; they must not be summed into outer wall or into one another.
+
+For SPEC-022, observed whole-invocation wall was `6262184712292 ns` and dispatch wall was `5631755831875 ns`; the receipt states component spans overlap the whole invocation. The fresh control environment (Darwin arm64, Python 3.13.11, Git 2.54.0) is not the historical treatment environment. Child CPU is process-global, not per worker; rejected/discarded output bytes are unavailable; scratch is a cumulative high-water mark without per-phase allocation; process-lifetime RSS is not a treatment delta; and some worker interval observations are unavailable.
+
+For SPEC-038, the operator receipt records registered API wall/parent CPU of `804416402208 ns` / `42361395000 ns` and outer caller wall/parent CPU of `804704162292 ns` / `42426933000 ns`. Fresh verification is reported separately and overlaps API wall. Manifest preparation was outside the ratios and measured separately at `97.154266375 s` wall and `5.973002 s` CPU. Source/rights acquisition, independent review, operator effort, and environment setup are null with reasons, not zeros. Hardware/load snapshots are outside treatment intervals and do not establish per-treatment conditions or causal CPU overlap. There was no hard child address-space cap or syscall audit. Raw Git-command and budget-charge counters have different scopes.
+
+## Closure status
+
+T006's bounded interpretation and explicit owner decision are recorded. This does not convert the negative evidence into a positive utility result. SPEC-022 remains open for whole-feature review; its assurance record remains draft with `human_review: pending`. The historical SPEC-021 G4 NO-GO and M4 open status remain unchanged. No whole-M4 or scientific acceptance is granted. The project-tracking entry remains open pending its separate post-PR reconciliation.
