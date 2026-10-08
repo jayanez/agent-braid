@@ -71,6 +71,7 @@ class HostLaunchConfig:
     codex_config_overrides: tuple[str, ...] = field(repr=False)
     config_dir: Path
     cwd: Path
+    mcp_result_root: Path
     output_root: Path
     source_roots: tuple[Path, ...]
     grant_root: Path
@@ -78,6 +79,7 @@ class HostLaunchConfig:
     environment: Mapping[str, str] = field(repr=False)
     mcp_servers: tuple[str, ...]
     expected_tools: tuple[str, ...]
+    runtime_enabled: bool
     expected_skill_bundle_sha256: str | None = None
     evidence: LaunchEvidence | None = None
     timeout_seconds: float = 57_600
@@ -107,6 +109,7 @@ class HostLaunchPlan:
     codex_config_overrides: tuple[str, ...] = field(repr=False)
     config_dir: Path
     cwd: Path
+    mcp_result_root: Path
     output_root: Path
     source_roots: tuple[Path, ...]
     grant_root: Path
@@ -117,6 +120,7 @@ class HostLaunchPlan:
     environment: Mapping[str, str] = field(repr=False)
     mcp_servers: tuple[str, ...]
     expected_tools: tuple[str, ...]
+    runtime_enabled: bool
     evidence: LaunchEvidence
     timeout_seconds: float
     max_output_bytes: int
@@ -269,6 +273,8 @@ class HostSessionAdapter(tooling_sessions.SessionAdapter):
             "version": plan.version,
             "model": plan.model,
             "effort": plan.effort,
+            "runtimeEnabled": plan.runtime_enabled,
+            "mcpResultRoot": str(plan.mcp_result_root),
             "promptSha256": plan.prompt_sha256,
             "configFiles": [{"path": str(pin.path), "sha256": pin.sha256}
                             for pin in plan.config_files],
@@ -354,6 +360,7 @@ def prepare_host_launch(admission: capture.AttemptAdmission,
             not isinstance(name, str) or not name for name in config.expected_tools) \
             or len(set(config.expected_tools)) != len(config.expected_tools):
         raise HostPreparationError("expected tool set must contain unique non-empty names")
+    _check_private_result_root(config.mcp_result_root)
     if config.host == "codex":
         if not config.codex_config_overrides:
             raise HostPreparationError("Codex requires explicit caller-supplied MCP and tool configuration")
@@ -407,6 +414,7 @@ def prepare_host_launch(admission: capture.AttemptAdmission,
         config_files=tuple(FilePin(pin.path.resolve(strict=True), pin.sha256) for pin in config.config_files),
         codex_config_overrides=config.codex_config_overrides,
         config_dir=config.config_dir, cwd=config.cwd, output_root=config.output_root,
+        mcp_result_root=config.mcp_result_root,
         source_roots=config.source_roots, grant_root=config.grant_root,
         argv=argv,
         codex_config_sha256=(hashlib.sha256("\0".join(config.codex_config_overrides).encode("utf-8")).hexdigest()
@@ -414,6 +422,7 @@ def prepare_host_launch(admission: capture.AttemptAdmission,
         prompt_sha256=hashlib.sha256(config.prompt).hexdigest(), prompt=config.prompt,
         environment=MappingProxyType(dict(config.environment)), mcp_servers=tuple(config.mcp_servers),
         expected_tools=config.expected_tools, evidence=config.evidence,
+        runtime_enabled=config.runtime_enabled,
         timeout_seconds=config.timeout_seconds, max_output_bytes=config.max_output_bytes,
         observation_max_age_seconds=config.observation_max_age_seconds,
         poll_interval_seconds=config.poll_interval_seconds,
@@ -473,8 +482,7 @@ def _validate_codex_configuration(config: HostLaunchConfig) -> None:
         if not isinstance(server, dict) or set(server) - {"command", "args", "enabled_tools", "enabled"} \
                 or not isinstance(server.get("command"), str):
             raise HostPreparationError(f"Codex MCP server {name} needs an explicit command")
-        if server.get("args", []) != []:
-            raise HostPreparationError("Codex MCP command arguments are unsupported until a safe schema is registered")
+        _validate_agent_braid_server(server.get("command"), server.get("args", []), config)
         tools = server.get("enabled_tools")
         if not isinstance(tools, list) or any(not isinstance(tool, str) for tool in tools):
             raise HostPreparationError(f"Codex MCP server {name} needs an explicit enabled_tools list")
@@ -528,11 +536,10 @@ def _reject_credential_arguments(value: Any) -> None:
         for index, arg in enumerate(value):
             if credential_flag.search(arg) or arg in {"-H", "--header"}:
                 raise HostPreparationError("Codex MCP args cannot pass credentials or authorization headers")
-            if index and credential_flag.fullmatch(value[index - 1]):
-                raise HostPreparationError("Codex MCP args cannot pass credential values")
-            if re.search(r"(?i)(?:api[-_]?key|access[-_]?key|secret|password|token|credential|authorization)=", arg):
-                raise HostPreparationError("Codex MCP args cannot pass inline credential values")
-        raise HostPreparationError("Codex MCP command arguments are unsupported until a safe schema is registered")
+        if index and credential_flag.fullmatch(value[index - 1]):
+            raise HostPreparationError("Codex MCP args cannot pass credential values")
+        if re.search(r"(?i)(?:api[-_]?key|access[-_]?key|secret|password|token|credential|authorization)=", arg):
+            raise HostPreparationError("Codex MCP args cannot pass inline credential values")
 
 
 def _validate_claude_configuration(config: HostLaunchConfig) -> None:
@@ -548,6 +555,92 @@ def _validate_claude_configuration(config: HostLaunchConfig) -> None:
         raise HostPreparationError("Claude MCP config must contain an mcpServers object")
     if tuple(sorted(data["mcpServers"])) != tuple(sorted(config.mcp_servers)):
         raise HostPreparationError("Claude MCP config inventory differs from the expected server set")
+    for server in data["mcpServers"].values():
+        if not isinstance(server, dict) or set(server) - {"command", "args", "env"}:
+            raise HostPreparationError("Claude MCP servers must use the reviewed stdio command schema")
+        if server.get("env"):
+            raise HostPreparationError("Claude MCP server environment values are not accepted in this profile")
+        _validate_agent_braid_server(server.get("command"), server.get("args", []), config)
+
+
+def _validate_agent_braid_server(command: Any, args: Any, config: HostLaunchConfig) -> None:
+    if not isinstance(command, str) or not Path(command).is_absolute():
+        raise HostPreparationError("MCP command must be an absolute pinned Agent Braid console executable")
+    canonical = Path(command).resolve(strict=True)
+    if not canonical.is_file() or not os.access(canonical, os.X_OK):
+        raise HostPreparationError("MCP command executable is unavailable")
+    if not any(pin.path.resolve(strict=False) == canonical for pin in config.config_files):
+        raise HostPreparationError("MCP command executable lacks a content pin")
+    if not isinstance(args, list) or any(not isinstance(arg, str) for arg in args):
+        raise HostPreparationError("MCP command arguments must be a string list")
+    if len(args) < 7 or args[:4] != ["-m", "agent_braid", "tooling", "serve"]:
+        raise HostPreparationError("MCP command must use the registered Agent Braid tooling serve entry point")
+    source: str | None = None
+    result: str | None = None
+    grant: str | None = None
+    worktrees: list[str] = []
+    runtime = False
+    index = 4
+    while index < len(args):
+        flag = args[index]
+        if flag == "--enable-runtime":
+            if runtime:
+                raise HostPreparationError("duplicate runtime flag")
+            runtime = True
+            index += 1
+            continue
+        if flag not in {"--source-root", "--result-root", "--grant-store", "--worktree-root"} \
+                or index + 1 >= len(args):
+            raise HostPreparationError("MCP command contains an unsupported or incomplete argument")
+        value = args[index + 1]
+        if not Path(value).is_absolute():
+            raise HostPreparationError("MCP root arguments must be absolute paths")
+        if flag == "--source-root":
+            if source is not None:
+                raise HostPreparationError("duplicate source-root argument")
+            source = value
+        elif flag == "--result-root":
+            if result is not None:
+                raise HostPreparationError("duplicate result-root argument")
+            result = value
+        elif flag == "--grant-store":
+            if grant is not None:
+                raise HostPreparationError("duplicate grant-store argument")
+            grant = value
+        else:
+            worktrees.append(value)
+        index += 2
+    source_path = Path(source).resolve(strict=True) if source else None
+    result_path = Path(result).resolve(strict=True) if result else None
+    grant_path = Path(grant).resolve(strict=False) if grant else None
+    allowed_sources = {path.resolve(strict=True) for path in config.source_roots}
+    expected_worktrees = {str(path.resolve(strict=True)) for path in config.source_roots}
+    if source_path not in allowed_sources:
+        raise HostPreparationError("MCP source root is outside the frozen source roots")
+    if result_path is None or result_path != config.mcp_result_root.resolve(strict=True):
+        raise HostPreparationError("MCP result root differs from the explicit isolated result root")
+    if result_path in allowed_sources or result_path in {
+            config.cwd.resolve(strict=True), config.output_root.resolve(strict=True),
+            config.grant_root.resolve(strict=False)}:
+        raise HostPreparationError("MCP result root overlaps a protected session root")
+    if any(value not in expected_worktrees for value in worktrees) or len(set(worktrees)) != len(worktrees):
+        raise HostPreparationError("MCP worktree roots differ from the frozen source roots")
+    if runtime != config.runtime_enabled or (runtime and grant_path != config.grant_root.resolve(strict=False)):
+        raise HostPreparationError("MCP runtime/grant arguments differ from the explicit admitted profile")
+    if not runtime and grant is not None:
+        raise HostPreparationError("grant-store cannot be configured while MCP runtime is disabled")
+    if runtime and (grant_path is None or not grant_path.is_dir() or grant_path.is_symlink()):
+        raise HostPreparationError("runtime grant store must be an existing explicit directory")
+
+
+def _check_private_result_root(path: Path) -> None:
+    try:
+        resolved = path.resolve(strict=True)
+        info = resolved.stat()
+    except (OSError, TypeError) as exc:
+        raise HostPreparationError("MCP result root must be an existing private directory") from exc
+    if not resolved.is_dir() or info.st_uid != os.getuid() or info.st_mode & 0o077:
+        raise HostPreparationError("MCP result root must be user-owned and private")
 
 
 def _check_file_pin(pin: FilePin, *, executable: bool = False) -> None:
