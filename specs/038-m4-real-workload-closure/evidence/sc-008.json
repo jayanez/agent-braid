@@ -1,0 +1,38 @@
+{
+  "evidenceVersion": "spec038-whole-m4-founder-decision-evidence-v1",
+  "scenario": "SC-008",
+  "status": "bounded-whole-M4-decision-recorded; guarded-tracking-reconciliation-pending",
+  "recordScope": "The owner approved bounded completion of M4 alpha engineering/evaluation with negative utility at the exact reviewed candidate. This completes the decision boundary for SC-008 without changing historical G4 or implying issue/milestone tracking is closed.",
+  "decision": {
+    "path": "specs/038-m4-real-workload-closure/whole-m4-founder-decision-20261009.json",
+    "sha256": "10a88fd2814187fddfb385d8a59dc6a7fc3d326cd6de3f43a4980a208b47d9ce",
+    "ownerDecisionRecordSha256": "6c4f6a0c6634dfc72f4f5fa2c053627c54c8a1beb741e6d609487d85fa5e3764",
+    "statement": "Apruebo el epígrafe 22",
+    "candidate": "fa8852ab4158f860bf2bc3aa70469f3367d2b57b",
+    "reviewedCommit": "fa8852ab4158f860bf2bc3aa70469f3367d2b57b"
+  },
+  "sixRowReview": {
+    "path": "specs/038-m4-real-workload-closure/whole-m4-six-row-review.json",
+    "sha256": "f2b1a721aaf671edd6b325a3b6703d877064f6eb5ab979eabb6053017bfe3b6d",
+    "acceptedRows": 6,
+    "reviewReceiptSha256": "b56f489770b1587b72f3b629e22417b98d87a01db8f249dd55c88c8d4d714d05"
+  },
+  "closurePacket": {
+    "path": "specs/038-m4-real-workload-closure/whole-m4-closure-packet.md",
+    "sha256": "d832743e8d77cb798dc1aa223a8b45fabdf78f7377ed1d2d3a83bec86a49e83f"
+  },
+  "historicalBoundary": {
+    "spec021G4": "NO-GO preserved for useful speedup",
+    "spec027": "Three bounded deferrals preserved; no capability adopted",
+    "captureCommit": "e66f9a1b94fc5ebfbf784d9c48a76f53c1a656ee",
+    "captureManifestSha256": "6cc2715f99c5e1eb47fa90e9ccb85388c7bc157f995c404660255c5608f60577",
+    "wholeM4BoundedEngineeringEvaluationAccepted": true,
+    "trackingApplied": false,
+    "milestoneClosed": false
+  },
+  "limits": [
+    "Evidence remains bounded to the reviewed candidate and stated row scopes.",
+    "No new capture, source execution, grants, provider calls, or capability adoption.",
+    "Tracking closure still requires guarded apply, empty follow-up audit, and actual Project/milestone verification."
+  ]
+}

@@ -1,6 +1,15 @@
 # Implementation and evidence plan
 
-## Development status — 2026-10-08
+## Current status — 2026-10-09
+
+The founder accepted bounded M4 alpha engineering and evaluation completion
+with negative utility. The historical SPEC-021 G4 NO-GO remains unchanged.
+The decision and six-row evidence review are in
+[`whole-m4-founder-decision-20261009.json`](whole-m4-founder-decision-20261009.json)
+and [`whole-m4-closure-packet.md`](whole-m4-closure-packet.md). Guarded
+issue/milestone reconciliation remains pending.
+
+## Capture status — 2026-10-08
 
 The exact successor candidate `e66f9a1b94fc5ebfbf784d9c48a76f53c1a656ee`
 and manifest received independent review, owner stable-candidate approval
@@ -15,9 +24,9 @@ See the [derived registered capture summary](evidence/registered-capture-summary
 for exact bindings, complete denominators, costs, controls and unavailable
 observations. The two historical `b85f7e5` pre-dispatch failures remain retained
 in the [attempt summary](evidence/pre-dispatch-attempt-summary.json). No capture
-was retried or resumed. Historical SPEC-021 G4 NO-GO remains visible and
-whole-M4 founder acceptance remains pending. Source-project code and tests
-were not executed under this protocol.
+was retried or resumed. Historical SPEC-021 G4 NO-GO remains visible. At this
+capture-status snapshot, the later founder decision had not yet been recorded.
+Source-project code and tests were not executed under this protocol.
 
 ## Technical context and scope
 
