@@ -203,7 +203,8 @@ class ToolingSupervisorTests(unittest.TestCase):
             return _snapshot()
 
         request = self.request("raise SystemExit(0)")
-        request = ProcessRequest(**{**request.__dict__, "observation_max_age_seconds": 0.08})
+        request = ProcessRequest(**{**request.__dict__, "observation_max_age_seconds": 0.08,
+                                    "observer_timeout_seconds": 0.08})
         began = time.monotonic()
         result = run_supervised(request, self.caps, observer)
         self.assertTrue(entered.is_set())
@@ -231,7 +232,8 @@ class ToolingSupervisorTests(unittest.TestCase):
 
         request = self.request("import time; time.sleep(10)", timeout=5)
         request = ProcessRequest(**{**request.__dict__, "observation_max_age_seconds": 0.08,
-                                    "poll_interval_seconds": 0.02})
+                                    "poll_interval_seconds": 0.02,
+                                    "observer_timeout_seconds": 0.08})
         began = time.monotonic()
         result = run_supervised(request, self.caps, observer)
         self.assertTrue(entered.is_set())
@@ -260,7 +262,8 @@ class ToolingSupervisorTests(unittest.TestCase):
 
         request = self.request("import time; time.sleep(0.03)", timeout=2)
         request = ProcessRequest(**{**request.__dict__, "observation_max_age_seconds": 0.15,
-                                    "poll_interval_seconds": 0.1})
+                                    "poll_interval_seconds": 0.1,
+                                    "observer_timeout_seconds": 0.15})
         began = time.monotonic()
         result = run_supervised(request, self.caps, observer)
         self.assertTrue(entered.is_set())
@@ -271,6 +274,59 @@ class ToolingSupervisorTests(unittest.TestCase):
         self.assertFalse(callback_done.is_set())
         release.set()
         self.assertTrue(callback_done.wait(0.5))
+
+    def test_request_wait_bounds_reject_excessive_values_before_observation(self):
+        invalid = (
+            {"observation_max_age_seconds": 61.0},
+            {"observer_timeout_seconds": 1.01},
+            {"poll_interval_seconds": 0.26},
+            {"term_grace_seconds": 1.01},
+            {"kill_grace_seconds": 1.01},
+        )
+        for changes in invalid:
+            with self.subTest(changes=changes):
+                request = self.request("pass")
+                request = ProcessRequest(**{**request.__dict__, **changes})
+                calls = {"count": 0}
+
+                def observer(_identity, _elapsed):
+                    calls["count"] += 1
+                    return _snapshot()
+
+                with self.assertRaises(SupervisorError):
+                    run_supervised(request, self.caps, observer)
+                self.assertEqual(0, calls["count"])
+
+    def test_maximum_grace_terminates_term_ignoring_process_group_boundedly(self):
+        child = "import signal,time; signal.signal(signal.SIGTERM,signal.SIG_IGN); time.sleep(10)"
+        parent = ("import signal,subprocess,sys,time; signal.signal(signal.SIGTERM,signal.SIG_IGN); "
+                  f"subprocess.Popen([sys.executable,'-c',{child!r}]); time.sleep(10)")
+        request = self.request(parent, timeout=0.1)
+        request = ProcessRequest(**{**request.__dict__, "term_grace_seconds": 1.0,
+                                    "kill_grace_seconds": 1.0})
+        began = time.monotonic()
+        result = run_supervised(request, self.caps, self.observer()[0])
+        self.assertEqual("timed-out", result.status)
+        self.assertNotEqual("completed", result.status)
+        self.assertLess(time.monotonic() - began, 3.5)
+
+    def test_final_observer_failure_is_recorded_even_after_budget_stop(self):
+        calls = {"count": 0}
+
+        def observer(identity, elapsed):
+            calls["count"] += 1
+            if calls["count"] == 2:
+                return _snapshot(tokens=4_000_000, wall=0.1 + elapsed)
+            if calls["count"] >= 3:
+                raise RuntimeError("secret collector details must not be retained")
+            return _snapshot(wall=0.1 + elapsed)
+
+        result = run_supervised(self.request("import time; time.sleep(10)"), self.caps,
+                                observer)
+        self.assertEqual("budget-exceeded", result.status)
+        receipt = json.loads(result.receipt_path.read_text())
+        self.assertTrue(receipt["observerFailure"].startswith("RuntimeError:"))
+        self.assertNotIn("secret collector details", result.receipt_path.read_text())
 
     def test_cumulative_wall_snapshot_is_not_double_counted_with_local_elapsed(self):
         calls = {"count": 0}
