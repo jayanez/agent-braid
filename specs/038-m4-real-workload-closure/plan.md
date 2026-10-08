@@ -1,5 +1,14 @@
 # Implementation and evidence plan
 
+## Development status — 2026-10-08
+
+Exact source rights and protocol are approved. The bounded harness is merged and
+validated; static admission and technical review cover two frozen operations and
+20 treatment slots. See [implementation readiness](implementation-readiness.md)
+for the evidence and scope. Earlier proposal descriptions retain their design-time
+context. Owner stable-candidate/manifest review, capture and whole-M4 acceptance
+remain pending.
+
 ## Technical context and scope
 
 This feature defines a successor actual-workload protocol and bounded C08
@@ -29,9 +38,9 @@ paths/999 changed lines (55,208 diff bytes). Static shape is 2 disjoint
 no-dependency operations, 8 paths, 63,080 bytes, all regular 100644 A/M files
 from the same base, within existing caps. PR metadata identifies `jayanez` as
 submitter and both commits are authored by Juan Antonio Yáñez García; this is
-a provenance/authorship lead, not a new source-rights permission. They remain
-candidate source only until current runtime preparation admission, exact source
-rights, and protocol review. Do not substitute other commits. If review finds
+a provenance/authorship lead, not a new source-rights permission. The two commits form
+the exact frozen source frame; source rights/protocol are approved and current
+runtime preparation admission has passed as recorded in the derived evidence. Do not substitute other commits. If review finds
 an unmet cap or rights gate, record infeasible. Existing M2 founder decisions
 apply solely to their exact M2 experiment, expressly with execution authorization
 false, and cannot satisfy either C07 or C09.
@@ -94,7 +103,8 @@ that these candidate sources are authorized or eligible.
 
 ## Human review and unresolved decisions
 
-Pending: source owner/rightsholder and exact permissions; exact eligible
-operation yield under current caps; protocol/source approval; later stable
-harness/manifest review; capture-specific authorization; independent evidence
-review; and founder whole-M4 decision. No approvals are represented as obtained.
+Source-rights and exact protocol approval are obtained as recorded above.
+The two-operation frame was admitted under current caps without exclusions or
+substitutions. Pending: owner stable-candidate/manifest review; capture-specific
+authorization; independent outcome review; and a new
+founder whole-M4 decision. Implementation authorization is not capture approval.

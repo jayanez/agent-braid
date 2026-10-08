@@ -1,6 +1,6 @@
 # Foundational review and implementation portfolio
 
-## Current navigation — 2026-10-07
+## Current navigation — 2026-10-08
 
 The audit below is a historical snapshot; its counts, findings and baseline remain
 unchanged. For the current inventory of 38 specs and 18 milestones, use the
@@ -10,9 +10,11 @@ SPEC-022 now includes implemented full-cost instrumentation and an owner-approve
 registered capture and a new utility decision remain pending. SPEC-027 provides
 [read-only refinement assessments](../../specs/027-runtime-refinement-contracts/quickstart.md),
 with capability decisions and adoption still pending. SPEC-028 has a synthetic
-reference core. [SPEC-038](../../specs/038-m4-real-workload-closure/spec.md) proposes
-a permissioned current-runtime study: source-use rights, exact protocol/capture
-approval and whole-M4 founder acceptance remain pending. These developments do
+reference core. [SPEC-038](../../specs/038-m4-real-workload-closure/implementation-readiness.md)
+has owner-approved exact source rights and protocol. Its bounded harness is
+merged and validated; the two-operation, 20-slot source frame has passed static
+admission and technical review. Owner stable-candidate/manifest review, capture
+and whole-M4 founder acceptance remain pending. These developments do
 not rewrite SPEC-021's historical G4 NO-GO.
 
 ## Audit boundary and result

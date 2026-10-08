@@ -15,7 +15,8 @@ verified plans under an explicit operator policy and grants.
 | Predictor preparation | Synthetic capture, recovery, accounting and filtered-lab tooling; real-source admission and fitting remain gated | [SPEC-019](specs/019-native-predictor/implementation-readiness.md) |
 | Runtime utility and refinement preparation | Full-cost instrumentation, owner-approved 180-minute successor preparation and read-only refinement assessments; registered capture, utility acceptance and capability adoption remain pending | [SPEC-022](specs/022-m4-utility-followup/successor-protocol-180m.md), [SPEC-027](specs/027-runtime-refinement-contracts/quickstart.md) |
 | System 1 reference core | Opt-in standard-library synthetic decisions and diagnostics; no learned model, accepted utility or execution authority | [SPEC-028](specs/028-system-one-core/spec.md) |
-| Further research and product capabilities | Recorded-trace, effectful-lab, formal-research, adoption, System 1 and forecast programmes; exact real-workload rights/protocol and broader feature acceptance remain gated | [SPEC-023–026 and SPEC-029–038](docs/development/SPEC_MILESTONE_INDEX.md) |
+| Real-workload evaluation preparation | Exact source rights/protocol approved; bounded harness merged and validated; two operations/20 slots statically admitted and technically reviewed; owner stable-candidate review, registered capture and whole-M4 acceptance remain pending | [SPEC-038](specs/038-m4-real-workload-closure/implementation-readiness.md) |
+| Further research and product capabilities | Recorded-trace, effectful-lab, formal-research, adoption, System 1 and forecast programmes; broader feature acceptance remains gated | [SPEC-023–026 and SPEC-029–037](docs/development/SPEC_MILESTONE_INDEX.md) |
 
 Whole M4 remains open. The recorded [G4 NO-GO](specs/021-m4-alpha-runtime/g4-decision.json)
 did not accept a useful speedup capability under its frozen evidence. Parallel

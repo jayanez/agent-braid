@@ -1,5 +1,14 @@
 # Source and protocol research record
 
+## Development status — 2026-10-08
+
+Exact source rights and protocol are approved. The bounded harness is merged and
+validated; static admission and technical review cover two frozen operations and
+20 treatment slots. See [implementation readiness](implementation-readiness.md)
+for the evidence and scope. Earlier proposal descriptions retain their design-time
+context. Owner stable-candidate/manifest review, capture and whole-M4 acceptance
+remain pending.
+
 ## Candidate source inspection
 
 The only candidate considered here is the exact SPEC-013 public M2 corpus:
@@ -34,10 +43,10 @@ also says changed corpus/command/image/limits/observation needs separate review
 and decision. These records do not identify a new M4 permission grant from
 every source author/rightsholder, define M4 retention/reuse rights, or authorize
 M4 collection/execution. The candidate commit author is the founder and PR submitter metadata is `jayanez`,
-but legal rights-holder capacity and an exact M4 permission have not been
-confirmed. Current rights status: **unknown / pending**. The
-source-rights manifest records this faithfully and identifies the exact
-evidence required; it is not an approval record.
+but that metadata alone did not confirm rightsholder capacity or exact M4
+permission at design time. The subsequent owner decisions approve the rights
+and protocol as described in implementation readiness. The frozen source-rights
+manifest retains its original pending status; it is not the approval record.
 
 ## Protocol decisions proposed for review
 
@@ -64,8 +73,8 @@ synthetic substitute. Source rights and enough eligible operations are gates.
 7. Two explicit reviews: protocol/source-rights before implementation/capture;
    exact stable candidate/harness/manifest before a separate capture approval.
 
-Unresolved: whether source rights can be obtained; whether eligible operations
-exist without patch/scope changes; whether the proposed denominator/order/cost
-protocol is accepted by technical reviewers; and whether stable harness
-implementation can preserve the existing contract. These questions keep the
-successor pending.
+Current runtime admission passed without source/scope changes: two operations,
+20 slots and equal predicted AB/BA trees. Remaining: owner stable-candidate/manifest
+review; exact capture authorization; and observed registered results.
+The denominator/order/cost protocol and source rights are owner-approved; this
+does not establish harness correctness or actual-task utility.

@@ -91,5 +91,8 @@ is implemented for preparation after owner review; it preserves the original
 45-minute plan version and does not authorize capture. Exact stable-harness and
 manifest review, registered measurement and any new utility decision remain
 separate pending gates. Engineering preparation diagnostics are not registered
-measurement evidence. The proposed [SPEC-038 real-workload study](../../specs/038-m4-real-workload-closure/spec.md)
-also requires exact source-use rights and protocol/capture approval.
+measurement evidence. As of 2026-10-08, the [SPEC-038 real-workload study](../../specs/038-m4-real-workload-closure/implementation-readiness.md)
+has owner-approved exact source-use rights and protocol. The bounded harness is
+merged and validated; static admission and technical review cover the exact two
+operations and 20 slots. Owner stable-candidate/manifest review and separate capture
+authorization remain pending.
