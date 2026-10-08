@@ -45,3 +45,11 @@ the exact reviewed SPEC-012 history, and transferred the final working-tree patc
 only. No old `.git` was copied, object pruned, history rewritten, authority amended
 or gate disabled. The older checkout remains intact. Final code is staged and
 committed only once stable so superseded index-only blobs do not accumulate.
+
+## Frozen preparation candidate
+
+`candidate-receipt.json` identifies `47854298822dd6973e040947683bf72120395115` as the exact
+authority/evidence candidate. The later commit packages this freeze only;
+human review remains pending. The packet commitment is
+`02457065ecd1a5f0a78a59a161e7dff8d4d83b6f22d2b5e45c5594326525477b`. No scientific
+acceptance, source capture permission or model adoption follows from this record.

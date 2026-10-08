@@ -1,0 +1,24 @@
+{
+  "format": "m35-preparation-candidate-v1",
+  "candidateCommit": "47854298822dd6973e040947683bf72120395115",
+  "baseCommit": "d5f379be20eb99a584cf71deb853cd68f3722834",
+  "authoritySnapshot": "47854298822dd6973e040947683bf72120395115",
+  "evidenceSnapshot": "47854298822dd6973e040947683bf72120395115",
+  "packetSha256": "02457065ecd1a5f0a78a59a161e7dff8d4d83b6f22d2b5e45c5594326525477b",
+  "validationReceiptSha256": "8dbe1b5048541b5a0d34992193bd1d3707ccd6ece9e1bdc7bb00a79cb195a808",
+  "humanReview": "pending",
+  "sourceCaptureAuthorization": false,
+  "trainingAuthorization": false,
+  "executionAuthorization": false,
+  "realPairsAdmitted": 0,
+  "actualExperimentExecuted": false,
+  "openTasks": [
+    "T001",
+    "T002",
+    "T003",
+    "T004",
+    "T005",
+    "T007"
+  ],
+  "limits": "Frozen preparation candidate only. Founder/scientific review, source-specific rights, complete windows, human labels, actual model/evaluation and clean-room experiment reproduction remain pending. Technical review and checks do not satisfy those gates."
+}
