@@ -34,6 +34,11 @@ MAX_ENV_BYTES = 64 * 1024
 READ_CHUNK_BYTES = 64 * 1024
 MAX_RETAINED_SNAPSHOTS = 512
 MAX_RECEIPT_BYTES = 256 * 1024
+MAX_OBSERVATION_AGE_SECONDS = 60.0
+MAX_OBSERVER_CALLBACK_SECONDS = 1.0
+MAX_POLL_INTERVAL_SECONDS = 0.25
+MAX_TERM_GRACE_SECONDS = 1.0
+MAX_KILL_GRACE_SECONDS = 1.0
 APPROVED_CAPS = {
     "eur": 25.0,
     "tokens": 4_000_000,
@@ -110,6 +115,7 @@ class ProcessRequest:
     term_grace_seconds: float
     kill_grace_seconds: float
     file_pins: tuple["FilePin", ...] = ()
+    observer_timeout_seconds: float = MAX_OBSERVER_CALLBACK_SECONDS
 
 
 @dataclass(frozen=True)
@@ -207,7 +213,7 @@ def run_supervised(
 
     try:
         initial = _observe_bounded(observer, None, 0.0,
-                                  request.observation_max_age_seconds)
+                                  request.observer_timeout_seconds)
         _validate_snapshot(initial, caps, request, None, clock, None)
     except Exception as exc:
         return _not_launched("measurement-unknown", _safe_reason(exc), clock)
@@ -275,6 +281,7 @@ def run_supervised(
     identity: ProcessIdentity | None = None
     stop_reason: str | None = None
     stop_status: str | None = None
+    observer_failure: str | None = None
     term_sent_at: float | None = None
     kill_sent_at: float | None = None
     group_cleanup = "pending"
@@ -334,7 +341,7 @@ def run_supervised(
                 elif now_mono >= next_observation_at:
                     try:
                         observer_deadline = min(
-                            request.observation_max_age_seconds,
+                            request.observer_timeout_seconds,
                             max(0.001, request.timeout_seconds - process_elapsed),
                             max(0.001, wall_remaining - elapsed),
                         )
@@ -351,6 +358,7 @@ def run_supervised(
                                 stop_reason, stop_status = stop, "budget-exceeded"
                     except Exception as exc:
                         stop_reason, stop_status = _safe_reason(exc), "measurement-unknown"
+                        observer_failure = _safe_reason(exc)
                     next_observation_at = now_mono + request.poll_interval_seconds
             if stop_reason is not None and term_sent_at is None:
                 _signal_group(process.pid, signal.SIGTERM)
@@ -434,7 +442,7 @@ def run_supervised(
                 except subprocess.TimeoutExpired:
                     group_cleanup = "unknown: root process could not be reaped"
         if term_sent_at is not None:
-            group_cleanup = _cleanup_stopped_group(process.pid, request, group_cleanup)
+            group_cleanup = _group_state(process.pid, group_cleanup)
         else:
             group_cleanup = _clean_or_stop_descendants(process.pid, request)
 
@@ -443,7 +451,7 @@ def run_supervised(
             try:
                 final_snapshot = _observe_bounded(
                     observer, identity, elapsed,
-                    request.observation_max_age_seconds)
+                    request.observer_timeout_seconds)
                 _validate_snapshot(final_snapshot, caps, request, last_snapshot, clock, identity)
                 last_snapshot = final_snapshot
                 if len(snapshots) < MAX_RETAINED_SNAPSHOTS:
@@ -452,8 +460,9 @@ def run_supervised(
                 if final_stop is not None and stop_reason is None:
                     stop_reason, stop_status = final_stop, "budget-exceeded"
             except Exception as exc:
+                observer_failure = _safe_reason(exc)
                 if stop_reason is None:
-                    stop_reason, stop_status = _safe_reason(exc), "measurement-unknown"
+                    stop_reason, stop_status = observer_failure, "measurement-unknown"
         if stop_reason is not None:
             status = stop_status or "measurement-unknown"
             reason = stop_reason
@@ -510,6 +519,7 @@ def run_supervised(
         "stderrBytesStored": err_written, "stdoutBytesObserved": out_seen,
         "stderrBytesObserved": err_seen, "stdoutSha256": out_hash.hexdigest(),
         "stderrSha256": err_hash.hexdigest(), "lastSnapshot": _snapshot_dict(last_snapshot),
+        "observerFailure": observer_failure,
         "stdoutArtifact": stdout_path.name, "stderrArtifact": stderr_path.name,
         "reason": reason, "groupCleanup": group_cleanup,
         "limits": list(_LIMITS),
@@ -583,13 +593,23 @@ def _validate_request(request, caps, observer, clock):
     if type(request.max_output_bytes) is not int or not 1 <= request.max_output_bytes <= MAX_OUTPUT_BYTES:
         raise SupervisorError("max_output_bytes is outside the independent output bound")
     for field_name in ("timeout_seconds", "observation_max_age_seconds", "poll_interval_seconds",
-                       "term_grace_seconds", "kill_grace_seconds"):
+                       "term_grace_seconds", "kill_grace_seconds", "observer_timeout_seconds"):
         value = getattr(request, field_name)
         if isinstance(value, bool) or not isinstance(value, (int, float)) \
                 or not math.isfinite(value) or value <= 0:
             raise SupervisorError(f"{field_name} must be finite and positive")
     if request.timeout_seconds > APPROVED_CAPS["wall_seconds"]:
         raise SupervisorError("process timeout exceeds the approved wall-time maximum")
+    if request.observation_max_age_seconds > MAX_OBSERVATION_AGE_SECONDS:
+        raise SupervisorError("observation freshness age exceeds the fixed maximum")
+    if request.observer_timeout_seconds > MAX_OBSERVER_CALLBACK_SECONDS:
+        raise SupervisorError("observer callback timeout exceeds the fixed maximum")
+    if request.poll_interval_seconds > MAX_POLL_INTERVAL_SECONDS:
+        raise SupervisorError("poll interval exceeds the fixed maximum")
+    if request.term_grace_seconds > MAX_TERM_GRACE_SECONDS:
+        raise SupervisorError("SIGTERM grace exceeds the fixed maximum")
+    if request.kill_grace_seconds > MAX_KILL_GRACE_SECONDS:
+        raise SupervisorError("SIGKILL grace exceeds the fixed maximum")
     if request.poll_interval_seconds > request.observation_max_age_seconds:
         raise SupervisorError("poll interval cannot exceed observation freshness bound")
     if not request.source_roots or not isinstance(request.source_roots, tuple):
@@ -766,17 +786,6 @@ def _group_state(pgid, previous):
     except PermissionError:
         return "unknown: process group could not be inspected"
     return "unknown: process group still exists after stop"
-
-
-def _cleanup_stopped_group(pgid, request, previous):
-    state = _group_state(pgid, previous)
-    if state == "clean":
-        return state
-    _signal_group(pgid, signal.SIGTERM)
-    time.sleep(request.term_grace_seconds)
-    _signal_group(pgid, signal.SIGKILL)
-    time.sleep(request.kill_grace_seconds)
-    return _group_state(pgid, state)
 
 
 def _clean_or_stop_descendants(pgid, request):
