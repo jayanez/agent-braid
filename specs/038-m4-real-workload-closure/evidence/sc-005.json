@@ -1,0 +1,13 @@
+{
+  "recordVersion": "spec038-obtained-evidence-v1",
+  "scenario": "SC-005",
+  "status": "satisfied-with-limits",
+  "candidateCommit": "e66f9a1b94fc5ebfbf784d9c48a76f53c1a656ee",
+  "captureSummary": "specs/038-m4-real-workload-closure/evidence/registered-capture-summary-e66f9a1.json",
+  "captureSummarySha256": "7e2e948aa9252270eb495364d86d66e75c03e1acb578d60079244c7fbcc7c1cc",
+  "obtainedEvidence": "Eight ordered disjoint phases are accounted for in each of 20 treatments, with nonnegative per-treatment residuals and no phase reconciliation failures. Fresh-process verification, caller, observer, cleanup, capture output, and omitted external costs are reported separately with null reasons. Nested or overlapping views are not summed.",
+  "scopeLimits": [
+    "Some counters are unavailable with explicit reasons, and identity/source-integrity Git commands are not separately instrumented.",
+    "Whole-M4 acceptance remains pending."
+  ]
+}

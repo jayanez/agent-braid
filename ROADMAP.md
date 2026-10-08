@@ -254,6 +254,19 @@ merged in [PR #220](https://github.com/jayanez/agent-braid/pull/220) and
 This delivery leaves the G4 NO-GO, SPEC-021's open state and M4's open milestone
 in effect.
 
+SPEC-038's exact two-operation source frame completed a registered capture on
+candidate `e66f9a1`: 20/20 treatment slots were valid (eight warm-up and 12
+measured treatments across ten pairs, of which six were measured), with mandatory fresh-process verification reporting
+`verified` before conditional cleanup. The six measured serial/parallel
+total-wall ratios were below one (median `0.6538998702917553`; AB median
+`0.6530442113`, BA median `0.6547555293`). This is a finite negative result for
+parallel utility on the admitted frame, not a general utility claim. The checks
+compare tracked Git trees; they do not establish semantic equivalence or
+native-code validity. No real-source interruption/recovery controls were run.
+The [derived capture summary](specs/038-m4-real-workload-closure/evidence/registered-capture-summary-e66f9a1.json)
+documents costs and limits. This result does not alter SPEC-021's G4 NO-GO or
+close M4; whole-milestone acceptance remains separate and pending.
+
 Candidate deliverables:
 
 - MCP and host-runtime adapters;
@@ -346,7 +359,7 @@ The [review and implementation portfolio](docs/development/FOUNDATION_IMPLEMENTA
 |---|---|---|
 | M3.5 | [SPEC-019 preparation](specs/019-native-predictor/implementation-readiness.md) | Metadata/synthetic tooling first; real-source rights, yield, protocol and labels before fitting |
 | M4 | [SPEC-022 utility follow-up](specs/022-m4-utility-followup/spec.md) | Registered synthetic capture completed on frozen candidate `b85f7e5`; 88 valid pairs and four fresh control suites; three admitted independent blocks were negative, the dependency-chain block was an order control, and five blocks were excluded by pinned caps. No general utility claim; preserve SPEC-021 NO-GO and require a separate utility decision |
-| M4 real workload | [SPEC-038](specs/038-m4-real-workload-closure/spec.md) | Exact source rights/protocol and prior-candidate review remain historical; two pre-dispatch failures produced zero actual treatments. Repair requires a new stable candidate/manifest and fresh exact owner reviews and authorization; no approval is inherited. Whole-M4 founder decision remains pending |
+| M4 real workload | [SPEC-038](specs/038-m4-real-workload-closure/spec.md) | Exact source rights/protocol and stable/capture reviews bound candidate `e66f9a1`; registered capture completed with 20 valid treatments, six finite negative serial/parallel ratios, and mandatory fresh verification. Tracked-tree checks do not establish semantic/native-code validity; real-source recovery controls were not run. Whole-M4 founder decision remains pending |
 | M4 refinement contracts | [SPEC-027](specs/027-runtime-refinement-contracts/spec.md) | Read-only assessments implemented; founder recorded NO-GO/defer for all three capabilities within bounded M4 alpha. No capability adopted or granted; any future adoption requires a separate reviewed contract and authority |
 | ADP.1 — Recorded-trace adapters | [SPEC-023](specs/023-recorded-trace-adapters/spec.md) | Conservative offline trace mappings and reviewed spike/adoption decisions; no execution authority |
 | LAB.1 — Effectful workload lab | [SPEC-024](specs/024-effectful-workload-lab/spec.md) | Reproducible finite simulated effects, failures and nondeterminism; no real external adapters |
