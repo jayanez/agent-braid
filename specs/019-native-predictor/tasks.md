@@ -74,6 +74,9 @@ existing task IDs and real-data/review gates. Within T001/T007 preparation, the
 metadata-only [source review packet](source-review-packet.md) proposes five
 natural workflows, and the [model interface plan](model-interface-plan.md)
 defines the candidate trainer/adapter/evaluator contracts before their review.
+The [protocol decision review](protocol-decision-review.md) presents concrete
+P019-02…04 options and a recommendation; none is adopted pending founder
+selection and required human scientific review.
 The [ADR-extension proposal](adr-extension-proposal.md) is not an adopted ADR.
 
 The read-only `scripts/check_m35_review_packet.py` and its adversarial tests
