@@ -13,6 +13,11 @@ The [implementation map](../../specs/039-ai-tooling-program/implementation-statu
 retains all work packages and pending paired evidence. The `agent-braid tooling`
 command group provides stdio serving, previewed receipt-owned lifecycle operations,
 read-only diagnostics and presentation/export of already obtained values.
+Capture preparation also provides [local measurement primitives](MEASUREMENTS.md),
+[one-shot host event parsing](HOST_EVENTS.md), and
+[single-dispatch session coordination](SESSIONS.md). These components preserve
+unavailable costs and require external authenticators and actual host adapters;
+they do not start the registered evaluation by themselves.
 Actual host trust/authentication, complete comparisons and founder acceptance
 are still separate gates. Plain text/ASCII graphs work without a browser;
 JSON retains complete core values after any artifact reconstruction.
