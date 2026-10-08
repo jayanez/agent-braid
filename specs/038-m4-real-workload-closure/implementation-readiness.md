@@ -31,11 +31,13 @@ limits. Raw sources, manifests, receipts and observations stay private/local.
 The existing historical authority record is preserved; the new partial evidence
 uses a current evidence binding and does not approve the feature as a whole.
 
-Owner stable-candidate/manifest review, registered capture, actual-workload
-results and a new whole-M4 founder decision remain pending. No actual-source
-grants or persistent runs have been issued. No source-project code or test
-commands may be run. Engineering tests on owned synthetic repositories remain
-separate from registered capture and actual-workload evidence.
+The historical `b85f7e5` candidate received stable-candidate review and exact
+capture authorization, then failed twice before dispatch. Zero actual-source
+treatments ran and no source grants or persistent runs were issued. A repaired
+harness needs a new candidate and source manifest plus fresh exact owner review
+and capture authorization. Whole-M4 acceptance remains pending. No source-project
+code or test commands may be run; engineering tests on owned synthetic
+repositories remain separate from actual-workload evidence.
 
 ## Retained outcomes and recovery
 
