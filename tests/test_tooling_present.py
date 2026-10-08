@@ -59,6 +59,17 @@ class SummaryTests(unittest.TestCase):
         verified = present.render_summary(envelope({"verificationStatus": "verified"}))
         self.assertIn("does not establish code correctness", verified)
 
+    def test_nested_runtime_verifier_states_survive_summaries_and_exports(self):
+        for state in ("completed", "interrupted", "aborted", "verified-prefix",
+                      "verified-completed", "verified-aborted", "unverified", "rejected"):
+            with self.subTest(state=state):
+                value = envelope({"runtime": {"status": state}, "dispatch": "not-dispatched"},
+                                 operation="verify")
+                self.assertIn("domain status: " + state, present.render_summary(value))
+                outputs = present.build_exports(value, selected_evidence_refs=[])
+                self.assertIn(state, outputs["summary.md"].decode())
+                self.assertIn(state, outputs["index.html"].decode())
+
     def test_real_analyze_work_envelope_renders_nested_report_and_full_provenance(self):
         sample_path = Path(__file__).resolve().parents[1] / "examples/analysis/file-edits.json"
         request = json.loads(sample_path.read_text(encoding="utf-8"))
