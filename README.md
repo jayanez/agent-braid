@@ -217,8 +217,12 @@ SPEC-022 completed its registered synthetic capture on candidate `b85f7e5`:
 excluded by pinned caps. Required in-treatment verification completed; fresh
 inspection verified capture structure and bounded replay, and four fresh control
 suites passed (76 tests). All three admitted independent diagnostic blocks were
-negative; the dependency-chain block was an order control. These fixture results
-do not establish general speedup or utility. See the [derived capture summary](specs/022-m4-utility-followup/evidence/registered-capture-summary-b85f7e5.json)
+negative; the dependency-chain block was an order control. These fixture results do not establish general speedup or utility. On 2026-10-08,
+the owner approved a bounded T006 interpretation: no useful-speedup claim or
+parallel performance default for the measured families. This is not a general
+claim about parallelism; SPEC-021 G4 NO-GO and whole-M4-open status remain. See the
+[decision packet](specs/022-m4-utility-followup/decision-packet.md) and [derived
+capture summary](specs/022-m4-utility-followup/evidence/registered-capture-summary-b85f7e5.json)
 for ratios, full costs and inspection limits.
 
 SPEC-027 has implemented read-only
