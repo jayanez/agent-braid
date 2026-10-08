@@ -152,6 +152,39 @@ class HostAdapterTests(unittest.TestCase):
         self.assertTrue(plan.runtime_enabled)
         self.assertIn("--enable-runtime", plan.codex_config_overrides[0])
 
+    def test_refuses_nested_result_and_grant_roots(self):
+        tmp_path = self.with_temp()
+        admission, config = _inputs(tmp_path)
+        nested_result = config.source_roots[0] / "results"
+        nested_result.mkdir(mode=0o700)
+        nested_overrides = tuple(
+            override.replace(json.dumps(str(config.mcp_result_root)), json.dumps(str(nested_result)))
+            for override in config.codex_config_overrides
+        )
+        nested = config.__class__(**{
+            **config.__dict__, "mcp_result_root": nested_result,
+            "codex_config_overrides": nested_overrides,
+        })
+        with self.assertRaisesRegex(HostPreparationError, "overlaps"):
+            prepare_host_launch(admission, nested)
+
+        nested_grant = config.source_roots[0] / "grants"
+        nested_grant.mkdir(mode=0o700)
+        args = tomllib.loads(config.codex_config_overrides[0])["mcp_servers"]["test"]["args"]
+        args.extend(("--enable-runtime", "--grant-store", str(nested_grant)))
+        args_toml = ", ".join(json.dumps(arg) for arg in args)
+        server = tomllib.loads(config.codex_config_overrides[0])["mcp_servers"]["test"]
+        grant_override = config.__class__(**{
+            **config.__dict__, "runtime_enabled": True, "grant_root": nested_grant,
+            "codex_config_overrides": (
+                f'mcp_servers.test = {{ command = {json.dumps(server["command"])}, '
+                f'args = [{args_toml}], enabled_tools = ["lookup"] }}',
+                "skills.config = []",
+            ),
+        })
+        with self.assertRaisesRegex(HostPreparationError, "overlaps"):
+            prepare_host_launch(admission, grant_override)
+
     def test_binary_pin_is_rechecked_before_supervisor(self):
         tmp_path = self.with_temp()
         admission, config = _inputs(tmp_path)
