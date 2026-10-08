@@ -1,6 +1,6 @@
 # M4.5 — AI tooling integrations for Codex and Claude Code
 
-**Status:** proposed implementation program, 2026-10-08. Source preparation is
+**Status:** [Open](https://github.com/jayanez/agent-braid/milestone/19) implementation program, 2026-10-08. Source preparation is
 authorized. Product implementation, observations and acceptance follow the tasks
 and explicit gates below. No capability or milestone closure is claimed here.
 
@@ -72,10 +72,7 @@ digest under GITHUB_TRACKING.md and require a subsequent `operations: []` audit.
 Keep private Project membership and Review pending status as a separate check.
 No unrelated tracking drift is included in M4.5.
 
-The new milestone initially has no registered repository number. Bootstrap only
-the new title after reviewed source integration, record its returned immutable
-number through the normal source path, then use the scoped audit's exact missing-ID
-allowlist. Do not apply a full-repository plan containing unrelated operations.
+M4.5 is registered as milestone **#19**, with six parent issues and 60 task subissues. The [administrative registration record](administrative-registration.md) records the scoped audit and Project check. Future reconciliations use the registered number and their exact reviewed digest; bootstrap allowlists apply only to genuinely missing new IDs.
 See [issue drafts](issue-drafts.md) and individual task lists.
 
 Product code follows bounded PR slices: protocol and analysis, runtime bridge,
