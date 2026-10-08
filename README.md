@@ -58,10 +58,12 @@ offline evidence exports. The intended journey takes a developer from analyzing
 proposed work to planning, executing an already granted bounded batch, recovering
 an interruption and inspecting the verified result.
 
-The first targets are **Codex local CLI and Claude Code local CLI**. Product
-implementation, actual host observations and acceptance remain pending. Cursor,
-VS Code/GitHub Copilot, OpenCode and pi are future routes. Start with the
-[integration guide](docs/tooling/README.md) for the spec, contract and task map.
+The first targets are **Codex local CLI and Claude Code local CLI**. M4.5 product
+implementation and acceptance remain pending. SPEC-021 has one bounded Codex CLI
+host observation; current Claude observation and cross-client support remain
+pending. Cursor, VS Code/GitHub Copilot, OpenCode and pi are future routes. Start
+with the [integration guide](docs/tooling/README.md) for the spec, contract and
+task map.
 
 <a id="quick-start"></a>
 
@@ -237,6 +239,26 @@ interruption/recovery controls were run. See the [derived capture
 summary](specs/038-m4-real-workload-closure/evidence/registered-capture-summary-e66f9a1.json)
 for bounded evidence and limits. SPEC-021 G4 remains NO-GO, and M4 remains open
 pending its separate whole-milestone decision.
+
+On candidate `e66f9a1`, Codex CLI 0.162.0-alpha.2 completed a bounded Darwin
+arm64 direct-tool-bridge observation with zero model calls. It exercised all six
+MCP tools, refusal, disconnect recovery, independent-prefix verification,
+completion, duplicate suppression and abort. The run matched 80 runtime input
+hashes; a separate 201-file pre-import guard has a different scope. Linux
+reproduced 68 core, policy, scheduler and protocol tests with no skips on the same
+candidate. Source, candidate, client binary and persistent host configuration
+remained unchanged. Neither observation establishes current Claude behavior or
+changes the G4 NO-GO. See the [Codex host record](specs/021-m4-alpha-runtime/evidence/current-codex-host-e66f9a1.md),
+[Linux reproduction record](specs/021-m4-alpha-runtime/evidence/current-linux-core-protocol-e66f9a1.md)
+and [six-row exit matrix](specs/021-m4-alpha-runtime/closure-matrix.md).
+
+A separate Darwin core-suite reproduction on `e66f9a1` first passed 67 of 68
+tests and retained one hooks-directory error. A focused 1-test diagnostic passed;
+a corrected full run then passed all 68 tests without skips. Both later runs used a
+minimal private Git template and a separate 201-file guard; the original run binds
+only its 80-input fingerprint. All three runs used fresh Python processes, but
+reused the existing isolated Python 3.13.11 environment. This is not a clean-room
+reproduction or a host-adapter observation. See the [Darwin test record](specs/021-m4-alpha-runtime/evidence/current-darwin-core-e66f9a1.md).
 
 M3.5 synthetic checks demonstrate tooling only. They do not establish real-source
 rights, prospective registration, capture, training authorization, predictor
