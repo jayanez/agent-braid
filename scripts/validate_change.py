@@ -155,8 +155,13 @@ RULES = (
         boundary="Applicable milestone, release or publication clean-room protocol"),
     Rule("feature-assurance", ("specs/**",), ("spec-kit-structure",), True,
         boundary="Feature-specific evidence capture, freeze and human review"),
+    Rule("ai-tooling", (
+        "agent_braid/cli.py", "agent_braid/tooling_*.py", "tests/test_tooling_*.py",
+        "integrations/agent-braid/**", "examples/tooling/**", "docs/tooling/**", "docs/ai-tooling-presentation.md",
+    ), ("full-tests",), True,
+        boundary="M4.5 exact-candidate host discovery, clean-platform reproduction, registered 108-slot evaluation and founder acceptance"),
     Rule("supply-chain", (
-        "pyproject.toml", "requirements-dev.txt", ".gitignore", ".gitattributes",
+        "pyproject.toml", "requirements-dev.txt", ".gitignore", ".gitattributes", "MANIFEST.in", "build_support.py",
     ), ("cli-smoke",), True),
     Rule("contributor-documentation", (
         "README.md", "CONTRIBUTING.md", "CODE_OF_CONDUCT.md", "SUPPORT.md",

@@ -113,6 +113,14 @@ jobs:
       - name: Run complete bounded and negative test suite
         run: python3 -m unittest discover -s tests -v
 
+      - name: Validate optional MCP SDK in an isolated tooling environment
+        run: |
+          python3 -m venv .venv-tooling
+          .venv-tooling/bin/python -m pip install '.[tooling]'
+          .venv-tooling/bin/python -I -c 'from agent_braid.tooling_install import asset_provenance; value = asset_provenance(); assert len(value["skills"]) == 5; assert len(value["licenseFiles"]) == 2'
+          .venv-tooling/bin/python -I -c 'from agent_braid.tooling_fixtures import load_inventory; value = load_inventory(); assert len(value.fixtures) == 18; assert len(value.prompts) == 6'
+          .venv-tooling/bin/python -m unittest tests.test_tooling_mcp -v
+
   governance_science:
     name: Governance, contracts and scientific controls
     runs-on: ubuntu-24.04

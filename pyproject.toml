@@ -17,9 +17,14 @@ classifiers = [
 ]
 dependencies = []
 
+[project.optional-dependencies]
+tooling = ["mcp==2.3.0"]
+
 [project.scripts]
 agent-braid = "agent_braid.cli:main"
 
 [tool.setuptools]
 packages = ["agent_braid", "research", "research.lab"]
 
+[tool.setuptools.cmdclass]
+build_py = "build_support.ToolingBuildPy"

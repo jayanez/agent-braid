@@ -6,7 +6,7 @@ Record positive, refusal, unknown, failed, cancelled and unexecuted outcomes. Ev
 
 ## procedure_registration_gate (REQ-001/SC-001)
 
-Given unapproved paid capture or a drifted/missing registration; perform capture admission runs. Assert unapproved costs/rights/versions refuse; owned deterministic controls remain a separately identified engineering path. Include the success and refusal/unavailable counterpart; retain source/result-root integrity and exact typed output.
+The registration is ready for approval only after the stable 040–043 candidate, immutable inputs/fixtures, exact host/model builds, full attempt roster, source rights, reviewer roles, frozen rubric and numerical cost/resource caps are identified. Before any actual attempt, validate that the approved registration binds those values and that drift, missing rights or unapproved provider cost refuses admission; owned deterministic controls remain a separately identified engineering path. Include success and refusal/unavailable counterparts; retain source/result-root integrity and exact typed output. Drafting or validating a registration does not authorize paid/provider capture.
 
 Prospective targets: `specs/044-ai-tooling-evaluation/registration.json (future); research/tooling_evaluation.py (new); tests/test_tooling_evaluation.py (new); specs/044-ai-tooling-evaluation/evidence/ (future); docs/releases/M4_5_CLOSURE.md (future)`. Planned receipt: `evidence/sc-001.json`. Use a focused test/harness added with implementation and record its actual command; never execute an invented future command.
 
@@ -30,13 +30,13 @@ Prospective targets: `specs/044-ai-tooling-evaluation/registration.json (future)
 
 ## procedure_three_arm_comparison (REQ-005/SC-005)
 
-Given the three-arm fixture roster and isolated sessions; perform all slots are processed. Assert completion, interventions and fidelity are compared with full denominators, failures and carryover disclosed. Include the success and refusal/unavailable counterpart; retain source/result-root integrity and exact typed output.
+Given an approved T001 registration and the exact stable 040–043 candidate, immutable three-arm fixture roster and isolated sessions; perform all 108 intended slots are processed or explicitly retained as not-started/interrupted. Assert completion, interventions and fidelity are compared with full per-host/class/arm denominators, failures and carryover disclosed, and no prompt, fixture, threshold or rubric is revised from observed outcomes. Include success and refusal/unavailable counterparts; retain source/result-root integrity and exact typed output.
 
 Prospective targets: `specs/044-ai-tooling-evaluation/registration.json (future); research/tooling_evaluation.py (new); tests/test_tooling_evaluation.py (new); specs/044-ai-tooling-evaluation/evidence/ (future); docs/releases/M4_5_CLOSURE.md (future)`. Planned receipt: `evidence/sc-005.json`. Use a focused test/harness added with implementation and record its actual command; never execute an invented future command.
 
 ## procedure_complete_cost (REQ-006/SC-006)
 
-Given missing tokens, overlapping phases, exceeded budget and provider failure; perform cost accounting and admission run. Assert unknown differs from zero, wall totals are not double-counted and exceeded/blocked attempts stop without silent retry. Include the success and refusal/unavailable counterpart; retain source/result-root integrity and exact typed output.
+Before any actual T002/T004/T005 attempt, validate the cost fields, source timestamps, stop thresholds and accounting instrumentation against deterministic controls. After all attempted T002–T005 slots, reconcile complete setup and per-attempt costs with the registered denominator, retaining unavailable fields and affected attempt IDs. Given missing tokens, overlapping phases, exceeded budget and provider failure; perform accounting and admission controls. Assert unknown differs from zero, wall totals are not double-counted and exceeded/blocked attempts stop without silent retry. Include success and refusal/unavailable counterparts; retain source/result-root integrity and exact typed output.
 
 Prospective targets: `specs/044-ai-tooling-evaluation/registration.json (future); research/tooling_evaluation.py (new); tests/test_tooling_evaluation.py (new); specs/044-ai-tooling-evaluation/evidence/ (future); docs/releases/M4_5_CLOSURE.md (future)`. Planned receipt: `evidence/sc-006.json`. Use a focused test/harness added with implementation and record its actual command; never execute an invented future command.
 
@@ -48,6 +48,6 @@ Prospective targets: `specs/044-ai-tooling-evaluation/registration.json (future)
 
 ## procedure_acceptance_decision (REQ-008/SC-008)
 
-Given a bounded completed or inconclusive report; perform the decision packet is assembled. Assert implementation/protocol/human gates are separated; M4.5 acceptance cannot reverse M4 G4 NO-GO or close M4. Include the success and refusal/unavailable counterpart; retain source/result-root integrity and exact typed output.
+Given a T009-reconciled, validated bounded candidate, completed applicable observation gates, a completed or inconclusive report, and independent technical findings; perform the decision packet is prepared with candidate/evidence hashes, gate status, limits and a founder decision field explicitly marked pending. Assert packet preparation does not imply owner acceptance. Only after the founder records accepted, rejected or pending scope/closure decision may T010 record the actual decision and final M4.5 closure status; acceptance cannot reverse M4 G4 NO-GO or close M4. Include success and refusal/unavailable counterparts; retain source/result-root integrity and exact typed output.
 
 Prospective targets: `specs/044-ai-tooling-evaluation/registration.json (future); research/tooling_evaluation.py (new); tests/test_tooling_evaluation.py (new); specs/044-ai-tooling-evaluation/evidence/ (future); docs/releases/M4_5_CLOSURE.md (future)`. Planned receipt: `evidence/sc-008.json`. Use a focused test/harness added with implementation and record its actual command; never execute an invented future command.

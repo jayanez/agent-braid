@@ -2,10 +2,20 @@
 
 **Status — 2026-10-08:** [M4.5](https://github.com/jayanez/agent-braid/milestone/19) is Open, adjacent to M4, with six spec issues and 60 linked task subissues. Six draft
 Spec Kit packages define 48 requirements, 48 acceptance scenarios and 60 unchecked
-implementation tasks. Product implementation, actual host observations and
-acceptance remain pending. Administrative tracking is registered; the [registration record](../../specs/039-ai-tooling-program/administrative-registration.md) links each parent and its work queue. [ADR 0021](../adr/0021-codex-claude-tooling-integration.md) is proposed.
+implementation tasks. An unmerged experimental implementation candidate is now present; paired evidence,
+actual host observations and acceptance remain pending. Administrative tracking is registered; the [registration record](../../specs/039-ai-tooling-program/administrative-registration.md) links each parent and its work queue. [ADR 0021](../adr/0021-codex-claude-tooling-integration.md) is proposed.
 
 ## Start here
+
+Start the experimental candidate with [installation](INSTALL.md),
+[presentation](../ai-tooling-presentation.md) and [evaluation preparation](EVALUATION.md).
+The [implementation map](../../specs/039-ai-tooling-program/implementation-status.md)
+retains all work packages and pending paired evidence. The `agent-braid tooling`
+command group provides stdio serving, previewed receipt-owned lifecycle operations,
+read-only diagnostics and presentation/export of already obtained values.
+Actual host trust/authentication, complete comparisons and founder acceptance
+are still separate gates. Plain text/ASCII graphs work without a browser;
+JSON retains complete core values after any artifact reconstruction.
 
 The existing bounded stdio MCP runtime is documented in the
 [alpha quickstart](../../specs/021-m4-alpha-runtime/quickstart.md). The
@@ -43,7 +53,7 @@ and historical G4 NO-GO.
 
 The existing generated `.agents/skills/` and `.claude/skills/` adapters implement
 the repository's [Spec Kit contribution workflow](../development/SPEC_KIT.md).
-M4.5's five product skills have a planned canonical home at
+M4.5's five candidate product skills have their canonical home at
 `integrations/agent-braid/skills/`, with minimal host packaging. Implementation
 follows the linked task lists and consumed-contract reviews.
 
