@@ -619,9 +619,10 @@ def _validate_agent_braid_server(command: Any, args: Any, config: HostLaunchConf
         raise HostPreparationError("MCP source root is outside the frozen source roots")
     if result_path is None or result_path != config.mcp_result_root.resolve(strict=True):
         raise HostPreparationError("MCP result root differs from the explicit isolated result root")
-    if result_path in allowed_sources or result_path in {
-            config.cwd.resolve(strict=True), config.output_root.resolve(strict=True),
-            config.grant_root.resolve(strict=False)}:
+    protected_roots = (*allowed_sources, config.cwd.resolve(strict=True),
+                       config.output_root.resolve(strict=True))
+    if any(_paths_overlap(result_path, root) for root in protected_roots) \
+            or _paths_overlap(result_path, config.grant_root.resolve(strict=False)):
         raise HostPreparationError("MCP result root overlaps a protected session root")
     if any(value not in expected_worktrees for value in worktrees) or len(set(worktrees)) != len(worktrees):
         raise HostPreparationError("MCP worktree roots differ from the frozen source roots")
@@ -631,6 +632,13 @@ def _validate_agent_braid_server(command: Any, args: Any, config: HostLaunchConf
         raise HostPreparationError("grant-store cannot be configured while MCP runtime is disabled")
     if runtime and (grant_path is None or not grant_path.is_dir() or grant_path.is_symlink()):
         raise HostPreparationError("runtime grant store must be an existing explicit directory")
+    if grant_path is not None and (any(_paths_overlap(grant_path, root) for root in protected_roots)
+                                   or _paths_overlap(grant_path, result_path)):
+        raise HostPreparationError("MCP grant store overlaps a protected session root")
+
+
+def _paths_overlap(left: Path, right: Path) -> bool:
+    return left == right or left.is_relative_to(right) or right.is_relative_to(left)
 
 
 def _check_private_result_root(path: Path) -> None:
