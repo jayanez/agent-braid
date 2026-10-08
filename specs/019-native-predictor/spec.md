@@ -39,6 +39,11 @@ determines bounded evidence. Prediction never authorizes execution.
     explicit base receipts, independent proposal ordering and full session/pair
     exclusion counts in synthetic rehearsal; content changes and incomplete
     remote registration or seal chains fail closed. No real-source claim follows.
+  - **SC-008:** A metadata-only preparation packet binds fixed source-candidate,
+    protocol, rubric and interface documents; malformed inputs, unsafe files and
+    commitment drift fail closed. A structurally complete packet still reports
+    zero real admitted pairs and no capture, training, human-review verification
+    or execution authorization. This preparation does not complete SC-003/004.
 - **REQ-003 — strict separation.** The deterministic SPEC-018 verifier remains
   the only source of bounded exchange status.
   - **SC-005:** A high model score without verifier agreement cannot yield
@@ -71,6 +76,11 @@ direction on 2026-09-27 and approved source feasibility work on
 2026-09-28, then limited ADR 0018 preparation on 2026-10-01. A consented source,
 data provenance, privacy review, actual label
 distribution and the final protocol still require review before training.
+The 2026-10-08 [completion plan](completion-plan.md) and
+[source review packet](source-review-packet.md) are the next gated preparation
+increment. Their proposed five workflow descriptions are not eligible observed
+families, and the [model interface plan](model-interface-plan.md) is not a fitted
+artifact. Original model/evaluation acceptance evidence remains pending.
 The [pretraining feasibility audit](feasibility-audit.md) identifies a
 degenerate verifier-status target in the current valid corpus and two possible
 routes to a useful comparison. Source discovery does not approve the model or

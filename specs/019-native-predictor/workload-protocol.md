@@ -162,3 +162,19 @@ before inspecting new labels.
 
 This protocol is proposed for human scientific review. Its numeric thresholds
 are preregistration candidates, not established power or production targets.
+
+## Trainer and interface candidate, 2026-10-08
+
+The [model interface plan](model-interface-plan.md) proposes a fixed native
+linear logistic ranker: training-only population normalization, zero initial
+weights/intercept, 2,000 full-batch gradient steps of size 0.1, and mean logistic
+loss plus `0.01 * sum(weight**2) / 2` with unpenalized intercept. Constant features
+normalize to zero; nonfinite arithmetic aborts. These choices must be reviewed
+and frozen with the complete protocol before any fit, including fitting controls
+on synthetic labels. No hyperparameter search or holdout-based stopping is added.
+Permutation controls use a local seed of 0. Existing calibration, threshold,
+baseline and cost rules above remain controlling.
+
+The [source candidates](source-candidates.json) are proposals, not an approved
+sampling frame or five eligible families. A read-only packet hash binds candidate
+documents; it does not approve this revision, actual source yield or training.
