@@ -42,7 +42,8 @@ def _accounting():
 class RealWorkloadTrialTests(unittest.TestCase):
     def setUp(self):
         self.candidate = "a" * 40
-        schedule = trials.build_schedule()
+        # Feed descriptors from the preparation module into the trial engine.
+        prepared_slots = workload._slots(Path("/private/test/prepared-manifest.json"))
         self.manifest = {
             "recordVersion": "synthetic-test-only",
             "candidateCommit": self.candidate,
@@ -51,10 +52,9 @@ class RealWorkloadTrialTests(unittest.TestCase):
             "harnessInputHashes": {"synthetic_fixture.py": "3" * 64},
             "slots": [],
         }
-        for slot in schedule["slots"]:
+        for slot in prepared_slots:
             self.manifest["slots"].append({
-                **deepcopy(slot), "runPath": "/private/test/" + slot["slotId"],
-                "grantPath": "/private/test/" + slot["slotId"] + ".grants",
+                **deepcopy(slot),
                 "expectedFinalTree": self.manifest["expectedFinalTrees"][slot["operationOrder"]],
             })
         self.manifest_raw = _raw(self.manifest)
@@ -102,13 +102,39 @@ class RealWorkloadTrialTests(unittest.TestCase):
 
     def test_protocol_schedule_is_frozen_and_contains_twenty_unique_slots(self):
         schedule = trials.build_schedule()
+        prepared_slots = workload._slots(Path("/private/test/prepared-manifest.json"))
+        shared_fields = ("slotId", "pairId", "pairKind", "operationOrder",
+                         "globalPairDispatch", "treatmentOrder", "mode")
+        self.assertEqual(
+            [{key: row[key] for key in shared_fields} for row in schedule["slots"]],
+            [{key: row[key] for key in shared_fields} for row in prepared_slots],
+        )
         self.assertEqual([row["pairId"] for row in schedule["pairs"]],
                          ["W-AB-1", "W-AB-2", "W-BA-1", "W-BA-2", "M-AB-2",
                           "M-BA-2", "M-BA-3", "M-AB-1", "M-AB-3", "M-BA-1"])
+        self.assertEqual([row["treatmentOrder"][0] for row in schedule["pairs"]],
+                         ["serial", "parallel", "serial", "parallel", "serial",
+                          "parallel", "serial", "parallel", "serial", "parallel"])
         self.assertEqual(len(schedule["slots"]), 20)
         self.assertEqual(len({row["slotId"] for row in schedule["slots"]}), 20)
         self.assertEqual(sum(row["pairKind"] == "warmup" for row in schedule["pairs"]), 4)
         self.assertEqual(sum(row["pairKind"] == "measured" for row in schedule["pairs"]), 6)
+
+    def test_trial_engine_accepts_preparation_descriptors_before_factory(self):
+        events = []
+
+        def factory(manifest):
+            events.append([slot["slotId"] for slot in manifest["slots"]])
+            return lambda _slot: None, {"synthetic": True}
+
+        result = self.call(
+            callback_factory=factory,
+            clock=iter([100, 100 + trials.DISPATCH_BUDGET_NS]).__next__,
+        )
+        self.assertEqual(len(events), 1)
+        self.assertEqual(events[0], [slot["slotId"] for slot in self.manifest["slots"]])
+        self.assertEqual(len(result["slots"]), 20)
+        self.assertTrue(all(row["status"] == "unexecuted" for row in result["slots"]))
 
     def test_exact_gate_runs_before_any_callback_or_fixture_preparation(self):
         events = []

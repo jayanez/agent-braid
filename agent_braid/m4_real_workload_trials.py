@@ -76,9 +76,10 @@ def build_schedule() -> dict:
     measured = [(f"M-{order}-{i}", "measured", order, None)
                 for order in ("AB", "BA") for i in range(1, 4)]
     measured.sort(key=lambda p: (hashlib.sha256((SEED + "|" + p[0]).encode()).hexdigest(), p[0]))
-    for pair_id, kind, order, _ in measured:
-        digest = hashlib.sha256((SEED + "|" + pair_id).encode()).digest()
-        first = "serial" if digest[0] % 2 == 0 else "parallel"
+    first_mode = "serial" if int(SEED_SHA256[:2], 16) % 2 == 0 else "parallel"
+    for measured_ordinal, (pair_id, kind, order, _) in enumerate(measured):
+        first = first_mode if measured_ordinal % 2 == 0 else (
+            "parallel" if first_mode == "serial" else "serial")
         pairs.append((pair_id, kind, order, first))
     slots = []
     for dispatch, (pair_id, kind, order, first) in enumerate(pairs, start=1):

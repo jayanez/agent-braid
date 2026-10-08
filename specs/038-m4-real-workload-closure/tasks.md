@@ -2,12 +2,14 @@
 
 ## Development status — 2026-10-08
 
-Exact source rights and protocol are approved. The bounded harness is merged and
-validated; static admission and technical review cover two frozen operations and
-20 treatment slots. See [implementation readiness](implementation-readiness.md)
-for the evidence and scope. Earlier proposal descriptions retain their design-time
-context. Owner stable-candidate/manifest review, capture and whole-M4 acceptance
-remain pending.
+Exact source rights, protocol, stable-candidate review and capture authorization
+were granted for the historical `b85f7e5` candidate. Two pre-dispatch failures
+then produced zero actual source treatments. Both failure records and process
+costs are retained. Any harness repair requires a new source manifest, fresh
+exact owner review and separate capture authorization; the prior approval is
+historical and cannot authorize the changed candidate. Whole-M4 acceptance
+remains pending. See [implementation readiness](implementation-readiness.md) and
+the [derived attempt summary](evidence/pre-dispatch-attempt-summary.json).
 
 T002 approval of the exact source/protocol permits bounded C08 implementation
 and evaluation preparation under the user-authorized goal. It does not permit
@@ -27,9 +29,9 @@ do not change those boundaries.
   Dependencies: approved T002 and confirmed exact source feasibility. Targets: `one narrow runner; focused novel-invariant tests; successor plan.md, tasks.md and quickstart.md; candidate manifest`.
   Verification and evidence: Merged candidate `7d73c80f1b8c23a65b33bf584abac29a2e097417` passed static admission for two operations and 20 treatment slots; private manifest SHA-256 `72714511b4506c491f4297c900c40e28c0131cc25c9e6ef2f072fa57f0ff1cac`. It is tree-identical to profile candidate `915e90fcf2f84ea7d9fa46da82aa28a5b3796cc6` (tree OID `8a48146a743cd867a8cc0cff0f112383ef838db6`). Local quick and PR profiles each ran 762 tests (758 passed, 4 skipped); receipts/log hashes and candidate-binding caveats are in `evidence/candidate-validation-status.json`. PR #390 merged at 7d73c80f. Hosted PR checks succeeded for selected validators (special matrix skipped); post-merge validation run 37705172263 also passed selected checks. T003 completes only implementation, preparation and local validation; registered-capture scenarios SC-003 through SC-006 remain pending.
 
-- [ ] T004 (REQ-002,REQ-005/SC-003,SC-007): Freeze and independently review the stable harness and manifest.
+- [x] T004 (REQ-002,REQ-005/SC-003,SC-007): Freeze and independently review the stable harness and manifest.
   Dependencies: T003. Targets: `frozen candidate; exact workload manifest; independent review record`.
-  Verification and evidence (partial): Independent static C08 code/domain/security review and separate read-only manifest review report no actionable findings. The C08 review did not execute tests or capture; its explicit reviewer bindings cover only the trial engine and fresh verifier, with other hashes operator-observed. Owner stable-candidate/manifest review and separate exact capture authorization remain pending; no duplicate technical review is requested. Planned evidence obligations remain open.
+  Verification and evidence (historical candidate only): Independent static C08 code/domain/security review and separate read-only manifest review reported no actionable findings; exact owner stable-candidate review and capture authorization were also granted for `b85f7e5`. The candidate then failed twice before dispatch, with zero actual treatments. These reviews and authorization do not cover a repaired harness candidate. A new candidate and manifest require new exact owner review and capture authorization. See `evidence/pre-dispatch-attempt-summary.json`.
 
 - [ ] T005 (REQ-002,REQ-003/SC-003,SC-004,SC-005): Capture only under separate exact authorization.
   Dependencies: approved T004 and exact capture decision. Targets: `raw observation index; environment/candidate receipt; pair outcomes`.
