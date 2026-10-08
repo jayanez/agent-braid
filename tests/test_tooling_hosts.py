@@ -254,6 +254,39 @@ class HostAdapterTests(unittest.TestCase):
         })
         with self.assertRaisesRegex(HostPreparationError, "credential"):
             prepare_host_launch(admission, dangerous)
+        argument_secret = config.__class__(**{
+            **config.__dict__, "codex_config_overrides": (
+                'mcp_servers.test = { command="mcp", args=["--api-key", "SECRET_SENTINEL"], '
+                'enabled_tools=["lookup"] }',
+                "skills.config = []",
+            ),
+        })
+        with self.assertRaisesRegex(HostPreparationError, "credentials"):
+            prepare_host_launch(admission, argument_secret)
+        for arguments in (
+            '["--api-key", "SECRET_SENTINEL"]',
+            '["--api-key=SECRET_SENTINEL"]',
+            '["--credential-wrapper", "TOKEN_SENTINEL"]',
+            '["--wrapper", "opaque-credential-value"]',
+        ):
+            candidate = config.__class__(**{
+                **config.__dict__, "codex_config_overrides": (
+                    'mcp_servers.test = { command="mcp", args=' + arguments + ', '
+                    'enabled_tools=["lookup"] }',
+                    "skills.config = []",
+                ),
+            })
+            with self.assertRaises(HostPreparationError):
+                prepare_host_launch(admission, candidate)
+        opaque = config.__class__(**{
+            **config.__dict__, "codex_config_overrides": (
+                'mcp_servers.test = { command="opaque-sentinel", args=[], '
+                'enabled_tools=["lookup"] }',
+                "skills.config = []",
+            ),
+        })
+        safe_plan = prepare_host_launch(admission, opaque)
+        self.assertNotIn("opaque-sentinel", repr(safe_plan))
 
     def test_real_supervisor_composes_with_fake_host_executable_only(self):
         tmp_path = self.with_temp()
@@ -319,6 +352,7 @@ class HostAdapterTests(unittest.TestCase):
             "codex_config_overrides": (), "environment": {"CLAUDE_CONFIG_DIR": str(base.config_dir)},
             "expected_tools": (), "source_roots": (source,),
             "poll_interval_seconds": 0.05, "observation_max_age_seconds": 5,
+            "term_grace_seconds": 0.1, "kill_grace_seconds": 0.1,
         })
         plan = prepare_host_launch(admission, config)
         now = datetime.now(timezone.utc).isoformat().replace("+00:00", "Z")

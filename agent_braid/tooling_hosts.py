@@ -104,7 +104,7 @@ class HostLaunchPlan:
     model: str
     effort: str
     config_files: tuple[FilePin, ...]
-    codex_config_overrides: tuple[str, ...]
+    codex_config_overrides: tuple[str, ...] = field(repr=False)
     config_dir: Path
     cwd: Path
     output_root: Path
@@ -473,6 +473,8 @@ def _validate_codex_configuration(config: HostLaunchConfig) -> None:
         if not isinstance(server, dict) or set(server) - {"command", "args", "enabled_tools", "enabled"} \
                 or not isinstance(server.get("command"), str):
             raise HostPreparationError(f"Codex MCP server {name} needs an explicit command")
+        if server.get("args", []) != []:
+            raise HostPreparationError("Codex MCP command arguments are unsupported until a safe schema is registered")
         tools = server.get("enabled_tools")
         if not isinstance(tools, list) or any(not isinstance(tool, str) for tool in tools):
             raise HostPreparationError(f"Codex MCP server {name} needs an explicit enabled_tools list")
@@ -506,12 +508,31 @@ def _reject_credential_config(value: Any) -> None:
         for key, child in value.items():
             if not isinstance(key, str) or sensitive.search(key):
                 raise HostPreparationError("Codex inline config cannot carry environment or credential fields")
+            if key == "args":
+                _reject_credential_arguments(child)
+                continue
             _reject_credential_config(child)
     elif isinstance(value, list):
         for child in value:
             _reject_credential_config(child)
-    elif isinstance(value, str) and re.search(r"(?i)(bearer\s+|sk-[A-Za-z0-9]{8,}|AKIA[0-9A-Z]{16})", value):
+    elif isinstance(value, str) and re.search(
+            r"(?i)(bearer\s+|sk-[A-Za-z0-9]{8,}|AKIA[0-9A-Z]{16}|secret[_ -]|token[_ -]|password[_ -])", value):
         raise HostPreparationError("Codex inline config appears to contain a credential value")
+
+
+def _reject_credential_arguments(value: Any) -> None:
+    if not isinstance(value, list) or any(not isinstance(arg, str) for arg in value):
+        raise HostPreparationError("Codex MCP args must be an explicit list of strings")
+    credential_flag = re.compile(r"(?i)^--?(?:api[-_]?key|access[-_]?key|secret|password|token|credential|authorization|header)(?:=|$)")
+    if value:
+        for index, arg in enumerate(value):
+            if credential_flag.search(arg) or arg in {"-H", "--header"}:
+                raise HostPreparationError("Codex MCP args cannot pass credentials or authorization headers")
+            if index and credential_flag.fullmatch(value[index - 1]):
+                raise HostPreparationError("Codex MCP args cannot pass credential values")
+            if re.search(r"(?i)(?:api[-_]?key|access[-_]?key|secret|password|token|credential|authorization)=", arg):
+                raise HostPreparationError("Codex MCP args cannot pass inline credential values")
+        raise HostPreparationError("Codex MCP command arguments are unsupported until a safe schema is registered")
 
 
 def _validate_claude_configuration(config: HostLaunchConfig) -> None:
