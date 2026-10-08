@@ -1,3 +1,4 @@
+<!-- SPDX-License-Identifier: CC-BY-SA-4.0 -->
 # Verified cost reconciliation
 
 `agent_braid.tooling_costs` reconciles explicitly supplied, externally verified

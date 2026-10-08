@@ -75,9 +75,10 @@ come from an authenticated source, not a caller-entered green light.
 The current [`registration-draft.json`](../../examples/tooling/registration-draft.json)
 is deliberately not admissible: it has draft/pending approval and source-rights
 records, provider opt-in is false, exact rates and reviewers are unset, and the
-rubric is not frozen. The proposed caps—€25, 4 million tokens, 16 hours
-including setup and human review, 4 GiB
-RSS and 5 GiB disk—are proposals, not approved spending authority. No two
+rubric is not frozen. The owner approved numeric caps of €25, 4 million tokens,
+16 hours including setup and human review, 4 GiB RSS per attempt and 5 GiB
+retained cohort disk. This cap decision does not authorize provider use or
+approve the complete registration. No two
 independent human reviewer identities or provider decision are recorded here.
 Do not alter the draft into an approved registration to exercise this code.
 
@@ -85,6 +86,6 @@ This module is an admission and receipt-preparation slice for W15/W18/W19. It is
 not a host/session capture runner, instrumentation source, stop controller,
 actual receipt, or approval. No provider, host session, or grant was used by its
 tests. Actual Codex and Claude discovery, skill loading, session events, complete
-cost collectors, registered source rights and budgets, human scoring, and the
+cost collectors, registered source rights and the full protocol, human scoring, and the
 founder decision remain separate requirements in the
 [evaluation protocol](../../specs/044-ai-tooling-evaluation/evaluation-protocol.md).
