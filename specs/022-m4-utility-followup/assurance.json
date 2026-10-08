@@ -17,9 +17,9 @@
   ],
   "assumptions": "Owned POSIX Git fixtures; complete current-runtime verification and grants remain enforced; OS cache state is uncontrolled.",
   "authority_snapshot": {
-    "commit": "600ce85e2ccdc1ac77cd6380abdc4be1d66b1fbe",
+    "commit": null,
     "hashes": {
-      "ARCHITECTURE.md": "d8cb93624faf2ed7900b55eb9dbb1630e32b9141763d455c67dec5df6a22d6f2",
+      "ARCHITECTURE.md": "2f0c81ea8eefb9eb74aec6b3a76fae7e0500c9fad31fbe8b209ebc7d492a355e",
       "CONSTITUTION.md": "ff7196976a1736a639947c2ab26e8da157fef23c89ba9881312f2a36459964eb",
       "GOVERNANCE.md": "c8eda331d97c42e54be4730ef906dfaad9ae2814e36704302f97afceff037d82",
       "LICENSE": "340d66a837b3a1617645d00622a46d1bcbf3534bedd997b6461d16d2e08b374f",
@@ -83,13 +83,13 @@
       "schemas/governance/public-export-manifest.schema.json": "11eb7f2594939ae9fd0c9e6cfe4423a80aba686d6cdfdd8b73b0fb84b0840aa8",
       "schemas/governance/release-validation-record.schema.json": "d9943f0c9f5520ea52e3b12bfba88240d03f8011b433fc5e35cb49549ab6e819"
     },
-    "mode": "historical"
+    "mode": "current"
   },
   "compatibility": "No current public API/schema/version changes; future diagnostic harness remains separate from accepted reports.",
   "domain": "Existing 2\u20134 immutable ordinary-text A/M patch domain; local descriptive measurement only.",
   "evidence_snapshot": {
-    "commit": "600ce85e2ccdc1ac77cd6380abdc4be1d66b1fbe",
-    "mode": "historical"
+    "commit": null,
+    "mode": "current"
   },
   "execution_contract": "No new authority or capability. Fixture runs require current exact operator grant and existing private-run restrictions.",
   "human_review": "pending",
@@ -115,18 +115,18 @@
           "id": "SC-001",
           "obtained_evidence": [
             {
-              "command": "/tmp/agent-braid-parallel-20261006/.venv-speckit/bin/python -m unittest tests.test_utility_accounting tests.test_utility_fixtures tests.test_m4_utility tests.test_utility_trials tests.test_m4_utility_preparation",
-              "limits": "Engineering tests or one-pair exploratory diagnosis only; full repository gates, registered measurements and human/founder decisions remain separate.",
-              "outcome": "Focal engineering tests passed; exact count and log hash are recorded in the referenced receipt",
-              "path": "specs/022-m4-utility-followup/evidence/phase-accounting-test-receipt.json",
-              "sha256": "001a552cc5a5ecdcb06bd15384719e4f8ca5f481ab9d27d13f792f4a80e1e791"
+              "command": "Read-only historical binding verified against public commit 5cb144e1193a266645e012a7f31224d846ea7003; artifact, 18 input hashes and retained auxiliary outputs are recorded in the historical wrapper.",
+              "limits": "Pre-successor development evidence only; does not validate later v2 trial/manifest inputs, current utility, human acceptance or M4 closure.",
+              "outcome": "Historical receipt reports 74 focal tests with exit code 0; its original artifact and test log are byte-bound to public commit 5cb144e.",
+              "path": "specs/022-m4-utility-followup/evidence/historical-development-evidence-binding-5cb144e.json",
+              "sha256": "9819734c5ec8755a7779ca4d0ff890c4f7cc663570fd6ab6e1ece290ed3a8c1d"
             },
             {
-              "command": "Four clean-candidate diagnostic-only invocations of scripts/measure_m4_utility.py; exact commands in evidence/final-guarded-diagnostics/execution-receipt.json",
-              "limits": "Engineering tests or one-pair exploratory diagnosis only; full repository gates, registered measurements and human/founder decisions remain separate.",
-              "outcome": "Eight exploratory treatments completed with independent verification and full accounting",
-              "path": "specs/022-m4-utility-followup/cost-diagnosis.json",
-              "sha256": "8ace1f15917dfd48b892ef3eef3030a2aa88a43b46f271656e98d99aca8b32df"
+              "command": "Read-only historical binding verified against public commit 5cb144e1193a266645e012a7f31224d846ea7003; artifact, 18 input hashes and retained auxiliary outputs are recorded in the historical wrapper.",
+              "limits": "Not a registered measurement. The named local diagnostic candidate source is unavailable in this clone; no public reviewed-candidate or independent reproduction claim is made. Does not cover later v2 trial/manifest inputs.",
+              "outcome": "Historical record reports eight exploratory synthetic treatments with full accounting; the four diagnostic output hashes match public artifacts at 5cb144e.",
+              "path": "specs/022-m4-utility-followup/evidence/historical-development-evidence-binding-5cb144e.json",
+              "sha256": "9819734c5ec8755a7779ca4d0ff890c4f7cc663570fd6ab6e1ece290ed3a8c1d"
             }
           ],
           "planned_evidence": "Future frozen phase/accounting tests, raw paired measurements and scoped decision packet defined in quickstart.md.",
@@ -146,18 +146,18 @@
           "id": "SC-002",
           "obtained_evidence": [
             {
-              "command": "/tmp/agent-braid-parallel-20261006/.venv-speckit/bin/python -m unittest tests.test_utility_accounting tests.test_utility_fixtures tests.test_m4_utility tests.test_utility_trials tests.test_m4_utility_preparation",
-              "limits": "Engineering tests or one-pair exploratory diagnosis only; full repository gates, registered measurements and human/founder decisions remain separate.",
-              "outcome": "Focal engineering tests passed; exact count and log hash are recorded in the referenced receipt",
-              "path": "specs/022-m4-utility-followup/evidence/phase-accounting-test-receipt.json",
-              "sha256": "001a552cc5a5ecdcb06bd15384719e4f8ca5f481ab9d27d13f792f4a80e1e791"
+              "command": "Read-only historical binding verified against public commit 5cb144e1193a266645e012a7f31224d846ea7003; artifact, 18 input hashes and retained auxiliary outputs are recorded in the historical wrapper.",
+              "limits": "Pre-successor development evidence only; does not validate later v2 trial/manifest inputs, current utility, human acceptance or M4 closure.",
+              "outcome": "Historical receipt reports 74 focal tests with exit code 0; its original artifact and test log are byte-bound to public commit 5cb144e.",
+              "path": "specs/022-m4-utility-followup/evidence/historical-development-evidence-binding-5cb144e.json",
+              "sha256": "9819734c5ec8755a7779ca4d0ff890c4f7cc663570fd6ab6e1ece290ed3a8c1d"
             },
             {
-              "command": "Four clean-candidate diagnostic-only invocations of scripts/measure_m4_utility.py; exact commands in evidence/final-guarded-diagnostics/execution-receipt.json",
-              "limits": "Engineering tests or one-pair exploratory diagnosis only; full repository gates, registered measurements and human/founder decisions remain separate.",
-              "outcome": "Eight exploratory treatments completed with independent verification and full accounting",
-              "path": "specs/022-m4-utility-followup/cost-diagnosis.json",
-              "sha256": "8ace1f15917dfd48b892ef3eef3030a2aa88a43b46f271656e98d99aca8b32df"
+              "command": "Read-only historical binding verified against public commit 5cb144e1193a266645e012a7f31224d846ea7003; artifact, 18 input hashes and retained auxiliary outputs are recorded in the historical wrapper.",
+              "limits": "Not a registered measurement. The named local diagnostic candidate source is unavailable in this clone; no public reviewed-candidate or independent reproduction claim is made. Does not cover later v2 trial/manifest inputs.",
+              "outcome": "Historical record reports eight exploratory synthetic treatments with full accounting; the four diagnostic output hashes match public artifacts at 5cb144e.",
+              "path": "specs/022-m4-utility-followup/evidence/historical-development-evidence-binding-5cb144e.json",
+              "sha256": "9819734c5ec8755a7779ca4d0ff890c4f7cc663570fd6ab6e1ece290ed3a8c1d"
             }
           ],
           "planned_evidence": "Future frozen phase/accounting tests, raw paired measurements and scoped decision packet defined in quickstart.md.",
@@ -177,18 +177,18 @@
           "id": "SC-003",
           "obtained_evidence": [
             {
-              "command": "/tmp/agent-braid-parallel-20261006/.venv-speckit/bin/python -m unittest tests.test_utility_accounting tests.test_utility_fixtures tests.test_m4_utility tests.test_utility_trials tests.test_m4_utility_preparation",
-              "limits": "Engineering tests or one-pair exploratory diagnosis only; full repository gates, registered measurements and human/founder decisions remain separate.",
-              "outcome": "Focal engineering tests passed; exact count and log hash are recorded in the referenced receipt",
-              "path": "specs/022-m4-utility-followup/evidence/phase-accounting-test-receipt.json",
-              "sha256": "001a552cc5a5ecdcb06bd15384719e4f8ca5f481ab9d27d13f792f4a80e1e791"
+              "command": "Read-only historical binding verified against public commit 5cb144e1193a266645e012a7f31224d846ea7003; artifact, 18 input hashes and retained auxiliary outputs are recorded in the historical wrapper.",
+              "limits": "Pre-successor development evidence only; does not validate later v2 trial/manifest inputs, current utility, human acceptance or M4 closure.",
+              "outcome": "Historical receipt reports 74 focal tests with exit code 0; its original artifact and test log are byte-bound to public commit 5cb144e.",
+              "path": "specs/022-m4-utility-followup/evidence/historical-development-evidence-binding-5cb144e.json",
+              "sha256": "9819734c5ec8755a7779ca4d0ff890c4f7cc663570fd6ab6e1ece290ed3a8c1d"
             },
             {
-              "command": "Four clean-candidate diagnostic-only invocations of scripts/measure_m4_utility.py; exact commands in evidence/final-guarded-diagnostics/execution-receipt.json",
-              "limits": "Engineering tests or one-pair exploratory diagnosis only; full repository gates, registered measurements and human/founder decisions remain separate.",
-              "outcome": "Eight exploratory treatments completed with independent verification and full accounting",
-              "path": "specs/022-m4-utility-followup/cost-diagnosis.json",
-              "sha256": "8ace1f15917dfd48b892ef3eef3030a2aa88a43b46f271656e98d99aca8b32df"
+              "command": "Read-only historical binding verified against public commit 5cb144e1193a266645e012a7f31224d846ea7003; artifact, 18 input hashes and retained auxiliary outputs are recorded in the historical wrapper.",
+              "limits": "Not a registered measurement. The named local diagnostic candidate source is unavailable in this clone; no public reviewed-candidate or independent reproduction claim is made. Does not cover later v2 trial/manifest inputs.",
+              "outcome": "Historical record reports eight exploratory synthetic treatments with full accounting; the four diagnostic output hashes match public artifacts at 5cb144e.",
+              "path": "specs/022-m4-utility-followup/evidence/historical-development-evidence-binding-5cb144e.json",
+              "sha256": "9819734c5ec8755a7779ca4d0ff890c4f7cc663570fd6ab6e1ece290ed3a8c1d"
             }
           ],
           "planned_evidence": "Future frozen phase/accounting tests, raw paired measurements and scoped decision packet defined in quickstart.md.",
