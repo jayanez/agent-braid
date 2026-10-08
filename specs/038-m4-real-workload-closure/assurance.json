@@ -87,7 +87,7 @@
       "schemas/governance/public-export-manifest.schema.json": "11eb7f2594939ae9fd0c9e6cfe4423a80aba686d6cdfdd8b73b0fb84b0840aa8",
       "schemas/governance/release-validation-record.schema.json": "d9943f0c9f5520ea52e3b12bfba88240d03f8011b433fc5e35cb49549ab6e819"
     },
-    "mode": "current"
+    "mode": "historical"
   },
   "compatibility": "Bounded current-runtime harness implementation and preparation; no public API/schema, grants, effects, verifier, host, promotion or runtime contract changes. Historical G4NO-GO and other milestones unchanged.",
   "domain": "Exact owner-permissioned PR137/138 fixed-patch source frame, two operations from a common base, tracked-tree-v1 observation. Four warm-up and six measured pairs; all 20 treatments valid and tree-matched. Measured median serial/parallel total-wall ratio 0.6538998702917553 is finite negative descriptive performance evidence. No source-code execution, actual-source refusal/recovery observations, population utility or causal inference.",
