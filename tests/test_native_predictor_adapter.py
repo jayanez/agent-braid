@@ -122,6 +122,64 @@ class NativePredictorAdapterTests(unittest.TestCase):
         self.assertTrue(any(p.get("excludedReason") == "unsupported-operation"
                             for p in result["pairs"]))
 
+    def test_missing_source_provenance_is_excluded_like_canonical_window_audit(self):
+        cases = []
+        missing_open_source = records()
+        del missing_open_source[0]["data"]["sourceRef"]
+        cases.append((missing_open_source, 3))
+        missing_context_hash = records()
+        del missing_context_hash[0]["data"]["contextSha"]
+        cases.append((missing_context_hash, 3))
+        missing_proposal_source = records()
+        del missing_proposal_source[4]["data"]["sourceRef"]
+        cases.append((missing_proposal_source, 2))
+
+        for source, expected_exclusions in cases:
+            previous = None
+            for event in source:
+                event["previousHash"] = previous
+                body = {key: value for key, value in event.items() if key != "eventHash"}
+                event["eventHash"] = _hash(body)
+                previous = event["eventHash"]
+            result = adapt(source, source_kind="synthetic", family_id="family-a",
+                           partition="train")
+            self.assertEqual(len(result["pairs"]), 3)
+            excluded = [pair for pair in result["pairs"]
+                        if pair.get("excludedReason") == "missing-provenance"]
+            self.assertEqual(len(excluded), expected_exclusions)
+            self.assertTrue(all("request" not in pair for pair in excluded))
+
+    def test_primary_exclusion_reason_matches_canonical_order(self):
+        source = records(missing_receipt=True, dependent=True)
+        previous = None
+        for event in source:
+            event["previousHash"] = previous
+            body = {key: value for key, value in event.items() if key != "eventHash"}
+            event["eventHash"] = _hash(body)
+            previous = event["eventHash"]
+        result = adapt(source, source_kind="synthetic", family_id="family-a",
+                       partition="train")
+        counts = {reason: sum(pair.get("excludedReason") == reason for pair in result["pairs"])
+                  for reason in ("dependent-observation", "missing-receipt")}
+        self.assertEqual(counts, {"dependent-observation": 2, "missing-receipt": 1})
+
+    def test_base_over_canonical_size_limit_is_excluded(self):
+        source = records()
+        source[0]["data"]["base"].extend(
+            {"id": f"extra-{index}", "value": f"extra value {index}"}
+            for index in range(3))
+        previous = None
+        for event in source:
+            event["previousHash"] = previous
+            body = {key: value for key, value in event.items() if key != "eventHash"}
+            event["eventHash"] = _hash(body)
+            previous = event["eventHash"]
+        result = adapt(source, source_kind="synthetic", family_id="family-a",
+                       partition="train")
+        self.assertEqual(len(result["pairs"]), 3)
+        self.assertTrue(all(pair.get("excludedReason") == "invalid-base"
+                            for pair in result["pairs"]))
+
     def test_prospective_fails_closed_even_with_fabricated_registration_and_gate(self):
         error = "prospective adaptation unavailable: no independently verified registration"
         with self.assertRaisesRegex(ValueError, error):

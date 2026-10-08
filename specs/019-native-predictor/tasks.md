@@ -87,3 +87,8 @@ synthetic checks for versioned inference/tamper rejection, holdout
 evaluation/no-gain, and verifier separation. They establish software behavior
 only; a real trained artifact, eligible human-reviewed holdout, and experiment
 evidence remain deferred.
+
+The synthetic evaluator's timing excludes source-to-request extraction and
+final report serialization. Neither may be presented as T003's end-to-end cost;
+the preregistered real evaluation must include both, along with policy-specific
+preparation, scoring, ranking, verifier calls, and serialization.

@@ -190,19 +190,34 @@ def adapt(events: Any, *, source_kind: str, family_id: str, partition: str,
         for first, second in itertools.combinations(proposals, 2):
             reason = None
             ops = [first["data"].get("operation"), second["data"].get("operation")]
+            if any(prop["data"].get("baseEventId") != opened["eventId"]
+                   for prop in (first, second)):
+                reason = "base-mismatch"
             for prop in (first, second):
+                if reason is not None:
+                    break
                 actor = prop["data"].get("actorId")
-                if not any(r["data"].get("actorId") == actor
-                           and r["data"].get("baseEventId") == opened["eventId"]
-                           and r["sequence"] < prop["sequence"] for r in receipts):
-                    reason = "missing-receipt"
                 if any(e["kind"] in {"external-observation", "proposals-seen"}
                        and e["data"].get("actorId") == actor
                        and e["sequence"] < prop["sequence"] for e in records):
                     reason = "dependent-observation"
-            if reason is None and any(prop["data"].get("baseEventId") != opened["eventId"]
-                                      for prop in (first, second)):
-                reason = "base-mismatch"
+                    break
+                if not any(r["data"].get("actorId") == actor
+                           and r["data"].get("baseEventId") == opened["eventId"]
+                           and r["sequence"] < prop["sequence"] for r in receipts):
+                    reason = "missing-receipt"
+                    break
+            # Match the canonical source-window audit. A valid request and
+            # hash chain do not establish source provenance.
+            if reason is None and any(
+                    type(value) is not str or not value
+                    for value in (opened["data"].get("sourceRef"),
+                                  opened["data"].get("contextSha"),
+                                  first["data"].get("sourceRef"),
+                                  second["data"].get("sourceRef"))):
+                reason = "missing-provenance"
+            if reason is None and (type(base) is not list or len(base) > 3):
+                reason = "invalid-base"
             if reason is None and any(type(op) is not dict or op.get("kind") != "insert" for op in ops):
                 reason = "unsupported-operation"
             req = None
