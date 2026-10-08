@@ -28,3 +28,12 @@ prerequisites only; it does not approve evidence or declare market superiority.
 
 The initial registry is at
 [`research/adoption/2026-09-initial-triage.json`](2026-09-initial-triage.json).
+
+## Consumer integration program
+
+[M4.5 / SPEC-039–044](../../docs/tooling/README.md) prepares MCP access and product
+skills for Codex and Claude Code local CLIs. Its draft contracts, task lists and
+evaluation protocol provide the delivery path for that selected integration work.
+Source preparation records no registry adoption or verified host compatibility.
+Contract review, implementation evidence, actual host observations and bounded
+acceptance remain explicit gates in the [program](../../specs/039-ai-tooling-program/program.md).

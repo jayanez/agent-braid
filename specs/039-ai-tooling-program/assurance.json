@@ -1,0 +1,255 @@
+{
+  "articles": [
+    0,
+    3,
+    4,
+    5,
+    6,
+    7,
+    12,
+    13,
+    14,
+    15,
+    16,
+    19,
+    20,
+    21,
+    22,
+    23,
+    24,
+    25
+  ],
+  "assumptions": "Owned trusted local roots, separately reviewed contracts and exact host/source/cost decisions; no universal compatibility, positive utility or available provider budget assumed.",
+  "authority_snapshot": {
+    "commit": null,
+    "hashes": {
+      "ARCHITECTURE.md": "d8cb93624faf2ed7900b55eb9dbb1630e32b9141763d455c67dec5df6a22d6f2",
+      "CONSTITUTION.md": "ff7196976a1736a639947c2ab26e8da157fef23c89ba9881312f2a36459964eb",
+      "GOVERNANCE.md": "c8eda331d97c42e54be4730ef906dfaad9ae2814e36704302f97afceff037d82",
+      "LICENSE": "340d66a837b3a1617645d00622a46d1bcbf3534bedd997b6461d16d2e08b374f",
+      "MATHEMATICAL_FOUNDATIONS.md": "8c56b59b20ca5f9bc7464b458f980e51e05c0820645cf86181cf08883acd5ca4",
+      "RESEARCH.md": "a3e9668e2c1b80024a6ce9024b7558d31f0d3d2d1e22fa89f460a70beefdd56d",
+      "TERMINOLOGY.md": "4b52b621900a413f58fa920254c2d36df849bda906e9989f0e49b0a43aaf503c",
+      "TRADEMARKS.md": "be084562378235f7c72b4a16e9d0f37b01e7e2b035291eceb4f6478048a517b8",
+      "docs/adr/0000-template.md": "546bd5098b2f8f07804253f0b1fd2c893264d4519644ccd93913956056fac8f4",
+      "docs/adr/0001-formalization-before-implementation.md": "c68d05ee8abb12932acaebee8b95ef4873172a97f93a8dae2187b84b63a29188",
+      "docs/adr/0002-yang-baxter-is-a-hypothesis.md": "8f72ec03ea85a5cef1bed08b04c871bca5930a70e2c313f01124d4a0c194efef",
+      "docs/adr/0003-copyleft-and-trademark-protection.md": "174745a166b4f521fab0f1a043d5c96b8b4b6a626b344245d8b89616d919f8c6",
+      "docs/adr/0004-scientific-constitutional-clarifications.md": "eaf956ab7a8daae2b5ea75d5ae8832a039ef2c6d18bf2e0e27e9b2b964e0fd71",
+      "docs/adr/0005-evidence-contracts-and-bounded-laboratory.md": "a35504083c719993a8c9a460d579c9017871b20bd65760f9f2534de2d7f27f6b",
+      "docs/adr/0006-shared-spec-kit-guardrails.md": "b02e0844e311e0364b40d06e2de3c1c73628247625d20c534a644ff8d9387cb7",
+      "docs/adr/0007-read-only-python-analyzer.md": "c864497da1a8172826d1b96b728b03d16272396c53dc194680d646301c4d07f3",
+      "docs/adr/0008-read-only-git-worktree-adapter.md": "8915605500bb4fa0150ff2fe576482db8a55bd29fb53a17788a51f8671a52e76",
+      "docs/adr/0009-transparent-validation-status.md": "7e329563e069e972ef2febcf64e0fec29255c0c9af29e331a1d5beb7f382e60d",
+      "docs/adr/0010-clean-publication-provenance.md": "6481cf11e2daf5d307928310763ae82889b280cea215126ebae3b32a708f3994",
+      "docs/adr/0011-risk-based-validation-gates.md": "3aa363f808821ead18d830e931e476a0d790106112ef637875428f322d321531",
+      "docs/adr/0012-vendored-python-skills-license-boundary.md": "e98b19c465689190265ed410b9226d60d52f00a8abf95410f5aa0a567aa80fea",
+      "docs/adr/0013-isolated-git-replay-and-advisory-planning.md": "1c291cb527825864520075edc2ae7c84bafb07f66790f9fc29b0149a07024d24",
+      "docs/adr/0014-parallel-integration-contract.md": "2481e93cf1e392887f2ee74e39efec7dfee0a9c52340fccd491903fd4292f679",
+      "docs/adr/0015-real-repository-validation-profile.md": "43e05f6fa96b5b3a8a8a83ddc922d8bced11b89a3f88263760b83b358febde99",
+      "docs/adr/0016-post-root-public-provenance.md": "e3c001cc23b64db5362ed0274af21d1d5a42b27d2bff68654db51498fbfb142a",
+      "docs/adr/0017-bounded-structured-exchange.md": "72cecb595605a16eaa5de7a88e960492205d82a300af2f6fb4451263f7e780c4",
+      "docs/adr/0018-private-source-sidecar-and-disposable-labs.md": "487c48e8ed4296bb4120e32e9d7e75724c76da88ebb6435396cb7fdcf7d317ad",
+      "docs/adr/0019-bounded-local-git-runtime.md": "9023b6176762885ce291721633f686ae2c4d3a4c1404f3ee164e7414a69b5fd3",
+      "docs/adr/0020-bounded-m4-alpha-runtime.md": "b91615158b29902237ce638d659bc30484562766a0f2607a38fcc4bd717fda28",
+      "docs/adr/0021-codex-claude-tooling-integration.md": "e37d78bd1755f4a2b27c0883cda0303e00fb1546b22b7b176bc9ac6ad2b58b8c",
+      "docs/architecture/AGENT_INTERACTION_METADATA.md": "0118d7f16c390fc4c1ff027b503a4eaba8a747edf3f6d7b088559f8870e27780",
+      "docs/architecture/ASSURANCE_LEVELS.md": "3e86d0060ef566ba8d1e1690606fc06e8fee172f187a1b9779b13d27f0f915d9",
+      "docs/architecture/CONFLUENCE_CERTIFICATE.md": "fd12a8f1a1477835848581b0f4ccd52f76d3f22dd96a3abaccb9074733464a8e",
+      "docs/architecture/DRAFT_0_2.md": "ae2bc09d941537eec6ea05edb69e4402d5c17dae0585b4add0825d6a01fdc29f",
+      "docs/architecture/GIT_REPLAY.md": "991de0aba02d2f89cb5fd01af4d9842c0a15b1ee52fb692671e34a81a6b09ab2",
+      "docs/architecture/PARALLEL_INTEGRATION.md": "14a55efe552cb0b5a90e8112260af681b303b9ce2e0fd0b49c7024ab4b15843b",
+      "docs/theory/CLAIM_DISCIPLINE.md": "0fcd89ae045e017f62cbe0b7a83a9a9c107770856bba12a340e77f06576db053",
+      "docs/theory/OPERATIONAL_SEMANTICS.md": "7e83813d138dde064f85aafee1ba20302d55ede768d35d26340abd522ecce1f7",
+      "docs/theory/SCIENTIFIC_INTEGRATION.md": "3bdb0e13edf1e7666902c426df864cb51219d33e762f6bd87e8d2702bb1642eb",
+      "docs/theory/STRUCTURED_EXCHANGE.md": "522fa1e4f2be6a0873c00ba2f503f475fa04833292a6684620ec01ef725bb710",
+      "schemas/0.1.0-alpha/analysis-report.schema.json": "91c759ad0d28de0b4e68f5bd3958de37ff2e6c102ecd8c6c2f0083e0151ad578",
+      "schemas/0.1.0-alpha/git-analysis-provenance.schema.json": "403b2e61ff7a7700c0db05df4ac3b11504e2c69e2bab9161b4a9ceb156b1316c",
+      "schemas/0.1.0-alpha/git-analysis-request.schema.json": "928c777ae68a184fae172a7cb2b172ba283b5af912edaf6c4b389bd8bf767a96",
+      "schemas/0.1.0-alpha/git-integration-prototype-report.schema.json": "417e5ae3f27083dfa0592589bf229fa9db8bd66cd20a29d472d9c0a83509b22e",
+      "schemas/0.1.0-alpha/git-integration-prototype-request.schema.json": "3dcde3972f3ab99939bec923416e5be57f9a6c0a2fc73a281830a20f6998222b",
+      "schemas/0.1.0-alpha/git-plan.schema.json": "3519d38b395974c3261fbb9243dd2fcbf1d0f08086c2164d64d7ebfb9a726972",
+      "schemas/0.1.0-alpha/git-replay-evidence.schema.json": "46560e30af74daf22d816130590d7bc596a9ae4fe1060ff4709e76f19487d137",
+      "schemas/0.1.0-alpha/git-runtime-manifest.schema.json": "a302dec5d42d61d72128798a8e08f7a7ad5b1b6024d18f3e89e6ef6abe3f868c",
+      "schemas/0.1.0-alpha/git-runtime-report.schema.json": "b2b1833e43c3b8429f9cc20a2a632a27214f8d2acd59a3e9ce5f0243579af73b",
+      "schemas/0.1.0-alpha/git-runtime-request.schema.json": "a83873e072ea357b29331e74e42b5a075769d939bcfba69f458712876b187f5d",
+      "schemas/0.1.0-alpha/git-runtime-state.schema.json": "6ce9a56e6493e10938eaf60dfc6501d52cd59af240e9f0bb5a0a8c036677d75a",
+      "schemas/0.1.0-alpha/runtime-operator-grant.schema.json": "0a49f4800ed40873022eaa14d37e12eacb5790f71197ac1013766f4742162b8d",
+      "schemas/0.1.0-alpha/runtime-policy.schema.json": "dc88b1e7de631c797002ad29276a4eeccf8f2a1bbbb3a48c41dd4f82ea6f8c17",
+      "schemas/0.1.0-alpha/runtime-preparation-evidence.schema.json": "1989267da48fa7ad3432b67d0767e2f702381773edb02aff7bd8a9ad37a3229f",
+      "schemas/0.1.0-alpha/runtime-schedule.schema.json": "0bd21c877e5f594e7710085d4232b5b095683e1239277a7b322f0890d4b28f64",
+      "schemas/0.2.0-draft/agent-interaction-metadata.schema.json": "9d2ff528d0d3f02ba5bce63181e88732eecef96e90fabb5898b3314abd554900",
+      "schemas/0.2.0-draft/confluence-certificate.schema.json": "8e375fdc57fbd3b9f15544f2079c8f92633ec1def660f3eabed77feb784f34f0",
+      "schemas/0.3.0-experimental/structured-exchange-evidence.schema.json": "1cb4e536d89b519b3a5ffc70421a6ec561b06e1826b22c69b9e9cc01cca4c767",
+      "schemas/0.3.0-experimental/structured-exchange-request.schema.json": "5b2065b94fa50570ecfe5392551d87f1f1fd31cff8dc4b840045e1c13e3aaabb",
+      "schemas/agent-interaction-metadata.schema.json": "44b60956817cbcd92e0802dfe99ca537b20768f53472f04afd1dcc502f53cd5c",
+      "schemas/confluence-certificate.schema.json": "ea68bf94f6767d615881167d8f7dd28359e6c399edd66935ba17b88b2b1cf785",
+      "schemas/governance/public-export-manifest.schema.json": "11eb7f2594939ae9fd0c9e6cfe4423a80aba686d6cdfdd8b73b0fb84b0840aa8",
+      "schemas/governance/release-validation-record.schema.json": "d9943f0c9f5520ea52e3b12bfba88240d03f8011b433fc5e35cb49549ab6e819"
+    },
+    "mode": "current"
+  },
+  "compatibility": "Additive experimental tooling envelope with optional pinned SDK; core dependencies empty. Codex and Claude Code v1 only, exact versions selected before observation. Existing contracts and historical records unchanged.",
+  "domain": "Engineering planning and bounded adoption of existing AIM/Git/worktree analysis and private fixed-patch runtime capabilities.",
+  "evidence_snapshot": {
+    "commit": null,
+    "mode": "current"
+  },
+  "execution_contract": "Source planning only. Future server defaults to analysis; execution/recovery delegate existing independent exact operator grants and private fixed-patch runtime. Installation writes only explicitly selected receipt-owned entries. No new effects.",
+  "human_review": "pending",
+  "hypotheses": "A coherent discoverable integration may make existing bounded capabilities useful to these hosts; user recognition and utility are not assumed.",
+  "observation_contract": "Exact input/candidate/host/environment identities and unchanged analyzer/runtime observation contracts; synthetic, protocol-peer, actual-host and clean-room evidence remain distinct.",
+  "references": [
+    "CONSTITUTION.md",
+    "GOVERNANCE.md",
+    "LICENSE",
+    "ROADMAP.md",
+    "docs/development/SPEC_KIT.md",
+    "docs/development/VALIDATION_PROFILES.md",
+    "docs/development/GITHUB_TRACKING.md",
+    "docs/theory/OPERATIONAL_SEMANTICS.md",
+    "docs/theory/CLAIM_DISCIPLINE.md",
+    "docs/adr/0019-bounded-local-git-runtime.md",
+    "docs/adr/0020-bounded-m4-alpha-runtime.md",
+    "docs/adr/0021-codex-claude-tooling-integration.md",
+    "specs/021-m4-alpha-runtime/g4-decision.json",
+    "specs/027-runtime-refinement-contracts/spec.md",
+    "specs/039-ai-tooling-program/program.md",
+    "specs/039-ai-tooling-program/research.md",
+    "specs/039-ai-tooling-program/capability-matrix.md",
+    "specs/039-ai-tooling-program/validation-plan.md"
+  ],
+  "requirements": [
+    {
+      "id": "REQ-001",
+      "scenarios": [
+        {
+          "given": "current runtime and proposed host features",
+          "id": "SC-001",
+          "obtained_evidence": [],
+          "planned_evidence": "specs/039-ai-tooling-program/evidence/sc-001.json: exact candidate/input/environment hashes, actual commands/raw outputs, all outcomes and limits; human decisions require their own record.",
+          "test_file": "specs/039-ai-tooling-program/validation-plan.md",
+          "test_name": "procedure_capability_matrix",
+          "then": "each capability names its basis, increment and exact pending acceptance; documents cannot claim product support",
+          "when": "the matrix is inspected"
+        }
+      ],
+      "text": "Separate current capability, planned integration, evidence and adoption in a versioned matrix for Codex and Claude Code."
+    },
+    {
+      "id": "REQ-002",
+      "scenarios": [
+        {
+          "given": "M4's historical results and separate source-rights protocol",
+          "id": "SC-002",
+          "obtained_evidence": [],
+          "planned_evidence": "specs/039-ai-tooling-program/evidence/sc-002.json: exact candidate/input/environment hashes, actual commands/raw outputs, all outcomes and limits; human decisions require their own record.",
+          "test_file": "specs/039-ai-tooling-program/validation-plan.md",
+          "test_name": "procedure_m4_boundary",
+          "then": "consumer engineering can progress but neither source permission nor M4 closure is inferred",
+          "when": "M4.5 dependencies and closure are evaluated"
+        }
+      ],
+      "text": "Keep M4.5 adjacent to M4 while preserving the whole-M4 open state, G4 NO-GO and independent M3/M3.5 gates."
+    },
+    {
+      "id": "REQ-003",
+      "scenarios": [
+        {
+          "given": "SPEC-039\u2013044 and their task lists",
+          "id": "SC-003",
+          "obtained_evidence": [],
+          "planned_evidence": "specs/039-ai-tooling-program/evidence/sc-003.json: exact candidate/input/environment hashes, actual commands/raw outputs, all outcomes and limits; human decisions require their own record.",
+          "test_file": "specs/039-ai-tooling-program/validation-plan.md",
+          "test_name": "procedure_traceability",
+          "then": "all requirements trace to scenarios, tasks and prospective procedures with no fabricated evidence",
+          "when": "Spec Kit and cross-artifact analysis run"
+        }
+      ],
+      "text": "Maintain six subordinate specs with stable requirement/scenario/task identities and complete evidence obligations."
+    },
+    {
+      "id": "REQ-004",
+      "scenarios": [
+        {
+          "given": "accepted ADRs and the new architectural proposal",
+          "id": "SC-004",
+          "obtained_evidence": [],
+          "planned_evidence": "specs/039-ai-tooling-program/evidence/sc-004.json: exact candidate/input/environment hashes, actual commands/raw outputs, all outcomes and limits; human decisions require their own record.",
+          "test_file": "specs/039-ai-tooling-program/validation-plan.md",
+          "test_name": "procedure_architecture_review",
+          "then": "no effect/grant/schema weakening is admitted and architectural adoption remains recorded separately",
+          "when": "the design is reviewed"
+        }
+      ],
+      "text": "Propose the portable architecture through ADR 0021 without rewriting constitutional or runtime authority."
+    },
+    {
+      "id": "REQ-005",
+      "scenarios": [
+        {
+          "given": "current vendor and protocol documentation",
+          "id": "SC-005",
+          "obtained_evidence": [],
+          "planned_evidence": "specs/039-ai-tooling-program/evidence/sc-005.json: exact candidate/input/environment hashes, actual commands/raw outputs, all outcomes and limits; human decisions require their own record.",
+          "test_file": "specs/039-ai-tooling-program/validation-plan.md",
+          "test_name": "procedure_research_provenance",
+          "then": "each decision links its source and validation need; trend signals alone cannot assert compatibility",
+          "when": "a capability choice is proposed"
+        }
+      ],
+      "text": "Record official-source research with retrieval date, chosen versions, alternatives and unverified host claims."
+    },
+    {
+      "id": "REQ-006",
+      "scenarios": [
+        {
+          "given": "source mapping and an exact scoped remote plan",
+          "id": "SC-006",
+          "obtained_evidence": [],
+          "planned_evidence": "specs/039-ai-tooling-program/evidence/sc-006.json: exact candidate/input/environment hashes, actual commands/raw outputs, all outcomes and limits; human decisions require their own record.",
+          "test_file": "specs/039-ai-tooling-program/validation-plan.md",
+          "test_name": "procedure_tracking_scope",
+          "then": "only M4.5 records change, stable markers/subissue links hold, operations are empty afterward and private Project status is separately checked",
+          "when": "tracking is reconciled after source integration"
+        }
+      ],
+      "text": "Prepare one milestone, six parents and every task subissue under governed reviewed-source tracking."
+    },
+    {
+      "id": "REQ-007",
+      "scenarios": [
+        {
+          "given": "the owner-selected two-host scope",
+          "id": "SC-007",
+          "obtained_evidence": [],
+          "planned_evidence": "specs/039-ai-tooling-program/evidence/sc-007.json: exact candidate/input/environment hashes, actual commands/raw outputs, all outcomes and limits; human decisions require their own record.",
+          "test_file": "specs/039-ai-tooling-program/validation-plan.md",
+          "test_name": "procedure_future_scope",
+          "then": "future routes have entry gates and create no v1 claims or implementation tasks",
+          "when": "future options are listed"
+        }
+      ],
+      "text": "Document five future routes and explicitly defer Cursor, VS Code/Copilot, OpenCode and pi from v1."
+    },
+    {
+      "id": "REQ-008",
+      "scenarios": [
+        {
+          "given": "a completed source packet versus a future implementation candidate",
+          "id": "SC-008",
+          "obtained_evidence": [],
+          "planned_evidence": "specs/039-ai-tooling-program/evidence/sc-008.json: exact candidate/input/environment hashes, actual commands/raw outputs, all outcomes and limits; human decisions require their own record.",
+          "test_file": "specs/039-ai-tooling-program/validation-plan.md",
+          "test_name": "procedure_closure_boundary",
+          "then": "source preparation alone leaves runtime acceptance/host observations pending; negative findings can reject adoption",
+          "when": "closure readiness is assessed"
+        }
+      ],
+      "text": "Require candidate-bound technical review, actual host evidence and explicit founder acceptance before M4.5 closure."
+    }
+  ],
+  "scientific_limits": "Existing AIM/runtime/grant/verifier contracts remain unchanged. Analysis and preparation are consultative; host permission never substitutes for operator grants. No source ref promotion, repository-code/hook execution, arbitrary network effects or new scientific guarantee. Existing M4 G4 NO-GO and independent M3/M3.5 gates remain in effect. Structural validation is not mathematical proof, scientific acceptance, production safety or human approval.",
+  "scope": "Define the adjacent M4.5 program, current capability inventory, adoption decisions and exact delivery/closure boundaries for Codex and Claude Code.",
+  "stage": "draft"
+}

@@ -19,7 +19,8 @@
     "S1.2 — Native decision model": "Own non-generative neural decision experiment; draft implementation track, no accepted utility claim.",
     "S1.3 — Advisory integration": "Advisory integration across Agent Braid decision stages; draft implementation track, no accepted utility claim.",
     "S1.4 — Product capabilities and promotion": "Per-feature advanced capability acceptance plus separately governed shadow, promotion, drift, rollback and closure.",
-    "FC.1 — Forecast-guided parallelism experiment": "Permissioned workload telemetry, optional local Chronos-2, prospective forecasting/complete-cost parallelism experiment and separately governed shadow/promotion. Negative or infeasible outcomes are valid; no new execution domain or M4 closure."
+    "FC.1 — Forecast-guided parallelism experiment": "Permissioned workload telemetry, optional local Chronos-2, prospective forecasting/complete-cost parallelism experiment and separately governed shadow/promotion. Negative or infeasible outcomes are valid; no new execution domain or M4 closure.",
+    "M4.5 — AI tooling integrations for Codex and Claude Code": "Adjacent consumer/product track over existing M4 bounded runtime: shared optional stdio MCP surface, five portable skills, installation/diagnostics, evidence presentation and registered actual Codex/Claude Code evaluation. SPEC-039–044. Future hosts deferred; no new effects or implied M4 closure. Source/ADR review, actual host receipts and explicit founder acceptance remain pending."
   },
   "closed_milestones": [
     "M0 — Operational foundations",
@@ -180,6 +181,30 @@
     "038-m4-real-workload-closure": {
       "milestone": "M4 — Agent Braid runtime",
       "state": "open"
+    },
+    "039-ai-tooling-program": {
+      "milestone": "M4.5 — AI tooling integrations for Codex and Claude Code",
+      "state": "open"
+    },
+    "040-portable-mcp-surface": {
+      "milestone": "M4.5 — AI tooling integrations for Codex and Claude Code",
+      "state": "open"
+    },
+    "041-ai-tooling-skills": {
+      "milestone": "M4.5 — AI tooling integrations for Codex and Claude Code",
+      "state": "open"
+    },
+    "042-ai-tooling-packaging": {
+      "milestone": "M4.5 — AI tooling integrations for Codex and Claude Code",
+      "state": "open"
+    },
+    "043-ai-tooling-journey": {
+      "milestone": "M4.5 — AI tooling integrations for Codex and Claude Code",
+      "state": "open"
+    },
+    "044-ai-tooling-evaluation": {
+      "milestone": "M4.5 — AI tooling integrations for Codex and Claude Code",
+      "state": "open"
     }
   },
   "task_state_overrides": {
@@ -208,7 +233,13 @@
     "SPEC-035",
     "SPEC-036",
     "SPEC-037",
-    "SPEC-038"
+    "SPEC-038",
+    "SPEC-039",
+    "SPEC-040",
+    "SPEC-041",
+    "SPEC-042",
+    "SPEC-043",
+    "SPEC-044"
   ],
   "milestone_numbers": {
     "M0 — Operational foundations": 1,
@@ -228,6 +259,7 @@
     "S1.2 — Native decision model": 15,
     "S1.3 — Advisory integration": 16,
     "S1.4 — Product capabilities and promotion": 17,
-    "FC.1 — Forecast-guided parallelism experiment": 18
+    "FC.1 — Forecast-guided parallelism experiment": 18,
+    "M4.5 — AI tooling integrations for Codex and Claude Code": 19
   }
 }

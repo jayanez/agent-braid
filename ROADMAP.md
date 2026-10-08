@@ -3,7 +3,7 @@
 The roadmap follows evidence, not calendar promises. Milestones are exit-criterion driven.
 
 The [spec and milestone index](docs/development/SPEC_MILESTONE_INDEX.md) maps all
-38 specs to the 18 registered GitHub milestones. Titles follow `ID — Capability`;
+44 specs to the 19 registered GitHub milestones. Titles follow `ID — Capability`;
 track prefixes do not establish an implementation sequence. Historical closure
 records retain their original names, scope and decisions.
 
@@ -266,6 +266,49 @@ Candidate deliverables:
 This milestone proceeds only if validated M1–M2 engineering results justify the
 complexity. M3 is an independent research track: a negative braid result cannot
 block useful, sound engineering. Real adapter refinement remains a prerequisite.
+
+## M4.5 — AI tooling integrations for Codex and Claude Code
+
+**Status:** [Open](https://github.com/jayanez/agent-braid/milestone/19) adjacent implementation program, with six spec issues and 60 linked task subissues. The owner selected Codex
+and Claude Code for v1 on 2026-10-08. Source preparation does not establish product
+support, accept ADR 0021 or close either M4.5 or M4.
+
+**Objective:** make the existing bounded analysis, planning, execution, recovery
+and evidence capabilities discoverable and usable through these two local hosts.
+
+The [six-spec program](specs/039-ai-tooling-program/program.md) defines the
+[capability matrix](specs/039-ai-tooling-program/capability-matrix.md), official-source
+research, proposed [ADR 0021](docs/adr/0021-codex-claude-tooling-integration.md)
+and traceable tasks for implementation and governed tracking.
+
+Deliverables:
+
+- optional official-SDK stdio MCP surface with typed tools/resources/prompts and
+  unchanged runtime/grant enforcement;
+- five portable skills for analyze, plan, already-granted execute, recover and
+  evidence, with tested minimal Codex/Claude metadata;
+- isolated reusable package, explicit user/project configuration, diagnostics,
+  safe update/removal and root-bound server access;
+- clear chat evidence, interaction graph and deterministic offline exports;
+- candidate-bound controls, clean reproduction, actual host observations and a
+  preregistered CLI/MCP-only/MCP-plus-skills comparison with full costs.
+
+Exit criteria:
+
+- both selected host builds complete the bounded journey with actual receipts;
+- mandatory refusal/grant/recovery/parity controls pass without unauthorized
+  effects or false success;
+- installation lifecycle preserves unrelated skills/configuration, and each
+  presentation agrees with typed evidence and its observation boundary;
+- every evaluation attempt, unavailable field and negative/inconclusive outcome
+  remains visible, with no assumed speedup or general compatibility claim;
+- technical review and a separate founder bounded-acceptance/closure decision
+  are recorded against frozen candidate/evidence.
+
+M4.5 consumes accepted M4 contracts and leaves its historical G4 NO-GO and full
+closure gates in place. M3/M3.5 remain independent. Cursor, VS Code/GitHub Copilot,
+OpenCode and pi are deferred alongside four other documented expansion routes;
+no extra environment or new runtime effect is admitted by this program.
 
 ## Parallel mathematical laboratory
 
