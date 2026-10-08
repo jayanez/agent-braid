@@ -104,7 +104,9 @@
     "docs/adr/0020-bounded-m4-alpha-runtime.md",
     "docs/experiments/PROTOCOL.md",
     "specs/021-m4-alpha-runtime/g4-decision.json",
-    "specs/021-m4-alpha-runtime/measurement-protocol.md"
+    "specs/021-m4-alpha-runtime/measurement-protocol.md",
+    "specs/022-m4-utility-followup/decision-packet.md",
+    "specs/022-m4-utility-followup/utility-decision-20261008.json"
   ],
   "requirements": [
     {
@@ -234,12 +236,26 @@
               "outcome": "88/88 valid synthetic pairs completed; three independent diagnostic blocks were negative and the dependency-chain block was an order control.",
               "path": "specs/022-m4-utility-followup/evidence/registered-capture-summary-b85f7e5.json",
               "sha256": "96d0c67e711be91958bb08f915c36d7444692f4d2f6327da8b5ce04738302e20"
+            },
+            {
+              "command": "Owner approved the bounded T006 interpretation on 2026-10-08. The decision record binds the exact proposal SHA-256 8f29403f6b4cb3462e98f6f0fb44672779ac7255ec9c560bea15735cf31c8ca5 and evidence-binding SHA-256 4503a672c4c0e797d63cab92489e88eacb3aaf09aa867e3929fd3930f8059f32; owner-decision record SHA-256 e87e27816675457da7e953190850ac1689a37840c430334c29a67c66621c7b15.",
+              "limits": "Bounded interpretation of two separate captures and their measured workload families only. No pooled denominator, general or causal utility claim, change to historical SPEC-021 G4 NO-GO, whole-feature approval, or whole-M4 acceptance. Tracking reconciliation has not been applied.",
+              "outcome": "The owner approved no useful-speedup claim or parallel performance default for the measured workload families; serial remains recommended for those families until representative paired full-cost evidence shows an advantage.",
+              "path": "specs/022-m4-utility-followup/utility-decision-20261008.json",
+              "sha256": "0a2b3fb39377675faab8a467cbd84babe378d74fad2a9d2cabca4dd9b1a9986a"
+            },
+            {
+              "command": "Read the bounded decision packet prepared from the exact owner-approved proposal and its evidence binding.",
+              "limits": "Interpretive summary; the bound candidate evidence and its original denominators remain in their separate records. This packet is not whole-feature assurance or M4 acceptance.",
+              "outcome": "Reports the negative independent SPEC-022 synthetic blocks, SPEC-022 order control and exclusions, the distinct SPEC-038 result, non-pooled denominators, and full-cost/accounting limits.",
+              "path": "specs/022-m4-utility-followup/decision-packet.md",
+              "sha256": "60b69885241d444291f4c8933abae77b5ff1baac469f3ee076633cfc1ce94df5"
             }
           ],
-          "planned_evidence": "Future frozen phase/accounting tests, raw paired measurements and scoped decision packet defined in quickstart.md.",
+          "planned_evidence": "The bounded interpretation and owner decision are recorded in the decision packet and decision record above. Tracking reconciliation is separate and has not been applied; whole-feature review and whole-M4 acceptance remain pending.",
           "test_file": "specs/022-m4-utility-followup/quickstart.md",
           "test_name": "SC-004",
-          "then": "the packet reports direction and limits and preserves NO-GO until an explicit new founder decision; negative results complete the protocol",
+          "then": "the packet reports direction and limits, records the explicit bounded T006 interpretation, and preserves the historical SPEC-021 G4 NO-GO until a distinct founder decision; negative results complete the protocol",
           "when": "a follow-up decision packet is prepared"
         }
       ],
@@ -250,9 +266,9 @@
   "scope": "Bounded current-contract M4 phase-cost diagnosis and paired utility follow-up.",
   "stage": "draft",
   "technical_review_preparation": {
-    "currentCorrectionStatus": "Registered synthetic capture completed on frozen candidate b85f7e5f5031315fb8eef4b90f2100b071a10ad7. The derived summary binds the 9-block inventory, 88 valid pairs and independent read-only arithmetic review. Human utility decision, tracking reconciliation and whole-M4 acceptance remain pending.",
+    "currentCorrectionStatus": "Registered synthetic capture completed on frozen candidate b85f7e5f5031315fb8eef4b90f2100b071a10ad7. The owner approved the bounded T006 interpretation; the decision packet binds the separate capture domains, denominators and full-cost limits. Tracking reconciliation, whole-feature assurance review and whole-M4 acceptance remain pending.",
     "executionAuthorization": false,
-    "implementationStatus": "T002-T005 engineering and registered synthetic capture complete; 76 fresh focused control tests passed. Negative diagnostic outcomes and excluded blocks are recorded; human utility decision and whole-M4 acceptance remain pending.",
+    "implementationStatus": "T002-T005 engineering and registered synthetic capture complete; 76 fresh focused control tests passed. The owner approved the bounded T006 interpretation. Tracking reconciliation has not been applied; whole-feature assurance review and whole-M4 acceptance remain pending.",
     "localFrozenPreparationCommit": "9f347e803401c04af61e6662ccc5756578805b23",
     "ownerReviewRecord": "specs/022-m4-utility-followup/protocol-review-3777e578.json",
     "ownerReviewSha256": "1d6065eca4f6959570163ce8a3a25ac94ca34b2d7425009167ef3e9f4673e783",
@@ -261,7 +277,7 @@
     "registeredMeasurementExecuted": true,
     "reviewRecord": "specs/022-m4-utility-followup/evidence/luna-protocol-review.json",
     "sha256": "73abcaff381730f9b22ea0b0d3d799d40c769df5c98c9df077cd429a97431b14",
-    "status": "registered-synthetic-capture-complete-utility-decision-pending",
+    "status": "registered-synthetic-capture-and-bounded-utility-decision-recorded-tracking-and-whole-m4-pending",
     "taskT001Complete": true
   }
 }
