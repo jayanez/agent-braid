@@ -1,0 +1,64 @@
+{
+  "recordVersion": "m4-spec038-historical-evidence-binding-v1",
+  "purpose": "Preserve provenance for SC-001 and SC-002 artifacts after their candidate inputs changed.",
+  "historicalEvidence": [
+    {
+      "artifactPath": "specs/038-m4-real-workload-closure/evidence/sc-001.json",
+      "artifactSha256": "fbe83689316edd8b794b85ca97c29226ea87cfdc0420d0b54eaf6d37a542f3b6",
+      "historicalCandidateCommit": "7d73c80f1b8c23a65b33bf584abac29a2e097417",
+      "historicalInputs": {
+        "specs/038-m4-real-workload-closure/source-rights-manifest.json": "8f1707b2ae5fc66b5ed5e45fa21d70b9e02a1765ec51c242db96c11bd1e1766d",
+        "specs/038-m4-real-workload-closure/protocol-review-packet.md": "656f0b67958e6cf0857bcf3a2908b8235eb2ea43a9a44a8ae18e1c6905790fd2",
+        "tests/test_m4_real_workload_trials.py": "8d888c64b79635a961b28a35db524f172d781399e2b1ce4d11ebde474c05c491",
+        "tests/test_m4_real_workload_preparation.py": "40ed0e337f340b28d4efa03dd94a9658da4296a15fc52dd47000f8882298301f"
+      },
+      "verification": {
+        "method": "For each historicalInputs entry, SHA-256 was recomputed from read-only `git show 7d73c80f1b8c23a65b33bf584abac29a2e097417:<path>` output.",
+        "status": "all-input-hashes-match"
+      },
+      "scope": "Owner source-rights and protocol decisions for the unchanged exact source frame; historical engineering-control inputs only.",
+      "limits": "Historical bytes and conclusions only; do not interpret as evidence for the repaired/current candidate."
+    },
+    {
+      "artifactPath": "specs/038-m4-real-workload-closure/evidence/sc-002.json",
+      "artifactSha256": "6dc49e5f0ea4d106b8901ddcd877d8107b283f9c85f12121fa81c73c69d65b20",
+      "historicalCandidateCommit": "7d73c80f1b8c23a65b33bf584abac29a2e097417",
+      "historicalInputs": {
+        "agent_braid/git_adapter.py": "4548eb96849e2d0ed1eaefc53579d065651b00a2c6ae5b1aef6e2bdc5ae3dc45",
+        "agent_braid/git_process.py": "3247ac861404cfb68f08939770a5048294b45ddc984a1379ca9eb2091ad48668",
+        "agent_braid/git_replay.py": "62a2c461902e30d874dfe82bed77ab79075f33cb0e56f1e543fd9d317f1d571e",
+        "agent_braid/git_runtime.py": "ceb4469906b6c97a6f03faf3cc1b4ea8387df937c06b8ccd49984eaf2dff4d4e",
+        "agent_braid/m4_real_workload.py": "f69221eb6ed21d5b959e0e172fee34191c651195a3bcc18e8324ea8709d78678",
+        "agent_braid/m4_real_workload_trials.py": "0a68a568d07a51cf103eee0c66f1e3fbe43a31fb6f343d8c025d4872d98e5a11",
+        "agent_braid/runtime_policy.py": "930ead80e4085301e6337af58660665219da3d3b40b72cfca8b803cebfa09188",
+        "agent_braid/runtime_scheduler.py": "47bb371c88726793d207a59bb85cb6911d86e00a44694b37934805d9fa2462a9",
+        "schemas/0.1.0-alpha/git-runtime-request.schema.json": "a83873e072ea357b29331e74e42b5a075769d939bcfba69f458712876b187f5d",
+        "schemas/0.1.0-alpha/runtime-policy.schema.json": "dc88b1e7de631c797002ad29276a4eeccf8f2a1bbbb3a48c41dd4f82ea6f8c17",
+        "scripts/measure_m4_real_workload.py": "38ae05961eb64a3b2495f5b2934671732d59d1c9ebe4ec1298421bf00ede7c2f",
+        "scripts/prepare_m4_real_workload.py": "626866669ff6153472346c9275362da0b7ea0348493ba7815004064d3502cf2d",
+        "scripts/verify_m4_real_workload.py": "8b395f826cf3bc9f4f6bd2ee316e860212100591d86a342bfa0e615d0f8d7f58",
+        "specs/013-m2-real-workload/m2-corpus-selection.json": "978a40379b049d023be95d8eae652d7bbd06ea07942ce5776d40d2b0ad0b9737",
+        "specs/038-m4-real-workload-closure/protocol-review-packet.md": "656f0b67958e6cf0857bcf3a2908b8235eb2ea43a9a44a8ae18e1c6905790fd2",
+        "specs/038-m4-real-workload-closure/source-rights-manifest.json": "8f1707b2ae5fc66b5ed5e45fa21d70b9e02a1765ec51c242db96c11bd1e1766d",
+        "tests/test_m4_real_workload_preparation.py": "40ed0e337f340b28d4efa03dd94a9658da4296a15fc52dd47000f8882298301f",
+        "tests/test_m4_real_workload_trials.py": "8d888c64b79635a961b28a35db524f172d781399e2b1ce4d11ebde474c05c491"
+      },
+      "verification": {
+        "method": "For each historicalInputs entry, SHA-256 was recomputed from read-only `git show 7d73c80f1b8c23a65b33bf584abac29a2e097417:<path>` output.",
+        "status": "all-input-hashes-match"
+      },
+      "scope": "Static admission of the exact source frame on the historical reviewed candidate; not admission of the repaired trial engine.",
+      "limits": "Historical bytes and conclusions only; do not interpret as evidence for the repaired/current candidate."
+    }
+  ],
+  "currentCandidateStatus": {
+    "historicalCandidate": "7d73c80f1b8c23a65b33bf584abac29a2e097417",
+    "repairStatus": "new static preparation is pending",
+    "sourceRightsAndProtocol": "The exact rights and protocol remain bound to the same unchanged source frame.",
+    "limits": "Historical admission and engineering-test bindings do not cover the repaired trial engine or its tests. No new treatment is authorized by this wrapper."
+  },
+  "inputs": {
+    "specs/038-m4-real-workload-closure/source-rights-manifest.json": "8f1707b2ae5fc66b5ed5e45fa21d70b9e02a1765ec51c242db96c11bd1e1766d",
+    "specs/038-m4-real-workload-closure/protocol-review-packet.md": "656f0b67958e6cf0857bcf3a2908b8235eb2ea43a9a44a8ae18e1c6905790fd2"
+  }
+}

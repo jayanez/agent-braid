@@ -1,0 +1,33 @@
+{
+  "recordVersion": "m4-spec038-public-derived-pre-dispatch-summary-v1",
+  "candidateCommit": "b85f7e5f5031315fb8eef4b90f2100b071a10ad7",
+  "manifestSha256": "d0d2a3e167e188cb66345535b9db4ac69c2449d7b8614a2dfee8930b8f318928",
+  "historicalAuthorization": "Exact source/protocol and stable-candidate reviews and capture authorization applied only to this candidate and manifest.",
+  "attempts": [
+    {
+      "ordinal": 1,
+      "stage": "manifest validated-shape check, before source fingerprint inspection and capture API",
+      "cause": "Private helper compared parsed manifest after validator augmentation with the unaugmented raw JSON.",
+      "exitCode": 1,
+      "wholeProcessWallNs": 147468625,
+      "actualTreatmentsStarted": 0,
+      "futureRunGrantPathsPresent": 0,
+      "preflightReceiptPresent": false,
+      "captureReceiptPresent": false
+    },
+    {
+      "ordinal": 2,
+      "stage": "public canonical schedule validation, before callback construction and dispatch clock",
+      "cause": "Trial engine's per-pair digest schedule disagreed with the approved seed-digest parity and alternation schedule.",
+      "exitCode": 1,
+      "wholeProcessWallNs": 289949083,
+      "actualTreatmentsStarted": 0,
+      "futureRunGrantPathsPresent": 0,
+      "preflightReceiptPresent": true,
+      "captureReceiptPresent": false
+    }
+  ],
+  "retention": "Both attempts and costs are preserved in controlled private evidence. This public record excludes source contents, private paths, raw operator output, request data and grant data.",
+  "nextBoundary": "A repair changes the harness candidate and requires a new stable candidate, source manifest, exact owner review and separate capture authorization. Historical approval does not carry forward.",
+  "claimBoundary": "Zero actual source treatments and no actual-workload outcome were obtained. These failures do not change SPEC-021 G4 NO-GO or close M4."
+}

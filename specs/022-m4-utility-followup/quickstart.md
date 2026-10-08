@@ -1,6 +1,6 @@
 # Verification and evaluation preparation
 
-Protocol T001 was approved against public `3777e578`. The owner separately approved the 180-minute successor for implementation and preparation only; see `successor-protocol-review-20261007.json`. Whole-feature human review, stable harness/registered manifest review, actual-workload utility acceptance and G4/M4 closure remain pending. The implementation does not turn protocol approval into registered-execution approval.
+Protocol T001 was approved against public `3777e578`. The owner separately approved the 180-minute successor for implementation and preparation; its exact stable candidate and manifest were subsequently reviewed and authorized for registered capture. The registered synthetic capture completed on candidate `b85f7e5`; see the [derived result](evidence/registered-capture-summary-b85f7e5.json). T006 interpretation, human utility acceptance and G4/M4 closure remain pending. The result does not establish actual-workload utility or a general speedup.
 
 Run commands in an isolated Python 3.12+ environment with its `bin` directory first in `PATH`, including child interpreters.
 

@@ -74,7 +74,9 @@ synthetic substitute. Source rights and enough eligible operations are gates.
    exact stable candidate/harness/manifest before a separate capture approval.
 
 Current runtime admission passed without source/scope changes: two operations,
-20 slots and equal predicted AB/BA trees. Remaining: owner stable-candidate/manifest
-review; exact capture authorization; and observed registered results.
+20 slots and equal predicted AB/BA trees. The exact historical candidate later
+received owner stable-candidate/manifest review and capture authorization, but
+both launches failed before dispatch. Zero actual treatments ran; any repair
+requires a new candidate and manifest with fresh exact owner decisions.
 The denominator/order/cost protocol and source rights are owner-approved; this
 does not establish harness correctness or actual-task utility.
