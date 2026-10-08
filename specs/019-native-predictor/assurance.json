@@ -278,8 +278,16 @@
         {
           "given": "High predictor score without verifier agreement",
           "id": "SC-005",
-          "obtained_evidence": [],
-          "planned_evidence": "Focused unittest result and bounded evidence artifact; record actual command, hash, outcome and limits after execution.",
+          "obtained_evidence": [
+            {
+              "command": "CI: python3 -m unittest discover -s tests -v",
+              "limits": "Synthetic software-boundary controls only; no real-source eligibility, human-utility prediction, real-data fit, holdout performance, production behavior, human scientific approval or founder acceptance is established.",
+              "outcome": "GitHub Actions run 37858099799, job 113587349492, on PR head 7316f97551e8345e43ae39c7b5eb0ffa6200c403: 832 tests passed with two explicit skips; both predictor/verifier boundary controls passed.",
+              "path": "docs/experiments/evidence/m35-verifier-boundary-2026-10-09/README.md",
+              "sha256": "3cc14f76b40e1e3ee4eb9ec2b4f8d183c7e315c3e752296fc3c78e24a955626e"
+            }
+          ],
+          "planned_evidence": "The exact software boundary established by this synthetic evidence; real-data and scientific claims remain separate.",
           "test_file": "tests/test_native_predictor_contract.py",
           "test_name": "NativePredictorContractTests.test_verifier_remains_sole_certificate_source",
           "then": "no bounded certificate or execution permission follows",
@@ -290,6 +298,6 @@
     }
   ],
   "scientific_limits": "Human assessed-usefulness is an indirect proxy, not observed time saved or conflict prevention. Synthetic sequence and hash-chain checks cover the supplied fixture only; hashes are not signatures and do not establish source authenticity or upstream completeness. A three-family holdout supports description only; incomplete labels and source scarcity may make the comparison inconclusive. Finite corpus and shared producer/verifier replay engine do not prove general OT, contextual equivalence, confluence, Yang-Baxter, production performance or safe parallel execution. Prospective sidecar and filtered lab checks exercise local software only; actor identity, independent outside observations, upstream completeness and natural production yield remain unproven.",
-  "scope": "M3.5 real-workload utility target selected and limited source feasibility approved. Synthetic capture and prospective sidecar tooling exercised; no real window, admitted real pair dataset, trained or integrated predictor. Detailed protocol and rubric pending review. 2026-10-08 metadata-only five-candidate review preparation and read-only packet checker; candidates remain unreviewed and the proposed trainer is not implemented or fitted.",
+  "scope": "M3.5 real-workload utility target selected and limited source feasibility approved. Synthetic capture and prospective sidecar tooling exercised; no real window, admitted real pair dataset, real-data fit/calibration, held-out evaluation or integrated predictor. Detailed protocol and rubric pending review. 2026-10-08 metadata-only five-candidate review preparation and read-only packet checker; candidates remain unreviewed. Synthetic-only trainer and evaluator implementation is exercised but does not authorize or evidence a real-data experiment.",
   "stage": "draft"
 }

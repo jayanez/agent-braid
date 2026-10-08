@@ -87,9 +87,11 @@ and retains abstentions at the end. It cannot prove the caller froze inventory
 before labels; duplicate identities are rejected. Scores remain heuristic and
 uncalibrated. All proposals and abstentions contain no certificate and deny
 execution authorization. Even a high score does not invoke or bypass the M3
-verifier. These interfaces provide synthetic controls only: T001/T007 and
-actual training, evaluation, T004 candidate verification and human review
-remain pending.
+verifier. The synthetic T004 software-boundary controls passed in the complete
+CI suite; see [bounded evidence](../../docs/experiments/evidence/m35-verifier-boundary-2026-10-09/README.md).
+This evidence does not close the still-unmerged tracking issue or imply human
+scientific review. T001/T007, real-data training/calibration, held-out
+evaluation and experiment review remain pending.
 
 Focused verification command (Python 3.12+ in an isolated environment):
 
