@@ -20,7 +20,7 @@
   ],
   "assumptions": "Pure deterministic sequence operations with immutable anchors, fresh IDs and complete finite inputs.",
   "authority_snapshot": {
-    "commit": "47854298822dd6973e040947683bf72120395115",
+    "commit": "10944b5e8454602f7adc386f4b2eaff3ff628645",
     "hashes": {
       "ARCHITECTURE.md": "d8cb93624faf2ed7900b55eb9dbb1630e32b9141763d455c67dec5df6a22d6f2",
       "CONSTITUTION.md": "ff7196976a1736a639947c2ab26e8da157fef23c89ba9881312f2a36459964eb",
@@ -91,7 +91,7 @@
   "compatibility": "No current contract changes or M3 closure dependency; future model artifact/version needs separate review.",
   "domain": "Prospective consent-reviewed editing sessions mapped without guesswork to M3 anchored-sequence pairs; fixed source windows, family-separated holdout and policy-blind separately adjudicated utility proxy labels. No admitted real pair yet.",
   "evidence_snapshot": {
-    "commit": "47854298822dd6973e040947683bf72120395115",
+    "commit": "10944b5e8454602f7adc386f4b2eaff3ff628645",
     "mode": "historical"
   },
   "execution_contract": "Local synthetic capture creates a new output file exclusively and audit reads it without changing source input; no Git source mutation, live agents, external effects or execution authorization. The review-packet checker reads six fixed local metadata/document files with safe-file checks, outputs metadata commitments only and never opens journals, admits pairs, invokes source services or authorizes capture/training.",
