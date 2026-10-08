@@ -16,11 +16,26 @@ accounting, fresh-process verification and unchanged budgets/stops are approved.
 
 The original source-rights candidate and protocol packet remain byte-for-byte
 frozen proposals; their historical pending labels are not current decision
-records. Static runtime preparation admission and stable harness/manifest review
-still need evidence. Registered capture, actual-workload results and a new
-whole-M4 founder decision remain pending. No source-project code or source-project
-test commands may be run. Engineering tests on owned synthetic repositories are permitted and are separate from
-registered capture and actual-workload evidence.
+records. [PR #390](https://github.com/jayanez/agent-braid/pull/390) merged the bounded
+harness after local quick/PR validation and exact-head hosted CI. Its merged tree
+is identical to the reviewed implementation candidate. Static preparation at the
+public merged commit admits both frozen operations, all 20 slots and the same
+expected final Git tree for AB and BA. All 18 harness inputs match; all 40 future
+run/grant paths were absent. Luna Latest, medium, reviewed the code and exact
+manifest within the recorded technical scopes, with no actionable findings.
+
+Derived [rights](evidence/sc-001.json), [frame/admission](evidence/sc-002.json),
+[validation](evidence/candidate-validation-status.json) and
+[review-boundary](evidence/sc-007.json) records retain hashes, counts, costs and
+limits. Raw sources, manifests, receipts and observations stay private/local.
+The existing historical authority record is preserved; the new partial evidence
+uses a current evidence binding and does not approve the feature as a whole.
+
+Owner stable-candidate/manifest review, registered capture, actual-workload
+results and a new whole-M4 founder decision remain pending. No actual-source
+grants or persistent runs have been issued. No source-project code or test
+commands may be run. Engineering tests on owned synthetic repositories remain
+separate from registered capture and actual-workload evidence.
 
 ## Retained outcomes and recovery
 

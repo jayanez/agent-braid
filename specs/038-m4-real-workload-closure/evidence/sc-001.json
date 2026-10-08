@@ -1,0 +1,98 @@
+{
+  "authorizationBoundary": {
+    "boundedImplementation": true,
+    "registeredCapture": false,
+    "staticAdmissionAndEvaluationPreparation": true,
+    "wholeM4Acceptance": false,
+    "syntheticHarnessTestsExecuted": true,
+    "sourceProjectCodeExecuted": false
+  },
+  "decision": "approved-implementation-and-evaluation-preparation-only",
+  "decisionRecordSha256": "160441f088d148210fda174775fc5705fd0e319ccd1ad3b448e2a35cdf96db2f",
+  "decisionRecordVersion": "m4-exact-source-protocol-decision-v1",
+  "decisionRecordedAt": "2026-10-07T22:29:17.985790+00:00",
+  "evidenceVersion": "spec038-derived-evidence-v1",
+  "permission": {
+    "additionalConflicts": "none declared in the reviewed role/conflict statement",
+    "authorityCapacity": "confirmed for both exact source changes",
+    "localUse": "approved for bounded local fixed-patch preparation and tree/cost observation",
+    "publication": "derived hashes, costs, statuses, verification and limitations only; no source, patch, log or sensitive-data redistribution",
+    "retention": "exact patches, trees, logs and raw measurements remain private/local",
+    "term": "limited to this M4 evaluation and exact frozen source changes; prospective written revocation applies, with disposition of already-obtained evidence handled explicitly"
+  },
+  "privateRawRecordsRetainedLocally": true,
+  "protocolCandidateSha256": "656f0b67958e6cf0857bcf3a2908b8235eb2ea43a9a44a8ae18e1c6905790fd2",
+  "protocolItemsApproved": [
+    "exact serial/parallel method",
+    "fixed AB/BA schedule",
+    "full accounting boundary",
+    "budgets and stops"
+  ],
+  "provenance": "Public pull-request and commit provenance was checked against the exact frozen candidate commits; it supports provenance/authorship only.",
+  "publicReference": "specs/038-m4-real-workload-closure/evidence/sc-001.json",
+  "reviewerRole": "owner and confirmed rightsholder; no independent auditor or scientific validation is claimed",
+  "scenario": "SC-001",
+  "sourceFrame": {
+    "baseCommit": "f3c734a1f42d6d5962cfedc57d7f6c1efe40e0a6",
+    "candidates": [
+      {
+        "commit": "58351f812614058e53a8ee6aef1dd458f1bb70fc",
+        "operationId": "m2-observation-normalizer",
+        "pullRequest": 137
+      },
+      {
+        "commit": "083f1a390988a9527a5aaeb19133401243b1d714",
+        "operationId": "m2-counterexample-reducer",
+        "pullRequest": 138
+      }
+    ],
+    "repository": "jayanez/agent-braid"
+  },
+  "sourceRightsCandidateSha256": "8f1707b2ae5fc66b5ed5e45fa21d70b9e02a1765ec51c242db96c11bd1e1766d",
+  "status": "satisfied-for-bounded-implementation-and-evaluation-preparation",
+  "decisionItemsApproved": [
+    "038-rightsholder",
+    "038-local-use",
+    "038-retention",
+    "038-term",
+    "038-conflicts",
+    "038-method",
+    "038-schedule",
+    "038-accounting",
+    "038-budgets"
+  ],
+  "engineeringControls": {
+    "testPath": "tests/test_m4_real_workload_trials.py",
+    "testInputSha256": "8d888c64b79635a961b28a35db524f172d781399e2b1ce4d11ebde474c05c491",
+    "profileReceiptSha256": "2dc9ef0d8cf366cb1d5516044ca93c0f4cf5961f2cbdf2adc88d077b4708d1c1",
+    "negativeAndBoundaryTests": [
+      "test_protocol_schedule_is_frozen_and_contains_twenty_unique_slots",
+      "test_exact_gate_runs_before_any_callback_or_fixture_preparation",
+      "test_truthy_but_non_boolean_authority_response_is_rejected_before_factory",
+      "test_review_must_bind_raw_manifest_and_capture_must_bind_review",
+      "test_review_after_capture_and_capture_after_action_are_rejected",
+      "test_all_twenty_slots_remain_when_dispatch_budget_expires",
+      "test_unknown_treatment_failure_stops_dispatch_and_preserves_remaining_slots",
+      "test_same_slot_recovery_requires_consumed_bound_resume_grant_and_never_becomes_valid",
+      "test_owned_synthetic_interruption_resume_and_readonly_inspection_ingest_same_slot",
+      "test_complete_synthetic_rows_keep_six_measured_ratios_and_all_warmups",
+      "test_phase_accounting_rejects_residual_double_count",
+      "test_owned_synthetic_git_treatments_retain_outputs_for_fresh_readonly_inspection",
+      "test_fresh_verifier_checks_all_twenty_slot_dispositions_and_rejects_tree_mismatch",
+      "test_cli_capture_path_is_refused",
+      "test_fresh_verifier_failure_preserves_owned_run_and_grant_evidence",
+      "test_verified_but_incomplete_capture_still_retains_treatment_evidence",
+      "test_capture_output_inside_git_common_storage_is_refused_before_runner"
+    ],
+    "limits": "These are synthetic engineering controls covered by the local PR profile; they do not reproduce or constitute an actual registered capture."
+  },
+  "rightsholder": {
+    "capacity": "Explicit owner/rightsholder confirmation for both exact frozen source changes; the named party is retained in the already-frozen rights candidate. Provenance alone is not treated as rights authority."
+  },
+  "inputs": {
+    "specs/038-m4-real-workload-closure/source-rights-manifest.json": "8f1707b2ae5fc66b5ed5e45fa21d70b9e02a1765ec51c242db96c11bd1e1766d",
+    "specs/038-m4-real-workload-closure/protocol-review-packet.md": "656f0b67958e6cf0857bcf3a2908b8235eb2ea43a9a44a8ae18e1c6905790fd2",
+    "tests/test_m4_real_workload_trials.py": "8d888c64b79635a961b28a35db524f172d781399e2b1ce4d11ebde474c05c491",
+    "tests/test_m4_real_workload_preparation.py": "40ed0e337f340b28d4efa03dd94a9658da4296a15fc52dd47000f8882298301f"
+  }
+}

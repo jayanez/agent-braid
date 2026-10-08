@@ -2,10 +2,12 @@
 
 ## Development status — 2026-10-08
 
-Exact source rights and protocol are approved for bounded implementation and
-preparation. See [implementation readiness](implementation-readiness.md) for the
-scoped decision and current gates. Earlier proposal descriptions below retain
-their design-time context; stable review, capture and whole-M4 acceptance remain pending.
+Exact source rights and protocol are approved. The bounded harness is merged and
+validated; static admission and technical review cover two frozen operations and
+20 treatment slots. See [implementation readiness](implementation-readiness.md)
+for the evidence and scope. Earlier proposal descriptions retain their design-time
+context. Owner stable-candidate/manifest review, capture and whole-M4 acceptance
+remain pending.
 
 ## Candidate source inspection
 
@@ -71,7 +73,8 @@ synthetic substitute. Source rights and enough eligible operations are gates.
 7. Two explicit reviews: protocol/source-rights before implementation/capture;
    exact stable candidate/harness/manifest before a separate capture approval.
 
-Remaining: current runtime admission without source/scope changes; stable
-harness/manifest review; exact capture authorization; and observed results.
+Current runtime admission passed without source/scope changes: two operations,
+20 slots and equal predicted AB/BA trees. Remaining: owner stable-candidate/manifest
+review; exact capture authorization; and observed registered results.
 The denominator/order/cost protocol and source rights are owner-approved; this
 does not establish harness correctness or actual-task utility.
