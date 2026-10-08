@@ -1,10 +1,13 @@
 <!-- SPDX-License-Identifier: CC-BY-SA-4.0 -->
-# Proposed first-cohort budget
+# First-cohort budget limits
 
-Proposal dated 2026-10-08, not an approved budget or provider opt-in. The draft
-registration retains `status: draft` and `provider.optIn: false`.
+The owner approved the following numeric limits on 2026-10-08 in the M4.5
+implementation chat. This decision covers the caps only. Provider opt-in,
+billing route, exact model builds, source rights and the complete registration
+remain pending. The registration retains `status: draft` and
+`provider.optIn: false`; the private decision packet preserves the direct reply.
 
-| Boundary | Proposed cap |
+| Boundary | Approved cap |
 | --- | ---: |
 | Total provider cost, including setup and retries | EUR 25 |
 | Total input/output/retry tokens | 4,000,000 |
