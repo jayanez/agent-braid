@@ -1,0 +1,159 @@
+{
+  "recordVersion": "m4-whole-milestone-six-row-review-v1",
+  "decision": "bounded-whole-M4-alpha-engineering-and-evaluation-accepted-with-negative-utility",
+  "candidate": {
+    "commit": "fa8852ab4158f860bf2bc3aa70469f3367d2b57b",
+    "tree": "3bae1cc52fb8c838bdbe10dd6ee72924c6a5be52",
+    "captureCommit": "e66f9a1b94fc5ebfbf784d9c48a76f53c1a656ee",
+    "captureManifestSha256": "6cc2715f99c5e1eb47fa90e9ccb85388c7bc157f995c404660255c5608f60577",
+    "inputCount": 18,
+    "inputHashesMatch": true,
+    "runtimePathDiffSinceCapture": []
+  },
+  "reviewBasis": {
+    "model": "gpt-6-luna",
+    "effort": "medium",
+    "reviewReceiptSha256": "b56f489770b1587b72f3b629e22417b98d87a01db8f249dd55c88c8d4d714d05",
+    "questionParityReceiptSha256": "e3bb8f835d6556a2224385c86942d048d5e7e6ff08e6fd69086662d2ee72cfb6",
+    "reviewScope": "Exact-candidate six-row evidence, G4, execution bindings, terminal receipt and SPEC-027 assessment-closure compatibility",
+    "remainingFinding": "One P2 stale current SPEC-027 status text was identified for correction in the reviewed public delivery; it does not indicate missing founder authority or capability adoption."
+  },
+  "rows": [
+    {
+      "id": "M4-EXIT-01",
+      "title": "MCP and host-runtime adapters",
+      "status": "accepted-bounded-engineering-evaluation",
+      "evidence": [
+        [
+          "specs/021-m4-alpha-runtime/evidence/current-codex-host-e66f9a1.json",
+          "a811e0a3d55bc1b5fb0e87e463a974f15498338351d606cafadb3068d4b068d7"
+        ],
+        [
+          "specs/021-m4-alpha-runtime/evidence/current-claude-host-e66f9a1.json",
+          "fb87291e569062d8f962f664c2daf3290adb974901ea5a81450a930bf67debf8"
+        ],
+        [
+          "specs/038-m4-real-workload-closure/evidence/sc-003.json",
+          "d90ead251b43f9b9ff67bb48556c2746d22eabde3b90abceb38b5ffe3f11c27e"
+        ]
+      ],
+      "boundary": "Bounded Darwin host observations; no Linux live-host adapter. Claude client error and independently verified runtime prefix remain distinct facts."
+    },
+    {
+      "id": "M4-EXIT-02",
+      "title": "Transactional/isolation policies",
+      "status": "accepted-bounded-engineering-evaluation",
+      "evidence": [
+        [
+          "tests/test_m4_alpha_scheduler.py",
+          "03966aac4af6dc9f4d99400aa0daf26bdb76711b8a50ce30d93ee60982f3ba52"
+        ],
+        [
+          "tests/test_m4_alpha_policy.py",
+          "51fd5581bbf50971aba89bb0cda3df27ae799fe2648cd44e99b2347d140f6418"
+        ],
+        [
+          "specs/038-m4-real-workload-closure/evidence/sc-004.json",
+          "ee9bcd84c7861831591bd3e5e005de1b93677a448f638668b8510a504aafba39"
+        ],
+        [
+          "specs/021-m4-alpha-runtime/evidence/current-darwin-core-e66f9a1.json",
+          "a96cd7c213b87bf14174d768ca6d768d911aff96e9b278dc601af3c5c699ca14"
+        ]
+      ],
+      "boundary": "Synthetic controls are not actual-source refusals/recoveries. No hostile same-user or hard memory-cap proof."
+    },
+    {
+      "id": "M4-EXIT-03",
+      "title": "Live effect verification",
+      "status": "accepted-bounded-engineering-evaluation",
+      "evidence": [
+        [
+          "tests/test_git_runtime.py",
+          "70e0655241bb64b4fb620309b0897c350b077a46db57be142f000a2e0d46fe47"
+        ],
+        [
+          "specs/038-m4-real-workload-closure/evidence/sc-005.json",
+          "43eb39ab302661e71d0ebbf52418a71bb9ecdfb8790566f842baac7dbd4b0b46"
+        ],
+        [
+          "specs/038-m4-real-workload-closure/evidence/sc-007.json",
+          "997c5f16fbb8f9a779bd044c9e00d43d39ac32b4272c09457df4732db7fd56ba"
+        ]
+      ],
+      "boundary": "20 source treatments were verified before cleanup and paired trees matched; deleted run/grant paths cannot be re-inspected. No semantic-correctness claim."
+    },
+    {
+      "id": "M4-EXIT-04",
+      "title": "Replay and recovery",
+      "status": "accepted-bounded-engineering-evaluation",
+      "evidence": [
+        [
+          "specs/021-m4-alpha-runtime/evidence/current-codex-host-e66f9a1.json",
+          "a811e0a3d55bc1b5fb0e87e463a974f15498338351d606cafadb3068d4b068d7"
+        ],
+        [
+          "specs/021-m4-alpha-runtime/evidence/current-claude-host-e66f9a1.json",
+          "fb87291e569062d8f962f664c2daf3290adb974901ea5a81450a930bf67debf8"
+        ],
+        [
+          "tests/test_m4_alpha_policy.py",
+          "51fd5581bbf50971aba89bb0cda3df27ae799fe2648cd44e99b2347d140f6418"
+        ]
+      ],
+      "boundary": "Claude abort was not exercised; SPEC-038 source evaluation had no refused/recovered pairs."
+    },
+    {
+      "id": "M4-EXIT-05",
+      "title": "CI and policy gates",
+      "status": "accepted-bounded-engineering-evaluation",
+      "evidence": [
+        [
+          "specs/021-m4-alpha-runtime/evidence/current-darwin-core-e66f9a1.json",
+          "a96cd7c213b87bf14174d768ca6d768d911aff96e9b278dc601af3c5c699ca14"
+        ],
+        [
+          "specs/021-m4-alpha-runtime/evidence/current-linux-core-protocol-e66f9a1.json",
+          "ee59e5e35872330292dc7feb8f03a247974fa2ad5ec102e7f679e1e346d8254c"
+        ],
+        [
+          "specs/021-m4-alpha-runtime/closure-matrix.md",
+          "5d9979e8c3303859f9dbb87f033fd4f074b75c546611f576223a5a2c425bbe64"
+        ]
+      ],
+      "boundary": "Merged-candidate workflow passed 763 tests: 758 passed, 5 skipped. Specialist matrix was skipped with no runner/steps."
+    },
+    {
+      "id": "M4-EXIT-06",
+      "title": "Portability",
+      "status": "accepted-bounded-engineering-evaluation",
+      "evidence": [
+        [
+          "specs/021-m4-alpha-runtime/evidence/current-darwin-core-e66f9a1.json",
+          "a96cd7c213b87bf14174d768ca6d768d911aff96e9b278dc601af3c5c699ca14"
+        ],
+        [
+          "specs/021-m4-alpha-runtime/evidence/current-linux-core-protocol-e66f9a1.json",
+          "ee59e5e35872330292dc7feb8f03a247974fa2ad5ec102e7f679e1e346d8254c"
+        ],
+        [
+          "specs/021-m4-alpha-runtime/evidence/current-codex-host-e66f9a1.json",
+          "a811e0a3d55bc1b5fb0e87e463a974f15498338351d606cafadb3068d4b068d7"
+        ],
+        [
+          "specs/021-m4-alpha-runtime/evidence/current-claude-host-e66f9a1.json",
+          "fb87291e569062d8f962f664c2daf3290adb974901ea5a81450a930bf67debf8"
+        ]
+      ],
+      "boundary": "Darwin arm64 host observations and Linux x86_64 core/protocol only; no Linux live-host or clean-room dependency reproduction."
+    }
+  ],
+  "interpretation": {
+    "historicalSpec021G4": "NO-GO preserved for useful speedup",
+    "spec027": "Three bounded deferrals preserved; implementationAdopted=false",
+    "utility": "Negative descriptive results remain separate: SPEC-021 0.5581; SPEC-038 0.6538998703; SPEC-022 admitted synthetic blocks 0.6399138361, 0.6459474869, 0.8480100361. Do not pool; serial remains recommended for measured families until representative paired full-cost evidence shows an advantage.",
+    "scope": "Bounded completed engineering/evaluation disposition only; no production, general utility, semantic, scientific or formal acceptance; no capability expansion.",
+    "tracking": "Issue/milestone apply, follow-up empty audit and actual Project verification remain separate and pending."
+  },
+  "artifactHashSemantics": "Listed evidence hashes bind the exact approved candidate fa8852a or the separately identified capture commit e66f9a1. Later publication edits to this closure matrix do not change the reviewed candidate evidence binding."
+}

@@ -1,6 +1,8 @@
-# Proposed M4 alpha exit matrix
+# M4 alpha exit matrix and closure record
 
-All rows remain **open for final M4 acceptance**. Evidence is assembled below, with unexecuted checks and limitations called out. G0 accepted criteria and implementation scope, not final results. On 2026-10-05 the founder recorded a G4 NO-GO for accepting SPEC-021 as a useful speedup capability under the current evidence. This does not close M4; the milestone remains open.
+Current bounded disposition: all six M4 exit rows are accepted as engineering/evaluation evidence at reviewed candidate `fa8852ab4158f860bf2bc3aa70469f3367d2b57b` under the explicit 2026-10-09 item22 decision. This accepts a bounded M4 alpha completion with negative utility; it does not accept useful speedup or make parallel execution the performance default. Issue/milestone tracking remains pending separate guarded apply, empty audit, and Project/milestone verification.
+
+The 2026-10-05 historical G4 decision remains **NO-GO** for accepting SPEC-021 as a useful speedup capability. The decision does not change M3/M3.5 scientific gates or authorize broader capability adoption. The historical evidence snapshots and row limits below remain intact.
 
 | Roadmap deliverable | Required exit evidence | Requirements | Cut |
 | --- | --- | --- | --- |
@@ -115,6 +117,7 @@ bounded capture scope. The earlier partial capture and
 metadata-preflight stop remain separately preserved and are not erased by this
 replacement observation.
 
-The Claude record adds only a bounded current-host observation. All six exit
-criteria remain open. G4 NO-GO, SPEC-021's open state and M4's open milestone are
-unchanged; the founder's whole-M4 decision remains separate.
+At the time of this Claude addendum, the record added only a bounded current-host
+observation and all six exit criteria remained open. The later item22 decision
+accepts the six rows as bounded engineering/evaluation evidence; it preserves the
+historical G4 NO-GO and does not itself close issue or milestone tracking.

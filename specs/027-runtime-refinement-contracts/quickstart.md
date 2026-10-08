@@ -4,9 +4,10 @@ The read-only assessment CLI and synthetic controls are implemented. No expanded
 NO-GO/defer dispositions for source promotion, arbitrary code execution and real
 external effects by the bounded M4 alpha runtime. Those decisions preserve ordinary
 authorized project delivery/testing and do not adopt capabilities or issue grants.
-See the [derived decision record](evidence/founder-capability-dispositions-20261008.json).
+See the [current disposition status](capability-disposition-current.md) and
+[derived decision record](evidence/founder-capability-dispositions-20261008.json).
 See `evidence.json` and `tasks.md` for the candidate-bound obtained evidence;
-assessment completion alone did not close T007; its three bounded-M4-alpha disposition decisions are now recorded. This does not close M4.
+assessment completion alone did not close T007; its three bounded-M4-alpha disposition decisions are now recorded. The founder separately accepted bounded M4 alpha engineering and evaluation as complete on 2026-10-09 with negative utility. Historical G4 NO-GO remains, and no capability was adopted. See the [SPEC-038 decision](../038-m4-real-workload-closure/whole-m4-founder-decision-20261009.json); tracking reconciliation remains pending reviewed delivery.
 
 ## SC-001 — Separate grant scope
 

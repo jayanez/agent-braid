@@ -23,6 +23,17 @@ The private Project's Specs and tasks, By milestone and By status views were
 checked separately: SPEC-020 and all seven tasks are Done, assigned to M4.
 The previously pending review decisions were not changed.
 
-M4 remains open. Tracking closure covers only the founder-approved first cut,
+At this SPEC-020 integration snapshot, M4 remained open. Its tracking closure covered only the founder-approved first cut,
 and neither this integration nor CI changes the M3/M3.5 empirical scenario gates,
 independent external validation, production authority or broader runtime scope.
+
+## Subsequent whole-M4 decision — 2026-10-09
+
+The founder separately approved whole bounded M4 alpha engineering and evaluation
+through item 22, with negative utility and the historical G4 NO-GO preserved.
+See the [whole-M4 decision](../../specs/038-m4-real-workload-closure/whole-m4-founder-decision-20261009.json)
+and [six-row closure packet](../../specs/038-m4-real-workload-closure/whole-m4-closure-packet.md).
+The current source proposes the remaining governed tracking closure after reviewed
+public delivery; the historical SPEC-020 integration above does not provide that
+new approval. No source-promotion, arbitrary-code or real-external-effect capability
+is adopted, and M3/M3.5 and independent scientific gates retain their own scope.
