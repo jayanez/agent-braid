@@ -6,8 +6,8 @@ No real payload was opened, no window registered, no pair admitted, no human
 label collected, and no weight fit, calibration or holdout evaluation executed.
 The real-data and scientific-review prerequisites remain pending.
 
-`packet.json` binds six fixed review inputs and records five proposed workflow
-descriptions only. `binding.json` binds those inputs, checker, tests and completion
+`packet.json` binds six fixed review inputs and records the current five proposed
+workflow descriptions only. `binding.json` binds those inputs, checker, tests, completion
 plan with actual Python/platform provenance. `focused-tests.txt` records 29
 passing synthetic/preparation controls. `technical-review.md` records the separate
 Luna Latest medium review and its limits. Authority/evidence freeze identifies
@@ -53,6 +53,11 @@ authority/evidence candidate. The later commit packages this freeze only;
 human review remains pending. The packet commitment is
 `02457065ecd1a5f0a78a59a161e7dff8d4d83b6f22d2b5e45c5594326525477b`. No scientific
 acceptance, source capture permission or model adoption follows from this record.
+
+The 2026-10-08 adversarial follow-up and its bounded regression evidence are in
+[`adversarial-regression-review.md`](adversarial-regression-review.md). They
+supersede this preparation candidate for review; a new freeze is required before
+the human review can apply to changed bytes.
 
 ## Separate preparation reproduction
 

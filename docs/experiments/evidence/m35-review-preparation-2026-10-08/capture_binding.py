@@ -8,7 +8,7 @@ import sys
 
 ROOT = Path(__file__).resolve().parents[4]
 sys.path.insert(0, str(ROOT))
-from scripts.check_m35_review_packet import check_packet  # noqa: E402
+from scripts.check_m35_review_packet import check_packet, read_auxiliary_file  # noqa: E402
 
 
 def main() -> None:
@@ -19,8 +19,9 @@ def main() -> None:
         "tests/test_m35_review_packet.py",
         "specs/019-native-predictor/completion-plan.md",
         "docs/experiments/evidence/m35-review-preparation-2026-10-08/capture_binding.py",
+        "docs/experiments/evidence/m35-review-preparation-2026-10-08/adversarial-regression-review.md",
     ):
-        inputs[name] = sha256((ROOT / name).read_bytes()).hexdigest()
+        inputs[name] = sha256(read_auxiliary_file(ROOT, name)).hexdigest()
     result = {
         "format": "m35-review-preparation-evidence-v1",
         "inputs": inputs,
