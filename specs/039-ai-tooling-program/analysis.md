@@ -20,8 +20,8 @@ as future, not executable existing commands.
 | A002 | Major | SPEC-040 data-model.md AnalyzeWorkRequest | A shared Git common directory alone could admit sibling worktrees beyond selected roots; added explicit canonical worktree allowlist and default root-only scope | Articles 5/12/15; configured-root contract |
 | A003 | Minor | SPEC_MILESTONE_INDEX.md | New rows must remain in the table and counts distinguish registered from proposed milestones; corrected | GITHUB_TRACKING.md |
 | A004 | Minor | Six tasks.md files | Replaced undifferentiated feature-wide targets with bounded target slices for T001–T008 | Spec Kit task/evidence traceability |
-
 | A005 | Minor | issue-drafts.md and six validation-plan.md files | Complete source-diff check exposed trailing blank lines at EOF; normalized endings and checked against develop | Validation whitespace gate |
+| A006 | Minor | README.md; architecture, contributor, strategy, portfolio and adoption navigation | M4.5 had no public entry guide; README/portfolio still counted 38 specs. Added a guide and links, updated inventory to 44 specs, and identified six draft packages and proposed registration separately from current runtime support | Articles 13/14/20; public evidence boundaries |
 
 ## Pending boundary findings
 

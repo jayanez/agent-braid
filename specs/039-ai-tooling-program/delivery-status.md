@@ -4,6 +4,24 @@ Prepared on 2026-10-08 from public develop
 `796a959d881d0c44f9d259fb7a2d5d916c45a416` in an independent full clone.
 No changes were made to another task's checkout or shared object store.
 
+## Documentation follow-up — 2026-10-08
+
+The source branch incorporated develop
+`7d0985dfb3a406debfc534746b769d0d729caabe` by merge, retaining the reviewed
+SPEC-038 harness/source-preparation updates from PRs #390/#391.
+
+README, architecture, contributor guidance, ecosystem, adoption pathline and
+the portfolio's current navigation now link the new `docs/tooling/README.md`
+entry guide. The historical portfolio audit remains unchanged. Inventory is
+44 specs, with 18 registered milestones and proposed M4.5; all 60 M4.5
+implementation tasks remain unchecked.
+
+These additions identify planned capabilities, selected local CLI hosts,
+deferred environments and the distinction between contributor and product skills.
+The changed architecture authority requires renewed frozen draft snapshots and
+new review; snapshotting confers no approval. Stable-candidate validation results
+are reported in PR #389 after execution.
+
 ## Delivered source
 
 - Six Spec Kit features, 48 requirements, 48 scenarios and 60 unchecked tasks.
