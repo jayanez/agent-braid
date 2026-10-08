@@ -26,6 +26,17 @@ support alone cannot satisfy that gate.
 
 ## Competitive gap under test
 
+The proposed [M4.5 integration program](../tooling/README.md) selects Codex and
+Claude Code local CLIs as its first developer hosts. It combines MCP access,
+portable workflow skills, explicit installation/configuration and evidence
+presentation. The [research register](../../specs/039-ai-tooling-program/research.md)
+records the official sources behind these design choices. Product implementation,
+compatibility observations and usability evaluation remain pending.
+
+Cursor, VS Code/GitHub Copilot, OpenCode and pi are documented future routes.
+Additional hosts, remote consumers and interactive embedded views require their
+own contracts and observations before any support claim.
+
 The hypothesis is that teams need portable, evidence-carrying analysis between
 orchestration and execution policy. This is not yet established market demand.
 It will be tested through integrations, independent reproductions, benchmark
