@@ -22,6 +22,7 @@ from agent_braid.tooling_hosts import (
     LaunchEvidence, prepare_host_launch,
 )
 from agent_braid.tooling_supervisor import BudgetCaps
+from agent_braid.tooling_mcp import ToolingConfig, ToolingError
 
 
 @dataclass
@@ -167,6 +168,25 @@ class HostAdapterTests(unittest.TestCase):
         })
         with self.assertRaisesRegex(HostPreparationError, "overlaps"):
             prepare_host_launch(admission, nested)
+        with self.assertRaisesRegex(ToolingError, "disjoint"):
+            ToolingConfig(config.source_roots[0], nested_result)
+
+        result_parent = tmp_path / "result-container"
+        nested_source = result_parent / "source"
+        nested_source.mkdir(parents=True, mode=0o700)
+        result_parent.chmod(0o700)
+        ancestor_result = config.__class__(**{
+            **config.__dict__, "source_roots": (nested_source,),
+            "mcp_result_root": result_parent,
+            "codex_config_overrides": tuple(
+                override.replace(json.dumps(str(config.source_roots[0])), json.dumps(str(nested_source)))
+                       .replace(json.dumps(str(config.mcp_result_root)), json.dumps(str(result_parent)))
+                for override in config.codex_config_overrides),
+        })
+        with self.assertRaisesRegex(HostPreparationError, "overlaps"):
+            prepare_host_launch(admission, ancestor_result)
+        with self.assertRaisesRegex(ToolingError, "disjoint"):
+            ToolingConfig(nested_source, result_parent)
 
         nested_grant = config.source_roots[0] / "grants"
         nested_grant.mkdir(mode=0o700)
@@ -184,6 +204,9 @@ class HostAdapterTests(unittest.TestCase):
         })
         with self.assertRaisesRegex(HostPreparationError, "overlaps"):
             prepare_host_launch(admission, grant_override)
+        with self.assertRaisesRegex(ToolingError, "Grant store"):
+            ToolingConfig(config.source_roots[0], config.mcp_result_root,
+                          grant_store=nested_grant, runtime_enabled=True)
 
     def test_binary_pin_is_rechecked_before_supervisor(self):
         tmp_path = self.with_temp()
