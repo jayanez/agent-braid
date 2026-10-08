@@ -3,9 +3,9 @@
 **Status: proposal for human review only.** This metadata-only packet records
 the current candidate workflow descriptions and requests decisions. It does not
 identify eligible families, establish observed yield, authorize source access,
-or approve data collection. The source screen remains **zero observed real
-sessions and zero eligible pairs**. No source payload was opened to prepare
-this packet.
+or approve data collection. No prospective session inventory, collection
+window, or pair dataset has been admitted by this packet. It records no
+content-review findings.
 
 The Kinetiq evidence-pipeline shortlist and SmartNotes non-clinical
 architecture/Spec Kit option list preserve the initial candidate boundaries

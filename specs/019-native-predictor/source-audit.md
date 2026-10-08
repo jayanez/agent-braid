@@ -9,9 +9,10 @@ Braid artifacts. It contains no private session payloads or utility labels.
 
 The founder requested the [completion plan](completion-plan.md). The new
 [source review packet](source-review-packet.md) preserves the two existing
-candidate workflows and proposes three natural Agent Braid engineering workflows
-for review. No new source payload was opened. A 2026-10-08 repository metadata
-query confirmed the three repository identities (`jayanez/agent-braid`,
+candidate workflows and proposes three natural Agent Braid engineering
+workflows for review. This register publishes no content-review findings. A
+2026-10-08 repository metadata query confirmed the three repository identities
+(`jayanez/agent-braid`,
 `jayanez/kinetiq-core`, `jayanez/smart-notes`) only; it did not inspect feeds or
 establish workflow occurrence, permissions, completeness or pair yield.
 The five inventory rows are not five independently eligible observed families.

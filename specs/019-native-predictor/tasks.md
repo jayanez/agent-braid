@@ -79,7 +79,7 @@ The [ADR-extension proposal](adr-extension-proposal.md) is not an adopted ADR.
 The read-only `scripts/check_m35_review_packet.py` and its adversarial tests
 check fixed packet inputs, strict candidate shape and byte drift. Their
 synthetic/software evidence cannot check T001, T007, T002, T003, T004 or T005.
-No real payload was inspected, no window opened, no pair admitted, no human
-label collected, and no fit/calibration/evaluation executed in this increment.
+No prospective window or pair dataset was admitted, no human label was
+collected, and no fit/calibration/evaluation was executed in this increment.
 The three deferred native predictor contract acceptance tests remain pending;
 removing their skips requires actual eligible implementations and evidence.
