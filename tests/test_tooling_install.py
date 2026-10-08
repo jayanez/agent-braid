@@ -2,6 +2,7 @@
 """Temporary-host positive and refusal controls for receipt-owned lifecycle."""
 from contextlib import redirect_stdout, redirect_stderr
 from dataclasses import replace
+import hashlib
 import io
 import json
 import os
@@ -11,8 +12,28 @@ import tomllib
 import unittest
 from unittest.mock import patch
 
+from agent_braid import tooling_assets
 from agent_braid.cli import main
 from agent_braid.tooling_install import InstallationRefused, Selection, apply, doctor, plan
+
+
+def _synthetic_older_bundle(current):
+    assets = list(current.skills)
+    first = assets[0]
+    content = first.content + "\nSynthetic prior bundle fixture; not a published release.\n"
+    assets[0] = replace(first, content=content,
+                        sha256=hashlib.sha256(content.encode("utf-8")).hexdigest(),
+                        size_bytes=len(content.encode("utf-8")))
+    version = "0.0.9-synthetic"
+    digest = hashlib.sha256()
+    digest.update(b"agent-braid-skill-bundle\0")
+    digest.update(version.encode("ascii"))
+    digest.update(b"\0")
+    for asset in assets:
+        digest.update(asset.name.encode("utf-8"))
+        digest.update(b"\0")
+        digest.update(bytes.fromhex(asset.sha256))
+    return tooling_assets.SkillBundle(version, tuple(assets), digest.hexdigest())
 
 
 class LifecycleTests(unittest.TestCase):
@@ -214,6 +235,179 @@ class LifecycleTests(unittest.TestCase):
         with self.assertRaisesRegex(InstallationRefused, "user edit"):
             plan(self.selection, operation="update", source_checkout=True)
         self.assertEqual(target.read_text(), "modified")
+
+    def test_synthetic_older_bundle_updates_then_cli_refusal_has_redacted_diff(self):
+        current = tooling_assets.load_skill_bundle(source_checkout=True)
+        older = _synthetic_older_bundle(current)
+        with patch("agent_braid.tooling_assets.load_skill_bundle", return_value=older):
+            self.transact()
+        config, skills, receipt = self.selection.paths()
+        target = skills / "agent-braid-analyze" / "SKILL.md"
+        self.assertEqual(target.read_text(), older.skills[0].content)
+        update = plan(self.selection, operation="update", source_checkout=True)
+        self.assertIn(target, [change.path for change in update.changes])
+        applied = apply(update, preview_digest=update.preview()["previewDigest"])
+        receipt_after = json.loads(receipt.read_bytes())
+        proposed = current.skills[0].content.encode("utf-8")
+        self.assertEqual(applied["status"], "applied")
+        self.assertEqual(receipt_after["bundleVersion"], current.version)
+        self.assertEqual(receipt_after["bundleSha256"], current.sha256)
+        self.assertEqual(target.read_bytes(), proposed)
+
+        private_edit = b"PRIVATE_USER_EDIT_SHOULD_NOT_LEAK"
+        target.write_bytes(private_edit)
+        before = {str(path.relative_to(self.selection.destination)): path.read_bytes()
+                  for path in self.selection.destination.rglob("*") if path.is_file()}
+        args = ["tooling", "update", "--host", "codex", "--scope", "user",
+                "--source-root", str(self.source), "--result-root", str(self.results),
+                "--destination", str(self.selection.destination), "--source-checkout-assets"]
+        stdout, stderr = io.StringIO(), io.StringIO()
+        with redirect_stdout(stdout), redirect_stderr(stderr):
+            self.assertEqual(main(args), 2)
+        after = {str(path.relative_to(self.selection.destination)): path.read_bytes()
+                 for path in self.selection.destination.rglob("*") if path.is_file()}
+        self.assertEqual(before, after)
+        self.assertEqual(stdout.getvalue(), "")
+        record = json.loads(stderr.getvalue())
+        self.assertEqual(record["schema"], "agent-braid-tooling-refusal-record/v1")
+        self.assertEqual(record["diagnostic"]["scope"], "skill_asset")
+        comparison = record["diagnostic"]["comparison"]
+        self.assertEqual(comparison["direction"], "current -> proposed")
+        self.assertEqual(comparison["ownership"], "owned_but_modified")
+        self.assertEqual(comparison["expectedOwned"]["sha256"], receipt_after["files"]["agent-braid-analyze/SKILL.md"])
+        self.assertEqual(comparison["current"]["sha256"], hashlib.sha256(private_edit).hexdigest())
+        self.assertEqual(comparison["proposed"]["sha256"], hashlib.sha256(proposed).hexdigest())
+        self.assertEqual(comparison["hunks"], [{"currentByteRange": [0, len(private_edit)],
+                                                 "proposedByteRange": [0, len(proposed)]}])
+        self.assertTrue(comparison["redacted"])
+        self.assertNotIn(private_edit.decode(), stderr.getvalue())
+        self.assertNotIn(str(self.root), stderr.getvalue())
+        self.assertLess(len(stderr.getvalue()), 4096)
+
+    def test_unowned_skill_with_proposed_bytes_is_refused_as_ownership_difference(self):
+        bundle = tooling_assets.load_skill_bundle(source_checkout=True)
+        config, skills, receipt = self.selection.paths()
+        target = skills / f"{bundle.skills[0].name}/SKILL.md"
+        target.parent.mkdir(parents=True)
+        target.write_bytes(bundle.skills[0].content.encode("utf-8"))
+        before = target.read_bytes()
+        with self.assertRaises(InstallationRefused) as caught:
+            plan(self.selection, source_checkout=True)
+        diagnostic = caught.exception.diagnostic
+        self.assertEqual(diagnostic["comparison"]["ownership"], "unowned")
+        self.assertEqual(diagnostic["comparison"]["change"], "unchanged")
+        self.assertFalse(diagnostic["comparison"]["contentChanged"])
+        self.assertEqual(diagnostic["comparison"]["current"], diagnostic["comparison"]["proposed"])
+        self.assertIsNone(diagnostic["comparison"]["expectedOwned"])
+        self.assertEqual(diagnostic["comparison"]["hunks"], [])
+        self.assertEqual(target.read_bytes(), before)
+        self.assertFalse(config.exists())
+        self.assertFalse(receipt.exists())
+
+    def test_apply_concurrent_skill_edit_reports_redacted_diff_without_writing(self):
+        transaction = plan(self.selection, source_checkout=True)
+        config, skills, receipt = self.selection.paths()
+        target = skills / "agent-braid-analyze" / "SKILL.md"
+        target.parent.mkdir(parents=True)
+        concurrent = b"PRIVATE_CONCURRENT_EDIT"
+        target.write_bytes(concurrent)
+        with self.assertRaises(InstallationRefused) as caught:
+            apply(transaction, preview_digest=transaction.preview()["previewDigest"])
+        diagnostic = caught.exception.diagnostic
+        self.assertEqual(diagnostic["comparison"]["ownership"], "concurrent_drift_after_preview")
+        self.assertEqual(diagnostic["comparison"]["current"]["sha256"], hashlib.sha256(concurrent).hexdigest())
+        self.assertNotIn(concurrent.decode(), json.dumps(diagnostic))
+        self.assertEqual(target.read_bytes(), concurrent)
+        self.assertFalse(config.exists())
+        self.assertFalse(receipt.exists())
+
+    def test_codex_toml_unowned_collision_reports_redacted_semantic_diff(self):
+        config, skills, receipt = self.selection.paths()
+        config.parent.mkdir(parents=True)
+        original = (b'[mcp_servers.agent-braid]\ncommand = "PRIVATE_TOML_COMMAND"\n'
+                    b'args = ["PRIVATE_TOML_ARGUMENT"]\n')
+        config.write_bytes(original)
+        with self.assertRaises(InstallationRefused) as caught:
+            plan(self.selection, source_checkout=True)
+        diagnostic = caught.exception.diagnostic
+        comparison = diagnostic["comparison"]
+        self.assertEqual(diagnostic["scope"], "codex_toml_server_mapping")
+        self.assertEqual(comparison["representation"], "canonical selected-server mapping")
+        self.assertEqual(comparison["ownership"], "unowned")
+        self.assertTrue(comparison["contentChanged"])
+        self.assertEqual(len(comparison["hunks"]), 1)
+        rendered = json.dumps(diagnostic)
+        self.assertNotIn("PRIVATE_TOML_COMMAND", rendered)
+        self.assertNotIn("PRIVATE_TOML_ARGUMENT", rendered)
+        self.assertNotIn(str(self.root), rendered)
+        self.assertEqual(config.read_bytes(), original)
+        self.assertFalse(skills.exists())
+        self.assertFalse(receipt.exists())
+
+    def test_claude_json_collision_cli_reports_scoped_redacted_diff(self):
+        selection = replace(self.selection, host="claude")
+        config, skills, receipt = selection.paths()
+        config.parent.mkdir(parents=True)
+        secret = "PRIVATE_CONFIG_VALUE_SHOULD_NOT_LEAK"
+        original = json.dumps({"mcpServers": {"agent-braid": {"private": secret},
+                                              "other": {"private": "UNRELATED_SECRET"}}}).encode()
+        config.write_bytes(original)
+        args = ["tooling", "install", "--host", "claude", "--scope", "user",
+                "--source-root", str(self.source), "--result-root", str(self.results),
+                "--destination", str(self.selection.destination), "--source-checkout-assets"]
+        stdout, stderr = io.StringIO(), io.StringIO()
+        with redirect_stdout(stdout), redirect_stderr(stderr):
+            self.assertEqual(main(args), 2)
+        self.assertEqual(stdout.getvalue(), "")
+        self.assertEqual(config.read_bytes(), original)
+        self.assertFalse(skills.exists())
+        self.assertFalse(receipt.exists())
+        record = json.loads(stderr.getvalue())
+        comparison = record["diagnostic"]["comparison"]
+        self.assertEqual(record["diagnostic"]["scope"], "claude_json_server_entry")
+        self.assertEqual(comparison["direction"], "current -> proposed")
+        self.assertEqual(comparison["ownership"], "unowned")
+        self.assertTrue(comparison["contentChanged"])
+        self.assertEqual(len(comparison["hunks"]), 1)
+        self.assertNotIn(secret, stderr.getvalue())
+        self.assertNotIn("UNRELATED_SECRET", stderr.getvalue())
+        self.assertNotIn(str(self.root), stderr.getvalue())
+        self.assertLess(len(stderr.getvalue()), 4096)
+
+    def test_codex_toml_format_drift_reports_semantic_equality_without_raw_hunk(self):
+        self.transact()
+        config, skills, receipt = self.selection.paths()
+        original = config.read_bytes()
+        config.write_bytes(original.replace(b"command = ", b"command= "))
+        changed = config.read_bytes()
+        with self.assertRaises(InstallationRefused) as caught:
+            plan(self.selection, operation="update", source_checkout=True)
+        diagnostic = caught.exception.diagnostic
+        self.assertEqual(diagnostic["comparison"]["status"], "semantic_equal_raw_mismatch")
+        self.assertTrue(diagnostic["comparison"]["semanticEqualToExpected"])
+        self.assertTrue(diagnostic["comparison"]["semanticEqualToProposed"])
+        self.assertEqual(diagnostic["comparison"]["rawOwnedBlock"]["byteRangeComparison"], "unavailable")
+        self.assertEqual(config.read_bytes(), changed)
+        self.assertTrue(skills.exists())
+        self.assertTrue(receipt.exists())
+
+    def test_codex_toml_added_subtable_reports_semantic_diff_without_private_values(self):
+        self.transact()
+        config, _, _ = self.selection.paths()
+        original = config.read_bytes()
+        config.write_bytes(original + b"\n[mcp_servers.agent-braid.private_table]\nprivate_key = \"PRIVATE_TOML_VALUE\"\n")
+        changed = config.read_bytes()
+        with self.assertRaises(InstallationRefused) as caught:
+            plan(self.selection, operation="update", source_checkout=True)
+        diagnostic = caught.exception.diagnostic
+        comparison = diagnostic["comparison"]
+        self.assertEqual(comparison["status"], "compared")
+        self.assertEqual(comparison["representation"], "canonical selected-server mapping")
+        self.assertTrue(comparison["contentChanged"])
+        self.assertEqual(len(comparison["hunks"]), 1)
+        self.assertNotIn("private_table", json.dumps(diagnostic))
+        self.assertNotIn("PRIVATE_TOML_VALUE", json.dumps(diagnostic))
+        self.assertEqual(config.read_bytes(), changed)
 
     def test_unknown_skill_contents_are_not_adopted_or_removed(self):
         self.transact()
