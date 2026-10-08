@@ -9,8 +9,7 @@ engineering/evaluation exit rows at reviewed candidate
 The historical SPEC-021 G4 NO-GO and all evidence limits remain unchanged.
 See the [founder decision](whole-m4-founder-decision-20261009.json),
 [closure packet](whole-m4-closure-packet.md), and [SC-008 evidence](evidence/sc-008.json).
-Guarded issue/milestone reconciliation remains pending; no external tracking
-closure is claimed.
+Current GitHub tracking is shown in the [live M4 milestone](https://github.com/jayanez/agent-braid/milestone/6). Updates follow scoped-plan review, guarded apply, a fresh `operations: []` audit, and Project/milestone verification.
 
 ## Capture status — 2026-10-08
 
