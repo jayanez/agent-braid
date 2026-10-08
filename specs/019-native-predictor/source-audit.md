@@ -22,6 +22,23 @@ The five inventory rows are not five independently eligible observed families.
 No prospective window has been registered by this increment and zero real pairs
 are admitted. Source-specific permissions and full protocol review remain pending.
 
+## Current source feasibility disposition — 2026-10-09
+
+The founder directed that all observed candidates remain ineligible for capture
+until a concrete source-specific allowlist is backed by a documented rights
+basis. No such capture allowlist or explicit source-specific capture approval
+is currently recorded for any candidate. M3.5 therefore cannot begin a real
+collection window under the present source record. This is a finding about
+current authorization and evidence, not a claim that no source could become
+available or an estimate of future pair yield.
+
+Do not broaden content discovery or inspect additional source payloads while
+this condition holds. The `agent-braid-validation-method` and
+`agent-braid-release-evidence-review` rows remain separate provisional
+candidates; each still needs an individual rights and eligibility review.
+There are no registered windows, admitted real pairs, human labels, real-data
+fit, or holdout evaluation. T001/T007 and the full M3.5 objective remain open.
+
 The [ADR-extension proposal](adr-extension-proposal.md) is non-operative.
 It creates no source access, credentials, service, registration or lab. The
 existing accepted ADR 0018 scope and its historical founder decision remain
