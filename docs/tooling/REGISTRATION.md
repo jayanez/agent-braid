@@ -4,10 +4,11 @@
 `examples/tooling/registration-draft.json` binds the proposed eighteen fixture
 definitions and six prompts to the pinned source inventory. It is intentionally
 invalid for capture: no owner approval, source-rights decision, provider opt-in,
-approved budget, exact model-build selection, EUR rate card, two human reviewers,
-or frozen rubric is supplied. `BUDGET.md` explains the proposed caps and model
-names. Those values are recommendations awaiting a decision. Missing values are
-not zero-cost measurements or decisions.
+exact model-build selection, EUR rate card, two human reviewers,
+or frozen rubric is supplied. The numeric caps in [BUDGET.md](BUDGET.md) were
+approved separately; model names remain recommendations. Cap approval does not
+approve this registration or provider use. Missing values are not zero-cost
+measurements or decisions.
 
 Copy the draft to a private registration workspace after freezing the integrated
 candidate. Record its full Git commit and the SHA-256 of the retained candidate
@@ -36,9 +37,11 @@ required decisions are authentic and the object validates. The offline evaluator
 does not launch or authorize sessions. The session coordinator reserves one
 dispatch against a durable cohort ledger head and requires fresh attested
 cost/stop observations. Local collectors and one-shot event parsers provide
-bounded inputs, with their coverage limits. Actual host adapters, authentic
-decision/outcome verifiers, complete cost sources and live stopping integration
-remain required before W18/W19; these preparation modules do not supply them.
+bounded inputs, with their coverage limits. Explicit host adapters and a
+bounded process supervisor are implemented with synthetic process controls.
+Authentic decision/outcome verifiers, complete live cost sources, actual host
+provenance and verified configuration/isolation remain required before W18/W19.
+The software does not authenticate those external facts.
 Register numeric EUR/token/total-wall/RSS/disk caps, rates and provider choice
 before capture; retain unavailable values as null. Stop on incidents, exceeded
 caps, missing immutable inputs, candidate/build drift, unrecoverable transitions

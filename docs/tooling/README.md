@@ -15,9 +15,13 @@ command group provides stdio serving, previewed receipt-owned lifecycle operatio
 read-only diagnostics and presentation/export of already obtained values.
 Capture preparation also provides [local measurement primitives](MEASUREMENTS.md),
 [one-shot host event parsing](HOST_EVENTS.md), and
-[single-dispatch session coordination](SESSIONS.md). These components preserve
-unavailable costs and require external authenticators and actual host adapters;
-they do not start the registered evaluation by themselves.
+[single-dispatch session coordination](SESSIONS.md),
+[verified cost reconciliation](COSTS.md),
+[bounded process supervision](SUPERVISOR.md), and
+[explicit host adapters](HOSTS.md). These components preserve unavailable costs
+and require external authenticators, frozen configuration and verified live
+telemetry. Their controls use synthetic owned processes; actual host capture
+and the registered evaluation remain pending.
 Actual host trust/authentication, complete comparisons and founder acceptance
 are still separate gates. Plain text/ASCII graphs work without a browser;
 JSON retains complete core values after any artifact reconstruction.

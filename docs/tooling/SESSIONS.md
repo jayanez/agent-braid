@@ -4,7 +4,8 @@
 `agent_braid.tooling_sessions.execute_admitted_attempt` coordinates one
 previously admitted slot. It does not implement a Codex/Claude host adapter,
 provider client, MCP connection, grant operation, or human decision. Real
-adapters and an authenticating `OutcomeVerifier` remain external.
+adapters are implemented separately in [HOSTS.md](HOSTS.md); an authenticating
+`OutcomeVerifier` remains an external trusted-caller requirement.
 
 The coordinator reopens the admission receipt from the fixed per-user store and
 checks its exact hash, registration, slot, attempt ID, fixture identity,
@@ -68,9 +69,9 @@ and immediately before dispatch using the required fresh observation. It
 combines that cumulative baseline with verified per-attempt costs once, while
 prior-slot totals are validated against the ledger without being added twice.
 It can validate verified final costs and preserve unknowns, but it does not
-claim a hard live kill. No generic progress-event protocol is
-currently shared by actual host adapters. A future adapter may support
-per-event cap stopping only after those events and the cancellation result are
-independently verified; cancellation is not proof that an external operation
-stopped. This code does not perform capture, satisfy W18/W19, or establish the
-registered host journey.
+claim a hard live kill. The [process supervisor](SUPERVISOR.md) composes with
+[host adapters](HOSTS.md) and fresh externally verified cumulative telemetry
+for local process-group stopping. Its controls use owned synthetic processes.
+Sampled telemetry and local cancellation do not establish a provider spending
+ceiling or prove that an external operation stopped. Actual verified capture
+remains pending; these components do not satisfy W18/W19 by themselves.

@@ -82,6 +82,10 @@ registered private artifact boundary.
 
 ## Limits
 
+Process-group observation requires the POSIX `ps` utility. Missing or
+unusable process metadata leaves the result unknown; it cannot establish
+clean completion. Linux diagnostics install `procps` in their isolated image.
+
 Process-group signaling is best effort. A descendant can escape the group;
 group state can be inaccessible or ambiguous; an OS may retain a killed child
 as a zombie; and the supervisor cannot prove a provider stopped billing. It
