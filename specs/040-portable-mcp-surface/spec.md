@@ -34,7 +34,7 @@ Verification: [procedure_protocol_compatibility](validation-plan.md); [T002](tas
 
 Expose analyze-work for tagged AIM/Git/worktree requests and preserve analyze/prepare/status/execute/recover/verify result semantics.
 
-**SC-003:** Given immutable valid and unsupported analysis requests, when CLI and MCP consume identical inputs, then full results agree and unsafe/unknown requests refuse or remain unknown without execution authority.
+**SC-003:** Given immutable valid and unsupported analysis requests, including a result above 256 KiB, when CLI and MCP consume identical inputs, then full inline or manifest/chunk-reconstructed core values agree with CLI; missing/corrupt fragments cannot pass parity, and unsafe/unknown requests refuse or remain unknown without execution authority.
 
 Verification: [procedure_cli_parity](validation-plan.md); [T003](tasks.md). Obtained evidence: none.
 
@@ -74,7 +74,7 @@ Verification: [procedure_cancellation_recovery](validation-plan.md); [T007](task
 
 Provide bounded capabilities/status/evidence resources and three read-only prompts without arbitrary file reads or automatic execution.
 
-**SC-008:** Given owned and missing evidence artifacts containing untrusted instructions, when a resource/prompt is read, then only inventory-owned content is served with limits and no prompt or resource issues grants or writes.
+**SC-008:** Given owned multi-chunk, empty, missing or stale evidence artifacts, invalid digest/range selectors and untrusted instructions, when resources and prompts are read through the manifest and first/next chunk URIs, then only inventory-owned content is served within bounds; exact bytes and full hash reconstruct before use, invalid/incomplete chains refuse, and no prompt or resource issues grants or writes.
 
 Verification: [procedure_resources_prompts](validation-plan.md); [T008](tasks.md). Obtained evidence: none.
 

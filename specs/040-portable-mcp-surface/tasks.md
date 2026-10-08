@@ -30,7 +30,7 @@ Stable task IDs are implementation obligations. Check only after the paired proc
   Dependencies: T001–T005. Targets: `tooling_mcp.py cancellation/concurrency bridge; interruption controls`.
   Verification and planned evidence: `validation-plan.md::procedure_cancellation_recovery`; `evidence/sc-007.json` with actual commands and negative controls. Obtained: none.
 
-- [ ] T008 (REQ-008/SC-008): Provide bounded capabilities/status/evidence resources and three read-only prompts without arbitrary file reads or automatic execution.
+- [ ] T008 (REQ-008/SC-008): Provide bounded capabilities/status/evidence manifests and digest/range chunk URIs with complete-result reconstruction controls, plus three read-only prompts without arbitrary file reads or automatic execution.
   Dependencies: T001–T005. Targets: `tooling_mcp.py resources/prompts; owned artifact inventory`.
   Verification and planned evidence: `validation-plan.md::procedure_resources_prompts`; `evidence/sc-008.json` with actual commands and negative controls. Obtained: none.
 

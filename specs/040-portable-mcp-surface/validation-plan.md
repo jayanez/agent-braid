@@ -18,7 +18,7 @@ Prospective targets: `agent_braid/tooling_mcp.py (new); agent_braid/mcp_runtime.
 
 ## procedure_cli_parity (REQ-003/SC-003)
 
-Given immutable valid and unsupported analysis requests; perform CLI and MCP consume identical inputs. Assert full results agree and unsafe/unknown requests refuse or remain unknown without execution authority. Include the success and refusal/unavailable counterpart; retain source/result-root integrity and exact typed output.
+Given immutable valid and unsupported analysis requests, including a result above 256 KiB; compare CLI and MCP on identical inputs. Reconstruct the complete result through digest-bound first/next chunk URIs before comparing core values. Assert parity for every byte/field and preserve refusal/unknown semantics without execution authority. Missing, corrupt or incomplete fragment chains cannot pass parity. Include the success and refusal/unavailable counterpart; retain source/result-root integrity and exact typed output.
 
 Prospective targets: `agent_braid/tooling_mcp.py (new); agent_braid/mcp_runtime.py (compatibility); agent_braid/cli.py; pyproject.toml; tests/test_tooling_mcp.py (new)`. Planned receipt: `evidence/sc-003.json`. Use a focused test/harness added with implementation and record its actual command; never execute an invented future command.
 
@@ -48,6 +48,6 @@ Prospective targets: `agent_braid/tooling_mcp.py (new); agent_braid/mcp_runtime.
 
 ## procedure_resources_prompts (REQ-008/SC-008)
 
-Given owned and missing evidence artifacts containing untrusted instructions; perform a resource/prompt is read. Assert only inventory-owned content is served with limits and no prompt or resource issues grants or writes. Include the success and refusal/unavailable counterpart; retain source/result-root integrity and exact typed output.
+Given owned multi-chunk, empty, missing or stale artifacts and untrusted instructions; read the manifest and every first/next chunk URI. Assert deterministic repeat reads, bounded base64 bytes, exact offsets/lengths, correct EOF and complete digest reconstruction, including Unicode split across fragments and a partial last chunk. Refuse wrong digests, malformed/overflowing or out-of-range selectors, escapes and missing/corrupt chains; detect duplicate/overlapping/gapped replies before use. Only inventory-owned content is served and no resource or prompt issues grants, writes or reruns the operation. Include the success and refusal/unavailable counterpart; retain source/result-root integrity and exact typed output.
 
 Prospective targets: `agent_braid/tooling_mcp.py (new); agent_braid/mcp_runtime.py (compatibility); agent_braid/cli.py; pyproject.toml; tests/test_tooling_mcp.py (new)`. Planned receipt: `evidence/sc-008.json`. Use a focused test/harness added with implementation and record its actual command; never execute an invented future command.

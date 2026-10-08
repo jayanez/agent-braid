@@ -63,7 +63,10 @@ cannot satisfy criterion 1.
 
 First deliver a reviewable source PR containing these six specs, their task
 lists/assurance records, proposed ADR and mapping. Record review findings without
-inventing approval. After source integration into clean develop, audit the exact
+inventing approval. Preserve current draft snapshots during this linear-history
+source integration; freeze the integrated develop candidate for later human
+acceptance as described in [integration provenance](analysis.md#integration-provenance).
+After source integration into clean develop, audit the exact
 new milestone, six spec parents and their stable task subissues; approve/apply the
 digest under GITHUB_TRACKING.md and require a subsequent `operations: []` audit.
 Keep private Project membership and Review pending status as a separate check.

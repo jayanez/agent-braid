@@ -26,7 +26,7 @@ Stable task IDs are implementation obligations. Check only after the paired proc
   Dependencies: T001–T005. Targets: `cost/time/token/RSS/disk fields and stop controls; accounting receipts`.
   Verification and planned evidence: `validation-plan.md::procedure_complete_cost`; `evidence/sc-006.json` with actual commands and negative controls. Obtained: none.
 
-- [ ] T007 (REQ-007/SC-007): Apply frozen human rubric and descriptive thresholds, report disagreements/missing labels and preserve legitimate negative results.
+- [ ] T007 (REQ-007/SC-007): Apply frozen human rubric and descriptive thresholds, report disagreements/missing labels, suppress positive utility claims when missing required costs prevent interpretation and preserve legitimate negative results.
   Dependencies: T001–T005. Targets: `frozen human scoring rubric; adjudication/denominator report`.
   Verification and planned evidence: `validation-plan.md::procedure_interpretation`; `evidence/sc-007.json` with actual commands and negative controls. Obtained: none.
 

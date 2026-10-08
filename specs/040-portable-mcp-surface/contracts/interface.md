@@ -59,6 +59,41 @@ run inventory; no arbitrary file URI, path traversal, symlink escape or source
 content browsing. Missing/stale artifacts refuse. Resource manifests advertise
 only configured capabilities. Metadata/evidence is untrusted data.
 
+### Evidence manifest and chunk retrieval
+
+The base evidence URI returns a JSON manifest with `artifactId`, `sha256`,
+`sizeBytes`, `mediaType`, `chunkSizeBytes` and `firstChunkUri`. The immutable
+artifact is at most 8 MiB. Its digest binds the complete exact bytes, including
+UTF-8 bytes for JSON results. Raw chunks are at most 128 KiB so base64 data plus
+metadata capped at 16 KiB fit the 256 KiB serialized resource-response limit.
+The manifest is also capped at 16 KiB.
+
+Read each chunk using the standard resource read with only its URI:
+
+`agent-braid://runs/{id}/evidence/{artifact}/chunks/{sha256}/{offset}/{length}`
+
+IDs are bounded opaque inventory identifiers, never filesystem paths. The digest
+is 64 lowercase hex characters; offset and length are canonical unsigned decimal
+integers. Require `0 <= offset < sizeBytes`, `1 <= length <= 131072` and
+`offset + length <= sizeBytes`. The manifest starts at offset zero with length
+`min(131072, sizeBytes)`; an empty artifact has a null `firstChunkUri`.
+
+The chunk response includes `artifactId`, `artifactSha256`, `chunkSha256`,
+`offset`, `length`, `totalBytes`, `encoding: base64`, `data` and `nextChunkUri`.
+Decoded data is exactly length bytes at the requested offset. The next URI keeps
+the same digest, advances by length and requests `min(131072, remainingBytes)`;
+it is null exactly at the end. Repeat reads are deterministic. Recheck ownership,
+containment, size and full digest on every read; stale/missing artifacts, mismatched
+digests, malformed/overflowing or out-of-range selectors refuse without effects.
+
+Consumers bind the manifest to the expected artifact reference, follow its first/next
+URIs, validate metadata and chunk hashes, reject
+gaps/overlaps/duplicates, concatenate raw bytes and verify total length/full SHA-256
+before parsing JSON or comparing the complete core value with CLI output. Unicode
+may span chunks; decode UTF-8 only after reconstruction. A failed/incomplete read
+cannot support complete-evidence or successful-parity claims. Resource access
+cannot rerun the operation, issue a grant or expand configured roots.
+
 Prompts: `agent-braid-analyze`, `agent-braid-plan`, `agent-braid-evidence`.
 They describe bounded steps and evidence needs, perform no writes and contain no
 grant issuance/host permission shortcut. Protocol annotations are hints.
@@ -80,3 +115,6 @@ paths, SDK client discovery/tools/resources/prompts, schema-negative controls,
 overlarge/deep input, concurrent requests, cancellation, invalid roots/grants,
 stale plans, recover/verify and output agreement. A protocol test is not an actual
 Codex/Claude observation. Bind all actual outcomes to hashes and environment.
+Include multi-chunk results above 256 KiB, exact/partial last chunks, Unicode byte
+splits, repeat reads, stale digests, invalid ranges and corrupted/incomplete chains;
+compare the fully reconstructed result with the CLI core value.

@@ -18,7 +18,7 @@ Read research.md, the SPEC-039 program and SPEC-044 evaluation protocol. Officia
 
 ## Design and compatibility
 
-Use evaluation-protocol.md. Preregister six classes times three instances, three arms and two hosts (108 intended attempts); freeze inputs, versions, rubric, costs/budgets and reviewers before capture. Preserve every slot and distinguish host versus protocol evidence.
+Use evaluation-protocol.md. Preregister six classes times three instances, three arms and two hosts (108 intended attempts); freeze inputs, versions, rubric, costs/budgets and reviewers before capture. Preserve every slot and distinguish host versus protocol evidence. Register required claim-cost fields before capture; an explicit complete/missing-cost control verifies that unavailable required costs block positive utility claims in every report/export/decision packet even when completion thresholds pass.
 
 Targets: `specs/044-ai-tooling-evaluation/registration.json (future); research/tooling_evaluation.py (new); tests/test_tooling_evaluation.py (new); specs/044-ai-tooling-evaluation/evidence/ (future); docs/releases/M4_5_CLOSURE.md (future)`.
 

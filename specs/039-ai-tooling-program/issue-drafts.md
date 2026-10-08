@@ -221,7 +221,7 @@ Parent: SPEC-040. Labels: task. State: open. Milestone: M4.5 — AI tooling inte
 
 Parent: SPEC-040. Labels: task. State: open. Milestone: M4.5 — AI tooling integrations for Codex and Claude Code
 
-- [ ] T008 (REQ-008/SC-008): Provide bounded capabilities/status/evidence resources and three read-only prompts without arbitrary file reads or automatic execution.
+- [ ] T008 (REQ-008/SC-008): Provide bounded capabilities/status/evidence manifests and digest/range chunk URIs with complete-result reconstruction controls, plus three read-only prompts without arbitrary file reads or automatic execution.
   Dependencies: T001–T005. Targets: `tooling_mcp.py resources/prompts; owned artifact inventory`.
   Verification and planned evidence: `validation-plan.md::procedure_resources_prompts`; `evidence/sc-008.json` with actual commands and negative controls. Obtained: none.
 
@@ -690,7 +690,7 @@ Parent: SPEC-044. Labels: task. State: open. Milestone: M4.5 — AI tooling inte
 
 Parent: SPEC-044. Labels: task. State: open. Milestone: M4.5 — AI tooling integrations for Codex and Claude Code
 
-- [ ] T007 (REQ-007/SC-007): Apply frozen human rubric and descriptive thresholds, report disagreements/missing labels and preserve legitimate negative results.
+- [ ] T007 (REQ-007/SC-007): Apply frozen human rubric and descriptive thresholds, report disagreements/missing labels, suppress positive utility claims when missing required costs prevent interpretation and preserve legitimate negative results.
   Dependencies: T001–T005. Targets: `frozen human scoring rubric; adjudication/denominator report`.
   Verification and planned evidence: `validation-plan.md::procedure_interpretation`; `evidence/sc-007.json` with actual commands and negative controls. Obtained: none.
 

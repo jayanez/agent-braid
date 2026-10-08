@@ -52,6 +52,17 @@ and total wall time descriptively across matched A/B/C attempts, including
 failed/refused attempts. No minimum speedup is required. Do not accept a positive
 utility claim if missing outcomes/costs or sampling limits prevent interpretation.
 
+The registered claim scope identifies the required cost fields before capture.
+Interpretation must check their availability over all intended attempts before
+emitting a positive utility conclusion. If missing required costs prevent that
+interpretation, record `utilityClaimEligible: false`, the missing fields/attempts
+and an inconclusive utility conclusion in both the structured report and narrative
+exports/decision packet. Completion or rubric thresholds cannot override this gate.
+Retain descriptive observations and all outcomes with their limits; never replace
+unknown costs with zero, omit affected attempts or silently narrow the registered
+claim. A narrower follow-up utility claim requires a new prospective registration,
+separate cohort and review; it cannot relabel the current cohort's blocked claim.
+
 Report per-host/class/arm attempt denominators, outcomes, completion rate,
 interventions, median/range total wall, error/recovery counts and cost. Retain
 intended/not-started/attempted/valid/invalid/refused/cancelled/recovered/failed rows.

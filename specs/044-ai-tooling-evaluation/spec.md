@@ -66,7 +66,7 @@ Verification: [procedure_complete_cost](validation-plan.md); [T006](tasks.md). O
 
 Apply frozen human rubric and descriptive thresholds, report disagreements/missing labels and preserve legitimate negative results.
 
-**SC-007:** Given 16/18 completion threshold, a host failure or unresolved scoring, when the report is interpreted, then per-host denominators and uncertainty remain visible; safety failures block acceptance and no general causal speedup claim is inferred.
+**SC-007:** Given completion thresholds met with complete costs, or missing required costs, a host failure or unresolved scoring, when the report is interpreted, then per-host denominators and uncertainty remain visible; missing costs that prevent interpretation set utilityClaimEligible false and suppress positive utility claims in reports/exports/decision packets despite completion thresholds; safety failures block acceptance and no general causal speedup claim is inferred.
 
 Verification: [procedure_interpretation](validation-plan.md); [T007](tasks.md). Obtained evidence: none.
 

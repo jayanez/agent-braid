@@ -18,7 +18,7 @@ Read research.md, the SPEC-039 program and SPEC-044 evaluation protocol. Officia
 
 ## Design and compatibility
 
-Introduce a new SDK adapter around existing RuntimeTools and analyzers. Preserve legacy six tool names and entry point, add analyze-work, version the output envelope, advertise only configured capabilities and bind every root at startup. Resources/prompts expose bounded evidence/guidance.
+Introduce a new SDK adapter around existing RuntimeTools and analyzers. Preserve legacy six tool names and entry point, add analyze-work, version the output envelope, advertise only configured capabilities and bind every root at startup. Resources/prompts expose bounded evidence/guidance. The manifest and digest/range chunk URI contract supports exact byte reconstruction beyond the inline limit; first/next URIs, total/chunk hashes, bounds and refusal controls are defined in contracts/interface.md and data-model.md.
 
 Targets: `agent_braid/tooling_mcp.py (new); agent_braid/mcp_runtime.py (compatibility); agent_braid/cli.py; pyproject.toml; tests/test_tooling_mcp.py (new)`.
 

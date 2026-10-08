@@ -40,10 +40,15 @@ protocol error; an admitted but refused operation uses an error/refusal result
 with the reason. Neither case includes a success marker.
 
 Artifact references use a distinct tagged schema branch; never confuse a
-reference with the core JSON object. Bounded resource chunks preserve hashes,
-offset/total length and exact bytes for reconstruction. Inline limit is 256 KiB,
-chunk limit 256 KiB, maximum total artifact 8 MiB (existing stricter core bounds
-remain). Refuse requests expected to exceed admitted resource bounds before
+reference with the core JSON object. The owned evidence URI resolves to the
+manifest and digest/range chunk URIs in [interface.md](contracts/interface.md#evidence-manifest-and-chunk-retrieval).
+Manifest fields are `artifactId`, `sha256`, `sizeBytes`, `mediaType`,
+`chunkSizeBytes` and `firstChunkUri`; each chunk binds `artifactSha256`,
+`chunkSha256`, `offset`, `length`, `totalBytes` and exact base64 bytes, with a
+deterministic `nextChunkUri` or null at EOF. Verify complete length/digest before
+JSON decoding and CLI comparison. Inline limit is 256 KiB, serialized chunk
+response limit 256 KiB, raw chunk limit 128 KiB and maximum total artifact 8 MiB
+(existing stricter core bounds remain). Refuse requests expected to exceed admitted resource bounds before
 effects. Report-storage/rendering failure after execution must expose the actual
 run identity/outcome and recovery/verification path, never pretend no effect.
 Read-only analysis artifacts may live in bounded server memory; durable writes

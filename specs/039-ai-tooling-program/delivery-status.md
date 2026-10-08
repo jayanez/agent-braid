@@ -18,9 +18,27 @@ implementation tasks remain unchecked.
 
 These additions identify planned capabilities, selected local CLI hosts,
 deferred environments and the distinction between contributor and product skills.
-The changed architecture authority requires renewed frozen draft snapshots and
+The changed architecture authority required renewed draft snapshots and
 new review; snapshotting confers no approval. Stable-candidate validation results
 are reported in PR #389 after execution.
+
+## Independent review corrections — 2026-10-08
+
+Luna Latest reviewed all 71 changed paths at `c51590d` against develop `7d0985d`.
+Its three actionable findings concerned linear-history integration, later evidence
+chunks and validation of utility claims when required costs are missing.
+
+The source now specifies digest-bound sequential chunk reads and their controls,
+and mandatory suppression of positive utility claims when missing costs prevent
+interpretation. Specs, task/issue drafts and assurance traceability carry the same
+obligations. The six unapproved draft records use current authority/evidence
+snapshots with null commit identities; the earlier branch-bound snapshots are
+superseded for this source preparation. Human review remains pending and obtained
+implementation evidence remains empty. Freeze a clean integrated develop candidate
+for later human acceptance, as explained in analysis.md.
+
+Correction validation and follow-up review outcomes are reported in PR #389 after
+execution. This record does not claim product implementation or host acceptance.
 
 ## Delivered source
 
@@ -52,7 +70,7 @@ they do not implement or accept runtime product support.
 
 ## Required next gates
 
-Independent technical review is pending. Architectural/API adoption, source
+Follow-up technical review of the corrections is pending. Architectural/API adoption, source
 integration and remote tracking reconciliation remain separate operations.
 No new milestone/issue has yet been created; private Project state is unverified.
 Implementation/control evidence, exact paid/provider/source capture registration,
