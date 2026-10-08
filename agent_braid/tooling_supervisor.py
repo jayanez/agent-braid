@@ -51,6 +51,10 @@ class SupervisorError(ValueError):
     """A process request is malformed, unsafe, reused, or unsupported."""
 
 
+class _StartDrift(Exception):
+    """A pinned pathname changed at the process-launch boundary."""
+
+
 @dataclass(frozen=True)
 class BudgetCaps:
     """Frozen per-cohort maxima; no defaults imply permission to spend."""
@@ -105,6 +109,15 @@ class ProcessRequest:
     poll_interval_seconds: float
     term_grace_seconds: float
     kill_grace_seconds: float
+    file_pins: tuple["FilePin", ...] = ()
+
+
+@dataclass(frozen=True)
+class FilePin:
+    """A configuration/skill pathname and its expected SHA-256."""
+
+    path: Path
+    sha256: str
 
 
 @dataclass(frozen=True)
@@ -184,10 +197,17 @@ def run_supervised(
     expected_executable = _hash_executable(executable)
     if expected_executable != request.executable_sha256:
         return _not_launched("start-drift", "executable SHA-256 differs from the pinned value", clock)
+    try:
+        pinned_files = _resolve_file_pins(request.file_pins)
+        if not _launch_pins_match(executable, request.executable_sha256, pinned_files):
+            return _not_launched("start-drift", "pinned configuration input differs", clock)
+    except (OSError, SupervisorError) as exc:
+        return _not_launched("start-drift", _safe_reason(exc), clock)
     started_at = _utc(clock)
 
     try:
-        initial = observer(None, 0.0)
+        initial = _observe_bounded(observer, None, 0.0,
+                                  request.observation_max_age_seconds)
         _validate_snapshot(initial, caps, request, None, clock, None)
     except Exception as exc:
         return _not_launched("measurement-unknown", _safe_reason(exc), clock)
@@ -204,8 +224,8 @@ def run_supervised(
 
     # The observer is external code and may take time; recheck the executable
     # immediately before creating any process or durable start record.
-    if _hash_executable(executable) != request.executable_sha256:
-        return _not_launched("start-drift", "executable changed during pre-dispatch observation", clock, initial)
+    if not _launch_pins_match(executable, request.executable_sha256, pinned_files):
+        return _not_launched("start-drift", "executable or pinned input changed during pre-dispatch observation", clock, initial)
 
     stdout_path = output_root / "stdout.partial"
     stderr_path = output_root / "stderr.partial"
@@ -220,6 +240,8 @@ def run_supervised(
         "argvSha256": _sha(_json_bytes(list(request.argv))),
         "stdinBytes": len(request.stdin or b""),
         "environmentEntryCount": len(env), "preDispatchSnapshot": _snapshot_dict(initial),
+        "filePins": [{"pathSha256": _sha(str(path).encode("utf-8")), "sha256": digest}
+                     for path, digest in pinned_files],
         "preDispatchAt": started_at,
     }
     start_recorded = False
@@ -264,16 +286,21 @@ def run_supervised(
     input_stream = None
     output_streams = {}
     try:
+        # Recheck after receipt setup, as close as practical to Popen. This is
+        # still pathname observation, not atomic OS-level file binding.
+        if not _launch_pins_match(executable, request.executable_sha256, pinned_files):
+            raise _StartDrift()
         process = subprocess.Popen(
-            [str(executable), *request.argv], cwd=cwd, env=env, stdin=subprocess.PIPE if request.stdin is not None else subprocess.DEVNULL,
+            [str(executable), *request.argv],
+            cwd=cwd, env=env, stdin=subprocess.PIPE if request.stdin is not None else subprocess.DEVNULL,
             stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=False, close_fds=True,
             start_new_session=True, bufsize=0,
         )
         launched = True
         start_time_mono = clock.monotonic()
         identity = ProcessIdentity(process.pid, process.pid, _utc(clock), request.executable_sha256)
-        if _hash_executable(executable) != request.executable_sha256:
-            stop_reason, stop_status = "executable changed at process start", "start-drift"
+        if _hash_executable(executable) != request.executable_sha256 or not _file_pins_match(pinned_files):
+            stop_reason, stop_status = "executable or pinned input changed at process start", "start-drift"
         if process.stdout is None or process.stderr is None:
             raise SupervisorError("subprocess pipes were not created")
         output_streams[process.stdout.fileno()] = (process.stdout, out_fd, out_hash, "stdout")
@@ -306,7 +333,12 @@ def run_supervised(
                     stop_reason, stop_status = "registered wall-time cap reached", "budget-exceeded"
                 elif now_mono >= next_observation_at:
                     try:
-                        observed = observer(identity, elapsed)
+                        observer_deadline = min(
+                            request.observation_max_age_seconds,
+                            max(0.001, request.timeout_seconds - process_elapsed),
+                            max(0.001, wall_remaining - elapsed),
+                        )
+                        observed = _observe_bounded(observer, identity, elapsed, observer_deadline)
                         _validate_snapshot(observed, caps, request, last_snapshot, clock, identity)
                         last_snapshot = observed
                         if len(snapshots) < MAX_RETAINED_SNAPSHOTS:
@@ -314,7 +346,7 @@ def run_supervised(
                         elif len(snapshots) == MAX_RETAINED_SNAPSHOTS:
                             stop_reason, stop_status = "telemetry snapshot retention limit exceeded", "measurement-unknown"
                         if stop_reason is None:
-                            stop = _stop_reason(observed, caps, elapsed)
+                            stop = _stop_reason(observed, caps)
                             if stop is not None:
                                 stop_reason, stop_status = stop, "budget-exceeded"
                     except Exception as exc:
@@ -407,18 +439,21 @@ def run_supervised(
             group_cleanup = _clean_or_stop_descendants(process.pid, request)
 
         elapsed = max(0.0, clock.monotonic() - activity_start_mono)
-        try:
-            final_snapshot = observer(identity, elapsed)
-            _validate_snapshot(final_snapshot, caps, request, last_snapshot, clock, identity)
-            last_snapshot = final_snapshot
-            if len(snapshots) < MAX_RETAINED_SNAPSHOTS:
-                snapshots.append(final_snapshot)
-            final_stop = _stop_reason(final_snapshot, caps, elapsed)
-            if final_stop is not None and stop_reason is None:
-                stop_reason, stop_status = final_stop, "budget-exceeded"
-        except Exception as exc:
-            if stop_reason is None:
-                stop_reason, stop_status = _safe_reason(exc), "measurement-unknown"
+        if stop_status != "measurement-unknown":
+            try:
+                final_snapshot = _observe_bounded(
+                    observer, identity, elapsed,
+                    request.observation_max_age_seconds)
+                _validate_snapshot(final_snapshot, caps, request, last_snapshot, clock, identity)
+                last_snapshot = final_snapshot
+                if len(snapshots) < MAX_RETAINED_SNAPSHOTS:
+                    snapshots.append(final_snapshot)
+                final_stop = _stop_reason(final_snapshot, caps)
+                if final_stop is not None and stop_reason is None:
+                    stop_reason, stop_status = final_stop, "budget-exceeded"
+            except Exception as exc:
+                if stop_reason is None:
+                    stop_reason, stop_status = _safe_reason(exc), "measurement-unknown"
         if stop_reason is not None:
             status = stop_status or "measurement-unknown"
             reason = stop_reason
@@ -430,6 +465,9 @@ def run_supervised(
         else:
             status = "failed"
             reason = "process exited nonzero or by signal"
+    except _StartDrift:
+        reason = "pinned executable or configuration input changed immediately before process launch"
+        status = "start-drift"
     except OSError as exc:
         reason = f"{type(exc).__name__}: process launch or pipe operation failed"
         status = "start-failed" if not launched else "measurement-unknown"
@@ -521,6 +559,12 @@ def _validate_request(request, caps, observer, clock):
         raise SupervisorError("executable must be an absolute pinned path")
     if not _SHA256.fullmatch(request.executable_sha256):
         raise SupervisorError("executable SHA-256 is malformed")
+    if not isinstance(request.file_pins, tuple) or len(request.file_pins) > 64:
+        raise SupervisorError("file pins must be a bounded tuple")
+    for pin in request.file_pins:
+        if not isinstance(pin, FilePin) or not isinstance(pin.path, Path) \
+                or not pin.path.is_absolute() or not _SHA256.fullmatch(pin.sha256):
+            raise SupervisorError("each file pin requires an absolute path and SHA-256")
     if not isinstance(request.argv, tuple) or len(request.argv) > MAX_ARGUMENTS:
         raise SupervisorError("argv must be a bounded tuple")
     if any(not isinstance(arg, str) or "\0" in arg for arg in request.argv):
@@ -569,6 +613,33 @@ def _resolve_paths(request):
     if _overlap(cwd, output_root):
         raise SupervisorError("working and output roots must be disjoint")
     return executable, cwd, output_root, source_roots, grant_root, dict(request.env)
+
+
+def _resolve_file_pins(file_pins):
+    resolved = []
+    seen = set()
+    for pin in file_pins:
+        if pin.path.is_symlink():
+            raise SupervisorError("pinned configuration input cannot be a symlink")
+        path = pin.path.resolve(strict=True)
+        if path in seen:
+            raise SupervisorError("duplicate pinned file path")
+        seen.add(path)
+        if not path.is_file() or path.is_symlink():
+            raise SupervisorError("pinned configuration input must be a regular non-symlink file")
+        resolved.append((path, pin.sha256))
+    return tuple(resolved)
+
+
+def _file_pins_match(file_pins):
+    return all(_hash_regular_file(path) == expected for path, expected in file_pins)
+
+
+def _launch_pins_match(executable, executable_sha256, file_pins):
+    try:
+        return _hash_executable(executable) == executable_sha256 and _file_pins_match(file_pins)
+    except (OSError, SupervisorError):
+        return False
 
 
 def _private_directory(path, label):
@@ -623,7 +694,39 @@ def _validate_snapshot(snapshot, caps, request, prior, clock, identity):
             raise SupervisorError("cumulative wall-time measurement regressed")
 
 
-def _stop_reason(snapshot, caps, elapsed_seconds=0.0):
+class _ObserverTimeout(TimeoutError):
+    pass
+
+
+def _observe_bounded(observer, identity, elapsed, timeout_seconds):
+    """Call untrusted-to-the-loop observer without blocking supervision forever.
+
+    The daemon worker cannot safely be killed if its callback ignores the
+    timeout. The caller must ensure callback work has no direct provider effect.
+    A timed-out call is never retried and no second callback is started.
+    """
+    result = []
+    finished = threading.Event()
+
+    def invoke():
+        try:
+            result.append((True, observer(identity, elapsed)))
+        except BaseException as exc:
+            result.append((False, exc))
+        finally:
+            finished.set()
+
+    worker = threading.Thread(target=invoke, name="agent-braid-observer", daemon=True)
+    worker.start()
+    if not finished.wait(timeout_seconds):
+        raise _ObserverTimeout("telemetry observer exceeded its bounded call deadline")
+    succeeded, value = result[0]
+    if not succeeded:
+        raise value
+    return value
+
+
+def _stop_reason(snapshot, caps):
     state = snapshot.stop_state
     if state.incident_open:
         return "authority/privacy incident is open"
@@ -633,8 +736,6 @@ def _stop_reason(snapshot, caps, elapsed_seconds=0.0):
         return "two consecutive infrastructure failures"
     for name, cap in caps.as_dict().items():
         observed = snapshot.costs.values[name]
-        if name == "wall_seconds":
-            observed += elapsed_seconds
         if observed >= cap:
             return f"registered {name} cap reached"
     return None
@@ -800,6 +901,29 @@ def _hash_executable(path):
     return digest.hexdigest()
 
 
+def _hash_regular_file(path):
+    digest = hashlib.sha256()
+    flags = os.O_RDONLY
+    if hasattr(os, "O_NOFOLLOW"):
+        flags |= os.O_NOFOLLOW
+    fd = os.open(path, flags)
+    try:
+        before = os.fstat(fd)
+        if not os.path.isfile(path):
+            raise SupervisorError("pinned configuration input is not a regular file")
+        while True:
+            chunk = os.read(fd, READ_CHUNK_BYTES)
+            if not chunk:
+                break
+            digest.update(chunk)
+        after = os.fstat(fd)
+        if _stat_identity(before) != _stat_identity(after):
+            raise SupervisorError("pinned configuration input changed while hashing")
+    finally:
+        os.close(fd)
+    return digest.hexdigest()
+
+
 def _stat_identity(info):
     return (info.st_dev, info.st_ino, info.st_size, info.st_mtime_ns, info.st_ctime_ns, info.st_mode)
 
@@ -837,5 +961,5 @@ def _sha(value):
     return hashlib.sha256(value).hexdigest()
 
 
-__all__ = ["BudgetCaps", "Clock", "ProcessIdentity", "ProcessOutcome", "ProcessRequest",
+__all__ = ["BudgetCaps", "Clock", "FilePin", "ProcessIdentity", "ProcessOutcome", "ProcessRequest",
            "SupervisorError", "TelemetrySnapshot", "run_supervised"]
