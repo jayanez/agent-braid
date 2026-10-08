@@ -1,0 +1,51 @@
+{
+  "recordVersion": "spec027-founder-capability-dispositions-public-v1",
+  "sourceReceiptSha256": "c2764bb9d0b9c4a9c7763dba8c4ffed1e0f0768425a5d258e3257ceac889d32e",
+  "sourceReceiptVersion": "m4-founder-capability-dispositions-v1",
+  "repository": "jayanez/agent-braid",
+  "reviewedPublicCandidateCommit": "7d0985dfb3a406debfc534746b769d0d729caabe",
+  "reviewedPacketSha256": "df291bdc6779fa291b75bc405d6e9374297d2da162b0b9a635315631edc3d7a2",
+  "recordedAt": "2026-10-08T05:01:20.335269+00:00",
+  "decisions": [
+    {
+      "capability": "source-ref promotion by the bounded M4 alpha runtime",
+      "decision": "approved-NO-GO-defer-for-bounded-M4-alpha",
+      "ownerStatement": "Apruebo el epígrafe 11",
+      "sourceDecisionRecordSha256": "5527badc80d861686f5e615646eec1fa69a1a6c583004428e366762078956dae",
+      "runtimeCapabilityAuthorized": false,
+      "fallback": "Export/manual integration; ordinary reviewed project delivery remains permitted.",
+      "reconsideration": "A separately reviewed publication/CAS/recovery contract and exact grant."
+    },
+    {
+      "capability": "arbitrary repository-code execution by the bounded M4 alpha runtime",
+      "decision": "approved-NO-GO-defer-for-bounded-M4-alpha",
+      "ownerStatement": "Apruebo el epígrafe 12",
+      "sourceDecisionRecordSha256": "2f5856f21fd8486bf989857e0d484aedd0566d8f0842aeef1ec9b72fd6a9542e",
+      "runtimeCapabilityAuthorized": false,
+      "fallback": "Read-only analysis and private fixed-patch replay; ordinary authorized project development/testing remains permitted.",
+      "reconsideration": "An exact backend/probe/fixture/budget contract with verified credential, filesystem, network, descendant and memory enforcement, plus a separate grant."
+    },
+    {
+      "capability": "real external effects dispatched by the bounded M4 alpha runtime",
+      "decision": "approved-NO-GO-defer-for-bounded-M4-alpha",
+      "ownerStatement": "Apruebo el epígrafe 13",
+      "sourceDecisionRecordSha256": "5b23808e5be8e928708f9e92ded428c956a70a3b854103c2b4cad73563eefd05",
+      "runtimeCapabilityAuthorized": false,
+      "fallback": "Abstract simulation and abstention under ambiguous success; ordinary authorized project delivery and connector actions remain outside this runtime decision.",
+      "reconsideration": "A separately reviewed adapter-specific rights/request/result/failure/compensation contract and exact grant."
+    }
+  ],
+  "scope": "The three capability dispositions apply to bounded M4 alpha only. They preserve ordinary authorized project delivery/testing and do not adopt any new runtime capability.",
+  "implementationAdopted": false,
+  "newGrantsAuthorized": false,
+  "sourceCodeOrProbeExecutionAuthorized": false,
+  "providerCallsAuthorized": false,
+  "registeredCaptureAuthorized": false,
+  "scientificAcceptance": false,
+  "wholeM4Accepted": false,
+  "limitations": [
+    "This is a derived public decision record bound to the private source receipt, exact disposition statements and frozen packet hash.",
+    "It records capability deferral, not technical implementation, enforcement, source rights, M4 acceptance or scientific validation.",
+    "Future adoption requires a separate reviewed contract and exact applicable authority."
+  ]
+}
