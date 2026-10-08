@@ -50,8 +50,14 @@ assurance record and the [roadmap](../../ROADMAP.md) for those boundaries.
 | [SPEC-036: forecast-parallelism-experiment](../../specs/036-forecast-parallelism-experiment/spec.md) | [FC.1 — Forecast-guided parallelism experiment](https://github.com/jayanez/agent-braid/milestone/18) |
 | [SPEC-037: forecast-advisory-integration](../../specs/037-forecast-advisory-integration/spec.md) | [FC.1 — Forecast-guided parallelism experiment](https://github.com/jayanez/agent-braid/milestone/18) |
 | [SPEC-038: m4-real-workload-closure](../../specs/038-m4-real-workload-closure/spec.md) | [M4 — Agent Braid runtime](https://github.com/jayanez/agent-braid/milestone/6) |
+| [SPEC-039: ai-tooling-program](../../specs/039-ai-tooling-program/spec.md) | [M4.5 — AI tooling integrations for Codex and Claude Code](../../specs/039-ai-tooling-program/program.md) (proposed; GitHub number pending) |
+| [SPEC-040: portable-mcp-surface](../../specs/040-portable-mcp-surface/spec.md) | [M4.5 — AI tooling integrations for Codex and Claude Code](../../specs/039-ai-tooling-program/program.md) (proposed; GitHub number pending) |
+| [SPEC-041: ai-tooling-skills](../../specs/041-ai-tooling-skills/spec.md) | [M4.5 — AI tooling integrations for Codex and Claude Code](../../specs/039-ai-tooling-program/program.md) (proposed; GitHub number pending) |
+| [SPEC-042: ai-tooling-packaging](../../specs/042-ai-tooling-packaging/spec.md) | [M4.5 — AI tooling integrations for Codex and Claude Code](../../specs/039-ai-tooling-program/program.md) (proposed; GitHub number pending) |
+| [SPEC-043: ai-tooling-journey](../../specs/043-ai-tooling-journey/spec.md) | [M4.5 — AI tooling integrations for Codex and Claude Code](../../specs/039-ai-tooling-program/program.md) (proposed; GitHub number pending) |
+| [SPEC-044: ai-tooling-evaluation](../../specs/044-ai-tooling-evaluation/spec.md) | [M4.5 — AI tooling integrations for Codex and Claude Code](../../specs/039-ai-tooling-program/program.md) (proposed; GitHub number pending) |
 
-All 38 specs have an assignment to one of the 18 registered milestones.
+All 44 specs have an assignment: 38 to the 18 registered milestones and six to the proposed unnumbered M4.5 milestone.
 Frozen publication receipts, assurance/evidence records, founder decisions and
 dated audits retain their captured titles and counts. Resolve those historical
 names through the tracking crosswalk; do not rewrite their bound contents.
