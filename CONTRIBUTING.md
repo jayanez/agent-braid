@@ -4,6 +4,11 @@ For specification-driven work with Codex or Claude Code, follow the shared
 [Spec Kit guide](docs/development/SPEC_KIT.md). Both environments use the same
 normative controls; do not edit generated skills or the constitutional replica.
 
+Those generated adapters support repository contribution. The proposed
+[M4.5 product integration](docs/tooling/README.md) defines five user workflow
+skills, with canonical assets planned under `integrations/agent-braid/skills/`.
+For that work, follow SPEC-039–044, their contract dependencies and task lists.
+
 Thank you for helping turn Agent Braid into rigorous, useful infrastructure.
 
 ## Before contributing
