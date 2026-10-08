@@ -41,7 +41,7 @@
   "packetFileSha256": "8f82006c79aad064e62ad9c60d54bfdbd0e53fd1abbb198bcba5546c85f41e81",
   "prValidationSha256": "faed15806a66d18600d255a7df7b01ae68cafafde25e12f1e24df7f64cad1fed",
   "quickValidationSha256": "7b9942640cea9eed5b195c5a9b751c15e181f6b2bbca7104cbfe285160472cb3",
-  "receiptAdversarialReviewSha256": "dc8869eab9549e9b240364d154cb8aa09917d4b5794673f746c90fd9dc393847",
+  "receiptAdversarialReviewSha256": "1b35b90db37b2581c28963f156ea54db056d9c91b2aef0312bf4c6ba86aed23e",
   "receiptLimits": "This receipt binds repository metadata and software validation artifacts only. It is not proof of source rights, consent, workflow independence, scientific validity, real yield, a real-data experiment, clean-room reproduction, human permission, or founder approval. Its own package commit is intentionally not self-referenced; this file is a descendant package of receiptPackageParentCommit.",
   "receiptPackageParentCommit": "d4e6488959c4d37baf956de47b5fd5516fdc43af",
   "validation": {
