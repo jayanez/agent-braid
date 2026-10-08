@@ -2,11 +2,22 @@
 
 ## Development status — 2026-10-08
 
-Exact source rights, protocol, stable-candidate review and capture authorization
-were granted for historical candidate `b85f7e5`. Two pre-dispatch failures
-produced zero actual source treatments; see the [derived attempt summary](evidence/pre-dispatch-attempt-summary.json).
-A harness repair requires a new stable candidate and source manifest with fresh
-exact owner review and authorization. Whole-M4 acceptance remains pending.
+The exact successor candidate `e66f9a1b94fc5ebfbf784d9c48a76f53c1a656ee`
+and manifest received independent review, owner stable-candidate approval
+(item 18) and separate capture authorization (item 19). The single registered
+capture completed all 20 treatments: 10 complete pairs, including four warm-up
+and six measured pairs. All treatments were valid; the separate fresh-process
+verifier inspected all 20 before conditional cleanup removed 40 run/grant paths.
+The measured median serial/parallel total-wall ratio was `0.6538998702917553`,
+favoring serial execution in this finite, uncontrolled sample.
+
+See the [derived registered capture summary](evidence/registered-capture-summary-e66f9a1.json)
+for exact bindings, complete denominators, costs, controls and unavailable
+observations. The two historical `b85f7e5` pre-dispatch failures remain retained
+in the [attempt summary](evidence/pre-dispatch-attempt-summary.json). No capture
+was retried or resumed. Historical SPEC-021 G4 NO-GO remains visible and
+whole-M4 founder acceptance remains pending. Source-project code and tests
+were not executed under this protocol.
 
 This workflow prepares the bounded evaluator. Do not capture a workload or run
 source project code from this quickstart.
@@ -31,8 +42,9 @@ source project code from this quickstart.
 Historical status: source-rights, exact protocol, stable-candidate review and
 capture authorization applied to `b85f7e5`. The exact two-operation manifest
 passed static admission and technical review, but both launches stopped before
-dispatch and no actual workload outcome was obtained. Any repair requires fresh
-candidate-bound owner decisions.
+dispatch and those attempts obtained no actual workload outcome. The separately
+approved e66f9a1 capture later completed as summarized above. Any future repair
+requires fresh candidate-bound owner decisions.
 
 ## Preparation-only command
 

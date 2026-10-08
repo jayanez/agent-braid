@@ -5,19 +5,28 @@
 The audit below is a historical snapshot; its counts, findings and baseline remain
 unchanged. For the current inventory of 44 specs and 19 registered milestones, use the
 [spec and milestone index](SPEC_MILESTONE_INDEX.md) and [roadmap](../../ROADMAP.md).
-SPEC-022 now includes implemented full-cost instrumentation and an owner-approved
-[180-minute successor preparation](../../specs/022-m4-utility-followup/successor-protocol-180m.md);
-registered capture and a new utility decision remain pending. SPEC-027 provides
+SPEC-022 includes implemented full-cost instrumentation and completed registered
+synthetic v2 capture on `b85f7e5` (88 valid pairs, 176 treatments; five blocks
+excluded by pinned caps). Three admitted independent diagnostics were negative;
+the dependency-chain block was an order control. See the [capture summary](../../specs/022-m4-utility-followup/evidence/registered-capture-summary-b85f7e5.json).
+Human utility interpretation remains pending. SPEC-027 provides
 [read-only refinement assessments](../../specs/027-runtime-refinement-contracts/quickstart.md),
 with founder-recorded NO-GO/defer dispositions for all three bounded-M4-alpha capabilities;
 no capability was adopted and any future adoption requires separate reviewed scope and
 execution authority. Whole-M4 acceptance remains pending. SPEC-028 has a synthetic
 reference core. [SPEC-038](../../specs/038-m4-real-workload-closure/implementation-readiness.md)
-has owner-approved exact source rights and protocol. Its bounded harness is
-merged and validated; the two-operation, 20-slot source frame has passed static
-admission and technical review. Owner stable-candidate/manifest review, capture
-and whole-M4 founder acceptance remain pending. These developments do
-not rewrite SPEC-021's historical G4 NO-GO.
+has approved exact source rights/protocol, stable-harness review and separate
+capture authorization for candidate `e66f9a1`. Its registered capture completed
+with 20 valid treatments (eight warm-up and 12 measured) and mandatory
+fresh-process verification before conditional cleanup. Six measured
+serial/parallel total-wall ratios were below
+one (median `0.6538998702917553`; AB `0.6530442113`, BA `0.6547555293`), a finite
+negative result for parallel utility on this exact two-operation frame. This
+compares tracked Git trees, not semantic equivalence or native-code validity;
+no real-source interruption/recovery controls were run. See the [derived capture
+summary](../../specs/038-m4-real-workload-closure/evidence/registered-capture-summary-e66f9a1.json).
+Whole-M4 acceptance remains pending. These developments do not rewrite
+SPEC-021's historical G4 NO-GO.
 
 [M4.5 / SPEC-039–044](../tooling/README.md) is an Open registered milestone with six draft planning packages and
 60 unchecked tasks for Codex and Claude Code integration. MCP access, product
