@@ -80,6 +80,8 @@ def _write_prototype_report(path: Path, serialized: str) -> None:
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     subparsers = parser.add_subparsers(dest="command", required=True)
+    from .tooling_cli import add_parser
+    add_parser(subparsers)
     decision_parser = subparsers.add_parser("system-one", help="opt-in offline synthetic decision diagnostics")
     decision_commands = decision_parser.add_subparsers(dest="decision_command", required=True)
     decision_commands.add_parser("capabilities", help="list local immutable reference capabilities")
@@ -165,6 +167,9 @@ def main(argv: list[str] | None = None) -> int:
         if command == "recover-policy-run":
             policy_parser.add_argument("--action", choices=("resume", "abort"), required=True)
     args = parser.parse_args(argv)
+    if args.command == "tooling":
+        from .tooling_cli import run
+        return run(args)
     if args.command == "system-one":
         from .system_one_cli import run
         return run(args)

@@ -1,5 +1,6 @@
 # Local environments
 .venv-speckit/
+.venv-tooling/
 .venv/
 .env
 .env.*
@@ -16,6 +17,7 @@ artifacts/
 bin/
 obj/
 dist/
+build/
 coverage/
 TestResults/
 __pycache__/

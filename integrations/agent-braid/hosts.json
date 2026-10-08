@@ -1,0 +1,11 @@
+{
+  "schema": "agent-braid-host-assets/v0.1",
+  "version": "0.1.0a1",
+  "hosts": ["codex", "claude"],
+  "scopes": ["user", "project"],
+  "transport": "stdio",
+  "sdk": {"distribution": "mcp", "version": "2.3.0"},
+  "hostBuild": "observation required; not implied by asset metadata",
+  "license": "AGPL-3.0-only",
+  "runtimeAuthority": "existing operator grants; no grant issuance through tools or skills"
+}
