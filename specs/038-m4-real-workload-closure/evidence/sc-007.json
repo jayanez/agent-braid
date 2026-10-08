@@ -1,0 +1,61 @@
+{
+  "c08TechnicalReview": {
+    "bindingCaveat": "Only the trial engine and fresh verifier have final explicit reviewer bindings. Other current file hashes are an operator-observed inventory recorded in the review, not final reviewer bindings.",
+    "boundary": "Static technical review only; does not authorize capture, give external scientific validation or replace owner stable-candidate/manifest review.",
+    "effort": "medium",
+    "finalExplicitReviewerBindings": {
+      "agent_braid/m4_real_workload_trials.py": "0a68a568d07a51cf103eee0c66f1e3fbe43a31fb6f343d8c025d4872d98e5a11",
+      "scripts/verify_m4_real_workload.py": "8b395f826cf3bc9f4f6bd2ee316e860212100591d86a342bfa0e615d0f8d7f58"
+    },
+    "model": "gpt-6-luna",
+    "operatorObservedFileHashes": {
+      "agent_braid/m4_real_workload.py": "f69221eb6ed21d5b959e0e172fee34191c651195a3bcc18e8324ea8709d78678",
+      "scripts/measure_m4_real_workload.py": "38ae05961eb64a3b2495f5b2934671732d59d1c9ebe4ec1298421bf00ede7c2f",
+      "scripts/prepare_m4_real_workload.py": "626866669ff6153472346c9275362da0b7ea0348493ba7815004064d3502cf2d"
+    },
+    "registeredCapture": false,
+    "remainingActionableFindings": [],
+    "scope": "Full static C08 code/domain/security review and final same-slot recovery/source-integrity recheck",
+    "sha256": "20029a950a17235b80122cadd10faf048c4c0265f9a2b04d8abf216c7a59d32b",
+    "testsExecutedByReviewer": false,
+    "version": "spec038-harness-development-independent-review-v1"
+  },
+  "captureAuthorization": "absent; a new exact decision is required after the owner stable-candidate/manifest review",
+  "evidenceVersion": "spec038-derived-evidence-v1",
+  "ownerStableCandidateReview": "pending",
+  "publicReference": "specs/038-m4-real-workload-closure/evidence/sc-007.json",
+  "scenario": "SC-007",
+  "sourceProtocolDecision": {
+    "decision": "approved-implementation-and-evaluation-preparation-only",
+    "m4Acceptance": false,
+    "registeredCaptureAuthorized": false,
+    "sha256": "160441f088d148210fda174775fc5705fd0e319ccd1ad3b448e2a35cdf96db2f",
+    "rightsCandidateSha256": "8f1707b2ae5fc66b5ed5e45fa21d70b9e02a1765ec51c242db96c11bd1e1766d",
+    "protocolCandidateSha256": "656f0b67958e6cf0857bcf3a2908b8235eb2ea43a9a44a8ae18e1c6905790fd2",
+    "itemsApproved": [
+      "038-rightsholder",
+      "038-local-use",
+      "038-retention",
+      "038-term",
+      "038-conflicts",
+      "038-method",
+      "038-schedule",
+      "038-accounting",
+      "038-budgets"
+    ]
+  },
+  "stableHarnessReview": "A substantive independent static C08 code/domain/security review is recorded above; do not request a duplicate review. The owner stable-candidate/manifest review required by T004 remains pending.",
+  "staticManifestReview": {
+    "candidateCommit": "7d73c80f1b8c23a65b33bf584abac29a2e097417",
+    "effort": "medium",
+    "manifestSha256": "72714511b4506c491f4297c900c40e28c0131cc25c9e6ef2f072fa57f0ff1cac",
+    "model": "gpt-6-luna",
+    "registeredCaptureAuthorized": false,
+    "remainingActionableFindings": [],
+    "scope": "Read-only manifest/provenance and candidate-file hashes/existence review only; no Git, tests, preparation, grants, treatments or capture run by reviewer. Historic timings and source fingerprint not independently reproduced.",
+    "sha256": "5e84a9ceed95630d76a83bb4b39af5c60c2515f5765855d796ec72ede9f0cf2c",
+    "wholeM4Accepted": false
+  },
+  "status": "capture-blocked-pending-owner-stable-candidate-review-and-separate-capture-decision",
+  "wholeM4Decision": "absent; requires later independent outcome review and a separate founder decision"
+}

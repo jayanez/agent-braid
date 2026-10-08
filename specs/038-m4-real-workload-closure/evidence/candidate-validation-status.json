@@ -1,0 +1,131 @@
+{
+  "c08TechnicalReview": {
+    "bindingCaveat": "Final explicit review bindings cover only the trial engine and fresh verifier. Other hashes in that record are operator-observed current-file inventory.",
+    "finalExplicitReviewerBindings": {
+      "agent_braid/m4_real_workload_trials.py": "0a68a568d07a51cf103eee0c66f1e3fbe43a31fb6f343d8c025d4872d98e5a11",
+      "scripts/verify_m4_real_workload.py": "8b395f826cf3bc9f4f6bd2ee316e860212100591d86a342bfa0e615d0f8d7f58"
+    },
+    "operatorObservedFileHashes": {
+      "agent_braid/m4_real_workload.py": "f69221eb6ed21d5b959e0e172fee34191c651195a3bcc18e8324ea8709d78678",
+      "scripts/measure_m4_real_workload.py": "38ae05961eb64a3b2495f5b2934671732d59d1c9ebe4ec1298421bf00ede7c2f",
+      "scripts/prepare_m4_real_workload.py": "626866669ff6153472346c9275362da0b7ea0348493ba7815004064d3502cf2d"
+    },
+    "receiptSha256": "20029a950a17235b80122cadd10faf048c4c0265f9a2b04d8abf216c7a59d32b",
+    "registeredCapture": false,
+    "remainingActionableFindings": [],
+    "scope": "Full static C08 code/domain/security review and final same-slot recovery/source-integrity recheck",
+    "testsExecutedByReviewer": false
+  },
+  "candidateCommit": "7d73c80f1b8c23a65b33bf584abac29a2e097417",
+  "hostedPullRequest": {
+    "draft": false,
+    "headCommit": "915e90fcf2f84ea7d9fa46da82aa28a5b3796cc6",
+    "pullRequest": 390,
+    "repository": "jayanez/agent-braid",
+    "statusProvenance": "Operator-observed GitHub PR and workflow API records; the PR head and merged commit are recorded separately.",
+    "validationRuns": [
+      {
+        "runId": 37704302547,
+        "status": "success",
+        "details": "all selected validators succeeded on hosted runners; special matrix skipped",
+        "headCommit": "915e90fcf2f84ea7d9fa46da82aa28a5b3796cc6"
+      },
+      {
+        "runId": 37704302523,
+        "status": "success",
+        "details": "tracking CI",
+        "headCommit": "915e90fcf2f84ea7d9fa46da82aa28a5b3796cc6"
+      },
+      {
+        "runId": 37705172263,
+        "status": "success",
+        "details": "post-merge validation passed all selected jobs on real runners; special integration matrix explicitly skipped",
+        "observedAt": "2026-10-08T00:09:19.198642+00:00",
+        "headCommit": "7d73c80f1b8c23a65b33bf584abac29a2e097417"
+      },
+      {
+        "runId": 37705172278,
+        "status": "failure",
+        "headCommit": "7d73c80f1b8c23a65b33bf584abac29a2e097417",
+        "details": "Global post-merge repository-tracking audit reported drift, including other milestones and SPEC-038/T002. The subsequent guarded M4-only apply reconciled T002, and its fresh scoped reaudit returned operations: []; global drift is not waived."
+      }
+    ]
+  },
+  "ownerStableCandidateReview": "pending",
+  "prProfile": {
+    "allSelectedValidatorsPassed": true,
+    "baseCommit": "796a959d881d0c44f9d259fb7a2d5d916c45a416",
+    "candidateAssociation": "Operator launched this profile at clean candidate915e90fc and rechecked unchanged clean HEAD and all18manifest input hashes after terminal exit. The profile log itself does not serialize a pre-run immutable candidate snapshot.",
+    "candidateCommit": "915e90fcf2f84ea7d9fa46da82aa28a5b3796cc6",
+    "captureExecuted": false,
+    "deferredBoundaryGates": [
+      "source-project execution",
+      "registered capture",
+      "human whole-M4 acceptance"
+    ],
+    "executedPassedTests": 758,
+    "profile": "pr",
+    "receiptSha256": "2dc9ef0d8cf366cb1d5516044ca93c0f4cf5961f2cbdf2adc88d077b4708d1c1",
+    "sessionId": 18060,
+    "skippedTests": 4,
+    "status": "passed",
+    "terminalExitCode": 0,
+    "terminalLogSha256": "32b6472fec2d70a03f7f09972d577d1cf95e484a5a2f3b9204008ec2f3a7a221",
+    "testsRun": 762,
+    "unitTestDurationSeconds": 1017.919,
+    "wholeM4Accepted": false
+  },
+  "quickProfile": {
+    "candidateBindingCaveat": "The terminal log shows the effective sensitive profile and changed-path inventory but does not serialize an immutable candidate snapshot. The association to candidateCommit is operator-reported; no snapshot provenance is inferred.",
+    "durationSeconds": 1001.821,
+    "effectiveProfile": "sensitive",
+    "executedPassedTests": 758,
+    "requestedProfile": "quick",
+    "skippedTests": 4,
+    "status": "passed",
+    "terminalExitCode": 0,
+    "terminalLogSha256": "7cc94f47c2565b608069bc67cb315a6e597d9adc5f2ff2be1e30dab27063a94d",
+    "testsRun": 762
+  },
+  "registeredCaptureAuthorized": false,
+  "stableCandidateReview": {
+    "status": "partial-static-manifest-review-only",
+    "receiptSha256": "5e84a9ceed95630d76a83bb4b39af5c60c2515f5765855d796ec72ede9f0cf2c",
+    "remainingActionableFindings": [],
+    "scopeLimit": "Read-only manifest/provenance and candidate-file hash/existence review only; owner stable-candidate review and exact capture authorization remain pending."
+  },
+  "wholeM4Accepted": false,
+  "candidateLineage": {
+    "pullRequest": 390,
+    "mergedCommit": "7d73c80f1b8c23a65b33bf584abac29a2e097417",
+    "priorProfileCandidate": "915e90fcf2f84ea7d9fa46da82aa28a5b3796cc6",
+    "treeIdentical": true,
+    "treeOid": "8a48146a743cd867a8cc0cff0f112383ef838db6"
+  },
+  "staticPreparation": {
+    "candidateCommit": "7d73c80f1b8c23a65b33bf584abac29a2e097417",
+    "manifestSha256": "72714511b4506c491f4297c900c40e28c0131cc25c9e6ef2f072fa57f0ff1cac",
+    "provenanceSha256": "ee939c337129ea4f4ed895dd04f6ac408b95ad380271b588e42600a7cfb32e97",
+    "status": "passed",
+    "operations": 2,
+    "treatmentSlots": 20,
+    "futurePathsAbsent": 40,
+    "reviewReceiptSha256": "5e84a9ceed95630d76a83bb4b39af5c60c2515f5765855d796ec72ede9f0cf2c",
+    "wallSeconds": 70.139261584,
+    "parentCpuSeconds": 4.925153
+  },
+  "scopedPostMergeTracking": {
+    "scope": "M4 milestone only",
+    "appliedOperations": [
+      {
+        "action": "update_task_text",
+        "key": "SPEC-038/T002"
+      }
+    ],
+    "applyExitCode": 0,
+    "reauditExitCode": 0,
+    "reauditOperations": [],
+    "globalAuditGreen": false,
+    "limits": "No tracking operations for other milestones were applied by this M4 delivery."
+  }
+}
