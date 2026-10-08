@@ -2,7 +2,7 @@
 
 Status date: 2026-10-08. This is a source map for the proposed M4.5 implementation and closure work. It does not update task checkboxes, assurance records, approval state, or milestone state.
 
-The inspected planning baseline is `develop` at `59d0eadbea772dbff32fb9daca88bd39ab67a030`. The current implementation candidate is a set of unmerged workspace changes based on that baseline; its final integrated/frozen SHA is not established here. Code present in this candidate is not, by itself, paired scenario evidence, host observation, clean-room reproduction, approval, or task completion. The registered 60 child tasks and six parent tasks therefore remain pending until their existing procedures and candidate-bound receipts establish their acceptance criteria. Do not create replacement task IDs or reduce the planned scope.
+The inspected planning baseline is `develop` at `59d0eadbea772dbff32fb9daca88bd39ab67a030`. The unmerged PR #467 candidate also integrates `develop` metadata/evidence commit `7c10b248d34a05f15195376d72884d9b443fe36a` without inheriting its M4 acceptance; its final integrated/frozen SHA is not established here. Code present in this candidate is not, by itself, paired scenario evidence, host observation, clean-room reproduction, approval, or task completion. The registered 60 child tasks and six parent tasks therefore remain pending until their existing procedures and candidate-bound receipts establish their acceptance criteria. Do not create replacement task IDs or reduce the planned scope.
 
 ## State vocabulary
 
