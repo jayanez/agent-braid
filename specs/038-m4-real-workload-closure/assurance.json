@@ -133,9 +133,16 @@
               "outcome": "The exact source-rights and protocol decisions remain bound to the unchanged source frame; original engineering-control inputs are historically verified against the reviewed candidate.",
               "path": "specs/038-m4-real-workload-closure/evidence/historical-evidence-binding-7d73c80.json",
               "sha256": "ba7423cd6791178d264960752d4169268fe1446b97c37cec67353a4644dafa82"
+            },
+            {
+              "path": "specs/038-m4-real-workload-closure/evidence/registered-capture-summary-e66f9a1.json",
+              "sha256": "7e2e948aa9252270eb495364d86d66e75c03e1acb578d60079244c7fbcc7c1cc",
+              "command": "Read-only reconciliation of unchanged source-rights/protocol manifest inputs and separately authorized single e66f9a1 capture against retained bound approvals and independent review.",
+              "outcome": "The exact source-rights/protocol hashes remain bound to the e66f9a1 manifest and unchanged source frame; separate owner items 18 and 19 bind stable-candidate review and actual capture authorization. Twenty valid treatments completed without source-code execution.",
+              "limits": "Original rights decisions and historical engineering records remain separate. Exact capture permission does not grant broader source use, provider/model access, scientific validity or whole-M4 acceptance."
             }
           ],
-          "planned_evidence": "specs/038-m4-real-workload-closure/evidence/sc-001.json; exact rights and provenance decision required",
+          "planned_evidence": "Exact source-rights/protocol decisions and e66f9a1 capture bindings are obtained and indexed above. Any changed source frame requires its own applicable review; whole-M4 acceptance remains separate under T007/SC-008.",
           "test_file": "specs/038-m4-real-workload-closure/validation-plan.md",
           "test_name": "procedure_sc001",
           "then": "capture remains blocked and the outcome is pending or infeasible without source execution",
@@ -157,9 +164,16 @@
               "outcome": "Static admission of the exact two-operation frame passed on historical candidate 7d73c80f1b8c23a65b33bf584abac29a2e097417; all 18 input hashes were independently confirmed against that commit.",
               "path": "specs/038-m4-real-workload-closure/evidence/historical-evidence-binding-7d73c80.json",
               "sha256": "ba7423cd6791178d264960752d4169268fe1446b97c37cec67353a4644dafa82"
+            },
+            {
+              "path": "specs/038-m4-real-workload-closure/evidence/registered-capture-summary-e66f9a1.json",
+              "sha256": "7e2e948aa9252270eb495364d86d66e75c03e1acb578d60079244c7fbcc7c1cc",
+              "command": "Candidate-bound static preparation and independent manifest review followed by the separately authorized single capture on frozen e66f9a1.",
+              "outcome": "Repaired-candidate admission binds 18 capture input hashes and manifest SHA-256 6cc2715f99c5e1eb47fa90e9ccb85388c7bc157f995c404660255c5608f60577; all 20 intended treatments completed and the retained fresh-process verifier inspected all 20 before cleanup.",
+              "limits": "Old sc-002.json remains historical 7d73c80 admission. Static preparation costs are separately reported; admission is neither source rights nor scientific validation. Deleted run/grant paths cannot be inspected anew. Whole-M4 acceptance remains pending."
             }
           ],
-          "planned_evidence": "specs/038-m4-real-workload-closure/evidence/sc-002.json; current limits and exact admission evidence required",
+          "planned_evidence": "Candidate-bound e66f9a1 static admission, manifest and capture are obtained and indexed above. No replacement capture is planned or authorized; whole-M4 acceptance remains separate under T007/SC-008.",
           "test_file": "specs/038-m4-real-workload-closure/validation-plan.md",
           "test_name": "procedure_sc002",
           "then": "all candidates and exclusion reasons are retained and no alternative source is silently substituted",
