@@ -53,3 +53,13 @@ authority/evidence candidate. The later commit packages this freeze only;
 human review remains pending. The packet commitment is
 `02457065ecd1a5f0a78a59a161e7dff8d4d83b6f22d2b5e45c5594326525477b`. No scientific
 acceptance, source capture permission or model adoption follows from this record.
+
+## Separate preparation reproduction
+
+`preparation-reproduction.json` records the independent Luna Latest medium
+reviewer replay in a new full clone and a new Python 3.13.11 environment. The
+checker and input-binding commands matched the frozen candidate outputs byte
+for byte; HEAD and Git status stayed unchanged. This reproduces the
+preparation software only. No real experiment, scientific acceptance or human
+approval is claimed, and the original frozen evidence snapshot remains bound
+to the candidate above.
