@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+import datetime
 import hashlib
 from importlib import metadata
 from importlib import resources
@@ -25,6 +26,10 @@ NAME = re.compile(r"[a-z][a-z0-9_-]{0,63}\Z")
 class InstallationRefused(ValueError):
     """An ambiguous target or ownership change prevents a local transaction."""
 
+    def __init__(self, message: str, *, diagnostic: dict | None = None):
+        super().__init__(message)
+        self.diagnostic = diagnostic
+
 
 def _require(value, message):
     if not value:
@@ -33,6 +38,185 @@ def _require(value, message):
 
 def _digest(value: bytes) -> str:
     return hashlib.sha256(value).hexdigest()
+
+
+def _byte_identity(value: bytes | None) -> dict | None:
+    if value is None:
+        return None
+    return {"sha256": _digest(value), "byteLength": len(value)}
+
+
+def _refusal_diff(*, operation: str, scope: str, current: bytes | None,
+                  proposed: bytes | None, expected_owned: bytes | str | None,
+                  ownership: str) -> dict:
+    """Describe one coalesced byte replacement without returning payload bytes."""
+    expected = ({"sha256": _digest(expected_owned), "byteLength": len(expected_owned)}
+                if isinstance(expected_owned, bytes) else
+                {"sha256": expected_owned, "byteLength": None}
+                if isinstance(expected_owned, str) else None)
+    hunks = []
+    if current != proposed:
+        before = current or b""
+        after = proposed or b""
+        prefix = 0
+        limit = min(len(before), len(after))
+        while prefix < limit and before[prefix] == after[prefix]:
+            prefix += 1
+        suffix = 0
+        suffix_limit = min(len(before) - prefix, len(after) - prefix)
+        while suffix < suffix_limit and before[len(before) - suffix - 1] == after[len(after) - suffix - 1]:
+            suffix += 1
+        hunks.append({
+            "currentByteRange": [prefix, len(before) - suffix],
+            "proposedByteRange": [prefix, len(after) - suffix],
+        })
+    change = ("create" if current is None else "remove" if proposed is None else
+              "replace" if current != proposed else "unchanged")
+    return {
+        "schema": "agent-braid-tooling-refusal/v1",
+        "operation": operation,
+        "scope": scope,
+        "comparison": {
+            "status": "compared",
+            "direction": "current -> proposed",
+            "change": change,
+            "coalesced": True,
+            "redacted": True,
+            "rangeUnit": "zero-based byte offsets; end exclusive",
+            "current": _byte_identity(current),
+            "proposed": _byte_identity(proposed),
+            "expectedOwned": expected,
+            "ownership": ownership,
+            "ownershipDifference": {
+                "unowned": "current bytes have no matching receipt authority, even when equal to proposed bytes",
+                "owned_but_modified": "current bytes differ from the receipt-owned identity",
+                "concurrent_drift_after_preview": "current bytes changed after the selected preview",
+            }.get(ownership),
+            "contentChanged": current != proposed,
+            "hunks": hunks,
+        },
+    }
+
+
+def _unavailable_refusal_diff(*, operation: str, scope: str, reason: str,
+                              expected_owned: bytes | str | None = None,
+                              ownership: str = "unknown") -> dict:
+    expected = ({"sha256": _digest(expected_owned), "byteLength": len(expected_owned)}
+                if isinstance(expected_owned, bytes) else
+                {"sha256": expected_owned, "byteLength": None}
+                if isinstance(expected_owned, str) else None)
+    return {
+        "schema": "agent-braid-tooling-refusal/v1",
+        "operation": operation,
+        "scope": scope,
+        "comparison": {
+            "status": "unavailable",
+            "reason": reason,
+            "expectedOwned": expected,
+            "ownership": ownership,
+            "redacted": True,
+            "content": "withheld",
+        },
+    }
+
+
+def _canonical_toml_value(value):
+    """Return a deterministic internal JSON shape for TOML values, including dates."""
+    if isinstance(value, dict):
+        return {key: _canonical_toml_value(value[key]) for key in sorted(value)}
+    if isinstance(value, list):
+        return [_canonical_toml_value(item) for item in value]
+    if isinstance(value, (str, int, float, bool)) or value is None:
+        return value
+    if isinstance(value, (datetime.datetime, datetime.date, datetime.time)):
+        return {"$tomlType": type(value).__name__, "iso": value.isoformat()}
+    raise TypeError("unsupported TOML value")
+
+
+def _toml_mapping_bytes(mapping: dict) -> bytes:
+    value = _json(_canonical_toml_value(mapping))
+    _require(len(value) <= MAX_CONFIG, "canonical TOML mapping exceeds the comparison bound")
+    return value
+
+
+def _selected_mapping_bytes(raw: bytes | None, host: str, name: str) -> bytes | None:
+    if raw is None:
+        return None
+    if host == "claude":
+        entry = _json_entry(raw, name)
+        return entry
+    parsed = _toml_parse(raw)
+    servers = parsed.get("mcp_servers", {})
+    mapping = servers.get(name) if isinstance(servers, dict) else None
+    if mapping is None:
+        return None
+    if not isinstance(mapping, dict):
+        raise ValueError("selected server mapping is not a table")
+    return _toml_mapping_bytes(mapping)
+
+
+def _toml_refusal_diff(*, raw: bytes, name: str, operation: str,
+                       expected_owned: bytes | None, proposed: dict,
+                       ownership: str) -> dict:
+    """Compare only canonical selected-server mappings, never the full TOML file."""
+    try:
+        parsed = _toml_parse(raw)
+        servers = parsed.get("mcp_servers", {})
+        current_mapping = servers.get(name) if isinstance(servers, dict) else None
+        if current_mapping is not None and not isinstance(current_mapping, dict):
+            raise ValueError("selected server mapping is unavailable")
+        current = _toml_mapping_bytes(current_mapping) if current_mapping is not None else None
+        desired = _toml_mapping_bytes(proposed)
+        expected = None
+        if expected_owned is not None:
+            old = _toml_parse(expected_owned).get("mcp_servers", {}).get(name)
+            if not isinstance(old, dict):
+                raise ValueError("owned server mapping is unavailable")
+            expected = _toml_mapping_bytes(old)
+    except (InstallationRefused, ValueError, TypeError, OverflowError, RecursionError, AttributeError):
+        return _unavailable_refusal_diff(
+            operation=operation,
+            scope="codex_toml_server_mapping",
+            reason="A selected TOML mapping could not be canonicalized safely; no private values or whole-file comparison are included.",
+            ownership=ownership,
+        )
+    if expected is not None and current == expected:
+        return {
+            "schema": "agent-braid-tooling-refusal/v1",
+            "operation": operation,
+            "scope": "codex_toml_server_mapping",
+            "comparison": {
+                "status": "semantic_equal_raw_mismatch",
+                "representation": "canonical selected-server mapping",
+                "current": _byte_identity(current),
+                "proposed": _byte_identity(desired),
+                "expectedOwned": _byte_identity(expected),
+                "semanticEqualToExpected": True,
+                "semanticEqualToProposed": current == desired,
+                "ownership": "owned_raw_bytes_changed",
+                "redacted": True,
+                "rawOwnedBlock": {
+                    "status": "mismatch",
+                    "byteRangeComparison": "unavailable",
+                    "reason": "The owned TOML block's original raw span cannot be isolated safely after formatting or table-boundary drift; the full configuration was not compared.",
+                },
+            },
+        }
+    diagnostic = _refusal_diff(
+        operation=operation,
+        scope="codex_toml_server_mapping",
+        current=current,
+        proposed=desired,
+        expected_owned=expected,
+        ownership=ownership,
+    )
+    diagnostic["comparison"]["representation"] = "canonical selected-server mapping"
+    diagnostic["comparison"]["rawOwnedBlock"] = {
+        "status": "not-compared",
+        "byteRangeComparison": "unavailable",
+        "reason": "TOML formatting and table boundaries are not represented by this semantic mapping diff; the full configuration was not compared.",
+    }
+    return diagnostic
 
 
 def _json(value) -> bytes:
@@ -358,7 +542,26 @@ def plan(selection: Selection, *, operation: str = "install", source_checkout: b
     config_before = _read(config)
     raw = config_before if config_before is not None else (b"" if selection.host == "codex" else b"{}\n")
     old_entry = receipt["entry"].encode() if receipt else None
-    entry = _config_entry(raw, selection.host, selection.name, old_entry, allow_modified=operation == "uninstall")
+    try:
+        entry = _config_entry(raw, selection.host, selection.name, old_entry,
+                              allow_modified=operation == "uninstall")
+    except InstallationRefused as exc:
+        if selection.host == "codex" and operation != "uninstall" and any(
+                marker in str(exc) for marker in ("existing TOML server is unowned or modified",
+                                                  "owned TOML server has additional shared keys")):
+            proposed_server = selection.server()
+            raise InstallationRefused(
+                str(exc),
+                diagnostic=_toml_refusal_diff(
+                    raw=raw,
+                    name=selection.name,
+                    operation=operation,
+                    expected_owned=old_entry,
+                    proposed=proposed_server,
+                    ownership="unowned" if old_entry is None else "owned_but_modified",
+                ),
+            ) from exc
+        raise
     changes = []
     residuals = []
     if operation == "uninstall":
@@ -401,15 +604,31 @@ def plan(selection: Selection, *, operation: str = "install", source_checkout: b
                                     "scope": selection.scope, "configPath": str(config), "receipt": str(receipt_path),
                                     "residuals": residuals})
 
-    _require(entry is None or receipt is not None, "server name collision; no owned receipt")
-    _require(receipt is None or entry == old_entry or (entry is None and receipt.get("state") == "uninstalled"),
-             "owned server changed; refusing overwrite")
-    _require(operation != "update" or receipt is not None, "update requires an owned receipt")
-    _require(operation != "update" or receipt.get("state") == "installed", "update requires an active installation")
     server = selection.server()
     new_entry = _toml_entry(selection.name, server) if selection.host == "codex" else _json(server).rstrip(b"\n")
     if selection.host == "codex" and old_entry is not None and old_entry.startswith(b"\n"):
         new_entry = b"\n" + new_entry
+    if entry is not None and receipt is None:
+        diagnostic = (_refusal_diff(operation=operation, scope="claude_json_server_entry",
+                                    current=entry, proposed=new_entry, expected_owned=None,
+                                    ownership="unowned")
+                      if selection.host == "claude" else
+                      _toml_refusal_diff(
+                          raw=raw, name=selection.name, operation=operation,
+                          expected_owned=None, proposed=server, ownership="unowned"))
+        raise InstallationRefused("server name collision; no owned receipt", diagnostic=diagnostic)
+    if receipt is not None and entry != old_entry and not (entry is None and receipt.get("state") == "uninstalled"):
+        diagnostic = (_refusal_diff(operation=operation, scope="claude_json_server_entry",
+                                    current=entry, proposed=new_entry, expected_owned=old_entry,
+                                    ownership="owned_but_modified")
+                      if selection.host == "claude" else
+                      _toml_refusal_diff(
+                          raw=raw, name=selection.name, operation=operation,
+                          expected_owned=old_entry, proposed=server,
+                          ownership="owned_but_modified"))
+        raise InstallationRefused("owned server changed; refusing overwrite", diagnostic=diagnostic)
+    _require(operation != "update" or receipt is not None, "update requires an owned receipt")
+    _require(operation != "update" or receipt.get("state") == "installed", "update requires an active installation")
     if selection.host == "codex":
         if entry is not None:
             config_after = raw.replace(old_entry, new_entry, 1)
@@ -435,13 +654,32 @@ def plan(selection: Selection, *, operation: str = "install", source_checkout: b
             target = skills / relative
             if target.parent.exists():
                 _require(not target.parent.is_symlink() and target.parent.is_dir(), "skill directory is unsafe")
-                _require(not _unowned_skill_contents(target.parent, receipt),
-                         f"shared skill contents require manual review: {asset.name}")
+                if _unowned_skill_contents(target.parent, receipt):
+                    raise InstallationRefused(
+                        f"shared skill contents require manual review: {asset.name}",
+                        diagnostic=_unavailable_refusal_diff(
+                            operation=operation,
+                            scope="skill_directory",
+                            reason="The directory contains unowned sibling files; those private filenames and contents are withheld, and no single-file comparison can explain directory ownership.",
+                            expected_owned=inventory.get(relative),
+                            ownership="shared_directory_contents",
+                        ),
+                    )
             before = _read(target)
             owned = inventory.get(relative)
-            _require(before is None or (owned is not None and _digest(before) == owned),
-                     f"skill collision or user edit: {relative}")
             after = asset.content.encode("utf-8")
+            if before is not None and (owned is None or _digest(before) != owned):
+                raise InstallationRefused(
+                    f"skill collision or user edit: {relative}",
+                    diagnostic=_refusal_diff(
+                        operation=operation,
+                        scope="skill_asset",
+                        current=before,
+                        proposed=after,
+                        expected_owned=owned,
+                        ownership="unowned" if owned is None else "owned_but_modified",
+                    ),
+                )
             if before != after:
                 changes.append(Change(target, before, after))
             inventory[relative] = _digest(after)
@@ -501,13 +739,74 @@ def _sync_directory(path: Path):
         os.close(descriptor)
 
 
+def _concurrent_refusal(transaction: Transaction, change: Change, current: bytes | None,
+                        message: str) -> InstallationRefused:
+    summary = transaction.summary
+    operation = str(summary.get("operation", "apply"))
+    try:
+        relative = change.path.relative_to(Path(summary["skillsPath"]))
+    except (KeyError, ValueError):
+        relative = None
+    if (relative is not None and len(relative.parts) == 2
+            and re.fullmatch(r"agent-braid-(analyze|plan|execute|recover|evidence)", relative.parts[0])
+            and relative.parts[1] == "SKILL.md"):
+        diagnostic = _refusal_diff(
+            operation=operation,
+            scope="skill_asset",
+            current=current,
+            proposed=change.after,
+            expected_owned=change.before,
+            ownership="concurrent_drift_after_preview",
+        )
+    elif str(change.path) == summary.get("configPath"):
+        host = summary.get("host")
+        name = summary.get("serverName")
+        try:
+            current_entry = _selected_mapping_bytes(current, host, name)
+            expected_entry = _selected_mapping_bytes(change.before, host, name)
+            proposed_entry = _selected_mapping_bytes(change.after, host, name)
+            diagnostic = _refusal_diff(
+                operation=operation,
+                scope=("claude_json_server_entry" if host == "claude"
+                       else "codex_toml_server_mapping"),
+                current=current_entry,
+                proposed=proposed_entry,
+                expected_owned=expected_entry,
+                ownership="concurrent_drift_after_preview",
+            )
+            if host == "codex":
+                diagnostic["comparison"]["representation"] = "canonical selected-server mapping"
+                diagnostic["comparison"]["rawOwnedBlock"] = {
+                    "status": "not-compared",
+                    "byteRangeComparison": "unavailable",
+                    "reason": "Concurrent configuration drift is shown only for the canonical selected-server mapping; the full TOML file and raw block ranges were not compared.",
+                }
+            diagnostic["comparison"]["concurrentScopeNote"] = (
+                "The selected server entry is shown; the file-level concurrent change may also be outside this entry."
+            )
+        except (InstallationRefused, ValueError, TypeError, OverflowError, RecursionError, AttributeError):
+            diagnostic = _unavailable_refusal_diff(
+                operation=operation,
+                scope=("claude_json_server_entry" if host == "claude"
+                       else "codex_toml_server_mapping"),
+                reason="The selected server entry could not be isolated after concurrent configuration drift; the full configuration was not compared.",
+                ownership="concurrent_drift_after_preview",
+            )
+    else:
+        diagnostic = None
+    return InstallationRefused(message, diagnostic=diagnostic)
+
+
 def apply(transaction: Transaction, *, preview_digest: str,
           fault: Callable[[int, Path], None] | None = None) -> dict:
     """Apply exactly the reviewed preview with rollback and persistent backups."""
     preview = transaction.preview()
     _require(preview_digest == preview["previewDigest"], "selected preview digest does not match")
     for change in transaction.changes:
-        _require(_read(change.path) == change.before, "concurrent destination edit; refusing transaction")
+        current = _read(change.path)
+        if current != change.before:
+            raise _concurrent_refusal(transaction, change, current,
+                                      "concurrent destination edit; refusing transaction")
     if not transaction.changes:
         return dict(preview, status="unchanged", backups=[])
     # One lock per receipt/config scope; never start hosts, dependency installers or grants.
@@ -534,7 +833,10 @@ def apply(transaction: Transaction, *, preview_digest: str,
     try:
         os.close(descriptor)
         for index, change in enumerate(transaction.changes):
-            _require(_read(change.path) == change.before, "destination changed after preview")
+            current = _read(change.path)
+            if current != change.before:
+                raise _concurrent_refusal(transaction, change, current,
+                                          "destination changed after preview")
             if change.before is not None:
                 backup = change.path.parent / f".{change.path.name}.braid-backup-{_digest(change.before)}"
                 existing = _read(backup)
@@ -548,7 +850,10 @@ def apply(transaction: Transaction, *, preview_digest: str,
                 backups.append({"path": str(backup), "sha256": _digest(change.before)})
             if fault:
                 fault(index, change.path)
-            _require(_read(change.path) == change.before, "destination changed at replacement")
+            current = _read(change.path)
+            if current != change.before:
+                raise _concurrent_refusal(transaction, change, current,
+                                          "destination changed at replacement")
             applied.append(change)
             _atomic(change.path, change.after)
     except BaseException:

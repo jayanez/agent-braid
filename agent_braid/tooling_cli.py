@@ -100,6 +100,12 @@ def run(args) -> int:
         return 0
     except (ValueError, OSError, ImportError, RuntimeError) as exc:
         # Preserve actionable fixed diagnoses, never print a traceback/payload on stdout.
+        if isinstance(exc, InstallationRefused) and exc.diagnostic is not None:
+            record = {"schema": "agent-braid-tooling-refusal-record/v1",
+                      "message": str(exc), "diagnostic": exc.diagnostic}
+            sys.stderr.write(json.dumps(record, ensure_ascii=False, sort_keys=True,
+                                        separators=(",", ":"), allow_nan=False) + "\n")
+            return 2
         print(f"tooling refused: {exc}", file=sys.stderr)
         return 2
 

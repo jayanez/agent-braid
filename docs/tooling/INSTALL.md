@@ -46,6 +46,17 @@ A changed destination or digest refuses before replacement. Use a distinct
 root for tests. `--source-checkout-assets` is explicit development-only lookup;
 it is unnecessary and unavailable in a relocated installation.
 
+Ownership refusals that have a safe comparison scope return a bounded structured
+JSON record on stderr (exit 2; stdout stays empty). The record gives a coalesced
+current-to-proposed byte-range change and hashes for skill files and Claude's
+selected JSON server entry. Codex TOML diagnostics compare the canonical selected
+server mapping and label that representation; they do not compare the whole config
+file to one server block. If TOML formatting or table-boundary drift prevents a
+raw owned-block comparison, the record reports semantic equality or the selected
+mapping difference and says raw byte ranges are unavailable. Content and absolute
+target paths are withheld. A content match without a receipt is still reported as
+unowned and is not adopted.
+
 Codex user config respects `CODEX_HOME` (otherwise `~/.codex/config.toml`);
 user skills use `~/.agents/skills`. Codex project config/skills use
 `.codex/config.toml` and `.agents/skills` in the selected repository. Claude user
