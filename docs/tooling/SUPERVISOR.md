@@ -38,6 +38,16 @@ as incomplete. Status `completed` requires process exit zero and a clean group
 state; descendant cleanup, unknown telemetry, cancellation, cap exhaustion,
 timeout, output overflow, or launch drift cannot be reported as success.
 
+The executable hash is limited to 512 MiB and each optional configuration or
+skill `FilePin` to 1 MiB; reads use bounded chunks, reject growth beyond the
+limit, and require regular files. Opens use no-follow/nonblocking flags where
+the platform supports them, then inspect the opened descriptor before reading
+so a FIFO or special-file replacement is refused. These are byte bounds, not
+hard timing guarantees: synchronous local filesystem metadata and reads can
+still stall on a faulty or unusual filesystem. The operator must use the
+approved trusted local filesystem boundary; the process deadline cannot make
+kernel/filesystem I/O preemptible.
+
 ## Example composition
 
 ```python
@@ -64,7 +74,9 @@ launch. Paths are hashed in the
 receipt. These are pathname observations, not an atomic `fexec` guarantee: a
 file may change between the final hash and the operating system opening it.
 The external verifier must still establish source/configuration identity and
-actual host provenance. The output files remain private and may
+actual host provenance. Preflight and pin hashing are synchronous filesystem
+operations, so their duration is not covered by a hard service-response
+deadline. The output files remain private and may
 contain sensitive session output; callers must retain them only in the
 registered private artifact boundary.
 
