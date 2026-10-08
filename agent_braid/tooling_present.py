@@ -43,6 +43,8 @@ _BEARER = re.compile(r"\bBearer\s+[^\s,;]+", re.IGNORECASE)
 _DIGEST = re.compile(r"^(?:sha256:)?[0-9a-f]{64}$")
 _DOMAIN_STATES = {
     "verified", "failed", "cancelled", "refused", "unknown", "complete",
+    "completed", "aborted", "interrupted", "verified-completed",
+    "verified-aborted", "verified-prefix", "unverified", "rejected",
     "incomplete", "no-private-run", "not-verified", "not-dispatched",
     "not-repeated", "performed", "fallback", "ready", "in-progress",
     "manual-review", "serial-fallback", "candidate-preparation-waves",

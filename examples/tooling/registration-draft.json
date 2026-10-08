@@ -47,7 +47,7 @@
   "costCaps": {
     "eur": 25,
     "tokens": 4000000,
-    "wall_seconds": 28800,
+    "wall_seconds": 57600,
     "rss_bytes": 4294967296,
     "disk_bytes": 5368709120
   },

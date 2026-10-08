@@ -165,6 +165,22 @@ class LifecycleTests(unittest.TestCase):
         transaction = plan(replace(self.selection, grant_store=self.root / "grants", enable_runtime=True), source_checkout=True)
         self.assertIn("execute", transaction.preview()["enabledTools"])
 
+    def test_existing_directory_grant_store_is_accepted_but_file_or_alias_is_refused(self):
+        grants = self.root / "existing-grants"
+        grants.mkdir(mode=0o700)
+        selection = replace(self.selection, grant_store=grants, enable_runtime=True)
+        self.assertIn("execute", plan(selection, source_checkout=True).preview()["enabledTools"])
+        self.assertEqual([], list(grants.iterdir()))
+        wrong = self.root / "file-grants"
+        wrong.write_bytes(b"owned content")
+        alias = self.root / "aliased-grants"
+        alias.symlink_to(grants, target_is_directory=True)
+        for path in (wrong, wrong / "child", alias):
+            with self.subTest(path=path), self.assertRaises(InstallationRefused):
+                plan(replace(selection, grant_store=path), source_checkout=True)
+        self.assertEqual(b"owned content", wrong.read_bytes())
+        self.assertFalse(self.selection.destination.exists())
+
     def test_doctor_permission_failure_is_not_healthy(self):
         real_access = os.access
         def access(path, mode):

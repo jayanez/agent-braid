@@ -8,7 +8,7 @@ registration retains `status: draft` and `provider.optIn: false`.
 | --- | ---: |
 | Total provider cost, including setup and retries | EUR 25 |
 | Total input/output/retry tokens | 4,000,000 |
-| Total wall boundary, including setup and human review | 28,800 seconds |
+| Total accounted wall time, including setup and human review | 57,600 seconds (16 hours) |
 | Peak aggregate resident memory of an attempt's processes | 4 GiB |
 | Retained fixture/result/receipt disk footprint | 5 GiB |
 
@@ -35,3 +35,10 @@ Two independently scoring human raters remain required. The proposed arrangement
 is the owner and a second person familiar with Python/Git, with 2–4 hours reserved
 per person and disclosed blinding limits. No second identity or human score is
 invented. Luna technical review cannot replace either human rating.
+
+The time proposal reserves up to eight hours for the two human raters together
+and up to eight for setup and all attempts. It is an accounting ceiling, not an
+elapsed-time forecast: overlap inside one attempt is not added twice, and
+separate attempts and setup retain their costs. The earlier eight-hour proposal
+left too little margin when including human review. No measured throughput or
+completion guarantee is implied by this allocation.

@@ -98,6 +98,26 @@ complete envelope. A reference alone is not a complete result.
 
 ## Separate operator-authorized runtime path
 
+The source integration control in `tests/test_tooling_journey.py` exercises the
+complete offline path in its own temporary roots. It previews/applies isolated
+assets for both host formats, checks the five installed skill hashes and the
+service catalog, analyzes and prepares one owned fixture, and verifies that an
+unissued grant refuses before allocating a run. A separate test operator then
+uses the existing policy API to issue the exact plan-bound grant. The control
+interrupts an actual local run at a committed checkpoint, inspects its prefix,
+issues a distinct recovery grant, resumes, verifies the expected tree, and
+exports the complete verified envelope deterministically. It checks that the
+source revision/tree remain unchanged and removes only the installed assets.
+
+```sh
+.venv/bin/python -m unittest tests.test_tooling_journey
+```
+
+This is a synthetic engineering control with local test-only operator grants,
+not a user tutorial that issues authority, an MCP host connection, a provider
+call or an actual M4.5 evaluation attempt. Its command and result must be bound
+to the final candidate before use as procedure evidence.
+
 The walkthrough stops before execution. If an operator later elects to use the
 synthetic fixture for a local runtime demonstration, follow the explicit
 `grant-policy-run` → `execute-policy-run` → `verify-git-run` commands in the

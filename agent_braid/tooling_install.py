@@ -116,7 +116,13 @@ class Selection:
             _require(self.grant_store is not None, "runtime requires explicit grant store")
         if self.grant_store is not None:
             grant = self.grant_store.expanduser().absolute()
-            _check_path(grant)
+            for part in (grant, *grant.parents):
+                _require(not part.is_symlink(), "grant store must use its canonical path")
+                if part.exists():
+                    _require(part.is_dir(), "grant store path is not a directory")
+            _require(grant.resolve(strict=False) == grant, "grant store must use its canonical path")
+            if grant.exists():
+                _require(grant.is_dir(), "grant store is not a directory")
             _require(not grant.is_relative_to(source), "grant store overlaps source")
             _require(not grant.is_relative_to(results) and not source.is_relative_to(grant)
                      and not results.is_relative_to(grant), "grant store overlaps configured roots")
