@@ -254,6 +254,13 @@
               "outcome": "Exit 0; escalated sensitive profile; 775 tests, 771 passed and four explicitly skipped.",
               "path": "docs/experiments/evidence/m35-review-correction-2026-10-08/validation-quick.json",
               "sha256": "93d3f5f09ef81d33a86f28a47992f6fbbcd84750c1c8ca92f31ff8f4ced62c96"
+            },
+            {
+              "command": "PATH=\"$PWD/.venv-speckit/bin:$PATH\" python3 scripts/validate_change.py --base develop --profile pr > docs/experiments/evidence/m35-review-correction-2026-10-08/validation-pr.txt 2>&1",
+              "limits": "Full software/structural profile only. Four tests were skipped (three deferred real-predictor controls and one unavailable private historical commit check). No source permission, real-data experiment, scientific review, clean-room experiment reproduction or founder approval.",
+              "outcome": "Exit 0 on code-identical candidate tree 3e91789; 775 tests, 771 passed and four skipped; selected executable validation passed.",
+              "path": "docs/experiments/evidence/m35-review-correction-2026-10-08/validation-pr.txt",
+              "sha256": "7c6816e05996a41ce95dd5727f559afb03ba542b0b0f8b2ac552627ec7d81d2f"
             }
           ],
           "planned_evidence": "Focused adversarial software controls, exact packet and implementation commitments, environment and bounded results; not real source, training or held-out evidence.",

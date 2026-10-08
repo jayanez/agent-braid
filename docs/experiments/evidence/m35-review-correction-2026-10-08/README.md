@@ -2,8 +2,8 @@
 
 This package records the follow-up to the earlier frozen preparation candidate.
 The exact candidate source tree is commit `10944b5e8454602f7adc386f4b2eaff3ff628645`;
-its authority/evidence freeze remains pending in this package until the final
-candidate is re-frozen after the complete validation receipt is available.
+its source bytes are unchanged in the final frozen package; final review status
+is pending until a human reviews that package.
 
 `packet.json` reproduces the six-file metadata-only packet. `binding.json`
 commits those files plus the checker, tests, completion plan, binding script and
@@ -20,7 +20,8 @@ bypass and confirmed the experiment's five-eligible-family threshold is
 unchanged. The review checkout lacked requested base `e66f9a1`, so review was
 against available `develop` `d5f379b`. No source payload was opened.
 
-`pr` validation, independent human review, source decisions and experiment
-gates remain pending. This package records neither consent nor permission,
+The stable `pr` profile passed on code-identical commit `3e91789`; its complete
+log is `validation-pr.txt`. Independent human review, source decisions and
+experiment gates remain pending. This package records neither consent nor permission,
 registration, source completeness, real admitted pairs, annotation, model fit,
 calibration, holdout results, or founder approval.
