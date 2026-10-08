@@ -21,7 +21,7 @@
   ],
   "assumptions": "Exact frozen source rights and protocol were approved by nine item-by-item decisions, bound to the unchanged candidate hashes in SC-001. Approval covers bounded implementation, static admission and evaluation preparation only. Static admission passed for the exact two-operation frame at merged candidate 7d73c80f; local quick/PR profiles passed on its tree-identical predecessor 915e90fc. Hosted PR and post-merge validation succeeded for selected checks; the special integration matrix was explicitly skipped. Independent C08 technical and manifest reviews found no actionable findings within their distinct scopes. For the repaired successor, fresh static preparation, exact owner stable-candidate/manifest review and separate capture authorization remain pending. Registered actual capture and whole-M4 acceptance also remain pending. The historical b85f7e5 candidate was reviewed and capture-authorized, but two pre-dispatch failures produced zero actual treatments; no successor candidate is yet authorized.",
   "authority_snapshot": {
-    "commit": "3bbefd1d61248f1f60655adc274b763604107456",
+    "commit": null,
     "hashes": {
       "ARCHITECTURE.md": "2f0c81ea8eefb9eb74aec6b3a76fae7e0500c9fad31fbe8b209ebc7d492a355e",
       "CONSTITUTION.md": "ff7196976a1736a639947c2ab26e8da157fef23c89ba9881312f2a36459964eb",
@@ -87,13 +87,13 @@
       "schemas/governance/public-export-manifest.schema.json": "11eb7f2594939ae9fd0c9e6cfe4423a80aba686d6cdfdd8b73b0fb84b0840aa8",
       "schemas/governance/release-validation-record.schema.json": "d9943f0c9f5520ea52e3b12bfba88240d03f8011b433fc5e35cb49549ab6e819"
     },
-    "mode": "historical"
+    "mode": "current"
   },
   "compatibility": "Bounded current-runtime harness implementation and preparation; no public API/schema, grants, effects, verifier, host, promotion or runtime contract changes. Historical G4NO-GO and other milestones unchanged.",
   "domain": "Exact owner-permissioned PR137/138 frozen source frame from common base; static replay/runtime admission passed for the exact two-operation frame at merged candidate 7d73c80f. One finite task frame, no population claims. Candidate-specific attempts stopped before dispatch; no actual source treatments occurred.",
   "evidence_snapshot": {
-    "commit": "3bbefd1d61248f1f60655adc274b763604107456",
-    "mode": "historical"
+    "commit": null,
+    "mode": "current"
   },
   "execution_contract": "Implementation/static admission/evaluation preparation approved; registered capture requires separately reviewed stable harness/manifest and exact human authorization. Existing fixed patches, grants, private destinations and verifier only; no source code/tests/hooks/network/providers/ref promotion. Historical approval binds only the reviewed b85f7e5 candidate and manifest; changed harness bytes require new exact review and capture authorization.",
   "human_review": "pending",
