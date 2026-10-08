@@ -1,0 +1,120 @@
+{
+  "candidate": {
+    "candidateIdentity": {
+      "commit": "e66f9a1b94fc5ebfbf784d9c48a76f53c1a656ee",
+      "tree": "36821ee4685f583e97fede0e3c627dcf7d85bd07"
+    },
+    "candidateInputMapGuardScope": {
+      "appliesTo": [
+        "focused-environment-diagnostic",
+        "corrected-environment-full-run"
+      ],
+      "doesNotApplyTo": [
+        "original-full-run"
+      ],
+      "inputFileCount": 201,
+      "inputMapSha256": "40e089bf3632edca48ef39c3f47f50bad6ffce2a938a34b00f556c8fa366d0b8"
+    },
+    "candidateUnchangedBeforeAfter": true,
+    "commit": "e66f9a1b94fc5ebfbf784d9c48a76f53c1a656ee",
+    "git": "2.54.0 (Apple Git-157)",
+    "machine": "arm64",
+    "platform": "Darwin",
+    "python": "3.13.11",
+    "reproductionFingerprintFileKinds": {
+      "json": 23,
+      "markdown": 7,
+      "python": 50
+    },
+    "reproductionFingerprintInputFiles": 80,
+    "tree": "36821ee4685f583e97fede0e3c627dcf7d85bd07"
+  },
+  "dependencyBoundary": "The suite ran in a fresh Python process using the existing isolated Python 3.13.11 environment. This was not a clean-room dependency installation or an independently provisioned environment.",
+  "limits": [
+    "Local Darwin arm64 reproduction of bounded Git runtime, policy, scheduler, and deterministic MCP stdio-peer tests only.",
+    "No external model, client host, live MCP server, real-source workload, network, or CI was used.",
+    "Passing tests do not establish semantic correctness of arbitrary operations, speedup, cross-platform behavior, utility, or whole-M4 acceptance.",
+    "The first full-run failure remains part of the record and must be disclosed alongside the distinct corrected-environment pass."
+  ],
+  "observations": [
+    {
+      "command": "python -m unittest -v tests.test_git_runtime tests.test_m4_alpha_policy tests.test_m4_alpha_scheduler tests.test_m4_alpha_mcp",
+      "errors": 1,
+      "exitCode": 1,
+      "finding": "The existing test_execute_and_verify errored while writing .git/hooks/post-commit because the temporary Git repository had no hooks directory.",
+      "id": "original-full-run",
+      "inputIntegrity": {
+        "candidateGuard201InputMapApplied": false,
+        "recordedInputsChangedDuringRun": false,
+        "recordedWorkingTreeChangedDuringRun": false,
+        "reproductionFingerprintInputFiles": 80
+      },
+      "logSha256": "bbc7961d897d844667458d015eace6aa14fd26923b72d879bdef1da4cd307d19",
+      "passed": 67,
+      "preservation": "This original full-suite failure remains failed; it is not relabeled by the later environment-specific pass.",
+      "receiptSha256": "607156a9b31e01a4f81645b0372a19b0f004909998cb83cd90de15d03d7ece0f",
+      "skipped": 0,
+      "status": "failed",
+      "testsRun": 68,
+      "timedOut": false,
+      "unitTestSeconds": 660.178
+    },
+    {
+      "command": "python -m unittest -v tests.test_git_runtime.GitRuntimeTests.test_execute_and_verify",
+      "errors": 0,
+      "exitCode": 0,
+      "id": "focused-environment-diagnostic",
+      "inputIntegrity": {
+        "candidateGuardInputFiles": 201,
+        "candidateGuardPassedBeforeAndAfter": true,
+        "candidateInputMapSha256": "40e089bf3632edca48ef39c3f47f50bad6ffce2a938a34b00f556c8fa366d0b8"
+      },
+      "logSha256": "2f06f5f6fa8ac222921e8c71fd48ed4552682370d698989cca3f2971c8f56c6d",
+      "outerSeconds": 10.805,
+      "passed": 1,
+      "receiptSha256": "da07633edb38ee7fbf514b071043811535d4b0df2afbe20c5c6a10da351a2f6b",
+      "skipped": 0,
+      "status": "passed",
+      "template": "A separate private Git template containing only one empty hooks/ directory; no files or symlinks.",
+      "testsRun": 1,
+      "timedOut": false,
+      "unitTestSeconds": 10.66
+    },
+    {
+      "command": "python -m unittest -v tests.test_git_runtime tests.test_m4_alpha_policy tests.test_m4_alpha_scheduler tests.test_m4_alpha_mcp",
+      "environmentChange": "Used the same frozen candidate and reproduction script with a new private Git template containing only an empty hooks/ directory. The template had no files or symlinks before or after. The reviewed environment also disabled system Git configuration, used the reviewed minimal global config, set core.hooksPath=/dev/null and core.fsmonitor=false, and disabled terminal prompts.",
+      "errors": 0,
+      "exitCode": 0,
+      "id": "corrected-environment-full-run",
+      "inputIntegrity": {
+        "candidateGuardInputFiles": 201,
+        "candidateGuardPassedBeforeAndAfter": true,
+        "candidateInputMapSha256": "40e089bf3632edca48ef39c3f47f50bad6ffce2a938a34b00f556c8fa366d0b8",
+        "reproductionFingerprintInputFiles": 80
+      },
+      "logSha256": "6eea5bd6157bc022cd77bbd4712c6d1f91cf0a4901a1d978065f88eea4640bd0",
+      "operatorPreflightSha256": "211dbdba1261234bd48f410960361e895d202b9f1dece39ea429f2fd81acc819",
+      "operatorRunSha256": "fa6a8a93879466235c5f85e6c041abf0e0b0e0c79b927462ec9416dff28952f4",
+      "outerOperatorSeconds": 654.361,
+      "passed": 68,
+      "receiptSha256": "b14bc25d4fba94608a33ce990512b489bbab58ddc5b99383f91d7f9af9bc4800",
+      "skipped": 0,
+      "status": "passed",
+      "testsRun": 68,
+      "timedOut": false,
+      "unitTestSeconds": 653.984
+    }
+  ],
+  "recordVersion": "spec021-darwin-core-summary-v2",
+  "recordedAtUtc": "2026-10-08T15:35:04Z",
+  "review": {
+    "model": "gpt-6-luna",
+    "receiptSha256": "4bea438602ab1368ac51fc1f8012d212d3cf98fdb3f71b51a9b1adadbe1e8e07",
+    "status": "findings empty"
+  },
+  "revision": {
+    "reviewCorrection": "Scope the 201-input candidate guard only to the focused diagnostic and corrected full run. The original failed full run binds its 80-input reproduction fingerprint and unchanged candidate/worktree fields.",
+    "supersedes": "darwin-core-summary.json",
+    "supersedesSha256": "8af721c416f06c7bed9914a45eb8f831055487276edc01c9ea0712108ca854cb"
+  }
+}
