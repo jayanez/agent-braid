@@ -20,7 +20,7 @@
   ],
   "assumptions": "Pure deterministic sequence operations with immutable anchors, fresh IDs and complete finite inputs.",
   "authority_snapshot": {
-    "commit": "7cf977378bc95c4c1242cff2f0d7964450dc3b4c",
+    "commit": null,
     "hashes": {
       "ARCHITECTURE.md": "d8cb93624faf2ed7900b55eb9dbb1630e32b9141763d455c67dec5df6a22d6f2",
       "CONSTITUTION.md": "ff7196976a1736a639947c2ab26e8da157fef23c89ba9881312f2a36459964eb",
@@ -86,13 +86,13 @@
       "schemas/governance/public-export-manifest.schema.json": "11eb7f2594939ae9fd0c9e6cfe4423a80aba686d6cdfdd8b73b0fb84b0840aa8",
       "schemas/governance/release-validation-record.schema.json": "d9943f0c9f5520ea52e3b12bfba88240d03f8011b433fc5e35cb49549ab6e819"
     },
-    "mode": "historical"
+    "mode": "current"
   },
   "compatibility": "No current contract changes or M3 closure dependency; future model artifact/version needs separate review.",
   "domain": "Prospective consent-reviewed editing sessions mapped without guesswork to M3 anchored-sequence pairs; fixed source windows, family-separated holdout and policy-blind separately adjudicated utility proxy labels. No admitted real pair yet.",
   "evidence_snapshot": {
-    "commit": "7cf977378bc95c4c1242cff2f0d7964450dc3b4c",
-    "mode": "historical"
+    "commit": null,
+    "mode": "current"
   },
   "execution_contract": "Local synthetic capture creates a new output file exclusively and audit reads it without changing source input; no Git source mutation, live agents, external effects or execution authorization. The review-packet checker reads six fixed local metadata/document files with safe-file checks, outputs metadata commitments only and never opens journals, admits pairs, invokes source services or authorizes capture/training.",
   "human_review": "pending",
@@ -221,46 +221,46 @@
           "id": "SC-008",
           "obtained_evidence": [
             {
-              "command": ".venv-speckit/bin/python -m scripts.check_m35_review_packet > docs/experiments/evidence/m35-review-correction-2026-10-08/packet.json",
+              "command": ".venv-speckit/bin/python -m scripts.check_m35_review_packet > docs/experiments/evidence/m35-review-final-2026-10-08/packet.json",
               "limits": "Structural metadata commitment only. Candidate workflows remain unapproved; there is no source access, consent, registration, yield, or scientific approval.",
-              "outcome": "Current packet checked with variable candidate roster; zero real admitted pairs and every authority flag false.",
-              "path": "docs/experiments/evidence/m35-review-correction-2026-10-08/packet.json",
-              "sha256": "4411e2eba501f277797ab03663803806baea73a64c74b05bb7df1cfb5b233898"
+              "outcome": "Final source-review procedure is explicit about staged permission: metadata-only screening first, then specifically authorized full-text inspection; zero real admitted pairs and every authority flag false.",
+              "path": "docs/experiments/evidence/m35-review-final-2026-10-08/packet.json",
+              "sha256": "8f82006c79aad064e62ad9c60d54bfdbd0e53fd1abbb198bcba5546c85f41e81"
             },
             {
-              "command": ".venv-speckit/bin/python docs/experiments/evidence/m35-review-preparation-2026-10-08/capture_binding.py > docs/experiments/evidence/m35-review-correction-2026-10-08/binding.json",
+              "command": ".venv-speckit/bin/python docs/experiments/evidence/m35-review-preparation-2026-10-08/capture_binding.py > docs/experiments/evidence/m35-review-final-2026-10-08/binding.json",
               "limits": "Hashes bind supplied metadata bytes only, not authenticity, rights, workflow independence, consent, or human decisions.",
-              "outcome": "Eleven source-free preparation inputs bound by the replayable helper; packet commitment reproduced.",
-              "path": "docs/experiments/evidence/m35-review-correction-2026-10-08/binding.json",
-              "sha256": "1a3d36f0b23953e2453c2eb184dde5fe3fcccca78cd2f5d4f8669877fa98220c"
+              "outcome": "Twelve source-free preparation input hashes bound by the replayable helper; final packet commitment reproduced.",
+              "path": "docs/experiments/evidence/m35-review-final-2026-10-08/binding.json",
+              "sha256": "e3182f1fd90d4d8a6b1651034139ff86cfa9b3463a69c04a8641847560acf8a4"
             },
             {
-              "command": ".venv-speckit/bin/python -m unittest -v tests.test_m35_review_packet > docs/experiments/evidence/m35-review-correction-2026-10-08/focused-tests.txt 2>&1",
+              "command": ".venv-speckit/bin/python -m unittest -v tests.test_m35_review_packet > docs/experiments/evidence/m35-review-final-2026-10-08/focused-tests.txt 2>&1",
               "limits": "Synthetic adversarial controls only; no real source payload or experiment was opened or run.",
               "outcome": "13 source-free packet and boundary regression tests passed.",
-              "path": "docs/experiments/evidence/m35-review-correction-2026-10-08/focused-tests.txt",
-              "sha256": "c51b52f4dc7d592044a51bb1b6fc32089ce84a30fd183fc3b594b32562728c5d"
+              "path": "docs/experiments/evidence/m35-review-final-2026-10-08/focused-tests.txt",
+              "sha256": "f462de5749b44ade3b5541150b3c5c0db451e0c1064e221453571b76b6c36bba"
             },
             {
-              "command": "Independent read-only adversarial reviews by Luna Latest (gpt-6-luna), medium effort; no source payload access.",
-              "limits": "Technical reviewer findings only; not human source permission, scientific review, or founder approval. Reviewers lacked requested base e66f9a1 and used available d5f379b.",
-              "outcome": "Unsafe supplemental reads replaced with bounded safe reads; proposal roster no longer enforces five rows. Follow-up reviewers reported no actionable bypass and confirmed the five-eligible-family experiment gate is unchanged.",
-              "path": "docs/experiments/evidence/m35-review-preparation-2026-10-08/adversarial-regression-review.md",
-              "sha256": "8aa6cd1bd233733e54d24d681d8ab51a556bc94d2aa31af03cfdef3f0c1b4268"
+              "command": "Independent metadata-only adversarial review by Luna Latest (gpt-6-luna), medium effort.",
+              "limits": "Technical review only; reviewer did not rerun tests, open source payloads, approve permissions, assess scientific validity, or provide founder approval.",
+              "outcome": "No remaining actionable bypass found. Corrected the twelve-input count; staged permission gates are coherent. The final candidate receipt remains a post-freeze package item.",
+              "path": "docs/experiments/evidence/m35-review-final-2026-10-08/adversarial-review.md",
+              "sha256": "9a866798c863220d1d480e846338c6750dbaa17855b63ed0242c0112efb4a7d9"
             },
             {
-              "command": "PATH=\"$PWD/.venv-speckit/bin:$PATH\" python3 scripts/validate_change.py --base develop --profile quick",
-              "limits": "Software/structural checks only. Skips are not passes. Source permissions, human/scientific review, real data, model fitting and clean-room reproduction remain pending.",
-              "outcome": "Exit 0; escalated sensitive profile; 775 tests, 771 passed and four explicitly skipped.",
-              "path": "docs/experiments/evidence/m35-review-correction-2026-10-08/validation-quick.json",
-              "sha256": "93d3f5f09ef81d33a86f28a47992f6fbbcd84750c1c8ca92f31ff8f4ced62c96"
+              "command": "PATH=\"$PWD/.venv-speckit/bin:$PATH\" python3 scripts/validate_change.py --base origin/develop --profile quick",
+              "limits": "Software and structural checks only. Four skips are not passes; source access, human/scientific review, real experiment, clean-room reproduction, and founder approval remain pending.",
+              "outcome": "Exit 0; effective sensitive profile; 775 tests, 771 passed, four skipped, zero failed; selected executable validation passed.",
+              "path": "docs/experiments/evidence/m35-review-final-2026-10-08/validation-quick.json",
+              "sha256": "7b9942640cea9eed5b195c5a9b751c15e181f6b2bbca7104cbfe285160472cb3"
             },
             {
-              "command": "PATH=\"$PWD/.venv-speckit/bin:$PATH\" python3 scripts/validate_change.py --base develop --profile pr > docs/experiments/evidence/m35-review-correction-2026-10-08/validation-pr.txt 2>&1",
-              "limits": "Full software/structural profile only. Four tests were skipped (three deferred real-predictor controls and one unavailable private historical commit check). No source permission, real-data experiment, scientific review, clean-room experiment reproduction or founder approval.",
-              "outcome": "Exit 0 on code-identical candidate tree 3e91789; 775 tests, 771 passed and four skipped; selected executable validation passed.",
-              "path": "docs/experiments/evidence/m35-review-correction-2026-10-08/validation-pr.txt",
-              "sha256": "7c6816e05996a41ce95dd5727f559afb03ba542b0b0f8b2ac552627ec7d81d2f"
+              "command": "PATH=\"$PWD/.venv-speckit/bin:$PATH\" python3 scripts/validate_change.py --base origin/develop --profile pr",
+              "limits": "Full software/structural profile only. Four skips are not passes; source permission, real-data experiment, clean-room reproduction, human/scientific review, and founder approval remain pending.",
+              "outcome": "Exit 0; effective sensitive profile; 775 tests, 771 passed, four skipped, zero failed; selected executable validation passed.",
+              "path": "docs/experiments/evidence/m35-review-final-2026-10-08/validation-pr.txt",
+              "sha256": "faed15806a66d18600d255a7df7b01ae68cafafde25e12f1e24df7f64cad1fed"
             }
           ],
           "planned_evidence": "Focused adversarial software controls, exact packet and implementation commitments, environment and bounded results; not real source, training or held-out evidence.",
