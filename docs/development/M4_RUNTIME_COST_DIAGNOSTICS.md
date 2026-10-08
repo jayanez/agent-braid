@@ -92,7 +92,10 @@ is implemented for preparation after owner review; it preserves the original
 manifest review, registered measurement and any new utility decision remain
 separate pending gates. Engineering preparation diagnostics are not registered
 measurement evidence. As of 2026-10-08, the [SPEC-038 real-workload study](../../specs/038-m4-real-workload-closure/implementation-readiness.md)
-has owner-approved exact source-use rights and protocol. The bounded harness is
-merged and validated; static admission and technical review cover the exact two
-operations and 20 slots. Owner stable-candidate/manifest review and separate capture
-authorization remain pending.
+completed its bounded registered capture on candidate `e66f9a1`. All 20 treatment
+slots were valid, and the six measured serial/parallel total-wall ratios favored
+serial execution on the admitted two-operation frame. This is a finite negative
+utility result, not a general performance claim or a new cost comparison. See the
+[derived capture summary](../../specs/038-m4-real-workload-closure/evidence/registered-capture-summary-e66f9a1.json)
+for the measurement boundary and costs. It does not change the historical G4
+NO-GO or close SPEC-021/M4; the whole-milestone decision remains separate.
