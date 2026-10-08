@@ -2,12 +2,11 @@
 
 ## Development status — 2026-10-08
 
-Exact source rights and protocol are approved. The bounded harness is merged and
-validated; static admission and technical review cover two frozen operations and
-20 treatment slots. See [implementation readiness](implementation-readiness.md)
-for the evidence and scope. Earlier proposal descriptions retain their design-time
-context. Owner stable-candidate/manifest review, capture and whole-M4 acceptance
-remain pending.
+Exact source rights, protocol, stable-candidate review and capture authorization
+were granted for historical candidate `b85f7e5`. Two pre-dispatch failures
+produced zero actual source treatments; see the [derived attempt summary](evidence/pre-dispatch-attempt-summary.json).
+A harness repair requires a new stable candidate and source manifest with fresh
+exact owner review and authorization. Whole-M4 acceptance remains pending.
 
 This workflow prepares the bounded evaluator. Do not capture a workload or run
 source project code from this quickstart.
@@ -29,11 +28,11 @@ source project code from this quickstart.
    independent evidence review. Whole-M4 status needs a new founder decision;
    SPEC-021 G4 NO-GO and M4-open remain historical facts until then.
 
-Current status: source-rights and exact protocol approval obtained. The bounded
-harness is merged; local quick/PR and hosted PR/post-merge validation have passed.
-The exact two-operation manifest has passed static admission and technical review.
-Owner stable-candidate/manifest review, separate capture authorization and
-registered actual-workload outcomes remain pending.
+Historical status: source-rights, exact protocol, stable-candidate review and
+capture authorization applied to `b85f7e5`. The exact two-operation manifest
+passed static admission and technical review, but both launches stopped before
+dispatch and no actual workload outcome was obtained. Any repair requires fresh
+candidate-bound owner decisions.
 
 ## Preparation-only command
 
