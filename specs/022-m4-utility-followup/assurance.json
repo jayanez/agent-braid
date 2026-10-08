@@ -127,9 +127,16 @@
               "outcome": "Historical record reports eight exploratory synthetic treatments with full accounting; the four diagnostic output hashes match public artifacts at 5cb144e.",
               "path": "specs/022-m4-utility-followup/evidence/historical-development-evidence-binding-5cb144e.json",
               "sha256": "9819734c5ec8755a7779ca4d0ff890c4f7cc663570fd6ab6e1ece290ed3a8c1d"
+            },
+            {
+              "path": "specs/022-m4-utility-followup/evidence/registered-capture-summary-b85f7e5.json",
+              "sha256": "96d0c67e711be91958bb08f915c36d7444692f4d2f6327da8b5ce04738302e20",
+              "command": "Registered synthetic capture at frozen b85f7e5; four fresh software control suites and retained structural/replay inspection, reviewed independently.",
+              "outcome": "Registered full-cost synthetic capture completed 176 valid treatments; phase accounting, measured and warm-up denominators, omitted costs and four fresh control suites are retained.",
+              "limits": "Bounded b85f7e5 synthetic evidence only; fresh controls do not reverify deleted treatment run/grant receipts. Unavailable metrics and five excluded blocks retain their reasons. No current-host observation, general utility, human acceptance or whole-M4 closure."
             }
           ],
-          "planned_evidence": "Future frozen phase/accounting tests, raw paired measurements and scoped decision packet defined in quickstart.md.",
+          "planned_evidence": "Registered capture and fresh software controls are obtained at b85f7e5 and indexed above; remaining human utility decision and tracking reconciliation are separate under T006/SC-004. No new capture is planned or authorized by this record.",
           "test_file": "specs/022-m4-utility-followup/quickstart.md",
           "test_name": "SC-001",
           "then": "phase totals reconcile to total wall time and no required verification or grant cost is omitted",
@@ -158,9 +165,16 @@
               "outcome": "Historical record reports eight exploratory synthetic treatments with full accounting; the four diagnostic output hashes match public artifacts at 5cb144e.",
               "path": "specs/022-m4-utility-followup/evidence/historical-development-evidence-binding-5cb144e.json",
               "sha256": "9819734c5ec8755a7779ca4d0ff890c4f7cc663570fd6ab6e1ece290ed3a8c1d"
+            },
+            {
+              "path": "specs/022-m4-utility-followup/evidence/registered-capture-summary-b85f7e5.json",
+              "sha256": "96d0c67e711be91958bb08f915c36d7444692f4d2f6327da8b5ce04738302e20",
+              "command": "Registered synthetic capture at frozen b85f7e5; four fresh software control suites and retained structural/replay inspection, reviewed independently.",
+              "outcome": "Immutable b85f7e5 candidate and manifest capture completed 88 valid pairs: eight warm-up and 80 measured, no invalid or unexecuted pair; five planned blocks remained explicitly excluded by pinned caps.",
+              "limits": "Bounded b85f7e5 synthetic evidence only; fresh controls do not reverify deleted treatment run/grant receipts. Unavailable metrics and five excluded blocks retain their reasons. No current-host observation, general utility, human acceptance or whole-M4 closure."
             }
           ],
-          "planned_evidence": "Future frozen phase/accounting tests, raw paired measurements and scoped decision packet defined in quickstart.md.",
+          "planned_evidence": "Registered capture and fresh software controls are obtained at b85f7e5 and indexed above; remaining human utility decision and tracking reconciliation are separate under T006/SC-004. No new capture is planned or authorized by this record.",
           "test_file": "specs/022-m4-utility-followup/quickstart.md",
           "test_name": "SC-002",
           "then": "raw successful, rejected and infrastructure outcomes are retained; insufficient or invalid pairs make the affected block inconclusive",
@@ -189,9 +203,16 @@
               "outcome": "Historical record reports eight exploratory synthetic treatments with full accounting; the four diagnostic output hashes match public artifacts at 5cb144e.",
               "path": "specs/022-m4-utility-followup/evidence/historical-development-evidence-binding-5cb144e.json",
               "sha256": "9819734c5ec8755a7779ca4d0ff890c4f7cc663570fd6ab6e1ece290ed3a8c1d"
+            },
+            {
+              "path": "specs/022-m4-utility-followup/evidence/registered-capture-summary-b85f7e5.json",
+              "sha256": "96d0c67e711be91958bb08f915c36d7444692f4d2f6327da8b5ce04738302e20",
+              "command": "Registered synthetic capture at frozen b85f7e5; four fresh software control suites and retained structural/replay inspection, reviewed independently.",
+              "outcome": "Registered capture and four fresh control suites are retained after the selected contract-preserving coordinator improvement; three independent synthetic blocks were negative and the dependency-chain block was an order control.",
+              "limits": "Bounded b85f7e5 synthetic evidence only; fresh controls do not reverify deleted treatment run/grant receipts. Unavailable metrics and five excluded blocks retain their reasons. No current-host observation, general utility, human acceptance or whole-M4 closure."
             }
           ],
-          "planned_evidence": "Future frozen phase/accounting tests, raw paired measurements and scoped decision packet defined in quickstart.md.",
+          "planned_evidence": "Registered capture and fresh software controls are obtained at b85f7e5 and indexed above; remaining human utility decision and tracking reconciliation are separate under T006/SC-004. No new capture is planned or authorized by this record.",
           "test_file": "specs/022-m4-utility-followup/quickstart.md",
           "test_name": "SC-003",
           "then": "unsafe inputs are refused, admitted final trees agree, and every existing execution boundary remains enforced",
