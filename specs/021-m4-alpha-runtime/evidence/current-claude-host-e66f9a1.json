@@ -1,0 +1,111 @@
+{
+  "recordVersion": "spec021-current-claude-host-public-summary-v1",
+  "candidate": {
+    "commit": "e66f9a1b94fc5ebfbf784d9c48a76f53c1a656ee",
+    "tree": "36821ee4685f583e97fede0e3c627dcf7d85bd07",
+    "scope": "One bounded current Claude Code host observation on this frozen candidate; it does not bind to later or current working-tree bytes."
+  },
+  "observation": {
+    "host": "Claude Code 2.1.285",
+    "platform": "Darwin arm64",
+    "python": "3.13.11",
+    "subscription": "Claude.ai Max first-party subscription; usage credits disabled by operator confirmation",
+    "modelBacked": true,
+    "status": "capture-complete-independently-reviewed-no-findings-within-bounded-scope",
+    "reportedStageTurns": 14,
+    "reservedStageTurns": 20,
+    "turnAccountingNote": "Four stage turn observations (5, 3, 4, 2) are not model API call counts, billed usage, or cost measurements.",
+    "candidatePreImportGuard": {
+      "count": 201,
+      "inputMapSha256": "40e089bf3632edca48ef39c3f47f50bad6ffce2a938a34b00f556c8fa366d0b8",
+      "hashesMatched": true
+    },
+    "reservationAccounting": {
+      "priorPartialRunReservedStageTurns": 10,
+      "replacementRunReservedStageTurns": 20,
+      "aggregateReservationsAcrossBothRuns": 30,
+      "note": "Reservations across the preserved partial run and this replacement; not actual API calls or cost."
+    },
+    "modelAlias": "sonnet",
+    "resolvedModel": "claude-sonnet-5-5",
+    "clientBinarySha256": "51f09bd1e021d9fa8a1864c179799bd37cb39962a937935c5cf6823398e86db4"
+  },
+  "observedCoverage": {
+    "stages": [
+      {
+        "stage": 1,
+        "reportedTurns": 5,
+        "outcome": "missing-execute-grant-refused",
+        "runAllocated": false
+      },
+      {
+        "stage": 2,
+        "reportedTurns": 3,
+        "outcome": "planned-checkpoint-interruption-after-a",
+        "clientResultSubtype": "error_during_execution",
+        "independentPrefixStatus": "verified-prefix"
+      },
+      {
+        "stage": 3,
+        "reportedTurns": 4,
+        "outcome": "resume-completed-and-independently-verified",
+        "completedOperations": [
+          "a",
+          "b"
+        ]
+      },
+      {
+        "stage": 4,
+        "reportedTurns": 2,
+        "outcome": "consumed-execute-grant-retry-not-repeated",
+        "runtimeUnchangedAfterRetry": true
+      }
+    ],
+    "sourceUnchanged": true,
+    "candidateUnchanged": true,
+    "fixtureRetainedAndVerified": true,
+    "abort": false,
+    "abortNote": "No Claude abort exercise was performed; the separate Codex observation includes abort coverage.",
+    "plannedInterruptionClassification": "The planned checkpoint SIGINT was reported by the client as error_during_execution and independently verified as a prefix; it is retained as such, not normalized to a success response."
+  },
+  "priorRunDisclosure": {
+    "priorPartialCapturePreserved": true,
+    "priorPartialCaptureSha256": "ddf81b660c23e701ee0585c1fc1b66e5fb27af13db703b8c0a486f8c3b1fe882",
+    "metadataPreflightStopPreserved": true,
+    "metadataPreflightStopSha256": "5d22363417e6e21b09cb89497edd028b7b15e8b0b821e2509545a5761db8f2a2",
+    "metadataCorrectionReviewSha256": "4fcae7b33c4fb5180f88a2f5bf73873f51d0bb2c8081cf0ef08132b37da13d3f",
+    "note": "The earlier partial capture and the later preflight stop are retained as separate records; neither is represented as a successful v4a stage or erased by this derivative."
+  },
+  "interpretation": {
+    "population": "One bounded model-mediated actual-client observation on one Darwin arm64 host, on a fixed owned synthetic two-edit fixture.",
+    "claim": "The capture records the listed host and fixture outcomes for this candidate, session and configuration only. Independent Luna review found no findings within the stated bounded capture scope.",
+    "notEstablished": [
+      "Claude abort behavior",
+      "Codex or Linux current-host behavior beyond their separate records",
+      "cross-client product support or broad host compatibility",
+      "generalized or causal utility, speedup, or cost effectiveness",
+      "application-level semantic correctness",
+      "hostile same-user or production safety",
+      "acceptance of SPEC-021 or whole-M4",
+      "source promotion or execution authority beyond the bounded owned fixture"
+    ],
+    "retentionAndPrivacy": "Raw private streams, prompts, grants, session identifiers, paths and fixture payload remain outside this public derivative. A restricted private hash-only binding inventory records artifact integrity."
+  },
+  "provenanceHashes": {
+    "captureBundleSha256": "e9a4bf6f0d307577e2e850479c2e11cacc9d914ef4353a9eef877d56b34f9332",
+    "finalRootVerificationSha256": "76fc5f072b717e01106a8372d13f7dc452ef8ba0dc8d719fc8fc36234ae833b4",
+    "privateBindingInventorySha256": "4759cf21c6413be9b9b0a2ad2a9f592fbac695d346f5cceec08bace0ca8e7514",
+    "independentReview": {
+      "status": "completed-no-findings-within-bounded-scope",
+      "model": "gpt-6-luna",
+      "reasoningEffort": "medium",
+      "sha256": "ef9e3f6622d5c69f9e938f8264241ffabc4fdb68c6e8cc8a1bd02c5d97030d44"
+    }
+  },
+  "publication": "Public-candidate derivative only; independent review is complete within the stated bounded capture scope. This record does not authorize publication, merge, utility acceptance, or whole-M4 acceptance.",
+  "authorityBoundary": {
+    "historicalImplementationCandidate": "9108a206d76c4ffb8f253b68cc4c60d977382394",
+    "historicalCodexAndMeasurementCandidate": "67b8b521d0d18ebe679a905c3ed559d2f4a0119a",
+    "note": "This current host observation supplements the historical evidence and does not rewrite or extend the frozen G4 evidence domain."
+  }
+}

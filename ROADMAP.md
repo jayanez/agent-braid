@@ -273,8 +273,11 @@ reproduction of 68 core and protocol tests with no skips. The Codex record cover
 the six tools, refusal, disconnect recovery, verified prefix and completion,
 duplicate suppression and abort; its separate 201-file pre-import guard is not
 the 80-file runtime input set. Linux evidence covers core/protocol behavior only,
-not a Linux host adapter. Current Claude evidence and the six-row exit criteria
-remain open. These records do not change G4 NO-GO or close M4. See the
+not a Linux host adapter. A separate bounded model-mediated Claude Code 2.1.285
+observation is now recorded for the same candidate; independent Luna review found
+no findings within its bounded scope, and the capture did not cover Claude abort. All
+six exit criteria remain open.
+These records do not change G4 NO-GO or close M4. See the
 [candidate-bound platform evidence](specs/021-m4-alpha-runtime/closure-matrix.md#candidate-bound-platform-evidence-on-e66f9a1-2026-10-08).
 
 A distinct local Darwin suite on this candidate retained its original 67/68
