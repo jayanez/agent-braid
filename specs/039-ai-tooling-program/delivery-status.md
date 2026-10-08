@@ -4,6 +4,21 @@ Prepared on 2026-10-08 from public develop
 `796a959d881d0c44f9d259fb7a2d5d916c45a416` in an independent full clone.
 No changes were made to another task's checkout or shared object store.
 
+## Administrative registration — 2026-10-08
+
+[M4.5 is Open as milestone #19](https://github.com/jayanez/agent-braid/milestone/19),
+with six open spec parents and 60 open linked task subissues. The private Project
+contains all 66 records: six Review pending parents and 60 Todo tasks.
+The [registration record](administrative-registration.md) provides issue links,
+the reviewed scoped plan, API verification and the subsequent empty audit.
+The current inventory is 44 specs and 19 registered milestones. All 60 M4.5
+implementation task checkboxes remain unchecked; assurance stays draft and
+human review remains pending. Earlier preparation counts below are historical.
+
+The source package was reviewed, corrected and merged through PR #389;
+registration identity was merged through PR #394. Administrative registration
+confers no runtime implementation, host acceptance or ADR adoption.
+
 ## Documentation follow-up — 2026-10-08
 
 The source branch incorporated develop
@@ -70,9 +85,8 @@ they do not implement or accept runtime product support.
 
 ## Required next gates
 
-Follow-up technical review of the corrections is pending. Architectural/API adoption, source
-integration and remote tracking reconciliation remain separate operations.
-No new milestone/issue has yet been created; private Project state is unverified.
+Source integration and M4.5 administrative registration are complete, as recorded
+above. Architectural/API adoption and capability acceptance remain separate gates.
 Implementation/control evidence, exact paid/provider/source capture registration,
 actual Codex/Claude observations, clean reproduction, human interpretation and
 founder capability/closure acceptance remain pending.
