@@ -102,6 +102,19 @@ objects. This covers only the Linux core/protocol sub-scope; it does not establi
 Codex or Claude Linux host-adapter behavior. No cost result is claimed.
 
 These records add evidence to the Codex host/protocol and Linux core/protocol
-slices. The Claude current-host observation and the remaining six-row exit
+slices. A separate [current Claude host addendum](evidence/current-claude-host-e66f9a1.md)
+and [summary JSON](evidence/current-claude-host-e66f9a1.json) record one bounded
+model-mediated Claude Code 2.1.285 observation on Darwin arm64 for this same
+candidate. It records missing-grant refusal, a verified prefix after the planned
+checkpoint interruption, recovery and completion, and suppression of a retry with
+the consumed grant. Four stages observed 14 turns against 20 reserved slots; these
+are not model API-call counts or cost measurements. A distinct 201-file pre-import
+guard matched. The owned fixture was retained and verified. Claude abort was not
+exercised. Independent Luna review found no findings within the stated
+bounded capture scope. The earlier partial capture and
+metadata-preflight stop remain separately preserved and are not erased by this
+replacement observation.
+
+The Claude record adds only a bounded current-host observation. All six exit
 criteria remain open. G4 NO-GO, SPEC-021's open state and M4's open milestone are
 unchanged; the founder's whole-M4 decision remains separate.
