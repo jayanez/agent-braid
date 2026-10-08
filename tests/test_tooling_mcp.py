@@ -225,6 +225,39 @@ class ToolingServiceTests(unittest.TestCase):
         enabled = ToolingConfig(self.source, self.results, grants, True)
         self.assertIn("execute", ToolingService(enabled).tools)
 
+    def test_results_and_grants_are_disjoint_from_every_allowlisted_worktree(self):
+        base = Path(self.temp.name)
+        worktree_parent = base / "readable-worktrees"
+        worktree = worktree_parent / "checkout"
+        worktree.mkdir(parents=True)
+        nested_results = worktree / "results"
+        nested_results.mkdir()
+        grants_under = worktree / "grants"
+        grants_under.mkdir()
+        alias = base / "worktree-alias"
+        alias.symlink_to(worktree, target_is_directory=True)
+        aliased_grants = alias / "grant-store"
+
+        for result_root in (nested_results, worktree_parent):
+            result_root.mkdir(exist_ok=True)
+            with self.subTest(result_root=result_root), self.assertRaisesRegex(
+                    ToolingError, "result root must be disjoint"):
+                ToolingConfig(self.source, result_root, worktree_roots=(worktree,))
+
+        for grant in (grants_under, worktree_parent, aliased_grants):
+            with self.subTest(grant=grant), self.assertRaisesRegex(
+                    ToolingError, "outside source and result"):
+                # Grant isolation applies in analysis-only mode too.
+                ToolingConfig(self.source, self.results, grant, runtime_enabled=False,
+                              worktree_roots=(worktree,))
+
+    def test_source_and_worktree_read_roots_may_be_nested(self):
+        nested = self.source / "nested-checkout"
+        nested.mkdir()
+        config = ToolingConfig(self.source, self.results, worktree_roots=(nested,))
+        self.assertIn(self.source.resolve(), config.worktree_roots)
+        self.assertIn(nested.resolve(), config.worktree_roots)
+
     def test_sdk_import_is_lazy_and_core_missing_extra_message_is_actionable(self):
         from agent_braid import tooling_mcp
         original_import = builtins.__import__
