@@ -15,6 +15,9 @@ workflows for review. This register publishes no content-review findings. A
 (`jayanez/agent-braid`,
 `jayanez/kinetiq-core`, `jayanez/smart-notes`) only; it did not inspect feeds or
 establish workflow occurrence, permissions, completeness or pair yield.
+The linked validation receipts are immutable point-in-time records of their
+own software-check scope; their source-access wording is not a certification of
+current access state. This register makes no current source-access claim.
 The five inventory rows are not five independently eligible observed families.
 No prospective window has been registered by this increment and zero real pairs
 are admitted. Source-specific permissions and full protocol review remain pending.
