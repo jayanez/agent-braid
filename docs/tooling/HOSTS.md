@@ -49,6 +49,14 @@ tool set and disables slash commands. The skills arm selects the five exact
 native `Skill(name)` tools and does not disable slash commands. No command uses
 permission bypass flags or puts the prompt on argv.
 
+The current Codex adapter accepts only MCP stdio commands with an empty
+argument list. It refuses arbitrary command arguments because CLI arguments can
+carry credentials and no exact sanitized argument schema is frozen for this
+cohort. A future argument schema needs separate review and tests before it can
+be enabled. Raw inline config and argv values are also excluded from plan and
+receipt representations; the caller attestation must still authenticate the
+exact selected route and config digest.
+
 The Claude MCP config pins the exact server inventory, but the host CLI surface
 does not provide this adapter a trusted per-server tool inventory. Tool calls
 observed in JSONL are evidence of calls made, not proof that no other tools
