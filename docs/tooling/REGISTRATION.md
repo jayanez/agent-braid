@@ -33,8 +33,12 @@ context only.
 Use `validate_registration` with the actual candidate digest and the complete
 caller-verified fixture/prompt hash inventory; use `new_ledger` only after all
 required decisions are authentic and the object validates. The offline evaluator
-does not launch or authorize sessions. A session capture runner, measured cost
-sources and admission/stopping integration remain required before W18/W19.
+does not launch or authorize sessions. The session coordinator reserves one
+dispatch against a durable cohort ledger head and requires fresh attested
+cost/stop observations. Local collectors and one-shot event parsers provide
+bounded inputs, with their coverage limits. Actual host adapters, authentic
+decision/outcome verifiers, complete cost sources and live stopping integration
+remain required before W18/W19; these preparation modules do not supply them.
 Register numeric EUR/token/total-wall/RSS/disk caps, rates and provider choice
 before capture; retain unavailable values as null. Stop on incidents, exceeded
 caps, missing immutable inputs, candidate/build drift, unrecoverable transitions
