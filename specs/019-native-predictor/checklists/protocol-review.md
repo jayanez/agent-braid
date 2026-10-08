@@ -5,6 +5,11 @@ These questions track the four adversarial findings against the proposed
 evidence that a real source or valid result exists. The founder approved only
 source feasibility work; the full protocol needs a new review.
 
+Use the [protocol decision packet](../protocol-decision-packet-2026-10-08.md)
+to record founder selections for P019-02…04. It is a decision aid only; no
+option is frozen until the protocol is revised and receives human scientific
+review.
+
 - [ ] **P019-01 — source and yield (high).** The
   [source register](../source-audit.md) must name a consented session feed,
   fixed collection window, complete session/pair counts and primary exclusion
@@ -35,10 +40,12 @@ source feasibility work; the full protocol needs a new review.
   baseline's `keep-order` handling and state whether one verifier call consumes
   one unordered pair (including both deterministic paths), how
   `verified-bounded`/`divergent`/`inconclusive` contribute to the primary
-  assessed-useful yield and precision/recall denominators, and whether
-  abstentions consume budget. Review the fixed calibration method and its
-  minimum descriptive coverage or explicit no-probability rule, the
-  infeasibility rule, full time boundary and sparse reliability bins in the
+  assessed-useful count under the fixed 50% call ceiling, and whether
+  abstentions consume budget. Per-actual-call yield is secondary unless a
+  revised protocol explicitly changes the estimand. Review the candidate
+  calibration grid as pending human approval, its descriptive coverage or
+  explicit no-probability rule, the strict infeasibility gate, full end-to-end
+  time boundary and sparse reliability bins in the
   [protocol](../workload-protocol.md). Inspect actual bin sizes before any
   calibrated interpretation. Report training and annotation costs separately.
 
