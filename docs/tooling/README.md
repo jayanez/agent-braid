@@ -1,10 +1,9 @@
 # AI tooling integrations
 
-**Status — 2026-10-08:** M4.5 is a proposed program adjacent to M4. Six draft
+**Status — 2026-10-08:** [M4.5](https://github.com/jayanez/agent-braid/milestone/19) is Open, adjacent to M4, with six spec issues and 60 linked task subissues. Six draft
 Spec Kit packages define 48 requirements, 48 acceptance scenarios and 60 unchecked
 implementation tasks. Product implementation, actual host observations and
-acceptance remain pending; milestone and issue registration follow reviewed source
-integration. [ADR 0021](../adr/0021-codex-claude-tooling-integration.md) is proposed.
+acceptance remain pending. Administrative tracking is registered; the [registration record](../../specs/039-ai-tooling-program/administrative-registration.md) links each parent and its work queue. [ADR 0021](../adr/0021-codex-claude-tooling-integration.md) is proposed.
 
 ## Start here
 

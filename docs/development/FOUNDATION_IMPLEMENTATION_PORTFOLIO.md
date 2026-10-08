@@ -3,8 +3,7 @@
 ## Current navigation — 2026-10-08
 
 The audit below is a historical snapshot; its counts, findings and baseline remain
-unchanged. For the current inventory of 44 specs, 18 registered milestones and
-the proposed M4.5 track, use the
+unchanged. For the current inventory of 44 specs and 19 registered milestones, use the
 [spec and milestone index](SPEC_MILESTONE_INDEX.md) and [roadmap](../../ROADMAP.md).
 SPEC-022 now includes implemented full-cost instrumentation and an owner-approved
 [180-minute successor preparation](../../specs/022-m4-utility-followup/successor-protocol-180m.md);
@@ -20,7 +19,7 @@ admission and technical review. Owner stable-candidate/manifest review, capture
 and whole-M4 founder acceptance remain pending. These developments do
 not rewrite SPEC-021's historical G4 NO-GO.
 
-[M4.5 / SPEC-039–044](../tooling/README.md) adds six draft planning packages and
+[M4.5 / SPEC-039–044](../tooling/README.md) is an Open registered milestone with six draft planning packages and
 60 unchecked tasks for Codex and Claude Code integration. MCP access, product
 skills, lifecycle, presentation and evaluation are specified; product
 implementation, host observations and acceptance remain pending.
