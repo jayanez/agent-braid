@@ -75,7 +75,8 @@ come from an authenticated source, not a caller-entered green light.
 The current [`registration-draft.json`](../../examples/tooling/registration-draft.json)
 is deliberately not admissible: it has draft/pending approval and source-rights
 records, provider opt-in is false, exact rates and reviewers are unset, and the
-rubric is not frozen. The proposed caps—€25, 4 million tokens, 8 hours, 4 GiB
+rubric is not frozen. The proposed caps—€25, 4 million tokens, 16 hours
+including setup and human review, 4 GiB
 RSS and 5 GiB disk—are proposals, not approved spending authority. No two
 independent human reviewer identities or provider decision are recorded here.
 Do not alter the draft into an approved registration to exercise this code.

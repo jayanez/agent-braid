@@ -71,14 +71,17 @@ class ToolingConfig:
             if not resolved.is_dir():
                 raise ToolingError("Configured worktree roots must be directories")
             roots.add(resolved)
+        for read_root in roots:
+            if _paths_overlap(results, read_root):
+                raise ToolingError("Configured result root must be disjoint from source and worktree roots")
         grant = None
         if self.grant_store is not None:
             requested_grant = Path(self.grant_store).expanduser().absolute()
             if requested_grant.is_symlink():
                 raise ToolingError("Grant store cannot be a symbolic link")
             grant = requested_grant.resolve(strict=False)
-            if (grant.is_relative_to(source) or source.is_relative_to(grant)
-                    or grant.is_relative_to(results) or results.is_relative_to(grant)):
+            if (any(_paths_overlap(grant, read_root) for read_root in roots)
+                    or _paths_overlap(grant, results)):
                 raise ToolingError("Grant store must be outside source and result roots")
         if self.runtime_enabled and grant is None:
             raise ToolingError("Runtime mode requires an operator-configured grant store")
@@ -94,6 +97,11 @@ def _json_bytes(value: Any) -> bytes:
                           ensure_ascii=False, allow_nan=False).encode("utf-8")
     except (TypeError, ValueError, RecursionError, UnicodeError) as exc:
         raise ToolingError("Input is not bounded JSON data") from exc
+
+
+def _paths_overlap(left: Path, right: Path) -> bool:
+    """Return true when either normalized path contains the other."""
+    return left == right or left.is_relative_to(right) or right.is_relative_to(left)
 
 
 def _check_depth(value: Any, depth: int = 0) -> None:
