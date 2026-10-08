@@ -242,7 +242,7 @@
           "planned_evidence": "specs/042-ai-tooling-packaging/evidence/sc-008.json: exact candidate/input/environment hashes, actual commands/raw outputs, all outcomes and limits; human decisions require their own record.",
           "test_file": "specs/042-ai-tooling-packaging/validation-plan.md",
           "test_name": "procedure_package_provenance",
-          "then": "hashes, licenses and actual environment results are recorded; remote/cloud installation remains separately required",
+          "then": "hashes, licenses and actual environment results are recorded; remote/cloud installation is outside M4.5 v1 acceptance and requires a separately reviewed installation contract and actual validation before any remote/cloud compatibility claim",
           "when": "inventory and clean reproduction run"
         }
       ],

@@ -48,6 +48,6 @@ Prospective targets: `pyproject.toml; agent_braid/tooling_install.py (new); agen
 
 ## procedure_package_provenance (REQ-008/SC-008)
 
-Given built artifacts and macOS/Linux control environments; perform inventory and clean reproduction run. Assert hashes, licenses and actual environment results are recorded; remote/cloud installation remains separately required. Include the success and refusal/unavailable counterpart; retain source/result-root integrity and exact typed output.
+Given built artifacts and macOS/Linux control environments; perform inventory and clean reproduction run. Assert hashes, licenses and actual environment results are recorded; remote/cloud installation is outside M4.5 v1 acceptance and requires a separately reviewed installation contract and actual validation before any remote/cloud compatibility claim. Include the success and refusal/unavailable counterpart; retain source/result-root integrity and exact typed output.
 
 Prospective targets: `pyproject.toml; agent_braid/tooling_install.py (new); agent_braid/cli.py; integrations/agent-braid/; docs/tooling/INSTALL.md (new); tests/test_tooling_install.py (new)`. Planned receipt: `evidence/sc-008.json`. Use a focused test/harness added with implementation and record its actual command; never execute an invented future command.

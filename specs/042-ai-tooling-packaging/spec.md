@@ -74,9 +74,20 @@ Verification: [procedure_safe_uninstall](validation-plan.md); [T007](tasks.md). 
 
 Record license/provenance/transitive dependencies and reproduce package/lifecycle controls on supported platforms without cloud claims.
 
-**SC-008:** Given built artifacts and macOS/Linux control environments, when inventory and clean reproduction run, then hashes, licenses and actual environment results are recorded; remote/cloud installation remains separately required.
+**SC-008:** Given built artifacts and macOS/Linux control environments, when inventory and clean reproduction run, then hashes, licenses and actual environment results are recorded; remote/cloud installation is outside M4.5 v1 acceptance and requires a separately reviewed installation contract and actual validation before any remote/cloud compatibility claim.
 
 Verification: [procedure_package_provenance](validation-plan.md); [T008](tasks.md). Obtained evidence: none.
+
+## Approved scope clarification — 2026-10-09
+
+The owner approved clarifying SC-008 in accordance with the reviewed M4.5 plan:
+remote/cloud and container-host installation belongs to future support, with
+its own reviewed installation contract and actual validation before such claims.
+Required local Codex/Claude host observations, clean macOS arm64/Linux x86_64
+package/protocol/core reproduction (including bounded Linux control containers),
+and all provenance, positive/negative controls, evaluation and acceptance gates
+remain mandatory. This scope decision does not authorize provider capture,
+approve the evaluation registration, accept SC-008 or close the feature/milestone.
 
 ## Scientific boundaries and compatibility
 
