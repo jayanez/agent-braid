@@ -188,7 +188,7 @@ current assignment.
 | Foundations | [M1 — Observable interaction analyzer](https://github.com/jayanez/agent-braid/milestone/3) | Closed internally against the reviewed candidate; independent external validation remains pending. |
 | Research | [M2 — Confluence lab and scheduler](https://github.com/jayanez/agent-braid/milestone/4) | Closed internally. Bounded replay and finite observations do not establish general confluence. |
 | Research | [M3 — Braid semantics](https://github.com/jayanez/agent-braid/milestone/5) | Closed internally for `anchored-sequence-v1`; no general braid or Yang–Baxter theorem is claimed. |
-| Runtime | [M4 — Agent Braid runtime](https://github.com/jayanez/agent-braid/milestone/6) | **Open.** The bounded alpha includes local grants, isolated preparation, stdio MCP and Linux reproduction; whole-milestone acceptance is pending. SPEC-021 G4 remains **NO-GO** on useful speedup under its frozen evidence. |
+| Runtime | [M4 — Agent Braid runtime](https://github.com/jayanez/agent-braid/milestone/6) | Founder accepted bounded alpha engineering and evaluation as complete on 2026-10-09, with negative utility. Tracking reconciliation remains pending reviewed delivery and guarded apply. Historical SPEC-021 G4 remains **NO-GO** on useful speedup under its frozen evidence. |
 | Integration | [M4.5 — AI tooling integrations for Codex and Claude Code](https://github.com/jayanez/agent-braid/milestone/19) | **Open.** Six draft specs cover MCP, skills, lifecycle, presentation and evaluation. Product implementation, support and acceptance remain pending; separate SPEC-021 host observations are linked below. |
 | Publication | [PUB.1 — Public research preview](https://github.com/jayanez/agent-braid/milestone/7) | **Open.** The preview is public; historical publication authorization reconciliation remains separately tracked. |
 | Governance | [GOV.1 — Governance and adoption](https://github.com/jayanez/agent-braid/milestone/8) | **Open.** Governance and adoption evidence work continues; issue state does not confer human or founder approval. |
@@ -220,7 +220,7 @@ suites passed (76 tests). All three admitted independent diagnostic blocks were
 negative; the dependency-chain block was an order control. These fixture results do not establish general speedup or utility. On 2026-10-08,
 the owner approved a bounded T006 interpretation: no useful-speedup claim or
 parallel performance default for the measured families. This is not a general
-claim about parallelism; SPEC-021 G4 NO-GO and whole-M4-open status remain. See the
+claim about parallelism; SPEC-021 G4 NO-GO remains. See the
 [decision packet](specs/022-m4-utility-followup/decision-packet.md) and [derived
 capture summary](specs/022-m4-utility-followup/evidence/registered-capture-summary-b85f7e5.json)
 for ratios, full costs and inspection limits.
@@ -229,20 +229,25 @@ SPEC-027 has implemented read-only
 refinement assessments and synthetic/disposable controls. The founder recorded
 NO-GO/defer dispositions for source promotion, arbitrary code execution and real
 external effects by the bounded M4 alpha runtime; no capability was adopted and no
-expanded execution authority was granted. Whole-M4 and scientific acceptance remain
-separate and pending. SPEC-038 completed a bounded registered capture on
+expanded execution authority was granted. SPEC-038 completed a bounded registered capture on
 candidate `e66f9a1`: all 20 treatment slots were valid (eight warm-up and 12
 measured treatments across ten pairs, of which six were measured), and the mandatory fresh-process
 verifier reported `verified` for all 20 before conditional cleanup. The six
 measured serial/parallel total-wall ratios were below one (median
 `0.6538998702917553`; AB median `0.6530442113`, BA median `0.6547555293`), a
 finite negative result for parallel utility on this exact two-operation source
-frame. The checks establish tracked Git-tree equality for the admitted orders,
-not semantic equivalence or native-code validity. No real-source
+frame. On 2026-10-09 the founder accepted bounded M4 alpha engineering and
+evaluation as complete with negative utility. The decision preserves historical
+G4 NO-GO and does not establish general utility, production safety, semantic
+correctness or a scientific result. Tracking reconciliation remains pending
+reviewed delivery and guarded apply. The checks establish tracked Git-tree
+equality for the admitted orders, not semantic equivalence or native-code validity. No real-source
 interruption/recovery controls were run. See the [derived capture
 summary](specs/038-m4-real-workload-closure/evidence/registered-capture-summary-e66f9a1.json)
-for bounded evidence and limits. SPEC-021 G4 remains NO-GO, and M4 remains open
-pending its separate whole-milestone decision.
+for bounded evidence and limits. SPEC-021 G4 remains NO-GO. The [whole-M4
+decision](specs/038-m4-real-workload-closure/whole-m4-founder-decision-20261009.json)
+and [closure packet](specs/038-m4-real-workload-closure/whole-m4-closure-packet.md)
+record the bounded acceptance and its limits; tracking reconciliation remains pending.
 
 On candidate `e66f9a1`, Codex CLI 0.162.0-alpha.2 completed a bounded Darwin
 arm64 direct-tool-bridge observation with zero model calls. It exercised all six

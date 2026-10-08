@@ -1,7 +1,13 @@
 # Bounded M4 alpha implementation and validation
 
-SPEC-021 and ADR 0020 scope are adopted. Implementation acceptance and whole-M4
-closure remain separate gates. Use the existing isolated Python >=3.12 environment.
+SPEC-021 and ADR 0020 scope are adopted. On 2026-10-09 the founder accepted
+bounded M4 alpha engineering and evaluation as complete with a negative-utility
+result. The historical G4 NO-GO on useful speedup remains unchanged; this is not
+a general utility, semantic-correctness, production-safety or scientific claim.
+See the [whole-M4 decision](../038-m4-real-workload-closure/whole-m4-founder-decision-20261009.json)
+and [closure packet](../038-m4-real-workload-closure/whole-m4-closure-packet.md).
+Tracking reconciliation remains pending reviewed delivery and guarded apply.
+Use the existing isolated Python >=3.12 environment.
 The adapter has no new runtime dependencies.
 
 ## Local operator pipeline
@@ -96,4 +102,6 @@ The manual Linux workflow is prepared for publication only after separate author
 is given. It uses no live-model credentials. A successful profile, local reproduction
 or host capture does not close the six roadmap rows. Consult closure-matrix.md,
 measurement-protocol.md and the exact-candidate review packet; independent Luna
-review and founder whole-M4 acceptance remain distinct.
+The founder's bounded whole-M4 acceptance is recorded in the linked decision
+above. The historical G4 NO-GO and all evidence limits remain in force; tracking
+reconciliation is a separate pending administrative step.
