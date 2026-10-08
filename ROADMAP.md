@@ -267,6 +267,23 @@ The [derived capture summary](specs/038-m4-real-workload-closure/evidence/regist
 documents costs and limits. This result does not alter SPEC-021's G4 NO-GO or
 close M4; whole-milestone acceptance remains separate and pending.
 
+The same frozen candidate now has a bounded Codex CLI 0.162.0-alpha.2 observation
+on Darwin arm64 through a direct no-model tool bridge, plus a fresh-process Linux
+reproduction of 68 core and protocol tests with no skips. The Codex record covers
+the six tools, refusal, disconnect recovery, verified prefix and completion,
+duplicate suppression and abort; its separate 201-file pre-import guard is not
+the 80-file runtime input set. Linux evidence covers core/protocol behavior only,
+not a Linux host adapter. Current Claude evidence and the six-row exit criteria
+remain open. These records do not change G4 NO-GO or close M4. See the
+[candidate-bound platform evidence](specs/021-m4-alpha-runtime/closure-matrix.md#candidate-bound-platform-evidence-on-e66f9a1-2026-10-08).
+
+A distinct local Darwin suite on this candidate retained its original 67/68
+failure, then passed a focused diagnostic and a corrected 68/68 full run with no
+skips. The 201-file guard applies to the focused and corrected runs, not the first
+run, which records an 80-input fingerprint. The Python processes were fresh but
+reused the existing isolated environment. This does not establish clean-room
+reproduction, host-adapter behavior or M4 acceptance; see the [Darwin test record](specs/021-m4-alpha-runtime/evidence/current-darwin-core-e66f9a1.md).
+
 Candidate deliverables:
 
 - MCP and host-runtime adapters;
