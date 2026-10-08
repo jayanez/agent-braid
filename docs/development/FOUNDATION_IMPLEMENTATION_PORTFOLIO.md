@@ -9,7 +9,9 @@ SPEC-022 now includes implemented full-cost instrumentation and an owner-approve
 [180-minute successor preparation](../../specs/022-m4-utility-followup/successor-protocol-180m.md);
 registered capture and a new utility decision remain pending. SPEC-027 provides
 [read-only refinement assessments](../../specs/027-runtime-refinement-contracts/quickstart.md),
-with capability decisions and adoption still pending. SPEC-028 has a synthetic
+with founder-recorded NO-GO/defer dispositions for all three bounded-M4-alpha capabilities;
+no capability was adopted and any future adoption requires separate reviewed scope and
+execution authority. Whole-M4 acceptance remains pending. SPEC-028 has a synthetic
 reference core. [SPEC-038](../../specs/038-m4-real-workload-closure/implementation-readiness.md)
 has owner-approved exact source rights and protocol. Its bounded harness is
 merged and validated; the two-operation, 20-slot source frame has passed static

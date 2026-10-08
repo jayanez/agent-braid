@@ -197,8 +197,11 @@ SPEC-022 has implemented measurement instrumentation and owner-approved
 180-minute successor preparation; engineering diagnostics are not its registered experiment.
 Registered measurement, human review of the stable harness/manifest and any
 future utility decision remain pending. SPEC-027 has implemented read-only
-refinement assessments and synthetic/disposable controls; capability decisions,
-founder acceptance and expanded execution authority remain pending. SPEC-038 has
+refinement assessments and synthetic/disposable controls. The founder recorded
+NO-GO/defer dispositions for source promotion, arbitrary code execution and real
+external effects by the bounded M4 alpha runtime; no capability was adopted and no
+expanded execution authority was granted. Whole-M4 and scientific acceptance remain
+separate and pending. SPEC-038 has
 owner-approved source rights and protocol, a merged bounded harness, and
 [static admission evidence](specs/038-m4-real-workload-closure/evidence/sc-002.json)
 for two frozen operations and 20 treatment slots. Local and exact-candidate CI
