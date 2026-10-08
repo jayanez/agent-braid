@@ -50,7 +50,7 @@ def synthetic_artifact() -> dict:
 
 
 class NativePredictorContractTests(unittest.TestCase):
-    def test_synthetic_versioned_local_inference_and_tamper(self) -> None:
+    def test_versioned_local_inference_and_tamper(self) -> None:
         def row(pair: str, family: str, session: str, partition: str,
                 label: int | None, offset: float) -> dict:
             return {"pairId": pair, "familyId": family, "sessionId": session,
@@ -91,7 +91,7 @@ class NativePredictorContractTests(unittest.TestCase):
             serialize_artifact(tampered, expected_hash=commitment,
                                expected_model_id="contract-synthetic")
 
-    def test_synthetic_holdout_evaluation_records_no_gain_with_sanitized_scorer(self) -> None:
+    def test_held_out_evaluation_and_negative_outcome(self) -> None:
         inventory = []
         for index, (family, anchor1, anchor2) in enumerate(
                 [("f1", "$root", "$root"), ("f1", "$root", "base"),
