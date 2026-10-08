@@ -17,6 +17,7 @@ from pathlib import Path
 import re
 import selectors
 import signal
+import stat
 import subprocess
 import threading
 import time
@@ -39,6 +40,8 @@ MAX_OBSERVER_CALLBACK_SECONDS = 1.0
 MAX_POLL_INTERVAL_SECONDS = 0.25
 MAX_TERM_GRACE_SECONDS = 1.0
 MAX_KILL_GRACE_SECONDS = 1.0
+MAX_EXECUTABLE_BYTES = 512 * 1024 * 1024
+MAX_FILE_PIN_BYTES = 1024 * 1024
 APPROVED_CAPS = {
     "eur": 25.0,
     "tokens": 4_000_000,
@@ -200,7 +203,10 @@ def run_supervised(
     _validate_request(request, caps, observer, clock)
     executable, cwd, output_root, source_roots, grant_root, env = _resolve_paths(request)
     _ensure_fresh_output_root(output_root)
-    expected_executable = _hash_executable(executable)
+    try:
+        expected_executable = _hash_executable(executable)
+    except (OSError, SupervisorError) as exc:
+        return _not_launched("start-drift", _safe_reason(exc), clock)
     if expected_executable != request.executable_sha256:
         return _not_launched("start-drift", "executable SHA-256 differs from the pinned value", clock)
     try:
@@ -888,46 +894,46 @@ def _snapshot_dict(snapshot):
 
 
 def _hash_executable(path):
-    digest = hashlib.sha256()
-    flags = os.O_RDONLY
-    if hasattr(os, "O_NOFOLLOW"):
-        flags |= os.O_NOFOLLOW
-    fd = os.open(path, flags)
-    try:
-        before = os.fstat(fd)
-        if not os.path.isfile(path) or not os.access(path, os.X_OK):
-            raise SupervisorError("pinned executable is not a regular executable file")
-        while True:
-            chunk = os.read(fd, READ_CHUNK_BYTES)
-            if not chunk:
-                break
-            digest.update(chunk)
-        after = os.fstat(fd)
-        if _stat_identity(before) != _stat_identity(after):
-            raise SupervisorError("pinned executable changed while hashing")
-    finally:
-        os.close(fd)
-    return digest.hexdigest()
+    return _hash_bounded_regular_file(path, MAX_EXECUTABLE_BYTES, executable=True)
 
 
 def _hash_regular_file(path):
+    return _hash_bounded_regular_file(path, MAX_FILE_PIN_BYTES, executable=False)
+
+
+def _hash_bounded_regular_file(path, maximum_bytes, *, executable):
     digest = hashlib.sha256()
-    flags = os.O_RDONLY
+    flags = os.O_RDONLY | getattr(os, "O_NONBLOCK", 0)
     if hasattr(os, "O_NOFOLLOW"):
         flags |= os.O_NOFOLLOW
     fd = os.open(path, flags)
     try:
         before = os.fstat(fd)
-        if not os.path.isfile(path):
-            raise SupervisorError("pinned configuration input is not a regular file")
+        if not stat.S_ISREG(before.st_mode):
+            label = "executable" if executable else "configuration input"
+            raise SupervisorError(f"pinned {label} is not a regular file")
+        if before.st_size > maximum_bytes:
+            label = "executable" if executable else "configuration input"
+            raise SupervisorError(f"pinned {label} exceeds its fixed byte limit")
+        if executable and not before.st_mode & (stat.S_IXUSR | stat.S_IXGRP | stat.S_IXOTH):
+            raise SupervisorError("pinned executable is not executable")
+        total = 0
         while True:
-            chunk = os.read(fd, READ_CHUNK_BYTES)
+            chunk = os.read(fd, min(READ_CHUNK_BYTES, maximum_bytes - total + 1))
             if not chunk:
                 break
+            total += len(chunk)
+            if total > maximum_bytes:
+                label = "executable" if executable else "configuration input"
+                raise SupervisorError(f"pinned {label} grew beyond its fixed byte limit")
             digest.update(chunk)
         after = os.fstat(fd)
         if _stat_identity(before) != _stat_identity(after):
-            raise SupervisorError("pinned configuration input changed while hashing")
+            label = "executable" if executable else "configuration input"
+            raise SupervisorError(f"pinned {label} changed while hashing")
+        if total != before.st_size:
+            label = "executable" if executable else "configuration input"
+            raise SupervisorError(f"pinned {label} size changed while hashing")
     finally:
         os.close(fd)
     return digest.hexdigest()

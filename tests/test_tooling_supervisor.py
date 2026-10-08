@@ -388,6 +388,58 @@ class ToolingSupervisorTests(unittest.TestCase):
         self.assertFalse(result.launched)
         self.assertFalse((request.output_root / "started.json").exists())
 
+    def test_sparse_oversized_executable_and_config_pins_refuse_before_observer(self):
+        calls = {"count": 0}
+
+        def observer(_identity, _elapsed):
+            calls["count"] += 1
+            return _snapshot()
+
+        oversized_binary = Path(self.temp.name) / "oversized-executable"
+        with oversized_binary.open("wb") as stream:
+            stream.truncate(512 * 1024 * 1024 + 1)
+        oversized_binary.chmod(0o700)
+        binary_request = self.request("unused", executable=oversized_binary,
+                                      executable_sha="0" * 64)
+        binary_result = run_supervised(binary_request, self.caps, observer)
+        self.assertEqual("start-drift", binary_result.status)
+        self.assertFalse(binary_result.launched)
+
+        large_pin = self.source / "large-sparse-config"
+        with large_pin.open("wb") as stream:
+            stream.truncate(1024 * 1024 + 1)
+        pin_request = self.request("pass")
+        pin_request = ProcessRequest(**{**pin_request.__dict__,
+                                       "file_pins": (FilePin(large_pin, "0" * 64),)})
+        pin_result = run_supervised(pin_request, self.caps, observer)
+        self.assertEqual("start-drift", pin_result.status)
+        self.assertFalse(pin_result.launched)
+        self.assertEqual(0, calls["count"])
+
+    def test_file_pin_symlink_or_fifo_replacement_refuses_without_blocking(self):
+        for replacement in ("symlink", "fifo"):
+            with self.subTest(replacement=replacement):
+                config = self.source / f"config-{replacement}"
+                config.write_text("synthetic")
+                request = self.request("raise SystemExit(0)")
+                request = ProcessRequest(**{**request.__dict__,
+                    "file_pins": (FilePin(config, _sha(config.read_bytes())),)})
+
+                def replace(_identity, _elapsed):
+                    config.unlink()
+                    if replacement == "fifo":
+                        os.mkfifo(config)
+                    else:
+                        config.symlink_to(self.source / "missing-target")
+                    return _snapshot()
+
+                began = time.monotonic()
+                result = run_supervised(request, self.caps, replace)
+                self.assertLess(time.monotonic() - began, 0.5)
+                self.assertEqual("start-drift", result.status)
+                self.assertFalse(result.launched)
+                self.assertFalse((request.output_root / "started.json").exists())
+
     def test_one_shot_receipts_prevent_silent_retry(self):
         request = self.request("raise SystemExit(0)")
         result = run_supervised(request, self.caps, self.observer()[0])
