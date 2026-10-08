@@ -28,7 +28,7 @@ Draft contract/assessment work only. No new execution scope follows from this ta
 
 - [x] T007 (REQ-005/SC-005): Record founder capability decisions and create separate implementation work only for adopted contracts.
   Dependencies: T006. Targets: `future decision records; ROADMAP.md; separate feature/contract versions`.
-  Verification and planned evidence: Founder adoption is explicit. Preserve current M4 open/NO-GO and legacy grants. No new runtime capability is implemented by closing assessment tasks.
+  Verification and planned evidence: Founder dispositions are explicit. The historical useful-speedup NO-GO and legacy grants are preserved. No new runtime capability is implemented by closing assessment tasks; the later bounded whole-M4 acceptance is recorded separately in SPEC-038.
 
 ## Obtained technical evidence (2026-10-07)
 
@@ -41,6 +41,7 @@ subsequently completed only for the three bounded-M4-alpha deferrals recorded in
 [`evidence/founder-capability-dispositions-20261008.json`](evidence/founder-capability-dispositions-20261008.json)
 (SHA-256 `c5a12182ba037420dac09661205636f027db4b72899bb84265c30265e7b0e42f`). No capability was adopted. Source promotion, arbitrary-code
 execution, real external effects, probes, provider calls, new grants, capture,
-scientific acceptance and whole-M4 acceptance remain unauthorized or pending as
-applicable; any capability adoption requires a separate reviewed feature/contract
-and exact authority.
+scientific acceptance remains a separate gate. The 2026-10-09 whole-M4 bounded
+engineering/evaluation acceptance is recorded in SPEC-038 and does not adopt any
+capability; future adoption requires a separate reviewed feature/contract and
+exact authority.
