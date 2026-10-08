@@ -66,3 +66,20 @@ Obtained T009/T010 evidence: 19 synthetic predictor/readiness controls passed,
 Luna technical review and the shared stable PR profile passed (504 tests, four
 documented skips). See `docs/experiments/evidence/autonomous-tracks-2026-10-06/`.
 Original training/evaluation/source/review tasks remain pending; no fit occurred.
+
+## Gated completion preparation, 2026-10-08
+
+The founder requested the [completion plan](completion-plan.md), preserving all
+existing task IDs and real-data/review gates. Within T001/T007 preparation, the
+metadata-only [source review packet](source-review-packet.md) proposes five
+natural workflows, and the [model interface plan](model-interface-plan.md)
+defines the candidate trainer/adapter/evaluator contracts before their review.
+The [ADR-extension proposal](adr-extension-proposal.md) is not an adopted ADR.
+
+The read-only `scripts/check_m35_review_packet.py` and its adversarial tests
+check fixed packet inputs, strict candidate shape and byte drift. Their
+synthetic/software evidence cannot check T001, T007, T002, T003, T004 or T005.
+No real payload was inspected, no window opened, no pair admitted, no human
+label collected, and no fit/calibration/evaluation executed in this increment.
+The three deferred native predictor contract acceptance tests remain pending;
+removing their skips requires actual eligible implementations and evidence.

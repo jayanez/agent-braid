@@ -5,6 +5,24 @@ discovery and an eligibility audit, not a dataset, model fit or M3.5 result.
 This register covers public repository metadata and already published Agent
 Braid artifacts. It contains no private session payloads or utility labels.
 
+## Metadata-only completion preparation, 2026-10-08
+
+The founder requested the [completion plan](completion-plan.md). The new
+[source review packet](source-review-packet.md) preserves the two existing
+candidate workflows and proposes three natural Agent Braid engineering workflows
+for review. No new source payload was opened. A 2026-10-08 repository metadata
+query confirmed the three repository identities (`jayanez/agent-braid`,
+`jayanez/kinetiq-core`, `jayanez/smart-notes`) only; it did not inspect feeds or
+establish workflow occurrence, permissions, completeness or pair yield.
+The five inventory rows are not five independently eligible observed families.
+No prospective window has been registered by this increment and zero real pairs
+are admitted. Source-specific permissions and full protocol review remain pending.
+
+The [ADR-extension proposal](adr-extension-proposal.md) is non-operative.
+It creates no source access, credentials, service, registration or lab. The
+existing accepted ADR 0018 scope and its historical founder decision remain
+unchanged until a separately recorded decision is accepted.
+
 ## Candidate owned repositories: Kinetiq and SmartNotes
 
 The [prospective pilot runbook](prospective-pilot.md) defines the proposed

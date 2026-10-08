@@ -1,0 +1,21 @@
+{
+  "format": "m35-tracking-reconciliation-receipt-v1",
+  "observedDate": "2026-10-08",
+  "repository": "jayanez/agent-braid",
+  "sourceCommit": "d5f379be20eb99a584cf71deb853cd68f3722834",
+  "milestoneNumber": 9,
+  "reviewedPlanSha256": "786402ac9f24f314df8ec29091de4682af5ef621110bf1784d0c0c8abd5c63c9",
+  "command": "python scripts/sync_github_tracking.py apply --milestone-number 9 --confirm-repository jayanez/agent-braid --plan-sha256 786402ac9f24f314df8ec29091de4682af5ef621110bf1784d0c0c8abd5c63c9",
+  "appliedOperations": [
+    {"action": "set_state", "key": "SPEC-019/T009", "issueNumber": 222, "from": "open", "to": "closed"},
+    {"action": "set_state", "key": "SPEC-019/T010", "issueNumber": 223, "from": "open", "to": "closed"}
+  ],
+  "postApplyAudit": {
+    "command": "python scripts/sync_github_tracking.py audit --milestone-number 9",
+    "scope": "milestone:9",
+    "planSha256": "2a2ae2eecea939a6dda76f9fdc2d553d0b32f8e5a375e32f4ff61a25f681a445",
+    "operations": []
+  },
+  "observedMilestoneState": {"state": "open", "openIssues": 7, "closedIssues": 4},
+  "limits": "Temporal tracking receipt only; no source admission, scientific review, task T001/T007 completion, parent closure or M3.5 approval. Apply was executed from a separate clean develop clone; the preparation branch was not used to bypass the clean-checkout requirement."
+}

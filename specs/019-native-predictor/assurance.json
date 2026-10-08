@@ -20,9 +20,9 @@
   ],
   "assumptions": "Pure deterministic sequence operations with immutable anchors, fresh IDs and complete finite inputs.",
   "authority_snapshot": {
-    "commit": "7a8df0d587fbb9e3737c0b8d8af4e298edb0cc86",
+    "commit": null,
     "hashes": {
-      "ARCHITECTURE.md": "94e5114eb799b25ca666ef728f84ab1c88e6ad1b342e30a9e99276b8f44c30c2",
+      "ARCHITECTURE.md": "d8cb93624faf2ed7900b55eb9dbb1630e32b9141763d455c67dec5df6a22d6f2",
       "CONSTITUTION.md": "ff7196976a1736a639947c2ab26e8da157fef23c89ba9881312f2a36459964eb",
       "GOVERNANCE.md": "c8eda331d97c42e54be4730ef906dfaad9ae2814e36704302f97afceff037d82",
       "LICENSE": "340d66a837b3a1617645d00622a46d1bcbf3534bedd997b6461d16d2e08b374f",
@@ -50,15 +50,17 @@
       "docs/adr/0017-bounded-structured-exchange.md": "72cecb595605a16eaa5de7a88e960492205d82a300af2f6fb4451263f7e780c4",
       "docs/adr/0018-private-source-sidecar-and-disposable-labs.md": "487c48e8ed4296bb4120e32e9d7e75724c76da88ebb6435396cb7fdcf7d317ad",
       "docs/adr/0019-bounded-local-git-runtime.md": "9023b6176762885ce291721633f686ae2c4d3a4c1404f3ee164e7414a69b5fd3",
+      "docs/adr/0020-bounded-m4-alpha-runtime.md": "b91615158b29902237ce638d659bc30484562766a0f2607a38fcc4bd717fda28",
+      "docs/adr/0021-codex-claude-tooling-integration.md": "e37d78bd1755f4a2b27c0883cda0303e00fb1546b22b7b176bc9ac6ad2b58b8c",
       "docs/architecture/AGENT_INTERACTION_METADATA.md": "0118d7f16c390fc4c1ff027b503a4eaba8a747edf3f6d7b088559f8870e27780",
-      "docs/architecture/ASSURANCE_LEVELS.md": "102d0df0dc6fc0ec114d92fe1ef053b375bd9704d0af6a048affe36900d77512",
+      "docs/architecture/ASSURANCE_LEVELS.md": "3e86d0060ef566ba8d1e1690606fc06e8fee172f187a1b9779b13d27f0f915d9",
       "docs/architecture/CONFLUENCE_CERTIFICATE.md": "fd12a8f1a1477835848581b0f4ccd52f76d3f22dd96a3abaccb9074733464a8e",
       "docs/architecture/DRAFT_0_2.md": "ae2bc09d941537eec6ea05edb69e4402d5c17dae0585b4add0825d6a01fdc29f",
-      "docs/architecture/GIT_REPLAY.md": "365fe948089b374856d1423d69b73d1e3efa540b9d1e88f3fc5439c91d8a031d",
+      "docs/architecture/GIT_REPLAY.md": "991de0aba02d2f89cb5fd01af4d9842c0a15b1ee52fb692671e34a81a6b09ab2",
       "docs/architecture/PARALLEL_INTEGRATION.md": "14a55efe552cb0b5a90e8112260af681b303b9ce2e0fd0b49c7024ab4b15843b",
       "docs/theory/CLAIM_DISCIPLINE.md": "0fcd89ae045e017f62cbe0b7a83a9a9c107770856bba12a340e77f06576db053",
       "docs/theory/OPERATIONAL_SEMANTICS.md": "7e83813d138dde064f85aafee1ba20302d55ede768d35d26340abd522ecce1f7",
-      "docs/theory/SCIENTIFIC_INTEGRATION.md": "bf4dba9119006a9261b45415edfe52b92d226648ab21aa3fd2e4a7f4822faf8c",
+      "docs/theory/SCIENTIFIC_INTEGRATION.md": "3bdb0e13edf1e7666902c426df864cb51219d33e762f6bd87e8d2702bb1642eb",
       "docs/theory/STRUCTURED_EXCHANGE.md": "522fa1e4f2be6a0873c00ba2f503f475fa04833292a6684620ec01ef725bb710",
       "schemas/0.1.0-alpha/analysis-report.schema.json": "91c759ad0d28de0b4e68f5bd3958de37ff2e6c102ecd8c6c2f0083e0151ad578",
       "schemas/0.1.0-alpha/git-analysis-provenance.schema.json": "403b2e61ff7a7700c0db05df4ac3b11504e2c69e2bab9161b4a9ceb156b1316c",
@@ -71,6 +73,10 @@
       "schemas/0.1.0-alpha/git-runtime-report.schema.json": "b2b1833e43c3b8429f9cc20a2a632a27214f8d2acd59a3e9ce5f0243579af73b",
       "schemas/0.1.0-alpha/git-runtime-request.schema.json": "a83873e072ea357b29331e74e42b5a075769d939bcfba69f458712876b187f5d",
       "schemas/0.1.0-alpha/git-runtime-state.schema.json": "6ce9a56e6493e10938eaf60dfc6501d52cd59af240e9f0bb5a0a8c036677d75a",
+      "schemas/0.1.0-alpha/runtime-operator-grant.schema.json": "0a49f4800ed40873022eaa14d37e12eacb5790f71197ac1013766f4742162b8d",
+      "schemas/0.1.0-alpha/runtime-policy.schema.json": "dc88b1e7de631c797002ad29276a4eeccf8f2a1bbbb3a48c41dd4f82ea6f8c17",
+      "schemas/0.1.0-alpha/runtime-preparation-evidence.schema.json": "1989267da48fa7ad3432b67d0767e2f702381773edb02aff7bd8a9ad37a3229f",
+      "schemas/0.1.0-alpha/runtime-schedule.schema.json": "0bd21c877e5f594e7710085d4232b5b095683e1239277a7b322f0890d4b28f64",
       "schemas/0.2.0-draft/agent-interaction-metadata.schema.json": "9d2ff528d0d3f02ba5bce63181e88732eecef96e90fabb5898b3314abd554900",
       "schemas/0.2.0-draft/confluence-certificate.schema.json": "8e375fdc57fbd3b9f15544f2079c8f92633ec1def660f3eabed77feb784f34f0",
       "schemas/0.3.0-experimental/structured-exchange-evidence.schema.json": "1cb4e536d89b519b3a5ffc70421a6ec561b06e1826b22c69b9e9cc01cca4c767",
@@ -80,15 +86,15 @@
       "schemas/governance/public-export-manifest.schema.json": "11eb7f2594939ae9fd0c9e6cfe4423a80aba686d6cdfdd8b73b0fb84b0840aa8",
       "schemas/governance/release-validation-record.schema.json": "d9943f0c9f5520ea52e3b12bfba88240d03f8011b433fc5e35cb49549ab6e819"
     },
-    "mode": "historical"
+    "mode": "current"
   },
   "compatibility": "No current contract changes or M3 closure dependency; future model artifact/version needs separate review.",
   "domain": "Prospective consent-reviewed editing sessions mapped without guesswork to M3 anchored-sequence pairs; fixed source windows, family-separated holdout and policy-blind separately adjudicated utility proxy labels. No admitted real pair yet.",
   "evidence_snapshot": {
-    "commit": "7a8df0d587fbb9e3737c0b8d8af4e298edb0cc86",
-    "mode": "historical"
+    "commit": null,
+    "mode": "current"
   },
-  "execution_contract": "Local synthetic capture creates a new output file exclusively and audit reads it without changing source input; no Git source mutation, live agents, external effects or execution authorization.",
+  "execution_contract": "Local synthetic capture creates a new output file exclusively and audit reads it without changing source input; no Git source mutation, live agents, external effects or execution authorization. The review-packet checker reads six fixed local metadata/document files with safe-file checks, outputs metadata commitments only and never opens journals, admits pairs, invokes source services or authorizes capture/training.",
   "human_review": "pending",
   "hypotheses": "At a fixed verifier-call budget, a local linear advisor may surface more useful verified proposals than the rule baseline on held-out real workload families.",
   "observation_contract": "Final ordered ID/value sequence; intermediate chronological trace and physical residual indices retained but not equated.",
@@ -109,7 +115,13 @@
     "specs/019-native-predictor/checklists/protocol-review.md",
     "docs/adr/0018-private-source-sidecar-and-disposable-labs.md",
     "specs/019-native-predictor/prospective-pilot.md",
-    "specs/019-native-predictor/lab-sync-cli-runbook.md"
+    "specs/019-native-predictor/lab-sync-cli-runbook.md",
+    "specs/019-native-predictor/completion-plan.md",
+    "specs/019-native-predictor/model-interface-plan.md",
+    "specs/019-native-predictor/source-review-packet.md",
+    "specs/019-native-predictor/source-candidates.json",
+    "specs/019-native-predictor/adr-extension-proposal.md",
+    "specs/019-native-predictor/quickstart.md"
   ],
   "requirements": [
     {
@@ -203,6 +215,52 @@
           "test_name": "M35SourceWindowTests.test_independent_proposals_are_counted_and_hidden_until_barrier",
           "then": "the proposal barrier, all-pair admission, exact-file export and ordered seal chain hold or fail closed; no real yield or execution permission is inferred",
           "when": "the sidecar, lab exporter and remote seal validator are exercised adversarially"
+        },
+        {
+          "given": "Five proposed metadata-only source workflow descriptions and fixed review documents, with permissions, protocol review and real yield absent",
+          "id": "SC-008",
+          "obtained_evidence": [
+            {
+              "command": ".venv-speckit/bin/python docs/experiments/evidence/m35-review-preparation-2026-10-08/capture_binding.py > docs/experiments/evidence/m35-review-preparation-2026-10-08/binding.json",
+              "limits": "Input hashes bind supplied bytes, not authenticity, workflow independence, consent, human decisions or scientific evidence. Prospective windows, labels, experiment and M3.5 closure remain pending.",
+              "outcome": "Ten preparation inputs bound by replayable packaging script; six-file packet commitment reproduced; zero real admitted pairs and no source/training/human approval.",
+              "path": "docs/experiments/evidence/m35-review-preparation-2026-10-08/binding.json",
+              "sha256": "132b1784fd6ff3295ff4f77ea7861632273ef8f05f3e0e4704bfff7be8f2a0e8"
+            },
+            {
+              "command": ".venv-speckit/bin/python -m scripts.check_m35_review_packet > docs/experiments/evidence/m35-review-preparation-2026-10-08/packet.json",
+              "limits": "Input hashes bind supplied bytes, not authenticity, workflow independence, consent, human decisions or scientific evidence. Prospective windows, labels, experiment and M3.5 closure remain pending.",
+              "outcome": "Structurally complete metadata-only review packet with exact file commitments and all permission/review/source gates pending.",
+              "path": "docs/experiments/evidence/m35-review-preparation-2026-10-08/packet.json",
+              "sha256": "4ef475a249f4c0d71f460a41b76045db56924ff2005ebe943f9b403a2bbcce11"
+            },
+            {
+              "command": ".venv-speckit/bin/python -m unittest -v tests.test_m35_review_packet tests.test_predictor_readiness tests.test_native_predictor > docs/experiments/evidence/m35-review-preparation-2026-10-08/focused-tests.txt 2>&1",
+              "limits": "Input hashes bind supplied bytes, not authenticity, workflow independence, consent, human decisions or scientific evidence. Prospective windows, labels, experiment and M3.5 closure remain pending.",
+              "outcome": "29 focused tests passed, including ten new packet controls and nineteen existing synthetic readiness/predictor controls.",
+              "path": "docs/experiments/evidence/m35-review-preparation-2026-10-08/focused-tests.txt",
+              "sha256": "c6a4a94a3d5d43d6c8714d6fb530df0af6624b6e974a47e676932226353d53ab"
+            },
+            {
+              "command": "Independent Codex reviewer gpt-6-luna medium: inspect candidate changes and execute .venv-speckit/bin/python -m unittest -v tests.test_m35_review_packet tests.test_predictor_readiness tests.test_native_predictor; reproduce pinned packet.",
+              "limits": "Agent technical review only, before candidate freeze; no human/scientific/source/founder approval, real source completeness or trained predictor result.",
+              "outcome": "Separate technical review passed with no actionable findings; 29 focused controls independently passed.",
+              "path": "docs/experiments/evidence/m35-review-preparation-2026-10-08/technical-review.md",
+              "sha256": "7bad83ed592c51a413cf69c09aa9d22738e001bac1f6281f2dd2ebe6bd5e7be9"
+            },
+            {
+              "command": "PATH=\"$PWD/.venv-speckit/bin:$PATH\" .venv-speckit/bin/python scripts/validate_change.py --base develop --profile quick > docs/experiments/evidence/m35-review-preparation-2026-10-08/validation-quick.txt 2>&1\nPATH=\"$PWD/.venv-speckit/bin:$PATH\" .venv-speckit/bin/python scripts/validate_change.py --base develop --profile pr > docs/experiments/evidence/m35-review-preparation-2026-10-08/validation-pr.txt 2>&1",
+              "limits": "Executable preparation software/structural checks only. Four omissions per suite are not passed acceptance controls. No real-data experiment, scientific validation, clean-room experiment reproduction or human/founder approval. Earlier failed/interrupted runs are retained separately.",
+              "outcome": "Quick escalated to sensitive and stable PR profile exited 0. Each full suite ran 772 tests with four skips (three deferred real predictor controls and one unavailable private historical-commit test); 768 executed tests passed per suite.",
+              "path": "docs/experiments/evidence/m35-review-preparation-2026-10-08/validation-receipt.json",
+              "sha256": "8dbe1b5048541b5a0d34992193bd1d3707ccd6ece9e1bdc7bb00a79cb195a808"
+            }
+          ],
+          "planned_evidence": "Focused adversarial software controls, exact packet and implementation commitments, environment and bounded results; not real source, training or held-out evidence.",
+          "test_file": "tests/test_m35_review_packet.py",
+          "test_name": "M35ReviewPacketTests.test_deterministic_packet_pin_and_all_authority_stays_false",
+          "then": "Unsafe/malformed/drifted inputs fail closed; a complete preparatory packet reports zero real admitted pairs and no capture, training, execution or verified human approval",
+          "when": "The read-only preparation checker validates files and their commitments"
         }
       ],
       "text": "Family-separated real-workload evaluation against the rule baseline with negative outcomes."
@@ -225,6 +283,6 @@
     }
   ],
   "scientific_limits": "Human assessed-usefulness is an indirect proxy, not observed time saved or conflict prevention. Synthetic sequence and hash-chain checks cover the supplied fixture only; hashes are not signatures and do not establish source authenticity or upstream completeness. A three-family holdout supports description only; incomplete labels and source scarcity may make the comparison inconclusive. Finite corpus and shared producer/verifier replay engine do not prove general OT, contextual equivalence, confluence, Yang-Baxter, production performance or safe parallel execution. Prospective sidecar and filtered lab checks exercise local software only; actor identity, independent outside observations, upstream completeness and natural production yield remain unproven.",
-  "scope": "M3.5 real-workload utility target selected and limited source feasibility approved. Synthetic capture and prospective sidecar tooling exercised; no real window, admitted real pair dataset, trained or integrated predictor. Detailed protocol and rubric pending review.",
+  "scope": "M3.5 real-workload utility target selected and limited source feasibility approved. Synthetic capture and prospective sidecar tooling exercised; no real window, admitted real pair dataset, trained or integrated predictor. Detailed protocol and rubric pending review. 2026-10-08 metadata-only five-candidate review preparation and read-only packet checker; candidates remain unreviewed and the proposed trainer is not implemented or fitted.",
   "stage": "draft"
 }
