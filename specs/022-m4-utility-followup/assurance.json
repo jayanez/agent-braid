@@ -17,7 +17,7 @@
   ],
   "assumptions": "Owned POSIX Git fixtures; complete current-runtime verification and grants remain enforced; OS cache state is uncontrolled.",
   "authority_snapshot": {
-    "commit": null,
+    "commit": "600ce85e2ccdc1ac77cd6380abdc4be1d66b1fbe",
     "hashes": {
       "ARCHITECTURE.md": "d8cb93624faf2ed7900b55eb9dbb1630e32b9141763d455c67dec5df6a22d6f2",
       "CONSTITUTION.md": "ff7196976a1736a639947c2ab26e8da157fef23c89ba9881312f2a36459964eb",
@@ -83,13 +83,13 @@
       "schemas/governance/public-export-manifest.schema.json": "11eb7f2594939ae9fd0c9e6cfe4423a80aba686d6cdfdd8b73b0fb84b0840aa8",
       "schemas/governance/release-validation-record.schema.json": "d9943f0c9f5520ea52e3b12bfba88240d03f8011b433fc5e35cb49549ab6e819"
     },
-    "mode": "current"
+    "mode": "historical"
   },
   "compatibility": "No current public API/schema/version changes; future diagnostic harness remains separate from accepted reports.",
   "domain": "Existing 2\u20134 immutable ordinary-text A/M patch domain; local descriptive measurement only.",
   "evidence_snapshot": {
-    "commit": null,
-    "mode": "current"
+    "commit": "600ce85e2ccdc1ac77cd6380abdc4be1d66b1fbe",
+    "mode": "historical"
   },
   "execution_contract": "No new authority or capability. Fixture runs require current exact operator grant and existing private-run restrictions.",
   "human_review": "pending",
