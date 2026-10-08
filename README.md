@@ -51,7 +51,7 @@ covers grants, recovery and MCP configuration.
 
 ### Planned Codex and Claude Code integrations
 
-[M4.5](docs/tooling/README.md) is the proposed next integration program, adjacent
+[M4.5](docs/tooling/README.md) is the next integration program, now Open, adjacent
 to M4. Its six draft specs cover a shared MCP interface, five workflow skills,
 reusable installation and diagnostics, chat explanations, interaction graphs and
 offline evidence exports. The intended journey takes a developer from analyzing
@@ -171,15 +171,15 @@ calls through the owned runtime.
 ## 🧭 Evidence and project status
 
 **Project status on 2026-10-08:** research alpha. The source inventory includes
-44 specs and 18 registered GitHub milestones, plus the proposed M4.5 track.
+44 specs and 19 registered GitHub milestones.
 SPEC-039–044 are draft planning packages with 60 unchecked implementation tasks;
-M4.5 has no registered milestone or issues yet. “Closed”
+M4.5 is Open with six spec issues and 60 linked task subissues. “Closed”
 is the remote milestone state; internal closure, obtained implementation,
 scientific acceptance and external review are separate facts. The
 [spec and milestone index](docs/development/SPEC_MILESTONE_INDEX.md) lists every
 current assignment.
 
-| Track | Milestone or proposed track | State and evidence boundary |
+| Track | Milestone | State and evidence boundary |
 | --- | --- | --- |
 | Foundations | [M0 — Operational foundations](https://github.com/jayanez/agent-braid/milestone/1) | Closed; internally closed. Independent external validation remains pending. |
 | Foundations | [M0.5 — Open strategy and preview preparation](https://github.com/jayanez/agent-braid/milestone/2) | Closed; internally closed. Two historical review items remain open in tracking. |
@@ -187,7 +187,7 @@ current assignment.
 | Research | [M2 — Confluence lab and scheduler](https://github.com/jayanez/agent-braid/milestone/4) | Closed internally. Bounded replay and finite observations do not establish general confluence. |
 | Research | [M3 — Braid semantics](https://github.com/jayanez/agent-braid/milestone/5) | Closed internally for `anchored-sequence-v1`; no general braid or Yang–Baxter theorem is claimed. |
 | Runtime | [M4 — Agent Braid runtime](https://github.com/jayanez/agent-braid/milestone/6) | **Open.** The bounded alpha includes local grants, isolated preparation, stdio MCP and Linux reproduction; whole-milestone acceptance is pending. SPEC-021 G4 remains **NO-GO** on useful speedup under its frozen evidence. |
-| Integration | [M4.5 — AI tooling integrations for Codex and Claude Code](docs/tooling/README.md) | **Proposed; registration pending.** Six draft specs cover MCP, skills, lifecycle, presentation and evaluation. Product support and host evidence remain pending. |
+| Integration | [M4.5 — AI tooling integrations for Codex and Claude Code](https://github.com/jayanez/agent-braid/milestone/19) | **Open.** Six draft specs cover MCP, skills, lifecycle, presentation and evaluation. Product support and host evidence remain pending. |
 | Publication | [PUB.1 — Public research preview](https://github.com/jayanez/agent-braid/milestone/7) | **Open.** The preview is public; historical publication authorization reconciliation remains separately tracked. |
 | Governance | [GOV.1 — Governance and adoption](https://github.com/jayanez/agent-braid/milestone/8) | **Open.** Governance and adoption evidence work continues; issue state does not confer human or founder approval. |
 | Research | [M3.5 — Native proposal predictor](https://github.com/jayanez/agent-braid/milestone/9) | **Open.** Synthetic capture and readiness tooling exist; zero real pairs are admitted. Rights, exact protocol/review, real capture and training remain gated. |

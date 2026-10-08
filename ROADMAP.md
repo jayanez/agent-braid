@@ -3,7 +3,7 @@
 The roadmap follows evidence, not calendar promises. Milestones are exit-criterion driven.
 
 The [spec and milestone index](docs/development/SPEC_MILESTONE_INDEX.md) maps all
-44 specs to the 18 registered GitHub milestones and the proposed M4.5 track. Titles follow `ID — Capability`;
+44 specs to the 19 registered GitHub milestones. Titles follow `ID — Capability`;
 track prefixes do not establish an implementation sequence. Historical closure
 records retain their original names, scope and decisions.
 
@@ -269,7 +269,7 @@ block useful, sound engineering. Real adapter refinement remains a prerequisite.
 
 ## M4.5 — AI tooling integrations for Codex and Claude Code
 
-**Status:** proposed adjacent implementation program. The owner selected Codex
+**Status:** [Open](https://github.com/jayanez/agent-braid/milestone/19) adjacent implementation program, with six spec issues and 60 linked task subissues. The owner selected Codex
 and Claude Code for v1 on 2026-10-08. Source preparation does not establish product
 support, accept ADR 0021 or close either M4.5 or M4.
 
