@@ -26,7 +26,7 @@ dependencies: **Python's standard library**. Git workflows additionally require
 Git; execution requires Linux or macOS with POSIX locking.
 
 **[Quick start](#-quick-start) · [CLI reference](#-cli-reference) ·
-[Owned runtime demo](examples/runtime/README.md) · [Architecture](ARCHITECTURE.md) ·
+[Owned runtime demo](examples/runtime/README.md) · [Planned AI tooling](docs/tooling/README.md) · [Architecture](ARCHITECTURE.md) ·
 [Evidence and status](#-evidence-and-project-status) · [Documentation](#-documentation)**
 
 <a id="what-you-can-do"></a>
@@ -48,6 +48,20 @@ promotion and broader agent/provider adapters require additional contracts and
 authority. The [runtime demo](examples/runtime/README.md) gives you a complete
 owned fixture; the [alpha quickstart](specs/021-m4-alpha-runtime/quickstart.md)
 covers grants, recovery and MCP configuration.
+
+### Planned Codex and Claude Code integrations
+
+[M4.5](docs/tooling/README.md) is the proposed next integration program, adjacent
+to M4. Its six draft specs cover a shared MCP interface, five workflow skills,
+reusable installation and diagnostics, chat explanations, interaction graphs and
+offline evidence exports. The intended journey takes a developer from analyzing
+proposed work to planning, executing an already granted bounded batch, recovering
+an interruption and inspecting the verified result.
+
+The first targets are **Codex local CLI and Claude Code local CLI**. Product
+implementation, actual host observations and acceptance remain pending. Cursor,
+VS Code/GitHub Copilot, OpenCode and pi are future routes. Start with the
+[integration guide](docs/tooling/README.md) for the spec, contract and task map.
 
 <a id="quick-start"></a>
 
@@ -156,14 +170,16 @@ calls through the owned runtime.
 
 ## 🧭 Evidence and project status
 
-**Project status on 2026-10-07:** research alpha. The table below includes all
-18 registered GitHub milestones and the repository's 38 current specs. “Closed”
+**Project status on 2026-10-08:** research alpha. The source inventory includes
+44 specs and 18 registered GitHub milestones, plus the proposed M4.5 track.
+SPEC-039–044 are draft planning packages with 60 unchecked implementation tasks;
+M4.5 has no registered milestone or issues yet. “Closed”
 is the remote milestone state; internal closure, obtained implementation,
 scientific acceptance and external review are separate facts. The
 [spec and milestone index](docs/development/SPEC_MILESTONE_INDEX.md) lists every
 current assignment.
 
-| Track | Registered milestone | State and evidence boundary |
+| Track | Milestone or proposed track | State and evidence boundary |
 | --- | --- | --- |
 | Foundations | [M0 — Operational foundations](https://github.com/jayanez/agent-braid/milestone/1) | Closed; internally closed. Independent external validation remains pending. |
 | Foundations | [M0.5 — Open strategy and preview preparation](https://github.com/jayanez/agent-braid/milestone/2) | Closed; internally closed. Two historical review items remain open in tracking. |
@@ -171,6 +187,7 @@ current assignment.
 | Research | [M2 — Confluence lab and scheduler](https://github.com/jayanez/agent-braid/milestone/4) | Closed internally. Bounded replay and finite observations do not establish general confluence. |
 | Research | [M3 — Braid semantics](https://github.com/jayanez/agent-braid/milestone/5) | Closed internally for `anchored-sequence-v1`; no general braid or Yang–Baxter theorem is claimed. |
 | Runtime | [M4 — Agent Braid runtime](https://github.com/jayanez/agent-braid/milestone/6) | **Open.** The bounded alpha includes local grants, isolated preparation, stdio MCP and Linux reproduction; whole-milestone acceptance is pending. SPEC-021 G4 remains **NO-GO** on useful speedup under its frozen evidence. |
+| Integration | [M4.5 — AI tooling integrations for Codex and Claude Code](docs/tooling/README.md) | **Proposed; registration pending.** Six draft specs cover MCP, skills, lifecycle, presentation and evaluation. Product support and host evidence remain pending. |
 | Publication | [PUB.1 — Public research preview](https://github.com/jayanez/agent-braid/milestone/7) | **Open.** The preview is public; historical publication authorization reconciliation remains separately tracked. |
 | Governance | [GOV.1 — Governance and adoption](https://github.com/jayanez/agent-braid/milestone/8) | **Open.** Governance and adoption evidence work continues; issue state does not confer human or founder approval. |
 | Research | [M3.5 — Native proposal predictor](https://github.com/jayanez/agent-braid/milestone/9) | **Open.** Synthetic capture and readiness tooling exist; zero real pairs are admitted. Rights, exact protocol/review, real capture and training remain gated. |
@@ -253,6 +270,7 @@ Start with [claim discipline](docs/theory/CLAIM_DISCIPLINE.md),
 | Your next step | Start here |
 | --- | --- |
 | Build and verify a local result | [Owned fixture tutorial](examples/runtime/README.md) · [Alpha runtime / MCP](specs/021-m4-alpha-runtime/quickstart.md) |
+| Follow planned Codex and Claude Code support | [M4.5 integration guide](docs/tooling/README.md) · [Capability matrix](specs/039-ai-tooling-program/capability-matrix.md) |
 | Understand architecture and limits | [Architecture](ARCHITECTURE.md) · [Git replay](docs/architecture/GIT_REPLAY.md) · [ADRs](docs/adr/) |
 | Consume portable artifacts | [AIM](docs/architecture/AGENT_INTERACTION_METADATA.md) · [Certificates](docs/architecture/CONFLUENCE_CERTIFICATE.md) · [Schemas](schemas/) |
 | Reproduce experiments | [Bounded laboratory](research/lab/README.md) · [Experiment protocol](docs/experiments/PROTOCOL.md) · [External reproduction](docs/releases/EXTERNAL_REPRODUCTION.md) |

@@ -16,6 +16,7 @@ verified plans under an explicit operator policy and grants.
 | Runtime utility and refinement preparation | Full-cost instrumentation, owner-approved 180-minute successor preparation and read-only refinement assessments; registered capture, utility acceptance and capability adoption remain pending | [SPEC-022](specs/022-m4-utility-followup/successor-protocol-180m.md), [SPEC-027](specs/027-runtime-refinement-contracts/quickstart.md) |
 | System 1 reference core | Opt-in standard-library synthetic decisions and diagnostics; no learned model, accepted utility or execution authority | [SPEC-028](specs/028-system-one-core/spec.md) |
 | Real-workload evaluation preparation | Exact source rights/protocol approved; bounded harness merged and validated; two operations/20 slots statically admitted and technically reviewed; owner stable-candidate review, registered capture and whole-M4 acceptance remain pending | [SPEC-038](specs/038-m4-real-workload-closure/implementation-readiness.md) |
+| Proposed Codex and Claude Code integrations | Draft shared MCP adapter, five product skills, package lifecycle and evidence presentation; implementation, host observations and ADR adoption remain pending | [M4.5 / SPEC-039–044](docs/tooling/README.md) |
 | Further research and product capabilities | Recorded-trace, effectful-lab, formal-research, adoption, System 1 and forecast programmes; broader feature acceptance remains gated | [SPEC-023–026 and SPEC-029–037](docs/development/SPEC_MILESTONE_INDEX.md) |
 
 Whole M4 remains open. The recorded [G4 NO-GO](specs/021-m4-alpha-runtime/g4-decision.json)
@@ -23,6 +24,13 @@ did not accept a useful speedup capability under its frozen evidence. Parallel
 preparation does not authorize concurrent publication or arbitrary repository-code
 execution. Source-ref promotion, real external effects, broader adapters and learned
 advice require their own contracts, evidence and authority.
+
+The proposed M4.5 adapter delegates bounded execution and recovery to the existing
+runtime and operator grant policy. Its SDK dependency is planned as an optional
+extra; core dependencies remain unchanged. Product skills are planned separately
+from the generated Spec Kit contributor adapters. See the proposed
+[ADR 0021](docs/adr/0021-codex-claude-tooling-integration.md) for the architecture
+and adoption decisions still required.
 
 The components and data flow below describe the reference architecture. Their
 general mechanisms and example domains are design targets; current support is
