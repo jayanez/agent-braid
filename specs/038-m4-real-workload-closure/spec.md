@@ -2,10 +2,12 @@
 
 ## Development status — 2026-10-08
 
-Exact source rights and protocol are approved for bounded implementation and
-preparation. See [implementation readiness](implementation-readiness.md) for the
-scoped decision and current gates. Earlier proposal descriptions below retain
-their design-time context; stable review, capture and whole-M4 acceptance remain pending.
+Exact source rights and protocol are approved. The bounded harness is merged and
+validated; static admission and technical review cover two frozen operations and
+20 treatment slots. See [implementation readiness](implementation-readiness.md)
+for the evidence and scope. Earlier proposal descriptions retain their design-time
+context. Owner stable-candidate/manifest review, capture and whole-M4 acceptance
+remain pending.
 
 ## Purpose and scope
 
@@ -14,7 +16,8 @@ workload to evaluate the bounded local runtime in SPEC-020/ADR 0019. This is a
 research protocol and source-feasibility packet. It authorizes no capture,
 repository code or tests, grants, provider calls, installation, ref promotion,
 or execution by itself. Exact source rights and protocol are approved through
-the separate owner decision; runtime admission and capture remain pending.
+the separate owner decision; static runtime admission has passed for the exact
+frozen frame. Capture remains pending.
 A completed evaluation may validly conclude infeasible, negative, or inconclusive.
 
 Owner-permissioned source frame, subject to runtime feasibility review: the

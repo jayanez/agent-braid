@@ -92,6 +92,7 @@ is implemented for preparation after owner review; it preserves the original
 manifest review, registered measurement and any new utility decision remain
 separate pending gates. Engineering preparation diagnostics are not registered
 measurement evidence. As of 2026-10-08, the [SPEC-038 real-workload study](../../specs/038-m4-real-workload-closure/implementation-readiness.md)
-has owner-approved exact source-use rights and protocol; the bounded harness is implemented, with
-validation and preparation in progress. Stable review and separate capture
+has owner-approved exact source-use rights and protocol. The bounded harness is
+merged and validated; static admission and technical review cover the exact two
+operations and 20 slots. Owner stable-candidate/manifest review and separate capture
 authorization remain pending.

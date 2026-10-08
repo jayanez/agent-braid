@@ -2,10 +2,12 @@
 
 ## Development status — 2026-10-08
 
-Exact source rights and protocol are approved for bounded implementation and
-preparation. See [implementation readiness](implementation-readiness.md) for the
-scoped decision and current gates. Earlier proposal descriptions below retain
-their design-time context; stable review, capture and whole-M4 acceptance remain pending.
+Exact source rights and protocol are approved. The bounded harness is merged and
+validated; static admission and technical review cover two frozen operations and
+20 treatment slots. See [implementation readiness](implementation-readiness.md)
+for the evidence and scope. Earlier proposal descriptions retain their design-time
+context. Owner stable-candidate/manifest review, capture and whole-M4 acceptance
+remain pending.
 
 This workflow prepares the bounded evaluator. Do not capture a workload or run
 source project code from this quickstart.
@@ -27,8 +29,11 @@ source project code from this quickstart.
    independent evidence review. Whole-M4 status needs a new founder decision;
    SPEC-021 G4 NO-GO and M4-open remain historical facts until then.
 
-Current status: source-rights and exact protocol approval obtained. The narrow harness is implemented; validation is in progress; exact eligible manifest, stable review, capture
-authorization and actual-workload evidence remain pending.
+Current status: source-rights and exact protocol approval obtained. The bounded
+harness is merged; local quick/PR and hosted PR/post-merge validation have passed.
+The exact two-operation manifest has passed static admission and technical review.
+Owner stable-candidate/manifest review, separate capture authorization and
+registered actual-workload outcomes remain pending.
 
 ## Preparation-only command
 
