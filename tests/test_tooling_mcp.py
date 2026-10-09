@@ -429,6 +429,34 @@ class BoundedInputTests(unittest.IsolatedAsyncioTestCase):
         self.assertGreater(stream.remaining, 0, "oversized input should close without unbounded draining")
 
 
+class WorkerCancellationTests(unittest.IsolatedAsyncioTestCase):
+    async def test_cancellation_waits_for_dispatched_worker_checkpoint(self):
+        started = threading.Event()
+        cancel_event = threading.Event()
+        completed = threading.Event()
+
+        def worker_body():
+            started.set()
+            cancel_event.wait(timeout=2)
+            completed.set()
+
+        worker = asyncio.create_task(asyncio.to_thread(worker_body))
+
+        async def caller():
+            try:
+                await asyncio.shield(worker)
+            except asyncio.CancelledError:
+                await _settle_cancelled_worker(worker, cancel_event)
+                raise
+
+        task = asyncio.create_task(caller())
+        self.assertTrue(await asyncio.to_thread(started.wait, 1), "worker must dispatch before caller cancellation")
+        task.cancel()
+        with self.assertRaises(asyncio.CancelledError):
+            await task
+        self.assertTrue(completed.is_set(), "handler must wait until the dispatched worker reaches its checkpoint")
+
+
 @unittest.skipUnless(importlib.util.find_spec("mcp"), "optional tooling extra (mcp==2.3.0) is not installed")
 class SdkClientIntegrationTests(unittest.IsolatedAsyncioTestCase):
     async def asyncSetUp(self):
@@ -477,33 +505,6 @@ class SdkClientIntegrationTests(unittest.IsolatedAsyncioTestCase):
                                  {"agent-braid-analyze", "agent-braid-plan", "agent-braid-evidence"})
                 prompt = await client.get_prompt("agent-braid-evidence")
                 self.assertIn("SHA-256", prompt.messages[0].content.text)
-
-    async def test_cancellation_waits_for_dispatched_worker_checkpoint(self):
-        started = threading.Event()
-        cancel_event = threading.Event()
-        completed = threading.Event()
-
-        def worker_body():
-            started.set()
-            cancel_event.wait(timeout=2)
-            completed.set()
-
-        worker = asyncio.create_task(asyncio.to_thread(worker_body))
-
-        async def caller():
-            try:
-                await asyncio.shield(worker)
-            except asyncio.CancelledError:
-                await _settle_cancelled_worker(worker, cancel_event)
-                raise
-
-        task = asyncio.create_task(caller())
-        await asyncio.to_thread(started.wait, 1)
-        task.cancel()
-        with self.assertRaises(asyncio.CancelledError):
-            await task
-        self.assertTrue(completed.is_set(), "handler must wait until the dispatched worker reaches its checkpoint")
-
 
 if __name__ == "__main__":
     unittest.main()
