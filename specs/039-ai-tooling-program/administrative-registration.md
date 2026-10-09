@@ -57,4 +57,4 @@ Each task issue has its stable marker, full source task text, dependency and tar
 
 ## Remaining delivery gates
 
-Implement and review the registered tasks under the applicable specs and authority. Capture actual supported-host observations and implementation/control evidence; perform required clean reproduction, human interpretation and founder acceptance before any capability promotion or closure. M4 remains Open with its historical G4 NO-GO; this registration makes no new M4 decision.
+Implement and review the registered tasks under the applicable specs and authority. Capture actual supported-host observations and implementation/control evidence; perform required clean reproduction, human interpretation and founder acceptance before any capability promotion or closure. At the 2026-10-08 registration, M4 was Open with its historical G4 NO-GO; this registration made no new M4 decision. The separate bounded M4 acceptance on 2026-10-09 is recorded in [program.md](program.md#m4-relationship) and grants no M4.5 acceptance or capture permission.

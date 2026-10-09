@@ -150,7 +150,7 @@
           "when": "M4.5 dependencies and closure are evaluated"
         }
       ],
-      "text": "Keep M4.5 adjacent to M4 while preserving the whole-M4 open state, G4 NO-GO and independent M3/M3.5 gates."
+      "text": "Keep M4.5 adjacent to M4 while preserving its separately governed bounded acceptance, historical G4 NO-GO and independent M3/M3.5 gates."
     },
     {
       "id": "REQ-003",

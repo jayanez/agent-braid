@@ -29,6 +29,14 @@ new infrastructure, scientific capture or founder acceptance.
 
 ## M4 relationship
 
+The founder accepted bounded M4 alpha engineering/evaluation separately on
+2026-10-09; [PR #471](https://github.com/jayanez/agent-braid/pull/471) is
+included in predecessor commit `9dfd9fdf52e688e7225af1f7644f41b6ba92b780`.
+[Milestone #6](https://github.com/jayanez/agent-braid/milestone/6) was
+verified closed with 46 closed issues and none open on 2026-10-09. This
+separate decision preserves negative utility, historical SPEC-021 G4 NO-GO
+and deferred capabilities; it grants no M4.5 capture or acceptance.
+
 M4.5 is contiguous to M4 in the product roadmap and consumes its existing bounded
 runtime. Engineering does not require a favorable M4 speedup result or new M3
 research. Actual runtime support requires the consumed M4 contracts and refinement
