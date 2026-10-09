@@ -24,6 +24,8 @@ Targets: `specs/044-ai-tooling-evaluation/registration.json (future); research/t
 
 Existing AIM/runtime/grant/verifier contracts remain unchanged. Analysis and preparation are consultative; host permission never substitutes for operator grants. No source ref promotion, repository-code/hook execution, arbitrary network effects or new scientific guarantee. Existing M4 G4 NO-GO and independent M3/M3.5 gates remain in effect.
 
+Provider model identity follows [the owner-approved clarification](model-identity-clarification.md): immutable provider IDs when exposed; otherwise a labelled exact requested route with backend identity unavailable. Registration, attestation and receipts bind selector/effort, native build, catalog, effective configuration and authenticated account route. Metadata hashes cannot stand in for backend-build hashes. Observable drift requires a new reviewed cohort; hidden revisions and nondeterminism remain limits. All 108 slots and other gates remain required.
+
 ## Validation strategy
 
 Each requirement maps to one scenario, named prospective procedure, task and planned evidence in assurance.json. Positive and negative controls are specified in validation-plan.md. Before implementation resolve required contract review and run Spec Kit prerequisites; implement bounded dependency-ordered slices. Run `python3 -m scripts.validate_change --base develop --profile quick` after coherent increments and `--profile pr` once on the stable candidate. Separate actual host/provider capture, clean-room evidence and human review.

@@ -24,7 +24,9 @@ approval, budget, observation, or utility result is supplied here.
 - a source-rights record whose approved fixture IDs match the registered
   fixtures exactly, with scope, record ID and record hash;
 - two exact macOS arm64 host records (`codex`, `claude-code`), each with host,
-  model, OS and SDK versions and hashes;
+  OS and SDK versions and hashes, plus an explicit immutable-provider-build or
+  approved observable-requested-route model identity; metadata catalog/route hashes
+  cannot populate backend-build fields, and an opaque backend remains unavailable;
 - an explicit provider opt-in and consent record/hash, exact EUR per-million
   input/output rates for each registered host/model pair and each rate record's
   source ID/hash;
@@ -152,3 +154,73 @@ registration/roster/accounting behavior. They are not a registration approval,
 source-rights finding, provider authorization, host receipt, clean-room
 reproduction, human score, utility result, or M4.5 closure. No fixture files are
 read or executed by these helpers.
+
+## Versioned provider model identity
+
+`agent-braid-m45-registration-v1` retains the legacy immutable model
+version/hash interpretation. New observable-route registrations use
+`agent-braid-m45-registration-v2` and require an explicit `modelIdentity`
+on each host. The owner approved this interpretation, not a complete registration.
+The v2 native subscription routes pin Codex to `openai`/`chatgpt` and Claude Code
+to `anthropic`/`claude.ai`; live billing policy observations remain separate.
+
+Both identity kinds bind `selectorKind`, `selector`, `effort`, `effectiveConfig`,
+`configSha256`, `cliBuild`, `nativeCatalogEntry` (UTC observation, source reference, catalog and selected-entry
+hashes) and `providerRoute` (provider, account hash, authentication method).
+`cliBuild` must match the registered native host.
+`immutable-provider-build` requires `backendAvailable: true`, an authoritative
+`immutableId` matching `model.version`. `selectorKind: immutable-id` selects
+that exact ID. If the host only supports a `provider-alias`, each attempt must
+independently observe and authenticate the same frozen immutable backend ID.
+An exposed backend artifact digest is
+mandatory through `backendDigestAvailable: true` and `backendSha256`, matching
+`model.sha256`; when no such digest is exposed, declare it unavailable and keep
+those digest fields null. An immutable provider build ID does not imply public
+model weights.
+`observable-requested-route` requires `backendAvailable: false`,
+`immutableId: null`, `backendDigestAvailable: false`, `backendSha256: null`
+and explicitly null backend `model.version`/`model.sha256`.
+Metadata hashes cannot be substituted for those backend fields.
+
+Admission must additionally bind a fresh externally authenticated model-route
+observation. Requested and reported selectors stay separate, and missing
+reporting stays null. The validator checks declared consistency; the trusted
+verifier must authenticate catalog, configuration, route and any assertion that
+the provider exposes no immutable identifier. Changing observable identity
+requires a new reviewed cohort. Hidden backend revisions remain outside
+reproducibility claims. Existing fixture, cost, subscription and human gates
+remain in force, with all 108 intended slots preserved.
+
+`backendAvailable` means that an authoritative immutable backend build identifier
+is exposed; it does not describe whether the model service is reachable.
+`backendDigestAvailable` describes exposure of a backend artifact digest.
+Neither may be inferred from a model name or a catalog metadata hash.
+
+`configSha256` hashes the secret-free `effectiveConfig` record containing selector,
+effort, provider endpoint (or an explicitly attested native first-party default),
+authentication method and host selection descriptors. `hostSelection` records
+`source`, a sanitized `configRef`, `flags: [model-selector, reasoning-effort]`
+and `argv: [selector, effort]` as abstract roles. Actual command arguments are
+separate redacted execution evidence; arbitrary arguments and opaque secrets
+cannot be copied into this selection metadata.
+`entrySha256` hashes the complete retained selected catalog-entry record; document
+any projection from the native response, without claiming a projected entry is the
+raw provider response. Both use UTF-8 JSON with sorted keys, compact separators,
+`ensure_ascii=False`, `allow_nan=False` and no trailing newline.
+`catalogSha256` hashes the exact retained catalog artifact bytes, including their
+actual formatting. Retain those records to make the byte boundaries inspectable.
+Endpoint/domain metadata alone does not establish subscription billing; fresh
+authenticated account, policy and quota observations remain mandatory.
+
+## Subscription economic-cost gate
+
+[Experimental monetary records](MONEY.md) distinguish additional cash, allocated
+subscription value and API-reference estimates. Subscription-policy registrations
+require a matching registration-bound full economic summary in
+`assess_utility_eligibility(..., monetary_summary=...,
+expected_monetary_roster_sha256=...)`. Bind the independently frozen monetary
+roster, including period and activity coverage, as well as the registration. Zero additional cash and
+complete legacy scalar fields do not establish complete subscription and human
+costs. The current experimental ledger keeps full-economic eligibility blocked
+until that prospective scope and its human-cost fields are registered and
+integrated. All intended slots and unknown costs remain visible.

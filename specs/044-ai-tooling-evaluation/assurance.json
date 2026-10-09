@@ -19,7 +19,7 @@
     24,
     25
   ],
-  "assumptions": "Owned trusted local roots, separately reviewed contracts and exact host/source/cost decisions; no universal compatibility, positive utility or available provider budget assumed.",
+  "assumptions": "Owned trusted local roots, separately reviewed contracts and exact host/source/cost decisions; no universal compatibility, positive utility or available provider budget assumed. Immutable provider identifiers are mandatory when exposed; otherwise exact selector/effort, host, catalog, effective configuration and authenticated route are explicitly distinguished from unavailable backend identity under the owner-approved 2026-10-09 clarification.",
   "authority_snapshot": {
     "commit": "f18f63c8fc9b52dc0652f57c505d7f7647164030",
     "hashes": {
@@ -90,7 +90,7 @@
     "mode": "historical"
   },
   "compatibility": "Additive experimental tooling envelope with optional pinned SDK; core dependencies empty. Codex and Claude Code v1 only, exact versions selected before observation. Existing contracts and historical records unchanged.",
-  "domain": "Exact local host/model builds on macOS arm64 and owned registered fixture population; Linux x86_64 core/protocol reproduction is a separate domain.",
+  "domain": "Exact local host builds and registered provider model identities on macOS arm64 and owned registered fixture population; opaque backend builds remain unavailable under the approved observable-route interpretation. Linux x86_64 core/protocol reproduction is a separate domain.",
   "evidence_snapshot": {
     "commit": null,
     "mode": "current"
@@ -98,7 +98,7 @@
   "execution_contract": "Source planning only. Future server defaults to analysis; execution/recovery delegate existing independent exact operator grants and private fixed-patch runtime. Installation writes only explicitly selected receipt-owned entries. No new effects.",
   "human_review": "pending",
   "hypotheses": "MCP plus skills may improve completion, interventions or evidence fidelity over CLI/MCP-only. Negative, null and infeasible outcomes are valid.",
-  "observation_contract": "Exact input/candidate/host/environment identities and unchanged analyzer/runtime observation contracts; synthetic, protocol-peer, actual-host and clean-room evidence remain distinct.",
+  "observation_contract": "Exact input/candidate/host/environment identities and unchanged analyzer/runtime observation contracts; synthetic, protocol-peer, actual-host and clean-room evidence remain distinct. Immutable provider identifiers are mandatory when exposed; otherwise exact selector/effort, host, catalog, effective configuration and authenticated route are explicitly distinguished from unavailable backend identity under the owner-approved 2026-10-09 clarification.",
   "references": [
     "CONSTITUTION.md",
     "GOVERNANCE.md",
@@ -117,7 +117,8 @@
     "specs/039-ai-tooling-program/program.md",
     "specs/039-ai-tooling-program/research.md",
     "specs/044-ai-tooling-evaluation/evaluation-protocol.md",
-    "specs/044-ai-tooling-evaluation/validation-plan.md"
+    "specs/044-ai-tooling-evaluation/validation-plan.md",
+    "specs/044-ai-tooling-evaluation/model-identity-clarification.md"
   ],
   "requirements": [
     {
@@ -127,14 +128,14 @@
           "given": "unapproved paid capture or a drifted/missing registration",
           "id": "SC-001",
           "obtained_evidence": [],
-          "planned_evidence": "specs/044-ai-tooling-evaluation/evidence/sc-001.json: exact candidate/input/environment hashes, actual commands/raw outputs, all outcomes and limits; human decisions require their own record.",
+          "planned_evidence": "specs/044-ai-tooling-evaluation/evidence/sc-001.json: exact candidate/input/environment hashes, actual commands/raw outputs, all outcomes and limits; human decisions require their own record. Include labelled route/backend identity, availability, catalog/configuration binding and drift refusals; the clarification decision is separate from capture approval.",
           "test_file": "specs/044-ai-tooling-evaluation/validation-plan.md",
           "test_name": "procedure_registration_gate",
           "then": "unapproved costs/rights/versions refuse; owned deterministic controls remain a separately identified engineering path",
           "when": "capture admission runs"
         }
       ],
-      "text": "Preregister exact population, source rights, candidate/input/host/model versions, all attempts, rubric and numerical caps before capture."
+      "text": "Preregister exact population, source rights, candidate/input/host/SDK identities and either an immutable provider model-build identity or an explicitly labelled observable requested route, all attempts, rubric and numerical caps before capture."
     },
     {
       "id": "REQ-002",
@@ -143,10 +144,10 @@
           "given": "a real host and a mock protocol client",
           "id": "SC-002",
           "obtained_evidence": [],
-          "planned_evidence": "specs/044-ai-tooling-evaluation/evidence/sc-002.json: exact candidate/input/environment hashes, actual commands/raw outputs, all outcomes and limits; human decisions require their own record.",
+          "planned_evidence": "specs/044-ai-tooling-evaluation/evidence/sc-002.json: exact candidate/input/environment hashes, actual commands/raw outputs, all outcomes and limits; human decisions require their own record. Include labelled route/backend identity, availability, catalog/configuration binding and drift refusals; the clarification decision is separate from capture approval.",
           "test_file": "specs/044-ai-tooling-evaluation/validation-plan.md",
           "test_name": "procedure_actual_host_observation",
-          "then": "only real host receipts satisfy host acceptance, with exact build/model/bundle and interactive blocks reported",
+          "then": "only real host receipts satisfy host acceptance, with exact host/bundle identities, requested and reported model selectors distinguished, backend identity unavailable when not exposed, and interactive blocks reported",
           "when": "host support is assessed"
         }
       ],
@@ -249,7 +250,7 @@
       "text": "Freeze candidate/evidence, obtain independent technical review and explicit founder scope/closure decision with historical M4 limits."
     }
   ],
-  "scientific_limits": "Existing AIM/runtime/grant/verifier contracts remain unchanged. Analysis and preparation are consultative; host permission never substitutes for operator grants. No source ref promotion, repository-code/hook execution, arbitrary network effects or new scientific guarantee. Existing M4 G4 NO-GO and independent M3/M3.5 gates remain in effect. Structural validation is not mathematical proof, scientific acceptance, production safety or human approval.",
+  "scientific_limits": "Existing AIM/runtime/grant/verifier contracts remain unchanged. Analysis and preparation are consultative; host permission never substitutes for operator grants. No source ref promotion, repository-code/hook execution, arbitrary network effects or new scientific guarantee. Existing M4 G4 NO-GO and independent M3/M3.5 gates remain in effect. Structural validation is not mathematical proof, scientific acceptance, production safety or human approval. Observable identity does not establish backend reproducibility; hidden backend revisions and model nondeterminism remain limits.",
   "scope": "Register and execute candidate-bound deterministic controls, clean reproduction, actual Codex/Claude journeys and a complete-cost three-arm comparison.",
   "stage": "draft"
 }

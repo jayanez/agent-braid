@@ -1,5 +1,5 @@
 {
-  "schemaVersion": "agent-braid-m45-registration-v1",
+  "schemaVersion": "agent-braid-m45-registration-v2",
   "registrationId": "m45-candidate-pending-review",
   "status": "draft",
   "ownerApproval": {
@@ -237,6 +237,44 @@
         "name": "mcp",
         "version": "2.3.0",
         "sha256": null
+      },
+      "modelIdentity": {
+        "kind": "observable-requested-route",
+        "selector": "gpt-6-luna",
+        "effort": "medium",
+        "configSha256": null,
+        "cliBuild": {
+          "version": null,
+          "sha256": null
+        },
+        "nativeCatalogEntry": {
+          "observedAtUtc": null,
+          "sourceRef": null,
+          "catalogSha256": null,
+          "entrySha256": null
+        },
+        "providerRoute": {
+          "provider": "openai",
+          "accountSha256": null,
+          "authMethod": "chatgpt"
+        },
+        "backendAvailable": null,
+        "immutableId": null,
+        "backendDigestAvailable": null,
+        "backendSha256": null,
+        "selectorKind": "provider-alias",
+        "effectiveConfig": {
+          "selector": "gpt-6-luna",
+          "effort": "medium",
+          "providerEndpoint": null,
+          "authMethod": "chatgpt",
+          "hostSelection": {
+            "source": null,
+            "configRef": null,
+            "flags": [],
+            "argv": []
+          }
+        }
       }
     },
     {
@@ -258,7 +296,66 @@
         "name": "mcp",
         "version": "2.3.0",
         "sha256": null
+      },
+      "modelIdentity": {
+        "kind": "observable-requested-route",
+        "selector": "claude-sonnet-5-5",
+        "effort": "medium",
+        "configSha256": null,
+        "cliBuild": {
+          "version": null,
+          "sha256": null
+        },
+        "nativeCatalogEntry": {
+          "observedAtUtc": null,
+          "sourceRef": null,
+          "catalogSha256": null,
+          "entrySha256": null
+        },
+        "providerRoute": {
+          "provider": "anthropic",
+          "accountSha256": null,
+          "authMethod": "claude.ai"
+        },
+        "backendAvailable": null,
+        "immutableId": null,
+        "backendDigestAvailable": null,
+        "backendSha256": null,
+        "selectorKind": "provider-alias",
+        "effectiveConfig": {
+          "selector": "claude-sonnet-5-5",
+          "effort": "medium",
+          "providerEndpoint": null,
+          "authMethod": "claude.ai",
+          "hostSelection": {
+            "source": null,
+            "configRef": null,
+            "flags": [],
+            "argv": []
+          }
+        }
       }
     }
-  ]
+  ],
+  "billingPolicy": {
+    "schema": "agent-braid-m45-subscription-policy-v1",
+    "mode": "included-subscription-only",
+    "additionalSpendCapEur": 0,
+    "paidApiAllowed": false,
+    "overageAllowed": false,
+    "creditsAllowed": false,
+    "autoRechargeAllowed": false,
+    "hosts": [
+      {
+        "host": "codex",
+        "accountSha256": null,
+        "authMethod": "chatgpt"
+      },
+      {
+        "host": "claude-code",
+        "accountSha256": null,
+        "authMethod": "claude.ai"
+      }
+    ]
+  }
 }

@@ -16,7 +16,7 @@ Constitution clause zero and Articles 3–7, 12–16, 19–25; GOVERNANCE.md; op
 
 ### REQ-001
 
-Preregister exact population, source rights, candidate/input/host/model versions, all attempts, rubric and numerical caps before capture.
+Preregister exact population, source rights, candidate/input/host/SDK identities and either an immutable provider model-build identity or an explicitly labelled observable requested route, all attempts, rubric and numerical caps before capture.
 
 **SC-001:** Given unapproved paid capture or a drifted/missing registration, when capture admission runs, then unapproved costs/rights/versions refuse; owned deterministic controls remain a separately identified engineering path.
 
@@ -26,7 +26,7 @@ Verification: [procedure_registration_gate](validation-plan.md); [T001](tasks.md
 
 Obtain actual discovery, five-skill loading and complete basic journey receipts in both selected macOS arm64 hosts.
 
-**SC-002:** Given a real host and a mock protocol client, when host support is assessed, then only real host receipts satisfy host acceptance, with exact build/model/bundle and interactive blocks reported.
+**SC-002:** Given a real host and a mock protocol client, when host support is assessed, then only real host receipts satisfy host acceptance, with exact host/bundle identities, requested and reported model selectors distinguished, backend identity unavailable when not exposed, and interactive blocks reported.
 
 Verification: [procedure_actual_host_observation](validation-plan.md); [T002](tasks.md). Obtained evidence: none.
 
@@ -80,13 +80,17 @@ Verification: [procedure_acceptance_decision](validation-plan.md); [T008](tasks.
 
 ## Scientific boundaries and compatibility
 
-Domain: Exact local host/model builds on macOS arm64 and owned registered fixture population; Linux x86_64 core/protocol reproduction is a separate domain.
+Domain: Exact local host builds and registered provider model identities on macOS arm64 and owned registered fixture population; opaque backend builds remain unavailable under the approved observable-route interpretation. Linux x86_64 core/protocol reproduction is a separate domain.
 
 Hypothesis: MCP plus skills may improve completion, interventions or evidence fidelity over CLI/MCP-only. Negative, null and infeasible outcomes are valid.
 
 Existing AIM/runtime/grant/verifier contracts remain unchanged. Analysis and preparation are consultative; host permission never substitutes for operator grants. No source ref promotion, repository-code/hook execution, arbitrary network effects or new scientific guarantee. Existing M4 G4 NO-GO and independent M3/M3.5 gates remain in effect.
 
 SDK/documentation, structural checks, synthetic controls, actual host observations and independent reproduction have separate evidence domains. Passing one does not establish the others or human approval. Public APIs are additive experimental proposals with migration/versioning review during implementation.
+
+## Approved model identity interpretation
+
+See [model-identity-clarification.md](model-identity-clarification.md). Immutable provider build identifiers are mandatory when exposed. Otherwise freeze the exact requested selector/effort, host build/hash, dated native catalog artifact/entry hashes, selection/configuration and authenticated provider/account route; retain backend identity as unavailable. These metadata hashes are not model-build hashes. Observable drift refuses admission and requires a new reviewed cohort. Hidden backend revisions and nondeterminism limit reproducibility. The owner approved this interpretation on 2026-10-09; all 108 slots, complete costs and other human gates remain unchanged. This does not approve capture or full registration.
 
 ## Evidence and unresolved questions
 
