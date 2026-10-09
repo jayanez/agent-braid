@@ -55,6 +55,77 @@ class UtilityReportTests(unittest.TestCase):
         with self.assertRaises(evaluation.EvaluationError):
             render_utility_report_narrative({**dict(report), "eligibilityReasons": ["Positive utility is proven"]})
 
+    def test_safe_report_preserves_actual_attempt_ids_separately_from_slot_ids(self):
+        registration, _roster, _money, summary = full_cost_tests.FullCostContractTests()._assessment()
+        ledger, ratings = _complete_ledger(registration)
+        report = self._make_report(registration, ledger, ratings, summary=summary,
+                                   roster_sha=_roster.sha256)
+
+        first_slot = ledger.slots[0]
+        first_attempt = ledger.current_event(first_slot.slot_id).attempt_id
+        reported_slot = next(row for row in report["attempts"]["slots"]
+                             if row["slotId"] == first_slot.slot_id)
+        self.assertEqual(first_slot.slot_id, reported_slot["slotId"])
+        self.assertEqual(first_attempt, reported_slot["currentAttemptId"])
+        self.assertNotEqual(first_slot.slot_id, reported_slot["currentAttemptId"])
+        slot_events = [event for event in report["attempts"]["events"]
+                       if event["slotId"] == first_slot.slot_id]
+        self.assertEqual(["attempted", "valid"], [event["status"] for event in slot_events])
+        self.assertEqual([first_attempt, first_attempt], [event["attemptId"] for event in slot_events])
+        self.assertIn(f'"attemptId":"{first_attempt}"', render_utility_report_json(report))
+
+    def test_missing_cost_attribution_maps_attempt_setup_and_cohort_scopes(self):
+        registration, roster, _money, summary = full_cost_tests.FullCostContractTests()._assessment()
+        all_slots = evaluation.generate_slots(registration)
+
+        target = all_slots[4]
+        per_slot_ledger, per_slot_ratings = _complete_ledger(
+            registration, missing_cost_slot=target.slot_id,
+        )
+        per_slot = self._make_report(registration, per_slot_ledger, per_slot_ratings,
+                                     summary=summary, roster_sha=roster.sha256)
+        attempt_row = next(item for item in per_slot["costs"]["missingRequiredByScope"]
+                           if item["scope"] == "attempt" and item["activityId"] == target.slot_id)
+        expected_attempt_id = per_slot_ledger.current_event(target.slot_id).attempt_id
+        self.assertEqual([{"slotId": target.slot_id, "attemptId": expected_attempt_id}],
+                         attempt_row["affectedAttempts"])
+        self.assertEqual({"costs.tokens", "costs.input_tokens"}, set(attempt_row["fields"]))
+        self.assertIn(f"{target.slot_id}={expected_attempt_id}",
+                      render_utility_report_narrative(per_slot))
+
+        complete_ledger, complete_ratings = _complete_ledger(registration)
+        setup = self._make_report(registration, complete_ledger, complete_ratings,
+                                  summary=summary, roster_sha=roster.sha256,
+                                  setup=_known_costs(eur=None))
+        setup_row = next(item for item in setup["costs"]["missingRequiredByScope"]
+                         if item["scope"] == "setup")
+        self.assertEqual("setup", setup_row["activityId"])
+        self.assertEqual(["setupCosts.eur"], setup_row["fields"])
+        self.assertEqual(108, len(setup_row["affectedAttempts"]))
+        self.assertTrue(all(row["attemptId"] is not None for row in setup_row["affectedAttempts"]))
+        self.assertIn("setup: fields=setupCosts.eur", render_utility_report_narrative(setup))
+
+        global_gap = replace(
+            summary,
+            full_economic_cost_complete=False,
+            full_economic_cost_status="incomplete",
+            missing_full_economic_cost=summary.missing_full_economic_cost +
+                (("registration-costs", "eur"),),
+        )
+        cohort = self._make_report(registration, complete_ledger, complete_ratings,
+                                   summary=global_gap, roster_sha=roster.sha256)
+        cohort_row = next(item for item in cohort["costs"]["missingRequiredByScope"]
+                          if item["scope"] == "cohort")
+        self.assertEqual(["subscription.registrationCosts.eur"], cohort_row["fields"])
+        self.assertEqual(108, len(cohort_row["affectedAttempts"]))
+        self.assertEqual(
+            {slot.slot_id: complete_ledger.current_event(slot.slot_id).attempt_id
+             for slot in all_slots},
+            {row["slotId"]: row["attemptId"] for row in cohort_row["affectedAttempts"]},
+        )
+        self.assertIn("cohort: fields=subscription.registrationCosts.eur",
+                      render_utility_report_narrative(cohort))
+
     def test_composed_full_cost_can_be_eligible_but_waits_for_interpretation(self):
         registration, roster, _money, summary = full_cost_tests.FullCostContractTests()._assessment()
         ledger, ratings = _complete_ledger(registration)
@@ -323,11 +394,21 @@ class UtilityReportTests(unittest.TestCase):
         report = self._make_report(registration, ledger, ratings)
         json_text = render_utility_report_json(report)
         narrative = render_utility_report_narrative(report)
+        not_started_slot = ledger.slots[0].slot_id
         self.assertFalse(report["utilityClaimEligible"])
         self.assertEqual(108, len(report["attempts"]["slots"]))
         self.assertTrue(all(row["currentStatus"] == "not-started" for row in report["attempts"]["slots"]))
+        self.assertTrue(all(row["currentAttemptId"] is None for row in report["attempts"]["slots"]))
+        self.assertEqual([None], [event["attemptId"] for event in report["attempts"]["events"]])
+        not_started_mapping = next(
+            item for item in report["costs"]["missingRequiredByScope"]
+            if item["scope"] == "attempt" and item["activityId"] == not_started_slot
+        )
+        self.assertEqual([{"slotId": not_started_slot, "attemptId": None}],
+                         not_started_mapping["affectedAttempts"])
         self.assertIn('"notStarted":3', json_text)
         self.assertIn("notStarted=3", narrative)
+        self.assertIn(f"{not_started_slot}=null", narrative)
         self.assertIn("costs.eur", narrative)
         self.assertNotIn("account secret", json_text)
         self.assertNotIn("positive utility; account", narrative)
