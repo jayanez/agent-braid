@@ -121,7 +121,10 @@ cleanup. Zero additional spend is an authorization boundary, not a claim that
 polling guarantees zero charges against concurrent external account changes.
 
 This module does not itself authorize or execute an actual capture. Registered
-source rights, provider consent, founder/owner decisions, two independent
-human reviewers, exact candidate registration, and external receipt
-verification remain separate gates. Tests launch only bounded local synthetic
+source rights, provider consent, founder/owner decisions, exact candidate
+registration, and external receipt verification remain separate gates. V3
+technical capture requires the approved human-evaluation deferral and two abstract
+independent reviewer roles. Named identities, ratings, adjudication and reviewer
+time/fee records are deferred and do not gate that technical phase. Legacy v1/v2
+registrations retain their two named-reviewer prerequisite. Tests launch only bounded local synthetic
 subprocesses; they make no provider or host calls.

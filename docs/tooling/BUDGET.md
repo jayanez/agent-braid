@@ -12,7 +12,8 @@ Exact account/model bindings, source rights, human identities/ratings/adjudicati
 the frozen rubric, and complete registration approval remain pending. V3 technical
 capture requires an approved technical `fullCostScope` and human-evaluation deferral
 record with abstract reviewer roles; the named human roster remains empty until a
-separately bound addendum. Technical accounting retains measured user/setup/attempt
+separately bound addendum. Pending human identities, ratings and adjudication do
+not gate this technical phase. Technical accounting retains measured user/setup/attempt
 and wall times with receipt hashes. Reviewer time/fee and combined human-inclusive
 totals remain unavailable, not zero; approving this scope does not approve source
 rights or reviewer fees. The committed example remains

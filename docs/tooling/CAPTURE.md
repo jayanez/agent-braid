@@ -72,14 +72,17 @@ come from an authenticated source, not a caller-entered green light.
 
 ## Current limits and required decisions
 
-The current [`registration-draft.json`](../../examples/tooling/registration-draft.json)
+The legacy v2 [`registration-draft.json`](../../examples/tooling/registration-draft.json)
 is deliberately not admissible: it has draft/pending approval and source-rights
 records, provider opt-in is false, exact rates and reviewers are unset, and the
 rubric is not frozen. The owner approved numeric caps of €25, 4 million tokens,
 16 hours including setup and human review, 4 GiB RSS per attempt and 5 GiB
 retained cohort disk. This cap decision does not authorize provider use or
-approve the complete registration. No two
-independent human reviewer identities or provider decision are recorded here.
+approve the complete registration. In this legacy draft, no two
+independent human reviewer identities or provider decision are recorded. V3
+technical capture instead uses two abstract independent reviewer roles and an
+approved human-evaluation deferral; its named human roster stays empty until the
+separately bound addendum.
 Do not alter the draft into an approved registration to exercise this code.
 
 This module is an admission and receipt-preparation slice for W15/W18/W19. It is
