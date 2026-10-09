@@ -107,7 +107,10 @@ in this increment. The three former native predictor contract anchors now run
 synthetic checks for versioned inference/tamper rejection, holdout
 evaluation/no-gain, and verifier separation. They establish software behavior
 only; a real trained artifact, eligible human-reviewed holdout, and experiment
-evidence remain deferred.
+evidence remain deferred. The [contract-test receipt](../../docs/experiments/evidence/m35-contract-tests-2026-10-09/README.md)
+and [synthetic reproduction receipt](../../docs/experiments/evidence/m35-synthetic-reproduction-2026-10-09/README.md)
+bind the current software evidence without changing the historical assurance
+snapshot or implying human review.
 
 The synthetic evaluator now measures a supplied source-to-request extraction
 hook symmetrically for both policies and includes an equal share of measured

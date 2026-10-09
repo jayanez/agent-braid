@@ -91,8 +91,8 @@
   "compatibility": "No current contract changes or M3 closure dependency; future model artifact/version needs separate review.",
   "domain": "Prospective consent-reviewed editing sessions mapped without guesswork to M3 anchored-sequence pairs; fixed source windows, family-separated holdout and policy-blind separately adjudicated utility proxy labels. No admitted real pair yet.",
   "evidence_snapshot": {
-    "mode": "historical",
-    "commit": "d45246f944785e93a03f74e90ee2473ef34d591b"
+    "commit": "dc6c8abef6e64f851bf6adcdaf70fdcd21eefc57",
+    "mode": "historical"
   },
   "execution_contract": "Local synthetic capture creates a new output file exclusively and audit reads it without changing source input; no Git source mutation, live agents, external effects or execution authorization. The review-packet checker reads six fixed local metadata/document files with safe-file checks, outputs metadata commitments only and never opens journals, admits pairs, invokes source services or authorizes capture/training.",
   "human_review": "pending",
@@ -130,15 +130,7 @@
         {
           "given": "Versioned feature vector and weights",
           "id": "SC-001",
-          "obtained_evidence": [
-            {
-              "command": "python3.13 -m unittest tests.test_native_predictor_contract -v",
-              "path": "docs/experiments/evidence/m35-contract-tests-2026-10-09/contract-tests.txt",
-              "sha256": "fe05c6d63e9d96e68640f0e8b8ec890835e72238c7a64c1afba11c8b32c8b6d1",
-              "limits": "Synthetic software controls only; the fixture does not establish an eligible real holdout, human utility, protocol approval, real-data fit/calibration, or production behavior. executionAuthorization remains false.",
-              "outcome": "Versioned synthetic artifact serialization and request-bound local inference passed with provenance; no certificate or execution authorization was produced."
-            }
-          ],
+          "obtained_evidence": [],
           "planned_evidence": "Focused unittest result and bounded evidence artifact; record actual command, hash, outcome and limits after execution.",
           "test_file": "tests/test_native_predictor_contract.py",
           "test_name": "NativePredictorContractTests.test_versioned_local_inference_and_tamper",
@@ -148,15 +140,7 @@
         {
           "given": "Tampered weights or unknown features",
           "id": "SC-002",
-          "obtained_evidence": [
-            {
-              "command": "python3.13 -m unittest tests.test_native_predictor_contract -v",
-              "path": "docs/experiments/evidence/m35-contract-tests-2026-10-09/contract-tests.txt",
-              "sha256": "fe05c6d63e9d96e68640f0e8b8ec890835e72238c7a64c1afba11c8b32c8b6d1",
-              "limits": "Synthetic software controls only; the fixture does not establish an eligible real holdout, human utility, protocol approval, real-data fit/calibration, or production behavior. executionAuthorization remains false.",
-              "outcome": "Tampered artifact commitment was refused or yielded abstention; synthetic inference remained fail-closed without certificate or execution authorization."
-            }
-          ],
+          "obtained_evidence": [],
           "planned_evidence": "Focused unittest result and bounded evidence artifact; record actual command, hash, outcome and limits after execution.",
           "test_file": "tests/test_native_predictor_contract.py",
           "test_name": "NativePredictorContractTests.test_versioned_local_inference_and_tamper",
@@ -172,15 +156,7 @@
         {
           "given": "Family-separated held-out data",
           "id": "SC-003",
-          "obtained_evidence": [
-            {
-              "command": "python3.13 -m unittest tests.test_native_predictor_contract -v",
-              "path": "docs/experiments/evidence/m35-contract-tests-2026-10-09/contract-tests.txt",
-              "sha256": "fe05c6d63e9d96e68640f0e8b8ec890835e72238c7a64c1afba11c8b32c8b6d1",
-              "limits": "Synthetic software controls only; the fixture does not establish an eligible real holdout, human utility, protocol approval, real-data fit/calibration, or production behavior. executionAuthorization remains false.",
-              "outcome": "The synthetic holdout fixture exercised matched-budget baseline/predictor reporting, unknown-label bounds and per-family summaries; this is not a real held-out evaluation."
-            }
-          ],
+          "obtained_evidence": [],
           "planned_evidence": "Consented source register, frozen sampling and rubric records, policy-blind annotation coverage, family and class counts, matched-budget baseline, calibration feasibility and total-analysis-time accounting, plus focused unittest result and bounded evidence artifact; record actual command, hash, outcome and limits after execution.",
           "test_file": "tests/test_native_predictor_contract.py",
           "test_name": "NativePredictorContractTests.test_held_out_evaluation_and_negative_outcome",
@@ -190,15 +166,7 @@
         {
           "given": "Leakage or no gain",
           "id": "SC-004",
-          "obtained_evidence": [
-            {
-              "command": "python3.13 -m unittest tests.test_native_predictor_contract -v",
-              "path": "docs/experiments/evidence/m35-contract-tests-2026-10-09/contract-tests.txt",
-              "sha256": "fe05c6d63e9d96e68640f0e8b8ec890835e72238c7a64c1afba11c8b32c8b6d1",
-              "limits": "Synthetic software controls only; the fixture does not establish an eligible real holdout, human utility, protocol approval, real-data fit/calibration, or production behavior. executionAuthorization remains false.",
-              "outcome": "The synthetic no-gain fixture reported equal predictor/baseline useful-yield bounds and did not permute holdout labels; this is not evidence of real-world no-gain or leakage absence."
-            }
-          ],
+          "obtained_evidence": [],
           "planned_evidence": "Reviewer disagreement, unknown-label bounds, leakage and negative-outcome report, plus focused unittest result and bounded evidence artifact; record actual command, hash, outcome and limits after execution.",
           "test_file": "tests/test_native_predictor_contract.py",
           "test_name": "NativePredictorContractTests.test_held_out_evaluation_and_negative_outcome",
