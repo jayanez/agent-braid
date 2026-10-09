@@ -47,6 +47,13 @@ or billing-control observations are unavailable, and stop on quota exhaustion
 or an enabled paid fallback. Read-only verification is not registration approval
 or evidence that this stop behavior has operated in a native host cohort.
 
+The EUR 25 accounting ceiling counts actual provider cash plus allocated
+subscription value for setup and all attempts. Reviewer cash is outside that
+provider sum but inside the separate EUR 0 study-cash authorization. API
+reference estimates are excluded from both totals. The legacy scalar EUR ledger
+is not added again to the derived provider total; unknown cash or allocation
+prevents eligibility, and exact monetary comparisons preserve small cap excesses.
+
 Two independently scoring human raters remain required. The proposed arrangement
 is the owner and a second person familiar with Python/Git, with 2–4 hours reserved
 per person and disclosed blinding limits. No second identity or human score is

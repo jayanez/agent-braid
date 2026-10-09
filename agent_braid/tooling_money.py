@@ -134,6 +134,26 @@ def _exact_decimal_sum(values: list[Decimal], label: str, *, max_digits: int = 3
     return result
 
 
+def provider_accounting_total(
+    actual_provider_spend_eur: Decimal | None,
+    allocated_subscription_cost_eur: Decimal | None,
+) -> Decimal | None:
+    """Add provider cash and prepaid allocation once; exclude reference estimates.
+
+    Inputs are verified ledger aggregates, not invoice lookups or approvals.
+    Unknown coverage remains unknown; reviewer cash is outside this provider sum.
+    """
+    if actual_provider_spend_eur is None or allocated_subscription_cost_eur is None:
+        return None
+    values = [actual_provider_spend_eur, allocated_subscription_cost_eur]
+    for value in values:
+        if (not isinstance(value, Decimal) or not value.is_finite() or value < 0
+                or len(value.as_tuple().digits) > 36
+                or not -30 <= value.as_tuple().exponent <= 30):
+            raise MoneyAccountingError("provider accounting aggregates are malformed or unbounded")
+    return _exact_decimal_sum(values, "provider accounting total")
+
+
 def _canonical_sha256(value: object) -> str:
     encoded = json.dumps(value, sort_keys=True, separators=(",", ":"),
                          ensure_ascii=False, allow_nan=False).encode("utf-8")
@@ -486,6 +506,8 @@ class MoneySummary:
     user_time_seconds: Decimal | None = None
     reviewer_time_seconds: Decimal | None = None
     study_wall_seconds: Decimal | None = None
+    actual_provider_spend_eur: Decimal | None = None
+    provider_accounting_cost_eur: Decimal | None = None
 
     def as_dict(self) -> dict[str, object]:
         return {
@@ -518,6 +540,8 @@ class MoneySummary:
             "userTimeSeconds": _decimal_text(self.user_time_seconds),
             "reviewerTimeSeconds": _decimal_text(self.reviewer_time_seconds),
             "studyWallSeconds": _decimal_text(self.study_wall_seconds),
+            "actualProviderSpendEur": _decimal_text(self.actual_provider_spend_eur),
+            "providerAccountingCostEur": _decimal_text(self.provider_accounting_cost_eur),
         }
 
 
@@ -802,6 +826,8 @@ class MoneyLedger:
             missing_full: list[tuple[str, str]] = []
             totals: dict[str, Decimal | None] = {}
             known_actual: list[Decimal] = []
+            provider_actual: list[Decimal] = []
+            provider_actual_complete = True
             actual_complete = True
             allocated_complete = True
             for measure in MEASURES:
@@ -815,6 +841,8 @@ class MoneyLedger:
                     item = self._receipts.get((activity.activity_id, measure))
                     amount = item[0].amount_eur if item is not None else None
                     if amount is None:
+                        if measure == "actualAdditionalSpendEur" and activity.kind in {"setup", "attempt"}:
+                            provider_actual_complete = False
                         complete_measure = False
                         if measure in self.roster.required_measures:
                             missing_required.append((activity.activity_id, measure))
@@ -824,6 +852,8 @@ class MoneyLedger:
                         values.append(amount)
                         if measure == "actualAdditionalSpendEur":
                             known_actual.append(amount)
+                            if activity.kind in {"setup", "attempt"}:
+                                provider_actual.append(amount)
                 if measure == "actualAdditionalSpendEur":
                     actual_complete = complete_measure
                 elif measure == "allocatedSubscriptionCostEur":
@@ -839,6 +869,11 @@ class MoneyLedger:
                 else:
                     totals[measure] = None
             actual_total = totals["actualAdditionalSpendEur"]
+            provider_cash_total = (_exact_decimal_sum(provider_actual, "provider cash aggregate")
+                                   if provider_actual_complete else None)
+            provider_total = provider_accounting_total(
+                provider_cash_total, totals["allocatedSubscriptionCostEur"]
+            )
             try:
                 observed_subtotal = (
                     _exact_decimal_sum(known_actual, "observed additional-spend subtotal")
@@ -876,4 +911,6 @@ class MoneyLedger:
                 registration_sha256=self.roster.registration_sha256,
                 roster_sha256=self.roster.sha256,
                 receipt_sha256s=tuple(receipts),
+                actual_provider_spend_eur=provider_cash_total,
+                provider_accounting_cost_eur=provider_total,
             )

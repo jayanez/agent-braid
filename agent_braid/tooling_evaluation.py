@@ -592,7 +592,14 @@ def assess_utility_eligibility(
         # Legacy scalar EUR completeness cannot establish subscription allocation
         # or human-cost scope. Source authentication remains the caller's duty.
         from decimal import Decimal
-        from .tooling_money import MoneySummary
+        from .tooling_money import MoneyAccountingError, MoneySummary, provider_accounting_total
+        from .tooling_full_cost import FullCostError, FullCostScope
+        try:
+            registered_scope = FullCostScope.from_registration(registration)
+        except FullCostError:
+            registered_scope = None
+        if registered_scope is None:
+            reasons.append("registered subscription full-cost scope is unavailable or malformed")
         if not isinstance(monetary_summary, MoneySummary):
             reasons.append("registration-bound full subscription cost summary is unavailable")
         elif monetary_summary.registration_sha256 != registration.sha256:
@@ -604,22 +611,65 @@ def assess_utility_eligibility(
                     expected_monetary_roster_sha256, "expected monetary roster SHA-256"):
                 reasons.append("subscription cost summary belongs to a different monetary roster")
             actual = monetary_summary.actual_additional_spend_eur
+            provider_cash = monetary_summary.actual_provider_spend_eur
             allocated = monetary_summary.allocated_subscription_cost_eur
+            provider_total = monetary_summary.provider_accounting_cost_eur
             cap = monetary_summary.actual_additional_spend_cap_eur
             valid_amounts = all(isinstance(value, Decimal) and value.is_finite() and value >= 0
-                               for value in (actual, allocated, cap))
+                               for value in (actual, provider_cash, allocated, provider_total, cap))
+            verified_provider_total = None
             if not valid_amounts:
                 reasons.append("subscription economic cost amounts are unavailable or malformed")
             elif cap != Decimal(registration.data["billingPolicy"]["additionalSpendCapEur"]) or actual > cap:
                 reasons.append("subscription additional-spend amount or cap violates the registered policy")
+            if valid_amounts:
+                try:
+                    recomputed_total = provider_accounting_total(provider_cash, allocated)
+                except MoneyAccountingError:
+                    reasons.append("subscription provider accounting amounts are malformed or unbounded")
+                else:
+                    if provider_cash > actual or provider_total != recomputed_total:
+                        reasons.append("subscription provider accounting total is inconsistent with its measures")
+                    else:
+                        verified_provider_total = recomputed_total
+                        if provider_total > Decimal(str(registration.data["costCaps"]["eur"])):
+                            reasons.append("subscription provider accounting EUR cap is exceeded")
             if (monetary_summary.full_economic_cost_complete is not True
                     or monetary_summary.full_economic_cost_status != "complete"
                     or monetary_summary.required_measures_complete is not True
                     or monetary_summary.missing_full_economic_cost):
                 reasons.append("subscription economic cost scope and human cost fields are incomplete")
+            times = (monetary_summary.human_time_seconds, monetary_summary.user_time_seconds,
+                     monetary_summary.reviewer_time_seconds, monetary_summary.study_wall_seconds)
+            if not all(isinstance(value, Decimal) and value.is_finite() and value >= 0
+                       for value in times):
+                reasons.append("subscription human and study wall times are unavailable or malformed")
+            elif monetary_summary.study_wall_seconds > Decimal(str(
+                    registration.data["costCaps"]["wall_seconds"])):
+                reasons.append("subscription study wall cap including human review is exceeded")
             if (monetary_summary.stop_required is not False
                     or monetary_summary.cap_violation is not False):
                 reasons.append("subscription additional-spend compliance is unavailable or violated")
+            subscription_cap_totals = dict(costs.totals)
+            subscription_cap_totals["eur"] = (float(verified_provider_total)
+                                              if verified_provider_total is not None else None)
+            study_wall = monetary_summary.study_wall_seconds
+            observed_wall = (float(study_wall) if isinstance(study_wall, Decimal)
+                             and study_wall.is_finite() and study_wall >= 0 else None)
+            subscription_cap_totals["wall_seconds"] = (
+                observed_wall if observed_wall is not None and math.isfinite(observed_wall) else None
+            )
+            caps = check_cost_caps(registration, subscription_cap_totals)
+            exact_cap_reasons = []
+            if (verified_provider_total is not None and verified_provider_total > Decimal(str(
+                    registration.data["costCaps"]["eur"]))):
+                exact_cap_reasons.append("provider accounting EUR cap exceeded")
+            if (isinstance(study_wall, Decimal) and study_wall.is_finite() and study_wall > Decimal(str(
+                    registration.data["costCaps"]["wall_seconds"]))):
+                exact_cap_reasons.append("study wall cap including human review exceeded")
+            if exact_cap_reasons:
+                caps = CapAssessment(False, True, tuple(dict.fromkeys(
+                    (*caps.reasons, *exact_cap_reasons))), caps.observed)
     resolved: dict[str, dict[str, bool | None]] = {}
     human_complete = True
     registered_reviewer_ids = {reviewer["reviewerId"] for reviewer in registration.data["humanReviewers"]}

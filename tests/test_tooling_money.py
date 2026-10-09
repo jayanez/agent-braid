@@ -17,6 +17,7 @@ from agent_braid.tooling_money import (
     MoneyReceipt,
     MoneyRoster,
     SourceAttestation,
+    provider_accounting_total,
 )
 from tests.test_tooling_evaluation import _inputs, _registration
 
@@ -160,6 +161,32 @@ class _PolicyVerifier:
 
 
 class MoneyAccountingTests(unittest.TestCase):
+    def test_provider_cash_excludes_reviewer_fees_and_unknown_provider_coverage(self):
+        roster = _roster()
+        ledger = MoneyLedger(roster, source_verifier=_SourceVerifier())
+        for activity in roster.activities:
+            amount = Decimal("7") if activity.kind == "reviewer" else Decimal("0.01")
+            ledger.add(_receipt(roster, activity, "actualAdditionalSpendEur", amount=amount))
+        summary = ledger.summarize()
+        self.assertEqual(Decimal("15.09"), summary.actual_additional_spend_eur)
+        self.assertEqual(Decimal("1.09"), summary.actual_provider_spend_eur)
+        self.assertIsNone(summary.provider_accounting_cost_eur)
+        self.assertEqual("1.09", summary.as_dict()["actualProviderSpendEur"])
+        incomplete = MoneyLedger(roster, source_verifier=_SourceVerifier())
+        for activity in roster.activities[1:]:
+            incomplete.add(_receipt(roster, activity, "actualAdditionalSpendEur"))
+        self.assertIsNone(incomplete.summarize().actual_provider_spend_eur)
+
+    def test_exact_provider_total_preserves_tiny_cap_excess_under_low_precision(self):
+        with localcontext() as context:
+            context.prec = 2
+            total = provider_accounting_total(Decimal("25"), Decimal("0.0000000000000000000000000001"))
+        self.assertEqual(Decimal("25.0000000000000000000000000001"), total)
+        self.assertIsNone(provider_accounting_total(None, Decimal("25")))
+        for value in (Decimal("NaN"), Decimal("-1"), Decimal("1e100")):
+            with self.assertRaises(MoneyAccountingError):
+                provider_accounting_total(Decimal("0"), value)
+
     def test_actual_estimate_and_allocation_measures_stay_separate(self):
         roster = _roster()
         ledger = MoneyLedger(roster, source_verifier=_SourceVerifier())

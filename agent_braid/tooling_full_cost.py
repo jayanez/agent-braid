@@ -420,8 +420,17 @@ def complete_full_cost(
         tuple(distinct_time_receipts.values()), reasons,
     )
     cap_totals = dict(cost_assessment.totals)
+    # Legacy EUR may already contain actual spend. Do not add it again.
+    # The subscription accounting boundary is provider cash + prepaid allocation;
+    # reference-price estimates and reviewer cash are separate measures.
+    provider_total = money_summary.provider_accounting_cost_eur
+    cap_totals["eur"] = float(provider_total) if provider_total is not None else None
     cap_totals["wall_seconds"] = float(wall_seconds) if wall_seconds is not None else None
     cap_assessment = evaluation.check_cost_caps(registration, cap_totals)
+    exact_provider_cap_exceeded = (provider_total is not None and provider_total > Decimal(str(
+        registration.data["costCaps"]["eur"])))
+    if exact_provider_cap_exceeded:
+        reasons.append(("numeric-stop", "provider accounting EUR cap exceeded"))
     if cap_assessment.stop:
         reasons.extend(("numeric-stop", reason) for reason in cap_assessment.reasons)
     human_microseconds_by_participant = _human_time_union(distinct_time_receipts.values())
@@ -447,7 +456,8 @@ def complete_full_cost(
         money_summary,
         full_economic_cost_complete=complete,
         full_economic_cost_status="complete" if complete else "incomplete-registered-cost-scope",
-        stop_required=money_summary.stop_required or cap_assessment.stop,
+        stop_required=(money_summary.stop_required or cap_assessment.stop
+                       or exact_provider_cap_exceeded),
         missing_full_economic_cost=tuple(sorted(set(money_summary.missing_full_economic_cost) | set(reasons))),
         human_time_seconds=human_seconds,
         user_time_seconds=user_seconds,
