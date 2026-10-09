@@ -147,6 +147,42 @@ reported. A positive utility claim still requires the separate human
 interpretation, candidate-bound evidence, independent review and founder
 decision described by SPEC-044.
 
+## Structured and narrative utility reports
+
+`agent_braid.tooling_evaluation_report.build_utility_report(...)` accepts the
+registration data, ledger, expected candidate/input hashes, setup costs, and
+human ratings. It validates the exact registration and ledger roster and derives
+eligibility by calling `assess_utility_eligibility`; callers cannot supply an
+assessment or an `eligible` override. Subscription registrations also need a structurally approved, resolved
+`fullCostScope`; summaries are checked against the exact registration and frozen
+monetary roster identities, and the registered cash, provider accounting and
+study-wall caps. The provider accounting total is actual provider cash plus
+allocated subscription value; it excludes reviewer cash and API reference
+estimates and does not add the legacy scalar EUR a second time. Exact Decimal
+comparisons preserve cap excesses even when a float would round them down.
+
+The report preserves all 108 intended rows, current statuses, event history
+hashes, and per-host/arm/journey-class denominators. Event observations are
+projected to registered timestamps, outcome labels, costs, and input/output
+hashes; arbitrary event text is not copied into exports. Unknown required costs
+include their setup/slot field paths in the structured `costs.missingRequired`
+list and in the deterministic English narrative. Any ineligible result has an
+inconclusive conclusion and reasons in both forms. An eligible result only
+allows independent human interpretation; it does not assert positive utility,
+acceptance, scientific validity, or milestone closure. Founder interpretation
+remains pending.
+
+`build_utility_report(...)` returns an immutable mapping. The renderers accept
+that builder-produced report, so callers cannot alter its reasons or denominators
+between assessment and export. `render_utility_report_json(...)` produces
+deterministic compact JSON, and `render_utility_report_narrative(...)` renders
+fixed English decision text from validated status, reason, cost, and denominator
+fields. The economic synopsis keeps exact decimal values as strings. These are pure offline
+functions with no filesystem, host, provider, or global-state effects. Declared
+registration/source-right records and evidence hashes are reported as scope;
+the report does not authenticate them, anonymize source data, authorize capture,
+or turn model/test output into human acceptance.
+
 ## Boundary
 
 This module and its synthetic unit tests establish only deterministic

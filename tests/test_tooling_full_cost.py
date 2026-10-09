@@ -179,7 +179,8 @@ def _wall_receipts(roster):
     ) for item in roster.activities if item.kind in {"setup", "attempt"})
 
 
-def _filled_money(roster, *, positive_cash=False, allocation=True):
+def _filled_money(roster, *, positive_cash=False, allocation=True,
+                  allocation_amount=Decimal("0.1")):
     ledger = MoneyLedger(roster, source_verifier=_SourceVerifier(),
                          allocation_policy_verifier=_PolicyVerifier())
     method = _method(roster)
@@ -191,7 +192,7 @@ def _filled_money(roster, *, positive_cash=False, allocation=True):
             if activity.kind not in {"setup", "attempt"}:
                 continue
             ledger.add(_receipt(
-                roster, activity, "allocatedSubscriptionCostEur", amount=Decimal("0.1"),
+                roster, activity, "allocatedSubscriptionCostEur", amount=allocation_amount,
                 method=method, share=AllocationShare(Decimal("1"), Decimal("1000")),
                 source_identity=f"subscription-{activity.account_sha256}",
             ))
@@ -236,6 +237,25 @@ class FullCostContractTests(unittest.TestCase):
         self.assertEqual(len(result.human_time_receipt_sha256s), 3)
         self.assertEqual(result.study_wall_seconds, Decimal("300.000000"))
         self.assertEqual(result.as_dict()["fullEconomicCostComplete"], True)
+
+    def test_subscription_allocation_cannot_bypass_provider_accounting_cap(self):
+        registration = _registration()
+        roster = _roster(registration)
+        money, summary = _filled_money(roster, allocation_amount=Decimal("1"))
+        self.assertEqual(Decimal("0"), summary.actual_additional_spend_eur)
+        self.assertEqual(Decimal("0"), summary.actual_provider_spend_eur)
+        self.assertEqual(Decimal("109"), summary.provider_accounting_cost_eur)
+        result = complete_full_cost(
+            registration, _complete_ledger(registration)[0], roster, money, summary,
+            setup_costs=_known_costs(), human_time_receipts=_time_receipts(roster),
+            scope_verifier=_ScopeVerifier(), time_verifier=_TimeVerifier(),
+            study_wall_receipts=_wall_receipts(roster), study_wall_verifier=_WallVerifier(),
+        )
+        self.assertFalse(result.full_economic_cost_complete)
+        self.assertTrue(result.stop_required)
+        self.assertFalse(result.cap_violation)  # Additional cash remains within EUR 0.
+        self.assertTrue(any("EUR cap" in field for _activity, field in result.missing_full_economic_cost))
+        self.assertEqual("109", result.as_dict()["providerAccountingCostEur"])
 
     def test_absent_pending_or_unknown_fee_scope_stays_incomplete(self):
         registration = _registration()

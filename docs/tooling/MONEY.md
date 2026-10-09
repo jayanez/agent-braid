@@ -19,6 +19,16 @@ one total-wall boundary; phase intervals are descriptive and must not be added
 to it. Monetary API estimates remain separate from actual cash and allocated
 subscription value.
 
+For subscription registrations, the EUR 25 provider accounting ceiling uses
+`providerAccountingCostEur`: authenticated setup/attempt cash
+(`actualProviderSpendEur`) plus allocated prepaid subscription value, exactly
+once. It excludes reviewer cash and API reference estimates. The legacy scalar
+`eur` is retained in its ledger but is not added again to this derived total.
+The separate EUR 0 additional-cash cap covers all study cash, including any
+reviewer fees. Unknown provider cash or allocation leaves the accounting total
+unknown and stops eligibility. Exact Decimal comparisons prevent tiny cap
+excesses from disappearing through floating-point rounding.
+
 The monetary roster binds the exact validated registration, all 108 generated
 slot IDs, setup and the two registered reviewer activities. Receipts bind
 account, source-document billing period, cohort coverage period, currency/FX
@@ -85,9 +95,10 @@ evidence on its own.
 No current registration includes this approved scope. Fee applicability,
 method/denominator/unit, and any additional owner decisions remain draft until
 prospectively approved. This document records the interface boundary, not an
-owner decision or permission to incur charges. Integrate the module into the
-root report/export pipeline and verify missing-cost claim suppression before
-any T002/T004/T005 capture. All 108 intended slots and human review remain in
+owner decision or permission to incur charges. The offline report/export pipeline
+composes these fields and suppresses utility claims when required costs or scope
+are missing. These synthetic controls do not replace authenticated
+T002/T004/T005 capture. All 108 intended slots and human review remain in
 scope; missing rows cannot be dropped or relabeled as zero.
 
 `requiredMeasuresComplete` in the base money summary covers the required

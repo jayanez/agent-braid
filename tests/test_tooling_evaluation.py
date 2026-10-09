@@ -542,10 +542,18 @@ class ToolingEvaluationTests(unittest.TestCase):
         declared_complete = replace(pending, full_economic_cost_complete=True,
                                     full_economic_cost_status="complete", missing_full_economic_cost=(),
                                     allocated_subscription_cost_eur=Decimal("0"))
-        for summary in (None, pending, replace(pending, registration_sha256=_sha("another registration")),
+        time_complete = replace(declared_complete, human_time_seconds=Decimal("10"),
+                                user_time_seconds=Decimal("5"), reviewer_time_seconds=Decimal("5"),
+                                study_wall_seconds=Decimal("10"))
+        for summary in (None, pending, declared_complete, time_complete,
+                        replace(pending, registration_sha256=_sha("another registration")),
                         replace(pending, full_economic_cost_complete=True),
                         replace(declared_complete, roster_sha256=_sha("another period roster")),
-                        replace(declared_complete, actual_additional_spend_eur=Decimal("1"))):
+                        replace(time_complete, actual_additional_spend_eur=Decimal("1")),
+                        replace(time_complete, human_time_seconds=None),
+                        replace(time_complete, reviewer_time_seconds=Decimal("NaN")),
+                        replace(time_complete, study_wall_seconds=Decimal(str(
+                            registration.data["costCaps"]["wall_seconds"])) + 1)):
             with self.subTest(summary=summary):
                 result = evaluation.assess_utility_eligibility(
                     registration, ledger, setup_costs=_known_costs(), human_ratings=ratings,
@@ -556,6 +564,52 @@ class ToolingEvaluationTests(unittest.TestCase):
                 self.assertEqual(108, result.denominators["intendedSlots"])
                 self.assertFalse(result.positive_claim_eligible)
                 self.assertTrue(any("subscription" in reason for reason in result.reasons))
+
+    def test_subscription_full_cost_requires_observed_human_times_and_review_wall_cap(self):
+        from dataclasses import replace
+        from decimal import Decimal
+        from tests.test_tooling_full_cost import FullCostContractTests
+
+        registration, roster, _money, summary = FullCostContractTests()._assessment()
+        ledger, ratings = _complete_ledger(registration)
+
+        def assess(value):
+            return evaluation.assess_utility_eligibility(
+                registration, ledger, setup_costs=_known_costs(), human_ratings=ratings,
+                monetary_summary=value, expected_monetary_roster_sha256=roster.sha256,
+            )
+
+        self.assertTrue(assess(summary).positive_claim_eligible)
+        for field in ("human_time_seconds", "user_time_seconds", "reviewer_time_seconds",
+                      "study_wall_seconds"):
+            for unavailable in (None, Decimal("NaN"), Decimal("-1")):
+                with self.subTest(field=field, value=unavailable):
+                    result = assess(replace(summary, **{field: unavailable}))
+                    self.assertFalse(result.positive_claim_eligible)
+                    self.assertTrue(any("times are unavailable or malformed" in reason
+                                        for reason in result.reasons))
+        over_review_cap = replace(summary, study_wall_seconds=Decimal(str(
+            registration.data["costCaps"]["wall_seconds"])) + 1,
+                                  stop_required=False, cap_violation=False)
+        result = assess(over_review_cap)
+        self.assertFalse(result.positive_claim_eligible)
+        self.assertTrue(any("including human review is exceeded" in reason for reason in result.reasons))
+        # Keep cash and all other flags compliant while accounting exceeds EUR 25.
+        for accounting_total in (Decimal("109"), Decimal("25.0000000000000000000000000001")):
+            over_provider_cap = replace(summary,
+                allocated_subscription_cost_eur=accounting_total,
+                provider_accounting_cost_eur=accounting_total,
+                stop_required=False, cap_violation=False)
+            result = assess(over_provider_cap)
+            self.assertFalse(result.positive_claim_eligible)
+            self.assertTrue(result.cap_assessment.stop)
+            self.assertFalse(result.cap_assessment.within_caps)
+            self.assertTrue(any("accounting EUR cap" in reason for reason in result.reasons))
+        inconsistent = replace(summary, provider_accounting_cost_eur=Decimal("0"))
+        self.assertFalse(assess(inconsistent).positive_claim_eligible)
+        estimate_only = replace(summary, api_reference_estimate_eur=Decimal("999"))
+        self.assertTrue(assess(estimate_only).positive_claim_eligible)
+        self.assertEqual(10.9, assess(estimate_only).cap_assessment.observed["eur"])
 
     def test_positive_claim_eligibility_requires_costs_thresholds_and_two_humans(self) -> None:
         registration = _validated()
