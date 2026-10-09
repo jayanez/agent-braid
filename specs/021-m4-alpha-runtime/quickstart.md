@@ -6,7 +6,7 @@ result. The historical G4 NO-GO on useful speedup remains unchanged; this is not
 a general utility, semantic-correctness, production-safety or scientific claim.
 See the [whole-M4 decision](../038-m4-real-workload-closure/whole-m4-founder-decision-20261009.json)
 and [closure packet](../038-m4-real-workload-closure/whole-m4-closure-packet.md).
-Tracking reconciliation remains pending reviewed delivery and guarded apply.
+Current GitHub tracking is shown in the [live M4 milestone](https://github.com/jayanez/agent-braid/milestone/6).
 Use the existing isolated Python >=3.12 environment.
 The adapter has no new runtime dependencies.
 
