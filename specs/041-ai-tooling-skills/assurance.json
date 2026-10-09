@@ -21,7 +21,7 @@
   ],
   "assumptions": "Owned trusted local roots, separately reviewed contracts and exact host/source/cost decisions; no universal compatibility, positive utility or available provider budget assumed.",
   "authority_snapshot": {
-    "commit": null,
+    "commit": "f18f63c8fc9b52dc0652f57c505d7f7647164030",
     "hashes": {
       "ARCHITECTURE.md": "af19c8ed2eda7635220a2f9d6816669452c758369f824fe91ceb6ee7ab8878ab",
       "CONSTITUTION.md": "ff7196976a1736a639947c2ab26e8da157fef23c89ba9881312f2a36459964eb",
@@ -87,7 +87,7 @@
       "schemas/governance/public-export-manifest.schema.json": "11eb7f2594939ae9fd0c9e6cfe4423a80aba686d6cdfdd8b73b0fb84b0840aa8",
       "schemas/governance/release-validation-record.schema.json": "d9943f0c9f5520ea52e3b12bfba88240d03f8011b433fc5e35cb49549ab6e819"
     },
-    "mode": "current"
+    "mode": "historical"
   },
   "compatibility": "Additive experimental tooling envelope with optional pinned SDK; core dependencies empty. Codex and Claude Code v1 only, exact versions selected before observation. Existing contracts and historical records unchanged.",
   "domain": "Instruction guidance over the exact MCP/CLI contracts; skills are not effect enforcement, operator authority or mathematical proof.",

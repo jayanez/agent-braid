@@ -1,0 +1,44 @@
+{
+  "recordVersion": "m4-whole-milestone-item22-founder-decision-v1",
+  "decisionDate": "2026-10-09",
+  "decider": {
+    "role": "owner",
+    "statement": "Apruebo el epígrafe 22",
+    "recordedSource": "Direct human user message"
+  },
+  "decision": {
+    "status": "approved-bounded-whole-M4-alpha-engineering-and-evaluation-completion",
+    "outcome": "completed-bounded-engineering-and-evaluation-with-negative-utility",
+    "scope": "Six M4 exit rows accepted as bounded engineering/evaluation evidence at the reviewed candidate; no useful-speedup capability acceptance.",
+    "recommendation": "Do not make parallel execution the performance default; serial remains recommended for measured families until representative paired full-cost evidence demonstrates an advantage."
+  },
+  "ownerDecisionBinding": {
+    "ownerDecisionRecordSha256": "6c4f6a0c6634dfc72f4f5fa2c053627c54c8a1beb741e6d609487d85fa5e3764",
+    "recordedAtUtc": "2026-10-08T22:02:03.899354+00:00"
+  },
+  "candidateBinding": {
+    "approvedCommit": "fa8852ab4158f860bf2bc3aa70469f3367d2b57b",
+    "approvedTree": "3bae1cc52fb8c838bdbe10dd6ee72924c6a5be52",
+    "captureCommit": "e66f9a1b94fc5ebfbf784d9c48a76f53c1a656ee",
+    "captureManifestSha256": "6cc2715f99c5e1eb47fa90e9ccb85388c7bc157f995c404660255c5608f60577",
+    "readinessSha256": "4e38a5bcbf635e40309130c3ed7b7a374039f00a681e547b2c76ae3e0d1d4202",
+    "reviewReceiptSha256": "b56f489770b1587b72f3b629e22417b98d87a01db8f249dd55c88c8d4d714d05",
+    "questionParityReceiptSha256": "e3bb8f835d6556a2224385c86942d048d5e7e6ff08e6fd69086662d2ee72cfb6",
+    "reviewedCommit": "fa8852ab4158f860bf2bc3aa70469f3367d2b57b"
+  },
+  "interpretation": {
+    "wholeM4BoundedDecision": true,
+    "spec021HistoricalG4": "NO-GO preserved; no useful-speedup claim",
+    "spec027": "Three bounded deferrals preserved; implementationAdopted=false",
+    "utility": "SPEC-021, SPEC-022 and SPEC-038 results remain separate and are not pooled.",
+    "trackingApplied": false,
+    "milestoneClosed": false
+  },
+  "limits": [
+    "No expanded capability adoption, new capture, source execution, grants, provider calls, release, scientific validation or formal claim.",
+    "No general utility, population, causal, semantic-correctness or production claim.",
+    "The specialist CI matrix was skipped without a runner or steps; five workflow test skips are explicit.",
+    "Closure publication does not itself close GitHub issues or milestone; guarded tracking, empty follow-up audit and actual Project/milestone verification remain required."
+  ],
+  "reviewedCommit": "fa8852ab4158f860bf2bc3aa70469f3367d2b57b"
+}

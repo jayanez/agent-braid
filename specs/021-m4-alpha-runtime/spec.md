@@ -1,5 +1,13 @@
 # SPEC-021: Complete bounded M4 alpha runtime
 
+## Current status — 2026-10-09
+
+The founder accepted bounded M4 alpha engineering and evaluation as complete
+with negative utility. This does not accept useful speedup; the historical G4
+NO-GO remains unchanged. See the [SPEC-038 founder decision](../038-m4-real-workload-closure/whole-m4-founder-decision-20261009.json)
+and [closure packet](../038-m4-real-workload-closure/whole-m4-closure-packet.md).
+Current GitHub tracking is shown in the [live M4 milestone](https://github.com/jayanez/agent-braid/milestone/6).
+
 ## Purpose and scope
 
 Complete the six candidate M4 deliverables with a model-agnostic, local fixed-patch runtime. This is an engineering track independent of M3/M3.5 datasets, hypotheses and predictor scores. SPEC-020 remains accepted within its original serial contract; this proposal neither rewrites that acceptance nor declares M4 closed.
