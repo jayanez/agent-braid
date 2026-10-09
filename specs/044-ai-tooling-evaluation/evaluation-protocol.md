@@ -1,6 +1,7 @@
 # M4.5 evaluation protocol proposal
 
-**Registration:** select exact candidate, host/model builds, eligible fixture
+**Registration:** select exact candidate and host builds, explicitly labelled provider
+model identities under [the approved clarification](model-identity-clarification.md), eligible fixture
 hashes, prompt roster, cost rates/budgets and reviewers before observations.
 Current status: protocol draft; no measured observations or accepted utility.
 Existing M4 source rights and observations do not authorize this capture.
@@ -70,6 +71,20 @@ Do not drop failed attempts or relabel a provider/infrastructure block as succes
 Do not pool hosts to hide a host failure. Sample is descriptive; no general
 causal/statistical significance or production safety claim.
 
+## Model identity and drift
+
+Require an authoritative immutable provider build identifier whenever exposed.
+Otherwise register an observable requested route: exact selector and effort,
+native executable version/hash, dated catalog artifact/entry hashes, effective
+selection/configuration identity and authenticated provider/account route. Backend
+identity remains unavailable; never use catalog or route hashes as backend-build
+hashes. Receipts distinguish requested and host-reported selectors and any exposed
+backend identifier. Observable route/catalog/configuration/build/account drift
+stops the cohort; a repaired route needs a newly reviewed registration and separate
+cohort. Hidden backend revisions and nondeterminism remain limits, with no promise
+of backend reproducibility or weight-level replay. All 108 intended attempts,
+complete cost fields and separate human approvals remain required.
+
 ## Complete cost and stops
 
 Record install/configure/setup separately; per attempt include context/skill/tool
@@ -89,7 +104,8 @@ Resumption needs an unchanged registration or a new declared cohort.
 ## Evidence and acceptance
 
 Receipt per attempt: registration ID; candidate/bundle/SDK/protocol/host/model/OS
-versions; immutable input and output hashes; actual commands/tool events; permission
+versions; discriminated provider model identity, requested/reported selectors and
+backend availability; immutable input and output hashes; actual commands/tool events; permission
 and grant check outcome; raw transcripts redacted with retained redaction record;
 verification result; full cost availability; status and limits. Synthetic,
 protocol-peer, actual-host and clean-room records have different evidence types.

@@ -10,6 +10,7 @@ import math
 import unittest
 
 from agent_braid import tooling_evaluation as evaluation
+from agent_braid import tooling_model_identity as model_identity_policy
 
 
 def _sha(value: str) -> str:
@@ -189,6 +190,70 @@ class ToolingEvaluationTests(unittest.TestCase):
                 _validated(malformed)
         malformed = copy.deepcopy(policy_registration)
         malformed["billingPolicy"]["hosts"][0]["authMethod"] = "api"
+        with self.assertRaises(evaluation.EvaluationError):
+            _validated(malformed)
+
+    def test_v2_registration_requires_discriminated_model_identity_without_redefining_v1(self):
+        value = _registration()
+        # v1 remains the historical immutable model-build contract.
+        malformed_v1 = copy.deepcopy(value)
+        malformed_v1["hosts"][0]["modelIdentity"] = {"kind": "observable-requested-route"}
+        with self.assertRaises(evaluation.EvaluationError):
+            _validated(malformed_v1)
+
+        value["schemaVersion"] = evaluation.REGISTRATION_SCHEMA_V2
+        for host in value["hosts"]:
+            selector = host["model"]["name"]
+            auth_method = "chatgpt" if host["name"] == "codex" else "claude.ai"
+            effective_config = {"selector": selector, "effort": "medium",
+                "providerEndpoint": "https://api.openai.com/v1" if host["name"] == "codex" else "https://api.anthropic.com",
+                "authMethod": auth_method,
+                "hostSelection": {"source": "argv", "configRef": None, "flags": ["model-selector", "reasoning-effort"],
+                                  "argv": ["selector", "effort"]}}
+            host["modelIdentity"] = {
+                "kind": "observable-requested-route", "selectorKind": "provider-alias", "selector": selector,
+                "effort": "medium", "effectiveConfig": effective_config,
+                "configSha256": model_identity_policy.canonical_json_sha256(effective_config),
+                "cliBuild": {"version": host["version"], "sha256": host["sha256"]},
+                "nativeCatalogEntry": {
+                    "observedAtUtc": "2026-10-09T08:00:00Z", "sourceRef": "native-catalog",
+                    "catalogSha256": _sha("catalog:" + host["name"]),
+                    "entrySha256": _sha("entry:" + host["name"]),
+                },
+                "providerRoute": {"provider": "openai" if host["name"] == "codex" else "anthropic",
+                                  "accountSha256": _sha("account:" + host["name"]),
+                                  "authMethod": auth_method},
+                "backendAvailable": False, "immutableId": None,
+                "backendDigestAvailable": False, "backendSha256": None,
+            }
+            host["model"]["version"] = None
+            host["model"]["sha256"] = None
+        value["billingPolicy"] = {
+            "schema": "agent-braid-m45-subscription-policy-v1", "mode": "included-subscription-only",
+            "additionalSpendCapEur": 0, "paidApiAllowed": False, "overageAllowed": False,
+            "creditsAllowed": False, "autoRechargeAllowed": False,
+            "hosts": [{"host": host["name"], "authMethod": host["modelIdentity"]["providerRoute"]["authMethod"],
+                       "accountSha256": host["modelIdentity"]["providerRoute"]["accountSha256"]}
+                      for host in value["hosts"]],
+        }
+        validated = _validated(value)
+        self.assertEqual(validated.data["schemaVersion"], evaluation.REGISTRATION_SCHEMA_V2)
+
+        # Catalog and route digests cannot be passed off as the unknown backend hash.
+        malformed = copy.deepcopy(value)
+        malformed["hosts"][0]["model"]["sha256"] = malformed["hosts"][0]["modelIdentity"]["nativeCatalogEntry"]["catalogSha256"]
+        with self.assertRaises(evaluation.EvaluationError):
+            _validated(malformed)
+        malformed = copy.deepcopy(value)
+        malformed["hosts"][0]["modelIdentity"]["configSha256"] = _sha("tampered configuration digest")
+        with self.assertRaises(evaluation.EvaluationError):
+            _validated(malformed)
+        malformed = copy.deepcopy(value)
+        del malformed["hosts"][0]["modelIdentity"]
+        with self.assertRaises(evaluation.EvaluationError):
+            _validated(malformed)
+        malformed = copy.deepcopy(value)
+        malformed["billingPolicy"]["hosts"][0]["accountSha256"] = _sha("other-account")
         with self.assertRaises(evaluation.EvaluationError):
             _validated(malformed)
 
@@ -444,6 +509,53 @@ class ToolingEvaluationTests(unittest.TestCase):
 
         within = evaluation.check_cost_caps(registration, _known_costs(eur=25.0))
         self.assertTrue(within.within_caps)
+
+    def test_subscription_zero_extra_spend_does_not_complete_full_economic_scope(self):
+        from dataclasses import replace
+        from decimal import Decimal
+        from agent_braid.tooling_money import MoneySummary
+
+        data = _registration()
+        data["billingPolicy"] = {
+            "schema": "agent-braid-m45-subscription-policy-v1",
+            "mode": "included-subscription-only", "additionalSpendCapEur": 0,
+            "paidApiAllowed": False, "overageAllowed": False,
+            "creditsAllowed": False, "autoRechargeAllowed": False,
+            "hosts": [
+                {"host": "codex", "accountSha256": _sha("codex account"), "authMethod": "chatgpt"},
+                {"host": "claude-code", "accountSha256": _sha("claude account"), "authMethod": "claude.ai"},
+            ],
+        }
+        registration = _validated(data)
+        ledger, ratings = _complete_ledger(registration)
+        pending = MoneySummary(
+            actual_additional_spend_eur=Decimal("0"),
+            observed_additional_spend_subtotal_eur=Decimal("0"),
+            actual_additional_spend_cap_eur=Decimal("0"), cap_violation=False,
+            stop_required=False, allocated_subscription_cost_eur=None,
+            api_reference_estimate_eur=Decimal("99"), required_measures_complete=True,
+            full_economic_cost_complete=False,
+            full_economic_cost_status="pending-registered-cost-scope-and-human-cost-fields",
+            missing_required=(), missing_full_economic_cost=(("setup", "allocatedSubscriptionCostEur"),),
+            registration_sha256=registration.sha256, roster_sha256=_sha("roster"), receipt_sha256s=(),
+        )
+        declared_complete = replace(pending, full_economic_cost_complete=True,
+                                    full_economic_cost_status="complete", missing_full_economic_cost=(),
+                                    allocated_subscription_cost_eur=Decimal("0"))
+        for summary in (None, pending, replace(pending, registration_sha256=_sha("another registration")),
+                        replace(pending, full_economic_cost_complete=True),
+                        replace(declared_complete, roster_sha256=_sha("another period roster")),
+                        replace(declared_complete, actual_additional_spend_eur=Decimal("1"))):
+            with self.subTest(summary=summary):
+                result = evaluation.assess_utility_eligibility(
+                    registration, ledger, setup_costs=_known_costs(), human_ratings=ratings,
+                    monetary_summary=summary, expected_monetary_roster_sha256=_sha("roster"),
+                )
+                self.assertTrue(result.cost_assessment.complete)
+                self.assertTrue(result.human_scoring_complete)
+                self.assertEqual(108, result.denominators["intendedSlots"])
+                self.assertFalse(result.positive_claim_eligible)
+                self.assertTrue(any("subscription" in reason for reason in result.reasons))
 
     def test_positive_claim_eligibility_requires_costs_thresholds_and_two_humans(self) -> None:
         registration = _validated()

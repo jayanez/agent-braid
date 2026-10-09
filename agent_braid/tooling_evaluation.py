@@ -16,9 +16,11 @@ import re
 from typing import Any, Mapping, Sequence
 
 from .tooling_subscription import SubscriptionError, policy_sha256 as _subscription_policy_sha256
+from . import tooling_model_identity as model_identity_policy
 
 
 REGISTRATION_SCHEMA = "agent-braid-m45-registration-v1"
+REGISTRATION_SCHEMA_V2 = "agent-braid-m45-registration-v2"
 LEDGER_SCHEMA = "agent-braid-m45-ledger-v1"
 HOSTS = ("codex", "claude-code")
 ARMS = ("cli", "mcp-only", "mcp-plus-skills")
@@ -186,7 +188,8 @@ def validate_registration(
     if not isinstance(registration, Mapping):
         raise EvaluationError("registration must be a JSON object")
     data = _json_copy(registration, "registration")
-    if data.get("schemaVersion") != REGISTRATION_SCHEMA:
+    schema_version = data.get("schemaVersion")
+    if schema_version not in {REGISTRATION_SCHEMA, REGISTRATION_SCHEMA_V2}:
         raise EvaluationError("unsupported or missing registration schemaVersion")
     _require_id(data.get("registrationId"), "registrationId")
     if data.get("status") != "approved":
@@ -218,7 +221,8 @@ def validate_registration(
         raise EvaluationError("source-rights record must cover exactly the registered fixtures")
     if {item["fixtureId"] for item in fixtures} & {item["promptId"] for item in prompts}:
         raise EvaluationError("fixture and prompt IDs must be disjoint")
-    _validate_host_builds(data.get("hosts"))
+    _validate_host_builds(data.get("hosts"), schema_version=schema_version,
+                          billing_policy=data.get("billingPolicy"))
     _validate_cost_rates(data.get("costRates"), data["hosts"])
 
     if not isinstance(expected_input_hashes, Mapping):
@@ -561,12 +565,16 @@ def assess_utility_eligibility(
     setup_costs: Mapping[str, Any] | None,
     human_ratings: Mapping[str, Sequence[Mapping[str, Any]]],
     adjudications: Mapping[str, Mapping[str, Any]] | None = None,
+    monetary_summary: Any = None,
+    expected_monetary_roster_sha256: str | None = None,
 ) -> UtilityEligibility:
     """Assess preregistered positive-claim eligibility, never assert utility.
 
     Human ratings must come from two distinct independent humans for every slot.
     Disagreements require an explicit adjudication. Model/Luna annotations do not
-    count. Unknown authority handling fails the 18/18 requirement.
+    count. Unknown authority handling fails the 18/18 requirement. Subscription
+    policies additionally require a registration-bound full economic cost summary;
+    complete legacy scalars or zero additional spend cannot substitute for it.
     """
 
     _require_validated(registration)
@@ -580,6 +588,38 @@ def assess_utility_eligibility(
     denominators = summarize_denominators(ledger)
     adjudications = adjudications or {}
     reasons: list[str] = []
+    if "billingPolicy" in registration.data:
+        # Legacy scalar EUR completeness cannot establish subscription allocation
+        # or human-cost scope. Source authentication remains the caller's duty.
+        from decimal import Decimal
+        from .tooling_money import MoneySummary
+        if not isinstance(monetary_summary, MoneySummary):
+            reasons.append("registration-bound full subscription cost summary is unavailable")
+        elif monetary_summary.registration_sha256 != registration.sha256:
+            reasons.append("subscription cost summary belongs to a different registration")
+        else:
+            if expected_monetary_roster_sha256 is None:
+                reasons.append("frozen subscription monetary roster identity is unavailable")
+            elif monetary_summary.roster_sha256 != _require_hash(
+                    expected_monetary_roster_sha256, "expected monetary roster SHA-256"):
+                reasons.append("subscription cost summary belongs to a different monetary roster")
+            actual = monetary_summary.actual_additional_spend_eur
+            allocated = monetary_summary.allocated_subscription_cost_eur
+            cap = monetary_summary.actual_additional_spend_cap_eur
+            valid_amounts = all(isinstance(value, Decimal) and value.is_finite() and value >= 0
+                               for value in (actual, allocated, cap))
+            if not valid_amounts:
+                reasons.append("subscription economic cost amounts are unavailable or malformed")
+            elif cap != Decimal(registration.data["billingPolicy"]["additionalSpendCapEur"]) or actual > cap:
+                reasons.append("subscription additional-spend amount or cap violates the registered policy")
+            if (monetary_summary.full_economic_cost_complete is not True
+                    or monetary_summary.full_economic_cost_status != "complete"
+                    or monetary_summary.required_measures_complete is not True
+                    or monetary_summary.missing_full_economic_cost):
+                reasons.append("subscription economic cost scope and human cost fields are incomplete")
+            if (monetary_summary.stop_required is not False
+                    or monetary_summary.cap_violation is not False):
+                reasons.append("subscription additional-spend compliance is unavailable or violated")
     resolved: dict[str, dict[str, bool | None]] = {}
     human_complete = True
     registered_reviewer_ids = {reviewer["reviewerId"] for reviewer in registration.data["humanReviewers"]}
@@ -710,7 +750,8 @@ def _resolve_human_ratings(
     return resolved, tuple(dict.fromkeys(errors))
 
 
-def _validate_host_builds(hosts: Any) -> None:
+def _validate_host_builds(hosts: Any, *, schema_version: str = REGISTRATION_SCHEMA,
+                          billing_policy: Any = None) -> None:
     if not isinstance(hosts, list) or len(hosts) != len(HOSTS):
         raise EvaluationError("hosts must list Codex and Claude Code exactly once")
     if {host.get("name") for host in hosts if isinstance(host, Mapping)} != set(HOSTS):
@@ -721,7 +762,26 @@ def _validate_host_builds(hosts: Any) -> None:
         model = host.get("model")
         _require_object(model, f"{host['name']}.model")
         _require_text(model.get("name"), f"{host['name']}.model.name")
-        _require_version_hash(model, f"{host['name']}.model")
+        identity = host.get("modelIdentity")
+        if schema_version == REGISTRATION_SCHEMA:
+            if identity is not None or "modelIdentity" in host:
+                raise EvaluationError("registration v1 cannot contain modelIdentity; use registration v2")
+            _require_version_hash(model, f"{host['name']}.model")
+        else:
+            if identity is None:
+                raise EvaluationError("registration v2 requires modelIdentity for every host")
+            try:
+                model_identity_policy.validate_identity(identity, host=host["name"], model=model)
+            except model_identity_policy.ModelIdentityError as exc:
+                raise EvaluationError(f"{host['name']} model identity is invalid: {exc}") from exc
+            if identity["cliBuild"] != {"version": host["version"], "sha256": host["sha256"]}:
+                raise EvaluationError(f"{host['name']} CLI build identity must match the registered host build")
+            if billing_policy is not None:
+                account = next(item for item in billing_policy["hosts"] if item["host"] == host["name"])
+                route = identity["providerRoute"]
+                if (route["accountSha256"] != account["accountSha256"]
+                        or route["authMethod"] != account["authMethod"]):
+                    raise EvaluationError(f"{host['name']} model provider route differs from billingPolicy account")
         os_build = host.get("os")
         _require_object(os_build, f"{host['name']}.os")
         if os_build.get("name") != "macOS" or os_build.get("architecture") != "arm64":
@@ -1017,7 +1077,7 @@ def _canonical_sha256(value: Mapping[str, Any]) -> str:
 
 __all__ = [
     "ARMS", "COST_FIELDS", "HOSTS", "JOURNEY_CLASSES", "LEDGER_SCHEMA",
-    "REGISTRATION_SCHEMA", "SLOT_STATUSES", "AttemptSlot", "CapAssessment",
+    "REGISTRATION_SCHEMA", "REGISTRATION_SCHEMA_V2", "SLOT_STATUSES", "AttemptSlot", "CapAssessment",
     "CostAssessment", "EvaluationError", "EvaluationLedger", "LedgerEvent",
     "UtilityEligibility", "ValidatedRegistration", "append_slot_event",
     "assess_cost_completeness", "assess_utility_eligibility", "check_cost_caps",

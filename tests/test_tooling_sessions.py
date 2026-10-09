@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from datetime import datetime, timezone
+from dataclasses import replace
 import hashlib
 import json
 import os
@@ -18,6 +19,7 @@ from agent_braid import tooling_capture as capture
 from agent_braid import tooling_evaluation as evaluation
 from agent_braid import tooling_sessions as sessions
 from agent_braid.tooling_fixtures import load_inventory
+from agent_braid import tooling_model_identity as model_identity_policy
 
 
 def _sha(value: bytes | str) -> str:
@@ -191,7 +193,8 @@ class ToolingSessionTests(unittest.TestCase):
                                 stderr=subprocess.PIPE, text=True)
         return result.stdout.strip()
 
-    def _admit(self, slot, ledger, *, cost_values=None, observed_at=None):
+    def _admit(self, slot, ledger, *, cost_values=None, observed_at=None,
+               model_identity_observation=None):
         self.cost_snapshot = capture.MeasuredCosts(
             values=cost_values or _costs(), source_ref="synthetic measured costs",
             source_sha256=_sha("costs"), observed_at=observed_at or _now())
@@ -202,16 +205,177 @@ class ToolingSessionTests(unittest.TestCase):
             candidate_artifact=self.artifact, ledger=ledger, slot_id=slot.slot_id,
             authorization=capture.AuthorizationContext("none", "synthetic-decision", _sha("decision")),
             costs=self.cost_snapshot, stop_state=self.stop_state,
+            model_identity_observation=model_identity_observation,
             verifier=_AdmissionVerifier(), receipt_directory=self.receipt_dir)
 
     def _run(self, adapter=None, verifier=None, *, admission=None, ledger=None,
-             measured_costs=None, stop_state=None):
+             measured_costs=None, stop_state=None, model_identity_observer=None):
         return sessions.execute_admitted_attempt(
             admission=admission or self.admission, registration=self.registration, ledger=ledger or self.ledger,
             candidate_root=self.candidate, candidate_artifact=self.artifact,
             registration_path=self.registration_path, adapter=adapter or _Adapter(),
             verifier=verifier or _OutcomeVerifier(), measured_costs=measured_costs or self.cost_snapshot,
-            stop_state=stop_state or self.stop_state)
+            stop_state=stop_state or self.stop_state,
+            model_identity_observer=model_identity_observer)
+
+    def _upgrade_to_v2_route_identity(self):
+        self.registration_data["schemaVersion"] = evaluation.REGISTRATION_SCHEMA_V2
+        for host in self.registration_data["hosts"]:
+            selector = host["model"]["name"]
+            auth_method = "chatgpt" if host["name"] == "codex" else "claude.ai"
+            effective_config = {"selector": selector, "effort": "medium",
+                "providerEndpoint": "https://api.openai.com/v1" if host["name"] == "codex" else "https://api.anthropic.com",
+                "authMethod": auth_method,
+                "hostSelection": {"source": "argv", "configRef": None, "flags": ["model-selector", "reasoning-effort"],
+                                  "argv": ["selector", "effort"]}}
+            host["model"] = {"name": selector, "version": None, "sha256": None}
+            host["modelIdentity"] = {
+                "kind": "observable-requested-route", "selectorKind": "provider-alias",
+                "selector": selector, "effort": "medium",
+                "effectiveConfig": effective_config,
+                "configSha256": model_identity_policy.canonical_json_sha256(effective_config),
+                "cliBuild": {"version": host["version"], "sha256": host["sha256"]},
+                "nativeCatalogEntry": {"observedAtUtc": "2026-10-09T08:00:00Z",
+                    "sourceRef": "native-catalog", "catalogSha256": _sha("catalog:" + host["name"]),
+                    "entrySha256": _sha("entry:" + host["name"])},
+                "providerRoute": {"provider": "openai" if host["name"] == "codex" else "anthropic",
+                    "accountSha256": _sha("account:" + host["name"]), "authMethod": auth_method},
+                "backendAvailable": False, "immutableId": None,
+                "backendDigestAvailable": False, "backendSha256": None,
+            }
+        self.registration_path.write_text(json.dumps(self.registration_data, sort_keys=True, indent=2) + "\n")
+        self.registration = evaluation.validate_registration(
+            self.registration_data, expected_candidate_sha256=self.registration_data["candidate"]["sha256"],
+            expected_input_hashes={**{item["fixtureId"]: item["sha256"] for item in self.registration_data["fixtures"]},
+                                  **{item["promptId"]: item["sha256"] for item in self.registration_data["prompts"]}})
+        self.ledger = evaluation.new_ledger(self.registration)
+        self.slot = next(slot for slot in self.ledger.slots
+                         if slot.host == "codex" and slot.journey_class == "analyze-interactions")
+        self.receipt_dir = capture.receipt_directory_for(self.registration.sha256)
+        self.receipt_dir.mkdir(mode=0o700)
+
+    def _model_observation(self, host="codex", **updates):
+        expected = next(item for item in self.registration_data["hosts"] if item["name"] == host)["modelIdentity"]
+        catalog = expected["nativeCatalogEntry"]
+        values = dict(selector_kind=expected["selectorKind"], configured_selector=expected["selector"], reported_selector=None,
+            effort=expected["effort"], config_sha256=expected["configSha256"],
+            catalog_sha256=catalog["catalogSha256"], entry_sha256=catalog["entrySha256"],
+            provider_route=expected["providerRoute"], backend_available=False, immutable_id=None,
+            backend_sha256=None,
+            observed_at_utc=datetime.now(timezone.utc), source_ref="synthetic model observer",
+            source_sha256=_sha("model observer"))
+        values.update(updates)
+        return model_identity_policy.ModelIdentityObservation(**values)
+
+    def test_v2_session_requires_fresh_identity_at_dispatch_and_completion(self):
+        self._upgrade_to_v2_route_identity()
+        admission_observation = self._model_observation()
+        admission = self._admit(self.slot, self.ledger,
+                                model_identity_observation=admission_observation)
+
+        class Observer:
+            def __init__(self, rows):
+                self.rows = iter(rows)
+
+            def observe(self, *, host, slot):
+                self.asserted = (host, slot.host)
+                row = next(self.rows)
+                return row() if callable(row) else row
+
+        dispatch_now = datetime.now(timezone.utc)
+        later = dispatch_now + __import__("datetime").timedelta(seconds=120)
+        clock_values = iter([dispatch_now, later, later + __import__("datetime").timedelta(seconds=1),
+                             later + __import__("datetime").timedelta(seconds=1)])
+        observed_times = iter([dispatch_now, later + __import__("datetime").timedelta(seconds=1)])
+        observer = Observer([lambda: self._model_observation(observed_at_utc=next(observed_times)),
+                             lambda: self._model_observation(observed_at_utc=next(observed_times))])
+        class LaterVerifier:
+            def verify_start(self, **kwargs):
+                return _OutcomeVerifier().verify_start(**kwargs)
+
+            def verify_outcome(self, **kwargs):
+                verified, attestation = _OutcomeVerifier().verify_outcome(**kwargs)
+                boundary = later + __import__("datetime").timedelta(seconds=1)
+                value = boundary.isoformat().replace("+00:00", "Z")
+                return replace(verified, source_timestamp=value), replace(attestation, verified_at=value)
+
+        with patch("agent_braid.tooling_sessions._now_datetime", side_effect=lambda: next(clock_values)):
+            result = self._run(admission=admission, ledger=self.ledger,
+                               model_identity_observer=observer, verifier=LaterVerifier())
+        self.assertEqual("outcome", result.status)
+        outcome = json.loads(result.lifecycle_path.read_text(encoding="utf-8"))
+        self.assertEqual("synthetic-model", outcome["modelIdentityObservationAfter"]["configuredSelector"])
+        payload = {key: value for key, value in outcome.items() if key != "recordSha256"}
+        after_at = sessions._parse_timestamp(outcome["modelIdentityObservationAfter"]["observedAtUtc"])
+        payload["executionCompletedAt"] = (after_at + __import__("datetime").timedelta(seconds=1)).isoformat().replace("+00:00", "Z")
+        result.lifecycle_path.write_text(json.dumps(sessions._seal(payload), sort_keys=True,
+                                                   separators=(",", ":")), encoding="utf-8")
+        with self.assertRaisesRegex(sessions.SessionError, "predates its bound completion boundary"):
+            sessions.inspect_session(admission, self.registration, result.ledger)
+
+    def test_v2_session_route_drift_after_dispatch_remains_interrupted(self):
+        self._upgrade_to_v2_route_identity()
+        admission = self._admit(self.slot, self.ledger,
+                                model_identity_observation=self._model_observation())
+
+        class Observer:
+            def __init__(self, rows):
+                self.rows = iter(rows)
+
+            def observe(self, *, host, slot):
+                row = next(self.rows)
+                return row() if callable(row) else row
+
+        observer = Observer([lambda: self._model_observation(),
+            lambda: self._model_observation(config_sha256=_sha("drifted config"))])
+        adapter = _Adapter()
+        result = self._run(admission=admission, ledger=self.ledger,
+                           adapter=adapter, model_identity_observer=observer)
+        self.assertEqual("interrupted", result.status)
+        self.assertEqual(1, adapter.calls)
+        interrupted = json.loads(result.lifecycle_path.read_text(encoding="utf-8"))
+        self.assertRegex(interrupted["rawOutcomeSha256"], r"^[0-9a-f]{64}$")
+
+    def test_cached_admission_model_observation_cannot_authorize_start(self):
+        self._upgrade_to_v2_route_identity()
+        admitted_observation = self._model_observation()
+        admission = self._admit(self.slot, self.ledger,
+                                model_identity_observation=admitted_observation)
+
+        class Observer:
+            def observe(self, *, host, slot):
+                return admitted_observation
+
+        adapter = _Adapter()
+        with self.assertRaisesRegex(sessions.SessionError, "newer than admission"):
+            self._run(admission=admission, ledger=self.ledger, adapter=adapter,
+                      model_identity_observer=Observer())
+        self.assertEqual(0, adapter.calls)
+
+    def test_cached_predispatch_observation_cannot_satisfy_post_execution_check(self):
+        self._upgrade_to_v2_route_identity()
+        admission = self._admit(self.slot, self.ledger,
+                                model_identity_observation=self._model_observation())
+
+        class Observer:
+            def __init__(self, row):
+                self.row = row
+                self.calls = 0
+
+            def observe(self, *, host, slot):
+                self.calls += 1
+                return self.row
+
+        cached = self._model_observation()
+        observer = Observer(cached)
+        adapter = _Adapter()
+        result = self._run(admission=admission, ledger=self.ledger,
+                           adapter=adapter, model_identity_observer=observer)
+        self.assertEqual("interrupted", result.status)
+        self.assertEqual(1, adapter.calls)
+        self.assertEqual(2, observer.calls)
+        interrupted = json.loads(result.lifecycle_path.read_text(encoding="utf-8"))
+        self.assertRegex(interrupted["rawOutcomeSha256"], r"^[0-9a-f]{64}$")
 
     def test_distinct_slots_cannot_dispatch_concurrently_from_same_ledger_head(self):
         other = next(slot for slot in self.ledger.slots if slot.slot_id != self.slot.slot_id)
@@ -336,6 +500,17 @@ class ToolingSessionTests(unittest.TestCase):
         outcome = json.loads(result.lifecycle_path.read_text())
         self.assertEqual(_sha("synthetic normalized output"), outcome["outcome"]["outputSha256"])
         self.assertEqual(self.slot.fixture_sha256, outcome["outcome"]["inputSha256"])
+
+    def test_inspector_reconstructs_attested_start_subject_after_record_reseal(self):
+        result = self._run()
+        self.assertEqual("outcome", result.status)
+        marker_path = result.started_path
+        marker = json.loads(marker_path.read_text(encoding="utf-8"))
+        marker["measuredCosts"]["values"]["eur"] = 91.0
+        tampered = sessions._seal({key: value for key, value in marker.items() if key != "recordSha256"})
+        marker_path.write_text(json.dumps(tampered, sort_keys=True, separators=(",", ":")), encoding="utf-8")
+        with self.assertRaisesRegex(sessions.SessionError, "attested start subject"):
+            sessions.inspect_session(self.admission, self.registration, result.ledger)
 
     def test_second_dispatch_is_refused_by_durable_o_excl_start_marker(self):
         adapter = _Adapter()

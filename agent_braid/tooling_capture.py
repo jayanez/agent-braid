@@ -22,6 +22,7 @@ import uuid
 
 from . import tooling_evaluation as evaluation
 from . import tooling_subscription as subscription_policy
+from . import tooling_model_identity as model_identity_policy
 from .tooling_fixtures import FixtureInventoryError, load_inventory
 
 
@@ -101,6 +102,7 @@ class AdmissionVerifier(Protocol):
         stop_state: StopState,
         subject_sha256: str,
         subscription: subscription_policy.SubscriptionObservation | None = None,
+        model_identity_observation: model_identity_policy.ModelIdentityObservation | None = None,
     ) -> DecisionAttestation: ...
 
 
@@ -154,6 +156,7 @@ def prepare_attempt(
     verifier: AdmissionVerifier,
     receipt_directory: str | os.PathLike[str],
     subscription: subscription_policy.SubscriptionObservation | None = None,
+    model_identity_observation: model_identity_policy.ModelIdentityObservation | None = None,
 ) -> AttemptAdmission:
     """Validate exact frozen inputs and write one private hash-bound admission.
 
@@ -228,6 +231,15 @@ def prepare_attempt(
     elif subscription is not None:
         raise CaptureAdmissionError("subscription observation requires a frozen billing policy")
 
+    host_identity = host_record.get("modelIdentity")
+    if host_identity is not None:
+        try:
+            model_identity_policy.check_observation(model_identity_observation, host_identity)
+        except model_identity_policy.ModelIdentityError as exc:
+            raise CaptureAdmissionError("model identity admission refused: " + str(exc)) from exc
+    elif model_identity_observation is not None:
+        raise CaptureAdmissionError("model identity observation requires a v2 frozen host identity")
+
     subject = {
         "schemaVersion": CAPTURE_RECEIPT_SCHEMA,
         "registrationSha256": registration.sha256,
@@ -251,6 +263,8 @@ def prepare_attempt(
     }
     if binding is not None:
         subject["subscription"] = subscription.as_dict()
+    if host_identity is not None:
+        subject["modelIdentityObservation"] = model_identity_observation.as_dict()
     subject_sha256 = _sha256(_canonical_json(subject))
     try:
         verification_args = dict(
@@ -260,15 +274,26 @@ def prepare_attempt(
         if binding is not None:
             # Legacy verifiers cannot silently attest a newly constrained policy.
             verification_args["subscription"] = subscription
+        if host_identity is not None:
+            verification_args["model_identity_observation"] = model_identity_observation
         attestation = verifier.attest(**verification_args)
     except Exception as exc:
         raise CaptureAdmissionError("trusted decision verification failed") from exc
     _validate_attestation(attestation, subject_sha256)
+    if host_identity is not None:
+        verified_at = datetime.fromisoformat(attestation.verified_at.replace("Z", "+00:00"))
+        if verified_at < model_identity_observation.observed_at_utc:
+            raise CaptureAdmissionError("model identity verifier attestation predates its observation")
     if binding is not None:
         try:
             subscription_policy.check_observation(subscription, binding)
         except subscription_policy.SubscriptionError as exc:
             raise CaptureAdmissionError("subscription observation expired during verification") from exc
+    if host_identity is not None:
+        try:
+            model_identity_policy.check_observation(model_identity_observation, host_identity)
+        except model_identity_policy.ModelIdentityError as exc:
+            raise CaptureAdmissionError("model identity observation expired or drifted during verification") from exc
     # Recheck immutable inputs after the potentially external verifier call.
     if _hash_file(artifact, MAX_ARTIFACT_BYTES) != artifact_sha256:
         raise CaptureAdmissionError("candidate artifact changed during admission")

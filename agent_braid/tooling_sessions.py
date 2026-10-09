@@ -19,6 +19,7 @@ from typing import Any, Mapping, Protocol
 
 from . import tooling_capture as capture
 from . import tooling_evaluation as evaluation
+from . import tooling_model_identity as model_identity_policy
 
 
 SESSION_SCHEMA = "agent-braid-m45-session-v1"
@@ -89,6 +90,7 @@ class OutcomeVerifier(Protocol):
         slot: evaluation.AttemptSlot, admission_receipt: Mapping[str, Any],
         ledger_sha256: str, measured_costs: capture.MeasuredCosts,
         stop_state: capture.StopState, subject_sha256: str,
+        model_identity_observation: model_identity_policy.ModelIdentityObservation | None = None,
     ) -> StartAttestation: ...
 
     def verify_outcome(
@@ -99,6 +101,7 @@ class OutcomeVerifier(Protocol):
         admission_receipt: Mapping[str, Any],
         raw_outcome: Any,
         subject_sha256: str,
+        model_identity_observation: model_identity_policy.ModelIdentityObservation | None = None,
     ) -> tuple[VerifiedOutcome, OutcomeAttestation]: ...
 
 
@@ -114,6 +117,7 @@ def execute_admitted_attempt(
     verifier: OutcomeVerifier,
     measured_costs: capture.MeasuredCosts,
     stop_state: capture.StopState,
+    model_identity_observer: Any = None,
 ) -> SessionResult:
     """Durably start one admitted slot, dispatch once, and record only verified output.
 
@@ -172,18 +176,35 @@ def execute_admitted_attempt(
     cohort = _claim_cohort(admission, registration, ledger, slot, started_at)
     try:
         admission_outer = _read_admission(admission, registration, slot)
+        host_record = next(item for item in registration.data["hosts"] if item["name"] == slot.host)
+        host_identity = host_record.get("modelIdentity")
+        if host_identity is not None:
+            model_identity_observation = _observe_model_identity(model_identity_observer, slot, host_identity)
+        else:
+            if model_identity_observer is not None:
+                raise SessionError("model identity observer supplied for a legacy registration")
+            model_identity_observation = None
         start_subject = _start_subject(registration, slot, admission, ledger,
-                                       admission_outer, measured_costs, stop_state)
-        start_attestation = verifier.verify_start(
-            registration=registration, slot=slot, admission_receipt=admission_outer,
-            ledger_sha256=prior_ledger_sha256, measured_costs=measured_costs,
-            stop_state=stop_state, subject_sha256=_canonical_sha256(start_subject),
-        )
+                                       admission_outer, measured_costs, stop_state,
+                                       model_identity_observation)
+        start_args = dict(registration=registration, slot=slot, admission_receipt=admission_outer,
+                          ledger_sha256=prior_ledger_sha256, measured_costs=measured_costs,
+                          stop_state=stop_state, subject_sha256=_canonical_sha256(start_subject))
+        if host_identity is not None:
+            start_args["model_identity_observation"] = model_identity_observation
+        start_attestation = verifier.verify_start(**start_args)
         _validate_start_attestation(start_attestation, _canonical_sha256(start_subject))
         observation_floor = max(_parse_timestamp(measured_costs.observed_at),
                                 _parse_timestamp(stop_state.observed_at))
+        if host_identity is not None:
+            observation_floor = max(observation_floor, model_identity_observation.observed_at_utc)
         if _parse_timestamp(start_attestation.verified_at) < observation_floor:
             raise SessionError("start verifier attestation predates the fresh observations")
+        if host_identity is not None:
+            model_identity_policy.check_observation(model_identity_observation, host_identity)
+            admitted_at = _parse_timestamp(admission_outer["receipt"]["modelIdentityObservation"]["observedAtUtc"])
+            if model_identity_observation.observed_at_utc <= admitted_at:
+                raise SessionError("pre-dispatch model identity observation must be newer than admission evidence")
     except Exception as exc:
         _release_prelaunch_cohort(cohort)
         if isinstance(exc, SessionError):
@@ -193,6 +214,9 @@ def execute_admitted_attempt(
     start_payload["startedAt"] = started_at
     start_payload["measuredCosts"] = capture._costs_dict(measured_costs)
     start_payload["stopState"] = capture._stop_dict(stop_state)
+    start_payload["minimumObservedAt"] = start_subject["minimumObservedAt"]
+    if host_identity is not None:
+        start_payload["modelIdentityObservation"] = model_identity_observation.as_dict()
     start_payload["startSubjectSha256"] = _canonical_sha256(start_subject)
     start_payload["startAttestation"] = _start_attestation_dict(start_attestation)
     started_record = _seal(start_payload)
@@ -204,17 +228,27 @@ def execute_admitted_attempt(
         raise SessionError("slot already has a durable started marker; do not dispatch or retry") from exc
     started_sha256 = _canonical_sha256(start_payload)
 
+    raw_sha256 = None
     try:
         registration_file_sha256 = admission_outer["receipt"]["registrationFileSha256"]
         _check_candidate_identity(candidate_root, candidate_artifact, registration_path,
                                  registration, admission.receipt_path, registration_file_sha256)
         raw_outcome = adapter.execute(admission)
-        _check_candidate_identity(candidate_root, candidate_artifact, registration_path,
-                                 registration, admission.receipt_path, registration_file_sha256)
         raw_bytes = _canonical_json(raw_outcome)
         if len(raw_bytes) > MAX_ADAPTER_OUTCOME_BYTES:
             raise SessionError("adapter outcome exceeds the bounded 8 MiB receipt limit")
         raw_sha256 = _sha256(raw_bytes)
+        completion_boundary = _now_datetime()
+        completion_boundary_text = _iso_utc(completion_boundary)
+        if host_identity is not None:
+            model_identity_after = _observe_model_identity(model_identity_observer, slot, host_identity)
+            model_identity_policy.check_observation(model_identity_after, host_identity,
+                                                    now=_now_datetime())
+            if (model_identity_after.observed_at_utc <= model_identity_observation.observed_at_utc
+                    or model_identity_after.observed_at_utc < completion_boundary):
+                raise SessionError("post-execution model identity observation predates completion or dispatch")
+        _check_candidate_identity(candidate_root, candidate_artifact, registration_path,
+                                 registration, admission.receipt_path, registration_file_sha256)
         subject = {
             "schemaVersion": SESSION_SCHEMA,
             "registrationSha256": registration.sha256,
@@ -225,14 +259,28 @@ def execute_admitted_attempt(
             "startedMarkerSha256": started_sha256,
             "rawOutcomeSha256": raw_sha256,
         }
+        if host_identity is not None:
+            subject["executionCompletedAt"] = completion_boundary_text
+            model_identity_policy.check_observation(model_identity_observation, host_identity,
+                                                    now=model_identity_observation.observed_at_utc)
+            subject["modelIdentityObservationBefore"] = model_identity_observation.as_dict()
+            subject["modelIdentityObservationAfter"] = model_identity_after.as_dict()
         subject_sha256 = _canonical_sha256(subject)
-        verified, attestation = verifier.verify_outcome(
+        outcome_args = dict(
             registration=registration, slot=slot,
             admission_receipt=admission_outer,
             raw_outcome=raw_outcome, subject_sha256=subject_sha256,
         )
+        if host_identity is not None:
+            outcome_args["model_identity_observation"] = model_identity_after
+        verified, attestation = verifier.verify_outcome(**outcome_args)
         _validate_verified_outcome(verified, attestation, subject_sha256,
                                    slot, registration)
+        if host_identity is not None:
+            model_identity_policy.check_observation(model_identity_after, host_identity,
+                                                    now=model_identity_after.observed_at_utc)
+            if _parse_timestamp(attestation.verified_at) < model_identity_after.observed_at_utc:
+                raise SessionError("outcome verifier attestation predates its bound post-execution model observation")
         cap_assessment = evaluation.check_cost_caps(
             registration,
             _cumulative_costs(measured_costs.values, verified.costs),
@@ -274,6 +322,10 @@ def execute_admitted_attempt(
             },
             "attestation": _attestation_dict(attestation),
         }
+        if host_identity is not None:
+            outcome_payload["modelIdentityObservationBefore"] = model_identity_observation.as_dict()
+            outcome_payload["modelIdentityObservationAfter"] = model_identity_after.as_dict()
+            outcome_payload["executionCompletedAt"] = completion_boundary_text
         sealed = _seal(outcome_payload)
         _write_exclusive(outcome_path, _canonical_json(sealed))
         _advance_cohort(cohort, final_ledger, outcome_payload)
@@ -297,6 +349,8 @@ def execute_admitted_attempt(
             "costs": {field: None for field in evaluation.COST_FIELDS},
             "limits": ["No verified terminal outcome; this record does not assert execution result or actual costs"],
         }
+        if raw_sha256 is not None:
+            interruption["rawOutcomeSha256"] = raw_sha256
         sealed = _seal(interruption)
         try:
             _write_exclusive(interrupted_path, _canonical_json(sealed))
@@ -321,7 +375,7 @@ def reconcile_started_ledger(
                               next((item for item in ledger.slots if item.slot_id == admission.slot_id), None))
     slot = next(item for item in ledger.slots if item.slot_id == admission.slot_id)
     marker = _read_sealed(_started_path(admission, slot), "started marker")
-    _validate_start_marker(marker, admission, registration, slot, _roster_sha256(ledger))
+    _validate_start_marker(marker, admission, registration, slot, _roster_sha256(ledger), receipt["receipt"])
     if _ledger_sha256(ledger) == marker["priorLedgerSha256"]:
         event = marker["attemptedEvent"]
         updated = evaluation.append_slot_event(
@@ -353,7 +407,7 @@ def inspect_session(
     if slot is None:
         raise SessionError("admission slot is absent from the registered roster")
     started = _read_sealed(_started_path(admission, slot), "started marker")
-    _validate_start_marker(started, admission, registration, slot, _roster_sha256(ledger))
+    _validate_start_marker(started, admission, registration, slot, _roster_sha256(ledger), admission_outer["receipt"])
     outcome_path = _lifecycle_path(admission, slot, "outcome")
     interrupted_path = _lifecycle_path(admission, slot, "interrupted")
     if outcome_path.exists():
@@ -442,6 +496,20 @@ def _read_admission(admission, registration, slot):
         "schemaVersion", "registrationSha256", "slot", "candidate", "registrationFileSha256",
         "fixturePromptInventorySha256", "hostBuild", "authorization", "measuredCosts", "stopState", "limits",
     }
+    host_record = next(item for item in registration.data["hosts"] if item["name"] == slot.host)
+    if body.get("hostBuild") != host_record:
+        raise SessionError("admission host/model identity differs from the frozen registration")
+    host_identity = host_record.get("modelIdentity")
+    if host_identity is not None:
+        subject_keys.add("modelIdentityObservation")
+        try:
+            model_observation = model_identity_policy.observation_from_dict(body.get("modelIdentityObservation"))
+            model_identity_policy.check_observation(model_observation, host_identity,
+                                                    now=model_observation.observed_at_utc)
+        except model_identity_policy.ModelIdentityError as exc:
+            raise SessionError("admission model identity observation is missing, malformed, or drifted") from exc
+    elif "modelIdentityObservation" in body:
+        raise SessionError("unregistered model identity observation in admission receipt")
     from . import tooling_subscription as subscription_policy
     binding = subscription_policy.binding_from_registration(registration, slot.slot_id, slot.host)
     if admission.subscription_binding != binding:
@@ -506,7 +574,7 @@ def _claim_cohort(admission, registration, ledger, slot, started_at):
 
 
 def _start_subject(registration, slot, admission, ledger, admission_outer,
-                   measured_costs, stop_state):
+                   measured_costs, stop_state, model_identity_observation=None):
     if not isinstance(measured_costs, capture.MeasuredCosts):
         raise SessionError("fresh cumulative cost observation is required")
     if not isinstance(stop_state, capture.StopState):
@@ -519,6 +587,21 @@ def _start_subject(registration, slot, admission, ledger, admission_outer,
         raise SessionError(f"fresh pre-dispatch observations are invalid: {exc}") from exc
     if stop_state.incident_open or stop_state.unrecoverable_run or stop_state.consecutive_infrastructure_failures >= 2:
         raise SessionError("fresh stop-state observation blocks dispatch")
+    host_record = next(item for item in registration.data["hosts"] if item["name"] == slot.host)
+    host_identity = host_record.get("modelIdentity")
+    if host_identity is not None:
+        try:
+            model_identity_policy.check_observation(model_identity_observation, host_identity)
+            admission_observation = model_identity_policy.observation_from_dict(
+                admission_outer["receipt"].get("modelIdentityObservation"))
+            model_identity_policy.check_observation(admission_observation, host_identity,
+                                                    now=admission_observation.observed_at_utc)
+            if model_identity_observation.observed_at_utc <= admission_observation.observed_at_utc:
+                raise SessionError("pre-dispatch model identity observation must be newer than admission evidence")
+        except model_identity_policy.ModelIdentityError as exc:
+            raise SessionError("fresh pre-dispatch model identity observation is invalid: " + str(exc)) from exc
+    elif model_identity_observation is not None:
+        raise SessionError("model identity observation supplied for a legacy registration")
     baseline = admission_outer["receipt"]["measuredCosts"]["values"]
     for field in evaluation.COST_FIELDS:
         old, new = baseline[field], measured_costs.values[field]
@@ -539,7 +622,7 @@ def _start_subject(registration, slot, admission, ledger, admission_outer,
         _timestamp(value, label)
         if _parse_timestamp(value) < _parse_timestamp(floor):
             raise SessionError(f"{label} predates the latest admission or ledger cost floor")
-    return {
+    result = {
         "schemaVersion": SESSION_SCHEMA, "registrationSha256": registration.sha256,
         "slot": slot.as_dict(), "attemptId": admission.attempt_id,
         "admissionReceiptSha256": admission.receipt_sha256,
@@ -549,6 +632,35 @@ def _start_subject(registration, slot, admission, ledger, admission_outer,
         "stopState": capture._stop_dict(stop_state),
         "minimumObservedAt": floor,
     }
+    if host_identity is not None:
+        admission_observation = admission_outer["receipt"]["modelIdentityObservation"]
+        result["modelIdentityObservationAtAdmission"] = admission_observation
+        result["modelIdentityObservationAtStart"] = model_identity_observation.as_dict()
+    return result
+
+
+def _observe_model_identity(observer, slot, expected):
+    if not callable(getattr(observer, "observe", None)):
+        raise SessionError("trusted model identity observer is required for registration v2")
+    try:
+        observed = observer.observe(host=slot.host, slot=slot)
+        model_identity_policy.check_observation(observed, expected, now=_now_datetime())
+    except Exception as exc:
+        if isinstance(exc, SessionError):
+            raise
+        raise SessionError("fresh model identity observation failed or drifted") from exc
+    return observed
+
+
+def _now_datetime():
+    """UTC clock boundary, isolated for deterministic duration tests."""
+    return datetime.now(timezone.utc)
+
+
+def _iso_utc(value):
+    if not isinstance(value, datetime) or value.tzinfo is None:
+        raise SessionError("UTC time boundary must be timezone-aware")
+    return value.astimezone(timezone.utc).isoformat().replace("+00:00", "Z")
 
 
 def _validate_start_attestation(value, subject_sha256):
@@ -672,7 +784,7 @@ def _validate_verified_outcome(value, attestation, subject_sha256, slot, registr
         raise SessionError("slot host is absent from the frozen registration")
 
 
-def _validate_start_marker(marker, admission, registration, slot, expected_roster_sha256):
+def _validate_start_marker(marker, admission, registration, slot, expected_roster_sha256, admission_body):
     if (marker.get("status") != "started"
             or marker.get("registrationSha256") != registration.sha256
             or marker.get("slot") != slot.as_dict()
@@ -689,6 +801,49 @@ def _validate_start_marker(marker, admission, registration, slot, expected_roste
     _timestamp(start_attestation.get("verifiedAt"), "startVerifiedAt")
     if not isinstance(marker.get("measuredCosts"), dict) or not isinstance(marker.get("stopState"), dict):
         raise SessionError("started marker lacks fresh cost/stop observations")
+    if not isinstance(marker.get("minimumObservedAt"), str):
+        raise SessionError("started marker lacks its source observation floor")
+    host_record = next(item for item in registration.data["hosts"] if item["name"] == slot.host)
+    host_identity = host_record.get("modelIdentity")
+    if host_identity is not None:
+        try:
+            observation = model_identity_policy.observation_from_dict(marker.get("modelIdentityObservation"))
+            model_identity_policy.check_observation(observation, host_identity,
+                                                    now=observation.observed_at_utc)
+        except model_identity_policy.ModelIdentityError as exc:
+            raise SessionError("started marker model identity observation is missing, malformed, or drifted") from exc
+        admission_observation = admission_body.get("modelIdentityObservation")
+        if not isinstance(admission_observation, dict):
+            raise SessionError("admission lacks its bound model identity observation")
+        admitted_model_observation = model_identity_policy.observation_from_dict(admission_observation)
+        if observation.observed_at_utc <= admitted_model_observation.observed_at_utc:
+            raise SessionError("started model observation does not follow admission observation")
+        if _parse_timestamp(start_attestation.get("verifiedAt")) < observation.observed_at_utc:
+            raise SessionError("start attestation predates its bound model observation")
+        model_identity_fields = {
+            "modelIdentityObservationAtAdmission": admission_observation,
+            "modelIdentityObservationAtStart": observation.as_dict(),
+        }
+    elif "modelIdentityObservation" in marker:
+        raise SessionError("unregistered model identity observation in started marker")
+    else:
+        model_identity_fields = {}
+    reconstructed_subject = {
+        "schemaVersion": SESSION_SCHEMA,
+        "registrationSha256": registration.sha256,
+        "slot": slot.as_dict(),
+        "attemptId": admission.attempt_id,
+        "admissionReceiptSha256": admission.receipt_sha256,
+        "admissionSubjectSha256": admission.subject_sha256,
+        "ledgerSha256": marker.get("priorLedgerSha256"),
+        "rosterSha256": marker.get("rosterSha256"),
+        "measuredCosts": marker.get("measuredCosts"),
+        "stopState": marker.get("stopState"),
+        "minimumObservedAt": marker.get("minimumObservedAt"),
+        **model_identity_fields,
+    }
+    if _canonical_sha256(reconstructed_subject) != marker.get("startSubjectSha256"):
+        raise SessionError("started marker observations differ from the attested start subject")
     event = marker.get("attemptedEvent")
     if (not isinstance(event, dict) or event.get("slotId") != slot.slot_id
             or event.get("status") != "attempted" or event.get("attemptId") != admission.attempt_id
@@ -745,6 +900,37 @@ def _validate_outcome_record(record, admission, registration, slot, admission_bo
         "startedMarkerSha256": started["recordSha256"],
         "rawOutcomeSha256": raw_sha,
     }
+    host_record = next(item for item in registration.data["hosts"] if item["name"] == slot.host)
+    host_identity = host_record.get("modelIdentity")
+    if host_identity is not None:
+        try:
+            before = model_identity_policy.observation_from_dict(record.get("modelIdentityObservationBefore"))
+            after = model_identity_policy.observation_from_dict(record.get("modelIdentityObservationAfter"))
+            model_identity_policy.check_observation(before, host_identity, now=before.observed_at_utc)
+            model_identity_policy.check_observation(after, host_identity, now=after.observed_at_utc)
+            completion_boundary = _parse_timestamp(record.get("executionCompletedAt"))
+            started_at = _parse_timestamp(started.get("startedAt"))
+            if completion_boundary < started_at:
+                raise SessionError("execution completion boundary predates durable start")
+            if before.as_dict() != started.get("modelIdentityObservation"):
+                raise SessionError("outcome pre-dispatch observation differs from durable start evidence")
+            if after.observed_at_utc < completion_boundary:
+                raise SessionError("post-execution model observation predates its bound completion boundary")
+            if after.observed_at_utc <= before.observed_at_utc:
+                raise SessionError("post-execution model observation does not follow pre-dispatch evidence")
+            if _parse_timestamp(attested.verified_at) < after.observed_at_utc:
+                raise SessionError("outcome attestation predates its bound post-execution model observation")
+        except model_identity_policy.ModelIdentityError as exc:
+            raise SessionError("outcome model identity evidence is missing, malformed, or drifted") from exc
+        except SessionError:
+            raise
+        except (TypeError, ValueError) as exc:
+            raise SessionError("outcome execution/model observation ordering is malformed") from exc
+        subject["executionCompletedAt"] = _iso_utc(completion_boundary)
+        subject["modelIdentityObservationBefore"] = before.as_dict()
+        subject["modelIdentityObservationAfter"] = after.as_dict()
+    elif "modelIdentityObservationBefore" in record or "modelIdentityObservationAfter" in record:
+        raise SessionError("unregistered model identity observation in outcome receipt")
     _validate_verified_outcome(verified, attested, _canonical_sha256(subject), slot, registration)
     if record.get("outcome") != _outcome_dict(verified):
         raise SessionError("sealed outcome differs from its normalized form")

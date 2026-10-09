@@ -4,7 +4,7 @@
 `examples/tooling/registration-draft.json` binds the proposed eighteen fixture
 definitions and six prompts to the pinned source inventory. It is intentionally
 invalid for capture: no owner approval, source-rights decision, provider opt-in,
-exact model-build selection, EUR rate card, two human reviewers,
+exact provider model identity selection, EUR rate card, two human reviewers,
 or frozen rubric is supplied. The numeric caps in [BUDGET.md](BUDGET.md) were
 approved separately; model names remain recommendations. Cap approval does not
 approve this registration. A later owner decision authorizes only existing
@@ -16,10 +16,20 @@ measurements or decisions.
 Copy the draft to a private registration workspace after freezing the integrated
 candidate. Record its full Git commit and the SHA-256 of the retained candidate
 artifact (state the artifact and hashing procedure). Record wheel/sdist and skill
-bundle hashes separately. Fill exact host/model/OS/SDK versions and immutable
-records, then obtain protocol, rights, budget and owner review before observations.
+bundle hashes separately. Fill exact host/OS/SDK versions and explicit provider
+model identities, then obtain protocol, rights, budget and owner review before observations.
 Do not infer acceptance from the shape validator or turn a draft into `approved`
 without an actual decision record.
+
+The owner approved the [observable model identity interpretation](../../specs/044-ai-tooling-evaluation/model-identity-clarification.md)
+on 2026-10-09. Use immutable provider identifiers when exposed. Otherwise freeze
+the requested selector/effort, native executable build/hash, dated catalog artifact
+and entry hashes, effective selection/configuration and authenticated account/provider
+route; record the backend identity as unavailable. Keep route/catalog metadata
+separate from model-build fields. Requested and host-reported selectors are separate
+observations. Observable drift requires a new reviewed registration and separate
+cohort; hidden backend revisions remain an explicit reproducibility limit. This
+approves one interpretation only; all 108 slots and other approvals remain required.
 
 Fixture registration hashes identify canonical definitions; materialization also
 records the exact runtime input hash, temporary repository identity, base/operation
@@ -59,6 +69,12 @@ cleanup does not guarantee cancellation of a provider request already sent.
 Historical browser checks are insufficient for this live observer. Exact native
 account identity, supported host builds and authoritative ongoing observations
 remain capture prerequisites; a synthetic observer cannot supply them.
+The [v2 monetary representation](MONEY.md) is experimental. The full registration
+must review allocated subscription value and human-cost applicability separately
+from additional cash; no allocation method or reviewer-fee zero is approved here.
+A subscription policy cannot support positive full-cost utility from legacy scalar
+EUR data alone. Preserve unknowns and all 108 slots.
+
 Register numeric EUR/token/total-wall/RSS/disk caps, rates and provider choice
 before capture; retain unavailable values as null. Stop on incidents, exceeded
 caps, missing immutable inputs, candidate/build drift, unrecoverable transitions

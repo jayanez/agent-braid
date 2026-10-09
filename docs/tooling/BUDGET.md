@@ -22,7 +22,10 @@ an intentionally invalid draft; private decision records retain the actual repli
 
 Proposed host models are `gpt-6-luna` with medium effort and
 `claude-sonnet-5-5` with medium effort. Validate actual host support and freeze
-exact builds before registration; no model session was run to establish support.
+exact native host builds and explicit provider model identities before registration;
+use immutable provider build IDs whenever exposed, otherwise the approved observable
+selector/effort/catalog/configuration/account route with backend identity unavailable.
+No model session was run to establish support.
 
 For historical reference only, at the previously reviewed standard API rates,
 [Luna](https://developers.openai.com/api/docs/models/gpt-6-luna) costs USD

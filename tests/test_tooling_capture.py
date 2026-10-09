@@ -20,6 +20,7 @@ from unittest.mock import patch
 from agent_braid import tooling_evaluation as evaluation
 from agent_braid import tooling_capture as capture
 from agent_braid import tooling_subscription as subscription_policy
+from agent_braid import tooling_model_identity as model_identity_policy
 from agent_braid import tooling_sessions as sessions
 from tests.test_tooling_subscription import _policy
 from agent_braid.tooling_fixtures import load_inventory
@@ -37,12 +38,13 @@ class _SyntheticVerifier:
     def __init__(self, *, mismatch: bool = False):
         self.mismatch = mismatch
 
-    def attest(self, *, registration, slot, authorization, costs, stop_state, subject_sha256):
+    def attest(self, *, registration, slot, authorization, costs, stop_state, subject_sha256,
+               model_identity_observation=None):
         return capture.DecisionAttestation(
             verifier_id="synthetic-test-verifier",
             decision_sha256=_sha("synthetic decision").replace("0", "1", 1),
             subject_sha256=("f" * 64 if self.mismatch else subject_sha256),
-            verified_at="2026-10-08T10:00:00Z",
+            verified_at=datetime.now(timezone.utc).isoformat().replace("+00:00", "Z"),
         )
 
 
@@ -112,6 +114,13 @@ class CaptureAdmissionTests(unittest.TestCase):
                     "sha256": item.sha256} for item in inventory.prompts]
         hosts = []
         for host in evaluation.HOSTS:
+            selector = "synthetic-model"
+            auth_method = "chatgpt" if host == "codex" else "claude.ai"
+            effective_config = {"selector": selector, "effort": "medium",
+                "providerEndpoint": "https://api.openai.com/v1" if host == "codex" else "https://api.anthropic.com",
+                "authMethod": auth_method,
+                "hostSelection": {"source": "argv", "configRef": None, "flags": ["model-selector", "reasoning-effort"],
+                                  "argv": ["selector", "effort"]}}
             hosts.append({
                 "name": host, "version": "synthetic-host-build", "sha256": _sha("host:" + host),
                 "model": {"name": "synthetic-model", "version": "test-model-build",
@@ -188,7 +197,8 @@ class CaptureAdmissionTests(unittest.TestCase):
         return capture.AuthorizationContext(mode, "synthetic-decision-package", _sha("decision"), **extra)
 
     def _prepare(self, *, journey="analyze-interactions", verifier="default",
-                 authorization=None, costs=None, stop=None, receipt_directory=None):
+                 authorization=None, costs=None, stop=None, receipt_directory=None,
+                 model_identity_observation=None):
         slot = self._slot(journey)
         return capture.prepare_attempt(
             registration_path=self.registration_path,
@@ -201,7 +211,76 @@ class CaptureAdmissionTests(unittest.TestCase):
             stop_state=stop or self.stop,
             verifier=_SyntheticVerifier() if verifier == "default" else verifier,
             receipt_directory=receipt_directory or self.receipts,
+            model_identity_observation=model_identity_observation,
         )
+
+    def _upgrade_to_v2_route_identity(self):
+        self.registration_data["schemaVersion"] = evaluation.REGISTRATION_SCHEMA_V2
+        for host in self.registration_data["hosts"]:
+            selector = host["model"]["name"]
+            auth_method = "chatgpt" if host["name"] == "codex" else "claude.ai"
+            effective_config = {"selector": selector, "effort": "medium",
+                "providerEndpoint": "https://api.openai.com/v1" if host["name"] == "codex" else "https://api.anthropic.com",
+                "authMethod": auth_method,
+                "hostSelection": {"source": "argv", "configRef": None, "flags": ["model-selector", "reasoning-effort"],
+                                  "argv": ["selector", "effort"]}}
+            host["model"] = {"name": selector, "version": None, "sha256": None}
+            host["modelIdentity"] = {
+                "kind": "observable-requested-route", "selectorKind": "provider-alias",
+                "selector": selector, "effort": "medium",
+                "effectiveConfig": effective_config,
+                "configSha256": model_identity_policy.canonical_json_sha256(effective_config),
+                "cliBuild": {"version": host["version"], "sha256": host["sha256"]},
+                "nativeCatalogEntry": {"observedAtUtc": "2026-10-09T08:00:00Z",
+                    "sourceRef": "native-catalog", "catalogSha256": _sha("catalog:" + host["name"]),
+                    "entrySha256": _sha("entry:" + host["name"])},
+                "providerRoute": {"provider": "openai" if host["name"] == "codex" else "anthropic",
+                    "accountSha256": _sha("account:" + host["name"]), "authMethod": auth_method},
+                "backendAvailable": False, "immutableId": None,
+                "backendDigestAvailable": False, "backendSha256": None,
+            }
+        self._write_registration()
+        self.valid_registration = evaluation.validate_registration(
+            self.registration_data, expected_candidate_sha256=self.artifact_sha256,
+            expected_input_hashes=self.input_hashes)
+        self.ledger = evaluation.new_ledger(self.valid_registration)
+        self.receipts = capture.receipt_directory_for(self.valid_registration.sha256)
+        self.receipts.mkdir(mode=0o700)
+
+    def _model_observation(self, host="codex", **updates):
+        registered = next(item for item in self.registration_data["hosts"] if item["name"] == host)["modelIdentity"]
+        catalog = registered["nativeCatalogEntry"]
+        values = dict(selector_kind=registered["selectorKind"], configured_selector=registered["selector"], reported_selector=None,
+            effort=registered["effort"], config_sha256=registered["configSha256"],
+            catalog_sha256=catalog["catalogSha256"], entry_sha256=catalog["entrySha256"],
+            provider_route=registered["providerRoute"], backend_available=False, immutable_id=None,
+            backend_sha256=None,
+            observed_at_utc=datetime.now(timezone.utc), source_ref="synthetic model observer",
+            source_sha256=_sha("model observation"))
+        values.update(updates)
+        return model_identity_policy.ModelIdentityObservation(**values)
+
+    def test_v2_admission_receipt_binds_observable_model_identity_and_rejects_drift(self):
+        self._upgrade_to_v2_route_identity()
+        obs = self._model_observation()
+        admission = self._prepare(model_identity_observation=obs)
+        body = json.loads(admission.receipt_path.read_text(encoding="utf-8"))["receipt"]
+        self.assertEqual(obs.as_dict(), body["modelIdentityObservation"])
+        registered = next(host for host in self.registration_data["hosts"] if host["name"] == "codex")
+        self.assertEqual(registered["modelIdentity"], body["hostBuild"]["modelIdentity"])
+        changed = self._model_observation(config_sha256=_sha("drifted config"))
+        with self.assertRaises(capture.CaptureAdmissionError):
+            self._prepare(model_identity_observation=changed)
+        with self.assertRaises(capture.CaptureAdmissionError):
+            self._prepare()
+
+        class MutatingVerifier(_SyntheticVerifier):
+            def attest(self, **kwargs):
+                kwargs["model_identity_observation"].provider_route["accountSha256"] = _sha("mutated account")
+                return super().attest(**kwargs)
+
+        with self.assertRaisesRegex(capture.CaptureAdmissionError, "expired or drifted"):
+            self._prepare(model_identity_observation=self._model_observation(), verifier=MutatingVerifier())
 
     def test_receipt_binds_registration_candidate_input_host_prompt_and_measures(self):
         admission = self._prepare()
