@@ -329,6 +329,18 @@ def parse_host_events(
                 estimated_cost = _cost(event.get("total_cost_usd"))
                 if estimated_cost is not None:
                     cost_basis = "Claude result total_cost_usd; host estimate, not invoice"
+                if status == "error_during_execution":
+                    # Crash results may zero every usage/cost field despite prior
+                    # consumption. The result cannot establish complete totals.
+                    input_tokens = cached_tokens = output_tokens = None
+                    estimated_cost = None
+                    cost_basis = None
+                    limits.append("Claude execution-error totals may be reset after a crash; complete usage and cost are unknown.")
+                elif status == "error_max_budget_usd":
+                    # Result usage omits the response crossing the budget. The
+                    # reported total_cost_usd remains only a host estimate.
+                    input_tokens = cached_tokens = output_tokens = None
+                    limits.append("Claude budget-error usage omits the budget-crossing response; complete token totals are unknown.")
                 if status != "success":
                     error = f"Claude result subtype: {status}"
                     state = "cancelled" if "interrupt" in status or "cancel" in status else "failed"
