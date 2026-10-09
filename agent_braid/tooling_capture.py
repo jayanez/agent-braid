@@ -21,6 +21,7 @@ from typing import Any, Mapping, Protocol
 import uuid
 
 from . import tooling_evaluation as evaluation
+from . import tooling_subscription as subscription_policy
 from .tooling_fixtures import FixtureInventoryError, load_inventory
 
 
@@ -99,6 +100,7 @@ class AdmissionVerifier(Protocol):
         costs: MeasuredCosts,
         stop_state: StopState,
         subject_sha256: str,
+        subscription: subscription_policy.SubscriptionObservation | None = None,
     ) -> DecisionAttestation: ...
 
 
@@ -111,6 +113,7 @@ class AttemptAdmission:
     receipt_path: Path
     receipt_sha256: str
     subject_sha256: str
+    subscription_binding: subscription_policy.SubscriptionBinding | None = None
 
 
 def input_hashes(candidate_root: str | os.PathLike[str]) -> dict[str, str]:
@@ -150,6 +153,7 @@ def prepare_attempt(
     stop_state: StopState,
     verifier: AdmissionVerifier,
     receipt_directory: str | os.PathLike[str],
+    subscription: subscription_policy.SubscriptionObservation | None = None,
 ) -> AttemptAdmission:
     """Validate exact frozen inputs and write one private hash-bound admission.
 
@@ -215,6 +219,15 @@ def prepare_attempt(
         raise CaptureAdmissionError("measured cumulative costs do not establish cap compliance: "
                                     + "; ".join(cap_check.reasons))
 
+    binding = subscription_policy.binding_from_registration(registration, slot_id, slot.host)
+    if binding is not None:
+        try:
+            subscription_policy.check_observation(subscription, binding)
+        except subscription_policy.SubscriptionError as exc:
+            raise CaptureAdmissionError("subscription admission refused: " + str(exc)) from exc
+    elif subscription is not None:
+        raise CaptureAdmissionError("subscription observation requires a frozen billing policy")
+
     subject = {
         "schemaVersion": CAPTURE_RECEIPT_SCHEMA,
         "registrationSha256": registration.sha256,
@@ -236,15 +249,26 @@ def prepare_attempt(
             "Measured cost completeness and stop-state truth depend on verifier provenance",
         ],
     }
+    if binding is not None:
+        subject["subscription"] = subscription.as_dict()
     subject_sha256 = _sha256(_canonical_json(subject))
     try:
-        attestation = verifier.attest(
+        verification_args = dict(
             registration=registration, slot=slot, authorization=authorization,
             costs=costs, stop_state=stop_state, subject_sha256=subject_sha256,
         )
+        if binding is not None:
+            # Legacy verifiers cannot silently attest a newly constrained policy.
+            verification_args["subscription"] = subscription
+        attestation = verifier.attest(**verification_args)
     except Exception as exc:
         raise CaptureAdmissionError("trusted decision verification failed") from exc
     _validate_attestation(attestation, subject_sha256)
+    if binding is not None:
+        try:
+            subscription_policy.check_observation(subscription, binding)
+        except subscription_policy.SubscriptionError as exc:
+            raise CaptureAdmissionError("subscription observation expired during verification") from exc
     # Recheck immutable inputs after the potentially external verifier call.
     if _hash_file(artifact, MAX_ARTIFACT_BYTES) != artifact_sha256:
         raise CaptureAdmissionError("candidate artifact changed during admission")
@@ -274,7 +298,7 @@ def prepare_attempt(
     _ensure_private_store(output)
     receipt_path = output / ("slot-" + _sha256(slot_id.encode("utf-8"))[:32] + ".json")
     _write_exclusive(receipt_path, _canonical_json(receipt))
-    return AttemptAdmission(attempt_id, slot_id, receipt_path, receipt_sha256, subject_sha256)
+    return AttemptAdmission(attempt_id, slot_id, receipt_path, receipt_sha256, subject_sha256, binding)
 
 
 def _registered_slot(ledger: evaluation.EvaluationLedger, slot_id: str) -> evaluation.AttemptSlot:

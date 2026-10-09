@@ -155,6 +155,43 @@ def _complete_ledger(registration: evaluation.ValidatedRegistration, *, unknown_
 
 
 class ToolingEvaluationTests(unittest.TestCase):
+    def test_subscription_policy_is_optional_and_strict_when_present(self):
+        # Legacy registrations keep their existing identity; the opt-in policy
+        # has no effect on the independent positive total-cost cap/rate fields.
+        original = _registration()
+        legacy = _validated(original)
+        policy_registration = copy.deepcopy(original)
+        policy_registration["billingPolicy"] = {
+            "schema": "agent-braid-m45-subscription-policy-v1",
+            "mode": "included-subscription-only",
+            "additionalSpendCapEur": 0,
+            "paidApiAllowed": False,
+            "overageAllowed": False,
+            "creditsAllowed": False,
+            "autoRechargeAllowed": False,
+            "hosts": [
+                {"host": "codex", "authMethod": "chatgpt", "accountSha256": _sha("codex-account")},
+                {"host": "claude-code", "authMethod": "claude.ai", "accountSha256": _sha("claude-account")},
+            ],
+        }
+        validated = _validated(policy_registration)
+        self.assertEqual(legacy.data["costCaps"]["eur"], 25.0)
+        self.assertEqual(validated.data["billingPolicy"]["additionalSpendCapEur"], 0)
+        mutations = (
+            ("additionalSpendCapEur", 1), ("paidApiAllowed", True),
+            ("overageAllowed", True), ("creditsAllowed", True),
+            ("autoRechargeAllowed", True), ("mode", "subscription-plus-api"),
+        )
+        for field, value in mutations:
+            malformed = copy.deepcopy(policy_registration)
+            malformed["billingPolicy"][field] = value
+            with self.subTest(field=field), self.assertRaises(evaluation.EvaluationError):
+                _validated(malformed)
+        malformed = copy.deepcopy(policy_registration)
+        malformed["billingPolicy"]["hosts"][0]["authMethod"] = "api"
+        with self.assertRaises(evaluation.EvaluationError):
+            _validated(malformed)
+
     def test_registration_requires_exact_hashes_rights_provider_opt_in_and_caps(self) -> None:
         registration = _registration()
         validated = _validated(registration)

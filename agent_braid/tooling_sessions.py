@@ -442,6 +442,20 @@ def _read_admission(admission, registration, slot):
         "schemaVersion", "registrationSha256", "slot", "candidate", "registrationFileSha256",
         "fixturePromptInventorySha256", "hostBuild", "authorization", "measuredCosts", "stopState", "limits",
     }
+    from . import tooling_subscription as subscription_policy
+    binding = subscription_policy.binding_from_registration(registration, slot.slot_id, slot.host)
+    if admission.subscription_binding != binding:
+        raise SessionError("admission subscription policy differs from frozen registration")
+    if binding is not None:
+        subject_keys.add("subscription")
+        try:
+            observation = subscription_policy.observation_from_dict(body.get("subscription"))
+        except (subscription_policy.SubscriptionError, TypeError, ValueError) as exc:
+            raise SessionError("admission subscription observation is missing or malformed") from exc
+        if observation.binding != binding:
+            raise SessionError("admission subscription observation has the wrong cohort or account")
+    elif "subscription" in body:
+        raise SessionError("unregistered subscription observation in admission receipt")
     subject = {key: body.get(key) for key in subject_keys}
     if _canonical_sha256(subject) != body.get("subjectSha256"):
         raise SessionError("admission subject digest does not match its immutable receipt")

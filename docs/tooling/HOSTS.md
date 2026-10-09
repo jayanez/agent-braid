@@ -35,6 +35,14 @@ unknown route, missing model/effort, absent provider opt-in, unresolved
 isolation evidence, stale configuration/binary identity, or missing required
 attestation fails before handoff. This code does not create or refresh any of
 those facts. A failed or ambiguous started attempt is never retried.
+For a frozen subscription-only admission, the exact account/cohort/slot binding
+is carried into the process supervisor. Its child environment permits only
+`PATH`, `LANG`, `LC_ALL`, `TMPDIR` and `CLAUDE_CONFIG_DIR`; provider keys, routing,
+proxy and loader overrides refuse. This reduces configuration fallback paths;
+it does not authenticate the selected native account. The preparation verifier
+must verify the effective route and authentication, and the trusted supervisor
+observer must supply fresh account, included-quota and paid-usage facts. See
+[REGISTRATION.md](REGISTRATION.md) and [SUPERVISOR.md](SUPERVISOR.md).
 
 ## CLI command profiles
 

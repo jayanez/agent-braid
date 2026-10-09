@@ -3,6 +3,8 @@
 from __future__ import annotations
 
 import copy
+from dataclasses import replace
+from datetime import datetime, timezone
 import hashlib
 import json
 import os
@@ -17,6 +19,9 @@ from unittest.mock import patch
 
 from agent_braid import tooling_evaluation as evaluation
 from agent_braid import tooling_capture as capture
+from agent_braid import tooling_subscription as subscription_policy
+from agent_braid import tooling_sessions as sessions
+from tests.test_tooling_subscription import _policy
 from agent_braid.tooling_fixtures import load_inventory
 
 
@@ -213,6 +218,63 @@ class CaptureAdmissionTests(unittest.TestCase):
         self.assertEqual("admitted-not-started", body["status"])
         self.assertEqual("not-started", self.ledger.current_status(admission.slot_id))
         self.assertEqual(0o600, stat.S_IMODE(admission.receipt_path.stat().st_mode))
+
+    def _subscription_registration(self):
+        self.registration_data["billingPolicy"] = _policy()
+        self._write_registration()
+        self.valid_registration = evaluation.validate_registration(
+            self.registration_data, expected_candidate_sha256=self.artifact_sha256,
+            expected_input_hashes=self.input_hashes)
+        self.ledger = evaluation.new_ledger(self.valid_registration)
+        self.receipts = capture.receipt_directory_for(self.valid_registration.sha256)
+        binding = subscription_policy.binding_from_registration(
+            self.valid_registration, self._slot().slot_id, "codex")
+        return subscription_policy.SubscriptionObservation(
+            binding, "chatgpt", True, False, False, False, False, True, 0,
+            "synthetic-account-billing-source", _sha("synthetic subscription"),
+            datetime.now(timezone.utc))
+
+    def _prepare_subscription(self, observation, verifier):
+        return capture.prepare_attempt(
+            registration_path=self.registration_path, candidate_root=self.candidate,
+            candidate_artifact=self.artifact, ledger=self.ledger, slot_id=self._slot().slot_id,
+            authorization=self._authorization("analyze-interactions"), costs=self.costs,
+            stop_state=self.stop, verifier=verifier, receipt_directory=self.receipts,
+            subscription=observation)
+
+    def test_subscription_proof_is_bound_and_explicitly_verified(self):
+        observation = self._subscription_registration()
+        seen = []
+        class Verifier(_SyntheticVerifier):
+            def attest(self, *, subscription, **kwargs):
+                seen.append(subscription)
+                return super().attest(**kwargs)
+        admitted = self._prepare_subscription(observation, Verifier())
+        self.assertEqual(seen, [observation])
+        self.assertEqual(admitted.subscription_binding, observation.binding)
+        body = json.loads(admitted.receipt_path.read_text())["receipt"]
+        self.assertEqual(body["subscription"], observation.as_dict())
+        self.assertEqual(len(self.ledger.slots), 108)
+        self.assertEqual(self.ledger.current_status(admitted.slot_id), "not-started")
+        self.assertEqual(sessions._read_admission(admitted, self.valid_registration, self._slot())["receipt"], body)
+        stripped = replace(admitted, subscription_binding=None)
+        with self.assertRaisesRegex(sessions.SessionError, "subscription policy differs"):
+            sessions._read_admission(stripped, self.valid_registration, self._slot())
+        changed = replace(admitted, subscription_binding=replace(observation.binding, account_sha256="9" * 64))
+        with self.assertRaisesRegex(sessions.SessionError, "subscription policy differs"):
+            sessions._read_admission(changed, self.valid_registration, self._slot())
+
+    def test_subscription_missing_paid_quota_and_legacy_verifier_refuse(self):
+        observation = self._subscription_registration()
+        for unsafe in (None, replace(observation, quota_available=False),
+                       replace(observation, api_billing_enabled=True),
+                       replace(observation, additional_spend_eur=None)):
+            with self.subTest(unsafe=unsafe):
+                with self.assertRaisesRegex(capture.CaptureAdmissionError, "subscription admission refused"):
+                    self._prepare_subscription(unsafe, _SyntheticVerifier())
+        with self.assertRaisesRegex(capture.CaptureAdmissionError, "trusted decision verification failed"):
+            self._prepare_subscription(observation, _SyntheticVerifier())
+        self.assertFalse(self.receipts.exists())
 
     def test_each_privileged_journey_requires_exact_existing_context(self):
         for journey in ("execute-granted-batch-verify", "inspect-recover-interruption"):

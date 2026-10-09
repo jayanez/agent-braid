@@ -22,6 +22,7 @@ from agent_braid.tooling_supervisor import (
     TelemetrySnapshot,
     run_supervised,
 )
+from agent_braid.tooling_subscription import SubscriptionBinding, SubscriptionObservation
 
 
 def _sha(value: bytes | str) -> str:
@@ -35,14 +36,22 @@ def _utc(delta_seconds: float = 0.0) -> str:
 
 
 def _snapshot(*, eur=0.0, tokens=0, wall=0.1, rss=0, disk=0, observed_at=None,
-              incident=False, unrecoverable=False, failures=0):
+              incident=False, unrecoverable=False, failures=0, subscription=None):
     values = {"eur": eur, "tokens": tokens, "input_tokens": tokens, "output_tokens": 0,
               "retry_tokens": 0, "wall_seconds": wall, "rss_bytes": rss, "disk_bytes": disk}
     costs = capture.MeasuredCosts(values, "synthetic measurement", _sha(json.dumps(values)),
                                  observed_at or _utc())
     stop = capture.StopState(incident, unrecoverable, failures, "synthetic stop source",
                              _sha("stop"), observed_at or _utc())
-    return TelemetrySnapshot(costs, stop)
+    return TelemetrySnapshot(costs, stop, subscription)
+
+
+def _subscription(binding, *, auth="chatgpt", quota=True, extra=False, credits=False,
+                  recharge=False, api=False, observed_at=None):
+    return SubscriptionObservation(binding, auth, True, extra, credits, recharge, api,
+                                   quota, 0, "authenticated-account-settings",
+                                   _sha("subscription-proof"),
+                                   datetime.fromisoformat((observed_at or _utc()).replace("Z", "+00:00")))
 
 
 class ToolingSupervisorTests(unittest.TestCase):
@@ -60,6 +69,8 @@ class ToolingSupervisorTests(unittest.TestCase):
         self.python = Path(sys.executable).resolve(strict=True)
         self.python_sha = _sha(self.python.read_bytes())
         self.output_counter = 0
+        self.subscription_binding = SubscriptionBinding(
+            "codex", _sha("registration"), "slot-001", _sha("policy"), _sha("account"))
 
     def request(self, code, *, stdin=None, max_output=1024 * 1024, timeout=2.0,
                 executable=None, executable_sha=None, output_root=None):
@@ -99,6 +110,58 @@ class ToolingSupervisorTests(unittest.TestCase):
         receipt = json.loads(result.receipt_path.read_text())
         self.assertNotIn("env", receipt)
         self.assertNotIn("PYTHONUNBUFFERED", result.receipt_path.read_text())
+
+    def test_subscription_only_preflight_and_periodic_stop(self):
+        binding = self.subscription_binding
+
+        # A valid live observer can run a short local process, and the receipt
+        # retains the policy binding and bounded source proof without a raw ref.
+        req = ProcessRequest(**{**self.request("raise SystemExit(0)").__dict__,
+                               "subscription_binding": binding})
+        result = run_supervised(req, self.caps,
+                                lambda _identity, _elapsed: _snapshot(
+                                    subscription=_subscription(binding)),)
+        self.assertTrue(result.completed, result)
+        receipt = json.loads(result.receipt_path.read_text())
+        self.assertEqual(binding.as_dict(), receipt["subscriptionBinding"])
+        proof = receipt["lastSnapshot"]["subscription"]
+        self.assertEqual(_sha("authenticated-account-settings"), proof["sourceRefSha256"])
+        self.assertNotIn("sourceRef", proof)
+
+        # Invalid initial state refuses before Popen.
+        for label, value in (
+            ("missing", None),
+            ("auth", _subscription(binding, auth="unknown")),
+            ("paid", _subscription(binding, extra=True)),
+        ):
+            with self.subTest(stage="preflight", label=label):
+                req = ProcessRequest(**{**self.request("raise SystemExit(0)").__dict__,
+                                       "subscription_binding": binding})
+                result = run_supervised(req, self.caps,
+                                        lambda _identity, _elapsed, value=value: _snapshot(subscription=value))
+                self.assertEqual("refused", result.status)
+                self.assertFalse(result.launched)
+
+        # A fresh but depleted or paid-enabled periodic observation terminates
+        # the owned process group and cannot produce a completed result.
+        for label, value in (
+            ("quota", _subscription(binding, quota=False)),
+            ("auth", _subscription(binding, auth="unknown")),
+            ("paid", _subscription(binding, api=True)),
+        ):
+            with self.subTest(stage="periodic", label=label):
+                calls = {"count": 0}
+                def observer(identity, elapsed, value=value):
+                    calls["count"] += 1
+                    sub = _subscription(binding) if identity is None else value
+                    return _snapshot(wall=0.1 + elapsed, subscription=sub)
+                req = ProcessRequest(**{**self.request("import time; time.sleep(10)").__dict__,
+                                       "subscription_binding": binding})
+                result = run_supervised(req, self.caps, observer)
+                self.assertTrue(result.launched)
+                self.assertEqual("subscription-policy-violation", result.status)
+                self.assertIsNotNone(result.returncode)
+                self.assertGreaterEqual(calls["count"], 2)
 
     def test_output_overflow_preserves_bounded_partial_and_stops_group(self):
         request = self.request("import os,time; [os.write(1,b'x'*8192) for _ in range(1000)]; time.sleep(5)",

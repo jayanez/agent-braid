@@ -29,6 +29,9 @@ approval, budget, observation, or utility result is supplied here.
   input/output rates for each registered host/model pair and each rate record's
   source ID/hash;
 - positive, finite EUR, token, wall-time, RSS and disk caps;
+- an optional exact subscription-only `billingPolicy`, when that route is
+  selected, with two account hashes, host authentication methods, zero additional
+  spend and paid API/overage/credits/auto-recharge permissions all false;
 - two distinct independent human reviewers and a frozen, hashed rubric with
   thresholds of at least 16/18 successful arm-C journeys per host and 18/18
   correct arm-C authority outcomes per host.
@@ -40,6 +43,12 @@ authenticate a person, source license, provider consent, owner approval, or host
 observation. A valid object is not an authorization to capture data.
 Any change to the registration changes its canonical digest and requires a new
 reviewed registration before a cohort can resume.
+Legacy registrations without this optional policy remain structurally supported;
+they do not satisfy the owner's later subscription-only authorization. New M4.5
+capture must use the chosen frozen policy. Policy shape checks do not authenticate
+accounts or quota, and additional spending at zero does not make total-cost fields
+zero or complete. Admission and supervision require fresh trusted observations;
+see [REGISTRATION.md](REGISTRATION.md).
 
 An intentionally invalid template looks like this:
 

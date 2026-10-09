@@ -7,7 +7,10 @@ invalid for capture: no owner approval, source-rights decision, provider opt-in,
 exact model-build selection, EUR rate card, two human reviewers,
 or frozen rubric is supplied. The numeric caps in [BUDGET.md](BUDGET.md) were
 approved separately; model names remain recommendations. Cap approval does not
-approve this registration or provider use. Missing values are not zero-cost
+approve this registration. A later owner decision authorizes only existing
+subscription use within included quotas, with EUR 0 additional spend; read-only
+authentication and visible billing controls have been checked privately. That
+decision does not approve the full registration or source rights. Missing values are not zero-cost
 measurements or decisions.
 
 Copy the draft to a private registration workspace after freezing the integrated
@@ -42,6 +45,20 @@ bounded process supervisor are implemented with synthetic process controls.
 Authentic decision/outcome verifiers, complete live cost sources, actual host
 provenance and verified configuration/isolation remain required before W18/W19.
 The software does not authenticate those external facts.
+For the owner's subscription-only route, freeze an exact `billingPolicy` using
+`agent-braid-m45-subscription-policy-v1`: both host account hashes and authentication
+methods, `mode: included-subscription-only`, `additionalSpendCapEur: 0`, and all
+paid API, overage, credits and auto-recharge permissions false. Keep numeric
+total-cost caps and cost rates separate. The policy is bound to the registration,
+host, slot and account; changing it creates a different registration cohort.
+Admission requires a fresh subscription observation and a verifier that explicitly
+authenticates it. Host supervision checks a fresh trusted observer before launch,
+during execution and at completion. Unknown quota, authentication, extra-spend
+or paid-usage controls refuse or stop; no paid fallback is selected. Local process
+cleanup does not guarantee cancellation of a provider request already sent.
+Historical browser checks are insufficient for this live observer. Exact native
+account identity, supported host builds and authoritative ongoing observations
+remain capture prerequisites; a synthetic observer cannot supply them.
 Register numeric EUR/token/total-wall/RSS/disk caps, rates and provider choice
 before capture; retain unavailable values as null. Stop on incidents, exceeded
 caps, missing immutable inputs, candidate/build drift, unrecoverable transitions
