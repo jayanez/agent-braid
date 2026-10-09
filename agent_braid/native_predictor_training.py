@@ -32,7 +32,8 @@ CALIBRATION_STEP = 0.02
 PARTITIONS = frozenset({"train", "calibration", "holdout"})
 _ID = re.compile(r"[A-Za-z0-9][A-Za-z0-9._-]{0,127}\Z")
 _HASH = re.compile(r"[0-9a-f]{64}\Z")
-_ROW_FIELDS = {"pairId", "familyId", "sessionId", "partition", "features", "label"}
+_ROW_FIELDS = {"pairId", "familyId", "sessionId", "duplicateGroupId",
+               "partition", "features", "label"}
 
 
 def _keys(value: Any, expected: set[str]) -> None:
@@ -71,12 +72,14 @@ def _validate_rows(rows: Any) -> list[dict]:
     pairs: set[str] = set()
     family_partitions: dict[str, str] = {}
     session_partitions: dict[str, str] = {}
+    duplicate_group_partitions: dict[str, str] = {}
     classes = {partition: set() for partition in PARTITIONS}
     for row in rows:
         _keys(row, _ROW_FIELDS)
         pair = _id(row["pairId"], "pair identity")
         family = _id(row["familyId"], "family identity")
         session = _id(row["sessionId"], "session identity")
+        duplicate_group = _id(row["duplicateGroupId"], "duplicate-group identity")
         if pair in pairs:
             raise ValueError("duplicate pair identity")
         pairs.add(pair)
@@ -84,7 +87,9 @@ def _validate_rows(rows: Any) -> list[dict]:
         if type(partition) is not str or partition not in PARTITIONS:
             raise ValueError("invalid partition")
         for identity, mapping, label in ((family, family_partitions, "family"),
-                                         (session, session_partitions, "session")):
+                                         (session, session_partitions, "session"),
+                                         (duplicate_group, duplicate_group_partitions,
+                                          "duplicate group")):
             previous = mapping.setdefault(identity, partition)
             if previous != partition:
                 raise ValueError(f"{label} crosses partitions")
@@ -100,6 +105,7 @@ def _validate_rows(rows: Any) -> list[dict]:
                 raise ValueError("label must be 0, 1, or None")
             classes[partition].add(label)
         checked.append({"pairId": pair, "familyId": family, "sessionId": session,
+                        "duplicateGroupId": duplicate_group,
                         "partition": partition, "features": features, "label": label})
     for partition in ("train", "calibration"):
         if classes[partition] != {0, 1}:
@@ -108,6 +114,10 @@ def _validate_rows(rows: Any) -> list[dict]:
         raise ValueError("training partition is required")
     if "calibration" not in {row["partition"] for row in checked}:
         raise ValueError("calibration partition is required")
+    calibration_families = {row["familyId"] for row in checked
+                            if row["partition"] == "calibration"}
+    if len(calibration_families) != 1:
+        raise ValueError("candidate calibration requires exactly one family")
     return checked
 
 
@@ -256,6 +266,7 @@ def fit(rows: Any, *, model_id: str, dataset_kind: str,
         "inputCommitments": {"kind": "sha256-canonical-json-v1",
                              "train": digest(train_inputs),
                              "calibration": digest(calibration_inputs)},
+        "calibrationFamilyWeighting": "single-family-rows-founder-selected-pending-review",
         "calibration": calibration,
         "coverageReceipt": receipt,
     }
@@ -266,7 +277,8 @@ def fit(rows: Any, *, model_id: str, dataset_kind: str,
 
 def validate_artifact(artifact: Any, *, expected_hash: str, expected_model_id: str) -> dict:
     _keys(artifact, {"version", "featureVersion", "datasetKind", "provenance", "modelId", "normalization", "weights", "bias",
-                     "optimizer", "inputCommitments", "calibration", "coverageReceipt"})
+                     "optimizer", "inputCommitments", "calibrationFamilyWeighting",
+                     "calibration", "coverageReceipt"})
     if artifact["version"] != ARTIFACT_VERSION or artifact["featureVersion"] != FEATURE_VERSION:
         raise ValueError("unsupported learned artifact or feature version")
     if artifact["datasetKind"] != "synthetic":
@@ -301,6 +313,8 @@ def validate_artifact(artifact: Any, *, expected_hash: str, expected_model_id: s
                    for name in ("train", "calibration"))):
         raise ValueError("invalid sorted-input commitments")
     _validate_calibration_artifact(artifact["calibration"])
+    if artifact["calibrationFamilyWeighting"] != "single-family-rows-founder-selected-pending-review":
+        raise ValueError("unsupported calibration-family weighting")
     receipt = artifact["coverageReceipt"]
     _keys(receipt, {"kind", "familyCounts", "knownTotal", "holdoutPositive", "holdoutNegative",
                     "satisfiesRealReadiness"})

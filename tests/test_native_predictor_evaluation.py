@@ -10,12 +10,14 @@ from agent_braid.native_predictor_evaluation import (
     permute_training_labels,
 )
 from agent_braid.native_predictor import FEATURES
-from agent_braid.native_predictor_training import digest, fit, score_request
+from agent_braid.native_predictor_training import digest, fit, prepare_request, score
 from agent_braid.structured_exchange import ROOT, VERSION
 
 
 def _row(pair, family, a, b):
-    return {"pairId": pair, "familyId": family, "partition": "holdout",
+    return {"pairId": pair, "familyId": family, "sessionId": f"{pair}-session",
+            "duplicateGroupId": f"duplicate-{pair}",
+            "partition": "holdout",
             "request": {"model": VERSION, "base": [{"id": "x", "value": "X"},
                                                       {"id": "y", "value": "Y"}], "operations": [
                 {"id": f"{pair}-op-a", "kind": "insert", "anchorId": a, "newId": f"{pair}-new-a", "value": "alpha"},
@@ -34,7 +36,7 @@ class NativePredictorEvaluationTests(unittest.TestCase):
 
     def test_floor_budget_ties_and_verified_usefulness_bounds(self):
         # A tied scorer preserves inventory order; floor(.25 * 4) calls one.
-        report = self.run_eval(lambda _row, _prepared: 0.0)
+        report = self.run_eval(lambda _vector: 0.0)
         baseline = report["budgets"]["baseline"]["25"]
         self.assertEqual(baseline["budgetCeiling"], 1)
         self.assertEqual(baseline["actualVerifierCalls"], 1)
@@ -48,7 +50,7 @@ class NativePredictorEvaluationTests(unittest.TestCase):
 
     def test_abstentions_use_no_calls_and_continue_down_ranking(self):
         calls = []
-        def scorer(row, _prepared):
+        def scorer(_vector):
             index = len(calls) % len(self.inventory)
             calls.append(index)
             return None if index == 0 else {"status": "proposal", "score": 10 if index == 1 else 0}
@@ -60,35 +62,75 @@ class NativePredictorEvaluationTests(unittest.TestCase):
 
     def test_label_and_family_fields_are_not_passed_to_scorer_or_preparer(self):
         seen = []
-        def scorer(row, prepared):
-            self.assertEqual(set(row), {"request"})
-            self.assertNotIn("familyId", row)
-            self.assertNotIn("annotation1", row)
-            self.assertNotIn("label", row)
-            self.assertEqual(prepared, "prepared")
-            seen.append(row["request"])
+        def scorer(vector):
+            self.assertEqual(set(vector), {"version", "features"})
+            self.assertEqual(set(vector["features"]), set(FEATURES))
+            self.assertNotIn("request", vector)
+            self.assertNotIn("inputHash", vector)
+            seen.append(vector)
             return 1
         def preparation(row):
             self.assertEqual(set(row), {"request"})
             self.assertNotIn("annotation1", row)
             self.assertNotIn("label", row)
-            return "prepared"
+            return prepare_request(row["request"], source_kind="synthetic")
         report = self.run_eval(scorer, preparation=preparation)
         self.assertTrue(seen)
         self.assertEqual(report["sourceKind"], "synthetic")
         self.assertFalse(report["executionAuthorization"])
         self.assertEqual(report["preparationMeasurement"]["sourceExtraction"],
                          "not measured; evaluator input is already an in-memory validated request")
+        self.assertEqual(report["completeCostStatus"], "incomplete-source-extraction")
+
+    def test_source_extraction_is_measured_symmetrically_and_report_serialization_is_allocated(self):
+        inventory = [{**row, "sourceInput": copy.deepcopy(row["request"])}
+                     for row in self.inventory]
+        calls = []
+
+        def extractor(source_input):
+            calls.append(source_input)
+            return copy.deepcopy(source_input)
+
+        def scorer(vector):
+            self.assertEqual(set(vector), {"version", "features"})
+            return 1
+
+        report = evaluate(inventory, self.labels, scorer=scorer, dataset_kind="synthetic",
+                          source_extractor=extractor)
+        self.assertTrue(calls)
+        self.assertEqual(report["completeCostStatus"], "synthetic-callback-boundary-measured")
+        self.assertEqual(report["preparationMeasurement"]["sourceExtraction"],
+                         "measured per policy/budget/repetition from sourceInput")
+        for policy in ("baseline", "predictor"):
+            timing = report["budgets"][policy]["50"]["timing"]
+            self.assertGreater(timing["phaseMedianSeconds"]["sourceExtractionSeconds"], 0)
+            self.assertTrue(timing["fullCostIncludesSourceExtraction"])
+            self.assertEqual(timing["fullCostMedianSeconds"],
+                             timing["medianTotalSeconds"] + report["reportSerializationSeconds"] / 2)
+        self.assertTrue(report["finalReportSerializationIncludedInPolicyTotals"])
+
+    def test_source_extraction_refuses_drift_and_missing_input(self):
+        inventory = [{**row, "sourceInput": copy.deepcopy(row["request"])}
+                     for row in self.inventory]
+        changed = copy.deepcopy(inventory)
+        changed[0]["sourceInput"]["base"][0]["value"] = "drift"
+        with self.assertRaisesRegex(ValueError, "differs from the frozen request commitment"):
+            evaluate(changed, self.labels, scorer=lambda *_: 1, dataset_kind="synthetic",
+                     source_extractor=lambda source: source)
+        with self.assertRaisesRegex(ValueError, "sourceInput on every inventory row"):
+            evaluate(self.inventory, self.labels, scorer=lambda *_: 1, dataset_kind="synthetic",
+                     source_extractor=lambda source: source)
 
     def test_callbacks_cannot_mutate_inventory_or_verified_requests(self):
         original = self.inventory[0]["request"]["base"][0]["value"]
         def preparation(row):
+            before = copy.deepcopy(row["request"])
+            vector = prepare_request(before, source_kind="synthetic")
             row["request"]["base"][0]["value"] = "prep mutation"
-            return row["request"]
-        def scorer(row, prepared):
-            self.assertEqual(row["request"]["base"][0]["value"], original)
-            prepared["base"][0]["value"] = "scorer mutation"
-            row["request"]["operations"][0]["value"] = "scorer mutation"
+            return vector
+        def scorer(vector):
+            self.assertNotIn("request", vector)
+            vector["features"]["baseSize"] = 3
             return 1
         report = self.run_eval(scorer, preparation=preparation)
         self.assertEqual(self.inventory[0]["request"]["base"][0]["value"], original)
@@ -100,18 +142,19 @@ class NativePredictorEvaluationTests(unittest.TestCase):
                              annotationHidden=0, reviewerNote="private") for row in self.inventory]
         def assert_blind(row):
             self.assertEqual(set(row), {"request"})
-        def scorer(row, _prepared):
-            assert_blind(row)
+        def scorer(vector):
+            self.assertEqual(set(vector), {"version", "features"})
+            self.assertEqual(set(vector["features"]), set(FEATURES))
             return 1
         def preparation(row):
             assert_blind(row)
-            return row["request"]
+            return prepare_request(row["request"], source_kind="synthetic")
         evaluate(hostile_rows, self.labels, scorer=scorer, preparation=preparation,
                  dataset_kind="synthetic")
 
     def test_annotations_and_calibration_are_descriptive_and_optional(self):
         inventory = [dict(row, annotation1=1, annotation2=0, adjudicatedLabel=None) for row in self.inventory]
-        report = evaluate(inventory, self.labels, scorer=lambda _r, _p: 0.1,
+        report = evaluate(inventory, self.labels, scorer=lambda _vector: 0.1,
                           dataset_kind="synthetic")
         self.assertEqual(report["annotationAgreementByFamily"]["f1"]["rawDisagreements"], 2)
         metric = report["budgets"]["predictor"]["50"]["calibration"]
@@ -119,7 +162,7 @@ class NativePredictorEvaluationTests(unittest.TestCase):
         self.assertIn("reason", metric)
 
     def test_calibrated_probabilities_get_brier_and_sparse_bins(self):
-        report = self.run_eval(lambda _r, _p: {"status": "proposal", "score": 0.5, "probability": 0.7})
+        report = self.run_eval(lambda _vector: {"status": "proposal", "score": 0.5, "probability": 0.7})
         metric = report["budgets"]["predictor"]["100"]["calibration"]
         self.assertIsNotNone(metric["brier"])
         self.assertEqual(len(metric["reliabilityBins"]), 5)
@@ -161,8 +204,9 @@ class NativePredictorEvaluationTests(unittest.TestCase):
         default = _default_verifier(self.inventory[0]["request"])
         self.assertIs(default["executionAuthorization"], False)
 
-    def test_negative_control_refits_from_seed_zero_permuted_train_labels_only(self):
+    def test_permuted_label_control_uses_canonical_train_only_refit(self):
         training = [{"pairId": f"t{i}", "familyId": "train-family", "sessionId": f"s{i}",
+                     "duplicateGroupId": f"duplicate-t{i}",
                      "partition": "train", "features": {
                          "baseSize": i, "sameAnchor": i % 2, "anchorDistance": i,
                          "firstLength": i + 1, "secondLength": i + 2, "lexicalOverlap": i / 5,
@@ -172,31 +216,48 @@ class NativePredictorEvaluationTests(unittest.TestCase):
         permuted = permute_training_labels(training, train_labels)
         self.assertEqual(permuted, permute_training_labels(training, train_labels))
         self.assertEqual([r["label"] for r in permuted].count(None), 1)
-        received = []
-        def factory(rows):
-            received.extend(rows)
-            self.assertTrue(all(row["partition"] == "train" for row in rows))
-            self.assertFalse(any(row["pairId"].startswith("p") for row in rows))
-            return lambda _row, _prepared: 0.5
+        calibration = [{"pairId": f"c{i}", "familyId": "calibration-family",
+                        "sessionId": f"cs{i}", "duplicateGroupId": f"duplicate-c{i}",
+                        "partition": "calibration",
+                        "features": {"baseSize": i + 5, "sameAnchor": i % 2,
+                                     "anchorDistance": i + 5, "firstLength": i + 6,
+                                     "secondLength": i + 7, "lexicalOverlap": (i + 1) / 5}}
+                       for i in range(2)]
         report = evaluate(self.inventory, self.labels, scorer=lambda *_: 1,
                           dataset_kind="synthetic", training_inventory=training,
-                          training_labels=train_labels, negative_control_scorer_factory=factory)
+                          training_labels=train_labels, calibration_inventory=calibration,
+                          calibration_labels={"c0": 1, "c1": 0})
         control = report["permutedLabelNegativeControl"]
-        self.assertEqual(control["status"], "available-synthetic-descriptive-only")
+        self.assertEqual(control["status"], "available")
         self.assertEqual(control["seed"], 0)
-        self.assertFalse(control["factoryReceivedHoldoutRowsOrLabels"])
-        self.assertTrue(received)
+        self.assertTrue(control["fitProvenanceVerified"])
+        self.assertTrue(control["trainingAssignmentChanged"])
+        self.assertTrue(control["classCountsPreserved"])
+        self.assertFalse(control["holdoutLabelsPermuted"])
+        self.assertFalse(control["holdoutRowsOrLabelsUsedForFit"])
+        self.assertFalse(control["factoryUsed"])
+        self.assertEqual(set(control["metricsByBudget"]), {"25", "50", "100"})
+        self.assertEqual(control["metricsByBudget"]["50"]["budgetCeiling"], 2)
+        self.assertEqual(control["metricsByBudget"]["50"]["actualVerifierCalls"], 2)
+        self.assertEqual(len(control["artifactHash"]), 64)
+        self.assertEqual(control["trainingInputCommitment"], digest(permuted))
+        expected_calibration = [{**row, "label": {"c0": 1, "c1": 0}[row["pairId"]]}
+                                for row in calibration]
+        self.assertEqual(control["calibrationInputCommitment"], digest(expected_calibration))
+        self.assertGreaterEqual(control["fitSeconds"], 0)
         features = {name: 0 for name in ("baseSize", "sameAnchor", "anchorDistance",
                                          "firstLength", "secondLength", "lexicalOverlap")}
         binary_train = [{"pairId": "left", "familyId": "f", "sessionId": "s1",
+                         "duplicateGroupId": "duplicate-left",
                          "partition": "train", "features": features},
                         {"pairId": "right", "familyId": "f", "sessionId": "s2",
+                         "duplicateGroupId": "duplicate-right",
                          "partition": "train", "features": features}]
         binary = permute_training_labels(binary_train, {"left": 0, "right": 1})
         self.assertEqual({row["label"] for row in binary}, {0, 1})
         self.assertNotEqual([row["label"] for row in binary], [0, 1])
 
-    def test_negative_control_is_unavailable_without_a_refit_factory(self):
+    def test_negative_control_is_unavailable_without_separate_fit_inputs(self):
         report = self.run_eval(lambda *_: 1)
         self.assertEqual(report["permutedLabelNegativeControl"]["status"], "unavailable")
         self.assertFalse(report["permutedLabelNegativeControl"]["holdoutLabelsPermuted"])
@@ -205,26 +266,96 @@ class NativePredictorEvaluationTests(unittest.TestCase):
         features = {name: 0 for name in ("baseSize", "sameAnchor", "anchorDistance",
                                          "firstLength", "secondLength", "lexicalOverlap")}
         training = [{"pairId": "t0", "familyId": "f", "sessionId": "s0",
+                     "duplicateGroupId": "duplicate-t0",
                      "partition": "train", "features": features},
                     {"pairId": "t1", "familyId": "f", "sessionId": "s1",
+                     "duplicateGroupId": "duplicate-t1",
                      "partition": "train", "features": features}]
-        factory_calls = []
-        def factory(rows):
-            factory_calls.append(rows)
-            return lambda *_: 1
+        calibration = [{"pairId": "c0", "familyId": "cal", "sessionId": "cs0",
+                        "duplicateGroupId": "duplicate-c0",
+                        "partition": "calibration", "features": features},
+                       {"pairId": "c1", "familyId": "cal", "sessionId": "cs1",
+                        "duplicateGroupId": "duplicate-c1",
+                        "partition": "calibration", "features": features}]
         report = evaluate(self.inventory, self.labels, scorer=lambda *_: 1,
                           dataset_kind="synthetic", training_inventory=training,
                           training_labels={"t0": 1, "t1": 1},
-                          negative_control_scorer_factory=factory)
+                          calibration_inventory=calibration,
+                          calibration_labels={"c0": 1, "c1": 0})
         control = report["permutedLabelNegativeControl"]
         self.assertEqual(control["status"], "unavailable")
-        self.assertFalse(control["factoryRun"])
-        self.assertEqual(factory_calls, [])
+        self.assertFalse(control["fitProvenanceVerified"])
 
-    def test_negative_control_factory_rejects_extra_label_or_holdout_fields(self):
+    def test_permuted_control_rejects_train_holdout_family_leakage(self):
+        features = {name: 0 for name in ("baseSize", "sameAnchor", "anchorDistance",
+                                         "firstLength", "secondLength", "lexicalOverlap")}
+        training = [{"pairId": "t0", "familyId": "f1", "sessionId": "ts0",
+                     "duplicateGroupId": "duplicate-t0",
+                     "partition": "train", "features": features},
+                    {"pairId": "t1", "familyId": "train", "sessionId": "ts1",
+                     "duplicateGroupId": "duplicate-t1",
+                     "partition": "train", "features": features}]
+        calibration = [{"pairId": "c0", "familyId": "cal", "sessionId": "cs0",
+                        "duplicateGroupId": "duplicate-c0",
+                        "partition": "calibration", "features": features},
+                       {"pairId": "c1", "familyId": "cal", "sessionId": "cs1",
+                        "duplicateGroupId": "duplicate-c1",
+                        "partition": "calibration", "features": features}]
+        with self.assertRaisesRegex(ValueError, "families/sessions/duplicate groups must be disjoint"):
+            self.run_eval(lambda *_: 1, training_inventory=training,
+                          training_labels={"t0": 1, "t1": 0},
+                          calibration_inventory=calibration,
+                          calibration_labels={"c0": 1, "c1": 0})
+
+    def test_permuted_control_rejects_duplicate_group_leakage(self):
+        features = {name: 0 for name in ("baseSize", "sameAnchor", "anchorDistance",
+                                         "firstLength", "secondLength", "lexicalOverlap")}
+        training = [{"pairId": "t0", "familyId": "train", "sessionId": "ts0",
+                     "duplicateGroupId": "shared-group",
+                     "partition": "train", "features": features},
+                    {"pairId": "t1", "familyId": "train", "sessionId": "ts1",
+                     "duplicateGroupId": "duplicate-t1",
+                     "partition": "train", "features": features}]
+        calibration = [{"pairId": "c0", "familyId": "cal", "sessionId": "cs0",
+                        "duplicateGroupId": "duplicate-c0",
+                        "partition": "calibration", "features": features},
+                       {"pairId": "c1", "familyId": "cal", "sessionId": "cs1",
+                        "duplicateGroupId": "duplicate-c1",
+                        "partition": "calibration", "features": features}]
+        holdout = copy.deepcopy(self.inventory)
+        holdout[0]["duplicateGroupId"] = "shared-group"
+        with self.assertRaisesRegex(ValueError, "families/sessions/duplicate groups must be disjoint"):
+            evaluate(holdout, self.labels, scorer=lambda *_: 1, dataset_kind="synthetic",
+                     training_inventory=training, training_labels={"t0": 1, "t1": 0},
+                     calibration_inventory=calibration,
+                     calibration_labels={"c0": 1, "c1": 0})
+
+    def test_permuted_control_aborts_when_calibration_lacks_both_classes(self):
+        features = {name: 0 for name in ("baseSize", "sameAnchor", "anchorDistance",
+                                         "firstLength", "secondLength", "lexicalOverlap")}
+        training = [{"pairId": "t0", "familyId": "train", "sessionId": "ts0",
+                     "duplicateGroupId": "duplicate-t0",
+                     "partition": "train", "features": features},
+                    {"pairId": "t1", "familyId": "train", "sessionId": "ts1",
+                     "duplicateGroupId": "duplicate-t1",
+                     "partition": "train", "features": features}]
+        calibration = [{"pairId": "c0", "familyId": "cal", "sessionId": "cs0",
+                        "duplicateGroupId": "duplicate-c0",
+                        "partition": "calibration", "features": features},
+                       {"pairId": "c1", "familyId": "cal", "sessionId": "cs1",
+                        "duplicateGroupId": "duplicate-c1",
+                        "partition": "calibration", "features": features}]
+        with self.assertRaisesRegex(ValueError, "calibration partition requires both known classes"):
+            self.run_eval(lambda *_: 1, training_inventory=training,
+                          training_labels={"t0": 1, "t1": 0},
+                          calibration_inventory=calibration,
+                          calibration_labels={"c0": 1, "c1": 1})
+
+    def test_label_permutation_rejects_extra_label_or_holdout_fields(self):
         valid_features = {name: 0 for name in ("baseSize", "sameAnchor", "anchorDistance",
                                                "firstLength", "secondLength", "lexicalOverlap")}
         base_row = {"pairId": "t", "familyId": "f", "sessionId": "s",
+                    "duplicateGroupId": "duplicate-t",
                     "partition": "train", "features": valid_features}
         with self.assertRaises(ValueError):
             permute_training_labels([{**base_row, "futureLabel": 1}], {"t": 1})
@@ -238,12 +369,26 @@ class NativePredictorEvaluationTests(unittest.TestCase):
         self.assertEqual(baseline["inferenceSeconds"], 0)
         self.assertEqual(baseline["preparationSeconds"], 0)
         self.assertGreater(predictor["inferenceSeconds"], 0)
-        self.assertEqual(predictor["preparationSeconds"], 0)
+        self.assertGreater(predictor["preparationSeconds"], 0)
         self.assertGreater(predictor["scoringSeconds"], 0)
+        self.assertGreater(baseline["submittedEvidenceProductionSeconds"], 0)
+        self.assertGreater(baseline["verifierInvocationSeconds"], 0)
+        self.assertAlmostEqual(
+            baseline["verificationSeconds"],
+            baseline["submittedEvidenceProductionSeconds"] + baseline["verifierInvocationSeconds"],
+            places=5)
+        result = report["budgets"]["baseline"]["50"]
+        self.assertEqual(result["verifierWork"]["submittedEvidenceProductionCount"],
+                         result["actualVerifierCalls"])
+        self.assertEqual(result["verifierWork"]["verifierInvocationCount"],
+                         result["actualVerifierCalls"])
+        self.assertEqual(result["verifierWork"]["verifierEvidenceRegenerationCount"],
+                         result["actualVerifierCalls"])
 
     def test_fitted_artifact_runs_end_to_end_through_request_preparation_and_evaluation(self):
         def training_row(pair_id, family, session, partition, label, offset):
             return {"pairId": pair_id, "familyId": family, "sessionId": session,
+                    "duplicateGroupId": f"duplicate-{pair_id}",
                     "partition": partition, "label": label,
                     "features": {name: float(index + offset) for index, name in enumerate(FEATURES)}}
         rows = [training_row("t0", "train", "s0", "train", 0, 0),
@@ -256,11 +401,9 @@ class NativePredictorEvaluationTests(unittest.TestCase):
         artifact = fit(rows, model_id="evaluation-model", dataset_kind="synthetic")
         artifact_hash = digest(artifact)
 
-        def scorer(row, _prepared):
-            return score_request(row["request"], artifact, source_kind="synthetic",
-                                 expected_hash=artifact_hash,
-                                 expected_model_id="evaluation-model",
-                                 expected_input_hash=digest(row["request"]))
+        def scorer(vector):
+            return score(vector, artifact, expected_hash=artifact_hash,
+                         expected_model_id="evaluation-model")
 
         report = evaluate(self.inventory, self.labels, scorer=scorer, dataset_kind="synthetic")
         result = report["budgets"]["predictor"]["50"]
@@ -268,6 +411,7 @@ class NativePredictorEvaluationTests(unittest.TestCase):
         self.assertEqual(report["sourceKind"], "synthetic")
         self.assertGreater(phases["inferenceSeconds"], 0)
         self.assertEqual(result["actualVerifierCalls"], 2)
+        self.assertEqual(result["verifierWork"]["verifierEvidenceRegenerationCount"], 2)
         self.assertFalse(report["executionAuthorization"])
         self.assertIn("unvalidated-scorer-supplied",
                       result["calibration"]["probabilityClaimStatus"])
@@ -288,18 +432,43 @@ class NativePredictorEvaluationTests(unittest.TestCase):
             self.assertEqual(set(row), {"request"})
             self.assertNotIn("features", row)
             self.assertNotIn("featureVector", row)
-            return None
+            return prepare_request(row["request"], source_kind="synthetic")
 
-        def scorer(row, _prepared):
-            seen.append(("score", set(row)))
-            self.assertEqual(set(row), {"request"})
-            self.assertNotIn("features", row)
-            self.assertNotIn("featureVector", row)
+        def scorer(vector):
+            seen.append(("score", set(vector)))
+            self.assertEqual(set(vector), {"version", "features"})
+            self.assertNotIn("request", vector)
+            self.assertNotIn("inputHash", vector)
             return 0.5
 
         evaluate(bait, self.labels, scorer=scorer, preparation=prepare,
                  dataset_kind="synthetic")
         self.assertTrue(seen)
+
+    def test_preparer_cannot_inject_noncanonical_or_extra_features(self):
+        scorer_calls = []
+
+        def scorer(vector):
+            scorer_calls.append(vector)
+            return 0.5
+
+        def wrong_value(row):
+            prepared = prepare_request(row["request"], source_kind="synthetic")
+            prepared["features"]["baseSize"] = 3
+            return prepared
+
+        with self.assertRaisesRegex(ValueError, "differ from the canonical"):
+            self.run_eval(scorer, preparation=wrong_value)
+        self.assertEqual(scorer_calls, [])
+
+        def unexpected_field(row):
+            prepared = prepare_request(row["request"], source_kind="synthetic")
+            prepared["unexpected"] = "label-derived"
+            return prepared
+
+        with self.assertRaisesRegex(ValueError, "request-bound versioned"):
+            self.run_eval(scorer, preparation=unexpected_field)
+        self.assertEqual(scorer_calls, [])
 
     def test_family_prevalence_differences_annotation_failures_and_complete_serialization(self):
         inventory = [
@@ -309,7 +478,8 @@ class NativePredictorEvaluationTests(unittest.TestCase):
                  annotation2Attempted=True, annotation2=0),
             *self.inventory[2:],
         ]
-        report = evaluate(inventory, self.labels, scorer=lambda row, _p: 1 if row["request"]["operations"][0]["id"].startswith("p0") else 0,
+        report = evaluate(inventory, self.labels,
+                          scorer=lambda vector: vector["features"]["sameAnchor"],
                           dataset_kind="synthetic")
         f1 = report["holdoutInventoryByFamily"]["f1"]
         self.assertEqual(f1["inventoryPairs"], 2)
@@ -326,7 +496,7 @@ class NativePredictorEvaluationTests(unittest.TestCase):
         policy = report["budgets"]["predictor"]["50"]
         self.assertGreater(policy["timing"]["phaseMedianSeconds"]["serializationSeconds"], 0)
         self.assertIn("serializationTimingNote", policy)
-        self.assertFalse(report["finalReportSerializationIncludedInPolicyTotals"])
+        self.assertTrue(report["finalReportSerializationIncludedInPolicyTotals"])
         self.assertGreaterEqual(report["reportSerializationSeconds"], 0)
 
 

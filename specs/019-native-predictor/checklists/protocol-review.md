@@ -5,10 +5,10 @@ These questions track the four adversarial findings against the proposed
 evidence that a real source or valid result exists. The founder approved only
 source feasibility work; the full protocol needs a new review.
 
-Use the [protocol decision packet](../protocol-decision-packet-2026-10-08.md)
-to record founder selections for P019-02…04. It is a decision aid only; no
-option is frozen until the protocol is revised and receives human scientific
-review.
+The founder's selections for P019-02…04 are recorded in the
+[protocol decision packet](../protocol-decision-packet-2026-10-08.md) and are
+being incorporated into the candidate. They remain subject to human scientific
+review; this checklist tracks unresolved evidence and does not imply approval.
 
 - [ ] **P019-01 — source and yield (high).** The
   [source register](../source-audit.md) must name a consented session feed,
@@ -23,7 +23,11 @@ review.
   per-pair annotation cutoff and expose only context available before the
   decision/resolution being assessed; hide later decisions, accept/reject
   outcomes and `session-close` results in addition to scores, priority, split
-  and verifier status. Specify when an absent record is `no` versus `unknown`.
+  and verifier status. Define an explicit resolution-event taxonomy linked to
+  proposal identity and prove source-feed completeness; the current adapter
+  does not implement this cutoff and unknown event kinds are rejected. Specify
+  when an absent record is `no` versus `unknown` and freeze exact displayed
+  fields for annotators.
   Record both dimensions, two blinded judgments per pair, third-reviewer
   adjudication, disagreement and unknowns. Keep this proxy separate from the
   M3 verifier and observed outcomes.
@@ -46,8 +50,11 @@ review.
   calibration grid as pending human approval, its descriptive coverage or
   explicit no-probability rule, the strict infeasibility gate, full end-to-end
   time boundary and sparse reliability bins in the
-  [protocol](../workload-protocol.md). Inspect actual bin sizes before any
-  calibrated interpretation. Report training and annotation costs separately.
+  [protocol](../workload-protocol.md). The founder selected one pair per
+  budget unit, one calibration family and full operational costs; review exact
+  timing boundaries and deterministic bin allocation. Inspect actual bin sizes
+  before any calibrated interpretation. Report training and annotation costs
+  separately.
 
 **Gate:** If P019-01 remains unmet, only feasibility findings can be reported.
 No task checkbox, generated skill, structural validator or PR merge substitutes

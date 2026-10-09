@@ -4,6 +4,36 @@
 exchanges in real workloads as the M3.5 target. This records the target
 direction, not approval of this detailed protocol, a dataset or model results.
 
+## Founder-selected amendments pending independent review — 2026-10-09
+
+The founder selected these rules for the next protocol revision:
+
+- Cut off after the second proposal in a validated total event sequence. A
+  resolution event at or before that cutoff excludes the pair. A hash fallback
+  may orient a pair deterministically but never establishes chronology or
+  source eligibility.
+- Group exact normalized unordered pairs and keep records from the same
+  session/lineage together. Do not group unrelated pairs solely because they
+  share a base. Detailed canonicalization remains for scientific review.
+- Keep `keep-order` eligible for verifier work. The primary comparison is the
+  fixed-budget assessed-useful `verified-bounded` count at the 50% ceiling,
+  with lower and upper bounds for unknown labels.
+- One unordered pair consumes one budget unit: one submitted `produce`, one
+  `verify`, and verifier-side evidence regeneration. Divergent and inconclusive
+  outcomes consume the unit; abstentions do not.
+- Preselect exactly one calibration family. Calibration is descriptive and
+  uses calibration rows only; omit probabilities and Brier when classes,
+  score variance, or fitting requirements fail.
+- Preserve every source, family, label and class threshold. If a metadata-only
+  audit proves the required five-family split infeasible, stop before
+  annotation and record infeasibility.
+- Include operational costs for extraction, preparation, scoring, ranking,
+  verifier work and serialization; report training and annotation separately.
+
+The annotator display has not yet been selected. These choices remain subject
+to independent human scientific review and authorize no source access,
+registration, annotation, training or holdout access.
+
 ## Population and acquisition
 
 The sampling unit is a candidate pair of pure anchored-sequence inserts from
@@ -25,7 +55,8 @@ The [source feasibility register](source-audit.md) has found no admitted real
 session pair. Before opening any new source payload, record its owner and
 permission, participant/data rights, privacy decision, editing workflow and
 immutable event feed. A family is a repository plus editing workflow. For
-each approved family, freeze a contiguous collection window by start/end
+each approved family, successfully register at least 24 hours before a
+contiguous 14-day UTC window beginning at midnight, then freeze its start/end
 event IDs or UTC timestamps before seeing utility labels. Enumerate every
 session in the window and every unordered pair of concurrent pure inserts
 from the same immutable base. Sort by source event ID, then operation ID;
@@ -51,6 +82,13 @@ expert proxy, not an observed time saving or avoided conflict. Report both
 dimensions, raw disagreement and unresolved rates by family. A usefulness
 label cannot be inferred from the M3 rule proposal or verifier status.
 
+The founder-selected annotation cutoff is immediately after the second
+proposal in a validated total event sequence. Exclude the pair if either
+proposal is resolved at or before that point, or if event order or source
+completeness cannot be established. The exact fields shown to annotators
+remain unresolved and must be reviewed before any label is collected. Later
+events, scores, priorities, partition and verifier outcomes stay hidden.
+
 The model ranks which candidate pairs merit verifier work. Any reported
 proposal must still pass the unchanged deterministic verifier. Neither a
 prediction nor a human usefulness label creates a certificate or grants
@@ -58,14 +96,20 @@ execution authorization.
 
 ## Frozen split and comparison
 
-Assign entire workload families to train, calibration and holdout partitions;
-no commit, session or near-duplicate pair may cross a partition. The first
+Assign entire workload families to train, calibration and holdout partitions.
+Group identical normalized unordered pairs and independently connect records
+from the same session/lineage before assignment; no such group may cross a
+partition. Orient pairs by a validated unique monotonic event sequence. A
+canonical payload hash may break a representational tie only; it cannot prove
+chronology or make a source eligible. The first
 frozen experiment requires at least one training family, one calibration
 family and three untouched holdout families, at least 100 adjudicated pairs
 with known positive or negative utility labels overall, and at least 20 useful
 and 20 not-useful cases in the untouched holdout. If those conditions cannot
 be met, report the experiment as inconclusive and do not fit or tune on the
-holdout. Both known classes must occur in the training and calibration
+holdout. Before annotation, a metadata-only feasibility check must establish
+that the required five-family split is possible; otherwise stop before
+annotation and record infeasibility. If the split remains feasible, both known classes must occur in the training and calibration
 partitions as well; if either is absent, do not fit or calibrate. Report the
 counts by family and partition. All admitted pairs, including every holdout
 pair, receive policy-blind annotation attempts before either policy scores
@@ -102,12 +146,17 @@ selection rule need a separate frozen protocol revision before fitting.
 
 At verifier-call ceilings of 25%, 50% and 100% of all assigned holdout pairs,
 set each ceiling to `floor(budget_fraction * N)`, where `N` is the number of
-assigned holdout pairs. Break equal priority scores by the inventory order
-frozen before labels. Rank pairs by each policy and call the unchanged verifier
-until its ceiling is reached or eligible proposals are exhausted. An abstention
-consumes no call; continue down the ranking and report unused calls if the
-ceiling cannot be filled. Report assessed-useful verified proposals, precision,
-recall, abstention, actual verifier calls and cost for both policies. The
+assigned holdout pairs. One unordered pair consumes one unit comprising
+proposal production, one verifier invocation and verifier-side evidence
+regeneration. Divergent and inconclusive results consume the unit; abstentions
+consume none. Break equal priority scores by the inventory order frozen before
+labels. Rank pairs by each policy and call the unchanged verifier until its
+ceiling is reached or eligible proposals are exhausted; report unused calls.
+The primary endpoint is the count of known-positive assessed-usefulness labels
+among `verified-bounded` pairs at the 50% ceiling. Report lower and upper
+counts with unknown labels treated as not useful/useful, respectively; do not
+claim a directional advantage if those bounds permit reversal. Precision,
+recall, abstention, actual calls and cost are secondary measures. The
 operational total analysis time includes source-to-feature extraction, rule
 or model scoring, ranking, unchanged verifier calls and result serialization;
 report one-time training and annotation effort separately. Measure both

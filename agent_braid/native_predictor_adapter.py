@@ -18,9 +18,9 @@ import json
 from datetime import datetime, timedelta
 from typing import Any
 
-from agent_braid.native_predictor_training import FEATURE_VERSION, feature_vector
+from agent_braid.native_predictor_training import FEATURE_VERSION, prepare_request
 from agent_braid.m35_source_window import EVENT_FORMAT, validate_window
-from agent_braid.structured_exchange import InvalidExchange, ROOT, VERSION, validate_request
+from agent_braid.structured_exchange import InvalidExchange, VERSION, validate_request
 
 
 class ReviewedLocalGate:
@@ -46,19 +46,6 @@ def _digest(value: Any) -> str:
 def _fail() -> None:
     # Deliberately exclude raw source IDs and values from exception text.
     raise ValueError("invalid event records or adapter input")
-
-
-def _feature_values(request: dict) -> dict:
-    first, second = request["operations"]
-    indices = {ROOT: -1} | {item["id"]: i for i, item in enumerate(request["base"])}
-    left, right = set(first["value"].casefold().split()), set(second["value"].casefold().split())
-    union = left | right
-    values = {"baseSize": len(request["base"]),
-              "sameAnchor": int(first["anchorId"] == second["anchorId"]),
-              "anchorDistance": abs(indices[first["anchorId"]] - indices[second["anchorId"]]),
-              "firstLength": len(first["value"]), "secondLength": len(second["value"]),
-              "lexicalOverlap": len(left & right) / len(union) if union else 0.0}
-    return values
 
 
 def adapt(events: Any, *, source_kind: str, family_id: str, partition: str,
@@ -169,7 +156,8 @@ def adapt(events: Any, *, source_kind: str, family_id: str, partition: str,
             actor = record["data"].get("actorId")
             if type(actor) is not str or actor not in participant_set:
                 _fail()
-        proposals = [e for e in records if e["kind"] == "proposal"]
+        proposals = sorted((e for e in records if e["kind"] == "proposal"),
+                           key=lambda event: event["sequence"])
         actors = [e["data"].get("actorId") for e in proposals]
         if len(set(actors)) != len(actors):
             _fail()
@@ -233,16 +221,27 @@ def adapt(events: Any, *, source_kind: str, family_id: str, partition: str,
             commitment = _digest({"first": first["eventHash"], "second": second["eventHash"]})
             pair_id = _digest({"session": session_digest,
                                "events": [first["eventId"], second["eventId"]]})
+            orientation = {
+                "method": "source-event-sequence-provisional-v1",
+                "firstSequence": first["sequence"],
+                "secondSequence": second["sequence"],
+                "sameEventTie": first["sequence"] == second["sequence"],
+                "sameTimestamp": first["timestampUtc"] == second["timestampUtc"],
+                "annotatorVisible": False,
+            }
             if reason:
                 items.append({"pairId": pair_id, "familyId": family_id, "sessionId": session_digest,
                               "partition": partition, "sourceCommitment": commitment,
+                              "orientation": orientation,
                               "excludedReason": reason})
                 continue
             request_hash = _digest(req)
-            features = _feature_values(req)
-            learned_vector = feature_vector(features)
+            # Use the trainer's request-bound canonical extractor so the
+            # adapter cannot drift into emitting a different feature mapping.
+            learned_vector = prepare_request(req, source_kind="synthetic")
             items.append({"pairId": pair_id, "familyId": family_id, "sessionId": session_digest,
                           "partition": partition, "sourceCommitment": commitment,
+                          "orientation": orientation,
                           "request": req, "requestHash": request_hash,
                           "featureVector": learned_vector,
                           "label": None})
@@ -268,3 +267,84 @@ def adapt(events: Any, *, source_kind: str, family_id: str, partition: str,
             "callerDeclarations": {"completenessDeclared": bool(gate and gate.completeness_declared),
                                    "protocolReviewDeclared": bool(gate and gate.protocol_review_declared)},
             "pairs": items}
+
+
+def project_trainer_rows(inventories: Any, *, training_labels: Any,
+                         calibration_labels: Any,
+                         duplicate_group_ids: Any) -> list[dict]:
+    """Project synthetic adapter inventories into the trainer's strict schema.
+
+    Duplicate groups must be assigned by an independently reviewed, frozen
+    cohort grouping step. This function requires those opaque IDs; it never
+    derives a grouping rule or substitutes pair/session IDs. Holdout labels are
+    not an input and are always projected as unknown.
+    """
+    if type(inventories) is not list or not inventories:
+        _fail()
+    if type(training_labels) is not dict or type(calibration_labels) is not dict:
+        _fail()
+    if type(duplicate_group_ids) is not dict:
+        _fail()
+    eligible: list[dict] = []
+    seen: set[str] = set()
+    expected_training: set[str] = set()
+    expected_calibration: set[str] = set()
+    for inventory in inventories:
+        if (type(inventory) is not dict
+                or inventory.get("format") != "m35-native-inventory-v1"
+                or inventory.get("featureVersion") != FEATURE_VERSION
+                or inventory.get("sourceKind") != "synthetic"
+                or type(inventory.get("pairs")) is not list):
+            _fail()
+        for item in inventory["pairs"]:
+            if type(item) is not dict or type(item.get("pairId")) is not str:
+                _fail()
+            pair_id = item["pairId"]
+            if not pair_id or pair_id in seen:
+                _fail()
+            seen.add(pair_id)
+            if "excludedReason" in item:
+                if set(item) != {"pairId", "familyId", "sessionId", "partition",
+                                 "sourceCommitment", "orientation", "excludedReason"}:
+                    _fail()
+                continue
+            if set(item) != {"pairId", "familyId", "sessionId", "partition",
+                             "sourceCommitment", "orientation", "request", "requestHash",
+                             "featureVector", "label"} or item["label"] is not None:
+                _fail()
+            if item["partition"] == "train":
+                expected_training.add(pair_id)
+            elif item["partition"] == "calibration":
+                expected_calibration.add(pair_id)
+            elif item["partition"] != "holdout":
+                _fail()
+            try:
+                validate_request(item["request"])
+                if _digest(item["request"]) != item["requestHash"]:
+                    _fail()
+                expected_vector = prepare_request(item["request"], source_kind="synthetic")
+            except (InvalidExchange, TypeError, ValueError, KeyError):
+                _fail()
+            if item["featureVector"] != expected_vector:
+                _fail()
+            eligible.append(item)
+    if (set(training_labels) != expected_training
+            or set(calibration_labels) != expected_calibration
+            or set(duplicate_group_ids) != {item["pairId"] for item in eligible}):
+        _fail()
+    result = []
+    for item in eligible:
+        pair_id = item["pairId"]
+        partition = item["partition"]
+        label = (training_labels[pair_id] if partition == "train" else
+                 calibration_labels[pair_id] if partition == "calibration" else None)
+        if label is not None and (type(label) is not int or label not in (0, 1)):
+            _fail()
+        group_id = duplicate_group_ids[pair_id]
+        if type(group_id) is not str or not group_id:
+            _fail()
+        result.append({"pairId": pair_id, "familyId": item["familyId"],
+                       "sessionId": item["sessionId"], "duplicateGroupId": group_id,
+                       "partition": partition, "features": item["featureVector"]["features"],
+                       "label": label})
+    return result

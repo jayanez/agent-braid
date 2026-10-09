@@ -10,8 +10,8 @@ Braid artifacts. It contains no private session payloads or utility labels.
 The founder requested the [completion plan](completion-plan.md). The new
 [source review packet](source-review-packet.md) preserves the two existing
 candidate workflows and proposes three natural Agent Braid engineering
-workflows for review. This register publishes no content-review findings. A
-2026-10-08 repository metadata query confirmed the three repository identities
+workflows for review. At that point this register had no content-review
+findings. A 2026-10-08 repository metadata query confirmed the three repository identities
 (`jayanez/agent-braid`,
 `jayanez/kinetiq-core`, `jayanez/smart-notes`) only; it did not inspect feeds or
 establish workflow occurrence, permissions, completeness or pair yield.
@@ -38,6 +38,38 @@ this condition holds. The `agent-braid-validation-method` and
 candidates; each still needs an individual rights and eligibility review.
 There are no registered windows, admitted real pairs, human labels, real-data
 fit, or holdout evaluation. T001/T007 and the full M3.5 objective remain open.
+
+## Exact-pin content review — 2026-10-08
+
+Following the founder's approval, an independent review opened only the
+previously pinned files in the three named repositories. This public summary
+records dispositions without reproducing private paths, source content,
+participant details or payloads. It authorized no capture, registration,
+annotation, label access or training.
+
+The reviewed Kinetiq pins describe a workflow outside the current M3.5
+non-sensitive engineering scope. They are excluded as source candidates under
+that scope; this is not a finding that other Kinetiq workflows are unavailable.
+The SmartNotes pins are engineering documents and the inspected files did not
+show clinical records, but the pins do not establish an owner-approved
+non-clinical event feed, participant/data rights, complete session yield or
+independent proposal receipts. SmartNotes remains a lead only, ineligible for
+capture pending a concrete source allowlist and documented rights/privacy
+basis.
+
+The Agent Braid public-interface candidate describes repository artifacts and
+synthetic flows, not an observed natural proposal feed, so it is ineligible on
+current evidence. The validation-method and release-evidence-review workflows
+remain distinct provisional candidates as directed by the founder. Neither
+has an approved feed, rights basis or observed sessions. Their separate labels
+do not establish separate eligible families, and the five-family requirement
+is unmet.
+
+Across all reviewed pins, no source was admitted and no real session or pair
+was counted. These exact-pin findings do not establish the absence of future
+eligible sources. Further source discovery or payload review requires a new
+concrete allowlist with a documented rights basis; the present route is to
+leave M3.5 source feasibility and the objective open.
 
 The [ADR-extension proposal](adr-extension-proposal.md) is non-operative.
 It creates no source access, credentials, service, registration or lab. The
