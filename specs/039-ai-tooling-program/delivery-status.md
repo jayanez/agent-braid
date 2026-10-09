@@ -83,13 +83,24 @@ they do not implement or accept runtime product support.
   PATH, all nine supervisor controls passed. Stable PR validation uses that PATH;
   its actual result is reported in the PR delivery record.
 
-## Required next gates
+## Required next gates — current status, 2026-10-09
 
 Source integration and M4.5 administrative registration are complete, as recorded
 above. Architectural/API adoption and capability acceptance remain separate gates.
-Implementation/control evidence, exact paid/provider/source capture registration,
-actual Codex/Claude observations, clean reproduction, human interpretation and
-founder capability/closure acceptance remain pending.
+Technical work proceeds under a prospective v3 `technical-capture` registration:
+it requires the approved human-evaluation deferral, two abstract independent
+reviewer roles, an empty `humanReviewers` list, the included-subscription-only
+billing policy, and an approved technical `fullCostScope`. Rights, account, budget,
+permission, stable-candidate and exact source approvals remain capture prerequisites.
+The trusted summary verifier must attest the exact technical summary, registration,
+roster, approved scope and complete technical receipt coverage before report values
+are shown; a synthetic verifier is not live evidence.
+
+The owner deferred only human outcome ratings and adjudication. Reviewer fees/time
+and all-in human-inclusive totals remain unavailable, not zero. T007's human portion,
+human interpretation, positive utility claims and founder capability/closure
+acceptance remain pending. This status does not claim registered capture, native
+host acceptance or milestone closure.
 
 The reviewer must distinguish this source-delivery outcome from M4.5 product
 completion. M4's historical G4 NO-GO and whole-M4 acceptance remain unchanged.

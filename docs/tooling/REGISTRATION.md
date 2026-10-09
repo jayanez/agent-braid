@@ -1,11 +1,12 @@
 <!-- SPDX-License-Identifier: CC-BY-SA-4.0 -->
 # Prepare the M4.5 registration
 
-`examples/tooling/registration-draft.json` binds the proposed eighteen fixture
+`examples/tooling/registration-draft.json` is the existing legacy v2 draft, preserved unchanged, and binds the proposed eighteen fixture
 definitions and six prompts to the pinned source inventory. It is intentionally
 invalid for capture: no owner approval, source-rights decision, provider opt-in,
-exact provider model identity selection, EUR rate card, two human reviewers,
-or frozen rubric is supplied. The numeric caps in [BUDGET.md](BUDGET.md) were
+exact provider model identity selection, EUR rate card, human identities,
+or frozen rubric is supplied. The prospective v3 draft is
+`examples/tooling/technical-registration-draft.json`; it shows the v3 phase/deferral/role fields, with placeholder values that must be replaced by the approved deferral record and the two abstract independent reviewer roles. Keep `humanReviewers` empty. The numeric caps in [BUDGET.md](BUDGET.md) were
 approved separately; model names remain recommendations. Cap approval does not
 approve this registration. A later owner decision authorizes only existing
 subscription use within included quotas, with EUR 0 additional spend; read-only
@@ -55,11 +56,12 @@ bounded process supervisor are implemented with synthetic process controls.
 Authentic decision/outcome verifiers, complete live cost sources, actual host
 provenance and verified configuration/isolation remain required before W18/W19.
 The software does not authenticate those external facts.
-For the owner's subscription-only route, freeze an exact `billingPolicy` using
+For v3 technical capture, the exact `billingPolicy` is mandatory: freeze it using
 `agent-braid-m45-subscription-policy-v1`: both host account hashes and authentication
 methods, `mode: included-subscription-only`, `additionalSpendCapEur: 0`, and all
 paid API, overage, credits and auto-recharge permissions false. Keep numeric
-total-cost caps and cost rates separate. The policy is bound to the registration,
+total-cost caps and cost rates separate. The legacy v1/v2 optional-policy contract
+remains unchanged. The policy is bound to the registration,
 host, slot and account; changing it creates a different registration cohort.
 Admission requires a fresh subscription observation and a verifier that explicitly
 authenticates it. Host supervision checks a fresh trusted observer before launch,
@@ -80,8 +82,30 @@ before capture; retain unavailable values as null. Stop on incidents, exceeded
 caps, missing immutable inputs, candidate/build drift, unrecoverable transitions
 or two consecutive infrastructure failures. Preserve all intended slots.
 
-The detailed protocol is
-`specs/044-ai-tooling-evaluation/evaluation-protocol.md`; accounting behavior and
-the validator's limits are in `docs/tooling/EVALUATION.md`. Two independent human
-raters and a separate founder decision are required. Model review cannot supply
-either. M4.5 closure does not close M3.5, M4 or reverse G4 NO-GO.
+For v3, include an approved technical `fullCostScope` using the existing scope
+shape. It binds technical allocation, user/setup/attempt time, wall-time receipt
+sources and scope-approval evidence; both reviewer-role fee rows remain `unknown`.
+That scope permits technical accounting only and does not approve any reviewer fee
+or complete human-inclusive totals. Preserve legacy v1/v2 scope semantics.
+
+Even with that scope, a report shows technical aggregate values only after a trusted
+summary verifier attests the exact summary against the registration, roster, scope,
+complete technical measure coverage and receipt inventories. Without a matching, supported attestation, or when the summary is forged or
+incomplete, `costs.technicalMeasuresAttested` is false; stored measurement rows
+remain retained but displayed aggregates are unknown. A synthetic verifier is not
+live evidence. The technical cash subtotal
+`technicalAdditionalSpendEur` covers setup plus all 108 attempts;
+`technicalStopRequired` clears only after technical receipt/time/outcome/cap checks
+pass. Global `actualAdditionalSpendEur`, `requiredMeasuresComplete`, `capViolation`
+and `stopRequired` retain their all-in meanings. `actualAdditionalSpendEur` stays null while reviewer fee applicability is unresolved. Reviewer and combined human-inclusive values remain unknown. Freeze the prospective [outcome rubric](OUTCOME_RUBRIC.md) before capture. The detailed protocol is
+`specs/044-ai-tooling-evaluation/evaluation-protocol.md`; the owner decision
+deferring only human outcome ratings/adjudication is recorded in
+`specs/044-ai-tooling-evaluation/human-evaluation-deferral-clarification.md`.
+Freeze the rubric before technical capture. T007 remains partially pending; T008/T009
+may establish technical readiness with human work pending. Verified technical
+setup/user/attempt costs and wall times may be complete while reviewer fee/time
+and combined human-inclusive totals remain unavailable. Technical cost completion
+is not full human-inclusive economic completion, and no positive utility claim
+is available. Later human identities/ratings/adjudication require a separately
+bound addendum. Model review cannot replace human review. M4.5 closure does not close
+M3.5, M4 or reverse G4 NO-GO.

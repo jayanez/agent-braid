@@ -2,6 +2,7 @@
 """Synthetic controls for prospective SPEC-044 T006 full-cost composition."""
 from dataclasses import replace
 from decimal import Decimal
+import copy
 import hashlib
 import unittest
 
@@ -27,7 +28,7 @@ from agent_braid.tooling_money import (
     SourceAttestation,
 )
 from tests.test_tooling_evaluation import (
-    _complete_ledger, _known_costs, _registration as _base_registration,
+    _complete_ledger, _known_costs, _registration as _base_registration, _registration_v3,
 )
 from tests.test_tooling_money import _receipt, _sha
 
@@ -45,8 +46,8 @@ _METHOD = {
 }
 
 
-def _registration(*, scope_status="approved", reviewer_fee="unpaid"):
-    data = _registration_base()
+def _registration(*, scope_status="approved", reviewer_fee="unpaid", technical_capture=False):
+    data = _registration_base(_registration_v3() if technical_capture else None)
     data["fullCostScope"] = {
         "schema": "agent-braid-m45-full-cost-scope-v1",
         "status": scope_status,
@@ -57,6 +58,9 @@ def _registration(*, scope_status="approved", reviewer_fee="unpaid"):
             "sha256": _sha("prospective-cost-approval"),
         },
         "reviewerFees": [
+            {"reviewerId": reviewer_id, "applicability": reviewer_fee}
+            for reviewer_id in ("planned-reviewer-one", "planned-reviewer-two") if technical_capture
+        ] if technical_capture else [
             {"reviewerId": reviewer["reviewerId"], "applicability": reviewer_fee}
             for reviewer in data["humanReviewers"]
         ],
@@ -81,8 +85,8 @@ def _registration(*, scope_status="approved", reviewer_fee="unpaid"):
     )
 
 
-def _registration_base():
-    data = _base_registration()
+def _registration_base(data=None):
+    data = data or _base_registration()
     data["billingPolicy"] = {
         "schema": "agent-braid-m45-subscription-policy-v1",
         "mode": "included-subscription-only",
@@ -96,6 +100,12 @@ def _registration_base():
             {"host": "claude-code", "authMethod": "claude.ai", "accountSha256": _sha("claude-account")},
         ],
     }
+    for host in data["hosts"]:
+        if "modelIdentity" in host:
+            policy_host = next(row for row in data["billingPolicy"]["hosts"]
+                               if row["host"] == host["name"])
+            host["modelIdentity"]["providerRoute"]["accountSha256"] = policy_host["accountSha256"]
+            host["modelIdentity"]["providerRoute"]["authMethod"] = policy_host["authMethod"]
     return data
 
 
@@ -110,10 +120,10 @@ def _roster(registration):
         for slot in evaluation.generate_slots(registration)
     )
     activities.extend(
-        MoneyActivity(f"reviewer:{row['reviewerId']}", "reviewer",
-                      f"reviewer-account-{row['reviewerId']}", _sha(f"reviewer:{row['reviewerId']}"),
-                      reviewer_id=row["reviewerId"], started_at=_START, ended_at=_END)
-        for row in registration.data["humanReviewers"]
+        MoneyActivity(f"reviewer:{reviewer_id}", "reviewer",
+                      f"reviewer-account-{reviewer_id}", _sha(f"reviewer:{reviewer_id}"),
+                      reviewer_id=reviewer_id, started_at=_START, ended_at=_END)
+        for reviewer_id in evaluation.expected_reviewer_participants(registration)
     )
     return MoneyRoster(registration, "cohort-2026-10", _START, _END, tuple(activities))
 
@@ -164,9 +174,10 @@ def _time_receipts(roster):
     attempt_ids = tuple(item.activity_id for item in activities if item.kind == "attempt")
     all_ids = tuple(item.activity_id for item in activities)
     rows = [("operator-1", all_ids, "10:00:00", "10:01:00")]
-    rows.extend((reviewer, attempt_ids, start, end)
-                for reviewer, start, end in (("rater-one", "10:01:00", "10:02:00"),
-                                             ("rater-two", "10:02:00", "10:03:00")))
+    if roster.registration.data["schemaVersion"] != evaluation.REGISTRATION_SCHEMA_V3:
+        rows.extend((reviewer, attempt_ids, start, end)
+                    for reviewer, start, end in (("rater-one", "10:01:00", "10:02:00"),
+                                                 ("rater-two", "10:02:00", "10:03:00")))
     return tuple(HumanTimeReceipt(
         participant, activity_ids, f"2026-10-09T{start}Z", f"2026-10-09T{end}Z",
         f"time-observation-{index}", _sha(f"time-observation:{index}"),
@@ -185,6 +196,9 @@ def _filled_money(roster, *, positive_cash=False, allocation=True,
                          allocation_policy_verifier=_PolicyVerifier())
     method = _method(roster)
     for activity in roster.activities:
+        if (roster.registration.data["schemaVersion"] == evaluation.REGISTRATION_SCHEMA_V3
+                and activity.kind == "reviewer"):
+            continue
         amount = Decimal("0.01") if positive_cash and activity.activity_id == "setup" else Decimal("0")
         ledger.add(_receipt(roster, activity, "actualAdditionalSpendEur", amount=amount))
     if allocation:
@@ -200,6 +214,65 @@ def _filled_money(roster, *, positive_cash=False, allocation=True,
 
 
 class FullCostContractTests(unittest.TestCase):
+    def test_v3_cost_roster_keeps_abstract_reviewer_rows_and_unknown_fee_scope(self):
+        registration = _registration(technical_capture=True, reviewer_fee="unknown")
+        self.assertEqual(evaluation.expected_reviewer_participants(registration),
+                         ("planned-reviewer-one", "planned-reviewer-two"))
+        planned_scope = FullCostScope.from_registration(registration)
+        self.assertIsNotNone(planned_scope)
+        self.assertTrue(planned_scope.technical_only)
+        roster = _roster(registration)
+        reviewer_rows = [item for item in roster.activities if item.kind == "reviewer"]
+        self.assertEqual({item.reviewer_id for item in reviewer_rows},
+                         {"planned-reviewer-one", "planned-reviewer-two"})
+        self.assertEqual(len(reviewer_rows), 2)
+
+    def test_v3_reconciles_verified_technical_cost_user_time_and_wall_but_not_reviewers(self):
+        registration = _registration(technical_capture=True, reviewer_fee="unknown")
+        scope = FullCostScope.from_registration(registration)
+        self.assertIsNotNone(scope)
+        self.assertTrue(scope.technical_only)
+        roster = _roster(registration)
+        money_ledger, money_summary = _filled_money(roster)
+        ledger, _ratings = _complete_ledger(registration)
+        result = complete_full_cost(
+            registration, ledger, roster, money_ledger, money_summary,
+            setup_costs=_known_costs(), human_time_receipts=_time_receipts(roster),
+            scope_verifier=_ScopeVerifier(), time_verifier=_TimeVerifier(),
+            study_wall_receipts=_wall_receipts(roster), study_wall_verifier=_WallVerifier(),
+        )
+        self.assertFalse(result.full_economic_cost_complete)
+        self.assertFalse(result.required_measures_complete)
+        self.assertTrue(result.missing_required)
+        self.assertTrue(result.stop_required)
+        self.assertTrue(result.technical_required_measures_complete)
+        self.assertEqual((), result.missing_technical_required)
+        self.assertEqual(Decimal("0.000000"), result.technical_additional_spend_eur)
+        self.assertFalse(result.technical_cap_violation)
+        self.assertFalse(result.technical_stop_required)
+        self.assertIsNotNone(result.actual_provider_spend_eur)
+        self.assertIsNotNone(result.allocated_subscription_cost_eur)
+        self.assertEqual(Decimal("60.000000"), result.user_time_seconds)
+        self.assertIsNone(result.reviewer_time_seconds)
+        self.assertIsNone(result.human_time_seconds)
+        self.assertEqual(Decimal("300.000000"), result.study_wall_seconds)
+        self.assertEqual(109, len(result.study_wall_receipt_sha256s))
+
+    def test_v3_unapproved_or_malformed_technical_scope_stays_unavailable(self):
+        pending = _registration(scope_status="pending", technical_capture=True)
+        self.assertIsNone(FullCostScope.from_registration(pending))
+        malformed_data = copy.deepcopy(dict(_registration(technical_capture=True).data))
+        malformed_data["fullCostScope"]["reviewerFees"].pop()
+        malformed = evaluation.validate_registration(
+            malformed_data, expected_candidate_sha256=malformed_data["candidate"]["sha256"],
+            expected_input_hashes={
+                **{item["fixtureId"]: item["sha256"] for item in malformed_data["fixtures"]},
+                **{item["promptId"]: item["sha256"] for item in malformed_data["prompts"]},
+            },
+        )
+        with self.assertRaisesRegex(FullCostError, "registered reviewer roster"):
+            FullCostScope.from_registration(malformed)
+
     def _assessment(self, *, scope_verifier=None, time_receipts=None, positive_cash=False,
                     allocation=True, reviewer_fee="unpaid", slot_statuses=None):
         registration = _registration(reviewer_fee=reviewer_fee)

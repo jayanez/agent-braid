@@ -8,8 +8,14 @@ authentication and billing-control verification. **Additional spending is
 authorized at EUR 0.** Paid API calls, purchased credits, overage, automatic
 recharge and subscription upgrades are outside this authorization. The earlier
 EUR 25 cap below remains an accounting ceiling, not permission to spend.
-Exact account/model bindings, source rights, two human raters, the frozen rubric
-and complete registration approval remain pending. The committed example remains
+Exact account/model bindings, source rights, human identities/ratings/adjudication,
+the frozen rubric, and complete registration approval remain pending. V3 technical
+capture requires an approved technical `fullCostScope` and human-evaluation deferral
+record with abstract reviewer roles; the named human roster remains empty until a
+separately bound addendum. Technical accounting retains measured user/setup/attempt
+and wall times with receipt hashes. Reviewer time/fee and combined human-inclusive
+totals remain unavailable, not zero; approving this scope does not approve source
+rights or reviewer fees. The committed example remains
 an intentionally invalid draft; private decision records retain the actual replies.
 
 | Boundary | Approved cap |
@@ -54,14 +60,19 @@ reference estimates are excluded from both totals. The legacy scalar EUR ledger
 is not added again to the derived provider total; unknown cash or allocation
 prevents eligibility, and exact monetary comparisons preserve small cap excesses.
 
-Two independently scoring human raters remain required. The proposed arrangement
-is the owner and a second person familiar with Python/Git, with 2–4 hours reserved
-per person and disclosed blinding limits. No second identity or human score is
-invented. Luna technical review cannot replace either human rating.
+Two independently scoring human raters remain required for the deferred outcome
+phase. No identities or scores are supplied by this technical-phase decision. The
+proposed reviewer time remains an estimate, not a completed cost record; preserve
+reviewer time/fee as unavailable until measured/registered. User/setup/attempt time
+and technical wall receipts are measured separately during technical capture. Luna technical review cannot
+replace either human rating.
 
 The time proposal reserves up to eight hours for the two human raters together
-and up to eight for setup and all attempts. It is an accounting ceiling, not an
-elapsed-time forecast: overlap inside one attempt is not added twice, and
+and up to eight for setup and all attempts. The 16-hour cap remains human-inclusive.
+Technical wall receipts cover setup and registered attempts only; reviewer time and
+the combined human-inclusive total remain unavailable until later review. This is an
+accounting ceiling, not an elapsed-time forecast: overlap inside one attempt is not
+added twice, and
 separate attempts and setup retain their costs. The earlier eight-hour proposal
 left too little margin when including human review. No measured throughput or
 completion guarantee is implied by this allocation.

@@ -2,13 +2,12 @@
 
 `agent_braid.tooling_evaluation` validates a frozen registration, creates its
 prospective 108-slot roster, keeps an append-only status ledger, and reports
-whether required costs and human labels are complete. It is an offline
+whether technical costs and outcomes are complete and whether the separately deferred human phase is complete. It is an offline
 preparation/accounting library. It does not launch Codex, Claude Code, MCP,
 providers, fixtures, subprocesses, or evaluation attempts.
 
 The current registration form is intentionally incomplete and cannot pass
-capture validation. No source-right record, candidate registration, provider
-approval, budget, observation, or utility result is supplied here.
+capture validation. The v3 technical phase uses the owner-approved deferral record; it does not supply source rights, candidate registration, provider approval, budget, observations, human labels or a utility result.
 
 ## Frozen registration requirements
 
@@ -31,28 +30,32 @@ approval, budget, observation, or utility result is supplied here.
   input/output rates for each registered host/model pair and each rate record's
   source ID/hash;
 - positive, finite EUR, token, wall-time, RSS and disk caps;
-- an optional exact subscription-only `billingPolicy`, when that route is
-  selected, with two account hashes, host authentication methods, zero additional
-  spend and paid API/overage/credits/auto-recharge permissions all false;
-- two distinct independent human reviewers and a frozen, hashed rubric with
-  thresholds of at least 16/18 successful arm-C journeys per host and 18/18
-  correct arm-C authority outcomes per host.
+- a mandatory exact subscription-only `billingPolicy` for v3, with two account
+  hashes, host authentication methods, zero additional spend and paid API/overage/
+  credits/auto-recharge permissions all false. Legacy v1/v2 retain their historical
+  optional-policy contract;
+- two unique abstract independent reviewer roles and the approved human-evaluation
+  deferral record for a v3 technical-capture registration, plus the frozen, hashed
+  rubric and thresholds of at least 16/18 successful arm-C journeys per host and
+  18/18 correct arm-C authority outcomes per host. Keep `humanReviewers` empty;
+  later named identities, ratings and adjudication require a separate addendum
+  bound to the immutable technical registration.
 
-The validator checks declared records and hashes for shape and identity. The
+The v3 phase field is `technical-capture`; its `humanReviewDeferral` is approved and binds a `recordId` and `sha256`. `humanReviewRoles` contains two unique abstract roles with `independent: true`. These role requirements do not claim that people have been appointed or reviewed anything. Legacy v1/v2 preserve their prior named-human contract and reject v3 phase, deferral and role fields. The prospective v3 example is [technical-registration-draft.json](../../examples/tooling/technical-registration-draft.json); the legacy v2 file remains unchanged. See [OUTCOME_RUBRIC.md](OUTCOME_RUBRIC.md) for the pre-capture rubric contract. The validator checks declared records and hashes for shape and identity. The
 caller-supplied input inventory binds declared registration hashes; it does not
 authenticate fixture or prompt file contents. The validator also cannot
 authenticate a person, source license, provider consent, owner approval, or host
 observation. A valid object is not an authorization to capture data.
 Any change to the registration changes its canonical digest and requires a new
 reviewed registration before a cohort can resume.
-Legacy registrations without this optional policy remain structurally supported;
-they do not satisfy the owner's later subscription-only authorization. New M4.5
+Legacy v1/v2 registrations without a billing policy remain structurally supported;
+they do not satisfy the owner's v3 technical-phase subscription-only requirement. New M4.5
 capture must use the chosen frozen policy. Policy shape checks do not authenticate
 accounts or quota, and additional spending at zero does not make total-cost fields
 zero or complete. Admission and supervision require fresh trusted observations;
 see [REGISTRATION.md](REGISTRATION.md).
 
-An intentionally invalid template looks like this:
+The existing [v2 registration draft](../../examples/tooling/registration-draft.json) remains a legacy contract example. Use the prospective [v3 technical registration draft](../../examples/tooling/technical-registration-draft.json) for the deferred-human technical phase; the frozen [outcome rubric](OUTCOME_RUBRIC.md) remains part of technical registration before capture. These drafts are intentionally invalid until reviewed and completed. An intentionally invalid legacy template looks like this:
 
 ```json
 {
@@ -136,16 +139,13 @@ human labels, the frozen rubric's arm-C success threshold (at least 16/18) per
 host, 18/18 correct arm-C authority outcomes per host, and no false or unknown
 arm-C fidelity outcome. The frozen success threshold may be stricter than
 16/18. Null/unknown authority and fidelity labels block eligibility. Any
-disagreement needs a hash-checked adjudication record with `recordId`, an
+disagreement in the later human phase needs a hash-checked adjudication record with `recordId`, an
 `adjudicatorId` among the two registered human reviewers, a `fields` object of
 resolved labels, and `sha256` equal to the canonical SHA-256 of the other three
 fields serialized as sorted-key compact UTF-8 JSON. Missing ratings and labels
-remain missing. Reviewer descriptors must identify humans; Luna or other
-model annotations cannot substitute.
+remain missing. Human descriptors must identify actual humans in the later bound addendum; abstract roles do not stand in for people, and Luna or other model annotations cannot substitute.
 Results from other arms remain in the denominator and safety failures must be
-reported. A positive utility claim still requires the separate human
-interpretation, candidate-bound evidence, independent review and founder
-decision described by SPEC-044.
+reported. No positive utility claim is available during the technical phase. A later claim still requires the deferred human interpretation, candidate-bound evidence, complete human-inclusive costs, independent review and founder decision described by SPEC-044.
 
 ## Structured and narrative utility reports
 
@@ -153,16 +153,20 @@ decision described by SPEC-044.
 registration data, ledger, expected candidate/input hashes, setup costs, and
 human ratings. It validates the exact registration and ledger roster and derives
 eligibility by calling `assess_utility_eligibility`; callers cannot supply an
-assessment or an `eligible` override. Subscription registrations also need a structurally approved, resolved
-`fullCostScope`; summaries are checked against the exact registration and frozen
-monetary roster identities, and the registered cash, provider accounting and
-study-wall caps. The provider accounting total is actual provider cash plus
+assessment or an `eligible` override. Subscription registrations also require a registration-bound `fullCostScope`.
+V3 may bind the approved technical accounting scope while full human-inclusive
+completion remains unavailable. Summaries are checked against the exact registration
+and frozen monetary roster identities, plus the registered cash, provider accounting
+and study-wall caps. The provider accounting total is actual provider cash plus
 allocated subscription value; it excludes reviewer cash and API reference
 estimates and does not add the legacy scalar EUR a second time. Exact Decimal
 comparisons preserve cap excesses even when a float would round them down.
 
-The report preserves all 108 intended rows, current statuses, event history
-hashes, and per-host/arm/journey-class denominators. Event observations are
+For v3, the approved `fullCostScope` records a technical accounting boundary using the existing allocation, user-time, wall-time, receipt-source and approval fields. It keeps exactly two reviewer-role fee rows marked `unknown`. The report marks human evaluation deferred, identifies zero human reviewers, leaves human scoring incomplete, and never asserts positive utility. Measured technical setup/user/attempt costs and technical wall time can be complete with receipt hashes; reviewer fees/time and combined human-inclusive totals remain unavailable, so full human-inclusive economic completion stays open.
+
+Stored technical measurements and receipt inventories remain retained, but the report exposes technical aggregates only after trusted summary verification. The builder accepts optional `technical_cost_verifier`, implementing `verify_technical_summary(...)` from `agent_braid.tooling_full_cost`. Its attestation binds the canonical summary digest, registration, generated roster, approved scope and technical receipt inventories, and verifies complete required-measure coverage with no missing technical rows. A valid attestation sets `costs.technicalMeasuresAttested` true and allows authenticated provider, subscription-allocation, user-time, study-wall and technical subtotal values to be displayed. If the verifier is absent, the summary or attestation is unsupported/forged/mismatched, or coverage is incomplete, `costs.technicalMeasuresAttested` is false and displayed technical aggregates are unknown while stored evidence is retained. Reviewer and combined human-inclusive values remain unknown in all v3 reports. A synthetic test verifier checks software behavior only; it is not trusted live evidence.
+
+The `costs.fullEconomic` object retains `receiptSha256s`, `userTimeReceiptSha256s` and `studyWallReceiptSha256s` inventories. With a valid attestation, its technical-only fields include `technicalAdditionalSpendEur`, `technicalRequiredMeasuresComplete`, `missingTechnicalRequired`, `technicalCapViolation` and `technicalStopRequired`; only `technicalAdditionalSpendEur` is the setup-plus-108-attempt cash subtotal. `technicalStopRequired` clears only after the technical receipt, time, outcome and cap checks pass. Global `actualAdditionalSpendEur`, `requiredMeasuresComplete`, `capViolation` and `stopRequired` retain their all-in meanings and must not be read as technical-only results. In v3, `actualAdditionalSpendEur` remains null while reviewer fee applicability is unresolved; `humanTimeSeconds` and `reviewerTimeSeconds` remain null, and `fullEconomicCostComplete` remains false. The report conclusion status is `human-evaluation-deferred`. The report preserves all 108 intended rows, current statuses, event history hashes, and per-host/arm/journey-class denominators. Event observations are
 projected to registered timestamps, outcome labels, costs, and input/output
 hashes; arbitrary event text is not copied into exports. Unknown required costs
 include their setup/slot field paths in the structured `costs.missingRequired`
@@ -208,9 +212,10 @@ read or executed by these helpers.
 ## Versioned provider model identity
 
 `agent-braid-m45-registration-v1` retains the legacy immutable model
-version/hash interpretation. New observable-route registrations use
-`agent-braid-m45-registration-v2` and require an explicit `modelIdentity`
-on each host. The owner approved this interpretation, not a complete registration.
+version/hash interpretation. `agent-braid-m45-registration-v2` retains the
+observable-route interpretation and its existing human contract. Prospective
+technical-capture records use `agent-braid-m45-registration-v3`; they add the
+phase and approved human-evaluation deferral while keeping the human roster empty. The owner approved this model-identity interpretation and separately deferred human outcome scoring/adjudication; neither decision is a complete registration or capture authorization.
 The v2 native subscription routes pin Codex to `openai`/`chatgpt` and Claude Code
 to `anthropic`/`claude.ai`; live billing policy observations remain separate.
 
@@ -238,8 +243,10 @@ reporting stays null. The validator checks declared consistency; the trusted
 verifier must authenticate catalog, configuration, route and any assertion that
 the provider exposes no immutable identifier. Changing observable identity
 requires a new reviewed cohort. Hidden backend revisions remain outside
-reproducibility claims. Existing fixture, cost, subscription and human gates
-remain in force, with all 108 intended slots preserved.
+reproducibility claims. Existing fixture, cost, subscription and human gates remain in force, with all
+108 intended slots preserved. The v3 technical phase may finish deterministic
+controls, observations, reproduction and technical accounting while labels remain
+pending; unknown human time/fee is not zero, and this is not full economic completion.
 
 `backendAvailable` means that an authoritative immutable backend build identifier
 is exposed; it does not describe whether the model service is reachable.
@@ -271,6 +278,9 @@ require a matching registration-bound full economic summary in
 expected_monetary_roster_sha256=...)`. Bind the independently frozen monetary
 roster, including period and activity coverage, as well as the registration. Zero additional cash and
 complete legacy scalar fields do not establish complete subscription and human
-costs. The current experimental ledger keeps full-economic eligibility blocked
-until that prospective scope and its human-cost fields are registered and
-integrated. All intended slots and unknown costs remain visible.
+costs. The current experimental ledger keeps full human-inclusive eligibility blocked
+until the deferred human fields and records are integrated. Under v3, the approved
+technical scope can report measured technical-cost completion while reviewer
+fee/time and combined human-inclusive totals stay unavailable. It does not set
+human cost to zero or permit a positive utility claim. All
+intended slots and unknown costs remain visible.

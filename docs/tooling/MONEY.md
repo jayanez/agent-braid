@@ -44,27 +44,29 @@ verifier reentry refuses. Decimal inputs are bounded to 30 coefficient digits,
 exponents -30 through 30 and 64 serialized characters; aggregates use exact
 integer scaling independent of ambient Decimal precision.
 
-The extra `fullCostScope` field is prospective and optional at registration
-validation. Missing or `pending` scope never yields a complete monetary summary.
-To complete the T006 representation, a future owner-approved registration must
-bind all of the following before capture:
+The existing `fullCostScope` shape remains prospective. It is required for v3 and
+its approved scope is technical: it binds the already-defined allocation, user-time,
+wall-time, receipt-source and approval fields while preserving two reviewer-fee
+rows as `unknown`. For v1/v2 it remains optional and retains its prior named-reviewer
+semantics. A v3 technical-scope approval is not approval of reviewer fees or reviewer
+activity, source rights, capture, or full human-inclusive accounting. Missing or
+`pending` scope never yields a technical-scope summary. Before v3
+technical capture, the approved scope binds the existing study-cash/accounting
+boundary for setup and attempts, subscription allocation and its evidence, one
+user-time participant, technical wall-time sources, receipt verification and the
+scope approval record. The same existing `reviewerFees` field contains exactly
+two rows keyed to the planned roles, each with `unknown` applicability. The
+existing reviewer activity field remains part of the scope shape, while reviewer
+time receipts are deferred. These unknown reviewer rows do not prevent measured
+technical setup/user/108-attempt costs and technical wall time from being complete.
 
-- the full study-cash scope, including provider/setup charges and any paid
-  reviewer fees, under the registered EUR 0 additional-cash cap;
-- explicit `paid` or `unpaid` applicability for each of the two registered
-  reviewers; `unknown` remains incomplete, and neither unpaid fees nor zero
-  amounts are inferred without source-authenticated receipts;
-- subscription allocation for setup and every one of the 108 attempts, plus an
-  explicit authenticated `not-applicable` marker for reviewer subscription
-  allocation; the method identity, denominator and unit are exact and the
-  separate verifiers authenticate the policy and source facts;
-- one registered user-time participant covering setup and every attempt, and
-  both registered reviewers covering every attempt, through source-authenticated
-  active-work intervals. The registration binds the meaning of active work;
-  receipts may cover one or more activity IDs, and their sets must exactly cover
-  the approved participant/activity scope without duplicate coverage. There is
-  no fixed interval count or synthetic per-slot zero.
-
+After the human phase, full human-inclusive accounting additionally requires
+resolved reviewer fee applicability and any applicable source-authenticated fee
+receipts, authenticated active-work time for both reviewers across the registered
+attempts, and a wall-time total that includes those human intervals. Unknown fee
+applicability or absent reviewer time remains unavailable; no unpaid status, zero
+fee, or combined human-inclusive total is inferred. Legacy v1/v2 retain their
+existing named-reviewer scope and completion behavior.
 The scope approval verifier binds the final registration hash, exact monetary
 roster hash, scope hash and approval-record identity. This avoids a self-
 referential hash. Registration validation and hashes alone do not authenticate
@@ -78,28 +80,53 @@ counting. No hourly rate or monetary value for human time is invented or
 required by this representation. Reviewer cash receipts require an
 authenticated invoice source even when the amount is zero.
 
-A full summary can be marked complete only when the existing scalar cost
-assessment is complete; all 108 attempts have terminal records; all required
-cash and subscription receipts are authenticated and within the zero cap; the
-allocation method matches the approved scope and its separate policy
-attestation; and every registered human-time interval is present and
-authenticated. Positive cash, missing or stale scope/roster/registration,
-unverified methods, unavailable cost values or time intervals, unknown
-reviewer-fee applicability, a missing wall source, cap excess, or incomplete
-attempts remain ineligible. API reference estimates never enter
+A v3 technical scope may support completion of measured technical costs when the
+existing scalar assessment is complete, all 108 attempts have terminal records,
+required technical cash/subscription receipts are authenticated and within caps,
+the allocation method matches the approved scope and policy attestation, and
+technical setup/user/attempt and wall receipts are verified.
+
+The report still withholds technical aggregate values until a trusted summary
+verifier binds the exact summary digest to the registration SHA-256, roster SHA-256,
+approved scope SHA-256 and receipt inventories, and verifies complete required
+technical measures/coverage with no missing rows. The v3 report builder accepts
+`technical_cost_verifier`; its `verify_technical_summary(...)` result is exposed as
+`costs.technicalMeasuresAttested`. Missing, mismatched, unsupported, forged or incomplete attestation
+means `costs.technicalMeasuresAttested` is false and displayed technical values stay unknown, while stored measurements and
+receipt histories remain retained. The technical-only summary fields are
+`technicalRequiredMeasuresComplete`, `missingTechnicalRequired`,
+`technicalAdditionalSpendEur`, `technicalCapViolation` and
+`technicalStopRequired`. `technicalAdditionalSpendEur` covers only actual setup and
+108-attempt additional spend. `technicalStopRequired` clears only after technical
+receipt, time, outcome and cap checks pass. The legacy `actualAdditionalSpendEur`,
+`requiredMeasuresComplete`, `capViolation` and `stopRequired` keep their all-in
+meanings and cannot be read as technical-only results; unresolved reviewer fees
+keep `actualAdditionalSpendEur` null and completeness incomplete. An
+attested technical report may show provider/allocation/user/wall values, but reviewer
+and combined human-inclusive totals remain unknown. A test verifier is synthetic
+only and does not establish live accounting evidence.The combined
+human-inclusive economic summary remains incomplete: reviewer fee applicability,
+reviewer time and any total that includes them remain unavailable. Full human-inclusive
+completion requires the later human scope/addendum and authenticated reviewer records.
+Legacy v1/v2 completion retains the prior full human-cost requirements. Positive
+cash, missing or stale scope/roster/registration, unverified methods, unavailable
+cost values or time intervals, unknown reviewer-fee applicability, a missing wall
+source, cap excess, or incomplete attempts remain ineligible. API reference estimates never enter
 actual or allocated totals. Full cost completion means registered cost
 measurements are complete; it does not assign a monetary price to observed
 human time, assert utility, or satisfy T006's future capture/reconciliation
 evidence on its own.
 
-No current registration includes this approved scope. Fee applicability,
-method/denominator/unit, and any additional owner decisions remain draft until
-prospectively approved. This document records the interface boundary, not an
+The v3 registration must carry the approved technical accounting scope before it
+can validate for technical capture. Reviewer fee applicability remains unknown; no
+source or fee approval is inferred. Method/denominator/unit and their approval
+records must be bound in the registration. This document records the interface boundary, not an
 owner decision or permission to incur charges. The offline report/export pipeline
 composes these fields and suppresses utility claims when required costs or scope
 are missing. These synthetic controls do not replace authenticated
-T002/T004/T005 capture. All 108 intended slots and human review remain in
-scope; missing rows cannot be dropped or relabeled as zero.
+T002/T004/T005 capture. All 108 intended slots remain in scope; the later human phase remains required
+for human-inclusive accounting and interpretation. Missing rows cannot be dropped
+or relabeled as zero.
 
 `requiredMeasuresComplete` in the base money summary covers the required
 additional-cash evidence only. The full-cost composer additionally binds the

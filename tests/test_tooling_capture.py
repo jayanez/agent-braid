@@ -48,6 +48,11 @@ class _SyntheticVerifier:
         )
 
 
+class _SubscriptionSyntheticVerifier(_SyntheticVerifier):
+    def attest(self, *, subscription=None, **kwargs):
+        return super().attest(**kwargs)
+
+
 class CaptureAdmissionTests(unittest.TestCase):
     """Exercise admission against copied pinned inputs and a private temp repo."""
 
@@ -247,6 +252,31 @@ class CaptureAdmissionTests(unittest.TestCase):
         self.receipts = capture.receipt_directory_for(self.valid_registration.sha256)
         self.receipts.mkdir(mode=0o700)
 
+    def _upgrade_to_v3_technical_capture(self):
+        self._upgrade_to_v2_route_identity()
+        self.registration_data["schemaVersion"] = evaluation.REGISTRATION_SCHEMA_V3
+        self.registration_data["phase"] = "technical-capture"
+        self.registration_data["humanReviewDeferral"] = {
+            "status": "approved", "recordId": "synthetic-human-deferral", "sha256": _sha("deferral")}
+        self.registration_data["humanReviewRoles"] = [
+            {"roleId": "planned-reviewer-one", "independent": True},
+            {"roleId": "planned-reviewer-two", "independent": True},
+        ]
+        self.registration_data["humanReviewers"] = []
+        self.registration_data["billingPolicy"] = _policy()
+        for host in self.registration_data["hosts"]:
+            policy_host = next(row for row in self.registration_data["billingPolicy"]["hosts"]
+                               if row["host"] == host["name"])
+            host["modelIdentity"]["providerRoute"]["accountSha256"] = policy_host["accountSha256"]
+            host["modelIdentity"]["providerRoute"]["authMethod"] = policy_host["authMethod"]
+        self._write_registration()
+        self.valid_registration = evaluation.validate_registration(
+            self.registration_data, expected_candidate_sha256=self.artifact_sha256,
+            expected_input_hashes=self.input_hashes)
+        self.ledger = evaluation.new_ledger(self.valid_registration)
+        self.receipts = capture.receipt_directory_for(self.valid_registration.sha256)
+        self.receipts.mkdir(mode=0o700)
+
     def _model_observation(self, host="codex", **updates):
         registered = next(item for item in self.registration_data["hosts"] if item["name"] == host)["modelIdentity"]
         catalog = registered["nativeCatalogEntry"]
@@ -281,6 +311,49 @@ class CaptureAdmissionTests(unittest.TestCase):
 
         with self.assertRaisesRegex(capture.CaptureAdmissionError, "expired or drifted"):
             self._prepare(model_identity_observation=self._model_observation(), verifier=MutatingVerifier())
+
+    def test_v3_technical_capture_admits_one_slot_only_with_all_frozen_and_live_gates(self):
+        self._upgrade_to_v3_technical_capture()
+        slot = self._slot()
+        binding = subscription_policy.binding_from_registration(
+            self.valid_registration, slot.slot_id, slot.host)
+        observation = subscription_policy.SubscriptionObservation(
+            binding, "chatgpt", True, False, False, False, False, True, 0,
+            "synthetic-account-billing-source", _sha("synthetic v3 subscription"), datetime.now(timezone.utc))
+        admitted = capture.prepare_attempt(
+            registration_path=self.registration_path, candidate_root=self.candidate,
+            candidate_artifact=self.artifact, ledger=self.ledger, slot_id=slot.slot_id,
+            authorization=self._authorization("analyze-interactions"), costs=self.costs,
+            stop_state=self.stop, verifier=_SubscriptionSyntheticVerifier(), receipt_directory=self.receipts,
+            subscription=observation, model_identity_observation=self._model_observation(),
+        )
+        self.assertEqual("admitted-not-started", json.loads(admitted.receipt_path.read_text())["receipt"]["status"])
+        self.assertEqual("not-started", self.ledger.current_status(slot.slot_id))
+
+        refused_slot = next(item for item in self.ledger.slots if item.slot_id != slot.slot_id)
+        refused_observation = subscription_policy.SubscriptionObservation(
+            subscription_policy.binding_from_registration(self.valid_registration, refused_slot.slot_id, refused_slot.host),
+            "chatgpt", True, False, False, False, False, True, 0,
+            "synthetic-account-billing-source", _sha("synthetic v3 refusal"), datetime.now(timezone.utc))
+        refused_receipt = self.receipts / ("slot-" + _sha(refused_slot.slot_id)[:32] + ".json")
+        for field, mutation in (
+            ("deferral", lambda value: value["humanReviewDeferral"].update(status="pending")),
+            ("billingPolicy", lambda value: value.pop("billingPolicy")),
+        ):
+            malformed = copy.deepcopy(self.registration_data)
+            mutation(malformed)
+            self.registration_path.write_text(json.dumps(malformed), encoding="utf-8")
+            with self.subTest(field=field), self.assertRaisesRegex(
+                capture.CaptureAdmissionError, "registration or ledger validation failed"):
+                capture.prepare_attempt(
+                    registration_path=self.registration_path, candidate_root=self.candidate,
+                    candidate_artifact=self.artifact, ledger=self.ledger, slot_id=refused_slot.slot_id,
+                    authorization=self._authorization("analyze-interactions"), costs=self.costs,
+                    stop_state=self.stop, verifier=_SubscriptionSyntheticVerifier(), receipt_directory=self.receipts,
+                    subscription=refused_observation,
+                    model_identity_observation=self._model_observation(host=refused_slot.host),
+                )
+            self.assertFalse(refused_receipt.exists())
 
     def test_receipt_binds_registration_candidate_input_host_prompt_and_measures(self):
         admission = self._prepare()

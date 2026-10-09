@@ -88,12 +88,14 @@ class FullCostScope:
     method_sha256: str
     denominator_id: str
     unit: str
+    technical_only: bool = False
 
     @classmethod
     def from_registration(
         cls, registration: evaluation.ValidatedRegistration,
     ) -> "FullCostScope | None":
         evaluation._require_validated(registration)
+        technical_only = registration.data["schemaVersion"] == evaluation.REGISTRATION_SCHEMA_V3
         raw = registration.data.get("fullCostScope")
         if raw is None:
             return None
@@ -126,8 +128,9 @@ class FullCostScope:
         fee_rows = raw.get("reviewerFees")
         if not isinstance(fee_rows, list):
             raise FullCostError("reviewer fee applicability must be registered")
-        expected_reviewers = {row["reviewerId"] for row in registration.data["humanReviewers"]}
+        expected_reviewers = set(evaluation.expected_reviewer_participants(registration))
         fees: dict[str, str] = {}
+        unknown_fee = False
         for row in fee_rows:
             if not isinstance(row, Mapping):
                 raise FullCostError("reviewer fee scope rows must be objects")
@@ -136,14 +139,19 @@ class FullCostScope:
             reviewer_id = _identifier(row.get("reviewerId"), "reviewer id")
             applicability = row.get("applicability")
             if applicability == "unknown":
-                return None
+                if not technical_only:
+                    return None
+                unknown_fee = True
             if applicability not in {"paid", "unpaid"}:
-                raise FullCostError("reviewer fee applicability must be explicitly paid or unpaid")
+                if not (technical_only and applicability == "unknown"):
+                    raise FullCostError("reviewer fee applicability must be explicitly paid or unpaid")
             if reviewer_id in fees:
                 raise FullCostError("reviewer fee scope contains duplicate reviewer ids")
             fees[reviewer_id] = applicability
         if set(fees) != expected_reviewers:
             raise FullCostError("reviewer fee scope must equal the registered reviewer roster")
+        if technical_only and (not unknown_fee or any(value != "unknown" for value in fees.values())):
+            raise FullCostError("v3 technical scope must preserve unknown fees for both planned roles")
         time_scope = raw.get("humanTime")
         if not isinstance(time_scope, Mapping):
             raise FullCostError("human time applicability must be registered")
@@ -170,6 +178,7 @@ class FullCostScope:
             method_sha256=_digest(method.get("methodSha256"), "allocation method hash"),
             denominator_id=_identifier(method.get("denominatorId"), "allocation denominator id"),
             unit=_identifier(method.get("unit"), "allocation unit"),
+            technical_only=technical_only,
         )
 
 
@@ -182,6 +191,51 @@ class ScopeApprovalAttestation:
     approval_record_id: str
     approval_record_sha256: str
     verified_at: str
+
+
+@dataclass(frozen=True)
+class TechnicalCostSummaryAttestation:
+    """External verification of a v3 technical-only reconciliation.
+
+    The verifier, not this data class, authenticates source records and exact
+    activity coverage. The report checks that this attestation binds the exact
+    summary and immutable registration/roster/scope inventories.
+    """
+
+    verifier_id: str
+    summary_sha256: str
+    registration_sha256: str
+    roster_sha256: str
+    scope_sha256: str
+    receipt_sha256s: tuple[str, ...]
+    human_time_receipt_sha256s: tuple[str, ...]
+    study_wall_receipt_sha256s: tuple[str, ...]
+    technical_activity_ids: tuple[str, ...]
+    actual_spend_activity_ids: tuple[str, ...]
+    allocated_activity_ids: tuple[str, ...]
+    user_time_activity_ids: tuple[str, ...]
+    study_wall_activity_ids: tuple[str, ...]
+    verified_at: str
+
+
+class TechnicalCostSummaryVerifier(Protocol):
+    """Authenticate external sources and exact technical receipt coverage."""
+
+    def verify_technical_summary(
+        self,
+        *,
+        registration_sha256: str,
+        roster_sha256: str,
+        scope_sha256: str,
+        summary: MoneySummary,
+    ) -> TechnicalCostSummaryAttestation: ...
+
+
+def technical_summary_sha256(summary: MoneySummary) -> str:
+    """Return the canonical digest that an external verifier must attest."""
+    if not isinstance(summary, MoneySummary):
+        raise FullCostError("a typed money summary is required for technical attestation")
+    return _canonical_sha256(summary.as_dict())
 
 
 class FullCostScopeVerifier(Protocol):
@@ -298,6 +352,13 @@ def complete_full_cost(
     """
     evaluation._require_validated(registration)
     evaluation.validate_ledger(ledger, registration)
+    if registration.data["schemaVersion"] == evaluation.REGISTRATION_SCHEMA_V3:
+        roles = set(evaluation.expected_reviewer_participants(registration))
+        if human_time_receipts is not None and any(
+            isinstance(receipt, HumanTimeReceipt) and receipt.participant_id in roles
+            for receipt in human_time_receipts
+        ):
+            raise FullCostError("v3 reviewer time requires an identity-bound human-rating addendum")
     roster.validate()
     if roster.registration_sha256 != registration.sha256:
         raise FullCostError("monetary roster belongs to a different registration")
@@ -333,6 +394,11 @@ def complete_full_cost(
     reasons: list[tuple[str, str]] = []
     scope_attestation = scope_verifier.verify_scope(scope, registration.sha256, roster.sha256)
     _validate_scope_attestation(scope, roster, scope_attestation)
+    if scope.technical_only:
+        for role_id in evaluation.expected_reviewer_participants(registration):
+            activity_id = f"reviewer:{role_id}"
+            reasons.append((activity_id, "reviewerFeeApplicability"))
+            reasons.append((activity_id, f"humanTime:{role_id}"))
 
     activity_by_id = roster.activity_by_id
     attempts = [slot.slot_id for slot in evaluation.generate_slots(registration)]
@@ -343,14 +409,20 @@ def complete_full_cost(
     if incomplete_slots:
         reasons.extend((slot_id, "attemptOutcome") for slot_id in incomplete_slots)
 
-    for field in evaluation.COST_FIELDS:
-        if money_summary.required_measures_complete is not True:
-            reasons.append(("registration-costs", field))
-            break
+    technical_phase = scope.technical_only
+    if technical_phase:
+        if money_summary.technical_required_measures_complete is not True:
+            reasons.extend(money_summary.missing_technical_required)
+    else:
+        for field in evaluation.COST_FIELDS:
+            if money_summary.required_measures_complete is not True:
+                reasons.append(("registration-costs", field))
+                break
     cost_assessment = evaluation.assess_cost_completeness(ledger, setup_costs=setup_costs)
     if not cost_assessment.complete:
         reasons.extend(("registration-costs", field) for field in cost_assessment.missing)
-    if money_summary.actual_additional_spend_eur is None or money_summary.cap_violation is not False or money_summary.stop_required:
+    if (not technical_phase and (money_summary.actual_additional_spend_eur is None
+            or money_summary.cap_violation is not False or money_summary.stop_required)):
         reasons.append(("study-cash", "actual-spend-or-cap"))
 
     expected_allocations = {item.activity_id for item in roster.activities
@@ -433,6 +505,15 @@ def complete_full_cost(
         reasons.append(("numeric-stop", "provider accounting EUR cap exceeded"))
     if cap_assessment.stop:
         reasons.extend(("numeric-stop", reason) for reason in cap_assessment.reasons)
+    technical_stop_required = None
+    if registration.data["schemaVersion"] == evaluation.REGISTRATION_SCHEMA_V3:
+        technical_stop_required = (
+            money_summary.technical_required_measures_complete is not True
+            or money_summary.technical_cap_violation is not False
+            or cap_assessment.stop
+            or exact_provider_cap_exceeded
+            or not cost_assessment.complete
+        )
     human_microseconds_by_participant = _human_time_union(distinct_time_receipts.values())
     reviewers = {reviewer_id for reviewer_id, _ in scope.reviewer_fee_applicability}
     participant_seconds = {
@@ -441,8 +522,9 @@ def complete_full_cost(
     }
     user_rows_missing = any(participant_id == scope.user_time_participant_id
                             for participant_id, _ in missing_time)
-    reviewer_rows_missing = any(participant_id in reviewers
-                                for participant_id, _ in missing_time)
+    reviewer_rows_missing = scope.technical_only or any(
+        participant_id in reviewers for participant_id, _ in missing_time
+    )
     user_seconds = (participant_seconds.get(scope.user_time_participant_id, Decimal(0))
                     if not user_rows_missing else None)
     reviewer_seconds = (_seconds_from_microseconds(sum(
@@ -450,8 +532,8 @@ def complete_full_cost(
                         ))
                         if not reviewer_rows_missing else None)
     human_seconds = (_seconds_from_microseconds(sum(human_microseconds_by_participant.values()))
-                     if not missing_time else None)
-    complete = not reasons and cost_assessment.complete
+                     if not missing_time and not scope.technical_only else None)
+    complete = not reasons and cost_assessment.complete and not scope.technical_only
     return replace(
         money_summary,
         full_economic_cost_complete=complete,
@@ -464,6 +546,10 @@ def complete_full_cost(
         reviewer_time_seconds=reviewer_seconds,
         human_time_receipt_sha256s=tuple(sorted(distinct_time_receipts)),
         study_wall_seconds=wall_seconds,
+        study_wall_receipt_sha256s=(tuple(sorted(
+            receipt.sha256 for receipt in (study_wall_receipts or ())
+        )) if wall_seconds is not None else ()),
+        technical_stop_required=technical_stop_required,
     )
 
 
@@ -476,7 +562,8 @@ def _expected_time_rows(scope: FullCostScope, roster: MoneyRoster) -> set[tuple[
         raise FullCostError("human-time scope requires the full registered roster")
     expected = {(scope.user_time_participant_id, activity_id)
                 for kind in ("setup", "attempt") for activity_id in by_kind[kind]}
-    reviewer_ids = {reviewer_id for reviewer_id, _ in scope.reviewer_fee_applicability}
+    reviewer_ids = (set() if scope.technical_only else
+                    {reviewer_id for reviewer_id, _ in scope.reviewer_fee_applicability})
     if scope.user_time_participant_id in reviewer_ids:
         raise FullCostError("user-time participant must be distinct from registered reviewers")
     expected.update((reviewer_id, activity_id)

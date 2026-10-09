@@ -6,10 +6,14 @@ import copy
 import unittest
 
 from agent_braid import tooling_evaluation as evaluation
+from agent_braid.tooling_money import MoneySummary
+from agent_braid.tooling_full_cost import (
+    FullCostScope, TechnicalCostSummaryAttestation, technical_summary_sha256,
+)
 from agent_braid.tooling_evaluation_report import (
     build_utility_report, render_utility_report_json, render_utility_report_narrative,
 )
-from tests.test_tooling_evaluation import _adjudication, _complete_ledger, _known_costs, _registration, _inputs
+from tests.test_tooling_evaluation import _adjudication, _complete_ledger, _known_costs, _registration, _registration_v3, _inputs
 from tests import test_tooling_full_cost as full_cost_tests
 from tests.test_tooling_full_cost import (
     _ScopeVerifier, _TimeVerifier, _WallVerifier,
@@ -20,7 +24,8 @@ from agent_braid.tooling_full_cost import complete_full_cost
 
 
 class UtilityReportTests(unittest.TestCase):
-    def _make_report(self, registration, ledger, ratings, *, summary=None, roster_sha=None, setup=None):
+    def _make_report(self, registration, ledger, ratings, *, summary=None, roster_sha=None, setup=None,
+                     technical_cost_verifier=None):
         return build_utility_report(
             registration.data, ledger,
             expected_candidate_sha256=registration.data["candidate"]["sha256"],
@@ -28,7 +33,164 @@ class UtilityReportTests(unittest.TestCase):
             setup_costs=_known_costs() if setup is None else setup,
             human_ratings=ratings, monetary_summary=summary,
             expected_monetary_roster_sha256=roster_sha,
+            technical_cost_verifier=technical_cost_verifier,
         )
+
+    def _technical_verifier(self, registration, *, mismatch=None):
+        expected_ids = tuple(sorted({"setup", *(
+            slot.slot_id for slot in evaluation.generate_slots(registration)
+        )}))
+        class Verifier:
+            def verify_technical_summary(self, *, registration_sha256, roster_sha256, scope_sha256, summary):
+                values = {
+                    "verifier_id": "synthetic-technical-summary-verifier",
+                    "summary_sha256": technical_summary_sha256(summary),
+                    "registration_sha256": registration_sha256,
+                    "roster_sha256": roster_sha256,
+                    "scope_sha256": scope_sha256,
+                    "receipt_sha256s": summary.receipt_sha256s,
+                    "human_time_receipt_sha256s": summary.human_time_receipt_sha256s,
+                    "study_wall_receipt_sha256s": summary.study_wall_receipt_sha256s,
+                    "technical_activity_ids": expected_ids,
+                    "actual_spend_activity_ids": expected_ids,
+                    "allocated_activity_ids": expected_ids,
+                    "user_time_activity_ids": expected_ids,
+                    "study_wall_activity_ids": expected_ids,
+                    "verified_at": "2026-10-09T16:00:00Z",
+                }
+                if mismatch:
+                    values.update(mismatch)
+                return TechnicalCostSummaryAttestation(**values)
+        return Verifier()
+
+    def test_v3_report_marks_human_evaluation_and_cost_pending_while_retaining_108(self):
+        data = _registration_v3()
+        registration = evaluation.validate_registration(
+            data, expected_candidate_sha256=data["candidate"]["sha256"],
+            expected_input_hashes=_inputs(data),
+        )
+        ledger, ratings = _complete_ledger(registration)
+        report = self._make_report(registration, ledger, ratings)
+        narrative = render_utility_report_narrative(report)
+        self.assertFalse(report["utilityClaimEligible"])
+        self.assertFalse(report["conclusion"]["positiveUtilityAsserted"])
+        self.assertEqual("human-evaluation-deferred", report["conclusion"]["status"])
+        self.assertEqual({"status": "deferred", "identifiedReviewers": 0,
+                          "adjudication": "pending", "humanCostStatus": "missing",
+                          "humanAcceptanceAsserted": False}, report["humanEvaluation"])
+        self.assertEqual(108, report["attempts"]["intendedSlots"])
+        self.assertIn("formal closure remains pending", report["conclusion"]["text"])
+        self.assertIn("Human evaluation: deferred", narrative)
+        self.assertIn("human cost=missing", narrative)
+        self.assertIn("formal closure", narrative)
+
+    def test_v3_report_refuses_a_spoofed_complete_human_inclusive_cost_summary(self):
+        registration = _full_registration(technical_capture=True, reviewer_fee="unknown")
+        roster = _roster(registration)
+        ledger, ratings = _complete_ledger(registration)
+        zero = Decimal("0")
+        forged = MoneySummary(
+            actual_additional_spend_eur=zero, observed_additional_spend_subtotal_eur=zero,
+            actual_additional_spend_cap_eur=zero, cap_violation=False, stop_required=False,
+            allocated_subscription_cost_eur=zero, api_reference_estimate_eur=None,
+            required_measures_complete=True, full_economic_cost_complete=True,
+            full_economic_cost_status="complete", missing_required=(), missing_full_economic_cost=(),
+            registration_sha256=registration.sha256, roster_sha256=roster.sha256, receipt_sha256s=(),
+            human_time_seconds=zero, user_time_seconds=zero, reviewer_time_seconds=zero,
+            study_wall_seconds=zero, actual_provider_spend_eur=zero, provider_accounting_cost_eur=zero,
+        )
+        report = self._make_report(registration, ledger, ratings, summary=forged,
+                                   roster_sha=roster.sha256)
+        self.assertFalse(report["costs"]["fullEconomicCostComplete"])
+        self.assertFalse(report["costs"]["complete"])
+        self.assertEqual("missing", report["humanEvaluation"]["humanCostStatus"])
+        self.assertFalse(report["utilityClaimEligible"])
+        self.assertIsNone(report["costs"]["fullEconomic"]["humanTimeSeconds"])
+        self.assertIsNone(report["costs"]["fullEconomic"]["reviewerTimeSeconds"])
+        narrative = render_utility_report_narrative(report)
+        self.assertIn("active human seconds=unknown", narrative)
+        self.assertIn("reviewer seconds=unknown", narrative)
+        self.assertNotIn("active human seconds=0", narrative)
+        self.assertNotIn("reviewer seconds=0", narrative)
+
+    def test_v3_report_retains_only_reconciled_technical_cost_and_wall_values(self):
+        registration = _full_registration(technical_capture=True, reviewer_fee="unknown")
+        roster = _roster(registration)
+        money_ledger, money_summary = _filled_money(roster)
+        ledger, ratings = _complete_ledger(registration)
+        summary = complete_full_cost(
+            registration, ledger, roster, money_ledger, money_summary,
+            setup_costs=_known_costs(), human_time_receipts=_time_receipts(roster),
+            scope_verifier=_ScopeVerifier(), time_verifier=_TimeVerifier(),
+            study_wall_receipts=_wall_receipts(roster), study_wall_verifier=_WallVerifier(),
+        )
+        report = self._make_report(registration, ledger, ratings, summary=summary,
+                                   roster_sha=roster.sha256,
+                                   technical_cost_verifier=self._technical_verifier(registration))
+        costs = report["costs"]["fullEconomic"]
+        self.assertTrue(report["costs"]["technicalMeasuresAttested"])
+        self.assertFalse(report["costs"]["fullEconomicCostComplete"])
+        self.assertIsNotNone(costs["actualProviderSpendEur"])
+        self.assertIsNotNone(costs["allocatedSubscriptionCostEur"])
+        self.assertEqual("0", costs["technicalAdditionalSpendEur"])
+        self.assertEqual("60.000000", costs["userTimeSeconds"])
+        self.assertEqual("300.000000", costs["studyWallSeconds"])
+        self.assertIsNone(costs["humanTimeSeconds"])
+        self.assertIsNone(costs["reviewerTimeSeconds"])
+        self.assertEqual(109, len(costs["studyWallReceiptSha256s"]))
+        narrative = render_utility_report_narrative(report)
+        self.assertIn("verified user seconds=60.000000", narrative)
+        self.assertIn("study wall seconds=300.000000", narrative)
+        self.assertIn("active human seconds=unknown", narrative)
+        self.assertIn("reviewer seconds=unknown", narrative)
+
+    def test_v3_attestation_mismatch_and_fake_repeated_hashes_fail_closed(self):
+        registration = _full_registration(technical_capture=True, reviewer_fee="unknown")
+        roster = _roster(registration)
+        money_ledger, money_summary = _filled_money(roster)
+        ledger, ratings = _complete_ledger(registration)
+        valid_summary = complete_full_cost(
+            registration, ledger, roster, money_ledger, money_summary,
+            setup_costs=_known_costs(), human_time_receipts=_time_receipts(roster),
+            scope_verifier=_ScopeVerifier(), time_verifier=_TimeVerifier(),
+            study_wall_receipts=_wall_receipts(roster), study_wall_verifier=_WallVerifier(),
+        )
+        fake = replace(
+            valid_summary, technical_additional_spend_eur=Decimal("0"),
+            technical_required_measures_complete=True, missing_technical_required=(),
+            technical_cap_violation=False, technical_stop_required=False,
+            actual_provider_spend_eur=Decimal("0"), allocated_subscription_cost_eur=Decimal("0"),
+            provider_accounting_cost_eur=Decimal("0"), user_time_seconds=Decimal("0"),
+            study_wall_seconds=Decimal("0"),
+            receipt_sha256s=("a" * 64, "a" * 64),
+            human_time_receipt_sha256s=("b" * 64, "b" * 64),
+            study_wall_receipt_sha256s=("c" * 64, "c" * 64),
+        )
+        fake_report = self._make_report(registration, ledger, ratings, summary=fake,
+                                        roster_sha=roster.sha256,
+                                        technical_cost_verifier=self._technical_verifier(registration))
+        self.assertFalse(fake_report["costs"]["technicalMeasuresAttested"])
+        for field in ("technicalAdditionalSpendEur", "actualProviderSpendEur",
+                      "allocatedSubscriptionCostEur", "userTimeSeconds", "studyWallSeconds"):
+            self.assertIsNone(fake_report["costs"]["fullEconomic"][field])
+
+        expected_ids = tuple(sorted({"setup", *(slot.slot_id for slot in evaluation.generate_slots(registration))}))
+        mismatch_cases = (
+            {"summary_sha256": "f" * 64},
+            {"registration_sha256": "f" * 64},
+            {"roster_sha256": "f" * 64},
+            {"scope_sha256": "f" * 64},
+            {"receipt_sha256s": ("d" * 64,)},
+            {"actual_spend_activity_ids": expected_ids[:-1]},
+        )
+        for mismatch in mismatch_cases:
+            with self.subTest(mismatch=mismatch):
+                verifier = self._technical_verifier(registration, mismatch=mismatch)
+                bound_report = self._make_report(registration, ledger, ratings, summary=valid_summary,
+                                                 roster_sha=roster.sha256,
+                                                 technical_cost_verifier=verifier)
+                self.assertFalse(bound_report["costs"]["technicalMeasuresAttested"])
+                self.assertIsNone(bound_report["costs"]["fullEconomic"]["studyWallSeconds"])
 
     def test_complete_legacy_scalars_and_two_humans_cannot_replace_subscription_costs(self):
         registration = _full_registration()

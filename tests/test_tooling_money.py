@@ -33,8 +33,8 @@ def _sha(value):
     return hashlib.sha256(value.encode("utf-8")).hexdigest()
 
 
-def _validated_registration():
-    data = _registration()
+def _validated_registration(data=None):
+    data = data or _registration()
     data["billingPolicy"] = {
         "schema": "agent-braid-m45-subscription-policy-v1",
         "mode": "included-subscription-only",
@@ -54,8 +54,8 @@ def _validated_registration():
     )
 
 
-def _roster():
-    registration = _validated_registration()
+def _roster(data=None):
+    registration = _validated_registration(data)
     account_by_host = {
         item["host"]: item["accountSha256"]
         for item in registration.data["billingPolicy"]["hosts"]
@@ -73,11 +73,11 @@ def _roster():
     )
     activities.extend(
         MoneyActivity(
-            f"reviewer:{reviewer['reviewerId']}", "reviewer",
-            f"reviewer-account-{reviewer['reviewerId']}", _sha(f"reviewer-account:{reviewer['reviewerId']}"),
-            reviewer_id=reviewer["reviewerId"], started_at=_COVERAGE_START, ended_at=_COVERAGE_END,
+            f"reviewer:{reviewer_id}", "reviewer",
+            f"reviewer-account-{reviewer_id}", _sha(f"reviewer-account:{reviewer_id}"),
+            reviewer_id=reviewer_id, started_at=_COVERAGE_START, ended_at=_COVERAGE_END,
         )
-        for reviewer in registration.data["humanReviewers"]
+        for reviewer_id in evaluation.expected_reviewer_participants(registration)
     )
     return MoneyRoster(registration, "cohort-2026-10", _COVERAGE_START, _COVERAGE_END,
                        tuple(activities))

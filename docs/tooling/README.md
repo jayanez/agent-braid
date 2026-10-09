@@ -22,8 +22,12 @@ Capture preparation also provides [local measurement primitives](MEASUREMENTS.md
 and require external authenticators, frozen configuration and verified live
 telemetry. Their controls use synthetic owned processes; actual host capture
 and the registered evaluation remain pending.
-Actual host trust/authentication, complete comparisons and founder acceptance
-are still separate gates. Plain text/ASCII graphs work without a browser;
+The 2026-10-09 owner decision defers only human outcome ratings and adjudication;
+the v3 technical phase retains all 108 attempts, the frozen rubric, rights/account/
+budget/permission gates, and unknown human costs. See the [deferral decision](../../specs/044-ai-tooling-evaluation/human-evaluation-deferral-clarification.md).
+Actual host trust/authentication, complete comparisons, later human interpretation
+and founder acceptance are still separate gates. No positive utility or milestone
+closure is claimed. Plain text/ASCII graphs work without a browser;
 JSON retains complete core values after any artifact reconstruction.
 
 The existing bounded stdio MCP runtime is documented in the
