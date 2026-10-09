@@ -35,27 +35,51 @@ unknown route, missing model/effort, absent provider opt-in, unresolved
 isolation evidence, stale configuration/binary identity, or missing required
 attestation fails before handoff. This code does not create or refresh any of
 those facts. A failed or ambiguous started attempt is never retried.
-For a frozen subscription-only admission, the exact account/cohort/slot binding
-is carried into the process supervisor. Its child environment permits only
-`PATH`, `LANG`, `LC_ALL`, `TMPDIR` and `CLAUDE_CONFIG_DIR`; provider keys, routing,
-proxy and loader overrides refuse. This reduces configuration fallback paths;
-it does not authenticate the selected native account. The preparation verifier
-must verify the effective route and authentication, and the trusted supervisor
-observer must supply fresh account, included-quota and paid-usage facts. See
+For a frozen subscription-only admission, the exact registration, account,
+policy and slot binding is carried into the process supervisor. Its child
+environment permits only `PATH`, `LANG`, `LC_ALL`, `TMPDIR` and
+`CLAUDE_CONFIG_DIR`; provider keys, routing, proxy and loader overrides refuse.
+This reduces configuration fallback paths; it does not authenticate the
+selected native account. The preparation verifier must verify the effective
+route and authentication, and the trusted supervisor observer must supply
+fresh account, included-quota and paid-usage facts. See
 [REGISTRATION.md](REGISTRATION.md) and [SUPERVISOR.md](SUPERVISOR.md).
 
 ## CLI command profiles
 
 The preparation profiles use the documented command surfaces reviewed on
-2026-10-08. Codex uses `exec --json --ephemeral --ignore-user-config
+2026-10-08 and 2026-10-09. Codex uses `exec --json --ephemeral --ignore-user-config
 --sandbox read-only --model ... --cd ...` and an explicit medium reasoning
 effort setting; its MCP/tool and skills configuration is supplied as explicit
-TOML overrides and bound by a digest. Claude uses `--bare --strict-mcp-config --mcp-config
+TOML overrides and bound by a digest. Legacy non-subscription Claude uses
+`--bare --strict-mcp-config --mcp-config
 ... --no-session-persistence --print --verbose --output-format stream-json
 --model ... --effort medium`. The MCP-only Claude arm supplies an empty built-in
 tool set and disables slash commands. The skills arm selects the five exact
 native `Skill(name)` tools and does not disable slash commands. No command uses
 permission bypass flags or puts the prompt on argv.
+
+Subscription-bound Claude instead omits `--bare`: pinned Claude Code 2.1.286
+documents bare mode as skipping keychain/OAuth and requiring `ANTHROPIC_API_KEY`
+or `apiKeyHelper`, which this subscription profile forbids. It requires a
+content-pinned per-invocation settings JSON with exactly
+`forceLoginMethod: claudeai`, `fastMode: false`, `disableAllHooks: true`, and
+`autoMemoryEnabled: false`; boolean settings require JSON booleans, and the
+settings file is limited to 16 KiB. Credentials, helper commands, provider
+overrides, duplicate keys, and extra settings are rejected. MCP and settings
+argv paths use the canonical paths captured in their pins. The invocation requests `--restricted`, an
+empty `--setting-sources` value, `--settings <pinned-file>`, and
+`--strict-mcp-config`, while retaining the same exact MCP and arm-specific tool
+selection. The settings path and digest are pinned in pre-dispatch checks and
+reported without serializing their contents.
+
+`CLAUDE_CONFIG_DIR` remains caller-selected and separately verified. A new or
+empty config directory does not inherit first-party Claude login. The caller
+must establish first-party account authentication in that namespace before a
+subscription run; this adapter neither copies credentials nor performs login,
+logout, or refresh. Route, included-quota, zero-paid-usage, isolation, effective
+settings, and native-skill attestations remain external required evidence.
+Requested CLI flags and settings do not prove that these conditions hold.
 
 The current adapter accepts only the registered Agent Braid MCP stdio command
 shape: a pinned executable followed by `-m agent_braid tooling serve`, required
@@ -79,8 +103,9 @@ These profiles describe requested argv/configuration, not proof of actual
 host compatibility. In particular, Codex's ignore-user-config option does not
 bypass authentication; ambient instructions and skills are not guaranteed to
 be isolated; feature flags may be rejected or have different effects on
-explicit MCP. Claude's bare mode is only one part of isolation and still needs
-external route/authentication evidence. Host versions and effective model,
+explicit MCP. Legacy Claude bare mode is not a subscription authentication
+route. Subscription Claude's restricted settings request is only one part of
+isolation and still needs external route/authentication evidence. Host versions and effective model,
 route, feature settings, MCP inventory, skill loading, and output schema must be
 verified from the actual start/outcome receipts before treating an attempt as
 comparable. Parser output is an observation of caller-supplied bytes, not an

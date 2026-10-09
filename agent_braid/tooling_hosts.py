@@ -9,13 +9,14 @@ actual source evidence.
 """
 from __future__ import annotations
 
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, replace
 import hashlib
 import json
 import os
 from pathlib import Path
 import re
 import math
+import stat
 import tomllib
 from types import MappingProxyType
 from typing import Any, Callable, Mapping, Protocol
@@ -27,6 +28,7 @@ from . import tooling_sessions
 from . import tooling_subscription as subscription_policy
 
 _SHA256 = re.compile(r"^[0-9a-f]{64}$")
+_MAX_CLAUDE_SETTINGS_BYTES = 16 * 1024
 _SUPPORTED_HOSTS = {"codex", "claude-code"}
 _SUPPORTED_ARMS = {"mcp-only", "mcp-plus-skills"}
 _SKILLS = (
@@ -89,6 +91,7 @@ class HostLaunchConfig:
     poll_interval_seconds: float = 1
     term_grace_seconds: float = 5
     kill_grace_seconds: float = 5
+    claude_subscription_settings: FilePin | None = field(default=None, repr=False)
 
 
 @dataclass(frozen=True)
@@ -130,6 +133,7 @@ class HostLaunchPlan:
     term_grace_seconds: float
     kill_grace_seconds: float
     subscription_binding: subscription_policy.SubscriptionBinding | None = None
+    claude_subscription_settings: FilePin | None = field(default=None, repr=False)
 
 
 class PreparationVerifier(Protocol):
@@ -176,6 +180,9 @@ class HostSessionAdapter(tooling_sessions.SessionAdapter):
             raise HostPreparationError("launch plan is not bound to this admission")
         self._verify_pins(plan)
         self._verifier.verify_pre_dispatch(admission=admission, plan=plan)
+        # The verifier may perform I/O; recheck bounded config pins immediately
+        # before handing the frozen request to the process supervisor.
+        self._verify_pins(plan)
         if self._supervisor is None:
             from .tooling_supervisor import run_supervised
             runner = run_supervised
@@ -282,6 +289,10 @@ class HostSessionAdapter(tooling_sessions.SessionAdapter):
             "configFiles": [{"path": str(pin.path), "sha256": pin.sha256}
                             for pin in plan.config_files],
             "codexConfigOverridesSha256": plan.codex_config_sha256,
+            "claudeSubscriptionSettingsSha256": (
+                plan.claude_subscription_settings.sha256
+                if plan.claude_subscription_settings is not None else None
+            ),
             "status": status,
             "launched": getattr(outcome, "launched", None),
             "returncode": getattr(outcome, "returncode", None),
@@ -312,7 +323,12 @@ class HostSessionAdapter(tooling_sessions.SessionAdapter):
     def _verify_pins(plan: HostLaunchPlan) -> None:
         _check_file_pin(FilePin(plan.executable, plan.executable_sha256), executable=True)
         for pin in plan.config_files:
+            if plan.claude_subscription_settings is not None \
+                    and pin.path == plan.claude_subscription_settings.path:
+                continue
             _check_file_pin(pin)
+        if plan.claude_subscription_settings is not None:
+            _validate_claude_subscription_settings(plan.claude_subscription_settings)
 
 
 def prepare_host_launch(admission: capture.AttemptAdmission,
@@ -344,6 +360,8 @@ def prepare_host_launch(admission: capture.AttemptAdmission,
         _require_digest(config.evidence.settings_support_attestation_sha256)
     else:
         raise HostPreparationError("effective host settings support must be verified before dispatch")
+    if config.host == "claude-code":
+        config = _canonicalize_claude_pins(config)
     if config.host == "claude-code" and _version_tuple(config.version, claude_stable=True) < (2, 1, 286):
         raise HostPreparationError("Claude Code before 2.1.286 is refused for isolated comparisons")
     if config.host == "codex" and _version_tuple(config.version) < (0, 162, 0):
@@ -395,6 +413,8 @@ def prepare_host_launch(admission: capture.AttemptAdmission,
     if any(not isinstance(k, str) or not isinstance(v, str) for k, v in config.environment.items()):
         raise HostPreparationError("explicit child environment must map strings to strings")
     binding = admission.subscription_binding
+    if config.host != "claude-code" and config.claude_subscription_settings is not None:
+        raise HostPreparationError("Claude subscription settings are irrelevant to this host")
     if binding is not None:
         if binding.host != config.host or binding.slot_id != admission.slot_id:
             raise HostPreparationError("subscription binding differs from the selected host or slot")
@@ -403,6 +423,14 @@ def prepare_host_launch(admission: capture.AttemptAdmission,
         allowed_environment = {"PATH", "LANG", "LC_ALL", "TMPDIR", "CLAUDE_CONFIG_DIR"}
         if set(config.environment) - allowed_environment:
             raise HostPreparationError("subscription-only child environment contains an unapproved override")
+        if config.host == "claude-code":
+            if config.claude_subscription_settings is None:
+                raise HostPreparationError("subscription-bound Claude requires pinned per-invocation settings")
+            _validate_claude_subscription_settings(config.claude_subscription_settings)
+        elif config.claude_subscription_settings is not None:
+            raise HostPreparationError("Claude subscription settings are irrelevant to this host")
+    elif config.claude_subscription_settings is not None:
+        raise HostPreparationError("Claude subscription settings require a genuine subscription admission")
     for name, value in (("timeout_seconds", config.timeout_seconds),
                         ("max_output_bytes", config.max_output_bytes),
                         ("observation_max_age_seconds", config.observation_max_age_seconds),
@@ -415,6 +443,8 @@ def prepare_host_launch(admission: capture.AttemptAdmission,
     _check_file_pin(FilePin(config.executable, config.executable_sha256), executable=True)
     for pin in config.config_files:
         _check_file_pin(pin)
+    if config.claude_subscription_settings is not None:
+        _validate_claude_subscription_settings(config.claude_subscription_settings)
     argv = _build_argv(config)
     return HostLaunchPlan(
         host=config.host, arm=config.arm, attempt_id=admission.attempt_id,
@@ -423,7 +453,10 @@ def prepare_host_launch(admission: capture.AttemptAdmission,
         executable=config.executable.resolve(strict=True),
         executable_sha256=config.executable_sha256, version=config.version,
         model=config.model, effort=config.effort,
-        config_files=tuple(FilePin(pin.path.resolve(strict=True), pin.sha256) for pin in config.config_files),
+        config_files=tuple(FilePin(pin.path.resolve(strict=True), pin.sha256)
+                           for pin in (*config.config_files,
+                                       *((config.claude_subscription_settings,)
+                                         if config.claude_subscription_settings else ()))),
         codex_config_overrides=config.codex_config_overrides,
         config_dir=config.config_dir, cwd=config.cwd, output_root=config.output_root,
         mcp_result_root=config.mcp_result_root,
@@ -441,6 +474,11 @@ def prepare_host_launch(admission: capture.AttemptAdmission,
         term_grace_seconds=config.term_grace_seconds,
         kill_grace_seconds=config.kill_grace_seconds,
         subscription_binding=binding,
+        claude_subscription_settings=(
+            FilePin(config.claude_subscription_settings.path.resolve(strict=True),
+                    config.claude_subscription_settings.sha256)
+            if config.claude_subscription_settings is not None else None
+        ),
     )
 
 
@@ -461,10 +499,15 @@ def _build_argv(config: HostLaunchConfig) -> tuple[str, ...]:
         argv.extend(("--config", "web_search=\"disabled\""))
         return tuple(argv)
     if config.host == "claude-code":
-        argv = ["--bare", "--strict-mcp-config", "--no-session-persistence",
+        subscription = config.claude_subscription_settings is not None
+        argv = [] if subscription else ["--bare"]
+        if subscription:
+            argv.extend(("--restricted", "--setting-sources", "",
+                         "--settings", str(config.claude_subscription_settings.path)))
+        argv.extend(("--strict-mcp-config", "--no-session-persistence",
                 "--print", "--verbose", "--output-format", "stream-json",
                 "--model", config.model, "--effort", config.effort,
-                "--mcp-config", str(config.config_files[0].path)]
+                "--mcp-config", str(config.config_files[0].path)))
         if config.arm == "mcp-only":
             argv.extend(("--tools", "", "--disable-slash-commands"))
         else:
@@ -574,6 +617,64 @@ def _validate_claude_configuration(config: HostLaunchConfig) -> None:
         if server.get("env"):
             raise HostPreparationError("Claude MCP server environment values are not accepted in this profile")
         _validate_agent_braid_server(server.get("command"), server.get("args", []), config)
+
+
+def _validate_claude_subscription_settings(pin: FilePin) -> None:
+    """Accept only the pinned no-key first-party subscription settings profile."""
+    fd = -1
+    try:
+        if not pin.path.is_absolute() or pin.path.is_symlink():
+            raise HostPreparationError("Claude subscription settings must use an absolute non-symlink path")
+        flags = os.O_RDONLY | getattr(os, "O_NONBLOCK", 0) | getattr(os, "O_NOFOLLOW", 0)
+        fd = os.open(pin.path, flags)
+        if not stat.S_ISREG(os.fstat(fd).st_mode):
+            raise HostPreparationError("Claude subscription settings must be a regular file")
+        with os.fdopen(fd, "rb") as stream:
+            fd = -1
+            raw = stream.read(_MAX_CLAUDE_SETTINGS_BYTES + 1)
+        if len(raw) > _MAX_CLAUDE_SETTINGS_BYTES:
+            raise HostPreparationError("Claude subscription settings exceed the 16 KiB limit")
+        if hashlib.sha256(raw).hexdigest() != pin.sha256:
+            raise HostPreparationError("Claude subscription settings changed after their pin was checked")
+        settings = json.loads(raw.decode("utf-8"), object_pairs_hook=_unique_json_object)
+    except (OSError, UnicodeError, json.JSONDecodeError) as exc:
+        raise HostPreparationError("Claude subscription settings must be readable strict JSON") from exc
+    finally:
+        if fd >= 0:
+            os.close(fd)
+    if not isinstance(settings, dict) or set(settings) != {
+            "forceLoginMethod", "fastMode", "disableAllHooks", "autoMemoryEnabled"}:
+        raise HostPreparationError("Claude subscription settings differ from the exact approved allowlist")
+    if type(settings["forceLoginMethod"]) is not str or settings["forceLoginMethod"] != "claudeai" \
+            or type(settings["fastMode"]) is not bool or settings["fastMode"] is not False \
+            or type(settings["disableAllHooks"]) is not bool or settings["disableAllHooks"] is not True \
+            or type(settings["autoMemoryEnabled"]) is not bool or settings["autoMemoryEnabled"] is not False:
+        raise HostPreparationError("Claude subscription settings differ from the exact approved allowlist")
+
+
+def _canonicalize_claude_pins(config: HostLaunchConfig) -> HostLaunchConfig:
+    """Freeze Claude argv paths to the same canonical files that are pinned."""
+    canonical: list[FilePin] = []
+    for pin in config.config_files:
+        _check_file_pin(pin)
+        canonical.append(FilePin(pin.path.resolve(strict=True), pin.sha256))
+    settings_pin = config.claude_subscription_settings
+    if settings_pin is not None:
+        if not settings_pin.path.is_absolute() or settings_pin.path.is_symlink():
+            raise HostPreparationError("Claude subscription settings must use an absolute non-symlink path")
+        settings_pin = FilePin(settings_pin.path.resolve(strict=True), settings_pin.sha256)
+        _validate_claude_subscription_settings(settings_pin)
+    return replace(config, config_files=tuple(canonical),
+                   claude_subscription_settings=settings_pin)
+
+
+def _unique_json_object(pairs: list[tuple[str, Any]]) -> dict[str, Any]:
+    result: dict[str, Any] = {}
+    for key, value in pairs:
+        if key in result:
+            raise HostPreparationError("Claude subscription settings contain duplicate JSON keys")
+        result[key] = value
+    return result
 
 
 def _validate_agent_braid_server(command: Any, args: Any, config: HostLaunchConfig) -> None:

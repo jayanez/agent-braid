@@ -6,6 +6,7 @@ from dataclasses import dataclass
 from datetime import datetime, timezone
 import hashlib
 import json
+import os
 from pathlib import Path
 import sys
 import tempfile
@@ -306,9 +307,10 @@ class HostAdapterTests(unittest.TestCase):
             "expected_tools": (), "evidence": evidence,
         })
         plan = prepare_host_launch(admission, config)
+        self.assertIn("--bare", plan.argv)
         self.assertIn("--strict-mcp-config", plan.argv)
         self.assertIn("--mcp-config", plan.argv)
-        self.assertIn(str(config_file), plan.argv)
+        self.assertIn(str(config_file.resolve()), plan.argv)
         self.assertIn("--no-session-persistence", plan.argv)
         self.assertIn("--disable-slash-commands", plan.argv)
         self.assertNotIn(config.prompt.decode(), plan.argv)
@@ -318,6 +320,189 @@ class HostAdapterTests(unittest.TestCase):
         prerelease = config.__class__(**{**config.__dict__, "version": "2.1.286-alpha"})
         with self.assertRaisesRegex(HostPreparationError, "prerelease"):
             prepare_host_launch(admission, prerelease)
+
+    def test_subscription_claude_uses_pinned_first_party_settings_and_reaches_supervisor(self):
+        tmp_path = self.with_temp()
+        admission, base = _inputs(tmp_path)
+        executable = tmp_path / "claude"
+        executable.write_bytes(b"synthetic claude")
+        executable.chmod(0o755)
+        real_inputs = tmp_path / "claude-inputs"
+        real_inputs.mkdir()
+        input_link = tmp_path / "claude-input-link"
+        input_link.symlink_to(real_inputs, target_is_directory=True)
+        mcp_file = input_link / "mcp.json"
+        server = tomllib.loads(base.codex_config_overrides[0])["mcp_servers"]["test"]
+        mcp_file.write_text(json.dumps({"mcpServers": {"test": {
+            "command": server["command"], "args": server["args"]
+        }}}))
+        mcp_pin = FilePin(mcp_file, _sha(mcp_file))
+        settings_file = input_link / "claude-settings.json"
+        settings_file.write_text(json.dumps({
+            "forceLoginMethod": "claudeai", "fastMode": False,
+            "disableAllHooks": True, "autoMemoryEnabled": False,
+        }))
+        settings_pin = FilePin(settings_file, _sha(settings_file))
+        binding = SubscriptionBinding("claude-code", "1" * 64, admission.slot_id,
+                                      "2" * 64, "3" * 64)
+        admission = admission.__class__(**{**admission.__dict__, "subscription_binding": binding})
+        config = base.__class__(**{
+            **base.__dict__, "host": "claude-code", "executable": executable,
+            "executable_sha256": _sha(executable), "version": "2.1.286",
+            "config_files": (mcp_pin, *base.config_files), "codex_config_overrides": (),
+            "environment": {"CLAUDE_CONFIG_DIR": str(base.config_dir)},
+            "expected_tools": (), "claude_subscription_settings": settings_pin,
+            "evidence": LaunchEvidence("claude-subscription", "4" * 64, "5" * 64,
+                                        "6" * 64, settings_support_attestation_sha256="7" * 64),
+        })
+        plan = prepare_host_launch(admission, config)
+        self.assertNotIn("--bare", plan.argv)
+        self.assertIn("--restricted", plan.argv)
+        self.assertIn("--setting-sources", plan.argv)
+        self.assertEqual(plan.argv[plan.argv.index("--setting-sources") + 1], "")
+        self.assertEqual(plan.argv[plan.argv.index("--settings") + 1],
+                         str((real_inputs / "claude-settings.json").resolve()))
+        self.assertIn("--strict-mcp-config", plan.argv)
+        self.assertIn("--tools", plan.argv)
+        self.assertEqual(plan.claude_subscription_settings.sha256, settings_pin.sha256)
+        self.assertIn(FilePin((real_inputs / "claude-settings.json").resolve(), settings_pin.sha256),
+                      plan.config_files)
+        self.assertNotIn(settings_file.read_text(), repr(config))
+        self.assertNotIn(settings_file.read_text(), repr(plan))
+
+        requests = []
+        fake_supervisor = types.SimpleNamespace(ProcessRequest=lambda **kwargs: kwargs, FilePin=FilePin)
+        class RecordingVerifier:
+            def verify_pre_dispatch(self, *, admission, plan):
+                self.admission = admission
+                self.plan = plan
+        verifier = RecordingVerifier()
+        with mock.patch.dict(sys.modules, {"agent_braid.tooling_supervisor": fake_supervisor}):
+            adapter = HostSessionAdapter(
+                plan, verifier=verifier, observer=lambda *_: None, caps=object(),
+                supervisor=lambda request, *_: (requests.append(request) or Outcome()),
+            )
+            adapter.execute(admission)
+        self.assertIs(verifier.admission, admission)
+        self.assertEqual(verifier.plan.subscription_binding, binding)
+        self.assertEqual(requests[0]["subscription_binding"], binding)
+        self.assertTrue(any(pin.path == (real_inputs / "claude-settings.json").resolve()
+                            for pin in requests[0]["file_pins"]))
+
+        skill_names = ("agent-braid-analyze", "agent-braid-plan", "agent-braid-execute",
+                       "agent-braid-recover", "agent-braid-evidence")
+        skills_config = config.__class__(**{
+            **config.__dict__, "arm": "mcp-plus-skills",
+            "expected_tools": tuple(f"Skill({name})" for name in skill_names),
+            "expected_skill_bundle_sha256": "8" * 64,
+            "evidence": LaunchEvidence("claude-subscription", "4" * 64, "5" * 64,
+                                        "6" * 64, native_skills_attestation_sha256="9" * 64,
+                                        settings_support_attestation_sha256="7" * 64),
+        })
+        skills_plan = prepare_host_launch(admission, skills_config)
+        self.assertNotIn("--bare", skills_plan.argv)
+        self.assertEqual(skills_plan.argv[skills_plan.argv.index("--tools") + 1],
+                         ",".join(skills_config.expected_tools))
+        self.assertNotIn("--disable-slash-commands", skills_plan.argv)
+
+        decoy_inputs = tmp_path / "decoy-inputs"
+        decoy_inputs.mkdir()
+        (decoy_inputs / "mcp.json").write_text('{"mcpServers":{}}')
+        (decoy_inputs / "claude-settings.json").write_text('{"apiKey":"DECOY"}')
+        input_link.unlink()
+        input_link.symlink_to(decoy_inputs, target_is_directory=True)
+        self.assertEqual(plan.argv[plan.argv.index("--settings") + 1],
+                         str((real_inputs / "claude-settings.json").resolve()))
+        HostSessionAdapter._verify_pins(plan)
+
+    def test_subscription_claude_refuses_missing_malformed_drifted_and_poison_settings(self):
+        tmp_path = self.with_temp()
+        admission, base = _inputs(tmp_path)
+        executable = tmp_path / "claude"
+        executable.write_bytes(b"synthetic claude")
+        executable.chmod(0o755)
+        mcp_file = tmp_path / "mcp.json"
+        server = tomllib.loads(base.codex_config_overrides[0])["mcp_servers"]["test"]
+        mcp_file.write_text(json.dumps({"mcpServers": {"test": {
+            "command": server["command"], "args": server["args"]
+        }}}))
+        binding = SubscriptionBinding("claude-code", "1" * 64, admission.slot_id,
+                                      "2" * 64, "3" * 64)
+        admission = admission.__class__(**{**admission.__dict__, "subscription_binding": binding})
+        evidence = LaunchEvidence("claude-subscription", "4" * 64, "5" * 64,
+                                  "6" * 64, settings_support_attestation_sha256="7" * 64)
+        base_values = {
+            **base.__dict__, "host": "claude-code", "executable": executable,
+            "executable_sha256": _sha(executable), "version": "2.1.286",
+            "config_files": (FilePin(mcp_file, _sha(mcp_file)), *base.config_files),
+            "codex_config_overrides": (),
+            "environment": {"CLAUDE_CONFIG_DIR": str(base.config_dir)},
+            "expected_tools": (), "evidence": evidence,
+        }
+        with self.assertRaisesRegex(HostPreparationError, "requires pinned"):
+            prepare_host_launch(admission, base.__class__(**base_values))
+        fifo_path = tmp_path / "claude-settings.fifo"
+        os.mkfifo(fifo_path)
+        for non_regular in (fifo_path, tmp_path):
+            candidate = base.__class__(**{
+                **base_values,
+                "claude_subscription_settings": FilePin(non_regular, "a" * 64),
+            })
+            with self.subTest(path=non_regular), self.assertRaisesRegex(
+                    HostPreparationError, "regular file"):
+                prepare_host_launch(admission, candidate)
+        settings_file = tmp_path / "claude-settings.json"
+        approved = {"forceLoginMethod": "claudeai", "fastMode": False,
+                    "disableAllHooks": True, "autoMemoryEnabled": False}
+        for poison in (
+            {**approved, "fastMode": True},
+            {**approved, "fastMode": 0},
+            {**approved, "disableAllHooks": 1},
+            {**approved, "autoMemoryEnabled": 0},
+            {**approved, "forceLoginMethod": "console"},
+            {**approved, "apiKey": "SECRET_SENTINEL"},
+            {**approved, "env": {"ANTHROPIC_API_KEY": "SECRET_SENTINEL"}},
+            {**approved, "apiKeyHelper": "secret-helper"},
+        ):
+            settings_file.write_text(json.dumps(poison))
+            candidate = base.__class__(**{
+                **base_values, "claude_subscription_settings": FilePin(settings_file, _sha(settings_file)),
+            })
+            with self.assertRaises(HostPreparationError):
+                prepare_host_launch(admission, candidate)
+        settings_file.write_text(
+            '{"forceLoginMethod":"claudeai","fastMode":false,"fastMode":true,'
+            '"disableAllHooks":true,"autoMemoryEnabled":false}'
+        )
+        duplicate = base.__class__(**{
+            **base_values, "claude_subscription_settings": FilePin(settings_file, _sha(settings_file)),
+        })
+        with self.assertRaisesRegex(HostPreparationError, "duplicate JSON"):
+            prepare_host_launch(admission, duplicate)
+        settings_file.write_bytes(b" " * (16 * 1024 + 1))
+        oversized = base.__class__(**{
+            **base_values, "claude_subscription_settings": FilePin(settings_file, _sha(settings_file)),
+        })
+        with self.assertRaisesRegex(HostPreparationError, "16 KiB"):
+            prepare_host_launch(admission, oversized)
+        settings_file.write_text(json.dumps(approved))
+        pin = FilePin(settings_file, _sha(settings_file))
+        candidate = base.__class__(**{**base_values, "claude_subscription_settings": pin})
+        plan = prepare_host_launch(admission, candidate)
+        settings_file.write_text(json.dumps({**approved, "fastMode": True}))
+        with self.assertRaisesRegex(HostPreparationError, "changed"):
+            HostSessionAdapter._verify_pins(plan)
+        settings_file.write_bytes(b" " * (16 * 1024 + 1))
+        with self.assertRaisesRegex(HostPreparationError, "16 KiB"):
+            HostSessionAdapter._verify_pins(plan)
+
+        settings_file.write_text(json.dumps(approved))
+        with self.assertRaisesRegex(HostPreparationError, "unapproved override"):
+            prepare_host_launch(admission, candidate.__class__(**{
+                **candidate.__dict__, "environment": {
+                    "CLAUDE_CONFIG_DIR": str(base.config_dir), "ANTHROPIC_API_KEY": "SECRET_SENTINEL",
+                },
+            }))
 
     def test_codex_skills_arm_requires_exact_native_inventory_and_pinned_files(self):
         tmp_path = self.with_temp()
