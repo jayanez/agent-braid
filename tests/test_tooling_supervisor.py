@@ -12,8 +12,11 @@ import tempfile
 import threading
 import time
 import unittest
+from unittest.mock import patch
 
 from agent_braid import tooling_capture as capture
+from agent_braid import tooling_supervisor as supervisor
+from agent_braid.tooling_process_birth import ProcessBirthIdentity
 from agent_braid.tooling_supervisor import (
     BudgetCaps,
     FilePin,
@@ -111,6 +114,29 @@ class ToolingSupervisorTests(unittest.TestCase):
         self.assertNotIn("env", receipt)
         self.assertNotIn("PYTHONUNBUFFERED", result.receipt_path.read_text())
 
+    def test_kernel_birth_is_captured_after_popen_before_live_observation(self):
+        events = []
+
+        def capture_birth(pid):
+            value = ProcessBirthIdentity(pid, "test", "synthetic-birth-source", "birth-token", 0)
+            events.append(("birth", pid, value.token))
+            return value
+
+        def observer(identity, elapsed):
+            if identity is not None:
+                events.append(("observer", identity.pid, identity.birth.token if identity.birth else None))
+                self.assertIsNotNone(identity.birth)
+            return _snapshot(wall=0.1 + elapsed)
+
+        with patch.object(supervisor, "capture_process_birth", side_effect=capture_birth):
+            result = run_supervised(self.request("import time; time.sleep(0.2)"), self.caps, observer)
+        self.assertTrue(result.launched)
+        birth_index = next(i for i, event in enumerate(events) if event[0] == "birth")
+        observer_index = next(i for i, event in enumerate(events) if event[0] == "observer")
+        self.assertLess(birth_index, observer_index)
+        self.assertEqual(events[birth_index][1], events[observer_index][1])
+        self.assertEqual(events[birth_index][2], events[observer_index][2])
+
     def test_subscription_only_preflight_and_periodic_stop(self):
         binding = self.subscription_binding
 
@@ -192,10 +218,30 @@ class ToolingSupervisorTests(unittest.TestCase):
         self.assertIsNotNone(cancelled.returncode)
 
     def test_ignoring_term_child_and_parent_exit_pipe_holder_are_bounded(self):
-        ignore = "import signal,time; signal.signal(signal.SIGTERM,signal.SIG_IGN); time.sleep(10)"
-        ignored = run_supervised(self.request(ignore, timeout=0.15), self.caps, self.observer()[0])
-        self.assertEqual("timed-out", ignored.status)
+        ignore = ("import signal,time; signal.signal(signal.SIGTERM,signal.SIG_IGN); "
+                  "print('TERM_IGNORED_READY',flush=True); time.sleep(10)")
+        cancel = threading.Event()
+        ready = threading.Event()
+        request = self.request(ignore, timeout=1.5)
+
+        def cancel_after_signal_handler_is_installed(identity, elapsed):
+            if identity is not None:
+                try:
+                    with (request.output_root / "stdout.partial").open("rb") as output:
+                        marker = output.read(64)
+                except OSError:
+                    marker = b""
+                if marker.startswith(b"TERM_IGNORED_READY\n"):
+                    ready.set()
+                    cancel.set()
+            return _snapshot(wall=0.1 + elapsed)
+
+        ignored = run_supervised(request, self.caps, cancel_after_signal_handler_is_installed,
+                                 cancel_event=cancel)
+        self.assertTrue(ready.is_set(), "child never confirmed its SIGTERM handler was installed")
+        self.assertEqual("cancelled", ignored.status)
         self.assertEqual(9, ignored.signal)
+        self.assertLess(ignored.wall_elapsed_seconds, 2.0)
 
         child = ("import subprocess,sys; subprocess.Popen([sys.executable,'-c',"
                  "'import time; time.sleep(10)'],stdout=sys.stdout,stderr=sys.stderr)")

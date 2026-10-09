@@ -24,6 +24,12 @@ import time
 from typing import Callable, Mapping
 
 from . import tooling_capture as capture
+from .tooling_process_birth import (
+    ProcessBirthError,
+    ProcessBirthIdentity,
+    capture_process_birth,
+    close_process_birth,
+)
 from .tooling_subscription import (
     SubscriptionBinding,
     SubscriptionError,
@@ -151,6 +157,7 @@ class ProcessIdentity:
     process_group_id: int
     started_at: str
     executable_sha256: str
+    birth: ProcessBirthIdentity | None = None
 
 
 @dataclass(frozen=True)
@@ -297,6 +304,7 @@ def run_supervised(
     snapshots = [initial]
     last_snapshot = initial
     identity: ProcessIdentity | None = None
+    birth: ProcessBirthIdentity | None = None
     stop_reason: str | None = None
     stop_status: str | None = None
     observer_failure: str | None = None
@@ -322,8 +330,13 @@ def run_supervised(
             start_new_session=True, bufsize=0,
         )
         launched = True
+        try:
+            # Bind kernel birth identity before any poll/wait can reap the child.
+            birth = capture_process_birth(process.pid)
+        except (OSError, ProcessBirthError):
+            birth = None
         start_time_mono = clock.monotonic()
-        identity = ProcessIdentity(process.pid, process.pid, _utc(clock), request.executable_sha256)
+        identity = ProcessIdentity(process.pid, process.pid, _utc(clock), request.executable_sha256, birth)
         if _hash_executable(executable) != request.executable_sha256 or not _file_pins_match(pinned_files):
             stop_reason, stop_status = "executable or pinned input changed at process start", "start-drift"
         if process.stdout is None or process.stderr is None:
@@ -516,6 +529,7 @@ def run_supervised(
                     process.wait(timeout=request.kill_grace_seconds)
                 except subprocess.TimeoutExpired:
                     group_cleanup = "unknown: root process could not be reaped"
+        close_process_birth(birth)
         try:
             selector.close()
         except OSError:
