@@ -1,5 +1,20 @@
 # SPEC-038 implementation readiness
 
+## Current bounded disposition — 2026-10-09
+
+The founder accepted bounded M4 alpha engineering and evaluation as complete in
+item 22, with negative utility. The [founder decision](whole-m4-founder-decision-20261009.json)
+and [current specification](spec.md) record that scope. Historical G4 NO-GO and
+the three SPEC-027 deferrals remain unchanged; no useful-speedup, production,
+scientific or broader-capability acceptance is implied.
+
+The development status below is a historical 2026-10-08 snapshot, including its
+then-current evidence binding and pending whole-feature decision. The registered
+source capture is complete; its approval does not authorize a retry or resumption.
+The recovery guidance describes implementation behavior subject to separately
+applicable authority; no real-source recovery observation was obtained.
+Current tracking is shown in the [M4 milestone](https://github.com/jayanez/agent-braid/milestone/6).
+
 ## Development status — 2026-10-08
 
 The founder approved the exact frozen source rights and protocol through nine

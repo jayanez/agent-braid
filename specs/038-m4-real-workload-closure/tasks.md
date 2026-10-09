@@ -1,6 +1,14 @@
 # Tasks
 
-## Development status — 2026-10-08
+## Current status — 2026-10-09
+
+The founder approved bounded whole-M4 alpha engineering/evaluation completion
+with negative utility. The decision accepts six bounded exit rows and preserves
+the historical SPEC-021 G4 NO-GO. See the [decision record](whole-m4-founder-decision-20261009.json),
+[closure packet](whole-m4-closure-packet.md), and [SC-008 evidence](evidence/sc-008.json).
+Current GitHub tracking is shown in the [live M4 milestone](https://github.com/jayanez/agent-braid/milestone/6).
+
+## Capture status — 2026-10-08
 
 The exact successor candidate `e66f9a1b94fc5ebfbf784d9c48a76f53c1a656ee`
 and manifest received independent review, owner stable-candidate approval
@@ -15,9 +23,9 @@ See the [derived registered capture summary](evidence/registered-capture-summary
 for exact bindings, complete denominators, costs, controls and unavailable
 observations. The two historical `b85f7e5` pre-dispatch failures remain retained
 in the [attempt summary](evidence/pre-dispatch-attempt-summary.json). No capture
-was retried or resumed. Historical SPEC-021 G4 NO-GO remains visible and
-whole-M4 founder acceptance remains pending. Source-project code and tests
-were not executed under this protocol.
+was retried or resumed. Historical SPEC-021 G4 NO-GO remains visible. At this
+capture-status snapshot, the later founder decision had not yet been recorded.
+Source-project code and tests were not executed under this protocol.
 
 T002 approval of the exact source/protocol permits bounded C08 implementation
 and evaluation preparation under the user-authorized goal. That approval alone does not permit
@@ -32,7 +40,7 @@ do not change those boundaries.
 
 - [x] T002 (REQ-001,REQ-002,REQ-003/SC-001,SC-002,SC-003,SC-004,SC-005): Obtain exact protocol/source-rights review.
   Dependencies: T001. Targets: `protocol-review-packet.md; separate exact human decision record`.
-  Verification and evidence: The exact rights and protocol hashes are bound by the nine-item decision receipt. Its scope is bounded C08 implementation, static admission and evaluation preparation. `evidence/sc-007.json` records this scope and its separate capture boundary. Frozen rights and protocol packets remain unchanged; items 18/19 later authorized e66f9a1 capture, while whole-M4 acceptance remains pending.
+  Verification and evidence: The exact rights and protocol hashes are bound by the nine-item decision receipt. Its scope is bounded C08 implementation, static admission and evaluation preparation. `evidence/sc-007.json` records this scope and its separate capture boundary. Frozen rights and protocol packets remain unchanged; items 18/19 later authorized e66f9a1 capture. The subsequent whole-M4 decision is recorded in the current status above.
 
 - [x] T003 (REQ-002,REQ-003/SC-003,SC-004,SC-005): Implement the narrow harness slice and prepare a candidate manifest.
   Dependencies: approved T002 and confirmed exact source feasibility. Targets: `one narrow runner; focused novel-invariant tests; successor plan.md, tasks.md and quickstart.md; candidate manifest`.
@@ -50,9 +58,9 @@ do not change those boundaries.
   Dependencies: T005 or a documented infeasible exit. Targets: `bounded result packet; denominator and source-integrity audit`.
   Verification and planned evidence: Report all intended, attempted, valid, invalid, failed, refused, recovered and unexecuted rows, plus full cost and unsupported yield. Negative, null, inconclusive and infeasible outcomes are valid. Obtained: `evidence/sc-004.json` through `evidence/sc-006.json`; independent read-only arithmetic/binding review found no actionable discrepancies, reconciled all phases/residuals and six measured ratios. Median 0.6538998702917553 favors serial in this finite uncontrolled sample; complete costs and unavailable observations are disclosed. Whole-M4 founder acceptance remains separate.
 
-- [ ] T007 (REQ-004,REQ-005/SC-006,SC-008): Prepare independent review and the whole-M4 decision packet.
+- [x] T007 (REQ-004,REQ-005/SC-006,SC-008): Prepare independent review and the whole-M4 decision packet.
   Dependencies: T006. Targets: `bounded packet; SPEC-021 six-row reconciliation; separate founder decision`.
-  Verification and planned evidence: Preserve the historical SPEC-021 G4 NO-GO, audit all six rows, and require a new explicit founder whole-M4 decision before changing milestone status. Planned: `evidence/sc-008.json`. Obtained: none.
+  Verification and obtained evidence: Preserved historical SPEC-021 G4 NO-GO; the six-row review accepted bounded engineering/evaluation evidence with the stated limits. The founder approved the bounded whole-M4 decision on 2026-10-09. `evidence/sc-008.json` binds the decision SHA-256 `10a88fd2814187fddfb385d8a59dc6a7fc3d326cd6de3f43a4980a208b47d9ce`, six-row review SHA-256 `f2b1a721aaf671edd6b325a3b6703d877064f6eb5ab979eabb6053017bfe3b6d`, closure packet SHA-256 `d832743e8d77cb798dc1aa223a8b45fabdf78f7377ed1d2d3a83bec86a49e83f`, and owner decision receipt SHA-256 `6c4f6a0c6634dfc72f4f5fa2c053627c54c8a1beb741e6d609487d85fa5e3764`. GitHub issue/milestone reconciliation remains pending guarded apply, empty follow-up audit, and Project/milestone verification.
 
 These future tasks do not authorize concurrent agents, source execution,
 registered capture, or milestone acceptance. Research completion does not
