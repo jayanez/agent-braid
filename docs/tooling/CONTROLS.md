@@ -35,9 +35,20 @@ pass the case. Cleanup targets only that owned group.
 The receipt labels this `unittest-control-source` and `synthetic-protocol-peer`.
 It does not claim that each case is a distinct independent experiment: test
 methods are named assertion sources, and their relationship is stated in the
-manifest. The runner verifies source hashes again after execution. The result
-integrity index detects changed, missing, extra, or permission-weakened result
-files:
+manifest. At freeze and completion the runner checks the complete source path
+inventory, including ignored source files, hashes, commit, branch and Git status.
+Added, removed or changed inputs, unsafe inventory entries, Git drift or an
+unavailable integrity check make the receipt incomplete even when every case
+passed. These checks observe the two boundaries; they do not prove the absence
+of transient changes between them. The result integrity index detects changed,
+missing, extra, or permission-weakened result files. Verification rejects a
+symlink supplied as the result root.
+
+Git observation removes inherited `GIT_*` control variables, ignores global and
+system configuration, and disables fsmonitor and hooks. Configured repository
+clean, smudge or process filters are unsupported and cause refusal before they
+can run. The recorded Git status belongs to this controlled configuration; it
+does not attest every user-specific Git configuration.
 
 The in-flight cancellation case exercises the application-level asyncio worker
 checkpoint using Python's standard library. It asserts dispatch before caller
