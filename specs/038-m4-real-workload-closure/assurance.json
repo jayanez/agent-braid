@@ -19,7 +19,7 @@
     24,
     25
   ],
-  "assumptions": "Exact source rights and protocol remain bound to nine item-by-item owner decisions and unchanged source/protocol hashes. The repaired candidate e66f9a1b94fc5ebfbf784d9c48a76f53c1a656ee received fresh static admission, independent review, exact owner stable-candidate approval (18) and separate capture authorization (19). The single capture completed 20 valid treatments and ten pairs; mandatory fresh-process verification inspected all 20 before conditional cleanup removed 40 run/grant paths. Historical b85f7e5 pre-dispatch failures remain retained. Capture approvals cover only the exact e66 capture. A separate bounded whole-M4 engineering/evaluation decision is recorded at fa8852a; issue/milestone tracking closure remains pending.",
+  "assumptions": "Exact source rights and protocol remain bound to nine item-by-item owner decisions and unchanged source/protocol hashes. The repaired candidate e66f9a1b94fc5ebfbf784d9c48a76f53c1a656ee received fresh static admission, independent review, exact owner stable-candidate approval (18) and separate capture authorization (19). The single capture completed 20 valid treatments and ten pairs; mandatory fresh-process verification inspected all 20 before conditional cleanup removed 40 run/grant paths. Historical b85f7e5 pre-dispatch failures remain retained. Capture approvals cover only the exact e66 capture. A separate bounded whole-M4 engineering/evaluation decision is recorded at fa8852a. At the 2026-10-09 decision/publication snapshot, issue and milestone tracking reconciliation was pending. See the current live [M4 — Agent Braid runtime](https://github.com/jayanez/agent-braid/milestone/6); this record does not attest to later tracking changes or claim a guarded apply, audit, or Project-state verification.",
   "authority_snapshot": {
     "commit": "fa8852ab4158f860bf2bc3aa70469f3367d2b57b",
     "hashes": {
@@ -92,11 +92,11 @@
   "compatibility": "Bounded current-runtime harness implementation and preparation; no public API/schema, grants, effects, verifier, host, promotion or runtime contract changes. Historical G4NO-GO and other milestones unchanged.",
   "domain": "Exact owner-permissioned PR137/138 fixed-patch source frame, two operations from a common base, tracked-tree-v1 observation. Four warm-up and six measured pairs; all 20 treatments valid and tree-matched. Measured median serial/parallel total-wall ratio 0.6538998702917553 is finite negative descriptive performance evidence. No source-code execution, actual-source refusal/recovery observations, population utility or causal inference.",
   "evidence_snapshot": {
-    "commit": null,
-    "mode": "current"
+    "commit": "f18f63c8fc9b52dc0652f57c505d7f7647164030",
+    "mode": "historical"
   },
-  "execution_contract": "Single exact e66f9a1 capture authorized separately by owner item 19 after item 18 stable review. Existing fixed patches, unique purpose-bound grants, private destinations and independent verifier only; no source code/tests/hooks/network/providers/ref promotion. No retry, replacement, resume or source substitution. Fresh verification preceded conditional cleanup; deleted run/grant artifacts cannot be independently re-inspected now. Any new action or changed candidate requires its applicable distinct authority. The item22 bounded whole-M4 decision is recorded separately; issue/milestone tracking closure remains pending.",
-  "human_review": "pending",
+  "execution_contract": "Single exact e66f9a1 capture authorized separately by owner item 19 after item 18 stable review. Existing fixed patches, unique purpose-bound grants, private destinations and independent verifier only; no source code/tests/hooks/network/providers/ref promotion. No retry, replacement, resume or source substitution. Fresh verification preceded conditional cleanup; deleted run/grant artifacts cannot be independently re-inspected now. Any new action or changed candidate requires its applicable distinct authority. The item22 bounded whole-M4 decision is recorded separately. At the 2026-10-09 decision/publication snapshot, issue and milestone tracking reconciliation was pending. See the current live [M4 — Agent Braid runtime](https://github.com/jayanez/agent-braid/milestone/6); this record does not attest to later tracking changes or claim a guarded apply, audit, or Project-state verification.",
+  "human_review": "approved",
   "hypotheses": "For one permissioned actual repository task, the unchanged local runtime may provide useful verified/recoverable outcomes relative to its complete cost. Negative, null, inconclusive, and infeasible outcomes are valid; no positive utility is presumed.",
   "observation_contract": "Existing tracked-tree-v1 and independent SPEC-021 verifier only. Compare actual SPEC-021 policy coordinator serial and parallel modes with 4 unscored warm-up pairs and 6 measured pairs across AB/BA operation orders. Each treatment uses full total-wall timing through consumer verification, report serialization and cleanup with disjoint phases/residual. Report fresh-process verification separately. Historical synthetic/M2 evidence is not M4 actual-workload evidence.",
   "references": [
@@ -331,6 +331,7 @@
     }
   ],
   "scientific_limits": "One finite task frame cannot establish population utility, general runtime safety, confluence, causality, or Yang-Baxter properties. Static Git metadata does not establish source rights, runtime admission, or verified results. Negative, null, inconclusive, and infeasible outcomes are valid.",
-  "scope": "Bounded unchanged SPEC-020/021 actual-source evaluation obtained at e66f9a1; reconcile registered capture, full costs, negative interpretation and independent review. Preserve historical SPEC-021 G4 NO-GO; the owner has separately accepted the six-row bounded M4 alpha engineering/evaluation disposition at candidate fa8852a. Tracking closure remains pending.",
-  "stage": "validated"
+  "scope": "Bounded unchanged SPEC-020/021 actual-source evaluation obtained at e66f9a1; reconcile registered capture, full costs, negative interpretation and independent review. Preserve historical SPEC-021 G4 NO-GO; the owner has separately accepted the six-row bounded M4 alpha engineering/evaluation disposition at candidate fa8852a. At the 2026-10-09 decision/publication snapshot, issue and milestone tracking reconciliation was pending. See the current live [M4 — Agent Braid runtime](https://github.com/jayanez/agent-braid/milestone/6); this record does not attest to later tracking changes or claim a guarded apply, audit, or Project-state verification.",
+  "stage": "validated",
+  "review_record": "specs/038-m4-real-workload-closure/whole-m4-founder-decision-20261009.json"
 }
