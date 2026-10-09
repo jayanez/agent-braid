@@ -16,6 +16,7 @@ from agent_braid.structured_exchange import ROOT, VERSION
 def row(pair, family, session, partition, label, offset=0):
     values = {name: float(index + offset) for index, name in enumerate(FEATURES)}
     return {"pairId": pair, "familyId": family, "sessionId": session,
+            "duplicateGroupId": f"duplicate-{pair}",
             "partition": partition, "features": values, "label": label}
 
 
@@ -109,6 +110,8 @@ class NativePredictorTrainingTests(unittest.TestCase):
         first = fit(dataset(), model_id="model-1", dataset_kind="synthetic")
         second = fit(list(reversed(dataset())), model_id="model-1", dataset_kind="synthetic")
         self.assertEqual(first, second)
+        self.assertEqual(first["calibrationFamilyWeighting"],
+                         "single-family-rows-founder-selected-pending-review")
         self.assertNotEqual(FEATURE_VERSION, SYNTHETIC_FEATURE_VERSION)
         self.assertNotEqual(ARTIFACT_VERSION, SYNTHETIC_ARTIFACT_VERSION)
 
@@ -120,6 +123,22 @@ class NativePredictorTrainingTests(unittest.TestCase):
         rows = dataset()
         rows[-1]["sessionId"] = "train-session"
         with self.assertRaisesRegex(ValueError, "session crosses"):
+            fit(rows, model_id="m", dataset_kind="synthetic")
+
+    def test_calibration_partition_requires_one_predeclared_family(self):
+        rows = dataset()
+        rows[3]["familyId"] = "second-calibration-family"
+        with self.assertRaisesRegex(ValueError, "calibration requires exactly one family"):
+            fit(rows, model_id="m", dataset_kind="synthetic")
+
+    def test_duplicate_groups_cannot_cross_partitions_or_be_omitted(self):
+        rows = dataset()
+        rows[-1]["duplicateGroupId"] = rows[0]["duplicateGroupId"]
+        with self.assertRaisesRegex(ValueError, "duplicate group crosses"):
+            fit(rows, model_id="m", dataset_kind="synthetic")
+        rows = dataset()
+        del rows[0]["duplicateGroupId"]
+        with self.assertRaisesRegex(ValueError, "missing or unknown fields"):
             fit(rows, model_id="m", dataset_kind="synthetic")
 
     def test_duplicate_and_malformed_ids_rejected(self):
@@ -191,6 +210,13 @@ class NativePredictorTrainingTests(unittest.TestCase):
         artifact["datasetKind"] = "prospective"
         with self.assertRaisesRegex(ValueError, "only synthetic artifacts"):
             # Rebind the commitment to exercise the dataset-kind check.
+            from agent_braid.native_predictor_training import validate_artifact
+            validate_artifact(artifact, expected_hash=digest(artifact), expected_model_id="m")
+
+    def test_artifact_commits_selected_calibration_family_weighting(self):
+        artifact = fitted()
+        artifact["calibrationFamilyWeighting"] = "pooled-rows-provisional"
+        with self.assertRaisesRegex(ValueError, "unsupported calibration-family weighting"):
             from agent_braid.native_predictor_training import validate_artifact
             validate_artifact(artifact, expected_hash=digest(artifact), expected_model_id="m")
 

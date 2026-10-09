@@ -3,8 +3,8 @@
 
 This is descriptive software, not an approved protocol or real-data evaluator.
 Labels and annotations are supplied separately and are never passed to a
-scorer or preparation hook. The status-to-usefulness mapping is deliberately
-named/versioned because P019-04 remains under review.
+scorer or preparation hook. The founder selected the status-to-usefulness and
+call-unit mapping; the complete protocol remains pending independent review.
 """
 from __future__ import annotations
 
@@ -17,6 +17,14 @@ from copy import deepcopy
 from typing import Any, Callable
 
 from agent_braid.native_predictor import FEATURES
+from agent_braid.native_predictor_training import (
+    FEATURES as LEARNED_FEATURES,
+    FEATURE_VERSION as LEARNED_FEATURE_VERSION,
+    digest as _request_digest,
+    fit as _fit_ranker,
+    prepare_request,
+    score as _score_ranker,
+)
 from agent_braid.structured_exchange import produce, verify
 
 POLICY_VERSION = "verified-bounded-usefulness-v1"
@@ -25,7 +33,7 @@ POLICY = {
     "version": POLICY_VERSION,
     "mapping": "one unordered pair per produce+verify call; only verified-bounded can contribute useful yield; divergent and inconclusive consume one call and contribute no yield; abstention consumes zero calls",
     "precisionRecall": "known labels among selected verified-bounded pairs; recall denominator is every known-positive inventory pair",
-    "approval": "provisional; P019-04 not approved",
+    "approval": "founder-selected; independent-review-pending",
 }
 
 
@@ -45,10 +53,8 @@ def _finite_number(value: Any) -> bool:
 def permute_training_labels(training_inventory: Any, training_labels: Any, *, seed: int = 0) -> list[dict]:
     """Return train-only rows with the complete label assignment permuted.
 
-    The returned rows are intended only for a negative-control fit factory.
-    They contain no holdout or calibration records. The known/unknown and
-    class counts are preserved. If any nonidentity assignment is possible,
-    the returned assignment is guaranteed to differ from the original.
+    The known/unknown and class counts are preserved. If any nonidentity
+    assignment is possible, the returned assignment is guaranteed to differ.
     """
     if seed != 0:
         raise ValueError("the candidate negative-control seed is fixed at 0")
@@ -57,14 +63,16 @@ def permute_training_labels(training_inventory: Any, training_labels: Any, *, se
     pairs = set()
     values = []
     checked = []
-    expected_row_fields = {"pairId", "familyId", "sessionId", "partition", "features"}
+    expected_row_fields = {"pairId", "familyId", "sessionId", "duplicateGroupId",
+                           "partition", "features"}
     for row in training_inventory:
         if type(row) is not dict or set(row) != expected_row_fields or row.get("partition") != "train":
             raise ValueError("permutation input rows must match the strict train feature schema")
         pair_id = row.get("pairId")
         if (type(pair_id) is not str or not pair_id or type(row["familyId"]) is not str
                 or not row["familyId"] or type(row["sessionId"]) is not str
-                or not row["sessionId"] or pair_id in pairs):
+                or not row["sessionId"] or type(row["duplicateGroupId"]) is not str
+                or not row["duplicateGroupId"] or pair_id in pairs):
             raise ValueError("invalid or duplicate training pair identity")
         if type(row["features"]) is not dict or set(row["features"]) != set(FEATURES):
             raise ValueError("training feature row does not match the fixed feature schema")
@@ -97,21 +105,68 @@ def permute_training_labels(training_inventory: Any, training_labels: Any, *, se
 
 
 def _blind_row(row: dict) -> dict:
-    # Feature payloads are derived only from the validated request. Never pass
-    # inventory-supplied feature fields across the scorer/preparer boundary.
+    # Only the trusted feature preparer and deterministic baseline/verifier may
+    # see the request. The learned scorer receives a versioned numeric vector.
     allowed = {"request"}
     return {key: value for key, value in row.items() if key in allowed}
+
+
+def _scorer_vector(prepared: Any, request: dict) -> dict:
+    """Validate preparation output and remove request identity before scoring."""
+    expected = {"version", "sourceKind", "inputHash", "features"}
+    if type(prepared) is not dict or set(prepared) != expected:
+        raise ValueError("preparer must return a request-bound versioned feature vector")
+    if (prepared["version"] != LEARNED_FEATURE_VERSION
+            or prepared["sourceKind"] != "synthetic"
+            or prepared["inputHash"] != _request_digest(request)):
+        raise ValueError("prepared feature vector has a version, source or request mismatch")
+    features = prepared["features"]
+    if type(features) is not dict or set(features) != set(LEARNED_FEATURES):
+        raise ValueError("prepared feature vector does not match the fixed feature schema")
+    bounds = {"baseSize": 3, "sameAnchor": 1, "anchorDistance": 3,
+              "firstLength": 256, "secondLength": 256, "lexicalOverlap": 1}
+    if any(not _finite_number(features[name]) or not 0 <= features[name] <= bounds[name]
+           for name in LEARNED_FEATURES):
+        raise ValueError("prepared feature is nonfinite or outside its declared bounds")
+    if any(type(features[name]) is not int
+           for name in LEARNED_FEATURES if name != "lexicalOverlap"):
+        raise ValueError("structural prepared features must be integers")
+    return {"version": LEARNED_FEATURE_VERSION,
+            "features": {name: features[name] for name in LEARNED_FEATURES}}
 
 
 def _default_verifier(request: dict) -> dict:
     """Use the unchanged deterministic evidence producer and verifier."""
     verdict = verify(produce(deepcopy(request)))
+    return _checked_verdict(verdict)
+
+
+def _checked_verdict(verdict: Any) -> dict:
     if type(verdict) is not dict or verdict.get("status") not in {
             "verified-bounded", "divergent", "inconclusive"}:
         raise ValueError("deterministic verifier returned an unrecognized M3 status")
     if verdict.get("executionAuthorization") is not False:
         raise ValueError("deterministic verifier must keep executionAuthorization false")
     return verdict
+
+
+def _timed_default_verifier(request: dict) -> tuple[dict, dict[str, float | int]]:
+    """Measure submitted evidence production separately from verifier regeneration."""
+    start = time.perf_counter()
+    evidence = produce(deepcopy(request))
+    evidence_seconds = time.perf_counter() - start
+    start = time.perf_counter()
+    verdict = _checked_verdict(verify(evidence))
+    verifier_seconds = time.perf_counter() - start
+    return verdict, {
+        "submittedEvidenceProductionCount": 1,
+        "verifierInvocationCount": 1,
+        # structured_exchange.verify regenerates evidence internally and compares
+        # it with the submitted bundle before returning a bounded verdict.
+        "verifierEvidenceRegenerationCount": 1,
+        "submittedEvidenceProductionSeconds": evidence_seconds,
+        "verifierInvocationSeconds": verifier_seconds,
+    }
 
 
 def _validate(inventory: Any, labels: Any, source_kind: str) -> tuple[list[dict], dict[str, int | None]]:
@@ -125,13 +180,19 @@ def _validate(inventory: Any, labels: Any, source_kind: str) -> tuple[list[dict]
     seen: set[str] = set()
     seen_unordered_pairs: set[str] = set()
     for row in inventory:
-        if type(row) is not dict or not {"pairId", "familyId", "partition", "request"} <= set(row):
-            raise ValueError("inventory row requires pairId, familyId, partition and request")
+        if type(row) is not dict or not {
+                "pairId", "familyId", "sessionId", "duplicateGroupId",
+                "partition", "request"} <= set(row):
+            raise ValueError(
+                "inventory row requires pair, family, session, duplicate group, partition and request")
         if row["partition"] != "holdout":
             raise ValueError("evaluation inventory must contain holdout rows only")
         pair_id, family_id = row["pairId"], row["familyId"]
         if type(pair_id) is not str or not pair_id or type(family_id) is not str or not family_id:
             raise ValueError("invalid pair or family identity")
+        for key in ("sessionId", "duplicateGroupId"):
+            if type(row[key]) is not str or not row[key]:
+                raise ValueError(f"invalid {key}")
         if pair_id in seen:
             raise ValueError("duplicate pair identity")
         seen.add(pair_id)
@@ -276,6 +337,116 @@ def _metrics(rows: list[dict], labels: dict[str, int | None], selected: list[dic
     }
 
 
+def _negative_control(rows: list[dict], labels: dict[str, int | None], *,
+                      training_inventory: Any, training_labels: Any,
+                      calibration_inventory: Any, calibration_labels: Any) -> dict:
+    """Fit and evaluate a provenance-bound synthetic permuted-label control."""
+    if any(value is None for value in (training_inventory, training_labels,
+                                       calibration_inventory, calibration_labels)):
+        raise ValueError("negative-control fit requires separate train and calibration inputs")
+    if type(calibration_inventory) is not list or not calibration_inventory:
+        raise ValueError("negative-control calibration inventory must be nonempty")
+    if type(calibration_labels) is not dict:
+        raise ValueError("negative-control calibration labels must be a separate mapping")
+
+    permuted_training = permute_training_labels(training_inventory, training_labels, seed=0)
+    training_ids = {row["pairId"] for row in permuted_training}
+    calibration_ids = set()
+    calibration_rows = []
+    for row in calibration_inventory:
+        if type(row) is not dict or set(row) != {
+                "pairId", "familyId", "sessionId", "duplicateGroupId",
+                "partition", "features"}:
+            raise ValueError("calibration inventory does not match the fixed feature-row schema")
+        if row["partition"] != "calibration" or row["pairId"] in calibration_ids:
+            raise ValueError("calibration inventory has an invalid partition or duplicate pair")
+        calibration_ids.add(row["pairId"])
+        calibration_rows.append({**deepcopy(row), "label": calibration_labels.get(row["pairId"])})
+    if set(calibration_labels) != calibration_ids:
+        raise ValueError("calibration label inventory mismatch")
+
+    holdout_pairs = {row["pairId"] for row in rows}
+    if training_ids & calibration_ids or (training_ids | calibration_ids) & holdout_pairs:
+        raise ValueError("train, calibration and holdout pair identities must be disjoint")
+    training_families = {row["familyId"] for row in permuted_training}
+    calibration_families = {row["familyId"] for row in calibration_rows}
+    holdout_families = {row["familyId"] for row in rows}
+    training_sessions = {row["sessionId"] for row in permuted_training}
+    calibration_sessions = {row["sessionId"] for row in calibration_rows}
+    training_duplicate_groups = {row["duplicateGroupId"] for row in permuted_training}
+    calibration_duplicate_groups = {row["duplicateGroupId"] for row in calibration_rows}
+    if any(type(row.get("sessionId")) is not str or not row["sessionId"] for row in rows):
+        raise ValueError("permuted-label control requires holdout session identities")
+    if any(type(row.get("duplicateGroupId")) is not str or not row["duplicateGroupId"]
+           for row in rows):
+        raise ValueError("permuted-label control requires holdout duplicate-group identities")
+    holdout_sessions = {row["sessionId"] for row in rows}
+    holdout_duplicate_groups = {row["duplicateGroupId"] for row in rows}
+    if (training_families & calibration_families or (training_families | calibration_families) & holdout_families
+            or training_sessions & calibration_sessions
+            or (training_sessions | calibration_sessions) & holdout_sessions
+            or training_duplicate_groups & calibration_duplicate_groups
+            or (training_duplicate_groups | calibration_duplicate_groups) & holdout_duplicate_groups):
+        raise ValueError(
+            "train, calibration and holdout families/sessions/duplicate groups must be disjoint")
+
+    fit_rows = permuted_training + calibration_rows
+    fit_started = time.perf_counter()
+    artifact = _fit_ranker(fit_rows, model_id="m35-permuted-label-control-v1",
+                           dataset_kind="synthetic")
+    fit_seconds = time.perf_counter() - fit_started
+    model_hash = _request_digest(artifact)
+    expected_train_hash = _request_digest(sorted(permuted_training, key=lambda row: row["pairId"]))
+    expected_calibration_hash = _request_digest(sorted(calibration_rows, key=lambda row: row["pairId"]))
+    commitments = artifact["inputCommitments"]
+    if commitments["train"] != expected_train_hash or commitments["calibration"] != expected_calibration_hash:
+        raise ValueError("negative-control artifact commitments do not match the frozen fit inputs")
+
+    scores: dict[str, float | None] = {}
+    probabilities: dict[str, float | None] = {}
+    for row in rows:
+        prepared = prepare_request(row["request"], source_kind="synthetic")
+        vector = {"version": prepared["version"], "features": prepared["features"]}
+        prediction = _score_ranker(vector, artifact, expected_hash=model_hash,
+                                   expected_model_id="m35-permuted-label-control-v1")
+        score, probability = _prediction(prediction)
+        scores[row["pairId"]] = score
+        probabilities[row["pairId"]] = probability
+
+    metrics_by_budget = {}
+    families = sorted({row["familyId"] for row in rows})
+    for fraction in (0.25, 0.5, 1.0):
+        ceiling = math.floor(fraction * len(rows))
+        selected = _select(rows, scores, ceiling)
+        verdicts = {row["pairId"]: _default_verifier(row["request"]) for row in selected}
+        metrics = _metrics(rows, labels, selected, verdicts, families)
+        metrics.update({"budgetCeiling": ceiling,
+                        "inventoryPairs": len(rows),
+                        "abstentions": sum(value is None for value in scores.values()),
+                        "unusedCalls": max(0, ceiling - len(selected)),
+                        "calibration": _calibration_metrics(rows, labels, probabilities)})
+        metrics_by_budget[str(int(fraction * 100))] = metrics
+
+    return {
+        "status": "available", "seed": 0,
+        "fitMethod": "native_predictor_training.fit",
+        "fitProvenanceVerified": True,
+        "trainingAssignmentChanged": True,
+        "classCountsPreserved": True,
+        "holdoutLabelsPermuted": False,
+        "factoryUsed": False,
+        "holdoutRowsOrLabelsUsedForFit": False,
+        "trainingLabelCounts": {str(label): sum(row["label"] == label for row in permuted_training)
+                                for label in (0, 1, None)},
+        "trainingInputCommitment": expected_train_hash,
+        "calibrationInputCommitment": expected_calibration_hash,
+        "artifactHash": model_hash,
+        "fitSeconds": fit_seconds,
+        "metricsByBudget": metrics_by_budget,
+        "interpretation": "synthetic permuted-label control; descriptive only",
+    }
+
+
 def _label_agreement(rows: list[dict], family_ids: list[str]) -> dict:
     result = {}
     for family in family_ids:
@@ -343,30 +514,61 @@ def _calibration_metrics(rows: list[dict], labels: dict[str, int | None],
 
 def _run_policy(rows: list[dict], labels: dict[str, int | None], *, scorer: Callable,
                 preparation: Callable | None, fraction: float,
-                inference_policy: bool) -> tuple[dict, dict]:
+                inference_policy: bool,
+                source_extractor: Callable | None) -> tuple[dict, dict]:
     n = len(rows)
     ceiling = math.floor(fraction * n)
-    phase = {"preparationSeconds": 0.0, "scoringSeconds": 0.0, "inferenceSeconds": 0.0,
+    phase = {"sourceExtractionSeconds": 0.0, "preparationSeconds": 0.0,
+             "scoringSeconds": 0.0, "inferenceSeconds": 0.0,
              "rankingSeconds": 0.0, "verificationSeconds": 0.0,
-             "serializationSeconds": 0.0}
+             "submittedEvidenceProductionSeconds": 0.0,
+             "verifierInvocationSeconds": 0.0, "serializationSeconds": 0.0}
     t0 = time.perf_counter()
     scores: dict[str, float | None] = {}
     probabilities: dict[str, float | None] = {}
     prepared: dict[str, Any] = {}
+    measured_rows = []
+    from agent_braid.structured_exchange import validate_request
+    for row in rows:
+        request = deepcopy(row["request"])
+        if source_extractor is not None:
+            start = time.perf_counter()
+            extracted = source_extractor(deepcopy(row["sourceInput"]))
+            validate_request(extracted)
+            if _request_digest(extracted) != _request_digest(row["request"]):
+                raise ValueError("source extractor output differs from the frozen request commitment")
+            phase["sourceExtractionSeconds"] += time.perf_counter() - start
+            request = deepcopy(extracted)
+        measured_rows.append({**{key: value for key, value in row.items()
+                                 if key != "sourceInput"}, "request": request})
+    rows = measured_rows
     for row in rows:
         candidate = _blind_row(row)
-        if preparation is not None and inference_policy:
+        if inference_policy:
             start = time.perf_counter()
-            prepared[row["pairId"]] = preparation(deepcopy(candidate))
+            raw_prepared = (preparation(deepcopy(candidate)) if preparation is not None
+                            else prepare_request(candidate["request"], source_kind="synthetic"))
+            checked_vector = _scorer_vector(raw_prepared, candidate["request"])
             phase["preparationSeconds"] += time.perf_counter() - start
+            if preparation is not None:
+                # A hook may adapt/measure preparation, but cannot replace the
+                # frozen extractor with label- or identity-encoded feature data.
+                # Keep this correctness check outside the hook's measured cost.
+                canonical_vector = _scorer_vector(
+                    prepare_request(candidate["request"], source_kind="synthetic"),
+                    candidate["request"])
+                if checked_vector != canonical_vector:
+                    raise ValueError("preparer features differ from the canonical request extractor")
+            prepared[row["pairId"]] = checked_vector
         else:
             # The rule baseline ranks directly from the request; do not charge
             # predictor-only feature preparation to its measured cost.
             prepared[row["pairId"]] = deepcopy(candidate["request"])
-        scorer_candidate = deepcopy(candidate)
-        scorer_prepared = deepcopy(prepared[row["pairId"]])
         start = time.perf_counter()
-        raw = scorer(scorer_candidate, scorer_prepared)
+        if inference_policy:
+            raw = scorer(deepcopy(prepared[row["pairId"]]))
+        else:
+            raw = scorer(candidate, deepcopy(prepared[row["pairId"]]))
         elapsed = time.perf_counter() - start
         phase["inferenceSeconds" if inference_policy else "scoringSeconds"] += elapsed
         start = time.perf_counter()
@@ -376,16 +578,24 @@ def _run_policy(rows: list[dict], labels: dict[str, int | None], *, scorer: Call
     selected = _select(rows, scores, ceiling)
     phase["rankingSeconds"] += time.perf_counter() - start
     verdicts = {}
-    start = time.perf_counter()
+    verifier_work = {"submittedEvidenceProductionCount": 0,
+                     "verifierInvocationCount": 0,
+                     "verifierEvidenceRegenerationCount": 0}
     for row in selected:
-        # Exactly one unchanged produce+verify call per selected pair.
-        verdict = _default_verifier(row["request"])
+        # One call unit per selected pair; expose its producer and verifier paths.
+        verdict, work = _timed_default_verifier(row["request"])
+        for name in verifier_work:
+            verifier_work[name] += work[name]
+        phase["submittedEvidenceProductionSeconds"] += work["submittedEvidenceProductionSeconds"]
+        phase["verifierInvocationSeconds"] += work["verifierInvocationSeconds"]
         verdicts[row["pairId"]] = verdict
-    phase["verificationSeconds"] += time.perf_counter() - start
+    phase["verificationSeconds"] = (phase["submittedEvidenceProductionSeconds"]
+                                     + phase["verifierInvocationSeconds"])
     result = _metrics(rows, labels, selected, verdicts, sorted({r["familyId"] for r in rows}))
     abstentions = sum(score is None for score in scores.values())
     result["abstentions"] = abstentions
     result["unusedCalls"] = max(0, ceiling - len(selected))
+    result["verifierWork"] = verifier_work
     result["budgetCeiling"] = ceiling
     result["inventoryPairs"] = n
     result["abstentionsSelected"] = 0
@@ -404,23 +614,33 @@ def _run_policy(rows: list[dict], labels: dict[str, int | None], *, scorer: Call
     return result, scores
 
 
-def evaluate(inventory: Any, labels: Any, *, scorer: Callable[[dict, Any], Any],
+def evaluate(inventory: Any, labels: Any, *, scorer: Callable[[dict], Any],
              dataset_kind: str, preparation: Callable[[dict], Any] | None = None,
+             source_extractor: Callable[[Any], dict] | None = None,
              training_inventory: Any = None, training_labels: Any = None,
-             negative_control_scorer_factory: Callable[[list[dict]], Callable] | None = None,
+             calibration_inventory: Any = None, calibration_labels: Any = None,
              warmups: int = 3, repetitions: int = 20) -> dict:
     """Compare the baseline and supplied ranker on one synthetic holdout.
 
-    ``scorer(row, prepared)`` sees only a sanitized pair identity and request,
-    no label, family identity, partition, or annotation. It returns a raw
-    numeric priority, ``None``/abstain, or ``{status, score, probability?}``.
-    ``preparation(row)`` is timed each run and gets the same sanitized row.
-    Without a preparation hook the inventory already contains requests, so
-    source extraction is not measured. A valid negative control requires a
-    factory fitted from seed-zero permuted train labels; holdout labels never
-    enter the factory.
+    The predictor ``scorer(vector)`` receives directly only a versioned
+    six-feature vector. This in-process Python callback is trusted code, not a
+    sandbox: closures or process-global state are outside this argument-level
+    boundary. The deterministic baseline and verifier retain access to the
+    validated request. ``source_extractor(sourceInput)`` is a trusted synthetic
+    callback; it receives no labels, runs identically for each policy, and its
+    canonical request output is checked against the frozen request. When set,
+    each row must provide ``sourceInput``. The payload is never passed to the
+    predictor scorer. ``preparation(row)`` is also trusted code; it receives
+    ``{"request": ...}``, is timed, and its result must match the canonical
+    extractor. Without a hook, the canonical synthetic extractor is used and
+    timed. This hook does not prove or authorize real journal extraction.
+    The permuted-label control, when supplied, is fit internally with the
+    canonical offline trainer from train-only permuted labels plus separate
+    calibration rows. Holdout labels never enter fit or scoring callbacks.
     """
     rows, checked_labels = _validate(inventory, labels, dataset_kind)
+    if source_extractor is not None and any("sourceInput" not in row for row in rows):
+        raise ValueError("source extraction requires sourceInput on every inventory row")
     if type(warmups) is not int or warmups != 3 or type(repetitions) is not int or repetitions != 20:
         raise ValueError("candidate protocol uses exactly three warmups and twenty repetitions")
     families = sorted({r["familyId"] for r in rows})
@@ -436,7 +656,8 @@ def evaluate(inventory: Any, labels: Any, *, scorer: Callable[[dict, Any], Any],
             for fraction in (0.25, 0.5, 1.0):
                 _run_policy(rows, checked_labels, scorer=policy_scorer,
                             preparation=preparation, fraction=fraction,
-                            inference_policy=(name != "baseline"))
+                            inference_policy=(name != "baseline"),
+                            source_extractor=source_extractor)
     samples: dict[str, dict[float, list[dict]]] = {
         name: {fraction: [] for fraction in (0.25, 0.5, 1.0)} for name, _ in policies}
     for rep in range(repetitions):
@@ -445,7 +666,8 @@ def evaluate(inventory: Any, labels: Any, *, scorer: Callable[[dict, Any], Any],
             for fraction in (0.25, 0.5, 1.0):
                 measured, _ = _run_policy(rows, checked_labels, scorer=policy_scorer,
                                           preparation=preparation, fraction=fraction,
-                                          inference_policy=(name != "baseline"))
+                                          inference_policy=(name != "baseline"),
+                                          source_extractor=source_extractor)
                 samples[name][fraction].append(measured)
     summaries = {}
     for name, by_budget in samples.items():
@@ -482,47 +704,30 @@ def evaluate(inventory: Any, labels: Any, *, scorer: Callable[[dict, Any], Any],
                     predictor_metrics["actualVerifierCalls"] - baseline_metrics["actualVerifierCalls"],
             }
 
-    negative_control: dict[str, Any]
-    if negative_control_scorer_factory is None:
+    control_inputs = (training_inventory, training_labels,
+                      calibration_inventory, calibration_labels)
+    if all(value is None for value in control_inputs):
         negative_control = {"status": "unavailable",
-                            "reason": "no scorer factory supplied to refit from permuted training labels",
+                            "reason": "separate train and calibration inputs were not supplied",
                             "holdoutLabelsPermuted": False}
+    elif any(value is None for value in control_inputs):
+        raise ValueError("permuted-label control requires separate train and calibration inputs")
     else:
-        if training_inventory is None or training_labels is None:
-            raise ValueError("negative-control factory requires separate training inventory and labels")
         try:
-            permuted_training = permute_training_labels(training_inventory, training_labels, seed=0)
+            negative_control = _negative_control(
+                rows, checked_labels, training_inventory=training_inventory,
+                training_labels=training_labels, calibration_inventory=calibration_inventory,
+                calibration_labels=calibration_labels)
         except NegativeControlUnavailable as exc:
             negative_control = {"status": "unavailable", "reason": str(exc),
-                                "factoryRun": False, "holdoutLabelsPermuted": False}
-        else:
-            original_assignment = [training_labels[row["pairId"]] for row in training_inventory]
-            permuted_assignment = [row["label"] for row in permuted_training]
-            if original_assignment == permuted_assignment:
-                raise NegativeControlUnavailable("permutation helper returned the unchanged training assignment")
-            control_scorer = negative_control_scorer_factory(permuted_training)
-            if not callable(control_scorer):
-                raise ValueError("negative-control factory must return a scorer")
-            control_run, _ = _run_policy(rows, checked_labels, scorer=control_scorer,
-                                         preparation=preparation, fraction=0.5,
-                                         inference_policy=True)
-            negative_control = {
-                "status": "available-synthetic-descriptive-only", "seed": 0,
-                "method": "refit scorer via caller factory using train-only known utility labels permuted with seed 0",
-                "budget": "50", "holdoutLabelsPermuted": False,
-                "factoryReceivedHoldoutRowsOrLabels": False,
-                "trainingAssignmentChanged": True,
-                "classCountsPreserved": True,
-                "trainingLabelCounts": {str(label): permuted_assignment.count(label)
-                                        for label in (0, 1, None)},
-                "metricsOnUnpermutedHoldoutLabels": control_run,
-                "interpretation": "permuted-training-label negative-control candidate; synthetic only",
-            }
+                                "seed": 0, "holdoutLabelsPermuted": False,
+                                "fitProvenanceVerified": False}
     report = {
         "format": "m35-evaluation-report-v1", "sourceKind": "synthetic",
-        "status": "synthetic-descriptive-only", "protocolApproval": "not-approved; P019-04 call/status mapping remains provisional",
+        "status": "synthetic-descriptive-only", "protocolApproval": "founder-selected-mapping; full-protocol-independent-review-pending",
         "policy": POLICY, "inventoryOrder": "caller-supplied stable order; tie breaks preserve it",
-        "labelIsolation": "labels and annotations are separate and scorer/preparation hooks never receive them",
+        "labelIsolation": "labels and annotations are separate and never passed directly to scorer or preparation callbacks",
+        "scorerInputBoundary": "direct scorer argument contains only the learned feature version and six canonical numeric features; callbacks are trusted in-process code, not isolated from closures or process-global state",
         "repetitions": {"warmupsPerPolicy": warmups, "measuredPerPolicy": repetitions,
                         "policyOrder": "alternating baseline/predictor and predictor/baseline"},
             "families": families,
@@ -537,26 +742,45 @@ def evaluate(inventory: Any, labels: Any, *, scorer: Callable[[dict, Any], Any],
         "permutedLabelNegativeControl": negative_control,
         "preparationMeasurement": {
             "hookProvided": preparation is not None,
-            "status": "predictor-only request-to-feature hook measured per repetition" if preparation is not None
-                     else "not measured; inventory already contains a validated request",
-            "sourceExtraction": "not measured; evaluator input is already an in-memory validated request",
-            "limitation": "the hook can measure request-to-feature preparation, but source-to-request extraction is outside this evaluator",
+            "status": "trusted request-to-feature hook measured per repetition" if preparation is not None
+                     else "canonical synthetic request-to-feature extraction measured per repetition",
+            "sourceExtraction": "measured per policy/budget/repetition from sourceInput"
+                               if source_extractor is not None else
+                               "not measured; evaluator input is already an in-memory validated request",
+            "limitation": "without the hook, source-to-request extraction is outside this evaluator; the hook is synthetic-only and does not implement or authorize admitted-journal extraction",
         },
         "timingPhaseDefinitions": {
             "inferenceSeconds": "predictor scorer callback duration only",
             "scoringSeconds": "baseline priority callback plus score response normalization/validation; predictor callback time is excluded",
-            "sourceExtraction": "excluded; evaluation begins with in-memory validated requests",
+            "sourceExtraction": "included per policy/budget/repetition only when a source_extractor is supplied",
         },
         "probabilityNote": "A probability is an unvalidated scorer-supplied claim; no artifact/calibration provenance is checked. Brier and reliability are descriptive only.",
         "executionAuthorization": False,
     }
     report["reportSerializationSeconds"] = 0.0
-    report["finalReportSerializationIncludedInPolicyTotals"] = False
+    report["finalReportSerializationIncludedInPolicyTotals"] = True
+    report["reportSerializationAllocation"] = "one-half shared report serialization per policy arm"
+    report["completeCostStatus"] = ("synthetic-callback-boundary-measured" if source_extractor is not None
+                                    else "incomplete-source-extraction")
+    for policy in ("baseline", "predictor"):
+        for summary in report["budgets"][policy].values():
+            summary["timing"]["sharedReportSerializationShareSeconds"] = 0.0
+            summary["timing"]["fullCostMedianSeconds"] = 0.0
+            summary["timing"]["fullCostRangeSeconds"] = [0.0, 0.0]
+            summary["timing"]["fullCostIncludesSourceExtraction"] = source_extractor is not None
     report["reportSerializationTimingNote"] = (
-        "final report serialized with a zero placeholder for this self-referential duration; "
-        "measured duration is filled afterward and excluded from policy timing"
+        "comparison report serialized with zero placeholders for self-referential timing; "
+        "the measured shared duration is allocated equally across the two policy arms"
     )
     start = time.perf_counter()
     json.dumps(report, sort_keys=True, separators=(",", ":"), allow_nan=False)
     report["reportSerializationSeconds"] = time.perf_counter() - start
+    shared_half = report["reportSerializationSeconds"] / 2
+    for policy in ("baseline", "predictor"):
+        for summary in report["budgets"][policy].values():
+            timing = summary["timing"]
+            timing["sharedReportSerializationShareSeconds"] = shared_half
+            timing["fullCostMedianSeconds"] = timing["medianTotalSeconds"] + shared_half
+            timing["fullCostRangeSeconds"] = [value + shared_half
+                                               for value in timing["rangeTotalSeconds"]]
     return report

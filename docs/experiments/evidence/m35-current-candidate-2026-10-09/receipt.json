@@ -1,0 +1,77 @@
+{
+  "baseCommit": "49fcb2b040334b923206261c8364177b9495521e",
+  "cleanCloneReproduction": {
+    "basePrHead": "49fcb2b040334b923206261c8364177b9495521e",
+    "command": "python3.13 -m unittest tests.test_native_predictor tests.test_native_predictor_contract tests.test_native_predictor_training tests.test_native_predictor_evaluation tests.test_native_predictor_adapter tests.test_predictor_readiness -q",
+    "log": "docs/experiments/evidence/m35-current-candidate-2026-10-09/focused-tests-clean-clone.txt",
+    "logSha256": "4e205325114df9ceb5bc03b1dd4740720b80ba6dc362621ad570cbc5630f54d4",
+    "outcome": "90 tests passed in 5.982s; repository validator passed; no unreachable Git objects after cleaning only the disposable clone"
+  },
+  "command": "/opt/homebrew/opt/python@3.13/bin/python3.13 -m unittest tests.test_native_predictor tests.test_native_predictor_contract tests.test_native_predictor_training tests.test_native_predictor_evaluation tests.test_native_predictor_adapter tests.test_predictor_readiness -v",
+  "date": "2026-10-09",
+  "exitCode": 0,
+  "limits": "Synthetic/software controls only. Does not admit sources, approve the protocol, collect labels, establish real-data eligibility or yield, perform a real fit/holdout experiment, or supply human scientific/founder review. Snapshot binds the listed worktree bytes; the candidate is not committed.",
+  "log": "docs/experiments/evidence/m35-current-candidate-2026-10-09/focused-tests.txt",
+  "logSha256": "43323885921bbd2fc9dec54440792ee7470c1149606533620d9629bde137b5c8",
+  "metadataOnlySourceAudit": {
+    "basedOnCommit": "d5f379be20eb99a584cf71deb853cd68f3722834",
+    "command": "python3.13 -m scripts.check_m35_review_packet",
+    "limitations": "Preparatory metadata commitment only; rights, roster, protocol approval, yield, and human decisions remain unverified and pending.",
+    "outcome": "packet structurally complete; zero real pairs admitted; source capture and training authorization false",
+    "packetSha256": "8fdead379f59c2d0355bfb7555ae4ca51d07a6b29e57105c98e08945830877c6",
+    "report": "docs/experiments/evidence/m35-current-candidate-2026-10-09/source-readiness.json",
+    "reportSha256": "910594bdbb394345a3ea4a3e32825ecdc0e3ed300e74a173be9e23d3de22d957"
+  },
+  "otherChecks": {
+    "focused M3.5 suite in disposable clone of PR head": "passed; 90 tests",
+    "isolated Spec Kit dependency install": "requirements-speckit.txt installed into /private/tmp/m35-speckit-venv-20261009; isolated temporary environment only",
+    "python3.13 scripts/constitution_replica.py check": "passed; not an approval",
+    "python3.13 scripts/validate_change.py --base develop --profile quick": "failed at publication validation because git reports unreachable objects",
+    "python3.13 scripts/validate_repository.py": "passed",
+    "python3.13 scripts/validate_spec_kit.py": "failed before completion because git reports unreachable objects",
+    "python3.13 scripts/validate_spec_kit.py in disposable clone of actual PR head": "failed because the public export manifest does not bind docs/adr/0019-bounded-local-git-runtime.md; disposable clone had one root and zero unreachable objects after local repack/prune",
+    "python3.13 scripts/validate_spec_kit.py in shared worktree": "failed because Git reported unreachable objects",
+    "scripts/spec_kit.py check with isolated requirements-speckit.txt": "passed; 0 files changed, no agents executed"
+  },
+  "outcome": "90 focused M3.5 tests passed",
+  "python": "3.13.11 (main, Dec  5 2025, 16:06:33) [Clang 17.0.0 (clang-1700.4.4.1)]",
+  "title": "SPEC-019 current dirty worktree focused software validation",
+  "trackingAudit": {
+    "applyAttempted": false,
+    "command": "python3.13 scripts/sync_github_tracking.py audit --milestone-number 9",
+    "operationCount": 1,
+    "operations": [
+      {
+        "action": "set_state",
+        "from": "open",
+        "key": "SPEC-019/T004",
+        "to": "closed"
+      }
+    ],
+    "report": "docs/experiments/evidence/m35-current-candidate-2026-10-09/tracking-audit.json",
+    "reportSha256": "e4f40b69580f45c4f09e62926d64fe8e91f726c477c55b9b91d47e293ce60d20"
+  },
+  "workingTreeSnapshot": {
+    "agent_braid/native_predictor.py": "9207966d8fd554a528dab313e978064cc8a4701a905fdb9a4335c1dfc7de39dc",
+    "agent_braid/native_predictor_adapter.py": "be8abf016dcb38748f9b87ca02179f439d8d2cd4ede0fafeb04f4d6f797c1da3",
+    "agent_braid/native_predictor_evaluation.py": "be7a39ee674ae63fcc39bb706f03b3c432202559628346c11f03f373ef126011",
+    "agent_braid/native_predictor_training.py": "79d0fe30990fe5f07150540b87a4f4abc716c94ec4de770aeac3d35361a7a018",
+    "docs/experiments/evidence/m35-current-candidate-2026-10-09/README.md": "2909b3264c9017d0468d9165e7187a0e73119c7417967de5cdca676f2a76fb6d",
+    "docs/experiments/evidence/m35-current-candidate-2026-10-09/focused-tests-clean-clone.txt": "4e205325114df9ceb5bc03b1dd4740720b80ba6dc362621ad570cbc5630f54d4",
+    "docs/experiments/evidence/m35-current-candidate-2026-10-09/source-readiness.json": "910594bdbb394345a3ea4a3e32825ecdc0e3ed300e74a173be9e23d3de22d957",
+    "docs/experiments/evidence/m35-current-candidate-2026-10-09/tracking-audit.json": "e4f40b69580f45c4f09e62926d64fe8e91f726c477c55b9b91d47e293ce60d20",
+    "specs/019-native-predictor/annotation-rubric.md": "00e4d73c6957b847359c4454b7c7b6c59061a9302d172c26e79af56cff6487a7",
+    "specs/019-native-predictor/checklists/protocol-review.md": "2ccfbad6298a2a546ef8cf2aa8b1d45fdf2ef86f1035da960d01ec2f464c81a6",
+    "specs/019-native-predictor/implementation-readiness.md": "ce086327439cf06619eb4a2d1082f168b9eed4c5001a3350f3eafb2580512a72",
+    "specs/019-native-predictor/protocol-decision-packet-2026-10-08.md": "3c60ec0df96007dc315b6157d7f36b2a946214d709ff887c12c46029c2034ee3",
+    "specs/019-native-predictor/source-audit.md": "ceec4d0dee4877a8a405d52a61d05149dd651f1d82891f7208096ab1bf6447ef",
+    "specs/019-native-predictor/tasks.md": "a7ce5ec48c1eee4ac49a2de88afb68a72023efd19077a6d0bdb6a09e7c745b4c",
+    "specs/019-native-predictor/workload-protocol.md": "05289e4d6882f2761b3f924bfb43b6bb5cbd4c75b222dacc63f476ae3b5f7781",
+    "tests/test_native_predictor.py": "3a685456125bcfae67086e9a63959359cb7b79e29e4ebc4d3a9096eddc1dbfda",
+    "tests/test_native_predictor_adapter.py": "0fcde0b701e6c4232925f1850a9fa70c0a16646285fefe6ef787d007d590a3f3",
+    "tests/test_native_predictor_contract.py": "230dd4896aa3aeecdbfb01921073e9988b33870333784b3d0909f51d41fc44fb",
+    "tests/test_native_predictor_evaluation.py": "3c8c87c1405f3f847dc4262365ca0ad5e3076e037670fe1ea8a4e50a8be262b5",
+    "tests/test_native_predictor_training.py": "193ae2573eb71603cee7319747e89d470a0654d617551c13f03834f03df8a093",
+    "tests/test_predictor_readiness.py": "5a14dc3a7296e6c471acee12207aaeb5e3f0e696f8738ea2b59ba101b5f7b06e"
+  }
+}

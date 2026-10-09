@@ -47,10 +47,26 @@ or M3.5 benefit is reported.
   private content stay excluded and outside this repository.
 - [ ] T002 (REQ-001, SC-001/002): Implement offline trainer and versioned
   local inference with negative controls.
+
+T002's synthetic implementation now includes deterministic train-only weight
+fitting, calibration-partition fitting, versioned artifact commitments and a
+canonical seed-0 permuted-label refit/evaluation path. Its tests use invented
+rows only; real-data fitting remains gated by T001/T007 and the frozen protocol.
+See the [implementation readiness record](implementation-readiness.md) and
+the synthetic trainer/evaluator tests.
+
 - [ ] T003 (REQ-002, SC-003/004): Evaluate held-out calibration when feasible,
   abstention, assessed-useful proposals, missing labels, reviewer disagreement
   and total analysis cost against the rule baseline.
-- [ ] T004 (REQ-003, SC-005): Confirm verifier and execution boundaries.
+- [x] T004 (REQ-003, SC-005): Confirm verifier and execution boundaries.
+
+T004's synthetic controls show extreme learned scores cannot invoke or replace
+the deterministic verifier, create bounded evidence or grant execution. This
+software-boundary task is complete; the separate reliability validation
+family is deferred and is not represented as passed by this task checkbox.
+Real-source, training, held-out evaluation and human-review gates remain open;
+see the [bounded evidence record](../../docs/experiments/evidence/m35-verifier-boundary-2026-10-09/README.md).
+
 - [ ] T005 (REQ-001..003): Capture evidence and request M3.5 review.
 
 ## Offline preparation follow-up
@@ -74,9 +90,11 @@ existing task IDs and real-data/review gates. Within T001/T007 preparation, the
 metadata-only [source review packet](source-review-packet.md) proposes five
 natural workflows, and the [model interface plan](model-interface-plan.md)
 defines the candidate trainer/adapter/evaluator contracts before their review.
-The [protocol decision packet](protocol-decision-packet-2026-10-08.md) presents
-concrete P019-02…04 options and a recommendation; none is adopted pending
-founder selection and required human scientific review.
+The [protocol decision packet](protocol-decision-packet-2026-10-08.md) records
+the founder's P019-02…04 selections. The amended protocol remains a candidate
+pending independent human scientific review, exact annotator display, and
+source-specific admission; no source, annotation, training or holdout access is
+authorized by those selections.
 The [ADR-extension proposal](adr-extension-proposal.md) is not an adopted ADR.
 
 The read-only `scripts/check_m35_review_packet.py` and its adversarial tests
@@ -91,7 +109,12 @@ evaluation/no-gain, and verifier separation. They establish software behavior
 only; a real trained artifact, eligible human-reviewed holdout, and experiment
 evidence remain deferred.
 
-The synthetic evaluator's timing excludes source-to-request extraction and
-final report serialization. Neither may be presented as T003's end-to-end cost;
-the preregistered real evaluation must include both, along with policy-specific
-preparation, scoring, ranking, verifier calls, and serialization.
+The synthetic evaluator now measures a supplied source-to-request extraction
+hook symmetrically for both policies and includes an equal share of measured
+comparison-report serialization in each arm's full-cost total. Without the hook,
+reports explicitly mark source extraction incomplete. The hook is synthetic-only,
+the shared-report allocation remains provisional, and no admitted-journal
+extractor is wired in; these measurements cannot complete T003. A real
+preregistered evaluation still requires an authorized full-boundary run,
+including extraction, preparation, scoring, ranking, verifier calls and
+serialization.

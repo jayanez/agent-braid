@@ -79,7 +79,37 @@ input hash. Invalid fields, versions, provenance, nonfinite numbers, unknown
 features, identity drift and arithmetic overflow return explicit abstention
 with no score. Hashes bind the supplied commitments; they are not signatures
 or proof of true source/feature provenance. The supplied feature vector is a
-synthetic test double, not trusted real data.
+synthetic test double, not trusted real data. This T010 interface has no
+trainer or calibration function; those are implemented separately under T002.
+
+The current adapter does not model proposal-resolution events or construct an
+annotator context ending at the selected second-proposal cutoff. Unsupported
+event kinds fail closed, but that behavior does not prove feed completeness or
+implement the cutoff. Resolution taxonomy, linkage to proposal identity, and
+cutoff-context tests remain prerequisites before any source admission.
+
+T002 now provides a synthetic-only deterministic trainer and local scorer in
+`agent_braid.native_predictor_training`. Weight normalization uses train rows
+only; calibration receives only calibration-partition rows. The versioned
+artifact binds exact train/calibration commitments, optimizer parameters and
+calibration status. Its negative-control path permutes only train labels with
+seed 0, refits through that same trainer, verifies the resulting input
+commitments, scores holdout features without labels, and reports deterministic
+verifier outcomes plus unknown-label bounds. Training/calibration/holdout pair,
+family, session and duplicate-group identities must be disjoint; every trainer
+and evaluator row now requires an opaque `duplicateGroupId` and rejects a group
+that spans partitions. The upstream canonical grouping rule remains subject to
+protocol review: the adapter does not invent group IDs, and pair IDs must not
+be used as a substitute because that would conceal duplicate leakage. The
+founder selected one predeclared calibration family, pending independent
+review; synthetic artifacts mark this as
+`single-family-rows-founder-selected-pending-review`. This marker does not
+prove preselection, which remains a separate preregistration gate. Any
+multi-family aggregation requires an explicit protocol revision before
+real-data fit. Missing classes or malformed inputs fail closed. The evaluator
+accepts synthetic inventories only. These
+synthetic tests validate software behavior, not real-data readiness, model
+benefit or authorization to fit a workload candidate.
 
 `rank` accepts `pairId`, `inputHash`, `vector` records in the caller's frozen
 inventory order. It ranks decreasing raw scores, preserves that order on ties,

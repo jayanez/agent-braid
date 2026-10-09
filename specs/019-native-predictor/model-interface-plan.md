@@ -1,11 +1,12 @@
 # SPEC-019 proposed model and evaluation interfaces
 
-**State: design candidate, not executable training approval.** The founder
-requested implementation of the M3.5 completion plan on 2026-10-08. Source
-admission, the complete protocol/rubric, human labels and the frozen experiment
-remain separate gates. No trainer, fitted weights, real inference or held-out
-result is delivered by this document. The existing synthetic interfaces keep
-their current semantics and versions.
+**State: synthetic-only trainer/evaluator implementation; real-workload use is
+not approved.** The founder requested implementation of the M3.5 completion
+plan on 2026-10-08. Source admission, the complete protocol/rubric, human labels
+and the frozen experiment remain separate gates. Deterministic fit tests use
+invented rows only; no real-workload fit, real inference or held-out result is
+delivered. The existing synthetic interfaces keep their current semantics and
+versions.
 
 ## Local data boundary
 
@@ -19,11 +20,11 @@ inventory order, all sessions/pairs and one primary exclusion reason per
 rejection. Never reinterpret a structural sidecar count as real admission.
 
 Keep raw/adjudicated utility labels and reviewer records separate from request
-features. Only train rows and known train labels reach the trainer. Only the
-calibration partition reaches calibration. The untouched holdout labels are
-released to the evaluator only after the model and calibration artifacts are
-frozen. A metadata flag or file hash alone cannot establish permission,
-blinding, source authenticity or upstream completeness.
+features. Only train rows and known train labels reach weight optimization;
+calibration rows reach only calibration. The synthetic evaluator keeps
+holdout labels in a separate mapping and does not pass them to preparation or
+scoring callbacks. Its in-memory fixture interface does not seal labels or
+establish source permission, blinding, authenticity or upstream completeness.
 
 The future local interface has separate operations for admitted-pair extraction,
 training, calibration, ranking and evaluation. The adapter accepts complete pair
@@ -42,8 +43,9 @@ outcomes. Proposed real versions are `m35-workload-features-v1` and
 `m35-synthetic-features-v1` and `m35-synthetic-ranker-v1` unchanged and do not
 relabel hand-authored test doubles as trained models.
 
-Freeze this deterministic training algorithm before any fitting, including
-synthetic fitting controls:
+The T002 implementation pins this deterministic algorithm. Unit tests exercise
+it only on invented synthetic rows; no workload candidate is fit. Freeze the
+protocol before any real-workload fit:
 
 - Use only known training labels, positive=1 and negative=0; unknown is excluded
   from fitting and remains in coverage accounting. Require both known classes.
@@ -57,8 +59,11 @@ synthetic fitting controls:
   malformed inputs. Bind Python version and platform; deterministic reproduction
   is scoped to the pinned environment, not promised byte-exact across platforms.
 - Keep a separately identified label-permutation negative control using a local
-  `random.Random(0)` and the same frozen training inventory. It is not a model
-  benefit result. Execute no fit until T001/T007 and protocol review permit it.
+  `random.Random(0)` and the same frozen training inventory. The synthetic
+  evaluator refits it through the canonical trainer, binds train/calibration
+  commitments, and emits only descriptive synthetic metrics. It is not a model
+  benefit result. No real-workload fit runs until T001/T007 and protocol review
+  permit it.
 
 The future trained artifact binds feature/model versions, six finite weights,
 intercept, training-only means/deviations, the exact algorithm parameters,
@@ -108,6 +113,19 @@ The consumer recomputes bounded evidence with the unchanged deterministic
 producer/verifier for each selected request. Model scores and utility labels
 cannot supply evidence fields, skip validation or grant execution. Independent
 boundary tests must exercise high scores, abstention and tampered artifacts.
+Within the synthetic evaluator, the deterministic baseline and verifier retain
+the validated request, while the learned scorer receives only the versioned
+six-feature vector. Request hashes, IDs, text, labels and family metadata stay
+outside the scorer callback; the evaluator checks preparation output against
+the canonical extractor before scoring. Both callbacks are trusted in-process
+Python code, not sandboxes; the direct-argument boundary does not isolate
+closures or process-global state. The runner may accept a synthetic
+`source_extractor` hook and measure it symmetrically for both policies, and it
+allocates the measured shared report serialization equally across both arms.
+These are synthetic measurement controls only: no admitted-journal extractor
+is wired in, the allocation rule remains provisional, and prospective
+source-to-request cost required by T003 remains pending the authorized
+real-source runner.
 
 ## Implementation ownership and acceptance
 

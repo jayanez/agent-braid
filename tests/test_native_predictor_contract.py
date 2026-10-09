@@ -54,6 +54,7 @@ class NativePredictorContractTests(unittest.TestCase):
         def row(pair: str, family: str, session: str, partition: str,
                 label: int | None, offset: float) -> dict:
             return {"pairId": pair, "familyId": family, "sessionId": session,
+                    "duplicateGroupId": f"duplicate-{pair}",
                     "partition": partition,
                     "features": {name: float(index + offset)
                                  for index, name in enumerate(LEARNED_FEATURES)},
@@ -106,22 +107,25 @@ class NativePredictorContractTests(unittest.TestCase):
             candidate["operations"][1]["anchorId"] = anchor2
             candidate["operations"][1]["value"] = f"proposal-B-{index}"
             inventory.append({"pairId": f"p{index}", "familyId": family,
+                              "sessionId": f"session-p{index}",
+                              "duplicateGroupId": f"duplicate-p{index}",
                               "partition": "holdout", "request": candidate})
 
         seen_scorer_rows = []
 
-        def baseline_equivalent_ranker(candidate, _prepared):
-            seen_scorer_rows.append(candidate)
-            operations = candidate["request"]["operations"]
-            return int(operations[0]["anchorId"] == operations[1]["anchorId"])
+        def baseline_equivalent_ranker(vector):
+            seen_scorer_rows.append(vector)
+            return vector["features"]["sameAnchor"]
 
         report = evaluate(inventory, {"p0": 1, "p1": 0, "p2": None, "p3": 1},
                           scorer=baseline_equivalent_ranker, dataset_kind="synthetic")
         self.assertEqual(report["status"], "synthetic-descriptive-only")
         self.assertEqual(report["protocolApproval"],
-                         "not-approved; P019-04 call/status mapping remains provisional")
+                         "founder-selected-mapping; full-protocol-independent-review-pending")
         self.assertTrue(seen_scorer_rows)
-        self.assertTrue(all(set(row) == {"request"} for row in seen_scorer_rows))
+        self.assertTrue(all(set(row) == {"version", "features"} for row in seen_scorer_rows))
+        self.assertTrue(all(set(row["features"]) == set(LEARNED_FEATURES)
+                            for row in seen_scorer_rows))
         predictor = report["budgets"]["predictor"]["50"]
         baseline = report["budgets"]["baseline"]["50"]
         self.assertEqual(predictor["actualVerifierCalls"], 2)
@@ -178,6 +182,7 @@ class NativePredictorContractTests(unittest.TestCase):
         def training_row(pair: str, family: str, session: str, partition: str,
                          label: int | None, offset: float) -> dict:
             return {"pairId": pair, "familyId": family, "sessionId": session,
+                    "duplicateGroupId": f"duplicate-{pair}",
                     "partition": partition,
                     "features": {name: float(index + offset)
                                  for index, name in enumerate(LEARNED_FEATURES)},
