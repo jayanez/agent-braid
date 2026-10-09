@@ -143,6 +143,9 @@ class RuntimePolicyTests(unittest.TestCase):
             with self.subTest(store=store),self.assertRaises(policy.InvalidRuntimePolicy):
                 policy.issue_operator_grant(self.plan,store,acknowledge=self.plan['planDigest'])
         self.store.mkdir(mode=0o755)
+        # mkdir's mode is filtered by the caller's umask; force the unsafe fixture.
+        self.store.chmod(0o755)
+        self.assertEqual(self.store.stat().st_mode & 0o777, 0o755)
         with self.assertRaisesRegex(policy.InvalidRuntimePolicy,'0700'): self.grant()
 
     def test_modified_and_symlink_grants_fail_closed(self):
