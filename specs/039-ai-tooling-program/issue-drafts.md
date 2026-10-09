@@ -35,7 +35,7 @@ Parent: SPEC-039. Labels: task. State: open. Milestone: M4.5 — AI tooling inte
 
 Parent: SPEC-039. Labels: task. State: open. Milestone: M4.5 — AI tooling integrations for Codex and Claude Code
 
-- [ ] T002 (REQ-002/SC-002): Keep M4.5 adjacent to M4 while preserving the whole-M4 open state, G4 NO-GO and independent M3/M3.5 gates.
+- [ ] T002 (REQ-002/SC-002): Keep M4.5 adjacent to M4 while preserving its separately governed bounded acceptance, historical G4 NO-GO and independent M3/M3.5 gates.
   Dependencies: T001. Targets: `program.md; historical M4 boundary audit`.
   Verification and planned evidence: `validation-plan.md::procedure_m4_boundary`; `evidence/sc-002.json` with actual commands and negative controls. Obtained: none.
 

@@ -103,4 +103,7 @@ acceptance remain pending. This status does not claim registered capture, native
 host acceptance or milestone closure.
 
 The reviewer must distinguish this source-delivery outcome from M4.5 product
-completion. M4's historical G4 NO-GO and whole-M4 acceptance remain unchanged.
+completion. This 2026-10-08 source-delivery record did not change M4's historical
+G4 NO-GO or decide whole-M4 acceptance. The separate bounded M4 acceptance on
+2026-10-09 is recorded in [program.md](program.md#m4-relationship); it preserves
+G4 NO-GO and grants no M4.5 acceptance or capture permission.

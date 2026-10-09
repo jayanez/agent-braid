@@ -24,7 +24,7 @@ Verification: [procedure_capability_matrix](validation-plan.md); [T001](tasks.md
 
 ### REQ-002
 
-Keep M4.5 adjacent to M4 while preserving the whole-M4 open state, G4 NO-GO and independent M3/M3.5 gates.
+Keep M4.5 adjacent to M4 while preserving its separately governed bounded acceptance, historical G4 NO-GO and independent M3/M3.5 gates.
 
 **SC-002:** Given M4's historical results and separate source-rights protocol, when M4.5 dependencies and closure are evaluated, then consumer engineering can progress but neither source permission nor M4 closure is inferred.
 
