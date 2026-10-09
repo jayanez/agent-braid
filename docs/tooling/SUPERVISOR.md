@@ -10,7 +10,25 @@ exclusive start and outcome receipts. A used output directory is never retried.
 
 The caller provides a `ProcessRequest`, frozen `BudgetCaps`, and an observer
 that returns `TelemetrySnapshot` values containing cumulative measured costs
-and externally observed stop state. The supervisor refuses before launch when
+and externally observed stop state. A request may also carry a
+`SubscriptionBinding`; when present, every preflight, periodic, and final
+snapshot must include a fresh `SubscriptionObservation` bound to that exact
+host, registration, slot, billing-policy hash, and account hash. The supervisor
+refuses before launch if the included subscription is inactive, included quota
+is unavailable, authentication does not match the host, additional spend is
+nonzero or unknown, or any paid API, extra usage, credits, or auto-recharge
+switch is enabled. A violation during execution stops the owned process group
+and leaves an incomplete `subscription-policy-violation` result. This policy
+gate supplements the independent cost completeness checks and the existing
+€25 accounting ceiling; it does not turn unknown provider cost into zero.
+
+The observer is the trust boundary. It must authenticate the live account,
+billing switches, and included quota state independently. A hash only binds
+the reported proof to a reference; it does not prove that reference is genuine.
+Stale read-only UI snapshots, screenshots, and unauthenticated exports are not
+sufficient to establish live quota or billing state. Receipts retain the
+subscription binding and bounded observation fields, hash source references,
+and never contain credentials. The supervisor refuses before launch when
 the executable pin, path separation, initial measurement, freshness, stop
 state, or registered caps fail. Source freshness may be configured up to 60
 seconds; the separately named `observer_timeout_seconds` is capped at one
@@ -96,6 +114,11 @@ provided by an authenticated measurement source. The supervisor cannot provide
 a hard provider-dollar cap or guarantee continuous process-tree resource
 limits. Any such uncertainty keeps the result incomplete and must be retained
 for separate review.
+Subscription monitoring has the same sampling limit: a billing setting or
+quota change between observations can be detected only on the next successful
+observation. A request already sent to the provider may continue after local
+cleanup. Zero additional spend is an authorization boundary, not a claim that
+polling guarantees zero charges against concurrent external account changes.
 
 This module does not itself authorize or execute an actual capture. Registered
 source rights, provider consent, founder/owner decisions, two independent

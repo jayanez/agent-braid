@@ -24,6 +24,7 @@ from . import tooling_capture as capture
 from . import tooling_evaluation as evaluation
 from . import tooling_host_events
 from . import tooling_sessions
+from . import tooling_subscription as subscription_policy
 
 _SHA256 = re.compile(r"^[0-9a-f]{64}$")
 _SUPPORTED_HOSTS = {"codex", "claude-code"}
@@ -128,6 +129,7 @@ class HostLaunchPlan:
     poll_interval_seconds: float
     term_grace_seconds: float
     kill_grace_seconds: float
+    subscription_binding: subscription_policy.SubscriptionBinding | None = None
 
 
 class PreparationVerifier(Protocol):
@@ -206,6 +208,7 @@ class HostSessionAdapter(tooling_sessions.SessionAdapter):
             poll_interval_seconds=plan.poll_interval_seconds,
             term_grace_seconds=plan.term_grace_seconds,
             kill_grace_seconds=plan.kill_grace_seconds,
+            subscription_binding=plan.subscription_binding,
         )
 
     def _public_outcome(self, plan: HostLaunchPlan, outcome: Any) -> Mapping[str, Any]:
@@ -391,6 +394,15 @@ def prepare_host_launch(admission: capture.AttemptAdmission,
         raise HostPreparationError("HOME and CODEX_HOME cannot be reassigned")
     if any(not isinstance(k, str) or not isinstance(v, str) for k, v in config.environment.items()):
         raise HostPreparationError("explicit child environment must map strings to strings")
+    binding = admission.subscription_binding
+    if binding is not None:
+        if binding.host != config.host or binding.slot_id != admission.slot_id:
+            raise HostPreparationError("subscription binding differs from the selected host or slot")
+        # Explicit child environment replaces inheritance. Unlisted routing,
+        # credential, proxy and loader variables cannot select a paid fallback.
+        allowed_environment = {"PATH", "LANG", "LC_ALL", "TMPDIR", "CLAUDE_CONFIG_DIR"}
+        if set(config.environment) - allowed_environment:
+            raise HostPreparationError("subscription-only child environment contains an unapproved override")
     for name, value in (("timeout_seconds", config.timeout_seconds),
                         ("max_output_bytes", config.max_output_bytes),
                         ("observation_max_age_seconds", config.observation_max_age_seconds),
@@ -428,6 +440,7 @@ def prepare_host_launch(admission: capture.AttemptAdmission,
         poll_interval_seconds=config.poll_interval_seconds,
         term_grace_seconds=config.term_grace_seconds,
         kill_grace_seconds=config.kill_grace_seconds,
+        subscription_binding=binding,
     )
 
 

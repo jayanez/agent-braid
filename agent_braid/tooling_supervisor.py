@@ -24,6 +24,12 @@ import time
 from typing import Callable, Mapping
 
 from . import tooling_capture as capture
+from .tooling_subscription import (
+    SubscriptionBinding,
+    SubscriptionError,
+    SubscriptionObservation,
+    check_observation,
+)
 
 
 MAX_OUTPUT_BYTES = 64 * 1024 * 1024
@@ -119,6 +125,7 @@ class ProcessRequest:
     kill_grace_seconds: float
     file_pins: tuple["FilePin", ...] = ()
     observer_timeout_seconds: float = MAX_OBSERVER_CALLBACK_SECONDS
+    subscription_binding: SubscriptionBinding | None = None
 
 
 @dataclass(frozen=True)
@@ -135,6 +142,7 @@ class TelemetrySnapshot:
 
     costs: capture.MeasuredCosts
     stop_state: capture.StopState
+    subscription: SubscriptionObservation | None = None
 
 
 @dataclass(frozen=True)
@@ -221,6 +229,8 @@ def run_supervised(
         initial = _observe_bounded(observer, None, 0.0,
                                   request.observer_timeout_seconds)
         _validate_snapshot(initial, caps, request, None, clock, None)
+    except SubscriptionError as exc:
+        return _not_launched("refused", _safe_reason(exc), clock)
     except Exception as exc:
         return _not_launched("measurement-unknown", _safe_reason(exc), clock)
     activity_start_mono = clock.monotonic()
@@ -247,11 +257,13 @@ def run_supervised(
         if path.exists() or path.is_symlink():
             raise SupervisorError("one-shot output root already contains a supervisor artifact")
     started_record = {
-        "schemaVersion": "agent-braid-process-supervisor-v1", "status": "launch-reserved",
+        "schemaVersion": "agent-braid-process-supervisor-v2", "status": "launch-reserved",
         "executableSha256": request.executable_sha256,
         "argvSha256": _sha(_json_bytes(list(request.argv))),
         "stdinBytes": len(request.stdin or b""),
         "environmentEntryCount": len(env), "preDispatchSnapshot": _snapshot_dict(initial),
+        "subscriptionBinding": request.subscription_binding.as_dict()
+        if request.subscription_binding is not None else None,
         "filePins": [{"pathSha256": _sha(str(path).encode("utf-8")), "sha256": digest}
                      for path, digest in pinned_files],
         "preDispatchAt": started_at,
@@ -363,7 +375,9 @@ def run_supervised(
                             if stop is not None:
                                 stop_reason, stop_status = stop, "budget-exceeded"
                     except Exception as exc:
-                        stop_reason, stop_status = _safe_reason(exc), "measurement-unknown"
+                        stop_reason = _safe_reason(exc)
+                        stop_status = ("subscription-policy-violation"
+                                       if isinstance(exc, SubscriptionError) else "measurement-unknown")
                         observer_failure = _safe_reason(exc)
                     next_observation_at = now_mono + request.poll_interval_seconds
             if stop_reason is not None and term_sent_at is None:
@@ -468,7 +482,9 @@ def run_supervised(
             except Exception as exc:
                 observer_failure = _safe_reason(exc)
                 if stop_reason is None:
-                    stop_reason, stop_status = observer_failure, "measurement-unknown"
+                    stop_reason = observer_failure
+                    stop_status = ("subscription-policy-violation"
+                                   if isinstance(exc, SubscriptionError) else "measurement-unknown")
         if stop_reason is not None:
             status = stop_status or "measurement-unknown"
             reason = stop_reason
@@ -516,7 +532,7 @@ def run_supervised(
     ended_at = _utc(clock)
     wall_elapsed = max(0.0, clock.monotonic() - activity_start_mono) if start_recorded else 0.0
     result_data = {
-        "schemaVersion": "agent-braid-process-supervisor-v1", "status": status,
+        "schemaVersion": "agent-braid-process-supervisor-v2", "status": status,
         "launched": launched, "executableSha256": request.executable_sha256,
         "argvSha256": _sha(_json_bytes(list(request.argv))),
         "returncode": returncode, "signal": -returncode if returncode is not None and returncode < 0 else None,
@@ -525,6 +541,9 @@ def run_supervised(
         "stderrBytesStored": err_written, "stdoutBytesObserved": out_seen,
         "stderrBytesObserved": err_seen, "stdoutSha256": out_hash.hexdigest(),
         "stderrSha256": err_hash.hexdigest(), "lastSnapshot": _snapshot_dict(last_snapshot),
+        "subscriptionBinding": request.subscription_binding.as_dict()
+        if request.subscription_binding is not None else None,
+        "preDispatchSubscription": _snapshot_dict(initial).get("subscription"),
         "observerFailure": observer_failure,
         "stdoutArtifact": stdout_path.name, "stderrArtifact": stderr_path.name,
         "reason": reason, "groupCleanup": group_cleanup,
@@ -569,6 +588,9 @@ _LIMITS = (
 def _validate_request(request, caps, observer, clock):
     if not isinstance(request, ProcessRequest) or not isinstance(caps, BudgetCaps):
         raise SupervisorError("typed process request and frozen budget caps are required")
+    if request.subscription_binding is not None and not isinstance(
+            request.subscription_binding, SubscriptionBinding):
+        raise SupervisorError("subscription_binding must be a typed registration binding")
     if not callable(observer) or not callable(clock.monotonic) or not callable(clock.utc_now):
         raise SupervisorError("observer and clock callables are required")
     if not isinstance(request.executable, Path) or not request.executable.is_absolute():
@@ -693,6 +715,12 @@ def _validate_snapshot(snapshot, caps, request, prior, clock, identity):
         capture._validate_stop_state(snapshot.stop_state)
     except capture.CaptureAdmissionError as exc:
         raise SupervisorError(f"observer supplied unknown or invalid telemetry: {exc}") from exc
+    if request.subscription_binding is not None:
+        if snapshot.subscription is None:
+            raise SubscriptionError("required subscription observation is missing")
+        check_observation(snapshot.subscription, request.subscription_binding,
+                          now=_parse_time(_utc(clock)),
+                          max_age_seconds=request.observation_max_age_seconds)
     now = _parse_time(_utc(clock))
     for observed_at, label in ((snapshot.costs.observed_at, "cost"),
                                (snapshot.stop_state.observed_at, "stop state")):
@@ -881,7 +909,7 @@ def _snapshot_dict(snapshot):
         return None
     costs = snapshot.costs
     stop = snapshot.stop_state
-    return {
+    result = {
         "costs": {"values": dict(costs.values), "sourceRefSha256": _sha(costs.source_ref.encode("utf-8")),
                   "sourceSha256": costs.source_sha256, "observedAt": costs.observed_at},
         "stopState": {"incidentOpen": stop.incident_open,
@@ -891,6 +919,11 @@ def _snapshot_dict(snapshot):
                       "sourceSha256": stop.source_sha256,
                       "observedAt": stop.observed_at},
     }
+    if snapshot.subscription is not None:
+        proof = snapshot.subscription.as_dict()
+        proof["sourceRefSha256"] = _sha(proof.pop("sourceRef").encode("utf-8"))
+        result["subscription"] = proof
+    return result
 
 
 def _hash_executable(path):

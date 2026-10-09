@@ -15,6 +15,8 @@ import math
 import re
 from typing import Any, Mapping, Sequence
 
+from .tooling_subscription import SubscriptionError, policy_sha256 as _subscription_policy_sha256
+
 
 REGISTRATION_SCHEMA = "agent-braid-m45-registration-v1"
 LEDGER_SCHEMA = "agent-braid-m45-ledger-v1"
@@ -203,6 +205,8 @@ def validate_registration(
     _validate_record(data.get("sourceRights"), "sourceRights", "approved")
     _validate_source_rights(data.get("sourceRights"))
     _validate_provider_opt_in(data.get("provider"))
+    if "billingPolicy" in data:
+        _validate_billing_policy(data["billingPolicy"])
     _validate_cost_caps(data.get("costCaps"))
     _validate_reviewers(data.get("humanReviewers"))
     _validate_rubric(data.get("rubric"))
@@ -798,6 +802,14 @@ def _validate_cost_caps(value: Any) -> None:
         number = value[field]
         if number is None or not _is_finite_number(number) or number <= 0:
             raise EvaluationError(f"costCaps.{field} must be a positive finite number")
+
+
+def _validate_billing_policy(value: Any) -> None:
+    """Share the canonical policy constraints with subscription receipt binding."""
+    try:
+        _subscription_policy_sha256(value)
+    except SubscriptionError as exc:
+        raise EvaluationError(f"invalid billingPolicy: {exc}") from exc
 
 
 def _validate_cost_rates(value: Any, hosts: Sequence[Mapping[str, Any]]) -> None:

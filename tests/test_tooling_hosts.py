@@ -22,6 +22,7 @@ from agent_braid.tooling_hosts import (
     LaunchEvidence, prepare_host_launch,
 )
 from agent_braid.tooling_supervisor import BudgetCaps
+from agent_braid.tooling_subscription import SubscriptionBinding
 from agent_braid.tooling_mcp import ToolingConfig, ToolingError
 
 
@@ -106,6 +107,21 @@ class HostAdapterTests(unittest.TestCase):
         self.assertIn("read-only", plan.argv)
         self.assertIn("--config", plan.argv)
         self.assertEqual(plan.argv.count("--model"), 1)
+
+    def test_subscription_binding_reaches_supervisor_and_rejects_paid_routes(self):
+        tmp_path = self.with_temp()
+        admission, config = _inputs(tmp_path)
+        binding = SubscriptionBinding("codex", "1" * 64, admission.slot_id, "2" * 64, "3" * 64)
+        admission = admission.__class__(**{**admission.__dict__, "subscription_binding": binding})
+        plan = prepare_host_launch(admission, config)
+        request = HostSessionAdapter._make_process_request(plan)
+        self.assertEqual(request.subscription_binding, binding)
+        for key in ("OPENAI_API_KEY", "ANTHROPIC_API_KEY", "ANTHROPIC_BASE_URL",
+                    "HTTP_PROXY", "CLAUDE_CODE_USE_BEDROCK", "LD_PRELOAD"):
+            with self.subTest(key=key):
+                changed = config.__class__(**{**config.__dict__, "environment": {key: "synthetic"}})
+                with self.assertRaisesRegex(HostPreparationError, "unapproved override"):
+                    prepare_host_launch(admission, changed)
 
     def test_refuses_human_unknown_route_and_missing_attestations(self):
         tmp_path = self.with_temp()
