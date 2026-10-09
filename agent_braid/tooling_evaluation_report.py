@@ -258,6 +258,9 @@ def build_utility_report(
             ),
             "fullEconomic": _full_economic_cost(monetary_summary),
             "missingRequired": sorted(set(missing_costs)),
+            "missingRequiredByScope": _missing_cost_attribution(
+                assessment.cost_assessment.missing, full_cost_missing, ledger,
+            ),
             "totals": dict(assessment.cost_assessment.totals),
             "capAssessment": {
                 "withinCaps": assessment.cap_assessment.within_caps,
@@ -319,6 +322,21 @@ def render_utility_report_narrative(report: UtilityReport) -> str:
     ]
     if costs["missingRequired"]:
         lines.append("Missing cost fields/attempts: " + "; ".join(costs["missingRequired"]) + ".")
+        lines.append("Missing-cost attribution by scope:")
+        grouped_attribution: dict[tuple[str, str | None, tuple[str, ...]], list[dict[str, Any]]] = {}
+        for item in costs["missingRequiredByScope"]:
+            activity_id = item.get("activityId") if item["scope"] == "setup" else None
+            key = (item["scope"], activity_id, tuple(item["fields"]))
+            grouped_attribution.setdefault(key, []).extend(item["affectedAttempts"])
+        for (scope_name, activity_id, fields), affected_attempts in sorted(grouped_attribution.items()):
+            affected = ", ".join(
+                f"{attempt['slotId']}={attempt['attemptId'] if attempt['attemptId'] is not None else 'null'}"
+                for attempt in affected_attempts
+            )
+            lines.append(
+                f"{scope_name}: fields={', '.join(fields)}; "
+                f"affected slotId=attemptId pairs: {affected}."
+            )
     for reason in raw["eligibilityReasons"]:
         lines.append("Eligibility reason: " + reason)
     lines.append("Arm C fidelity by host: " + "; ".join(
@@ -427,7 +445,14 @@ def _safe_ledger(ledger: evaluation.EvaluationLedger) -> dict[str, Any]:
     """Keep every slot and event while excluding free-form event text."""
     slots = []
     for slot in ledger.slots:
-        slots.append({**slot.as_dict(), "currentStatus": ledger.current_status(slot.slot_id)})
+        current_event = ledger.current_event(slot.slot_id)
+        slots.append({
+            **slot.as_dict(),
+            "currentStatus": ledger.current_status(slot.slot_id),
+            "currentAttemptId": _safe_attempt_id(
+                current_event.attempt_id if current_event is not None else None,
+            ),
+        })
     events = []
     for event in ledger.events:
         data = event.data
@@ -436,7 +461,8 @@ def _safe_ledger(ledger: evaluation.EvaluationLedger) -> dict[str, Any]:
             "inputSha256", "outputSha256") if key in data}
         events.append({
             "sequence": event.sequence, "slotId": event.slot_id,
-            "status": event.status, "dataSha256": event.data_sha256,
+            "status": event.status, "attemptId": _safe_attempt_id(event.attempt_id),
+            "dataSha256": event.data_sha256,
             "observations": projection,
         })
     return {
@@ -444,6 +470,81 @@ def _safe_ledger(ledger: evaluation.EvaluationLedger) -> dict[str, Any]:
         "registrationSha256": ledger.registration_sha256,
         "intendedSlots": len(slots), "slots": slots, "events": events,
     }
+
+
+def _safe_attempt_id(value: object) -> str | None:
+    """Return only bounded identifiers admitted by the ledger contract."""
+    if not isinstance(value, str) or re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9._:-]{0,127}", value) is None:
+        return None
+    return value
+
+
+def _missing_cost_attribution(
+    legacy_missing: Sequence[str],
+    full_cost_missing: Sequence[str],
+    ledger: evaluation.EvaluationLedger,
+) -> list[dict[str, Any]]:
+    """Bind each safe missing-cost field to actual attempt IDs and registered slots.
+
+    Setup and cohort-wide gaps conservatively affect every registered slot.
+    Per-slot gaps affect only that slot. Not-started slots retain their slot ID
+    with a null attempt ID; no synthetic run identifiers are manufactured.
+    """
+    slots_by_id = {slot.slot_id: slot for slot in ledger.slots}
+    longest_slot_ids = sorted(slots_by_id, key=len, reverse=True)
+    grouped: dict[tuple[str, str | None], set[str]] = {}
+
+    def add(scope: str, activity_id: str | None, field: str) -> None:
+        grouped.setdefault((scope, activity_id), set()).add(field)
+
+    for value in legacy_missing:
+        prefix, separator, field = value.rpartition(".")
+        if not separator or field not in evaluation.COST_FIELDS:
+            add("cohort", None, value)
+        elif prefix == "setupCosts":
+            add("setup", "setup", f"setupCosts.{field}")
+        elif prefix.endswith(".costs") and prefix[:-len(".costs")] in slots_by_id:
+            add("attempt", prefix[:-len(".costs")], f"costs.{field}")
+        else:
+            add("cohort", None, value)
+
+    for value in full_cost_missing:
+        if value.startswith("subscription.setup."):
+            add("setup", "setup", value[len("subscription.setup."):])
+            continue
+        activity_id = next((slot_id for slot_id in longest_slot_ids
+                            if value.startswith(f"subscription.{slot_id}.")), None)
+        if activity_id is not None:
+            add("attempt", activity_id,
+                value[len(f"subscription.{activity_id}."):])
+            continue
+        add("cohort", None, value)
+
+    def affected(activity_id: str | None) -> list[dict[str, str | None]]:
+        selected = (
+            [slots_by_id[activity_id]] if activity_id in slots_by_id else
+            list(ledger.slots)
+        )
+        rows: list[dict[str, str | None]] = []
+        for slot in selected:
+            event = ledger.current_event(slot.slot_id)
+            rows.append({
+                "slotId": slot.slot_id,
+                "attemptId": _safe_attempt_id(event.attempt_id if event is not None else None),
+            })
+        return rows
+
+    result = []
+    for (scope, activity_id), fields in sorted(grouped.items(), key=lambda item: (item[0][0], item[0][1] or "")):
+        row: dict[str, Any] = {
+            "scope": scope,
+            "fields": sorted(fields),
+            "affectedAttempts": affected(activity_id),
+        }
+        if activity_id is not None:
+            row["activityId"] = activity_id
+        result.append(row)
+    return result
 
 
 def _full_economic_cost(summary: Any) -> dict[str, str | None]:
