@@ -34,6 +34,36 @@ class HostEventParserTests(unittest.TestCase):
         self.assertEqual(report.estimated_cost_usd, 0.001)
         self.assertIn("not invoice", report.cost_basis)
 
+    def test_execution_error_zero_totals_are_unknown_after_prior_usage(self):
+        for count in (0, 17):
+            with self.subTest(reported_count=count):
+                report = parse_host_events("claude", lines(
+                    {"type": "system", "subtype": "init", "model": "m", "mcp_servers": [], "mcp_server_errors": []},
+                    {"type": "assistant", "message": {"usage": {"input_tokens": 17}, "content": []}},
+                    {"type": "result", "subtype": "error_during_execution", "usage": {
+                        "input_tokens": count, "cache_read_input_tokens": count, "output_tokens": count},
+                     "total_cost_usd": 0 if count == 0 else 0.1},
+                ), version="2.1.286", expected_mcp_servers=())
+                self.assertEqual(report.state, "failed")
+                for field in ("input_tokens", "cached_input_tokens", "output_tokens", "estimated_cost_usd", "cost_basis"):
+                    self.assertIsNone(getattr(report, field))
+                self.assertTrue(any("crash" in limit for limit in report.limits))
+
+    def test_budget_error_keeps_host_cost_estimate_but_not_incomplete_usage(self):
+        report = parse_host_events("claude", lines(
+            {"type": "system", "subtype": "init", "model": "m", "mcp_servers": [], "mcp_server_errors": []},
+            {"type": "result", "subtype": "error_max_budget_usd", "usage": {
+                "input_tokens": 10, "cache_read_input_tokens": 2, "output_tokens": 4},
+             "total_cost_usd": 0.2},
+        ), version="2.1.286", expected_mcp_servers=())
+        self.assertEqual(report.state, "failed")
+        self.assertIsNone(report.input_tokens)
+        self.assertIsNone(report.cached_input_tokens)
+        self.assertIsNone(report.output_tokens)
+        self.assertEqual(report.estimated_cost_usd, 0.2)
+        self.assertIn("not invoice", report.cost_basis)
+        self.assertTrue(any("budget-crossing" in limit for limit in report.limits))
+
     def test_claude_empty_mcp_expectation_and_mismatch_control(self):
         init = {"type": "system", "subtype": "init", "model": "m",
                 "mcp_servers": [], "mcp_server_errors": []}

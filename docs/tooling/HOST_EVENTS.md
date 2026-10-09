@@ -63,3 +63,12 @@ Documentation references:
 - [Codex CLI reference](https://developers.openai.com/codex/cli/reference)
 - [Claude Code CLI reference](https://code.claude.com/docs/en/cli-reference)
 - [Claude Code Agent SDK overview](https://code.claude.com/docs/en/agent-sdk/overview)
+
+Claude execution-error results can reset usage and cost after a crash. The parser
+therefore leaves their complete totals unknown, even when the result reports zero
+or another numeric value. Budget-error `usage` can omit the response that crossed
+the limit: token totals remain unknown while `total_cost_usd`, when present, stays
+a separately labelled host estimate. Assistant message placeholders cannot repair
+complete output, retry or subagent totals. These limits follow the official
+[Claude cost-tracking documentation](https://code.claude.com/docs/en/agent-sdk/cost-tracking);
+the parser still does not authenticate provider data or perform a capture.
