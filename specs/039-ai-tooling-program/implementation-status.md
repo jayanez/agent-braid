@@ -40,6 +40,15 @@ reviewer identities, fee applicability, allocation method and supporting source
 records, frozen rubric, fixture rights, full registration approval, native
 journeys/capture, human scoring and a separate founder decision.
 
+Claude subscription preparation now uses a distinct pinned-settings profile
+without `--bare`; the pinned CLI's bare mode does not read OAuth or keychain
+credentials. An empty caller-selected configuration namespace was observed to
+be logged out, so the habitual account match does not establish authentication
+for that namespace. The caller must obtain and verify first-party login in the
+selected namespace without copying credentials. Restricted flags, bounded
+settings and exact paths do not establish actual isolation, native skill loading
+or capture authorization; those remain separate observed gates.
+
 ## State vocabulary
 
 - **Code present** means an implementation path or deterministic control exists in the current candidate source.
