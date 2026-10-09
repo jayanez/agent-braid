@@ -92,7 +92,7 @@ class PublicSpecHistoryTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "public root"):
             self.restore(public_root="f" * 40)
 
-    def main_with(self, tags):
+    def main_with(self, tags, advertisement=None):
         assurance = self.root / "spec-012-fixture.json"
         assurance.write_text(json.dumps({
             "authority_snapshot": {"mode": "historical", "commit": self.candidate},
@@ -102,6 +102,9 @@ class PublicSpecHistoryTests(unittest.TestCase):
         def public_origin(*args, **kwargs):
             if args == ("remote", "get-url", "origin"):
                 return "https://github.com/jayanez/agent-braid.git"
+            if advertisement and args[:3] == ("ls-remote", "--tags", "origin") \
+                    and args[3] == advertisement[0]:
+                return advertisement[1]
             return original_git(*args, **kwargs)
         with patch.object(history, "ASSURANCE", assurance), \
                 patch.object(history, "REVIEWED_TAGS", tags), \
@@ -124,6 +127,25 @@ class PublicSpecHistoryTests(unittest.TestCase):
         before = git(self.root, "show-ref")
         with self.assertRaisesRegex(ValueError, "not overwritten"):
             self.main_with(tags)
+        self.assertEqual(git(self.root, "show-ref"), before)
+
+    def test_failed_batch_fetch_installs_no_earlier_refs(self):
+        feature, candidate, tag_object = "018-missing", "b" * 40, "a" * 40
+        record = self.root / "specs" / feature / "assurance.json"
+        record.parent.mkdir(parents=True)
+        record.write_text(json.dumps({
+            "human_review": "approved", "review_record": f"specs/{feature}/review.json",
+            "authority_snapshot": {"mode": "historical", "commit": candidate},
+            "evidence_snapshot": {"mode": "historical", "commit": candidate},
+        }))
+        (record.parent / "review.json").write_text(json.dumps({"reviewedCommit": candidate}))
+        ref = f"refs/tags/spec-018-reviewed-{candidate[:7]}"
+        advertised = f"{tag_object}\t{ref}\n{candidate}\t{ref}^{{}}"
+        before = git(self.root, "show-ref")
+        tags = ((self.feature, self.candidate, self.tag_object),
+                (feature, candidate, tag_object))
+        with self.assertRaisesRegex(ValueError, "fetch"):
+            self.main_with(tags, advertisement=(ref, advertised))
         self.assertEqual(git(self.root, "show-ref"), before)
 
 
