@@ -41,7 +41,12 @@ class ProcessBirthTests(unittest.TestCase):
             sample = birth.sample_process_birth(identity)
             self.assertTrue(birth.matches_process_birth(identity, sample))
             self.assertEqual(sample.pid, process.pid)
-            self.assertGreater(sample.resident_size_bytes, 0)
+            if sample.platform == "linux":
+                self.assertGreaterEqual(sample.resident_size_bytes, 0)
+                page_size = os.sysconf("SC_PAGE_SIZE")
+                self.assertEqual(sample.resident_size_bytes % page_size, 0)
+            else:
+                self.assertGreater(sample.resident_size_bytes, 0)
             self.assertIsNone(process.poll(), "birth source must not signal or reap its subject")
             reused = birth.ProcessBirthSample(
                 sample.pid, sample.platform, sample.source, sample.token + ":changed",
@@ -240,7 +245,9 @@ class ProcessBirthTests(unittest.TestCase):
             with patch.object(birth.os, "open", side_effect=deny_numeric_proc_reopen):
                 sample = birth.sample_process_birth(identity)
             self.assertTrue(birth.matches_process_birth(identity, sample))
-            self.assertGreater(sample.resident_size_bytes, 0)
+            page_size = os.sysconf("SC_PAGE_SIZE")
+            self.assertGreaterEqual(sample.resident_size_bytes, 0)
+            self.assertEqual(sample.resident_size_bytes % page_size, 0)
             process.terminate()
             process.wait(timeout=3)
             with self.assertRaises(birth.ProcessBirthError):
@@ -264,7 +271,9 @@ class ProcessBirthTests(unittest.TestCase):
             self.assertEqual(sample.pid, process.pid)
             self.assertEqual(sample.platform, "linux")
             self.assertIn("boot_id", sample.source)
-            self.assertGreater(sample.resident_size_bytes, 0)
+            page_size = os.sysconf("SC_PAGE_SIZE")
+            self.assertGreaterEqual(sample.resident_size_bytes, 0)
+            self.assertEqual(sample.resident_size_bytes % page_size, 0)
         finally:
             os.close(read_fd)
             os.close(write_fd)
@@ -273,6 +282,40 @@ class ProcessBirthTests(unittest.TestCase):
             if process.poll() is None:
                 process.terminate()
                 process.wait(timeout=3)
+
+    @unittest.skipUnless(sys.platform.startswith("linux"), "Linux RSS page conversion")
+    def test_linux_reader_converts_zero_and_nonzero_pages_and_rejects_invalid_counts(self):
+        pid = 4242
+        page_size = os.sysconf("SC_PAGE_SIZE")
+
+        def stat_with_pages(pages):
+            fields = ["S"] + ["0"] * 18 + ["123456", "0", str(pages)]
+            return f"{pid} (synthetic owned process) {' '.join(fields)}\n".encode("ascii")
+
+        for pages in (0, 7):
+            read_fd, write_fd = os.pipe()
+            try:
+                os.write(write_fd, b"01234567-89ab-cdef-0123-456789abcdef\n")
+                with patch.object(birth, "_read_proc_file",
+                                  side_effect=[stat_with_pages(pages), stat_with_pages(pages)]):
+                    with patch.object(birth.os, "open", return_value=read_fd):
+                        sample = birth._linux_read_pinned(pid, None, 900)
+                self.assertEqual(sample.pid, pid)
+                self.assertEqual(sample.resident_size_bytes, pages * page_size)
+            finally:
+                try:
+                    os.close(read_fd)
+                except OSError:
+                    pass
+                os.close(write_fd)
+
+        for pages, message in ((-1, "out of range"),
+                               (((1 << 63) // page_size) + 1, "out of range")):
+            with self.subTest(pages=pages):
+                with patch.object(birth, "_read_proc_file",
+                                  return_value=stat_with_pages(pages)):
+                    with self.assertRaisesRegex(birth.ProcessBirthError, message):
+                        birth._linux_read_pinned(pid, None, 900)
 
 
 if __name__ == "__main__":

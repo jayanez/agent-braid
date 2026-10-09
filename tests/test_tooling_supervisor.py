@@ -19,6 +19,7 @@ from agent_braid import tooling_supervisor as supervisor
 from agent_braid.tooling_process_birth import ProcessBirthIdentity
 from agent_braid.tooling_supervisor import (
     BudgetCaps,
+    Clock,
     FilePin,
     ProcessRequest,
     SupervisorError,
@@ -439,18 +440,51 @@ class ToolingSupervisorTests(unittest.TestCase):
 
     def test_cumulative_wall_snapshot_is_not_double_counted_with_local_elapsed(self):
         calls = {"count": 0}
+        live_owned_ready = threading.Event()
+        request = self.request(
+            "import time; print('CUMULATIVE_WALL_CHILD_READY',flush=True); time.sleep(0.5)",
+            timeout=2)
 
         def observer(identity, elapsed):
             calls["count"] += 1
+            if identity is not None:
+                try:
+                    with (request.output_root / "stdout.partial").open("rb") as output:
+                        marker = output.read(64)
+                except OSError:
+                    marker = b""
+                if marker.startswith(b"CUMULATIVE_WALL_CHILD_READY\n"):
+                    live_owned_ready.set()
             wall = 9.8 if calls["count"] == 1 else 9.99
             return _snapshot(wall=wall)
 
         caps = BudgetCaps(25.0, 4_000_000, 10.0, 4 * 1024**3, 5 * 1024**3)
-        request = self.request("import time; time.sleep(0.06)", timeout=2)
-        request = ProcessRequest(**{**request.__dict__, "poll_interval_seconds": 0.02})
-        result = run_supervised(request, caps, observer)
+        real_monotonic = time.monotonic
+        clock_calls = {"count": 0, "post_live_origin": None}
+
+        def controlled_monotonic():
+            # Script the first live polling opportunity independently of child
+            # startup latency, then advance at a slower real-monotonic rate.
+            # This stays monotonic and keeps timeout/cleanup clocks moving.
+            clock_calls["count"] += 1
+            if clock_calls["count"] <= 2:
+                return 0.0
+            if clock_calls["count"] == 3:
+                return 0.02
+            if clock_calls["count"] == 4:
+                clock_calls["post_live_origin"] = real_monotonic()
+                return 0.1
+            return 0.1 + (real_monotonic() - clock_calls["post_live_origin"]) * 0.1
+
+        result = run_supervised(request, caps, observer, clock=Clock(monotonic=controlled_monotonic))
         self.assertTrue(result.completed, result)
+        self.assertTrue(live_owned_ready.is_set(), "owned child did not reach its readiness marker")
         self.assertGreaterEqual(calls["count"], 3)
+        self.assertGreater(result.wall_elapsed_seconds, 0.01)
+        self.assertLess(result.wall_elapsed_seconds, 0.2)
+        self.assertLess(max(9.8 + result.wall_elapsed_seconds, 9.99), caps.wall_seconds)
+        self.assertGreater(9.99 + result.wall_elapsed_seconds, caps.wall_seconds)
+        self.assertEqual(9.99, result.last_snapshot.costs.values["wall_seconds"])
 
     def test_live_cap_reached_stops_without_claiming_success(self):
         def observer(identity, elapsed):
