@@ -188,7 +188,7 @@ current assignment.
 | Foundations | [M1 — Observable interaction analyzer](https://github.com/jayanez/agent-braid/milestone/3) | Closed internally against the reviewed candidate; independent external validation remains pending. |
 | Research | [M2 — Confluence lab and scheduler](https://github.com/jayanez/agent-braid/milestone/4) | Closed internally. Bounded replay and finite observations do not establish general confluence. |
 | Research | [M3 — Braid semantics](https://github.com/jayanez/agent-braid/milestone/5) | Closed internally for `anchored-sequence-v1`; no general braid or Yang–Baxter theorem is claimed. |
-| Runtime | [M4 — Agent Braid runtime](https://github.com/jayanez/agent-braid/milestone/6) | Founder accepted bounded alpha engineering and evaluation as complete on 2026-10-09, with negative utility. Tracking reconciliation remains pending reviewed delivery and guarded apply. Historical SPEC-021 G4 remains **NO-GO** on useful speedup under its frozen evidence. |
+| Runtime | [M4 — Agent Braid runtime](https://github.com/jayanez/agent-braid/milestone/6) | Founder accepted bounded alpha engineering and evaluation as complete on 2026-10-09, with negative utility. Current GitHub tracking is shown in the [live M4 milestone](https://github.com/jayanez/agent-braid/milestone/6). Historical SPEC-021 G4 remains **NO-GO** on useful speedup under its frozen evidence. |
 | Integration | [M4.5 — AI tooling integrations for Codex and Claude Code](https://github.com/jayanez/agent-braid/milestone/19) | **Open.** Six draft specs cover MCP, skills, lifecycle, presentation and evaluation. Product implementation, support and acceptance remain pending; separate SPEC-021 host observations are linked below. |
 | Publication | [PUB.1 — Public research preview](https://github.com/jayanez/agent-braid/milestone/7) | **Open.** The preview is public; historical publication authorization reconciliation remains separately tracked. |
 | Governance | [GOV.1 — Governance and adoption](https://github.com/jayanez/agent-braid/milestone/8) | **Open.** Governance and adoption evidence work continues; issue state does not confer human or founder approval. |
@@ -239,15 +239,14 @@ finite negative result for parallel utility on this exact two-operation source
 frame. On 2026-10-09 the founder accepted bounded M4 alpha engineering and
 evaluation as complete with negative utility. The decision preserves historical
 G4 NO-GO and does not establish general utility, production safety, semantic
-correctness or a scientific result. Tracking reconciliation remains pending
-reviewed delivery and guarded apply. The checks establish tracked Git-tree
+correctness or a scientific result. Current GitHub tracking is shown in the [live M4 milestone](https://github.com/jayanez/agent-braid/milestone/6). The checks establish tracked Git-tree
 equality for the admitted orders, not semantic equivalence or native-code validity. No real-source
 interruption/recovery controls were run. See the [derived capture
 summary](specs/038-m4-real-workload-closure/evidence/registered-capture-summary-e66f9a1.json)
 for bounded evidence and limits. SPEC-021 G4 remains NO-GO. The [whole-M4
 decision](specs/038-m4-real-workload-closure/whole-m4-founder-decision-20261009.json)
 and [closure packet](specs/038-m4-real-workload-closure/whole-m4-closure-packet.md)
-record the bounded acceptance and its limits; tracking reconciliation remains pending.
+record the bounded acceptance and its limits. Current GitHub tracking is shown in the [live M4 milestone](https://github.com/jayanez/agent-braid/milestone/6).
 
 On candidate `e66f9a1`, Codex CLI 0.162.0-alpha.2 completed a bounded Darwin
 arm64 direct-tool-bridge observation with zero model calls. It exercised all six

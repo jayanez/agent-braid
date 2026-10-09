@@ -6,8 +6,7 @@ The founder accepted bounded M4 alpha engineering and evaluation completion
 with negative utility. The historical SPEC-021 G4 NO-GO remains unchanged.
 The decision and six-row evidence review are in
 [`whole-m4-founder-decision-20261009.json`](whole-m4-founder-decision-20261009.json)
-and [`whole-m4-closure-packet.md`](whole-m4-closure-packet.md). Guarded
-issue/milestone reconciliation remains pending.
+and [`whole-m4-closure-packet.md`](whole-m4-closure-packet.md). Current GitHub tracking is shown in the [live M4 milestone](https://github.com/jayanez/agent-braid/milestone/6).
 
 ## Capture status — 2026-10-08
 

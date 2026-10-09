@@ -1,6 +1,6 @@
 # M4 alpha exit matrix and closure record
 
-Current bounded disposition: all six M4 exit rows are accepted as engineering/evaluation evidence at reviewed candidate `fa8852ab4158f860bf2bc3aa70469f3367d2b57b` under the explicit 2026-10-09 item22 decision. This accepts a bounded M4 alpha completion with negative utility; it does not accept useful speedup or make parallel execution the performance default. Issue/milestone tracking remains pending separate guarded apply, empty audit, and Project/milestone verification.
+Current bounded disposition: all six M4 exit rows are accepted as engineering/evaluation evidence at reviewed candidate `fa8852ab4158f860bf2bc3aa70469f3367d2b57b` under the explicit 2026-10-09 item22 decision. This accepts a bounded M4 alpha completion with negative utility; it does not accept useful speedup or make parallel execution the performance default. Current tracking is shown in the [live M4 milestone](https://github.com/jayanez/agent-braid/milestone/6); governed reconciliation requires a reviewed scoped plan, guarded apply, empty audit, and Project/milestone verification.
 
 The 2026-10-05 historical G4 decision remains **NO-GO** for accepting SPEC-021 as a useful speedup capability. The decision does not change M3/M3.5 scientific gates or authorize broader capability adoption. The historical evidence snapshots and row limits below remain intact.
 
@@ -58,9 +58,9 @@ The founder recorded **NO-GO for accepting SPEC-021 as a useful speedup capabili
 under the current evidence**. Six pairs produced equivalent verified trees, while
 the median serial/parallel total-wall ratio of `0.5581` favored serial execution
 in this small, uncontrolled sample. This decision does not claim that parallelism
-is generally unhelpful and does not accept or close whole M4. SPEC-021 and M4 remain
-open. The conditional Spec Kit integration matrix was skipped in the current PR
-workflows. See `g4-decision.json` for the decision source, exact candidate bindings,
+is generally unhelpful and did not accept or close whole M4 at that decision.
+At this 2026-10-05 G4 snapshot, SPEC-021 and M4 remained open. The conditional
+Spec Kit integration matrix was skipped in those PR workflows. See `g4-decision.json` for the decision source, exact candidate bindings,
 evidence hashes and boundaries. M3/M3.5 scientific gates remain unchanged.
 
 ## Candidate-bound platform evidence on e66f9a1 (2026-10-08)

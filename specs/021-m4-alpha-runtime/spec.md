@@ -6,7 +6,7 @@ The founder accepted bounded M4 alpha engineering and evaluation as complete
 with negative utility. This does not accept useful speedup; the historical G4
 NO-GO remains unchanged. See the [SPEC-038 founder decision](../038-m4-real-workload-closure/whole-m4-founder-decision-20261009.json)
 and [closure packet](../038-m4-real-workload-closure/whole-m4-closure-packet.md).
-Tracking reconciliation remains pending reviewed delivery and guarded apply.
+Current GitHub tracking is shown in the [live M4 milestone](https://github.com/jayanez/agent-braid/milestone/6).
 
 ## Purpose and scope
 

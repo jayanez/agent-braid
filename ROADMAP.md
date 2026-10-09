@@ -253,8 +253,7 @@ merged in [PR #220](https://github.com/jayanez/agent-braid/pull/220) and
 This delivery leaves the G4 NO-GO in effect. On 2026-10-09 the founder accepted
 bounded M4 alpha engineering and evaluation as complete with negative utility.
 That acceptance does not establish general utility, production safety, semantic
-correctness or a scientific result. Tracking reconciliation remains pending
-reviewed delivery and guarded apply. See the [whole-M4 decision](specs/038-m4-real-workload-closure/whole-m4-founder-decision-20261009.json)
+correctness or a scientific result. Current GitHub tracking is shown in the [live M4 milestone](https://github.com/jayanez/agent-braid/milestone/6). See the [whole-M4 decision](specs/038-m4-real-workload-closure/whole-m4-founder-decision-20261009.json)
 and [closure packet](specs/038-m4-real-workload-closure/whole-m4-closure-packet.md).
 
 SPEC-038's exact two-operation source frame completed a registered capture on
@@ -269,7 +268,7 @@ native-code validity. No real-source interruption/recovery controls were run.
 The [derived capture summary](specs/038-m4-real-workload-closure/evidence/registered-capture-summary-e66f9a1.json)
 documents costs and limits. This result does not alter SPEC-021's historical
 G4 NO-GO. The founder's bounded whole-M4 acceptance is
-recorded above; tracking reconciliation remains pending reviewed delivery.
+recorded above. Current GitHub tracking is shown in the [live M4 milestone](https://github.com/jayanez/agent-braid/milestone/6).
 
 The same frozen candidate now has a bounded Codex CLI 0.162.0-alpha.2 observation
 on Darwin arm64 through a direct no-model tool bridge, plus a fresh-process Linux
@@ -383,7 +382,7 @@ The [review and implementation portfolio](docs/development/FOUNDATION_IMPLEMENTA
 |---|---|---|
 | M3.5 | [SPEC-019 preparation](specs/019-native-predictor/implementation-readiness.md) | Metadata/synthetic tooling first; real-source rights, yield, protocol and labels before fitting |
 | M4 | [SPEC-022 utility follow-up](specs/022-m4-utility-followup/spec.md) | Registered synthetic capture completed on frozen candidate `b85f7e5`; three admitted independent blocks were negative, the dependency-chain block was an order control, and five blocks were excluded by pinned caps. Owner approved a bounded T006 interpretation: no useful-speedup claim or parallel performance default for measured families. Historical SPEC-021 G4 NO-GO is preserved. See the [decision packet](specs/022-m4-utility-followup/decision-packet.md) |
-| M4 real workload | [SPEC-038](specs/038-m4-real-workload-closure/spec.md) | Exact source rights/protocol and stable/capture reviews bound candidate `e66f9a1`; registered capture completed with 20 valid treatments, six finite negative serial/parallel ratios, and mandatory fresh verification. Tracked-tree checks do not establish semantic/native-code validity; real-source recovery controls were not run. Founder accepted bounded M4 engineering/evaluation completion with negative utility on 2026-10-09; tracking apply remains pending. |
+| M4 real workload | [SPEC-038](specs/038-m4-real-workload-closure/spec.md) | Exact source rights/protocol and stable/capture reviews bound candidate `e66f9a1`; registered capture completed with 20 valid treatments, six finite negative serial/parallel ratios, and mandatory fresh verification. Tracked-tree checks do not establish semantic/native-code validity; real-source recovery controls were not run. Founder accepted bounded M4 engineering/evaluation completion with negative utility on 2026-10-09. Current GitHub tracking is shown in the [live M4 milestone](https://github.com/jayanez/agent-braid/milestone/6). |
 | M4 refinement contracts | [SPEC-027](specs/027-runtime-refinement-contracts/spec.md) | Read-only assessments implemented; founder recorded NO-GO/defer for all three capabilities within bounded M4 alpha. No capability adopted or granted; any future adoption requires a separate reviewed contract and authority |
 | ADP.1 — Recorded-trace adapters | [SPEC-023](specs/023-recorded-trace-adapters/spec.md) | Conservative offline trace mappings and reviewed spike/adoption decisions; no execution authority |
 | LAB.1 — Effectful workload lab | [SPEC-024](specs/024-effectful-workload-lab/spec.md) | Reproducible finite simulated effects, failures and nondeterminism; no real external adapters |
@@ -428,5 +427,4 @@ remain distinct gates. Negative, inconclusive and infeasible research outcomes
 are valid. Forecast quality does not establish scheduling benefit or semantics;
 SPEC-019 and native System 1 model gates remain independent; SPEC-021's historical
 G4 NO-GO remains in force, and bounded M4 engineering/evaluation acceptance is
-recorded above with tracking reconciliation pending.
-unchanged. Milestone creation does not accept any capability or execute its tasks.
+recorded above. Current GitHub tracking is shown in the [live M4 milestone](https://github.com/jayanez/agent-braid/milestone/6). Milestone creation does not accept any capability or execute its tasks.
