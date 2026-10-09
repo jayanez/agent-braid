@@ -43,6 +43,14 @@ resident size is included as the first sample, and later reads are compared
 against that birth binding. The source does not infer identity from `ps`
 timestamps.
 
+Linux documents `/proc/<pid>/stat` RSS accounting as asynchronous and not
+precise. A newly started, already-owned process can therefore have a sample
+whose reported resident-page count is zero. The collector preserves that value
+as the selected kernel observation; it does not impose a positive floor or
+interpolate. A missing pre-start process identity remains unknown rather than
+zero, and a zero root-process sample says nothing about child or process-tree
+RSS.
+
 RSS scope is only the exact supervisor-owned root process. It does not sum
 children or descendants, even when they remain in the same process group; this
 is not a complete process-tree maximum and cannot clear a tree-wide cap by
@@ -57,7 +65,7 @@ observer callback must use a separately bounded asynchronous or cached source
 and preserve the original observation timestamps rather than relabeling a stale
 sample as fresh.
 
-Source references: [Apple `ri_proc_start_abstime`](https://developer.apple.com/documentation/kernel/rusage_info_v0/1577540-ri_proc_start_abstime), [Apple `ri_resident_size`](https://developer.apple.com/documentation/kernel/rusage_info_v0/1577575-ri_resident_size), [XNU `rusage_info_v0` declaration](https://github.com/apple-oss-distributions/xnu/blob/main/bsd/sys/resource.h), [XNU population of `ri_resident_size`](https://github.com/apple-oss-distributions/xnu/blob/main/osfmk/kern/bsd_kern.c), [Linux `pidfd_open(2)`](https://man7.org/linux/man-pages/man2/pidfd_open.2.html), [Linux procfs descriptor semantics](https://www.kernel.org/doc/html/latest/filesystems/proc.html#overview), and [Linux `/proc/pid/stat(5)`](https://man7.org/linux/man-pages/man5/proc_pid_stat.5.html).
+Source references: [Apple `ri_proc_start_abstime`](https://developer.apple.com/documentation/kernel/rusage_info_v0/1577540-ri_proc_start_abstime), [Apple `ri_resident_size`](https://developer.apple.com/documentation/kernel/rusage_info_v0/1577575-ri_resident_size), [XNU `rusage_info_v0` declaration](https://github.com/apple-oss-distributions/xnu/blob/main/bsd/sys/resource.h), [XNU population of `ri_resident_size`](https://github.com/apple-oss-distributions/xnu/blob/main/osfmk/kern/bsd_kern.c), [Linux `pidfd_open(2)`](https://man7.org/linux/man-pages/man2/pidfd_open.2.html), [Linux procfs descriptor semantics](https://www.kernel.org/doc/html/latest/filesystems/proc.html#overview), and [Linux `/proc/pid/stat(5)`](https://man7.org/linux/man-pages/man5/proc_pid_stat.5.html) (RSS accounting caveat).
 
 The immutable snapshot records source names, activity and registration
 references, UTC observation bounds, monotonic elapsed time, metric scope,
