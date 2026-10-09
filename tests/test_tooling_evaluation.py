@@ -100,6 +100,46 @@ def _inputs(registration: dict) -> dict[str, str]:
     }
 
 
+def _registration_v3() -> dict:
+    data = _registration()
+    data["schemaVersion"] = evaluation.REGISTRATION_SCHEMA_V3
+    for host in data["hosts"]:
+        selector = host["model"]["name"]
+        auth_method = "chatgpt" if host["name"] == "codex" else "claude.ai"
+        effective_config = {"selector": selector, "effort": "medium",
+            "providerEndpoint": "https://api.openai.com/v1" if host["name"] == "codex" else "https://api.anthropic.com",
+            "authMethod": auth_method,
+            "hostSelection": {"source": "argv", "configRef": None, "flags": ["model-selector", "reasoning-effort"],
+                              "argv": ["selector", "effort"]}}
+        host["modelIdentity"] = {
+            "kind": "observable-requested-route", "selectorKind": "provider-alias", "selector": selector,
+            "effort": "medium", "effectiveConfig": effective_config,
+            "configSha256": model_identity_policy.canonical_json_sha256(effective_config),
+            "cliBuild": {"version": host["version"], "sha256": host["sha256"]},
+            "nativeCatalogEntry": {"observedAtUtc": "2026-10-09T08:00:00Z", "sourceRef": "native-catalog",
+                "catalogSha256": _sha("catalog:" + host["name"]), "entrySha256": _sha("entry:" + host["name"])},
+            "providerRoute": {"provider": "openai" if host["name"] == "codex" else "anthropic",
+                "accountSha256": _sha("account:" + host["name"]), "authMethod": auth_method},
+            "backendAvailable": False, "immutableId": None,
+            "backendDigestAvailable": False, "backendSha256": None,
+        }
+        host["model"]["version"] = None
+        host["model"]["sha256"] = None
+    data["billingPolicy"] = {
+        "schema": "agent-braid-m45-subscription-policy-v1", "mode": "included-subscription-only",
+        "additionalSpendCapEur": 0, "paidApiAllowed": False, "overageAllowed": False,
+        "creditsAllowed": False, "autoRechargeAllowed": False,
+        "hosts": [{"host": host["name"], "authMethod": host["modelIdentity"]["providerRoute"]["authMethod"],
+                   "accountSha256": host["modelIdentity"]["providerRoute"]["accountSha256"]}
+                  for host in data["hosts"]],
+    }
+    data["phase"] = "technical-capture"
+    data["humanReviewDeferral"] = {"status": "approved", "recordId": "deferred-review", "sha256": _sha("deferred-review")}
+    data["humanReviewRoles"] = [{"roleId": name, "independent": True} for name in ("planned-reviewer-one", "planned-reviewer-two")]
+    data["humanReviewers"] = []
+    return data
+
+
 def _validated(registration: dict | None = None) -> evaluation.ValidatedRegistration:
     value = registration or _registration()
     return evaluation.validate_registration(
@@ -257,6 +297,70 @@ class ToolingEvaluationTests(unittest.TestCase):
         with self.assertRaises(evaluation.EvaluationError):
             _validated(malformed)
 
+    def test_v3_technical_capture_requires_deferral_roles_and_every_existing_admission_gate(self):
+        value = _registration_v3()
+        validated = _validated(value)
+        self.assertEqual(validated.data["schemaVersion"], evaluation.REGISTRATION_SCHEMA_V3)
+        self.assertEqual(len(evaluation.generate_slots(validated)), 108)
+        self.assertEqual(evaluation.expected_reviewer_participants(validated),
+                         ("planned-reviewer-one", "planned-reviewer-two"))
+
+        for field, mutation in (
+            ("phase", lambda item: item.update(phase="human-evaluation")),
+            ("deferral", lambda item: item["humanReviewDeferral"].update(status="pending")),
+            ("deferral hash", lambda item: item["humanReviewDeferral"].update(sha256="not-a-hash")),
+            ("roles", lambda item: item["humanReviewRoles"][1].update(roleId="planned-reviewer-one")),
+            ("role independence", lambda item: item["humanReviewRoles"][0].update(independent=False)),
+            ("identified reviewers", lambda item: item.update(humanReviewers=[{"reviewerId": "real-person"}])),
+            ("rubric", lambda item: item["rubric"].update(frozen=False)),
+            ("candidate", lambda item: item["candidate"].update(sha256=_sha("other candidate"))),
+            ("rights", lambda item: item["sourceRights"].update(status="pending")),
+            ("provider", lambda item: item["provider"].update(optIn=False)),
+            ("billing policy", lambda item: item.pop("billingPolicy")),
+            ("model identity", lambda item: item["hosts"][0].pop("modelIdentity")),
+        ):
+            malformed = copy.deepcopy(value)
+            mutation(malformed)
+            with self.subTest(field=field), self.assertRaises(evaluation.EvaluationError):
+                evaluation.validate_registration(
+                    malformed,
+                    expected_candidate_sha256=(value["candidate"]["sha256"] if field == "candidate"
+                                               else malformed["candidate"]["sha256"]),
+                    expected_input_hashes=_inputs(malformed),
+                )
+
+        # Reserved deferral fields cannot be smuggled into legacy registrations.
+        for schema in (evaluation.REGISTRATION_SCHEMA, evaluation.REGISTRATION_SCHEMA_V2):
+            legacy = copy.deepcopy(_registration())
+            legacy["schemaVersion"] = schema
+            legacy["phase"] = "technical-capture"
+            if schema == evaluation.REGISTRATION_SCHEMA_V2:
+                legacy = _registration_v3()
+                legacy["schemaVersion"] = schema
+                legacy["humanReviewers"] = [{"reviewerId": "rater-one", "type": "human", "independent": True},
+                                             {"reviewerId": "rater-two", "type": "human", "independent": True}]
+            with self.subTest(schema=schema), self.assertRaisesRegex(evaluation.EvaluationError, "cannot contain"):
+                _validated(legacy)
+
+    def test_v3_never_counts_roles_or_adjudication_as_human_evaluation(self):
+        registration = _validated(_registration_v3())
+        ledger, _ = _complete_ledger(registration)
+        roles = evaluation.expected_reviewer_participants(registration)
+        ratings = {slot.slot_id: [
+            {"reviewerId": role, "reviewerType": "human", "independent": True,
+             "success": True, "authority_correct": True, "fidelity": True}
+            for role in roles
+        ] for slot in ledger.slots}
+        adjudications = {slot.slot_id: {"recordId": "role-adjudication", "adjudicatorId": roles[0],
+                         "fields": {"success": True}, "sha256": _sha("not a valid human adjudication")}
+                         for slot in ledger.slots}
+        result = evaluation.assess_utility_eligibility(
+            registration, ledger, setup_costs=_known_costs(), human_ratings=ratings,
+            adjudications=adjudications,
+        )
+        self.assertFalse(result.positive_claim_eligible)
+        self.assertFalse(result.human_scoring_complete)
+        self.assertTrue(any("human evaluation is deferred" in reason for reason in result.reasons))
     def test_registration_requires_exact_hashes_rights_provider_opt_in_and_caps(self) -> None:
         registration = _registration()
         validated = _validated(registration)

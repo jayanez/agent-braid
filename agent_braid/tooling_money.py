@@ -508,6 +508,12 @@ class MoneySummary:
     study_wall_seconds: Decimal | None = None
     actual_provider_spend_eur: Decimal | None = None
     provider_accounting_cost_eur: Decimal | None = None
+    study_wall_receipt_sha256s: tuple[str, ...] = ()
+    technical_required_measures_complete: bool | None = None
+    missing_technical_required: tuple[tuple[str, str], ...] = ()
+    technical_additional_spend_eur: Decimal | None = None
+    technical_cap_violation: bool | None = None
+    technical_stop_required: bool | None = None
 
     def as_dict(self) -> dict[str, object]:
         return {
@@ -540,6 +546,15 @@ class MoneySummary:
             "userTimeSeconds": _decimal_text(self.user_time_seconds),
             "reviewerTimeSeconds": _decimal_text(self.reviewer_time_seconds),
             "studyWallSeconds": _decimal_text(self.study_wall_seconds),
+            "studyWallReceiptSha256s": list(self.study_wall_receipt_sha256s),
+            "technicalRequiredMeasuresComplete": self.technical_required_measures_complete,
+            "missingTechnicalRequired": [
+                {"activityId": activity, "measure": measure}
+                for activity, measure in self.missing_technical_required
+            ],
+            "technicalAdditionalSpendEur": _decimal_text(self.technical_additional_spend_eur),
+            "technicalCapViolation": self.technical_cap_violation,
+            "technicalStopRequired": self.technical_stop_required,
             "actualProviderSpendEur": _decimal_text(self.actual_provider_spend_eur),
             "providerAccountingCostEur": _decimal_text(self.provider_accounting_cost_eur),
         }
@@ -597,7 +612,7 @@ class MoneyRoster:
             raise MoneyAccountingError("one setup activity with id 'setup' is required")
         if setups[0].host is not None and setups[0].account_sha256 != policy_accounts.get(setups[0].host):
             raise MoneyAccountingError("setup account differs from the registered billing-policy account")
-        reviewer_ids = {item["reviewerId"] for item in self.registration.data["humanReviewers"]}
+        reviewer_ids = set(evaluation.expected_reviewer_participants(self.registration))
         reviewers = [item for item in self.activities if item.kind == "reviewer"]
         if ({item.reviewer_id for item in reviewers} != reviewer_ids
                 or len(reviewers) != len(reviewer_ids)
@@ -725,6 +740,11 @@ class MoneyLedger:
             activity = self.roster.activity_by_id.get(receipt.activity_id)
             if activity is None:
                 raise MoneyAccountingError("receipt activity is outside the frozen roster")
+            if (self.roster.registration.data["schemaVersion"] == evaluation.REGISTRATION_SCHEMA_V3
+                    and activity.kind == "reviewer"):
+                raise MoneyAccountingError(
+                    "v3 reviewer cost observations require an identity-bound human-rating addendum"
+                )
             evidence = receipt.evidence
             if evidence.account_sha256 != activity.account_sha256 or evidence.account_ref != activity.account_ref:
                 raise MoneyAccountingError("receipt account binding differs from its roster activity")
@@ -891,6 +911,41 @@ class MoneyLedger:
             else:
                 cap_violation = None
             required_complete = actual_complete
+            technical_required: bool | None = None
+            missing_technical: tuple[tuple[str, str], ...] = ()
+            technical_spend: Decimal | None = None
+            technical_cap_violation: bool | None = None
+            technical_stop_required: bool | None = None
+            if self.roster.registration.data["schemaVersion"] == evaluation.REGISTRATION_SCHEMA_V3:
+                technical_activities = [
+                    activity for activity in self.roster.activities
+                    if activity.kind in {"setup", "attempt"}
+                ]
+                missing_technical_rows = []
+                technical_actual_values = []
+                for activity in technical_activities:
+                    actual = self._receipts.get((activity.activity_id, "actualAdditionalSpendEur"))
+                    allocated = self._receipts.get((activity.activity_id, "allocatedSubscriptionCostEur"))
+                    if actual is None:
+                        missing_technical_rows.append((activity.activity_id, "actualAdditionalSpendEur"))
+                    else:
+                        technical_actual_values.append(actual[0].amount_eur)
+                    if allocated is None:
+                        missing_technical_rows.append((activity.activity_id, "allocatedSubscriptionCostEur"))
+                missing_technical = tuple(sorted(missing_technical_rows))
+                technical_required = not missing_technical
+                if technical_required:
+                    technical_spend = _exact_decimal_sum(
+                        technical_actual_values, "technical phase additional-spend aggregate"
+                    )
+                    technical_cap_violation = technical_spend > cap
+                else:
+                    technical_cap_violation = True if any(
+                        amount > cap for amount in technical_actual_values
+                    ) else None
+                technical_stop_required = (
+                    not technical_required or technical_cap_violation is not False
+                )
             # The present registration does not resolve reviewer-payment
             # applicability or represent the separate human-cost fields.
             full_economic_complete = False
@@ -913,4 +968,9 @@ class MoneyLedger:
                 receipt_sha256s=tuple(receipts),
                 actual_provider_spend_eur=provider_cash_total,
                 provider_accounting_cost_eur=provider_total,
+                technical_required_measures_complete=technical_required,
+                missing_technical_required=missing_technical,
+                technical_additional_spend_eur=technical_spend,
+                technical_cap_violation=technical_cap_violation,
+                technical_stop_required=technical_stop_required,
             )

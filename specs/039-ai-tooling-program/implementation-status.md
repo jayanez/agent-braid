@@ -35,19 +35,28 @@ showed remaining included quota, zero credits and disabled automatic recharge
 at the observed times. These point-in-time observations are retained privately;
 they do not establish ongoing quota, every attempt's billing route, authenticated
 cost sources or native host acceptance. No M4.5 native cohort has started.
-The exact candidate still requires its stable validation receipts, two human
-reviewer identities, fee applicability, allocation method and supporting source
-records, frozen rubric, fixture rights, full registration approval, native
-journeys/capture, human scoring and a separate founder decision.
+Before technical capture, the exact candidate still needs stable validation
+receipts, fixture-rights approval, exact host/model builds, billing route/rates,
+frozen candidate SHA and rubric, the mandatory v3 included-subscription policy,
+an approved technical `fullCostScope`, the approved human-evaluation deferral,
+the two abstract independent reviewer roles and all applicable owner/provider
+approvals. Keep `humanReviewers` empty for this phase. Named human identities,
+ratings/adjudication and reviewer fee/time applicability belong to the later
+bound human addendum; they do not block technical preparation. Technical receipts
+and aggregates still require complete registered coverage and trusted external
+attestation. This status does not authorize capture or a provider call.
 
-Claude subscription preparation now uses a distinct pinned-settings profile
-without `--bare`; the pinned CLI's bare mode does not read OAuth or keychain
-credentials. An empty caller-selected configuration namespace was observed to
-be logged out, so the habitual account match does not establish authentication
-for that namespace. The caller must obtain and verify first-party login in the
-selected namespace without copying credentials. Restricted flags, bounded
-settings and exact paths do not establish actual isolation, native skill loading
-or capture authorization; those remain separate observed gates.
+The earlier attempt to use an empty caller-selected Claude configuration
+namespace found it logged out. That is a dated failure for that namespace, not
+the current authentication state. At 18:33 UTC, a subsequent read-only check
+observed the first-party subscription account. A bounded no-tools Claude
+preparation at 18:36 requested Sonnet at medium effort and reported
+`claude-sonnet-5-5`; it was outside the 108 intended attempts and is not a
+registered observation, skill-loading receipt or host-acceptance result. An
+interactive attempt to obtain a fresh native catalog was unavailable; that is
+an unavailable attempt, not evidence that a model or host feature is absent.
+These observations do not prove authentication for every namespace or attempt,
+actual isolation, native skill loading, cohort capture or capture authorization.
 
 ## State vocabulary
 
@@ -94,9 +103,13 @@ requires fresh attested cost/stop inputs, and preserves interrupted/open attempt
 without replay. Explicit host adapters now compose with bounded process
 supervision and externally verified live cost/stop observations. Verified cost
 reconciliation preserves revisions, actual/estimated monetary bases, unknowns
-and non-additive peaks. Decision/outcome authenticators and actual live sources
-remain external; local stopping does not guarantee provider cancellation. These components
-are preparation for W18/W19, not actual capture, complete accounting or approval.
+and non-additive peaks. The v3 report also requires an external technical-summary
+attestation bound to the summary, registration, roster, approved scope and complete
+technical receipt coverage before showing technical aggregates; no production
+trust root is supplied. Decision/outcome authenticators and actual live sources
+remain external; local stopping does not guarantee provider cancellation. These
+components prepare W18/W19; no registered capture, attested technical summary or
+full human-inclusive accounting is established here.
 
 
 ## Remaining waves and closure gates
@@ -122,6 +135,6 @@ The inspected predecessor chats were titled **“Planificar cierre de M3.5”** 
 - Current predecessor update: `23dbb8c` (PR #468) adds bounded Claude Code 2.1.285 observations on candidate `e66f9a1`: missing-grant refusal, a verified interrupted prefix, recovery/completion and suppressed consumed-grant retry. It records 14 observed turns against 20 reserved slots, with no cost measurement or Claude abort exercise. All six M4 exit rows remain open. This metadata is consumed as predecessor context only; it does not prove the new M4.5 MCP surface, five native skills, selected host builds or registered cohort.
 - Keep whole-M4 acceptance and historical G4 NO-GO separate. The optional SDK remains additive and must preserve the legacy six-tool contract and core dependency behavior.
 
-The candidate includes a one-shot process supervisor and explicit host adapters. Their tests execute owned synthetic subprocesses; no actual Codex/Claude model session or provider capture was run. The owner approved the numeric evaluation caps separately on 2026-10-08. This is not source-rights, provider, protocol or capture approval. The evaluation registration draft retains false provider opt-in; model names remain recommendations. Fixture rights, actual host/model builds, billing route/rates, frozen candidate SHA, rubric and registered human reviewers must be resolved before any real attempt. The eventual code candidate SHA must be the integrated/frozen commit, not the planning baseline or a local workspace path.
+The candidate includes a one-shot process supervisor and explicit host adapters. Their tests execute owned synthetic subprocesses. The bounded no-tools Claude preparation described above was outside the registered cohort; no cohort session or provider capture was run. The owner approved the numeric evaluation caps separately on 2026-10-08. This is not source-rights, provider, protocol or capture approval. The legacy evaluation registration draft retains false provider opt-in; model names remain recommendations. Before a technical attempt, resolve fixture rights, exact host/model builds, billing route/rates, frozen candidate SHA and rubric, mandatory v3 technical scope/deferral/roles, and all source/account/budget/permission approvals. Human identities and reviewer fee/time applicability remain deferred; they are not set to zero or treated as full economic completion. The eventual code candidate SHA must be the integrated/frozen commit, not the planning baseline or a local workspace path.
 
 In synthetic offline report controls, the report preserves validated ledger attempt identifiers separately from intended slot identifiers. Missing-cost fields are attributed to per-attempt, setup or cohort scopes, retaining all intended slots and null actual identifiers for unstarted slots. Structured and narrative outputs retain this mapping while excluding free-form event text. These report controls do not authenticate costs or human ratings, approve a registration, assert utility, or complete any actual-host, human or founder gate.

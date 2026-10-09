@@ -4,13 +4,17 @@ from __future__ import annotations
 
 import json
 import re
+from datetime import datetime
 from decimal import Decimal
 from collections.abc import Iterator
 from typing import Any, Mapping, Sequence
 
 from . import tooling_evaluation as evaluation
 from .tooling_money import MoneyAccountingError, MoneySummary, provider_accounting_total
-from .tooling_full_cost import FullCostScope
+from .tooling_full_cost import (
+    FullCostScope, TechnicalCostSummaryAttestation,
+    TechnicalCostSummaryVerifier, technical_summary_sha256,
+)
 
 REPORT_SCHEMA = "agent-braid-m45-utility-report-v1"
 _REPORT_TOKEN = object()
@@ -52,6 +56,7 @@ def build_utility_report(
     adjudications: Mapping[str, Mapping[str, Any]] | None = None,
     monetary_summary: Any = None,
     expected_monetary_roster_sha256: str | None = None,
+    technical_cost_verifier: TechnicalCostSummaryVerifier | None = None,
 ) -> UtilityReport:
     """Validate exact registration/roster, derive eligibility, and build a report.
 
@@ -165,6 +170,7 @@ def build_utility_report(
         amounts_valid = not invalid_amounts and cap_valid and wall_cap_valid and accounting_cap_valid
         summary_complete = (
             scope_complete
+            and not registered_full_cost_scope.technical_only
             and amounts_valid
             and monetary_summary.full_economic_cost_complete is True
             and monetary_summary.full_economic_cost_status == "complete"
@@ -198,6 +204,18 @@ def build_utility_report(
         missing_costs.extend(full_cost_missing)
     report_reasons = list(assessment.reasons)
     report_reasons.extend(full_cost_reasons)
+    technical_reconciled = _v3_technical_costs_reconciled(
+        registration, monetary_summary, expected_monetary_roster_sha256,
+        registered_full_cost_scope if "billingPolicy" in registration.data else None,
+        registration_bound if "billingPolicy" in registration.data else False,
+        roster_bound if "billingPolicy" in registration.data else False,
+        technical_cost_verifier,
+        assessment.cost_assessment.complete,
+        isinstance(monetary_summary, MoneySummary)
+        and monetary_summary.technical_stop_required is False,
+    )
+    if data["schemaVersion"] == evaluation.REGISTRATION_SCHEMA_V3 and not technical_reconciled:
+        report_reasons.append("verified technical cost summary attestation is unavailable or does not bind the exact technical evidence")
     eligible = assessment.positive_claim_eligible and full_cost_complete is not False
     outcome_only = (
         not eligible and assessment.cost_assessment.complete
@@ -208,10 +226,13 @@ def build_utility_report(
         and bool(assessment.outcome_threshold_reasons)
     )
     conclusion_status = (
+        "human-evaluation-deferred" if data["schemaVersion"] == evaluation.REGISTRATION_SCHEMA_V3 else
         "pending-independent-human-founder-interpretation" if eligible else
         "registered-threshold-not-met" if outcome_only else "inconclusive"
     )
     conclusion_text = (
+        "Technical capture results and all intended denominators are retained. Human evaluation and adjudication are deferred; no utility or human acceptance is asserted, and formal closure remains pending."
+        if data["schemaVersion"] == evaluation.REGISTRATION_SCHEMA_V3 else
         "Eligibility permits independent interpretation only; no positive utility, acceptance, or milestone closure is asserted."
         if eligible else
         "Complete measured evidence did not meet one or more registered outcome and safety criteria. This describes this cohort only; it is not a causal or scientific utility conclusion, acceptance, or milestone closure."
@@ -242,7 +263,9 @@ def build_utility_report(
             "status": conclusion_status,
             "positiveUtilityAsserted": False,
             "text": conclusion_text,
-            "pendingDecisions": ["independent human interpretation", "founder decision"],
+            "pendingDecisions": (["two independent human ratings", "adjudication", "formal closure"]
+                                 if data["schemaVersion"] == evaluation.REGISTRATION_SCHEMA_V3 else
+                                 ["independent human interpretation", "founder decision"]),
         },
         "eligibilityReasons": report_reasons,
         "denominators": denominators,
@@ -256,7 +279,15 @@ def build_utility_report(
                 "not-required-by-registration" if full_cost_complete is None else
                 "complete" if full_cost_complete else "incomplete-or-unavailable"
             ),
-            "fullEconomic": _full_economic_cost(monetary_summary),
+            "fullEconomic": _full_economic_cost(
+                monetary_summary,
+                technical_capture=data["schemaVersion"] == evaluation.REGISTRATION_SCHEMA_V3,
+                technical_reconciled=technical_reconciled,
+            ),
+            "technicalMeasuresAttested": (
+                technical_reconciled
+                if data["schemaVersion"] == evaluation.REGISTRATION_SCHEMA_V3 else None
+            ),
             "missingRequired": sorted(set(missing_costs)),
             "missingRequiredByScope": _missing_cost_attribution(
                 assessment.cost_assessment.missing, full_cost_missing, ledger,
@@ -270,6 +301,19 @@ def build_utility_report(
             },
         },
         "humanScoringComplete": assessment.human_scoring_complete,
+        "humanEvaluation": ({
+            "status": "deferred",
+            "identifiedReviewers": 0,
+            "adjudication": "pending",
+            "humanCostStatus": "missing",
+            "humanAcceptanceAsserted": False,
+        } if data["schemaVersion"] == evaluation.REGISTRATION_SCHEMA_V3 else {
+            "status": "required",
+            "identifiedReviewers": len(data["humanReviewers"]),
+            "adjudication": "required-if-disagreement",
+            "humanCostStatus": "assessed-with-full-cost-scope",
+            "humanAcceptanceAsserted": False,
+        }),
         "armC": {
             "successfulByHost": dict(assessment.successful_by_host_arm_c),
             "authorityCorrectByHost": dict(assessment.authority_correct_by_host_arm_c),
@@ -283,6 +327,7 @@ def build_utility_report(
         "descriptiveByHostArmClass": _descriptive_groups(ledger, assessment.resolved_labels_by_slot),
         "evidenceLimits": [
             "Registration approval, source rights, provider consent, and host receipts are not authenticated by this offline report.",
+            "Technical cost attestation is trusted only as the output of the configured external verifier; this report checks exact bindings and receipt inventories but does not authenticate source systems.",
             "Eligibility does not establish positive utility, scientific validity, host acceptance, founder approval, or milestone closure.",
             "All 108 intended slots and their current statuses remain in the denominator; unknown costs are not zero.",
             "Intervention totals require typed observations for all slots in a group; missing observations are unavailable, never inferred as zero.",
@@ -309,6 +354,9 @@ def render_utility_report_narrative(report: UtilityReport) -> str:
         f"Registration: {scope['registrationId']} ({scope['registrationSha256']})",
         f"Candidate: {scope['candidate']['commit']} ({scope['candidate']['sha256']})",
         f"Utility claim eligible: {str(raw['utilityClaimEligible']).lower()}",
+        ("Human evaluation: deferred; identified reviewers=0; adjudication=pending; human cost=missing; no human acceptance is asserted."
+         if raw["humanEvaluation"]["status"] == "deferred" else
+         "Human evaluation: required; scoring complete=" + str(raw["humanScoringComplete"]).lower() + "."),
         "Conclusion: " + raw["conclusion"]["text"],
         "Conclusion status: " + raw["conclusion"]["status"] + ".",
         f"Intended denominator: {denoms['intendedSlots']} slots across hosts {', '.join(scope['population']['hosts'])}, arms {', '.join(scope['population']['arms'])}, and {len(scope['population']['journeyClasses'])} journey classes.",
@@ -318,6 +366,8 @@ def render_utility_report_narrative(report: UtilityReport) -> str:
         + "; allocated subscription EUR=" + _format_measure(costs["fullEconomic"]["allocatedSubscriptionCostEur"])
         + "; provider accounting EUR=" + _format_measure(costs["fullEconomic"]["providerAccountingCostEur"])
         + "; active human seconds=" + _format_measure(costs["fullEconomic"]["humanTimeSeconds"])
+        + "; verified user seconds=" + _format_measure(costs["fullEconomic"]["userTimeSeconds"])
+        + "; reviewer seconds=" + _format_measure(costs["fullEconomic"]["reviewerTimeSeconds"])
         + "; study wall seconds=" + _format_measure(costs["fullEconomic"]["studyWallSeconds"]) + ".",
     ]
     if costs["missingRequired"]:
@@ -435,7 +485,9 @@ def _validate_report(report: UtilityReport) -> None:
         if conclusion.get("status") != "pending-independent-human-founder-interpretation":
             raise evaluation.EvaluationError("eligible report must await human and founder interpretation")
     else:
-        if conclusion.get("status") not in {"inconclusive", "registered-threshold-not-met"}:
+        if conclusion.get("status") not in {
+            "inconclusive", "registered-threshold-not-met", "human-evaluation-deferred",
+        }:
             raise evaluation.EvaluationError("ineligible utility report has an unsupported conclusion status")
         if not raw.get("eligibilityReasons"):
             raise evaluation.EvaluationError("ineligible utility report must explain its reasons")
@@ -547,7 +599,133 @@ def _missing_cost_attribution(
     return result
 
 
-def _full_economic_cost(summary: Any) -> dict[str, str | None]:
+def _v3_technical_costs_reconciled(
+    registration: evaluation.ValidatedRegistration,
+    summary: Any,
+    expected_roster_sha256: str | None,
+    scope: FullCostScope | None,
+    registration_bound: bool,
+    roster_bound: bool,
+    verifier: TechnicalCostSummaryVerifier | None,
+    measured_costs_complete: bool,
+    registered_caps_clear: bool,
+) -> bool:
+    if registration.data["schemaVersion"] != evaluation.REGISTRATION_SCHEMA_V3:
+        return False
+    if (not isinstance(summary, MoneySummary) or scope is None or not scope.technical_only
+            or not registration_bound or not roster_bound or verifier is None):
+        return False
+    role_ids = set(evaluation.expected_reviewer_participants(registration))
+    expected_cash_gaps = {
+        (f"reviewer:{role_id}", "actualAdditionalSpendEur") for role_id in role_ids
+    }
+    expected_full_gaps = set(expected_cash_gaps)
+    expected_full_gaps.update(
+        (f"reviewer:{role_id}", field)
+        for role_id in role_ids
+        for field in ("reviewerFeeApplicability", f"humanTime:{role_id}")
+    )
+    if (summary.full_economic_cost_complete is not False
+            or summary.full_economic_cost_status != "incomplete-registered-cost-scope"
+            or summary.required_measures_complete is not False
+            or summary.missing_required != tuple(sorted(expected_cash_gaps))
+            or summary.missing_full_economic_cost != tuple(sorted(expected_full_gaps))
+            or summary.actual_additional_spend_eur is not None
+            or summary.cap_violation is not None
+            or summary.stop_required is not True
+            or summary.technical_required_measures_complete is not True
+            or summary.missing_technical_required
+            or summary.technical_cap_violation is not False
+            or summary.technical_stop_required is not False
+            or not measured_costs_complete or not registered_caps_clear
+            or not _finite_nonnegative(summary.technical_additional_spend_eur)
+            or not _finite_nonnegative(summary.actual_provider_spend_eur)
+            or not _finite_nonnegative(summary.allocated_subscription_cost_eur)
+            or not _finite_nonnegative(summary.provider_accounting_cost_eur)
+            or not _finite_nonnegative(summary.user_time_seconds)
+            or not _finite_nonnegative(summary.study_wall_seconds)
+            or summary.human_time_seconds is not None
+            or summary.reviewer_time_seconds is not None
+            or summary.actual_additional_spend_cap_eur != Decimal(str(
+                registration.data["billingPolicy"]["additionalSpendCapEur"]
+            ))
+            or summary.technical_additional_spend_eur > summary.actual_additional_spend_cap_eur
+            or summary.technical_additional_spend_eur != summary.actual_provider_spend_eur
+            or summary.provider_accounting_cost_eur > Decimal(str(registration.data["costCaps"]["eur"]))
+            or summary.study_wall_seconds > Decimal(str(registration.data["costCaps"]["wall_seconds"]))
+            or not _sha_list(summary.receipt_sha256s)
+            or not _sha_list(summary.human_time_receipt_sha256s)
+            or not _sha_list(summary.study_wall_receipt_sha256s)):
+        return False
+    try:
+        if provider_accounting_total(
+            summary.actual_provider_spend_eur, summary.allocated_subscription_cost_eur
+        ) != summary.provider_accounting_cost_eur:
+            return False
+        attestation = verifier.verify_technical_summary(
+            registration_sha256=registration.sha256,
+            roster_sha256=summary.roster_sha256,
+            scope_sha256=scope.scope_sha256,
+            summary=summary,
+        )
+        if not isinstance(attestation, TechnicalCostSummaryAttestation):
+            return False
+        expected_activity_ids = tuple(sorted({"setup", *(
+            slot.slot_id for slot in evaluation.generate_slots(registration)
+        )}))
+        return (
+            _valid_id(attestation.verifier_id)
+            and attestation.summary_sha256 == technical_summary_sha256(summary)
+            and attestation.registration_sha256 == registration.sha256
+            and attestation.roster_sha256 == summary.roster_sha256
+            and attestation.scope_sha256 == scope.scope_sha256
+            and attestation.receipt_sha256s == summary.receipt_sha256s
+            and attestation.human_time_receipt_sha256s == summary.human_time_receipt_sha256s
+            and attestation.study_wall_receipt_sha256s == summary.study_wall_receipt_sha256s
+            and attestation.technical_activity_ids == expected_activity_ids
+            and attestation.actual_spend_activity_ids == expected_activity_ids
+            and attestation.allocated_activity_ids == expected_activity_ids
+            and attestation.user_time_activity_ids == expected_activity_ids
+            and attestation.study_wall_activity_ids == expected_activity_ids
+            and _timestamp_is_utc(attestation.verified_at)
+            and _sha_list(summary.receipt_sha256s)
+            and _sha_list(summary.human_time_receipt_sha256s)
+            and _sha_list(summary.study_wall_receipt_sha256s)
+        )
+    except Exception:
+        return False
+
+
+def _sha_list(value: object) -> bool:
+    return (isinstance(value, tuple) and 0 < len(value) <= 1024
+            and all(isinstance(item, str) and re.fullmatch(r"[0-9a-f]{64}", item)
+                    for item in value) and len(set(value)) == len(value))
+
+
+def _finite_nonnegative(value: object) -> bool:
+    return isinstance(value, Decimal) and value.is_finite() and value >= 0
+
+
+def _valid_id(value: object) -> bool:
+    return isinstance(value, str) and re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9._:-]{0,127}", value) is not None
+
+
+def _timestamp_is_utc(value: object) -> bool:
+    if not isinstance(value, str):
+        return False
+    try:
+        parsed = datetime.fromisoformat(value.replace("Z", "+00:00"))
+    except ValueError:
+        return False
+    return parsed.tzinfo is not None and parsed.utcoffset().total_seconds() == 0
+
+
+def _full_economic_cost(
+    summary: Any,
+    *,
+    technical_capture: bool = False,
+    technical_reconciled: bool = False,
+) -> dict[str, Any]:
     fields = {
         "actualAdditionalSpendEur": "actual_additional_spend_eur",
         "actualAdditionalSpendCapEur": "actual_additional_spend_cap_eur",
@@ -561,12 +739,64 @@ def _full_economic_cost(summary: Any) -> dict[str, str | None]:
         "studyWallSeconds": "study_wall_seconds",
     }
     if not isinstance(summary, MoneySummary):
-        return {name: None for name in fields}
-    return {
+        values = {name: None for name in fields}
+        if technical_capture:
+            values.update({
+                "technicalAdditionalSpendEur": None,
+                "technicalRequiredMeasuresComplete": None,
+                "missingTechnicalRequired": None,
+                "technicalCapViolation": None,
+                "technicalStopRequired": None,
+                "receiptSha256s": [],
+                "userTimeReceiptSha256s": [],
+                "studyWallReceiptSha256s": [],
+            })
+        return values
+    values = {
         name: (str(value) if isinstance(value, Decimal) else None)
         for name, attribute in fields.items()
         for value in (getattr(summary, attribute),)
     }
+    if technical_capture:
+        # A v3 capture has no identified reviewers. Never surface combined or
+        # reviewer time (including a caller-supplied zero) as a measured value.
+        values["humanTimeSeconds"] = None
+        values["reviewerTimeSeconds"] = None
+        values["actualAdditionalSpendEur"] = None
+        values["technicalAdditionalSpendEur"] = (
+            str(summary.technical_additional_spend_eur)
+            if technical_reconciled and isinstance(summary.technical_additional_spend_eur, Decimal) else None
+        )
+        values["technicalRequiredMeasuresComplete"] = (
+            summary.technical_required_measures_complete if technical_reconciled else None
+        )
+        values["missingTechnicalRequired"] = (
+            [{"activityId": activity, "measure": measure}
+             for activity, measure in summary.missing_technical_required]
+            if technical_reconciled else None
+        )
+        values["technicalCapViolation"] = summary.technical_cap_violation if technical_reconciled else None
+        values["technicalStopRequired"] = summary.technical_stop_required if technical_reconciled else None
+        if not technical_reconciled:
+            for field in (
+                "allocatedSubscriptionCostEur",
+                "actualProviderSpendEur", "providerAccountingCostEur",
+                "apiReferenceEstimateEur", "userTimeSeconds", "studyWallSeconds",
+            ):
+                values[field] = None
+        values["userTimeReceiptSha256s"] = (
+            list(summary.human_time_receipt_sha256s)
+            if technical_reconciled and _sha_list(summary.human_time_receipt_sha256s) else []
+        )
+        values["studyWallReceiptSha256s"] = (
+            list(summary.study_wall_receipt_sha256s)
+            if technical_reconciled and _sha_list(summary.study_wall_receipt_sha256s) else []
+        )
+        values["receiptSha256s"] = (
+            list(summary.receipt_sha256s)
+            if technical_reconciled and _sha_list(summary.receipt_sha256s) else []
+        )
+    return values
 
 
 def _format_measure(value: str | None) -> str:
@@ -582,12 +812,18 @@ def _safe_full_cost_missing(
         return [], True
     attempt_ids = {slot.slot_id for slot in evaluation.generate_slots(registration)}
     activity_ids = attempt_ids | {"setup"}
+    if registration.data["schemaVersion"] == evaluation.REGISTRATION_SCHEMA_V3:
+        activity_ids.update(
+            f"reviewer:{role_id}"
+            for role_id in evaluation.expected_reviewer_participants(registration)
+        )
     participant_ids = ({scope.user_time_participant_id} | {
         reviewer_id for reviewer_id, _ in scope.reviewer_fee_applicability
     }) if scope is not None else set()
     allowed_measures = set(evaluation.COST_FIELDS) | {
         "attemptOutcome", "allocatedSubscriptionCostEur", "actualAdditionalSpendEur",
         "actual-spend-or-cap", "sourceVerification", "approvalVerification", "interval",
+        "reviewerFeeApplicability",
     }
     rendered: list[str] = []
     invalid = False

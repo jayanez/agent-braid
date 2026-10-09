@@ -21,6 +21,7 @@ from . import tooling_model_identity as model_identity_policy
 
 REGISTRATION_SCHEMA = "agent-braid-m45-registration-v1"
 REGISTRATION_SCHEMA_V2 = "agent-braid-m45-registration-v2"
+REGISTRATION_SCHEMA_V3 = "agent-braid-m45-registration-v3"
 LEDGER_SCHEMA = "agent-braid-m45-ledger-v1"
 HOSTS = ("codex", "claude-code")
 ARMS = ("cli", "mcp-only", "mcp-plus-skills")
@@ -195,8 +196,13 @@ def validate_registration(
         raise EvaluationError("registration must be a JSON object")
     data = _json_copy(registration, "registration")
     schema_version = data.get("schemaVersion")
-    if schema_version not in {REGISTRATION_SCHEMA, REGISTRATION_SCHEMA_V2}:
+    if schema_version not in {REGISTRATION_SCHEMA, REGISTRATION_SCHEMA_V2, REGISTRATION_SCHEMA_V3}:
         raise EvaluationError("unsupported or missing registration schemaVersion")
+    v3_fields = {"phase", "humanReviewDeferral", "humanReviewRoles"}
+    if schema_version in {REGISTRATION_SCHEMA, REGISTRATION_SCHEMA_V2} and any(
+        field in data for field in v3_fields
+    ):
+        raise EvaluationError("registration v1/v2 cannot contain technical-capture deferral fields")
     _require_id(data.get("registrationId"), "registrationId")
     if data.get("status") != "approved":
         raise EvaluationError("registration status must be approved before capture admission")
@@ -214,10 +220,15 @@ def validate_registration(
     _validate_record(data.get("sourceRights"), "sourceRights", "approved")
     _validate_source_rights(data.get("sourceRights"))
     _validate_provider_opt_in(data.get("provider"))
+    if schema_version == REGISTRATION_SCHEMA_V3 and "billingPolicy" not in data:
+        raise EvaluationError("registration v3 requires the approved EUR 0 included-subscription billingPolicy")
     if "billingPolicy" in data:
         _validate_billing_policy(data["billingPolicy"])
     _validate_cost_caps(data.get("costCaps"))
-    _validate_reviewers(data.get("humanReviewers"))
+    if schema_version == REGISTRATION_SCHEMA_V3:
+        _validate_technical_capture_review_deferral(data)
+    else:
+        _validate_reviewers(data.get("humanReviewers"))
     _validate_rubric(data.get("rubric"))
 
     fixtures = _validate_fixtures(data.get("fixtures"))
@@ -282,6 +293,22 @@ def generate_slots(registration: ValidatedRegistration) -> tuple[AttemptSlot, ..
     if len(slots) != 108 or len({slot.slot_id for slot in slots}) != 108:
         raise EvaluationError("registered design did not produce exactly 108 unique slots")
     return tuple(slots)
+
+
+def expected_reviewer_participants(registration: ValidatedRegistration) -> tuple[str, str]:
+    """Return frozen participant IDs for reviewer-cost rows.
+
+    v1/v2 bind actual human reviewer IDs. v3 binds abstract planned role IDs;
+    those rows preserve expected time/fee scope while remaining unobserved.
+    """
+    _require_validated(registration)
+    if registration.data["schemaVersion"] == REGISTRATION_SCHEMA_V3:
+        participants = tuple(role["roleId"] for role in registration.data["humanReviewRoles"])
+    else:
+        participants = tuple(reviewer["reviewerId"] for reviewer in registration.data["humanReviewers"])
+    if len(participants) != 2:
+        raise EvaluationError("exactly two frozen reviewer participants are required")
+    return participants  # type: ignore[return-value]
 
 
 def new_ledger(registration: ValidatedRegistration) -> EvaluationLedger:
@@ -688,7 +715,13 @@ def assess_utility_eligibility(
         ("resolved", "missing", "disagreement", "adjudicated")} for field in
         ("success", "authority_correct", "fidelity")}
     human_complete = True
-    registered_reviewer_ids = {reviewer["reviewerId"] for reviewer in registration.data["humanReviewers"]}
+    technical_capture = registration.data["schemaVersion"] == REGISTRATION_SCHEMA_V3
+    registered_reviewer_ids = (
+        set() if technical_capture else
+        {reviewer["reviewerId"] for reviewer in registration.data["humanReviewers"]}
+    )
+    if technical_capture:
+        reasons.append("human evaluation is deferred; no identified human reviewers or adjudication are available")
     for slot in ledger.slots:
         ratings = human_ratings.get(slot.slot_id, ())
         result, slot_reasons, slot_resolution = _resolve_human_ratings(
@@ -879,7 +912,7 @@ def _validate_host_builds(hosts: Any, *, schema_version: str = REGISTRATION_SCHE
             _require_version_hash(model, f"{host['name']}.model")
         else:
             if identity is None:
-                raise EvaluationError("registration v2 requires modelIdentity for every host")
+                raise EvaluationError("registration v2/v3 requires modelIdentity for every host")
             try:
                 model_identity_policy.validate_identity(identity, host=host["name"], model=model)
             except model_identity_policy.ModelIdentityError as exc:
@@ -1018,6 +1051,31 @@ def _validate_reviewers(value: Any) -> None:
         ids.add(_require_id(reviewer.get("reviewerId"), "human reviewer.reviewerId"))
     if len(ids) != 2:
         raise EvaluationError("human reviewer IDs must be distinct")
+
+
+def _validate_technical_capture_review_deferral(data: Mapping[str, Any]) -> None:
+    if data.get("phase") != "technical-capture":
+        raise EvaluationError("registration v3 phase must be technical-capture")
+    deferral = data.get("humanReviewDeferral")
+    if not isinstance(deferral, Mapping) or set(deferral) != {"status", "recordId", "sha256"}:
+        raise EvaluationError("v3 humanReviewDeferral must be an approved record with recordId and sha256")
+    if deferral.get("status") != "approved":
+        raise EvaluationError("v3 humanReviewDeferral.status must be approved")
+    _require_id(deferral.get("recordId"), "humanReviewDeferral.recordId")
+    _require_hash(deferral.get("sha256"), "humanReviewDeferral.sha256")
+    roles = data.get("humanReviewRoles")
+    if not isinstance(roles, list) or len(roles) != 2:
+        raise EvaluationError("v3 registration must name exactly two planned human review roles")
+    role_ids: set[str] = set()
+    for role in roles:
+        _require_object(role, "human review role")
+        if set(role) != {"roleId", "independent"} or role.get("independent") is not True:
+            raise EvaluationError("v3 review roles must declare planned independence")
+        role_ids.add(_require_id(role.get("roleId"), "human review role.roleId"))
+    if len(role_ids) != 2:
+        raise EvaluationError("v3 human review role IDs must be distinct")
+    if data.get("humanReviewers") != []:
+        raise EvaluationError("v3 technical capture must have an empty humanReviewers list")
 
 
 def _validate_rubric(value: Any) -> None:
