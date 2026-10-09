@@ -68,7 +68,8 @@ candidates are pinned; each candidate must match its frozen assurance record
 and descend from the existing public root. Conflicting local or public tag
 identities fail without overwriting refs. This also supports clones created
 without automatic tag fetching. Restoration does not create reviewer approval
-or change the historical records. Require zero unreachable objects, one public root and a
+or change the historical records. Unrelated unreachable objects still fail the
+portable-root gate. Require zero unreachable objects, one public root and a
 passing preflight. If any check still fails, stop there and report the actual
 failure. The old object store remains available for a separate history and
 worktree audit.

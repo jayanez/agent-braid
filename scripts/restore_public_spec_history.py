@@ -1,9 +1,9 @@
 # SPDX-License-Identifier: AGPL-3.0-only
 """Restore exact already-public reviewed candidates for portable validation.
 
-The public repository squash-merged its implementation PR, so a normal clone
-does not retain the candidate commit named by historical assurance. This tool
-fetches only that exact public commit and adds a local remote-tracking ref.
+Some squash-merged public candidates and their reviewed tags are omitted by
+clones. Restore the exact SPEC-012 candidate and the pinned annotated tags used
+by historical assurance, preserving the records and the public-root boundary.
 """
 
 from __future__ import annotations
