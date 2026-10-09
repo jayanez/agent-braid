@@ -10,9 +10,9 @@ Stable task IDs are implementation obligations. Check only after the paired proc
   Dependencies: approved T001 registration and its exact stable 040–043 candidate. Targets: `actual Codex and Claude receipts; bundle and host inventory`.
   Verification and planned evidence: `validation-plan.md::procedure_actual_host_observation`; `evidence/sc-002.json` with actual commands and negative controls. Obtained: none.
 
-- [ ] T003 (REQ-003/SC-003): Run parity, malformed/stale/unsafe/grant/cancellation/recovery and output-agreement controls with exact oracle outcomes.
-  Dependencies: stable 040–043 candidate and frozen control/oracle inputs; paid/provider controls remain subject to approved T001 registration. Targets: `research/tooling_evaluation.py control runner; oracle parity/refusal fixtures`.
-  Verification and planned evidence: `validation-plan.md::procedure_negative_controls`; `evidence/sc-003.json` with actual commands and negative controls. Obtained: none.
+- [x] T003 (REQ-003/SC-003): Run parity, malformed/stale/unsafe/grant/cancellation/recovery and output-agreement controls with exact oracle outcomes.
+  Dependencies: stable 040–043 candidate and frozen control/oracle inputs; paid/provider controls remain subject to approved T001 registration. Targets: `scripts/run_tooling_controls.py; research/tooling_evaluation.py; oracle parity/refusal fixtures`.
+  Verification and evidence: `validation-plan.md::procedure_negative_controls`; `evidence/sc-003.json` and `evidence/sc-003-run/` contain the exact case commands, oracles, raw results and limits. Obtained: 19/19 bounded deterministic controls passed for candidate `3c01c5b2e594c7ddfaf7850585478a6d41a6677c`; this does not establish actual host, MCP SDK transport, provider/billing, clean-room or later-candidate acceptance.
 
 - [ ] T004 (REQ-004/SC-004): Reproduce installed-package/core/protocol controls on clean macOS arm64 and Linux x86_64 environments.
   Dependencies: approved T001 registration and its exact stable 040–043 candidate. Targets: `separate clean macOS/Linux reproduction receipts`.

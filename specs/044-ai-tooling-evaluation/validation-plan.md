@@ -1,6 +1,6 @@
 # SPEC-044: Prospective validation procedures
 
-These procedures are plans. Future test modules/harnesses are not present in this source packet. No procedure below has obtained implementation evidence. A passed source validator checks structure only.
+These procedures are plans except for bounded synthetic deterministic-control evidence for REQ-003/SC-003, recorded at `evidence/sc-003.json` and bound only to the candidate identified there. That evidence does not establish actual-host or provider observations, MCP SDK transport behavior, clean-room reproduction or human outcome evaluation. The other procedures remain planned or pending unless their own evidence records say otherwise. A passed source validator checks structure only.
 
 Record positive, refusal, unknown, failed, cancelled and unexecuted outcomes. Evidence must include full candidate and input hashes, command/tool trace, environment, output hashes, domain and limits. Human decisions remain separate.
 

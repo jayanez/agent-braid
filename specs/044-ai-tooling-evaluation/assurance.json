@@ -161,7 +161,15 @@
         {
           "given": "all mandatory positive/negative control cases",
           "id": "SC-003",
-          "obtained_evidence": [],
+          "obtained_evidence": [
+            {
+              "command": "Wrapper: /private/tmp/agent-braid-m45-plan.nAWJs3/.venv-speckit/bin/python scripts/run_tooling_controls.py --output-root /private/tmp/spec044-t003-20261010-3c01c5b-v1 (cwd /private/tmp/m45-controls-20261009-v1); exact per-case argv arrays and raw output are in sc-003-run/manifest.json and cases/.",
+              "limits": "Synthetic local unittest-control-source only. No actual host acceptance, MCP SDK transport, provider/billing execution, clean-room reproduction or human outcome evidence. Application-level cancellation only. Does not complete T002, T004 or other SPEC-040 tasks; no later candidate coverage.",
+              "outcome": "19/19 frozen deterministic controls passed on clean candidate 3c01c5b2e594c7ddfaf7850585478a6d41a6677c; empty failure ledger and sourceChanges; root verifier exit 0. Historical incomplete runs and the earlier 03c256b pass are retained separately without rebinding.",
+              "path": "specs/044-ai-tooling-evaluation/evidence/sc-003.json",
+              "sha256": "be03d292e11cc71347b01030969917e7185fd6be08c0379a1992b43cb1c22e04"
+            }
+          ],
           "planned_evidence": "specs/044-ai-tooling-evaluation/evidence/sc-003.json: exact candidate/input/environment hashes, actual commands/raw outputs, all outcomes and limits; human decisions require their own record.",
           "test_file": "specs/044-ai-tooling-evaluation/validation-plan.md",
           "test_name": "procedure_negative_controls",
