@@ -33,7 +33,7 @@ The founder separately approved whole bounded M4 alpha engineering and evaluatio
 through item 22, with negative utility and the historical G4 NO-GO preserved.
 See the [whole-M4 decision](../../specs/038-m4-real-workload-closure/whole-m4-founder-decision-20261009.json)
 and [six-row closure packet](../../specs/038-m4-real-workload-closure/whole-m4-closure-packet.md).
-The current source proposes the remaining governed tracking closure after reviewed
-public delivery; the historical SPEC-020 integration above does not provide that
-new approval. No source-promotion, arbitrary-code or real-external-effect capability
+The source records authority for bounded closure through governed reconciliation
+after reviewed public delivery; current tracking is shown in the [M4 milestone](https://github.com/jayanez/agent-braid/milestone/6).
+The historical SPEC-020 integration above does not provide the new approval. No source-promotion, arbitrary-code or real-external-effect capability
 is adopted, and M3/M3.5 and independent scientific gates retain their own scope.

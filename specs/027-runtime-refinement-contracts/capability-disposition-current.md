@@ -18,7 +18,5 @@ both historical files unchanged.
 The separate 2026-10-09 item 22 decision accepts bounded whole-M4 alpha
 engineering and evaluation as complete with negative utility. It does not adopt
 these capabilities or change their deferrals. Historical SPEC-021 G4 NO-GO
-remains in force. GitHub issue and milestone reconciliation is still pending
-reviewed guarded apply, a subsequent `operations: []` audit, and Project/milestone
-verification. See the [SPEC-038 founder decision](../038-m4-real-workload-closure/whole-m4-founder-decision-20261009.json)
+remains in force. Current GitHub tracking is shown in the [live M4 milestone](https://github.com/jayanez/agent-braid/milestone/6). Updates follow scoped-plan review, guarded apply, a fresh `operations: []` audit, and Project/milestone verification. See the [SPEC-038 founder decision](../038-m4-real-workload-closure/whole-m4-founder-decision-20261009.json)
 and [closure packet](../038-m4-real-workload-closure/whole-m4-closure-packet.md).
