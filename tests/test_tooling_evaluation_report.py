@@ -9,7 +9,7 @@ from agent_braid import tooling_evaluation as evaluation
 from agent_braid.tooling_evaluation_report import (
     build_utility_report, render_utility_report_json, render_utility_report_narrative,
 )
-from tests.test_tooling_evaluation import _complete_ledger, _known_costs, _registration, _inputs
+from tests.test_tooling_evaluation import _adjudication, _complete_ledger, _known_costs, _registration, _inputs
 from tests import test_tooling_full_cost as full_cost_tests
 from tests.test_tooling_full_cost import (
     _ScopeVerifier, _TimeVerifier, _WallVerifier,
@@ -68,6 +68,170 @@ class UtilityReportTests(unittest.TestCase):
         self.assertIn("no positive utility", narrative)
         self.assertIn("actual extra EUR=0", narrative)
         self.assertEqual(108, report["denominators"]["intendedSlots"])
+
+    def test_complete_registered_threshold_failures_are_descriptive_in_legacy_and_subscription(self):
+        legacy = evaluation.validate_registration(
+            _registration(), expected_candidate_sha256=_registration()["candidate"]["sha256"],
+            expected_input_hashes=_inputs(_registration()),
+        )
+        failures = {slot.slot_id for slot in evaluation.generate_slots(legacy)
+                    if slot.arm == "mcp-plus-skills" and slot.host == "codex" and
+                    slot.order_position == 1}
+        ledger, ratings = _complete_ledger(legacy, successful_slots=failures)
+        arm_c_slot = next(slot for slot in ledger.slots if slot.arm == "mcp-plus-skills")
+        ratings[arm_c_slot.slot_id][0]["fidelity"] = False
+        ratings[arm_c_slot.slot_id][1]["fidelity"] = False
+        legacy_report = self._make_report(legacy, ledger, ratings)
+
+        registration, roster, _money, summary = full_cost_tests.FullCostContractTests()._assessment()
+        ledger2, ratings2 = _complete_ledger(registration, successful_slots=failures)
+        arm_c_slot2 = next(slot for slot in ledger2.slots if slot.arm == "mcp-plus-skills")
+        for rating in ratings2[arm_c_slot2.slot_id]:
+            rating["authority_correct"] = False
+        subscription_report = self._make_report(
+            registration, ledger2, ratings2, summary=summary, roster_sha=roster.sha256,
+        )
+        for report in (legacy_report, subscription_report):
+            self.assertFalse(report["utilityClaimEligible"])
+            self.assertEqual("registered-threshold-not-met", report["conclusion"]["status"])
+            self.assertFalse(report["conclusion"]["positiveUtilityAsserted"])
+            self.assertEqual(108, report["denominators"]["intendedSlots"])
+            self.assertIn("registered-threshold-not-met", render_utility_report_narrative(report))
+            self.assertIn("registered outcome and safety criteria", report["conclusion"]["text"])
+            self.assertIn('"status":"registered-threshold-not-met"', render_utility_report_json(report))
+            self.assertTrue(report["armC"]["labelResolution"]["totals"]["fidelity"]["resolved"] > 0)
+        self.assertFalse(legacy_report["armC"]["fidelityByHost"][arm_c_slot.host])
+        self.assertFalse(subscription_report["armC"]["authorityCorrectByHost"][arm_c_slot2.host] == 18)
+        described = legacy_report["descriptiveByHostArmClass"][0]
+        self.assertEqual(36, len(legacy_report["descriptiveByHostArmClass"]))
+        self.assertEqual(3, described["totalWallSeconds"]["observedSlots"])
+        self.assertFalse(described["interventions"]["complete"])
+        self.assertIsNone(described["interventions"]["total"])
+
+    def test_unknown_cost_or_human_labels_remain_inconclusive_and_true_pass_stays_pending(self):
+        registration, roster, _money, summary = full_cost_tests.FullCostContractTests()._assessment()
+        ledger, ratings = _complete_ledger(registration, missing_cost_slot=None)
+        first_c = next(slot for slot in ledger.slots if slot.arm == "mcp-plus-skills")
+        ratings[first_c.slot_id][1]["fidelity"] = None
+        unknown_label_report = self._make_report(
+            registration, ledger, ratings, summary=summary, roster_sha=roster.sha256,
+        )
+        self.assertEqual("inconclusive", unknown_label_report["conclusion"]["status"])
+        self.assertIsNone(unknown_label_report["armC"]["fidelityByHost"][first_c.host])
+        self.assertGreater(
+            unknown_label_report["armC"]["labelResolution"]["totals"]["fidelity"]["missing"]
+            + unknown_label_report["armC"]["labelResolution"]["totals"]["fidelity"]["disagreement"], 0,
+        )
+
+        ledger2, ratings2 = _complete_ledger(registration)
+        missing_slot = ledger2.slots[-1].slot_id
+        ledger2, ratings2 = _complete_ledger(registration, missing_cost_slot=missing_slot)
+        missing_cost_report = self._make_report(
+            registration, ledger2, ratings2, summary=summary, roster_sha=roster.sha256,
+        )
+        self.assertEqual("inconclusive", missing_cost_report["conclusion"]["status"])
+
+        disagree_ledger, disagree_ratings = _complete_ledger(registration)
+        disputed = next(slot for slot in disagree_ledger.slots if slot.arm == "mcp-plus-skills")
+        disagree_ratings[disputed.slot_id][1]["fidelity"] = False
+        bad_adjudication = _adjudication("rater-one", fidelity=True)
+        bad_adjudication["sha256"] = "0" * 64
+        unresolved_report = build_utility_report(
+            registration.data, disagree_ledger,
+            expected_candidate_sha256=registration.data["candidate"]["sha256"],
+            expected_input_hashes=_inputs(registration.data), setup_costs=_known_costs(),
+            human_ratings=disagree_ratings, adjudications={disputed.slot_id: bad_adjudication},
+            monetary_summary=summary, expected_monetary_roster_sha256=roster.sha256,
+        )
+        self.assertEqual("inconclusive", unresolved_report["conclusion"]["status"])
+        self.assertEqual("disagreement", unresolved_report["armC"]["labelResolution"]["bySlot"][disputed.slot_id]["fidelity"])
+
+        pass_report = self._make_report(
+            registration, _complete_ledger(registration)[0], _complete_ledger(registration)[1],
+            summary=summary, roster_sha=roster.sha256,
+        )
+        self.assertEqual("pending-independent-human-founder-interpretation", pass_report["conclusion"]["status"])
+
+    def test_invalid_rating_identity_and_missing_ratings_preserve_all_label_denominators(self):
+        registration, roster, _money, summary = full_cost_tests.FullCostContractTests()._assessment()
+        ledger, original_ratings = _complete_ledger(registration)
+        test_slot = ledger.slots[0].slot_id
+        variants = []
+        non_mapping = copy.deepcopy(original_ratings)
+        non_mapping[test_slot][1] = "not a rating object"
+        variants.append(non_mapping)
+        invalid_id = copy.deepcopy(original_ratings)
+        invalid_id[test_slot][1]["reviewerId"] = "unregistered-rater"
+        variants.append(invalid_id)
+        invalid_type = copy.deepcopy(original_ratings)
+        invalid_type[test_slot][1]["reviewerType"] = "model"
+        variants.append(invalid_type)
+        invalid_independence = copy.deepcopy(original_ratings)
+        invalid_independence[test_slot][1]["independent"] = False
+        variants.append(invalid_independence)
+
+        for ratings in variants:
+            report = self._make_report(
+                registration, ledger, ratings, summary=summary, roster_sha=roster.sha256,
+            )
+            self.assertEqual("inconclusive", report["conclusion"]["status"])
+            totals = report["armC"]["labelResolution"]["totals"]
+            for field_counts in totals.values():
+                self.assertEqual(108, sum(field_counts.values()))
+                self.assertGreater(field_counts["missing"], 0)
+            self.assertEqual("missing", report["armC"]["labelResolution"]["bySlot"][test_slot]["success"])
+
+    def test_threshold_failure_with_complete_costs_but_unstarted_cohort_is_inconclusive(self):
+        registration, roster, _money, summary = full_cost_tests.FullCostContractTests()._assessment()
+        _, ratings = _complete_ledger(registration, successful_slots={
+            slot.slot_id for slot in evaluation.generate_slots(registration)
+            if slot.host == "codex" and slot.arm == "mcp-plus-skills" and slot.order_position == 1
+        })
+        ledger = evaluation.new_ledger(registration)
+        for slot in ledger.slots:
+            ledger = evaluation.append_slot_event(
+                ledger, slot.slot_id, "not-started",
+                data={"reason": "synthetic pre-start measurement control",
+                      "sourceTimestamp": "2026-10-09T10:00:00Z", "costs": _known_costs()},
+            )
+        report = self._make_report(
+            registration, ledger, ratings, summary=summary, roster_sha=roster.sha256,
+        )
+        self.assertTrue(report["costs"]["complete"])
+        self.assertEqual("inconclusive", report["conclusion"]["status"])
+        self.assertTrue(report["armC"]["thresholdReasons"])
+        self.assertEqual(108, report["denominators"]["intendedSlots"])
+        narrative = render_utility_report_narrative(report)
+        self.assertIn("success=", narrative)
+        self.assertIn("intended=3", narrative)
+
+    def test_positive_report_with_all_true_labels_still_needs_terminal_measured_cohort(self):
+        registration, roster, _money, summary = full_cost_tests.FullCostContractTests()._assessment()
+        _complete, ratings = _complete_ledger(registration)
+        for open_status in ("not-started", "attempted"):
+            ledger = evaluation.new_ledger(registration)
+            for index, slot in enumerate(ledger.slots):
+                if open_status == "not-started":
+                    ledger = evaluation.append_slot_event(
+                        ledger, slot.slot_id, "not-started",
+                        data={"reason": "synthetic open-cohort control",
+                              "sourceTimestamp": "2026-10-09T10:00:00Z",
+                              "costs": _known_costs()},
+                    )
+                else:
+                    ledger = evaluation.append_slot_event(
+                        ledger, slot.slot_id, "attempted", attempt_id=f"report-open-{index:03d}",
+                        data={"sourceTimestamp": "2026-10-09T10:00:00Z",
+                              "costs": _known_costs()},
+                    )
+            report = self._make_report(
+                registration, ledger, ratings, summary=summary, roster_sha=roster.sha256,
+            )
+            self.assertFalse(report["utilityClaimEligible"])
+            self.assertEqual("inconclusive", report["conclusion"]["status"])
+            self.assertEqual(108, report["denominators"]["intendedSlots"])
+            self.assertTrue(any("not-started or open attempts" in reason
+                                for reason in report["eligibilityReasons"]))
 
     def test_wrong_money_bindings_and_exceeded_review_cap_remain_ineligible(self):
         registration, roster, _money, summary = full_cost_tests.FullCostContractTests()._assessment()

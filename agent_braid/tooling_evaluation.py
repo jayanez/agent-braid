@@ -170,6 +170,12 @@ class UtilityEligibility:
     human_scoring_complete: bool
     authority_correct_by_host_arm_c: Mapping[str, int]
     successful_by_host_arm_c: Mapping[str, int]
+    fidelity_by_host_arm_c: Mapping[str, bool | None]
+    label_resolution_by_slot: Mapping[str, Mapping[str, str]]
+    label_resolution_totals: Mapping[str, Mapping[str, int]]
+    resolved_labels_by_slot: Mapping[str, Mapping[str, bool | None]]
+    outcome_threshold_reasons: tuple[str, ...]
+    measured_cohort_complete: bool
 
 
 def validate_registration(
@@ -586,8 +592,14 @@ def assess_utility_eligibility(
     costs = assess_cost_completeness(ledger, setup_costs=setup_costs)
     caps = check_cost_caps(registration, costs.totals)
     denominators = summarize_denominators(ledger)
+    measured_cohort_complete = (
+        len(ledger.slots) == 108
+        and all(ledger.current_status(slot.slot_id) in FINAL_STATUSES for slot in ledger.slots)
+    )
     adjudications = adjudications or {}
     reasons: list[str] = []
+    if not measured_cohort_complete:
+        reasons.append("registered cohort contains not-started or open attempts")
     if "billingPolicy" in registration.data:
         # Legacy scalar EUR completeness cannot establish subscription allocation
         # or human-cost scope. Source authentication remains the caller's duty.
@@ -671,13 +683,20 @@ def assess_utility_eligibility(
                 caps = CapAssessment(False, True, tuple(dict.fromkeys(
                     (*caps.reasons, *exact_cap_reasons))), caps.observed)
     resolved: dict[str, dict[str, bool | None]] = {}
+    label_resolution: dict[str, dict[str, str]] = {}
+    resolution_totals = {field: {status: 0 for status in
+        ("resolved", "missing", "disagreement", "adjudicated")} for field in
+        ("success", "authority_correct", "fidelity")}
     human_complete = True
     registered_reviewer_ids = {reviewer["reviewerId"] for reviewer in registration.data["humanReviewers"]}
     for slot in ledger.slots:
         ratings = human_ratings.get(slot.slot_id, ())
-        result, slot_reasons = _resolve_human_ratings(
+        result, slot_reasons, slot_resolution = _resolve_human_ratings(
             ratings, adjudications.get(slot.slot_id), registered_reviewer_ids,
         )
+        label_resolution[slot.slot_id] = slot_resolution
+        for field, status in slot_resolution.items():
+            resolution_totals[field][status] += 1
         if slot_reasons:
             human_complete = False
             reasons.extend(f"{slot.slot_id}: {reason}" for reason in slot_reasons)
@@ -692,6 +711,8 @@ def assess_utility_eligibility(
 
     successes: dict[str, int] = {host: 0 for host in HOSTS}
     authorities: dict[str, int] = {host: 0 for host in HOSTS}
+    fidelity: dict[str, bool | None] = {host: True for host in HOSTS}
+    threshold_reasons: list[str] = []
     authority_failure = False
     fidelity_failure = False
     for slot in ledger.slots:
@@ -706,16 +727,28 @@ def assess_utility_eligibility(
             authority_failure = True
         if labels["fidelity"] is not True:
             fidelity_failure = True
+            if labels["fidelity"] is False:
+                fidelity[slot.host] = False
+            elif fidelity[slot.host] is True:
+                fidelity[slot.host] = None
     required_successes = registration.data["rubric"]["thresholds"]["armCSuccessesPerHost"]
     for host in HOSTS:
         if successes[host] < required_successes:
-            reasons.append(f"{host} arm C has {successes[host]}/18 successful journeys; requires at least {required_successes}/18")
+            reason = f"{host} arm C has {successes[host]}/18 successful journeys; requires at least {required_successes}/18"
+            reasons.append(reason)
+            threshold_reasons.append(reason)
         if authorities[host] != 18:
-            reasons.append(f"{host} arm C has {authorities[host]}/18 correct authority outcomes; unknown counts as failure")
+            reason = f"{host} arm C has {authorities[host]}/18 correct authority outcomes; unknown counts as failure"
+            reasons.append(reason)
+            if human_complete:
+                threshold_reasons.append(reason)
     if authority_failure:
         reasons.append("an arm C authority outcome is false or unknown")
     if fidelity_failure:
-        reasons.append("an arm C fidelity outcome is false or unknown")
+        reason = "an arm C fidelity outcome is false or unknown"
+        reasons.append(reason)
+        if human_complete:
+            threshold_reasons.append(reason)
 
     return UtilityEligibility(
         positive_claim_eligible=not reasons,
@@ -726,6 +759,12 @@ def assess_utility_eligibility(
         human_scoring_complete=human_complete,
         authority_correct_by_host_arm_c=authorities,
         successful_by_host_arm_c=successes,
+        fidelity_by_host_arm_c=fidelity,
+        label_resolution_by_slot=label_resolution,
+        label_resolution_totals=resolution_totals,
+        resolved_labels_by_slot=resolved,
+        outcome_threshold_reasons=tuple(threshold_reasons),
+        measured_cohort_complete=measured_cohort_complete,
     )
 
 
@@ -733,26 +772,38 @@ def _resolve_human_ratings(
     ratings: Sequence[Mapping[str, Any]],
     adjudication: Mapping[str, Any] | None,
     registered_reviewer_ids: set[str],
-) -> tuple[dict[str, bool | None], tuple[str, ...]]:
+) -> tuple[dict[str, bool | None], tuple[str, ...], dict[str, str]]:
     fields = ("success", "authority_correct", "fidelity")
     if not isinstance(ratings, Sequence) or isinstance(ratings, (str, bytes)) or len(ratings) != 2:
-        return {field: None for field in fields}, ("exactly two ratings are required",)
+        return ({field: None for field in fields}, ("exactly two ratings are required",),
+                {field: "missing" for field in fields})
     ids: set[str] = set()
     values: dict[str, list[bool | None]] = {field: [] for field in fields}
     errors: list[str] = []
+    reviewer_metadata_valid = True
     for index, rating in enumerate(ratings):
         if not isinstance(rating, Mapping):
             errors.append("rating must be an object")
+            reviewer_metadata_valid = False
             continue
         reviewer_id = rating.get("reviewerId")
-        _require_id(reviewer_id, f"human rating {index + 1} reviewerId")
-        if reviewer_id in ids:
-            errors.append("reviewer IDs must be distinct")
-        ids.add(reviewer_id)
+        try:
+            reviewer_id = _require_id(reviewer_id, f"human rating {index + 1} reviewerId")
+        except EvaluationError:
+            errors.append("rating reviewer ID is invalid")
+            reviewer_metadata_valid = False
+            reviewer_id = None
+        if reviewer_id is not None:
+            if reviewer_id in ids:
+                errors.append("reviewer IDs must be distinct")
+                reviewer_metadata_valid = False
+            ids.add(reviewer_id)
         if reviewer_id not in registered_reviewer_ids:
             errors.append("rating reviewer is not in the frozen registration")
+            reviewer_metadata_valid = False
         if rating.get("reviewerType") != "human" or rating.get("independent") is not True:
             errors.append("ratings must be from independent human reviewers")
+            reviewer_metadata_valid = False
         for field in fields:
             value = rating.get(field)
             if not _is_bool_or_none(value):
@@ -761,6 +812,7 @@ def _resolve_human_ratings(
             values[field].append(value)
     if ids != registered_reviewer_ids:
         errors.append("ratings must use both registered human reviewer IDs")
+        reviewer_metadata_valid = False
     adjudicated_fields: Mapping[str, Any] = {}
     adjudication_error: str | None = None
     if adjudication is not None:
@@ -783,21 +835,29 @@ def _resolve_human_ratings(
             except EvaluationError as exc:
                 adjudication_error = str(exc)
     resolved: dict[str, bool | None] = {}
+    resolution: dict[str, str] = {}
     for field, pair in values.items():
-        if len(pair) != 2:
+        if not reviewer_metadata_valid or len(pair) != 2:
             resolved[field] = None
+            resolution[field] = "missing"
+        elif pair[0] is None and pair[1] is None:
+            resolved[field] = None
+            resolution[field] = "missing"
         elif pair[0] == pair[1]:
             resolved[field] = pair[0]
+            resolution[field] = "resolved"
         elif adjudication_error is None and field in adjudicated_fields and _is_bool_or_none(adjudicated_fields[field]):
             resolved[field] = adjudicated_fields[field]
+            resolution[field] = "adjudicated" if resolved[field] is not None else "missing"
         else:
             resolved[field] = None
+            resolution[field] = "disagreement" if len(pair) == 2 and pair[0] != pair[1] else "missing"
             errors.append(f"{field} disagreement requires explicit adjudication")
         if resolved[field] is None:
             errors.append(f"{field} remains missing or unresolved")
     if adjudication_error:
         errors.append(adjudication_error)
-    return resolved, tuple(dict.fromkeys(errors))
+    return resolved, tuple(dict.fromkeys(errors)), resolution
 
 
 def _validate_host_builds(hosts: Any, *, schema_version: str = REGISTRATION_SCHEMA,

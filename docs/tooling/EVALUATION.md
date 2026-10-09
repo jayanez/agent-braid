@@ -166,11 +166,25 @@ hashes, and per-host/arm/journey-class denominators. Event observations are
 projected to registered timestamps, outcome labels, costs, and input/output
 hashes; arbitrary event text is not copied into exports. Unknown required costs
 include their setup/slot field paths in the structured `costs.missingRequired`
-list and in the deterministic English narrative. Any ineligible result has an
-inconclusive conclusion and reasons in both forms. An eligible result only
-allows independent human interpretation; it does not assert positive utility,
-acceptance, scientific validity, or milestone closure. Founder interpretation
-remains pending.
+list and in the deterministic English narrative. If required cost and scope
+evidence is complete and consistent, caps are satisfied, and human scoring is
+complete, a missed registered descriptive outcome threshold is reported as
+`registered-threshold-not-met`. This describes only the observed cohort against
+its frozen threshold; it does not assert causal or scientific negative utility,
+acceptance, or milestone closure. Missing or unknown costs, unresolved human
+labels, invalid adjudication, incomplete scope, and cap violations remain
+`inconclusive`. An eligible result only allows independent human interpretation;
+it does not assert positive utility, acceptance, scientific validity, or
+milestone closure. Founder interpretation remains pending.
+
+Arm-C fidelity is exposed as `true`, `false`, or `null` (unknown) per host. The
+report also summarizes resolved, missing, disagreement, and adjudicated label
+states by slot and in aggregate, using the validated human-rating resolver.
+Exports contain no raw rating text or reviewer identity. Host/arm/class summaries
+retain status denominators, resolved success labels, total wall-time median/range
+when typed per-slot observations exist, and intervention totals only when every
+slot has an observed integer. Missing intervention observations are unavailable,
+never inferred as zero.
 
 `build_utility_report(...)` returns an immutable mapping. The renderers accept
 that builder-produced report, so callers cannot alter its reasons or denominators

@@ -652,6 +652,33 @@ class ToolingEvaluationTests(unittest.TestCase):
         )
         self.assertTrue(eligible.positive_claim_eligible)
 
+    def test_positive_claim_requires_all_108_slots_to_be_terminal_measured(self) -> None:
+        registration = _validated()
+        _complete, ratings = _complete_ledger(registration)
+        for open_status in ("not-started", "attempted"):
+            ledger = evaluation.new_ledger(registration)
+            for index, slot in enumerate(ledger.slots):
+                if open_status == "not-started":
+                    ledger = evaluation.append_slot_event(
+                        ledger, slot.slot_id, "not-started",
+                        data={"reason": "synthetic open-cohort control",
+                              "sourceTimestamp": "2026-10-09T10:00:00Z",
+                              "costs": _known_costs()},
+                    )
+                else:
+                    ledger = evaluation.append_slot_event(
+                        ledger, slot.slot_id, "attempted", attempt_id=f"open-{index:03d}",
+                        data={"sourceTimestamp": "2026-10-09T10:00:00Z",
+                              "costs": _known_costs()},
+                    )
+            result = evaluation.assess_utility_eligibility(
+                registration, ledger, setup_costs=_known_costs(), human_ratings=ratings,
+            )
+            self.assertFalse(result.positive_claim_eligible)
+            self.assertFalse(result.measured_cohort_complete)
+            self.assertEqual(108, result.denominators["intendedSlots"])
+            self.assertTrue(any("not-started or open attempts" in reason for reason in result.reasons))
+
     def test_unknown_authority_missing_costs_and_model_ratings_block_claim(self) -> None:
         registration = _validated()
         ledger, ratings = _complete_ledger(registration)
