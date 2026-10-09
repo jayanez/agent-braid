@@ -92,8 +92,8 @@
   "compatibility": "Additive experimental tooling envelope with optional pinned SDK; core dependencies empty. Codex and Claude Code v1 only, exact versions selected before observation. Existing contracts and historical records unchanged.",
   "domain": "Exact local host builds and registered provider model identities on macOS arm64 and owned registered fixture population; opaque backend builds remain unavailable under the approved observable-route interpretation. Linux x86_64 core/protocol reproduction is a separate domain.",
   "evidence_snapshot": {
-    "commit": null,
-    "mode": "current"
+    "commit": "9bc3052f0ee9365919bea4525e979a0fb1825aa2",
+    "mode": "historical"
   },
   "execution_contract": "Source planning only. Future server defaults to analysis; execution/recovery delegate existing independent exact operator grants and private fixed-patch runtime. Installation writes only explicitly selected receipt-owned entries. No new effects.",
   "human_review": "pending",
