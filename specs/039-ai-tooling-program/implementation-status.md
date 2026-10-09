@@ -1,8 +1,44 @@
 # M4.5 implementation status and source map
 
-Status date: 2026-10-08. This is a source map for the proposed M4.5 implementation and closure work. It does not update task checkboxes, assurance records, approval state, or milestone state.
+Status date: 2026-10-09. This is a source map for the proposed M4.5 implementation and closure work. It does not update task checkboxes, assurance records, approval state, or milestone state.
 
 The inspected planning baseline is `develop` at `59d0eadbea772dbff32fb9daca88bd39ab67a030`. The unmerged PR #467 candidate also integrates `develop` metadata/evidence commit `7c10b248d34a05f15195376d72884d9b443fe36a` without inheriting its M4 acceptance; its final integrated/frozen SHA is not established here. Code present in this candidate is not, by itself, paired scenario evidence, host observation, clean-room reproduction, approval, or task completion. The registered 60 child tasks and six parent tasks therefore remain pending until their existing procedures and candidate-bound receipts establish their acceptance criteria. Do not create replacement task IDs or reduce the planned scope.
+
+## Current integration and evaluation preparation
+
+The current integration includes `develop` at
+`9dfd9fdf52e688e7225af1f7644f41b6ba92b780`, including the separately approved
+bounded M4 closure. That predecessor decision does not approve M4.5 or change
+historical G4 NO-GO and negative-utility evidence.
+
+The owner approved the subscription-only, EUR 0 additional-spend policy and
+the observable model-route interpretation: use an exposed immutable identifier
+when available, otherwise bind the exact selector, effort, CLI, catalog,
+configuration and account route while declaring the backend unknown. The
+SPEC-042 SC-008 clarification retains v1's supported local installation boundary.
+These individual decisions do not approve the complete prospective evaluation
+registration or authorize a cohort capture.
+
+Candidate source now contains subscription-only admission and stop controls,
+versioned model identity, registration-bound monetary accounting, and verified
+composition of provider cash, allocated subscription cost and human time.
+The EUR 25 accounting ceiling applies to provider cash plus subscription
+allocation; the separate additional-cash ceiling remains EUR 0. Reviewer cash
+and human time remain explicit rather than being inferred as free. Required
+source verifiers are external trust boundaries, not production authenticators
+supplied by the library. Offline report controls preserve incomplete evidence
+and supported failures of registered outcome and safety criteria separately.
+They do not perform human scoring or assert scientific utility.
+
+Read-only CLI/UI observations matched the subscription account for each host and
+showed remaining included quota, zero credits and disabled automatic recharge
+at the observed times. These point-in-time observations are retained privately;
+they do not establish ongoing quota, every attempt's billing route, authenticated
+cost sources or native host acceptance. No M4.5 native cohort has started.
+The exact candidate still requires its stable validation receipts, two human
+reviewer identities, fee applicability, allocation method and supporting source
+records, frozen rubric, fixture rights, full registration approval, native
+journeys/capture, human scoring and a separate founder decision.
 
 ## State vocabulary
 

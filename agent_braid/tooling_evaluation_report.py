@@ -199,6 +199,25 @@ def build_utility_report(
     report_reasons = list(assessment.reasons)
     report_reasons.extend(full_cost_reasons)
     eligible = assessment.positive_claim_eligible and full_cost_complete is not False
+    outcome_only = (
+        not eligible and assessment.cost_assessment.complete
+        and assessment.cap_assessment.within_caps
+        and assessment.human_scoring_complete
+        and full_cost_complete is not False
+        and assessment.measured_cohort_complete
+        and bool(assessment.outcome_threshold_reasons)
+    )
+    conclusion_status = (
+        "pending-independent-human-founder-interpretation" if eligible else
+        "registered-threshold-not-met" if outcome_only else "inconclusive"
+    )
+    conclusion_text = (
+        "Eligibility permits independent interpretation only; no positive utility, acceptance, or milestone closure is asserted."
+        if eligible else
+        "Complete measured evidence did not meet one or more registered outcome and safety criteria. This describes this cohort only; it is not a causal or scientific utility conclusion, acceptance, or milestone closure."
+        if outcome_only else
+        "Utility is inconclusive because required evidence or eligibility conditions are incomplete or unresolved. No positive utility claim is permitted."
+    )
     report = {
         "schemaVersion": REPORT_SCHEMA,
         "scope": {
@@ -220,12 +239,9 @@ def build_utility_report(
         },
         "utilityClaimEligible": eligible,
         "conclusion": {
-            "status": "pending-independent-human-founder-interpretation" if eligible else "inconclusive",
+            "status": conclusion_status,
             "positiveUtilityAsserted": False,
-            "text": ("Eligibility permits independent interpretation only; no positive utility, "
-                     "acceptance, or milestone closure is asserted." if eligible else
-                     "Utility is inconclusive because required eligibility conditions are unmet. "
-                     "No positive utility claim is permitted."),
+            "text": conclusion_text,
             "pendingDecisions": ["independent human interpretation", "founder decision"],
         },
         "eligibilityReasons": report_reasons,
@@ -254,11 +270,19 @@ def build_utility_report(
         "armC": {
             "successfulByHost": dict(assessment.successful_by_host_arm_c),
             "authorityCorrectByHost": dict(assessment.authority_correct_by_host_arm_c),
+            "fidelityByHost": dict(assessment.fidelity_by_host_arm_c),
+            "labelResolution": {
+                "bySlot": {slot_id: dict(states) for slot_id, states in assessment.label_resolution_by_slot.items()},
+                "totals": {field: dict(counts) for field, counts in assessment.label_resolution_totals.items()},
+            },
+            "thresholdReasons": list(assessment.outcome_threshold_reasons),
         },
+        "descriptiveByHostArmClass": _descriptive_groups(ledger, assessment.resolved_labels_by_slot),
         "evidenceLimits": [
             "Registration approval, source rights, provider consent, and host receipts are not authenticated by this offline report.",
             "Eligibility does not establish positive utility, scientific validity, host acceptance, founder approval, or milestone closure.",
             "All 108 intended slots and their current statuses remain in the denominator; unknown costs are not zero.",
+            "Intervention totals require typed observations for all slots in a group; missing observations are unavailable, never inferred as zero.",
         ],
     }
     return UtilityReport(report, _token=_REPORT_TOKEN)
@@ -282,9 +306,8 @@ def render_utility_report_narrative(report: UtilityReport) -> str:
         f"Registration: {scope['registrationId']} ({scope['registrationSha256']})",
         f"Candidate: {scope['candidate']['commit']} ({scope['candidate']['sha256']})",
         f"Utility claim eligible: {str(raw['utilityClaimEligible']).lower()}",
-        "Conclusion: " + ("Eligibility permits independent interpretation only; no positive utility, acceptance, or milestone closure is asserted."
-                           if raw["utilityClaimEligible"] else
-                           "Utility is inconclusive because required eligibility conditions are unmet. No positive utility claim is permitted."),
+        "Conclusion: " + raw["conclusion"]["text"],
+        "Conclusion status: " + raw["conclusion"]["status"] + ".",
         f"Intended denominator: {denoms['intendedSlots']} slots across hosts {', '.join(scope['population']['hosts'])}, arms {', '.join(scope['population']['arms'])}, and {len(scope['population']['journeyClasses'])} journey classes.",
         f"Missing required cost measurements: {len(costs['missingRequired'])}.",
         "Full economic cost status: " + costs["fullEconomicCostStatus"]
@@ -298,6 +321,24 @@ def render_utility_report_narrative(report: UtilityReport) -> str:
         lines.append("Missing cost fields/attempts: " + "; ".join(costs["missingRequired"]) + ".")
     for reason in raw["eligibilityReasons"]:
         lines.append("Eligibility reason: " + reason)
+    lines.append("Arm C fidelity by host: " + "; ".join(
+        f"{host}={str(value).lower() if value is not None else 'unknown'}"
+        for host, value in raw["armC"]["fidelityByHost"].items()) + ".")
+    lines.append("Human label resolution totals: " + "; ".join(
+        f"{field} " + ", ".join(f"{state}={count}" for state, count in counts.items())
+        for field, counts in raw["armC"]["labelResolution"]["totals"].items()) + ".")
+    lines.append("Descriptive host/arm/class metrics follow; intervention totals are unavailable when any slot lacks a typed observation.")
+    for group in raw["descriptiveByHostArmClass"]:
+        wall = group["totalWallSeconds"]
+        lines.append(
+            f"{group['host']} / {group['arm']} / {group['journeyClass']}: "
+            f"success={group['successes']}/{group['successObserved']} "
+            f"({group['successObserved']}/3 observed; intended={group['intended']}), "
+            f"interventions={group['interventions']['total'] if group['interventions']['complete'] else 'unavailable'} "
+            f"({group['interventions']['observedSlots']}/3 observed), "
+            f"wall median/range={wall['median']}/{wall['min']}-{wall['max']} seconds "
+            f"({wall['observedSlots']}/3 observed), statuses={group['statuses']}."
+        )
     lines.append("Per-host, arm, and journey-class intended and current-status counts follow.")
     for group in denoms["groups"]:
         counts = ", ".join(f"{key}={group[key]}" for key in (
@@ -306,6 +347,57 @@ def render_utility_report_narrative(report: UtilityReport) -> str:
         lines.append(f"{group['host']} / {group['arm']} / {group['journeyClass']}: {counts}.")
     lines.extend("Limit: " + item for item in raw["evidenceLimits"])
     return "\n".join(lines) + "\n"
+
+
+def _descriptive_groups(
+    ledger: evaluation.EvaluationLedger,
+    labels_by_slot: Mapping[str, Mapping[str, bool | None]],
+) -> list[dict[str, Any]]:
+    """Summarize typed ledger observations without treating absence as zero."""
+    groups: dict[tuple[str, str, str], list[evaluation.AttemptSlot]] = {}
+    for slot in ledger.slots:
+        groups.setdefault((slot.host, slot.arm, slot.journey_class), []).append(slot)
+    result: list[dict[str, Any]] = []
+    for (host, arm, journey_class), slots in sorted(groups.items()):
+        statuses = {status: 0 for status in evaluation.SLOT_STATUSES}
+        walls: list[float] = []
+        intervention_values: list[int] = []
+        successes = 0
+        success_observed = 0
+        for slot in slots:
+            statuses[ledger.current_status(slot.slot_id)] += 1
+            success = labels_by_slot[slot.slot_id]["success"]
+            if success is not None:
+                success_observed += 1
+                successes += success is True
+            event = ledger.current_event(slot.slot_id)
+            if event is None:
+                continue
+            costs = event.data.get("costs")
+            wall = costs.get("wall_seconds") if isinstance(costs, Mapping) else None
+            if isinstance(wall, (int, float)) and not isinstance(wall, bool):
+                walls.append(float(wall))
+            intervention = next((prior.data.get("interventions") for prior in reversed(ledger.events)
+                                 if prior.slot_id == slot.slot_id and "interventions" in prior.data), None)
+            if isinstance(intervention, int) and not isinstance(intervention, bool):
+                intervention_values.append(intervention)
+        ordered = sorted(walls)
+        median = None if not ordered else (ordered[len(ordered)//2] if len(ordered) % 2 else
+                  (ordered[len(ordered)//2 - 1] + ordered[len(ordered)//2]) / 2)
+        result.append({
+            "host": host, "arm": arm, "journeyClass": journey_class,
+            "intended": len(slots), "statuses": statuses,
+            "successes": successes, "successObserved": success_observed,
+            "interventions": {
+                "total": sum(intervention_values) if len(intervention_values) == len(slots) else None,
+                "observedSlots": len(intervention_values), "complete": len(intervention_values) == len(slots),
+            },
+            "totalWallSeconds": {
+                "median": median, "min": min(ordered) if ordered else None,
+                "max": max(ordered) if ordered else None, "observedSlots": len(ordered),
+            },
+        })
+    return result
 
 
 def _validate_report(report: UtilityReport) -> None:
@@ -325,8 +417,8 @@ def _validate_report(report: UtilityReport) -> None:
         if conclusion.get("status") != "pending-independent-human-founder-interpretation":
             raise evaluation.EvaluationError("eligible report must await human and founder interpretation")
     else:
-        if conclusion.get("status") != "inconclusive":
-            raise evaluation.EvaluationError("ineligible utility report must be inconclusive")
+        if conclusion.get("status") not in {"inconclusive", "registered-threshold-not-met"}:
+            raise evaluation.EvaluationError("ineligible utility report has an unsupported conclusion status")
         if not raw.get("eligibilityReasons"):
             raise evaluation.EvaluationError("ineligible utility report must explain its reasons")
 
