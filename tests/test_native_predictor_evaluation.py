@@ -373,10 +373,9 @@ class NativePredictorEvaluationTests(unittest.TestCase):
         self.assertGreater(predictor["scoringSeconds"], 0)
         self.assertGreater(baseline["submittedEvidenceProductionSeconds"], 0)
         self.assertGreater(baseline["verifierInvocationSeconds"], 0)
-        self.assertAlmostEqual(
-            baseline["verificationSeconds"],
-            baseline["submittedEvidenceProductionSeconds"] + baseline["verifierInvocationSeconds"],
-            places=5)
+        # These are independent medians over repeated runs. The median of
+        # per-run sums is not generally the sum of the per-phase medians.
+        self.assertGreater(baseline["verificationSeconds"], 0)
         result = report["budgets"]["baseline"]["50"]
         self.assertEqual(result["verifierWork"]["submittedEvidenceProductionCount"],
                          result["actualVerifierCalls"])
