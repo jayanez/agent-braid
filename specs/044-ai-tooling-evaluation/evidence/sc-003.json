@@ -1,0 +1,1071 @@
+{
+  "candidate": {
+    "branch": "work/m45-implementation-20261008",
+    "claimBoundary": "Bound only to clean candidate 3c01c5b2e594c7ddfaf7850585478a6d41a6677c. Packaging/reconciliation commits do not change the executed candidate; this record gives no coverage to later source candidates.",
+    "commit": "3c01c5b2e594c7ddfaf7850585478a6d41a6677c",
+    "runnerPath": "scripts/run_tooling_controls.py",
+    "runnerSha256": "84e203184684b648adbbdc46b5770c3106b75b83229b293021980d6c6c6551fb",
+    "sourceManifestEntryCount": 159,
+    "sourceManifestSha256": "a4e3501a9f7585070896bfaa1863a940dbe31fe1ad8a804e92e63555c598818b",
+    "workingTreeCleanAtExecution": true
+  },
+  "controls": {
+    "cases": [
+      {
+        "actualArgv": [
+          "/private/tmp/agent-braid-m45-plan.nAWJs3/.venv-speckit/bin/python",
+          "-m",
+          "unittest",
+          "-v",
+          "tests.test_tooling_fixtures.ToolingFixtureTests.test_runtime_fixture_materializes_valid_request_and_read_only_prepare_parity"
+        ],
+        "caseId": "parity-positive",
+        "category": "parity",
+        "exitCode": 0,
+        "expectedOracle": "Fixture definition and request hashes match; core and runtime analysis outputs are equal; MCP prepare is ok and byte-for-value equal to the runtime plan; prepare creates no run and no grant.",
+        "outputTruncated": false,
+        "ownedProcessGroupState": "absent",
+        "rawResultPath": "cases/parity-positive.json",
+        "rawResultSha256": "104e668593867781874337b87525d86f1b1a681d9514cdbfc355dc7e0b78b99b",
+        "result": "passed",
+        "role": "positive",
+        "skip": false,
+        "stderrUtf8Sha256": "aa9fea365f8312b5bd7915995a4761fbd8959216d7bccc70472ddd244331a29b",
+        "stdoutUtf8Sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "test": "tests.test_tooling_fixtures.ToolingFixtureTests.test_runtime_fixture_materializes_valid_request_and_read_only_prepare_parity",
+        "timeout": false
+      },
+      {
+        "actualArgv": [
+          "/private/tmp/agent-braid-m45-plan.nAWJs3/.venv-speckit/bin/python",
+          "-m",
+          "unittest",
+          "-v",
+          "tests.test_tooling_mcp.ToolingServiceTests.test_service_validates_call_shape_and_operation_bounds_itself"
+        ],
+        "caseId": "malformed-refusal",
+        "category": "malformed",
+        "exitCode": 0,
+        "expectedOracle": "Malformed AIM input and a 33-operation request both return status refused with the exact input-schema and 32-operation refusal indicators.",
+        "outputTruncated": false,
+        "ownedProcessGroupState": "absent",
+        "rawResultPath": "cases/malformed-refusal.json",
+        "rawResultSha256": "d567ad481d4fbc3f83625bcff66e548c510289804a0e0fca1fcfee3b55e2476c",
+        "result": "passed",
+        "role": "refusal",
+        "skip": false,
+        "stderrUtf8Sha256": "57b03ec1579e7fb0b5ae9e26b0b0fb5dca2ed29df7521c364b679d16dec2ae12",
+        "stdoutUtf8Sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "test": "tests.test_tooling_mcp.ToolingServiceTests.test_service_validates_call_shape_and_operation_bounds_itself",
+        "timeout": false
+      },
+      {
+        "actualArgv": [
+          "/private/tmp/agent-braid-m45-plan.nAWJs3/.venv-speckit/bin/python",
+          "-m",
+          "unittest",
+          "-v",
+          "tests.test_tooling_subscription.SubscriptionPolicyTests.test_rejects_paid_unknown_inactive_stale_and_cross_slot_states"
+        ],
+        "caseId": "stale-and-unknown-refusal",
+        "category": "stale",
+        "exitCode": 0,
+        "expectedOracle": "Paid, unknown, inactive, stale, and cross-slot synthetic subscription observations are rejected by the subscription policy.",
+        "outputTruncated": false,
+        "ownedProcessGroupState": "absent",
+        "rawResultPath": "cases/stale-and-unknown-refusal.json",
+        "rawResultSha256": "599b1ed0cff7ff1c59f00b2247d02e1274ea319a9c68573192a69888d34ac5a0",
+        "result": "passed",
+        "role": "refusal",
+        "skip": false,
+        "stderrUtf8Sha256": "18b1dd7b24e653c1626779bac65d0878a7ac29553fffedf3c36971a8eeb074ed",
+        "stdoutUtf8Sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "test": "tests.test_tooling_subscription.SubscriptionPolicyTests.test_rejects_paid_unknown_inactive_stale_and_cross_slot_states",
+        "timeout": false
+      },
+      {
+        "actualArgv": [
+          "/private/tmp/agent-braid-m45-plan.nAWJs3/.venv-speckit/bin/python",
+          "-m",
+          "unittest",
+          "-v",
+          "tests.test_tooling_subscription.SubscriptionPolicyTests.test_valid_observation_and_freshness"
+        ],
+        "caseId": "fresh-subscription-positive",
+        "category": "stale",
+        "exitCode": 0,
+        "expectedOracle": "A fresh, correctly bound synthetic included-subscription observation is accepted and remains bound to its account and observation source.",
+        "outputTruncated": false,
+        "ownedProcessGroupState": "absent",
+        "rawResultPath": "cases/fresh-subscription-positive.json",
+        "rawResultSha256": "1f0e588dc55f2106aa43042ec6684fc5aac2ea45a2f06138e6f45731de6dfb68",
+        "result": "passed",
+        "role": "positive",
+        "skip": false,
+        "stderrUtf8Sha256": "d68c7b8b1a8272fa00e2f2f93695671ac2975825c0466c00eec81f0b806114f4",
+        "stdoutUtf8Sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "test": "tests.test_tooling_subscription.SubscriptionPolicyTests.test_valid_observation_and_freshness",
+        "timeout": false
+      },
+      {
+        "actualArgv": [
+          "/private/tmp/agent-braid-m45-plan.nAWJs3/.venv-speckit/bin/python",
+          "-m",
+          "unittest",
+          "-v",
+          "tests.test_tooling_supervisor.ToolingSupervisorTests.test_subscription_only_preflight_and_periodic_stop"
+        ],
+        "caseId": "capture-caps-positive",
+        "category": "stale-caps",
+        "exitCode": 0,
+        "expectedOracle": "A fresh synthetic subscription proof permits the bounded local process; a later over-cap observation stops it and preserves a partial measurement rather than claiming completion.",
+        "outputTruncated": false,
+        "ownedProcessGroupState": "absent",
+        "rawResultPath": "cases/capture-caps-positive.json",
+        "rawResultSha256": "3456dd726a3cd5db1808b1313294cb683dc5206624983156b6c52cae93b2cde5",
+        "result": "passed",
+        "role": "positive",
+        "skip": false,
+        "stderrUtf8Sha256": "2a05bf80252ce0d0aedde64109e6e4aed1f72ef5096d70a41caca38228d3d6d8",
+        "stdoutUtf8Sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "test": "tests.test_tooling_supervisor.ToolingSupervisorTests.test_subscription_only_preflight_and_periodic_stop",
+        "timeout": false
+      },
+      {
+        "actualArgv": [
+          "/private/tmp/agent-braid-m45-plan.nAWJs3/.venv-speckit/bin/python",
+          "-m",
+          "unittest",
+          "-v",
+          "tests.test_tooling_supervisor.ToolingSupervisorTests.test_prelaunch_caps_staleness_incident_and_unknown_refuse_without_start"
+        ],
+        "caseId": "capture-stale-unknown-refusal",
+        "category": "stale-caps",
+        "exitCode": 0,
+        "expectedOracle": "Stale, unknown-cost, incident, and unrecoverable prelaunch observations refuse before process start and retain measurement-unknown where applicable.",
+        "outputTruncated": false,
+        "ownedProcessGroupState": "absent",
+        "rawResultPath": "cases/capture-stale-unknown-refusal.json",
+        "rawResultSha256": "65888e4936ca393f19fe402ee6a85d93bd03f2ecc4dfa49c05a7eaf06783b5b8",
+        "result": "passed",
+        "role": "refusal",
+        "skip": false,
+        "stderrUtf8Sha256": "0434965c6bdcb44fc9b638b67c6455ce18edb2a2b403cda62da58c5c1fe7932a",
+        "stdoutUtf8Sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "test": "tests.test_tooling_supervisor.ToolingSupervisorTests.test_prelaunch_caps_staleness_incident_and_unknown_refuse_without_start",
+        "timeout": false
+      },
+      {
+        "actualArgv": [
+          "/private/tmp/agent-braid-m45-plan.nAWJs3/.venv-speckit/bin/python",
+          "-m",
+          "unittest",
+          "-v",
+          "tests.test_tooling_fixtures.ToolingFixtureTests.test_materializer_refuses_existing_symlink_outside_temp_and_wrong_kind"
+        ],
+        "caseId": "unsafe-root-refusal",
+        "category": "unsafe-root",
+        "exitCode": 0,
+        "expectedOracle": "Existing destination, symlink destination, repository-outside-temp destination, and non-runtime fixture are refused before creating the refused destinations.",
+        "outputTruncated": false,
+        "ownedProcessGroupState": "absent",
+        "rawResultPath": "cases/unsafe-root-refusal.json",
+        "rawResultSha256": "8513d8e3929069454ef02a2eb8499593ad8dba91bf98964d4845b38fc2ea7d20",
+        "result": "passed",
+        "role": "refusal",
+        "skip": false,
+        "stderrUtf8Sha256": "cb828e86c996a007abc3a27eab929ce549888b7bfa71a87018f986a1fcf1f264",
+        "stdoutUtf8Sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "test": "tests.test_tooling_fixtures.ToolingFixtureTests.test_materializer_refuses_existing_symlink_outside_temp_and_wrong_kind",
+        "timeout": false
+      },
+      {
+        "actualArgv": [
+          "/private/tmp/agent-braid-m45-plan.nAWJs3/.venv-speckit/bin/python",
+          "-m",
+          "unittest",
+          "-v",
+          "tests.test_tooling_mcp.ToolingServiceTests.test_results_and_grants_are_disjoint_from_every_allowlisted_worktree"
+        ],
+        "caseId": "disjoint-grant-roots",
+        "category": "unsafe-root",
+        "exitCode": 0,
+        "expectedOracle": "Disjoint synthetic result/grant roots are accepted; nested, aliased, and overlapping roots are rejected against every allowlisted worktree.",
+        "outputTruncated": false,
+        "ownedProcessGroupState": "absent",
+        "rawResultPath": "cases/disjoint-grant-roots.json",
+        "rawResultSha256": "47a869c8815e6fc695a127eb56edf8f5e70f65b2769dc3274ec5ca7818b9fe54",
+        "result": "passed",
+        "role": "positive",
+        "skip": false,
+        "stderrUtf8Sha256": "8ba7323830545a47814e7111e9ce813a04f900ccd4442a3fb956c8ad5c8ea6db",
+        "stdoutUtf8Sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "test": "tests.test_tooling_mcp.ToolingServiceTests.test_results_and_grants_are_disjoint_from_every_allowlisted_worktree",
+        "timeout": false
+      },
+      {
+        "actualArgv": [
+          "/private/tmp/agent-braid-m45-plan.nAWJs3/.venv-speckit/bin/python",
+          "-m",
+          "unittest",
+          "-v",
+          "tests.test_tooling_fixtures.ToolingFixtureTests.test_execute_fixture_positive_synthetic_grant_execute_status_verify_control"
+        ],
+        "caseId": "grant-positive-execute-verify",
+        "category": "grant",
+        "exitCode": 0,
+        "expectedOracle": "A fixture-owned synthetic operator grant permits execute; runtime status and verify both report verified-completed and the result tree equals the fixture oracle.",
+        "outputTruncated": false,
+        "ownedProcessGroupState": "absent",
+        "rawResultPath": "cases/grant-positive-execute-verify.json",
+        "rawResultSha256": "e647d67a3a5b3158181a42746113d4876a2789ac90a9e8b9fe47219ff16bf11b",
+        "result": "passed",
+        "role": "positive",
+        "skip": false,
+        "stderrUtf8Sha256": "52054c884cd8461e781e867207bab1da4a51aad4d89f52e475c85df499fea625",
+        "stdoutUtf8Sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "test": "tests.test_tooling_fixtures.ToolingFixtureTests.test_execute_fixture_positive_synthetic_grant_execute_status_verify_control",
+        "timeout": false
+      },
+      {
+        "actualArgv": [
+          "/private/tmp/agent-braid-m45-plan.nAWJs3/.venv-speckit/bin/python",
+          "-m",
+          "unittest",
+          "-v",
+          "tests.test_tooling_mcp.SyntheticRuntimeSequenceTests.test_existing_runtime_prepare_grant_execute_status_verify_and_refusal_guards"
+        ],
+        "caseId": "grant-missing-and-stale-refusal",
+        "category": "grant",
+        "exitCode": 0,
+        "expectedOracle": "Out-of-root prepare, stale plan, missing/expired grant are refused or unknown without creating the run; only an exact grant executes, verifies, and cannot be silently reused.",
+        "outputTruncated": false,
+        "ownedProcessGroupState": "absent",
+        "rawResultPath": "cases/grant-missing-and-stale-refusal.json",
+        "rawResultSha256": "921276bb8fe0b0892ec5d5347831e78750626e8b259aef43c307ff8811628d4d",
+        "result": "passed",
+        "role": "refusal",
+        "skip": false,
+        "stderrUtf8Sha256": "a2cd4b0d190e2bd3406374c96adf40344a86ccb440790645714bf314380e579d",
+        "stdoutUtf8Sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "test": "tests.test_tooling_mcp.SyntheticRuntimeSequenceTests.test_existing_runtime_prepare_grant_execute_status_verify_and_refusal_guards",
+        "timeout": false
+      },
+      {
+        "actualArgv": [
+          "/private/tmp/agent-braid-m45-plan.nAWJs3/.venv-speckit/bin/python",
+          "-m",
+          "unittest",
+          "-v",
+          "tests.test_tooling_capture.CaptureAdmissionTests.test_missing_grant_journey_has_explicitly_absent_grant_context"
+        ],
+        "caseId": "missing-grant-capture-context",
+        "category": "grant",
+        "exitCode": 0,
+        "expectedOracle": "The refusal journey retains missing-grant mode with null grant reference and digest; no grant is inferred from host permission.",
+        "outputTruncated": false,
+        "ownedProcessGroupState": "absent",
+        "rawResultPath": "cases/missing-grant-capture-context.json",
+        "rawResultSha256": "c66a43a7c17453b98b7bd8eace9c32d36a728106b9855935a4aa0b75af25e091",
+        "result": "passed",
+        "role": "refusal",
+        "skip": false,
+        "stderrUtf8Sha256": "cb124873f69bcab6b8763fbd59a8b160574b9c59b02f73638beedb9abe8c49c8",
+        "stdoutUtf8Sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "test": "tests.test_tooling_capture.CaptureAdmissionTests.test_missing_grant_journey_has_explicitly_absent_grant_context",
+        "timeout": false
+      },
+      {
+        "actualArgv": [
+          "/private/tmp/agent-braid-m45-plan.nAWJs3/.venv-speckit/bin/python",
+          "-m",
+          "unittest",
+          "-v",
+          "tests.test_tooling_capture.CaptureAdmissionTests.test_missing_or_mismatched_existing_grant_context_refuses"
+        ],
+        "caseId": "grant-mismatch-capture-refusal",
+        "category": "grant",
+        "exitCode": 0,
+        "expectedOracle": "Missing or mismatched exact existing grant references/actions are rejected at capture admission; a host permission setting does not fill the grant context.",
+        "outputTruncated": false,
+        "ownedProcessGroupState": "absent",
+        "rawResultPath": "cases/grant-mismatch-capture-refusal.json",
+        "rawResultSha256": "b2e016dce99970c3222c820da595dda8d2ccfeeea2f5a95a98983f81edd3c7dd",
+        "result": "passed",
+        "role": "refusal",
+        "skip": false,
+        "stderrUtf8Sha256": "6e72abd1bf8ae9fdfbc093d8ee9f12d9e90e670f5a5bc75aec41d5023360545f",
+        "stdoutUtf8Sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "test": "tests.test_tooling_capture.CaptureAdmissionTests.test_missing_or_mismatched_existing_grant_context_refuses",
+        "timeout": false
+      },
+      {
+        "actualArgv": [
+          "/private/tmp/agent-braid-m45-plan.nAWJs3/.venv-speckit/bin/python",
+          "-m",
+          "unittest",
+          "-v",
+          "tests.test_tooling_mcp.ToolingServiceTests.test_cancelled_request_never_dispatches"
+        ],
+        "caseId": "cancelled-request-refusal",
+        "category": "cancellation",
+        "exitCode": 0,
+        "expectedOracle": "A pre-cancelled analysis request returns refused with null result and does not dispatch.",
+        "outputTruncated": false,
+        "ownedProcessGroupState": "absent",
+        "rawResultPath": "cases/cancelled-request-refusal.json",
+        "rawResultSha256": "e1515d83c4dc8a2e6479670c86b385d0f01248de58c9fae0355b9175fcb6c213",
+        "result": "passed",
+        "role": "refusal",
+        "skip": false,
+        "stderrUtf8Sha256": "b7f8f83bcea2e113c419bb8a9e3ba1af681dc62ed47b8f79c17106091e25a4ec",
+        "stdoutUtf8Sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "test": "tests.test_tooling_mcp.ToolingServiceTests.test_cancelled_request_never_dispatches",
+        "timeout": false
+      },
+      {
+        "actualArgv": [
+          "/private/tmp/agent-braid-m45-plan.nAWJs3/.venv-speckit/bin/python",
+          "-m",
+          "unittest",
+          "-v",
+          "tests.test_tooling_mcp.WorkerCancellationTests.test_cancellation_waits_for_dispatched_worker_checkpoint"
+        ],
+        "caseId": "dispatched-cancellation-checkpoint",
+        "category": "cancellation",
+        "exitCode": 0,
+        "expectedOracle": "The application-level asyncio caller is cancelled only after the stdlib worker dispatch signal is observed; cancellation waits for worker completion at its checkpoint before propagating. This is not an SDK transport control.",
+        "outputTruncated": false,
+        "ownedProcessGroupState": "absent",
+        "rawResultPath": "cases/dispatched-cancellation-checkpoint.json",
+        "rawResultSha256": "40875a242e2afbc4f1e24e56a40c76b6d3af4bbfe349dd31d4b042fa85d1f687",
+        "result": "passed",
+        "role": "in-flight",
+        "skip": false,
+        "stderrUtf8Sha256": "5839992bea572211dbc34afba7681da6104b48d8f2902dda0a439400930c3e8f",
+        "stdoutUtf8Sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "test": "tests.test_tooling_mcp.WorkerCancellationTests.test_cancellation_waits_for_dispatched_worker_checkpoint",
+        "timeout": false
+      },
+      {
+        "actualArgv": [
+          "/private/tmp/agent-braid-m45-plan.nAWJs3/.venv-speckit/bin/python",
+          "-m",
+          "unittest",
+          "-v",
+          "tests.test_tooling_mcp.ToolingServiceTests.test_analyze_work_preserves_core_result_and_advisory_boundary"
+        ],
+        "caseId": "uncancelled-request-positive",
+        "category": "cancellation",
+        "exitCode": 0,
+        "expectedOracle": "An uncancelled valid analysis returns ok with exact independent-candidate core classification, executionAuthorization false, and input provenance digest.",
+        "outputTruncated": false,
+        "ownedProcessGroupState": "absent",
+        "rawResultPath": "cases/uncancelled-request-positive.json",
+        "rawResultSha256": "ce4588b10cdcab99dac03821f0fdebabac28aac95780e6bc0e90df7fcb17c7a6",
+        "result": "passed",
+        "role": "positive",
+        "skip": false,
+        "stderrUtf8Sha256": "e8168c0c8c2ae1fdcab31358a98ff1b3c948970bda7394711101068accedb7d3",
+        "stdoutUtf8Sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "test": "tests.test_tooling_mcp.ToolingServiceTests.test_analyze_work_preserves_core_result_and_advisory_boundary",
+        "timeout": false
+      },
+      {
+        "actualArgv": [
+          "/private/tmp/agent-braid-m45-plan.nAWJs3/.venv-speckit/bin/python",
+          "-m",
+          "unittest",
+          "-v",
+          "tests.test_tooling_fixtures.ToolingFixtureTests.test_recovery_fixture_positive_synthetic_interrupted_run_resume_and_verify_control"
+        ],
+        "caseId": "recovery-positive-after-interruption",
+        "category": "recovery",
+        "exitCode": 0,
+        "expectedOracle": "Synthetic checkpoint interruption remains unknown/refused and inspectable; exact resume grant recovers, then verify reports verified-completed with the expected fixture result tree.",
+        "outputTruncated": false,
+        "ownedProcessGroupState": "absent",
+        "rawResultPath": "cases/recovery-positive-after-interruption.json",
+        "rawResultSha256": "c625ce38d945d652e93e84e31b06cfeffb88182d8650def199f40eb910add0eb",
+        "result": "passed",
+        "role": "positive",
+        "skip": false,
+        "stderrUtf8Sha256": "c6bd60c2dd36337a3f8647197c05ef7a0dfcd7fd58b3008cdab426720cc6110e",
+        "stdoutUtf8Sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "test": "tests.test_tooling_fixtures.ToolingFixtureTests.test_recovery_fixture_positive_synthetic_interrupted_run_resume_and_verify_control",
+        "timeout": false
+      },
+      {
+        "actualArgv": [
+          "/private/tmp/agent-braid-m45-plan.nAWJs3/.venv-speckit/bin/python",
+          "-m",
+          "unittest",
+          "-v",
+          "tests.test_tooling_present.ExportTests.test_complete_result_json_matches_for_raw_and_enveloped_values"
+        ],
+        "caseId": "output-agreement-positive",
+        "category": "output-agreement",
+        "exitCode": 0,
+        "expectedOracle": "Canonical result JSON is exactly equal for a raw result and its envelope; a one-value mutation produces a different canonical result.",
+        "outputTruncated": false,
+        "ownedProcessGroupState": "absent",
+        "rawResultPath": "cases/output-agreement-positive.json",
+        "rawResultSha256": "7cc452d641d6f16b955dfdb0eba00de6f3f983ce9bdc4be56a7651c8aecf3d6c",
+        "result": "passed",
+        "role": "positive",
+        "skip": false,
+        "stderrUtf8Sha256": "b8e7e72def84367213e37fc65d7328377ee1a1e94f6bdf45284ee46d022a9390",
+        "stdoutUtf8Sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "test": "tests.test_tooling_present.ExportTests.test_complete_result_json_matches_for_raw_and_enveloped_values",
+        "timeout": false
+      },
+      {
+        "actualArgv": [
+          "/private/tmp/agent-braid-m45-plan.nAWJs3/.venv-speckit/bin/python",
+          "-m",
+          "unittest",
+          "-v",
+          "tests.test_tooling_present.ExportTests.test_exports_are_deterministic_safe_and_keep_complete_evidence_separate"
+        ],
+        "caseId": "output-export-positive",
+        "category": "output-agreement",
+        "exitCode": 0,
+        "expectedOracle": "Repeated exports are byte-identical, preserve complete evidence separately, and exclude injected script, path, private-repository, and terminal-control content.",
+        "outputTruncated": false,
+        "ownedProcessGroupState": "absent",
+        "rawResultPath": "cases/output-export-positive.json",
+        "rawResultSha256": "fdc4351fe63934faa659bcc1bc2b3cd568446589a183830236cb6945690fb6fa",
+        "result": "passed",
+        "role": "positive",
+        "skip": false,
+        "stderrUtf8Sha256": "07499e666cbf48c6af4867f99b6edf60c623b1c054a1ac93203845be322e5e11",
+        "stdoutUtf8Sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "test": "tests.test_tooling_present.ExportTests.test_exports_are_deterministic_safe_and_keep_complete_evidence_separate",
+        "timeout": false
+      },
+      {
+        "actualArgv": [
+          "/private/tmp/agent-braid-m45-plan.nAWJs3/.venv-speckit/bin/python",
+          "-m",
+          "unittest",
+          "-v",
+          "tests.test_tooling_present.ExportTests.test_export_requires_explicit_selection_and_refuses_unowned_references"
+        ],
+        "caseId": "output-unowned-refusal",
+        "category": "output-agreement",
+        "exitCode": 0,
+        "expectedOracle": "Missing selection and an unowned evidence reference both raise PresentationError.",
+        "outputTruncated": false,
+        "ownedProcessGroupState": "absent",
+        "rawResultPath": "cases/output-unowned-refusal.json",
+        "rawResultSha256": "19bc6a3af4e9e2d61948b8bcc49bf0a150d845f081fb3ddb81efdfa2f40477af",
+        "result": "passed",
+        "role": "refusal",
+        "skip": false,
+        "stderrUtf8Sha256": "00be5736fae8dbf6db97856724e02b4864bd870f5a8d669ba35a44b630fbbd4a",
+        "stdoutUtf8Sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "test": "tests.test_tooling_present.ExportTests.test_export_requires_explicit_selection_and_refuses_unowned_references",
+        "timeout": false
+      }
+    ],
+    "mandatoryCategories": {
+      "cancellation": {
+        "caseIds": [
+          "uncancelled-request-positive",
+          "cancelled-request-refusal",
+          "dispatched-cancellation-checkpoint"
+        ],
+        "expected": "uncancelled valid analysis succeeds; pre-cancelled input does not dispatch; dispatched worker reaches its checkpoint before cancellation returns"
+      },
+      "grant": {
+        "caseIds": [
+          "grant-positive-execute-verify",
+          "grant-missing-and-stale-refusal",
+          "missing-grant-capture-context",
+          "grant-mismatch-capture-refusal"
+        ],
+        "expected": "fixture-owned exact grant can execute/verify; missing, expired, stale, mismatched or absent grant context cannot authorize execution"
+      },
+      "malformed": {
+        "caseIds": [
+          "parity-positive",
+          "malformed-refusal"
+        ],
+        "expected": "valid bounded input parity; malformed shape and over-limit input are refused"
+      },
+      "output-agreement": {
+        "caseIds": [
+          "output-agreement-positive",
+          "output-export-positive",
+          "output-unowned-refusal"
+        ],
+        "expected": "canonical result equality and deterministic safe export; changed value differs and unowned evidence is refused"
+      },
+      "parity": {
+        "caseIds": [
+          "parity-positive"
+        ],
+        "expected": "core/runtime/MCP prepare exact value agreement and zero run/grant writes"
+      },
+      "recovery": {
+        "caseIds": [
+          "recovery-positive-after-interruption"
+        ],
+        "expected": "interrupted prefix is retained and inspectable; exact resume grant reaches expected verified result"
+      },
+      "stale": {
+        "caseIds": [
+          "fresh-subscription-positive",
+          "stale-and-unknown-refusal"
+        ],
+        "expected": "fresh bound observation accepted; paid/unknown/inactive/stale/cross-slot observations rejected"
+      },
+      "stale-caps": {
+        "caseIds": [
+          "capture-caps-positive",
+          "capture-stale-unknown-refusal"
+        ],
+        "expected": "fresh bounded preflight may start; stale/unknown/incident/exceeded observations refuse or stop without false completion"
+      },
+      "unsafe-root": {
+        "caseIds": [
+          "disjoint-grant-roots",
+          "unsafe-root-refusal"
+        ],
+        "expected": "disjoint owned roots accepted; symlink, existing, out-of-temp and overlapping paths refused before unsafe writes"
+      }
+    }
+  },
+  "evidenceClass": "synthetic-protocol-peer-control-run",
+  "historicalFailureAppendices": [
+    {
+      "candidateBinding": "historical run manifest as retained; not rebound",
+      "disposition": "preserved verbatim; incomplete prior result, superseded for current SC-003 outcome only",
+      "label": "earlier incomplete 18-case run",
+      "path": "sc-003-history/initial-incomplete-18-case"
+    },
+    {
+      "candidateBinding": "historical run manifest as retained; source drift detected",
+      "disposition": "preserved verbatim; incomplete prior result, superseded for current SC-003 outcome only",
+      "label": "19-case source-integrity-drift run",
+      "path": "sc-003-history/source-integrity-drift-incomplete"
+    },
+    {
+      "candidateBinding": "03c256bfe445e3d9cc985769a74eb22b2abb9996",
+      "disposition": "historical prior pass only; not evidence for candidate 3c01c5b",
+      "label": "prior 19-case pass on 03c256b",
+      "path": "sc-003-history/prior-03c256b-passed"
+    }
+  ],
+  "inputs": {
+    "agent_braid/__init__.py": "697f7daba2857756bd135ac489b9e69a9487ebb976d666d2d6cf59bcd175224e",
+    "agent_braid/__main__.py": "67efadf972eab744b466da1049ccc81acf1af77db6b699075757666e48897bb8",
+    "agent_braid/_advice_scope.py": "cc1899293ea5f0a27b0bc6dcbfc84c2383dc43dafdcea21fa23d428fa34646af",
+    "agent_braid/_system_one_stage_manifest.py": "91064a168971b7b4035cf670452ea1ea4ffbb0434866ab5f2bbc15db65658b20",
+    "agent_braid/analysis.py": "fadfb6f6d3d6f89002df519bbcc86d839724f243e2c8e52732ef57e555abfe00",
+    "agent_braid/cli.py": "9e1750b94d9ec846c07117a4b3490f0a3026401a3816a42145eb866f843bf988",
+    "agent_braid/git_adapter.py": "4548eb96849e2d0ed1eaefc53579d065651b00a2c6ae5b1aef6e2bdc5ae3dc45",
+    "agent_braid/git_counterexamples.py": "6a1a74c753426c0a0072ed2ef25afe609e3149e27d88510659f392e2f5ec9a64",
+    "agent_braid/git_exec.py": "ce5e348f355ca5f73f1095ee4cbab8779c224cce7c8ac326a5376be69d416853",
+    "agent_braid/git_integration_prototype.py": "8e77bf6a27993be13188249bab64c1ec331c120438dc170cc47e323fb3854c4e",
+    "agent_braid/git_partial_order.py": "79bb660b89202beec104e7e1a9cac87948f0a2545b9d1199174276ee48fcf34b",
+    "agent_braid/git_process.py": "3247ac861404cfb68f08939770a5048294b45ddc984a1379ca9eb2091ad48668",
+    "agent_braid/git_replay.py": "62a2c461902e30d874dfe82bed77ab79075f33cb0e56f1e543fd9d317f1d571e",
+    "agent_braid/git_runtime.py": "ceb4469906b6c97a6f03faf3cc1b4ea8387df937c06b8ccd49984eaf2dff4d4e",
+    "agent_braid/git_runtime_process.py": "6cde49846602aec8b18a3df141c8f77ff2bb66badd098d149393e900c44c0da4",
+    "agent_braid/m35_source_window.py": "71fb8605b4dbff7ee715c6193cc411faa64918bd680a44df7364e00bb897d0eb",
+    "agent_braid/m4_real_workload.py": "f69221eb6ed21d5b959e0e172fee34191c651195a3bcc18e8324ea8709d78678",
+    "agent_braid/m4_real_workload_trials.py": "680a3de7ef5cfe3e96293bffea9703241e63292cca8e9b173ee6061b5b35789c",
+    "agent_braid/mcp_advice.py": "74b2a62a6e4665e9d3beca9cf9abf7e9e017d6353a670f5b047dbf27c928c1a9",
+    "agent_braid/mcp_runtime.py": "32d30a6a167235e1ab8ca89acdc32b23eb74412e2ac0555fe7c9118d1d816d83",
+    "agent_braid/native_predictor.py": "9207966d8fd554a528dab313e978064cc8a4701a905fdb9a4335c1dfc7de39dc",
+    "agent_braid/runtime_policy.py": "930ead80e4085301e6337af58660665219da3d3b40b72cfca8b803cebfa09188",
+    "agent_braid/runtime_scheduler.py": "47bb371c88726793d207a59bb85cb6911d86e00a44694b37934805d9fa2462a9",
+    "agent_braid/structured_exchange.py": "f43079b348c78e9e1a994492fb14754e1771533771e009b1186ff54bb3efa396",
+    "agent_braid/system_one.py": "8a52a047bc72ba4f1099df60c1051178fbcb7735ee4d6e615d9b8052bbb31f44",
+    "agent_braid/system_one_advisors.py": "9cc017b13c6ba36ded431b19494a2f4991e1090d1aafab546aa20a4852dd3922",
+    "agent_braid/system_one_backends.py": "e3d49bac70ef6904bddefdb1562e1961c98af0c8b7e81655affd94eca169a305",
+    "agent_braid/system_one_cli.py": "f19965e8f8dc4c0d45c2ce728cfb45721b740319bb1fb6c2c865aa5e3defc0c4",
+    "agent_braid/system_one_context.py": "cdda801f1561d508c7fa2c5f5c2d8f926fc9c3bc906b1a16a2b7a8c5bfdff3f0",
+    "agent_braid/system_one_hooks.py": "4fda66beafd10a076931ea5b43ceda68c012a8b9a84475da966f8056bef44417",
+    "agent_braid/system_one_policy.py": "12f09b48fe916f03c17faf18726c15ad862779ab0dcf4fdb81d5a42dc9212f31",
+    "agent_braid/system_one_product_metadata.py": "54e5a9e26804172f2f83c1e68d1722bf8ac344cab8eee8641976fd301532716f",
+    "agent_braid/system_one_router.py": "1a4c0f86667d58290f4f6395481ec3de7a9edc223f04dce80bc3c37e855b16e2",
+    "agent_braid/system_one_schema.py": "995ef38bc3cf9cf71dbd491e09b3ea4091157c382ca3bb8b6ba91095fec88929",
+    "agent_braid/system_one_trace.py": "bc69c1027aa829935979304538a8fd63dcd1be6af0757a86fc3fb9afe0509b50",
+    "agent_braid/tooling_assets.py": "58022d54f84bd91448889805923316d20c400c889564114999a85d7d24a874fd",
+    "agent_braid/tooling_capture.py": "6f6b4b0665066305c7fc358d97676f5278313ea7dc0af2f46153489652268bc3",
+    "agent_braid/tooling_cli.py": "2ba676c7873ee17590e66baa8ace4bef2453a12d686db57654382a8b23dece1a",
+    "agent_braid/tooling_costs.py": "4ae2510aaf1127d32047545c71e8c0798eb0dbb617a4c97a996e9393c5216c70",
+    "agent_braid/tooling_evaluation.py": "ec9cdf98e685703827ffe2b8cbb3efca1c8066d80f1b5db2d8c3d5f5b4b8c56a",
+    "agent_braid/tooling_evaluation_report.py": "f32bac3bd0b81c50ea1257db51dd0c15c1ebfc146dadef09dde0a87b6b0e0e5b",
+    "agent_braid/tooling_fixtures.py": "626fcb65f2d39297c29d79f19a91fb63f70854c382c358ebf97fd4729e501891",
+    "agent_braid/tooling_full_cost.py": "f8ceaaf0b1cd01b83bb9ae9f50caa141bb1908a99f087509696ca55326c1d4b4",
+    "agent_braid/tooling_host_events.py": "768ed2fa4cb634090f83374f6341725eb73b3e8737387fe9e3c1eccf44e6e791",
+    "agent_braid/tooling_hosts.py": "6fefe066947d0f4a51a9f68f3861ca626ddafa0f497df563df7eeba91d983f6c",
+    "agent_braid/tooling_incremental_usage.py": "5bf1184ec7feab55ccdc6f46a724615558c3efd30c0be90b3c2550e57ad3d41b",
+    "agent_braid/tooling_install.py": "91a736438833efdb8f98d70fed654075cf6da7e9c9303703c965e1d90e8fd5bd",
+    "agent_braid/tooling_mcp.py": "f8d151fb11905d5bff7114571e5663bf80cb0cd15af3acb1bf5159b14c54b6dd",
+    "agent_braid/tooling_measurements.py": "90e3a95a68debeabb12fd7e7a63d30789aee4a6d7169c0d30629b2efcf1fcf41",
+    "agent_braid/tooling_model_identity.py": "1376b95f2a07d855f505157c1784720cbfcbdf991f153f624b7be85d9898082e",
+    "agent_braid/tooling_money.py": "7a8585247c099e4ef541f911d416627f13e06aa6e1e09798d8785b619d271704",
+    "agent_braid/tooling_present.py": "781c4fa1aaac211405ef26620ca80d703b0d37e7769c89cf202b13d9bf3e6eb9",
+    "agent_braid/tooling_process_birth.py": "cdf29cea9ce0f69fee42308e69849fcfb2c212d4e22a89c2cf9627f60a78b73b",
+    "agent_braid/tooling_resources.py": "26b93e9fd27c2ff67e9c8dd39f7cd07be68e349663172e722957e6fd223f0d34",
+    "agent_braid/tooling_sessions.py": "541559e1c53264b3ea4a7c2a7d78716b0049aa641bbda1e28ffdfebd68c07304",
+    "agent_braid/tooling_subscription.py": "086632859810fa21496648f5dd8c1a9b750b29adeda7f106ef95285eb16768bc",
+    "agent_braid/tooling_supervisor.py": "480d98f47a1771d75ef684cbd5f82df6e473781f211a310441b659d316ae08fc",
+    "agent_braid/trace_adapter.py": "4da8a0cb5b4885df80681c9005ec82b0ff685d7dd9ed1d577eac3655af637332",
+    "agent_braid/utility_accounting.py": "402c77255209cfeddfbad0123b39dcfe7aa1bec8ce560e50ed339e6b54a7006b",
+    "agent_braid/utility_budget_observer.py": "611624b8734b342016e0f8fbc19a912422d3ff42fd98bce1ca941c90ed005568",
+    "agent_braid/utility_fixtures.py": "ea3ecb2bda7e6909f5307232dcc6b13953e4ac560eab9144dd0f566d90de8119",
+    "agent_braid/utility_trials.py": "8109945223d3b4f85a0c7957a1fd393008d8d8561bcf084017adc614190fd49b",
+    "docs/tooling/CONTROLS.md": "5da158e035bbe31d88d15c55dcf8ea9db31bf1a08bcc8669da1526e97ab4f861",
+    "examples/analysis/file-edits.json": "23a833a13adb2b029a696028bb1ae64ced30a65a19375d8e515c1c4d809fcd93",
+    "examples/tooling/fixture-inventory.json": "db76e4ec30c0b09200d6cbdb7a6f863c577a4ac41d7dccbbbd7819f22c93446d",
+    "examples/tooling/prompts.json": "1b5d94eece15b01e0409579adeb18d5da6564b1d5f01487b461197cbe198d3c2",
+    "examples/tooling/registration-draft.json": "3f7287d94561783c01c47987d1f8e0146b9c5fdea09471b2464b4c1e17c47ad6",
+    "examples/tooling/technical-registration-draft.json": "17ff510a6fe507f79f42f2228faa6d861a78b4992548c05e0ff0ab2b1b333fbe",
+    "pyproject.toml": "21b32beb7d47b4551e837027ae2713890dc14bb07d7efc56e1cdf2ecc57c1648",
+    "scripts/run_tooling_controls.py": "84e203184684b648adbbdc46b5770c3106b75b83229b293021980d6c6c6551fb",
+    "specs/044-ai-tooling-evaluation/evaluation-protocol.md": "f09dbec3fb0e915b1413038ea030bc0ac138c2661f445277292fd980c07cee25",
+    "tests/test_adoption_evidence.py": "7bdddc5eed3a1ae8bd955342f7dde07a4f411dd19cdcb07b87dac5363b578b5d",
+    "tests/test_adoption_pathline.py": "2384fd0718bcacf4402924838289e502331c1934104deafc06ba722c8c77ac9c",
+    "tests/test_analysis.py": "c5da2d4bffb162c77ab8eae71f3f768142780e63f6f9035e4b0518511b31efa4",
+    "tests/test_ci_validation.py": "10bf5762fd3afb2b327e572fa735a09ae567612c2a24ef53a62e1ea7366467f4",
+    "tests/test_contextual_lab.py": "aa8f33ba47d79a6418d7d1f3d1a570782561ced894dbf24ada03cda5679e674b",
+    "tests/test_contracts.py": "aa76622892bfae460538f6d0ea9f66345ccbaafd2a87a2361922a49b501518a6",
+    "tests/test_git_adapter.py": "f27408f851d23c78460bfc52b3ebc024ef58acde1c0d0f649dc9512d78b4c067",
+    "tests/test_git_counterexamples.py": "d2a14ca5b963a9cefe2a322b86305172baf692b6cd00c5216f9de120a936c685",
+    "tests/test_git_integration_prototype.py": "60769e5815a2139fa698eccf7c4dae0ae1805d20ac765d5dee5b73eddfe6a94e",
+    "tests/test_git_partial_order.py": "579c8a5d78f865370da618f144ba798d00fe1b5dc9b81052c0140ac1e89d625b",
+    "tests/test_git_replay.py": "e88c0bb3fefc47967421be011c40ca0e32635551b632b8f691b2b840cc35cc66",
+    "tests/test_git_runtime.py": "70e0655241bb64b4fb620309b0897c350b077a46db57be142f000a2e0d46fe47",
+    "tests/test_github_tracking.py": "db52cc0517ed3836db26c8a71f104286bc022885e8bd7f3ab7fd2ead2be08508",
+    "tests/test_lab.py": "d83f9e3d56006fedc668bd335dcfdcda0f34452e81e0ee4f632383910bab8e51",
+    "tests/test_linux_experiments.py": "c0980c63c1ed3c20615fea994be6743d394eb5da52223cfce9c275cbf368d9c8",
+    "tests/test_m05_closure.py": "5d71a8640c2d2c89b1e9dc8d7237c02827867b02739b2cf255fa9525bb1863bc",
+    "tests/test_m0_closure.py": "dbb3f552e3a517e0a6acc35b38976651b3968e05dd2e8401afb8ea30681d435f",
+    "tests/test_m1_closure.py": "338af503b4287324bb655b7b1d9585ff20700879ec72d8f602f35c771fc7855f",
+    "tests/test_m2_closure.py": "abc549754a76709f96bf0934c9f886c965f2a629877c9777f019257c5a6d7eb3",
+    "tests/test_m2_performance_retest.py": "72b34fb484592fd5db7fbfba3d60f48473ce8d4503e0d30a969465afb484e1f3",
+    "tests/test_m2_preparation_benchmark.py": "11b29310eede381f01a5b68a0890f305187223e493b27184f1b98cb1432c50ae",
+    "tests/test_m2_real_workload.py": "014220d074e871d0c27dac136dd9c8160755658d772f1ba594ad09879c2fb4d4",
+    "tests/test_m2_retest_proposal.py": "cefa19956850c131bb5b5ee5d34f5c6cb3dd61a842f3ebf615e5593fb8335f20",
+    "tests/test_m35_lab_export.py": "12324a699bcbc5820804835a11b1a0cbc12bf8a55104081275cc4a41aa0db0c6",
+    "tests/test_m35_seal_validate.py": "96048df3b824e89830b57bea6b0b94d6670abcd2aef85f99304b9d910e1be349",
+    "tests/test_m35_source_capture.py": "0a64a2df78379d9b3999b43d4fc81338d94777ffaf14ff0e5d8d97cf26771edb",
+    "tests/test_m35_source_window.py": "1cd98d3ccd6f2473c38561a1ac8c8df879c1f0a49876e2fc2bdb590fe5b9128b",
+    "tests/test_m4_alpha_mcp.py": "9d5b403be63d25ed62aee60686b4d4bf74dd004e0714c3f46318ecbdbcc10214",
+    "tests/test_m4_alpha_policy.py": "51fd5581bbf50971aba89bb0cda3df27ae799fe2648cd44e99b2347d140f6418",
+    "tests/test_m4_alpha_scheduler.py": "03966aac4af6dc9f4d99400aa0daf26bdb76711b8a50ce30d93ee60982f3ba52",
+    "tests/test_m4_cost_profile.py": "a9bd3f7e883401f292e7c6789fbab189c8e90c1693582c0f5d625ae07492d1d2",
+    "tests/test_m4_real_workload_preparation.py": "40ed0e337f340b28d4efa03dd94a9658da4296a15fc52dd47000f8882298301f",
+    "tests/test_m4_real_workload_trials.py": "ba6b2ebf1a5f18450802a23de187bb5abaad12eff3426defae8acc30ed22c425",
+    "tests/test_m4_utility.py": "c15962f7db6e7f51c16178a3326d4a3f93f36091ffe96250606df7479ecf66fd",
+    "tests/test_m4_utility_preparation.py": "538ae5c145302f77d2cbfbae182710a9548788a7eb6b24513daaa9ae5c36efdf",
+    "tests/test_native_predictor.py": "3a685456125bcfae67086e9a63959359cb7b79e29e4ebc4d3a9096eddc1dbfda",
+    "tests/test_native_predictor_contract.py": "06958799ccde0eec126bde1a7492c47796c0ae5429a8e0da8515d950fbe196fd",
+    "tests/test_predictor_readiness.py": "5a14dc3a7296e6c471acee12207aaeb5e3f0e696f8738ea2b59ba101b5f7b06e",
+    "tests/test_publication.py": "25d4426beddc8741a4326aa53cfd1e8d51651afc8cc0b453ee1d77ac701e93bd",
+    "tests/test_real_workload_manifest.py": "799eef73a912a124de1a56a219d1c1eff1de3f2f3a3cf3edfe92556f3f0d5479",
+    "tests/test_release_records.py": "d672433c5f467e642f7aaf7140e6efb44b3ac02f42be2012dfe81c6315646fcb",
+    "tests/test_repository.py": "ee0550346aeed84a20afaca640df66efd434f3e2b623a940a9ac0585682666d1",
+    "tests/test_runtime_refinement.py": "578ab9b8921509be026b41708e70593b82a0d1a7bec1c7fd7524f2cc29860477",
+    "tests/test_spec_kit.py": "55e60728b0c20db11b77f0cbff5d5519e03352f4e718a943f61f51316cfb2a47",
+    "tests/test_strategy.py": "af6c316cfa422e3ecfd027b66e5f5f6588df6095370e3b90882e436746c026c3",
+    "tests/test_structured_exchange.py": "13a59d522bd4a2f5739ae3431d4141f9e5f9c173eeff064edf9c47dcd8bd7b4d",
+    "tests/test_system_one_advisors.py": "b712dcd1281f31e98c2b0abeec940266f37367516b4eed1b66edf0950ec31a14",
+    "tests/test_system_one_backends.py": "442dc877c441e43d1c8abdb889fed3b94b7f2d753efabd28cfbde814dba7691f",
+    "tests/test_system_one_cli.py": "db8b80d4435218c0fb4d5679db7de6e8a66808931a6c3685461fd9787b7f4e13",
+    "tests/test_system_one_concurrency.py": "3be7d3e980d33725dbb0dfb8fa26afa1f6f9c07ae574b2b7ea45c078f4bebbda",
+    "tests/test_system_one_context.py": "f54ac437ed9d516033189efe3f17b4990d872d4627a6f5fadf51950132771978",
+    "tests/test_system_one_core.py": "db692c76cc62eb05f05b2b7529199f819aba485ccdfd5c9bef75e999d2d9724a",
+    "tests/test_system_one_hooks.py": "bc8286a410f8ddf328271b2427b9e8cd46212aa49904da34e446bd2d6de3c1b2",
+    "tests/test_system_one_mcp.py": "39978c47ce9215f8a56461f1d99d285ec0c7fe2a49d36bbe72877d9f34db8168",
+    "tests/test_system_one_policy.py": "6d021a247b7051ec4c625af75fe3275922cd3f610f080e1a0258e1febadea552",
+    "tests/test_system_one_router.py": "df58fb0573f707fe8d55609f282c458f00f95efdcc71062586c00ca1cfe57f60",
+    "tests/test_system_one_runtime_boundary.py": "94cc2ae35fceab234666dea69db1340095882ecfe2d8b6340f9d0fdcdcf032db",
+    "tests/test_system_one_schema.py": "ba5f6e6a6326acab2df449d01aa673a0be10a468088db895fb6b89d0e900c342",
+    "tests/test_system_one_trace.py": "b50cb7f0d089a5e05f9e4bd8a53fbbe07f3806148e95dbb089562f000df62874",
+    "tests/test_tooling_assets.py": "aa305e947ad695a3ae9eb158ceb9cd447db296d3e8af12db40513d33529a8a7c",
+    "tests/test_tooling_capture.py": "8aec955c4a714e974e1369048e6002310835d7b1b853ab082b9fea1b350c9f5c",
+    "tests/test_tooling_controls.py": "56c43b8418e7b60db7439913f94741dad186ec8ec71fbabec60bb9e48d0e4535",
+    "tests/test_tooling_costs.py": "1456186c3635e7ba2c2f63252677cbeebd8640b814a99fb5bc4962a4ad3bca94",
+    "tests/test_tooling_evaluation.py": "68e621801363fa48a1218bee8dc11e38c8d4c6425522133fbc39eacc9282d1ed",
+    "tests/test_tooling_evaluation_report.py": "520c80b6af471fd1d084bffee25e20623a9c419c62d4d991b02c0b5b4a3365c9",
+    "tests/test_tooling_fixtures.py": "d3090863c70db26aca4d52a7f0f61e6ca7a7a428325941b3af8b7ee7f3e3473a",
+    "tests/test_tooling_full_cost.py": "0d6c3ff4bdc60cc83278d0a99b4fd5a118d799b5e1dde2c3c7f64e972254255b",
+    "tests/test_tooling_host_events.py": "16d1fa694c1747a1d00a5f429308ed258ac9f44d8aa3d5c5869a77a829a166e1",
+    "tests/test_tooling_hosts.py": "7466407c82667fbd800fa0376200c85d9f679747f5292c5494b75bb4e8ea925f",
+    "tests/test_tooling_incremental_usage.py": "b9fbfb37c9bec42ac19c4b9ca72806ddb6e0ee62e9838aa94f87c3604811d77c",
+    "tests/test_tooling_install.py": "7988767724e86ade09e5fcf3c36e3a87f1417c985a68d6e0b1d22d611b34d233",
+    "tests/test_tooling_journey.py": "b0145f60d0517882c421536f1369073121ff612ff947867a293c27b7ffd76c96",
+    "tests/test_tooling_mcp.py": "de9ae5adbe42507a99cb33ecffbd0634455614aa8201c160d7a8d06eeabe6075",
+    "tests/test_tooling_measurements.py": "31dfd51c41391881aef34625d90c4db8041de1556b893bea783ec820ef47eba8",
+    "tests/test_tooling_model_identity.py": "9ef1a1b1a73ecd9a326155b81474019576331ea0a0967092eb42f6a7acbf9b97",
+    "tests/test_tooling_money.py": "8249ddf040075ed062ec66d4f75eecb891ac15f5424fc30ed381b547b5c5e96e",
+    "tests/test_tooling_present.py": "ba5abecef1d79eb15030ad036f70131335b75164d2e8787ea9b66d88f7a96992",
+    "tests/test_tooling_process_birth.py": "09ee74ab4e49fa7ac7b39d61e2d20b17110b2732bc6cfd93f47089e01c23d99d",
+    "tests/test_tooling_resources.py": "fb487356fb858c19de37e6f62739410ce16e351fe6ff9b1bdc261588d62adc33",
+    "tests/test_tooling_sessions.py": "17c80f57da18f7f0fc0d945a024496bbdd767d3e9555023248a769d38894fe33",
+    "tests/test_tooling_subscription.py": "ebb5fad30323cced7d395ff0cf32fd26547be074893401c46fd83733a0c285b6",
+    "tests/test_tooling_supervisor.py": "74f565906f28ffb01683a3471f4505c439d85097d25441b0fc08010bdbe532bc",
+    "tests/test_trace_adapter.py": "59245e466e20b124be50e20951025c9d41ddfaaa18b6190b03598be8abce50d3",
+    "tests/test_trace_lifecycle_spikes.py": "bc977c189c5d0789ba627f3050cb4ed872a2487964298f43c8946e920e17b7ce",
+    "tests/test_utility_accounting.py": "5b87e6ee636866d606bb5aca916375cb907c3c09655c68edcfef1dfb6df6faa2",
+    "tests/test_utility_fixtures.py": "f1468591ac02db8b44933f2262119d52fb707f026048080b9317f3a8de3ffb54",
+    "tests/test_utility_trials.py": "551e4d1eb0df2ebcfdb760de6de848182029626856a99e7008287d301082c3ed",
+    "tests/test_validation_profiles.py": "6771a4241e7104b82c0d73308cd65cbcefea5ab56bebdde43336f65675c4cd4d"
+  },
+  "recordedScope": [
+    "The 19 exact named unittest methods are the semantic oracles; subprocess success alone is not interpreted as a semantic pass.",
+    "Every current mandatory category has explicit mapped case IDs and exact expected-oracle text in the frozen manifest; all 19 case outputs and integrity metadata are retained.",
+    "Application-level dispatched-worker cancellation is tested by stdlib asyncio helper only; this is not MCP SDK transport cancellation.",
+    "All grants are synthetic and fixture-owned. No real-user data, grants, or provider operations were used."
+  ],
+  "reviewBindings": {
+    "rawRunIntegritySha256": "59f757373302da28ca748b022c33fa3de5957cab108f025e9f278aeeb2b6a751",
+    "rawRunManifestSha256": "3e189b554a8d2de9fc18173e40c52472f079d923da0cc83231d00523673551d3",
+    "rawRunReceiptSha256": "22804403cc73306cff9e146f69daedb4a790b25ed8017f1bed96ca416c29ac36",
+    "sourceCandidate": "3c01c5b2e594c7ddfaf7850585478a6d41a6677c",
+    "sourceManifestEntryCount": 159,
+    "sourceManifestSha256": "a4e3501a9f7585070896bfaa1863a940dbe31fe1ad8a804e92e63555c598818b",
+    "sourceTreeStatusAtExecution": "clean"
+  },
+  "run": {
+    "caseCount": 19,
+    "executionMetadata": {
+      "caseCommands": [
+        {
+          "argv": [
+            "/private/tmp/agent-braid-m45-plan.nAWJs3/.venv-speckit/bin/python",
+            "-m",
+            "unittest",
+            "-v",
+            "tests.test_tooling_fixtures.ToolingFixtureTests.test_runtime_fixture_materializes_valid_request_and_read_only_prepare_parity"
+          ],
+          "caseId": "parity-positive"
+        },
+        {
+          "argv": [
+            "/private/tmp/agent-braid-m45-plan.nAWJs3/.venv-speckit/bin/python",
+            "-m",
+            "unittest",
+            "-v",
+            "tests.test_tooling_mcp.ToolingServiceTests.test_service_validates_call_shape_and_operation_bounds_itself"
+          ],
+          "caseId": "malformed-refusal"
+        },
+        {
+          "argv": [
+            "/private/tmp/agent-braid-m45-plan.nAWJs3/.venv-speckit/bin/python",
+            "-m",
+            "unittest",
+            "-v",
+            "tests.test_tooling_subscription.SubscriptionPolicyTests.test_rejects_paid_unknown_inactive_stale_and_cross_slot_states"
+          ],
+          "caseId": "stale-and-unknown-refusal"
+        },
+        {
+          "argv": [
+            "/private/tmp/agent-braid-m45-plan.nAWJs3/.venv-speckit/bin/python",
+            "-m",
+            "unittest",
+            "-v",
+            "tests.test_tooling_subscription.SubscriptionPolicyTests.test_valid_observation_and_freshness"
+          ],
+          "caseId": "fresh-subscription-positive"
+        },
+        {
+          "argv": [
+            "/private/tmp/agent-braid-m45-plan.nAWJs3/.venv-speckit/bin/python",
+            "-m",
+            "unittest",
+            "-v",
+            "tests.test_tooling_supervisor.ToolingSupervisorTests.test_subscription_only_preflight_and_periodic_stop"
+          ],
+          "caseId": "capture-caps-positive"
+        },
+        {
+          "argv": [
+            "/private/tmp/agent-braid-m45-plan.nAWJs3/.venv-speckit/bin/python",
+            "-m",
+            "unittest",
+            "-v",
+            "tests.test_tooling_supervisor.ToolingSupervisorTests.test_prelaunch_caps_staleness_incident_and_unknown_refuse_without_start"
+          ],
+          "caseId": "capture-stale-unknown-refusal"
+        },
+        {
+          "argv": [
+            "/private/tmp/agent-braid-m45-plan.nAWJs3/.venv-speckit/bin/python",
+            "-m",
+            "unittest",
+            "-v",
+            "tests.test_tooling_fixtures.ToolingFixtureTests.test_materializer_refuses_existing_symlink_outside_temp_and_wrong_kind"
+          ],
+          "caseId": "unsafe-root-refusal"
+        },
+        {
+          "argv": [
+            "/private/tmp/agent-braid-m45-plan.nAWJs3/.venv-speckit/bin/python",
+            "-m",
+            "unittest",
+            "-v",
+            "tests.test_tooling_mcp.ToolingServiceTests.test_results_and_grants_are_disjoint_from_every_allowlisted_worktree"
+          ],
+          "caseId": "disjoint-grant-roots"
+        },
+        {
+          "argv": [
+            "/private/tmp/agent-braid-m45-plan.nAWJs3/.venv-speckit/bin/python",
+            "-m",
+            "unittest",
+            "-v",
+            "tests.test_tooling_fixtures.ToolingFixtureTests.test_execute_fixture_positive_synthetic_grant_execute_status_verify_control"
+          ],
+          "caseId": "grant-positive-execute-verify"
+        },
+        {
+          "argv": [
+            "/private/tmp/agent-braid-m45-plan.nAWJs3/.venv-speckit/bin/python",
+            "-m",
+            "unittest",
+            "-v",
+            "tests.test_tooling_mcp.SyntheticRuntimeSequenceTests.test_existing_runtime_prepare_grant_execute_status_verify_and_refusal_guards"
+          ],
+          "caseId": "grant-missing-and-stale-refusal"
+        },
+        {
+          "argv": [
+            "/private/tmp/agent-braid-m45-plan.nAWJs3/.venv-speckit/bin/python",
+            "-m",
+            "unittest",
+            "-v",
+            "tests.test_tooling_capture.CaptureAdmissionTests.test_missing_grant_journey_has_explicitly_absent_grant_context"
+          ],
+          "caseId": "missing-grant-capture-context"
+        },
+        {
+          "argv": [
+            "/private/tmp/agent-braid-m45-plan.nAWJs3/.venv-speckit/bin/python",
+            "-m",
+            "unittest",
+            "-v",
+            "tests.test_tooling_capture.CaptureAdmissionTests.test_missing_or_mismatched_existing_grant_context_refuses"
+          ],
+          "caseId": "grant-mismatch-capture-refusal"
+        },
+        {
+          "argv": [
+            "/private/tmp/agent-braid-m45-plan.nAWJs3/.venv-speckit/bin/python",
+            "-m",
+            "unittest",
+            "-v",
+            "tests.test_tooling_mcp.ToolingServiceTests.test_cancelled_request_never_dispatches"
+          ],
+          "caseId": "cancelled-request-refusal"
+        },
+        {
+          "argv": [
+            "/private/tmp/agent-braid-m45-plan.nAWJs3/.venv-speckit/bin/python",
+            "-m",
+            "unittest",
+            "-v",
+            "tests.test_tooling_mcp.WorkerCancellationTests.test_cancellation_waits_for_dispatched_worker_checkpoint"
+          ],
+          "caseId": "dispatched-cancellation-checkpoint"
+        },
+        {
+          "argv": [
+            "/private/tmp/agent-braid-m45-plan.nAWJs3/.venv-speckit/bin/python",
+            "-m",
+            "unittest",
+            "-v",
+            "tests.test_tooling_mcp.ToolingServiceTests.test_analyze_work_preserves_core_result_and_advisory_boundary"
+          ],
+          "caseId": "uncancelled-request-positive"
+        },
+        {
+          "argv": [
+            "/private/tmp/agent-braid-m45-plan.nAWJs3/.venv-speckit/bin/python",
+            "-m",
+            "unittest",
+            "-v",
+            "tests.test_tooling_fixtures.ToolingFixtureTests.test_recovery_fixture_positive_synthetic_interrupted_run_resume_and_verify_control"
+          ],
+          "caseId": "recovery-positive-after-interruption"
+        },
+        {
+          "argv": [
+            "/private/tmp/agent-braid-m45-plan.nAWJs3/.venv-speckit/bin/python",
+            "-m",
+            "unittest",
+            "-v",
+            "tests.test_tooling_present.ExportTests.test_complete_result_json_matches_for_raw_and_enveloped_values"
+          ],
+          "caseId": "output-agreement-positive"
+        },
+        {
+          "argv": [
+            "/private/tmp/agent-braid-m45-plan.nAWJs3/.venv-speckit/bin/python",
+            "-m",
+            "unittest",
+            "-v",
+            "tests.test_tooling_present.ExportTests.test_exports_are_deterministic_safe_and_keep_complete_evidence_separate"
+          ],
+          "caseId": "output-export-positive"
+        },
+        {
+          "argv": [
+            "/private/tmp/agent-braid-m45-plan.nAWJs3/.venv-speckit/bin/python",
+            "-m",
+            "unittest",
+            "-v",
+            "tests.test_tooling_present.ExportTests.test_export_requires_explicit_selection_and_refuses_unowned_references"
+          ],
+          "caseId": "output-unowned-refusal"
+        }
+      ],
+      "gitVersion": "git version 2.54.0 (Apple Git-157)",
+      "hostAcceptanceClaimed": false,
+      "installedDistributions": [
+        {
+          "name": "annotated-doc",
+          "version": "0.0.5"
+        },
+        {
+          "name": "attrs",
+          "version": "26.1.0"
+        },
+        {
+          "name": "build",
+          "version": "1.6.1"
+        },
+        {
+          "name": "click",
+          "version": "8.5.0"
+        },
+        {
+          "name": "json5",
+          "version": "0.15.0"
+        },
+        {
+          "name": "jsonschema",
+          "version": "4.25.1"
+        },
+        {
+          "name": "jsonschema-specifications",
+          "version": "2025.9.1"
+        },
+        {
+          "name": "markdown-it-py",
+          "version": "4.2.0"
+        },
+        {
+          "name": "mdurl",
+          "version": "0.1.2"
+        },
+        {
+          "name": "packaging",
+          "version": "26.3"
+        },
+        {
+          "name": "pathspec",
+          "version": "1.1.1"
+        },
+        {
+          "name": "pip",
+          "version": "25.3"
+        },
+        {
+          "name": "platformdirs",
+          "version": "4.11.9"
+        },
+        {
+          "name": "Pygments",
+          "version": "2.21.0"
+        },
+        {
+          "name": "pyproject_hooks",
+          "version": "1.3.3"
+        },
+        {
+          "name": "PyYAML",
+          "version": "6.0.3"
+        },
+        {
+          "name": "readchar",
+          "version": "4.2.2"
+        },
+        {
+          "name": "referencing",
+          "version": "0.37.0"
+        },
+        {
+          "name": "rich",
+          "version": "15.0.0"
+        },
+        {
+          "name": "rpds-py",
+          "version": "2026.9.1"
+        },
+        {
+          "name": "setuptools",
+          "version": "84.0.0"
+        },
+        {
+          "name": "shellingham",
+          "version": "1.5.4"
+        },
+        {
+          "name": "specify-cli",
+          "version": "1.0.7"
+        },
+        {
+          "name": "typer",
+          "version": "0.27.2"
+        }
+      ],
+      "kind": "unittest-control-source",
+      "platform": "macOS-26.6.2-arm64-arm-64bit-Mach-O",
+      "providerCalls": 0,
+      "pythonVersion": "3.13.11"
+    },
+    "failureLedger": [],
+    "integrityPath": "specs/044-ai-tooling-evaluation/evidence/sc-003-run/integrity.json",
+    "integritySha256": "59f757373302da28ca748b022c33fa3de5957cab108f025e9f278aeeb2b6a751",
+    "manifestPath": "specs/044-ai-tooling-evaluation/evidence/sc-003-run/manifest.json",
+    "manifestSha256": "3e189b554a8d2de9fc18173e40c52472f079d923da0cc83231d00523673551d3",
+    "passedCount": 19,
+    "receiptPath": "specs/044-ai-tooling-evaluation/evidence/sc-003-run/receipt.json",
+    "receiptSha256": "22804403cc73306cff9e146f69daedb4a790b25ed8017f1bed96ca416c29ac36",
+    "resultRootPathAtExecution": "/private/tmp/spec044-t003-20261010-3c01c5b-v1",
+    "resultRootVerifiedReadOnly": true,
+    "sourceChanges": [],
+    "status": "passed",
+    "wrapperInvocation": {
+      "argv": [
+        "/private/tmp/agent-braid-m45-plan.nAWJs3/.venv-speckit/bin/python",
+        "scripts/run_tooling_controls.py",
+        "--output-root",
+        "/private/tmp/spec044-t003-20261010-3c01c5b-v1"
+      ],
+      "cwd": "/private/tmp/m45-controls-20261009-v1",
+      "provenance": "Parent/root execution record; exact wrapper-level stdout/stderr transcript was not retained as a file. Per-case argv and outputs are retained in the raw run."
+    }
+  },
+  "schema": "agent-braid/spec-044-t003-evidence/v1",
+  "scopeAssessment": {
+    "boundedTask": "T003 / REQ-003 / SC-003 deterministic synthetic controls",
+    "remainingLimits": [
+      "No actual Codex or Claude host acceptance or host journey.",
+      "No MCP SDK transport behavior, provider execution, billing, clean-room reproduction, or human outcome evidence.",
+      "No evidence for T002, T004, other SPEC-040 tasks, or any source candidate after 3c01c5b.",
+      "The record and its hashes are technical evidence, not independent human annotation, scientific validation, production-safety certification, utility finding, or founder approval."
+    ],
+    "technicalResult": "19/19 controls passed; current run status passed; zero provider calls; sourceChanges and failureLedger empty; read-only result-root verification passed."
+  },
+  "status": "obtained"
+}
