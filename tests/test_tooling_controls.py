@@ -7,6 +7,7 @@ import os
 from pathlib import Path
 import tempfile
 import sys
+import subprocess
 import unittest
 from unittest.mock import patch
 
@@ -56,6 +57,207 @@ class ControlsManifestTests(unittest.TestCase):
 
 
 class ControlsResultTests(unittest.TestCase):
+    def _owned_repo(self, parent):
+        repo = parent / "source"
+        repo.mkdir()
+        for name in (
+            "agent_braid/baseline.py", "tests/baseline.py", "examples/tooling/baseline.json",
+            "examples/analysis/file-edits.json", "specs/044-ai-tooling-evaluation/evaluation-protocol.md",
+            "scripts/run_tooling_controls.py", "docs/tooling/CONTROLS.md", "pyproject.toml",
+        ):
+            path = repo / name
+            path.parent.mkdir(parents=True, exist_ok=True)
+            path.write_text("owned synthetic source fixture\n", encoding="ascii")
+        (repo / ".gitignore").write_text("*.ignored.py\n__pycache__/\n", encoding="ascii")
+        env = {key: value for key, value in os.environ.items() if not key.startswith("GIT_")}
+        env.update(GIT_CONFIG_NOSYSTEM="1", GIT_CONFIG_GLOBAL=os.devnull)
+        for args in (("init", "-q"), ("add", "."), ("commit", "-qm", "owned fixture")):
+            subprocess.run(["git", "-c", "user.name=Control Fixture", "-c",
+                            "user.email=fixture@example.invalid", "-c", "core.hooksPath=" + os.devnull,
+                            *args], cwd=repo, env=env, check=True, capture_output=True)
+        return repo
+
+    def test_source_drift_cannot_turn_green_case_results_into_complete_evidence(self):
+        # The subprocess oracle is stubbed; the candidate tree and Git changes
+        # are real and confined to this test's owned disposable repository.
+        for mutation in ("none", "added", "ignored-added", "removed", "modified", "symlink", "git-state"):
+            with self.subTest(mutation=mutation), tempfile.TemporaryDirectory(prefix="m45-source-drift-") as tmp:
+                parent = Path(tmp)
+                repo = self._owned_repo(parent)
+                result = parent / "result"
+                mutated = False
+
+                def complete_case(_repo, _case, _timeout):
+                    nonlocal mutated
+                    if not mutated:
+                        mutated = True
+                        if mutation in ("added", "ignored-added"):
+                            name = "new.ignored.py" if mutation == "ignored-added" else "new.py"
+                            (repo / "agent_braid" / name).write_text("new candidate input\n")
+                        elif mutation == "removed":
+                            (repo / "tests/baseline.py").unlink()
+                        elif mutation == "modified":
+                            (repo / "agent_braid/baseline.py").write_text("changed candidate input\n")
+                        elif mutation == "symlink":
+                            (repo / "agent_braid/alias.py").symlink_to(repo / "tests/baseline.py")
+                        elif mutation == "git-state":
+                            (repo / "outside-inventory.txt").write_text("concurrent change\n")
+                    return {"status": "passed", "returnCode": 0}
+
+                with patch.object(controls, "_execute_case", side_effect=complete_case):
+                    self.assertEqual(0 if mutation == "none" else 1, controls._run(repo, result, 1))
+                receipt = json.loads((result / "receipt.json").read_text())
+                self.assertTrue(all(value == "passed" for value in receipt["cases"].values()))
+                self.assertEqual("passed" if mutation == "none" else "incomplete", receipt["status"])
+                if mutation != "none":
+                    self.assertIn({"caseId": "source-integrity", "status": "changed"}, receipt["failureLedger"])
+                if mutation == "ignored-added":
+                    self.assertIn("agent_braid/new.ignored.py", receipt["sourceChanges"])
+                    self.assertEqual([], receipt["candidateStateChanges"])
+                if mutation == "symlink":
+                    self.assertEqual(["source-inventory:RuntimeError"], receipt["sourceIntegrityErrors"])
+                if mutation == "git-state":
+                    self.assertEqual([], receipt["sourceChanges"])
+                    self.assertIn("workingTreeStatusPorcelain", receipt["candidateStateChanges"])
+                self.assertEqual([], controls._verify_result_root(result))
+                if mutation == "none":
+                    alias = parent / "alias"
+                    alias.symlink_to(result, target_is_directory=True)
+                    self.assertEqual(0, controls.main(["--verify-root", str(result)]))
+                    self.assertEqual(2, controls.main(["--verify-root", str(alias)]))
+
+    def test_freeze_rejects_ignored_input_added_during_inventory_capture(self):
+        with tempfile.TemporaryDirectory(prefix="m45-freeze-drift-") as tmp:
+            repo = self._owned_repo(Path(tmp))
+            source_paths = controls._source_paths
+            calls = 0
+
+            def moving_paths(root):
+                nonlocal calls
+                paths = source_paths(root)
+                calls += 1
+                if calls == 1:
+                    (repo / "agent_braid/new.ignored.py").write_text("concurrent source\n")
+                return paths
+
+            with patch.object(controls, "_source_paths", side_effect=moving_paths):
+                with self.assertRaisesRegex(RuntimeError, "changed while freezing"):
+                    controls._freeze(repo)
+
+    def test_source_rescan_catches_ignored_file_added_during_hashing(self):
+        with tempfile.TemporaryDirectory(prefix="m45-hash-window-") as temporary:
+            repo = self._owned_repo(Path(temporary))
+            frozen = controls._freeze(repo)
+            original_sha = controls._sha
+            added = False
+
+            def add_during_hash(data):
+                nonlocal added
+                if not added:
+                    added = True
+                    (repo / "agent_braid/new.ignored.py").write_text("arrived during hashing\n")
+                return original_sha(data)
+
+            with patch.object(controls, "_sha", side_effect=add_during_hash):
+                integrity = controls._source_integrity(repo, frozen["candidate"])
+            self.assertTrue(added)
+            self.assertIn("agent_braid/new.ignored.py", integrity["sourceChanges"])
+            self.assertEqual([], integrity["sourceIntegrityErrors"])
+
+    def test_source_rescan_failure_is_retained_as_integrity_error(self):
+        with tempfile.TemporaryDirectory(prefix="m45-rescan-failure-") as temporary:
+            repo = self._owned_repo(Path(temporary))
+            frozen = controls._freeze(repo)
+            original_paths = controls._source_paths
+            calls = 0
+
+            def fail_second_scan(root):
+                nonlocal calls
+                calls += 1
+                if calls == 2:
+                    raise RuntimeError("synthetic rescan failure")
+                return original_paths(root)
+
+            with patch.object(controls, "_source_paths", side_effect=fail_second_scan):
+                integrity = controls._source_integrity(repo, frozen["candidate"])
+            self.assertIn("source-rescan:RuntimeError", integrity["sourceIntegrityErrors"])
+
+    def test_git_helper_ignores_inherited_git_dir_and_disables_fsmonitor(self):
+        with tempfile.TemporaryDirectory(prefix="m45-git-env-") as temporary:
+            parent = Path(temporary)
+            repo = self._owned_repo(parent)
+            other = parent / "other"
+            other.mkdir()
+            subprocess.run(["git", "init", "-q"], cwd=other, check=True, capture_output=True)
+            marker = parent / "fsmonitor-ran"
+            executable = parent / "fsmonitor"
+            executable.write_text(f"#!/bin/sh\nprintf ran > {marker}\n", encoding="ascii")
+            executable.chmod(0o700)
+            config = repo / ".git/config"
+            with config.open("a", encoding="ascii") as stream:
+                stream.write(f"\n[core]\n\tfsmonitor = {executable}\n")
+            with patch.dict(os.environ, {"GIT_DIR": str(other / ".git")}):
+                top = controls._git(repo, "rev-parse", "--show-toplevel")
+                controls._git(repo, "status", "--porcelain=v1", "--untracked-files=all")
+            self.assertEqual(str(repo.resolve()), top)
+            self.assertFalse(marker.exists(), "configured fsmonitor executable ran")
+
+    def test_configured_local_filter_is_refused_before_filter_execution(self):
+        with tempfile.TemporaryDirectory(prefix="m45-git-filter-") as temporary:
+            parent = Path(temporary)
+            repo = self._owned_repo(parent)
+            frozen = controls._freeze(repo)
+            marker = parent / "filter-ran"
+            executable = parent / "filter"
+            executable.write_text(f"#!/bin/sh\nprintf ran > {marker}\ncat\n", encoding="ascii")
+            executable.chmod(0o700)
+            (repo / ".gitattributes").write_text("*.py filter=probe\n", encoding="ascii")
+            config = repo / ".git/config"
+            with config.open("a", encoding="ascii") as stream:
+                stream.write(f"\n[filter \"probe\"]\n\tclean = {executable}\n")
+            with self.assertRaisesRegex(RuntimeError, "configured Git filters"):
+                controls._git(repo, "status", "--porcelain=v1", "--untracked-files=all")
+            self.assertFalse(marker.exists(), "configured filter executable ran")
+            integrity = controls._source_integrity(repo, frozen["candidate"])
+            self.assertIn("git-commit:RuntimeError", integrity["sourceIntegrityErrors"])
+            self.assertFalse(marker.exists(), "source integrity scan ran configured filter")
+
+    def test_configured_worktree_filter_is_refused_before_filter_execution(self):
+        with tempfile.TemporaryDirectory(prefix="m45-git-worktree-filter-") as temporary:
+            parent = Path(temporary)
+            repo = self._owned_repo(parent)
+            marker = parent / "worktree-filter-ran"
+            executable = parent / "worktree-filter"
+            executable.write_text(f"#!/bin/sh\nprintf ran > {marker}\ncat\n", encoding="ascii")
+            executable.chmod(0o700)
+            (repo / ".gitattributes").write_text("*.py filter=probe\n", encoding="ascii")
+            config = repo / ".git/config"
+            with config.open("a", encoding="ascii") as stream:
+                stream.write("\n[extensions]\n\tworktreeConfig = true\n")
+            (repo / ".git/config.worktree").write_text(
+                f'[filter "probe"]\n\tclean = {executable}\n', encoding="ascii")
+            with self.assertRaisesRegex(RuntimeError, "configured Git filters"):
+                controls._git(repo, "status", "--porcelain=v1", "--untracked-files=all")
+            self.assertFalse(marker.exists(), "worktree-configured filter executable ran")
+
+    def test_configured_included_filter_is_refused_before_filter_execution(self):
+        with tempfile.TemporaryDirectory(prefix="m45-git-include-filter-") as temporary:
+            parent = Path(temporary)
+            repo = self._owned_repo(parent)
+            marker = parent / "included-filter-ran"
+            executable = parent / "included-filter"
+            executable.write_text(f"#!/bin/sh\nprintf ran > {marker}\ncat\n", encoding="ascii")
+            executable.chmod(0o700)
+            (repo / ".gitattributes").write_text("*.py filter=probe\n", encoding="ascii")
+            included = parent / "included-config"
+            included.write_text(f'[filter "probe"]\n\tclean = {executable}\n', encoding="ascii")
+            config = repo / ".git/config"
+            with config.open("a", encoding="ascii") as stream:
+                stream.write(f"\n[include]\n\tpath = {included}\n")
+            with self.assertRaisesRegex(RuntimeError, "configured Git filters"):
+                controls._git(repo, "status", "--porcelain=v1", "--untracked-files=all")
+            self.assertFalse(marker.exists(), "included filter executable ran")
+
     def test_result_root_is_exclusive_and_outside_source(self):
         with tempfile.TemporaryDirectory(prefix="m45-controls-path-") as temporary:
             parent = Path(temporary)

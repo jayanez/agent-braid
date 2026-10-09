@@ -162,6 +162,7 @@ class UtilityReportTests(unittest.TestCase):
             actual_provider_spend_eur=Decimal("0"), allocated_subscription_cost_eur=Decimal("0"),
             provider_accounting_cost_eur=Decimal("0"), user_time_seconds=Decimal("0"),
             study_wall_seconds=Decimal("0"),
+            actual_additional_spend_cap_eur=Decimal("0.5"),
             receipt_sha256s=("a" * 64, "a" * 64),
             human_time_receipt_sha256s=("b" * 64, "b" * 64),
             study_wall_receipt_sha256s=("c" * 64, "c" * 64),
@@ -170,7 +171,7 @@ class UtilityReportTests(unittest.TestCase):
                                         roster_sha=roster.sha256,
                                         technical_cost_verifier=self._technical_verifier(registration))
         self.assertFalse(fake_report["costs"]["technicalMeasuresAttested"])
-        for field in ("technicalAdditionalSpendEur", "actualProviderSpendEur",
+        for field in ("actualAdditionalSpendCapEur", "technicalAdditionalSpendEur", "actualProviderSpendEur",
                       "allocatedSubscriptionCostEur", "userTimeSeconds", "studyWallSeconds"):
             self.assertIsNone(fake_report["costs"]["fullEconomic"][field])
 
@@ -191,6 +192,7 @@ class UtilityReportTests(unittest.TestCase):
                                                  technical_cost_verifier=verifier)
                 self.assertFalse(bound_report["costs"]["technicalMeasuresAttested"])
                 self.assertIsNone(bound_report["costs"]["fullEconomic"]["studyWallSeconds"])
+                self.assertIsNone(bound_report["costs"]["fullEconomic"]["actualAdditionalSpendCapEur"])
 
     def test_complete_legacy_scalars_and_two_humans_cannot_replace_subscription_costs(self):
         registration = _full_registration()

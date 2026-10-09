@@ -229,11 +229,82 @@ def _source_paths(repo: Path) -> list[Path]:
     return sorted(paths, key=lambda item: item.relative_to(repo).as_posix())
 
 
+def _git_env() -> dict[str, str]:
+    """Remove inherited Git control variables and ambient config sources."""
+    env = {key: value for key, value in os.environ.items() if not key.startswith("GIT_")}
+    env.update({"GIT_CONFIG_GLOBAL": os.devnull, "GIT_CONFIG_NOSYSTEM": "1",
+                "GIT_TERMINAL_PROMPT": "0"})
+    return env
+
+
+def _git_command(repo: Path, *args: str) -> subprocess.CompletedProcess[str]:
+    return subprocess.run(
+        ["git", "-C", str(repo), "-c", "core.fsmonitor=false",
+         "-c", f"core.hooksPath={os.devnull}", *args],
+        stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, timeout=10,
+        env=_git_env(), check=False,
+    )
+
+
 def _git(repo: Path, *args: str) -> str:
-    result = subprocess.run(["git", "-C", str(repo), *args], check=True,
-                            stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True,
-                            timeout=10)
+    # Git status may invoke configured clean/process filters while inspecting
+    # worktree files. Query effective config (including config.worktree when
+    # extensions.worktreeConfig is enabled); global/system sources are disabled
+    # by _git_env. Refuse configured filter drivers instead of running them.
+    filters = _git_command(repo, "config", "--name-only", "--get-regexp",
+                           r"^filter\..*\.(clean|smudge|process)$")
+    if filters.returncode not in (0, 1):
+        raise RuntimeError("repository Git filter configuration could not be checked")
+    if filters.returncode == 0 and filters.stdout.strip():
+        raise RuntimeError("repository has configured Git filters")
+    result = _git_command(repo, *args)
+    if result.returncode != 0:
+        raise subprocess.CalledProcessError(result.returncode, result.args,
+                                            output=result.stdout, stderr=result.stderr)
     return result.stdout.strip()
+
+
+def _source_integrity(repo: Path, candidate: dict[str, Any]) -> dict[str, list[str]]:
+    """Compare the full current inventory and Git state, retaining scan failures."""
+    expected = {row["path"]: row["sha256"] for row in candidate["sourceManifest"]}
+    changes: set[str] = set()
+    errors: list[str] = []
+    try:
+        current = {path.relative_to(repo).as_posix(): path for path in _source_paths(repo)}
+    except (OSError, RuntimeError) as exc:
+        current = None
+        errors.append("source-inventory:" + type(exc).__name__)
+    if current is not None:
+        changes.update(set(expected) ^ set(current))
+        for name in set(expected) & set(current):
+            try:
+                path = current[name]
+                if path.is_symlink() or _sha(path.read_bytes()) != expected[name]:
+                    changes.add(name)
+            except OSError as exc:
+                changes.add(name)
+                errors.append("source-read:" + type(exc).__name__)
+        # A second enumeration catches ignored or untracked inputs that appear
+        # after the first path listing while file bytes are being hashed. These
+        # are boundary observations, not an atomic filesystem snapshot.
+        try:
+            after_hash = {path.relative_to(repo).as_posix() for path in _source_paths(repo)}
+            changes.update(set(current) ^ after_hash)
+        except (OSError, RuntimeError) as exc:
+            errors.append("source-rescan:" + type(exc).__name__)
+    state_changes = []
+    for field, arguments in (
+        ("commit", ("rev-parse", "HEAD")),
+        ("branch", ("branch", "--show-current")),
+        ("workingTreeStatusPorcelain", ("status", "--porcelain=v1", "--untracked-files=all")),
+    ):
+        try:
+            if _git(repo, *arguments) != candidate[field]:
+                state_changes.append(field)
+        except (OSError, RuntimeError, subprocess.SubprocessError) as exc:
+            errors.append("git-" + field + ":" + type(exc).__name__)
+    return {"sourceChanges": sorted(changes), "sourceIntegrityErrors": sorted(set(errors)),
+            "candidateStateChanges": state_changes}
 
 
 def _freeze(repo: Path) -> dict[str, Any]:
@@ -247,13 +318,11 @@ def _freeze(repo: Path) -> dict[str, Any]:
         data = path.read_bytes()
         entries.append({"path": relative, "sizeBytes": len(data), "sha256": _sha(data)})
     # Refuse a moving input set instead of freezing a mixed snapshot.
-    changed_during_freeze = []
-    for entry, path in zip(entries, source_files):
-        if not path.is_file() or path.is_symlink() or _sha(path.read_bytes()) != entry["sha256"]:
-            changed_during_freeze.append(entry["path"])
-    status_after = _git(repo, "status", "--porcelain=v1", "--untracked-files=all")
-    if (changed_during_freeze or status_before != status_after
-            or commit != _git(repo, "rev-parse", "HEAD")):
+    source_check = _source_integrity(repo, {
+        "commit": commit, "branch": branch, "workingTreeStatusPorcelain": status_before,
+        "sourceManifest": entries,
+    })
+    if any(source_check.values()):
         raise RuntimeError("candidate source/status changed while freezing the manifest")
     git_version = subprocess.run(["git", "--version"], check=True, capture_output=True,
                                   text=True, timeout=10).stdout.strip()
@@ -560,7 +629,8 @@ def _verify_result_root(root: Path) -> list[str]:
     if receipt.get("status") == "passed" and (
             not isinstance(case_states, dict)
             or any(case_states.get(case["id"]) != "passed" for case in CASES)
-            or receipt.get("failureLedger") or receipt.get("sourceChanges")):
+            or receipt.get("failureLedger") or receipt.get("sourceChanges")
+            or receipt.get("sourceIntegrityErrors") or receipt.get("candidateStateChanges")):
         errors.append("passed receipt has failed, missing, or changed evidence")
     for row in expected:
         relative = row.get("path")
@@ -639,12 +709,8 @@ def _run(repo: Path, output_root: Path, timeout: int) -> int:
         _atomic_private(target / "receipt.json", _json_bytes(receipt))
         if interrupted:
             break
-    source_changes = []
-    for source in frozen["candidate"]["sourceManifest"]:
-        current = repo / source["path"]
-        if not current.is_file() or current.is_symlink() or _sha(current.read_bytes()) != source["sha256"]:
-            source_changes.append(source["path"])
-    if source_changes:
+    source_check = _source_integrity(repo, frozen["candidate"])
+    if any(source_check.values()):
         final_status = "incomplete"
         failures.append({"caseId": "source-integrity", "status": "changed"})
     final_receipt = {
@@ -653,7 +719,7 @@ def _run(repo: Path, output_root: Path, timeout: int) -> int:
         "status": final_status,
         "cases": {item["id"]: json.loads((cases_dir / f"{item['id']}.json").read_text(encoding="ascii"))["status"] for item in CASES},
         "failureLedger": failures,
-        "sourceChanges": source_changes,
+        **source_check,
     }
     _atomic_private(target / "receipt.json", _json_bytes(final_receipt))
     files = []
@@ -685,7 +751,7 @@ def main(argv: list[str] | None = None) -> int:
     if not 1 <= args.timeout_seconds <= MAX_TIMEOUT_SECONDS:
         parser.error(f"--timeout-seconds must be between 1 and {MAX_TIMEOUT_SECONDS}")
     if args.verify_root is not None:
-        errors = _verify_result_root(args.verify_root.resolve(strict=False))
+        errors = _verify_result_root(args.verify_root)
         if errors:
             print("result integrity failed: " + "; ".join(errors), file=sys.stderr)
             return 2

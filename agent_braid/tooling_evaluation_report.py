@@ -779,6 +779,7 @@ def _full_economic_cost(
         values["technicalStopRequired"] = summary.technical_stop_required if technical_reconciled else None
         if not technical_reconciled:
             for field in (
+                "actualAdditionalSpendCapEur",
                 "allocatedSubscriptionCostEur",
                 "actualProviderSpendEur", "providerAccountingCostEur",
                 "apiReferenceEstimateEur", "userTimeSeconds", "studyWallSeconds",
