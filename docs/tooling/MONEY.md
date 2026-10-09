@@ -1,50 +1,100 @@
 <!-- SPDX-License-Identifier: CC-BY-SA-4.0 -->
-# Experimental subscription monetary records
+# Prospective M4.5 cost contract (experimental)
 
-`agent_braid.tooling_money` adds v2 monetary receipts alongside the unchanged v1
-cost book. It separates actual additional cash, allocated prepaid subscription
-value and API-reference estimates. An estimate never counts as money paid.
-Permission for EUR 0 additional spend is not an observed zero-cost receipt.
-Missing amounts, invoice/fee evidence and reviewer costs remain unknown.
+`agent_braid.tooling_money` and `agent_braid.tooling_full_cost` define an
+additive, candidate-bound accounting representation for SPEC-044 T006. They
+do not change the legacy v1 scalar ledger or measure provider billing, tokens,
+or human activity by themselves. The representation is not an accepted
+registration, capture authorization, billing statement, or utility result.
 
-The roster binds the exact validated registration, all 108 generated slot IDs,
-setup and the two registered human reviewer activities. Receipts bind account,
-source-document billing period, cohort coverage period, currency/FX provenance,
-registered allocation method and denominator, or the matching model rate record.
-A monthly invoice may contain the shorter cohort period. External verifiers must
-authenticate source facts, complete slices, amount/share/FX calculations and
-cross-ledger nonoverlap. This module performs no invoice lookup, provider request,
-FX conversion, allocation calculation or choice of an allocation method.
+SPEC-044 REQ-006/SC-006 requires complete setup/provider/tool/runtime/export/
+user/reviewer cost fields, explicit unknowns, numerical stops, and reconciliation
+over the full intended-attempt roster. Its protocol requires setup and per-attempt
+discovery, provider wait/latency, tokens and retries, MCP/runtime preparation,
+execution, verification, recovery, export, and user/reviewer time. The existing
+`tooling_evaluation.assess_cost_completeness` remains the source of the eight
+registered scalar fields (`eur`, token fields, wall seconds, RSS and disk) over
+setup plus all 108 exact attempt slots. `tooling_measurements.WallClock` records
+one total-wall boundary; phase intervals are descriptive and must not be added
+to it. Monetary API estimates remain separate from actual cash and allocated
+subscription value.
 
-Within one ledger, source slices cannot be reused and allocations for the same
-account, statement, method, coverage and denominator cannot exceed the whole.
-Independent accounts and statements retain separate denominators. Publication
-is serialized and verifier reentry refuses. Decimal inputs have at most 30
-coefficient digits, exponent from -30 through 30 and 64 serialized characters;
-aggregation uses exact integer scaling independent of ambient Decimal precision.
+The monetary roster binds the exact validated registration, all 108 generated
+slot IDs, setup and the two registered reviewer activities. Receipts bind
+account, source-document billing period, cohort coverage period, currency/FX
+provenance, registered allocation method and denominator, or matching model
+rate record. A monthly invoice may contain the shorter cohort period. External
+verifiers authenticate source facts, complete slices, amount/share/FX
+calculations and cross-ledger nonoverlap. The module performs no invoice lookup,
+provider request, FX conversion, allocation calculation or choice of method.
+Within one ledger source slices cannot be reused; allocation totals are capped
+per account, statement, method, coverage and denominator. Independent accounts
+and statements retain separate denominators. Publication is serialized and
+verifier reentry refuses. Decimal inputs are bounded to 30 coefficient digits,
+exponents -30 through 30 and 64 serialized characters; aggregates use exact
+integer scaling independent of ambient Decimal precision.
 
-The proposed study cash measure includes setup, provider activity and paid review;
-its conservative EUR 0 cash cap is broader than the provider billing policy.
-It authorizes no payments or reviewers. Positive observed cash remains recorded
-and sets a stop/violation; incomplete cash coverage cannot prove compliance.
-This proposed applicability must be reviewed in the full prospective registration.
-Human work time remains separately measured by the existing complete-cost protocol;
-no hourly valuation, unpaid-fee zero or subscription allocation is invented.
+The extra `fullCostScope` field is prospective and optional at registration
+validation. Missing or `pending` scope never yields a complete monetary summary.
+To complete the T006 representation, a future owner-approved registration must
+bind all of the following before capture:
 
-`requiredMeasuresComplete` reports availability for its declared measures only.
-`fullEconomicCostComplete` remains false with status
-`pending-registered-cost-scope-and-human-cost-fields` until prospective protocol
-scope, reviewer-payment applicability, human-cost fields and their pipeline
-integration exist. A full summary binds the registration SHA as well as the roster.
-For a registration selecting `billingPolicy`, `assess_utility_eligibility` requires
-a matching monetary summary and independently frozen monetary roster digest,
-with complete economic scope, available actual amounts and no cash stop.
-The evaluator checks consistency and bindings; source authenticity remains the
-trusted caller/verifier responsibility.
-Complete legacy EUR/token/time fields or EUR 0 additional cash cannot bypass that
-gate. The existing non-subscription v1 evaluator behavior is preserved.
+- the full study-cash scope, including provider/setup charges and any paid
+  reviewer fees, under the registered EUR 0 additional-cash cap;
+- explicit `paid` or `unpaid` applicability for each of the two registered
+  reviewers; `unknown` remains incomplete, and neither unpaid fees nor zero
+  amounts are inferred without source-authenticated receipts;
+- subscription allocation for setup and every one of the 108 attempts, plus an
+  explicit authenticated `not-applicable` marker for reviewer subscription
+  allocation; the method identity, denominator and unit are exact and the
+  separate verifiers authenticate the policy and source facts;
+- one registered user-time participant covering setup and every attempt, and
+  both registered reviewers covering every attempt, through source-authenticated
+  active-work intervals. The registration binds the meaning of active work;
+  receipts may cover one or more activity IDs, and their sets must exactly cover
+  the approved participant/activity scope without duplicate coverage. There is
+  no fixed interval count or synthetic per-slot zero.
 
-These are engineering controls and experimental representation, not a complete
-native-host utility-cost pipeline or an approved allocation protocol. Founder
-registration, source rights, human raters, rubric and capture approval remain
-separate; the owner-approved model identity clarification changes none of them.
+The scope approval verifier binds the final registration hash, exact monetary
+roster hash, scope hash and approval-record identity. This avoids a self-
+referential hash. Registration validation and hashes alone do not authenticate
+the owner or approval. Each interval verifier binds the exact time receipt. A
+separate study-wall verifier authenticates one runtime/setup elapsed interval
+for setup and each of the 108 attempts. The registration's elapsed wall cap is
+computed from the union of those intervals and authenticated human review
+intervals; overlapping time counts once. Human labor totals are separately
+reported by participant role, with per-person interval unions preventing double
+counting. No hourly rate or monetary value for human time is invented or
+required by this representation. Reviewer cash receipts require an
+authenticated invoice source even when the amount is zero.
+
+A full summary can be marked complete only when the existing scalar cost
+assessment is complete; all 108 attempts have terminal records; all required
+cash and subscription receipts are authenticated and within the zero cap; the
+allocation method matches the approved scope and its separate policy
+attestation; and every registered human-time interval is present and
+authenticated. Positive cash, missing or stale scope/roster/registration,
+unverified methods, unavailable cost values or time intervals, unknown
+reviewer-fee applicability, a missing wall source, cap excess, or incomplete
+attempts remain ineligible. API reference estimates never enter
+actual or allocated totals. Full cost completion means registered cost
+measurements are complete; it does not assign a monetary price to observed
+human time, assert utility, or satisfy T006's future capture/reconciliation
+evidence on its own.
+
+No current registration includes this approved scope. Fee applicability,
+method/denominator/unit, and any additional owner decisions remain draft until
+prospectively approved. This document records the interface boundary, not an
+owner decision or permission to incur charges. Integrate the module into the
+root report/export pipeline and verify missing-cost claim suppression before
+any T002/T004/T005 capture. All 108 intended slots and human review remain in
+scope; missing rows cannot be dropped or relabeled as zero.
+
+`requiredMeasuresComplete` in the base money summary covers the required
+additional-cash evidence only. The full-cost composer additionally binds the
+existing scalar cost assessment and external approval/time attestations. For a
+registration with `billingPolicy`, `assess_utility_eligibility` requires the
+matching registration and roster, complete status, available money amounts and
+no stop; callers should pass only the summary returned by
+`complete_full_cost` when evaluating the prospective full scope. This preserves
+the existing non-subscription v1 evaluator behavior.

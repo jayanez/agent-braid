@@ -481,6 +481,11 @@ class MoneySummary:
     registration_sha256: str
     roster_sha256: str
     receipt_sha256s: tuple[str, ...]
+    human_time_seconds: Decimal | None = None
+    human_time_receipt_sha256s: tuple[str, ...] = ()
+    user_time_seconds: Decimal | None = None
+    reviewer_time_seconds: Decimal | None = None
+    study_wall_seconds: Decimal | None = None
 
     def as_dict(self) -> dict[str, object]:
         return {
@@ -508,6 +513,11 @@ class MoneySummary:
             "registrationSha256": self.registration_sha256,
             "rosterSha256": self.roster_sha256,
             "receiptSha256s": list(self.receipt_sha256s),
+            "humanTimeSeconds": _decimal_text(self.human_time_seconds),
+            "humanTimeReceiptSha256s": list(self.human_time_receipt_sha256s),
+            "userTimeSeconds": _decimal_text(self.user_time_seconds),
+            "reviewerTimeSeconds": _decimal_text(self.reviewer_time_seconds),
+            "studyWallSeconds": _decimal_text(self.study_wall_seconds),
         }
 
 
@@ -675,6 +685,12 @@ class MoneyLedger:
         with self._lock:
             return tuple(self._receipts.values())
 
+    @property
+    def verified_allocation_policy_attestations(self) -> tuple[AllocationPolicyAttestation, ...]:
+        """Externally verified allocation policy records retained by this ledger."""
+        with self._lock:
+            return tuple(self._policy_attestations.values())
+
     def add(self, receipt: MoneyReceipt) -> None:
         with self._lock:
             if self._verifying:
@@ -694,6 +710,9 @@ class MoneyLedger:
                 raise MoneyAccountingError("receipt coverage differs from the frozen cohort period")
             if receipt.measure == "allocatedSubscriptionCostEur" and activity.kind == "reviewer":
                 raise MoneyAccountingError("subscription allocation applies only to provider setup and attempt activities")
+            if (receipt.measure == "actualAdditionalSpendEur" and activity.kind == "reviewer"
+                    and evidence.source_kind != "invoice"):
+                raise MoneyAccountingError("reviewer cash-cost evidence requires an authenticated invoice source")
             if receipt.measure == "apiReferenceEstimateEur":
                 if activity.kind != "attempt" or activity.host is None:
                     raise MoneyAccountingError("API reference estimates apply only to registered model attempts")
