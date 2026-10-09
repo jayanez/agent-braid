@@ -200,10 +200,15 @@ class DiskFootprintTests(unittest.TestCase):
     def test_public_nested_directory_or_file_and_scan_errors_are_unknown(self):
         child = self.private / "child"
         child.mkdir(mode=0o755)
+        # Keep the refusal precondition independent of the caller's umask.
+        child.chmod(0o755)
+        self.assertEqual(child.stat().st_mode & 0o777, 0o755)
         self.assertIsNone(measurements.measure_private_disk([self.private]).observation.value)
         child.chmod(0o700)
         item = child / "public"
         item.write_bytes(b"x")
+        item.chmod(0o644)
+        self.assertEqual(item.stat().st_mode & 0o777, 0o644)
         self.assertIsNone(measurements.measure_private_disk([self.private]).observation.value)
         item.chmod(0o600)
         with patch.object(measurements.os, "scandir", side_effect=PermissionError("denied")):
