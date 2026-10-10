@@ -20,7 +20,7 @@
   ],
   "assumptions": "Pure deterministic sequence operations with immutable anchors, fresh IDs and complete finite inputs.",
   "authority_snapshot": {
-    "commit": null,
+    "commit": "86349214e03e06cd7a46c67b86bfcc48ef5fcb99",
     "hashes": {
       "ARCHITECTURE.md": "b48860b53c5aa703b020f03fc65c64fb9cc63e3d63a85878c6d1c7fba707f126",
       "CONSTITUTION.md": "ff7196976a1736a639947c2ab26e8da157fef23c89ba9881312f2a36459964eb",
@@ -86,13 +86,13 @@
       "schemas/governance/public-export-manifest.schema.json": "11eb7f2594939ae9fd0c9e6cfe4423a80aba686d6cdfdd8b73b0fb84b0840aa8",
       "schemas/governance/release-validation-record.schema.json": "d9943f0c9f5520ea52e3b12bfba88240d03f8011b433fc5e35cb49549ab6e819"
     },
-    "mode": "current"
+    "mode": "historical"
   },
   "compatibility": "No current contract changes or M3 closure dependency; future model artifact/version needs separate review.",
   "domain": "Prospective consent-reviewed editing sessions mapped without guesswork to M3 anchored-sequence pairs; fixed source windows, family-separated holdout and policy-blind separately adjudicated utility proxy labels. No admitted real pair yet.",
   "evidence_snapshot": {
-    "commit": null,
-    "mode": "current"
+    "commit": "86349214e03e06cd7a46c67b86bfcc48ef5fcb99",
+    "mode": "historical"
   },
   "execution_contract": "Local synthetic capture creates a new output file exclusively and audit reads it without changing source input; no Git source mutation, live agents, external effects or execution authorization. The review-packet checker reads six fixed local metadata/document files with safe-file checks, outputs metadata commitments only and never opens journals, admits pairs, invokes source services or authorizes capture/training.",
   "human_review": "pending",
@@ -137,28 +137,21 @@
               "limits": "Incremental synthetic software verification only; no real data, labels, fit, source authenticity, scientific or founder approval.",
               "outcome": "115 focused synthetic software tests executed; zero skips/failures. Three former contract anchors and timing validation-cost regression execute.",
               "path": "docs/experiments/evidence/m35-software-completion-2026-10-10/focused-receipt.json",
-              "sha256": "8cba19190443ee79b3f02c6c69eec3355bf7e766dfa07003ba1a5d59c9447d4e"
+              "sha256": "ebe641164bda75dbb6e12df2b682b1be9d1ade67b71405752eec6c4212e08176"
             },
             {
               "command": ".venv/bin/python -m unittest -v tests.test_native_predictor tests.test_native_predictor_training tests.test_native_predictor_evaluation tests.test_native_predictor_adapter tests.test_native_predictor_contract tests.test_predictor_readiness tests.test_m35_review_packet",
               "limits": "Synthetic software only; coordinator-run separate clone is reproduction, not independent scientific validation, human approval or a real experiment.",
-              "outcome": "115 focused synthetic controls reproduced from a clean independent public clone at 37eea0594a09a9bace5955ea1e2ab536366f34aa; global Spec Kit gate passed.",
+              "outcome": "115 focused synthetic controls reproduced from a clean independent public clone at 7321407bc6abc57117fab379e14eafcddf80dd63; global Spec Kit gate passed.",
               "path": "docs/experiments/evidence/m35-software-completion-2026-10-10/reproduction.json",
-              "sha256": "fbd73eff67647c0710895852d094fb347a1cd3148b853e0257863f22c1ae528e"
+              "sha256": "6c701bf6872d8337a0e6251f18251924176fcaa46cadfaaf8ebea518452f3dd6"
             },
             {
               "command": "Independent read-only Luna Latest medium reviews; focused suite plus evaluator timing regression",
               "limits": "Technical review only, not authenticated human annotation, scientific or founder acceptance.",
               "outcome": "Two material software/document findings fixed; bounded independent technical reviews report no remaining material finding.",
               "path": "docs/experiments/evidence/m35-software-completion-2026-10-10/adversarial-review.md",
-              "sha256": "1abf10516a14ff213b1d05fe7d256e7775ad6b28b466b44afb44d2f46726646f"
-            },
-            {
-              "command": "python3 scripts/validate_change.py --base develop --profile quick; --profile pr (isolated CPython 3.12.13)",
-              "limits": "Incremental repository verification, not an exact-final-head suite claim, real experiment, human or founder acceptance. Exact-head CI remains a separate integration gate.",
-              "outcome": "Both profiles escalated to sensitive and passed, each executing 864 tests with one skip. Later test-only correction passed the 115 focused controls and clean-clone reproduction.",
-              "path": "docs/experiments/evidence/m35-software-completion-2026-10-10/repository-validation.json",
-              "sha256": "11d200707d281a78766aa155fdaecd669cc3931e9e2a1eef87f18de40f616873"
+              "sha256": "aa24a527bffee3d0c1c704dc0d18cbf97ee23ca058ce7223eedb28cebb1410e2"
             }
           ],
           "planned_evidence": "Focused unittest result and bounded evidence artifact; record actual command, hash, outcome and limits after execution.",
@@ -176,21 +169,21 @@
               "limits": "Incremental synthetic software verification only; no real data, labels, fit, source authenticity, scientific or founder approval.",
               "outcome": "115 focused synthetic software tests executed; zero skips/failures. Three former contract anchors and timing validation-cost regression execute.",
               "path": "docs/experiments/evidence/m35-software-completion-2026-10-10/focused-receipt.json",
-              "sha256": "8cba19190443ee79b3f02c6c69eec3355bf7e766dfa07003ba1a5d59c9447d4e"
+              "sha256": "ebe641164bda75dbb6e12df2b682b1be9d1ade67b71405752eec6c4212e08176"
             },
             {
               "command": ".venv/bin/python -m unittest -v tests.test_native_predictor tests.test_native_predictor_training tests.test_native_predictor_evaluation tests.test_native_predictor_adapter tests.test_native_predictor_contract tests.test_predictor_readiness tests.test_m35_review_packet",
               "limits": "Synthetic software only; coordinator-run separate clone is reproduction, not independent scientific validation, human approval or a real experiment.",
-              "outcome": "115 focused synthetic controls reproduced from a clean independent public clone at 37eea0594a09a9bace5955ea1e2ab536366f34aa; global Spec Kit gate passed.",
+              "outcome": "115 focused synthetic controls reproduced from a clean independent public clone at 7321407bc6abc57117fab379e14eafcddf80dd63; global Spec Kit gate passed.",
               "path": "docs/experiments/evidence/m35-software-completion-2026-10-10/reproduction.json",
-              "sha256": "fbd73eff67647c0710895852d094fb347a1cd3148b853e0257863f22c1ae528e"
+              "sha256": "6c701bf6872d8337a0e6251f18251924176fcaa46cadfaaf8ebea518452f3dd6"
             },
             {
               "command": "Independent read-only Luna Latest medium reviews; focused suite plus evaluator timing regression",
               "limits": "Technical review only, not authenticated human annotation, scientific or founder acceptance.",
               "outcome": "Two material software/document findings fixed; bounded independent technical reviews report no remaining material finding.",
               "path": "docs/experiments/evidence/m35-software-completion-2026-10-10/adversarial-review.md",
-              "sha256": "1abf10516a14ff213b1d05fe7d256e7775ad6b28b466b44afb44d2f46726646f"
+              "sha256": "aa24a527bffee3d0c1c704dc0d18cbf97ee23ca058ce7223eedb28cebb1410e2"
             }
           ],
           "planned_evidence": "Focused unittest result and bounded evidence artifact; record actual command, hash, outcome and limits after execution.",
@@ -308,28 +301,21 @@
               "limits": "Incremental synthetic software verification only; no real data, labels, fit, source authenticity, scientific or founder approval.",
               "outcome": "115 focused synthetic software tests executed; zero skips/failures. Three former contract anchors and timing validation-cost regression execute.",
               "path": "docs/experiments/evidence/m35-software-completion-2026-10-10/focused-receipt.json",
-              "sha256": "8cba19190443ee79b3f02c6c69eec3355bf7e766dfa07003ba1a5d59c9447d4e"
+              "sha256": "ebe641164bda75dbb6e12df2b682b1be9d1ade67b71405752eec6c4212e08176"
             },
             {
               "command": ".venv/bin/python -m unittest -v tests.test_native_predictor tests.test_native_predictor_training tests.test_native_predictor_evaluation tests.test_native_predictor_adapter tests.test_native_predictor_contract tests.test_predictor_readiness tests.test_m35_review_packet",
               "limits": "Synthetic software only; coordinator-run separate clone is reproduction, not independent scientific validation, human approval or a real experiment.",
-              "outcome": "115 focused synthetic controls reproduced from a clean independent public clone at 37eea0594a09a9bace5955ea1e2ab536366f34aa; global Spec Kit gate passed.",
+              "outcome": "115 focused synthetic controls reproduced from a clean independent public clone at 7321407bc6abc57117fab379e14eafcddf80dd63; global Spec Kit gate passed.",
               "path": "docs/experiments/evidence/m35-software-completion-2026-10-10/reproduction.json",
-              "sha256": "fbd73eff67647c0710895852d094fb347a1cd3148b853e0257863f22c1ae528e"
+              "sha256": "6c701bf6872d8337a0e6251f18251924176fcaa46cadfaaf8ebea518452f3dd6"
             },
             {
               "command": "Independent read-only Luna Latest medium reviews; focused suite plus evaluator timing regression",
               "limits": "Technical review only, not authenticated human annotation, scientific or founder acceptance.",
               "outcome": "Two material software/document findings fixed; bounded independent technical reviews report no remaining material finding.",
               "path": "docs/experiments/evidence/m35-software-completion-2026-10-10/adversarial-review.md",
-              "sha256": "1abf10516a14ff213b1d05fe7d256e7775ad6b28b466b44afb44d2f46726646f"
-            },
-            {
-              "command": "python3 scripts/validate_change.py --base develop --profile quick; --profile pr (isolated CPython 3.12.13)",
-              "limits": "Incremental repository verification, not an exact-final-head suite claim, real experiment, human or founder acceptance. Exact-head CI remains a separate integration gate.",
-              "outcome": "Both profiles escalated to sensitive and passed, each executing 864 tests with one skip. Later test-only correction passed the 115 focused controls and clean-clone reproduction.",
-              "path": "docs/experiments/evidence/m35-software-completion-2026-10-10/repository-validation.json",
-              "sha256": "11d200707d281a78766aa155fdaecd669cc3931e9e2a1eef87f18de40f616873"
+              "sha256": "aa24a527bffee3d0c1c704dc0d18cbf97ee23ca058ce7223eedb28cebb1410e2"
             }
           ],
           "planned_evidence": "The exact software boundary established by this synthetic evidence; real-data and scientific claims remain separate.",

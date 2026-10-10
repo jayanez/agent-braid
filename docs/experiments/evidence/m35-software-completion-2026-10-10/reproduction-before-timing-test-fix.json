@@ -1,5 +1,5 @@
 {
-  "candidateCommit": "37eea0594a09a9bace5955ea1e2ab536366f34aa",
+  "candidateCommit": "7321407bc6abc57117fab379e14eafcddf80dd63",
   "candidateTransfer": "full public clone, local candidate ref fetched and detached; independent object store and new isolated environment",
   "checks": {
     "currentPreparationPacket": "reproduced",
@@ -11,10 +11,7 @@
   "command": ".venv/bin/python -m unittest -v tests.test_native_predictor tests.test_native_predictor_training tests.test_native_predictor_evaluation tests.test_native_predictor_adapter tests.test_native_predictor_contract tests.test_predictor_readiness tests.test_m35_review_packet",
   "environment": "CPython 3.12.13; requirements-dev.txt and requirements-speckit.txt pinned; macOS ARM64",
   "exitCode": 0,
-  "focusedLog": "docs/experiments/evidence/m35-software-completion-2026-10-10/focused-cleanroom-corrected-test.txt",
-  "focusedLogSha256": "87372546ca7bd42b4fe3dfbf98e1b7645348c1386259ee5601258446c4086b6a",
-  "globalGateLog": "docs/experiments/evidence/m35-software-completion-2026-10-10/global-gate-corrected-test.txt",
-  "globalGateLogSha256": "b28f0f3bd337a6cae29938ed6ec99ef7ecf3c0005cc38370479d91ec923e04ac",
+  "focusedLogSha256": "dc18e24f9ceec9343897a6b90ed2e97a17b2eed1a7fd5bd3297b5656879ae7b7",
   "inputs": {
     "agent_braid/m35_source_window.py": "71fb8605b4dbff7ee715c6193cc411faa64918bd680a44df7364e00bb897d0eb",
     "agent_braid/native_predictor.py": "9207966d8fd554a528dab313e978064cc8a4701a905fdb9a4335c1dfc7de39dc",
@@ -28,7 +25,7 @@
     "tests/test_native_predictor.py": "3a685456125bcfae67086e9a63959359cb7b79e29e4ebc4d3a9096eddc1dbfda",
     "tests/test_native_predictor_adapter.py": "d41741dd233a797be8161662b3bad0ba974ac567e3736b57663a88cd410058fc",
     "tests/test_native_predictor_contract.py": "0d8cc1b21e9a8d87645e7b2fc15d4134ec0f7dbcd08ff63e44af19cf85c75c03",
-    "tests/test_native_predictor_evaluation.py": "ae719c9d8c25cf254bb5cf40d246432c0163774ca99676ef89886f70ad7c958d",
+    "tests/test_native_predictor_evaluation.py": "d17f8209460b7564368a54bbb9071d996eb143c95b19ec02d3bd6cb81e392036",
     "tests/test_native_predictor_training.py": "a7023106c9f57e8ab961e6874c43316dc813eb17015b936b8f1e5a320127c392",
     "tests/test_predictor_readiness.py": "5a14dc3a7296e6c471acee12207aaeb5e3f0e696f8738ea2b59ba101b5f7b06e"
   },
