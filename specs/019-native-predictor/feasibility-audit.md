@@ -1,6 +1,10 @@
 # SPEC-019 feasibility audit before training
 
-**Status:** candidate for human review; no model training or evaluation has run.
+**Historical feasibility finding:** candidate for human review; no model training
+or evaluation had run against the real-workload corpus when this audit was
+prepared. As of 2026-10-10, synthetic-only T002 training and synthetic T003
+evaluation software controls have run; no real-workload training or evaluation
+has run, and the corpus-level feasibility finding below is unchanged.
 **Input:** the fixed-ID/attribute anchor-topology corpus of SPEC-018 at
 `46d78a3f6c0b95a5a18458eedb7f90dcefddc777`.
 
@@ -95,5 +99,7 @@ and their differing evidence needs are retained here for provenance:
 
 The bounded M3 verifier has founder approval and M3 is closed internally.
 Until the chosen path has a reviewed dataset protocol and actual data,
-SPEC-019 T001–T005 remain pending. A null result is acceptable after a valid
-protocol; it is not a substitute for an identifiable target here.
+T001/#181, T007/#188, T003/#183 and T005/#185 remain open. T002/#182 and
+T004/#184 are complete only for the synthetic software scope; they do not
+change this corpus feasibility finding. A null result is acceptable after a
+valid protocol; it is not a substitute for an identifiable target here.

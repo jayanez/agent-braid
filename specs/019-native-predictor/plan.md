@@ -1,5 +1,11 @@
 # SPEC-019 gated implementation plan
 
+**Current status (2026-10-10):** T002/#182 synthetic trainer/inference and
+T004/#184 verifier-boundary software are complete. T001/#181, T007/#188,
+T003/#183 and T005/#185 remain open; so do #180 and milestone 9. The
+implementation is synthetic-only, library-level and not connected to CLI or
+real-feed adaptation. See the [software completion record](software-completion.md).
+
 The founder requested execution of the [completion plan](completion-plan.md)
 on 2026-10-08, retaining a valid-experiment closure criterion, five proposed
 owned workflows and the current candidate protocol. The

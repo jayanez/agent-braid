@@ -1,15 +1,24 @@
 <!-- SPDX-License-Identifier: CC-BY-SA-4.0 -->
 # M3.5 technical readiness
 
-**Observed on:** 2026-10-05. **Status:** synthetic tooling verified; real-source
-admission and the predictor experiment remain pending.
+**Historical observation:** 2026-10-05. The measurements below retain their
+original date, code candidate and limits.
+
+**Current status (2026-10-10):** synthetic-only trainer/inference T002/#182 and
+verifier boundary T004/#184 are complete. Six software tasks T002/T004/T006/T008/
+T009/T010 are closed. T001/#181, T007/#188, T003/#183, T005/#185, parent #180
+and milestone 9 remain open. The synthetic package passed 115 focused controls
+with zero skips/failures; the final provenance repair passed exact-head and
+post-merge CI (885 tests, two skips) and all four integration-matrix configurations. These results do
+not admit real pairs, adapt real feeds, establish protocol approval or close the
+experiment. See the [delivery and alignment record](m35-project-alignment.md).
 
 This non-normative operations note records technical checks against Agent Braid
 commit `f1bc304827b26c2cc3e02d5488ff2f82daa5453d`. It supplements
 [ADR 0018](../adr/0018-private-source-sidecar-and-disposable-labs.md), the
 [source-readiness checklist](../../specs/019-native-predictor/checklists/owned-repo-source-readiness.md)
 and the [prospective pilot runbook](../../specs/019-native-predictor/prospective-pilot.md).
-It does not alter their approvals, frozen evidence or task status.
+It does not alter their approvals or frozen evidence. Current software task status is given in the dated addendum above; the historical observations below are unchanged.
 
 ## Executed software checks
 
@@ -103,7 +112,7 @@ and one executed diagnostic that produced no successful seal. Neither is a
 successful source-window registration. No workflow was dispatched, runner
 registered, credential changed or private payload captured during this audit.
 
-## Task disposition and human handoff
+## Historical task disposition and human handoff — 2026-10-05
 
 | Task | Technical work available now | Remaining prerequisite |
 | --- | --- | --- |
