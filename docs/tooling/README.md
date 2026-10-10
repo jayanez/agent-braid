@@ -1,8 +1,9 @@
 # AI tooling integrations
 
-**Status — 2026-10-08:** [M4.5](https://github.com/jayanez/agent-braid/milestone/19) is Open, adjacent to M4, with six spec issues and 60 linked task subissues. Six draft
-Spec Kit packages define 48 requirements, 48 acceptance scenarios and 60 unchecked
-implementation tasks. An unmerged experimental implementation candidate is now present; paired evidence,
+**Status — 2026-10-10:** [M4.5](https://github.com/jayanez/agent-braid/milestone/19) is Open, adjacent to M4, with six spec issues and 60 linked task subissues. Six draft
+Spec Kit packages define 48 requirements, 48 acceptance scenarios and 60 implementation tasks, of which 59 remain unchecked.
+SPEC-044 T003 records 19 bounded deterministic controls for its historical candidate;
+it does not establish later-candidate or actual-host acceptance. An unmerged experimental implementation candidate is now present; paired evidence,
 actual host observations and acceptance remain pending. Administrative tracking is registered; the [registration record](../../specs/039-ai-tooling-program/administrative-registration.md) links each parent and its work queue. [ADR 0021](../adr/0021-codex-claude-tooling-integration.md) is proposed.
 
 ## Start here
@@ -10,7 +11,9 @@ actual host observations and acceptance remain pending. Administrative tracking 
 Start the experimental candidate with [installation](INSTALL.md),
 [presentation](../ai-tooling-presentation.md) and [evaluation preparation](EVALUATION.md).
 The [implementation map](../../specs/039-ai-tooling-program/implementation-status.md)
-retains all work packages and pending paired evidence. The `agent-braid tooling`
+retains all work packages and pending paired evidence. The [technical evidence
+status](TECHNICAL_STATUS.md) distinguishes reviewed local observations from
+canonical scenario acceptance and the remaining native-host work. The `agent-braid tooling`
 command group provides stdio serving, previewed receipt-owned lifecycle operations,
 read-only diagnostics and presentation/export of already obtained values.
 Capture preparation also provides [local measurement primitives](MEASUREMENTS.md),

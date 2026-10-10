@@ -1,6 +1,6 @@
 # SPEC-040: Prospective validation procedures
 
-These procedures are plans. Future test modules/harnesses are not present in this source packet. No procedure below has obtained implementation evidence. A passed source validator checks structure only.
+These are the paired acceptance procedures. Experimental implementation modules and deterministic controls are present in the current candidate. Reviewed private local observations cover bounded portions of some procedures, as described in [the technical evidence status](../../docs/tooling/TECHNICAL_STATUS.md); they have not been packaged as canonical obtained evidence for this spec. Canonical assurance remains draft with human review pending. A passed source validator checks structure only and does not complete these procedures.
 
 Record positive, refusal, unknown, failed, cancelled and unexecuted outcomes. Evidence must include full candidate and input hashes, command/tool trace, environment, output hashes, domain and limits. Human decisions remain separate.
 
