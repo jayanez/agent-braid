@@ -54,6 +54,10 @@ PRESERVED_DRAFT_TAGS = (
      "refs/tags/spec-019-software-candidate-c30e8bc",
      "c30e8bcfb572afba4447767fc2b51dd2c3320766",
      "04f89c868406193be104c1f66360223907db4c38"),
+    ("specs/044-ai-tooling-evaluation/assurance.json",
+     "refs/tags/m45-tooling-candidate-8df6c9f",
+     "8df6c9f410f0559dc667833b8a4f71f1685d3ea0",
+     "2f2f6f4ec199d43ecc9ec3e2597875ab7547257a"),
 )
 
 
