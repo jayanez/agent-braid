@@ -3,8 +3,8 @@
 
 This is descriptive software, not an approved protocol or real-data evaluator.
 Labels and annotations are supplied separately and are never passed to a
-scorer or preparation hook. The founder selected the status-to-usefulness and
-call-unit mapping; the complete protocol remains pending independent review.
+scorer or preparation hook. The status-to-usefulness mapping is deliberately
+named/versioned because P019-04 remains under review.
 """
 from __future__ import annotations
 
@@ -33,7 +33,7 @@ POLICY = {
     "version": POLICY_VERSION,
     "mapping": "one unordered pair per produce+verify call; only verified-bounded can contribute useful yield; divergent and inconclusive consume one call and contribute no yield; abstention consumes zero calls",
     "precisionRecall": "known labels among selected verified-bounded pairs; recall denominator is every known-positive inventory pair",
-    "approval": "founder-selected; independent-review-pending",
+    "approval": "provisional; P019-04 not approved",
 }
 
 
@@ -53,18 +53,21 @@ def _finite_number(value: Any) -> bool:
 def permute_training_labels(training_inventory: Any, training_labels: Any, *, seed: int = 0) -> list[dict]:
     """Return train-only rows with the complete label assignment permuted.
 
-    The known/unknown and class counts are preserved. If any nonidentity
-    assignment is possible, the returned assignment is guaranteed to differ.
+    Pair rows are sorted by pairId before applying the fixed seed, so caller
+    inventory order cannot change the assignment. Known/unknown and class
+    counts are preserved; when possible, the assignment differs from identity.
     """
     if seed != 0:
         raise ValueError("the candidate negative-control seed is fixed at 0")
     if type(training_inventory) is not list or not training_inventory or type(training_labels) is not dict:
         raise ValueError("training inventory and separate labels are required")
     pairs = set()
-    values = []
     checked = []
     expected_row_fields = {"pairId", "familyId", "sessionId", "duplicateGroupId",
                            "partition", "features"}
+    # Bind seed-0 assignment to opaque pair identity rather than caller list
+    # order, so the same frozen cohort yields the same control after harmless
+    # inventory reordering.
     for row in training_inventory:
         if type(row) is not dict or set(row) != expected_row_fields or row.get("partition") != "train":
             raise ValueError("permutation input rows must match the strict train feature schema")
@@ -85,9 +88,10 @@ def permute_training_labels(training_inventory: Any, training_labels: Any, *, se
         if label is not None and (type(label) is not int or label not in (0, 1)):
             raise ValueError("training labels must be 0, 1, or None")
         checked.append((deepcopy(row), label))
-        values.append(label)
     if set(training_labels) != pairs:
         raise ValueError("training label inventory mismatch")
+    checked.sort(key=lambda item: item[0]["pairId"])
+    values = [label for _row, label in checked]
     if set(values) & {0, 1} != {0, 1}:
         raise NegativeControlUnavailable("permuted-label control requires both known training classes")
     permuted = list(values)
@@ -197,15 +201,72 @@ def _validate(inventory: Any, labels: Any, source_kind: str) -> tuple[list[dict]
             raise ValueError("duplicate pair identity")
         seen.add(pair_id)
         for field in ("annotation1", "annotation2", "adjudicatedLabel"):
+            if field not in row:
+                raise ValueError("every evaluation row requires both reviewer records and adjudication field")
             if field in row and row[field] is not None and (type(row[field]) is not int or row[field] not in (0, 1)):
                 raise ValueError("annotation values must be 0, 1, or None")
         for reviewer in ("annotation1", "annotation2"):
             attempted_field = reviewer + "Attempted"
             failure_field = reviewer + "Failure"
-            if attempted_field in row and type(row[attempted_field]) is not bool:
+            reviewer_id_field = reviewer + "ReviewerId"
+            reason_field = reviewer + "UnknownReason"
+            if attempted_field not in row or type(row[attempted_field]) is not bool:
                 raise ValueError("annotation attempt flags must be booleans")
-            if failure_field in row and row[failure_field] is not None and type(row[failure_field]) is not str:
-                raise ValueError("annotation failure must be text or None")
+            if failure_field in row and row[failure_field] is not None and (
+                    type(row[failure_field]) is not str or not row[failure_field]):
+                raise ValueError("annotation failure must be nonempty text or None")
+            if reviewer_id_field not in row or (row[reviewer_id_field] is not None and
+                                                  (type(row[reviewer_id_field]) is not str or not row[reviewer_id_field])):
+                raise ValueError("reviewer identity must be an opaque ID or None")
+            if reason_field not in row or (row[reason_field] is not None and
+                                            (type(row[reason_field]) is not str or not row[reason_field])):
+                raise ValueError("unknown-label reason must be nonempty text or None")
+            value = row[reviewer]
+            attempted = row[attempted_field]
+            failure = row.get(failure_field)
+            if attempted and row[reviewer_id_field] is None:
+                raise ValueError("attempted reviewer record requires an opaque reviewer ID")
+            if not attempted and (row[reviewer_id_field] is not None or value is not None or failure is not None):
+                raise ValueError("unattempted reviewer record cannot contain identity, label or failure")
+            if value in (0, 1) and (failure is not None or row[reason_field] is not None):
+                raise ValueError("known reviewer label cannot carry failure or unknown reason")
+            if attempted and value is None and failure is None and row[reason_field] is None:
+                raise ValueError("attempted unknown reviewer label requires a reason")
+        if (row["annotation1Attempted"] and row["annotation2Attempted"]
+                and row["annotation1ReviewerId"] == row["annotation2ReviewerId"]):
+            raise ValueError("independent reviewers must have distinct opaque IDs")
+        if not row["annotation1Attempted"] or not row["annotation2Attempted"]:
+            raise ValueError("every evaluated pair requires two independent reviewer attempts")
+        adjudication_fields = ("adjudicationAttempted", "adjudicatorId",
+                              "adjudicationRationale", "adjudicationUnknownReason")
+        if any(field not in row for field in adjudication_fields):
+            raise ValueError("every evaluation row requires an explicit adjudication record")
+        if type(row["adjudicationAttempted"]) is not bool:
+            raise ValueError("adjudication attempt flag must be boolean")
+        for field in ("adjudicatorId", "adjudicationRationale", "adjudicationUnknownReason"):
+            value = row[field]
+            if value is not None and (type(value) is not str or not value):
+                raise ValueError(f"{field} must be nonempty text or None")
+        disagreement = (row["annotation1"] in (0, 1) and row["annotation2"] in (0, 1)
+                        and row["annotation1"] != row["annotation2"])
+        if disagreement and not row["adjudicationAttempted"]:
+            raise ValueError("reviewer disagreement requires a third-reviewer adjudication attempt")
+        if row["adjudicationAttempted"]:
+            if not disagreement or row["adjudicatorId"] is None:
+                raise ValueError("adjudication requires a recorded third reviewer for disagreement")
+            if row["adjudicatorId"] in {row["annotation1ReviewerId"], row["annotation2ReviewerId"]}:
+                raise ValueError("adjudicator ID must differ from both independent reviewers")
+            if row["adjudicatedLabel"] is None and row["adjudicationUnknownReason"] is None:
+                raise ValueError("unknown adjudication requires a reason")
+            if row["adjudicatedLabel"] in (0, 1) and row["adjudicationRationale"] is None:
+                raise ValueError("known adjudication requires a rationale")
+            if row["adjudicatedLabel"] is None and row["adjudicationRationale"] is not None:
+                raise ValueError("unknown adjudication cannot carry a known-label rationale")
+            if row["adjudicatedLabel"] in (0, 1) and row["adjudicationUnknownReason"] is not None:
+                raise ValueError("known adjudication cannot carry an unknown-label reason")
+        elif any(row[field] is not None for field in ("adjudicatorId", "adjudicationRationale",
+                                                      "adjudicationUnknownReason", "adjudicatedLabel")):
+            raise ValueError("unattempted adjudication cannot contain outcome metadata")
         request = row["request"]
         # Validate request without deriving or altering its semantics.
         from agent_braid.structured_exchange import validate_request
@@ -224,9 +285,26 @@ def _validate(inventory: Any, labels: Any, source_kind: str) -> tuple[list[dict]
     if set(labels) != seen:
         raise ValueError("label inventory must exactly match pair inventory")
     checked_labels: dict[str, int | None] = {}
+    rows_by_id = {row["pairId"]: row for row in rows}
     for pair_id, value in labels.items():
         if value is not None and (type(value) is not int or value not in (0, 1)):
             raise ValueError("labels must be 0, 1, or None")
+        row = rows_by_id[pair_id]
+        first, second, adjudicated = (row["annotation1"], row["annotation2"],
+                                      row["adjudicatedLabel"])
+        if first in (0, 1) and second in (0, 1):
+            if first == second:
+                if adjudicated is not None and adjudicated != first:
+                    raise ValueError("adjudication conflicts with reviewer consensus")
+                derived = first
+            else:
+                derived = adjudicated
+        else:
+            if adjudicated is not None:
+                raise ValueError("adjudication requires two completed independent reviewer labels")
+            derived = None
+        if value != derived:
+            raise ValueError("metric label differs from reviewer consensus/adjudication")
         checked_labels[pair_id] = value
     return rows, deepcopy(checked_labels)
 
@@ -340,7 +418,7 @@ def _metrics(rows: list[dict], labels: dict[str, int | None], selected: list[dic
 def _negative_control(rows: list[dict], labels: dict[str, int | None], *,
                       training_inventory: Any, training_labels: Any,
                       calibration_inventory: Any, calibration_labels: Any) -> dict:
-    """Fit and evaluate a provenance-bound synthetic permuted-label control."""
+    """Fit a synthetic permuted-label control and verify its input commitments."""
     if any(value is None for value in (training_inventory, training_labels,
                                        calibration_inventory, calibration_labels)):
         raise ValueError("negative-control fit requires separate train and calibration inputs")
@@ -418,19 +496,29 @@ def _negative_control(rows: list[dict], labels: dict[str, int | None], *,
     for fraction in (0.25, 0.5, 1.0):
         ceiling = math.floor(fraction * len(rows))
         selected = _select(rows, scores, ceiling)
-        verdicts = {row["pairId"]: _default_verifier(row["request"]) for row in selected}
+        verdicts = {}
+        verifier_work = {"submittedEvidenceProductionCount": 0,
+                         "verifierInvocationCount": 0,
+                         "verifierEvidenceRegenerationCount": 0}
+        for row in selected:
+            verdict, work = _timed_default_verifier(row["request"])
+            verdicts[row["pairId"]] = verdict
+            for name in verifier_work:
+                verifier_work[name] += work[name]
         metrics = _metrics(rows, labels, selected, verdicts, families)
         metrics.update({"budgetCeiling": ceiling,
                         "inventoryPairs": len(rows),
                         "abstentions": sum(value is None for value in scores.values()),
                         "unusedCalls": max(0, ceiling - len(selected)),
-                        "calibration": _calibration_metrics(rows, labels, probabilities)})
+                        "calibration": _calibration_metrics(rows, labels, probabilities),
+                        "verifierWork": verifier_work})
         metrics_by_budget[str(int(fraction * 100))] = metrics
 
     return {
         "status": "available", "seed": 0,
         "fitMethod": "native_predictor_training.fit",
-        "fitProvenanceVerified": True,
+        "fitInputCommitmentsVerified": True,
+        "trainingLabelPermutationVerified": True,
         "trainingAssignmentChanged": True,
         "classCountsPreserved": True,
         "holdoutLabelsPermuted": False,
@@ -442,6 +530,12 @@ def _negative_control(rows: list[dict], labels: dict[str, int | None], *,
         "calibrationInputCommitment": expected_calibration_hash,
         "artifactHash": model_hash,
         "fitSeconds": fit_seconds,
+        "costAccounting": (
+            "fitSeconds covers trainer fit (weight fitting, calibration and in-memory artifact construction); "
+            "verifier work is counted per selected pair; "
+            "negative-control inference, ranking, verification and serialization timings "
+            "are not a policy-arm cost comparison"
+        ),
         "metricsByBudget": metrics_by_budget,
         "interpretation": "synthetic permuted-label control; descriptive only",
     }
@@ -453,7 +547,7 @@ def _label_agreement(rows: list[dict], family_ids: list[str]) -> dict:
         family_rows = [r for r in rows if r["familyId"] == family]
         reviewer_stats = {}
         for reviewer in ("annotation1", "annotation2"):
-            attempted_rows = [r for r in family_rows if r.get(reviewer + "Attempted", reviewer in r or reviewer + "Failure" in r)]
+            attempted_rows = [r for r in family_rows if r[reviewer + "Attempted"]]
             failed_rows = [r for r in attempted_rows if r.get(reviewer + "Failure")]
             missing_rows = [r for r in attempted_rows
                             if r.get(reviewer) is None and not r.get(reviewer + "Failure")]
@@ -466,12 +560,12 @@ def _label_agreement(rows: list[dict], family_ids: list[str]) -> dict:
                 "missingFieldRateAmongAttempts": len(missing_rows) / len(attempted_rows) if attempted_rows else None,
             }
         pair_attempts = [r for r in family_rows
-                         if r.get("annotation1Attempted", "annotation1" in r or "annotation1Failure" in r)
-                         and r.get("annotation2Attempted", "annotation2" in r or "annotation2Failure" in r)]
+                         if r["annotation1Attempted"] and r["annotation2Attempted"]]
         disagreements = [r for r in pair_attempts if r.get("annotation1") in (0, 1)
                          and r.get("annotation2") in (0, 1) and r["annotation1"] != r["annotation2"]]
         resolved = sum((r.get("annotation1") == r.get("annotation2") and r.get("annotation1") in (0, 1))
-                       or r.get("adjudicatedLabel") in (0, 1) for r in pair_attempts)
+                       or (r["adjudicationAttempted"] and r.get("adjudicatedLabel") in (0, 1))
+                       for r in pair_attempts)
         unresolved = len(pair_attempts) - resolved
         labeled_pairs = sum(r.get("annotation1") in (0, 1) and r.get("annotation2") in (0, 1)
                             for r in pair_attempts)
@@ -482,7 +576,9 @@ def _label_agreement(rows: list[dict], family_ids: list[str]) -> dict:
             "unresolvedRateAmongPairAttempts": unresolved / len(pair_attempts) if pair_attempts else None,
             "rawDisagreements": len(disagreements),
             "disagreementRateAmongDoubleKnown": len(disagreements) / labeled_pairs if labeled_pairs else None,
-            "adjudicatedDisagreements": sum(r.get("adjudicatedLabel") in (0, 1) for r in disagreements),
+            "adjudicatedDisagreements": sum(r["adjudicationAttempted"] and
+                                             r.get("adjudicatedLabel") in (0, 1)
+                                             for r in disagreements),
         }
     return result
 
@@ -721,10 +817,12 @@ def evaluate(inventory: Any, labels: Any, *, scorer: Callable[[dict], Any],
         except NegativeControlUnavailable as exc:
             negative_control = {"status": "unavailable", "reason": str(exc),
                                 "seed": 0, "holdoutLabelsPermuted": False,
-                                "fitProvenanceVerified": False}
+                                "fitInputCommitmentsVerified": False,
+                                "trainingLabelPermutationVerified": False}
     report = {
         "format": "m35-evaluation-report-v1", "sourceKind": "synthetic",
-        "status": "synthetic-descriptive-only", "protocolApproval": "founder-selected-mapping; full-protocol-independent-review-pending",
+        "status": "synthetic-descriptive-only",
+        "protocolApproval": "not-approved; founder-selected call unit and status mapping recorded; remaining protocol review is pending",
         "policy": POLICY, "inventoryOrder": "caller-supplied stable order; tie breaks preserve it",
         "labelIsolation": "labels and annotations are separate and never passed directly to scorer or preparation callbacks",
         "scorerInputBoundary": "direct scorer argument contains only the learned feature version and six canonical numeric features; callbacks are trusted in-process code, not isolated from closures or process-global state",

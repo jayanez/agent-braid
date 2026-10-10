@@ -1,0 +1,11 @@
+{
+  "oldCommit": "7e3cee8595ef8b45b1095a67c8977472f1266de3",
+  "newAuthorityMode": "current",
+  "humanReview": "pending",
+  "changed": [
+    "ARCHITECTURE.md"
+  ],
+  "added": [],
+  "removed": [],
+  "limits": "Draft software preparation only; no historical review rewritten or new approval inferred."
+}

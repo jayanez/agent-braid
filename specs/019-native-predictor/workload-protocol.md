@@ -4,35 +4,48 @@
 exchanges in real workloads as the M3.5 target. This records the target
 direction, not approval of this detailed protocol, a dataset or model results.
 
-## Founder-selected amendments pending independent review — 2026-10-09
+## Founder-selected clauses — candidate for human scientific review
 
-The founder selected these rules for the next protocol revision:
+The founder selected the following clauses during the 2026-10-09–10 discussion.
+They approve candidate wording and software preparation, not source admission,
+registration, annotation, real fitting or the experiment as a whole.
 
-- Cut off after the second proposal in a validated total event sequence. A
-  resolution event at or before that cutoff excludes the pair. A hash fallback
-  may orient a pair deterministically but never establishes chronology or
-  source eligibility.
-- Group exact normalized unordered pairs and keep records from the same
-  session/lineage together. Do not group unrelated pairs solely because they
-  share a base. Detailed canonicalization remains for scientific review.
-- Keep `keep-order` eligible for verifier work. The primary comparison is the
-  fixed-budget assessed-useful `verified-bounded` count at the 50% ceiling,
-  with lower and upper bounds for unknown labels.
-- One unordered pair consumes one budget unit: one submitted `produce`, one
-  `verify`, and verifier-side evidence regeneration. Divergent and inconclusive
-  outcomes consume the unit; abstentions do not.
-- Preselect exactly one calibration family. Calibration is descriptive and
-  uses calibration rows only; omit probabilities and Brier when classes,
-  score variance, or fitting requirements fail.
-- Preserve every source, family, label and class threshold. If a metadata-only
-  audit proves the required five-family split infeasible, stop before
-  annotation and record infeasibility.
-- Include operational costs for extraction, preparation, scoring, ranking,
-  verifier work and serialization; report training and annotation separately.
+- **P019-02:** cut off immediately after the later proposal in a validated total
+  event sequence. Resolution requires an explicit `proposal-resolved` event
+  linked to that proposal, an explicit outcome and valid sequence. A resolution
+  at or before cutoff excludes the pair; ambiguous resolution records remain
+  outside admission. Absence alone is not evidence of a negative utility label.
+- Show annotators the complete immutable base, the two proposals and their
+  anchors, with neutral display identifiers. Hide identity, time, source order,
+  scores, partitions, verifier judgments, later events and audit commitments.
+  The complete prefix is retained privately for eligibility auditing, not
+  displayed as the annotation context. Rendering and blinding implementation,
+  the outcome vocabulary and authoritative source completeness remain review
+  gates before real annotation.
+- **P019-03:** group normalized identical unordered pairs and common
+  session/lineage before partitioning. Orient by validated event sequence;
+  canonical payload hash then operation ID is a representational tie fallback
+  only, marked nonchronological. It cannot admit a source lacking a validated
+  total sequence. Canonical encoding and authenticated cross-family lineage
+  remain preregistration gates.
+- **P019-04:** keep `keep-order` verifier-eligible. Primary comparison is the
+  assessed-useful `verified-bounded` count at the fixed 50% ceiling with
+  unknown-label bounds. One non-abstaining pair consumes one submitted
+  production plus verification, including verifier-side regeneration;
+  divergent/inconclusive results consume the unit, abstentions do not.
+- Preselect exactly one calibration family. Fit the fixed grid only in that
+  partition; calibration is descriptive. On failed or degenerate calibration,
+  omit probabilities and Brier. Retain complete operational costs, with
+  training and annotation reported separately; timing/bin allocation details
+  remain pending review.
+- Preserve every threshold. If the required five-family split is infeasible,
+  stop before annotation. Zero currently eligible families is current
+  infeasibility, not completion of an experiment.
 
-The annotator display has not yet been selected. These choices remain subject
-to independent human scientific review and authorize no source access,
-registration, annotation, training or holdout access.
+The synthetic adapter records cutoff commitments but rejects
+`proposal-resolved` events instead of implementing the selected exclusion
+semantics. It provides no real annotation view or completeness proof and
+continues to reject prospective adaptation.
 
 ## Population and acquisition
 
@@ -69,6 +82,13 @@ opening holdout labels. Collection and privacy review remain pending.
 Collect prospective sessions from at least five separately identified
 eligible workload families before model fitting. A failed source screen is a
 feasibility result, not permission to project or crop a larger edit domain.
+Under the founder's current owner-only source boundary, the bounded reviewed
+set has zero eligible families and zero admitted pairs. Preserve every class,
+family and label threshold; if metadata-only review finds no possible
+five-family partition, stop before annotation and report current infeasibility.
+This does not authorize opening additional payloads, registration, capture or
+annotation; any newly eligible source requires a concrete allowlist and
+rights/privacy review first.
 
 ## Labels and boundaries
 
@@ -85,8 +105,9 @@ label cannot be inferred from the M3 rule proposal or verifier status.
 The founder-selected annotation cutoff is immediately after the second
 proposal in a validated total event sequence. Exclude the pair if either
 proposal is resolved at or before that point, or if event order or source
-completeness cannot be established. The exact fields shown to annotators
-remain unresolved and must be reviewed before any label is collected. Later
+completeness cannot be established. Annotators receive the selected base/proposals/anchors projection only;
+neutral rendering, resolution vocabulary and completeness still require review
+before any label is collected. Later
 events, scores, priorities, partition and verifier outcomes stay hidden.
 
 The model ranks which candidate pairs merit verifier work. Any reported
@@ -146,17 +167,15 @@ selection rule need a separate frozen protocol revision before fitting.
 
 At verifier-call ceilings of 25%, 50% and 100% of all assigned holdout pairs,
 set each ceiling to `floor(budget_fraction * N)`, where `N` is the number of
-assigned holdout pairs. One unordered pair consumes one unit comprising
-proposal production, one verifier invocation and verifier-side evidence
-regeneration. Divergent and inconclusive results consume the unit; abstentions
-consume none. Break equal priority scores by the inventory order frozen before
-labels. Rank pairs by each policy and call the unchanged verifier until its
-ceiling is reached or eligible proposals are exhausted; report unused calls.
-The primary endpoint is the count of known-positive assessed-usefulness labels
-among `verified-bounded` pairs at the 50% ceiling. Report lower and upper
-counts with unknown labels treated as not useful/useful, respectively; do not
-claim a directional advantage if those bounds permit reversal. Precision,
-recall, abstention, actual calls and cost are secondary measures. The
+assigned holdout pairs. Break equal priority scores by the inventory order
+frozen before labels. Rank pairs by each policy and call the unchanged verifier
+until its ceiling is reached or eligible proposals are exhausted. One
+non-abstaining unordered pair is one budgeted unit: one submitted production
+and one verifier invocation, including the verifier's deterministic evidence
+regeneration. `divergent` and `inconclusive` outcomes consume the unit; an
+abstention consumes none. Continue after abstention and report unused calls if
+the ceiling cannot be filled. Report assessed-useful verified proposals,
+precision, recall, abstention, actual verifier calls and cost for both policies. The
 operational total analysis time includes source-to-feature extraction, rule
 or model scoring, ranking, unchanged verifier calls and result serialization;
 report one-time training and annotation effort separately. Measure both
@@ -219,8 +238,8 @@ linear logistic ranker: training-only population normalization, zero initial
 weights/intercept, 2,000 full-batch gradient steps of size 0.1, and mean logistic
 loss plus `0.01 * sum(weight**2) / 2` with unpenalized intercept. Constant features
 normalize to zero; nonfinite arithmetic aborts. These choices must be reviewed
-and frozen with the complete protocol before any fit, including fitting controls
-on synthetic labels. No hyperparameter search or holdout-based stopping is added.
+and frozen with the complete protocol before any fit on admitted workload data. Synthetic fitting tests are
+software checks only and do not freeze these experimental choices. No hyperparameter search or holdout-based stopping is added.
 Permutation controls use a local seed of 0. Existing calibration, threshold,
 baseline and cost rules above remain controlling.
 

@@ -30,6 +30,15 @@ class NativePredictorEvaluationTests(unittest.TestCase):
         self.inventory = [_row("p0", "f1", ROOT, ROOT), _row("p1", "f1", ROOT, "x"),
                           _row("p2", "f2", ROOT, ROOT), _row("p3", "f2", "x", "y")]
         self.labels = {"p0": 1, "p1": 0, "p2": None, "p3": 1}
+        for row in self.inventory:
+            label = self.labels[row["pairId"]]
+            row.update(annotation1=label, annotation2=label, adjudicatedLabel=None,
+                       annotation1Attempted=True, annotation1ReviewerId="synthetic-reviewer-a",
+                       annotation1UnknownReason=None if label is not None else "insufficient-context",
+                       annotation2Attempted=True, annotation2ReviewerId="synthetic-reviewer-b",
+                       annotation2UnknownReason=None if label is not None else "insufficient-context",
+                       adjudicationAttempted=False, adjudicatorId=None,
+                       adjudicationRationale=None, adjudicationUnknownReason=None)
 
     def run_eval(self, scorer, **kwargs):
         return evaluate(self.inventory, self.labels, scorer=scorer, dataset_kind="synthetic", **kwargs)
@@ -47,6 +56,16 @@ class NativePredictorEvaluationTests(unittest.TestCase):
         half = report["budgets"]["baseline"]["50"]
         self.assertEqual(half["verifiedUsefulYieldBounds"]["lower"], 1)
         self.assertEqual(half["verifiedUsefulYieldBounds"]["upper"], 2)
+        for policy in ("baseline", "predictor"):
+            result = report["budgets"][policy]["25"]
+            self.assertEqual(result["actualVerifierCalls"], result["budgetCeiling"])
+            self.assertEqual(result["verifierWork"]["submittedEvidenceProductionCount"],
+                             result["actualVerifierCalls"])
+            self.assertEqual(result["verifierWork"]["verifierInvocationCount"],
+                             result["actualVerifierCalls"])
+            self.assertEqual(result["verifierWork"]["verifierEvidenceRegenerationCount"],
+                             result["actualVerifierCalls"])
+            self.assertEqual(result["abstentionsSelected"], 0)
 
     def test_abstentions_use_no_calls_and_continue_down_ranking(self):
         calls = []
@@ -59,6 +78,10 @@ class NativePredictorEvaluationTests(unittest.TestCase):
         self.assertEqual(result["abstentions"], 1)
         self.assertEqual(result["actualVerifierCalls"], 1)
         self.assertEqual(result["unusedCalls"], 0)
+        self.assertEqual(result["verifierWork"]["submittedEvidenceProductionCount"], 1)
+        self.assertEqual(result["verifierWork"]["verifierInvocationCount"], 1)
+        self.assertEqual(result["verifierWork"]["verifierEvidenceRegenerationCount"], 1)
+        self.assertEqual(result["abstentionsSelected"], 0)
 
     def test_label_and_family_fields_are_not_passed_to_scorer_or_preparer(self):
         seen = []
@@ -152,14 +175,100 @@ class NativePredictorEvaluationTests(unittest.TestCase):
         evaluate(hostile_rows, self.labels, scorer=scorer, preparation=preparation,
                  dataset_kind="synthetic")
 
-    def test_annotations_and_calibration_are_descriptive_and_optional(self):
-        inventory = [dict(row, annotation1=1, annotation2=0, adjudicatedLabel=None) for row in self.inventory]
-        report = evaluate(inventory, self.labels, scorer=lambda _vector: 0.1,
+    def test_annotation_agreement_and_calibration_are_descriptive(self):
+        inventory = [dict(row, annotation1=1, annotation2=0, adjudicatedLabel=None,
+                          annotation1UnknownReason=None, annotation2UnknownReason=None,
+                          adjudicationAttempted=True, adjudicatorId="synthetic-reviewer-c",
+                          adjudicationUnknownReason="synthetic insufficient context")
+                     for row in self.inventory]
+        unknown_labels = {pair_id: None for pair_id in self.labels}
+        report = evaluate(inventory, unknown_labels, scorer=lambda _vector: 0.1,
                           dataset_kind="synthetic")
         self.assertEqual(report["annotationAgreementByFamily"]["f1"]["rawDisagreements"], 2)
         metric = report["budgets"]["predictor"]["50"]["calibration"]
         self.assertIsNone(metric["brier"])
         self.assertIn("reason", metric)
+
+    def test_metric_labels_must_match_consensus_or_adjudication(self):
+        conflict = [dict(row, annotation1=0, annotation2=1, adjudicatedLabel=None,
+                         annotation1UnknownReason=None, annotation2UnknownReason=None,
+                         adjudicationAttempted=True, adjudicatorId="synthetic-reviewer-c",
+                         adjudicationUnknownReason="synthetic unresolved disagreement")
+                    for row in self.inventory]
+        with self.assertRaisesRegex(ValueError, "metric label differs"):
+            evaluate(conflict, self.labels, scorer=lambda _vector: 0.1,
+                     dataset_kind="synthetic")
+        adjudicated = [dict(row, annotation1=0, annotation2=1, adjudicatedLabel=1,
+                            annotation1UnknownReason=None, annotation2UnknownReason=None,
+                            adjudicationAttempted=True, adjudicatorId="synthetic-reviewer-c",
+                            adjudicationRationale="synthetic recorded rationale")
+                       for row in self.inventory]
+        adjudicated_labels = {pair_id: 1 for pair_id in self.labels}
+        evaluate(adjudicated, adjudicated_labels, scorer=lambda _vector: 0.1,
+                 dataset_kind="synthetic")
+        with self.assertRaisesRegex(ValueError, "metric label differs"):
+            evaluate(adjudicated, {pair_id: 0 for pair_id in self.labels},
+                     scorer=lambda _vector: 0.1, dataset_kind="synthetic")
+        contradictory_adjudication = [dict(row, adjudicationUnknownReason="contradictory")
+                                      for row in adjudicated]
+        with self.assertRaisesRegex(ValueError, "cannot carry an unknown-label reason"):
+            evaluate(contradictory_adjudication, adjudicated_labels,
+                     scorer=lambda _vector: 0.1, dataset_kind="synthetic")
+        fabricated_adjudicator = [dict(row, annotation1=0, annotation2=1,
+                                      annotation1UnknownReason=None, annotation2UnknownReason=None,
+                                      adjudicationAttempted=True, adjudicatorId=None,
+                                      adjudicatedLabel=0, adjudicationRationale="declared")
+                                 for row in self.inventory]
+        with self.assertRaisesRegex(ValueError, "recorded third reviewer"):
+            evaluate(fabricated_adjudicator, {pair_id: 0 for pair_id in self.labels},
+                     scorer=lambda _vector: 0.1, dataset_kind="synthetic")
+        incomplete = [dict(row, annotation1=0, annotation2=None,
+                           annotation1UnknownReason=None,
+                           annotation2UnknownReason="insufficient-context",
+                           adjudicationAttempted=True, adjudicatorId="synthetic-reviewer-c",
+                           adjudicationRationale="synthetic rationale", adjudicatedLabel=0)
+                      for row in self.inventory]
+        with self.assertRaisesRegex(ValueError, "requires a recorded third reviewer for disagreement"):
+            evaluate(incomplete, {pair_id: 0 for pair_id in self.labels},
+                     scorer=lambda _vector: 0.1, dataset_kind="synthetic")
+
+    def test_unknown_labels_cannot_imply_annotation_attempts(self):
+        inventory = copy.deepcopy(self.inventory)
+        for row in inventory:
+            row.pop("annotation1Attempted")
+            row.pop("annotation2Attempted")
+        with self.assertRaisesRegex(ValueError, "attempt flags must be booleans"):
+            evaluate(inventory, {pair_id: None for pair_id in self.labels},
+                     scorer=lambda _vector: 0.1, dataset_kind="synthetic")
+        incomplete = copy.deepcopy(self.inventory)
+        incomplete[0].update(annotation1Attempted=False, annotation1ReviewerId=None,
+                             annotation1=None, annotation1UnknownReason="not attempted")
+        with self.assertRaisesRegex(ValueError, "requires two independent reviewer attempts"):
+            evaluate(incomplete, self.labels, scorer=lambda _vector: 0.1,
+                     dataset_kind="synthetic")
+        empty_failure = copy.deepcopy(self.inventory)
+        empty_failure[0].update(annotation1=None, annotation1Failure="",
+                                annotation1UnknownReason=None, annotation2=None,
+                                annotation2UnknownReason="insufficient-context")
+        with self.assertRaisesRegex(ValueError, "failure must be nonempty"):
+            evaluate(empty_failure, {**self.labels, "p0": None},
+                     scorer=lambda _vector: 0.1, dataset_kind="synthetic")
+
+    def test_reviewer_and_adjudicator_ids_must_be_independent(self):
+        same_reviewers = [dict(row, annotation1ReviewerId="same-reviewer",
+                               annotation2ReviewerId="same-reviewer")
+                          for row in self.inventory]
+        with self.assertRaisesRegex(ValueError, "reviewers must have distinct"):
+            evaluate(same_reviewers, self.labels, scorer=lambda _vector: 0.1,
+                     dataset_kind="synthetic")
+        same_reviewer_and_adjudicator = [dict(
+            row, annotation1=0, annotation2=1, annotation1UnknownReason=None,
+            annotation2UnknownReason=None, adjudicationAttempted=True,
+            adjudicatorId="synthetic-reviewer-a", adjudicatedLabel=0,
+            adjudicationRationale="synthetic rationale") for row in self.inventory]
+        with self.assertRaisesRegex(ValueError, "adjudicator ID must differ"):
+            evaluate(same_reviewer_and_adjudicator, {pair_id: 0 for pair_id in self.labels},
+                     scorer=lambda _vector: 0.1, dataset_kind="synthetic")
 
     def test_calibrated_probabilities_get_brier_and_sparse_bins(self):
         report = self.run_eval(lambda _vector: {"status": "proposal", "score": 0.5, "probability": 0.7})
@@ -215,6 +324,10 @@ class NativePredictorEvaluationTests(unittest.TestCase):
         train_labels = {"t0": 1, "t1": 0, "t2": 1, "t3": 0, "t4": None}
         permuted = permute_training_labels(training, train_labels)
         self.assertEqual(permuted, permute_training_labels(training, train_labels))
+        reordered = permute_training_labels(list(reversed(training)), train_labels)
+        self.assertEqual({row["pairId"]: row["label"] for row in permuted},
+                         {row["pairId"]: row["label"] for row in reordered})
+        self.assertEqual([row["pairId"] for row in reordered], sorted(row["pairId"] for row in training))
         self.assertEqual([r["label"] for r in permuted].count(None), 1)
         calibration = [{"pairId": f"c{i}", "familyId": "calibration-family",
                         "sessionId": f"cs{i}", "duplicateGroupId": f"duplicate-c{i}",
@@ -230,7 +343,9 @@ class NativePredictorEvaluationTests(unittest.TestCase):
         control = report["permutedLabelNegativeControl"]
         self.assertEqual(control["status"], "available")
         self.assertEqual(control["seed"], 0)
-        self.assertTrue(control["fitProvenanceVerified"])
+        self.assertTrue(control["fitInputCommitmentsVerified"])
+        self.assertTrue(control["trainingLabelPermutationVerified"])
+        self.assertNotIn("fitProvenanceVerified", control)
         self.assertTrue(control["trainingAssignmentChanged"])
         self.assertTrue(control["classCountsPreserved"])
         self.assertFalse(control["holdoutLabelsPermuted"])
@@ -239,6 +354,12 @@ class NativePredictorEvaluationTests(unittest.TestCase):
         self.assertEqual(set(control["metricsByBudget"]), {"25", "50", "100"})
         self.assertEqual(control["metricsByBudget"]["50"]["budgetCeiling"], 2)
         self.assertEqual(control["metricsByBudget"]["50"]["actualVerifierCalls"], 2)
+        self.assertEqual(control["metricsByBudget"]["50"]["verifierWork"], {
+            "submittedEvidenceProductionCount": 2,
+            "verifierInvocationCount": 2,
+            "verifierEvidenceRegenerationCount": 2,
+        })
+        self.assertIn("not a policy-arm cost comparison", control["costAccounting"])
         self.assertEqual(len(control["artifactHash"]), 64)
         self.assertEqual(control["trainingInputCommitment"], digest(permuted))
         expected_calibration = [{**row, "label": {"c0": 1, "c1": 0}[row["pairId"]]}
@@ -284,7 +405,9 @@ class NativePredictorEvaluationTests(unittest.TestCase):
                           calibration_labels={"c0": 1, "c1": 0})
         control = report["permutedLabelNegativeControl"]
         self.assertEqual(control["status"], "unavailable")
-        self.assertFalse(control["fitProvenanceVerified"])
+        self.assertFalse(control["fitInputCommitmentsVerified"])
+        self.assertFalse(control["trainingLabelPermutationVerified"])
+        self.assertNotIn("fitProvenanceVerified", control)
 
     def test_permuted_control_rejects_train_holdout_family_leakage(self):
         features = {name: 0 for name in ("baseSize", "sameAnchor", "anchorDistance",
@@ -373,9 +496,10 @@ class NativePredictorEvaluationTests(unittest.TestCase):
         self.assertGreater(predictor["scoringSeconds"], 0)
         self.assertGreater(baseline["submittedEvidenceProductionSeconds"], 0)
         self.assertGreater(baseline["verifierInvocationSeconds"], 0)
-        # These are independent medians over repeated runs. The median of
-        # per-run sums is not generally the sum of the per-phase medians.
-        self.assertGreater(baseline["verificationSeconds"], 0)
+        self.assertAlmostEqual(
+            baseline["verificationSeconds"],
+            baseline["submittedEvidenceProductionSeconds"] + baseline["verifierInvocationSeconds"],
+            places=5)
         result = report["budgets"]["baseline"]["50"]
         self.assertEqual(result["verifierWork"]["submittedEvidenceProductionCount"],
                          result["actualVerifierCalls"])
@@ -471,11 +595,12 @@ class NativePredictorEvaluationTests(unittest.TestCase):
 
     def test_family_prevalence_differences_annotation_failures_and_complete_serialization(self):
         inventory = [
-            dict(self.inventory[0], annotation1Attempted=True, annotation1Failure="timeout",
-                 annotation2Attempted=True),
-            dict(self.inventory[1], annotation1Attempted=True, annotation1=None,
-                 annotation2Attempted=True, annotation2=0),
-            *self.inventory[2:],
+            *self.inventory[:2],
+            dict(self.inventory[2], annotation1=None, annotation2=None, adjudicatedLabel=None,
+                 annotation1Attempted=True, annotation1Failure="timeout",
+                 annotation1UnknownReason="review timed out", annotation2Attempted=True,
+                 annotation2UnknownReason="no sufficient context"),
+            self.inventory[3],
         ]
         report = evaluate(inventory, self.labels,
                           scorer=lambda vector: vector["features"]["sameAnchor"],
@@ -484,12 +609,13 @@ class NativePredictorEvaluationTests(unittest.TestCase):
         self.assertEqual(f1["inventoryPairs"], 2)
         self.assertEqual(f1["inventoryLabels"], {"knownUseful": 1, "knownNotUseful": 1, "unknown": 0})
         self.assertEqual(f1["knownClassPrevalence"]["useful"], 0.5)
-        annotations = report["annotationAgreementByFamily"]["f1"]
+        annotations = report["annotationAgreementByFamily"]["f2"]
         self.assertEqual(annotations["reviewers"]["annotation1"]["failed"], 1)
         self.assertEqual(annotations["reviewers"]["annotation2"]["missingField"], 1)
         self.assertEqual(annotations["reviewers"]["annotation1"]["failureRateAmongAttempts"], 0.5)
-        self.assertEqual(annotations["reviewers"]["annotation1"]["missingFieldRateAmongAttempts"], 0.5)
-        self.assertEqual(annotations["unresolvedOrMissing"], 2)
+        self.assertEqual(annotations["reviewers"]["annotation1"]["missingFieldRateAmongAttempts"], 0.0)
+        self.assertEqual(annotations["reviewers"]["annotation2"]["missingFieldRateAmongAttempts"], 0.5)
+        self.assertEqual(annotations["unresolvedOrMissing"], 1)
         difference = report["policyDifferencesByFamilyAndBudget"]["50"]["f1"]
         self.assertIn("verifiedBoundedUsefulYieldDifferencePredictorMinusBaseline", difference)
         policy = report["budgets"]["predictor"]["50"]

@@ -29,10 +29,19 @@ or M3.5 benefit is reported.
   runners on 2026-10-01; those operational results do not register a real
   source window or complete T001/P019-01.
 - [ ] T007 (REQ-002, SC-003/004): In a later source-feasibility phase, audit
-  existing session feeds only after owner permission, participant/data rights
-  and privacy review. Kinetiq and SmartNotes are candidate owned-repository
-  families from the 2026-09-29 structural screen; neither has an observed feed
-  or eligible pair yet. First review the proposed local sidecar signals
+  existing session feeds only after exact source permission, participant/data
+  rights and privacy review. On 2026-10-09 the founder confirmed owner/admin
+  scope across Kinetiq, SmartNotes and Agent Braid, restricted candidate data
+  to the founder's own authored content, excluded third-party material, and
+  approved privacy/export review with explicit exclusions. That owner-level
+  decision does not establish participant rights/notice, an immutable feed,
+  completeness or pair yield, and does not authorize a capture window. The
+  reviewed Kinetiq pins remain outside M3.5 scope; SmartNotes is only a
+  nonclinical workflow lead; Agent Braid validation-method and release-evidence
+  remain separate provisional categories, while its interface candidate is
+  excluded. The bounded reviewed set has zero eligible families and pairs.
+  Keep T007 open; do not broaden discovery or infer that another actor's
+  proposal is owner-authored. First review the proposed local sidecar signals
   (`session-open`, actor `base-seen`, `insert-proposed`, `session-close`) against
   a real authoring boundary; verify shared-base independent intent from
   contemporaneous receipts and reconcile journal completeness with the source
@@ -45,7 +54,7 @@ or M3.5 benefit is reported.
   Git-only histories that lack the shared-base event relation. SmartNotes
   patient and clinical payloads, Kinetiq athlete/customer data, and all
   private content stay excluded and outside this repository.
-- [ ] T002 (REQ-001, SC-001/002): Implement offline trainer and versioned
+- [x] T002 (REQ-001, SC-001/002): Implement offline trainer and versioned
   local inference with negative controls.
 
 T002's synthetic implementation now includes deterministic train-only weight
@@ -59,15 +68,85 @@ the synthetic trainer/evaluator tests.
   abstention, assessed-useful proposals, missing labels, reviewer disagreement
   and total analysis cost against the rule baseline.
 - [x] T004 (REQ-003, SC-005): Confirm verifier and execution boundaries.
-
-T004's synthetic controls show extreme learned scores cannot invoke or replace
-the deterministic verifier, create bounded evidence or grant execution. This
-software-boundary task is complete; the separate reliability validation
-family is deferred and is not represented as passed by this task checkbox.
-Real-source, training, held-out evaluation and human-review gates remain open;
-see the [bounded evidence record](../../docs/experiments/evidence/m35-verifier-boundary-2026-10-09/README.md).
-
 - [ ] T005 (REQ-001..003): Capture evidence and request M3.5 review.
+
+## Synthetic implementation increment — 2026-10-09
+
+T002 now has an offline, in-memory trainer and request-bound scorer in
+`agent_braid/native_predictor_training.py`. Callers must declare rows
+synthetic, but the trainer cannot authenticate their origin and records that
+provenance as unverified. It requires train/calibration/holdout separation by
+family, session and duplicate-group identity derived by the provisional
+synthetic adapter, fits weights from train rows, and records calibration
+provenance in the artifact. The candidate requires exactly one calibration
+family, matching the founder's selection to preselect one family before
+registration. The adapter derives provisional groups
+from normalized pair content and stable same-family session identity across
+windows. The exact canonical encoding is pending review, and real source lineage
+is not authenticated. No real fit, calibration or model result is claimed;
+the software implementation task T002 is complete, while any real fit remains
+gated by T001/T007 and the reviewed protocol.
+
+The projection also requires every pair-level family identifier to equal the
+enclosing inventory family. A synthetic regression proves that a shared
+train/holdout family is rejected by the trainer and that rewriting holdout pair
+families to disguise that leak is rejected at projection. This consistency
+check does not authenticate the inventory envelope or source commitments.
+Jointly rewriting an inventory envelope and its pair metadata, or changing
+partition/session/group declarations before projection, is not detected by
+this synthetic interface. A separately verified cohort manifest or seal must
+bind those fields to source events and requests before any real-data use.
+
+The local adapter in `agent_braid/native_predictor_adapter.py` validates
+synthetic source-window records, enumerates pairs, derives provisional
+duplicate components from normalized pair content and session identity, and projects separate
+training/calibration labels into the trainer schema; holdout labels are not an
+input. It rejects prospective adaptation because verified registration,
+rights, completeness and admission gates do not exist. Caller manifests,
+hashes and duplicate-group IDs do not establish provenance, source lineage,
+completeness or permission. Real lineage manifests remain unreviewed. For each
+pair it now records a synthetic cutoff after the later proposal and a
+commitment to the global event prefix through the cutoff. This is not a
+completeness proof or a reviewed annotation-context projection; resolution
+taxonomy and unresolved-at-cutoff checks remain unimplemented pending protocol
+review. A synthetic `proposal-resolved` event inserted between the first and
+second proposals now fails the whole adapter input closed; this does not
+interpret resolution semantics or implement the approved exclusion rule. It
+orients pairs by the validated total event sequence; canonical hash fallback
+never admits an unsequenced pair.
+T001 and T007 remain open; no payload was opened or captured.
+
+The synthetic evaluator now requires explicit attempts from two reviewers with
+distinct opaque IDs for every evaluated pair. Unknown labels need a nonempty
+reason; each reviewer disagreement needs a third-review attempt with a
+distinct ID and either a rationale-backed adjudicated label or an explicit
+unknown reason. Metric labels must agree with the row's consensus/adjudication,
+and malformed or unattempted records fail closed. Luna adversarial review found
+and regression-tested the label-map, missing-attempt, repeated-ID, adjudicator
+and malformed-unknown bypasses. These controls validate synthetic record
+consistency only: IDs are caller declarations, not an authenticated reviewer
+roster, and no annotation context, identity, rights or independence is
+verified. Real-source label provenance and the approved blinded annotation
+package remain prerequisites; T003 stays open.
+
+T003 has a synthetic comparison runner in
+`agent_braid/native_predictor_evaluation.py`, including budget ranking,
+abstention, verifier-status accounting, unknown-label bounds and a train-only
+seed-0 permuted-label control. An optional source-extractor callback is timed
+symmetrically on synthetic inputs and report-serialization time is allocated
+provisionally across policy arms. There is no admitted-journal extractor and
+no real end-to-end run; T003 remains open.
+
+The contract tests exercise artifact/inference tampering, holdout evaluation
+and separation from the deterministic verifier. They establish software
+behavior only. This completes T004's verifier/execution-boundary task; T005
+remains open because there is no real candidate, eligible holdout, human review
+or founder decision. Current focused evidence is 92 tests under Python 3.13.11.
+The earlier broad reliability run was interrupted and is not a pass.
+The 2026-10-10 software completion runs quick and one stable PR profile under
+the newly approved plan; their results are recorded separately and do not
+retroactively validate the interrupted candidate. The runs and their limits are recorded in
+[`synthetic implementation evidence`](../../docs/experiments/evidence/m35-native-predictor-synthetic-2026-10-09/README.md).
 
 ## Offline preparation follow-up
 
@@ -81,43 +160,24 @@ See [implementation readiness](implementation-readiness.md). These draft tasks p
 Obtained T009/T010 evidence: 19 synthetic predictor/readiness controls passed,
 Luna technical review and the shared stable PR profile passed (504 tests, four
 documented skips). See `docs/experiments/evidence/autonomous-tracks-2026-10-06/`.
-Original training/evaluation/source/review tasks remain pending; no fit occurred.
+At that stage, no fit occurred. The 2026-10-09 continuation below records
+synthetic-only trainer/evaluator tests; no real-workload fit occurred. Real-source fitting, evaluation, source admission and human review remain
+pending; T002 and T004 are software-only completions.
 
-## Gated completion preparation, 2026-10-08
+## GitHub tracking reconciliation — 2026-10-09
 
-The founder requested the [completion plan](completion-plan.md), preserving all
-existing task IDs and real-data/review gates. Within T001/T007 preparation, the
-metadata-only [source review packet](source-review-packet.md) proposes five
-natural workflows, and the [model interface plan](model-interface-plan.md)
-defines the candidate trainer/adapter/evaluator contracts before their review.
-The [protocol decision packet](protocol-decision-packet-2026-10-08.md) records
-the founder's P019-02…04 selections. The amended protocol remains a candidate
-pending independent human scientific review, exact annotator display, and
-source-specific admission; no source, annotation, training or holdout access is
-authorized by those selections.
-The [ADR-extension proposal](adr-extension-proposal.md) is not an adopted ADR.
+Read-only verification found #222/T009 and #223/T010 already closed, #180
+still open, and milestone 9 still open with seven open and four closed issues.
+`python3 scripts/sync_github_tracking.py audit --milestone-number 9` returned
+`operations: []`; no remote tracking mutation was needed. This reconciles the
+T009/T010 bookkeeping only and does not change the then-pending T001–T005/T007,
+parent issue or milestone state.
 
-The read-only `scripts/check_m35_review_packet.py` and its adversarial tests
-check fixed packet inputs, strict candidate shape and byte drift. Separate
-synthetic predictor tests exercise portions of T002–T004 software behavior but
-cannot establish real-source eligibility or complete T001, T007, T002, T003,
-T004 or T005. No prospective window or pair dataset was admitted, no human
-label was collected, and no real-data fit/calibration/evaluation was executed
-in this increment. The three former native predictor contract anchors now run
-synthetic checks for versioned inference/tamper rejection, holdout
-evaluation/no-gain, and verifier separation. They establish software behavior
-only; a real trained artifact, eligible human-reviewed holdout, and experiment
-evidence remain deferred. The [contract-test receipt](../../docs/experiments/evidence/m35-contract-tests-2026-10-09/README.md)
-and [synthetic reproduction receipt](../../docs/experiments/evidence/m35-synthetic-reproduction-2026-10-09/README.md)
-bind the current software evidence without changing the historical assurance
-snapshot or implying human review.
+## Software closure and remaining experiment — 2026-10-10
 
-The synthetic evaluator now measures a supplied source-to-request extraction
-hook symmetrically for both policies and includes an equal share of measured
-comparison-report serialization in each arm's full-cost total. Without the hook,
-reports explicitly mark source extraction incomplete. The hook is synthetic-only,
-the shared-report allocation remains provisional, and no admitted-journal
-extractor is wired in; these measurements cannot complete T003. A real
-preregistered evaluation still requires an authorized full-boundary run,
-including extraction, preparation, scoring, ranking, verifier calls and
-serialization.
+T002 and T004 are closed only for synthetic trainer/inference and verifier
+boundary implementation. SC-001/002/005 software checks are distinct from
+real-source satisfaction of REQ-001/002. The three contract anchors execute;
+no synthetic run supplies real labels, real fit or human scientific approval.
+The [software completion record](software-completion.md) is the single compact
+remaining-work register. T001, T007, T003, T005, #180 and milestone 9 remain open.
