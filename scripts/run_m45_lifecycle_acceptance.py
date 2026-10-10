@@ -125,7 +125,7 @@ def raw_test_outcomes(raw: str) -> list[dict[str, str]]:
 
 
 def expected_roster() -> list[dict[str, str]]:
-    return [{"testName": name, "testCase": case, "outcome": "ok"}
+    return [{"testName": name, "testCase": f"{case}.{name}", "outcome": "ok"}
             for name, case in EXPECTED_TESTS.items()]
 
 
