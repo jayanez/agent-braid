@@ -13,8 +13,11 @@ CPython 3.12.13 in an isolated pinned environment. Command:
 .venv/bin/python -m unittest -v tests.test_native_predictor tests.test_native_predictor_training tests.test_native_predictor_evaluation tests.test_native_predictor_adapter tests.test_native_predictor_contract tests.test_predictor_readiness tests.test_m35_review_packet
 ```
 
-`focused-increment.txt` is its raw output. Final frozen reproduction and
-independent adversarial review are packaged separately when executed;
+`focused-increment.txt` is its raw output. The post-review timing fix passed 115 controls with zero skips/failures in
+`focused-final.txt`; `focused-receipt.json` binds that run. The original 114-test
+receipt is preserved as `focused-receipt-before-timing-fix.json`. Independent
+Luna findings and corrections are recorded in `adversarial-review.md`.
+Final clean-clone reproduction is recorded separately when executed;
 quick/PR and exact-head CI are repository reliability checks, not scientific
 or human approval. Interrupted older runs remain historical non-passes.
 

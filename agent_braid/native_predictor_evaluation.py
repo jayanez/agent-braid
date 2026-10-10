@@ -615,6 +615,7 @@ def _run_policy(rows: list[dict], labels: dict[str, int | None], *, scorer: Call
     n = len(rows)
     ceiling = math.floor(fraction * n)
     phase = {"sourceExtractionSeconds": 0.0, "preparationSeconds": 0.0,
+             "preparationValidationSeconds": 0.0,
              "scoringSeconds": 0.0, "inferenceSeconds": 0.0,
              "rankingSeconds": 0.0, "verificationSeconds": 0.0,
              "submittedEvidenceProductionSeconds": 0.0,
@@ -645,16 +646,19 @@ def _run_policy(rows: list[dict], labels: dict[str, int | None], *, scorer: Call
             raw_prepared = (preparation(deepcopy(candidate)) if preparation is not None
                             else prepare_request(candidate["request"], source_kind="synthetic"))
             checked_vector = _scorer_vector(raw_prepared, candidate["request"])
-            phase["preparationSeconds"] += time.perf_counter() - start
             if preparation is not None:
                 # A hook may adapt/measure preparation, but cannot replace the
                 # frozen extractor with label- or identity-encoded feature data.
-                # Keep this correctness check outside the hook's measured cost.
+                # Include this mandatory validation in preparation and expose
+                # its subset separately; it already contributes to total time.
+                validation_start = time.perf_counter()
                 canonical_vector = _scorer_vector(
                     prepare_request(candidate["request"], source_kind="synthetic"),
                     candidate["request"])
                 if checked_vector != canonical_vector:
                     raise ValueError("preparer features differ from the canonical request extractor")
+                phase["preparationValidationSeconds"] += time.perf_counter() - validation_start
+            phase["preparationSeconds"] += time.perf_counter() - start
             prepared[row["pairId"]] = checked_vector
         else:
             # The rule baseline ranks directly from the request; do not charge
@@ -848,6 +852,8 @@ def evaluate(inventory: Any, labels: Any, *, scorer: Callable[[dict], Any],
             "limitation": "without the hook, source-to-request extraction is outside this evaluator; the hook is synthetic-only and does not implement or authorize admitted-journal extraction",
         },
         "timingPhaseDefinitions": {
+            "preparationSeconds": "predictor preparation and mandatory canonical feature validation; zero for the rule baseline",
+            "preparationValidationSeconds": "diagnostic subset of preparationSeconds for canonical re-extraction with a preparation hook; do not add it again to total cost",
             "inferenceSeconds": "predictor scorer callback duration only",
             "scoringSeconds": "baseline priority callback plus score response normalization/validation; predictor callback time is excluded",
             "sourceExtraction": "included per policy/budget/repetition only when a source_extractor is supplied",

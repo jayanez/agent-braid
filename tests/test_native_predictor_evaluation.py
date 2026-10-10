@@ -2,10 +2,12 @@
 """Hand-authored synthetic tests for the SPEC-019 evaluation candidate."""
 import copy
 import unittest
+from unittest.mock import patch
 
 from agent_braid.native_predictor_evaluation import (
     _default_verifier,
     _metrics,
+    _run_policy,
     evaluate,
     permute_training_labels,
 )
@@ -159,6 +161,35 @@ class NativePredictorEvaluationTests(unittest.TestCase):
         self.assertEqual(self.inventory[0]["request"]["base"][0]["value"], original)
         self.assertEqual(report["budgets"]["baseline"]["100"]["verifierStatuses"]["verified-bounded"], 4)
         self.assertEqual(report["budgets"]["predictor"]["100"]["verifierStatuses"]["verified-bounded"], 4)
+
+    def test_preparer_validation_cost_is_included_and_exposed(self):
+        # Advance a controlled clock only for the hook and the mandatory
+        # canonical validation, so neither sleep nor host latency decides this.
+        elapsed = [0.0]
+
+        def preparation(row):
+            elapsed[0] += 2.0
+            return prepare_request(row["request"], source_kind="synthetic")
+
+        def canonical_extraction(request, *, source_kind):
+            elapsed[0] += 3.0
+            return prepare_request(request, source_kind=source_kind)
+
+        with patch("agent_braid.native_predictor_evaluation.time.perf_counter",
+                   side_effect=lambda: elapsed[0]), patch(
+                       "agent_braid.native_predictor_evaluation.prepare_request",
+                       side_effect=canonical_extraction):
+            measured, _ = _run_policy(
+                self.inventory, self.labels, scorer=lambda _vector: 0,
+                preparation=preparation, fraction=0.5, inference_policy=True,
+                source_extractor=None)
+
+        phase = measured["phaseSeconds"]
+        self.assertEqual(phase["preparationValidationSeconds"], 12.0)
+        self.assertEqual(phase["preparationSeconds"], 20.0)
+        self.assertEqual(measured["totalAnalysisSeconds"], 20.0)
+        self.assertEqual(phase["preparationSeconds"],
+                         8.0 + phase["preparationValidationSeconds"])
 
     def test_scorer_and_preparation_allowlist_drops_unexpected_label_like_metadata(self):
         hostile_rows = [dict(row, label=1, target=1, predictionScore=999,

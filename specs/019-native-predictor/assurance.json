@@ -135,9 +135,9 @@
             {
               "command": ".venv/bin/python -m unittest -v tests.test_native_predictor tests.test_native_predictor_training tests.test_native_predictor_evaluation tests.test_native_predictor_adapter tests.test_native_predictor_contract tests.test_predictor_readiness tests.test_m35_review_packet",
               "limits": "Incremental synthetic software verification only; no real data, labels, fit, source authenticity, scientific or founder approval.",
-              "outcome": "114 focused synthetic software tests executed; zero skips/failures. Three former contract anchors execute.",
+              "outcome": "115 focused synthetic software tests executed; zero skips/failures. Three former contract anchors and timing validation-cost regression execute.",
               "path": "docs/experiments/evidence/m35-software-completion-2026-10-10/focused-receipt.json",
-              "sha256": "39afa29f9db50e330fb15abefe40fc54076009764f5742545ce9bb64d88e9db6"
+              "sha256": "ebe641164bda75dbb6e12df2b682b1be9d1ade67b71405752eec6c4212e08176"
             }
           ],
           "planned_evidence": "Focused unittest result and bounded evidence artifact; record actual command, hash, outcome and limits after execution.",
@@ -153,9 +153,9 @@
             {
               "command": ".venv/bin/python -m unittest -v tests.test_native_predictor tests.test_native_predictor_training tests.test_native_predictor_evaluation tests.test_native_predictor_adapter tests.test_native_predictor_contract tests.test_predictor_readiness tests.test_m35_review_packet",
               "limits": "Incremental synthetic software verification only; no real data, labels, fit, source authenticity, scientific or founder approval.",
-              "outcome": "114 focused synthetic software tests executed; zero skips/failures. Three former contract anchors execute.",
+              "outcome": "115 focused synthetic software tests executed; zero skips/failures. Three former contract anchors and timing validation-cost regression execute.",
               "path": "docs/experiments/evidence/m35-software-completion-2026-10-10/focused-receipt.json",
-              "sha256": "39afa29f9db50e330fb15abefe40fc54076009764f5742545ce9bb64d88e9db6"
+              "sha256": "ebe641164bda75dbb6e12df2b682b1be9d1ade67b71405752eec6c4212e08176"
             }
           ],
           "planned_evidence": "Focused unittest result and bounded evidence artifact; record actual command, hash, outcome and limits after execution.",
@@ -249,7 +249,7 @@
               "limits": "Metadata/software preparation only; does not admit families, approve the protocol, authenticate rights or grant source access.",
               "outcome": "Current fixed preparation document commitments reproduced; all authorization/approval verification fields false.",
               "path": "docs/experiments/evidence/m35-software-completion-2026-10-10/preparation-packet.json",
-              "sha256": "0492921bbca9a171f218898dd738795f23a12c5356282571c1361c7536bc2176"
+              "sha256": "da6eacbd36723b5b52fb2059bb8b4496dbb09d8b085a03f6840ea1842eaa7865"
             }
           ],
           "planned_evidence": "Focused adversarial software controls, exact packet and implementation commitments, environment and bounded results; not real source, training or held-out evidence.",
@@ -271,9 +271,9 @@
             {
               "command": ".venv/bin/python -m unittest -v tests.test_native_predictor tests.test_native_predictor_training tests.test_native_predictor_evaluation tests.test_native_predictor_adapter tests.test_native_predictor_contract tests.test_predictor_readiness tests.test_m35_review_packet",
               "limits": "Incremental synthetic software verification only; no real data, labels, fit, source authenticity, scientific or founder approval.",
-              "outcome": "114 focused synthetic software tests executed; zero skips/failures. Three former contract anchors execute.",
+              "outcome": "115 focused synthetic software tests executed; zero skips/failures. Three former contract anchors and timing validation-cost regression execute.",
               "path": "docs/experiments/evidence/m35-software-completion-2026-10-10/focused-receipt.json",
-              "sha256": "39afa29f9db50e330fb15abefe40fc54076009764f5742545ce9bb64d88e9db6"
+              "sha256": "ebe641164bda75dbb6e12df2b682b1be9d1ade67b71405752eec6c4212e08176"
             }
           ],
           "planned_evidence": "The exact software boundary established by this synthetic evidence; real-data and scientific claims remain separate.",
