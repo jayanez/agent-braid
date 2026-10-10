@@ -21,7 +21,7 @@
   "kind": "synthetic-software-controls-only",
   "limits": "Incremental synthetic software verification only; no real data, labels, fit, source authenticity, scientific or founder approval.",
   "logSha256": "3c6d81fc22fb6ad7f90e33557ff41ec45e8905667fcc31dad5746eb840c29ef3",
-  "python": "3.9.6 (default, Aug 25 2026, 21:26:21) \n[Clang 21.0.0 (clang-2100.3.34.2)]",
+  "python": "3.12.13 (main, Jun 23 2026, 15:44:24) [Clang 22.1.3 ]",
   "skipped": 0,
   "tests": 114
 }
