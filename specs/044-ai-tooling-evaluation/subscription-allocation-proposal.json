@@ -1,0 +1,15 @@
+{
+  "cashBoundary": "Additional provider spending remains capped at EUR 0; prepaid allocation is a separate accounting value.",
+  "denominatorId": "authenticated-subscription-billing-period-seconds",
+  "humanLimits": "Both independent reviewer role fees/time remain unknown until the human addendum. User active-work intervals are measured separately from provider session/wall time.",
+  "methodId": "m45-billing-period-active-session-share-v1",
+  "pendingInputs": [
+    "actual per-host subscription fee in EUR and billing-period dates",
+    "authenticated subscription-period source receipt",
+    "verified nonoverlapping setup/108-attempt intervals and receipt hashes"
+  ],
+  "rule": "For each registered host, allocate its actual subscription-period EUR fee multiplied by the sum of measured active setup/attempt session seconds, divided by that subscription period duration in seconds. Count each interval once; never substitute missing fee, period, interval or receipt as zero. Record other subscription uses and this convention as interpretation limits.",
+  "schema": "m45-proposed-subscription-allocation-v1",
+  "status": "proposed-not-approved",
+  "unit": "active-session-second"
+}

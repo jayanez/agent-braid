@@ -1,6 +1,6 @@
 # Linux x86_64 installed-package reproduction recipe
 
-**State: prepared recipe; no Linux execution has been recorded.** This procedure
+**State: standalone recipe with an explicit optional AMD64 emulation mode.** This procedure
 is for the installed `agent-braid` wheel, its five packaged skills, and the
 optional MCP 2.3.0 stdio surface. It does not exercise a native AI host, call a
 provider, run full registration, or satisfy SPEC-044 T004. Keep any future Linux
@@ -45,8 +45,12 @@ Before running the probe, require all of the following:
 
 1. The candidate wheel is bound to an exact reviewed source commit in the
    bundle record. The Linux runner itself does not need a source checkout.
-2. The executing host reports `Linux` and `x86_64`. An Apple Silicon or other
-   ARM host using emulation does not count as this target.
+2. The default executing host reports `Linux` and `x86_64`. Under the owner-approved
+   autonomous completion plan, standalone SPEC-042 controls may use an ARM64
+   macOS/Linux launch host with **`--allow-amd64-emulation` explicitly supplied**.
+   The pinned image and in-container verifier must still report Linux x86_64.
+   The receipt records launch-host/daemon identity and emulation; this is not
+   native hardware, performance, or registered SPEC-044/T004 evidence.
 3. The candidate wheel hash matches the independently frozen expected SHA-256.
 4. The lock manifest and every wheelhouse file match their recorded hashes and
    target metadata. Do not fetch a replacement or resolve dependencies online.
@@ -96,15 +100,17 @@ python3 /path/to/run_linux_reproduction.py \
   --launcher-sha256 "$LAUNCHER_SHA256"
 ```
 
-The prepare-only command checks native host architecture and local image
-metadata/digest but does not start a container. To execute the offline probe,
+The prepare-only command checks the default native launch host and daemon,
+local Unix endpoint and pinned image metadata/digest without starting a container.
+An ARM64 launch host or daemon requires the explicit emulation opt-in described
+below. To execute the offline probe,
 repeat the same command with `--execute`. It uses the local image only
 ([`--pull=never`](https://docs.docker.com/reference/cli/docker/container/run/#options)),
 pins `linux/amd64`, disables container networking, makes the container root
 filesystem read-only, mounts all inputs read-only, and writes the receipt only
 under the new output directory. If the image is missing, any
-hash differs, or the host is not Linux x86_64, it stops before starting the
-probe. Stage/import the pinned image separately if needed; the runner never
+hash differs, or an ARM64 launch host/daemon lacks the explicit emulation
+opt-in, it stops before starting the probe. Stage/import the pinned image separately if needed; the runner never
 pulls or builds it.
 
 After execution starts, the launcher writes a private mode-0600 receipt before
@@ -127,3 +133,16 @@ control outcomes, exit status, and any failure/timeout. Record missing prerequis
 never turn them into passes or failures of the package. This recipe supplies
 preparation only and makes no host-acceptance, provider, registration, cohort,
 utility, or scientific claim.
+
+## Explicit emulation boundary
+
+On an ARM64 macOS/Linux launch host, add `--allow-amd64-emulation` to the same
+hash-bound prepare and execute commands. Default execution still refuses that
+host. Every launch observes Docker daemon OS/architecture and retains it separately
+from the pinned AMD64 image and in-container probe target. The CLI launch host and daemon execution mode are classified separately; an
+ARM64 launch host alone does not prove emulation. Only a local Unix Docker
+endpoint is admitted; remote TCP/SSH contexts are refused. Unknown/wrong daemon
+platforms refuse; network, image digest, lock/wheel hashes, output isolation and
+container confinement remain mandatory. Actual results are indexed in
+[the autonomous delivery register](../AUTONOMOUS_COMPLETION.md); the older
+preparation record below is historical and is not itself an execution receipt.

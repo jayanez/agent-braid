@@ -41,3 +41,24 @@ Stable task IDs are implementation obligations. Check only after the paired proc
 - [ ] T010 (REQ-001,REQ-002,REQ-003,REQ-004,REQ-005,REQ-006,REQ-007,REQ-008/SC-001,SC-002,SC-003,SC-004,SC-005,SC-006,SC-007,SC-008): Freeze the bounded candidate, review findings and record the required human decision.
   Dependencies: T009 and feature-specific observation gates. Targets: frozen assurance, review record and SPEC-044 decision packet.
   Verification and planned evidence: candidate/evidence hashes, independent technical findings and actual decision; source validation and hashes are not approval.
+
+## Separately verifiable technical clauses — owner-approved split
+
+These auxiliary tasks preserve the full criteria of the linked original task.
+A completed auxiliary does not complete native-host or human acceptance.
+
+- [ ] T011 (REQ-001/SC-001): Verify the synthetic local journey preserves typed inputs, candidate/results and refusal boundaries; actual host execution stays with T001.
+  Related original: T001. Dependencies: available bounded implementation; original acceptance remains separate. Targets: `tests/test_tooling_mcp.py; tests/test_tooling_present.py`.
+  Verification: `evidence/technical-clauses.json` with frozen candidate/input hashes, actual command, paired controls and stated limits.
+
+- [ ] T012 (REQ-003/SC-003): Verify local formatted grant refusal and operator-scope wording; actual host explanation stays with T003.
+  Related original: T003. Dependencies: available bounded implementation; original acceptance remains separate. Targets: `tests/test_tooling_presentation_acceptance.py`.
+  Verification: `evidence/technical-clauses.json` with frozen candidate/input hashes, actual command, paired controls and stated limits.
+
+- [ ] T013 (REQ-008/SC-008): Verify deterministic bounded graph/CLI fallback and actionable diagnosis; visible fallback in each host stays with T008.
+  Related original: T008. Dependencies: available bounded implementation; original acceptance remains separate. Targets: `tests/test_tooling_present.py; docs/tooling/JOURNEY.md`.
+  Verification: `evidence/technical-clauses.json` with frozen candidate/input hashes, actual command, paired controls and stated limits.
+
+- [ ] T014 (REQ-001,REQ-002,REQ-003,REQ-004,REQ-005,REQ-006,REQ-007,REQ-008/SC-001,SC-002,SC-003,SC-004,SC-005,SC-006,SC-007,SC-008): Reconcile available local presentation evidence and pass repository quick/PR gates, preserving original native-host predecessor gates.
+  Related original: T009. Dependencies: available bounded implementation; original acceptance remains separate. Targets: `assurance.json; source validation`.
+  Verification: `evidence/technical-validation.json` with frozen candidate/input hashes, actual command, paired controls and stated limits.

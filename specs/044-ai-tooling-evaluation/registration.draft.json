@@ -1,0 +1,409 @@
+{
+  "billingPolicy": {
+    "additionalSpendCapEur": 0,
+    "autoRechargeAllowed": false,
+    "creditsAllowed": false,
+    "hosts": [
+      {
+        "accountSha256": null,
+        "authMethod": "chatgpt",
+        "host": "codex"
+      },
+      {
+        "accountSha256": null,
+        "authMethod": "claude.ai",
+        "host": "claude-code"
+      }
+    ],
+    "mode": "included-subscription-only",
+    "overageAllowed": false,
+    "paidApiAllowed": false,
+    "schema": "agent-braid-m45-subscription-policy-v1"
+  },
+  "candidate": {
+    "commit": "be98b776c687c9b386b3563e4534ec53423ab55d",
+    "sha256": "01baa246cb586ea6a4da7c90b239fee6a33c3b9cacc666485841e7ad990c5581",
+    "version": "0.1.0a1"
+  },
+  "costCaps": {
+    "disk_bytes": 5368709120,
+    "eur": 25,
+    "rss_bytes": 4294967296,
+    "tokens": 4000000,
+    "wall_seconds": 57600
+  },
+  "costRates": {
+    "byHost": [
+      {
+        "host": "codex",
+        "inputEurPerMillionTokens": null,
+        "modelName": "gpt-6-luna",
+        "outputEurPerMillionTokens": null,
+        "recordId": null,
+        "sha256": null
+      },
+      {
+        "host": "claude-code",
+        "inputEurPerMillionTokens": null,
+        "modelName": "claude-sonnet-5-5",
+        "outputEurPerMillionTokens": null,
+        "recordId": null,
+        "sha256": null
+      }
+    ],
+    "currency": "EUR"
+  },
+  "fixtures": [
+    {
+      "fixtureId": "m45-analyze-interactions-01",
+      "journeyClass": "analyze-interactions",
+      "sha256": "16d4eff2cf696394d8d277ca3b2d43874edd4f36dc103a0ac0bf3fc8f80f6c0f"
+    },
+    {
+      "fixtureId": "m45-analyze-interactions-02",
+      "journeyClass": "analyze-interactions",
+      "sha256": "b1438be5e3299a399ccf2bfcbec742aac937974c5e0432f24fffddd1cf5efa6d"
+    },
+    {
+      "fixtureId": "m45-analyze-interactions-03",
+      "journeyClass": "analyze-interactions",
+      "sha256": "d1fc752a97f350ee68723d242295d2cb272d9551d35d1637253921e277964100"
+    },
+    {
+      "fixtureId": "m45-prepare-advisory-plan-01",
+      "journeyClass": "prepare-advisory-plan",
+      "sha256": "2f8575655a11e8483f55a62998c90fa4e4479f2baad16af8e871854d4387229f"
+    },
+    {
+      "fixtureId": "m45-prepare-advisory-plan-02",
+      "journeyClass": "prepare-advisory-plan",
+      "sha256": "12138a7e5cda079ed04d3cbe9f1afa73ee1c4b6f77e3b6da41dab2b78fca7d9e"
+    },
+    {
+      "fixtureId": "m45-prepare-advisory-plan-03",
+      "journeyClass": "prepare-advisory-plan",
+      "sha256": "faf2ffb017fa7be6cccfa9adcd3edb66bf6ce8d68e1d3a7265321dc6bd4bccd1"
+    },
+    {
+      "fixtureId": "m45-refuse-missing-grant-01",
+      "journeyClass": "refuse-missing-grant",
+      "sha256": "dcb51f275d937c93b935aeb0bf50381a1dee07eb3833efa082fa4f1bc11f56bb"
+    },
+    {
+      "fixtureId": "m45-refuse-missing-grant-02",
+      "journeyClass": "refuse-missing-grant",
+      "sha256": "370a9f6471f88b8a1e4992078ce601950e6c8fe11e2ae363c0402c19d83bd14c"
+    },
+    {
+      "fixtureId": "m45-refuse-missing-grant-03",
+      "journeyClass": "refuse-missing-grant",
+      "sha256": "eea9ee9f95830b0a8b5ed6204f70dcf0d3c02da62175ed123349a22edb527310"
+    },
+    {
+      "fixtureId": "m45-execute-granted-batch-verify-01",
+      "journeyClass": "execute-granted-batch-verify",
+      "sha256": "4e3f16931d70a1ed3dc8b51edb282aaf03a3aa1f6b287c4b9a1d74dce012de2c"
+    },
+    {
+      "fixtureId": "m45-execute-granted-batch-verify-02",
+      "journeyClass": "execute-granted-batch-verify",
+      "sha256": "58af29f275737f6e6ba0c8022e88c022418af823f2ff5a727207d723469e7197"
+    },
+    {
+      "fixtureId": "m45-execute-granted-batch-verify-03",
+      "journeyClass": "execute-granted-batch-verify",
+      "sha256": "77e16a9237da9df820c5ac04dadcb95ca22d4b4dd913a1d8bb6f886e5aeb751a"
+    },
+    {
+      "fixtureId": "m45-inspect-recover-interruption-01",
+      "journeyClass": "inspect-recover-interruption",
+      "sha256": "b15126c5f09418716be528f0607c2259c3deeaa366588f7960baaa3c96cc9908"
+    },
+    {
+      "fixtureId": "m45-inspect-recover-interruption-02",
+      "journeyClass": "inspect-recover-interruption",
+      "sha256": "d196e51ebab11689f6fa47b966d8012910c26f59acf8cddaae4bb439965c4a57"
+    },
+    {
+      "fixtureId": "m45-inspect-recover-interruption-03",
+      "journeyClass": "inspect-recover-interruption",
+      "sha256": "bfa19af2ca66d6832834b4a4cca6ea95b4cf60fe58e2217cffafe1ee734f70be"
+    },
+    {
+      "fixtureId": "m45-export-evidence-01",
+      "journeyClass": "export-evidence",
+      "sha256": "3ba6e878f0bcfa536fd167db6e1e0fe10b946669326fcf1f947c09143589f0d0"
+    },
+    {
+      "fixtureId": "m45-export-evidence-02",
+      "journeyClass": "export-evidence",
+      "sha256": "c24f4a90fe7a2d55c9d473fb08e1b4896f31243424002393b40d06d5751c23af"
+    },
+    {
+      "fixtureId": "m45-export-evidence-03",
+      "journeyClass": "export-evidence",
+      "sha256": "d33cc9eba27f325fcc5f7056f6b878be5e4c680c280fa44a635044ae9ee7ef6e"
+    }
+  ],
+  "fullCostScope": {
+    "approval": {
+      "recordId": null,
+      "sha256": null,
+      "status": "pending"
+    },
+    "humanTime": {
+      "intervalSemantics": "verified-active-work-only",
+      "reviewerActivityKinds": [
+        "attempt"
+      ],
+      "userActivityKinds": [
+        "setup",
+        "attempt"
+      ],
+      "userParticipantId": "m45-owner-operator"
+    },
+    "reviewerFees": [
+      {
+        "applicability": "unknown",
+        "reviewerId": "independent-human-role-1"
+      },
+      {
+        "applicability": "unknown",
+        "reviewerId": "independent-human-role-2"
+      }
+    ],
+    "schema": "agent-braid-m45-full-cost-scope-v1",
+    "scopeId": "m45-technical-full-cost-scope-pending-review",
+    "status": "pending",
+    "subscriptionAllocation": {
+      "activityKinds": [
+        "setup",
+        "attempt"
+      ],
+      "denominatorId": "authenticated-subscription-billing-period-seconds",
+      "methodId": "m45-billing-period-active-session-share-v1",
+      "methodRef": "m45-subscription-allocation-proposal",
+      "methodSha256": "390ff9dd00f619c4c0686354db507eda493c0acf971830cff7cd8563d4f0424d",
+      "reviewerApplicability": "not-applicable",
+      "unit": "active-session-second"
+    }
+  },
+  "hosts": [
+    {
+      "model": {
+        "name": "gpt-6-luna",
+        "sha256": null,
+        "version": null
+      },
+      "modelIdentity": {
+        "backendAvailable": null,
+        "backendDigestAvailable": null,
+        "backendSha256": null,
+        "cliBuild": {
+          "sha256": "0d5ac7aae20c4eda6242428d5e218c55ba96d8763fda2a271088ff37104b9d28",
+          "version": "0.162.0-alpha.17.2"
+        },
+        "configSha256": null,
+        "effectiveConfig": {
+          "authMethod": "chatgpt",
+          "effort": "medium",
+          "hostSelection": {
+            "argv": [],
+            "configRef": null,
+            "flags": [],
+            "source": null
+          },
+          "providerEndpoint": null,
+          "selector": "gpt-6-luna"
+        },
+        "effort": "medium",
+        "immutableId": null,
+        "kind": "observable-requested-route",
+        "nativeCatalogEntry": {
+          "catalogSha256": null,
+          "entrySha256": null,
+          "observedAtUtc": null,
+          "sourceRef": null
+        },
+        "providerRoute": {
+          "accountSha256": null,
+          "authMethod": "chatgpt",
+          "provider": "openai"
+        },
+        "selector": "gpt-6-luna",
+        "selectorKind": "provider-alias"
+      },
+      "name": "codex",
+      "os": {
+        "architecture": "arm64",
+        "name": "macOS",
+        "sha256": null,
+        "version": null
+      },
+      "sdk": {
+        "name": "mcp",
+        "sha256": "dd0c44c089d16453e8ae31a3877a0054d7a2314caaa81f5e0541b9b1734b2377",
+        "version": "2.3.0"
+      },
+      "sha256": "0d5ac7aae20c4eda6242428d5e218c55ba96d8763fda2a271088ff37104b9d28",
+      "version": "0.162.0-alpha.17.2"
+    },
+    {
+      "model": {
+        "name": "claude-sonnet-5-5",
+        "sha256": null,
+        "version": null
+      },
+      "modelIdentity": {
+        "backendAvailable": null,
+        "backendDigestAvailable": null,
+        "backendSha256": null,
+        "cliBuild": {
+          "sha256": "51f09bd1e021d9fa8a1864c179799bd37cb39962a937935c5cf6823398e86db4",
+          "version": "2.1.285"
+        },
+        "configSha256": null,
+        "effectiveConfig": {
+          "authMethod": "claude.ai",
+          "effort": "medium",
+          "hostSelection": {
+            "argv": [],
+            "configRef": null,
+            "flags": [],
+            "source": null
+          },
+          "providerEndpoint": null,
+          "selector": "claude-sonnet-5-5"
+        },
+        "effort": "medium",
+        "immutableId": null,
+        "kind": "observable-requested-route",
+        "nativeCatalogEntry": {
+          "catalogSha256": null,
+          "entrySha256": null,
+          "observedAtUtc": null,
+          "sourceRef": null
+        },
+        "providerRoute": {
+          "accountSha256": null,
+          "authMethod": "claude.ai",
+          "provider": "anthropic"
+        },
+        "selector": "claude-sonnet-5-5",
+        "selectorKind": "provider-alias"
+      },
+      "name": "claude-code",
+      "os": {
+        "architecture": "arm64",
+        "name": "macOS",
+        "sha256": null,
+        "version": null
+      },
+      "sdk": {
+        "name": "mcp",
+        "sha256": "dd0c44c089d16453e8ae31a3877a0054d7a2314caaa81f5e0541b9b1734b2377",
+        "version": "2.3.0"
+      },
+      "sha256": "51f09bd1e021d9fa8a1864c179799bd37cb39962a937935c5cf6823398e86db4",
+      "version": "2.1.285"
+    }
+  ],
+  "humanReviewDeferral": {
+    "recordId": "m45-human-evaluation-deferral-20261009",
+    "sha256": "e021c02a5697f96b695df66813ef9f9c44feaa186f8ec0b76bdabf707921fe9e",
+    "status": "approved"
+  },
+  "humanReviewRoles": [
+    {
+      "independent": true,
+      "roleId": "independent-human-role-1"
+    },
+    {
+      "independent": true,
+      "roleId": "independent-human-role-2"
+    }
+  ],
+  "humanReviewers": [],
+  "ownerApproval": {
+    "recordId": null,
+    "sha256": null,
+    "status": "pending"
+  },
+  "phase": "technical-capture",
+  "prompts": [
+    {
+      "journeyClass": "analyze-interactions",
+      "promptId": "m45-prompt-analyze-interactions",
+      "sha256": "6348b3c41a3e7bf0a425c07b4ac014c33af9977717924531b15a5d4de9e2bd94"
+    },
+    {
+      "journeyClass": "prepare-advisory-plan",
+      "promptId": "m45-prompt-prepare-advisory-plan",
+      "sha256": "1963e5f7eabbe258603dc7a82ca33a1cdf8cd9827c8157eff9cb0e159ab890a4"
+    },
+    {
+      "journeyClass": "refuse-missing-grant",
+      "promptId": "m45-prompt-refuse-missing-grant",
+      "sha256": "982e64b56c374fa72cd1ad60ec64e82a15d708f27c2096803507d265bc45dcf1"
+    },
+    {
+      "journeyClass": "execute-granted-batch-verify",
+      "promptId": "m45-prompt-execute-granted-batch-verify",
+      "sha256": "6c027d944ed7ceee35a77769a87e263e5d922d2be15f25ba1ed0f5033907b48e"
+    },
+    {
+      "journeyClass": "inspect-recover-interruption",
+      "promptId": "m45-prompt-inspect-recover-interruption",
+      "sha256": "c5c1da089bbb5b1f1b0d9d45c39e6a426603d1e33eca14410caa10ed17d3db5b"
+    },
+    {
+      "journeyClass": "export-evidence",
+      "promptId": "m45-prompt-export-evidence",
+      "sha256": "78d46410c048022ff4da10d6e4624411f8bb365ea9d5a4aeb9e28291214501a8"
+    }
+  ],
+  "provider": {
+    "consentRecordId": null,
+    "consentRecordSha256": null,
+    "optIn": false,
+    "providerId": null
+  },
+  "registrationId": "m45-technical-capture-pending-review",
+  "rubric": {
+    "frozen": true,
+    "sha256": "45b102dd07fd864f7fd148ef173c77e91f2994e6d538ca19437ed50e31117f9e",
+    "thresholds": {
+      "armCSuccessesPerHost": 16,
+      "authorityCorrectPerHost": 18
+    },
+    "version": "m45-prospective-outcome-rubric-20261010-v1"
+  },
+  "schemaVersion": "agent-braid-m45-registration-v3",
+  "sourceRights": {
+    "fixtureIds": [
+      "m45-analyze-interactions-01",
+      "m45-analyze-interactions-02",
+      "m45-analyze-interactions-03",
+      "m45-prepare-advisory-plan-01",
+      "m45-prepare-advisory-plan-02",
+      "m45-prepare-advisory-plan-03",
+      "m45-refuse-missing-grant-01",
+      "m45-refuse-missing-grant-02",
+      "m45-refuse-missing-grant-03",
+      "m45-execute-granted-batch-verify-01",
+      "m45-execute-granted-batch-verify-02",
+      "m45-execute-granted-batch-verify-03",
+      "m45-inspect-recover-interruption-01",
+      "m45-inspect-recover-interruption-02",
+      "m45-inspect-recover-interruption-03",
+      "m45-export-evidence-01",
+      "m45-export-evidence-02",
+      "m45-export-evidence-03"
+    ],
+    "recordId": "m45-d1-d2-owner-20261010-v1",
+    "scope": "Owner-approved exact v3 scope: 18 owned synthetic definitions and six fixed prompts for this evaluation; no personal or external repositories, third-party source, hooks, credentials or network-retrieved inputs. Private isolated materialization only; operator grants remain separate.",
+    "sha256": "bbe44e51ad26dbb89c53e928c2b9974a6b9ae659fd50985618a27c6074fea9ed",
+    "status": "approved"
+  },
+  "status": "draft"
+}
