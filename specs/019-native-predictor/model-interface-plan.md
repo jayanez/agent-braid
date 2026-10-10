@@ -1,7 +1,8 @@
 # SPEC-019 proposed model and evaluation interfaces
 
-**State: caller-declared-synthetic trainer/evaluator implementation;
-real-workload use is not approved.** The trainer does not authenticate row
+**State (2026-10-10): caller-declared-synthetic trainer/evaluator implementation
+complete for bounded software scope; real-workload use is not approved.** The
+trainer does not authenticate row
 origin, and artifact provenance is explicitly marked unverified. The founder requested implementation of the M3.5 completion
 plan on 2026-10-08. Source admission, the complete protocol/rubric, human labels
 and the frozen experiment remain separate gates. Deterministic fit tests use
@@ -63,7 +64,8 @@ outcomes. Proposed real versions are `m35-workload-features-v1` and
 relabel hand-authored test doubles as trained models.
 
 The T002 implementation pins this deterministic algorithm. Unit tests exercise
-it only on invented synthetic rows; no workload candidate is fit. Freeze the
+it only on invented synthetic rows; a synthetic candidate can be fit and scored,
+but no real workload candidate is fit. Freeze the
 protocol before any real-workload fit:
 
 - Use only known training labels, positive=1 and negative=0; unknown is excluded
@@ -154,8 +156,9 @@ Use Luna Latest with medium effort as requested. A reviewer who did not implemen
 the candidate checks the combined result. Humans remain responsible for source
 decisions, blinded utility labels and the scientific/founder review.
 
-Replace the three deferred acceptance tests only when their actual implementations
-and eligible evidence exist; do not turn skips into passing empty assertions.
+The former three skipped software contract anchors now execute synthetic
+software controls. Real-workload acceptance still requires eligible evidence; do
+not turn skips into passing empty assertions.
 Cover family/session/duplicate leakage, missing classes and labels, exact
 deterministic artifacts in a pinned environment, stale hashes, calibration
 failure, permutation controls, budget/tie/abstention accounting, unknown bounds

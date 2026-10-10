@@ -4,9 +4,10 @@
 
 After M3 has a reviewed deterministic exchange domain, investigate a small
 native learned advisor for choosing which candidate exchanges deserve verifier
-work. This is a separate M3.5 experiment, not an M3 exit dependency. Synthetic
-trainer and evaluator software has been exercised, but no real-source model has
-been trained, integrated or scientifically reviewed.
+work. This is a separate M3.5 experiment, not an M3 exit dependency. Synthetic-only
+T002/#182 trainer/inference and T004/#184 verifier-boundary software is complete. The library implementation has not been integrated into
+the CLI or adapted to real feeds. No real-source model has been trained, and no
+scientific review or experiment result is claimed.
 
 ## Authorities
 
@@ -81,10 +82,11 @@ direction on 2026-09-27 and approved source feasibility work on
 2026-09-28, then limited ADR 0018 preparation on 2026-10-01. Source-specific
 participant rights/notice, a complete immutable feed, actual label
 distribution and the final protocol still require review before training.
-The 2026-10-08 [completion plan](completion-plan.md) and
-[source review packet](source-review-packet.md) are the next gated preparation
-increment. Their proposed five workflow descriptions are not eligible observed
-families, and the [model interface plan](model-interface-plan.md) is not a fitted
+The 2026-10-10 [software completion record](software-completion.md) records
+completed synthetic software scope and the deferred experiment. The
+[source review packet](source-review-packet.md) remains a metadata-only proposal;
+it does not authorize source access or collection. The proposed five workflow
+descriptions are not eligible observed families, and the [model interface plan](model-interface-plan.md) is not a fitted
 artifact. Original model/evaluation acceptance evidence remains pending.
 The [pretraining feasibility audit](feasibility-audit.md) identifies a
 degenerate verifier-status target in the current valid corpus and two possible

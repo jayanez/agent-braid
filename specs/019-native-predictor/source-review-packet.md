@@ -1,6 +1,8 @@
 # SPEC-019 proposed source-family review packet
 
-**Status: proposal for human review only.** This metadata-only packet records
+**Status: metadata-only proposal for human review (2026-10-10).** Synthetic
+T002/T004 software completion does not change this packet or authorize source
+inspection, capture, adaptation or training on real workloads. This packet records
 the current candidate workflow descriptions and requests decisions. It does not
 identify eligible families, establish observed yield, authorize source access,
 or approve data collection. No prospective session inventory, collection
@@ -107,6 +109,9 @@ services, private lab, or source access.
 ## Current disposition
 
 All current candidates remain proposals. Preserve actual zero observed pairs.
-T001, T007 and P019-01 remain open; T002/T003 and human M3.5 review remain
-gated. Nothing here closes SPEC-019, changes its assurance record, or implies
+T001/#181, T007/#188, T003/#183 and T005/#185 remain open; #180 and
+milestone 9 remain open. T002/#182 and T004/#184 are complete only for the
+bounded synthetic software scope. T001/T007 are still gates for any real-feed
+adaptation, source admission, real fit or evaluation. Nothing here closes
+SPEC-019, changes its assurance record, or implies
 M4, System 1, or forecast-track acceptance.

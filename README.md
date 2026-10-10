@@ -40,7 +40,7 @@ Git; execution requires Linux or macOS with POSIX locking.
 | **Check structured exchanges** | `anchored-sequence-v1` producer and consumer | Context-dependent insert residuals, retained intermediate paths and bounded braid-relation controls. |
 | **Run an owned Git pipeline** | Verified policy plans, local grants, isolated preparation and serial publication | Fixed text patches, checked paths/modes/blobs, private results and process-interruption resume/abort. |
 | **Connect through stdio MCP** | Six bounded tools: `analyze`, `prepare`, `status`, `execute`, `recover`, `verify` | Configured source/result roots and the same local policy; grant issuance stays with the operator. |
-| **Prepare prospective M3.5 studies** | Hidden-proposal journals, complete session/pair accounting, filtered labs and aggregate seals | Synthetic software checks. **Zero admitted real pairs**; source rights, exact protocol approval, capture and training remain gated. |
+| **Prepare and inspect M3.5 proposals** | Synthetic trainer/inference, evaluator controls, hidden-proposal journals, session/pair accounting, filtered labs and aggregate seals | Software scope completed for T002/T004 on caller-declared synthetic inputs; **zero admitted real pairs**. Real-feed adaptation, source rights, protocol approval, capture, real fit and held-out evaluation remain gated. |
 | **Inspect local System 1 decisions** | Opt-in `system-one` diagnostics with a standard-library reference backend | Synthetic requests only; no learned model, calibration, accepted utility or execution authority. |
 
 The runtime executes allowlisted Git plumbing. Repository code, source-ref
@@ -204,7 +204,7 @@ current assignment.
 | Integration | [M4.5 — AI tooling integrations for Codex and Claude Code](https://github.com/jayanez/agent-braid/milestone/19) | **Open.** Six draft specs cover MCP, skills, lifecycle, presentation and evaluation. An experimental implementation candidate provides the optional MCP surface, packaged skills, lifecycle and exports; native support and full paired acceptance remain pending. Separate SPEC-021 host observations are linked below. |
 | Publication | [PUB.1 — Public research preview](https://github.com/jayanez/agent-braid/milestone/7) | **Open.** The preview is public; historical publication authorization reconciliation remains separately tracked. |
 | Governance | [GOV.1 — Governance and adoption](https://github.com/jayanez/agent-braid/milestone/8) | **Open.** Governance and adoption evidence work continues; issue state does not confer human or founder approval. |
-| Research | [M3.5 — Native proposal predictor](https://github.com/jayanez/agent-braid/milestone/9) | **Open.** Synthetic capture and readiness tooling exist; zero real pairs are admitted. Rights, exact protocol/review, real capture and training remain gated. |
+| Research | [M3.5 — Native proposal predictor](https://github.com/jayanez/agent-braid/milestone/9) | **Open.** Synthetic-only T002/T004 software is complete; zero real pairs are admitted. T001/T007/T003/T005 and #180 remain open for source admission, protocol, real-feed adaptation, experiment and review. |
 | Adoption | [ADP.1 — Recorded-trace adapters](https://github.com/jayanez/agent-braid/milestone/10) | **Open.** Generic synthetic metadata import and bounded lifecycle spikes provide engineering evidence; real-source admission and provider adoption remain pending. |
 | Research | [LAB.1 — Effectful workload lab](https://github.com/jayanez/agent-braid/milestone/11) | **Open.** Contract and design work is in progress; no real external execution is authorized. |
 | Research | [RES.1 — Formal interaction research](https://github.com/jayanez/agent-braid/milestone/12) | **Open.** Contextual and proof-obligation work remains bounded research; finite checking is not a proof of generality. |
@@ -284,9 +284,7 @@ only its 80-input fingerprint. All three runs used fresh Python processes, but
 reused the existing isolated Python 3.13.11 environment. This is not a clean-room
 reproduction or a host-adapter observation. See the [Darwin test record](specs/021-m4-alpha-runtime/evidence/current-darwin-core-e66f9a1.md).
 
-M3.5 synthetic checks demonstrate tooling only. They do not establish real-source
-rights, prospective registration, capture, training authorization, predictor
-benefit or scientific validation. See the [M3.5 readiness note](docs/development/m35-technical-readiness.md),
+M3.5 synthetic software checks include deterministic synthetic fitting, calibration, inference and evaluation controls plus verifier-boundary tests. They establish those bounded software behaviors only. They do not establish real-source rights, prospective registration, real-feed adaptation, capture, real-workload fit, predictor benefit or scientific validation. The scope-bound synthetic software work for T002/#182 and T004/#184 is complete; the M3.5 experiment and milestone remain open. See the [M3.5 readiness note](docs/development/m35-technical-readiness.md),
 [Linux runbook](docs/development/linux-experiments.md), [M4 cost diagnostics](docs/development/M4_RUNTIME_COST_DIAGNOSTICS.md)
 and [delivery record](docs/development/autonomous-delivery.md).
 
