@@ -153,6 +153,9 @@ candidate's ancestry. It then runs ordinary strict authority/evidence validation
 errors propagate. It never supplies approval or substitutes for the existing
 reviewed-tag route. A changed record does not inherit this exception. Neither the
 immutable export manifest nor the historical assurance is rewritten.
+The reviewed-tag route also requires the exact already-public tag object and
+candidate from its literal catalog. A locally created review record and annotated
+tag cannot promote a preserved draft or impersonate a published reviewed tag.
 
 Snapshot includes selected canonical root authorities and all ADRs, theory,
 architecture and schema files. Additions, deletions and changes invalidate every

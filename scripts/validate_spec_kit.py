@@ -441,7 +441,7 @@ def _matches_preserved_draft_tag(root, relative_record, path, record):
 
 
 def _matches_reviewed_candidate_tag(root, relative_record, path, record, commit):
-    """Accept a frozen private record only when its exact reviewed bytes are tagged."""
+    """Recognize only an exact already-public reviewed candidate/tag pin."""
     if record.get("human_review") != "approved":
         return False
     evidence = record.get("evidence_snapshot", {})
@@ -450,8 +450,19 @@ def _matches_reviewed_candidate_tag(root, relative_record, path, record, commit)
     match = re.fullmatch(r"specs/(\d{3})-[^/]+/assurance\.json", relative_record)
     if not match:
         return False
+    try:
+        from scripts.restore_public_spec_history import REVIEWED_TAGS
+    except ModuleNotFoundError:
+        from restore_public_spec_history import REVIEWED_TAGS
+    pins = [oid for feature, candidate, oid in REVIEWED_TAGS
+            if relative_record == f"specs/{feature}/assurance.json"
+            and candidate == commit]
+    if len(pins) != 1:
+        return False
     tag_ref = f"refs/tags/spec-{match.group(1)}-reviewed-{commit[:7]}"
     try:
+        if git(root, "rev-parse", "--verify", tag_ref).decode("ascii").strip() != pins[0]:
+            return False
         if git(root, "cat-file", "-t", tag_ref).decode("ascii").strip() != "tag":
             return False
         tagged_commit = git(root, "rev-parse", f"{tag_ref}^{{commit}}").decode(

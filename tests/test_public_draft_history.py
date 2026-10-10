@@ -89,6 +89,32 @@ class PublicDraftHistoryTests(unittest.TestCase):
             altered[field] = {"mode": "current", "commit": None}
             self.assertFalse(self.matches(record=altered))
 
+    def test_local_counterfeit_review_cannot_promote_the_pending_draft(self):
+        altered = dict(self.record)
+        altered["human_review"] = "approved"
+        altered["review_record"] = "specs/019-native-predictor/local-review.json"
+        frozen = altered["authority_snapshot"]["commit"]
+        (self.root / altered["review_record"]).write_text(json.dumps({"reviewedCommit": frozen}))
+        self.path.write_text(json.dumps(altered))
+        ref = f"refs/tags/spec-019-reviewed-{frozen[:7]}"
+        self.git("tag", "-a", ref.removeprefix("refs/tags/"), frozen,
+                 "-m", "Local counterfeit approval")
+        with self.assertRaises(ValueError):
+            gates.validate_portable_record(self.root, self.path)
+        self.assertFalse(self.matches())
+
+    def test_recreated_reviewed_tag_cannot_inherit_public_approval(self):
+        feature, frozen, tag_object = history.REVIEWED_TAGS[0]
+        ref = f"refs/tags/spec-{feature[:3]}-reviewed-{frozen[:7]}"
+        path = self.root / f"specs/{feature}/assurance.json"
+        gates.validate_portable_record(self.root, path)
+        self.git("update-ref", "-d", ref)
+        self.git("tag", "-a", ref.removeprefix("refs/tags/"), frozen,
+                 "-m", "Same candidate, counterfeit public approval tag")
+        self.assertNotEqual(self.git("rev-parse", ref), tag_object)
+        with self.assertRaises(ValueError):
+            gates.validate_portable_record(self.root, path)
+
     def test_missing_and_nonancestor_snapshot_commits_fail_closed(self):
         for field in ("authority_snapshot", "evidence_snapshot"):
             for commit in ("f" * 40, self.git("rev-parse", "HEAD")):
