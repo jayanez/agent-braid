@@ -138,7 +138,7 @@ The founder directed that the general repository test families be treated as
 reliability verification rather than gates for closing independently complete
 M3.5 software tasks. The current `quick` run was stopped during unrelated M4
 tests by that direction (exit 130). Its partial output is preserved in
-[`current-quick-profile.txt`](current-quick-profile.txt); it is not a pass.
+[`current-quick-profile.txt.gz`](current-quick-profile.txt.gz); it is not a pass.
 M3.5-focused tests remain required evidence for the trainer and verifier
 boundary tasks. Real-source feasibility, evaluation, human review and the
 parent/milestone closure conditions remain unchanged.
@@ -146,3 +146,7 @@ parent/milestone closure conditions remain unchanged.
 Feature-specific evidence capture, freeze, clean-room reproduction, scientific
 and human review, and founder decision remain deferred. This synthetic package
 is not a real-source experiment or approval.
+
+The interrupted raw log is stored gzip-compressed without normalizing its
+bytes (decompressed SHA-256 `2b98560e882d3b12c7b98bbb8f7c4d1f35d488432d68270bf145da805fdfe2ac`). Its unfinished
+line includes a trailing space; compression preserves the original capture.
