@@ -34,9 +34,10 @@ Stable task IDs are implementation obligations. Check only after the paired proc
   Dependencies: T001–T005. Targets: `SPEC-044 decision packet; future closure record`.
   Verification and planned evidence: `validation-plan.md::procedure_closure_boundary`; `evidence/sc-008.json` with actual commands and negative controls. Obtained: `evidence/sc-008.json`; complete bounded paired procedure passed at its actual recorded source/input identities. Earlier partial evidence remains historical in assurance.json. Native-host acceptance, registered SPEC-044/T004, human/founder decisions remain separate.
 
-- [ ] T009 (REQ-001,REQ-002,REQ-003,REQ-004,REQ-005,REQ-006,REQ-007,REQ-008/SC-001,SC-002,SC-003,SC-004,SC-005,SC-006,SC-007,SC-008): Reconcile implementation evidence and run repository quick/PR gates.
+- [x] T009 (REQ-001,REQ-002,REQ-003,REQ-004,REQ-005,REQ-006,REQ-007,REQ-008/SC-001,SC-002,SC-003,SC-004,SC-005,SC-006,SC-007,SC-008): Reconcile implementation evidence and run repository quick/PR gates.
   Dependencies: T001–T008. Targets: this spec's assurance.json, validation receipts and bounded candidate.
   Verification and planned evidence: run the explicit quick and stable PR profiles; bind actual results without implying actual-host observation, clean-room reproduction or approval.
+  Obtained: Candidate-bound repository quick/PR validation results are recorded in `evidence/technical-validation.json`; raw test skips remain explicit. This does not establish native-host, registered-cohort, human or founder acceptance.
 
 - [ ] T010 (REQ-001,REQ-002,REQ-003,REQ-004,REQ-005,REQ-006,REQ-007,REQ-008/SC-001,SC-002,SC-003,SC-004,SC-005,SC-006,SC-007,SC-008): Freeze the bounded candidate, review findings and record the required human decision.
   Dependencies: T009 and feature-specific observation gates. Targets: frozen assurance, review record and SPEC-044 decision packet.

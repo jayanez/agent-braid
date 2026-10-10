@@ -2,9 +2,19 @@
 
 This register follows the [owner-approved execution plan](../../specs/044-ai-tooling-evaluation/autonomous-closure-plan.md).
 It distinguishes completed engineering clauses from each original acceptance
-procedure. Evidence and final validation are recorded below after capture;
-no native-host observation, registration approval or founder decision follows
-from the existence of code or a receipt hash.
+procedure. The candidate-bound technical procedures and final repository validation are
+recorded below. No native-host observation, complete registration approval,
+108-attempt execution, human decision or founder decision follows from a code
+change or a receipt hash.
+
+## Final repository validation — 2026-10-11
+
+Both repository profiles passed on the same clean frozen source `72a396d294205201f7f56d00fa2349dccb540a5c`.
+The receipts validate source work and do not extend the host, registered-cohort,
+human-evaluation or founder-acceptance boundaries.
+
+- Quick profile: `72a396d294205201f7f56d00fa2349dccb540a5c`; 1293 tests, 12 skipped; terminal profile receipt and raw output are hash-bound privately.
+- Stable PR profile: `72a396d294205201f7f56d00fa2349dccb540a5c`; 1293 tests, 12 skipped; terminal profile receipt and raw output are hash-bound privately.
 
 ## Original-task disposition
 
@@ -16,13 +26,13 @@ from the existence of code or a receipt hash.
 | 042 T001–T008 | Relocated package, lifecycle, doctor peer, preservation, update/removal, wheel/sdist provenance, Mac/Linux checks | Complete standalone paired procedures. This does not satisfy registered 044 T004. |
 | 043 T002,T004–T007 | Typed summary, result states, graphs, deterministic export, hostile-input controls | Complete paired local procedures. |
 | 043 T001,T003,T008 | Synthetic journey, local permission-refusal wording and fallback, split as T011–T013 | Actual recorded host journey, host explanation and visible host fallback, after 044 T001/T002 admission. |
-| 039/040/042 T009 | Full available procedure evidence and quick/PR gates | Complete after their eight original procedures. |
-| 041/043 T009 | Available source/evidence and repository validation, split as 041 T019 / 043 T014 | Original T001–T008 native-host predecessors. |
+| 039/040/042 T009 | Full available procedure evidence and quick/PR gates | Completed on the frozen source after the paired technical procedures and passing quick/PR profiles; does not establish host or registered acceptance. |
+| 041/043 T009 | Available source/evidence and repository validation, split as 041 T019 / 043 T014 | Completed for the bounded technical scope on the frozen source; original host-dependent acceptance remains open. |
 | 044 T001 | Exact registration preparation, split as T011 | Ground authenticated account/catalog/effective configuration, fresh subscription/quota/cost sources; review the technical cost scope and approve the complete exact registration. D1/D2 already approved. |
 | 044 T002,T004,T005 | Controls/roster and standalone platforms; T005 controls split as T012 | Approved T001 registration and authentic per-attempt admission. Then run both hosts, registered clean platforms and all 108 intended slots. Preserve every unavailable/refused/stopped outcome. |
 | 044 T006 | Admission/accounting/cap instrumentation, split as T013 | T001 and actual T002–T005 measurements. Reviewer costs/time remain unknown. |
 | 044 T007 | Denominator/missing-cost interpretation controls, split as T014 | Actual 108-slot technical outcomes/costs; later human ratings/adjudication remain deferred. |
-| 044 T008,T009 | Bounded engineering review packet and available validation, split as T015,T016 | Exact approved registration, actual observation/reproduction and technical interpretation predecessors. |
+| 044 T008,T009 | Bounded engineering review packet and available validation, split as T015,T016 | T015/T016 are completed as candidate-bound technical preparation; original registration, actual observation/reproduction and technical-interpretation predecessors remain open. |
 | All T010 | Candidate/evidence preparation may progress | Human/founder decision. 044 T010 additionally requires the deferred human addendum, two independent reviewers, ratings and adjudication. |
 
 The 19 auxiliary tasks do not replace or weaken the 60 original obligations.
@@ -97,7 +107,6 @@ Canonical full procedure receipts are `specs/039-ai-tooling-program/evidence/sc-
 Auxiliary clauses are indexed separately in each applicable spec's
 `evidence/technical-clauses.json`. Public commands normalize private absolute
 paths; exact argv, raw outputs, failure attempts and digest-bound inventories
-are retained privately. Repository profiles, final review and integration
-remain pending until their own terminal records are added.
+are retained privately. The quick and stable PR repository profiles passed on source `72a396d294205201f7f56d00fa2349dccb540a5c`, and the bounded independent technical review passed on that source. The six technical-validation projections ([039](../../specs/039-ai-tooling-program/evidence/technical-validation.json), [040](../../specs/040-portable-mcp-surface/evidence/technical-validation.json), [041](../../specs/041-ai-tooling-skills/evidence/technical-validation.json), [042](../../specs/042-ai-tooling-packaging/evidence/technical-validation.json), [043](../../specs/043-ai-tooling-journey/evidence/technical-validation.json), [044](../../specs/044-ai-tooling-evaluation/evidence/technical-validation.json)) and the [SPEC-044 technical-review record](../../specs/044-ai-tooling-evaluation/evidence/technical-review.json) bind these results. Integration is recorded separately in [PR #476](https://github.com/jayanez/agent-braid/pull/476); governed remote tracking is shown in the [live milestone](https://github.com/jayanez/agent-braid/milestone/19) and Project. These source receipts do not attest those later operations.
 
 The engineering procedure also passed by direct script invocation on `24921e1a16dfff15cde5af091f7b955491acdbef`: 223 tests, zero skips, stable clean candidate. See [the direct-run receipt](../../specs/044-ai-tooling-evaluation/evidence/engineering-direct-check.json).

@@ -79,6 +79,7 @@ A completed auxiliary does not complete native-host or human acceptance.
   Related original: T008. Dependencies: available bounded implementation; original acceptance remains separate. Targets: `integrations/agent-braid/skills; tests/test_tooling_assets.py; MCP/presentation controls`.
   Verification: `evidence/technical-clauses.json` with frozen candidate/input hashes, actual command, paired controls and stated limits.
   Status: Verified bounded auxiliary technical clause only against `evidence/technical-clauses.json` (T018); linked original T008 remains open. No native-host/provider observation, registration approval or human acceptance is implied.
-- [ ] T019 (REQ-001,REQ-002,REQ-003,REQ-004,REQ-005,REQ-006,REQ-007,REQ-008/SC-001,SC-002,SC-003,SC-004,SC-005,SC-006,SC-007,SC-008): Reconcile available static/deterministic evidence and pass repository quick/PR gates without completing the original native-evidence predecessor gate.
+- [x] T019 (REQ-001,REQ-002,REQ-003,REQ-004,REQ-005,REQ-006,REQ-007,REQ-008/SC-001,SC-002,SC-003,SC-004,SC-005,SC-006,SC-007,SC-008): Reconcile available static/deterministic evidence and pass repository quick/PR gates without completing the original native-evidence predecessor gate.
   Related original: T009. Dependencies: available bounded implementation; original acceptance remains separate. Targets: `assurance.json; source validation`.
   Verification: `evidence/technical-validation.json` with frozen candidate/input hashes, actual command, paired controls and stated limits.
+  Obtained: Candidate-bound repository quick/PR validation results are recorded in `evidence/technical-validation.json`; raw test skips remain explicit. This does not establish native-host, registered-cohort, human or founder acceptance.

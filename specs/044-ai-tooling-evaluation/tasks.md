@@ -63,10 +63,12 @@ A completed auxiliary does not complete native-host or human acceptance.
   Related original: T007. Dependencies: available bounded implementation; original acceptance remains separate. Targets: `agent_braid/tooling_evaluation.py; tests/test_tooling_evaluation.py`.
   Verification: `evidence/technical-clauses.json` with frozen candidate/input hashes, actual command, paired controls and stated limits.
   Status: Verified bounded auxiliary technical clause only against `evidence/technical-clauses.json` (T014); linked original T007 remains open. No native-host/provider observation, registration approval or human acceptance is implied.
-- [ ] T015 (REQ-008/SC-008): Prepare a bounded autonomous-delivery review packet with actual technical findings and explicit unready registered-capture/founder fields; the full observation-based decision packet stays with T008.
+- [x] T015 (REQ-008/SC-008): Prepare a bounded autonomous-delivery review packet with actual technical findings and explicit unready registered-capture/founder fields; the full observation-based decision packet stays with T008.
   Related original: T008. Dependencies: available bounded implementation; original acceptance remains separate. Targets: `autonomous-closure-plan.md; docs/tooling/AUTONOMOUS_COMPLETION.md`.
   Verification: `evidence/technical-clauses.json` with frozen candidate/input hashes, actual command, paired controls and stated limits.
+  Obtained: Bounded independent technical review passed; the review packet and findings are recorded in `evidence/technical-review.json`. Native-host, registration, human and founder gates remain open.
 
-- [ ] T016 (REQ-001,REQ-002,REQ-003,REQ-004,REQ-005,REQ-006,REQ-007,REQ-008/SC-001,SC-002,SC-003,SC-004,SC-005,SC-006,SC-007,SC-008): Reconcile available engineering evidence and pass repository quick/PR gates; original registered-observation predecessors stay with T009.
+- [x] T016 (REQ-001,REQ-002,REQ-003,REQ-004,REQ-005,REQ-006,REQ-007,REQ-008/SC-001,SC-002,SC-003,SC-004,SC-005,SC-006,SC-007,SC-008): Reconcile available engineering evidence and pass repository quick/PR gates; original registered-observation predecessors stay with T009.
   Related original: T009. Dependencies: available bounded implementation; original acceptance remains separate. Targets: `assurance.json; source validation`.
   Verification: `evidence/technical-validation.json` with frozen candidate/input hashes, actual command, paired controls and stated limits.
+  Obtained: Repository quick/PR validation results are recorded in `evidence/technical-validation.json`; raw test skips remain explicit. This does not establish native-host, registered-cohort, human or founder acceptance.
