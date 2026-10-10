@@ -1,0 +1,10 @@
+{
+  "command": "PATH=\"$PWD/.venv-speckit/bin:$PATH\" python3 scripts/validate_change.py --base origin/develop --profile quick",
+  "baseCommit": "11f7d093b8f518c88564ccaa49305a5e061178f7",
+  "observedAt": "2026-10-08",
+  "effectiveProfile": "sensitive",
+  "exitStatus": 0,
+  "tests": {"total": 775, "passed": 771, "skipped": 4, "failed": 0},
+  "outcome": "Selected executable validation passed; deferred boundary gates were not executed.",
+  "limits": "Software and structural checks only. Four skips are not passes; no source access, human/scientific review, real experiment, clean-room reproduction, or founder approval is established."
+}

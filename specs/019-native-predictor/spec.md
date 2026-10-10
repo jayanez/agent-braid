@@ -4,8 +4,9 @@
 
 After M3 has a reviewed deterministic exchange domain, investigate a small
 native learned advisor for choosing which candidate exchanges deserve verifier
-work. This is a separate M3.5 experiment, not an M3 exit dependency. No model
-is trained or integrated by this draft.
+work. This is a separate M3.5 experiment, not an M3 exit dependency. Synthetic
+trainer and evaluator software has been exercised, but no real-source model has
+been trained, integrated or scientifically reviewed.
 
 ## Authorities
 
@@ -39,6 +40,11 @@ determines bounded evidence. Prediction never authorizes execution.
     explicit base receipts, independent proposal ordering and full session/pair
     exclusion counts in synthetic rehearsal; content changes and incomplete
     remote registration or seal chains fail closed. No real-source claim follows.
+  - **SC-008:** A metadata-only preparation packet binds fixed source-candidate,
+    protocol, rubric and interface documents; malformed inputs, unsafe files and
+    commitment drift fail closed. A structurally complete packet still reports
+    zero real admitted pairs and no capture, training, human-review verification
+    or execution authorization. This preparation does not complete SC-003/004.
 - **REQ-003 — strict separation.** The deterministic SPEC-018 verifier remains
   the only source of bounded exchange status.
   - **SC-005:** A high model score without verifier agreement cannot yield
@@ -56,9 +62,13 @@ assumed. The dataset, labels, feature version and splits must be reproducible.
 
 ## Evidence and unresolved questions
 
-All model/evaluation evidence is empty pending M3.5 implementation. The
-[source audit](source-audit.md) found no admitted session pairs in the inspected
-public artifacts. The [annotation rubric](annotation-rubric.md) and revised
+Synthetic implementation evidence exists, but no real model/evaluation
+evidence exists. The
+[source audit](source-audit.md) records the founder's owner-only scope and
+reports zero eligible families or admitted pairs in the bounded reviewed set.
+The founder's privacy/export approval with explicit exclusions does not replace
+source-specific rights and notice for each actor or establish an eligible feed.
+The [annotation rubric](annotation-rubric.md) and revised
 [workload protocol](workload-protocol.md) remain candidates for review before
 label collection or training.
 The [synthetic source instrument](instrumentation.md) exercises capture and
@@ -68,9 +78,14 @@ adds tooling for a future prospective window. Its synthetic tests and lab
 snapshots do not constitute real pairs or permission to fit a predictor.
 The founder selected real-workload utility prioritization as the target
 direction on 2026-09-27 and approved source feasibility work on
-2026-09-28, then limited ADR 0018 preparation on 2026-10-01. A consented source,
-data provenance, privacy review, actual label
+2026-09-28, then limited ADR 0018 preparation on 2026-10-01. Source-specific
+participant rights/notice, a complete immutable feed, actual label
 distribution and the final protocol still require review before training.
+The 2026-10-08 [completion plan](completion-plan.md) and
+[source review packet](source-review-packet.md) are the next gated preparation
+increment. Their proposed five workflow descriptions are not eligible observed
+families, and the [model interface plan](model-interface-plan.md) is not a fitted
+artifact. Original model/evaluation acceptance evidence remains pending.
 The [pretraining feasibility audit](feasibility-audit.md) identifies a
 degenerate verifier-status target in the current valid corpus and two possible
 routes to a useful comparison. Source discovery does not approve the model or

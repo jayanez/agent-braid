@@ -1,4 +1,12 @@
-# SPEC-019 preliminary implementation plan
+# SPEC-019 gated implementation plan
+
+The founder requested execution of the [completion plan](completion-plan.md)
+on 2026-10-08, retaining a valid-experiment closure criterion, five proposed
+owned workflows and the current candidate protocol. The
+[source review packet](source-review-packet.md) and
+[model interface plan](model-interface-plan.md) make the next review concrete.
+This direction does not approve unknown source permissions, admit data, open
+windows, supply human labels or approve the detailed scientific protocol.
 
 ## Technical context and scope
 
@@ -81,3 +89,18 @@ The stable M3 verifier, actual target population, source permissions, label
 provenance, family split, metric thresholds, calibration feasibility, privacy
 constraints, architecture and publication need separate review before M3.5
 training or integration. This candidate is not an approved protocol.
+
+## Preparation checkpoint, 2026-10-08
+
+Reconcile T009/T010 only against their existing synthetic evidence. Review the
+five metadata-only proposed workflows before any additional source access;
+their distinctness and natural occurrence remain unverified. Keep the proposed
+extension of ADR 0018 under this spec until a separate source/architecture
+decision is accepted. No new canonical authority, credential or service is
+adopted by a preparation document.
+
+Use `scripts/check_m35_review_packet.py` to bind the exact six fixed review
+inputs. Packet success records presence, shape and byte commitments only; all
+capture/training/execution and human approval flags remain false. Obtain
+source-specific decisions and the full protocol review before proceeding to
+capture, annotation and actual fitting. An incomplete cohort cannot close M3.5.

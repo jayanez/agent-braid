@@ -1,0 +1,68 @@
+{
+  "adversarialReviewSha256": "9a866798c863220d1d480e846338c6750dbaa17855b63ed0242c0112efb4a7d9",
+  "assuranceFreezeCommit": "d4e6488959c4d37baf956de47b5fd5516fdc43af",
+  "authority": {
+    "executionAuthorization": false,
+    "experimentExecuted": false,
+    "founderApproval": "pending",
+    "humanReview": "pending",
+    "realPairsAdmitted": 0,
+    "sourceCaptureAuthorization": false,
+    "sourceInspectionPermission": false,
+    "trainingAuthorization": false
+  },
+  "authoritySnapshotCommit": "7e3cee8595ef8b45b1095a67c8977472f1266de3",
+  "bindingSha256": "e3182f1fd90d4d8a6b1651034139ff86cfa9b3463a69c04a8641847560acf8a4",
+  "candidateCommit": "d4e6488959c4d37baf956de47b5fd5516fdc43af",
+  "candidateTreeCommit": "7e3cee8595ef8b45b1095a67c8977472f1266de3",
+  "focusedTestsSha256": "f462de5749b44ade3b5541150b3c5c0db451e0c1064e221453571b76b6c36bba",
+  "format": "m35-frozen-candidate-receipt-v1",
+  "latestDevelopValidation": {
+    "baseCommit": "59d0eadbea772dbff32fb9daca88bd39ab67a030",
+    "pr": {
+      "exitStatus": 0,
+      "failed": 0,
+      "passed": 771,
+      "skipped": 4,
+      "tests": 775
+    },
+    "prLogSha256": "448cdeddebdc7f2f0edd2e2aa2829e7a0fd0a9b073da2a160dcdafdf1d1d11ef",
+    "quick": {
+      "exitStatus": 0,
+      "failed": 0,
+      "passed": 771,
+      "skipped": 4,
+      "tests": 775
+    },
+    "quickLogSha256": "6c6c55bc8dc2dbfa45c436f1baf2ce1233399e23ef553bd41648e527f6ccee4d",
+    "summarySha256": "d9b8e09dfbf20b82b664e6b3f67441e8bcbb3c3cf80980e0bb87b72ab96e1469"
+  },
+  "packetCommitmentSha256": "f44fee28f5a46f1d1b05da787e574433470faadaf011450db43b66844a7808ad",
+  "packetFileSha256": "8f82006c79aad064e62ad9c60d54bfdbd0e53fd1abbb198bcba5546c85f41e81",
+  "prValidationSha256": "faed15806a66d18600d255a7df7b01ae68cafafde25e12f1e24df7f64cad1fed",
+  "quickValidationSha256": "7b9942640cea9eed5b195c5a9b751c15e181f6b2bbca7104cbfe285160472cb3",
+  "receiptAdversarialReviewSha256": "1b35b90db37b2581c28963f156ea54db056d9c91b2aef0312bf4c6ba86aed23e",
+  "receiptLimits": "This receipt binds repository metadata and software validation artifacts only. It is not proof of source rights, consent, workflow independence, scientific validity, real yield, a real-data experiment, clean-room reproduction, human permission, or founder approval. Its own package commit is intentionally not self-referenced; this file is a descendant package of receiptPackageParentCommit.",
+  "receiptPackageParentCommit": "d4e6488959c4d37baf956de47b5fd5516fdc43af",
+  "validation": {
+    "pr": {
+      "exitStatus": 0,
+      "failed": 0,
+      "passed": 771,
+      "skipped": 4,
+      "tests": 775
+    },
+    "quick": {
+      "exitStatus": 0,
+      "failed": 0,
+      "passed": 771,
+      "skipped": 4,
+      "tests": 775
+    },
+    "specKitAfterFreeze": {
+      "exitStatus": 0,
+      "result": "structural gates passed; human review remains separate"
+    }
+  },
+  "validationBaseCommit": "11f7d093b8f518c88564ccaa49305a5e061178f7"
+}

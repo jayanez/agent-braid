@@ -1,0 +1,18 @@
+{
+  "apply_attempted": false,
+  "apply_blocker": "Apply requires the candidate to be integrated and a clean develop checkout; no remote write was attempted.",
+  "audit_exit_code": 1,
+  "interpretation": "Exit 1 indicates the read-only audit found pending reconciliation operations.",
+  "milestone_number": 9,
+  "operations": [
+    {
+      "action": "set_state",
+      "from": "open",
+      "key": "SPEC-019/T004",
+      "to": "closed"
+    }
+  ],
+  "plan_sha256": "8021baa3bc9a49ab6d34a3f0916c3332c2a7f81f709ba8303614f5bf2f094d78",
+  "repository": "jayanez/agent-braid",
+  "scope": "milestone:9"
+}

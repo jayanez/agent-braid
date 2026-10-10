@@ -1,0 +1,18 @@
+test_auxiliary_reader_rejects_nonallowlisted_symlink_fifo_and_oversize (tests.test_m35_review_packet.M35ReviewPacketTests.test_auxiliary_reader_rejects_nonallowlisted_symlink_fifo_and_oversize) ... ok
+test_candidate_roster_is_variable_and_empty_after_rejections (tests.test_m35_review_packet.M35ReviewPacketTests.test_candidate_roster_is_variable_and_empty_after_rejections) ... ok
+test_candidate_shape_and_pending_status_are_strict (tests.test_m35_review_packet.M35ReviewPacketTests.test_candidate_shape_and_pending_status_are_strict) ... ok
+test_checker_does_not_change_packet_inputs (tests.test_m35_review_packet.M35ReviewPacketTests.test_checker_does_not_change_packet_inputs) ... ok
+test_deterministic_packet_pin_and_all_authority_stays_false (tests.test_m35_review_packet.M35ReviewPacketTests.test_deterministic_packet_pin_and_all_authority_stays_false) ... ok
+test_duplicate_json_and_nonfinite_values_rejected (tests.test_m35_review_packet.M35ReviewPacketTests.test_duplicate_json_and_nonfinite_values_rejected) ... ok
+test_each_fixed_file_is_covered_by_packet_pin (tests.test_m35_review_packet.M35ReviewPacketTests.test_each_fixed_file_is_covered_by_packet_pin) ... ok
+test_fifo_rejected_without_blocking_subprocess (tests.test_m35_review_packet.M35ReviewPacketTests.test_fifo_rejected_without_blocking_subprocess) ... ok
+test_hardlinked_fixed_input_rejected (tests.test_m35_review_packet.M35ReviewPacketTests.test_hardlinked_fixed_input_rejected) ... ok
+test_intermediate_directory_symlink_and_symlink_root_rejected (tests.test_m35_review_packet.M35ReviewPacketTests.test_intermediate_directory_symlink_and_symlink_root_rejected) ... ok
+test_json_depth_limit_rejected (tests.test_m35_review_packet.M35ReviewPacketTests.test_json_depth_limit_rejected) ... ok
+test_size_limit_and_cli_diagnostics_are_redacted (tests.test_m35_review_packet.M35ReviewPacketTests.test_size_limit_and_cli_diagnostics_are_redacted) ... ok
+test_symlink_outside_and_missing_files_fail_without_following (tests.test_m35_review_packet.M35ReviewPacketTests.test_symlink_outside_and_missing_files_fail_without_following) ... ok
+
+----------------------------------------------------------------------
+Ran 13 tests in 0.078s
+
+OK

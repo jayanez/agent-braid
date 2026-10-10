@@ -1,0 +1,20 @@
+{
+  "format": "m35-preparation-reproduction-v1",
+  "sourceClone": "/private/tmp/agent-braid-m35-delivery.cB4cAa",
+  "candidateCommit": "47854298822dd6973e040947683bf72120395115",
+  "reproductionClone": "TEMP_ROOT/clone",
+  "python": "3.13.11",
+  "commands": [
+    ".venv/bin/python -m scripts.check_m35_review_packet --expected-packet-sha256 02457065ecd1a5f0a78a59a161e7dff8d4d83b6f22d2b5e45c5594326525477b",
+    ".venv/bin/python docs/experiments/evidence/m35-review-preparation-2026-10-08/capture_binding.py"
+  ],
+  "outcomes": {
+    "headBeforeAndAfter": "47854298822dd6973e040947683bf72120395115",
+    "gitStatusBeforeAndAfter": "clean",
+    "packetOutput": {"comparison": "byte-for-byte match with candidate packet.json", "sha256": "4ef475a249f4c0d71f460a41b76045db56924ff2005ebe943f9b403a2bbcce11"},
+    "bindingOutput": {"comparison": "byte-for-byte match with candidate binding.json", "sha256": "132b1784fd6ff3295ff4f77ea7861632273ef8f05f3e0e4704bfff7be8f2a0e8"},
+    "reportedRealPairsAdmitted": 0,
+    "reportedSourceCaptureTrainingExecutionAndHumanApproval": false
+  },
+  "limits": "Reproduces preparation software outputs only. No tests or validation profiles rerun. This is not clean-room reproduction of an experiment, evidence of real-source completeness, scientific validation, or human/founder approval. No source payloads or services accessed."
+}
