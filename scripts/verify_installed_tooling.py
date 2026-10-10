@@ -555,7 +555,7 @@ async def one(mode):
         if envelope["status"]!="ok" or envelope["result"].get("report") is None: raise RuntimeError("AIM positive")
         if json.loads(good.content[0].text)!=envelope or envelope["result"]["provenance"].get("executionAuthorization") is not False: raise RuntimeError("AIM boundary")
         bad=await client.call_tool("analyze-work",{"kind":"aim","request":{}})
-        if bad.structured_content["status"]!="refused" or bad.isError is not True: raise RuntimeError("AIM negative")
+        if bad.structured_content["status"]!="refused" or bad.is_error is not True: raise RuntimeError("AIM negative")
         listed=await client.list_resources()
         if "agent-braid://capabilities" not in {row.uri for row in listed.resources}: raise RuntimeError("resource roster")
         capability=await client.read_resource("agent-braid://capabilities")

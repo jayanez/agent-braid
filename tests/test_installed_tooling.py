@@ -136,9 +136,9 @@ class InstalledVerifierSafetyTests(unittest.TestCase):
 
                 async def call_tool(self, _name, arguments):
                     if arguments["request"] == {}:
-                        return types.SimpleNamespace(structured_content={"status": "refused"}, isError=True)
+                        return types.SimpleNamespace(structured_content={"status": "refused"}, is_error=True)
                     return types.SimpleNamespace(structured_content=envelope,
-                        content=[types.SimpleNamespace(text=json.dumps(envelope))], isError=False)
+                        content=[types.SimpleNamespace(text=json.dumps(envelope))], is_error=False)
 
                 async def list_resources(self):
                     return types.SimpleNamespace(resources=[types.SimpleNamespace(uri="agent-braid://capabilities")])
