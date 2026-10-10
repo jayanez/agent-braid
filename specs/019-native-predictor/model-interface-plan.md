@@ -161,3 +161,12 @@ deterministic artifacts in a pinned environment, stale hashes, calibration
 failure, permutation controls, budget/tie/abstention accounting, unknown bounds
 and the unchanged verifier/authorization boundary. Bind real results separately
 from synthetic software checks in assurance.
+
+## Synthetic timing-report compatibility — 2026-10-10
+
+Preparation-hook validation remains mandatory. `preparationSeconds` now
+includes its canonical re-extraction, and the additive
+`preparationValidationSeconds` phase exposes that subset. Consumers must not
+add the subset again when totaling phases. No feature/artifact version, policy,
+verification or authorization contract changes. The extra validation is a real
+operational cost of the supplied-hook path, not a baseline workload charge.

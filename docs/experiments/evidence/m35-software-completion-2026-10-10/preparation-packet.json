@@ -28,13 +28,13 @@
   "inputSha256": {
     "specs/019-native-predictor/adr-extension-proposal.md": "4ae1529bcee5c608d6c34d49c7760c47756321b5e2e514bc0779e70ac5a8c4ef",
     "specs/019-native-predictor/annotation-rubric.md": "00e4d73c6957b847359c4454b7c7b6c59061a9302d172c26e79af56cff6487a7",
-    "specs/019-native-predictor/model-interface-plan.md": "7e143dd952f567c03e5bea5cc834be9e98cf36cb5f4eeff08cb7e2ade0e574e5",
+    "specs/019-native-predictor/model-interface-plan.md": "ac9205da0869f9ae8c7565a7f571055658f638610f2e6161172118307ab87015",
     "specs/019-native-predictor/source-candidates.json": "ad27ccc4123b788793abd9d2650f45cbf903d68f54da82eb434aae84e1c1a781",
     "specs/019-native-predictor/source-review-packet.md": "656daf58b9ddd48db7d45f81d26152da476508f7c1c02b8ebac4588c42dc019d",
     "specs/019-native-predictor/workload-protocol.md": "1fa9479b21deab654893378272cea3e3f0a594b69094dbac2de809cd81bfae9f"
   },
   "limitations": "Preparatory metadata commitment only; rights, roster, protocol approval, yield, and human decisions remain unverified and pending.",
-  "packetSha256": "9bff5b664692f925aab15c6bb943c76f40d8b6644393230a4bb3ce202fbff792",
+  "packetSha256": "f96ad8d70d01b960f9cdb15e071a66abb7c302894f990ded040cdbc04e86b65d",
   "packetStructurallyComplete": true,
   "realPairsAdmitted": 0,
   "reasons": [

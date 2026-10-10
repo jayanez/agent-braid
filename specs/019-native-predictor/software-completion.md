@@ -13,8 +13,9 @@ pair, human label, real fit or held-out workload result is delivered.
   verifier supplies bounded status. No score or human label supplies a
   certificate or changes `executionAuthorization: false`.
 - The three formerly skipped contracts execute. Focused tests, quick and
-  stable PR profiles, independent Luna technical review and a frozen
-  clean-clone reproduction support software acceptance only. Results and their limits are recorded in the
+  stable PR profiles, independent Luna technical review and a committed
+  clean-clone reproduction are required verification, not assumed results.
+  Only executed outcomes support software acceptance. Status and limits are recorded in the
   [completion evidence](../../docs/experiments/evidence/m35-software-completion-2026-10-10/README.md).
 - Caller-declared synthetic origin, IDs, hashes and reviewer fields are not
   source authentication, permission or proof of independent human review.
