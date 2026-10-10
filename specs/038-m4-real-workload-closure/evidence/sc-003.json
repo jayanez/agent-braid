@@ -1,0 +1,26 @@
+{
+  "recordVersion": "spec038-obtained-evidence-v1",
+  "scenario": "SC-003",
+  "status": "satisfied-with-limits",
+  "candidateCommit": "e66f9a1b94fc5ebfbf784d9c48a76f53c1a656ee",
+  "captureSummary": "specs/038-m4-real-workload-closure/evidence/registered-capture-summary-e66f9a1.json",
+  "captureSummarySha256": "7e2e948aa9252270eb495364d86d66e75c03e1acb578d60079244c7fbcc7c1cc",
+  "contextReferences": [
+    {
+      "path": "specs/038-m4-real-workload-closure/evidence/sc-001.json",
+      "sha256": "fbe83689316edd8b794b85ca97c29226ea87cfdc0420d0b54eaf6d37a542f3b6",
+      "use": "historical synthetic negative and boundary control inventory"
+    },
+    {
+      "path": "specs/038-m4-real-workload-closure/evidence/candidate-validation-status.json",
+      "sha256": "9920e284b61682e99d44d042447a98a0ac240a2750257c6e1859a8be45ddad4f",
+      "use": "historical validation provenance"
+    }
+  ],
+  "obtainedEvidence": "The successor final-engine focused run covered 18 tests on the exact e66f9a1 candidate, bound by the manifest test input hash. This is distinct from the 17 named controls in historical SC-001 and is not inferred from SC-001 or the older validation receipt. The registered source capture exercised no refused or recovered pairs, so source-workload refusal or recovery is not claimed.",
+  "scopeLimits": [
+    "One finite task frame; no population or causal inference.",
+    "Whole-M4 acceptance remains pending and SPEC-021 G4 NO-GO is unchanged."
+  ],
+  "focusedRunReceiptLimitation": "No standalone focused-run receipt hash was located in the retained evidence root; see the summary for its exact candidate input hash and separately retained full-profile receipts."
+}

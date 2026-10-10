@@ -1,0 +1,788 @@
+{
+  "recordVersion": "spec038-public-derived-obtained-capture-v1",
+  "scenarioReferences": [
+    "SC-003",
+    "SC-004",
+    "SC-005",
+    "SC-006",
+    "SC-007"
+  ],
+  "candidate": {
+    "commit": "e66f9a1b94fc5ebfbf784d9c48a76f53c1a656ee",
+    "tree": "36821ee4685f583e97fede0e3c627dcf7d85bd07",
+    "manifestSha256": "6cc2715f99c5e1eb47fa90e9ccb85388c7bc157f995c404660255c5608f60577",
+    "capture_input_hashes": {
+      "binding": "Frozen e66f9a1 candidate manifest; these are manifest inputs, not current working-tree input hashes. Bound by the manifest SHA-256 above.",
+      "candidateInputs": {
+        "agent_braid/git_adapter.py": "4548eb96849e2d0ed1eaefc53579d065651b00a2c6ae5b1aef6e2bdc5ae3dc45",
+        "agent_braid/git_process.py": "3247ac861404cfb68f08939770a5048294b45ddc984a1379ca9eb2091ad48668",
+        "agent_braid/git_replay.py": "62a2c461902e30d874dfe82bed77ab79075f33cb0e56f1e543fd9d317f1d571e",
+        "agent_braid/git_runtime.py": "ceb4469906b6c97a6f03faf3cc1b4ea8387df937c06b8ccd49984eaf2dff4d4e",
+        "agent_braid/m4_real_workload.py": "f69221eb6ed21d5b959e0e172fee34191c651195a3bcc18e8324ea8709d78678",
+        "agent_braid/m4_real_workload_trials.py": "680a3de7ef5cfe3e96293bffea9703241e63292cca8e9b173ee6061b5b35789c",
+        "agent_braid/runtime_policy.py": "930ead80e4085301e6337af58660665219da3d3b40b72cfca8b803cebfa09188",
+        "agent_braid/runtime_scheduler.py": "47bb371c88726793d207a59bb85cb6911d86e00a44694b37934805d9fa2462a9",
+        "schemas/0.1.0-alpha/git-runtime-request.schema.json": "a83873e072ea357b29331e74e42b5a075769d939bcfba69f458712876b187f5d",
+        "schemas/0.1.0-alpha/runtime-policy.schema.json": "dc88b1e7de631c797002ad29276a4eeccf8f2a1bbbb3a48c41dd4f82ea6f8c17",
+        "scripts/measure_m4_real_workload.py": "38ae05961eb64a3b2495f5b2934671732d59d1c9ebe4ec1298421bf00ede7c2f",
+        "scripts/prepare_m4_real_workload.py": "626866669ff6153472346c9275362da0b7ea0348493ba7815004064d3502cf2d",
+        "scripts/verify_m4_real_workload.py": "8b395f826cf3bc9f4f6bd2ee316e860212100591d86a342bfa0e615d0f8d7f58",
+        "specs/013-m2-real-workload/m2-corpus-selection.json": "978a40379b049d023be95d8eae652d7bbd06ea07942ce5776d40d2b0ad0b9737",
+        "specs/038-m4-real-workload-closure/protocol-review-packet.md": "656f0b67958e6cf0857bcf3a2908b8235eb2ea43a9a44a8ae18e1c6905790fd2",
+        "specs/038-m4-real-workload-closure/source-rights-manifest.json": "8f1707b2ae5fc66b5ed5e45fa21d70b9e02a1765ec51c242db96c11bd1e1766d",
+        "tests/test_m4_real_workload_preparation.py": "40ed0e337f340b28d4efa03dd94a9658da4296a15fc52dd47000f8882298301f",
+        "tests/test_m4_real_workload_trials.py": "ba6b2ebf1a5f18450802a23de187bb5abaad12eff3426defae8acc30ed22c425"
+      },
+      "harnessInputHashes": {
+        "agent_braid/git_adapter.py": "4548eb96849e2d0ed1eaefc53579d065651b00a2c6ae5b1aef6e2bdc5ae3dc45",
+        "agent_braid/git_process.py": "3247ac861404cfb68f08939770a5048294b45ddc984a1379ca9eb2091ad48668",
+        "agent_braid/git_replay.py": "62a2c461902e30d874dfe82bed77ab79075f33cb0e56f1e543fd9d317f1d571e",
+        "agent_braid/git_runtime.py": "ceb4469906b6c97a6f03faf3cc1b4ea8387df937c06b8ccd49984eaf2dff4d4e",
+        "agent_braid/m4_real_workload.py": "f69221eb6ed21d5b959e0e172fee34191c651195a3bcc18e8324ea8709d78678",
+        "agent_braid/m4_real_workload_trials.py": "680a3de7ef5cfe3e96293bffea9703241e63292cca8e9b173ee6061b5b35789c",
+        "agent_braid/runtime_policy.py": "930ead80e4085301e6337af58660665219da3d3b40b72cfca8b803cebfa09188",
+        "agent_braid/runtime_scheduler.py": "47bb371c88726793d207a59bb85cb6911d86e00a44694b37934805d9fa2462a9",
+        "schemas/0.1.0-alpha/git-runtime-request.schema.json": "a83873e072ea357b29331e74e42b5a075769d939bcfba69f458712876b187f5d",
+        "schemas/0.1.0-alpha/runtime-policy.schema.json": "dc88b1e7de631c797002ad29276a4eeccf8f2a1bbbb3a48c41dd4f82ea6f8c17",
+        "scripts/measure_m4_real_workload.py": "38ae05961eb64a3b2495f5b2934671732d59d1c9ebe4ec1298421bf00ede7c2f",
+        "scripts/prepare_m4_real_workload.py": "626866669ff6153472346c9275362da0b7ea0348493ba7815004064d3502cf2d",
+        "scripts/verify_m4_real_workload.py": "8b395f826cf3bc9f4f6bd2ee316e860212100591d86a342bfa0e615d0f8d7f58",
+        "specs/013-m2-real-workload/m2-corpus-selection.json": "978a40379b049d023be95d8eae652d7bbd06ea07942ce5776d40d2b0ad0b9737",
+        "specs/038-m4-real-workload-closure/protocol-review-packet.md": "656f0b67958e6cf0857bcf3a2908b8235eb2ea43a9a44a8ae18e1c6905790fd2",
+        "specs/038-m4-real-workload-closure/source-rights-manifest.json": "8f1707b2ae5fc66b5ed5e45fa21d70b9e02a1765ec51c242db96c11bd1e1766d",
+        "tests/test_m4_real_workload_preparation.py": "40ed0e337f340b28d4efa03dd94a9658da4296a15fc52dd47000f8882298301f",
+        "tests/test_m4_real_workload_trials.py": "ba6b2ebf1a5f18450802a23de187bb5abaad12eff3426defae8acc30ed22c425"
+      }
+    },
+    "registeredCaptureAuthorized": true,
+    "captureAuthorizationSha256": "13e20f3f6727ddf916a8081a498a3af014b8d7b1053d15c06782d533dcf973f4",
+    "stableReviewSha256": "47b3b7d916cc1fd340011c0bac0f9110dc8441e372c83ed4c600fac8bb57b42d",
+    "status": "complete"
+  },
+  "sourceIntegrity": {
+    "recordedCandidateUnchanged": true,
+    "freshVerificationStatus": "verified",
+    "freshVerificationSourceIntegrity": "unchanged",
+    "freshVerificationInspectedSlots": 20,
+    "allPairTreesCompleteAndMatch": true,
+    "freshVerificationRecordSha256": "a6f2b51bbc0c97dcbfdb055ab5232cee5b8da661d987a2e0c0651eeb65f03982",
+    "freshVerificationRecordContentSha256": "6b38868d6d19b8b787e696b2540281b0b7308f60a3d4073c5e8f9efa66123688"
+  },
+  "captureArtifacts": {
+    "captureRecordSha256": "6b38868d6d19b8b787e696b2540281b0b7308f60a3d4073c5e8f9efa66123688",
+    "observerReceiptSha256": "9ed3e70e4e97c90a251e5ae8d7669fc29dcc013c04f34c66af230c9095fd88cf",
+    "observerTailReceiptSha256": "0bc3eaaabfce402c73412f8e9b1f49e66011fb9c5f69433928b32e487faf1370",
+    "callerContextReceiptSha256": "53a4d3b2dee8f4f563b708dcfa39245ac93c9f10410d8418823f0893cb6ee5a3",
+    "processCostReceiptSha256": "d156e7cb6c44379bc4b636fd3a24964a092293b092dc6b94c8dd7778f0106e33",
+    "independentReviewSha256": "3285206e87d10a9c7dbf6eafef20b9212024c91e9efb3d02155e4bb6c12e34fa",
+    "independentReviewModel": "gpt-6-luna",
+    "independentReviewOutcome": {
+      "authorizationBound": true,
+      "candidateAndManifestBound": true,
+      "captureAuthorized": true,
+      "captureStatus": "complete",
+      "claimBoundary": "Finite descriptive actual-workload trial only; no general utility, safety, scientific, or M4 acceptance claim.",
+      "freshVerifierRecordBound": true,
+      "freshVerifierStatus": "verified",
+      "m4Acceptance": false,
+      "processAggregateStatus": "complete",
+      "processExitCode": 0,
+      "registeredCaptureAuthorized": true,
+      "wholeM4Accepted": false
+    },
+    "independentReviewFindings": []
+  },
+  "denominator": {
+    "intendedPairs": 10,
+    "attemptedTreatments": 20,
+    "validTreatments": 20,
+    "validPairs": 10,
+    "warmupPairs": 4,
+    "measuredPairs": 6,
+    "validMeasuredPairs": 6,
+    "invalidPairs": 0,
+    "failedPairs": 0,
+    "refusedPairs": 0,
+    "interruptedPairs": 0,
+    "recoveredPairs": 0,
+    "unexecutedPairs": 0,
+    "failedInterruptedInvalidRefusedRecoveredOrUnexecutedPairs": 0,
+    "pairs": [
+      {
+        "pairId": "W-AB-1",
+        "pairKind": "warmup",
+        "operationOrder": "AB",
+        "slotIds": [
+          "W-AB-1-serial",
+          "W-AB-1-parallel"
+        ],
+        "valid": true,
+        "serialOverParallelOuterWallRatio": null
+      },
+      {
+        "pairId": "W-AB-2",
+        "pairKind": "warmup",
+        "operationOrder": "AB",
+        "slotIds": [
+          "W-AB-2-parallel",
+          "W-AB-2-serial"
+        ],
+        "valid": true,
+        "serialOverParallelOuterWallRatio": null
+      },
+      {
+        "pairId": "W-BA-1",
+        "pairKind": "warmup",
+        "operationOrder": "BA",
+        "slotIds": [
+          "W-BA-1-serial",
+          "W-BA-1-parallel"
+        ],
+        "valid": true,
+        "serialOverParallelOuterWallRatio": null
+      },
+      {
+        "pairId": "W-BA-2",
+        "pairKind": "warmup",
+        "operationOrder": "BA",
+        "slotIds": [
+          "W-BA-2-parallel",
+          "W-BA-2-serial"
+        ],
+        "valid": true,
+        "serialOverParallelOuterWallRatio": null
+      },
+      {
+        "pairId": "M-AB-2",
+        "pairKind": "measured",
+        "operationOrder": "AB",
+        "slotIds": [
+          "M-AB-2-serial",
+          "M-AB-2-parallel"
+        ],
+        "valid": true,
+        "serialOverParallelOuterWallRatio": 0.653044211312927
+      },
+      {
+        "pairId": "M-BA-2",
+        "pairKind": "measured",
+        "operationOrder": "BA",
+        "slotIds": [
+          "M-BA-2-parallel",
+          "M-BA-2-serial"
+        ],
+        "valid": true,
+        "serialOverParallelOuterWallRatio": 0.6547555292705836
+      },
+      {
+        "pairId": "M-BA-3",
+        "pairKind": "measured",
+        "operationOrder": "BA",
+        "slotIds": [
+          "M-BA-3-serial",
+          "M-BA-3-parallel"
+        ],
+        "valid": true,
+        "serialOverParallelOuterWallRatio": 0.6132461282422287
+      },
+      {
+        "pairId": "M-AB-1",
+        "pairKind": "measured",
+        "operationOrder": "AB",
+        "slotIds": [
+          "M-AB-1-parallel",
+          "M-AB-1-serial"
+        ],
+        "valid": true,
+        "serialOverParallelOuterWallRatio": 0.6569731076329103
+      },
+      {
+        "pairId": "M-AB-3",
+        "pairKind": "measured",
+        "operationOrder": "AB",
+        "slotIds": [
+          "M-AB-3-serial",
+          "M-AB-3-parallel"
+        ],
+        "valid": true,
+        "serialOverParallelOuterWallRatio": 0.6511676143044125
+      },
+      {
+        "pairId": "M-BA-1",
+        "pairKind": "measured",
+        "operationOrder": "BA",
+        "slotIds": [
+          "M-BA-1-parallel",
+          "M-BA-1-serial"
+        ],
+        "valid": true,
+        "serialOverParallelOuterWallRatio": 0.6647960914550365
+      }
+    ],
+    "slots": [
+      {
+        "slotId": "W-AB-1-serial",
+        "pairId": "W-AB-1",
+        "pairKind": "warmup",
+        "operationOrder": "AB",
+        "treatmentOrder": 0,
+        "mode": "serial",
+        "status": "valid",
+        "reason": null
+      },
+      {
+        "slotId": "W-AB-1-parallel",
+        "pairId": "W-AB-1",
+        "pairKind": "warmup",
+        "operationOrder": "AB",
+        "treatmentOrder": 1,
+        "mode": "parallel",
+        "status": "valid",
+        "reason": null
+      },
+      {
+        "slotId": "W-AB-2-parallel",
+        "pairId": "W-AB-2",
+        "pairKind": "warmup",
+        "operationOrder": "AB",
+        "treatmentOrder": 0,
+        "mode": "parallel",
+        "status": "valid",
+        "reason": null
+      },
+      {
+        "slotId": "W-AB-2-serial",
+        "pairId": "W-AB-2",
+        "pairKind": "warmup",
+        "operationOrder": "AB",
+        "treatmentOrder": 1,
+        "mode": "serial",
+        "status": "valid",
+        "reason": null
+      },
+      {
+        "slotId": "W-BA-1-serial",
+        "pairId": "W-BA-1",
+        "pairKind": "warmup",
+        "operationOrder": "BA",
+        "treatmentOrder": 0,
+        "mode": "serial",
+        "status": "valid",
+        "reason": null
+      },
+      {
+        "slotId": "W-BA-1-parallel",
+        "pairId": "W-BA-1",
+        "pairKind": "warmup",
+        "operationOrder": "BA",
+        "treatmentOrder": 1,
+        "mode": "parallel",
+        "status": "valid",
+        "reason": null
+      },
+      {
+        "slotId": "W-BA-2-parallel",
+        "pairId": "W-BA-2",
+        "pairKind": "warmup",
+        "operationOrder": "BA",
+        "treatmentOrder": 0,
+        "mode": "parallel",
+        "status": "valid",
+        "reason": null
+      },
+      {
+        "slotId": "W-BA-2-serial",
+        "pairId": "W-BA-2",
+        "pairKind": "warmup",
+        "operationOrder": "BA",
+        "treatmentOrder": 1,
+        "mode": "serial",
+        "status": "valid",
+        "reason": null
+      },
+      {
+        "slotId": "M-AB-2-serial",
+        "pairId": "M-AB-2",
+        "pairKind": "measured",
+        "operationOrder": "AB",
+        "treatmentOrder": 0,
+        "mode": "serial",
+        "status": "valid",
+        "reason": null
+      },
+      {
+        "slotId": "M-AB-2-parallel",
+        "pairId": "M-AB-2",
+        "pairKind": "measured",
+        "operationOrder": "AB",
+        "treatmentOrder": 1,
+        "mode": "parallel",
+        "status": "valid",
+        "reason": null
+      },
+      {
+        "slotId": "M-BA-2-parallel",
+        "pairId": "M-BA-2",
+        "pairKind": "measured",
+        "operationOrder": "BA",
+        "treatmentOrder": 0,
+        "mode": "parallel",
+        "status": "valid",
+        "reason": null
+      },
+      {
+        "slotId": "M-BA-2-serial",
+        "pairId": "M-BA-2",
+        "pairKind": "measured",
+        "operationOrder": "BA",
+        "treatmentOrder": 1,
+        "mode": "serial",
+        "status": "valid",
+        "reason": null
+      },
+      {
+        "slotId": "M-BA-3-serial",
+        "pairId": "M-BA-3",
+        "pairKind": "measured",
+        "operationOrder": "BA",
+        "treatmentOrder": 0,
+        "mode": "serial",
+        "status": "valid",
+        "reason": null
+      },
+      {
+        "slotId": "M-BA-3-parallel",
+        "pairId": "M-BA-3",
+        "pairKind": "measured",
+        "operationOrder": "BA",
+        "treatmentOrder": 1,
+        "mode": "parallel",
+        "status": "valid",
+        "reason": null
+      },
+      {
+        "slotId": "M-AB-1-parallel",
+        "pairId": "M-AB-1",
+        "pairKind": "measured",
+        "operationOrder": "AB",
+        "treatmentOrder": 0,
+        "mode": "parallel",
+        "status": "valid",
+        "reason": null
+      },
+      {
+        "slotId": "M-AB-1-serial",
+        "pairId": "M-AB-1",
+        "pairKind": "measured",
+        "operationOrder": "AB",
+        "treatmentOrder": 1,
+        "mode": "serial",
+        "status": "valid",
+        "reason": null
+      },
+      {
+        "slotId": "M-AB-3-serial",
+        "pairId": "M-AB-3",
+        "pairKind": "measured",
+        "operationOrder": "AB",
+        "treatmentOrder": 0,
+        "mode": "serial",
+        "status": "valid",
+        "reason": null
+      },
+      {
+        "slotId": "M-AB-3-parallel",
+        "pairId": "M-AB-3",
+        "pairKind": "measured",
+        "operationOrder": "AB",
+        "treatmentOrder": 1,
+        "mode": "parallel",
+        "status": "valid",
+        "reason": null
+      },
+      {
+        "slotId": "M-BA-1-parallel",
+        "pairId": "M-BA-1",
+        "pairKind": "measured",
+        "operationOrder": "BA",
+        "treatmentOrder": 0,
+        "mode": "parallel",
+        "status": "valid",
+        "reason": null
+      },
+      {
+        "slotId": "M-BA-1-serial",
+        "pairId": "M-BA-1",
+        "pairKind": "measured",
+        "operationOrder": "BA",
+        "treatmentOrder": 1,
+        "mode": "serial",
+        "status": "valid",
+        "reason": null
+      }
+    ]
+  },
+  "measuredResult": {
+    "medianSerialOverParallelOuterWallRatio": 0.6538998702917553,
+    "byOperationOrder": {
+      "AB": 0.653044211312927,
+      "BA": 0.6547555292705836
+    },
+    "individualMeasuredRatios": [
+      {
+        "pairId": "M-AB-2",
+        "operationOrder": "AB",
+        "ratio": 0.653044211312927
+      },
+      {
+        "pairId": "M-BA-2",
+        "operationOrder": "BA",
+        "ratio": 0.6547555292705836
+      },
+      {
+        "pairId": "M-BA-3",
+        "operationOrder": "BA",
+        "ratio": 0.6132461282422287
+      },
+      {
+        "pairId": "M-AB-1",
+        "operationOrder": "AB",
+        "ratio": 0.6569731076329103
+      },
+      {
+        "pairId": "M-AB-3",
+        "operationOrder": "AB",
+        "ratio": 0.6511676143044125
+      },
+      {
+        "pairId": "M-BA-1",
+        "operationOrder": "BA",
+        "ratio": 0.6647960914550365
+      }
+    ],
+    "interpretation": "Finite descriptive performance result for one repository task frame. A ratio below 1 indicates lower serial outer wall in this sample. No causal, population, generalized utility, safety, or scientific conclusion."
+  },
+  "phaseAccounting": {
+    "phasesAreDisjointAndOrdered": [
+      "input",
+      "replay",
+      "preparation",
+      "grant",
+      "execution",
+      "independent_verification",
+      "report_serialization",
+      "cleanup"
+    ],
+    "summedAcrossTwentyTreatments": {
+      "input": {
+        "treatmentCount": 20,
+        "wallNs": 2671246040,
+        "parentCpuSeconds": 0.2858160000000021,
+        "completedChildUserCpuSeconds": 1.0318970000000078,
+        "completedChildSystemCpuSeconds": 1.1574870000000104,
+        "acceptedBudgetOutputBytes": 0,
+        "gitCommands": 0,
+        "allSuccess": true
+      },
+      "replay": {
+        "treatmentCount": 20,
+        "wallNs": 84575947502,
+        "parentCpuSeconds": 5.327282999999995,
+        "completedChildUserCpuSeconds": 22.420013999999973,
+        "completedChildSystemCpuSeconds": 19.83931100000001,
+        "acceptedBudgetOutputBytes": 17233480,
+        "gitCommands": 2920,
+        "allSuccess": true
+      },
+      "preparation": {
+        "treatmentCount": 20,
+        "wallNs": 92599770418,
+        "parentCpuSeconds": 5.953311999999995,
+        "completedChildUserCpuSeconds": 24.28129300000002,
+        "completedChildSystemCpuSeconds": 21.73610099999999,
+        "acceptedBudgetOutputBytes": 17262490,
+        "gitCommands": 2950,
+        "allSuccess": true
+      },
+      "grant": {
+        "treatmentCount": 20,
+        "wallNs": 87399969209,
+        "parentCpuSeconds": 5.615703999999997,
+        "completedChildUserCpuSeconds": 23.49295299999998,
+        "completedChildSystemCpuSeconds": 20.527990999999975,
+        "acceptedBudgetOutputBytes": 17262490,
+        "gitCommands": 2950,
+        "allSuccess": true
+      },
+      "execution": {
+        "treatmentCount": 20,
+        "wallNs": 211621443044,
+        "parentCpuSeconds": 14.081101999999992,
+        "completedChildUserCpuSeconds": 58.857900999999984,
+        "completedChildSystemCpuSeconds": 50.28374500000002,
+        "acceptedBudgetOutputBytes": 38925810,
+        "gitCommands": 7020,
+        "allSuccess": true
+      },
+      "independent_verification": {
+        "treatmentCount": 20,
+        "wallNs": 165966934958,
+        "parentCpuSeconds": 10.749229999999994,
+        "completedChildUserCpuSeconds": 44.10199,
+        "completedChildSystemCpuSeconds": 38.84999900000001,
+        "acceptedBudgetOutputBytes": 30276610,
+        "gitCommands": 5250,
+        "allSuccess": true
+      },
+      "report_serialization": {
+        "treatmentCount": 20,
+        "wallNs": 6363582,
+        "parentCpuSeconds": 0.006169000000010971,
+        "completedChildUserCpuSeconds": 0.0,
+        "completedChildSystemCpuSeconds": 0.0,
+        "acceptedBudgetOutputBytes": 0,
+        "gitCommands": 0,
+        "allSuccess": true
+      },
+      "cleanup": {
+        "treatmentCount": 20,
+        "wallNs": 519084,
+        "parentCpuSeconds": 0.0005189999999923867,
+        "completedChildUserCpuSeconds": 0.0,
+        "completedChildSystemCpuSeconds": 0.0,
+        "acceptedBudgetOutputBytes": 0,
+        "gitCommands": 0,
+        "allSuccess": true
+      }
+    },
+    "treatmentOuterWallNs": 645739917916,
+    "residualWallNs": {
+      "sumAcrossTreatments": 897724079,
+      "minimum": 38952499,
+      "maximum": 75909543,
+      "allNonnegative": true
+    },
+    "phaseReconciliationFailures": 0,
+    "phaseBoundary": "Each treatment outer wall includes input/evidence, replay, preparation, grant, execution, independent consumer verification, report serialization, cleanup, and explicit residual. Parallel internal work means summed child CPU can exceed wall; no costs are inferred from that."
+  },
+  "separateCosts": {
+    "captureDispatchSpanNs": 647146106834,
+    "freshVerification": {
+      "wallNs": 156914908542,
+      "parentCpuNs": 10246068000,
+      "scope": "Fresh verifier-reported internal inspection span; outside treatment ratios. This overlaps the externally observed subprocess interval and must not be added to it."
+    },
+    "conditionalCleanup": {
+      "wallNs": 81022583,
+      "parentCpuNs": 71543000,
+      "removedTreatmentPaths": 40,
+      "errors": 0
+    },
+    "captureOutput": {
+      "wallNs": 5259500,
+      "parentCpuNs": 4849000,
+      "bytes": 1628528
+    },
+    "callerProcess": {
+      "wallNs": 804759283916,
+      "childCpuNs": null,
+      "childCpuUnavailableReason": "No separate process CPU attribution is made by this observer.",
+      "scope": "wallNs and parentCpuNs cover the caller process, launch-record publication, stdout observation and log persistence through caller return. The separate observerWhole fields include preceding authority checks and post-caller artifact inspection, up to receipt construction; these intervals overlap and must not be added. Final receipt encoding and persistence are unmeasured below.",
+      "observerParentCpuNs": 2300000,
+      "observerParentCpuScope": "The receipt parentCpuNs value 2300000 is CPU attributed to the observer process that launched/observed the caller; it is not caller-process CPU. The receipt wallNs remains its recorded outer observation span.",
+      "registeredApi": {
+        "wallNs": 804416402208,
+        "parentCpuNs": 42361395000,
+        "scope": "Actual registered capture API call, from operator return receipt."
+      },
+      "outerCaller": {
+        "wallNs": 804704162292,
+        "parentCpuNs": 42426933000,
+        "scope": "Actual outer caller process from operator return receipt."
+      },
+      "accountingRule": "These receipt, API, outer-caller and observer measurements overlap/nest with each other and with treatment phases; report separately and do not add them."
+    },
+    "observerWholeBeforeOwnReceiptPublication": {
+      "wallNs": 804766014125,
+      "parentCpuNs": 8596000
+    },
+    "postCallerArtifactInspection": {
+      "parentCpuNs": 5964000,
+      "scope": "Artifact hashing, sizes, capture status and operator-log inspection after the caller returned; outside caller-process wallNs.",
+      "wallNs": 6219583
+    },
+    "observerTailOutput": {
+      "bytes": 1782,
+      "parentCpuNs": 230000,
+      "scope": "shared observer sealing/output outside treatment and cleanup spans",
+      "sha256": "9ed3e70e4e97c90a251e5ae8d7669fc29dcc013c04f34c66af230c9095fd88cf",
+      "wallNs": 250292
+    },
+    "ownReceiptPublication": {
+      "parentCpuNs": null,
+      "reason": "Final receipt construction, serialization and persistence are not included in the observerWhole pre-publication fields; this receipt cannot embed the completed cost of its own publication.",
+      "wallNs": null
+    },
+    "nonOvercountingRule": "These are overlapping/nested caller and observer views with different boundaries. They are reported separately and are not added to treatment totals or to each other.",
+    "unmeasuredExternalCosts": {
+      "environmentSetup": {
+        "wallNs": null,
+        "reason": "environment setup predates the dispatch interval and is not instrumented here"
+      },
+      "independentReview": {
+        "wallNs": null,
+        "reason": "reviewer elapsed time is not available to the local runner"
+      },
+      "operatorEffort": {
+        "wallNs": null,
+        "reason": "operator effort is not observable by the local runner"
+      },
+      "sourceAndRightsAcquisition": {
+        "wallNs": null,
+        "reason": "pre-existing source-rights and protocol approval time was not instrumented by this capture runner"
+      },
+      "staticManifestPreparation": {
+        "wallNs": null,
+        "reason": "preparation receipt must be reported separately; no timing is bound into this capture record"
+      }
+    },
+    "staticManifestPreparationSupplement": {
+      "wallNs": 97154266375,
+      "parentCpuNs": 5973002000,
+      "provenanceSha256": "7f611799268ad26673af328cd733464fc4d0fe4721b39a2159049a7fcbe8921d",
+      "receiptSha256": "6fcd112ca1b47a4a52293c8b83a08e5853705587472d3f35be6c9aa09a9c3ab7",
+      "candidateCommit": "e66f9a1b94fc5ebfbf784d9c48a76f53c1a656ee",
+      "scope": "Separate pre-capture static manifest preparation receipt; no source treatments. This was not measured within the capture external-cost boundary."
+    },
+    "freshVerificationProcessObservation": {
+      "wallNs": 157008812292,
+      "processReturnCode": 0,
+      "scope": "Observer elapsed span around the fresh-verifier subprocess, including process start/exit overhead; overlaps its internal inspection timer, outside treatment ratios."
+    }
+  },
+  "runtimeBudgetAndNulls": {
+    "gitBudgetCount": {
+      "budget": 256,
+      "maximumObserved": 26,
+      "scope": "Instrumented runtime/replay budget-charge count; excludes identity and source-integrity guard commands."
+    },
+    "rawGitCommands": {
+      "minimumObserved": 865,
+      "maximumObserved": 1244,
+      "scope": "Raw phase commands in runtime/replay receipts; these counts are not the 256 budget-charge count and must not be described as total raw commands below 256."
+    },
+    "identityGitCommandCounts": {
+      "candidateIdentity": null,
+      "sourceIntegrity": null,
+      "reason": "Not separately instrumented; safe guard checks occur at bounded dispatch/treatment integrity phases."
+    },
+    "observedCapturedOutputBytes": {
+      "allTreatmentSlots": null,
+      "reason": "Runner does not expose rejected or discarded output bytes; total bytes read unavailable."
+    },
+    "sampledScratchPeakBytes": {
+      "allTreatmentSlots": null,
+      "reason": "Frozen budget does not expose whether sampled scratch high-water was observed; allocation unavailable."
+    },
+    "workerIntervals": {
+      "unavailableSlots": 20,
+      "reason": "Worker occupancy intervals unavailable."
+    },
+    "hardChildAddressSpaceCap": null,
+    "reason": "No hard child address-space cap is present; RSS is process-lifetime high-water only."
+  },
+  "environment": {
+    "hardware": {
+      "cpuModel": "Apple M3 Pro",
+      "logicalCpuCount": 12,
+      "physicalMemoryBytes": 38654705664
+    },
+    "os": {
+      "system": "Darwin",
+      "release": "25.6.0",
+      "machineArchitecture": "arm64"
+    },
+    "python": {
+      "implementation": "CPython",
+      "version": "3.13.11"
+    },
+    "gitVersion": "git version 2.54.0 (Apple Git-157)",
+    "systemLoadAverage1m5m15m": {
+      "pre": [
+        4.06,
+        3.902,
+        4.473
+      ],
+      "post": [
+        3.195,
+        4.672,
+        4.955
+      ],
+      "scope": "System-wide load averages only; no per-process attribution or CPU-overlap proof."
+    },
+    "cacheState": "Uncontrolled; no cache flush, purge, or reboot attempted.",
+    "rssProcessLifetimeHighWaterBytesRange": [
+      31801344,
+      31801344
+    ],
+    "environmentObservationBoundary": "Metadata only; no actual workload source or fixture code executed."
+  },
+  "cleanupAndRetention": {
+    "freshVerificationSucceededBeforeCleanup": true,
+    "removedTreatmentPaths": 40,
+    "cleanupErrors": 0,
+    "postCleanupRunAndGrantDirectoriesPresent": 0,
+    "reverificationAfterCleanup": "Not possible because the recorded 40 treatment/grant paths were removed after successful fresh verification. The verifier receipt and independent review retain the observed verification result."
+  },
+  "scopeLimits": {
+    "sourceProjectCodeExecuted": false,
+    "fixtureCodeExecuted": false,
+    "captureMode": "Registered fixed-patch actual-workload trial under existing contracts.",
+    "noSyscallOrNetworkAudit": true,
+    "historicalPreDispatchAttemptsRemainImmutable": "Both prior candidate-bound attempts stopped before dispatch; they remain in pre-dispatch-attempt-summary.json and were not replaced by this capture.",
+    "localFinalProfile": {
+      "tests": 763,
+      "passed": 759,
+      "skipped": 4,
+      "scope": "Local final candidate validation; separate from capture."
+    },
+    "hostedFinalProfile": {
+      "tests": 763,
+      "passed": 758,
+      "skipped": 5,
+      "scope": "Hosted selected checks; separate from capture."
+    },
+    "wholeM4Accepted": false,
+    "SPEC021G4": "NO-GO remains unchanged",
+    "founderAcceptance": "Pending separate whole-M4 decision; SC-008 is outside this package.",
+    "successorFocusedSyntheticControls": "The 18 owned focused synthetic tests are engineering-control evidence only. They do not establish that actual source recovery/refusal paths occurred; this capture recorded zero refused and zero recovered pairs."
+  },
+  "syntheticControls": {
+    "successorFinalEngineFocusedTestCount": 18,
+    "candidateCommit": "e66f9a1b94fc5ebfbf784d9c48a76f53c1a656ee",
+    "testInputSha256": "ba6b2ebf1a5f18450802a23de187bb5abaad12eff3426defae8acc30ed22c425",
+    "countProvenance": "Successor final-engine focused run reported for exact e66f9a1 candidate. This count is distinct from the 17 named controls in the historical SC-001 record and is not inferred from that record or the older candidate-validation receipt.",
+    "retainedFocusedRunReceiptSha256": null,
+    "receiptLimitation": "The retained public PR #462 validation description is provenance for the 18-test result; no standalone focused-run receipt hash was located. Candidate-bound test input hash and separate full-profile receipts are retained.",
+    "publicProvenance": "https://github.com/jayanez/agent-braid/pull/462",
+    "publicProvenanceScope": "PR #462 validation description reports 18 focused tests passed; this count is not inferred from historical SC-001."
+  },
+  "validationProfiles": {
+    "localFinalProfile": {
+      "tests": 763,
+      "passed": 759,
+      "skipped": 4,
+      "receiptSha256": "51805a8e3a67031dc05f34f55714809238c2badf40333327f1a8db1597eb5e9f",
+      "receiptCandidateCommit": "de958d89bdbab8f49821b0ad087aaa914db1bb08",
+      "treeRelation": "Merged PR record says merged tree matches reviewed head; separate from focused 18-test run."
+    },
+    "hostedFinalProfile": {
+      "tests": 763,
+      "passed": 758,
+      "skipped": 5,
+      "receiptSha256": "28a1b872e46162cdaa7361b5c4f11ab44e83427078ead49648d2430c576a4039",
+      "candidateCommit": "e66f9a1b94fc5ebfbf784d9c48a76f53c1a656ee",
+      "scope": "Selected hosted validation; special matrix skipped."
+    }
+  }
+}

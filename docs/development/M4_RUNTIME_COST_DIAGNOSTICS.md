@@ -80,19 +80,27 @@ storage. OS caches/background load are uncontrolled, so these small descriptive
 samples establish neither causality nor general speedup. Safety reproduction,
 independent review, human/founder gates and scientific validation stay separate.
 
-## Current follow-up — 2026-10-07
+## Current follow-up — 2026-10-09
 
 This guide profiles the frozen SPEC-021 corpus; its six-pair observations and
-historical G4 NO-GO retain their original boundary. The subsequent
-[SPEC-022 quickstart](../../specs/022-m4-utility-followup/quickstart.md) documents
-full-cost instrumentation and the registered comparison workflow. The
-[180-minute successor](../../specs/022-m4-utility-followup/successor-protocol-180m.md)
-is implemented for preparation after owner review; it preserves the original
-45-minute plan version and does not authorize capture. Exact stable-harness and
-manifest review, registered measurement and any new utility decision remain
-separate pending gates. Engineering preparation diagnostics are not registered
-measurement evidence. As of 2026-10-08, the [SPEC-038 real-workload study](../../specs/038-m4-real-workload-closure/implementation-readiness.md)
-has owner-approved exact source-use rights and protocol. The bounded harness is
-merged and validated; static admission and technical review cover the exact two
-operations and 20 slots. Owner stable-candidate/manifest review and separate capture
-authorization remain pending.
+historical G4 NO-GO retain their original boundary. The registered
+[SPEC-022 synthetic study](../../specs/022-m4-utility-followup/successor-protocol-180m.md)
+completed 88 valid pairs on b85f7e5. Its three admitted diagnostic blocks had
+serial/parallel medians 0.6399138361, 0.6459474869 and 0.8480100361; dependency-chain
+controls and exclusions remain separately reported. The
+[SPEC-038 real-source study](../../specs/038-m4-real-workload-closure/evidence/registered-capture-summary-e66f9a1.json)
+completed 20 valid treatments on e66f9a1, with ten verified matching-tree pairs,
+four warm-up pairs and six measured pairs. Its measured median 0.6538998703 favored
+serial execution in one finite, uncontrolled two-operation frame.
+
+These populations and protocols are distinct and are not pooled. Costs include
+recorded full phases/residuals and separately reported observer costs; missing
+metrics are not zero and nested costs are not added twice. Cleaned run/grant paths
+cannot be reverified after cleanup. None of these diagnostics shows useful speedup.
+The founder approved the bounded utility disposition in item 21 and then accepted
+whole bounded M4 alpha engineering and evaluation in item 22 with negative utility.
+See the [utility decision](../../specs/022-m4-utility-followup/utility-decision-20261008.json)
+and [whole-M4 decision](../../specs/038-m4-real-workload-closure/whole-m4-founder-decision-20261009.json).
+Serial remains recommended for the measured families until representative paired
+full-cost evidence demonstrates an advantage. The historical G4 NO-GO, capability
+deferrals, scientific boundaries and separate governed tracking delivery are preserved.

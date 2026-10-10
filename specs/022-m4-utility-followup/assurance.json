@@ -17,9 +17,9 @@
   ],
   "assumptions": "Owned POSIX Git fixtures; complete current-runtime verification and grants remain enforced; OS cache state is uncontrolled.",
   "authority_snapshot": {
-    "commit": "5cb144e1193a266645e012a7f31224d846ea7003",
+    "commit": "f18f63c8fc9b52dc0652f57c505d7f7647164030",
     "hashes": {
-      "ARCHITECTURE.md": "e26135a1037c232ff953710e5de52abef8cf1cad47a8822fe63a565bc9ad9555",
+      "ARCHITECTURE.md": "af19c8ed2eda7635220a2f9d6816669452c758369f824fe91ceb6ee7ab8878ab",
       "CONSTITUTION.md": "ff7196976a1736a639947c2ab26e8da157fef23c89ba9881312f2a36459964eb",
       "GOVERNANCE.md": "c8eda331d97c42e54be4730ef906dfaad9ae2814e36704302f97afceff037d82",
       "LICENSE": "340d66a837b3a1617645d00622a46d1bcbf3534bedd997b6461d16d2e08b374f",
@@ -48,6 +48,7 @@
       "docs/adr/0018-private-source-sidecar-and-disposable-labs.md": "487c48e8ed4296bb4120e32e9d7e75724c76da88ebb6435396cb7fdcf7d317ad",
       "docs/adr/0019-bounded-local-git-runtime.md": "9023b6176762885ce291721633f686ae2c4d3a4c1404f3ee164e7414a69b5fd3",
       "docs/adr/0020-bounded-m4-alpha-runtime.md": "b91615158b29902237ce638d659bc30484562766a0f2607a38fcc4bd717fda28",
+      "docs/adr/0021-codex-claude-tooling-integration.md": "e37d78bd1755f4a2b27c0883cda0303e00fb1546b22b7b176bc9ac6ad2b58b8c",
       "docs/architecture/AGENT_INTERACTION_METADATA.md": "0118d7f16c390fc4c1ff027b503a4eaba8a747edf3f6d7b088559f8870e27780",
       "docs/architecture/ASSURANCE_LEVELS.md": "3e86d0060ef566ba8d1e1690606fc06e8fee172f187a1b9779b13d27f0f915d9",
       "docs/architecture/CONFLUENCE_CERTIFICATE.md": "fd12a8f1a1477835848581b0f4ccd52f76d3f22dd96a3abaccb9074733464a8e",
@@ -87,8 +88,8 @@
   "compatibility": "No current public API/schema/version changes; future diagnostic harness remains separate from accepted reports.",
   "domain": "Existing 2\u20134 immutable ordinary-text A/M patch domain; local descriptive measurement only.",
   "evidence_snapshot": {
-    "commit": "5cb144e1193a266645e012a7f31224d846ea7003",
-    "mode": "historical"
+    "commit": null,
+    "mode": "current"
   },
   "execution_contract": "No new authority or capability. Fixture runs require current exact operator grant and existing private-run restrictions.",
   "human_review": "pending",
@@ -103,7 +104,9 @@
     "docs/adr/0020-bounded-m4-alpha-runtime.md",
     "docs/experiments/PROTOCOL.md",
     "specs/021-m4-alpha-runtime/g4-decision.json",
-    "specs/021-m4-alpha-runtime/measurement-protocol.md"
+    "specs/021-m4-alpha-runtime/measurement-protocol.md",
+    "specs/022-m4-utility-followup/decision-packet.md",
+    "specs/022-m4-utility-followup/utility-decision-20261008.json"
   ],
   "requirements": [
     {
@@ -114,21 +117,28 @@
           "id": "SC-001",
           "obtained_evidence": [
             {
-              "command": "/tmp/agent-braid-parallel-20261006/.venv-speckit/bin/python -m unittest tests.test_utility_accounting tests.test_utility_fixtures tests.test_m4_utility tests.test_utility_trials tests.test_m4_utility_preparation",
-              "limits": "Engineering tests or one-pair exploratory diagnosis only; full repository gates, registered measurements and human/founder decisions remain separate.",
-              "outcome": "Focal engineering tests passed; exact count and log hash are recorded in the referenced receipt",
-              "path": "specs/022-m4-utility-followup/evidence/phase-accounting-test-receipt.json",
-              "sha256": "001a552cc5a5ecdcb06bd15384719e4f8ca5f481ab9d27d13f792f4a80e1e791"
+              "command": "Read-only historical binding verified against public commit 5cb144e1193a266645e012a7f31224d846ea7003; artifact, 18 input hashes and retained auxiliary outputs are recorded in the historical wrapper.",
+              "limits": "Pre-successor development evidence only; does not validate later v2 trial/manifest inputs, current utility, human acceptance or M4 closure.",
+              "outcome": "Historical receipt reports 74 focal tests with exit code 0; its original artifact and test log are byte-bound to public commit 5cb144e.",
+              "path": "specs/022-m4-utility-followup/evidence/historical-development-evidence-binding-5cb144e.json",
+              "sha256": "9819734c5ec8755a7779ca4d0ff890c4f7cc663570fd6ab6e1ece290ed3a8c1d"
             },
             {
-              "command": "Four clean-candidate diagnostic-only invocations of scripts/measure_m4_utility.py; exact commands in evidence/final-guarded-diagnostics/execution-receipt.json",
-              "limits": "Engineering tests or one-pair exploratory diagnosis only; full repository gates, registered measurements and human/founder decisions remain separate.",
-              "outcome": "Eight exploratory treatments completed with independent verification and full accounting",
-              "path": "specs/022-m4-utility-followup/cost-diagnosis.json",
-              "sha256": "8ace1f15917dfd48b892ef3eef3030a2aa88a43b46f271656e98d99aca8b32df"
+              "command": "Read-only historical binding verified against public commit 5cb144e1193a266645e012a7f31224d846ea7003; artifact, 18 input hashes and retained auxiliary outputs are recorded in the historical wrapper.",
+              "limits": "Not a registered measurement. The named local diagnostic candidate source is unavailable in this clone; no public reviewed-candidate or independent reproduction claim is made. Does not cover later v2 trial/manifest inputs.",
+              "outcome": "Historical record reports eight exploratory synthetic treatments with full accounting; the four diagnostic output hashes match public artifacts at 5cb144e.",
+              "path": "specs/022-m4-utility-followup/evidence/historical-development-evidence-binding-5cb144e.json",
+              "sha256": "9819734c5ec8755a7779ca4d0ff890c4f7cc663570fd6ab6e1ece290ed3a8c1d"
+            },
+            {
+              "path": "specs/022-m4-utility-followup/evidence/registered-capture-summary-b85f7e5.json",
+              "sha256": "96d0c67e711be91958bb08f915c36d7444692f4d2f6327da8b5ce04738302e20",
+              "command": "Registered synthetic capture at frozen b85f7e5; four fresh software control suites and retained structural/replay inspection, reviewed independently.",
+              "outcome": "Registered full-cost synthetic capture completed 176 valid treatments; phase accounting, measured and warm-up denominators, omitted costs and four fresh control suites are retained.",
+              "limits": "Bounded b85f7e5 synthetic evidence only; fresh controls do not reverify deleted treatment run/grant receipts. Unavailable metrics and five excluded blocks retain their reasons. No current-host observation, general utility, human acceptance or whole-M4 closure."
             }
           ],
-          "planned_evidence": "Future frozen phase/accounting tests, raw paired measurements and scoped decision packet defined in quickstart.md.",
+          "planned_evidence": "Registered capture and fresh software controls are obtained at b85f7e5 and indexed above; remaining human utility decision and tracking reconciliation are separate under T006/SC-004. No new capture is planned or authorized by this record.",
           "test_file": "specs/022-m4-utility-followup/quickstart.md",
           "test_name": "SC-001",
           "then": "phase totals reconcile to total wall time and no required verification or grant cost is omitted",
@@ -145,21 +155,28 @@
           "id": "SC-002",
           "obtained_evidence": [
             {
-              "command": "/tmp/agent-braid-parallel-20261006/.venv-speckit/bin/python -m unittest tests.test_utility_accounting tests.test_utility_fixtures tests.test_m4_utility tests.test_utility_trials tests.test_m4_utility_preparation",
-              "limits": "Engineering tests or one-pair exploratory diagnosis only; full repository gates, registered measurements and human/founder decisions remain separate.",
-              "outcome": "Focal engineering tests passed; exact count and log hash are recorded in the referenced receipt",
-              "path": "specs/022-m4-utility-followup/evidence/phase-accounting-test-receipt.json",
-              "sha256": "001a552cc5a5ecdcb06bd15384719e4f8ca5f481ab9d27d13f792f4a80e1e791"
+              "command": "Read-only historical binding verified against public commit 5cb144e1193a266645e012a7f31224d846ea7003; artifact, 18 input hashes and retained auxiliary outputs are recorded in the historical wrapper.",
+              "limits": "Pre-successor development evidence only; does not validate later v2 trial/manifest inputs, current utility, human acceptance or M4 closure.",
+              "outcome": "Historical receipt reports 74 focal tests with exit code 0; its original artifact and test log are byte-bound to public commit 5cb144e.",
+              "path": "specs/022-m4-utility-followup/evidence/historical-development-evidence-binding-5cb144e.json",
+              "sha256": "9819734c5ec8755a7779ca4d0ff890c4f7cc663570fd6ab6e1ece290ed3a8c1d"
             },
             {
-              "command": "Four clean-candidate diagnostic-only invocations of scripts/measure_m4_utility.py; exact commands in evidence/final-guarded-diagnostics/execution-receipt.json",
-              "limits": "Engineering tests or one-pair exploratory diagnosis only; full repository gates, registered measurements and human/founder decisions remain separate.",
-              "outcome": "Eight exploratory treatments completed with independent verification and full accounting",
-              "path": "specs/022-m4-utility-followup/cost-diagnosis.json",
-              "sha256": "8ace1f15917dfd48b892ef3eef3030a2aa88a43b46f271656e98d99aca8b32df"
+              "command": "Read-only historical binding verified against public commit 5cb144e1193a266645e012a7f31224d846ea7003; artifact, 18 input hashes and retained auxiliary outputs are recorded in the historical wrapper.",
+              "limits": "Not a registered measurement. The named local diagnostic candidate source is unavailable in this clone; no public reviewed-candidate or independent reproduction claim is made. Does not cover later v2 trial/manifest inputs.",
+              "outcome": "Historical record reports eight exploratory synthetic treatments with full accounting; the four diagnostic output hashes match public artifacts at 5cb144e.",
+              "path": "specs/022-m4-utility-followup/evidence/historical-development-evidence-binding-5cb144e.json",
+              "sha256": "9819734c5ec8755a7779ca4d0ff890c4f7cc663570fd6ab6e1ece290ed3a8c1d"
+            },
+            {
+              "path": "specs/022-m4-utility-followup/evidence/registered-capture-summary-b85f7e5.json",
+              "sha256": "96d0c67e711be91958bb08f915c36d7444692f4d2f6327da8b5ce04738302e20",
+              "command": "Registered synthetic capture at frozen b85f7e5; four fresh software control suites and retained structural/replay inspection, reviewed independently.",
+              "outcome": "Immutable b85f7e5 candidate and manifest capture completed 88 valid pairs: eight warm-up and 80 measured, no invalid or unexecuted pair; five planned blocks remained explicitly excluded by pinned caps.",
+              "limits": "Bounded b85f7e5 synthetic evidence only; fresh controls do not reverify deleted treatment run/grant receipts. Unavailable metrics and five excluded blocks retain their reasons. No current-host observation, general utility, human acceptance or whole-M4 closure."
             }
           ],
-          "planned_evidence": "Future frozen phase/accounting tests, raw paired measurements and scoped decision packet defined in quickstart.md.",
+          "planned_evidence": "Registered capture and fresh software controls are obtained at b85f7e5 and indexed above; remaining human utility decision and tracking reconciliation are separate under T006/SC-004. No new capture is planned or authorized by this record.",
           "test_file": "specs/022-m4-utility-followup/quickstart.md",
           "test_name": "SC-002",
           "then": "raw successful, rejected and infrastructure outcomes are retained; insufficient or invalid pairs make the affected block inconclusive",
@@ -176,21 +193,28 @@
           "id": "SC-003",
           "obtained_evidence": [
             {
-              "command": "/tmp/agent-braid-parallel-20261006/.venv-speckit/bin/python -m unittest tests.test_utility_accounting tests.test_utility_fixtures tests.test_m4_utility tests.test_utility_trials tests.test_m4_utility_preparation",
-              "limits": "Engineering tests or one-pair exploratory diagnosis only; full repository gates, registered measurements and human/founder decisions remain separate.",
-              "outcome": "Focal engineering tests passed; exact count and log hash are recorded in the referenced receipt",
-              "path": "specs/022-m4-utility-followup/evidence/phase-accounting-test-receipt.json",
-              "sha256": "001a552cc5a5ecdcb06bd15384719e4f8ca5f481ab9d27d13f792f4a80e1e791"
+              "command": "Read-only historical binding verified against public commit 5cb144e1193a266645e012a7f31224d846ea7003; artifact, 18 input hashes and retained auxiliary outputs are recorded in the historical wrapper.",
+              "limits": "Pre-successor development evidence only; does not validate later v2 trial/manifest inputs, current utility, human acceptance or M4 closure.",
+              "outcome": "Historical receipt reports 74 focal tests with exit code 0; its original artifact and test log are byte-bound to public commit 5cb144e.",
+              "path": "specs/022-m4-utility-followup/evidence/historical-development-evidence-binding-5cb144e.json",
+              "sha256": "9819734c5ec8755a7779ca4d0ff890c4f7cc663570fd6ab6e1ece290ed3a8c1d"
             },
             {
-              "command": "Four clean-candidate diagnostic-only invocations of scripts/measure_m4_utility.py; exact commands in evidence/final-guarded-diagnostics/execution-receipt.json",
-              "limits": "Engineering tests or one-pair exploratory diagnosis only; full repository gates, registered measurements and human/founder decisions remain separate.",
-              "outcome": "Eight exploratory treatments completed with independent verification and full accounting",
-              "path": "specs/022-m4-utility-followup/cost-diagnosis.json",
-              "sha256": "8ace1f15917dfd48b892ef3eef3030a2aa88a43b46f271656e98d99aca8b32df"
+              "command": "Read-only historical binding verified against public commit 5cb144e1193a266645e012a7f31224d846ea7003; artifact, 18 input hashes and retained auxiliary outputs are recorded in the historical wrapper.",
+              "limits": "Not a registered measurement. The named local diagnostic candidate source is unavailable in this clone; no public reviewed-candidate or independent reproduction claim is made. Does not cover later v2 trial/manifest inputs.",
+              "outcome": "Historical record reports eight exploratory synthetic treatments with full accounting; the four diagnostic output hashes match public artifacts at 5cb144e.",
+              "path": "specs/022-m4-utility-followup/evidence/historical-development-evidence-binding-5cb144e.json",
+              "sha256": "9819734c5ec8755a7779ca4d0ff890c4f7cc663570fd6ab6e1ece290ed3a8c1d"
+            },
+            {
+              "path": "specs/022-m4-utility-followup/evidence/registered-capture-summary-b85f7e5.json",
+              "sha256": "96d0c67e711be91958bb08f915c36d7444692f4d2f6327da8b5ce04738302e20",
+              "command": "Registered synthetic capture at frozen b85f7e5; four fresh software control suites and retained structural/replay inspection, reviewed independently.",
+              "outcome": "Registered capture and four fresh control suites are retained after the selected contract-preserving coordinator improvement; three independent synthetic blocks were negative and the dependency-chain block was an order control.",
+              "limits": "Bounded b85f7e5 synthetic evidence only; fresh controls do not reverify deleted treatment run/grant receipts. Unavailable metrics and five excluded blocks retain their reasons. No current-host observation, general utility, human acceptance or whole-M4 closure."
             }
           ],
-          "planned_evidence": "Future frozen phase/accounting tests, raw paired measurements and scoped decision packet defined in quickstart.md.",
+          "planned_evidence": "Registered capture and fresh software controls are obtained at b85f7e5 and indexed above; remaining human utility decision and tracking reconciliation are separate under T006/SC-004. No new capture is planned or authorized by this record.",
           "test_file": "specs/022-m4-utility-followup/quickstart.md",
           "test_name": "SC-003",
           "then": "unsafe inputs are refused, admitted final trees agree, and every existing execution boundary remains enforced",
@@ -205,11 +229,33 @@
         {
           "given": "the registered results and SPEC-021 NO-GO",
           "id": "SC-004",
-          "obtained_evidence": [],
-          "planned_evidence": "Future frozen phase/accounting tests, raw paired measurements and scoped decision packet defined in quickstart.md.",
+          "obtained_evidence": [
+            {
+              "command": "Registered capture on frozen candidate b85f7e5; fresh structural/replay inspection and independent read-only outcome review.",
+              "limits": "No general utility or speedup claim, no actual-workload evidence, no human utility acceptance, and no M4 closure.",
+              "outcome": "88/88 valid synthetic pairs completed; three independent diagnostic blocks were negative and the dependency-chain block was an order control.",
+              "path": "specs/022-m4-utility-followup/evidence/registered-capture-summary-b85f7e5.json",
+              "sha256": "96d0c67e711be91958bb08f915c36d7444692f4d2f6327da8b5ce04738302e20"
+            },
+            {
+              "command": "Owner approved the bounded T006 interpretation on 2026-10-08. The decision record binds the exact proposal SHA-256 8f29403f6b4cb3462e98f6f0fb44672779ac7255ec9c560bea15735cf31c8ca5 and evidence-binding SHA-256 4503a672c4c0e797d63cab92489e88eacb3aaf09aa867e3929fd3930f8059f32; owner-decision record SHA-256 e87e27816675457da7e953190850ac1689a37840c430334c29a67c66621c7b15.",
+              "limits": "Bounded interpretation of two separate captures and their measured workload families only. No pooled denominator, general or causal utility claim, change to historical SPEC-021 G4 NO-GO, whole-feature approval, or whole-M4 acceptance. Tracking reconciliation has not been applied.",
+              "outcome": "The owner approved no useful-speedup claim or parallel performance default for the measured workload families; serial remains recommended for those families until representative paired full-cost evidence shows an advantage.",
+              "path": "specs/022-m4-utility-followup/utility-decision-20261008.json",
+              "sha256": "0a2b3fb39377675faab8a467cbd84babe378d74fad2a9d2cabca4dd9b1a9986a"
+            },
+            {
+              "command": "Read the bounded decision packet prepared from the exact owner-approved proposal and its evidence binding.",
+              "limits": "Interpretive summary; the bound candidate evidence and its original denominators remain in their separate records. This packet is not whole-feature assurance or M4 acceptance.",
+              "outcome": "Reports the negative independent SPEC-022 synthetic blocks, SPEC-022 order control and exclusions, the distinct SPEC-038 result, non-pooled denominators, and full-cost/accounting limits.",
+              "path": "specs/022-m4-utility-followup/decision-packet.md",
+              "sha256": "60b69885241d444291f4c8933abae77b5ff1baac469f3ee076633cfc1ce94df5"
+            }
+          ],
+          "planned_evidence": "The bounded interpretation and owner decision are recorded in the decision packet and decision record above. Tracking reconciliation is separate and has not been applied; whole-feature review and whole-M4 acceptance remain pending.",
           "test_file": "specs/022-m4-utility-followup/quickstart.md",
           "test_name": "SC-004",
-          "then": "the packet reports direction and limits and preserves NO-GO until an explicit new founder decision; negative results complete the protocol",
+          "then": "the packet reports direction and limits, records the explicit bounded T006 interpretation, and preserves the historical SPEC-021 G4 NO-GO until a distinct founder decision; negative results complete the protocol",
           "when": "a follow-up decision packet is prepared"
         }
       ],
@@ -220,18 +266,18 @@
   "scope": "Bounded current-contract M4 phase-cost diagnosis and paired utility follow-up.",
   "stage": "draft",
   "technical_review_preparation": {
-    "currentCorrectionStatus": "Final-treatment dispatch-budget correction is under engineering validation. Existing obtained evidence remains bound to public 5cb144e1193a266645e012a7f31224d846ea7003 and does not validate changed trial code; fresh candidate-bound diagnosis, manifest and capture review remain pending.",
+    "currentCorrectionStatus": "Registered synthetic capture completed on frozen candidate b85f7e5f5031315fb8eef4b90f2100b071a10ad7. The owner approved the bounded T006 interpretation; the decision packet binds the separate capture domains, denominators and full-cost limits. Tracking reconciliation, whole-feature assurance review and whole-M4 acceptance remain pending.",
     "executionAuthorization": false,
-    "implementationStatus": "T002-T004 engineering complete with 74 focal tests, final eight diagnostic treatments and Luna engineering GO; full repository gates are reported separately; human registered harness/manifest review pending",
+    "implementationStatus": "T002-T005 engineering and registered synthetic capture complete; 76 fresh focused control tests passed. The owner approved the bounded T006 interpretation. Tracking reconciliation has not been applied; whole-feature assurance review and whole-M4 acceptance remain pending.",
     "localFrozenPreparationCommit": "9f347e803401c04af61e6662ccc5756578805b23",
     "ownerReviewRecord": "specs/022-m4-utility-followup/protocol-review-3777e578.json",
     "ownerReviewSha256": "1d6065eca4f6959570163ce8a3a25ac94ca34b2d7425009167ef3e9f4673e783",
     "proposalSha256": "6e5a2bd790fb789926007e11f33af40df2ed494d3e8464b13f114523120b282b",
     "publicFreeze": "Protocol review binds durable public commit 3777e578ba3f8130d6f284acf54898198a45e0f0; whole-feature assurance remains pending.",
-    "registeredMeasurementExecuted": false,
+    "registeredMeasurementExecuted": true,
     "reviewRecord": "specs/022-m4-utility-followup/evidence/luna-protocol-review.json",
     "sha256": "73abcaff381730f9b22ea0b0d3d799d40c769df5c98c9df077cd429a97431b14",
-    "status": "protocol-approved-instrumentation-authorized",
+    "status": "registered-synthetic-capture-and-bounded-utility-decision-recorded-tracking-and-whole-m4-pending",
     "taskT001Complete": true
   }
 }

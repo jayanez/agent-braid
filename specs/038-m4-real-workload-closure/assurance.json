@@ -19,11 +19,11 @@
     24,
     25
   ],
-  "assumptions": "Exact frozen source rights and protocol were approved by nine item-by-item decisions, bound to the unchanged candidate hashes in SC-001. Approval covers bounded implementation, static admission and evaluation preparation only. Static admission passed for the exact two-operation frame at merged candidate 7d73c80f; local quick/PR profiles passed on its tree-identical predecessor 915e90fc. Hosted PR and post-merge validation succeeded for selected checks; the special integration matrix was explicitly skipped. Independent C08 technical and manifest reviews found no actionable findings within their distinct scopes. Owner stable-candidate/manifest review, registered capture and whole-M4 acceptance remain pending.",
+  "assumptions": "Exact source rights and protocol remain bound to nine item-by-item owner decisions and unchanged source/protocol hashes. The repaired candidate e66f9a1b94fc5ebfbf784d9c48a76f53c1a656ee received fresh static admission, independent review, exact owner stable-candidate approval (18) and separate capture authorization (19). The single capture completed 20 valid treatments and ten pairs; mandatory fresh-process verification inspected all 20 before conditional cleanup removed 40 run/grant paths. Historical b85f7e5 pre-dispatch failures remain retained. Capture approvals cover only the exact e66 capture. A separate bounded whole-M4 engineering/evaluation decision is recorded at fa8852a. At the 2026-10-09 decision/publication snapshot, issue and milestone tracking reconciliation was pending. See the current live [M4 — Agent Braid runtime](https://github.com/jayanez/agent-braid/milestone/6); this record does not attest to later tracking changes or claim a guarded apply, audit, or Project-state verification.",
   "authority_snapshot": {
-    "commit": "15e49bc8647898e37b3ffd11a6d1905eaba5b148",
+    "commit": "fa8852ab4158f860bf2bc3aa70469f3367d2b57b",
     "hashes": {
-      "ARCHITECTURE.md": "e26135a1037c232ff953710e5de52abef8cf1cad47a8822fe63a565bc9ad9555",
+      "ARCHITECTURE.md": "af19c8ed2eda7635220a2f9d6816669452c758369f824fe91ceb6ee7ab8878ab",
       "CONSTITUTION.md": "ff7196976a1736a639947c2ab26e8da157fef23c89ba9881312f2a36459964eb",
       "GOVERNANCE.md": "c8eda331d97c42e54be4730ef906dfaad9ae2814e36704302f97afceff037d82",
       "LICENSE": "340d66a837b3a1617645d00622a46d1bcbf3534bedd997b6461d16d2e08b374f",
@@ -52,6 +52,7 @@
       "docs/adr/0018-private-source-sidecar-and-disposable-labs.md": "487c48e8ed4296bb4120e32e9d7e75724c76da88ebb6435396cb7fdcf7d317ad",
       "docs/adr/0019-bounded-local-git-runtime.md": "9023b6176762885ce291721633f686ae2c4d3a4c1404f3ee164e7414a69b5fd3",
       "docs/adr/0020-bounded-m4-alpha-runtime.md": "b91615158b29902237ce638d659bc30484562766a0f2607a38fcc4bd717fda28",
+      "docs/adr/0021-codex-claude-tooling-integration.md": "e37d78bd1755f4a2b27c0883cda0303e00fb1546b22b7b176bc9ac6ad2b58b8c",
       "docs/architecture/AGENT_INTERACTION_METADATA.md": "0118d7f16c390fc4c1ff027b503a4eaba8a747edf3f6d7b088559f8870e27780",
       "docs/architecture/ASSURANCE_LEVELS.md": "3e86d0060ef566ba8d1e1690606fc06e8fee172f187a1b9779b13d27f0f915d9",
       "docs/architecture/CONFLUENCE_CERTIFICATE.md": "fd12a8f1a1477835848581b0f4ccd52f76d3f22dd96a3abaccb9074733464a8e",
@@ -89,13 +90,13 @@
     "mode": "historical"
   },
   "compatibility": "Bounded current-runtime harness implementation and preparation; no public API/schema, grants, effects, verifier, host, promotion or runtime contract changes. Historical G4NO-GO and other milestones unchanged.",
-  "domain": "Exact owner-permissioned PR137/138 frozen source frame from common base; static replay/runtime admission passed for the exact two-operation frame at merged candidate 7d73c80f. One finite task frame, no population claims.",
+  "domain": "Exact owner-permissioned PR137/138 fixed-patch source frame, two operations from a common base, tracked-tree-v1 observation. Four warm-up and six measured pairs; all 20 treatments valid and tree-matched. Measured median serial/parallel total-wall ratio 0.6538998702917553 is finite negative descriptive performance evidence. No source-code execution, actual-source refusal/recovery observations, population utility or causal inference.",
   "evidence_snapshot": {
-    "mode": "current",
-    "commit": null
+    "commit": "f18f63c8fc9b52dc0652f57c505d7f7647164030",
+    "mode": "historical"
   },
-  "execution_contract": "Implementation/static admission/evaluation preparation approved; registered capture requires separately reviewed stable harness/manifest and exact human authorization. Existing fixed patches, grants, private destinations and verifier only; no source code/tests/hooks/network/providers/ref promotion.",
-  "human_review": "pending",
+  "execution_contract": "Single exact e66f9a1 capture authorized separately by owner item 19 after item 18 stable review. Existing fixed patches, unique purpose-bound grants, private destinations and independent verifier only; no source code/tests/hooks/network/providers/ref promotion. No retry, replacement, resume or source substitution. Fresh verification preceded conditional cleanup; deleted run/grant artifacts cannot be independently re-inspected now. Any new action or changed candidate requires its applicable distinct authority. The item22 bounded whole-M4 decision is recorded separately. At the 2026-10-09 decision/publication snapshot, issue and milestone tracking reconciliation was pending. See the current live [M4 — Agent Braid runtime](https://github.com/jayanez/agent-braid/milestone/6); this record does not attest to later tracking changes or claim a guarded apply, audit, or Project-state verification.",
+  "human_review": "approved",
   "hypotheses": "For one permissioned actual repository task, the unchanged local runtime may provide useful verified/recoverable outcomes relative to its complete cost. Negative, null, inconclusive, and infeasible outcomes are valid; no positive utility is presumed.",
   "observation_contract": "Existing tracked-tree-v1 and independent SPEC-021 verifier only. Compare actual SPEC-021 policy coordinator serial and parallel modes with 4 unscored warm-up pairs and 6 measured pairs across AB/BA operation orders. Each treatment uses full total-wall timing through consumer verification, report serialization and cleanup with disjoint phases/residual. Report fresh-process verification separately. Historical synthetic/M2 evidence is not M4 actual-workload evidence.",
   "references": [
@@ -127,14 +128,21 @@
           "id": "SC-001",
           "obtained_evidence": [
             {
-              "path": "specs/038-m4-real-workload-closure/evidence/sc-001.json",
-              "sha256": "fbe83689316edd8b794b85ca97c29226ea87cfdc0420d0b54eaf6d37a542f3b6",
-              "command": "Owner decision record reviewed manually; private record paths and raw statements withheld.",
-              "outcome": "Nine exact rights/protocol decisions support bounded implementation and evaluation preparation.",
-              "limits": "No source code/test execution or registered capture authority; synthetic refusal controls do not reproduce an actual capture."
+              "command": "Read-only historical input-hash verification with `git show 7d73c80f1b8c23a65b33bf584abac29a2e097417:<path>`; exact source-rights and protocol bytes checked unchanged.",
+              "limits": "Historical engineering tests do not establish current repaired-harness correctness or authorize capture.",
+              "outcome": "The exact source-rights and protocol decisions remain bound to the unchanged source frame; original engineering-control inputs are historically verified against the reviewed candidate.",
+              "path": "specs/038-m4-real-workload-closure/evidence/historical-evidence-binding-7d73c80.json",
+              "sha256": "ba7423cd6791178d264960752d4169268fe1446b97c37cec67353a4644dafa82"
+            },
+            {
+              "path": "specs/038-m4-real-workload-closure/evidence/registered-capture-summary-e66f9a1.json",
+              "sha256": "7e2e948aa9252270eb495364d86d66e75c03e1acb578d60079244c7fbcc7c1cc",
+              "command": "Read-only reconciliation of unchanged source-rights/protocol manifest inputs and separately authorized single e66f9a1 capture against retained bound approvals and independent review.",
+              "outcome": "The exact source-rights/protocol hashes remain bound to the e66f9a1 manifest and unchanged source frame; separate owner items 18 and 19 bind stable-candidate review and actual capture authorization. Twenty valid treatments completed without source-code execution.",
+              "limits": "Original rights decisions and historical engineering records remain separate. Exact capture permission does not grant broader source use, provider/model access, scientific validity or whole-M4 acceptance."
             }
           ],
-          "planned_evidence": "specs/038-m4-real-workload-closure/evidence/sc-001.json; exact rights and provenance decision required",
+          "planned_evidence": "Exact source-rights/protocol decisions and e66f9a1 capture bindings are obtained and indexed above. Any changed source frame requires its own applicable review; the bounded whole-M4 decision is recorded under SC-008; this does not change the source-rights or capture boundary.",
           "test_file": "specs/038-m4-real-workload-closure/validation-plan.md",
           "test_name": "procedure_sc001",
           "then": "capture remains blocked and the outcome is pending or infeasible without source execution",
@@ -151,14 +159,21 @@
           "id": "SC-002",
           "obtained_evidence": [
             {
-              "path": "specs/038-m4-real-workload-closure/evidence/sc-002.json",
-              "sha256": "6dc49e5f0ea4d106b8901ddcd877d8107b283f9c85f12121fa81c73c69d65b20",
-              "command": ".venv-speckit/bin/python scripts/prepare_m4_real_workload.py --source-repository <private-source> --approval-receipt <private-exact-decision> --destination-root <fresh-private-root> --output <new-private-manifest>; paths are redacted, and the full literal invocation is retained in private provenance.",
-              "outcome": "Exact two-operation frame admitted; 20 slots and 40 future paths recorded.",
-              "limits": "Static admission only; no grants, source execution, treatments or capture."
+              "command": "Read-only historical input-hash verification with `git show 7d73c80f1b8c23a65b33bf584abac29a2e097417:<path>` for the original static-admission record.",
+              "limits": "The old admission does not cover the repaired trial engine. New candidate-bound static preparation remains pending; no treatments were authorized by this record.",
+              "outcome": "Static admission of the exact two-operation frame passed on historical candidate 7d73c80f1b8c23a65b33bf584abac29a2e097417; all 18 input hashes were independently confirmed against that commit.",
+              "path": "specs/038-m4-real-workload-closure/evidence/historical-evidence-binding-7d73c80.json",
+              "sha256": "ba7423cd6791178d264960752d4169268fe1446b97c37cec67353a4644dafa82"
+            },
+            {
+              "path": "specs/038-m4-real-workload-closure/evidence/registered-capture-summary-e66f9a1.json",
+              "sha256": "7e2e948aa9252270eb495364d86d66e75c03e1acb578d60079244c7fbcc7c1cc",
+              "command": "Candidate-bound static preparation and independent manifest review followed by the separately authorized single capture on frozen e66f9a1.",
+              "outcome": "Repaired-candidate admission binds 18 capture input hashes and manifest SHA-256 6cc2715f99c5e1eb47fa90e9ccb85388c7bc157f995c404660255c5608f60577; all 20 intended treatments completed and the retained fresh-process verifier inspected all 20 before cleanup.",
+              "limits": "Old sc-002.json remains historical 7d73c80 admission. Static preparation costs are separately reported; admission is neither source rights nor scientific validation. Deleted run/grant paths cannot be inspected anew. This capture record is distinct from the later bounded whole-M4 decision under SC-008."
             }
           ],
-          "planned_evidence": "specs/038-m4-real-workload-closure/evidence/sc-002.json; current limits and exact admission evidence required",
+          "planned_evidence": "Candidate-bound e66f9a1 static admission, manifest and capture are obtained and indexed above. No replacement capture is planned or authorized; the bounded whole-M4 decision is recorded under SC-008.",
           "test_file": "specs/038-m4-real-workload-closure/validation-plan.md",
           "test_name": "procedure_sc002",
           "then": "all candidates and exclusion reasons are retained and no alternative source is silently substituted",
@@ -167,7 +182,15 @@
         {
           "given": "reviewed harness controls and malformed, stale, unsafe, unauthorized, or wrong-tree inputs",
           "id": "SC-003",
-          "obtained_evidence": [],
+          "obtained_evidence": [
+            {
+              "path": "specs/038-m4-real-workload-closure/evidence/sc-003.json",
+              "sha256": "d90ead251b43f9b9ff67bb48556c2746d22eabde3b90abceb38b5ffe3f11c27e",
+              "command": "Single separately authorized registered capture at frozen e66f9a1; retained fresh-process verification and independent read-only obtained-evidence audit.",
+              "outcome": "Completed capture and reviewed derived evidence: 20 valid treatments, ten complete pairs, six measured comparisons; exact candidate and immutable private receipt hashes retained.",
+              "limits": "Owned-synthetic refusal/verifier engineering controls only; no actual-source refusal or recovery occurred."
+            }
+          ],
           "planned_evidence": "specs/038-m4-real-workload-closure/evidence/sc-003.json; future C08/C09 evidence only after exact gates",
           "test_file": "specs/038-m4-real-workload-closure/validation-plan.md",
           "test_name": "procedure_sc003",
@@ -183,7 +206,22 @@
         {
           "given": "four warm-up pairs, six measured pairs, exact deterministic order, and an intended-slot inventory",
           "id": "SC-004",
-          "obtained_evidence": [],
+          "obtained_evidence": [
+            {
+              "command": "Two candidate-bound launch attempts; both stopped before treatment dispatch.",
+              "limits": "No actual source outcomes or workload evidence were obtained.",
+              "outcome": "Both attempts and costs were retained; zero treatments started, so no denominator row was replaced or consumed.",
+              "path": "specs/038-m4-real-workload-closure/evidence/pre-dispatch-attempt-summary.json",
+              "sha256": "dcc39b49c6b0df19fe2e9915889732fb0320e38ed9db08930e2ac3e206a70ec7"
+            },
+            {
+              "path": "specs/038-m4-real-workload-closure/evidence/sc-004.json",
+              "sha256": "ee9bcd84c7861831591bd3e5e005de1b93677a448f638668b8510a504aafba39",
+              "command": "Single separately authorized registered capture at frozen e66f9a1; retained fresh-process verification and independent read-only obtained-evidence audit.",
+              "outcome": "Completed capture and reviewed derived evidence: 20 valid treatments, ten complete pairs, six measured comparisons; exact candidate and immutable private receipt hashes retained.",
+              "limits": "All ten intended pairs retained; four warm-up and six measured; no slot replacement or outcome selection."
+            }
+          ],
           "planned_evidence": "specs/038-m4-real-workload-closure/evidence/sc-004.json; future denominator audit",
           "test_file": "specs/038-m4-real-workload-closure/validation-plan.md",
           "test_name": "procedure_sc004",
@@ -193,7 +231,15 @@
         {
           "given": "full coordinator treatment receipts plus a separate fresh-process verifier receipt",
           "id": "SC-005",
-          "obtained_evidence": [],
+          "obtained_evidence": [
+            {
+              "path": "specs/038-m4-real-workload-closure/evidence/sc-005.json",
+              "sha256": "43eb39ab302661e71d0ebbf52418a71bb9ecdfb8790566f842baac7dbd4b0b46",
+              "command": "Single separately authorized registered capture at frozen e66f9a1; retained fresh-process verification and independent read-only obtained-evidence audit.",
+              "outcome": "Completed capture and reviewed derived evidence: 20 valid treatments, ten complete pairs, six measured comparisons; exact candidate and immutable private receipt hashes retained.",
+              "limits": "Eight phases plus residual reconcile; separate overlapping observer/fresh-process costs are not summed. Null metrics retain reasons."
+            }
+          ],
           "planned_evidence": "specs/038-m4-real-workload-closure/evidence/sc-005.json; future independent accounting audit",
           "test_file": "specs/038-m4-real-workload-closure/validation-plan.md",
           "test_name": "procedure_sc005",
@@ -209,7 +255,22 @@
         {
           "given": "a bounded result or documented feasibility failure",
           "id": "SC-006",
-          "obtained_evidence": [],
+          "obtained_evidence": [
+            {
+              "command": "Two candidate-bound launch attempts; derived result summary reviewed against retained records.",
+              "limits": "No outcome interpretation about actual-workload utility is possible because zero treatments started.",
+              "outcome": "Both attempts failed before dispatch. Historical SPEC-021 G4 NO-GO and M4 open status are unchanged.",
+              "path": "specs/038-m4-real-workload-closure/evidence/pre-dispatch-attempt-summary.json",
+              "sha256": "dcc39b49c6b0df19fe2e9915889732fb0320e38ed9db08930e2ac3e206a70ec7"
+            },
+            {
+              "path": "specs/038-m4-real-workload-closure/evidence/sc-006.json",
+              "sha256": "d516ac0c5793ebe4e2b7ac36c1c46ce97c0a4af260fe4e80d5780ef9117960b9",
+              "command": "Single separately authorized registered capture at frozen e66f9a1; retained fresh-process verification and independent read-only obtained-evidence audit.",
+              "outcome": "Completed capture and reviewed derived evidence: 20 valid treatments, ten complete pairs, six measured comparisons; exact candidate and immutable private receipt hashes retained.",
+              "limits": "Finite negative descriptive performance only; tracked-tree agreement is not native-code validity, causal inference, or general utility."
+            }
+          ],
           "planned_evidence": "specs/038-m4-real-workload-closure/evidence/sc-006.json; future independent interpretation review",
           "test_file": "specs/038-m4-real-workload-closure/validation-plan.md",
           "test_name": "procedure_sc006",
@@ -225,8 +286,23 @@
         {
           "given": "either protocol/source-rights review or stable candidate/manifest review is absent",
           "id": "SC-007",
-          "obtained_evidence": [],
-          "planned_evidence": "specs/038-m4-real-workload-closure/evidence/sc-007.json; separate exact human records required",
+          "obtained_evidence": [
+            {
+              "command": "Candidate and manifest identity checked against retained pre-dispatch records.",
+              "limits": "This record does not grant or imply approval for any successor candidate.",
+              "outcome": "The old candidate had exact owner reviews and capture authorization, but those decisions do not cover a repaired harness candidate. The changed candidate remains blocked pending fresh exact review and authorization.",
+              "path": "specs/038-m4-real-workload-closure/evidence/pre-dispatch-attempt-summary.json",
+              "sha256": "dcc39b49c6b0df19fe2e9915889732fb0320e38ed9db08930e2ac3e206a70ec7"
+            },
+            {
+              "path": "specs/038-m4-real-workload-closure/evidence/sc-007.json",
+              "sha256": "997c5f16fbb8f9a779bd044c9e00d43d39ac32b4272c09457df4732db7fd56ba",
+              "command": "Single separately authorized registered capture at frozen e66f9a1; retained fresh-process verification and independent read-only obtained-evidence audit.",
+              "outcome": "Completed capture and reviewed derived evidence: 20 valid treatments, ten complete pairs, six measured comparisons; exact candidate and immutable private receipt hashes retained.",
+              "limits": "Owner item18 stable review and item19 exact capture authorization cover e66 only; this candidate-specific capture record is distinct from the later bounded whole-M4 decision under SC-008."
+            }
+          ],
+          "planned_evidence": "The exact e66 stable-candidate review and separate capture authorization are obtained above; they do not authorize a successor candidate. The bounded whole-M4 decision is recorded under SC-008.",
           "test_file": "specs/038-m4-real-workload-closure/validation-plan.md",
           "test_name": "procedure_sc007",
           "then": "capture remains blocked at the missing boundary",
@@ -235,11 +311,19 @@
         {
           "given": "a completed actual-workload packet and preserved SPEC-021 closure matrix",
           "id": "SC-008",
-          "obtained_evidence": [],
-          "planned_evidence": "specs/038-m4-real-workload-closure/evidence/sc-008.json; future whole-M4 decision required",
+          "obtained_evidence": [
+            {
+              "path": "specs/038-m4-real-workload-closure/evidence/sc-008.json",
+              "sha256": "1ce428ff232ba388c618dd61b5507574daa8295682cdfa2c839091a235a9a2e3",
+              "command": "Direct owner item22 decision and exact-candidate six-row evidence reconciliation; no new capture, source execution, grant, or provider call.",
+              "outcome": "The owner accepted bounded M4 alpha engineering/evaluation completion with negative utility at reviewed candidate fa8852a. Historical SPEC-021 G4 NO-GO and SPEC-027 deferrals remain unchanged; source capture remains attributed to e66f9a1. Issue/milestone tracking remains pending.",
+              "limits": "Bounded engineering/evaluation acceptance only; not useful-speedup acceptance, production/scientific/formal validation, capability adoption, or tracking closure."
+            }
+          ],
+          "planned_evidence": "The item22 decision and six-row reconciliation are obtained above. Guarded issue/milestone tracking apply, follow-up operations:[] audit and actual Project/milestone verification remain pending.",
           "test_file": "specs/038-m4-real-workload-closure/validation-plan.md",
           "test_name": "procedure_sc008",
-          "then": "historical G4 NO-GO remains visible and a new explicit founder whole-M4 decision is required",
+          "then": "the explicit founder decision is bound to the reviewed candidate, historical G4 NO-GO remains visible, and tracking closure is not claimed until its separate guarded apply, empty audit, and Project/milestone verification",
           "when": "whole-M4 status is considered"
         }
       ],
@@ -247,6 +331,7 @@
     }
   ],
   "scientific_limits": "One finite task frame cannot establish population utility, general runtime safety, confluence, causality, or Yang-Baxter properties. Static Git metadata does not establish source rights, runtime admission, or verified results. Negative, null, inconclusive, and infeasible outcomes are valid.",
-  "scope": "Implement and prepare the approved bounded SPEC038 real-workload harness using unchanged SPEC020/021 contracts; no registered capture authorization.",
-  "stage": "draft"
+  "scope": "Bounded unchanged SPEC-020/021 actual-source evaluation obtained at e66f9a1; reconcile registered capture, full costs, negative interpretation and independent review. Preserve historical SPEC-021 G4 NO-GO; the owner has separately accepted the six-row bounded M4 alpha engineering/evaluation disposition at candidate fa8852a. At the 2026-10-09 decision/publication snapshot, issue and milestone tracking reconciliation was pending. See the current live [M4 — Agent Braid runtime](https://github.com/jayanez/agent-braid/milestone/6); this record does not attest to later tracking changes or claim a guarded apply, audit, or Project-state verification.",
+  "stage": "validated",
+  "review_record": "specs/038-m4-real-workload-closure/whole-m4-founder-decision-20261009.json"
 }

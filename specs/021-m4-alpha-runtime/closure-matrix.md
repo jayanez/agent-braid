@@ -1,6 +1,8 @@
-# Proposed M4 alpha exit matrix
+# M4 alpha exit matrix and closure record
 
-All rows remain **open for final M4 acceptance**. Evidence is assembled below, with unexecuted checks and limitations called out. G0 accepted criteria and implementation scope, not final results. On 2026-10-05 the founder recorded a G4 NO-GO for accepting SPEC-021 as a useful speedup capability under the current evidence. This does not close M4; the milestone remains open.
+Current bounded disposition: all six M4 exit rows are accepted as engineering/evaluation evidence at reviewed candidate `fa8852ab4158f860bf2bc3aa70469f3367d2b57b` under the explicit 2026-10-09 item22 decision. This accepts a bounded M4 alpha completion with negative utility; it does not accept useful speedup or make parallel execution the performance default. Current tracking is shown in the [live M4 milestone](https://github.com/jayanez/agent-braid/milestone/6); governed reconciliation requires a reviewed scoped plan, guarded apply, empty audit, and Project/milestone verification.
+
+The 2026-10-05 historical G4 decision remains **NO-GO** for accepting SPEC-021 as a useful speedup capability. The decision does not change M3/M3.5 scientific gates or authorize broader capability adoption. The historical evidence snapshots and row limits below remain intact.
 
 | Roadmap deliverable | Required exit evidence | Requirements | Cut |
 | --- | --- | --- | --- |
@@ -56,7 +58,66 @@ The founder recorded **NO-GO for accepting SPEC-021 as a useful speedup capabili
 under the current evidence**. Six pairs produced equivalent verified trees, while
 the median serial/parallel total-wall ratio of `0.5581` favored serial execution
 in this small, uncontrolled sample. This decision does not claim that parallelism
-is generally unhelpful and does not accept or close whole M4. SPEC-021 and M4 remain
-open. The conditional Spec Kit integration matrix was skipped in the current PR
-workflows. See `g4-decision.json` for the decision source, exact candidate bindings,
+is generally unhelpful and did not accept or close whole M4 at that decision.
+At this 2026-10-05 G4 snapshot, SPEC-021 and M4 remained open. The conditional
+Spec Kit integration matrix was skipped in those PR workflows. See `g4-decision.json` for the decision source, exact candidate bindings,
 evidence hashes and boundaries. M3/M3.5 scientific gates remain unchanged.
+
+## Candidate-bound platform evidence on e66f9a1 (2026-10-08)
+
+The current records add bounded platform observations for candidate
+`e66f9a1b94fc5ebfbf784d9c48a76f53c1a656ee` / tree
+`36821ee4685f583e97fede0e3c627dcf7d85bd07`. They do not replace the historical
+snapshots above or close any exit row.
+
+The [current Codex addendum](evidence/current-codex-host-e66f9a1.md) and
+[summary JSON](evidence/current-codex-host-e66f9a1.json) document one Darwin arm64
+Codex CLI 0.162.0-alpha.2 direct no-model bridge observation. It
+exercised six MCP tools, missing-grant refusal, controlled disconnect and
+recovery, independent prefix verification, verified completion, duplicate
+suppression and abort, with zero model calls. The record matched 80 runtime input
+hashes. Source, candidate, client binary and persistent host configuration were
+unchanged. A distinct private 201-file pre-import guard was checked separately.
+The temporary synthetic fixture was cleaned by the original harness at process exit; the
+filesystem fixture is unavailable for later re-verification. The retained private
+capture includes its 29-message transcript and outcome records. This is not a
+model-mediated workload or a current Claude observation.
+
+The distinct [Darwin core-suite addendum](evidence/current-darwin-core-e66f9a1.md)
+and [summary JSON](evidence/current-darwin-core-e66f9a1.json) preserve three
+executions on the same candidate. The original full run failed:
+67 of 68 tests passed and one errored when a temporary repository lacked its
+hooks directory. A focused 1-test diagnostic then passed, followed by a corrected
+full run with 68 passes, zero skips and no timeout. The original run records its
+80-input reproduction fingerprint and unchanged candidate/worktree state. The
+separate 201-file candidate guard applies only to the focused diagnostic and
+corrected full run. Each used a fresh Python process but the existing isolated
+Python 3.13.11 environment, not a clean-room dependency setup. The added runs do
+not erase the original failure or establish host-adapter behavior.
+
+The [current Linux addendum](evidence/current-linux-core-protocol-e66f9a1.md) and
+[summary JSON](evidence/current-linux-core-protocol-e66f9a1.json) document a
+fresh-process reproduction of 68 core, policy, scheduler and
+deterministic stdio-protocol tests, with zero skips, on Linux x86_64, Python
+3.12.14 and Git 2.55.0. All 80 public-record input hashes matched candidate
+objects. This covers only the Linux core/protocol sub-scope; it does not establish
+Codex or Claude Linux host-adapter behavior. No cost result is claimed.
+
+These records add evidence to the Codex host/protocol and Linux core/protocol
+slices. A separate [current Claude host addendum](evidence/current-claude-host-e66f9a1.md)
+and [summary JSON](evidence/current-claude-host-e66f9a1.json) record one bounded
+model-mediated Claude Code 2.1.285 observation on Darwin arm64 for this same
+candidate. It records missing-grant refusal, a verified prefix after the planned
+checkpoint interruption, recovery and completion, and suppression of a retry with
+the consumed grant. Four stages observed 14 turns against 20 reserved slots; these
+are not model API-call counts or cost measurements. A distinct 201-file pre-import
+guard matched. The owned fixture was retained and verified. Claude abort was not
+exercised. Independent Luna review found no findings within the stated
+bounded capture scope. The earlier partial capture and
+metadata-preflight stop remain separately preserved and are not erased by this
+replacement observation.
+
+At the time of this Claude addendum, the record added only a bounded current-host
+observation and all six exit criteria remained open. The later item22 decision
+accepts the six rows as bounded engineering/evaluation evidence; it preserves the
+historical G4 NO-GO and does not itself close issue or milestone tracking.

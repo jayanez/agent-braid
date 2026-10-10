@@ -1,0 +1,20 @@
+{
+  "recordVersion": "spec038-obtained-evidence-v1",
+  "scenario": "SC-006",
+  "status": "satisfied-with-limits",
+  "candidateCommit": "e66f9a1b94fc5ebfbf784d9c48a76f53c1a656ee",
+  "captureSummary": "specs/038-m4-real-workload-closure/evidence/registered-capture-summary-e66f9a1.json",
+  "captureSummarySha256": "7e2e948aa9252270eb495364d86d66e75c03e1acb578d60079244c7fbcc7c1cc",
+  "contextReferences": [
+    {
+      "path": "specs/021-m4-alpha-runtime/g4-decision.json",
+      "sha256": "ac3f4a6ae43097d6dc4c3abf9aba3bd09e8076206c036bfa466e6a063bd91a7e",
+      "use": "historical G4 decision remains NO-GO"
+    }
+  ],
+  "obtainedEvidence": "The finite descriptive performance result is negative: median serial/parallel outer-wall ratio 0.6538998702917553 (AB 0.653044211312927; BA 0.6547555292705836). This supports no causal or generalized utility claim and does not change G4 or close M4.",
+  "scopeLimits": [
+    "One finite source frame; no population, causal, safety, or scientific inference.",
+    "Founder whole-M4 acceptance remains pending."
+  ]
+}

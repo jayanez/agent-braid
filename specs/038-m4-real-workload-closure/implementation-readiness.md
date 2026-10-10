@@ -1,5 +1,20 @@
 # SPEC-038 implementation readiness
 
+## Current bounded disposition — 2026-10-09
+
+The founder accepted bounded M4 alpha engineering and evaluation as complete in
+item 22, with negative utility. The [founder decision](whole-m4-founder-decision-20261009.json)
+and [current specification](spec.md) record that scope. Historical G4 NO-GO and
+the three SPEC-027 deferrals remain unchanged; no useful-speedup, production,
+scientific or broader-capability acceptance is implied.
+
+The development status below is a historical 2026-10-08 snapshot, including its
+then-current evidence binding and pending whole-feature decision. The registered
+source capture is complete; its approval does not authorize a retry or resumption.
+The recovery guidance describes implementation behavior subject to separately
+applicable authority; no real-source recovery observation was obtained.
+Current tracking is shown in the [M4 milestone](https://github.com/jayanez/agent-braid/milestone/6).
+
 ## Development status — 2026-10-08
 
 The founder approved the exact frozen source rights and protocol through nine
@@ -31,11 +46,23 @@ limits. Raw sources, manifests, receipts and observations stay private/local.
 The existing historical authority record is preserved; the new partial evidence
 uses a current evidence binding and does not approve the feature as a whole.
 
-Owner stable-candidate/manifest review, registered capture, actual-workload
-results and a new whole-M4 founder decision remain pending. No actual-source
-grants or persistent runs have been issued. No source-project code or test
-commands may be run. Engineering tests on owned synthetic repositories remain
-separate from registered capture and actual-workload evidence.
+The exact successor candidate `e66f9a1b94fc5ebfbf784d9c48a76f53c1a656ee`
+and manifest received independent review, owner stable-candidate approval
+(item 18) and separate capture authorization (item 19). The single registered
+capture completed all 20 treatments: 10 complete pairs, including four warm-up
+and six measured pairs. All treatments were valid; the separate fresh-process
+verifier inspected all 20 before conditional cleanup removed 40 run/grant paths.
+The measured median serial/parallel total-wall ratio was `0.6538998702917553`,
+favoring serial execution in this finite, uncontrolled sample.
+
+See the [derived registered capture summary](evidence/registered-capture-summary-e66f9a1.json)
+for exact bindings, complete denominators, costs, controls and unavailable
+observations. The two historical `b85f7e5` pre-dispatch failures remain retained
+in the [attempt summary](evidence/pre-dispatch-attempt-summary.json). No capture
+was retried or resumed. Historical SPEC-021 G4 NO-GO remains visible and
+whole-M4 founder acceptance remains pending. Source-project code and tests
+were not executed under this protocol.
+
 
 ## Retained outcomes and recovery
 

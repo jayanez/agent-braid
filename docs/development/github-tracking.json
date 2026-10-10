@@ -8,7 +8,7 @@
     "M2 — Confluence lab and scheduler": "Confluence laboratory; bounded Git patch replay and advisory preparation planning, closed internally.",
     "M3 — Braid semantics": "Braid structure; bounded structured exchange closed internally.",
     "M3.5 — Native proposal predictor": "Native specialized proposal predictor; separate draft research track.",
-    "M4 — Agent Braid runtime": "Agent Braid Runtime; bounded local Git execution increment, separate from formal research and whole-milestone closure.",
+    "M4 — Agent Braid runtime": "Founder-accepted bounded local runtime alpha and completed evaluation with negative utility; historical G4 NO-GO on useful speedup and deferred capabilities preserved.",
     "PUB.1 — Public research preview": "Public publication and cutover verification.",
     "GOV.1 — Governance and adoption": "Governance and adoption work spanning release milestones.",
     "ADP.1 — Recorded-trace adapters": "Read-only recorded trace import and bounded adapter spikes; adoption and runtime authorization remain separate.",
@@ -27,7 +27,8 @@
     "M0.5 — Open strategy and preview preparation",
     "M1 — Observable interaction analyzer",
     "M2 — Confluence lab and scheduler",
-    "M3 — Braid semantics"
+    "M3 — Braid semantics",
+    "M4 — Agent Braid runtime"
   ],
   "specs": {
     "001-certificate-verifier-pilot": {
@@ -112,11 +113,11 @@
     },
     "021-m4-alpha-runtime": {
       "milestone": "M4 — Agent Braid runtime",
-      "state": "open"
+      "state": "closed"
     },
     "022-m4-utility-followup": {
       "milestone": "M4 — Agent Braid runtime",
-      "state": "open"
+      "state": "closed"
     },
     "023-recorded-trace-adapters": {
       "milestone": "ADP.1 — Recorded-trace adapters",
@@ -136,7 +137,7 @@
     },
     "027-runtime-refinement-contracts": {
       "milestone": "M4 — Agent Braid runtime",
-      "state": "open"
+      "state": "closed"
     },
     "028-system-one-core": {
       "milestone": "S1.0 — Decision contracts",
@@ -180,7 +181,7 @@
     },
     "038-m4-real-workload-closure": {
       "milestone": "M4 — Agent Braid runtime",
-      "state": "open"
+      "state": "closed"
     },
     "039-ai-tooling-program": {
       "milestone": "M4.5 — AI tooling integrations for Codex and Claude Code",
@@ -216,13 +217,10 @@
     "SPEC-011",
     "SPEC-011/T008",
     "SPEC-019",
-    "SPEC-021",
-    "SPEC-022",
     "SPEC-023",
     "SPEC-024",
     "SPEC-025",
     "SPEC-026",
-    "SPEC-027",
     "SPEC-028",
     "SPEC-029",
     "SPEC-030",
@@ -233,7 +231,6 @@
     "SPEC-035",
     "SPEC-036",
     "SPEC-037",
-    "SPEC-038",
     "SPEC-039",
     "SPEC-040",
     "SPEC-041",

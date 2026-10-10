@@ -1,0 +1,105 @@
+{
+  "recordVersion": "spec022-t006-bounded-utility-decision-v1",
+  "decisionDate": "2026-10-08",
+  "decider": {
+    "role": "owner",
+    "statement": "Apruebo el ep\u00edgrafe 21",
+    "recordedSource": "Direct human user message in this task"
+  },
+  "decision": {
+    "status": "approved-bounded-interpretation",
+    "recommendation": "Do not claim useful speedup or make parallel execution the performance default for the measured workload families; keep serial as the recommendation for those families until representative paired full-cost evidence demonstrates an advantage.",
+    "scope": "The finite SPEC-022 synthetic diagnostic and the distinct SPEC-038 registered source capture described by the exact bound proposal only.",
+    "notAClaim": [
+      "No general claim that parallelism is ineffective",
+      "No population or causal estimate",
+      "No semantic commutation or application-level correctness claim",
+      "No whole-feature or whole-M4 acceptance"
+    ]
+  },
+  "proposalBinding": {
+    "sha256": "8f29403f6b4cb3462e98f6f0fb44672779ac7255ec9c560bea15735cf31c8ca5",
+    "evidenceBindingSha256": "4503a672c4c0e797d63cab92489e88eacb3aaf09aa867e3929fd3930f8059f32",
+    "ownerDecisionRecordSha256": "e87e27816675457da7e953190850ac1689a37840c430334c29a67c66621c7b15"
+  },
+  "evidenceBoundary": {
+    "spec022": {
+      "candidate": "b85f7e5f5031315fb8eef4b90f2100b071a10ad7",
+      "manifestSha256": "59890d866f72f09d1919620bd77fb9e333d82712bd2293f4a54e7846bc43e78f",
+      "plannedBlocks": 9,
+      "admittedBlocks": 4,
+      "excludedBlocks": 5,
+      "validPairs": 88,
+      "warmupPairs": 8,
+      "measuredPairs": 80,
+      "validTreatments": 176,
+      "invalidPairs": 0,
+      "unexecutedPairs": 0,
+      "independentBlockMedianSerialOverParallel": {
+        "independent-2-1024": 0.6399138360865928,
+        "independent-2-65536": 0.6459474868836734,
+        "independent-4-1024": 0.8480100360844282
+      },
+      "orderControl": "dependency-chain-4-1024; not pooled as independent utility evidence",
+      "freshControlSuites": 4,
+      "freshControlTests": 76
+    },
+    "spec038": {
+      "candidate": "e66f9a1b94fc5ebfbf784d9c48a76f53c1a656ee",
+      "manifestSha256": "6cc2715f99c5e1eb47fa90e9ccb85388c7bc157f995c404660255c5608f60577",
+      "attemptedTreatments": 20,
+      "validTreatments": 20,
+      "validPairs": 10,
+      "warmupPairs": 4,
+      "measuredPairs": 6,
+      "invalidPairs": 0,
+      "failedPairs": 0,
+      "interruptedPairs": 0,
+      "recoveredPairs": 0,
+      "unexecutedPairs": 0,
+      "medianSerialOverParallelOuterWall": 0.6538998703,
+      "abMedian": 0.6530442113,
+      "baMedian": 0.6547555293,
+      "postCleanupReverificationAvailable": false,
+      "refusedPairs": 0
+    },
+    "populationsAndDenominatorsPooled": false,
+    "generalUtilityEstablished": false,
+    "wholeM4Acceptance": false
+  },
+  "costBoundary": {
+    "outerWallIncludes": [
+      "input",
+      "replay",
+      "preparation",
+      "grant",
+      "execution",
+      "independent_verification",
+      "report_serialization",
+      "cleanup",
+      "residual"
+    ],
+    "componentSpansMayOverlap": true,
+    "overlappingComponentsSummed": false,
+    "unavailableCostsRepresentedAsZero": false,
+    "limits": [
+      "SPEC-022 child CPU attribution is process-global rather than per-worker; rejected/discarded output bytes are unavailable; scratch is cumulative without per-phase allocation; process-lifetime RSS is not a treatment delta; some worker interval observations are unavailable.",
+      "SPEC-038 verification overlaps API wall and is reported separately; setup/rights/review/operator costs are null with reasons; environment snapshots are outside treatment intervals; no hard child address-space cap or syscall audit was present.",
+      "Caches and background activity were uncontrolled; results do not establish causal CPU overlap."
+    ]
+  },
+  "authority": {
+    "historicalSpec021G4": "NO-GO preserved",
+    "spec021Accepted": false,
+    "spec022WholeFeatureAccepted": false,
+    "wholeM4Accepted": false,
+    "newCaptureAuthorized": false,
+    "schedulerContractsChanged": false,
+    "trackingReconciliationApplied": false,
+    "trackingEntryRemainsOpen": true,
+    "projectReviewPendingRemains": true,
+    "assuranceStage": "draft",
+    "assuranceHumanReview": "pending"
+  },
+  "publication": "This record documents a bounded owner decision only. It is not whole-feature assurance approval, project tracking apply, whole-M4 acceptance, scientific validation, or authority for another capture."
+}

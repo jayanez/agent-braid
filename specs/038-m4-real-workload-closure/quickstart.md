@@ -1,13 +1,30 @@
 # SPEC-038 review and evidence workflow
 
-## Development status — 2026-10-08
+## Current status — 2026-10-09
 
-Exact source rights and protocol are approved. The bounded harness is merged and
-validated; static admission and technical review cover two frozen operations and
-20 treatment slots. See [implementation readiness](implementation-readiness.md)
-for the evidence and scope. Earlier proposal descriptions retain their design-time
-context. Owner stable-candidate/manifest review, capture and whole-M4 acceptance
-remain pending.
+The founder accepted bounded M4 alpha engineering and evaluation completion
+with negative utility. The historical SPEC-021 G4 NO-GO remains unchanged, and
+Current GitHub tracking is shown in the [live M4 milestone](https://github.com/jayanez/agent-braid/milestone/6). See the [decision](whole-m4-founder-decision-20261009.json),
+[closure packet](whole-m4-closure-packet.md), and [SC-008 evidence](evidence/sc-008.json).
+
+## Capture status — 2026-10-08
+
+The exact successor candidate `e66f9a1b94fc5ebfbf784d9c48a76f53c1a656ee`
+and manifest received independent review, owner stable-candidate approval
+(item 18) and separate capture authorization (item 19). The single registered
+capture completed all 20 treatments: 10 complete pairs, including four warm-up
+and six measured pairs. All treatments were valid; the separate fresh-process
+verifier inspected all 20 before conditional cleanup removed 40 run/grant paths.
+The measured median serial/parallel total-wall ratio was `0.6538998702917553`,
+favoring serial execution in this finite, uncontrolled sample.
+
+See the [derived registered capture summary](evidence/registered-capture-summary-e66f9a1.json)
+for exact bindings, complete denominators, costs, controls and unavailable
+observations. The two historical `b85f7e5` pre-dispatch failures remain retained
+in the [attempt summary](evidence/pre-dispatch-attempt-summary.json). No capture
+was retried or resumed. Historical SPEC-021 G4 NO-GO remains visible. At this
+capture-status snapshot, the later founder decision had not yet been recorded.
+Source-project code and tests were not executed under this protocol.
 
 This workflow prepares the bounded evaluator. Do not capture a workload or run
 source project code from this quickstart.
@@ -25,15 +42,17 @@ source project code from this quickstart.
    checks on owned synthetic repositories separate from actual-workload evidence.
 4. Freeze the exact harness and stable manifest. Obtain independent review and
    distinct capture authorization before any C09 capture.
-5. Preserve every outcome. Prepare the bounded interpretation packet and
-   independent evidence review. Whole-M4 status needs a new founder decision;
-   SPEC-021 G4 NO-GO and M4-open remain historical facts until then.
+5. Preserve every outcome and prepare the bounded interpretation packet and
+   independent evidence review. The founder's bounded whole-M4 decision is now
+   recorded; SPEC-021 G4 NO-GO remains historical and unchanged. Complete
+   tracking only through guarded reconciliation and verify its result.
 
-Current status: source-rights and exact protocol approval obtained. The bounded
-harness is merged; local quick/PR and hosted PR/post-merge validation have passed.
-The exact two-operation manifest has passed static admission and technical review.
-Owner stable-candidate/manifest review, separate capture authorization and
-registered actual-workload outcomes remain pending.
+Historical status: source-rights, exact protocol, stable-candidate review and
+capture authorization applied to `b85f7e5`. The exact two-operation manifest
+passed static admission and technical review, but both launches stopped before
+dispatch and those attempts obtained no actual workload outcome. The separately
+approved e66f9a1 capture later completed as summarized above. Any future repair
+requires fresh candidate-bound owner decisions.
 
 ## Preparation-only command
 

@@ -64,10 +64,12 @@ class TrackingTests(unittest.TestCase):
         self.assertNotIn("SPEC-019/T004", open_tasks)
         self.assertEqual("closed", next(item["state"] for item in desired
                                         if item["key"] == "SPEC-021/T014"))
-        self.assertEqual("open", config["specs"]["021-m4-alpha-runtime"]["state"])
+        self.assertEqual("closed", config["specs"]["021-m4-alpha-runtime"]["state"])
         self.assertEqual("M4 — Agent Braid runtime", config["specs"]["021-m4-alpha-runtime"]["milestone"])
         self.assertEqual("M4 — Agent Braid runtime", config["specs"]["020-m4-local-git-runtime"]["milestone"])
-        self.assertNotIn("M4 — Agent Braid runtime", config["closed_milestones"])
+        # The separate item22 founder decision accepts bounded M4 completion;
+        # remote closure still requires the reviewed guarded tracking apply.
+        self.assertIn("M4 — Agent Braid runtime", config["closed_milestones"])
         self.assertEqual({key for key, task in source_tasks.items() if task["state"] == "open"}, open_tasks)
         self.assertEqual({"SPEC-004/T005"}, set(config["task_state_overrides"]))
 
