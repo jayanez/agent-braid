@@ -115,6 +115,20 @@ class PublicDraftHistoryTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             gates.validate_portable_record(self.root, path)
 
+    def test_reviewed_assurance_and_review_bytes_cannot_inherit_public_approval(self):
+        for feature, _, _ in history.REVIEWED_TAGS:
+            path = self.root / f"specs/{feature}/assurance.json"
+            review = self.root / json.loads(path.read_text())["review_record"]
+            gates.validate_portable_record(self.root, path)
+            for target in (path, review):
+                with self.subTest(feature=feature, target=target.name):
+                    original = target.read_bytes()
+                    target.write_bytes(original + b"\n")
+                    with self.assertRaises(ValueError):
+                        gates.validate_portable_record(self.root, path)
+                    target.write_bytes(original)
+            gates.validate_portable_record(self.root, path)
+
     def test_missing_and_nonancestor_snapshot_commits_fail_closed(self):
         for field in ("authority_snapshot", "evidence_snapshot"):
             for commit in ("f" * 40, self.git("rev-parse", "HEAD")):

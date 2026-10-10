@@ -451,13 +451,18 @@ def _matches_reviewed_candidate_tag(root, relative_record, path, record, commit)
     if not match:
         return False
     try:
-        from scripts.restore_public_spec_history import REVIEWED_TAGS
+        from scripts.restore_public_spec_history import REVIEWED_TAGS, PUBLIC_REVIEW_RECORDS
     except ModuleNotFoundError:
-        from restore_public_spec_history import REVIEWED_TAGS
+        from restore_public_spec_history import REVIEWED_TAGS, PUBLIC_REVIEW_RECORDS
     pins = [oid for feature, candidate, oid in REVIEWED_TAGS
             if relative_record == f"specs/{feature}/assurance.json"
             and candidate == commit]
     if len(pins) != 1:
+        return False
+    metadata = [(assurance_hash, review_name, review_hash)
+                for feature, assurance_hash, review_name, review_hash in PUBLIC_REVIEW_RECORDS
+                if relative_record == f"specs/{feature}/assurance.json"]
+    if len(metadata) != 1:
         return False
     tag_ref = f"refs/tags/spec-{match.group(1)}-reviewed-{commit[:7]}"
     try:
@@ -470,6 +475,10 @@ def _matches_reviewed_candidate_tag(root, relative_record, path, record, commit)
         if tagged_commit != commit:
             return False
         review_name = safe_name(root, record.get("review_record", ""))
+        assurance_hash, expected_review_name, review_hash = metadata[0]
+        if (digest(path) != assurance_hash or review_name != expected_review_name
+                or digest(local(root, review_name)) != review_hash):
+            return False
         review = json.loads(local(root, review_name).read_text())
     except (ValueError, OSError, json.JSONDecodeError, UnicodeDecodeError):
         return False

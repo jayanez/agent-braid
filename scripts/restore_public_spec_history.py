@@ -29,6 +29,24 @@ REVIEWED_TAGS = (
     ("020-m4-local-git-runtime", "853df7432dd4700aa411f1f13b324a0b7beecd02",
      "6248172cb38b0d6a3ce1d077ad64544380bd1f0e"),
 )
+# Already-public approved metadata, as published in merged develop c51c91e.
+# Freezing a candidate initially records pending review; these commitments retain
+# the subsequently published reviewed metadata without inventing new approval.
+# Tuple: feature, assurance SHA256, review record path, review SHA256.
+PUBLIC_REVIEW_RECORDS = (
+    ("016-m2-partial-order-reduction",
+     "0d2007d2515e871c41d7c86e9afc0f1a2a2e022cd461d24966b954f4dae67764",
+     "specs/016-m2-partial-order-reduction/founder-review.json",
+     "03eb634a8562b9c20cdb4475dfb8aaa06938d80eec5009d1b7015880767e0d51"),
+    ("018-structured-exchange",
+     "9a0b3ee082b70ecc402897473927cbe39cb20997ef7be599e258c669c4cf3fa7",
+     "specs/018-structured-exchange/founder-review.json",
+     "3653a6f784211f4f3cb1618c1cd57728f8b367f7b52bd70941f7b085b804a3e3"),
+    ("020-m4-local-git-runtime",
+     "f09968de6e77bfd93793100ae2ddd14f1563ff7a2f3df8e6f7429b34d0e57c29",
+     "specs/020-m4-local-git-runtime/founder-review-corrected.json",
+     "f0654f1e2bc48cc9b777cd4afdc463a085a7b38e5d90fab98f5fb09f59b58732"),
+)
 # Exact already-public draft candidate; retention is not reviewer approval.
 # Tuple: record path, tag ref, peeled candidate, immutable annotated tag object.
 PRESERVED_DRAFT_TAGS = (

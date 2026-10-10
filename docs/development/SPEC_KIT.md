@@ -156,6 +156,11 @@ immutable export manifest nor the historical assurance is rewritten.
 The reviewed-tag route also requires the exact already-public tag object and
 candidate from its literal catalog. A locally created review record and annotated
 tag cannot promote a preserved draft or impersonate a published reviewed tag.
+For those already-public reviewed candidates, the assurance and review metadata
+must also match the literal SHA256 commitments of their published bytes in merged
+`develop` commit `c51c91ee270c84d6786355c20a49ee86cf38648e`. These are retention
+checks, not a new approval. Metadata changes require a separately reviewed update;
+they cannot silently inherit the retained historical review.
 
 Snapshot includes selected canonical root authorities and all ADRs, theory,
 architecture and schema files. Additions, deletions and changes invalidate every
