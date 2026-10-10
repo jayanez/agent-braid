@@ -1,0 +1,9 @@
+{
+  "baseCommit": "59d0eadbea772dbff32fb9daca88bd39ab67a030",
+  "effectiveProfile": "sensitive",
+  "observedAt": "2026-10-08",
+  "quick": {"exitStatus": 0, "tests": 775, "passed": 771, "skipped": 4, "failed": 0},
+  "pr": {"exitStatus": 0, "tests": 775, "passed": 771, "skipped": 4, "failed": 0},
+  "selectedExecutableValidation": "passed",
+  "limits": "Four skipped tests are not passes. Software/structural checks only; source permission, scientific/human review, real experiment, clean-room reproduction and founder approval remain pending."
+}

@@ -1,0 +1,38 @@
+Requested profile: quick
+Effective profile: sensitive
+Changed paths: docs/experiments/evidence/m35-review-preparation-2026-10-08/README.md, docs/experiments/evidence/m35-review-preparation-2026-10-08/authority-refresh.md, docs/experiments/evidence/m35-review-preparation-2026-10-08/base-supervisor-controls.txt, docs/experiments/evidence/m35-review-preparation-2026-10-08/base-supervisor-supported-environment.txt, docs/experiments/evidence/m35-review-preparation-2026-10-08/binding.json, docs/experiments/evidence/m35-review-preparation-2026-10-08/capture_binding.py, docs/experiments/evidence/m35-review-preparation-2026-10-08/focused-tests.txt, docs/experiments/evidence/m35-review-preparation-2026-10-08/packet.json, docs/experiments/evidence/m35-review-preparation-2026-10-08/technical-review.md, docs/experiments/evidence/m35-review-preparation-2026-10-08/tracking-receipt.json, docs/experiments/evidence/m35-review-preparation-2026-10-08/validation-pr-interrupted-unsupported-path.txt, docs/experiments/evidence/m35-review-preparation-2026-10-08/validation-quick-unsupported-path.txt, docs/experiments/evidence/m35-review-preparation-2026-10-08/validation-quick.txt, scripts/check_m35_review_packet.py, specs/019-native-predictor/adr-extension-proposal.md, specs/019-native-predictor/assurance.json, specs/019-native-predictor/completion-plan.md, specs/019-native-predictor/model-interface-plan.md, specs/019-native-predictor/plan.md, specs/019-native-predictor/quickstart.md, specs/019-native-predictor/source-audit.md, specs/019-native-predictor/source-candidates.json, specs/019-native-predictor/source-review-packet.md, specs/019-native-predictor/spec.md, specs/019-native-predictor/tasks.md, specs/019-native-predictor/workload-protocol.md, tests/test_m35_review_packet.py
+Domains: contributor-documentation, feature-assurance, scripts-other, tests-other
+Commands:
+  - repository: python3 scripts/validate_repository.py
+  - contracts: python3 scripts/validate_contracts.py
+  - release-records: python3 scripts/validate_release_records.py
+  - publication: python3 scripts/validate_publication.py --portable
+  - research-radar: python3 scripts/validate_research_radar.py --milestone M0.5
+  - adoption-tracks: python3 scripts/validate_adoption_tracks.py
+  - market-model: python3 scripts/market_sizing.py --check
+  - cli-smoke: python3 -m agent_braid --help
+  - full-tests: python3 -m unittest discover -s tests -v
+  - scientific-controls: python3 -m research.lab.controls
+  - spec-kit-structure: python3 scripts/validate_spec_kit.py
+  - spec-kit-render: python3 scripts/spec_kit.py check
+  - constitution-replica: python3 scripts/constitution_replica.py check
+  - whitespace: git diff --check d5f379be20eb99a584cf71deb853cd68f3722834 --
+Deferred boundary gates:
+  - Feature-specific evidence capture, freeze and human review (not executed)
+Limits:
+  - Path selection is not semantic dependency analysis or proof.
+  - Passing commands is not evidence capture, human review, founder approval or independent validation.
+  - Clean-room procedures remain separate and are not executed by this plan.
+
+==> repository: python3 scripts/validate_repository.py
+Repository validation passed.
+
+==> contracts: python3 scripts/validate_contracts.py
+Contract corpus passed: legacy, 0.2 structure and finite semantic checks.
+
+==> release-records: python3 scripts/validate_release_records.py
+Release records passed structural validation; no scientific approval inferred.
+
+==> publication: python3 scripts/validate_publication.py --portable
+Publication validation failed: public repository contains unreachable objects
+Validation failed at publication (exit 1).

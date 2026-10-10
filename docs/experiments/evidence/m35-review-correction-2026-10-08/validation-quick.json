@@ -1,0 +1,21 @@
+{
+  "format": "m35-review-correction-validation-v1",
+  "profile": "quick",
+  "effectiveProfile": "sensitive",
+  "command": "PATH=\"$PWD/.venv-speckit/bin:$PATH\" python3 scripts/validate_change.py --base develop --profile quick",
+  "baseCommit": "d5f379be20eb99a584cf71deb853cd68f3722834",
+  "sourceTreeCommit": "10944b5e8454602f7adc386f4b2eaff3ff628645",
+  "python": "3.13.11",
+  "exitCode": 0,
+  "tests": {
+    "total": 775,
+    "passed": 771,
+    "skipped": 4,
+    "skippedReasons": [
+      "Three deferred real-predictor contract controls",
+      "One unavailable private historical commit control"
+    ]
+  },
+  "outcome": "Selected executable validation passed. Spec Kit structure/render, repository, contracts, publication, CLI, scientific controls, and whitespace checks passed.",
+  "limits": "Software and structural checks only. No source payload, registration, real pair, human label, fit, calibration, holdout evaluation, human scientific review, or founder approval. Skips are not passes; deferred boundary gates remain unexecuted."
+}

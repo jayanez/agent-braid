@@ -1,0 +1,14 @@
+test_exited_worker_cannot_orphan_grouped_git_child (tests.test_git_counterexamples.GitCounterexampleSupervisorUnitTests.test_exited_worker_cannot_orphan_grouped_git_child) ... ok
+test_exited_worker_with_pipe_holding_child_is_killed (tests.test_git_counterexamples.GitCounterexampleSupervisorUnitTests.test_exited_worker_with_pipe_holding_child_is_killed) ... ok
+test_fast_command_passes_through_without_timeout (tests.test_git_counterexamples.GitCounterexampleSupervisorUnitTests.test_fast_command_passes_through_without_timeout) ... ok
+test_git_command_limit_kills_child_without_killing_worker_group (tests.test_git_counterexamples.GitCounterexampleSupervisorUnitTests.test_git_command_limit_kills_child_without_killing_worker_group) ... ok
+test_slow_command_is_killed_and_reaped_within_the_deadline (tests.test_git_counterexamples.GitCounterexampleSupervisorUnitTests.test_slow_command_is_killed_and_reaped_within_the_deadline) ... ok
+test_terminate_worker_group_leaves_unrelated_session_running (tests.test_git_counterexamples.GitCounterexampleSupervisorUnitTests.test_terminate_worker_group_leaves_unrelated_session_running) ... ok
+test_timeout_kills_git_child_confined_to_worker_group (tests.test_git_counterexamples.GitCounterexampleSupervisorUnitTests.test_timeout_kills_git_child_confined_to_worker_group) ... ok
+test_unstartable_command_is_reported_without_raising (tests.test_git_counterexamples.GitCounterexampleSupervisorUnitTests.test_unstartable_command_is_reported_without_raising) ... ok
+test_worker_does_not_inherit_unrelated_environment_values (tests.test_git_counterexamples.GitCounterexampleSupervisorUnitTests.test_worker_does_not_inherit_unrelated_environment_values) ... ok
+
+----------------------------------------------------------------------
+Ran 9 tests in 4.138s
+
+OK

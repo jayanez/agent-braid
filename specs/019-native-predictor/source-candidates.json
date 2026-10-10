@@ -1,0 +1,57 @@
+{
+  "format": "m35-source-candidates-v1",
+  "sourceKind": "metadata-only",
+  "basedOnCommit": "d5f379be20eb99a584cf71deb853cd68f3722834",
+  "families": [
+    {
+      "familyId": "kinetiq-evidence-pipeline",
+      "repository": "jayanez/kinetiq-core",
+      "workflow": "Ordered shortlist of literature or measurement decisions for the evidence pipeline.",
+      "decisionContext": "Non-sensitive engineering decisions about which already-authorized evidence source, measurement method, or evidence-processing step should be evaluated next. Exclude gait sessions, video, keypoints, biometrics, athlete/client material, and customer data.",
+      "naturalTrigger": "A participant naturally proposes or reviews alternatives for an evidence-pipeline decision against a shared immutable engineering base; do not create decisions or tasks to generate observations.",
+      "distinctnessReview": "pending",
+      "permissionReview": "pending",
+      "eligibilityReview": "pending"
+    },
+    {
+      "familyId": "smartnotes-nonclinical-architecture-speckit",
+      "repository": "jayanez/smart-notes",
+      "workflow": "Ordered non-clinical architecture or Spec Kit option list.",
+      "decisionContext": "Non-clinical engineering choices in architecture, specifications, or Spec Kit artifacts, with source files selected individually after review. Exclude patient records, PA-NNNN material, audio, transcripts, clinical drafts, review/audit events, production traces, and customer data.",
+      "naturalTrigger": "A participant naturally proposes or reviews alternatives during ordinary non-clinical architecture/specification work against one shared immutable engineering base; do not manufacture options or tasks to increase counts.",
+      "distinctnessReview": "pending",
+      "permissionReview": "pending",
+      "eligibilityReview": "pending"
+    },
+    {
+      "familyId": "agent-braid-public-interface-design",
+      "repository": "jayanez/agent-braid",
+      "workflow": "Natural design decisions about public library or CLI interfaces in existing engineering work.",
+      "decisionContext": "Ordinary engineering decisions about API shape, CLI behavior, compatibility, or error handling, scoped to individually reviewed public source/specification files. This is a proposed third-repository workflow family, not an authorized source feed.",
+      "naturalTrigger": "A real contributor independently proposes alternatives during an already-occurring interface design/review decision against a shared immutable base. No issue, task, branch, or decision may be created solely to produce study observations.",
+      "distinctnessReview": "pending",
+      "permissionReview": "pending",
+      "eligibilityReview": "pending"
+    },
+    {
+      "familyId": "agent-braid-validation-method",
+      "repository": "jayanez/agent-braid",
+      "workflow": "Natural engineering decisions about validation methods for an existing code change.",
+      "decisionContext": "Ordinary decisions about which already-applicable structural, behavioral, or negative-control checks should be run for existing changes. Exclude secrets, credentials, private payloads, user data, and generated test workloads. Distinctness from other Agent Braid workflows is unreviewed.",
+      "naturalTrigger": "Contributors naturally compare validation approaches while reviewing an existing change against a shared immutable base. No checks, changes, or tasks may be manufactured to create candidate pairs.",
+      "distinctnessReview": "pending",
+      "permissionReview": "pending",
+      "eligibilityReview": "pending"
+    },
+    {
+      "familyId": "agent-braid-release-evidence-review",
+      "repository": "jayanez/agent-braid",
+      "workflow": "Natural engineering decisions about evidence completeness and release-readiness findings for an existing change.",
+      "decisionContext": "Ordinary review decisions about whether existing engineering evidence supports a bounded readiness finding or requires follow-up. Exclude access-bearing configuration, credentials, private user data, and any decision to grant release or execution authority.",
+      "naturalTrigger": "A contributor naturally reviews evidence for an already-existing change and independently proposes how to resolve an evidence gap against one shared immutable base; no release scenario or task is manufactured for collection.",
+      "distinctnessReview": "pending",
+      "permissionReview": "pending",
+      "eligibilityReview": "pending"
+    }
+  ]
+}
