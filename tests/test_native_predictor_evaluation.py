@@ -527,10 +527,19 @@ class NativePredictorEvaluationTests(unittest.TestCase):
         self.assertGreater(predictor["scoringSeconds"], 0)
         self.assertGreater(baseline["submittedEvidenceProductionSeconds"], 0)
         self.assertGreater(baseline["verifierInvocationSeconds"], 0)
-        self.assertAlmostEqual(
-            baseline["verificationSeconds"],
-            baseline["submittedEvidenceProductionSeconds"] + baseline["verifierInvocationSeconds"],
-            places=5)
+        # Each run includes both work components. Independently summarized
+        # phase medians need not add to the median of their per-run sum.
+        measured, _ = _run_policy(
+            self.inventory, self.labels,
+            scorer=lambda row, _prepared: int(
+                row["request"]["operations"][0]["anchorId"]
+                == row["request"]["operations"][1]["anchorId"]),
+            preparation=None, fraction=0.5, inference_policy=False,
+            source_extractor=None)
+        phases = measured["phaseSeconds"]
+        self.assertEqual(phases["verificationSeconds"],
+                         phases["submittedEvidenceProductionSeconds"]
+                         + phases["verifierInvocationSeconds"])
         result = report["budgets"]["baseline"]["50"]
         self.assertEqual(result["verifierWork"]["submittedEvidenceProductionCount"],
                          result["actualVerifierCalls"])
