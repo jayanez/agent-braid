@@ -40,8 +40,10 @@ The hash-bound Linux AMD64 input bundle is prepared and its static validator and
 refusal checks passed on macOS. No Linux container, installed Linux probe or
 registered reproduction was executed. Target closure/licensing observations bind
 declared metadata and artifact bytes, not registry authenticity or legal approval.
-Stable-candidate quick/PR and hosted results remain pending delivery checks; they
-will be bound to their actual commits after execution.
+This proof packet was captured before final delivery validation and remote
+reconciliation. The exact-head validation and integration results belong to
+[PR #467](https://github.com/jayanez/agent-braid/pull/467), separately from the
+frozen installed artifact above. No later result is inferred from this packet.
 
 The 108 registered attempts, native Codex/Claude acceptance, complete approved
 registration, registered platform reproduction and founder M4.5 closure remain

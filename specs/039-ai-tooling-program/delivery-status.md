@@ -125,4 +125,6 @@ checks and CLI report parity on frozen source `3885706e`, plus a prepared Linux
 AMD64 bundle with static hash/architecture refusal checks. It preserves the earlier
 failed verifier and partial bundle preparation. These preparation observations
 do not complete additional canonical task procedures. Final validation, merge and
-GitHub reconciliation remain pending delivery gates.
+GitHub reconciliation are delivery requirements; their exact-head results are
+recorded in [PR #467](https://github.com/jayanez/agent-braid/pull/467), separately
+from this frozen preparation evidence.

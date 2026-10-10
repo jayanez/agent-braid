@@ -12,7 +12,9 @@ technical review. Frozen source `3885706eeb64837c1b409d24a9b0754eb33301cd` passe
 fresh offline macOS core/tooling installations and read-only CLI/MCP parity; a
 hash-bound Linux input bundle is prepared with static refusal checks. See the
 [preparation proof](../../docs/tooling/evidence/preparation-20261010.json).
-Final validation, evidence review, merge and remote tracking remain delivery gates.
+Delivery requires final validation, evidence review, merge and remote tracking;
+[PR #467](https://github.com/jayanez/agent-braid/pull/467) records the exact-head
+integration and validation results separately from this artifact proof.
 The complete evaluation and native-host acceptance remain separate gates.
 
 ## Historical implementation inventory
