@@ -38,3 +38,12 @@ independent timing review produced a code correction. It is not a pass. A new
 quick run and one stable PR profile validate the corrected candidate; their
 results and exact-head CI are disclosed in the PR, with full local logs retained
 in the task artifact directory. No profile substitutes for human review.
+
+
+CI run 38038949732 failed an evaluator test that incorrectly required the
+median of a sum to equal the sum of independently summarized medians. The test
+now verifies the additive timing identity per raw policy run and retains the
+report-level phase-separation checks; production code is unchanged. Independent
+Luna re-review ran the 28 evaluator tests successfully, and the corrected
+focused suite ran 115 controls. The failed run remains a non-pass; exact-head
+CI must run again before integration.
