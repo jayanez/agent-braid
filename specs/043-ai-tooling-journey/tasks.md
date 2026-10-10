@@ -1,6 +1,6 @@
 # Tasks
 
-Stable task IDs are implementation obligations. Check only after the paired procedure produces candidate-bound evidence. Targets below may be future files; no product implementation is claimed.
+Stable task IDs are implementation obligations. Check only after the paired procedure produces candidate-bound evidence. Experimental implementation and bounded local evidence are present. Original native-host acceptance remains pending; completed technical counterparts are recorded separately below.
 
 - [ ] T001 (REQ-001/SC-001): Provide a reproducible owned synthetic journey from install/discovery through analysis/plan/grant refusal/execute/verify/recovery/export.
   Dependencies: none; consumed contract review. Targets: `docs/tooling/JOURNEY.md; examples/tooling; full fixture workflow`.

@@ -1,4 +1,4 @@
-# SPEC-042: Prospective validation procedures
+# SPEC-042: Validation procedures and obtained scope
 
 These are the paired acceptance procedures. Experimental implementation modules and deterministic controls are present in the current candidate. Canonical records may retain reviewed partial local observations; a partial record does not satisfy a procedure unless all stated assertions and paired positive/refusal outcomes are evidenced. Canonical assurance remains draft with human review pending. A passed source validator checks structure only and does not complete these procedures.
 

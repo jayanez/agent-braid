@@ -1,6 +1,6 @@
-# SPEC-043: Prospective validation procedures
+# SPEC-043: Validation procedures and obtained scope
 
-These are the paired acceptance procedures. Experimental implementation modules and deterministic controls are present in the current candidate. Reviewed private local observations cover bounded portions of some procedures, as described in [the technical evidence status](../../docs/tooling/TECHNICAL_STATUS.md); they have not been packaged as canonical obtained evidence for this spec. Canonical assurance remains draft with human review pending. A passed source validator checks structure only and does not complete these procedures.
+These are the paired acceptance procedures. Experimental implementation modules and deterministic controls are present in the current candidate. Candidate-bound local evidence is published for SC-002 and SC-004–SC-007, with bounded technical counterparts for T001/T003/T008 recorded in `evidence/technical-clauses.json`. Actual native-host journey, explanation and fallback acceptance remain pending; see [the technical evidence status](../../docs/tooling/TECHNICAL_STATUS.md). Canonical assurance remains draft with human review pending. A passed source validator checks structure only and does not complete these procedures.
 
 Record positive, refusal, unknown, failed, cancelled and unexecuted outcomes. Evidence must include full candidate and input hashes, command/tool trace, environment, output hashes, domain and limits. Human decisions remain separate.
 

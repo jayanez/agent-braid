@@ -31,6 +31,8 @@ from agent_braid.tooling_mcp import (
 
 ROOT = Path(__file__).resolve().parents[1]
 SAMPLE = json.loads((ROOT / "examples/analysis/file-edits.json").read_text(encoding="utf-8"))
+HAS_MCP_SDK = importlib.util.find_spec("mcp") is not None
+MCP_SDK_SKIP_REASON = "optional tooling extra (mcp==2.3.0) is not installed"
 
 
 def _fixture_config(base: Path, *, runtime: bool = False, source: Path | None = None):
@@ -87,6 +89,7 @@ class MpcAcceptance(unittest.TestCase):
         self.config = _fixture_config(self.base)
         self.service = ToolingService(self.config)
 
+    @unittest.skipUnless(HAS_MCP_SDK, MCP_SDK_SKIP_REASON)
     def test_sc001_optional_sdk_pin_core_import_and_missing_dependency_refusal(self):
         self.assertEqual(importlib.metadata.version("mcp"), "2.3.0")
         self.assertIsNotNone(importlib.util.find_spec("mcp"))
@@ -105,6 +108,7 @@ class MpcAcceptance(unittest.TestCase):
             with self.assertRaisesRegex(RuntimeError, "optional 'tooling' extra"):
                 tooling_mcp.create_server(self.config)
 
+    @unittest.skipUnless(HAS_MCP_SDK, MCP_SDK_SKIP_REASON)
     def test_sc002_protocol_modes_and_legacy_endpoint_paired_controls(self):
         # The actual SDK peer negotiation matrix is exercised in the companion
         # integration test file; here assert both declared schema sets and legacy
@@ -400,6 +404,7 @@ class MpcAcceptance(unittest.TestCase):
         self.assertFalse(any(name in self.service.tools for name in ("grant", "read-file", "execute", "recover")))
 
 
+@unittest.skipUnless(HAS_MCP_SDK, MCP_SDK_SKIP_REASON)
 class MpcSdkTransportAcceptance(unittest.IsolatedAsyncioTestCase):
     """Exercise large evidence and Git analysis through real local SDK stdio clients."""
 
