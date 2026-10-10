@@ -1,0 +1,45 @@
+{
+  "kind": "incremental-repository-validation",
+  "limits": "Repository checks only. Clean-clone reproduction, exact-head CI, real experiment, human review and founder acceptance remain separate.",
+  "profiles": {
+    "pr": {
+      "beganFromCommit": "ae1c875282132f3558de816c52efc01f7118eb19",
+      "effectiveProfile": "sensitive",
+      "exitCode": 0,
+      "limits": "Production executable inputs match the final increment. Evidence packaging changed during execution; the later per-run timing test correction is checked separately by focused reproduction and exact-head CI. This is not an exact-final-head full-suite claim.",
+      "log": "docs/experiments/evidence/m35-software-completion-2026-10-10/validation-pr.txt",
+      "logSha256": "7dd8a0eb71c01543c21c36f48b53314a2bb4e3feba0121ffa10084ac3d20c466",
+      "requestedProfile": "pr",
+      "skipped": 1,
+      "tests": 864
+    },
+    "quick": {
+      "beganFromCommit": "7321407bc6abc57117fab379e14eafcddf80dd63",
+      "effectiveProfile": "sensitive",
+      "exitCode": 0,
+      "limits": "Production executable inputs match the final increment. Evidence packaging changed during execution; the later per-run timing test correction is checked separately by focused reproduction and exact-head CI. This is not an exact-final-head full-suite claim.",
+      "log": "docs/experiments/evidence/m35-software-completion-2026-10-10/validation-quick.txt",
+      "logSha256": "da8d6650db7dcd556dec48555eb39efd12033f4a155593c032033ef5f380357f",
+      "requestedProfile": "quick",
+      "skipped": 1,
+      "tests": 864
+    }
+  },
+  "superseded": [
+    {
+      "exitCode": 130,
+      "reason": "reviewed production timing correction",
+      "status": "interrupted"
+    },
+    {
+      "reason": "historical interrupted raw log whitespace; preserved byte-for-byte in gzip",
+      "run": 38038818762,
+      "status": "failed"
+    },
+    {
+      "reason": "invalid median-additivity test assertion; corrected per raw run",
+      "run": 38038949732,
+      "status": "failed"
+    }
+  ]
+}

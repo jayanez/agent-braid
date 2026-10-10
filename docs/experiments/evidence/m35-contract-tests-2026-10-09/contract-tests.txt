@@ -1,0 +1,9 @@
+test_held_out_evaluation_and_negative_outcome (tests.test_native_predictor_contract.NativePredictorContractTests.test_held_out_evaluation_and_negative_outcome) ... ok
+test_learned_score_remains_outside_verifier_and_authorization_boundary (tests.test_native_predictor_contract.NativePredictorContractTests.test_learned_score_remains_outside_verifier_and_authorization_boundary) ... ok
+test_verifier_remains_sole_certificate_source (tests.test_native_predictor_contract.NativePredictorContractTests.test_verifier_remains_sole_certificate_source) ... ok
+test_versioned_local_inference_and_tamper (tests.test_native_predictor_contract.NativePredictorContractTests.test_versioned_local_inference_and_tamper) ... ok
+
+----------------------------------------------------------------------
+Ran 4 tests in 0.476s
+
+OK

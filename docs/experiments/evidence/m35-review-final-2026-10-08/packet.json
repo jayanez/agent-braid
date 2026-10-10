@@ -1,0 +1,53 @@
+{
+  "basedOnCommit": "d5f379be20eb99a584cf71deb853cd68f3722834",
+  "executionAuthorization": false,
+  "families": [
+    {
+      "familyId": "kinetiq-evidence-pipeline",
+      "repository": "jayanez/kinetiq-core"
+    },
+    {
+      "familyId": "smartnotes-nonclinical-architecture-speckit",
+      "repository": "jayanez/smart-notes"
+    },
+    {
+      "familyId": "agent-braid-public-interface-design",
+      "repository": "jayanez/agent-braid"
+    },
+    {
+      "familyId": "agent-braid-validation-method",
+      "repository": "jayanez/agent-braid"
+    },
+    {
+      "familyId": "agent-braid-release-evidence-review",
+      "repository": "jayanez/agent-braid"
+    }
+  ],
+  "format": "m35-review-packet-report-v1",
+  "humanApprovalVerified": false,
+  "inputSha256": {
+    "specs/019-native-predictor/adr-extension-proposal.md": "4ae1529bcee5c608d6c34d49c7760c47756321b5e2e514bc0779e70ac5a8c4ef",
+    "specs/019-native-predictor/annotation-rubric.md": "00e4d73c6957b847359c4454b7c7b6c59061a9302d172c26e79af56cff6487a7",
+    "specs/019-native-predictor/model-interface-plan.md": "0eaad01b4291075ce889d8c26e6a94e1d9842d2b0a14c4f167e0178bce49ff41",
+    "specs/019-native-predictor/source-candidates.json": "ad27ccc4123b788793abd9d2650f45cbf903d68f54da82eb434aae84e1c1a781",
+    "specs/019-native-predictor/source-review-packet.md": "01b83802b1fdf7c6c94d4e7d7633f9f27b13c6cc8599085a2e1ed43e641bece2",
+    "specs/019-native-predictor/workload-protocol.md": "48e9c32a3bbb2a7375a477f946ab920d9bfbd72b61bfe4d6ffc64097e5d35c3e"
+  },
+  "limitations": "Preparatory metadata commitment only; rights, roster, protocol approval, yield, and human decisions remain unverified and pending.",
+  "packetSha256": "f44fee28f5a46f1d1b05da787e574433470faadaf011450db43b66844a7808ad",
+  "packetStructurallyComplete": true,
+  "realPairsAdmitted": 0,
+  "reasons": [
+    "owner-permission-review-pending",
+    "participant-and-data-rights-review-pending",
+    "privacy-review-pending",
+    "eligible-yield-unobserved",
+    "family-distinctness-review-pending",
+    "eligibility-review-pending",
+    "source-roster-not-approved",
+    "registration-not-approved",
+    "protocol-and-rubric-human-review-pending"
+  ],
+  "sourceCaptureAuthorization": false,
+  "trainingAuthorization": false
+}

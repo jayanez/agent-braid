@@ -1,0 +1,35 @@
+test_exited_worker_cannot_orphan_grouped_git_child (tests.test_git_counterexamples.GitCounterexampleSupervisorUnitTests.test_exited_worker_cannot_orphan_grouped_git_child) ... FAIL
+test_git_command_limit_kills_child_without_killing_worker_group (tests.test_git_counterexamples.GitCounterexampleSupervisorUnitTests.test_git_command_limit_kills_child_without_killing_worker_group) ... FAIL
+test_timeout_kills_git_child_confined_to_worker_group (tests.test_git_counterexamples.GitCounterexampleSupervisorUnitTests.test_timeout_kills_git_child_confined_to_worker_group) ... FAIL
+
+======================================================================
+FAIL: test_exited_worker_cannot_orphan_grouped_git_child (tests.test_git_counterexamples.GitCounterexampleSupervisorUnitTests.test_exited_worker_cannot_orphan_grouped_git_child)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/private/tmp/agent-braid-m35-tracking.foi6P1/tests/test_git_counterexamples.py", line 207, in test_exited_worker_cannot_orphan_grouped_git_child
+    self.assertTrue(outcome["timed_out"])
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: False is not true
+
+======================================================================
+FAIL: test_git_command_limit_kills_child_without_killing_worker_group (tests.test_git_counterexamples.GitCounterexampleSupervisorUnitTests.test_git_command_limit_kills_child_without_killing_worker_group)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/private/tmp/agent-braid-m35-tracking.foi6P1/tests/test_git_counterexamples.py", line 225, in test_git_command_limit_kills_child_without_killing_worker_group
+    self.assertEqual(outcome["returncode"], 0)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 1 != 0
+
+======================================================================
+FAIL: test_timeout_kills_git_child_confined_to_worker_group (tests.test_git_counterexamples.GitCounterexampleSupervisorUnitTests.test_timeout_kills_git_child_confined_to_worker_group)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/private/tmp/agent-braid-m35-tracking.foi6P1/tests/test_git_counterexamples.py", line 185, in test_timeout_kills_git_child_confined_to_worker_group
+    self.assertTrue(outcome["timed_out"])
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: False is not true
+
+----------------------------------------------------------------------
+Ran 3 tests in 0.492s
+
+FAILED (failures=3)
