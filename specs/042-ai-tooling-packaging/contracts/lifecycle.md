@@ -50,4 +50,4 @@ parser preserving untouched bytes. Test spaces/unicode paths, relocated package,
 empty/malformed configs, collisions, interrupted apply, unavailable host, repeat
 install/update/remove, two source roots and clean core install without the extra.
 Initial lifecycle platform macOS arm64; Linux x86_64 package/protocol reproduction.
-Remote executors, containers and cloud hosts need separate installation.
+Remote executors, container-host installations (including local containers other than the bounded control environments), and cloud hosts are outside M4.5 v1 acceptance. Their installation requires a separately reviewed installation contract and actual validation before any remote/cloud/container-host compatibility claim. The bounded Linux container package/protocol/core controls required by v1 remain mandatory and do not establish real-host or container-host support.

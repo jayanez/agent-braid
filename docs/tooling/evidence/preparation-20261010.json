@@ -1,0 +1,578 @@
+{
+  "artifacts": [
+    {
+      "bytes": 420852,
+      "name": "agent_braid-0.1.0a1-py3-none-any.whl",
+      "sha256": "da42b0af3f0d286c7cbe940424bf066f9844dfc126b48ddf68b6e7b25ce5348f"
+    },
+    {
+      "bytes": 670554,
+      "name": "agent_braid-0.1.0a1.tar.gz",
+      "sha256": "b4646fd78a7c7a6644aa8b82d7ccc6b1e8bcd6369e7ead0a41449d012df649ce"
+    }
+  ],
+  "boundary": {
+    "additionalSpendEUR": 0,
+    "grantIssued": false,
+    "humanEvaluation": "deferred",
+    "milestone45Closure": false,
+    "nativeHostAcceptance": false,
+    "providerSessionStarted": false,
+    "registeredAttempt": false,
+    "registeredAttemptsExecuted": 0,
+    "registeredPlatformReproduction": false,
+    "runtimeDispatched": false
+  },
+  "buildReceiptSha256": "0ba543561f4026bd13c88c899315ac940c9fb5bb503c98de7a24957dda4ca000",
+  "installation": {
+    "aimParity": {
+      "cliModes": [
+        "core",
+        "tooling"
+      ],
+      "reportSha256": "44669eac0f9ec67f74468b26498f78861d92ed6ee5aacaca994802116c63e9aa",
+      "requestSha256": "7e6e9b04d34819aaa8a4188585df7ca30a722fe4135cec95d4274ec71be53bbb",
+      "sdkModes": [
+        "auto",
+        "legacy"
+      ],
+      "status": "matched"
+    },
+    "assets": {
+      "core": {
+        "aimFixtureId": "m45-analyze-interactions-01",
+        "assetCount": 12,
+        "assetRosterSha256": "8ba741b306b013ac36b62cf490a945e26e2327261bf7d2abc05b9871459024b1",
+        "fixtureCount": 18,
+        "hostMetadataSha256": "a1160abd5fee714eac3bee430bf4176f9944aec6a830bb3a47121dcd72da0831",
+        "licenseFiles": {
+          "AGPL-3.0-only.txt": {
+            "sha256": "0d96a4ff68ad6d4b6f1f30f713b18d5184912ba8dd389f86aa7710db079abcb0",
+            "sizeBytes": 34523
+          },
+          "CC-BY-SA-4.0.txt": {
+            "sha256": "23ee78c8bae49cf08ea2f0c84945c66b987ebe4520881fb51b3dad4fb43d07c2",
+            "sizeBytes": 20137
+          }
+        },
+        "promptCount": 6,
+        "skillBundleSha256": "284d84d226fd58438d995d324e0a01fbe1606f709faeed2759c6f4c3ec192542",
+        "skillCount": 5,
+        "skills": [
+          {
+            "description": "Use when inspecting proposed work for interactions, dependencies, conflicts, conditions, or unknowns.",
+            "license": "CC-BY-SA-4.0",
+            "name": "agent-braid-analyze",
+            "sha256": "bf3292e5c3d867f277cf34bf298227035f6a0ff3caabffaf865da16fda44fd31",
+            "sizeBytes": 2564
+          },
+          {
+            "description": "Use when preparing an advisory order for bounded work and explaining constraints or missing operator authority.",
+            "license": "CC-BY-SA-4.0",
+            "name": "agent-braid-plan",
+            "sha256": "90970a2d5930400dcb5344389c28ab18236086a5dd194379ea2f329f37e4cfb3",
+            "sizeBytes": 2466
+          },
+          {
+            "description": "Use only when executing an exact prepared batch that already has a matching operator grant.",
+            "license": "CC-BY-SA-4.0",
+            "name": "agent-braid-execute",
+            "sha256": "d2f2a4598ab498663bd9854ee9cfa854a77ee64167adca39adeced33bd0b5f43",
+            "sizeBytes": 2456
+          },
+          {
+            "description": "Use when inspecting an interrupted owned run and deciding whether existing authority permits bounded recovery.",
+            "license": "CC-BY-SA-4.0",
+            "name": "agent-braid-recover",
+            "sha256": "0d2d02c291514c6c09a456791bf1521fa12719efe8ada608e3566b422586e27f",
+            "sizeBytes": 2038
+          },
+          {
+            "description": "Use when explaining or exporting a bounded Agent Braid result with its provenance, uncertainty, and observation limits.",
+            "license": "CC-BY-SA-4.0",
+            "name": "agent-braid-evidence",
+            "sha256": "3618f553971f85b51fb90e465b30a6423e2cb52dfcbfecdea4c320429771cba1",
+            "sizeBytes": 3072
+          }
+        ],
+        "version": "0.1.0a1"
+      },
+      "tooling": {
+        "aimFixtureId": "m45-analyze-interactions-01",
+        "assetCount": 12,
+        "assetRosterSha256": "8ba741b306b013ac36b62cf490a945e26e2327261bf7d2abc05b9871459024b1",
+        "fixtureCount": 18,
+        "hostMetadataSha256": "a1160abd5fee714eac3bee430bf4176f9944aec6a830bb3a47121dcd72da0831",
+        "licenseFiles": {
+          "AGPL-3.0-only.txt": {
+            "sha256": "0d96a4ff68ad6d4b6f1f30f713b18d5184912ba8dd389f86aa7710db079abcb0",
+            "sizeBytes": 34523
+          },
+          "CC-BY-SA-4.0.txt": {
+            "sha256": "23ee78c8bae49cf08ea2f0c84945c66b987ebe4520881fb51b3dad4fb43d07c2",
+            "sizeBytes": 20137
+          }
+        },
+        "promptCount": 6,
+        "skillBundleSha256": "284d84d226fd58438d995d324e0a01fbe1606f709faeed2759c6f4c3ec192542",
+        "skillCount": 5,
+        "skills": [
+          {
+            "description": "Use when inspecting proposed work for interactions, dependencies, conflicts, conditions, or unknowns.",
+            "license": "CC-BY-SA-4.0",
+            "name": "agent-braid-analyze",
+            "sha256": "bf3292e5c3d867f277cf34bf298227035f6a0ff3caabffaf865da16fda44fd31",
+            "sizeBytes": 2564
+          },
+          {
+            "description": "Use when preparing an advisory order for bounded work and explaining constraints or missing operator authority.",
+            "license": "CC-BY-SA-4.0",
+            "name": "agent-braid-plan",
+            "sha256": "90970a2d5930400dcb5344389c28ab18236086a5dd194379ea2f329f37e4cfb3",
+            "sizeBytes": 2466
+          },
+          {
+            "description": "Use only when executing an exact prepared batch that already has a matching operator grant.",
+            "license": "CC-BY-SA-4.0",
+            "name": "agent-braid-execute",
+            "sha256": "d2f2a4598ab498663bd9854ee9cfa854a77ee64167adca39adeced33bd0b5f43",
+            "sizeBytes": 2456
+          },
+          {
+            "description": "Use when inspecting an interrupted owned run and deciding whether existing authority permits bounded recovery.",
+            "license": "CC-BY-SA-4.0",
+            "name": "agent-braid-recover",
+            "sha256": "0d2d02c291514c6c09a456791bf1521fa12719efe8ada608e3566b422586e27f",
+            "sizeBytes": 2038
+          },
+          {
+            "description": "Use when explaining or exporting a bounded Agent Braid result with its provenance, uncertainty, and observation limits.",
+            "license": "CC-BY-SA-4.0",
+            "name": "agent-braid-evidence",
+            "sha256": "3618f553971f85b51fb90e465b30a6423e2cb52dfcbfecdea4c320429771cba1",
+            "sizeBytes": 3072
+          }
+        ],
+        "version": "0.1.0a1"
+      }
+    },
+    "commands": [
+      {
+        "elapsedSeconds": 1.151171,
+        "maxOutputBytes": 1048576,
+        "name": "create-core-venv",
+        "outputLimited": false,
+        "returnCode": 0,
+        "stderrBytes": 0,
+        "stderrObservedBytes": 0,
+        "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "stdoutBytes": 0,
+        "stdoutObservedBytes": 0,
+        "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "timedOut": false,
+        "timeoutSeconds": 45
+      },
+      {
+        "elapsedSeconds": 0.3502,
+        "maxOutputBytes": 1048576,
+        "name": "install-frozen-candidate-core-offline",
+        "outputLimited": false,
+        "returnCode": 0,
+        "stderrBytes": 0,
+        "stderrObservedBytes": 0,
+        "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "stdoutBytes": 295,
+        "stdoutObservedBytes": 295,
+        "stdoutSha256": "48f7b7357efbec4f759669d0c41ca65c4b6924322b61854ab082dcb865e43c67",
+        "timedOut": false,
+        "timeoutSeconds": 90
+      },
+      {
+        "elapsedSeconds": 1.181995,
+        "maxOutputBytes": 1048576,
+        "name": "create-tooling-venv",
+        "outputLimited": false,
+        "returnCode": 0,
+        "stderrBytes": 0,
+        "stderrObservedBytes": 0,
+        "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "stdoutBytes": 0,
+        "stdoutObservedBytes": 0,
+        "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "timedOut": false,
+        "timeoutSeconds": 45
+      },
+      {
+        "elapsedSeconds": 1.241797,
+        "maxOutputBytes": 1048576,
+        "name": "install-locked-sdk-offline",
+        "outputLimited": false,
+        "returnCode": 0,
+        "stderrBytes": 0,
+        "stderrObservedBytes": 0,
+        "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "stdoutBytes": 13808,
+        "stdoutObservedBytes": 13808,
+        "stdoutSha256": "d17a6b79d8263afe6f56d81d3e3b0e0947ace2bbb002eaec94a87d26e8404fad",
+        "timedOut": false,
+        "timeoutSeconds": 90
+      },
+      {
+        "elapsedSeconds": 0.364135,
+        "maxOutputBytes": 1048576,
+        "name": "install-frozen-candidate-tooling-offline",
+        "outputLimited": false,
+        "returnCode": 0,
+        "stderrBytes": 0,
+        "stderrObservedBytes": 0,
+        "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "stdoutBytes": 295,
+        "stdoutObservedBytes": 295,
+        "stdoutSha256": "48f7b7357efbec4f759669d0c41ca65c4b6924322b61854ab082dcb865e43c67",
+        "timedOut": false,
+        "timeoutSeconds": 90
+      },
+      {
+        "elapsedSeconds": 0.06521,
+        "maxOutputBytes": 1048576,
+        "name": "installed-origin-assets-core",
+        "outputLimited": false,
+        "returnCode": 0,
+        "stderrBytes": 0,
+        "stderrObservedBytes": 0,
+        "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "stdoutBytes": 4263,
+        "stdoutObservedBytes": 4263,
+        "stdoutSha256": "55da91ab885ab9118ed39a3808700862102d0948cb64474c753ee9d9313ae46d",
+        "timedOut": false,
+        "timeoutSeconds": 30
+      },
+      {
+        "elapsedSeconds": 0.266352,
+        "maxOutputBytes": 1048576,
+        "name": "console-help-core",
+        "outputLimited": false,
+        "returnCode": 0,
+        "stderrBytes": 0,
+        "stderrObservedBytes": 0,
+        "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "stdoutBytes": 2374,
+        "stdoutObservedBytes": 2374,
+        "stdoutSha256": "e0508f3c176f15a962a13482e902232aff4205f8838c99449e1cc3ed1854928f",
+        "timedOut": false,
+        "timeoutSeconds": 30
+      },
+      {
+        "elapsedSeconds": 0.083339,
+        "maxOutputBytes": 1048576,
+        "name": "core-serve-requires-optional-sdk",
+        "outputLimited": false,
+        "returnCode": 2,
+        "stderrBytes": 97,
+        "stderrObservedBytes": 97,
+        "stderrSha256": "d0a1956827b0159d227559a50453016577d62d84ffd76d56baa0f11157c05c14",
+        "stdoutBytes": 0,
+        "stdoutObservedBytes": 0,
+        "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "timedOut": false,
+        "timeoutSeconds": 30
+      },
+      {
+        "elapsedSeconds": 0.089585,
+        "maxOutputBytes": 1048576,
+        "name": "doctor-core",
+        "outputLimited": false,
+        "returnCode": 0,
+        "stderrBytes": 0,
+        "stderrObservedBytes": 0,
+        "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "stdoutBytes": 2604,
+        "stdoutObservedBytes": 2604,
+        "stdoutSha256": "a6a97dc150120958a78f884a024af336250628f23d2595dac4f395d23a5409b5",
+        "timedOut": false,
+        "timeoutSeconds": 30
+      },
+      {
+        "elapsedSeconds": 0.065123,
+        "maxOutputBytes": 1048576,
+        "name": "installed-origin-assets-tooling",
+        "outputLimited": false,
+        "returnCode": 0,
+        "stderrBytes": 0,
+        "stderrObservedBytes": 0,
+        "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "stdoutBytes": 4266,
+        "stdoutObservedBytes": 4266,
+        "stdoutSha256": "c179e0f024c74e31f886cecf6e086a13aeaefaa6beea4b3a938907c62ab406e6",
+        "timedOut": false,
+        "timeoutSeconds": 30
+      },
+      {
+        "elapsedSeconds": 0.214085,
+        "maxOutputBytes": 1048576,
+        "name": "console-help-tooling",
+        "outputLimited": false,
+        "returnCode": 0,
+        "stderrBytes": 0,
+        "stderrObservedBytes": 0,
+        "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "stdoutBytes": 2374,
+        "stdoutObservedBytes": 2374,
+        "stdoutSha256": "e0508f3c176f15a962a13482e902232aff4205f8838c99449e1cc3ed1854928f",
+        "timedOut": false,
+        "timeoutSeconds": 30
+      },
+      {
+        "elapsedSeconds": 0.08753,
+        "maxOutputBytes": 1048576,
+        "name": "doctor-tooling",
+        "outputLimited": false,
+        "returnCode": 0,
+        "stderrBytes": 0,
+        "stderrObservedBytes": 0,
+        "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "stdoutBytes": 2601,
+        "stdoutObservedBytes": 2601,
+        "stdoutSha256": "dc64269244707b341ea18dc703dce9b775511f41e900240d2df572849a02252f",
+        "timedOut": false,
+        "timeoutSeconds": 30
+      },
+      {
+        "elapsedSeconds": 0.071718,
+        "maxOutputBytes": 1048576,
+        "name": "aim-analysis-cli-core",
+        "outputLimited": false,
+        "returnCode": 0,
+        "stderrBytes": 0,
+        "stderrObservedBytes": 0,
+        "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "stdoutBytes": 2366,
+        "stdoutObservedBytes": 2366,
+        "stdoutSha256": "f48915234626a06e91615287d38ac7c19bcd88743d0b51d67bcf928d8aeb997b",
+        "timedOut": false,
+        "timeoutSeconds": 30
+      },
+      {
+        "elapsedSeconds": 0.072419,
+        "maxOutputBytes": 1048576,
+        "name": "aim-analysis-cli-tooling",
+        "outputLimited": false,
+        "returnCode": 0,
+        "stderrBytes": 0,
+        "stderrObservedBytes": 0,
+        "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "stdoutBytes": 2366,
+        "stdoutObservedBytes": 2366,
+        "stdoutSha256": "f48915234626a06e91615287d38ac7c19bcd88743d0b51d67bcf928d8aeb997b",
+        "timedOut": false,
+        "timeoutSeconds": 30
+      },
+      {
+        "elapsedSeconds": 1.583756,
+        "maxOutputBytes": 1048576,
+        "name": "mcp-sdk-auto-legacy",
+        "outputLimited": false,
+        "returnCode": 0,
+        "stderrBytes": 0,
+        "stderrObservedBytes": 0,
+        "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "stdoutBytes": 3093,
+        "stdoutObservedBytes": 3093,
+        "stdoutSha256": "ecdc9728275a8f4f6f819f87cc5bc988134ee8bc351cc47b6272a9ca7202f7e2",
+        "timedOut": false,
+        "timeoutSeconds": 90
+      }
+    ],
+    "doctor": {
+      "core": {
+        "analysis": "pending",
+        "authentication": "pending",
+        "grantIssued": false,
+        "hostApproval": "pending",
+        "paidSessionStarted": false,
+        "protocol": "pending",
+        "runtime": "disabled",
+        "runtimeDispatched": false,
+        "schemas": "pending"
+      },
+      "tooling": {
+        "analysis": "pending",
+        "authentication": "pending",
+        "grantIssued": false,
+        "hostApproval": "pending",
+        "paidSessionStarted": false,
+        "protocol": "pending",
+        "runtime": "disabled",
+        "runtimeDispatched": false,
+        "schemas": "pending"
+      }
+    },
+    "locks": {
+      "lockSha256": "a226cf773888027dac8e907aa743945eaf15b3d4bf4acf825c64e2dfc6e4fee6",
+      "manifestSha256": "dd99c2fd82f7196fe36de973bc34c23bf533d2b42ffa8a35f11eea148011054d",
+      "packageCount": 28,
+      "wheelCount": 28,
+      "wheelhouseSha256": "ff451a520a8de28f87ecf22c3217a40d2529ba4fcdf2914a98b0597b70f2d7fb"
+    },
+    "originBoundary": "Fresh isolated core and tooling virtual environments outside the source checkout; installed origins under each environment verified",
+    "python": "3.13.11",
+    "sessions": [
+      {
+        "aimReportSha256": "44669eac0f9ec67f74468b26498f78861d92ed6ee5aacaca994802116c63e9aa",
+        "capabilityResource": "read",
+        "mode": "auto",
+        "negativeAIM": "refused",
+        "positiveAIM": "ok",
+        "promptCount": 3,
+        "protocolVersion": "2026-07-28",
+        "selectedPrompt": "read",
+        "serverChildCancelled": false,
+        "serverChildForcedTermination": null,
+        "serverChildReaped": true,
+        "serverChildReturnCode": 0,
+        "serverTrace": {
+          "client-to-server": {
+            "byteCount": 4115,
+            "retainedBytes": 4115,
+            "sha256": "68878b5a5175cd83419d15878b6cce79120dedf0f5b886589f8dc2742a3e95a3",
+            "truncated": false
+          },
+          "server-stderr": {
+            "byteCount": 0,
+            "retainedBytes": 0,
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "truncated": false
+          },
+          "server-to-client": {
+            "byteCount": 13683,
+            "retainedBytes": 13683,
+            "sha256": "362eb36eda5e1d8461613e4dfbbb4ff06e32e968d24e4ea029cf730268ac6ac5",
+            "truncated": false
+          }
+        },
+        "toolCount": 3
+      },
+      {
+        "aimReportSha256": "44669eac0f9ec67f74468b26498f78861d92ed6ee5aacaca994802116c63e9aa",
+        "capabilityResource": "read",
+        "mode": "legacy",
+        "negativeAIM": "refused",
+        "positiveAIM": "ok",
+        "promptCount": 3,
+        "protocolVersion": "2025-11-25",
+        "selectedPrompt": "read",
+        "serverChildCancelled": false,
+        "serverChildForcedTermination": null,
+        "serverChildReaped": true,
+        "serverChildReturnCode": 0,
+        "serverTrace": {
+          "client-to-server": {
+            "byteCount": 2763,
+            "retainedBytes": 2763,
+            "sha256": "89005d6694d973a10fff1242af67baf7a81f11879639bf0059cd96837c9b7085",
+            "truncated": false
+          },
+          "server-stderr": {
+            "byteCount": 0,
+            "retainedBytes": 0,
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "truncated": false
+          },
+          "server-to-client": {
+            "byteCount": 12602,
+            "retainedBytes": 12602,
+            "sha256": "900b855ccb1eef8a46e0316ab35a572c3bfb6a344e61d04553f39d795b80e7fe",
+            "truncated": false
+          }
+        },
+        "toolCount": 3
+      }
+    ],
+    "status": "passed",
+    "target": "macos-arm64"
+  },
+  "installedReceiptSha256": "33b5b1c685efb6589e8a3772d00b794224d73ab32e790e0ba11639c4d80408c8",
+  "license": "CC-BY-SA-4.0",
+  "limits": [
+    "Hashes bind retained artifact bytes and declared target metadata; registry-origin authenticity and legal compatibility are not established",
+    "Installed synthetic read-only checks are preparation evidence, not the registered T004 platform protocol",
+    "No complete T001 registration approval, 108-attempt capture, native Codex or Claude host acceptance, human ratings or adoption claim",
+    "Raw commands, source paths, full protocol frames and stderr remain private; public rows are deliberately minimized",
+    "Build dependency installation was separate from the optional MCP target closures; core product dependencies remain empty"
+  ],
+  "linuxPreparation": {
+    "artifactSha256": {
+      "candidate_sha256": "da42b0af3f0d286c7cbe940424bf066f9844dfc126b48ddf68b6e7b25ce5348f",
+      "launcher_sha256": "96c83a3b74610fec9da9d199fd39d2b2c22a69f9fbefd4f9803be8ec74ab6557",
+      "lock_sha256": "1cdfb069424b11fccf882c84ca597019bedc8bd9b3ca10c12082c6b4d34cc0fe",
+      "manifest_sha256": "a3df2591a7c39f50b5454c014ca851c824006b09cbfc054a88e2fc5cf84ee2a1",
+      "probe_sha256": "e88e030718c87fb080f091e7179636e02d416b48a85e2353a00928eecf1ce431",
+      "wheelhouse_sha256": "b3704260a766dd9a43c256b4b3772f7d869cc2d164c329958f38e136f254fb0d"
+    },
+    "execution": {
+      "additionalSpendEUR": 0,
+      "candidateInstalled": false,
+      "captureAuthorized": false,
+      "containerStarted": false,
+      "dockerInspected": false,
+      "providerCalled": false,
+      "registeredCapture": false,
+      "verifierInvoked": false
+    },
+    "image": "python:3.13.11-slim-bookworm@sha256:ac76900038d8606cc99b413d4ede77bc7152f1e42b94cf5d50d4b80a999652fe",
+    "inventoryBytes": 10158274,
+    "inventoryFileCount": 32,
+    "inventoryFileSha256": "127ef5937f4430b23705430a6737f4e33975fe0d9a823d9c04b15bcd4735ed9d",
+    "inventorySha256": "109aa5453137d2510b1357f7eac1f82a6a172f4252afb158267007a2415e0ea9",
+    "negativeChecks": {
+      "nativeHost": "native execution requires Linux x86_64",
+      "wrongCandidateHash": "candidate wheel digest mismatch"
+    },
+    "positiveValidation": "standalone launcher accepted manifest, target, lock, exact 28-wheel roster and hashes on macOS; verifier was not invoked",
+    "receiptSha256": "75469fd3aa0595e1d2c4b9ec9f167a321bd10302ac09ed798b1469e044b2bb2c",
+    "sourceCommit": "3885706eeb64837c1b409d24a9b0754eb33301cd",
+    "sourceTree": "81e9d66d276c6280aef7a20311e2e8ed16054d30",
+    "staticCheckCapture": {
+      "containerStarted": false,
+      "executedOn": "macOS ARM64; static validator only",
+      "harnessSha256": "e06ed2210b56cfca3d3ebc6b7c9a11634066ce65692dcd0a242771c518723dc3",
+      "observations": [
+        "Frozen input bundle accepted",
+        "Wrong candidate hash refused",
+        "macOS host refused for native Linux execution"
+      ],
+      "receiptSha256": "2afab907d39079f955833d882b083df0760d25c04ef17224c34dfbd071e6d7f2",
+      "returnCode": 0,
+      "stderrBytes": 0,
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdoutBytes": 872,
+      "stdoutSha256": "3029491975b6a0031c4b87db1c6a2ae3959c3da3de4b9a88c826b638c6fc3d20",
+      "verifierInvoked": false
+    },
+    "status": "prepared"
+  },
+  "observedDate": "2026-10-10",
+  "outerReceiptSha256": "2307855b002a9f458d89e0543f03b12480e4a07b1c68b0941cf7ae3f5dec9554",
+  "retainedFailures": [
+    {
+      "cause": "Verifier used isError rather than MCP 2.3.0 public is_error; corrected and independently reviewed before a new frozen build and fresh run",
+      "outerReturnCode": 2,
+      "probeReceiptSha256": "d9982141d934a1367895c689432b9091d01f6d416932cb005cd4040600e6fa68",
+      "sourceCommit": "5248210bee3db132617661f59bee8c6fc110fdc4",
+      "stage": "installed SDK negative-result assertion",
+      "status": "blocked"
+    },
+    {
+      "cause": "Dataclass module was not registered in sys.modules before executing the launcher import; bundle validation and container execution were not reached",
+      "receiptSha256": "73e023e6151d5ae1b2c38a1eee688011e89941a5ef977dbb46e1879e443b6281",
+      "sourceCommit": "5248210bee3db132617661f59bee8c6fc110fdc4",
+      "stage": "Linux bundle preparation harness import",
+      "status": "partial"
+    }
+  ],
+  "schema": "agent-braid-five-task-preparation-proof/v1",
+  "sourceArchiveSha256": "ab55aa79bb977545ebadb4feb219491c0abc7e8cca9ba2df9fd4298a3add7726",
+  "sourceCommit": "3885706eeb64837c1b409d24a9b0754eb33301cd",
+  "sourceTree": "81e9d66d276c6280aef7a20311e2e8ed16054d30",
+  "verifierSha256": "e88e030718c87fb080f091e7179636e02d416b48a85e2353a00928eecf1ce431"
+}

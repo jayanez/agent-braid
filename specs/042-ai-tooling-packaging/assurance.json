@@ -126,7 +126,15 @@
         {
           "given": "relocated isolated installation and core-only environment",
           "id": "SC-001",
-          "obtained_evidence": [],
+          "obtained_evidence": [
+            {
+              "path": "specs/042-ai-tooling-packaging/evidence/partial-installed-e40c949.json",
+              "sha256": "f3f7c1ee6e447ae22559869c40a7c27b5ef27b01cf9725bffa98d4bededdafc7",
+              "command": "See the normalized command record in the bound partial evidence JSON and the later retention limitation in docs/tooling/EVIDENCE_RETENTION_20261010.md. Exact raw invocation archives are not fully recovered; receipt hashes do not establish current replayability.",
+              "outcome": "partial-obtained; paired full procedure remains unmet",
+              "limits": "Exact-e40 local wheel/install and default resource byte equality are partial evidence only; no sdist, Linux reproduction, native host loading, lifecycle procedures, legal compatibility, or full scenario acceptance. Complete original private archives are not currently recovered; see the linked retention update. This remains historical partial evidence and cannot establish current replayability or complete acceptance."
+            }
+          ],
           "planned_evidence": "specs/042-ai-tooling-packaging/evidence/sc-001.json: exact candidate/input/environment hashes, actual commands/raw outputs, all outcomes and limits; human decisions require their own record.",
           "test_file": "specs/042-ai-tooling-packaging/validation-plan.md",
           "test_name": "procedure_installed_assets",
@@ -238,11 +246,19 @@
         {
           "given": "built artifacts and macOS/Linux control environments",
           "id": "SC-008",
-          "obtained_evidence": [],
+          "obtained_evidence": [
+            {
+              "path": "specs/042-ai-tooling-packaging/evidence/partial-installed-e40c949.json",
+              "sha256": "f3f7c1ee6e447ae22559869c40a7c27b5ef27b01cf9725bffa98d4bededdafc7",
+              "command": "See the normalized command record in the bound partial evidence JSON and the later retention limitation in docs/tooling/EVIDENCE_RETENTION_20261010.md. Exact raw invocation archives are not fully recovered; receipt hashes do not establish current replayability.",
+              "outcome": "partial-obtained; paired full procedure remains unmet",
+              "limits": "Exact-e40 local wheel/install and default resource byte equality are partial evidence only; no sdist, Linux reproduction, native host loading, lifecycle procedures, legal compatibility, or full scenario acceptance. Complete original private archives are not currently recovered; see the linked retention update. This remains historical partial evidence and cannot establish current replayability or complete acceptance."
+            }
+          ],
           "planned_evidence": "specs/042-ai-tooling-packaging/evidence/sc-008.json: exact candidate/input/environment hashes, actual commands/raw outputs, all outcomes and limits; human decisions require their own record.",
           "test_file": "specs/042-ai-tooling-packaging/validation-plan.md",
           "test_name": "procedure_package_provenance",
-          "then": "hashes, licenses and actual environment results are recorded; remote/cloud installation remains separately required",
+          "then": "hashes, licenses and actual environment results are recorded; remote/cloud installation is outside M4.5 v1 acceptance and requires a separately reviewed installation contract and actual validation before any remote/cloud compatibility claim",
           "when": "inventory and clean reproduction run"
         }
       ],

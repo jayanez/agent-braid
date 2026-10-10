@@ -1,11 +1,48 @@
 # AI tooling integrations
 
-**Status — 2026-10-08:** [M4.5](https://github.com/jayanez/agent-braid/milestone/19) is Open, adjacent to M4, with six spec issues and 60 linked task subissues. Six draft
-Spec Kit packages define 48 requirements, 48 acceptance scenarios and 60 unchecked
-implementation tasks. Product implementation, actual host observations and
-acceptance remain pending. Administrative tracking is registered; the [registration record](../../specs/039-ai-tooling-program/administrative-registration.md) links each parent and its work queue. [ADR 0021](../adr/0021-codex-claude-tooling-integration.md) is proposed.
+**Status — 2026-10-10:** [M4.5](https://github.com/jayanez/agent-braid/milestone/19) is Open, adjacent to M4, with six spec issues and 60 linked task subissues. Six draft
+Spec Kit packages define 48 requirements, 48 acceptance scenarios and 60 implementation tasks, of which 59 remain unchecked.
+SPEC-044 T003 records 19 bounded deterministic controls for its historical candidate;
+it does not establish later-candidate or actual-host acceptance. An experimental implementation candidate is present; paired evidence,
+actual host observations and acceptance remain pending. Administrative tracking is registered; the [registration record](../../specs/039-ai-tooling-program/administrative-registration.md) links each parent and its work queue. [ADR 0021](../adr/0021-codex-claude-tooling-integration.md) is proposed.
+
+The immediate owner-authorized delivery is the [five-task preparation plan](../../specs/044-ai-tooling-evaluation/preparation-delivery-plan.md),
+with EUR 0 additional spend. It prioritizes frozen dependencies and fresh installed
+macOS checks, alongside Linux recipe preparation, reviewed evidence and documentation/
+GitHub alignment. The registered 108-attempt evaluation and native-host acceptance
+remain the broader program's pending gates.
+
+The frozen macOS core/tooling package checks and Linux bundle preparation now have
+a [source-bound proof](evidence/preparation-20261010.json). Both macOS environments
+matched the read-only AIM reports from actual SDK auto/legacy sessions. The Linux
+bundle was statically checked on macOS; Linux execution remains pending.
 
 ## Start here
+
+Start the experimental candidate with [installation](INSTALL.md),
+[presentation](../ai-tooling-presentation.md) and [evaluation preparation](EVALUATION.md).
+The [implementation map](../../specs/039-ai-tooling-program/implementation-status.md)
+retains all work packages and pending paired evidence. The [technical evidence
+status](TECHNICAL_STATUS.md) distinguishes reviewed local observations from
+canonical scenario acceptance and the remaining native-host work. The `agent-braid tooling`
+command group provides stdio serving, previewed receipt-owned lifecycle operations,
+read-only diagnostics and presentation/export of already obtained values.
+Capture preparation also provides [local measurement primitives](MEASUREMENTS.md),
+[one-shot host event parsing](HOST_EVENTS.md), and
+[single-dispatch session coordination](SESSIONS.md),
+[verified cost reconciliation](COSTS.md),
+[bounded process supervision](SUPERVISOR.md), and
+[explicit host adapters](HOSTS.md). These components preserve unavailable costs
+and require external authenticators, frozen configuration and verified live
+telemetry. Their controls use synthetic owned processes; actual host capture
+and the registered evaluation remain pending.
+The 2026-10-09 owner decision defers only human outcome ratings and adjudication;
+the v3 technical phase retains all 108 attempts, the frozen rubric, rights/account/
+budget/permission gates, and unknown human costs. See the [deferral decision](../../specs/044-ai-tooling-evaluation/human-evaluation-deferral-clarification.md).
+Actual host trust/authentication, complete comparisons, later human interpretation
+and founder acceptance are still separate gates. No positive utility or milestone
+closure is claimed. Plain text/ASCII graphs work without a browser;
+JSON retains complete core values after any artifact reconstruction.
 
 The existing bounded stdio MCP runtime is documented in the
 [alpha quickstart](../../specs/021-m4-alpha-runtime/quickstart.md). The
@@ -43,7 +80,7 @@ and historical G4 NO-GO.
 
 The existing generated `.agents/skills/` and `.claude/skills/` adapters implement
 the repository's [Spec Kit contribution workflow](../development/SPEC_KIT.md).
-M4.5's five product skills have a planned canonical home at
+M4.5's five candidate product skills have their canonical home at
 `integrations/agent-braid/skills/`, with minimal host packaging. Implementation
 follows the linked task lists and consumed-contract reviews.
 
