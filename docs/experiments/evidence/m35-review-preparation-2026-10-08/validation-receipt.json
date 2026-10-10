@@ -1,0 +1,47 @@
+{
+  "format": "m35-preparation-validation-v1",
+  "baseCommit": "d5f379be20eb99a584cf71deb853cd68f3722834",
+  "pythonVersion": "3.13.11",
+  "profiles": [
+    {
+      "requestedProfile": "quick",
+      "effectiveProfile": "sensitive",
+      "command": "PATH=\"$PWD/.venv-speckit/bin:$PATH\" .venv-speckit/bin/python scripts/validate_change.py --base develop --profile quick",
+      "exitCode": 0,
+      "output": "docs/experiments/evidence/m35-review-preparation-2026-10-08/validation-quick.txt",
+      "sha256": "1e4046efbecfe4d87088fd041535541e0df8393bc4eb7b68b98c2900f6b77500",
+      "unitTestsRun": 772,
+      "unitTestsSkipped": 4,
+      "unitTestSeconds": 1143.417,
+      "skippedTests": [
+        "test_held_out_evaluation_and_negative_outcome (test_native_predictor_contract.NativePredictorContractTests.test_held_out_evaluation_and_negative_outcome) ... skipped 'SPEC-019 M3.5 implementation is deferred'",
+        "test_verifier_remains_sole_certificate_source (test_native_predictor_contract.NativePredictorContractTests.test_verifier_remains_sole_certificate_source) ... skipped 'SPEC-019 M3.5 implementation is deferred'",
+        "test_versioned_local_inference_and_tamper (test_native_predictor_contract.NativePredictorContractTests.test_versioned_local_inference_and_tamper) ... skipped 'SPEC-019 M3.5 implementation is deferred'",
+        "test_historical_snapshot_must_match_available_commit (test_spec_kit.SpecKitTests.test_historical_snapshot_must_match_available_commit) ... skipped 'private historical commit objects are intentionally unavailable'"
+      ]
+    },
+    {
+      "requestedProfile": "pr",
+      "effectiveProfile": "pr",
+      "command": "PATH=\"$PWD/.venv-speckit/bin:$PATH\" .venv-speckit/bin/python scripts/validate_change.py --base develop --profile pr",
+      "exitCode": 0,
+      "output": "docs/experiments/evidence/m35-review-preparation-2026-10-08/validation-pr.txt",
+      "sha256": "05dfff641e498aeb60bd3f4b589bec718a4dcb7562c4c17cf4c6990e5d582c95",
+      "unitTestsRun": 772,
+      "unitTestsSkipped": 4,
+      "unitTestSeconds": 1142.93,
+      "skippedTests": [
+        "test_held_out_evaluation_and_negative_outcome (test_native_predictor_contract.NativePredictorContractTests.test_held_out_evaluation_and_negative_outcome) ... skipped 'SPEC-019 M3.5 implementation is deferred'",
+        "test_verifier_remains_sole_certificate_source (test_native_predictor_contract.NativePredictorContractTests.test_verifier_remains_sole_certificate_source) ... skipped 'SPEC-019 M3.5 implementation is deferred'",
+        "test_versioned_local_inference_and_tamper (test_native_predictor_contract.NativePredictorContractTests.test_versioned_local_inference_and_tamper) ... skipped 'SPEC-019 M3.5 implementation is deferred'",
+        "test_historical_snapshot_must_match_available_commit (test_spec_kit.SpecKitTests.test_historical_snapshot_must_match_available_commit) ... skipped 'private historical commit objects are intentionally unavailable'"
+      ]
+    }
+  ],
+  "focusedTestsPassed": 29,
+  "realPairsAdmitted": 0,
+  "actualExperimentExecuted": false,
+  "humanApprovalVerified": false,
+  "executionAuthorization": false,
+  "limits": "Executable preparation software/structural checks only. Four omissions per suite are not passed acceptance controls. No real-data experiment, scientific validation, clean-room experiment reproduction or human/founder approval. Earlier failed/interrupted runs are retained separately."
+}
