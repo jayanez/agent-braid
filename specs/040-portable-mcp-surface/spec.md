@@ -2,7 +2,7 @@
 
 **Milestone:** M4.5 — AI tooling integrations for Codex and Claude Code
 
-**Status:** draft specification; implementation, observations and human acceptance are pending.
+**Status:** draft specification; experimental implementation and partial local observations exist, while full procedures and human acceptance remain pending.
 
 ## Purpose and scope
 
@@ -20,7 +20,7 @@ Use mcp==2.3.0 as an isolated optional tooling extra, with core dependencies emp
 
 **SC-001:** Given core-only and tooling-extra installations, when each launches supported commands, then core analysis works without the SDK; the new endpoint uses the pinned SDK and refuses missing dependency with actionable diagnosis.
 
-Verification: [procedure_optional_sdk](validation-plan.md); [T001](tasks.md). Obtained evidence: none.
+Verification: [procedure_optional_sdk](validation-plan.md); [T001](tasks.md). Obtained evidence: partial installed-e40 controls are recorded in [the partial evidence record](evidence/partial-installed-e40c949.json); full procedure remains unmet.
 
 ### REQ-002
 
@@ -28,7 +28,7 @@ Support 2026-07-28 discovery and 2025-11-25 initialization through the SDK while
 
 **SC-002:** Given SDK clients selecting each protocol and an existing legacy request, when discovery and a tool call run, then declared schemas/capabilities work for both versions; legacy semantics are preserved and unsupported modes are explicit.
 
-Verification: [procedure_protocol_compatibility](validation-plan.md); [T002](tasks.md). Obtained evidence: none.
+Verification: [procedure_protocol_compatibility](validation-plan.md); [T002](tasks.md). Obtained evidence: the record includes two read-only analyze-work calls on the new endpoint, selecting 2026-07-28 and 2025-11-25, plus a separate old-endpoint 2025-11-25 probe with an out-of-root refusal and a valid synthetic Git analyze call. The full unsupported-mode/refusal matrix and all scenarios remain unobserved, so SC-002 remains unmet.
 
 ### REQ-003
 
@@ -36,7 +36,7 @@ Expose analyze-work for tagged AIM/Git/worktree requests and preserve analyze/pr
 
 **SC-003:** Given immutable valid and unsupported analysis requests, including a result above 256 KiB, when CLI and MCP consume identical inputs, then full inline or manifest/chunk-reconstructed core values agree with CLI; missing/corrupt fragments cannot pass parity, and unsafe/unknown requests refuse or remain unknown without execution authority.
 
-Verification: [procedure_cli_parity](validation-plan.md); [T003](tasks.md). Obtained evidence: none.
+Verification: [procedure_cli_parity](validation-plan.md); [T003](tasks.md). Obtained evidence: one classic AIM example produced semantic CLI/MCP report equality in both selected new-endpoint protocol modes, with execution authorization false. No large-result chunk reconstruction, Git/worktree parity, corrupt-chain refusal, or unsupported-request matrix is recorded; SC-003 remains unmet.
 
 ### REQ-004
 
@@ -76,7 +76,7 @@ Provide bounded capabilities/status/evidence resources and three read-only promp
 
 **SC-008:** Given owned multi-chunk, empty, missing or stale evidence artifacts, invalid digest/range selectors and untrusted instructions, when resources and prompts are read through the manifest and first/next chunk URIs, then only inventory-owned content is served within bounds; exact bytes and full hash reconstruct before use, invalid/incomplete chains refuse, and no prompt or resource issues grants or writes.
 
-Verification: [procedure_resources_prompts](validation-plan.md); [T008](tasks.md). Obtained evidence: none.
+Verification: [procedure_resources_prompts](validation-plan.md); [T008](tasks.md). Obtained evidence: partial capability/prompt listing and oversized-argument refusal with successful follow-up, plus default installed-wheel loading of five skill resources and five supporting assets with source/wheel/installed byte equality, are recorded in [the partial evidence record](evidence/partial-installed-e40c949.json). Artifact manifest/chunk and refusal-chain assertions, native host loading, sdist/Linux, and legal compatibility remain unproven; the full procedure remains unmet.
 
 ## Scientific boundaries and compatibility
 
@@ -90,4 +90,4 @@ SDK/documentation, structural checks, synthetic controls, actual host observatio
 
 ## Evidence and unresolved questions
 
-Planned procedures are in validation-plan.md; obtained evidence is empty in assurance.json. The packet records a proposed design, not a runtime acceptance result. Required decisions: technical contract/ADR adoption, exact host versions and installation scope, provider budget/source rights for capture, independent review and founder acceptance. See program.md in SPEC-039 and evaluation-protocol.md in SPEC-044.
+Planned procedures are in validation-plan.md; the assurance record contains candidate-bound partial local observations for SC-001, SC-002, SC-003 and SC-008, including installed default-resource bytes but not native loading, but no complete scenario has been established by these records. This packet remains draft and does not establish runtime acceptance, native-host acceptance or human approval. Required decisions: technical contract/ADR adoption, exact host versions and installation scope, provider budget/source rights for capture, independent review and founder acceptance. See program.md in SPEC-039 and evaluation-protocol.md in SPEC-044.
