@@ -6,6 +6,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import os
 from pathlib import Path
 import re
 import subprocess
@@ -17,8 +18,11 @@ HEX64 = re.compile(r"[0-9a-f]{64}")
 
 
 def _git(root: Path, *args: str) -> bytes:
+    environment = os.environ.copy()
+    environment["GIT_NO_REPLACE_OBJECTS"] = "1"
+    environment["GIT_GRAFT_FILE"] = os.devnull
     process = subprocess.run(
-        ["git", *args], cwd=root, capture_output=True, check=False,
+        ["git", *args], cwd=root, capture_output=True, check=False, env=environment,
     )
     if process.returncode:
         raise ValueError(
