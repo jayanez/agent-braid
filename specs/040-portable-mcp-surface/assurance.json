@@ -138,9 +138,9 @@
             {
               "command": "python scripts/run_m45_mcp_acceptance.py --tooling-python <isolated-tooling-python> --core-python <isolated-core-python> --output-root <private-receipt> --require-clean (public path normalization; exact argv retained privately)",
               "limits": "Bounded source/local service/SDK or installed-package engineering only. No native Codex/Claude host observation, provider session, approved registration, 108-attempt capture, positive utility, human evaluation, ADR adoption or founder acceptance.",
-              "outcome": "Paired procedure passed; see actual candidate-bound outcomes and retained-output hashes.",
+              "outcome": "Paired procedure passed on 24921e1a16dfff15cde5af091f7b955491acdbef with 37 tests, eight cases and zero skips; actual source/trace bindings retained.",
               "path": "specs/040-portable-mcp-surface/evidence/sc-001.json",
-              "sha256": "f35413a4d54e8d9549b0f355805b6f3a62dc7bf00569849d0eeac06d713aff21"
+              "sha256": "82819ee10495e859115c9ea22def16a99141cc42a47cbc96a505113eac5ed040"
             }
           ],
           "planned_evidence": "specs/040-portable-mcp-surface/evidence/sc-001.json: exact candidate/input/environment hashes, actual commands/raw outputs, all outcomes and limits; human decisions require their own record.",
@@ -169,9 +169,9 @@
             {
               "command": "python scripts/run_m45_mcp_acceptance.py --tooling-python <isolated-tooling-python> --core-python <isolated-core-python> --output-root <private-receipt> --require-clean (public path normalization; exact argv retained privately)",
               "limits": "Bounded source/local service/SDK or installed-package engineering only. No native Codex/Claude host observation, provider session, approved registration, 108-attempt capture, positive utility, human evaluation, ADR adoption or founder acceptance.",
-              "outcome": "Paired procedure passed; see actual candidate-bound outcomes and retained-output hashes.",
+              "outcome": "Paired procedure passed on 24921e1a16dfff15cde5af091f7b955491acdbef with 37 tests, eight cases and zero skips; actual source/trace bindings retained.",
               "path": "specs/040-portable-mcp-surface/evidence/sc-002.json",
-              "sha256": "16d79aef3abc5a8ac3b8e98c686cadf92bd53c59580cbf597c14b3a7ae14406b"
+              "sha256": "fc133416e4f8aef5e798e9587e905d4252ef4916784b72c857e955650aa83f32"
             }
           ],
           "planned_evidence": "specs/040-portable-mcp-surface/evidence/sc-002.json: exact candidate/input/environment hashes, actual commands/raw outputs, all outcomes and limits; human decisions require their own record.",
@@ -200,9 +200,9 @@
             {
               "command": "python scripts/run_m45_mcp_acceptance.py --tooling-python <isolated-tooling-python> --core-python <isolated-core-python> --output-root <private-receipt> --require-clean (public path normalization; exact argv retained privately)",
               "limits": "Bounded source/local service/SDK or installed-package engineering only. No native Codex/Claude host observation, provider session, approved registration, 108-attempt capture, positive utility, human evaluation, ADR adoption or founder acceptance.",
-              "outcome": "Paired procedure passed; see actual candidate-bound outcomes and retained-output hashes.",
+              "outcome": "Paired procedure passed on 24921e1a16dfff15cde5af091f7b955491acdbef with 37 tests, eight cases and zero skips; actual source/trace bindings retained.",
               "path": "specs/040-portable-mcp-surface/evidence/sc-003.json",
-              "sha256": "248b749c16314b52257200fe30e144cc12e0d736d76c2234ced443f6bdc022cd"
+              "sha256": "c39564b24378212ab6a3c3ed7729b970219bc134df220889fced8b35f83a4ebc"
             }
           ],
           "planned_evidence": "specs/040-portable-mcp-surface/evidence/sc-003.json: exact candidate/input/environment hashes, actual commands/raw outputs, all outcomes and limits; human decisions require their own record.",
@@ -224,9 +224,9 @@
             {
               "command": "python scripts/run_m45_mcp_acceptance.py --tooling-python <isolated-tooling-python> --core-python <isolated-core-python> --output-root <private-receipt> --require-clean (public path normalization; exact argv retained privately)",
               "limits": "Bounded source/local service/SDK or installed-package engineering only. No native Codex/Claude host observation, provider session, approved registration, 108-attempt capture, positive utility, human evaluation, ADR adoption or founder acceptance.",
-              "outcome": "Paired procedure passed; see actual candidate-bound outcomes and retained-output hashes.",
+              "outcome": "Paired procedure passed on 24921e1a16dfff15cde5af091f7b955491acdbef with 37 tests, eight cases and zero skips; actual source/trace bindings retained.",
               "path": "specs/040-portable-mcp-surface/evidence/sc-004.json",
-              "sha256": "20a04d87e4f2eae5024b31864be5c7ff7a2840e46997756e0a4b3069c8f2af59"
+              "sha256": "81f4b9d9ba8063a521d03bfeed49ddbafbb2972fc9e59dbc4387e7fedf767e38"
             }
           ],
           "planned_evidence": "specs/040-portable-mcp-surface/evidence/sc-004.json: exact candidate/input/environment hashes, actual commands/raw outputs, all outcomes and limits; human decisions require their own record.",
@@ -248,9 +248,9 @@
             {
               "command": "python scripts/run_m45_mcp_acceptance.py --tooling-python <isolated-tooling-python> --core-python <isolated-core-python> --output-root <private-receipt> --require-clean (public path normalization; exact argv retained privately)",
               "limits": "Bounded source/local service/SDK or installed-package engineering only. No native Codex/Claude host observation, provider session, approved registration, 108-attempt capture, positive utility, human evaluation, ADR adoption or founder acceptance.",
-              "outcome": "Paired procedure passed; see actual candidate-bound outcomes and retained-output hashes.",
+              "outcome": "Paired procedure passed on 24921e1a16dfff15cde5af091f7b955491acdbef with 37 tests, eight cases and zero skips; actual source/trace bindings retained.",
               "path": "specs/040-portable-mcp-surface/evidence/sc-005.json",
-              "sha256": "7c51f02e1726905153f459b6af247f5d0aed745950e4759886cd4ed273ad0c44"
+              "sha256": "d366ca3fd08b521668e863b2962109e0befbccd0726d2edc4f58e22563c18387"
             }
           ],
           "planned_evidence": "specs/040-portable-mcp-surface/evidence/sc-005.json: exact candidate/input/environment hashes, actual commands/raw outputs, all outcomes and limits; human decisions require their own record.",
@@ -272,9 +272,9 @@
             {
               "command": "python scripts/run_m45_mcp_acceptance.py --tooling-python <isolated-tooling-python> --core-python <isolated-core-python> --output-root <private-receipt> --require-clean (public path normalization; exact argv retained privately)",
               "limits": "Bounded source/local service/SDK or installed-package engineering only. No native Codex/Claude host observation, provider session, approved registration, 108-attempt capture, positive utility, human evaluation, ADR adoption or founder acceptance.",
-              "outcome": "Paired procedure passed; see actual candidate-bound outcomes and retained-output hashes.",
+              "outcome": "Paired procedure passed on 24921e1a16dfff15cde5af091f7b955491acdbef with 37 tests, eight cases and zero skips; actual source/trace bindings retained.",
               "path": "specs/040-portable-mcp-surface/evidence/sc-006.json",
-              "sha256": "e6c0ddaea28a0613fa949a4fba493948a1d2f6e2d54bef877742656c01ec1e89"
+              "sha256": "223668ede0b8a3348b416a42debb716a92dd78cd7ed700fdc080c39b8b6f9bb4"
             }
           ],
           "planned_evidence": "specs/040-portable-mcp-surface/evidence/sc-006.json: exact candidate/input/environment hashes, actual commands/raw outputs, all outcomes and limits; human decisions require their own record.",
@@ -296,9 +296,9 @@
             {
               "command": "python scripts/run_m45_mcp_acceptance.py --tooling-python <isolated-tooling-python> --core-python <isolated-core-python> --output-root <private-receipt> --require-clean (public path normalization; exact argv retained privately)",
               "limits": "Bounded source/local service/SDK or installed-package engineering only. No native Codex/Claude host observation, provider session, approved registration, 108-attempt capture, positive utility, human evaluation, ADR adoption or founder acceptance.",
-              "outcome": "Paired procedure passed; see actual candidate-bound outcomes and retained-output hashes.",
+              "outcome": "Paired procedure passed on 24921e1a16dfff15cde5af091f7b955491acdbef with 37 tests, eight cases and zero skips; actual source/trace bindings retained.",
               "path": "specs/040-portable-mcp-surface/evidence/sc-007.json",
-              "sha256": "d645c7c50c9f1736858415165eb800cea56a6f1980ca1f12503137d862f0049c"
+              "sha256": "2da738cc3c799aa172fd9b1ea384dc7908eb370251b8fb598c7e659f1c284dcb"
             }
           ],
           "planned_evidence": "specs/040-portable-mcp-surface/evidence/sc-007.json: exact candidate/input/environment hashes, actual commands/raw outputs, all outcomes and limits; human decisions require their own record.",
@@ -327,9 +327,9 @@
             {
               "command": "python scripts/run_m45_mcp_acceptance.py --tooling-python <isolated-tooling-python> --core-python <isolated-core-python> --output-root <private-receipt> --require-clean (public path normalization; exact argv retained privately)",
               "limits": "Bounded source/local service/SDK or installed-package engineering only. No native Codex/Claude host observation, provider session, approved registration, 108-attempt capture, positive utility, human evaluation, ADR adoption or founder acceptance.",
-              "outcome": "Paired procedure passed; see actual candidate-bound outcomes and retained-output hashes.",
+              "outcome": "Paired procedure passed on 24921e1a16dfff15cde5af091f7b955491acdbef with 37 tests, eight cases and zero skips; actual source/trace bindings retained.",
               "path": "specs/040-portable-mcp-surface/evidence/sc-008.json",
-              "sha256": "e2fa46ccc9d507aeeaf8a42695689c08768dcc5069faa88966e849c498734a55"
+              "sha256": "1cb48c8515d563761b00985d863cf3aa1e897e71230670cec84f0bec0457f778"
             }
           ],
           "planned_evidence": "specs/040-portable-mcp-surface/evidence/sc-008.json: exact candidate/input/environment hashes, actual commands/raw outputs, all outcomes and limits; human decisions require their own record.",
