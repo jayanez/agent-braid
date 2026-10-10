@@ -10,7 +10,29 @@ are not published here.
 The table below is a historical record for the earlier integration `153c8fb7452fc55ddb50ad979ba8f872f9c1fb2d`, incorporating `develop` at `42d99fa8eabb4295f8605e564bc0ea0fa6fc09e0`. Its installed-product checks used the wheel from `9dfdf27eb54fa6a912d8cae4b2a05b67fbb368be`:
 `agent_braid-0.1.0a1-py3-none-any.whl`, SHA-256
 `30c058c14ae5dbcfc3c4e369d480f402f935520a6c68d7dd13c7ebac80061c08`.
-The recorded product modules match that historical integrated source. The observations below are not transferred to another commit. The e40c949 source was the reviewed PR candidate at the time of the bound validation observations below; it is the latest validated source candidate recorded here.
+The recorded product modules match that historical integrated source. The observations below are not transferred to another commit. The e40c949 source was the reviewed PR candidate at the time of the bound validation observations below; it is the latest validated source candidate in this historical section.
+
+## Current preparation delivery — 2026-10-10
+
+The active owner goal is the [five-task preparation delivery](../../specs/044-ai-tooling-evaluation/preparation-delivery-plan.md):
+freeze both dependency closures, verify the installed macOS package, prepare the
+Linux x86_64 recipe, consolidate independently reviewed evidence, and reconcile
+project documentation and GitHub tracking after validated integration. Additional
+spending is EUR 0; human outcome evaluation remains deferred.
+
+The existing implementation branch incorporated public `develop`
+`526fa11c2a074abfe8c5c1217a4529a5f60ed4da` by normal merge at
+`aae3e0062d2b8be68ccf42a27c6950a2d3283047`. Spec Kit preflight and explicit
+SPEC-044 prerequisites passed at that integration. The new dependency, installed
+artifact and recipe work is in progress; no new installed-artifact result is
+claimed here. Stable-candidate quick/PR and hosted results will be recorded against
+their actual commits after execution.
+
+The 108 registered attempts, native Codex/Claude acceptance, complete approved
+registration, registered platform reproduction and founder M4.5 closure remain
+open obligations of the broader evaluation, outside this preparation goal.
+Preparing a Linux recipe and running local package probes do not satisfy T004.
+Historical observations below retain their original source and artifact identities.
 
 ## Historical reviewed local observations (153c8fb integration; 9dfdf27 wheel)
 
@@ -74,7 +96,7 @@ evidence-packaging candidates require their own validation. At the time of the
 publication receipt, the PR remained draft and unmerged. Passing profiles do not establish registered
 clean-room reproduction, native-host/cohort acceptance, or human/founder approval.
 
-## Work still required by the technical goal
+## Broader evaluation work still required (outside the preparation goal)
 
 1. Approve and freeze the complete prospective registration: exact owned fixture
    rights, prompts, rubric and thresholds, candidate, host/model identities,
@@ -96,8 +118,9 @@ clean-room reproduction, native-host/cohort acceptance, or human/founder approva
    validate the resulting exact candidate, and obtain the independent technical
    review and decision packet.
 
-The active owner goal excludes only the two human outcome evaluations and their
-adjudication. They remain explicitly pending under the
+The earlier full technical-evaluation goal excluded only the two human outcome
+evaluations and their adjudication. It is superseded for immediate delivery by
+the five-task preparation goal above. They remain explicitly pending under the
 [deferral decision](../../specs/044-ai-tooling-evaluation/human-evaluation-deferral-clarification.md).
 Human identities, fees, times and combined human-inclusive totals remain unknown;
 technical accounting must not represent them as zero. Independent model-based
