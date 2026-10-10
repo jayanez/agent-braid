@@ -1,0 +1,124 @@
+{
+  "schema": "agent-braid-m45-technical-review-v1",
+  "status": "passed",
+  "review": {
+    "schema": "agent-braid-m45-independent-technical-review-addendum-v1",
+    "receiptRef": "independent-review-addendum-v2.json",
+    "receiptSha256": "ce3228347825169ba255b4f360e09339e9d75c4e4e41b86765ac4f4f307f278c",
+    "outcome": "passed",
+    "reviewedHead": "72a396d294205201f7f56d00fa2349dccb540a5c",
+    "reviewedWorkingTree": "clean",
+    "parentReviewRef": "independent-review-v1.json",
+    "parentReviewSha256": "224b8fb532a07a4c0afcde7a8c183f8137e41478d9440ce899757ba9e5dc0a21",
+    "reviewer": {
+      "designatedModel": "gpt-6-luna",
+      "reasoningEffort": "medium",
+      "toolRuntimeAttestation": false
+    },
+    "profileCandidateRelationship": {
+      "relationship": "same-candidate",
+      "quickCandidateHead": "72a396d294205201f7f56d00fa2349dccb540a5c",
+      "prCandidateHead": "72a396d294205201f7f56d00fa2349dccb540a5c",
+      "metadataOnlyChangedPaths": [],
+      "verifiedUnchangedProductInputSha256": {}
+    },
+    "profileValidationReceiptSha256": {
+      "quick": "8ab197608e8beb57e03f2f60de9de4ae8d939f48e47dae04527cb12beb4a3691",
+      "pr": "567fa7f6fa4b0ff35db8ff47c62494e301cc9261688b7807eae5035f215e9d0f"
+    },
+    "inputPathSha256": {
+      "specs/039-ai-tooling-program/assurance.json": "360cece31ffc2b58ea418c4730131ec19b039a519dda14c992b03323abe0cf47",
+      "specs/039-ai-tooling-program/tasks.md": "5d6442b3176ec91779eecdd436676c6919a606741646bc0579d36e04d2327846",
+      "specs/040-portable-mcp-surface/assurance.json": "98c9670eec8a71c5bc9794a707f1ea7a1788370711bf821c6ffc94478404d301",
+      "specs/040-portable-mcp-surface/tasks.md": "9d5022c005da40ef4867c1879d7044d67e3d2196d0222f45d436a89b4a383479",
+      "specs/041-ai-tooling-skills/assurance.json": "110ffe4ccc928ef8a96ba83e8aaf97f1e154ba5c8b559bb3aa3d0f8f82577157",
+      "specs/041-ai-tooling-skills/tasks.md": "b2d8192712555aa20e67eb26db6d92a518c9fea01aea552c31cbfaacb859a010",
+      "specs/042-ai-tooling-packaging/assurance.json": "1eaa5dfa5555b4b2cc7e05fd11f4b04160a59b1a3819fd547e25d59579370f1c",
+      "specs/042-ai-tooling-packaging/tasks.md": "118ecc0aadf787eeaf4c123e17689e2bf0445866e963e8d13a0ec1d46a1fe5cf",
+      "specs/043-ai-tooling-journey/assurance.json": "df2d1e06dcc4f91bc6f7245f661655759bae2e582a8ef62f223ca78c51bb954c",
+      "specs/043-ai-tooling-journey/tasks.md": "623f299cde5ca73cd7ab8e00669a1f2cb57c2d7f047d61b007d91d22e2d361cc",
+      "specs/044-ai-tooling-evaluation/assurance.json": "138ff249996f2c75372c9aaf9efe0c6b0def8f58a4fea9d873a0f82286305068",
+      "specs/044-ai-tooling-evaluation/tasks.md": "1058cb4bc67ce34ae30f86a74eb118536def7656f54542f74b90c31e10d9f5c4"
+    },
+    "resolvedFindings": [
+      {
+        "finding": "MCP acceptance runner could report success with missing scenarios, skipped/failed tests, mismatched summary, or source drift.",
+        "disposition": "resolved",
+        "resolution": "Fail-closed checks cover all eight scenario gates, the exact test roster, parsed versus unittest summary counts, all-ok/no-skips, SDK/core checks, unchanged source inputs and HEAD."
+      },
+      {
+        "finding": "Lifecycle proof could be asserted without binding private raw transport output and a complete qualified roster.",
+        "disposition": "resolved",
+        "resolution": "Runner verifies hashed private outputs, current MCP input inventory, exact 13 fully qualified passing tests with no skips, private permissions and candidate stability."
+      },
+      {
+        "finding": "Linux AMD64 guest execution on ARM64 could be presented as native execution or use a remote Docker context.",
+        "disposition": "resolved",
+        "resolution": "Explicit opt-in preserves native defaults; only local Unix Docker endpoint is accepted; host and daemon are recorded separately and raw endpoint is omitted."
+      },
+      {
+        "finding": "Registration draft candidate and wheel identity were stale.",
+        "disposition": "resolved",
+        "resolution": "The draft binds source candidate 53f1704 and verified wheel SHA c43fd789…; registration approval and account/cost evidence remain pending."
+      },
+      {
+        "finding": "Checked 040/042 task annotations contradicted complete bounded procedures.",
+        "disposition": "resolved",
+        "resolution": "Current annotations describe bounded paired evidence while retaining registered/native/human/founder gates."
+      },
+      {
+        "finding": "Remote tracking preparation initially lacked a binding between the evaluated M4.5 candidate and the selected merged PR.",
+        "disposition": "resolved",
+        "resolution": "The read-only note planner now requires PR #476, the final metadata review bound to its actual head, all six validation source commits, and candidate→PR head→merge→develop ancestry."
+      },
+      {
+        "finding": "Metadata-only delta classification initially allowed broad docs/evidence subtrees containing executable code.",
+        "disposition": "resolved",
+        "resolution": "Classifier is restricted to the exact 19 reviewed documentation, task and evidence projection paths; arbitrary code, extra JSON and assurance files are rejected."
+      }
+    ],
+    "remainingInterventions": [
+      "PR #476 merge and post-merge verification remain separate; no merge or task/issue publication is authorized by this review record.",
+      "Authenticated Codex/Claude account, complete catalog/configuration, exact live model and fresh included-subscription/cost observations remain unknown.",
+      "Review and approve the proposed full subscription allocation/cost scope and complete the specific exact registration; draft approval remains pending and opens no capture admission.",
+      "Run admitted actual Codex and Claude native-host workflows, registered clean-platform checks and all 108 attempts only after every admission gate is satisfied; preserve unavailable/refused/interrupted outcomes.",
+      "Reconcile actual technical costs and interpretation, then later conduct the separately deferred two-reviewer human ratings/adjudication and obtain the explicit founder decision.",
+      "Final post-profile metadata projections, the actual merged-PR-bound review, and read-only tracking reconciliation remain pending."
+    ],
+    "acceptedScope": [
+      {
+        "spec": "039",
+        "scope": "SC-001–SC-008 documentary/source contract procedures and historical scoped tracking readbacks; no ADR adoption or milestone closure."
+      },
+      {
+        "spec": "040",
+        "scope": "SC-001–SC-008 local MCP Python SDK 2.3.0 stdio and service paired controls; no Codex/Claude host observation."
+      },
+      {
+        "spec": "041",
+        "scope": "Auxiliary T011–T018 static source and deterministic controls only; original T001–T010 remain open."
+      },
+      {
+        "spec": "042",
+        "scope": "SC-001–SC-008 package/provenance and installed lifecycle controls; macOS arm64 and Linux AMD64 guest under explicit Docker/QEMU emulation; not native Linux hardware or registered 044 T004."
+      },
+      {
+        "spec": "043",
+        "scope": "SC-002 and SC-004–SC-007 bounded local presentation controls plus auxiliary T011–T013; original T001/T003/T008 host criteria remain open."
+      },
+      {
+        "spec": "044",
+        "scope": "Auxiliary T011–T014 exact registration preparation and synthetic roster/admission/accounting/interpretation controls; no provider attempt, registration approval, actual 108-slot observations or human outcome evaluation."
+      },
+      {
+        "scope": "Local repository quick and PR validation profiles on one clean candidate, each 1293 tests with 12 explicit skips and no failures/errors; skips remain skips."
+      }
+    ],
+    "limits": "Independent bounded technical review only. No native Codex/Claude host acceptance, registration approval, human outcome adjudication, scientific/utility result, founder acceptance, ADR adoption or milestone closure is inferred."
+  },
+  "candidate": {
+    "sourceCommit": "72a396d294205201f7f56d00fa2349dccb540a5c",
+    "workingTreeAtReview": "clean"
+  },
+  "limits": "Independent bounded technical review only. No native Codex/Claude host acceptance, registration approval, human outcome adjudication, scientific/utility result, founder acceptance, ADR adoption or milestone closure is inferred."
+}

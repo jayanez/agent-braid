@@ -128,3 +128,23 @@ do not complete additional canonical task procedures. Final validation, merge an
 GitHub reconciliation are delivery requirements; their exact-head results are
 recorded in [PR #467](https://github.com/jayanez/agent-braid/pull/467), separately
 from this frozen preparation evidence.
+
+## Candidate-bound autonomous closure — 2026-10-10
+
+The authorized local technical procedures have now run and their obtained receipts
+are linked from [the technical status report](../../docs/tooling/TECHNICAL_STATUS.md)
+and [autonomous completion record](../../docs/tooling/AUTONOMOUS_COMPLETION.md).
+This update does not rewrite the historical 2026-10-08 source-preparation record.
+
+The 60 original task criteria were not reduced. Nineteen auxiliary evidence tasks
+raise the current target to 79 task issues, with 52 completed and 27 still pending;
+six parent issues remain open. The candidate-bound technical procedures include
+8/8 program controls, 8/8 MCP scenarios and 37/37 MCP tests, 13/13 lifecycle tests,
+and a separate 223-test engineering run with no skips. Fresh macOS and emulated
+Linux AMD64 package checks passed for source `53f1704`; the suite, program, MCP and
+lifecycle receipts bind separate candidates as detailed in the technical report.
+
+These local results do not establish native Codex/Claude journeys, full registered
+108-attempt capture, human outcome review, founder acceptance, ADR adoption or
+milestone closure. M4 remains bounded-complete with its historical G4 NO-GO and
+negative-utility result. M3.5 is independent and still has zero admitted real pairs.

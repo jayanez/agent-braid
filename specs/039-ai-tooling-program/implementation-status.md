@@ -1,21 +1,16 @@
 # M4.5 implementation status and source map
 
-## Current preparation scope — 2026-10-10
+## Current autonomous closure scope — 2026-10-11
 
-The active work is the [five-task preparation plan](../044-ai-tooling-evaluation/preparation-delivery-plan.md).
-The existing implementation candidate was integrated with public `develop`
-`526fa11c2a074abfe8c5c1217a4529a5f60ed4da` at
-`aae3e0062d2b8be68ccf42a27c6950a2d3283047`; its Spec Kit preflight passed.
-The source and installed checks described below are historical snapshots, not
-validation of that integration or later preparation changes. Both target dependency closures and the verifier/recipe passed independent
-technical review. Frozen source `3885706eeb64837c1b409d24a9b0754eb33301cd` passed
-fresh offline macOS core/tooling installations and read-only CLI/MCP parity; a
-hash-bound Linux input bundle is prepared with static refusal checks. See the
-[preparation proof](../../docs/tooling/evidence/preparation-20261010.json).
-Delivery requires final validation, evidence review, merge and remote tracking;
-[PR #467](https://github.com/jayanez/agent-braid/pull/467) records the exact-head
-integration and validation results separately from this artifact proof.
-The complete evaluation and native-host acceptance remain separate gates.
+The active owner-authorized work is the [autonomous closure plan](../044-ai-tooling-evaluation/autonomous-closure-plan.md); the earlier [five-task preparation plan](../044-ai-tooling-evaluation/preparation-delivery-plan.md) is historical. Seven bounded candidate-bound technical tasks are complete on source `72a396d294205201f7f56d00fa2349dccb540a5c`. Final quick and stable PR repository profiles both passed on that exact source. The six source task files now contain 52 checked and 27 unchecked boxes (79 total); this is a source inventory, not a remote issue-state assertion.
+
+The evidence remains split by actual candidate: package/macOS and emulated Linux checks on `53f1704`; program/lifecycle controls on `5cffa9d`; MCP controls on `24921e1`; engineering controls on `aaae2e7` plus the direct 223-test run on `24921e1`; final repository validation on `72a396d294205201f7f56d00fa2349dccb540a5c`. These identities are not collapsed into one end-to-end source claim. The exact receipts and limits are in the [technical status](../../docs/tooling/TECHNICAL_STATUS.md) and [autonomous completion record](../../docs/tooling/AUTONOMOUS_COMPLETION.md).
+
+This is the completed technical phase of the autonomous closure goal. It retains the EUR 0 additional-spend boundary and deferred human outcome ratings/adjudication. It does not complete native Codex/Claude journeys, registered clean-platform reproduction, the 108-attempt technical evaluation, complete account/cost approval, founder acceptance, or formal M4.5 closure. Integration and guarded remote tracking have their own records in [PR #476](https://github.com/jayanez/agent-braid/pull/476), the [live milestone](https://github.com/jayanez/agent-braid/milestone/19) and Project; these source profile records do not attest those later operations.
+
+### Historical preparation snapshot — 2026-10-10
+
+The earlier owner goal was the [five-task preparation plan](../044-ai-tooling-evaluation/preparation-delivery-plan.md): freeze both target dependency closures, verify fresh installed macOS packages, prepare the Linux x86_64 recipe, consolidate reviewed evidence and align documentation/GitHub tracking, with EUR 0 additional spend and human outcome evaluation deferred. The integrated preparation candidate was `aae3e0062d2b8be68ccf42a27c6950a2d3283047` after incorporating public `develop` `526fa11c2a074abfe8c5c1217a4529a5f60ed4da`. The installed artifact proof was bound to separate frozen candidate `3885706eeb64837c1b409d24a9b0754eb33301cd`; it is historical artifact evidence, not the current validation source. See the [preparation proof](../../docs/tooling/evidence/preparation-20261010.json).
 
 ## Historical implementation inventory
 
@@ -143,7 +138,7 @@ full human-inclusive accounting is established here.
 | W22 — frozen review and decision packet | 039/T008; 044/T008; T010 in 039–044 | Pending. Assemble candidate/evidence hashes, actual receipts, independent technical findings and a decision packet. Packet readiness requests a decision; it does not record one. Founder acceptance/rejection and scope decision remain explicit human actions. |
 | W23 — governed merge and tracking closure | 039/T006 and 039/T008–T010; final parent/child/milestone dispositions | Pending. After accepted evidence and governed integration, reconcile exactly the existing 60 children, six parents and milestone 19; require an empty scoped audit and separately verify any private Project state. |
 
-The earlier full technical-evaluation goal retained all technical work: five product skills, optional SDK behavior, installation/configuration, accounting and negative controls, registered clean reproduction, both native host journeys, all 108 intended attempts, technical interpretation and independent technical review. The two human outcome evaluations and their adjudication were explicitly outside that earlier goal and remain pending. The current five-task preparation goal is described above; the broader technical waves in this section remain open outside that immediate delivery scope. Unknown human fees and times are not zero. Founder acceptance, merge, governed tracking and formal milestone closure retain their separate approval and evidence boundaries; none is implied by completion of the technical goal.
+The earlier full technical-evaluation goal retained all technical work: five product skills, optional SDK behavior, installation/configuration, accounting and negative controls, registered clean reproduction, both native host journeys, all 108 intended attempts, technical interpretation and independent technical review. The two human outcome evaluations and their adjudication were explicitly outside that earlier goal and remain pending. The completed technical phase of the autonomous closure goal is described above; the broader technical waves in this section remain open outside that bounded scope. Unknown human fees and times are not zero. Founder acceptance, merge, governed tracking and formal milestone closure retain their separate approval and evidence boundaries; none is implied by completion of the technical goal.
 
 ## Predecessor context and evidence boundaries
 
@@ -157,3 +152,26 @@ The inspected predecessor chats were titled **“Planificar cierre de M3.5”** 
 The candidate includes a one-shot process supervisor and explicit host adapters. Their tests execute owned synthetic subprocesses. The private preparation inference described above was outside the registered cohort; no cohort session or registered provider capture was run. The owner approved the numeric evaluation caps separately on 2026-10-08. This is not source-rights, provider, protocol or capture approval. The legacy evaluation registration draft retains false provider opt-in; model names remain recommendations. Before a technical attempt, resolve fixture rights, exact host/model builds, billing route/rates, frozen candidate SHA and rubric, mandatory v3 technical scope/deferral/roles, and all source/account/budget/permission approvals. Human identities and reviewer fee/time applicability remain deferred; they are not set to zero or treated as full economic completion. The eventual code candidate SHA must be the integrated/frozen commit, not the planning baseline or a local workspace path.
 
 In synthetic offline report controls, the report preserves validated ledger attempt identifiers separately from intended slot identifiers. Missing-cost fields are attributed to per-attempt, setup or cohort scopes, retaining all intended slots and null actual identifiers for unstarted slots. Structured and narrative outputs retain this mapping while excluding free-form event text. These report controls do not authenticate costs or human ratings, approve a registration, assert utility, or complete any actual-host, human or founder gate.
+
+## Candidate-bound autonomous technical results — 2026-10-10
+
+The local procedures authorized by the bounded closure plan have produced canonical
+scenario evidence. See [technical evidence status](../../docs/tooling/TECHNICAL_STATUS.md)
+for the exact receipt map and limitations, and [autonomous completion](../../docs/tooling/AUTONOMOUS_COMPLETION.md)
+for the proof inventory. The evidence spans distinct candidates: package checks on
+`53f1704`, engineering tests on `aaae2e7`, program/lifecycle
+procedures on `5cffa9d`, and the refreshed MCP capture on `24921e1`. No result is transferred across those candidates.
+
+The paired technical run reports 8/8 program controls, 8/8 MCP scenarios and 37/37
+MCP tests, 13/13 lifecycle tests, 223 engineering tests without skips, fresh
+macOS wheel/core/tooling installation, and Linux AMD64 emulated installation.
+The local MCP SDK peer is not a Codex or Claude host launch. The Linux run is not
+native-hardware or performance evidence. The 108-attempt cohort has not started.
+
+The original 60 task acceptance criteria remain unchanged. Nineteen auxiliary
+evidence tasks add to that scope: the six source task files now show 52 checked
+and 27 unchecked boxes (79 total), plus six open parents; remote issue state is
+tracked separately. Native-host procedures, human review and interpretation,
+founder acceptance, ADR adoption and milestone closure remain external gates. M4's
+bounded-complete decision preserves historical G4 NO-GO and negative utility;
+M3.5 remains independent with zero admitted real pairs.

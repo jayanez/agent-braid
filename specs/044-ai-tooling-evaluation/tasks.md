@@ -1,6 +1,6 @@
 # Tasks
 
-Stable task IDs are implementation obligations. Check only after the paired procedure produces candidate-bound evidence. Some targets already have an experimental implementation candidate; all product evidence and task completion remain pending. Human outcome ratings and adjudication are explicitly deferred by [the owner decision](human-evaluation-deferral-clarification.md); this does not mark any task or human acceptance complete.
+Stable task IDs are implementation obligations. Check only after the paired procedure produces candidate-bound evidence. Experimental implementation, historical T003 evidence and completed auxiliary engineering clauses are present. Other original registered-observation and decision obligations remain pending. Human outcome ratings and adjudication are explicitly deferred by [the owner decision](human-evaluation-deferral-clarification.md); this does not mark any task or human acceptance complete.
 
 - [ ] T001 (REQ-001/SC-001): Preregister exact population, source rights, candidate/input/host/model versions, all attempts, rubric and numerical caps before capture.
   Dependencies: none for drafting the registration; the exact 040–043 candidate, inputs, host/model builds, source rights, mandatory included-subscription-only `billingPolicy`, two unique abstract independent reviewer roles, approved human-evaluation deferral record, frozen rubric and numerical caps must be fixed before technical registration is approved and capture. Keep `humanReviewers` empty in v3; future identities and human ratings require a separately bound addendum. Targets: `evaluation-protocol.md; registration.json; owner source/budget decisions`.
@@ -41,3 +41,34 @@ Stable task IDs are implementation obligations. Check only after the paired proc
 - [ ] T010 (REQ-001,REQ-002,REQ-003,REQ-004,REQ-005,REQ-006,REQ-007,REQ-008/SC-001,SC-002,SC-003,SC-004,SC-005,SC-006,SC-007,SC-008): Freeze the bounded candidate, review findings and record the required human decision.
   Dependencies: T008 technical packet readiness, T009 validation, all applicable technical gates, later human addendum/ratings/adjudication, independent review and the actual explicit founder decision. Until these occur T010 remains pending. Targets: frozen assurance, review record, recorded owner decision and final SPEC-044 closure record.
   Verification and planned evidence: record the founder's accepted, rejected or pending decision and bounded rationale after independent findings are available; close milestone #19 only when all required gates are evidenced and the owner records closure. Source validation and hashes are not approval.
+
+## Separately verifiable technical clauses — owner-approved split
+
+These auxiliary tasks preserve the full criteria of the linked original task.
+A completed auxiliary does not complete native-host or human acceptance.
+
+- [x] T011 (REQ-001/SC-001): Prepare the exact 18-fixture/six-prompt registration, rubric, caps, approved D1/D2 and human deferral with unresolved account/catalog/configuration/approval fields explicitly pending.
+  Related original: T001. Dependencies: available bounded implementation; original acceptance remains separate. Targets: `private registration; readiness register`.
+  Verification: `evidence/technical-clauses.json` with frozen candidate/input hashes, actual command, paired controls and stated limits.
+  Status: Verified bounded auxiliary technical clause only against `evidence/technical-clauses.json` (T011); linked original T001 remains open. No native-host/provider observation, registration approval or human acceptance is implied.
+- [x] T012 (REQ-005/SC-005): Validate the fixed balanced 108-slot roster, arm ordering, ledger isolation and all-outcome denominators using deterministic controls; actual attempts stay with T005.
+  Related original: T005. Dependencies: available bounded implementation; original acceptance remains separate. Targets: `agent_braid/tooling_evaluation.py; tests/test_tooling_evaluation.py`.
+  Verification: `evidence/technical-clauses.json` with frozen candidate/input hashes, actual command, paired controls and stated limits.
+  Status: Verified bounded auxiliary technical clause only against `evidence/technical-clauses.json` (T012); linked original T005 remains open. No native-host/provider observation, registration approval or human acceptance is implied.
+- [x] T013 (REQ-006/SC-006): Validate pre-attempt subscription-only, cost/token/time/RSS/disk stop and fail-closed admission instrumentation; real measured-accounting reconciliation stays with T006.
+  Related original: T006. Dependencies: available bounded implementation; original acceptance remains separate. Targets: `agent_braid/tooling_capture.py; agent_braid/tooling_subscription.py; tests/test_tooling_capture.py`.
+  Verification: `evidence/technical-clauses.json` with frozen candidate/input hashes, actual command, paired controls and stated limits.
+  Status: Verified bounded auxiliary technical clause only against `evidence/technical-clauses.json` (T013); linked original T006 remains open. No native-host/provider observation, registration approval or human acceptance is implied.
+- [x] T014 (REQ-007/SC-007): Validate deterministic interpretation/missing-cost/human-label suppression controls; reporting the actual 108 observations stays with T007.
+  Related original: T007. Dependencies: available bounded implementation; original acceptance remains separate. Targets: `agent_braid/tooling_evaluation.py; tests/test_tooling_evaluation.py`.
+  Verification: `evidence/technical-clauses.json` with frozen candidate/input hashes, actual command, paired controls and stated limits.
+  Status: Verified bounded auxiliary technical clause only against `evidence/technical-clauses.json` (T014); linked original T007 remains open. No native-host/provider observation, registration approval or human acceptance is implied.
+- [x] T015 (REQ-008/SC-008): Prepare a bounded autonomous-delivery review packet with actual technical findings and explicit unready registered-capture/founder fields; the full observation-based decision packet stays with T008.
+  Related original: T008. Dependencies: available bounded implementation; original acceptance remains separate. Targets: `autonomous-closure-plan.md; docs/tooling/AUTONOMOUS_COMPLETION.md`.
+  Verification: `evidence/technical-clauses.json` with frozen candidate/input hashes, actual command, paired controls and stated limits.
+  Obtained: Bounded independent technical review passed; the review packet and findings are recorded in `evidence/technical-review.json`. Native-host, registration, human and founder gates remain open.
+
+- [x] T016 (REQ-001,REQ-002,REQ-003,REQ-004,REQ-005,REQ-006,REQ-007,REQ-008/SC-001,SC-002,SC-003,SC-004,SC-005,SC-006,SC-007,SC-008): Reconcile available engineering evidence and pass repository quick/PR gates; original registered-observation predecessors stay with T009.
+  Related original: T009. Dependencies: available bounded implementation; original acceptance remains separate. Targets: `assurance.json; source validation`.
+  Verification: `evidence/technical-validation.json` with frozen candidate/input hashes, actual command, paired controls and stated limits.
+  Obtained: Repository quick/PR validation results are recorded in `evidence/technical-validation.json`; raw test skips remain explicit. This does not establish native-host, registered-cohort, human or founder acceptance.

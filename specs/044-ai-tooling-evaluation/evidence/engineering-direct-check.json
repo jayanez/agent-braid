@@ -1,0 +1,305 @@
+{
+  "candidateInventorySha256": "4b2aeab794952606452b07c12e8b13bf82885b087ec053e3cc1e423da4f8cb10",
+  "candidateStable": true,
+  "command": [
+    ".venv-speckit/bin/python",
+    "scripts/run_m45_engineering_readiness.py",
+    "--output",
+    "<private-engineering-receipt>"
+  ],
+  "execution": {
+    "command": [
+      "<private-delivery-root>/checkout/.venv-speckit/bin/python",
+      "-m",
+      "unittest",
+      "-v",
+      "tests.test_tooling_assets",
+      "tests.test_tooling_evaluation",
+      "tests.test_tooling_subscription",
+      "tests.test_tooling_capture",
+      "tests.test_tooling_model_identity",
+      "tests.test_tooling_money",
+      "tests.test_tooling_costs",
+      "tests.test_tooling_allocation",
+      "tests.test_tooling_full_cost",
+      "tests.test_tooling_measurements",
+      "tests.test_tooling_supervisor",
+      "tests.test_tooling_incremental_usage",
+      "tests.test_tooling_sessions",
+      "tests.test_tooling_host_events",
+      "tests.test_tooling_evaluation_report"
+    ],
+    "cwd": "<private-delivery-root>/checkout",
+    "environment": {
+      "implementation": "CPython",
+      "networkCalls": "none by test procedure design; no host/provider is invoked; OS network isolation is not enforced",
+      "osName": "posix",
+      "platform": "macOS-27.0.1-arm64-arm-64bit-Mach-O",
+      "privateHome": true,
+      "privateTemporaryDirectory": true,
+      "providerEnvironmentVariablesInherited": false,
+      "python": "3.13.11 (main, Dec  5 2025, 16:06:33) [Clang 17.0.0 (clang-1700.4.4.1)]",
+      "pythonExecutable": "<private-delivery-root>/checkout/.venv-speckit/bin/python"
+    },
+    "testRun": {
+      "argv": [
+        "<private-delivery-root>/checkout/.venv-speckit/bin/python",
+        "-m",
+        "unittest",
+        "-v",
+        "tests.test_tooling_assets",
+        "tests.test_tooling_evaluation",
+        "tests.test_tooling_subscription",
+        "tests.test_tooling_capture",
+        "tests.test_tooling_model_identity",
+        "tests.test_tooling_money",
+        "tests.test_tooling_costs",
+        "tests.test_tooling_allocation",
+        "tests.test_tooling_full_cost",
+        "tests.test_tooling_measurements",
+        "tests.test_tooling_supervisor",
+        "tests.test_tooling_incremental_usage",
+        "tests.test_tooling_sessions",
+        "tests.test_tooling_host_events",
+        "tests.test_tooling_evaluation_report"
+      ],
+      "cwd": "<private-delivery-root>/checkout",
+      "durationMs": 55718,
+      "finishedAtUtc": "2026-10-10T22:25:37.912542+00:00",
+      "outputLimitBytes": 67108864,
+      "outputLimitExceeded": false,
+      "returnCode": 0,
+      "startedAtUtc": "2026-10-10T22:24:42.193990+00:00",
+      "stderr": {
+        "bytes": 41647,
+        "path": "stderr.raw",
+        "sha256": "fd6fca782106861763aba147567b9bf34396ba5a5f1ba2c607f0a145093b0548"
+      },
+      "stdout": {
+        "bytes": 0,
+        "path": "stdout.raw",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "timedOut": false,
+      "timeoutSeconds": 900
+    },
+    "testSummary": {
+      "allRequiredCostCapAndAdmissionControlsObserved": true,
+      "balancedRosterTestObserved": true,
+      "errors": 0,
+      "failures": 0,
+      "observedCostCapAndAdmissionControls": [
+        "test_provider_cash_excludes_reviewer_fees_and_unknown_provider_coverage",
+        "test_missing_registered_cost_component_is_unknown_and_stops",
+        "test_subscription_only_preflight_and_periodic_stop",
+        "test_live_cap_reached_stops_without_claiming_success",
+        "test_sample_count_limit_fails_closed",
+        "test_file_and_directory_inventory_limits_fail_closed",
+        "test_full_cost_scope_must_be_present_approved_and_resolved",
+        "test_provider_accounting_cap_cannot_be_hidden_by_zero_cash_or_reference_estimates",
+        "test_registration_or_ledger_mismatch_is_rejected"
+      ],
+      "registrationGuardTestsObserved": [
+        "test_v3_technical_capture_requires_deferral_roles_and_every_existing_admission_gate",
+        "test_v3_technical_capture_admits_one_slot_only_with_all_frozen_and_live_gates",
+        "test_registration_requires_exact_hashes_rights_provider_opt_in_and_caps",
+        "test_registration_refuses_nonfinite_values_and_unfrozen_rubric"
+      ],
+      "requiredCostCapAndAdmissionControls": [
+        "test_provider_cash_excludes_reviewer_fees_and_unknown_provider_coverage",
+        "test_missing_registered_cost_component_is_unknown_and_stops",
+        "test_subscription_only_preflight_and_periodic_stop",
+        "test_live_cap_reached_stops_without_claiming_success",
+        "test_sample_count_limit_fails_closed",
+        "test_file_and_directory_inventory_limits_fail_closed",
+        "test_full_cost_scope_must_be_present_approved_and_resolved",
+        "test_provider_accounting_cap_cannot_be_hidden_by_zero_cash_or_reference_estimates",
+        "test_registration_or_ledger_mismatch_is_rejected"
+      ],
+      "skipped": 0,
+      "summaryParsed": true,
+      "testCount": 223
+    },
+    "timeoutSeconds": 900
+  },
+  "limits": [
+    "The 108-slot balance is a synthetic protocol/unit-test contract, not an approved or actual registered roster.",
+    "Registration presence is recorded only; approval and source-right values are not inferred or adjudicated here.",
+    "No native host behavior, provider/account identity, live model identity, capture, human scoring, legal review, or scientific result was observed.",
+    "This receipt is bound to the recorded HEAD and worktree inventory; later candidate changes require a new run."
+  ],
+  "outcome": "passed",
+  "privateReceiptSha256": "44ca6098cc3721319aeb4fc9ad4fe88ad7be87c93d60c2ae7fa94525981b8db6",
+  "schema": "agent-braid-m45-direct-engineering-check-v1",
+  "sourceCommit": "24921e1a16dfff15cde5af091f7b955491acdbef",
+  "sourceInputs": {
+    "agent_braid/tooling_allocation.py": {
+      "bytes": 13355,
+      "sha256": "9f506909be5c004baa928a45a374820d0fecca01d4101436681d9069e9376be5"
+    },
+    "agent_braid/tooling_assets.py": {
+      "bytes": 9012,
+      "sha256": "58022d54f84bd91448889805923316d20c400c889564114999a85d7d24a874fd"
+    },
+    "agent_braid/tooling_capture.py": {
+      "bytes": 29899,
+      "sha256": "6f6b4b0665066305c7fc358d97676f5278313ea7dc0af2f46153489652268bc3"
+    },
+    "agent_braid/tooling_costs.py": {
+      "bytes": 11931,
+      "sha256": "4ae2510aaf1127d32047545c71e8c0798eb0dbb617a4c97a996e9393c5216c70"
+    },
+    "agent_braid/tooling_evaluation.py": {
+      "bytes": 60723,
+      "sha256": "ec9cdf98e685703827ffe2b8cbb3efca1c8066d80f1b5db2d8c3d5f5b4b8c56a"
+    },
+    "agent_braid/tooling_evaluation_report.py": {
+      "bytes": 44744,
+      "sha256": "68c068e1f1b24f25485aff200c8b6a9819dd994cfc6fc81fb86adc212e15bd38"
+    },
+    "agent_braid/tooling_full_cost.py": {
+      "bytes": 32992,
+      "sha256": "f8ceaaf0b1cd01b83bb9ae9f50caa141bb1908a99f087509696ca55326c1d4b4"
+    },
+    "agent_braid/tooling_host_events.py": {
+      "bytes": 19794,
+      "sha256": "768ed2fa4cb634090f83374f6341725eb73b3e8737387fe9e3c1eccf44e6e791"
+    },
+    "agent_braid/tooling_incremental_usage.py": {
+      "bytes": 23129,
+      "sha256": "5bf1184ec7feab55ccdc6f46a724615558c3efd30c0be90b3c2550e57ad3d41b"
+    },
+    "agent_braid/tooling_measurements.py": {
+      "bytes": 22425,
+      "sha256": "90e3a95a68debeabb12fd7e7a63d30789aee4a6d7169c0d30629b2efcf1fcf41"
+    },
+    "agent_braid/tooling_model_identity.py": {
+      "bytes": 22697,
+      "sha256": "1376b95f2a07d855f505157c1784720cbfcbdf991f153f624b7be85d9898082e"
+    },
+    "agent_braid/tooling_money.py": {
+      "bytes": 50431,
+      "sha256": "7a8585247c099e4ef541f911d416627f13e06aa6e1e09798d8785b619d271704"
+    },
+    "agent_braid/tooling_sessions.py": {
+      "bytes": 57255,
+      "sha256": "541559e1c53264b3ea4a7c2a7d78716b0049aa641bbda1e28ffdfebd68c07304"
+    },
+    "agent_braid/tooling_subscription.py": {
+      "bytes": 13299,
+      "sha256": "086632859810fa21496648f5dd8c1a9b750b29adeda7f106ef95285eb16768bc"
+    },
+    "agent_braid/tooling_supervisor.py": {
+      "bytes": 45560,
+      "sha256": "480d98f47a1771d75ef684cbd5f82df6e473781f211a310441b659d316ae08fc"
+    },
+    "integrations/agent-braid/skills/agent-braid-analyze/SKILL.md": {
+      "bytes": 2564,
+      "sha256": "bf3292e5c3d867f277cf34bf298227035f6a0ff3caabffaf865da16fda44fd31"
+    },
+    "integrations/agent-braid/skills/agent-braid-evidence/SKILL.md": {
+      "bytes": 3072,
+      "sha256": "3618f553971f85b51fb90e465b30a6423e2cb52dfcbfecdea4c320429771cba1"
+    },
+    "integrations/agent-braid/skills/agent-braid-execute/SKILL.md": {
+      "bytes": 2456,
+      "sha256": "d2f2a4598ab498663bd9854ee9cfa854a77ee64167adca39adeced33bd0b5f43"
+    },
+    "integrations/agent-braid/skills/agent-braid-plan/SKILL.md": {
+      "bytes": 2466,
+      "sha256": "90970a2d5930400dcb5344389c28ab18236086a5dd194379ea2f329f37e4cfb3"
+    },
+    "integrations/agent-braid/skills/agent-braid-recover/SKILL.md": {
+      "bytes": 2038,
+      "sha256": "0d2d02c291514c6c09a456791bf1521fa12719efe8ada608e3566b422586e27f"
+    },
+    "scripts/run_m45_engineering_readiness.py": {
+      "bytes": 19025,
+      "sha256": "ec1aa518006aa4c5af442c7a42e26cfb4a3e354d4bb773d63820aa9e680c01b7"
+    },
+    "specs/044-ai-tooling-evaluation/assurance.json": {
+      "bytes": 23735,
+      "sha256": "138ff249996f2c75372c9aaf9efe0c6b0def8f58a4fea9d873a0f82286305068"
+    },
+    "specs/044-ai-tooling-evaluation/evaluation-protocol.md": {
+      "bytes": 8679,
+      "sha256": "f09dbec3fb0e915b1413038ea030bc0ac138c2661f445277292fd980c07cee25"
+    },
+    "specs/044-ai-tooling-evaluation/human-evaluation-deferral-clarification.md": {
+      "bytes": 2712,
+      "sha256": "c10bacb5ec1a4870ebcf0c53568819c3e416a1afc6d32e897fb4779d7f9dd3df"
+    },
+    "specs/044-ai-tooling-evaluation/model-identity-clarification.md": {
+      "bytes": 2177,
+      "sha256": "f61fc211f31d1cc1284a2df9338461d1f1f9c85b1b1814e660537ac4a4c6d155"
+    },
+    "specs/044-ai-tooling-evaluation/spec.md": {
+      "bytes": 8471,
+      "sha256": "8b36d3fa4cc678d7339ec7b641bcbfd1611bb6f0ea215efc52f3de4288978237"
+    },
+    "specs/044-ai-tooling-evaluation/tasks.md": {
+      "bytes": 12949,
+      "sha256": "1058cb4bc67ce34ae30f86a74eb118536def7656f54542f74b90c31e10d9f5c4"
+    },
+    "tests/test_tooling_allocation.py": {
+      "bytes": 13063,
+      "sha256": "e3ea82e24f2e143a7953e711197490efb323741f748a3df494d7a32f45f916ef"
+    },
+    "tests/test_tooling_assets.py": {
+      "bytes": 7492,
+      "sha256": "aa305e947ad695a3ae9eb158ceb9cd447db296d3e8af12db40513d33529a8a7c"
+    },
+    "tests/test_tooling_capture.py": {
+      "bytes": 35012,
+      "sha256": "8aec955c4a714e974e1369048e6002310835d7b1b853ab082b9fea1b350c9f5c"
+    },
+    "tests/test_tooling_costs.py": {
+      "bytes": 9280,
+      "sha256": "1456186c3635e7ba2c2f63252677cbeebd8640b814a99fb5bc4962a4ad3bca94"
+    },
+    "tests/test_tooling_evaluation.py": {
+      "bytes": 47789,
+      "sha256": "68e621801363fa48a1218bee8dc11e38c8d4c6425522133fbc39eacc9282d1ed"
+    },
+    "tests/test_tooling_evaluation_report.py": {
+      "bytes": 39717,
+      "sha256": "3b676b3e3be3bb57483fec33ef05fc31d1fb0c58c01c2c1636c501efd55d58b6"
+    },
+    "tests/test_tooling_full_cost.py": {
+      "bytes": 24361,
+      "sha256": "0d6c3ff4bdc60cc83278d0a99b4fd5a118d799b5e1dde2c3c7f64e972254255b"
+    },
+    "tests/test_tooling_host_events.py": {
+      "bytes": 11914,
+      "sha256": "16d1fa694c1747a1d00a5f429308ed258ac9f44d8aa3d5c5869a77a829a166e1"
+    },
+    "tests/test_tooling_incremental_usage.py": {
+      "bytes": 14929,
+      "sha256": "b9fbfb37c9bec42ac19c4b9ca72806ddb6e0ee62e9838aa94f87c3604811d77c"
+    },
+    "tests/test_tooling_measurements.py": {
+      "bytes": 14641,
+      "sha256": "69df0927ca0281d95435f810b805a8e7966f144e8c14e2402f257c7b9976b776"
+    },
+    "tests/test_tooling_model_identity.py": {
+      "bytes": 8681,
+      "sha256": "9ef1a1b1a73ecd9a326155b81474019576331ea0a0967092eb42f6a7acbf9b97"
+    },
+    "tests/test_tooling_money.py": {
+      "bytes": 22622,
+      "sha256": "8249ddf040075ed062ec66d4f75eecb891ac15f5424fc30ed381b547b5c5e96e"
+    },
+    "tests/test_tooling_sessions.py": {
+      "bytes": 36228,
+      "sha256": "17c80f57da18f7f0fc0d945a024496bbdd767d3e9555023248a769d38894fe33"
+    },
+    "tests/test_tooling_subscription.py": {
+      "bytes": 6095,
+      "sha256": "ebb5fad30323cced7d395ff0cf32fd26547be074893401c46fd83733a0c285b6"
+    },
+    "tests/test_tooling_supervisor.py": {
+      "bytes": 29494,
+      "sha256": "74f565906f28ffb01683a3471f4505c439d85097d25441b0fc08010bdbe532bc"
+    }
+  }
+}

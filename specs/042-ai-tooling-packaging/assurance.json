@@ -128,11 +128,18 @@
           "id": "SC-001",
           "obtained_evidence": [
             {
-              "path": "specs/042-ai-tooling-packaging/evidence/partial-installed-e40c949.json",
-              "sha256": "f3f7c1ee6e447ae22559869c40a7c27b5ef27b01cf9725bffa98d4bededdafc7",
               "command": "See the normalized command record in the bound partial evidence JSON and the later retention limitation in docs/tooling/EVIDENCE_RETENTION_20261010.md. Exact raw invocation archives are not fully recovered; receipt hashes do not establish current replayability.",
+              "limits": "Exact-e40 local wheel/install and default resource byte equality are partial evidence only; no sdist, Linux reproduction, native host loading, lifecycle procedures, legal compatibility, or full scenario acceptance. Complete original private archives are not currently recovered; see the linked retention update. This remains historical partial evidence and cannot establish current replayability or complete acceptance.",
               "outcome": "partial-obtained; paired full procedure remains unmet",
-              "limits": "Exact-e40 local wheel/install and default resource byte equality are partial evidence only; no sdist, Linux reproduction, native host loading, lifecycle procedures, legal compatibility, or full scenario acceptance. Complete original private archives are not currently recovered; see the linked retention update. This remains historical partial evidence and cannot establish current replayability or complete acceptance."
+              "path": "specs/042-ai-tooling-packaging/evidence/partial-installed-e40c949.json",
+              "sha256": "f3f7c1ee6e447ae22559869c40a7c27b5ef27b01cf9725bffa98d4bededdafc7"
+            },
+            {
+              "command": "python scripts/run_m45_lifecycle_acceptance.py --protocol-receipt <private-mcp-5cffa9d-receipt> --output <private-lifecycle-proof>; actual separately retained build, macOS installed verifier and explicit Linux standalone launcher commands are in linked receipt projections (public path normalization; exact argv retained privately)",
+              "limits": "Bounded source/local service/SDK or installed-package engineering only. No native Codex/Claude host observation, provider session, approved registration, 108-attempt capture, positive utility, human evaluation, ADR adoption or founder acceptance.",
+              "outcome": "Paired procedure passed; see actual candidate-bound outcomes and retained-output hashes.",
+              "path": "specs/042-ai-tooling-packaging/evidence/sc-001.json",
+              "sha256": "c3c1779d9c1179716e9da3946c1ecfc0820578ab12366837272eb97640208253"
             }
           ],
           "planned_evidence": "specs/042-ai-tooling-packaging/evidence/sc-001.json: exact candidate/input/environment hashes, actual commands/raw outputs, all outcomes and limits; human decisions require their own record.",
@@ -150,7 +157,15 @@
         {
           "given": "a user-selected lifecycle operation",
           "id": "SC-002",
-          "obtained_evidence": [],
+          "obtained_evidence": [
+            {
+              "command": "python scripts/run_m45_lifecycle_acceptance.py --protocol-receipt <private-mcp-5cffa9d-receipt> --output <private-lifecycle-proof> (public path normalization; exact argv retained privately)",
+              "limits": "Bounded source/local service/SDK or installed-package engineering only. No native Codex/Claude host observation, provider session, approved registration, 108-attempt capture, positive utility, human evaluation, ADR adoption or founder acceptance.",
+              "outcome": "Paired procedure passed; see actual candidate-bound outcomes and retained-output hashes.",
+              "path": "specs/042-ai-tooling-packaging/evidence/sc-002.json",
+              "sha256": "2f9012daf7170ff91baebe4a9c5bbbc66f8ff9622b5f15a9f033b7135bd3e5bc"
+            }
+          ],
           "planned_evidence": "specs/042-ai-tooling-packaging/evidence/sc-002.json: exact candidate/input/environment hashes, actual commands/raw outputs, all outcomes and limits; human decisions require their own record.",
           "test_file": "specs/042-ai-tooling-packaging/validation-plan.md",
           "test_name": "procedure_lifecycle_api",
@@ -166,7 +181,15 @@
         {
           "given": "two repositories, host scopes and nondefault CODEX_HOME",
           "id": "SC-003",
-          "obtained_evidence": [],
+          "obtained_evidence": [
+            {
+              "command": "python scripts/run_m45_lifecycle_acceptance.py --protocol-receipt <private-mcp-5cffa9d-receipt> --output <private-lifecycle-proof> (public path normalization; exact argv retained privately)",
+              "limits": "Bounded source/local service/SDK or installed-package engineering only. No native Codex/Claude host observation, provider session, approved registration, 108-attempt capture, positive utility, human evaluation, ADR adoption or founder acceptance.",
+              "outcome": "Paired procedure passed; see actual candidate-bound outcomes and retained-output hashes.",
+              "path": "specs/042-ai-tooling-packaging/evidence/sc-003.json",
+              "sha256": "85c889f90197971c684bfa8dc30bf0a1db5ec5acff49c5ea76ad4c3a7b707e5d"
+            }
+          ],
           "planned_evidence": "specs/042-ai-tooling-packaging/evidence/sc-003.json: exact candidate/input/environment hashes, actual commands/raw outputs, all outcomes and limits; human decisions require their own record.",
           "test_file": "specs/042-ai-tooling-packaging/validation-plan.md",
           "test_name": "procedure_scope_and_roots",
@@ -182,7 +205,15 @@
         {
           "given": "existing unrelated configuration, collision or concurrent edit",
           "id": "SC-004",
-          "obtained_evidence": [],
+          "obtained_evidence": [
+            {
+              "command": "python scripts/run_m45_lifecycle_acceptance.py --protocol-receipt <private-mcp-5cffa9d-receipt> --output <private-lifecycle-proof> (public path normalization; exact argv retained privately)",
+              "limits": "Bounded source/local service/SDK or installed-package engineering only. No native Codex/Claude host observation, provider session, approved registration, 108-attempt capture, positive utility, human evaluation, ADR adoption or founder acceptance.",
+              "outcome": "Paired procedure passed; see actual candidate-bound outcomes and retained-output hashes.",
+              "path": "specs/042-ai-tooling-packaging/evidence/sc-004.json",
+              "sha256": "8196a2a2ef614ee548bda9fabc92f6ff6df7a2beffc8705cda5f3af839294b64"
+            }
+          ],
           "planned_evidence": "specs/042-ai-tooling-packaging/evidence/sc-004.json: exact candidate/input/environment hashes, actual commands/raw outputs, all outcomes and limits; human decisions require their own record.",
           "test_file": "specs/042-ai-tooling-packaging/validation-plan.md",
           "test_name": "procedure_configuration_preservation",
@@ -198,7 +229,15 @@
         {
           "given": "missing SDK/host/auth, invalid root and healthy protocol peer",
           "id": "SC-005",
-          "obtained_evidence": [],
+          "obtained_evidence": [
+            {
+              "command": "python scripts/run_m45_lifecycle_acceptance.py --protocol-receipt <private-mcp-5cffa9d-receipt> --output <private-lifecycle-proof> (public path normalization; exact argv retained privately)",
+              "limits": "Bounded source/local service/SDK or installed-package engineering only. No native Codex/Claude host observation, provider session, approved registration, 108-attempt capture, positive utility, human evaluation, ADR adoption or founder acceptance.",
+              "outcome": "Paired procedure passed; see actual candidate-bound outcomes and retained-output hashes.",
+              "path": "specs/042-ai-tooling-packaging/evidence/sc-005.json",
+              "sha256": "a6628e60588bd4194ed27452ea465410f3be66f51d04d463a87487dca00dd326"
+            }
+          ],
           "planned_evidence": "specs/042-ai-tooling-packaging/evidence/sc-005.json: exact candidate/input/environment hashes, actual commands/raw outputs, all outcomes and limits; human decisions require their own record.",
           "test_file": "specs/042-ai-tooling-packaging/validation-plan.md",
           "test_name": "procedure_doctor_status",
@@ -214,7 +253,15 @@
         {
           "given": "older owned bundle and locally edited files",
           "id": "SC-006",
-          "obtained_evidence": [],
+          "obtained_evidence": [
+            {
+              "command": "python scripts/run_m45_lifecycle_acceptance.py --protocol-receipt <private-mcp-5cffa9d-receipt> --output <private-lifecycle-proof> (public path normalization; exact argv retained privately)",
+              "limits": "Bounded source/local service/SDK or installed-package engineering only. No native Codex/Claude host observation, provider session, approved registration, 108-attempt capture, positive utility, human evaluation, ADR adoption or founder acceptance.",
+              "outcome": "Paired procedure passed; see actual candidate-bound outcomes and retained-output hashes.",
+              "path": "specs/042-ai-tooling-packaging/evidence/sc-006.json",
+              "sha256": "03f2dff86dd3c31ae5e103618fe1923add0b12e676ccd6842b586ef6cea6427b"
+            }
+          ],
           "planned_evidence": "specs/042-ai-tooling-packaging/evidence/sc-006.json: exact candidate/input/environment hashes, actual commands/raw outputs, all outcomes and limits; human decisions require their own record.",
           "test_file": "specs/042-ai-tooling-packaging/validation-plan.md",
           "test_name": "procedure_safe_update",
@@ -230,7 +277,15 @@
         {
           "given": "owned, shared and changed configuration/skills",
           "id": "SC-007",
-          "obtained_evidence": [],
+          "obtained_evidence": [
+            {
+              "command": "python scripts/run_m45_lifecycle_acceptance.py --protocol-receipt <private-mcp-5cffa9d-receipt> --output <private-lifecycle-proof> (public path normalization; exact argv retained privately)",
+              "limits": "Bounded source/local service/SDK or installed-package engineering only. No native Codex/Claude host observation, provider session, approved registration, 108-attempt capture, positive utility, human evaluation, ADR adoption or founder acceptance.",
+              "outcome": "Paired procedure passed; see actual candidate-bound outcomes and retained-output hashes.",
+              "path": "specs/042-ai-tooling-packaging/evidence/sc-007.json",
+              "sha256": "3e748959c86a2dd4b56a23a9ffe2f19f15fe80f0a8aeaa1a1c0ce777fce89ece"
+            }
+          ],
           "planned_evidence": "specs/042-ai-tooling-packaging/evidence/sc-007.json: exact candidate/input/environment hashes, actual commands/raw outputs, all outcomes and limits; human decisions require their own record.",
           "test_file": "specs/042-ai-tooling-packaging/validation-plan.md",
           "test_name": "procedure_safe_uninstall",
@@ -248,11 +303,18 @@
           "id": "SC-008",
           "obtained_evidence": [
             {
-              "path": "specs/042-ai-tooling-packaging/evidence/partial-installed-e40c949.json",
-              "sha256": "f3f7c1ee6e447ae22559869c40a7c27b5ef27b01cf9725bffa98d4bededdafc7",
               "command": "See the normalized command record in the bound partial evidence JSON and the later retention limitation in docs/tooling/EVIDENCE_RETENTION_20261010.md. Exact raw invocation archives are not fully recovered; receipt hashes do not establish current replayability.",
+              "limits": "Exact-e40 local wheel/install and default resource byte equality are partial evidence only; no sdist, Linux reproduction, native host loading, lifecycle procedures, legal compatibility, or full scenario acceptance. Complete original private archives are not currently recovered; see the linked retention update. This remains historical partial evidence and cannot establish current replayability or complete acceptance.",
               "outcome": "partial-obtained; paired full procedure remains unmet",
-              "limits": "Exact-e40 local wheel/install and default resource byte equality are partial evidence only; no sdist, Linux reproduction, native host loading, lifecycle procedures, legal compatibility, or full scenario acceptance. Complete original private archives are not currently recovered; see the linked retention update. This remains historical partial evidence and cannot establish current replayability or complete acceptance."
+              "path": "specs/042-ai-tooling-packaging/evidence/partial-installed-e40c949.json",
+              "sha256": "f3f7c1ee6e447ae22559869c40a7c27b5ef27b01cf9725bffa98d4bededdafc7"
+            },
+            {
+              "command": "python scripts/run_m45_lifecycle_acceptance.py --protocol-receipt <private-mcp-5cffa9d-receipt> --output <private-lifecycle-proof>; actual separately retained build, macOS installed verifier and explicit Linux standalone launcher commands are in linked receipt projections (public path normalization; exact argv retained privately)",
+              "limits": "Bounded source/local service/SDK or installed-package engineering only. No native Codex/Claude host observation, provider session, approved registration, 108-attempt capture, positive utility, human evaluation, ADR adoption or founder acceptance.",
+              "outcome": "Paired procedure passed; see actual candidate-bound outcomes and retained-output hashes.",
+              "path": "specs/042-ai-tooling-packaging/evidence/sc-008.json",
+              "sha256": "688972eed56855a69f5a4e04790ed23e08b4758223e58de692b036084fed5a41"
             }
           ],
           "planned_evidence": "specs/042-ai-tooling-packaging/evidence/sc-008.json: exact candidate/input/environment hashes, actual commands/raw outputs, all outcomes and limits; human decisions require their own record.",

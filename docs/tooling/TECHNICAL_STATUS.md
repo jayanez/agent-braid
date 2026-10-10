@@ -1,6 +1,6 @@
 # M4.5 technical evidence status
 
-**Status date: 2026-10-10.** This is a derived status report for the
+**Status date: 2026-10-11.** This is a derived status report for the
 experimental candidate. It does not replace raw receipts, canonical obtained
 evidence, task acceptance or an approval record. Historical private receipts and independent review bindings have a later
 [retention limitation](EVIDENCE_RETENTION_20261010.md). Some original archives
@@ -12,9 +12,50 @@ The table below is a historical record for the earlier integration `153c8fb7452f
 `30c058c14ae5dbcfc3c4e369d480f402f935520a6c68d7dd13c7ebac80061c08`.
 The recorded product modules match that historical integrated source. The observations below are not transferred to another commit. The e40c949 source was the reviewed PR candidate at the time of the bound validation observations below; it is the latest validated source candidate in this historical section.
 
-## Current preparation delivery — 2026-10-10
+## Final repository validation — 2026-10-11
 
-The active owner goal is the [five-task preparation delivery](../../specs/044-ai-tooling-evaluation/preparation-delivery-plan.md):
+Both repository profiles passed on the same clean frozen source `72a396d294205201f7f56d00fa2349dccb540a5c`.
+The receipts validate source work and do not extend the host, registered-cohort,
+human-evaluation or founder-acceptance boundaries.
+
+- Quick profile: `72a396d294205201f7f56d00fa2349dccb540a5c`; 1293 tests, 12 skipped; terminal profile receipt and raw output are hash-bound privately.
+- Stable PR profile: `72a396d294205201f7f56d00fa2349dccb540a5c`; 1293 tests, 12 skipped; terminal profile receipt and raw output are hash-bound privately.
+
+## Autonomous technical closure — 2026-10-10
+
+The current local technical capture is complete within its stated scope. Canonical
+scenario receipts were published separately and bind distinct source candidates;
+there is no single candidate that supports every row below. See
+[autonomous completion](AUTONOMOUS_COMPLETION.md) for the private evidence handling
+and the canonical receipt index.
+
+| Procedure | Bound candidate | Observed result | Boundary |
+| --- | --- | --- | --- |
+| Offline macOS core/tooling wheel installations and CLI/MCP checks | `53f1704ca7ea668637efdeb2d4b0a231769b3c68`; wheel SHA-256 `c43fd789b64cc123e8fd3c903fd075c27b9ce012964fbd7e8017f847cf54814d` | Fresh isolated core and SDK-extra environments passed the 15-command package procedure, including actual SDK auto/legacy CLI parity and the core-only SDK refusal. | Local macOS ARM64/CPython only; no native Codex or Claude host was launched. |
+| Linux AMD64 package reproduction | `53f1704ca7ea668637efdeb2d4b0a231769b3c68`; same wheel digest | Offline installation/probe passed on an ARM64 Docker host using explicit AMD64 emulation. | Not native AMD64 hardware, performance evidence or registered SPEC-044 SC-004. |
+| Engineering controls | `aaae2e76b74653d142c46027bd33f3e05c0982eb`; direct rerun on `24921e1a16dfff15cde5af091f7b955491acdbef` | 223 tests passed with no skips on each recorded candidate. | Synthetic/unit controls; the direct rerun is not transferred to another source; no live provider or host behavior. |
+| Program acceptance | `5cffa9d27f27686dc2cbbf90ed643e2ec2df94e7` | Eight positive/refusal control scenarios passed. | Local deterministic procedure; does not start the 108-attempt cohort. |
+| MCP acceptance | `24921e1a16dfff15cde5af091f7b955491acdbef` | Eight acceptance scenarios and 37/37 tests passed with no skips; an actual local SDK stdio peer completed auto and legacy negotiation. | SDK peer is not a native Codex or Claude host observation. |
+| Lifecycle acceptance | `5cffa9d27f27686dc2cbbf90ed643e2ec2df94e7` | 13/13 tests passed, no skips or failures. | Deterministic local fixtures; doctor remains pending and no native-host install was observed. |
+
+Canonical scenario receipts: [SPEC-039] [SC-001](../../specs/039-ai-tooling-program/evidence/sc-001.json) [SC-002](../../specs/039-ai-tooling-program/evidence/sc-002.json) [SC-003](../../specs/039-ai-tooling-program/evidence/sc-003.json) [SC-004](../../specs/039-ai-tooling-program/evidence/sc-004.json) [SC-005](../../specs/039-ai-tooling-program/evidence/sc-005.json) [SC-006](../../specs/039-ai-tooling-program/evidence/sc-006.json) [SC-007](../../specs/039-ai-tooling-program/evidence/sc-007.json) [SC-008](../../specs/039-ai-tooling-program/evidence/sc-008.json); [SPEC-040] [SC-001](../../specs/040-portable-mcp-surface/evidence/sc-001.json) [SC-002](../../specs/040-portable-mcp-surface/evidence/sc-002.json) [SC-003](../../specs/040-portable-mcp-surface/evidence/sc-003.json) [SC-004](../../specs/040-portable-mcp-surface/evidence/sc-004.json) [SC-005](../../specs/040-portable-mcp-surface/evidence/sc-005.json) [SC-006](../../specs/040-portable-mcp-surface/evidence/sc-006.json) [SC-007](../../specs/040-portable-mcp-surface/evidence/sc-007.json) [SC-008](../../specs/040-portable-mcp-surface/evidence/sc-008.json); [SPEC-042] [SC-001](../../specs/042-ai-tooling-packaging/evidence/sc-001.json) [SC-002](../../specs/042-ai-tooling-packaging/evidence/sc-002.json) [SC-003](../../specs/042-ai-tooling-packaging/evidence/sc-003.json) [SC-004](../../specs/042-ai-tooling-packaging/evidence/sc-004.json) [SC-005](../../specs/042-ai-tooling-packaging/evidence/sc-005.json) [SC-006](../../specs/042-ai-tooling-packaging/evidence/sc-006.json) [SC-007](../../specs/042-ai-tooling-packaging/evidence/sc-007.json) [SC-008](../../specs/042-ai-tooling-packaging/evidence/sc-008.json);
+and the applicable [SPEC-043] [SC-002](../../specs/043-ai-tooling-journey/evidence/sc-002.json) [SC-004](../../specs/043-ai-tooling-journey/evidence/sc-004.json) [SC-005](../../specs/043-ai-tooling-journey/evidence/sc-005.json) [SC-006](../../specs/043-ai-tooling-journey/evidence/sc-006.json) [SC-007](../../specs/043-ai-tooling-journey/evidence/sc-007.json). Auxiliary clause and validation receipts:
+[SPEC-041 technical clauses](../../specs/041-ai-tooling-skills/evidence/technical-clauses.json),
+[SPEC-043 technical clauses](../../specs/043-ai-tooling-journey/evidence/technical-clauses.json),
+[SPEC-044 technical clauses](../../specs/044-ai-tooling-evaluation/evidence/technical-clauses.json),
+and [SPEC-044 technical validation](../../specs/044-ai-tooling-evaluation/evidence/technical-validation.json).
+
+M4.5 remains Open. The six original draft packages and all 60 original acceptance
+criteria are retained; 19 added evidence tasks produce a 79-item source task checklist
+(52 checked, 27 unchecked), plus six open parents. Remote issue state is separate. Native Codex/Claude workflows, human
+outcome interpretation/adjudication, founder acceptance, ADR adoption and milestone
+closure remain separate gates. The 108-attempt registered cohort has not started.
+M4 bounded engineering/evaluation closure does not change historical G4 NO-GO or
+its negative-utility result; M3.5 remains independent with zero admitted real pairs.
+
+## Historical preparation delivery — 2026-10-10
+
+The then-active owner goal was the [five-task preparation delivery](../../specs/044-ai-tooling-evaluation/preparation-delivery-plan.md):
 freeze both dependency closures, verify the installed macOS package, prepare the
 Linux x86_64 recipe, consolidate independently reviewed evidence, and reconcile
 project documentation and GitHub tracking after validated integration. Additional
@@ -136,8 +177,9 @@ clean-room reproduction, native-host/cohort acceptance, or human/founder approva
    review and decision packet.
 
 The earlier full technical-evaluation goal excluded only the two human outcome
-evaluations and their adjudication. It is superseded for immediate delivery by
-the five-task preparation goal above. They remain explicitly pending under the
+evaluations and their adjudication. The completed technical phase of the current
+autonomous closure goal above is narrower and does not waive broader technical
+gates. Those human evaluations remain explicitly pending under the
 [deferral decision](../../specs/044-ai-tooling-evaluation/human-evaluation-deferral-clarification.md).
 Human identities, fees, times and combined human-inclusive totals remain unknown;
 technical accounting must not represent them as zero. Independent model-based

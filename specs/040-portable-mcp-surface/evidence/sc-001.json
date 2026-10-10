@@ -1,0 +1,767 @@
+{
+  "case": {
+    "limits": [
+      "Local service and SDK protocol peer only; no Codex/Claude host observation."
+    ],
+    "outcome": "passed",
+    "scenario": "SC-001",
+    "tests": [
+      {
+        "outcome": "ok",
+        "testName": "test_sc001_optional_sdk_pin_core_import_and_missing_dependency_refusal"
+      }
+    ]
+  },
+  "inputs": {
+    "agent_braid/analysis.py": "fadfb6f6d3d6f89002df519bbcc86d839724f243e2c8e52732ef57e555abfe00",
+    "agent_braid/cli.py": "9e1750b94d9ec846c07117a4b3490f0a3026401a3816a42145eb866f843bf988",
+    "agent_braid/git_adapter.py": "4548eb96849e2d0ed1eaefc53579d065651b00a2c6ae5b1aef6e2bdc5ae3dc45",
+    "agent_braid/git_process.py": "3247ac861404cfb68f08939770a5048294b45ddc984a1379ca9eb2091ad48668",
+    "agent_braid/git_replay.py": "62a2c461902e30d874dfe82bed77ab79075f33cb0e56f1e543fd9d317f1d571e",
+    "agent_braid/git_runtime.py": "ceb4469906b6c97a6f03faf3cc1b4ea8387df937c06b8ccd49984eaf2dff4d4e",
+    "agent_braid/mcp_runtime.py": "32d30a6a167235e1ab8ca89acdc32b23eb74412e2ac0555fe7c9118d1d816d83",
+    "agent_braid/runtime_policy.py": "930ead80e4085301e6337af58660665219da3d3b40b72cfca8b803cebfa09188",
+    "agent_braid/runtime_scheduler.py": "47bb371c88726793d207a59bb85cb6911d86e00a44694b37934805d9fa2462a9",
+    "agent_braid/tooling_cli.py": "2ba676c7873ee17590e66baa8ace4bef2453a12d686db57654382a8b23dece1a",
+    "agent_braid/tooling_mcp.py": "f8d151fb11905d5bff7114571e5663bf80cb0cd15af3acb1bf5159b14c54b6dd",
+    "examples/analysis/file-edits.json": "23a833a13adb2b029a696028bb1ae64ced30a65a19375d8e515c1c4d809fcd93",
+    "pyproject.toml": "21b32beb7d47b4551e837027ae2713890dc14bb07d7efc56e1cdf2ecc57c1648",
+    "scripts/run_m45_mcp_acceptance.py": "7b50f30f07f2147b32d9b688817801a71882727e40d86e314c9fde726939a778",
+    "specs/040-portable-mcp-surface/contracts/interface.md": "d8e33c92f83e9f251f985e72d2bb5ce8a658151b7f41964b46d7c9af9808b8a6",
+    "specs/040-portable-mcp-surface/data-model.md": "cbc2d49e75b416931a9f2e23a1d5a27065549cc7ab6ebfaec95a8655c49bc4ec",
+    "tests/test_git_adapter.py": "f27408f851d23c78460bfc52b3ebc024ef58acde1c0d0f649dc9512d78b4c067",
+    "tests/test_git_runtime.py": "70e0655241bb64b4fb620309b0897c350b077a46db57be142f000a2e0d46fe47",
+    "tests/test_tooling_mcp.py": "de9ae5adbe42507a99cb33ecffbd0634455614aa8201c160d7a8d06eeabe6075",
+    "tests/test_tooling_mcp_acceptance.py": "42fc5daf4d9af91a5e9cdf882d82ed46686a1982a9a939637938205f8a841501"
+  },
+  "limits": "Bounded source/local service/SDK or installed-package engineering only. No native Codex/Claude host observation, provider session, approved registration, 108-attempt capture, positive utility, human evaluation, ADR adoption or founder acceptance.",
+  "observation": {
+    "domain": "Local SDK 2.3.0 stdio peer and local service paired controls",
+    "privacy": "Absolute paths normalized; exact command, cwd, raw outputs and receipt retained privately. No raw provider/account data published.",
+    "privateReceiptName": "mcp-optional-fix-v1/mcp-acceptance-receipt.json",
+    "privateReceiptSha256": "9e65e20bffd2bf48a82c8677c88b814d3b47ee48e28a21cec7a83286ba50fc02",
+    "record": {
+      "acceptanceDecision": {
+        "checks": {
+          "allEightCasesPassed": true,
+          "allRequiredTestsObserved": true,
+          "allTestsObservedOkNoSkips": true,
+          "coreOnlyPairedControlPassed": true,
+          "headUnchanged": true,
+          "parsedTestCount": 37,
+          "pinnedSdkVersionObserved": true,
+          "sourceInputsUnchanged": true,
+          "unittestReportedCount": 37
+        },
+        "outcome": "passed"
+      },
+      "candidate": {
+        "baseCommit": "24921e1a16dfff15cde5af091f7b955491acdbef",
+        "inputSha256": {
+          "agent_braid/analysis.py": "fadfb6f6d3d6f89002df519bbcc86d839724f243e2c8e52732ef57e555abfe00",
+          "agent_braid/cli.py": "9e1750b94d9ec846c07117a4b3490f0a3026401a3816a42145eb866f843bf988",
+          "agent_braid/git_adapter.py": "4548eb96849e2d0ed1eaefc53579d065651b00a2c6ae5b1aef6e2bdc5ae3dc45",
+          "agent_braid/git_process.py": "3247ac861404cfb68f08939770a5048294b45ddc984a1379ca9eb2091ad48668",
+          "agent_braid/git_replay.py": "62a2c461902e30d874dfe82bed77ab79075f33cb0e56f1e543fd9d317f1d571e",
+          "agent_braid/git_runtime.py": "ceb4469906b6c97a6f03faf3cc1b4ea8387df937c06b8ccd49984eaf2dff4d4e",
+          "agent_braid/mcp_runtime.py": "32d30a6a167235e1ab8ca89acdc32b23eb74412e2ac0555fe7c9118d1d816d83",
+          "agent_braid/runtime_policy.py": "930ead80e4085301e6337af58660665219da3d3b40b72cfca8b803cebfa09188",
+          "agent_braid/runtime_scheduler.py": "47bb371c88726793d207a59bb85cb6911d86e00a44694b37934805d9fa2462a9",
+          "agent_braid/tooling_cli.py": "2ba676c7873ee17590e66baa8ace4bef2453a12d686db57654382a8b23dece1a",
+          "agent_braid/tooling_mcp.py": "f8d151fb11905d5bff7114571e5663bf80cb0cd15af3acb1bf5159b14c54b6dd",
+          "examples/analysis/file-edits.json": "23a833a13adb2b029a696028bb1ae64ced30a65a19375d8e515c1c4d809fcd93",
+          "pyproject.toml": "21b32beb7d47b4551e837027ae2713890dc14bb07d7efc56e1cdf2ecc57c1648",
+          "scripts/run_m45_mcp_acceptance.py": "7b50f30f07f2147b32d9b688817801a71882727e40d86e314c9fde726939a778",
+          "specs/040-portable-mcp-surface/contracts/interface.md": "d8e33c92f83e9f251f985e72d2bb5ce8a658151b7f41964b46d7c9af9808b8a6",
+          "specs/040-portable-mcp-surface/data-model.md": "cbc2d49e75b416931a9f2e23a1d5a27065549cc7ab6ebfaec95a8655c49bc4ec",
+          "tests/test_git_adapter.py": "f27408f851d23c78460bfc52b3ebc024ef58acde1c0d0f649dc9512d78b4c067",
+          "tests/test_git_runtime.py": "70e0655241bb64b4fb620309b0897c350b077a46db57be142f000a2e0d46fe47",
+          "tests/test_tooling_mcp.py": "de9ae5adbe42507a99cb33ecffbd0634455614aa8201c160d7a8d06eeabe6075",
+          "tests/test_tooling_mcp_acceptance.py": "42fc5daf4d9af91a5e9cdf882d82ed46686a1982a9a939637938205f8a841501"
+        },
+        "postCaptureHead": "24921e1a16dfff15cde5af091f7b955491acdbef",
+        "postCaptureInputSha256": {
+          "agent_braid/analysis.py": "fadfb6f6d3d6f89002df519bbcc86d839724f243e2c8e52732ef57e555abfe00",
+          "agent_braid/cli.py": "9e1750b94d9ec846c07117a4b3490f0a3026401a3816a42145eb866f843bf988",
+          "agent_braid/git_adapter.py": "4548eb96849e2d0ed1eaefc53579d065651b00a2c6ae5b1aef6e2bdc5ae3dc45",
+          "agent_braid/git_process.py": "3247ac861404cfb68f08939770a5048294b45ddc984a1379ca9eb2091ad48668",
+          "agent_braid/git_replay.py": "62a2c461902e30d874dfe82bed77ab79075f33cb0e56f1e543fd9d317f1d571e",
+          "agent_braid/git_runtime.py": "ceb4469906b6c97a6f03faf3cc1b4ea8387df937c06b8ccd49984eaf2dff4d4e",
+          "agent_braid/mcp_runtime.py": "32d30a6a167235e1ab8ca89acdc32b23eb74412e2ac0555fe7c9118d1d816d83",
+          "agent_braid/runtime_policy.py": "930ead80e4085301e6337af58660665219da3d3b40b72cfca8b803cebfa09188",
+          "agent_braid/runtime_scheduler.py": "47bb371c88726793d207a59bb85cb6911d86e00a44694b37934805d9fa2462a9",
+          "agent_braid/tooling_cli.py": "2ba676c7873ee17590e66baa8ace4bef2453a12d686db57654382a8b23dece1a",
+          "agent_braid/tooling_mcp.py": "f8d151fb11905d5bff7114571e5663bf80cb0cd15af3acb1bf5159b14c54b6dd",
+          "examples/analysis/file-edits.json": "23a833a13adb2b029a696028bb1ae64ced30a65a19375d8e515c1c4d809fcd93",
+          "pyproject.toml": "21b32beb7d47b4551e837027ae2713890dc14bb07d7efc56e1cdf2ecc57c1648",
+          "scripts/run_m45_mcp_acceptance.py": "7b50f30f07f2147b32d9b688817801a71882727e40d86e314c9fde726939a778",
+          "specs/040-portable-mcp-surface/contracts/interface.md": "d8e33c92f83e9f251f985e72d2bb5ce8a658151b7f41964b46d7c9af9808b8a6",
+          "specs/040-portable-mcp-surface/data-model.md": "cbc2d49e75b416931a9f2e23a1d5a27065549cc7ab6ebfaec95a8655c49bc4ec",
+          "tests/test_git_adapter.py": "f27408f851d23c78460bfc52b3ebc024ef58acde1c0d0f649dc9512d78b4c067",
+          "tests/test_git_runtime.py": "70e0655241bb64b4fb620309b0897c350b077a46db57be142f000a2e0d46fe47",
+          "tests/test_tooling_mcp.py": "de9ae5adbe42507a99cb33ecffbd0634455614aa8201c160d7a8d06eeabe6075",
+          "tests/test_tooling_mcp_acceptance.py": "42fc5daf4d9af91a5e9cdf882d82ed46686a1982a9a939637938205f8a841501"
+        },
+        "postCaptureWorkingTreeStatus": "",
+        "trackedDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "workingTreeStatus": ""
+      },
+      "commands": [
+        {
+          "command": [
+            "<private-delivery-root>/checkout/../macos-installed-5248210bee3d-v1/probe-work/venvs/tooling/bin/python",
+            "-m",
+            "unittest",
+            "-v",
+            "tests.test_tooling_mcp",
+            "tests.test_tooling_mcp_acceptance"
+          ],
+          "exitCode": 0,
+          "purpose": "tooling-sdk-acceptance-tests",
+          "rawOutputPath": "mcp-acceptance-output.txt",
+          "rawOutputSha256": "f589026ba8517d69c0c32d313bb0a08dccb958385fe2ec75943af162ca6ec575",
+          "stderrSha256": "f589026ba8517d69c0c32d313bb0a08dccb958385fe2ec75943af162ca6ec575",
+          "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "command": [
+            "<private-delivery-root>/checkout/../macos-installed-5248210bee3d-v1/probe-work/venvs/tooling/bin/python",
+            "-c",
+            "import importlib.metadata; print(importlib.metadata.version('mcp'))"
+          ],
+          "exitCode": 0,
+          "literalStdout": "2.3.0",
+          "purpose": "pinned-sdk-version-probe",
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "stdoutSha256": "a42caf4a54bbbe27aa45b6efbc6356c5e299b19763e728b6cdb7201b02ebbe36"
+        },
+        {
+          "command": [
+            "<private-delivery-root>/checkout/../macos-installed-5248210bee3d-v1/probe-work/venvs/core/bin/python",
+            "-c",
+            "import importlib.util,json; assert importlib.util.find_spec('mcp') is None; import agent_braid.analysis; from agent_braid.tooling_mcp import create_server,ToolingConfig; from pathlib import Path; import tempfile; t=tempfile.TemporaryDirectory(); p=Path(t.name); s=p/'src';r=p/'res';s.mkdir();r.mkdir(); c=ToolingConfig(s,r); \ntry: create_server(c)\nexcept RuntimeError as e: assert \"optional 'tooling' extra\" in str(e); print('core-only-analysis-import-and-actionable-refusal: passed')\nelse: raise AssertionError('SDK unexpectedly available')"
+          ],
+          "exitCode": 0,
+          "outcome": "passed",
+          "purpose": "core-only-paired-control",
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "stdoutSha256": "387dc17e7dc9f312a9ec158cb32edc3b21d0f310168045034cca079e360c5ff7"
+        }
+      ],
+      "environment": {
+        "environmentAllowlist": [
+          "HOME",
+          "LANG",
+          "M45_CONTROL_TRACE_DIR",
+          "PATH",
+          "TMPDIR"
+        ],
+        "mcpSdkVersion": "2.3.0",
+        "pathSha256": "0cb0386ae81193faf28dff65df807cd09e8b8aab4525a503d34a5357cd9a57fb",
+        "platform": "macOS-27.0.1-arm64-arm-64bit-Mach-O",
+        "python": "Python 3.13.11"
+      },
+      "limits": [
+        "Unit and SDK protocol peers establish the recorded local domains only.",
+        "No actual Codex or Claude Code host was launched or observed.",
+        "No clean-room reproduction, human review, founder approval, or scientific claim is implied."
+      ],
+      "sdkTransportTrace": {
+        "directory": "sdk-transport-traces",
+        "fileCount": 78,
+        "files": [
+          {
+            "path": "sc003-git-auto-out-of-root-envelope.json",
+            "sha256": "a03b1329d350aadbe7ade95c9f27ce170940fb4468b3e04cfbfc6eacaa7f87a2",
+            "sizeBytes": 750
+          },
+          {
+            "path": "sc003-git-auto-unknown-envelope.json",
+            "sha256": "2d8399011c7fbbec1e3dbeb8d32636ba1b45139ab069bea07a15023ef5d43465",
+            "sizeBytes": 723
+          },
+          {
+            "path": "sc003-git-auto-valid-envelope.json",
+            "sha256": "140a1873c4eb6810eb27899e7250890b64188a64c0c4e54f9bda6f4295bf1c4f",
+            "sizeBytes": 3726
+          },
+          {
+            "path": "sc003-git-cli-provenance.json",
+            "sha256": "46e9d4d3aac4d9aa78b84c3c5909155cfb50fef4a68e990bd8ed5ecf733f0b24",
+            "sizeBytes": 1058
+          },
+          {
+            "path": "sc003-git-cli-report.json",
+            "sha256": "6c691a5f540a90a3617e8a7927a1c1f2e5d5ebd309b914d0b159cc3cb1391f8f",
+            "sizeBytes": 2378
+          },
+          {
+            "path": "sc003-git-legacy-out-of-root-envelope.json",
+            "sha256": "a03b1329d350aadbe7ade95c9f27ce170940fb4468b3e04cfbfc6eacaa7f87a2",
+            "sizeBytes": 750
+          },
+          {
+            "path": "sc003-git-legacy-unknown-envelope.json",
+            "sha256": "2d8399011c7fbbec1e3dbeb8d32636ba1b45139ab069bea07a15023ef5d43465",
+            "sizeBytes": 723
+          },
+          {
+            "path": "sc003-git-legacy-valid-envelope.json",
+            "sha256": "fff92d16e5bf81447516131366c7bbdc428a6386c38d892fbaea11e05a8b7c54",
+            "sizeBytes": 3726
+          },
+          {
+            "path": "sc003-git-worktree-input-commits.json",
+            "sha256": "b6da5a377ac3e2f27d9d012a95d339920eab4d2e36e917bc8ee72cc7c4a2574c",
+            "sizeBytes": 147
+          },
+          {
+            "path": "sc003-git-worktree-input.json",
+            "sha256": "2d6c8c79ac2dcb9182372e209e042340a3718f0bac2cd5ebea53661a597a5641",
+            "sizeBytes": 856
+          },
+          {
+            "path": "sc003-large-aim-auto-chain.json",
+            "sha256": "a416c09c7430bea1acbfc42e080dc174cd077bd88fcf819746a82fefb4a483d0",
+            "sizeBytes": 10891
+          },
+          {
+            "path": "sc003-large-aim-auto-chunk-000.json",
+            "sha256": "b3abfc88e20f6864a029c2bbfd4e912ee82c8e979c4fe5e96cc88abf3f720b44",
+            "sizeBytes": 175259
+          },
+          {
+            "path": "sc003-large-aim-auto-chunk-001.json",
+            "sha256": "aebce1b9254538f2fe77a00e692fee28e424173d3cc9d8266cfd82a9dc10dcef",
+            "sizeBytes": 175264
+          },
+          {
+            "path": "sc003-large-aim-auto-chunk-002.json",
+            "sha256": "e009e1ea0c86237f039c0aa7b447986dc3af52440f56de6f9848ff1283edecc8",
+            "sizeBytes": 175264
+          },
+          {
+            "path": "sc003-large-aim-auto-chunk-003.json",
+            "sha256": "816b5824e068c2ebd60897edae8f7d39cafff309180f8f98d95331157732ce32",
+            "sizeBytes": 175264
+          },
+          {
+            "path": "sc003-large-aim-auto-chunk-004.json",
+            "sha256": "e781ec365a82bf397a5a1ad975dc8444db9598f263c3312dc5d84278cfcc377d",
+            "sizeBytes": 175264
+          },
+          {
+            "path": "sc003-large-aim-auto-chunk-005.json",
+            "sha256": "9cd84cb95bb606bed5a133056bd462924545a21ec84a9176a0857b4585ef4a63",
+            "sizeBytes": 175264
+          },
+          {
+            "path": "sc003-large-aim-auto-chunk-006.json",
+            "sha256": "1dd6ea3ed40d1248389630237f62d07dc7059e16f6480fe346b80c349412e51b",
+            "sizeBytes": 175264
+          },
+          {
+            "path": "sc003-large-aim-auto-chunk-007.json",
+            "sha256": "1cb655f4b8196bdfabcf3db15c73d0db66dd30740c09bbcb8b70bc353b465ffe",
+            "sizeBytes": 175265
+          },
+          {
+            "path": "sc003-large-aim-auto-chunk-008.json",
+            "sha256": "1a9b04c41c21bd55074cafb5a098a2e7233d7ce2fb71e2faa3a4dd0a63febc55",
+            "sizeBytes": 175266
+          },
+          {
+            "path": "sc003-large-aim-auto-chunk-009.json",
+            "sha256": "ff861f61d043abc2821174d32b727d20866c4c14bb527949842d284b68c379ce",
+            "sizeBytes": 175266
+          },
+          {
+            "path": "sc003-large-aim-auto-chunk-010.json",
+            "sha256": "f5c1af95ebde611b0ad0689e6a313445763435c7a2f1d9b86cc3747215de52cc",
+            "sizeBytes": 175266
+          },
+          {
+            "path": "sc003-large-aim-auto-chunk-011.json",
+            "sha256": "35dd5ebad3def317d67ea79d99a9d78fb99aed3268e053c122da4eca42bccabe",
+            "sizeBytes": 175266
+          },
+          {
+            "path": "sc003-large-aim-auto-chunk-012.json",
+            "sha256": "4fe4b5755ecaf81cd8d7fe0aa4367642ec5089abec70eeca42741249f7024e52",
+            "sizeBytes": 175266
+          },
+          {
+            "path": "sc003-large-aim-auto-chunk-013.json",
+            "sha256": "7479a9bede229400aa2d6a0b64cca5ed8308d74a4afc925734c2d47c79a31ee6",
+            "sizeBytes": 175266
+          },
+          {
+            "path": "sc003-large-aim-auto-chunk-014.json",
+            "sha256": "b42c5cf689e9d99c0f2a32aa109579c18fcbdda2bad47a35f911e6a81b859fd5",
+            "sizeBytes": 175266
+          },
+          {
+            "path": "sc003-large-aim-auto-chunk-015.json",
+            "sha256": "ec5461cec56f437a9465679b706f9060823724c17a380ab30aed334a55f73bee",
+            "sizeBytes": 175266
+          },
+          {
+            "path": "sc003-large-aim-auto-chunk-016.json",
+            "sha256": "2157e218fce0a66bc37e2d9c77ebb1aedec43cd9a4c9af4ea6d6d5d0833741c9",
+            "sizeBytes": 175266
+          },
+          {
+            "path": "sc003-large-aim-auto-chunk-017.json",
+            "sha256": "f34a1226ecef544be60a9ec29e8de0fa61172d6bc705ee108b5c2a4c1564b66b",
+            "sizeBytes": 175266
+          },
+          {
+            "path": "sc003-large-aim-auto-chunk-018.json",
+            "sha256": "9b6d8707a89c02b918d52bacd3ab11a14e9f0e97e82113d1e30f453490ee44cf",
+            "sizeBytes": 175266
+          },
+          {
+            "path": "sc003-large-aim-auto-chunk-019.json",
+            "sha256": "b28327ea4e158af91905bcf0c8cf71880047c650d0dbf30c20b6887c0fd49c99",
+            "sizeBytes": 175265
+          },
+          {
+            "path": "sc003-large-aim-auto-chunk-020.json",
+            "sha256": "a3c09969c9fa04991ee5c4f0b4c21b6ad919476dac29a003dcf58562068d4f46",
+            "sizeBytes": 14716
+          },
+          {
+            "path": "sc003-large-aim-auto-manifest.json",
+            "sha256": "ef7b02b8a80fa5f21212ab7004c774f69e8099510529b5f844c1890247d4aef1",
+            "sizeBytes": 399
+          },
+          {
+            "path": "sc003-large-aim-auto-reconstructed.bin",
+            "sha256": "a151fbcb2e4e2313bd9502261737e0739f597c5a116eadb6e31afc9c140f888d",
+            "sizeBytes": 2632237
+          },
+          {
+            "path": "sc003-large-aim-auto-tool-envelope.json",
+            "sha256": "9580be4b166a365202405ee23785b3b7762ccebb869ec7897f5a61256a6fd568",
+            "sizeBytes": 1288
+          },
+          {
+            "path": "sc003-large-aim-cli-report.json",
+            "sha256": "0a80a652e63da5f598d2b93a1c57f1a8095d330941770fd2a15248435571ccfe",
+            "sizeBytes": 2802996
+          },
+          {
+            "path": "sc003-large-aim-input.json",
+            "sha256": "7381645f9676c8a2a4fd4783249bcd162e8d36dd35a4a24a38246a30446c6bd6",
+            "sizeBytes": 189387
+          },
+          {
+            "path": "sc003-large-aim-legacy-chain.json",
+            "sha256": "9aa7f2e8def5205ed12c30af560a8b47ac8e89fb57bdee9cd09a7dc8dd519527",
+            "sizeBytes": 10933
+          },
+          {
+            "path": "sc003-large-aim-legacy-chunk-000.json",
+            "sha256": "e609752eb9caca60ab7b425e5c8e0c5cccb114eb4bac581309d60cd6ee2807e0",
+            "sizeBytes": 175259
+          },
+          {
+            "path": "sc003-large-aim-legacy-chunk-001.json",
+            "sha256": "58e376ef0d2bf917ce808097fc6b7e8ec026b76c173c47830f929a1eccef2cb7",
+            "sizeBytes": 175264
+          },
+          {
+            "path": "sc003-large-aim-legacy-chunk-002.json",
+            "sha256": "9e90b4079b5a75e229a744b8ff67d0db084f15de99ce154a5f2573c8edb81776",
+            "sizeBytes": 175264
+          },
+          {
+            "path": "sc003-large-aim-legacy-chunk-003.json",
+            "sha256": "b772e1a02c398c32a55133c5859f586c534d160d17c96df79819c68158d0b80a",
+            "sizeBytes": 175264
+          },
+          {
+            "path": "sc003-large-aim-legacy-chunk-004.json",
+            "sha256": "4266f3725d3ef883fa71f7dd239ce15b65f0766f333f43f9933e09cf1ca513d9",
+            "sizeBytes": 175264
+          },
+          {
+            "path": "sc003-large-aim-legacy-chunk-005.json",
+            "sha256": "13483ce507591d96bed7259a3d4897ce373e393c81a409eaa7014d6e7b9b2a0a",
+            "sizeBytes": 175264
+          },
+          {
+            "path": "sc003-large-aim-legacy-chunk-006.json",
+            "sha256": "1e2ddce74adb6e26d63d35cb741563c3333e3ec4f886077fb398e6a1d5da43a9",
+            "sizeBytes": 175264
+          },
+          {
+            "path": "sc003-large-aim-legacy-chunk-007.json",
+            "sha256": "7f9a2c7941e380b136b94289402e1d68d3f25e38133f6e366491a8cc322e7c88",
+            "sizeBytes": 175265
+          },
+          {
+            "path": "sc003-large-aim-legacy-chunk-008.json",
+            "sha256": "daf47ca9f07809cfe9f944e28c8aa2ec0343e9cfd3a1003cd7e7ea0da2cc03ee",
+            "sizeBytes": 175266
+          },
+          {
+            "path": "sc003-large-aim-legacy-chunk-009.json",
+            "sha256": "66e80c1556537bb56c8a889c2c728375419446e22428e9b4ac1d641915e84e24",
+            "sizeBytes": 175266
+          },
+          {
+            "path": "sc003-large-aim-legacy-chunk-010.json",
+            "sha256": "fbdbfb3696672834267f15aa2768f08883c58287752d604f608f15319c413ea8",
+            "sizeBytes": 175266
+          },
+          {
+            "path": "sc003-large-aim-legacy-chunk-011.json",
+            "sha256": "1981d1d9355a9310d702d393dd3814da2dbf759b1c1224ef878d3be2837ae34f",
+            "sizeBytes": 175266
+          },
+          {
+            "path": "sc003-large-aim-legacy-chunk-012.json",
+            "sha256": "5753290c5608d3a96d7654d0234b2029b9aa76481fde38f9acae711fc6e509c2",
+            "sizeBytes": 175266
+          },
+          {
+            "path": "sc003-large-aim-legacy-chunk-013.json",
+            "sha256": "8429403e07e25ce53edb883166f99a74752224d62b5950884923ea7b45d70625",
+            "sizeBytes": 175266
+          },
+          {
+            "path": "sc003-large-aim-legacy-chunk-014.json",
+            "sha256": "d99e55e81f6f861c6e890792747098ca1390d9ce94e92941296208ec00843155",
+            "sizeBytes": 175266
+          },
+          {
+            "path": "sc003-large-aim-legacy-chunk-015.json",
+            "sha256": "abebe4a21380ca1bfafd2f7594b419a14db0401dc8adbcfe52aa52dbb7d26beb",
+            "sizeBytes": 175266
+          },
+          {
+            "path": "sc003-large-aim-legacy-chunk-016.json",
+            "sha256": "8516a206fd0916b69d4bf77c31602ce2c5d341265323a4f03b86c1afb561c94d",
+            "sizeBytes": 175266
+          },
+          {
+            "path": "sc003-large-aim-legacy-chunk-017.json",
+            "sha256": "fa0bce0eb61a67df7288d3c1ee0bf648afb94be26e1ba0f65e7888d36cb08d25",
+            "sizeBytes": 175266
+          },
+          {
+            "path": "sc003-large-aim-legacy-chunk-018.json",
+            "sha256": "9737b7e42efca299e4b6772efa698895f20f62225ed09dde0af741f0f8cd03d2",
+            "sizeBytes": 175266
+          },
+          {
+            "path": "sc003-large-aim-legacy-chunk-019.json",
+            "sha256": "360a9280c0f4ce411b065a1cd0f5851ff3524e9ad7a33d45c5c324e90f1799eb",
+            "sizeBytes": 175265
+          },
+          {
+            "path": "sc003-large-aim-legacy-chunk-020.json",
+            "sha256": "842e7448eaf248668169533c0505a9415702e20f515bb8109073761477258283",
+            "sizeBytes": 14716
+          },
+          {
+            "path": "sc003-large-aim-legacy-manifest.json",
+            "sha256": "23ff61e1710dd97262ab2014a0af1eb58418c8bc44dcbdcd9a5b51f33425b8fa",
+            "sizeBytes": 399
+          },
+          {
+            "path": "sc003-large-aim-legacy-reconstructed.bin",
+            "sha256": "a151fbcb2e4e2313bd9502261737e0739f597c5a116eadb6e31afc9c140f888d",
+            "sizeBytes": 2632237
+          },
+          {
+            "path": "sc003-large-aim-legacy-tool-envelope.json",
+            "sha256": "c0dd1c5f3497250bea4ade0283a6d33e86d220bead7d747960583b7ffd3a5ba3",
+            "sizeBytes": 1288
+          },
+          {
+            "path": "sc008-empty-auto-manifest.json",
+            "sha256": "654ff0de6f8d2576ce1654e6ac9f10b142cbc78cf7f2293247c01ba052352472",
+            "sizeBytes": 199
+          },
+          {
+            "path": "sc008-empty-legacy-manifest.json",
+            "sha256": "654ff0de6f8d2576ce1654e6ac9f10b142cbc78cf7f2293247c01ba052352472",
+            "sizeBytes": 199
+          },
+          {
+            "path": "sc008-unicode-auto-chain.json",
+            "sha256": "53e191a0738cd7daea578264c987686e70cd17ebe77e229454d9ab44dfea1083",
+            "sizeBytes": 2209
+          },
+          {
+            "path": "sc008-unicode-auto-chunk-000.json",
+            "sha256": "9cf8c32b93b8c93b03ca391b7b11a23339cb9a4abb05d1b02bfc5b446c527a90",
+            "sizeBytes": 175215
+          },
+          {
+            "path": "sc008-unicode-auto-chunk-001.json",
+            "sha256": "560ce19b05c6c7e0264435ae871f67543ea014c27a34475efa55dbca1256c783",
+            "sizeBytes": 175220
+          },
+          {
+            "path": "sc008-unicode-auto-chunk-002.json",
+            "sha256": "b41a6ae723838cd4ddd23611cf2b2651676dba3faf2c6234237af9ace6a29ea0",
+            "sizeBytes": 175219
+          },
+          {
+            "path": "sc008-unicode-auto-chunk-003.json",
+            "sha256": "99abc306a50c55c224581700ff41276f846c3c239897e3d9604eb59dfc7b0ee6",
+            "sizeBytes": 50781
+          },
+          {
+            "path": "sc008-unicode-auto-manifest.json",
+            "sha256": "b059403a2a5863e725d1d533f865b7c72cd0890c5bed11067bf0913054af7bd1",
+            "sizeBytes": 355
+          },
+          {
+            "path": "sc008-unicode-auto-reconstructed.bin",
+            "sha256": "7b6e0c2aad73d008ee744521a9bdfcdf28cd1391c97eb44e7bb79f068c8b71f9",
+            "sizeBytes": 431076
+          },
+          {
+            "path": "sc008-unicode-legacy-chain.json",
+            "sha256": "e2b49c5192bfe0175797eccb8022af95d430865e7ea40825dd40bbf7c242a844",
+            "sizeBytes": 2217
+          },
+          {
+            "path": "sc008-unicode-legacy-chunk-000.json",
+            "sha256": "9cf8c32b93b8c93b03ca391b7b11a23339cb9a4abb05d1b02bfc5b446c527a90",
+            "sizeBytes": 175215
+          },
+          {
+            "path": "sc008-unicode-legacy-chunk-001.json",
+            "sha256": "560ce19b05c6c7e0264435ae871f67543ea014c27a34475efa55dbca1256c783",
+            "sizeBytes": 175220
+          },
+          {
+            "path": "sc008-unicode-legacy-chunk-002.json",
+            "sha256": "b41a6ae723838cd4ddd23611cf2b2651676dba3faf2c6234237af9ace6a29ea0",
+            "sizeBytes": 175219
+          },
+          {
+            "path": "sc008-unicode-legacy-chunk-003.json",
+            "sha256": "99abc306a50c55c224581700ff41276f846c3c239897e3d9604eb59dfc7b0ee6",
+            "sizeBytes": 50781
+          },
+          {
+            "path": "sc008-unicode-legacy-manifest.json",
+            "sha256": "b059403a2a5863e725d1d533f865b7c72cd0890c5bed11067bf0913054af7bd1",
+            "sizeBytes": 355
+          },
+          {
+            "path": "sc008-unicode-legacy-reconstructed.bin",
+            "sha256": "7b6e0c2aad73d008ee744521a9bdfcdf28cd1391c97eb44e7bb79f068c8b71f9",
+            "sizeBytes": 431076
+          }
+        ],
+        "scope": "Local mcp==2.3.0 stdio Client/server fixtures and exact observed local payloads.",
+        "totalSizeBytes": 17357478
+      },
+      "testOutcomes": [
+        {
+          "outcome": "ok",
+          "testCase": "tests.test_tooling_mcp.BoundedInputTests.test_stream_caps_and_closes_on_oversized_line",
+          "testName": "test_stream_caps_and_closes_on_oversized_line"
+        },
+        {
+          "outcome": "ok",
+          "testCase": "tests.test_tooling_mcp.BoundedInputTests.test_stream_rejects_duplicate_nonfinite_deep_and_invalid_utf8_before_sdk",
+          "testName": "test_stream_rejects_duplicate_nonfinite_deep_and_invalid_utf8_before_sdk"
+        },
+        {
+          "outcome": "ok",
+          "testCase": "tests.test_tooling_mcp.SdkClientIntegrationTests.test_sdk_auto_and_legacy_negotiation_tools_resource_prompt_and_call",
+          "testName": "test_sdk_auto_and_legacy_negotiation_tools_resource_prompt_and_call"
+        },
+        {
+          "outcome": "ok",
+          "testCase": "tests.test_tooling_mcp.SyntheticRuntimeSequenceTests.test_existing_runtime_prepare_grant_execute_status_verify_and_refusal_guards",
+          "testName": "test_existing_runtime_prepare_grant_execute_status_verify_and_refusal_guards"
+        },
+        {
+          "outcome": "ok",
+          "testCase": "tests.test_tooling_mcp.SyntheticRuntimeSequenceTests.test_runtime_status_resource_caps_output_and_waits_on_cancellation",
+          "testName": "test_runtime_status_resource_caps_output_and_waits_on_cancellation"
+        },
+        {
+          "outcome": "ok",
+          "testCase": "tests.test_tooling_mcp.ToolingServiceTests.test_active_call_limit_is_enforced",
+          "testName": "test_active_call_limit_is_enforced"
+        },
+        {
+          "outcome": "ok",
+          "testCase": "tests.test_tooling_mcp.ToolingServiceTests.test_analysis_only_status_does_not_claim_runtime_observation",
+          "testName": "test_analysis_only_status_does_not_claim_runtime_observation"
+        },
+        {
+          "outcome": "ok",
+          "testCase": "tests.test_tooling_mcp.ToolingServiceTests.test_analyze_work_preserves_core_result_and_advisory_boundary",
+          "testName": "test_analyze_work_preserves_core_result_and_advisory_boundary"
+        },
+        {
+          "outcome": "ok",
+          "testCase": "tests.test_tooling_mcp.ToolingServiceTests.test_artifact_corruption_is_rejected_in_manifest_and_chunk_reads",
+          "testName": "test_artifact_corruption_is_rejected_in_manifest_and_chunk_reads"
+        },
+        {
+          "outcome": "ok",
+          "testCase": "tests.test_tooling_mcp.ToolingServiceTests.test_cancelled_request_never_dispatches",
+          "testName": "test_cancelled_request_never_dispatches"
+        },
+        {
+          "outcome": "ok",
+          "testCase": "tests.test_tooling_mcp.ToolingServiceTests.test_chunk_manifest_and_exact_reconstruction",
+          "testName": "test_chunk_manifest_and_exact_reconstruction"
+        },
+        {
+          "outcome": "ok",
+          "testCase": "tests.test_tooling_mcp.ToolingServiceTests.test_depth_and_operation_bounds_are_checked_before_core",
+          "testName": "test_depth_and_operation_bounds_are_checked_before_core"
+        },
+        {
+          "outcome": "ok",
+          "testCase": "tests.test_tooling_mcp.ToolingServiceTests.test_internal_core_type_error_is_error_and_diagnostic_is_fixed",
+          "testName": "test_internal_core_type_error_is_error_and_diagnostic_is_fixed"
+        },
+        {
+          "outcome": "ok",
+          "testCase": "tests.test_tooling_mcp.ToolingServiceTests.test_malformed_bracketed_resource_authority_is_a_bounded_refusal",
+          "testName": "test_malformed_bracketed_resource_authority_is_a_bounded_refusal"
+        },
+        {
+          "outcome": "ok",
+          "testCase": "tests.test_tooling_mcp.ToolingServiceTests.test_malformed_tool_shape_is_rejected_at_protocol_boundary",
+          "testName": "test_malformed_tool_shape_is_rejected_at_protocol_boundary"
+        },
+        {
+          "outcome": "ok",
+          "testCase": "tests.test_tooling_mcp.ToolingServiceTests.test_oversized_core_result_never_claims_success_or_complete_evidence",
+          "testName": "test_oversized_core_result_never_claims_success_or_complete_evidence"
+        },
+        {
+          "outcome": "ok",
+          "testCase": "tests.test_tooling_mcp.ToolingServiceTests.test_resource_rejects_wrong_owner_hash_and_range",
+          "testName": "test_resource_rejects_wrong_owner_hash_and_range"
+        },
+        {
+          "outcome": "ok",
+          "testCase": "tests.test_tooling_mcp.ToolingServiceTests.test_results_and_grants_are_disjoint_from_every_allowlisted_worktree",
+          "testName": "test_results_and_grants_are_disjoint_from_every_allowlisted_worktree"
+        },
+        {
+          "outcome": "ok",
+          "testCase": "tests.test_tooling_mcp.ToolingServiceTests.test_runtime_mutations_are_not_advertised_or_dispatchable_by_default",
+          "testName": "test_runtime_mutations_are_not_advertised_or_dispatchable_by_default"
+        },
+        {
+          "outcome": "ok",
+          "testCase": "tests.test_tooling_mcp.ToolingServiceTests.test_runtime_requires_disjoint_operator_grant_store",
+          "testName": "test_runtime_requires_disjoint_operator_grant_store"
+        },
+        {
+          "outcome": "ok",
+          "testCase": "tests.test_tooling_mcp.ToolingServiceTests.test_sdk_import_is_lazy_and_core_missing_extra_message_is_actionable",
+          "testName": "test_sdk_import_is_lazy_and_core_missing_extra_message_is_actionable"
+        },
+        {
+          "outcome": "ok",
+          "testCase": "tests.test_tooling_mcp.ToolingServiceTests.test_server_requires_exact_pinned_sdk_distribution_before_construction",
+          "testName": "test_server_requires_exact_pinned_sdk_distribution_before_construction"
+        },
+        {
+          "outcome": "ok",
+          "testCase": "tests.test_tooling_mcp.ToolingServiceTests.test_service_validates_call_shape_and_operation_bounds_itself",
+          "testName": "test_service_validates_call_shape_and_operation_bounds_itself"
+        },
+        {
+          "outcome": "ok",
+          "testCase": "tests.test_tooling_mcp.ToolingServiceTests.test_source_and_worktree_read_roots_may_be_nested",
+          "testName": "test_source_and_worktree_read_roots_may_be_nested"
+        },
+        {
+          "outcome": "ok",
+          "testCase": "tests.test_tooling_mcp.ToolingServiceTests.test_worktree_paths_must_be_in_operator_allowlist",
+          "testName": "test_worktree_paths_must_be_in_operator_allowlist"
+        },
+        {
+          "outcome": "ok",
+          "testCase": "tests.test_tooling_mcp.WorkerCancellationTests.test_cancellation_waits_for_dispatched_worker_checkpoint",
+          "testName": "test_cancellation_waits_for_dispatched_worker_checkpoint"
+        },
+        {
+          "outcome": "ok",
+          "testCase": "tests.test_tooling_mcp_acceptance.MpcAcceptance.test_sc001_optional_sdk_pin_core_import_and_missing_dependency_refusal",
+          "testName": "test_sc001_optional_sdk_pin_core_import_and_missing_dependency_refusal"
+        },
+        {
+          "outcome": "ok",
+          "testCase": "tests.test_tooling_mcp_acceptance.MpcAcceptance.test_sc002_protocol_modes_and_legacy_endpoint_paired_controls",
+          "testName": "test_sc002_protocol_modes_and_legacy_endpoint_paired_controls"
+        },
+        {
+          "outcome": "ok",
+          "testCase": "tests.test_tooling_mcp_acceptance.MpcAcceptance.test_sc003_aim_git_worktree_parity_and_large_unicode_chain_refusals",
+          "testName": "test_sc003_aim_git_worktree_parity_and_large_unicode_chain_refusals"
+        },
+        {
+          "outcome": "ok",
+          "testCase": "tests.test_tooling_mcp_acceptance.MpcAcceptance.test_sc004_schema_depth_summary_and_envelope_refusal_controls",
+          "testName": "test_sc004_schema_depth_summary_and_envelope_refusal_controls"
+        },
+        {
+          "outcome": "ok",
+          "testCase": "tests.test_tooling_mcp_acceptance.MpcAcceptance.test_sc005_canonical_roots_symlinks_unknown_inventory_and_analysis_only",
+          "testName": "test_sc005_canonical_roots_symlinks_unknown_inventory_and_analysis_only"
+        },
+        {
+          "outcome": "ok",
+          "testCase": "tests.test_tooling_mcp_acceptance.MpcAcceptance.test_sc006_exact_grant_authority_positive_absent_wrong_scope_expired_reused",
+          "testName": "test_sc006_exact_grant_authority_positive_absent_wrong_scope_expired_reused"
+        },
+        {
+          "outcome": "ok",
+          "testCase": "tests.test_tooling_mcp_acceptance.MpcAcceptance.test_sc007_cancellation_stale_base_concurrency_and_recovery_observability",
+          "testName": "test_sc007_cancellation_stale_base_concurrency_and_recovery_observability"
+        },
+        {
+          "outcome": "ok",
+          "testCase": "tests.test_tooling_mcp_acceptance.MpcAcceptance.test_sc008_owned_empty_and_multi_chunk_resources_prompts_and_refusals",
+          "testName": "test_sc008_owned_empty_and_multi_chunk_resources_prompts_and_refusals"
+        },
+        {
+          "outcome": "ok",
+          "testCase": "tests.test_tooling_mcp_acceptance.MpcSdkTransportAcceptance.test_sc003_sdk_stdio_git_worktree_success_and_unsupported_refusal",
+          "testName": "test_sc003_sdk_stdio_git_worktree_success_and_unsupported_refusal"
+        },
+        {
+          "outcome": "ok",
+          "testCase": "tests.test_tooling_mcp_acceptance.MpcSdkTransportAcceptance.test_sc003_sdk_stdio_large_aim_chunk_chain_and_cli_parity_auto_legacy",
+          "testName": "test_sc003_sdk_stdio_large_aim_chunk_chain_and_cli_parity_auto_legacy"
+        },
+        {
+          "outcome": "ok",
+          "testCase": "tests.test_tooling_mcp_acceptance.MpcSdkTransportAcceptance.test_sc008_sdk_stdio_owned_empty_and_raw_unicode_manifest_chain",
+          "testName": "test_sc008_sdk_stdio_owned_empty_and_raw_unicode_manifest_chain"
+        }
+      ]
+    }
+  },
+  "outcome": "passed",
+  "scenario": "SC-001",
+  "schema": "agent-braid-m45-bounded-procedure-evidence-v1",
+  "sourceCandidate": "24921e1a16dfff15cde5af091f7b955491acdbef",
+  "spec": "SPEC-040",
+  "supersededObservation": {
+    "limits": "Preserved in Git history and private immutable capture. New test-file dependency guards require this fresh actual 37-test capture; runtime product modules did not change.",
+    "privateReceiptSha256": "56781878ac14f9c0a336ef797b340b9eabf461866d1c2559d8f296722c269f06",
+    "publicProjectionSha256": "f35413a4d54e8d9549b0f355805b6f3a62dc7bf00569849d0eeac06d713aff21",
+    "sourceCandidate": "5cffa9d27f27686dc2cbbf90ed643e2ec2df94e7"
+  }
+}

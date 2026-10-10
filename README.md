@@ -49,26 +49,23 @@ authority. The [runtime demo](examples/runtime/README.md) gives you a complete
 owned fixture; the [alpha quickstart](specs/021-m4-alpha-runtime/quickstart.md)
 covers grants, recovery and MCP configuration.
 
-### Planned Codex and Claude Code integrations
+### Codex and Claude Code integrations
 
-[M4.5](docs/tooling/README.md) is the next integration program, now Open, adjacent
-to M4. Its six draft specs cover a shared MCP interface, five workflow skills,
-reusable installation and diagnostics, chat explanations, interaction graphs and
-offline evidence exports. The intended journey takes a developer from analyzing
-proposed work to planning, executing an already granted bounded batch, recovering
-an interruption and inspecting the verified result.
+[M4.5](docs/tooling/README.md) is an open integration program adjacent to M4. Its
+six specs retain the planned MCP, skills, lifecycle, presentation and evaluation
+scope. Current local evidence now covers bounded technical controls and fresh
+macOS/Linux package checks, each bound to its own candidate; it does not establish
+native host support, M4.5 acceptance or milestone closure. The complete current
+status and candidate-specific limits are in the [tooling status](docs/tooling/TECHNICAL_STATUS.md).
 
-The current [five-task preparation delivery](specs/044-ai-tooling-evaluation/preparation-delivery-plan.md)
-freezes dependencies, checks installed macOS artifacts, prepares Linux reproduction,
-consolidates evidence and aligns documentation/tracking with no additional spend.
-Native-host acceptance and the registered comparison remain pending; human outcome
-review is deferred.
-
-Fresh offline macOS core/tooling installations and read-only MCP auto/legacy
-checks passed for frozen source `3885706e`; Linux artifacts and a pinned offline
-recipe are prepared. The [preparation proof](docs/tooling/evidence/preparation-20261010.json)
-binds the exact checks and retained failures. Linux execution and full native-host
-acceptance remain pending.
+The [autonomous technical closure record](docs/tooling/AUTONOMOUS_COMPLETION.md)
+and [technical evidence status](docs/tooling/TECHNICAL_STATUS.md) now link the
+candidate-bound package, Linux, engineering, program, MCP and lifecycle evidence.
+MCP, program controls and lifecycle procedures passed on their recorded local
+candidates; installed macOS and emulated Linux AMD64 package checks passed for
+`53f1704`. The 223-test engineering suite passed on `aaae2e7`, with a separate direct
+223-test run on `24921e1`. These are distinct source identities and observation
+domains, not a single end-to-end candidate claim.
 
 The first targets are **Codex local CLI and Claude Code local CLI**. M4.5 formal product
 support and full acceptance remain pending. Separate bounded SPEC-021 host
@@ -76,6 +73,15 @@ observations for Codex and Claude are linked below; they do not establish M4.5
 product support or acceptance. Cursor, VS Code/GitHub Copilot, OpenCode and pi are
 future routes. Start with the [integration guide](docs/tooling/README.md) for the
 spec, contract and task map.
+
+## Final repository validation — 2026-10-11
+
+Both repository profiles passed on the same clean frozen source `72a396d294205201f7f56d00fa2349dccb540a5c`.
+The receipts validate source work and do not extend the host, registered-cohort,
+human-evaluation or founder-acceptance boundaries.
+
+- Quick profile: `72a396d294205201f7f56d00fa2349dccb540a5c`; 1293 tests, 12 skipped; terminal profile receipt and raw output are hash-bound privately.
+- Stable PR profile: `72a396d294205201f7f56d00fa2349dccb540a5c`; 1293 tests, 12 skipped; terminal profile receipt and raw output are hash-bound privately.
 
 <a id="quick-start"></a>
 
@@ -184,14 +190,14 @@ calls through the owned runtime.
 
 ## 🧭 Evidence and project status
 
-**Project status on 2026-10-08:** research alpha. The source inventory includes
-44 specs and 19 registered GitHub milestones.
-SPEC-039–044 are draft planning packages with 60 unchecked implementation tasks;
-M4.5 is Open with six spec issues and 60 linked task subissues. “Closed”
-is the remote milestone state; internal closure, obtained implementation,
-scientific acceptance and external review are separate facts. The
-[spec and milestone index](docs/development/SPEC_MILESTONE_INDEX.md) lists every
-current assignment.
+**Project status on 2026-10-11:** research alpha. The source inventory includes
+44 specs and 19 registered GitHub milestones. M4.5 remains Open. Its 60 original
+acceptance criteria are unchanged; 19 auxiliary tasks add evidence work. The six
+source task files now show 52 checked and 27 unchecked boxes (79 total), plus six
+open parents. These source counts do not assert remote issue state. “Closed” is
+the remote milestone state; implementation, scientific acceptance and external
+review remain distinct. The [spec and milestone index](docs/development/SPEC_MILESTONE_INDEX.md)
+lists every current assignment.
 
 | Track | Milestone | State and evidence boundary |
 | --- | --- | --- |
@@ -201,7 +207,7 @@ current assignment.
 | Research | [M2 — Confluence lab and scheduler](https://github.com/jayanez/agent-braid/milestone/4) | Closed internally. Bounded replay and finite observations do not establish general confluence. |
 | Research | [M3 — Braid semantics](https://github.com/jayanez/agent-braid/milestone/5) | Closed internally for `anchored-sequence-v1`; no general braid or Yang–Baxter theorem is claimed. |
 | Runtime | [M4 — Agent Braid runtime](https://github.com/jayanez/agent-braid/milestone/6) | Founder accepted bounded alpha engineering and evaluation as complete on 2026-10-09, with negative utility. Current GitHub tracking is shown in the [live M4 milestone](https://github.com/jayanez/agent-braid/milestone/6). Historical SPEC-021 G4 remains **NO-GO** on useful speedup under its frozen evidence. |
-| Integration | [M4.5 — AI tooling integrations for Codex and Claude Code](https://github.com/jayanez/agent-braid/milestone/19) | **Open.** Six draft specs cover MCP, skills, lifecycle, presentation and evaluation. An experimental implementation candidate provides the optional MCP surface, packaged skills, lifecycle and exports; native support and full paired acceptance remain pending. Separate SPEC-021 host observations are linked below. |
+| Integration | [M4.5 — AI tooling integrations for Codex and Claude Code](https://github.com/jayanez/agent-braid/milestone/19) | **Open.** Candidate-bound local paired procedures, package checks and technical controls passed within their stated domains. The source task checklist is 52/79 checked, with 27 unchecked and six open parents; remote issue state is tracked separately. Native-host acceptance, human interpretation, founder decision and milestone closure remain open. |
 | Publication | [PUB.1 — Public research preview](https://github.com/jayanez/agent-braid/milestone/7) | **Open.** The preview is public; historical publication authorization reconciliation remains separately tracked. |
 | Governance | [GOV.1 — Governance and adoption](https://github.com/jayanez/agent-braid/milestone/8) | **Open.** Governance and adoption evidence work continues; issue state does not confer human or founder approval. |
 | Research | [M3.5 — Native proposal predictor](https://github.com/jayanez/agent-braid/milestone/9) | **Open.** Synthetic-only T002/T004 software is complete; zero real pairs are admitted. T001/T007/T003/T005 and #180 remain open for source admission, protocol, real-feed adaptation, experiment and review. |
