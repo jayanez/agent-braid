@@ -3,7 +3,8 @@
 
 This script validates a transport bundle and the already-present local Docker
 image. It never pulls or builds an image. Container execution requires the
-explicit --execute flag and a native Linux x86_64 host.
+explicit --execute flag. Native Linux x86_64 is the default; bounded AMD64
+emulation on ARM64 requires a separate explicit option and is recorded.
 """
 from __future__ import annotations
 
@@ -60,6 +61,53 @@ def require_sha256(value: str, name: str) -> str:
 def require_native_target(system: str, machine: str) -> None:
     if system != "Linux" or machine.lower() not in {"x86_64", "amd64"}:
         raise Refused("native execution requires Linux x86_64")
+
+
+def launch_host_identity(system: str, machine: str, allow_emulation: bool) -> dict:
+    if system == "Linux" and machine.lower() in {"x86_64", "amd64"}:
+        return {"system": system, "machine": machine, "mode": "native-launch-host",
+                "amd64EmulationAllowed": allow_emulation}
+    if allow_emulation and system in {"Darwin", "Linux"} and machine.lower() in {"arm64", "aarch64"}:
+        return {"system": system, "machine": machine, "mode": "arm64-launch-host-amd64-container",
+                "amd64EmulationAllowed": True}
+    require_native_target(system, machine)
+    raise Refused("unsupported launch host")
+
+
+def inspect_daemon_identity(docker: str) -> dict:
+    context_override = os.environ.get("DOCKER_CONTEXT")
+    endpoint = None if context_override else os.environ.get("DOCKER_HOST")
+    if not endpoint:
+        context_command = [docker, "context", "inspect"]
+        if context_override:
+            context_command.append(context_override)
+        context_command += ["--format", "{{json .Endpoints.docker.Host}}"]
+        selected = subprocess.run(context_command,
+                                  check=False, capture_output=True, text=True, timeout=15)
+        if selected.returncode != 0:
+            raise Refused("Docker context endpoint unavailable")
+        try:
+            endpoint = json.loads(selected.stdout)
+        except (ValueError, TypeError) as exc:
+            raise Refused("Docker context endpoint unreadable") from exc
+    if not isinstance(endpoint, str) or not endpoint.startswith("unix://"):
+        raise Refused("standalone reproduction requires a local Unix Docker endpoint")
+    result = subprocess.run([docker, "info", "--format", "{{json .}}"],
+                            check=False, capture_output=True, text=True, timeout=15)
+    if result.returncode != 0:
+        raise Refused("Docker daemon identity unavailable")
+    try:
+        value = json.loads(result.stdout)
+    except (ValueError, TypeError) as exc:
+        raise Refused("Docker daemon identity unreadable") from exc
+    if not isinstance(value, dict) or value.get("OSType") != "linux" or value.get("Architecture") not in {"aarch64", "arm64", "x86_64", "amd64"}:
+        raise Refused("unsupported Docker daemon platform")
+    identity = {key: value.get(key) for key in ("OSType", "Architecture", "ServerVersion")}
+    identity["endpointScheme"] = "unix"
+    identity["endpointSha256"] = hashlib.sha256(endpoint.encode("utf-8")).hexdigest()
+    identity["containerExecutionMode"] = ("amd64-on-arm64-daemon-emulation"
+        if value["Architecture"] in {"arm64", "aarch64"} else "amd64-on-amd64-daemon")
+    return identity
 
 
 def validate_manifest_bundle(input_root: Path, *, manifest_sha256: str,
@@ -307,7 +355,8 @@ def _write_private(path: Path, contents: bytes) -> None:
 
 
 def persist_launcher_receipt(output: Path, argv: list[str], container_name: str,
-                             result: BoundedCommandResult, cleanup_returncode: int | None) -> Path:
+                             result: BoundedCommandResult, cleanup_returncode: int | None,
+                             launch_host: dict | None = None) -> Path:
     """Persist mode-0600 bounded transcripts and provenance before parsing JSON."""
     stdout_path, stderr_path = output / "launcher.stdout.bin", output / "launcher.stderr.bin"
     _write_private(stdout_path, result.stdout)
@@ -318,6 +367,7 @@ def persist_launcher_receipt(output: Path, argv: list[str], container_name: str,
                   "output_limited" if result.output_limited else
                   "completed" if result.returncode == 0 else "failed",
         "argv": argv,
+        "launchHost": launch_host,
         "containerName": container_name,
         "timeoutSeconds": MAX_SECONDS,
         "startedAt": result.started_at,
@@ -363,13 +413,16 @@ def main(argv: list[str] | None = None) -> int:
                         help="frozen SHA-256 of this standalone launcher")
     parser.add_argument("--execute", action="store_true",
                         help="run the offline probe in the already-present pinned container image")
+    parser.add_argument("--allow-amd64-emulation", action="store_true",
+                        help="explicitly allow standalone AMD64 container controls on an ARM64 launch host; not native hardware or registered cohort evidence")
     args = parser.parse_args(argv)
     try:
         if sha256_file(Path(__file__).resolve(strict=True)) != require_sha256(
             args.launcher_sha256, "launcher SHA-256"
         ):
             raise Refused("launcher digest mismatch")
-        require_native_target(platform.system(), platform.machine())
+        launch_host = launch_host_identity(platform.system(), platform.machine(),
+                                           args.allow_amd64_emulation)
         inputs = validate_manifest_bundle(
             args.input_dir, manifest_sha256=args.manifest_sha256,
             candidate_sha256=args.candidate_sha256, probe_sha256=args.probe_sha256,
@@ -379,6 +432,9 @@ def main(argv: list[str] | None = None) -> int:
         docker = shutil.which("docker")
         if not docker:
             raise Refused("Docker CLI unavailable")
+        launch_host["daemon"] = inspect_daemon_identity(docker)
+        if not args.allow_amd64_emulation and launch_host["daemon"]["Architecture"] not in {"x86_64", "amd64"}:
+            raise Refused("ARM64 Docker daemon requires explicit AMD64 emulation opt-in")
         _inspect_local_image(docker)
         prepared = {
             "status": "prepared", "target": TARGET,
@@ -386,7 +442,7 @@ def main(argv: list[str] | None = None) -> int:
             "probeSha256": args.probe_sha256,
             "manifestSha256": args.manifest_sha256,
             "wheelhouseSha256": args.wheelhouse_sha256,
-            "executionRequested": args.execute,
+            "executionRequested": args.execute, "launchHost": launch_host,
         }
         if not args.execute:
             print(json.dumps(prepared, sort_keys=True))
@@ -406,7 +462,7 @@ def main(argv: list[str] | None = None) -> int:
             except subprocess.SubprocessError:
                 cleanup_returncode = None
         launcher_receipt = persist_launcher_receipt(
-            output, command, name, result, cleanup_returncode
+            output, command, name, result, cleanup_returncode, launch_host
         )
         launcher_receipt_sha256 = sha256_file(launcher_receipt)
         if result.timed_out:

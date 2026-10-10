@@ -34,4 +34,4 @@ The shared core and existing runtime remain authoritative. Descriptive tool/skil
 
 ## Human review and unresolved decisions
 
-Required: architectural/API/lifecycle review for the consumed contract; exact candidate/host/registration and budget decisions before capture; independent technical review and founder capability acceptance. ADR 0021 is proposed. All implementation tasks remain unchecked until actual evidence exists. Creating issues or a source PR is not adoption.
+Required: architectural/API/lifecycle review for the consumed contract; exact candidate/host/registration and budget decisions before capture; independent technical review and founder capability acceptance. ADR 0021 is proposed. Task completion requires actual evidence; separately verified technical clauses are recorded in `tasks.md` and `evidence/technical-clauses.json`, with native/registered/human/founder obligations preserved. Creating issues or a source PR is not adoption.

@@ -1,4 +1,4 @@
-# SPEC-042: Prospective validation procedures
+# SPEC-042: Validation procedures and obtained scope
 
 These are the paired acceptance procedures. Experimental implementation modules and deterministic controls are present in the current candidate. Canonical records may retain reviewed partial local observations; a partial record does not satisfy a procedure unless all stated assertions and paired positive/refusal outcomes are evidenced. Canonical assurance remains draft with human review pending. A passed source validator checks structure only and does not complete these procedures.
 
@@ -11,7 +11,7 @@ Given relocated isolated installation and core-only environment; perform assets 
 Prospective targets: `pyproject.toml; agent_braid/tooling_install.py (new); agent_braid/cli.py; integrations/agent-braid/; docs/tooling/INSTALL.md (new); tests/test_tooling_install.py (new)`. Planned receipt: `evidence/sc-001.json`. Use a focused test/harness added with implementation and record its actual command; never execute an invented future command.
 
 
-Partial obtained evidence: `evidence/partial-installed-e40c949.json` binds an exact e40 wheel, local isolated install, console help, and SDK capability listing. It does not establish the complete five-skill/host asset inventory or core-only asset-resolution success; SC-001 remains unmet.
+Historical partial observation, before the 2026-10-10 full bounded procedures: `evidence/partial-installed-e40c949.json` binds an exact e40 wheel, local isolated install, console help, and SDK capability listing. It does not establish the complete five-skill/host asset inventory or core-only asset-resolution success; SC-001 remains unmet.
 
 ## procedure_lifecycle_api (REQ-002/SC-002)
 
@@ -56,7 +56,10 @@ Given built artifacts and macOS/Linux control environments; perform inventory an
 Prospective targets: `pyproject.toml; agent_braid/tooling_install.py (new); agent_braid/cli.py; integrations/agent-braid/; docs/tooling/INSTALL.md (new); tests/test_tooling_install.py (new)`. Planned receipt: `evidence/sc-008.json`. Use a focused test/harness added with implementation and record its actual command; never execute an invented future command.
 
 
-Partial obtained evidence: `evidence/partial-installed-e40c949.json` records the exact e40 wheel and local macOS arm64 build/install plus dependency metadata. No sdist, Linux reproduction, or legal compatibility conclusion is established; SC-008 remains unmet.
+Historical partial observation, before the 2026-10-10 full bounded procedures: `evidence/partial-installed-e40c949.json` records the exact e40 wheel and local macOS arm64 build/install plus dependency metadata. No sdist, Linux reproduction, or legal compatibility conclusion is established; SC-008 remains unmet.
 
 
-Partial obtained evidence: a separate installed-resource observation loads five skills and five supporting assets from the default wheel package resources and compares source, wheel and installed bytes. It does not exercise native loading, install/update/uninstall lifecycle, sdist, Linux, or legal compatibility; SC-001 and SC-008 remain unmet.
+Historical partial observation, before the 2026-10-10 full bounded procedures: a separate installed-resource observation loads five skills and five supporting assets from the default wheel package resources and compares source, wheel and installed bytes. It does not exercise native loading, install/update/uninstall lifecycle, sdist, Linux, or legal compatibility; SC-001 and SC-008 remain unmet.
+
+
+2026-10-10 autonomous procedure update: obtained receipts `evidence/sc-*.json` retain actual paired controls, commands, source/input identities and limits. Earlier partial observations above are historical and have not been rebound. See `docs/tooling/AUTONOMOUS_COMPLETION.md` for remaining interventions.

@@ -129,11 +129,18 @@
           "id": "SC-001",
           "obtained_evidence": [
             {
-              "path": "specs/040-portable-mcp-surface/evidence/partial-installed-e40c949.json",
-              "sha256": "1b7286d8f71e795a9a8f52a6e2a5c2f7cc9d6ff1a73394d49f5ddc2de79fd42c",
               "command": "See the normalized command record in the bound partial evidence JSON and the later retention limitation in docs/tooling/EVIDENCE_RETENTION_20261010.md. Exact raw invocation archives are not fully recovered; receipt hashes do not establish current replayability.",
+              "limits": "Exact-e40 core-only behavior and optional dependency boundaries plus default installed-wheel resource byte equality are partial local evidence only; native loading, installation lifecycle, all platforms, cohort, complete procedure and acceptance remain unproven. Complete original private archives are not currently recovered; see the linked retention update. This remains historical partial evidence and cannot establish current replayability or complete acceptance.",
               "outcome": "partial-obtained; paired full procedure remains unmet",
-              "limits": "Exact-e40 core-only behavior and optional dependency boundaries plus default installed-wheel resource byte equality are partial local evidence only; native loading, installation lifecycle, all platforms, cohort, complete procedure and acceptance remain unproven. Complete original private archives are not currently recovered; see the linked retention update. This remains historical partial evidence and cannot establish current replayability or complete acceptance."
+              "path": "specs/040-portable-mcp-surface/evidence/partial-installed-e40c949.json",
+              "sha256": "1b7286d8f71e795a9a8f52a6e2a5c2f7cc9d6ff1a73394d49f5ddc2de79fd42c"
+            },
+            {
+              "command": "python scripts/run_m45_mcp_acceptance.py --tooling-python <isolated-tooling-python> --core-python <isolated-core-python> --output-root <private-receipt> --require-clean (public path normalization; exact argv retained privately)",
+              "limits": "Bounded source/local service/SDK or installed-package engineering only. No native Codex/Claude host observation, provider session, approved registration, 108-attempt capture, positive utility, human evaluation, ADR adoption or founder acceptance.",
+              "outcome": "Paired procedure passed on 24921e1a16dfff15cde5af091f7b955491acdbef with 37 tests, eight cases and zero skips; actual source/trace bindings retained.",
+              "path": "specs/040-portable-mcp-surface/evidence/sc-001.json",
+              "sha256": "82819ee10495e859115c9ea22def16a99141cc42a47cbc96a505113eac5ed040"
             }
           ],
           "planned_evidence": "specs/040-portable-mcp-surface/evidence/sc-001.json: exact candidate/input/environment hashes, actual commands/raw outputs, all outcomes and limits; human decisions require their own record.",
@@ -153,11 +160,18 @@
           "id": "SC-002",
           "obtained_evidence": [
             {
-              "path": "specs/040-portable-mcp-surface/evidence/partial-installed-e40c949.json",
-              "sha256": "1b7286d8f71e795a9a8f52a6e2a5c2f7cc9d6ff1a73394d49f5ddc2de79fd42c",
               "command": "See the normalized command record in the bound partial evidence JSON and the later retention limitation in docs/tooling/EVIDENCE_RETENTION_20261010.md. Exact raw invocation archives are not fully recovered; receipt hashes do not establish current replayability.",
+              "limits": "Exact-e40 local SDK evidence covers two read-only analyze calls on one AIM example for protocol selection and one out-of-root refusal plus one valid synthetic Git analyze on the separate old endpoint; unsupported-mode matrix, all scenarios, native hosts, other candidates/platforms, and acceptance remain unproven. Complete original private archives are not currently recovered; see the linked retention update. This remains historical partial evidence and cannot establish current replayability or complete acceptance.",
               "outcome": "partial-obtained; protocol modes and separate legacy endpoint have bounded evidence; full procedure remains unmet",
-              "limits": "Exact-e40 local SDK evidence covers two read-only analyze calls on one AIM example for protocol selection and one out-of-root refusal plus one valid synthetic Git analyze on the separate old endpoint; unsupported-mode matrix, all scenarios, native hosts, other candidates/platforms, and acceptance remain unproven. Complete original private archives are not currently recovered; see the linked retention update. This remains historical partial evidence and cannot establish current replayability or complete acceptance."
+              "path": "specs/040-portable-mcp-surface/evidence/partial-installed-e40c949.json",
+              "sha256": "1b7286d8f71e795a9a8f52a6e2a5c2f7cc9d6ff1a73394d49f5ddc2de79fd42c"
+            },
+            {
+              "command": "python scripts/run_m45_mcp_acceptance.py --tooling-python <isolated-tooling-python> --core-python <isolated-core-python> --output-root <private-receipt> --require-clean (public path normalization; exact argv retained privately)",
+              "limits": "Bounded source/local service/SDK or installed-package engineering only. No native Codex/Claude host observation, provider session, approved registration, 108-attempt capture, positive utility, human evaluation, ADR adoption or founder acceptance.",
+              "outcome": "Paired procedure passed on 24921e1a16dfff15cde5af091f7b955491acdbef with 37 tests, eight cases and zero skips; actual source/trace bindings retained.",
+              "path": "specs/040-portable-mcp-surface/evidence/sc-002.json",
+              "sha256": "fc133416e4f8aef5e798e9587e905d4252ef4916784b72c857e955650aa83f32"
             }
           ],
           "planned_evidence": "specs/040-portable-mcp-surface/evidence/sc-002.json: exact candidate/input/environment hashes, actual commands/raw outputs, all outcomes and limits; human decisions require their own record.",
@@ -177,11 +191,18 @@
           "id": "SC-003",
           "obtained_evidence": [
             {
-              "path": "specs/040-portable-mcp-surface/evidence/partial-installed-e40c949.json",
-              "sha256": "1b7286d8f71e795a9a8f52a6e2a5c2f7cc9d6ff1a73394d49f5ddc2de79fd42c",
               "command": "See the normalized command record in the bound partial evidence JSON and the later retention limitation in docs/tooling/EVIDENCE_RETENTION_20261010.md. Exact raw invocation archives are not fully recovered; receipt hashes do not establish current replayability.",
+              "limits": "Only one classic AIM request was compared across CLI and two installed SDK protocol modes. No >256 KiB result, chunk reconstruction, Git/worktree parity, corrupt-chain or unsupported-request refusal matrix, other candidate, platform, host acceptance, or full task is established. Complete original private archives are not currently recovered; see the linked retention update. This remains historical partial evidence and cannot establish current replayability or complete acceptance.",
               "outcome": "partial-obtained; one classic AIM input has semantic report equality; full chunked/refusal procedure remains unmet",
-              "limits": "Only one classic AIM request was compared across CLI and two installed SDK protocol modes. No >256 KiB result, chunk reconstruction, Git/worktree parity, corrupt-chain or unsupported-request refusal matrix, other candidate, platform, host acceptance, or full task is established. Complete original private archives are not currently recovered; see the linked retention update. This remains historical partial evidence and cannot establish current replayability or complete acceptance."
+              "path": "specs/040-portable-mcp-surface/evidence/partial-installed-e40c949.json",
+              "sha256": "1b7286d8f71e795a9a8f52a6e2a5c2f7cc9d6ff1a73394d49f5ddc2de79fd42c"
+            },
+            {
+              "command": "python scripts/run_m45_mcp_acceptance.py --tooling-python <isolated-tooling-python> --core-python <isolated-core-python> --output-root <private-receipt> --require-clean (public path normalization; exact argv retained privately)",
+              "limits": "Bounded source/local service/SDK or installed-package engineering only. No native Codex/Claude host observation, provider session, approved registration, 108-attempt capture, positive utility, human evaluation, ADR adoption or founder acceptance.",
+              "outcome": "Paired procedure passed on 24921e1a16dfff15cde5af091f7b955491acdbef with 37 tests, eight cases and zero skips; actual source/trace bindings retained.",
+              "path": "specs/040-portable-mcp-surface/evidence/sc-003.json",
+              "sha256": "c39564b24378212ab6a3c3ed7729b970219bc134df220889fced8b35f83a4ebc"
             }
           ],
           "planned_evidence": "specs/040-portable-mcp-surface/evidence/sc-003.json: exact candidate/input/environment hashes, actual commands/raw outputs, all outcomes and limits; human decisions require their own record.",
@@ -199,7 +220,15 @@
         {
           "given": "valid, malformed, deeply nested and overlarge input/output",
           "id": "SC-004",
-          "obtained_evidence": [],
+          "obtained_evidence": [
+            {
+              "command": "python scripts/run_m45_mcp_acceptance.py --tooling-python <isolated-tooling-python> --core-python <isolated-core-python> --output-root <private-receipt> --require-clean (public path normalization; exact argv retained privately)",
+              "limits": "Bounded source/local service/SDK or installed-package engineering only. No native Codex/Claude host observation, provider session, approved registration, 108-attempt capture, positive utility, human evaluation, ADR adoption or founder acceptance.",
+              "outcome": "Paired procedure passed on 24921e1a16dfff15cde5af091f7b955491acdbef with 37 tests, eight cases and zero skips; actual source/trace bindings retained.",
+              "path": "specs/040-portable-mcp-surface/evidence/sc-004.json",
+              "sha256": "81f4b9d9ba8063a521d03bfeed49ddbafbb2972fc9e59dbc4387e7fedf767e38"
+            }
+          ],
           "planned_evidence": "specs/040-portable-mcp-surface/evidence/sc-004.json: exact candidate/input/environment hashes, actual commands/raw outputs, all outcomes and limits; human decisions require their own record.",
           "test_file": "specs/040-portable-mcp-surface/validation-plan.md",
           "test_name": "procedure_schema_and_summary",
@@ -215,7 +244,15 @@
         {
           "given": "root escapes, symlinks, unknown runs and analysis mode",
           "id": "SC-005",
-          "obtained_evidence": [],
+          "obtained_evidence": [
+            {
+              "command": "python scripts/run_m45_mcp_acceptance.py --tooling-python <isolated-tooling-python> --core-python <isolated-core-python> --output-root <private-receipt> --require-clean (public path normalization; exact argv retained privately)",
+              "limits": "Bounded source/local service/SDK or installed-package engineering only. No native Codex/Claude host observation, provider session, approved registration, 108-attempt capture, positive utility, human evaluation, ADR adoption or founder acceptance.",
+              "outcome": "Paired procedure passed on 24921e1a16dfff15cde5af091f7b955491acdbef with 37 tests, eight cases and zero skips; actual source/trace bindings retained.",
+              "path": "specs/040-portable-mcp-surface/evidence/sc-005.json",
+              "sha256": "d366ca3fd08b521668e863b2962109e0befbccd0726d2edc4f58e22563c18387"
+            }
+          ],
           "planned_evidence": "specs/040-portable-mcp-surface/evidence/sc-005.json: exact candidate/input/environment hashes, actual commands/raw outputs, all outcomes and limits; human decisions require their own record.",
           "test_file": "specs/040-portable-mcp-surface/validation-plan.md",
           "test_name": "procedure_root_and_mode",
@@ -231,7 +268,15 @@
         {
           "given": "valid, absent, stale, expired, reused, revoked or wrong-scope grants",
           "id": "SC-006",
-          "obtained_evidence": [],
+          "obtained_evidence": [
+            {
+              "command": "python scripts/run_m45_mcp_acceptance.py --tooling-python <isolated-tooling-python> --core-python <isolated-core-python> --output-root <private-receipt> --require-clean (public path normalization; exact argv retained privately)",
+              "limits": "Bounded source/local service/SDK or installed-package engineering only. No native Codex/Claude host observation, provider session, approved registration, 108-attempt capture, positive utility, human evaluation, ADR adoption or founder acceptance.",
+              "outcome": "Paired procedure passed on 24921e1a16dfff15cde5af091f7b955491acdbef with 37 tests, eight cases and zero skips; actual source/trace bindings retained.",
+              "path": "specs/040-portable-mcp-surface/evidence/sc-006.json",
+              "sha256": "223668ede0b8a3348b416a42debb716a92dd78cd7ed700fdc080c39b8b6f9bb4"
+            }
+          ],
           "planned_evidence": "specs/040-portable-mcp-surface/evidence/sc-006.json: exact candidate/input/environment hashes, actual commands/raw outputs, all outcomes and limits; human decisions require their own record.",
           "test_file": "specs/040-portable-mcp-surface/validation-plan.md",
           "test_name": "procedure_grant_boundary",
@@ -247,7 +292,15 @@
         {
           "given": "cancelled execution, stale base and overlapping calls",
           "id": "SC-007",
-          "obtained_evidence": [],
+          "obtained_evidence": [
+            {
+              "command": "python scripts/run_m45_mcp_acceptance.py --tooling-python <isolated-tooling-python> --core-python <isolated-core-python> --output-root <private-receipt> --require-clean (public path normalization; exact argv retained privately)",
+              "limits": "Bounded source/local service/SDK or installed-package engineering only. No native Codex/Claude host observation, provider session, approved registration, 108-attempt capture, positive utility, human evaluation, ADR adoption or founder acceptance.",
+              "outcome": "Paired procedure passed on 24921e1a16dfff15cde5af091f7b955491acdbef with 37 tests, eight cases and zero skips; actual source/trace bindings retained.",
+              "path": "specs/040-portable-mcp-surface/evidence/sc-007.json",
+              "sha256": "2da738cc3c799aa172fd9b1ea384dc7908eb370251b8fb598c7e659f1c284dcb"
+            }
+          ],
           "planned_evidence": "specs/040-portable-mcp-surface/evidence/sc-007.json: exact candidate/input/environment hashes, actual commands/raw outputs, all outcomes and limits; human decisions require their own record.",
           "test_file": "specs/040-portable-mcp-surface/validation-plan.md",
           "test_name": "procedure_cancellation_recovery",
@@ -265,11 +318,18 @@
           "id": "SC-008",
           "obtained_evidence": [
             {
-              "path": "specs/040-portable-mcp-surface/evidence/partial-installed-e40c949.json",
-              "sha256": "1b7286d8f71e795a9a8f52a6e2a5c2f7cc9d6ff1a73394d49f5ddc2de79fd42c",
               "command": "See the normalized command record in the bound partial evidence JSON and the later retention limitation in docs/tooling/EVIDENCE_RETENTION_20261010.md. Exact raw invocation archives are not fully recovered; receipt hashes do not establish current replayability.",
+              "limits": "Evidence includes a separate capability/prompt probe and default installed wheel resource load for five skills/five supporting assets with source-wheel-installed byte equality. It does not test artifact manifest/chunk reading, empty/stale/missing resources, reconstruction/refusal chain, native host loading, sdist/Linux, or full SC-008. Complete original private archives are not currently recovered; see the linked retention update. This remains historical partial evidence and cannot establish current replayability or complete acceptance.",
               "outcome": "partial-obtained; capability/prompt controls and default installed resource bytes observed; full artifact-chain procedure remains unmet",
-              "limits": "Evidence includes a separate capability/prompt probe and default installed wheel resource load for five skills/five supporting assets with source-wheel-installed byte equality. It does not test artifact manifest/chunk reading, empty/stale/missing resources, reconstruction/refusal chain, native host loading, sdist/Linux, or full SC-008. Complete original private archives are not currently recovered; see the linked retention update. This remains historical partial evidence and cannot establish current replayability or complete acceptance."
+              "path": "specs/040-portable-mcp-surface/evidence/partial-installed-e40c949.json",
+              "sha256": "1b7286d8f71e795a9a8f52a6e2a5c2f7cc9d6ff1a73394d49f5ddc2de79fd42c"
+            },
+            {
+              "command": "python scripts/run_m45_mcp_acceptance.py --tooling-python <isolated-tooling-python> --core-python <isolated-core-python> --output-root <private-receipt> --require-clean (public path normalization; exact argv retained privately)",
+              "limits": "Bounded source/local service/SDK or installed-package engineering only. No native Codex/Claude host observation, provider session, approved registration, 108-attempt capture, positive utility, human evaluation, ADR adoption or founder acceptance.",
+              "outcome": "Paired procedure passed on 24921e1a16dfff15cde5af091f7b955491acdbef with 37 tests, eight cases and zero skips; actual source/trace bindings retained.",
+              "path": "specs/040-portable-mcp-surface/evidence/sc-008.json",
+              "sha256": "1cb48c8515d563761b00985d863cf3aa1e897e71230670cec84f0bec0457f778"
             }
           ],
           "planned_evidence": "specs/040-portable-mcp-surface/evidence/sc-008.json: exact candidate/input/environment hashes, actual commands/raw outputs, all outcomes and limits; human decisions require their own record.",
