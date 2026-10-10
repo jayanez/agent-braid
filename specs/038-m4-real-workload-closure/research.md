@@ -2,12 +2,22 @@
 
 ## Development status — 2026-10-08
 
-Exact source rights and protocol are approved. The bounded harness is merged and
-validated; static admission and technical review cover two frozen operations and
-20 treatment slots. See [implementation readiness](implementation-readiness.md)
-for the evidence and scope. Earlier proposal descriptions retain their design-time
-context. Owner stable-candidate/manifest review, capture and whole-M4 acceptance
-remain pending.
+The exact successor candidate `e66f9a1b94fc5ebfbf784d9c48a76f53c1a656ee`
+and manifest received independent review, owner stable-candidate approval
+(item 18) and separate capture authorization (item 19). The single registered
+capture completed all 20 treatments: 10 complete pairs, including four warm-up
+and six measured pairs. All treatments were valid; the separate fresh-process
+verifier inspected all 20 before conditional cleanup removed 40 run/grant paths.
+The measured median serial/parallel total-wall ratio was `0.6538998702917553`,
+favoring serial execution in this finite, uncontrolled sample.
+
+See the [derived registered capture summary](evidence/registered-capture-summary-e66f9a1.json)
+for exact bindings, complete denominators, costs, controls and unavailable
+observations. The two historical `b85f7e5` pre-dispatch failures remain retained
+in the [attempt summary](evidence/pre-dispatch-attempt-summary.json). No capture
+was retried or resumed. Historical SPEC-021 G4 NO-GO remains visible and
+whole-M4 founder acceptance remains pending. Source-project code and tests
+were not executed under this protocol.
 
 ## Candidate source inspection
 
@@ -15,8 +25,8 @@ The only candidate considered here is the exact SPEC-013 public M2 corpus:
 
 | Operation candidate | Public source | Base | Static patch inventory | M4 disposition |
 |---|---|---|---|---|
-| M2 observation normalizer | PR #137, `58351f812614058e53a8ee6aef1dd458f1bb70fc` | `f3c734a1f42d6d5962cfedc57d7f6c1efe40e0a6` | 3 modified paths; 64 changed lines; 7,872-byte diff | Static candidate; new rights and protocol approval pending |
-| M2 counterexample reducer | PR #138, `083f1a390988a9527a5aaeb19133401243b1d714` | same | 5 paths (2 added, 3 modified); 999 changed lines; 55,208-byte diff | Static candidate; new rights and protocol approval pending |
+| M2 observation normalizer | PR #137, `58351f812614058e53a8ee6aef1dd458f1bb70fc` | `f3c734a1f42d6d5962cfedc57d7f6c1efe40e0a6` | 3 modified paths; 64 changed lines; 7,872-byte diff | Historical design-time candidate; subsequently authorized and captured as summarized above |
+| M2 counterexample reducer | PR #138, `083f1a390988a9527a5aaeb19133401243b1d714` | same | 5 paths (2 added, 3 modified); 999 changed lines; 55,208-byte diff | Historical design-time candidate; subsequently authorized and captured as summarized above |
 
 These are authentic Agent Braid engineering changes and may have task relevance
 to Git/runtime observation and reduction. They are not evidence of benefit for
@@ -74,7 +84,10 @@ synthetic substitute. Source rights and enough eligible operations are gates.
    exact stable candidate/harness/manifest before a separate capture approval.
 
 Current runtime admission passed without source/scope changes: two operations,
-20 slots and equal predicted AB/BA trees. Remaining: owner stable-candidate/manifest
-review; exact capture authorization; and observed registered results.
+20 slots and equal predicted AB/BA trees. Historical candidate b85f7e5 later
+received owner stable-candidate/manifest review and capture authorization, but
+both launches failed before dispatch. Those attempts ran zero treatments. The
+e66f9a1 successor subsequently obtained fresh exact owner decisions and completed
+the capture summarized above; any future changed candidate requires new decisions.
 The denominator/order/cost protocol and source rights are owner-approved; this
 does not establish harness correctness or actual-task utility.

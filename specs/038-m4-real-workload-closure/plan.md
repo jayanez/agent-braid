@@ -1,13 +1,31 @@
 # Implementation and evidence plan
 
-## Development status — 2026-10-08
+## Current status — 2026-10-09
 
-Exact source rights and protocol are approved. The bounded harness is merged and
-validated; static admission and technical review cover two frozen operations and
-20 treatment slots. See [implementation readiness](implementation-readiness.md)
-for the evidence and scope. Earlier proposal descriptions retain their design-time
-context. Owner stable-candidate/manifest review, capture and whole-M4 acceptance
-remain pending.
+The founder accepted bounded M4 alpha engineering and evaluation completion
+with negative utility. The historical SPEC-021 G4 NO-GO remains unchanged.
+The decision and six-row evidence review are in
+[`whole-m4-founder-decision-20261009.json`](whole-m4-founder-decision-20261009.json)
+and [`whole-m4-closure-packet.md`](whole-m4-closure-packet.md). Current GitHub tracking is shown in the [live M4 milestone](https://github.com/jayanez/agent-braid/milestone/6).
+
+## Capture status — 2026-10-08
+
+The exact successor candidate `e66f9a1b94fc5ebfbf784d9c48a76f53c1a656ee`
+and manifest received independent review, owner stable-candidate approval
+(item 18) and separate capture authorization (item 19). The single registered
+capture completed all 20 treatments: 10 complete pairs, including four warm-up
+and six measured pairs. All treatments were valid; the separate fresh-process
+verifier inspected all 20 before conditional cleanup removed 40 run/grant paths.
+The measured median serial/parallel total-wall ratio was `0.6538998702917553`,
+favoring serial execution in this finite, uncontrolled sample.
+
+See the [derived registered capture summary](evidence/registered-capture-summary-e66f9a1.json)
+for exact bindings, complete denominators, costs, controls and unavailable
+observations. The two historical `b85f7e5` pre-dispatch failures remain retained
+in the [attempt summary](evidence/pre-dispatch-attempt-summary.json). No capture
+was retried or resumed. Historical SPEC-021 G4 NO-GO remains visible. At this
+capture-status snapshot, the later founder decision had not yet been recorded.
+Source-project code and tests were not executed under this protocol.
 
 ## Technical context and scope
 
@@ -105,6 +123,7 @@ that these candidate sources are authorized or eligible.
 
 Source-rights and exact protocol approval are obtained as recorded above.
 The two-operation frame was admitted under current caps without exclusions or
-substitutions. Pending: owner stable-candidate/manifest review; capture-specific
-authorization; independent outcome review; and a new
-founder whole-M4 decision. Implementation authorization is not capture approval.
+substitutions. Exact owner stable-candidate review, capture authorization and
+independent obtained-outcome review are now recorded for e66f9a1. The remaining
+boundary is a separately reviewed six-row packet and a new founder whole-M4
+decision. Implementation authorization alone is not capture approval.

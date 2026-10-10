@@ -1,13 +1,34 @@
 # SPEC-038: M4 real-workload closure protocol
 
-## Development status — 2026-10-08
+## Current status — 2026-10-09
 
-Exact source rights and protocol are approved. The bounded harness is merged and
-validated; static admission and technical review cover two frozen operations and
-20 treatment slots. See [implementation readiness](implementation-readiness.md)
-for the evidence and scope. Earlier proposal descriptions retain their design-time
-context. Owner stable-candidate/manifest review, capture and whole-M4 acceptance
-remain pending.
+The founder approved bounded whole-M4 alpha engineering and evaluation
+completion with a negative-utility result. The decision accepts six bounded
+engineering/evaluation exit rows at reviewed candidate
+`fa8852ab4158f860bf2bc3aa70469f3367d2b57b`; it does not accept useful speedup.
+The historical SPEC-021 G4 NO-GO and all evidence limits remain unchanged.
+See the [founder decision](whole-m4-founder-decision-20261009.json),
+[closure packet](whole-m4-closure-packet.md), and [SC-008 evidence](evidence/sc-008.json).
+Current GitHub tracking is shown in the [live M4 milestone](https://github.com/jayanez/agent-braid/milestone/6). Updates follow scoped-plan review, guarded apply, a fresh `operations: []` audit, and Project/milestone verification.
+
+## Capture status — 2026-10-08
+
+The exact successor candidate `e66f9a1b94fc5ebfbf784d9c48a76f53c1a656ee`
+and manifest received independent review, owner stable-candidate approval
+(item 18) and separate capture authorization (item 19). The single registered
+capture completed all 20 treatments: 10 complete pairs, including four warm-up
+and six measured pairs. All treatments were valid; the separate fresh-process
+verifier inspected all 20 before conditional cleanup removed 40 run/grant paths.
+The measured median serial/parallel total-wall ratio was `0.6538998702917553`,
+favoring serial execution in this finite, uncontrolled sample.
+
+See the [derived registered capture summary](evidence/registered-capture-summary-e66f9a1.json)
+for exact bindings, complete denominators, costs, controls and unavailable
+observations. The two historical `b85f7e5` pre-dispatch failures remain retained
+in the [attempt summary](evidence/pre-dispatch-attempt-summary.json). No capture
+was retried or resumed. Historical SPEC-021 G4 NO-GO remains visible. At this
+capture-status snapshot, the later founder decision had not yet been recorded.
+Source-project code and tests were not executed under this protocol.
 
 ## Purpose and scope
 
@@ -16,8 +37,9 @@ workload to evaluate the bounded local runtime in SPEC-020/ADR 0019. This is a
 research protocol and source-feasibility packet. It authorizes no capture,
 repository code or tests, grants, provider calls, installation, ref promotion,
 or execution by itself. Exact source rights and protocol are approved through
-the separate owner decision; static runtime admission has passed for the exact
-frozen frame. Capture remains pending.
+the separate owner decision; static runtime admission passed for the exact frozen
+frame. Historical b85f7e5 failed before dispatch; the separately approved
+e66f9a1 successor subsequently completed the single capture summarized above.
 A completed evaluation may validly conclude infeasible, negative, or inconclusive.
 
 Owner-permissioned source frame, subject to runtime feasibility review: the
@@ -43,7 +65,8 @@ Constitution Articles 0, 2–7, 9, 12–15, 19–25; GOVERNANCE.md; ADRs 0013, 0
 SPEC-022's synthetic measurement protocol and stable harness review; SPEC-013's
 M2 source/decision records; operational semantics; Spec Kit and validation
 profiles. Feature records cannot amend these authorities. SPEC-021's historical
-G4 NO-GO and M4-open status remain unchanged. SPEC-022 evidence remains
+G4 NO-GO remains unchanged. The bounded M4 acceptance is recorded in the current
+status above; SPEC-022 evidence remains
 synthetic and separate.
 
 ## Requirements and acceptance scenarios
@@ -158,6 +181,9 @@ independent and unchanged.
 
 ## Evidence and unresolved questions
 
-Obtained M4 evidence: none. Planned evidence and all unresolved rights/yield
-questions are in `assurance.json`, `research.md`, and the review packet. No
-source execution, probing, or capture was performed while preparing this spec.
+The registered M4 capture and six-row closure evidence are recorded in the
+linked current status and `evidence/` records. The capture was bounded to the
+approved frame and did not execute source-project code, tests, probes, or
+captures beyond the registered protocol. Remaining external tracking work is
+administrative and pending guarded reconciliation; it is not an evidence or
+acceptance prerequisite for this recorded bounded decision.
