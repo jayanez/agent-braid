@@ -1,0 +1,38 @@
+{
+  "candidate": {
+    "commit": "9dfdf27eb54fa6a912d8cae4b2a05b67fbb368be",
+    "wheel": "agent_braid 0.1.0a1",
+    "wheelSha256": "30c058c14ae5dbcfc3c4e369d480f402f935520a6c68d7dd13c7ebac80061c08"
+  },
+  "classification": "derived-summary-only; not canonical obtained evidence; not byte-verifiable against private raw records",
+  "limits": [
+    "Not a full tooling-extra installation or successful MCP serve test.",
+    "Not clean-room reproduction, actual Linux compatibility, legal compatibility, registered T004, native-host/provider validation, human/founder acceptance, or overall M4.5 acceptance.",
+    "This projection is a newly authored summary. It does not carry original command/environment traces or raw receipt hashes and cannot substitute for them."
+  ],
+  "packagingBase": {
+    "commit": "153c8fb7452fc55ddb50ad979ba8f872f9c1fb2d",
+    "relationship": "later clean packaging base; candidate product module hashes match the recorded modules"
+  },
+  "privateEvidenceHandling": {
+    "noRawRedactionClaim": true,
+    "publicationDecision": "Only this minimal summary is proposed for publication after ordinary content review; raw receipts/manifests remain private because they contain local paths, environment values and trace/run context.",
+    "rawEvidenceRetainedSeparately": true
+  },
+  "review": {
+    "date": "2026-10-10",
+    "result": "no blocking finding within stated bounded installed-core and declared-metadata closure scope",
+    "scenarios": {
+      "SPEC-042/SC-001": "bounded local offline wheel installation, generated console entrypoints, core analysis parity, and typed SDK-absent serve refusal",
+      "SPEC-042/SC-008": "partial; metadata closure reviewed, tooling-extra/full platform and clean-room clauses remain unmet"
+    },
+    "wheelIdentityMatchesCandidate": true
+  },
+  "schema": "m45-public-evidence-summary-projection-v1",
+  "selectedEvidenceFacts": [
+    "The exact candidate wheel installed offline with pip in an isolated Python 3.13 environment; generated console entrypoints and core analysis completed within the bounded local test.",
+    "The optional tooling extra declares mcp==2.3.0. The core-only install did not contain the SDK, and serve returned the expected dependency-unavailable diagnosis without starting a server.",
+    "Metadata closure review found the core-only metadata closure complete and the tooling closure incomplete in the core-only environment; an isolated donor supplied the declared tooling closure but did not contain the root wheel.",
+    "Declared license metadata and wheel license files were inventoried; no legal compatibility conclusion was made."
+  ]
+}

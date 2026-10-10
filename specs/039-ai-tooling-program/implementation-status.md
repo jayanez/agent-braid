@@ -1,15 +1,22 @@
 # M4.5 implementation status and source map
 
-Status date: 2026-10-09. This is a source map for the proposed M4.5 implementation and closure work. It does not update task checkboxes, assurance records, approval state, or milestone state.
+Status date: 2026-10-10. This is a source map for the proposed M4.5 implementation and closure work. It does not update task checkboxes, assurance records, approval state, or milestone state.
 
-The inspected planning baseline is `develop` at `59d0eadbea772dbff32fb9daca88bd39ab67a030`. The unmerged PR #467 candidate also integrates `develop` metadata/evidence commit `7c10b248d34a05f15195376d72884d9b443fe36a` without inheriting its M4 acceptance; its final integrated/frozen SHA is not established here. Code present in this candidate is not, by itself, paired scenario evidence, host observation, clean-room reproduction, approval, or task completion. The registered 60 child tasks and six parent tasks therefore remain pending until their existing procedures and candidate-bound receipts establish their acceptance criteria. Do not create replacement task IDs or reduce the planned scope.
+The earlier planning source map used `develop` at `59d0eadbea772dbff32fb9daca88bd39ab67a030` and later integrated metadata/evidence commit `7c10b248d34a05f15195376d72884d9b443fe36a`. The currently inspected source commit is `153c8fb7452fc55ddb50ad979ba8f872f9c1fb2d`; its identity is known. Approval and freeze of the prospective evaluation candidate remain pending. Neither source integration nor an earlier M4 decision establishes M4.5 acceptance. Code present in this candidate is not, by itself, paired scenario evidence, host observation, clean-room reproduction, approval, or task completion. The registered 60 child tasks and six parent tasks retain their existing acceptance criteria. SPEC-044 T003 alone is checked for 19 bounded deterministic controls on its historical candidate; the other 59 task checkboxes remain open. No later-candidate or host acceptance is inferred from that record. Do not create replacement task IDs or reduce the planned scope.
 
 ## Current integration and evaluation preparation
 
 The current integration includes `develop` at
-`9dfd9fdf52e688e7225af1f7644f41b6ba92b780`, including the separately approved
+`42d99fa8eabb4295f8605e564bc0ea0fa6fc09e0`, including the separately approved
 bounded M4 closure. That predecessor decision does not approve M4.5 or change
 historical G4 NO-GO and negative-utility evidence.
+
+The clean integration source is `153c8fb7452fc55ddb50ad979ba8f872f9c1fb2d`.
+The reviewed installed-wheel observations use the earlier product candidate
+`9dfdf27eb54fa6a912d8cae4b2a05b67fbb368be`; the recorded product module bytes
+match the integration source. This is not a wheel built from the integration
+commit. The [technical evidence status](../../docs/tooling/TECHNICAL_STATUS.md)
+records that boundary and outstanding procedures.
 
 The owner approved the subscription-only, EUR 0 additional-spend policy and
 the observable model-route interpretation: use an exposed immutable identifier
@@ -30,11 +37,9 @@ supplied by the library. Offline report controls preserve incomplete evidence
 and supported failures of registered outcome and safety criteria separately.
 They do not perform human scoring or assert scientific utility.
 
-Read-only CLI/UI observations matched the subscription account for each host and
-showed remaining included quota, zero credits and disabled automatic recharge
-at the observed times. These point-in-time observations are retained privately;
-they do not establish ongoing quota, every attempt's billing route, authenticated
-cost sources or native host acceptance. No M4.5 native cohort has started.
+Provider authorization and availability observations are retained privately.
+They do not establish every attempt's route, authenticated cost sources or native
+host acceptance. No M4.5 native cohort has started.
 Before technical capture, the exact candidate still needs stable validation
 receipts, fixture-rights approval, exact host/model builds, billing route/rates,
 frozen candidate SHA and rubric, the mandatory v3 included-subscription policy,
@@ -46,16 +51,11 @@ bound human addendum; they do not block technical preparation. Technical receipt
 and aggregates still require complete registered coverage and trusted external
 attestation. This status does not authorize capture or a provider call.
 
-The earlier attempt to use an empty caller-selected Claude configuration
-namespace found it logged out. That is a dated failure for that namespace, not
-the current authentication state. At 18:33 UTC, a subsequent read-only check
-observed the first-party subscription account. A bounded no-tools Claude
-preparation at 18:36 requested Sonnet at medium effort and reported
-`claude-sonnet-5-5`; it was outside the 108 intended attempts and is not a
-registered observation, skill-loading receipt or host-acceptance result. An
-interactive attempt to obtain a fresh native catalog was unavailable; that is
-an unavailable attempt, not evidence that a model or host feature is absent.
-These observations do not prove authentication for every namespace or attempt,
+Private preparation records retain unavailable attempts and one previously
+authorized inference outside the intended 108-attempt cohort. They are not
+registered observations, skill-loading receipts or host-acceptance results.
+Their incomplete discovery attempts do not establish that a model or host
+feature is absent. Preparation does not prove every namespace's authentication,
 actual isolation, native skill loading, cohort capture or capture authorization.
 
 ## State vocabulary
@@ -87,7 +87,7 @@ The implementation-status map does not convert any of these states into task com
 | W13 — deterministic exports and safety | 043/T006–T007 | `agent_braid/tooling_present.py` provides deterministic JSON/Markdown/SVG/HTML export helpers, escaping, bounds and selected evidence references. | Hash/provenance receipt, injection/secret/URI/active-content/remote-reference negatives and raw-evidence fidelity need validation. |
 | W14 — onboarding and completed offline journey | 043/T008; completion evidence for 043/T001 and 041/T006 | `docs/tooling/README.md`, `docs/tooling/INSTALL.md`, `docs/tooling/JOURNEY.md`, `docs/ai-tooling-presentation.md`, and the presentation/skills modules provide onboarding, diagnostics, raw-evidence and unsupported-rendering guidance. Pinned fixtures include 12 Git runtime recipes and six AIM controls; explicit scenario preconditions distinguish granted execution and existing interrupted-run recovery. The materializer supplies neither context; private synthetic test-only operator controls exercise those paths separately. | `tests/test_tooling_journey.py` now exercises both isolated host asset formats, all five skill hashes, service discovery, analysis, preparation, missing-grant refusal, a separate test-operator grant, checkpoint interruption, inspection, independently granted recovery, expected-tree verification and deterministic export. It also preserves the source revision/tree. This is an owned offline engineering control; its paired final-candidate receipt and feature acceptance remain pending. W14 does not satisfy actual-host W18. |
 | W15 — registration and accounting preparation | 044/T001; instrumentation prerequisite of 044/T006 | `agent_braid/tooling_evaluation.py` and `tests/test_tooling_evaluation.py` provide offline registration validation, exact 108-slot generation, immutable ledger history, full denominators, cost completeness, cap-stop checks and human-label eligibility controls. `agent_braid/tooling_capture.py`, its tests and `docs/tooling/CAPTURE.md` add hash-bound admission-only receipts: a fixed OS-account/registration store refuses alternate-root and concurrent duplicate admissions. Authentic decision/cost/stop attestation remains a trusted external verifier boundary; no production verifier is provided. Explicit host adapters and a bounded local process supervisor now have synthetic process controls; authentic live sources and actual host provenance remain pending. `agent_braid/tooling_fixtures.py` and `examples/tooling/` pin 18 owned synthetic definitions and six prompts: 12 Git runtime-request recipes for four runtime journey classes and six AIM requests with explicit unknown-coverage controls. Each fixture declares scenario preconditions, phases, outcomes, and context status. Installed loading targets package resources; source JSON requires explicit source-checkout mode. Offline tests also exercise one synthetic execute/status/verify path and one controlled interrupted-run inspect/resume/verify path with test-only private grants. | The minimal template is intentionally invalid for capture. The full `examples/tooling/registration-draft.json` binds the pinned 18 definitions/six prompts and supplies the separately approved numeric caps and proposed model names described in `docs/tooling/BUDGET.md`; provider opt-in remains false and approval, exact builds/rates and human identities remain pending. Materialization creates requests only: execute still needs an exact operator-supplied plan-bound grant; recovery also needs an existing interrupted-run state and matching recovery grant. The fixture helper does not create those contexts or perform runtime operations. Tests demonstrate local synthetic code paths only, not host sessions, captures, or approval. No candidate-specific approved registration, fixture-rights record, rates, reviewer record or capture exists. Numeric cap approval is recorded separately and does not approve these other decisions. Instrumentation validation must precede any future attempt; accounting completion follows all outcomes. |
-| W16 — deterministic offline evaluation controls | 044/T003 | `tests/test_tooling_evaluation.py` exercises synthetic registration, roster, denominator, cost, cap, rating, authority, fidelity and adjudication controls without provider or host execution. | This does not establish all SPEC-044 parity/refusal oracles for the product, does not exercise real sessions, and does not itself complete T003 without its paired procedure and candidate-bound evidence. |
+| W16 — deterministic offline evaluation controls | 044/T003 | `tests/test_tooling_evaluation.py` exercises synthetic registration, roster, denominator, cost, cap, rating, authority, fidelity and adjudication controls without provider or host execution. | The already checked T003 is bound to its historical 19-control candidate. The current unit controls and private later-candidate receipts do not replace that canonical record, prove all product oracles, or establish real sessions or later-candidate acceptance. |
 
 The candidate also contains CLI registration in `agent_braid/cli.py`, packaging resource hooks, and focused tests for assets, MCP, lifecycle, presentation, evaluation and fixtures. A repository quick-profile run completed with 837 tests, 3 failures and 6 skips; it is not a pass. The failures were in unchanged Git counterexample supervisor tests whose child Python resolved from PATH to system Python 3.9.6; a Luna reviewer reproduced the failures under that PATH and the supervisor suite passed all 9 tests when PATH selected the existing Python 3.13.11 environment. Preserve the failure/skip diagnostics. The first stable PR run was interrupted after hosted CI found an optional-SDK assumption in a new core-only test. The corrected test covers both environments without omitting its pin/refusal controls; the isolated SDK job remains mandatory. Hosted CI on superseded candidate `b3f5ce6ad4bbd2bd284b8d83a678b7975fa2cd16` passed 871 core tests with 7 skips and 24 mandatory isolated SDK tests. Its local PR profile was interrupted after an agent temporarily added untracked files; those files were preserved outside that candidate. Both interrupted profiles remain non-passing observations. The newer integrated candidate requires a fresh stable PR profile; earlier CI does not validate these later changes. This does not complete T009 or imply host, clean-room or acceptance evidence.
 
@@ -124,7 +124,7 @@ full human-inclusive accounting is established here.
 | W22 — frozen review and decision packet | 039/T008; 044/T008; T010 in 039–044 | Pending. Assemble candidate/evidence hashes, actual receipts, independent technical findings and a decision packet. Packet readiness requests a decision; it does not record one. Founder acceptance/rejection and scope decision remain explicit human actions. |
 | W23 — governed merge and tracking closure | 039/T006 and 039/T008–T010; final parent/child/milestone dispositions | Pending. After accepted evidence and governed integration, reconcile exactly the existing 60 children, six parents and milestone 19; require an empty scoped audit and separately verify any private Project state. |
 
-All five product skills, optional SDK behavior, installation/configuration, accounting, all negative controls, clean reproduction, both host sessions, the 108-attempt study, cost availability, human scoring, independent review, founder decision, merge and milestone closure remain part of the full goal. No status entry here narrows those obligations.
+The active owner goal retains all technical work: five product skills, optional SDK behavior, installation/configuration, accounting and negative controls, registered clean reproduction, both native host journeys, all 108 intended attempts, technical interpretation and independent technical review. The two human outcome evaluations and their adjudication are explicitly outside this active goal and remain pending. Unknown human fees and times are not zero. Founder acceptance, merge, governed tracking and formal milestone closure retain their separate approval and evidence boundaries; none is implied by completion of the technical goal.
 
 ## Predecessor context and evidence boundaries
 
@@ -135,6 +135,6 @@ The inspected predecessor chats were titled **“Planificar cierre de M3.5”** 
 - Historical predecessor observation before the separately approved 2026-10-09 closure: `23dbb8c` (PR #468) adds bounded Claude Code 2.1.285 observations on candidate `e66f9a1`: missing-grant refusal, a verified interrupted prefix, recovery/completion and suppressed consumed-grant retry. It records 14 observed turns against 20 reserved slots, with no cost measurement or Claude abort exercise. All six M4 exit rows remain open. This metadata is consumed as predecessor context only; it does not prove the new M4.5 MCP surface, five native skills, selected host builds or registered cohort.
 - Keep whole-M4 acceptance and historical G4 NO-GO separate. The optional SDK remains additive and must preserve the legacy six-tool contract and core dependency behavior.
 
-The candidate includes a one-shot process supervisor and explicit host adapters. Their tests execute owned synthetic subprocesses. The bounded no-tools Claude preparation described above was outside the registered cohort; no cohort session or provider capture was run. The owner approved the numeric evaluation caps separately on 2026-10-08. This is not source-rights, provider, protocol or capture approval. The legacy evaluation registration draft retains false provider opt-in; model names remain recommendations. Before a technical attempt, resolve fixture rights, exact host/model builds, billing route/rates, frozen candidate SHA and rubric, mandatory v3 technical scope/deferral/roles, and all source/account/budget/permission approvals. Human identities and reviewer fee/time applicability remain deferred; they are not set to zero or treated as full economic completion. The eventual code candidate SHA must be the integrated/frozen commit, not the planning baseline or a local workspace path.
+The candidate includes a one-shot process supervisor and explicit host adapters. Their tests execute owned synthetic subprocesses. The private preparation inference described above was outside the registered cohort; no cohort session or registered provider capture was run. The owner approved the numeric evaluation caps separately on 2026-10-08. This is not source-rights, provider, protocol or capture approval. The legacy evaluation registration draft retains false provider opt-in; model names remain recommendations. Before a technical attempt, resolve fixture rights, exact host/model builds, billing route/rates, frozen candidate SHA and rubric, mandatory v3 technical scope/deferral/roles, and all source/account/budget/permission approvals. Human identities and reviewer fee/time applicability remain deferred; they are not set to zero or treated as full economic completion. The eventual code candidate SHA must be the integrated/frozen commit, not the planning baseline or a local workspace path.
 
 In synthetic offline report controls, the report preserves validated ledger attempt identifiers separately from intended slot identifiers. Missing-cost fields are attributed to per-attempt, setup or cohort scopes, retaining all intended slots and null actual identifiers for unstarted slots. Structured and narrative outputs retain this mapping while excluding free-form event text. These report controls do not authenticate costs or human ratings, approve a registration, assert utility, or complete any actual-host, human or founder gate.
