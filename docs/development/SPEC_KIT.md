@@ -62,7 +62,14 @@ git fsck --unreachable --no-reflogs
 ```
 
 The restoration tool fetches the exact reviewed SPEC-012 candidate and anchors
-it to a local ref. Require zero unreachable objects, one public root and a
+it to a local ref. It also restores the already-public annotated reviewed tags
+for SPEC-016, SPEC-018 and SPEC-020. Their tag object identities and peeled
+candidates are pinned; each candidate must match its frozen assurance record
+and descend from the existing public root. Conflicting local or public tag
+identities fail without overwriting refs. This also supports clones created
+without automatic tag fetching. Restoration does not create reviewer approval
+or change the historical records. Unrelated unreachable objects still fail the
+portable-root gate. Require zero unreachable objects, one public root and a
 passing preflight. If any check still fails, stop there and report the actual
 failure. The old object store remains available for a separate history and
 worktree audit.
