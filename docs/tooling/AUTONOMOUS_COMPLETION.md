@@ -67,3 +67,32 @@ public projections; raw paths/account context are not published. The final
 candidate, tests, review, PR and scoped GitHub/Project reconciliation are recorded
 here after they finish. Working-tree or historical-wheel observations are not
 silently reassigned to the final candidate.
+
+### Captured local procedures
+
+The eight documentary procedures (SPEC-039), eight local MCP procedures
+(SPEC-040), seven lifecycle plus six presentation tests and healthy SDK peer
+(SPEC-042 / SPEC-043) passed on `5cffa9d27f27686dc2cbbf90ed643e2ec2df94e7`.
+The MCP receipt contains 37 passing tests, eight passing cases and 78 private
+transport trace files. The 223-test synthetic engineering capture passed with
+zero skips on `aaae2e76b74653d142c46027bd33f3e05c0982eb`.
+
+Package/source/installed resources bind `53f1704ca7ea668637efdeb2d4b0a231769b3c68`,
+wheel SHA-256 `c43fd789b64cc123e8fd3c903fd075c27b9ce012964fbd7e8017f847cf54814d`
+and sdist SHA-256 `83234a8b46083de21e576713e90587cfcb8e975a0c372f7dfcc5114c2e394df3`.
+Both fresh isolated macOS arm64 and pinned Linux x86_64 installed procedures
+passed 15 commands. The Linux run explicitly used AMD64 emulation on an ARM64
+Docker daemon, with no network, image pull, credentials or runtime dispatch.
+This is standalone SPEC-042 evidence, separately from registered SPEC-044 T004.
+Each receipt keeps its actual candidate; later documentation-only commits do
+not rewrite an earlier observation. The module/resource input hashes are
+unchanged across these captured candidates.
+
+Canonical full procedure receipts are `specs/039-ai-tooling-program/evidence/sc-*.json`,
+`specs/040-portable-mcp-surface/evidence/sc-*.json`,
+`specs/042-ai-tooling-packaging/evidence/sc-*.json` and SPEC-043 SC-002, SC-004–SC-007.
+Auxiliary clauses are indexed separately in each applicable spec's
+`evidence/technical-clauses.json`. Public commands normalize private absolute
+paths; exact argv, raw outputs, failure attempts and digest-bound inventories
+are retained privately. Repository profiles, final review and integration
+remain pending until their own terminal records are added.

@@ -11,7 +11,7 @@ Given core-only and tooling-extra installations; perform each launches supported
 Prospective targets: `agent_braid/tooling_mcp.py (new); agent_braid/mcp_runtime.py (compatibility); agent_braid/cli.py; pyproject.toml; tests/test_tooling_mcp.py (new)`. Planned receipt: `evidence/sc-001.json`. Use a focused test/harness added with implementation and record its actual command; never execute an invented future command.
 
 
-Partial obtained evidence: `evidence/partial-installed-e40c949.json` records installed-wheel core analysis success and the actionable missing-SDK serve refusal on exact e40. These observations cover only those paired clauses; the complete procedure remains unmet. The capability-only probe lists tools/resources/prompts and makes zero calls; separate protocol-mode evidence makes two read-only calls. A separate default installed-wheel resource observation confirms byte equality for five bundled skills and five supporting assets, but no native host load. The classic analysis example is not a cohort fixture.
+Historical partial observation, before the 2026-10-10 full bounded procedures: `evidence/partial-installed-e40c949.json` records installed-wheel core analysis success and the actionable missing-SDK serve refusal on exact e40. These observations cover only those paired clauses; the complete procedure remains unmet. The capability-only probe lists tools/resources/prompts and makes zero calls; separate protocol-mode evidence makes two read-only calls. A separate default installed-wheel resource observation confirms byte equality for five bundled skills and five supporting assets, but no native host load. The classic analysis example is not a cohort fixture.
 
 ## procedure_protocol_compatibility (REQ-002/SC-002)
 
@@ -20,7 +20,7 @@ Given SDK clients selecting each protocol and an existing legacy request; perfor
 Prospective targets: `agent_braid/tooling_mcp.py (new); agent_braid/mcp_runtime.py (compatibility); agent_braid/cli.py; pyproject.toml; tests/test_tooling_mcp.py (new)`. Planned receipt: `evidence/sc-002.json`. Use a focused test/harness added with implementation and record its actual command; never execute an invented future command.
 
 
-Partial obtained evidence: `evidence/partial-installed-e40c949.json` records two read-only calls on the new endpoint (`auto` selecting 2026-07-28 and `legacy` selecting 2025-11-25), plus a separately reviewed old-endpoint 2025-11-25 probe with six tools listed, out-of-root refusal, and valid synthetic Git analyze. Both probes matched their stated bounded results. The complete paired unsupported-mode/refusal matrix and all required scenarios remain unobserved; SC-002 remains unmet.
+Historical partial observation, before the 2026-10-10 full bounded procedures: `evidence/partial-installed-e40c949.json` records two read-only calls on the new endpoint (`auto` selecting 2026-07-28 and `legacy` selecting 2025-11-25), plus a separately reviewed old-endpoint 2025-11-25 probe with six tools listed, out-of-root refusal, and valid synthetic Git analyze. Both probes matched their stated bounded results. The complete paired unsupported-mode/refusal matrix and all required scenarios remain unobserved; SC-002 remains unmet.
 
 ## procedure_cli_parity (REQ-003/SC-003)
 
@@ -28,7 +28,7 @@ Given immutable valid and unsupported analysis requests, including a result abov
 
 Prospective targets: `agent_braid/tooling_mcp.py (new); agent_braid/mcp_runtime.py (compatibility); agent_braid/cli.py; pyproject.toml; tests/test_tooling_mcp.py (new)`. Planned receipt: `evidence/sc-003.json`. Use a focused test/harness added with implementation and record its actual command; never execute an invented future command.
 
-Partial obtained evidence: the bound partial record includes semantic CLI/MCP report equality for one classic AIM input across two selected SDK modes, with execution authorization false. No >256 KiB result, digest-bound chunk reconstruction, Git/worktree parity, missing/corrupt chain control, or unsupported-request refusal matrix was exercised; SC-003 remains unmet.
+Historical partial observation, before the 2026-10-10 full bounded procedures: the bound partial record includes semantic CLI/MCP report equality for one classic AIM input across two selected SDK modes, with execution authorization false. No >256 KiB result, digest-bound chunk reconstruction, Git/worktree parity, missing/corrupt chain control, or unsupported-request refusal matrix was exercised; SC-003 remains unmet.
 
 ## procedure_schema_and_summary (REQ-004/SC-004)
 
@@ -61,4 +61,7 @@ Given owned multi-chunk, empty, missing or stale artifacts and untrusted instruc
 Prospective targets: `agent_braid/tooling_mcp.py (new); agent_braid/mcp_runtime.py (compatibility); agent_braid/cli.py; pyproject.toml; tests/test_tooling_mcp.py (new)`. Planned receipt: `evidence/sc-008.json`. Use a focused test/harness added with implementation and record its actual command; never execute an invented future command.
 
 
-Partial obtained evidence: `evidence/partial-installed-e40c949.json` records capability-resource and prompt inventory plus an oversized prompt-argument refusal and a succeeding follow-up list request. A separate installed-wheel observation loads five skills and five supporting assets from the default package resources and verifies source/wheel/installed byte equality. Neither observation tests artifact manifests/chunks, empty or stale resources, reconstruction, the required refusal matrix, or native host loading; SC-008 remains unmet.
+Historical partial observation, before the 2026-10-10 full bounded procedures: `evidence/partial-installed-e40c949.json` records capability-resource and prompt inventory plus an oversized prompt-argument refusal and a succeeding follow-up list request. A separate installed-wheel observation loads five skills and five supporting assets from the default package resources and verifies source/wheel/installed byte equality. Neither observation tests artifact manifests/chunks, empty or stale resources, reconstruction, the required refusal matrix, or native host loading; SC-008 remains unmet.
+
+
+2026-10-10 autonomous procedure update: obtained receipts `evidence/sc-*.json` retain actual paired controls, commands, source/input identities and limits. Earlier partial observations above are historical and have not been rebound. See `docs/tooling/AUTONOMOUS_COMPLETION.md` for remaining interventions.

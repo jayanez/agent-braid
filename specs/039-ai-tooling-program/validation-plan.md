@@ -1,6 +1,6 @@
 # SPEC-039: Prospective validation procedures
 
-These procedures are plans. Future test modules/harnesses are not present in this source packet. No procedure below has obtained implementation evidence. A passed source validator checks structure only.
+The procedures below remain the acceptance contract. Candidate-bound obtained local evidence is linked in `assurance.json` and `evidence/`; source validators alone establish only structure. Native-host and human decisions remain separate.
 
 Record positive, refusal, unknown, failed, cancelled and unexecuted outcomes. Evidence must include full candidate and input hashes, command/tool trace, environment, output hashes, domain and limits. Human decisions remain separate.
 
@@ -51,3 +51,6 @@ Prospective targets: `ROADMAP.md; docs/adr/0021-codex-claude-tooling-integration
 Given a completed source packet versus a future implementation candidate; perform closure readiness is assessed. Assert source preparation alone leaves runtime acceptance/host observations pending; negative findings can reject adoption. Include the success and refusal/unavailable counterpart; retain source/result-root integrity and exact typed output.
 
 Prospective targets: `ROADMAP.md; docs/adr/0021-codex-claude-tooling-integration.md; docs/development/github-tracking.json; specs/039-ai-tooling-program/`. Planned receipt: `evidence/sc-008.json`. Use a focused test/harness added with implementation and record its actual command; never execute an invented future command.
+
+
+2026-10-10 autonomous procedure update: obtained receipts `evidence/sc-*.json` retain actual paired controls, commands, source/input identities and limits. Earlier partial observations above are historical and have not been rebound. See `docs/tooling/AUTONOMOUS_COMPLETION.md` for remaining interventions.

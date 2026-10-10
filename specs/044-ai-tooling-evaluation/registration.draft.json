@@ -21,8 +21,8 @@
     "schema": "agent-braid-m45-subscription-policy-v1"
   },
   "candidate": {
-    "commit": "be98b776c687c9b386b3563e4534ec53423ab55d",
-    "sha256": "01baa246cb586ea6a4da7c90b239fee6a33c3b9cacc666485841e7ad990c5581",
+    "commit": "53f1704ca7ea668637efdeb2d4b0a231769b3c68",
+    "sha256": "c43fd789b64cc123e8fd3c903fd075c27b9ce012964fbd7e8017f847cf54814d",
     "version": "0.1.0a1"
   },
   "costCaps": {

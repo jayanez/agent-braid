@@ -57,7 +57,7 @@ assurance record and the [roadmap](../../ROADMAP.md) for those boundaries.
 | [SPEC-043: ai-tooling-journey](../../specs/043-ai-tooling-journey/spec.md) | [M4.5 — AI tooling integrations for Codex and Claude Code](https://github.com/jayanez/agent-braid/milestone/19) |
 | [SPEC-044: ai-tooling-evaluation](../../specs/044-ai-tooling-evaluation/spec.md) | [M4.5 — AI tooling integrations for Codex and Claude Code](https://github.com/jayanez/agent-braid/milestone/19) |
 
-All 44 specs are assigned to the 19 registered GitHub milestones. M4.5 is Open with six spec parents and 60 linked task subissues.
+All 44 specs are assigned to the 19 registered GitHub milestones. M4.5 remains Open with six spec parents, 60 preserved original task obligations and 19 separately verifiable technical clauses (79 task subissues in the approved autonomous reconciliation). The completed local procedures and remaining interventions are indexed in [AUTONOMOUS_COMPLETION.md](../tooling/AUTONOMOUS_COMPLETION.md).
 Frozen publication receipts, assurance/evidence records, founder decisions and
 dated audits retain their captured titles and counts. Resolve those historical
 names through the tracking crosswalk; do not rewrite their bound contents.

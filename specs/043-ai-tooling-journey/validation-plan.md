@@ -51,3 +51,6 @@ Prospective targets: `agent_braid/tooling_present.py (new); agent_braid/cli.py; 
 Given missing feature and image rendering unsupported by a host; perform journey presentation is requested. Assert bounded fallback and actionable diagnosis are visible; no native embedded UI capability is invented. Include the success and refusal/unavailable counterpart; retain source/result-root integrity and exact typed output.
 
 Prospective targets: `agent_braid/tooling_present.py (new); agent_braid/cli.py; docs/tooling/JOURNEY.md (new); examples/tooling/ (new); tests/test_tooling_present.py (new)`. Planned receipt: `evidence/sc-008.json`. Use a focused test/harness added with implementation and record its actual command; never execute an invented future command.
+
+
+2026-10-10 autonomous procedure update: obtained receipts `evidence/sc-*.json` retain actual paired controls, commands, source/input identities and limits. Earlier partial observations above are historical and have not been rebound. See `docs/tooling/AUTONOMOUS_COMPLETION.md` for remaining interventions.

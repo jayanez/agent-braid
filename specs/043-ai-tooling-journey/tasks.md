@@ -6,29 +6,29 @@ Stable task IDs are implementation obligations. Check only after the paired proc
   Dependencies: none; consumed contract review. Targets: `docs/tooling/JOURNEY.md; examples/tooling; full fixture workflow`.
   Verification and planned evidence: `validation-plan.md::procedure_full_journey`; `evidence/sc-001.json` with actual commands and negative controls. Obtained: none.
 
-- [ ] T002 (REQ-002/SC-002): Explain decisions with input identity, conflicts/dependencies, conditional premises, unknowns, assurance and observation limits.
+- [x] T002 (REQ-002/SC-002): Explain decisions with input identity, conflicts/dependencies, conditional premises, unknowns, assurance and observation limits.
   Dependencies: T001. Targets: `tooling_present.py chat summary; classification fidelity controls`.
-  Verification and planned evidence: `validation-plan.md::procedure_faithful_summary`; `evidence/sc-002.json` with actual commands and negative controls. Obtained: none.
+  Verification and planned evidence: `validation-plan.md::procedure_faithful_summary`; `evidence/sc-002.json` with actual commands and negative controls. Obtained: `evidence/sc-002.json`; complete bounded paired procedure passed at its actual recorded source/input identities. Earlier partial evidence remains historical in assurance.json. Native-host acceptance, registered SPEC-044/T004, human/founder decisions remain separate.
 
 - [ ] T003 (REQ-003/SC-003): Explain advisory order and exact missing authority before opt-in execution.
   Dependencies: T001. Targets: `plan/permission journey explanation; missing-grant fixtures`.
   Verification and planned evidence: `validation-plan.md::procedure_authority_journey`; `evidence/sc-003.json` with actual commands and negative controls. Obtained: none.
 
-- [ ] T004 (REQ-004/SC-004): Display actual private-result/verifier state and interruption/recovery outcomes with evidence links.
+- [x] T004 (REQ-004/SC-004): Display actual private-result/verifier state and interruption/recovery outcomes with evidence links.
   Dependencies: T001. Targets: `result/recovery explanation; verifier-state controls`.
-  Verification and planned evidence: `validation-plan.md::procedure_result_journey`; `evidence/sc-004.json` with actual commands and negative controls. Obtained: none.
+  Verification and planned evidence: `validation-plan.md::procedure_result_journey`; `evidence/sc-004.json` with actual commands and negative controls. Obtained: `evidence/sc-004.json`; complete bounded paired procedure passed at its actual recorded source/input identities. Earlier partial evidence remains historical in assurance.json. Native-host acceptance, registered SPEC-044/T004, human/founder decisions remain separate.
 
-- [ ] T005 (REQ-005/SC-005): Render an interaction graph with semantic labels, accessible legend and bounded node/edge input.
+- [x] T005 (REQ-005/SC-005): Render an interaction graph with semantic labels, accessible legend and bounded node/edge input.
   Dependencies: T001. Targets: `tooling_present.py graph model/legend; bounded graph controls`.
-  Verification and planned evidence: `validation-plan.md::procedure_interaction_graph`; `evidence/sc-005.json` with actual commands and negative controls. Obtained: none.
+  Verification and planned evidence: `validation-plan.md::procedure_interaction_graph`; `evidence/sc-005.json` with actual commands and negative controls. Obtained: `evidence/sc-005.json`; complete bounded paired procedure passed at its actual recorded source/input identities. Earlier partial evidence remains historical in assurance.json. Native-host acceptance, registered SPEC-044/T004, human/founder decisions remain separate.
 
-- [ ] T006 (REQ-006/SC-006): Export deterministic Markdown, SVG and standalone HTML from selected evidence with hashes and provenance.
+- [x] T006 (REQ-006/SC-006): Export deterministic Markdown, SVG and standalone HTML from selected evidence with hashes and provenance.
   Dependencies: T001–T005. Targets: `tooling_present.py Markdown/SVG/HTML; deterministic export receipts`.
-  Verification and planned evidence: `validation-plan.md::procedure_deterministic_export`; `evidence/sc-006.json` with actual commands and negative controls. Obtained: none.
+  Verification and planned evidence: `validation-plan.md::procedure_deterministic_export`; `evidence/sc-006.json` with actual commands and negative controls. Obtained: `evidence/sc-006.json`; complete bounded paired procedure passed at its actual recorded source/input identities. Earlier partial evidence remains historical in assurance.json. Native-host acceptance, registered SPEC-044/T004, human/founder decisions remain separate.
 
-- [ ] T007 (REQ-007/SC-007): Escape and bound untrusted source/evidence in every export without scripts, remote references or secret inclusion.
+- [x] T007 (REQ-007/SC-007): Escape and bound untrusted source/evidence in every export without scripts, remote references or secret inclusion.
   Dependencies: T001–T005. Targets: `tooling_present.py escaping/URI/content limits; injection controls`.
-  Verification and planned evidence: `validation-plan.md::procedure_export_security`; `evidence/sc-007.json` with actual commands and negative controls. Obtained: none.
+  Verification and planned evidence: `validation-plan.md::procedure_export_security`; `evidence/sc-007.json` with actual commands and negative controls. Obtained: `evidence/sc-007.json`; complete bounded paired procedure passed at its actual recorded source/input identities. Earlier partial evidence remains historical in assurance.json. Native-host acceptance, registered SPEC-044/T004, human/founder decisions remain separate.
 
 - [ ] T008 (REQ-008/SC-008): Provide clear onboarding, diagnostics, raw-evidence access and unsupported-rendering explanations in both hosts.
   Dependencies: T001–T005. Targets: `docs/tooling onboarding/diagnostics; unsupported render fallback`.
@@ -47,15 +47,15 @@ Stable task IDs are implementation obligations. Check only after the paired proc
 These auxiliary tasks preserve the full criteria of the linked original task.
 A completed auxiliary does not complete native-host or human acceptance.
 
-- [ ] T011 (REQ-001/SC-001): Verify the synthetic local journey preserves typed inputs, candidate/results and refusal boundaries; actual host execution stays with T001.
+- [x] T011 (REQ-001/SC-001): Verify the synthetic local journey preserves typed inputs, candidate/results and refusal boundaries; actual host execution stays with T001.
   Related original: T001. Dependencies: available bounded implementation; original acceptance remains separate. Targets: `tests/test_tooling_mcp.py; tests/test_tooling_present.py`.
   Verification: `evidence/technical-clauses.json` with frozen candidate/input hashes, actual command, paired controls and stated limits.
 
-- [ ] T012 (REQ-003/SC-003): Verify local formatted grant refusal and operator-scope wording; actual host explanation stays with T003.
+- [x] T012 (REQ-003/SC-003): Verify local formatted grant refusal and operator-scope wording; actual host explanation stays with T003.
   Related original: T003. Dependencies: available bounded implementation; original acceptance remains separate. Targets: `tests/test_tooling_presentation_acceptance.py`.
   Verification: `evidence/technical-clauses.json` with frozen candidate/input hashes, actual command, paired controls and stated limits.
 
-- [ ] T013 (REQ-008/SC-008): Verify deterministic bounded graph/CLI fallback and actionable diagnosis; visible fallback in each host stays with T008.
+- [x] T013 (REQ-008/SC-008): Verify deterministic bounded graph/CLI fallback and actionable diagnosis; visible fallback in each host stays with T008.
   Related original: T008. Dependencies: available bounded implementation; original acceptance remains separate. Targets: `tests/test_tooling_present.py; docs/tooling/JOURNEY.md`.
   Verification: `evidence/technical-clauses.json` with frozen candidate/input hashes, actual command, paired controls and stated limits.
 

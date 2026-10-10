@@ -1,0 +1,421 @@
+{
+  "limits": "Bounded source/local service/SDK or installed-package engineering only. No native Codex/Claude host observation, provider session, approved registration, 108-attempt capture, positive utility, human evaluation, ADR adoption or founder acceptance.",
+  "observation": {
+    "domain": "13 local lifecycle/presentation paired controls plus independently retained healthy SDK peer",
+    "privacy": "Absolute paths normalized; exact command, cwd, raw outputs and receipt retained privately. No raw provider/account data published.",
+    "privateReceiptName": "lifecycle-5cffa9d-v1/proof.json",
+    "privateReceiptSha256": "6884cc761dd9f8484c0acbf5207e3f8c5ee698cceb831bf13ff5e4ba6ee0738a",
+    "record": {
+      "candidate": {
+        "gitHead": "5cffa9d27f27686dc2cbbf90ed643e2ec2df94e7",
+        "postRunGitHead": "5cffa9d27f27686dc2cbbf90ed643e2ec2df94e7",
+        "postRunInventoryFileCount": 1658,
+        "postRunInventorySha256": "f6c83deae155b066ad4034f694db9907b9c93a11009b973b83033a6c62340fae",
+        "postRunStatus": "",
+        "preRunInventoryFileCount": 1658,
+        "preRunInventorySha256": "f6c83deae155b066ad4034f694db9907b9c93a11009b973b83033a6c62340fae",
+        "stableForFullRun": true
+      },
+      "execution": {
+        "command": [
+          "<private-delivery-root>/checkout/.venv-speckit/bin/python",
+          "scripts/run_m45_lifecycle_acceptance.py",
+          "--protocol-receipt",
+          "../autonomous-closure-v1/mcp-5cffa9d-v1/mcp-acceptance-receipt.json",
+          "--output",
+          "../autonomous-closure-v1/lifecycle-5cffa9d-v1"
+        ],
+        "cwd": "<private-delivery-root>/checkout",
+        "environment": {
+          "implementation": "CPython",
+          "osName": "posix",
+          "platform": "macOS-27.0.1-arm64-arm-64bit-Mach-O",
+          "python": "3.13.11"
+        },
+        "errors": 0,
+        "expectedRosterCompleteAllOkAndNoSkips": true,
+        "expectedTestCount": 13,
+        "expectedTestRoster": [
+          {
+            "outcome": "ok",
+            "testCase": "m45_acceptance_test_tooling_lifecycle_acceptance.LifecycleAcceptance.test_sc002_preview_selected_apply_and_refusal_keep_stdout_protocol",
+            "testName": "test_sc002_preview_selected_apply_and_refusal_keep_stdout_protocol"
+          },
+          {
+            "outcome": "ok",
+            "testCase": "m45_acceptance_test_tooling_lifecycle_acceptance.LifecycleAcceptance.test_sc002_cli_emits_only_typed_json_and_requires_selected_preview_digest",
+            "testName": "test_sc002_cli_emits_only_typed_json_and_requires_selected_preview_digest"
+          },
+          {
+            "outcome": "ok",
+            "testCase": "m45_acceptance_test_tooling_lifecycle_acceptance.LifecycleAcceptance.test_sc003_user_project_and_codex_home_are_explicit_and_root_scoped",
+            "testName": "test_sc003_user_project_and_codex_home_are_explicit_and_root_scoped"
+          },
+          {
+            "outcome": "ok",
+            "testCase": "m45_acceptance_test_tooling_lifecycle_acceptance.LifecycleAcceptance.test_sc004_idempotent_owned_change_preserves_unrelated_bytes_and_refuses_collision",
+            "testName": "test_sc004_idempotent_owned_change_preserves_unrelated_bytes_and_refuses_collision"
+          },
+          {
+            "outcome": "ok",
+            "testCase": "m45_acceptance_test_tooling_lifecycle_acceptance.LifecycleAcceptance.test_sc005_doctor_separates_healthy_static_checks_from_unavailable_host_and_pending_auth",
+            "testName": "test_sc005_doctor_separates_healthy_static_checks_from_unavailable_host_and_pending_auth"
+          },
+          {
+            "outcome": "ok",
+            "testCase": "m45_acceptance_test_tooling_lifecycle_acceptance.LifecycleAcceptance.test_sc006_older_owned_bundle_updates_with_receipt_and_modified_asset_refuses",
+            "testName": "test_sc006_older_owned_bundle_updates_with_receipt_and_modified_asset_refuses"
+          },
+          {
+            "outcome": "ok",
+            "testCase": "m45_acceptance_test_tooling_lifecycle_acceptance.LifecycleAcceptance.test_sc007_uninstall_twice_removes_owned_and_preserves_modified_and_shared_data",
+            "testName": "test_sc007_uninstall_twice_removes_owned_and_preserves_modified_and_shared_data"
+          },
+          {
+            "outcome": "ok",
+            "testCase": "m45_acceptance_test_tooling_presentation_acceptance.PresentationAcceptance.test_sc002_summary_agrees_with_every_classification_and_unknown_stays_unknown",
+            "testName": "test_sc002_summary_agrees_with_every_classification_and_unknown_stays_unknown"
+          },
+          {
+            "outcome": "ok",
+            "testCase": "m45_acceptance_test_tooling_presentation_acceptance.PresentationAcceptance.test_sc003_summary_explains_missing_grant_and_records_limited_success_scope",
+            "testName": "test_sc003_summary_explains_missing_grant_and_records_limited_success_scope"
+          },
+          {
+            "outcome": "ok",
+            "testCase": "m45_acceptance_test_tooling_presentation_acceptance.PresentationAcceptance.test_sc004_success_failure_cancel_and_recovery_states_remain_distinct",
+            "testName": "test_sc004_success_failure_cancel_and_recovery_states_remain_distinct"
+          },
+          {
+            "outcome": "ok",
+            "testCase": "m45_acceptance_test_tooling_presentation_acceptance.PresentationAcceptance.test_sc005_graph_preserves_edge_semantics_and_refuses_malformed_or_oversize",
+            "testName": "test_sc005_graph_preserves_edge_semantics_and_refuses_malformed_or_oversize"
+          },
+          {
+            "outcome": "ok",
+            "testCase": "m45_acceptance_test_tooling_presentation_acceptance.PresentationAcceptance.test_sc006_repeated_export_bytes_and_receipt_bind_exact_source_output_and_limits",
+            "testName": "test_sc006_repeated_export_bytes_and_receipt_bind_exact_source_output_and_limits"
+          },
+          {
+            "outcome": "ok",
+            "testCase": "m45_acceptance_test_tooling_presentation_acceptance.PresentationAcceptance.test_sc007_export_escapes_active_markup_and_refuses_unsafe_selection_and_size",
+            "testName": "test_sc007_export_escapes_active_markup_and_refuses_unsafe_selection_and_size"
+          }
+        ],
+        "failures": 0,
+        "networkOrHostProviderCalls": "none by procedure design; local temporary fixtures only",
+        "rawTestOutcomes": [
+          {
+            "outcome": "ok",
+            "testCase": "m45_acceptance_test_tooling_lifecycle_acceptance.LifecycleAcceptance.test_sc002_cli_emits_only_typed_json_and_requires_selected_preview_digest",
+            "testName": "test_sc002_cli_emits_only_typed_json_and_requires_selected_preview_digest"
+          },
+          {
+            "outcome": "ok",
+            "testCase": "m45_acceptance_test_tooling_lifecycle_acceptance.LifecycleAcceptance.test_sc002_preview_selected_apply_and_refusal_keep_stdout_protocol",
+            "testName": "test_sc002_preview_selected_apply_and_refusal_keep_stdout_protocol"
+          },
+          {
+            "outcome": "ok",
+            "testCase": "m45_acceptance_test_tooling_lifecycle_acceptance.LifecycleAcceptance.test_sc003_user_project_and_codex_home_are_explicit_and_root_scoped",
+            "testName": "test_sc003_user_project_and_codex_home_are_explicit_and_root_scoped"
+          },
+          {
+            "outcome": "ok",
+            "testCase": "m45_acceptance_test_tooling_lifecycle_acceptance.LifecycleAcceptance.test_sc004_idempotent_owned_change_preserves_unrelated_bytes_and_refuses_collision",
+            "testName": "test_sc004_idempotent_owned_change_preserves_unrelated_bytes_and_refuses_collision"
+          },
+          {
+            "outcome": "ok",
+            "testCase": "m45_acceptance_test_tooling_lifecycle_acceptance.LifecycleAcceptance.test_sc005_doctor_separates_healthy_static_checks_from_unavailable_host_and_pending_auth",
+            "testName": "test_sc005_doctor_separates_healthy_static_checks_from_unavailable_host_and_pending_auth"
+          },
+          {
+            "outcome": "ok",
+            "testCase": "m45_acceptance_test_tooling_lifecycle_acceptance.LifecycleAcceptance.test_sc006_older_owned_bundle_updates_with_receipt_and_modified_asset_refuses",
+            "testName": "test_sc006_older_owned_bundle_updates_with_receipt_and_modified_asset_refuses"
+          },
+          {
+            "outcome": "ok",
+            "testCase": "m45_acceptance_test_tooling_lifecycle_acceptance.LifecycleAcceptance.test_sc007_uninstall_twice_removes_owned_and_preserves_modified_and_shared_data",
+            "testName": "test_sc007_uninstall_twice_removes_owned_and_preserves_modified_and_shared_data"
+          },
+          {
+            "outcome": "ok",
+            "testCase": "m45_acceptance_test_tooling_presentation_acceptance.PresentationAcceptance.test_sc002_summary_agrees_with_every_classification_and_unknown_stays_unknown",
+            "testName": "test_sc002_summary_agrees_with_every_classification_and_unknown_stays_unknown"
+          },
+          {
+            "outcome": "ok",
+            "testCase": "m45_acceptance_test_tooling_presentation_acceptance.PresentationAcceptance.test_sc003_summary_explains_missing_grant_and_records_limited_success_scope",
+            "testName": "test_sc003_summary_explains_missing_grant_and_records_limited_success_scope"
+          },
+          {
+            "outcome": "ok",
+            "testCase": "m45_acceptance_test_tooling_presentation_acceptance.PresentationAcceptance.test_sc004_success_failure_cancel_and_recovery_states_remain_distinct",
+            "testName": "test_sc004_success_failure_cancel_and_recovery_states_remain_distinct"
+          },
+          {
+            "outcome": "ok",
+            "testCase": "m45_acceptance_test_tooling_presentation_acceptance.PresentationAcceptance.test_sc005_graph_preserves_edge_semantics_and_refuses_malformed_or_oversize",
+            "testName": "test_sc005_graph_preserves_edge_semantics_and_refuses_malformed_or_oversize"
+          },
+          {
+            "outcome": "ok",
+            "testCase": "m45_acceptance_test_tooling_presentation_acceptance.PresentationAcceptance.test_sc006_repeated_export_bytes_and_receipt_bind_exact_source_output_and_limits",
+            "testName": "test_sc006_repeated_export_bytes_and_receipt_bind_exact_source_output_and_limits"
+          },
+          {
+            "outcome": "ok",
+            "testCase": "m45_acceptance_test_tooling_presentation_acceptance.PresentationAcceptance.test_sc007_export_escapes_active_markup_and_refuses_unsafe_selection_and_size",
+            "testName": "test_sc007_export_escapes_active_markup_and_refuses_unsafe_selection_and_size"
+          }
+        ],
+        "scenarioOutcomes": {
+          "SC-002": {
+            "outcome": "passed",
+            "tests": [
+              {
+                "outcome": "ok",
+                "testCase": "m45_acceptance_test_tooling_lifecycle_acceptance.LifecycleAcceptance.test_sc002_cli_emits_only_typed_json_and_requires_selected_preview_digest",
+                "testName": "test_sc002_cli_emits_only_typed_json_and_requires_selected_preview_digest"
+              },
+              {
+                "outcome": "ok",
+                "testCase": "m45_acceptance_test_tooling_lifecycle_acceptance.LifecycleAcceptance.test_sc002_preview_selected_apply_and_refusal_keep_stdout_protocol",
+                "testName": "test_sc002_preview_selected_apply_and_refusal_keep_stdout_protocol"
+              },
+              {
+                "outcome": "ok",
+                "testCase": "m45_acceptance_test_tooling_presentation_acceptance.PresentationAcceptance.test_sc002_summary_agrees_with_every_classification_and_unknown_stays_unknown",
+                "testName": "test_sc002_summary_agrees_with_every_classification_and_unknown_stays_unknown"
+              }
+            ]
+          },
+          "SC-003": {
+            "outcome": "passed",
+            "tests": [
+              {
+                "outcome": "ok",
+                "testCase": "m45_acceptance_test_tooling_lifecycle_acceptance.LifecycleAcceptance.test_sc003_user_project_and_codex_home_are_explicit_and_root_scoped",
+                "testName": "test_sc003_user_project_and_codex_home_are_explicit_and_root_scoped"
+              },
+              {
+                "outcome": "ok",
+                "testCase": "m45_acceptance_test_tooling_presentation_acceptance.PresentationAcceptance.test_sc003_summary_explains_missing_grant_and_records_limited_success_scope",
+                "testName": "test_sc003_summary_explains_missing_grant_and_records_limited_success_scope"
+              }
+            ]
+          },
+          "SC-004": {
+            "outcome": "passed",
+            "tests": [
+              {
+                "outcome": "ok",
+                "testCase": "m45_acceptance_test_tooling_lifecycle_acceptance.LifecycleAcceptance.test_sc004_idempotent_owned_change_preserves_unrelated_bytes_and_refuses_collision",
+                "testName": "test_sc004_idempotent_owned_change_preserves_unrelated_bytes_and_refuses_collision"
+              },
+              {
+                "outcome": "ok",
+                "testCase": "m45_acceptance_test_tooling_presentation_acceptance.PresentationAcceptance.test_sc004_success_failure_cancel_and_recovery_states_remain_distinct",
+                "testName": "test_sc004_success_failure_cancel_and_recovery_states_remain_distinct"
+              }
+            ]
+          },
+          "SC-005": {
+            "outcome": "passed",
+            "tests": [
+              {
+                "outcome": "ok",
+                "testCase": "m45_acceptance_test_tooling_lifecycle_acceptance.LifecycleAcceptance.test_sc005_doctor_separates_healthy_static_checks_from_unavailable_host_and_pending_auth",
+                "testName": "test_sc005_doctor_separates_healthy_static_checks_from_unavailable_host_and_pending_auth"
+              },
+              {
+                "outcome": "ok",
+                "testCase": "m45_acceptance_test_tooling_presentation_acceptance.PresentationAcceptance.test_sc005_graph_preserves_edge_semantics_and_refuses_malformed_or_oversize",
+                "testName": "test_sc005_graph_preserves_edge_semantics_and_refuses_malformed_or_oversize"
+              }
+            ]
+          },
+          "SC-006": {
+            "outcome": "passed",
+            "tests": [
+              {
+                "outcome": "ok",
+                "testCase": "m45_acceptance_test_tooling_lifecycle_acceptance.LifecycleAcceptance.test_sc006_older_owned_bundle_updates_with_receipt_and_modified_asset_refuses",
+                "testName": "test_sc006_older_owned_bundle_updates_with_receipt_and_modified_asset_refuses"
+              },
+              {
+                "outcome": "ok",
+                "testCase": "m45_acceptance_test_tooling_presentation_acceptance.PresentationAcceptance.test_sc006_repeated_export_bytes_and_receipt_bind_exact_source_output_and_limits",
+                "testName": "test_sc006_repeated_export_bytes_and_receipt_bind_exact_source_output_and_limits"
+              }
+            ]
+          },
+          "SC-007": {
+            "outcome": "passed",
+            "tests": [
+              {
+                "outcome": "ok",
+                "testCase": "m45_acceptance_test_tooling_lifecycle_acceptance.LifecycleAcceptance.test_sc007_uninstall_twice_removes_owned_and_preserves_modified_and_shared_data",
+                "testName": "test_sc007_uninstall_twice_removes_owned_and_preserves_modified_and_shared_data"
+              },
+              {
+                "outcome": "ok",
+                "testCase": "m45_acceptance_test_tooling_presentation_acceptance.PresentationAcceptance.test_sc007_export_escapes_active_markup_and_refuses_unsafe_selection_and_size",
+                "testName": "test_sc007_export_escapes_active_markup_and_refuses_unsafe_selection_and_size"
+              }
+            ]
+          }
+        },
+        "skipped": 0,
+        "successful": true,
+        "testCount": 13,
+        "testsSuccessful": true
+      },
+      "limits": [
+        "Does not establish actual Codex or Claude host behavior, native rendering, provider behavior, clean-room reproduction, scientific validity, human review, or founder acceptance.",
+        "Candidate inventory hash binds tracked and non-ignored untracked regular files at run time; output is stored outside the checkout."
+      ],
+      "protocolObservation": {
+        "candidateBaseCommit": "5cffa9d27f27686dc2cbbf90ed643e2ec2df94e7",
+        "doctorStatus": "remains intentionally pending; this peer receipt is separate and does not rewrite doctor output.",
+        "domain": "Actual MCP Python SDK stdio client against a local Agent Braid server; not a Codex or Claude host observation.",
+        "rawOutputPath": "<private-delivery-root>/checkout/../autonomous-closure-v1/mcp-5cffa9d-v1/mcp-acceptance-output.txt",
+        "rawOutputSha256": "35999125f737b6d96f950ee6880703911843f82e9ef847302542d72c7a1b8ce7",
+        "receiptPath": "<private-delivery-root>/checkout/../autonomous-closure-v1/mcp-5cffa9d-v1/mcp-acceptance-receipt.json",
+        "receiptSha256": "56781878ac14f9c0a336ef797b340b9eabf461866d1c2559d8f296722c269f06",
+        "receiptVersion": "m45-mcp-acceptance/v1",
+        "status": "healthy-local-sdk-stdio-peer",
+        "testOutcome": {
+          "outcome": "ok",
+          "testCase": "tests.test_tooling_mcp.SdkClientIntegrationTests.test_sdk_auto_and_legacy_negotiation_tools_resource_prompt_and_call",
+          "testName": "test_sdk_auto_and_legacy_negotiation_tools_resource_prompt_and_call"
+        }
+      },
+      "rawOutcomes": {
+        "stderr": {
+          "bytes": 0,
+          "path": "stderr.txt",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "stdout": {
+          "bytes": 3145,
+          "path": "stdout.txt",
+          "sha256": "b6fab24918c9a0618354a68399934aa58497d1ad287a25a7a05ce52744e6a87a"
+        }
+      }
+    }
+  },
+  "outcome": "passed",
+  "scenario": "SC-006",
+  "schema": "agent-braid-m45-bounded-procedure-evidence-v1",
+  "sourceCandidate": "5cffa9d27f27686dc2cbbf90ed643e2ec2df94e7",
+  "sourceInputs": {
+    "agent_braid/analysis.py": {
+      "bytes": 13627,
+      "sha256": "fadfb6f6d3d6f89002df519bbcc86d839724f243e2c8e52732ef57e555abfe00"
+    },
+    "agent_braid/cli.py": {
+      "bytes": 17662,
+      "sha256": "9e1750b94d9ec846c07117a4b3490f0a3026401a3816a42145eb866f843bf988"
+    },
+    "agent_braid/git_adapter.py": {
+      "bytes": 15952,
+      "sha256": "4548eb96849e2d0ed1eaefc53579d065651b00a2c6ae5b1aef6e2bdc5ae3dc45"
+    },
+    "agent_braid/git_process.py": {
+      "bytes": 11219,
+      "sha256": "3247ac861404cfb68f08939770a5048294b45ddc984a1379ca9eb2091ad48668"
+    },
+    "agent_braid/git_replay.py": {
+      "bytes": 32089,
+      "sha256": "62a2c461902e30d874dfe82bed77ab79075f33cb0e56f1e543fd9d317f1d571e"
+    },
+    "agent_braid/git_runtime.py": {
+      "bytes": 31403,
+      "sha256": "ceb4469906b6c97a6f03faf3cc1b4ea8387df937c06b8ccd49984eaf2dff4d4e"
+    },
+    "agent_braid/mcp_runtime.py": {
+      "bytes": 15271,
+      "sha256": "32d30a6a167235e1ab8ca89acdc32b23eb74412e2ac0555fe7c9118d1d816d83"
+    },
+    "agent_braid/runtime_policy.py": {
+      "bytes": 18829,
+      "sha256": "930ead80e4085301e6337af58660665219da3d3b40b72cfca8b803cebfa09188"
+    },
+    "agent_braid/runtime_scheduler.py": {
+      "bytes": 24309,
+      "sha256": "47bb371c88726793d207a59bb85cb6911d86e00a44694b37934805d9fa2462a9"
+    },
+    "agent_braid/tooling_cli.py": {
+      "bytes": 6375,
+      "sha256": "2ba676c7873ee17590e66baa8ace4bef2453a12d686db57654382a8b23dece1a"
+    },
+    "agent_braid/tooling_install.py": {
+      "bytes": 48804,
+      "sha256": "91a736438833efdb8f98d70fed654075cf6da7e9c9303703c965e1d90e8fd5bd"
+    },
+    "agent_braid/tooling_mcp.py": {
+      "bytes": 40695,
+      "sha256": "f8d151fb11905d5bff7114571e5663bf80cb0cd15af3acb1bf5159b14c54b6dd"
+    },
+    "agent_braid/tooling_present.py": {
+      "bytes": 33629,
+      "sha256": "781c4fa1aaac211405ef26620ca80d703b0d37e7769c89cf202b13d9bf3e6eb9"
+    },
+    "examples/analysis/file-edits.json": {
+      "bytes": 2440,
+      "sha256": "23a833a13adb2b029a696028bb1ae64ced30a65a19375d8e515c1c4d809fcd93"
+    },
+    "pyproject.toml": {
+      "bytes": 805,
+      "sha256": "21b32beb7d47b4551e837027ae2713890dc14bb07d7efc56e1cdf2ecc57c1648"
+    },
+    "scripts/run_m45_lifecycle_acceptance.py": {
+      "bytes": 21830,
+      "sha256": "9422bd2b756f83af6f38d0323b2b8101a08c1c62a1e129646131d6f4b64babbe"
+    },
+    "scripts/run_m45_mcp_acceptance.py": {
+      "bytes": 17125,
+      "sha256": "7b50f30f07f2147b32d9b688817801a71882727e40d86e314c9fde726939a778"
+    },
+    "specs/040-portable-mcp-surface/contracts/interface.md": {
+      "bytes": 7387,
+      "sha256": "d8e33c92f83e9f251f985e72d2bb5ce8a658151b7f41964b46d7c9af9808b8a6"
+    },
+    "specs/040-portable-mcp-surface/data-model.md": {
+      "bytes": 4512,
+      "sha256": "cbc2d49e75b416931a9f2e23a1d5a27065549cc7ab6ebfaec95a8655c49bc4ec"
+    },
+    "specs/042-ai-tooling-packaging/validation-plan.md": {
+      "bytes": 7587,
+      "sha256": "c32005c847595516cf3cef044d0798fe6b8fa7a285742e35f8d0bf885035530a"
+    },
+    "tests/test_git_adapter.py": {
+      "bytes": 13550,
+      "sha256": "f27408f851d23c78460bfc52b3ebc024ef58acde1c0d0f649dc9512d78b4c067"
+    },
+    "tests/test_git_runtime.py": {
+      "bytes": 32665,
+      "sha256": "70e0655241bb64b4fb620309b0897c350b077a46db57be142f000a2e0d46fe47"
+    },
+    "tests/test_tooling_lifecycle_acceptance.py": {
+      "bytes": 13163,
+      "sha256": "8fa318110346c520e00136a1a4b0bea36491465c9f2c688fd3b60315e4991307"
+    },
+    "tests/test_tooling_mcp.py": {
+      "bytes": 25376,
+      "sha256": "de9ae5adbe42507a99cb33ecffbd0634455614aa8201c160d7a8d06eeabe6075"
+    },
+    "tests/test_tooling_mcp_acceptance.py": {
+      "bytes": 38457,
+      "sha256": "17d9fdb9ca7c1762ebc1c9f084a97bc152ba353ad0682b8e721e36fa9151fb52"
+    },
+    "tests/test_tooling_presentation_acceptance.py": {
+      "bytes": 9513,
+      "sha256": "3a78c9fe87a8ca4d9893befd4f1b18a47196e0514fa980ae7f7b34e45d4125e9"
+    }
+  },
+  "spec": "SPEC-043"
+}

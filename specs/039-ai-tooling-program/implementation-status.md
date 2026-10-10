@@ -157,3 +157,25 @@ The inspected predecessor chats were titled **“Planificar cierre de M3.5”** 
 The candidate includes a one-shot process supervisor and explicit host adapters. Their tests execute owned synthetic subprocesses. The private preparation inference described above was outside the registered cohort; no cohort session or registered provider capture was run. The owner approved the numeric evaluation caps separately on 2026-10-08. This is not source-rights, provider, protocol or capture approval. The legacy evaluation registration draft retains false provider opt-in; model names remain recommendations. Before a technical attempt, resolve fixture rights, exact host/model builds, billing route/rates, frozen candidate SHA and rubric, mandatory v3 technical scope/deferral/roles, and all source/account/budget/permission approvals. Human identities and reviewer fee/time applicability remain deferred; they are not set to zero or treated as full economic completion. The eventual code candidate SHA must be the integrated/frozen commit, not the planning baseline or a local workspace path.
 
 In synthetic offline report controls, the report preserves validated ledger attempt identifiers separately from intended slot identifiers. Missing-cost fields are attributed to per-attempt, setup or cohort scopes, retaining all intended slots and null actual identifiers for unstarted slots. Structured and narrative outputs retain this mapping while excluding free-form event text. These report controls do not authenticate costs or human ratings, approve a registration, assert utility, or complete any actual-host, human or founder gate.
+
+## Candidate-bound autonomous technical results — 2026-10-10
+
+The local procedures authorized by the bounded closure plan have produced canonical
+scenario evidence. See [technical evidence status](../../docs/tooling/TECHNICAL_STATUS.md)
+for the exact receipt map and limitations, and [autonomous completion](../../docs/tooling/AUTONOMOUS_COMPLETION.md)
+for the proof inventory. The evidence spans distinct candidates: package checks on
+`53f1704`, engineering tests on `aaae2e7`, and the final program/MCP/lifecycle
+procedures on `5cffa9d`. No result is transferred across those candidates.
+
+The paired technical run reports 8/8 program controls, 8/8 MCP scenarios and 37/37
+MCP tests, 13/13 lifecycle tests, 223 engineering tests without skips, fresh
+macOS wheel/core/tooling installation, and Linux AMD64 emulated installation.
+The local MCP SDK peer is not a Codex or Claude host launch. The Linux run is not
+native-hardware or performance evidence. The 108-attempt cohort has not started.
+
+The original 60 task acceptance criteria remain unchanged. Nineteen auxiliary
+evidence tasks add to that scope: current target 52 completed and 27 pending task
+issues, plus six open parent issues. Native-host procedures, human review and
+interpretation, founder acceptance, ADR adoption and milestone closure remain
+external gates. M4's bounded-complete decision preserves historical G4 NO-GO and
+negative utility; M3.5 remains independent with zero admitted real pairs.

@@ -1,0 +1,1622 @@
+{
+  "build": {
+    "domain": "Offline isolated artifact build",
+    "privacy": "Absolute paths normalized; exact command, cwd, raw outputs and receipt retained privately. No raw provider/account data published.",
+    "privateReceiptName": "build-53f1704-v1/build-receipt.json",
+    "privateReceiptSha256": "9f5411efc88b4c06d8614061e7c4ac20c5a3d85597e06d526d9c117c1f6f6cba",
+    "record": {
+      "command": "SOURCE_DATE_EPOCH=$(git show -s --format=%ct HEAD) ../build-environment-v1/venv/bin/python -m build --no-isolation --outdir ../autonomous-closure-v1/build-53f1704-v1",
+      "files": {
+        "agent_braid-0.1.0a1-py3-none-any.whl": {
+          "sha256": "c43fd789b64cc123e8fd3c903fd075c27b9ce012964fbd7e8017f847cf54814d",
+          "size": 421159
+        },
+        "agent_braid-0.1.0a1.tar.gz": {
+          "sha256": "83234a8b46083de21e576713e90587cfcb8e975a0c372f7dfcc5114c2e394df3",
+          "size": 684371
+        }
+      },
+      "outcome": "passed",
+      "sourceCandidate": "53f1704ca7ea668637efdeb2d4b0a231769b3c68",
+      "sourceDateEpoch": "1791668994",
+      "sourceTree": "f3dff406332c186639ac926aca4c809b5a7bdab9"
+    }
+  },
+  "installedPlatforms": [
+    {
+      "domain": "Installed macOS arm64 CPython 3.13.11 offline core/tooling wheel",
+      "privacy": "Absolute paths normalized; exact command, cwd, raw outputs and receipt retained privately. No raw provider/account data published.",
+      "privateReceiptName": "macos-53f1704-v1/receipt.json",
+      "privateReceiptSha256": "f0eb0a8a0ac209b8d3c7dc911c3e1dd359e3d8d768db8a7f58e334e08f620ba7",
+      "record": {
+        "aimCli": {
+          "core": {
+            "reportSha256": "44669eac0f9ec67f74468b26498f78861d92ed6ee5aacaca994802116c63e9aa",
+            "requestSha256": "7e6e9b04d34819aaa8a4188585df7ca30a722fe4135cec95d4274ec71be53bbb"
+          },
+          "tooling": {
+            "reportSha256": "44669eac0f9ec67f74468b26498f78861d92ed6ee5aacaca994802116c63e9aa",
+            "requestSha256": "7e6e9b04d34819aaa8a4188585df7ca30a722fe4135cec95d4274ec71be53bbb"
+          }
+        },
+        "aimParity": {
+          "cliModes": [
+            "core",
+            "tooling"
+          ],
+          "reportSha256": "44669eac0f9ec67f74468b26498f78861d92ed6ee5aacaca994802116c63e9aa",
+          "requestSha256": "7e6e9b04d34819aaa8a4188585df7ca30a722fe4135cec95d4274ec71be53bbb",
+          "sdkModes": [
+            "auto",
+            "legacy"
+          ],
+          "status": "matched"
+        },
+        "candidate": {
+          "distribution": "agent-braid",
+          "sha256": "c43fd789b64cc123e8fd3c903fd075c27b9ce012964fbd7e8017f847cf54814d",
+          "version": "0.1.0a1"
+        },
+        "commands": [
+          {
+            "argv": [
+              "<private-delivery-root>/checkout/.venv-speckit/bin/python",
+              "-I",
+              "-m",
+              "venv",
+              "<private-delivery-root>/checkout/../autonomous-closure-v1/macos-53f1704-v1/venvs/core"
+            ],
+            "cwd": "<private-delivery-root>/checkout/../autonomous-closure-v1/macos-53f1704-v1",
+            "elapsedSeconds": 1.200722,
+            "maxOutputBytes": 1048576,
+            "name": "create-core-venv",
+            "outputCaptureComplete": true,
+            "outputLimited": false,
+            "rawStderrPath": "commands/00-create-core-venv.stderr.raw",
+            "rawStdoutPath": "commands/00-create-core-venv.stdout.raw",
+            "returnCode": 0,
+            "stderrBytes": 0,
+            "stderrObservedBytes": 0,
+            "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "stdoutBytes": 0,
+            "stdoutObservedBytes": 0,
+            "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "timedOut": false,
+            "timeoutSeconds": 45
+          },
+          {
+            "argv": [
+              "<private-delivery-root>/checkout/../autonomous-closure-v1/macos-53f1704-v1/venvs/core/bin/python",
+              "-I",
+              "-m",
+              "pip",
+              "install",
+              "--no-index",
+              "--no-deps",
+              "<private-delivery-root>/autonomous-closure-v1/build-53f1704-v1/agent_braid-0.1.0a1-py3-none-any.whl"
+            ],
+            "cwd": "<private-delivery-root>/checkout/../autonomous-closure-v1/macos-53f1704-v1",
+            "elapsedSeconds": 0.376461,
+            "maxOutputBytes": 1048576,
+            "name": "install-frozen-candidate-core-offline",
+            "outputCaptureComplete": true,
+            "outputLimited": false,
+            "rawStderrPath": "commands/01-install-frozen-candidate-core-offline.stderr.raw",
+            "rawStdoutPath": "commands/01-install-frozen-candidate-core-offline.stdout.raw",
+            "returnCode": 0,
+            "stderrBytes": 0,
+            "stderrObservedBytes": 0,
+            "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "stdoutBytes": 307,
+            "stdoutObservedBytes": 307,
+            "stdoutSha256": "6bcdeecf45a0e93d8b3822f29a3868e976f079dada0ba6cc69c79ef03931d27e",
+            "timedOut": false,
+            "timeoutSeconds": 90
+          },
+          {
+            "argv": [
+              "<private-delivery-root>/checkout/.venv-speckit/bin/python",
+              "-I",
+              "-m",
+              "venv",
+              "<private-delivery-root>/checkout/../autonomous-closure-v1/macos-53f1704-v1/venvs/tooling"
+            ],
+            "cwd": "<private-delivery-root>/checkout/../autonomous-closure-v1/macos-53f1704-v1",
+            "elapsedSeconds": 1.196872,
+            "maxOutputBytes": 1048576,
+            "name": "create-tooling-venv",
+            "outputCaptureComplete": true,
+            "outputLimited": false,
+            "rawStderrPath": "commands/02-create-tooling-venv.stderr.raw",
+            "rawStdoutPath": "commands/02-create-tooling-venv.stdout.raw",
+            "returnCode": 0,
+            "stderrBytes": 0,
+            "stderrObservedBytes": 0,
+            "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "stdoutBytes": 0,
+            "stdoutObservedBytes": 0,
+            "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "timedOut": false,
+            "timeoutSeconds": 45
+          },
+          {
+            "argv": [
+              "<private-delivery-root>/checkout/../autonomous-closure-v1/macos-53f1704-v1/venvs/tooling/bin/python",
+              "-I",
+              "-m",
+              "pip",
+              "install",
+              "--no-index",
+              "--find-links",
+              "<private-delivery-root>/wheelhouses/macos-arm64",
+              "--require-hashes",
+              "-r",
+              "<private-delivery-root>/checkout/docs/tooling/reproducibility/mcp-2.3.0-cp313-macos-arm64.lock.txt"
+            ],
+            "cwd": "<private-delivery-root>/checkout/../autonomous-closure-v1/macos-53f1704-v1",
+            "elapsedSeconds": 1.246478,
+            "maxOutputBytes": 1048576,
+            "name": "install-locked-sdk-offline",
+            "outputCaptureComplete": true,
+            "outputLimited": false,
+            "rawStderrPath": "commands/03-install-locked-sdk-offline.stderr.raw",
+            "rawStdoutPath": "commands/03-install-locked-sdk-offline.stdout.raw",
+            "returnCode": 0,
+            "stderrBytes": 0,
+            "stderrObservedBytes": 0,
+            "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "stdoutBytes": 13248,
+            "stdoutObservedBytes": 13248,
+            "stdoutSha256": "2382b153a369bd857999672aaeba2be4ebc708e67c2e4ad37943acd3879c001c",
+            "timedOut": false,
+            "timeoutSeconds": 90
+          },
+          {
+            "argv": [
+              "<private-delivery-root>/checkout/../autonomous-closure-v1/macos-53f1704-v1/venvs/tooling/bin/python",
+              "-I",
+              "-m",
+              "pip",
+              "install",
+              "--no-index",
+              "--no-deps",
+              "<private-delivery-root>/autonomous-closure-v1/build-53f1704-v1/agent_braid-0.1.0a1-py3-none-any.whl"
+            ],
+            "cwd": "<private-delivery-root>/checkout/../autonomous-closure-v1/macos-53f1704-v1",
+            "elapsedSeconds": 0.355132,
+            "maxOutputBytes": 1048576,
+            "name": "install-frozen-candidate-tooling-offline",
+            "outputCaptureComplete": true,
+            "outputLimited": false,
+            "rawStderrPath": "commands/04-install-frozen-candidate-tooling-offline.stderr.raw",
+            "rawStdoutPath": "commands/04-install-frozen-candidate-tooling-offline.stdout.raw",
+            "returnCode": 0,
+            "stderrBytes": 0,
+            "stderrObservedBytes": 0,
+            "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "stdoutBytes": 307,
+            "stdoutObservedBytes": 307,
+            "stdoutSha256": "6bcdeecf45a0e93d8b3822f29a3868e976f079dada0ba6cc69c79ef03931d27e",
+            "timedOut": false,
+            "timeoutSeconds": 90
+          },
+          {
+            "argv": [
+              "<private-delivery-root>/checkout/../autonomous-closure-v1/macos-53f1704-v1/venvs/core/bin/python",
+              "-I",
+              "-c",
+              "import hashlib,importlib,importlib.metadata,importlib.resources,json,pathlib,sys\nexpected=json.loads('{\"NOTICE\":\"c68b8c70b5d4a707eecf3ca4cb0dbc14d3754aa8dff3700f1252e9ac80cbffb5\",\"TRADEMARKS.md\":\"be084562378235f7c72b4a16e9d0f37b01e7e2b035291eceb4f6478048a517b8\",\"fixtures/fixture-inventory.json\":\"db76e4ec30c0b09200d6cbdb7a6f863c577a4ac41d7dccbbbd7819f22c93446d\",\"fixtures/prompts.json\":\"1b5d94eece15b01e0409579adeb18d5da6564b1d5f01487b461197cbe198d3c2\",\"hosts.json\":\"a1160abd5fee714eac3bee430bf4176f9944aec6a830bb3a47121dcd72da0831\",\"licenses/AGPL-3.0-only.txt\":\"0d96a4ff68ad6d4b6f1f30f713b18d5184912ba8dd389f86aa7710db079abcb0\",\"licenses/CC-BY-SA-4.0.txt\":\"23ee78c8bae49cf08ea2f0c84945c66b987ebe4520881fb51b3dad4fb43d07c2\",\"skills/agent-braid-analyze/SKILL.md\":\"bf3292e5c3d867f277cf34bf298227035f6a0ff3caabffaf865da16fda44fd31\",\"skills/agent-braid-evidence/SKILL.md\":\"3618f553971f85b51fb90e465b30a6423e2cb52dfcbfecdea4c320429771cba1\",\"skills/agent-braid-execute/SKILL.md\":\"d2f2a4598ab498663bd9854ee9cfa854a77ee64167adca39adeced33bd0b5f43\",\"skills/agent-braid-plan/SKILL.md\":\"90970a2d5930400dcb5344389c28ab18236086a5dd194379ea2f329f37e4cfb3\",\"skills/agent-braid-recover/SKILL.md\":\"0d2d02c291514c6c09a456791bf1521fa12719efe8ada608e3566b422586e27f\"}')\ndist=importlib.metadata.distribution(\"agent-braid\")\nmodule=importlib.import_module(\"agent_braid\")\norigin=pathlib.Path(module.__file__).resolve(); prefix=pathlib.Path(sys.prefix).resolve()\nif not origin.is_relative_to(prefix): raise SystemExit(31)\nif any(\"agent_braid\" in p and \"site-packages\" not in p and \"dist-packages\" not in p for p in sys.path): raise SystemExit(32)\nactual={}\ndef visit(node,base=\"\"):\n    for child in node.iterdir():\n        name=base+child.name\n        if child.is_dir(): visit(child,name+\"/\")\n        else: actual[name]=hashlib.sha256(child.read_bytes()).hexdigest()\nvisit(importlib.resources.files(\"agent_braid\").joinpath(\"tooling_assets\"))\nif actual!=expected: raise SystemExit(33)\nfrom agent_braid.tooling_assets import load_skill_bundle\nfrom agent_braid.tooling_fixtures import load_inventory,fixture_input\nfrom agent_braid.tooling_install import asset_provenance\nbundle=load_skill_bundle(); inventory=load_inventory(); provenance=asset_provenance()\nif len(bundle.skills)!=5 or len(inventory.fixtures)!=18 or len(inventory.prompts)!=6: raise SystemExit(34)\nfixture=next(row for row in inventory.fixtures if row.definition.get(\"kind\")==\"aim\")\nvalue={\"origin\":str(origin),\"version\":dist.version,\"assetCount\":len(actual),\n\"assetRosterSha256\":hashlib.sha256(json.dumps(actual,sort_keys=True,separators=(\",\",\":\")).encode()).hexdigest(),\n\"skillCount\":len(bundle.skills),\"skillBundleSha256\":bundle.sha256,\"skills\":bundle.inventory()[\"skills\"],\"fixtureCount\":len(inventory.fixtures),\n\"promptCount\":len(inventory.prompts),\"hostMetadataSha256\":provenance[\"hostMetadataSha256\"],\n\"licenseFiles\":provenance[\"licenseFiles\"],\"aimFixtureId\":fixture.fixture_id,\n\"aimRequest\":fixture_input(inventory,fixture.fixture_id).request}\nprint(json.dumps(value,sort_keys=True,separators=(\",\",\":\")))\n"
+            ],
+            "cwd": "<private-delivery-root>/checkout/../autonomous-closure-v1/macos-53f1704-v1",
+            "elapsedSeconds": 0.063402,
+            "maxOutputBytes": 1048576,
+            "name": "installed-origin-assets-core",
+            "outputCaptureComplete": true,
+            "outputLimited": false,
+            "rawStderrPath": "commands/05-installed-origin-assets-core.stderr.raw",
+            "rawStdoutPath": "commands/05-installed-origin-assets-core.stdout.raw",
+            "returnCode": 0,
+            "stderrBytes": 0,
+            "stderrObservedBytes": 0,
+            "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "stdoutBytes": 4259,
+            "stdoutObservedBytes": 4259,
+            "stdoutSha256": "1dd7783745d8ee8a367c96040b1a4f7d704873d5b432dde704a67dc15fc202cd",
+            "timedOut": false,
+            "timeoutSeconds": 30
+          },
+          {
+            "argv": [
+              "<private-delivery-root>/checkout/../autonomous-closure-v1/macos-53f1704-v1/venvs/core/bin/agent-braid",
+              "--help"
+            ],
+            "cwd": "<private-delivery-root>/checkout/../autonomous-closure-v1/macos-53f1704-v1",
+            "elapsedSeconds": 0.207259,
+            "maxOutputBytes": 1048576,
+            "name": "console-help-core",
+            "outputCaptureComplete": true,
+            "outputLimited": false,
+            "rawStderrPath": "commands/06-console-help-core.stderr.raw",
+            "rawStdoutPath": "commands/06-console-help-core.stdout.raw",
+            "returnCode": 0,
+            "stderrBytes": 0,
+            "stderrObservedBytes": 0,
+            "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "stdoutBytes": 2374,
+            "stdoutObservedBytes": 2374,
+            "stdoutSha256": "e0508f3c176f15a962a13482e902232aff4205f8838c99449e1cc3ed1854928f",
+            "timedOut": false,
+            "timeoutSeconds": 30
+          },
+          {
+            "argv": [
+              "<private-delivery-root>/checkout/../autonomous-closure-v1/macos-53f1704-v1/venvs/core/bin/agent-braid",
+              "tooling",
+              "serve",
+              "--source-root",
+              "<private-delivery-root>/checkout/../autonomous-closure-v1/macos-53f1704-v1/empty-source",
+              "--result-root",
+              "<private-delivery-root>/checkout/../autonomous-closure-v1/macos-53f1704-v1/results"
+            ],
+            "cwd": "<private-delivery-root>/checkout/../autonomous-closure-v1/macos-53f1704-v1",
+            "elapsedSeconds": 0.078229,
+            "expectedDependencyUnavailable": true,
+            "maxOutputBytes": 1048576,
+            "name": "core-serve-requires-optional-sdk",
+            "outputCaptureComplete": true,
+            "outputLimited": false,
+            "rawStderrPath": "commands/07-core-serve-requires-optional-sdk.stderr.raw",
+            "rawStdoutPath": "commands/07-core-serve-requires-optional-sdk.stdout.raw",
+            "returnCode": 2,
+            "stderrBytes": 97,
+            "stderrObservedBytes": 97,
+            "stderrSha256": "d0a1956827b0159d227559a50453016577d62d84ffd76d56baa0f11157c05c14",
+            "stdoutBytes": 0,
+            "stdoutObservedBytes": 0,
+            "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "timedOut": false,
+            "timeoutSeconds": 30
+          },
+          {
+            "argv": [
+              "<private-delivery-root>/checkout/../autonomous-closure-v1/macos-53f1704-v1/venvs/core/bin/agent-braid",
+              "tooling",
+              "doctor",
+              "--host",
+              "claude",
+              "--scope",
+              "user",
+              "--source-root",
+              "<private-delivery-root>/checkout/../autonomous-closure-v1/macos-53f1704-v1/empty-source",
+              "--result-root",
+              "<private-delivery-root>/checkout/../autonomous-closure-v1/macos-53f1704-v1/results",
+              "--destination",
+              "<private-delivery-root>/checkout/../autonomous-closure-v1/macos-53f1704-v1/host-config"
+            ],
+            "cwd": "<private-delivery-root>/checkout/../autonomous-closure-v1/macos-53f1704-v1",
+            "elapsedSeconds": 0.083158,
+            "maxOutputBytes": 1048576,
+            "name": "doctor-core",
+            "outputCaptureComplete": true,
+            "outputLimited": false,
+            "rawStderrPath": "commands/08-doctor-core.stderr.raw",
+            "rawStdoutPath": "commands/08-doctor-core.stdout.raw",
+            "returnCode": 0,
+            "stderrBytes": 0,
+            "stderrObservedBytes": 0,
+            "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "stdoutBytes": 2273,
+            "stdoutObservedBytes": 2273,
+            "stdoutSha256": "0a666aaa9915e127c499c62d03a34a55314e282a507abfeac81e9c13cfa65846",
+            "timedOut": false,
+            "timeoutSeconds": 30
+          },
+          {
+            "argv": [
+              "<private-delivery-root>/checkout/../autonomous-closure-v1/macos-53f1704-v1/venvs/tooling/bin/python",
+              "-I",
+              "-c",
+              "import hashlib,importlib,importlib.metadata,importlib.resources,json,pathlib,sys\nexpected=json.loads('{\"NOTICE\":\"c68b8c70b5d4a707eecf3ca4cb0dbc14d3754aa8dff3700f1252e9ac80cbffb5\",\"TRADEMARKS.md\":\"be084562378235f7c72b4a16e9d0f37b01e7e2b035291eceb4f6478048a517b8\",\"fixtures/fixture-inventory.json\":\"db76e4ec30c0b09200d6cbdb7a6f863c577a4ac41d7dccbbbd7819f22c93446d\",\"fixtures/prompts.json\":\"1b5d94eece15b01e0409579adeb18d5da6564b1d5f01487b461197cbe198d3c2\",\"hosts.json\":\"a1160abd5fee714eac3bee430bf4176f9944aec6a830bb3a47121dcd72da0831\",\"licenses/AGPL-3.0-only.txt\":\"0d96a4ff68ad6d4b6f1f30f713b18d5184912ba8dd389f86aa7710db079abcb0\",\"licenses/CC-BY-SA-4.0.txt\":\"23ee78c8bae49cf08ea2f0c84945c66b987ebe4520881fb51b3dad4fb43d07c2\",\"skills/agent-braid-analyze/SKILL.md\":\"bf3292e5c3d867f277cf34bf298227035f6a0ff3caabffaf865da16fda44fd31\",\"skills/agent-braid-evidence/SKILL.md\":\"3618f553971f85b51fb90e465b30a6423e2cb52dfcbfecdea4c320429771cba1\",\"skills/agent-braid-execute/SKILL.md\":\"d2f2a4598ab498663bd9854ee9cfa854a77ee64167adca39adeced33bd0b5f43\",\"skills/agent-braid-plan/SKILL.md\":\"90970a2d5930400dcb5344389c28ab18236086a5dd194379ea2f329f37e4cfb3\",\"skills/agent-braid-recover/SKILL.md\":\"0d2d02c291514c6c09a456791bf1521fa12719efe8ada608e3566b422586e27f\"}')\ndist=importlib.metadata.distribution(\"agent-braid\")\nmodule=importlib.import_module(\"agent_braid\")\norigin=pathlib.Path(module.__file__).resolve(); prefix=pathlib.Path(sys.prefix).resolve()\nif not origin.is_relative_to(prefix): raise SystemExit(31)\nif any(\"agent_braid\" in p and \"site-packages\" not in p and \"dist-packages\" not in p for p in sys.path): raise SystemExit(32)\nactual={}\ndef visit(node,base=\"\"):\n    for child in node.iterdir():\n        name=base+child.name\n        if child.is_dir(): visit(child,name+\"/\")\n        else: actual[name]=hashlib.sha256(child.read_bytes()).hexdigest()\nvisit(importlib.resources.files(\"agent_braid\").joinpath(\"tooling_assets\"))\nif actual!=expected: raise SystemExit(33)\nfrom agent_braid.tooling_assets import load_skill_bundle\nfrom agent_braid.tooling_fixtures import load_inventory,fixture_input\nfrom agent_braid.tooling_install import asset_provenance\nbundle=load_skill_bundle(); inventory=load_inventory(); provenance=asset_provenance()\nif len(bundle.skills)!=5 or len(inventory.fixtures)!=18 or len(inventory.prompts)!=6: raise SystemExit(34)\nfixture=next(row for row in inventory.fixtures if row.definition.get(\"kind\")==\"aim\")\nvalue={\"origin\":str(origin),\"version\":dist.version,\"assetCount\":len(actual),\n\"assetRosterSha256\":hashlib.sha256(json.dumps(actual,sort_keys=True,separators=(\",\",\":\")).encode()).hexdigest(),\n\"skillCount\":len(bundle.skills),\"skillBundleSha256\":bundle.sha256,\"skills\":bundle.inventory()[\"skills\"],\"fixtureCount\":len(inventory.fixtures),\n\"promptCount\":len(inventory.prompts),\"hostMetadataSha256\":provenance[\"hostMetadataSha256\"],\n\"licenseFiles\":provenance[\"licenseFiles\"],\"aimFixtureId\":fixture.fixture_id,\n\"aimRequest\":fixture_input(inventory,fixture.fixture_id).request}\nprint(json.dumps(value,sort_keys=True,separators=(\",\",\":\")))\n"
+            ],
+            "cwd": "<private-delivery-root>/checkout/../autonomous-closure-v1/macos-53f1704-v1",
+            "elapsedSeconds": 0.06241,
+            "maxOutputBytes": 1048576,
+            "name": "installed-origin-assets-tooling",
+            "outputCaptureComplete": true,
+            "outputLimited": false,
+            "rawStderrPath": "commands/09-installed-origin-assets-tooling.stderr.raw",
+            "rawStdoutPath": "commands/09-installed-origin-assets-tooling.stdout.raw",
+            "returnCode": 0,
+            "stderrBytes": 0,
+            "stderrObservedBytes": 0,
+            "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "stdoutBytes": 4262,
+            "stdoutObservedBytes": 4262,
+            "stdoutSha256": "78487d5deafdadfcaed45d21d28cdc8669b3ce2723655877c9f757cbce22dd2e",
+            "timedOut": false,
+            "timeoutSeconds": 30
+          },
+          {
+            "argv": [
+              "<private-delivery-root>/checkout/../autonomous-closure-v1/macos-53f1704-v1/venvs/tooling/bin/agent-braid",
+              "--help"
+            ],
+            "cwd": "<private-delivery-root>/checkout/../autonomous-closure-v1/macos-53f1704-v1",
+            "elapsedSeconds": 0.211057,
+            "maxOutputBytes": 1048576,
+            "name": "console-help-tooling",
+            "outputCaptureComplete": true,
+            "outputLimited": false,
+            "rawStderrPath": "commands/10-console-help-tooling.stderr.raw",
+            "rawStdoutPath": "commands/10-console-help-tooling.stdout.raw",
+            "returnCode": 0,
+            "stderrBytes": 0,
+            "stderrObservedBytes": 0,
+            "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "stdoutBytes": 2374,
+            "stdoutObservedBytes": 2374,
+            "stdoutSha256": "e0508f3c176f15a962a13482e902232aff4205f8838c99449e1cc3ed1854928f",
+            "timedOut": false,
+            "timeoutSeconds": 30
+          },
+          {
+            "argv": [
+              "<private-delivery-root>/checkout/../autonomous-closure-v1/macos-53f1704-v1/venvs/tooling/bin/agent-braid",
+              "tooling",
+              "doctor",
+              "--host",
+              "claude",
+              "--scope",
+              "user",
+              "--source-root",
+              "<private-delivery-root>/checkout/../autonomous-closure-v1/macos-53f1704-v1/empty-source",
+              "--result-root",
+              "<private-delivery-root>/checkout/../autonomous-closure-v1/macos-53f1704-v1/results",
+              "--destination",
+              "<private-delivery-root>/checkout/../autonomous-closure-v1/macos-53f1704-v1/host-config"
+            ],
+            "cwd": "<private-delivery-root>/checkout/../autonomous-closure-v1/macos-53f1704-v1",
+            "elapsedSeconds": 0.083306,
+            "maxOutputBytes": 1048576,
+            "name": "doctor-tooling",
+            "outputCaptureComplete": true,
+            "outputLimited": false,
+            "rawStderrPath": "commands/11-doctor-tooling.stderr.raw",
+            "rawStdoutPath": "commands/11-doctor-tooling.stdout.raw",
+            "returnCode": 0,
+            "stderrBytes": 0,
+            "stderrObservedBytes": 0,
+            "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "stdoutBytes": 2270,
+            "stdoutObservedBytes": 2270,
+            "stdoutSha256": "f0087dd3b941e76742eec055f45241cdddcdea1edb86179dd31d9beab72720ff",
+            "timedOut": false,
+            "timeoutSeconds": 30
+          },
+          {
+            "argv": [
+              "<private-delivery-root>/checkout/../autonomous-closure-v1/macos-53f1704-v1/venvs/core/bin/agent-braid",
+              "analyze",
+              "<private-delivery-root>/checkout/../autonomous-closure-v1/macos-53f1704-v1/aim-request.json",
+              "--format",
+              "json"
+            ],
+            "cwd": "<private-delivery-root>/checkout/../autonomous-closure-v1/macos-53f1704-v1",
+            "elapsedSeconds": 0.071495,
+            "maxOutputBytes": 1048576,
+            "name": "aim-analysis-cli-core",
+            "outputCaptureComplete": true,
+            "outputLimited": false,
+            "rawStderrPath": "commands/12-aim-analysis-cli-core.stderr.raw",
+            "rawStdoutPath": "commands/12-aim-analysis-cli-core.stdout.raw",
+            "returnCode": 0,
+            "stderrBytes": 0,
+            "stderrObservedBytes": 0,
+            "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "stdoutBytes": 2366,
+            "stdoutObservedBytes": 2366,
+            "stdoutSha256": "f48915234626a06e91615287d38ac7c19bcd88743d0b51d67bcf928d8aeb997b",
+            "timedOut": false,
+            "timeoutSeconds": 30
+          },
+          {
+            "argv": [
+              "<private-delivery-root>/checkout/../autonomous-closure-v1/macos-53f1704-v1/venvs/tooling/bin/agent-braid",
+              "analyze",
+              "<private-delivery-root>/checkout/../autonomous-closure-v1/macos-53f1704-v1/aim-request.json",
+              "--format",
+              "json"
+            ],
+            "cwd": "<private-delivery-root>/checkout/../autonomous-closure-v1/macos-53f1704-v1",
+            "elapsedSeconds": 0.070212,
+            "maxOutputBytes": 1048576,
+            "name": "aim-analysis-cli-tooling",
+            "outputCaptureComplete": true,
+            "outputLimited": false,
+            "rawStderrPath": "commands/13-aim-analysis-cli-tooling.stderr.raw",
+            "rawStdoutPath": "commands/13-aim-analysis-cli-tooling.stdout.raw",
+            "returnCode": 0,
+            "stderrBytes": 0,
+            "stderrObservedBytes": 0,
+            "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "stdoutBytes": 2366,
+            "stdoutObservedBytes": 2366,
+            "stdoutSha256": "f48915234626a06e91615287d38ac7c19bcd88743d0b51d67bcf928d8aeb997b",
+            "timedOut": false,
+            "timeoutSeconds": 30
+          },
+          {
+            "argv": [
+              "<private-delivery-root>/checkout/../autonomous-closure-v1/macos-53f1704-v1/venvs/tooling/bin/python",
+              "-I",
+              "-c",
+              "import asyncio,hashlib,json,pathlib,sys\nfrom mcp import Client\nfrom mcp.client.stdio import StdioServerParameters\ncfg=json.loads('{\"config\":\"<private-delivery-root>/checkout/../autonomous-closure-v1/macos-53f1704-v1/stdio-relay-config.json\",\"home\":\"<private-delivery-root>/checkout/../autonomous-closure-v1/macos-53f1704-v1/home\",\"path\":\"<private-delivery-root>/checkout/../autonomous-closure-v1/macos-53f1704-v1/venvs/tooling/bin:/usr/bin:/bin\",\"relay\":\"<private-delivery-root>/checkout/../autonomous-closure-v1/macos-53f1704-v1/stdio-relay.py\",\"request\":{\"analysisInputVersion\":\"0.1.0-alpha\",\"operations\":[{\"aimVersion\":\"0.2.0-draft\",\"attemptId\":\"m45-analyze-interactions-01-attempt-a\",\"definition\":{\"digest\":\"sha256:3c8b3324764d24be15f694d5f253cf6d78b896a7d678b5f263cbc27f88f8d18d\",\"id\":\"repository.update-file-v1\"},\"dependencies\":[],\"effects\":{\"coverage\":{\"domain\":\"owned synthetic exact-resource fixture\",\"method\":\"fixed fixture declaration\",\"status\":\"complete\"},\"declared\":[{\"kind\":\"write\",\"resource\":\"repo://m45/m45-analyze-interactions-01/a.txt\"}],\"inferred\":[],\"observed\":[]},\"evidence\":[{\"assumptions\":[\"fixture declares relevant paths only\"],\"assuranceClass\":1,\"domain\":\"synthetic exact-resource footprints\",\"executionContract\":\"analysis only; no effect\",\"method\":\"declared\",\"observationContract\":\"fixed fixture declaration\",\"property\":\"independence\"}],\"inputDigest\":\"sha256:177219b775a96af95418db6630259920aaacb20a518724cc8f073b7e5b0ad044\",\"instanceId\":\"m45-analyze-interactions-01-a\",\"readVersions\":{}},{\"aimVersion\":\"0.2.0-draft\",\"attemptId\":\"m45-analyze-interactions-01-attempt-b\",\"definition\":{\"digest\":\"sha256:3c8b3324764d24be15f694d5f253cf6d78b896a7d678b5f263cbc27f88f8d18d\",\"id\":\"repository.update-file-v1\"},\"dependencies\":[],\"effects\":{\"coverage\":{\"domain\":\"owned synthetic exact-resource fixture\",\"method\":\"fixed fixture declaration\",\"status\":\"complete\"},\"declared\":[{\"kind\":\"write\",\"resource\":\"repo://m45/m45-analyze-interactions-01/b.txt\"}],\"inferred\":[],\"observed\":[]},\"evidence\":[{\"assumptions\":[\"fixture declares relevant paths only\"],\"assuranceClass\":1,\"domain\":\"synthetic exact-resource footprints\",\"executionContract\":\"analysis only; no effect\",\"method\":\"declared\",\"observationContract\":\"fixed fixture declaration\",\"property\":\"independence\"}],\"inputDigest\":\"sha256:05034400330b92bc92944f4d727bb5af0ad2c9e15bf79570ce36a44efa4c6d24\",\"instanceId\":\"m45-analyze-interactions-01-b\",\"readVersions\":{}}],\"source\":{\"description\":\"Fixed independent fixture m45-analyze-interactions-01.\",\"kind\":\"owned-synthetic-fixture\"}},\"results\":\"<private-delivery-root>/checkout/../autonomous-closure-v1/macos-53f1704-v1/results\",\"source\":\"<private-delivery-root>/checkout/../autonomous-closure-v1/macos-53f1704-v1/empty-source\",\"traceNames\":{\"client-to-server\":\"client-to-server.frames\",\"server-stderr\":\"server.stderr.log\",\"server-to-client\":\"server-to-client.frames\"},\"traceRoot\":\"<private-delivery-root>/checkout/../autonomous-closure-v1/macos-53f1704-v1\"}'); outcomes=[]\nasync def one(mode):\n    status=pathlib.Path(cfg[\"config\"]).parent/(mode+\"-server-exit.json\")\n    params=StdioServerParameters(command=sys.executable,args=[\"-I\",cfg[\"relay\"],cfg[\"config\"]],\n        cwd=cfg[\"home\"],env={\"HOME\":cfg[\"home\"],\"PATH\":cfg[\"path\"],\"PYTHONNOUSERSITE\":\"1\"})\n    base=json.loads(pathlib.Path(cfg[\"config\"]).read_text())\n    base[\"status\"]=str(status); pathlib.Path(cfg[\"config\"]).write_text(json.dumps(base))\n    trace_paths={name:str(pathlib.Path(cfg[\"traceRoot\"])/(mode+\"-\"+filename)) for name,filename in cfg[\"traceNames\"].items()}\n    base[\"traces\"]=trace_paths; pathlib.Path(cfg[\"config\"]).write_text(json.dumps(base))\n    async with Client(params,mode=mode) as client:\n        protocol=client.protocol_version\n        expected_protocol=\"2026-07-28\" if mode==\"auto\" else \"2025-11-25\"\n        if protocol!=expected_protocol: raise RuntimeError(\"protocol version\")\n        tools=await client.list_tools(); names=sorted(row.name for row in tools.tools)\n        if names!=[\"analyze\",\"analyze-work\",\"prepare\"]: raise RuntimeError(\"tool roster\")\n        good=await client.call_tool(\"analyze-work\",{\"kind\":\"aim\",\"request\":cfg[\"request\"]})\n        envelope=good.structured_content\n        if envelope[\"status\"]!=\"ok\" or envelope[\"result\"].get(\"report\") is None: raise RuntimeError(\"AIM positive\")\n        if json.loads(good.content[0].text)!=envelope or envelope[\"result\"][\"provenance\"].get(\"executionAuthorization\") is not False: raise RuntimeError(\"AIM boundary\")\n        bad=await client.call_tool(\"analyze-work\",{\"kind\":\"aim\",\"request\":{}})\n        if bad.structured_content[\"status\"]!=\"refused\" or bad.is_error is not True: raise RuntimeError(\"AIM negative\")\n        listed=await client.list_resources()\n        if \"agent-braid://capabilities\" not in {row.uri for row in listed.resources}: raise RuntimeError(\"resource roster\")\n        capability=await client.read_resource(\"agent-braid://capabilities\")\n        if \"analysis-only\" not in capability.contents[0].text: raise RuntimeError(\"capability resource\")\n        prompts=await client.list_prompts(); prompt_names=sorted(row.name for row in prompts.prompts)\n        if prompt_names!=[\"agent-braid-analyze\",\"agent-braid-evidence\",\"agent-braid-plan\"]: raise RuntimeError(\"prompt roster\")\n        prompt=await client.get_prompt(\"agent-braid-evidence\")\n        if \"SHA-256\" not in prompt.messages[0].content.text: raise RuntimeError(\"prompt content\")\n    child=json.loads(status.read_text())\n    if child.get(\"returnCode\")!=0 or child.get(\"interrupted\") or child.get(\"forcedTermination\") is not None or not child.get(\"reaped\"): raise RuntimeError(\"server child exit\")\n    report=envelope[\"result\"][\"report\"]\n    report_digest=hashlib.sha256(json.dumps(report,sort_keys=True,separators=(\",\",\":\"),ensure_ascii=False,allow_nan=False).encode(\"utf-8\")).hexdigest()\n    outcomes.append({\"mode\":mode,\"protocolVersion\":protocol,\"toolCount\":len(names),\n        \"positiveAIM\":\"ok\",\"negativeAIM\":\"refused\",\"capabilityResource\":\"read\",\n        \"promptCount\":len(prompt_names),\"selectedPrompt\":\"read\",\n        \"aimReportSha256\":report_digest,\n        \"serverChildReturnCode\":child[\"returnCode\"],\"serverChildReaped\":child[\"reaped\"],\n        \"serverChildCancelled\":child[\"interrupted\"],\"serverChildForcedTermination\":child[\"forcedTermination\"],\n        \"serverTrace\":child[\"trace\"],\"privateTraceFiles\":trace_paths})\nasync def main():\n    await one(\"auto\"); await one(\"legacy\")\n    print(json.dumps({\"sessions\":outcomes},sort_keys=True,separators=(\",\",\":\")))\nasyncio.run(main())\n"
+            ],
+            "cwd": "<private-delivery-root>/checkout/../autonomous-closure-v1/macos-53f1704-v1",
+            "elapsedSeconds": 1.459423,
+            "maxOutputBytes": 1048576,
+            "name": "mcp-sdk-auto-legacy",
+            "outputCaptureComplete": true,
+            "outputLimited": false,
+            "parentExitCode": 0,
+            "rawStderrPath": "commands/14-mcp-sdk-auto-legacy.stderr.raw",
+            "rawStdoutPath": "commands/14-mcp-sdk-auto-legacy.stdout.raw",
+            "returnCode": 0,
+            "stderrBytes": 0,
+            "stderrObservedBytes": 0,
+            "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "stdoutBytes": 3141,
+            "stdoutObservedBytes": 3141,
+            "stdoutSha256": "519fa8da22844bcaec9e640395351948064f0566c774815d9be04204c63c0945",
+            "timedOut": false,
+            "timeoutSeconds": 90
+          }
+        ],
+        "doctor": {
+          "core": {
+            "analysis": "pending",
+            "authentication": "pending",
+            "grantIssued": false,
+            "hostApproval": "pending",
+            "paidSessionStarted": false,
+            "protocol": "pending",
+            "runtime": "disabled",
+            "runtimeDispatched": false,
+            "schemas": "pending"
+          },
+          "tooling": {
+            "analysis": "pending",
+            "authentication": "pending",
+            "grantIssued": false,
+            "hostApproval": "pending",
+            "paidSessionStarted": false,
+            "protocol": "pending",
+            "runtime": "disabled",
+            "runtimeDispatched": false,
+            "schemas": "pending"
+          }
+        },
+        "grantIssued": false,
+        "humanEvaluation": false,
+        "installedAssets": {
+          "core": {
+            "aimFixtureId": "m45-analyze-interactions-01",
+            "assetCount": 12,
+            "assetRosterSha256": "8ba741b306b013ac36b62cf490a945e26e2327261bf7d2abc05b9871459024b1",
+            "fixtureCount": 18,
+            "hostMetadataSha256": "a1160abd5fee714eac3bee430bf4176f9944aec6a830bb3a47121dcd72da0831",
+            "licenseFiles": {
+              "AGPL-3.0-only.txt": {
+                "sha256": "0d96a4ff68ad6d4b6f1f30f713b18d5184912ba8dd389f86aa7710db079abcb0",
+                "sizeBytes": 34523
+              },
+              "CC-BY-SA-4.0.txt": {
+                "sha256": "23ee78c8bae49cf08ea2f0c84945c66b987ebe4520881fb51b3dad4fb43d07c2",
+                "sizeBytes": 20137
+              }
+            },
+            "origin": "<private-delivery-root>/autonomous-closure-v1/macos-53f1704-v1/venvs/core/lib/python3.13/site-packages/agent_braid/__init__.py",
+            "promptCount": 6,
+            "skillBundleSha256": "284d84d226fd58438d995d324e0a01fbe1606f709faeed2759c6f4c3ec192542",
+            "skillCount": 5,
+            "skills": [
+              {
+                "description": "Use when inspecting proposed work for interactions, dependencies, conflicts, conditions, or unknowns.",
+                "license": "CC-BY-SA-4.0",
+                "name": "agent-braid-analyze",
+                "sha256": "bf3292e5c3d867f277cf34bf298227035f6a0ff3caabffaf865da16fda44fd31",
+                "sizeBytes": 2564
+              },
+              {
+                "description": "Use when preparing an advisory order for bounded work and explaining constraints or missing operator authority.",
+                "license": "CC-BY-SA-4.0",
+                "name": "agent-braid-plan",
+                "sha256": "90970a2d5930400dcb5344389c28ab18236086a5dd194379ea2f329f37e4cfb3",
+                "sizeBytes": 2466
+              },
+              {
+                "description": "Use only when executing an exact prepared batch that already has a matching operator grant.",
+                "license": "CC-BY-SA-4.0",
+                "name": "agent-braid-execute",
+                "sha256": "d2f2a4598ab498663bd9854ee9cfa854a77ee64167adca39adeced33bd0b5f43",
+                "sizeBytes": 2456
+              },
+              {
+                "description": "Use when inspecting an interrupted owned run and deciding whether existing authority permits bounded recovery.",
+                "license": "CC-BY-SA-4.0",
+                "name": "agent-braid-recover",
+                "sha256": "0d2d02c291514c6c09a456791bf1521fa12719efe8ada608e3566b422586e27f",
+                "sizeBytes": 2038
+              },
+              {
+                "description": "Use when explaining or exporting a bounded Agent Braid result with its provenance, uncertainty, and observation limits.",
+                "license": "CC-BY-SA-4.0",
+                "name": "agent-braid-evidence",
+                "sha256": "3618f553971f85b51fb90e465b30a6423e2cb52dfcbfecdea4c320429771cba1",
+                "sizeBytes": 3072
+              }
+            ],
+            "version": "0.1.0a1"
+          },
+          "tooling": {
+            "aimFixtureId": "m45-analyze-interactions-01",
+            "assetCount": 12,
+            "assetRosterSha256": "8ba741b306b013ac36b62cf490a945e26e2327261bf7d2abc05b9871459024b1",
+            "fixtureCount": 18,
+            "hostMetadataSha256": "a1160abd5fee714eac3bee430bf4176f9944aec6a830bb3a47121dcd72da0831",
+            "licenseFiles": {
+              "AGPL-3.0-only.txt": {
+                "sha256": "0d96a4ff68ad6d4b6f1f30f713b18d5184912ba8dd389f86aa7710db079abcb0",
+                "sizeBytes": 34523
+              },
+              "CC-BY-SA-4.0.txt": {
+                "sha256": "23ee78c8bae49cf08ea2f0c84945c66b987ebe4520881fb51b3dad4fb43d07c2",
+                "sizeBytes": 20137
+              }
+            },
+            "origin": "<private-delivery-root>/autonomous-closure-v1/macos-53f1704-v1/venvs/tooling/lib/python3.13/site-packages/agent_braid/__init__.py",
+            "promptCount": 6,
+            "skillBundleSha256": "284d84d226fd58438d995d324e0a01fbe1606f709faeed2759c6f4c3ec192542",
+            "skillCount": 5,
+            "skills": [
+              {
+                "description": "Use when inspecting proposed work for interactions, dependencies, conflicts, conditions, or unknowns.",
+                "license": "CC-BY-SA-4.0",
+                "name": "agent-braid-analyze",
+                "sha256": "bf3292e5c3d867f277cf34bf298227035f6a0ff3caabffaf865da16fda44fd31",
+                "sizeBytes": 2564
+              },
+              {
+                "description": "Use when preparing an advisory order for bounded work and explaining constraints or missing operator authority.",
+                "license": "CC-BY-SA-4.0",
+                "name": "agent-braid-plan",
+                "sha256": "90970a2d5930400dcb5344389c28ab18236086a5dd194379ea2f329f37e4cfb3",
+                "sizeBytes": 2466
+              },
+              {
+                "description": "Use only when executing an exact prepared batch that already has a matching operator grant.",
+                "license": "CC-BY-SA-4.0",
+                "name": "agent-braid-execute",
+                "sha256": "d2f2a4598ab498663bd9854ee9cfa854a77ee64167adca39adeced33bd0b5f43",
+                "sizeBytes": 2456
+              },
+              {
+                "description": "Use when inspecting an interrupted owned run and deciding whether existing authority permits bounded recovery.",
+                "license": "CC-BY-SA-4.0",
+                "name": "agent-braid-recover",
+                "sha256": "0d2d02c291514c6c09a456791bf1521fa12719efe8ada608e3566b422586e27f",
+                "sizeBytes": 2038
+              },
+              {
+                "description": "Use when explaining or exporting a bounded Agent Braid result with its provenance, uncertainty, and observation limits.",
+                "license": "CC-BY-SA-4.0",
+                "name": "agent-braid-evidence",
+                "sha256": "3618f553971f85b51fb90e465b30a6423e2cb52dfcbfecdea4c320429771cba1",
+                "sizeBytes": 3072
+              }
+            ],
+            "version": "0.1.0a1"
+          }
+        },
+        "locks": {
+          "lockSha256": "a226cf773888027dac8e907aa743945eaf15b3d4bf4acf825c64e2dfc6e4fee6",
+          "manifestSha256": "dd99c2fd82f7196fe36de973bc34c23bf533d2b42ffa8a35f11eea148011054d",
+          "packageCount": 28,
+          "wheelCount": 28,
+          "wheelhouseSha256": "ff451a520a8de28f87ecf22c3217a40d2529ba4fcdf2914a98b0597b70f2d7fb"
+        },
+        "privateRelayArtifacts": {
+          "configuration": "stdio-relay-config.json",
+          "limits": {
+            "protocolFrameBytesPerDirection": 1048576,
+            "serverStderrBytes": 65536
+          },
+          "statusPaths": {
+            "auto": "auto-server-exit.json",
+            "legacy": "legacy-server-exit.json"
+          },
+          "tracePaths": {
+            "auto-client-to-server": "auto-client-to-server.frames",
+            "auto-server-stderr": "auto-server.stderr.log",
+            "auto-server-to-client": "auto-server-to-client.frames",
+            "legacy-client-to-server": "legacy-client-to-server.frames",
+            "legacy-server-stderr": "legacy-server.stderr.log",
+            "legacy-server-to-client": "legacy-server-to-client.frames"
+          }
+        },
+        "providerSessionStarted": false,
+        "python": "3.13.11",
+        "registeredAttempt": false,
+        "relayChildren": {
+          "auto": {
+            "forcedTermination": null,
+            "interrupted": false,
+            "reaped": true,
+            "returnCode": 0,
+            "trace": {
+              "client-to-server": {
+                "byteCount": 4115,
+                "retainedBytes": 4115,
+                "sha256": "68878b5a5175cd83419d15878b6cce79120dedf0f5b886589f8dc2742a3e95a3",
+                "truncated": false
+              },
+              "server-stderr": {
+                "byteCount": 0,
+                "retainedBytes": 0,
+                "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+                "truncated": false
+              },
+              "server-to-client": {
+                "byteCount": 13683,
+                "retainedBytes": 13683,
+                "sha256": "939f83dd3c63c50f228d89e67495dc6875f17e832055982433327cb15e9531fd",
+                "truncated": false
+              }
+            }
+          },
+          "legacy": {
+            "forcedTermination": null,
+            "interrupted": false,
+            "reaped": true,
+            "returnCode": 0,
+            "trace": {
+              "client-to-server": {
+                "byteCount": 2763,
+                "retainedBytes": 2763,
+                "sha256": "89005d6694d973a10fff1242af67baf7a81f11879639bf0059cd96837c9b7085",
+                "truncated": false
+              },
+              "server-stderr": {
+                "byteCount": 0,
+                "retainedBytes": 0,
+                "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+                "truncated": false
+              },
+              "server-to-client": {
+                "byteCount": 12602,
+                "retainedBytes": 12602,
+                "sha256": "fca8d25d968916f041f0d64c3adc01abb91c40cf178cabd647e98782d4237fac",
+                "truncated": false
+              }
+            }
+          }
+        },
+        "runtimeDispatched": false,
+        "schema": "agent-braid-installed-tooling-probe/v1",
+        "sdk": {
+          "sessions": [
+            {
+              "aimReportSha256": "44669eac0f9ec67f74468b26498f78861d92ed6ee5aacaca994802116c63e9aa",
+              "capabilityResource": "read",
+              "mode": "auto",
+              "negativeAIM": "refused",
+              "positiveAIM": "ok",
+              "privateTraceFiles": {
+                "client-to-server": "<private-delivery-root>/checkout/../autonomous-closure-v1/macos-53f1704-v1/auto-client-to-server.frames",
+                "server-stderr": "<private-delivery-root>/checkout/../autonomous-closure-v1/macos-53f1704-v1/auto-server.stderr.log",
+                "server-to-client": "<private-delivery-root>/checkout/../autonomous-closure-v1/macos-53f1704-v1/auto-server-to-client.frames"
+              },
+              "promptCount": 3,
+              "protocolVersion": "2026-07-28",
+              "selectedPrompt": "read",
+              "serverChildCancelled": false,
+              "serverChildForcedTermination": null,
+              "serverChildReaped": true,
+              "serverChildReturnCode": 0,
+              "serverTrace": {
+                "client-to-server": {
+                  "byteCount": 4115,
+                  "retainedBytes": 4115,
+                  "sha256": "68878b5a5175cd83419d15878b6cce79120dedf0f5b886589f8dc2742a3e95a3",
+                  "truncated": false
+                },
+                "server-stderr": {
+                  "byteCount": 0,
+                  "retainedBytes": 0,
+                  "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+                  "truncated": false
+                },
+                "server-to-client": {
+                  "byteCount": 13683,
+                  "retainedBytes": 13683,
+                  "sha256": "939f83dd3c63c50f228d89e67495dc6875f17e832055982433327cb15e9531fd",
+                  "truncated": false
+                }
+              },
+              "toolCount": 3
+            },
+            {
+              "aimReportSha256": "44669eac0f9ec67f74468b26498f78861d92ed6ee5aacaca994802116c63e9aa",
+              "capabilityResource": "read",
+              "mode": "legacy",
+              "negativeAIM": "refused",
+              "positiveAIM": "ok",
+              "privateTraceFiles": {
+                "client-to-server": "<private-delivery-root>/checkout/../autonomous-closure-v1/macos-53f1704-v1/legacy-client-to-server.frames",
+                "server-stderr": "<private-delivery-root>/checkout/../autonomous-closure-v1/macos-53f1704-v1/legacy-server.stderr.log",
+                "server-to-client": "<private-delivery-root>/checkout/../autonomous-closure-v1/macos-53f1704-v1/legacy-server-to-client.frames"
+              },
+              "promptCount": 3,
+              "protocolVersion": "2025-11-25",
+              "selectedPrompt": "read",
+              "serverChildCancelled": false,
+              "serverChildForcedTermination": null,
+              "serverChildReaped": true,
+              "serverChildReturnCode": 0,
+              "serverTrace": {
+                "client-to-server": {
+                  "byteCount": 2763,
+                  "retainedBytes": 2763,
+                  "sha256": "89005d6694d973a10fff1242af67baf7a81f11879639bf0059cd96837c9b7085",
+                  "truncated": false
+                },
+                "server-stderr": {
+                  "byteCount": 0,
+                  "retainedBytes": 0,
+                  "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+                  "truncated": false
+                },
+                "server-to-client": {
+                  "byteCount": 12602,
+                  "retainedBytes": 12602,
+                  "sha256": "fca8d25d968916f041f0d64c3adc01abb91c40cf178cabd647e98782d4237fac",
+                  "truncated": false
+                }
+              },
+              "toolCount": 3
+            }
+          ]
+        },
+        "status": "passed",
+        "target": "macos-arm64"
+      }
+    },
+    {
+      "domain": "Installed Linux x86_64 CPython 3.13.11 pinned AMD64 image via explicitly permitted ARM64-daemon emulation",
+      "privacy": "Absolute paths normalized; exact command, cwd, raw outputs and receipt retained privately. No raw provider/account data published.",
+      "privateReceiptName": "linux/execute-53f1704-v1/linux-execution-summary-v2.json",
+      "privateReceiptSha256": "b189bf05c925b0dbb6c43362e43c53e6e15e1b82ee835bd7df8de3e635aa638e",
+      "record": {
+        "boundary": {
+          "amd64EmulationUsed": true,
+          "doesNotSatisfySpec044T004": true,
+          "grantIssued": false,
+          "humanEvaluation": false,
+          "noNativeHostObserved": true,
+          "providerSessionStarted": false,
+          "registeredAttempt": false,
+          "runtimeDispatched": false
+        },
+        "execution": {
+          "dockerArgv": [
+            "/usr/local/bin/docker",
+            "run",
+            "--pull=never",
+            "--platform=linux/amd64",
+            "--network=none",
+            "--read-only",
+            "--rm",
+            "--name",
+            "agent-braid-linux-probe-739dac9497f54c08",
+            "--memory=2g",
+            "--cpus=2",
+            "--pids-limit=256",
+            "--cap-drop=ALL",
+            "--security-opt=no-new-privileges",
+            "--user",
+            "502:20",
+            "--tmpfs",
+            "/tmp:rw,nosuid,nodev,size=512m,mode=1777",
+            "--mount",
+            "type=bind,src=<private-delivery-root>/autonomous-closure-v1/linux-bundle-53f1704-v1/input-bundle,dst=/inputs,readonly",
+            "--mount",
+            "type=bind,src=<private-delivery-root>/autonomous-closure-v1/linux/execute-53f1704-v1,dst=/evidence",
+            "--workdir",
+            "/evidence",
+            "--env",
+            "PYTHONDONTWRITEBYTECODE=1",
+            "--env",
+            "PYTHONNOUSERSITE=1",
+            "--env",
+            "PIP_CONFIG_FILE=/dev/null",
+            "--env",
+            "PIP_NO_INDEX=1",
+            "--env",
+            "PIP_NO_CACHE_DIR=1",
+            "--env",
+            "PIP_DISABLE_PIP_VERSION_CHECK=1",
+            "python:3.13.11-slim-bookworm@sha256:ac76900038d8606cc99b413d4ede77bc7152f1e42b94cf5d50d4b80a999652fe",
+            "python",
+            "-I",
+            "/inputs/verify_installed_tooling.py",
+            "--target",
+            "linux-amd64",
+            "--manifest",
+            "/inputs/reproducibility/mcp-2.3.0-cp313-linux-amd64.manifest.json",
+            "--wheelhouse",
+            "/inputs/wheelhouse",
+            "--candidate-wheel",
+            "/inputs/agent_braid-0.1.0a1-py3-none-any.whl",
+            "--candidate-sha256",
+            "c43fd789b64cc123e8fd3c903fd075c27b9ce012964fbd7e8017f847cf54814d",
+            "--work-dir",
+            "/evidence/probe-work",
+            "--execute-installed"
+          ],
+          "launcherDurationMs": 27038,
+          "launcherOutputLimited": false,
+          "launcherReceiptPath": "<private-delivery-root>/autonomous-closure-v1/linux/execute-53f1704-v1/launcher-receipt.json",
+          "launcherReceiptSha256": "0c994b675e580510bc969245c21b658bda1402966de8a1ad0f37e1fb08901284",
+          "launcherReturnCode": 0,
+          "launcherTimedOut": false,
+          "launcherTimeoutSeconds": 720,
+          "outerArgv": [
+            "<private-delivery-root>/autonomous-closure-v1/linux-bundle-53f1704-v1/input-bundle/run_linux_reproduction.py",
+            "--input-dir",
+            "<private-delivery-root>/autonomous-closure-v1/linux-bundle-53f1704-v1/input-bundle",
+            "--output-dir",
+            "<private-delivery-root>/autonomous-closure-v1/linux/execute-53f1704-v1",
+            "--candidate-sha256",
+            "c43fd789b64cc123e8fd3c903fd075c27b9ce012964fbd7e8017f847cf54814d",
+            "--probe-sha256",
+            "e88e030718c87fb080f091e7179636e02d416b48a85e2353a00928eecf1ce431",
+            "--manifest-sha256",
+            "a3df2591a7c39f50b5454c014ca851c824006b09cbfc054a88e2fc5cf84ee2a1",
+            "--wheelhouse-sha256",
+            "b3704260a766dd9a43c256b4b3772f7d869cc2d164c329958f38e136f254fb0d",
+            "--launcher-sha256",
+            "573dee1c51f828f0abf53ab0d97dcd111090d9fefa6c04fc83133bfa28386241",
+            "--allow-amd64-emulation",
+            "--execute"
+          ],
+          "probeCommandCount": 15,
+          "probeCommandOutcomes": [
+            {
+              "expectedDependencyUnavailable": null,
+              "name": "create-core-venv",
+              "outputLimited": false,
+              "returnCode": 0,
+              "timedOut": false
+            },
+            {
+              "expectedDependencyUnavailable": null,
+              "name": "install-frozen-candidate-core-offline",
+              "outputLimited": false,
+              "returnCode": 0,
+              "timedOut": false
+            },
+            {
+              "expectedDependencyUnavailable": null,
+              "name": "create-tooling-venv",
+              "outputLimited": false,
+              "returnCode": 0,
+              "timedOut": false
+            },
+            {
+              "expectedDependencyUnavailable": null,
+              "name": "install-locked-sdk-offline",
+              "outputLimited": false,
+              "returnCode": 0,
+              "timedOut": false
+            },
+            {
+              "expectedDependencyUnavailable": null,
+              "name": "install-frozen-candidate-tooling-offline",
+              "outputLimited": false,
+              "returnCode": 0,
+              "timedOut": false
+            },
+            {
+              "expectedDependencyUnavailable": null,
+              "name": "installed-origin-assets-core",
+              "outputLimited": false,
+              "returnCode": 0,
+              "timedOut": false
+            },
+            {
+              "expectedDependencyUnavailable": null,
+              "name": "console-help-core",
+              "outputLimited": false,
+              "returnCode": 0,
+              "timedOut": false
+            },
+            {
+              "expectedDependencyUnavailable": true,
+              "name": "core-serve-requires-optional-sdk",
+              "outputLimited": false,
+              "returnCode": 2,
+              "timedOut": false
+            },
+            {
+              "expectedDependencyUnavailable": null,
+              "name": "doctor-core",
+              "outputLimited": false,
+              "returnCode": 0,
+              "timedOut": false
+            },
+            {
+              "expectedDependencyUnavailable": null,
+              "name": "installed-origin-assets-tooling",
+              "outputLimited": false,
+              "returnCode": 0,
+              "timedOut": false
+            },
+            {
+              "expectedDependencyUnavailable": null,
+              "name": "console-help-tooling",
+              "outputLimited": false,
+              "returnCode": 0,
+              "timedOut": false
+            },
+            {
+              "expectedDependencyUnavailable": null,
+              "name": "doctor-tooling",
+              "outputLimited": false,
+              "returnCode": 0,
+              "timedOut": false
+            },
+            {
+              "expectedDependencyUnavailable": null,
+              "name": "aim-analysis-cli-core",
+              "outputLimited": false,
+              "returnCode": 0,
+              "timedOut": false
+            },
+            {
+              "expectedDependencyUnavailable": null,
+              "name": "aim-analysis-cli-tooling",
+              "outputLimited": false,
+              "returnCode": 0,
+              "timedOut": false
+            },
+            {
+              "expectedDependencyUnavailable": null,
+              "name": "mcp-sdk-auto-legacy",
+              "outputLimited": false,
+              "returnCode": 0,
+              "timedOut": false
+            }
+          ],
+          "probeReceiptPath": "<private-delivery-root>/autonomous-closure-v1/linux/execute-53f1704-v1/probe-work/receipt.json",
+          "probeReceiptSha256": "77ab385dec54e982df50d0cee54aef623a420233b1a531680735254bf3aa899c",
+          "probeStatus": "passed"
+        },
+        "executionFiles": {
+          "countExcludes": [
+            "execution-file-inventory.json itself",
+            "linux-execution-summary.json",
+            "linux-execution-summary-v2.json"
+          ],
+          "fileCount": 3861,
+          "inventoryEntries": 3860,
+          "inventoryPath": "<private-delivery-root>/autonomous-closure-v1/linux/execute-53f1704-v1/execution-file-inventory.json",
+          "inventorySha256": "a9fa086d2f22bc45c3ae3685371d7b9984fe58dbfe301ae8eed4930a59de2bb2",
+          "totalArtifactFileCountIncludingInventoryAndSummaries": 3863
+        },
+        "inputs": {
+          "bundleReceiptPath": "<private-delivery-root>/autonomous-closure-v1/linux-bundle-53f1704-v1/frozen-bundle-receipt.json",
+          "bundleReceiptSha256": "531a804d5caced30cd8a18193fc8d1df6fd37352a896698101a0b6e17c8347b7",
+          "candidateSha256": "c43fd789b64cc123e8fd3c903fd075c27b9ce012964fbd7e8017f847cf54814d",
+          "launcherSha256": "573dee1c51f828f0abf53ab0d97dcd111090d9fefa6c04fc83133bfa28386241",
+          "lockSha256": "1cdfb069424b11fccf882c84ca597019bedc8bd9b3ca10c12082c6b4d34cc0fe",
+          "manifestSha256": "a3df2591a7c39f50b5454c014ca851c824006b09cbfc054a88e2fc5cf84ee2a1",
+          "probeSha256": "e88e030718c87fb080f091e7179636e02d416b48a85e2353a00928eecf1ce431",
+          "wheelCount": 28,
+          "wheelhouseSha256": "b3704260a766dd9a43c256b4b3772f7d869cc2d164c329958f38e136f254fb0d"
+        },
+        "installedPackageEvidence": {
+          "AIMCoreToolingParity": {
+            "cliModes": [
+              "core",
+              "tooling"
+            ],
+            "reportSha256": "44669eac0f9ec67f74468b26498f78861d92ed6ee5aacaca994802116c63e9aa",
+            "requestSha256": "7e6e9b04d34819aaa8a4188585df7ca30a722fe4135cec95d4274ec71be53bbb",
+            "sdkModes": [
+              "auto",
+              "legacy"
+            ],
+            "status": "matched"
+          },
+          "MCPModes": [
+            {
+              "mode": "auto",
+              "negativeAIM": "refused",
+              "positiveAIM": "ok",
+              "promptCount": 3,
+              "protocolVersion": "2026-07-28",
+              "serverChildReaped": true,
+              "serverChildReturnCode": 0,
+              "toolCount": 3
+            },
+            {
+              "mode": "legacy",
+              "negativeAIM": "refused",
+              "positiveAIM": "ok",
+              "promptCount": 3,
+              "protocolVersion": "2025-11-25",
+              "serverChildReaped": true,
+              "serverChildReturnCode": 0,
+              "toolCount": 3
+            }
+          ],
+          "assetCount": 12,
+          "coreOnlyServe": {
+            "expectedDependencyUnavailable": true,
+            "returnCode": 2
+          },
+          "fiveSkillAssets": 5,
+          "fixtureCount": 18,
+          "promptCount": 6,
+          "skillBundleSha256": "284d84d226fd58438d995d324e0a01fbe1606f709faeed2759c6f4c3ec192542"
+        },
+        "observedAtUtc": "2026-10-10T21:54:10.263947+00:00",
+        "prepareOnly": {
+          "command": [
+            "/opt/homebrew/opt/python@3.13/bin/python3.13",
+            "<private-delivery-root>/autonomous-closure-v1/linux-bundle-53f1704-v1/input-bundle/run_linux_reproduction.py",
+            "--input-dir",
+            "<private-delivery-root>/autonomous-closure-v1/linux-bundle-53f1704-v1/input-bundle",
+            "--output-dir",
+            "<private-delivery-root>/autonomous-closure-v1/linux/prepare-result-53f1704-v1",
+            "--candidate-sha256",
+            "c43fd789b64cc123e8fd3c903fd075c27b9ce012964fbd7e8017f847cf54814d",
+            "--probe-sha256",
+            "e88e030718c87fb080f091e7179636e02d416b48a85e2353a00928eecf1ce431",
+            "--manifest-sha256",
+            "a3df2591a7c39f50b5454c014ca851c824006b09cbfc054a88e2fc5cf84ee2a1",
+            "--wheelhouse-sha256",
+            "b3704260a766dd9a43c256b4b3772f7d869cc2d164c329958f38e136f254fb0d",
+            "--launcher-sha256",
+            "573dee1c51f828f0abf53ab0d97dcd111090d9fefa6c04fc83133bfa28386241",
+            "--allow-amd64-emulation"
+          ],
+          "rawStderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "rawStdoutSha256": "f22dd32d002aa27a0df57941888c4beb5639590429a94cbde56c77c8c7df10b4",
+          "receiptPath": "<private-delivery-root>/autonomous-closure-v1/linux/prepare-receipt-captured-53f1704-v1/receipt.json",
+          "receiptSha256": "015e3db235e0e16fb2fbe5ecf5c890d54a5eeacf53fcce3b5cfd75827565e3f0",
+          "returnCode": 0,
+          "status": "prepared"
+        },
+        "schema": "m45-linux-offline-execution-summary/v1",
+        "scope": "standalone offline Linux x86_64 installed-package controls for SPEC-042 SC-008; not SPEC-044 T004 registration evidence",
+        "source": {
+          "candidateSha256": "c43fd789b64cc123e8fd3c903fd075c27b9ce012964fbd7e8017f847cf54814d",
+          "candidateVersion": "0.1.0a1",
+          "candidateWheelPath": "<private-delivery-root>/autonomous-closure-v1/linux-bundle-53f1704-v1/input-bundle/agent_braid-0.1.0a1-py3-none-any.whl",
+          "checkoutWasCleanAtBundleFreeze": true,
+          "commit": "53f1704ca7ea668637efdeb2d4b0a231769b3c68"
+        },
+        "status": "passed",
+        "supersedes": {
+          "path": "linux-execution-summary.json",
+          "reason": "corrected summary metadata: base-image digest transcription and artifact inventory count",
+          "sha256": "edf5f07e6f19a1163755a2a0cabddcb3da29a01d5db63c431a7e2d67145d1a09"
+        },
+        "target": {
+          "confinement": [
+            "read-only root filesystem",
+            "read-only input mount",
+            "separate output mount",
+            "2 GiB memory cap",
+            "2 CPU cap",
+            "256 PID cap",
+            "all Linux capabilities dropped",
+            "no-new-privileges",
+            "unprivileged uid:gid",
+            "no Docker socket or unrelated host data mounts",
+            "no provider credentials passed as container environment"
+          ],
+          "host": {
+            "amd64EmulationAllowed": true,
+            "daemon": {
+              "Architecture": "aarch64",
+              "OSType": "linux",
+              "ServerVersion": "29.8.2",
+              "containerExecutionMode": "amd64-on-arm64-daemon-emulation",
+              "endpointScheme": "unix",
+              "endpointSha256": "9d3b6f61c013d1be82ec733d811a6788955bb8f1e56cdffdbf5cee17ed016e52"
+            },
+            "machine": "arm64",
+            "mode": "arm64-launch-host-amd64-container",
+            "system": "Darwin"
+          },
+          "image": "python:3.13.11-slim-bookworm@sha256:ac76900038d8606cc99b413d4ede77bc7152f1e42b94cf5d50d4b80a999652fe",
+          "imagePullPerformed": false,
+          "network": "container --network=none",
+          "platform": "linux-amd64",
+          "python": "3.13.11"
+        }
+      }
+    }
+  ],
+  "limits": "Bounded source/local service/SDK or installed-package engineering only. No native Codex/Claude host observation, provider session, approved registration, 108-attempt capture, positive utility, human evaluation, ADR adoption or founder acceptance.",
+  "observation": {
+    "domain": "13 local lifecycle/presentation paired controls plus independently retained healthy SDK peer",
+    "privacy": "Absolute paths normalized; exact command, cwd, raw outputs and receipt retained privately. No raw provider/account data published.",
+    "privateReceiptName": "lifecycle-5cffa9d-v1/proof.json",
+    "privateReceiptSha256": "6884cc761dd9f8484c0acbf5207e3f8c5ee698cceb831bf13ff5e4ba6ee0738a",
+    "record": {
+      "candidate": {
+        "gitHead": "5cffa9d27f27686dc2cbbf90ed643e2ec2df94e7",
+        "postRunGitHead": "5cffa9d27f27686dc2cbbf90ed643e2ec2df94e7",
+        "postRunInventoryFileCount": 1658,
+        "postRunInventorySha256": "f6c83deae155b066ad4034f694db9907b9c93a11009b973b83033a6c62340fae",
+        "postRunStatus": "",
+        "preRunInventoryFileCount": 1658,
+        "preRunInventorySha256": "f6c83deae155b066ad4034f694db9907b9c93a11009b973b83033a6c62340fae",
+        "stableForFullRun": true
+      },
+      "execution": {
+        "command": [
+          "<private-delivery-root>/checkout/.venv-speckit/bin/python",
+          "scripts/run_m45_lifecycle_acceptance.py",
+          "--protocol-receipt",
+          "../autonomous-closure-v1/mcp-5cffa9d-v1/mcp-acceptance-receipt.json",
+          "--output",
+          "../autonomous-closure-v1/lifecycle-5cffa9d-v1"
+        ],
+        "cwd": "<private-delivery-root>/checkout",
+        "environment": {
+          "implementation": "CPython",
+          "osName": "posix",
+          "platform": "macOS-27.0.1-arm64-arm-64bit-Mach-O",
+          "python": "3.13.11"
+        },
+        "errors": 0,
+        "expectedRosterCompleteAllOkAndNoSkips": true,
+        "expectedTestCount": 13,
+        "expectedTestRoster": [
+          {
+            "outcome": "ok",
+            "testCase": "m45_acceptance_test_tooling_lifecycle_acceptance.LifecycleAcceptance.test_sc002_preview_selected_apply_and_refusal_keep_stdout_protocol",
+            "testName": "test_sc002_preview_selected_apply_and_refusal_keep_stdout_protocol"
+          },
+          {
+            "outcome": "ok",
+            "testCase": "m45_acceptance_test_tooling_lifecycle_acceptance.LifecycleAcceptance.test_sc002_cli_emits_only_typed_json_and_requires_selected_preview_digest",
+            "testName": "test_sc002_cli_emits_only_typed_json_and_requires_selected_preview_digest"
+          },
+          {
+            "outcome": "ok",
+            "testCase": "m45_acceptance_test_tooling_lifecycle_acceptance.LifecycleAcceptance.test_sc003_user_project_and_codex_home_are_explicit_and_root_scoped",
+            "testName": "test_sc003_user_project_and_codex_home_are_explicit_and_root_scoped"
+          },
+          {
+            "outcome": "ok",
+            "testCase": "m45_acceptance_test_tooling_lifecycle_acceptance.LifecycleAcceptance.test_sc004_idempotent_owned_change_preserves_unrelated_bytes_and_refuses_collision",
+            "testName": "test_sc004_idempotent_owned_change_preserves_unrelated_bytes_and_refuses_collision"
+          },
+          {
+            "outcome": "ok",
+            "testCase": "m45_acceptance_test_tooling_lifecycle_acceptance.LifecycleAcceptance.test_sc005_doctor_separates_healthy_static_checks_from_unavailable_host_and_pending_auth",
+            "testName": "test_sc005_doctor_separates_healthy_static_checks_from_unavailable_host_and_pending_auth"
+          },
+          {
+            "outcome": "ok",
+            "testCase": "m45_acceptance_test_tooling_lifecycle_acceptance.LifecycleAcceptance.test_sc006_older_owned_bundle_updates_with_receipt_and_modified_asset_refuses",
+            "testName": "test_sc006_older_owned_bundle_updates_with_receipt_and_modified_asset_refuses"
+          },
+          {
+            "outcome": "ok",
+            "testCase": "m45_acceptance_test_tooling_lifecycle_acceptance.LifecycleAcceptance.test_sc007_uninstall_twice_removes_owned_and_preserves_modified_and_shared_data",
+            "testName": "test_sc007_uninstall_twice_removes_owned_and_preserves_modified_and_shared_data"
+          },
+          {
+            "outcome": "ok",
+            "testCase": "m45_acceptance_test_tooling_presentation_acceptance.PresentationAcceptance.test_sc002_summary_agrees_with_every_classification_and_unknown_stays_unknown",
+            "testName": "test_sc002_summary_agrees_with_every_classification_and_unknown_stays_unknown"
+          },
+          {
+            "outcome": "ok",
+            "testCase": "m45_acceptance_test_tooling_presentation_acceptance.PresentationAcceptance.test_sc003_summary_explains_missing_grant_and_records_limited_success_scope",
+            "testName": "test_sc003_summary_explains_missing_grant_and_records_limited_success_scope"
+          },
+          {
+            "outcome": "ok",
+            "testCase": "m45_acceptance_test_tooling_presentation_acceptance.PresentationAcceptance.test_sc004_success_failure_cancel_and_recovery_states_remain_distinct",
+            "testName": "test_sc004_success_failure_cancel_and_recovery_states_remain_distinct"
+          },
+          {
+            "outcome": "ok",
+            "testCase": "m45_acceptance_test_tooling_presentation_acceptance.PresentationAcceptance.test_sc005_graph_preserves_edge_semantics_and_refuses_malformed_or_oversize",
+            "testName": "test_sc005_graph_preserves_edge_semantics_and_refuses_malformed_or_oversize"
+          },
+          {
+            "outcome": "ok",
+            "testCase": "m45_acceptance_test_tooling_presentation_acceptance.PresentationAcceptance.test_sc006_repeated_export_bytes_and_receipt_bind_exact_source_output_and_limits",
+            "testName": "test_sc006_repeated_export_bytes_and_receipt_bind_exact_source_output_and_limits"
+          },
+          {
+            "outcome": "ok",
+            "testCase": "m45_acceptance_test_tooling_presentation_acceptance.PresentationAcceptance.test_sc007_export_escapes_active_markup_and_refuses_unsafe_selection_and_size",
+            "testName": "test_sc007_export_escapes_active_markup_and_refuses_unsafe_selection_and_size"
+          }
+        ],
+        "failures": 0,
+        "networkOrHostProviderCalls": "none by procedure design; local temporary fixtures only",
+        "rawTestOutcomes": [
+          {
+            "outcome": "ok",
+            "testCase": "m45_acceptance_test_tooling_lifecycle_acceptance.LifecycleAcceptance.test_sc002_cli_emits_only_typed_json_and_requires_selected_preview_digest",
+            "testName": "test_sc002_cli_emits_only_typed_json_and_requires_selected_preview_digest"
+          },
+          {
+            "outcome": "ok",
+            "testCase": "m45_acceptance_test_tooling_lifecycle_acceptance.LifecycleAcceptance.test_sc002_preview_selected_apply_and_refusal_keep_stdout_protocol",
+            "testName": "test_sc002_preview_selected_apply_and_refusal_keep_stdout_protocol"
+          },
+          {
+            "outcome": "ok",
+            "testCase": "m45_acceptance_test_tooling_lifecycle_acceptance.LifecycleAcceptance.test_sc003_user_project_and_codex_home_are_explicit_and_root_scoped",
+            "testName": "test_sc003_user_project_and_codex_home_are_explicit_and_root_scoped"
+          },
+          {
+            "outcome": "ok",
+            "testCase": "m45_acceptance_test_tooling_lifecycle_acceptance.LifecycleAcceptance.test_sc004_idempotent_owned_change_preserves_unrelated_bytes_and_refuses_collision",
+            "testName": "test_sc004_idempotent_owned_change_preserves_unrelated_bytes_and_refuses_collision"
+          },
+          {
+            "outcome": "ok",
+            "testCase": "m45_acceptance_test_tooling_lifecycle_acceptance.LifecycleAcceptance.test_sc005_doctor_separates_healthy_static_checks_from_unavailable_host_and_pending_auth",
+            "testName": "test_sc005_doctor_separates_healthy_static_checks_from_unavailable_host_and_pending_auth"
+          },
+          {
+            "outcome": "ok",
+            "testCase": "m45_acceptance_test_tooling_lifecycle_acceptance.LifecycleAcceptance.test_sc006_older_owned_bundle_updates_with_receipt_and_modified_asset_refuses",
+            "testName": "test_sc006_older_owned_bundle_updates_with_receipt_and_modified_asset_refuses"
+          },
+          {
+            "outcome": "ok",
+            "testCase": "m45_acceptance_test_tooling_lifecycle_acceptance.LifecycleAcceptance.test_sc007_uninstall_twice_removes_owned_and_preserves_modified_and_shared_data",
+            "testName": "test_sc007_uninstall_twice_removes_owned_and_preserves_modified_and_shared_data"
+          },
+          {
+            "outcome": "ok",
+            "testCase": "m45_acceptance_test_tooling_presentation_acceptance.PresentationAcceptance.test_sc002_summary_agrees_with_every_classification_and_unknown_stays_unknown",
+            "testName": "test_sc002_summary_agrees_with_every_classification_and_unknown_stays_unknown"
+          },
+          {
+            "outcome": "ok",
+            "testCase": "m45_acceptance_test_tooling_presentation_acceptance.PresentationAcceptance.test_sc003_summary_explains_missing_grant_and_records_limited_success_scope",
+            "testName": "test_sc003_summary_explains_missing_grant_and_records_limited_success_scope"
+          },
+          {
+            "outcome": "ok",
+            "testCase": "m45_acceptance_test_tooling_presentation_acceptance.PresentationAcceptance.test_sc004_success_failure_cancel_and_recovery_states_remain_distinct",
+            "testName": "test_sc004_success_failure_cancel_and_recovery_states_remain_distinct"
+          },
+          {
+            "outcome": "ok",
+            "testCase": "m45_acceptance_test_tooling_presentation_acceptance.PresentationAcceptance.test_sc005_graph_preserves_edge_semantics_and_refuses_malformed_or_oversize",
+            "testName": "test_sc005_graph_preserves_edge_semantics_and_refuses_malformed_or_oversize"
+          },
+          {
+            "outcome": "ok",
+            "testCase": "m45_acceptance_test_tooling_presentation_acceptance.PresentationAcceptance.test_sc006_repeated_export_bytes_and_receipt_bind_exact_source_output_and_limits",
+            "testName": "test_sc006_repeated_export_bytes_and_receipt_bind_exact_source_output_and_limits"
+          },
+          {
+            "outcome": "ok",
+            "testCase": "m45_acceptance_test_tooling_presentation_acceptance.PresentationAcceptance.test_sc007_export_escapes_active_markup_and_refuses_unsafe_selection_and_size",
+            "testName": "test_sc007_export_escapes_active_markup_and_refuses_unsafe_selection_and_size"
+          }
+        ],
+        "scenarioOutcomes": {
+          "SC-002": {
+            "outcome": "passed",
+            "tests": [
+              {
+                "outcome": "ok",
+                "testCase": "m45_acceptance_test_tooling_lifecycle_acceptance.LifecycleAcceptance.test_sc002_cli_emits_only_typed_json_and_requires_selected_preview_digest",
+                "testName": "test_sc002_cli_emits_only_typed_json_and_requires_selected_preview_digest"
+              },
+              {
+                "outcome": "ok",
+                "testCase": "m45_acceptance_test_tooling_lifecycle_acceptance.LifecycleAcceptance.test_sc002_preview_selected_apply_and_refusal_keep_stdout_protocol",
+                "testName": "test_sc002_preview_selected_apply_and_refusal_keep_stdout_protocol"
+              },
+              {
+                "outcome": "ok",
+                "testCase": "m45_acceptance_test_tooling_presentation_acceptance.PresentationAcceptance.test_sc002_summary_agrees_with_every_classification_and_unknown_stays_unknown",
+                "testName": "test_sc002_summary_agrees_with_every_classification_and_unknown_stays_unknown"
+              }
+            ]
+          },
+          "SC-003": {
+            "outcome": "passed",
+            "tests": [
+              {
+                "outcome": "ok",
+                "testCase": "m45_acceptance_test_tooling_lifecycle_acceptance.LifecycleAcceptance.test_sc003_user_project_and_codex_home_are_explicit_and_root_scoped",
+                "testName": "test_sc003_user_project_and_codex_home_are_explicit_and_root_scoped"
+              },
+              {
+                "outcome": "ok",
+                "testCase": "m45_acceptance_test_tooling_presentation_acceptance.PresentationAcceptance.test_sc003_summary_explains_missing_grant_and_records_limited_success_scope",
+                "testName": "test_sc003_summary_explains_missing_grant_and_records_limited_success_scope"
+              }
+            ]
+          },
+          "SC-004": {
+            "outcome": "passed",
+            "tests": [
+              {
+                "outcome": "ok",
+                "testCase": "m45_acceptance_test_tooling_lifecycle_acceptance.LifecycleAcceptance.test_sc004_idempotent_owned_change_preserves_unrelated_bytes_and_refuses_collision",
+                "testName": "test_sc004_idempotent_owned_change_preserves_unrelated_bytes_and_refuses_collision"
+              },
+              {
+                "outcome": "ok",
+                "testCase": "m45_acceptance_test_tooling_presentation_acceptance.PresentationAcceptance.test_sc004_success_failure_cancel_and_recovery_states_remain_distinct",
+                "testName": "test_sc004_success_failure_cancel_and_recovery_states_remain_distinct"
+              }
+            ]
+          },
+          "SC-005": {
+            "outcome": "passed",
+            "tests": [
+              {
+                "outcome": "ok",
+                "testCase": "m45_acceptance_test_tooling_lifecycle_acceptance.LifecycleAcceptance.test_sc005_doctor_separates_healthy_static_checks_from_unavailable_host_and_pending_auth",
+                "testName": "test_sc005_doctor_separates_healthy_static_checks_from_unavailable_host_and_pending_auth"
+              },
+              {
+                "outcome": "ok",
+                "testCase": "m45_acceptance_test_tooling_presentation_acceptance.PresentationAcceptance.test_sc005_graph_preserves_edge_semantics_and_refuses_malformed_or_oversize",
+                "testName": "test_sc005_graph_preserves_edge_semantics_and_refuses_malformed_or_oversize"
+              }
+            ]
+          },
+          "SC-006": {
+            "outcome": "passed",
+            "tests": [
+              {
+                "outcome": "ok",
+                "testCase": "m45_acceptance_test_tooling_lifecycle_acceptance.LifecycleAcceptance.test_sc006_older_owned_bundle_updates_with_receipt_and_modified_asset_refuses",
+                "testName": "test_sc006_older_owned_bundle_updates_with_receipt_and_modified_asset_refuses"
+              },
+              {
+                "outcome": "ok",
+                "testCase": "m45_acceptance_test_tooling_presentation_acceptance.PresentationAcceptance.test_sc006_repeated_export_bytes_and_receipt_bind_exact_source_output_and_limits",
+                "testName": "test_sc006_repeated_export_bytes_and_receipt_bind_exact_source_output_and_limits"
+              }
+            ]
+          },
+          "SC-007": {
+            "outcome": "passed",
+            "tests": [
+              {
+                "outcome": "ok",
+                "testCase": "m45_acceptance_test_tooling_lifecycle_acceptance.LifecycleAcceptance.test_sc007_uninstall_twice_removes_owned_and_preserves_modified_and_shared_data",
+                "testName": "test_sc007_uninstall_twice_removes_owned_and_preserves_modified_and_shared_data"
+              },
+              {
+                "outcome": "ok",
+                "testCase": "m45_acceptance_test_tooling_presentation_acceptance.PresentationAcceptance.test_sc007_export_escapes_active_markup_and_refuses_unsafe_selection_and_size",
+                "testName": "test_sc007_export_escapes_active_markup_and_refuses_unsafe_selection_and_size"
+              }
+            ]
+          }
+        },
+        "skipped": 0,
+        "successful": true,
+        "testCount": 13,
+        "testsSuccessful": true
+      },
+      "limits": [
+        "Does not establish actual Codex or Claude host behavior, native rendering, provider behavior, clean-room reproduction, scientific validity, human review, or founder acceptance.",
+        "Candidate inventory hash binds tracked and non-ignored untracked regular files at run time; output is stored outside the checkout."
+      ],
+      "protocolObservation": {
+        "candidateBaseCommit": "5cffa9d27f27686dc2cbbf90ed643e2ec2df94e7",
+        "doctorStatus": "remains intentionally pending; this peer receipt is separate and does not rewrite doctor output.",
+        "domain": "Actual MCP Python SDK stdio client against a local Agent Braid server; not a Codex or Claude host observation.",
+        "rawOutputPath": "<private-delivery-root>/checkout/../autonomous-closure-v1/mcp-5cffa9d-v1/mcp-acceptance-output.txt",
+        "rawOutputSha256": "35999125f737b6d96f950ee6880703911843f82e9ef847302542d72c7a1b8ce7",
+        "receiptPath": "<private-delivery-root>/checkout/../autonomous-closure-v1/mcp-5cffa9d-v1/mcp-acceptance-receipt.json",
+        "receiptSha256": "56781878ac14f9c0a336ef797b340b9eabf461866d1c2559d8f296722c269f06",
+        "receiptVersion": "m45-mcp-acceptance/v1",
+        "status": "healthy-local-sdk-stdio-peer",
+        "testOutcome": {
+          "outcome": "ok",
+          "testCase": "tests.test_tooling_mcp.SdkClientIntegrationTests.test_sdk_auto_and_legacy_negotiation_tools_resource_prompt_and_call",
+          "testName": "test_sdk_auto_and_legacy_negotiation_tools_resource_prompt_and_call"
+        }
+      },
+      "rawOutcomes": {
+        "stderr": {
+          "bytes": 0,
+          "path": "stderr.txt",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "stdout": {
+          "bytes": 3145,
+          "path": "stdout.txt",
+          "sha256": "b6fab24918c9a0618354a68399934aa58497d1ad287a25a7a05ce52744e6a87a"
+        }
+      }
+    }
+  },
+  "outcome": "passed",
+  "packageSourceCandidate": "53f1704ca7ea668637efdeb2d4b0a231769b3c68",
+  "provenance": {
+    "domain": "Source/wheel/sdist canonical resources, licenses and NOTICE",
+    "privacy": "Absolute paths normalized; exact command, cwd, raw outputs and receipt retained privately. No raw provider/account data published.",
+    "privateReceiptName": "build-53f1704-v1/asset-provenance.json",
+    "privateReceiptSha256": "b87a03f94a66660daf5ddd58df24d165d7b839b6fa778fd3db7542fad5c2acd4",
+    "record": {
+      "checks": [
+        "all packaged resource bytes equal canonical source and sdist",
+        "five skills",
+        "distribution LICENSE and NOTICE present"
+      ],
+      "inputs": {
+        "LICENSE": "340d66a837b3a1617645d00622a46d1bcbf3534bedd997b6461d16d2e08b374f",
+        "LICENSES/AGPL-3.0-only.txt": "0d96a4ff68ad6d4b6f1f30f713b18d5184912ba8dd389f86aa7710db079abcb0",
+        "LICENSES/CC-BY-SA-4.0.txt": "23ee78c8bae49cf08ea2f0c84945c66b987ebe4520881fb51b3dad4fb43d07c2",
+        "NOTICE": "c68b8c70b5d4a707eecf3ca4cb0dbc14d3754aa8dff3700f1252e9ac80cbffb5",
+        "TRADEMARKS.md": "be084562378235f7c72b4a16e9d0f37b01e7e2b035291eceb4f6478048a517b8",
+        "examples/tooling/fixture-inventory.json": "db76e4ec30c0b09200d6cbdb7a6f863c577a4ac41d7dccbbbd7819f22c93446d",
+        "examples/tooling/prompts.json": "1b5d94eece15b01e0409579adeb18d5da6564b1d5f01487b461197cbe198d3c2",
+        "integrations/agent-braid/hosts.json": "a1160abd5fee714eac3bee430bf4176f9944aec6a830bb3a47121dcd72da0831",
+        "integrations/agent-braid/skills/agent-braid-analyze/SKILL.md": "bf3292e5c3d867f277cf34bf298227035f6a0ff3caabffaf865da16fda44fd31",
+        "integrations/agent-braid/skills/agent-braid-evidence/SKILL.md": "3618f553971f85b51fb90e465b30a6423e2cb52dfcbfecdea4c320429771cba1",
+        "integrations/agent-braid/skills/agent-braid-execute/SKILL.md": "d2f2a4598ab498663bd9854ee9cfa854a77ee64167adca39adeced33bd0b5f43",
+        "integrations/agent-braid/skills/agent-braid-plan/SKILL.md": "90970a2d5930400dcb5344389c28ab18236086a5dd194379ea2f329f37e4cfb3",
+        "integrations/agent-braid/skills/agent-braid-recover/SKILL.md": "0d2d02c291514c6c09a456791bf1521fa12719efe8ada608e3566b422586e27f"
+      },
+      "limits": "Package/source provenance only; no native-host or registered-run claim.",
+      "outcome": "passed",
+      "sdistSha256": "83234a8b46083de21e576713e90587cfcb8e975a0c372f7dfcc5114c2e394df3",
+      "sourceCandidate": "53f1704ca7ea668637efdeb2d4b0a231769b3c68",
+      "wheelResourceInventory": {
+        "agent_braid-0.1.0a1.dist-info/licenses/LICENSE": "340d66a837b3a1617645d00622a46d1bcbf3534bedd997b6461d16d2e08b374f",
+        "agent_braid-0.1.0a1.dist-info/licenses/NOTICE": "c68b8c70b5d4a707eecf3ca4cb0dbc14d3754aa8dff3700f1252e9ac80cbffb5",
+        "agent_braid/tooling_assets/NOTICE": "c68b8c70b5d4a707eecf3ca4cb0dbc14d3754aa8dff3700f1252e9ac80cbffb5",
+        "agent_braid/tooling_assets/TRADEMARKS.md": "be084562378235f7c72b4a16e9d0f37b01e7e2b035291eceb4f6478048a517b8",
+        "agent_braid/tooling_assets/fixtures/fixture-inventory.json": "db76e4ec30c0b09200d6cbdb7a6f863c577a4ac41d7dccbbbd7819f22c93446d",
+        "agent_braid/tooling_assets/fixtures/prompts.json": "1b5d94eece15b01e0409579adeb18d5da6564b1d5f01487b461197cbe198d3c2",
+        "agent_braid/tooling_assets/hosts.json": "a1160abd5fee714eac3bee430bf4176f9944aec6a830bb3a47121dcd72da0831",
+        "agent_braid/tooling_assets/licenses/AGPL-3.0-only.txt": "0d96a4ff68ad6d4b6f1f30f713b18d5184912ba8dd389f86aa7710db079abcb0",
+        "agent_braid/tooling_assets/licenses/CC-BY-SA-4.0.txt": "23ee78c8bae49cf08ea2f0c84945c66b987ebe4520881fb51b3dad4fb43d07c2",
+        "agent_braid/tooling_assets/skills/agent-braid-analyze/SKILL.md": "bf3292e5c3d867f277cf34bf298227035f6a0ff3caabffaf865da16fda44fd31",
+        "agent_braid/tooling_assets/skills/agent-braid-evidence/SKILL.md": "3618f553971f85b51fb90e465b30a6423e2cb52dfcbfecdea4c320429771cba1",
+        "agent_braid/tooling_assets/skills/agent-braid-execute/SKILL.md": "d2f2a4598ab498663bd9854ee9cfa854a77ee64167adca39adeced33bd0b5f43",
+        "agent_braid/tooling_assets/skills/agent-braid-plan/SKILL.md": "90970a2d5930400dcb5344389c28ab18236086a5dd194379ea2f329f37e4cfb3",
+        "agent_braid/tooling_assets/skills/agent-braid-recover/SKILL.md": "0d2d02c291514c6c09a456791bf1521fa12719efe8ada608e3566b422586e27f"
+      },
+      "wheelSha256": "c43fd789b64cc123e8fd3c903fd075c27b9ce012964fbd7e8017f847cf54814d"
+    }
+  },
+  "scenario": "SC-001",
+  "schema": "agent-braid-m45-bounded-procedure-evidence-v1",
+  "sourceCandidate": "5cffa9d27f27686dc2cbbf90ed643e2ec2df94e7",
+  "sourceInputs": {
+    "agent_braid/analysis.py": {
+      "bytes": 13627,
+      "sha256": "fadfb6f6d3d6f89002df519bbcc86d839724f243e2c8e52732ef57e555abfe00"
+    },
+    "agent_braid/cli.py": {
+      "bytes": 17662,
+      "sha256": "9e1750b94d9ec846c07117a4b3490f0a3026401a3816a42145eb866f843bf988"
+    },
+    "agent_braid/git_adapter.py": {
+      "bytes": 15952,
+      "sha256": "4548eb96849e2d0ed1eaefc53579d065651b00a2c6ae5b1aef6e2bdc5ae3dc45"
+    },
+    "agent_braid/git_process.py": {
+      "bytes": 11219,
+      "sha256": "3247ac861404cfb68f08939770a5048294b45ddc984a1379ca9eb2091ad48668"
+    },
+    "agent_braid/git_replay.py": {
+      "bytes": 32089,
+      "sha256": "62a2c461902e30d874dfe82bed77ab79075f33cb0e56f1e543fd9d317f1d571e"
+    },
+    "agent_braid/git_runtime.py": {
+      "bytes": 31403,
+      "sha256": "ceb4469906b6c97a6f03faf3cc1b4ea8387df937c06b8ccd49984eaf2dff4d4e"
+    },
+    "agent_braid/mcp_runtime.py": {
+      "bytes": 15271,
+      "sha256": "32d30a6a167235e1ab8ca89acdc32b23eb74412e2ac0555fe7c9118d1d816d83"
+    },
+    "agent_braid/runtime_policy.py": {
+      "bytes": 18829,
+      "sha256": "930ead80e4085301e6337af58660665219da3d3b40b72cfca8b803cebfa09188"
+    },
+    "agent_braid/runtime_scheduler.py": {
+      "bytes": 24309,
+      "sha256": "47bb371c88726793d207a59bb85cb6911d86e00a44694b37934805d9fa2462a9"
+    },
+    "agent_braid/tooling_cli.py": {
+      "bytes": 6375,
+      "sha256": "2ba676c7873ee17590e66baa8ace4bef2453a12d686db57654382a8b23dece1a"
+    },
+    "agent_braid/tooling_install.py": {
+      "bytes": 48804,
+      "sha256": "91a736438833efdb8f98d70fed654075cf6da7e9c9303703c965e1d90e8fd5bd"
+    },
+    "agent_braid/tooling_mcp.py": {
+      "bytes": 40695,
+      "sha256": "f8d151fb11905d5bff7114571e5663bf80cb0cd15af3acb1bf5159b14c54b6dd"
+    },
+    "agent_braid/tooling_present.py": {
+      "bytes": 33629,
+      "sha256": "781c4fa1aaac211405ef26620ca80d703b0d37e7769c89cf202b13d9bf3e6eb9"
+    },
+    "examples/analysis/file-edits.json": {
+      "bytes": 2440,
+      "sha256": "23a833a13adb2b029a696028bb1ae64ced30a65a19375d8e515c1c4d809fcd93"
+    },
+    "pyproject.toml": {
+      "bytes": 805,
+      "sha256": "21b32beb7d47b4551e837027ae2713890dc14bb07d7efc56e1cdf2ecc57c1648"
+    },
+    "scripts/run_m45_lifecycle_acceptance.py": {
+      "bytes": 21830,
+      "sha256": "9422bd2b756f83af6f38d0323b2b8101a08c1c62a1e129646131d6f4b64babbe"
+    },
+    "scripts/run_m45_mcp_acceptance.py": {
+      "bytes": 17125,
+      "sha256": "7b50f30f07f2147b32d9b688817801a71882727e40d86e314c9fde726939a778"
+    },
+    "specs/040-portable-mcp-surface/contracts/interface.md": {
+      "bytes": 7387,
+      "sha256": "d8e33c92f83e9f251f985e72d2bb5ce8a658151b7f41964b46d7c9af9808b8a6"
+    },
+    "specs/040-portable-mcp-surface/data-model.md": {
+      "bytes": 4512,
+      "sha256": "cbc2d49e75b416931a9f2e23a1d5a27065549cc7ab6ebfaec95a8655c49bc4ec"
+    },
+    "specs/042-ai-tooling-packaging/validation-plan.md": {
+      "bytes": 7587,
+      "sha256": "c32005c847595516cf3cef044d0798fe6b8fa7a285742e35f8d0bf885035530a"
+    },
+    "tests/test_git_adapter.py": {
+      "bytes": 13550,
+      "sha256": "f27408f851d23c78460bfc52b3ebc024ef58acde1c0d0f649dc9512d78b4c067"
+    },
+    "tests/test_git_runtime.py": {
+      "bytes": 32665,
+      "sha256": "70e0655241bb64b4fb620309b0897c350b077a46db57be142f000a2e0d46fe47"
+    },
+    "tests/test_tooling_lifecycle_acceptance.py": {
+      "bytes": 13163,
+      "sha256": "8fa318110346c520e00136a1a4b0bea36491465c9f2c688fd3b60315e4991307"
+    },
+    "tests/test_tooling_mcp.py": {
+      "bytes": 25376,
+      "sha256": "de9ae5adbe42507a99cb33ecffbd0634455614aa8201c160d7a8d06eeabe6075"
+    },
+    "tests/test_tooling_mcp_acceptance.py": {
+      "bytes": 38457,
+      "sha256": "17d9fdb9ca7c1762ebc1c9f084a97bc152ba353ad0682b8e721e36fa9151fb52"
+    },
+    "tests/test_tooling_presentation_acceptance.py": {
+      "bytes": 9513,
+      "sha256": "3a78c9fe87a8ca4d9893befd4f1b18a47196e0514fa980ae7f7b34e45d4125e9"
+    }
+  },
+  "spec": "SPEC-042"
+}
