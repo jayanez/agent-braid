@@ -211,10 +211,14 @@ Exit criteria:
 
 **Objective:** test whether a small, local learned advisor improves selection
 of candidates for the deterministic M3 verifier. [SPEC-019](specs/019-native-predictor/spec.md)
-is a draft for offline training, versioned structural features, held-out
-evaluation and abstention. It is independent of M3 closure. A score is
-heuristic; the verifier remains the only source of bounded exchange evidence.
-No external Laya/Jev service is required or integrated.
+remains a draft for versioned features, held-out evaluation and abstention.
+Synthetic-only T002/#182 trainer/inference and T004/#184 verifier-boundary
+software is complete, with 115 focused controls passing and a final clean-clone
+reproduction recorded. The software is not wired into the CLI and does not adapt
+real feeds; zero real pairs are admitted. T001/#181, T007/#188, T003/#183 and
+T005/#185 remain open, as do parent #180 and milestone 9. A score remains
+heuristic; the deterministic verifier alone supplies bounded exchange
+evidence. No external Laya/Jev service is integrated.
 
 ## M4 — Agent Braid runtime
 
@@ -380,7 +384,7 @@ The [review and implementation portfolio](docs/development/FOUNDATION_IMPLEMENTA
 
 | Milestone / track | Implementation or next package | Exit boundary |
 |---|---|---|
-| M3.5 | [SPEC-019 preparation](specs/019-native-predictor/implementation-readiness.md) | Metadata/synthetic tooling first; real-source rights, yield, protocol and labels before fitting |
+| M3.5 | [SPEC-019 synthetic software completion](specs/019-native-predictor/software-completion.md) | T002/T004 synthetic software and T006/T008/T009/T010 closed; zero real pairs admitted. T001/T007 source admission and protocol, T003 real evaluation, and T005 review remain open before any real-workload model; #180 and milestone 9 remain open |
 | M4 | [SPEC-022 utility follow-up](specs/022-m4-utility-followup/spec.md) | Registered synthetic capture completed on frozen candidate `b85f7e5`; three admitted independent blocks were negative, the dependency-chain block was an order control, and five blocks were excluded by pinned caps. Owner approved a bounded T006 interpretation: no useful-speedup claim or parallel performance default for measured families. Historical SPEC-021 G4 NO-GO is preserved. See the [decision packet](specs/022-m4-utility-followup/decision-packet.md) |
 | M4 real workload | [SPEC-038](specs/038-m4-real-workload-closure/spec.md) | Exact source rights/protocol and stable/capture reviews bound candidate `e66f9a1`; registered capture completed with 20 valid treatments, six finite negative serial/parallel ratios, and mandatory fresh verification. Tracked-tree checks do not establish semantic/native-code validity; real-source recovery controls were not run. Founder accepted bounded M4 engineering/evaluation completion with negative utility on 2026-10-09. Current GitHub tracking is shown in the [live M4 milestone](https://github.com/jayanez/agent-braid/milestone/6). |
 | M4 refinement contracts | [SPEC-027](specs/027-runtime-refinement-contracts/spec.md) | Read-only assessments implemented; founder recorded NO-GO/defer for all three capabilities within bounded M4 alpha. No capability adopted or granted; any future adoption requires a separate reviewed contract and authority |

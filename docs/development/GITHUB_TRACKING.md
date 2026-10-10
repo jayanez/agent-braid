@@ -152,3 +152,20 @@ The audit deliberately does not create issues from unchecked speculative text,
 declare future M2–M4 tasks, close a parent because every child is closed, or
 convert a passing validator into approval. Source deletions and disputed states
 require a human decision and a repository record before any remote change.
+
+## M3.5 software closure and experimental exception — 2026-10-10
+
+M3.5 has six closed software tasks (T002, T004, T006, T008, T009, T010).
+The four open tasks (T007, T001, T003, T005) are the source-admission,
+preregistration/annotation, fit/evaluation and evidence/review phases of the
+[deferred experiment](../../specs/019-native-predictor/software-completion.md).
+SPEC-019/#180 and milestone 9 remain explicitly open for that experiment.
+No source or scientific gate is closed by synthetic software or technical review.
+
+The private Project was inspected through the owner's existing authenticated
+browser session on 2026-10-10: all eleven records were present, the six closed
+tasks were **Done**, and the four experimental tasks were **Todo**. The parent
+was corrected from **Todo** to the configured **Review pending**. This is a
+bounded UI observation, separate from repository issue reconciliation; no token
+permissions were expanded. See the [alignment record](m35-project-alignment.md)
+for the final source/remote audit and documentation boundary.
