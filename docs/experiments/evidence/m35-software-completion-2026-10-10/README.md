@@ -47,3 +47,13 @@ report-level phase-separation checks; production code is unchanged. Independent
 Luna re-review ran the 28 evaluator tests successfully, and the corrected
 focused suite ran 115 controls. The failed run remains a non-pass; exact-head
 CI must run again before integration.
+
+The final test correction is reproduced at `37eea0594a09a9bace5955ea1e2ab536366f34aa`.
+Current `focused-receipt.json` and `reproduction.json` bind the corrected inputs
+and raw outputs; `focused-cleanroom-corrected-test.txt` and
+`global-gate-corrected-test.txt` record 115 passing controls and the global gate.
+The former receipts and frozen assurance are preserved with
+`-before-timing-test-fix` names. The two broad local profiles each passed
+864 tests with one skip; `repository-validation.json` and their raw logs record
+the actual incremental candidates and limits. Exact-head CI is recorded in the
+PR and must pass before merge; no failed or interrupted run counts as a pass.

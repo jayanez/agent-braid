@@ -31,3 +31,10 @@ callbacks are trusted and not sandboxed. Real feed completeness, linked
 resolution/exclusion semantics, blinded rendering, authenticated lineage,
 real-cost protocol review, the experiment and human/founder approval remain
 pending. No independent scientific validation or production benefit is claimed.
+
+The exact-head CI run 38038949732 exposed a test-only statistical error:
+independently summarized medians were incorrectly required to add. The test
+now checks the additive identity on a raw policy run and retains report-level
+phase-separation checks. Production code is unchanged. The evaluator reviewer
+independently reran all 28 evaluator controls and confirmed the correction and
+coverage, with no remaining material concern. Failed CI remains a non-pass.

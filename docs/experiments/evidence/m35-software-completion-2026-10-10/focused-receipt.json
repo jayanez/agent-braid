@@ -1,4 +1,5 @@
 {
+  "candidateCommit": "37eea0594a09a9bace5955ea1e2ab536366f34aa",
   "command": ".venv/bin/python -m unittest -v tests.test_native_predictor tests.test_native_predictor_training tests.test_native_predictor_evaluation tests.test_native_predictor_adapter tests.test_native_predictor_contract tests.test_predictor_readiness tests.test_m35_review_packet",
   "exitCode": 0,
   "inputs": {
@@ -14,13 +15,14 @@
     "tests/test_native_predictor.py": "3a685456125bcfae67086e9a63959359cb7b79e29e4ebc4d3a9096eddc1dbfda",
     "tests/test_native_predictor_adapter.py": "d41741dd233a797be8161662b3bad0ba974ac567e3736b57663a88cd410058fc",
     "tests/test_native_predictor_contract.py": "0d8cc1b21e9a8d87645e7b2fc15d4134ec0f7dbcd08ff63e44af19cf85c75c03",
-    "tests/test_native_predictor_evaluation.py": "d17f8209460b7564368a54bbb9071d996eb143c95b19ec02d3bd6cb81e392036",
+    "tests/test_native_predictor_evaluation.py": "ae719c9d8c25cf254bb5cf40d246432c0163774ca99676ef89886f70ad7c958d",
     "tests/test_native_predictor_training.py": "a7023106c9f57e8ab961e6874c43316dc813eb17015b936b8f1e5a320127c392",
     "tests/test_predictor_readiness.py": "5a14dc3a7296e6c471acee12207aaeb5e3f0e696f8738ea2b59ba101b5f7b06e"
   },
   "kind": "synthetic-software-controls-only",
   "limits": "Incremental synthetic software verification only; no real data, labels, fit, source authenticity, scientific or founder approval.",
-  "logSha256": "d7c57874d7c5023571a6cc3c8ed5d4ce8962aedb140c913ab5aaadf25ab2348b",
+  "log": "docs/experiments/evidence/m35-software-completion-2026-10-10/focused-corrected-test.txt",
+  "logSha256": "0689c46de2e2e122fc5a0d03d090510feae596f56d6aa9bc1851c0998153ecb4",
   "python": "3.12.13 (main, Jun 23 2026, 15:44:24) [Clang 22.1.3 ]",
   "skipped": 0,
   "tests": 115
