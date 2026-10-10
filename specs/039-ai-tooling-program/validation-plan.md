@@ -1,4 +1,4 @@
-# SPEC-039: Prospective validation procedures
+# SPEC-039: Validation procedures and obtained scope
 
 The procedures below remain the acceptance contract. Candidate-bound obtained local evidence is linked in `assurance.json` and `evidence/`; source validators alone establish only structure. Native-host and human decisions remain separate.
 
