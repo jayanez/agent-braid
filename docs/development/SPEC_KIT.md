@@ -161,6 +161,8 @@ must also match the literal SHA256 commitments of their published bytes in merge
 `develop` commit `c51c91ee270c84d6786355c20a49ee86cf38648e`. These are retention
 checks, not a new approval. Metadata changes require a separately reviewed update;
 they cannot silently inherit the retained historical review.
+Changed retained approval metadata is rejected before ancestry checks or portable
+fallback; availability of another validation route cannot waive its byte binding.
 
 Snapshot includes selected canonical root authorities and all ADRs, theory,
 architecture and schema files. Additions, deletions and changes invalidate every

@@ -137,6 +137,20 @@ class PublicDraftHistoryTests(unittest.TestCase):
                     altered[field]["commit"] = commit
                     self.assertFalse(self.matches(record=altered))
 
+    def test_reviewed_byte_drift_is_terminal_before_ancestry_or_fallback(self):
+        feature, frozen, _ = history.REVIEWED_TAGS[0]
+        path = self.root / f"specs/{feature}/assurance.json"
+        path.write_bytes(path.read_bytes() + b"\n")
+        # Even making the actual reviewed commit a real HEAD ancestor must not
+        # let changed retained approval metadata use a different validation route.
+        self.git("update-ref", "HEAD", frozen)
+        with patch.object(gates, "validate_record") as strict, \
+                patch.object(gates, "_matches_reviewed_candidate_tag") as reviewed:
+            with self.assertRaisesRegex(ValueError, "Published reviewed metadata changed"):
+                gates.validate_portable_record(self.root, path)
+        strict.assert_not_called()
+        reviewed.assert_not_called()
+
     def test_additional_root_cannot_use_the_public_pin(self):
         tree = self.git("mktree", input_text="")
         commit = self.git("commit-tree", tree, "-m", "Disconnected fixture root")

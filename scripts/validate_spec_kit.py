@@ -261,6 +261,7 @@ def validate_portable_record(root, path, bind_manifest=True):
     if bind_manifest and relative_record in protected:
         manifest_entry(root, relative_record)
     record = json.loads(path.read_text())
+    _validate_published_review_metadata(root, relative_record, path, record)
     authority_candidate = record.get("authority_snapshot", {})
     evidence_candidate = record.get("evidence_snapshot", {})
     if authority_candidate.get("mode") == "historical" \
@@ -405,6 +406,32 @@ def validate_portable_record(root, path, bind_manifest=True):
                             raise ValueError(f"Stale evidence input: {name}")
                 for field in ("command", "outcome", "limits"):
                     nonempty(item.get(field), field)
+
+
+def _validate_published_review_metadata(root, relative_record, path, record):
+    """Reject changed retained approved metadata before any ancestry/fallback route."""
+    if record.get("human_review") != "approved":
+        return
+    try:
+        from scripts.restore_public_spec_history import PUBLIC_REVIEW_RECORDS
+    except ModuleNotFoundError:
+        from restore_public_spec_history import PUBLIC_REVIEW_RECORDS
+    metadata = [(assurance_hash, review_name, review_hash)
+                for feature, assurance_hash, review_name, review_hash in PUBLIC_REVIEW_RECORDS
+                if relative_record == f"specs/{feature}/assurance.json"]
+    if not metadata:
+        return
+    if len(metadata) != 1:
+        raise ValueError("Ambiguous published reviewed metadata pin")
+    assurance_hash, review_name, review_hash = metadata[0]
+    try:
+        matches = (digest(path) == assurance_hash
+                   and record.get("review_record") == review_name
+                   and digest(local(root, review_name)) == review_hash)
+    except (ValueError, OSError) as error:
+        raise ValueError("Published reviewed metadata changed or missing") from error
+    if not matches:
+        raise ValueError("Published reviewed metadata changed or missing")
 
 
 def _matches_preserved_draft_tag(root, relative_record, path, record):
