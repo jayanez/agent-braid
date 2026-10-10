@@ -1,10 +1,10 @@
 # Tasks
 
-Stable task IDs are implementation obligations. Check only after the paired procedure produces candidate-bound evidence. Targets below may be future files; no product implementation is claimed.
+Stable task IDs are implementation obligations. Experimental implementation and partial local observations exist, but a task remains incomplete until its full paired procedure produces candidate-bound evidence. Partial evidence is explicitly scoped below and does not complete a task. Targets below may include future files.
 
 - [ ] T001 (REQ-001/SC-001): Include versioned skills/host metadata in wheel/sdist and resolve them from installed resources with the optional tooling extra.
   Dependencies: none; consumed contract review. Targets: `pyproject.toml assets; installed package resource controls`.
-  Verification and planned evidence: `validation-plan.md::procedure_installed_assets`; `evidence/sc-001.json` with actual commands and negative controls. Obtained: none.
+  Verification and planned evidence: `validation-plan.md::procedure_installed_assets`; `evidence/sc-001.json` with actual commands and negative controls. Obtained: partial wheel installation/capability observations and default installed resource byte equality for five skills/five supporting assets; see `evidence/partial-installed-e40c949.json`; native host loading and full procedure/task remain incomplete.
 
 - [ ] T002 (REQ-002/SC-002): Provide explicit serve/configure/install/doctor/update/uninstall commands with previewed destinations, effects, version and roots.
   Dependencies: T001. Targets: `agent_braid/cli.py tooling command group; lifecycle API`.
@@ -32,7 +32,7 @@ Stable task IDs are implementation obligations. Check only after the paired proc
 
 - [ ] T008 (REQ-008/SC-008): Record license/provenance/transitive dependencies and reproduce package/lifecycle controls on supported platforms without cloud claims.
   Dependencies: T001–T005. Targets: `artifact hashes/license inventory; macOS/Linux package reproduction receipts`.
-  Verification and planned evidence: `validation-plan.md::procedure_package_provenance`; `evidence/sc-008.json` with actual commands and negative controls. Obtained: none.
+  Verification and planned evidence: `validation-plan.md::procedure_package_provenance`; `evidence/sc-008.json` with actual commands and negative controls. Obtained: partial wheel provenance, local macOS build/install, and default installed resource byte equality only; see `evidence/partial-installed-e40c949.json`; sdist/Linux/legal compatibility and full procedure/task remain incomplete.
 
 - [ ] T009 (REQ-001,REQ-002,REQ-003,REQ-004,REQ-005,REQ-006,REQ-007,REQ-008/SC-001,SC-002,SC-003,SC-004,SC-005,SC-006,SC-007,SC-008): Reconcile implementation evidence and run repository quick/PR gates.
   Dependencies: T001–T008. Targets: this spec's assurance.json, validation receipts and bounded candidate.
