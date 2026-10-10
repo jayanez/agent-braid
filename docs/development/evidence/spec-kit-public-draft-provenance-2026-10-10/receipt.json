@@ -1,0 +1,157 @@
+{
+  "artifacts": {
+    "public-draft-clean-fsck.log.gz": {
+      "compression": "gzip; bytes unchanged",
+      "disposition": "executed",
+      "rawBytes": 0,
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "public-draft-clean-gate-final.log.gz": {
+      "compression": "gzip; bytes unchanged",
+      "disposition": "executed",
+      "rawBytes": 74,
+      "rawSha256": "b28f0f3bd337a6cae29938ed6ec99ef7ecf3c0005cc38370479d91ec923e04ac"
+    },
+    "public-draft-clean-restoration.log.gz": {
+      "compression": "gzip; bytes unchanged",
+      "disposition": "executed",
+      "rawBytes": 511,
+      "rawSha256": "b68dfa34b29652e662de3b9b6b29a26f43cda0290c7ba11b6d0802a652b39640"
+    },
+    "public-draft-focused-final-29.log.gz": {
+      "compression": "gzip; bytes unchanged",
+      "disposition": "executed",
+      "rawBytes": 6047,
+      "rawSha256": "b53f13d89f3e4bdb26d47e6e70813a1a0e0f0186daac00f451320033804b5486"
+    },
+    "public-draft-pr.log.gz": {
+      "compression": "gzip; bytes unchanged",
+      "disposition": "executed",
+      "rawBytes": 153807,
+      "rawSha256": "534d4abfe8762f63ecbd20949c7296c1e680bfb2b3de5f2289b3aba6988c07fb"
+    },
+    "public-draft-quick.log.gz": {
+      "compression": "gzip; bytes unchanged",
+      "disposition": "executed",
+      "rawBytes": 154158,
+      "rawSha256": "060bf78e4c766002b5b4dc5ceb7f29ab83f1da5abd57d8e8b534a5b7f03f783e"
+    }
+  },
+  "base": "c51c91ee270c84d6786355c20a49ee86cf38648e",
+  "candidate": "76aaca58da1aa6678cf07c648fe4bac264e506a7",
+  "cleanPublicClone": {
+    "fsckExitCode": 0,
+    "restorationExitCode": 0,
+    "specKitExitCode": 0,
+    "unreachableOutput": false
+  },
+  "environment": {
+    "dependencies": "isolated environments; pinned requirements",
+    "git": "git version 2.54.0 (Apple Git-157)",
+    "machine": "arm64",
+    "python": "3.12.13",
+    "system": "Darwin"
+  },
+  "focused": {
+    "exitCode": 0,
+    "skipped": 0,
+    "tests": 29
+  },
+  "inputs": {
+    "CONSTITUTION.md": "ff7196976a1736a639947c2ab26e8da157fef23c89ba9881312f2a36459964eb",
+    "docs/development/SPEC_KIT.md": "85bee2c4dc8e27a997d3d4bcd76e81a16c1abe65e39987f422bbe7eb534faba7",
+    "docs/releases/public-export.json": "6ed49fcba3503ebd362ec478977697d7bbab9b3ea99846cd408c9e00de7b656d",
+    "requirements-dev.txt": "24a8316f230a1f408b5c953bf0217968f7ccab452594e774a1771ae28df86448",
+    "requirements-speckit.txt": "daa35d1e5551fba64cada1787b2646c283f9fb56ddc00b48f9b596b68134c392",
+    "scripts/closure_anchors.py": "4dd690de1c33ddf372663618b193bab654c111f3cab8e620b42326b793ac4b33",
+    "scripts/publication.py": "8ac3df95a00e4643043ab4ae0201d8f7d92dc8b671d2670e4b64ace2d1a2021d",
+    "scripts/restore_public_spec_history.py": "21a712b9ce029eda14bba4bfcd700b5501c34b3cd93c64efc0cf3b32358c7805",
+    "scripts/validate_spec_kit.py": "1c5f614d4cc99d928014de9b48c0de31e37503d334c805c8479c9d3bdb32c00e",
+    "specs/016-m2-partial-order-reduction/assurance.json": "0d2007d2515e871c41d7c86e9afc0f1a2a2e022cd461d24966b954f4dae67764",
+    "specs/016-m2-partial-order-reduction/founder-review.json": "03eb634a8562b9c20cdb4475dfb8aaa06938d80eec5009d1b7015880767e0d51",
+    "specs/018-structured-exchange/assurance.json": "9a0b3ee082b70ecc402897473927cbe39cb20997ef7be599e258c669c4cf3fa7",
+    "specs/018-structured-exchange/founder-review.json": "3653a6f784211f4f3cb1618c1cd57728f8b367f7b52bd70941f7b085b804a3e3",
+    "specs/019-native-predictor/assurance.json": "8eefb30d00ebab3071824e6f5f29e0c2651d1d13236448d4f9b0476147fbfc8b",
+    "specs/020-m4-local-git-runtime/assurance.json": "f09968de6e77bfd93793100ae2ddd14f1563ff7a2f3df8e6f7429b34d0e57c29",
+    "specs/020-m4-local-git-runtime/founder-review-corrected.json": "f0654f1e2bc48cc9b777cd4afdc463a085a7b38e5d90fab98f5fb09f59b58732",
+    "tests/test_public_draft_history.py": "3fa4726a00c9e9506e1e40c7dcf31b922919202818307b898010925260a38345",
+    "tests/test_public_spec_history.py": "1c253a205ce566d2ee5cd37c430d95adbd6300cc7e22ab7f994d1d046c6ac524"
+  },
+  "limits": [
+    "Profiles do not establish scientific validity, production safety or human approval.",
+    "Exact-head hosted CI and post-merge fresh-clone verification are separate delivery gates.",
+    "The published software draft remains draft/pending; the real M3.5 experiment remains open."
+  ],
+  "profiles": {
+    "pr": {
+      "candidate": "76aaca58da1aa6678cf07c648fe4bac264e506a7",
+      "effectiveProfile": "pr",
+      "exitCode": 0,
+      "integrationMatrixExecuted": false,
+      "scope": "executable checks only",
+      "skipped": [
+        "1"
+      ],
+      "tests": 885
+    },
+    "quick": {
+      "candidate": "76aaca58da1aa6678cf07c648fe4bac264e506a7",
+      "effectiveProfile": "sensitive",
+      "exitCode": 0,
+      "integrationMatrixExecuted": true,
+      "scope": "executable checks only",
+      "skipped": [
+        "1"
+      ],
+      "tests": 885
+    }
+  },
+  "review": {
+    "effort": "medium",
+    "humanScientificReview": "not performed",
+    "models": [
+      "gpt-6-luna",
+      "gpt-6-luna"
+    ],
+    "remainingMaterialFindings": []
+  },
+  "scope": "public history and metadata retention, no experiment or approval",
+  "supersededProfiles": {
+    "public-draft-pr-interrupted-counterfeit-review.log": {
+      "disposition": "interrupted; not a pass; raw retained outside Git",
+      "exitCode": 130,
+      "rawBytes": 24840,
+      "rawSha256": "10c467177de51882aa3820fb7c7a1aa30cf4bab4c73760271870347762dc274f"
+    },
+    "public-draft-pr-interrupted-reviewed-bytes.log": {
+      "disposition": "interrupted; not a pass; raw retained outside Git",
+      "exitCode": 130,
+      "rawBytes": 33394,
+      "rawSha256": "1331434d475f9d9f34ac1314bf1670853716b1473a31e1672bf87400cd612ca4"
+    },
+    "public-draft-pr-interrupted-terminal-binding.log": {
+      "disposition": "interrupted; not a pass; raw retained outside Git",
+      "exitCode": 130,
+      "rawBytes": 35688,
+      "rawSha256": "fd580cc5504b60b97c122cece83da18dbc0dec38ebe3b1fff38913bc5858f04f"
+    },
+    "public-draft-quick-interrupted-counterfeit-review.log": {
+      "disposition": "interrupted; not a pass; raw retained outside Git",
+      "exitCode": 130,
+      "rawBytes": 24376,
+      "rawSha256": "1bcc22c6d0cc733821becbd2d1824d86fb8db00d218a9605f6d18aa80ad4e615"
+    },
+    "public-draft-quick-interrupted-reviewed-bytes.log": {
+      "disposition": "interrupted; not a pass; raw retained outside Git",
+      "exitCode": 130,
+      "rawBytes": 33477,
+      "rawSha256": "cb6cbaf06f0024e324fdc7a657910d119ac33adb4ffd529a2266274881f708fd"
+    },
+    "public-draft-quick-interrupted-terminal-binding.log": {
+      "disposition": "interrupted; not a pass; raw retained outside Git",
+      "exitCode": 130,
+      "rawBytes": 35755,
+      "rawSha256": "3fc30efcc3b31035cfc250ed1f6059a5649cc36ed3526b5d5ed219bb3ccaca80"
+    }
+  }
+}
