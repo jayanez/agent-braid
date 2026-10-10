@@ -5,6 +5,7 @@ import argparse
 import ast
 import hashlib
 import json
+import os
 from pathlib import Path
 import re
 import subprocess
@@ -50,8 +51,12 @@ def authorities(root):
 
 
 def git(root, *args):
+    environment = os.environ.copy()
+    environment["GIT_NO_REPLACE_OBJECTS"] = "1"
+    environment["GIT_GRAFT_FILE"] = os.devnull
     process = subprocess.run(
-        ["git", "-C", str(root), *args], capture_output=True, check=False
+        ["git", "-C", str(root), *args], capture_output=True, check=False,
+        env=environment,
     )
     if process.returncode:
         message = process.stderr.decode("utf-8", "replace").strip()
@@ -256,6 +261,7 @@ def validate_portable_record(root, path, bind_manifest=True):
     if bind_manifest and relative_record in protected:
         manifest_entry(root, relative_record)
     record = json.loads(path.read_text())
+    _validate_published_review_metadata(root, relative_record, path, record)
     authority_candidate = record.get("authority_snapshot", {})
     evidence_candidate = record.get("evidence_snapshot", {})
     if authority_candidate.get("mode") == "historical" \
@@ -263,15 +269,21 @@ def validate_portable_record(root, path, bind_manifest=True):
             and all(isinstance(item.get("commit"), str)
                     and re.fullmatch(r"[0-9a-f]{40}", item["commit"])
                     for item in (authority_candidate, evidence_candidate)):
-        commits_in_public_history = all(subprocess.run(
-            ["git", "-C", str(root), "merge-base", "--is-ancestor",
-             item["commit"], "HEAD"], capture_output=True, check=False,
-        ).returncode == 0 for item in (authority_candidate, evidence_candidate))
+        try:
+            for item in (authority_candidate, evidence_candidate):
+                git(root, "merge-base", "--is-ancestor", item["commit"], "HEAD")
+            commits_in_public_history = True
+        except ValueError:
+            commits_in_public_history = False
         if commits_in_public_history:
             validate_record(root, path)
             return
         if _matches_reviewed_candidate_tag(
                 root, relative_record, path, record, authority_candidate["commit"]):
+            validate_record(root, path)
+            return
+        if _matches_preserved_draft_tag(root, relative_record, path, record):
+            # Strict historical validation still applies; failures propagate.
             validate_record(root, path)
             return
     if "authority_hashes" in record:
@@ -396,8 +408,67 @@ def validate_portable_record(root, path, bind_manifest=True):
                     nonempty(item.get(field), field)
 
 
+def _validate_published_review_metadata(root, relative_record, path, record):
+    """Reject changed retained approved metadata before any ancestry/fallback route."""
+    if record.get("human_review") != "approved":
+        return
+    try:
+        from scripts.restore_public_spec_history import PUBLIC_REVIEW_RECORDS
+    except ModuleNotFoundError:
+        from restore_public_spec_history import PUBLIC_REVIEW_RECORDS
+    metadata = [(assurance_hash, review_name, review_hash)
+                for feature, assurance_hash, review_name, review_hash in PUBLIC_REVIEW_RECORDS
+                if relative_record == f"specs/{feature}/assurance.json"]
+    if not metadata:
+        return
+    if len(metadata) != 1:
+        raise ValueError("Ambiguous published reviewed metadata pin")
+    assurance_hash, review_name, review_hash = metadata[0]
+    try:
+        matches = (digest(path) == assurance_hash
+                   and record.get("review_record") == review_name
+                   and digest(local(root, review_name)) == review_hash)
+    except (ValueError, OSError) as error:
+        raise ValueError("Published reviewed metadata changed or missing") from error
+    if not matches:
+        raise ValueError("Published reviewed metadata changed or missing")
+
+
+def _matches_preserved_draft_tag(root, relative_record, path, record):
+    """Recognize only an exact public draft pin; never approve its review."""
+    try:
+        from scripts.restore_public_spec_history import PRESERVED_DRAFT_TAGS
+    except ModuleNotFoundError:
+        from restore_public_spec_history import PRESERVED_DRAFT_TAGS
+    if record.get("stage") != "draft" or record.get("human_review") != "pending":
+        return False
+    for name, ref, candidate, tag_object in PRESERVED_DRAFT_TAGS:
+        if relative_record != name:
+            continue
+        try:
+            if (git(root, "rev-parse", "--verify", ref).decode("ascii").strip() != tag_object
+                    or git(root, "cat-file", "-t", ref).decode("ascii").strip() != "tag"
+                    or git(root, "rev-parse", f"{ref}^{{commit}}").decode("ascii").strip() != candidate):
+                return False
+            roots = git(root, "rev-list", "--max-parents=0", "--all").decode("ascii").split()
+            if len(roots) != 1 or git(root, "merge-base", roots[0], candidate).decode("ascii").strip() != roots[0]:
+                return False
+            for field in ("authority_snapshot", "evidence_snapshot"):
+                snapshot = record.get(field, {})
+                commit = snapshot.get("commit")
+                if snapshot.get("mode") != "historical" or not isinstance(commit, str) \
+                        or not re.fullmatch(r"[0-9a-f]{40}", commit):
+                    return False
+                git(root, "cat-file", "-e", f"{commit}^{{commit}}")
+                git(root, "merge-base", "--is-ancestor", commit, candidate)
+            return path.read_bytes() == git(root, "show", f"{candidate}:{name}")
+        except (ValueError, OSError, UnicodeError):
+            return False
+    return False
+
+
 def _matches_reviewed_candidate_tag(root, relative_record, path, record, commit):
-    """Accept a frozen private record only when its exact reviewed bytes are tagged."""
+    """Recognize only an exact already-public reviewed candidate/tag pin."""
     if record.get("human_review") != "approved":
         return False
     evidence = record.get("evidence_snapshot", {})
@@ -406,8 +477,24 @@ def _matches_reviewed_candidate_tag(root, relative_record, path, record, commit)
     match = re.fullmatch(r"specs/(\d{3})-[^/]+/assurance\.json", relative_record)
     if not match:
         return False
+    try:
+        from scripts.restore_public_spec_history import REVIEWED_TAGS, PUBLIC_REVIEW_RECORDS
+    except ModuleNotFoundError:
+        from restore_public_spec_history import REVIEWED_TAGS, PUBLIC_REVIEW_RECORDS
+    pins = [oid for feature, candidate, oid in REVIEWED_TAGS
+            if relative_record == f"specs/{feature}/assurance.json"
+            and candidate == commit]
+    if len(pins) != 1:
+        return False
+    metadata = [(assurance_hash, review_name, review_hash)
+                for feature, assurance_hash, review_name, review_hash in PUBLIC_REVIEW_RECORDS
+                if relative_record == f"specs/{feature}/assurance.json"]
+    if len(metadata) != 1:
+        return False
     tag_ref = f"refs/tags/spec-{match.group(1)}-reviewed-{commit[:7]}"
     try:
+        if git(root, "rev-parse", "--verify", tag_ref).decode("ascii").strip() != pins[0]:
+            return False
         if git(root, "cat-file", "-t", tag_ref).decode("ascii").strip() != "tag":
             return False
         tagged_commit = git(root, "rev-parse", f"{tag_ref}^{{commit}}").decode(
@@ -415,6 +502,10 @@ def _matches_reviewed_candidate_tag(root, relative_record, path, record, commit)
         if tagged_commit != commit:
             return False
         review_name = safe_name(root, record.get("review_record", ""))
+        assurance_hash, expected_review_name, review_hash = metadata[0]
+        if (digest(path) != assurance_hash or review_name != expected_review_name
+                or digest(local(root, review_name)) != review_hash):
+            return False
         review = json.loads(local(root, review_name).read_text())
     except (ValueError, OSError, json.JSONDecodeError, UnicodeDecodeError):
         return False
