@@ -20,9 +20,9 @@
   ],
   "assumptions": "Pure deterministic sequence operations with immutable anchors, fresh IDs and complete finite inputs.",
   "authority_snapshot": {
-    "commit": null,
+    "commit": "7e3cee8595ef8b45b1095a67c8977472f1266de3",
     "hashes": {
-      "ARCHITECTURE.md": "b48860b53c5aa703b020f03fc65c64fb9cc63e3d63a85878c6d1c7fba707f126",
+      "ARCHITECTURE.md": "d8cb93624faf2ed7900b55eb9dbb1630e32b9141763d455c67dec5df6a22d6f2",
       "CONSTITUTION.md": "ff7196976a1736a639947c2ab26e8da157fef23c89ba9881312f2a36459964eb",
       "GOVERNANCE.md": "c8eda331d97c42e54be4730ef906dfaad9ae2814e36704302f97afceff037d82",
       "LICENSE": "340d66a837b3a1617645d00622a46d1bcbf3534bedd997b6461d16d2e08b374f",
@@ -86,13 +86,13 @@
       "schemas/governance/public-export-manifest.schema.json": "11eb7f2594939ae9fd0c9e6cfe4423a80aba686d6cdfdd8b73b0fb84b0840aa8",
       "schemas/governance/release-validation-record.schema.json": "d9943f0c9f5520ea52e3b12bfba88240d03f8011b433fc5e35cb49549ab6e819"
     },
-    "mode": "current"
+    "mode": "historical"
   },
   "compatibility": "No current contract changes or M3 closure dependency; future model artifact/version needs separate review.",
   "domain": "Prospective consent-reviewed editing sessions mapped without guesswork to M3 anchored-sequence pairs; fixed source windows, family-separated holdout and policy-blind separately adjudicated utility proxy labels. No admitted real pair yet.",
   "evidence_snapshot": {
-    "commit": null,
-    "mode": "current"
+    "commit": "dc6c8abef6e64f851bf6adcdaf70fdcd21eefc57",
+    "mode": "historical"
   },
   "execution_contract": "Local synthetic capture creates a new output file exclusively and audit reads it without changing source input; no Git source mutation, live agents, external effects or execution authorization. The review-packet checker reads six fixed local metadata/document files with safe-file checks, outputs metadata commitments only and never opens journals, admits pairs, invokes source services or authorizes capture/training.",
   "human_review": "pending",
@@ -121,8 +121,7 @@
     "specs/019-native-predictor/source-review-packet.md",
     "specs/019-native-predictor/source-candidates.json",
     "specs/019-native-predictor/adr-extension-proposal.md",
-    "specs/019-native-predictor/quickstart.md",
-    "specs/019-native-predictor/software-completion.md"
+    "specs/019-native-predictor/quickstart.md"
   ],
   "requirements": [
     {
@@ -131,15 +130,7 @@
         {
           "given": "Versioned feature vector and weights",
           "id": "SC-001",
-          "obtained_evidence": [
-            {
-              "command": ".venv/bin/python -m unittest -v tests.test_native_predictor tests.test_native_predictor_training tests.test_native_predictor_evaluation tests.test_native_predictor_adapter tests.test_native_predictor_contract tests.test_predictor_readiness tests.test_m35_review_packet",
-              "limits": "Incremental synthetic software verification only; no real data, labels, fit, source authenticity, scientific or founder approval.",
-              "outcome": "114 focused synthetic software tests executed; zero skips/failures. Three former contract anchors execute.",
-              "path": "docs/experiments/evidence/m35-software-completion-2026-10-10/focused-receipt.json",
-              "sha256": "267a414767fae5f5a4bfccb9d72293809d2beff0b0d8eec770fc8dbf46d91144"
-            }
-          ],
+          "obtained_evidence": [],
           "planned_evidence": "Focused unittest result and bounded evidence artifact; record actual command, hash, outcome and limits after execution.",
           "test_file": "tests/test_native_predictor_contract.py",
           "test_name": "NativePredictorContractTests.test_versioned_local_inference_and_tamper",
@@ -149,15 +140,7 @@
         {
           "given": "Tampered weights or unknown features",
           "id": "SC-002",
-          "obtained_evidence": [
-            {
-              "command": ".venv/bin/python -m unittest -v tests.test_native_predictor tests.test_native_predictor_training tests.test_native_predictor_evaluation tests.test_native_predictor_adapter tests.test_native_predictor_contract tests.test_predictor_readiness tests.test_m35_review_packet",
-              "limits": "Incremental synthetic software verification only; no real data, labels, fit, source authenticity, scientific or founder approval.",
-              "outcome": "114 focused synthetic software tests executed; zero skips/failures. Three former contract anchors execute.",
-              "path": "docs/experiments/evidence/m35-software-completion-2026-10-10/focused-receipt.json",
-              "sha256": "267a414767fae5f5a4bfccb9d72293809d2beff0b0d8eec770fc8dbf46d91144"
-            }
-          ],
+          "obtained_evidence": [],
           "planned_evidence": "Focused unittest result and bounded evidence artifact; record actual command, hash, outcome and limits after execution.",
           "test_file": "tests/test_native_predictor_contract.py",
           "test_name": "NativePredictorContractTests.test_versioned_local_inference_and_tamper",
@@ -238,18 +221,46 @@
           "id": "SC-008",
           "obtained_evidence": [
             {
-              "command": ".venv/bin/python: scripts.validate_spec_kit.validate_record(ROOT, ROOT / \"specs/019-native-predictor/assurance.json\") before updating the draft",
-              "limits": "Historical preparation evidence only, bound to authority 7e3cee8595ef8b45b1095a67c8977472f1266de3 and evidence dc6c8abef6e64f851bf6adcdaf70fdcd21eefc57. Archived unchanged; it does not verify current protocol wording or source access.",
-              "outcome": "Previous historical SPEC-019 assurance verified against its frozen authority/evidence commits; no approval inferred.",
-              "path": "docs/experiments/evidence/m35-software-completion-2026-10-10/historical-assurance.json",
-              "sha256": "84e1a7c17f6c0c2f44fc0c1842fac484706466f5064d3c77876296e09942daf5"
+              "command": ".venv-speckit/bin/python -m scripts.check_m35_review_packet > docs/experiments/evidence/m35-review-final-2026-10-08/packet.json",
+              "limits": "Structural metadata commitment only. Candidate workflows remain unapproved; there is no source access, consent, registration, yield, or scientific approval.",
+              "outcome": "Final source-review procedure is explicit about staged permission: metadata-only screening first, then specifically authorized full-text inspection; zero real admitted pairs and every authority flag false.",
+              "path": "docs/experiments/evidence/m35-review-final-2026-10-08/packet.json",
+              "sha256": "8f82006c79aad064e62ad9c60d54bfdbd0e53fd1abbb198bcba5546c85f41e81"
             },
             {
-              "command": ".venv/bin/python scripts/check_m35_review_packet.py",
-              "limits": "Metadata/software preparation only; does not admit families, approve the protocol, authenticate rights or grant source access.",
-              "outcome": "Current fixed preparation document commitments reproduced; all authorization/approval verification fields false.",
-              "path": "docs/experiments/evidence/m35-software-completion-2026-10-10/preparation-packet.json",
-              "sha256": "0492921bbca9a171f218898dd738795f23a12c5356282571c1361c7536bc2176"
+              "command": ".venv-speckit/bin/python docs/experiments/evidence/m35-review-preparation-2026-10-08/capture_binding.py > docs/experiments/evidence/m35-review-final-2026-10-08/binding.json",
+              "limits": "Hashes bind supplied metadata bytes only, not authenticity, rights, workflow independence, consent, or human decisions.",
+              "outcome": "Twelve source-free preparation input hashes bound by the replayable helper; final packet commitment reproduced.",
+              "path": "docs/experiments/evidence/m35-review-final-2026-10-08/binding.json",
+              "sha256": "e3182f1fd90d4d8a6b1651034139ff86cfa9b3463a69c04a8641847560acf8a4"
+            },
+            {
+              "command": ".venv-speckit/bin/python -m unittest -v tests.test_m35_review_packet > docs/experiments/evidence/m35-review-final-2026-10-08/focused-tests.txt 2>&1",
+              "limits": "Synthetic adversarial controls only; no real source payload or experiment was opened or run.",
+              "outcome": "13 source-free packet and boundary regression tests passed.",
+              "path": "docs/experiments/evidence/m35-review-final-2026-10-08/focused-tests.txt",
+              "sha256": "f462de5749b44ade3b5541150b3c5c0db451e0c1064e221453571b76b6c36bba"
+            },
+            {
+              "command": "Independent metadata-only adversarial review by Luna Latest (gpt-6-luna), medium effort.",
+              "limits": "Technical review only; reviewer did not rerun tests, open source payloads, approve permissions, assess scientific validity, or provide founder approval.",
+              "outcome": "No remaining actionable bypass found. Corrected the twelve-input count; staged permission gates are coherent. The final candidate receipt remains a post-freeze package item.",
+              "path": "docs/experiments/evidence/m35-review-final-2026-10-08/adversarial-review.md",
+              "sha256": "9a866798c863220d1d480e846338c6750dbaa17855b63ed0242c0112efb4a7d9"
+            },
+            {
+              "command": "PATH=\"$PWD/.venv-speckit/bin:$PATH\" python3 scripts/validate_change.py --base origin/develop --profile quick",
+              "limits": "Software and structural checks only. Four skips are not passes; source access, human/scientific review, real experiment, clean-room reproduction, and founder approval remain pending.",
+              "outcome": "Exit 0; effective sensitive profile; 775 tests, 771 passed, four skipped, zero failed; selected executable validation passed.",
+              "path": "docs/experiments/evidence/m35-review-final-2026-10-08/validation-quick.json",
+              "sha256": "7b9942640cea9eed5b195c5a9b751c15e181f6b2bbca7104cbfe285160472cb3"
+            },
+            {
+              "command": "PATH=\"$PWD/.venv-speckit/bin:$PATH\" python3 scripts/validate_change.py --base origin/develop --profile pr",
+              "limits": "Full software/structural profile only. Four skips are not passes; source permission, real-data experiment, clean-room reproduction, human/scientific review, and founder approval remain pending.",
+              "outcome": "Exit 0; effective sensitive profile; 775 tests, 771 passed, four skipped, zero failed; selected executable validation passed.",
+              "path": "docs/experiments/evidence/m35-review-final-2026-10-08/validation-pr.txt",
+              "sha256": "faed15806a66d18600d255a7df7b01ae68cafafde25e12f1e24df7f64cad1fed"
             }
           ],
           "planned_evidence": "Focused adversarial software controls, exact packet and implementation commitments, environment and bounded results; not real source, training or held-out evidence.",
@@ -269,11 +280,11 @@
           "id": "SC-005",
           "obtained_evidence": [
             {
-              "command": ".venv/bin/python -m unittest -v tests.test_native_predictor tests.test_native_predictor_training tests.test_native_predictor_evaluation tests.test_native_predictor_adapter tests.test_native_predictor_contract tests.test_predictor_readiness tests.test_m35_review_packet",
-              "limits": "Incremental synthetic software verification only; no real data, labels, fit, source authenticity, scientific or founder approval.",
-              "outcome": "114 focused synthetic software tests executed; zero skips/failures. Three former contract anchors execute.",
-              "path": "docs/experiments/evidence/m35-software-completion-2026-10-10/focused-receipt.json",
-              "sha256": "267a414767fae5f5a4bfccb9d72293809d2beff0b0d8eec770fc8dbf46d91144"
+              "command": "CI: python3 -m unittest discover -s tests -v",
+              "limits": "Synthetic software-boundary controls only; no real-source eligibility, human-utility prediction, real-data fit, holdout performance, production behavior, human scientific approval or founder acceptance is established.",
+              "outcome": "GitHub Actions run 37858099799, job 113587349492, on PR head 7316f97551e8345e43ae39c7b5eb0ffa6200c403: 832 tests passed with two explicit skips; both predictor/verifier boundary controls passed.",
+              "path": "docs/experiments/evidence/m35-verifier-boundary-2026-10-09/README.md",
+              "sha256": "3cc14f76b40e1e3ee4eb9ec2b4f8d183c7e315c3e752296fc3c78e24a955626e"
             }
           ],
           "planned_evidence": "The exact software boundary established by this synthetic evidence; real-data and scientific claims remain separate.",
@@ -287,6 +298,6 @@
     }
   ],
   "scientific_limits": "Human assessed-usefulness is an indirect proxy, not observed time saved or conflict prevention. Synthetic sequence and hash-chain checks cover the supplied fixture only; hashes are not signatures and do not establish source authenticity or upstream completeness. A three-family holdout supports description only; incomplete labels and source scarcity may make the comparison inconclusive. Finite corpus and shared producer/verifier replay engine do not prove general OT, contextual equivalence, confluence, Yang-Baxter, production performance or safe parallel execution. Prospective sidecar and filtered lab checks exercise local software only; actor identity, independent outside observations, upstream completeness and natural production yield remain unproven.",
-  "scope": "M3.5 real-workload utility target selected and limited source feasibility approved. Synthetic capture and prospective sidecar tooling exercised; no real window, admitted real pair dataset, real-data fit/calibration, held-out evaluation or integrated predictor. Detailed protocol and rubric pending review. 2026-10-08 metadata-only five-candidate review preparation and read-only packet checker; candidates remain unreviewed. Synthetic-only trainer and evaluator implementation is exercised but does not authorize or evidence a real-data experiment. T002/T004 synthetic software completion is separate from open T001/T007/T003/T005; no complete experimental acceptance.",
+  "scope": "M3.5 real-workload utility target selected and limited source feasibility approved. Synthetic capture and prospective sidecar tooling exercised; no real window, admitted real pair dataset, real-data fit/calibration, held-out evaluation or integrated predictor. Detailed protocol and rubric pending review. 2026-10-08 metadata-only five-candidate review preparation and read-only packet checker; candidates remain unreviewed. Synthetic-only trainer and evaluator implementation is exercised but does not authorize or evidence a real-data experiment.",
   "stage": "draft"
 }

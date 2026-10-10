@@ -2,9 +2,10 @@
 """Offline, in-memory linear logistic training for SPEC-019.
 
 This module accepts already-extracted numeric features only. It never opens a
-source, captures data, contacts a network, or reads a dataset. The current fit
-path is restricted to explicitly designated synthetic fixtures; no real-data
-admission receipt exists. Weights use training rows alone and the frozen
+source, captures data, contacts a network, or reads a dataset. The fit caller
+must declare its rows synthetic, but this module cannot authenticate that
+claim; artifacts record provenance as caller-declared and unverified. No
+real-data admission receipt exists. Weights use training rows alone and the frozen
 sigmoid calibration grid uses calibration rows only. Holdout labels are
 prohibited at the API boundary.
 
@@ -122,12 +123,12 @@ def _validate_rows(rows: Any) -> list[dict]:
 
 
 def _descriptive_coverage(rows: list[dict]) -> dict:
-    """Report only counts observed in this synthetic in-memory fixture."""
+    """Report counts from caller-declared rows without authenticating origin."""
     family_counts = {partition: len({row["familyId"] for row in rows
                                      if row["partition"] == partition})
                      for partition in PARTITIONS}
     known = [row for row in rows if row["label"] is not None]
-    return {"kind": "synthetic-descriptive-only", "familyCounts": family_counts,
+    return {"kind": "caller-declared-descriptive-only", "familyCounts": family_counts,
             "knownTotal": len(known), "holdoutPositive": 0, "holdoutNegative": 0,
             "satisfiesRealReadiness": False}
 
@@ -166,17 +167,19 @@ def fit(rows: Any, *, model_id: str, dataset_kind: str,
         coverage_receipt: Any = None) -> dict:
     """Fit train weights and calibration-only sigmoid parameters.
 
-    This implementation supports explicitly designated synthetic fixtures
-    only. Caller receipts cannot authorize or establish real-data readiness.
+    The caller must designate the input as synthetic. This function cannot
+    authenticate that designation, and its artifact records provenance as
+    caller-declared and unverified. Caller receipts cannot authorize or
+    establish real-data readiness.
     Holdout rows may be present only with label=None. No calibration or
     holdout feature or label is used for training weights. Calibration inputs
     affect only the protocol's fixed-grid calibration. Caller-supplied
-    coverage receipts are rejected; synthetic descriptive counts come from
-    the visible fixture rows and never satisfy real-data readiness.
+    coverage receipts are rejected; descriptive counts come from the visible
+    caller-declared rows and never satisfy real-data readiness.
     """
     model_id = _id(model_id, "model identity")
     if dataset_kind != "synthetic":
-        raise ValueError("only explicitly designated synthetic datasets are supported")
+        raise ValueError("caller must declare a synthetic dataset")
     if coverage_receipt is not None:
         raise ValueError("caller-supplied coverage receipts cannot authorize fitting")
     data = _validate_rows(rows)
@@ -253,8 +256,8 @@ def fit(rows: Any, *, model_id: str, dataset_kind: str,
     artifact = {
         "version": ARTIFACT_VERSION,
         "featureVersion": FEATURE_VERSION,
-        "datasetKind": "synthetic",
-        "provenance": {"kind": "synthetic-fixture-only", "realDataEligible": False},
+        "datasetKind": "caller-declared-synthetic",
+        "provenance": {"kind": "caller-declared-unverified", "realDataEligible": False},
         "modelId": model_id,
         "normalization": {"means": means, "scales": scales, "scaleConvention": "population",
                           "constantFeatureValue": 0.0},
@@ -266,7 +269,7 @@ def fit(rows: Any, *, model_id: str, dataset_kind: str,
         "inputCommitments": {"kind": "sha256-canonical-json-v1",
                              "train": digest(train_inputs),
                              "calibration": digest(calibration_inputs)},
-        "calibrationFamilyWeighting": "single-family-rows-founder-selected-pending-review",
+        "calibrationFamilyWeighting": "single-family-rows-provisional",
         "calibration": calibration,
         "coverageReceipt": receipt,
     }
@@ -281,10 +284,10 @@ def validate_artifact(artifact: Any, *, expected_hash: str, expected_model_id: s
                      "calibration", "coverageReceipt"})
     if artifact["version"] != ARTIFACT_VERSION or artifact["featureVersion"] != FEATURE_VERSION:
         raise ValueError("unsupported learned artifact or feature version")
-    if artifact["datasetKind"] != "synthetic":
-        raise ValueError("only synthetic artifacts are supported")
-    if artifact["provenance"] != {"kind": "synthetic-fixture-only", "realDataEligible": False}:
-        raise ValueError("invalid synthetic-only provenance")
+    if artifact["datasetKind"] != "caller-declared-synthetic":
+        raise ValueError("only caller-declared synthetic artifacts are supported")
+    if artifact["provenance"] != {"kind": "caller-declared-unverified", "realDataEligible": False}:
+        raise ValueError("invalid caller-declared provenance")
     if artifact["modelId"] != _id(expected_model_id, "model identity"):
         raise ValueError("model identity mismatch")
     if type(expected_hash) is not str or _HASH.fullmatch(expected_hash) is None or digest(artifact) != expected_hash:
@@ -313,19 +316,19 @@ def validate_artifact(artifact: Any, *, expected_hash: str, expected_model_id: s
                    for name in ("train", "calibration"))):
         raise ValueError("invalid sorted-input commitments")
     _validate_calibration_artifact(artifact["calibration"])
-    if artifact["calibrationFamilyWeighting"] != "single-family-rows-founder-selected-pending-review":
-        raise ValueError("unsupported calibration-family weighting")
+    if artifact["calibrationFamilyWeighting"] != "single-family-rows-provisional":
+        raise ValueError("unsupported provisional calibration-family weighting")
     receipt = artifact["coverageReceipt"]
     _keys(receipt, {"kind", "familyCounts", "knownTotal", "holdoutPositive", "holdoutNegative",
                     "satisfiesRealReadiness"})
-    if receipt["kind"] != "synthetic-descriptive-only" or receipt["satisfiesRealReadiness"] is not False:
-        raise ValueError("invalid synthetic descriptive coverage record")
+    if receipt["kind"] != "caller-declared-descriptive-only" or receipt["satisfiesRealReadiness"] is not False:
+        raise ValueError("invalid caller-declared descriptive coverage record")
     _keys(receipt["familyCounts"], {"train", "calibration", "holdout"})
     if any(type(value) is not int or value < 0 for value in receipt["familyCounts"].values()):
         raise ValueError("invalid coverage receipt family counts")
     if (type(receipt["knownTotal"]) is not int or receipt["knownTotal"] < 0
             or receipt["holdoutPositive"] != 0 or receipt["holdoutNegative"] != 0):
-        raise ValueError("invalid synthetic descriptive coverage counts")
+        raise ValueError("invalid caller-declared descriptive coverage counts")
     return artifact
 
 

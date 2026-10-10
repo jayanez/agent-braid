@@ -110,8 +110,7 @@ class NativePredictorTrainingTests(unittest.TestCase):
         first = fit(dataset(), model_id="model-1", dataset_kind="synthetic")
         second = fit(list(reversed(dataset())), model_id="model-1", dataset_kind="synthetic")
         self.assertEqual(first, second)
-        self.assertEqual(first["calibrationFamilyWeighting"],
-                         "single-family-rows-founder-selected-pending-review")
+        self.assertEqual(first["calibrationFamilyWeighting"], "single-family-rows-provisional")
         self.assertNotEqual(FEATURE_VERSION, SYNTHETIC_FEATURE_VERSION)
         self.assertNotEqual(ARTIFACT_VERSION, SYNTHETIC_ARTIFACT_VERSION)
 
@@ -193,30 +192,30 @@ class NativePredictorTrainingTests(unittest.TestCase):
 
     def test_fit_is_synthetic_only_and_caller_receipts_cannot_authorize(self):
         for kind in ("prospective", "real", "admitted"):
-            with self.subTest(kind=kind), self.assertRaisesRegex(ValueError, "only explicitly designated synthetic"):
+            with self.subTest(kind=kind), self.assertRaisesRegex(ValueError, "caller must declare a synthetic dataset"):
                 fit(dataset(), model_id="m", dataset_kind=kind, coverage_receipt=receipt())
         with self.assertRaisesRegex(ValueError, "caller-supplied coverage receipts"):
             fit(dataset(), model_id="m", dataset_kind="synthetic", coverage_receipt=receipt())
         artifact = fitted()
-        self.assertEqual(artifact["datasetKind"], "synthetic")
+        self.assertEqual(artifact["datasetKind"], "caller-declared-synthetic")
         self.assertEqual(artifact["provenance"],
-                         {"kind": "synthetic-fixture-only", "realDataEligible": False})
-        self.assertEqual(artifact["coverageReceipt"]["kind"], "synthetic-descriptive-only")
+                         {"kind": "caller-declared-unverified", "realDataEligible": False})
+        self.assertEqual(artifact["coverageReceipt"]["kind"], "caller-declared-descriptive-only")
         self.assertFalse(artifact["coverageReceipt"]["satisfiesRealReadiness"])
         self.assertEqual(artifact["coverageReceipt"]["knownTotal"], 4)
 
-    def test_artifact_validation_rejects_non_synthetic_provenance(self):
+    def test_artifact_validation_rejects_unverified_provenance_changes(self):
         artifact = fitted()
         artifact["datasetKind"] = "prospective"
-        with self.assertRaisesRegex(ValueError, "only synthetic artifacts"):
+        with self.assertRaisesRegex(ValueError, "only caller-declared synthetic artifacts"):
             # Rebind the commitment to exercise the dataset-kind check.
             from agent_braid.native_predictor_training import validate_artifact
             validate_artifact(artifact, expected_hash=digest(artifact), expected_model_id="m")
 
-    def test_artifact_commits_selected_calibration_family_weighting(self):
+    def test_artifact_commits_provisional_calibration_family_weighting(self):
         artifact = fitted()
         artifact["calibrationFamilyWeighting"] = "pooled-rows-provisional"
-        with self.assertRaisesRegex(ValueError, "unsupported calibration-family weighting"):
+        with self.assertRaisesRegex(ValueError, "unsupported provisional calibration-family weighting"):
             from agent_braid.native_predictor_training import validate_artifact
             validate_artifact(artifact, expected_hash=digest(artifact), expected_model_id="m")
 

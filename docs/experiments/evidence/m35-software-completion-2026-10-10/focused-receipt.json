@@ -1,0 +1,27 @@
+{
+  "command": ".venv/bin/python -m unittest -v tests.test_native_predictor tests.test_native_predictor_training tests.test_native_predictor_evaluation tests.test_native_predictor_adapter tests.test_native_predictor_contract tests.test_predictor_readiness tests.test_m35_review_packet",
+  "exitCode": 0,
+  "inputs": {
+    "agent_braid/m35_source_window.py": "71fb8605b4dbff7ee715c6193cc411faa64918bd680a44df7364e00bb897d0eb",
+    "agent_braid/native_predictor.py": "9207966d8fd554a528dab313e978064cc8a4701a905fdb9a4335c1dfc7de39dc",
+    "agent_braid/native_predictor_adapter.py": "ecaa6c037e1af6f02e737f61cadcc2a88f44e4f7161ed52625da66123b7fd43c",
+    "agent_braid/native_predictor_evaluation.py": "355e0e0e058dbc33605d41cb7089242138c479c7f899f20b9f5f865a3283848b",
+    "agent_braid/native_predictor_training.py": "5c77eb3c134ed8bdb8f1a6f7ab5a46b3fda62014282d7da0211863e7d3b2d8a3",
+    "agent_braid/structured_exchange.py": "f43079b348c78e9e1a994492fb14754e1771533771e009b1186ff54bb3efa396",
+    "scripts/check_m35_review_packet.py": "564ee536895f301690751369ee8bd3c1902ab2a0d385f92d3847a4395a5e6835",
+    "scripts/check_predictor_readiness.py": "b8068659a10675815cfeb87457d6e95f5fa17bfaf7d6d2970a0564b12390d13b",
+    "tests/test_m35_review_packet.py": "f700f6291a360369d341b9db7e9392e1dcd785035f3a6deece2c6c803e595529",
+    "tests/test_native_predictor.py": "3a685456125bcfae67086e9a63959359cb7b79e29e4ebc4d3a9096eddc1dbfda",
+    "tests/test_native_predictor_adapter.py": "d41741dd233a797be8161662b3bad0ba974ac567e3736b57663a88cd410058fc",
+    "tests/test_native_predictor_contract.py": "0d8cc1b21e9a8d87645e7b2fc15d4134ec0f7dbcd08ff63e44af19cf85c75c03",
+    "tests/test_native_predictor_evaluation.py": "097da1b7a064eab64c5deb598de4a61479da09c1b9c83a3af7577253a71cd93d",
+    "tests/test_native_predictor_training.py": "a7023106c9f57e8ab961e6874c43316dc813eb17015b936b8f1e5a320127c392",
+    "tests/test_predictor_readiness.py": "5a14dc3a7296e6c471acee12207aaeb5e3f0e696f8738ea2b59ba101b5f7b06e"
+  },
+  "kind": "synthetic-software-controls-only",
+  "limits": "Incremental synthetic software verification only; no real data, labels, fit, source authenticity, scientific or founder approval.",
+  "logSha256": "3c6d81fc22fb6ad7f90e33557ff41ec45e8905667fcc31dad5746eb840c29ef3",
+  "python": "3.9.6 (default, Aug 25 2026, 21:26:21) \n[Clang 21.0.0 (clang-2100.3.34.2)]",
+  "skipped": 0,
+  "tests": 114
+}

@@ -5,7 +5,7 @@ import unittest
 
 from agent_braid.m35_source_window import EVENT_FORMAT
 from agent_braid.native_predictor_adapter import (
-    ReviewedLocalGate, adapt as _adapt, project_trainer_rows,
+    ReviewedLocalGate, adapt as _adapt, derive_duplicate_group_ids, project_trainer_rows,
 )
 from agent_braid.native_predictor_training import FEATURE_VERSION, fit
 from agent_braid.structured_exchange import ROOT
@@ -36,7 +36,7 @@ def _hash(value):
 
 def records(*, missing_receipt=False, dependent=False, unsupported=False,
             session_id="session-a", start_sequence=0, previous_hash=None, prefix="",
-            same_timestamp=False):
+            same_timestamp=False, value_prefix="synthetic value"):
     open_id = prefix + "open-id"
     specs = [("session-open", {"participants": ["actor-a", "actor-b", "actor-c"],
                                "base": [{"id": "b1", "value": "base"}], "sourceRef": "private/path",
@@ -48,7 +48,7 @@ def records(*, missing_receipt=False, dependent=False, unsupported=False,
         specs.append(("external-observation", {"actorId": "actor-b"}))
     for n, actor in enumerate(("actor-a", "actor-b", "actor-c")):
         op = {"id": f"{prefix}op-{n}", "kind": "insert", "anchorId": ROOT if n == 0 else "b1",
-              "newId": f"{prefix}new-{n}", "value": f"synthetic value {n}"}
+              "newId": f"{prefix}new-{n}", "value": f"{value_prefix} {n}"}
         if unsupported and n == 2:
             op["kind"] = "delete"
         specs.append(("proposal", {"actorId": actor, "baseEventId": open_id, "operation": op,
@@ -70,23 +70,81 @@ def records(*, missing_receipt=False, dependent=False, unsupported=False,
     return result
 
 
-def rechain(events):
-    previous = None
-    rebuilt = []
-    for sequence, original in enumerate(events):
-        body = {key: original[key] for key in
-                ("format", "timestampUtc", "kind", "sessionId", "data")}
-        event_id = "open-id" if sequence == 0 else f"event-{sequence}"
-        body.update({"sequence": sequence, "eventId": event_id,
-                     "previousHash": previous})
-        body["timestampUtc"] = f"2026-10-01T00:00:{sequence:02d}Z"
-        event = {**body, "eventHash": _hash(body)}
-        rebuilt.append(event)
-        previous = event["eventHash"]
-    return rebuilt
-
-
 class NativePredictorAdapterTests(unittest.TestCase):
+    @staticmethod
+    def _inventory(pair_id, session_id, partition, *, base_id, values, op_ids,
+                   anchors, operations_order=None):
+        operations = [
+            {"id": op_id, "kind": "insert", "anchorId": anchor,
+             "newId": f"new-{op_id}", "value": value}
+            for op_id, anchor, value in zip(op_ids, anchors, values)
+        ]
+        if operations_order is not None:
+            operations = [operations[index] for index in operations_order]
+        request = {"model": "anchored-sequence-v1",
+                   "base": [{"id": base_id, "value": "Base\t NODE"}],
+                   "operations": operations}
+        pair = {"pairId": pair_id, "sessionId": session_id,
+                "partition": partition, "request": request}
+        return {"format": "m35-native-inventory-v1", "sourceKind": "synthetic",
+                "pairs": [pair]}
+
+    def test_duplicate_groups_normalize_text_ignore_ephemeral_ids_and_unorder_operations(self):
+        first = self._inventory(
+            "pair-a", "session-a", "train", base_id="base-id-a",
+            values=["CAFÉ\t  x", "de\u0301cision"], op_ids=["op-a", "op-b"],
+            anchors=["$root", "base-id-a"])
+        second = self._inventory(
+            "pair-b", "session-b", "train", base_id="different-base-id",
+            values=["DÉCISION", "cafe\u0301 x"], op_ids=["ephemeral-1", "ephemeral-2"],
+            anchors=["different-base-id", "$root"], operations_order=[1, 0])
+        groups = derive_duplicate_group_ids([first, second])
+        self.assertEqual(groups["pair-a"], groups["pair-b"])
+
+    def test_distinct_semantics_in_distinct_sessions_get_distinct_groups(self):
+        first = self._inventory("pair-a", "session-a", "train", base_id="base-a",
+                                values=["hello", "world"], op_ids=["a", "b"],
+                                anchors=["$root", "base-a"])
+        second = self._inventory("pair-b", "session-b", "train", base_id="base-b",
+                                 values=["hello", "unrelated"], op_ids=["c", "d"],
+                                 anchors=["$root", "base-b"])
+        groups = derive_duplicate_group_ids([first, second])
+        self.assertNotEqual(groups["pair-a"], groups["pair-b"])
+
+    def test_identical_duplicate_component_crossing_partitions_fails_closed(self):
+        train = self._inventory("pair-a", "session-a", "train", base_id="base-a",
+                                values=["hello", "world"], op_ids=["a", "b"],
+                                anchors=["$root", "base-a"])
+        holdout = self._inventory("pair-b", "session-b", "holdout", base_id="base-b",
+                                  values=["HELLO", "world"], op_ids=["c", "d"],
+                                  anchors=["$root", "base-b"])
+        with self.assertRaisesRegex(ValueError, "duplicate group crosses partitions"):
+            derive_duplicate_group_ids([train, holdout])
+
+    def test_duplicate_fingerprint_and_projection_reject_non_spec_model_and_non_pair_counts(self):
+        valid = adapt(records(), source_kind="synthetic", family_id="family-a", partition="train")
+        pair_ids = [pair["pairId"] for pair in valid["pairs"]]
+        invalid_cases = []
+        wrong_model = copy.deepcopy(valid)
+        wrong_model["pairs"][0]["request"]["model"] = "arbitrary-model"
+        invalid_cases.append(wrong_model)
+        for count in (3, 4):
+            wrong_count = copy.deepcopy(valid)
+            operations = wrong_count["pairs"][0]["request"]["operations"]
+            wrong_count["pairs"][0]["request"]["operations"] = [
+                *operations, *copy.deepcopy(operations[:count - 2])]
+            invalid_cases.append(wrong_count)
+
+        for inventory in invalid_cases:
+            with self.subTest(model=inventory["pairs"][0]["request"]["model"],
+                              operation_count=len(inventory["pairs"][0]["request"]["operations"])):
+                with self.assertRaises(ValueError):
+                    derive_duplicate_group_ids([inventory])
+                with self.assertRaises(ValueError):
+                    project_trainer_rows(
+                        [inventory], training_labels={pair_id: 0 for pair_id in pair_ids},
+                        calibration_labels={}, duplicate_group_ids={})
+
     def test_pairs_are_exhaustive_deterministic_and_oriented_by_event_order(self):
         source = records()
         first = adapt(source, source_kind="synthetic", family_id="family-a", partition="train")
@@ -103,6 +161,68 @@ class NativePredictorAdapterTests(unittest.TestCase):
         self.assertFalse(orientation["sameTimestamp"])
         self.assertFalse(orientation["annotatorVisible"])
 
+    def test_each_pair_freezes_its_own_second_proposal_cutoff_and_complete_prefix(self):
+        first_session = records(session_id="prior-session")
+        second_session = records(session_id="session-a", start_sequence=len(first_session),
+                                 previous_hash=first_session[-1]["eventHash"], prefix="next-")
+        source = first_session + second_session
+        inventory = adapt(source, source_kind="synthetic", family_id="family-a",
+                          partition="train")
+        proposals = [event for event in second_session if event["kind"] == "proposal"]
+        pairs = inventory["pairs"][3:]
+        expected = [(proposals[1]["sequence"], 14),
+                    (proposals[2]["sequence"], 15),
+                    (proposals[2]["sequence"], 15)]
+        self.assertEqual([pair["cutoff"]["sequence"] for pair in pairs],
+                         [cutoff for cutoff, _ in expected])
+        for pair, (cutoff_sequence, prefix_count) in zip(pairs, expected):
+            prefix = [event for event in source if event["sequence"] <= cutoff_sequence]
+            self.assertEqual(pair["cutoff"]["sourcePrefixEventCount"], prefix_count)
+            self.assertEqual(
+                pair["cutoff"]["sourcePrefixCommitment"],
+                _hash([event["eventHash"] for event in prefix]),
+            )
+            self.assertFalse(pair["cutoff"]["annotatorVisible"])
+            self.assertNotIn("sessionCommitments", pair["cutoff"])
+            self.assertNotIn("auditOnlySessionCommitments", pair["cutoff"])
+            self.assertGreater(second_session[-1]["sequence"], cutoff_sequence)
+
+    def test_pair_identity_is_scoped_to_window_and_family(self):
+        source = records()
+        family_a = adapt(source, source_kind="synthetic", family_id="family-a", partition="train")
+        family_b = adapt(source, source_kind="synthetic", family_id="family-b", partition="holdout")
+        window_b = adapt(source, source_kind="synthetic", family_id="family-a", partition="train",
+                         window_metadata={"format": "m35-source-window-v1", "sourceKind": "synthetic",
+                                          "windowId": "window-b", "familyId": "family-a",
+                                          "startUtc": "2026-10-01T00:00:00Z",
+                                          "endUtc": "2026-10-15T00:00:00Z",
+                                          "registrationRunId": None, "protocolCommit": "a" * 40})
+        ids_a = {item["pairId"] for item in family_a["pairs"]}
+        ids_b = {item["pairId"] for item in family_b["pairs"]}
+        ids_window_b = {item["pairId"] for item in window_b["pairs"]}
+        self.assertTrue(ids_a.isdisjoint(ids_b))
+        self.assertTrue(ids_a.isdisjoint(ids_window_b))
+
+    def test_session_groups_are_stable_across_windows_without_exposing_session_id(self):
+        window_a = adapt(records(session_id="shared-session", value_prefix="window a"),
+                         source_kind="synthetic", family_id="family-a", partition="train")
+        window_b = adapt(
+            records(session_id="shared-session", value_prefix="window b"),
+            source_kind="synthetic", family_id="family-a", partition="train",
+            window_metadata={"format": "m35-source-window-v1", "sourceKind": "synthetic",
+                             "windowId": "window-b", "familyId": "family-a",
+                             "startUtc": "2026-10-01T00:00:00Z",
+                             "endUtc": "2026-10-15T00:00:00Z",
+                             "registrationRunId": None, "protocolCommit": "a" * 40})
+        all_pairs = window_a["pairs"] + window_b["pairs"]
+        self.assertTrue({pair["pairId"] for pair in window_a["pairs"]}.isdisjoint(
+            pair["pairId"] for pair in window_b["pairs"]))
+        self.assertEqual({pair["sessionId"] for pair in all_pairs},
+                         {window_a["pairs"][0]["sessionId"]})
+        groups = derive_duplicate_group_ids([window_a, window_b])
+        self.assertEqual(len(set(groups.values())), 1)
+        self.assertNotIn("shared-session", str(all_pairs))
+
     def test_equal_timestamps_keep_sequence_orientation_without_claiming_event_tie(self):
         inventory = adapt(records(same_timestamp=True), source_kind="synthetic",
                           family_id="family-a", partition="train")
@@ -113,17 +233,16 @@ class NativePredictorAdapterTests(unittest.TestCase):
 
     def test_projection_connects_adapted_inventories_to_synthetic_trainer_without_holdout_labels(self):
         inventories = [
-            adapt(records(session_id="train-session"), source_kind="synthetic",
+            adapt(records(session_id="train-session", value_prefix="train example"), source_kind="synthetic",
                   family_id="train-family", partition="train"),
-            adapt(records(session_id="cal-session"), source_kind="synthetic",
+            adapt(records(session_id="cal-session", value_prefix="cal example"), source_kind="synthetic",
                   family_id="cal-family", partition="calibration"),
-            adapt(records(session_id="holdout-session"), source_kind="synthetic",
+            adapt(records(session_id="holdout-session", value_prefix="holdout example"), source_kind="synthetic",
                   family_id="holdout-family", partition="holdout"),
         ]
         train_ids = [item["pairId"] for item in inventories[0]["pairs"]]
         calibration_ids = [item["pairId"] for item in inventories[1]["pairs"]]
-        duplicate_groups = {item["pairId"]: f"group-{item['pairId']}"
-                            for inventory in inventories for item in inventory["pairs"]}
+        duplicate_groups = derive_duplicate_group_ids(inventories)
         rows = project_trainer_rows(
             inventories,
             training_labels={train_ids[0]: 0, train_ids[1]: 1, train_ids[2]: None},
@@ -139,18 +258,47 @@ class NativePredictorAdapterTests(unittest.TestCase):
         leaked_groups = dict(duplicate_groups)
         leaked_groups[next(item["pairId"] for item in inventories[2]["pairs"])] = \
             leaked_groups[train_ids[0]]
-        leaked_rows = project_trainer_rows(
-            inventories,
-            training_labels={train_ids[0]: 0, train_ids[1]: 1, train_ids[2]: None},
-            calibration_labels={calibration_ids[0]: 1, calibration_ids[1]: 0,
-                                calibration_ids[2]: None},
-            duplicate_group_ids=leaked_groups,
-        )
-        with self.assertRaisesRegex(ValueError, "duplicate group crosses partitions"):
-            fit(leaked_rows, model_id="adapted-synthetic", dataset_kind="synthetic")
+        with self.assertRaisesRegex(ValueError, "invalid event records or adapter input"):
+            project_trainer_rows(
+                inventories,
+                training_labels={train_ids[0]: 0, train_ids[1]: 1, train_ids[2]: None},
+                calibration_labels={calibration_ids[0]: 1, calibration_ids[1]: 0,
+                                    calibration_ids[2]: None},
+                duplicate_group_ids=leaked_groups,
+            )
         self.assertTrue(all(pair["featureVector"]["version"] == FEATURE_VERSION
                             for inventory in inventories for pair in inventory["pairs"]
                             if "featureVector" in pair))
+
+    def test_projection_rejects_pair_family_forgery_before_it_can_mask_partition_leakage(self):
+        inventories = [
+            adapt(records(session_id="train-session", value_prefix="train example"), source_kind="synthetic",
+                  family_id="shared-family", partition="train"),
+            adapt(records(session_id="cal-session", value_prefix="cal example"), source_kind="synthetic",
+                  family_id="calibration-family", partition="calibration"),
+            adapt(records(session_id="holdout-session", value_prefix="holdout example"), source_kind="synthetic",
+                  family_id="shared-family", partition="holdout"),
+        ]
+        train_ids = [item["pairId"] for item in inventories[0]["pairs"]]
+        calibration_ids = [item["pairId"] for item in inventories[1]["pairs"]]
+        duplicate_groups = derive_duplicate_group_ids(inventories)
+        labels = {
+            "training_labels": {train_ids[0]: 0, train_ids[1]: 1, train_ids[2]: None},
+            "calibration_labels": {calibration_ids[0]: 1, calibration_ids[1]: 0,
+                                   calibration_ids[2]: None},
+            "duplicate_group_ids": duplicate_groups,
+        }
+
+        rows = project_trainer_rows(inventories, **labels)
+        with self.assertRaisesRegex(ValueError, "family crosses partitions"):
+            fit(rows, model_id="adapted-synthetic", dataset_kind="synthetic")
+
+        forged = copy.deepcopy(inventories)
+        forged[2]["pairs"][0]["familyId"] = "forged-holdout-family"
+        forged[2]["pairs"][1]["familyId"] = "forged-holdout-family"
+        forged[2]["pairs"][2]["familyId"] = "forged-holdout-family"
+        with self.assertRaisesRegex(ValueError, "invalid event records or adapter input"):
+            project_trainer_rows(forged, **labels)
 
     def test_global_sequence_accepts_multiple_sessions_and_enumerates_all_pairs_once(self):
         first = records()
@@ -159,7 +307,7 @@ class NativePredictorAdapterTests(unittest.TestCase):
         result = adapt(first + second, source_kind="synthetic", family_id="family-a", partition="train")
         self.assertEqual(len(result["pairs"]), 6)
         self.assertEqual(len({pair["pairId"] for pair in result["pairs"]}), 6)
-        self.assertEqual(len(result["sessionCommitments"]), 2)
+        self.assertEqual(len(result["auditOnlySessionCommitments"]), 2)
 
     def test_hash_tamper_is_rejected_without_echoing_identifiers(self):
         source = records()
@@ -194,15 +342,6 @@ class NativePredictorAdapterTests(unittest.TestCase):
         self.assertEqual(len(result["pairs"]), 3)
         self.assertTrue(any(p.get("excludedReason") == "unsupported-operation"
                             for p in result["pairs"]))
-
-    def test_unreviewed_resolution_event_fails_closed(self):
-        source = records()
-        source.insert(5, {**source[4], "kind": "proposal-resolved",
-                          "data": {"actorId": "actor-a", "proposalEventId": "event-4",
-                                   "resolution": "accepted"}})
-        with self.assertRaises(ValueError):
-            adapt(rechain(source), source_kind="synthetic", family_id="family-a",
-                  partition="train")
 
     def test_missing_source_provenance_is_excluded_like_canonical_window_audit(self):
         cases = []
@@ -319,6 +458,39 @@ class NativePredictorAdapterTests(unittest.TestCase):
         for first, second in zip(left["pairs"], right["pairs"]):
             self.assertEqual((first["request"], first["requestHash"], first["featureVector"]),
                              (second["request"], second["requestHash"], second["featureVector"]))
+
+    def test_unreviewed_resolution_before_second_proposal_fails_closed(self):
+        events = records()
+        second_proposal_index = next(
+            index for index, event in enumerate(events)
+            if event["kind"] == "proposal" and event["data"]["actorId"] == "actor-b"
+        )
+        resolution = {
+            "format": EVENT_FORMAT,
+            "sequence": second_proposal_index,
+            "eventId": "resolution-before-second-proposal",
+            "timestampUtc": "2026-10-01T00:00:04Z",
+            "kind": "proposal-resolved",
+            "sessionId": "session-a",
+            "data": {"proposalEventId": events[second_proposal_index - 1]["eventId"],
+                     "outcome": "accepted"},
+            "previousHash": None,
+            "eventHash": None,
+        }
+        events.insert(second_proposal_index, resolution)
+        previous = None
+        for sequence, event in enumerate(events):
+            event["sequence"] = sequence
+            event["timestampUtc"] = f"2026-10-01T00:00:{sequence:02d}Z"
+            event["previousHash"] = previous
+            body = {key: value for key, value in event.items() if key != "eventHash"}
+            event["eventHash"] = _hash(body)
+            previous = event["eventHash"]
+
+        # Resolution events have no reviewed taxonomy or cutoff semantics yet.
+        # Reject the whole feed; do not emit a pair as eligible.
+        with self.assertRaisesRegex(ValueError, "invalid event records"):
+            adapt(events, source_kind="synthetic", family_id="family-a", partition="train")
 
     def test_malformed_participants_and_window_metadata_fail_closed(self):
         malformed = records()

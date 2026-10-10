@@ -5,76 +5,107 @@ discovery and an eligibility audit, not a dataset, model fit or M3.5 result.
 This register covers public repository metadata and already published Agent
 Braid artifacts. It contains no private session payloads or utility labels.
 
-## Metadata-only completion preparation, 2026-10-08
+## Metadata-only completion preparation — 2026-10-08
 
-The founder requested the [completion plan](completion-plan.md). The new
-[source review packet](source-review-packet.md) preserves the two existing
-candidate workflows and proposes three natural Agent Braid engineering
-workflows for review. At that point this register had no content-review
-findings. A 2026-10-08 repository metadata query confirmed the three repository identities
-(`jayanez/agent-braid`,
-`jayanez/kinetiq-core`, `jayanez/smart-notes`) only; it did not inspect feeds or
-establish workflow occurrence, permissions, completeness or pair yield.
-The linked validation receipts are immutable point-in-time records of their
-own software-check scope; their source-access wording is not a certification of
-current access state. This register makes no current source-access claim.
-The five inventory rows are not five independently eligible observed families.
-No prospective window has been registered by this increment and zero real pairs
-are admitted. Source-specific permissions and full protocol review remain pending.
+The founder requested a completion plan and source review that preserved the
+two existing candidate workflows and proposed three natural Agent Braid
+engineering workflows for review. A repository metadata query confirmed the identities
+`jayanez/agent-braid`, `jayanez/kinetiq-core` and `jayanez/smart-notes`; it did
+not inspect feeds or establish workflow occurrence, permissions, completeness
+or pair yield. The five inventory rows were not five independently eligible
+observed families. No prospective window was registered and zero real pairs
+were admitted. Source-specific permissions and full protocol review remained
+pending.
 
-## Current source feasibility disposition — 2026-10-09
+## Current source disposition — 2026-10-09
 
-The founder directed that all observed candidates remain ineligible for capture
-until a concrete source-specific allowlist is backed by a documented rights
-basis. No such capture allowlist or explicit source-specific capture approval
-is currently recorded for any candidate. M3.5 therefore cannot begin a real
-collection window under the present source record. This is a finding about
-current authorization and evidence, not a claim that no source could become
-available or an estimate of future pair yield.
+The bounded metadata review and the exact-file review authorized for its
+preselected pins did not establish a rights basis, participant notice/privacy
+decision, immutable natural-session feed, or eligible real-pair yield for any
+candidate. No source is admitted. The user selected the conservative route:
+keep the observed candidates ineligible and the experiment open until a
+source-specific allowlist and rights basis are available. Do not broaden the
+file set or infer permission from repository ownership or public visibility.
 
-Do not broaden content discovery or inspect additional source payloads while
-this condition holds. The `agent-braid-validation-method` and
-`agent-braid-release-evidence-review` rows remain separate provisional
-candidates; each still needs an individual rights and eligibility review.
-There are no registered windows, admitted real pairs, human labels, real-data
-fit, or holdout evaluation. T001/T007 and the full M3.5 objective remain open.
+The reviewed Kinetiq candidate path does not establish a natural human
+pair-proposal workflow or a rights basis and is excluded under current M3.5
+scope. The SmartNotes pins describe a general engineering workflow, but do not
+establish participant roles, source-event rights, independent proposal
+receipts, or a complete nonclinical corpus; retain it only as a lead until its
+owner supplies an exact nonclinical feed allowlist and rights/completeness
+basis. In Agent Braid, the interface category is a broad CLI flow rather than
+an observed M3.5 decision workflow. Keep only the validation-method and
+release-evidence categories separate and provisional, as directed; the
+inspected artifacts show overlapping paths and no natural session yield, so
+neither qualifies. Across the five proposed families, the reviewed pins
+establish zero eligible families and zero admitted pairs. This bounded result
+does not establish that no suitable source exists outside the reviewed set.
+
+Accordingly, P019-01/T001 and T007 remain open. Do not register a window,
+capture, label, train or evaluate from these candidates. The five-family and
+label thresholds remain unchanged; current source infeasibility is a stop
+condition, not a reason to relax eligibility or to close M3.5.
 
 ## Exact-pin content review — 2026-10-08
 
 Following the founder's approval, an independent review opened only the
 previously pinned files in the three named repositories. This public summary
-records dispositions without reproducing private paths, source content,
-participant details or payloads. It authorized no capture, registration,
-annotation, label access or training.
+records dispositions without reproducing source content, participant details
+or payloads. It authorized no capture, registration, annotation, label access
+or training.
 
-The reviewed Kinetiq pins describe a workflow outside the current M3.5
-non-sensitive engineering scope. They are excluded as source candidates under
-that scope; this is not a finding that other Kinetiq workflows are unavailable.
-The SmartNotes pins are engineering documents and the inspected files did not
-show clinical records, but the pins do not establish an owner-approved
-non-clinical event feed, participant/data rights, complete session yield or
-independent proposal receipts. SmartNotes remains a lead only, ineligible for
-capture pending a concrete source allowlist and documented rights/privacy
-basis.
+The reviewed Kinetiq pins described a workflow outside the current M3.5
+non-sensitive engineering scope. They were excluded as source candidates
+under that scope; this is not a finding that other Kinetiq workflows are
+unavailable. The SmartNotes pins were engineering documents and did not show
+clinical records, but they did not establish an owner-approved nonclinical
+event feed, participant/data rights, complete session yield or independent
+proposal receipts. SmartNotes remains a lead only, ineligible for capture
+pending a concrete source allowlist and documented rights/privacy basis.
 
-The Agent Braid public-interface candidate describes repository artifacts and
-synthetic flows, not an observed natural proposal feed, so it is ineligible on
-current evidence. The validation-method and release-evidence-review workflows
-remain distinct provisional candidates as directed by the founder. Neither
-has an approved feed, rights basis or observed sessions. Their separate labels
-do not establish separate eligible families, and the five-family requirement
-is unmet.
+The Agent Braid public-interface candidate described repository artifacts and
+synthetic flows, not an observed natural proposal feed, so it was ineligible
+on current evidence. The validation-method and release-evidence-review
+workflows remain distinct provisional candidates as directed. Neither has an
+approved feed, rights basis or observed sessions. Their separate labels do
+not establish separate eligible families, and the five-family requirement is
+unmet.
 
 Across all reviewed pins, no source was admitted and no real session or pair
 was counted. These exact-pin findings do not establish the absence of future
 eligible sources. Further source discovery or payload review requires a new
-concrete allowlist with a documented rights basis; the present route is to
+concrete allowlist with a documented rights basis; the current route is to
 leave M3.5 source feasibility and the objective open.
 
-The [ADR-extension proposal](adr-extension-proposal.md) is non-operative.
-It creates no source access, credentials, service, registration or lab. The
-existing accepted ADR 0018 scope and its historical founder decision remain
-unchanged until a separately recorded decision is accepted.
+## Owner-only scope decision — 2026-10-09
+
+After that bounded review, the founder confirmed ownership and administration
+of `jayanez/kinetiq-core`, `jayanez/smart-notes` and `jayanez/agent-braid`,
+selected all three repositories for the source-scope register, restricted
+consideration to their own authored content, excluded other people's messages,
+proposals, identifiers and data, and approved privacy/export review with
+explicit exclusions. The founder chose to keep this owner-only boundary and
+record the reviewed candidates as ineligible for now.
+
+This records the founder's stated scope decision; it does not independently
+verify authorship, actor identity, rights or notice for another actor, feed
+completeness, natural proposal yield, or the per-family
+`m35-source-permission-v1` record. It authorizes no prospective window,
+registration, capture, annotation, labeling, training or evaluation. In
+particular, do not infer that another actor's or agent's proposal is owner-
+authored or owner-owned.
+
+Under this boundary, the reviewed Kinetiq pins remain excluded by the M3.5
+source/domain scope. SmartNotes remains a nonclinical engineering-workflow lead
+without an immutable complete event feed or admitted pair. The Agent Braid
+interface pins remain excluded; validation-method and release-evidence remain
+separate provisional categories only. No reviewed candidate demonstrates a
+qualifying natural pair from two distinct actors within the owner-only scope.
+Accordingly the bounded result remains zero eligible families and zero
+admitted real pairs. If a source cannot demonstrate a complete, rights-reviewed
+feed and a qualifying pair within this scope, record that source as currently
+ineligible; do not broaden the scope implicitly or relax the five-family and
+label thresholds. P019-01/T001 and T007 and milestone M3.5 remain open.
 
 ## Candidate owned repositories: Kinetiq and SmartNotes
 

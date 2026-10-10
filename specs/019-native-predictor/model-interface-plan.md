@@ -1,7 +1,8 @@
 # SPEC-019 proposed model and evaluation interfaces
 
-**State: synthetic-only trainer/evaluator implementation; real-workload use is
-not approved.** The founder requested implementation of the M3.5 completion
+**State: caller-declared-synthetic trainer/evaluator implementation;
+real-workload use is not approved.** The trainer does not authenticate row
+origin, and artifact provenance is explicitly marked unverified. The founder requested implementation of the M3.5 completion
 plan on 2026-10-08. Source admission, the complete protocol/rubric, human labels
 and the frozen experiment remain separate gates. Deterministic fit tests use
 invented rows only; no real-workload fit, real inference or held-out result is
@@ -24,13 +25,31 @@ features. Only train rows and known train labels reach weight optimization;
 calibration rows reach only calibration. The synthetic evaluator keeps
 holdout labels in a separate mapping and does not pass them to preparation or
 scoring callbacks. Its in-memory fixture interface does not seal labels or
-establish source permission, blinding, authenticity or upstream completeness.
+establish source permission, blinding, authenticity, upstream completeness, or
+that supplied values are bound to human annotation/adjudication records. Before
+real-workload evaluation, the frozen inventory must bind each known label to
+independent reviewer attempts and, when applicable, adjudication; a separate
+label mapping alone is not that evidence.
 
 The future local interface has separate operations for admitted-pair extraction,
 training, calibration, ranking and evaluation. The adapter accepts complete pair
 requests rather than trusted arbitrary feature vectors. Local filenames are
 explicit operator inputs; journals, context and participant maps are never
 included in the public repository or Actions artifacts.
+
+The founder selected P019-03 duplicate rule A: link pairs with identical
+normalized base plus unordered pure-insert operations, and link every pair from
+the same source session before partitioning. The synthetic adapter now derives
+provisional group IDs using NFKC, casefold, whitespace collapse, positional
+anchors and a canonical JSON/UTF-8 digest; it ignores ephemeral IDs and refuses
+components split across train/calibration/holdout. This exercise does not
+authenticate lineage, source completeness, or the caller's family/session
+declarations, and it does not detect semantic near-duplicates. Stable session
+identity is scoped to one declared family across windows; cross-family lineage
+is unavailable. Exact byte encoding and verified lineage inputs remain
+preregistration decisions. Real partitions must be assigned only after a
+source-bound grouping manifest is reviewed; the synthetic helper's split check
+is not that manifest.
 
 ## Features, trainer and artifact candidate
 

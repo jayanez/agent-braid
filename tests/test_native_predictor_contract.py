@@ -106,10 +106,21 @@ class NativePredictorContractTests(unittest.TestCase):
             candidate["operations"][1]["newId"] = f"b-{index}"
             candidate["operations"][1]["anchorId"] = anchor2
             candidate["operations"][1]["value"] = f"proposal-B-{index}"
+            label = {0: 1, 1: 0, 2: None, 3: 1}[index]
             inventory.append({"pairId": f"p{index}", "familyId": family,
                               "sessionId": f"session-p{index}",
                               "duplicateGroupId": f"duplicate-p{index}",
-                              "partition": "holdout", "request": candidate})
+                              "partition": "holdout", "request": candidate,
+                              "annotation1": label, "annotation2": label,
+                              "adjudicatedLabel": None,
+                              "annotation1Attempted": True,
+                              "annotation1ReviewerId": "synthetic-reviewer-a",
+                              "annotation1UnknownReason": None if label is not None else "insufficient-context",
+                              "annotation2Attempted": True,
+                              "annotation2ReviewerId": "synthetic-reviewer-b",
+                              "annotation2UnknownReason": None if label is not None else "insufficient-context",
+                              "adjudicationAttempted": False, "adjudicatorId": None,
+                              "adjudicationRationale": None, "adjudicationUnknownReason": None})
 
         seen_scorer_rows = []
 
@@ -121,7 +132,7 @@ class NativePredictorContractTests(unittest.TestCase):
                           scorer=baseline_equivalent_ranker, dataset_kind="synthetic")
         self.assertEqual(report["status"], "synthetic-descriptive-only")
         self.assertEqual(report["protocolApproval"],
-                         "founder-selected-mapping; full-protocol-independent-review-pending")
+                         "not-approved; founder-selected call unit and status mapping recorded; remaining protocol review is pending")
         self.assertTrue(seen_scorer_rows)
         self.assertTrue(all(set(row) == {"version", "features"} for row in seen_scorer_rows))
         self.assertTrue(all(set(row["features"]) == set(LEARNED_FEATURES)
@@ -137,46 +148,57 @@ class NativePredictorContractTests(unittest.TestCase):
         self.assertFalse(report["permutedLabelNegativeControl"]["holdoutLabelsPermuted"])
 
     def test_verifier_remains_sole_certificate_source(self) -> None:
-        request = synthetic_request()
-        artifact = synthetic_artifact()
-        artifact_hash = digest(artifact)
-        vector = extract_features(request, source_kind="synthetic")
+        requests = [synthetic_request(), synthetic_request()]
+        requests[1]["operations"][1]["anchorId"] = "$root"
+        artifacts = []
+        for bias in (-1_000_000, 1_000_000):
+            artifact = synthetic_artifact()
+            artifact["bias"] = bias
+            artifacts.append((artifact, digest(artifact)))
 
         # Even an extreme score cannot invoke deterministic evidence production or
         # verification as a side effect of prediction.
         with patch("agent_braid.structured_exchange.produce", side_effect=AssertionError("predictor invoked verifier producer")), \
              patch("agent_braid.structured_exchange.verify", side_effect=AssertionError("predictor invoked verifier")):
-            prediction = propose(
-                vector,
-                artifact,
-                expected_hash=artifact_hash,
-                expected_input_hash=digest(request),
-                expected_model_id="contract-double",
-            )
+            predictions = [[propose(
+                extract_features(request, source_kind="synthetic"), artifact,
+                expected_hash=commitment, expected_input_hash=digest(request),
+                expected_model_id="contract-double")
+                for artifact, commitment in artifacts] for request in requests]
 
-        self.assertEqual(prediction["status"], "proposal")
-        self.assertEqual(prediction["score"], 1_000_000)
-        self.assertNotIn("verdict", prediction)
-        self.assertIsNone(prediction["certificate"])
-        self.assertFalse(prediction["executionAuthorization"])
+        self.assertEqual([row["score"] for row in predictions[0]], [-1_000_000, 1_000_000])
+        self.assertEqual([row["score"] for row in predictions[1]], [-1_000_000, 1_000_000])
+        self.assertTrue(all(row["status"] == "proposal" for pair in predictions for row in pair))
+        self.assertTrue(all("verdict" not in row and row["certificate"] is None
+                            and row["executionAuthorization"] is False
+                            for pair in predictions for row in pair))
 
-        # Tampered verifier evidence cannot be rescued by the extreme score.
-        tampered_evidence = produce(request)
+        # Distinct deterministic proposal states remain functions of request
+        # content alone, regardless of either extreme predictor score.
+        outputs = []
+        for request, pair_predictions in zip(requests, predictions):
+            evidence = produce(request)
+            verdict = verify(evidence)
+            outputs.append((evidence["proposal"], verdict["status"], verdict["proposal"],
+                            verdict["executionAuthorization"]))
+            for prediction in pair_predictions:
+                self.assertEqual(prediction["status"], "proposal")
+                self.assertIsNone(prediction["certificate"])
+                self.assertFalse(prediction["executionAuthorization"])
+        self.assertEqual(outputs[0][:3], ("keep-order", "verified-bounded", "keep-order"))
+        self.assertEqual(outputs[1][:3], ("propose-swap", "verified-bounded", "propose-swap"))
+        self.assertTrue(all(output[3] is False for output in outputs))
+
+        # The high-score prediction remains advisory when an independent
+        # verifier receives tampered evidence; no combined result is exposed.
+        tampered_evidence = produce(requests[0])
         tampered_evidence["proposal"] = "verified-bounded"
         rejected = verify(tampered_evidence)
         self.assertEqual(rejected["status"], "inconclusive")
         self.assertFalse(rejected["executionAuthorization"])
-        self.assertEqual(prediction["status"], "proposal")
-        self.assertIsNone(prediction["certificate"])
-        self.assertFalse(prediction["executionAuthorization"])
-
-        # A bounded verdict is available only from the separately invoked
-        # deterministic path; the predictor's score is not an input to it.
-        evidence = produce(request)
-        verdict = verify(evidence)
-        self.assertEqual(verdict["status"], "verified-bounded")
-        self.assertNotIn("certificate", verdict)
-        self.assertFalse(verdict["executionAuthorization"])
+        self.assertEqual(predictions[0][1]["score"], 1_000_000)
+        self.assertEqual(predictions[0][1]["status"], "proposal")
+        self.assertIsNone(predictions[0][1]["certificate"])
 
     def test_learned_score_remains_outside_verifier_and_authorization_boundary(self) -> None:
         def training_row(pair: str, family: str, session: str, partition: str,
