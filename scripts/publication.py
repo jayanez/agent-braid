@@ -6,6 +6,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import os
 from functools import lru_cache
 from pathlib import Path, PurePosixPath
 import re
@@ -189,7 +190,11 @@ def validate_export_tree(root: Path) -> dict:
 
 
 def _git(root: Path, *args: str, allow_failure: bool = False) -> subprocess.CompletedProcess:
-    process = subprocess.run(["git", *args], cwd=root, capture_output=True, check=False)
+    environment = os.environ.copy()
+    environment["GIT_NO_REPLACE_OBJECTS"] = "1"
+    environment["GIT_GRAFT_FILE"] = os.devnull
+    process = subprocess.run(["git", *args], cwd=root, capture_output=True, check=False,
+                             env=environment)
     if process.returncode and not allow_failure:
         raise ValueError(f"Git failed during portable validation: {' '.join(args)}")
     return process

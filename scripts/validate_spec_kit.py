@@ -5,6 +5,7 @@ import argparse
 import ast
 import hashlib
 import json
+import os
 from pathlib import Path
 import re
 import subprocess
@@ -50,8 +51,12 @@ def authorities(root):
 
 
 def git(root, *args):
+    environment = os.environ.copy()
+    environment["GIT_NO_REPLACE_OBJECTS"] = "1"
+    environment["GIT_GRAFT_FILE"] = os.devnull
     process = subprocess.run(
-        ["git", "-C", str(root), *args], capture_output=True, check=False
+        ["git", "-C", str(root), *args], capture_output=True, check=False,
+        env=environment,
     )
     if process.returncode:
         message = process.stderr.decode("utf-8", "replace").strip()
@@ -263,15 +268,21 @@ def validate_portable_record(root, path, bind_manifest=True):
             and all(isinstance(item.get("commit"), str)
                     and re.fullmatch(r"[0-9a-f]{40}", item["commit"])
                     for item in (authority_candidate, evidence_candidate)):
-        commits_in_public_history = all(subprocess.run(
-            ["git", "-C", str(root), "merge-base", "--is-ancestor",
-             item["commit"], "HEAD"], capture_output=True, check=False,
-        ).returncode == 0 for item in (authority_candidate, evidence_candidate))
+        try:
+            for item in (authority_candidate, evidence_candidate):
+                git(root, "merge-base", "--is-ancestor", item["commit"], "HEAD")
+            commits_in_public_history = True
+        except ValueError:
+            commits_in_public_history = False
         if commits_in_public_history:
             validate_record(root, path)
             return
         if _matches_reviewed_candidate_tag(
                 root, relative_record, path, record, authority_candidate["commit"]):
+            validate_record(root, path)
+            return
+        if _matches_preserved_draft_tag(root, relative_record, path, record):
+            # Strict historical validation still applies; failures propagate.
             validate_record(root, path)
             return
     if "authority_hashes" in record:
@@ -394,6 +405,39 @@ def validate_portable_record(root, path, bind_manifest=True):
                             raise ValueError(f"Stale evidence input: {name}")
                 for field in ("command", "outcome", "limits"):
                     nonempty(item.get(field), field)
+
+
+def _matches_preserved_draft_tag(root, relative_record, path, record):
+    """Recognize only an exact public draft pin; never approve its review."""
+    try:
+        from scripts.restore_public_spec_history import PRESERVED_DRAFT_TAGS
+    except ModuleNotFoundError:
+        from restore_public_spec_history import PRESERVED_DRAFT_TAGS
+    if record.get("stage") != "draft" or record.get("human_review") != "pending":
+        return False
+    for name, ref, candidate, tag_object in PRESERVED_DRAFT_TAGS:
+        if relative_record != name:
+            continue
+        try:
+            if (git(root, "rev-parse", "--verify", ref).decode("ascii").strip() != tag_object
+                    or git(root, "cat-file", "-t", ref).decode("ascii").strip() != "tag"
+                    or git(root, "rev-parse", f"{ref}^{{commit}}").decode("ascii").strip() != candidate):
+                return False
+            roots = git(root, "rev-list", "--max-parents=0", "--all").decode("ascii").split()
+            if len(roots) != 1 or git(root, "merge-base", roots[0], candidate).decode("ascii").strip() != roots[0]:
+                return False
+            for field in ("authority_snapshot", "evidence_snapshot"):
+                snapshot = record.get(field, {})
+                commit = snapshot.get("commit")
+                if snapshot.get("mode") != "historical" or not isinstance(commit, str) \
+                        or not re.fullmatch(r"[0-9a-f]{40}", commit):
+                    return False
+                git(root, "cat-file", "-e", f"{commit}^{{commit}}")
+                git(root, "merge-base", "--is-ancestor", commit, candidate)
+            return path.read_bytes() == git(root, "show", f"{candidate}:{name}")
+        except (ValueError, OSError, UnicodeError):
+            return False
+    return False
 
 
 def _matches_reviewed_candidate_tag(root, relative_record, path, record, commit):
