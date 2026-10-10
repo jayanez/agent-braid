@@ -9,8 +9,8 @@ import unittest
 
 from scripts.constitution_replica import sync
 from scripts.validate_spec_kit import (
-    ROOT, authorities, check, digest, freeze, snapshot, validate_portable_record,
-    validate_record,
+    ROOT, _matches_preserved_draft_tag, authorities, check, digest, freeze,
+    snapshot, validate_portable_record, validate_record,
 )
 
 
@@ -192,6 +192,66 @@ class SpecKitTests(unittest.TestCase):
         with self.assertRaisesRegex(
                 ValueError, "export manifest does not bind required file"):
             validate_portable_record(self.root, record)
+
+    def test_preserved_m45_draft_tag_restores_historical_validation_after_squash(self):
+        if not self.portable:
+            self.skipTest("public export manifest is not present")
+        record = self.root / "specs/044-ai-tooling-evaluation/assurance.json"
+        data = json.loads(record.read_text())
+        snapshot_commit = data["evidence_snapshot"]["commit"]
+        ancestry = subprocess.run(
+            ["git", "-C", str(self.root), "merge-base", "--is-ancestor",
+             snapshot_commit, "HEAD"], check=False, capture_output=True,
+        )
+        self.assertEqual(ancestry.returncode, 1,
+                         "fixture must exercise the post-squash fallback path")
+        self.assertEqual(data["stage"], "draft")
+        self.assertEqual(data["human_review"], "pending")
+
+        validate_portable_record(self.root, record)
+
+        self.assertEqual(json.loads(record.read_text()), data,
+                         "preserving the draft tag must not edit or approve its record")
+
+    def test_preserved_m45_draft_tag_rejects_mismatched_refs_and_record_state(self):
+        if not self.portable:
+            self.skipTest("public export manifest is not present")
+        relative = "specs/044-ai-tooling-evaluation/assurance.json"
+        record = self.root / relative
+        tag_ref = "refs/tags/m45-tooling-candidate-8df6c9f"
+        candidate = "8df6c9f410f0559dc667833b8a4f71f1685d3ea0"
+        tag_object = "2f2f6f4ec199d43ecc9ec3e2597875ab7547257a"
+        original_bytes = record.read_bytes()
+
+        def set_ref(value):
+            subprocess.run(["git", "-C", str(self.root), "update-ref", tag_ref, value],
+                           check=True, capture_output=True)
+
+        def matches():
+            return _matches_preserved_draft_tag(
+                self.root, relative, record, json.loads(record.read_text()))
+
+        cases = (
+            ("missing", lambda: subprocess.run(
+                ["git", "-C", str(self.root), "update-ref", "-d", tag_ref],
+                check=True, capture_output=True)),
+            ("lightweight", lambda: set_ref(candidate)),
+            ("moved", lambda: set_ref(
+                "04f89c868406193be104c1f66360223907db4c38")),
+            ("record-bytes", lambda: record.write_bytes(original_bytes + b"\n")),
+            ("review-state", lambda: record.write_text(json.dumps({
+                **json.loads(original_bytes), "human_review": "approved"}))),
+            ("snapshot-commit", lambda: record.write_text(json.dumps({
+                **json.loads(original_bytes),
+                "evidence_snapshot": {"mode": "historical", "commit": "93c952811a164586a6785473c66453df7a319a80"}}))),
+        )
+        for name, mutation in cases:
+            with self.subTest(case=name):
+                record.write_bytes(original_bytes)
+                set_ref(tag_object)
+                mutation()
+                self.assertFalse(matches(), f"invalid {name} pin was accepted")
+
 
     def test_each_integration_drift_and_override_drift(self):
         for relative in (".agents/skills/speckit-constitution/SKILL.md",
