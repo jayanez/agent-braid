@@ -1,17 +1,25 @@
-# SPEC-019 deferred tasks
+# SPEC-019 software closure and deferred experiment
+
+**Current disposition, 2026-10-10:** six software tasks are complete: T002,
+T004, T006, T008, T009 and T010. The only open workstream is the deferred
+real-workload experiment, tracked through T007 (sources), T001 (preregistration
+and annotation), T003 (real fit/evaluation) and T005 (experimental evidence
+and human/founder decision). Its source-bound tooling adaptations remain part
+of that gated workstream; synthetic software completion does not assert a
+ready-to-run real experiment. See [the compact register](software-completion.md).
 
 The founder chose workload utility prioritization after the
 [feasibility audit](feasibility-audit.md) and approved a limited
 [source screen](source-audit.md). The [workload protocol](workload-protocol.md),
 [annotation rubric](annotation-rubric.md) and actual data remain pending before
-T001 can be completed. The bounded M3 experiment has founder review; no model
+T001 can be completed. The bounded M3 experiment has founder review; no real-workload model
 or M3.5 benefit is reported.
 
-- [ ] T001 (REQ-001/002, SC-001..004): Complete source permission and
+- [ ] T001 (REQ-001/002, SC-001..004): Preregister and annotate the deferred real-workload experiment. Complete source permission and
   prospective session/pair yield audit; review and freeze the sampling frame,
   human utility rubric, policy-blind holdout annotation, class coverage,
   features, family splits, baseline, calibration, cost rules and thresholds
-  before training. The limited public screen is recorded; a consented source
+  before admitted-workload training. The limited public screen is recorded; a consented source
   and eligible pair yield are still missing.
 - [x] T006 (REQ-002, SC-006): Instrument an owned local flow with
   immutable base/operation events, stable IDs and provenance. Publish a
@@ -28,7 +36,7 @@ or M3.5 benefit is reported.
   read-only source deploy keys and lab Actions syncs were verified on actual
   runners on 2026-10-01; those operational results do not register a real
   source window or complete T001/P019-01.
-- [ ] T007 (REQ-002, SC-003/004): In a later source-feasibility phase, audit
+- [ ] T007 (REQ-002, SC-003/004): Admit sources for the deferred real-workload experiment. In a later source-feasibility phase, audit
   existing session feeds only after exact source permission, participant/data
   rights and privacy review. On 2026-10-09 the founder confirmed owner/admin
   scope across Kinetiq, SmartNotes and Agent Braid, restricted candidate data
@@ -64,11 +72,11 @@ rows only; real-data fitting remains gated by T001/T007 and the frozen protocol.
 See the [implementation readiness record](implementation-readiness.md) and
 the synthetic trainer/evaluator tests.
 
-- [ ] T003 (REQ-002, SC-003/004): Evaluate held-out calibration when feasible,
+- [ ] T003 (REQ-002, SC-003/004): Fit and evaluate the deferred real-workload experiment. Evaluate held-out calibration when feasible,
   abstention, assessed-useful proposals, missing labels, reviewer disagreement
   and total analysis cost against the rule baseline.
 - [x] T004 (REQ-003, SC-005): Confirm verifier and execution boundaries.
-- [ ] T005 (REQ-001..003): Capture evidence and request M3.5 review.
+- [ ] T005 (REQ-001..003): Reproduce and review the deferred real-workload experiment. Capture experimental evidence, obtain human scientific review and an explicit founder decision before M3.5 closure.
 
 ## Synthetic implementation increment — 2026-10-09
 

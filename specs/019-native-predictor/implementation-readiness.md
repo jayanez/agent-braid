@@ -1,6 +1,16 @@
 # SPEC-019 implementation readiness
 
-**Status:** prospective work breakdown, 2026-10-05. No new source, label, fit or protocol approval is recorded. Existing T001/T007 and their reviewed restrictions remain controlling. T009/T010 make offline preparation actionable; they do not satisfy the real-data gates.
+**Historical plan (2026-10-05):** the opening work breakdown retains its
+prospective scope. Dated continuations below record later synthetic increments;
+the current implementation and experimental boundary are summarized here.
+
+**Current status (2026-10-10):** T002/#182 synthetic trainer/inference and
+T004/#184 verifier-boundary software are complete. T006/T008/T009/T010 are also
+closed. T001/#181, T007/#188, T003/#183 and T005/#185 remain open, as do #180
+and milestone 9. Zero real pairs are admitted. Training/inference/evaluation
+are synthetic-only; no CLI integration or real-feed adaptation is delivered.
+The [software completion record](software-completion.md) is the compact source
+for the remaining experimental gates.
 
 | Step | Task | Required output | Completion or stop condition |
 |---|---|---|---|
@@ -87,9 +97,10 @@ The current adapter does not model proposal-resolution events or construct an
 annotator context ending at the selected second-proposal cutoff. Unsupported
 event kinds fail closed, but that behavior does not prove feed completeness or
 implement the cutoff. Resolution taxonomy, linkage to proposal identity, and
-cutoff-context tests remain prerequisites before any source admission.
+cutoff-context tests remain prerequisites before pair-level experimental
+admission or annotation.
 
-T002 now provides a synthetic-only deterministic trainer and local scorer in
+T002 provides a synthetic-only deterministic trainer and local scorer in
 `agent_braid.native_predictor_training`. Weight normalization uses train rows
 only; calibration receives only calibration-partition rows. The versioned
 artifact binds exact train/calibration commitments, optimizer parameters and
@@ -119,11 +130,12 @@ and retains abstentions at the end. It cannot prove the caller froze inventory
 before labels; duplicate identities are rejected. Scores remain heuristic and
 uncalibrated. All proposals and abstentions contain no certificate and deny
 execution authorization. Even a high score does not invoke or bypass the M3
-verifier. The synthetic T004 software-boundary controls passed in the complete
-CI suite; see [bounded evidence](../../docs/experiments/evidence/m35-verifier-boundary-2026-10-09/README.md).
-This evidence does not close the still-unmerged tracking issue or imply human
-scientific review. T001/T007, real-data training/calibration, held-out
-evaluation and experiment review remain pending.
+verifier. The synthetic T004 software-boundary controls passed; the merged
+implementation and final post-merge reliability evidence are summarized in the
+[2026-10-10 delivery record](../../docs/development/m35-project-alignment.md).
+This software evidence does not imply human scientific review. T001/T007,
+real-data training/calibration, held-out evaluation and experiment review remain
+pending.
 
 Focused verification command (Python 3.12+ in an isolated environment):
 
