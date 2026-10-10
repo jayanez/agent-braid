@@ -118,3 +118,11 @@ It does not replace the full evaluation protocol or complete its open acceptance
 procedures. Historical counts and receipts above retain their dates and domains.
 SPEC-044 T003 remains the single checked historical control task; all other
 M4.5 tasks remain pending until their complete paired procedures are evidenced.
+
+The source-bound [preparation proof](../../docs/tooling/evidence/preparation-20261010.json)
+now records offline macOS core/tooling installation, actual read-only MCP auto/legacy
+checks and CLI report parity on frozen source `3885706e`, plus a prepared Linux
+AMD64 bundle with static hash/architecture refusal checks. It preserves the earlier
+failed verifier and partial bundle preparation. These preparation observations
+do not complete additional canonical task procedures. Final validation, merge and
+GitHub reconciliation remain pending delivery gates.

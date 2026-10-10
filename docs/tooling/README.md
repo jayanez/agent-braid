@@ -3,7 +3,7 @@
 **Status — 2026-10-10:** [M4.5](https://github.com/jayanez/agent-braid/milestone/19) is Open, adjacent to M4, with six spec issues and 60 linked task subissues. Six draft
 Spec Kit packages define 48 requirements, 48 acceptance scenarios and 60 implementation tasks, of which 59 remain unchecked.
 SPEC-044 T003 records 19 bounded deterministic controls for its historical candidate;
-it does not establish later-candidate or actual-host acceptance. An unmerged experimental implementation candidate is now present; paired evidence,
+it does not establish later-candidate or actual-host acceptance. An experimental implementation candidate is present; paired evidence,
 actual host observations and acceptance remain pending. Administrative tracking is registered; the [registration record](../../specs/039-ai-tooling-program/administrative-registration.md) links each parent and its work queue. [ADR 0021](../adr/0021-codex-claude-tooling-integration.md) is proposed.
 
 The immediate owner-authorized delivery is the [five-task preparation plan](../../specs/044-ai-tooling-evaluation/preparation-delivery-plan.md),
@@ -11,6 +11,11 @@ with EUR 0 additional spend. It prioritizes frozen dependencies and fresh instal
 macOS checks, alongside Linux recipe preparation, reviewed evidence and documentation/
 GitHub alignment. The registered 108-attempt evaluation and native-host acceptance
 remain the broader program's pending gates.
+
+The frozen macOS core/tooling package checks and Linux bundle preparation now have
+a [source-bound proof](evidence/preparation-20261010.json). Both macOS environments
+matched the read-only AIM reports from actual SDK auto/legacy sessions. The Linux
+bundle was statically checked on macOS; Linux execution remains pending.
 
 ## Start here
 
