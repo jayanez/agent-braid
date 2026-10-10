@@ -92,7 +92,7 @@ class PublicSpecHistoryTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "public root"):
             self.restore(public_root="f" * 40)
 
-    def main_with(self, tags, advertisement=None):
+    def main_with(self, tags, advertisement=None, preserved=()):
         assurance = self.root / "spec-012-fixture.json"
         assurance.write_text(json.dumps({
             "authority_snapshot": {"mode": "historical", "commit": self.candidate},
@@ -107,9 +107,89 @@ class PublicSpecHistoryTests(unittest.TestCase):
                 return advertisement[1]
             return original_git(*args, **kwargs)
         with patch.object(history, "ASSURANCE", assurance), \
+                patch.object(history, "PUBLIC_ROOT_COMMIT", self.public_root), \
                 patch.object(history, "REVIEWED_TAGS", tags), \
+                patch.object(history, "PRESERVED_DRAFT_TAGS", preserved), \
                 patch.object(history, "git", side_effect=public_origin):
             return history.main()
+
+    def test_restores_preserved_draft_without_changing_pending_review(self):
+        data = json.loads(self.record.read_text())
+        data.update(stage="draft", human_review="pending")
+        self.record.write_text(json.dumps(data))
+        original = self.record.read_bytes()
+        pins = ((f"specs/{self.feature}/assurance.json", self.ref,
+                 self.candidate, self.tag_object),)
+        self.assertEqual(self.main_with((), preserved=pins), 0)
+        self.assertEqual(git(self.root, "rev-parse", self.ref), self.tag_object)
+        self.assertEqual(self.record.read_bytes(), original)
+        self.assertEqual(self.main_with((), preserved=pins), 0)
+
+    def test_late_preserved_pin_failure_installs_no_earlier_refs(self):
+        before = git(self.root, "show-ref")
+        pins = ((f"specs/{self.feature}/assurance.json", self.ref,
+                 self.candidate, self.tag_object),
+                ("specs/019-missing/assurance.json", "refs/tags/missing-draft",
+                 "b" * 40, "a" * 40))
+        with self.assertRaisesRegex(ValueError, "public identity"):
+            self.main_with((), preserved=pins)
+        self.assertEqual(git(self.root, "show-ref"), before)
+
+    def test_conflicting_preserved_pin_is_not_overwritten(self):
+        git(self.root, "tag", self.ref.removeprefix("refs/tags/"), self.candidate)
+        before = git(self.root, "show-ref")
+        pins = ((f"specs/{self.feature}/assurance.json", self.ref,
+                 self.candidate, self.tag_object),)
+        with self.assertRaisesRegex(ValueError, "local identity"):
+            self.main_with((), preserved=pins)
+        self.assertEqual(git(self.root, "show-ref"), before)
+
+    def test_wrong_root_is_rejected_before_fetch_and_installs_no_refs(self):
+        wrong = Path(self.tmp.name) / "wrong-root"
+        wrong.mkdir()
+        git(wrong, "init", "-b", "main")
+        git(wrong, "config", "user.name", "Fixture")
+        git(wrong, "config", "user.email", "fixture@example.invalid")
+        (wrong / "file").write_text("unrelated root")
+        git(wrong, "add", "file")
+        git(wrong, "commit", "-m", "unrelated root")
+        git(wrong, "remote", "add", "origin", str(self.source))
+        original_root = self.root
+        self.root = wrong
+        try:
+            before = git(wrong, "show-ref")
+            pins = ((f"specs/{self.feature}/assurance.json", self.ref,
+                     self.candidate, self.tag_object),)
+            with patch.object(history, "ROOT", wrong):
+                with self.assertRaisesRegex(ValueError, "pinned clean public root"):
+                    self.main_with((), preserved=pins)
+            self.assertEqual(git(wrong, "show-ref"), before)
+            self.assertEqual(git(wrong, "tag", "-l"), "")
+        finally:
+            self.root = original_root
+
+    def test_additional_root_is_rejected_before_fetch_and_installs_no_refs(self):
+        git(self.root, "config", "user.name", "Fixture")
+        git(self.root, "config", "user.email", "fixture@example.invalid")
+        tree = git(self.root, "rev-parse", "HEAD^{tree}")
+        foreign = git(self.root, "commit-tree", tree, "-m", "disconnected root")
+        git(self.root, "update-ref", "refs/heads/foreign", foreign)
+        before = git(self.root, "show-ref")
+        pins = ((f"specs/{self.feature}/assurance.json", self.ref,
+                 self.candidate, self.tag_object),)
+        with self.assertRaisesRegex(ValueError, "additional root"):
+            self.main_with((), preserved=pins)
+        self.assertEqual(git(self.root, "show-ref"), before)
+        self.assertEqual(git(self.root, "tag", "-l"), "")
+
+    def test_malformed_preserved_advertisement_installs_no_refs(self):
+        before = git(self.root, "show-ref")
+        pins = ((f"specs/{self.feature}/assurance.json", self.ref,
+                 self.candidate, self.tag_object),)
+        for advertised in ("malformed", f"{self.tag_object}\t{self.ref}"):
+            with self.subTest(advertised=advertised), self.assertRaises(ValueError):
+                self.main_with((), advertisement=(self.ref, advertised), preserved=pins)
+            self.assertEqual(git(self.root, "show-ref"), before)
 
     def test_late_preflight_failure_does_not_mutate_any_refs(self):
         before = git(self.root, "show-ref")
