@@ -44,6 +44,35 @@ verifier reentry refuses. Decimal inputs are bounded to 30 coefficient digits,
 exponents -30 through 30 and 64 serialized characters; aggregates use exact
 integer scaling independent of ambient Decimal precision.
 
+## Exact provisional allocation arithmetic
+
+`agent_braid.tooling_allocation.calculate_subscription_time_allocation` provides
+an additive, offline calculator for a supplied fixed-period subscription fee
+multiplied by the union of use intervals divided by the actual elapsed period.
+It uses integer UTC microseconds and exact rational arithmetic; overlapping
+intervals count once. The calculation preserves the supplied currency and does
+not convert to EUR or round amounts. String timestamps require explicit UTC
+(`Z` or `+00:00`) and at most six fractional-second digits; greater precision is
+refused. Input snapshots accept at most 4,096 interval receipts and refuse
+excess input without silently truncating it.
+
+Import the calculator, `UsageInterval` and `IntervalCoverage` from
+`agent_braid.tooling_allocation`. `IntervalCoverage.unknown()` produces unknown
+duration and amount. `IntervalCoverage.declared_complete(())` represents an
+explicit caller declaration of complete zero use. The declaration and supplied
+source/account/interval references and hashes are unauthenticated inputs. The
+payload binds those inputs, period bounds and exact share/amount rationals with
+canonical hashes, and labels the result as a provisional calculation. Hashes do
+not establish source authenticity or coverage completeness.
+
+This calculator does not choose or approve the registered allocation method,
+produce a final `MoneyReceipt`, authenticate a live source, or authorize dispatch.
+External source and policy verification, final currency/rounding rules and
+closed-period reconciliation remain required. The existing monetary ledger and
+its final receipt close-time rule are unchanged.
+
+## Technical and human-inclusive scope
+
 The existing `fullCostScope` shape remains prospective. It is required for v3 and
 its approved scope is technical: it binds the already-defined allocation, user-time,
 wall-time, receipt-source and approval fields while preserving two reviewer-fee
