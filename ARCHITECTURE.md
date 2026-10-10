@@ -16,7 +16,7 @@ verified plans under an explicit operator policy and grants.
 | Runtime utility and refinement preparation | Full-cost instrumentation and registered synthetic capture completed on `b85f7e5` (88 valid pairs; negative independent diagnostics); read-only refinement assessments and bounded NO-GO/defer decisions recorded. Owner accepted the bounded utility interpretation (item 21) and whole-M4 engineering/evaluation completion with negative utility (item 22); no deferred capability adopted | [SPEC-022](specs/022-m4-utility-followup/successor-protocol-180m.md), [SPEC-027](specs/027-runtime-refinement-contracts/quickstart.md) |
 | System 1 reference core | Opt-in standard-library synthetic decisions and diagnostics; no learned model, accepted utility or execution authority | [SPEC-028](specs/028-system-one-core/spec.md) |
 | Real-workload evaluation | Exact source rights/protocol, stable harness review and separate capture authorization bound to candidate `e66f9a1`; registered capture completed with 20 valid treatments and mandatory fresh verification. Six measured serial/parallel ratios were below one in this finite two-operation frame; checks compare tracked Git trees only. No real-source interruption/recovery controls; owner accepted bounded whole-M4 engineering/evaluation completion with negative utility on 2026-10-09 | [SPEC-038](specs/038-m4-real-workload-closure/spec.md) · [capture summary](specs/038-m4-real-workload-closure/evidence/registered-capture-summary-e66f9a1.json) |
-| Proposed Codex and Claude Code integrations | Draft shared MCP adapter, five product skills, package lifecycle and evidence presentation; implementation, host observations and ADR adoption remain pending | [M4.5 / SPEC-039–044](docs/tooling/README.md) |
+| Experimental Codex and Claude Code integration candidate | Optional MCP adapter, five packaged product skills, receipt-owned lifecycle and evidence presentation have an experimental implementation candidate. Frozen macOS offline core/tooling installation and read-only SDK checks passed; Linux artifacts and recipe are prepared. Native-host observations, full paired acceptance and ADR adoption remain pending | [M4.5 / SPEC-039–044](docs/tooling/README.md) |
 | Further research and product capabilities | Recorded-trace, effectful-lab, formal-research, adoption, System 1 and forecast programmes; broader feature acceptance remains gated | [SPEC-023–026 and SPEC-029–037](docs/development/SPEC_MILESTONE_INDEX.md) |
 
 The owner accepted bounded M4 alpha engineering and evaluation as complete with
@@ -28,10 +28,13 @@ preparation does not authorize concurrent publication or arbitrary repository-co
 execution. Source-ref promotion, real external effects, broader adapters and learned
 advice require their own contracts, evidence and authority.
 
-The proposed M4.5 adapter delegates bounded execution and recovery to the existing
-runtime and operator grant policy. Its SDK dependency is planned as an optional
-extra; core dependencies remain unchanged. Product skills are planned separately
-from the generated Spec Kit contributor adapters. See the proposed
+The experimental M4.5 adapter delegates bounded execution and recovery to the
+existing runtime and operator grant policy. Its MCP SDK is an optional `tooling`
+extra pinned to 2.3.0; core dependencies remain empty. The five canonical product
+skills are packaged separately from the generated Spec Kit contributor adapters.
+The [five-task preparation plan](specs/044-ai-tooling-evaluation/preparation-delivery-plan.md)
+binds dependency freezing, installed-artifact checks and Linux recipe preparation;
+it does not establish native-host acceptance or registered reproduction. See the proposed
 [ADR 0021](docs/adr/0021-codex-claude-tooling-integration.md) for the architecture
 and adoption decisions still required.
 

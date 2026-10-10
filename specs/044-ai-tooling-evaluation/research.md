@@ -4,7 +4,7 @@ Retrieved 2026-10-08. The authoritative shared [research register](../039-ai-too
 
 ## Local design decision
 
-Use evaluation-protocol.md. Preregister six classes times three instances, three arms and two hosts (108 intended attempts); freeze inputs, versions, rubric, costs/budgets and reviewers before capture. Preserve every slot and distinguish host versus protocol evidence.
+Use evaluation-protocol.md. Preregister six classes times three instances, three arms and two hosts (108 intended attempts); freeze inputs, versions, the human rubric, costs/budgets and two abstract independent reviewer roles before capture. The owner decision dated 2026-10-09 defers only named human outcome ratings/adjudication: v3 technical registration records the approved deferral and keeps humanReviewers empty. Preserve all 108 slots and distinguish technical/host/protocol evidence; retain measured user/setup/attempt and technical wall times with receipt hashes; retain reviewer time/fee as unavailable, not zero, and do not claim positive utility before human evaluation.
 
 ## Why and alternatives
 

@@ -1,0 +1,419 @@
+{
+  "buildAndInstall": {
+    "buildCommand": [
+      "python",
+      "-m",
+      "pip",
+      "wheel",
+      "--no-index",
+      "--no-build-isolation",
+      "--no-deps",
+      "--wheel-dir",
+      "<PRIVATE_WHEEL_OUTPUT>",
+      "<PRIVATE_E40_SOURCE_ARCHIVE_COPY>"
+    ],
+    "buildExit": 0,
+    "buildTools": [
+      {
+        "name": "setuptools",
+        "sha256": "062d34222ad13e0cc312a4c02d73f059e86a4acbfbdea8f8f76b28c99f306922",
+        "version": "80.9.0"
+      },
+      {
+        "name": "wheel",
+        "sha256": "708e7481cc80179af0e556bbf0cc00b8444c7321e2700b8d8580231d13017248",
+        "version": "0.45.1"
+      }
+    ],
+    "coreConsoleCommand": [
+      "agent-braid",
+      "--help"
+    ],
+    "coreConsoleExit": 0,
+    "coreInstallCommand": [
+      "python",
+      "-m",
+      "pip",
+      "install",
+      "--no-index",
+      "<EXACT_E40_WHEEL>"
+    ],
+    "coreInstallExit": 0,
+    "corePipCheckCommand": [
+      "python",
+      "-m",
+      "pip",
+      "check"
+    ],
+    "corePipCheckExit": 0,
+    "environment": {
+      "architecture": "arm64",
+      "buildDependencyDownload": "exact pinned setuptools/wheel only; downloaded from public PyPI and hash-verified",
+      "environmentMode": "fresh isolated virtual environment",
+      "installNetworkUsed": false,
+      "os": "macOS 26.6.2",
+      "pip": "25.3",
+      "python": "3.13.11"
+    },
+    "sourceArchiveSha256": "2a39276a6f71624a661362dce76280a68e0422d469250b45ef9a9ebfed4c35f7",
+    "toolingConsoleExit": 0,
+    "toolingExtraInstallCommand": [
+      "python",
+      "-m",
+      "pip",
+      "install",
+      "--no-index",
+      "--find-links",
+      "<PRIVATE_LOCAL_WHEELHOUSE>",
+      "-r",
+      "<PRIVATE_PINNED_REQUIREMENTS>",
+      "<EXACT_E40_WHEEL>[tooling]"
+    ],
+    "toolingExtraInstallExit": 0,
+    "toolingPipCheckExit": 0
+  },
+  "candidate": {
+    "candidateBinding": "The source archive, product wheel, installed import origins, and module hashes are bound to this exact commit; no result is transferred from 9dfdf27 or later candidates.",
+    "commit": "e40c94989edc2f3af36635b46e6243c1fc937b5f",
+    "tree": "23c5e907f6393d63e279fdb885c9b8d6b43f0c3e"
+  },
+  "commandProvenance": {
+    "exactInvocationBinding": "The original raw invocation traces were privately retained at observation time. Current archive availability is limited by docs/tooling/EVIDENCE_RETENTION_20261010.md; original hashes and normalized commands do not replace missing raw traces or establish current replayability.",
+    "pathsRedacted": true,
+    "publicPresentation": "Command arrays in this public summary normalize only ephemeral private output-root, interpreter, wheelhouse, and runner paths to named placeholders. Product command names, flags, dependency pins, and reported numeric exits are preserved."
+  },
+  "inputs": {
+    "agent_braid/__init__.py": "697f7daba2857756bd135ac489b9e69a9487ebb976d666d2d6cf59bcd175224e",
+    "agent_braid/cli.py": "9e1750b94d9ec846c07117a4b3490f0a3026401a3816a42145eb866f843bf988",
+    "agent_braid/tooling_allocation.py": "9f506909be5c004baa928a45a374820d0fecca01d4101436681d9069e9376be5",
+    "agent_braid/tooling_assets.py": "58022d54f84bd91448889805923316d20c400c889564114999a85d7d24a874fd",
+    "agent_braid/tooling_mcp.py": "f8d151fb11905d5bff7114571e5663bf80cb0cd15af3acb1bf5159b14c54b6dd",
+    "pyproject.toml": "21b32beb7d47b4551e837027ae2713890dc14bb07d7efc56e1cdf2ecc57c1648",
+    "tests/test_tooling_allocation.py": "e3ea82e24f2e143a7953e711197490efb323741f748a3df494d7a32f45f916ef"
+  },
+  "installedSdkProbe": {
+    "clientStderr": {
+      "bytes": 1551,
+      "note": "bounded expected refusal traceback; no raw text included",
+      "sha256": "1182bbe0a32260e02a6c2577e52480dd170e23074494012f7b217bb4a2bfebe0"
+    },
+    "clientStdout": {
+      "bytes": 10789,
+      "sha256": "86793e373dfaeea14edf42040996d70c5c2f443593df403c55f5923f64c0889f"
+    },
+    "command": [
+      "python",
+      "-I",
+      "<PRIVATE_STDIO_PROBE_SCRIPT>"
+    ],
+    "environmentKeys": [
+      "HOME",
+      "LANG",
+      "LC_ALL",
+      "PATH",
+      "PYTHONNOUSERSITE",
+      "TMPDIR"
+    ],
+    "environmentValues": "HOME and TMPDIR were private controlled roots; no normal HOME path is disclosed.",
+    "fixtureTreesUnchanged": true,
+    "fixturesInitiallyEmpty": true,
+    "followingRequest": {
+      "operation": "list_prompts",
+      "succeeded": true
+    },
+    "hostileArgumentEchoObserved": false,
+    "moduleOrigins": "all recorded product/SDK imports resolved under the isolated install site-packages",
+    "oversizePromptControl": {
+      "argumentBytes": 16385,
+      "outcome": "MCPError refusal",
+      "rejected": true
+    },
+    "probeExit": 0,
+    "productModuleSha256": {
+      "agent_braid_init": "697f7daba2857756bd135ac489b9e69a9487ebb976d666d2d6cf59bcd175224e",
+      "cli": "9e1750b94d9ec846c07117a4b3490f0a3026401a3816a42145eb866f843bf988",
+      "tooling_mcp": "f8d151fb11905d5bff7114571e5663bf80cb0cd15af3acb1bf5159b14c54b6dd"
+    },
+    "protocolVersion": "2025-11-25",
+    "resourcesListed": [
+      "agent-braid://capabilities"
+    ],
+    "sdk": "mcp==2.3.0; mcp-types==2.3.0",
+    "serverCommand": [
+      "<INSTALLED_AGENT_BRAID_CONSOLE>",
+      "tooling",
+      "serve"
+    ],
+    "serverNumericExit": "not exposed by the SDK client; unknown",
+    "staticPromptsListed": [
+      "agent-braid-analyze",
+      "agent-braid-plan",
+      "agent-braid-evidence"
+    ],
+    "toolCallsMade": 0,
+    "toolsListed": [
+      "analyze-work",
+      "analyze",
+      "prepare"
+    ],
+    "transport": "actual MCP SDK stdio client using StdioServerParameters",
+    "wrapperExit": 0
+  },
+  "limits": [
+    "Core-only installed e40 analysis and actionable missing-SDK serve refusal were observed; the two protocol-mode calls and separate legacy-endpoint call are separately described below. These clauses do not complete SC-001 or establish cohort/native acceptance.",
+    "The SDK-enabled capability-only probe listed tools/resources/prompts and made zero tool calls; a separate reviewed protocol-mode probe made two read-only analyze-work calls, one per selected mode, with exact classic AIM CLI report parity. The separate old endpoint probe made one out-of-root refusal and one valid synthetic Git analyze call.",
+    "Protocol-mode and legacy endpoint observations provide partial SC-002 evidence only. Full unsupported-mode/refusal matrix, all required scenarios, and native host behavior remain unobserved.",
+    "SC-003 has partial parity evidence for one classic AIM example only. No >256 KiB result/chunk chain, Git/worktree parity, missing/corrupt fragment rejection, or unsupported request matrix was exercised.",
+    "The earlier capability-only probe\u2019s output limits and zero-call count apply only to that probe. The protocol-mode probe retained 43,119 stdout bytes with no output-byte cap; the separate legacy probe enforced a 1 MiB per-stream retained-output cap. SDK child OS exits were not exposed.",
+    "No provider/account/credential interaction, native host discovery/configuration, registration, clean-room, Linux, sdist, or acceptance claim.",
+    "Installed default-resource loading now has partial evidence for the five bundled skills and five supporting assets, with byte equality across source, wheel, and installed package. It does not prove native host loading, installation lifecycle, sdist/Linux behavior, or legal compatibility."
+  ],
+  "productWheel": {
+    "bytes": 394686,
+    "filename": "agent_braid-0.1.0a1-py3-none-any.whl",
+    "optionalExtra": "tooling requires mcp==2.3.0",
+    "pythonTag": "py3-none-any",
+    "recordIntegrity": true,
+    "sha256": "2e98bcbc0284fd7f585977947d753febc0541d3da056518f6282552b70b0d0e3"
+  },
+  "rawEvidenceBoundary": "Historical private archive bindings are preserved, but complete original raw logs and proof archives are not currently recovered. See docs/tooling/EVIDENCE_RETENTION_20261010.md. This sanitized public record contains hashes and bounded historical observations only; no private paths, account identity, host-auth output or raw traceback.",
+  "reviewBindings": {
+    "allocationBoundTestReceiptSha256": "8316843da662f18e6d89cc04860c6e72761bd49c467e01d063f88f6020b26c17",
+    "allocationExecutionReceiptSha256": "713192046e39d2e61efc976d3d23806c2cb3d701c63426b38124cf2677758bff",
+    "fullSdkIntegrityManifestSha256": "9a09fa92b6866dcfee6404e5ed48779432a13e9b6a746dbc44fba90851af7df8",
+    "fullSdkProbeReceiptSha256": "c346fa9a08f6bfa88d6427bdc15b9ab2dd564eac69287f4ee809653301de106c",
+    "fullSdkReceiptSha256": "e6c5c776d484ca5ded6621eede13599eb39fac8109895e7867abdcc612adc06b",
+    "fullSdkReviewSha256": "2544292b9bc21e66b58c02fafd3a3554628e973c456f4fa530bc4fe15f0c51a9",
+    "installedCoreIntegrityManifestSha256": "52f0b036377666b14667725e9e29d65ce2cfe155ac5897efed9832d5c684fc4c",
+    "installedCoreReviewSha256": "07f04e16103c0005aa6d56ad291711b1fbeb8e55bcc337e4b9294ebbef73d55e",
+    "installedCoreAnalysisSdkAbsenceReceiptSha256": "a8c4c236d3f40ed5448bbd360ee5e6a2d5ad6312a487309abef5f5d9e5fca23a",
+    "installedCoreAnalysisSdkAbsenceReviewSha256": "65ad0b92e28ab835d667431cd74d0aa6395085e118df25cfeb943e0871720e06",
+    "protocolModeReceiptSha256": "3a1794978505c443fa78e99df8910dbcf424672bc3855341ee45c61c34ad6466",
+    "protocolModeManifestSha256": "d12077794fe260b534959d623d8e5f649c9d18370e785eba557e98d90539adfa",
+    "protocolModeReviewSha256": "5721b98a54357e49562d17e4c1b5fda96ad8c2e68912bc75bae58443bd21bd90",
+    "protocolModeReviewAddendumSha256": "39f1d030dd7fa447251790eb969c045d1f05e6ebdd8e25aee4cba6baa73f1c1a",
+    "legacyEndpointReceiptSha256": "07b06e8ed4ed784835bff10ed327dda89077693be28d0e09723ae9ec2b110895",
+    "legacyEndpointManifestSha256": "4a49568b33350c3542678254dab7a3e3624974d5c7c062bc25ef7da319a47b3d",
+    "legacyEndpointReviewSha256": "67562120c2108229dd867acab7d1c3fa06af333a8693678889e1f556c4ca74df",
+    "installedDefaultResourceReceiptSha256": "bb58a46418e5d60e61af39ed82914aa353e92dfcbe040b0e131446b134d3b52d",
+    "installedDefaultResourceManifestSha256": "46f70e8df1651c4e0cbf78fe54ada069692ca577139c3f33ec3e387bd7e793eb",
+    "installedDefaultResourceReviewSha256": "d43c13701dcead30297cddc92d8e394d443b7b162dcf2ed0e9fb7adb81efb950"
+  },
+  "schema": "spec040-partial-installed-e40c949-v2",
+  "scope": "Exact-e40 local wheel installation and reviewed bounded installed MCP SDK observations. Not native-host evidence or complete SPEC-040 acceptance.",
+  "status": "partial-obtained-evidence; full-scenarios-unmet",
+  "supportingCheckNotCoreAnalyzer": {
+    "command": [
+      "python",
+      "-B",
+      "-I",
+      "<PRIVATE_INSTALLED_IMPORT_TEST_RUNNER>"
+    ],
+    "failed": 0,
+    "limit": "These 17 tests do not exercise core analysis, MCP analyze-work parity, or the missing-SDK serve refusal.",
+    "numericExit": 0,
+    "passed": 17,
+    "runnerSha256": "d6006e7956ac9d3cf87cd4691abd60bf15ca3192a283b5dac2541abd2ea8bd2f",
+    "skipped": 0,
+    "sourceTestSha256": "e3ea82e24f2e143a7953e711197490efb323741f748a3df494d7a32f45f916ef",
+    "testedSurface": "tooling_allocation public Python module imported from installed site-packages; allocation calculator behavior only"
+  },
+  "installedCoreOnlyAnalysis": {
+    "candidateCommit": "e40c94989edc2f3af36635b46e6243c1fc937b5f",
+    "exampleInput": {
+      "logicalPath": "examples/analysis/file-edits.json",
+      "bytes": 2440,
+      "sha256": "23a833a13adb2b029a696028bb1ae64ced30a65a19375d8e5153c1c4d809fcd93"
+    },
+    "coreAnalyze": {
+      "command": [
+        "agent-braid",
+        "analyze",
+        "<OWNED_COPY_OF_EXAMPLE_INPUT>"
+      ],
+      "numericExit": 0,
+      "sourceKind": "aim",
+      "operationCount": 2,
+      "pairCount": 1,
+      "executionAuthorization": false,
+      "stdoutBytes": 2174,
+      "stdoutSha256": "422cd4b972437ca56f0d0968a43b52fb300cbaf824e27498baa2cc376ad5f95b",
+      "stderrBytes": 0
+    },
+    "missingSdkServe": {
+      "command": [
+        "agent-braid",
+        "tooling",
+        "serve",
+        "--source-root",
+        "<OWNED_SOURCE_ROOT>",
+        "--result-root",
+        "<OWNED_RESULT_ROOT>"
+      ],
+      "numericExit": 2,
+      "protocolServerStarted": false,
+      "timedOut": false,
+      "diagnosis": "actionable optional tooling extra required; raw stderr was retained at observation time; complete original archive is not currently recovered"
+    },
+    "moduleOrigins": {
+      "agent_braid.analysis": "isolated installed wheel",
+      "agent_braid.cli": "isolated installed wheel",
+      "agent_braid.tooling_cli": "isolated installed wheel"
+    },
+    "moduleSha256": {
+      "agent_braid.analysis": "fadfb6f6d3d6f89002df519bbcc86d839724f243e2c8e52732ef57e555abfe00",
+      "agent_braid.cli": "9e1750b94d9ec846c07117a4b3490f0a3026401a3816a42145eb866f843bf988",
+      "agent_braid.tooling_cli": "2ba676c7873ee17590e66baa8ace4bef2453a12d686db57654382a8b23dece1a"
+    },
+    "sdkAbsent": true,
+    "privateBindings": {
+      "receiptSha256": "a8c4c236d3f40ed5448bbd360ee5e6a2d5ad6312a487309abef5f5d9e5fca23a",
+      "manifestSha256": "01580529ae9a899f8740e771072ce5c6d20550d13d59b6823633d94d0d16ac67",
+      "reviewSha256": "65ad0b92e28ab835d667431cd74d0aa6395085e118df25cfeb943e0871720e06"
+    },
+    "interpretation": "Partial evidence for the core-only analysis success and missing-SDK refusal clauses of SC-001. Input is a pre-existing classic example, not a cohort fixture. No tool call, grant, execution authority, provider, account, host, credential or external network was used. This does not complete SC-001 or establish host acceptance."
+  },
+  "installedProtocolModes": {
+    "candidateCommit": "e40c94989edc2f3af36635b46e6243c1fc937b5f",
+    "candidateTree": "23c5e907f6393d63e279fdb885c9b8d6b43f0c3e",
+    "productWheelSha256": "2e98bcbc0284fd7f585977947d753febc0541d3da056518f6282552b70b0d0e3",
+    "receiptSha256": "3a1794978505c443fa78e99df8910dbcf424672bc3855341ee45c61c34ad6466",
+    "integrityManifestSha256": "d12077794fe260b534959d623d8e5f649c9d18370e785eba557e98d90539adfa",
+    "reviewSha256": "5721b98a54357e49562d17e4c1b5fda96ad8c2e68912bc75bae58443bd21bd90",
+    "reviewAddendumSha256": "39f1d030dd7fa447251790eb969c045d1f05e6ebdd8e25aee4cba6baa73f1c1a",
+    "networkScopeClarificationSha256": "f1c5c66d752d574ee2e8647b9e3d741f1681de2a94a39901c44b99edb2d7f702",
+    "sdk": "mcp==2.3.0; mcp-types==2.3.0",
+    "observedModes": [
+      {
+        "mode": "auto",
+        "protocolVersion": "2026-07-28"
+      },
+      {
+        "mode": "legacy",
+        "protocolVersion": "2025-11-25"
+      }
+    ],
+    "calls": 2,
+    "callKind": "read-only analyze-work on classic AIM example",
+    "input": {
+      "logicalPath": "examples/analysis/file-edits.json",
+      "bytes": 2440,
+      "sha256": "23a833a13adb2b029a696028bb1ae64ced30a65a19375d8e515c1c4d809fcd93"
+    },
+    "cliParity": {
+      "cliNumericExit": 0,
+      "wrapperNumericExit": 0,
+      "semanticReportMatchesCli": true,
+      "analysisId": "sha256:216014b8a3c05cff6440665d9f13cc9da6524694286d0ada852ccc7dd875a366",
+      "executionAuthorization": false
+    },
+    "integrity": {
+      "sourceAndResultRootsUnchanged": true,
+      "installedProductAndSDKModuleHashesUnchanged": true
+    },
+    "supervision": {
+      "timeoutSeconds": 60,
+      "stdoutBytes": 43119,
+      "stdoutSha256": "34f183b5820c86ae8bf7ffad4f182fcc25788744b9f2fb8b5d40c3745eb8d1bb",
+      "stderrBytes": 0,
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "outputByteCap": "none enforced",
+      "sdkChildNumericExit": "unknown/not exposed by SDK"
+    },
+    "networkBoundary": "The probe reported no network request; no OS-level network isolation was enforced. Public documentation preparation used two Context7 requests, separately from the actual SDK/CLI probe.",
+    "limits": [
+      "One classic AIM input only; no Git/worktree parity, >256 KiB result, chunk reconstruction, malformed/unsupported-request refusal matrix, or complete SC-003 procedure.",
+      "Only two read-only analyze-work calls; no prepare/execute/recover/grant calls, native host, provider/account/credential interaction, host configuration, or registration.",
+      "This is local exact-e40 evidence, not a registered clean-room or cross-platform reproduction."
+    ]
+  },
+  "installedLegacyEndpoint": {
+    "candidateCommit": "e40c94989edc2f3af36635b46e6243c1fc937b5f",
+    "candidateTree": "23c5e907f6393d63e279fdb885c9b8d6b43f0c3e",
+    "productWheelSha256": "2e98bcbc0284fd7f585977947d753febc0541d3da056518f6282552b70b0d0e3",
+    "sdk": "mcp==2.3.0; mcp-types==2.3.0",
+    "receiptSha256": "07b06e8ed4ed784835bff10ed327dda89077693be28d0e09723ae9ec2b110895",
+    "integrityManifestSha256": "4a49568b33350c3542678254dab7a3e3624974d5c7c062bc25ef7da319a47b3d",
+    "independentReviewSha256": "67562120c2108229dd867acab7d1c3fa06af333a8693678889e1f556c4ca74df",
+    "protocolVersion": "2025-11-25",
+    "endpoint": "separate existing legacy endpoint",
+    "advertisedTools": [
+      "analyze",
+      "prepare",
+      "status",
+      "execute",
+      "recover",
+      "verify"
+    ],
+    "calls": {
+      "outOfRootAnalyze": "refused",
+      "validSyntheticGitAnalyze": "succeeded",
+      "matchesInstalledRuntimeToolsReference": true,
+      "executionAuthorization": false
+    },
+    "fixture": "Two local synthetic commits and two tracked text files; no remotes; private local hooks disabled. Source tree, refs, status, result roots and grant roots remained unchanged; no authority API called.",
+    "supervision": {
+      "timeoutSeconds": 60,
+      "retainedOutputCapPerStreamBytes": 1048576,
+      "stdoutBytes": 43845,
+      "stderrBytes": 0,
+      "capHit": false,
+      "wrapperNumericExit": 0,
+      "readerThreadsJoined": true,
+      "sdkChildNumericExit": "unknown/not exposed by SDK"
+    },
+    "networkBoundary": "Probe reported no network request; this is not OS-level network isolation.",
+    "attemptHistory": "Attempts 01\u201304 were retained in the original private archive at observation time; detailed pass was attempt 05. The complete original archive is not currently recovered; see retentionUpdate.",
+    "limits": [
+      "Read-only analyze on one owned synthetic Git fixture through the separate old endpoint; not full SC-002 or all legacy scenarios/protocols.",
+      "Does not establish the new endpoint refusal matrix, full procedure, native-host acceptance, or overall SPEC-040 acceptance.",
+      "No provider/account/credential access, host configuration, grant issuance, prepare/execute/recover, or persistent result allocation."
+    ]
+  },
+  "installedDefaultResources": {
+    "sourceCommit": "e40c94989edc2f3af36635b46e6243c1fc937b5f",
+    "wheelSha256": "2e98bcbc0284fd7f585977947d753febc0541d3da056518f6282552b70b0d0e3",
+    "receiptSha256": "bb58a46418e5d60e61af39ed82914aa353e92dfcbe040b0e131446b134d3b52d",
+    "integrityManifestSha256": "46f70e8df1651c4e0cbf78fe54ada069692ca577139c3f33ec3e387bd7e793eb",
+    "independentReviewSha256": "d43c13701dcead30297cddc92d8e394d443b7b162dcf2ed0e9fb7adb81efb950",
+    "clarificationSha256": "524cfee860da91f79d42d76de228816200c68b288cb7686b715e519b9c03c11a",
+    "method": "actual installed tooling_assets module; default load_skill_bundle source_checkout=False",
+    "bundleVersion": "0.1.0",
+    "bundleSha256": "284d84d226fd58438d995d324e0a01fbe1606f709faeed2759c6f4c3ec192542",
+    "resourceCount": 10,
+    "skills": [
+      "agent-braid-analyze",
+      "agent-braid-plan",
+      "agent-braid-execute",
+      "agent-braid-recover",
+      "agent-braid-evidence"
+    ],
+    "allTenSourceWheelInstalledResourcesByteEqual": true,
+    "moduleSha256": "58022d54f84bd91448889805923316d20c400c889564114999a85d7d24a874fd",
+    "numericExit": 0,
+    "timeoutSeconds": 20,
+    "observedOutput": {
+      "stdoutBytes": 2473,
+      "stdoutSha256": "cf316b42fb1df484d55d058d6fd9387cbb7e93f135de7a5f7dc50a8d2190ca1b",
+      "stderrBytes": 0,
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "streamCap": "none; script bounded serialized JSON length to 65536 bytes, but parent stdout/stderr log files had no enforced byte cap",
+    "preflightHistory": "Initial no-child preflight failure and append-only clarification were recorded at observation time. The earlier review noted the cause was recorded but not independently re-derived from raw argv/stderr. The complete original archive is not currently recovered; see retentionUpdate.",
+    "hostLoadedSkills": false,
+    "legalCompatibilityConclusion": "none",
+    "limits": [
+      "Installed wheel resource loading and source/wheel/installed byte equality only, one isolated local environment.",
+      "No native host loading, installation lifecycle, sdist, Linux, cohort fixtures, or full SC-001/SC-008 acceptance.",
+      "No provider/account/native behavior or OS-level network isolation."
+    ]
+  },
+  "retentionUpdate": {
+    "observedOn": "2026-10-10",
+    "reference": "docs/tooling/EVIDENCE_RETENTION_20261010.md",
+    "completeOriginalArchiveRecovered": false,
+    "historicalObservationsPreserved": true,
+    "currentReplayabilityEstablished": false,
+    "scenarioAcceptanceEstablished": false
+  }
+}

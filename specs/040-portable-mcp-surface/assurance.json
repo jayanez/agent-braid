@@ -127,7 +127,15 @@
         {
           "given": "core-only and tooling-extra installations",
           "id": "SC-001",
-          "obtained_evidence": [],
+          "obtained_evidence": [
+            {
+              "path": "specs/040-portable-mcp-surface/evidence/partial-installed-e40c949.json",
+              "sha256": "1b7286d8f71e795a9a8f52a6e2a5c2f7cc9d6ff1a73394d49f5ddc2de79fd42c",
+              "command": "See the normalized command record in the bound partial evidence JSON and the later retention limitation in docs/tooling/EVIDENCE_RETENTION_20261010.md. Exact raw invocation archives are not fully recovered; receipt hashes do not establish current replayability.",
+              "outcome": "partial-obtained; paired full procedure remains unmet",
+              "limits": "Exact-e40 core-only behavior and optional dependency boundaries plus default installed-wheel resource byte equality are partial local evidence only; native loading, installation lifecycle, all platforms, cohort, complete procedure and acceptance remain unproven. Complete original private archives are not currently recovered; see the linked retention update. This remains historical partial evidence and cannot establish current replayability or complete acceptance."
+            }
+          ],
           "planned_evidence": "specs/040-portable-mcp-surface/evidence/sc-001.json: exact candidate/input/environment hashes, actual commands/raw outputs, all outcomes and limits; human decisions require their own record.",
           "test_file": "specs/040-portable-mcp-surface/validation-plan.md",
           "test_name": "procedure_optional_sdk",
@@ -143,7 +151,15 @@
         {
           "given": "SDK clients selecting each protocol and an existing legacy request",
           "id": "SC-002",
-          "obtained_evidence": [],
+          "obtained_evidence": [
+            {
+              "path": "specs/040-portable-mcp-surface/evidence/partial-installed-e40c949.json",
+              "sha256": "1b7286d8f71e795a9a8f52a6e2a5c2f7cc9d6ff1a73394d49f5ddc2de79fd42c",
+              "command": "See the normalized command record in the bound partial evidence JSON and the later retention limitation in docs/tooling/EVIDENCE_RETENTION_20261010.md. Exact raw invocation archives are not fully recovered; receipt hashes do not establish current replayability.",
+              "outcome": "partial-obtained; protocol modes and separate legacy endpoint have bounded evidence; full procedure remains unmet",
+              "limits": "Exact-e40 local SDK evidence covers two read-only analyze calls on one AIM example for protocol selection and one out-of-root refusal plus one valid synthetic Git analyze on the separate old endpoint; unsupported-mode matrix, all scenarios, native hosts, other candidates/platforms, and acceptance remain unproven. Complete original private archives are not currently recovered; see the linked retention update. This remains historical partial evidence and cannot establish current replayability or complete acceptance."
+            }
+          ],
           "planned_evidence": "specs/040-portable-mcp-surface/evidence/sc-002.json: exact candidate/input/environment hashes, actual commands/raw outputs, all outcomes and limits; human decisions require their own record.",
           "test_file": "specs/040-portable-mcp-surface/validation-plan.md",
           "test_name": "procedure_protocol_compatibility",
@@ -159,7 +175,15 @@
         {
           "given": "immutable valid and unsupported analysis requests, including a result above 256 KiB",
           "id": "SC-003",
-          "obtained_evidence": [],
+          "obtained_evidence": [
+            {
+              "path": "specs/040-portable-mcp-surface/evidence/partial-installed-e40c949.json",
+              "sha256": "1b7286d8f71e795a9a8f52a6e2a5c2f7cc9d6ff1a73394d49f5ddc2de79fd42c",
+              "command": "See the normalized command record in the bound partial evidence JSON and the later retention limitation in docs/tooling/EVIDENCE_RETENTION_20261010.md. Exact raw invocation archives are not fully recovered; receipt hashes do not establish current replayability.",
+              "outcome": "partial-obtained; one classic AIM input has semantic report equality; full chunked/refusal procedure remains unmet",
+              "limits": "Only one classic AIM request was compared across CLI and two installed SDK protocol modes. No >256 KiB result, chunk reconstruction, Git/worktree parity, corrupt-chain or unsupported-request refusal matrix, other candidate, platform, host acceptance, or full task is established. Complete original private archives are not currently recovered; see the linked retention update. This remains historical partial evidence and cannot establish current replayability or complete acceptance."
+            }
+          ],
           "planned_evidence": "specs/040-portable-mcp-surface/evidence/sc-003.json: exact candidate/input/environment hashes, actual commands/raw outputs, all outcomes and limits; human decisions require their own record.",
           "test_file": "specs/040-portable-mcp-surface/validation-plan.md",
           "test_name": "procedure_cli_parity",
@@ -239,7 +263,15 @@
         {
           "given": "owned multi-chunk, empty, missing or stale evidence artifacts, invalid digest/range selectors and untrusted instructions",
           "id": "SC-008",
-          "obtained_evidence": [],
+          "obtained_evidence": [
+            {
+              "path": "specs/040-portable-mcp-surface/evidence/partial-installed-e40c949.json",
+              "sha256": "1b7286d8f71e795a9a8f52a6e2a5c2f7cc9d6ff1a73394d49f5ddc2de79fd42c",
+              "command": "See the normalized command record in the bound partial evidence JSON and the later retention limitation in docs/tooling/EVIDENCE_RETENTION_20261010.md. Exact raw invocation archives are not fully recovered; receipt hashes do not establish current replayability.",
+              "outcome": "partial-obtained; capability/prompt controls and default installed resource bytes observed; full artifact-chain procedure remains unmet",
+              "limits": "Evidence includes a separate capability/prompt probe and default installed wheel resource load for five skills/five supporting assets with source-wheel-installed byte equality. It does not test artifact manifest/chunk reading, empty/stale/missing resources, reconstruction/refusal chain, native host loading, sdist/Linux, or full SC-008. Complete original private archives are not currently recovered; see the linked retention update. This remains historical partial evidence and cannot establish current replayability or complete acceptance."
+            }
+          ],
           "planned_evidence": "specs/040-portable-mcp-surface/evidence/sc-008.json: exact candidate/input/environment hashes, actual commands/raw outputs, all outcomes and limits; human decisions require their own record.",
           "test_file": "specs/040-portable-mcp-surface/validation-plan.md",
           "test_name": "procedure_resources_prompts",

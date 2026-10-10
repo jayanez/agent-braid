@@ -333,6 +333,17 @@ Deliverables:
 - candidate-bound controls, clean reproduction, actual host observations and a
   preregistered CLI/MCP-only/MCP-plus-skills comparison with full costs.
 
+Immediate delivery follows the [five-task preparation plan](specs/044-ai-tooling-evaluation/preparation-delivery-plan.md):
+frozen dependencies, fresh installed macOS checks, a pinned Linux recipe, reviewed
+evidence, and documentation/GitHub alignment. Its EUR 0 spending boundary and
+deferred human outcome review do not replace the full exit criteria below.
+
+Fresh offline macOS core/tooling installations and read-only MCP auto/legacy
+checks passed for frozen source `3885706e`; Linux artifacts and a pinned offline
+recipe are prepared. The [preparation proof](docs/tooling/evidence/preparation-20261010.json)
+binds the exact checks and retained failures. Linux execution and full native-host
+acceptance remain pending.
+
 Exit criteria:
 
 - both selected host builds complete the bounded journey with actual receipts;

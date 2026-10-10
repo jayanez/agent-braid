@@ -6,6 +6,7 @@ These are planning decisions, not a founder adoption/closure record.
 |---|---|---|
 | Initial hosts | Owner narrowed v1 to Codex and Claude Code on 2026-10-08 | Other named environments appear only in future routes |
 | Milestone position | Owner requested an adjacent contiguous milestone to M4 | M4.5 consumes accepted M4 contracts; does not close M4 |
+| M4 predecessor status | Separately approved bounded closure; PR #471, commit `9dfd9fdf52e688e7225af1f7644f41b6ba92b780`, milestone #6 verified closed on 2026-10-09 | Preserve negative utility, G4 NO-GO and deferrals; no inherited M4.5 acceptance or capture rights |
 | Permission | Preserve accepted runtime and exact external operator grants | No grant issuance through MCP/skills; analysis default |
 | Shared contract | Proposed ADR 0021 and SPEC-040 interface/data model | Official optional SDK, stdio, new/legacy protocol controls |
 | Skills | Five focused product workflows | Canonical portable source separate from Spec Kit adapters |

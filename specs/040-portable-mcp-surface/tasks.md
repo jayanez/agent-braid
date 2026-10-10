@@ -1,18 +1,18 @@
 # Tasks
 
-Stable task IDs are implementation obligations. Check only after the paired procedure produces candidate-bound evidence. Targets below may be future files; no product implementation is claimed.
+Stable task IDs are implementation obligations. Experimental implementation and partial local observations exist, but a task remains incomplete until its full paired procedure produces candidate-bound evidence. Partial evidence is explicitly scoped below and does not complete a task. Targets below may include future files.
 
 - [ ] T001 (REQ-001/SC-001): Use mcp==2.3.0 as an isolated optional tooling extra, with core dependencies empty and stdio-only operation.
   Dependencies: none; consumed contract review. Targets: `pyproject.toml optional tooling extra; packaging controls`.
-  Verification and planned evidence: `validation-plan.md::procedure_optional_sdk`; `evidence/sc-001.json` with actual commands and negative controls. Obtained: none.
+  Verification and planned evidence: `validation-plan.md::procedure_optional_sdk`; `evidence/sc-001.json` with actual commands and negative controls. Obtained: partial; see `evidence/partial-installed-e40c949.json`; partial default installed-wheel resource bytes are also recorded. The frozen 3885706 preparation packet in `../../docs/tooling/evidence/preparation-20261010.json` additionally records offline core/tooling installation and installed asset provenance on macOS; native loading and full procedure/task remain incomplete.
 
 - [ ] T002 (REQ-002/SC-002): Support 2026-07-28 discovery and 2025-11-25 initialization through the SDK while preserving the legacy endpoint.
   Dependencies: T001. Targets: `agent_braid/tooling_mcp.py SDK lifecycle; protocol controls`.
-  Verification and planned evidence: `validation-plan.md::procedure_protocol_compatibility`; `evidence/sc-002.json` with actual commands and negative controls. Obtained: none.
+  Verification and planned evidence: `validation-plan.md::procedure_protocol_compatibility`; `evidence/sc-002.json` with actual commands and negative controls. Obtained: partial selected protocol modes plus a separate legacy endpoint analyze/refusal control; see `evidence/partial-installed-e40c949.json`. The frozen 3885706 preparation packet in `../../docs/tooling/evidence/preparation-20261010.json` additionally records successful installed SDK initialization and read-only observations for both selected protocol versions. Full procedure and task remain incomplete.
 
 - [ ] T003 (REQ-003/SC-003): Expose analyze-work for tagged AIM/Git/worktree requests and preserve analyze/prepare/status/execute/recover/verify result semantics.
   Dependencies: T001. Targets: `analysis.py and git_adapter.py delegation; CLI parity controls`.
-  Verification and planned evidence: `validation-plan.md::procedure_cli_parity`; `evidence/sc-003.json` with actual commands and negative controls. Obtained: none.
+  Verification and planned evidence: `validation-plan.md::procedure_cli_parity`; `evidence/sc-003.json` with actual commands and negative controls. Obtained: partial semantic report equality for one classic AIM input across CLI and two selected SDK protocol modes; no chunked, Git/worktree, or full refusal matrix; see `evidence/partial-installed-e40c949.json`. The frozen 3885706 preparation packet in `../../docs/tooling/evidence/preparation-20261010.json` additionally records exact report hash equality for one synthetic AIM request across installed core/tooling CLI and both SDK protocol versions. Full procedure and task remain incomplete.
 
 - [ ] T004 (REQ-004/SC-004): Declare bounded input/output schemas and a typed evidence envelope whose text and structuredContent agree.
   Dependencies: T001. Targets: `tooling_mcp.py schemas/envelope; data-model.md`.
@@ -32,7 +32,7 @@ Stable task IDs are implementation obligations. Check only after the paired proc
 
 - [ ] T008 (REQ-008/SC-008): Provide bounded capabilities/status/evidence manifests and digest/range chunk URIs with complete-result reconstruction controls, plus three read-only prompts without arbitrary file reads or automatic execution.
   Dependencies: T001–T005. Targets: `tooling_mcp.py resources/prompts; owned artifact inventory`.
-  Verification and planned evidence: `validation-plan.md::procedure_resources_prompts`; `evidence/sc-008.json` with actual commands and negative controls. Obtained: none.
+  Verification and planned evidence: `validation-plan.md::procedure_resources_prompts`; `evidence/sc-008.json` with actual commands and negative controls. Obtained: partial capability/prompt listing and oversized-argument refusal only; see `evidence/partial-installed-e40c949.json`; default installed resource bytes for five skills/five supporting assets are also recorded; artifact-chain assertions and full procedure/task remain incomplete.
 
 - [ ] T009 (REQ-001,REQ-002,REQ-003,REQ-004,REQ-005,REQ-006,REQ-007,REQ-008/SC-001,SC-002,SC-003,SC-004,SC-005,SC-006,SC-007,SC-008): Reconcile implementation evidence and run repository quick/PR gates.
   Dependencies: T001–T008. Targets: this spec's assurance.json, validation receipts and bounded candidate.

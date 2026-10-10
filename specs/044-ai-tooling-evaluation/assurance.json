@@ -19,7 +19,7 @@
     24,
     25
   ],
-  "assumptions": "Owned trusted local roots, separately reviewed contracts and exact host/source/cost decisions; no universal compatibility, positive utility or available provider budget assumed.",
+  "assumptions": "Owned trusted local roots, separately reviewed contracts and exact host/source/cost decisions; no universal compatibility, positive utility or available provider budget assumed. Immutable provider identifiers are mandatory when exposed; otherwise exact selector/effort, host, catalog, effective configuration and authenticated route are explicitly distinguished from unavailable backend identity under the owner-approved 2026-10-09 clarification. A v3 technical-capture registration contains the approved deferral record, two unique abstract independent reviewer roles and an empty humanReviewers list. Later named humans and outcome labels require a separately bound addendum. Technical cost completion is distinct from complete human-inclusive economic accounting; user/setup/attempt and technical wall times are measured with receipt hashes; reviewer time/fee and combined human-inclusive totals remain unavailable rather than zero. V3 technical capture requires the included-subscription-only billingPolicy for both registered hosts; this does not change legacy v1/v2 policy behavior.",
   "authority_snapshot": {
     "commit": "f18f63c8fc9b52dc0652f57c505d7f7647164030",
     "hashes": {
@@ -90,15 +90,15 @@
     "mode": "historical"
   },
   "compatibility": "Additive experimental tooling envelope with optional pinned SDK; core dependencies empty. Codex and Claude Code v1 only, exact versions selected before observation. Existing contracts and historical records unchanged.",
-  "domain": "Exact local host/model builds on macOS arm64 and owned registered fixture population; Linux x86_64 core/protocol reproduction is a separate domain.",
+  "domain": "Exact local host builds and registered provider model identities on macOS arm64 and owned registered fixture population; opaque backend builds remain unavailable under the approved observable-route interpretation. Linux x86_64 core/protocol reproduction is a separate domain.",
   "evidence_snapshot": {
-    "commit": null,
-    "mode": "current"
+    "commit": "9bc3052f0ee9365919bea4525e979a0fb1825aa2",
+    "mode": "historical"
   },
   "execution_contract": "Source planning only. Future server defaults to analysis; execution/recovery delegate existing independent exact operator grants and private fixed-patch runtime. Installation writes only explicitly selected receipt-owned entries. No new effects.",
   "human_review": "pending",
   "hypotheses": "MCP plus skills may improve completion, interventions or evidence fidelity over CLI/MCP-only. Negative, null and infeasible outcomes are valid.",
-  "observation_contract": "Exact input/candidate/host/environment identities and unchanged analyzer/runtime observation contracts; synthetic, protocol-peer, actual-host and clean-room evidence remain distinct.",
+  "observation_contract": "Exact input/candidate/host/environment identities and unchanged analyzer/runtime observation contracts; synthetic, protocol-peer, actual-host and clean-room evidence remain distinct. Immutable provider identifiers are mandatory when exposed; otherwise exact selector/effort, host, catalog, effective configuration and authenticated route are explicitly distinguished from unavailable backend identity under the owner-approved 2026-10-09 clarification.",
   "references": [
     "CONSTITUTION.md",
     "GOVERNANCE.md",
@@ -117,7 +117,10 @@
     "specs/039-ai-tooling-program/program.md",
     "specs/039-ai-tooling-program/research.md",
     "specs/044-ai-tooling-evaluation/evaluation-protocol.md",
-    "specs/044-ai-tooling-evaluation/validation-plan.md"
+    "specs/044-ai-tooling-evaluation/validation-plan.md",
+    "specs/044-ai-tooling-evaluation/model-identity-clarification.md",
+    "specs/044-ai-tooling-evaluation/human-evaluation-deferral-clarification.md",
+    "docs/tooling/OUTCOME_RUBRIC.md"
   ],
   "requirements": [
     {
@@ -127,14 +130,14 @@
           "given": "unapproved paid capture or a drifted/missing registration",
           "id": "SC-001",
           "obtained_evidence": [],
-          "planned_evidence": "specs/044-ai-tooling-evaluation/evidence/sc-001.json: exact candidate/input/environment hashes, actual commands/raw outputs, all outcomes and limits; human decisions require their own record.",
+          "planned_evidence": "specs/044-ai-tooling-evaluation/evidence/sc-001.json: exact candidate/input/environment hashes, actual commands/raw outputs, all outcomes and limits; human decisions require their own record. Include labelled route/backend identity, availability, catalog/configuration binding and drift refusals; the clarification decision is separate from capture approval. v3 phase/deferral/role validation and legacy v1/v2 rejection controls; preserve empty humanReviewers and require a separately bound addendum for future human identities/ratings. Require exact v3 included-subscription-only billingPolicy and preserve legacy v1/v2 optional-policy behavior.",
           "test_file": "specs/044-ai-tooling-evaluation/validation-plan.md",
           "test_name": "procedure_registration_gate",
-          "then": "unapproved costs/rights/versions refuse; owned deterministic controls remain a separately identified engineering path",
+          "then": "unapproved costs/rights/versions, missing included-subscription-only billingPolicy, or an invalid phase/deferral/role binding refuse; v3 technical capture requires the approved deferral and two unique abstract independent roles with humanReviewers empty; this does not authorize capture",
           "when": "capture admission runs"
         }
       ],
-      "text": "Preregister exact population, source rights, candidate/input/host/model versions, all attempts, rubric and numerical caps before capture."
+      "text": "Preregister exact population, source rights, candidate/input/host/SDK identities and either an immutable provider model-build identity or an explicitly labelled observable requested route, all 108 attempts, the mandatory included-subscription-only billingPolicy, the frozen rubric, two abstract independent reviewer roles, approved human-evaluation deferral record and numerical caps before technical capture. Keep humanReviewers empty; human identity and scoring require a later bound addendum."
     },
     {
       "id": "REQ-002",
@@ -143,10 +146,10 @@
           "given": "a real host and a mock protocol client",
           "id": "SC-002",
           "obtained_evidence": [],
-          "planned_evidence": "specs/044-ai-tooling-evaluation/evidence/sc-002.json: exact candidate/input/environment hashes, actual commands/raw outputs, all outcomes and limits; human decisions require their own record.",
+          "planned_evidence": "specs/044-ai-tooling-evaluation/evidence/sc-002.json: exact candidate/input/environment hashes, actual commands/raw outputs, all outcomes and limits; human decisions require their own record. Include labelled route/backend identity, availability, catalog/configuration binding and drift refusals; the clarification decision is separate from capture approval.",
           "test_file": "specs/044-ai-tooling-evaluation/validation-plan.md",
           "test_name": "procedure_actual_host_observation",
-          "then": "only real host receipts satisfy host acceptance, with exact build/model/bundle and interactive blocks reported",
+          "then": "only real host receipts satisfy host acceptance, with exact host/bundle identities, requested and reported model selectors distinguished, backend identity unavailable when not exposed, and interactive blocks reported",
           "when": "host support is assessed"
         }
       ],
@@ -158,7 +161,15 @@
         {
           "given": "all mandatory positive/negative control cases",
           "id": "SC-003",
-          "obtained_evidence": [],
+          "obtained_evidence": [
+            {
+              "command": "Wrapper: /private/tmp/agent-braid-m45-plan.nAWJs3/.venv-speckit/bin/python scripts/run_tooling_controls.py --output-root /private/tmp/spec044-t003-20261010-3c01c5b-v1 (cwd /private/tmp/m45-controls-20261009-v1); exact per-case argv arrays and raw output are in sc-003-run/manifest.json and cases/.",
+              "limits": "Synthetic local unittest-control-source only. No actual host acceptance, MCP SDK transport, provider/billing execution, clean-room reproduction or human outcome evidence. Application-level cancellation only. Does not complete T002, T004 or other SPEC-040 tasks; no later candidate coverage.",
+              "outcome": "19/19 frozen deterministic controls passed on clean candidate 3c01c5b2e594c7ddfaf7850585478a6d41a6677c; empty failure ledger and sourceChanges; root verifier exit 0. Historical incomplete runs and the earlier 03c256b pass are retained separately without rebinding.",
+              "path": "specs/044-ai-tooling-evaluation/evidence/sc-003.json",
+              "sha256": "be03d292e11cc71347b01030969917e7185fd6be08c0379a1992b43cb1c22e04"
+            }
+          ],
           "planned_evidence": "specs/044-ai-tooling-evaluation/evidence/sc-003.json: exact candidate/input/environment hashes, actual commands/raw outputs, all outcomes and limits; human decisions require their own record.",
           "test_file": "specs/044-ai-tooling-evaluation/validation-plan.md",
           "test_name": "procedure_negative_controls",
@@ -207,49 +218,49 @@
           "given": "missing tokens, overlapping phases, exceeded budget and provider failure",
           "id": "SC-006",
           "obtained_evidence": [],
-          "planned_evidence": "specs/044-ai-tooling-evaluation/evidence/sc-006.json: exact candidate/input/environment hashes, actual commands/raw outputs, all outcomes and limits; human decisions require their own record.",
+          "planned_evidence": "specs/044-ai-tooling-evaluation/evidence/sc-006.json: exact candidate/input/environment hashes, actual commands/raw outputs, all outcomes and limits; human decisions require their own record. Preserve source hashes for measured technical user/setup/attempt/wall costs while retaining unknown reviewer fee/time and incomplete combined human-inclusive totals.",
           "test_file": "specs/044-ai-tooling-evaluation/validation-plan.md",
           "test_name": "procedure_complete_cost",
-          "then": "unknown differs from zero, wall totals are not double-counted and exceeded/blocked attempts stop without silent retry",
+          "then": "technical accounting may be complete when measured setup/user/108-attempt and technical wall receipts are verified; reviewer fee/time and combined human-inclusive totals remain unavailable; unknown differs from zero, wall totals are not double-counted and exceeded/blocked attempts stop without silent retry",
           "when": "cost accounting and admission run"
         }
       ],
-      "text": "Measure complete setup/provider/tool/runtime/export/user/reviewer costs with unavailable fields explicit and numerical stops enforced."
+      "text": "Measure complete technical setup/provider/tool/runtime/export/user costs with unavailable fields explicit and numerical stops enforced; measure user/setup/attempt and technical wall times with receipt hashes, while preserving reviewer time/fee and combined human-inclusive totals as unavailable until the deferred phase, and distinguish technical-cost completion from full human-inclusive completion."
     },
     {
       "id": "REQ-007",
       "scenarios": [
         {
-          "given": "completion thresholds met with complete costs, or missing required costs, a host failure or unresolved scoring",
+          "given": "all 108 technical outcomes and costs retained with human outcome labels/adjudication deferred; later addendum-based ratings are a separate phase",
           "id": "SC-007",
           "obtained_evidence": [],
-          "planned_evidence": "specs/044-ai-tooling-evaluation/evidence/sc-007.json: exact candidate/input/environment hashes, actual commands/raw outputs, all outcomes and limits; human decisions require their own record.",
+          "planned_evidence": "specs/044-ai-tooling-evaluation/evidence/sc-007.json: exact candidate/input/environment hashes, actual commands/raw outputs, all outcomes and limits; human decisions require their own record. Explicit v3 technical-report status, zero identified human reviewers, pending labels/adjudication, no positive utility assertion, preserved human costs as unavailable, and legacy v1/v2 behavior.",
           "test_file": "specs/044-ai-tooling-evaluation/validation-plan.md",
           "test_name": "procedure_interpretation",
-          "then": "per-host denominators and uncertainty remain visible; missing costs that prevent interpretation set utilityClaimEligible false and suppress positive utility claims in reports/exports/decision packets despite completion thresholds; safety failures block acceptance and no general causal speedup claim is inferred",
+          "then": "technical report preserves thresholds/denominators and marks human evaluation pending; no positive utility claim is available until human evaluation and complete applicable economic costs are resolved; missing required costs also block interpretation",
           "when": "the report is interpreted"
         }
       ],
-      "text": "Apply frozen human rubric and descriptive thresholds, report disagreements/missing labels and preserve legitimate negative results."
+      "text": "Retain the frozen human rubric and descriptive thresholds before capture; complete technical interpretation while human outcome labels and adjudication remain deferred; report missing labels as pending, preserve legitimate negative results, and make no positive utility claim until the human phase and complete applicable costs permit interpretation."
     },
     {
       "id": "REQ-008",
       "scenarios": [
         {
-          "given": "a bounded completed or inconclusive report",
+          "given": "T001–T006 and completed technical T007 evidence, applicable technical observations/reproduction, and independent technical findings; human outcome evaluation remains pending",
           "id": "SC-008",
           "obtained_evidence": [],
           "planned_evidence": "specs/044-ai-tooling-evaluation/evidence/sc-008.json: exact candidate/input/environment hashes, actual commands/raw outputs, all outcomes and limits; human decisions require their own record.",
           "test_file": "specs/044-ai-tooling-evaluation/validation-plan.md",
           "test_name": "procedure_acceptance_decision",
-          "then": "implementation/protocol/human gates are separated; M4.5 acceptance cannot reverse M4 G4 NO-GO or close M4",
+          "then": "technical decision packet records readiness and human evaluation pending; founder acceptance, T010 and milestone closure remain pending and are not inferred",
           "when": "the decision packet is assembled"
         }
       ],
-      "text": "Freeze candidate/evidence, obtain independent technical review and explicit founder scope/closure decision with historical M4 limits."
+      "text": "Prepare the technical decision packet from T001–T006 and completed technical T007 evidence, with human evaluation explicitly pending; obtain candidate-bound technical review and keep founder acceptance, T010 and milestone closure pending."
     }
   ],
-  "scientific_limits": "Existing AIM/runtime/grant/verifier contracts remain unchanged. Analysis and preparation are consultative; host permission never substitutes for operator grants. No source ref promotion, repository-code/hook execution, arbitrary network effects or new scientific guarantee. Existing M4 G4 NO-GO and independent M3/M3.5 gates remain in effect. Structural validation is not mathematical proof, scientific acceptance, production safety or human approval.",
-  "scope": "Register and execute candidate-bound deterministic controls, clean reproduction, actual Codex/Claude journeys and a complete-cost three-arm comparison.",
+  "scientific_limits": "Existing AIM/runtime/grant/verifier contracts remain unchanged. Analysis and preparation are consultative; host permission never substitutes for operator grants. No source ref promotion, repository-code/hook execution, arbitrary network effects or new scientific guarantee. Existing M4 G4 NO-GO and independent M3/M3.5 gates remain in effect. Structural validation is not mathematical proof, scientific acceptance, production safety or human approval. Observable identity does not establish backend reproducibility; hidden backend revisions and model nondeterminism remain limits.",
+  "scope": "Register and execute candidate-bound deterministic controls, clean reproduction, actual Codex/Claude journeys and all 108 technical three-arm attempts. Human outcome ratings and adjudication are explicitly deferred under the dated owner decision; the rubric remains frozen before capture.",
   "stage": "draft"
 }
