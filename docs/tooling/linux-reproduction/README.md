@@ -122,17 +122,18 @@ remains diagnosable without exposing raw traces to terminal output.
 
 ## Execution boundary and expected record
 
-The current workstation's Docker daemon is ARM64, so it cannot produce the
-required Linux x86_64 observation. No image pull, container launch, installed
-probe, or Linux result is part of this prepared record.
+The earlier preparation-only record required native x86_64 hardware and therefore
+did not execute on this workstation's ARM64 Docker daemon. The current explicit
+emulation mode has separately retained actual Linux x86_64 installed-package
+results; it does not supply native hardware or registered SPEC-044/T004 evidence.
 
 Retain the candidate commit, wheel, verifier and launcher hashes, lock-manifest
 hash, wheelhouse inventory hash, base digest, host and Python versions, installed
 distribution/SDK versions, skill-bundle and asset-roster hashes, protocol
 control outcomes, exit status, and any failure/timeout. Record missing prerequisites as not executed;
-never turn them into passes or failures of the package. This recipe supplies
-preparation only and makes no host-acceptance, provider, registration, cohort,
-utility, or scientific claim.
+never turn them into passes or failures of the package. The original preparation record is historical. Current execution is separately
+indexed below and makes no native-host, provider, registration, cohort, utility
+or scientific claim.
 
 ## Explicit emulation boundary
 

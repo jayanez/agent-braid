@@ -12,9 +12,41 @@ The table below is a historical record for the earlier integration `153c8fb7452f
 `30c058c14ae5dbcfc3c4e369d480f402f935520a6c68d7dd13c7ebac80061c08`.
 The recorded product modules match that historical integrated source. The observations below are not transferred to another commit. The e40c949 source was the reviewed PR candidate at the time of the bound validation observations below; it is the latest validated source candidate in this historical section.
 
-## Current preparation delivery — 2026-10-10
+## Autonomous technical closure — 2026-10-10
 
-The active owner goal is the [five-task preparation delivery](../../specs/044-ai-tooling-evaluation/preparation-delivery-plan.md):
+The current local technical capture is complete within its stated scope. Canonical
+scenario receipts were published separately and bind distinct source candidates;
+there is no single candidate that supports every row below. See
+[autonomous completion](AUTONOMOUS_COMPLETION.md) for the private evidence handling
+and the canonical receipt index.
+
+| Procedure | Bound candidate | Observed result | Boundary |
+| --- | --- | --- | --- |
+| Offline macOS core/tooling wheel installations and CLI/MCP checks | `53f1704ca7ea668637efdeb2d4b0a231769b3c68`; wheel SHA-256 `c43fd789b64cc123e8fd3c903fd075c27b9ce012964fbd7e8017f847cf54814d` | Fresh isolated core and SDK-extra environments passed the 15-command package procedure, including actual SDK auto/legacy CLI parity and the core-only SDK refusal. | Local macOS ARM64/CPython only; no native Codex or Claude host was launched. |
+| Linux AMD64 package reproduction | `53f1704ca7ea668637efdeb2d4b0a231769b3c68`; same wheel digest | Offline installation/probe passed on an ARM64 Docker host using explicit AMD64 emulation. | Not native AMD64 hardware, performance evidence or registered SPEC-044 SC-004. |
+| Engineering controls | `aaae2e76b74653d142c46027bd33f3e05c0982eb` | 223 tests passed with no skips. | Synthetic/unit controls; no live provider or host behavior. |
+| Program acceptance | `5cffa9d27f27686dc2cbbf90ed643e2ec2df94e7` | Eight positive/refusal control scenarios passed. | Local deterministic procedure; does not start the 108-attempt cohort. |
+| MCP acceptance | `5cffa9d27f27686dc2cbbf90ed643e2ec2df94e7` | Eight acceptance scenarios and 37/37 tests passed with no skips; an actual local SDK stdio peer completed auto and legacy negotiation. | SDK peer is not a native Codex or Claude host observation. |
+| Lifecycle acceptance | `5cffa9d27f27686dc2cbbf90ed643e2ec2df94e7` | 13/13 tests passed, no skips or failures. | Deterministic local fixtures; doctor remains pending and no native-host install was observed. |
+
+Canonical scenario receipts: [SPEC-039] [SC-001](../../specs/039-ai-tooling-program/evidence/sc-001.json) [SC-002](../../specs/039-ai-tooling-program/evidence/sc-002.json) [SC-003](../../specs/039-ai-tooling-program/evidence/sc-003.json) [SC-004](../../specs/039-ai-tooling-program/evidence/sc-004.json) [SC-005](../../specs/039-ai-tooling-program/evidence/sc-005.json) [SC-006](../../specs/039-ai-tooling-program/evidence/sc-006.json) [SC-007](../../specs/039-ai-tooling-program/evidence/sc-007.json) [SC-008](../../specs/039-ai-tooling-program/evidence/sc-008.json); [SPEC-040] [SC-001](../../specs/040-portable-mcp-surface/evidence/sc-001.json) [SC-002](../../specs/040-portable-mcp-surface/evidence/sc-002.json) [SC-003](../../specs/040-portable-mcp-surface/evidence/sc-003.json) [SC-004](../../specs/040-portable-mcp-surface/evidence/sc-004.json) [SC-005](../../specs/040-portable-mcp-surface/evidence/sc-005.json) [SC-006](../../specs/040-portable-mcp-surface/evidence/sc-006.json) [SC-007](../../specs/040-portable-mcp-surface/evidence/sc-007.json) [SC-008](../../specs/040-portable-mcp-surface/evidence/sc-008.json); [SPEC-042] [SC-001](../../specs/042-ai-tooling-packaging/evidence/sc-001.json) [SC-002](../../specs/042-ai-tooling-packaging/evidence/sc-002.json) [SC-003](../../specs/042-ai-tooling-packaging/evidence/sc-003.json) [SC-004](../../specs/042-ai-tooling-packaging/evidence/sc-004.json) [SC-005](../../specs/042-ai-tooling-packaging/evidence/sc-005.json) [SC-006](../../specs/042-ai-tooling-packaging/evidence/sc-006.json) [SC-007](../../specs/042-ai-tooling-packaging/evidence/sc-007.json) [SC-008](../../specs/042-ai-tooling-packaging/evidence/sc-008.json);
+and the applicable [SPEC-043] [SC-002](../../specs/043-ai-tooling-journey/evidence/sc-002.json) [SC-004](../../specs/043-ai-tooling-journey/evidence/sc-004.json) [SC-005](../../specs/043-ai-tooling-journey/evidence/sc-005.json) [SC-006](../../specs/043-ai-tooling-journey/evidence/sc-006.json) [SC-007](../../specs/043-ai-tooling-journey/evidence/sc-007.json). Auxiliary clause and validation receipts:
+[SPEC-041 technical clauses](../../specs/041-ai-tooling-skills/evidence/technical-clauses.json),
+[SPEC-043 technical clauses](../../specs/043-ai-tooling-journey/evidence/technical-clauses.json),
+[SPEC-044 technical clauses](../../specs/044-ai-tooling-evaluation/evidence/technical-clauses.json),
+and [SPEC-044 technical validation](../../specs/044-ai-tooling-evaluation/evidence/technical-validation.json).
+
+M4.5 remains Open. The six original draft packages and all 60 original acceptance
+criteria are retained; 19 added evidence tasks produce 79 task issues (52 complete,
+27 pending), plus six open parent issues. Native Codex/Claude workflows, human
+outcome interpretation/adjudication, founder acceptance, ADR adoption and milestone
+closure remain separate gates. The 108-attempt registered cohort has not started.
+M4 bounded engineering/evaluation closure does not change historical G4 NO-GO or
+its negative-utility result; M3.5 remains independent with zero admitted real pairs.
+
+## Historical preparation delivery — 2026-10-10
+
+The then-active owner goal was the [five-task preparation delivery](../../specs/044-ai-tooling-evaluation/preparation-delivery-plan.md):
 freeze both dependency closures, verify the installed macOS package, prepare the
 Linux x86_64 recipe, consolidate independently reviewed evidence, and reconcile
 project documentation and GitHub tracking after validated integration. Additional

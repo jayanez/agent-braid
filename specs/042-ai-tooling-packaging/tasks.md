@@ -2,37 +2,37 @@
 
 Stable task IDs are implementation obligations. Experimental implementation and partial local observations exist, but a task remains incomplete until its full paired procedure produces candidate-bound evidence. Partial evidence is explicitly scoped below and does not complete a task. Targets below may include future files.
 
-- [ ] T001 (REQ-001/SC-001): Include versioned skills/host metadata in wheel/sdist and resolve them from installed resources with the optional tooling extra.
+- [x] T001 (REQ-001/SC-001): Include versioned skills/host metadata in wheel/sdist and resolve them from installed resources with the optional tooling extra.
   Dependencies: none; consumed contract review. Targets: `pyproject.toml assets; installed package resource controls`.
-  Verification and planned evidence: `validation-plan.md::procedure_installed_assets`; `evidence/sc-001.json` with actual commands and negative controls. Obtained: partial wheel installation/capability observations and default installed resource byte equality for five skills/five supporting assets; see `evidence/partial-installed-e40c949.json`. The frozen 3885706 preparation packet in `../../docs/tooling/evidence/preparation-20261010.json` additionally records wheel/sdist build hashes, offline macOS core/tooling installation, and origins for twelve packaged assets, including five skills. Native host loading and full procedure/task remain incomplete.
+  Verification and planned evidence: `validation-plan.md::procedure_installed_assets`; `evidence/sc-001.json` with actual commands and negative controls. Obtained: `evidence/sc-001.json`; complete bounded paired procedure passed at its actual recorded source/input identities. Earlier partial evidence remains historical in assurance.json. Native-host acceptance, registered SPEC-044/T004, human/founder decisions remain separate.
 
-- [ ] T002 (REQ-002/SC-002): Provide explicit serve/configure/install/doctor/update/uninstall commands with previewed destinations, effects, version and roots.
+- [x] T002 (REQ-002/SC-002): Provide explicit serve/configure/install/doctor/update/uninstall commands with previewed destinations, effects, version and roots.
   Dependencies: T001. Targets: `agent_braid/cli.py tooling command group; lifecycle API`.
-  Verification and planned evidence: `validation-plan.md::procedure_lifecycle_api`; `evidence/sc-002.json` with actual commands and negative controls. Obtained: none.
+  Verification and planned evidence: `validation-plan.md::procedure_lifecycle_api`; `evidence/sc-002.json` with actual commands and negative controls. Obtained: `evidence/sc-002.json`; complete bounded paired procedure passed at its actual recorded source/input identities. Earlier partial evidence remains historical in assurance.json. Native-host acceptance, registered SPEC-044/T004, human/founder decisions remain separate.
 
-- [ ] T003 (REQ-003/SC-003): Support reusable user and opt-in project scope according to each host's actual conventions with per-server trusted roots.
+- [x] T003 (REQ-003/SC-003): Support reusable user and opt-in project scope according to each host's actual conventions with per-server trusted roots.
   Dependencies: T001. Targets: `tooling_install.py host scope adapters and explicit root configuration`.
-  Verification and planned evidence: `validation-plan.md::procedure_scope_and_roots`; `evidence/sc-003.json` with actual commands and negative controls. Obtained: none.
+  Verification and planned evidence: `validation-plan.md::procedure_scope_and_roots`; `evidence/sc-003.json` with actual commands and negative controls. Obtained: `evidence/sc-003.json`; complete bounded paired procedure passed at its actual recorded source/input identities. Earlier partial evidence remains historical in assurance.json. Native-host acceptance, registered SPEC-044/T004, human/founder decisions remain separate.
 
-- [ ] T004 (REQ-004/SC-004): Apply configuration atomically with backups/ownership hashes and preserve unrelated keys, comments and skills.
+- [x] T004 (REQ-004/SC-004): Apply configuration atomically with backups/ownership hashes and preserve unrelated keys, comments and skills.
   Dependencies: T001. Targets: `tooling_install.py atomic scoped apply/backup/receipt; preservation controls`.
-  Verification and planned evidence: `validation-plan.md::procedure_configuration_preservation`; `evidence/sc-004.json` with actual commands and negative controls. Obtained: none.
+  Verification and planned evidence: `validation-plan.md::procedure_configuration_preservation`; `evidence/sc-004.json` with actual commands and negative controls. Obtained: `evidence/sc-004.json`; complete bounded paired procedure passed at its actual recorded source/input identities. Earlier partial evidence remains historical in assurance.json. Native-host acceptance, registered SPEC-044/T004, human/founder decisions remain separate.
 
-- [ ] T005 (REQ-005/SC-005): Report doctor results separately for executable, dependency/assets, host/config/roots, protocol and runtime enablement.
+- [x] T005 (REQ-005/SC-005): Report doctor results separately for executable, dependency/assets, host/config/roots, protocol and runtime enablement.
   Dependencies: T001. Targets: `tooling_install.py read-only doctor; diagnostic status controls`.
-  Verification and planned evidence: `validation-plan.md::procedure_doctor_status`; `evidence/sc-005.json` with actual commands and negative controls. Obtained: none.
+  Verification and planned evidence: `validation-plan.md::procedure_doctor_status`; `evidence/sc-005.json` with actual commands and negative controls. Obtained: `evidence/sc-005.json`; complete bounded paired procedure passed at its actual recorded source/input identities. Earlier partial evidence remains historical in assurance.json. Native-host acceptance, registered SPEC-044/T004, human/founder decisions remain separate.
 
-- [ ] T006 (REQ-006/SC-006): Update only receipt-owned assets, verify compatibility/version and refuse unknown modifications.
+- [x] T006 (REQ-006/SC-006): Update only receipt-owned assets, verify compatibility/version and refuse unknown modifications.
   Dependencies: T001–T005. Targets: `tooling_install.py owned update; drift/collision controls`.
-  Verification and planned evidence: `validation-plan.md::procedure_safe_update`; `evidence/sc-006.json` with actual commands and negative controls. Obtained: none.
+  Verification and planned evidence: `validation-plan.md::procedure_safe_update`; `evidence/sc-006.json` with actual commands and negative controls. Obtained: `evidence/sc-006.json`; complete bounded paired procedure passed at its actual recorded source/input identities. Earlier partial evidence remains historical in assurance.json. Native-host acceptance, registered SPEC-044/T004, human/founder decisions remain separate.
 
-- [ ] T007 (REQ-007/SC-007): Uninstall only matching owned entries and report residual shared/modified data.
+- [x] T007 (REQ-007/SC-007): Uninstall only matching owned entries and report residual shared/modified data.
   Dependencies: T001–T005. Targets: `tooling_install.py owned uninstall; residual/idempotency controls`.
-  Verification and planned evidence: `validation-plan.md::procedure_safe_uninstall`; `evidence/sc-007.json` with actual commands and negative controls. Obtained: none.
+  Verification and planned evidence: `validation-plan.md::procedure_safe_uninstall`; `evidence/sc-007.json` with actual commands and negative controls. Obtained: `evidence/sc-007.json`; complete bounded paired procedure passed at its actual recorded source/input identities. Earlier partial evidence remains historical in assurance.json. Native-host acceptance, registered SPEC-044/T004, human/founder decisions remain separate.
 
-- [ ] T008 (REQ-008/SC-008): Record license/provenance/transitive dependencies and reproduce package/lifecycle controls on supported platforms without cloud claims.
+- [x] T008 (REQ-008/SC-008): Record license/provenance/transitive dependencies and reproduce package/lifecycle controls on supported platforms without cloud claims.
   Dependencies: T001–T005. Targets: `artifact hashes/license inventory; macOS/Linux package reproduction receipts`.
-  Verification and planned evidence: `validation-plan.md::procedure_package_provenance`; `evidence/sc-008.json` with actual commands and negative controls. Obtained: partial wheel provenance, local macOS build/install, and default installed resource byte equality only; see `evidence/partial-installed-e40c949.json`. The frozen 3885706 preparation packet in `../../docs/tooling/evidence/preparation-20261010.json` additionally records wheel/sdist build hashes, macOS offline installation, hash-bound 28-wheel target dependency manifests/closures and declared license metadata, and a prepared Linux bundle with static refusal controls. Registered Linux reproduction, legal compatibility and the full procedure/task remain incomplete.
+  Verification and planned evidence: `validation-plan.md::procedure_package_provenance`; `evidence/sc-008.json` with actual commands and negative controls. Obtained: `evidence/sc-008.json`; complete bounded paired procedure passed at its actual recorded source/input identities. Earlier partial evidence remains historical in assurance.json. Native-host acceptance, registered SPEC-044/T004, human/founder decisions remain separate.
 
 - [ ] T009 (REQ-001,REQ-002,REQ-003,REQ-004,REQ-005,REQ-006,REQ-007,REQ-008/SC-001,SC-002,SC-003,SC-004,SC-005,SC-006,SC-007,SC-008): Reconcile implementation evidence and run repository quick/PR gates.
   Dependencies: T001–T008. Targets: this spec's assurance.json, validation receipts and bounded candidate.

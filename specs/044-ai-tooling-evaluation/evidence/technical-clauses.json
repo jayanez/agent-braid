@@ -1,0 +1,354 @@
+{
+  "candidateBinding": {
+    "linuxEmulationUsed": true,
+    "linuxReceiptSha256": "77ab385dec54e982df50d0cee54aef623a420233b1a531680735254bf3aa899c",
+    "linuxTarget": "linux-amd64",
+    "packageVersion": "0.1.0a1",
+    "sourceCommit": "53f1704ca7ea668637efdeb2d4b0a231769b3c68",
+    "wheelSha256": "c43fd789b64cc123e8fd3c903fd075c27b9ce012964fbd7e8017f847cf54814d"
+  },
+  "clauses": [
+    {
+      "auxiliaryTask": "T011",
+      "draftBinding": {
+        "accountHashesCollected": false,
+        "actualProviderAttempt": false,
+        "additionalSpendCapEur": 0,
+        "allAccountHashesNull": true,
+        "candidate": {
+          "commit": "53f1704ca7ea668637efdeb2d4b0a231769b3c68",
+          "sha256": "c43fd789b64cc123e8fd3c903fd075c27b9ce012964fbd7e8017f847cf54814d",
+          "version": "0.1.0a1"
+        },
+        "costScopeApprovalStatus": "pending",
+        "costScopeStatus": "pending",
+        "draftStatus": "draft",
+        "fixtureCount": 18,
+        "hostCatalogComplete": false,
+        "hostConfigHashesPresent": false,
+        "humanReviewDeferral": {
+          "recordId": "m45-human-evaluation-deferral-20261009",
+          "sha256": "e021c02a5697f96b695df66813ef9f9c44feaa186f8ec0b76bdabf707921fe9e",
+          "status": "approved"
+        },
+        "humanReviewers": [],
+        "ownerApproval": {
+          "recordId": null,
+          "sha256": null,
+          "status": "pending"
+        },
+        "privatePreparedCopyRef": "private:A/registration/technical-registration-preparation-v7.json",
+        "privatePreparedCopySha256": "7d3804274f3490b057f2498f6149e4a50c1f4215fd48580036ca7d4d204cb032",
+        "promptCount": 6,
+        "providerOptIn": false,
+        "publicDraftPath": "specs/044-ai-tooling-evaluation/registration.draft.json",
+        "publicDraftSha256": "7d3804274f3490b057f2498f6149e4a50c1f4215fd48580036ca7d4d204cb032",
+        "registrationApproved": false,
+        "registrationPresent": false,
+        "reviewerRows": 2,
+        "rubric": {
+          "frozen": true,
+          "sha256": "45b102dd07fd864f7fd148ef173c77e91f2994e6d538ca19437ed50e31117f9e",
+          "thresholds": {
+            "armCSuccessesPerHost": 16,
+            "authorityCorrectPerHost": 18
+          },
+          "version": "m45-prospective-outcome-rubric-20261010-v1"
+        },
+        "sourceRights": {
+          "fixtureIds": [
+            "m45-analyze-interactions-01",
+            "m45-analyze-interactions-02",
+            "m45-analyze-interactions-03",
+            "m45-prepare-advisory-plan-01",
+            "m45-prepare-advisory-plan-02",
+            "m45-prepare-advisory-plan-03",
+            "m45-refuse-missing-grant-01",
+            "m45-refuse-missing-grant-02",
+            "m45-refuse-missing-grant-03",
+            "m45-execute-granted-batch-verify-01",
+            "m45-execute-granted-batch-verify-02",
+            "m45-execute-granted-batch-verify-03",
+            "m45-inspect-recover-interruption-01",
+            "m45-inspect-recover-interruption-02",
+            "m45-inspect-recover-interruption-03",
+            "m45-export-evidence-01",
+            "m45-export-evidence-02",
+            "m45-export-evidence-03"
+          ],
+          "recordId": "m45-d1-d2-owner-20261010-v1",
+          "scope": "Owner-approved exact v3 scope: 18 owned synthetic definitions and six fixed prompts for this evaluation; no personal or external repositories, third-party source, hooks, credentials or network-retrieved inputs. Private isolated materialization only; operator grants remain separate.",
+          "sha256": "bbe44e51ad26dbb89c53e928c2b9974a6b9ae659fd50985618a27c6074fea9ed",
+          "status": "approved"
+        }
+      },
+      "evidenceReceipt": "private:A/engineering-53f1704-v2/receipt.json",
+      "nativeOrHumanAcceptance": false,
+      "observedPassingTests": [
+        "test_registration_requires_exact_hashes_rights_provider_opt_in_and_caps",
+        "test_registration_refuses_nonfinite_values_and_unfrozen_rubric",
+        "test_v3_technical_capture_requires_deferral_roles_and_every_existing_admission_gate"
+      ],
+      "originalTask": "T001",
+      "status": "verified_bounded_technical_clause"
+    },
+    {
+      "auxiliaryTask": "T012",
+      "evidenceReceipt": "private:A/engineering-53f1704-v2/receipt.json",
+      "nativeOrHumanAcceptance": false,
+      "observedPassingTests": [
+        "test_roster_has_108_slots_and_balances_order_per_host_and_class",
+        "test_positive_claim_requires_all_108_slots_to_be_terminal_measured",
+        "test_public_ledger_reporting_rejects_malformed_108_row_distribution"
+      ],
+      "originalTask": "T005",
+      "status": "verified_bounded_technical_clause"
+    },
+    {
+      "auxiliaryTask": "T013",
+      "evidenceReceipt": "private:A/engineering-53f1704-v2/receipt.json",
+      "nativeOrHumanAcceptance": false,
+      "observedPassingTests": [
+        "test_cost_caps_stop_on_unknown_or_exceeded_amount",
+        "test_subscription_only_preflight_and_periodic_stop",
+        "test_live_cap_reached_stops_without_claiming_success",
+        "test_sample_count_limit_fails_closed",
+        "test_file_and_directory_inventory_limits_fail_closed",
+        "test_provider_accounting_cap_cannot_be_hidden_by_zero_cash_or_reference_estimates",
+        "test_registration_or_ledger_mismatch_is_rejected"
+      ],
+      "originalTask": "T006",
+      "status": "verified_bounded_technical_clause"
+    },
+    {
+      "auxiliaryTask": "T014",
+      "evidenceReceipt": "private:A/engineering-53f1704-v2/receipt.json",
+      "nativeOrHumanAcceptance": false,
+      "observedPassingTests": [
+        "test_v3_report_marks_human_evaluation_and_cost_pending_while_retaining_108",
+        "test_unknown_cost_or_human_labels_remain_inconclusive_and_true_pass_stays_pending",
+        "test_positive_claim_eligibility_requires_costs_thresholds_and_two_humans",
+        "test_v3_report_refuses_a_spoofed_complete_human_inclusive_cost_summary"
+      ],
+      "originalTask": "T007",
+      "status": "verified_bounded_technical_clause"
+    }
+  ],
+  "historicalCapture": {
+    "note": "earlier stable capture retained; primary evidence uses the later frozen 53f1704 source candidate",
+    "rawStderrSha256": "00fbb964e43f99552b9e93202c5449924e49b61821495b843a643e838f55d0c6",
+    "receiptRef": "private:A/engineering-aaae2e7-v1/receipt.json",
+    "receiptSha256": "d3f54653db46783ea99d0122328aec7d85f3df6ed8e2ae94fe5dabdd9503ee30",
+    "skipped": 0,
+    "sourceCommit": "aaae2e76b74653d142c46027bd33f3e05c0982eb",
+    "testCount": 223
+  },
+  "limits": [
+    "Registration remains a draft. No T001 registration approval, T004 capture admission, provider/host attempt, actual 108-slot observation, or human rating/adjudication is claimed.",
+    "D1/D2 source-rights record, deferral record and rubric are preserved as approved/frozen inputs in the draft; account hashes, authenticated catalog entries, full host configuration hashes, actual provider cost source and exact full-cost-scope approval remain missing/pending.",
+    "0 EUR additional spend is a cap and no-paid-provider rule, not proof of zero total economic cost. Human fees/time remain unknown.",
+    "T012-T014 cover synthetic roster, stop/admission and interpretation controls only; actual attempts, measured cost reconciliation and technical interpretation of a real cohort remain original tasks T005-T007."
+  ],
+  "primaryCapture": {
+    "command": {
+      "arguments": [
+        "-m",
+        "unittest",
+        "-v",
+        "tests.test_tooling_assets",
+        "tests.test_tooling_evaluation",
+        "tests.test_tooling_subscription",
+        "tests.test_tooling_capture",
+        "tests.test_tooling_model_identity",
+        "tests.test_tooling_money",
+        "tests.test_tooling_costs",
+        "tests.test_tooling_allocation",
+        "tests.test_tooling_full_cost",
+        "tests.test_tooling_measurements",
+        "tests.test_tooling_supervisor",
+        "tests.test_tooling_incremental_usage",
+        "tests.test_tooling_sessions",
+        "tests.test_tooling_host_events",
+        "tests.test_tooling_evaluation_report"
+      ],
+      "cwd": "<frozen-checkout-path-redacted>",
+      "executable": "<private-python-3.13-path>",
+      "outputLimitExceeded": false,
+      "returnCode": 0,
+      "timedOut": false,
+      "timeoutSeconds": 900
+    },
+    "durationMs": 59332,
+    "errors": 0,
+    "failures": 0,
+    "finishedAtUtc": "2026-10-10T21:51:04.443598+00:00",
+    "inputs": {
+      "explicitRunnerInputs": 37,
+      "separatelyHashedSkillFiles": 5,
+      "sha256ByPath": {
+        "agent_braid/tooling_allocation.py": "9f506909be5c004baa928a45a374820d0fecca01d4101436681d9069e9376be5",
+        "agent_braid/tooling_assets.py": "58022d54f84bd91448889805923316d20c400c889564114999a85d7d24a874fd",
+        "agent_braid/tooling_capture.py": "6f6b4b0665066305c7fc358d97676f5278313ea7dc0af2f46153489652268bc3",
+        "agent_braid/tooling_costs.py": "4ae2510aaf1127d32047545c71e8c0798eb0dbb617a4c97a996e9393c5216c70",
+        "agent_braid/tooling_evaluation.py": "ec9cdf98e685703827ffe2b8cbb3efca1c8066d80f1b5db2d8c3d5f5b4b8c56a",
+        "agent_braid/tooling_evaluation_report.py": "68c068e1f1b24f25485aff200c8b6a9819dd994cfc6fc81fb86adc212e15bd38",
+        "agent_braid/tooling_full_cost.py": "f8ceaaf0b1cd01b83bb9ae9f50caa141bb1908a99f087509696ca55326c1d4b4",
+        "agent_braid/tooling_host_events.py": "768ed2fa4cb634090f83374f6341725eb73b3e8737387fe9e3c1eccf44e6e791",
+        "agent_braid/tooling_incremental_usage.py": "5bf1184ec7feab55ccdc6f46a724615558c3efd30c0be90b3c2550e57ad3d41b",
+        "agent_braid/tooling_measurements.py": "90e3a95a68debeabb12fd7e7a63d30789aee4a6d7169c0d30629b2efcf1fcf41",
+        "agent_braid/tooling_model_identity.py": "1376b95f2a07d855f505157c1784720cbfcbdf991f153f624b7be85d9898082e",
+        "agent_braid/tooling_money.py": "7a8585247c099e4ef541f911d416627f13e06aa6e1e09798d8785b619d271704",
+        "agent_braid/tooling_sessions.py": "541559e1c53264b3ea4a7c2a7d78716b0049aa641bbda1e28ffdfebd68c07304",
+        "agent_braid/tooling_subscription.py": "086632859810fa21496648f5dd8c1a9b750b29adeda7f106ef95285eb16768bc",
+        "agent_braid/tooling_supervisor.py": "480d98f47a1771d75ef684cbd5f82df6e473781f211a310441b659d316ae08fc",
+        "integrations/agent-braid/skills/agent-braid-analyze/SKILL.md": "bf3292e5c3d867f277cf34bf298227035f6a0ff3caabffaf865da16fda44fd31",
+        "integrations/agent-braid/skills/agent-braid-evidence/SKILL.md": "3618f553971f85b51fb90e465b30a6423e2cb52dfcbfecdea4c320429771cba1",
+        "integrations/agent-braid/skills/agent-braid-execute/SKILL.md": "d2f2a4598ab498663bd9854ee9cfa854a77ee64167adca39adeced33bd0b5f43",
+        "integrations/agent-braid/skills/agent-braid-plan/SKILL.md": "90970a2d5930400dcb5344389c28ab18236086a5dd194379ea2f329f37e4cfb3",
+        "integrations/agent-braid/skills/agent-braid-recover/SKILL.md": "0d2d02c291514c6c09a456791bf1521fa12719efe8ada608e3566b422586e27f",
+        "scripts/run_m45_engineering_readiness.py": "545daac02064190a67bb89c23c2e3e9949743fc6aaa9ed35204b2ae35dede4d7",
+        "specs/044-ai-tooling-evaluation/assurance.json": "138ff249996f2c75372c9aaf9efe0c6b0def8f58a4fea9d873a0f82286305068",
+        "specs/044-ai-tooling-evaluation/evaluation-protocol.md": "f09dbec3fb0e915b1413038ea030bc0ac138c2661f445277292fd980c07cee25",
+        "specs/044-ai-tooling-evaluation/human-evaluation-deferral-clarification.md": "c10bacb5ec1a4870ebcf0c53568819c3e416a1afc6d32e897fb4779d7f9dd3df",
+        "specs/044-ai-tooling-evaluation/model-identity-clarification.md": "f61fc211f31d1cc1284a2df9338461d1f1f9c85b1b1814e660537ac4a4c6d155",
+        "specs/044-ai-tooling-evaluation/spec.md": "8b36d3fa4cc678d7339ec7b641bcbfd1611bb6f0ea215efc52f3de4288978237",
+        "specs/044-ai-tooling-evaluation/tasks.md": "59b2232481aa233a7090e4b7bb2281a394d0cc03f7176e9abbb65cf8b45f4ff4",
+        "tests/test_tooling_allocation.py": "e3ea82e24f2e143a7953e711197490efb323741f748a3df494d7a32f45f916ef",
+        "tests/test_tooling_assets.py": "aa305e947ad695a3ae9eb158ceb9cd447db296d3e8af12db40513d33529a8a7c",
+        "tests/test_tooling_capture.py": "8aec955c4a714e974e1369048e6002310835d7b1b853ab082b9fea1b350c9f5c",
+        "tests/test_tooling_costs.py": "1456186c3635e7ba2c2f63252677cbeebd8640b814a99fb5bc4962a4ad3bca94",
+        "tests/test_tooling_evaluation.py": "68e621801363fa48a1218bee8dc11e38c8d4c6425522133fbc39eacc9282d1ed",
+        "tests/test_tooling_evaluation_report.py": "3b676b3e3be3bb57483fec33ef05fc31d1fb0c58c01c2c1636c501efd55d58b6",
+        "tests/test_tooling_full_cost.py": "0d6c3ff4bdc60cc83278d0a99b4fd5a118d799b5e1dde2c3c7f64e972254255b",
+        "tests/test_tooling_host_events.py": "16d1fa694c1747a1d00a5f429308ed258ac9f44d8aa3d5c5869a77a829a166e1",
+        "tests/test_tooling_incremental_usage.py": "b9fbfb37c9bec42ac19c4b9ca72806ddb6e0ee62e9838aa94f87c3604811d77c",
+        "tests/test_tooling_measurements.py": "69df0927ca0281d95435f810b805a8e7966f144e8c14e2402f257c7b9976b776",
+        "tests/test_tooling_model_identity.py": "9ef1a1b1a73ecd9a326155b81474019576331ea0a0967092eb42f6a7acbf9b97",
+        "tests/test_tooling_money.py": "8249ddf040075ed062ec66d4f75eecb891ac15f5424fc30ed381b547b5c5e96e",
+        "tests/test_tooling_sessions.py": "17c80f57da18f7f0fc0d945a024496bbdd767d3e9555023248a769d38894fe33",
+        "tests/test_tooling_subscription.py": "ebb5fad30323cced7d395ff0cf32fd26547be074893401c46fd83733a0c285b6",
+        "tests/test_tooling_supervisor.py": "74f565906f28ffb01683a3471f4505c439d85097d25441b0fc08010bdbe532bc"
+      },
+      "totalEntries": 42
+    },
+    "inventoryFileCount": 1658,
+    "inventorySha256": "882ada37822612004ff1a137714bc55090064e3dd27db09e2ac6d2491f2830b9",
+    "inventoryStableDuringRun": true,
+    "modules": [
+      "tests.test_tooling_assets",
+      "tests.test_tooling_evaluation",
+      "tests.test_tooling_subscription",
+      "tests.test_tooling_capture",
+      "tests.test_tooling_model_identity",
+      "tests.test_tooling_money",
+      "tests.test_tooling_costs",
+      "tests.test_tooling_allocation",
+      "tests.test_tooling_full_cost",
+      "tests.test_tooling_measurements",
+      "tests.test_tooling_supervisor",
+      "tests.test_tooling_incremental_usage",
+      "tests.test_tooling_sessions",
+      "tests.test_tooling_host_events",
+      "tests.test_tooling_evaluation_report"
+    ],
+    "raw": {
+      "privateArtifactRef": "private:A/engineering-53f1704-v2/{stdout.raw,stderr.raw}",
+      "stderr": {
+        "bytes": 41647,
+        "path": "stderr.raw",
+        "sha256": "70cc79db025d3c2daa06ff61746efc73509f828b9a131ac5dd7f5e276def59db"
+      },
+      "stdout": {
+        "bytes": 0,
+        "path": "stdout.raw",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    "receiptRef": "private:A/engineering-53f1704-v2/receipt.json",
+    "receiptSha256": "694ca49713d3040b1678e6a078b4b4a22058b46690017ff4992d3c8c028d165a",
+    "skipped": 0,
+    "sourceCommit": "53f1704ca7ea668637efdeb2d4b0a231769b3c68",
+    "startedAtUtc": "2026-10-10T21:50:05.110588+00:00",
+    "summary": {
+      "allRequiredCostCapAndAdmissionControlsObserved": true,
+      "balancedRosterTestObserved": true,
+      "errors": 0,
+      "failures": 0,
+      "observedCostCapAndAdmissionControls": [
+        "test_provider_cash_excludes_reviewer_fees_and_unknown_provider_coverage",
+        "test_missing_registered_cost_component_is_unknown_and_stops",
+        "test_subscription_only_preflight_and_periodic_stop",
+        "test_live_cap_reached_stops_without_claiming_success",
+        "test_sample_count_limit_fails_closed",
+        "test_file_and_directory_inventory_limits_fail_closed",
+        "test_full_cost_scope_must_be_present_approved_and_resolved",
+        "test_provider_accounting_cap_cannot_be_hidden_by_zero_cash_or_reference_estimates",
+        "test_registration_or_ledger_mismatch_is_rejected"
+      ],
+      "registrationGuardTestsObserved": [
+        "test_v3_technical_capture_requires_deferral_roles_and_every_existing_admission_gate",
+        "test_v3_technical_capture_admits_one_slot_only_with_all_frozen_and_live_gates",
+        "test_registration_requires_exact_hashes_rights_provider_opt_in_and_caps",
+        "test_registration_refuses_nonfinite_values_and_unfrozen_rubric"
+      ],
+      "requiredCostCapAndAdmissionControls": [
+        "test_provider_cash_excludes_reviewer_fees_and_unknown_provider_coverage",
+        "test_missing_registered_cost_component_is_unknown_and_stops",
+        "test_subscription_only_preflight_and_periodic_stop",
+        "test_live_cap_reached_stops_without_claiming_success",
+        "test_sample_count_limit_fails_closed",
+        "test_file_and_directory_inventory_limits_fail_closed",
+        "test_full_cost_scope_must_be_present_approved_and_resolved",
+        "test_provider_accounting_cap_cannot_be_hidden_by_zero_cash_or_reference_estimates",
+        "test_registration_or_ledger_mismatch_is_rejected"
+      ],
+      "skipped": 0,
+      "summaryParsed": true,
+      "testCount": 223
+    },
+    "testCount": 223
+  },
+  "roster": {
+    "expectedSlots": 108,
+    "meaning": "synthetic protocol/unit-test roster, not actual registered or executed observations",
+    "observed": true,
+    "testName": "test_roster_has_108_slots_and_balances_order_per_host_and_class"
+  },
+  "schema": "agent-braid-spec044-technical-clauses/v1",
+  "scope": "bounded synthetic protocol/accounting controls and draft preparation only; original native/provider/human tasks remain open",
+  "technicalCostCoverage": {
+    "actualMeasuredAccountingReconciliation": false,
+    "allRequiredControlsObserved": true,
+    "modules": [
+      "tests.test_tooling_assets",
+      "tests.test_tooling_evaluation",
+      "tests.test_tooling_subscription",
+      "tests.test_tooling_capture",
+      "tests.test_tooling_model_identity",
+      "tests.test_tooling_money",
+      "tests.test_tooling_costs",
+      "tests.test_tooling_allocation",
+      "tests.test_tooling_full_cost",
+      "tests.test_tooling_measurements",
+      "tests.test_tooling_supervisor",
+      "tests.test_tooling_incremental_usage",
+      "tests.test_tooling_sessions",
+      "tests.test_tooling_host_events",
+      "tests.test_tooling_evaluation_report"
+    ],
+    "requiredControlsObserved": [
+      "test_provider_cash_excludes_reviewer_fees_and_unknown_provider_coverage",
+      "test_missing_registered_cost_component_is_unknown_and_stops",
+      "test_subscription_only_preflight_and_periodic_stop",
+      "test_live_cap_reached_stops_without_claiming_success",
+      "test_sample_count_limit_fails_closed",
+      "test_file_and_directory_inventory_limits_fail_closed",
+      "test_full_cost_scope_must_be_present_approved_and_resolved",
+      "test_provider_accounting_cap_cannot_be_hidden_by_zero_cash_or_reference_estimates",
+      "test_registration_or_ledger_mismatch_is_rejected"
+    ],
+    "skipped": 0,
+    "testCount": 223,
+    "tokenTimeRssDiskCaps": true
+  }
+}
