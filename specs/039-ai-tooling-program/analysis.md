@@ -25,6 +25,7 @@ as future, not executable existing commands.
 | R001 | P1 | Integration provenance; six assurance records | Luna Latest found that mandatory merge-commit ancestry conflicts with develop's required linear history. Use current draft snapshots for source integration; freeze the integrated develop candidate before later human acceptance | Spec Kit current/historical modes; branch protection |
 | R002 | P2 | SPEC-040 resource contract and validation | Defined digest-bound chunk URIs, byte ranges, response metadata, sequential retrieval and reconstruction/refusal controls | Full-result parity; bounded owned resources |
 | R003 | P2 | SPEC-044 interpretation procedure | Added explicit missing-required-cost controls that suppress positive utility claims despite otherwise passing completion thresholds | Prospective evaluation protocol; evidence limits |
+| R004 | P2 | SPEC-044 tasks T005–T010 and validation procedures | Corrected the evaluation dependency chain: 108-arm comparison consumes the registered stable 040–043 candidate; cost instrumentation precedes actual attempts while complete accounting follows them; human scoring follows complete denominators/cost availability; validation precedes the review packet; packet readiness is distinct from the later founder decision and closure record | SPEC-039 portfolio dependencies; SPEC-044 evaluation protocol and evidence boundaries |
 
 ## Pending boundary findings
 
@@ -32,7 +33,7 @@ as future, not executable existing commands.
 |---|---|---|---|
 | G001 | Gate | ADR 0021; six plan.md review sections | Architecture/API adoption and consumed-contract review are pending before governed implementation acceptance |
 | G002 | Gate | SPEC-044 evaluation-protocol.md | Exact host/model builds, source rights, numeric paid/provider/resource caps and frozen registration precede actual capture |
-| G003 | Gate | SPEC-044 acceptance decision | No actual host, clean-room or human scoring receipt exists; source review does not satisfy product acceptance |
+| G003 | Gate | SPEC-044 acceptance decision | No actual host, clean-room or human scoring receipt exists; the decision packet and independent review remain future gates, and packet preparation does not constitute the founder's decision; source review does not satisfy product acceptance |
 | G004 | Gate | program.md delivery section | Remote milestone/issues require reviewed source integration and scoped digest; private Project status is a separate check |
 
 Gates remain visible. No MUST contradiction is intentionally proposed; a newly

@@ -2,7 +2,7 @@
 
 ## Technical context and scope
 
-Register and execute candidate-bound deterministic controls, clean reproduction, actual Codex/Claude journeys and a complete-cost three-arm comparison.
+Register and execute candidate-bound deterministic controls, clean reproduction, actual Codex/Claude journeys and all 108 technical three-arm attempts. Human outcome ratings/adjudication are separately deferred by [the owner decision](human-evaluation-deferral-clarification.md); the rubric remains frozen before capture.
 
 Prerequisites: Protocol review before capture; stable SPEC-040–043 candidate; exact owner-approved source rights and numeric provider/time/resource budget. Earlier M4 approval is not inherited.
 
@@ -18,15 +18,17 @@ Read research.md, the SPEC-039 program and SPEC-044 evaluation protocol. Officia
 
 ## Design and compatibility
 
-Use evaluation-protocol.md. Preregister six classes times three instances, three arms and two hosts (108 intended attempts); freeze inputs, versions, rubric, costs/budgets and reviewers before capture. Preserve every slot and distinguish host versus protocol evidence. Register required claim-cost fields before capture; an explicit complete/missing-cost control verifies that unavailable required costs block positive utility claims in every report/export/decision packet even when completion thresholds pass.
+Use evaluation-protocol.md. Preregister six classes times three instances, three arms and two hosts (108 intended attempts) and require the exact included-subscription-only `billingPolicy` for v3; freeze inputs, versions, rubric, costs/budgets and two abstract independent reviewer roles before capture. For v3 technical capture, record the approved deferral and keep named human reviewers empty; later identities and scoring require a bound addendum. Preserve every slot and distinguish host versus protocol evidence. Technical-cost completion does not establish full human-inclusive economic completion; retain measured user/setup/attempt and technical wall times with receipt hashes; keep reviewer time/fee unknown, not zero. Register required claim-cost fields before capture; an explicit complete/missing-cost control verifies that unavailable required costs block positive utility claims in every report/export/decision packet even when completion thresholds pass.
 
 Targets: `specs/044-ai-tooling-evaluation/registration.json (future); research/tooling_evaluation.py (new); tests/test_tooling_evaluation.py (new); specs/044-ai-tooling-evaluation/evidence/ (future); docs/releases/M4_5_CLOSURE.md (future)`.
 
 Existing AIM/runtime/grant/verifier contracts remain unchanged. Analysis and preparation are consultative; host permission never substitutes for operator grants. No source ref promotion, repository-code/hook execution, arbitrary network effects or new scientific guarantee. Existing M4 G4 NO-GO and independent M3/M3.5 gates remain in effect.
 
+Provider model identity follows [the owner-approved clarification](model-identity-clarification.md): immutable provider IDs when exposed; otherwise a labelled exact requested route with backend identity unavailable. Registration, attestation and receipts bind selector/effort, native build, catalog, effective configuration and authenticated account route. Metadata hashes cannot stand in for backend-build hashes. Observable drift requires a new reviewed cohort; hidden revisions and nondeterminism remain limits. All 108 slots and other gates remain required.
+
 ## Validation strategy
 
-Each requirement maps to one scenario, named prospective procedure, task and planned evidence in assurance.json. Positive and negative controls are specified in validation-plan.md. Before implementation resolve required contract review and run Spec Kit prerequisites; implement bounded dependency-ordered slices. Run `python3 -m scripts.validate_change --base develop --profile quick` after coherent increments and `--profile pr` once on the stable candidate. Separate actual host/provider capture, clean-room evidence and human review.
+Each requirement maps to one scenario, named prospective procedure, task and planned evidence in assurance.json. Positive and negative controls are specified in validation-plan.md. Before implementation resolve required contract review and run Spec Kit prerequisites; implement bounded dependency-ordered slices. Run `python3 -m scripts.validate_change --base develop --profile quick` after coherent increments and `--profile pr` once on the stable candidate. Separate actual host/provider capture, clean-room evidence and human review. T008/T009 technical readiness can use T001–T006 and technical T007 while human evaluation remains pending; T010 and milestone acceptance remain pending.
 
 ## Constitution check after design
 
@@ -34,4 +36,4 @@ The shared core and existing runtime remain authoritative. Descriptive tool/skil
 
 ## Human review and unresolved decisions
 
-Required: architectural/API/lifecycle review for the consumed contract; exact candidate/host/registration and budget decisions before capture; independent technical review and founder capability acceptance. ADR 0021 is proposed. All implementation tasks remain unchecked until actual evidence exists. Creating issues or a source PR is not adoption.
+Required: architectural/API/lifecycle review for the consumed contract; exact candidate/host/registration, rights, permissions and budget decisions before capture; independent technical review; later human identities/ratings/adjudication; and founder capability acceptance. The 2026-10-09 decision defers only human outcome evaluation and does not approve capture or closure. ADR 0021 is proposed. All implementation tasks remain unchecked until actual evidence exists. Creating issues or a source PR is not adoption.

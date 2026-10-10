@@ -35,7 +35,7 @@ Parent: SPEC-039. Labels: task. State: open. Milestone: M4.5 — AI tooling inte
 
 Parent: SPEC-039. Labels: task. State: open. Milestone: M4.5 — AI tooling integrations for Codex and Claude Code
 
-- [ ] T002 (REQ-002/SC-002): Keep M4.5 adjacent to M4 while preserving the whole-M4 open state, G4 NO-GO and independent M3/M3.5 gates.
+- [ ] T002 (REQ-002/SC-002): Keep M4.5 adjacent to M4 while preserving its separately governed bounded acceptance, historical G4 NO-GO and independent M3/M3.5 gates.
   Dependencies: T001. Targets: `program.md; historical M4 boundary audit`.
   Verification and planned evidence: `validation-plan.md::procedure_m4_boundary`; `evidence/sc-002.json` with actual commands and negative controls. Obtained: none.
 
@@ -624,7 +624,7 @@ Source: specs/044-ai-tooling-evaluation/spec.md. Scope, acceptance and limits ar
 
 Parent: SPEC-044. Labels: task. State: open. Milestone: M4.5 — AI tooling integrations for Codex and Claude Code
 
-- [ ] T001 (REQ-001/SC-001): Preregister exact population, source rights, candidate/input/host/model versions, all attempts, rubric and numerical caps before capture.
+- [ ] T001 (REQ-001/SC-001): Preregister the exact candidate/input/host/model versions, source rights, mandatory included-subscription-only billingPolicy, all 108 attempts, frozen rubric, two abstract independent reviewer roles, approved human-evaluation deferral record and numerical caps for v3 technical capture; keep humanReviewers empty and require a later bound addendum for named identities/ratings.
   Dependencies: none; consumed contract review. Targets: `evaluation-protocol.md; registration.json; owner source/budget decisions`.
   Verification and planned evidence: `validation-plan.md::procedure_registration_gate`; `evidence/sc-001.json` with actual commands and negative controls. Obtained: none.
 
@@ -690,8 +690,8 @@ Parent: SPEC-044. Labels: task. State: open. Milestone: M4.5 — AI tooling inte
 
 Parent: SPEC-044. Labels: task. State: open. Milestone: M4.5 — AI tooling integrations for Codex and Claude Code
 
-- [ ] T007 (REQ-007/SC-007): Apply frozen human rubric and descriptive thresholds, report disagreements/missing labels, suppress positive utility claims when missing required costs prevent interpretation and preserve legitimate negative results.
-  Dependencies: T001–T005. Targets: `frozen human scoring rubric; adjudication/denominator report`.
+- [ ] T007 (REQ-007/SC-007): Complete technical interpretation against the frozen rubric while human ratings/adjudication remain deferred; preserve all 108 outcomes and denominators, report labels pending, retain human costs as unavailable rather than zero, and prohibit positive utility conclusions until later human review and applicable cost reconciliation. T007 remains partially pending.
+  Dependencies: technical T001–T006 and retained outcomes/cost availability. Targets: `technical interpretation/denominator report; later human scoring and adjudication addendum`.
   Verification and planned evidence: `validation-plan.md::procedure_interpretation`; `evidence/sc-007.json` with actual commands and negative controls. Obtained: none.
 
 
@@ -701,8 +701,8 @@ Parent: SPEC-044. Labels: task. State: open. Milestone: M4.5 — AI tooling inte
 
 Parent: SPEC-044. Labels: task. State: open. Milestone: M4.5 — AI tooling integrations for Codex and Claude Code
 
-- [ ] T008 (REQ-008/SC-008): Freeze candidate/evidence, obtain independent technical review and explicit founder scope/closure decision with historical M4 limits.
-  Dependencies: T001–T005. Targets: `frozen candidate/evidence; independent review; explicit founder decision`.
+- [ ] T008 (REQ-008/SC-008): Prepare the technical decision packet from T001–T006 and technical T007, with human outcome evaluation explicitly pending; obtain independent technical review and preserve historical M4 limits.
+  Dependencies: technical T001–T006, completed technical T007, applicable technical observations/reproduction and independent technical findings. Founder acceptance and closure remain pending. Targets: `technical candidate/evidence; independent review; decision packet with human phase pending`.
   Verification and planned evidence: `validation-plan.md::procedure_acceptance_decision`; `evidence/sc-008.json` with actual commands and negative controls. Obtained: none.
 
 
@@ -713,7 +713,7 @@ Parent: SPEC-044. Labels: task. State: open. Milestone: M4.5 — AI tooling inte
 Parent: SPEC-044. Labels: task. State: open. Milestone: M4.5 — AI tooling integrations for Codex and Claude Code
 
 - [ ] T009 (REQ-001,REQ-002,REQ-003,REQ-004,REQ-005,REQ-006,REQ-007,REQ-008/SC-001,SC-002,SC-003,SC-004,SC-005,SC-006,SC-007,SC-008): Reconcile implementation evidence and run repository quick/PR gates.
-  Dependencies: T001–T008. Targets: this spec's assurance.json, validation receipts and bounded candidate.
+  Dependencies: technical evidence T001–T006 and technical T007; deferred human ratings, T008 and T010 follow technical validation. Targets: this spec's assurance.json, validation receipts and bounded candidate.
   Verification and planned evidence: run the explicit quick and stable PR profiles; bind actual results without implying actual-host observation, clean-room reproduction or approval.
 
 
@@ -724,5 +724,5 @@ Parent: SPEC-044. Labels: task. State: open. Milestone: M4.5 — AI tooling inte
 Parent: SPEC-044. Labels: task. State: open. Milestone: M4.5 — AI tooling integrations for Codex and Claude Code
 
 - [ ] T010 (REQ-001,REQ-002,REQ-003,REQ-004,REQ-005,REQ-006,REQ-007,REQ-008/SC-001,SC-002,SC-003,SC-004,SC-005,SC-006,SC-007,SC-008): Freeze the bounded candidate, review findings and record the required human decision.
-  Dependencies: T009 and feature-specific observation gates. Targets: frozen assurance, review record and SPEC-044 decision packet.
+  Dependencies: T008 technical packet readiness, T009 validation, applicable technical gates, later human addendum/ratings/adjudication, independent review and actual founder decision. Targets: frozen assurance, review record and final SPEC-044 closure record.
   Verification and planned evidence: candidate/evidence hashes, independent technical findings and actual decision; source validation and hashes are not approval.

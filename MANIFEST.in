@@ -1,0 +1,6 @@
+include build_support.py
+include LICENSE
+include NOTICE TRADEMARKS.md
+recursive-include LICENSES *.txt
+recursive-include integrations/agent-braid *.md *.json
+recursive-include examples/tooling *.json

@@ -1,9 +1,10 @@
 # M4.5 evaluation protocol proposal
 
-**Registration:** select exact candidate, host/model builds, eligible fixture
-hashes, prompt roster, cost rates/budgets and reviewers before observations.
+**Registration:** select exact candidate and host builds, explicitly labelled provider
+model identities under [the approved clarification](model-identity-clarification.md), eligible fixture
+hashes, prompt roster, cost rates/budgets, two abstract independent reviewer roles and the approved human-evaluation deferral before technical observations. Keep v3 humanReviewers empty; later identities, ratings and adjudication require a separately bound addendum.
 Current status: protocol draft; no measured observations or accepted utility.
-Existing M4 source rights and observations do not authorize this capture.
+V3 requires the exact included-subscription-only `billingPolicy` for both hosts; numeric caps and other owner-approved capture gates still apply. Existing M4 source rights and observations do not authorize this capture.
 
 ## Questions and population
 
@@ -30,13 +31,9 @@ A repaired candidate needs a declared new registration and separate cohort.
 CLI is a host-associated baseline with the same environment and operator, not
 model-generated MCP output disguised as an independent comparator.
 
-Human rubric before scoring: successful required steps; correct conflict/unknown
+Freeze the human rubric and thresholds before capture, even though outcome scoring is deferred. The approved v3 technical `fullCostScope` retains the existing accounting fields, measures user/setup/attempt time and technical wall time with verified receipts, and records two reviewer-role fee rows as `unknown`. Reviewer time/fee and combined human-inclusive totals remain unavailable until the separate human phase; technical-scope approval is not full human-inclusive cost completion. Human rubric before scoring: successful required steps; correct conflict/unknown
 interpretation; evidence/provenance/limits fidelity; correct authority separation;
-user interventions; unrecovered errors; time and complete cost. Independent Luna
-review can assess deterministic artifacts if authorized; it is not independent
-human outcome annotation. Two human reviewers score de-identified artifacts with
-arm/order hidden where feasible; disclose incomplete blinding and adjudicate
-disagreements before aggregates. Unresolved labels stay missing and reported.
+user interventions; unrecovered errors; time and complete cost. Independent technical review can assess deterministic artifacts if authorized; it is not independent human outcome annotation. The later human phase requires two appointed reviewers to score de-identified artifacts with arm/order hidden where feasible; disclose incomplete blinding and adjudicate disagreements before aggregates. Until that separately authorized phase, identities/ratings/adjudication remain pending. Unresolved labels stay missing and reported.
 
 ## Mandatory controls and descriptive thresholds
 
@@ -70,6 +67,19 @@ Do not drop failed attempts or relabel a provider/infrastructure block as succes
 Do not pool hosts to hide a host failure. Sample is descriptive; no general
 causal/statistical significance or production safety claim.
 
+## Model identity and drift
+
+Require an authoritative immutable provider build identifier whenever exposed.
+Otherwise register an observable requested route: exact selector and effort,
+native executable version/hash, dated catalog artifact/entry hashes, effective
+selection/configuration identity and authenticated provider/account route. Backend
+identity remains unavailable; never use catalog or route hashes as backend-build
+hashes. Receipts distinguish requested and host-reported selectors and any exposed
+backend identifier. Observable route/catalog/configuration/build/account drift
+stops the cohort; a repaired route needs a newly reviewed registration and separate
+cohort. Hidden backend revisions and nondeterminism remain limits, with no promise
+of backend reproducibility or weight-level replay. All 108 intended attempts and complete economic scope remain required. The technical phase may finish with reviewer time/fee fields unavailable while measured user/setup/attempt costs and technical wall times remain recorded; no human-inclusive cost or positive utility claim follows until human ratings/adjudication and applicable cost reconciliation are complete.
+
 ## Complete cost and stops
 
 Record install/configure/setup separately; per attempt include context/skill/tool
@@ -89,12 +99,11 @@ Resumption needs an unchanged registration or a new declared cohort.
 ## Evidence and acceptance
 
 Receipt per attempt: registration ID; candidate/bundle/SDK/protocol/host/model/OS
-versions; immutable input and output hashes; actual commands/tool events; permission
+versions; discriminated provider model identity, requested/reported selectors and
+backend availability; immutable input and output hashes; actual commands/tool events; permission
 and grant check outcome; raw transcripts redacted with retained redaction record;
 verification result; full cost availability; status and limits. Synthetic,
 protocol-peer, actual-host and clean-room records have different evidence types.
 
-Audit registration adherence and all exclusions before interpreting utility.
-Freeze stable candidate and evidence; obtain independent technical review and
-separate human/founder decision. Founder may accept a bounded useful integration,
+Audit registration adherence and all exclusions before technical interpretation. Freeze the technical candidate and evidence and obtain independent technical review; the decision packet may report technical readiness with human evaluation explicitly pending. Human labels/adjudication and founder acceptance remain separate later decisions. Founder may accept a bounded useful integration,
 reject it or leave it pending. M4.5 closure does not close M4 or reverse G4 NO-GO.

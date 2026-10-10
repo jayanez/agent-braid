@@ -1,6 +1,11 @@
 # M4 runtime implementation and closure plan
 
-Status: proposed execution plan; planning complete, implementation and acceptance pending.
+Status: historical execution plan, superseded by the bounded M4 closure on
+2026-10-09. See the [closure packet](../specs/038-m4-real-workload-closure/whole-m4-closure-packet.md)
+and [recorded founder decision](../specs/038-m4-real-workload-closure/whole-m4-founder-decision-20261009.json).
+Milestone 6 is closed; historical G4 NO-GO and deferred capabilities remain explicit.
+The current adjacent work is the [M4.5 five-task preparation plan](../specs/044-ai-tooling-evaluation/preparation-delivery-plan.md).
+The original prospective plan below is preserved as history.
 Prepared on 2026-10-07 for [M4 — Agent Braid runtime](https://github.com/jayanez/agent-braid/milestone/6).
 Baseline: public `develop` at `5cb144e1193a266645e012a7f31224d846ea7003`.
 

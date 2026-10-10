@@ -83,13 +83,48 @@ they do not implement or accept runtime product support.
   PATH, all nine supervisor controls passed. Stable PR validation uses that PATH;
   its actual result is reported in the PR delivery record.
 
-## Required next gates
+## Required next gates — current status, 2026-10-09
 
 Source integration and M4.5 administrative registration are complete, as recorded
 above. Architectural/API adoption and capability acceptance remain separate gates.
-Implementation/control evidence, exact paid/provider/source capture registration,
-actual Codex/Claude observations, clean reproduction, human interpretation and
-founder capability/closure acceptance remain pending.
+Technical work proceeds under a prospective v3 `technical-capture` registration:
+it requires the approved human-evaluation deferral, two abstract independent
+reviewer roles, an empty `humanReviewers` list, the included-subscription-only
+billing policy, and an approved technical `fullCostScope`. Rights, account, budget,
+permission, stable-candidate and exact source approvals remain capture prerequisites.
+The trusted summary verifier must attest the exact technical summary, registration,
+roster, approved scope and complete technical receipt coverage before report values
+are shown; a synthetic verifier is not live evidence.
+
+The owner deferred only human outcome ratings and adjudication. Reviewer fees/time
+and all-in human-inclusive totals remain unavailable, not zero. T007's human portion,
+human interpretation, positive utility claims and founder capability/closure
+acceptance remain pending. This status does not claim registered capture, native
+host acceptance or milestone closure.
 
 The reviewer must distinguish this source-delivery outcome from M4.5 product
-completion. M4's historical G4 NO-GO and whole-M4 acceptance remain unchanged.
+completion. This 2026-10-08 source-delivery record did not change M4's historical
+G4 NO-GO or decide whole-M4 acceptance. The separate bounded M4 acceptance on
+2026-10-09 is recorded in [program.md](program.md#m4-relationship); it preserves
+G4 NO-GO and grants no M4.5 acceptance or capture permission.
+
+## Five-task preparation delivery — 2026-10-10
+
+The owner authorized the [bounded preparation plan](../044-ai-tooling-evaluation/preparation-delivery-plan.md)
+and its integrated delivery with EUR 0 additional spend and human outcome review
+deferred. Its goal covers dependency freezing, fresh installed macOS checks,
+Linux recipe preparation, reviewed evidence, documentation and GitHub alignment.
+It does not replace the full evaluation protocol or complete its open acceptance
+procedures. Historical counts and receipts above retain their dates and domains.
+SPEC-044 T003 remains the single checked historical control task; all other
+M4.5 tasks remain pending until their complete paired procedures are evidenced.
+
+The source-bound [preparation proof](../../docs/tooling/evidence/preparation-20261010.json)
+now records offline macOS core/tooling installation, actual read-only MCP auto/legacy
+checks and CLI report parity on frozen source `3885706e`, plus a prepared Linux
+AMD64 bundle with static hash/architecture refusal checks. It preserves the earlier
+failed verifier and partial bundle preparation. These preparation observations
+do not complete additional canonical task procedures. Final validation, merge and
+GitHub reconciliation are delivery requirements; their exact-head results are
+recorded in [PR #467](https://github.com/jayanez/agent-braid/pull/467), separately
+from this frozen preparation evidence.

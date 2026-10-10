@@ -1,0 +1,185 @@
+{
+  "candidate": {
+    "candidateBinding": "The source archive, product wheel, installed import origins, and module hashes are bound to this exact commit; no result is transferred from 9dfdf27 or later candidates.",
+    "commit": "e40c94989edc2f3af36635b46e6243c1fc937b5f",
+    "tree": "23c5e907f6393d63e279fdb885c9b8d6b43f0c3e"
+  },
+  "commandProvenance": {
+    "exactInvocationBinding": "The original raw invocation traces were privately retained at observation time. Current archive availability is limited by docs/tooling/EVIDENCE_RETENTION_20261010.md; original hashes and normalized commands do not replace missing raw traces or establish current replayability.",
+    "pathsRedacted": true,
+    "publicPresentation": "Command arrays in this public summary normalize only ephemeral private output-root, interpreter, wheelhouse, and runner paths to named placeholders. Product command names, flags, dependency pins, and reported numeric exits are preserved."
+  },
+  "dependencyAndBuildEvidence": {
+    "buildTools": [
+      {
+        "name": "setuptools",
+        "sha256": "062d34222ad13e0cc312a4c02d73f059e86a4acbfbdea8f8f76b28c99f306922",
+        "version": "80.9.0"
+      },
+      {
+        "name": "wheel",
+        "sha256": "708e7481cc80179af0e556bbf0cc00b8444c7321e2700b8d8580231d13017248",
+        "version": "0.45.1"
+      }
+    ],
+    "dependencyHashesBoundByPrivateManifest": true,
+    "licenseConclusion": "none; package license-file presence and dependency metadata do not establish legal compatibility",
+    "sourceArchiveSha256": "2a39276a6f71624a661362dce76280a68e0422d469250b45ef9a9ebfed4c35f7",
+    "toolingDependencySetIncludes": "mcp==2.3.0; mcp-types==2.3.0",
+    "toolingDependencyWheelCount": 28,
+    "wheelSha256": "2e98bcbc0284fd7f585977947d753febc0541d3da056518f6282552b70b0d0e3"
+  },
+  "inputs": {
+    "MANIFEST.in": "c36bca5457903da36fcf38ced2b32525047e179b362f623ef26ffe52cb416ea1",
+    "agent_braid/__init__.py": "697f7daba2857756bd135ac489b9e69a9487ebb976d666d2d6cf59bcd175224e",
+    "agent_braid/cli.py": "9e1750b94d9ec846c07117a4b3490f0a3026401a3816a42145eb866f843bf988",
+    "agent_braid/tooling_assets.py": "58022d54f84bd91448889805923316d20c400c889564114999a85d7d24a874fd",
+    "agent_braid/tooling_install.py": "91a736438833efdb8f98d70fed654075cf6da7e9c9303703c965e1d90e8fd5bd",
+    "agent_braid/tooling_mcp.py": "f8d151fb11905d5bff7114571e5663bf80cb0cd15af3acb1bf5159b14c54b6dd",
+    "build_support.py": "03dc853786c0bb1d38c55b9ad136b8eba333ce9d0514f42a8d07d76d27300b8b",
+    "pyproject.toml": "21b32beb7d47b4551e837027ae2713890dc14bb07d7efc56e1cdf2ecc57c1648"
+  },
+  "limits": [
+    "Wheel only: no e40 sdist was built or installed.",
+    "Local macOS arm64/Python 3.13.11 only; no Linux x86_64 reproduction or registered clean-room run.",
+    "No actual Codex or Claude Code host configuration/discovery, installation, update, uninstall, or doctor run.",
+    "The SDK probe made zero tool calls; no product execution, cancellation, recovery, artifact chunking, or empty-artifact producer was observed.",
+    "No account, credential, provider, native host, or cohort action.",
+    "A separate default installed-wheel resource observation confirms five bundled skill resources and five supporting assets byte-equal across source, wheel and installed package. It does not prove native host loading, installation lifecycle, sdist/Linux, legal compatibility, or full SC-001/SC-008 acceptance."
+  ],
+  "localPackageObservation": {
+    "assetInventoryLimit": "The original package/capability receipts did not demonstrate default resource inventory; the separate installed-resource observation below now records five skill and five supporting asset byte comparisons, but not native loading.",
+    "buildCommand": [
+      "python",
+      "-m",
+      "pip",
+      "wheel",
+      "--no-index",
+      "--no-build-isolation",
+      "--no-deps",
+      "--wheel-dir",
+      "<PRIVATE_WHEEL_OUTPUT>",
+      "<PRIVATE_E40_SOURCE_ARCHIVE_COPY>"
+    ],
+    "buildExit": 0,
+    "corePipCheckExit": 0,
+    "environment": {
+      "architecture": "arm64",
+      "installMode": "isolated/offline",
+      "os": "macOS 26.6.2",
+      "python": "3.13.11",
+      "wheelTag": "py3-none-any"
+    },
+    "installedConsoleHelpCommand": [
+      "agent-braid",
+      "--help"
+    ],
+    "installedConsoleHelpExit": 0,
+    "mcp": "2.3.0",
+    "stdioCapabilityProbe": {
+      "followingListPrompts": "succeeded",
+      "numericExit": 0,
+      "oversizePrompt": "MCPError refusal at 16385 argument bytes",
+      "protocolVersion": "2025-11-25",
+      "resources": [
+        "agent-braid://capabilities"
+      ],
+      "staticPrompts": [
+        "agent-braid-analyze",
+        "agent-braid-plan",
+        "agent-braid-evidence"
+      ],
+      "toolCalls": 0,
+      "tools": [
+        "analyze-work",
+        "analyze",
+        "prepare"
+      ]
+    },
+    "toolingExtraInstallCommand": [
+      "python",
+      "-m",
+      "pip",
+      "install",
+      "--no-index",
+      "--find-links",
+      "<PRIVATE_LOCAL_WHEELHOUSE>",
+      "-r",
+      "<PRIVATE_PINNED_REQUIREMENTS>",
+      "<EXACT_E40_WHEEL>[tooling]"
+    ],
+    "toolingExtraInstallExit": 0,
+    "toolingPipCheckExit": 0,
+    "wheelInstallCommand": [
+      "python",
+      "-m",
+      "pip",
+      "install",
+      "--no-index",
+      "<EXACT_E40_WHEEL>"
+    ],
+    "wheelInstallExit": 0
+  },
+  "productWheel": {
+    "bytes": 394686,
+    "filename": "agent_braid-0.1.0a1-py3-none-any.whl",
+    "optionalExtra": "tooling requires mcp==2.3.0",
+    "pythonTag": "py3-none-any",
+    "recordIntegrity": true,
+    "sha256": "2e98bcbc0284fd7f585977947d753febc0541d3da056518f6282552b70b0d0e3"
+  },
+  "rawEvidenceBoundary": "Historical private archive bindings are preserved, but complete original raw logs and proof archives are not currently recovered. See docs/tooling/EVIDENCE_RETENTION_20261010.md. This sanitized public record contains hashes and bounded historical observations only; no private paths, account identity, host-auth output or raw traceback.",
+  "reviewBindings": {
+    "allocationBoundTestReceiptSha256": "8316843da662f18e6d89cc04860c6e72761bd49c467e01d063f88f6020b26c17",
+    "allocationExecutionReceiptSha256": "713192046e39d2e61efc976d3d23806c2cb3d701c63426b38124cf2677758bff",
+    "fullSdkIntegrityManifestSha256": "9a09fa92b6866dcfee6404e5ed48779432a13e9b6a746dbc44fba90851af7df8",
+    "fullSdkProbeReceiptSha256": "c346fa9a08f6bfa88d6427bdc15b9ab2dd564eac69287f4ee809653301de106c",
+    "fullSdkReceiptSha256": "e6c5c776d484ca5ded6621eede13599eb39fac8109895e7867abdcc612adc06b",
+    "fullSdkReviewSha256": "2544292b9bc21e66b58c02fafd3a3554628e973c456f4fa530bc4fe15f0c51a9",
+    "installedCoreIntegrityManifestSha256": "52f0b036377666b14667725e9e29d65ce2cfe155ac5897efed9832d5c684fc4c",
+    "installedCoreReviewSha256": "07f04e16103c0005aa6d56ad291711b1fbeb8e55bcc337e4b9294ebbef73d55e",
+    "installedDefaultResourceReceiptSha256": "bb58a46418e5d60e61af39ed82914aa353e92dfcbe040b0e131446b134d3b52d",
+    "installedDefaultResourceManifestSha256": "46f70e8df1651c4e0cbf78fe54ada069692ca577139c3f33ec3e387bd7e793eb",
+    "installedDefaultResourceReviewSha256": "d43c13701dcead30297cddc92d8e394d443b7b162dcf2ed0e9fb7adb81efb950"
+  },
+  "schema": "spec042-partial-installed-e40c949-v2",
+  "scope": "Exact-e40 wheel build and local isolated installation; limited generated console/SDK capability probe. Not a complete package, host-lifecycle, or cross-platform acceptance.",
+  "status": "partial-obtained-evidence; full-scenarios-unmet",
+  "installedDefaultResources": {
+    "sourceCommit": "e40c94989edc2f3af36635b46e6243c1fc937b5f",
+    "wheelSha256": "2e98bcbc0284fd7f585977947d753febc0541d3da056518f6282552b70b0d0e3",
+    "receiptSha256": "bb58a46418e5d60e61af39ed82914aa353e92dfcbe040b0e131446b134d3b52d",
+    "integrityManifestSha256": "46f70e8df1651c4e0cbf78fe54ada069692ca577139c3f33ec3e387bd7e793eb",
+    "independentReviewSha256": "d43c13701dcead30297cddc92d8e394d443b7b162dcf2ed0e9fb7adb81efb950",
+    "clarificationSha256": "524cfee860da91f79d42d76de228816200c68b288cb7686b715e519b9c03c11a",
+    "method": "actual installed tooling_assets module; default load_skill_bundle source_checkout=False",
+    "bundleVersion": "0.1.0",
+    "bundleSha256": "284d84d226fd58438d995d324e0a01fbe1606f709faeed2759c6f4c3ec192542",
+    "resourceCount": 10,
+    "skills": [
+      "agent-braid-analyze",
+      "agent-braid-plan",
+      "agent-braid-execute",
+      "agent-braid-recover",
+      "agent-braid-evidence"
+    ],
+    "allTenSourceWheelInstalledResourcesByteEqual": true,
+    "numericExit": 0,
+    "timeoutSeconds": 20,
+    "observedStdoutBytes": 2473,
+    "observedStderrBytes": 0,
+    "parentPipeByteCap": "none; script JSON length guard 65536 is not parent pipe cap",
+    "preflightHistory": "Initial no-child preflight failure and clarification retained. Review states recorded cause not independently re-derived from raw argv/stderr.",
+    "nativeHostLoadedSkills": false,
+    "licenseCompatibilityConclusion": "none",
+    "streamCap": "none; parent stdout/stderr log files had no enforced byte cap, and the probe checked serialized JSON length <=65536 before writing (not a parent cap)"
+  },
+  "retentionUpdate": {
+    "observedOn": "2026-10-10",
+    "reference": "docs/tooling/EVIDENCE_RETENTION_20261010.md",
+    "completeOriginalArchiveRecovered": false,
+    "historicalObservationsPreserved": true,
+    "currentReplayabilityEstablished": false,
+    "scenarioAcceptanceEstablished": false
+  }
+}
