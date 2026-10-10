@@ -59,6 +59,7 @@ A completed auxiliary does not complete native-host or human acceptance.
   Related original: T008. Dependencies: available bounded implementation; original acceptance remains separate. Targets: `tests/test_tooling_present.py; docs/tooling/JOURNEY.md`.
   Verification: `evidence/technical-clauses.json` with frozen candidate/input hashes, actual command, paired controls and stated limits.
 
-- [ ] T014 (REQ-001,REQ-002,REQ-003,REQ-004,REQ-005,REQ-006,REQ-007,REQ-008/SC-001,SC-002,SC-003,SC-004,SC-005,SC-006,SC-007,SC-008): Reconcile available local presentation evidence and pass repository quick/PR gates, preserving original native-host predecessor gates.
+- [x] T014 (REQ-001,REQ-002,REQ-003,REQ-004,REQ-005,REQ-006,REQ-007,REQ-008/SC-001,SC-002,SC-003,SC-004,SC-005,SC-006,SC-007,SC-008): Reconcile available local presentation evidence and pass repository quick/PR gates, preserving original native-host predecessor gates.
   Related original: T009. Dependencies: available bounded implementation; original acceptance remains separate. Targets: `assurance.json; source validation`.
   Verification: `evidence/technical-validation.json` with frozen candidate/input hashes, actual command, paired controls and stated limits.
+  Obtained: Candidate-bound repository quick/PR validation results are recorded in `evidence/technical-validation.json`; raw test skips remain explicit. This does not establish native-host, registered-cohort, human or founder acceptance.

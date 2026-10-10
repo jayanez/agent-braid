@@ -311,8 +311,9 @@ block useful, sound engineering. Real adapter refinement remains a prerequisite.
 
 **Status:** [Open](https://github.com/jayanez/agent-braid/milestone/19), adjacent to
 M4. The 60 original task criteria remain unchanged; 19 auxiliary evidence tasks
-bring the target to 79 task issues, of which 52 are complete and 27 remain open,
-with six parent issues still open. Candidate-bound local technical procedures and
+bring the source task-checklist inventory to 79 items, of which 52 are checked
+and 27 remain unchecked, alongside six open parents. Remote issue state is tracked
+separately. Candidate-bound local technical procedures and
 fresh package checks have passed in their recorded domains. Native Codex/Claude
 acceptance, human interpretation, founder decision and milestone closure remain
 pending. The owner selected Codex and Claude Code for v1 on 2026-10-08. This work
@@ -338,10 +339,7 @@ Deliverables:
 - candidate-bound controls, clean reproduction, actual host observations and a
   preregistered CLI/MCP-only/MCP-plus-skills comparison with full costs.
 
-Immediate delivery follows the [five-task preparation plan](specs/044-ai-tooling-evaluation/preparation-delivery-plan.md):
-frozen dependencies, fresh installed macOS checks, a pinned Linux recipe, reviewed
-evidence, and documentation/GitHub alignment. Its EUR 0 spending boundary and
-deferred human outcome review do not replace the full exit criteria below.
+The current owner-authorized work follows the [autonomous closure plan](specs/044-ai-tooling-evaluation/autonomous-closure-plan.md). Its seven candidate-bound technical tasks are complete on the frozen source, including both repository profiles; the earlier [five-task preparation plan](specs/044-ai-tooling-evaluation/preparation-delivery-plan.md) is historical. The work remains bounded to EUR 0 additional spend and defers human outcome evaluation. It does not replace the full M4.5 exit criteria below.
 
 Candidate-specific results and canonical per-scenario receipts are recorded in
 the [autonomous completion record](docs/tooling/AUTONOMOUS_COMPLETION.md) and
