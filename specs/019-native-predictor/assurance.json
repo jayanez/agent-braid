@@ -138,6 +138,20 @@
               "outcome": "115 focused synthetic software tests executed; zero skips/failures. Three former contract anchors and timing validation-cost regression execute.",
               "path": "docs/experiments/evidence/m35-software-completion-2026-10-10/focused-receipt.json",
               "sha256": "ebe641164bda75dbb6e12df2b682b1be9d1ade67b71405752eec6c4212e08176"
+            },
+            {
+              "command": ".venv/bin/python -m unittest -v tests.test_native_predictor tests.test_native_predictor_training tests.test_native_predictor_evaluation tests.test_native_predictor_adapter tests.test_native_predictor_contract tests.test_predictor_readiness tests.test_m35_review_packet",
+              "limits": "Synthetic software only; coordinator-run separate clone is reproduction, not independent scientific validation, human approval or a real experiment.",
+              "outcome": "115 focused synthetic controls reproduced from a clean independent public clone at 7321407bc6abc57117fab379e14eafcddf80dd63; global Spec Kit gate passed.",
+              "path": "docs/experiments/evidence/m35-software-completion-2026-10-10/reproduction.json",
+              "sha256": "6c701bf6872d8337a0e6251f18251924176fcaa46cadfaaf8ebea518452f3dd6"
+            },
+            {
+              "command": "Independent read-only Luna Latest medium reviews; focused suite plus evaluator timing regression",
+              "limits": "Technical review only, not authenticated human annotation, scientific or founder acceptance.",
+              "outcome": "Two material software/document findings fixed; bounded independent technical reviews report no remaining material finding.",
+              "path": "docs/experiments/evidence/m35-software-completion-2026-10-10/adversarial-review.md",
+              "sha256": "aa24a527bffee3d0c1c704dc0d18cbf97ee23ca058ce7223eedb28cebb1410e2"
             }
           ],
           "planned_evidence": "Focused unittest result and bounded evidence artifact; record actual command, hash, outcome and limits after execution.",
@@ -156,6 +170,20 @@
               "outcome": "115 focused synthetic software tests executed; zero skips/failures. Three former contract anchors and timing validation-cost regression execute.",
               "path": "docs/experiments/evidence/m35-software-completion-2026-10-10/focused-receipt.json",
               "sha256": "ebe641164bda75dbb6e12df2b682b1be9d1ade67b71405752eec6c4212e08176"
+            },
+            {
+              "command": ".venv/bin/python -m unittest -v tests.test_native_predictor tests.test_native_predictor_training tests.test_native_predictor_evaluation tests.test_native_predictor_adapter tests.test_native_predictor_contract tests.test_predictor_readiness tests.test_m35_review_packet",
+              "limits": "Synthetic software only; coordinator-run separate clone is reproduction, not independent scientific validation, human approval or a real experiment.",
+              "outcome": "115 focused synthetic controls reproduced from a clean independent public clone at 7321407bc6abc57117fab379e14eafcddf80dd63; global Spec Kit gate passed.",
+              "path": "docs/experiments/evidence/m35-software-completion-2026-10-10/reproduction.json",
+              "sha256": "6c701bf6872d8337a0e6251f18251924176fcaa46cadfaaf8ebea518452f3dd6"
+            },
+            {
+              "command": "Independent read-only Luna Latest medium reviews; focused suite plus evaluator timing regression",
+              "limits": "Technical review only, not authenticated human annotation, scientific or founder acceptance.",
+              "outcome": "Two material software/document findings fixed; bounded independent technical reviews report no remaining material finding.",
+              "path": "docs/experiments/evidence/m35-software-completion-2026-10-10/adversarial-review.md",
+              "sha256": "aa24a527bffee3d0c1c704dc0d18cbf97ee23ca058ce7223eedb28cebb1410e2"
             }
           ],
           "planned_evidence": "Focused unittest result and bounded evidence artifact; record actual command, hash, outcome and limits after execution.",
@@ -274,6 +302,20 @@
               "outcome": "115 focused synthetic software tests executed; zero skips/failures. Three former contract anchors and timing validation-cost regression execute.",
               "path": "docs/experiments/evidence/m35-software-completion-2026-10-10/focused-receipt.json",
               "sha256": "ebe641164bda75dbb6e12df2b682b1be9d1ade67b71405752eec6c4212e08176"
+            },
+            {
+              "command": ".venv/bin/python -m unittest -v tests.test_native_predictor tests.test_native_predictor_training tests.test_native_predictor_evaluation tests.test_native_predictor_adapter tests.test_native_predictor_contract tests.test_predictor_readiness tests.test_m35_review_packet",
+              "limits": "Synthetic software only; coordinator-run separate clone is reproduction, not independent scientific validation, human approval or a real experiment.",
+              "outcome": "115 focused synthetic controls reproduced from a clean independent public clone at 7321407bc6abc57117fab379e14eafcddf80dd63; global Spec Kit gate passed.",
+              "path": "docs/experiments/evidence/m35-software-completion-2026-10-10/reproduction.json",
+              "sha256": "6c701bf6872d8337a0e6251f18251924176fcaa46cadfaaf8ebea518452f3dd6"
+            },
+            {
+              "command": "Independent read-only Luna Latest medium reviews; focused suite plus evaluator timing regression",
+              "limits": "Technical review only, not authenticated human annotation, scientific or founder acceptance.",
+              "outcome": "Two material software/document findings fixed; bounded independent technical reviews report no remaining material finding.",
+              "path": "docs/experiments/evidence/m35-software-completion-2026-10-10/adversarial-review.md",
+              "sha256": "aa24a527bffee3d0c1c704dc0d18cbf97ee23ca058ce7223eedb28cebb1410e2"
             }
           ],
           "planned_evidence": "The exact software boundary established by this synthetic evidence; real-data and scientific claims remain separate.",

@@ -17,7 +17,11 @@ CPython 3.12.13 in an isolated pinned environment. Command:
 `focused-final.txt`; `focused-receipt.json` binds that run. The original 114-test
 receipt is preserved as `focused-receipt-before-timing-fix.json`. Independent
 Luna findings and corrections are recorded in `adversarial-review.md`.
-Final clean-clone reproduction is recorded separately when executed;
+Final clean-clone reproduction executed 115 controls with zero skips/failures
+on commit `7321407bc6abc57117fab379e14eafcddf80dd63`; `reproduction.json`,
+`focused-cleanroom-final.txt` and `global-gate-final.txt` record its input
+commitments, focused output and passing global gate. The earlier 114-test
+reproduction is retained as `reproduction-before-timing-fix.json`.
 quick/PR and exact-head CI are repository reliability checks, not scientific
 or human approval. Interrupted older runs remain historical non-passes.
 
@@ -27,3 +31,10 @@ before replacement. `authority-refresh.json` names changes between that
 candidate and current authorities. The new draft remains human-review pending.
 `preparation-packet.json` commits the fixed current metadata documents only:
 it permits no source access, capture, registration, annotation or training.
+
+
+The first quick run in this increment was interrupted (exit 130) because the
+independent timing review produced a code correction. It is not a pass. A new
+quick run and one stable PR profile validate the corrected candidate; their
+results and exact-head CI are disclosed in the PR, with full local logs retained
+in the task artifact directory. No profile substitutes for human review.
