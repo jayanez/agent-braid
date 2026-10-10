@@ -309,9 +309,15 @@ block useful, sound engineering. Real adapter refinement remains a prerequisite.
 
 ## M4.5 — AI tooling integrations for Codex and Claude Code
 
-**Status:** [Open](https://github.com/jayanez/agent-braid/milestone/19) adjacent implementation program, with six spec issues and 60 linked task subissues. The owner selected Codex
-and Claude Code for v1 on 2026-10-08. Source preparation does not establish product
-support, accept ADR 0021 or close either M4.5 or M4.
+**Status:** [Open](https://github.com/jayanez/agent-braid/milestone/19), adjacent to
+M4. The 60 original task criteria remain unchanged; 19 auxiliary evidence tasks
+bring the source task-checklist inventory to 79 items, of which 52 are checked
+and 27 remain unchecked, alongside six open parents. Remote issue state is tracked
+separately. Candidate-bound local technical procedures and
+fresh package checks have passed in their recorded domains. Native Codex/Claude
+acceptance, human interpretation, founder decision and milestone closure remain
+pending. The owner selected Codex and Claude Code for v1 on 2026-10-08. This work
+does not accept ADR 0021 or change M4's historical G4 NO-GO.
 
 **Objective:** make the existing bounded analysis, planning, execution, recovery
 and evidence capabilities discoverable and usable through these two local hosts.
@@ -333,16 +339,14 @@ Deliverables:
 - candidate-bound controls, clean reproduction, actual host observations and a
   preregistered CLI/MCP-only/MCP-plus-skills comparison with full costs.
 
-Immediate delivery follows the [five-task preparation plan](specs/044-ai-tooling-evaluation/preparation-delivery-plan.md):
-frozen dependencies, fresh installed macOS checks, a pinned Linux recipe, reviewed
-evidence, and documentation/GitHub alignment. Its EUR 0 spending boundary and
-deferred human outcome review do not replace the full exit criteria below.
+The current owner-authorized work follows the [autonomous closure plan](specs/044-ai-tooling-evaluation/autonomous-closure-plan.md). Its seven candidate-bound technical tasks are complete on the frozen source, including both repository profiles; the earlier [five-task preparation plan](specs/044-ai-tooling-evaluation/preparation-delivery-plan.md) is historical. The work remains bounded to EUR 0 additional spend and defers human outcome evaluation. It does not replace the full M4.5 exit criteria below.
 
-Fresh offline macOS core/tooling installations and read-only MCP auto/legacy
-checks passed for frozen source `3885706e`; Linux artifacts and a pinned offline
-recipe are prepared. The [preparation proof](docs/tooling/evidence/preparation-20261010.json)
-binds the exact checks and retained failures. Linux execution and full native-host
-acceptance remain pending.
+Candidate-specific results and canonical per-scenario receipts are recorded in
+the [autonomous completion record](docs/tooling/AUTONOMOUS_COMPLETION.md) and
+[technical status](docs/tooling/TECHNICAL_STATUS.md). macOS and emulated Linux
+AMD64 package checks passed on `53f1704`; engineering validation passed on
+`aaae2e7`; program, MCP and lifecycle procedure receipts bind `5cffa9d`.
+These records do not imply native-host journeys or milestone acceptance.
 
 Exit criteria:
 

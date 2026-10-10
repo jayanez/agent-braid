@@ -1,21 +1,13 @@
 # AI tooling integrations
 
-**Status — 2026-10-10:** [M4.5](https://github.com/jayanez/agent-braid/milestone/19) is Open, adjacent to M4, with six spec issues and 60 linked task subissues. Six draft
-Spec Kit packages define 48 requirements, 48 acceptance scenarios and 60 implementation tasks, of which 59 remain unchecked.
-SPEC-044 T003 records 19 bounded deterministic controls for its historical candidate;
-it does not establish later-candidate or actual-host acceptance. An experimental implementation candidate is present; paired evidence,
-actual host observations and acceptance remain pending. Administrative tracking is registered; the [registration record](../../specs/039-ai-tooling-program/administrative-registration.md) links each parent and its work queue. [ADR 0021](../adr/0021-codex-claude-tooling-integration.md) is proposed.
+**Status — 2026-10-11:** [M4.5](https://github.com/jayanez/agent-braid/milestone/19) remains Open and adjacent to M4. The 60 original task criteria remain intact; 19 auxiliary tasks bring the source task-checklist inventory to 79 (52 checked, 27 unchecked), alongside six open spec parents; remote issue state is tracked separately. Candidate-bound local technical procedures passed: eight program controls, eight MCP acceptance scenarios with 37/37 tests, and lifecycle scenarios with 13/13 tests. The 223-test engineering suite passed without skips on its separately recorded candidate. Fresh macOS and emulated Linux AMD64 package checks passed for `53f1704`. See the [autonomous completion record](AUTONOMOUS_COMPLETION.md) and [technical evidence status](TECHNICAL_STATUS.md) for candidate identities, receipt links and limits. These do not establish native Codex/Claude acceptance, ADR 0021 adoption, human/founder approval or milestone closure. Administrative tracking is registered; the [registration record](../../specs/039-ai-tooling-program/administrative-registration.md) links each parent and its work queue.
 
-The immediate owner-authorized delivery is the [five-task preparation plan](../../specs/044-ai-tooling-evaluation/preparation-delivery-plan.md),
-with EUR 0 additional spend. It prioritizes frozen dependencies and fresh installed
-macOS checks, alongside Linux recipe preparation, reviewed evidence and documentation/
-GitHub alignment. The registered 108-attempt evaluation and native-host acceptance
-remain the broader program's pending gates.
+The current owner-authorized work follows the [autonomous closure plan](../../specs/044-ai-tooling-evaluation/autonomous-closure-plan.md); the [five-task preparation plan](../../specs/044-ai-tooling-evaluation/preparation-delivery-plan.md) is historical. The seven bounded technical tasks completed on the frozen source with EUR 0 additional spend. The registered 108-attempt evaluation, native-host acceptance, human outcome review and founder decision remain separate pending gates.
 
-The frozen macOS core/tooling package checks and Linux bundle preparation now have
-a [source-bound proof](evidence/preparation-20261010.json). Both macOS environments
-matched the read-only AIM reports from actual SDK auto/legacy sessions. The Linux
-bundle was statically checked on macOS; Linux execution remains pending.
+Candidate-bound macOS and Linux package observations and their exact evidence
+boundaries are summarized in [technical status](TECHNICAL_STATUS.md). The Linux
+AMD64 procedure used explicit emulation on an ARM64 Docker host; it is not native
+AMD64 hardware or performance evidence.
 
 ## Start here
 

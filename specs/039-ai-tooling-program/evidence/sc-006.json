@@ -1,0 +1,70 @@
+{
+  "limits": "Bounded source/local service/SDK or installed-package engineering only. No native Codex/Claude host observation, provider session, approved registration, 108-attempt capture, positive utility, human evaluation, ADR adoption or founder acceptance.",
+  "observation": {
+    "domain": "Documentary paired procedures and separately observed earlier scoped tracking",
+    "privacy": "Absolute paths normalized; exact command, cwd, raw outputs and receipt retained privately. No raw provider/account data published.",
+    "privateReceiptName": "program-5cffa9d-v1/receipt.json",
+    "privateReceiptSha256": "d2704478144302cb5115d4886297a57fc71c02f22c8bb11ae514cb403a21418a",
+    "record": {
+      "execution": {
+        "command": [
+          "<private-delivery-root>/checkout/.venv-speckit/bin/python",
+          "scripts/run_m45_program_acceptance.py",
+          "--candidate",
+          "5cffa9d27f27686dc2cbbf90ed643e2ec2df94e7",
+          "--tracking-readbacks",
+          "../m45-status-refresh-v1",
+          "--output",
+          "../autonomous-closure-v1/program-5cffa9d-v1"
+        ],
+        "cwd": "<private-delivery-root>/checkout",
+        "platform": "macOS-27.0.1-arm64-arm-64bit-Mach-O",
+        "python": "3.13.11",
+        "runnerSha256": "e32187bbee3f186efc833be5b3181b278c22f1dc817d471fb256618995c5482e"
+      },
+      "limits": "Documentary/source contract plus historical actual tracking readbacks only. No host invocation, ADR adoption, founder acceptance or scientific proof. Tracking proof precedes newly added auxiliary tasks and later state reconciliation.",
+      "trackingReadbacks": {
+        "after-audit.json": "e0e4d3b779ddb824fec184dafa9f9ef8227f9c3a5af29829d0b390bef2648c8c",
+        "plugin-readback.json": "80cda4ae09a7821aa821eebf355ed029454f806929913a285c5903bb404fac1d",
+        "project-readback.json": "5299ced2a187e29b37f2db5f7be1db8f1801dbd07879480ee22df77d501b2607"
+      }
+    }
+  },
+  "outcome": "passed",
+  "result": {
+    "negative": "refused",
+    "positive": "passed",
+    "procedure": "procedure_tracking_scope",
+    "rejection": "unreconciled tracking",
+    "scenario": "SC-006"
+  },
+  "scenario": "SC-006",
+  "schema": "agent-braid-m45-bounded-procedure-evidence-v1",
+  "sourceCandidate": "5cffa9d27f27686dc2cbbf90ed643e2ec2df94e7",
+  "sourceInputs": {
+    "CONSTITUTION.md": "ff7196976a1736a639947c2ab26e8da157fef23c89ba9881312f2a36459964eb",
+    "docs/adr/0021-codex-claude-tooling-integration.md": "e37d78bd1755f4a2b27c0883cda0303e00fb1546b22b7b176bc9ac6ad2b58b8c",
+    "specs/039-ai-tooling-program/assurance.json": "38b6225f3299d9f3a9076e1bc6643066e17982d57d6bad610fe95c9f3ebf7752",
+    "specs/039-ai-tooling-program/capability-matrix.md": "dd5fa37983598203d85f9266fbb58f8a00c7ee768ef3debcfb686f256dbb5dc0",
+    "specs/039-ai-tooling-program/program.md": "2f5a1f165317ccf9e73d65f64a07ea1c4ed155dc2e856c9e78baeaddccdca9fb",
+    "specs/039-ai-tooling-program/research.md": "c885635427029f6a5f5351fe455bf6b79b6077f91e45c6762d47360b618def2c",
+    "specs/039-ai-tooling-program/tasks.md": "b856e42dd33a0c8a9486e96689bcce825b1b4f10165dc21c0fb92aa6880c5e61",
+    "specs/039-ai-tooling-program/validation-plan.md": "c32409743fdbeee9f286af0b142b96738e7999241a8404327158710ad8c2ba10",
+    "specs/040-portable-mcp-surface/assurance.json": "ac1e0ab350d42b8ebc49d004012a36044b03d42c0226d909e207785adfecc0bc",
+    "specs/040-portable-mcp-surface/tasks.md": "810df856d3287bf569bd01f9dee3829ea0ebea6132026ef51704e947308c735d",
+    "specs/040-portable-mcp-surface/validation-plan.md": "048be9331e96065ee370821199f7023d7a8c35d7e43df2bd19167ec3392e876e",
+    "specs/041-ai-tooling-skills/assurance.json": "110ffe4ccc928ef8a96ba83e8aaf97f1e154ba5c8b559bb3aa3d0f8f82577157",
+    "specs/041-ai-tooling-skills/tasks.md": "c1bfb61a6e52d44ed28da26e413f8e931fb10f35057ff24956ad97cc1e10db28",
+    "specs/041-ai-tooling-skills/validation-plan.md": "39e9aff44e41d96f74eeeb1d2aa60b1ab6e86fc167be25d98a02d7bfe4311189",
+    "specs/042-ai-tooling-packaging/assurance.json": "8420a42189ebcc147de762dad1a200ca85a58bc9f57edccf40d252b9cab9fe81",
+    "specs/042-ai-tooling-packaging/tasks.md": "b6508e4d21cb9813abca144c93d578d3dcd4ddc60587092d4e23281ff9cf8cd0",
+    "specs/042-ai-tooling-packaging/validation-plan.md": "c32005c847595516cf3cef044d0798fe6b8fa7a285742e35f8d0bf885035530a",
+    "specs/043-ai-tooling-journey/assurance.json": "0b85075bf1a699738331fb7889fb2e319a8414bdf284e4cb6b3ba02066c9061d",
+    "specs/043-ai-tooling-journey/tasks.md": "23348ff2924520478505ef877421bf7d719181f7f1264b19391f3a271041ee35",
+    "specs/043-ai-tooling-journey/validation-plan.md": "13de1784b3dfb7e03d5d4db9156bbc9d8d71cb92157a3c30a37678a2a91174cc",
+    "specs/044-ai-tooling-evaluation/assurance.json": "138ff249996f2c75372c9aaf9efe0c6b0def8f58a4fea9d873a0f82286305068",
+    "specs/044-ai-tooling-evaluation/tasks.md": "59b2232481aa233a7090e4b7bb2281a394d0cc03f7176e9abbb65cf8b45f4ff4",
+    "specs/044-ai-tooling-evaluation/validation-plan.md": "2706919b6e6795d81d7f5c3772c8c31ad95cc0cf67b20fdc0f712d0766321367"
+  },
+  "spec": "SPEC-039"
+}

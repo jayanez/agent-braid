@@ -1,0 +1,75 @@
+{
+  "schema": "agent-braid-m45-technical-validation-v1",
+  "status": "passed",
+  "sourceCommit": "72a396d294205201f7f56d00fa2349dccb540a5c",
+  "profileReceipts": [
+    {
+      "profile": "quick",
+      "sourceCommit": "72a396d294205201f7f56d00fa2349dccb540a5c",
+      "receiptRef": "profile-quick-v4/receipt.json",
+      "receiptSha256": "8ab197608e8beb57e03f2f60de9de4ae8d939f48e47dae04527cb12beb4a3691",
+      "outcome": "passed",
+      "returnCode": 0,
+      "normalizedCommand": [
+        "<isolated-python>",
+        "scripts/validate_change.py",
+        "--base",
+        "develop",
+        "--profile",
+        "quick"
+      ],
+      "base": "develop",
+      "resolvedBaseCommit": "b795ea8325edad926b52731ce19f9407f8fc9fe8",
+      "effectiveProfile": "sensitive",
+      "outputSha256": "17745afe15a33c146ea86607092e504306a63a9aef2ab2628a5a56a30b86182d",
+      "planSha256": "d82cde804e61ca0e67a438e450fc02ee669e922191a87afb120dec70bef5072f",
+      "terminalCounts": {
+        "testCount": 1293,
+        "passedCount": 1281,
+        "skippedCount": 12,
+        "expectedFailureCount": 0,
+        "failureCount": 0,
+        "unittestRuns": 1,
+        "parseablePerTestStatusCount": 1287,
+        "perTestStatusesMatchedSummary": null
+      },
+      "workingTreeAfter": "clean",
+      "limits": "Repository validation profile only; skips are reported as observed and are not converted to passes. No native-host, registration, human or founder acceptance follows from this profile."
+    },
+    {
+      "profile": "pr",
+      "sourceCommit": "72a396d294205201f7f56d00fa2349dccb540a5c",
+      "receiptRef": "profile-pr-v1/receipt.json",
+      "receiptSha256": "567fa7f6fa4b0ff35db8ff47c62494e301cc9261688b7807eae5035f215e9d0f",
+      "outcome": "passed",
+      "returnCode": 0,
+      "normalizedCommand": [
+        "<isolated-python>",
+        "scripts/validate_change.py",
+        "--base",
+        "develop",
+        "--profile",
+        "pr"
+      ],
+      "base": "develop",
+      "resolvedBaseCommit": "b795ea8325edad926b52731ce19f9407f8fc9fe8",
+      "effectiveProfile": "pr",
+      "outputSha256": "72193c5b3a16f8c4ee4ede715887f21c1324d5aa2f307161088cc031defea8a8",
+      "planSha256": "10ca2b1ab7a7f162894d8d2778d93bd4d3b4123951c5009d778fb1712791ea98",
+      "terminalCounts": {
+        "testCount": 1293,
+        "passedCount": 1281,
+        "skippedCount": 12,
+        "expectedFailureCount": 0,
+        "failureCount": 0,
+        "unittestRuns": 1,
+        "parseablePerTestStatusCount": 1287,
+        "perTestStatusesMatchedSummary": null
+      },
+      "workingTreeAfter": "clean",
+      "limits": "Repository validation profile only; skips are reported as observed and are not converted to passes. No native-host, registration, human or founder acceptance follows from this profile."
+    }
+  ],
+  "reviewReceipt": "independent-review-addendum-v2.json",
+  "limits": "Repository quick and PR profiles passed on the source identities stated per receipt. Raw skips are reported exactly; a passing profile does not imply native-host, registered cohort, human, scientific, founder or milestone acceptance."
+}

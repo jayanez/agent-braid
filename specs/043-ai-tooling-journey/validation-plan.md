@@ -1,6 +1,6 @@
-# SPEC-043: Prospective validation procedures
+# SPEC-043: Validation procedures and obtained scope
 
-These are the paired acceptance procedures. Experimental implementation modules and deterministic controls are present in the current candidate. Reviewed private local observations cover bounded portions of some procedures, as described in [the technical evidence status](../../docs/tooling/TECHNICAL_STATUS.md); they have not been packaged as canonical obtained evidence for this spec. Canonical assurance remains draft with human review pending. A passed source validator checks structure only and does not complete these procedures.
+These are the paired acceptance procedures. Experimental implementation modules and deterministic controls are present in the current candidate. Candidate-bound local evidence is published for SC-002 and SC-004–SC-007, with bounded technical counterparts for T001/T003/T008 recorded in `evidence/technical-clauses.json`. Actual native-host journey, explanation and fallback acceptance remain pending; see [the technical evidence status](../../docs/tooling/TECHNICAL_STATUS.md). Canonical assurance remains draft with human review pending. A passed source validator checks structure only and does not complete these procedures.
 
 Record positive, refusal, unknown, failed, cancelled and unexecuted outcomes. Evidence must include full candidate and input hashes, command/tool trace, environment, output hashes, domain and limits. Human decisions remain separate.
 
@@ -51,3 +51,6 @@ Prospective targets: `agent_braid/tooling_present.py (new); agent_braid/cli.py; 
 Given missing feature and image rendering unsupported by a host; perform journey presentation is requested. Assert bounded fallback and actionable diagnosis are visible; no native embedded UI capability is invented. Include the success and refusal/unavailable counterpart; retain source/result-root integrity and exact typed output.
 
 Prospective targets: `agent_braid/tooling_present.py (new); agent_braid/cli.py; docs/tooling/JOURNEY.md (new); examples/tooling/ (new); tests/test_tooling_present.py (new)`. Planned receipt: `evidence/sc-008.json`. Use a focused test/harness added with implementation and record its actual command; never execute an invented future command.
+
+
+2026-10-10 autonomous procedure update: obtained receipts `evidence/sc-*.json` retain actual paired controls, commands, source/input identities and limits. Earlier partial observations above are historical and have not been rebound. See `docs/tooling/AUTONOMOUS_COMPLETION.md` for remaining interventions.

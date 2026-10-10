@@ -126,7 +126,15 @@
         {
           "given": "current runtime and proposed host features",
           "id": "SC-001",
-          "obtained_evidence": [],
+          "obtained_evidence": [
+            {
+              "command": "python scripts/run_m45_program_acceptance.py --candidate 5cffa9d27f27686dc2cbbf90ed643e2ec2df94e7 --tracking-readbacks <private-status-refresh> --output <private-program-receipt> (public path normalization; exact argv retained privately)",
+              "limits": "Bounded source/local service/SDK or installed-package engineering only. No native Codex/Claude host observation, provider session, approved registration, 108-attempt capture, positive utility, human evaluation, ADR adoption or founder acceptance.",
+              "outcome": "Paired procedure passed; see actual candidate-bound outcomes and retained-output hashes.",
+              "path": "specs/039-ai-tooling-program/evidence/sc-001.json",
+              "sha256": "516777b82bb1b75d48b2ce05f484955c0d7b15104b0da2bfacb56465956ba689"
+            }
+          ],
           "planned_evidence": "specs/039-ai-tooling-program/evidence/sc-001.json: exact candidate/input/environment hashes, actual commands/raw outputs, all outcomes and limits; human decisions require their own record.",
           "test_file": "specs/039-ai-tooling-program/validation-plan.md",
           "test_name": "procedure_capability_matrix",
@@ -142,7 +150,15 @@
         {
           "given": "M4's historical results and separate source-rights protocol",
           "id": "SC-002",
-          "obtained_evidence": [],
+          "obtained_evidence": [
+            {
+              "command": "python scripts/run_m45_program_acceptance.py --candidate 5cffa9d27f27686dc2cbbf90ed643e2ec2df94e7 --tracking-readbacks <private-status-refresh> --output <private-program-receipt> (public path normalization; exact argv retained privately)",
+              "limits": "Bounded source/local service/SDK or installed-package engineering only. No native Codex/Claude host observation, provider session, approved registration, 108-attempt capture, positive utility, human evaluation, ADR adoption or founder acceptance.",
+              "outcome": "Paired procedure passed; see actual candidate-bound outcomes and retained-output hashes.",
+              "path": "specs/039-ai-tooling-program/evidence/sc-002.json",
+              "sha256": "a131ca1310c1017b225a8f1d1b1e5c9032ed080bb3b396c30173082fabb6fc08"
+            }
+          ],
           "planned_evidence": "specs/039-ai-tooling-program/evidence/sc-002.json: exact candidate/input/environment hashes, actual commands/raw outputs, all outcomes and limits; human decisions require their own record.",
           "test_file": "specs/039-ai-tooling-program/validation-plan.md",
           "test_name": "procedure_m4_boundary",
@@ -158,7 +174,15 @@
         {
           "given": "SPEC-039\u2013044 and their task lists",
           "id": "SC-003",
-          "obtained_evidence": [],
+          "obtained_evidence": [
+            {
+              "command": "python scripts/run_m45_program_acceptance.py --candidate 5cffa9d27f27686dc2cbbf90ed643e2ec2df94e7 --tracking-readbacks <private-status-refresh> --output <private-program-receipt> (public path normalization; exact argv retained privately)",
+              "limits": "Bounded source/local service/SDK or installed-package engineering only. No native Codex/Claude host observation, provider session, approved registration, 108-attempt capture, positive utility, human evaluation, ADR adoption or founder acceptance.",
+              "outcome": "Paired procedure passed; see actual candidate-bound outcomes and retained-output hashes.",
+              "path": "specs/039-ai-tooling-program/evidence/sc-003.json",
+              "sha256": "48f3c9e5c5ad659c282e81684ffd554f8c04ff81be001a313ce0ad9199923c79"
+            }
+          ],
           "planned_evidence": "specs/039-ai-tooling-program/evidence/sc-003.json: exact candidate/input/environment hashes, actual commands/raw outputs, all outcomes and limits; human decisions require their own record.",
           "test_file": "specs/039-ai-tooling-program/validation-plan.md",
           "test_name": "procedure_traceability",
@@ -174,7 +198,15 @@
         {
           "given": "accepted ADRs and the new architectural proposal",
           "id": "SC-004",
-          "obtained_evidence": [],
+          "obtained_evidence": [
+            {
+              "command": "python scripts/run_m45_program_acceptance.py --candidate 5cffa9d27f27686dc2cbbf90ed643e2ec2df94e7 --tracking-readbacks <private-status-refresh> --output <private-program-receipt> (public path normalization; exact argv retained privately)",
+              "limits": "Bounded source/local service/SDK or installed-package engineering only. No native Codex/Claude host observation, provider session, approved registration, 108-attempt capture, positive utility, human evaluation, ADR adoption or founder acceptance.",
+              "outcome": "Paired procedure passed; see actual candidate-bound outcomes and retained-output hashes.",
+              "path": "specs/039-ai-tooling-program/evidence/sc-004.json",
+              "sha256": "383bf2057d98f1191d6f406360d5ef2a9183dbbdae5e6099d9b92f1b6284e98c"
+            }
+          ],
           "planned_evidence": "specs/039-ai-tooling-program/evidence/sc-004.json: exact candidate/input/environment hashes, actual commands/raw outputs, all outcomes and limits; human decisions require their own record.",
           "test_file": "specs/039-ai-tooling-program/validation-plan.md",
           "test_name": "procedure_architecture_review",
@@ -190,7 +222,15 @@
         {
           "given": "current vendor and protocol documentation",
           "id": "SC-005",
-          "obtained_evidence": [],
+          "obtained_evidence": [
+            {
+              "command": "python scripts/run_m45_program_acceptance.py --candidate 5cffa9d27f27686dc2cbbf90ed643e2ec2df94e7 --tracking-readbacks <private-status-refresh> --output <private-program-receipt> (public path normalization; exact argv retained privately)",
+              "limits": "Bounded source/local service/SDK or installed-package engineering only. No native Codex/Claude host observation, provider session, approved registration, 108-attempt capture, positive utility, human evaluation, ADR adoption or founder acceptance.",
+              "outcome": "Paired procedure passed; see actual candidate-bound outcomes and retained-output hashes.",
+              "path": "specs/039-ai-tooling-program/evidence/sc-005.json",
+              "sha256": "760cca82b4a1d337fba1a6ae86b1528e24ed798fd4c8d6a3653d7cab460c6d2d"
+            }
+          ],
           "planned_evidence": "specs/039-ai-tooling-program/evidence/sc-005.json: exact candidate/input/environment hashes, actual commands/raw outputs, all outcomes and limits; human decisions require their own record.",
           "test_file": "specs/039-ai-tooling-program/validation-plan.md",
           "test_name": "procedure_research_provenance",
@@ -206,7 +246,15 @@
         {
           "given": "source mapping and an exact scoped remote plan",
           "id": "SC-006",
-          "obtained_evidence": [],
+          "obtained_evidence": [
+            {
+              "command": "python scripts/run_m45_program_acceptance.py --candidate 5cffa9d27f27686dc2cbbf90ed643e2ec2df94e7 --tracking-readbacks <private-status-refresh> --output <private-program-receipt> (public path normalization; exact argv retained privately)",
+              "limits": "Bounded source/local service/SDK or installed-package engineering only. No native Codex/Claude host observation, provider session, approved registration, 108-attempt capture, positive utility, human evaluation, ADR adoption or founder acceptance.",
+              "outcome": "Paired procedure passed; see actual candidate-bound outcomes and retained-output hashes.",
+              "path": "specs/039-ai-tooling-program/evidence/sc-006.json",
+              "sha256": "7454dc049116370d2a104b676651087ec87a82e3e3307013bd0ae37b6e96babd"
+            }
+          ],
           "planned_evidence": "specs/039-ai-tooling-program/evidence/sc-006.json: exact candidate/input/environment hashes, actual commands/raw outputs, all outcomes and limits; human decisions require their own record.",
           "test_file": "specs/039-ai-tooling-program/validation-plan.md",
           "test_name": "procedure_tracking_scope",
@@ -222,7 +270,15 @@
         {
           "given": "the owner-selected two-host scope",
           "id": "SC-007",
-          "obtained_evidence": [],
+          "obtained_evidence": [
+            {
+              "command": "python scripts/run_m45_program_acceptance.py --candidate 5cffa9d27f27686dc2cbbf90ed643e2ec2df94e7 --tracking-readbacks <private-status-refresh> --output <private-program-receipt> (public path normalization; exact argv retained privately)",
+              "limits": "Bounded source/local service/SDK or installed-package engineering only. No native Codex/Claude host observation, provider session, approved registration, 108-attempt capture, positive utility, human evaluation, ADR adoption or founder acceptance.",
+              "outcome": "Paired procedure passed; see actual candidate-bound outcomes and retained-output hashes.",
+              "path": "specs/039-ai-tooling-program/evidence/sc-007.json",
+              "sha256": "996d16a2c376babf1f346d00dc9a0ed52366c0ea204f87dc420b79ee3eb58e7a"
+            }
+          ],
           "planned_evidence": "specs/039-ai-tooling-program/evidence/sc-007.json: exact candidate/input/environment hashes, actual commands/raw outputs, all outcomes and limits; human decisions require their own record.",
           "test_file": "specs/039-ai-tooling-program/validation-plan.md",
           "test_name": "procedure_future_scope",
@@ -238,7 +294,15 @@
         {
           "given": "a completed source packet versus a future implementation candidate",
           "id": "SC-008",
-          "obtained_evidence": [],
+          "obtained_evidence": [
+            {
+              "command": "python scripts/run_m45_program_acceptance.py --candidate 5cffa9d27f27686dc2cbbf90ed643e2ec2df94e7 --tracking-readbacks <private-status-refresh> --output <private-program-receipt> (public path normalization; exact argv retained privately)",
+              "limits": "Bounded source/local service/SDK or installed-package engineering only. No native Codex/Claude host observation, provider session, approved registration, 108-attempt capture, positive utility, human evaluation, ADR adoption or founder acceptance.",
+              "outcome": "Paired procedure passed; see actual candidate-bound outcomes and retained-output hashes.",
+              "path": "specs/039-ai-tooling-program/evidence/sc-008.json",
+              "sha256": "c51d2059aeb3cbc0ded32f739cba43d4244467b355228ebe8ce8331d72e2e020"
+            }
+          ],
           "planned_evidence": "specs/039-ai-tooling-program/evidence/sc-008.json: exact candidate/input/environment hashes, actual commands/raw outputs, all outcomes and limits; human decisions require their own record.",
           "test_file": "specs/039-ai-tooling-program/validation-plan.md",
           "test_name": "procedure_closure_boundary",
