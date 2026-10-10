@@ -1,11 +1,21 @@
 <!-- SPDX-License-Identifier: CC-BY-SA-4.0 -->
 # Autonomous engineering delivery
 
-**Recorded:** 2026-10-06. This non-normative record covers the approved
+**Original record:** 2026-10-06. **Status addendum:** 2026-10-10. The original
+record covers the approved
 engineering work that could proceed without new scientific, source-owner or
 founder decisions. The [Constitution](../../CONSTITUTION.md), applicable ADRs and
 frozen evidence retain their authority. A reviewed PR is the delivery boundary;
 merge and whole-milestone acceptance remain separate.
+
+The M3.5 software increment subsequently closed T002/#182 and T004/#184 for
+synthetic-only trainer/inference and verifier-boundary behavior. T006/T008/T009/
+T010 are closed. The final focused suite passed 115 controls with zero skips or
+failures; the merged provenance repair passed exact-head and post-merge CI
+(885 tests, two skips) and all four integration-matrix configurations. The experiment remains
+open: T001/#181, T007/#188, T003/#183, T005/#185, #180 and milestone 9. There
+are zero admitted real pairs, and real-feed adaptation is not implemented. See
+the [completion evidence](../experiments/evidence/m35-software-completion-2026-10-10/README.md).
 
 ## Parallel tracks and integration
 
