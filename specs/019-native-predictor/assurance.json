@@ -137,7 +137,7 @@
               "limits": "Incremental synthetic software verification only; no real data, labels, fit, source authenticity, scientific or founder approval.",
               "outcome": "114 focused synthetic software tests executed; zero skips/failures. Three former contract anchors execute.",
               "path": "docs/experiments/evidence/m35-software-completion-2026-10-10/focused-receipt.json",
-              "sha256": "267a414767fae5f5a4bfccb9d72293809d2beff0b0d8eec770fc8dbf46d91144"
+              "sha256": "39afa29f9db50e330fb15abefe40fc54076009764f5742545ce9bb64d88e9db6"
             }
           ],
           "planned_evidence": "Focused unittest result and bounded evidence artifact; record actual command, hash, outcome and limits after execution.",
@@ -155,7 +155,7 @@
               "limits": "Incremental synthetic software verification only; no real data, labels, fit, source authenticity, scientific or founder approval.",
               "outcome": "114 focused synthetic software tests executed; zero skips/failures. Three former contract anchors execute.",
               "path": "docs/experiments/evidence/m35-software-completion-2026-10-10/focused-receipt.json",
-              "sha256": "267a414767fae5f5a4bfccb9d72293809d2beff0b0d8eec770fc8dbf46d91144"
+              "sha256": "39afa29f9db50e330fb15abefe40fc54076009764f5742545ce9bb64d88e9db6"
             }
           ],
           "planned_evidence": "Focused unittest result and bounded evidence artifact; record actual command, hash, outcome and limits after execution.",
@@ -273,7 +273,7 @@
               "limits": "Incremental synthetic software verification only; no real data, labels, fit, source authenticity, scientific or founder approval.",
               "outcome": "114 focused synthetic software tests executed; zero skips/failures. Three former contract anchors execute.",
               "path": "docs/experiments/evidence/m35-software-completion-2026-10-10/focused-receipt.json",
-              "sha256": "267a414767fae5f5a4bfccb9d72293809d2beff0b0d8eec770fc8dbf46d91144"
+              "sha256": "39afa29f9db50e330fb15abefe40fc54076009764f5742545ce9bb64d88e9db6"
             }
           ],
           "planned_evidence": "The exact software boundary established by this synthetic evidence; real-data and scientific claims remain separate.",
