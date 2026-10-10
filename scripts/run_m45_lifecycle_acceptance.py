@@ -107,8 +107,17 @@ def raw_test_outcomes(raw: str) -> list[dict[str, str]]:
             continue
         test_name, test_case, tail = match.groups()
         outcome = result.search(tail)
-        if outcome is None and index + 1 < len(lines):
-            outcome = result.fullmatch(lines[index + 1].strip())
+        # ResourceWarning/asyncio diagnostics can be written between unittest's
+        # progress prefix and its final standalone status line. Search only
+        # until the next test prefix so a later test can never supply this one's
+        # outcome.
+        if outcome is None:
+            for continuation in lines[index + 1:]:
+                if start.match(continuation):
+                    break
+                outcome = result.fullmatch(continuation.strip())
+                if outcome is not None:
+                    break
         if outcome is not None:
             found.append({"testName": test_name, "testCase": test_case,
                           "outcome": outcome.group(1).split(maxsplit=1)[0]})
