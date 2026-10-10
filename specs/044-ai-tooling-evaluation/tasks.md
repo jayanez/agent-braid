@@ -41,3 +41,32 @@ Stable task IDs are implementation obligations. Check only after the paired proc
 - [ ] T010 (REQ-001,REQ-002,REQ-003,REQ-004,REQ-005,REQ-006,REQ-007,REQ-008/SC-001,SC-002,SC-003,SC-004,SC-005,SC-006,SC-007,SC-008): Freeze the bounded candidate, review findings and record the required human decision.
   Dependencies: T008 technical packet readiness, T009 validation, all applicable technical gates, later human addendum/ratings/adjudication, independent review and the actual explicit founder decision. Until these occur T010 remains pending. Targets: frozen assurance, review record, recorded owner decision and final SPEC-044 closure record.
   Verification and planned evidence: record the founder's accepted, rejected or pending decision and bounded rationale after independent findings are available; close milestone #19 only when all required gates are evidenced and the owner records closure. Source validation and hashes are not approval.
+
+## Separately verifiable technical clauses — owner-approved split
+
+These auxiliary tasks preserve the full criteria of the linked original task.
+A completed auxiliary does not complete native-host or human acceptance.
+
+- [ ] T011 (REQ-001/SC-001): Prepare the exact 18-fixture/six-prompt registration, rubric, caps, approved D1/D2 and human deferral with unresolved account/catalog/configuration/approval fields explicitly pending.
+  Related original: T001. Dependencies: available bounded implementation; original acceptance remains separate. Targets: `private registration; readiness register`.
+  Verification: `evidence/technical-clauses.json` with frozen candidate/input hashes, actual command, paired controls and stated limits.
+
+- [ ] T012 (REQ-005/SC-005): Validate the fixed balanced 108-slot roster, arm ordering, ledger isolation and all-outcome denominators using deterministic controls; actual attempts stay with T005.
+  Related original: T005. Dependencies: available bounded implementation; original acceptance remains separate. Targets: `agent_braid/tooling_evaluation.py; tests/test_tooling_evaluation.py`.
+  Verification: `evidence/technical-clauses.json` with frozen candidate/input hashes, actual command, paired controls and stated limits.
+
+- [ ] T013 (REQ-006/SC-006): Validate pre-attempt subscription-only, cost/token/time/RSS/disk stop and fail-closed admission instrumentation; real measured-accounting reconciliation stays with T006.
+  Related original: T006. Dependencies: available bounded implementation; original acceptance remains separate. Targets: `agent_braid/tooling_capture.py; agent_braid/tooling_subscription.py; tests/test_tooling_capture.py`.
+  Verification: `evidence/technical-clauses.json` with frozen candidate/input hashes, actual command, paired controls and stated limits.
+
+- [ ] T014 (REQ-007/SC-007): Validate deterministic interpretation/missing-cost/human-label suppression controls; reporting the actual 108 observations stays with T007.
+  Related original: T007. Dependencies: available bounded implementation; original acceptance remains separate. Targets: `agent_braid/tooling_evaluation.py; tests/test_tooling_evaluation.py`.
+  Verification: `evidence/technical-clauses.json` with frozen candidate/input hashes, actual command, paired controls and stated limits.
+
+- [ ] T015 (REQ-008/SC-008): Prepare a bounded autonomous-delivery review packet with actual technical findings and explicit unready registered-capture/founder fields; the full observation-based decision packet stays with T008.
+  Related original: T008. Dependencies: available bounded implementation; original acceptance remains separate. Targets: `autonomous-closure-plan.md; docs/tooling/AUTONOMOUS_COMPLETION.md`.
+  Verification: `evidence/technical-clauses.json` with frozen candidate/input hashes, actual command, paired controls and stated limits.
+
+- [ ] T016 (REQ-001,REQ-002,REQ-003,REQ-004,REQ-005,REQ-006,REQ-007,REQ-008/SC-001,SC-002,SC-003,SC-004,SC-005,SC-006,SC-007,SC-008): Reconcile available engineering evidence and pass repository quick/PR gates; original registered-observation predecessors stay with T009.
+  Related original: T009. Dependencies: available bounded implementation; original acceptance remains separate. Targets: `assurance.json; source validation`.
+  Verification: `evidence/technical-validation.json` with frozen candidate/input hashes, actual command, paired controls and stated limits.

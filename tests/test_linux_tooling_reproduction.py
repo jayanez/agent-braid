@@ -98,6 +98,60 @@ class LinuxToolingRecipeTests(unittest.TestCase):
                     recipe.require_native_target(system, machine)
         recipe.require_native_target("Linux", "x86_64")
 
+    def test_arm64_launch_requires_explicit_emulation_and_retains_target_identity(self):
+        for system, machine in (("Darwin", "arm64"), ("Linux", "aarch64")):
+            with self.subTest(system=system):
+                with self.assertRaises(recipe.Refused):
+                    recipe.launch_host_identity(system, machine, False)
+                identity = recipe.launch_host_identity(system, machine, True)
+                self.assertEqual("arm64-launch-host-amd64-container", identity["mode"])
+                self.assertEqual(machine, identity["machine"])
+        for system, machine in (("Windows", "ARM64"), ("Linux", "riscv64")):
+            with self.assertRaises(recipe.Refused):
+                recipe.launch_host_identity(system, machine, True)
+        self.assertEqual("native-launch-host", recipe.launch_host_identity("Linux", "x86_64", False)["mode"])
+
+    def test_daemon_identity_refuses_unknown_platform_and_excludes_private_fields(self):
+        data = {"OSType": "linux", "Architecture": "aarch64", "ServerVersion": "fixture", "Name": "private-host"}
+        with patch.dict(recipe.os.environ, {"DOCKER_HOST": "unix:///fixture", "DOCKER_CONTEXT": ""}), patch.object(recipe.subprocess, "run", return_value=subprocess.CompletedProcess([], 0, stdout=json.dumps(data))):
+            actual = recipe.inspect_daemon_identity("docker")
+            self.assertNotIn("Name", actual)
+            self.assertEqual("unix", actual["endpointScheme"])
+            self.assertEqual("amd64-on-arm64-daemon-emulation", actual["containerExecutionMode"])
+            self.assertEqual("aarch64", actual["Architecture"])
+        with patch.dict(recipe.os.environ, {"DOCKER_HOST": "tcp://remote-fixture:2376", "DOCKER_CONTEXT": ""}), patch.object(recipe.subprocess, "run") as forbidden:
+            with self.assertRaisesRegex(recipe.Refused, "local Unix"):
+                recipe.inspect_daemon_identity("docker")
+            forbidden.assert_not_called()
+        for bad in ({"OSType": "windows", "Architecture": "amd64"}, {"OSType": "linux", "Architecture": "unknown"}, []):
+            with patch.dict(recipe.os.environ, {"DOCKER_HOST": "unix:///fixture", "DOCKER_CONTEXT": ""}), patch.object(recipe.subprocess, "run", return_value=subprocess.CompletedProcess([], 0, stdout=json.dumps(bad))):
+                with self.assertRaises(recipe.Refused):
+                    recipe.inspect_daemon_identity("docker")
+
+    def test_main_remote_endpoint_refuses_before_any_docker_invocation(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root, _wheels, expected = self._bundle(Path(temporary))
+            args = ["--input-dir", str(root), "--output-dir", str(Path(temporary)/"output"),
+                    "--candidate-sha256", expected["candidate_sha256"],
+                    "--probe-sha256", expected["probe_sha256"],
+                    "--manifest-sha256", expected["manifest_sha256"],
+                    "--wheelhouse-sha256", expected["wheelhouse_sha256"],
+                    "--launcher-sha256", recipe.sha256_file(SCRIPT), "--execute"]
+            with patch.dict(recipe.os.environ, {"DOCKER_HOST": "tcp://remote-fixture:2376", "DOCKER_CONTEXT": ""}), \
+                 patch.object(recipe.platform, "system", return_value="Linux"), \
+                 patch.object(recipe.platform, "machine", return_value="x86_64"), \
+                 patch.object(recipe.shutil, "which", return_value="/usr/bin/docker"), \
+                 patch.object(recipe.subprocess, "run") as forbidden, redirect_stdout(io.StringIO()):
+                self.assertEqual(2, recipe.main(args))
+            forbidden.assert_not_called()
+
+    def test_context_override_cannot_hide_remote_endpoint_behind_unix_host_env(self):
+        with patch.dict(recipe.os.environ, {"DOCKER_HOST": "unix:///fixture", "DOCKER_CONTEXT": "remote-fixture"}), \
+             patch.object(recipe.subprocess, "run", return_value=subprocess.CompletedProcess([], 0, stdout='"ssh://remote-fixture"')) as calls:
+            with self.assertRaisesRegex(recipe.Refused, "local Unix"):
+                recipe.inspect_daemon_identity("docker")
+            calls.assert_called_once_with(["docker", "context", "inspect", "remote-fixture", "--format", "{{json .Endpoints.docker.Host}}"], check=False, capture_output=True, text=True, timeout=15)
+
     def test_local_image_guard_requires_exact_amd64_digest(self):
         good = [{"Os": "linux", "Architecture": "amd64",
                  "RepoDigests": ["python@" + recipe.IMAGE_DIGEST]}]
@@ -173,6 +227,7 @@ class LinuxToolingRecipeTests(unittest.TestCase):
                  patch.object(recipe.platform, "machine", return_value="x86_64"), \
                  patch.object(recipe.shutil, "which", return_value="/usr/bin/docker"), \
                  patch.object(recipe, "_inspect_local_image"), \
+                 patch.object(recipe, "inspect_daemon_identity", return_value={"Architecture": "amd64"}), \
                  patch.object(recipe, "run_docker_bounded", return_value=result) as run_child, \
                  redirect_stdout(stdout):
                 status = recipe.main(args)
@@ -230,6 +285,7 @@ class LinuxToolingRecipeTests(unittest.TestCase):
                      patch.object(recipe.platform, "machine", return_value="x86_64"), \
                      patch.object(recipe.shutil, "which", return_value="/usr/bin/docker"), \
                      patch.object(recipe, "_inspect_local_image"), \
+                 patch.object(recipe, "inspect_daemon_identity", return_value={"Architecture": "amd64"}), \
                      patch.object(recipe, "run_docker_bounded", return_value=result), \
                      patch.object(recipe.subprocess, "run", return_value=cleanup) as cleanup_runner, \
                      redirect_stdout(output):
