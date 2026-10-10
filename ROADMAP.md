@@ -329,6 +329,11 @@ Deliverables:
 - candidate-bound controls, clean reproduction, actual host observations and a
   preregistered CLI/MCP-only/MCP-plus-skills comparison with full costs.
 
+Immediate delivery follows the [five-task preparation plan](specs/044-ai-tooling-evaluation/preparation-delivery-plan.md):
+frozen dependencies, fresh installed macOS checks, a pinned Linux recipe, reviewed
+evidence, and documentation/GitHub alignment. Its EUR 0 spending boundary and
+deferred human outcome review do not replace the full exit criteria below.
+
 Exit criteria:
 
 - both selected host builds complete the bounded journey with actual receipts;

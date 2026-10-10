@@ -107,3 +107,14 @@ completion. This 2026-10-08 source-delivery record did not change M4's historica
 G4 NO-GO or decide whole-M4 acceptance. The separate bounded M4 acceptance on
 2026-10-09 is recorded in [program.md](program.md#m4-relationship); it preserves
 G4 NO-GO and grants no M4.5 acceptance or capture permission.
+
+## Five-task preparation delivery — 2026-10-10
+
+The owner authorized the [bounded preparation plan](../044-ai-tooling-evaluation/preparation-delivery-plan.md)
+and its integrated delivery with EUR 0 additional spend and human outcome review
+deferred. Its goal covers dependency freezing, fresh installed macOS checks,
+Linux recipe preparation, reviewed evidence, documentation and GitHub alignment.
+It does not replace the full evaluation protocol or complete its open acceptance
+procedures. Historical counts and receipts above retain their dates and domains.
+SPEC-044 T003 remains the single checked historical control task; all other
+M4.5 tasks remain pending until their complete paired procedures are evidenced.

@@ -1,8 +1,21 @@
 # M4.5 implementation status and source map
 
+## Current preparation scope — 2026-10-10
+
+The active work is the [five-task preparation plan](../044-ai-tooling-evaluation/preparation-delivery-plan.md).
+The existing implementation candidate was integrated with public `develop`
+`526fa11c2a074abfe8c5c1217a4529a5f60ed4da` at
+`aae3e0062d2b8be68ccf42a27c6950a2d3283047`; its Spec Kit preflight passed.
+The source and installed checks described below are historical snapshots, not
+validation of that integration or later preparation changes. Current dependency,
+macOS installation, Linux recipe and independent review results are pending.
+The complete evaluation and native-host acceptance remain separate gates.
+
+## Historical implementation inventory
+
 Status date: 2026-10-10. This is a source map for the proposed M4.5 implementation and closure work. It does not update task checkboxes, assurance records, approval state, or milestone state.
 
-The earlier planning source map used `develop` at `59d0eadbea772dbff32fb9daca88bd39ab67a030` and later integrated metadata/evidence commit `7c10b248d34a05f15195376d72884d9b443fe36a`. The currently inspected source commit is `153c8fb7452fc55ddb50ad979ba8f872f9c1fb2d`; its identity is known. Approval and freeze of the prospective evaluation candidate remain pending. Neither source integration nor an earlier M4 decision establishes M4.5 acceptance. Code present in this candidate is not, by itself, paired scenario evidence, host observation, clean-room reproduction, approval, or task completion. The registered 60 child tasks and six parent tasks retain their existing acceptance criteria. SPEC-044 T003 alone is checked for 19 bounded deterministic controls on its historical candidate; the other 59 task checkboxes remain open. No later-candidate or host acceptance is inferred from that record. Do not create replacement task IDs or reduce the planned scope.
+The earlier planning source map used `develop` at `59d0eadbea772dbff32fb9daca88bd39ab67a030` and later integrated metadata/evidence commit `7c10b248d34a05f15195376d72884d9b443fe36a`. The historically inspected source commit was `153c8fb7452fc55ddb50ad979ba8f872f9c1fb2d`; its identity is known. Approval and freeze of the prospective evaluation candidate remain pending. Neither source integration nor an earlier M4 decision establishes M4.5 acceptance. Code present in this candidate is not, by itself, paired scenario evidence, host observation, clean-room reproduction, approval, or task completion. The registered 60 child tasks and six parent tasks retain their existing acceptance criteria. SPEC-044 T003 alone is checked for 19 bounded deterministic controls on its historical candidate; the other 59 task checkboxes remain open. No later-candidate or host acceptance is inferred from that record. Do not create replacement task IDs or reduce the planned scope.
 
 ## Current integration and evaluation preparation
 
@@ -124,7 +137,7 @@ full human-inclusive accounting is established here.
 | W22 — frozen review and decision packet | 039/T008; 044/T008; T010 in 039–044 | Pending. Assemble candidate/evidence hashes, actual receipts, independent technical findings and a decision packet. Packet readiness requests a decision; it does not record one. Founder acceptance/rejection and scope decision remain explicit human actions. |
 | W23 — governed merge and tracking closure | 039/T006 and 039/T008–T010; final parent/child/milestone dispositions | Pending. After accepted evidence and governed integration, reconcile exactly the existing 60 children, six parents and milestone 19; require an empty scoped audit and separately verify any private Project state. |
 
-The active owner goal retains all technical work: five product skills, optional SDK behavior, installation/configuration, accounting and negative controls, registered clean reproduction, both native host journeys, all 108 intended attempts, technical interpretation and independent technical review. The two human outcome evaluations and their adjudication are explicitly outside this active goal and remain pending. Unknown human fees and times are not zero. Founder acceptance, merge, governed tracking and formal milestone closure retain their separate approval and evidence boundaries; none is implied by completion of the technical goal.
+The earlier full technical-evaluation goal retained all technical work: five product skills, optional SDK behavior, installation/configuration, accounting and negative controls, registered clean reproduction, both native host journeys, all 108 intended attempts, technical interpretation and independent technical review. The two human outcome evaluations and their adjudication were explicitly outside that earlier goal and remain pending. The current five-task preparation goal is described above; the broader technical waves in this section remain open outside that immediate delivery scope. Unknown human fees and times are not zero. Founder acceptance, merge, governed tracking and formal milestone closure retain their separate approval and evidence boundaries; none is implied by completion of the technical goal.
 
 ## Predecessor context and evidence boundaries
 
