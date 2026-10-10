@@ -1,6 +1,6 @@
 # M4.5 technical evidence status
 
-**Status date: 2026-10-10.** This is a derived status report for the unmerged
+**Status date: 2026-10-10.** This is a derived status report for the
 experimental candidate. It does not replace raw receipts, canonical obtained
 evidence, task acceptance or an approval record. Historical private receipts and independent review bindings have a later
 [retention limitation](EVIDENCE_RETENTION_20261010.md). Some original archives
@@ -23,10 +23,25 @@ spending is EUR 0; human outcome evaluation remains deferred.
 The existing implementation branch incorporated public `develop`
 `526fa11c2a074abfe8c5c1217a4529a5f60ed4da` by normal merge at
 `aae3e0062d2b8be68ccf42a27c6950a2d3283047`. Spec Kit preflight and explicit
-SPEC-044 prerequisites passed at that integration. The new dependency, installed
-artifact and recipe work is in progress; no new installed-artifact result is
-claimed here. Stable-candidate quick/PR and hosted results will be recorded against
-their actual commits after execution.
+SPEC-044 prerequisites passed at that integration. A new frozen preparation
+candidate, `3885706eeb64837c1b409d24a9b0754eb33301cd`, has built wheel/sdist artifacts
+and passed fresh offline core and tooling installations on macOS ARM64 / CPython
+3.13.11. The [preparation proof](evidence/preparation-20261010.json) binds the exact
+wheel, source, dependency manifests, private receipts and executed commands.
+
+Both installations verified installed origins, twelve packaged assets, five
+skills, CLI analysis and pending doctor boundaries. Actual MCP SDK 2.3.0 auto and
+legacy sessions read capabilities/prompts, accepted the owned synthetic AIM input,
+refused the malformed input and matched both CLI report digests. Both server
+children exited normally and were reaped; full bounded protocol frames and stderr
+are retained privately. The earlier verifier failure is retained separately.
+
+The hash-bound Linux AMD64 input bundle is prepared and its static validator and
+refusal checks passed on macOS. No Linux container, installed Linux probe or
+registered reproduction was executed. Target closure/licensing observations bind
+declared metadata and artifact bytes, not registry authenticity or legal approval.
+Stable-candidate quick/PR and hosted results remain pending delivery checks; they
+will be bound to their actual commits after execution.
 
 The 108 registered attempts, native Codex/Claude acceptance, complete approved
 registration, registered platform reproduction and founder M4.5 closure remain

@@ -64,6 +64,12 @@ consolidates evidence and aligns documentation/tracking with no additional spend
 Native-host acceptance and the registered comparison remain pending; human outcome
 review is deferred.
 
+Fresh offline macOS core/tooling installations and read-only MCP auto/legacy
+checks passed for frozen source `3885706e`; Linux artifacts and a pinned offline
+recipe are prepared. The [preparation proof](docs/tooling/evidence/preparation-20261010.json)
+binds the exact checks and retained failures. Linux execution and full native-host
+acceptance remain pending.
+
 The first targets are **Codex local CLI and Claude Code local CLI**. M4.5 formal product
 support and full acceptance remain pending. Separate bounded SPEC-021 host
 observations for Codex and Claude are linked below; they do not establish M4.5

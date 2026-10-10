@@ -7,8 +7,12 @@ The existing implementation candidate was integrated with public `develop`
 `526fa11c2a074abfe8c5c1217a4529a5f60ed4da` at
 `aae3e0062d2b8be68ccf42a27c6950a2d3283047`; its Spec Kit preflight passed.
 The source and installed checks described below are historical snapshots, not
-validation of that integration or later preparation changes. Current dependency,
-macOS installation, Linux recipe and independent review results are pending.
+validation of that integration or later preparation changes. Both target dependency closures and the verifier/recipe passed independent
+technical review. Frozen source `3885706eeb64837c1b409d24a9b0754eb33301cd` passed
+fresh offline macOS core/tooling installations and read-only CLI/MCP parity; a
+hash-bound Linux input bundle is prepared with static refusal checks. See the
+[preparation proof](../../docs/tooling/evidence/preparation-20261010.json).
+Final validation, evidence review, merge and remote tracking remain delivery gates.
 The complete evaluation and native-host acceptance remain separate gates.
 
 ## Historical implementation inventory
