@@ -164,8 +164,8 @@ The local procedures authorized by the bounded closure plan have produced canoni
 scenario evidence. See [technical evidence status](../../docs/tooling/TECHNICAL_STATUS.md)
 for the exact receipt map and limitations, and [autonomous completion](../../docs/tooling/AUTONOMOUS_COMPLETION.md)
 for the proof inventory. The evidence spans distinct candidates: package checks on
-`53f1704`, engineering tests on `aaae2e7`, and the final program/MCP/lifecycle
-procedures on `5cffa9d`. No result is transferred across those candidates.
+`53f1704`, engineering tests on `aaae2e7`, program/lifecycle
+procedures on `5cffa9d`, and the refreshed MCP capture on `24921e1`. No result is transferred across those candidates.
 
 The paired technical run reports 8/8 program controls, 8/8 MCP scenarios and 37/37
 MCP tests, 13/13 lifecycle tests, 223 engineering tests without skips, fresh

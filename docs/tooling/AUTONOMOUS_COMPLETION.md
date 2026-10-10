@@ -70,9 +70,12 @@ silently reassigned to the final candidate.
 
 ### Captured local procedures
 
-The eight documentary procedures (SPEC-039), eight local MCP procedures
-(SPEC-040), seven lifecycle plus six presentation tests and healthy SDK peer
-(SPEC-042 / SPEC-043) passed on `5cffa9d27f27686dc2cbbf90ed643e2ec2df94e7`.
+The eight documentary procedures (SPEC-039), seven lifecycle plus six presentation
+tests and their healthy SDK peer (SPEC-042 / SPEC-043) passed on
+`5cffa9d27f27686dc2cbbf90ed643e2ec2df94e7`. The eight local MCP procedures
+(SPEC-040) were captured again on `24921e1a16dfff15cde5af091f7b955491acdbef` after adding
+optional-dependency guards to the acceptance tests. The earlier MCP capture
+remains preserved; runtime product inputs did not change.
 The MCP receipt contains 37 passing tests, eight passing cases and 78 private
 transport trace files. The 223-test synthetic engineering capture passed with
 zero skips on `aaae2e76b74653d142c46027bd33f3e05c0982eb`.
@@ -96,3 +99,5 @@ Auxiliary clauses are indexed separately in each applicable spec's
 paths; exact argv, raw outputs, failure attempts and digest-bound inventories
 are retained privately. Repository profiles, final review and integration
 remain pending until their own terminal records are added.
+
+The engineering procedure also passed by direct script invocation on `24921e1a16dfff15cde5af091f7b955491acdbef`: 223 tests, zero skips, stable clean candidate. See [the direct-run receipt](../../specs/044-ai-tooling-evaluation/evidence/engineering-direct-check.json).
