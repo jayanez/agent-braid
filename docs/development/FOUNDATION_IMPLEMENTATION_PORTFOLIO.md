@@ -1,5 +1,11 @@
 # Foundational review and implementation portfolio
 
+**M3.5 update, 2026-10-10:** this portfolio retains its original audit and planning
+observations. The six synthetic-software tasks are now closed, including the
+offline trainer/inference and verifier boundary. Only the real-workload experiment
+remains; see the [current alignment record](m35-project-alignment.md) and
+[compact deferred experiment](../../specs/019-native-predictor/software-completion.md).
+
 ## Current navigation — 2026-10-08
 
 The audit below is a historical snapshot; its counts, findings and baseline remain
