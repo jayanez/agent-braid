@@ -141,6 +141,29 @@ python3 scripts/validate_spec_kit.py snapshot specs/your-feature
 python3 scripts/validate_spec_kit.py
 ```
 
+SPEC-019's squashed synthetic software draft is retained in the exact public
+annotated tag `spec-019-software-candidate-c30e8bc`. The restoration tool pins
+both its tag object and peeled candidate; it checks the exact clean public root
+before fetching or changing refs, and rejects any additional reachable root.
+Git replacement objects and legacy graft files are ignored in authority, evidence
+and ancestry checks. This separate draft route requires
+the allowlisted record path, unchanged `draft/pending` bytes matching the tagged
+candidate, one clean public root, and both historical snapshots in that
+candidate's ancestry. It then runs ordinary strict authority/evidence validation;
+errors propagate. It never supplies approval or substitutes for the existing
+reviewed-tag route. A changed record does not inherit this exception. Neither the
+immutable export manifest nor the historical assurance is rewritten.
+The reviewed-tag route also requires the exact already-public tag object and
+candidate from its literal catalog. A locally created review record and annotated
+tag cannot promote a preserved draft or impersonate a published reviewed tag.
+For those already-public reviewed candidates, the assurance and review metadata
+must also match the literal SHA256 commitments of their published bytes in merged
+`develop` commit `c51c91ee270c84d6786355c20a49ee86cf38648e`. These are retention
+checks, not a new approval. Metadata changes require a separately reviewed update;
+they cannot silently inherit the retained historical review.
+Changed retained approval metadata is rejected before ancestry checks or portable
+fallback; availability of another validation route cannot waive its byte binding.
+
 Snapshot includes selected canonical root authorities and all ADRs, theory,
 architecture and schema files. Additions, deletions and changes invalidate every
 `current` record. Snapshot always resets human review to pending. Once a clean
