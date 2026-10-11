@@ -191,6 +191,7 @@ The estimate route remains separate from actual allocation, provider
 accounting and cash. The existing estimate convention, 108-slot roster,
 human-review deferral, candidate/host/resource/rights requirements and
 acceptance gates remain in force. Strict registration-v1/v2 and
-subscription-policy-v1 semantics are unchanged. Implementation, native
-observations, complete registration approval and capture authorization remain
-pending.
+subscription-policy-v1 semantics are unchanged. The additive implementation
+and synthetic controls are available from PR #499. Complete authentic native
+admission/supervision evidence, registration approval and capture authorization
+remain pending; see the [technical completion preparation](TECHNICAL_COMPLETION_20261011.md).
