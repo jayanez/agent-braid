@@ -15,7 +15,10 @@ import subprocess
 
 MANIFEST = "docs/releases/public-export.json"
 ADDENDUM = "docs/releases/public-export-addendum-m2.json"
-ADDITIONAL_ADDENDA = ("docs/releases/public-export-addendum-spec-kit.json",)
+ADDITIONAL_ADDENDA = (
+    "docs/releases/public-export-addendum-spec-kit.json",
+    "docs/releases/public-export-addendum-historical-evidence.json",
+)
 ADDENDA = (ADDENDUM, *ADDITIONAL_ADDENDA)
 MANIFEST_VERSION = "0.1.0"
 MANIFEST_FIELDS = {
@@ -306,7 +309,8 @@ def validate_addenda(root: Path, base: dict | None = None) -> list[dict]:
     root = root.resolve()
     results = [result for name in ADDENDA
                if (result := _validate_addendum(root, name, base)) is not None]
-    paths = [item["path"] for result in results for item in result["files"]]
+    paths = [item["path"] for result in results
+             for item in (*result["files"], *result.get("pathAssertions", []))]
     if len(paths) != len(set(paths)):
         raise ValueError("public export addenda bind duplicate paths")
     return results
@@ -345,8 +349,10 @@ def _validated_addendum(root_name: str, addendum_path: str, head: str, addendum_
         data = json.loads(payload)
     except (UnicodeError, json.JSONDecodeError) as exc:
         raise ValueError("public export addendum is invalid") from exc
-    if set(data) != {"recordVersion", "baseManifestSha256", "snapshotCommit",
-                     "snapshotTree", "files", "limits"} \
+    if set(data) not in ({"recordVersion", "baseManifestSha256", "snapshotCommit",
+                          "snapshotTree", "files", "limits"},
+                         {"recordVersion", "baseManifestSha256", "snapshotCommit",
+                          "snapshotTree", "files", "pathAssertions", "limits"}) \
             or data.get("recordVersion") != "0.1.0" \
             or data.get("baseManifestSha256") != base_hash \
             or not HEX40.fullmatch(str(data.get("snapshotCommit", ""))) \
@@ -371,7 +377,21 @@ def _validated_addendum(root_name: str, addendum_path: str, head: str, addendum_
                 or type(item.get("size")) is not int or item["size"] < 0:
             raise ValueError(f"public export addendum file metadata is invalid: {relative}")
         names.append(relative)
-    if names != sorted(set(names)):
+    assertions = data.get("pathAssertions", [])
+    if not isinstance(assertions, list):
+        raise ValueError("public export addendum path assertions are invalid")
+    assertion_names = []
+    for item in assertions:
+        if not isinstance(item, dict) or set(item) != {"path", "sha256", "size"}:
+            raise ValueError("public export addendum path assertion is invalid")
+        relative = safe_relative(item.get("path", ""))
+        if relative in base_paths or relative in {MANIFEST, *ADDENDA} \
+                or not HEX64.fullmatch(str(item.get("sha256", ""))) \
+                or type(item.get("size")) is not int or item["size"] < 0:
+            raise ValueError(f"public export addendum path assertion is invalid: {relative}")
+        assertion_names.append(relative)
+    if names != sorted(set(names)) or assertion_names != sorted(set(assertion_names)) \
+            or set(names) & set(assertion_names):
         raise ValueError("public export addendum paths must be unique and sorted")
     introduced = _git(root, "log", "--format=%H", "--diff-filter=A", head,
                       "--", addendum_path).stdout.decode("ascii").splitlines()
@@ -392,6 +412,11 @@ def _validated_addendum(root_name: str, addendum_path: str, head: str, addendum_
         if len(blob) != item["size"] or digest_bytes(blob) != item["sha256"] \
                 or any(pattern.search(blob) for pattern in PROHIBITED_TEXT):
             raise ValueError(f"public export addendum payload is invalid: {relative}")
+    for item in assertions:
+        relative = item["path"]
+        blob = _git(root, "show", f"{snapshot}:{relative}").stdout
+        if len(blob) != item["size"] or digest_bytes(blob) != item["sha256"]:
+            raise ValueError(f"public export addendum path assertion is invalid: {relative}")
     return data
 
 
@@ -434,3 +459,23 @@ def root_manifest_payload(root: Path, relative: str) -> bytes:
     if digest_bytes(payload) != entry["sha256"] or len(payload) != entry["size"]:
         raise ValueError(f"public root payload does not match manifest: {relative}")
     return payload
+
+
+def root_manifest_presence(root: Path, relative: str) -> bool:
+    """Verify a committed input path without exposing its contents as export bytes."""
+    relative = safe_relative(relative)
+    base = load_manifest(root)
+    if any(item["path"] == relative for item in base["files"]):
+        root_manifest_payload(root, relative)
+        return True
+    for addendum in validate_addenda(root, base):
+        if any(item["path"] == relative for item in addendum["files"]):
+            root_manifest_payload(root, relative)
+            return True
+        for item in addendum.get("pathAssertions", []):
+            if item["path"] == relative:
+                blob = _git(root, "show", f"{addendum['snapshotCommit']}:{relative}").stdout
+                if len(blob) != item["size"] or digest_bytes(blob) != item["sha256"]:
+                    raise ValueError(f"public snapshot path assertion changed: {relative}")
+                return True
+    raise ValueError(f"export manifest does not bind required path: {relative}")

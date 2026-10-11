@@ -242,11 +242,13 @@ def validate_portable_record(root, path, bind_manifest=True):
     """Validate exported record structure without pretending private Git is present."""
     try:
         from scripts.publication import (
-            load_manifest, manifest_entry, root_manifest_payload, validate_addenda,
+            load_manifest, manifest_entry, root_manifest_payload, root_manifest_presence,
+            validate_addenda,
         )
     except ModuleNotFoundError:
         from publication import (
-            load_manifest, manifest_entry, root_manifest_payload, validate_addenda,
+            load_manifest, manifest_entry, root_manifest_payload, root_manifest_presence,
+            validate_addenda,
         )
 
     root = root.resolve()
@@ -395,7 +397,7 @@ def validate_portable_record(root, path, bind_manifest=True):
                             # evidence. Keep the path present and the recorded
                             # checksum well formed without pretending the private
                             # input bytes can be reconstructed.
-                            root_manifest_payload(root, safe_name(root, name))
+                            root_manifest_presence(root, safe_name(root, name))
                             if not re.fullmatch(r"[0-9a-f]{64}", str(checksum)):
                                 raise ValueError(f"Historical evidence input hash is invalid: {name}")
                             continue
