@@ -342,6 +342,84 @@ class ToolingEvaluationTests(unittest.TestCase):
             with self.subTest(schema=schema), self.assertRaisesRegex(evaluation.EvaluationError, "cannot contain"):
                 _validated(legacy)
 
+    def test_v3_subscription_registration_allows_explicitly_unavailable_reference_rates(self):
+        value = _registration_v3()
+        for entry in value["costRates"]["byHost"]:
+            entry.update(inputEurPerMillionTokens=None, outputEurPerMillionTokens=None,
+                         recordId=None, sha256=None)
+        validated = _validated(value)
+        self.assertEqual(len(validated.data["costRates"]["byHost"]), 2)
+        self.assertEqual({item["host"] for item in validated.data["costRates"]["byHost"]},
+                         set(evaluation.HOSTS))
+
+        # Unknown monetary rates do not weaken measured-cost cap admission.
+        unknown_costs = evaluation.check_cost_caps(
+            validated, _known_costs(eur=None, tokens=None, input_tokens=None,
+                                    output_tokens=None, retry_tokens=None)
+        )
+        self.assertTrue(unknown_costs.stop)
+        self.assertFalse(unknown_costs.within_caps)
+        self.assertTrue(any("eur is unavailable" in reason for reason in unknown_costs.reasons))
+
+        # Legacy schema versions keep their original requirement for sourced rates.
+        for schema in (evaluation.REGISTRATION_SCHEMA, evaluation.REGISTRATION_SCHEMA_V2):
+            legacy = _registration_v3()
+            legacy["schemaVersion"] = schema
+            legacy.pop("phase")
+            legacy.pop("humanReviewDeferral")
+            legacy.pop("humanReviewRoles")
+            legacy["humanReviewers"] = [
+                {"reviewerId": "rater-one", "type": "human", "independent": True},
+                {"reviewerId": "rater-two", "type": "human", "independent": True},
+            ]
+            if schema == evaluation.REGISTRATION_SCHEMA:
+                for host in legacy["hosts"]:
+                    host.pop("modelIdentity")
+                    host["model"].update(version="model-build-1", sha256=_sha("model:" + host["name"]))
+            for entry in legacy["costRates"]["byHost"]:
+                entry.update(inputEurPerMillionTokens=None, outputEurPerMillionTokens=None,
+                             recordId=None, sha256=None)
+            with self.subTest(schema=schema), self.assertRaisesRegex(
+                    evaluation.EvaluationError, "only for v3 included-subscription"):
+                _validated(legacy)
+
+        invalid_rows = []
+        partial = copy.deepcopy(value)
+        partial["costRates"]["byHost"][0]["recordId"] = "dangling-source"
+        invalid_rows.append(("partial provenance", partial))
+        partial_host_knowledge = copy.deepcopy(value)
+        partial_host_knowledge["costRates"]["byHost"][0].update(
+            inputEurPerMillionTokens=1.0, outputEurPerMillionTokens=2.0,
+            recordId="rate-record", sha256=_sha("rate-record"),
+        )
+        partial_host_validated = _validated(partial_host_knowledge)
+        self.assertEqual(len(partial_host_validated.data["costRates"]["byHost"]), 2)
+        omitted_unknown = copy.deepcopy(value)
+        del omitted_unknown["costRates"]["byHost"][0]["recordId"]
+        invalid_rows.append(("omitted explicit null provenance", omitted_unknown))
+        bad_numeric = copy.deepcopy(value)
+        bad_numeric["costRates"]["byHost"][0].update(
+            inputEurPerMillionTokens=-1.0, outputEurPerMillionTokens=2.0,
+            recordId="rate-record", sha256=_sha("rate-record"),
+        )
+        invalid_rows.append(("negative numeric rate", bad_numeric))
+        bad_digest = copy.deepcopy(value)
+        bad_digest["costRates"]["byHost"][0].update(
+            inputEurPerMillionTokens=1.0, outputEurPerMillionTokens=2.0,
+            recordId="rate-record", sha256="not-a-sha256",
+        )
+        invalid_rows.append(("bad source digest", bad_digest))
+        missing_host = copy.deepcopy(value)
+        missing_host["costRates"]["byHost"].pop()
+        invalid_rows.append(("missing host coverage", missing_host))
+        duplicate_host = copy.deepcopy(value)
+        duplicate_host["costRates"]["byHost"][1]["host"] = "codex"
+        duplicate_host["costRates"]["byHost"][1]["modelName"] = "model-codex"
+        invalid_rows.append(("duplicate host coverage", duplicate_host))
+        for label, malformed in invalid_rows:
+            with self.subTest(case=label), self.assertRaises(evaluation.EvaluationError):
+                _validated(malformed)
+
     def test_v3_never_counts_roles_or_adjudication_as_human_evaluation(self):
         registration = _validated(_registration_v3())
         ledger, _ = _complete_ledger(registration)
