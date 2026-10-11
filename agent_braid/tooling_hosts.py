@@ -188,12 +188,12 @@ class HostSessionAdapter(tooling_sessions.SessionAdapter):
             runner = run_supervised
         else:
             runner = self._supervisor
-        request = self._make_process_request(plan)
+        request = self._make_process_request(plan, admission)
         outcome = runner(request, self._caps, self._observer)
         return self._public_outcome(plan, outcome)
 
     @staticmethod
-    def _make_process_request(plan: HostLaunchPlan) -> Any:
+    def _make_process_request(plan: HostLaunchPlan, admission: capture.AttemptAdmission | None = None) -> Any:
         try:
             from .tooling_supervisor import FilePin as SupervisorFilePin, ProcessRequest
         except ImportError as exc:
@@ -216,6 +216,11 @@ class HostSessionAdapter(tooling_sessions.SessionAdapter):
             term_grace_seconds=plan.term_grace_seconds,
             kill_grace_seconds=plan.kill_grace_seconds,
             subscription_binding=plan.subscription_binding,
+            subscription_estimate_runtime_guard=(admission.subscription_estimate_runtime_guard
+                                                 if admission is not None else None),
+            subscription_estimate_admission_receipt_sha256=(admission.receipt_sha256
+                                                            if admission is not None and admission.subscription_estimate_runtime_guard is not None
+                                                            else None),
         )
 
     def _public_outcome(self, plan: HostLaunchPlan, outcome: Any) -> Mapping[str, Any]:

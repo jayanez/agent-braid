@@ -70,3 +70,14 @@ Review SPEC-039–044, installation effects, portable contracts and negative con
 before adopting the capability. Freeze the exact reviewed candidate. A later
 founder decision must identify accepted scope and residual limitations. Passing
 structural validation or creating issues does not adopt this ADR.
+
+## Pending proposal: native-process billing observation boundary
+
+Status: pending owner decision, implementation and evidence; not adopted. The
+owner's estimated subscription convention does not approve this separate boundary.
+
+For a registered M4.5 run, the billing observation claim may be scoped to each selected native Codex or Claude Code CLI process and its provider route. The account-wide API billing state remains unknown and outside this claim. Before and during every provider operation, a trusted observer must bind the process to the registered subscription account and included-quota route; attest that no API credential or provider override is available to that process; verify extra usage, credits and auto-recharge are disabled; and enforce stop on quota exhaustion with no paid API or alternate-provider fallback. This scoped statement does not establish the account-wide API setting, unrelated account activity, or EUR 0 actual cohort cash. Dispatch still requires separate trusted evidence of exactly EUR 0 additional cash. Any missing, stale, conflicting or unverifiable condition refuses the operation.
+
+This proposal preserves the current subscription-policy-v1 behavior. It creates
+no observer, cash receipt, provider-call permission or complete registration.
+Implementation and evidence would need their own candidate-bound review.

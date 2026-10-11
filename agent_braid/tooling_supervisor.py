@@ -9,7 +9,10 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 from datetime import datetime, timezone
+from contextlib import contextmanager
+from decimal import Decimal
 import hashlib
+import fcntl
 import json
 import math
 import os
@@ -36,6 +39,7 @@ from .tooling_subscription import (
     SubscriptionObservation,
     check_observation,
 )
+from . import tooling_subscription_estimate as estimate_policy
 
 
 MAX_OUTPUT_BYTES = 64 * 1024 * 1024
@@ -132,6 +136,8 @@ class ProcessRequest:
     file_pins: tuple["FilePin", ...] = ()
     observer_timeout_seconds: float = MAX_OBSERVER_CALLBACK_SECONDS
     subscription_binding: SubscriptionBinding | None = None
+    subscription_estimate_runtime_guard: estimate_policy.RuntimeGuard | None = None
+    subscription_estimate_admission_receipt_sha256: str | None = None
 
 
 @dataclass(frozen=True)
@@ -208,6 +214,67 @@ def run_supervised(
     cancel_event: threading.Event | None = None,
     clock: Clock = Clock(),
 ) -> ProcessOutcome:
+    """Run once, serializing estimate-bound work by registration and host."""
+    guard = request.subscription_estimate_runtime_guard if isinstance(request, ProcessRequest) else None
+    if guard is not None:
+        try:
+            guard.validate()
+        except estimate_policy.EstimateError as exc:
+            raise SupervisorError(f"subscription estimate runtime guard is invalid: {exc}") from exc
+        receipt_sha = request.subscription_estimate_admission_receipt_sha256
+        if receipt_sha is None or not capture._consume_verified_estimate_guard(guard, receipt_sha):
+            raise SupervisorError("runtime guard requires a fresh, verified v4 admission lease")
+    if guard is None:
+        return _run_supervised_body(request, caps, observer, cancel_event=cancel_event, clock=clock)
+    with _estimate_host_lock(guard):
+        return _run_supervised_body(request, caps, observer, cancel_event=cancel_event, clock=clock)
+
+
+@contextmanager
+def _estimate_host_lock(guard: estimate_policy.RuntimeGuard):
+    root = capture.receipt_directory_for(guard.registration_sha256)
+    try:
+        info = root.stat()
+    except OSError as exc:
+        raise SupervisorError("private estimate receipt store is unavailable") from exc
+    if not root.is_dir() or info.st_uid != os.getuid() or info.st_mode & 0o077:
+        raise SupervisorError("estimate lock store must be user-owned and mode 0700")
+    path = root / ("estimate-host-" + guard.host + ".lock")
+    flags = os.O_CREAT | os.O_RDWR
+    if hasattr(os, "O_NOFOLLOW"):
+        flags |= os.O_NOFOLLOW
+    fd = None
+    try:
+        fd = os.open(path, flags, 0o600)
+        lock_info = os.fstat(fd)
+        if (not stat.S_ISREG(lock_info.st_mode) or lock_info.st_uid != os.getuid()
+                or lock_info.st_mode & 0o077):
+            os.close(fd)
+            raise SupervisorError("estimate host lock must be a private user-owned regular file")
+        fcntl.flock(fd, fcntl.LOCK_EX | fcntl.LOCK_NB)
+    except BlockingIOError as exc:
+        if fd is not None:
+            os.close(fd)
+        raise SupervisorError("another estimate-bound process is active for this host") from exc
+    except OSError as exc:
+        if fd is not None:
+            os.close(fd)
+        raise SupervisorError("estimate host lock could not be acquired") from exc
+    try:
+        yield
+    finally:
+        fcntl.flock(fd, fcntl.LOCK_UN)
+        os.close(fd)
+
+
+def _run_supervised_body(
+    request: ProcessRequest,
+    caps: BudgetCaps,
+    observer: Observer,
+    *,
+    cancel_event: threading.Event | None = None,
+    clock: Clock = Clock(),
+) -> ProcessOutcome:
     """Validate, start once, multiplex pipes, observe budgets, and reap the process.
 
     A returned non-``completed`` status is never a successful host observation.
@@ -248,6 +315,23 @@ def run_supervised(
         return _not_launched("refused", stop, clock, initial)
     wall_remaining = caps.wall_seconds - float(initial.costs.values["wall_seconds"])
     runtime_deadline = min(request.timeout_seconds, wall_remaining)
+    estimate_remaining: int | None = None
+    estimate_guard = request.subscription_estimate_runtime_guard
+    if estimate_guard is not None:
+        try:
+            estimate_guard.validate()
+            if (request.subscription_binding is None
+                    or request.subscription_binding.host != estimate_guard.host
+                    or request.subscription_binding.registration_sha256 != estimate_guard.registration_sha256):
+                raise estimate_policy.EstimateError("runtime estimate guard differs from subscription binding")
+            estimate_remaining = estimate_guard.remaining_seconds()
+            estimate_guard.assess_elapsed(0)
+            if (Decimal(str(initial.costs.values["eur"])) + estimate_policy.RESERVATION_EUR
+                    > Decimal(str(caps.eur))):
+                raise estimate_policy.EstimateError("reserved estimate plus measured cash exceeds EUR cap")
+            runtime_deadline = min(runtime_deadline, float(estimate_remaining))
+        except estimate_policy.EstimateError as exc:
+            return _not_launched("refused", _safe_reason(exc), clock, initial)
     if runtime_deadline <= 0:
         return _not_launched("refused", "registered cumulative wall cap is already reached", clock, initial)
 
@@ -271,6 +355,7 @@ def run_supervised(
         "environmentEntryCount": len(env), "preDispatchSnapshot": _snapshot_dict(initial),
         "subscriptionBinding": request.subscription_binding.as_dict()
         if request.subscription_binding is not None else None,
+        "subscriptionEstimateRuntimeGuard": _estimate_guard_dict(estimate_guard),
         "filePins": [{"pathSha256": _sha(str(path).encode("utf-8")), "sha256": digest}
                      for path, digest in pinned_files],
         "preDispatchAt": started_at,
@@ -323,6 +408,8 @@ def run_supervised(
         # still pathname observation, not atomic OS-level file binding.
         if not _launch_pins_match(executable, request.executable_sha256, pinned_files):
             raise _StartDrift()
+        if estimate_guard is not None:
+            estimate_guard.validate_observation_freshness()
         process = subprocess.Popen(
             [str(executable), *request.argv],
             cwd=cwd, env=env, stdin=subprocess.PIPE if request.stdin is not None else subprocess.DEVNULL,
@@ -367,6 +454,8 @@ def run_supervised(
                         stop_reason, stop_status = "process deadline reached", "timed-out"
                     else:
                         stop_reason, stop_status = "registered wall-time cap reached", "budget-exceeded"
+                elif estimate_remaining is not None and process_elapsed >= estimate_remaining:
+                    stop_reason, stop_status = "subscription per-host active-time cap reached", "budget-exceeded"
                 elif float(initial.costs.values["wall_seconds"]) + elapsed >= caps.wall_seconds:
                     stop_reason, stop_status = "registered wall-time cap reached", "budget-exceeded"
                 elif now_mono >= next_observation_at:
@@ -387,6 +476,15 @@ def run_supervised(
                             stop = _stop_reason(observed, caps)
                             if stop is not None:
                                 stop_reason, stop_status = stop, "budget-exceeded"
+                            elif (estimate_guard is not None
+                                  and Decimal(str(observed.costs.values["eur"]))
+                                  + estimate_policy.RESERVATION_EUR > Decimal(str(caps.eur))):
+                                stop_reason, stop_status = "reserved estimate plus measured cash exceeds EUR cap", "budget-exceeded"
+                            elif estimate_guard is not None:
+                                try:
+                                    estimate_guard.assess_elapsed(process_elapsed)
+                                except estimate_policy.EstimateError as exc:
+                                    stop_reason, stop_status = _safe_reason(exc), "budget-exceeded"
                     except Exception as exc:
                         stop_reason = _safe_reason(exc)
                         stop_status = ("subscription-policy-violation"
@@ -418,6 +516,8 @@ def run_supervised(
                 timeout = min(timeout, max(0.001, request.timeout_seconds - process_elapsed),
                               max(0.001, caps.wall_seconds - float(initial.costs.values["wall_seconds"]) - elapsed),
                               max(0.001, next_observation_at - now_mono))
+                if estimate_remaining is not None:
+                    timeout = min(timeout, max(0.001, estimate_remaining - process_elapsed))
             elif term_sent_at is not None and kill_sent_at is None:
                 timeout = min(timeout, max(0.001, request.term_grace_seconds - (now_mono - term_sent_at)))
             elif kill_sent_at is not None:
@@ -557,6 +657,7 @@ def run_supervised(
         "stderrSha256": err_hash.hexdigest(), "lastSnapshot": _snapshot_dict(last_snapshot),
         "subscriptionBinding": request.subscription_binding.as_dict()
         if request.subscription_binding is not None else None,
+        "subscriptionEstimateRuntimeGuard": _estimate_guard_dict(estimate_guard),
         "preDispatchSubscription": _snapshot_dict(initial).get("subscription"),
         "observerFailure": observer_failure,
         "stdoutArtifact": stdout_path.name, "stderrArtifact": stderr_path.name,
@@ -605,6 +706,16 @@ def _validate_request(request, caps, observer, clock):
     if request.subscription_binding is not None and not isinstance(
             request.subscription_binding, SubscriptionBinding):
         raise SupervisorError("subscription_binding must be a typed registration binding")
+    if request.subscription_estimate_runtime_guard is not None:
+        if not isinstance(request.subscription_estimate_runtime_guard, estimate_policy.RuntimeGuard):
+            raise SupervisorError("subscription estimate guard must be derived from v4 capture admission")
+        try:
+            request.subscription_estimate_runtime_guard.validate()
+        except estimate_policy.EstimateError as exc:
+            raise SupervisorError(f"subscription estimate runtime guard is invalid: {exc}") from exc
+        receipt_sha = request.subscription_estimate_admission_receipt_sha256
+        if receipt_sha is None or not _SHA256.fullmatch(receipt_sha):
+            raise SupervisorError("subscription estimate admission receipt digest is required")
     if not callable(observer) or not callable(clock.monotonic) or not callable(clock.utc_now):
         raise SupervisorError("observer and clock callables are required")
     if not isinstance(request.executable, Path) or not request.executable.is_absolute():
@@ -916,6 +1027,20 @@ def _fsync_directory(path):
         os.fsync(descriptor)
     finally:
         os.close(descriptor)
+
+
+def _estimate_guard_dict(guard):
+    if guard is None:
+        return None
+    return {
+        "registrationSha256": guard.registration_sha256,
+        "ledgerSha256": guard.ledger_sha256,
+        "host": guard.host,
+        "priorActiveSecondsByHost": dict(sorted(guard.prior_active_seconds_by_host.items())),
+        "activeTimeSourceSha256": guard.source_sha256,
+        "remainingHostSeconds": guard.remaining_seconds(),
+        "reservationEur": str(estimate_policy.RESERVATION_EUR),
+    }
 
 
 def _snapshot_dict(snapshot):
