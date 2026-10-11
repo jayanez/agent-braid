@@ -56,7 +56,7 @@ Verification: [procedure_three_arm_comparison](validation-plan.md); [T005](tasks
 
 ### REQ-006
 
-Measure complete technical setup/provider/tool/runtime/export/user costs and preserve future human reviewer time/fee fields as unknown until the separate human phase; enforce numerical stops and never interpret technical cost completion as full human-inclusive economic completion.
+Measure technical setup/provider/tool/runtime/export/user costs and enforce numerical stops. Under the [owner-selected estimated subscription route](subscription-estimation-decision.md), bind and enforce the separate EUR 5.045 reservation while actual allocation/provider accounting remain unknown; retain independently verified EUR 0 additional cash and all other measured technical fields. Preserve future human reviewer time/fee fields as unknown until the separate human phase. Never interpret estimated-budget technical capture as actual economic completeness or human-inclusive utility.
 
 **SC-006:** Given missing tokens, overlapping phases, exceeded budget and provider failure, when cost accounting and admission run, then unknown differs from zero, wall totals are not double-counted and exceeded/blocked attempts stop without silent retry.
 

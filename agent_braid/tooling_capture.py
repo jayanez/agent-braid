@@ -10,6 +10,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from datetime import datetime, timezone
+from decimal import Decimal
 import hashlib
 import json
 import math
@@ -19,10 +20,12 @@ import re
 import subprocess
 from typing import Any, Mapping, Protocol
 import uuid
+import threading
 
 from . import tooling_evaluation as evaluation
 from . import tooling_subscription as subscription_policy
 from . import tooling_model_identity as model_identity_policy
+from . import tooling_subscription_estimate as estimate_policy
 from .tooling_fixtures import FixtureInventoryError, load_inventory
 
 
@@ -31,6 +34,36 @@ MAX_REGISTRATION_BYTES = 1024 * 1024
 MAX_ARTIFACT_BYTES = 512 * 1024 * 1024
 _SHA256 = re.compile(r"^[0-9a-f]{64}$")
 _GIT_COMMIT = re.compile(r"^[0-9a-f]{40,64}$")
+_VERIFIED_ESTIMATE_GUARDS: dict[int, tuple[object, str, str, str, str, bool]] = {}
+_VERIFIED_ESTIMATE_GUARDS_LOCK = threading.Lock()
+
+
+def _register_verified_estimate_guard(guard, receipt_sha256: str, registration_sha256: str,
+                                     ledger_sha256: str) -> None:
+    """Bind the exact trusted capture result to its durable admission receipt."""
+    with _VERIFIED_ESTIMATE_GUARDS_LOCK:
+        _VERIFIED_ESTIMATE_GUARDS[id(guard)] = (
+            guard, receipt_sha256, registration_sha256, ledger_sha256, guard.host, False)
+
+
+def _is_verified_estimate_guard(guard, receipt_sha256: str) -> bool:
+    with _VERIFIED_ESTIMATE_GUARDS_LOCK:
+        item = _VERIFIED_ESTIMATE_GUARDS.get(id(guard))
+        return (item is not None and item[0] is guard and item[1] == receipt_sha256
+                and (guard.registration_sha256, guard.ledger_sha256, guard.host)
+                    == (item[2], item[3], item[4]))
+
+
+def _consume_verified_estimate_guard(guard, receipt_sha256: str) -> bool:
+    """Consume a verifier-bound estimate lease exactly once before process start."""
+    with _VERIFIED_ESTIMATE_GUARDS_LOCK:
+        item = _VERIFIED_ESTIMATE_GUARDS.get(id(guard))
+        if (item is None or item[0] is not guard or item[1] != receipt_sha256 or item[5]
+                or (guard.registration_sha256, guard.ledger_sha256, guard.host)
+                    != (item[2], item[3], item[4])):
+            return False
+        _VERIFIED_ESTIMATE_GUARDS[id(guard)] = (*item[:5], True)
+        return True
 
 
 class CaptureAdmissionError(ValueError):
@@ -102,6 +135,7 @@ class AdmissionVerifier(Protocol):
         stop_state: StopState,
         subject_sha256: str,
         subscription: subscription_policy.SubscriptionObservation | None = None,
+        subscription_estimate: estimate_policy.ActiveTimeEvidence | None = None,
         model_identity_observation: model_identity_policy.ModelIdentityObservation | None = None,
     ) -> DecisionAttestation: ...
 
@@ -116,6 +150,8 @@ class AttemptAdmission:
     receipt_sha256: str
     subject_sha256: str
     subscription_binding: subscription_policy.SubscriptionBinding | None = None
+    subscription_estimate: estimate_policy.EstimateAssessment | None = None
+    subscription_estimate_runtime_guard: estimate_policy.RuntimeGuard | None = None
 
 
 def input_hashes(candidate_root: str | os.PathLike[str]) -> dict[str, str]:
@@ -156,6 +192,7 @@ def prepare_attempt(
     verifier: AdmissionVerifier,
     receipt_directory: str | os.PathLike[str],
     subscription: subscription_policy.SubscriptionObservation | None = None,
+    subscription_estimate_active_time: estimate_policy.ActiveTimeEvidence | None = None,
     model_identity_observation: model_identity_policy.ModelIdentityObservation | None = None,
 ) -> AttemptAdmission:
     """Validate exact frozen inputs and write one private hash-bound admission.
@@ -222,6 +259,35 @@ def prepare_attempt(
         raise CaptureAdmissionError("measured cumulative costs do not establish cap compliance: "
                                     + "; ".join(cap_check.reasons))
 
+    estimate_assessment = None
+    estimate_runtime_guard = None
+    is_v4 = registration.data["schemaVersion"] == evaluation.REGISTRATION_SCHEMA_V4
+    if is_v4:
+        if subscription_estimate_active_time is None:
+            raise CaptureAdmissionError("v4 admission requires verified cumulative subscription active-time evidence")
+        ledger_sha256 = _sha256(_canonical_json(ledger.as_dict()))
+        try:
+            estimate_policy.validate_observation_freshness(
+                subscription_estimate_active_time.observed_at)
+            estimate_assessment = estimate_policy.assess(
+                registration.data[estimate_policy.REGISTRATION_FIELD],
+                subscription_estimate_active_time,
+                registration_sha256=registration.sha256,
+                ledger_sha256=ledger_sha256,
+            )
+        except estimate_policy.EstimateError as exc:
+            raise CaptureAdmissionError("subscription estimate admission refused: " + str(exc)) from exc
+        total_reserved_eur = estimate_assessment.reservation_eur + Decimal(str(costs.values["eur"]))
+        if total_reserved_eur > Decimal(str(registration.data["costCaps"]["eur"])):
+            raise CaptureAdmissionError("subscription estimate reservation plus measured cash exceeds the EUR cap")
+        estimate_runtime_guard = estimate_policy.runtime_guard(
+            registration.sha256, ledger_sha256, slot.host,
+            subscription_estimate_active_time,
+            registration.data[estimate_policy.REGISTRATION_FIELD],
+        )
+    elif subscription_estimate_active_time is not None:
+        raise CaptureAdmissionError("subscription estimate evidence requires a frozen v4 registration")
+
     binding = subscription_policy.binding_from_registration(registration, slot_id, slot.host)
     if binding is not None:
         try:
@@ -261,6 +327,13 @@ def prepare_attempt(
             "Measured cost completeness and stop-state truth depend on verifier provenance",
         ],
     }
+    if estimate_assessment is not None:
+        subject["subscriptionAllocationUpperBound"] = {
+            "policySha256": estimate_policy.policy_sha256(
+                registration.data[estimate_policy.REGISTRATION_FIELD]),
+            "activeTimeEvidence": subscription_estimate_active_time.as_dict(),
+            "assessment": estimate_assessment.as_dict(),
+        }
     if binding is not None:
         subject["subscription"] = subscription.as_dict()
     if host_identity is not None:
@@ -271,6 +344,8 @@ def prepare_attempt(
             registration=registration, slot=slot, authorization=authorization,
             costs=costs, stop_state=stop_state, subject_sha256=subject_sha256,
         )
+        if is_v4:
+            verification_args["subscription_estimate"] = subscription_estimate_active_time
         if binding is not None:
             # Legacy verifiers cannot silently attest a newly constrained policy.
             verification_args["subscription"] = subscription
@@ -289,6 +364,12 @@ def prepare_attempt(
             subscription_policy.check_observation(subscription, binding)
         except subscription_policy.SubscriptionError as exc:
             raise CaptureAdmissionError("subscription observation expired during verification") from exc
+    if is_v4:
+        try:
+            estimate_policy.validate_observation_freshness(
+                subscription_estimate_active_time.observed_at)
+        except estimate_policy.EstimateError as exc:
+            raise CaptureAdmissionError("subscription active-time observation expired during verification") from exc
     if host_identity is not None:
         try:
             model_identity_policy.check_observation(model_identity_observation, host_identity)
@@ -323,7 +404,11 @@ def prepare_attempt(
     _ensure_private_store(output)
     receipt_path = output / ("slot-" + _sha256(slot_id.encode("utf-8"))[:32] + ".json")
     _write_exclusive(receipt_path, _canonical_json(receipt))
-    return AttemptAdmission(attempt_id, slot_id, receipt_path, receipt_sha256, subject_sha256, binding)
+    if estimate_runtime_guard is not None:
+        _register_verified_estimate_guard(estimate_runtime_guard, receipt_sha256,
+                                          registration.sha256, ledger_sha256)
+    return AttemptAdmission(attempt_id, slot_id, receipt_path, receipt_sha256, subject_sha256,
+                            binding, estimate_assessment, estimate_runtime_guard)
 
 
 def _registered_slot(ledger: evaluation.EvaluationLedger, slot_id: str) -> evaluation.AttemptSlot:

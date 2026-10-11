@@ -514,6 +514,8 @@ class MoneySummary:
     technical_additional_spend_eur: Decimal | None = None
     technical_cap_violation: bool | None = None
     technical_stop_required: bool | None = None
+    subscription_allocation_upper_bound_eur: Decimal | None = None
+    subscription_estimate_evidence_sha256: str | None = None
 
     def as_dict(self) -> dict[str, object]:
         return {
@@ -557,6 +559,10 @@ class MoneySummary:
             "technicalStopRequired": self.technical_stop_required,
             "actualProviderSpendEur": _decimal_text(self.actual_provider_spend_eur),
             "providerAccountingCostEur": _decimal_text(self.provider_accounting_cost_eur),
+            "subscriptionAllocationUpperBoundEur": _decimal_text(
+                self.subscription_allocation_upper_bound_eur
+            ),
+            "subscriptionEstimateEvidenceSha256": self.subscription_estimate_evidence_sha256,
         }
 
 
@@ -741,10 +747,12 @@ class MoneyLedger:
             activity = self.roster.activity_by_id.get(receipt.activity_id)
             if activity is None:
                 raise MoneyAccountingError("receipt activity is outside the frozen roster")
-            if (self.roster.registration.data["schemaVersion"] == evaluation.REGISTRATION_SCHEMA_V3
+            if (self.roster.registration.data["schemaVersion"] in {
+                    evaluation.REGISTRATION_SCHEMA_V3, evaluation.REGISTRATION_SCHEMA_V4,
+                }
                     and activity.kind == "reviewer"):
                 raise MoneyAccountingError(
-                    "v3 reviewer cost observations require an identity-bound human-rating addendum"
+                    "technical-capture reviewer cost observations require an identity-bound human-rating addendum"
                 )
             evidence = receipt.evidence
             if evidence.account_sha256 != activity.account_sha256 or evidence.account_ref != activity.account_ref:
@@ -921,7 +929,9 @@ class MoneyLedger:
             technical_spend: Decimal | None = None
             technical_cap_violation: bool | None = None
             technical_stop_required: bool | None = None
-            if self.roster.registration.data["schemaVersion"] == evaluation.REGISTRATION_SCHEMA_V3:
+            if self.roster.registration.data["schemaVersion"] in {
+                    evaluation.REGISTRATION_SCHEMA_V3, evaluation.REGISTRATION_SCHEMA_V4,
+                }:
                 technical_activities = [
                     activity for activity in self.roster.activities
                     if activity.kind in {"setup", "attempt"}
@@ -939,7 +949,13 @@ class MoneyLedger:
                         missing_technical_rows.append((activity.activity_id, "allocatedSubscriptionCostEur"))
                 missing_technical = tuple(sorted(missing_technical_rows))
                 technical_required = not missing_technical
-                if technical_required:
+                estimated_route = (self.roster.registration.data["schemaVersion"]
+                                   == evaluation.REGISTRATION_SCHEMA_V4)
+                actual_rows_complete = all(
+                    (activity.activity_id, "actualAdditionalSpendEur") in self._receipts
+                    for activity in technical_activities
+                )
+                if technical_required or (estimated_route and actual_rows_complete):
                     technical_spend = _exact_decimal_sum(
                         technical_actual_values, "technical phase additional-spend aggregate"
                     )
