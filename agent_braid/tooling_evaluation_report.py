@@ -209,7 +209,10 @@ def build_utility_report(
     report_reasons = list(assessment.reasons)
     report_reasons.extend(full_cost_reasons)
     estimated_subscription = None
-    estimated_route = data["schemaVersion"] == evaluation.REGISTRATION_SCHEMA_V4
+    operational_route = data["schemaVersion"] == evaluation.REGISTRATION_SCHEMA_V5
+    estimated_route = data["schemaVersion"] in {
+        evaluation.REGISTRATION_SCHEMA_V4, evaluation.REGISTRATION_SCHEMA_V5,
+    }
     if estimated_route and subscription_estimate_active_time is not None:
         try:
             estimated_subscription = assess_estimated_subscription_allocation(
@@ -218,6 +221,27 @@ def build_utility_report(
             )
         except Exception as exc:
             report_reasons.append("verified subscription active-time estimate is unavailable: " + str(exc))
+    noncash_cap_fields = set(data["costCaps"]) - {"eur"}
+    noncash_measure_fields = set(evaluation.COST_FIELDS) - {"eur"}
+    noncash_costs_complete = all(
+        assessment.cost_assessment.totals.get(field) is not None
+        for field in noncash_measure_fields
+    )
+    noncash_caps_clear = all(
+        isinstance(assessment.cap_assessment.observed.get(field), (int, float))
+        and assessment.cap_assessment.observed[field] <= data["costCaps"][field]
+        for field in noncash_cap_fields
+    )
+    operational_capture_complete = (
+        operational_route and assessment.measured_cohort_complete
+        and noncash_costs_complete and noncash_caps_clear
+        and registered_full_cost_scope is not None
+        and registration_bound and roster_bound
+        and estimated_subscription is not None
+        and isinstance(monetary_summary, MoneySummary)
+        and monetary_summary.cap_violation is None
+        and monetary_summary.technical_cap_violation is None
+    )
     technical_reconciled = _v3_technical_costs_reconciled(
         registration, monetary_summary, expected_monetary_roster_sha256,
         registered_full_cost_scope if "billingPolicy" in registration.data else None,
@@ -241,7 +265,12 @@ def build_utility_report(
     if data["schemaVersion"] in {evaluation.REGISTRATION_SCHEMA_V3,
                                   evaluation.REGISTRATION_SCHEMA_V4} and not technical_reconciled:
         report_reasons.append("verified technical cost summary attestation is unavailable or does not bind the exact technical evidence")
-    eligible = assessment.positive_claim_eligible and full_cost_complete is not False
+    if operational_route:
+        report_reasons.append(
+            "actual cohort cash remains unknown pending independent reconciliation; no cash or provider-accounting amount is inferred"
+        )
+    eligible = (False if operational_route else
+                assessment.positive_claim_eligible and full_cost_complete is not False)
     outcome_only = (
         not eligible and assessment.cost_assessment.complete
         and assessment.cap_assessment.within_caps
@@ -251,12 +280,18 @@ def build_utility_report(
         and bool(assessment.outcome_threshold_reasons)
     )
     conclusion_status = (
+        "pending-cash-verification" if operational_capture_complete else
+        "inconclusive" if operational_route else
         "human-evaluation-deferred" if data["schemaVersion"] in {evaluation.REGISTRATION_SCHEMA_V3,
                                                                   evaluation.REGISTRATION_SCHEMA_V4} else
         "pending-independent-human-founder-interpretation" if eligible else
         "registered-threshold-not-met" if outcome_only else "inconclusive"
     )
     conclusion_text = (
+        "The completed technical cohort still requires independent actual-cash reconciliation. Operational quota observations and their trusted verifier must be assessed separately; actual cash, actual allocation, and provider accounting remain unknown, and positive utility, human acceptance, and milestone closure are not asserted."
+        if operational_capture_complete else
+        "The registration requires authenticated operational quota controls and independent actual-cash reconciliation. The cohort or its required technical evidence is incomplete; no operational control, cash amount, positive utility, human acceptance, or milestone closure is asserted."
+        if operational_route else
         "Technical capture results and all intended denominators are retained. Human evaluation and adjudication are deferred; no utility or human acceptance is asserted, and formal closure remains pending."
         if data["schemaVersion"] in {evaluation.REGISTRATION_SCHEMA_V3, evaluation.REGISTRATION_SCHEMA_V4} else
         "Eligibility permits independent interpretation only; no positive utility, acceptance, or milestone closure is asserted."
@@ -286,6 +321,8 @@ def build_utility_report(
         },
         "utilityClaimEligible": eligible,
         "technicalCaptureAccountingStatus": (
+            ("pending-cash-verification" if operational_capture_complete else "inconclusive")
+            if operational_route else
             "technical-capture-complete-estimated-accounting"
             if estimated_route and estimated_subscription is not None and technical_reconciled else
             "estimated-accounting" if estimated_route and estimated_subscription is not None else
@@ -295,7 +332,10 @@ def build_utility_report(
             "status": conclusion_status,
             "positiveUtilityAsserted": False,
             "text": conclusion_text,
-            "pendingDecisions": (["two independent human ratings", "adjudication", "formal closure"]
+            "pendingDecisions": (["independent actual-cash reconciliation", "two independent human ratings",
+                                  "adjudication", "founder decision", "formal closure"]
+                                 if operational_route else
+                                 ["two independent human ratings", "adjudication", "formal closure"]
                                  if data["schemaVersion"] == evaluation.REGISTRATION_SCHEMA_V3 else
                                  ["independent human interpretation", "founder decision"]),
         },
@@ -308,15 +348,18 @@ def build_utility_report(
             "fullEconomicCostRequired": "billingPolicy" in registration.data,
             "fullEconomicCostComplete": full_cost_complete,
             "fullEconomicCostStatus": (
+                "pending-cash-verification" if operational_route else
                 "not-required-by-registration" if full_cost_complete is None else
                 "complete" if full_cost_complete else "incomplete-or-unavailable"
             ),
             "fullEconomic": _full_economic_cost(
                 monetary_summary,
                 technical_capture=data["schemaVersion"] in {evaluation.REGISTRATION_SCHEMA_V3,
-                                                              evaluation.REGISTRATION_SCHEMA_V4},
+                                                              evaluation.REGISTRATION_SCHEMA_V4,
+                                                              evaluation.REGISTRATION_SCHEMA_V5},
                 technical_reconciled=technical_reconciled,
                 estimated_route=estimated_route,
+                pending_cash=operational_route,
             ),
             "subscriptionAllocationUpperBound": (
                 estimated_subscription.as_dict() if estimated_subscription is not None else
@@ -333,10 +376,13 @@ def build_utility_report(
             "missingRequiredByScope": _missing_cost_attribution(
                 assessment.cost_assessment.missing, full_cost_missing, ledger,
             ),
-            "totals": dict(assessment.cost_assessment.totals),
+            "totals": ({**assessment.cost_assessment.totals, "eur": None}
+                       if operational_route else dict(assessment.cost_assessment.totals)),
             "capAssessment": {
-                "withinCaps": assessment.cap_assessment.within_caps,
-                "stop": assessment.cap_assessment.stop,
+                "withinCaps": (None if operational_route else assessment.cap_assessment.within_caps),
+                "stop": (None if operational_route else assessment.cap_assessment.stop),
+                "nonCashWithinCaps": (noncash_caps_clear if operational_route else None),
+                "nonCashStop": ((not noncash_caps_clear) if operational_route else None),
                 "reasons": list(assessment.cap_assessment.reasons),
                 "observed": dict(assessment.cap_assessment.observed),
             },
@@ -349,7 +395,8 @@ def build_utility_report(
             "humanCostStatus": "missing",
             "humanAcceptanceAsserted": False,
         } if data["schemaVersion"] in {evaluation.REGISTRATION_SCHEMA_V3,
-                                       evaluation.REGISTRATION_SCHEMA_V4} else {
+                                       evaluation.REGISTRATION_SCHEMA_V4,
+                                       evaluation.REGISTRATION_SCHEMA_V5} else {
             "status": "required",
             "identifiedReviewers": len(data["humanReviewers"]),
             "adjudication": "required-if-disagreement",
@@ -865,9 +912,11 @@ def _full_economic_cost(
     technical_capture: bool = False,
     technical_reconciled: bool = False,
     estimated_route: bool = False,
+    pending_cash: bool = False,
 ) -> dict[str, Any]:
     fields = {
         "actualAdditionalSpendEur": "actual_additional_spend_eur",
+        "observedAdditionalSpendSubtotalEur": "observed_additional_spend_subtotal_eur",
         "actualAdditionalSpendCapEur": "actual_additional_spend_cap_eur",
         "allocatedSubscriptionCostEur": "allocated_subscription_cost_eur",
         "actualProviderSpendEur": "actual_provider_spend_eur",
@@ -930,6 +979,38 @@ def _full_economic_cost(
                 "apiReferenceEstimateEur", "userTimeSeconds", "studyWallSeconds",
             ):
                 values[field] = None
+        if pending_cash:
+            # An operational quota observation is not a cash receipt. Keep all
+            # cash-derived values unknown, even if a supplied summary contains
+            # amounts that have not passed independent cash reconciliation.
+            for field in (
+                "allocatedSubscriptionCostEur",
+                "actualProviderSpendEur", "providerAccountingCostEur",
+                "technicalAdditionalSpendEur", "technicalRequiredMeasuresComplete",
+            ):
+                values[field] = None
+            # Preserve a positive authenticated observation as a breach signal,
+            # even when it is only a partial subtotal. A zero observation does
+            # not establish completed-cash reconciliation.
+            observed_positive = (
+                summary.observed_additional_spend_subtotal_eur
+                if isinstance(summary, MoneySummary)
+                and isinstance(summary.observed_additional_spend_subtotal_eur, Decimal)
+                and summary.observed_additional_spend_subtotal_eur > 0 else None
+            )
+            values["actualAdditionalSpendEur"] = None
+            values["observedAdditionalSpendSubtotalEur"] = (
+                str(observed_positive) if observed_positive is not None else None
+            )
+            values["missingTechnicalRequired"] = None
+            values["technicalCapViolation"] = (
+                True if isinstance(summary, MoneySummary)
+                and summary.technical_cap_violation is True else None
+            )
+            values["technicalStopRequired"] = (
+                True if isinstance(summary, MoneySummary)
+                and summary.technical_cap_violation is True else None
+            )
         values["userTimeReceiptSha256s"] = (
             list(summary.human_time_receipt_sha256s)
             if technical_reconciled and _sha_list(summary.human_time_receipt_sha256s) else []

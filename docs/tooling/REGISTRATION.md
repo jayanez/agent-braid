@@ -167,3 +167,30 @@ accounting, or cash. The policy creates no trusted observer, verifier, cash
 source, registration approval, or capture authorization. v2 acceptance,
 authenticity, and all capture evidence remain pending; no raw credential values
 or private billing-period identities belong in the registration record.
+
+## Operational subscription capture policy v3 and registration-v5
+
+On 2026-10-11 the owner approved Alternative B as an additive operational
+subscription route. See the [operational policy](../../specs/044-ai-tooling-evaluation/operational-subscription-capture-policy.md)
+and [ADR 0021](../adr/0021-codex-claude-tooling-integration.md). The policy
+`agent-braid-m45-operational-subscription-policy-v3` and registration-v5 bind
+the authenticated native route/account namespace, host/build, executable,
+effective configuration, exact argv, model, candidate and slot; fresh
+authoritative quota/credits/extra-usage/auto-recharge state; and absence of API
+keys, helper credentials, provider overrides and paid fallbacks. A bounded
+supervisor polls and refuses further work on quota exhaustion, unknown or stale
+state, observer loss, drift or its limits. This operational quota boundary is
+not a per-internal-request client veto.
+
+Additional spend remains capped at EUR 0, with no purchases, overages, paid API
+or alternate-provider fallback. Actual cohort cash remains unknown/null until
+independent authoritative verification covers setup, all started slots and
+completion reconciliation. That actual-cash evidence gates acceptance and
+positive utility; it is not required before every internal provider request.
+The estimate route remains separate from actual allocation, provider
+accounting and cash. The existing estimate convention, 108-slot roster,
+human-review deferral, candidate/host/resource/rights requirements and
+acceptance gates remain in force. Strict registration-v1/v2 and
+subscription-policy-v1 semantics are unchanged. Implementation, native
+observations, complete registration approval and capture authorization remain
+pending.

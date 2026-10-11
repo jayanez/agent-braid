@@ -232,15 +232,16 @@ Policy-v2 acceptance, trusted native observations, complete registration
 approval and all 108 actual outcomes remain pending. Two human reviewers and
 adjudication remain deferred. Neither these PRs nor their checks close M4.5.
 
-The owner-approved native-process scope now has an additive implementation and
-contract in [SPEC-044](../../specs/044-ai-tooling-evaluation/native-process-route-policy.md),
-with stable NP-001–NP-005 engineering and validation tasks. The contract keeps
-account-wide API billing unknown and out of scope, requires fresh process-bound
-route evidence and an externally trusted per-operation gate, and requires
-independent cohort cash evidence of exactly EUR 0. The EUR 5.045 value remains
-an estimate reservation, not actual cash. Exact-candidate repository validation
-is recorded on its pull request; no authentic route observer, continuously enforced
-request gate, or actual-cash source is established. Registration approval,
-provider capture, native-host evidence, the 108 outcomes, human evaluation,
-founder acceptance and M4.5 closure remain pending. These engineering tasks do
-not check or rewrite original SPEC-044 T006/T009 or assurance history.
+The owner-approved native-process scope now has an additive operational policy
+in [SPEC-044](../../specs/044-ai-tooling-evaluation/operational-subscription-capture-policy.md),
+with stable OP001–OP006 tasks. Registration-v5 binds the native process route,
+fresh authoritative quota state and a bounded supervisor. Quota is an
+operational boundary, not a per-internal-request client veto. Additional spend
+remains capped at EUR 0; actual cohort cash remains unknown until independently
+verified and gates acceptance and positive utility. The estimate remains
+separate from actual allocation, provider accounting and cash. Authentic route
+and supervisor evidence, registration approval, provider capture, native-host
+evidence, the 108 outcomes, human evaluation, founder acceptance and M4.5
+closure remain pending. Historical registration-v1/v2 and subscription-policy-v1
+semantics are unchanged. These tasks do not check or rewrite original
+SPEC-044 T006/T009 or assurance history.

@@ -186,6 +186,17 @@ def _with_native_policy(data: dict) -> dict:
     return data
 
 
+def _with_operational_policy(data: dict) -> dict:
+    _with_native_policy(data)
+    data["schemaVersion"] = evaluation.REGISTRATION_SCHEMA_V5
+    policy = data["billingPolicy"]
+    policy["schema"] = subscription_policy.OPERATIONAL_SUBSCRIPTION_POLICY_SCHEMA
+    policy.pop("cashSource")
+    policy["observer"].pop("continuousPerOperationControlRequired")
+    policy["observer"]["providerEnforcedQuotaBoundaryRequired"] = True
+    return data
+
+
 def _validated(registration: dict | None = None) -> evaluation.ValidatedRegistration:
     value = registration or _registration()
     return evaluation.validate_registration(
@@ -242,6 +253,19 @@ def _complete_ledger(registration: evaluation.ValidatedRegistration, *, unknown_
 
 
 class ToolingEvaluationTests(unittest.TestCase):
+    def test_operational_policy_requires_v5_and_binds_exact_108_slots(self):
+        data = _with_operational_policy(_registration_v4())
+        registered = _validated(data)
+        self.assertEqual(len(evaluation.generate_slots(registered)), 108)
+        for slot in evaluation.generate_slots(registered):
+            binding = subscription_policy.binding_from_registration(registered, slot.slot_id, slot.host)
+            self.assertIsInstance(binding, subscription_policy.OperationalProcessRouteBinding)
+            self.assertEqual(binding.candidate_artifact_sha256, data["candidate"]["sha256"])
+        malformed = copy.deepcopy(data)
+        malformed["billingPolicy"]["schema"] = subscription_policy.NATIVE_PROCESS_POLICY_SCHEMA
+        with self.assertRaises(evaluation.EvaluationError):
+            _validated(malformed)
+
     def test_native_policy_binds_all_108_slots_for_v3_and_v4(self):
         for factory in (_registration_v3, _registration_v4):
             with self.subTest(version=factory.__name__):

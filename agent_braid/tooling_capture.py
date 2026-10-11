@@ -134,7 +134,7 @@ class AdmissionVerifier(Protocol):
         costs: MeasuredCosts,
         stop_state: StopState,
         subject_sha256: str,
-        subscription: subscription_policy.SubscriptionObservation | subscription_policy.NativeProcessRouteObservation | None = None,
+        subscription: subscription_policy.SubscriptionObservation | subscription_policy.NativeProcessRouteObservation | subscription_policy.OperationalProcessRouteObservation | None = None,
         subscription_estimate: estimate_policy.ActiveTimeEvidence | None = None,
         model_identity_observation: model_identity_policy.ModelIdentityObservation | None = None,
     ) -> DecisionAttestation: ...
@@ -191,7 +191,7 @@ def prepare_attempt(
     stop_state: StopState,
     verifier: AdmissionVerifier,
     receipt_directory: str | os.PathLike[str],
-    subscription: subscription_policy.SubscriptionObservation | subscription_policy.NativeProcessRouteObservation | None = None,
+    subscription: subscription_policy.SubscriptionObservation | subscription_policy.NativeProcessRouteObservation | subscription_policy.OperationalProcessRouteObservation | None = None,
     subscription_estimate_active_time: estimate_policy.ActiveTimeEvidence | None = None,
     model_identity_observation: model_identity_policy.ModelIdentityObservation | None = None,
 ) -> AttemptAdmission:
@@ -245,8 +245,9 @@ def prepare_attempt(
     if ledger.current_status(slot_id) != "not-started":
         raise CaptureAdmissionError("slot has already started or reached an outcome; do not retry")
     _validate_context(slot, authorization)
-    _validate_costs(costs)
-    _validate_prior_costs(ledger, costs)
+    operational_mode = registration.data["schemaVersion"] == evaluation.REGISTRATION_SCHEMA_V5
+    _validate_costs(costs, allow_unknown_eur=operational_mode)
+    _validate_prior_costs(ledger, costs, allow_unknown_eur=operational_mode)
     _validate_stop_state(stop_state)
     if stop_state.incident_open:
         raise CaptureAdmissionError("capture is stopped by an open incident")
@@ -261,7 +262,7 @@ def prepare_attempt(
 
     estimate_assessment = None
     estimate_runtime_guard = None
-    is_v4 = registration.data["schemaVersion"] == evaluation.REGISTRATION_SCHEMA_V4
+    is_v4 = registration.data["schemaVersion"] in {evaluation.REGISTRATION_SCHEMA_V4, evaluation.REGISTRATION_SCHEMA_V5}
     if is_v4:
         if subscription_estimate_active_time is None:
             raise CaptureAdmissionError("v4 admission requires verified cumulative subscription active-time evidence")
@@ -277,7 +278,9 @@ def prepare_attempt(
             )
         except estimate_policy.EstimateError as exc:
             raise CaptureAdmissionError("subscription estimate admission refused: " + str(exc)) from exc
-        total_reserved_eur = estimate_assessment.reservation_eur + Decimal(str(costs.values["eur"]))
+        total_reserved_eur = estimate_assessment.reservation_eur
+        if costs.values["eur"] is not None:
+            total_reserved_eur += Decimal(str(costs.values["eur"]))
         if total_reserved_eur > Decimal(str(registration.data["costCaps"]["eur"])):
             raise CaptureAdmissionError("subscription estimate reservation plus measured cash exceeds the EUR cap")
         estimate_runtime_guard = estimate_policy.runtime_guard(
@@ -291,10 +294,15 @@ def prepare_attempt(
     binding = subscription_policy.binding_from_registration(registration, slot_id, slot.host)
     if binding is not None:
         try:
+            if (isinstance(binding, subscription_policy.OperationalProcessRouteBinding)
+                    and costs.values["eur"] not in (None, 0)):
+                raise subscription_policy.SubscriptionError("known additional cash exceeds the operational EUR 0 cap")
             subscription_policy.check_observation(subscription, binding)
-            if isinstance(binding, subscription_policy.NativeProcessRouteBinding):
+            if isinstance(binding, (subscription_policy.NativeProcessRouteBinding,
+                                    subscription_policy.OperationalProcessRouteBinding)):
                 if subscription.phase != "prelaunch":
                     raise subscription_policy.SubscriptionError("native route admission requires prelaunch evidence")
+            if isinstance(binding, subscription_policy.NativeProcessRouteBinding):
                 started_slots = {event.slot_id for event in ledger.events
                                  if event.status == "attempted"}
                 if set(subscription.cash.started_slot_ids) != started_slots:
@@ -467,7 +475,7 @@ def _validate_context(slot: evaluation.AttemptSlot, context: AuthorizationContex
         raise CaptureAdmissionError("unexpected grant or interruption context for this journey")
 
 
-def _validate_costs(costs: MeasuredCosts) -> None:
+def _validate_costs(costs: MeasuredCosts, *, allow_unknown_eur: bool = False) -> None:
     if not isinstance(costs, MeasuredCosts):
         raise CaptureAdmissionError("an observed cumulative cost snapshot is required")
     _require_text(costs.source_ref, "cost source reference")
@@ -476,6 +484,8 @@ def _validate_costs(costs: MeasuredCosts) -> None:
     if not isinstance(costs.values, Mapping) or set(costs.values) != set(evaluation.COST_FIELDS):
         raise CaptureAdmissionError("cost snapshot must explicitly include every registered cost field")
     for field, value in costs.values.items():
+        if value is None and field == "eur" and allow_unknown_eur:
+            continue
         if value is None:
             raise CaptureAdmissionError(f"measured cost {field} is unavailable; admission cannot assume zero")
         try:
@@ -489,7 +499,8 @@ def _validate_costs(costs: MeasuredCosts) -> None:
         raise CaptureAdmissionError("total tokens must equal input, output, and retry token totals")
 
 
-def _validate_prior_costs(ledger: evaluation.EvaluationLedger, costs: MeasuredCosts) -> None:
+def _validate_prior_costs(ledger: evaluation.EvaluationLedger, costs: MeasuredCosts,
+                          *, allow_unknown_eur: bool = False) -> None:
     """Require a reconciled cumulative snapshot that covers every recorded cost."""
     additive = {"eur", "tokens", "input_tokens", "output_tokens", "retry_tokens", "wall_seconds"}
     lower_bounds: dict[str, int | float] = {field: 0 for field in additive}
@@ -506,13 +517,19 @@ def _validate_prior_costs(ledger: evaluation.EvaluationLedger, costs: MeasuredCo
             raise CaptureAdmissionError("prior attempt cost record is incomplete; cap compliance is unknown")
         for field in evaluation.COST_FIELDS:
             value = prior[field]
+            if field == "eur" and allow_unknown_eur and value not in (None, 0):
+                raise CaptureAdmissionError("known additional cash exceeds the operational EUR 0 cap")
             if value is None:
+                if field == "eur" and allow_unknown_eur:
+                    continue
                 raise CaptureAdmissionError(f"prior attempt cost {field} is unknown; admission cannot assume zero")
             if field in additive:
                 lower_bounds[field] += value
             else:
                 lower_bounds[field] = max(lower_bounds[field], value)
     for field, lower_bound in lower_bounds.items():
+        if field == "eur" and allow_unknown_eur and costs.values[field] is None:
+            continue
         if costs.values[field] < lower_bound:
             raise CaptureAdmissionError(f"cumulative measured {field} is below previously recorded attempt costs")
 
