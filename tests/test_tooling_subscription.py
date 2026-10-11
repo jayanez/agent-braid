@@ -125,6 +125,61 @@ class SubscriptionPolicyTests(unittest.TestCase):
         with self.assertRaises(subscription.SubscriptionError):
             subscription.observation_from_dict(encoded)
 
+    def test_operational_v3_refuses_stale_future_missing_and_unknown_quota_controls(self):
+        now = datetime.now(timezone.utc)
+        binding = subscription.binding_from_registration(
+            {"billingPolicy": _operational_policy()}, "slot-1", "codex")
+        base = _operational_observation(binding, now)
+
+        invalid_observations = (
+            ("stale", {"observed_at": now - timedelta(seconds=31)}),
+            ("future", {"observed_at": now + timedelta(seconds=1)}),
+            ("subscription state unknown", {"subscription_active": None}),
+            ("quota availability unknown", {"quota_available": None}),
+            ("quota boundary unknown", {"quota_boundary_active": None}),
+            ("observer state unknown", {"observer_connected": None}),
+            ("credits state unknown", {"credits_enabled": None}),
+            ("extra usage state unknown", {"extra_usage_enabled": None}),
+            ("auto-recharge state unknown", {"auto_recharge_enabled": None}),
+        )
+        for name, changes in invalid_observations:
+            with self.subTest(state=name), self.assertRaises(subscription.SubscriptionError):
+                subscription.check_observation(
+                    _operational_observation(binding, now, **changes), binding, now)
+
+        for field in ("subscriptionActive", "quotaAvailable", "quotaBoundaryActive",
+                      "observerConnected", "creditsEnabled", "extraUsageEnabled",
+                      "autoRechargeEnabled"):
+            with self.subTest(missing_field=field):
+                serialized = base.as_dict()
+                del serialized[field]
+                with self.assertRaises(subscription.SubscriptionError):
+                    subscription.observation_from_dict(serialized)
+
+        serialized = base.as_dict()
+        serialized["unexpectedQuotaState"] = True
+        with self.assertRaises(subscription.SubscriptionError):
+            subscription.observation_from_dict(serialized)
+
+    def test_operational_v3_refuses_inactive_subscription_and_enabled_paid_controls(self):
+        now = datetime.now(timezone.utc)
+        binding = subscription.binding_from_registration(
+            {"billingPolicy": _operational_policy()}, "slot-1", "codex")
+
+        invalid_observations = (
+            ("inactive subscription despite available quota",
+             {"subscription_active": False, "quota_available": True}),
+            ("unavailable quota despite active subscription",
+             {"subscription_active": True, "quota_available": False}),
+            ("credits enabled", {"credits_enabled": True}),
+            ("extra usage enabled", {"extra_usage_enabled": True}),
+            ("auto-recharge enabled", {"auto_recharge_enabled": True}),
+        )
+        for name, changes in invalid_observations:
+            with self.subTest(state=name), self.assertRaises(subscription.SubscriptionError):
+                subscription.check_observation(
+                    _operational_observation(binding, now, **changes), binding, now)
+
     def test_policy_hash_and_binding_are_stable_and_account_specific(self):
         policy = _policy()
         registration = {"billingPolicy": policy}

@@ -400,5 +400,8 @@ uses a bounded supervisor, and keeps actual cash unknown until independent
 verification gates acceptance and positive utility. Additional spend remains
 EUR 0; no purchase, overage or paid fallback is permitted. Strict registration
 v1/v2 behavior, the 108-slot roster and deferred human review remain unchanged.
-Implementation and authentic native evidence, complete registration approval
-and capture authorization remain pending.
+The additive implementation and synthetic controls are available. Authentic
+process-bound native evidence, complete registration approval and capture
+authorization remain pending. The [technical completion preparation](docs/tooling/TECHNICAL_COMPLETION_20261011.md)
+records package preparation, native-interface limits and the selected free
+Linux x86_64 route; no registered slot has launched.
