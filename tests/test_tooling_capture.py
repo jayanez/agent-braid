@@ -23,7 +23,8 @@ from agent_braid import tooling_subscription as subscription_policy
 from agent_braid import tooling_model_identity as model_identity_policy
 from agent_braid import tooling_subscription_estimate as estimate_policy
 from agent_braid import tooling_sessions as sessions
-from tests.test_tooling_subscription import _policy
+from tests.test_tooling_subscription import _policy, _native_observation
+from tests.test_tooling_evaluation import _with_native_policy
 from agent_braid.tooling_fixtures import load_inventory
 
 
@@ -55,6 +56,46 @@ class _SubscriptionSyntheticVerifier(_SyntheticVerifier):
 
 
 class CaptureAdmissionTests(unittest.TestCase):
+    def _native_registration(self):
+        self._upgrade_to_v3_technical_capture()
+        _with_native_policy(self.registration_data)
+        self._write_registration()
+        self.valid_registration = evaluation.validate_registration(self.registration_data,
+            expected_candidate_sha256=self.artifact_sha256, expected_input_hashes=self.input_hashes)
+        self.ledger = evaluation.new_ledger(self.valid_registration)
+        self.receipts = capture.receipt_directory_for(self.valid_registration.sha256)
+        binding = subscription_policy.binding_from_registration(self.valid_registration, self._slot().slot_id, "codex")
+        return _native_observation(binding, datetime.now(timezone.utc))
+
+    def _prepare_native(self, observation, verifier=None):
+        return capture.prepare_attempt(registration_path=self.registration_path,
+            candidate_root=self.candidate, candidate_artifact=self.artifact,
+            ledger=self.ledger, slot_id=self._slot().slot_id,
+            authorization=self._authorization("analyze-interactions"), costs=self.costs,
+            stop_state=self.stop, verifier=verifier or _SubscriptionSyntheticVerifier(),
+            receipt_directory=self.receipts, subscription=observation,
+            model_identity_observation=self._model_observation())
+
+    def test_native_admission_binds_prelaunch_route_and_independent_cash(self):
+        observation = self._native_registration()
+        admitted = self._prepare_native(observation)
+        body = sessions._read_admission(admitted, self.valid_registration, self._slot())["receipt"]
+        self.assertEqual(body["subscription"], observation.as_dict())
+        self.assertEqual("unknown-out-of-scope", body["subscription"]["accountWideApiBilling"])
+        self.assertEqual("not-started", self.ledger.current_status(admitted.slot_id))
+
+    def test_native_admission_refuses_running_phase_unknown_cash_and_wrong_coverage(self):
+        observation = self._native_registration()
+        unsafe = (replace(observation, phase="running", process_id=123,
+                          process_birth_sha256=_sha("birth"),
+                          cash=replace(observation.cash, started_slot_ids=(observation.binding.slot_id,))),
+                  replace(observation, cash=replace(observation.cash, additional_cash_eur=None)),
+                  replace(observation, cash=replace(observation.cash, started_slot_ids=("unobserved-slot",))))
+        for value in unsafe:
+            with self.subTest(value=value), self.assertRaises(capture.CaptureAdmissionError):
+                self._prepare_native(value)
+        self.assertFalse(self.receipts.exists())
+
     """Exercise admission against copied pinned inputs and a private temp repo."""
 
     def setUp(self) -> None:

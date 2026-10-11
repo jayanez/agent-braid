@@ -134,7 +134,7 @@ class AdmissionVerifier(Protocol):
         costs: MeasuredCosts,
         stop_state: StopState,
         subject_sha256: str,
-        subscription: subscription_policy.SubscriptionObservation | None = None,
+        subscription: subscription_policy.SubscriptionObservation | subscription_policy.NativeProcessRouteObservation | None = None,
         subscription_estimate: estimate_policy.ActiveTimeEvidence | None = None,
         model_identity_observation: model_identity_policy.ModelIdentityObservation | None = None,
     ) -> DecisionAttestation: ...
@@ -149,7 +149,7 @@ class AttemptAdmission:
     receipt_path: Path
     receipt_sha256: str
     subject_sha256: str
-    subscription_binding: subscription_policy.SubscriptionBinding | None = None
+    subscription_binding: subscription_policy.SubscriptionBinding | subscription_policy.NativeProcessRouteBinding | None = None
     subscription_estimate: estimate_policy.EstimateAssessment | None = None
     subscription_estimate_runtime_guard: estimate_policy.RuntimeGuard | None = None
 
@@ -191,7 +191,7 @@ def prepare_attempt(
     stop_state: StopState,
     verifier: AdmissionVerifier,
     receipt_directory: str | os.PathLike[str],
-    subscription: subscription_policy.SubscriptionObservation | None = None,
+    subscription: subscription_policy.SubscriptionObservation | subscription_policy.NativeProcessRouteObservation | None = None,
     subscription_estimate_active_time: estimate_policy.ActiveTimeEvidence | None = None,
     model_identity_observation: model_identity_policy.ModelIdentityObservation | None = None,
 ) -> AttemptAdmission:
@@ -292,6 +292,13 @@ def prepare_attempt(
     if binding is not None:
         try:
             subscription_policy.check_observation(subscription, binding)
+            if isinstance(binding, subscription_policy.NativeProcessRouteBinding):
+                if subscription.phase != "prelaunch":
+                    raise subscription_policy.SubscriptionError("native route admission requires prelaunch evidence")
+                started_slots = {event.slot_id for event in ledger.events
+                                 if event.status == "attempted"}
+                if set(subscription.cash.started_slot_ids) != started_slots:
+                    raise subscription_policy.SubscriptionError("native cash coverage differs from started cohort slots")
         except subscription_policy.SubscriptionError as exc:
             raise CaptureAdmissionError("subscription admission refused: " + str(exc)) from exc
     elif subscription is not None:
@@ -364,6 +371,10 @@ def prepare_attempt(
             subscription_policy.check_observation(subscription, binding)
         except subscription_policy.SubscriptionError as exc:
             raise CaptureAdmissionError("subscription observation expired during verification") from exc
+        if isinstance(binding, subscription_policy.NativeProcessRouteBinding):
+            verified_at = datetime.fromisoformat(attestation.verified_at.replace("Z", "+00:00"))
+            if verified_at < max(subscription.observed_at, subscription.cash.observed_at):
+                raise CaptureAdmissionError("native route verifier attestation predates its evidence")
     if is_v4:
         try:
             estimate_policy.validate_observation_freshness(
