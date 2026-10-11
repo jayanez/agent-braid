@@ -73,17 +73,29 @@ structural validation or creating issues does not adopt this ADR.
 
 ## Approved scope: native-process billing observation boundary
 
-On 2026-10-11 the owner explicitly approved the proposed process-scoped boundary.
-This approves the scope only. An additive policy-v2 implementation is present;
-authentic native evidence remains pending. The overall ADR remains Proposed; neither complete
+On 2026-10-11 the owner explicitly approved the process-scoped boundary and
+Alternative B operational-subscription semantics. This approves scope only.
+An additive registration-v5 contract is being documented; authentic native
+evidence remains pending. The overall ADR remains Proposed; neither complete
 registration nor provider capture is approved by this decision.
 
-For a registered M4.5 run, the billing observation claim may be scoped to each selected native Codex or Claude Code CLI process and its provider route. The account-wide API billing state remains unknown and outside this claim. Before and during every provider operation, a trusted observer must bind the process to the registered subscription account and included-quota route; attest that no API credential or provider override is available to that process; verify extra usage, credits and auto-recharge are disabled; and enforce stop on quota exhaustion with no paid API or alternate-provider fallback. This scoped statement does not establish the account-wide API setting, unrelated account activity, or EUR 0 actual cohort cash. Dispatch still requires separate trusted evidence of exactly EUR 0 additional cash. Any missing, stale, conflicting or unverifiable condition refuses the operation.
+For a registered M4.5 run, a trusted observer binds the launched native Codex or Claude Code process to its subscription route, account namespace, host/build, executable, configuration, exact arguments, model route, candidate and slot. Fresh authoritative included-quota, credits, extra-usage and auto-recharge observations govern bounded launch/session operation. The process must have no API key, helper credential, provider override, paid fallback or alternate-provider fallback. A bounded supervisor polls and stops further work on quota exhaustion, stale/lost observation, identity/configuration drift or its limits. The quota is an operational boundary, not a per-internal-request client-side veto. This scoped statement does not establish account-wide API billing settings or unrelated account activity.
 
-This scope approval preserves the current subscription-policy-v1 behavior. It creates
-no observer, cash receipt, provider-call permission or complete registration.
-The additive implementation contract is recorded in
-[SPEC-044's native-process route policy](../../specs/044-ai-tooling-evaluation/native-process-route-policy.md).
-Its bounded NP-001–NP-005 plan separates source controls from native evidence.
-Implementation and evidence require candidate-bound validation and review; this scope decision does
-not adopt the overall ADR, which remains Proposed.
+Actual cohort cash remains unknown until independent authoritative verification
+covers setup, all started slots and completion reconciliation. Unknown cash is
+not zero. Independently verified actual cash remains an acceptance and positive-
+utility gate; it is not a precondition before each internal provider request.
+The additional-spend cap remains EUR 0, with no purchases, overages, paid API or
+paid fallback. The estimated subscription reservation remains a separate
+accounting route and is not actual allocation, provider accounting or cash.
+Missing, stale, conflicting or unverifiable operational route/quota conditions
+refuse launch or stop further work.
+
+This scope approval preserves strict registration-v1/v2 and
+subscription-policy-v1 behavior. It creates no observer, cash receipt,
+provider-call permission or complete registration. The additive
+[operational subscription capture policy](../../specs/044-ai-tooling-evaluation/operational-subscription-capture-policy.md)
+uses `agent-braid-m45-operational-subscription-policy-v3` with registration-v5.
+Its OP001–OP006 tasks separate source controls from native evidence.
+Implementation and evidence require candidate-bound validation and review; this
+scope decision does not adopt the overall ADR, which remains Proposed.

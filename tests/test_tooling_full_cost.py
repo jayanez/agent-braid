@@ -89,6 +89,57 @@ def _registration(*, scope_status="approved", reviewer_fee="unpaid", technical_c
     )
 
 
+def _registration_v5(*, reviewer_fee="unknown"):
+    """Synthetic operational-policy v5 cohort for cost-consumer controls."""
+    from tests.test_tooling_evaluation import _registration_v4
+
+    legacy_registration = _registration(technical_capture=True, reviewer_fee=reviewer_fee)
+    data = copy.deepcopy(dict(legacy_registration.data))
+    estimate = _registration_v4()[subscription_estimate.REGISTRATION_FIELD]
+    data[subscription_estimate.REGISTRATION_FIELD] = copy.deepcopy(estimate)
+    data["schemaVersion"] = evaluation.REGISTRATION_SCHEMA_V5
+    accounts = {
+        host["name"]: host["modelIdentity"]["providerRoute"]["accountSha256"]
+        for host in data["hosts"]
+    }
+    data["billingPolicy"] = {
+        "schema": "agent-braid-m45-operational-subscription-policy-v3",
+        "mode": "included-subscription-only", "scope": "registered-native-process-only",
+        "accountWideApiBilling": "unknown-out-of-scope", "additionalSpendCapEur": 0,
+        "maxAgeSeconds": 30, "paidApiAllowed": False, "overageAllowed": False,
+        "creditsAllowed": False, "autoRechargeAllowed": False,
+        "hosts": [
+            {"host": "codex", "authMethod": "chatgpt", "accountSha256": accounts["codex"],
+             "accountNamespaceSha256": _sha("codex-namespace")},
+            {"host": "claude-code", "authMethod": "claude.ai", "accountSha256": accounts["claude-code"],
+             "accountNamespaceSha256": _sha("claude-namespace")},
+        ],
+        "processContracts": {},
+        "observer": {"sourceRef": "synthetic-observer", "sourceSha256": _sha("observer"),
+                     "verifierRef": "synthetic-observer-verifier",
+                     "verifierSha256": _sha("observer-verifier"),
+                     "providerEnforcedQuotaBoundaryRequired": True},
+    }
+    for slot in evaluation.generate_slots(legacy_registration):
+        host = next(item for item in data["hosts"] if item["name"] == slot.host)
+        data["billingPolicy"]["processContracts"][slot.slot_id] = {
+            "host": slot.host, "hostBuildSha256": host["sha256"],
+            "candidateArtifactSha256": data["candidate"]["sha256"],
+            "executableSha256": host["sha256"],
+            "configSha256": _sha("config:" + slot.slot_id),
+            "argvSha256": _sha("argv:" + slot.slot_id),
+            "modelIdentitySha256": hashlib.sha256(json.dumps(
+                host["modelIdentity"], sort_keys=True, separators=(",", ":"),
+                ensure_ascii=False, allow_nan=False,
+            ).encode("utf-8")).hexdigest(),
+        }
+    return evaluation.validate_registration(
+        data, expected_candidate_sha256=data["candidate"]["sha256"],
+        expected_input_hashes={**{item["fixtureId"]: item["sha256"] for item in data["fixtures"]},
+                               **{item["promptId"]: item["sha256"] for item in data["prompts"]}},
+    )
+
+
 def _registration_base(data=None):
     data = data or _base_registration()
     data["billingPolicy"] = {
@@ -180,6 +231,7 @@ def _time_receipts(roster):
     rows = [("operator-1", all_ids, "10:00:00", "10:01:00")]
     if roster.registration.data["schemaVersion"] not in {
             evaluation.REGISTRATION_SCHEMA_V3, evaluation.REGISTRATION_SCHEMA_V4,
+            evaluation.REGISTRATION_SCHEMA_V5,
     }:
         rows.extend((reviewer, attempt_ids, start, end)
                     for reviewer, start, end in (("rater-one", "10:01:00", "10:02:00"),
@@ -204,6 +256,7 @@ def _filled_money(roster, *, positive_cash=False, allocation=True,
     for activity in roster.activities:
         if (roster.registration.data["schemaVersion"] in {
                 evaluation.REGISTRATION_SCHEMA_V3, evaluation.REGISTRATION_SCHEMA_V4,
+                evaluation.REGISTRATION_SCHEMA_V5,
         }
                 and activity.kind == "reviewer"):
             continue
@@ -222,6 +275,52 @@ def _filled_money(roster, *, positive_cash=False, allocation=True,
 
 
 class FullCostContractTests(unittest.TestCase):
+    def test_v5_scope_parses_as_technical_only_with_review_cost_unknown(self):
+        registration = _registration_v5()
+        scope = FullCostScope.from_registration(registration)
+
+        self.assertIsNotNone(scope)
+        self.assertTrue(scope.technical_only)
+        self.assertEqual({"unknown"}, {value for _, value in scope.reviewer_fee_applicability})
+        self.assertEqual("5.045", registration.data[subscription_estimate.REGISTRATION_FIELD]["reservationEur"])
+
+    def test_v5_completion_keeps_unknown_cash_pending_while_carrying_estimate(self):
+        registration = _registration_v5()
+        roster = _roster(registration)
+        money_ledger = MoneyLedger(roster, source_verifier=_SourceVerifier(),
+                                   allocation_policy_verifier=_PolicyVerifier())
+        money_summary = money_ledger.summarize()
+        ledger = evaluation.new_ledger(registration)
+        ledger_sha = hashlib.sha256(json.dumps(
+            ledger.as_dict(), sort_keys=True, separators=(",", ":"), ensure_ascii=False,
+        ).encode("utf-8")).hexdigest()
+        evidence = subscription_estimate.ActiveTimeEvidence(
+            registration.sha256, ledger_sha, "synthetic-active-time", _sha("active-time"),
+            "2026-10-09T16:00:00Z", {"codex": 57_600, "claude-code": 57_600},
+        )
+
+        class EstimateVerifier:
+            def verify_active_time(self, *, registration_sha256, ledger_sha256, evidence):
+                return registration_sha256 == registration.sha256 and ledger_sha256 == ledger_sha
+
+        result = complete_full_cost(
+            registration, ledger, roster, money_ledger, money_summary,
+            setup_costs=_known_costs(), human_time_receipts=_time_receipts(roster),
+            scope_verifier=_ScopeVerifier(), time_verifier=_TimeVerifier(),
+            study_wall_receipts=_wall_receipts(roster), study_wall_verifier=_WallVerifier(),
+            subscription_estimate_evidence=evidence,
+            subscription_estimate_verifier=EstimateVerifier(),
+        )
+
+        self.assertEqual("pending-cash-verification", result.full_economic_cost_status)
+        self.assertIsNone(result.actual_additional_spend_eur)
+        self.assertIsNone(result.actual_provider_spend_eur)
+        self.assertIsNone(result.allocated_subscription_cost_eur)
+        self.assertIsNone(result.provider_accounting_cost_eur)
+        self.assertEqual(Decimal("5.045"), result.subscription_allocation_upper_bound_eur)
+        self.assertIsNone(result.stop_required)
+        self.assertIsNone(result.technical_stop_required)
+
     def test_v4_estimated_route_completes_technical_costs_but_leaves_actual_allocation_unknown(self):
         data = copy.deepcopy(_registration(technical_capture=True, reviewer_fee="unknown").data)
         data["schemaVersion"] = evaluation.REGISTRATION_SCHEMA_V4

@@ -59,7 +59,72 @@ def _native_observation(binding, now, phase="prelaunch"):
         binding.observer_verifier_ref, binding.observer_verifier_sha256, now, cash)
 
 
+def _operational_policy():
+    return {"schema": subscription.OPERATIONAL_SUBSCRIPTION_POLICY_SCHEMA,
+            "mode": "included-subscription-only", "scope": "registered-native-process-only",
+            "accountWideApiBilling": "unknown-out-of-scope", "additionalSpendCapEur": 0,
+            "maxAgeSeconds": 30, "paidApiAllowed": False, "overageAllowed": False,
+            "creditsAllowed": False, "autoRechargeAllowed": False,
+            "hosts": [{"host": "codex", "authMethod": "chatgpt", "accountSha256": _sha("a"),
+                       "accountNamespaceSha256": _sha("a-ns")},
+                      {"host": "claude-code", "authMethod": "claude.ai", "accountSha256": _sha("b"),
+                       "accountNamespaceSha256": _sha("b-ns")}],
+            "processContracts": {"slot-1": {"host": "codex", "hostBuildSha256": _sha("build"),
+                "candidateArtifactSha256": _sha("artifact"), "executableSha256": _sha("exe"),
+                "configSha256": _sha("config"), "argvSha256": _sha("argv"),
+                "modelIdentitySha256": _sha("model")}},
+            "observer": {"sourceRef": "provider-quota-boundary", "sourceSha256": _sha("observer"),
+                "verifierRef": "quota-verifier", "verifierSha256": _sha("verifier"),
+                "providerEnforcedQuotaBoundaryRequired": True}}
+
+
+def _operational_observation(binding, now, **changes):
+    data = dict(binding=binding, phase="prelaunch", auth_method="chatgpt",
+        route="included-subscription-quota", account_wide_api_billing="unknown-out-of-scope",
+        subscription_active=True, quota_available=True, extra_usage_enabled=False,
+        credits_enabled=False, auto_recharge_enabled=False, api_credential_available=False,
+        provider_override_available=False, fallback_available=False, quota_boundary_active=True,
+        no_provider_operation_before_bind=True, observer_connected=True, process_id=None,
+        process_birth_sha256=None, observed_sequence=1, source_ref=binding.observer_source_ref,
+        source_sha256=binding.observer_source_sha256, verifier_ref=binding.observer_verifier_ref,
+        verifier_sha256=binding.observer_verifier_sha256, observed_at=now)
+    data.update(changes)
+    return subscription.OperationalProcessRouteObservation(**data)
+
+
 class SubscriptionPolicyTests(unittest.TestCase):
+    def test_operational_policy_rejects_non_string_hosts_with_domain_error(self):
+        for value in ([], {}, None, 1):
+            for location in ("account", "contract"):
+                with self.subTest(value=value, location=location):
+                    policy = _operational_policy()
+                    if location == "account":
+                        policy["hosts"][0]["host"] = value
+                    else:
+                        policy["processContracts"]["slot-1"]["host"] = value
+                    with self.assertRaises(subscription.SubscriptionError):
+                        subscription.binding_from_registration({"billingPolicy": policy}, "slot-1", "codex")
+
+    def test_operational_v3_quota_observation_is_cash_free_and_strict(self):
+        now = datetime.now(timezone.utc)
+        policy = _operational_policy()
+        binding = subscription.binding_from_registration({"billingPolicy": policy}, "slot-1", "codex")
+        self.assertIsInstance(binding, subscription.OperationalProcessRouteBinding)
+        observation = _operational_observation(binding, now)
+        self.assertTrue(subscription.check_observation(observation, binding, now))
+        encoded = observation.as_dict()
+        self.assertNotIn("cash", encoded)
+        self.assertEqual(subscription.binding_from_dict(binding.as_dict()), binding)
+        self.assertEqual(subscription.observation_from_dict(encoded), observation)
+        for changes in ({"quota_available": False}, {"quota_boundary_active": False},
+                        {"api_credential_available": True}, {"provider_override_available": True},
+                        {"fallback_available": True}, {"observed_at": now + timedelta(seconds=1)}):
+            with self.subTest(changes=changes), self.assertRaises(subscription.SubscriptionError):
+                subscription.check_observation(_operational_observation(binding, now, **changes), binding, now)
+        encoded["cash"] = {"additionalCashEur": 0}
+        with self.assertRaises(subscription.SubscriptionError):
+            subscription.observation_from_dict(encoded)
+
     def test_policy_hash_and_binding_are_stable_and_account_specific(self):
         policy = _policy()
         registration = {"billingPolicy": policy}

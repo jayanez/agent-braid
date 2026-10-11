@@ -497,11 +497,11 @@ def _read_admission(admission, registration, slot, *, ledger=None):
         "schemaVersion", "registrationSha256", "slot", "candidate", "registrationFileSha256",
         "fixturePromptInventorySha256", "hostBuild", "authorization", "measuredCosts", "stopState", "limits",
     }
-    if registration.data["schemaVersion"] == evaluation.REGISTRATION_SCHEMA_V4:
+    if registration.data["schemaVersion"] in {evaluation.REGISTRATION_SCHEMA_V4, evaluation.REGISTRATION_SCHEMA_V5}:
         subject_keys.add("subscriptionAllocationUpperBound")
         estimate = body.get("subscriptionAllocationUpperBound")
         if not isinstance(estimate, dict) or set(estimate) != {"policySha256", "activeTimeEvidence", "assessment"}:
-            raise SessionError("v4 admission estimate binding is missing or malformed")
+            raise SessionError("v4/v5 admission estimate binding is missing or malformed")
         try:
             active_data = estimate["activeTimeEvidence"]
             if set(active_data) != {"registrationSha256", "ledgerSha256", "sourceRef",
@@ -558,6 +558,13 @@ def _read_admission(admission, registration, slot, *, ledger=None):
                     raise subscription_policy.SubscriptionError("admission must contain prelaunch route evidence")
             except subscription_policy.SubscriptionError as exc:
                 raise SessionError("native route admission evidence is malformed or unsafe") from exc
+        elif isinstance(binding, subscription_policy.OperationalProcessRouteBinding):
+            try:
+                subscription_policy.check_observation(observation, binding, now=observation.observed_at)
+                if observation.phase != "prelaunch":
+                    raise subscription_policy.SubscriptionError("admission must contain prelaunch operational route evidence")
+            except subscription_policy.SubscriptionError as exc:
+                raise SessionError("operational route admission evidence is malformed or unsafe") from exc
     elif "subscription" in body:
         raise SessionError("unregistered subscription observation in admission receipt")
     subject = {key: body.get(key) for key in subject_keys}

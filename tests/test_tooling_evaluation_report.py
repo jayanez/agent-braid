@@ -29,6 +29,137 @@ from agent_braid.tooling_full_cost import complete_full_cost
 
 
 class UtilityReportTests(unittest.TestCase):
+    def test_v5_complete_cohort_remains_pending_cash_with_estimate_and_deferred_acceptance(self):
+        from tests.test_tooling_evaluation import _complete_ledger
+        from tests.test_tooling_full_cost import _registration_v5, _roster
+        from tests.test_tooling_money import _SourceVerifier
+        from agent_braid.tooling_money import MoneyLedger
+
+        registration = _registration_v5()
+        ledger = evaluation.new_ledger(registration)
+        for index, slot in enumerate(ledger.slots):
+            attempt_id = f"operational-attempt-{index:03d}"
+            ledger = evaluation.append_slot_event(
+                ledger, slot.slot_id, "attempted", attempt_id=attempt_id,
+                data={"sourceTimestamp": "2026-10-08T10:00:00Z"},
+            )
+            ledger = evaluation.append_slot_event(
+                ledger, slot.slot_id, "valid", attempt_id=attempt_id,
+                data={"sourceTimestamp": "2026-10-08T10:01:00Z", "completion": True,
+                      "authorityCorrect": True, "costs": _known_costs(eur=None),
+                      "inputSha256": slot.fixture_sha256,
+                      "outputSha256": hashlib.sha256(slot.slot_id.encode()).hexdigest()},
+            )
+        ratings = {}
+        roster = _roster(registration)
+        money_ledger = MoneyLedger(roster, source_verifier=_SourceVerifier())
+        summary = money_ledger.summarize()
+        ledger_sha = hashlib.sha256(json.dumps(
+            ledger.as_dict(), sort_keys=True, separators=(",", ":"), ensure_ascii=False,
+        ).encode("utf-8")).hexdigest()
+        evidence = subscription_estimate.ActiveTimeEvidence(
+            registration.sha256, ledger_sha, "synthetic-active-time", "f" * 64,
+            "2026-10-09T16:00:00Z", {"codex": 57_600, "claude-code": 57_600},
+        )
+
+        class EstimateVerifier:
+            def verify_active_time(self, *, registration_sha256, ledger_sha256, evidence):
+                return registration_sha256 == registration.sha256 and ledger_sha256 == ledger_sha
+
+        summary = complete_full_cost(
+            registration, ledger, roster, money_ledger, summary,
+            setup_costs=_known_costs(), human_time_receipts=_time_receipts(roster),
+            scope_verifier=_ScopeVerifier(), time_verifier=_TimeVerifier(),
+            study_wall_receipts=_wall_receipts(roster), study_wall_verifier=_WallVerifier(),
+            subscription_estimate_evidence=evidence,
+            subscription_estimate_verifier=EstimateVerifier(),
+        )
+
+        report = build_utility_report(
+            registration.data, ledger,
+            expected_candidate_sha256=registration.data["candidate"]["sha256"],
+            expected_input_hashes=_inputs(registration.data), setup_costs=_known_costs(),
+            human_ratings=ratings, monetary_summary=summary,
+            expected_monetary_roster_sha256=roster.sha256,
+            subscription_estimate_active_time=evidence,
+            subscription_estimate_verifier=EstimateVerifier(),
+        )
+
+        self.assertEqual("pending-cash-verification", report["conclusion"]["status"])
+        self.assertEqual("pending-cash-verification", report["technicalCaptureAccountingStatus"])
+        self.assertEqual(108, report["denominators"]["intendedSlots"])
+        self.assertEqual(0, sum(group["notStarted"] for group in report["denominators"]["groups"]))
+        self.assertEqual("deferred", report["humanEvaluation"]["status"])
+        self.assertFalse(report["utilityClaimEligible"])
+        self.assertFalse(report["conclusion"]["positiveUtilityAsserted"])
+        self.assertFalse(report["costs"]["legacyScalarComplete"])
+        self.assertTrue(report["costs"]["capAssessment"]["nonCashWithinCaps"])
+        self.assertIsNone(report["costs"]["capAssessment"]["withinCaps"])
+        self.assertIsNone(report["costs"]["totals"]["eur"])
+        self.assertEqual(0, report["costs"]["totals"]["tokens"])
+        full = report["costs"]["fullEconomic"]
+        self.assertIsNone(full["actualAdditionalSpendEur"])
+        self.assertIsNone(full["allocatedSubscriptionCostEur"])
+        self.assertIsNone(full["actualProviderSpendEur"])
+        self.assertIsNone(full["providerAccountingCostEur"])
+        self.assertEqual("5.045", report["costs"]["subscriptionAllocationUpperBound"][
+            "subscriptionAllocationUpperBoundEur"])
+
+    def test_v5_report_keeps_cash_unknown_and_does_not_promote_incomplete_cohort(self):
+        from tests.test_tooling_full_cost import _registration_v5
+        from tests.test_tooling_money import _SourceVerifier
+        from agent_braid.tooling_money import MoneyLedger
+
+        registration = _registration_v5()
+        roster = _roster(registration)
+        summary = MoneyLedger(roster, source_verifier=_SourceVerifier()).summarize()
+        report = self._make_report(
+            registration, evaluation.new_ledger(registration), {}, summary=summary,
+            roster_sha=roster.sha256,
+        )
+
+        costs = report["costs"]
+        self.assertEqual("inconclusive", report["conclusion"]["status"])
+        self.assertFalse(report["utilityClaimEligible"])
+        self.assertEqual("pending-cash-verification", costs["fullEconomicCostStatus"])
+        full = costs["fullEconomic"]
+        for field in ("actualAdditionalSpendEur", "allocatedSubscriptionCostEur",
+                      "actualProviderSpendEur", "providerAccountingCostEur",
+                      "technicalAdditionalSpendEur", "technicalStopRequired"):
+            self.assertIsNone(full[field], field)
+        self.assertEqual(108, report["denominators"]["intendedSlots"])
+
+    def test_v5_report_retains_positive_observed_cash_and_cap_breach(self):
+        from tests.test_tooling_full_cost import _registration_v5
+        from tests.test_tooling_money import _SourceVerifier, _receipt
+        from agent_braid.tooling_money import MoneyLedger
+
+        registration = _registration_v5()
+        roster = _roster(registration)
+        money = MoneyLedger(roster, source_verifier=_SourceVerifier())
+        setup = next(item for item in roster.activities if item.activity_id == "setup")
+        money.add(_receipt(roster, setup, "actualAdditionalSpendEur", amount=Decimal("0.01")))
+        inconsistent = replace(
+            money.summarize(), actual_additional_spend_eur=Decimal("0.01"),
+            actual_provider_spend_eur=Decimal("0.02"),
+            allocated_subscription_cost_eur=Decimal("0"),
+            provider_accounting_cost_eur=Decimal("0.02"),
+        )
+        report = self._make_report(
+            registration, evaluation.new_ledger(registration), {}, summary=inconsistent,
+            roster_sha=roster.sha256,
+        )
+
+        full = report["costs"]["fullEconomic"]
+        self.assertIsNone(full["actualAdditionalSpendEur"])
+        self.assertEqual("0.01", full["observedAdditionalSpendSubtotalEur"])
+        self.assertIsNone(full["actualProviderSpendEur"])
+        self.assertTrue(full["technicalCapViolation"])
+        self.assertTrue(full["technicalStopRequired"])
+        self.assertFalse(report["utilityClaimEligible"])
+        self.assertTrue(any("provider accounting total is unavailable, inconsistent, or exceeds" in reason
+                            for reason in report["eligibilityReasons"]))
+
     def test_estimated_summary_must_bind_exact_active_time_evidence_digest(self):
         data = _registration_v4()
         registration = evaluation.validate_registration(

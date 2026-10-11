@@ -331,6 +331,58 @@ class HostAdapterTests(unittest.TestCase):
             with self.subTest(identity=name), self.assertRaises(HostPreparationError):
                 prepare_host_launch(admission, config.__class__(**{**config.__dict__, **changed}))
 
+    def test_operational_v3_host_plan_pins_route_and_forwards_verifier(self):
+        tmp_path = self.with_temp()
+        admission, base = _inputs(tmp_path)
+        model_identity = {"kind": "requested-route", "selector": base.model,
+                          "effort": base.effort,
+                          "effectiveConfig": {"selector": base.model, "effort": base.effort},
+                          "cliBuild": {"version": base.version, "sha256": base.executable_sha256}}
+        candidate_sha = "b" * 64
+        config = base.__class__(**{**base.__dict__,
+            "host_build_sha256": base.executable_sha256,
+            "candidate_artifact_sha256": candidate_sha,
+            "model_identity": model_identity})
+        pins = tuple(hosts_module.FilePin(pin.path.resolve(strict=True), pin.sha256)
+                     for pin in config.config_files)
+        argv = hosts_module._build_argv(config)
+        binding = subscription_policy.OperationalProcessRouteBinding(
+            "codex", "c" * 64, admission.slot_id, "d" * 64, "e" * 64, "f" * 64,
+            config.host_build_sha256, candidate_sha, config.executable_sha256,
+            hosts_module._host_config_digest(pins), hosts_module._host_argv_digest(argv),
+            hosts_module._canonical_digest(model_identity), "quota-source", "1" * 64,
+            "quota-verifier", "2" * 64, 30.0)
+        admission = admission.__class__(**{**admission.__dict__, "subscription_binding": binding})
+        plan = prepare_host_launch(admission, config)
+        self.assertEqual(binding, plan.operational_route_binding)
+        calls = []
+
+        def fake_supervisor(request, caps, observer, *, operational_route_verifier):
+            calls.append((request, operational_route_verifier))
+            return Outcome()
+
+        with self.assertRaisesRegex(HostPreparationError, "operational quota route verifier"):
+            HostSessionAdapter(plan, verifier=AllowVerifier(), observer=lambda *_: None,
+                               caps=object(), supervisor=fake_supervisor)
+
+        class RouteVerifier:
+            source_ref = "quota-source"
+            source_sha256 = "1" * 64
+            verifier_ref = "quota-verifier"
+            verifier_sha256 = "2" * 64
+
+            def verify_operational_observation(self, *args, **kwargs):
+                pass
+
+        route_verifier = RouteVerifier()
+        adapter = HostSessionAdapter(plan, verifier=AllowVerifier(), observer=lambda *_: None,
+            caps=object(), operational_route_verifier=route_verifier, supervisor=fake_supervisor)
+        adapter.execute(admission)
+        request, forwarded = calls[0]
+        self.assertIs(forwarded, route_verifier)
+        self.assertEqual(binding, request.operational_route_binding)
+        self.assertEqual(binding, request.subscription_binding)
+
     def test_adapter_handoff_omits_prompt_and_environment_secrets_from_outcome(self):
         tmp_path = self.with_temp()
         admission, config = _inputs(tmp_path, environment={"TEST_SECRET": "never-receipt"})

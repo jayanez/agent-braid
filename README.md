@@ -391,10 +391,14 @@ research use [CC-BY-SA-4.0](LICENSES/CC-BY-SA-4.0.txt). The [license map](LICENS
 [attribution notices](NOTICE) and [trademark policy](TRADEMARKS.md) define the
 applicable terms and project identity.
 
-The experimental [registration-v4 accounting route](docs/tooling/REGISTRATION.md) now implements
-the owner-selected EUR 5.045 subscription reservation with actual allocation
-unknown. The approved [process-scoped policy v2](specs/044-ai-tooling-evaluation/native-process-route-policy.md)
-has an additive implementation with explicit verifier, lifecycle and independent
-cash checks. Authentic native evidence, an external gate before each provider
-operation and complete capture approval remain pending. The additional-spend
-cap is EUR 0; human review remains deferred.
+The experimental registration-v4 accounting route supports the owner-selected
+estimated subscription convention, with actual allocation unknown. The owner
+also approved the additive [operational subscription capture policy
+v3](specs/044-ai-tooling-evaluation/operational-subscription-capture-policy.md)
+for registration-v5. It binds the native process route and fresh quota state,
+uses a bounded supervisor, and keeps actual cash unknown until independent
+verification gates acceptance and positive utility. Additional spend remains
+EUR 0; no purchase, overage or paid fallback is permitted. Strict registration
+v1/v2 behavior, the 108-slot roster and deferred human review remain unchanged.
+Implementation and authentic native evidence, complete registration approval
+and capture authorization remain pending.
