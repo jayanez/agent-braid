@@ -1,0 +1,128 @@
+{
+  "schema": "m45-operational-control-receipt-map-v1",
+  "runtimeCandidateCommit": "93cde078357eb5a303950439b92d65888d8d258a",
+  "testCandidateCommit": "9e0b23abffd762fdb8144851f124db3f0c07b7da",
+  "testCandidateTree": "d56e9f1252c57c936f01e947ab62e77f892c6ef6",
+  "focusedLogSha256": "9759034dbbc2553b270accc91bcf22650607ed30edbebf06c9cf0ee60b4e452b",
+  "testsRun": 182,
+  "skips": 0,
+  "rows": [
+    {
+      "task": "OP001",
+      "sourceFiles": {
+        "agent_braid/tooling_subscription.py": "716b409c891c4ba07af6e524917df2a36d23af2d7ac21c63d4d0c5187b124238",
+        "agent_braid/tooling_evaluation.py": "d444eb8f32822790b23d638e6452589e9ca98344d29d50a0fc88d4351cf3501a",
+        "agent_braid/tooling_hosts.py": "73bfc8da0bbcee4ee020c4a0ac11334f4af747d9c6b39aa7db32eea7f9cdef90"
+      },
+      "testNames": [
+        "test_operational_policy_requires_v5_and_binds_exact_108_slots",
+        "test_operational_v3_host_plan_pins_route_and_forwards_verifier"
+      ],
+      "syntheticControlStatus": "passed",
+      "operationalAcceptanceStatus": "pending",
+      "missingEvidence": "Authentic per-slot effective configuration, argv, account/host/namespace and isolation binding are pending."
+    },
+    {
+      "task": "OP002",
+      "sourceFiles": {
+        "agent_braid/tooling_subscription.py": "716b409c891c4ba07af6e524917df2a36d23af2d7ac21c63d4d0c5187b124238"
+      },
+      "testNames": [
+        "test_operational_v3_quota_observation_is_cash_free_and_strict",
+        "test_operational_v3_refuses_stale_future_missing_and_unknown_quota_controls",
+        "test_operational_v3_refuses_inactive_subscription_and_enabled_paid_controls"
+      ],
+      "syntheticControlStatus": "passed",
+      "operationalAcceptanceStatus": "pending",
+      "missingEvidence": "Provider-authoritative complete quota/payment-control fields and a trusted verifier are pending."
+    },
+    {
+      "task": "OP003",
+      "sourceFiles": {
+        "agent_braid/tooling_subscription.py": "716b409c891c4ba07af6e524917df2a36d23af2d7ac21c63d4d0c5187b124238",
+        "agent_braid/tooling_hosts.py": "73bfc8da0bbcee4ee020c4a0ac11334f4af747d9c6b39aa7db32eea7f9cdef90"
+      },
+      "testNames": [
+        "test_operational_v3_quota_observation_is_cash_free_and_strict",
+        "test_codex_credential_channels_are_refused_before_argv_construction"
+      ],
+      "syntheticControlStatus": "passed",
+      "operationalAcceptanceStatus": "pending",
+      "missingEvidence": "Authentic verification of process-accessible API/helper credentials, overrides and fallback is pending."
+    },
+    {
+      "task": "OP004",
+      "sourceFiles": {
+        "agent_braid/tooling_supervisor.py": "0ad00b09a3bead5797f9bdc9528175a6f2d0d536bbe5da5c4a005008d0946f2c",
+        "agent_braid/tooling_process_birth.py": "cdf29cea9ce0f69fee42308e69849fcfb2c212d4e22a89c2cf9627f60a78b73b"
+      },
+      "testNames": [
+        "test_operational_v3_verifies_cash_free_quota_lifecycle_with_unknown_eur",
+        "test_operational_v3_running_stale_lost_and_drifted_observations_stop_child_without_effect",
+        "test_operational_v3_missing_or_stale_prelaunch_source_refuses_without_sending_stdin",
+        "test_operational_v3_stops_running_quota_loss_before_releasing_stdin"
+      ],
+      "syntheticControlStatus": "passed",
+      "operationalAcceptanceStatus": "pending",
+      "missingEvidence": "Trusted live supervisor/observer sequence for real native slots is pending."
+    },
+    {
+      "task": "OP005",
+      "sourceFiles": {
+        "agent_braid/tooling_capture.py": "aed3d71e8df05e8504b77b10030b4eb83c3eb9d6dcffd135329bf60df7aa2b61",
+        "agent_braid/tooling_money.py": "e52b75b1e59373d6fdaf18b756271b51eee83c6c57aeb3bd37cdc3853b4e65c3",
+        "agent_braid/tooling_full_cost.py": "37487efaf37cb1807919806a1b835170fa78e30de71ed6424c6717fc45b1551e",
+        "agent_braid/tooling_evaluation_report.py": "943881e3f36a7361b7bbee691c3356cc1ccf731985da80ea160b89682b33e540"
+      },
+      "testNames": [
+        "test_v5_operational_admission_keeps_actual_cash_unknown_and_rejects_known_positive"
+      ],
+      "syntheticControlStatus": "passed",
+      "operationalAcceptanceStatus": "pending",
+      "missingEvidence": "Independent cohort-attributable cash is unavailable; acceptance/positive utility remain blocked."
+    },
+    {
+      "task": "OP006",
+      "sourceFiles": {
+        "agent_braid/tooling_evaluation.py": "d444eb8f32822790b23d638e6452589e9ca98344d29d50a0fc88d4351cf3501a",
+        "agent_braid/tooling_subscription_estimate.py": "3b9258a56f679cb14ec9cabd802173833f8c92ee83604f339ce02ead451c6dad"
+      },
+      "testNames": [
+        "test_operational_policy_requires_v5_and_binds_exact_108_slots"
+      ],
+      "syntheticControlStatus": "passed",
+      "operationalAcceptanceStatus": "pending",
+      "missingEvidence": "Exact registration/capture approval and all inherited host/rights/resource/human gates remain separate."
+    }
+  ],
+  "actualCohortCashEur": null,
+  "registeredAttemptsStarted": 0,
+  "milestoneClosure": false,
+  "limits": [
+    "Source/test evidence only; authentic process/host/provider supervision and approval are not supplied by these controls.",
+    "Historical candidate assurance and original task checkboxes are unchanged."
+  ],
+  "localQuickProfile": {
+    "candidateCommit": "9e0b23abffd762fdb8144851f124db3f0c07b7da",
+    "candidateTree": "d56e9f1252c57c936f01e947ab62e77f892c6ef6",
+    "requestedProfile": "quick",
+    "effectiveProfile": "sensitive",
+    "pythonVersion": "Python 3.13.11",
+    "exitCode": 0,
+    "candidateUnchanged": true,
+    "logSha256": "fbdf2602c64313f11df09f2592c427a3cf5f8eed3a3891acaf0f588f05ee1c84",
+    "fullSuiteTestsRun": 1344,
+    "skips": 12,
+    "boundaryGatesExecuted": false
+  },
+  "testSensitivity": {
+    "method": "isolated temporary source copies; assertion failures detected all three mutants",
+    "mutantsDetected": [
+      "unknown-payment-controls-allowed",
+      "paid-controls-allowed",
+      "stale-quota-allowed"
+    ],
+    "runtimeSourceModified": false,
+    "operationalAcceptance": false
+  }
+}
