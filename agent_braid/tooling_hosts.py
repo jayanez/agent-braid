@@ -138,9 +138,11 @@ class HostLaunchPlan:
     term_grace_seconds: float
     kill_grace_seconds: float
     subscription_binding: (subscription_policy.SubscriptionBinding
-                           | subscription_policy.NativeProcessRouteBinding | None) = field(default=None, repr=False)
+                           | subscription_policy.NativeProcessRouteBinding
+                           | subscription_policy.OperationalProcessRouteBinding | None) = field(default=None, repr=False)
     claude_subscription_settings: FilePin | None = field(default=None, repr=False)
     native_route_binding: subscription_policy.NativeProcessRouteBinding | None = field(default=None, repr=False)
+    operational_route_binding: subscription_policy.OperationalProcessRouteBinding | None = field(default=None, repr=False)
     host_build_sha256: str | None = None
     candidate_artifact_sha256: str | None = None
     model_identity_sha256: str | None = None
@@ -161,6 +163,12 @@ class NativeRouteVerifier(Protocol):
                            identity: Any, request: Any, final: bool) -> None: ...
 
 
+class OperationalRouteVerifier(Protocol):
+    def verify_operational_observation(self, observation: subscription_policy.OperationalProcessRouteObservation,
+                                       binding: subscription_policy.OperationalProcessRouteBinding,
+                                       identity: Any, request: Any, final: bool) -> None: ...
+
+
 class HostSessionAdapter(tooling_sessions.SessionAdapter):
     """Single-dispatch adapter composed with `tooling_supervisor`.
 
@@ -172,6 +180,7 @@ class HostSessionAdapter(tooling_sessions.SessionAdapter):
     def __init__(self, plan: HostLaunchPlan, *, verifier: PreparationVerifier,
                  observer: Callable[..., Any], caps: Any,
                  native_route_verifier: NativeRouteVerifier | None = None,
+                 operational_route_verifier: OperationalRouteVerifier | None = None,
                  supervisor: Callable[..., Any] | None = None,
                  outcome_reader: Callable[[Any], bytes] | None = None):
         if verifier is None or not callable(getattr(verifier, "verify_pre_dispatch", None)):
@@ -181,9 +190,13 @@ class HostSessionAdapter(tooling_sessions.SessionAdapter):
         self._plan = plan
         self._verifier = verifier
         self._native_route_verifier = native_route_verifier
+        self._operational_route_verifier = operational_route_verifier
         if plan.native_route_binding is not None and not callable(
                 getattr(native_route_verifier, "verify_observation", None)):
             raise HostPreparationError("trusted native process route verifier is required for policy v2")
+        if plan.operational_route_binding is not None and not callable(
+                getattr(operational_route_verifier, "verify_operational_observation", None)):
+            raise HostPreparationError("trusted operational quota route verifier is required for policy v3")
         self._observer = observer
         self._caps = caps
         self._supervisor = supervisor
@@ -219,6 +232,9 @@ class HostSessionAdapter(tooling_sessions.SessionAdapter):
         if plan.native_route_binding is not None:
             outcome = runner(request, self._caps, self._observer,
                              native_route_verifier=self._native_route_verifier)
+        elif plan.operational_route_binding is not None:
+            outcome = runner(request, self._caps, self._observer,
+                             operational_route_verifier=self._operational_route_verifier)
         else:
             outcome = runner(request, self._caps, self._observer)
         return self._public_outcome(plan, outcome)
@@ -248,6 +264,7 @@ class HostSessionAdapter(tooling_sessions.SessionAdapter):
             kill_grace_seconds=plan.kill_grace_seconds,
             subscription_binding=plan.subscription_binding,
             native_route_binding=plan.native_route_binding,
+            operational_route_binding=plan.operational_route_binding,
             subscription_estimate_runtime_guard=(admission.subscription_estimate_runtime_guard
                                                  if admission is not None else None),
             subscription_estimate_admission_receipt_sha256=(admission.receipt_sha256
@@ -454,7 +471,8 @@ def prepare_host_launch(admission: capture.AttemptAdmission,
         raise HostPreparationError("Claude subscription settings are irrelevant to this host")
     if binding is not None:
         if not isinstance(binding, (subscription_policy.SubscriptionBinding,
-                                    subscription_policy.NativeProcessRouteBinding)):
+                                    subscription_policy.NativeProcessRouteBinding,
+                                    subscription_policy.OperationalProcessRouteBinding)):
             raise HostPreparationError("admission subscription binding is not a supported typed policy")
         if binding.host != config.host or binding.slot_id != admission.slot_id:
             raise HostPreparationError("route binding differs from the selected host or slot")
@@ -487,26 +505,29 @@ def prepare_host_launch(admission: capture.AttemptAdmission,
         _validate_claude_subscription_settings(config.claude_subscription_settings)
     argv = _build_argv(config)
     native_binding = binding if isinstance(binding, subscription_policy.NativeProcessRouteBinding) else None
+    operational_binding = binding if isinstance(binding, subscription_policy.OperationalProcessRouteBinding) else None
+    process_binding = native_binding or operational_binding
     normalized_pins = tuple(FilePin(pin.path.resolve(strict=True), pin.sha256)
                             for pin in (*config.config_files,
                                         *((config.claude_subscription_settings,)
                                           if config.claude_subscription_settings else ())))
     model_identity_sha256 = None
-    if native_binding is not None:
+    if process_binding is not None:
         for label, value in (("host build", config.host_build_sha256),
                              ("candidate artifact", config.candidate_artifact_sha256)):
             _require_digest(value)
-        if config.host_build_sha256 != native_binding.host_build_sha256:
-            raise HostPreparationError("host build differs from the registered native process policy")
-        if config.candidate_artifact_sha256 != native_binding.candidate_artifact_sha256:
-            raise HostPreparationError("candidate artifact differs from the registered native process policy")
-        if config.executable_sha256 != native_binding.executable_sha256:
-            raise HostPreparationError("executable differs from the registered native process policy")
+        policy_label = "operational subscription" if operational_binding is not None else "native process"
+        if config.host_build_sha256 != process_binding.host_build_sha256:
+            raise HostPreparationError(f"host build differs from the registered {policy_label} policy")
+        if config.candidate_artifact_sha256 != process_binding.candidate_artifact_sha256:
+            raise HostPreparationError(f"candidate artifact differs from the registered {policy_label} policy")
+        if config.executable_sha256 != process_binding.executable_sha256:
+            raise HostPreparationError(f"executable differs from the registered {policy_label} policy")
         if not isinstance(config.model_identity, Mapping):
             raise HostPreparationError("native process policy requires the exact registered model identity")
         model_identity_sha256 = _canonical_digest(config.model_identity)
-        if model_identity_sha256 != native_binding.model_identity_sha256:
-            raise HostPreparationError("model identity differs from the registered native process policy")
+        if model_identity_sha256 != process_binding.model_identity_sha256:
+            raise HostPreparationError(f"model identity differs from the registered {policy_label} policy")
         identity = config.model_identity
         effective_config = identity.get("effectiveConfig")
         if (identity.get("selector") != config.model or identity.get("effort") != config.effort
@@ -519,10 +540,10 @@ def prepare_host_launch(admission: capture.AttemptAdmission,
                 or cli_build.get("sha256") != config.executable_sha256
                 or cli_build.get("sha256") != config.host_build_sha256):
             raise HostPreparationError("host build version or executable differs from registered model identity")
-        if _host_argv_digest(argv) != native_binding.argv_sha256:
-            raise HostPreparationError("native host argv differs from the registered process policy")
-        if _host_config_digest(normalized_pins) != native_binding.config_sha256:
-            raise HostPreparationError("native host config pin inventory differs from registered policy")
+        if _host_argv_digest(argv) != process_binding.argv_sha256:
+            raise HostPreparationError(f"{policy_label} host argv differs from the registered process policy")
+        if _host_config_digest(normalized_pins) != process_binding.config_sha256:
+            raise HostPreparationError(f"{policy_label} host config pin inventory differs from registered policy")
     return HostLaunchPlan(
         host=config.host, arm=config.arm, attempt_id=admission.attempt_id,
         slot_id=admission.slot_id, admission_receipt_sha256=admission.receipt_sha256,
@@ -554,6 +575,7 @@ def prepare_host_launch(admission: capture.AttemptAdmission,
             if config.claude_subscription_settings is not None else None
         ),
         native_route_binding=native_binding,
+        operational_route_binding=operational_binding,
         host_build_sha256=config.host_build_sha256,
         candidate_artifact_sha256=config.candidate_artifact_sha256,
         model_identity_sha256=model_identity_sha256,

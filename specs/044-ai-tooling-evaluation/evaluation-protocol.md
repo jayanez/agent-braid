@@ -4,7 +4,7 @@
 model identities under [the approved clarification](model-identity-clarification.md), eligible fixture
 hashes, prompt roster, cost rates/budgets, two abstract independent reviewer roles and the approved human-evaluation deferral before technical observations. Keep v3 humanReviewers empty; later identities, ratings and adjudication require a separately bound addendum.
 Current status: protocol draft; no measured observations or accepted utility.
-V3 requires the exact included-subscription-only `billingPolicy` for both hosts; numeric caps and other owner-approved capture gates still apply. Existing M4 source rights and observations do not authorize this capture.
+Strict registration-v1/v2 keep their exact included-subscription-only `billingPolicy` and prior cash-admission semantics. The additive registration-v5 route follows the [operational subscription capture policy](operational-subscription-capture-policy.md) and separate estimated-accounting route described below. Numeric caps and other owner-approved capture gates still apply. Existing M4 source rights and observations do not authorize this capture.
 
 ## Questions and population
 
@@ -114,10 +114,29 @@ The [owner-selected estimated convention](subscription-estimation-decision.md) s
 
 Do not use this estimate as actual allocation, actual provider accounting or cash. Missing actual allocation may remain unknown on this route; independently verified EUR 0 additional cash, fresh subscription evidence, all other measured resource/candidate/rights gates and all 108 slots remain required. Changed assumptions, missing active-time evidence or cap excess refuse or stop. Report only technical capture under the estimated bound; actual economic completeness and positive utility remain unavailable with unknown actuals or deferred human work. This addendum does not approve the complete registration or change account-wide subscription-observation semantics.
 
-## Approved scope: native-process route evidence
+## Approved scope: operational subscription capture
 
-The owner approved this separate observation boundary on 2026-10-11. An additive
-policy-v2 implementation is present; authentic native evidence remains pending. Current
-subscription-policy-v1 behavior is unchanged; this approval has no capture effect.
+On 2026-10-11 the owner approved Alternative B as an additive operational
+subscription route. The [operational subscription capture policy](operational-subscription-capture-policy.md)
+defines `agent-braid-m45-operational-subscription-policy-v3` and registration-v5.
+Strict registration-v1/v2, subscription-policy-v1 and the existing
+native-process-route-policy-v2 retain their prior semantics.
 
-The additive [native-process route policy v2 contract](native-process-route-policy.md) specifies the frozen per-slot identity and source bindings, typed fresh lifecycle observations, trusted verifier, and refusal behavior. `accountWideApiBilling` is `unknown-out-of-scope`, never false. A trusted external per-provider-operation gate must block startup and every request until process-bound included-subscription route evidence, absence of API credentials/provider overrides/fallback, fresh quota and paid-control state, and separate cohort-attributable EUR 0 actual-cash evidence are verified. Periodic polling alone cannot enforce this gate. Missing, stale, conflicting or unverifiable evidence; quota exhaustion; observer loss; route/config drift; nonzero or unknown cash; or any failed control stops before the next provider operation, with no paid API or alternate-provider fallback. The EUR 5.045 estimate remains separate from actual allocation, provider accounting and cash. v1 behavior remains unchanged. Authentic observer/gate/cash sources, complete registration approval and all capture authorization remain pending; this policy does not alter human or utility gates.
+For the additive route, the native launch binds authenticated route/account
+namespace, host/build, executable, effective configuration, exact argv, model,
+candidate and slot. Fresh authoritative included-quota, credits, extra-usage
+and auto-recharge observations are required. The process must lack API keys,
+helper credentials, provider overrides and paid/alternate-provider fallbacks.
+A bounded supervisor polls and refuses further work on quota exhaustion,
+unknown/stale quota, route/configuration drift, lost observation or supervisor
+limits. Provider quota is an operational boundary, not a per-internal-request
+client veto. No purchase, overage or paid route is allowed, and the additional-
+spend cap remains EUR 0.
+
+Actual cohort cash is `unknown`/null until independently verified across setup,
+all started slots and completion reconciliation. Actual cash is an acceptance
+and positive-utility gate, not a per-request dispatch gate. Unknown is never
+treated as zero. The selected estimate remains separate from actual allocation,
+provider accounting and cash. Authentic observer/supervisor evidence, complete
+registration approval and capture authorization remain pending; human,
+utility, candidate, rights and acceptance gates are unchanged.
