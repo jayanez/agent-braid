@@ -240,7 +240,11 @@ def validate_registration(
         raise EvaluationError("fixture and prompt IDs must be disjoint")
     _validate_host_builds(data.get("hosts"), schema_version=schema_version,
                           billing_policy=data.get("billingPolicy"))
-    _validate_cost_rates(data.get("costRates"), data["hosts"])
+    _validate_cost_rates(
+        data.get("costRates"), data["hosts"],
+        allow_unavailable=(schema_version == REGISTRATION_SCHEMA_V3
+                           and data.get("billingPolicy", {}).get("mode") == "included-subscription-only"),
+    )
 
     if not isinstance(expected_input_hashes, Mapping):
         raise EvaluationError("expected_input_hashes must bind all 18 fixture and six prompt IDs")
@@ -1015,7 +1019,9 @@ def _validate_billing_policy(value: Any) -> None:
         raise EvaluationError(f"invalid billingPolicy: {exc}") from exc
 
 
-def _validate_cost_rates(value: Any, hosts: Sequence[Mapping[str, Any]]) -> None:
+def _validate_cost_rates(
+    value: Any, hosts: Sequence[Mapping[str, Any]], *, allow_unavailable: bool = False,
+) -> None:
     _require_object(value, "costRates")
     if value.get("currency") != "EUR":
         raise EvaluationError("costRates.currency must be EUR")
@@ -1030,12 +1036,24 @@ def _validate_cost_rates(value: Any, hosts: Sequence[Mapping[str, Any]]) -> None
         if host not in models or host in seen or entry.get("modelName") != models[host]:
             raise EvaluationError("cost rate entries must match each exact registered host/model")
         seen.add(host)
-        for field in ("inputEurPerMillionTokens", "outputEurPerMillionTokens"):
-            rate = entry.get(field)
+        rate_values = (entry.get("inputEurPerMillionTokens"),
+                       entry.get("outputEurPerMillionTokens"))
+        provenance = (entry.get("recordId"), entry.get("sha256"))
+        rate_fields = ("inputEurPerMillionTokens", "outputEurPerMillionTokens", "recordId", "sha256")
+        unavailable = all(field in entry and entry[field] is None for field in rate_fields)
+        if unavailable:
+            if not allow_unavailable:
+                raise EvaluationError("cost rates may be unavailable only for v3 included-subscription registrations")
+            continue
+        if allow_unavailable and any(field not in entry for field in rate_fields):
+            raise EvaluationError("v3 cost-rate rows must explicitly include all rate and provenance fields")
+        if any(item is None for item in (*rate_values, *provenance)):
+            raise EvaluationError("unavailable cost rates require null rates and null provenance together")
+        for field, rate in zip(("inputEurPerMillionTokens", "outputEurPerMillionTokens"), rate_values):
             if not _is_finite_number(rate) or rate < 0:
                 raise EvaluationError(f"costRates.byHost.{field} must be a finite nonnegative value")
-        _require_id(entry.get("recordId"), "costRates.byHost.recordId")
-        _require_hash(entry.get("sha256"), "costRates.byHost.sha256")
+        _require_id(provenance[0], "costRates.byHost.recordId")
+        _require_hash(provenance[1], "costRates.byHost.sha256")
     if seen != set(HOSTS):
         raise EvaluationError("costRates must include exactly one rate record per host")
 

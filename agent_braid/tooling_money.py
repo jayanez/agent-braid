@@ -660,6 +660,7 @@ class MoneyRoster:
         return {
             item["host"]: (item["recordId"], item["sha256"])
             for item in self.registration.data["costRates"]["byHost"]
+            if item["recordId"] is not None and item["sha256"] is not None
         }
 
     def as_dict(self) -> dict[str, object]:
@@ -760,7 +761,11 @@ class MoneyLedger:
             if receipt.measure == "apiReferenceEstimateEur":
                 if activity.kind != "attempt" or activity.host is None:
                     raise MoneyAccountingError("API reference estimates apply only to registered model attempts")
-                expected_rate = self.roster.rate_cards_by_host[activity.host]
+                expected_rate = self.roster.rate_cards_by_host.get(activity.host)
+                if expected_rate is None:
+                    raise MoneyAccountingError(
+                        "API reference estimate is unavailable because this host has no registered token rates"
+                    )
                 if (evidence.rate_card_ref, evidence.rate_card_sha256) != expected_rate:
                     raise MoneyAccountingError("API reference rate card differs from the registered host rate")
             key = (receipt.activity_id, receipt.measure)

@@ -14,6 +14,11 @@ authentication and visible billing controls have been checked privately. That
 decision does not approve the full registration or source rights. Missing values are not zero-cost
 measurements or decisions.
 
+The owner subsequently approved [the technical cohort model choices](../../specs/044-ai-tooling-evaluation/model-selection-decision.md)
+on 2026-10-11: Codex `gpt-6-luna` and Claude Code's observed `sonnet` alias
+resolving to Sonnet 5.5, both with medium effort. This separate selection decision
+does not approve either example draft or the complete technical registration.
+
 Copy the draft to a private registration workspace after freezing the integrated
 candidate. Record its full Git commit and the SHA-256 of the retained candidate
 artifact (state the artifact and hashing procedure). Record wheel/sdist and skill
@@ -81,6 +86,16 @@ Register numeric EUR/token/total-wall/RSS/disk caps, rates and provider choice
 before capture; retain unavailable values as null. Stop on incidents, exceeded
 caps, missing immutable inputs, candidate/build drift, unrecoverable transitions
 or two consecutive infrastructure failures. Preserve all intended slots.
+
+For v3 included-subscription-only registration, unavailable reference API prices
+are recorded as an explicitly unknown host/model row: both per-token rates,
+the rate-record identifier and its hash are null. This does not describe a
+zero-price provider, waive the allocated-subscription accounting ceiling or
+authorize paid API use. A priced row still needs finite nonnegative rates and
+its source record. Legacy v1/v2 rate requirements remain unchanged. An unknown
+reference row cannot support an API-equivalent estimate; actual cash,
+subscription allocation and live admission measurements retain their separate
+verification and completeness requirements.
 
 For v3, include an approved technical `fullCostScope` using the existing scope
 shape. It binds technical allocation, user/setup/attempt time, wall-time receipt
