@@ -19,7 +19,7 @@ from agent_braid.tooling_money import (
     SourceAttestation,
     provider_accounting_total,
 )
-from tests.test_tooling_evaluation import _inputs, _registration
+from tests.test_tooling_evaluation import _complete_ledger, _inputs, _known_costs, _registration, _registration_v3
 
 
 _COVERAGE_START = "2026-10-09T10:00:00Z"
@@ -35,6 +35,11 @@ def _sha(value):
 
 def _validated_registration(data=None):
     data = data or _registration()
+    account_by_host = {
+        host["name"]: host["modelIdentity"]["providerRoute"]["accountSha256"]
+        if "modelIdentity" in host else _sha(f"{host['name']}-account")
+        for host in data["hosts"]
+    }
     data["billingPolicy"] = {
         "schema": "agent-braid-m45-subscription-policy-v1",
         "mode": "included-subscription-only",
@@ -44,8 +49,8 @@ def _validated_registration(data=None):
         "creditsAllowed": False,
         "autoRechargeAllowed": False,
         "hosts": [
-            {"host": "codex", "authMethod": "chatgpt", "accountSha256": _sha("codex-account")},
-            {"host": "claude-code", "authMethod": "claude.ai", "accountSha256": _sha("claude-account")},
+            {"host": "codex", "authMethod": "chatgpt", "accountSha256": account_by_host["codex"]},
+            {"host": "claude-code", "authMethod": "claude.ai", "accountSha256": account_by_host["claude-code"]},
         ],
     }
     return evaluation.validate_registration(
@@ -104,7 +109,7 @@ def _receipt(roster, activity, measure, *, amount=Decimal("0"), scope=None,
     estimate = measure == "apiReferenceEstimateEur"
     currency = "USD" if estimate else "EUR"
     native_amount = source_amount if source_amount is not None else (Decimal("2") if estimate else amount)
-    registered_rate = roster.rate_cards_by_host[activity.host] if estimate else None
+    registered_rate = roster.rate_cards_by_host.get(activity.host) if estimate else None
     if rate_card is not None:
         registered_rate = rate_card
     evidence = MoneyEvidence(
@@ -127,8 +132,8 @@ def _receipt(roster, activity, measure, *, amount=Decimal("0"), scope=None,
         fx_rate_to_eur=Decimal("0.9") if estimate else Decimal("1"),
         fx_source_ref="fx-eur-rate" if estimate else None,
         fx_source_sha256=_sha("fx rate") if estimate else None,
-        rate_card_ref=registered_rate[0] if estimate else None,
-        rate_card_sha256=registered_rate[1] if estimate else None,
+        rate_card_ref=registered_rate[0] if estimate and registered_rate else None,
+        rate_card_sha256=registered_rate[1] if estimate and registered_rate else None,
         calculation_inputs_sha256=_sha(f"inputs-{measure}-{activity.activity_id}")
         if estimate or method is not None else None,
     )
@@ -161,6 +166,99 @@ class _PolicyVerifier:
 
 
 class MoneyAccountingTests(unittest.TestCase):
+    def test_v3_unknown_reference_rates_reject_estimates_and_missing_receipts_remain_incomplete(self):
+        data = _registration_v3()
+        for item in data["costRates"]["byHost"]:
+            item.update(inputEurPerMillionTokens=None, outputEurPerMillionTokens=None,
+                        recordId=None, sha256=None)
+        roster = _roster(data)
+        self.assertEqual(roster.rate_cards_by_host, {})
+        ledger = MoneyLedger(roster, source_verifier=_SourceVerifier())
+        attempt = next(item for item in roster.activities if item.kind == "attempt")
+        fabricated = _receipt(
+            roster, attempt, "apiReferenceEstimateEur", amount=Decimal("2"),
+            rate_card=("fabricated-rate-card", _sha("fabricated-rate-card")),
+        )
+        with self.assertRaisesRegex(MoneyAccountingError, "no registered token rates"):
+            ledger.add(fabricated)
+        self.assertEqual(ledger.history, ())
+
+        summary = ledger.summarize()
+        self.assertFalse(summary.required_measures_complete)
+        self.assertFalse(summary.technical_required_measures_complete)
+        self.assertIsNone(summary.actual_provider_spend_eur)
+        self.assertIsNone(summary.api_reference_estimate_eur)
+        self.assertTrue(summary.stop_required)
+        attempt_ledger, ratings = _complete_ledger(roster.registration)
+        eligibility = evaluation.assess_utility_eligibility(
+            roster.registration, attempt_ledger, setup_costs=_known_costs(),
+            human_ratings=ratings, monetary_summary=summary,
+            expected_monetary_roster_sha256=roster.sha256,
+        )
+        self.assertFalse(eligibility.positive_claim_eligible)
+        self.assertTrue(any("subscription economic cost amounts are unavailable" in reason
+                            for reason in eligibility.reasons))
+
+    def test_v3_unknown_rates_preserve_complete_technical_cash_and_allocation_but_not_human_economics(self):
+        # Reuse the full-cost registration, roster, and synthetic source attestations
+        # so this isolates missing reference pricing from required actual measures.
+        from tests.test_tooling_full_cost import (
+            _ScopeVerifier, _TimeVerifier, _WallVerifier, _filled_money,
+            _registration as full_cost_registration, _roster as full_cost_roster,
+            _time_receipts, _wall_receipts,
+        )
+        from agent_braid.tooling_full_cost import complete_full_cost
+
+        prepared = full_cost_registration(technical_capture=True, reviewer_fee="unknown")
+        for item in prepared.data["costRates"]["byHost"]:
+            item.update(inputEurPerMillionTokens=None, outputEurPerMillionTokens=None,
+                        recordId=None, sha256=None)
+        registration_data = prepared.data
+        registration = evaluation.validate_registration(
+            registration_data,
+            expected_candidate_sha256=registration_data["candidate"]["sha256"],
+            expected_input_hashes=_inputs(registration_data),
+        )
+        roster = full_cost_roster(registration)
+        self.assertEqual(roster.rate_cards_by_host, {})
+        money_ledger, money_summary = _filled_money(roster)
+        self.assertEqual(218, len(money_ledger.history))
+        self.assertTrue(money_summary.technical_required_measures_complete)
+        self.assertFalse(money_summary.technical_stop_required)
+        self.assertIsNotNone(money_summary.actual_provider_spend_eur)
+        self.assertIsNotNone(money_summary.allocated_subscription_cost_eur)
+        self.assertIsNone(money_summary.api_reference_estimate_eur)
+
+        attempt = next(item for item in roster.activities if item.kind == "attempt")
+        fabricated = _receipt(
+            roster, attempt, "apiReferenceEstimateEur", amount=Decimal("2"),
+            rate_card=("fabricated-rate-card", _sha("fabricated-rate-card")),
+        )
+        with self.assertRaisesRegex(MoneyAccountingError, "no registered token rates"):
+            money_ledger.add(fabricated)
+        self.assertEqual(218, len(money_ledger.history))
+
+        attempts, ratings = _complete_ledger(registration)
+        completed = complete_full_cost(
+            registration, attempts, roster, money_ledger, money_summary,
+            setup_costs=_known_costs(), human_time_receipts=_time_receipts(roster),
+            scope_verifier=_ScopeVerifier(), time_verifier=_TimeVerifier(),
+            study_wall_receipts=_wall_receipts(roster), study_wall_verifier=_WallVerifier(),
+        )
+        self.assertTrue(completed.technical_required_measures_complete)
+        self.assertFalse(completed.technical_stop_required)
+        self.assertFalse(completed.full_economic_cost_complete)
+        self.assertIsNotNone(completed.actual_provider_spend_eur)
+        self.assertIsNotNone(completed.allocated_subscription_cost_eur)
+        self.assertIsNone(completed.api_reference_estimate_eur)
+        eligibility = evaluation.assess_utility_eligibility(
+            registration, attempts, setup_costs=_known_costs(), human_ratings=ratings,
+            monetary_summary=completed, expected_monetary_roster_sha256=roster.sha256,
+        )
+        self.assertFalse(eligibility.positive_claim_eligible)
+        self.assertTrue(any("human evaluation is deferred" in reason
+                            for reason in eligibility.reasons))
+
     def test_provider_cash_excludes_reviewer_fees_and_unknown_provider_coverage(self):
         roster = _roster()
         ledger = MoneyLedger(roster, source_verifier=_SourceVerifier())
