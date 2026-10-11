@@ -11,6 +11,7 @@ import unittest
 
 from agent_braid import tooling_evaluation as evaluation
 from agent_braid import tooling_model_identity as model_identity_policy
+from agent_braid import tooling_subscription_estimate as subscription_estimate
 
 
 def _sha(value: str) -> str:
@@ -137,6 +138,26 @@ def _registration_v3() -> dict:
     data["humanReviewDeferral"] = {"status": "approved", "recordId": "deferred-review", "sha256": _sha("deferred-review")}
     data["humanReviewRoles"] = [{"roleId": name, "independent": True} for name in ("planned-reviewer-one", "planned-reviewer-two")]
     data["humanReviewers"] = []
+    return data
+
+
+def _registration_v4() -> dict:
+    data = _registration_v3()
+    data["schemaVersion"] = evaluation.REGISTRATION_SCHEMA_V4
+    for rate in data["costRates"]["byHost"]:
+        rate.update(inputEurPerMillionTokens=None, outputEurPerMillionTokens=None,
+                    recordId=None, sha256=None)
+    data[subscription_estimate.REGISTRATION_FIELD] = {
+        "schema": subscription_estimate.SCHEMA,
+        "methodId": subscription_estimate.METHOD_ID,
+        "nominalPeriodSeconds": subscription_estimate.PERIOD_SECONDS,
+        "pricesEurPerMonth": {"codex": "100.00", "claude-code": "111.89"},
+        "maxActiveSecondsPerHost": subscription_estimate.MAX_ACTIVE_SECONDS_PER_HOST,
+        "reservationEur": "5.045", "budgetCeilingEur": "25.00",
+        "decisionSha256": _sha("owner estimate decision"),
+        "codexPriceSourceSha256": _sha("Codex price observation"),
+        "claudeCodePriceSourceSha256": _sha("Claude price observation"),
+    }
     return data
 
 
@@ -341,6 +362,25 @@ class ToolingEvaluationTests(unittest.TestCase):
                                              {"reviewerId": "rater-two", "type": "human", "independent": True}]
             with self.subTest(schema=schema), self.assertRaisesRegex(evaluation.EvaluationError, "cannot contain"):
                 _validated(legacy)
+
+    def test_v4_estimate_registration_inherits_all_v3_technical_gates(self):
+        value = _registration_v4()
+        validated = _validated(value)
+        self.assertEqual(validated.data["schemaVersion"], evaluation.REGISTRATION_SCHEMA_V4)
+        self.assertEqual(len(evaluation.generate_slots(validated)), 108)
+        self.assertEqual(evaluation.expected_reviewer_participants(validated),
+                         ("planned-reviewer-one", "planned-reviewer-two"))
+        for mutation in (
+            lambda item: item.pop("billingPolicy"),
+            lambda item: item.pop(subscription_estimate.REGISTRATION_FIELD),
+            lambda item: item[subscription_estimate.REGISTRATION_FIELD].update(reservationEur="5.046"),
+            lambda item: item["humanReviewDeferral"].update(status="pending"),
+            lambda item: item["hosts"][0].pop("modelIdentity"),
+        ):
+            malformed = copy.deepcopy(value)
+            mutation(malformed)
+            with self.assertRaises(evaluation.EvaluationError):
+                _validated(malformed)
 
     def test_v3_subscription_registration_allows_explicitly_unavailable_reference_rates(self):
         value = _registration_v3()

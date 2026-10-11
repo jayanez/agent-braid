@@ -13,8 +13,10 @@ from . import tooling_evaluation as evaluation
 from .tooling_money import MoneyAccountingError, MoneySummary, provider_accounting_total
 from .tooling_full_cost import (
     FullCostScope, TechnicalCostSummaryAttestation,
-    TechnicalCostSummaryVerifier, technical_summary_sha256,
+    TechnicalCostSummaryVerifier, SubscriptionEstimateVerifier,
+    assess_estimated_subscription_allocation, technical_summary_sha256,
 )
+from . import tooling_subscription_estimate as subscription_estimate
 
 REPORT_SCHEMA = "agent-braid-m45-utility-report-v1"
 _REPORT_TOKEN = object()
@@ -57,6 +59,8 @@ def build_utility_report(
     monetary_summary: Any = None,
     expected_monetary_roster_sha256: str | None = None,
     technical_cost_verifier: TechnicalCostSummaryVerifier | None = None,
+    subscription_estimate_active_time: subscription_estimate.ActiveTimeEvidence | None = None,
+    subscription_estimate_verifier: SubscriptionEstimateVerifier | None = None,
 ) -> UtilityReport:
     """Validate exact registration/roster, derive eligibility, and build a report.
 
@@ -204,6 +208,16 @@ def build_utility_report(
         missing_costs.extend(full_cost_missing)
     report_reasons = list(assessment.reasons)
     report_reasons.extend(full_cost_reasons)
+    estimated_subscription = None
+    estimated_route = data["schemaVersion"] == evaluation.REGISTRATION_SCHEMA_V4
+    if estimated_route and subscription_estimate_active_time is not None:
+        try:
+            estimated_subscription = assess_estimated_subscription_allocation(
+                registration, ledger, subscription_estimate_active_time,
+                subscription_estimate_verifier,
+            )
+        except Exception as exc:
+            report_reasons.append("verified subscription active-time estimate is unavailable: " + str(exc))
     technical_reconciled = _v3_technical_costs_reconciled(
         registration, monetary_summary, expected_monetary_roster_sha256,
         registered_full_cost_scope if "billingPolicy" in registration.data else None,
@@ -214,7 +228,18 @@ def build_utility_report(
         isinstance(monetary_summary, MoneySummary)
         and monetary_summary.technical_stop_required is False,
     )
-    if data["schemaVersion"] == evaluation.REGISTRATION_SCHEMA_V3 and not technical_reconciled:
+    if estimated_route and estimated_subscription is not None:
+        technical_reconciled = _v4_estimated_technical_costs_reconciled(
+            registration, monetary_summary, expected_monetary_roster_sha256,
+            registered_full_cost_scope if "billingPolicy" in registration.data else None,
+            registration_bound if "billingPolicy" in registration.data else False,
+            roster_bound if "billingPolicy" in registration.data else False,
+            technical_cost_verifier, assessment.cost_assessment.complete,
+            assessment.cap_assessment.within_caps,
+            estimated_subscription,
+        )
+    if data["schemaVersion"] in {evaluation.REGISTRATION_SCHEMA_V3,
+                                  evaluation.REGISTRATION_SCHEMA_V4} and not technical_reconciled:
         report_reasons.append("verified technical cost summary attestation is unavailable or does not bind the exact technical evidence")
     eligible = assessment.positive_claim_eligible and full_cost_complete is not False
     outcome_only = (
@@ -226,13 +251,14 @@ def build_utility_report(
         and bool(assessment.outcome_threshold_reasons)
     )
     conclusion_status = (
-        "human-evaluation-deferred" if data["schemaVersion"] == evaluation.REGISTRATION_SCHEMA_V3 else
+        "human-evaluation-deferred" if data["schemaVersion"] in {evaluation.REGISTRATION_SCHEMA_V3,
+                                                                  evaluation.REGISTRATION_SCHEMA_V4} else
         "pending-independent-human-founder-interpretation" if eligible else
         "registered-threshold-not-met" if outcome_only else "inconclusive"
     )
     conclusion_text = (
         "Technical capture results and all intended denominators are retained. Human evaluation and adjudication are deferred; no utility or human acceptance is asserted, and formal closure remains pending."
-        if data["schemaVersion"] == evaluation.REGISTRATION_SCHEMA_V3 else
+        if data["schemaVersion"] in {evaluation.REGISTRATION_SCHEMA_V3, evaluation.REGISTRATION_SCHEMA_V4} else
         "Eligibility permits independent interpretation only; no positive utility, acceptance, or milestone closure is asserted."
         if eligible else
         "Complete measured evidence did not meet one or more registered outcome and safety criteria. This describes this cohort only; it is not a causal or scientific utility conclusion, acceptance, or milestone closure."
@@ -259,6 +285,12 @@ def build_utility_report(
                            "journeyClasses": list(evaluation.JOURNEY_CLASSES)},
         },
         "utilityClaimEligible": eligible,
+        "technicalCaptureAccountingStatus": (
+            "technical-capture-complete-estimated-accounting"
+            if estimated_route and estimated_subscription is not None and technical_reconciled else
+            "estimated-accounting" if estimated_route and estimated_subscription is not None else
+            "estimate-unavailable" if estimated_route else None
+        ),
         "conclusion": {
             "status": conclusion_status,
             "positiveUtilityAsserted": False,
@@ -281,12 +313,21 @@ def build_utility_report(
             ),
             "fullEconomic": _full_economic_cost(
                 monetary_summary,
-                technical_capture=data["schemaVersion"] == evaluation.REGISTRATION_SCHEMA_V3,
+                technical_capture=data["schemaVersion"] in {evaluation.REGISTRATION_SCHEMA_V3,
+                                                              evaluation.REGISTRATION_SCHEMA_V4},
                 technical_reconciled=technical_reconciled,
+                estimated_route=estimated_route,
+            ),
+            "subscriptionAllocationUpperBound": (
+                estimated_subscription.as_dict() if estimated_subscription is not None else
+                {"accountingStatus": "unavailable", "reservationEur": "5.045",
+                 "allocatedSubscriptionCostEur": None, "providerAccountingCostEur": None,
+                 "utilityClaimEligible": False} if estimated_route else None
             ),
             "technicalMeasuresAttested": (
                 technical_reconciled
-                if data["schemaVersion"] == evaluation.REGISTRATION_SCHEMA_V3 else None
+                if data["schemaVersion"] in {evaluation.REGISTRATION_SCHEMA_V3,
+                                              evaluation.REGISTRATION_SCHEMA_V4} else None
             ),
             "missingRequired": sorted(set(missing_costs)),
             "missingRequiredByScope": _missing_cost_attribution(
@@ -307,7 +348,8 @@ def build_utility_report(
             "adjudication": "pending",
             "humanCostStatus": "missing",
             "humanAcceptanceAsserted": False,
-        } if data["schemaVersion"] == evaluation.REGISTRATION_SCHEMA_V3 else {
+        } if data["schemaVersion"] in {evaluation.REGISTRATION_SCHEMA_V3,
+                                       evaluation.REGISTRATION_SCHEMA_V4} else {
             "status": "required",
             "identifiedReviewers": len(data["humanReviewers"]),
             "adjudication": "required-if-disagreement",
@@ -696,6 +738,103 @@ def _v3_technical_costs_reconciled(
         return False
 
 
+def _v4_estimated_technical_costs_reconciled(
+    registration: evaluation.ValidatedRegistration,
+    summary: Any,
+    expected_roster_sha256: str | None,
+    scope: FullCostScope | None,
+    registration_bound: bool,
+    roster_bound: bool,
+    verifier: TechnicalCostSummaryVerifier | None,
+    measured_costs_complete: bool,
+    registered_caps_clear: bool,
+    estimate: Any,
+) -> bool:
+    if registration.data["schemaVersion"] != evaluation.REGISTRATION_SCHEMA_V4:
+        return False
+    if (not isinstance(summary, MoneySummary) or scope is None or not scope.technical_only
+            or not registration_bound or not roster_bound or verifier is None):
+        return False
+    activity_ids = tuple(sorted({"setup", *(slot.slot_id for slot in evaluation.generate_slots(registration))}))
+    role_ids = set(evaluation.expected_reviewer_participants(registration))
+    expected_cash_gaps = {(f"reviewer:{role_id}", "actualAdditionalSpendEur") for role_id in role_ids}
+    expected_full_gaps = set(expected_cash_gaps)
+    expected_full_gaps.update(
+        (f"reviewer:{role_id}", field) for role_id in role_ids
+        for field in ("reviewerFeeApplicability", f"humanTime:{role_id}")
+    )
+    expected_full_gaps.update((activity_id, "allocatedSubscriptionCostEur") for activity_id in activity_ids)
+    if (summary.full_economic_cost_complete is not False
+            or summary.full_economic_cost_status != "incomplete-registered-cost-scope"
+            or summary.required_measures_complete is not False
+            or summary.missing_required != tuple(sorted(expected_cash_gaps))
+            or summary.missing_full_economic_cost != tuple(sorted(expected_full_gaps))
+            or summary.actual_additional_spend_eur is not None
+            or summary.cap_violation is not None
+            or summary.stop_required is not True
+            or summary.technical_required_measures_complete is not True
+            or summary.missing_technical_required
+            or summary.technical_cap_violation is not False
+            or summary.technical_stop_required is not False
+            or not measured_costs_complete or not registered_caps_clear
+            or not _finite_nonnegative(summary.technical_additional_spend_eur)
+            or not _finite_nonnegative(summary.actual_provider_spend_eur)
+            or summary.technical_additional_spend_eur != summary.actual_provider_spend_eur
+            or summary.allocated_subscription_cost_eur is not None
+            or summary.provider_accounting_cost_eur is not None
+            or summary.subscription_allocation_upper_bound_eur != estimate.allocated_upper_bound_eur
+            or not _estimate_evidence_matches(summary, estimate)
+            or not _finite_nonnegative(summary.user_time_seconds)
+            or not _finite_nonnegative(summary.study_wall_seconds)
+            or summary.human_time_seconds is not None
+            or summary.reviewer_time_seconds is not None
+            or summary.actual_additional_spend_cap_eur != Decimal(str(
+                registration.data["billingPolicy"]["additionalSpendCapEur"]))
+            or summary.technical_additional_spend_eur > summary.actual_additional_spend_cap_eur
+            or summary.subscription_allocation_upper_bound_eur + summary.actual_provider_spend_eur
+                > Decimal(str(registration.data["costCaps"]["eur"]))
+            or summary.study_wall_seconds > Decimal(str(registration.data["costCaps"]["wall_seconds"]))
+            or not _sha_list(summary.receipt_sha256s)
+            or not _sha_list(summary.human_time_receipt_sha256s)
+            or not _sha_list(summary.study_wall_receipt_sha256s)):
+        return False
+    try:
+        attestation = verifier.verify_technical_summary(
+            registration_sha256=registration.sha256,
+            roster_sha256=summary.roster_sha256,
+            scope_sha256=scope.scope_sha256,
+            summary=summary,
+        )
+        return (
+            isinstance(attestation, TechnicalCostSummaryAttestation)
+            and _valid_id(attestation.verifier_id)
+            and attestation.summary_sha256 == technical_summary_sha256(summary)
+            and attestation.registration_sha256 == registration.sha256
+            and attestation.roster_sha256 == summary.roster_sha256 == expected_roster_sha256
+            and attestation.scope_sha256 == scope.scope_sha256
+            and attestation.receipt_sha256s == summary.receipt_sha256s
+            and attestation.human_time_receipt_sha256s == summary.human_time_receipt_sha256s
+            and attestation.study_wall_receipt_sha256s == summary.study_wall_receipt_sha256s
+            and attestation.technical_activity_ids == activity_ids
+            and attestation.actual_spend_activity_ids == activity_ids
+            and attestation.allocated_activity_ids == ()
+            and attestation.user_time_activity_ids == activity_ids
+            and attestation.study_wall_activity_ids == activity_ids
+            and _timestamp_is_utc(attestation.verified_at)
+        )
+    except Exception:
+        return False
+
+
+def _valid_sha(value: object) -> bool:
+    return isinstance(value, str) and re.fullmatch(r"[0-9a-f]{64}", value) is not None
+
+
+def _estimate_evidence_matches(summary: MoneySummary, estimate: Any) -> bool:
+    """Require the cost summary to cite the exact verifier-bound time evidence."""
+    return summary.subscription_estimate_evidence_sha256 == estimate.evidence_sha256
+
+
 def _sha_list(value: object) -> bool:
     return (isinstance(value, tuple) and 0 < len(value) <= 1024
             and all(isinstance(item, str) and re.fullmatch(r"[0-9a-f]{64}", item)
@@ -725,6 +864,7 @@ def _full_economic_cost(
     *,
     technical_capture: bool = False,
     technical_reconciled: bool = False,
+    estimated_route: bool = False,
 ) -> dict[str, Any]:
     fields = {
         "actualAdditionalSpendEur": "actual_additional_spend_eur",
@@ -732,6 +872,7 @@ def _full_economic_cost(
         "allocatedSubscriptionCostEur": "allocated_subscription_cost_eur",
         "actualProviderSpendEur": "actual_provider_spend_eur",
         "providerAccountingCostEur": "provider_accounting_cost_eur",
+        "subscriptionAllocationUpperBoundEur": "subscription_allocation_upper_bound_eur",
         "apiReferenceEstimateEur": "api_reference_estimate_eur",
         "humanTimeSeconds": "human_time_seconds",
         "userTimeSeconds": "user_time_seconds",
@@ -757,12 +898,16 @@ def _full_economic_cost(
         for name, attribute in fields.items()
         for value in (getattr(summary, attribute),)
     }
+    values["subscriptionEstimateEvidenceSha256"] = (
+        summary.subscription_estimate_evidence_sha256 if estimated_route else None
+    )
     if technical_capture:
         # A v3 capture has no identified reviewers. Never surface combined or
         # reviewer time (including a caller-supplied zero) as a measured value.
         values["humanTimeSeconds"] = None
         values["reviewerTimeSeconds"] = None
-        values["actualAdditionalSpendEur"] = None
+        if not estimated_route:
+            values["actualAdditionalSpendEur"] = None
         values["technicalAdditionalSpendEur"] = (
             str(summary.technical_additional_spend_eur)
             if technical_reconciled and isinstance(summary.technical_additional_spend_eur, Decimal) else None

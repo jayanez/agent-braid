@@ -1,19 +1,24 @@
 # SPDX-License-Identifier: AGPL-3.0-only
 """Offline end-to-end controls for the SPEC-044 utility report pipeline."""
 from dataclasses import replace
+from datetime import datetime, timezone
 from decimal import Decimal
+import hashlib
+import json
 import copy
 import unittest
 
 from agent_braid import tooling_evaluation as evaluation
+from agent_braid import tooling_subscription_estimate as subscription_estimate
 from agent_braid.tooling_money import MoneySummary
 from agent_braid.tooling_full_cost import (
     FullCostScope, TechnicalCostSummaryAttestation, technical_summary_sha256,
 )
 from agent_braid.tooling_evaluation_report import (
-    build_utility_report, render_utility_report_json, render_utility_report_narrative,
+    _estimate_evidence_matches, build_utility_report, render_utility_report_json,
+    render_utility_report_narrative,
 )
-from tests.test_tooling_evaluation import _adjudication, _complete_ledger, _known_costs, _registration, _registration_v3, _inputs
+from tests.test_tooling_evaluation import _adjudication, _complete_ledger, _known_costs, _registration, _registration_v3, _registration_v4, _inputs
 from tests import test_tooling_full_cost as full_cost_tests
 from tests.test_tooling_full_cost import (
     _ScopeVerifier, _TimeVerifier, _WallVerifier,
@@ -24,6 +29,29 @@ from agent_braid.tooling_full_cost import complete_full_cost
 
 
 class UtilityReportTests(unittest.TestCase):
+    def test_estimated_summary_must_bind_exact_active_time_evidence_digest(self):
+        data = _registration_v4()
+        registration = evaluation.validate_registration(
+            data, expected_candidate_sha256=data["candidate"]["sha256"],
+            expected_input_hashes=_inputs(data),
+        )
+        ledger = evaluation.new_ledger(registration)
+        ledger_sha = hashlib.sha256(json.dumps(
+            ledger.as_dict(), sort_keys=True, separators=(",", ":"), ensure_ascii=False,
+        ).encode()).hexdigest()
+        evidence = subscription_estimate.ActiveTimeEvidence(
+            registration.sha256, ledger_sha, "synthetic-time-source", "f" * 64,
+            datetime.now(timezone.utc).isoformat().replace("+00:00", "Z"),
+            {"codex": 1, "claude-code": 1})
+        estimate = subscription_estimate.assess(
+            data[subscription_estimate.REGISTRATION_FIELD], evidence,
+            registration_sha256=registration.sha256, ledger_sha256=ledger_sha)
+        summary = type("Summary", (), {
+            "subscription_estimate_evidence_sha256": estimate.evidence_sha256})()
+        self.assertTrue(_estimate_evidence_matches(summary, estimate))
+        summary.subscription_estimate_evidence_sha256 = "0" * 64
+        self.assertFalse(_estimate_evidence_matches(summary, estimate))
+
     def _make_report(self, registration, ledger, ratings, *, summary=None, roster_sha=None, setup=None,
                      technical_cost_verifier=None):
         return build_utility_report(
@@ -62,6 +90,41 @@ class UtilityReportTests(unittest.TestCase):
                     values.update(mismatch)
                 return TechnicalCostSummaryAttestation(**values)
         return Verifier()
+
+    def test_v4_report_exposes_separate_estimate_and_never_actualizes_it(self):
+        data = _registration_v4()
+        registration = evaluation.validate_registration(
+            data, expected_candidate_sha256=data["candidate"]["sha256"],
+            expected_input_hashes=_inputs(data),
+        )
+        ledger = evaluation.new_ledger(registration)
+        ledger_sha = hashlib.sha256(json.dumps(
+            ledger.as_dict(), sort_keys=True, separators=(",", ":"), ensure_ascii=False,
+        ).encode()).hexdigest()
+        active_time = subscription_estimate.ActiveTimeEvidence(
+            registration.sha256, ledger_sha, "synthetic-time-source", "f" * 64,
+            datetime.now(timezone.utc).isoformat().replace("+00:00", "Z"),
+            {"codex": 57_600, "claude-code": 57_600})
+
+        class Verifier:
+            def verify_active_time(self, *, registration_sha256, ledger_sha256, evidence):
+                return (registration_sha256 == registration.sha256
+                        and ledger_sha256 == ledger_sha and evidence is active_time)
+
+        report = build_utility_report(
+            registration.data, ledger,
+            expected_candidate_sha256=registration.data["candidate"]["sha256"],
+            expected_input_hashes=_inputs(registration.data), setup_costs=_known_costs(),
+            human_ratings={}, subscription_estimate_active_time=active_time,
+            subscription_estimate_verifier=Verifier(),
+        )
+        estimate = report["costs"]["subscriptionAllocationUpperBound"]
+        self.assertEqual("5.045", estimate["subscriptionAllocationUpperBoundEur"])
+        self.assertEqual("estimated-accounting", report["technicalCaptureAccountingStatus"])
+        self.assertIsNone(estimate["allocatedSubscriptionCostEur"])
+        self.assertIsNone(estimate["providerAccountingCostEur"])
+        self.assertFalse(estimate["utilityClaimEligible"])
+        self.assertFalse(report["utilityClaimEligible"])
 
     def test_v3_report_marks_human_evaluation_and_cost_pending_while_retaining_108(self):
         data = _registration_v3()

@@ -20,6 +20,7 @@ from typing import Any, Mapping, Protocol
 from . import tooling_capture as capture
 from . import tooling_evaluation as evaluation
 from . import tooling_model_identity as model_identity_policy
+from . import tooling_subscription_estimate as estimate_policy
 
 
 SESSION_SCHEMA = "agent-braid-m45-session-v1"
@@ -175,7 +176,7 @@ def execute_admitted_attempt(
     started_record = _seal(start_payload)
     cohort = _claim_cohort(admission, registration, ledger, slot, started_at)
     try:
-        admission_outer = _read_admission(admission, registration, slot)
+        admission_outer = _read_admission(admission, registration, slot, ledger=ledger)
         host_record = next(item for item in registration.data["hosts"] if item["name"] == slot.host)
         host_identity = host_record.get("modelIdentity")
         if host_identity is not None:
@@ -450,18 +451,18 @@ def _validate_inputs(admission, registration, ledger, candidate_root,
     try:
         evaluation.validate_ledger(ledger, registration)
         slot = next((item for item in ledger.slots if item.slot_id == admission.slot_id), None)
-        _read_admission(admission, registration, slot)
+        _read_admission(admission, registration, slot, ledger=ledger)
     except (evaluation.EvaluationError, SessionError) as exc:
         raise SessionError(f"admission or ledger validation failed: {exc}") from exc
     if slot is None or ledger.current_status(slot.slot_id) != "not-started":
         raise SessionError("slot is absent or already attempted; do not retry")
-    outer = _read_admission(admission, registration, slot)
+    outer = _read_admission(admission, registration, slot, ledger=ledger)
     _check_candidate_identity(candidate_root, candidate_artifact, registration_path,
                              registration, admission.receipt_path,
                              outer["receipt"]["registrationFileSha256"])
 
 
-def _read_admission(admission, registration, slot):
+def _read_admission(admission, registration, slot, *, ledger=None):
     if slot is None:
         raise SessionError("admission slot is absent from the registered roster")
     root = capture.receipt_directory_for(registration.sha256)
@@ -496,6 +497,34 @@ def _read_admission(admission, registration, slot):
         "schemaVersion", "registrationSha256", "slot", "candidate", "registrationFileSha256",
         "fixturePromptInventorySha256", "hostBuild", "authorization", "measuredCosts", "stopState", "limits",
     }
+    if registration.data["schemaVersion"] == evaluation.REGISTRATION_SCHEMA_V4:
+        subject_keys.add("subscriptionAllocationUpperBound")
+        estimate = body.get("subscriptionAllocationUpperBound")
+        if not isinstance(estimate, dict) or set(estimate) != {"policySha256", "activeTimeEvidence", "assessment"}:
+            raise SessionError("v4 admission estimate binding is missing or malformed")
+        try:
+            active_data = estimate["activeTimeEvidence"]
+            if set(active_data) != {"registrationSha256", "ledgerSha256", "sourceRef",
+                                    "sourceSha256", "observedAt", "activeSecondsByHost"}:
+                raise ValueError("unexpected active-time evidence fields")
+            active = estimate_policy.ActiveTimeEvidence(
+                active_data["registrationSha256"], active_data["ledgerSha256"],
+                active_data["sourceRef"], active_data["sourceSha256"],
+                active_data["observedAt"], active_data["activeSecondsByHost"])
+            computed = estimate_policy.assess(
+                registration.data[estimate_policy.REGISTRATION_FIELD], active,
+                registration_sha256=registration.sha256,
+                ledger_sha256=active.ledger_sha256,
+            )
+            if estimate["assessment"] != computed.as_dict():
+                raise ValueError("estimate assessment differs from its frozen inputs")
+        except (estimate_policy.EstimateError, KeyError, TypeError, ValueError) as exc:
+            raise SessionError("v4 admission estimate evidence is malformed or inconsistent") from exc
+        if estimate["policySha256"] != estimate_policy.policy_sha256(
+                registration.data[estimate_policy.REGISTRATION_FIELD]):
+            raise SessionError("v4 admission estimate policy differs from frozen registration")
+        if ledger is not None and active.ledger_sha256 != _ledger_sha256(ledger):
+            raise SessionError("v4 admission active-time snapshot is stale for the current ledger head")
     host_record = next(item for item in registration.data["hosts"] if item["name"] == slot.host)
     if body.get("hostBuild") != host_record:
         raise SessionError("admission host/model identity differs from the frozen registration")

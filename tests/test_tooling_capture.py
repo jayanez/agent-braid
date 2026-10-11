@@ -21,6 +21,7 @@ from agent_braid import tooling_evaluation as evaluation
 from agent_braid import tooling_capture as capture
 from agent_braid import tooling_subscription as subscription_policy
 from agent_braid import tooling_model_identity as model_identity_policy
+from agent_braid import tooling_subscription_estimate as estimate_policy
 from agent_braid import tooling_sessions as sessions
 from tests.test_tooling_subscription import _policy
 from agent_braid.tooling_fixtures import load_inventory
@@ -39,7 +40,7 @@ class _SyntheticVerifier:
         self.mismatch = mismatch
 
     def attest(self, *, registration, slot, authorization, costs, stop_state, subject_sha256,
-               model_identity_observation=None):
+               subscription_estimate=None, model_identity_observation=None):
         return capture.DecisionAttestation(
             verifier_id="synthetic-test-verifier",
             decision_sha256=_sha("synthetic decision").replace("0", "1", 1),
@@ -277,6 +278,30 @@ class CaptureAdmissionTests(unittest.TestCase):
         self.receipts = capture.receipt_directory_for(self.valid_registration.sha256)
         self.receipts.mkdir(mode=0o700)
 
+    def _upgrade_to_v4_estimated_capture(self):
+        self._upgrade_to_v3_technical_capture()
+        self.registration_data["schemaVersion"] = evaluation.REGISTRATION_SCHEMA_V4
+        for rate in self.registration_data["costRates"]["byHost"]:
+            rate.update(inputEurPerMillionTokens=None, outputEurPerMillionTokens=None,
+                        recordId=None, sha256=None)
+        self.registration_data[estimate_policy.REGISTRATION_FIELD] = {
+            "schema": estimate_policy.SCHEMA, "methodId": estimate_policy.METHOD_ID,
+            "nominalPeriodSeconds": estimate_policy.PERIOD_SECONDS,
+            "pricesEurPerMonth": {"codex": "100.00", "claude-code": "111.89"},
+            "maxActiveSecondsPerHost": estimate_policy.MAX_ACTIVE_SECONDS_PER_HOST,
+            "reservationEur": "5.045", "budgetCeilingEur": "25.00",
+            "decisionSha256": _sha("owner decision"),
+            "codexPriceSourceSha256": _sha("Codex source"),
+            "claudeCodePriceSourceSha256": _sha("Claude source"),
+        }
+        self._write_registration()
+        self.valid_registration = evaluation.validate_registration(
+            self.registration_data, expected_candidate_sha256=self.artifact_sha256,
+            expected_input_hashes=self.input_hashes)
+        self.ledger = evaluation.new_ledger(self.valid_registration)
+        self.receipts = capture.receipt_directory_for(self.valid_registration.sha256)
+        self.receipts.mkdir(mode=0o700)
+
     def _model_observation(self, host="codex", **updates):
         registered = next(item for item in self.registration_data["hosts"] if item["name"] == host)["modelIdentity"]
         catalog = registered["nativeCatalogEntry"]
@@ -354,6 +379,50 @@ class CaptureAdmissionTests(unittest.TestCase):
                     model_identity_observation=self._model_observation(host=refused_slot.host),
                 )
             self.assertFalse(refused_receipt.exists())
+
+    def test_v4_capture_reserves_before_admission_and_keeps_actual_allocation_unknown(self):
+        self._upgrade_to_v4_estimated_capture()
+        slot = self._slot()
+        binding = subscription_policy.binding_from_registration(self.valid_registration, slot.slot_id, slot.host)
+        observation = subscription_policy.SubscriptionObservation(
+            binding, "chatgpt", True, False, False, False, False, True, 0,
+            "synthetic-account-settings", _sha("synthetic account state"), datetime.now(timezone.utc))
+        ledger_sha = _sha(json.dumps(self.ledger.as_dict(), sort_keys=True, separators=(",", ":"),
+                                     ensure_ascii=False).encode())
+        active = estimate_policy.ActiveTimeEvidence(
+            self.valid_registration.sha256, ledger_sha, "synthetic-cumulative-active-time",
+            _sha("active-time source"), datetime.now(timezone.utc).isoformat().replace("+00:00", "Z"),
+            {"codex": 10, "claude-code": 20})
+        admission = capture.prepare_attempt(
+            registration_path=self.registration_path, candidate_root=self.candidate,
+            candidate_artifact=self.artifact, ledger=self.ledger, slot_id=slot.slot_id,
+            authorization=self._authorization("analyze-interactions"), costs=self.costs,
+            stop_state=self.stop, verifier=_SubscriptionSyntheticVerifier(), receipt_directory=self.receipts,
+            subscription=observation, subscription_estimate_active_time=active,
+            model_identity_observation=self._model_observation(),
+        )
+        body = json.loads(admission.receipt_path.read_text())["receipt"]
+        report = body["subscriptionAllocationUpperBound"]["assessment"]
+        self.assertEqual("5.045", report["reservationEur"])
+        self.assertIsNone(report["allocatedSubscriptionCostEur"])
+        self.assertIsNone(report["providerAccountingCostEur"])
+        self.assertFalse(report["utilityClaimEligible"])
+        self.assertEqual(slot.host, admission.subscription_estimate_runtime_guard.host)
+        self.assertTrue(capture._is_verified_estimate_guard(
+            admission.subscription_estimate_runtime_guard, admission.receipt_sha256))
+        fabricated = estimate_policy.runtime_guard(
+            self.valid_registration.sha256, ledger_sha, slot.host, active,
+            self.valid_registration.data[estimate_policy.REGISTRATION_FIELD])
+        self.assertFalse(capture._is_verified_estimate_guard(fabricated, admission.receipt_sha256))
+
+        with self.assertRaisesRegex(capture.CaptureAdmissionError, "active-time evidence"):
+            capture.prepare_attempt(
+                registration_path=self.registration_path, candidate_root=self.candidate,
+                candidate_artifact=self.artifact, ledger=self.ledger, slot_id=self._slot().slot_id,
+                authorization=self._authorization("analyze-interactions"), costs=self.costs,
+                stop_state=self.stop, verifier=_SubscriptionSyntheticVerifier(), receipt_directory=self.receipts,
+                subscription=observation, model_identity_observation=self._model_observation(),
+            )
 
     def test_receipt_binds_registration_candidate_input_host_prompt_and_measures(self):
         admission = self._prepare()
