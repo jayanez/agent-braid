@@ -378,6 +378,7 @@ class CaptureAdmissionTests(unittest.TestCase):
                     subscription=refused_observation,
                     model_identity_observation=self._model_observation(host=refused_slot.host),
                 )
+            self.assertFalse(refused_receipt.exists())
 
     def test_v4_capture_reserves_before_admission_and_keeps_actual_allocation_unknown(self):
         self._upgrade_to_v4_estimated_capture()
@@ -422,7 +423,6 @@ class CaptureAdmissionTests(unittest.TestCase):
                 stop_state=self.stop, verifier=_SubscriptionSyntheticVerifier(), receipt_directory=self.receipts,
                 subscription=observation, model_identity_observation=self._model_observation(),
             )
-            self.assertFalse(refused_receipt.exists())
 
     def test_receipt_binds_registration_candidate_input_host_prompt_and_measures(self):
         admission = self._prepare()
