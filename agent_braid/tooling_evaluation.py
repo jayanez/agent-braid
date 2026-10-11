@@ -17,6 +17,7 @@ from typing import Any, Mapping, Sequence
 
 from .tooling_subscription import (
     NATIVE_PROCESS_POLICY_SCHEMA,
+    OPERATIONAL_SUBSCRIPTION_POLICY_SCHEMA,
     SubscriptionError,
     policy_sha256 as _subscription_policy_sha256,
 )
@@ -28,6 +29,7 @@ REGISTRATION_SCHEMA = "agent-braid-m45-registration-v1"
 REGISTRATION_SCHEMA_V2 = "agent-braid-m45-registration-v2"
 REGISTRATION_SCHEMA_V3 = "agent-braid-m45-registration-v3"
 REGISTRATION_SCHEMA_V4 = "agent-braid-m45-registration-v4"
+REGISTRATION_SCHEMA_V5 = "agent-braid-m45-registration-v5"
 LEDGER_SCHEMA = "agent-braid-m45-ledger-v1"
 HOSTS = ("codex", "claude-code")
 ARMS = ("cli", "mcp-only", "mcp-plus-skills")
@@ -203,7 +205,7 @@ def validate_registration(
     data = _json_copy(registration, "registration")
     schema_version = data.get("schemaVersion")
     if schema_version not in {REGISTRATION_SCHEMA, REGISTRATION_SCHEMA_V2, REGISTRATION_SCHEMA_V3,
-                              REGISTRATION_SCHEMA_V4}:
+                              REGISTRATION_SCHEMA_V4, REGISTRATION_SCHEMA_V5}:
         raise EvaluationError("unsupported or missing registration schemaVersion")
     v3_fields = {"phase", "humanReviewDeferral", "humanReviewRoles"}
     if schema_version in {REGISTRATION_SCHEMA, REGISTRATION_SCHEMA_V2} and any(
@@ -227,14 +229,19 @@ def validate_registration(
     _validate_record(data.get("sourceRights"), "sourceRights", "approved")
     _validate_source_rights(data.get("sourceRights"))
     _validate_provider_opt_in(data.get("provider"))
-    if schema_version in {REGISTRATION_SCHEMA_V3, REGISTRATION_SCHEMA_V4} and "billingPolicy" not in data:
-        raise EvaluationError("registration v3/v4 requires the approved EUR 0 included-subscription billingPolicy")
+    if schema_version in {REGISTRATION_SCHEMA_V3, REGISTRATION_SCHEMA_V4, REGISTRATION_SCHEMA_V5} and "billingPolicy" not in data:
+        raise EvaluationError("registration v3/v4/v5 requires an included-subscription billingPolicy")
     if "billingPolicy" in data:
         _validate_billing_policy(data["billingPolicy"])
+        if schema_version == REGISTRATION_SCHEMA_V5 and data["billingPolicy"].get("schema") != OPERATIONAL_SUBSCRIPTION_POLICY_SCHEMA:
+            raise EvaluationError("registration v5 requires the operational subscription policy v3")
         if (data["billingPolicy"].get("schema") == NATIVE_PROCESS_POLICY_SCHEMA
                 and schema_version not in {REGISTRATION_SCHEMA_V3, REGISTRATION_SCHEMA_V4}):
             raise EvaluationError("native-process route policy v2 requires technical registration v3/v4")
-    if schema_version == REGISTRATION_SCHEMA_V4:
+        if (data["billingPolicy"].get("schema") == OPERATIONAL_SUBSCRIPTION_POLICY_SCHEMA
+                and schema_version != REGISTRATION_SCHEMA_V5):
+            raise EvaluationError("operational subscription policy v3 requires technical registration v5")
+    if schema_version in {REGISTRATION_SCHEMA_V4, REGISTRATION_SCHEMA_V5}:
         try:
             subscription_estimate.validate_policy(data.get(subscription_estimate.REGISTRATION_FIELD))
         except subscription_estimate.EstimateError as exc:
@@ -242,7 +249,7 @@ def validate_registration(
     elif subscription_estimate.REGISTRATION_FIELD in data:
         raise EvaluationError("subscription allocation upper bound requires registration v4")
     _validate_cost_caps(data.get("costCaps"))
-    if schema_version in {REGISTRATION_SCHEMA_V3, REGISTRATION_SCHEMA_V4}:
+    if schema_version in {REGISTRATION_SCHEMA_V3, REGISTRATION_SCHEMA_V4, REGISTRATION_SCHEMA_V5}:
         _validate_technical_capture_review_deferral(data)
     else:
         _validate_reviewers(data.get("humanReviewers"))
@@ -259,7 +266,7 @@ def validate_registration(
                           billing_policy=data.get("billingPolicy"))
     _validate_cost_rates(
         data.get("costRates"), data["hosts"],
-        allow_unavailable=(schema_version in {REGISTRATION_SCHEMA_V3, REGISTRATION_SCHEMA_V4}
+        allow_unavailable=(schema_version in {REGISTRATION_SCHEMA_V3, REGISTRATION_SCHEMA_V4, REGISTRATION_SCHEMA_V5}
                            and data.get("billingPolicy", {}).get("mode") == "included-subscription-only"),
     )
 
@@ -286,7 +293,7 @@ def _validate_native_process_contracts(data: Mapping[str, Any], digest: str) -> 
     Per-slot configuration and argv pins are checked again at the launch boundary.
     """
     policy = data.get("billingPolicy", {})
-    if policy.get("schema") != NATIVE_PROCESS_POLICY_SCHEMA:
+    if policy.get("schema") not in {NATIVE_PROCESS_POLICY_SCHEMA, OPERATIONAL_SUBSCRIPTION_POLICY_SCHEMA}:
         return
     slots = generate_slots(ValidatedRegistration(data=data, sha256=digest))
     contracts = policy["processContracts"]
@@ -352,7 +359,7 @@ def expected_reviewer_participants(registration: ValidatedRegistration) -> tuple
     those rows preserve expected time/fee scope while remaining unobserved.
     """
     _require_validated(registration)
-    if registration.data["schemaVersion"] in {REGISTRATION_SCHEMA_V3, REGISTRATION_SCHEMA_V4}:
+    if registration.data["schemaVersion"] in {REGISTRATION_SCHEMA_V3, REGISTRATION_SCHEMA_V4, REGISTRATION_SCHEMA_V5}:
         participants = tuple(role["roleId"] for role in registration.data["humanReviewRoles"])
     else:
         participants = tuple(reviewer["reviewerId"] for reviewer in registration.data["humanReviewers"])
@@ -635,7 +642,12 @@ def check_cost_caps(
     for field in CAP_FIELDS:
         value = values[field]
         if value is None:
-            reasons.append(f"{field} is unavailable; cap compliance cannot be established")
+            operational_unknown_cash = (field == "eur"
+                and registration.data.get("schemaVersion") == REGISTRATION_SCHEMA_V5
+                and registration.data.get("billingPolicy", {}).get("schema")
+                    == OPERATIONAL_SUBSCRIPTION_POLICY_SCHEMA)
+            if not operational_unknown_cash:
+                reasons.append(f"{field} is unavailable; cap compliance cannot be established")
         elif value > caps[field]:
             reasons.append(f"{field} cap exceeded")
     return CapAssessment(not reasons, bool(reasons), tuple(reasons), values)
@@ -765,7 +777,7 @@ def assess_utility_eligibility(
         ("resolved", "missing", "disagreement", "adjudicated")} for field in
         ("success", "authority_correct", "fidelity")}
     human_complete = True
-    technical_capture = registration.data["schemaVersion"] in {REGISTRATION_SCHEMA_V3, REGISTRATION_SCHEMA_V4}
+    technical_capture = registration.data["schemaVersion"] in {REGISTRATION_SCHEMA_V3, REGISTRATION_SCHEMA_V4, REGISTRATION_SCHEMA_V5}
     registered_reviewer_ids = (
         set() if technical_capture else
         {reviewer["reviewerId"] for reviewer in registration.data["humanReviewers"]}
@@ -1309,7 +1321,7 @@ def _canonical_sha256(value: Mapping[str, Any]) -> str:
 
 __all__ = [
     "ARMS", "COST_FIELDS", "HOSTS", "JOURNEY_CLASSES", "LEDGER_SCHEMA",
-    "REGISTRATION_SCHEMA", "REGISTRATION_SCHEMA_V2", "SLOT_STATUSES", "AttemptSlot", "CapAssessment",
+    "REGISTRATION_SCHEMA", "REGISTRATION_SCHEMA_V2", "REGISTRATION_SCHEMA_V5", "SLOT_STATUSES", "AttemptSlot", "CapAssessment",
     "CostAssessment", "EvaluationError", "EvaluationLedger", "LedgerEvent",
     "UtilityEligibility", "ValidatedRegistration", "append_slot_event",
     "assess_cost_completeness", "assess_utility_eligibility", "check_cost_caps",

@@ -242,26 +242,30 @@ def validate_portable_record(root, path, bind_manifest=True):
     """Validate exported record structure without pretending private Git is present."""
     try:
         from scripts.publication import (
-            load_manifest, manifest_entry, root_manifest_payload, validate_addendum,
+            load_manifest, manifest_entry, root_manifest_payload, root_manifest_presence,
+            validate_addenda,
         )
     except ModuleNotFoundError:
         from publication import (
-            load_manifest, manifest_entry, root_manifest_payload, validate_addendum,
+            load_manifest, manifest_entry, root_manifest_payload, root_manifest_presence,
+            validate_addenda,
         )
 
     root = root.resolve()
     relative_record = path.resolve().relative_to(root).as_posix()
+    # Reviewed bytes are an immutable approval boundary. Check them before
+    # validating optional export supplements so a missing/non-ancestor
+    # supplement cannot mask reviewed metadata drift or enable fallback.
+    record = json.loads(path.read_text())
+    _validate_published_review_metadata(root, relative_record, path, record)
     manifest = load_manifest(root)
     protected = set(manifest["protectedPaths"])
     bound = {item["path"] for item in manifest["files"]}
     if bind_manifest:
-        addendum = validate_addendum(root, manifest)
-        if addendum is not None:
+        for addendum in validate_addenda(root, manifest):
             bound.update(item["path"] for item in addendum["files"])
     if bind_manifest and relative_record in protected:
         manifest_entry(root, relative_record)
-    record = json.loads(path.read_text())
-    _validate_published_review_metadata(root, relative_record, path, record)
     authority_candidate = record.get("authority_snapshot", {})
     evidence_candidate = record.get("evidence_snapshot", {})
     if authority_candidate.get("mode") == "historical" \
@@ -396,7 +400,7 @@ def validate_portable_record(root, path, bind_manifest=True):
                             # evidence. Keep the path present and the recorded
                             # checksum well formed without pretending the private
                             # input bytes can be reconstructed.
-                            root_manifest_payload(root, safe_name(root, name))
+                            root_manifest_presence(root, safe_name(root, name))
                             if not re.fullmatch(r"[0-9a-f]{64}", str(checksum)):
                                 raise ValueError(f"Historical evidence input hash is invalid: {name}")
                             continue

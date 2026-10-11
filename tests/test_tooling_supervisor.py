@@ -30,6 +30,7 @@ from agent_braid.tooling_supervisor import (
 )
 from agent_braid.tooling_subscription import (
     CohortCashObservation, NativeProcessRouteBinding, NativeProcessRouteObservation,
+    OperationalProcessRouteBinding, OperationalProcessRouteObservation,
     SubscriptionBinding, SubscriptionObservation,
 )
 
@@ -46,14 +47,14 @@ def _utc(delta_seconds: float = 0.0) -> str:
 
 def _snapshot(*, eur=0.0, tokens=0, wall=0.1, rss=0, disk=0, observed_at=None,
               incident=False, unrecoverable=False, failures=0, subscription=None,
-              native_route=None):
+              native_route=None, operational_route=None):
     values = {"eur": eur, "tokens": tokens, "input_tokens": tokens, "output_tokens": 0,
               "retry_tokens": 0, "wall_seconds": wall, "rss_bytes": rss, "disk_bytes": disk}
     costs = capture.MeasuredCosts(values, "synthetic measurement", _sha(json.dumps(values)),
                                  observed_at or _utc())
     stop = capture.StopState(incident, unrecoverable, failures, "synthetic stop source",
                              _sha("stop"), observed_at or _utc())
-    return TelemetrySnapshot(costs, stop, subscription, native_route)
+    return TelemetrySnapshot(costs, stop, subscription, native_route, operational_route)
 
 
 def _subscription(binding, *, auth="chatgpt", quota=True, extra=False, credits=False,
@@ -98,6 +99,26 @@ def _native_route(binding, identity, *, phase, sequence, quota=True,
     )
 
 
+def _operational_binding(request):
+    return OperationalProcessRouteBinding(
+        "codex", _sha("registration-v5"), "slot-001", _sha("operational-policy"),
+        _sha("account"), _sha("namespace"), request.executable_sha256, _sha("candidate"),
+        request.executable_sha256, supervisor._native_config_digest(()),
+        _sha(supervisor._json_bytes(list(request.argv))), _sha("model"),
+        "quota-boundary-source", _sha("quota-boundary-source"),
+        "quota-boundary-verifier", _sha("quota-boundary-verifier"), 2.0)
+
+
+def _operational_route(binding, identity, *, phase, sequence, quota=True, boundary=True):
+    now = datetime.now(timezone.utc)
+    birth_sha = (supervisor._process_birth_sha256(identity.birth)
+                 if identity is not None and identity.birth is not None else None)
+    return OperationalProcessRouteObservation(
+        binding, phase, "chatgpt", "included-subscription-quota", "unknown-out-of-scope",
+        True, quota, False, False, False, False, False, False, boundary, True, True,
+        identity.pid if identity is not None else None, birth_sha, sequence,
+        binding.observer_source_ref, binding.observer_source_sha256,
+        binding.observer_verifier_ref, binding.observer_verifier_sha256, now)
 class ToolingSupervisorTests(unittest.TestCase):
     def setUp(self):
         self.temp = tempfile.TemporaryDirectory(prefix="m45-supervisor-")
@@ -758,6 +779,84 @@ class ToolingSupervisorTests(unittest.TestCase):
         self.assertNotIn("sourceRef", route)
         self.assertNotIn("verifierRef", route)
 
+    def test_operational_v3_verifies_cash_free_quota_lifecycle_with_unknown_eur(self):
+        request = self.request("import sys; sys.stdin.read()", stdin=b"quota-bound")
+        binding = _operational_binding(request)
+        request = ProcessRequest(**{**request.__dict__, "subscription_binding": binding,
+                                    "operational_route_binding": binding})
+        observations = []
+        verifier_calls = []
+
+        def observer(identity, elapsed, final=False):
+            phase = "prelaunch" if identity is None else ("completed" if final else "running")
+            sequence = len(observations) + 1
+            observation = _operational_route(binding, identity, phase=phase, sequence=sequence)
+            observations.append(observation)
+            return _snapshot(eur=None, wall=0.1 + max(elapsed, 0.0), operational_route=observation)
+
+        class Verifier:
+            source_ref = binding.observer_source_ref
+            source_sha256 = binding.observer_source_sha256
+            verifier_ref = binding.observer_verifier_ref
+            verifier_sha256 = binding.observer_verifier_sha256
+
+            def verify_operational_observation(self, observation, supplied_binding, identity, req, final):
+                verifier_calls.append((observation.phase, identity.pid if identity else None, final))
+
+        outcome = run_supervised(request, self.caps, observer, operational_route_verifier=Verifier())
+        self.assertTrue(outcome.completed, outcome)
+        self.assertEqual(("prelaunch", "completed"),
+                         (verifier_calls[0][0], verifier_calls[-1][0]))
+        self.assertGreaterEqual(len(verifier_calls), 3)
+        self.assertIsNone(outcome.last_snapshot.costs.values["eur"])
+        self.assertNotIn("cash", outcome.last_snapshot.operational_route.as_dict())
+
+    def test_operational_v3_refuses_positive_cash_and_quota_boundary_loss_before_start(self):
+        for eur, boundary, quota in ((0.1, True, True), (None, False, True), (None, True, False)):
+            request = self.request("pass")
+            binding = _operational_binding(request)
+            request = ProcessRequest(**{**request.__dict__, "subscription_binding": binding,
+                                        "operational_route_binding": binding})
+            class Verifier:
+                source_ref = binding.observer_source_ref
+                source_sha256 = binding.observer_source_sha256
+                verifier_ref = binding.observer_verifier_ref
+                verifier_sha256 = binding.observer_verifier_sha256
+                def verify_operational_observation(self, *args): pass
+
+            def observer(identity, elapsed, final=False, *, eur=eur, boundary=boundary, quota=quota):
+                observation = _operational_route(binding, identity,
+                    phase="prelaunch" if identity is None else ("completed" if final else "running"),
+                    sequence=1, quota=quota, boundary=boundary)
+                return _snapshot(eur=eur, operational_route=observation)
+            outcome = run_supervised(request, self.caps, observer, operational_route_verifier=Verifier())
+            self.assertFalse(outcome.launched)
+            self.assertEqual("refused", outcome.status)
+
+    def test_operational_v3_stops_running_quota_loss_before_releasing_stdin(self):
+        request = self.request("import sys; print(sys.stdin.read())", stdin=b"must-not-be-sent")
+        binding = _operational_binding(request)
+        request = ProcessRequest(**{**request.__dict__, "subscription_binding": binding,
+                                    "operational_route_binding": binding})
+        class Verifier:
+            source_ref = binding.observer_source_ref
+            source_sha256 = binding.observer_source_sha256
+            verifier_ref = binding.observer_verifier_ref
+            verifier_sha256 = binding.observer_verifier_sha256
+            def verify_operational_observation(self, *args): pass
+
+        calls = []
+        def observer(identity, elapsed, final=False):
+            phase = "prelaunch" if identity is None else ("completed" if final else "running")
+            calls.append(phase)
+            observation = _operational_route(binding, identity, phase=phase,
+                sequence=len(calls), quota=phase == "prelaunch", boundary=phase == "prelaunch")
+            return _snapshot(eur=None, operational_route=observation)
+
+        outcome = run_supervised(request, self.caps, observer, operational_route_verifier=Verifier())
+        self.assertTrue(outcome.launched)
+        self.assertEqual("subscription-policy-violation", outcome.status)
+        self.assertIn("running", calls)
     def test_native_v2_rejects_identity_argv_and_config_drift_before_launch(self):
         request = self.request("pass")
         binding = _native_binding(request)

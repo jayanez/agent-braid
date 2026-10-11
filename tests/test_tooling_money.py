@@ -166,6 +166,39 @@ class _PolicyVerifier:
 
 
 class MoneyAccountingTests(unittest.TestCase):
+    def test_v5_missing_cash_and_allocation_remain_unknown_without_stop_decision(self):
+        from tests.test_tooling_full_cost import _registration_v5, _roster
+
+        roster = _roster(_registration_v5())
+        summary = MoneyLedger(roster, source_verifier=_SourceVerifier()).summarize()
+
+        self.assertIsNone(summary.actual_additional_spend_eur)
+        self.assertIsNone(summary.observed_additional_spend_subtotal_eur)
+        self.assertIsNone(summary.actual_provider_spend_eur)
+        self.assertIsNone(summary.allocated_subscription_cost_eur)
+        self.assertIsNone(summary.provider_accounting_cost_eur)
+        self.assertIsNone(summary.cap_violation)
+        self.assertIsNone(summary.stop_required)
+        self.assertIsNone(summary.technical_required_measures_complete)
+        self.assertIsNone(summary.technical_cap_violation)
+        self.assertIsNone(summary.technical_stop_required)
+
+    def test_v5_positive_cash_observation_stays_visible_as_zero_cap_breach(self):
+        from tests.test_tooling_full_cost import _registration_v5, _roster
+
+        roster = _roster(_registration_v5())
+        ledger = MoneyLedger(roster, source_verifier=_SourceVerifier())
+        setup = next(item for item in roster.activities if item.activity_id == "setup")
+        ledger.add(_receipt(roster, setup, "actualAdditionalSpendEur", amount=Decimal("0.01")))
+        summary = ledger.summarize()
+
+        self.assertIsNone(summary.actual_additional_spend_eur)
+        self.assertEqual(Decimal("0.01"), summary.observed_additional_spend_subtotal_eur)
+        self.assertTrue(summary.cap_violation)
+        self.assertTrue(summary.technical_cap_violation)
+        self.assertTrue(summary.stop_required)
+        self.assertTrue(summary.technical_stop_required)
+
     def test_v3_unknown_reference_rates_reject_estimates_and_missing_receipts_remain_incomplete(self):
         data = _registration_v3()
         for item in data["costRates"]["byHost"]:

@@ -90,8 +90,10 @@ also cover AI applications/orchestration, expanded execution, coordination acros
 tools and embedded visual interaction. Each route needs its own selected scope,
 contracts, observations and acceptance decisions.
 
-The experimental [registration-v4 accounting route](REGISTRATION.md) now implements
-the owner-selected EUR 5.045 subscription reservation with actual allocation
-unknown. The process-scoped observation boundary is approved; its policy-v2
-implementation, trusted native evidence and complete capture approval remain
-pending. Additional spending is EUR 0; human review remains deferred.
+The experimental [registration-v4 accounting route](REGISTRATION.md) supports
+the owner-selected estimated subscription convention, with actual allocation
+unknown. Alternative B's additive [operational subscription policy v3](../../specs/044-ai-tooling-evaluation/operational-subscription-capture-policy.md)
+and registration-v5 route are approved in scope; implementation and authentic
+native evidence remain pending. Actual cohort cash remains unknown until
+independent verification gates acceptance and positive utility. Additional
+spending remains EUR 0; human review remains deferred.

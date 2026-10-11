@@ -23,8 +23,8 @@ from agent_braid import tooling_subscription as subscription_policy
 from agent_braid import tooling_model_identity as model_identity_policy
 from agent_braid import tooling_subscription_estimate as estimate_policy
 from agent_braid import tooling_sessions as sessions
-from tests.test_tooling_subscription import _policy, _native_observation
-from tests.test_tooling_evaluation import _with_native_policy
+from tests.test_tooling_subscription import _policy, _native_observation, _operational_observation
+from tests.test_tooling_evaluation import _with_native_policy, _with_operational_policy
 from agent_braid.tooling_fixtures import load_inventory
 
 
@@ -56,6 +56,63 @@ class _SubscriptionSyntheticVerifier(_SyntheticVerifier):
 
 
 class CaptureAdmissionTests(unittest.TestCase):
+    def test_v5_operational_admission_keeps_actual_cash_unknown_and_rejects_known_positive(self):
+        self._upgrade_to_v4_estimated_capture()
+        _with_operational_policy(self.registration_data)
+        self._write_registration()
+        self.valid_registration = evaluation.validate_registration(
+            self.registration_data, expected_candidate_sha256=self.artifact_sha256,
+            expected_input_hashes=self.input_hashes)
+        self.ledger = evaluation.new_ledger(self.valid_registration)
+        self.receipts = capture.receipt_directory_for(self.valid_registration.sha256)
+        self.receipts.mkdir(mode=0o700)
+        slot = self._slot()
+        binding = subscription_policy.binding_from_registration(
+            self.valid_registration, slot.slot_id, slot.host)
+        observation = _operational_observation(binding, datetime.now(timezone.utc))
+        ledger_sha = _sha(json.dumps(self.ledger.as_dict(), sort_keys=True, separators=(",", ":"),
+                                     ensure_ascii=False).encode())
+        active = estimate_policy.ActiveTimeEvidence(
+            self.valid_registration.sha256, ledger_sha, "synthetic-active-time", _sha("active-time"),
+            datetime.now(timezone.utc).isoformat().replace("+00:00", "Z"),
+            {"codex": 0, "claude-code": 0})
+        unknown_values = dict(self.costs.values)
+        unknown_values["eur"] = None
+        unknown_cash_costs = replace(self.costs, values=unknown_values)
+        admission = capture.prepare_attempt(
+            registration_path=self.registration_path, candidate_root=self.candidate,
+            candidate_artifact=self.artifact, ledger=self.ledger, slot_id=slot.slot_id,
+            authorization=self._authorization("analyze-interactions"), costs=unknown_cash_costs,
+            stop_state=self.stop, verifier=_SubscriptionSyntheticVerifier(), receipt_directory=self.receipts,
+            subscription=observation, subscription_estimate_active_time=active,
+            model_identity_observation=self._model_observation())
+        body = json.loads(admission.receipt_path.read_text())["receipt"]
+        self.assertIsNone(body["measuredCosts"]["values"]["eur"])
+        self.assertNotIn("cash", body["subscription"])
+        self.assertEqual("5.045", body["subscriptionAllocationUpperBound"]["assessment"]["reservationEur"])
+
+        positive_values = dict(self.costs.values)
+        positive_values["eur"] = 0.01
+        with self.assertRaisesRegex(capture.CaptureAdmissionError, "EUR 0 cap"):
+            capture.prepare_attempt(
+                registration_path=self.registration_path, candidate_root=self.candidate,
+                candidate_artifact=self.artifact, ledger=self.ledger, slot_id=slot.slot_id,
+                authorization=self._authorization("analyze-interactions"),
+                costs=replace(self.costs, values=positive_values), stop_state=self.stop,
+                verifier=_SubscriptionSyntheticVerifier(), receipt_directory=self.receipts,
+                subscription=observation, subscription_estimate_active_time=active,
+                model_identity_observation=self._model_observation())
+
+    def test_operational_unknown_eur_is_null_not_zero_and_only_allowed_explicitly(self):
+        values = dict(self.costs.values)
+        values["eur"] = None
+        unknown_cash = replace(self.costs, values=values)
+        capture._validate_costs(unknown_cash, allow_unknown_eur=True)
+        capture._validate_prior_costs(self.ledger, unknown_cash, allow_unknown_eur=True)
+        self.assertIsNone(unknown_cash.values["eur"])
+        with self.assertRaisesRegex(capture.CaptureAdmissionError, "eur is unavailable"):
+            capture._validate_costs(unknown_cash)
+
     def _native_registration(self):
         self._upgrade_to_v3_technical_capture()
         _with_native_policy(self.registration_data)

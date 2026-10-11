@@ -1,0 +1,17 @@
+{
+  "baseManifestSha256": "6ed49fcba3503ebd362ec478977697d7bbab9b3ea99846cd408c9e00de7b656d",
+  "files": [
+    {
+      "path": "docs/development/GITHUB_TRACKING.md",
+      "sha256": "29253de3154c655d2f0cd942ccb5320346dc4eda741c00cbcd288c32c5457688",
+      "size": 10867
+    }
+  ],
+  "limits": [
+    "This supplement binds the committed public tracking guide only; it does not alter the immutable root export manifest or M2 supplement.",
+    "The public snapshot does not establish private Git ancestry, repository governance approval, or remote Project state."
+  ],
+  "recordVersion": "0.1.0",
+  "snapshotCommit": "7d72132edfc4c95dd8f541d329ef7dafbaa29713",
+  "snapshotTree": "56044e4cabf6bd502c62fd6516b477b8f468f42b"
+}

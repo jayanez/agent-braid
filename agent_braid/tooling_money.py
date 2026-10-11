@@ -490,7 +490,7 @@ class MoneySummary:
     observed_additional_spend_subtotal_eur: Decimal | None
     actual_additional_spend_cap_eur: Decimal
     cap_violation: bool | None
-    stop_required: bool
+    stop_required: bool | None
     allocated_subscription_cost_eur: Decimal | None
     api_reference_estimate_eur: Decimal | None
     required_measures_complete: bool
@@ -749,6 +749,7 @@ class MoneyLedger:
                 raise MoneyAccountingError("receipt activity is outside the frozen roster")
             if (self.roster.registration.data["schemaVersion"] in {
                     evaluation.REGISTRATION_SCHEMA_V3, evaluation.REGISTRATION_SCHEMA_V4,
+                    evaluation.REGISTRATION_SCHEMA_V5,
                 }
                     and activity.kind == "reviewer"):
                 raise MoneyAccountingError(
@@ -967,6 +968,21 @@ class MoneyLedger:
                 technical_stop_required = (
                     not technical_required or technical_cap_violation is not False
                 )
+            elif self.roster.registration.data["schemaVersion"] == evaluation.REGISTRATION_SCHEMA_V5:
+                # The operational subscription route authorizes a bounded
+                # technical launch, but it is not a cash or allocation receipt.
+                # Keep money compliance unknown until independent reconciliation.
+                technical_required = None
+                missing_technical = tuple(sorted(
+                    (activity.activity_id, measure)
+                    for activity in self.roster.activities
+                    if activity.kind in {"setup", "attempt"}
+                    for measure in ("actualAdditionalSpendEur", "allocatedSubscriptionCostEur")
+                    if (activity.activity_id, measure) not in self._receipts
+                ))
+                technical_spend = None
+                technical_cap_violation = True if any(amount > cap for amount in known_actual) else None
+                technical_stop_required = True if technical_cap_violation is True else None
             # The present registration does not resolve reviewer-payment
             # applicability or represent the separate human-cost fields.
             full_economic_complete = False
@@ -976,7 +992,9 @@ class MoneyLedger:
                 observed_additional_spend_subtotal_eur=observed_subtotal,
                 actual_additional_spend_cap_eur=cap,
                 cap_violation=cap_violation,
-                stop_required=(not required_complete or cap_violation is not False),
+                stop_required=(None if self.roster.registration.data["schemaVersion"]
+                               == evaluation.REGISTRATION_SCHEMA_V5 and cap_violation is None
+                               else (not required_complete or cap_violation is not False)),
                 allocated_subscription_cost_eur=totals["allocatedSubscriptionCostEur"],
                 api_reference_estimate_eur=totals["apiReferenceEstimateEur"],
                 required_measures_complete=required_complete,

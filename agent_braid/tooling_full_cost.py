@@ -52,8 +52,10 @@ def assess_estimated_subscription_allocation(
     """
     evaluation._require_validated(registration)
     evaluation.validate_ledger(ledger, registration)
-    if registration.data["schemaVersion"] != evaluation.REGISTRATION_SCHEMA_V4:
-        raise FullCostError("estimated subscription allocation requires registration v4")
+    if registration.data["schemaVersion"] not in {
+        evaluation.REGISTRATION_SCHEMA_V4, evaluation.REGISTRATION_SCHEMA_V5,
+    }:
+        raise FullCostError("estimated subscription allocation requires registration v4 or v5")
     if verifier is None or not callable(getattr(verifier, "verify_active_time", None)):
         raise FullCostError("trusted active-time verifier is required for estimated accounting")
     ledger_sha256 = _canonical_sha256(ledger.as_dict())
@@ -135,6 +137,7 @@ class FullCostScope:
         evaluation._require_validated(registration)
         technical_only = registration.data["schemaVersion"] in {
             evaluation.REGISTRATION_SCHEMA_V3, evaluation.REGISTRATION_SCHEMA_V4,
+            evaluation.REGISTRATION_SCHEMA_V5,
         }
         raw = registration.data.get("fullCostScope")
         if raw is None:
@@ -191,7 +194,7 @@ class FullCostScope:
         if set(fees) != expected_reviewers:
             raise FullCostError("reviewer fee scope must equal the registered reviewer roster")
         if technical_only and (not unknown_fee or any(value != "unknown" for value in fees.values())):
-            raise FullCostError("v3 technical scope must preserve unknown fees for both planned roles")
+            raise FullCostError("technical scope must preserve unknown fees for both planned roles")
         time_scope = raw.get("humanTime")
         if not isinstance(time_scope, Mapping):
             raise FullCostError("human time applicability must be registered")
@@ -437,7 +440,9 @@ def complete_full_cost(
     reasons: list[tuple[str, str]] = []
     scope_attestation = scope_verifier.verify_scope(scope, registration.sha256, roster.sha256)
     _validate_scope_attestation(scope, roster, scope_attestation)
-    estimated_route = registration.data["schemaVersion"] == evaluation.REGISTRATION_SCHEMA_V4
+    estimated_route = registration.data["schemaVersion"] in {
+        evaluation.REGISTRATION_SCHEMA_V4, evaluation.REGISTRATION_SCHEMA_V5,
+    }
     estimate_assessment = None
     if estimated_route:
         if subscription_estimate_evidence is None:
@@ -552,11 +557,13 @@ def complete_full_cost(
     # reference-price estimates and reviewer cash are separate measures.
     provider_total = money_summary.provider_accounting_cost_eur
     if estimated_route and estimate_assessment is not None:
-        if not isinstance(money_summary.actual_provider_spend_eur, Decimal):
+        if (registration.data["schemaVersion"] == evaluation.REGISTRATION_SCHEMA_V4
+                and not isinstance(money_summary.actual_provider_spend_eur, Decimal)):
             raise FullCostError("estimated technical route requires known actual provider cash")
-        cap_totals["eur"] = float(
-            estimate_assessment.reservation_eur + money_summary.actual_provider_spend_eur
-        )
+        cap_totals["eur"] = float(estimate_assessment.reservation_eur + (
+            money_summary.actual_provider_spend_eur
+            if isinstance(money_summary.actual_provider_spend_eur, Decimal) else Decimal(0)
+        ))
     else:
         cap_totals["eur"] = float(provider_total) if provider_total is not None else None
     cap_totals["wall_seconds"] = float(wall_seconds) if wall_seconds is not None else None
@@ -569,8 +576,13 @@ def complete_full_cost(
         reasons.extend(("numeric-stop", reason) for reason in cap_assessment.reasons)
     technical_stop_required = None
     if registration.data["schemaVersion"] in {evaluation.REGISTRATION_SCHEMA_V3,
-                                                evaluation.REGISTRATION_SCHEMA_V4}:
-        technical_stop_required = (
+                                                evaluation.REGISTRATION_SCHEMA_V4,
+                                                evaluation.REGISTRATION_SCHEMA_V5}:
+        technical_stop_required = (True if registration.data["schemaVersion"]
+                                   == evaluation.REGISTRATION_SCHEMA_V5
+                                   and money_summary.technical_cap_violation is True else
+                                   None if registration.data["schemaVersion"]
+                                   == evaluation.REGISTRATION_SCHEMA_V5 else (
             (money_summary.technical_required_measures_complete is not True
              and not (estimated_route and estimate_assessment is not None
                       and _estimated_cash_rows_complete(money_ledger, roster)
@@ -587,7 +599,7 @@ def complete_full_cost(
             or exact_provider_cap_exceeded
             or not cost_assessment.complete
             or (estimated_route and estimate_assessment is None)
-        )
+        ))
     human_microseconds_by_participant = _human_time_union(distinct_time_receipts.values())
     reviewers = {reviewer_id for reviewer_id, _ in scope.reviewer_fee_applicability}
     participant_seconds = {
@@ -609,6 +621,8 @@ def complete_full_cost(
                      if not missing_time and not scope.technical_only else None)
     complete = not reasons and cost_assessment.complete and not scope.technical_only
     estimated_cash_complete = (
+        registration.data["schemaVersion"] == evaluation.REGISTRATION_SCHEMA_V4
+        and
         estimated_route and estimate_assessment is not None
         and _estimated_cash_rows_complete(money_ledger, roster)
         and cost_assessment.complete and not cap_assessment.stop
@@ -623,9 +637,17 @@ def complete_full_cost(
     return replace(
         money_summary,
         full_economic_cost_complete=complete,
-        full_economic_cost_status="complete" if complete else "incomplete-registered-cost-scope",
-        stop_required=(money_summary.stop_required or cap_assessment.stop
-                       or exact_provider_cap_exceeded),
+        full_economic_cost_status=(
+            "pending-cash-verification"
+            if registration.data["schemaVersion"] == evaluation.REGISTRATION_SCHEMA_V5
+            else "complete" if complete else "incomplete-registered-cost-scope"
+        ),
+        stop_required=(
+            True if registration.data["schemaVersion"] == evaluation.REGISTRATION_SCHEMA_V5
+            and money_summary.cap_violation is True else
+            None if registration.data["schemaVersion"] == evaluation.REGISTRATION_SCHEMA_V5 else
+            (money_summary.stop_required or cap_assessment.stop or exact_provider_cap_exceeded)
+        ),
         missing_full_economic_cost=tuple(sorted(set(money_summary.missing_full_economic_cost) | set(reasons))),
         human_time_seconds=human_seconds,
         user_time_seconds=user_seconds,

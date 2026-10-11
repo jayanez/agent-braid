@@ -18,6 +18,7 @@ from typing import Any, Mapping
 
 POLICY_SCHEMA = "agent-braid-m45-subscription-policy-v1"
 NATIVE_PROCESS_POLICY_SCHEMA = "agent-braid-m45-native-process-route-policy-v2"
+OPERATIONAL_SUBSCRIPTION_POLICY_SCHEMA = "agent-braid-m45-operational-subscription-policy-v3"
 _SHA256 = re.compile(r"^[0-9a-f]{64}$")
 _AUTH = {"codex": "chatgpt", "claude-code": "claude.ai"}
 
@@ -196,6 +197,96 @@ class NativeProcessRouteObservation:
                 "observedAt": _iso(self.observed_at), "cash": self.cash.as_dict()}
 
 
+@dataclass(frozen=True)
+class OperationalProcessRouteBinding:
+    """Registration-frozen process identity for an operational quota check."""
+    host: str
+    registration_sha256: str
+    slot_id: str
+    policy_sha256: str
+    account_sha256: str
+    account_namespace_sha256: str
+    host_build_sha256: str
+    candidate_artifact_sha256: str
+    executable_sha256: str
+    config_sha256: str
+    argv_sha256: str
+    model_identity_sha256: str
+    observer_source_ref: str
+    observer_source_sha256: str
+    observer_verifier_ref: str
+    observer_verifier_sha256: str
+    max_age_seconds: float
+
+    def as_dict(self) -> dict[str, Any]:
+        return {"schema": OPERATIONAL_SUBSCRIPTION_POLICY_SCHEMA,
+                "host": self.host, "registrationSha256": self.registration_sha256,
+                "slotId": self.slot_id, "policySha256": self.policy_sha256,
+                "accountSha256": self.account_sha256,
+                "accountNamespaceSha256": self.account_namespace_sha256,
+                "hostBuildSha256": self.host_build_sha256,
+                "candidateArtifactSha256": self.candidate_artifact_sha256,
+                "executableSha256": self.executable_sha256,
+                "configSha256": self.config_sha256, "argvSha256": self.argv_sha256,
+                "modelIdentitySha256": self.model_identity_sha256,
+                "observerSourceRef": self.observer_source_ref,
+                "observerSourceSha256": self.observer_source_sha256,
+                "observerVerifierRef": self.observer_verifier_ref,
+                "observerVerifierSha256": self.observer_verifier_sha256,
+                "maxAgeSeconds": self.max_age_seconds}
+
+
+@dataclass(frozen=True)
+class OperationalProcessRouteObservation:
+    """Fresh process route and provider-enforced quota snapshot; contains no cash claim."""
+    binding: OperationalProcessRouteBinding
+    phase: str
+    auth_method: str
+    route: str
+    account_wide_api_billing: str
+    subscription_active: bool
+    quota_available: bool
+    extra_usage_enabled: bool
+    credits_enabled: bool
+    auto_recharge_enabled: bool
+    api_credential_available: bool
+    provider_override_available: bool
+    fallback_available: bool
+    quota_boundary_active: bool
+    no_provider_operation_before_bind: bool
+    observer_connected: bool
+    process_id: int | None
+    process_birth_sha256: str | None
+    observed_sequence: int
+    source_ref: str
+    source_sha256: str
+    verifier_ref: str
+    verifier_sha256: str
+    observed_at: datetime
+
+    def as_dict(self) -> dict[str, Any]:
+        return {"binding": self.binding.as_dict(), "phase": self.phase,
+                "authMethod": self.auth_method, "route": self.route,
+                "accountWideApiBilling": self.account_wide_api_billing,
+                "subscriptionActive": self.subscription_active,
+                "quotaAvailable": self.quota_available,
+                "extraUsageEnabled": self.extra_usage_enabled,
+                "creditsEnabled": self.credits_enabled,
+                "autoRechargeEnabled": self.auto_recharge_enabled,
+                "apiCredentialAvailable": self.api_credential_available,
+                "providerOverrideAvailable": self.provider_override_available,
+                "fallbackAvailable": self.fallback_available,
+                "quotaBoundaryActive": self.quota_boundary_active,
+                "noProviderOperationBeforeBind": self.no_provider_operation_before_bind,
+                "observerConnected": self.observer_connected,
+                "processId": self.process_id,
+                "processBirthSha256": self.process_birth_sha256,
+                "observedSequence": self.observed_sequence,
+                "sourceRef": self.source_ref, "sourceSha256": self.source_sha256,
+                "verifierRef": self.verifier_ref, "verifierSha256": self.verifier_sha256,
+                "observedAt": _iso(self.observed_at)}
+
+
 def policy_sha256(policy: Mapping[str, Any]) -> str:
     _validate_policy(policy)
     try:
@@ -206,12 +297,30 @@ def policy_sha256(policy: Mapping[str, Any]) -> str:
     return hashlib.sha256(encoded).hexdigest()
 
 
-def binding_from_registration(registration: Any, slot_id: str, host: str) -> SubscriptionBinding | NativeProcessRouteBinding | None:
+def binding_from_registration(registration: Any, slot_id: str, host: str) -> SubscriptionBinding | NativeProcessRouteBinding | OperationalProcessRouteBinding | None:
     data = getattr(registration, "data", registration)
     registration_sha = getattr(registration, "sha256", None)
     if not isinstance(data, Mapping) or "billingPolicy" not in data:
         return None
     policy = data["billingPolicy"]
+    if isinstance(policy, Mapping) and policy.get("schema") == OPERATIONAL_SUBSCRIPTION_POLICY_SCHEMA:
+        _validate_operational_policy(policy)
+        registration_sha = registration_sha or _canonical_sha256(data)
+        _hash(registration_sha, "registration SHA-256")
+        if not isinstance(slot_id, str) or not slot_id.strip() or host not in _AUTH:
+            raise SubscriptionError("slot_id and registered host are required")
+        host_row = next(row for row in policy["hosts"] if row["host"] == host)
+        contract = policy["processContracts"].get(slot_id)
+        if not isinstance(contract, Mapping) or contract.get("host") != host:
+            raise SubscriptionError("slot has no operational process contract for the requested host")
+        observer = policy["observer"]
+        return OperationalProcessRouteBinding(
+            host, registration_sha, slot_id, policy_sha256(policy), host_row["accountSha256"],
+            host_row["accountNamespaceSha256"], contract["hostBuildSha256"],
+            contract["candidateArtifactSha256"], contract["executableSha256"],
+            contract["configSha256"], contract["argvSha256"], contract["modelIdentitySha256"],
+            observer["sourceRef"], observer["sourceSha256"], observer["verifierRef"],
+            observer["verifierSha256"], policy["maxAgeSeconds"])
     if isinstance(policy, Mapping) and policy.get("schema") == NATIVE_PROCESS_POLICY_SCHEMA:
         _validate_native_process_policy(policy)
         registration_sha = registration_sha or _canonical_sha256(data)
@@ -248,8 +357,10 @@ def binding_from_registration(registration: Any, slot_id: str, host: str) -> Sub
 
 
 def check_observation(observation: SubscriptionObservation | NativeProcessRouteObservation,
-                      binding: SubscriptionBinding | NativeProcessRouteBinding,
+                      binding: SubscriptionBinding | NativeProcessRouteBinding | OperationalProcessRouteBinding,
                       now: datetime | None = None, max_age_seconds: float = 60) -> bool:
+    if isinstance(observation, OperationalProcessRouteObservation) or isinstance(binding, OperationalProcessRouteBinding):
+        return _check_operational_observation(observation, binding, now, max_age_seconds)
     if isinstance(observation, NativeProcessRouteObservation) or isinstance(binding, NativeProcessRouteBinding):
         return _check_native_process_observation(observation, binding, now, max_age_seconds)
     if not isinstance(observation, SubscriptionObservation) or not isinstance(binding, SubscriptionBinding):
@@ -290,7 +401,59 @@ def check_observation(observation: SubscriptionObservation | NativeProcessRouteO
     return True
 
 
-def binding_from_dict(value: Mapping[str, Any]) -> SubscriptionBinding | NativeProcessRouteBinding:
+def _check_operational_observation(observation: Any, binding: Any,
+                                   now: datetime | None, max_age_seconds: float) -> bool:
+    if not isinstance(observation, OperationalProcessRouteObservation) or not isinstance(binding, OperationalProcessRouteBinding):
+        raise SubscriptionError("operational observation and binding must use typed operational records")
+    if observation.binding != binding:
+        raise SubscriptionError("operational observation is bound to a different registration, slot, or process contract")
+    if not _finite_number(max_age_seconds) or max_age_seconds < 0:
+        raise SubscriptionError("max_age_seconds must be finite and nonnegative")
+    flags = (observation.subscription_active, observation.quota_available,
+             observation.extra_usage_enabled, observation.credits_enabled,
+             observation.auto_recharge_enabled, observation.api_credential_available,
+             observation.provider_override_available, observation.fallback_available,
+             observation.quota_boundary_active, observation.no_provider_operation_before_bind,
+             observation.observer_connected)
+    if any(type(flag) is not bool for flag in flags):
+        raise SubscriptionError("operational route controls must be explicit booleans")
+    if observation.auth_method != _AUTH[binding.host] or observation.route != "included-subscription-quota":
+        raise SubscriptionError("operational route or authentication differs from the registered host")
+    if observation.account_wide_api_billing != "unknown-out-of-scope":
+        raise SubscriptionError("account-wide API billing must remain unknown and out of scope")
+    if not observation.subscription_active or not observation.quota_available:
+        raise SubscriptionError("included subscription quota is unavailable or exhausted")
+    if any((observation.extra_usage_enabled, observation.credits_enabled,
+            observation.auto_recharge_enabled, observation.api_credential_available,
+            observation.provider_override_available, observation.fallback_available)):
+        raise SubscriptionError("paid route, credential, override, or fallback is available")
+    if not (observation.quota_boundary_active and observation.no_provider_operation_before_bind
+            and observation.observer_connected):
+        raise SubscriptionError("provider-enforced per-operation quota boundary is not active")
+    if (observation.source_ref, observation.source_sha256,
+            observation.verifier_ref, observation.verifier_sha256) != (
+            binding.observer_source_ref, binding.observer_source_sha256,
+            binding.observer_verifier_ref, binding.observer_verifier_sha256):
+        raise SubscriptionError("operational observer or verifier differs from the frozen policy")
+    if observation.phase not in {"prelaunch", "running", "completed"}:
+        raise SubscriptionError("operational route phase is invalid")
+    if observation.phase == "prelaunch":
+        if observation.process_id is not None or observation.process_birth_sha256 is not None:
+            raise SubscriptionError("prelaunch observation cannot identify a process")
+    elif (type(observation.process_id) is not int or observation.process_id <= 0
+          or not isinstance(observation.process_birth_sha256, str)
+          or not _SHA256.fullmatch(observation.process_birth_sha256)):
+        raise SubscriptionError("running operational observation requires process identity")
+    if type(observation.observed_sequence) is not int or observation.observed_sequence < 1:
+        raise SubscriptionError("operational observation sequence must be positive")
+    _check_fresh(observation.observed_at, now, min(max_age_seconds, binding.max_age_seconds),
+                 "operational subscription route observation")
+    return True
+
+
+def binding_from_dict(value: Mapping[str, Any]) -> SubscriptionBinding | NativeProcessRouteBinding | OperationalProcessRouteBinding:
+    if isinstance(value, Mapping) and value.get("schema") == OPERATIONAL_SUBSCRIPTION_POLICY_SCHEMA:
+        return operational_binding_from_dict(value)
     if isinstance(value, Mapping) and "accountNamespaceSha256" in value:
         return native_binding_from_dict(value)  # type: ignore[return-value]
     if not isinstance(value, Mapping) or set(value) != {
@@ -309,8 +472,10 @@ def binding_from_dict(value: Mapping[str, Any]) -> SubscriptionBinding | NativeP
     return result
 
 
-def observation_from_dict(value: Mapping[str, Any]) -> SubscriptionObservation | NativeProcessRouteObservation:
+def observation_from_dict(value: Mapping[str, Any]) -> SubscriptionObservation | NativeProcessRouteObservation | OperationalProcessRouteObservation:
     """Reconstruct a receipt observation; authenticity still needs external verification."""
+    if isinstance(value, Mapping) and "quotaBoundaryActive" in value:
+        return operational_observation_from_dict(value)
     if isinstance(value, Mapping) and "cash" in value:
         return native_process_observation_from_dict(value)  # type: ignore[return-value]
     expected = {"binding", "authMethod", "subscriptionActive", "extraUsageEnabled", "creditsEnabled",
@@ -415,6 +580,69 @@ def native_binding_from_dict(value: Mapping[str, Any]) -> NativeProcessRouteBind
     return result
 
 
+def operational_binding_from_dict(value: Mapping[str, Any]) -> OperationalProcessRouteBinding:
+    fields = {"schema", "host", "registrationSha256", "slotId", "policySha256", "accountSha256",
+              "accountNamespaceSha256", "hostBuildSha256", "candidateArtifactSha256", "executableSha256",
+              "configSha256", "argvSha256", "modelIdentitySha256", "observerSourceRef",
+              "observerSourceSha256", "observerVerifierRef", "observerVerifierSha256", "maxAgeSeconds"}
+    if not isinstance(value, Mapping) or set(value) != fields or value["schema"] != OPERATIONAL_SUBSCRIPTION_POLICY_SCHEMA:
+        raise SubscriptionError("invalid serialized operational subscription binding")
+    parsed = {"host": value["host"], "registration_sha256": value["registrationSha256"],
+              "slot_id": value["slotId"], "policy_sha256": value["policySha256"],
+              "account_sha256": value["accountSha256"], "account_namespace_sha256": value["accountNamespaceSha256"],
+              "host_build_sha256": value["hostBuildSha256"], "candidate_artifact_sha256": value["candidateArtifactSha256"],
+              "executable_sha256": value["executableSha256"], "config_sha256": value["configSha256"],
+              "argv_sha256": value["argvSha256"], "model_identity_sha256": value["modelIdentitySha256"],
+              "observer_source_ref": value["observerSourceRef"], "observer_source_sha256": value["observerSourceSha256"],
+              "observer_verifier_ref": value["observerVerifierRef"], "observer_verifier_sha256": value["observerVerifierSha256"],
+              "max_age_seconds": value["maxAgeSeconds"]}
+    result = OperationalProcessRouteBinding(**parsed)
+    if result.host not in _AUTH or not isinstance(result.slot_id, str) or not result.slot_id.strip():
+        raise SubscriptionError("invalid operational subscription host or slot")
+    for name, digest in parsed.items():
+        if name.endswith("_sha256"):
+            _hash(digest, name)
+    if not _finite_number(result.max_age_seconds) or not 0 < result.max_age_seconds <= 60:
+        raise SubscriptionError("operational binding freshness limit is invalid")
+    for name in ("observer_source_ref", "observer_verifier_ref"):
+        if not isinstance(getattr(result, name), str) or not getattr(result, name).strip():
+            raise SubscriptionError(f"{name} must be nonempty")
+    return result
+
+
+def operational_observation_from_dict(value: Mapping[str, Any]) -> OperationalProcessRouteObservation:
+    fields = {"binding", "phase", "authMethod", "route", "accountWideApiBilling", "subscriptionActive",
+              "quotaAvailable", "extraUsageEnabled", "creditsEnabled", "autoRechargeEnabled",
+              "apiCredentialAvailable", "providerOverrideAvailable", "fallbackAvailable", "quotaBoundaryActive",
+              "noProviderOperationBeforeBind", "observerConnected", "processId", "processBirthSha256",
+              "observedSequence", "sourceRef", "sourceSha256", "verifierRef", "verifierSha256", "observedAt"}
+    if not isinstance(value, Mapping) or set(value) != fields:
+        raise SubscriptionError("invalid serialized operational subscription observation")
+    try:
+        observed_at = datetime.fromisoformat(value["observedAt"].replace("Z", "+00:00"))
+        if observed_at.tzinfo is None:
+            raise ValueError("timezone required")
+        result = OperationalProcessRouteObservation(
+            operational_binding_from_dict(value["binding"]), value["phase"], value["authMethod"],
+            value["route"], value["accountWideApiBilling"], value["subscriptionActive"],
+            value["quotaAvailable"], value["extraUsageEnabled"], value["creditsEnabled"],
+            value["autoRechargeEnabled"], value["apiCredentialAvailable"], value["providerOverrideAvailable"],
+            value["fallbackAvailable"], value["quotaBoundaryActive"], value["noProviderOperationBeforeBind"],
+            value["observerConnected"], value["processId"], value["processBirthSha256"],
+            value["observedSequence"], value["sourceRef"], value["sourceSha256"],
+            value["verifierRef"], value["verifierSha256"], observed_at)
+    except (KeyError, TypeError, ValueError, AttributeError) as exc:
+        raise SubscriptionError("invalid serialized operational subscription observation") from exc
+    if not isinstance(result.auth_method, str) or not isinstance(result.route, str):
+        raise SubscriptionError("operational route identifiers must be text")
+    for name in ("source_ref", "verifier_ref"):
+        if not isinstance(getattr(result, name), str) or not getattr(result, name).strip():
+            raise SubscriptionError(f"{name} must be nonempty")
+    _hash(result.source_sha256, "operational source SHA-256")
+    _hash(result.verifier_sha256, "operational verifier SHA-256")
+    return result
+
+
 def cash_observation_from_dict(value: Mapping[str, Any]) -> CohortCashObservation:
     expected = {"registrationSha256", "additionalCashEur", "setupCovered", "startedSlotIds",
                 "completionReconciled", "sourceRef", "sourceSha256", "verifierRef",
@@ -462,6 +690,9 @@ def check_cash_observation(cash: CohortCashObservation, binding: NativeProcessRo
 
 
 def _validate_policy(policy: Mapping[str, Any]) -> None:
+    if isinstance(policy, Mapping) and policy.get("schema") == OPERATIONAL_SUBSCRIPTION_POLICY_SCHEMA:
+        _validate_operational_policy(policy)
+        return
     if isinstance(policy, Mapping) and policy.get("schema") == NATIVE_PROCESS_POLICY_SCHEMA:
         _validate_native_process_policy(policy)
         return
@@ -547,6 +778,59 @@ def _validate_native_process_policy(policy: Mapping[str, Any]) -> None:
     if (policy["observer"]["sourceRef"], policy["observer"]["sourceSha256"]) == (
             policy["cashSource"]["sourceRef"], policy["cashSource"]["sourceSha256"]):
         raise SubscriptionError("route observer and actual-cash evidence must use independent sources")
+
+
+def _validate_operational_policy(policy: Mapping[str, Any]) -> None:
+    """Validate the additive subscription-quota admission policy without a cash assertion."""
+    required = {"schema", "mode", "scope", "accountWideApiBilling", "additionalSpendCapEur",
+                "maxAgeSeconds", "paidApiAllowed", "overageAllowed", "creditsAllowed",
+                "autoRechargeAllowed", "hosts", "processContracts", "observer"}
+    if not isinstance(policy, Mapping) or set(policy) != required:
+        raise SubscriptionError("unsupported or malformed operational subscription policy")
+    if (policy["schema"] != OPERATIONAL_SUBSCRIPTION_POLICY_SCHEMA
+            or policy["mode"] != "included-subscription-only"
+            or policy["scope"] != "registered-native-process-only"
+            or policy["accountWideApiBilling"] != "unknown-out-of-scope"):
+        raise SubscriptionError("operational subscription policy scope is invalid")
+    if not _finite_number(policy["additionalSpendCapEur"]) or policy["additionalSpendCapEur"] != 0:
+        raise SubscriptionError("additional spend cap must be exactly zero EUR")
+    if not _finite_number(policy["maxAgeSeconds"]) or not 0 < policy["maxAgeSeconds"] <= 60:
+        raise SubscriptionError("operational route maximum age must be positive and at most 60 seconds")
+    if any(policy[name] is not False for name in
+           ("paidApiAllowed", "overageAllowed", "creditsAllowed", "autoRechargeAllowed")):
+        raise SubscriptionError("paid API, overage, credits, and auto-recharge must be disabled")
+    hosts = policy["hosts"]
+    if not isinstance(hosts, list) or len(hosts) != 2:
+        raise SubscriptionError("policy must bind both subscription hosts")
+    seen = set()
+    for row in hosts:
+        if not isinstance(row, Mapping) or set(row) != {
+                "host", "accountSha256", "accountNamespaceSha256", "authMethod"}:
+            raise SubscriptionError("malformed operational host account binding")
+        host = row["host"]
+        if not isinstance(host, str) or host not in _AUTH or host in seen or row["authMethod"] != _AUTH[host]:
+            raise SubscriptionError("operational host authentication is invalid")
+        _hash(row["accountSha256"], "account SHA-256")
+        _hash(row["accountNamespaceSha256"], "account namespace SHA-256")
+        seen.add(host)
+    if seen != set(_AUTH):
+        raise SubscriptionError("policy must bind codex and claude-code")
+    contracts = policy["processContracts"]
+    expected = {"host", "hostBuildSha256", "candidateArtifactSha256", "executableSha256",
+                "configSha256", "argvSha256", "modelIdentitySha256"}
+    if not isinstance(contracts, Mapping) or not contracts:
+        raise SubscriptionError("operational process contracts are required")
+    for slot, contract in contracts.items():
+        if not isinstance(slot, str) or not slot.strip() or not isinstance(contract, Mapping) or set(contract) != expected:
+            raise SubscriptionError("malformed operational per-slot process contract")
+        if not isinstance(contract["host"], str) or contract["host"] not in _AUTH:
+            raise SubscriptionError("operational process contract host is invalid")
+        for key in expected - {"host"}:
+            _hash(contract[key], key)
+    _validate_source_pair(policy["observer"], "operational observer",
+                          extra={"providerEnforcedQuotaBoundaryRequired"})
+    if policy["observer"]["providerEnforcedQuotaBoundaryRequired"] is not True:
+        raise SubscriptionError("provider-enforced included-quota boundary is required")
 
 
 def _validate_source_pair(value: Any, label: str, extra: set[str] | None = None) -> None:
@@ -702,9 +986,11 @@ def _iso(value: datetime) -> str:
     return value.isoformat().replace("+00:00", "Z")
 
 
-__all__ = ["NATIVE_PROCESS_POLICY_SCHEMA", "POLICY_SCHEMA", "CohortCashObservation",
-           "NativeProcessRouteBinding", "NativeProcessRouteObservation", "SubscriptionBinding",
+__all__ = ["NATIVE_PROCESS_POLICY_SCHEMA", "OPERATIONAL_SUBSCRIPTION_POLICY_SCHEMA", "POLICY_SCHEMA",
+           "CohortCashObservation", "NativeProcessRouteBinding", "NativeProcessRouteObservation",
+           "OperationalProcessRouteBinding", "OperationalProcessRouteObservation", "SubscriptionBinding",
            "SubscriptionError", "SubscriptionObservation", "binding_from_dict",
            "binding_from_registration", "cash_observation_from_dict", "check_cash_observation",
            "check_observation", "native_binding_from_dict", "native_process_observation_from_dict",
-           "observation_from_dict", "policy_sha256"]
+           "observation_from_dict", "operational_binding_from_dict", "operational_observation_from_dict",
+           "policy_sha256"]
