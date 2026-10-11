@@ -390,3 +390,9 @@ and automation use [AGPL-3.0-only](LICENSES/AGPL-3.0-only.txt); documentation an
 research use [CC-BY-SA-4.0](LICENSES/CC-BY-SA-4.0.txt). The [license map](LICENSE),
 [attribution notices](NOTICE) and [trademark policy](TRADEMARKS.md) define the
 applicable terms and project identity.
+
+The experimental [registration-v4 accounting route](docs/tooling/REGISTRATION.md) now implements
+the owner-selected EUR 5.045 subscription reservation with actual allocation
+unknown. The process-scoped observation boundary is approved; its policy-v2
+implementation, trusted native evidence and complete capture approval remain
+pending. Additional spending is EUR 0; human review remains deferred.

@@ -4,8 +4,9 @@
 Date: 2026-10-11. The owner selected the conservative planning estimate and
 instructed the project not to inspect further private billed-period data:
 “Quédate en esa estimación. No vamos a bajar al detalle de los datos privados del periodo facturado”.
-The convention is approved; its versioned implementation and complete technical
-registration remain separately pending. This is not capture approval, ADR adoption,
+The convention is approved; its experimental registration-v4 implementation is
+available with synthetic controls. Complete technical registration approval and
+authenticated native capture remain separately pending. This is not capture approval, ADR adoption,
 founder acceptance or milestone closure.
 
 ## Declared convention
@@ -52,8 +53,9 @@ additional private period disclosure.
 
 This decision changes only the estimated subscription accounting convention.
 The existing policy's account-wide API-billing observation requirement remains
-unchanged. Narrowing that observation to a selected native process route would
-require a separate versioned policy decision. No API calls, credits, overage,
+unchanged. The owner separately approved the selected native-process observation boundary
+on 2026-10-11; its versioned implementation and authentic evidence remain pending
+(see [ADR 0021](../../docs/adr/0021-codex-claude-tooling-integration.md#approved-scope-native-process-billing-observation-boundary)). No API calls, credits, overage,
 auto-recharge or additional payment are authorized.
 
 The prospective requirements are recorded in [the draft assurance addendum](subscription-estimation-assurance-addendum.json). The inherited assurance record and obtained historical evidence remain unchanged; no evidence is rebound to the new estimated route.

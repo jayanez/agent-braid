@@ -208,3 +208,26 @@ The protocol-mode wrapper exited 0, timed out neither, and retained 43,119 stdou
 
 
 The exact-e40 wheel’s default `tooling_assets` resource loader was also observed in an isolated installation with `source_checkout=False`: five skill resources and five supporting assets matched source-to-wheel-to-installed bytes (bundle version 0.1.0; digest `284d84d226fd58438d995d324e0a01fbe1606f709faeed2759c6f4c3ec192542`). Receipt `bb58a46418e5d60e61af39ed82914aa353e92dfcbe040b0e131446b134d3b52d`, manifest `46f70e8df1651c4e0cbf78fe54ada069692ca577139c3f33ec3e387bd7e793eb`, and independent review `d43c13701dcead30297cddc92d8e394d443b7b162dcf2ed0e9fb7adb81efb950` bind this partial result. The process exited 0 under a 20-second timeout; 2,473 stdout bytes and zero stderr bytes were observed, but parent pipes had no byte cap. The initial no-child preflight failure and clarification remain preserved; the reviewer notes that the stated cause was not independently re-derived from raw argv/stderr. This proves installed resource bytes only, not native-host loading, sdist/Linux behavior, legal compatibility, cohort fixtures or full SC-001/SC-008 acceptance.
+
+## Estimated technical accounting and approved process scope — 2026-10-11
+
+[PR #496](https://github.com/jayanez/agent-braid/pull/496) permits explicitly
+unavailable reference API rates for included-subscription technical registration.
+[PR #497](https://github.com/jayanez/agent-braid/pull/497) implements the experimental
+v4 EUR 5.045 estimate reservation, fresh receipt-bound one-use launch guards and
+separate report fields. Actual subscription allocation/provider accounting remain
+unknown, and positive utility remains ineligible. See [registration](REGISTRATION.md)
+and [money](MONEY.md) for the exact contract and refusal boundaries.
+
+Source candidate `18b193d4cd54170b29ba86874b4839527bd7970b` passed the stable
+local PR profile (1,308 tests, 12 skips), a separate six-test optional-SDK follow-up
+with no skips, and CI (1,308 tests, eight skips; separately 37 MCP tests, no skips).
+Fresh installed macOS and offline emulated Linux AMD64 probes each retained
+14 successful commands and the expected missing-SDK refusal. These records apply
+to that candidate and its wheel, not to later commits or native provider capture.
+The Linux run used ARM64-host emulation and does not satisfy registered T004.
+
+The owner approved the [process-scoped policy boundary](../adr/0021-codex-claude-tooling-integration.md#approved-scope-native-process-billing-observation-boundary).
+Policy-v2 implementation, trusted native observations, complete registration
+approval and all 108 actual outcomes remain pending. Two human reviewers and
+adjudication remain deferred. Neither these PRs nor their checks close M4.5.
