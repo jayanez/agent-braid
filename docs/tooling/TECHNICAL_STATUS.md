@@ -228,6 +228,19 @@ to that candidate and its wheel, not to later commits or native provider capture
 The Linux run used ARM64-host emulation and does not satisfy registered T004.
 
 The owner approved the [process-scoped policy boundary](../adr/0021-codex-claude-tooling-integration.md#approved-scope-native-process-billing-observation-boundary).
-Policy-v2 implementation, trusted native observations, complete registration
+Policy-v2 acceptance, trusted native observations, complete registration
 approval and all 108 actual outcomes remain pending. Two human reviewers and
 adjudication remain deferred. Neither these PRs nor their checks close M4.5.
+
+The owner-approved native-process scope now has an additive implementation and
+contract in [SPEC-044](../../specs/044-ai-tooling-evaluation/native-process-route-policy.md),
+with stable NP-001–NP-005 engineering and validation tasks. The contract keeps
+account-wide API billing unknown and out of scope, requires fresh process-bound
+route evidence and an externally trusted per-operation gate, and requires
+independent cohort cash evidence of exactly EUR 0. The EUR 5.045 value remains
+an estimate reservation, not actual cash. Exact-candidate repository validation
+is recorded on its pull request; no authentic route observer, continuously enforced
+request gate, or actual-cash source is established. Registration approval,
+provider capture, native-host evidence, the 108 outcomes, human evaluation,
+founder acceptance and M4.5 closure remain pending. These engineering tasks do
+not check or rewrite original SPEC-044 T006/T009 or assurance history.

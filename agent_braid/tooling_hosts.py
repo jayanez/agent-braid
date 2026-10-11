@@ -92,6 +92,11 @@ class HostLaunchConfig:
     term_grace_seconds: float = 5
     kill_grace_seconds: float = 5
     claude_subscription_settings: FilePin | None = field(default=None, repr=False)
+    # Required only by native process route policy v2. These are registration-
+    # bound identities supplied by the authenticated admission path.
+    host_build_sha256: str | None = None
+    candidate_artifact_sha256: str | None = None
+    model_identity: Mapping[str, Any] | None = field(default=None, repr=False)
 
 
 @dataclass(frozen=True)
@@ -132,8 +137,13 @@ class HostLaunchPlan:
     poll_interval_seconds: float
     term_grace_seconds: float
     kill_grace_seconds: float
-    subscription_binding: subscription_policy.SubscriptionBinding | None = None
+    subscription_binding: (subscription_policy.SubscriptionBinding
+                           | subscription_policy.NativeProcessRouteBinding | None) = field(default=None, repr=False)
     claude_subscription_settings: FilePin | None = field(default=None, repr=False)
+    native_route_binding: subscription_policy.NativeProcessRouteBinding | None = field(default=None, repr=False)
+    host_build_sha256: str | None = None
+    candidate_artifact_sha256: str | None = None
+    model_identity_sha256: str | None = None
 
 
 class PreparationVerifier(Protocol):
@@ -141,6 +151,14 @@ class PreparationVerifier(Protocol):
 
     def verify_pre_dispatch(self, *, admission: capture.AttemptAdmission,
                             plan: HostLaunchPlan) -> None: ...
+
+
+class NativeRouteVerifier(Protocol):
+    """Trusted process-scoped route verifier injected independently of host prep."""
+
+    def verify_observation(self, observation: subscription_policy.NativeProcessRouteObservation,
+                           binding: subscription_policy.NativeProcessRouteBinding,
+                           identity: Any, request: Any, final: bool) -> None: ...
 
 
 class HostSessionAdapter(tooling_sessions.SessionAdapter):
@@ -153,6 +171,7 @@ class HostSessionAdapter(tooling_sessions.SessionAdapter):
 
     def __init__(self, plan: HostLaunchPlan, *, verifier: PreparationVerifier,
                  observer: Callable[..., Any], caps: Any,
+                 native_route_verifier: NativeRouteVerifier | None = None,
                  supervisor: Callable[..., Any] | None = None,
                  outcome_reader: Callable[[Any], bytes] | None = None):
         if verifier is None or not callable(getattr(verifier, "verify_pre_dispatch", None)):
@@ -161,6 +180,10 @@ class HostSessionAdapter(tooling_sessions.SessionAdapter):
             raise HostPreparationError("fresh observation callback and explicit budget caps are required")
         self._plan = plan
         self._verifier = verifier
+        self._native_route_verifier = native_route_verifier
+        if plan.native_route_binding is not None and not callable(
+                getattr(native_route_verifier, "verify_observation", None)):
+            raise HostPreparationError("trusted native process route verifier is required for policy v2")
         self._observer = observer
         self._caps = caps
         self._supervisor = supervisor
@@ -178,6 +201,10 @@ class HostSessionAdapter(tooling_sessions.SessionAdapter):
                 or admission.receipt_sha256 != plan.admission_receipt_sha256 \
                 or admission.subject_sha256 != plan.admission_subject_sha256:
             raise HostPreparationError("launch plan is not bound to this admission")
+        if admission.subscription_binding != plan.subscription_binding:
+            raise HostPreparationError("launch plan route binding differs from this admission")
+        if plan.native_route_binding is not None and plan.native_route_binding != admission.subscription_binding:
+            raise HostPreparationError("native process route policy cannot be removed or changed after preparation")
         self._verify_pins(plan)
         self._verifier.verify_pre_dispatch(admission=admission, plan=plan)
         # The verifier may perform I/O; recheck bounded config pins immediately
@@ -189,7 +216,11 @@ class HostSessionAdapter(tooling_sessions.SessionAdapter):
         else:
             runner = self._supervisor
         request = self._make_process_request(plan, admission)
-        outcome = runner(request, self._caps, self._observer)
+        if plan.native_route_binding is not None:
+            outcome = runner(request, self._caps, self._observer,
+                             native_route_verifier=self._native_route_verifier)
+        else:
+            outcome = runner(request, self._caps, self._observer)
         return self._public_outcome(plan, outcome)
 
     @staticmethod
@@ -216,6 +247,7 @@ class HostSessionAdapter(tooling_sessions.SessionAdapter):
             term_grace_seconds=plan.term_grace_seconds,
             kill_grace_seconds=plan.kill_grace_seconds,
             subscription_binding=plan.subscription_binding,
+            native_route_binding=plan.native_route_binding,
             subscription_estimate_runtime_guard=(admission.subscription_estimate_runtime_guard
                                                  if admission is not None else None),
             subscription_estimate_admission_receipt_sha256=(admission.receipt_sha256
@@ -421,8 +453,11 @@ def prepare_host_launch(admission: capture.AttemptAdmission,
     if config.host != "claude-code" and config.claude_subscription_settings is not None:
         raise HostPreparationError("Claude subscription settings are irrelevant to this host")
     if binding is not None:
+        if not isinstance(binding, (subscription_policy.SubscriptionBinding,
+                                    subscription_policy.NativeProcessRouteBinding)):
+            raise HostPreparationError("admission subscription binding is not a supported typed policy")
         if binding.host != config.host or binding.slot_id != admission.slot_id:
-            raise HostPreparationError("subscription binding differs from the selected host or slot")
+            raise HostPreparationError("route binding differs from the selected host or slot")
         # Explicit child environment replaces inheritance. Unlisted routing,
         # credential, proxy and loader variables cannot select a paid fallback.
         allowed_environment = {"PATH", "LANG", "LC_ALL", "TMPDIR", "CLAUDE_CONFIG_DIR"}
@@ -451,6 +486,43 @@ def prepare_host_launch(admission: capture.AttemptAdmission,
     if config.claude_subscription_settings is not None:
         _validate_claude_subscription_settings(config.claude_subscription_settings)
     argv = _build_argv(config)
+    native_binding = binding if isinstance(binding, subscription_policy.NativeProcessRouteBinding) else None
+    normalized_pins = tuple(FilePin(pin.path.resolve(strict=True), pin.sha256)
+                            for pin in (*config.config_files,
+                                        *((config.claude_subscription_settings,)
+                                          if config.claude_subscription_settings else ())))
+    model_identity_sha256 = None
+    if native_binding is not None:
+        for label, value in (("host build", config.host_build_sha256),
+                             ("candidate artifact", config.candidate_artifact_sha256)):
+            _require_digest(value)
+        if config.host_build_sha256 != native_binding.host_build_sha256:
+            raise HostPreparationError("host build differs from the registered native process policy")
+        if config.candidate_artifact_sha256 != native_binding.candidate_artifact_sha256:
+            raise HostPreparationError("candidate artifact differs from the registered native process policy")
+        if config.executable_sha256 != native_binding.executable_sha256:
+            raise HostPreparationError("executable differs from the registered native process policy")
+        if not isinstance(config.model_identity, Mapping):
+            raise HostPreparationError("native process policy requires the exact registered model identity")
+        model_identity_sha256 = _canonical_digest(config.model_identity)
+        if model_identity_sha256 != native_binding.model_identity_sha256:
+            raise HostPreparationError("model identity differs from the registered native process policy")
+        identity = config.model_identity
+        effective_config = identity.get("effectiveConfig")
+        if (identity.get("selector") != config.model or identity.get("effort") != config.effort
+                or not isinstance(effective_config, Mapping)
+                or effective_config.get("selector") != config.model
+                or effective_config.get("effort") != config.effort):
+            raise HostPreparationError("host model or effort differs from the registered model identity")
+        cli_build = identity.get("cliBuild")
+        if (not isinstance(cli_build, Mapping) or cli_build.get("version") != config.version
+                or cli_build.get("sha256") != config.executable_sha256
+                or cli_build.get("sha256") != config.host_build_sha256):
+            raise HostPreparationError("host build version or executable differs from registered model identity")
+        if _host_argv_digest(argv) != native_binding.argv_sha256:
+            raise HostPreparationError("native host argv differs from the registered process policy")
+        if _host_config_digest(normalized_pins) != native_binding.config_sha256:
+            raise HostPreparationError("native host config pin inventory differs from registered policy")
     return HostLaunchPlan(
         host=config.host, arm=config.arm, attempt_id=admission.attempt_id,
         slot_id=admission.slot_id, admission_receipt_sha256=admission.receipt_sha256,
@@ -458,10 +530,7 @@ def prepare_host_launch(admission: capture.AttemptAdmission,
         executable=config.executable.resolve(strict=True),
         executable_sha256=config.executable_sha256, version=config.version,
         model=config.model, effort=config.effort,
-        config_files=tuple(FilePin(pin.path.resolve(strict=True), pin.sha256)
-                           for pin in (*config.config_files,
-                                       *((config.claude_subscription_settings,)
-                                         if config.claude_subscription_settings else ()))),
+        config_files=normalized_pins,
         codex_config_overrides=config.codex_config_overrides,
         config_dir=config.config_dir, cwd=config.cwd, output_root=config.output_root,
         mcp_result_root=config.mcp_result_root,
@@ -484,6 +553,10 @@ def prepare_host_launch(admission: capture.AttemptAdmission,
                     config.claude_subscription_settings.sha256)
             if config.claude_subscription_settings is not None else None
         ),
+        native_route_binding=native_binding,
+        host_build_sha256=config.host_build_sha256,
+        candidate_artifact_sha256=config.candidate_artifact_sha256,
+        model_identity_sha256=model_identity_sha256,
     )
 
 
@@ -795,6 +868,26 @@ def _check_file_pin(pin: FilePin, *, executable: bool = False) -> None:
 def _require_digest(value: str) -> None:
     if not isinstance(value, str) or not _SHA256.fullmatch(value):
         raise HostPreparationError("a lowercase SHA-256 attestation is required")
+
+
+def _canonical_digest(value: Any) -> str:
+    try:
+        encoded = json.dumps(value, sort_keys=True, separators=(",", ":"),
+                             ensure_ascii=False, allow_nan=False).encode("utf-8")
+    except (TypeError, ValueError, OverflowError) as exc:
+        raise HostPreparationError("registered host identity must be canonical JSON") from exc
+    return hashlib.sha256(encoded).hexdigest()
+
+
+def _host_argv_digest(argv: tuple[str, ...]) -> str:
+    return _canonical_digest(list(argv))
+
+
+def _host_config_digest(pins: tuple[FilePin, ...]) -> str:
+    inventory = sorted(({"pathSha256": hashlib.sha256(str(pin.path).encode("utf-8")).hexdigest(),
+                         "sha256": pin.sha256} for pin in pins),
+                       key=lambda row: row["pathSha256"])
+    return _canonical_digest(inventory)
 
 
 def _version_tuple(version: str, *, claude_stable: bool = False) -> tuple[int, ...]:
