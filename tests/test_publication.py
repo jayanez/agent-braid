@@ -15,8 +15,8 @@ from unittest import mock
 from scripts.closure_anchors import validate_closure_anchor
 from scripts.create_public_export import create_export
 from scripts.publication import (
-    ADDENDUM, MANIFEST, canonical_manifest, redact_local_paths,
-    root_manifest_payload, validate_addendum, validate_portable_root,
+    ADDENDUM, ADDITIONAL_ADDENDA, MANIFEST, canonical_manifest, redact_local_paths,
+    root_manifest_payload, validate_addendum, validate_addenda, validate_portable_root,
 )
 from scripts.validate_publication import (
     PUBLIC_INPUTS,
@@ -236,6 +236,37 @@ class PublicationTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, "canonical|unchanged"):
                 validate_portable_root(public)
             (public / ADDENDUM).write_bytes(original_addendum)
+            tracking = "docs/development/GITHUB_TRACKING.md"
+            tracking_payload = b"Stable public tracking instructions.\n"
+            (public / tracking).parent.mkdir(parents=True, exist_ok=True)
+            (public / tracking).write_bytes(tracking_payload)
+            snapshot = commit(public, "add tracking documentation")
+            supplemental = {
+                "recordVersion": "0.1.0",
+                "baseManifestSha256": hashlib.sha256(
+                    (public / MANIFEST).read_bytes()).hexdigest(),
+                "snapshotCommit": snapshot,
+                "snapshotTree": git(public, "rev-parse", f"{snapshot}^{{tree}}"),
+                "files": [{"path": tracking,
+                           "sha256": hashlib.sha256(tracking_payload).hexdigest(),
+                           "size": len(tracking_payload)}],
+                "limits": ["Supplemental public bytes only; private ancestry unavailable."],
+            }
+            additional = public / ADDITIONAL_ADDENDA[0]
+            additional.parent.mkdir(parents=True, exist_ok=True)
+            additional.write_bytes(canonical_manifest(supplemental))
+            commit(public, "bind Spec Kit tracking documentation")
+            self.assertEqual(len(validate_addenda(public)), 2)
+            self.assertEqual(validate_portable_root(public)["independentValidation"], "pending")
+            self.assertEqual(root_manifest_payload(public, tracking), tracking_payload)
+            original_supplement = additional.read_bytes()
+            wrong_digest = {**supplemental, "files": [{**supplemental["files"][0],
+                                                        "sha256": "0" * 64}]}
+            additional.write_bytes(canonical_manifest(wrong_digest))
+            with self.assertRaisesRegex(ValueError, "unchanged since introduction|payload"):
+                validate_addenda(public)
+            additional.write_bytes(original_supplement)
+            validate_addenda(public)
             data = json.loads((public / MANIFEST).read_text())
             data["independentValidation"] = "completed"
             write(public / MANIFEST, json.dumps(data, indent=2, sort_keys=True) + "\n")

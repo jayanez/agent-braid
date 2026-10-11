@@ -15,6 +15,8 @@ import subprocess
 
 MANIFEST = "docs/releases/public-export.json"
 ADDENDUM = "docs/releases/public-export-addendum-m2.json"
+ADDITIONAL_ADDENDA = ("docs/releases/public-export-addendum-spec-kit.json",)
+ADDENDA = (ADDENDUM, *ADDITIONAL_ADDENDA)
 MANIFEST_VERSION = "0.1.0"
 MANIFEST_FIELDS = {
     "recordVersion", "sourceCommit", "sourceTree", "publicationMode",
@@ -290,17 +292,36 @@ def validate_portable_root(root: Path) -> dict:
     unreachable = _git(root, "fsck", "--unreachable", "--no-reflogs", allow_failure=True)
     if unreachable.returncode not in (0, 1) or b"unreachable " in unreachable.stdout + unreachable.stderr:
         raise ValueError("public repository contains unreachable objects")
-    validate_addendum(root, data)
+    validate_addenda(root, data)
     return data
 
 
 def validate_addendum(root: Path, base: dict | None = None) -> dict | None:
-    """Bind post-root public files to one reachable, immutable snapshot."""
+    """Validate the historical M2 addendum (compatibility API)."""
+    return _validate_addendum(root, ADDENDUM, base)
+
+
+def validate_addenda(root: Path, base: dict | None = None) -> list[dict]:
+    """Bind each allowlisted post-root supplement to an immutable snapshot."""
     root = root.resolve()
-    path = root / ADDENDUM
+    results = [result for name in ADDENDA
+               if (result := _validate_addendum(root, name, base)) is not None]
+    paths = [item["path"] for result in results for item in result["files"]]
+    if len(paths) != len(set(paths)):
+        raise ValueError("public export addenda bind duplicate paths")
+    return results
+
+
+def _validate_addendum(root: Path, addendum_path: str,
+                       base: dict | None = None) -> dict | None:
+    """Validate one known supplement without changing any historical record."""
+    root = root.resolve()
+    if addendum_path not in ADDENDA:
+        raise ValueError("public export addendum path is not allowlisted")
+    path = root / addendum_path
     if not path.is_file():
         introduced = _git(root, "log", "--format=%H", "--diff-filter=A", "HEAD",
-                          "--", ADDENDUM).stdout.decode("ascii").splitlines()
+                          "--", addendum_path).stdout.decode("ascii").splitlines()
         if introduced:
             raise ValueError("public export addendum is missing after introduction")
         return None
@@ -308,15 +329,15 @@ def validate_addendum(root: Path, base: dict | None = None) -> dict | None:
         base = load_manifest(root)
     payload = path.read_bytes()
     head = _git(root, "rev-parse", "HEAD").stdout.decode("ascii").strip()
-    return _validated_addendum(str(root), head, digest_bytes(payload),
+    return _validated_addendum(str(root), addendum_path, head, digest_bytes(payload),
                                digest(root / MANIFEST))
 
 
 @lru_cache(maxsize=16)
-def _validated_addendum(root_name: str, head: str, addendum_hash: str,
+def _validated_addendum(root_name: str, addendum_path: str, head: str, addendum_hash: str,
                         base_hash: str) -> dict:
     root = Path(root_name)
-    path = root / ADDENDUM
+    path = root / addendum_path
     payload = path.read_bytes()
     if digest_bytes(payload) != addendum_hash:
         raise ValueError("public export addendum changed during validation")
@@ -345,7 +366,7 @@ def _validated_addendum(root_name: str, head: str, addendum_hash: str,
         if not isinstance(item, dict) or set(item) != {"path", "sha256", "size"}:
             raise ValueError("public export addendum file record is invalid")
         relative = safe_relative(item.get("path", ""))
-        if relative in base_paths or relative in {MANIFEST, ADDENDUM} \
+        if relative in base_paths or relative in {MANIFEST, *ADDENDA} \
                 or not HEX64.fullmatch(str(item.get("sha256", ""))) \
                 or type(item.get("size")) is not int or item["size"] < 0:
             raise ValueError(f"public export addendum file metadata is invalid: {relative}")
@@ -353,9 +374,9 @@ def _validated_addendum(root_name: str, head: str, addendum_hash: str,
     if names != sorted(set(names)):
         raise ValueError("public export addendum paths must be unique and sorted")
     introduced = _git(root, "log", "--format=%H", "--diff-filter=A", head,
-                      "--", ADDENDUM).stdout.decode("ascii").splitlines()
+                      "--", addendum_path).stdout.decode("ascii").splitlines()
     if len(introduced) != 1 \
-            or _git(root, "show", f"{introduced[0]}:{ADDENDUM}").stdout != payload:
+            or _git(root, "show", f"{introduced[0]}:{addendum_path}").stdout != payload:
         raise ValueError("public export addendum must be unchanged since introduction")
     snapshot = data["snapshotCommit"]
     if _git(root, "merge-base", "--is-ancestor", snapshot, introduced[0],
@@ -395,12 +416,12 @@ def root_manifest_payload(root: Path, relative: str) -> bytes:
     base = load_manifest(root)
     matches = [item for item in base["files"] if item["path"] == relative]
     if not matches:
-        addendum = validate_addendum(root, base)
-        matches = [item for item in addendum["files"] if item["path"] == relative] \
-            if addendum is not None else []
+        addenda = validate_addenda(root, base)
+        matches = [(addendum, item) for addendum in addenda
+                   for item in addendum["files"] if item["path"] == relative]
         if len(matches) != 1:
             raise ValueError(f"export manifest does not bind required file: {relative}")
-        entry = matches[0]
+        addendum, entry = matches[0]
         payload = _git(root, "show", f"{addendum['snapshotCommit']}:{relative}").stdout
         if digest_bytes(payload) != entry["sha256"] or len(payload) != entry["size"]:
             raise ValueError(f"public snapshot payload does not match manifest: {relative}")

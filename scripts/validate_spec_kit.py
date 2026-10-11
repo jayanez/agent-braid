@@ -242,11 +242,11 @@ def validate_portable_record(root, path, bind_manifest=True):
     """Validate exported record structure without pretending private Git is present."""
     try:
         from scripts.publication import (
-            load_manifest, manifest_entry, root_manifest_payload, validate_addendum,
+            load_manifest, manifest_entry, root_manifest_payload, validate_addenda,
         )
     except ModuleNotFoundError:
         from publication import (
-            load_manifest, manifest_entry, root_manifest_payload, validate_addendum,
+            load_manifest, manifest_entry, root_manifest_payload, validate_addenda,
         )
 
     root = root.resolve()
@@ -255,8 +255,7 @@ def validate_portable_record(root, path, bind_manifest=True):
     protected = set(manifest["protectedPaths"])
     bound = {item["path"] for item in manifest["files"]}
     if bind_manifest:
-        addendum = validate_addendum(root, manifest)
-        if addendum is not None:
+        for addendum in validate_addenda(root, manifest):
             bound.update(item["path"] for item in addendum["files"])
     if bind_manifest and relative_record in protected:
         manifest_entry(root, relative_record)
