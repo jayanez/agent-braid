@@ -393,6 +393,8 @@ applicable terms and project identity.
 
 The experimental [registration-v4 accounting route](docs/tooling/REGISTRATION.md) now implements
 the owner-selected EUR 5.045 subscription reservation with actual allocation
-unknown. The process-scoped observation boundary is approved; its policy-v2
-implementation, trusted native evidence and complete capture approval remain
-pending. Additional spending is EUR 0; human review remains deferred.
+unknown. The approved [process-scoped policy v2](specs/044-ai-tooling-evaluation/native-process-route-policy.md)
+has an additive implementation with explicit verifier, lifecycle and independent
+cash checks. Authentic native evidence, an external gate before each provider
+operation and complete capture approval remain pending. The additional-spend
+cap is EUR 0; human review remains deferred.

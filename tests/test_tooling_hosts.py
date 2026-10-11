@@ -18,6 +18,8 @@ from unittest import mock
 from agent_braid.tooling_capture import (
     AttemptAdmission, MeasuredCosts, StopState, _sha256,
 )
+from agent_braid import tooling_hosts as hosts_module
+from agent_braid import tooling_subscription as subscription_policy
 from agent_braid.tooling_hosts import (
     FilePin, HostLaunchConfig, HostPreparationError, HostSessionAdapter,
     LaunchEvidence, prepare_host_launch,
@@ -265,6 +267,69 @@ class HostAdapterTests(unittest.TestCase):
             with self.assertRaisesRegex(HostPreparationError, "one-shot"):
                 adapter.execute(admission)
         self.assertEqual(calls, [])
+
+    def test_native_v2_host_plan_pins_registered_build_model_config_and_verifier(self):
+        tmp_path = self.with_temp()
+        admission, base = _inputs(tmp_path)
+        model_identity = {"kind": "requested-route", "selector": base.model,
+                          "effort": base.effort,
+                          "effectiveConfig": {"selector": base.model, "effort": base.effort},
+                          "cliBuild": {"version": base.version, "sha256": base.executable_sha256}}
+        candidate_sha = "b" * 64
+        config = base.__class__(**{**base.__dict__,
+            "host_build_sha256": base.executable_sha256,
+            "candidate_artifact_sha256": candidate_sha,
+            "model_identity": model_identity})
+        pins = tuple(hosts_module.FilePin(pin.path.resolve(strict=True), pin.sha256)
+                     for pin in config.config_files)
+        argv = hosts_module._build_argv(config)
+        binding = subscription_policy.NativeProcessRouteBinding(
+            "codex", "c" * 64, admission.slot_id, "d" * 64, "e" * 64, "f" * 64,
+            config.host_build_sha256, candidate_sha, config.executable_sha256,
+            hosts_module._host_config_digest(pins), hosts_module._host_argv_digest(argv),
+            hosts_module._canonical_digest(model_identity),
+            "observer", "1" * 64, "observer-verifier", "2" * 64,
+            "cash", "3" * 64, "cash-verifier", "4" * 64, 30.0)
+        admission = admission.__class__(**{**admission.__dict__, "subscription_binding": binding})
+        plan = prepare_host_launch(admission, config)
+        self.assertEqual(binding, plan.native_route_binding)
+        self.assertEqual(hosts_module._canonical_digest(model_identity), plan.model_identity_sha256)
+
+        calls = []
+        def fake_supervisor(request, caps, observer, *, native_route_verifier):
+            calls.append((request, native_route_verifier))
+            return Outcome()
+
+        with self.assertRaisesRegex(HostPreparationError, "native process route verifier"):
+            HostSessionAdapter(plan, verifier=AllowVerifier(), observer=lambda *_: None,
+                               caps=object(), supervisor=fake_supervisor)
+
+        class RouteVerifier:
+            def verify_observation(self, *args):
+                pass
+        route_verifier = RouteVerifier()
+        adapter = HostSessionAdapter(plan, verifier=AllowVerifier(), observer=lambda *_: None,
+            caps=object(), native_route_verifier=route_verifier, supervisor=fake_supervisor)
+        adapter.execute(admission)
+        self.assertIs(calls[0][1], route_verifier)
+        self.assertEqual(binding, calls[0][0].native_route_binding)
+        self.assertEqual(binding, calls[0][0].subscription_binding)
+
+        stripped = admission.__class__(**{**admission.__dict__, "subscription_binding": None})
+        bypass_adapter = HostSessionAdapter(plan, verifier=AllowVerifier(), observer=lambda *_: None,
+            caps=object(), native_route_verifier=route_verifier, supervisor=fake_supervisor)
+        with self.assertRaisesRegex(HostPreparationError, "route binding differs"):
+            bypass_adapter.execute(stripped)
+
+        for name, changed in (
+            ("build", {"host_build_sha256": "9" * 64}),
+            ("candidate", {"candidate_artifact_sha256": "8" * 64}),
+            ("model", {"model_identity": {**model_identity, "selector": "other"}}),
+            ("cli-build", {"model_identity": {**model_identity,
+                 "cliBuild": {"version": "0.162.0", "sha256": "7" * 64}}}),
+        ):
+            with self.subTest(identity=name), self.assertRaises(HostPreparationError):
+                prepare_host_launch(admission, config.__class__(**{**config.__dict__, **changed}))
 
     def test_adapter_handoff_omits_prompt_and_environment_secrets_from_outcome(self):
         tmp_path = self.with_temp()

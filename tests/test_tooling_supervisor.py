@@ -2,6 +2,7 @@
 """Real local subprocess controls; no host, provider, or network invocation."""
 from __future__ import annotations
 
+from dataclasses import replace
 from datetime import datetime, timedelta, timezone
 import hashlib
 import json
@@ -27,7 +28,10 @@ from agent_braid.tooling_supervisor import (
     TelemetrySnapshot,
     run_supervised,
 )
-from agent_braid.tooling_subscription import SubscriptionBinding, SubscriptionObservation
+from agent_braid.tooling_subscription import (
+    CohortCashObservation, NativeProcessRouteBinding, NativeProcessRouteObservation,
+    SubscriptionBinding, SubscriptionObservation,
+)
 
 
 def _sha(value: bytes | str) -> str:
@@ -41,14 +45,15 @@ def _utc(delta_seconds: float = 0.0) -> str:
 
 
 def _snapshot(*, eur=0.0, tokens=0, wall=0.1, rss=0, disk=0, observed_at=None,
-              incident=False, unrecoverable=False, failures=0, subscription=None):
+              incident=False, unrecoverable=False, failures=0, subscription=None,
+              native_route=None):
     values = {"eur": eur, "tokens": tokens, "input_tokens": tokens, "output_tokens": 0,
               "retry_tokens": 0, "wall_seconds": wall, "rss_bytes": rss, "disk_bytes": disk}
     costs = capture.MeasuredCosts(values, "synthetic measurement", _sha(json.dumps(values)),
                                  observed_at or _utc())
     stop = capture.StopState(incident, unrecoverable, failures, "synthetic stop source",
                              _sha("stop"), observed_at or _utc())
-    return TelemetrySnapshot(costs, stop, subscription)
+    return TelemetrySnapshot(costs, stop, subscription, native_route)
 
 
 def _subscription(binding, *, auth="chatgpt", quota=True, extra=False, credits=False,
@@ -57,6 +62,40 @@ def _subscription(binding, *, auth="chatgpt", quota=True, extra=False, credits=F
                                    quota, 0, "authenticated-account-settings",
                                    _sha("subscription-proof"),
                                    datetime.fromisoformat((observed_at or _utc()).replace("Z", "+00:00")))
+
+
+def _native_binding(request):
+    return NativeProcessRouteBinding(
+        "codex", _sha("registration-v2"), "slot-001", _sha("native-policy"),
+        _sha("account"), _sha("namespace"), request.executable_sha256,
+        _sha("candidate"), request.executable_sha256, supervisor._native_config_digest(()),
+        _sha(supervisor._json_bytes(list(request.argv))), _sha("model-identity"),
+        "native-route-observer", _sha("native-route-observer"),
+        "native-route-verifier", _sha("native-route-verifier"),
+        "cohort-cash-source", _sha("cohort-cash-source"),
+        "cohort-cash-verifier", _sha("cohort-cash-verifier"), 2.0,
+    )
+
+
+def _native_route(binding, identity, *, phase, sequence, quota=True,
+                  gate=True, connected=True, cash=0, started_slots=None):
+    now = datetime.now(timezone.utc)
+    birth_sha = (supervisor._process_birth_sha256(identity.birth)
+                 if identity is not None and identity.birth is not None else None)
+    cash_observation = CohortCashObservation(
+        binding.registration_sha256, cash, True,
+        (started_slots if started_slots is not None else
+         ((binding.slot_id,) if identity is not None else ())), phase == "completed",
+        binding.cash_source_ref, binding.cash_source_sha256,
+        binding.cash_verifier_ref, binding.cash_verifier_sha256, now,
+    )
+    return NativeProcessRouteObservation(
+        binding, phase, "chatgpt", "included-subscription-quota", "unknown-out-of-scope",
+        True, quota, False, False, False, False, False, False,
+        gate, True, connected, identity.pid if identity is not None else None,
+        birth_sha, sequence, binding.observer_source_ref, binding.observer_source_sha256,
+        binding.observer_verifier_ref, binding.observer_verifier_sha256, now, cash_observation,
+    )
 
 
 class ToolingSupervisorTests(unittest.TestCase):
@@ -681,6 +720,221 @@ class ToolingSupervisorTests(unittest.TestCase):
         unsafe = ProcessRequest(**{**request.__dict__, "output_root": self.source})
         with self.assertRaisesRegex(SupervisorError, "disjoint from all source and grant roots"):
             run_supervised(unsafe, self.caps, self.observer()[0])
+
+    def test_native_v2_requires_verifier_and_binds_process_before_stdin(self):
+        request = self.request("import sys; print(sys.stdin.read())", stdin=b"bound input")
+        binding = _native_binding(request)
+        request = ProcessRequest(**{**request.__dict__,
+                                    "subscription_binding": binding,
+                                    "native_route_binding": binding})
+        observer_calls = []
+
+        def observer(identity, elapsed, final=False):
+            sequence = len(observer_calls)
+            phase = "prelaunch" if identity is None else ("completed" if final else "running")
+            observer_calls.append((phase, identity.pid if identity else None))
+            return _snapshot(wall=0.1 + max(elapsed, 0.0), native_route=_native_route(
+                binding, identity, phase=phase, sequence=sequence))
+
+        with self.assertRaisesRegex(SupervisorError, "trusted native route verifier"):
+            run_supervised(request, self.caps, observer)
+
+        calls = []
+        class Verifier:
+            def verify_observation(self, observation, supplied_binding, identity, request, final):
+                self.assert_binding = supplied_binding
+                calls.append((observation.phase, identity.pid if identity else None, final))
+
+        outcome = run_supervised(request, self.caps, observer, native_route_verifier=Verifier())
+        self.assertTrue(outcome.completed, outcome)
+        self.assertEqual("prelaunch", calls[0][0])
+        self.assertEqual("running", calls[1][0])
+        self.assertEqual("completed", calls[-1][0])
+        self.assertFalse(calls[0][2])
+        self.assertTrue(calls[-1][2])
+        self.assertEqual(calls[1][1], calls[-1][1])
+        self.assertEqual("bound input", outcome.stdout_path.read_text().strip())
+        route = json.loads(outcome.receipt_path.read_text())["lastSnapshot"]["nativeProcessRoute"]
+        self.assertNotIn("sourceRef", route)
+        self.assertNotIn("verifierRef", route)
+
+    def test_native_v2_rejects_identity_argv_and_config_drift_before_launch(self):
+        request = self.request("pass")
+        binding = _native_binding(request)
+        route_request = ProcessRequest(**{**request.__dict__, "native_route_binding": binding})
+        with self.assertRaisesRegex(SupervisorError, "argv hash"):
+            run_supervised(ProcessRequest(**{**route_request.__dict__, "argv": ("-c", "changed")}),
+                           self.caps, lambda *_: self.fail("must refuse before observer"),
+                           native_route_verifier=type("V", (), {"verify_observation": lambda *args: None})())
+        altered = ProcessRequest(**{**route_request.__dict__,
+                                    "file_pins": (FilePin(self.source / "later", _sha("later")),)})
+        (self.source / "later").write_text("later")
+        result = run_supervised(altered, self.caps, lambda *_: self.fail("must refuse before observer"),
+                                native_route_verifier=type("V", (), {"verify_observation": lambda *args: None})())
+        self.assertEqual("start-drift", result.status)
+        self.assertFalse(result.launched)
+
+    def test_native_v2_quota_cash_observer_and_verifier_fail_closed(self):
+        request = self.request("import time,sys; time.sleep(5); sys.stdin.read()", stdin=b"must not arrive")
+        binding = _native_binding(request)
+
+        def request_with_binding():
+            self.output_counter += 1
+            output = Path(self.temp.name) / f"native-output-{self.output_counter}"
+            output.mkdir(mode=0o700)
+            return ProcessRequest(**{**request.__dict__, "output_root": output,
+                                     "native_route_binding": binding})
+
+        for label, changes in (("quota", {"quota": False}), ("cash", {"cash": 0.01}),
+                               ("observer", {"connected": False})):
+            with self.subTest(label=label):
+                calls = []
+                def unsafe_observer(identity, elapsed, final=False, changes=changes):
+                    calls.append(identity)
+                    return _snapshot(native_route=_native_route(
+                        binding, identity, phase="prelaunch", sequence=0, **changes))
+                result = run_supervised(request_with_binding(), self.caps, unsafe_observer,
+                    native_route_verifier=type("V", (), {"verify_observation": lambda *args: None})())
+                self.assertEqual("refused", result.status)
+                self.assertFalse(result.launched)
+
+        false_result = run_supervised(request_with_binding(), self.caps,
+            lambda identity, elapsed, final=False: _snapshot(native_route=_native_route(
+                binding, identity, phase="prelaunch", sequence=0)),
+            native_route_verifier=type("FalseVerifier", (), {
+                "verify_observation": lambda *args: False})())
+        self.assertEqual("refused", false_result.status)
+        self.assertFalse(false_result.launched)
+
+        observed = {"sequence": 0}
+        def observer(identity, elapsed, final=False):
+            observed["sequence"] += 1
+            phase = "prelaunch" if identity is None else ("completed" if final else "running")
+            quota = not (identity is not None and observed["sequence"] >= 3)
+            return _snapshot(wall=0.1 + max(elapsed, 0.0), native_route=_native_route(
+                binding, identity, phase=phase, sequence=observed["sequence"] - 1, quota=quota))
+        outcome = run_supervised(request_with_binding(), self.caps, observer,
+            native_route_verifier=type("V", (), {"verify_observation": lambda *args: None})())
+        self.assertTrue(outcome.launched)
+        self.assertEqual("subscription-policy-violation", outcome.status)
+        self.assertNotIn("must not arrive", outcome.stdout_path.read_text())
+
+        failing = request_with_binding()
+        sequence = {"n": 0}
+        def valid_observer(identity, elapsed, final=False):
+            sequence["n"] += 1
+            phase = "prelaunch" if identity is None else ("completed" if final else "running")
+            return _snapshot(wall=0.1 + max(elapsed, 0.0), native_route=_native_route(
+                binding, identity, phase=phase, sequence=sequence["n"] - 1))
+        class DenyAfterBind:
+            def verify_observation(self, observation, supplied_binding, identity, request, final):
+                if observation.phase == "running" and not final:
+                    raise RuntimeError("trusted route verification failed")
+        denied = run_supervised(failing, self.caps, valid_observer,
+                                native_route_verifier=DenyAfterBind())
+        self.assertTrue(denied.launched)
+        self.assertEqual("measurement-unknown", denied.status)
+        self.assertNotIn("must not arrive", denied.stdout_path.read_text())
+
+    def test_native_v2_rejects_sequence_replay_pid_and_birth_drift_before_stdin(self):
+        for label in ("sequence", "pid", "birth"):
+            with self.subTest(drift=label):
+                request = self.request("import sys; print(sys.stdin.read())", stdin=b"must not arrive")
+                binding = _native_binding(request)
+                request = ProcessRequest(**{**request.__dict__, "native_route_binding": binding})
+                calls = {"n": 0}
+
+                def observer(identity, elapsed, final=False):
+                    calls["n"] += 1
+                    if identity is None:
+                        return _snapshot(native_route=_native_route(
+                            binding, None, phase="prelaunch", sequence=0))
+                    if final:
+                        return _snapshot(wall=0.1 + elapsed, native_route=_native_route(
+                            binding, identity, phase="completed", sequence=2))
+                    route = _native_route(binding, identity, phase="running", sequence=0 if label == "sequence" else 1)
+                    if label == "pid":
+                        route = replace(route, process_id=route.process_id + 1)
+                    elif label == "birth":
+                        route = replace(route, process_birth_sha256=_sha("wrong-kernel-birth"))
+                    return _snapshot(wall=0.1 + elapsed, native_route=route)
+
+                outcome = run_supervised(request, self.caps, observer,
+                    native_route_verifier=type("V", (), {"verify_observation": lambda *args: None})())
+                self.assertTrue(outcome.launched)
+                self.assertEqual("subscription-policy-violation", outcome.status)
+                self.assertIsNotNone(outcome.returncode)
+                self.assertNotIn("must not arrive", outcome.stdout_path.read_text())
+
+    def test_native_v2_refuses_cumulative_cash_coverage_regression(self):
+        request = self.request("pass")
+        binding = _native_binding(request)
+        request = ProcessRequest(**{**request.__dict__, "native_route_binding": binding})
+        birth = ProcessBirthIdentity(12345, "synthetic", "local-test", "birth-token", 0)
+        identity = supervisor.ProcessIdentity(12345, 12345, _utc(), request.executable_sha256, birth)
+        prior_route = _native_route(binding, identity, phase="running", sequence=1,
+                                    started_slots=("prior-slot", binding.slot_id))
+        current_route = _native_route(binding, identity, phase="running", sequence=2,
+                                      started_slots=(binding.slot_id,))
+        prior = _snapshot(wall=0.2, native_route=prior_route)
+        current = _snapshot(wall=0.3, native_route=current_route)
+        with self.assertRaisesRegex(supervisor.SubscriptionError, "cash slot coverage regressed"):
+            supervisor._validate_snapshot(current, self.caps, request, prior, Clock(), identity,
+                native_route_verifier=type("V", (), {"verify_observation": lambda *args: None})())
+
+    def test_native_v2_observer_and_verifier_timeouts_do_not_retry_or_release_stdin(self):
+        request = self.request("import sys; print(sys.stdin.read())", stdin=b"must not arrive")
+        binding = _native_binding(request)
+        request = ProcessRequest(**{**request.__dict__, "native_route_binding": binding,
+                                    "observer_timeout_seconds": 0.05})
+
+        observer_release = threading.Event()
+        observer_calls = []
+        def blocked_observer(identity, elapsed, final=False):
+            observer_calls.append((identity, final))
+            observer_release.wait(1.0)
+            return _snapshot(native_route=_native_route(
+                binding, identity, phase="prelaunch", sequence=0))
+        observer_timeout = run_supervised(request, self.caps, blocked_observer,
+            native_route_verifier=type("V", (), {"verify_observation": lambda *args: None})())
+        observer_release.set()
+        self.assertFalse(observer_timeout.launched)
+        self.assertEqual("measurement-unknown", observer_timeout.status)
+        self.assertEqual(1, len(observer_calls))
+
+        verifier_release = threading.Event()
+        verifier_calls = []
+        def valid_observer(identity, elapsed, final=False):
+            phase = "prelaunch" if identity is None else ("completed" if final else "running")
+            seq = 0 if identity is None else (2 if final else 1)
+            return _snapshot(wall=0.1 + elapsed, native_route=_native_route(
+                binding, identity, phase=phase, sequence=seq))
+        class BlockPrelaunchVerifier:
+            def verify_observation(self, observation, *args):
+                verifier_calls.append(observation.phase)
+                if observation.phase == "prelaunch":
+                    verifier_release.wait(1.0)
+        verifier_timeout = run_supervised(request, self.caps, valid_observer,
+                                          native_route_verifier=BlockPrelaunchVerifier())
+        verifier_release.set()
+        self.assertFalse(verifier_timeout.launched)
+        self.assertEqual("refused", verifier_timeout.status)
+        self.assertEqual(["prelaunch"], verifier_calls)
+
+        running_release = threading.Event()
+        running_calls = []
+        class BlockRunningVerifier:
+            def verify_observation(self, observation, *args):
+                running_calls.append(observation.phase)
+                if observation.phase == "running":
+                    running_release.wait(1.0)
+        running_timeout = run_supervised(request, self.caps, valid_observer,
+                                         native_route_verifier=BlockRunningVerifier())
+        running_release.set()
+        self.assertTrue(running_timeout.launched)
+        self.assertEqual("measurement-unknown", running_timeout.status)
+        self.assertEqual(["prelaunch", "running"], running_calls)
+        self.assertNotIn("must not arrive", running_timeout.stdout_path.read_text())
 
 
 if __name__ == "__main__":

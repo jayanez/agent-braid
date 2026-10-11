@@ -24,7 +24,7 @@ import stat
 import subprocess
 import threading
 import time
-from typing import Callable, Mapping
+from typing import Callable, Mapping, Protocol
 
 from . import tooling_capture as capture
 from .tooling_process_birth import (
@@ -34,6 +34,8 @@ from .tooling_process_birth import (
     close_process_birth,
 )
 from .tooling_subscription import (
+    NativeProcessRouteBinding,
+    NativeProcessRouteObservation,
     SubscriptionBinding,
     SubscriptionError,
     SubscriptionObservation,
@@ -79,6 +81,10 @@ class _StartDrift(Exception):
     """A pinned pathname changed at the process-launch boundary."""
 
 
+class _NativeRouteVerificationError(SubscriptionError):
+    """Trusted route verifier denied, failed, or missed its fixed deadline."""
+
+
 @dataclass(frozen=True)
 class BudgetCaps:
     """Frozen per-cohort maxima; no defaults imply permission to spend."""
@@ -120,13 +126,13 @@ class BudgetCaps:
 class ProcessRequest:
     executable: Path
     executable_sha256: str
-    argv: tuple[str, ...]
+    argv: tuple[str, ...] = field(repr=False)
     cwd: Path
     output_root: Path
     source_roots: tuple[Path, ...]
     grant_root: Path | None
-    env: Mapping[str, str]
-    stdin: bytes | None
+    env: Mapping[str, str] = field(repr=False)
+    stdin: bytes | None = field(repr=False)
     max_output_bytes: int
     timeout_seconds: float
     observation_max_age_seconds: float
@@ -135,9 +141,10 @@ class ProcessRequest:
     kill_grace_seconds: float
     file_pins: tuple["FilePin", ...] = ()
     observer_timeout_seconds: float = MAX_OBSERVER_CALLBACK_SECONDS
-    subscription_binding: SubscriptionBinding | None = None
+    subscription_binding: (SubscriptionBinding | NativeProcessRouteBinding | None) = field(default=None, repr=False)
     subscription_estimate_runtime_guard: estimate_policy.RuntimeGuard | None = None
     subscription_estimate_admission_receipt_sha256: str | None = None
+    native_route_binding: NativeProcessRouteBinding | None = field(default=None, repr=False)
 
 
 @dataclass(frozen=True)
@@ -155,6 +162,7 @@ class TelemetrySnapshot:
     costs: capture.MeasuredCosts
     stop_state: capture.StopState
     subscription: SubscriptionObservation | None = None
+    native_route: NativeProcessRouteObservation | None = field(default=None, repr=False)
 
 
 @dataclass(frozen=True)
@@ -203,7 +211,24 @@ class ProcessOutcome:
         return self.status == "completed" and self.returncode == 0 and self.group_cleanup == "clean"
 
 
-Observer = Callable[[ProcessIdentity | None, float], TelemetrySnapshot]
+# Policy v1 observers keep the two-argument callback. Native route policy v2
+# passes a third final-boundary boolean so the observer can emit the strict
+# `prelaunch` / `running` / `completed` phase expected by the v2 DTO.
+Observer = Callable[..., TelemetrySnapshot]
+
+
+class NativeRouteVerifier(Protocol):
+    """Trusted, externally installed verifier for native process route evidence.
+
+    This verifier must authenticate both the route and independent cash source,
+    and attest a continuously enforced per-provider-operation gate. Polling
+    snapshots alone cannot provide that enforcement.
+    """
+
+    def verify_observation(self, observation: NativeProcessRouteObservation,
+                           binding: NativeProcessRouteBinding,
+                           identity: ProcessIdentity | None, request: ProcessRequest,
+                           final: bool) -> None: ...
 
 
 def run_supervised(
@@ -213,6 +238,7 @@ def run_supervised(
     *,
     cancel_event: threading.Event | None = None,
     clock: Clock = Clock(),
+    native_route_verifier: NativeRouteVerifier | None = None,
 ) -> ProcessOutcome:
     """Run once, serializing estimate-bound work by registration and host."""
     guard = request.subscription_estimate_runtime_guard if isinstance(request, ProcessRequest) else None
@@ -225,9 +251,11 @@ def run_supervised(
         if receipt_sha is None or not capture._consume_verified_estimate_guard(guard, receipt_sha):
             raise SupervisorError("runtime guard requires a fresh, verified v4 admission lease")
     if guard is None:
-        return _run_supervised_body(request, caps, observer, cancel_event=cancel_event, clock=clock)
+        return _run_supervised_body(request, caps, observer, cancel_event=cancel_event, clock=clock,
+                                    native_route_verifier=native_route_verifier)
     with _estimate_host_lock(guard):
-        return _run_supervised_body(request, caps, observer, cancel_event=cancel_event, clock=clock)
+        return _run_supervised_body(request, caps, observer, cancel_event=cancel_event, clock=clock,
+                                    native_route_verifier=native_route_verifier)
 
 
 @contextmanager
@@ -274,6 +302,7 @@ def _run_supervised_body(
     *,
     cancel_event: threading.Event | None = None,
     clock: Clock = Clock(),
+    native_route_verifier: NativeRouteVerifier | None = None,
 ) -> ProcessOutcome:
     """Validate, start once, multiplex pipes, observe budgets, and reap the process.
 
@@ -282,7 +311,7 @@ def _run_supervised_body(
     """
     if os.name != "posix":
         raise SupervisorError("the process supervisor requires POSIX process groups")
-    _validate_request(request, caps, observer, clock)
+    _validate_request(request, caps, observer, clock, native_route_verifier)
     executable, cwd, output_root, source_roots, grant_root, env = _resolve_paths(request)
     _ensure_fresh_output_root(output_root)
     try:
@@ -295,14 +324,19 @@ def _run_supervised_body(
         pinned_files = _resolve_file_pins(request.file_pins)
         if not _launch_pins_match(executable, request.executable_sha256, pinned_files):
             return _not_launched("start-drift", "pinned configuration input differs", clock)
+        native_binding = _native_route_binding(request)
+        if native_binding is not None and _native_config_digest(pinned_files) != native_binding.config_sha256:
+            return _not_launched("start-drift", "native route configuration inventory differs from registration", clock)
     except (OSError, SupervisorError) as exc:
         return _not_launched("start-drift", _safe_reason(exc), clock)
     started_at = _utc(clock)
 
     try:
         initial = _observe_bounded(observer, None, 0.0,
-                                  request.observer_timeout_seconds)
-        _validate_snapshot(initial, caps, request, None, clock, None)
+                                  request.observer_timeout_seconds,
+                                  native_route=_native_route_binding(request) is not None)
+        _validate_snapshot(initial, caps, request, None, clock, None,
+                           native_route_verifier=native_route_verifier)
     except SubscriptionError as exc:
         return _not_launched("refused", _safe_reason(exc), clock)
     except Exception as exc:
@@ -353,8 +387,9 @@ def _run_supervised_body(
         "argvSha256": _sha(_json_bytes(list(request.argv))),
         "stdinBytes": len(request.stdin or b""),
         "environmentEntryCount": len(env), "preDispatchSnapshot": _snapshot_dict(initial),
-        "subscriptionBinding": request.subscription_binding.as_dict()
-        if request.subscription_binding is not None else None,
+        "subscriptionBinding": _safe_subscription_binding_dict(
+            _native_route_binding(request) or request.subscription_binding)
+        if _native_route_binding(request) is not None or request.subscription_binding is not None else None,
         "subscriptionEstimateRuntimeGuard": _estimate_guard_dict(estimate_guard),
         "filePins": [{"pathSha256": _sha(str(path).encode("utf-8")), "sha256": digest}
                      for path, digest in pinned_files],
@@ -408,6 +443,15 @@ def _run_supervised_body(
         # still pathname observation, not atomic OS-level file binding.
         if not _launch_pins_match(executable, request.executable_sha256, pinned_files):
             raise _StartDrift()
+        if _native_route_binding(request) is not None:
+            try:
+                check_observation(initial.native_route, _native_route_binding(request),
+                                  now=_parse_time(_utc(clock)),
+                                  max_age_seconds=request.observation_max_age_seconds)
+            except SubscriptionError as exc:
+                raise SubscriptionError("native route evidence expired before process launch") from exc
+            if not _launch_pins_match(executable, request.executable_sha256, pinned_files):
+                raise _StartDrift()
         if estimate_guard is not None:
             estimate_guard.validate_observation_freshness()
         process = subprocess.Popen(
@@ -424,8 +468,29 @@ def _run_supervised_body(
             birth = None
         start_time_mono = clock.monotonic()
         identity = ProcessIdentity(process.pid, process.pid, _utc(clock), request.executable_sha256, birth)
+        if _native_route_binding(request) is not None and (
+                birth is None or birth.pid != process.pid or not birth.platform
+                or not birth.source or not birth.token):
+            stop_reason, stop_status = "kernel process birth identity is unavailable or mismatched", "measurement-unknown"
         if _hash_executable(executable) != request.executable_sha256 or not _file_pins_match(pinned_files):
             stop_reason, stop_status = "executable or pinned input changed at process start", "start-drift"
+        if stop_reason is None and _native_route_binding(request) is not None:
+            # Bind the child to the trusted route before sending the request on
+            # stdin. The external continuously installed gate must already
+            # block provider operations during this startup interval.
+            try:
+                bound = _observe_bounded(observer, identity, 0.0,
+                                         request.observer_timeout_seconds,
+                                         native_route=True)
+                _validate_snapshot(bound, caps, request, last_snapshot, clock, identity,
+                                   native_route_verifier=native_route_verifier)
+                last_snapshot = bound
+                snapshots.append(bound)
+            except Exception as exc:
+                stop_reason = _safe_reason(exc)
+                stop_status = ("measurement-unknown" if isinstance(exc, _NativeRouteVerificationError)
+                               else "subscription-policy-violation")
+                observer_failure = stop_reason
         if process.stdout is None or process.stderr is None:
             raise SupervisorError("subprocess pipes were not created")
         output_streams[process.stdout.fileno()] = (process.stdout, out_fd, out_hash, "stdout")
@@ -433,7 +498,7 @@ def _run_supervised_body(
         for fd, (stream, _write_fd, _digest, _name) in output_streams.items():
             os.set_blocking(fd, False)
             selector.register(stream, selectors.EVENT_READ, ("read", fd))
-        if process.stdin is not None:
+        if process.stdin is not None and stop_reason is None:
             input_stream = process.stdin
             if request.stdin:
                 os.set_blocking(input_stream.fileno(), False)
@@ -441,6 +506,8 @@ def _run_supervised_body(
             else:
                 input_stream.close()
                 input_stream = None
+        elif process.stdin is not None:
+            process.stdin.close()
         next_observation_at = start_time_mono + request.poll_interval_seconds
         while selector.get_map() or process.poll() is None:
             now_mono = clock.monotonic()
@@ -465,8 +532,10 @@ def _run_supervised_body(
                             max(0.001, request.timeout_seconds - process_elapsed),
                             max(0.001, wall_remaining - elapsed),
                         )
-                        observed = _observe_bounded(observer, identity, elapsed, observer_deadline)
-                        _validate_snapshot(observed, caps, request, last_snapshot, clock, identity)
+                        observed = _observe_bounded(observer, identity, elapsed, observer_deadline,
+                                                    native_route=_native_route_binding(request) is not None)
+                        _validate_snapshot(observed, caps, request, last_snapshot, clock, identity,
+                                           native_route_verifier=native_route_verifier)
                         last_snapshot = observed
                         if len(snapshots) < MAX_RETAINED_SNAPSHOTS:
                             snapshots.append(observed)
@@ -487,7 +556,8 @@ def _run_supervised_body(
                                     stop_reason, stop_status = _safe_reason(exc), "budget-exceeded"
                     except Exception as exc:
                         stop_reason = _safe_reason(exc)
-                        stop_status = ("subscription-policy-violation"
+                        stop_status = ("measurement-unknown" if isinstance(exc, _NativeRouteVerificationError)
+                                       else "subscription-policy-violation"
                                        if isinstance(exc, SubscriptionError) else "measurement-unknown")
                         observer_failure = _safe_reason(exc)
                     next_observation_at = now_mono + request.poll_interval_seconds
@@ -584,8 +654,10 @@ def _run_supervised_body(
             try:
                 final_snapshot = _observe_bounded(
                     observer, identity, elapsed,
-                    request.observer_timeout_seconds)
-                _validate_snapshot(final_snapshot, caps, request, last_snapshot, clock, identity)
+                    request.observer_timeout_seconds,
+                    native_route=_native_route_binding(request) is not None, final=True)
+                _validate_snapshot(final_snapshot, caps, request, last_snapshot, clock, identity,
+                                   native_route_verifier=native_route_verifier, final=True)
                 last_snapshot = final_snapshot
                 if len(snapshots) < MAX_RETAINED_SNAPSHOTS:
                     snapshots.append(final_snapshot)
@@ -655,8 +727,9 @@ def _run_supervised_body(
         "stderrBytesStored": err_written, "stdoutBytesObserved": out_seen,
         "stderrBytesObserved": err_seen, "stdoutSha256": out_hash.hexdigest(),
         "stderrSha256": err_hash.hexdigest(), "lastSnapshot": _snapshot_dict(last_snapshot),
-        "subscriptionBinding": request.subscription_binding.as_dict()
-        if request.subscription_binding is not None else None,
+        "subscriptionBinding": _safe_subscription_binding_dict(
+            _native_route_binding(request) or request.subscription_binding)
+        if _native_route_binding(request) is not None or request.subscription_binding is not None else None,
         "subscriptionEstimateRuntimeGuard": _estimate_guard_dict(estimate_guard),
         "preDispatchSubscription": _snapshot_dict(initial).get("subscription"),
         "observerFailure": observer_failure,
@@ -700,12 +773,26 @@ _LIMITS = (
 )
 
 
-def _validate_request(request, caps, observer, clock):
+def _validate_request(request, caps, observer, clock, native_route_verifier=None):
     if not isinstance(request, ProcessRequest) or not isinstance(caps, BudgetCaps):
         raise SupervisorError("typed process request and frozen budget caps are required")
     if request.subscription_binding is not None and not isinstance(
-            request.subscription_binding, SubscriptionBinding):
+            request.subscription_binding, (SubscriptionBinding, NativeProcessRouteBinding)):
         raise SupervisorError("subscription_binding must be a typed registration binding")
+    native_binding = _native_route_binding(request)
+    if request.native_route_binding is not None and not isinstance(
+            request.native_route_binding, NativeProcessRouteBinding):
+        raise SupervisorError("native_route_binding must be a typed v2 registration binding")
+    if native_binding is not None:
+        if (request.subscription_binding is not None
+                and request.subscription_binding != native_binding):
+            raise SupervisorError("native process route bindings disagree")
+        if not callable(getattr(native_route_verifier, "verify_observation", None)):
+            raise SupervisorError("trusted native route verifier is required for policy v2")
+        if request.executable_sha256 != native_binding.executable_sha256:
+            raise SupervisorError("native route executable hash differs from registered process")
+        if _sha(_json_bytes(list(request.argv))) != native_binding.argv_sha256:
+            raise SupervisorError("native route argv hash differs from registered process")
     if request.subscription_estimate_runtime_guard is not None:
         if not isinstance(request.subscription_estimate_runtime_guard, estimate_policy.RuntimeGuard):
             raise SupervisorError("subscription estimate guard must be derived from v4 capture admission")
@@ -832,7 +919,8 @@ def _ensure_fresh_output_root(root):
         raise SupervisorError("one-shot output root already contains a supervisor artifact")
 
 
-def _validate_snapshot(snapshot, caps, request, prior, clock, identity):
+def _validate_snapshot(snapshot, caps, request, prior, clock, identity,
+                       native_route_verifier=None, *, final=False):
     if not isinstance(snapshot, TelemetrySnapshot):
         raise SupervisorError("observer returned no typed cumulative telemetry snapshot")
     try:
@@ -840,7 +928,45 @@ def _validate_snapshot(snapshot, caps, request, prior, clock, identity):
         capture._validate_stop_state(snapshot.stop_state)
     except capture.CaptureAdmissionError as exc:
         raise SupervisorError(f"observer supplied unknown or invalid telemetry: {exc}") from exc
-    if request.subscription_binding is not None:
+    native_binding = _native_route_binding(request)
+    if native_binding is not None:
+        observation = snapshot.native_route
+        if observation is None:
+            raise SubscriptionError("required native process route observation is missing")
+        expected_phase = "prelaunch" if identity is None else ("completed" if final else "running")
+        if observation.phase != expected_phase:
+            raise SubscriptionError(f"native route phase must be {expected_phase} at this boundary")
+        if identity is None:
+            if observation.process_id is not None or observation.process_birth_sha256 is not None:
+                raise SubscriptionError("native prelaunch route observation cannot bind a process")
+        else:
+            if observation.process_id != identity.pid:
+                raise SubscriptionError("native route observation PID differs from owned process")
+            if identity.birth is None or observation.process_birth_sha256 != _process_birth_sha256(identity.birth):
+                raise SubscriptionError("native route observation lacks the exact kernel process birth binding")
+        try:
+            check_observation(observation, native_binding, now=_parse_time(_utc(clock)),
+                              max_age_seconds=request.observation_max_age_seconds)
+        except SubscriptionError:
+            raise
+        if prior is not None and prior.native_route is not None:
+            previous = prior.native_route
+            if observation.observed_sequence <= previous.observed_sequence:
+                raise SubscriptionError("native route observation sequence did not strictly increase")
+            if observation.observed_at < previous.observed_at:
+                raise SubscriptionError("native route observation timestamp moved backward")
+            prior_cash_slots = set(previous.cash.started_slot_ids)
+            if not prior_cash_slots.issubset(observation.cash.started_slot_ids):
+                raise SubscriptionError("cumulative cohort cash slot coverage regressed")
+            if observation.cash.observed_at < previous.cash.observed_at:
+                raise SubscriptionError("cohort cash observation timestamp moved backward")
+        _verify_native_route_bounded(native_route_verifier, observation, native_binding,
+                                     identity, request, final, request.observer_timeout_seconds)
+        # The trusted callback may perform bounded external I/O. Ensure neither
+        # route nor independent cash proof expired while it ran.
+        check_observation(observation, native_binding, now=_parse_time(_utc(clock)),
+                          max_age_seconds=request.observation_max_age_seconds)
+    elif request.subscription_binding is not None:
         if snapshot.subscription is None:
             raise SubscriptionError("required subscription observation is missing")
         check_observation(snapshot.subscription, request.subscription_binding,
@@ -877,19 +1003,51 @@ class _ObserverTimeout(TimeoutError):
     pass
 
 
-def _observe_bounded(observer, identity, elapsed, timeout_seconds):
+def _verify_native_route_bounded(verifier, observation, binding, identity, request,
+                                 final, timeout_seconds):
+    result = []
+    finished = threading.Event()
+
+    def invoke():
+        try:
+            value = verifier.verify_observation(observation, binding, identity, request, final)
+        except BaseException as exc:
+            result.append((False, exc))
+        else:
+            result.append((True, value))
+        finally:
+            finished.set()
+
+    worker = threading.Thread(target=invoke, name="agent-braid-native-route-verifier", daemon=True)
+    worker.start()
+    if not finished.wait(timeout_seconds):
+        raise _NativeRouteVerificationError("trusted native route verifier exceeded its bounded deadline")
+    succeeded, value = result[0]
+    if not succeeded:
+        raise _NativeRouteVerificationError("trusted native route verification failed") from value
+    if value is not None:
+        raise _NativeRouteVerificationError("trusted native route verifier must return None on success")
+
+
+def _observe_bounded(observer, identity, elapsed, timeout_seconds, *,
+                     native_route=False, final=False):
     """Call untrusted-to-the-loop observer without blocking supervision forever.
 
     The daemon worker cannot safely be killed if its callback ignores the
     timeout. The caller must ensure callback work has no direct provider effect.
     A timed-out call is never retried and no second callback is started.
+    Native policy v2 receives ``(identity, elapsed, final)``; legacy v1 retains
+    its original two-argument callback contract.
     """
     result = []
     finished = threading.Event()
 
     def invoke():
         try:
-            result.append((True, observer(identity, elapsed)))
+            if native_route:
+                result.append((True, observer(identity, elapsed, final)))
+            else:
+                result.append((True, observer(identity, elapsed)))
         except BaseException as exc:
             result.append((False, exc))
         finally:
@@ -1062,7 +1220,47 @@ def _snapshot_dict(snapshot):
         proof = snapshot.subscription.as_dict()
         proof["sourceRefSha256"] = _sha(proof.pop("sourceRef").encode("utf-8"))
         result["subscription"] = proof
+    if snapshot.native_route is not None:
+        proof = snapshot.native_route.as_dict()
+        proof["binding"] = _safe_subscription_binding_dict(snapshot.native_route.binding)
+        proof["sourceRefSha256"] = _sha(proof.pop("sourceRef").encode("utf-8"))
+        proof["verifierRefSha256"] = _sha(proof.pop("verifierRef").encode("utf-8"))
+        proof["cash"]["sourceRefSha256"] = _sha(proof["cash"].pop("sourceRef").encode("utf-8"))
+        proof["cash"]["verifierRefSha256"] = _sha(proof["cash"].pop("verifierRef").encode("utf-8"))
+        result["nativeProcessRoute"] = proof
     return result
+
+
+def _native_route_binding(request):
+    explicit = getattr(request, "native_route_binding", None)
+    legacy_slot = getattr(request, "subscription_binding", None)
+    if isinstance(legacy_slot, NativeProcessRouteBinding):
+        if explicit is not None and explicit != legacy_slot:
+            raise SupervisorError("native process route bindings disagree")
+        return legacy_slot
+    if explicit is not None and legacy_slot is not None:
+        raise SupervisorError("v2 native route binding cannot be combined with a v1 subscription binding")
+    return explicit
+
+
+def _safe_subscription_binding_dict(binding):
+    if isinstance(binding, NativeProcessRouteBinding):
+        value = binding.as_dict()
+        for field in ("observerSourceRef", "observerVerifierRef", "cashSourceRef", "cashVerifierRef"):
+            value[field + "Sha256"] = _sha(value.pop(field).encode("utf-8"))
+        return value
+    return binding.as_dict()
+
+
+def _native_config_digest(file_pins):
+    inventory = sorted(({"pathSha256": _sha(str(path).encode("utf-8")), "sha256": digest}
+                        for path, digest in file_pins), key=lambda item: item["pathSha256"])
+    return _sha(_json_bytes(inventory))
+
+
+def _process_birth_sha256(birth):
+    return _sha(_json_bytes({"pid": birth.pid, "platform": birth.platform,
+                             "source": birth.source, "token": birth.token}))
 
 
 def _hash_executable(path):

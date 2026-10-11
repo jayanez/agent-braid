@@ -12,6 +12,8 @@ import unittest
 from agent_braid import tooling_evaluation as evaluation
 from agent_braid import tooling_model_identity as model_identity_policy
 from agent_braid import tooling_subscription_estimate as subscription_estimate
+from agent_braid import tooling_subscription as subscription_policy
+from tests.test_tooling_subscription import _native_policy
 
 
 def _sha(value: str) -> str:
@@ -161,6 +163,29 @@ def _registration_v4() -> dict:
     return data
 
 
+def _with_native_policy(data: dict) -> dict:
+    """Synthetic complete per-slot bindings; these never authorize real capture."""
+    base = evaluation.validate_registration(data,
+        expected_candidate_sha256=data["candidate"]["sha256"], expected_input_hashes=_inputs(data))
+    policy = _native_policy()
+    for row in policy["hosts"]:
+        host = next(item for item in data["hosts"] if item["name"] == row["host"])
+        row["accountSha256"] = host["modelIdentity"]["providerRoute"]["accountSha256"]
+    policy["processContracts"] = {}
+    for slot in evaluation.generate_slots(base):
+        host = next(item for item in data["hosts"] if item["name"] == slot.host)
+        policy["processContracts"][slot.slot_id] = {
+            "host": slot.host, "hostBuildSha256": host["sha256"],
+            "candidateArtifactSha256": data["candidate"]["sha256"],
+            "executableSha256": host["sha256"],
+            "configSha256": _sha("synthetic-config:" + slot.slot_id),
+            "argvSha256": _sha("synthetic-argv:" + slot.slot_id),
+            "modelIdentitySha256": model_identity_policy.canonical_json_sha256(host["modelIdentity"]),
+        }
+    data["billingPolicy"] = policy
+    return data
+
+
 def _validated(registration: dict | None = None) -> evaluation.ValidatedRegistration:
     value = registration or _registration()
     return evaluation.validate_registration(
@@ -217,6 +242,43 @@ def _complete_ledger(registration: evaluation.ValidatedRegistration, *, unknown_
 
 
 class ToolingEvaluationTests(unittest.TestCase):
+    def test_native_policy_binds_all_108_slots_for_v3_and_v4(self):
+        for factory in (_registration_v3, _registration_v4):
+            with self.subTest(version=factory.__name__):
+                data = _with_native_policy(factory())
+                registered = _validated(data)
+                for slot in evaluation.generate_slots(registered):
+                    bound = subscription_policy.binding_from_registration(registered, slot.slot_id, slot.host)
+                    self.assertIsInstance(bound, subscription_policy.NativeProcessRouteBinding)
+                    self.assertEqual(bound.candidate_artifact_sha256, data["candidate"]["sha256"])
+
+    def test_native_policy_refuses_missing_extra_cross_host_and_drifted_contracts(self):
+        data = _with_native_policy(_registration_v3())
+        slot_id = next(iter(data["billingPolicy"]["processContracts"]))
+        for kind in ("missing", "extra", "host", "candidateArtifactSha256", "hostBuildSha256",
+                     "executableSha256", "modelIdentitySha256"):
+            malformed = copy.deepcopy(data)
+            contracts = malformed["billingPolicy"]["processContracts"]
+            if kind == "missing":
+                contracts.pop(slot_id)
+            elif kind == "extra":
+                contracts["extra-slot"] = copy.deepcopy(contracts[slot_id])
+            elif kind == "host":
+                contracts[slot_id]["host"] = "claude-code"
+            else:
+                contracts[slot_id][kind] = _sha("drift")
+            with self.subTest(kind=kind), self.assertRaises(evaluation.EvaluationError):
+                _validated(malformed)
+
+    def test_native_policy_cannot_change_legacy_registration_scope(self):
+        for version in (evaluation.REGISTRATION_SCHEMA, evaluation.REGISTRATION_SCHEMA_V2):
+            data = _with_native_policy(_registration_v3())
+            data["schemaVersion"] = version
+            for field in ("phase", "humanReviewDeferral", "humanReviewRoles"):
+                data.pop(field)
+            with self.subTest(version=version), self.assertRaisesRegex(evaluation.EvaluationError, "requires technical"):
+                _validated(data)
+
     def test_subscription_policy_is_optional_and_strict_when_present(self):
         # Legacy registrations keep their existing identity; the opt-in policy
         # has no effect on the independent positive total-cost cap/rate fields.

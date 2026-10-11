@@ -15,7 +15,11 @@ import math
 import re
 from typing import Any, Mapping, Sequence
 
-from .tooling_subscription import SubscriptionError, policy_sha256 as _subscription_policy_sha256
+from .tooling_subscription import (
+    NATIVE_PROCESS_POLICY_SCHEMA,
+    SubscriptionError,
+    policy_sha256 as _subscription_policy_sha256,
+)
 from . import tooling_model_identity as model_identity_policy
 from . import tooling_subscription_estimate as subscription_estimate
 
@@ -227,6 +231,9 @@ def validate_registration(
         raise EvaluationError("registration v3/v4 requires the approved EUR 0 included-subscription billingPolicy")
     if "billingPolicy" in data:
         _validate_billing_policy(data["billingPolicy"])
+        if (data["billingPolicy"].get("schema") == NATIVE_PROCESS_POLICY_SCHEMA
+                and schema_version not in {REGISTRATION_SCHEMA_V3, REGISTRATION_SCHEMA_V4}):
+            raise EvaluationError("native-process route policy v2 requires technical registration v3/v4")
     if schema_version == REGISTRATION_SCHEMA_V4:
         try:
             subscription_estimate.validate_policy(data.get(subscription_estimate.REGISTRATION_FIELD))
@@ -268,7 +275,36 @@ def validate_registration(
             raise EvaluationError(f"registered input SHA-256 mismatch: {input_id}")
 
     digest = _canonical_sha256(data)
+    _validate_native_process_contracts(data, digest)
     return ValidatedRegistration(data=data, sha256=digest)
+
+
+def _validate_native_process_contracts(data: Mapping[str, Any], digest: str) -> None:
+    """Bind v2 process contracts to the complete roster and frozen identities.
+
+    These are structural bindings, not authentic account, route or cash evidence.
+    Per-slot configuration and argv pins are checked again at the launch boundary.
+    """
+    policy = data.get("billingPolicy", {})
+    if policy.get("schema") != NATIVE_PROCESS_POLICY_SCHEMA:
+        return
+    slots = generate_slots(ValidatedRegistration(data=data, sha256=digest))
+    contracts = policy["processContracts"]
+    if set(contracts) != {slot.slot_id for slot in slots}:
+        raise EvaluationError("native process contracts must bind exactly all 108 registered slots")
+    for policy_host in policy["hosts"]:
+        host = next(item for item in data["hosts"] if item["name"] == policy_host["host"])
+        expected = {"candidateArtifactSha256": data["candidate"]["sha256"],
+                    "hostBuildSha256": host["sha256"],
+                    "executableSha256": host["sha256"],
+                    "modelIdentitySha256": _canonical_sha256(host["modelIdentity"])}
+        for slot in slots:
+            if slot.host != host["name"]:
+                continue
+            contract = contracts[slot.slot_id]
+            if (contract["host"] != slot.host
+                    or any(contract[field] != value for field, value in expected.items())):
+                raise EvaluationError("native process contract differs from frozen candidate, host or model identity")
 
 
 def generate_slots(registration: ValidatedRegistration) -> tuple[AttemptSlot, ...]:
