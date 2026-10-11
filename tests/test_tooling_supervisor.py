@@ -16,6 +16,7 @@ from unittest.mock import patch
 
 from agent_braid import tooling_capture as capture
 from agent_braid import tooling_supervisor as supervisor
+from agent_braid import tooling_subscription_estimate as estimate_policy
 from agent_braid.tooling_process_birth import ProcessBirthIdentity
 from agent_braid.tooling_supervisor import (
     BudgetCaps,
@@ -154,6 +155,91 @@ class ToolingSupervisorTests(unittest.TestCase):
         proof = receipt["lastSnapshot"]["subscription"]
         self.assertEqual(_sha("authenticated-account-settings"), proof["sourceRefSha256"])
         self.assertNotIn("sourceRef", proof)
+
+    def test_estimated_subscription_runtime_guard_refuses_exhausted_host_and_stops_inflight(self):
+        binding = self.subscription_binding
+        ledger_sha = _sha("ledger")
+        policy = {
+            "schema": estimate_policy.SCHEMA, "methodId": estimate_policy.METHOD_ID,
+            "nominalPeriodSeconds": estimate_policy.PERIOD_SECONDS,
+            "pricesEurPerMonth": {"codex": "100.00", "claude-code": "111.89"},
+            "maxActiveSecondsPerHost": estimate_policy.MAX_ACTIVE_SECONDS_PER_HOST,
+            "reservationEur": "5.045", "budgetCeilingEur": "25.00",
+            "decisionSha256": _sha("decision"), "codexPriceSourceSha256": _sha("price c"),
+            "claudeCodePriceSourceSha256": _sha("price cc"),
+        }
+        def make_guard(seconds, *, age_seconds=0):
+            observed_at = datetime.now(timezone.utc) - timedelta(seconds=age_seconds)
+            active = estimate_policy.ActiveTimeEvidence(
+                binding.registration_sha256, ledger_sha, "active-time-source", _sha("active-time evidence"),
+                observed_at.isoformat().replace("+00:00", "Z"),
+                {"codex": seconds, "claude-code": 0})
+            guard = estimate_policy.runtime_guard(binding.registration_sha256, ledger_sha,
+                                                  "codex", active, policy)
+            receipt_sha = _sha(f"admission-{seconds}")
+            capture._register_verified_estimate_guard(
+                guard, receipt_sha, binding.registration_sha256, ledger_sha)
+            return guard, receipt_sha
+        lock_root = Path(self.temp.name) / "private-estimate-store"
+        lock_root.mkdir(mode=0o700)
+        exhausted, exhausted_receipt = make_guard(57_600)
+        request = ProcessRequest(**{**self.request("import time; time.sleep(0.2)").__dict__,
+                                    "subscription_binding": binding,
+                                    "subscription_estimate_runtime_guard": exhausted,
+                                    "subscription_estimate_admission_receipt_sha256": exhausted_receipt})
+        with patch.object(supervisor.capture, "receipt_directory_for", return_value=lock_root):
+            refused = run_supervised(request, self.caps,
+                                     lambda _identity, _elapsed: _snapshot(
+                                         subscription=_subscription(binding)))
+        self.assertFalse(refused.launched)
+        self.assertEqual("refused", refused.status)
+
+        bare_guard, _bare_receipt = make_guard(0)
+        bare_request = ProcessRequest(**{**self.request("pass").__dict__,
+                                         "subscription_binding": binding,
+                                         "subscription_estimate_runtime_guard": bare_guard})
+        with self.assertRaisesRegex(SupervisorError, "fresh, verified v4 admission lease"):
+            run_supervised(bare_request, self.caps, lambda *_: _snapshot(
+                subscription=_subscription(binding)))
+
+        stale_guard, stale_receipt = make_guard(0, age_seconds=61)
+        stale_request = ProcessRequest(**{**self.request("pass").__dict__,
+                                          "subscription_binding": binding,
+                                          "subscription_estimate_runtime_guard": stale_guard,
+                                          "subscription_estimate_admission_receipt_sha256": stale_receipt})
+        with patch.object(supervisor.capture, "receipt_directory_for", return_value=lock_root):
+            stale = run_supervised(stale_request, self.caps,
+                                   lambda *_: _snapshot(subscription=_subscription(binding)))
+        self.assertFalse(stale.launched)
+
+        fresh_but_aging_guard, aging_receipt = make_guard(0, age_seconds=59)
+        aging_request = ProcessRequest(**{**self.request("import time; time.sleep(2)").__dict__,
+                                          "subscription_binding": binding,
+                                          "subscription_estimate_runtime_guard": fresh_but_aging_guard,
+                                          "subscription_estimate_admission_receipt_sha256": aging_receipt,
+                                          "timeout_seconds": 5})
+        with patch.object(supervisor.capture, "receipt_directory_for", return_value=lock_root):
+            aging = run_supervised(aging_request, self.caps,
+                                   lambda *_: _snapshot(subscription=_subscription(binding)))
+        self.assertTrue(aging.launched)
+        self.assertTrue(aging.completed, aging)
+
+        almost, almost_receipt = make_guard(57_599)
+        request = ProcessRequest(**{**self.request("import time; time.sleep(3)").__dict__,
+                                    "subscription_binding": binding,
+                                    "subscription_estimate_runtime_guard": almost,
+                                    "subscription_estimate_admission_receipt_sha256": almost_receipt})
+        with patch.object(supervisor.capture, "receipt_directory_for", return_value=lock_root):
+            outcome = run_supervised(request, self.caps,
+                                     lambda _identity, _elapsed: _snapshot(
+                                         subscription=_subscription(binding)))
+        self.assertTrue(outcome.launched)
+        self.assertEqual("budget-exceeded", outcome.status)
+        self.assertLessEqual(outcome.wall_elapsed_seconds, 2.0)
+        with self.assertRaisesRegex(SupervisorError, "fresh, verified v4 admission lease"):
+            run_supervised(request, self.caps,
+                           lambda _identity, _elapsed: _snapshot(
+                               subscription=_subscription(binding)))
 
         # Invalid initial state refuses before Popen.
         for label, value in (

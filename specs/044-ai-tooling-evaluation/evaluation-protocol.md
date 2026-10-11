@@ -107,3 +107,17 @@ protocol-peer, actual-host and clean-room records have different evidence types.
 
 Audit registration adherence and all exclusions before technical interpretation. Freeze the technical candidate and evidence and obtain independent technical review; the decision packet may report technical readiness with human evaluation explicitly pending. Human labels/adjudication and founder acceptance remain separate later decisions. Founder may accept a bounded useful integration,
 reject it or leave it pending. M4.5 closure does not close M4 or reverse G4 NO-GO.
+
+## Estimated subscription accounting addendum — 2026-10-11
+
+The [owner-selected estimated convention](subscription-estimation-decision.md) supersedes the requirement to retrieve actual billed-period detail for the prospective estimated technical route. Reserve EUR 5.045 separately, with exact input/assumption/decision bindings and a nominal 28-day denominator. Enforce at most 57,600 nonoverlapping active seconds per host; the existing 16-hour total-wall ceiling remains unchanged.
+
+Do not use this estimate as actual allocation, actual provider accounting or cash. Missing actual allocation may remain unknown on this route; independently verified EUR 0 additional cash, fresh subscription evidence, all other measured resource/candidate/rights gates and all 108 slots remain required. Changed assumptions, missing active-time evidence or cap excess refuse or stop. Report only technical capture under the estimated bound; actual economic completeness and positive utility remain unavailable with unknown actuals or deferred human work. This addendum does not approve the complete registration or change account-wide subscription-observation semantics.
+
+## Approved scope: native-process route evidence
+
+The owner approved this separate observation boundary on 2026-10-11. Versioned
+policy-v2 implementation and authentic evidence remain pending. Current
+subscription-policy-v1 behavior is unchanged; this approval has no capture effect.
+
+The registration records an explicit native-process-route-v2 evidence policy and the observer/verifier source and freshness boundary. Capture admission and each subsequent provider operation require process-bound included-subscription route evidence, no API credentials/provider override/fallback, fresh quota and paid-control state, and independent cohort-attributable actual-cash evidence of EUR 0. accountWideApiBilling is recorded as unknown-out-of-scope, never false. Missing evidence, quota exhaustion, route/config drift, observer loss, nonzero or unknown cash, or any failed control stops before the next provider operation; paid API fallback is prohibited. This policy does not authorize provider calls by itself and does not affect the separate EUR 5.045 estimate reservation, actual-cost unknowns, or human/utility gates.

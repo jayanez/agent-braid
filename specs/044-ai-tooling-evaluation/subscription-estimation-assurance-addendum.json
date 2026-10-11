@@ -1,0 +1,33 @@
+{
+  "schema": "agent-braid-spec044-estimated-accounting-assurance-addendum-v1",
+  "stage": "draft",
+  "human_review": "pending",
+  "scope": "Prospective registration-v4 estimated accounting only; inherited historical assurance remains unchanged.",
+  "decision": "specs/044-ai-tooling-evaluation/subscription-estimation-decision.md",
+  "baseAssurance": "specs/044-ai-tooling-evaluation/assurance.json",
+  "requirements": [
+    {
+      "id": "REQ-006",
+      "scenarios": [
+        {
+          "given": "missing tokens, overlapping phases, exceeded budget and provider failure",
+          "id": "SC-006",
+          "obtained_evidence": [],
+          "planned_evidence": "specs/044-ai-tooling-evaluation/evidence/sc-006.json: exact candidate/input/environment hashes, actual commands/raw outputs, all outcomes and limits; human decisions require their own record. Preserve source hashes for measured technical user/setup/attempt/wall costs while retaining unknown reviewer fee/time and incomplete combined human-inclusive totals. Estimated-route controls must verify reservation/assumption/decision hashes, per-host nonoverlapping active-time limits, EUR25 ceiling and independent EUR0 cash, refusal on missing/stale evidence, and suppression of actual-economic completeness/utility; the owner estimation decision is not capture approval.",
+          "test_file": "specs/044-ai-tooling-evaluation/validation-plan.md",
+          "test_name": "procedure_complete_cost",
+          "then": "Unknown remains distinct from zero; missing required token, RSS, disk, total-wall, active-time, actual-cash, provider/tool/runtime/export/user measurement or source evidence refuses admission or blocks bounded technical completion. Overlapping intervals are not counted twice; excess budgets and provider failures stop without silent retry. Only private-period subscription allocation may remain unknown under the separately bound estimated reservation. Human fees/time remain separately deferred, and actual-economic completeness and positive utility stay ineligible.",
+          "when": "cost accounting and admission run"
+        }
+      ],
+      "text": "Measure technical setup/provider/tool/runtime/export/user costs and enforce numerical stops. Under the owner-selected estimated subscription route, bind and enforce the separate EUR 5.045 reservation while actual allocation/provider accounting remain unknown; retain independently verified EUR 0 additional cash and all other measured technical fields. Preserve future human reviewer time/fee fields as unknown until the separate human phase. Never interpret estimated-budget technical capture as actual economic completeness or human-inclusive utility."
+    }
+  ],
+  "candidateCommit": null,
+  "obtainedEvidence": [],
+  "limits": [
+    "No inherited obtained evidence is rebound to this decision or a new candidate.",
+    "No capture approval, actual allocation completeness, human evaluation or positive utility.",
+    "Candidate freeze, independent review, full registration and live external gates remain pending."
+  ]
+}

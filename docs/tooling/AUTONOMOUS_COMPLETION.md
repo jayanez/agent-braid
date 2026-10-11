@@ -44,19 +44,22 @@ synthetic engineering checks.
 
 ## Action required before actual native capture
 
-1. **Authenticated observations.** Under the existing D2 authorization, use a
-   documented confidential observation path or have the operator record the
-   account comparison directly. Retain exact CLI build, full selected model
-   catalog/configuration and authenticated route. Do not substitute truncated
-   display text, stale account receipts or guessed hashes. The earlier Claude
-   comparison could not complete through the available confidential transport.
-2. **Technical cost scope.** Review a prepared allocation proposal: per-host
-   subscription-period EUR fee times measured nonoverlapping active
-   setup/attempt session seconds divided by that subscription period's seconds.
-   Authenticated fee/period and measured interval receipts remain required;
-   missing values stay unknown. This convention is proposed, not approved.
-   Additional provider spending remains EUR 0. User active-work time is separate;
-   both reviewer-role fee/time fields remain unknown until the human addendum.
+1. **Authenticated observations and process policy.** Retain exact CLI builds,
+   selected model catalogs/configuration and authenticated subscription routes.
+   Confidential account observations do not by themselves prove the effective
+   process route or account namespace binding. On 2026-10-11 the owner approved
+   the process-scoped observation boundary in [ADR 0021](../adr/0021-codex-claude-tooling-integration.md#approved-scope-native-process-billing-observation-boundary).
+   Implement and independently review policy-v2, then obtain trusted fresh quota,
+   paid-control and cohort-attributable EUR 0 cash evidence. Missing evidence
+   refuses capture; subscription-policy-v1 remains unchanged until v2 is delivered.
+2. **Estimated technical cost scope.** The owner approved the separate EUR 5.045
+   reservation with a nominal 28-day denominator and at most 57,600 active seconds
+   per host. The experimental registration-v4 implementation and synthetic
+   controls are available. Bind the private price sources, decision and trusted
+   nonoverlapping active-time observations. No further private billed-period
+   lookup is required or authorized. Actual allocation/provider accounting stay
+   unknown; independent additional-cash evidence must establish EUR 0. User work
+   time remains separate, and reviewer fee/time stay unknown until the human addendum.
 3. **Exact registration approval.** Bind the stable candidate/wheel, all 18
    fixtures/six prompts, rubric, roles, approved D1/D2/deferral, included-only
    billing policy and numerical caps. After the factual bindings and cost scope
@@ -110,3 +113,26 @@ paths; exact argv, raw outputs, failure attempts and digest-bound inventories
 are retained privately. The quick and stable PR repository profiles passed on source `72a396d294205201f7f56d00fa2349dccb540a5c`, and the bounded independent technical review passed on that source. The six technical-validation projections ([039](../../specs/039-ai-tooling-program/evidence/technical-validation.json), [040](../../specs/040-portable-mcp-surface/evidence/technical-validation.json), [041](../../specs/041-ai-tooling-skills/evidence/technical-validation.json), [042](../../specs/042-ai-tooling-packaging/evidence/technical-validation.json), [043](../../specs/043-ai-tooling-journey/evidence/technical-validation.json), [044](../../specs/044-ai-tooling-evaluation/evidence/technical-validation.json)) and the [SPEC-044 technical-review record](../../specs/044-ai-tooling-evaluation/evidence/technical-review.json) bind these results. Integration is recorded separately in [PR #476](https://github.com/jayanez/agent-braid/pull/476); governed remote tracking is shown in the [live milestone](https://github.com/jayanez/agent-braid/milestone/19) and Project. These source receipts do not attest those later operations.
 
 The engineering procedure also passed by direct script invocation on `24921e1a16dfff15cde5af091f7b955491acdbef`: 223 tests, zero skips, stable clean candidate. See [the direct-run receipt](../../specs/044-ai-tooling-evaluation/evidence/engineering-direct-check.json).
+
+## Estimated technical accounting and approved process scope — 2026-10-11
+
+[PR #496](https://github.com/jayanez/agent-braid/pull/496) permits explicitly
+unavailable reference API rates for included-subscription technical registration.
+[PR #497](https://github.com/jayanez/agent-braid/pull/497) implements the experimental
+v4 EUR 5.045 estimate reservation, fresh receipt-bound one-use launch guards and
+separate report fields. Actual subscription allocation/provider accounting remain
+unknown, and positive utility remains ineligible. See [registration](REGISTRATION.md)
+and [money](MONEY.md) for the exact contract and refusal boundaries.
+
+Source candidate `18b193d4cd54170b29ba86874b4839527bd7970b` passed the stable
+local PR profile (1,308 tests, 12 skips), a separate six-test optional-SDK follow-up
+with no skips, and CI (1,308 tests, eight skips; separately 37 MCP tests, no skips).
+Fresh installed macOS and offline emulated Linux AMD64 probes each retained
+14 successful commands and the expected missing-SDK refusal. These records apply
+to that candidate and its wheel, not to later commits or native provider capture.
+The Linux run used ARM64-host emulation and does not satisfy registered T004.
+
+The owner approved the [process-scoped policy boundary](../adr/0021-codex-claude-tooling-integration.md#approved-scope-native-process-billing-observation-boundary).
+Policy-v2 implementation, trusted native observations, complete registration
+approval and all 108 actual outcomes remain pending. Two human reviewers and
+adjudication remain deferred. Neither these PRs nor their checks close M4.5.

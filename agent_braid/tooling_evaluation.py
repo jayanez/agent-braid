@@ -17,11 +17,13 @@ from typing import Any, Mapping, Sequence
 
 from .tooling_subscription import SubscriptionError, policy_sha256 as _subscription_policy_sha256
 from . import tooling_model_identity as model_identity_policy
+from . import tooling_subscription_estimate as subscription_estimate
 
 
 REGISTRATION_SCHEMA = "agent-braid-m45-registration-v1"
 REGISTRATION_SCHEMA_V2 = "agent-braid-m45-registration-v2"
 REGISTRATION_SCHEMA_V3 = "agent-braid-m45-registration-v3"
+REGISTRATION_SCHEMA_V4 = "agent-braid-m45-registration-v4"
 LEDGER_SCHEMA = "agent-braid-m45-ledger-v1"
 HOSTS = ("codex", "claude-code")
 ARMS = ("cli", "mcp-only", "mcp-plus-skills")
@@ -196,7 +198,8 @@ def validate_registration(
         raise EvaluationError("registration must be a JSON object")
     data = _json_copy(registration, "registration")
     schema_version = data.get("schemaVersion")
-    if schema_version not in {REGISTRATION_SCHEMA, REGISTRATION_SCHEMA_V2, REGISTRATION_SCHEMA_V3}:
+    if schema_version not in {REGISTRATION_SCHEMA, REGISTRATION_SCHEMA_V2, REGISTRATION_SCHEMA_V3,
+                              REGISTRATION_SCHEMA_V4}:
         raise EvaluationError("unsupported or missing registration schemaVersion")
     v3_fields = {"phase", "humanReviewDeferral", "humanReviewRoles"}
     if schema_version in {REGISTRATION_SCHEMA, REGISTRATION_SCHEMA_V2} and any(
@@ -220,12 +223,19 @@ def validate_registration(
     _validate_record(data.get("sourceRights"), "sourceRights", "approved")
     _validate_source_rights(data.get("sourceRights"))
     _validate_provider_opt_in(data.get("provider"))
-    if schema_version == REGISTRATION_SCHEMA_V3 and "billingPolicy" not in data:
-        raise EvaluationError("registration v3 requires the approved EUR 0 included-subscription billingPolicy")
+    if schema_version in {REGISTRATION_SCHEMA_V3, REGISTRATION_SCHEMA_V4} and "billingPolicy" not in data:
+        raise EvaluationError("registration v3/v4 requires the approved EUR 0 included-subscription billingPolicy")
     if "billingPolicy" in data:
         _validate_billing_policy(data["billingPolicy"])
+    if schema_version == REGISTRATION_SCHEMA_V4:
+        try:
+            subscription_estimate.validate_policy(data.get(subscription_estimate.REGISTRATION_FIELD))
+        except subscription_estimate.EstimateError as exc:
+            raise EvaluationError(f"invalid subscription allocation upper bound: {exc}") from exc
+    elif subscription_estimate.REGISTRATION_FIELD in data:
+        raise EvaluationError("subscription allocation upper bound requires registration v4")
     _validate_cost_caps(data.get("costCaps"))
-    if schema_version == REGISTRATION_SCHEMA_V3:
+    if schema_version in {REGISTRATION_SCHEMA_V3, REGISTRATION_SCHEMA_V4}:
         _validate_technical_capture_review_deferral(data)
     else:
         _validate_reviewers(data.get("humanReviewers"))
@@ -242,7 +252,7 @@ def validate_registration(
                           billing_policy=data.get("billingPolicy"))
     _validate_cost_rates(
         data.get("costRates"), data["hosts"],
-        allow_unavailable=(schema_version == REGISTRATION_SCHEMA_V3
+        allow_unavailable=(schema_version in {REGISTRATION_SCHEMA_V3, REGISTRATION_SCHEMA_V4}
                            and data.get("billingPolicy", {}).get("mode") == "included-subscription-only"),
     )
 
@@ -306,7 +316,7 @@ def expected_reviewer_participants(registration: ValidatedRegistration) -> tuple
     those rows preserve expected time/fee scope while remaining unobserved.
     """
     _require_validated(registration)
-    if registration.data["schemaVersion"] == REGISTRATION_SCHEMA_V3:
+    if registration.data["schemaVersion"] in {REGISTRATION_SCHEMA_V3, REGISTRATION_SCHEMA_V4}:
         participants = tuple(role["roleId"] for role in registration.data["humanReviewRoles"])
     else:
         participants = tuple(reviewer["reviewerId"] for reviewer in registration.data["humanReviewers"])
@@ -719,7 +729,7 @@ def assess_utility_eligibility(
         ("resolved", "missing", "disagreement", "adjudicated")} for field in
         ("success", "authority_correct", "fidelity")}
     human_complete = True
-    technical_capture = registration.data["schemaVersion"] == REGISTRATION_SCHEMA_V3
+    technical_capture = registration.data["schemaVersion"] in {REGISTRATION_SCHEMA_V3, REGISTRATION_SCHEMA_V4}
     registered_reviewer_ids = (
         set() if technical_capture else
         {reviewer["reviewerId"] for reviewer in registration.data["humanReviewers"]}

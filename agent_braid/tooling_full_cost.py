@@ -18,6 +18,7 @@ import re
 from typing import Mapping, Protocol
 
 from . import tooling_evaluation as evaluation
+from . import tooling_subscription_estimate as subscription_estimate
 from .tooling_money import MoneyLedger, MoneyRoster, MoneySummary
 
 _SCOPE_SCHEMA = "agent-braid-m45-full-cost-scope-v1"
@@ -29,6 +30,43 @@ _MAX_WALL_RECEIPTS = 109
 
 class FullCostError(ValueError):
     """A full-cost policy, time receipt, or approval binding is invalid."""
+
+
+class SubscriptionEstimateVerifier(Protocol):
+    """Authenticates cumulative active-time evidence against the complete ledger."""
+
+    def verify_active_time(self, *, registration_sha256: str, ledger_sha256: str,
+                           evidence: subscription_estimate.ActiveTimeEvidence) -> bool: ...
+
+
+def assess_estimated_subscription_allocation(
+    registration: evaluation.ValidatedRegistration,
+    ledger: evaluation.EvaluationLedger,
+    evidence: subscription_estimate.ActiveTimeEvidence,
+    verifier: SubscriptionEstimateVerifier | None,
+) -> subscription_estimate.EstimateAssessment:
+    """Verify and assess v4 reservation evidence without creating actual money.
+
+    This is a technical accounting status only. It cannot complete full economic
+    cost, supply actual allocation/provider totals, or establish utility.
+    """
+    evaluation._require_validated(registration)
+    evaluation.validate_ledger(ledger, registration)
+    if registration.data["schemaVersion"] != evaluation.REGISTRATION_SCHEMA_V4:
+        raise FullCostError("estimated subscription allocation requires registration v4")
+    if verifier is None or not callable(getattr(verifier, "verify_active_time", None)):
+        raise FullCostError("trusted active-time verifier is required for estimated accounting")
+    ledger_sha256 = _canonical_sha256(ledger.as_dict())
+    try:
+        if verifier.verify_active_time(registration_sha256=registration.sha256,
+                                       ledger_sha256=ledger_sha256, evidence=evidence) is not True:
+            raise FullCostError("active-time evidence verifier refused the exact cohort and ledger")
+        return subscription_estimate.assess(
+            registration.data[subscription_estimate.REGISTRATION_FIELD], evidence,
+            registration_sha256=registration.sha256, ledger_sha256=ledger_sha256,
+        )
+    except subscription_estimate.EstimateError as exc:
+        raise FullCostError(f"estimated subscription accounting refused: {exc}") from exc
 
 
 def _identifier(value: object, label: str) -> str:
@@ -95,7 +133,9 @@ class FullCostScope:
         cls, registration: evaluation.ValidatedRegistration,
     ) -> "FullCostScope | None":
         evaluation._require_validated(registration)
-        technical_only = registration.data["schemaVersion"] == evaluation.REGISTRATION_SCHEMA_V3
+        technical_only = registration.data["schemaVersion"] in {
+            evaluation.REGISTRATION_SCHEMA_V3, evaluation.REGISTRATION_SCHEMA_V4,
+        }
         raw = registration.data.get("fullCostScope")
         if raw is None:
             return None
@@ -343,6 +383,8 @@ def complete_full_cost(
     time_verifier: HumanTimeVerifier | None,
     study_wall_receipts: tuple[StudyWallIntervalReceipt, ...] | None = None,
     study_wall_verifier: StudyWallVerifier | None = None,
+    subscription_estimate_evidence: subscription_estimate.ActiveTimeEvidence | None = None,
+    subscription_estimate_verifier: SubscriptionEstimateVerifier | None = None,
 ) -> MoneySummary:
     """Return an upgraded immutable summary only when the full contract clears.
 
@@ -352,7 +394,8 @@ def complete_full_cost(
     """
     evaluation._require_validated(registration)
     evaluation.validate_ledger(ledger, registration)
-    if registration.data["schemaVersion"] == evaluation.REGISTRATION_SCHEMA_V3:
+    if registration.data["schemaVersion"] in {evaluation.REGISTRATION_SCHEMA_V3,
+                                                evaluation.REGISTRATION_SCHEMA_V4}:
         roles = set(evaluation.expected_reviewer_participants(registration))
         if human_time_receipts is not None and any(
             isinstance(receipt, HumanTimeReceipt) and receipt.participant_id in roles
@@ -394,6 +437,15 @@ def complete_full_cost(
     reasons: list[tuple[str, str]] = []
     scope_attestation = scope_verifier.verify_scope(scope, registration.sha256, roster.sha256)
     _validate_scope_attestation(scope, roster, scope_attestation)
+    estimated_route = registration.data["schemaVersion"] == evaluation.REGISTRATION_SCHEMA_V4
+    estimate_assessment = None
+    if estimated_route:
+        if subscription_estimate_evidence is None:
+            raise FullCostError("v4 technical completion requires verified active-time evidence")
+        estimate_assessment = assess_estimated_subscription_allocation(
+            registration, ledger, subscription_estimate_evidence,
+            subscription_estimate_verifier,
+        )
     if scope.technical_only:
         for role_id in evaluation.expected_reviewer_participants(registration):
             activity_id = f"reviewer:{role_id}"
@@ -434,12 +486,15 @@ def complete_full_cost(
     }
     verified_methods = {attestation.policy_sha256
                         for attestation in money_ledger.verified_allocation_policy_attestations}
-    if set(allocated) != expected_allocations or money_summary.allocated_subscription_cost_eur is None:
+    if estimated_route:
+        reasons.extend((activity_id, "allocatedSubscriptionCostEur")
+                       for activity_id in sorted(expected_allocations - set(allocated)))
+    if not estimated_route and (set(allocated) != expected_allocations or money_summary.allocated_subscription_cost_eur is None):
         reasons.extend((activity_id, "allocatedSubscriptionCostEur")
                        for activity_id in sorted(expected_allocations - set(allocated)))
         if not reasons:
             reasons.append(("subscription-allocation", "incomplete-or-unknown"))
-    for activity_id, receipt in allocated.items():
+    for activity_id, receipt in (allocated.items() if not estimated_route else ()):
         binding = receipt.allocation_method
         if binding is None or (
             binding.registration_ref != roster.registration_ref
@@ -496,7 +551,14 @@ def complete_full_cost(
     # The subscription accounting boundary is provider cash + prepaid allocation;
     # reference-price estimates and reviewer cash are separate measures.
     provider_total = money_summary.provider_accounting_cost_eur
-    cap_totals["eur"] = float(provider_total) if provider_total is not None else None
+    if estimated_route and estimate_assessment is not None:
+        if not isinstance(money_summary.actual_provider_spend_eur, Decimal):
+            raise FullCostError("estimated technical route requires known actual provider cash")
+        cap_totals["eur"] = float(
+            estimate_assessment.reservation_eur + money_summary.actual_provider_spend_eur
+        )
+    else:
+        cap_totals["eur"] = float(provider_total) if provider_total is not None else None
     cap_totals["wall_seconds"] = float(wall_seconds) if wall_seconds is not None else None
     cap_assessment = evaluation.check_cost_caps(registration, cap_totals)
     exact_provider_cap_exceeded = (provider_total is not None and provider_total > Decimal(str(
@@ -506,13 +568,25 @@ def complete_full_cost(
     if cap_assessment.stop:
         reasons.extend(("numeric-stop", reason) for reason in cap_assessment.reasons)
     technical_stop_required = None
-    if registration.data["schemaVersion"] == evaluation.REGISTRATION_SCHEMA_V3:
+    if registration.data["schemaVersion"] in {evaluation.REGISTRATION_SCHEMA_V3,
+                                                evaluation.REGISTRATION_SCHEMA_V4}:
         technical_stop_required = (
-            money_summary.technical_required_measures_complete is not True
-            or money_summary.technical_cap_violation is not False
+            (money_summary.technical_required_measures_complete is not True
+             and not (estimated_route and estimate_assessment is not None
+                      and _estimated_cash_rows_complete(money_ledger, roster)
+                      and isinstance(money_summary.technical_additional_spend_eur, Decimal)
+                      and money_summary.technical_additional_spend_eur <= Decimal(str(
+                          registration.data["billingPolicy"]["additionalSpendCapEur"]))))
+            or
+            (money_summary.technical_cap_violation is not False
+             and not (estimated_route and estimate_assessment is not None
+                      and isinstance(money_summary.technical_additional_spend_eur, Decimal)
+                      and money_summary.technical_additional_spend_eur <= Decimal(str(
+                          registration.data["billingPolicy"]["additionalSpendCapEur"]))))
             or cap_assessment.stop
             or exact_provider_cap_exceeded
             or not cost_assessment.complete
+            or (estimated_route and estimate_assessment is None)
         )
     human_microseconds_by_participant = _human_time_union(distinct_time_receipts.values())
     reviewers = {reviewer_id for reviewer_id, _ in scope.reviewer_fee_applicability}
@@ -534,6 +608,18 @@ def complete_full_cost(
     human_seconds = (_seconds_from_microseconds(sum(human_microseconds_by_participant.values()))
                      if not missing_time and not scope.technical_only else None)
     complete = not reasons and cost_assessment.complete and not scope.technical_only
+    estimated_cash_complete = (
+        estimated_route and estimate_assessment is not None
+        and _estimated_cash_rows_complete(money_ledger, roster)
+        and cost_assessment.complete and not cap_assessment.stop
+        and isinstance(money_summary.technical_additional_spend_eur, Decimal)
+        and money_summary.technical_additional_spend_eur <= Decimal(str(
+            registration.data["billingPolicy"]["additionalSpendCapEur"]))
+    )
+    missing_technical = tuple(
+        item for item in money_summary.missing_technical_required
+        if not (estimated_route and item[1] == "allocatedSubscriptionCostEur")
+    )
     return replace(
         money_summary,
         full_economic_cost_complete=complete,
@@ -549,8 +635,32 @@ def complete_full_cost(
         study_wall_receipt_sha256s=(tuple(sorted(
             receipt.sha256 for receipt in (study_wall_receipts or ())
         )) if wall_seconds is not None else ()),
+        technical_required_measures_complete=(True if estimated_cash_complete
+                                               else money_summary.technical_required_measures_complete),
+        missing_technical_required=(missing_technical if estimated_route
+                                    else money_summary.missing_technical_required),
+        technical_cap_violation=(False if estimated_cash_complete
+                                 and isinstance(money_summary.technical_additional_spend_eur, Decimal)
+                                 and money_summary.technical_additional_spend_eur <= Decimal(str(
+                                     registration.data["billingPolicy"]["additionalSpendCapEur"]))
+                                 else money_summary.technical_cap_violation),
         technical_stop_required=technical_stop_required,
+        subscription_allocation_upper_bound_eur=(
+            estimate_assessment.allocated_upper_bound_eur if estimate_assessment is not None else None
+        ),
+        subscription_estimate_evidence_sha256=(
+            _canonical_sha256(subscription_estimate_evidence.as_dict())
+            if estimate_assessment is not None and subscription_estimate_evidence is not None else None
+        ),
     )
+
+
+def _estimated_cash_rows_complete(money_ledger: MoneyLedger, roster: MoneyRoster) -> bool:
+    expected = {item.activity_id for item in roster.activities
+                if item.kind in {"setup", "attempt"}}
+    recorded = {receipt.activity_id for receipt, _ in money_ledger.history
+                if receipt.measure == "actualAdditionalSpendEur"}
+    return len(expected) == 109 and recorded == expected
 
 
 def _expected_time_rows(scope: FullCostScope, roster: MoneyRoster) -> set[tuple[str, str]]:

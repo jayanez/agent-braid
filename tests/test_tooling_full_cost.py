@@ -1,12 +1,16 @@
 # SPDX-License-Identifier: AGPL-3.0-only
 """Synthetic controls for prospective SPEC-044 T006 full-cost composition."""
 from dataclasses import replace
+from datetime import datetime, timezone
 from decimal import Decimal
 import copy
+import hashlib
+import json
 import hashlib
 import unittest
 
 from agent_braid import tooling_evaluation as evaluation
+from agent_braid import tooling_subscription_estimate as subscription_estimate
 from agent_braid.tooling_full_cost import (
     FullCostScope,
     FullCostError,
@@ -174,7 +178,9 @@ def _time_receipts(roster):
     attempt_ids = tuple(item.activity_id for item in activities if item.kind == "attempt")
     all_ids = tuple(item.activity_id for item in activities)
     rows = [("operator-1", all_ids, "10:00:00", "10:01:00")]
-    if roster.registration.data["schemaVersion"] != evaluation.REGISTRATION_SCHEMA_V3:
+    if roster.registration.data["schemaVersion"] not in {
+            evaluation.REGISTRATION_SCHEMA_V3, evaluation.REGISTRATION_SCHEMA_V4,
+    }:
         rows.extend((reviewer, attempt_ids, start, end)
                     for reviewer, start, end in (("rater-one", "10:01:00", "10:02:00"),
                                                  ("rater-two", "10:02:00", "10:03:00")))
@@ -196,7 +202,9 @@ def _filled_money(roster, *, positive_cash=False, allocation=True,
                          allocation_policy_verifier=_PolicyVerifier())
     method = _method(roster)
     for activity in roster.activities:
-        if (roster.registration.data["schemaVersion"] == evaluation.REGISTRATION_SCHEMA_V3
+        if (roster.registration.data["schemaVersion"] in {
+                evaluation.REGISTRATION_SCHEMA_V3, evaluation.REGISTRATION_SCHEMA_V4,
+        }
                 and activity.kind == "reviewer"):
             continue
         amount = Decimal("0.01") if positive_cash and activity.activity_id == "setup" else Decimal("0")
@@ -214,6 +222,58 @@ def _filled_money(roster, *, positive_cash=False, allocation=True,
 
 
 class FullCostContractTests(unittest.TestCase):
+    def test_v4_estimated_route_completes_technical_costs_but_leaves_actual_allocation_unknown(self):
+        data = copy.deepcopy(_registration(technical_capture=True, reviewer_fee="unknown").data)
+        data["schemaVersion"] = evaluation.REGISTRATION_SCHEMA_V4
+        data[subscription_estimate.REGISTRATION_FIELD] = {
+            "schema": subscription_estimate.SCHEMA,
+            "methodId": subscription_estimate.METHOD_ID,
+            "nominalPeriodSeconds": subscription_estimate.PERIOD_SECONDS,
+            "pricesEurPerMonth": {"codex": "100.00", "claude-code": "111.89"},
+            "maxActiveSecondsPerHost": subscription_estimate.MAX_ACTIVE_SECONDS_PER_HOST,
+            "reservationEur": "5.045", "budgetCeilingEur": "25.00",
+            "decisionSha256": _sha("estimate decision"),
+            "codexPriceSourceSha256": _sha("synthetic Codex source"),
+            "claudeCodePriceSourceSha256": _sha("synthetic Claude source"),
+        }
+        registration = evaluation.validate_registration(
+            data, expected_candidate_sha256=data["candidate"]["sha256"],
+            expected_input_hashes={**{item["fixtureId"]: item["sha256"] for item in data["fixtures"]},
+                                   **{item["promptId"]: item["sha256"] for item in data["prompts"]}},
+        )
+        roster = _roster(registration)
+        money_ledger, money_summary = _filled_money(roster, allocation=False)
+        ledger, _ratings = _complete_ledger(registration)
+        ledger_sha = hashlib.sha256(json.dumps(
+            ledger.as_dict(), sort_keys=True, separators=(",", ":"), ensure_ascii=False,
+        ).encode()).hexdigest()
+        evidence = subscription_estimate.ActiveTimeEvidence(
+            registration.sha256, ledger_sha, "synthetic-active-time-source", _sha("active time"),
+            datetime.now(timezone.utc).isoformat().replace("+00:00", "Z"),
+            {"codex": 100, "claude-code": 100})
+
+        class EstimateVerifier:
+            def verify_active_time(self, *, registration_sha256, ledger_sha256, evidence):
+                return (registration_sha256 == registration.sha256
+                        and ledger_sha256 == ledger_sha and evidence is not None)
+
+        result = complete_full_cost(
+            registration, ledger, roster, money_ledger, money_summary,
+            setup_costs=_known_costs(), human_time_receipts=_time_receipts(roster),
+            scope_verifier=_ScopeVerifier(), time_verifier=_TimeVerifier(),
+            study_wall_receipts=_wall_receipts(roster), study_wall_verifier=_WallVerifier(),
+            subscription_estimate_evidence=evidence,
+            subscription_estimate_verifier=EstimateVerifier(),
+        )
+        self.assertFalse(result.full_economic_cost_complete)
+        self.assertEqual("incomplete-registered-cost-scope", result.full_economic_cost_status)
+        self.assertTrue(result.technical_required_measures_complete, result.as_dict())
+        self.assertFalse(result.technical_stop_required)
+        self.assertEqual(Decimal("0.000000"), result.technical_additional_spend_eur)
+        self.assertEqual(Decimal("0.009"), result.subscription_allocation_upper_bound_eur)
+        self.assertIsNone(result.allocated_subscription_cost_eur)
+        self.assertIsNone(result.provider_accounting_cost_eur)
+
     def test_v3_cost_roster_keeps_abstract_reviewer_rows_and_unknown_fee_scope(self):
         registration = _registration(technical_capture=True, reviewer_fee="unknown")
         self.assertEqual(evaluation.expected_reviewer_participants(registration),

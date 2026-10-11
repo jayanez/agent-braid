@@ -165,3 +165,11 @@ matching registration and roster, complete status, available money amounts and
 no stop; callers should pass only the summary returned by
 `complete_full_cost` when evaluating the prospective full scope. This preserves
 the existing non-subscription v1 evaluator behavior.
+
+## Estimated subscription reservation decision
+
+The owner selected [a separate EUR 5.045 subscription estimate reservation](../../specs/044-ai-tooling-evaluation/subscription-estimation-decision.md) on 2026-10-11. It uses observed monthly prices and an explicit nominal 28-day planning denominator, with at most 57,600 active seconds per host. No additional private billed-period retrieval is required or authorized by this decision.
+
+The experimental registration-v4 implementation exposes this as a separately named, registration-bound estimated budget measure. Never place the estimate in actual allocation/provider-cost fields or authenticate it as an invoice. Its bound applies only under the registered assumptions and measured nonoverlapping active-time limits. Actual cash evidence remains independently required, and unknown cash refuses dispatch. Preserve the EUR 25 ceiling, EUR 0 additional cash, all 108 slots and the other resource limits.
+
+A separate bounded technical capture result can report the estimate and remaining unknown actuals. It cannot satisfy actual-economic completion or positive utility eligibility. Human fees/time/ratings remain deferred and unknown; current actual-cost contracts retain their meaning. The versioned v4 estimate implementation has passed synthetic controls. Complete registration approval, trusted native observations and registered capture remain pending.

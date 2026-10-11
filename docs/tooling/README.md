@@ -89,3 +89,9 @@ Cursor, VS Code/GitHub Copilot, OpenCode and pi are deferred. The
 also cover AI applications/orchestration, expanded execution, coordination across
 tools and embedded visual interaction. Each route needs its own selected scope,
 contracts, observations and acceptance decisions.
+
+The experimental [registration-v4 accounting route](REGISTRATION.md) now implements
+the owner-selected EUR 5.045 subscription reservation with actual allocation
+unknown. The process-scoped observation boundary is approved; its policy-v2
+implementation, trusted native evidence and complete capture approval remain
+pending. Additional spending is EUR 0; human review remains deferred.
