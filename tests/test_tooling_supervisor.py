@@ -119,6 +119,22 @@ def _operational_route(binding, identity, *, phase, sequence, quota=True, bounda
         identity.pid if identity is not None else None, birth_sha, sequence,
         binding.observer_source_ref, binding.observer_source_sha256,
         binding.observer_verifier_ref, binding.observer_verifier_sha256, now)
+
+
+def _operational_verifier(binding, calls):
+    class Verifier:
+        source_ref = binding.observer_source_ref
+        source_sha256 = binding.observer_source_sha256
+        verifier_ref = binding.observer_verifier_ref
+        verifier_sha256 = binding.observer_verifier_sha256
+
+        def verify_operational_observation(self, observation, supplied_binding,
+                                           identity, request, final):
+            calls.append(observation.phase)
+
+    return Verifier()
+
+
 class ToolingSupervisorTests(unittest.TestCase):
     def setUp(self):
         self.temp = tempfile.TemporaryDirectory(prefix="m45-supervisor-")
@@ -857,6 +873,83 @@ class ToolingSupervisorTests(unittest.TestCase):
         self.assertTrue(outcome.launched)
         self.assertEqual("subscription-policy-violation", outcome.status)
         self.assertIn("running", calls)
+
+    def test_operational_v3_running_stale_lost_and_drifted_observations_stop_child_without_effect(self):
+        for failure in ("stale", "lost", "route-drift", "config-binding-drift"):
+            with self.subTest(failure=failure):
+                marker = Path(self.temp.name) / f"operational-{failure}-effect"
+                code = (
+                    "import pathlib,sys,time; payload=sys.stdin.buffer.read(); time.sleep(2); "
+                    f"pathlib.Path({str(marker)!r}).write_bytes(payload)"
+                )
+                request = self.request(code, stdin=b"must-not-become-an-effect", timeout=5)
+                request = ProcessRequest(**{**request.__dict__, "poll_interval_seconds": 0.01})
+                binding = _operational_binding(request)
+                request = ProcessRequest(**{**request.__dict__, "subscription_binding": binding,
+                                            "operational_route_binding": binding})
+                verifier_phases = []
+                verifier = _operational_verifier(binding, verifier_phases)
+                observed_phases = []
+
+                def observer(identity, elapsed, final=False):
+                    phase = "prelaunch" if identity is None else ("completed" if final else "running")
+                    observed_phases.append(phase)
+                    if phase == "running" and failure == "lost":
+                        return _snapshot(eur=None, wall=0.1 + max(elapsed, 0.0))
+                    observation = _operational_route(
+                        binding, identity, phase=phase, sequence=len(observed_phases))
+                    if phase == "running" and failure == "stale":
+                        observation = replace(
+                            observation, observed_at=datetime.now(timezone.utc) - timedelta(seconds=5))
+                    elif phase == "running" and failure == "route-drift":
+                        observation = replace(observation, route="paid-api")
+                    elif phase == "running" and failure == "config-binding-drift":
+                        observation = replace(
+                            observation,
+                            binding=replace(binding, config_sha256=_sha("drifted-effective-config")),
+                        )
+                    return _snapshot(eur=None, wall=0.1 + max(elapsed, 0.0),
+                                     operational_route=observation)
+
+                outcome = run_supervised(request, self.caps, observer,
+                                         operational_route_verifier=verifier)
+                self.assertTrue(outcome.launched)
+                self.assertEqual("subscription-policy-violation", outcome.status)
+                self.assertIn("running", observed_phases)
+                self.assertEqual(["prelaunch", "completed"], verifier_phases)
+                self.assertFalse(marker.exists(), "the interrupted child must not reach its effect")
+
+    def test_operational_v3_missing_or_stale_prelaunch_source_refuses_without_sending_stdin(self):
+        for failure in ("stale", "lost"):
+            with self.subTest(failure=failure):
+                marker = Path(self.temp.name) / f"operational-prelaunch-{failure}-effect"
+                code = (
+                    "import pathlib,sys; payload=sys.stdin.buffer.read(); "
+                    f"pathlib.Path({str(marker)!r}).write_bytes(payload)"
+                )
+                request = self.request(code, stdin=b"must-not-be-sent")
+                binding = _operational_binding(request)
+                request = ProcessRequest(**{**request.__dict__, "subscription_binding": binding,
+                                            "operational_route_binding": binding})
+                verifier = _operational_verifier(binding, [])
+
+                def observer(identity, elapsed, final=False):
+                    if failure == "lost":
+                        return _snapshot(eur=None, wall=0.1 + max(elapsed, 0.0))
+                    observation = _operational_route(
+                        binding, identity, phase="prelaunch", sequence=1)
+                    observation = replace(
+                        observation, observed_at=datetime.now(timezone.utc) - timedelta(seconds=5))
+                    return _snapshot(eur=None, wall=0.1 + max(elapsed, 0.0),
+                                     operational_route=observation)
+
+                outcome = run_supervised(request, self.caps, observer,
+                                         operational_route_verifier=verifier)
+                self.assertFalse(outcome.launched)
+                self.assertEqual("refused", outcome.status)
+                self.assertFalse((request.output_root / "started.json").exists())
+                self.assertFalse(marker.exists(), "refusal must happen before stdin reaches a child")
+
     def test_native_v2_rejects_identity_argv_and_config_drift_before_launch(self):
         request = self.request("pass")
         binding = _native_binding(request)

@@ -1,5 +1,10 @@
 # M4.5 technical evidence status
 
+The [technical completion preparation](TECHNICAL_COMPLETION_20261011.md)
+continues the broader objective from PR #499 and separates current native
+interface observations, package preparation and remaining admission gates.
+Historical records below retain their original candidate boundaries.
+
 **Status date: 2026-10-11.** This is a derived status report for the
 experimental candidate. It does not replace raw receipts, canonical obtained
 evidence, task acceptance or an approval record. Historical private receipts and independent review bindings have a later

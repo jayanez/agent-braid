@@ -1,5 +1,10 @@
 # M4.5 autonomous completion and remaining interventions
 
+The [broader technical completion register](TECHNICAL_COMPLETION_20261011.md)
+continues after the completed preparation delivery. Native admission,
+registered reproduction and all 108 technical slots remain required; the
+historical bounded completions below do not satisfy those gates.
+
 This register follows the [owner-approved execution plan](../../specs/044-ai-tooling-evaluation/autonomous-closure-plan.md).
 It distinguishes completed engineering clauses from each original acceptance
 procedure. The candidate-bound technical procedures and final repository validation are
