@@ -129,10 +129,41 @@ M3.5, M4 or reverse G4 NO-GO.
 
 On 2026-10-11 the owner selected the [estimated subscription convention](../../specs/044-ai-tooling-evaluation/subscription-estimation-decision.md) and declined further inspection of private billed-period data. The versioned estimate route must reserve EUR 5.045 under its explicit nominal 28-day and 16-active-hour-per-host assumptions. It must bind the input sources and decision, enforce the reservation and time limits, and retain the independent EUR 0 additional-cash gate and EUR 25 ceiling.
 
-This is a prospective estimated accounting route, not actual allocation. Actual `allocatedSubscriptionCostEur` and `providerAccountingCostEur` remain unknown without actual reconciliation. Reports must distinguish technical capture under an estimated bound from actual economic completeness and utility. The versioned v4 estimate implementation is available and has passed synthetic controls; complete registration approval and authenticated native evidence remain pending; current v1/v2 monetary and subscription-observation contracts keep their prior semantics.
+This is a prospective estimated accounting route, not actual allocation. Actual `allocatedSubscriptionCostEur` and `providerAccountingCostEur` remain unknown without actual reconciliation. Reports must distinguish technical capture under an estimated bound from actual economic completeness and utility. The versioned v4 estimate implementation is available and has passed synthetic controls; complete registration approval and authenticated native evidence remain pending. Legacy registration v1/v2 and subscription-policy-v1 keep their prior semantics; the native-process-route-policy-v2 contract is additive.
 
 The experimental `agent-braid-m45-registration-v4` route inherits the v3 phase, human deferral, role, subscription-policy and observable-model requirements. It additionally binds `subscriptionAllocationUpperBound` with schema `agent-braid-m45-subscription-estimate-v1` and method `m45-nominal-28day-active-time-upper-bound-v1`. Its exact inputs are `nominalPeriodSeconds: 2419200`, privately retained source-backed per-host monthly planning prices, `maxActiveSecondsPerHost: 57600`, `reservationEur: "5.045"` and `budgetCeilingEur: "25.00"`. Decision and both price-source digests must authenticate their actual records; placeholder digests do not establish approval or source authenticity.
 
 Active-time observations must use an ISO-8601 UTC timestamp ending in `Z`, be no more than 60 seconds old at admission and immediately before process creation, and never be future-dated. Every estimate guard requires a verified, receipt-bound admission lease for the exact registration, host and ledger snapshot. The supervisor consumes that lease once before launching; missing, mismatched or replayed leases refuse execution. Reports must bind the exact digest of the active-time evidence used for their estimate. These checks establish binding and freshness, while source authenticity remains the trusted verifier's responsibility.
 
 [The v4 example](../../examples/tooling/estimated-technical-registration-draft.json) is intentionally invalid: source/decision bindings and other prerequisites remain missing. Preserve the previous v2/v3 examples. Before each dispatch, the active-time snapshot must bind the frozen registration and exact 108-slot ledger head. The budget reserves the whole estimate, rather than treating unused reservation as permission for extra spending. Runtime supervision enforces remaining active-time limits. A prepared configuration is not proof of an actual provider route.
+
+## Native-process route policy v2 contract
+
+The owner approved only the process-scoped observation boundary in
+[ADR 0021](../adr/0021-codex-claude-tooling-integration.md#approved-scope-native-process-billing-observation-boundary).
+The additive implementation contract and bounded validation work are specified in
+[SPEC-044's native-process route policy](../../specs/044-ai-tooling-evaluation/native-process-route-policy.md).
+A future v3/v4 registration may select the additive
+`agent-braid-m45-native-process-route-policy-v2` policy; this does not alter
+legacy v1/v2 registrations or weaken v1's explicit account-wide billing-false
+requirement.
+
+The v2 registration binds account and provider namespace digests, every slot's
+host/build/candidate/executable/model/configuration/argv digests, and explicit
+observer and independent cash source/verifier identities. Its evidence is
+process-lifetime scoped: fresh typed route snapshots bind the exact slot and
+owned process identity, while a trusted external gate must block startup and
+each provider operation until route and cash checks pass. Polling snapshots
+alone cannot enforce that gate. Missing or unverifiable trust refuses before
+launch; loss, staleness, quota exhaustion, settings/route drift or other failed
+controls stop before the next operation, with no paid API or alternate-provider
+fallback.
+
+`accountWideApiBilling` stays `unknown-out-of-scope`, never false. Independently
+verified, cohort-attributable actual additional cash must equal EUR 0 and cover
+setup, all started slots, and completion reconciliation. The EUR 5.045 estimate
+remains a separate reservation and is not actual allocation, provider
+accounting, or cash. The policy creates no trusted observer, verifier, cash
+source, registration approval, or capture authorization. v2 acceptance,
+authenticity, and all capture evidence remain pending; no raw credential values
+or private billing-period identities belong in the registration record.

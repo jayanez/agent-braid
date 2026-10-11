@@ -551,6 +551,13 @@ def _read_admission(admission, registration, slot, *, ledger=None):
             raise SessionError("admission subscription observation is missing or malformed") from exc
         if observation.binding != binding:
             raise SessionError("admission subscription observation has the wrong cohort or account")
+        if isinstance(binding, subscription_policy.NativeProcessRouteBinding):
+            try:
+                subscription_policy.check_observation(observation, binding, now=observation.observed_at)
+                if observation.phase != "prelaunch":
+                    raise subscription_policy.SubscriptionError("admission must contain prelaunch route evidence")
+            except subscription_policy.SubscriptionError as exc:
+                raise SessionError("native route admission evidence is malformed or unsafe") from exc
     elif "subscription" in body:
         raise SessionError("unregistered subscription observation in admission receipt")
     subject = {key: body.get(key) for key in subject_keys}
