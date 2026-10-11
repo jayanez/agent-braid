@@ -253,6 +253,11 @@ def validate_portable_record(root, path, bind_manifest=True):
 
     root = root.resolve()
     relative_record = path.resolve().relative_to(root).as_posix()
+    # Reviewed bytes are an immutable approval boundary. Check them before
+    # validating optional export supplements so a missing/non-ancestor
+    # supplement cannot mask reviewed metadata drift or enable fallback.
+    record = json.loads(path.read_text())
+    _validate_published_review_metadata(root, relative_record, path, record)
     manifest = load_manifest(root)
     protected = set(manifest["protectedPaths"])
     bound = {item["path"] for item in manifest["files"]}
@@ -261,8 +266,6 @@ def validate_portable_record(root, path, bind_manifest=True):
             bound.update(item["path"] for item in addendum["files"])
     if bind_manifest and relative_record in protected:
         manifest_entry(root, relative_record)
-    record = json.loads(path.read_text())
-    _validate_published_review_metadata(root, relative_record, path, record)
     authority_candidate = record.get("authority_snapshot", {})
     evidence_candidate = record.get("evidence_snapshot", {})
     if authority_candidate.get("mode") == "historical" \
