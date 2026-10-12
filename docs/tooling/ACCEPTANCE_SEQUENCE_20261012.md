@@ -234,7 +234,7 @@ SPEC-041 covers the five product skills in both hosts; comparative utility,
 registered reproduction and whole-milestone acceptance remain in SPEC-044.
 
 
-### Proposed Codex source-contract decision
+### Codex source-contract decision
 
 The remaining Codex API-field gap needs a source-contract decision, not an
 assertion that absent booleans are false. Proposed scope for owner review:
@@ -247,9 +247,15 @@ disabled and no paid/API/provider fallback. Unknown, conflicting, stale or
 unbound sources must refuse; availability is not labelled a credit-setting
 boolean. The strict v1/v2/v3 contracts and their historical evidence stay intact.
 
-This is a proposal to design and review the source mapping, not owner approval,
-implemented enforcement, registration approval or capture authorization. It must
+This proposal was approved by the owner on 2026-10-12: “Autorizo el contrato
+adicional y su implementación de la PR #504”. The separately versioned
+[source composition contract](CODEX_SOURCE_CONTRACT.md) is implemented with
+synthetic refusal controls. This authorizes that implementation scope; it does
+not approve registration or capture, authenticate native sources, or enable a
+new launch path. Live composition must
 address live source freshness, namespace correspondence and drift refusal before
 any launch. A source-bound observer/verifier and its review remain required.
-Keeping v3 unchanged without this additional route leaves the missing explicit
-Codex fields as blockers. No arbitrary account-wide billing attestation is inferred.
+The original v3 path continues to refuse absent explicit payment fields; source
+composition never invents those booleans. No arbitrary account-wide billing
+attestation is inferred. The trusted observer and bounded supervisor integration
+remain the next implementation boundary, followed by exact registration approval.
