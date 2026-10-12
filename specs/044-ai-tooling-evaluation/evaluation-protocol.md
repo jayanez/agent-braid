@@ -4,6 +4,10 @@
 model identities under [the approved clarification](model-identity-clarification.md), eligible fixture
 hashes, prompt roster, cost rates/budgets, two abstract independent reviewer roles and the approved human-evaluation deferral before technical observations. Keep v3 humanReviewers empty; later identities, ratings and adjudication require a separately bound addendum.
 Current status: protocol draft; no measured observations or accepted utility.
+Historical account/quota preparation and the procedure for repeating it are
+recorded in the [platform API verification reference](platform-api-verification-reference.md).
+These metadata reads are separate from measured journey outcomes and do not
+approve capture or the complete registration.
 Strict registration-v1/v2 keep their exact included-subscription-only `billingPolicy` and prior cash-admission semantics. The additive registration-v5 route follows the [operational subscription capture policy](operational-subscription-capture-policy.md) and separate estimated-accounting route described below. Numeric caps and other owner-approved capture gates still apply. Existing M4 source rights and observations do not authorize this capture.
 
 ## Questions and population

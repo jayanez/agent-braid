@@ -89,6 +89,23 @@ native observation, registration approval, or capture authorization is complete.
 Registration-v1/v2 and subscription-policy-v1 retain their exact prior strict
 semantics. The route is not a migration or weakening of historical records.
 
+## Recorded API verification reference
+
+On 2026-10-12 the owner requested that the completed API observations and their
+acquisition procedure become the reference for later checks. The
+[platform API verification reference](platform-api-verification-reference.md)
+records the dated Codex and Claude quota/control observations, the read-only
+methods, private evidence location and repeat procedure. Use that route with
+existing native authentication when fresh verification is needed; provider
+support contact is not the selected method.
+
+This is historical preparation. Codex payment-setting fields and Claude
+auto-reload remain unverified. Reuse of the reviewed method does not reuse old
+quota as fresh evidence or authorize any launch. All admission, freshness,
+isolation, supervision, cash, registration and human conditions above remain
+in force. Keep the original receipts private and immutable; retain new API
+responses as separate dated observations.
+
 ## Operational tasks
 
 These stable tasks track this additive policy. Keep each unchecked until its
