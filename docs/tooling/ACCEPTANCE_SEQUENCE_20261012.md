@@ -1,8 +1,8 @@
 # M4.5 acceptance sequence and decision packet
 
 Status: owner accepted the bounded SPEC-039/040/042 scopes and authorized FC.1
-contract review/preparation on 2026-10-12; integration and remote closure remain
-pending. Baseline: public `develop`
+contract review/preparation on 2026-10-12. PR #502 integrated those decisions,
+and the six bounded issues are closed. Preparation baseline: public `develop`
 `d58b648a36b1f8477204004e3acbaad5e40f83b7`, inspected on 2026-10-12.
 The owner requested closing every currently supportable item so FC.1 can be
 addressed, while retaining the deferred two-person human evaluation.
@@ -162,3 +162,31 @@ membership/status separately or report its access limitation. Do not apply an
 unrelated global tracking delta. At preparation time all six parents and milestone
 19 remain open. Parent closures are individual; milestone 19 stays open while
 registered/native or human acceptance requirements remain pending.
+
+
+## Integrated closure and retained history
+
+[PR #502](https://github.com/jayanez/agent-braid/pull/502) was squash-merged as
+`a7f7d5890942ef2eb657f4a783b974afa589b339` after the owner separately authorized
+integration and the six closures with `OK continúa`. The corrected isolated local
+PR profile passed 1,344 tests (12 declared skips) and every selected executable
+gate; exact-candidate CI passed 1,344 core tests (eight declared skips) and 37
+isolated MCP tests. The specialist matrix was skipped by classification. The
+earlier local system-Python PATH failure remains disclosed on the PR. No local
+validation exception was used.
+
+The reviewed milestone-19 digest
+`f1a9d445de0cf84873b6a9b0abbd054e3010377abdb66bffe4a3bbdd7391196b` applied
+only #395/#405, #406/#416 and #428/#438. Their pending labels were removed and
+actual decision/closure notes recorded; all six Project items were observed as
+Done. The subsequent scoped audit returned `operations: []`. Milestone 19
+remains open with 58 closed and 27 open issues at that readback.
+
+Squash integration made the newly frozen commits non-ancestors of `develop`.
+The public reviewed-history catalog therefore retains each exact annotated tag
+and the SHA-256 of the already-published assurance and owner decision. This uses
+the existing strict historical validation route, preserving root manifest bytes,
+accepted record bytes and original observation commits. A retained tag does not
+create a new approval or extend its scope. The three retained references are
+`spec-039-reviewed-e94497b`, `spec-040-reviewed-5888737` and
+`spec-042-reviewed-6eedc5f`.

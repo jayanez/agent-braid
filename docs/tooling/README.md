@@ -1,6 +1,6 @@
 # AI tooling integrations
 
-**Status — 2026-10-11:** [M4.5](https://github.com/jayanez/agent-braid/milestone/19) remains Open and adjacent to M4. The 60 original task criteria remain intact; 19 auxiliary tasks bring the source task-checklist inventory to 79 (52 checked, 27 unchecked), alongside six open spec parents; remote issue state is tracked separately. Candidate-bound local technical procedures passed: eight program controls, eight MCP acceptance scenarios with 37/37 tests, and lifecycle scenarios with 13/13 tests. The 223-test engineering suite passed without skips on its separately recorded candidate. Fresh macOS and emulated Linux AMD64 package checks passed for `53f1704`. See the [autonomous completion record](AUTONOMOUS_COMPLETION.md) and [technical evidence status](TECHNICAL_STATUS.md) for candidate identities, receipt links and limits. These do not establish native Codex/Claude acceptance, ADR 0021 adoption, human/founder approval or milestone closure. Administrative tracking is registered; the [registration record](../../specs/039-ai-tooling-program/administrative-registration.md) links each parent and its work queue.
+**Status — 2026-10-12:** [M4.5](https://github.com/jayanez/agent-braid/milestone/19) remains Open and adjacent to M4. The 60 original task criteria remain intact; 19 auxiliary tasks bring the source task-checklist inventory to 79 (55 checked, 24 unchecked), alongside three closed and three open spec parents; the verified milestone readback is 58 closed and 27 open issues. Candidate-bound local technical procedures passed: eight program controls, eight MCP acceptance scenarios with 37/37 tests, and lifecycle scenarios with 13/13 tests. The 223-test engineering suite passed without skips on its separately recorded candidate. Fresh macOS and emulated Linux AMD64 package checks passed for `53f1704`. See the [autonomous completion record](AUTONOMOUS_COMPLETION.md) and [technical evidence status](TECHNICAL_STATUS.md) for candidate identities, receipt links and limits. Those technical procedures alone do not establish native Codex/Claude acceptance, ADR 0021 adoption, human outcome acceptance or milestone closure. Administrative tracking is registered; the [registration record](../../specs/039-ai-tooling-program/administrative-registration.md) links each parent and its work queue.
 
 The current owner-authorized work follows the [autonomous closure plan](../../specs/044-ai-tooling-evaluation/autonomous-closure-plan.md); the [five-task preparation plan](../../specs/044-ai-tooling-evaluation/preparation-delivery-plan.md) is historical. The seven bounded technical tasks completed on the frozen source with EUR 0 additional spend. The registered 108-attempt evaluation, native-host acceptance, human outcome review and founder decision remain separate pending gates.
 
@@ -14,8 +14,8 @@ AMD64 hardware or performance evidence.
 For the owner-requested bounded acceptance sequence and FC.1 entry preparation,
 see the [2026-10-12 decision packet](ACCEPTANCE_SEQUENCE_20261012.md). The owner
 accepted the bounded SPEC-039/040/042 scopes and authorized FC.1 review/preparation.
-Their source records propose six issue closures; integration and remote tracking
-remain pending. Native admission, registered capture and the deferred human phase
+PR #502 integrated those decisions and closed their six issues; their pending
+labels are removed and their Project items are Done. Native admission, registered capture and the deferred human phase
 remain separate; M4.5 remains open.
 
 Start the experimental candidate with [installation](INSTALL.md),
