@@ -11,6 +11,13 @@ AMD64 hardware or performance evidence.
 
 ## Start here
 
+For the owner-requested bounded acceptance sequence and FC.1 entry preparation,
+see the [2026-10-12 decision packet](ACCEPTANCE_SEQUENCE_20261012.md). The owner
+accepted the bounded SPEC-039/040/042 scopes and authorized FC.1 review/preparation.
+Their source records propose six issue closures; integration and remote tracking
+remain pending. Native admission, registered capture and the deferred human phase
+remain separate; M4.5 remains open.
+
 Start the experimental candidate with [installation](INSTALL.md),
 [presentation](../ai-tooling-presentation.md) and [evaluation preparation](EVALUATION.md).
 The [implementation map](../../specs/039-ai-tooling-program/implementation-status.md)
