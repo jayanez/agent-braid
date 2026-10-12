@@ -96,7 +96,7 @@
     "mode": "historical"
   },
   "execution_contract": "Source planning only. Future server defaults to analysis; execution/recovery delegate existing independent exact operator grants and private fixed-patch runtime. Installation writes only explicitly selected receipt-owned entries. No new effects.",
-  "human_review": "pending",
+  "human_review": "approved",
   "hypotheses": "A coherent discoverable integration may make existing bounded capabilities useful to these hosts; user recognition and utility are not assumed.",
   "observation_contract": "Exact input/candidate/host/environment identities and unchanged analyzer/runtime observation contracts; synthetic, protocol-peer, actual-host and clean-room evidence remain distinct.",
   "references": [
@@ -313,7 +313,8 @@
       "text": "Require candidate-bound technical review, actual host evidence and explicit founder acceptance before M4.5 closure."
     }
   ],
+  "review_record": "specs/039-ai-tooling-program/founder-review-20261012.json",
   "scientific_limits": "Existing AIM/runtime/grant/verifier contracts remain unchanged. Analysis and preparation are consultative; host permission never substitutes for operator grants. No source ref promotion, repository-code/hook execution, arbitrary network effects or new scientific guarantee. Existing M4 G4 NO-GO and independent M3/M3.5 gates remain in effect. Structural validation is not mathematical proof, scientific acceptance, production safety or human approval.",
   "scope": "Define the adjacent M4.5 program, current capability inventory, adoption decisions and exact delivery/closure boundaries for Codex and Claude Code.",
-  "stage": "draft"
+  "stage": "validated"
 }

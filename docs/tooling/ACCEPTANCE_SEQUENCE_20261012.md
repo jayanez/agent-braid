@@ -1,7 +1,8 @@
 # M4.5 acceptance sequence and decision packet
 
-Status: owner-authorized preparation and sequencing; all acceptance decisions
-below remain pending. Baseline: public `develop`
+Status: owner accepted the bounded SPEC-039/040/042 scopes and authorized FC.1
+contract review/preparation on 2026-10-12; integration and remote closure remain
+pending. Baseline: public `develop`
 `d58b648a36b1f8477204004e3acbaad5e40f83b7`, inspected on 2026-10-12.
 The owner requested closing every currently supportable item so FC.1 can be
 addressed, while retaining the deferred two-person human evaluation.
@@ -24,6 +25,17 @@ an estimate, never as actual cash or subscription allocation. Measurements
 are serialized; FC.1 and M4.5 never share a measurement window.
 
 ## Lot 1: three bounded acceptance decisions
+
+The owner's direct interactive answer was
+`Aceptar las tres con esos límites (Recomendada)` to question item
+`["request_user_input_async","call_f2af6fd4f85244cfa0b4b4c3f2ec7cd3",0]`.
+The actual decisions are recorded separately for
+[SPEC-039](../../specs/039-ai-tooling-program/founder-review-20261012.json),
+[SPEC-040](../../specs/040-portable-mcp-surface/founder-review-20261012.json) and
+[SPEC-042](../../specs/042-ai-tooling-packaging/founder-review-20261012.json).
+Source T010 checkboxes, assurance review states and parent dispositions now
+propose the six closures listed below. No remote issue was closed by recording
+these decisions; merge authorization and governed apply remain separate.
 
 The [verification receipt](evidence/acceptance-preparation-20261012.json)
 checks all 24 canonical scenario projections, 552 historical input hashes,
@@ -67,16 +79,16 @@ follows. No runtime code, evidence projection or original observation was change
 
 | Spec | Frozen authority/evidence packet commit | Human decision |
 | --- | --- | --- |
-| SPEC-039 | `e94497bd561d03bac858ba154e21d9327437d22e` | Pending |
-| SPEC-040 | `588873779b74865563fafc3fa507884b2e88751b` | Pending |
-| SPEC-042 | `6eedc5f14d9d8188a14b25d0820693d269ef9253` | Pending |
+| SPEC-039 | `e94497bd561d03bac858ba154e21d9327437d22e` | Accepted within card A |
+| SPEC-040 | `588873779b74865563fafc3fa507884b2e88751b` | Accepted within card B |
+| SPEC-042 | `6eedc5f14d9d8188a14b25d0820693d269ef9253` | Accepted within card C |
 
 The authority inventory now includes the previously approved additive policy
-text disclosed above. Freezing records its bytes and resets human review to
-pending; it does not adopt that ADR or approve changed authority. Each original
-observation keeps its actual earlier source candidate. Record the owner's exact
-response against the corresponding frozen packet before marking human review
-approved. Preparing or freezing this packet does not approve it.
+text disclosed above. Freezing recorded its bytes and reset human review to
+pending. The later direct owner response, not the freeze, approved the bounded
+cards. It did not adopt the whole ADR or accept every later addition. Each
+original observation keeps its actual earlier source candidate. The review
+records bind the actual response to each corresponding frozen packet.
 
 ## Lot 2: admission disposition
 
@@ -135,11 +147,11 @@ created merely to improve closure counts.
 ## Lot 4: FC.1 entry and integration
 
 The [FC.1 entry packet](FC1_ENTRY_20261012.md) identifies reusable contracts and
-the first SPEC-034/T001 review package. Its preparation can proceed while
-native admission and human evaluation are parked. Resuming FC.1 implementation
-requires the owner's explicit exact-scope decision; the earlier pause is not
-silently revoked. Real workload collection, model download/loading, experiment
-launch and promotion retain separate gates.
+the first SPEC-034/T001 review package. The owner explicitly lifted the earlier
+pause only for contract review and first-lot preparation. This work can proceed
+while native admission and human evaluation are parked. Implementation still
+requires its own exact-scope decision. Real workload collection, model
+download/loading, experiment launch and promotion retain separate gates.
 
 After actual acceptance, update the existing task, assurance, review and parent
 tracking records; prepare the reviewed integration candidate. Ask for merge

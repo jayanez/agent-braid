@@ -96,7 +96,7 @@
     "mode": "historical"
   },
   "execution_contract": "Source planning only. Future server defaults to analysis; execution/recovery delegate existing independent exact operator grants and private fixed-patch runtime. Installation writes only explicitly selected receipt-owned entries. No new effects.",
-  "human_review": "pending",
+  "human_review": "approved",
   "hypotheses": "A standard typed interface may improve discovery and interoperability; SDK conformance alone does not prove real-host support or semantic correctness.",
   "observation_contract": "Exact input/candidate/host/environment identities and unchanged analyzer/runtime observation contracts; synthetic, protocol-peer, actual-host and clean-room evidence remain distinct.",
   "references": [
@@ -342,7 +342,8 @@
       "text": "Provide bounded capabilities/status/evidence resources and three read-only prompts without arbitrary file reads or automatic execution."
     }
   ],
+  "review_record": "specs/040-portable-mcp-surface/founder-review-20261012.json",
   "scientific_limits": "Existing AIM/runtime/grant/verifier contracts remain unchanged. Analysis and preparation are consultative; host permission never substitutes for operator grants. No source ref promotion, repository-code/hook execution, arbitrary network effects or new scientific guarantee. Existing M4 G4 NO-GO and independent M3/M3.5 gates remain in effect. Structural validation is not mathematical proof, scientific acceptance, production safety or human approval.",
   "scope": "Add an optional official-SDK stdio interface over existing analysis and runtime contracts with typed results, discovery and bounded evidence access.",
-  "stage": "draft"
+  "stage": "validated"
 }
