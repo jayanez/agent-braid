@@ -59,12 +59,24 @@ interpret bounded acceptance as acceptance of every later addition.
 
 Every card excludes native Codex/Claude observation, the registered SPEC-044
 clean reproduction and 108-attempt evaluation, positive utility, human ratings,
-whole-ADR adoption and whole-M4.5 closure. Authority snapshots currently retain
-historical commit `f18f63c8fc9b52dc0652f57c505d7f7647164030`; evidence snapshots are
-currently unfrozen. Before marking human review approved, freeze the concrete
-source/evidence packet using the shared Spec Kit workflow. Preserve historical
-authority and actual receipt candidates, disclose authority drift, and record
-the owner's exact response. Preparing this packet does not approve it.
+whole-ADR adoption and whole-M4.5 closure. At the inspected baseline, authority
+snapshots retained `f18f63c8fc9b52dc0652f57c505d7f7647164030` and evidence snapshots
+were current. The official freeze command was subsequently run on a clean
+candidate for each spec, with both authority and evidence snapshots bound as
+follows. No runtime code, evidence projection or original observation was changed.
+
+| Spec | Frozen authority/evidence packet commit | Human decision |
+| --- | --- | --- |
+| SPEC-039 | `e94497bd561d03bac858ba154e21d9327437d22e` | Pending |
+| SPEC-040 | `588873779b74865563fafc3fa507884b2e88751b` | Pending |
+| SPEC-042 | `6eedc5f14d9d8188a14b25d0820693d269ef9253` | Pending |
+
+The authority inventory now includes the previously approved additive policy
+text disclosed above. Freezing records its bytes and resets human review to
+pending; it does not adopt that ADR or approve changed authority. Each original
+observation keeps its actual earlier source candidate. Record the owner's exact
+response against the corresponding frozen packet before marking human review
+approved. Preparing or freezing this packet does not approve it.
 
 ## Lot 2: admission disposition
 
@@ -86,7 +98,7 @@ changed; no authenticated account contents were printed or provider launched.
 
 | Gate | Required next evidence | Disposition |
 | --- | --- | --- |
-| OP001–004 / native admission | Supported executable, exact effective configuration/argv/account namespace, authoritative fresh quota and disabled paid controls, source-bound live observer/verifier and isolation receipts. | Blocked on authentic external bindings; user approval cannot substitute for observed facts. |
+| OP001–004 / native admission | Supported executable, exact effective configuration/argv/account namespace, authoritative fresh quota and disabled paid controls, source-bound live observer/verifier and isolation receipts. Required token/resource observations and cap enforcement must cover their full registered boundaries; local sampled metrics alone cannot clear them. | Blocked on authentic external bindings; user approval cannot substitute for observed facts. |
 | SPEC-044/T001 / exact registration | Bind those sources to the exact candidate/wheel, 18 fixtures, six prompts, all 108 slots, frozen rubric, abstract roles and numerical caps; verify existing rights/deferral decisions. | Specific registration/capture approval follows a complete packet; not requested while inadmissible. |
 | SPEC-044/T004 / reproduction | Registered native macOS ARM64 and owner-selected standard GitHub Actions Linux x86_64 receipts. | Depends on approved registration; standalone emulated Linux checks cannot substitute. |
 | SPEC-044/T006 / acceptance costs | Independent cohort-attributable cash verification and actual technical measurements; unknown reviewer time/fees remain unknown. | Estimate approval is already recorded; acceptance cash evidence remains unavailable. |
@@ -135,5 +147,6 @@ authorization separately from acceptance, in the same grouped block if useful.
 After authorized merge, apply only the reviewed milestone-19 audit digest and
 require a second scoped audit with `operations: []`. Verify private Project
 membership/status separately or report its access limitation. Do not apply an
-unrelated global tracking delta. All six parents and milestone 19 stay open
-until their individual source records and actual decisions support closure.
+unrelated global tracking delta. At preparation time all six parents and milestone
+19 remain open. Parent closures are individual; milestone 19 stays open while
+registered/native or human acceptance requirements remain pending.
