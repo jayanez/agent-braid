@@ -11,6 +11,11 @@ AMD64 hardware or performance evidence.
 
 ## Start here
 
+For the owner-requested bounded acceptance sequence and FC.1 entry preparation,
+see the [2026-10-12 decision packet](ACCEPTANCE_SEQUENCE_20261012.md). Decisions,
+native admission, registered capture and the deferred human phase remain
+separate; preparation does not close an issue or the milestone.
+
 Start the experimental candidate with [installation](INSTALL.md),
 [presentation](../ai-tooling-presentation.md) and [evaluation preparation](EVALUATION.md).
 The [implementation map](../../specs/039-ai-tooling-program/implementation-status.md)
