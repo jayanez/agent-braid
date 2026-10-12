@@ -17,7 +17,8 @@ approval of the complete registration.
 Remaining weekly percentages of 33% for Codex and 7% for Claude are arithmetic
 derivations of the used percentages, not separately returned provider fields.
 The Codex account/configuration/catalog reads also succeeded; the bounded catalog
-contained seven entries, including the selected `gpt-6-luna` route. A catalog
+contained seven entries, including `gpt-6-luna`; the effective configuration
+selected `gpt-6.1-sol` with high reasoning effort. A catalog
 entry is not an immutable backend build identity.
 
 ## How the observations were obtained
