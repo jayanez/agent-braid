@@ -52,7 +52,11 @@ and [SPEC-044 technical validation](../../specs/044-ai-tooling-evaluation/eviden
 
 M4.5 remains Open. The six original draft packages and all 60 original acceptance
 criteria are retained; 19 added evidence tasks produce a 79-item source task checklist
-(52 checked, 27 unchecked), plus six open parents. Remote issue state is separate. Native Codex/Claude workflows, human
+(55 checked, 24 unchecked), plus three closed and three open parents.
+The bounded SPEC-039/040/042 acceptance and six issue closures are recorded in
+[the acceptance sequence](ACCEPTANCE_SEQUENCE_20261012.md). Its native admission
+checkpoint records fresh metadata reads, supplementary UI observations and the
+verified isolated Claude build; none completes a native skill procedure. Remote issue state is separate. Native Codex/Claude workflows, human
 outcome interpretation/adjudication, founder acceptance, ADR adoption and milestone
 closure remain separate gates. The 108-attempt registered cohort has not started.
 M4 bounded engineering/evaluation closure does not change historical G4 NO-GO or
