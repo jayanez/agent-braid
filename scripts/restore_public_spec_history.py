@@ -28,8 +28,15 @@ REVIEWED_TAGS = (
      "75f2a98f038a233540f0d83ed0fe68646435f792"),
     ("020-m4-local-git-runtime", "853df7432dd4700aa411f1f13b324a0b7beecd02",
      "6248172cb38b0d6a3ce1d077ad64544380bd1f0e"),
+    ("039-ai-tooling-program", "e94497bd561d03bac858ba154e21d9327437d22e",
+     "2057142684a15808b1ff457655415da42f8f0ed3"),
+    ("040-portable-mcp-surface", "588873779b74865563fafc3fa507884b2e88751b",
+     "d6d30cce0151c086f75164803879e9a25ce9dcb9"),
+    ("042-ai-tooling-packaging", "6eedc5f14d9d8188a14b25d0820693d269ef9253",
+     "401c73447745a56ae1145df9bce3cf26ed45533e"),
 )
-# Already-public approved metadata, as published in merged develop c51c91e.
+# Already-public approved metadata from merged develop c51c91e and PR #502
+# (a7f7d589). The latter retains bounded owner acceptance for SPEC-039/040/042.
 # Freezing a candidate initially records pending review; these commitments retain
 # the subsequently published reviewed metadata without inventing new approval.
 # Tuple: feature, assurance SHA256, review record path, review SHA256.
@@ -46,6 +53,18 @@ PUBLIC_REVIEW_RECORDS = (
      "f09968de6e77bfd93793100ae2ddd14f1563ff7a2f3df8e6f7429b34d0e57c29",
      "specs/020-m4-local-git-runtime/founder-review-corrected.json",
      "f0654f1e2bc48cc9b777cd4afdc463a085a7b38e5d90fab98f5fb09f59b58732"),
+    ("039-ai-tooling-program",
+     "2572697be4cb1bb6fb5f39554fefac1127b73f2f54cfd37e0cfa6d6213eeb585",
+     "specs/039-ai-tooling-program/founder-review-20261012.json",
+     "1d4e22e2b018f27c491227367efcb9b3da6b164cfb935e2e36f60870fd46517e"),
+    ("040-portable-mcp-surface",
+     "9e56074d0c6aac32040a9ee963cc32390cc0d8b4efad8078065708a793c4a736",
+     "specs/040-portable-mcp-surface/founder-review-20261012.json",
+     "5b32934be187bf575f11b94dc233877ba18e040ded497105f8d9631664410d01"),
+    ("042-ai-tooling-packaging",
+     "bd409e5b84bb5f7405acb01c4463a43c7a33a0eede7aa6649c8e29bd4a277dd0",
+     "specs/042-ai-tooling-packaging/founder-review-20261012.json",
+     "518f69e1765f640ce0b4a7268b2567fddb30d7319ffc508fa05e42149d8bbe65"),
 )
 # Exact already-public draft candidate; retention is not reviewer approval.
 # Tuple: record path, tag ref, peeled candidate, immutable annotated tag object.
