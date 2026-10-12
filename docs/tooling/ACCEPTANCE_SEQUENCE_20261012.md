@@ -232,3 +232,24 @@ capture. SPEC-041/T001–T010, SPEC-044/T001–T002 and OP001–OP006 remain ope
 no scenario evidence or original task was completed by these metadata reads.
 SPEC-041 covers the five product skills in both hosts; comparative utility,
 registered reproduction and whole-milestone acceptance remain in SPEC-044.
+
+
+### Proposed Codex source-contract decision
+
+The remaining Codex API-field gap needs a source-contract decision, not an
+assertion that absent booleans are false. Proposed scope for owner review:
+prepare a separately versioned additive admission route using the native
+`ordinaryUsageAllowed`, `credits.hasCredits` and `credits.unlimited` fields,
+authoritatively bound auto-recharge state, and the existing process credential,
+provider/fallback, configuration, candidate, model and slot checks. Require
+ordinary included usage allowed, no available/unlimited credits, auto-recharge
+disabled and no paid/API/provider fallback. Unknown, conflicting, stale or
+unbound sources must refuse; availability is not labelled a credit-setting
+boolean. The strict v1/v2/v3 contracts and their historical evidence stay intact.
+
+This is a proposal to design and review the source mapping, not owner approval,
+implemented enforcement, registration approval or capture authorization. It must
+address live source freshness, namespace correspondence and drift refusal before
+any launch. A source-bound observer/verifier and its review remain required.
+Keeping v3 unchanged without this additional route leaves the missing explicit
+Codex fields as blockers. No arbitrary account-wide billing attestation is inferred.
