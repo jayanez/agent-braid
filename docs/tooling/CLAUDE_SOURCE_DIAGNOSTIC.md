@@ -90,3 +90,59 @@ HTTP 200, absence, `null` or a zero balance were not interpreted as `false`.
 Observer receipts, OP001–OP006, SPEC-044 T001/T002 and SPEC-041 remain pending
 their original evidence. Required reviews, the complete registration approval,
 cash reconciliation and human gates are unchanged.
+
+## Follow-up — 2026-10-13
+
+Steps 1 and 2 above were prepared as private collector revisions. Their
+sources, receipts and digests stay in the owner's private evidence and are not
+published.
+
+- **Gap A revision.** For a successful prepaid response, the receipt records
+  only JSON type labels for the body, `amount`, `auto_reload_settings` and its
+  `enabled` field, plus whether the native client would treat the route as
+  supported. It records no values. Admission semantics are unchanged: only an
+  exact boolean counts as an observed control.
+- **Gap B revision.** An explicit mode reads the credential store that a
+  process launched with a given isolated `CLAUDE_CONFIG_DIR` would use: the
+  directory-specific Keychain item, without refresh, and that directory's
+  global configuration. It then binds the stored account and organization to a
+  profile read (`bound`, `mismatch`, `unknown` or `credential_unavailable`
+  with a fixed reason). It refuses before any credential access when the
+  directory is not canonical, when a plaintext credential file is present, or
+  when the configuration supplies environment overrides or an API-key helper.
+  Prepaid is read only when bound.
+
+At the owner's request, the required independent reviews ran in Claude Code
+instead of the earlier Codex reviewer, using the most capable available model
+at high reasoning effort.
+- Gap A was approved in one round.
+- Gap B was approved after two rounds of requested changes. One finding was a
+  credential-source gap: the native client applies the global configuration's
+  `env` block to the process environment.
+- During the final review, the reviewer ran a mocked negative probe that
+  invoked the Security CLI eleven times against synthetic, nonexistent
+  Keychain items. This broke the review's rules. The reviewer reported that no
+  real item was read. The offline tests now block any real Security CLI or
+  network call.
+- These reviews are model reviews, not provider or runtime attestation.
+
+The isolated configuration directory was identified from the owner-authorized
+native login receipts of 2026-10-09. It is the directory that a registered
+launch would pass as `CLAUDE_CONFIG_DIR`, and it still has to be registered
+explicitly.
+
+**Not yet done:**
+- **The read.** The single live read must be started by the owner from a
+  plain terminal. No new provider request has been made.
+- **Credential refresh.** The stored credential from 2026-10-09 is likely
+  expired. The collector never refreshes, so a refresh would need separate
+  owner authorization.
+
+The launch path must still guarantee:
+- empty `--setting-sources` and the pinned `--settings` file;
+- the child environment allowlist;
+- no environment or key helper from policy settings;
+- a canonical configuration path.
+
+No observer, launch or evaluation attempt occurred. Additional spend remains
+EUR 0.
