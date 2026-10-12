@@ -21,9 +21,9 @@
   ],
   "assumptions": "Owned trusted local roots, separately reviewed contracts and exact host/source/cost decisions; no universal compatibility, positive utility or available provider budget assumed.",
   "authority_snapshot": {
-    "commit": "f18f63c8fc9b52dc0652f57c505d7f7647164030",
+    "commit": "e94497bd561d03bac858ba154e21d9327437d22e",
     "hashes": {
-      "ARCHITECTURE.md": "af19c8ed2eda7635220a2f9d6816669452c758369f824fe91ceb6ee7ab8878ab",
+      "ARCHITECTURE.md": "7bad53a83a54da09a0f55fb514432b53265cc1d99e88fdc3e42989b2fa4ea256",
       "CONSTITUTION.md": "ff7196976a1736a639947c2ab26e8da157fef23c89ba9881312f2a36459964eb",
       "GOVERNANCE.md": "c8eda331d97c42e54be4730ef906dfaad9ae2814e36704302f97afceff037d82",
       "LICENSE": "340d66a837b3a1617645d00622a46d1bcbf3534bedd997b6461d16d2e08b374f",
@@ -52,7 +52,7 @@
       "docs/adr/0018-private-source-sidecar-and-disposable-labs.md": "487c48e8ed4296bb4120e32e9d7e75724c76da88ebb6435396cb7fdcf7d317ad",
       "docs/adr/0019-bounded-local-git-runtime.md": "9023b6176762885ce291721633f686ae2c4d3a4c1404f3ee164e7414a69b5fd3",
       "docs/adr/0020-bounded-m4-alpha-runtime.md": "b91615158b29902237ce638d659bc30484562766a0f2607a38fcc4bd717fda28",
-      "docs/adr/0021-codex-claude-tooling-integration.md": "e37d78bd1755f4a2b27c0883cda0303e00fb1546b22b7b176bc9ac6ad2b58b8c",
+      "docs/adr/0021-codex-claude-tooling-integration.md": "c9e85fbab0c71445ca16d9aef7c33d17614abbf36588441ddf90b2b07fc1fd89",
       "docs/architecture/AGENT_INTERACTION_METADATA.md": "0118d7f16c390fc4c1ff027b503a4eaba8a747edf3f6d7b088559f8870e27780",
       "docs/architecture/ASSURANCE_LEVELS.md": "3e86d0060ef566ba8d1e1690606fc06e8fee172f187a1b9779b13d27f0f915d9",
       "docs/architecture/CONFLUENCE_CERTIFICATE.md": "fd12a8f1a1477835848581b0f4ccd52f76d3f22dd96a3abaccb9074733464a8e",
@@ -92,11 +92,11 @@
   "compatibility": "Additive experimental tooling envelope with optional pinned SDK; core dependencies empty. Codex and Claude Code v1 only, exact versions selected before observation. Existing contracts and historical records unchanged.",
   "domain": "Engineering planning and bounded adoption of existing AIM/Git/worktree analysis and private fixed-patch runtime capabilities.",
   "evidence_snapshot": {
-    "commit": null,
-    "mode": "current"
+    "commit": "e94497bd561d03bac858ba154e21d9327437d22e",
+    "mode": "historical"
   },
   "execution_contract": "Source planning only. Future server defaults to analysis; execution/recovery delegate existing independent exact operator grants and private fixed-patch runtime. Installation writes only explicitly selected receipt-owned entries. No new effects.",
-  "human_review": "pending",
+  "human_review": "approved",
   "hypotheses": "A coherent discoverable integration may make existing bounded capabilities useful to these hosts; user recognition and utility are not assumed.",
   "observation_contract": "Exact input/candidate/host/environment identities and unchanged analyzer/runtime observation contracts; synthetic, protocol-peer, actual-host and clean-room evidence remain distinct.",
   "references": [
@@ -313,7 +313,8 @@
       "text": "Require candidate-bound technical review, actual host evidence and explicit founder acceptance before M4.5 closure."
     }
   ],
+  "review_record": "specs/039-ai-tooling-program/founder-review-20261012.json",
   "scientific_limits": "Existing AIM/runtime/grant/verifier contracts remain unchanged. Analysis and preparation are consultative; host permission never substitutes for operator grants. No source ref promotion, repository-code/hook execution, arbitrary network effects or new scientific guarantee. Existing M4 G4 NO-GO and independent M3/M3.5 gates remain in effect. Structural validation is not mathematical proof, scientific acceptance, production safety or human approval.",
   "scope": "Define the adjacent M4.5 program, current capability inventory, adoption decisions and exact delivery/closure boundaries for Codex and Claude Code.",
-  "stage": "draft"
+  "stage": "validated"
 }

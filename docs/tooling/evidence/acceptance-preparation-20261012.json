@@ -1,0 +1,294 @@
+{
+  "schema": "agent-braid-m45-acceptance-preparation-v1",
+  "observedDate": "2026-10-12",
+  "baselineCommit": "d58b648a36b1f8477204004e3acbaad5e40f83b7",
+  "command": "<private-delivery-root>/verify_packet.py <independent-checkout> <public-report>",
+  "verificationScriptSha256": "11f4118ed5efc8ae6747d544468b6d70820b54f18fdc73f2cbf0d7695cdeb04b",
+  "verifier": "main-session; not a new independent review",
+  "specs": [
+    {
+      "spec": "SPEC-039",
+      "parentIssue": 395,
+      "decisionIssue": 405,
+      "decision": "pending",
+      "checkedTasks": [
+        "T001",
+        "T002",
+        "T003",
+        "T004",
+        "T005",
+        "T006",
+        "T007",
+        "T008",
+        "T009"
+      ],
+      "pendingTasks": [
+        "T010"
+      ],
+      "authorityCommit": "f18f63c8fc9b52dc0652f57c505d7f7647164030",
+      "assuranceSha256": "360cece31ffc2b58ea418c4730131ec19b039a519dda14c992b03323abe0cf47",
+      "receipts": [
+        {
+          "path": "specs/039-ai-tooling-program/evidence/sc-001.json",
+          "sha256": "516777b82bb1b75d48b2ce05f484955c0d7b15104b0da2bfacb56465956ba689",
+          "sourceCommit": "5cffa9d27f27686dc2cbbf90ed643e2ec2df94e7",
+          "outcome": "passed"
+        },
+        {
+          "path": "specs/039-ai-tooling-program/evidence/sc-002.json",
+          "sha256": "a131ca1310c1017b225a8f1d1b1e5c9032ed080bb3b396c30173082fabb6fc08",
+          "sourceCommit": "5cffa9d27f27686dc2cbbf90ed643e2ec2df94e7",
+          "outcome": "passed"
+        },
+        {
+          "path": "specs/039-ai-tooling-program/evidence/sc-003.json",
+          "sha256": "48f3c9e5c5ad659c282e81684ffd554f8c04ff81be001a313ce0ad9199923c79",
+          "sourceCommit": "5cffa9d27f27686dc2cbbf90ed643e2ec2df94e7",
+          "outcome": "passed"
+        },
+        {
+          "path": "specs/039-ai-tooling-program/evidence/sc-004.json",
+          "sha256": "383bf2057d98f1191d6f406360d5ef2a9183dbbdae5e6099d9b92f1b6284e98c",
+          "sourceCommit": "5cffa9d27f27686dc2cbbf90ed643e2ec2df94e7",
+          "outcome": "passed"
+        },
+        {
+          "path": "specs/039-ai-tooling-program/evidence/sc-005.json",
+          "sha256": "760cca82b4a1d337fba1a6ae86b1528e24ed798fd4c8d6a3653d7cab460c6d2d",
+          "sourceCommit": "5cffa9d27f27686dc2cbbf90ed643e2ec2df94e7",
+          "outcome": "passed"
+        },
+        {
+          "path": "specs/039-ai-tooling-program/evidence/sc-006.json",
+          "sha256": "7454dc049116370d2a104b676651087ec87a82e3e3307013bd0ae37b6e96babd",
+          "sourceCommit": "5cffa9d27f27686dc2cbbf90ed643e2ec2df94e7",
+          "outcome": "passed"
+        },
+        {
+          "path": "specs/039-ai-tooling-program/evidence/sc-007.json",
+          "sha256": "996d16a2c376babf1f346d00dc9a0ed52366c0ea204f87dc420b79ee3eb58e7a",
+          "sourceCommit": "5cffa9d27f27686dc2cbbf90ed643e2ec2df94e7",
+          "outcome": "passed"
+        },
+        {
+          "path": "specs/039-ai-tooling-program/evidence/sc-008.json",
+          "sha256": "c51d2059aeb3cbc0ded32f739cba43d4244467b355228ebe8ce8331d72e2e020",
+          "sourceCommit": "5cffa9d27f27686dc2cbbf90ed643e2ec2df94e7",
+          "outcome": "passed"
+        }
+      ],
+      "historicalInputHashChecks": 184,
+      "historicalInputHashMismatches": [],
+      "obtainedEvidenceHashMismatches": [],
+      "currentInputDriftPaths": [
+        "docs/adr/0021-codex-claude-tooling-integration.md",
+        "specs/039-ai-tooling-program/assurance.json",
+        "specs/039-ai-tooling-program/tasks.md",
+        "specs/039-ai-tooling-program/validation-plan.md",
+        "specs/040-portable-mcp-surface/assurance.json",
+        "specs/040-portable-mcp-surface/tasks.md",
+        "specs/040-portable-mcp-surface/validation-plan.md",
+        "specs/041-ai-tooling-skills/tasks.md",
+        "specs/042-ai-tooling-packaging/assurance.json",
+        "specs/042-ai-tooling-packaging/tasks.md",
+        "specs/042-ai-tooling-packaging/validation-plan.md",
+        "specs/043-ai-tooling-journey/assurance.json",
+        "specs/043-ai-tooling-journey/tasks.md",
+        "specs/043-ai-tooling-journey/validation-plan.md",
+        "specs/044-ai-tooling-evaluation/assurance.json",
+        "specs/044-ai-tooling-evaluation/tasks.md",
+        "specs/044-ai-tooling-evaluation/validation-plan.md"
+      ],
+      "validationSourceCommit": "72a396d294205201f7f56d00fa2349dccb540a5c",
+      "readiness": "historical-bounded-scope-decision-packet"
+    },
+    {
+      "spec": "SPEC-040",
+      "parentIssue": 406,
+      "decisionIssue": 416,
+      "decision": "pending",
+      "checkedTasks": [
+        "T001",
+        "T002",
+        "T003",
+        "T004",
+        "T005",
+        "T006",
+        "T007",
+        "T008",
+        "T009"
+      ],
+      "pendingTasks": [
+        "T010"
+      ],
+      "authorityCommit": "f18f63c8fc9b52dc0652f57c505d7f7647164030",
+      "assuranceSha256": "98c9670eec8a71c5bc9794a707f1ea7a1788370711bf821c6ffc94478404d301",
+      "receipts": [
+        {
+          "path": "specs/040-portable-mcp-surface/evidence/sc-001.json",
+          "sha256": "82819ee10495e859115c9ea22def16a99141cc42a47cbc96a505113eac5ed040",
+          "sourceCommit": "24921e1a16dfff15cde5af091f7b955491acdbef",
+          "outcome": "passed"
+        },
+        {
+          "path": "specs/040-portable-mcp-surface/evidence/sc-002.json",
+          "sha256": "fc133416e4f8aef5e798e9587e905d4252ef4916784b72c857e955650aa83f32",
+          "sourceCommit": "24921e1a16dfff15cde5af091f7b955491acdbef",
+          "outcome": "passed"
+        },
+        {
+          "path": "specs/040-portable-mcp-surface/evidence/sc-003.json",
+          "sha256": "c39564b24378212ab6a3c3ed7729b970219bc134df220889fced8b35f83a4ebc",
+          "sourceCommit": "24921e1a16dfff15cde5af091f7b955491acdbef",
+          "outcome": "passed"
+        },
+        {
+          "path": "specs/040-portable-mcp-surface/evidence/sc-004.json",
+          "sha256": "81f4b9d9ba8063a521d03bfeed49ddbafbb2972fc9e59dbc4387e7fedf767e38",
+          "sourceCommit": "24921e1a16dfff15cde5af091f7b955491acdbef",
+          "outcome": "passed"
+        },
+        {
+          "path": "specs/040-portable-mcp-surface/evidence/sc-005.json",
+          "sha256": "d366ca3fd08b521668e863b2962109e0befbccd0726d2edc4f58e22563c18387",
+          "sourceCommit": "24921e1a16dfff15cde5af091f7b955491acdbef",
+          "outcome": "passed"
+        },
+        {
+          "path": "specs/040-portable-mcp-surface/evidence/sc-006.json",
+          "sha256": "223668ede0b8a3348b416a42debb716a92dd78cd7ed700fdc080c39b8b6f9bb4",
+          "sourceCommit": "24921e1a16dfff15cde5af091f7b955491acdbef",
+          "outcome": "passed"
+        },
+        {
+          "path": "specs/040-portable-mcp-surface/evidence/sc-007.json",
+          "sha256": "2da738cc3c799aa172fd9b1ea384dc7908eb370251b8fb598c7e659f1c284dcb",
+          "sourceCommit": "24921e1a16dfff15cde5af091f7b955491acdbef",
+          "outcome": "passed"
+        },
+        {
+          "path": "specs/040-portable-mcp-surface/evidence/sc-008.json",
+          "sha256": "1cb48c8515d563761b00985d863cf3aa1e897e71230670cec84f0bec0457f778",
+          "sourceCommit": "24921e1a16dfff15cde5af091f7b955491acdbef",
+          "outcome": "passed"
+        }
+      ],
+      "historicalInputHashChecks": 160,
+      "historicalInputHashMismatches": [],
+      "obtainedEvidenceHashMismatches": [],
+      "currentInputDriftPaths": [],
+      "validationSourceCommit": "72a396d294205201f7f56d00fa2349dccb540a5c",
+      "readiness": "historical-bounded-scope-decision-packet"
+    },
+    {
+      "spec": "SPEC-042",
+      "parentIssue": 428,
+      "decisionIssue": 438,
+      "decision": "pending",
+      "checkedTasks": [
+        "T001",
+        "T002",
+        "T003",
+        "T004",
+        "T005",
+        "T006",
+        "T007",
+        "T008",
+        "T009"
+      ],
+      "pendingTasks": [
+        "T010"
+      ],
+      "authorityCommit": "f18f63c8fc9b52dc0652f57c505d7f7647164030",
+      "assuranceSha256": "1eaa5dfa5555b4b2cc7e05fd11f4b04160a59b1a3819fd547e25d59579370f1c",
+      "receipts": [
+        {
+          "path": "specs/042-ai-tooling-packaging/evidence/sc-001.json",
+          "sha256": "c3c1779d9c1179716e9da3946c1ecfc0820578ab12366837272eb97640208253",
+          "sourceCommit": "5cffa9d27f27686dc2cbbf90ed643e2ec2df94e7",
+          "outcome": "passed"
+        },
+        {
+          "path": "specs/042-ai-tooling-packaging/evidence/sc-002.json",
+          "sha256": "2f9012daf7170ff91baebe4a9c5bbbc66f8ff9622b5f15a9f033b7135bd3e5bc",
+          "sourceCommit": "5cffa9d27f27686dc2cbbf90ed643e2ec2df94e7",
+          "outcome": "passed"
+        },
+        {
+          "path": "specs/042-ai-tooling-packaging/evidence/sc-003.json",
+          "sha256": "85c889f90197971c684bfa8dc30bf0a1db5ec5acff49c5ea76ad4c3a7b707e5d",
+          "sourceCommit": "5cffa9d27f27686dc2cbbf90ed643e2ec2df94e7",
+          "outcome": "passed"
+        },
+        {
+          "path": "specs/042-ai-tooling-packaging/evidence/sc-004.json",
+          "sha256": "8196a2a2ef614ee548bda9fabc92f6ff6df7a2beffc8705cda5f3af839294b64",
+          "sourceCommit": "5cffa9d27f27686dc2cbbf90ed643e2ec2df94e7",
+          "outcome": "passed"
+        },
+        {
+          "path": "specs/042-ai-tooling-packaging/evidence/sc-005.json",
+          "sha256": "a6628e60588bd4194ed27452ea465410f3be66f51d04d463a87487dca00dd326",
+          "sourceCommit": "5cffa9d27f27686dc2cbbf90ed643e2ec2df94e7",
+          "outcome": "passed"
+        },
+        {
+          "path": "specs/042-ai-tooling-packaging/evidence/sc-006.json",
+          "sha256": "03f2dff86dd3c31ae5e103618fe1923add0b12e676ccd6842b586ef6cea6427b",
+          "sourceCommit": "5cffa9d27f27686dc2cbbf90ed643e2ec2df94e7",
+          "outcome": "passed"
+        },
+        {
+          "path": "specs/042-ai-tooling-packaging/evidence/sc-007.json",
+          "sha256": "3e748959c86a2dd4b56a23a9ffe2f19f15fe80f0a8aeaa1a1c0ce777fce89ece",
+          "sourceCommit": "5cffa9d27f27686dc2cbbf90ed643e2ec2df94e7",
+          "outcome": "passed"
+        },
+        {
+          "path": "specs/042-ai-tooling-packaging/evidence/sc-008.json",
+          "sha256": "688972eed56855a69f5a4e04790ed23e08b4758223e58de692b036084fed5a41",
+          "sourceCommit": "5cffa9d27f27686dc2cbbf90ed643e2ec2df94e7",
+          "outcome": "passed"
+        }
+      ],
+      "historicalInputHashChecks": 208,
+      "historicalInputHashMismatches": [],
+      "obtainedEvidenceHashMismatches": [],
+      "currentInputDriftPaths": [
+        "specs/042-ai-tooling-packaging/validation-plan.md",
+        "tests/test_tooling_mcp_acceptance.py"
+      ],
+      "validationSourceCommit": "72a396d294205201f7f56d00fa2349dccb540a5c",
+      "readiness": "historical-bounded-scope-decision-packet"
+    }
+  ],
+  "historicalReview": {
+    "path": "specs/044-ai-tooling-evaluation/evidence/technical-review.json",
+    "sha256": "bb0f5c06846502da5f5dcc11d2d4fba24ba1ee965682e40858449413e333d354",
+    "sourceCommit": "72a396d294205201f7f56d00fa2349dccb540a5c",
+    "reviewer": {
+      "designatedModel": "gpt-6-luna",
+      "reasoningEffort": "medium",
+      "toolRuntimeAttestation": false
+    },
+    "inputHashChecks": 12,
+    "historicalInputHashMismatches": [],
+    "currentInputDriftPaths": [
+      "specs/039-ai-tooling-program/tasks.md",
+      "specs/040-portable-mcp-surface/tasks.md",
+      "specs/041-ai-tooling-skills/tasks.md",
+      "specs/042-ai-tooling-packaging/tasks.md",
+      "specs/043-ai-tooling-journey/tasks.md",
+      "specs/044-ai-tooling-evaluation/assurance.json",
+      "specs/044-ai-tooling-evaluation/tasks.md"
+    ]
+  },
+  "remoteReadback": {
+    "openIssues": 33,
+    "acceptancePending": 6,
+    "decisionPending": 6,
+    "executionPending": 21,
+    "sourceSha256": "df03e5cc8934bbb6de141cdeadc9705db19dc2d74ad06481d2be7ee9e1cd12ee"
+  },
+  "limits": "Public receipt integrity and historical input bindings only. Private raw archives were not reverified. Current drift is disclosed, not transferred to historical evidence. No new native observations, experiment, independent review, owner acceptance, ADR adoption, merge or issue closure."
+}
