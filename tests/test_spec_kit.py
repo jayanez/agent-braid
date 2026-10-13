@@ -8,6 +8,7 @@ import tempfile
 import unittest
 
 from scripts.constitution_replica import sync
+from scripts.history_equivalence import resolve_public_commit
 from scripts.validate_spec_kit import (
     ROOT, _matches_preserved_draft_tag, authorities, check, digest, freeze,
     snapshot, validate_portable_record, validate_record,
@@ -198,7 +199,9 @@ class SpecKitTests(unittest.TestCase):
             self.skipTest("public export manifest is not present")
         record = self.root / "specs/044-ai-tooling-evaluation/assurance.json"
         data = json.loads(record.read_text())
-        snapshot_commit = data["evidence_snapshot"]["commit"]
+        # ADR 0022: the frozen identity may be absent; its equivalent must still
+        # be outside HEAD so the post-squash tag fallback is exercised.
+        snapshot_commit = resolve_public_commit(self.root, data["evidence_snapshot"]["commit"])
         ancestry = subprocess.run(
             ["git", "-C", str(self.root), "merge-base", "--is-ancestor",
              snapshot_commit, "HEAD"], check=False, capture_output=True,
