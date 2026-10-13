@@ -71,6 +71,10 @@ class ValidationProfileTests(unittest.TestCase):
         self.assertTrue(validation.classify(
             ["scripts/restore_public_spec_history.py"]
         ).spec_kit_integration)
+        equivalence = validation.classify(["scripts/history_equivalence.py"])
+        self.assertTrue(equivalence.sensitive)
+        self.assertTrue(equivalence.spec_kit_integration)
+        self.assertIn("governance-release", equivalence.domains)
         ci_tests = validation.classify(["tests/test_ci_validation.py"])
         self.assertEqual(ci_tests.domains, ("validation-process",))
         self.assertTrue(ci_tests.sensitive)

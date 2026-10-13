@@ -8,6 +8,7 @@ import tempfile
 import unittest
 
 from scripts.constitution_replica import sync
+from scripts.history_equivalence import resolve_public_commit
 from scripts.validate_spec_kit import (
     ROOT, _matches_preserved_draft_tag, authorities, check, digest, freeze,
     snapshot, validate_portable_record, validate_record,
@@ -198,7 +199,9 @@ class SpecKitTests(unittest.TestCase):
             self.skipTest("public export manifest is not present")
         record = self.root / "specs/044-ai-tooling-evaluation/assurance.json"
         data = json.loads(record.read_text())
-        snapshot_commit = data["evidence_snapshot"]["commit"]
+        # ADR 0022: the frozen identity may be absent; its equivalent must still
+        # be outside HEAD so the post-squash tag fallback is exercised.
+        snapshot_commit = resolve_public_commit(self.root, data["evidence_snapshot"]["commit"])
         ancestry = subprocess.run(
             ["git", "-C", str(self.root), "merge-base", "--is-ancestor",
              snapshot_commit, "HEAD"], check=False, capture_output=True,
@@ -218,9 +221,9 @@ class SpecKitTests(unittest.TestCase):
             self.skipTest("public export manifest is not present")
         relative = "specs/044-ai-tooling-evaluation/assurance.json"
         record = self.root / relative
-        tag_ref = "refs/tags/m45-tooling-candidate-8df6c9f"
-        candidate = "8df6c9f410f0559dc667833b8a4f71f1685d3ea0"
-        tag_object = "2f2f6f4ec199d43ecc9ec3e2597875ab7547257a"
+        tag_ref = "refs/tags/m45-tooling-candidate-ae20930"
+        candidate = "ae209301764562bde858b4a2eedd7c7a97f6688f"
+        tag_object = "5c4269e04e97d734ae87fa7173236b86c65d5427"
         original_bytes = record.read_bytes()
 
         def set_ref(value):

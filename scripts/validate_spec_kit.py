@@ -14,6 +14,7 @@ import sys
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "scripts"))
 from constitution_replica import sync
+from history_equivalence import resolve_public_commit
 
 COMMANDS = {"analyze", "checklist", "clarify", "constitution", "converge",
             "implement", "plan", "specify", "tasks", "taskstoissues"}
@@ -134,7 +135,9 @@ def validate_record(root, path):
         if record.get("human_review") == "approved":
             raise ValueError("Approval requires a frozen historical authority snapshot")
     elif mode == "historical":
-        expected = authorities_at_commit(root, authority_snapshot["commit"])
+        # ADR 0022: Git access uses the tree-verified equivalent of a listed identity.
+        expected = authorities_at_commit(
+            root, resolve_public_commit(root, authority_snapshot["commit"]))
         if authority_snapshot["hashes"] != expected:
             raise ValueError("Historical authority snapshot does not match its commit")
     else:
@@ -152,6 +155,7 @@ def validate_record(root, path):
         evidence_commit = evidence_snapshot["commit"]
         if not isinstance(evidence_commit, str) or not re.fullmatch(r"[0-9a-f]{40}", evidence_commit):
             raise ValueError("Historical evidence snapshot requires a full commit hash")
+        evidence_commit = resolve_public_commit(root, evidence_commit)
         git(root, "cat-file", "-e", f"{evidence_commit}^{{commit}}")
     else:
         raise ValueError("evidence_snapshot mode must be current or historical")
@@ -175,7 +179,7 @@ def validate_record(root, path):
     for name in record["references"]:
         if evidence_mode == "historical":
             name = safe_name(root, name)
-            git(root, "cat-file", "-e", f"{evidence_snapshot['commit']}:{name}")
+            git(root, "cat-file", "-e", f"{evidence_commit}:{name}")
         else:
             local(root, name)
     requirements = record.get("requirements")
@@ -214,7 +218,7 @@ def validate_record(root, path):
                 if evidence_mode == "historical":
                     artifact_name = safe_name(root, item.get("path", ""))
                     artifact_bytes = git(
-                        root, "show", f"{evidence_snapshot['commit']}:{artifact_name}"
+                        root, "show", f"{evidence_commit}:{artifact_name}"
                     )
                     artifact_digest = hashlib.sha256(artifact_bytes).hexdigest()
                     data = json.loads(artifact_bytes) if Path(artifact_name).suffix == ".json" else None
@@ -228,7 +232,7 @@ def validate_record(root, path):
                     for name, checksum in data["inputs"].items():
                         if evidence_mode == "historical":
                             observed = hashlib.sha256(git(
-                                root, "show", f"{evidence_snapshot['commit']}:{name}"
+                                root, "show", f"{evidence_commit}:{name}"
                             )).hexdigest()
                         else:
                             observed = digest(local(root, name))
@@ -275,7 +279,8 @@ def validate_portable_record(root, path, bind_manifest=True):
                     for item in (authority_candidate, evidence_candidate)):
         try:
             for item in (authority_candidate, evidence_candidate):
-                git(root, "merge-base", "--is-ancestor", item["commit"], "HEAD")
+                git(root, "merge-base", "--is-ancestor",
+                    resolve_public_commit(root, item["commit"]), "HEAD")
             commits_in_public_history = True
         except ValueError:
             commits_in_public_history = False
@@ -463,6 +468,7 @@ def _matches_preserved_draft_tag(root, relative_record, path, record):
                 if snapshot.get("mode") != "historical" or not isinstance(commit, str) \
                         or not re.fullmatch(r"[0-9a-f]{40}", commit):
                     return False
+                commit = resolve_public_commit(root, commit)
                 git(root, "cat-file", "-e", f"{commit}^{{commit}}")
                 git(root, "merge-base", "--is-ancestor", commit, candidate)
             return path.read_bytes() == git(root, "show", f"{candidate}:{name}")
@@ -485,9 +491,15 @@ def _matches_reviewed_candidate_tag(root, relative_record, path, record, commit)
         from scripts.restore_public_spec_history import REVIEWED_TAGS, PUBLIC_REVIEW_RECORDS
     except ModuleNotFoundError:
         from restore_public_spec_history import REVIEWED_TAGS, PUBLIC_REVIEW_RECORDS
+    # ADR 0022: the reviewed identity stays the recorded one; the tag pins its
+    # tree-verified public equivalent.
+    try:
+        public = resolve_public_commit(root, commit)
+    except ValueError:
+        return False
     pins = [oid for feature, candidate, oid in REVIEWED_TAGS
             if relative_record == f"specs/{feature}/assurance.json"
-            and candidate == commit]
+            and candidate == public]
     if len(pins) != 1:
         return False
     metadata = [(assurance_hash, review_name, review_hash)
@@ -495,7 +507,7 @@ def _matches_reviewed_candidate_tag(root, relative_record, path, record, commit)
                 if relative_record == f"specs/{feature}/assurance.json"]
     if len(metadata) != 1:
         return False
-    tag_ref = f"refs/tags/spec-{match.group(1)}-reviewed-{commit[:7]}"
+    tag_ref = f"refs/tags/spec-{match.group(1)}-reviewed-{public[:7]}"
     try:
         if git(root, "rev-parse", "--verify", tag_ref).decode("ascii").strip() != pins[0]:
             return False
@@ -503,7 +515,7 @@ def _matches_reviewed_candidate_tag(root, relative_record, path, record, commit)
             return False
         tagged_commit = git(root, "rev-parse", f"{tag_ref}^{{commit}}").decode(
             "ascii").strip()
-        if tagged_commit != commit:
+        if tagged_commit != public:
             return False
         review_name = safe_name(root, record.get("review_record", ""))
         assurance_hash, expected_review_name, review_hash = metadata[0]
