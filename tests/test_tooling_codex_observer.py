@@ -84,6 +84,10 @@ class CodexQuotaProjectionTests(unittest.TestCase):
         changed = deepcopy(account)
         changed["requiresOpenaiAuth"] = 1
         variants.append((changed, quota))
+        # Routing still matches the quota; only the account fallback disagrees.
+        changed = deepcopy(account)
+        changed["account"]["accountId"] = "other"
+        variants.append((changed, quota))
         for left, right in variants:
             with self.assertRaises(observer.CodexObserverError):
                 self.project(left, right)
@@ -114,6 +118,24 @@ class CodexQuotaAcquisitionTests(unittest.TestCase):
             link.symlink_to(path)
             with self.assertRaises(OSError):
                 observer._verified_bytes(link, digest, private=True)
+
+    def test_loaded_transport_must_pin_the_reviewed_executable(self):
+        for exe, digest in ((observer.EXECUTABLE, observer.EXECUTABLE_SHA256),
+                            (Path("/other/codex"), observer.EXECUTABLE_SHA256),
+                            (observer.EXECUTABLE, "0" * 64)):
+            with self.subTest(exe=str(exe), digest=digest[:8]), \
+                    tempfile.TemporaryDirectory() as directory:
+                path = Path(directory) / "transport.py"
+                data = (f"from pathlib import Path\nEXE = Path({str(exe)!r})\n"
+                        f"EXPECTED_EXE_SHA256 = {digest!r}\n").encode()
+                path.write_bytes(data)
+                path.chmod(0o600)
+                with patch.object(observer, "TRANSPORT_SHA256", hashlib.sha256(data).hexdigest()):
+                    if (exe, digest) == (observer.EXECUTABLE, observer.EXECUTABLE_SHA256):
+                        self.assertEqual(observer._load_transport(path).EXE, exe)
+                    else:
+                        with self.assertRaises(observer.CodexObserverError):
+                            observer._load_transport(path)
 
     def test_context_environment_omits_credentials_and_refuses_custom_home(self):
         with patch.dict(os.environ, {"CODEX_HOME": "", "OPENAI_API_KEY": "synthetic-secret"}):
@@ -174,8 +196,14 @@ class CodexQuotaAcquisitionTests(unittest.TestCase):
         self.assertFalse(instance._lock.locked())
 
     def test_unserialized_or_overlapping_read_never_launches(self):
+        _, transport, process = self.harness()
         instance = observer.CodexQuotaObserver(Path("/synthetic"), expected_namespace_sha256=NAMESPACE)
-        with patch.object(observer.subprocess, "Popen") as launch:
+        # Every other step would succeed, so only the serialization gate can refuse.
+        with (patch.object(observer, "_environment", return_value={}),
+              patch.object(observer, "_load_transport", return_value=transport),
+              patch.object(observer, "_verified_bytes"),
+              patch.object(observer.os, "killpg"),
+              patch.object(observer.subprocess, "Popen", return_value=process) as launch):
             with self.assertRaises(observer.CodexObserverError):
                 instance.read()
             instance._lock.acquire()
