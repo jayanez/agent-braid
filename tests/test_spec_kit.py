@@ -218,9 +218,9 @@ class SpecKitTests(unittest.TestCase):
             self.skipTest("public export manifest is not present")
         relative = "specs/044-ai-tooling-evaluation/assurance.json"
         record = self.root / relative
-        tag_ref = "refs/tags/m45-tooling-candidate-8df6c9f"
-        candidate = "8df6c9f410f0559dc667833b8a4f71f1685d3ea0"
-        tag_object = "2f2f6f4ec199d43ecc9ec3e2597875ab7547257a"
+        tag_ref = "refs/tags/m45-tooling-candidate-ae20930"
+        candidate = "ae209301764562bde858b4a2eedd7c7a97f6688f"
+        tag_object = "5c4269e04e97d734ae87fa7173236b86c65d5427"
         original_bytes = record.read_bytes()
 
         def set_ref(value):

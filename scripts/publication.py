@@ -398,7 +398,12 @@ def _validated_addendum(root_name: str, addendum_path: str, head: str, addendum_
     if len(introduced) != 1 \
             or _git(root, "show", f"{introduced[0]}:{addendum_path}").stdout != payload:
         raise ValueError("public export addendum must be unchanged since introduction")
-    snapshot = data["snapshotCommit"]
+    try:
+        from scripts.history_equivalence import resolve_public_commit
+    except ModuleNotFoundError:
+        from history_equivalence import resolve_public_commit
+    # ADR 0022: a listed frozen snapshot resolves to its tree-verified equivalent.
+    snapshot = resolve_public_commit(root, data["snapshotCommit"], data["snapshotTree"])
     if _git(root, "merge-base", "--is-ancestor", snapshot, introduced[0],
             allow_failure=True).returncode != 0 \
             or _git(root, "merge-base", "--is-ancestor", snapshot, head,
