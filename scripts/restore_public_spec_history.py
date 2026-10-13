@@ -15,9 +15,9 @@ import re
 import subprocess
 
 try:
-    from scripts.history_equivalence import resolve_public_commit
+    from scripts.history_equivalence import recorded_equivalent
 except ModuleNotFoundError:
-    from history_equivalence import resolve_public_commit
+    from history_equivalence import recorded_equivalent
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -43,7 +43,8 @@ REVIEWED_TAGS = (
      "fb49f97182362092eaa43af48df82e3542786ef7"),
 )
 # Already-public approved metadata from merged develop c51c91e (now 25f56d8) and
-# PR #502 (a7f7d589, now 6ef4842; ADR 0022). The latter retains bounded owner acceptance for SPEC-039/040/042.
+# PR #502 (a7f7d589, now 6ef4842; ADR 0022). The latter retains bounded owner
+# acceptance for SPEC-039/040/042.
 # Freezing a candidate initially records pending review; these commitments retain
 # the subsequently published reviewed metadata without inventing new approval.
 # Tuple: feature, assurance SHA256, review record path, review SHA256.
@@ -106,7 +107,9 @@ def reviewed_tag_ref(feature: str, candidate: str, tag_object: str,
             or record.get("authority_snapshot", {}).get("mode") != "historical"
             or not isinstance(reviewed, str)
             or record.get("evidence_snapshot") != {"mode": "historical", "commit": reviewed}
-            or resolve_public_commit(ROOT, reviewed) != candidate):
+            # Preflight compares the listed equivalent; the target may not be fetched
+            # yet. verify_reviewed_tag and portable validation check tree and ancestry.
+            or recorded_equivalent(ROOT, reviewed) != candidate):
         raise ValueError(f"SPEC-{feature[:3]} record does not match the pinned reviewed candidate")
     review_path = (ROOT / record.get("review_record", "")).resolve()
     if (not review_path.is_relative_to(ROOT.resolve()) or not review_path.is_file()

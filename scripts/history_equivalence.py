@@ -125,6 +125,16 @@ def _verified_tag(root: Path, item: dict) -> bool:
             and rev(f"{item['newCommit']}^{{tree}}") == item["tree"])
 
 
+def recorded_equivalent(root: Path, recorded: str) -> str:
+    """Return the listed equivalent identity without requiring its objects.
+
+    For preflight before restoration fetches the target; validation must still
+    call resolve_public_commit, which verifies tree and reachability.
+    """
+    entry = load_equivalence(Path(root).resolve())["entries"].get(recorded)
+    return recorded if entry is None else entry["new"]
+
+
 def resolve_public_commit(root: Path, recorded: str, tree: str | None = None) -> str:
     """Map a listed frozen identity to its verified published equivalent.
 

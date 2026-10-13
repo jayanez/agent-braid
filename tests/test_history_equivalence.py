@@ -64,6 +64,21 @@ class HistoryEquivalenceTests(unittest.TestCase):
         closure = self.anchor["closureCommit"]
         with self.assertRaisesRegex(ValueError, "tree does not match"):
             equivalence.resolve_public_commit(self.root, closure, "0" * 40)
+        loaded = equivalence.load_equivalence(self.root)
+        altered = {**loaded["entries"], closure: {**loaded["entries"][closure], "tree": "0" * 40}}
+        with patch.object(equivalence, "load_equivalence",
+                          return_value={**loaded, "entries": altered}):
+            with self.assertRaisesRegex(ValueError, "tree does not match"):
+                equivalence.resolve_public_commit(self.root, closure)
+
+    def test_preflight_equivalent_needs_no_objects(self):
+        item, entry = self.tag_entry()
+        for tag in self.data["tags"]:
+            self.git("update-ref", "-d", f"refs/tags/{tag['newName']}")
+        self.assertEqual(equivalence.recorded_equivalent(self.root, entry["old"]), entry["new"])
+        self.assertEqual(equivalence.recorded_equivalent(self.root, "f" * 40), "f" * 40)
+        with self.assertRaises(ValueError):
+            equivalence.resolve_public_commit(self.root, entry["old"])
 
     def test_record_bytes_cannot_change_after_introduction(self):
         original = self.path.read_bytes()
