@@ -1,0 +1,593 @@
+{
+  "modelLoaded": false,
+  "packageCount": 41,
+  "packages": [
+    {
+      "licenseClassifiers": [
+        "License :: OSI Approved :: Apache Software License"
+      ],
+      "licenseExpression": null,
+      "name": "chronos-forecasting",
+      "projectUrls": {
+        "Chronos-2-Paper": "https://arxiv.org/abs/2510.15821",
+        "Chronos-Paper": "https://arxiv.org/abs/2403.07815",
+        "Homepage": "https://github.com/amazon-science/chronos-forecasting",
+        "Issues": "https://github.com/amazon-science/chronos-forecasting/issues"
+      },
+      "sha256": "0f0d9a1972f252d6cf584b9fa749bd1b389b3c1cf05a889c4130cb10652c2117",
+      "url": "https://files.pythonhosted.org/packages/6a/c9/c9e1363d55ac569e9b09b98d66b342ada5530a26624f45ea7e2f9e4131a9/chronos_forecasting-2.3.2-py3-none-any.whl",
+      "version": "2.3.2"
+    },
+    {
+      "licenseClassifiers": [
+        "License :: OSI Approved :: Apache Software License"
+      ],
+      "licenseExpression": null,
+      "name": "accelerate",
+      "projectUrls": {
+        "Homepage": "https://github.com/huggingface/accelerate"
+      },
+      "sha256": "97eacca0b73e45cb867dbf8c5d5d4dc32219544300e0c8992c7334dc2ef33cec",
+      "url": "https://files.pythonhosted.org/packages/8a/4c/34f0450479d01195027260da68d8a3880683f1640c3ca5adf64acb3185f1/accelerate-1.15.0-py3-none-any.whl",
+      "version": "1.15.0"
+    },
+    {
+      "licenseClassifiers": [
+        "License :: OSI Approved :: MIT License"
+      ],
+      "licenseExpression": null,
+      "name": "einops",
+      "projectUrls": {
+        "Homepage": "https://github.com/arogozhnikov/einops"
+      },
+      "sha256": "54058201ac7087911181bfec4af6091bb59380360f069276601256a76af08193",
+      "url": "https://files.pythonhosted.org/packages/2a/09/f8d8f8f31e4483c10a906437b4ce31bdf3d6d417b73fe33f1a8b59e34228/einops-0.8.2-py3-none-any.whl",
+      "version": "0.8.2"
+    },
+    {
+      "licenseClassifiers": [],
+      "licenseExpression": "BSD-3-Clause AND 0BSD AND MIT AND Zlib AND CC0-1.0",
+      "name": "numpy",
+      "projectUrls": {
+        "documentation": "https://numpy.org/doc/",
+        "download": "https://pypi.org/project/numpy/#files",
+        "homepage": "https://numpy.org",
+        "release notes": "https://numpy.org/doc/stable/release",
+        "source": "https://github.com/numpy/numpy",
+        "tracker": "https://github.com/numpy/numpy/issues"
+      },
+      "sha256": "fe4d21ab149f15e4e6043dfb0de87e6e5f34ac176cde83060e9802981fca2ac2",
+      "url": "https://files.pythonhosted.org/packages/dc/96/8319e2457ae4333c62c815c7006b869a4f60985c1e01024c2f8c6c040fe5/numpy-2.5.4-cp312-cp312-manylinux_2_27_aarch64.manylinux_2_28_aarch64.whl",
+      "version": "2.5.4"
+    },
+    {
+      "licenseClassifiers": [
+        "License :: OSI Approved :: BSD License"
+      ],
+      "licenseExpression": null,
+      "name": "pandas",
+      "projectUrls": {
+        "documentation": "https://pandas.pydata.org/docs/",
+        "homepage": "https://pandas.pydata.org",
+        "repository": "https://github.com/pandas-dev/pandas"
+      },
+      "sha256": "e3dccb584123b399c07562ac4d62543e90ede49ddf8ce3c13ffc64cbe828c281",
+      "url": "https://files.pythonhosted.org/packages/67/fa/613d867c3d9554a61bafdec6f79565c8a3e73235feb52cc4a72ad2e0fa6a/pandas-3.0.6-cp312-cp312-manylinux_2_24_aarch64.manylinux_2_28_aarch64.whl",
+      "version": "3.0.6"
+    },
+    {
+      "licenseClassifiers": [],
+      "licenseExpression": "Apache-2.0 AND Apache-2.0 WITH LLVM-exception AND BSD-2-Clause AND BSD-3-Clause AND BSL-1.0 AND MIT",
+      "name": "torch",
+      "projectUrls": {
+        "Documentation": "https://pytorch.org/docs",
+        "Forum": "https://discuss.pytorch.org",
+        "Homepage": "https://pytorch.org",
+        "Issue Tracker": "https://github.com/pytorch/pytorch/issues",
+        "Repository": "https://github.com/pytorch/pytorch"
+      },
+      "sha256": "0b13acde294b401509830d85a8906cbf2fc97425a12a66cce1d9fa13c5106a2a",
+      "url": "https://files.pythonhosted.org/packages/a4/3e/474930ab971e306957ec763b7df695d659179e15ccab9e7073d47ae14ce8/torch-2.14.1-cp312-cp312-manylinux_2_28_aarch64.whl",
+      "version": "2.14.1"
+    },
+    {
+      "licenseClassifiers": [],
+      "licenseExpression": null,
+      "name": "transformers",
+      "projectUrls": {
+        "Homepage": "https://github.com/huggingface/transformers"
+      },
+      "sha256": "afcd2dd5f603ed28c1e1fcb00a338ccbb4ef5f878ed289635df8b58187afb518",
+      "url": "https://files.pythonhosted.org/packages/b9/59/1e7f1212c215c73690ae6cab4678efe1555ff985953e145d88cc212859b0/transformers-5.19.0-py3-none-any.whl",
+      "version": "5.19.0"
+    },
+    {
+      "licenseClassifiers": [
+        "License :: OSI Approved :: Apache Software License"
+      ],
+      "licenseExpression": null,
+      "name": "huggingface_hub",
+      "projectUrls": {
+        "Homepage": "https://github.com/huggingface/huggingface_hub"
+      },
+      "sha256": "1667f145dc56dc210d60966069397df9ecfca9607a5d43db88b308c89dae56b3",
+      "url": "https://files.pythonhosted.org/packages/eb/b0/0f7b430fd100b3a3b037fdbb314878200241082e607b3383c63d91a13a72/huggingface_hub-2.2.0-py3-none-any.whl",
+      "version": "2.2.0"
+    },
+    {
+      "licenseClassifiers": [],
+      "licenseExpression": "BSD-3-Clause",
+      "name": "click",
+      "projectUrls": {
+        "Changes": "https://click.palletsprojects.com/page/changes/",
+        "Chat": "https://discord.gg/pallets",
+        "Documentation": "https://click.palletsprojects.com/",
+        "Donate": "https://palletsprojects.com/donate",
+        "Source": "https://github.com/pallets/click/"
+      },
+      "sha256": "255bc9599cf7748b4b1a446ccc735421bd08a2ae529a8b88597d3de5664ee360",
+      "url": "https://files.pythonhosted.org/packages/58/50/6c0d534c5f134586a8e1ba4e330569e32f057e33372ae556463212fb4cd3/click-8.5.0-py3-none-any.whl",
+      "version": "8.5.0"
+    },
+    {
+      "licenseClassifiers": [
+        "License :: OSI Approved :: Apache Software License"
+      ],
+      "licenseExpression": "Apache-2.0",
+      "name": "hf-xet",
+      "projectUrls": {
+        "Documentation": "https://huggingface.co/docs/hub/xet/index",
+        "Homepage": "https://github.com/huggingface/xet-core",
+        "Issues": "https://github.com/huggingface/xet-core/issues",
+        "Repository": "https://github.com/huggingface/xet-core.git"
+      },
+      "sha256": "fcfd6c22418e57dd5b3aea649e813b2e2cfb2aebf317b210d90f1fe4b3018b52",
+      "url": "https://files.pythonhosted.org/packages/49/0c/a2f703a5a78267556e89e03316fa0805c86b72b50829bc67665746e8ebf0/hf_xet-1.7.0-cp38-abi3-manylinux_2_28_aarch64.whl",
+      "version": "1.7.0"
+    },
+    {
+      "licenseClassifiers": [
+        "License :: OSI Approved :: BSD License"
+      ],
+      "licenseExpression": "BSD-3-Clause",
+      "name": "httpx2",
+      "projectUrls": {
+        "Changelog": "https://github.com/pydantic/httpx2/blob/main/src/httpx2/CHANGELOG.md",
+        "Homepage": "https://github.com/pydantic/httpx2",
+        "Source": "https://github.com/pydantic/httpx2"
+      },
+      "sha256": "6dff50fabc270ee5fd25d845d0b078ed20564579744d6d962850975996d2f9a4",
+      "url": "https://files.pythonhosted.org/packages/d8/9c/6fe8931fd9f381042a9e4c7d5a7b4cbf7016b252bec0c99a49fce42c3326/httpx2-2.13.1-py3-none-any.whl",
+      "version": "2.13.1"
+    },
+    {
+      "licenseClassifiers": [
+        "License :: OSI Approved :: BSD License"
+      ],
+      "licenseExpression": "BSD-3-Clause",
+      "name": "httpcore2",
+      "projectUrls": {
+        "Changelog": "https://github.com/pydantic/httpx2/blob/main/src/httpcore2/CHANGELOG.md",
+        "Homepage": "https://github.com/pydantic/httpx2",
+        "Source": "https://github.com/pydantic/httpx2/blob/main/src/httpcore2"
+      },
+      "sha256": "e1e05d4f25f7d7d496bfb96748f6f4b67657b03da069b3a68c36069f3db73d0a",
+      "url": "https://files.pythonhosted.org/packages/09/ba/a4568248771ce81957bfb7cc600264a40fbcda092391ee1c415c50be4bea/httpcore2-2.13.1-py3-none-any.whl",
+      "version": "2.13.1"
+    },
+    {
+      "licenseClassifiers": [
+        "License :: OSI Approved :: Apache Software License"
+      ],
+      "licenseExpression": null,
+      "name": "tokenizers",
+      "projectUrls": {
+        "Homepage": "https://github.com/huggingface/tokenizers",
+        "Source": "https://github.com/huggingface/tokenizers"
+      },
+      "sha256": "ec82e80e65a862275b97c3d90b7a523df8d9519ee48aeb4e9625b2cc909274e0",
+      "url": "https://files.pythonhosted.org/packages/15/fc/ae987741829b1cd547668c4c94be732ae3eefd1d74344e64c3d2ca714acd/tokenizers-0.23.3-cp310-abi3-manylinux_2_17_aarch64.manylinux2014_aarch64.whl",
+      "version": "0.23.3"
+    },
+    {
+      "licenseClassifiers": [],
+      "licenseExpression": "MIT",
+      "name": "anyio",
+      "projectUrls": {
+        "Changelog": "https://anyio.readthedocs.io/en/stable/versionhistory.html",
+        "Documentation": "https://anyio.readthedocs.io/en/latest/",
+        "Issue tracker": "https://github.com/agronholm/anyio/issues",
+        "Source code": "https://github.com/agronholm/anyio"
+      },
+      "sha256": "6152fdbbf9a77fdec97731721bebf7c4c44f7c29b424b0065826173efc7ed101",
+      "url": "https://files.pythonhosted.org/packages/12/b8/4bd346e22b28902df4d651910f5242c28d84e4a5c2435ca5c3f797ed7e2e/anyio-4.15.1-py3-none-any.whl",
+      "version": "4.15.1"
+    },
+    {
+      "licenseClassifiers": [
+        "License :: OSI Approved :: MIT License"
+      ],
+      "licenseExpression": "MIT",
+      "name": "filelock",
+      "projectUrls": {
+        "Documentation": "https://py-filelock.readthedocs.io",
+        "Homepage": "https://github.com/tox-dev/py-filelock",
+        "Source": "https://github.com/tox-dev/py-filelock",
+        "Tracker": "https://github.com/tox-dev/py-filelock/issues"
+      },
+      "sha256": "3f4a557945a7b0f95efeb1f432267affe5d45ac8ddde2aed1b97ebb62382c089",
+      "url": "https://files.pythonhosted.org/packages/d7/8b/f837f52905395ba4510fe61f753c24833fb0a9c76e21267bb9f828b664a9/filelock-4.1.1-py3-none-any.whl",
+      "version": "4.1.1"
+    },
+    {
+      "licenseClassifiers": [],
+      "licenseExpression": "BSD-3-Clause",
+      "name": "fsspec",
+      "projectUrls": {
+        "Changelog": "https://filesystem-spec.readthedocs.io/en/latest/changelog.html",
+        "Documentation": "https://filesystem-spec.readthedocs.io/en/latest/",
+        "Homepage": "https://github.com/fsspec/filesystem_spec"
+      },
+      "sha256": "8dd6e646e99ea382bd85f97a45e6b526a442d79423a7dc673f1e2756d05fcb5f",
+      "url": "https://files.pythonhosted.org/packages/6c/c0/a98505f18594f1bce828bb159cec0fcf9860562f1a2c85913409fc8f3d9e/fsspec-2026.9.0-py3-none-any.whl",
+      "version": "2026.9.0"
+    },
+    {
+      "licenseClassifiers": [
+        "License :: OSI Approved :: MIT License"
+      ],
+      "licenseExpression": null,
+      "name": "h11",
+      "projectUrls": {
+        "Homepage": "https://github.com/python-hyper/h11"
+      },
+      "sha256": "63cf8bbe7522de3bf65932fda1d9c2772064ffb3dae62d55932da54b31cb6c86",
+      "url": "https://files.pythonhosted.org/packages/04/4b/29cac41a4d98d144bf5f6d33995617b185d14b22401f75ca86f384e87ff1/h11-0.16.0-py3-none-any.whl",
+      "version": "0.16.0"
+    },
+    {
+      "licenseClassifiers": [],
+      "licenseExpression": "BSD-3-Clause",
+      "name": "idna",
+      "projectUrls": {
+        "Changelog": "https://github.com/kjd/idna/blob/master/HISTORY.md",
+        "Issue tracker": "https://github.com/kjd/idna/issues",
+        "Source": "https://github.com/kjd/idna"
+      },
+      "sha256": "ab7ae7122974553370f0bdb919e1a960b2cd1bc1ef0276416d896db81c14582c",
+      "url": "https://files.pythonhosted.org/packages/58/a2/bb081bab032533a855d44de1d56f8e8426114ff1ba5d1f07a438a0a654f8/idna-3.20-py3-none-any.whl",
+      "version": "3.20"
+    },
+    {
+      "licenseClassifiers": [],
+      "licenseExpression": "BSD-3-Clause",
+      "name": "networkx",
+      "projectUrls": {
+        "Bug Tracker": "https://github.com/networkx/networkx/issues",
+        "Documentation": "https://networkx.org/documentation/stable/",
+        "Homepage": "https://networkx.org/",
+        "Source Code": "https://github.com/networkx/networkx"
+      },
+      "sha256": "e3fd2c13a7814cee3746340d8d7f8598a67f16a58bf47fb7f8793fab6efca1b0",
+      "url": "https://files.pythonhosted.org/packages/7e/cd/fe58041e9011f307c490e3e17dd48cc516448f7c698a3f2d9d9d65d7e6a8/networkx-3.7-py3-none-any.whl",
+      "version": "3.7"
+    },
+    {
+      "licenseClassifiers": [],
+      "licenseExpression": "Apache-2.0 OR BSD-2-Clause",
+      "name": "packaging",
+      "projectUrls": {
+        "Documentation": "https://packaging.pypa.io/",
+        "Source": "https://github.com/pypa/packaging"
+      },
+      "sha256": "d7193f7c8e4e93f444fde0262bf90af30e16fa0ad0ad44cb553c87339b23cd1c",
+      "url": "https://files.pythonhosted.org/packages/63/34/ba1c580383c9eada3711951fef0795c80b829a078d72188184bcab9dd527/packaging-26.3-py3-none-any.whl",
+      "version": "26.3"
+    },
+    {
+      "licenseClassifiers": [
+        "License :: OSI Approved :: Apache Software License",
+        "License :: OSI Approved :: BSD License"
+      ],
+      "licenseExpression": null,
+      "name": "python-dateutil",
+      "projectUrls": {
+        "Documentation": "https://dateutil.readthedocs.io/en/stable/",
+        "Homepage": "https://github.com/dateutil/dateutil",
+        "Source": "https://github.com/dateutil/dateutil"
+      },
+      "sha256": "a8b2bc7bffae282281c8140a97d3aa9c14da0b136dfe83f850eea9a5f7470427",
+      "url": "https://files.pythonhosted.org/packages/ec/57/56b9bcc3c9c6a792fcbaf139543cee77261f3651ca9da0c93f5c1221264b/python_dateutil-2.9.0.post0-py2.py3-none-any.whl",
+      "version": "2.9.0.post0"
+    },
+    {
+      "licenseClassifiers": [
+        "License :: OSI Approved :: MIT License"
+      ],
+      "licenseExpression": null,
+      "name": "PyYAML",
+      "projectUrls": {
+        "Bug Tracker": "https://github.com/yaml/pyyaml/issues",
+        "CI": "https://github.com/yaml/pyyaml/actions",
+        "Documentation": "https://pyyaml.org/wiki/PyYAMLDocumentation",
+        "Download": "https://pypi.org/project/PyYAML/",
+        "Homepage": "https://pyyaml.org/",
+        "Mailing lists": "http://lists.sourceforge.net/lists/listinfo/yaml-core",
+        "Source Code": "https://github.com/yaml/pyyaml"
+      },
+      "sha256": "9149cad251584d5fb4981be1ecde53a1ca46c891a79788c0df828d2f166bda28",
+      "url": "https://files.pythonhosted.org/packages/ed/23/7a778b6bd0b9a8039df8b1b1d80e2e2ad78aa04171592c8a5c43a56a6af4/pyyaml-6.0.3-cp312-cp312-manylinux2014_aarch64.manylinux_2_17_aarch64.manylinux_2_28_aarch64.whl",
+      "version": "6.0.3"
+    },
+    {
+      "licenseClassifiers": [],
+      "licenseExpression": "Apache-2.0 AND CNRI-Python",
+      "name": "regex",
+      "projectUrls": {
+        "Homepage": "https://github.com/mrabarnett/mrab-regex"
+      },
+      "sha256": "f93bc1c3486ef3747e07c9d7c1d0a147b8fbaab975f80e348aed6f71309dfaca",
+      "url": "https://files.pythonhosted.org/packages/c9/72/67e7a8ce17f1aea49df215564048efb49cc8c2b31a0e0fc30f36838f8516/regex-2026.9.29-cp312-cp312-manylinux2014_aarch64.manylinux_2_17_aarch64.manylinux_2_28_aarch64.whl",
+      "version": "2026.9.29"
+    },
+    {
+      "licenseClassifiers": [
+        "License :: OSI Approved :: Apache Software License"
+      ],
+      "licenseExpression": null,
+      "name": "safetensors",
+      "projectUrls": {
+        "Homepage": "https://github.com/huggingface/safetensors",
+        "Source": "https://github.com/huggingface/safetensors"
+      },
+      "sha256": "7a46e5ff292c356d6991e60942ba7f79817682d3a2cef0702136448cb9c4d235",
+      "url": "https://files.pythonhosted.org/packages/09/7d/65a7de0af421317bb36a067241e4235fff194eed60b961ed6d3f59a3fc60/safetensors-0.8.0-cp310-abi3-manylinux_2_17_aarch64.manylinux2014_aarch64.whl",
+      "version": "0.8.0"
+    },
+    {
+      "licenseClassifiers": [],
+      "licenseExpression": "MIT",
+      "name": "setuptools",
+      "projectUrls": {
+        "Changelog": "https://setuptools.pypa.io/en/stable/history.html",
+        "Documentation": "https://setuptools.pypa.io/",
+        "Source": "https://github.com/pypa/setuptools"
+      },
+      "sha256": "51a52592b3b99e102b609654876bd65f19f999935166d1352678931132b0c670",
+      "url": "https://files.pythonhosted.org/packages/95/9c/c510029fc6ef33a6275cd2c5d3cecd6613dfd6aa401d57c54f1c18852ccf/setuptools-84.0.0-py3-none-any.whl",
+      "version": "84.0.0"
+    },
+    {
+      "licenseClassifiers": [
+        "License :: OSI Approved :: MIT License"
+      ],
+      "licenseExpression": null,
+      "name": "six",
+      "projectUrls": {
+        "Homepage": "https://github.com/benjaminp/six"
+      },
+      "sha256": "4721f391ed90541fddacab5acf947aa0d3dc7d27b2e1e8eda2be8970586c3274",
+      "url": "https://files.pythonhosted.org/packages/b7/ce/149a00dd41f10bc29e5921b496af8b574d8413afcd5e30dfa0ed46c2cc5e/six-1.17.0-py2.py3-none-any.whl",
+      "version": "1.17.0"
+    },
+    {
+      "licenseClassifiers": [
+        "License :: OSI Approved :: BSD License"
+      ],
+      "licenseExpression": null,
+      "name": "sympy",
+      "projectUrls": {
+        "Homepage": "https://sympy.org",
+        "Source": "https://github.com/sympy/sympy"
+      },
+      "sha256": "e091cc3e99d2141a0ba2847328f5479b05d94a6635cb96148ccb3f34671bd8f5",
+      "url": "https://files.pythonhosted.org/packages/a2/09/77d55d46fd61b4a135c444fc97158ef34a095e5681d0a6c10b75bf356191/sympy-1.14.0-py3-none-any.whl",
+      "version": "1.14.0"
+    },
+    {
+      "licenseClassifiers": [
+        "License :: OSI Approved :: BSD License"
+      ],
+      "licenseExpression": null,
+      "name": "mpmath",
+      "projectUrls": {
+        "Documentation": "http://mpmath.org/doc/current/",
+        "Homepage": "http://mpmath.org/",
+        "Source": "https://github.com/fredrik-johansson/mpmath",
+        "Tracker": "https://github.com/fredrik-johansson/mpmath/issues"
+      },
+      "sha256": "a0b2b9fe80bbcd81a6647ff13108738cfb482d481d826cc0e02f5b35e5c88d2c",
+      "url": "https://files.pythonhosted.org/packages/43/e3/7d92a15f894aa0c9c4b49b8ee9ac9850d6e63b03c9c32c0367a13ae62209/mpmath-1.3.0-py3-none-any.whl",
+      "version": "1.3.0"
+    },
+    {
+      "licenseClassifiers": [],
+      "licenseExpression": null,
+      "name": "tqdm",
+      "projectUrls": {
+        "changelog": "https://tqdm.github.io/releases",
+        "homepage": "https://tqdm.github.io",
+        "repository": "https://github.com/tqdm/tqdm",
+        "wiki": "https://github.com/tqdm/tqdm/wiki"
+      },
+      "sha256": "c293e525e6fef9c20e8728fd4612df02a0aa31bb5fe91ecd93e123b1b7bffa73",
+      "url": "https://files.pythonhosted.org/packages/a7/03/921a3d3c75785aca9ebfbfcabfbc3a1be12e2ab5265deb026d55a5a3f83e/tqdm-4.70.1-py3-none-any.whl",
+      "version": "4.70.1"
+    },
+    {
+      "licenseClassifiers": [],
+      "licenseExpression": "MIT",
+      "name": "truststore",
+      "projectUrls": {
+        "Documentation": "https://truststore.readthedocs.io",
+        "Source": "https://github.com/sethmlarson/truststore"
+      },
+      "sha256": "9aaaedaefaf06d8b206278cf8b5012bc897f485a874503501e12d776df78951c",
+      "url": "https://files.pythonhosted.org/packages/51/e9/3a7820be2bb0fe53b6bc9c3be26d3d1158004e4c3ab953aa6840b955b1e9/truststore-0.10.5-py3-none-any.whl",
+      "version": "0.10.5"
+    },
+    {
+      "licenseClassifiers": [],
+      "licenseExpression": "PSF-2.0",
+      "name": "typing_extensions",
+      "projectUrls": {
+        "Bug Tracker": "https://github.com/python/typing_extensions/issues",
+        "Changes": "https://github.com/python/typing_extensions/blob/main/CHANGELOG.md",
+        "Documentation": "https://typing-extensions.readthedocs.io/",
+        "Home": "https://github.com/python/typing_extensions",
+        "Q & A": "https://github.com/python/typing/discussions",
+        "Repository": "https://github.com/python/typing_extensions"
+      },
+      "sha256": "481caa481374e813c1b176ada14e97f1f67a4539ce9cfeb3f350d78d6370c2e8",
+      "url": "https://files.pythonhosted.org/packages/49/d3/b8441a820a491ddfc024b0b0cf0393375b75ea13866d9c66727e54c2fc80/typing_extensions-4.16.0-py3-none-any.whl",
+      "version": "4.16.0"
+    },
+    {
+      "licenseClassifiers": [
+        "License :: OSI Approved :: BSD License"
+      ],
+      "licenseExpression": null,
+      "name": "Jinja2",
+      "projectUrls": {
+        "Changes": "https://jinja.palletsprojects.com/changes/",
+        "Chat": "https://discord.gg/pallets",
+        "Documentation": "https://jinja.palletsprojects.com/",
+        "Donate": "https://palletsprojects.com/donate",
+        "Source": "https://github.com/pallets/jinja/"
+      },
+      "sha256": "85ece4451f492d0c13c5dd7c13a64681a86afae63a5f347908daf103ce6d2f67",
+      "url": "https://files.pythonhosted.org/packages/62/a1/3d680cbfd5f4b8f15abc1d571870c5fc3e594bb582bc3b64ea099db13e56/jinja2-3.1.6-py3-none-any.whl",
+      "version": "3.1.6"
+    },
+    {
+      "licenseClassifiers": [],
+      "licenseExpression": "BSD-3-Clause",
+      "name": "MarkupSafe",
+      "projectUrls": {
+        "Changes": "https://markupsafe.palletsprojects.com/page/changes/",
+        "Chat": "https://discord.gg/pallets",
+        "Documentation": "https://markupsafe.palletsprojects.com/",
+        "Donate": "https://palletsprojects.com/donate",
+        "Source": "https://github.com/pallets/markupsafe/"
+      },
+      "sha256": "6a45c3d514f2436064db00d7fc8778d888f0236ebfed649b53d13a59e69ad51b",
+      "url": "https://files.pythonhosted.org/packages/0d/f2/8f18e0b806eb13c1f8d07d917a720831ead54253a6dec011fbc78098a6f8/markupsafe-3.0.4-cp312-cp312-manylinux2014_aarch64.manylinux_2_17_aarch64.manylinux_2_28_aarch64.whl",
+      "version": "3.0.4"
+    },
+    {
+      "licenseClassifiers": [],
+      "licenseExpression": null,
+      "name": "psutil",
+      "projectUrls": {
+        "Homepage": "https://github.com/giampaolo/psutil"
+      },
+      "sha256": "b0726cecd84f9474419d67252add4ac0cd9811b04d61123054b9fb6f57df6e9e",
+      "url": "https://files.pythonhosted.org/packages/63/65/37648c0c158dc222aba51c089eb3bdfa238e621674dc42d48706e639204f/psutil-7.2.2-cp36-abi3-manylinux2014_aarch64.manylinux_2_17_aarch64.manylinux_2_28_aarch64.whl",
+      "version": "7.2.2"
+    },
+    {
+      "licenseClassifiers": [],
+      "licenseExpression": "MIT",
+      "name": "typer",
+      "projectUrls": {
+        "Changelog": "https://typer.tiangolo.com/release-notes/",
+        "Documentation": "https://typer.tiangolo.com",
+        "Homepage": "https://github.com/fastapi/typer",
+        "Issues": "https://github.com/fastapi/typer/issues",
+        "Repository": "https://github.com/fastapi/typer"
+      },
+      "sha256": "e50022f28b82a86313e54501317a1db64bf8f8d036ff8cfe5ca7e47675454aff",
+      "url": "https://files.pythonhosted.org/packages/07/ea/2e31b67051e91a133189e9c000c222502ddc6969856416de0d095de4c0b0/typer-0.27.3-py3-none-any.whl",
+      "version": "0.27.3"
+    },
+    {
+      "licenseClassifiers": [],
+      "licenseExpression": "MIT",
+      "name": "annotated-doc",
+      "projectUrls": {
+        "Changelog": "https://github.com/fastapi/annotated-doc/release-notes.md",
+        "Documentation": "https://github.com/fastapi/annotated-doc",
+        "Homepage": "https://github.com/fastapi/annotated-doc",
+        "Issues": "https://github.com/fastapi/annotated-doc/issues",
+        "Repository": "https://github.com/fastapi/annotated-doc"
+      },
+      "sha256": "117bac03a25ede5df5440e855b32d556049ca169ead221505badf432fed4b101",
+      "url": "https://files.pythonhosted.org/packages/3e/30/e900b21425a860e195f32e37657aa1f7c7f2b1bfb26f03ca209b90933c06/annotated_doc-0.0.5-py3-none-any.whl",
+      "version": "0.0.5"
+    },
+    {
+      "licenseClassifiers": [
+        "License :: OSI Approved :: MIT License"
+      ],
+      "licenseExpression": null,
+      "name": "rich",
+      "projectUrls": {
+        "Documentation": "https://rich.readthedocs.io/en/latest/",
+        "Homepage": "https://github.com/Textualize/rich"
+      },
+      "sha256": "33bd4ef74232fb73fe9279a257718407f169c09b78a87ad3d296f548e27de0bb",
+      "url": "https://files.pythonhosted.org/packages/82/3b/64d4899d73f91ba49a8c18a8ff3f0ea8f1c1d75481760df8c68ef5235bf5/rich-15.0.0-py3-none-any.whl",
+      "version": "15.0.0"
+    },
+    {
+      "licenseClassifiers": [],
+      "licenseExpression": "BSD-2-Clause",
+      "name": "Pygments",
+      "projectUrls": {
+        "Bug Tracker": "https://github.com/pygments/pygments/issues",
+        "Changelog": "https://github.com/pygments/pygments/blob/master/CHANGES",
+        "Documentation": "https://pygments.org/docs",
+        "Homepage": "https://pygments.org",
+        "Source": "https://github.com/pygments/pygments"
+      },
+      "sha256": "2363c69b61c4a97c838da3b130dcd6468f4848992b21a82f2a63ec34377137d9",
+      "url": "https://files.pythonhosted.org/packages/71/46/17f022dd3e953bf20a04a028a21ec746d942f8d2af30fa0f124fa0e6a684/pygments-2.21.0-py3-none-any.whl",
+      "version": "2.21.0"
+    },
+    {
+      "licenseClassifiers": [
+        "License :: OSI Approved :: MIT License"
+      ],
+      "licenseExpression": null,
+      "name": "markdown-it-py",
+      "projectUrls": {
+        "Documentation": "https://markdown-it-py.readthedocs.io",
+        "Homepage": "https://github.com/executablebooks/markdown-it-py"
+      },
+      "sha256": "9f7ebbcd14fe59494226453aed97c1070d83f8d24b6fc3a3bcf9a38092641c4a",
+      "url": "https://files.pythonhosted.org/packages/b3/81/4da04ced5a082363ecfa159c010d200ecbd959ae410c10c0264a38cac0f5/markdown_it_py-4.2.0-py3-none-any.whl",
+      "version": "4.2.0"
+    },
+    {
+      "licenseClassifiers": [
+        "License :: OSI Approved :: MIT License"
+      ],
+      "licenseExpression": null,
+      "name": "mdurl",
+      "projectUrls": {
+        "Homepage": "https://github.com/executablebooks/mdurl"
+      },
+      "sha256": "84008a41e51615a49fc9966191ff91509e3c40b939176e643fd50a5c2196b8f8",
+      "url": "https://files.pythonhosted.org/packages/b3/38/89ba8ad64ae25be8de66a6d463314cf1eb366222074cfda9ee839c56a4b4/mdurl-0.1.2-py3-none-any.whl",
+      "version": "0.1.2"
+    },
+    {
+      "licenseClassifiers": [
+        "License :: OSI Approved :: ISC License (ISCL)"
+      ],
+      "licenseExpression": null,
+      "name": "shellingham",
+      "projectUrls": {
+        "Homepage": "https://github.com/sarugaku/shellingham"
+      },
+      "sha256": "7ecfff8f2fd72616f7481040475a65b2bf8af90a56c89140852d1120324e8686",
+      "url": "https://files.pythonhosted.org/packages/e0/f9/0595336914c5619e5f28a1fb793285925a8cd4b432c9da0a987836c7f822/shellingham-1.5.4-py2.py3-none-any.whl",
+      "version": "1.5.4"
+    }
+  ],
+  "platform": "linux-arm64",
+  "python": "3.12",
+  "rightsDecision": "pending-exact-owner-artifact-review",
+  "sourceMetadataSha256": "2a61e98965c4e72543db2b8d4eefa2c297ef2f5f82a6fcf3b02aaf356d9fbaa0",
+  "status": "prepared-not-owner-approved"
+}
