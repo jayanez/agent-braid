@@ -299,6 +299,9 @@ def policy_sha256(policy: Mapping[str, Any]) -> str:
 
 def binding_from_registration(registration: Any, slot_id: str, host: str) -> SubscriptionBinding | NativeProcessRouteBinding | OperationalProcessRouteBinding | None:
     data = getattr(registration, "data", registration)
+    if isinstance(data, Mapping) and data.get("schemaVersion") == "agent-braid-m45-registration-v6":
+        from .tooling_registration_v6 import binding_from_registration as source_binding
+        return source_binding(registration, slot_id, host)
     registration_sha = getattr(registration, "sha256", None)
     if not isinstance(data, Mapping) or "billingPolicy" not in data:
         return None

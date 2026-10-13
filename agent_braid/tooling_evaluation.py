@@ -30,6 +30,7 @@ REGISTRATION_SCHEMA_V2 = "agent-braid-m45-registration-v2"
 REGISTRATION_SCHEMA_V3 = "agent-braid-m45-registration-v3"
 REGISTRATION_SCHEMA_V4 = "agent-braid-m45-registration-v4"
 REGISTRATION_SCHEMA_V5 = "agent-braid-m45-registration-v5"
+REGISTRATION_SCHEMA_V6 = "agent-braid-m45-registration-v6"
 LEDGER_SCHEMA = "agent-braid-m45-ledger-v1"
 HOSTS = ("codex", "claude-code")
 ARMS = ("cli", "mcp-only", "mcp-plus-skills")
@@ -204,6 +205,13 @@ def validate_registration(
         raise EvaluationError("registration must be a JSON object")
     data = _json_copy(registration, "registration")
     schema_version = data.get("schemaVersion")
+    from . import tooling_registration_v6 as source_registration
+    if schema_version == REGISTRATION_SCHEMA_V6:
+        return source_registration.validate_registration(data,
+            expected_candidate_sha256=expected_candidate_sha256,
+            expected_input_hashes=expected_input_hashes)
+    if any(field in data for field in source_registration.FIELDS):
+        raise EvaluationError("source contracts and sampled human audit require registration v6")
     if schema_version not in {REGISTRATION_SCHEMA, REGISTRATION_SCHEMA_V2, REGISTRATION_SCHEMA_V3,
                               REGISTRATION_SCHEMA_V4, REGISTRATION_SCHEMA_V5}:
         raise EvaluationError("unsupported or missing registration schemaVersion")
@@ -359,7 +367,7 @@ def expected_reviewer_participants(registration: ValidatedRegistration) -> tuple
     those rows preserve expected time/fee scope while remaining unobserved.
     """
     _require_validated(registration)
-    if registration.data["schemaVersion"] in {REGISTRATION_SCHEMA_V3, REGISTRATION_SCHEMA_V4, REGISTRATION_SCHEMA_V5}:
+    if registration.data["schemaVersion"] in {REGISTRATION_SCHEMA_V3, REGISTRATION_SCHEMA_V4, REGISTRATION_SCHEMA_V5, REGISTRATION_SCHEMA_V6}:
         participants = tuple(role["roleId"] for role in registration.data["humanReviewRoles"])
     else:
         participants = tuple(reviewer["reviewerId"] for reviewer in registration.data["humanReviewers"])
@@ -643,9 +651,9 @@ def check_cost_caps(
         value = values[field]
         if value is None:
             operational_unknown_cash = (field == "eur"
-                and registration.data.get("schemaVersion") == REGISTRATION_SCHEMA_V5
-                and registration.data.get("billingPolicy", {}).get("schema")
-                    == OPERATIONAL_SUBSCRIPTION_POLICY_SCHEMA)
+                and registration.data.get("schemaVersion") in {REGISTRATION_SCHEMA_V5, REGISTRATION_SCHEMA_V6}
+                and registration.data.get("billingPolicy", {}).get("schema") in {
+                    OPERATIONAL_SUBSCRIPTION_POLICY_SCHEMA, "agent-braid-m45-source-subscription-policy-v1"})
             if not operational_unknown_cash:
                 reasons.append(f"{field} is unavailable; cap compliance cannot be established")
         elif value > caps[field]:
@@ -674,6 +682,8 @@ def assess_utility_eligibility(
 
     _require_validated(registration)
     validate_ledger(ledger, registration)
+    if registration.data["schemaVersion"] == REGISTRATION_SCHEMA_V6:
+        raise EvaluationError("v6 sampled audit needs its separate coverage report; legacy all-human utility claims are unavailable")
     if not isinstance(human_ratings, Mapping):
         raise EvaluationError("human ratings must be keyed by registered slot ID")
     if adjudications is not None and not isinstance(adjudications, Mapping):
@@ -1321,7 +1331,7 @@ def _canonical_sha256(value: Mapping[str, Any]) -> str:
 
 __all__ = [
     "ARMS", "COST_FIELDS", "HOSTS", "JOURNEY_CLASSES", "LEDGER_SCHEMA",
-    "REGISTRATION_SCHEMA", "REGISTRATION_SCHEMA_V2", "REGISTRATION_SCHEMA_V5", "SLOT_STATUSES", "AttemptSlot", "CapAssessment",
+    "REGISTRATION_SCHEMA", "REGISTRATION_SCHEMA_V2", "REGISTRATION_SCHEMA_V3", "REGISTRATION_SCHEMA_V4", "REGISTRATION_SCHEMA_V5", "REGISTRATION_SCHEMA_V6", "SLOT_STATUSES", "AttemptSlot", "CapAssessment",
     "CostAssessment", "EvaluationError", "EvaluationLedger", "LedgerEvent",
     "UtilityEligibility", "ValidatedRegistration", "append_slot_event",
     "assess_cost_completeness", "assess_utility_eligibility", "check_cost_caps",

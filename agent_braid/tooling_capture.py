@@ -26,6 +26,7 @@ from . import tooling_evaluation as evaluation
 from . import tooling_subscription as subscription_policy
 from . import tooling_model_identity as model_identity_policy
 from . import tooling_subscription_estimate as estimate_policy
+from . import tooling_registration_v6 as source_registration
 from .tooling_fixtures import FixtureInventoryError, load_inventory
 
 
@@ -149,7 +150,7 @@ class AttemptAdmission:
     receipt_path: Path
     receipt_sha256: str
     subject_sha256: str
-    subscription_binding: subscription_policy.SubscriptionBinding | subscription_policy.NativeProcessRouteBinding | None = None
+    subscription_binding: subscription_policy.SubscriptionBinding | subscription_policy.NativeProcessRouteBinding | subscription_policy.OperationalProcessRouteBinding | source_registration.SourceRouteBinding | None = None
     subscription_estimate: estimate_policy.EstimateAssessment | None = None
     subscription_estimate_runtime_guard: estimate_policy.RuntimeGuard | None = None
 
@@ -229,6 +230,7 @@ def prepare_attempt(
             expected_input_hashes=frozen_input_hashes,
         )
         evaluation.validate_ledger(ledger, registration)
+        source_registration.require_instrument_identity(verifier, registration, "admission")
     except (evaluation.EvaluationError, CaptureAdmissionError) as exc:
         raise CaptureAdmissionError(f"frozen registration or ledger validation failed: {exc}") from exc
     expected_output = receipt_directory_for(registration.sha256)
@@ -245,7 +247,7 @@ def prepare_attempt(
     if ledger.current_status(slot_id) != "not-started":
         raise CaptureAdmissionError("slot has already started or reached an outcome; do not retry")
     _validate_context(slot, authorization)
-    operational_mode = registration.data["schemaVersion"] == evaluation.REGISTRATION_SCHEMA_V5
+    operational_mode = registration.data["schemaVersion"] in {evaluation.REGISTRATION_SCHEMA_V5, evaluation.REGISTRATION_SCHEMA_V6}
     _validate_costs(costs, allow_unknown_eur=operational_mode)
     _validate_prior_costs(ledger, costs, allow_unknown_eur=operational_mode)
     _validate_stop_state(stop_state)
@@ -262,7 +264,7 @@ def prepare_attempt(
 
     estimate_assessment = None
     estimate_runtime_guard = None
-    is_v4 = registration.data["schemaVersion"] in {evaluation.REGISTRATION_SCHEMA_V4, evaluation.REGISTRATION_SCHEMA_V5}
+    is_v4 = registration.data["schemaVersion"] in {evaluation.REGISTRATION_SCHEMA_V4, evaluation.REGISTRATION_SCHEMA_V5, evaluation.REGISTRATION_SCHEMA_V6}
     if is_v4:
         if subscription_estimate_active_time is None:
             raise CaptureAdmissionError("v4 admission requires verified cumulative subscription active-time evidence")
@@ -294,10 +296,16 @@ def prepare_attempt(
     binding = subscription_policy.binding_from_registration(registration, slot_id, slot.host)
     if binding is not None:
         try:
+            if isinstance(binding, source_registration.SourceRouteBinding):
+                if costs.values["eur"] not in (None, 0):
+                    raise subscription_policy.SubscriptionError("known additional cash exceeds the source EUR 0 cap")
+                source_registration.check_observation(subscription, binding,
+                    now=datetime.now(timezone.utc), phase="prelaunch")
             if (isinstance(binding, subscription_policy.OperationalProcessRouteBinding)
                     and costs.values["eur"] not in (None, 0)):
                 raise subscription_policy.SubscriptionError("known additional cash exceeds the operational EUR 0 cap")
-            subscription_policy.check_observation(subscription, binding)
+            if not isinstance(binding, source_registration.SourceRouteBinding):
+                subscription_policy.check_observation(subscription, binding)
             if isinstance(binding, (subscription_policy.NativeProcessRouteBinding,
                                     subscription_policy.OperationalProcessRouteBinding)):
                 if subscription.phase != "prelaunch":
@@ -342,6 +350,10 @@ def prepare_attempt(
             "Measured cost completeness and stop-state truth depend on verifier provenance",
         ],
     }
+    if registration.data["schemaVersion"] == evaluation.REGISTRATION_SCHEMA_V6:
+        selection = source_registration.audit_selection(registration)
+        subject["humanAuditPolicySha256"] = selection.policy_sha256
+        subject["humanAuditSelectionSha256"] = selection.sha256
     if estimate_assessment is not None:
         subject["subscriptionAllocationUpperBound"] = {
             "policySha256": estimate_policy.policy_sha256(
@@ -376,7 +388,11 @@ def prepare_attempt(
             raise CaptureAdmissionError("model identity verifier attestation predates its observation")
     if binding is not None:
         try:
-            subscription_policy.check_observation(subscription, binding)
+            if isinstance(binding, source_registration.SourceRouteBinding):
+                source_registration.check_observation(subscription, binding,
+                    now=datetime.now(timezone.utc), phase="prelaunch")
+            else:
+                subscription_policy.check_observation(subscription, binding)
         except subscription_policy.SubscriptionError as exc:
             raise CaptureAdmissionError("subscription observation expired during verification") from exc
         if isinstance(binding, subscription_policy.NativeProcessRouteBinding):

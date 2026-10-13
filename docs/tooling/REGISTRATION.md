@@ -195,3 +195,56 @@ subscription-policy-v1 semantics are unchanged. The additive implementation
 and synthetic controls are available from PR #499. Complete authentic native
 admission/supervision evidence, registration approval and capture authorization
 remain pending; see the [technical completion preparation](TECHNICAL_COMPLETION_20261011.md).
+
+## Assisted source registration v6
+
+The prospective [v6 draft](../../examples/tooling/assisted-source-registration-draft.json)
+uses `agent-braid-m45-registration-v6` and the distinct
+`agent-braid-m45-source-subscription-policy-v1`. It preserves the 108 slots,
+original cap/estimate/model/rights/deferral requirements and historical schemas.
+The draft is intentionally invalid: its exact candidate, approvals, private
+account/store/source identities, instruments and audit seed are still missing.
+No null or example declaration authorizes capture.
+
+`agent_braid.tooling_registration_v6` adds:
+
+- `sourceContractTemplates`: exactly one approved Codex and Claude source
+  contract template. Omit `binding` from templates; per-slot bindings are
+  instantiated after the complete registration hash exists, avoiding a circular
+  digest. All 108 `billingPolicy.processContracts` are still mandatory.
+- `claudeLaunchStore`: the digest of the existing canonical absolute config
+  directory's UTF-8 path and its observed Keychain suffix. Directory aliases,
+  a different environment path and suffix drift refuse; path hashing alone
+  does not authenticate stored credentials or the running route.
+- `humanAuditPolicy` and its canonical `humanAuditPolicySha256`: freeze the
+  algorithm, seed and escalation rule before results. `audit_selection()`
+  derives the same initial 36 cases across all three arms. Admission attests
+  both the policy and selection digests. An external owner record must establish
+  prospective timing and approval; hashes cannot establish either.
+- `instrumentPins`: independently frozen source/verifier references and byte
+  digests for `admission`, `outcome`, `costs` and `technicalSummary`. Explicitly
+  installed trusted instruments remain necessary. Pin equality is identity,
+  not authentication of provider, cost or human facts.
+
+The declaration-only legacy projection reuses existing validators. It never
+creates a v3 observation or infers v3 booleans from the new source composition.
+`SourceRouteBinding`, source observations and their supervisor path remain
+separately typed/versioned. Restoring serialized source bytes produces checked
+claims; a trusted runtime verifier must authenticate them again.
+
+The consumer uses the original individual source times: at most 60 seconds
+for Codex; Claude allows up to 900 seconds only for recharge. Quota/process
+receipts and the earliest source expiry still control availability. Both
+`prelaunch` and running/completed phase, exact PID and kernel birth are checked;
+stdin is withheld until the process link passes. The supervisor's separate
+one-second consumer deadline is retained. See [source acquisition](SOURCE_OBSERVER.md),
+[interface observations](INTERFACE_OBSERVER.md) and the
+[prospective audit decision](../../specs/044-ai-tooling-evaluation/assisted-audit-decision.md).
+
+`CostBook(..., registration=registration)` binds the costs instrument at
+installation and publication for v6. The legacy constructor remains available
+for earlier/unregistered controls. Outcome instruments are bound before a
+session start. The separate assisted technical report preserves actual automatic,
+model and human provenance and explicitly leaves unaudited human cases unaudited;
+legacy full-human utility assessment refuses v6. No report records founder
+acceptance or turns an estimate into actual cash.

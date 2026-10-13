@@ -450,6 +450,8 @@ def _validate_inputs(admission, registration, ledger, candidate_root,
         raise SessionError("a trusted fresh-observation verifier is required")
     try:
         evaluation.validate_ledger(ledger, registration)
+        from . import tooling_registration_v6 as source_registration
+        source_registration.require_instrument_identity(verifier, registration, "outcome")
         slot = next((item for item in ledger.slots if item.slot_id == admission.slot_id), None)
         _read_admission(admission, registration, slot, ledger=ledger)
     except (evaluation.EvaluationError, SessionError) as exc:
@@ -497,7 +499,14 @@ def _read_admission(admission, registration, slot, *, ledger=None):
         "schemaVersion", "registrationSha256", "slot", "candidate", "registrationFileSha256",
         "fixturePromptInventorySha256", "hostBuild", "authorization", "measuredCosts", "stopState", "limits",
     }
-    if registration.data["schemaVersion"] in {evaluation.REGISTRATION_SCHEMA_V4, evaluation.REGISTRATION_SCHEMA_V5}:
+    if registration.data["schemaVersion"] == evaluation.REGISTRATION_SCHEMA_V6:
+        from . import tooling_registration_v6 as source_registration
+        selection = source_registration.audit_selection(registration)
+        if (body.get("humanAuditPolicySha256") != selection.policy_sha256
+                or body.get("humanAuditSelectionSha256") != selection.sha256):
+            raise SessionError("admission human audit commitment differs from the frozen registration")
+        subject_keys.update({"humanAuditPolicySha256", "humanAuditSelectionSha256"})
+    if registration.data["schemaVersion"] in {evaluation.REGISTRATION_SCHEMA_V4, evaluation.REGISTRATION_SCHEMA_V5, evaluation.REGISTRATION_SCHEMA_V6}:
         subject_keys.add("subscriptionAllocationUpperBound")
         estimate = body.get("subscriptionAllocationUpperBound")
         if not isinstance(estimate, dict) or set(estimate) != {"policySha256", "activeTimeEvidence", "assessment"}:
@@ -546,10 +555,19 @@ def _read_admission(admission, registration, slot, *, ledger=None):
     if binding is not None:
         subject_keys.add("subscription")
         try:
-            observation = subscription_policy.observation_from_dict(body.get("subscription"))
-        except (subscription_policy.SubscriptionError, TypeError, ValueError) as exc:
+            from . import tooling_registration_v6 as source_registration
+            if isinstance(binding, source_registration.SourceRouteBinding):
+                raw = body.get("subscription")
+                observed = max(_parse_timestamp(row["observedAt"]) for row in raw["receipts"].values())
+                observation = source_registration.observation_from_dict(raw, binding, now=observed)
+                source_registration.check_observation(observation, binding, now=observed, phase="prelaunch")
+            else:
+                observation = subscription_policy.observation_from_dict(body.get("subscription"))
+        except (subscription_policy.SubscriptionError, KeyError, AttributeError, TypeError, ValueError) as exc:
             raise SessionError("admission subscription observation is missing or malformed") from exc
-        if observation.binding != binding:
+        actual_binding = observation.composition.binding if isinstance(binding, source_registration.SourceRouteBinding) else observation.binding
+        expected_binding = binding.binding if isinstance(binding, source_registration.SourceRouteBinding) else binding
+        if actual_binding != expected_binding:
             raise SessionError("admission subscription observation has the wrong cohort or account")
         if isinstance(binding, subscription_policy.NativeProcessRouteBinding):
             try:
@@ -623,8 +641,9 @@ def _start_subject(registration, slot, admission, ledger, admission_outer,
     if not isinstance(stop_state, capture.StopState):
         raise SessionError("fresh stop-state observation is required")
     try:
-        capture._validate_costs(measured_costs)
-        capture._validate_prior_costs(ledger, measured_costs)
+        operational = registration.data["schemaVersion"] in {evaluation.REGISTRATION_SCHEMA_V5, evaluation.REGISTRATION_SCHEMA_V6}
+        capture._validate_costs(measured_costs, allow_unknown_eur=operational)
+        capture._validate_prior_costs(ledger, measured_costs, allow_unknown_eur=operational)
         capture._validate_stop_state(stop_state)
     except capture.CaptureAdmissionError as exc:
         raise SessionError(f"fresh pre-dispatch observations are invalid: {exc}") from exc

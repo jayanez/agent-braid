@@ -139,7 +139,8 @@ Intervals of distinct activities must be disjoint to avoid wall double counting.
 This is reconciliation software, not a durable ledger or live billing service.
 """
 
-    def __init__(self, activity_ids: tuple[str, ...], *, verifier: CostVerifier):
+    def __init__(self, activity_ids: tuple[str, ...], *, verifier: CostVerifier,
+                 registration=None):
         if (not isinstance(activity_ids, tuple) or not activity_ids
                 or len(activity_ids) > MAX_RECEIPTS or len(set(activity_ids)) != len(activity_ids)):
             raise CostAccountingError("a bounded unique frozen activity roster is required")
@@ -147,8 +148,16 @@ This is reconciliation software, not a durable ledger or live billing service.
             _identifier(identifier)
         if not callable(getattr(verifier, "verify", None)):
             raise CostAccountingError("an external cost verifier is required")
+        if registration is not None:
+            from . import tooling_evaluation as evaluation
+            from . import tooling_registration_v6 as source_registration
+            try:
+                source_registration.require_instrument_identity(verifier, registration, "costs")
+            except evaluation.EvaluationError as exc:
+                raise CostAccountingError("cost verifier differs from its frozen registration instrument") from exc
         self._roster = activity_ids
         self._verifier = verifier
+        self._registration = registration
         self._history: list[tuple[CostReceipt, CostAttestation]] = []
         self._latest: dict[str, CostReceipt] = {}
         self._lock = threading.RLock()
@@ -166,6 +175,13 @@ This is reconciliation software, not a durable ledger or live billing service.
             self._add(receipt)
 
     def _add(self, receipt: CostReceipt) -> None:
+        if self._registration is not None:
+            from . import tooling_evaluation as evaluation
+            from . import tooling_registration_v6 as source_registration
+            try:
+                source_registration.require_instrument_identity(self._verifier, self._registration, "costs")
+            except evaluation.EvaluationError as exc:
+                raise CostAccountingError("cost instrument drift prevents receipt publication") from exc
         if not isinstance(receipt, CostReceipt) or receipt.activity_id not in self._roster:
             raise CostAccountingError("receipt activity is outside the frozen roster")
         if len(self._history) >= MAX_RECEIPTS:
@@ -200,6 +216,11 @@ This is reconciliation software, not a durable ledger or live billing service.
             attestation = self._verifier.verify(receipt)
         finally:
             self._verifying = False
+        if self._registration is not None:
+            try:
+                source_registration.require_instrument_identity(self._verifier, self._registration, "costs")
+            except evaluation.EvaluationError as exc:
+                raise CostAccountingError("cost instrument drift prevents receipt publication") from exc
         if not isinstance(attestation, CostAttestation) or attestation.subject_sha256 != receipt.sha256:
             raise CostAccountingError("external verification did not bind the exact receipt")
         _identifier(attestation.verifier_id)

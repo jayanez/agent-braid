@@ -44,6 +44,7 @@ from .tooling_subscription import (
     check_observation,
 )
 from . import tooling_subscription_estimate as estimate_policy
+from . import tooling_registration_v6 as source_registration
 
 
 MAX_OUTPUT_BYTES = 64 * 1024 * 1024
@@ -148,6 +149,7 @@ class ProcessRequest:
     subscription_estimate_admission_receipt_sha256: str | None = None
     native_route_binding: NativeProcessRouteBinding | None = field(default=None, repr=False)
     operational_route_binding: OperationalProcessRouteBinding | None = field(default=None, repr=False)
+    source_route_binding: source_registration.SourceRouteBinding | None = field(default=None, repr=False)
 
 
 @dataclass(frozen=True)
@@ -167,6 +169,7 @@ class TelemetrySnapshot:
     subscription: SubscriptionObservation | None = None
     native_route: NativeProcessRouteObservation | None = field(default=None, repr=False)
     operational_route: OperationalProcessRouteObservation | None = field(default=None, repr=False)
+    source_route: object | None = field(default=None, repr=False)
 
 
 @dataclass(frozen=True)
@@ -252,6 +255,7 @@ def run_supervised(
     clock: Clock = Clock(),
     native_route_verifier: NativeRouteVerifier | None = None,
     operational_route_verifier: OperationalRouteVerifier | None = None,
+    source_route_verifier: object | None = None,
 ) -> ProcessOutcome:
     """Run once, serializing estimate-bound work by registration and host."""
     guard = request.subscription_estimate_runtime_guard if isinstance(request, ProcessRequest) else None
@@ -266,11 +270,13 @@ def run_supervised(
     if guard is None:
         return _run_supervised_body(request, caps, observer, cancel_event=cancel_event, clock=clock,
                                     native_route_verifier=native_route_verifier,
-                                    operational_route_verifier=operational_route_verifier)
+                                    operational_route_verifier=operational_route_verifier,
+                                    source_route_verifier=source_route_verifier)
     with _estimate_host_lock(guard):
         return _run_supervised_body(request, caps, observer, cancel_event=cancel_event, clock=clock,
                                     native_route_verifier=native_route_verifier,
-                                    operational_route_verifier=operational_route_verifier)
+                                    operational_route_verifier=operational_route_verifier,
+                                    source_route_verifier=source_route_verifier)
 
 
 @contextmanager
@@ -319,6 +325,7 @@ def _run_supervised_body(
     clock: Clock = Clock(),
     native_route_verifier: NativeRouteVerifier | None = None,
     operational_route_verifier: OperationalRouteVerifier | None = None,
+    source_route_verifier: object | None = None,
 ) -> ProcessOutcome:
     """Validate, start once, multiplex pipes, observe budgets, and reap the process.
 
@@ -327,7 +334,8 @@ def _run_supervised_body(
     """
     if os.name != "posix":
         raise SupervisorError("the process supervisor requires POSIX process groups")
-    _validate_request(request, caps, observer, clock, native_route_verifier, operational_route_verifier)
+    _validate_request(request, caps, observer, clock, native_route_verifier, operational_route_verifier,
+                      source_route_verifier)
     executable, cwd, output_root, source_roots, grant_root, env = _resolve_paths(request)
     _ensure_fresh_output_root(output_root)
     try:
@@ -342,6 +350,9 @@ def _run_supervised_body(
             return _not_launched("start-drift", "pinned configuration input differs", clock)
         native_binding = _native_route_binding(request)
         operational_binding = _operational_route_binding(request)
+        source_binding = _source_route_binding(request)
+        if source_binding is not None and _native_config_digest(pinned_files) != source_binding.binding.config_sha256:
+            return _not_launched("start-drift", "source-route configuration inventory differs from registration", clock)
         if native_binding is not None and _native_config_digest(pinned_files) != native_binding.config_sha256:
             return _not_launched("start-drift", "native route configuration inventory differs from registration", clock)
         if operational_binding is not None and _native_config_digest(pinned_files) != operational_binding.config_sha256:
@@ -356,7 +367,8 @@ def _run_supervised_body(
                                   native_route=_has_route_binding(request))
         _validate_snapshot(initial, caps, request, None, clock, None,
                            native_route_verifier=native_route_verifier,
-                           operational_route_verifier=operational_route_verifier)
+                           operational_route_verifier=operational_route_verifier,
+                           source_route_verifier=source_route_verifier)
     except SubscriptionError as exc:
         return _not_launched("refused", _safe_reason(exc), clock)
     except Exception as exc:
@@ -410,7 +422,7 @@ def _run_supervised_body(
         "stdinBytes": len(request.stdin or b""),
         "environmentEntryCount": len(env), "preDispatchSnapshot": _snapshot_dict(initial),
         "subscriptionBinding": _safe_subscription_binding_dict(
-            _native_route_binding(request) or _operational_route_binding(request) or request.subscription_binding)
+            _native_route_binding(request) or _operational_route_binding(request) or _source_route_binding(request) or request.subscription_binding)
         if _has_route_binding(request) or request.subscription_binding is not None else None,
         "subscriptionEstimateRuntimeGuard": _estimate_guard_dict(estimate_guard),
         "filePins": [{"pathSha256": _sha(str(path).encode("utf-8")), "sha256": digest}
@@ -467,10 +479,16 @@ def _run_supervised_body(
             raise _StartDrift()
         if _has_route_binding(request):
             try:
-                binding = _native_route_binding(request) or _operational_route_binding(request)
-                observation = initial.native_route if _native_route_binding(request) else initial.operational_route
-                check_observation(observation, binding, now=_parse_time(_utc(clock)),
-                                  max_age_seconds=request.observation_max_age_seconds)
+                source_binding = _source_route_binding(request)
+                if source_binding is not None:
+                    source_registration.check_claude_directory(source_binding, request.env)
+                    source_registration.check_observation(initial.source_route, source_binding,
+                        now=_parse_time(_utc(clock)), phase="prelaunch")
+                else:
+                    binding = _native_route_binding(request) or _operational_route_binding(request)
+                    observation = initial.native_route if _native_route_binding(request) else initial.operational_route
+                    check_observation(observation, binding, now=_parse_time(_utc(clock)),
+                                      max_age_seconds=request.observation_max_age_seconds)
             except SubscriptionError as exc:
                 raise SubscriptionError("native route evidence expired before process launch") from exc
             if not _launch_pins_match(executable, request.executable_sha256, pinned_files):
@@ -507,7 +525,8 @@ def _run_supervised_body(
                                          native_route=True)
                 _validate_snapshot(bound, caps, request, last_snapshot, clock, identity,
                                    native_route_verifier=native_route_verifier,
-                                   operational_route_verifier=operational_route_verifier)
+                                   operational_route_verifier=operational_route_verifier,
+                                   source_route_verifier=source_route_verifier)
                 last_snapshot = bound
                 snapshots.append(bound)
             except Exception as exc:
@@ -560,7 +579,8 @@ def _run_supervised_body(
                                                     native_route=_has_route_binding(request))
                         _validate_snapshot(observed, caps, request, last_snapshot, clock, identity,
                                            native_route_verifier=native_route_verifier,
-                                   operational_route_verifier=operational_route_verifier)
+                                   operational_route_verifier=operational_route_verifier,
+                                   source_route_verifier=source_route_verifier)
                         last_snapshot = observed
                         if len(snapshots) < MAX_RETAINED_SNAPSHOTS:
                             snapshots.append(observed)
@@ -684,7 +704,8 @@ def _run_supervised_body(
                     native_route=_has_route_binding(request), final=True)
                 _validate_snapshot(final_snapshot, caps, request, last_snapshot, clock, identity,
                                    native_route_verifier=native_route_verifier,
-                                   operational_route_verifier=operational_route_verifier, final=True)
+                                   operational_route_verifier=operational_route_verifier,
+                                   source_route_verifier=source_route_verifier, final=True)
                 last_snapshot = final_snapshot
                 if len(snapshots) < MAX_RETAINED_SNAPSHOTS:
                     snapshots.append(final_snapshot)
@@ -755,7 +776,7 @@ def _run_supervised_body(
         "stderrBytesObserved": err_seen, "stdoutSha256": out_hash.hexdigest(),
         "stderrSha256": err_hash.hexdigest(), "lastSnapshot": _snapshot_dict(last_snapshot),
         "subscriptionBinding": _safe_subscription_binding_dict(
-            _native_route_binding(request) or _operational_route_binding(request) or request.subscription_binding)
+            _native_route_binding(request) or _operational_route_binding(request) or _source_route_binding(request) or request.subscription_binding)
         if _has_route_binding(request) or request.subscription_binding is not None else None,
         "subscriptionEstimateRuntimeGuard": _estimate_guard_dict(estimate_guard),
         "preDispatchSubscription": _snapshot_dict(initial).get("subscription"),
@@ -801,14 +822,35 @@ _LIMITS = (
 
 
 def _validate_request(request, caps, observer, clock, native_route_verifier=None,
-                      operational_route_verifier=None):
+                      operational_route_verifier=None, source_route_verifier=None):
     if not isinstance(request, ProcessRequest) or not isinstance(caps, BudgetCaps):
         raise SupervisorError("typed process request and frozen budget caps are required")
     if request.subscription_binding is not None and not isinstance(
             request.subscription_binding, (SubscriptionBinding, NativeProcessRouteBinding,
-                                           OperationalProcessRouteBinding)):
+                                           OperationalProcessRouteBinding, source_registration.SourceRouteBinding)):
         raise SupervisorError("subscription_binding must be a typed registration binding")
     native_binding = _native_route_binding(request)
+    source_binding = _source_route_binding(request)
+    if source_binding is not None:
+        try:
+            source_binding.validate()
+            source_registration.check_claude_directory(source_binding, request.env)
+        except SubscriptionError as exc:
+            raise SupervisorError("invalid source route binding") from exc
+        if not callable(getattr(source_route_verifier, "verify_source_observation", None)):
+            raise SupervisorError("trusted source route verifier is required for v6")
+        core = source_binding.binding
+        if (getattr(source_route_verifier, "source_ref", None),
+                getattr(source_route_verifier, "source_sha256", None),
+                getattr(source_route_verifier, "verifier_ref", None),
+                getattr(source_route_verifier, "verifier_sha256", None)) != (
+                core.observer_source_ref, core.observer_source_sha256,
+                core.observer_verifier_ref, core.observer_verifier_sha256):
+            raise SupervisorError("source verifier identity differs from the frozen policy")
+        if request.executable_sha256 != core.executable_sha256 or _sha(_json_bytes(list(request.argv))) != core.argv_sha256:
+            raise SupervisorError("source-route executable or argv differs from registered process")
+        if request.subscription_binding is not None and request.subscription_binding != source_binding:
+            raise SupervisorError("source route bindings disagree")
     if request.native_route_binding is not None and not isinstance(
             request.native_route_binding, NativeProcessRouteBinding):
         raise SupervisorError("native_route_binding must be a typed v2 registration binding")
@@ -844,6 +886,8 @@ def _validate_request(request, caps, observer, clock, native_route_verifier=None
             raise SupervisorError("operational process route bindings disagree")
     if native_binding is not None and operational_binding is not None:
         raise SupervisorError("native v2 and operational v3 route bindings cannot be combined")
+    if source_binding is not None and (native_binding is not None or operational_binding is not None):
+        raise SupervisorError("source route cannot be combined with legacy native observations")
     if request.subscription_estimate_runtime_guard is not None:
         if not isinstance(request.subscription_estimate_runtime_guard, estimate_policy.RuntimeGuard):
             raise SupervisorError("subscription estimate guard must be derived from v4 capture admission")
@@ -971,16 +1015,24 @@ def _ensure_fresh_output_root(root):
 
 
 def _validate_snapshot(snapshot, caps, request, prior, clock, identity,
-                       native_route_verifier=None, operational_route_verifier=None, *, final=False):
+                       native_route_verifier=None, operational_route_verifier=None,
+                       source_route_verifier=None, *, final=False):
     if not isinstance(snapshot, TelemetrySnapshot):
         raise SupervisorError("observer returned no typed cumulative telemetry snapshot")
     try:
-        capture._validate_costs(snapshot.costs, allow_unknown_eur=_operational_route_binding(request) is not None)
+        capture._validate_costs(snapshot.costs, allow_unknown_eur=(
+            _operational_route_binding(request) is not None or _source_route_binding(request) is not None))
         capture._validate_stop_state(snapshot.stop_state)
     except capture.CaptureAdmissionError as exc:
         raise SupervisorError(f"observer supplied unknown or invalid telemetry: {exc}") from exc
     native_binding = _native_route_binding(request)
     operational_binding = _operational_route_binding(request)
+    source_binding = _source_route_binding(request)
+    if source_binding is not None:
+        if snapshot.costs.values["eur"] not in (None, 0):
+            raise SubscriptionError("known additional cash exceeds the source EUR 0 cap")
+        _validate_source_snapshot(snapshot, source_binding, prior, identity, request, clock,
+                                  source_route_verifier, final)
     if operational_binding is not None and snapshot.costs.values["eur"] not in (None, 0):
         raise SubscriptionError("known additional cash exceeds the operational EUR 0 cap")
     if native_binding is not None:
@@ -1045,7 +1097,7 @@ def _validate_snapshot(snapshot, caps, request, prior, clock, identity,
                                           request.observer_timeout_seconds)
         check_observation(observation, operational_binding, now=_parse_time(_utc(clock)),
                           max_age_seconds=request.observation_max_age_seconds)
-    elif native_binding is None and operational_binding is None and request.subscription_binding is not None:
+    elif native_binding is None and operational_binding is None and source_binding is None and request.subscription_binding is not None:
         if snapshot.subscription is None:
             raise SubscriptionError("required subscription observation is missing")
         check_observation(snapshot.subscription, request.subscription_binding,
@@ -1111,13 +1163,13 @@ def _verify_native_route_bounded(verifier, observation, binding, identity, reque
 
 
 def _verify_operational_route_bounded(verifier, observation, binding, identity, request,
-                                      final, timeout_seconds):
+                                      final, timeout_seconds, method_name="verify_operational_observation"):
     result = []
     finished = threading.Event()
 
     def invoke():
         try:
-            value = verifier.verify_operational_observation(
+            value = getattr(verifier, method_name)(
                 observation, binding, identity, request, final)
         except BaseException as exc:
             result.append((False, exc))
@@ -1344,6 +1396,17 @@ def _snapshot_dict(snapshot):
         proof["sourceRefSha256"] = _sha(proof.pop("sourceRef").encode("utf-8"))
         proof["verifierRefSha256"] = _sha(proof.pop("verifierRef").encode("utf-8"))
         result["operationalProcessRoute"] = proof
+    if snapshot.source_route is not None:
+        composition = snapshot.source_route.composition
+        result["sourceProcessRoute"] = {
+            "contractSha256": composition.contract_sha256,
+            "binding": _safe_subscription_binding_dict(composition.binding),
+            "phase": composition.phase, "processId": composition.process_id,
+            "processBirthSha256": composition.process_birth_sha256,
+            "observedSequence": composition.observed_sequence,
+            "receiptSha256": list(composition.receipt_sha256),
+            "validUntil": composition.valid_until.isoformat(),
+        }
     return result
 
 
@@ -1372,10 +1435,51 @@ def _operational_route_binding(request):
 
 
 def _has_route_binding(request):
-    return _native_route_binding(request) is not None or _operational_route_binding(request) is not None
+    return (_native_route_binding(request) is not None or _operational_route_binding(request) is not None
+            or _source_route_binding(request) is not None)
+
+
+def _source_route_binding(request):
+    explicit = getattr(request, "source_route_binding", None)
+    legacy = getattr(request, "subscription_binding", None)
+    if isinstance(legacy, source_registration.SourceRouteBinding):
+        if explicit is not None and explicit != legacy:
+            raise SupervisorError("source route bindings disagree")
+        return legacy
+    if explicit is not None and not isinstance(explicit, source_registration.SourceRouteBinding):
+        raise SupervisorError("source route requires its distinct typed binding")
+    if explicit is not None and legacy is not None:
+        raise SupervisorError("source route cannot be combined with legacy subscription binding")
+    return explicit
+
+
+def _validate_source_snapshot(snapshot, binding, prior, identity, request, clock, verifier, final):
+    source_registration.check_claude_directory(binding, request.env)
+    phase = "prelaunch" if identity is None else ("completed" if final else "running")
+    if identity is not None and identity.birth is None:
+        raise SubscriptionError("source route requires exact kernel process birth")
+    kwargs = dict(now=_parse_time(_utc(clock)), phase=phase,
+                  process_id=None if identity is None else identity.pid,
+                  process_birth_sha256=None if identity is None else _process_birth_sha256(identity.birth))
+    current = source_registration.check_observation(snapshot.source_route, binding, **kwargs)
+    if prior is not None and prior.source_route is not None:
+        previous = prior.source_route.composition
+        if current.observed_sequence <= previous.observed_sequence:
+            raise SubscriptionError("source observation sequence did not strictly increase")
+        for kind in ("quota", "autoRecharge", "process"):
+            if _parse_time(snapshot.source_route.receipts[kind]["observedAt"]) < _parse_time(prior.source_route.receipts[kind]["observedAt"]):
+                raise SubscriptionError("source observation timestamp regressed")
+    _verify_operational_route_bounded(verifier, snapshot.source_route, binding, identity, request,
+        final, request.observer_timeout_seconds, "verify_source_observation")
+    kwargs["now"] = _parse_time(_utc(clock))
+    source_registration.check_observation(snapshot.source_route, binding, **kwargs)
 
 
 def _safe_subscription_binding_dict(binding):
+    if isinstance(binding, source_registration.SourceRouteBinding):
+        return {"schema": source_registration.BINDING_SCHEMA,
+                "binding": _safe_subscription_binding_dict(binding.binding),
+                "contractSha256": binding.contract_sha256}
     if isinstance(binding, NativeProcessRouteBinding):
         value = binding.as_dict()
         for field in ("observerSourceRef", "observerVerifierRef", "cashSourceRef", "cashVerifierRef"):
