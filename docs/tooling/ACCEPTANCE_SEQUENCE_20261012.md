@@ -190,3 +190,72 @@ accepted record bytes and original observation commits. A retained tag does not
 create a new approval or extend its scope. The three retained references are
 `spec-039-reviewed-e94497b`, `spec-040-reviewed-5888737` and
 `spec-042-reviewed-6eedc5f`.
+
+
+## Native admission checkpoint — 2026-10-12
+
+After PR #503, the owner authorized continuing admission preparation for the
+SPEC-041 native procedures and keeping documentation and GitHub state current.
+The integrated [platform API reference](../../specs/044-ai-tooling-evaluation/platform-api-verification-reference.md)
+was reused. Its immutable private archive passed all 20 file hashes. Byte-exact
+reviewed collectors ran serially, Codex then Claude, into a new exclusive private
+observation directory. Both exited zero; neither sent an inference request,
+changed a setting, refreshed credentials or launched a registered attempt.
+The original archive remains unchanged. Current private receipts and the
+`m45-native-readiness-checkpoint/v1` interpretation remain outside this repository.
+
+Codex's allowed account/quota/configuration/catalog reads completed and ordinary
+usage was allowed at observation time. Explicit `creditsEnabled` and
+`extraUsageEnabled` remain unavailable. Claude profile, usage and prepaid reads
+returned HTTP 200; profile and usage reported extra usage disabled, while the
+reviewed API projection still had no usable auto-reload boolean. These snapshots
+are preparation, not present quota at a later dispatch or continuous supervision.
+
+Read-only inspection of the official usage interfaces additionally observed
+Codex's auto-recharge switch with `aria-checked=false` and Claude's explicit
+"Recarga automática desactivada" text. These are main-session point-in-time UI
+observations. Browser-to-native account/organization namespace correspondence
+has not been established; no UI value is promoted into a process-bound policy
+observation. No monetary values, account identifiers or response bodies are public.
+
+The isolated Claude Code 2.1.287 executable matched its previously reviewed
+SHA-256. Its local `--version` and `--help` commands exited zero and exposed
+`--restricted`, `--strict-mcp-config`, `--setting-sources`, `--settings` and
+`--output-format`. This removes the need to upgrade the global 2.1.285 binary
+for the selected candidate; help output does not prove effective isolation.
+
+Next gate: establish browser/native namespace correspondence and authoritative
+coverage of remaining paid controls, then implement and review the source-bound
+operational observer/verifier and its bounded live composition. Unknown values
+must refuse. Complete exact registration approval precedes discovery/journey
+capture. SPEC-041/T001–T010, SPEC-044/T001–T002 and OP001–OP006 remain open;
+no scenario evidence or original task was completed by these metadata reads.
+SPEC-041 covers the five product skills in both hosts; comparative utility,
+registered reproduction and whole-milestone acceptance remain in SPEC-044.
+
+
+### Codex source-contract decision
+
+The remaining Codex API-field gap needs a source-contract decision, not an
+assertion that absent booleans are false. Proposed scope for owner review:
+prepare a separately versioned additive admission route using the native
+`ordinaryUsageAllowed`, `credits.hasCredits` and `credits.unlimited` fields,
+authoritatively bound auto-recharge state, and the existing process credential,
+provider/fallback, configuration, candidate, model and slot checks. Require
+ordinary included usage allowed, no available/unlimited credits, auto-recharge
+disabled and no paid/API/provider fallback. Unknown, conflicting, stale or
+unbound sources must refuse; availability is not labelled a credit-setting
+boolean. The strict v1/v2/v3 contracts and their historical evidence stay intact.
+
+This proposal was approved by the owner on 2026-10-12: “Autorizo el contrato
+adicional y su implementación de la PR #504”. The separately versioned
+[source composition contract](CODEX_SOURCE_CONTRACT.md) is implemented with
+synthetic refusal controls. This authorizes that implementation scope; it does
+not approve registration or capture, authenticate native sources, or enable a
+new launch path. Live composition must
+address live source freshness, namespace correspondence and drift refusal before
+any launch. A source-bound observer/verifier and its review remain required.
+The original v3 path continues to refuse absent explicit payment fields; source
+composition never invents those booleans. No arbitrary account-wide billing
+attestation is inferred. The trusted observer and bounded supervisor integration
+remain the next implementation boundary, followed by exact registration approval.
