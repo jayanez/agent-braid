@@ -5,7 +5,7 @@ observer. **Outcome: the required sources are not yet verifiable, so no observer
 component was implemented.** This record states which values were observed,
 which remain unknown, and the exact field, method and condition still missing.
 
-It depends on the Codex source composition contract proposed in
+It builds on the Codex source composition contract integrated through
 [PR #504](https://github.com/jayanez/agent-braid/pull/504) and does not modify it.
 It is not registration approval, capture authorization, native acceptance or
 evaluation evidence. No observer, launch, journey, registered reproduction or
@@ -149,12 +149,14 @@ settings or freshness at dispatch; the launch-path guarantees below remain.
 **Owner decision (2026-10-13, in chat):** the admissible auto-recharge source
 for Claude is a fresh, explicit observation of the setting in the claude.ai
 usage interface, bound to the same account. This records the choice of source;
-it does not yet change a versioned contract. Open design points:
+it did not yet change a versioned contract (superseded: see the update at the end).
+Open design points at that time:
 - The collectors discard email addresses, so the binding method between the
   interface account and the API profile account needs its own reviewed
   definition (for example a private identity comparison at observation time).
-- Each admission needs a fresh observation; an earlier interface observation
-  is not reusable evidence.
+- Each admission needs an observation no older than the limit its registration
+  declares (see the [Claude source contract](CLAUDE_SOURCE_CONTRACT.md)); an older
+  interface observation is not reusable evidence.
 - The observer cannot be implemented until that method and the contract change
   are specified and reviewed.
 
@@ -214,10 +216,14 @@ and extra usage was `false`.
 - The result holds at its observation time and does not attest the launched process.
 - The collector receipt is not authenticated beyond its recorded digest, so any
   consumer must check that digest and the adapter digest against reviewed values.
-- Every admission needs a fresh pair of reads.
+- Every admission needs a pair of reads within the registered limits.
 
-**Still pending before an observer can exist:** a versioned contract that accepts
-this observation as the auto-recharge source, registration of the isolated
-configuration directory in the launch path with its expected Keychain item suffix,
-and a decision on how each admission refreshes the interface observation. No observer,
+**Update 2026-10-13:** the owner approved the [Claude source contract](CLAUDE_SOURCE_CONTRACT.md),
+which accepts this observation as the auto-recharge source and is implemented as a
+claims-composition module.
+
+**Still pending before an observer can exist:** authentication of each receipt against
+its pinned procedure, registration of the isolated configuration directory in the
+launch path with its expected Keychain item suffix, and the refresh of the interface
+observation at each admission. No observer,
 launch or evaluation attempt occurred. Additional spend remains EUR 0.

@@ -21,8 +21,8 @@ remain separate; M4.5 remains open.
 The [Claude source diagnostic](CLAUDE_SOURCE_DIAGNOSTIC.md) records which Claude
 Code account, quota and payment-control sources are verifiable for a future
 launched process; auto-recharge and process correspondence remain unverified.
-A [proposed Claude source contract](CLAUDE_SOURCE_CONTRACT_PROPOSAL.md) would compose
-its quota, auto-recharge and process claims; it is not approved or implemented.
+The owner-approved [Claude source contract](CLAUDE_SOURCE_CONTRACT.md) composes quota,
+auto-recharge and process claims; it authenticates no source and enables no launch path.
 
 Start the experimental candidate with [installation](INSTALL.md),
 [presentation](../ai-tooling-presentation.md) and [evaluation preparation](EVALUATION.md).
