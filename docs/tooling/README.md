@@ -18,6 +18,12 @@ PR #502 integrated those decisions and closed their six issues; their pending
 labels are removed and their Project items are Done. Native admission, registered capture and the deferred human phase
 remain separate; M4.5 remains open.
 
+The [Claude source diagnostic](CLAUDE_SOURCE_DIAGNOSTIC.md) records which Claude
+Code account, quota and payment-control sources are verifiable for a future
+launched process; auto-recharge and process correspondence remain unverified.
+The owner-approved [Claude source contract](CLAUDE_SOURCE_CONTRACT.md) composes quota,
+auto-recharge and process claims; it authenticates no source and enables no launch path.
+
 Start the experimental candidate with [installation](INSTALL.md),
 [presentation](../ai-tooling-presentation.md) and [evaluation preparation](EVALUATION.md).
 The [implementation map](../../specs/039-ai-tooling-program/implementation-status.md)
