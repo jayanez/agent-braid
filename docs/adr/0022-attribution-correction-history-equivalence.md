@@ -1,6 +1,6 @@
 # ADR 0022: Attribution-correction history equivalence
 
-- **Status:** proposed
+- **Status:** accepted by explicit founder decision on 2026-10-13
 - **Date:** 2026-10-13
 - **Deciders:** Juan Antonio Yáñez García (`@jayanez`, founder)
 - **Constitutional articles:** 0, 7, 13, 14

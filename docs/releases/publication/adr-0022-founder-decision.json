@@ -1,23 +1,24 @@
 {
   "recordVersion": "agent-braid-adr-0022-founder-decision-1",
   "adr": "docs/adr/0022-attribution-correction-history-equivalence.md",
-  "reviewedAt": null,
+  "reviewedAt": "2026-10-13",
   "reviewer": {
     "name": "Juan Antonio Yáñez García",
     "role": "founder"
   },
-  "decision": "pending",
-  "reviewedCommit": null,
-  "reviewedProposalSha256": null,
-  "decisionText": null,
+  "decision": "accepted",
+  "reviewedCommit": "c7b976498f8f7edc55ac3984e3894debe132540f",
+  "reviewedProposalSha256": "89f6c394cdbbf15f9b56e4cd541614a6c6dc86e16160f9b111475a53eac9ef24",
+  "decisionText": "Approve ADR 0022 as presented: keep the attribution-corrected history, correct the five affected tags, and validate frozen identities only through the immutable, tree-verified equivalence record with its stated limits.",
   "scope": {
-    "requested": [
-      "Keep the attribution-corrected history and validate frozen identities through the immutable equivalence record.",
-      "Publish the five attribution-corrected annotated tags and delete the five original tags after merge."
+    "authorized": [
+      "Adopt the equivalence record and resolver as the portable validation design for the attribution correction.",
+      "Delete the five original tags after this pull request is merged."
     ],
     "separateDecisions": [
       "Any feature, release, experiment or scientific claim.",
-      "GitHub Support removal of retained pull-request refs and cached views."
+      "GitHub Support removal of retained pull-request refs and cached views.",
+      "Rebasing or merging other pull requests."
     ]
   },
   "independentValidation": "pending"
