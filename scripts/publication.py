@@ -12,6 +12,11 @@ from pathlib import Path, PurePosixPath
 import re
 import subprocess
 
+try:
+    from scripts.history_equivalence import resolve_public_commit
+except ModuleNotFoundError:
+    from history_equivalence import resolve_public_commit
+
 
 MANIFEST = "docs/releases/public-export.json"
 ADDENDUM = "docs/releases/public-export-addendum-m2.json"
@@ -398,10 +403,6 @@ def _validated_addendum(root_name: str, addendum_path: str, head: str, addendum_
     if len(introduced) != 1 \
             or _git(root, "show", f"{introduced[0]}:{addendum_path}").stdout != payload:
         raise ValueError("public export addendum must be unchanged since introduction")
-    try:
-        from scripts.history_equivalence import resolve_public_commit
-    except ModuleNotFoundError:
-        from history_equivalence import resolve_public_commit
     # ADR 0022: a listed frozen snapshot resolves to its tree-verified equivalent.
     snapshot = resolve_public_commit(root, data["snapshotCommit"], data["snapshotTree"])
     if _git(root, "merge-base", "--is-ancestor", snapshot, introduced[0],
@@ -452,7 +453,8 @@ def root_manifest_payload(root: Path, relative: str) -> bytes:
         if len(matches) != 1:
             raise ValueError(f"export manifest does not bind required file: {relative}")
         addendum, entry = matches[0]
-        payload = _git(root, "show", f"{addendum['snapshotCommit']}:{relative}").stdout
+        snapshot = resolve_public_commit(root, addendum["snapshotCommit"], addendum["snapshotTree"])
+        payload = _git(root, "show", f"{snapshot}:{relative}").stdout
         if digest_bytes(payload) != entry["sha256"] or len(payload) != entry["size"]:
             raise ValueError(f"public snapshot payload does not match manifest: {relative}")
         return payload
@@ -479,7 +481,9 @@ def root_manifest_presence(root: Path, relative: str) -> bool:
             return True
         for item in addendum.get("pathAssertions", []):
             if item["path"] == relative:
-                blob = _git(root, "show", f"{addendum['snapshotCommit']}:{relative}").stdout
+                snapshot = resolve_public_commit(
+                    root, addendum["snapshotCommit"], addendum["snapshotTree"])
+                blob = _git(root, "show", f"{snapshot}:{relative}").stdout
                 if len(blob) != item["size"] or digest_bytes(blob) != item["sha256"]:
                     raise ValueError(f"public snapshot path assertion changed: {relative}")
                 return True
