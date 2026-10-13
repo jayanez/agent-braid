@@ -11,6 +11,11 @@ from pathlib import Path
 import re
 import subprocess
 
+try:
+    from scripts.history_equivalence import resolve_public_commit
+except ModuleNotFoundError:
+    from history_equivalence import resolve_public_commit
+
 
 ANCHORS = "docs/releases/closure-anchors.json"
 HEX40 = re.compile(r"[0-9a-f]{40}")
@@ -77,6 +82,10 @@ def validate_closure_anchor(root: Path, milestone: str, candidate: str | None = 
            for value in protected.values()):
         raise ValueError(f"{milestone} closure anchor contains an invalid digest")
 
+    # ADR 0022: a listed frozen identity resolves to its tree-verified equivalent.
+    candidate_commit = resolve_public_commit(root, anchor["candidateCommit"])
+    closure_commit = resolve_public_commit(root, anchor["closureCommit"], anchor["closureTree"])
+
     # The registry is committed after the closure commit because its entry
     # contains that commit's identity. Bind each entry to its first published
     # appearance in this ancestry so later edits cannot shrink protection.
@@ -88,13 +97,11 @@ def validate_closure_anchor(root: Path, milestone: str, candidate: str | None = 
             continue
         historical_anchor = historical_registry.get("milestones", {}).get(milestone)
         if historical_anchor is not None:
-            _git(root, "merge-base", "--is-ancestor", anchor["closureCommit"], revision)
+            _git(root, "merge-base", "--is-ancestor", closure_commit, revision)
             break
     if historical_anchor is None or historical_anchor != anchor:
         raise ValueError(f"{milestone} closure anchor differs from its first recorded entry")
 
-    candidate_commit = anchor["candidateCommit"]
-    closure_commit = anchor["closureCommit"]
     _git(root, "cat-file", "-e", f"{candidate_commit}^{{commit}}")
     _git(root, "cat-file", "-e", f"{closure_commit}^{{commit}}")
     tree = _git(root, "rev-parse", f"{closure_commit}^{{tree}}").decode("ascii").strip()
