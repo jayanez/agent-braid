@@ -63,6 +63,9 @@ def fixture():
     return contract, receipts, digest
 
 
+_DELETE = object()
+
+
 def get(payload, path):
     for part in path[:-1]:
         payload = payload[part]
@@ -475,74 +478,48 @@ class ClaudeSourceContractTests(unittest.TestCase):
         receipts["quota"]["payload"]["quotaWindows"]["fiveHour"]["resetsAt"] = iso(NOW + timedelta(seconds=20))
         self.assertEqual(self.check(contract, receipts, digest).valid_until, NOW + timedelta(seconds=20))
 
-    def test_contract_validation_and_mutation_refuse(self):
-        def mutate(name):
-            contract, receipts, digest = fixture()
-            if name == "cap":
-                contract["additionalSpendCapEur"] = True
-            elif name == "cap-nonzero":
-                contract["additionalSpendCapEur"] = 1
-            elif name == "pin":
-                contract["sources"]["quota"]["sourceSha256"] = _sha("changed")
-            elif name == "host":
-                contract["binding"]["host"] = "codex"
-            elif name == "suffix-short":
-                contract["isolatedStore"]["keychainSuffix"] = "abc"
-            elif name == "suffix-upper":
-                contract["isolatedStore"]["keychainSuffix"] = "ABCDEF12"
-            elif name == "suffix-extra":
-                contract["isolatedStore"]["path"] = "/x"
-            elif name == "org-bound":
-                contract["organizationScope"]["binding"] = "bound"
-            elif name == "org-missing-hash":
-                del contract["organizationScope"]["declarationSha256"]
-            elif name == "org-bad-hash":
-                contract["organizationScope"]["declarationSha256"] = "abc"
-            elif name == "org-absent":
-                del contract["organizationScope"]
-            elif name == "age-ui-ceiling":
-                contract["sourceMaxAgeSeconds"]["autoRecharge"] = 901
-            elif name == "age-quota-over-binding":
-                contract["sourceMaxAgeSeconds"]["quota"] = 31
-            elif name == "age-process-over-binding":
-                contract["sourceMaxAgeSeconds"]["process"] = 61
-            elif name == "age-zero":
-                contract["sourceMaxAgeSeconds"]["quota"] = 0
-            elif name == "age-bool":
-                contract["sourceMaxAgeSeconds"]["process"] = True
-            elif name == "age-nan":
-                contract["sourceMaxAgeSeconds"]["autoRecharge"] = float("nan")
-            elif name == "age-missing":
-                del contract["sourceMaxAgeSeconds"]["process"]
-            elif name == "age-extra":
-                contract["sourceMaxAgeSeconds"]["other"] = 1
-            elif name == "extra":
-                receipts["quota"]["payload"]["creditsEnabled"] = False
-            elif name == "missing":
-                del receipts["autoRecharge"]
-            elif name == "contract-extra":
-                contract["notes"] = "x"
-            else:
-                digest = _sha("different-contract")
-            return contract, receipts, digest
-        for name in ["cap", "cap-nonzero", "pin", "host", "suffix-short", "suffix-upper", "suffix-extra",
-                     "org-bound", "org-missing-hash", "org-bad-hash", "org-absent", "age-ui-ceiling",
-                     "age-quota-over-binding", "age-process-over-binding", "age-zero", "age-bool",
-                     "age-nan", "age-missing", "age-extra", "extra", "missing", "contract-extra", "digest"]:
-            with self.subTest(mutation=name):
-                contract, receipts, digest = mutate(name)
-                if name in ("pin", "host", "suffix-short", "suffix-upper", "suffix-extra", "org-bound",
-                            "org-missing-hash", "org-bad-hash", "org-absent", "age-quota-over-binding",
-                            "age-process-over-binding", "age-zero", "age-bool", "age-nan",
-                            "age-missing", "age-extra", "age-ui-ceiling", "cap", "cap-nonzero",
-                            "contract-extra"):
-                    # the frozen digest is stale after these edits, so refusal also covers drift
-                    self.refuses(contract, receipts, digest)
-                    if name != "pin":
-                        with self.assertRaises(subscription.SubscriptionError):
-                            sources.source_contract_sha256(contract)
+    def test_contract_and_receipt_mutations_each_refuse_with_their_own_reason(self):
+        def contract_edit(path, value):
+            def apply(contract, receipts):
+                target = contract
+                for part in path[:-1]:
+                    target = target[part]
+                if value is _DELETE:
+                    del target[path[-1]]
                 else:
-                    self.refuses(contract, receipts, digest)
+                    target[path[-1]] = value
+            return apply
+
+        cases = [
+            ("spend cap is a bool", contract_edit(("additionalSpendCapEur",), True), "integer EUR zero"),
+            ("spend cap is non-zero", contract_edit(("additionalSpendCapEur",), 1), "integer EUR zero"),
+            ("other host", contract_edit(("binding", "host"), "codex"), "cannot bind another host"),
+            ("suffix too short", contract_edit(("isolatedStore", "keychainSuffix"), "abc"), "eight lowercase hex"),
+            ("suffix upper case", contract_edit(("isolatedStore", "keychainSuffix"), "ABCDEF12"), "eight lowercase hex"),
+            ("suffix carries a path", contract_edit(("isolatedStore", "path"), "/x"), "invalid isolated store fields"),
+            ("organization bound is reserved", contract_edit(("organizationScope", "binding"), "bound"), "owner-declared single organization"),
+            ("declaration hash missing", contract_edit(("organizationScope", "declarationSha256"), _DELETE), "invalid organization scope fields"),
+            ("declaration hash malformed", contract_edit(("organizationScope", "declarationSha256"), "abc"), "lowercase SHA-256"),
+            ("organization scope missing", contract_edit(("organizationScope",), _DELETE), "invalid source contract fields"),
+            ("auto-recharge limit above ceiling", contract_edit(("sourceMaxAgeSeconds", "autoRecharge"), 901), "outside its ceiling"),
+            ("quota limit above binding", contract_edit(("sourceMaxAgeSeconds", "quota"), 31), "outside its ceiling"),
+            ("process limit above binding", contract_edit(("sourceMaxAgeSeconds", "process"), 61), "outside its ceiling"),
+            ("limit zero", contract_edit(("sourceMaxAgeSeconds", "quota"), 0), "outside its ceiling"),
+            ("limit is a bool", contract_edit(("sourceMaxAgeSeconds", "process"), True), "finite number"),
+            ("limit is NaN", contract_edit(("sourceMaxAgeSeconds", "autoRecharge"), float("nan")), "finite"),
+            ("limit missing", contract_edit(("sourceMaxAgeSeconds", "process"), _DELETE), "invalid source age limits fields"),
+            ("limit for an unknown source", contract_edit(("sourceMaxAgeSeconds", "other"), 1), "invalid source age limits fields"),
+            ("unknown contract field", contract_edit(("notes",), "x"), "invalid source contract fields"),
+            ("unknown payload field", lambda c, r: r["quota"]["payload"].update(creditsEnabled=False), "invalid quota payload fields"),
+            ("receipt missing", lambda c, r: r.pop("autoRecharge"), "invalid source receipts fields"),
+        ]
+        for label, edit, message in cases:
+            with self.subTest(label):
+                contract, receipts, digest = fixture()
+                edit(contract, receipts)
+                self.refuses(contract, receipts, digest, message)
+        contract, receipts, digest = fixture()
+        self.refuses(contract, receipts, _sha("different-contract"), "differs from its frozen digest")
 
     def test_naive_check_time_is_refused(self):
         contract, receipts, digest = fixture()

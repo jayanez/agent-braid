@@ -134,9 +134,9 @@ store and suffix mismatch; mismatching collector receipt digests between sources
 launch guarantee false; and rejection by the existing v3 admission checker. Mutation
 testing ran in three rounds (the author's 19 and 35 deliberate module faults, then an
 independent review's 90 single-point faults). Each round's surviving fail-open faults were
-closed with targeted tests that also assert which rule refused. The last 90-fault run
-left only faults that are equivalent or that can only shorten validity (for example a check made
-redundant by a later cross-source comparison, or an expiry already capped by the generic age limit).
+closed with targeted tests that also assert which rule refused. After the module was
+restructured into one check per source, a 61-fault set left a single fault alive, a hash check
+that the process claim's identical check makes redundant (the claims must carry the same digest).
 
 ## Not covered
 

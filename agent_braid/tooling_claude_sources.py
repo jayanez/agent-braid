@@ -14,7 +14,7 @@ import hashlib
 import json
 import math
 import re
-from collections.abc import Mapping
+from collections.abc import Callable, Mapping
 from typing import Any
 
 from .tooling_subscription import (
@@ -141,6 +141,25 @@ def source_contract_sha256(contract: Mapping[str, Any]) -> str:
     return _digest(contract)
 
 
+@dataclass(frozen=True)
+class _Context:
+    """Frozen, already validated inputs shared by the per-source payload checks."""
+
+    suffix: str
+    limits: Mapping[str, float]
+    organization_binding: str
+    observed: datetime
+    current: datetime
+
+
+@dataclass(frozen=True)
+class _Checked:
+    """What a payload check contributes beyond accepting it."""
+
+    valid_until: datetime | None = None
+    collector_sha256: str | None = None
+
+
 def compose_claude_sources(
     contract: Mapping[str, Any], receipts: Mapping[str, Any], *,
     expected_contract_sha256: str, now: datetime | None = None,
@@ -161,6 +180,7 @@ def compose_claude_sources(
     binding = operational_binding_from_dict(contract["binding"])
     limits = _limits(contract, binding)
     suffix = contract["isolatedStore"]["keychainSuffix"]
+    organization_binding = contract["organizationScope"]["binding"]
     _shape(receipts, set(KINDS), "source receipts")
     current = datetime.now(timezone.utc) if now is None else now
     if not isinstance(current, datetime) or current.utcoffset() is None:
@@ -168,7 +188,7 @@ def compose_claude_sources(
     identity = None
     expirations = []
     digests = []
-    collector_digests = {}
+    collectors = {}
     for kind in KINDS:
         receipt = receipts[kind]
         _shape(receipt, {"schema", "kind", "contractSha256", "binding", "phase", "processId",
@@ -181,37 +201,42 @@ def compose_claude_sources(
             raise SubscriptionError("source account, namespace, candidate or process binding drift")
         if {field: receipt[field] for field in PIN_FIELDS} != contract["sources"][kind]:
             raise SubscriptionError("source or verifier differs from its frozen pin")
-        phase, pid, birth, sequence = (receipt[field] for field in (
-            "phase", "processId", "processBirthSha256", "observedSequence"))
-        if phase not in ("prelaunch", "running", "completed"):
-            raise SubscriptionError("invalid source process phase")
-        if phase == "prelaunch":
-            if pid is not None or birth is not None:
-                raise SubscriptionError("prelaunch source cannot claim a launched process")
-        else:
-            if type(pid) is not int or pid <= 0:
-                raise SubscriptionError("launched source requires a positive process ID")
-            _hash(birth)
-        if type(sequence) is not int or sequence < 1:
-            raise SubscriptionError("source sequence must be a positive integer")
-        scope = (phase, pid, birth, sequence)
+        scope = _process_scope(receipt)
         if identity is not None and identity != scope:
             raise SubscriptionError("source receipts refer to different process observations")
         identity = scope
         observed = _time(receipt["observedAt"], "source timestamp")
-        age = (current - observed).total_seconds()
-        if not 0 <= age <= limits[kind]:
+        if not 0 <= (current - observed).total_seconds() <= limits[kind]:
             raise SubscriptionError("Claude source is from the future or stale")
+        checked = _CHECKS[kind](receipt["payload"], _Context(
+            suffix, limits, organization_binding, observed, current))
         expiry = observed + timedelta(seconds=limits[kind])
-        expiry = min(expiry, _check_payload(kind, receipt["payload"], suffix, limits, observed,
-                                            current, collector_digests,
-                                            contract["organizationScope"]["binding"]))
-        expirations.append(expiry)
+        expirations.append(expiry if checked.valid_until is None else min(expiry, checked.valid_until))
+        if checked.collector_sha256 is not None:
+            collectors[kind] = checked.collector_sha256
         digests.append(_digest(receipt))
-    if collector_digests["autoRecharge"] != collector_digests["process"]:
+    if collectors["autoRecharge"] != collectors["process"]:
         raise SubscriptionError("auto-recharge and process claims refer to different collector receipts")
     assert identity is not None
     return ClaudeSourceComposition(digest, binding, suffix, *identity, tuple(digests), min(expirations))
+
+
+def _process_scope(receipt: Mapping[str, Any]) -> tuple[str, int | None, str | None, int]:
+    """Validate the lifecycle fields of one receipt and return them as one comparable scope."""
+    phase, pid, birth, sequence = (receipt[field] for field in (
+        "phase", "processId", "processBirthSha256", "observedSequence"))
+    if phase not in ("prelaunch", "running", "completed"):
+        raise SubscriptionError("invalid source process phase")
+    if phase == "prelaunch":
+        if pid is not None or birth is not None:
+            raise SubscriptionError("prelaunch source cannot claim a launched process")
+    else:
+        if type(pid) is not int or pid <= 0:
+            raise SubscriptionError("launched source requires a positive process ID")
+        _hash(birth)
+    if type(sequence) is not int or sequence < 1:
+        raise SubscriptionError("source sequence must be a positive integer")
+    return phase, pid, birth, sequence
 
 
 def _flags(payload: Mapping[str, Any], required_true: set[str], required_false: set[str]) -> None:
@@ -222,46 +247,48 @@ def _flags(payload: Mapping[str, Any], required_true: set[str], required_false: 
             raise SubscriptionError(f"unsafe or unavailable Claude source control: {field}")
 
 
-def _check_payload(kind: str, payload: Any, suffix: str, limits: Mapping[str, float],
-                   observed: datetime, current: datetime,
-                   collector_digests: dict[str, str], organization_binding: str) -> datetime:
-    """Validate one payload and return the latest instant its claims stay current."""
-    if kind == "quota":
-        _shape(payload, {"extraUsageEnabled", "quotaWindows"}, "quota payload")
-        _flags(payload, set(), {"extraUsageEnabled"})
-        _shape(payload["quotaWindows"], set(_WINDOWS), "quota windows")
-        valid_until = None
-        for name in _WINDOWS:
-            window = payload["quotaWindows"][name]
-            _shape(window, {"usedPct", "resetsAt"}, "quota window")
-            if not 0 <= _number(window["usedPct"], "quota used percentage") < 100:
-                raise SubscriptionError("included quota window is exhausted or invalid")
-            reset = _time(window["resetsAt"], "quota reset time")
-            if reset <= max(observed, current):
-                raise SubscriptionError("quota window reset is not in the future")
-            valid_until = reset if valid_until is None else min(valid_until, reset)
-        return valid_until
-    if kind == "autoRecharge":
-        _shape(payload, {"autoRechargeEnabled", "basis", "accountBound", "organizationBinding",
-                         "uiObservedAt", "profileObservedAt", "collectorReceiptSha256",
-                         "recorderRecordSha256"}, "auto-recharge payload")
-        _flags(payload, {"accountBound"}, {"autoRechargeEnabled"})
-        if payload["basis"] != INTERFACE_BASIS:
-            raise SubscriptionError("auto-recharge must come from a bound interface observation")
-        if payload["organizationBinding"] != organization_binding:
-            raise SubscriptionError("auto-recharge organization scope differs from the frozen contract")
-        ui = _time(payload["uiObservedAt"], "interface observation time")
-        profile = _time(payload["profileObservedAt"], "profile read time")
-        if ui > observed or profile > observed:
-            raise SubscriptionError("interface or profile observation is from the future")
-        if (current - ui).total_seconds() > limits["autoRecharge"]:
-            raise SubscriptionError("interface observation is stale")
-        if abs((ui - profile).total_seconds()) > PROFILE_UI_SKEW_SECONDS:
-            raise SubscriptionError("interface observation is too far from the profile read")
-        _hash(payload["collectorReceiptSha256"])
-        _hash(payload["recorderRecordSha256"])
-        collector_digests[kind] = payload["collectorReceiptSha256"]
-        return ui + timedelta(seconds=limits["autoRecharge"])
+def _check_quota(payload: Any, context: _Context) -> _Checked:
+    _shape(payload, {"extraUsageEnabled", "quotaWindows"}, "quota payload")
+    _flags(payload, set(), {"extraUsageEnabled"})
+    _shape(payload["quotaWindows"], set(_WINDOWS), "quota windows")
+    resets = []
+    for name in _WINDOWS:
+        window = payload["quotaWindows"][name]
+        _shape(window, {"usedPct", "resetsAt"}, "quota window")
+        if not 0 <= _number(window["usedPct"], "quota used percentage") < 100:
+            raise SubscriptionError("included quota window is exhausted or invalid")
+        reset = _time(window["resetsAt"], "quota reset time")
+        if reset <= max(context.observed, context.current):
+            raise SubscriptionError("quota window reset is not in the future")
+        resets.append(reset)
+    return _Checked(valid_until=min(resets))
+
+
+def _check_auto_recharge(payload: Any, context: _Context) -> _Checked:
+    _shape(payload, {"autoRechargeEnabled", "basis", "accountBound", "organizationBinding",
+                     "uiObservedAt", "profileObservedAt", "collectorReceiptSha256",
+                     "recorderRecordSha256"}, "auto-recharge payload")
+    _flags(payload, {"accountBound"}, {"autoRechargeEnabled"})
+    if payload["basis"] != INTERFACE_BASIS:
+        raise SubscriptionError("auto-recharge must come from a bound interface observation")
+    if payload["organizationBinding"] != context.organization_binding:
+        raise SubscriptionError("auto-recharge organization scope differs from the frozen contract")
+    ui = _time(payload["uiObservedAt"], "interface observation time")
+    profile = _time(payload["profileObservedAt"], "profile read time")
+    if ui > context.observed or profile > context.observed:
+        raise SubscriptionError("interface or profile observation is from the future")
+    limit = context.limits["autoRecharge"]
+    if (context.current - ui).total_seconds() > limit:
+        raise SubscriptionError("interface observation is stale")
+    if abs((ui - profile).total_seconds()) > PROFILE_UI_SKEW_SECONDS:
+        raise SubscriptionError("interface observation is too far from the profile read")
+    _hash(payload["collectorReceiptSha256"])
+    _hash(payload["recorderRecordSha256"])
+    return _Checked(valid_until=ui + timedelta(seconds=limit),
+                    collector_sha256=payload["collectorReceiptSha256"])
+
+
+def _check_process(payload: Any, context: _Context) -> _Checked:
     _shape(payload, PROCESS_TRUE | PROCESS_FALSE | LAUNCH_TRUE | LAUNCH_FALSE
            | {"authMethod", "route", "storeBinding", "keychainSuffix", "collectorReceiptSha256"},
            "process payload")
@@ -269,9 +296,13 @@ def _check_payload(kind: str, payload: Any, suffix: str, limits: Mapping[str, fl
         raise SubscriptionError("Claude source route must use native included claude.ai usage")
     if payload["storeBinding"] != "bound":
         raise SubscriptionError("isolated credential store is not bound to the profile")
-    if payload["keychainSuffix"] != suffix:
+    if payload["keychainSuffix"] != context.suffix:
         raise SubscriptionError("credential store differs from the frozen isolated store")
     _hash(payload["collectorReceiptSha256"])
-    collector_digests[kind] = payload["collectorReceiptSha256"]
     _flags(payload, PROCESS_TRUE | LAUNCH_TRUE, PROCESS_FALSE | LAUNCH_FALSE)
-    return observed + timedelta(seconds=limits["process"])
+    return _Checked(collector_sha256=payload["collectorReceiptSha256"])
+
+
+_CHECKS: Mapping[str, Callable[[Any, _Context], _Checked]] = {
+    "quota": _check_quota, "autoRecharge": _check_auto_recharge, "process": _check_process,
+}
