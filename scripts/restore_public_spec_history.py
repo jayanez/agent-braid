@@ -14,6 +14,11 @@ from pathlib import Path
 import re
 import subprocess
 
+try:
+    from scripts.history_equivalence import recorded_equivalent
+except ModuleNotFoundError:
+    from history_equivalence import recorded_equivalent
+
 
 ROOT = Path(__file__).resolve().parents[1]
 ASSURANCE = ROOT / "specs/012-m2-git-replay-planner/assurance.json"
@@ -28,15 +33,18 @@ REVIEWED_TAGS = (
      "75f2a98f038a233540f0d83ed0fe68646435f792"),
     ("020-m4-local-git-runtime", "853df7432dd4700aa411f1f13b324a0b7beecd02",
      "6248172cb38b0d6a3ce1d077ad64544380bd1f0e"),
-    ("039-ai-tooling-program", "e94497bd561d03bac858ba154e21d9327437d22e",
-     "2057142684a15808b1ff457655415da42f8f0ed3"),
-    ("040-portable-mcp-surface", "588873779b74865563fafc3fa507884b2e88751b",
-     "d6d30cce0151c086f75164803879e9a25ce9dcb9"),
-    ("042-ai-tooling-packaging", "6eedc5f14d9d8188a14b25d0820693d269ef9253",
-     "401c73447745a56ae1145df9bce3cf26ed45533e"),
+    # SPEC-039/040/042 pin the ADR 0022 attribution-corrected tags; their records
+    # keep naming the originally reviewed commits, resolved by the equivalence record.
+    ("039-ai-tooling-program", "a6dac01e425dfca5a8f1f0034154171bfa9c7532",
+     "a9613fcfcce4f49bae4f3ff28b769647d13fcc3e"),
+    ("040-portable-mcp-surface", "684b71184159573c3e6702168c003f252c9fc9bb",
+     "73286c3f892f94b7acc12431a10a536a5fc22b7c"),
+    ("042-ai-tooling-packaging", "573929245925c4b7d737ff878fe29df08fc68a81",
+     "fb49f97182362092eaa43af48df82e3542786ef7"),
 )
-# Already-public approved metadata from merged develop c51c91e and PR #502
-# (a7f7d589). The latter retains bounded owner acceptance for SPEC-039/040/042.
+# Already-public approved metadata from merged develop c51c91e (now 25f56d8) and
+# PR #502 (a7f7d589, now 6ef4842; ADR 0022). The latter retains bounded owner
+# acceptance for SPEC-039/040/042.
 # Freezing a candidate initially records pending review; these commitments retain
 # the subsequently published reviewed metadata without inventing new approval.
 # Tuple: feature, assurance SHA256, review record path, review SHA256.
@@ -74,9 +82,9 @@ PRESERVED_DRAFT_TAGS = (
      "c30e8bcfb572afba4447767fc2b51dd2c3320766",
      "04f89c868406193be104c1f66360223907db4c38"),
     ("specs/044-ai-tooling-evaluation/assurance.json",
-     "refs/tags/m45-tooling-candidate-8df6c9f",
-     "8df6c9f410f0559dc667833b8a4f71f1685d3ea0",
-     "2f2f6f4ec199d43ecc9ec3e2597875ab7547257a"),
+     "refs/tags/m45-tooling-candidate-ae20930",
+     "ae209301764562bde858b4a2eedd7c7a97f6688f",
+     "5c4269e04e97d734ae87fa7173236b86c65d5427"),
 )
 
 
@@ -94,14 +102,18 @@ def git(*args: str, allow_failure: bool = False) -> str:
 def reviewed_tag_ref(feature: str, candidate: str, tag_object: str,
                      public_root: str) -> str:
     record = json.loads((ROOT / "specs" / feature / "assurance.json").read_text())
+    reviewed = record.get("authority_snapshot", {}).get("commit")
     if (record.get("human_review") != "approved"
             or record.get("authority_snapshot", {}).get("mode") != "historical"
-            or record["authority_snapshot"].get("commit") != candidate
-            or record.get("evidence_snapshot") != {"mode": "historical", "commit": candidate}):
+            or not isinstance(reviewed, str)
+            or record.get("evidence_snapshot") != {"mode": "historical", "commit": reviewed}
+            # Preflight compares the listed equivalent; the target may not be fetched
+            # yet. verify_reviewed_tag and portable validation check tree and ancestry.
+            or recorded_equivalent(ROOT, reviewed) != candidate):
         raise ValueError(f"SPEC-{feature[:3]} record does not match the pinned reviewed candidate")
     review_path = (ROOT / record.get("review_record", "")).resolve()
     if (not review_path.is_relative_to(ROOT.resolve()) or not review_path.is_file()
-            or json.loads(review_path.read_text()).get("reviewedCommit") != candidate):
+            or json.loads(review_path.read_text()).get("reviewedCommit") != reviewed):
         raise ValueError(f"SPEC-{feature[:3]} review does not match the pinned candidate")
     ref = f"refs/tags/spec-{feature[:3]}-reviewed-{candidate[:7]}"
     existing = git("rev-parse", "--verify", ref, allow_failure=True)
