@@ -83,19 +83,23 @@ class HistoryEquivalenceTests(unittest.TestCase):
             equivalence.resolve_public_commit(self.root, self.anchor["closureCommit"])
 
     def test_tag_only_target_requires_the_exact_annotated_tag(self):
-        item, entry = self.tag_entry()
-        ref = f"refs/tags/{item['newName']}"
+        _, entry = self.tag_entry()
         self.assertEqual(equivalence.resolve_public_commit(self.root, entry["old"]), entry["new"])
+        # Corrected tags share ancestry, so every listed tag is replaced at once.
         for replacement in ("absent", "lightweight", "recreated"):
             with self.subTest(replacement=replacement):
-                self.git("update-ref", "-d", ref)
-                if replacement == "lightweight":
-                    self.git("update-ref", ref, item["newCommit"])
-                elif replacement == "recreated":
-                    self.git("tag", "-a", item["newName"], item["newCommit"], "-m", "Counterfeit")
+                for item in self.data["tags"]:
+                    ref = f"refs/tags/{item['newName']}"
+                    self.git("update-ref", "-d", ref)
+                    if replacement == "lightweight":
+                        self.git("update-ref", ref, item["newCommit"])
+                    elif replacement == "recreated":
+                        self.git("tag", "-a", item["newName"], item["newCommit"], "-m", "Counterfeit")
                 with self.assertRaisesRegex(ValueError, "not in public ancestry"):
                     equivalence.resolve_public_commit(self.root, entry["old"])
-                self.git("update-ref", ref, item["newTagObject"])
+                for item in self.data["tags"]:
+                    self.git("update-ref", f"refs/tags/{item['newName']}", item["newTagObject"])
+        self.assertEqual(equivalence.resolve_public_commit(self.root, entry["old"]), entry["new"])
 
     def test_local_original_object_or_replacement_cannot_change_the_route(self):
         closure = self.anchor["closureCommit"]
