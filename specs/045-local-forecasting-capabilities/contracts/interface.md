@@ -1,0 +1,9 @@
+# Local forecasting interface v1
+
+Telemetry/window/resource/forecast/advice JSON is finite, bounded to 1MiB and versioned independently. Numeric values reject bool/nonfinite/mixed units; masks and null reasons are explicit. Event and available-at time precede cutoff. Requests bind full canonical inputs, resource, artifact, transform, partition and policy, with recomputed digests.
+
+API: capabilities(), forecast(request, deadline, cancellation), advise(request), inspect(receipt); close() releases only owned worker state. CLI namespace forecast provides capabilities, predict, advice, inspect and export. Local-only MCP tools forecast_capabilities, forecast_predict, forecast_advice and forecast_inspect accept typed synthetic/approved numeric envelopes, never paths, grant stores, credentials or repository reads. All responses are heuristic and executionAuthorization=false. Real input admission requires an external authority verifier; a caller-supplied boolean/digest is insufficient.
+
+Memory: 2GiB hard total-container cgroup cap, including tmpfs/cache; per-process RSS is independently observed and bounded by that conservative group cap. Verification checks applied configuration and cgroup values, not merely requested flags. Unsupported enforcement blocks loading. CPU1 is quota; library thread1 is separately configured.
+
+MCP uses local stdio only, protocol 2025-11-25. The transport admits one tools/call with zero queue; request IDs bind cancellation notifications to the original request. Numeric predict requests carry deadlineMs (1–31000) bounded by separate cold/resident worker ceilings. EOF/shutdown cancels the active call and confirms owned cleanup; no HTTP/listening socket is introduced. Artifact/source approval verifiers are deployment-side objects, never JSON request fields. A shared private cross-process lease prevents multiple resident containers and preserves unresolved-cleanup state.
