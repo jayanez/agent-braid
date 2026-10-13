@@ -1,7 +1,8 @@
 # Claude source composition contract — proposal
 
-Status: **proposal, 2026-10-13. Not approved, not implemented.** It needs the owner's
-explicit approval of the contract and of its implementation, as the Codex contract
+Status: **proposal, 2026-10-13. Not approved, not implemented.** The owner settled the three
+design decisions below in chat on 2026-10-13, but still has to give explicit approval of the
+contract and of its implementation, as the Codex contract
 received in [PR #504](https://github.com/jayanez/agent-braid/pull/504), and it
 depends on that pull request. It is not registration approval, capture
 authorization, native acceptance or an observer. Additional spend stays EUR 0.
@@ -81,24 +82,27 @@ The claims keep their native meaning. Quota and extra usage come from the OAuth
 usage and profile reads. Auto-recharge comes only from the interface observation
 bound to the account. None of them attests account-wide API billing or actual cash.
 
-## Decisions requested from the owner
+## Owner design decisions (2026-10-13, in chat)
 
-1. **Organization scope.** The interface does not show which organization a setting
-   belongs to, so the account binding cannot cover it. Options: (a) accept only
-   `owner-declared-single-organization`, recorded in the registration, with the
-   declaration's limits stated; (b) require a future organization-binding method
-   before accepting any interface observation. Recommendation: (a). The API profile exposes a single
-   organization, so multi-organization membership cannot be detected from it and
-   remains the owner's declaration.
-2. **Freshness of the interface source.** Reading claude.ai before every one of the
-   108 attempts is costly. Options: (a) one limit for all sources (at most 60 s);
-   (b) a longer `autoRecharge` limit (proposed at most 900 s) while quota, extra
-   usage and process stay at 60 s and are re-read by the supervisor. Recommendation:
-   (b), with the longer limit stated per registration.
-3. **Isolated store registration.** The directory stays caller-selected; the contract
-   freezes only its credential-item suffix. Registering and canonicalizing the path in
-   the launch path is a separate proposal for the shared host module and is not
-   part of this one.
+1. **Organization scope — owner-declared single organization.** The interface does not
+   show which organization a setting belongs to, and the API profile exposes a single
+   organization, so multi-organization membership cannot be detected from either. The
+   contract accepts `organizationBinding: "owner-declared-single-organization"` only
+   when the frozen registration carries the owner's declaration and states its limit;
+   `unbound` or absent refuses. A future method that binds the organization would add
+   the `bound` value without changing the rest.
+2. **Freshness — a longer limit for the interface source only.** `autoRecharge` may
+   declare its own `sourceMaxAgeSeconds`, at most 900 s per registration. `quota` and
+   `process` stay within the binding's 60 s and are re-read by the supervisor, which
+   re-reads extra usage live. This exceeds the existing structural ceiling for that one
+   source, so the exception is written into the contract and each registration states it.
+3. **Isolated store — separate proposal for the launch module.** The contract freezes
+   only the credential-item suffix. Requiring a canonical `CLAUDE_CONFIG_DIR` in the
+   shared host module, and comparing the expected suffix there, is a separate proposal
+   for a later coordinated batch and is not part of this contract.
+
+Still open: the owner's approval of the contract and of its implementation, and the
+integration of PR #504 on which it builds.
 
 ## Controls the implementation would carry
 
