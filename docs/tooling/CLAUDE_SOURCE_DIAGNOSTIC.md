@@ -9,11 +9,12 @@ It depends on the Codex source composition contract proposed in
 [PR #504](https://github.com/jayanez/agent-braid/pull/504) and does not modify it.
 It is not registration approval, capture authorization, native acceptance or
 evaluation evidence. No observer, launch, journey, registered reproduction or
-any of the 108 intended attempts was started. No new provider request was made:
-the diagnostic reused two existing private receipts produced by the unchanged,
-previously reviewed collector, the private integrity-checked archive, local
+any of the 108 intended attempts was started. The original diagnostic made no
+new provider request: it reused two existing private receipts produced by the
+unchanged, previously reviewed collector, the private integrity-checked archive, local
 configuration metadata and static inspection of the pinned isolated native
-Claude Code 2.1.287 arm64 build. Additional spend: EUR 0.
+Claude Code 2.1.287 arm64 build. Additional spend: EUR 0. A later owner-run,
+metadata-only read is recorded at the end of this document.
 
 ## Source matrix
 
@@ -126,17 +127,36 @@ at high reasoning effort.
   network call.
 - These reviews are model reviews, not provider or runtime attestation.
 
-The isolated configuration directory was identified from the owner-authorized
-native login receipts of 2026-10-09. It is the directory that a registered
-launch would pass as `CLAUDE_CONFIG_DIR`, and it still has to be registered
-explicitly.
+The isolated configuration directory first identified from the 2026-10-09
+login receipts no longer held its credential. The owner therefore created a
+stable owner-private directory outside the repository and logged in there
+natively. Registering that directory as the launch `CLAUDE_CONFIG_DIR` is a
+coordination item for a later batch.
 
-**Not yet done:**
-- **The read.** The single live read must be started by the owner from a
-  plain terminal. No new provider request has been made.
-- **Credential refresh.** The stored credential from 2026-10-09 is likely
-  expired. The collector never refreshes, so a refresh would need separate
-  owner authorization.
+## Result of the isolated-store read — 2026-10-13
+
+One owner-run read used the approved collector, with no retry, refresh or
+inference request.
+
+| Gap | Result |
+| --- | --- |
+| B — account/organization ↔ process store | **Resolved, point in time.** The stored account and organization of the isolated store match a profile read made with the same credential (`bound`). Extra usage was `false` in the profile and usage reads. |
+| A — auto-recharge | **Still unknown.** The prepaid route is supported (numeric `amount`) but reports `auto_reload_settings` as `null` with no `enabled` field. A null settings object is not a boolean and is not treated as `false`. |
+
+The B binding does not attest the launched process environment, policy
+settings or freshness at dispatch; the launch-path guarantees below remain.
+
+**Owner decision (2026-10-13, in chat):** the admissible auto-recharge source
+for Claude is a fresh, explicit observation of the setting in the claude.ai
+usage interface, bound to the same account. This records the choice of source;
+it does not yet change a versioned contract. Open design points:
+- The collectors discard email addresses, so the binding method between the
+  interface account and the API profile account needs its own reviewed
+  definition (for example a private identity comparison at observation time).
+- Each admission needs a fresh observation; an earlier interface observation
+  is not reusable evidence.
+- The observer cannot be implemented until that method and the contract change
+  are specified and reviewed.
 
 The launch path must still guarantee:
 - empty `--setting-sources` and the pinned `--settings` file;
