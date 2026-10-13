@@ -48,6 +48,42 @@ class CodexQuotaProjectionTests(unittest.TestCase):
         self.assertFalse(hasattr(sample, "process_id"))
         self.assertFalse(hasattr(sample, "auto_recharge_enabled"))
 
+    def test_optional_private_profile_witness_uses_original_email_without_retaining_it(self):
+        from agent_braid import tooling_interface_observer as ui
+        account, quota = inputs()
+        account["account"]["email"] = "Owner@Example.test"
+        key = b"synthetic-codex-private-key-32bytes"
+        sample = self.project(account, quota, private_hmac_key=key)
+        self.assertEqual(ui.private_email_binding("owner@example.test", key), sample.email_binding_sha256)
+        self.assertEqual(ui.key_fingerprint(key), sample.key_fingerprint_sha256)
+        self.assertNotIn("Owner@Example.test", repr(sample))
+        from tests.test_tooling_codex_sources import fixture
+        from agent_braid.tooling_subscription import operational_binding_from_dict
+        from dataclasses import replace
+        contract, _, _ = fixture()
+        binding = replace(operational_binding_from_dict(contract["binding"]),
+                          account_sha256=sample.account_object_sha256,
+                          account_namespace_sha256=sample.account_namespace_sha256)
+        witness = sample.native_profile_witness(binding)
+        self.assertEqual(sample.observed_at, witness.observed_at)
+        self.assertEqual(sample.email_binding_sha256, witness.email_binding_sha256)
+        with self.assertRaises(observer.CodexObserverError):
+            sample.native_profile_witness(replace(binding, account_sha256="f" * 64))
+
+    def test_missing_profile_email_cannot_supply_account_bound_interface_witness(self):
+        account, quota = inputs()
+        sample = self.project(account, quota, private_hmac_key=b"synthetic-codex-private-key-32bytes")
+        self.assertIsNone(sample.email_binding_sha256)
+        from tests.test_tooling_codex_sources import fixture
+        from agent_braid.tooling_subscription import operational_binding_from_dict
+        from dataclasses import replace
+        contract, _, _ = fixture()
+        binding = replace(operational_binding_from_dict(contract["binding"]),
+                          account_sha256=sample.account_object_sha256,
+                          account_namespace_sha256=sample.account_namespace_sha256)
+        with self.assertRaises(observer.CodexObserverError):
+            sample.native_profile_witness(binding)
+
     def test_missing_null_and_non_boolean_controls_remain_unknown(self):
         for value in (None, 0, 1, "false", {}, []):
             account, quota = inputs()

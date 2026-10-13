@@ -45,6 +45,27 @@ class CodexQuotaSample:
     unlimited_credits: bool | None
     transport_sha256: str = TRANSPORT_SHA256
     executable_sha256: str = EXECUTABLE_SHA256
+    email_binding_sha256: str | None = None
+    key_fingerprint_sha256: str | None = None
+
+    def native_profile_witness(self, binding):
+        """Project a privately keyed account witness; no browser/process attestation."""
+        from .tooling_interface_observer import NativeProfileWitness
+        from .tooling_subscription import OperationalProcessRouteBinding
+        if (not isinstance(binding, OperationalProcessRouteBinding) or binding.host != "codex"
+                or binding.account_sha256 != self.account_object_sha256
+                or binding.account_namespace_sha256 != self.account_namespace_sha256
+                or self.email_binding_sha256 is None or self.key_fingerprint_sha256 is None):
+            raise CodexObserverError("native profile witness is unavailable or differently bound")
+        subject = {"accountSha256": self.account_object_sha256,
+                   "namespaceSha256": self.account_namespace_sha256,
+                   "emailBindingSha256": self.email_binding_sha256,
+                   "keyFingerprintSha256": self.key_fingerprint_sha256,
+                   "observedAt": self.observed_at.isoformat(),
+                   "transportSha256": self.transport_sha256,
+                   "executableSha256": self.executable_sha256}
+        return NativeProfileWitness(self.account_object_sha256, self.account_namespace_sha256,
+            self.email_binding_sha256, self.key_fingerprint_sha256, self.observed_at, _digest(subject))
 
 
 def _digest(value: Any) -> str:
@@ -114,7 +135,7 @@ def _flag(value: Any) -> bool | None:
 
 def _project(account_result: dict[str, Any], quota: dict[str, Any], *,
              expected_namespace: str, observed: datetime,
-             completed: datetime, max_age_seconds: int) -> CodexQuotaSample:
+             completed: datetime, max_age_seconds: int, private_hmac_key: bytes | None = None) -> CodexQuotaSample:
     account = account_result.get("account")
     routing = account_result.get("workspaceRouting")
     if (not isinstance(account, dict) or account.get("type") != "chatgpt"
@@ -134,11 +155,22 @@ def _project(account_result: dict[str, Any], quota: dict[str, Any], *,
     snapshot = snapshot if isinstance(snapshot, dict) else {}
     credits = snapshot.get("credits")
     credits = credits if isinstance(credits, dict) else {}
+    email_binding = fingerprint = None
+    if private_hmac_key is not None:
+        from . import tooling_interface_observer as ui
+        try:
+            fingerprint = ui.key_fingerprint(private_hmac_key)
+            email_binding = ui.private_email_binding(account.get("email"), private_hmac_key)
+        except ui.InterfaceObserverError:
+            # Quota metadata can remain available; absent/unusable email cannot
+            # produce an account-bound interface witness.
+            email_binding = None
     return CodexQuotaSample(
         observed, observed + timedelta(seconds=max_age_seconds), _digest(namespace),
         _digest(account), _flag(quota.get("ordinaryUsageAllowed")),
         _flag(snapshot.get("spendControlReached")), _flag(credits.get("hasCredits")),
         _flag(credits.get("unlimited")),
+        email_binding_sha256=email_binding, key_fingerprint_sha256=fingerprint,
     )
 
 
@@ -151,7 +183,7 @@ class CodexQuotaObserver:
     """
 
     def __init__(self, transport_path: Path, *, expected_namespace_sha256: str,
-                 max_age_seconds: int = 60):
+                 max_age_seconds: int = 60, private_hmac_key: bytes | None = None):
         if (not isinstance(expected_namespace_sha256, str)
                 or len(expected_namespace_sha256) != 64
                 or any(c not in "0123456789abcdef" for c in expected_namespace_sha256)):
@@ -161,6 +193,13 @@ class CodexQuotaObserver:
         self._transport_path = Path(transport_path)
         self._namespace = expected_namespace_sha256
         self._max_age = max_age_seconds
+        if private_hmac_key is not None:
+            from .tooling_interface_observer import key_fingerprint, InterfaceObserverError
+            try:
+                key_fingerprint(private_hmac_key)
+            except InterfaceObserverError as exc:
+                raise CodexObserverError("private identity key is invalid") from exc
+        self._private_key = private_hmac_key
         self._lock = threading.Lock()
 
     def read(self, *, serialized_read_only: bool = False) -> CodexQuotaSample:
@@ -194,7 +233,8 @@ class CodexQuotaObserver:
                          {"supportsLunaReserve": False, "excludeResetCreditDetails": True})
             completed = datetime.now(timezone.utc)
             return _project(account, quota, expected_namespace=self._namespace,
-                            observed=observed, completed=completed, max_age_seconds=self._max_age)
+                            observed=observed, completed=completed, max_age_seconds=self._max_age,
+                            private_hmac_key=self._private_key)
         except Exception:
             raise CodexObserverError("native quota acquisition refused; no retry or fallback") from None
         finally:
