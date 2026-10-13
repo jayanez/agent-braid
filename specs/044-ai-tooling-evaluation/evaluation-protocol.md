@@ -21,6 +21,14 @@ host version is inferred. Core/protocol reproduction separately targets Linux x8
 
 ## Design
 
+The [2026-10-13 assisted audit decision](assisted-audit-decision.md) adds a
+prospective registration-v6 human-audit route. It retains the complete original
+108-attempt design below while requiring an initial 36-case balanced human audit
+plus all prescribed escalations. The existing full-rating design remains the
+contract for registration-v1 through v5. The v6 seed, algorithm, rubric, sources
+and review policy must be frozen before capture; this decision approves no exact
+registration or launch. Model assessments and human ratings remain distinct.
+
 Three arms: A CLI with written instructions; B MCP without product skills;
 C MCP plus the five skills. Same immutable requests and expected oracle outputs.
 Six journey classes: analyze interactions; prepare advisory plan; refuse missing
