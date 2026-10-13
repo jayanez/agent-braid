@@ -166,3 +166,58 @@ The launch path must still guarantee:
 
 No observer, launch or evaluation attempt occurred. Additional spend remains
 EUR 0.
+
+## Interface account binding — 2026-10-13
+
+The OAuth prepaid route cannot supply auto-recharge, so the owner-selected source
+is a claude.ai interface observation. A method links that observation to the
+account of a specific collector receipt without retaining any email.
+
+**Method (private, not published).**
+- An owner-private random key file produces a keyed HMAC of the canonical account
+  email. The collector can add it, with a short key fingerprint, to the profile
+  receipt. The email and other profile values are never retained. Without the key
+  file the collector behaves as before.
+- A separate recorder is not an observer and reads neither the interface, the
+  Keychain nor the network. The caller supplies the state it saw, the time it saw
+  it, and the displayed account email on standard input. The recorder compares the
+  email's HMAC with the profile of one named receipt and writes `autoRechargeEnabled`
+  only when the account matches. The receipt must be the expected schema, have
+  exactly one successful profile read, and record its isolated store as bound.
+  The observation time must be consistent with the profile read within a bounded
+  window. Otherwise the value is null. The output carries the receipt digest and
+  contains no email or HMAC.
+
+**Review.** The independent reviews again ran in Claude Code (most capable model,
+high effort) at the owner's request. Round one found two blocking issues: the
+record was not tied to a specific receipt, and it presented the recorder's clock as
+the interface observation time. Both were fixed with the non-blocking items, and
+round two approved. Several non-blocking hardening items were deliberately left
+unapplied to keep the approved bytes, and the model reviews are not provider or
+runtime attestation.
+
+**Interface findings.** In the signed-in interface the auto-recharge line is on the
+usage settings page, which shows no email. The account email appears only in the
+sidebar account menu. An observation therefore needs both surfaces read within the
+window.
+
+**Result.** One owner-run collector read, followed within seconds by the interface
+reading, bound the displayed account to the isolated store's profile. The interface
+showed automatic reload as disabled, and the recorder returned `autoRechargeEnabled =
+false` with `accountBoundObservation = true`. The isolated store was again `bound`
+and extra usage was `false`.
+
+**Limits.**
+- The state, its time and the displayed email are caller-asserted.
+- The organization shown in the interface is not bound; a multi-organization
+  account could display another organization's setting.
+- The result holds at its observation time and does not attest the launched process.
+- The collector receipt is not authenticated beyond its recorded digest, so any
+  consumer must check that digest and the adapter digest against reviewed values.
+- Every admission needs a fresh pair of reads.
+
+**Still pending before an observer can exist:** a versioned contract that accepts
+this observation as the auto-recharge source, registration of the isolated
+configuration directory in the launch path with its expected Keychain item suffix,
+and a decision on how each admission refreshes the interface observation. No observer,
+launch or evaluation attempt occurred. Additional spend remains EUR 0.
