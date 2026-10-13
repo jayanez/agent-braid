@@ -17,6 +17,16 @@ ROOT = Path(__file__).resolve().parents[1]
 
 
 class ValidationProfileTests(unittest.TestCase):
+    def test_forecasting_has_owned_sensitive_domain_and_separate_model_gates(self):
+        for path in ('agent_braid/forecast_worker.py','tests/test_forecast_mcp.py','scripts/reproduce_forecast_cpu.py','docs/forecast/OPERATIONS.md'):
+            plan=validation.build_plan([path],'quick')
+            self.assertIn('local-forecasting',plan.impact.domains)
+            self.assertEqual('sensitive',plan.effective_profile)
+            self.assertFalse(plan.impact.unknown_paths)
+            self.assertFalse(plan.impact.spec_kit_integration)
+            self.assertIn('full-tests',plan.commands)
+            self.assertTrue(plan.impact.boundaries)
+
     def test_product_tooling_selects_owned_sensitive_checks_and_separate_capture(self):
         for path in ("agent_braid/cli.py", "agent_braid/tooling_mcp.py", "tests/test_tooling_install.py",
                      "integrations/agent-braid/skills/agent-braid-evidence/SKILL.md",
