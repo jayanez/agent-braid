@@ -126,3 +126,8 @@ and registration-v5 route are approved in scope; implementation and authentic
 native evidence remain pending. Actual cohort cash remains unknown until
 independent verification gates acceptance and positive utility. Additional
 spending remains EUR 0; human review remains deferred.
+
+Concrete private admission/start/outcome/cost instruments are documented in
+[RECEIPT_INSTRUMENTS.md](RECEIPT_INSTRUMENTS.md). They require an authenticated
+installation and independent outcome oracle; synthetic controls do not provide
+those real facts or authorize native capture.
