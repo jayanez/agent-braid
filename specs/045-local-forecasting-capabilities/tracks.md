@@ -10,7 +10,7 @@ independence does not authorize additional concurrent agents.
 | T0 | SPEC-045 contracts, assurance, feature-local ADR proposal, technical Luna review; original IDs preserved | Actual source/model/launch/adoption decisions retain distinct authority |
 | T1 | Numeric telemetry, causal windows, purged splits, resources, eight synthetic families and Git fixtures | 034/T003,T005–T008 need exact real source/profile/capture acceptance |
 | T2 | Lazy adapter, typed covariates/quantiles, shared lease, offline bounded worker, cancellation and cache | Actual enforcement and full model lifecycle evidence remain additional obligations |
-| T3 | Pinned package closure/base image/checkpoint metadata; operator verifier and actual CPU driver | 035/T001 artifact/compute decision, T008 actual conformance, OOM/crash and reproduction |
+| T3 | Pinned package closure/base image/checkpoint metadata; operator verifier and actual CPU driver | Actual v3/v5 conformance and OOM are retained; full costs, owned daemon crash and exact next-artifact admission remain open |
 | T4 | Persistence/EWMA, development ridge model, frozen synthetic origin scoring and denominators | Real registered target/resource roster and economic calibration |
 | T5 | Finite mapper, interval/benefit abstention, default-off/shadow, synthetic trace/drift rollback | Permissioned source/resource/candidate verifier chain and real shadow capture |
 | T6 | API/CLI, separate read-only MCP, trusted launch configuration, immutable store/export, installed reproduction | System 1 explicitly deferred; no accepted real dispatch is claimed |
@@ -25,7 +25,7 @@ capability tasks. Each software checkbox requires actual mapped evidence;
 partial implementation is recorded here without declaring the whole task done.
 SPEC-034/T002 and T004 have independently admitted synthetic technical
 predecessors. Source review in T001 remains partial and never becomes collection
-approval. FC.2 T007 remains open without actual approved model conformance.
+approval. FC.2 T007 remains open because full deployment costs and the owned engine-fault control remain incomplete despite the retained approved v3/v5 actual-model observations.
 
 ## Concrete decision packages
 

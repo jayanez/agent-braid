@@ -21,6 +21,20 @@ class ForecastWindowTests(unittest.TestCase):
                            step_ns=1,bins=1,cutoff_ns=0,episode_group='e',resource_digest='a'*64,
                            partition_digest='b'*64,transform_digest='c'*64)
 
+    def test_unknown_cadence_and_off_grid_events_are_refused(self):
+        arguments = dict(target_ids=['load'], units=['count'], grid_start_ns=0,
+                         step_ns=100, bins=4, cutoff_ns=300, episode_group='e',
+                         resource_digest='a'*64, partition_digest='b'*64,
+                         transform_digest='c'*64)
+        event = {'targetId':'load', 'eventNs':150, 'availableAtNs':150,
+                 'unit':'count', 'value':1}
+        with self.assertRaisesRegex(ForecastError, '^off-grid-event$'):
+            compile_window([event], **arguments)
+        for cadence in (None, 0, True, 1.5):
+            with self.subTest(cadence=cadence):
+                with self.assertRaisesRegex(ForecastError, '^invalid-integer$'):
+                    compile_window([], **dict(arguments, step_ns=cadence))
+
     def test_episode_and_context_horizon_overlap_cannot_cross_partitions(self):
         rows=[{'episodeGroup':'e1','partition':'development','startNs':0,'endNs':10},
               {'episodeGroup':'e2','partition':'holdout','startNs':20,'endNs':30}]
