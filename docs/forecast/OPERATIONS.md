@@ -90,7 +90,10 @@ three horizons, both cheap baselines, absent-model refusals, CLI/MCP parity and
 optional independently granted paired Git controls. The actual CPU driver is
 `scripts/reproduce_forecast_cpu.py`; it requires the separate retained approval.
 It keeps all attempted outcomes, two warmups and five measured cycles, cold and
-resident costs, preflight cancellation and owned cleanup. In-flight cancellation, OOM/engine-crash controls and
+resident costs, multivariate/covariate shape probes, preflight cancellation and an
+active-request cancellation attempt with owned cleanup. It reports whether
+cancellation was actually observed while active; physical in-kernel interruption
+is not inferred. OOM/engine-crash controls and
 model clean-room reproduction are explicitly separate pending procedures.
 
 The synthetic policy cost model uses fixture constants, not observed real

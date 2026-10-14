@@ -17,6 +17,13 @@ class TestControlVerifier:
     def verify(self,m):return ArtifactApprovalAttestation(digest(m),'e'*64,'owner-artifact-compute')
 
 class ForecastWorkerTests(unittest.TestCase):
+    def test_owned_oom_diagnostics_survive_cleanup_without_raw_engine_errors(self):
+        worker=DockerCPUWorker(manifest(),artifact_verifier=TestControlVerifier());worker.container='a'*64
+        worker._inspect=lambda:{'State':{'OOMKilled':True,'ExitCode':137,'Running':False,'Error':'private-engine-detail'}}
+        worker._docker=lambda *args,**kwargs:b''
+        worker.close();self.assertTrue(worker.last_diagnostics['oomKilled']);self.assertEqual(137,worker.last_diagnostics['exitCode'])
+        self.assertTrue(worker.last_diagnostics['cleanupConfirmed']);self.assertNotIn('Error',worker.last_diagnostics);self.assertIsNone(worker.container)
+
     def test_docker_stdout_stderr_and_cancel_are_stream_bounded(self):
         worker=DockerCPUWorker(manifest(),artifact_verifier=TestControlVerifier());worker.private_config=Path('/not-read')
         for fd,reason in ((1,'docker-output-budget'),(2,'docker-stderr-budget')):
