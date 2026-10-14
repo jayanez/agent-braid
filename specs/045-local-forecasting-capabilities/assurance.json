@@ -123,9 +123,9 @@
             {
               "command": ".venv-speckit/bin/python -m unittest discover -s tests -p test_forecast*.py -v; installed synthetic reproduction; separate container controls",
               "limits": "Engineering-only partial requirement evidence; no artifact/source/human approval or promotion",
-              "outcome": "61 focused checks and installed synthetic controls passed; actual model and real utility obligations remain pending",
+              "outcome": "64 focused checks and installed synthetic controls passed; actual model and real utility obligations remain pending",
               "path": "specs/045-local-forecasting-capabilities/evidence/engineering.json",
-              "sha256": "2972debcb2c5cbd3fbc37ec5df4d02cd22f9b008633335c88919fa2977df9f68"
+              "sha256": "6a23a7abb26e618fea8109b19433a10322f1fd358963a01bbda87fa265e7fac3"
             }
           ],
           "planned_evidence": "specs/045-local-forecasting-capabilities/evidence/engineering.json",
@@ -147,9 +147,9 @@
             {
               "command": ".venv-speckit/bin/python -m unittest discover -s tests -p test_forecast*.py -v; installed synthetic reproduction; separate container controls",
               "limits": "Engineering-only partial requirement evidence; no artifact/source/human approval or promotion",
-              "outcome": "61 focused checks and installed synthetic controls passed; actual model and real utility obligations remain pending",
+              "outcome": "64 focused checks and installed synthetic controls passed; actual model and real utility obligations remain pending",
               "path": "specs/045-local-forecasting-capabilities/evidence/engineering.json",
-              "sha256": "2972debcb2c5cbd3fbc37ec5df4d02cd22f9b008633335c88919fa2977df9f68"
+              "sha256": "6a23a7abb26e618fea8109b19433a10322f1fd358963a01bbda87fa265e7fac3"
             }
           ],
           "planned_evidence": "specs/045-local-forecasting-capabilities/evidence/engineering.json",
@@ -171,9 +171,9 @@
             {
               "command": ".venv-speckit/bin/python -m unittest discover -s tests -p test_forecast*.py -v; installed synthetic reproduction; separate container controls",
               "limits": "Engineering-only partial requirement evidence; no artifact/source/human approval or promotion",
-              "outcome": "61 focused checks and installed synthetic controls passed; actual model and real utility obligations remain pending",
+              "outcome": "64 focused checks and installed synthetic controls passed; actual model and real utility obligations remain pending",
               "path": "specs/045-local-forecasting-capabilities/evidence/engineering.json",
-              "sha256": "2972debcb2c5cbd3fbc37ec5df4d02cd22f9b008633335c88919fa2977df9f68"
+              "sha256": "6a23a7abb26e618fea8109b19433a10322f1fd358963a01bbda87fa265e7fac3"
             }
           ],
           "planned_evidence": "specs/045-local-forecasting-capabilities/evidence/engineering.json",
@@ -195,9 +195,9 @@
             {
               "command": ".venv-speckit/bin/python -m unittest discover -s tests -p test_forecast*.py -v; installed synthetic reproduction; separate container controls",
               "limits": "Engineering-only partial requirement evidence; no artifact/source/human approval or promotion",
-              "outcome": "61 focused checks and installed synthetic controls passed; actual model and real utility obligations remain pending",
+              "outcome": "64 focused checks and installed synthetic controls passed; actual model and real utility obligations remain pending",
               "path": "specs/045-local-forecasting-capabilities/evidence/engineering.json",
-              "sha256": "2972debcb2c5cbd3fbc37ec5df4d02cd22f9b008633335c88919fa2977df9f68"
+              "sha256": "6a23a7abb26e618fea8109b19433a10322f1fd358963a01bbda87fa265e7fac3"
             }
           ],
           "planned_evidence": "specs/045-local-forecasting-capabilities/evidence/engineering.json",
@@ -219,9 +219,9 @@
             {
               "command": ".venv-speckit/bin/python -m unittest discover -s tests -p test_forecast*.py -v; installed synthetic reproduction; separate container controls",
               "limits": "Engineering-only partial requirement evidence; no artifact/source/human approval or promotion",
-              "outcome": "61 focused checks and installed synthetic controls passed; actual model and real utility obligations remain pending",
+              "outcome": "64 focused checks and installed synthetic controls passed; actual model and real utility obligations remain pending",
               "path": "specs/045-local-forecasting-capabilities/evidence/engineering.json",
-              "sha256": "2972debcb2c5cbd3fbc37ec5df4d02cd22f9b008633335c88919fa2977df9f68"
+              "sha256": "6a23a7abb26e618fea8109b19433a10322f1fd358963a01bbda87fa265e7fac3"
             }
           ],
           "planned_evidence": "specs/045-local-forecasting-capabilities/evidence/engineering.json",
@@ -243,9 +243,9 @@
             {
               "command": ".venv-speckit/bin/python -m unittest discover -s tests -p test_forecast*.py -v; installed synthetic reproduction; separate container controls",
               "limits": "Engineering-only partial requirement evidence; no artifact/source/human approval or promotion",
-              "outcome": "61 focused checks and installed synthetic controls passed; actual model and real utility obligations remain pending",
+              "outcome": "64 focused checks and installed synthetic controls passed; actual model and real utility obligations remain pending",
               "path": "specs/045-local-forecasting-capabilities/evidence/engineering.json",
-              "sha256": "2972debcb2c5cbd3fbc37ec5df4d02cd22f9b008633335c88919fa2977df9f68"
+              "sha256": "6a23a7abb26e618fea8109b19433a10322f1fd358963a01bbda87fa265e7fac3"
             }
           ],
           "planned_evidence": "specs/045-local-forecasting-capabilities/evidence/engineering.json",

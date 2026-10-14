@@ -3,18 +3,23 @@
   "commands": [
     {
       "command": ".venv-speckit/bin/python -m unittest discover -s tests -p test_forecast*.py -v",
-      "outcome": "61 focused tests passed",
-      "raw": "focused-tests.txt"
+      "outcome": "64 focused tests passed on source candidate 4b308594; see structured execution summary",
+      "raw": "focused-result.json"
     },
     {
       "command": "installed Python scripts/reproduce_forecast.py --paired-git --output PRIVATE_OUTPUT (cwd outside checkout)",
-      "outcome": "216 predictions, CLI/MCP parity, two independently granted equivalent Git episodes; model unavailable and comparison inconclusive",
+      "outcome": "Latest candidate core wheel installed outside checkout:216 predictions, CLI/MCP parity, two independently granted equivalent Git episodes; unavailable model and inconclusive comparison",
       "raw": "installed-synthetic.json"
     },
     {
       "command": "installed Python scripts/reproduce_forecast_container_controls.py --image-id IMMUTABLE_PREPARED_IMAGE --engine-socket LOCAL_SOCKET --output PRIVATE_OUTPUT",
       "outcome": "effective cgroup memory/swap/CPU/PIDs, OOM exit137 and owned crash exit17 observed; cleanup confirmed; no model load",
       "raw": "container-controls.json"
+    },
+    {
+      "command": "owned pinned-image worker ready probe; no load command",
+      "outcome": "interactive stdin, exact cgroups, waits for load; owned cleanup confirmed",
+      "raw": "worker-ready-probe.json"
     }
   ],
   "earlierObservations": [
@@ -25,6 +30,22 @@
     {
       "outcome": "superseded data-only broad profile interrupted; not passing validation",
       "rawPrivate": "quick-data.txt"
+    },
+    {
+      "outcome": "1447 tests:44 worktree .git-directory errors,3 children on systemPython3.9; 11 targeted tests pass with own Git clone andPython3.13 PATH; subsequent broad retry interrupted by user status/tool-session shutdown, no pass inferred",
+      "rawPrivate": "quick-complete.txt"
+    },
+    {
+      "outcome": "pinned repeat interrupted; receipt not produced; controller absent and three owned names absent under exclusive lease, marker reconciled; no acceptance inferred",
+      "raw": "container-controls-interruption.json"
+    },
+    {
+      "outcome": "Earlier 63-test raw transcript; superseded by 64-test execution summary and independently executed CPU delta checks",
+      "raw": "focused-tests.txt"
+    },
+    {
+      "outcome": "Installed verification completed its checks but refused export to an existing owned output; repeated with a fresh exclusive output",
+      "rawPrivate": "installed-final.txt"
     }
   ],
   "inputs": {
@@ -52,13 +73,13 @@
     "agent_braid/forecast_telemetry.py": "ad910c2c6c4017eeb81060cfad616639b924309716825fbf4631a5c00bb00521",
     "agent_braid/forecast_trace.py": "7fa137143a0badcbda5bbb2cb280efdafc0466678ca0fdfe751f233382b2dde9",
     "agent_braid/forecast_windows.py": "dc6dac94b8abd0f9d192414ebe597886615aee3299204a10bc9baedf97b204a5",
-    "agent_braid/forecast_worker.py": "084675131ad3bbcf4a6e140055262c1d7b460f17bea14bf0d91307ed8a4692a2",
+    "agent_braid/forecast_worker.py": "948d400290f0ce03afbe592288c1c02367a7bfcba80f60d72f16177aa979c429",
     "agent_braid/forecast_worker_entry.py": "dabc8e4bdc9f2d3d05a5d7183f1e2375dbe7066c0a456476f732787b78b41060",
-    "docs/forecast/OPERATIONS.md": "9a1ce81fb35a0078cdd34ebfa1ac27173acf6cf94415110994578c44e7821a8b",
+    "docs/forecast/OPERATIONS.md": "1676d5b8fe33a58e2bea63f37971fc94869de84af1b1803ccd45b9c9be36f45e",
     "pyproject.toml": "82a3ea6c7d4f2c9b3326ae4a31789ca9b84621dee2105c54b883f2335d0d6ed3",
     "scripts/reproduce_forecast.py": "157c354ded9834b6d4041651ad2df327dff85e14b4d7520cdf70e2c774fbea6d",
     "scripts/reproduce_forecast_container_controls.py": "1d3a130215d7bf61bfdd393cfd450fd0e4506d842d5fd784de7a6b9be6172ee0",
-    "scripts/reproduce_forecast_cpu.py": "6397d79c454356137a674671ca80e0fe17082241bd53b9ec0c0cf3898e6f53bf",
+    "scripts/reproduce_forecast_cpu.py": "a0761c1ab2e396fdd31c4871453b09caa6b4e16b9263cc4bb76c5242bb85890a",
     "specs/045-local-forecasting-capabilities/contracts/interface.md": "7939b3f4aa331b7bfe5fd7126b70c837035acf7bf8b37d45d576fcc4b0a79ef7",
     "specs/045-local-forecasting-capabilities/runtime/Dockerfile": "fb568797f5b2c9bda8e9e1f828a3bf02228652f667bca8630c221fcfadefdb5b",
     "specs/045-local-forecasting-capabilities/runtime/requirements-cpu-linux-arm64-py312.lock": "264003dae477786d2e3c9187d10df2cd848eaec5b0e505a2c235538934f62068",
@@ -67,6 +88,7 @@
     "tests/test_forecast_baselines.py": "25e136e8005695c9a4bf1a1e30e45253294a4b38f9133e72ca123c2b92a5933f",
     "tests/test_forecast_chronos.py": "1a5afcbf444d7347cff2476d61b3fb820b63538717105c1f3eb55da0711be3be",
     "tests/test_forecast_cli.py": "74c2115906506c06d5dbc1216216e8a2fa9714c878fa6eb4aa2f3670a974395e",
+    "tests/test_forecast_cpu_procedure.py": "9c4708df79cdcde451edbaa3a9a5a73d370d777c0428d317bb9e8ad34765b86f",
     "tests/test_forecast_data.py": "f4f26e7c12819bdb12b7b8b5d7d259c745767608b717bc8dca7c6b4a69c7297e",
     "tests/test_forecast_evaluation.py": "9943947266d0ef50ab235fc1b55cf6940ec2c06b00d6f2b54227e9ad46a8680d",
     "tests/test_forecast_experiment.py": "267506cead09c21449ffe24571c293472949cb57b9ad14e12629e194a5776e1a",
@@ -80,8 +102,9 @@
     "tests/test_forecast_telemetry.py": "2ab0956fab87fdf6f6beb9af08535116a7abc29a09b95e23f03d4608e85dc0d1",
     "tests/test_forecast_trace.py": "79c5eb6798cd799fea62bafa628de48aec91d4ee0faf8c7e0c74454625107a91",
     "tests/test_forecast_windows.py": "3f832b89061530e3697df97a97cee444c0308202f62d411bddae6679fab73be3",
-    "tests/test_forecast_worker.py": "b471532c7bea94aaf024dc237cd1021b091b9109b8f7e0fe357bfabbd30d17f2"
+    "tests/test_forecast_worker.py": "9a733afbc6fb521369d4791fa12c767a473f706f4009b39a08af41e4188cd87c"
   },
+  "installedWheelSha256": "b45fea3aba2e3704cac717229ff9c20e56cccf6076c9bedd643447cd16734525",
   "limits": "No human approval, actual Chronos performance, real workload utility, complete deployment cost or promotion inferred. Whole repository profiles are recorded separately.",
   "pending": [
     "exact-model-artifact-compute-approval",
@@ -101,12 +124,13 @@
   "python": "3.13.11",
   "realWorkloadEvidence": false,
   "review": {
-    "independentExecutedChecks": "tests.test_forecast_worker:7 passed",
+    "independentExecutedChecks": "worker and CPU procedure:9 passed; final CPU diagnostic delta:2 passed",
     "model": "gpt-6-luna",
-    "outcome": "no remaining blocker within reviewed synthetic software scope",
+    "outcome": "no remaining blocker within reviewed default-off synthetic software scope; actual model gate pending",
     "reviewer": "/root/forecast_boundary_review",
     "scope": "default-off synthetic software"
   },
+  "softwareCandidate": "4b308594d7323dbe9761adbf13d6a9096a7ddc0f",
   "status": "software-controls-obtained-real-model-pending",
   "utilityAccepted": false,
   "version": "agent-braid-fc2-engineering-evidence-v1"

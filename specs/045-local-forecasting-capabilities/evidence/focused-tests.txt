@@ -8,6 +8,7 @@ test_missingness_is_preserved_and_no_future_target_is_constructed (test_forecast
 test_unapproved_model_never_calls_worker_and_stub_is_explicit (test_forecast_chronos.ForecastChronosTests.test_unapproved_model_never_calls_worker_and_stub_is_explicit) ... ok
 test_capabilities_help_and_predict_load_no_ml (test_forecast_cli.ForecastCLITests.test_capabilities_help_and_predict_load_no_ml) ... ok
 test_oversized_malformed_input_refuses (test_forecast_cli.ForecastCLITests.test_oversized_malformed_input_refuses) ... ok
+test_frozen_multivariate_and_causal_covariate_probes_have_exact_axes (test_forecast_cpu_procedure.CpuProcedureTests.test_frozen_multivariate_and_causal_covariate_probes_have_exact_axes) ... ok
 test_ingress_rejects_duplicates_nonfinite_and_oversize (test_forecast_data.ForecastDataTests.test_ingress_rejects_duplicates_nonfinite_and_oversize) ... ok
 test_malformed_and_late_data_are_refused (test_forecast_data.ForecastDataTests.test_malformed_and_late_data_are_refused) ... ok
 test_missing_values_need_reasons_and_masks (test_forecast_data.ForecastDataTests.test_missing_values_need_reasons_and_masks) ... ok
@@ -57,10 +58,11 @@ test_cross_process_lease_blocks_and_unclean_release_remains_blocked (test_foreca
 test_digest_is_not_approval_and_changed_profile_refuses (test_forecast_worker.ForecastWorkerTests.test_digest_is_not_approval_and_changed_profile_refuses) ... ok
 test_docker_stdout_stderr_and_cancel_are_stream_bounded (test_forecast_worker.ForecastWorkerTests.test_docker_stdout_stderr_and_cancel_are_stream_bounded) ... ok
 test_manifest_is_copied_and_pending_files_refuse_before_container (test_forecast_worker.ForecastWorkerTests.test_manifest_is_copied_and_pending_files_refuse_before_container) ... ok
+test_owned_oom_diagnostics_survive_cleanup_without_raw_engine_errors (test_forecast_worker.ForecastWorkerTests.test_owned_oom_diagnostics_survive_cleanup_without_raw_engine_errors) ... ok
 test_pipe_read_hang_and_cancel_are_bounded (test_forecast_worker.ForecastWorkerTests.test_pipe_read_hang_and_cancel_are_bounded) ... ok
 test_uncertain_create_keeps_cleanup_marker_and_refuses_next_admission (test_forecast_worker.ForecastWorkerTests.test_uncertain_create_keeps_cleanup_marker_and_refuses_next_admission) ... ok
 
 ----------------------------------------------------------------------
-Ran 61 tests in 48.593s
+Ran 63 tests in 37.908s
 
 OK
