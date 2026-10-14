@@ -21,7 +21,7 @@ from .forecast_authority import require_artifact_approval
 from .forecast_lease import WorkerLease
 
 PROFILE={'memoryBytes':2147483648,'cpus':1,'threads':1,'scratchBytes':67108864,'pids':64,
-         'coldDeadlineMs':30000,'residentDeadlineMs':1000,'activeRequests':1,'queuedRequests':0}
+         'coldReadiness':'first-valid-forecast','coldDeadlineMs':30000,'residentDeadlineMs':1000,'activeRequests':1,'queuedRequests':0}
 SOURCE_REVISION='0aba28e9360b6355d5a919596c90b16c25939f02'
 CHECKPOINT_REVISION='29ec3766d36d6f73f0696f85560a422f50e8498c'
 
@@ -149,7 +149,7 @@ class DockerCPUWorker:
         except (BrokenPipeError,OSError):raise ForecastError('worker-exited') from None
         finally:selector.close()
 
-    def _start(self,deadline,cancellation):
+    def _start(self,deadline,cancellation,first_request):
         import tempfile
         require_artifact_approval(self.manifest,self.artifact_verifier)
         self.lease.acquire()
@@ -188,10 +188,12 @@ class DockerCPUWorker:
         readiness=self._read(deadline,cancellation)
         require(readiness=={'version':'agent-braid-worker-ready-v1','memoryMax':2147483648,'swapMax':0,
                             'cpuQuota':100000,'cpuPeriod':100000,'pidsMax':64},'worker-enforcement-unavailable')
-        self._write({'command':'load','files':self.manifest['files'],'dependencyLockDigest':self.manifest['dependencyLockDigest']},deadline,cancellation)
+        self._write({'command':'load','files':self.manifest['files'],'dependencyLockDigest':self.manifest['dependencyLockDigest'],'firstRequest':first_request,
+                     'coldRemainingSeconds':min(30,deadline-time.monotonic())},deadline,cancellation)
         loaded=self._read(deadline,cancellation)
-        require(loaded.get('status')=='loaded' and loaded.get('libraryVersion')=='2.3.2','worker-load-failed')
-        self.loaded=True
+        require(loaded.get('status')=='forecast' and loaded.get('libraryVersion')=='2.3.2'
+                and loaded.get('bindingDigest')==first_request['bindingDigest'],'worker-load-failed')
+        return loaded
 
     def forecast(self,window,horizon,*,deadline=None,cancellation=None):
         started=time.monotonic_ns();window=validate_window(window)
@@ -201,11 +203,18 @@ class DockerCPUWorker:
             require(not self.closed,'worker-closed')
             if cancellation is not None and cancellation.is_set():raise ForecastError('cancelled')
             cold=not self.loaded
-            if cold:self._start(min(deadline or float('inf'),time.monotonic()+30),cancellation)
-            resident_deadline=min(deadline or float('inf'),time.monotonic()+1)
+            request={'command':'predict','inputs':translate_inputs(window,horizon),'horizon':horizon,'inputDigest':digest(window)}
+            request['bindingDigest']=digest(request)
+            request_deadline=min(deadline if deadline is not None else float('inf'),
+                                 started/1e9+(30 if cold else 1))
+            self._checkpoint_deadline(request_deadline,cancellation)
             require_artifact_approval(self.manifest,self.artifact_verifier)
-            self._write({'command':'predict','inputs':translate_inputs(window,horizon),'horizon':horizon},resident_deadline,cancellation)
-            result=self._read(resident_deadline,cancellation)
+            if cold:
+                result=self._start(request_deadline,cancellation,request)
+            else:
+                self._write(request,request_deadline,cancellation)
+                result=self._read(request_deadline,cancellation)
+            require(result.get('bindingDigest')==request['bindingDigest'],'worker-prediction-binding')
             require(result.get('status')=='forecast','worker-prediction-failed')
             output=normalize_output(window,horizon,result['quantiles'],result['median'],model_digest=self.model_digest,started_ns=started)
             output['costs']['rssBytes']=result['rssBytes'];output['costs']['rssReason']=None
@@ -214,7 +223,10 @@ class DockerCPUWorker:
             output['costs']['modelCpuNs']=result['modelCpuNs'];output['costs']['modelCpuReason']=None
             output['packetDigest']=digest({k:v for k,v in output.items() if k!='packetDigest'})
             from .forecast_outputs import validate_forecast
-            return validate_forecast(output,window,horizon)
+            output=validate_forecast(output,window,horizon)
+            self._checkpoint_deadline(request_deadline,cancellation)
+            self.loaded=True
+            return output
         except (ForecastError,OSError,ValueError,KeyError,TypeError,IndexError) as exc:
             reason=str(exc) if isinstance(exc,ForecastError) else 'worker-failed'
             if reason not in ('cancelled','deadline-exceeded','worker-busy','worker-closed','checkpoint-hash-drift',

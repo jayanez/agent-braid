@@ -104,3 +104,21 @@ technical review. The previous v1 decision cannot authorize v2 loading.
 | Host/image core wheel | `fae1c3a6f379daf1d6abf2eb9289d1a286ef69cd0ee51d9c4f3551e0d7c5da54` |
 | CPU image | `3c7fa6bfb37b77ed890223cdc901cfdaa2c064cb661d4d377971e33147939b21` |
 | Model manifest | `5597b631142d8dc9d10a0bfae1c8fd99a24f319256dc4db6998d81f44204525a` |
+
+## Owner-adopted cold readiness delta
+
+On 2026-10-14 the owner adopted the explicitly proposed timing clarification.
+Luna Latest (`gpt-6-luna`) reviewed the worker/protocol/contracts delta and
+identified a resident deadline that excluded validation/binding. The corrected
+implementation starts both cold30s and later1s budgets at forecast-call entry.
+The reviewer independently ran13 worker/entry tests; no blocker remained in
+that delta. The implementer ran15 including the CPU procedure suite. These are
+synthetic software controls, not a new image/load or scientific approval.
+
+The first registered input is digest-bound into load and predicted once.
+Readiness follows valid output and final deadline verification. Failed/cancelled
+first calls remain unready; earlier caller deadlines and cleanup remain active.
+The profile adds `coldReadiness: first-valid-forecast`, invalidating old pins.
+Raw v2 diagnostics remain unchanged: State fields were observed before forced
+removal; cleanup confirmation afterwards. ExitCode0 while running is not an
+observed terminal success. New exact-package model admission remains pending.

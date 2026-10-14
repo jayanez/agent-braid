@@ -9,7 +9,7 @@ import resource
 import signal
 import sys
 import time
-from .forecast_data import MAX_BYTES,parse_record,canonical,require
+from .forecast_data import MAX_BYTES,parse_record,canonical,require,digest,pin
 
 def _send(value):sys.stdout.buffer.write(canonical(value)+b'\n');sys.stdout.buffer.flush()
 
@@ -25,6 +25,10 @@ def main():
     require(memory==2147483648 and swap==0 and quota==period==100000 and pids==64,'worker-enforcement-unavailable')
     _send({'version':'agent-braid-worker-ready-v1','memoryMax':memory,'swapMax':swap,'cpuQuota':quota,'cpuPeriod':period,'pidsMax':pids})
     load=_read();require(load.get('command')=='load','invalid-load-command')
+    remaining=load['coldRemainingSeconds']
+    require(type(remaining) in (float,int) and 0<remaining<=30,'invalid-cold-budget')
+    def timed_out(_signal,_frame):raise TimeoutError('worker-deadline')
+    signal.signal(signal.SIGALRM,timed_out);signal.setitimer(signal.ITIMER_REAL,remaining)
     require(hashlib.sha256(Path('/opt/agent-braid/requirements-cpu.lock').read_bytes()).hexdigest()==load['dependencyLockDigest'],'dependency-lock-drift')
     for name in ('config.json','model.safetensors'):
         expected=load['files'][name];sha=hashlib.sha256()
@@ -39,28 +43,37 @@ def main():
     from chronos import Chronos2Pipeline
     torch.set_num_threads(1);torch.set_num_interop_threads(1)
     pipeline=Chronos2Pipeline.from_pretrained('/model',device_map='cpu',torch_dtype=torch.float32,local_files_only=True,trust_remote_code=False)
-    _send({'status':'loaded','libraryVersion':'2.3.2'})
-    def timed_out(_signal,_frame):raise TimeoutError('resident-deadline')
-    signal.signal(signal.SIGALRM,timed_out)
+    first=_predict(pipeline,torch,load['firstRequest'])
+    first['libraryVersion']='2.3.2'
+    signal.setitimer(signal.ITIMER_REAL,0)
+    _send(first)
     while True:
         if not sys.stdin.buffer.peek(1):return 0
-        request=_read();require(request.get('command')=='predict','unsupported-worker-command')
-        horizon=request['horizon'];require(type(horizon) is int and horizon in (1,5,10),'unsupported-horizon')
-        inputs=[]
-        for raw in request['inputs']:
-            item={'target':torch.tensor([[float('nan') if value is None else value for value in row] for row in raw['target']],dtype=torch.float32)}
-            for role in ('past_covariates','future_covariates'):
-                item[role]={name:torch.tensor([float('nan') if value is None else value for value in values],dtype=torch.float32) for name,values in raw[role].items()}
-            inputs.append(item)
-        cpu_started=time.process_time_ns();signal.setitimer(signal.ITIMER_REAL,1)
-        try:
-            quantiles,median=pipeline.predict_quantiles(inputs,prediction_length=horizon,quantile_levels=[.1,.5,.9],
-                                 context_length=128,batch_size=1,cross_learning=False,limit_prediction_length=True)
+        request=_read()
+        signal.setitimer(signal.ITIMER_REAL,1)
+        try:result=_predict(pipeline,torch,request)
         finally:signal.setitimer(signal.ITIMER_REAL,0)
-        # Linux ru_maxrss is process-lifetime peak KiB, not instantaneous group memory.
-        _send({'status':'forecast','quantiles':[q.tolist() for q in quantiles],'median':[m.tolist() for m in median],
-               'rssBytes':int(resource.getrusage(resource.RUSAGE_SELF).ru_maxrss)*1024,
-               'containerMemoryBytes':int(_cg('memory.current')),'modelCpuNs':time.process_time_ns()-cpu_started})
+        _send(result)
+
+def _predict(pipeline,torch,request):
+    require(request.get('command')=='predict','unsupported-worker-command')
+    pin(request['inputDigest']);pin(request['bindingDigest'])
+    require(digest({k:v for k,v in request.items() if k!='bindingDigest'})==request['bindingDigest'],'worker-input-binding')
+    horizon=request['horizon'];require(type(horizon) is int and horizon in (1,5,10),'unsupported-horizon')
+    inputs=[]
+    for raw in request['inputs']:
+        item={'target':torch.tensor([[float('nan') if value is None else value for value in row] for row in raw['target']],dtype=torch.float32)}
+        for role in ('past_covariates','future_covariates'):
+            item[role]={name:torch.tensor([float('nan') if value is None else value for value in values],dtype=torch.float32) for name,values in raw[role].items()}
+        inputs.append(item)
+    cpu_started=time.process_time_ns()
+    quantiles,median=pipeline.predict_quantiles(inputs,prediction_length=horizon,quantile_levels=[.1,.5,.9],
+                 context_length=128,batch_size=1,cross_learning=False,limit_prediction_length=True)
+    # Linux ru_maxrss is process-lifetime peak KiB, not instantaneous group memory.
+    return {'status':'forecast','bindingDigest':request['bindingDigest'],'quantiles':[q.tolist() for q in quantiles],'median':[m.tolist() for m in median],
+           'rssBytes':int(resource.getrusage(resource.RUSAGE_SELF).ru_maxrss)*1024,
+           'containerMemoryBytes':int(_cg('memory.current')),'modelCpuNs':time.process_time_ns()-cpu_started}
+
 
 if __name__=='__main__':
     try:raise SystemExit(main())

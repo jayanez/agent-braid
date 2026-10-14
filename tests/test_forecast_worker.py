@@ -1,6 +1,7 @@
 # SPDX-License-Identifier: AGPL-3.0-only
 import subprocess,sys,tempfile,threading,time,unittest
 from pathlib import Path
+from unittest.mock import patch
 from agent_braid.forecast_data import ForecastError,digest
 from agent_braid.forecast_worker import DockerCPUWorker,PROFILE,SOURCE_REVISION,CHECKPOINT_REVISION,validate_manifest
 from agent_braid.forecast_lease import WorkerLease
@@ -80,3 +81,41 @@ class ForecastWorkerTests(unittest.TestCase):
             event=threading.Event();event.set()
             with self.assertRaisesRegex(ForecastError,'cancelled'):worker._read(time.monotonic()+1,event)
         finally:worker._close_owned()
+
+    def test_first_request_is_returned_once_then_resident_budget_is_one_second(self):
+        worker=DockerCPUWorker(manifest(),artifact_verifier=TestControlVerifier());calls=[]
+        def output(request):
+            return {'status':'forecast','bindingDigest':request['bindingDigest'],'quantiles':[[[[1,2,3]]]],
+                    'median':[[[2]]],'rssBytes':1024,'containerMemoryBytes':2048,'modelCpuNs':1}
+        def start(deadline,cancellation,request):
+            self.assertFalse(worker.loaded);self.assertEqual(130,deadline);calls.append(request);return output(request)
+        worker._start=start;worker._checkpoint_deadline=lambda *args:None
+        worker._write=lambda request,*args:calls.append(request)
+        worker._read=lambda deadline,cancellation: (self.assertEqual(101,deadline) or output(calls[-1]))
+        with patch('agent_braid.forecast_worker.time.monotonic_ns',return_value=100000000000), \
+             patch('agent_braid.forecast_worker.time.monotonic',return_value=100):
+            first=worker.forecast(window(),1);second=worker.forecast(window(),1)
+        self.assertEqual('forecast',first['status']);self.assertTrue(worker.loaded)
+        self.assertEqual('forecast',second['status']);self.assertEqual(2,len(calls))
+        self.assertEqual(digest(window()),calls[0]['inputDigest']);worker.close()
+
+    def test_first_timeout_or_invalid_result_never_establishes_readiness(self):
+        for reason in ('deadline-exceeded','invalid-output'):
+            worker=DockerCPUWorker(manifest(),artifact_verifier=TestControlVerifier())
+            def start(deadline,cancellation,request):
+                self.assertEqual(100.25,deadline)
+                if reason=='deadline-exceeded':raise ForecastError(reason)
+                return {'status':'forecast','bindingDigest':'f'*64}
+            worker._start=start;worker._checkpoint_deadline=lambda *args:None
+            with patch('agent_braid.forecast_worker.time.monotonic_ns',return_value=100000000000):
+                result=worker.forecast(window(),1,deadline=100.25)
+            self.assertFalse(worker.loaded);self.assertNotEqual('forecast',result['status']);worker.close()
+
+    def test_resident_validation_and_binding_consume_the_same_one_second_budget(self):
+        worker=DockerCPUWorker(manifest(),artifact_verifier=TestControlVerifier());worker.loaded=True
+        with patch('agent_braid.forecast_worker.time.monotonic_ns',return_value=100000000000), \
+             patch('agent_braid.forecast_worker.time.monotonic',return_value=102), \
+             patch.object(worker,'_write') as write:
+            result=worker.forecast(window(),1)
+        write.assert_not_called();self.assertEqual('timed-out',result['status'])
+        self.assertFalse(worker.loaded);worker.close()
