@@ -188,6 +188,7 @@ class ClaudeArchiveTests(unittest.TestCase):
 
 
 class ClaudeLifecycleTests(unittest.TestCase):
+    @patch.object(observer.sys, "platform", "darwin")
     def test_installation_drift_before_spawn_or_during_collection_never_returns_sample(self):
         real_environment = observer.collection_environment
         for phase in ("before-spawn", "during-collection"):
@@ -290,6 +291,7 @@ def run_personal_diagnostic(output,config_dir=None,identity_key_file=None):
                     self.assertEqual(0, process.returncode)
                     self.assertEqual(sha(bytes.fromhex("12" * 32)), json.loads(output.read_text())["keyDigest"])
 
+    @patch.object(observer.sys, "platform", "darwin")
     def test_unserialized_read_and_native_build_drift_refuse_before_process_launch(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory).resolve()
@@ -306,14 +308,45 @@ def run_personal_diagnostic(output,config_dir=None,identity_key_file=None):
                 expected_key_fingerprint="0123456789abcdef", namespace_verifier=lambda *args: None)
             archive = observer.VerifiedClaudeArchive(collector, observer.COLLECTOR_SHA256,
                 observer.ROUTES_SHA256, observer.REVIEW_MANIFEST_SHA256, observer.CONTEXT_SHA256)
-            with patch.object(observer, "verify_private_archive", return_value=archive), patch.object(
+            with patch.object(observer, "verify_private_archive", return_value=archive) as archive_reader, patch.object(
                     observer.subprocess, "Popen") as popen:
                 with self.assertRaises(observer.ClaudeObserverError):
                     instance.read(collector.parent / "new.json")
                 with self.assertRaises(observer.ClaudeObserverError):
                     instance.read(collector.parent / "new.json", serialized_read_only=True)
+                archive_reader.assert_called_once_with(root / "archive", root / "review")
                 popen.assert_not_called()
 
+    def test_unsupported_platform_or_preexisting_cancellation_refuses_before_archive_or_spawn(self):
+        for platform, cancelled in (("linux", False), ("win32", False), ("darwin", True)):
+            with self.subTest(platform=platform, cancelled=cancelled), tempfile.TemporaryDirectory() as directory:
+                root = Path(directory).resolve()
+                config = root / "config"
+                config.mkdir(mode=0o700)
+                instance = observer.ClaudeQuotaObserver(root / "archive", root / "review",
+                    native_reference_artifact=root / "native", python_executable=root / "python",
+                    expected_python_sha256=sha("python"), canonical_config_dir=config,
+                    expected_keychain_suffix=sha(str(config))[:8], expected_account_sha256=sha("account"),
+                    expected_organization_sha256=sha("org"), expected_namespace_sha256=sha("namespace"),
+                    identity_key_path=root / "key", expected_identity_key_sha256=sha("key"),
+                    expected_key_fingerprint="0123456789abcdef", namespace_verifier=lambda *args: None)
+                cancel = threading.Event()
+                if cancelled:
+                    cancel.set()
+                with patch.object(observer.sys, "platform", platform), patch.object(
+                        observer, "verify_private_archive") as archive_reader, patch.object(
+                        instance, "_recheck_installation") as installation, patch.object(
+                        observer.subprocess, "Popen") as popen:
+                    with self.assertRaisesRegex(observer.ClaudeObserverError, "acquisition refused"):
+                        instance.read(root / "archive/claude/new.json", serialized_read_only=True,
+                                      cancel_event=cancel)
+                    archive_reader.assert_not_called()
+                    installation.assert_not_called()
+                    popen.assert_not_called()
+                self.assertTrue(instance._lock.acquire(blocking=False))
+                instance._lock.release()
+
+    @patch.object(observer.sys, "platform", "darwin")
     def test_mocked_private_subprocess_preserves_pins_and_completion_cancellation_refuses(self):
         for cancel_at_completion in (False, True):
             with self.subTest(cancel_at_completion=cancel_at_completion), tempfile.TemporaryDirectory() as directory:

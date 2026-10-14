@@ -311,11 +311,12 @@ block useful, sound engineering. Real adapter refinement remains a prerequisite.
 
 **Status:** [Open](https://github.com/jayanez/agent-braid/milestone/19), adjacent to
 M4. The 60 original task criteria remain unchanged; 19 auxiliary evidence tasks
-bring the source task-checklist inventory to 79 items, of which 52 are checked
-and 27 remain unchecked, alongside six open parents. Remote issue state is tracked
-separately. Candidate-bound local technical procedures and
+bring the source task-checklist inventory to 79 items, of which 55 are checked
+and 24 remain unchecked, alongside three closed and three open spec parents.
+SPEC-039/040/042 retain their recorded bounded acceptance; remote issue state is
+tracked separately. Candidate-bound local technical procedures and
 fresh package checks have passed in their recorded domains. Native Codex/Claude
-acceptance, human interpretation, founder decision and milestone closure remain
+acceptance, human interpretation, remaining founder decisions and milestone closure remain
 pending. The owner selected Codex and Claude Code for v1 on 2026-10-08. This work
 does not accept ADR 0021 or change M4's historical G4 NO-GO.
 
