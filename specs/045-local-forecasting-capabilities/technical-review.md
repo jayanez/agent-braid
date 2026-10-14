@@ -133,3 +133,34 @@ or read-only enforcement; actual loader checks remain separate. The reviewer
 identified original-versus-adopted proposal byte history, now explicitly retained
 in two files; the owner receipt binds original reviewed bytes, not later notes.
 Exact new-package load/conformance approval remains pending.
+
+## Actual approved v3 receipt review
+
+Luna Latest independently verified the single-shot v3 receipt SHA256
+`cfd925669232a71b08819714ef8f041db6c28a3e8c0638800455af695f48907d`,
+manifest/wheel/source bindings and removed one-run pin without rerunning a model.
+All 171 forecast packet digests, finite ordered quantiles, horizon/target axes
+and median agreement passed; deterministic synthetic input digests matched the
+recipe, including multivariate and past/future-covariate probes. Two adapter
+cancellation outcomes and owned cleanup are retained. This is technical
+verification of authentic-on-synthetic conformance, not scientific acceptance.
+
+Prediction CPU excludes loading. The final idempotent close 28,250 ns field is
+not the container teardown duration: owned teardown occurred inside the active
+adapter-cancellation row (277.9 ms), and is included in total 27.95748 s wall time.
+Cancellation was observed while the adapter lock was held; no receipt establishes
+that a Chronos kernel had begun or that a kernel itself was interrupted. Docker
+State fields precede removal; cleanup confirmation follows it. Original task
+predecessors, failure controls, full cost accounting and clean-room reproduction
+remain separate reconciliation obligations.
+
+## Public-session deadline delta
+
+After retaining v3 worker conformance, Luna identified that API/CLI/MCP session
+validation/translation preceded the worker timer. The corrected public session
+derives 30-second cold and one-second resident deadlines from its own entry
+timestamp, caps them by the earlier caller deadline, and checks expiry before
+worker/cached output and after adapter return. Luna independently ran 13
+session/MCP/CLI tests and found no blocker; no model was called. This host API
+delta is separate from the exact v3 wheel/image conformance; no conformance for
+a newly packaged host wheel is inferred.
