@@ -33,7 +33,9 @@ def main():
         require(sha.hexdigest()==expected,'checkpoint-hash-drift')
     import importlib.metadata
     require(importlib.metadata.version('chronos-forecasting')=='2.3.2','library-version-drift')
+    require(importlib.metadata.version('torch')=='2.14.1+cpu','cpu-library-version-drift')
     import torch
+    require(torch.version.cuda is None and not torch.backends.cuda.is_built(),'non-cpu-library-build')
     from chronos import Chronos2Pipeline
     torch.set_num_threads(1);torch.set_num_interop_threads(1)
     pipeline=Chronos2Pipeline.from_pretrained('/model',device_map='cpu',torch_dtype=torch.float32,local_files_only=True,trust_remote_code=False)
