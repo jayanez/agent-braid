@@ -38,3 +38,20 @@ class ForecastExperimentTests(unittest.TestCase):
         self.assertEqual('unavailable',next(r for r in result['arms'] if r['arm']=='forecast-choice')['forecastStatus'])
         self.assertFalse(result['utilityAccepted'])
         summary=summarize_pairs([result]);self.assertEqual(1,summary['fallbackEpisodes']);self.assertEqual([],summary['pairedRatios'])
+
+    def test_companion_costs_retain_failed_arms_grants_and_owned_cleanup(self):
+        from agent_braid.forecast_cost import CostRecorder,summarize_cost_ledger
+        recorder=CostRecorder('invalid-grants','a'*64,'b'*64)
+        with git_fixture(seed=49) as fixture:
+            result=paired_synthetic_episode(fixture,signal_episode('constant',seed=49),
+                operator=lambda plan,root:{'grantId':'missing'},cost_recorder=recorder)
+        ledger=recorder.seal(cleanup_confirmed=True)
+        self.assertEqual(3,len(result['arms']))
+        execution=[p for p in ledger['phases'] if p['stage']=='isolated-execution']
+        self.assertEqual(3,len(execution));self.assertTrue(all(p['status']=='failed' for p in execution))
+        self.assertEqual(3,len([p for p in ledger['phases'] if p['stage']=='grants']))
+        self.assertEqual(4,len([p for p in ledger['phases'] if p['stage']=='cleanup']))
+        summary=summarize_cost_ledger(ledger)
+        self.assertGreater(summary['coordinatorResidualNs'],0)
+        self.assertFalse(summary['reportedCoverageComplete'])
+        self.assertIn('artifact-provisioning:missing',summary['gaps'])

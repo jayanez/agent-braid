@@ -18,6 +18,33 @@ class TestControlVerifier:
     def verify(self,m):return ArtifactApprovalAttestation(digest(m),'e'*64,'owner-artifact-compute')
 
 class ForecastWorkerTests(unittest.TestCase):
+    def test_simulated_daemon_loss_preserves_container_identity_and_blocks_new_lease(self):
+        # Pure synthetic fault injection. Never contacts or stops a Docker daemon.
+        with tempfile.TemporaryDirectory() as tmp:
+            worker=DockerCPUWorker(manifest(),artifact_verifier=TestControlVerifier())
+            root=Path(tmp).resolve()/'lease';worker.lease=WorkerLease(worker.owner,worker.model_digest,directory=root)
+            worker.lease.acquire();worker.container='a'*64;worker.loaded=True
+            with patch.object(worker,'_write',side_effect=ForecastError('local-engine-unavailable')), \
+                 patch.object(worker,'_inspect',side_effect=ForecastError('local-engine-unavailable')), \
+                 patch.object(worker,'_docker') as docker:
+                result=worker.forecast(window(),1)
+                self.assertEqual('refused',result['status'])
+                self.assertEqual(['owned-container-cleanup-pending'],result['reasonCodes'])
+                self.assertFalse(result['executionAuthorization']);self.assertFalse(worker.loaded)
+                self.assertEqual('a'*64,worker.container);self.assertIsNone(worker.last_diagnostics)
+                with self.assertRaisesRegex(ForecastError,'cleanup-pending'):
+                    WorkerLease('next','b'*64,directory=root).acquire()
+                with self.assertRaisesRegex(ForecastError,'local-engine-unavailable'):worker.close()
+                docker.assert_not_called()
+            # Later container removal is insufficient to clear a released marker.
+            # Recovery of that persistent marker remains an operator procedure.
+            worker._inspect=lambda:{'State':{'Running':False,'OOMKilled':False,'ExitCode':1}}
+            worker._docker=lambda *args,**kwargs:b''
+            worker.close()
+            successor=WorkerLease('recovered','b'*64,directory=root)
+            self.assertTrue(worker.last_diagnostics['cleanupConfirmed'])
+            with self.assertRaisesRegex(ForecastError,'cleanup-pending'):successor.acquire()
+
     def test_owned_oom_diagnostics_survive_cleanup_without_raw_engine_errors(self):
         worker=DockerCPUWorker(manifest(),artifact_verifier=TestControlVerifier());worker.container='a'*64
         worker._inspect=lambda:{'State':{'OOMKilled':True,'ExitCode':137,'Running':False,'Error':'private-engine-detail'}}

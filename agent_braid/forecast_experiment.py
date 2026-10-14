@@ -1,6 +1,7 @@
 # SPDX-License-Identifier: AGPL-3.0-only
 """Owned synthetic paired policy harness; grants come from an external operator."""
 from copy import deepcopy
+from contextlib import contextmanager,nullcontext
 from pathlib import Path
 import random
 import subprocess
@@ -11,7 +12,7 @@ from .forecast_windows import compile_window
 from .forecast_advice import ForecastSession
 from .forecast_policy import advise
 
-def paired_synthetic_episode(fixture,signal,*,operator,session=None,order_seed=1):
+def paired_synthetic_episode(fixture,signal,*,operator,session=None,order_seed=1,cost_recorder=None):
     """Execute every intended arm on fresh owned private runs; preserve failures."""
     episode_started=time.monotonic_ns()
     require(callable(operator),'independent-operator-required');integer(order_seed)
@@ -22,6 +23,19 @@ def paired_synthetic_episode(fixture,signal,*,operator,session=None,order_seed=1
     request=deepcopy(fixture['request']);episode=digest({'request':{k:v for k,v in request.items() if k!='repository'},'recipe':signal['recipe']})
     expected_source=fixture['sourceHead'];arms=['serial-reference','non-model-reference','forecast-choice'];random.Random(order_seed).shuffle(arms)
     own_session=session is None;session=ForecastSession() if session is None else session;results=[];cleanup_ns=0
+    phase_count=0
+    def phase(index,stage):
+        nonlocal phase_count
+        phase_count+=1
+        return (nullcontext() if cost_recorder is None
+                else cost_recorder.phase(episode[:16]+':'+str(index)+':'+str(phase_count),stage))
+    @contextmanager
+    def directory(index):
+        with phase(index,'isolated-preparation'):
+            scope=tempfile.TemporaryDirectory(prefix='arm-',dir=root)
+        try:yield scope.name
+        finally:
+            with phase(index,'cleanup'):scope.cleanup()
     try:
         for index,arm in enumerate(arms):
             started=time.monotonic_ns();row={'arm':arm,'orderIndex':index,'status':'failed','mode':'serial','sourceKind':'authentic-on-synthetic',
@@ -30,16 +44,19 @@ def paired_synthetic_episode(fixture,signal,*,operator,session=None,order_seed=1
                 head=subprocess.run(['git','--no-optional-locks','-C',str(repo),'rev-parse','HEAD'],capture_output=True,timeout=5,check=True)
                 require(head.stdout.decode().strip()==expected_source,'fixture-source-drift')
                 # Compile from the frozen raw events inside every treatment boundary.
-                original=signal['window'];window=compile_window(deepcopy(signal['events']),target_ids=original['targetIds'],units=original['units'],
-                    grid_start_ns=original['gridStartNs'],step_ns=original['stepNs'],bins=len(original['values'][0]),cutoff_ns=original['cutoffNs'],
-                    episode_group=original['episodeGroup'],resource_digest=original['resourceReceiptDigest'],partition_digest=original['partitionDigest'],transform_digest=original['transformDigest'])
+                with phase(index,'data-preparation'):
+                    original=signal['window'];window=compile_window(deepcopy(signal['events']),target_ids=original['targetIds'],units=original['units'],
+                        grid_start_ns=original['gridStartNs'],step_ns=original['stepNs'],bins=len(original['values'][0]),cutoff_ns=original['cutoffNs'],
+                        episode_group=original['episodeGroup'],resource_digest=original['resourceReceiptDigest'],partition_digest=original['partitionDigest'],transform_digest=original['transformDigest'])
                 if arm=='forecast-choice':
-                    forecast=session.predict({'version':'agent-braid-forecast-request-v1','backend':'chronos2','window':window,'horizon':1,'alpha':.3})
+                    with phase(index,'forecast'):
+                        forecast=session.predict({'version':'agent-braid-forecast-request-v1','backend':'chronos2','window':window,'horizon':1,'alpha':.3})
                     row['forecastStatus']=forecast['status']
                     row['economicInputsKind']='synthetic-fixture-costs-not-observed-runtime-costs'
                     policy={'version':1,'partition':'development','targetId':'load','unit':'count','minimumRatio':1.1,'maximumIntervalWidth':100,
                             'advisoryOverheadNs':forecast['costs']['wallNs']}
-                    advice=advise({'version':'agent-braid-advice-request-v1','mode':'consultative','window':window,'forecast':forecast,
+                    with phase(index,'advice'):
+                        advice=advise({'version':'agent-braid-advice-request-v1','mode':'consultative','window':window,'forecast':forecast,
                         'resource':signal['resource'],'resourceDigest':digest(signal['resource']),'nowNs':window['cutoffNs'],
                         'expiresNs':window['cutoffNs']+1,'referenceMode':'serial','policy':policy,
                         'catalogue':{'sourceKind':'synthetic','candidates':[
@@ -47,13 +64,19 @@ def paired_synthetic_episode(fixture,signal,*,operator,session=None,order_seed=1
                             {'id':'parallel','mode':'parallel','planDigest':'b'*64,'baseWallNs':500000000,'loadPenaltyNsPerUnit':1000000,
                              'eligible':not any(op['dependencies'] for op in request['operations'])}]}})
                     row['mode']=advice['selectedAction'];row['adviceDigest']=advice['packetDigest']
-                with tempfile.TemporaryDirectory(prefix='arm-',dir=root) as tmp:
-                    destination=Path(tmp);evidence,portable=git_replay.produce(git_runtime._analysis_request(request))
-                    plan=runtime_policy.prepare_policy_run(request,destination/'result',replay_evidence=evidence,advisory_plan=portable,mode=row['mode'])
-                    grant=operator(deepcopy(plan),destination/'grants')
+                with directory(index) as tmp:
+                    destination=Path(tmp)
+                    with phase(index,'replay'):
+                        evidence,portable=git_replay.produce(git_runtime._analysis_request(request))
+                    with phase(index,'isolated-preparation'):
+                        plan=runtime_policy.prepare_policy_run(request,destination/'result',replay_evidence=evidence,advisory_plan=portable,mode=row['mode'])
+                    with phase(index,'grants'):
+                        grant=operator(deepcopy(plan),destination/'grants')
                     require(type(grant) is dict and 'grantId' in grant,'invalid-operator-grant')
-                    report=runtime_policy.execute_policy_run(plan,destination/'grants',grant['grantId'])
-                    verified=git_runtime.verify_run(request,destination/'result')
+                    with phase(index,'isolated-execution'):
+                        report=runtime_policy.execute_policy_run(plan,destination/'grants',grant['grantId'])
+                    with phase(index,'verification'):
+                        verified=git_runtime.verify_run(request,destination/'result')
                     require(verified['status']=='verified-completed','unverified-outcome')
                     require(request['expectedFinalTree']==verified['resultTree'],'non-equivalent-outcome')
                     row.update(status='completed',resultTree=verified['resultTree'],planDigest=plan['planDigest'])
@@ -62,7 +85,8 @@ def paired_synthetic_episode(fixture,signal,*,operator,session=None,order_seed=1
         require(len(results)==3,'incomplete-intended-roster')
     finally:
         cleanup_started=time.monotonic_ns()
-        if own_session:session.close()
+        if own_session:
+            with phase('session','cleanup'):session.close()
         cleanup_ns=time.monotonic_ns()-cleanup_started
     total=time.monotonic_ns()-episode_started
     result={'version':'agent-braid-synthetic-policy-experiment-v1','episodeId':episode,'provenance':'authentic-on-synthetic',

@@ -53,3 +53,21 @@ Luna independently checked source/wheel/proposal/owner/manifest bindings, all ni
 The isolated whole-daemon crash control, full cost accounting, predecessor/task reconciliation and bounded post-merge tracking remain open. Historical assurance, human feature/ADR acceptance and real source/launch/utility/promotion gates are unchanged. See `evidence/v5-evidence-index.json` for public derivative hashes, original private receipt hashes and redactions. The frozen driver source is retained byte-exact under `evidence/procedures/`; its public test copy removes redundant final blank lines only, with both hashes and the transformation indexed. Its test fixture requires the exact independently rebuilt wheel at `evidence/procedures/wheels-independent-reproduction/agent_braid-0.1.0a1-py3-none-any.whl`. These historical sources never grant load authority.
 
 The executed e6 PR-profile summary and exact CI/tracking run references are retained in `evidence/source-e6-validation-summary.json`. This newly added summary omits local paths, and its original validation logs remain private. The evidence-only packaging validation is separate.
+
+## Additive cost and daemon preparation
+
+The technical-cost companion records the complete required phase inventory,
+union/residual wall accounting, disjoint declared CPU domains and distinct RSS /
+cgroup scopes. The paired Git harness optionally reports preparation, replay,
+grants, execution, verification and owned cleanup to that observer while retaining
+its existing receipt contract. The installed synthetic cost driver exercises cheap
+baseline/cache work and model-unavailable fallback without Docker/model loading.
+Unobserved worker/daemon counters, reused setup allocation and final ledger
+publication remain explicit gaps; no full deployment cost acceptance is inferred.
+
+The synthetic daemon-loss test confirms fail-closed refusal, retained container
+identity and persistent next-lease denial. It does not stop a real daemon. The
+isolated-engine proposal requires an owned Linux VM and pinned runtime/kernel/
+rootfs/daemon/configuration before an exact execution packet can be reviewed.
+See `contracts/technical-cost.md`, `isolated-engine-control-proposal.md` and the
+`convergence-2026-10-14.md` task/evidence matrix. No model approval was reused.
