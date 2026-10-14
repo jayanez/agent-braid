@@ -122,3 +122,14 @@ The profile adds `coldReadiness: first-valid-forecast`, invalidating old pins.
 Raw v2 diagnostics remain unchanged: State fields were observed before forced
 removal; cleanup confirmation afterwards. ExitCode0 while running is not an
 observed terminal success. New exact-package model admission remains pending.
+
+Luna Latest independently verified revision3 package bindings: source
+`1c0a08a0726ecb333c77a8ddacbbbae767c4ff3d`, identical host/image wheel bytes,
+worker/entry source hashes, image identity and canonical private manifest.
+The173-attempt/300-second envelope and30/1-second timing match the adopted
+clarification. Twelve no-model image stub/import controls and cgroup observations
+passed with owned cleanup. The smoke does not independently establish network
+or read-only enforcement; actual loader checks remain separate. The reviewer
+identified original-versus-adopted proposal byte history, now explicitly retained
+in two files; the owner receipt binds original reviewed bytes, not later notes.
+Exact new-package load/conformance approval remains pending.

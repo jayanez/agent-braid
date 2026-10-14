@@ -1,6 +1,7 @@
 {
-  "change": "Replace PyPI CUDA-linked torch2.14.1 with hash-pinned official CPU torch2.14.1+cpu; validate distribution and binary CPU build before pipeline construction. Existing checkpoint and limits unchanged.",
+  "change": "Owner-adopted cold readiness: first registered valid forecast within total30s from call entry; later requests1s from entry. Input-bound first forward executes once; old v1/v2 pins cannot admit the changed profile.",
   "checkpointDirectory": "owned-private-local-directory; exact absolute binding retained in private manifest",
+  "coldReadinessDecision": "355accef50c3433359c9dcb8255e8be5f0b7f6fbac08c183d670e34584c1580d",
   "compute": {
     "additionalSpendAuthorized": false,
     "attempts": 173,
@@ -34,17 +35,18 @@
     "totalBytes": 477931539
   },
   "engine": "existing-local-unix-socket; exact binding retained privately",
-  "hostWheelSha256": "fae1c3a6f379daf1d6abf2eb9289d1a286ef69cd0ee51d9c4f3551e0d7c5da54",
+  "hostWheelSha256": "c1c98cabd09b366cfae5931010d2b593d9d069c51f5b52f6624a7db508f02a84",
+  "hostWorkerSha256": "0a8076398a1de8767f2a0f65f24f82971608e605fa14a34426494acfb200aeb5",
   "image": {
     "Architecture": "arm64",
-    "Created": "2026-10-14T08:05:26.416101717Z",
-    "Id": "sha256:3c7fa6bfb37b77ed890223cdc901cfdaa2c064cb661d4d377971e33147939b21",
+    "Created": "2026-10-14T08:59:50.940097256Z",
+    "Id": "sha256:a5be42650c591593263671591407dc366529a6d090707ef92cf68a36779f9beb",
     "Os": "linux",
-    "Size": 1676553138
+    "Size": 1676558930
   },
-  "imageCoreWheelSha256": "fae1c3a6f379daf1d6abf2eb9289d1a286ef69cd0ee51d9c4f3551e0d7c5da54",
-  "imageWorkerEntrySha256": "e7af6635f75544f1db24dc3e4196cad1ed69e1b96791e2d6b6e2f2d766c1c53f",
-  "manifestDigest": "5597b631142d8dc9d10a0bfae1c8fd99a24f319256dc4db6998d81f44204525a",
+  "imageCoreWheelSha256": "c1c98cabd09b366cfae5931010d2b593d9d069c51f5b52f6624a7db508f02a84",
+  "imageWorkerEntrySha256": "cf92e31985916c12319e109e8ef7bb0b640fdea2eef1f69bd7a7ab905220bafb",
+  "manifestDigest": "1ae8aff107c71e9e5e83b3e23806ea6fcafc742add1b569e6686d6dee1d17a60",
   "manifestFields": {
     "checkpointRevision": "29ec3766d36d6f73f0696f85560a422f50e8498c",
     "dependencyLockDigest": "92518d2612ea9a66926465ace6b1356571f4bd32cfe47e2b135fa6a682d71919",
@@ -52,11 +54,12 @@
       "config.json": "ef1143bfdc9c0376d9a056eefca46cb4b1ec3d0ffacd541ff56feb40fb708031",
       "model.safetensors": "ddcda3c7508bf2528087723e98a20707cc04b7f370ae275a9fd88078ddba4f42"
     },
-    "imageId": "sha256:3c7fa6bfb37b77ed890223cdc901cfdaa2c064cb661d4d377971e33147939b21",
+    "imageId": "sha256:a5be42650c591593263671591407dc366529a6d090707ef92cf68a36779f9beb",
     "libraryVersion": "2.3.2",
     "profile": {
       "activeRequests": 1,
       "coldDeadlineMs": 30000,
+      "coldReadiness": "first-valid-forecast",
       "cpus": 1,
       "memoryBytes": 2147483648,
       "pids": 64,
@@ -74,13 +77,13 @@
   "previousApprovedAttempt": {
     "attempts": 1,
     "cleanupConfirmed": true,
-    "manifestDigest": "80853ec3fd8c852bd7edd1277828436e12851d499dbe9643af9b51aa62a013c7",
-    "outcome": "inconclusive",
-    "scope": "Old approval does not authorize loading this changed image/closure."
+    "manifestDigest": "5597b631142d8dc9d10a0bfae1c8fd99a24f319256dc4db6998d81f44204525a",
+    "outcome": "inconclusive; first cold H1 timed out, no forecast output",
+    "scope": "Retained v2 raw receipt; neither old package approval admits new image/profile."
   },
-  "requestRevision": 2,
+  "requestRevision": 3,
   "rights": "Apache-2.0 checkpoint/package metadata and41-dependency closure retained for exact owner review; no rights approval inferred",
-  "softwareCandidate": "84873295a4453d5aa0636683b764f443c7dd38c9",
+  "softwareCandidate": "1c0a08a0726ecb333c77a8ddacbbbae767c4ff3d",
   "sourceConformance": {
     "byteEqual": true,
     "modelLoaded": false,
@@ -90,6 +93,6 @@
     "wheelSha256": "0f0d9a1972f252d6cf584b9fa749bd1b389b3c1cf05a889c4130cb10652c2117"
   },
   "status": "pending-owner-decision",
-  "supersedesProposalSha256": "ccfe420a0f1bfc14f7855c047d417ccc63fd0d73a03a7c2c6e3f999c40f0c03a",
+  "supersedesProposalSha256": "05e573d8400fce0b04dccc3a0ee2f24aaaf058f9cfa9e4f0e96ef2f6e7223c5f",
   "version": "agent-braid-model-approval-request-v1"
 }

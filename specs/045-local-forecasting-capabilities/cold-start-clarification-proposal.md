@@ -66,3 +66,12 @@ In the unchanged v2 receipt, `running`, `exitCode` and `oomKilled` were read
 from Docker State before forced removal. Because `running` was true, its
 `exitCode: 0` is not an observed successful terminal exit. `cleanupConfirmed`
 was set only after the owned removal succeeded. The raw receipt is preserved.
+
+## Proposal byte history
+
+The owner decision pins the original reviewed proposal SHA256
+`473da6f1d0b50d7972ce39c972ba2b19de0390bc4a9395404de7e5a534eb0684`,
+retained byte-for-byte in `cold-start-clarification-reviewed-proposal.md`.
+This adopted companion appends decision/diagnostic notes and changes status
+wording after that decision; it does not claim the owner reviewed these later
+bytes. The cold-readiness terms are unchanged.
