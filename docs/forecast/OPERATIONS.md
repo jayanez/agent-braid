@@ -120,3 +120,26 @@ output validation. Later requests have one second. No additional warmup, retry,
 CPU or memory increase is authorized. A first timeout never establishes
 readiness. The changed profile binds `coldReadiness: first-valid-forecast`; old
 v1/v2 pins cannot admit the new image. Its exact model approval remains pending.
+
+## Technical cost companion
+
+The additive [technical cost contract](../../specs/045-local-forecasting-capabilities/contracts/technical-cost.md)
+records preparation, model/engine startup and residency, advice/cache, grants,
+replay, isolated execution, verification, failures, export and cleanup with an
+explicit wall-time union and residual. Missing counters remain null and reused
+setup is unallocated. CPU domains and RSS/cgroup memory scopes stay separate;
+reported inventory coverage is not an authenticity or economic acceptance claim.
+
+Run the installed environment's Python outside the checkout:
+
+```sh
+python /owned/checkout/scripts/reproduce_forecast_cost.py --output-directory /owned/new-cost-run --paired-git
+```
+
+This procedure loads no model and performs no Docker operation. It observes
+host baseline/cache work, unavailable-model fallback and externally granted
+synthetic Git arms, binding the installed Python bytes. It leaves worker/daemon
+counters, provisioning allocation and final ledger publication explicitly open.
+The [isolated daemon procedure](../../specs/045-local-forecasting-capabilities/isolated-engine-control-proposal.md)
+is prepared but needs an owned Linux environment and its exact reviewed execution
+packet. The shared daemon must remain untouched.

@@ -170,3 +170,32 @@ a newly packaged host wheel is inferred.
 Luna Latest independently verified the fresh clone source, byte-equal repeat wheels,216 installed core responses and two inconclusive owned synthetic Git episodes without a model rerun. After separate exact owner decisions, v4 remained a retained inconclusive procedural parser failure; v5 completed9 calls (7 forecasts,2 refusals) and2 owned failure controls. All9 packet digests and7 forecast quantile/median outputs verified. API/CLI/MCP H1 outputs match. Docker state establishes the resident-worker OOM victim, while the attach interruption explicitly leaves the daemon available. Known containers are absent, the lease confirms cleanup, pins are absent and persistent one-run claims remain.
 
 The reviewed v5 private receipt SHA256 is `f6937101272e01408ead49e0e726834c52c797d32a04aeb13b51502640079bb4`; public sanitization and original hashes are recorded in `evidence/v5-evidence-index.json`. This is independent retained-evidence/source verification, not a second measured run, human acceptance, full cost accounting or utility acceptance. The complete engine crash remains pending an isolated owned engine.
+
+## Cost companion and isolated-engine preparation review
+
+Luna Latest (`gpt-6-luna`, `/root/forecast_boundary_review`) independently reviewed
+the additive technical ledger, optional paired-arm observer, no-model installed
+cost driver, synthetic daemon-loss lease control and isolated Linux VM procedure.
+Earlier findings were retained and corrected: source checkout origin could be
+mislabelled as installed; handled interrupts skipped sealing; SIGTERM could
+interrupt ledger export or arrive between output creation and handler admission.
+The final driver verifies exact interpreter purelib origin, records unavailable
+artifact identity on failed preflight, queues CLI SIGINT/SIGTERM before output
+creation, persists handled interruptions and cleanup failures, and restores its
+prior signal handlers. It uses owned no-follow exclusive outputs.
+
+Independent checks included 29 focused tests on the earlier delta, 17 and 19
+cost/driver tests on corrected deltas, controlled own-process interruption during
+cleanup/export and the final post-mkdir regression. The main session's final
+cost/driver set has 20 cases. A temporary-copy mutation of reported coverage
+was caught by positive and negative tests. Final narrow disposition: no remaining
+blocker for the bounded no-model synthetic cost driver. Driver SHA256:
+`ff9422e01dc34f4610940ce4e393878a7135ff064a39c01a1a1bd8784dcbfa0c`;
+procedure tests SHA256:
+`b4f47e56208aa51467ee6819affafb7cd541fd88db2770c3c7304c7f0af5353c`.
+
+The reviewer performed no model, Docker or network workload. This review does
+not accept full deployment/economic costs, actual daemon-fault cleanup, any new
+model artifacts, real sources, launch, ADR adoption, utility or promotion. The
+isolated daemon proposal remains blocked on exact owned Linux environment pins.
+Stable candidate validation and installed cost reproduction are recorded separately.

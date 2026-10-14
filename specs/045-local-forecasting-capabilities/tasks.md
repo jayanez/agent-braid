@@ -42,3 +42,13 @@ Original FC.1 task criteria remain unchanged. Independent dependency properties 
   Verification: execute the mapped scenarios and negative controls; model/source decisions require actual authority.
   Command: `.venv-speckit/bin/python -m unittest discover -s tests -p "test_forecast*.py" -v`.
   Planned evidence: `evidence/engineering.json`; obtained evidence: none.
+
+## Obtained evidence supplement (2026-10-14)
+
+The original unchecked criteria and historical assurance remain unchanged.
+`convergence-2026-10-14.md` maps T001–T008 to the engineering, independent installed,
+actual v3/v5 and cost-companion evidence, with consumer-specific remaining gates.
+The technical-cost contract and optional paired-arm observer address REQ-005/006;
+the synthetic daemon-loss test supports REQ-002 without claiming a real engine
+crash. T007 still requires full deployment costs and its exact real control chain;
+T008 still requires governed integration/publication/tracking readback.
