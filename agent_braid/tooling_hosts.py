@@ -627,6 +627,8 @@ def _build_argv(config: HostLaunchConfig) -> tuple[str, ...]:
         argv.extend(("--config", "web_search=\"disabled\""))
         return tuple(argv)
     if config.host == "claude-code":
+        if any(not re.fullmatch(r"[A-Za-z0-9_-]{1,64}", name) for name in config.mcp_servers):
+            raise HostPreparationError("Claude MCP permission namespaces must be bounded literal names")
         subscription = config.claude_subscription_settings is not None
         argv = [] if subscription else ["--bare"]
         if subscription:
@@ -639,7 +641,15 @@ def _build_argv(config: HostLaunchConfig) -> tuple[str, ...]:
         if config.arm == "mcp-only":
             argv.extend(("--tools", "", "--disable-slash-commands"))
         else:
-            argv.extend(("--tools", ",".join(config.expected_tools)))
+            # Availability uses built-in names; Skill(name) is a permission
+            # pattern, not the name of a built-in tool. MCP availability comes
+            # from the exact validated stdio configuration independently.
+            argv.extend(("--tools", "Skill"))
+        approvals = tuple(f"mcp__{name}__*" for name in config.mcp_servers)
+        if config.arm == "mcp-plus-skills":
+            approvals += config.expected_tools
+        if approvals:
+            argv.extend(("--allowedTools", ",".join(approvals)))
         argv.extend(("--permission-mode", "dontAsk"))
         return tuple(argv)
     raise HostPreparationError("unknown host route")

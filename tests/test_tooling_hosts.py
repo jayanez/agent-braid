@@ -92,6 +92,29 @@ class AllowVerifier:
 
 
 class HostAdapterTests(unittest.TestCase):
+    def test_claude_skill_permissions_do_not_replace_builtin_availability(self):
+        config = types.SimpleNamespace(host="claude-code", arm="mcp-plus-skills",
+            mcp_servers=("agent-braid",), claude_subscription_settings=None,
+            model="sonnet", effort="medium", config_files=(types.SimpleNamespace(path="/pinned/mcp.json"),),
+            expected_tools=tuple(f"Skill({name})" for name in hosts_module._SKILLS))
+        argv = hosts_module._build_argv(config)
+        self.assertEqual("Skill", argv[argv.index("--tools") + 1])
+        self.assertEqual(",".join(("mcp__agent-braid__*", *config.expected_tools)),
+                         argv[argv.index("--allowedTools") + 1])
+        self.assertEqual("dontAsk", argv[argv.index("--permission-mode") + 1])
+        self.assertNotIn("--disable-slash-commands", argv)
+        config.arm, config.expected_tools = "mcp-only", ()
+        argv = hosts_module._build_argv(config)
+        self.assertEqual("", argv[argv.index("--tools") + 1])
+        self.assertEqual("mcp__agent-braid__*", argv[argv.index("--allowedTools") + 1])
+        self.assertIn("--disable-slash-commands", argv)
+
+    def test_claude_mcp_names_cannot_expand_permission_patterns(self):
+        for name in ("*", "server,Skill(*)", "server__tool,*", "server space", "", "a" * 65):
+            config = types.SimpleNamespace(host="claude-code", mcp_servers=(name,))
+            with self.subTest(name=name), self.assertRaisesRegex(HostPreparationError, "literal names"):
+                hosts_module._build_argv(config)
+
     def with_temp(self):
         context = tempfile.TemporaryDirectory()
         self.addCleanup(context.cleanup)
@@ -519,7 +542,10 @@ class HostAdapterTests(unittest.TestCase):
         skills_plan = prepare_host_launch(admission, skills_config)
         self.assertNotIn("--bare", skills_plan.argv)
         self.assertEqual(skills_plan.argv[skills_plan.argv.index("--tools") + 1],
-                         ",".join(skills_config.expected_tools))
+                         "Skill")
+        self.assertEqual(skills_plan.argv[skills_plan.argv.index("--allowedTools") + 1],
+                         ",".join(("mcp__test__*", *skills_config.expected_tools)))
+        self.assertEqual(plan.argv[plan.argv.index("--allowedTools") + 1], "mcp__test__*")
         self.assertNotIn("--disable-slash-commands", skills_plan.argv)
 
         decoy_inputs = tmp_path / "decoy-inputs"
