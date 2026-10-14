@@ -176,10 +176,39 @@ declares `io.containerd.runc.v2`; the same image contains the executable
 `709fa03b8b731c50ce3241247a4945b49c14e3ef0d8584c0159daf291fcb151f`). The
 upstream [containerd Runtime V2 documentation](https://github.com/containerd/containerd/blob/main/docs/runtime-v2.md)
 says the runtime shim is resolved through the normal `PATH`. The v6 receipt did
-not record that environment, so this supports collecting and checking `PATH`
-and both runtime names but does not prove the cause of BuildKit's exact error.
-No v7 packet has been validated or reviewed, and no further VM execution is
-admitted.
+not record that environment, so this supported collecting and checking `PATH`
+and both runtime names but did not prove the cause of BuildKit's exact error.
+
+## Corrected empty-engine packet v7: executed, incomplete
+
+The v7 request SHA256 is
+`2f6d04aa315fbc8d342c3a91185a9337a327b7f6f4e634a64d7c51b8068d04e1`; the
+consumed result SHA256 is
+`f47ae30bac9384a207969be1f1482edbb28a60e1476617385e9a188edeb032b2`. Luna
+Latest independently verified the exact request/result binding, all 23 asset
+bindings, the admitted decision, cleanup lease, pin removal, and absence of a
+remaining owned probe process. The VM stopped and cleanup was confirmed after
+68.718455750 seconds.
+
+The guest resolved both pinned runtime tools at `/usr/bin/runc` and
+`/usr/bin/containerd-shim-runc-v2`, validated the private daemon configuration,
+and launched the pinned `/usr/bin/dockerd`. This confirms those PATH lookups in
+this run, but not daemon readiness. Host preflight saw `/info` return HTTP 200
+with JSON `null`, `/images/json?all=1` return HTTP 499, and
+`/containers/json?all=1` return `[]`. Because the image population could not be
+established, the host rejected preflight and did not send the crash-admission
+token. No image/container creation request or daemon signal was issued; the
+approved crash control was not exercised.
+
+The supervisor stopped the VM immediately after preflight rejection. Thus the
+guest completion marker, exit-trap summary, drained-log count, and signal/wait
+receipt are absent; the apparent completion-marker text in console output is
+the echoed script source, not an emitted guest event. Luna confirms
+`guestResult=null`, `enginePreflightValidated=false`, and
+`guestCompletionSeen=false`. This is a failure-path observability gap in the
+control protocol. It neither establishes a daemon crash nor explains the null
+and 499 API responses. The exact v7 run is consumed; no follow-up VM run is
+authorized by it.
 
 ## SPEC-045 task matrix
 
@@ -214,16 +243,20 @@ or promotes forecasting. M4 historical utility NO-GO is unchanged.
 1. Integrate actual engine/model counters and setup allocation under a separately
    admitted exact procedure. Keep every uncovered deployment counter visible.
 2. Complete daemon-environment readiness and exact integrated cost/fault admission.
-   Native VM boot/stop and a read-only Linux shell are separately qualified; five
+   Native VM boot/stop and a read-only Linux shell are separately qualified; six
    admitted empty-engine attempts remain incomplete: the first lacked guest
    `encodings`, the second found `/dev` already mounted, the third did not establish
    the daemon executable identity, and v5 reached the pinned daemon but rejected
    its configuration before readiness; v6 passed configuration validation but
-   BuildKit could not locate `runc`. Static image inspection confirms the pinned
-   executable exists, while the effective runtime search path is unknown. Any
-   PATH adjustment remains an unvalidated hypothesis. Docker readiness,
-   integrated worker/daemon failure and model cost collection remain pending;
-   consumed decisions admit no further run.
+   BuildKit could not locate `runc`; v7 resolved both pinned runtime paths and
+   launched the daemon, but `/info` returned JSON `null` and the images endpoint
+   returned HTTP 499. The host therefore withheld crash admission and stopped
+   the VM before the guest could emit its bounded failure receipt. PATH lookup
+   is now observed, while daemon readiness, the cause of the API responses,
+   failure-path receipt delivery, integrated worker/daemon failure and model
+   cost collection remain pending. Diagnose and test the receipt protocol
+   offline with synthetic null/499 fixtures before proposing any new exact
+   execution packet; consumed approvals do not carry over.
 3. The exact software candidate is frozen and validated. Merge requires the owner's
    actual integration decision. Post-merge tracking must use canonical clean
    develop, reviewed guarded operations and FC.1/FC.2-only readback; do not apply
