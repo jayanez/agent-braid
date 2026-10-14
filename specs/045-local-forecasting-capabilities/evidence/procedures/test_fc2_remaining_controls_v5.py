@@ -98,5 +98,3 @@ class ChildFrameRegressionTests(unittest.TestCase):
         self.assertLessEqual(len(seen['stdout']),driver.MAX_BYTES)
 
 if __name__=='__main__':unittest.main()
-
-

@@ -65,8 +65,8 @@
     {
       "path": "procedures/test_fc2_remaining_controls_v5.py",
       "retainedPrivateOriginalSha256": "fc27b2531a7f5e2c68f729e68895c68eb4a8da6e9d1c2ff32638d2f54344d6f7",
-      "sha256": "fc27b2531a7f5e2c68f729e68895c68eb4a8da6e9d1c2ff32638d2f54344d6f7",
-      "transformation": "none"
+      "sha256": "00a8d867598b8ebd635198dca5cf6e28b49bfabda773e5d9e7ffc901564af509",
+      "transformation": "remove redundant final blank lines only for repository whitespace policy; original approved test bytes/hash retained privately"
     },
     {
       "path": "actual-cpu-v4-inconclusive.json",
