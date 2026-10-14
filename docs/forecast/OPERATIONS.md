@@ -110,3 +110,13 @@ episode wall additionally includes owned session cleanup and coordinator
 residual. Export/provisioning and external resident lifecycle are separate
 boundaries and must be added before claiming complete deployment cost. Raw cost
 ratios and forecast accuracy never accept real workload utility or promotion.
+
+## Adopted cold readiness clarification
+
+The owner adopted SPEC-045’s cold-readiness clarification on 2026-10-14.
+The 30-second budget starts at the first forecast call and covers validation,
+hashing, container setup, loading and the first registered prediction through
+output validation. Later requests have one second. No additional warmup, retry,
+CPU or memory increase is authorized. A first timeout never establishes
+readiness. The changed profile binds `coldReadiness: first-valid-forecast`; old
+v1/v2 pins cannot admit the new image. Its exact model approval remains pending.
