@@ -1,0 +1,46 @@
+{
+  "cleanupConfirmed": true,
+  "exit": 0,
+  "modelLoaded": false,
+  "recipe": {
+    "imageId": "sha256:f8728ca9052b3150d4d9e1622c011b19e5f7301f671f211e91d7d09a37773057",
+    "scope": "preload-filesystem-hash-diagnostic-no-ML"
+  },
+  "result": {
+    "gid": 20,
+    "libraryVersion": "2.3.2",
+    "modelLoaded": false,
+    "rows": [
+      {
+        "bytes": 1067,
+        "gid": 20,
+        "mode": "0o600",
+        "name": "config.json",
+        "readable": true,
+        "sha256": "ef1143bfdc9c0376d9a056eefca46cb4b1ec3d0ffacd541ff56feb40fb708031",
+        "uid": 502
+      },
+      {
+        "bytes": 477930472,
+        "gid": 20,
+        "mode": "0o600",
+        "name": "model.safetensors",
+        "readable": true,
+        "sha256": "ddcda3c7508bf2528087723e98a20707cc04b7f370ae275a9fd88078ddba4f42",
+        "uid": 502
+      },
+      {
+        "bytes": 3924,
+        "gid": 0,
+        "mode": "0o644",
+        "name": "/opt/agent-braid/requirements-cpu.lock",
+        "readable": true,
+        "sha256": "264003dae477786d2e3c9187d10df2cd848eaec5b0e505a2c235538934f62068",
+        "uid": 0
+      }
+    ],
+    "uid": 502
+  },
+  "version": "agent-braid-preload-diagnostic-v1",
+  "wallNs": 804670917
+}

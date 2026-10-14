@@ -1,0 +1,29 @@
+{
+  "budgetExceeded": false,
+  "cause": "procedure child reader passed bytearray to bytes-only parse_record; production CLI failure not established",
+  "cleanupConfirmed": true,
+  "cliModelLoadStatus": "not-established-from-retained-evidence",
+  "daemonCrash": "pending; shared daemon never stopped",
+  "faultControlsAttempted": false,
+  "forecastRequests": 4,
+  "hostWheelSha256": "0faea2370d5a8da15d613373e9d2414805fd17b79a00ee66c3ef0516900238df",
+  "manifestDigest": "4d88052a9d8185b10943cbcd4a649a6eaff62995b5d526c225c5006ef39bffbf",
+  "mcpAttempted": false,
+  "oneRunPinRevoked": true,
+  "proposalSha256": "14d5b1b9f7158fa73e104552da49d2f54938b44c4d7764721debe5a1ece4da12",
+  "rawReceiptSha256": "fde36baba47ae52366d94c6017344650f1c536001ed1b585193c5060b0127163",
+  "retainedApiForecasts": 3,
+  "retainedHorizons": [
+    1,
+    5,
+    10
+  ],
+  "reviewModel": "gpt-6-luna",
+  "scientificUtilityAccepted": false,
+  "softwareCandidate": "e6d1e6ee870611e41b83f5239544061f7e58de86",
+  "sourceKind": "authentic-on-synthetic",
+  "status": "inconclusive",
+  "unretainedCliAttempts": 1,
+  "version": "agent-braid-fc2-v4-summary-v1",
+  "wallNsThroughCleanup": 10439579709
+}

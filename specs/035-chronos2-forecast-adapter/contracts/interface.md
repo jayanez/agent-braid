@@ -16,7 +16,13 @@ Proposed initial limits, subject to 035/T001 and 036/T001 review: 1 MiB canonica
 JSON; one active request, zero waiting queue, one-item batch, at most eight target
 and eight covariate channels; context 128 bins; horizons 1/5/10 bins; levels
 [0.1, 0.5, 0.9]; CPU reference, one library CPU thread, 2 GiB model-worker RSS
-ceiling, 1 s resident-request deadline and separate 30 s cold-start ceiling.
+ceiling, 1 s deadline for requests after readiness and a total 30 s cold-start ceiling
+covering the first registered prediction through output validation. The owner
+adopted this timing clarification on 2026-10-14; see SPEC-045
+`cold-start-clarification-proposal.md`. No extra prediction is added. The worker
+is ready only after its first bound result validates, and tighter caller
+deadlines/cancellation apply throughout. Exact changed artifact loading still
+requires its separate owner decision.
 These are review candidates, not approved installed capabilities. Unsupported
 enforcement refuses real loading/evaluation. No automatic GPU switch or cap increase.
 

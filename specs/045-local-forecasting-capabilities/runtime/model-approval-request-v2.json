@@ -1,0 +1,95 @@
+{
+  "change": "Replace PyPI CUDA-linked torch2.14.1 with hash-pinned official CPU torch2.14.1+cpu; validate distribution and binary CPU build before pipeline construction. Existing checkpoint and limits unchanged.",
+  "checkpointDirectory": "owned-private-local-directory; exact absolute binding retained in private manifest",
+  "compute": {
+    "additionalSpendAuthorized": false,
+    "attempts": 173,
+    "cleanupReserveSeconds": 30,
+    "profilesChangedAutomatically": false,
+    "requestSeconds": 270,
+    "signals": "owned-synthetic-only",
+    "totalSeconds": 300,
+    "training": false
+  },
+  "cpuWheel": {
+    "sha256": "2af649994b36dffc627175c3f306d9e513a309b58d4619ac7107577613336454",
+    "url": "https://download-r2.pytorch.org/whl/cpu/torch-2.14.1%2Bcpu-cp312-cp312-manylinux_2_28_aarch64.whl",
+    "version": "2.14.1+cpu"
+  },
+  "decisionExcludes": [
+    "real-source-admission",
+    "experimental-launch",
+    "scientific-utility-acceptance",
+    "canonical-ADR-adoption",
+    "promotion"
+  ],
+  "deliveryBoundary": "Host and image core wheels use the same newly pinned CPU-admission source; API/MCP remain host interfaces and image serves worker protocol only.",
+  "download": {
+    "credentials": false,
+    "files": 2,
+    "filesAlreadyVerified": true,
+    "newCheckpointDownload": false,
+    "paidService": false,
+    "source": "https://huggingface.co/amazon/chronos-2/tree/29ec3766d36d6f73f0696f85560a422f50e8498c",
+    "totalBytes": 477931539
+  },
+  "engine": "existing-local-unix-socket; exact binding retained privately",
+  "hostWheelSha256": "fae1c3a6f379daf1d6abf2eb9289d1a286ef69cd0ee51d9c4f3551e0d7c5da54",
+  "image": {
+    "Architecture": "arm64",
+    "Created": "2026-10-14T08:05:26.416101717Z",
+    "Id": "sha256:3c7fa6bfb37b77ed890223cdc901cfdaa2c064cb661d4d377971e33147939b21",
+    "Os": "linux",
+    "Size": 1676553138
+  },
+  "imageCoreWheelSha256": "fae1c3a6f379daf1d6abf2eb9289d1a286ef69cd0ee51d9c4f3551e0d7c5da54",
+  "imageWorkerEntrySha256": "e7af6635f75544f1db24dc3e4196cad1ed69e1b96791e2d6b6e2f2d766c1c53f",
+  "manifestDigest": "5597b631142d8dc9d10a0bfae1c8fd99a24f319256dc4db6998d81f44204525a",
+  "manifestFields": {
+    "checkpointRevision": "29ec3766d36d6f73f0696f85560a422f50e8498c",
+    "dependencyLockDigest": "92518d2612ea9a66926465ace6b1356571f4bd32cfe47e2b135fa6a682d71919",
+    "files": {
+      "config.json": "ef1143bfdc9c0376d9a056eefca46cb4b1ec3d0ffacd541ff56feb40fb708031",
+      "model.safetensors": "ddcda3c7508bf2528087723e98a20707cc04b7f370ae275a9fd88078ddba4f42"
+    },
+    "imageId": "sha256:3c7fa6bfb37b77ed890223cdc901cfdaa2c064cb661d4d377971e33147939b21",
+    "libraryVersion": "2.3.2",
+    "profile": {
+      "activeRequests": 1,
+      "coldDeadlineMs": 30000,
+      "cpus": 1,
+      "memoryBytes": 2147483648,
+      "pids": 64,
+      "queuedRequests": 0,
+      "residentDeadlineMs": 1000,
+      "scratchBytes": 67108864,
+      "threads": 1
+    },
+    "sourceRevision": "0aba28e9360b6355d5a919596c90b16c25939f02",
+    "version": "agent-braid-chronos-cpu-manifest-v1"
+  },
+  "modelLoaded": false,
+  "modelWeightsProvisioned": true,
+  "outcomes": "All attempted cold/resident/covariate/multivariate/cancellation results and failures retained. Limits stay fixed; refusal/inconclusive is valid.",
+  "previousApprovedAttempt": {
+    "attempts": 1,
+    "cleanupConfirmed": true,
+    "manifestDigest": "80853ec3fd8c852bd7edd1277828436e12851d499dbe9643af9b51aa62a013c7",
+    "outcome": "inconclusive",
+    "scope": "Old approval does not authorize loading this changed image/closure."
+  },
+  "requestRevision": 2,
+  "rights": "Apache-2.0 checkpoint/package metadata and41-dependency closure retained for exact owner review; no rights approval inferred",
+  "softwareCandidate": "84873295a4453d5aa0636683b764f443c7dd38c9",
+  "sourceConformance": {
+    "byteEqual": true,
+    "modelLoaded": false,
+    "pipelineReferenceSha256": "9fad1e4fb7251471463a40408a32d25d31b23b7afb88069911f095071b9b0599",
+    "pipelineWheelSha256": "9fad1e4fb7251471463a40408a32d25d31b23b7afb88069911f095071b9b0599",
+    "sourceRevision": "0aba28e9360b6355d5a919596c90b16c25939f02",
+    "wheelSha256": "0f0d9a1972f252d6cf584b9fa749bd1b389b3c1cf05a889c4130cb10652c2117"
+  },
+  "status": "pending-owner-decision",
+  "supersedesProposalSha256": "ccfe420a0f1bfc14f7855c047d417ccc63fd0d73a03a7c2c6e3f999c40f0c03a",
+  "version": "agent-braid-model-approval-request-v1"
+}

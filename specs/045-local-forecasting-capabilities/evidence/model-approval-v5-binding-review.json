@@ -1,0 +1,12 @@
+{
+  "disposition": "ready to present new exact owner decision; not approval",
+  "driverSha256": "cde6eb23aff11abc231beb89bd7b8c45cd3f7c04bb776f3d95e66cd26cf4a80b",
+  "independentSyntheticTests": 13,
+  "model": "gpt-6-luna",
+  "modelOrDockerWorkloadExecutedByReviewer": false,
+  "requestSha256": "2ffba2086df38ce7a524baef17eb2090ffebed7897000b2470ae8af3f56f81c7",
+  "scope": "narrow child-frame bytes conversion and bounded diagnostic retention; unchanged wheel/image/manifest/caps and one separately approved new procedure",
+  "testSeconds": 0.476,
+  "testsSha256": "fc27b2531a7f5e2c68f729e68895c68eb4a8da6e9d1c2ff32638d2f54344d6f7",
+  "version": "agent-braid-v5-binding-review-v1"
+}

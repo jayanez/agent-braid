@@ -1,0 +1,311 @@
+{
+  "aggregateStageReservationSeconds": 442,
+  "approvalRecordDigest": "b38a76b4b72014840ed170c68b17be5bd0b78b18401b9dae5a390f944d9dc66c",
+  "budgetExceeded": false,
+  "budgetSeconds": 480,
+  "claimAndSessionSetupMarginSeconds": 4,
+  "cleanupConfirmed": true,
+  "cleanupLease": {
+    "cleanupConfirmed": true,
+    "manifestDigest": "4d88052a9d8185b10943cbcd4a649a6eaff62995b5d526c225c5006ef39bffbf",
+    "owner": "134a382a619f40f68805c71eeb961b62"
+  },
+  "daemonCrash": "pending; shared daemon never stopped",
+  "forecastRequests": 4,
+  "manifestDigest": "4d88052a9d8185b10943cbcd4a649a6eaff62995b5d526c225c5006ef39bffbf",
+  "oneRunPinRevoked": true,
+  "packageBinding": {
+    "hostWheelSha256": "0faea2370d5a8da15d613373e9d2414805fd17b79a00ee66c3ef0516900238df",
+    "packageOrigin": "owned isolated installed purelib outside checkout; exact path retained privately",
+    "python": "3.13.11 (main, Dec  5 2025, 16:06:33) [Clang 17.0.0 (clang-1700.4.4.1)]",
+    "scriptSha256": "79d27f5fda18c412db7df44d4c47c2f948c89a0651ae55b0c9277ba27908dba8",
+    "softwareCandidate": "e6d1e6ee870611e41b83f5239544061f7e58de86"
+  },
+  "requestBudgetExceeded": false,
+  "requestBudgetSeconds": 450,
+  "rows": [
+    {
+      "diagnostics": null,
+      "receipt": {
+        "costs": {
+          "containerMemoryBytes": 813211648,
+          "containerMemoryReason": null,
+          "modelCpuNs": 258673724,
+          "modelCpuReason": null,
+          "rssBytes": 898904064,
+          "rssReason": null,
+          "rssScope": "process-lifetime-peak-linux",
+          "wallNs": 5875889875
+        },
+        "evidenceClass": "heuristic",
+        "executionAuthorization": false,
+        "futureTimesNs": [
+          12800000000
+        ],
+        "inputDigest": "4cdf1e8ead7e018af9dff09152baf34ca4e429d52d6716141277504759b6b9a9",
+        "intervalCalibration": "not-evaluated",
+        "median": [
+          [
+            4.0
+          ]
+        ],
+        "modelDigest": "4d88052a9d8185b10943cbcd4a649a6eaff62995b5d526c225c5006ef39bffbf",
+        "packetDigest": "43e17315b00593fd03ab4f31b7184e646bfd5c5aedbabdc32878cfabbd4d096c",
+        "partitionDigest": "3ec4e13fdb9519d6c2d7d426ed8ca5ff8dba2cab6261de8752c7732956e40b52",
+        "quantileLevels": [
+          0.1,
+          0.5,
+          0.9
+        ],
+        "quantiles": [
+          [
+            [
+              4.0,
+              4.0,
+              4.0
+            ]
+          ]
+        ],
+        "reasonCodes": [],
+        "resourceReceiptDigest": "fc6e7f6adc11e271f165b1b07eb4697d4f0fde80cd0036b73013b970a551db67",
+        "sourceKind": "synthetic",
+        "status": "forecast",
+        "targetIds": [
+          "load"
+        ],
+        "transformDigest": "f0329e81bfd7d90ad8c954ff71c1b825b56845ceaf835d87fcc4092a1130b4bc",
+        "units": [
+          "count"
+        ],
+        "version": "agent-braid-forecast-v1"
+      },
+      "role": "independent-api",
+      "status": "returned"
+    },
+    {
+      "diagnostics": null,
+      "receipt": {
+        "costs": {
+          "containerMemoryBytes": 821862400,
+          "containerMemoryReason": null,
+          "modelCpuNs": 96917208,
+          "modelCpuReason": null,
+          "rssBytes": 903766016,
+          "rssReason": null,
+          "rssScope": "process-lifetime-peak-linux",
+          "wallNs": 101065375
+        },
+        "evidenceClass": "heuristic",
+        "executionAuthorization": false,
+        "futureTimesNs": [
+          12800000000,
+          12900000000,
+          13000000000,
+          13100000000,
+          13200000000
+        ],
+        "inputDigest": "4cdf1e8ead7e018af9dff09152baf34ca4e429d52d6716141277504759b6b9a9",
+        "intervalCalibration": "not-evaluated",
+        "median": [
+          [
+            4.0,
+            4.0,
+            4.0,
+            4.0,
+            4.0
+          ]
+        ],
+        "modelDigest": "4d88052a9d8185b10943cbcd4a649a6eaff62995b5d526c225c5006ef39bffbf",
+        "packetDigest": "6afe887af85e9f970f6503470e482c63eb4cc80cbf76f3b786e6d72e29edb4c2",
+        "partitionDigest": "3ec4e13fdb9519d6c2d7d426ed8ca5ff8dba2cab6261de8752c7732956e40b52",
+        "quantileLevels": [
+          0.1,
+          0.5,
+          0.9
+        ],
+        "quantiles": [
+          [
+            [
+              4.0,
+              4.0,
+              4.0
+            ],
+            [
+              4.0,
+              4.0,
+              4.0
+            ],
+            [
+              4.0,
+              4.0,
+              4.0
+            ],
+            [
+              4.0,
+              4.0,
+              4.0
+            ],
+            [
+              4.0,
+              4.0,
+              4.0
+            ]
+          ]
+        ],
+        "reasonCodes": [],
+        "resourceReceiptDigest": "fc6e7f6adc11e271f165b1b07eb4697d4f0fde80cd0036b73013b970a551db67",
+        "sourceKind": "synthetic",
+        "status": "forecast",
+        "targetIds": [
+          "load"
+        ],
+        "transformDigest": "f0329e81bfd7d90ad8c954ff71c1b825b56845ceaf835d87fcc4092a1130b4bc",
+        "units": [
+          "count"
+        ],
+        "version": "agent-braid-forecast-v1"
+      },
+      "role": "independent-api",
+      "status": "returned"
+    },
+    {
+      "diagnostics": null,
+      "receipt": {
+        "costs": {
+          "containerMemoryBytes": 821862400,
+          "containerMemoryReason": null,
+          "modelCpuNs": 77649833,
+          "modelCpuReason": null,
+          "rssBytes": 903766016,
+          "rssReason": null,
+          "rssScope": "process-lifetime-peak-linux",
+          "wallNs": 84046291
+        },
+        "evidenceClass": "heuristic",
+        "executionAuthorization": false,
+        "futureTimesNs": [
+          12800000000,
+          12900000000,
+          13000000000,
+          13100000000,
+          13200000000,
+          13300000000,
+          13400000000,
+          13500000000,
+          13600000000,
+          13700000000
+        ],
+        "inputDigest": "4cdf1e8ead7e018af9dff09152baf34ca4e429d52d6716141277504759b6b9a9",
+        "intervalCalibration": "not-evaluated",
+        "median": [
+          [
+            4.0,
+            4.0,
+            4.0,
+            4.0,
+            4.0,
+            4.0,
+            4.0,
+            4.0,
+            4.0,
+            4.0
+          ]
+        ],
+        "modelDigest": "4d88052a9d8185b10943cbcd4a649a6eaff62995b5d526c225c5006ef39bffbf",
+        "packetDigest": "64e0e13159ab15004135de9c12b685afc1704f3ae5ca9b1ad62403c9a9de2125",
+        "partitionDigest": "3ec4e13fdb9519d6c2d7d426ed8ca5ff8dba2cab6261de8752c7732956e40b52",
+        "quantileLevels": [
+          0.1,
+          0.5,
+          0.9
+        ],
+        "quantiles": [
+          [
+            [
+              4.0,
+              4.0,
+              4.0
+            ],
+            [
+              4.0,
+              4.0,
+              4.0
+            ],
+            [
+              4.0,
+              4.0,
+              4.0
+            ],
+            [
+              4.0,
+              4.0,
+              4.0
+            ],
+            [
+              4.0,
+              4.0,
+              4.0
+            ],
+            [
+              4.0,
+              4.0,
+              4.0
+            ],
+            [
+              4.0,
+              4.0,
+              4.0
+            ],
+            [
+              4.0,
+              4.0,
+              4.0
+            ],
+            [
+              4.0,
+              4.0,
+              4.0
+            ],
+            [
+              4.0,
+              4.0,
+              4.0
+            ]
+          ]
+        ],
+        "reasonCodes": [],
+        "resourceReceiptDigest": "fc6e7f6adc11e271f165b1b07eb4697d4f0fde80cd0036b73013b970a551db67",
+        "sourceKind": "synthetic",
+        "status": "forecast",
+        "targetIds": [
+          "load"
+        ],
+        "transformDigest": "f0329e81bfd7d90ad8c954ff71c1b825b56845ceaf835d87fcc4092a1130b4bc",
+        "units": [
+          "count"
+        ],
+        "version": "agent-braid-forecast-v1"
+      },
+      "role": "independent-api",
+      "status": "returned"
+    },
+    {
+      "partialStdout": "",
+      "role": "independent-cli",
+      "status": "attempted",
+      "stderrBytes": 0
+    },
+    {
+      "exceptionType": "ForecastError",
+      "lastDockerObservation": null,
+      "reason": "input-budget-exceeded",
+      "role": "procedure-failure"
+    }
+  ],
+  "runClaimed": true,
+  "scientificUtilityAccepted": false,
+  "scope": "authentic-on-synthetic",
+  "status": "inconclusive",
+  "version": "agent-braid-fc2-remaining-controls-v1",
+  "wallNsThroughCleanup": 10439579709
+}
