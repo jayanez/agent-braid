@@ -171,11 +171,15 @@ This is not worker conformance or full deployment-cost evidence.
 
 Read-only metadata inspection of the installed EROFS image confirms `/usr/bin/runc`
 is a regular executable matching the pinned digest, and its containerd config
-declares `io.containerd.runc.v2`. The v6 receipt did not record the inherited
-`PATH`, so the cause of Docker's lookup failure is unresolved. An explicit
-`PATH` plus a preflight `command -v runc` observation is only a hypothesis for a
-future bounded diagnostic. No v7 packet has been validated or reviewed, and no
-further VM execution is admitted.
+declares `io.containerd.runc.v2`; the same image contains the executable
+`/usr/bin/containerd-shim-runc-v2` (SHA256
+`709fa03b8b731c50ce3241247a4945b49c14e3ef0d8584c0159daf291fcb151f`). The
+upstream [containerd Runtime V2 documentation](https://github.com/containerd/containerd/blob/main/docs/runtime-v2.md)
+says the runtime shim is resolved through the normal `PATH`. The v6 receipt did
+not record that environment, so this supports collecting and checking `PATH`
+and both runtime names but does not prove the cause of BuildKit's exact error.
+No v7 packet has been validated or reviewed, and no further VM execution is
+admitted.
 
 ## SPEC-045 task matrix
 
