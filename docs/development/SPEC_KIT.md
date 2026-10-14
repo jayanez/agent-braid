@@ -108,6 +108,14 @@ not verify consent, label quality, statistical validity or a positive result.
 
 ## Assurance record
 
+SPEC-045's draft assurance retains the historical synthetic software snapshot.
+After PR #508's linear-history integration, restore its exact already-public
+annotated draft tag `spec-045-software-candidate-bb2e032` with the same
+`restore_public_spec_history.py` command. The tool pins the tag object and peeled
+candidate; portable validation requires pending draft metadata, exact assurance
+bytes and both historical snapshots in that candidate's ancestry. This restores
+validation without changing the record or granting feature/model/source approval.
+
 Each `specs/<feature>/spec.md` requires a sibling `assurance.json`. Use the pilot's
 shape, never copy its claims as evidence. The required fields are:
 
