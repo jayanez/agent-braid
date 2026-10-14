@@ -1,0 +1,137 @@
+{
+  "change": "Independently rebuilt/installed source e6 including public-session deadline repair; real API/CLI/MCP reproduction plus owned attach-client fault and resident-worker OOM pressure control. Shared daemon never stopped.",
+  "checkpointDirectory": "owned-private-local-directory; exact absolute binding retained in private manifest",
+  "coldReadinessDecision": "355accef50c3433359c9dcb8255e8be5f0b7f6fbac08c183d670e34584c1580d",
+  "compute": {
+    "additionalSpendAuthorized": false,
+    "aggregateStageReservationSeconds": 442,
+    "claimAndSessionSetupMarginSeconds": 4,
+    "cleanupReserveSeconds": 30,
+    "concurrentProcedures": false,
+    "faultControls": 2,
+    "maxForecastRequests": 9,
+    "oneProcedure": true,
+    "profilesChangedAutomatically": false,
+    "requestSeconds": 450,
+    "retries": 0,
+    "signals": "owned-synthetic-only",
+    "totalSeconds": 480,
+    "training": false
+  },
+  "controlScriptSha256": "79d27f5fda18c412db7df44d4c47c2f948c89a0651ae55b0c9277ba27908dba8",
+  "controlTestsSha256": "3f264e0f8e65138a34d811f0f51ee03d544eefaea50c2331a6701914dde33187",
+  "cpuWheel": {
+    "sha256": "2af649994b36dffc627175c3f306d9e513a309b58d4619ac7107577613336454",
+    "url": "https://download-r2.pytorch.org/whl/cpu/torch-2.14.1%2Bcpu-cp312-cp312-manylinux_2_28_aarch64.whl",
+    "version": "2.14.1+cpu"
+  },
+  "decisionExcludes": [
+    "real-source-admission",
+    "experimental-launch",
+    "scientific-utility-acceptance",
+    "canonical-ADR-adoption",
+    "promotion"
+  ],
+  "deliveryBoundary": "Host and image core wheels use the same newly pinned CPU-admission source; API/MCP remain host interfaces and image serves worker protocol only.",
+  "download": {
+    "credentials": false,
+    "files": 2,
+    "filesAlreadyVerified": true,
+    "newCheckpointDownload": false,
+    "paidService": false,
+    "source": "https://huggingface.co/amazon/chronos-2/tree/29ec3766d36d6f73f0696f85560a422f50e8498c",
+    "totalBytes": 477931539
+  },
+  "engine": "existing-local-unix-socket; exact binding retained privately",
+  "hostWheelSha256": "0faea2370d5a8da15d613373e9d2414805fd17b79a00ee66c3ef0516900238df",
+  "hostWorkerSha256": "0a8076398a1de8767f2a0f65f24f82971608e605fa14a34426494acfb200aeb5",
+  "image": {
+    "Architecture": "arm64",
+    "Created": "2026-10-14T09:58:54.640720924Z",
+    "Id": "sha256:73f9cfa235f558a14620e54daccd844737dff274a59a030e2d933c59c60ba378",
+    "Os": "linux",
+    "Size": 1676559630
+  },
+  "imageCoreWheelSha256": "0faea2370d5a8da15d613373e9d2414805fd17b79a00ee66c3ef0516900238df",
+  "imageWorkerEntrySha256": "cf92e31985916c12319e109e8ef7bb0b640fdea2eef1f69bd7a7ab905220bafb",
+  "manifestDigest": "4d88052a9d8185b10943cbcd4a649a6eaff62995b5d526c225c5006ef39bffbf",
+  "manifestFields": {
+    "checkpointRevision": "29ec3766d36d6f73f0696f85560a422f50e8498c",
+    "dependencyLockDigest": "92518d2612ea9a66926465ace6b1356571f4bd32cfe47e2b135fa6a682d71919",
+    "files": {
+      "config.json": "ef1143bfdc9c0376d9a056eefca46cb4b1ec3d0ffacd541ff56feb40fb708031",
+      "model.safetensors": "ddcda3c7508bf2528087723e98a20707cc04b7f370ae275a9fd88078ddba4f42"
+    },
+    "imageId": "sha256:73f9cfa235f558a14620e54daccd844737dff274a59a030e2d933c59c60ba378",
+    "libraryVersion": "2.3.2",
+    "profile": {
+      "activeRequests": 1,
+      "coldDeadlineMs": 30000,
+      "coldReadiness": "first-valid-forecast",
+      "cpus": 1,
+      "memoryBytes": 2147483648,
+      "pids": 64,
+      "queuedRequests": 0,
+      "residentDeadlineMs": 1000,
+      "scratchBytes": 67108864,
+      "threads": 1
+    },
+    "sourceRevision": "0aba28e9360b6355d5a919596c90b16c25939f02",
+    "version": "agent-braid-chronos-cpu-manifest-v1"
+  },
+  "modelLoaded": false,
+  "modelWeightsProvisioned": true,
+  "outcomes": "Retain every registered attempted outcome and bounded partial diagnostics. Inconclusive/OOM allocator-only outcome is valid; no retry, automatic cap increase, shared daemon shutdown or new checkpoint download.",
+  "pendingOutsideScope": [
+    "Docker daemon crash; no isolated owned daemon available on this host",
+    "permissioned real workload sources and launch",
+    "scientific utility interpretation",
+    "canonical ADR adoption and promotion"
+  ],
+  "previousApprovedAttempt": {
+    "manifestDigest": "1ae8aff107c71e9e5e83b3e23806ea6fcafc742add1b569e6686d6dee1d17a60",
+    "oneRunPinRemoved": true,
+    "outcome": "conformant171 forecasts and2 cancellations",
+    "scope": "Historical exact v3 wheel/image; its decision cannot admit this package."
+  },
+  "registeredProcedures": [
+    "API horizons1/5/10, CLI horizon1 and MCP horizon1 using identical constant synthetic input and installed wheel outside checkout",
+    "owned attach-client interruption; live precondition and observed daemon availability, then worker-exited refusal and known-owner cleanup",
+    "resident-worker OOM: confirmed PID1 command/UID, unchanged cgroup, available kernel memory minus cap/current demand plus512MiB margin; own PID1 oom_score_adj1000 readback, bounded allocator, observed worker victim only, then public worker-oom refusal and cleanup"
+  ],
+  "reproduction": {
+    "buildTool": "setuptools84.0.0",
+    "coreModelLoaded": false,
+    "coreReproductionRawSha256": "45a8d86705f9c730548a2644450548f05fece03fa177f9920e4402867589212c",
+    "grantedSyntheticGitEpisodes": 2,
+    "installedApiCliMcpParity": true,
+    "installedCoreResponses": 216,
+    "optionalImageNoModelSmokeSha256": "b26a68c6694f76423e0f765457a7c886a62c05eb0240b4f865a680dd3ecb1847",
+    "ownGitDirectory": true,
+    "preflight": "passed",
+    "publicCloneFromGitHub": true,
+    "python": "3.13.11",
+    "repeatWheelByteEqual": true,
+    "sourceDateEpoch": 1791969791
+  },
+  "requestRevision": 4,
+  "rights": "Apache-2.0 checkpoint/package metadata and41-dependency closure retained for exact owner review; no rights approval inferred",
+  "softwareCandidate": "e6d1e6ee870611e41b83f5239544061f7e58de86",
+  "sourceConformance": {
+    "byteEqual": true,
+    "modelLoaded": false,
+    "pipelineReferenceSha256": "9fad1e4fb7251471463a40408a32d25d31b23b7afb88069911f095071b9b0599",
+    "pipelineWheelSha256": "9fad1e4fb7251471463a40408a32d25d31b23b7afb88069911f095071b9b0599",
+    "sourceRevision": "0aba28e9360b6355d5a919596c90b16c25939f02",
+    "wheelSha256": "0f0d9a1972f252d6cf584b9fa749bd1b389b3c1cf05a889c4130cb10652c2117"
+  },
+  "status": "pending-owner-decision",
+  "supersedesProposalSha256": "3c33618606e41ebb3763ae708836bff2afe2dd5b70491087f382be49d81c3d58",
+  "technicalReview": {
+    "driverDisposition": "no remaining blocker in code/math delta",
+    "focusedTests": 9,
+    "model": "gpt-6-luna",
+    "modelOrDockerWorkloadExecutedByReviewer": false
+  },
+  "version": "agent-braid-model-approval-request-v1"
+}

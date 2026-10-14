@@ -1,0 +1,24 @@
+{
+  "candidate": "cb23bdc1c829cc0fea6f433a44a80534a7550234",
+  "command": [
+    "isolated-python",
+    "scripts/validate_change.py",
+    "--base",
+    "develop",
+    "--profile",
+    "pr"
+  ],
+  "cwd": "owned full Git clone",
+  "exit": 0,
+  "finishedUnixNs": 1791961872614706000,
+  "humanAcceptance": false,
+  "pythonPathFirst": "isolated Python3.13.11",
+  "remoteStatus": "success",
+  "remoteWorkflowRun": "https://github.com/jayanez/agent-braid/actions/runs/38524256245",
+  "scope": "Previous exact candidate cb23bdc, not new CPU admission delta",
+  "seconds": 1456.259,
+  "skipped": 12,
+  "startedUnixNs": 1791960287632146000,
+  "tests": 1457,
+  "timeoutSeconds": 3600
+}

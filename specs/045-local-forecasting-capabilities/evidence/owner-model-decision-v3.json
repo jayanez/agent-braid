@@ -1,0 +1,16 @@
+{
+  "activePinRemovedAfterAttempt": true,
+  "decision": "approved",
+  "excludes": [
+    "real-source-admission",
+    "experimental-launch",
+    "scientific-utility-acceptance",
+    "canonical-ADR-adoption",
+    "promotion"
+  ],
+  "manifestDigest": "1ae8aff107c71e9e5e83b3e23806ea6fcafc742add1b569e6686d6dee1d17a60",
+  "proposalSha256": "3c33618606e41ebb3763ae708836bff2afe2dd5b70491087f382be49d81c3d58",
+  "retainedPrivateDecisionSha256": "c7e0fc8fafbb19524fd571812dda1aba206015dc5f8d93859f053a7c02261a31",
+  "scope": "exact v3 CPU package and adopted cold-readiness compute envelope only",
+  "version": "agent-braid-public-owner-model-decision-v3"
+}

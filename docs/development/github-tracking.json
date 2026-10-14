@@ -20,7 +20,8 @@
     "S1.3 — Advisory integration": "Advisory integration across Agent Braid decision stages; draft implementation track, no accepted utility claim.",
     "S1.4 — Product capabilities and promotion": "Per-feature advanced capability acceptance plus separately governed shadow, promotion, drift, rollback and closure.",
     "FC.1 — Forecast-guided parallelism experiment": "Permissioned workload telemetry, optional local Chronos-2, prospective forecasting/complete-cost parallelism experiment and separately governed shadow/promotion. Negative or infeasible outcomes are valid; no new execution domain or M4 closure.",
-    "M4.5 — AI tooling integrations for Codex and Claude Code": "Adjacent to bounded-complete M4; M4 historical G4 NO-GO and negative utility preserved. Local candidate-bound technical procedures passed: 8 program controls, 8 MCP scenarios/37 tests, 13 lifecycle tests, 223 engineering tests without skips, and macOS/Linux-emulated package checks. 60 original task criteria retained; 19 auxiliary evidence tasks produce 52/79 task issues complete, 27 pending, plus six open parents. Native Codex/Claude acceptance, human interpretation, founder decision, ADR adoption and milestone closure remain pending; M3.5 is independent with zero admitted real pairs."
+    "M4.5 — AI tooling integrations for Codex and Claude Code": "Adjacent to bounded-complete M4; M4 historical G4 NO-GO and negative utility preserved. Local candidate-bound technical procedures passed: 8 program controls, 8 MCP scenarios/37 tests, 13 lifecycle tests, 223 engineering tests without skips, and macOS/Linux-emulated package checks. 60 original task criteria retained; 19 auxiliary evidence tasks produce 52/79 task issues complete, 27 pending, plus six open parents. Native Codex/Claude acceptance, human interpretation, founder decision, ADR adoption and milestone closure remain pending; M3.5 is independent with zero admitted real pairs.",
+    "FC.2 — Local forecasting capabilities": "Local default-off API/CLI/MCP forecasting, synthetic engineering/reproduction and separately approved actual Chronos CPU conformance; no real workload utility or promotion implied."
   },
   "closed_milestones": [
     "M0 — Operational foundations",
@@ -206,6 +207,10 @@
     "044-ai-tooling-evaluation": {
       "milestone": "M4.5 — AI tooling integrations for Codex and Claude Code",
       "state": "open"
+    },
+    "045-local-forecasting-capabilities": {
+      "milestone": "FC.2 — Local forecasting capabilities",
+      "state": "open"
     }
   },
   "task_state_overrides": {
@@ -233,7 +238,8 @@
     "SPEC-037",
     "SPEC-041",
     "SPEC-043",
-    "SPEC-044"
+    "SPEC-044",
+    "SPEC-045"
   ],
   "milestone_numbers": {
     "M0 — Operational foundations": 1,
@@ -254,6 +260,7 @@
     "S1.3 — Advisory integration": 16,
     "S1.4 — Product capabilities and promotion": 17,
     "FC.1 — Forecast-guided parallelism experiment": 18,
-    "M4.5 — AI tooling integrations for Codex and Claude Code": 19
+    "M4.5 — AI tooling integrations for Codex and Claude Code": 19,
+    "FC.2 — Local forecasting capabilities": 20
   }
 }

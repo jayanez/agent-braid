@@ -19,6 +19,7 @@ dependencies = []
 
 [project.optional-dependencies]
 tooling = ["mcp==2.3.0"]
+forecast = ["chronos-forecasting==2.3.2"]
 
 [project.scripts]
 agent-braid = "agent_braid.cli:main"

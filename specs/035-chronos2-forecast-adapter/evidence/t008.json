@@ -1,0 +1,43 @@
+{
+  "command": "installed Python scripts/reproduce_forecast_cpu.py --manifest PRIVATE_MANIFEST --output PRIVATE_OUTPUT (cwd /tmp)",
+  "disposition": "partial; installed e6 API/CLI/MCP real CPU synthetic parity and owned model OOM/attach failure observations obtained; remaining engine/cost/predecessor gates remain",
+  "laterSoftwareCandidate": "e6d1e6ee870611e41b83f5239544061f7e58de86",
+  "obtainedEvidence": [
+    {
+      "cancellations": 2,
+      "cleanupConfirmed": true,
+      "domain": "authentic-on-synthetic",
+      "forecasts": 171,
+      "path": "../../045-local-forecasting-capabilities/evidence/actual-cpu-v3-conformant.json",
+      "sha256": "cfd925669232a71b08819714ef8f041db6c28a3e8c0638800455af695f48907d"
+    },
+    {
+      "cleanupConfirmed": true,
+      "domain": "authentic-on-synthetic",
+      "failureRefusals": 2,
+      "forecasts": 7,
+      "path": "../../045-local-forecasting-capabilities/evidence/actual-cpu-v5-observed.json",
+      "retainedPrivateOriginalSha256": "f6937101272e01408ead49e0e726834c52c797d32a04aeb13b51502640079bb4",
+      "scope": "API H1/5/10 and CLI/MCP H1 parity; owned attach fault and induced resident-worker OOM; no daemon crash/full cost/utility acceptance",
+      "sha256": "c568b40c643542f948778167826690a0e96146743130b600d2ac0dc165e64068",
+      "softwareCandidate": "e6d1e6ee870611e41b83f5239544061f7e58de86"
+    }
+  ],
+  "pending": [
+    "isolated-engine-crash",
+    "complete-deployment-cost-accounting",
+    "predecessor-evidence-chain"
+  ],
+  "requirements": [
+    "REQ-002",
+    "REQ-007"
+  ],
+  "scenarios": [
+    "SC-002",
+    "SC-007"
+  ],
+  "scope": "No real workload utility or promotion; per-response prediction CPU/cgroup/RSS costs are not full deployment accounting. v1/v2 failure history retained.",
+  "softwareCandidate": "1c0a08a0726ecb333c77a8ddacbbbae767c4ff3d",
+  "task": "SPEC-035/T008",
+  "version": "agent-braid-task-evidence-v1"
+}

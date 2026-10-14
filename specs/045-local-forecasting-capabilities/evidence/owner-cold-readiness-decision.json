@@ -1,0 +1,17 @@
+{
+  "version": "agent-braid-owner-cold-readiness-decision-v1",
+  "decision": "adopted",
+  "date": "2026-10-14",
+  "sourceReference": "interactive decision call_fd991bc267934c429900dd70b4d2b4b6",
+  "answer": "Adoptar la aclaraci\u00f3n (recomendado)",
+  "reviewedProposalSha256": "473da6f1d0b50d7972ce39c972ba2b19de0390bc4a9395404de7e5a534eb0684",
+  "scope": "Implement and review first registered valid forecast within total cold30s; subsequent requests1s. Existing numerical caps and attempt accounting unchanged.",
+  "changedArtifactLoadingApproved": false,
+  "excludes": [
+    "canonical-ADR-adoption",
+    "real-source-admission",
+    "experiment-launch",
+    "scientific-utility-acceptance",
+    "promotion"
+  ]
+}
