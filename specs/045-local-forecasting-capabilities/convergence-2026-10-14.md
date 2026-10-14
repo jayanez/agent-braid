@@ -91,6 +91,25 @@ receipt, console, lease, pin and process state. This failed attempt cannot close
 the integrated worker fault or full-cost obligation. Any further correction needs
 a new exact procedure and owner decision.
 
+The shell-based request SHA256
+`49e62e87a496e504a2504ae73fcc1ea2b3beeefebf1e78814b53007d0ac1dca8` was then
+admitted and consumed once. The guest verified its existing `/dev` mount, formatted
+and mounted only its private scratch disk, and invoked `/usr/bin/dockerd` with the
+owned socket and data paths. The captured PID was 117 with `comm=bash`; the guest
+never established the expected executable identity or Docker readiness. Two
+readiness probes found no Unix socket, `kill -0` then found the process absent, and
+the shell ended `incomplete` with no crash-admit token. No `/info`, image or
+container observations were made and no daemon crash was induced. The VM stopped
+with cleanup confirmed in 68.793450334 seconds; the helper reported 68.422456958
+seconds. The owner pin was removed and claim retained. The private 20 GiB ext4
+scratch image remains preserved (8,872 host blocks allocated) and reports that
+journal recovery would be needed; it has not been mounted or repaired. The daemon
+log was directed to guest `/run` tmpfs and was lost on VM stop. Luna Latest
+independently confirmed the result and process boundary without another VM run.
+This attempt establishes neither daemon readiness nor crash conformance. Any new
+procedure must preserve bounded daemon diagnostics outside ephemeral guest tmpfs
+and needs its own exact review and owner decision.
+
 ## SPEC-045 task matrix
 
 | Task | Obtained evidence and procedure | Remaining acceptance boundary |
@@ -125,11 +144,12 @@ or promotes forecasting. M4 historical utility NO-GO is unchanged.
    admitted exact procedure. Keep every uncovered deployment counter visible.
 2. Complete daemon-environment readiness and exact integrated cost/fault admission.
    Native VM boot/stop and a read-only Linux shell are separately qualified; the
-   two admitted empty-engine attempts failed before daemon startup: first the guest
-   interpreter was incomplete, then `/dev` was already mounted. Correct and review
-   the collector under a new packet before requesting any further run. Docker
-   readiness, integrated worker/daemon failure and model cost collection remain
-   pending; consumed decisions admit no further run.
+   three admitted empty-engine attempts remain incomplete: the first lacked guest
+   `encodings`, the second found `/dev` already mounted, and the third invoked the
+   daemon launcher without reaching readiness or preserving its tmpfs log. Prepare
+   and review a new collector that captures bounded startup diagnostics before any
+   later owner decision. Docker readiness, integrated worker/daemon failure and
+   model cost collection remain pending; consumed decisions admit no further run.
 3. The exact software candidate is frozen and validated. Merge requires the owner's
    actual integration decision. Post-merge tracking must use canonical clean
    develop, reviewed guarded operations and FC.1/FC.2-only readback; do not apply
