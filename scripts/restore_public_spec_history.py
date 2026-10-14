@@ -85,6 +85,10 @@ PRESERVED_DRAFT_TAGS = (
      "refs/tags/m45-tooling-candidate-ae20930",
      "ae209301764562bde858b4a2eedd7c7a97f6688f",
      "5c4269e04e97d734ae87fa7173236b86c65d5427"),
+    ("specs/045-local-forecasting-capabilities/assurance.json",
+     "refs/tags/spec-045-software-candidate-bb2e032",
+     "bb2e0322fdf0fe3eabc6e28fec4864c9cfc954df",
+     "d4d02eac6f4d4511df03ead37d484e7b6ab511c5"),
 )
 
 
