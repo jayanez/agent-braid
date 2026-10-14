@@ -1,59 +1,131 @@
-name: Reproduce bounded M4 runtime
+name: Reproduce frozen M4.5 engineering candidate
 
 on:
   workflow_dispatch:
     inputs:
       candidate_commit:
-        description: Full public commit SHA to reproduce
+        description: Exact frozen public candidate commit
+        required: true
+        type: string
+      approval_payload_sha256:
+        description: Coordinator-verified exact owner approval payload reference; cloud does not authenticate approval
+        required: true
+        type: string
+      dependency_archive_sha256:
+        description: Exact frozen public dependency archive digest
         required: true
         type: string
 
 permissions:
   contents: read
 
+# Serial one-shot engineering reproduction; no native hosts, matrix or paid runner fallback.
+concurrency:
+  group: m45-frozen-linux-reproduction-4fa12c6
+  cancel-in-progress: false
+
 jobs:
   reproduce:
-    name: Fresh-process Linux runtime reproduction
+    name: Registered Linux x86_64 engineering reproduction
     runs-on: ubuntu-24.04
-    timeout-minutes: 15
+    timeout-minutes: 30
     steps:
-      - name: Require a public immutable candidate
+      - name: Require exact public candidate and frozen artifact
         shell: bash
         env:
           CANDIDATE_COMMIT: ${{ inputs.candidate_commit }}
+          APPROVAL_PAYLOAD_SHA256: ${{ inputs.approval_payload_sha256 }}
+          DEPENDENCY_ARCHIVE_SHA256: ${{ inputs.dependency_archive_sha256 }}
           REPOSITORY_PRIVATE: ${{ github.event.repository.private }}
+          REPOSITORY_NAME: ${{ github.repository }}
+          WORKFLOW_REF: ${{ github.ref }}
         run: |
-          [[ "$CANDIDATE_COMMIT" =~ ^[0-9a-f]{40}$ ]] || exit 1
           test "$REPOSITORY_PRIVATE" = "false"
+          test "$REPOSITORY_NAME" = "jayanez/agent-braid"
+          test "$WORKFLOW_REF" = "refs/heads/m45-reproduction-4fa12c6-v4"
+          test "$CANDIDATE_COMMIT" = "4fa12c69985484b1ea3640e59d17cbf96cae8ffa"
+          test "$DEPENDENCY_ARCHIVE_SHA256" = "35cf016e2306e837df5361a095b745699991a2afd413a7378d128a8efcd500e6"
+          [[ "$APPROVAL_PAYLOAD_SHA256" =~ ^[0-9a-f]{64}$ ]]
+          # This input is a receipt reference. The trusted local coordinator must verify approval before dispatch.
 
-      - name: Check out the public candidate
-        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1 (Node 24)
+      - name: Fresh full checkout of the candidate
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           ref: ${{ inputs.candidate_commit }}
           fetch-depth: 0
           persist-credentials: false
 
-      - name: Set up Python 3.12
+      - name: Exact CPython 3.13.11 x64
         uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
         with:
-          python-version: "3.12"
+          python-version: "3.13.11"
+          architecture: x64
+          check-latest: false
 
-      - name: Install development-only schema validator
-        run: python3 -m pip install --no-cache-dir -r requirements-dev.txt
-
-      - name: Confirm the clean candidate and Linux x86_64
-        shell: bash
+      - name: Download only the frozen public GitHub release asset
         env:
-          CANDIDATE_COMMIT: ${{ inputs.candidate_commit }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        shell: bash
         run: |
-          test "$(git rev-parse HEAD)" = "$CANDIDATE_COMMIT"
-          test -z "$(git status --porcelain)"
-          test "$(uname -s)" = "Linux"
-          test "$(uname -m)" = "x86_64"
+          mkdir -p "$RUNNER_TEMP/m45-dependencies"
+          gh release download "m45-registration-4fa12c6-dependencies-v4" \
+            --repo "jayanez/agent-braid" \
+            --pattern "m45-linux-dependencies-4fa12c6-v4.tar.gz" \
+            --dir "$RUNNER_TEMP/m45-dependencies"
 
-      - name: Capture bounded runtime reproduction
-        run: python3 -m scripts.reproduce_m4_runtime --output "$RUNNER_TEMP/m4-evidence/reproduction.json"
+      - name: Verify archive bytes before any extraction or execution
+        env:
+          DEPENDENCY_ARCHIVE_SHA256: ${{ inputs.dependency_archive_sha256 }}
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import hashlib, os, pathlib, tarfile
+          archive = pathlib.Path(os.environ['RUNNER_TEMP']) / 'm45-dependencies/m45-linux-dependencies-4fa12c6-v4.tar.gz'
+          expected = '35cf016e2306e837df5361a095b745699991a2afd413a7378d128a8efcd500e6'
+          assert os.environ['DEPENDENCY_ARCHIVE_SHA256'] == expected
+          assert hashlib.sha256(archive.read_bytes()).hexdigest() == expected
+          destination = archive.parent / 'unpacked'
+          destination.mkdir()
+          with tarfile.open(archive, 'r:gz') as handle:
+              members = handle.getmembers()
+              assert len(members) == 67 and sum(row.size for row in members) < 100_000_000
+              assert all(row.isfile() and not pathlib.PurePosixPath(row.name).is_absolute() and '..' not in pathlib.PurePosixPath(row.name).parts for row in members)
+              handle.extractall(destination, filter='data')
+          PY
+          python3 "$RUNNER_TEMP/m45-dependencies/unpacked/verify_public_dependencies.py" "$RUNNER_TEMP/m45-dependencies/unpacked"
 
-      - name: Publish the public record in logs and job summary
+      - name: Execute frozen offline installation, build and full PR profile once
+        env:
+          APPROVAL_PAYLOAD_SHA256: ${{ inputs.approval_payload_sha256 }}
+          DEPENDENCY_ARCHIVE_SHA256: ${{ inputs.dependency_archive_sha256 }}
+          PYTHONDONTWRITEBYTECODE: "1"
+          PIP_NO_INDEX: "1"
+          PIP_FIND_LINKS: ${{ runner.temp }}/m45-dependencies/unpacked/linux-x86_64
+        shell: bash
+        run: |
+          python3 -m venv "$RUNNER_TEMP/m45-reproduction-venv"
+          "$RUNNER_TEMP/m45-reproduction-venv/bin/python3" \
+            "$RUNNER_TEMP/m45-dependencies/unpacked/linux_receipt.py" \
+            --candidate-root "$GITHUB_WORKSPACE" \
+            --wheelhouse-root "$RUNNER_TEMP/m45-dependencies/unpacked" \
+            --output "$RUNNER_TEMP/m45-reproduction/receipt.json" \
+            --approval-payload-sha256 "$APPROVAL_PAYLOAD_SHA256" \
+            --dependency-archive-sha256 "$DEPENDENCY_ARCHIVE_SHA256"
+
+      - name: Publish original platform receipt and preserve failure visibility
         if: ${{ always() }}
-        run: python3 -m scripts.summarize_public_experiment --record "$RUNNER_TEMP/m4-evidence/reproduction.json"
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import os, pathlib
+          receipt = pathlib.Path(os.environ['RUNNER_TEMP']) / 'm45-reproduction/receipt.json'
+          if not receipt.is_file():
+              print('M4.5 reproduction receipt unavailable; execution did not reach the pinned driver. Earlier failed/skipped steps remain explicit.')
+              raise SystemExit(1)
+          original = receipt.read_text()
+          print('M45_LINUX_ORIGINAL_PLATFORM_RECEIPT_BEGIN')
+          print(original)
+          print('M45_LINUX_ORIGINAL_PLATFORM_RECEIPT_END')
+          with open(os.environ['GITHUB_STEP_SUMMARY'], 'a') as summary:
+              summary.write('## Frozen M4.5 Linux engineering reproduction\n\n```json\n' + original + '\n```\n')
+          PY
