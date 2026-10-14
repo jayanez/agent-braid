@@ -257,6 +257,17 @@ or promotes forecasting. M4 historical utility NO-GO is unchanged.
    cost collection remain pending. Diagnose and test the receipt protocol
    offline with synthetic null/499 fixtures before proposing any new exact
    execution packet; consumed approvals do not carry over.
+   Offline diagnostic follow-up now records the shared admission state machine
+   and parser fixture at
+   `evidence/procedures/owned-engine-preflight/`. Synthetic `/info=null` and
+   HTTP 499 cases reject without token admission; missing guest receipt expires
+   after five seconds. Independent Luna review found and then cleared a race in
+   which queued readiness could be admitted during shutdown: cancellation is
+   now terminal, preflight processing checks stop state, and bounded token
+   delivery is serialized on the supervisor queue. Swift fixture tests,
+   supervisor typecheck, and 18 Python diagnostic tests pass. These tests do
+   not exercise real signal scheduling, VM cleanup, or guest EXIT-trap delivery;
+   no VM, daemon, model, or new approval packet was used.
 3. The exact software candidate is frozen and validated. Merge requires the owner's
    actual integration decision. Post-merge tracking must use canonical clean
    develop, reviewed guarded operations and FC.1/FC.2-only readback; do not apply
