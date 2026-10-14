@@ -131,13 +131,38 @@ configuration-only receipt is 144 bytes and reports `vmCreated=false` and
 the bounded-input control and plan-only validation passed. The live-FIFO test
 does not exercise the join timeout or VM supervisor stop timeout dynamically;
 those paths were source-reviewed and remain separate from executed evidence.
-The plan still reports `pending-owner-decision`; no v5 VM, Docker daemon or
-container has run, and no v5 decision, pin or claim exists. The request retains
-one own VM, one guest vCPU, 4 GiB guest RAM, 20 GiB private scratch, 145 seconds
-supervised total, 204 local API queries maximum, no network or shared folders,
-no images or containers, no retries and zero additional spend. This would only
-qualify an isolated empty-engine environment; it does not accept worker
-conformance or complete deployment cost.
+The v5 request was then approved and consumed once. Its VM and private scratch
+were cleaned up and the owner pin was removed. Linux reached the guest shell and
+started the pinned `/usr/bin/dockerd`, but Docker exited before readiness with
+`invalid userland-proxy-path: userland-proxy is enabled, but userland-proxy-path
+is not set`. Two readiness probes observed no socket; no `/info`, image or
+container observations were made, no crash admission was issued and no signal
+was sent. The receipt also exposed a count parser defect: the collector saved
+the decimal `wc` output, but the summary treated the count's text length as the
+number of drained bytes. The attempt result SHA256 is
+`d1cd4f6687a59d0c5b0505fb171ca4d8917fce1e35ced6711683874385b009ba`.
+
+## Corrected empty-engine packet prepared, not executed
+
+The v6 packet SHA256 is
+`70be094fbce64dc5ebe06a1757da7106a2764a7331f42be4b1c24a925d925e4f`.
+It explicitly disables Docker's userland proxy in the owned daemon config,
+checks that config with one `dockerd --validate` invocation before daemon start,
+and parses the numeric drained-tail count before computing total bytes and the
+truncation flag. The updated host protocol pins the exact new config bytes, and
+the request records the consumed v5 failure and cleanup result.
+
+The packet's 16 Python synthetic tests (including the counter/truncation cases
+and live FIFO cap), 11 native preflight cases, Bash syntax check and bounded
+input control passed. The signed helper verifies with its sole Virtualization
+entitlement, its embedded guest script matches the source, and the refreshed
+configuration-only receipt says `vmCreated=false` and `vmStarted=false`. The
+wrapper plan reports `pending-owner-decision`. Luna independently reviewed this
+exact v6 packet and found it ready for owner presentation, with the dynamic-test
+limits stated above; no v6 VM or daemon has run. Its requested scope remains one
+own VM and empty daemon, no network/shared folders, images, containers, model,
+inference or additional spend, and does not establish worker conformance or
+complete deployment cost.
 
 ## SPEC-045 task matrix
 
@@ -172,13 +197,15 @@ or promotes forecasting. M4 historical utility NO-GO is unchanged.
 1. Integrate actual engine/model counters and setup allocation under a separately
    admitted exact procedure. Keep every uncovered deployment counter visible.
 2. Complete daemon-environment readiness and exact integrated cost/fault admission.
-   Native VM boot/stop and a read-only Linux shell are separately qualified; the
-   three admitted empty-engine attempts remain incomplete: the first lacked guest
-   `encodings`, the second found `/dev` already mounted, and the third invoked the
-   daemon launcher without reaching readiness or preserving its tmpfs log. The
-   reviewed v5 bounded collector is ready for its exact owner decision. Docker
-   readiness, integrated worker/daemon failure and model cost collection remain
-   pending; consumed decisions admit no further run.
+   Native VM boot/stop and a read-only Linux shell are separately qualified; four
+   admitted empty-engine attempts remain incomplete: the first lacked guest
+   `encodings`, the second found `/dev` already mounted, the third did not establish
+   the daemon executable identity, and v5 reached the pinned daemon but rejected
+   its configuration before readiness. V6 corrects that config and its byte-count
+   parser; Luna reviewed it ready for presentation, and the exact owner decision
+   is pending. Docker readiness,
+   integrated worker/daemon failure and model cost collection remain pending;
+   consumed decisions admit no further run.
 3. The exact software candidate is frozen and validated. Merge requires the owner's
    actual integration decision. Post-merge tracking must use canonical clean
    develop, reviewed guarded operations and FC.1/FC.2-only readback; do not apply
