@@ -71,3 +71,7 @@ isolated-engine proposal requires an owned Linux VM and pinned runtime/kernel/
 rootfs/daemon/configuration before an exact execution packet can be reviewed.
 See `contracts/technical-cost.md`, `isolated-engine-control-proposal.md` and the
 `convergence-2026-10-14.md` task/evidence matrix. No model approval was reused.
+
+## Integration and tracking reconciliation
+
+[Delivery readiness](delivery-readiness.md) maps the original task criteria and SPEC-045 T001–T008 to obtained evidence and remaining gates. Milestone FC.2 is registered as #20. The current task/evidence and GitHub issue publication path is additive; historical assurances and consumed execution approvals remain unchanged.

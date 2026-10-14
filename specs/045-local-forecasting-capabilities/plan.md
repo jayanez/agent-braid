@@ -10,7 +10,7 @@ Articles 6/12 preserve runtime correctness, isolation and independent grants; 7/
 
 ## Research, assumptions and alternatives
 
-Existing M4 is bounded-complete with historical utility NO-GO. Relevant M4.5 measurement primitives are reusable only within their observed scopes: sampled root RSS is not enforced capacity. Docker local cgroup memory/CPU enforcement is a separate model-worker profile. No actual checkpoint approval exists.
+Existing M4 is bounded-complete with historical utility NO-GO. Relevant M4.5 measurement primitives are reusable only within their observed scopes: sampled root RSS is not enforced capacity. Docker local cgroup memory/CPU enforcement is a separate model-worker profile. At initial planning no checkpoint approval existed. The consumed exact v3/v5 approvals and authentic-on-synthetic observations are indexed in `implementation-status.md`; they do not admit another model load.
 
 ## Design and compatibility
 

@@ -260,6 +260,7 @@
     "S1.3 — Advisory integration": 16,
     "S1.4 — Product capabilities and promotion": 17,
     "FC.1 — Forecast-guided parallelism experiment": 18,
-    "M4.5 — AI tooling integrations for Codex and Claude Code": 19
+    "M4.5 — AI tooling integrations for Codex and Claude Code": 19,
+    "FC.2 — Local forecasting capabilities": 20
   }
 }
