@@ -1,7 +1,7 @@
 # FC.2 convergence supplement: costs and daemon boundary
 
 This companion supersedes stale *pending actual-model* descriptions only within
-the exact recorded v3/v5 scope. Historical assurance snapshots and original task
+the exact recorded source-e6/Chronos-v5 and owned-engine-v3 scope. Historical assurance snapshots and original task
 criteria remain unchanged. No checkbox, GitHub issue, milestone or approval is
 closed by this inventory. The new cost observer is an additive software candidate;
 it has not been exercised with an actual model.
@@ -110,6 +110,35 @@ This attempt establishes neither daemon readiness nor crash conformance. Any new
 procedure must preserve bounded daemon diagnostics outside ephemeral guest tmpfs
 and needs its own exact review and owner decision.
 
+## Bounded daemon-log correction prepared, not executed
+
+The v4 collector was not presented to the owner or executed. Luna's review found
+that its console export stopped at 32 KiB while the persistent ext4 log remained
+unbounded. The v5 collector corrects the writer path: a private FIFO feeds an
+exact 32,768-byte persistent prefix, and a separate reader continuously drains
+the remaining output until EOF while retaining only its byte count. An
+independent synthetic FIFO test kept the writer open for 3.2 seconds, then sent
+another 1 MiB; the stored file stayed at 32 KiB and the writer completed. The
+guest's post-stop join is bounded to one second and reports failure if the reader
+is still active; a missing completion marker fails closed.
+
+The exact v5 request is SHA256
+`2d559fe1783b3ddd12297207ad6049cde3776a0f3a13b21bf4a61cd1b9e79286`.
+Luna Latest independently checked all 21 unique asset bindings, embedded shell,
+code signature and its sole Virtualization entitlement. Its refreshed
+configuration-only receipt is 144 bytes and reports `vmCreated=false` and
+`vmStarted=false`. Fifteen Python synthetic tests, eleven native preflight cases,
+the bounded-input control and plan-only validation passed. The live-FIFO test
+does not exercise the join timeout or VM supervisor stop timeout dynamically;
+those paths were source-reviewed and remain separate from executed evidence.
+The plan still reports `pending-owner-decision`; no v5 VM, Docker daemon or
+container has run, and no v5 decision, pin or claim exists. The request retains
+one own VM, one guest vCPU, 4 GiB guest RAM, 20 GiB private scratch, 145 seconds
+supervised total, 204 local API queries maximum, no network or shared folders,
+no images or containers, no retries and zero additional spend. This would only
+qualify an isolated empty-engine environment; it does not accept worker
+conformance or complete deployment cost.
+
 ## SPEC-045 task matrix
 
 | Task | Obtained evidence and procedure | Remaining acceptance boundary |
@@ -146,10 +175,10 @@ or promotes forecasting. M4 historical utility NO-GO is unchanged.
    Native VM boot/stop and a read-only Linux shell are separately qualified; the
    three admitted empty-engine attempts remain incomplete: the first lacked guest
    `encodings`, the second found `/dev` already mounted, and the third invoked the
-   daemon launcher without reaching readiness or preserving its tmpfs log. Prepare
-   and review a new collector that captures bounded startup diagnostics before any
-   later owner decision. Docker readiness, integrated worker/daemon failure and
-   model cost collection remain pending; consumed decisions admit no further run.
+   daemon launcher without reaching readiness or preserving its tmpfs log. The
+   reviewed v5 bounded collector is ready for its exact owner decision. Docker
+   readiness, integrated worker/daemon failure and model cost collection remain
+   pending; consumed decisions admit no further run.
 3. The exact software candidate is frozen and validated. Merge requires the owner's
    actual integration decision. Post-merge tracking must use canonical clean
    develop, reviewed guarded operations and FC.1/FC.2-only readback; do not apply
