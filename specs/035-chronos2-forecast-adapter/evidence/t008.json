@@ -1,0 +1,33 @@
+{
+  "command": "installed Python scripts/reproduce_forecast_cpu.py --manifest PRIVATE_MANIFEST --output PRIVATE_OUTPUT (cwd /tmp)",
+  "disposition": "partial; approved real CPU synthetic conformance obtained; predecessor and remaining procedures/cost accounting gates remain",
+  "obtainedEvidence": [
+    {
+      "cancellations": 2,
+      "cleanupConfirmed": true,
+      "domain": "authentic-on-synthetic",
+      "forecasts": 171,
+      "path": "../../045-local-forecasting-capabilities/evidence/actual-cpu-v3-conformant.json",
+      "sha256": "cfd925669232a71b08819714ef8f041db6c28a3e8c0638800455af695f48907d"
+    }
+  ],
+  "pending": [
+    "engine-crash",
+    "model-OOM-control",
+    "independent-clean-room-model-reproduction",
+    "complete-deployment-cost-accounting",
+    "predecessor-evidence-chain"
+  ],
+  "requirements": [
+    "REQ-002",
+    "REQ-007"
+  ],
+  "scenarios": [
+    "SC-002",
+    "SC-007"
+  ],
+  "scope": "No real workload utility or promotion; per-response prediction CPU/cgroup/RSS costs are not full deployment accounting. v1/v2 failure history retained.",
+  "softwareCandidate": "1c0a08a0726ecb333c77a8ddacbbbae767c4ff3d",
+  "task": "SPEC-035/T008",
+  "version": "agent-braid-task-evidence-v1"
+}

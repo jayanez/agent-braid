@@ -30,6 +30,9 @@ class ForecastSession:
         keys(request,('version','backend','window','horizon','alpha'))
         require(request['version']=='agent-braid-forecast-request-v1','unsupported-request-version')
         require(request['backend'] in ('persistence','ewma','chronos2'),'unsupported-backend')
+        if request['backend']=='chronos2':
+            resident=bool(self.adapter.worker is not None and self.adapter.worker.loaded)
+            deadline=min(deadline if deadline is not None else float('inf'),started/1e9+(1 if resident else 30))
         window=validate_window(request['window']);require(type(request['horizon']) is int and request['horizon'] in (1,5,10),'unsupported-horizon')
         finite(request['alpha']);require(0<request['alpha']<=1,'invalid-ewma-alpha')
         require(self.lock.acquire(blocking=False),'session-busy')
@@ -45,12 +48,16 @@ class ForecastSession:
                 return envelope(window,request['horizon'],model_digest=model_digest,status='timed-out',reasons=('deadline-exceeded',),started_ns=started)
             key=self.cache.key(request,model_digest);cached=self.cache.get(key)
             if cached is not None:
+                if deadline is not None and time.monotonic()>=deadline:
+                    return envelope(window,request['horizon'],model_digest=model_digest,status='timed-out',reasons=('deadline-exceeded',),started_ns=started)
                 result=envelope(window,request['horizon'],model_digest=cached['modelDigest'],quantiles=cached['quantiles'],started_ns=started)
                 self.last_cache_receipt={'cacheHit':True,'key':key,'originalForecastDigest':cached['packetDigest'],
                                          'currentForecastDigest':result['packetDigest'],'wallNs':time.monotonic_ns()-started}
                 return result
             if request['backend']=='chronos2':result=self.adapter.forecast(window,request['horizon'],deadline=deadline,cancellation=cancellation)
             else:result=predict_baseline(window,request['horizon'],method=request['backend'],alpha=request['alpha'])
+            if deadline is not None and time.monotonic()>=deadline:
+                return envelope(window,request['horizon'],model_digest=model_digest,status='timed-out',reasons=('deadline-exceeded',),started_ns=started)
             if result['status']=='forecast':self.cache.put(key,result)
             self.last_cache_receipt={'cacheHit':False,'key':key,'originalForecastDigest':None,
                                      'currentForecastDigest':result['packetDigest'],'wallNs':time.monotonic_ns()-started}
