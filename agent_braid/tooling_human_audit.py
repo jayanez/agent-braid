@@ -659,4 +659,3 @@ def _sha(value: Any) -> str:
     except (TypeError, ValueError) as exc:
         raise HumanAuditError("audit value must have canonical finite JSON contents") from exc
     return hashlib.sha256(encoded.encode("utf-8")).hexdigest()
-
