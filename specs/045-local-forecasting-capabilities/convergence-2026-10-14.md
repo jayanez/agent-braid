@@ -110,7 +110,7 @@ This attempt establishes neither daemon readiness nor crash conformance. Any new
 procedure must preserve bounded daemon diagnostics outside ephemeral guest tmpfs
 and needs its own exact review and owner decision.
 
-## Bounded daemon-log correction prepared, not executed
+## Bounded daemon-log correction v5: executed, incomplete
 
 The v4 collector was not presented to the owner or executed. Luna's review found
 that its console export stopped at 32 KiB while the persistent ext4 log remained
@@ -142,7 +142,7 @@ the decimal `wc` output, but the summary treated the count's text length as the
 number of drained bytes. The attempt result SHA256 is
 `d1cd4f6687a59d0c5b0505fb171ca4d8917fce1e35ced6711683874385b009ba`.
 
-## Corrected empty-engine packet prepared, not executed
+## Corrected empty-engine packet v6: executed, incomplete
 
 The v6 packet SHA256 is
 `70be094fbce64dc5ebe06a1757da7106a2764a7331f42be4b1c24a925d925e4f`.
@@ -156,13 +156,26 @@ The packet's 16 Python synthetic tests (including the counter/truncation cases
 and live FIFO cap), 11 native preflight cases, Bash syntax check and bounded
 input control passed. The signed helper verifies with its sole Virtualization
 entitlement, its embedded guest script matches the source, and the refreshed
-configuration-only receipt says `vmCreated=false` and `vmStarted=false`. The
-wrapper plan reports `pending-owner-decision`. Luna independently reviewed this
-exact v6 packet and found it ready for owner presentation, with the dynamic-test
-limits stated above; no v6 VM or daemon has run. Its requested scope remains one
-own VM and empty daemon, no network/shared folders, images, containers, model,
-inference or additional spend, and does not establish worker conformance or
-complete deployment cost.
+configuration-only receipt says `vmCreated=false` and `vmStarted=false`. Luna
+independently reviewed this exact v6 packet and found it ready for presentation;
+the owner approved the exact request SHA and its single run was consumed. The VM
+stopped and cleanup was confirmed in 68.777864458 seconds; the pin was removed.
+The private daemon config passed `dockerd --validate`, and the captured process
+was verified as the pinned `/usr/bin/dockerd`. Docker then exited before API
+readiness with `error initializing buildkit: error creating buildkit instance:
+failed to find runc binary`. The bounded diagnostic was retained (90 bytes),
+showed two failed readiness probes, and no image/container observations occurred.
+No crash-admit token was sent and no daemon signal was issued. The result
+SHA256 is `67cf3d5752fc939c74cac74ba2685f71d49c2d6611b16320908be55980fe11e4`.
+This is not worker conformance or full deployment-cost evidence.
+
+Read-only metadata inspection of the installed EROFS image confirms `/usr/bin/runc`
+is a regular executable matching the pinned digest, and its containerd config
+declares `io.containerd.runc.v2`. The v6 receipt did not record the inherited
+`PATH`, so the cause of Docker's lookup failure is unresolved. An explicit
+`PATH` plus a preflight `command -v runc` observation is only a hypothesis for a
+future bounded diagnostic. No v7 packet has been validated or reviewed, and no
+further VM execution is admitted.
 
 ## SPEC-045 task matrix
 
@@ -197,13 +210,14 @@ or promotes forecasting. M4 historical utility NO-GO is unchanged.
 1. Integrate actual engine/model counters and setup allocation under a separately
    admitted exact procedure. Keep every uncovered deployment counter visible.
 2. Complete daemon-environment readiness and exact integrated cost/fault admission.
-   Native VM boot/stop and a read-only Linux shell are separately qualified; four
+   Native VM boot/stop and a read-only Linux shell are separately qualified; five
    admitted empty-engine attempts remain incomplete: the first lacked guest
    `encodings`, the second found `/dev` already mounted, the third did not establish
    the daemon executable identity, and v5 reached the pinned daemon but rejected
-   its configuration before readiness. V6 corrects that config and its byte-count
-   parser; Luna reviewed it ready for presentation, and the exact owner decision
-   is pending. Docker readiness,
+   its configuration before readiness; v6 passed configuration validation but
+   BuildKit could not locate `runc`. Static image inspection confirms the pinned
+   executable exists, while the effective runtime search path is unknown. Any
+   PATH adjustment remains an unvalidated hypothesis. Docker readiness,
    integrated worker/daemon failure and model cost collection remain pending;
    consumed decisions admit no further run.
 3. The exact software candidate is frozen and validated. Merge requires the owner's
