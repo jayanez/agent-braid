@@ -248,3 +248,12 @@ session start. The separate assisted technical report preserves actual automatic
 model and human provenance and explicitly leaves unaudited human cases unaudited;
 legacy full-human utility assessment refuses v6. No report records founder
 acceptance or turns an estimate into actual cash.
+
+The v6 draft includes a pending technical `fullCostScope` for the selected
+nominal-period estimate. Bind its genuine decision and source records privately
+and obtain exact scope approval with the registration. The accounting readers
+treat v6 as a technical operational route: unknown cash remains unknown, known
+positive additional cash triggers the zero-cap violation, and neither abstract
+reviewer receipts nor times enter the ledger before a human identity addendum.
+The monetary roster hashes the exact v6 source policy, preserving its schema.
+The reservation does not supply actual allocation or cash.

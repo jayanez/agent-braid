@@ -492,5 +492,48 @@
   "claudeLaunchStore": {
     "canonicalConfigDirSha256": null,
     "keychainSuffix": null
+  },
+  "fullCostScope": {
+    "approval": {
+      "recordId": null,
+      "sha256": null,
+      "status": "pending"
+    },
+    "humanTime": {
+      "intervalSemantics": "verified-active-work-only",
+      "reviewerActivityKinds": [
+        "attempt"
+      ],
+      "userActivityKinds": [
+        "setup",
+        "attempt"
+      ],
+      "userParticipantId": "m45-owner-operator"
+    },
+    "reviewerFees": [
+      {
+        "applicability": "unknown",
+        "reviewerId": "independent-human-role-1"
+      },
+      {
+        "applicability": "unknown",
+        "reviewerId": "independent-human-role-2"
+      }
+    ],
+    "schema": "agent-braid-m45-full-cost-scope-v1",
+    "scopeId": "m45-technical-full-cost-scope-pending-review",
+    "status": "pending",
+    "subscriptionAllocation": {
+      "activityKinds": [
+        "setup",
+        "attempt"
+      ],
+      "denominatorId": "declared-nominal-28-day-seconds",
+      "methodId": "m45-nominal-28day-active-time-upper-bound-v1",
+      "methodRef": "subscription-estimation-owner-decision",
+      "methodSha256": null,
+      "reviewerApplicability": "not-applicable",
+      "unit": "active-session-second"
+    }
   }
 }

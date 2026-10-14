@@ -53,8 +53,9 @@ returned a fresh profile/quota sample, matching the frozen account, organization
 canonical configuration and prepaid acquisition namespace. Its evidence states
 `nativeProcessObserved: false`. Original failure receipts remain private and no
 retry is counted as an experimental attempt. Web login renewal is complete;
-the current Claude source contract still requires the owner's single-organization
-declaration and reviewed installation witnesses before admission. These preparatory
+the owner supplied the single-organization declaration on 2026-10-14.
+Reviewed installation witnesses and fresh process-bound sources remain required
+before admission. These preparatory
 observations establish neither cash accounting nor a registered journey.
 
 The PATH Claude CLI reported 2.1.285, below the host preparation minimum. The
@@ -119,3 +120,15 @@ A negative observed result can complete its registered procedure and support
 rejection. Human ratings remain deferred until the full technical packet is
 available. The package asks for those decisions only after their actual
 reviewable evidence exists.
+
+## Registration v6 accounting compatibility
+
+The accounting consumers preserve v6's separate source-policy identity when
+hashing the monetary roster. Like v5, v6 keeps cash/allocation compliance unknown
+without authentic receipts and exposes a known positive additional amount as a
+zero-cap breach. Its full-cost scope is technical only: both planned reviewer
+fees remain unknown, and reviewer money/time require an identity-bound human
+addendum. Verified active-time evidence can carry the EUR 5.045 reservation; it
+cannot become actual cash, allocation or complete human-inclusive costs. The
+legacy all-human utility consumer continues to refuse v6. Synthetic regressions
+cover these boundaries; they create no experimental cost observations.
