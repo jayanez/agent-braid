@@ -26,6 +26,14 @@ verify source authority or unavailable input bindings.
 
 ## Approved CPU deployment
 
+The image lock pins the official Linux ARM64 Torch `2.14.1+cpu` wheel by URL
+and hash. Validate `pip check`, explicit Torch/Chronos class imports and the
+CPU binary before requesting checkpoint loading. The worker checks both the
+distribution version and absence of a compiled CUDA backend before constructing
+the pipeline. An installed package metadata/stub smoke alone cannot establish
+that its native runtime imports successfully. A changed image, wheel or lock
+needs a new exact artifact decision; preserve earlier failed attempts.
+
 The optional `forecast` extra identifies the pinned Chronos package; the complete
 [Linux ARM64/Python 3.12 lock](../../specs/045-local-forecasting-capabilities/runtime/requirements-cpu-linux-arm64-py312.lock)
 belongs inside the [local image](../../specs/045-local-forecasting-capabilities/runtime/Dockerfile).

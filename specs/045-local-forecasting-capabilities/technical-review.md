@@ -66,3 +66,41 @@ Original task closure candidates remain SPEC-034/T002 and T004, subject to
 their task-specific receipts and stable repository checks. Other original
 criteria and predecessor gates remain pending; technical review does not waive
 them or accept a real source, model budget, experimental launch or promotion.
+
+## Approved v1 attempt and CPU build correction
+
+The owner approved only the exact v1 package. Its two checkpoint files were
+downloaded and hash-verified. One attempted forecast returned `worker-failed`;
+the owned container exited1 without OOM and cleanup was confirmed. The procedure
+stopped, retained the inconclusive receipt and removed its active one-run pin.
+The generic conformance receipt does not identify its exception. A separate
+no-checkpoint library diagnostic reproduced a missing `libcublasLt` import
+failure in the PyPI Torch distribution. These observations retain separate scopes.
+
+Source candidate `84873295a4453d5aa0636683b764f443c7dd38c9` replaces that
+distribution with the official hash-pinned Torch `2.14.1+cpu` wheel and checks
+both distribution metadata and the CPU binary before pipeline construction.
+Luna Latest independently executed `tests.test_forecast_worker_entry`: one test
+passed, covering wrong distribution, CUDA binary rejection and the CPU stub
+branch. The complete focused suite passed65 checks. The previous repository
+profile passed1457 tests with12 skips at `cb23bdc`; it does not cover this delta.
+
+The corrected image smoke passed12 installed stub tests and `pip check`.
+After those tests, explicit Torch and Chronos class imports succeeded with a
+CPU binary. No checkpoint was mounted and no model constructor or inference
+was called. The public receipt distinguishes the initial no-ML-import stub
+phase from those subsequent library imports. Cgroups were observed; this
+specific probe does not independently verify network/filesystem enforcement.
+
+The same independent reviewer checked the v2 request, image/wheel/lock/source
+bindings, checkpoint reuse, unchanged limits and v1 approval separation. The
+request is suitable to present for an exact owner decision, not approved by
+technical review. The previous v1 decision cannot authorize v2 loading.
+
+| New binding | SHA256 |
+|---|---|
+| Source worker entry | `e7af6635f75544f1db24dc3e4196cad1ed69e1b96791e2d6b6e2f2d766c1c53f` |
+| CPU dependency lock | `92518d2612ea9a66926465ace6b1356571f4bd32cfe47e2b135fa6a682d71919` |
+| Host/image core wheel | `fae1c3a6f379daf1d6abf2eb9289d1a286ef69cd0ee51d9c4f3551e0d7c5da54` |
+| CPU image | `3c7fa6bfb37b77ed890223cdc901cfdaa2c064cb661d4d377971e33147939b21` |
+| Model manifest | `5597b631142d8dc9d10a0bfae1c8fd99a24f319256dc4db6998d81f44204525a` |
