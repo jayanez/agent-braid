@@ -164,3 +164,9 @@ worker/cached output and after adapter return. Luna independently ran 13
 session/MCP/CLI tests and found no blocker; no model was called. This host API
 delta is separate from the exact v3 wheel/image conformance; no conformance for
 a newly packaged host wheel is inferred.
+
+## Independent e6 reproduction and v4/v5 observations
+
+Luna Latest independently verified the fresh clone source, byte-equal repeat wheels,216 installed core responses and two inconclusive owned synthetic Git episodes without a model rerun. After separate exact owner decisions, v4 remained a retained inconclusive procedural parser failure; v5 completed9 calls (7 forecasts,2 refusals) and2 owned failure controls. All9 packet digests and7 forecast quantile/median outputs verified. API/CLI/MCP H1 outputs match. Docker state establishes the resident-worker OOM victim, while the attach interruption explicitly leaves the daemon available. Known containers are absent, the lease confirms cleanup, pins are absent and persistent one-run claims remain.
+
+The reviewed v5 private receipt SHA256 is `f6937101272e01408ead49e0e726834c52c797d32a04aeb13b51502640079bb4`; public sanitization and original hashes are recorded in `evidence/v5-evidence-index.json`. This is independent retained-evidence/source verification, not a second measured run, human acceptance, full cost accounting or utility acceptance. The complete engine crash remains pending an isolated owned engine.
