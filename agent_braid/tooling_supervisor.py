@@ -481,9 +481,11 @@ def _run_supervised_body(
             try:
                 source_binding = _source_route_binding(request)
                 if source_binding is not None:
-                    source_registration.check_claude_directory(source_binding, request.env)
-                    source_registration.check_observation(initial.source_route, source_binding,
-                        now=_parse_time(_utc(clock)), phase="prelaunch")
+                    # The producer may invalidate or replace a still-fresh
+                    # snapshot while launch receipts are reserved. Recheck the
+                    # installed verifier's current cache, not just DTO age.
+                    _validate_source_snapshot(initial, source_binding, None, None,
+                                              request, clock, source_route_verifier, False)
                 else:
                     binding = _native_route_binding(request) or _operational_route_binding(request)
                     observation = initial.native_route if _native_route_binding(request) else initial.operational_route

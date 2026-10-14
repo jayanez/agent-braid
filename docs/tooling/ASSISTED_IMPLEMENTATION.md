@@ -35,22 +35,26 @@ Preparation observations obtained on 2026-10-14 are separately private: the
 reviewed Codex observer returned an authentic native account/quota metadata
 sample, with all four projected quota controls known and a private email HMAC
 available. The authenticated browser interfaces showed recharge explicitly off
-for both hosts. Those interface observations are still unbound to a complete
-native profile/session witness; they cannot enter admission. All observations
+for both hosts, and Claude extra usage explicitly off. Private browser/native
+email HMAC comparisons matched within the respective source timing limits.
+Those point observations have no registered slot/process witness and cannot
+enter admission. All observations
 retain their original times and expire under their respective contracts.
 They establish no later current quota, actual cash or registered host journey.
 
-The Codex browser/native private email HMAC matched during preparation. The
-original source times remain distinct, and the browser connection subsequently
-became unavailable; no current complete interface receipt was admitted. A real
+An earlier Codex browser/native private email HMAC matched during preparation,
+followed by a browser connection block. The owner subsequently completed both
+authenticated web logins; fresh private correspondence checks preserved the
+original source times. No complete registered interface receipt was admitted. A real
 Claude read exposed an ambient-store configuration bug, corrected and reviewed
 separately. Its isolated OAuth credential was then observed expired without any
 provider GET. After the owner-authorized login renewal, the reviewed collector
 returned a fresh profile/quota sample, matching the frozen account, organization,
 canonical configuration and prepaid acquisition namespace. Its evidence states
 `nativeProcessObserved: false`. Original failure receipts remain private and no
-retry is counted as an experimental attempt. Both authenticated web logins and
-current account-bound recharge receipts remain pending. These preparatory
+retry is counted as an experimental attempt. Web login renewal is complete;
+the current Claude source contract still requires the owner's single-organization
+declaration and reviewed installation witnesses before admission. These preparatory
 observations establish neither cash accounting nor a registered journey.
 
 The PATH Claude CLI reported 2.1.285, below the host preparation minimum. The

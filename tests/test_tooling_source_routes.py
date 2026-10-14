@@ -6,6 +6,7 @@ from datetime import datetime, timedelta, timezone
 import json
 import time
 import unittest
+from unittest.mock import patch
 
 from agent_braid import tooling_codex_sources as codex
 from agent_braid import tooling_registration_v6 as v6
@@ -122,5 +123,24 @@ class SourceRouteSupervisorTests(unittest.TestCase):
                 time.sleep(0.06)
         result = supervisor.run_supervised(req, self.helper.caps, observe,
                                            source_route_verifier=SlowVerifier(binding))
+        self.assertFalse(result.launched)
+        self.assertFalse(result.completed)
+
+    def test_source_invalidated_after_initial_verification_never_starts(self):
+        req, observe, binding = self.inputs()
+        class InvalidatedVerifier(SyntheticSourceVerifier):
+            calls = 0
+
+            def verify_source_observation(self, *args):
+                self.calls += 1
+                if self.calls > 1:
+                    raise supervisor.SubscriptionError("source cache invalidated after initial verification")
+
+        verifier = InvalidatedVerifier(binding)
+        with patch.object(supervisor.subprocess, "Popen", side_effect=AssertionError("must not launch")) as launch:
+            result = supervisor.run_supervised(req, self.helper.caps, observe,
+                                               source_route_verifier=verifier)
+        launch.assert_not_called()
+        self.assertEqual(2, verifier.calls)
         self.assertFalse(result.launched)
         self.assertFalse(result.completed)
