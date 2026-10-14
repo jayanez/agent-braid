@@ -74,9 +74,22 @@ The wrapper correctly returned incomplete (exit 2), retained the missing guest
 receipt and kernel diagnostic, and confirmed SDK cleanup and pin removal within
 68.737762333 seconds (helper 68.394346208 seconds). Its new 20 GiB scratch file
 still has zero allocated blocks. No Docker readiness or crash was observed; no
-retry is admitted. A corrected collector using available guest tools is being
-prepared. These failures remain evidence; they cannot close the integrated
-worker fault or full-cost obligation.
+retry is admitted.
+
+The separately reviewed shell-based request SHA256
+`1c0f29dfe83593fe9f282d9edf865d66218b813c2b43a82e358747f0969a27f1` was then
+admitted and consumed once. The VM and guest shell started, but the script stopped
+at its first mount because `/dev` was already mounted (`mount: /dev: devtmpfs
+already mounted on /dev`). The collector reported incomplete (exit 2) and the
+wrapper confirmed VM stop, cleanup and pin removal within 68.788 seconds (SDK
+helper 68.393 seconds). The 20 GiB sparse scratch file has zero allocated blocks;
+the claim and failed console remain preserved. The guest did not format its data
+disk or start Docker, so no engine readiness or daemon crash was observed. The
+long-lived Virtualization.framework service remained; no owned probe helper or
+Docker daemon process remained. Luna Latest independently inspected the exact
+receipt, console, lease, pin and process state. This failed attempt cannot close
+the integrated worker fault or full-cost obligation. Any further correction needs
+a new exact procedure and owner decision.
 
 ## SPEC-045 task matrix
 
@@ -112,10 +125,11 @@ or promotes forecasting. M4 historical utility NO-GO is unchanged.
    admitted exact procedure. Keep every uncovered deployment counter visible.
 2. Complete daemon-environment readiness and exact integrated cost/fault admission.
    Native VM boot/stop and a read-only Linux shell are separately qualified; the
-   admitted empty-engine attempt failed before daemon startup because its guest
-   interpreter was incomplete. Correct and review the collector without retrying
-   the consumed procedure. Docker readiness, integrated worker/daemon failure and
-   model cost collection remain pending; consumed decisions admit no further run.
+   two admitted empty-engine attempts failed before daemon startup: first the guest
+   interpreter was incomplete, then `/dev` was already mounted. Correct and review
+   the collector under a new packet before requesting any further run. Docker
+   readiness, integrated worker/daemon failure and model cost collection remain
+   pending; consumed decisions admit no further run.
 3. The exact software candidate is frozen and validated. Merge requires the owner's
    actual integration decision. Post-merge tracking must use canonical clean
    develop, reviewed guarded operations and FC.1/FC.2-only readback; do not apply
