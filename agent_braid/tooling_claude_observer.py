@@ -281,8 +281,10 @@ def collection_environment(config_dir: Path) -> dict[str, str]:
     if os.environ.get("HOME") != home:
         raise ClaudeObserverError("custom HOME requires separate account-context verification")
     # Do not inherit provider, proxy, TLS, Python loader or credential-helper settings.
+    # The collector receives its canonical store explicitly by config_dir argv.
+    # Its native-account guard rejects an ambient CLAUDE_CONFIG_DIR override.
     return {"HOME": home, "PATH": "/usr/bin:/bin:/usr/sbin:/sbin",
-            "CLAUDE_CONFIG_DIR": str(config_dir), "CLAUDE_CODE_ENTRYPOINT": "cli"}
+            "CLAUDE_CODE_ENTRYPOINT": "cli"}
 
 
 def stop_owned_collector(process) -> None:

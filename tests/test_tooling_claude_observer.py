@@ -417,11 +417,11 @@ def run_personal_diagnostic(output,config_dir=None,identity_key_file=None):
     def test_environment_has_fixed_home_and_no_ambient_provider_or_proxy_configuration(self):
         import pwd
         home = pwd.getpwuid(os.getuid()).pw_dir
-        with patch.dict(os.environ, {"HOME": home, "ANTHROPIC_API_KEY": "fake-secret",
+        with patch.dict(os.environ, {"HOME": home, "ANTHROPIC_API_KEY": "fake-secret", "CLAUDE_CONFIG_DIR": "/ambient-other-store",
                                     "HTTPS_PROXY": "http://fake-proxy", "PYTHONPATH": "fake-loader"}):
             env = observer.collection_environment(Path("/private/fake-config"))
         self.assertEqual(env["HOME"], home)
-        self.assertEqual(env["CLAUDE_CONFIG_DIR"], "/private/fake-config")
+        self.assertNotIn("CLAUDE_CONFIG_DIR", env)
         self.assertNotIn("ANTHROPIC_API_KEY", env)
         self.assertNotIn("HTTPS_PROXY", env)
         self.assertNotIn("PYTHONPATH", env)

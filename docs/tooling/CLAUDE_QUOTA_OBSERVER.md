@@ -86,7 +86,10 @@ not exist already. No existing receipt is overwritten. Stdout/stderr are
 discarded; exceptions never expose provider bodies or account values.
 
 The child retains the original OS-account HOME and a fixed system PATH. It
-receives the explicitly registered configuration directory and CLI context,
+receives the explicitly registered configuration directory as a collector
+argument and CLI context in the environment. It does not export
+`CLAUDE_CONFIG_DIR`: the archived collector refuses ambient store overrides and
+derives its isolated store from the explicit argument. Acquisition runs
 without inherited API credentials, provider overrides, proxies, Python loaders,
 custom TLS configuration or key logging. The private key's path is passed as a
 reference; key bytes, tokens and emails are never command arguments or logs.
