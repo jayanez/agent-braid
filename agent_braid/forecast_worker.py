@@ -48,6 +48,7 @@ class DockerCPUWorker:
         self.model_digest=digest(self.manifest);self.owner=uuid.uuid4().hex;self.container=None;self.process=None
         self.loaded=False;self.closed=False;self.lock=threading.Lock();self.stdout=bytearray();self.stderr_bytes=0
         self.create_unconfirmed=False
+        self.last_diagnostics=None
         self.engine=None;self.private_config=None
         self.lease=WorkerLease(self.owner,self.model_digest)
 
@@ -159,7 +160,7 @@ class DockerCPUWorker:
         remaining=max(.01,min(5,deadline-time.monotonic()))
         require(os.getuid()!=0,'worker-requires-nonroot-owner')
         self.create_unconfirmed=True
-        raw=self._docker('container','create','--name=agent-braid-forecast-'+self.owner,'--pull=never','--network=none','--read-only','--user='+str(os.getuid())+':'+str(os.getgid()),
+        raw=self._docker('container','create','--interactive','--name=agent-braid-forecast-'+self.owner,'--pull=never','--network=none','--read-only','--user='+str(os.getuid())+':'+str(os.getgid()),
              '--cap-drop=ALL','--security-opt=no-new-privileges','--memory=2147483648','--memory-swap=2147483648',
              '--cpus=1','--pids-limit=64','--tmpfs=/tmp:rw,nosuid,nodev,size=67108864',
              '--mount','type=bind,src='+self.manifest['checkpointDirectory']+',dst=/model,readonly',
@@ -173,6 +174,7 @@ class DockerCPUWorker:
                 and config.get('NanoCpus')==1000000000 and config.get('PidsLimit')==64
                 and config.get('NetworkMode')=='none' and config.get('ReadonlyRootfs') is True
                 and inspected['Config'].get('User')==str(os.getuid())+':'+str(os.getgid())
+                and inspected['Config'].get('OpenStdin') is True and inspected['Config'].get('Tty') is False
                 and 'ALL' in config.get('CapDrop',[]) and 'no-new-privileges' in config.get('SecurityOpt',[])
                 and inspected.get('Image')==self.manifest['imageId'],'worker-enforcement-unavailable')
         mounts=inspected.get('Mounts',[])
@@ -221,6 +223,8 @@ class DockerCPUWorker:
             status='cancelled' if reason=='cancelled' else 'timed-out' if reason=='deadline-exceeded' else 'refused'
             try:self._close_owned()
             except (ForecastError,OSError,subprocess.TimeoutExpired):reason='owned-container-cleanup-pending';status='refused'
+            if reason!='owned-container-cleanup-pending' and self.last_diagnostics is not None and self.last_diagnostics['oomKilled'] is True:
+                reason='worker-oom';status='refused'
             return envelope(window,horizon,model_digest=self.model_digest,status=status,reasons=(reason,),started_ns=started)
         finally:self.lock.release()
 
@@ -228,8 +232,14 @@ class DockerCPUWorker:
         try:
             require(not self.create_unconfirmed,'owned-container-cleanup-pending')
             if self.container is not None:
-                self._inspect();self._docker('container','rm','--force',self.container)
+                state=self._inspect().get('State',{})
+                self.last_diagnostics={'version':'agent-braid-owned-container-diagnostics-v1','manifestDigest':self.model_digest,
+                    'containerId':self.container,'oomKilled':state.get('OOMKilled') if type(state.get('OOMKilled')) is bool else None,
+                    'exitCode':state.get('ExitCode') if type(state.get('ExitCode')) is int else None,
+                    'running':state.get('Running') if type(state.get('Running')) is bool else None,'cleanupConfirmed':False}
+                self._docker('container','rm','--force',self.container)
                 self.container=None
+                self.last_diagnostics['cleanupConfirmed']=True
         finally:
             self.loaded=False
             if self.process is not None:
