@@ -7,6 +7,7 @@ import hashlib
 import json
 import os
 from pathlib import Path
+import stat
 import tempfile
 import threading
 import time
@@ -532,7 +533,9 @@ class ProducerTests(unittest.TestCase):
             for bad in ["symlink", "mode"]:
                 if bad == "mode":
                     lock.unlink()
-                    lock.touch(mode=0o644)
+                    lock.touch(mode=0o600)
+                    lock.chmod(0o644)
+                    self.assertEqual(stat.S_IMODE(lock.stat().st_mode), 0o644)
                 producer = observer.SourceProducer(cache(contract, digest), lambda cancel: receipts,
                     lock_path=lock, timeout_seconds=.5, utc_now=lambda: NOW)
                 with self.assertRaises(observer.SourceObserverError):
