@@ -26,6 +26,44 @@ TRACE_FALLBACK = "- Trace: See the parent issue and assurance record."
 LEGACY_TRACE_FALLBACK = "- Trace: No direct REQ/SC reference in tasks.md; see the parent issue and assurance record."
 
 
+def task_cancellations(root: Path, config: dict) -> dict:
+    """Validate committed disposition records; bytes do not authenticate an owner."""
+    records = {}
+    entries = config.get("task_cancellations", {})
+    if not isinstance(entries, dict):
+        raise ValueError("task cancellations must be a mapping")
+    for key, binding in entries.items():
+        if not isinstance(key, str) or not re.fullmatch(r"SPEC-\d{3}/T\d{3}", key) or not isinstance(binding, dict) or set(binding) != {"decision", "sha256"}:
+            raise ValueError("invalid cancellation binding")
+        if not isinstance(binding["decision"], str) or not isinstance(binding["sha256"], str) or not re.fullmatch(r"[0-9a-f]{64}", binding["sha256"]):
+            raise ValueError("invalid cancellation path/hash")
+        relative = Path(binding["decision"])
+        if relative.is_absolute() or ".." in relative.parts or not relative.parts:
+            raise ValueError("cancellation decision must be repository relative")
+        path = root.resolve()
+        for component in relative.parts:
+            path = path / component
+            if path.is_symlink():
+                raise ValueError("symlinked cancellation decision")
+        if not path.is_file() or not 0 < path.stat().st_size <= 16384:
+            raise ValueError("missing or oversized cancellation decision")
+        raw = path.read_bytes()
+        if hashlib.sha256(raw).hexdigest() != binding["sha256"]:
+            raise ValueError("cancellation decision hash drift")
+        record = json.loads(raw)
+        expected = {"version": "agent-braid-task-cancellation-v1", "taskId": key,
+                    "decision": "adopted", "disposition": "cancelled-partial-infeasible",
+                    "stateReason": "not_planned"}
+        if not isinstance(record, dict) or any(record.get(k) != v for k, v in expected.items()) or record.get("criterionCompleted") is not False:
+            raise ValueError("cancellation requires explicit adopted noncompletion")
+        if any(not isinstance(record.get(k), str) or not record[k].strip() for k in ("reason", "sourceReference")):
+            raise ValueError("cancellation needs reason and owner provenance")
+        if not isinstance(record.get("taskLineSha256"), str) or not re.fullmatch(r"[0-9a-f]{64}", record["taskLineSha256"]):
+            raise ValueError("cancellation requires original criterion binding")
+        records[key] = record
+    return records
+
+
 def validate_milestone_numbers(config: dict) -> dict:
     numbers = config.get("milestone_numbers", {})
     if not isinstance(numbers, dict) or not set(numbers) <= set(config["milestones"]):
@@ -63,6 +101,7 @@ def resolve_milestones(config: dict, milestones: dict) -> dict:
 def source_inventory(root: Path = ROOT, config_path: Path = CONFIG) -> tuple[dict, list[dict]]:
     config = json.loads(config_path.read_text(encoding="utf-8"))
     validate_milestone_numbers(config)
+    cancellations = task_cancellations(root, config)
     folders = sorted(path for path in (root / "specs").glob("[0-9]*") if (path / "spec.md").is_file())
     configured = set(config["specs"])
     actual = {path.name for path in folders}
@@ -117,25 +156,38 @@ def source_inventory(root: Path = ROOT, config_path: Path = CONFIG) -> tuple[dic
             task_text = " ".join([start] + continuation)
             key = f"{spec_id}/{task_id}"
             task_keys.add(key)
+            cancellation = cancellations.get(key)
+            if cancellation and (checked == "x" or key in config["task_state_overrides"]):
+                raise ValueError(f"cancellation cannot overlap completed task: {key}")
+            if cancellation and hashlib.sha256(line.encode()).hexdigest() != cancellation["taskLineSha256"]:
+                raise ValueError(f"cancelled criterion changed: {key}")
             if checked == "x" and key in config["task_state_overrides"]:
                 raise ValueError(f"remove now-redundant state override: {key}")
-            closed = checked == "x" or key in config["task_state_overrides"]
+            closed = checked == "x" or key in config["task_state_overrides"] or cancellation is not None
             short = re.sub(r"[`\n]+", "", task_text).strip().rstrip(".")
             if len(short) > 105:
                 short = short[:102].rstrip() + "..."
             note = config["task_state_overrides"].get(key, "Source checkbox in tasks.md.")
+            if cancellation:
+                binding = config["task_cancellations"][key]
+                note = (f"Owner-adopted cancelled-partial/infeasible (not completed): "
+                        f"[decision]({base}{binding['decision']}) (SHA-256 {binding['sha256']}). "
+                        f"{cancellation['reason']}")
             desired.append({
                 "key": key, "kind": "task", "parent": spec_id,
                 "title": f"[{spec_id} {task_id}] {short}",
                 "body": f"<!-- agent-braid-task-id: {key} -->\n\n## Task\n\n{task_text}\n\n- Source: {common}\n- Trace: {refs or 'See the parent issue and assurance record.'}\n- State basis: {note}\n\nPlanned and obtained evidence are separate in assurance.json. Closing this issue does not imply human review or scientific proof.\n",
                 "milestone": metadata["milestone"], "state": "closed" if closed else "open",
                 "task_text": task_text,
+                **({"state_reason": "not_planned"} if cancellation else {}),
             })
         if not task_ids:
             raise ValueError(f"no tasks found in {folder.name}")
     unknown_overrides = set(config["task_state_overrides"]) - task_keys
     if unknown_overrides:
         raise ValueError(f"unknown task overrides: {sorted(unknown_overrides)}")
+    if set(cancellations) - task_keys:
+        raise ValueError("unknown cancelled task")
     if any(not reason.strip() for reason in config["task_state_overrides"].values()):
         raise ValueError("task state overrides need a recorded reason")
     by_key = {item["key"]: item for item in desired}
@@ -239,10 +291,27 @@ def build_plan(config: dict, desired: list[dict], milestones: dict,
                        if item["milestone"] in numbers else actual_milestone == item["milestone"])
             if not matches:
                 operations.append({"action": "update_milestone", "key": key, "from": actual_milestone, "to": item["milestone"]})
-            if issue["state"] != item["state"]:
-                operations.append({"action": "set_state", "key": key, "from": issue["state"], "to": item["state"]})
+            reason = item.get("state_reason", "completed")
+            reason_changed = item["state"] == "closed" and (
+                "state_reason" in item or issue.get("state_reason") is not None
+            ) and issue.get("state_reason") != reason
+            if issue["state"] != item["state"] or reason_changed:
+                operation = {"action": "set_state", "key": key, "from": issue["state"], "to": item["state"]}
+                if item["state"] == "closed" and ("state_reason" in item or reason_changed):
+                    operation["state_reason"] = reason
+                    if issue["state"] == "closed" and reason_changed:
+                        operation["state_reason_from"] = issue.get("state_reason")
+                operations.append(operation)
             if item["kind"] == "task":
                 body = issue.get("body") or ""
+                if item.get("state_reason") == "not_planned":
+                    actual_basis = re.findall(r"^- State basis: .*$", body, re.M)
+                    expected_basis = re.search(r"^- State basis: .*$", item["body"], re.M).group()
+                    if len(actual_basis) != 1:
+                        operations.append({"action": "review_body", "key": key})
+                    elif actual_basis[0] != expected_basis:
+                        operations.append({"action": "update_state_basis", "key": key,
+                                           "from": actual_basis[0], "to": expected_basis})
                 task_match = re.search(r"## Task\n\n(.*?)\n\n- Source:", body, re.S)
                 expected_trace = re.search(r"^- Trace: .*$", item.get("body", ""), re.M)
                 actual_traces = re.findall(r"^- Trace: .*$", body, re.M)
@@ -261,7 +330,8 @@ def build_plan(config: dict, desired: list[dict], milestones: dict,
             if parent is None or issue is None or issue["id"] not in extra["children"].get(item["parent"], set()):
                 operations.append({"action": "link_subissue", "key": key, "parent": item["parent"]})
         if issue is None and item["state"] == "closed":
-            operations.append({"action": "set_state", "key": key, "from": "open", "to": "closed"})
+            operations.append({"action": "set_state", "key": key, "from": "open", "to": "closed",
+                               **({"state_reason": item["state_reason"]} if "state_reason" in item else {})})
     return operations
 
 
@@ -332,6 +402,16 @@ def apply_plan(repo: str, config: dict, desired: list[dict], milestones: dict,
         action = operation["action"]
         if action.startswith("review_"):
             raise ValueError(f"manual review required before apply: {operation}")
+        if action == "set_state":
+            item = by_key[operation["key"]]
+            if operation["to"] != item["state"] or operation.get("state_reason", item.get("state_reason", "completed")) != item.get("state_reason", "completed"):
+                raise ValueError("reviewed closure reason drift")
+        if action == "update_state_basis":
+            item = by_key[operation["key"]]
+            actual = re.findall(r"^- State basis: .*$", issues[item["key"]].get("body", ""), re.M)
+            expected = re.findall(r"^- State basis: .*$", item["body"], re.M)
+            if item.get("state_reason") != "not_planned" or actual != [operation["from"]] or expected != [operation["to"]]:
+                raise ValueError("reviewed state basis drift")
     for operation in operations:
         action = operation["action"]
         if action == "rename_milestone":
@@ -356,7 +436,7 @@ def apply_plan(repo: str, config: dict, desired: list[dict], milestones: dict,
                 "labels": [item["kind"]],
             })
             issues[item["key"]] = issue
-        elif action in {"update_title", "update_milestone", "set_state", "update_task_text"}:
+        elif action in {"update_title", "update_milestone", "set_state", "update_task_text", "update_state_basis"}:
             key = operation["key"]
             issue = issues[key]
             item = by_key[key]
@@ -367,7 +447,10 @@ def apply_plan(repo: str, config: dict, desired: list[dict], milestones: dict,
             elif action == "set_state":
                 payload = {"state": item["state"]}
                 if item["state"] == "closed":
-                    payload["state_reason"] = "completed"
+                    payload["state_reason"] = item.get("state_reason", "completed")
+            elif action == "update_state_basis":
+                payload = {"body": re.sub(r"^- State basis: .*$", lambda m: operation["to"],
+                                         issue["body"], count=1, flags=re.M)}
             else:
                 original = issue["body"]
                 updated = re.sub(r"(## Task\n\n).*?(\n\n- Source:)",
@@ -415,6 +498,8 @@ def main(argv: list[str] | None = None) -> int:
     if args.mode == "source":
         print(json.dumps({"specs": sum(x["kind"] == "spec" for x in desired),
                           "tasks": sum(x["kind"] == "task" for x in desired),
+                          "tasks_completed": sum(x["kind"] == "task" and x["state"] == "closed" and x.get("state_reason") != "not_planned" for x in desired),
+                          "tasks_cancelled": sum(x.get("state_reason") == "not_planned" for x in desired),
                           "milestones": len(config["milestones"]),
                           "project_review_pending": len(config["project_review_pending"]),
                           "project_url": config["project_url"]}, indent=2))

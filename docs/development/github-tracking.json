@@ -262,5 +262,11 @@
     "FC.1 — Forecast-guided parallelism experiment": 18,
     "M4.5 — AI tooling integrations for Codex and Claude Code": 19,
     "FC.2 — Local forecasting capabilities": 20
+  },
+  "task_cancellations": {
+    "SPEC-045/T007": {
+      "decision": "specs/045-local-forecasting-capabilities/evidence/t007-owner-disposition-2026-10-15.json",
+      "sha256": "2e7e7f16388d0e7107e473cbc89aa37c69a83f6187ae2d76009751f231fa7293"
+    }
   }
 }
