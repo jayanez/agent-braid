@@ -1,0 +1,70 @@
+{
+  "economicCostAccepted": false,
+  "executionAuthorization": false,
+  "fullDeploymentCostAccepted": false,
+  "historicalAssuranceUnchanged": true,
+  "noNewExecution": true,
+  "privatePayloadCheckpointKernelRootfsAndOwnerRecordsPublished": false,
+  "privateRawRetained": true,
+  "rawModelOrConsoleReceiptsPublished": false,
+  "records": [
+    {
+      "path": "outcome.json",
+      "retainedPrivateOriginalSha256": "7e313ce4347edc4aba6acaf8491469962847be0ddd6c975aea9b8911d550034c",
+      "sha256": "7e313ce4347edc4aba6acaf8491469962847be0ddd6c975aea9b8911d550034c",
+      "transformation": "none; byte-exact"
+    },
+    {
+      "path": "technical-cost.json",
+      "retainedPrivateOriginalSha256": "c44fa6b7147ab29ddc3d608931e3f564c9fbd7203351748d38ae91c5b8bb7861",
+      "sha256": "c44fa6b7147ab29ddc3d608931e3f564c9fbd7203351748d38ae91c5b8bb7861",
+      "transformation": "none; byte-exact"
+    },
+    {
+      "path": "obtained-review.json",
+      "retainedPrivateOriginalSha256": "f487fd4650ec830b003ebb5d5c20664530c633df532cf973b01f86a0755cca1a",
+      "sha256": "f487fd4650ec830b003ebb5d5c20664530c633df532cf973b01f86a0755cca1a",
+      "transformation": "none; byte-exact"
+    },
+    {
+      "path": "package-review.json",
+      "retainedPrivateOriginalSha256": "dd26a8bce5db0130cc5aa24cd0e4734588472eb5b4026605a8b8938619cd99e7",
+      "sha256": "dd26a8bce5db0130cc5aa24cd0e4734588472eb5b4026605a8b8938619cd99e7",
+      "transformation": "none; byte-exact"
+    },
+    {
+      "path": "setup-allocation.json",
+      "retainedPrivateOriginalSha256": "a064e7afad00972c1b0a3fbe1d9d5d692b074615a342347c90c1437485affc55",
+      "sha256": "2f6a9e3ed0623fc1453384dc73e7ee017ce909782cd1ab5c38140a0b0b2eaab4",
+      "transformation": "JSON reserialized; sources[].source reduced to basename; all original receipt hashes and measurements retained"
+    },
+    {
+      "path": "historical-engine-attempts.json",
+      "retainedPrivateOriginalSha256": "d4a2339aa2d41f744b7493fadcfa5f47d463ab9935a474efcf0539e5caca7a20",
+      "sha256": "e041e9d8762b80b5c0cbe8b563eb2a1d4d84bf36337ee8310ef1923026050871",
+      "transformation": "JSON reserialized; local resultPath and duplicateCopies reduced to execution-directory/basename; all values/hashes retained"
+    },
+    {
+      "path": "engine-inventory-after-v9.json",
+      "retainedPrivateOriginalSha256": "990310e6467960bc364d2b5ae523539e124873019d3bfa785bfe54b1e6f96a8e",
+      "sha256": "990310e6467960bc364d2b5ae523539e124873019d3bfa785bfe54b1e6f96a8e",
+      "transformation": "none; byte-exact"
+    },
+    {
+      "path": "accounting.json",
+      "sha256": "23a7ccf0f9dc9924e436424e56d4ca2a7022687c2912ab4d0e1efc690af96e18",
+      "transformation": "new reconciliation derived from the bound retained observations; no new measurement"
+    },
+    {
+      "path": "criteria-review.json",
+      "sha256": "e01aca9b2658bd8abc5ccb6d4623e913804adb077f14f12a3dbb2dcc321996e9",
+      "transformation": "new integrator record of independent Luna criteria review; actual execution review remains separate"
+    },
+    {
+      "path": "historical-model-attempts.json",
+      "sha256": "a831fc49f30896b01a9cdc7e196f749e13956fc79ad1b903934c0b1b3dac9081",
+      "transformation": "selected source metadata and elapsed Unix arithmetic from five original outer model wrappers plus original VM boot qualification; no paths or commands published"
+    }
+  ],
+  "version": "agent-braid-fc2-integrated-publication-index-v1"
+}

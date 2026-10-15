@@ -1,0 +1,111 @@
+{
+  "attempts": [
+    {
+      "cleanupReceiptConfirmed": true,
+      "duplicateCopies": [],
+      "error": "owned-engine-probe-incomplete",
+      "independentPhysicalVmAbsenceProofIncluded": false,
+      "qualified": false,
+      "requestSha256": "c2298e56c5ab45494131ceb81952f79680b1f4a58d6c2868967a292eef89c564",
+      "resultPath": "execution-c2298e56c5ab4549/result.json",
+      "resultSha256": "fd86a3a9e7db86b4f03c064238eccb37710caaec23dd7302b2a3fbd3e36f956f",
+      "terminalCostReceipt": null,
+      "wallNsThroughResultPublication": 68737762333
+    },
+    {
+      "cleanupReceiptConfirmed": true,
+      "duplicateCopies": [
+        "execution-1c0f29dfe83593fe/result.json"
+      ],
+      "error": "owned-engine-probe-incomplete",
+      "independentPhysicalVmAbsenceProofIncluded": false,
+      "qualified": false,
+      "requestSha256": "1c0f29dfe83593fe9f282d9edf865d66218b813c2b43a82e358747f0969a27f1",
+      "resultPath": "execution-1c0f29dfe83593fe/result.json",
+      "resultSha256": "10c4f11078831509857faa2c8c36e7971391e07099384363e5698e7134e8115a",
+      "terminalCostReceipt": null,
+      "wallNsThroughResultPublication": 68788765459
+    },
+    {
+      "cleanupReceiptConfirmed": true,
+      "duplicateCopies": [],
+      "error": "owned-engine-probe-incomplete",
+      "independentPhysicalVmAbsenceProofIncluded": false,
+      "qualified": false,
+      "requestSha256": "49e62e87a496e504a2504ae73fcc1ea2b3beeefebf1e78814b53007d0ac1dca8",
+      "resultPath": "execution-49e62e87a496e504/result.json",
+      "resultSha256": "f7b2ed5443abfa93e2944455152281b315e6e24d99ed9ff26d71e28d3eb08929",
+      "terminalCostReceipt": null,
+      "wallNsThroughResultPublication": 68793450334
+    },
+    {
+      "cleanupReceiptConfirmed": true,
+      "duplicateCopies": [],
+      "error": "owned-engine-probe-incomplete",
+      "independentPhysicalVmAbsenceProofIncluded": false,
+      "qualified": false,
+      "requestSha256": "2d559fe1783b3ddd12297207ad6049cde3776a0f3a13b21bf4a61cd1b9e79286",
+      "resultPath": "execution-2d559fe1783b3ddd/result.json",
+      "resultSha256": "d1cd4f6687a59d0c5b0505fb171ca4d8917fce1e35ced6711683874385b009ba",
+      "terminalCostReceipt": null,
+      "wallNsThroughResultPublication": 68892479125
+    },
+    {
+      "cleanupReceiptConfirmed": true,
+      "duplicateCopies": [],
+      "error": "owned-engine-probe-incomplete",
+      "independentPhysicalVmAbsenceProofIncluded": false,
+      "qualified": false,
+      "requestSha256": "70be094fbce64dc5ebe06a1757da7106a2764a7331f42be4b1c24a925d925e4f",
+      "resultPath": "execution-70be094fbce64dc5/result.json",
+      "resultSha256": "67cf3d5752fc939c74cac74ba2685f71d49c2d6611b16320908be55980fe11e4",
+      "terminalCostReceipt": null,
+      "wallNsThroughResultPublication": 68777864458
+    },
+    {
+      "cleanupReceiptConfirmed": true,
+      "duplicateCopies": [],
+      "error": "owned-engine-probe-incomplete",
+      "independentPhysicalVmAbsenceProofIncluded": false,
+      "qualified": false,
+      "requestSha256": "2f6d04aa315fbc8d342c3a91185a9337a327b7f6f4e634a64d7c51b8068d04e1",
+      "resultPath": "execution-2f6d04aa315fbc8d/result.json",
+      "resultSha256": "f47ae30bac9384a207969be1f1482edbb28a60e1476617385e9a188edeb032b2",
+      "terminalCostReceipt": null,
+      "wallNsThroughResultPublication": 68718455750
+    },
+    {
+      "cleanupReceiptConfirmed": true,
+      "duplicateCopies": [],
+      "error": "owned-engine-probe-incomplete",
+      "independentPhysicalVmAbsenceProofIncluded": false,
+      "qualified": false,
+      "requestSha256": "0e652b26e9ca719560b017f83f6e4b303383a86686a980fc0d378181865f6654",
+      "resultPath": "execution-0e652b26e9ca7195/result.json",
+      "resultSha256": "d212b3eb2e3475aa2a6401883fcfafe4fd4771b2b8faf7426451905a3d5d6fea",
+      "terminalCostReceipt": {
+        "path": "cost-publication.json",
+        "sha256": "cc902b7e46847eee68fc187106ddc17258813ead41878d1d6ebcf475f786a5d0"
+      },
+      "wallNsThroughResultPublication": 69342195166
+    }
+  ],
+  "date": "2026-10-15",
+  "duplicateResultCopiesExcluded": 1,
+  "executionAuthorization": false,
+  "failedQualificationAttempts": 7,
+  "fullDeploymentCostAccepted": false,
+  "gaps": [
+    "preparation-and-provisioning",
+    "development-and-review-time",
+    "terminal-cost-receipt-publication",
+    "heterogeneous-missing-daemon-and-containerd-counters",
+    "worker-and-model-absent",
+    "independent-physical-vm-absence-proof"
+  ],
+  "newVmRuns": 0,
+  "sumAttemptWallNsThroughResultPublication": 482050972625,
+  "uniqueMeasuredEmptyEngineAttempts": 7,
+  "version": "agent-braid-owned-engine-historical-cost-inventory-v1",
+  "wallMeaning": "Sum of historical own attempt intervals; excludes provisioning/development/review/terminal cost receipt publication. Not complete deployment cost or forecasting utility. Nested guest/native intervals are not added."
+}
