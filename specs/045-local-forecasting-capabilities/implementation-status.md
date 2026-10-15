@@ -92,3 +92,7 @@ The consumed framed v8 attempt failed. Its actual result and the offline causes
 and corrections are recorded in [the repair supplement](offline-harness-repair-2026-10-15.md).
 PR #520 retains the engineering changes; no new execution request or VM run is
 prepared. T007 and T008 remain open, independently of software-test results.
+
+## Obtained worker control and accounting publication
+
+The additive [obtained accounting packet](obtained-accounting-2026-10-15.md) supersedes the earlier current-status descriptions above. The admitted integrated worker/daemon control succeeded and was independently reviewed by Luna; no new execution accompanies publication. T007 remains open for the explicit complete-cost gaps. T008 has a separate technical-publication and bounded-readback criterion; no model/source/scientific/ADR/promotion acceptance is inferred. Historical observations and assurance remain unchanged.
