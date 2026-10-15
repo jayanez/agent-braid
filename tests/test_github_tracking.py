@@ -37,7 +37,7 @@ class TrackingTests(unittest.TestCase):
                 source_tasks[key] = {
                     "parent": spec_id,
                     "milestone": config["specs"][folder.name]["milestone"],
-                    "state": "closed" if checked == "x" or key in config["task_state_overrides"] else "open",
+                    "state": "closed" if checked == "x" or key in config["task_state_overrides"] or key in config.get("task_cancellations", {}) else "open",
                 }
         keys = [item["key"] for item in desired]
         self.assertEqual(len(keys), len(set(keys)), "duplicate tracking identity")
