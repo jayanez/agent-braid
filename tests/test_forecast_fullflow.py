@@ -62,6 +62,9 @@ class FullFlowTests(unittest.TestCase):
             self.assertEqual(2,record['backendCalls']); self.assertTrue(record['cleanupConfirmed'])
             self.assertEqual('authentic-on-synthetic',record['ledger']['sourceKind'])
             self.assertEqual('synthetic-simulation',record['modelSourceKind'])
+            self.assertIn('excludes-guest-and-host-XPC',record['hostWaitedChildrenScope'])
+            if record['hostWaitedChildrenCpuNs'] is not None:
+                self.assertGreater(record['hostWaitedChildrenCpuNs'],0)
             self.assertTrue(all(p.stat().st_mode & 0o777==0o600 for p in output.iterdir()))
 
     def test_existing_output_refuses_before_collecting(self):

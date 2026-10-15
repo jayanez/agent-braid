@@ -72,6 +72,15 @@ def validate_model_batch(raw, window, nonce, source_kind):
     return batch
 
 
+def _waited_children_cpu():
+    try:
+        import resource
+    except ImportError:
+        return None
+    usage = resource.getrusage(resource.RUSAGE_CHILDREN)
+    return round((usage.ru_utime + usage.ru_stime) * 1e9)
+
+
 class _BatchConsumer:
     def __init__(self, batch, window):
         self.batch, self.window = batch, window
@@ -99,6 +108,7 @@ def run_selected_flow(directory, *, collector, operator, artifact_digest,
     require(source_kind in ('synthetic-simulation', 'authentic-on-synthetic'), 'unsupported-flow-source')
     output = Path(directory).absolute()
     nonce = secrets.token_hex(16)
+    children_before = _waited_children_cpu()
     recorder = CostRecorder('selected-' + nonce, digest({'seed':20261015}), artifact_digest,
                             source_kind='authentic-on-synthetic')
     with recorder.phase('output-allocation', 'isolated-preparation'):
@@ -173,10 +183,16 @@ def run_selected_flow(directory, *, collector, operator, artifact_digest,
     for stage in ('artifact-provisioning', 'engine-startup', 'model-startup', 'residency',
                   'failure-controls', 'waiting-deferred'):
         recorder.unavailable(stage, stage, 'collector-lifecycle-separate-scope' if batch else 'collector-incomplete')
+    children_after = _waited_children_cpu()
+    children_cpu = None if children_before is None or children_after is None else children_after - children_before
+    if children_cpu is not None: integer(children_cpu)
     ledger = recorder.seal(cleanup_confirmed=cleanup)
     result = dict(version=VERSION, runNonce=nonce, sourceKind='authentic-on-synthetic',
                   modelSourceKind=source_kind,
                   ledger=ledger, costSummary=summarize_cost_ledger(ledger),
+                  hostWaitedChildrenCpuNs=children_cpu,
+                  hostWaitedChildrenScope='waited-native-helper-and-git-excludes-guest-and-host-XPC',
+                  hostWaitedChildrenReason='platform-counter-unavailable' if children_cpu is None else None,
                   backendCalls=0 if batch is None else batch['backendCalls'],
                   collectorReceiptDigest=None if batch is None else batch['counterReceiptDigest'],
                   payloadSha256=payload_sha, payloadPublicationIncluded=published,

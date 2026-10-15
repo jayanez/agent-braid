@@ -57,7 +57,10 @@ If that cannot be satisfied, report partial/infeasible; no completed checkbox.
 Retain all 17 v1 stage obligations and four CPU domains. The host phase enclosing
 collection is not a replacement for guest model/engine phase measurements.
 The collector's disjoint, persistent client/worker/services lifetime counters
-remain separate from host coordinator/waited-helper and guest-control diagnostics.
+remain separate from host coordinator/waited-helper-and-Git and guest-control diagnostics.
+The outer waited-children delta is recorded when the platform supports it,
+excludes guest/XPC CPU, and overlaps the inner collector helper counter; never
+add those two host observations.
 Do not translate guest clocks to host offsets without an observed mapping or add
 VM-wide/host virtualization counters to their children. Partial intervals remain
 gaps. Memory lifetime peaks and samples are never summed.
