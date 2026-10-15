@@ -171,4 +171,3 @@ class CancellationTests(unittest.TestCase):
         issues['SPEC-999'] = dict(number=9, id=9, title='Unrelated', state='open', milestone={'number': 2})
         plan = milestone_plan(config, desired, milestones, issues, extra, 1)[-1]
         self.assertEqual({'SPEC-001/T001'}, {op['key'] for op in plan})
-
