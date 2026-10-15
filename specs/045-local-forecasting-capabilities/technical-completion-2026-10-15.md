@@ -79,3 +79,28 @@ retained complete diagnostics and present the concrete blocker.
    model/cost/control acceptance remains absent.
 4. Preserve default-off/query/shadow behavior, unavailable active bridge, ADR/source/
    real-experiment/interpretation/promotion gates and EUR0 additional spend.
+
+## Serial framing correction and withdrawn request
+
+The initial v8 request SHA256 `e9230190a060be55d83c366fbb434a79a269914ac5b4ce7b6f6bcf1c3a3f7bfc`
+was withdrawn before execution after an owned PTY exposed source/token input
+collision. Its later owner answer is retained privately and was neither executed
+nor transferred to changed bytes. No VM start or claim was consumed. The previous
+technical review is superseded for this serial boundary.
+
+The corrected helper embeds the shared pure `SerialGuestProgram.swift` function.
+It sends the complete script as a function definition and a separate invocation,
+so Bash consumes all source before the admission read executes. Four PTY controls
+exercise the output of the packet-bound compiled Swift function with the actual
+guest admission read/function/call shape: raw-source regression, valid framed
+admission, explicit framed abort, and native source linkage. They run no daemon
+or guest command. Luna independently reran the four controls successfully.
+
+The framed request SHA256 is
+`32fefd0508fab7bc100431f8a5ad76d99aa45800335480362604cd0b7d7edae8`.
+All 30 assets match; its configuration-only record says VM not created/started.
+The 33 focused controls and 15 native preflight cases pass. The earlier complete
+local PR profile passed 1516 tests (14 skips) and executable gates before this
+framing delta; it is not presented as a full-suite run of the four later controls.
+The framing delta requires its fresh exact-head CI before owner presentation.
+Limits and the one-shot stop rule are unchanged; a new exact decision is required.
