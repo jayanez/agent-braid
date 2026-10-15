@@ -31,7 +31,7 @@ T002–T005 are complete for bounded software acceptance in their recorded domai
   Dependencies: T004 T005; SPEC-034/T005. Target files: agent_braid/forecast_cache.py; tests/test_forecast_cache.py.
   Verification: Exercise changed cutoff, masks, artifact and resource revision plus cancellation; retain causal cached/uncached parity and costs.
   Planned commands after implementation: `.venv-speckit/bin/python -m unittest discover -s tests -p "test_forecast*.py" -v` plus the requirement-specific procedure in `specs/035-chronos2-forecast-adapter/validation-plan.md`; source/model/launch/founder decisions require their actual reviewer record.
-  Planned evidence: `specs/035-chronos2-forecast-adapter/evidence/t006.json`. Obtained evidence: none.
+  Planned evidence: `specs/035-chronos2-forecast-adapter/evidence/t006.json`. Obtained evidence: `evidence/t006.json` and `../034-workload-forecast-data/resource-cache-controls-2026-10-15.md` record direct causal-key, parity, receipt, deadline and cancellation controls. SPEC-034/T005 remains an unmet predecessor; the original task stays open.
 - [ ] T007 (REQ-001 REQ-003 REQ-004 REQ-005 REQ-006 REQ-007 / SC-001 SC-003 SC-004 SC-005 SC-006 SC-007): Validate the installed optional wheel and adapter controls.
   Dependencies: T004 T005 T006. Target files: tests/test_forecast_chronos_packaging.py; specs/035-chronos2-forecast-adapter/evidence/.
   Verification: Run synthetic/stub refusal and packaging procedures; classify every unavailable real-model/device procedure as pending.

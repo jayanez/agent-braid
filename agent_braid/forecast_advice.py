@@ -7,7 +7,7 @@ from .forecast_data import canonical,parse_record,keys,require,digest,finite,val
 from .forecast_baselines import predict_baseline
 from .forecast_cache import ForecastCache
 from .forecast_chronos import ChronosAdapter
-from .forecast_outputs import envelope
+from .forecast_outputs import envelope,validate_forecast
 from .forecast_policy import advise
 
 def capabilities():
@@ -38,6 +38,7 @@ class ForecastSession:
         require(self.lock.acquire(blocking=False),'session-busy')
         try:
             require(not self.closed,'session-closed')
+            self.last_cache_receipt=None
             model_digest=digest(self.adapter.manifest) if self.adapter.manifest is not None else digest({'artifact':None})
             if request['backend']=='chronos2' and not self.adapter.capabilities()['available']:
                 self.cache.clear();self.adapter.close();self.adapter.worker=None
@@ -47,18 +48,36 @@ class ForecastSession:
             if deadline is not None and time.monotonic()>=deadline:
                 return envelope(window,request['horizon'],model_digest=model_digest,status='timed-out',reasons=('deadline-exceeded',),started_ns=started)
             key=self.cache.key(request,model_digest);cached=self.cache.get(key)
+            if cancellation is not None and cancellation.is_set():
+                return envelope(window,request['horizon'],model_digest=model_digest,status='cancelled',reasons=('cancelled',),started_ns=started)
+            if deadline is not None and time.monotonic()>=deadline:
+                return envelope(window,request['horizon'],model_digest=model_digest,status='timed-out',reasons=('deadline-exceeded',),started_ns=started)
             if cached is not None:
+                cached=validate_forecast(cached,window,request['horizon'])
+                if request['backend']=='chronos2':require(cached['modelDigest']==model_digest,'cached-artifact-drift')
                 if deadline is not None and time.monotonic()>=deadline:
                     return envelope(window,request['horizon'],model_digest=model_digest,status='timed-out',reasons=('deadline-exceeded',),started_ns=started)
                 result=envelope(window,request['horizon'],model_digest=cached['modelDigest'],quantiles=cached['quantiles'],started_ns=started)
+                if cancellation is not None and cancellation.is_set():
+                    return envelope(window,request['horizon'],model_digest=model_digest,status='cancelled',reasons=('cancelled',),started_ns=started)
+                if deadline is not None and time.monotonic()>=deadline:
+                    return envelope(window,request['horizon'],model_digest=model_digest,status='timed-out',reasons=('deadline-exceeded',),started_ns=started)
                 self.last_cache_receipt={'cacheHit':True,'key':key,'originalForecastDigest':cached['packetDigest'],
                                          'currentForecastDigest':result['packetDigest'],'wallNs':time.monotonic_ns()-started}
                 return result
             if request['backend']=='chronos2':result=self.adapter.forecast(window,request['horizon'],deadline=deadline,cancellation=cancellation)
             else:result=predict_baseline(window,request['horizon'],method=request['backend'],alpha=request['alpha'])
+            if cancellation is not None and cancellation.is_set():
+                return envelope(window,request['horizon'],model_digest=model_digest,status='cancelled',reasons=('cancelled',),started_ns=started)
             if deadline is not None and time.monotonic()>=deadline:
                 return envelope(window,request['horizon'],model_digest=model_digest,status='timed-out',reasons=('deadline-exceeded',),started_ns=started)
             if result['status']=='forecast':self.cache.put(key,result)
+            if cancellation is not None and cancellation.is_set():
+                self.cache.discard(key)
+                return envelope(window,request['horizon'],model_digest=model_digest,status='cancelled',reasons=('cancelled',),started_ns=started)
+            if deadline is not None and time.monotonic()>=deadline:
+                self.cache.discard(key)
+                return envelope(window,request['horizon'],model_digest=model_digest,status='timed-out',reasons=('deadline-exceeded',),started_ns=started)
             self.last_cache_receipt={'cacheHit':False,'key':key,'originalForecastDigest':None,
                                      'currentForecastDigest':result['packetDigest'],'wallNs':time.monotonic_ns()-started}
             return deepcopy(result)

@@ -1,0 +1,61 @@
+{
+  "version": "agent-braid-resource-catalogue-v1",
+  "sourceKind": "synthetic",
+  "profiles": [
+    {
+      "resource": {
+        "version": "agent-braid-forecast-resource-v2",
+        "sourceKind": "synthetic",
+        "profileId": "synthetic-preparation",
+        "hostId": "synthetic-local",
+        "executionContract": "authorized-serial-index-patch-v1",
+        "allowedModes": [
+          "serial",
+          "parallel"
+        ],
+        "maxWorkers": 4,
+        "observedNs": 100,
+        "expiresNs": 200,
+        "caps": {
+          "operations": 4,
+          "patchBytes": 262144,
+          "scratchBytes": 67108864
+        },
+        "profileRevision": "b1b82f95231f3ef86f5041118868c8797917d7c430de8c61f0ebb68fbf9ab450"
+      },
+      "metadata": {
+        "runtimeRevision": "1111111111111111111111111111111111111111111111111111111111111111",
+        "inventoryRevision": "2222222222222222222222222222222222222222222222222222222222222222",
+        "platform": {
+          "system": "synthetic-linux",
+          "architecture": "synthetic-cpu",
+          "logicalCpuCount": 4,
+          "memoryBytes": 4294967296
+        },
+        "isolation": {
+          "revision": "3333333333333333333333333333333333333333333333333333333333333333",
+          "receiptDigest": "4444444444444444444444444444444444444444444444444444444444444444",
+          "scope": "owned-git-index-scratch-v1",
+          "ownedScratch": true,
+          "independentGrants": true,
+          "verifierRequired": true,
+          "hardCpuLimitSupported": false,
+          "hardMemoryLimitSupported": false
+        },
+        "availabilityReceipt": {
+          "version": "agent-braid-resource-availability-v1",
+          "sourceKind": "synthetic",
+          "profileId": "synthetic-preparation",
+          "hostId": "synthetic-local",
+          "inventoryRevision": "2222222222222222222222222222222222222222222222222222222222222222",
+          "observedNs": 100,
+          "expiresNs": 200,
+          "observationsDigest": "bcf3477ac379e52ec89f51b4c56c82c3f9a0dca136f6cb566bb2972c4738e30b",
+          "clockId": "synthetic-clock-epoch",
+          "timeUnit": "monotonic-ns"
+        }
+      }
+    }
+  ],
+  "executionAuthorization": false
+}

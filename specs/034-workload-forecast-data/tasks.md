@@ -26,7 +26,7 @@ Only T002 and T004 are complete for bounded synthetic engineering, with the expl
   Dependencies: T001 T002. Target files: agent_braid/forecast_resources.py; tests/test_forecast_resources.py.
   Verification: Reject unknown/stale/over-budget resource IDs; describe actual admitted local slots without claiming distributed placement support.
   Planned commands after implementation: `.venv-speckit/bin/python -m unittest discover -s tests -p "test_forecast*.py" -v` plus the requirement-specific procedure in `specs/034-workload-forecast-data/validation-plan.md`; source/model/launch/founder decisions require their actual reviewer record.
-  Planned evidence: `specs/034-workload-forecast-data/evidence/t005.json`. Obtained evidence: none.
+  Planned evidence: `specs/034-workload-forecast-data/evidence/t005.json`. Obtained evidence: `evidence/t005.json` and `resource-cache-controls-2026-10-15.md` record the synthetic registry, full-profile/refusal controls and bounded engineering review. Actual profile admission and the applicable T001 predecessor remain pending; the original criterion is not marked complete.
 - [ ] T006 (REQ-001 REQ-003 REQ-004 / SC-001 SC-003 SC-004): Freeze and collect the approved prospective source window.
   Dependencies: T003 T004 T005; source rights and numerical capture budget reviewed. Target files: specs/034-workload-forecast-data/source-register.md; private capture receipts.
   Verification: Freeze source/candidate hashes, temporal cutoffs, partitions, duration and storage limits before capture; retain all failures and exclusions.
