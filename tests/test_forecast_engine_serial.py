@@ -43,7 +43,10 @@ class SerialAdmissionTests(unittest.TestCase):
                   'printf "\\nSYNTHETIC_DISPATCH\\n"\nexit 0\n').encode()
         pid, descriptor = pty.fork()
         if pid == 0:
-            os.execl('/bin/bash', 'bash', '--noprofile', '--norc', '-i')
+            os.execve('/bin/bash', ['bash', '--noprofile', '--norc', '-i'], {**os.environ,
+                      'LC_ALL': 'C', 'TERM': 'dumb', 'INPUTRC': '/dev/null',
+                      'HISTFILE': '/dev/null', 'HISTSIZE': '0',
+                      'BASH_SILENCE_DEPRECATION_WARNING': '1'})
         output = bytearray(); status = None; sent = False
         try:
             os.write(descriptor, wrap(source))
@@ -98,7 +101,13 @@ class SerialAdmissionTests(unittest.TestCase):
     def test_raw_v7_shape_consumes_source_instead_of_host_admission(self):
         code, output = self.probe(lambda source: source)
         self.assertNotEqual(0, code, output)
-        self.assertIn(b'\r\nOBSERVED_TOKEN=# BEGIN PURE ADMISSION CHECK\r\n', output)
+        self.assertIn(b'\r\nFC2_WAITING_FOR_TOKEN\r\n', output)
+        # Bash 3.2 can consume the following source line as token; Bash 5.2
+        # can buffer/discard the remaining source and interpret the later host
+        # token as a command. Both violate source/data channel separation.
+        self.assertNotIn(b'\r\nOBSERVED_TOKEN=FC2_ADMIT_OWN_DAEMON_CRASH\r\n', output)
+        self.assertTrue(b'\r\nOBSERVED_TOKEN=# BEGIN PURE ADMISSION CHECK\r\n' in output
+                        or b'FC2_ADMIT_OWN_DAEMON_CRASH: command not found' in output, output)
         self.assertNotIn(b'\r\nSYNTHETIC_DISPATCH\r\n', output)
 
     def test_framed_abort_never_dispatches(self):
