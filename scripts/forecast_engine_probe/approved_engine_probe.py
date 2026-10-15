@@ -93,17 +93,17 @@ def guest_receipt(path):
         except (KeyError,ValueError,UnicodeDecodeError):
             events=parse_events(text)
             if events.get('status')!=b'incomplete' or events.get('daemonLogAvailable')!=b'yes':raise
-            log=events.get('daemonLogBase64',b'')
+            # parse_events has already decoded the event's single base64 layer.
+            decoded=events['daemonLogBase64']
             reported=int(events['daemonLogBytes'])
             truncated=events.get('daemonLogTruncated')==b'yes'
-            decoded=base64.b64decode(log,validate=True)
             if len(decoded)>32768 or reported<0 or len(decoded)!=min(reported,32768) or truncated!=(reported>32768):
                 raise ValueError('daemon-diagnostic-integrity')
             return {'version':'agent-braid-owned-engine-shell-diagnostic-v1','status':'incomplete',
                 'diagnosticOnly':True,'engineReady':False,'ownedDaemonCrash':False,'executionAuthorization':False,
                 'daemonExecIdentity':events.get('daemonExecIdentity')==b'yes','daemonLogAvailable':True,
                 'daemonLogDrainComplete':events.get('daemonLogDrainComplete')==b'yes',
-                'daemonLogBytes':reported,'daemonLogTruncated':truncated,'daemonLogBase64':log.decode('ascii'),
+                'daemonLogBytes':reported,'daemonLogTruncated':truncated,'daemonLogBase64':base64.b64encode(decoded).decode('ascii'),
                 'daemonLogText':decoded.decode('utf-8',errors='replace'),'readinessProbes':int(events.get('readinessProbes',b'0')),
                 'signal':int(events.get('signal',b'0')),'shellWaitStatus':int(events.get('waitStatus',b'0'))}
 

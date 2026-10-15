@@ -58,12 +58,35 @@ class ShellProtocolTests(unittest.TestCase):
 
  def test_incomplete_diagnostic_preserves_failed_log_drain(self):
   sample={'status':b'incomplete','daemonLogAvailable':b'yes','daemonLogDrainComplete':b'no',
-          'daemonLogBase64':base64.b64encode(b'partial'),'daemonLogBytes':b'7','daemonLogTruncated':b'no'}
+          'daemonLogBase64':b'partial','daemonLogBytes':b'7','daemonLogTruncated':b'no'}
   with tempfile.TemporaryDirectory() as tmp:
    path=Path(tmp)/'console';path.write_text(console(sample));path.chmod(0o600)
    result=probe.guest_receipt(path)
   self.assertFalse(result['daemonLogDrainComplete'])
   self.assertFalse(result['ownedDaemonCrash'])
+
+ def test_incomplete_log_is_decoded_exactly_once_including_base64_looking_bytes(self):
+  for detail in [b'',b'YWJj',b'ordinary log: not base64\n',b'\xff\x00binary']:
+   with self.subTest(detail=detail),tempfile.TemporaryDirectory() as tmp:
+    sample={'status':b'incomplete','daemonLogAvailable':b'yes','daemonLogDrainComplete':b'yes',
+            'daemonLogBase64':detail,'daemonLogBytes':str(len(detail)).encode(),'daemonLogTruncated':b'no'}
+    path=Path(tmp)/'console';path.write_text(console(sample));path.chmod(0o600)
+    result=probe.guest_receipt(path)
+    self.assertEqual(detail,base64.b64decode(result['daemonLogBase64']))
+    self.assertEqual(detail.decode('utf-8',errors='replace'),result['daemonLogText'])
+    self.assertFalse(result['ownedDaemonCrash']);self.assertFalse(result['executionAuthorization'])
+
+ def test_incomplete_log_missing_payload_or_inconsistent_length_refuses(self):
+  for patch_value in [{'daemonLogBytes':b'6'},{'daemonLogTruncated':b'yes'},{'daemonLogBytes':b'-1'},
+                      {'daemonLogBase64':None}]:
+   sample={'status':b'incomplete','daemonLogAvailable':b'yes','daemonLogDrainComplete':b'yes',
+           'daemonLogBase64':b'partial','daemonLogBytes':b'7','daemonLogTruncated':b'no'}
+   for key,value in patch_value.items():
+    if value is None:sample.pop(key)
+    else:sample[key]=value
+   with self.subTest(patch=patch_value),tempfile.TemporaryDirectory() as tmp:
+    path=Path(tmp)/'console';path.write_text(console(sample));path.chmod(0o600)
+    with self.assertRaises((KeyError,ValueError)):probe.guest_receipt(path)
 
  def test_unknown_runc_search_path_refuses(self):
   sample=events();sample['runtimeSearchPath']=b'/missing/runc'
@@ -187,7 +210,7 @@ class ShellProtocolTests(unittest.TestCase):
   self.assertLess(guest.index('fc2_exec_ready != 1'),guest.index('fc2_ready=0'))
   detail=b'dockerd exited before socket creation'
   sample={'daemonLogAvailable':b'yes','daemonLogBytes':str(len(detail)).encode(),
-   'daemonLogTruncated':b'no','daemonLogBase64':base64.b64encode(detail),'daemonLogDrainComplete':b'yes','daemonConfigValidated':b'yes',
+   'daemonLogTruncated':b'no','daemonLogBase64':detail,'daemonLogDrainComplete':b'yes','daemonConfigValidated':b'yes',
    'daemonExecIdentity':b'no','readinessProbes':b'2','signal':b'0','waitStatus':b'0','status':b'incomplete'}
   with tempfile.TemporaryDirectory() as tmp:
    console_path=Path(tmp)/'console';console_path.write_text(console(sample))
@@ -200,7 +223,7 @@ class ShellProtocolTests(unittest.TestCase):
  def test_synthetic_launcher_failure_is_retained_without_qualification(self):
   detail=b'dockerd exited before socket creation'
   sample={'daemonLogAvailable':b'yes','daemonLogBytes':str(len(detail)).encode(),
-   'daemonLogTruncated':b'no','daemonLogBase64':base64.b64encode(detail),'daemonLogDrainComplete':b'yes','daemonConfigValidated':b'yes',
+   'daemonLogTruncated':b'no','daemonLogBase64':detail,'daemonLogDrainComplete':b'yes','daemonConfigValidated':b'yes',
    'daemonExecIdentity':b'no','readinessProbes':b'2','signal':b'0','waitStatus':b'0','status':b'incomplete'}
   code,result=self.fake_run(sample)
   self.assertEqual(2,code);self.assertFalse(result['qualified']);self.assertTrue(result['cleanupConfirmed'])
@@ -210,7 +233,7 @@ class ShellProtocolTests(unittest.TestCase):
  def test_daemon_diagnostic_truncation_is_explicit_and_bounded(self):
   detail=b'x'*40000
   sample={'daemonLogAvailable':b'yes','daemonLogBytes':b'40000','daemonLogTruncated':b'yes','daemonLogDrainComplete':b'yes','daemonConfigValidated':b'yes',
-   'daemonLogBase64':base64.b64encode(detail[:32768]),'daemonExecIdentity':b'no',
+   'daemonLogBase64':detail[:32768],'daemonExecIdentity':b'no',
    'readinessProbes':b'0','signal':b'0','waitStatus':b'0','status':b'incomplete'}
   with tempfile.TemporaryDirectory() as tmp:
    console_path=Path(tmp)/'console';console_path.write_text(console(sample));console_path.chmod(0o600)

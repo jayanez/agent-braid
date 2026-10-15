@@ -85,3 +85,10 @@ records/dependencies. T001–T006 are closed; T007/T008 remain open. The additiv
 supervised installed synthetic costs, current publication boundary and exact
 remaining daemon/model/closure obligations. Earlier dated observations retain
 their original artifact and execution boundaries; they do not authorize a new run.
+
+## Offline harness repair supplement (2026-10-15)
+
+The consumed framed v8 attempt failed. Its actual result and the offline causes
+and corrections are recorded in [the repair supplement](offline-harness-repair-2026-10-15.md).
+PR #520 retains the engineering changes; no new execution request or VM run is
+prepared. T007 and T008 remain open, independently of software-test results.

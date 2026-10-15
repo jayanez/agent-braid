@@ -220,7 +220,9 @@ fc2_emit launchedStat "$fc2_stat"
 fc2_fields=${fc2_stat##*) }; read -ra fc2_values <<< "$fc2_fields"; fc2_birth=${fc2_values[19]}
 fc2_api() {
   fc2_guard || return 2
-  printf 'GET %s HTTP/1.0\r\nHost: owned-guest\r\nConnection: close\r\n\r\n' "$1" | /usr/bin/timeout -k1 1 /usr/bin/socat -t0.05 -T0.8 STDIO,ignoreeof "UNIX-CONNECT:$fc2_socket" | /usr/bin/head -c1048577 > "$2" || return $?
+  # The outer deadline bounds the complete exchange. socat's subsecond -T
+  # inactivity path can return success after only the first response block.
+  printf 'GET %s HTTP/1.0\r\nHost: owned-guest\r\nConnection: close\r\n\r\n' "$1" | /usr/bin/timeout -k1 1 /usr/bin/socat -t0.05 STDIO,ignoreeof "UNIX-CONNECT:$fc2_socket" | /usr/bin/head -c1048577 > "$2" || return $?
   local fc2_bytes
   fc2_bytes=$(/usr/bin/wc -c < "$2"); (( fc2_bytes <= 1048576 ))
 }

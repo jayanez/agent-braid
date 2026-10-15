@@ -3,6 +3,23 @@
 import Foundation
 import CoreFoundation
 
+// Foundation splits the LF byte even in CRLF. Swift Character splitting does
+// not: CRLF is one extended grapheme, so split(separator: "\n") misses it.
+// Always discard the final component: until LF arrives it is a partial record.
+func engineConsoleLines(_ console: String) -> [String] {
+    console.components(separatedBy: "\n").dropLast().map {
+        $0.trimmingCharacters(in: .whitespacesAndNewlines)
+    }
+}
+
+func enginePrerequisiteReady(_ console: String) -> Bool {
+    engineConsoleLines(console).contains("FC2_ENGINE_EVENT prerequisiteReady eWVz")
+}
+
+func engineCompletionSeen(_ console: String) -> Bool {
+    engineConsoleLines(console).contains("FC2_ENGINE_QUALIFICATION_DONE")
+}
+
 func uniqueJSON(_ data: Data) throws -> Any {
     guard data.count <= 1048576 else { throw NSError(domain: "budget", code: 1) }
     let bytes = [UInt8](data)
@@ -62,8 +79,7 @@ func engineHTTPJSON(_ raw: Data) throws -> Any {
 func nativeEnginePreflight(_ console: String) -> Bool {
     guard console.utf8.count <= 1048576 else { return false }
     var events = [String: Data]()
-    for raw in console.split(separator: "\n").dropLast(console.hasSuffix("\n") ? 0 : 1) {
-        let line = raw.trimmingCharacters(in: .whitespacesAndNewlines)
+    for line in engineConsoleLines(console) {
         guard line.hasPrefix("FC2_ENGINE_EVENT ") else { continue }
         let parts = line.dropFirst("FC2_ENGINE_EVENT ".count).split(separator: " ", maxSplits: 1, omittingEmptySubsequences: false)
         guard parts.count == 2, events[String(parts[0])] == nil, events.count < 32, let value = Data(base64Encoded: String(parts[1])) else { return false }
