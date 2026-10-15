@@ -75,3 +75,13 @@ See `contracts/technical-cost.md`, `isolated-engine-control-proposal.md` and the
 ## Integration and tracking reconciliation
 
 [Delivery readiness](delivery-readiness.md) maps the original task criteria and SPEC-045 T001–T008 to obtained evidence and remaining gates. Milestone FC.2 is registered as #20. The current task/evidence and GitHub issue publication path is additive; historical assurances and consumed execution approvals remain unchanged.
+
+## Technical completion continuation (2026-10-15)
+
+PRs #508/#519 are merged and FC.2 #20 is published with all nine managed
+records/dependencies. T001–T006 are closed; T007/T008 remain open. The additive
+[technical completion packet](technical-completion-2026-10-15.md) and
+[measurement index](evidence/completion-increment-2026-10-15.json) record the
+supervised installed synthetic costs, current publication boundary and exact
+remaining daemon/model/closure obligations. Earlier dated observations retain
+their original artifact and execution boundaries; they do not authorize a new run.
