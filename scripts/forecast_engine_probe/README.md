@@ -43,3 +43,14 @@ truncated historical HTTP record or convert that failed attempt into qualificati
 No test here starts a VM, daemon, container or model, installs an approval pin, or
 prepares another execution request. Guest behavior after these changes remains
 unexecuted. T007 and T008 remain subject to their existing separate gates.
+
+The subsequent cancellation review adds a shared pure `SerialInputGate` around
+all bounded serial writes. Cancellation and each whole write have one lock order:
+a write already begun completes before cancellation; cancellation winning first
+prevents sender invocation. The absolute 20-second cleanup deadline is anchored
+before waiting for that lock. No overall deadline or write budget is increased.
+The pure queued-cancellation and in-flight controls run without Virtualization:
+
+```sh
+python -m unittest tests.test_forecast_engine_cancellation -v
+```

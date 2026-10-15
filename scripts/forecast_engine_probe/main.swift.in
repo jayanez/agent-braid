@@ -18,6 +18,30 @@ func serialGuestProgram(_ script: Data) -> Data {
     return program
 }
 
+// SPDX-License-Identifier: AGPL-3.0-only
+import Foundation
+
+// One linearization order for cancellation and whole bounded serial writes.
+// A write already holding the lock precedes cancellation; after cancel returns
+// no sender can start. Callers keep the original absolute cleanup deadline.
+final class SerialInputGate {
+    private let lock = NSLock()
+    private var cancelled = false
+
+    func cancel() {
+        lock.lock()
+        defer { lock.unlock() }
+        cancelled = true
+    }
+
+    func sendIfActive(_ sender: () -> Bool) -> Bool {
+        lock.lock()
+        defer { lock.unlock() }
+        guard !cancelled else { return false }
+        return sender()
+    }
+}
+
 // BEGIN BOUNDED SERIAL INPUT
 func sendBoundedInput(_ data: Data, to handle: FileHandle, budgetNs: UInt64, closeAfter: Bool = true) -> Bool {
     let fd = handle.fileDescriptor
@@ -188,6 +212,7 @@ var preflightStarted = false
 var enginePreflightValidated = false
 var guestConsole = Data()
 var stopRequested = false
+let serialInputGate = SerialInputGate()
 var consoleBytes = 0
 var consoleBudgetExceeded = false
 func finish(_ status: String, _ code: Int32, _ cleaned: Bool) -> Never {
@@ -208,8 +233,11 @@ func stopped() -> Never {
 }
 func stop() {
     guard !stopRequested else { return }
+    let cleanupDeadline = DispatchTime.now() + 20
     stopRequested = true
-    DispatchQueue.main.asyncAfter(deadline: .now() + 20) { finish("stop-unconfirmed", 2, false) }
+    // Anchor at entry: waiting behind a <=2s write never extends cleanup.
+    DispatchQueue.main.asyncAfter(deadline: cleanupDeadline) { finish("stop-unconfirmed", 2, false) }
+    serialInputGate.cancel()
     if machine.state == .stopped { stopped() }
     guard machine.canStop else { finish("stop-unconfirmed", 2, false) }
     machine.stop { error in
@@ -250,14 +278,14 @@ let preflightAccepted = DispatchSource.makeUserDataAddSource(queue: .main)
 preflightAccepted.setEventHandler {
     DispatchQueue.global(qos: .utility).async {
         let grant = Data("FC2_ADMIT_OWN_DAEMON_CRASH\n".utf8)
-        if !sendBoundedInput(grant, to: inputPipe.fileHandleForWriting, budgetNs: 500000000, closeAfter: false) { inputFailure.add(data: 1) }
+        if !serialInputGate.sendIfActive({ sendBoundedInput(grant, to: inputPipe.fileHandleForWriting, budgetNs: 500000000, closeAfter: false) }) { inputFailure.add(data: 1) }
     }
 }; preflightAccepted.resume()
 let preflightRejected = DispatchSource.makeUserDataAddSource(queue: .main)
 preflightRejected.setEventHandler {
     DispatchQueue.global(qos: .utility).async {
         let abort = Data("FC2_ABORT_OWN_DAEMON_CRASH\n".utf8)
-        if !sendBoundedInput(abort, to: inputPipe.fileHandleForWriting, budgetNs: 500000000, closeAfter: false) { inputFailure.add(data: 1) }
+        if !serialInputGate.sendIfActive({ sendBoundedInput(abort, to: inputPipe.fileHandleForWriting, budgetNs: 500000000, closeAfter: false) }) { inputFailure.add(data: 1) }
     }
     // No crash is admitted. Let the guest EXIT trap stop its owned daemon and
     // publish the capped log; timeout still stops this VM through its own handle.
@@ -274,7 +302,9 @@ machine.start { result in
         DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
             let script = Data(base64Encoded: "@@GUEST_BASE64@@")!
             DispatchQueue.global(qos: .utility).async {
-                let delivered = sendBoundedInput(serialGuestProgram(script), to: inputPipe.fileHandleForWriting, budgetNs: 2000000000, closeAfter: false)
+                let delivered = serialInputGate.sendIfActive {
+                    sendBoundedInput(serialGuestProgram(script), to: inputPipe.fileHandleForWriting, budgetNs: 2000000000, closeAfter: false)
+                }
                 if !delivered { inputFailure.add(data: 1) }
             }
         }

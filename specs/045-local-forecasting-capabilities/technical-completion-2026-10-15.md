@@ -104,3 +104,18 @@ local PR profile passed 1516 tests (14 skips) and executable gates before this
 framing delta; it is not presented as a full-suite run of the four later controls.
 The framing delta requires its fresh exact-head CI before owner presentation.
 Limits and the one-shot stop rule are unchanged; a new exact decision is required.
+
+## Retrospective and cost continuation
+
+The [FC.1 retrospective](fc1-retrospective-2026-10-15.md) records the live original
+task counts and distinguishes shared engineering from missing real experiment
+acceptance. The [cost acceptance inventory](cost-acceptance-2026-10-15.md) preserves
+the 53.087457875-second synthetic observation and proposes a finite measurement
+boundary without accepting its remaining gaps. These additions close no task.
+
+The first offline-repaired private v9 request was not presented or executed:
+Luna found a queued-admission/cancellation race. A shared serial input gate now
+orders all bounded writes against cancellation, retaining the absolute 20-second
+cleanup deadline from stop entry. A new compiled/signed package must bind that
+correction and pass exact review before owner approval is requested. No previous
+approval applies to it.
