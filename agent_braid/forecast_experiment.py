@@ -12,10 +12,11 @@ from .forecast_windows import compile_window
 from .forecast_advice import ForecastSession
 from .forecast_policy import advise
 
-def paired_synthetic_episode(fixture,signal,*,operator,session=None,order_seed=1,cost_recorder=None):
+def paired_synthetic_episode(fixture,signal,*,operator,session=None,order_seed=1,cost_recorder=None,progress=None):
     """Execute every intended arm on fresh owned private runs; preserve failures."""
     episode_started=time.monotonic_ns()
     require(callable(operator),'independent-operator-required');integer(order_seed)
+    require(progress is None or callable(progress),'invalid-progress-observer')
     require(signal.get('provenance')=='synthetic-simulation','real-source-not-admitted')
     from . import git_runtime,git_replay,runtime_policy
     root=Path(fixture['root']).resolve(strict=True);repo=Path(fixture['repository']).resolve(strict=True)
@@ -40,6 +41,11 @@ def paired_synthetic_episode(fixture,signal,*,operator,session=None,order_seed=1
         for index,arm in enumerate(arms):
             started=time.monotonic_ns();row={'arm':arm,'orderIndex':index,'status':'failed','mode':'serial','sourceKind':'authentic-on-synthetic',
                  'wallNs':None,'resultTree':None,'forecastStatus':None,'reason':None,'inputDigest':digest(request)}
+            if progress is not None:
+                progress(deepcopy({'episodeId':episode,'arms':results,
+                    'activeArm':{'arm':arm,'orderIndex':index,'status':'started-outcome-unknown',
+                                 'inputDigest':row['inputDigest']},
+                    'notRunArms':arms[index+1:],'executionAuthorization':False}))
             try:
                 head=subprocess.run(['git','--no-optional-locks','-C',str(repo),'rev-parse','HEAD'],capture_output=True,timeout=5,check=True)
                 require(head.stdout.decode().strip()==expected_source,'fixture-source-drift')
@@ -81,7 +87,16 @@ def paired_synthetic_episode(fixture,signal,*,operator,session=None,order_seed=1
                     require(request['expectedFinalTree']==verified['resultTree'],'non-equivalent-outcome')
                     row.update(status='completed',resultTree=verified['resultTree'],planDigest=plan['planDigest'])
             except (ValueError,OSError,KeyError,TypeError):row['reason']='paired-arm-failed'
-            finally:row['wallNs']=time.monotonic_ns()-started;results.append(row)
+            except BaseException as error:
+                row['reason']=('paired-arm-cancelled' if isinstance(error,(KeyboardInterrupt,SystemExit))
+                               else 'paired-arm-timed-out' if isinstance(error,subprocess.TimeoutExpired)
+                               else 'paired-arm-aborted')
+                raise
+            finally:
+                row['wallNs']=time.monotonic_ns()-started;results.append(row)
+                if progress is not None:
+                    progress(deepcopy({'episodeId':episode,'arms':results,'activeArm':None,
+                        'notRunArms':arms[index+1:],'executionAuthorization':False}))
         require(len(results)==3,'incomplete-intended-roster')
     finally:
         cleanup_started=time.monotonic_ns()

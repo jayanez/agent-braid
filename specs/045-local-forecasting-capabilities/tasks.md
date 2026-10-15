@@ -60,3 +60,7 @@ The [obtained packet](obtained-accounting-2026-10-15.md) and `evidence/integrate
 ## Technical publication/readback acceptance (2026-10-15)
 
 PR #521 is integrated at `ff01ce46213854b3dd0116f9a4eb28efb740448b`. The scoped issue audit returned zero operations after the two reviewed text updates; authenticated Project readback observed all nine managed records in the three views. `evidence/technical-publication-readback-2026-10-15.json` binds those obtained facts and their validation. T008 is checked for its completed publication/inventory-readback criterion; the following scoped remote transition and final closed/Done readback remain separate operations. T007, parent #510 and milestone #20 remain open for the unresolved complete-cost gate. No scientific, model-load, source, ADR or promotion authority is inferred.
+
+## Selected-flow measurement preparation (2026-10-15)
+
+The additive implementation in [selected-flow-implementation-2026-10-15.md](selected-flow-implementation-2026-10-15.md) reuses the obtained worker control and paired Git harness, defines the separate finite v2 observation boundary, and prepares fresh model/cache-to-policy collection. It closes no original criterion. T007 remains open for authentic selected-flow capture and literal complete-cost acceptance; T008 stays closed. New execution requires its exact reviewed package and owner admission.
