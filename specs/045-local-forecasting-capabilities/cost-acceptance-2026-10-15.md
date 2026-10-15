@@ -72,3 +72,7 @@ scoped issue/Project readback independently of T007. PR #520 remains the deliver
 vehicle; it has not been merged by this continuation. Keep T007, parent and
 milestone open while full model/control/cost acceptance is absent. No holdout,
 utility, ADR, source or promotion decision follows from software publication.
+
+## Obtained worker control and accounting publication
+
+The additive [obtained accounting packet](obtained-accounting-2026-10-15.md) supersedes the earlier current-status descriptions above. The admitted integrated worker/daemon control succeeded and was independently reviewed by Luna; no new execution accompanies publication. T007 remains open for the explicit complete-cost gaps. T008 has a separate technical-publication and bounded-readback criterion; no model/source/scientific/ADR/promotion acceptance is inferred. Historical observations and assurance remain unchanged.

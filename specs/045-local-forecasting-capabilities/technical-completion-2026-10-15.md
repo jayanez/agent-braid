@@ -119,3 +119,7 @@ orders all bounded writes against cancellation, retaining the absolute 20-second
 cleanup deadline from stop entry. A new compiled/signed package must bind that
 correction and pass exact review before owner approval is requested. No previous
 approval applies to it.
+
+## Obtained worker control and accounting publication
+
+The additive [obtained accounting packet](obtained-accounting-2026-10-15.md) supersedes the earlier current-status descriptions above. The admitted integrated worker/daemon control succeeded and was independently reviewed by Luna; no new execution accompanies publication. T007 remains open for the explicit complete-cost gaps. T008 has a separate technical-publication and bounded-readback criterion; no model/source/scientific/ADR/promotion acceptance is inferred. Historical observations and assurance remain unchanged.
