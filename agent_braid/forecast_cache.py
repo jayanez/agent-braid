@@ -20,3 +20,5 @@ class ForecastCache:
         while len(self.records)>self.capacity:self.records.popitem(last=False)
 
     def clear(self):self.records.clear()
+
+    def discard(self,key):self.records.pop(key,None)

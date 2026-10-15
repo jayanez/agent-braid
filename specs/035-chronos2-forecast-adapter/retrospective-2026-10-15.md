@@ -81,3 +81,7 @@ Pure cache-key and deferral tests, task-specific acceptance publications and a
 reviewed FC.1 resource profile are concrete follow-up opportunities; they are
 not executed or completed by this retrospective. No new milestone, model/VM
 package, source capture or experiment is proposed here.
+
+## Subsequent resource/cache engineering tranche
+
+The [additive resource/cache controls](../034-workload-forecast-data/resource-cache-controls-2026-10-15.md) now supply the direct synthetic cache controls previously missing in the T006 row and a metadata-rich resource validator. This supersedes that software-gap description only; no real profile has been admitted and the T005/T006 dependency/checkbox dispositions above remain open. The earlier review and historical evidence remain bound to their original inputs.
