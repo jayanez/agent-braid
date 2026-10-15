@@ -64,3 +64,7 @@ PR #521 is integrated at `ff01ce46213854b3dd0116f9a4eb28efb740448b`. The scoped 
 ## Selected-flow measurement preparation (2026-10-15)
 
 The additive implementation in [selected-flow-implementation-2026-10-15.md](selected-flow-implementation-2026-10-15.md) reuses the obtained worker control and paired Git harness, defines the separate finite v2 observation boundary, and prepares fresh model/cache-to-policy collection. It closes no original criterion. T007 remains open for authentic selected-flow capture and literal complete-cost acceptance; T008 stays closed. New execution requires its exact reviewed package and owner admission.
+
+## Owner-adopted T007 cancellation (2026-10-15)
+
+The [disposition](t007-disposition.md) and [owner provenance record](evidence/t007-owner-disposition-2026-10-15.json) adopt the reviewed proposal to cancel T007's unmet complete-cost remainder as partial/infeasible. The exact original T007 line and unchecked checkbox above remain unchanged. The selected-flow measurement is obtained in the linked public receipts; no new model/VM execution accompanies this decision. Registered tracking requests `closed/not_planned`, separately from completion, after reviewed integration and scoped readback. Report seven completed tasks plus one cancelled/partial task; T008 stays completed. Parent #510 and milestone #20 stay open; no FC.1/source/experiment/scientific/ADR/promotion gate is accepted. Dated historical supplements retain their original scopes and status.
