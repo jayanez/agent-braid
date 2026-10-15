@@ -4,9 +4,11 @@ Status: engineering repair in PR #520; no new execution package or approval.
 T007 and T008 remain open. This supplement does not replace historical assurance
 or accept the failed environment qualification.
 
-The [scoped evidence index](evidence/offline-harness-repair-2026-10-15.json)
-binds the retained input, current sources, failing regressions, 39 focused checks
-and Luna review. Whole-PR validation retains its separate candidate/run identity.
+The [initial evidence index](evidence/offline-harness-repair-2026-10-15.json)
+binds the retained input, originally reviewed sources, failing regressions,
+39 focused checks and Luna review. The [UTF-8 follow-up](evidence/offline-harness-utf8-followup-2026-10-15.json)
+preserves the later Linux failures and binds the byte-splitting correction and
+its separate review. Whole-PR validation retains its own candidate/run identity.
 
 ## Retained outcome
 
@@ -22,9 +24,14 @@ No model, inference or container creation was part of that attempt.
 
 | Failure | Offline reproduction | Correction |
 | --- | --- | --- |
-| Native preflight/completion flags missed saved records | Foundation-only replay shows Swift treats CRLF as one `Character`; LF character splitting and substring checks miss those boundaries | Share Foundation line splitting across strict preflight and marker detection; ignore incomplete final records and return after terminal stop |
+| Native preflight/completion flags missed saved records | Foundation-only replay shows Swift treats CRLF as one `Character`; LF character splitting and substring checks miss those boundaries | Share UTF-8 byte splitting across strict preflight and marker detection; ignore incomplete final records and return after terminal stop |
 | `/info` capture stops at 4096 bytes | An owned synthetic Unix peer sends a 4096-byte block followed by a delayed remainder; the isolated socat client with the previous options exits zero after the first block | Remove the inner subsecond `-T0.8` inactivity path; preserve stdin EOF handling, the outer one-second deadline and 1 MiB byte cap |
 | Incomplete diagnostic disappears into a generic wrapper error | Replaying the retained console raises a base64 error because `parse_events` has already decoded the 357-byte log | Validate the decoded bytes directly and encode once for the JSON field; correct previously double-encoded synthetic fixtures |
+
+CI for commit `94673ce` also exposed a macOS/Linux Foundation substring difference:
+three CRLF checks failed on Linux. The follow-up splits UTF-8 LF bytes directly,
+retaining the same assertions and strict preflight. The initial focused evidence
+index remains bound to its original reviewed source; it does not cover this delta.
 
 The socket comparison reproduces the observed cutoff outside the VM; it does not
 establish which internal guest/Linux event caused the historical truncation.

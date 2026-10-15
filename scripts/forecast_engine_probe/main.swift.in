@@ -44,12 +44,12 @@ func sendBoundedInput(_ data: Data, to handle: FileHandle, budgetNs: UInt64, clo
 import Foundation
 import CoreFoundation
 
-// Foundation splits the LF byte even in CRLF. Swift Character splitting does
-// not: CRLF is one extended grapheme, so split(separator: "\n") misses it.
+// Split UTF-8 bytes, not Swift Characters or platform-specific Foundation
+// substrings: CRLF is one extended grapheme, but LF is always byte 10.
 // Always discard the final component: until LF arrives it is a partial record.
 func engineConsoleLines(_ console: String) -> [String] {
-    console.components(separatedBy: "\n").dropLast().map {
-        $0.trimmingCharacters(in: .whitespacesAndNewlines)
+    console.utf8.split(separator: 10, omittingEmptySubsequences: false).dropLast().map {
+        String(decoding: $0, as: UTF8.self).trimmingCharacters(in: .whitespacesAndNewlines)
     }
 }
 

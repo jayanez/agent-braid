@@ -8,8 +8,9 @@ Changing these sources does not renew approval or qualify the environment.
 The 2026-10-15 offline repair covers three independently reproducible defects:
 
 - Swift `Character` splitting misses CRLF-delimited event and completion records.
-  `engineConsoleLines` uses Foundation splitting and waits for a complete LF-ended
-  record, including when CR and LF arrive in separate reads. Native preflight and
+  `engineConsoleLines` splits UTF-8 bytes directly and waits for a complete LF-ended
+  record, including when CR and LF arrive in separate reads. This also avoids
+  the macOS/Linux Foundation substring difference found by CI. Native preflight and
   both host marker predicates share this implementation.
 - A subsecond socat inactivity timeout can return exit zero after only the first
   response block. The synthetic Unix peer reproduces the 4096-byte cutoff with
