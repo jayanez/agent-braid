@@ -1,0 +1,25 @@
+{
+  "actualVmStarts": 0,
+  "date": "2026-10-15",
+  "executionAuthorization": false,
+  "failedCandidate": "4fd70decdedba63db3ffb8ecc7b2bfb5c87f5f92",
+  "failedCiRun": 38700213696,
+  "failures": 1,
+  "freshCi": "required-not-yet-passed",
+  "independentReruns": {
+    "compiledSwiftPtyControls": 4,
+    "literalSourcePtyControls": 4
+  },
+  "preservedAssertions": [
+    "raw reaches runtime wait and exits nonzero",
+    "raw never observes genuine token and never dispatches",
+    "framed positive observes exact genuine token and dispatches synthetically",
+    "framed abort emits rejection and never dispatches"
+  ],
+  "reason": "negative control over-specified which queued source line Bash must consume; Bash 5.2 instead interprets the later owner token as a command",
+  "reviewModel": "gpt-6-luna",
+  "runtimeHelperChanged": false,
+  "skips": 10,
+  "testsExecuted": 1520,
+  "version": "agent-braid-fc2-serial-portability-review-v1"
+}

@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: AGPL-3.0-only
-import subprocess,sys,tempfile,threading,time,unittest
+import hashlib,subprocess,sys,tempfile,threading,time,unittest
 from pathlib import Path
 from unittest.mock import patch
 from agent_braid.forecast_data import ForecastError,digest
@@ -18,6 +18,37 @@ class TestControlVerifier:
     def verify(self,m):return ArtifactApprovalAttestation(digest(m),'e'*64,'owner-artifact-compute')
 
 class ForecastWorkerTests(unittest.TestCase):
+    def test_manifest_revisions_refuse_even_when_the_test_verifier_matches(self):
+        valid=manifest()
+        self.assertEqual(valid,validate_manifest(valid,artifact_verifier=TestControlVerifier()))
+        for field,value in (('sourceRevision','main'),('checkpointRevision','main'),('libraryVersion','99.0.0')):
+            with self.subTest(field=field):
+                changed=manifest();changed[field]=value
+                with self.assertRaisesRegex(ForecastError,'^unsupported-model-revision$'):
+                    validate_manifest(changed,artifact_verifier=TestControlVerifier())
+
+    def test_mutable_image_reference_refuses_before_any_container_operation(self):
+        changed=manifest();changed['imageId']='chronos:latest'
+        with patch('subprocess.Popen') as process:
+            with self.assertRaisesRegex(ForecastError,'^mutable-image-reference$'):
+                DockerCPUWorker(changed,artifact_verifier=TestControlVerifier())
+            process.assert_not_called()
+
+    def test_changed_owned_fake_checkpoint_refuses_before_engine_access(self):
+        with tempfile.TemporaryDirectory(prefix='forecast-fake-checkpoint-') as tmp:
+            root=Path(tmp).resolve();root.chmod(0o700);changed=manifest()
+            changed['checkpointDirectory']=str(root)
+            for name in changed['files']:
+                path=root/name;path.write_bytes(b'owned synthetic fixture; not model data');path.chmod(0o600)
+                changed['files'][name]=hashlib.sha256(path.read_bytes()).hexdigest()
+            (root/'config.json').write_bytes(b'changed synthetic fixture')
+            worker=DockerCPUWorker(changed,artifact_verifier=TestControlVerifier())
+            with patch.object(worker,'_docker') as docker,patch('subprocess.Popen') as process:
+                with self.assertRaisesRegex(ForecastError,'^checkpoint-hash-drift$'):
+                    worker._checkpoint(time.monotonic()+2,threading.Event())
+                docker.assert_not_called();process.assert_not_called()
+            self.assertIsNone(worker.container);self.assertFalse(worker.loaded)
+
     def test_simulated_daemon_loss_preserves_container_identity_and_blocks_new_lease(self):
         # Pure synthetic fault injection. Never contacts or stops a Docker daemon.
         with tempfile.TemporaryDirectory() as tmp:

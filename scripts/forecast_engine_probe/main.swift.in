@@ -1,0 +1,316 @@
+// SPDX-License-Identifier: AGPL-3.0-only
+// Owned guest engine qualification. No containers, checkpoint or host directories.
+// Default is configuration only. The trusted approval wrapper owns execution.
+import Foundation
+import Virtualization
+import Darwin
+
+// SPDX-License-Identifier: AGPL-3.0-only
+import Foundation
+
+// Bash consumes the entire function definition before executing its invocation.
+// A later read from the serial terminal therefore receives host admission data,
+// not unread source lines. The pinned guest source is not caller-controlled.
+func serialGuestProgram(_ script: Data) -> Data {
+    var program = Data("fc2_run_probe() {\n".utf8)
+    program.append(script)
+    program.append(Data("\n}\nfc2_run_probe\n".utf8))
+    return program
+}
+
+// SPDX-License-Identifier: AGPL-3.0-only
+import Foundation
+
+// One linearization order for cancellation and whole bounded serial writes.
+// A write already holding the lock precedes cancellation; after cancel returns
+// no sender can start. Callers keep the original absolute cleanup deadline.
+final class SerialInputGate {
+    private let lock = NSLock()
+    private var cancelled = false
+
+    func cancel() {
+        lock.lock()
+        defer { lock.unlock() }
+        cancelled = true
+    }
+
+    func sendIfActive(_ sender: () -> Bool) -> Bool {
+        lock.lock()
+        defer { lock.unlock() }
+        guard !cancelled else { return false }
+        return sender()
+    }
+}
+
+// BEGIN BOUNDED SERIAL INPUT
+func sendBoundedInput(_ data: Data, to handle: FileHandle, budgetNs: UInt64, closeAfter: Bool = true) -> Bool {
+    let fd = handle.fileDescriptor
+    let flags = fcntl(fd, F_GETFL)
+    guard flags >= 0 && fcntl(fd, F_SETFL, flags | O_NONBLOCK) >= 0 else { return false }
+    let deadline = DispatchTime.now().uptimeNanoseconds + budgetNs
+    var offset = 0
+    data.withUnsafeBytes { bytes in
+        while offset < data.count && DispatchTime.now().uptimeNanoseconds < deadline {
+            let count = Darwin.write(fd, bytes.baseAddress!.advanced(by: offset), data.count - offset)
+            if count > 0 { offset += count }
+            else if count < 0 && (errno == EAGAIN || errno == EWOULDBLOCK) { usleep(10000) }
+            else if count < 0 && errno == EINTR { continue }
+            else { break }
+        }
+    }
+    if closeAfter { try? handle.close() }
+    return offset == data.count
+}
+// END BOUNDED SERIAL INPUT
+
+// SPDX-License-Identifier: AGPL-3.0-only
+// Pure bounded host decoding. No VM, process, daemon or socket operations.
+import Foundation
+import CoreFoundation
+
+// Split UTF-8 bytes, not Swift Characters or platform-specific Foundation
+// substrings: CRLF is one extended grapheme, but LF is always byte 10.
+// Always discard the final component: until LF arrives it is a partial record.
+func engineConsoleLines(_ console: String) -> [String] {
+    console.utf8.split(separator: 10, omittingEmptySubsequences: false).dropLast().map {
+        String(decoding: $0, as: UTF8.self).trimmingCharacters(in: .whitespacesAndNewlines)
+    }
+}
+
+func enginePrerequisiteReady(_ console: String) -> Bool {
+    engineConsoleLines(console).contains("FC2_ENGINE_EVENT prerequisiteReady eWVz")
+}
+
+func engineCompletionSeen(_ console: String) -> Bool {
+    engineConsoleLines(console).contains("FC2_ENGINE_QUALIFICATION_DONE")
+}
+
+func uniqueJSON(_ data: Data) throws -> Any {
+    guard data.count <= 1048576 else { throw NSError(domain: "budget", code: 1) }
+    let bytes = [UInt8](data)
+    struct Frame { var kind: UInt8; var keys = Set<String>(); var expectsKey: Bool }
+    var frames = [Frame]()
+    var index = 0
+    while index < bytes.count {
+        let byte = bytes[index]
+        if byte == 123 || byte == 91 {
+            guard frames.count < 128 else { throw NSError(domain: "depth", code: 1) }
+            frames.append(Frame(kind: byte, expectsKey: byte == 123))
+        } else if byte == 125 || byte == 93 {
+            guard let frame = frames.last, frame.kind == (byte == 125 ? 123 : 91) else { throw NSError(domain: "framing", code: 1) }
+            frames.removeLast()
+        } else if byte == 44 {
+            if !frames.isEmpty && frames[frames.count - 1].kind == 123 { frames[frames.count - 1].expectsKey = true }
+        } else if byte == 34 {
+            let begin = index
+            index += 1
+            while index < bytes.count {
+                if bytes[index] == 92 { index += 2; continue }
+                if bytes[index] == 34 { break }
+                index += 1
+            }
+            guard index < bytes.count else { throw NSError(domain: "string", code: 1) }
+            if !frames.isEmpty && frames[frames.count - 1].kind == 123 && frames[frames.count - 1].expectsKey {
+                let raw = Data(bytes[begin...index])
+                guard let key = try JSONSerialization.jsonObject(with: raw, options: .fragmentsAllowed) as? String else { throw NSError(domain: "key", code: 1) }
+                guard frames[frames.count - 1].keys.insert(key).inserted else { throw NSError(domain: "duplicate", code: 1) }
+                frames[frames.count - 1].expectsKey = false
+            }
+        }
+        index += 1
+    }
+    guard frames.isEmpty else { throw NSError(domain: "framing", code: 1) }
+    return try JSONSerialization.jsonObject(with: data, options: .fragmentsAllowed)
+}
+
+func engineHTTPJSON(_ raw: Data) throws -> Any {
+    guard raw.count <= 1048576, let separator = raw.range(of: Data("\r\n\r\n".utf8)),
+          let head = String(data: raw[..<separator.lowerBound], encoding: .utf8) else { throw NSError(domain: "HTTP", code: 1) }
+    let lines = head.components(separatedBy: "\r\n")
+    guard lines.first == "HTTP/1.0 200 OK" || lines.first == "HTTP/1.1 200 OK" else { throw NSError(domain: "HTTP", code: 2) }
+    var headers = [String: String]()
+    for line in lines.dropFirst() {
+        guard let colon = line.firstIndex(of: ":") else { throw NSError(domain: "HTTP", code: 3) }
+        let key = line[..<colon].trimmingCharacters(in: .whitespaces).lowercased()
+        guard headers[key] == nil else { throw NSError(domain: "HTTP", code: 4) }
+        headers[key] = line[line.index(after: colon)...].trimmingCharacters(in: .whitespaces)
+    }
+    let body = Data(raw[separator.upperBound...])
+    guard headers["transfer-encoding"] == nil else { throw NSError(domain: "HTTP", code: 5) }
+    if let size = headers["content-length"] { guard Int(size) == body.count else { throw NSError(domain: "HTTP", code: 6) } }
+    return try uniqueJSON(body)
+}
+
+func nativeEnginePreflight(_ console: String) -> Bool {
+    guard console.utf8.count <= 1048576 else { return false }
+    var events = [String: Data]()
+    for line in engineConsoleLines(console) {
+        guard line.hasPrefix("FC2_ENGINE_EVENT ") else { continue }
+        let parts = line.dropFirst("FC2_ENGINE_EVENT ".count).split(separator: " ", maxSplits: 1, omittingEmptySubsequences: false)
+        guard parts.count == 2, events[String(parts[0])] == nil, events.count < 32, let value = Data(base64Encoded: String(parts[1])) else { return false }
+        events[String(parts[0])] = value
+    }
+    guard events["daemonExecIdentity"] == Data("yes".utf8),
+          events["runtimeSearchPath"] == Data("/usr/bin/runc".utf8),
+          events["runtimeShimSearchPath"] == Data("/usr/bin/containerd-shim-runc-v2".utf8),
+          events["prerequisiteReady"] == Data("yes".utf8), let infoRaw = events["infoHttp"],
+          let imagesRaw = events["imagesHttp"], let containersRaw = events["containersHttp"],
+          let statRaw = events["launchedStat"], let statText = String(data: statRaw, encoding: .utf8),
+          let first = statText.range(of: " ("), let last = statText.range(of: ") ", options: .backwards),
+          let pid = Int(statText[..<first.lowerBound]), pid > 1 else { return false }
+    let fields = statText[last.upperBound...].split(separator: " ")
+    guard fields.count >= 20, fields[0] != "Z", let birth = UInt64(fields[19]), birth > 0,
+          UInt64(fields[11]) != nil, UInt64(fields[12]) != nil else { return false }
+    do {
+        guard let info = try engineHTTPJSON(infoRaw) as? [String: Any],
+              info["DockerRootDir"] as? String == "/mnt/fc2-engine/docker",
+              let identifier = info["ID"] as? String, !identifier.isEmpty,
+              let live = info["LiveRestoreEnabled"] as? NSNumber,
+              CFGetTypeID(live) == CFBooleanGetTypeID(), !live.boolValue,
+              let count = info["Containers"] as? NSNumber, CFGetTypeID(count) != CFBooleanGetTypeID(),
+              ["i", "s", "l", "q", "I", "S", "L", "Q"].contains(String(cString: count.objCType)), count.int64Value == 0,
+              let images = try engineHTTPJSON(imagesRaw) as? [Any], images.isEmpty,
+              let containers = try engineHTTPJSON(containersRaw) as? [Any], containers.isEmpty else { return false }
+        return true
+    } catch { return false }
+}
+
+let root = URL(fileURLWithPath: CommandLine.arguments[1], isDirectory: true)
+let executing = CommandLine.arguments.count == 3 && CommandLine.arguments[2] == "--execute"
+let configuration = VZVirtualMachineConfiguration()
+let loader = VZLinuxBootLoader(kernelURL: URL(fileURLWithPath: "/Applications/Docker.app/Contents/Resources/linuxkit/kernel"))
+loader.commandLine = "console=hvc0 root=/dev/vda rootfstype=erofs ro"
+configuration.bootLoader = loader
+configuration.platform = VZGenericPlatformConfiguration()
+configuration.cpuCount = 1
+configuration.memorySize = 4294967296
+configuration.networkDevices = []
+configuration.entropyDevices = [VZVirtioEntropyDeviceConfiguration()]
+let base = try VZDiskImageStorageDeviceAttachment(url: URL(fileURLWithPath: "/Applications/Docker.app/Contents/Resources/linuxkit/desktop.img"), readOnly: true)
+let scratch = try VZDiskImageStorageDeviceAttachment(url: root.appendingPathComponent("guest-data.raw"), readOnly: false)
+configuration.storageDevices = [VZVirtioBlockDeviceConfiguration(attachment: base), VZVirtioBlockDeviceConfiguration(attachment: scratch)]
+let console = VZVirtioConsoleDeviceSerialPortConfiguration()
+let consolePath = root.appendingPathComponent("guest-console.txt")
+let descriptor = open(consolePath.path, O_WRONLY | O_CREAT | O_EXCL | O_NOFOLLOW, mode_t(0o600))
+guard descriptor >= 0 else { exit(2) }
+let consolePipe = Pipe()
+let inputPipe = Pipe()
+let consoleFile = FileHandle(fileDescriptor: descriptor, closeOnDealloc: true)
+console.attachment = VZFileHandleSerialPortAttachment(fileHandleForReading: inputPipe.fileHandleForReading,
+    fileHandleForWriting: consolePipe.fileHandleForWriting)
+configuration.serialPorts = [console]
+try configuration.validate()
+if !executing {
+    print("{\"configurationValidated\":true,\"vmCreated\":false,\"vmStarted\":false,\"checkpointExposed\":false,\"networkDevices\":0,\"executionAuthorization\":false}")
+    exit(0)
+}
+let started = DispatchTime.now().uptimeNanoseconds
+let machine = VZVirtualMachine(configuration: configuration)
+var began = false
+var guestCompletionSeen = false
+var preflightStarted = false
+var enginePreflightValidated = false
+var guestConsole = Data()
+var stopRequested = false
+let serialInputGate = SerialInputGate()
+var consoleBytes = 0
+var consoleBudgetExceeded = false
+func finish(_ status: String, _ code: Int32, _ cleaned: Bool) -> Never {
+    let result: [String: Any] = ["version": "agent-braid-owned-engine-shell-vm-probe-v2", "status": status,
+        "enginePreflightValidated": enginePreflightValidated, "guestCompletionSeen": guestCompletionSeen, "vmCreated": true, "vmStarted": began, "vmStopped": machine.state == .stopped,
+        "cleanupConfirmed": cleaned, "consoleBytes": consoleBytes, "consoleBudgetExceeded": consoleBudgetExceeded, "wallNs": DispatchTime.now().uptimeNanoseconds - started,
+        "guestCpus": 1, "guestMemoryBytes": 4294967296, "networkDevices": 0,
+        "sharedDirectories": 0, "checkpointExposed": false, "forecastCalls": 0,
+        "daemonState": "not-inspected", "executionAuthorization": false]
+    if let bytes = try? JSONSerialization.data(withJSONObject: result, options: [.sortedKeys]) {
+        FileHandle.standardOutput.write(bytes); FileHandle.standardOutput.write(Data([10]))
+    }
+    exit(code)
+}
+func stopped() -> Never {
+    let qualified = began && !consoleBudgetExceeded
+    finish(qualified ? "stopped" : "qualification-incomplete", qualified ? 0 : 2, true)
+}
+func stop() {
+    guard !stopRequested else { return }
+    let cleanupDeadline = DispatchTime.now() + 20
+    stopRequested = true
+    // Anchor at entry: waiting behind a <=2s write never extends cleanup.
+    DispatchQueue.main.asyncAfter(deadline: cleanupDeadline) { finish("stop-unconfirmed", 2, false) }
+    serialInputGate.cancel()
+    if machine.state == .stopped { stopped() }
+    guard machine.canStop else { finish("stop-unconfirmed", 2, false) }
+    machine.stop { error in
+        if error == nil && machine.state == .stopped { stopped() }
+        finish("stop-unconfirmed", 2, false)
+    }
+}
+let reader = DispatchSource.makeReadSource(fileDescriptor: consolePipe.fileHandleForReading.fileDescriptor, queue: .main)
+reader.setEventHandler {
+    var buffer = [UInt8](repeating: 0, count: 65536)
+    let count = read(consolePipe.fileHandleForReading.fileDescriptor, &buffer, buffer.count)
+    if count <= 0 { reader.cancel(); return }
+    if consoleBytes + count > 1048576 {
+        consoleBudgetExceeded = true; reader.cancel(); stop(); return
+    }
+    consoleBytes += count
+    let chunk = Data(buffer[0..<count])
+    consoleFile.write(chunk)
+    guestConsole.append(chunk)
+    if let text = String(data: guestConsole, encoding: .utf8), engineCompletionSeen(text) {
+        guestCompletionSeen = true; stop(); return
+    }
+    if !preflightStarted, let text = String(data: guestConsole, encoding: .utf8),
+       enginePrerequisiteReady(text) {
+        preflightStarted = true
+        enginePreflightValidated = nativeEnginePreflight(text)
+        if enginePreflightValidated { preflightAccepted.add(data: 1) }
+        else { preflightRejected.add(data: 1) }
+    }
+}
+reader.resume()
+signal(SIGPIPE, SIG_IGN); signal(SIGTERM, SIG_IGN); signal(SIGINT, SIG_IGN)
+let term = DispatchSource.makeSignalSource(signal: SIGTERM, queue: .main)
+let interrupt = DispatchSource.makeSignalSource(signal: SIGINT, queue: .main)
+term.setEventHandler { stop() }; interrupt.setEventHandler { stop() }
+term.resume(); interrupt.resume()
+let preflightAccepted = DispatchSource.makeUserDataAddSource(queue: .main)
+preflightAccepted.setEventHandler {
+    DispatchQueue.global(qos: .utility).async {
+        let grant = Data("FC2_ADMIT_OWN_DAEMON_CRASH\n".utf8)
+        if !serialInputGate.sendIfActive({ sendBoundedInput(grant, to: inputPipe.fileHandleForWriting, budgetNs: 500000000, closeAfter: false) }) { inputFailure.add(data: 1) }
+    }
+}; preflightAccepted.resume()
+let preflightRejected = DispatchSource.makeUserDataAddSource(queue: .main)
+preflightRejected.setEventHandler {
+    DispatchQueue.global(qos: .utility).async {
+        let abort = Data("FC2_ABORT_OWN_DAEMON_CRASH\n".utf8)
+        if !serialInputGate.sendIfActive({ sendBoundedInput(abort, to: inputPipe.fileHandleForWriting, budgetNs: 500000000, closeAfter: false) }) { inputFailure.add(data: 1) }
+    }
+    // No crash is admitted. Let the guest EXIT trap stop its owned daemon and
+    // publish the capped log; timeout still stops this VM through its own handle.
+    DispatchQueue.main.asyncAfter(deadline: .now() + 5) { stop() }
+}; preflightRejected.resume()
+let inputFailure = DispatchSource.makeUserDataAddSource(queue: .main)
+inputFailure.setEventHandler { stop() }; inputFailure.resume()
+DispatchQueue.main.asyncAfter(deadline: .now() + 50) { if !began { stop() } }
+DispatchQueue.main.asyncAfter(deadline: .now() + 135) { finish("stop-unconfirmed", 2, false) }
+machine.start { result in
+    switch result {
+    case .success:
+        began = true
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+            let script = Data(base64Encoded: "@@GUEST_BASE64@@")!
+            DispatchQueue.global(qos: .utility).async {
+                let delivered = serialInputGate.sendIfActive {
+                    sendBoundedInput(serialGuestProgram(script), to: inputPipe.fileHandleForWriting, budgetNs: 2000000000, closeAfter: false)
+                }
+                if !delivered { inputFailure.add(data: 1) }
+            }
+        }
+        DispatchQueue.main.asyncAfter(deadline: .now() + 65) { stop() }
+    case .failure:
+        finish("start-failed", 2, machine.state == .stopped)
+    }
+}
+dispatchMain()

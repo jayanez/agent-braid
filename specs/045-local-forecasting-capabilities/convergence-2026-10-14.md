@@ -272,3 +272,13 @@ or promotes forecasting. M4 historical utility NO-GO is unchanged.
    actual integration decision. Post-merge tracking must use canonical clean
    develop, reviewed guarded operations and FC.1/FC.2-only readback; do not apply
    unrelated M4.5 or historical tracking changes.
+
+## Technical completion continuation (2026-10-15)
+
+PRs #508/#519 are merged and FC.2 #20 is published with all nine managed
+records/dependencies. T001–T006 are closed; T007/T008 remain open. The additive
+[technical completion packet](technical-completion-2026-10-15.md) and
+[measurement index](evidence/completion-increment-2026-10-15.json) record the
+supervised installed synthetic costs, current publication boundary and exact
+remaining daemon/model/closure obligations. Earlier dated observations retain
+their original artifact and execution boundaries; they do not authorize a new run.

@@ -73,3 +73,14 @@ and host process RSS with platform units. It never loads a model, starts/stops
 Docker, changes approval pins or accepts utility. Outputs use a new private
 exclusive directory; failed or partial outputs are retained without overwrite.
 Actual model/daemon counters and historical provisioning allocation remain open.
+
+## Outer synthetic publication observer
+
+`scripts/reproduce_forecast_cost_supervised.py` runs only the fixed installed
+synthetic driver. It records a separate wall boundary through publication and
+readback of its inner receipts/index. Its waited-child-tree counters overlap
+inner CPU and are not summed with it. The parent terminal receipt's publication
+remains a named gap, as do unavailable worker/daemon measurements and reused
+provisioning. This narrows the measured publication boundary without changing
+`publicationIncluded` or claiming complete deployment costs. A failed child or
+missing receipt stays visible and cannot confirm cleanup.

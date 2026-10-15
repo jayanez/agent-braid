@@ -13,7 +13,7 @@ historical milestone operations are included.
 | Source | Bounded task disposition | Open acceptance |
 |---|---|---|
 | SPEC-034 | T002 and T004: numeric validation, causal compilation and purged splits; unchanged production inputs and fresh negatives, with the supplemental window-test delta hashed explicitly | T001 source/privacy/population/resource review; T003 permissioned hooks; T005 real profile; T006–T008 admitted capture/readiness/review |
-| SPEC-035 | Adapter/input/output/worker/cache modules implemented and synthetic evidence retained | All original checkboxes remain open because literal review/profile/predecessor, lifecycle and full cost criteria are not waived; T008 remains partial |
+| SPEC-035 | T002–T004: lazy optional adapter, pinned preprocessing comparison, typed quantiles/median and synthetic/installed evidence; obtained task receipts and technical review published | T001 source/artifact phases and T005–T008 resource/lifecycle/full-cost criteria remain open; T001 interface phase alone is sufficient for the three software tasks |
 | SPEC-036 | Baselines, rolling origins, mapper, paired Git harness and negative controls implemented | Original protocol/predecessor chain, complete deployment allocation, registered real holdout, uncertainty and interpretation |
 | SPEC-037 | Default-off advice/CLI, finite mapper, explicit unavailable System 1 bridge, synthetic shadow/rollback implemented | Original runtime/source/profile predecessor chain, actual outcome labels/full overhead, exact defer/promotion/founder decisions |
 | SPEC-045 | T001–T006: synthetic engineering, laboratory, API/CLI/MCP, immutable store and independently installed core parity | T007: complete actual model/engine cost and owned daemon-fault controls; T008: publication and bounded repository/private Project readback |
@@ -43,3 +43,13 @@ additive acceptance supplement. Frozen historical assurance is preserved rather
 than refreshed to imply a new human decision. No constitutional MUST conflict
 was identified by this bounded document consistency pass; complete source review
 and final validation remain independently recorded.
+
+## Technical completion continuation (2026-10-15)
+
+PRs #508/#519 are merged and FC.2 #20 is published with all nine managed
+records/dependencies. T001–T006 are closed; T007/T008 remain open. The additive
+[technical completion packet](technical-completion-2026-10-15.md) and
+[measurement index](evidence/completion-increment-2026-10-15.json) record the
+supervised installed synthetic costs, current publication boundary and exact
+remaining daemon/model/closure obligations. Earlier dated observations retain
+their original artifact and execution boundaries; they do not authorize a new run.
