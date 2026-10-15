@@ -37,7 +37,7 @@ Original FC.1 task criteria remain unchanged. Independent dependency properties 
   Verification: execute the mapped scenarios and negative controls; model/source decisions require actual authority.
   Command: after exact artifact approval, `.venv-speckit/bin/python scripts/reproduce_forecast_cpu.py --manifest PRIVATE_MANIFEST --output PRIVATE_OUTPUT`. Capture cold/resident/failure/container limits separately from stub engineering.
   Planned evidence: `evidence/engineering.json`; obtained evidence: historical engineering/model/installed evidence is mapped in `convergence-2026-10-14.md` and the additive `evidence/reconciliation-acceptance.json`; actual-model/cost and tracking obligations retain their own gates. The admitted worker/daemon control is obtained in `evidence/integrated-worker-2026-10-15/index.json`; `obtained-accounting-2026-10-15.md` retains the exact complete-cost gaps, so T007 stays open.
-- [ ] T008 (REQ-005 REQ-006 / SC-005 SC-006): Publish the technical completion packet and bounded tracking readback.
+- [x] T008 (REQ-005 REQ-006 / SC-005 SC-006): Publish the technical completion packet and bounded tracking readback.
   Dependencies: T006; retain T007 as a separate actual-model gate. Targets: forecast modules, tests and feature-local evidence.
   Verification: execute the mapped scenarios and negative controls; model/source decisions require actual authority.
   Command: `.venv-speckit/bin/python -m unittest discover -s tests -p "test_forecast*.py" -v`.
@@ -56,3 +56,7 @@ T008 still requires governed integration/publication/tracking readback.
 ## Obtained accounting and technical publication supplement (2026-10-15)
 
 The [obtained packet](obtained-accounting-2026-10-15.md) and `evidence/integrated-worker-2026-10-15/index.json` bind the successful admitted worker/daemon control, nine retained setup allocations, unsuccessful qualification attempts and remaining cost gaps. T007 retains its literal complete-cost criterion and remains open. T008 remains unchecked until reviewed publication and bounded readback are obtained. Apply its remote closure only from the subsequent evidence-backed source update. This does not close T007, parent or milestone, refresh historical assurance, or grant scientific/model/source/ADR/promotion acceptance. Earlier supplements retain their dated historical status.
+
+## Technical publication/readback acceptance (2026-10-15)
+
+PR #521 is integrated at `ff01ce46213854b3dd0116f9a4eb28efb740448b`. The scoped issue audit returned zero operations after the two reviewed text updates; authenticated Project readback observed all nine managed records in the three views. `evidence/technical-publication-readback-2026-10-15.json` binds those obtained facts and their validation. T008 is checked for its completed publication/inventory-readback criterion; the following scoped remote transition and final closed/Done readback remain separate operations. T007, parent #510 and milestone #20 remain open for the unresolved complete-cost gate. No scientific, model-load, source, ADR or promotion authority is inferred.
