@@ -3,7 +3,7 @@
 Observation date: 2026-10-15. Status: engineering/tracking assessment, not a
 research interpretation, source admission, ADR adoption or promotion decision.
 Live GitHub milestone #18 readback found 38 records: 33 original tasks (two closed,
-31 open), four open specification parents and closed planning issue #372.
+31 open), four open specification parents and closed planning PR #372.
 Milestone #20 has six closed tasks, two open tasks and one open parent.
 
 ## Assessment
@@ -89,3 +89,13 @@ approval. Review and tracking comments are separate from acceptance.
   [registration candidate](../036-forecast-parallelism-experiment/registration-candidate.json).
 - [Original tasks](../036-forecast-parallelism-experiment/tasks.md) and the
   corresponding SPEC-034/035/037 task sources; acceptance criteria unchanged.
+
+## Software closure continuation
+
+After the initial readback above, six narrow refusal controls and direct pinned
+converter inspection resolved the technical gaps in SPEC-035/T002–T004. Their
+[review](../035-chronos2-forecast-adapter/software-acceptance-review-2026-10-15.md)
+and obtained task receipts now support bounded software closure through normal
+publication. The initial remote counts remain historical; the readback after
+publication must report the actual new counts. Full source-window admission is
+not a prerequisite for these technical checks. No original criteria are waived.
