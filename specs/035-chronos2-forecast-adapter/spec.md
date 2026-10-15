@@ -69,7 +69,10 @@ All four specs are draft planning records with human review pending. This packet
 authorizes no workload collection, model download, fitting, benchmark execution,
 paid service or live forecast-guided policy. Implementation may begin only after
 the applicable technical contract review; real data, model loading, experiment
-execution and promotion have distinct gates. No implementation task is complete.
+execution and promotion have distinct gates. T002–T004 now have bounded software
+acceptance with obtained task receipts and technical review; T001 and T005–T008
+remain open. This does not complete actual-model lifecycle/full-cost, workload
+evaluation or promotion acceptance.
 
 The supported execution language remains 2–4 immutable ordinary-text A/M Git
 patches in owned local scratch with the existing independent operator grant,
