@@ -1,0 +1,259 @@
+{
+  "attempts": [
+    {
+      "episodeGroup": "episode-3557b466d05af56b92232bb6",
+      "partition": "development",
+      "reasonCodes": [],
+      "receiptDigest": "8f271fa30d1406fc43009cbb84217c9b9fd2697f143b9efce82f5daca72d11cd",
+      "status": "mapped"
+    },
+    {
+      "episodeGroup": "episode-64a05ae733324cebb8dfc22a",
+      "partition": "development",
+      "reasonCodes": [],
+      "receiptDigest": "a1773eb32cd5a0d91b02707c137dcdd9c41998acb5acc1910d21f8ecf7f24b46",
+      "status": "mapped"
+    },
+    {
+      "episodeGroup": "episode-7f441039404c71feabf07be5",
+      "partition": "development",
+      "reasonCodes": [],
+      "receiptDigest": "3aa63aed365b1b323736f52101551f0f773ce0920bfb44963c3520a94c5fae2a",
+      "status": "mapped"
+    },
+    {
+      "episodeGroup": "episode-f128d0d6abc43f644a87d6ed",
+      "partition": "development",
+      "reasonCodes": [],
+      "receiptDigest": "9e97d373a9e5272fd2b11f8059bdce2c754bb51b0f3da37879c6717d364b2b65",
+      "status": "mapped"
+    },
+    {
+      "episodeGroup": "episode-1d5a676eecadd1e91ab80b47",
+      "partition": "calibration",
+      "reasonCodes": [],
+      "receiptDigest": "1597f0205ad3bb4ba77cae5c7b27d45e5bc678c03a961a3771e8394fa4f7e916",
+      "status": "mapped"
+    },
+    {
+      "episodeGroup": "episode-2f192d3ddf16aa67f227b9e8",
+      "partition": "calibration",
+      "reasonCodes": [],
+      "receiptDigest": "64ada71190251915d56b8e20e171e632d6490ea24c0cb669b91809b1b7d6197f",
+      "status": "mapped"
+    },
+    {
+      "episodeGroup": "episode-56063d1c392f71218a7d6ca8",
+      "partition": "calibration",
+      "reasonCodes": [],
+      "receiptDigest": "1acd07a9194b8821e51bbcf27360488d46b678a9999ee34886998e05273a7122",
+      "status": "mapped"
+    },
+    {
+      "episodeGroup": "episode-b96f0aa20450d2ec13d28106",
+      "partition": "calibration",
+      "reasonCodes": [],
+      "receiptDigest": "c3f0028b78b1728672fd40041c2bbc8f7d3f51786c92e5b425fab052c476e920",
+      "status": "mapped"
+    },
+    {
+      "episodeGroup": "episode-21a151efe9f7f9932f4d8f5d",
+      "partition": "holdout",
+      "reasonCodes": [],
+      "receiptDigest": "6a666c0fc36bb007fdc4c01684d5c91fa4f71c0247bc9c58299a35573656d190",
+      "status": "mapped"
+    },
+    {
+      "episodeGroup": "episode-79309ca81317a6984dd0244a",
+      "partition": "holdout",
+      "reasonCodes": [],
+      "receiptDigest": "1ad6e78e4dce2e8e86ea664fb0feb3ec66813448c97f4d25b566e54bb151730f",
+      "status": "mapped"
+    },
+    {
+      "episodeGroup": "episode-afb93830b8e06566497d4ff9",
+      "partition": "holdout",
+      "reasonCodes": [
+        "reference-not-admitted"
+      ],
+      "receiptDigest": "30963dfcfc5fddbb8996611d50ac7559b086bce4a0456ebd5a1e8afdd866b65a",
+      "status": "refused"
+    },
+    {
+      "episodeGroup": "episode-e8bbab3b07302a92201a0372",
+      "partition": "holdout",
+      "reasonCodes": [],
+      "receiptDigest": "2e415b566522bd78a946c0b11129e0989eceb53353e5236e0d9a5e84f71e5154",
+      "status": "mapped"
+    }
+  ],
+  "baseCommit": "477d64248216fa4f4bd5ba4287a938b9ddec576c",
+  "checks": {
+    "focused": {
+      "command": ".venv-speckit/bin/python -m unittest tests.test_forecast_decisions -v",
+      "executor": "independent Luna Latest review agent (gpt-6-luna)",
+      "outcome": "19 tests passed, including retained receipt replay"
+    },
+    "guardMutations": [
+      {
+        "exitCode": 1,
+        "guard": "frozen-policy",
+        "outcome": "detected",
+        "rawOutput": "FFFF\n======================================================================\nFAIL: test_resigned_reference_threshold_and_cost_drift_refuse (tests.test_forecast_decisions.FrozenDecisionTests.test_resigned_reference_threshold_and_cost_drift_refuse) (mutation=<function FrozenDecisionTests.test_resigned_reference_threshold_and_cost_drift_refuse.<locals>.<lambda> at 0x107e36e80>)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/private/tmp/agent-braid-fc1-decisions-20261016/tests/test_forecast_decisions.py\", line 88, in test_resigned_reference_threshold_and_cost_drift_refuse\n    with self.subTest(mutation=mutate), self.assertRaisesRegex(ForecastError, 'frozen-decision-policy-drift'):\n                                        ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: ForecastError not raised\n\n======================================================================\nFAIL: test_resigned_reference_threshold_and_cost_drift_refuse (tests.test_forecast_decisions.FrozenDecisionTests.test_resigned_reference_threshold_and_cost_drift_refuse) (mutation=<function FrozenDecisionTests.test_resigned_reference_threshold_and_cost_drift_refuse.<locals>.<lambda> at 0x107e81940>)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/private/tmp/agent-braid-fc1-decisions-20261016/tests/test_forecast_decisions.py\", line 88, in test_resigned_reference_threshold_and_cost_drift_refuse\n    with self.subTest(mutation=mutate), self.assertRaisesRegex(ForecastError, 'frozen-decision-policy-drift'):\n                                        ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: ForecastError not raised\n\n======================================================================\nFAIL: test_resigned_reference_threshold_and_cost_drift_refuse (tests.test_forecast_decisions.FrozenDecisionTests.test_resigned_reference_threshold_and_cost_drift_refuse) (mutation=<function FrozenDecisionTests.test_resigned_reference_threshold_and_cost_drift_refuse.<locals>.<lambda> at 0x107e81a80>)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/private/tmp/agent-braid-fc1-decisions-20261016/tests/test_forecast_decisions.py\", line 88, in test_resigned_reference_threshold_and_cost_drift_refuse\n    with self.subTest(mutation=mutate), self.assertRaisesRegex(ForecastError, 'frozen-decision-policy-drift'):\n                                        ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: ForecastError not raised\n\n======================================================================\nFAIL: test_resigned_reference_threshold_and_cost_drift_refuse (tests.test_forecast_decisions.FrozenDecisionTests.test_resigned_reference_threshold_and_cost_drift_refuse) (mutation=<function FrozenDecisionTests.test_resigned_reference_threshold_and_cost_drift_refuse.<locals>.<lambda> at 0x107e81800>)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/private/tmp/agent-braid-fc1-decisions-20261016/tests/test_forecast_decisions.py\", line 88, in test_resigned_reference_threshold_and_cost_drift_refuse\n    with self.subTest(mutation=mutate), self.assertRaisesRegex(ForecastError, 'frozen-decision-policy-drift'):\n                                        ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: ForecastError not raised\n\n----------------------------------------------------------------------\nRan 1 test in 5.044s\n\nFAILED (failures=4)\n",
+        "test": "test_resigned_reference_threshold_and_cost_drift_refuse"
+      },
+      {
+        "exitCode": 1,
+        "guard": "development-only",
+        "outcome": "detected",
+        "rawOutput": "F\n======================================================================\nFAIL: test_later_folds_cannot_tune_reference_or_mapper (tests.test_forecast_decisions.FrozenDecisionTests.test_later_folds_cannot_tune_reference_or_mapper)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/private/tmp/agent-braid-fc1-decisions-20261016/tests/test_forecast_decisions.py\", line 69, in test_later_folds_cannot_tune_reference_or_mapper\n    self.assertEqual(plan['selection'], changed['selection'])\n    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: {'par[82 chars]t': '1e67ed3392fda69e676baee68dc5e9260c5edd85d[993 chars]0.0}} != {'par[82 chars]t': '28f4209ee11efbbb809100eec749031a983168339[993 chars]0.0}}\nDiff is 2721 characters long. Set self.maxDiff to None to see it.\n\n----------------------------------------------------------------------\nRan 1 test in 3.121s\n\nFAILED (failures=1)\n",
+        "test": "test_later_folds_cannot_tune_reference_or_mapper"
+      },
+      {
+        "exitCode": 1,
+        "guard": "known-dependency",
+        "outcome": "detected",
+        "rawOutput": "F\n======================================================================\nFAIL: test_known_dependency_descriptor_cannot_be_overridden_as_independent (tests.test_forecast_decisions.FrozenDecisionTests.test_known_dependency_descriptor_cannot_be_overridden_as_independent)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/private/tmp/agent-braid-fc1-decisions-20261016/tests/test_forecast_decisions.py\", line 244, in test_known_dependency_descriptor_cannot_be_overridden_as_independent\n    self.assertFalse(candidate['eligible'])\n    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: True is not false\n\n----------------------------------------------------------------------\nRan 1 test in 1.345s\n\nFAILED (failures=1)\n",
+        "test": "test_known_dependency_descriptor_cannot_be_overridden_as_independent"
+      },
+      {
+        "exitCode": 1,
+        "guard": "full-receipt-binding",
+        "outcome": "detected",
+        "rawOutput": "FFFFF\n======================================================================\nFAIL: test_point_of_use_recomputes_complete_binding_even_after_resigning (tests.test_forecast_decisions.FrozenDecisionTests.test_point_of_use_recomputes_complete_binding_even_after_resigning) (<subtest>)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/private/tmp/agent-braid-fc1-decisions-20261016/tests/test_forecast_decisions.py\", line 177, in test_point_of_use_recomputes_complete_binding_even_after_resigning\n    with self.subTest(), self.assertRaisesRegex(ForecastError, 'synthetic-decision-binding-drift'): check(changed)\n                         ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: ForecastError not raised\n\n======================================================================\nFAIL: test_point_of_use_recomputes_complete_binding_even_after_resigning (tests.test_forecast_decisions.FrozenDecisionTests.test_point_of_use_recomputes_complete_binding_even_after_resigning) (<subtest>)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/private/tmp/agent-braid-fc1-decisions-20261016/tests/test_forecast_decisions.py\", line 177, in test_point_of_use_recomputes_complete_binding_even_after_resigning\n    with self.subTest(), self.assertRaisesRegex(ForecastError, 'synthetic-decision-binding-drift'): check(changed)\n                         ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: ForecastError not raised\n\n======================================================================\nFAIL: test_point_of_use_recomputes_complete_binding_even_after_resigning (tests.test_forecast_decisions.FrozenDecisionTests.test_point_of_use_recomputes_complete_binding_even_after_resigning) (<subtest>)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/private/tmp/agent-braid-fc1-decisions-20261016/tests/test_forecast_decisions.py\", line 177, in test_point_of_use_recomputes_complete_binding_even_after_resigning\n    with self.subTest(), self.assertRaisesRegex(ForecastError, 'synthetic-decision-binding-drift'): check(changed)\n                         ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: ForecastError not raised\n\n======================================================================\nFAIL: test_point_of_use_recomputes_complete_binding_even_after_resigning (tests.test_forecast_decisions.FrozenDecisionTests.test_point_of_use_recomputes_complete_binding_even_after_resigning) (<subtest>)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/private/tmp/agent-braid-fc1-decisions-20261016/tests/test_forecast_decisions.py\", line 177, in test_point_of_use_recomputes_complete_binding_even_after_resigning\n    with self.subTest(), self.assertRaisesRegex(ForecastError, 'synthetic-decision-binding-drift'): check(changed)\n                         ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: ForecastError not raised\n\n======================================================================\nFAIL: test_point_of_use_recomputes_complete_binding_even_after_resigning (tests.test_forecast_decisions.FrozenDecisionTests.test_point_of_use_recomputes_complete_binding_even_after_resigning) (<subtest>)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/private/tmp/agent-braid-fc1-decisions-20261016/tests/test_forecast_decisions.py\", line 177, in test_point_of_use_recomputes_complete_binding_even_after_resigning\n    with self.subTest(), self.assertRaisesRegex(ForecastError, 'synthetic-decision-binding-drift'): check(changed)\n                         ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: ForecastError not raised\n\n----------------------------------------------------------------------\nRan 1 test in 7.277s\n\nFAILED (failures=5)\n",
+        "test": "test_point_of_use_recomputes_complete_binding_even_after_resigning"
+      }
+    ],
+    "status": "passed-focused-and-mutations"
+  },
+  "date": "2026-10-16",
+  "domain": "synthetic-simulation",
+  "environment": {
+    "platform": "darwin",
+    "python": "3.13.11"
+  },
+  "evaluationPlanDigest": "315c2460d076e341ae0770ed9413387df20f113ec766ecdf56bd6ea8ddf315cb",
+  "fixture": {
+    "families": [
+      "trend",
+      "constant",
+      "bursts",
+      "late"
+    ],
+    "operationSeeds": "same numeric seed roster",
+    "partitions": [
+      "development",
+      "calibration",
+      "holdout"
+    ],
+    "seedRule": "10*partitionIndex+familyIndex",
+    "shapes": {
+      "episode-afb93830b8e06566497d4ff9": "unknown-effects"
+    },
+    "simulatedStatuses": {
+      "episode-21a151efe9f7f9932f4d8f5d/1": "timed-out",
+      "episode-79309ca81317a6984dd0244a/1": "unavailable",
+      "episode-afb93830b8e06566497d4ff9/1": "cancelled",
+      "episode-e8bbab3b07302a92201a0372/1": "refused"
+    }
+  },
+  "inputHashes": {
+    "agent_braid/forecast_decisions.py": "34de1b5388cadd6127de1764f457a7f5bfdcf8f4b755ae844f2e1518b8348059",
+    "agent_braid/forecast_evaluation.py": "3ad040937a2d42ab3a107a638817b843fa5a9ddbfce9ad21f5ef0f78bb7af1e1",
+    "agent_braid/forecast_experiment.py": "f6a05be610adecf9fc68350027ea601aeebbf8cbf0368c3ba8584309dbd1fc8d",
+    "agent_braid/forecast_lab.py": "ab17755a4414d179294fc9511f49e38e09fd6c41d4feb4b63467189f82f5a599",
+    "agent_braid/forecast_policy.py": "0c15cbcb6983377cffa0193697400c7049c875416dd6be3bee7c84fbfa12d333",
+    "agent_braid/runtime_scheduler.py": "47bb371c88726793d207a59bb85cb6911d86e00a44694b37934805d9fa2462a9",
+    "tests/test_forecast_decisions.py": "15a3c4d23345fc6301445827917e04e69927f3d888aaf5d734b5889b3da0b989"
+  },
+  "limits": [
+    "No model, VM, Docker, runtime arm, grant or execution package.",
+    "Synthetic plan identities and cost labels are not verified runtime plans or observed costs.",
+    "No full historical costs recovered; FC.2 T007 disposition unchanged.",
+    "Original tasks remain unchecked with original unmet dependencies; real gates unchanged."
+  ],
+  "policy": {
+    "costLawDigest": "4e5bb0cb9f2e477cc02b9bfc0048a497b3f50dc40dbd51dc5c68e13b95964c68",
+    "evaluationPlanDigest": "315c2460d076e341ae0770ed9413387df20f113ec766ecdf56bd6ea8ddf315cb",
+    "executionAuthorization": false,
+    "policyDigest": "83ee534bde3f46e82175294d2f39ce4291aa190016008171074e341ed4bbb94f",
+    "provenance": "synthetic-simulation",
+    "selection": {
+      "criterion": "synthetic-full-wall-cost",
+      "developmentDigest": "2296830364a3d84f52fe3825a14b5fddf73ca788c9fa602fb36ef4ce276b0b98",
+      "partition": "development",
+      "policy": {
+        "maximumIntervalWidth": 0.0,
+        "minimumRatio": 1.0,
+        "partition": "development",
+        "targetId": "load",
+        "unit": "count",
+        "version": 1
+      },
+      "referenceMethod": "persistence",
+      "referencePolicy": {
+        "maximumIntervalWidth": 100.0,
+        "minimumRatio": 1.0,
+        "partition": "development",
+        "targetId": "load",
+        "unit": "count",
+        "version": 1
+      },
+      "referenceScores": [
+        {
+          "method": "serial",
+          "policy": {
+            "maximumIntervalWidth": 0.0,
+            "minimumRatio": 1.0,
+            "partition": "development",
+            "targetId": "load",
+            "unit": "count",
+            "version": 1
+          },
+          "simulatedFullWallNs": 322476020.30948734
+        },
+        {
+          "method": "persistence",
+          "policy": {
+            "maximumIntervalWidth": 100.0,
+            "minimumRatio": 1.0,
+            "partition": "development",
+            "targetId": "load",
+            "unit": "count",
+            "version": 1
+          },
+          "simulatedFullWallNs": 263331495.80923235
+        },
+        {
+          "method": "ewma",
+          "policy": {
+            "maximumIntervalWidth": 100.0,
+            "minimumRatio": 1.0,
+            "partition": "development",
+            "targetId": "load",
+            "unit": "count",
+            "version": 1
+          },
+          "simulatedFullWallNs": 309621495.80923235
+        }
+      ]
+    },
+    "shapes": {
+      "episode-afb93830b8e06566497d4ff9": "unknown-effects"
+    },
+    "version": "agent-braid-synthetic-decision-policy-v1"
+  },
+  "reportDigest": "683db01a9cb4af7e9dd277b9c1044b0ee4fc05acd59aafaead003ac1581427e7",
+  "review": {
+    "limits": "Fixed synthetic resource recipes only: operation/mode/worker checks plus existing wave geometry are not arbitrary runtime patch/scratch/effect admission.",
+    "model": "gpt-6-luna",
+    "outcome": "Dependency weakening and vacuous disagreement fixture findings corrected; final source/receipt review found no new correctness issues. Independently ran 19 focused tests and checked all seven input hashes.",
+    "scope": "technical synthetic engineering only; not founder/source/resource/scientific/launch/promotion approval",
+    "status": "completed-no-findings"
+  },
+  "tasks": [
+    "SPEC-036/T004",
+    "SPEC-037/T003"
+  ],
+  "version": "agent-braid-synthetic-decision-engineering-evidence-v1"
+}
