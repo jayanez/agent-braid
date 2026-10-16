@@ -20,7 +20,7 @@
     "S1.3 — Advisory integration": "Advisory integration across Agent Braid decision stages; draft implementation track, no accepted utility claim.",
     "S1.4 — Product capabilities and promotion": "Per-feature advanced capability acceptance plus separately governed shadow, promotion, drift, rollback and closure.",
     "FC.1 — Forecast-guided parallelism experiment": "Permissioned workload telemetry, optional local Chronos-2, prospective forecasting/complete-cost parallelism experiment and separately governed shadow/promotion. Negative or infeasible outcomes are valid; no new execution domain or M4 closure.",
-    "M4.5 — AI tooling integrations for Codex and Claude Code": "Adjacent to bounded-complete M4; M4 historical G4 NO-GO and negative utility preserved. Historical candidate-bound technical procedures and package checks retain their recorded domains. The 60 original task criteria and 19 auxiliary evidence tasks total 79: 55 checked and 24 pending, with three closed and three open spec parents. SPEC-039/040/042 retain their recorded bounded acceptance. Native Codex/Claude acceptance, human interpretation, remaining founder decisions, ADR adoption and milestone closure remain pending; M3.5 is independent with zero admitted real pairs.",
+    "M4.5 — AI tooling integrations for Codex and Claude Code": "Adjacent to bounded-complete M4; M4 historical G4 NO-GO and negative utility preserved. Historical candidate-bound technical procedures and package checks retain their recorded domains. The 60 original task criteria and 19 auxiliary evidence tasks total 79: 55 checked and 24 pending, with three closed and three open spec parents. SPEC-039/040/042 retain their recorded bounded acceptance. Native Codex/Claude acceptance, human interpretation, remaining founder decisions, ADR adoption and milestone closure remain pending; M3.5 is independent with zero admitted real pairs. SPEC-046 adds 15 separately tracked native-plugin tasks (including the shell installer and independent external approvals); public distribution and official candidacy approvals remain separate gates.",
     "FC.2 — Local forecasting capabilities": "Local default-off API/CLI/MCP forecasting, synthetic engineering/reproduction and separately approved actual Chronos CPU conformance; no real workload utility or promotion implied."
   },
   "closed_milestones": [
@@ -211,6 +211,10 @@
     "045-local-forecasting-capabilities": {
       "milestone": "FC.2 — Local forecasting capabilities",
       "state": "open"
+    },
+    "046-native-ai-plugins": {
+      "milestone": "M4.5 — AI tooling integrations for Codex and Claude Code",
+      "state": "open"
     }
   },
   "task_state_overrides": {
@@ -239,7 +243,8 @@
     "SPEC-041",
     "SPEC-043",
     "SPEC-044",
-    "SPEC-045"
+    "SPEC-045",
+    "SPEC-046"
   ],
   "milestone_numbers": {
     "M0 — Operational foundations": 1,

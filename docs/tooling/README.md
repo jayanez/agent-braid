@@ -1,5 +1,12 @@
 # AI tooling integrations
 
+Start with [native plugin installation and setup](NATIVE_PLUGINS.md), including
+the optional curl installer. The experimental source candidate includes its
+runtime and automatically supplies five product skills plus setup. Public
+marketplace publication and official directory approvals remain separate gates.
+[SPEC-046 alignment](../../specs/046-native-ai-plugins/m45-alignment.md) explains
+how this extension preserves the original six specifications and their evidence.
+
 **Implementation candidate — 2026-10-14:** the owner-approved assisted tracks
 now add a durable coordinator, separately authenticated source cache/producer,
 interface witness adapter, source-based registration v6, native process-bound

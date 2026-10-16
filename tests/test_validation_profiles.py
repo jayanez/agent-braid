@@ -30,7 +30,9 @@ class ValidationProfileTests(unittest.TestCase):
     def test_product_tooling_selects_owned_sensitive_checks_and_separate_capture(self):
         for path in ("agent_braid/cli.py", "agent_braid/tooling_mcp.py", "tests/test_tooling_install.py",
                      "integrations/agent-braid/skills/agent-braid-evidence/SKILL.md",
-                     "integrations/agent-braid/hosts.json", "examples/tooling/fixtures/analyze-1.json", "docs/tooling/INSTALL.md"):
+                     "integrations/agent-braid/hosts.json", "examples/tooling/fixtures/analyze-1.json", "docs/tooling/INSTALL.md",
+                     "agent_braid/plugin_registry.py", "tests/test_plugin_package.py", "install.sh",
+                     "scripts/build_native_plugin.py", "scripts/reproduce_native_plugin.py"):
             with self.subTest(path=path):
                 plan = validation.build_plan([path], "quick")
                 self.assertIn("ai-tooling", plan.impact.domains)
@@ -39,7 +41,7 @@ class ValidationProfileTests(unittest.TestCase):
                 self.assertFalse(plan.impact.spec_kit_integration)
                 self.assertIn("full-tests", plan.commands)
                 self.assertTrue(plan.impact.boundaries)
-        for path in ("build_support.py", "MANIFEST.in"):
+        for path in ("build_support.py", "MANIFEST.in", "requirements-native-plugin.txt"):
             plan = validation.build_plan([path], "quick")
             self.assertIn("supply-chain", plan.impact.domains)
             self.assertEqual(plan.effective_profile, "sensitive")

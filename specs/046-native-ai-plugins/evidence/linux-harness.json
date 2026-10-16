@@ -1,0 +1,56 @@
+{
+  "command": [
+    "/marketplace/plugins/agent-braid/runtime/linux-x86_64/bin/python3.12",
+    "-I",
+    "-B",
+    "/source/scripts/reproduce_native_plugin.py",
+    "--marketplace",
+    "/marketplace",
+    "--state-root",
+    "/tmp/reproduction linux 8",
+    "--output",
+    "/evidence/reproduction-linux-8.json",
+    "--fixture",
+    "/source/examples/analysis/file-edits.json",
+    "--codex-executable",
+    "/tools/codex",
+    "--claude-executable",
+    "/tools/claude",
+    "--context",
+    "container-linux-amd64-emulated-on-macos"
+  ],
+  "dockerOptions": [
+    "--rm",
+    "--platform",
+    "linux/amd64",
+    "--network",
+    "none",
+    "--read-only",
+    "--cap-drop",
+    "ALL",
+    "--security-opt",
+    "no-new-privileges",
+    "--pids-limit",
+    "128",
+    "--memory",
+    "1g",
+    "--cpus",
+    "2",
+    "--tmpfs",
+    "/tmp:rw,exec,mode=1777"
+  ],
+  "exitCode": 0,
+  "image": "agent-braid-m45-sdk-diagnostic:latest",
+  "limits": [
+    "Options recorded from executed harness invocation; no independent network probing/packet capture performed",
+    "Emulated container controls, not physical Linux or provider acceptance"
+  ],
+  "mountedInputs": [
+    "clean-distribution-8:/marketplace:ro",
+    "native-linux-tools:/tools:ro",
+    "source:/source:ro",
+    "artifacts:/evidence:rw"
+  ],
+  "observation": "Executed Docker invocation for reproduction-linux-8.json from clean Git distribution clone; exec tmpfs required for native host plugin cache",
+  "rawStdoutSha256": "fbeea90cc97c240578e4fff7e69870d8d37a8e62ef463a87b65152c0d81a4864"
+}

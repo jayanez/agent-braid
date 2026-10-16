@@ -164,11 +164,13 @@ RULES = (
         boundary="Feature-specific evidence capture, freeze and human review"),
     Rule("ai-tooling", (
         "agent_braid/cli.py", "agent_braid/tooling_*.py", "tests/test_tooling_*.py",
+        "agent_braid/plugin_*.py", "tests/test_plugin_*.py", "install.sh",
+        "scripts/build_native_plugin.py", "scripts/reproduce_native_plugin.py",
         "integrations/agent-braid/**", "examples/tooling/**", "docs/tooling/**", "docs/ai-tooling-presentation.md",
     ), ("full-tests",), True,
         boundary="M4.5 exact-candidate host discovery, clean-platform reproduction, registered 108-slot evaluation and founder acceptance"),
     Rule("supply-chain", (
-        "pyproject.toml", "requirements-dev.txt", ".gitignore", ".gitattributes", "MANIFEST.in", "build_support.py",
+        "pyproject.toml", "requirements-dev.txt", "requirements-native-plugin.txt", ".gitignore", ".gitattributes", "MANIFEST.in", "build_support.py",
     ), ("cli-smoke",), True),
     Rule("contributor-documentation", (
         "README.md", "CONTRIBUTING.md", "CODE_OF_CONDUCT.md", "SUPPORT.md",

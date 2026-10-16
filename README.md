@@ -23,7 +23,8 @@ reports another consumer can reconstruct.
 The analyzer is advisory. The opt-in policy pipeline requires a separately issued,
 one-use operator grant and publishes into private local storage. Runtime
 dependencies: **Python's standard library**. Git workflows additionally require
-Git; execution requires Linux or macOS with POSIX locking.
+Git; execution requires Linux or macOS with POSIX locking. The native plugin
+packages its own runtime for supported local hosts.
 
 **[Quick start](#-quick-start) · [CLI reference](#-cli-reference) ·
 [Owned runtime demo](examples/runtime/README.md) · [Planned AI tooling](docs/tooling/README.md) · [Architecture](ARCHITECTURE.md) ·
@@ -52,8 +53,10 @@ covers grants, recovery and MCP configuration.
 ### Codex and Claude Code integrations
 
 [M4.5](docs/tooling/README.md) is an open integration program adjacent to M4. Its
-six specs retain the planned MCP, skills, lifecycle, presentation and evaluation
-scope. Current local evidence now covers bounded technical controls and fresh
+original six specs retain the planned MCP, skills, lifecycle, presentation and evaluation
+scope. [SPEC-046](specs/046-native-ai-plugins/spec.md) extends M4.5 with
+native packaging, a shared workspace registry and setup; it does not reopen
+historical acceptance or replace existing evaluation gates. Current local evidence now covers bounded technical controls and fresh
 macOS/Linux package checks, each bound to its own candidate; it does not establish
 native host support, M4.5 acceptance or milestone closure. The complete current
 status and candidate-specific limits are in the [tooling status](docs/tooling/TECHNICAL_STATUS.md).
@@ -86,6 +89,27 @@ human-evaluation or founder-acceptance boundaries.
 <a id="quick-start"></a>
 
 ## 🚀 Quick start
+
+The preferred installation route is the **native user plugin** for Codex or
+Claude Code on macOS arm64 and Linux x86_64. It includes Python and dependencies,
+registers its skills automatically and guides you through selecting repositories.
+The source candidate is experimental; publication of `plugin-dist` remains a
+separate release decision. See [native installation and setup](docs/tooling/NATIVE_PLUGINS.md)
+for the marketplace commands, local candidate installation and the optional
+`curl … | sh` installer. Neither the installer nor discovery registers a repository
+without the setup preview and explicit apply.
+
+After `plugin-dist` publication, the optional installer command is:
+
+```sh
+curl -fsSL https://raw.githubusercontent.com/jayanez/agent-braid/develop/install.sh \
+  | sh -s -- --host codex
+```
+
+Select `--host claude` or `--host both` as needed. For an unpublished candidate,
+use the [local marketplace instructions](docs/tooling/NATIVE_PLUGINS.md).
+
+### Python installation (development and existing users)
 
 Requires **Python 3.12+**. The analyzer and decision diagnostics use the Python
 standard library. Git analysis/replay and the owned runtime also require Git;
