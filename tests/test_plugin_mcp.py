@@ -65,12 +65,18 @@ class PluginSdkTests(unittest.IsolatedAsyncioTestCase):
             params = StdioServerParameters(command=sys.executable,
                 args=['-m', 'agent_braid', 'plugin', 'serve', '--home', str(self.home)], cwd=str(root))
             async with Client(params, mode=mode) as client:
-                names = {x.name for x in (await client.list_tools()).tools}
+                definitions = {tool.name: tool for tool in (await client.list_tools()).tools}
+                names = set(definitions)
                 self.assertEqual(names, {'plugin-status', 'workspaces', 'analyze-work', 'analyze', 'prepare'})
                 response = await client.call_tool('analyze-work', {'workspaceId': identifier, 'kind': 'aim', 'request': sample})
                 value = response.structured_content
                 self.assertEqual(value['status'], 'ok')
                 self.assertEqual(json.loads(response.content[0].text), value)
+                import jsonschema
+                jsonschema.validate(value, definitions['analyze-work'].output_schema)
+                refused = await client.call_tool('analyze-work', {'workspaceId': 'unknown'})
+                self.assertEqual(refused.structured_content['status'], 'refused')
+                jsonschema.validate(refused.structured_content, definitions['analyze-work'].output_schema)
                 uri = value['evidenceRefs'][0]['uri']
                 data = await client.read_resource(uri)
                 self.assertTrue(json.loads(data.contents[0].text)['firstChunkUri'].startswith('agent-braid-plugin://'))
