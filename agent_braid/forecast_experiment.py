@@ -164,3 +164,12 @@ def simulate_frozen_policy_arms(signals, operations, *, evaluation, frozen, mode
     """
     from .forecast_decisions import simulate_decisions
     return simulate_decisions(signals, operations, evaluation=evaluation, frozen=frozen, mode=mode)
+
+
+def rehearse_frozen_policy_arms(signals, operations, **kwargs):
+    """Integrate frozen decisions with the in-memory paired rehearsal only.
+
+    This does not call the older measured Git harness or any operator/runtime.
+    """
+    from .forecast_pairs import rehearse_paired_policies
+    return rehearse_paired_policies(signals, operations, **kwargs)

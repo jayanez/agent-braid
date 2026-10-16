@@ -57,3 +57,14 @@ frozen economic policy and synthetic candidate/advice identities. The obtained
 engineering receipt is `evidence/t004-synthetic-decisions.json`. The original T004
 checkbox and dependencies T002 and SPEC-037/T003 remain pending. This phase runs
 no model, VM or runtime arm and makes no full-cost or utility acceptance claim.
+
+## Bounded paired rehearsal engineering
+
+T005 and the synthetic phase of T006 have an additive [paired policy rehearsal](paired-rehearsal.md)
+consuming the exact T004 decisions through the experiment entry point. The
+in-memory executor retains every intended arm, fixture grant refusal, simulated
+failure, cancellation and interval; its evidence is
+`evidence/t005-t006-paired-rehearsal.json`. Original T005/T006 checkboxes and
+predecessors remain pending. This does not execute the measured Git harness,
+verify physical isolation or real operator authority, recover complete costs,
+or accept a source/resource/model/experiment/scientific/promotion gate.
