@@ -56,8 +56,8 @@ python -m unittest tests.test_forecast_engine_cancellation -v
 ```
 
 These host-only Swift tests share a private temporary module cache within one
-Python process. The compiler version check has a 5-second limit; a minimal
-Foundation/Dispatch compilation prepares imported modules within 180 seconds.
+Python process. A verbose minimal Foundation/Dispatch compilation reports the
+compiler version and prepares imported modules within 180 seconds.
 Each current fixture is then compiled afresh within the original 60-second limit.
 Preparation is attempted once, without retries; a failure remains an error.
 The compiler runs in its own POSIX process group, which is killed on timeout.
@@ -75,3 +75,14 @@ reproduced Linux finding. A fresh private-cache check on Apple Swift 6.4 took
 2.142 seconds cold and 0.225 seconds warm; it is host-only evidence, not a Linux
 reproduction. The bounded preparation window is a mitigation, not a measured
 upper bound or proof that subsequent CI will pass.
+
+The single bounded Linux diagnosis in run `38880715567` used the same
+`ubuntu-24.04` image version (`20261012.334.1`) as the original failing run. It
+stopped at the separate `swiftc --version` query after 5.010 seconds, before any
+fixture or Foundation compilation. This exposed an additional insufficient
+startup budget introduced by the first helper revision. That redundant query has
+been removed: the verbose bootstrap reports compiler details within the existing
+preparation deadline. The image's versioned install script preinstalls Swift 6.4
+and creates compiler symlinks; it does not establish a deferred installer as the
+cause. The historical 60-second cause remains unresolved. No diagnostic rerun or
+complete suite is implied; the pull request remains draft pending that diagnosis.

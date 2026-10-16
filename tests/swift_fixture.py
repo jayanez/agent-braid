@@ -79,7 +79,6 @@ class SwiftFixtureCompiler:
         options = [self.compiler, '-v', '-module-cache-path', str(self.root / 'cache')]
         if not self.ready:
             try:
-                run_phase([self.compiler, '--version'], 'toolchain', 5)
                 bootstrap = self.root / 'main.swift'
                 bootstrap.write_text('import Foundation\nimport Dispatch\n')
                 run_phase([*options, str(bootstrap), '-o', str(self.root / 'bootstrap')],

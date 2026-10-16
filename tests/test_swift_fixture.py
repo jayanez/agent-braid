@@ -26,10 +26,12 @@ class SwiftFixtureTests(unittest.TestCase):
         with patch('tests.swift_fixture.run_phase') as run:
             compiler.compile('gate.swift', 'gate')
             compiler.compile('parser.swift', 'parser')
-        self.assertEqual(['toolchain', 'module preparation', 'fixture compilation',
+        self.assertEqual(['module preparation', 'fixture compilation',
                           'fixture compilation'], [c.args[1] for c in run.call_args_list])
-        self.assertEqual([5, 180, 60, 60], [c.args[2] for c in run.call_args_list])
-        preparation, first, second = [c.args[0] for c in run.call_args_list[1:]]
+        self.assertEqual([180, 60, 60], [c.args[2] for c in run.call_args_list])
+        preparation, first, second = [c.args[0] for c in run.call_args_list]
+        self.assertTrue(all('--version' not in c.args[0] for c in run.call_args_list))
+        self.assertIn('-v', preparation)
         self.assertEqual(preparation[:4], first[:4])
         self.assertEqual(first[:4], second[:4])
         self.assertEqual(['gate.swift', '-o', 'gate'], first[4:])
@@ -40,21 +42,21 @@ class SwiftFixtureTests(unittest.TestCase):
     def test_failed_preparation_is_not_retried_or_converted_to_skip(self):
         compiler = self.compiler()
         with patch('tests.swift_fixture.run_phase',
-                   side_effect=[None, RuntimeError('cold compilation failed')]) as run:
+                   side_effect=RuntimeError('cold compilation failed')) as run:
             with self.assertRaisesRegex(RuntimeError, 'cold compilation failed'):
                 compiler.compile('gate.swift', 'gate')
             with self.assertRaisesRegex(RuntimeError, 'no retry'):
                 compiler.compile('parser.swift', 'parser')
-        self.assertEqual(2, run.call_count)
+        self.assertEqual(1, run.call_count)
         self.assertFalse(compiler.ready)
 
     def test_failed_fixture_is_not_retried(self):
         compiler = self.compiler()
         with patch('tests.swift_fixture.run_phase',
-                   side_effect=[None, None, RuntimeError('type check failed')]) as run:
+                   side_effect=[None, RuntimeError('type check failed')]) as run:
             with self.assertRaisesRegex(RuntimeError, 'type check failed'):
                 compiler.compile('gate.swift', 'gate')
-        self.assertEqual(3, run.call_count)
+        self.assertEqual(2, run.call_count)
 
     def test_nonzero_compiler_retains_diagnostic_and_phase(self):
         with redirect_stderr(io.StringIO()) as log:
