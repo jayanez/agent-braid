@@ -1,37 +1,37 @@
 # SPEC-035: Tasks
 
-All implementation, collection, experiment and approval checkboxes remain pending. Paths outside this spec are prospective targets. Dependency independence is not authorization for concurrent agents. Every receipt must bind actual command, candidate/input hashes, environment, all attempted outcomes and limits.
+T002–T005 are complete for bounded software acceptance in their recorded domains. T001 artifact/source phases, T006–T008 reuse/packaging/full-cost obligations and all scientific decisions remain open. Other paths outside this spec remain prospective targets. Dependency independence is not authorization for concurrent agents. Every receipt must bind actual command, candidate/input hashes, environment, all attempted outcomes and limits.
 
 - [ ] T001 (REQ-002 REQ-005 / SC-002 SC-005): Review the Chronos-2 artifact, package closure and CPU envelope.
   Dependencies: SPEC-034/T001; model/dependency/budget review. Target files: specs/035-chronos2-forecast-adapter/model-manifest-candidate.json; dependency-lock proposal.
   Verification: Review exact rights and wheel/checkpoint hashes before provisioning; freeze supported hardware and measurable limits.
   Planned commands after implementation: `.venv-speckit/bin/python -m unittest discover -s tests -p "test_forecast*.py" -v` plus the requirement-specific procedure in `specs/035-chronos2-forecast-adapter/validation-plan.md`; source/model/launch/founder decisions require their actual reviewer record.
   Planned evidence: `specs/035-chronos2-forecast-adapter/evidence/t001.json`. Obtained evidence: none.
-- [ ] T002 (REQ-001 REQ-002 / SC-001 SC-002): Implement the lazy optional adapter interface with stubs.
+- [x] T002 (REQ-001 REQ-002 / SC-001 SC-002): Implement the lazy optional adapter interface with stubs.
   Dependencies: T001 interface review; SPEC-034/T002. Target files: agent_braid/forecast_chronos.py; pyproject.toml; tests/test_forecast_chronos.py.
   Verification: Default imports and CLI never load ML; unknown/unapproved revisions refuse and the optional installed wheel contains the backend.
   Planned commands after implementation: `.venv-speckit/bin/python -m unittest discover -s tests -p "test_forecast*.py" -v` plus the requirement-specific procedure in `specs/035-chronos2-forecast-adapter/validation-plan.md`; source/model/launch/founder decisions require their actual reviewer record.
-  Planned evidence: `specs/035-chronos2-forecast-adapter/evidence/t002.json`. Obtained evidence: none.
-- [ ] T003 (REQ-003 / SC-003): Implement target, covariate and missingness translation.
+  Planned evidence: `specs/035-chronos2-forecast-adapter/evidence/t002.json`. Obtained evidence: the task receipt, pinned-source comparison and bounded technical review in `software-acceptance-review-2026-10-15.md`; retained installed observations keep their original artifact scope. No new model/source/experiment decision is inferred.
+- [x] T003 (REQ-003 / SC-003): Implement target, covariate and missingness translation.
   Dependencies: T002; SPEC-034/T004. Target files: agent_braid/forecast_chronos_inputs.py; tests/test_forecast_chronos_inputs.py.
   Verification: Check channel order, regular grid, late values, past-only masks and cross-partition groups against pinned preprocessing source.
   Planned commands after implementation: `.venv-speckit/bin/python -m unittest discover -s tests -p "test_forecast*.py" -v` plus the requirement-specific procedure in `specs/035-chronos2-forecast-adapter/validation-plan.md`; source/model/launch/founder decisions require their actual reviewer record.
-  Planned evidence: `specs/035-chronos2-forecast-adapter/evidence/t003.json`. Obtained evidence: none.
-- [ ] T004 (REQ-004 / SC-004): Implement typed quantile outputs and median labeling.
+  Planned evidence: `specs/035-chronos2-forecast-adapter/evidence/t003.json`. Obtained evidence: the task receipt, pinned-source comparison and bounded technical review in `software-acceptance-review-2026-10-15.md`; retained installed observations keep their original artifact scope. No new model/source/experiment decision is inferred.
+- [x] T004 (REQ-004 / SC-004): Implement typed quantile outputs and median labeling.
   Dependencies: T003. Target files: agent_braid/forecast_outputs.py; tests/test_forecast_outputs.py.
   Verification: Assert target/horizon/quantile axes, p50 semantics, finite ordered outputs, units and uncalibrated interval labels.
   Planned commands after implementation: `.venv-speckit/bin/python -m unittest discover -s tests -p "test_forecast*.py" -v` plus the requirement-specific procedure in `specs/035-chronos2-forecast-adapter/validation-plan.md`; source/model/launch/founder decisions require their actual reviewer record.
-  Planned evidence: `specs/035-chronos2-forecast-adapter/evidence/t004.json`. Obtained evidence: none.
-- [ ] T005 (REQ-005 / SC-005): Implement the reviewed bounded offline CPU worker.
+  Planned evidence: `specs/035-chronos2-forecast-adapter/evidence/t004.json`. Obtained evidence: the task receipt, pinned-source comparison and bounded technical review in `software-acceptance-review-2026-10-15.md`; retained installed observations keep their original artifact scope. No new model/source/experiment decision is inferred.
+- [x] T005 (REQ-005 / SC-005): Implement the reviewed bounded offline CPU worker.
   Dependencies: T002; exact lifecycle/enforcement review. Target files: agent_braid/forecast_worker.py; tests/test_forecast_worker.py.
   Verification: Use owned worker timeout/crash/cancellation controls; do not claim enforced memory isolation on an unsupported backend.
   Planned commands after implementation: `.venv-speckit/bin/python -m unittest discover -s tests -p "test_forecast*.py" -v` plus the requirement-specific procedure in `specs/035-chronos2-forecast-adapter/validation-plan.md`; source/model/launch/founder decisions require their actual reviewer record.
-  Planned evidence: `specs/035-chronos2-forecast-adapter/evidence/t005.json`. Obtained evidence: none.
+  Planned evidence: `specs/035-chronos2-forecast-adapter/evidence/t005.json`. Obtained evidence: `evidence/t005.json` and `retrospective-2026-10-15.md` bind unchanged worker code/tests, the admitted guest wheel, existing exact lifecycle/enforcement review, owned failure/cleanup observations and independent retrospective acceptance. This completes bounded worker implementation only; full deployment cost and T008 acceptance remain separate.
 - [ ] T006 (REQ-006 / SC-006): Implement receipt-bound reuse and request isolation.
   Dependencies: T004 T005; SPEC-034/T005. Target files: agent_braid/forecast_cache.py; tests/test_forecast_cache.py.
   Verification: Exercise changed cutoff, masks, artifact and resource revision plus cancellation; retain causal cached/uncached parity and costs.
   Planned commands after implementation: `.venv-speckit/bin/python -m unittest discover -s tests -p "test_forecast*.py" -v` plus the requirement-specific procedure in `specs/035-chronos2-forecast-adapter/validation-plan.md`; source/model/launch/founder decisions require their actual reviewer record.
-  Planned evidence: `specs/035-chronos2-forecast-adapter/evidence/t006.json`. Obtained evidence: none.
+  Planned evidence: `specs/035-chronos2-forecast-adapter/evidence/t006.json`. Obtained evidence: `evidence/t006.json` and `../034-workload-forecast-data/resource-cache-controls-2026-10-15.md` record direct causal-key, parity, receipt, deadline and cancellation controls. SPEC-034/T005 remains an unmet predecessor; the original task stays open.
 - [ ] T007 (REQ-001 REQ-003 REQ-004 REQ-005 REQ-006 REQ-007 / SC-001 SC-003 SC-004 SC-005 SC-006 SC-007): Validate the installed optional wheel and adapter controls.
   Dependencies: T004 T005 T006. Target files: tests/test_forecast_chronos_packaging.py; specs/035-chronos2-forecast-adapter/evidence/.
   Verification: Run synthetic/stub refusal and packaging procedures; classify every unavailable real-model/device procedure as pending.
@@ -42,3 +42,7 @@ All implementation, collection, experiment and approval checkboxes remain pendin
   Verification: Measure real checkpoint output/cost on owned synthetic signals offline; retain cold/warm/failure results without claiming real-workload utility.
   Planned commands after implementation: `.venv-speckit/bin/python -m unittest discover -s tests -p "test_forecast*.py" -v` plus the requirement-specific procedure in `specs/035-chronos2-forecast-adapter/validation-plan.md`; source/model/launch/founder decisions require their actual reviewer record.
   Planned evidence: `specs/035-chronos2-forecast-adapter/evidence/t008.json`. Obtained evidence: none.
+
+## Retrospective worker acceptance (2026-10-15)
+
+The [33-task retrospective](retrospective-2026-10-15.md) and [T005 receipt](evidence/t005.json) record Luna's bounded original-task acceptance of T005 using existing evidence and unchanged worker/entry/authority/lease bytes. T002 and the exact lifecycle/enforcement review satisfy its literal predecessors. The original T005 criterion/verification is unchanged; the source checkbox records that criterion, with remote closure following reviewed integration and scoped readback. No new model/VM or test execution was needed for the retrospective. Other FC.1 criteria remain pending: this yields six completed original tasks after remote reconciliation, not milestone or scientific closure. SPEC-045/T007's cancellation does not change SPEC-035/T008 or any FC.1 cost/experiment gate. Historical evidence, reviews and assurance remain unchanged.

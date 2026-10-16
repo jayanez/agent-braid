@@ -1,0 +1,19 @@
+{
+  "version": "agent-braid-task-cancellation-v1",
+  "taskId": "SPEC-034/T005",
+  "decision": "adopted",
+  "disposition": "cancelled-partial-infeasible",
+  "stateReason": "not_planned",
+  "criterionCompleted": false,
+  "taskLineSha256": "5435562fd9152b3726208b1c6a7d05f957d6fa5be09c0268a9827ccca5f4b58c",
+  "sourceReference": "Direct human owner instruction in Codex on 2026-10-16: Adopto la propuesta: prepara la PR para cerrar T005 como not_planned, conservando el criterio sin marcar y las dependencias pendientes. Que Luna la revise y actualiza GitHub, sin nuevas ejecuciones ni paquetes. Integrator-recorded provenance, not independently authenticated.",
+  "reason": "Partial engineering delivered; actual-profile acceptance remains unmet and further admission work is cancelled by owner decision. Original criterion unchecked; dependencies remain unsatisfied; no active profile or overall native acceptance.",
+  "proposalSha256": "abfaba86a9014ecdd9a29dd3ee32dfa83f265b5dea65bc6383a0a342c9726885",
+  "proposalPath": "specs/034-workload-forecast-data/evidence/t005-disposition-proposal-2026-10-16.md",
+  "proposalReference": "https://github.com/jayanez/agent-braid/issues/340#issuecomment-6210811286",
+  "parentAndMilestoneClosureAuthorized": false,
+  "dependenciesSatisfied": false,
+  "actualProfileAdmitted": false,
+  "executionAuthorization": false,
+  "newExecutionOrPackageAuthorized": false
+}

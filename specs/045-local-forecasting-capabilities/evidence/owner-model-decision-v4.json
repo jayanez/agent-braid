@@ -1,0 +1,20 @@
+{
+  "activePinInstalled": false,
+  "activePinRemovedAfterAttempt": true,
+  "decision": "approved",
+  "excludes": [
+    "real-source-admission",
+    "experimental-launch",
+    "scientific-utility-acceptance",
+    "canonical-ADR-adoption",
+    "promotion"
+  ],
+  "manifestDigest": "4d88052a9d8185b10943cbcd4a649a6eaff62995b5d526c225c5006ef39bffbf",
+  "oneRunClaimRetained": true,
+  "proposalSha256": "14d5b1b9f7158fa73e104552da49d2f54938b44c4d7764721debe5a1ece4da12",
+  "resultRawSha256": "fde36baba47ae52366d94c6017344650f1c536001ed1b585193c5060b0127163",
+  "resultStatus": "inconclusive",
+  "retainedPrivateDecisionSha256": "b38a76b4b72014840ed170c68b17be5bd0b78b18401b9dae5a390f944d9dc66c",
+  "scope": "one exact v4 procedure: up to9 model calls,2 owned synthetic controls,480 seconds total; no retries",
+  "version": "agent-braid-public-owner-model-decision-v4"
+}

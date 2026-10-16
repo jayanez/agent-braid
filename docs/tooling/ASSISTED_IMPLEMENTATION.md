@@ -132,3 +132,11 @@ addendum. Verified active-time evidence can carry the EUR 5.045 reservation; it
 cannot become actual cash, allocation or complete human-inclusive costs. The
 legacy all-human utility consumer continues to refuse v6. Synthetic regressions
 cover these boundaries; they create no experimental cost observations.
+
+## Rewritten-history integration status — 2026-10-16
+
+The [history reconciliation record](PR509_HISTORY_RECONCILIATION.md) identifies
+the rewritten source/base, bounded instrument byte comparisons and the blocking
+public-history provenance gate. Earlier results stay historical. This source
+integration neither repeats nor reopens the bounded A/SPEC-044-T004 closure and
+does not import the separate local telemetry pilot or grant native admission.

@@ -1,0 +1,29 @@
+{
+  "T007Closed": false,
+  "T008Closed": false,
+  "actionableFindings": [],
+  "configuredModel": "gpt-6-luna",
+  "executionAuthorization": false,
+  "fullDeploymentCostAccepted": false,
+  "noRerun": true,
+  "noReviewerStateWrites": true,
+  "recordedAtUnixNs": 1792066753671720000,
+  "recordedBy": "integrator from independent Luna reviewer messages",
+  "requestSha256": "885aac4097302f39a6f2eae5bac2b687845ee09e07c5a298c1a3536fe57cfa94",
+  "runtimeModelIndependentlyInspected": false,
+  "verdict": "retained evidence supports bounded successful actual synthetic control",
+  "verified": [
+    "50 exact asset bindings",
+    "owner decision and one-shot consumed claim",
+    "raw console independently parsed by protocol.events and protocol.terminal equals result guest",
+    "all technical-cost receipt hashes",
+    "cold/resident/refusal and successor lease behavior",
+    "actual resource controls and socket access",
+    "stable parent identities and terminal empty/frozen scopes",
+    "SDK stop and reaped/absent own helper",
+    "successful scratch deletion",
+    "VM and host production profile leases clean",
+    "one-shot pin revoked"
+  ],
+  "version": "fc2-integrated-obtained-independent-review-v1"
+}

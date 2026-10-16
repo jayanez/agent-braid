@@ -25,6 +25,23 @@ it does not establish scientific validity or grant human or founder approval.
   T008 and human review remain open. Remove an override only when its checkbox
   and evidence agree. A newly checked task is a proposed issue-state change,
   not automatic approval.
+- `task_cancellations` is a separate owner-adopted noncompletion disposition.
+  Each repository-relative decision file has a pinned hash, explicit adopted
+  `cancelled-partial-infeasible` decision, owner provenance and the hash of the
+  unchanged original unchecked task line. Missing/drifted/symlinked decisions,
+  unknown tasks and overlaps with checked tasks/completed overrides refuse.
+  This validates source consistency; hashes cannot authenticate a human decision.
+  The planner binds `state_reason=not_planned`, including a reason-only repair
+  for an already closed issue. It updates only the State-basis annotation while
+  preserving the original criterion and other issue prose. Cancellation never
+  means completed acceptance, and parent/milestone states remain explicit.
+  SPEC-045/T007's [adopted disposition](../../specs/045-local-forecasting-capabilities/t007-disposition.md)
+  retains seven completed FC.2 tasks and one cancelled/partial task. Issue/Project
+  readback is separate; a generic Project Done value is administrative.
+  SPEC-034/T005's [adopted disposition](../../specs/034-workload-forecast-data/t005-disposition.md)
+  adds one FC.1 cancellation while retaining six completed and 26 open original
+  tasks after reconciliation. Its original criterion remains unchecked and its
+  dependencies remain unsatisfied; parent and milestone states stay open.
 - Issue bodies contain stable `agent-braid-spec-id` or `agent-braid-task-id`
   markers. Do not delete or reuse these markers. The linked repository files
   are current; issue prose may include historical reconciliation context.

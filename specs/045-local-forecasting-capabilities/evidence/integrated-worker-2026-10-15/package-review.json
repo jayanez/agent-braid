@@ -1,0 +1,46 @@
+{
+  "version": "fc2-integrated-exact-package-review-v1",
+  "recordedBy": "integrator from independent reviewer messages",
+  "recordedAtUnixNs": 1792065650433661000,
+  "requestSha256": "885aac4097302f39a6f2eae5bac2b687845ee09e07c5a298c1a3536fe57cfa94",
+  "reviewModel": {
+    "requested": "gpt-6-luna",
+    "configured": "gpt-6-luna",
+    "independentRuntimeIntrospection": false
+  },
+  "verdict": "ready-for-owner-presentation",
+  "actionableFindings": [],
+  "obtainedChecks": {
+    "assetHashesAndSizes": 50,
+    "payloadMembers": 9,
+    "coreWheelComponentEquivalence": 9,
+    "syntheticTests": 26,
+    "syntheticTestsPassed": true,
+    "exactEmbeddedGuest": true,
+    "strictHelperSignatureVerified": true,
+    "nonExecutingAssetCheckPassed": true,
+    "defaultRemainsPendingOwnerApproval": true
+  },
+  "resolvedReviewItems": [
+    "fresh cumulative CPU baselines",
+    "non-root socket negative and positive access",
+    "actual external owner bootstrap and fresh host admission",
+    "bound setup-allocation and failure-finalization costs",
+    "host production shared worker reservation",
+    "persistent parent counters despite child cgroup disappearance"
+  ],
+  "execution": {
+    "vmStarted": false,
+    "helperInvoked": false,
+    "dockerContainersStarted": false,
+    "modelLoaded": false,
+    "ownerApprovalRecorded": false
+  },
+  "limits": [
+    "Dynamic integrated Linux/worker/daemon behavior remains unexecuted.",
+    "Known setup allocated at denominator one; historical and stated observation gaps remain unknown.",
+    "T007/T008 remain open.",
+    "No full deployment/economic cost acceptance, source admission, experiment launch, scientific interpretation, ADR adoption or promotion."
+  ],
+  "executionAuthorization": false
+}

@@ -1,0 +1,85 @@
+{
+  "cleanupConfirmed": true,
+  "modelArtifactApproved": false,
+  "modelLoaded": false,
+  "recipe": {
+    "cpus": 1,
+    "imageId": "sha256:90707c410bedee59b6e6db485a967fc961f250c8f835f4d1de3de1ec936a1b19",
+    "memoryBytes": 2147483648,
+    "scope": "synthetic-container-controls-no-model"
+  },
+  "rows": [
+    {
+      "control": "effective-limits",
+      "limits": {
+        "cpu.max": "100000 100000",
+        "memory.max": "2147483648",
+        "memory.swap.max": "0",
+        "pids.max": "64"
+      },
+      "modelLoaded": false,
+      "provenance": "authentic-on-synthetic",
+      "state": {
+        "Dead": false,
+        "Error": "",
+        "ExitCode": 0,
+        "FinishedAt": "2026-10-13T22:55:04.608354305Z",
+        "OOMKilled": false,
+        "Paused": false,
+        "Pid": 0,
+        "Restarting": false,
+        "Running": false,
+        "StartedAt": "2026-10-13T22:55:01.572502803Z",
+        "Status": "exited"
+      },
+      "status": "observed",
+      "wallNs": 5541324250
+    },
+    {
+      "control": "oom",
+      "limits": null,
+      "modelLoaded": false,
+      "provenance": "authentic-on-synthetic",
+      "state": {
+        "Dead": false,
+        "Error": "",
+        "ExitCode": 137,
+        "FinishedAt": "2026-10-13T22:55:23.189624216Z",
+        "OOMKilled": true,
+        "Paused": false,
+        "Pid": 0,
+        "Restarting": false,
+        "Running": false,
+        "StartedAt": "2026-10-13T22:55:06.44592118Z",
+        "Status": "exited"
+      },
+      "status": "observed",
+      "wallNs": 18095962083
+    },
+    {
+      "control": "owned-crash",
+      "limits": null,
+      "modelLoaded": false,
+      "provenance": "authentic-on-synthetic",
+      "state": {
+        "Dead": false,
+        "Error": "",
+        "ExitCode": 17,
+        "FinishedAt": "2026-10-13T22:55:23.794262341Z",
+        "OOMKilled": false,
+        "Paused": false,
+        "Pid": 0,
+        "Restarting": false,
+        "Running": false,
+        "StartedAt": "2026-10-13T22:55:23.606509508Z",
+        "Status": "exited"
+      },
+      "status": "observed",
+      "wallNs": 428651459
+    }
+  ],
+  "status": "observed",
+  "utilityAccepted": false,
+  "version": "agent-braid-synthetic-container-controls-v1",
+  "wallNsThroughCleanup": 24732130875
+}

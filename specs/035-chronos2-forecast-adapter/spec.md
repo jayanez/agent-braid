@@ -69,7 +69,10 @@ All four specs are draft planning records with human review pending. This packet
 authorizes no workload collection, model download, fitting, benchmark execution,
 paid service or live forecast-guided policy. Implementation may begin only after
 the applicable technical contract review; real data, model loading, experiment
-execution and promotion have distinct gates. No implementation task is complete.
+execution and promotion have distinct gates. T002–T005 now have bounded software
+acceptance with obtained task receipts and technical review; T001 and T006–T008
+remain open. This does not complete actual-model lifecycle/full-cost, workload
+evaluation or promotion acceptance.
 
 The supported execution language remains 2–4 immutable ordinary-text A/M Git
 patches in owned local scratch with the existing independent operator grant,
@@ -89,3 +92,7 @@ status, M3/M3.5 scientific gates and historical evidence remain unchanged.
 ## Evidence and unresolved questions
 
 Acceptance evidence: none. Upstream documentation/source inspection supports interface planning only. No model was installed/downloaded/evaluated and no new workload window was collected by drafting this record. Exact permissions, corpus yield, hardware enforcement, numerical budget and capability decisions remain visible implementation gates. Planned thresholds are review candidates; public benchmark rankings do not accept local utility.
+
+## Retrospective worker-lifecycle status (2026-10-15)
+
+This additive status supersedes earlier pending-T005 descriptions, without changing requirements or historical assurance. T002–T005 have bounded software acceptance; [the retrospective](retrospective-2026-10-15.md) and [T005 receipt](evidence/t005.json) bind the worker implementation to exact existing review, synthetic controls and authentic owned-synthetic failure/cleanup observations. T001 and T006–T008 remain open, including complete-adapter/full-cost obligations. No new source collection, model/VM execution, launch, utility, ADR or promotion decision follows. The separate cancelled FC.2 task does not cancel or fulfill an FC.1 criterion.

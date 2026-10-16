@@ -51,6 +51,11 @@ class Plan:
 
 
 RULES = (
+    Rule("local-forecasting", (
+        "agent_braid/forecast_*.py", "tests/test_forecast*.py", "tests/forecast_helpers.py",
+        "scripts/reproduce_forecast*.py", "docs/forecast/**", "examples/forecast/**",
+    ), ("full-tests",), True,
+        boundary="Synthetic engineering only; exact model load, permissioned sources, experiment launch and promotion require separate retained authority"),
     Rule("spec-kit-integration", (
         ".specify/templates/**", ".specify/scripts/**", ".specify/spec-kit.lock.json",
         ".agents/skills/**", ".claude/skills/**", "scripts/spec_kit.py",

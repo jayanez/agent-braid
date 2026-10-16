@@ -1,0 +1,53 @@
+{
+  "authorityAndAssuranceSnapshotsChanged": false,
+  "criteriaSatisfied": [
+    "target/horizon/quantile axes",
+    "p50 point semantics",
+    "finite ordered quantiles and crossed/nonfinite/wrong-median refusals",
+    "explicit units and uncalibrated interval labels"
+  ],
+  "date": "2026-10-15",
+  "dependencyDisposition": "T003 pinned preprocessing comparison complete within the software domain.",
+  "domain": "synthetic software implementation and pinned upstream source inspection",
+  "executionAuthorization": false,
+  "freshControls": {
+    "command": "python -m unittest tests.test_forecast_worker tests.test_forecast_chronos tests.test_forecast_windows tests.test_forecast_data -v",
+    "exit": 0,
+    "log": "specs/035-chronos2-forecast-adapter/evidence/software-acceptance-tests-2026-10-15.txt",
+    "logSha256": "85e32609e6a0a681acaeb7d80bc7549903f1e6ab2b215d659471ab727f8a6acb",
+    "seconds": 2.222,
+    "skips": 0,
+    "tests": 27
+  },
+  "fullCostAcceptanceImplied": false,
+  "modelOrSourceAdmissionImplied": false,
+  "productionBaseCandidate": "0681db69ae9b939d86c4b66ea3ee98d1fb2667c3",
+  "productionInputs": {
+    "agent_braid/forecast_chronos.py": "207186d910163a5e654c578582967e63498ede84817b0aa27544936bf2cdc7bc",
+    "agent_braid/forecast_outputs.py": "75bafa16e4b93f8d4b1b94ecc26decfa6112ab842eb73965605b605da5ffeb8d"
+  },
+  "reusedEvidence": [
+    {
+      "path": "specs/045-local-forecasting-capabilities/evidence/actual-cpu-v3-summary.json",
+      "scope": "Historical exact installed/artifact boundary; no new run or transferred approval",
+      "sha256": "71e68da5d26689da545edc79c5ca38703bf075ab708c71ad7d8ae4c26f0b328f"
+    },
+    {
+      "path": "specs/045-local-forecasting-capabilities/evidence/actual-cpu-v5-summary.json",
+      "scope": "Historical exact installed/artifact boundary; no new run or transferred approval",
+      "sha256": "df34cf0c2c4002a7e4e6726053c31582928eefd419854c5bd64b1f4845bcb4f0"
+    }
+  ],
+  "reviewRecord": "specs/035-chronos2-forecast-adapter/software-acceptance-review-2026-10-15.md",
+  "reviewerConfiguredModel": "gpt-6-luna",
+  "task": "SPEC-035/T004",
+  "upstreamMedianContract": {
+    "commit": "0aba28e9360b6355d5a919596c90b16c25939f02",
+    "file": "src/chronos/chronos2/pipeline.py",
+    "interpretation": "second return uses training quantile0.5 despite upstream mean variable name",
+    "lines": "817-820",
+    "sha256": "9fad1e4fb7251471463a40408a32d25d31b23b7afb88069911f095071b9b0599"
+  },
+  "utilityOrPromotionImplied": false,
+  "version": "agent-braid-fc1-software-task-evidence-v1"
+}

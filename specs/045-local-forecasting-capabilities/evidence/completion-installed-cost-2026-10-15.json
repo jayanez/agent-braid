@@ -1,0 +1,44 @@
+{
+  "date": "2026-10-15",
+  "executionAuthorization": false,
+  "fullDeploymentCostAccepted": false,
+  "interpretation": "authentic own synthetic diagnostic interval; no cross-attempt performance improvement or utility inference",
+  "observation": {
+    "cleanupConfirmed": true,
+    "cleanupError": null,
+    "coordinatorCpuNs": 30858000,
+    "cpuScope": "outer-process-and-waited-child-tree-overlap-inner-do-not-add",
+    "driverSha256": "ff9422e01dc34f4610940ce4e393878a7135ff064a39c01a1a1bd8784dcbfa0c",
+    "error": null,
+    "executionAuthorization": false,
+    "exit": 0,
+    "fullDeploymentCostAccepted": false,
+    "gaps": [
+      "prior-artifact-provisioning-unallocated",
+      "worker-and-daemon-not-exercised",
+      "this-terminal-receipt-publication-after-boundary"
+    ],
+    "innerReceiptSha256": {
+      "ledger.json": "85cb4b36f5517ff7b31557c3ca9356bb6859554f528a634ecb4f4ae366f8331b",
+      "payload.json": "8c6ed31fd5775df886cd22b78bb2cc76efbf8f50ad1ca50d263b778fe33181a1",
+      "summary.json": "13789068807938d60eff7e636a1d744651da52c5143a87a021cd22302b9afc8e"
+    },
+    "interruptedSignal": null,
+    "modelLoaded": false,
+    "provenance": "authentic-on-synthetic",
+    "supervisorSha256": "b85a5e6cb5f0fd5092e3848d6a0b677c7f43a0113ddcdab8f2a5ab3d5cb4b139",
+    "version": "agent-braid-synthetic-cost-supervisor-v1",
+    "waitedChildTreeCpuNs": 31693785000,
+    "wallNsThroughInnerPublicationReadback": 53087457875
+  },
+  "rawReceiptSha256": {
+    "inner-index.json": "a360bac18a5b23c9b0c48acfbeafbdf6dbaa70c67f4b5d9b45865da8e04b062b",
+    "observed-supervisor.py": "b85a5e6cb5f0fd5092e3848d6a0b677c7f43a0113ddcdab8f2a5ab3d5cb4b139",
+    "start.json": "3a7be2950f06501899b388ea5801fd64a79decb2782dbef165374d14a3824dd3",
+    "supervisor.json": "774b607c22917e4a2f15c789cb073020e3f3d5f70d7400e3bcaaa39669036e33"
+  },
+  "rawReceiptsPublished": false,
+  "sourceCandidate": "4fd70decdedba63db3ffb8ecc7b2bfb5c87f5f92",
+  "supervisorSourceMatches": true,
+  "version": "agent-braid-fc2-installed-cost-current-v1"
+}

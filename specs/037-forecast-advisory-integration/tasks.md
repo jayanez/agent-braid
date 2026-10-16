@@ -42,3 +42,13 @@ All implementation, collection, experiment and approval checkboxes remain pendin
   Verification: Accept only the exact eligible capability or document no-go; any execution still needs an independent grant and full M4/M3.5 closure remains outside FC.1.
   Planned commands after implementation: `.venv-speckit/bin/python -m unittest discover -s tests -p "test_forecast*.py" -v` plus the requirement-specific procedure in `specs/037-forecast-advisory-integration/validation-plan.md`; source/model/launch/founder decisions require their actual reviewer record.
   Planned evidence: `specs/037-forecast-advisory-integration/evidence/t008.json`. Obtained evidence: none.
+
+## Bounded synthetic mapping engineering
+
+T003 has additive [synthetic mapping and identity controls](../036-forecast-parallelism-experiment/offline-decisions.md)
+with complete candidate/exclusion records, point-of-use recomputation, shadow and
+existing synthetic-dispatch rejection. Its reusable engineering receipt is
+`specs/036-forecast-parallelism-experiment/evidence/t004-synthetic-decisions.json`.
+The original T003 checkbox and dependencies T001, SPEC-034/T005 and SPEC-035/T007
+remain pending. This does not admit real profiles, verify actual runtime plans or
+accept independent operator authority, source collection, launch or promotion.

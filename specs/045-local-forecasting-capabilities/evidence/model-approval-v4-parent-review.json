@@ -1,0 +1,16 @@
+{
+  "checks": [
+    "exclusive no-follow start/result/log reservations before pin installation",
+    "frozen driver/proposal/owner record hash checks",
+    "guarded pin installation/start receipt/child spawn",
+    "SIGTERM forwarded only to owned child process group",
+    "bounded parent failsafe separate from driver480-second budget",
+    "exact one-run pin removal on terminal paths"
+  ],
+  "disposition": "no remaining wrapper blocker",
+  "model": "gpt-6-luna",
+  "registryWriterCaveat": "Atomic replace without read-modify-write lock; this run serializes its registry writes and no other forecast deployment job is active.",
+  "reviewScope": "read-only lifecycle and frozen package binding; no model load or fault execution",
+  "version": "agent-braid-v4-parent-review-v1",
+  "wrapperSha256": "1d28e09d3fed58bd1d3cb4066a99d327464231f7fdcbacdc54a352c1d9a6e022"
+}

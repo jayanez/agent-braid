@@ -1,0 +1,27 @@
+{
+  "downloadDeadlineSeconds": 120,
+  "hiddenRetries": 0,
+  "manifestDigest": "80853ec3fd8c852bd7edd1277828436e12851d499dbe9643af9b51aa62a013c7",
+  "modelLoaded": false,
+  "ownerDecisionSha256": "ea51e51bbd758edeb06dc99835fffe151a0372cb428bfe5aee1377a3ba61178d",
+  "rows": [
+    {
+      "bytes": 1067,
+      "name": "config.json",
+      "sha256": "ef1143bfdc9c0376d9a056eefca46cb4b1ec3d0ffacd541ff56feb40fb708031",
+      "status": "verified",
+      "wallNs": 342942791
+    },
+    {
+      "bytes": 477930472,
+      "name": "model.safetensors",
+      "sha256": "ddcda3c7508bf2528087723e98a20707cc04b7f370ae275a9fd88078ddba4f42",
+      "status": "verified",
+      "wallNs": 8642968875
+    }
+  ],
+  "scope": "artifact download/hash preparation, separate from300s conformance compute budget",
+  "status": "provisioned-verified",
+  "version": "agent-braid-approved-provisioning-v1",
+  "wallNs": 8986125167
+}
