@@ -13,36 +13,39 @@ import json
 import os
 from pathlib import Path
 import platform
+import signal
 import shutil
 import subprocess
 import sys
 
 
 
-async def codex_inventory(executable, env, cwd):
+async def codex_inventory(executable, env, cwd, *, timeout_seconds=120):
     """Inspect actual host loading without starting a thread or model turn."""
     process = await asyncio.create_subprocess_exec(str(executable), 'app-server', '--stdio',
         env=env, cwd=cwd, stdin=asyncio.subprocess.PIPE, stdout=asyncio.subprocess.PIPE,
-        stderr=asyncio.subprocess.PIPE, limit=2 * 1024 * 1024)
+        stderr=asyncio.subprocess.PIPE, limit=2 * 1024 * 1024, start_new_session=True)
     async def drain_errors():
         kept = bytearray()
         while chunk := await process.stderr.read(4096):
             kept.extend(chunk[:max(0, 65536 - len(kept))])
         return bytes(kept).decode(errors='replace')
     errors = asyncio.create_task(drain_errors())
+    deadline = asyncio.get_running_loop().time() + timeout_seconds
     async def request(identifier, method, params):
-        process.stdin.write((json.dumps({'id': identifier, 'method': method, 'params': params}) + '\n').encode())
-        await process.stdin.drain()
-        for _ in range(100):
-            raw = await asyncio.wait_for(process.stdout.readline(), 60)
-            if not raw:
-                raise RuntimeError('Native app server exited during discovery')
-            value = json.loads(raw)
-            if value.get('id') == identifier:
-                if 'error' in value:
-                    raise RuntimeError('Native app server refused discovery: ' + str(value['error']))
-                return value['result']
-        raise RuntimeError('Native app server discovery exceeded notification budget')
+        async with asyncio.timeout_at(deadline):
+            process.stdin.write((json.dumps({'id': identifier, 'method': method, 'params': params}) + '\n').encode())
+            await process.stdin.drain()
+            for _ in range(100):
+                raw = await process.stdout.readline()
+                if not raw:
+                    raise RuntimeError('Native app server exited during discovery')
+                value = json.loads(raw)
+                if value.get('id') == identifier:
+                    if 'error' in value:
+                        raise RuntimeError('Native app server refused discovery: ' + str(value['error']))
+                    return value['result']
+            raise RuntimeError('Native app server discovery exceeded notification budget')
     try:
         await request(0, 'initialize', {'clientInfo': {'name': 'agent_braid_installation_probe', 'version': '0.1.0'}})
         process.stdin.write(b'{"method":"initialized","params":{}}\n')
@@ -61,13 +64,23 @@ async def codex_inventory(executable, env, cwd):
                   'limits': ['Actual native loader/discovery only; no thread/start, turn/start or skill invocation',
                              'Host can expose global user components outside isolated profile; unrelated inventory is excluded']}
     finally:
-        if process.returncode is None:
-            process.terminate()
+        try:
+            os.killpg(process.pid, signal.SIGTERM)
+        except ProcessLookupError:
+            pass
+        try:
+            await asyncio.wait_for(process.wait(), 10)
+        except TimeoutError:
+            os.killpg(process.pid, signal.SIGKILL)
+            await asyncio.wait_for(process.wait(), 5)
+        try:
+            stderr = await asyncio.wait_for(errors, 5)
+        except TimeoutError:
             try:
-                await asyncio.wait_for(process.wait(), 10)
-            except TimeoutError:
-                process.kill(); await process.wait()
-        stderr = await errors
+                os.killpg(process.pid, signal.SIGKILL)
+            except ProcessLookupError:
+                pass
+            stderr = 'Native host stderr drain exceeded its cleanup deadline'
     result['stderr'] = stderr
     return result
 
