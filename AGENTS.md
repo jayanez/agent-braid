@@ -36,3 +36,35 @@ Do not use for: refactoring, writing scripts from scratch, debugging business lo
 3. `query-docs` with the selected library ID and the user's full question (not single words)
 4. Answer using the fetched docs
 <!-- context7 -->
+
+<!-- CODEGRAPH_START -->
+## CodeGraph
+
+In repositories indexed by CodeGraph (a `.codegraph/` directory exists at the repo root), reach for it BEFORE grep/find or reading files when you need to understand or locate code:
+
+- **MCP tool** (when available): `codegraph_explore` answers most code questions in one call — the relevant symbols' verbatim source plus the call paths between them, including dynamic-dispatch hops grep can't follow. Name a file or symbol in the query to read its current line-numbered source. If it's listed but deferred, load it by name via tool search.
+- **Shell** (always works): `codegraph explore "<symbol names or question>"` prints the same output.
+
+If there is no `.codegraph/` directory, skip CodeGraph entirely — indexing is the user's decision.
+<!-- CODEGRAPH_END -->
+
+### Bounded CodeGraph workflow
+
+- Start with `codegraph_explore` and a specific file or symbol; use `maxFiles`
+  (CLI: `--max-files 2`) to bound the response. Treat returned current source as
+  already read; follow exact elided symbol names only when needed.
+- For a smaller slice, use `codegraph_node` (CLI: `codegraph node --file PATH
+  --symbols-only`, or `--offset N --limit N`). Use `codegraph_search` for names,
+  `codegraph_callers` / `codegraph_callees` for direct relationships, and
+  `codegraph_impact` before changing shared symbols. `codegraph_files` provides
+  indexed file structure; `codegraph_status` checks index health.
+- For task context without source, use `codegraph context --no-code --max-nodes 8`.
+  Use `codegraph affected PATH --json` to suggest affected tests; this does not
+  replace the required validation profiles or establish complete test coverage.
+- Pass this worktree's absolute `projectPath` when the MCP has no default project.
+  The MCP watches changes; after a freshness warning or offline edits, run
+  `codegraph sync` and check `codegraph status --json` before structural queries.
+- Use direct reads/searches for unindexed documentation/configuration, missing
+  results or explicit freshness failures. Resolution is best effort, not proof.
+- Keep cross-call source deduplication disabled: context compaction and separate
+  chats cannot guarantee that previously returned source remains available.
