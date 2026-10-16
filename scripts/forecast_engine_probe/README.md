@@ -54,3 +54,24 @@ The pure queued-cancellation and in-flight controls run without Virtualization:
 ```sh
 python -m unittest tests.test_forecast_engine_cancellation -v
 ```
+
+These host-only Swift tests share a private temporary module cache within one
+Python process. The compiler version check has a 5-second limit; a minimal
+Foundation/Dispatch compilation prepares imported modules within 180 seconds.
+Each current fixture is then compiled afresh within the original 60-second limit.
+Preparation is attempted once, without retries; a failure remains an error.
+The compiler runs in its own POSIX process group, which is killed on timeout.
+Each wait/join during failure cleanup is bounded to 5 seconds. Diagnostics retain
+only the last 8 KiB, with compiler command, phase and elapsed time. The native
+fixture execution deadlines and VM/worker budgets are unchanged.
+
+This separates toolchain preparation from fixture compilation. It does not
+establish the exact cause of the historical Linux timeout after PR #527:
+run `38874843633` exceeded 60 seconds without preserving compiler diagnostics or
+version. The identical source passed in run `38871354533` (approximately 25 seconds
+for the first compilation); the following parser compiled in approximately
+4.3 and 1.5 seconds respectively. Cold module preparation is a hypothesis, not a
+reproduced Linux finding. A fresh private-cache check on Apple Swift 6.4 took
+2.142 seconds cold and 0.225 seconds warm; it is host-only evidence, not a Linux
+reproduction. The bounded preparation window is a mitigation, not a measured
+upper bound or proof that subsequent CI will pass.
