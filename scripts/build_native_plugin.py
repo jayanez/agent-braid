@@ -155,8 +155,8 @@ exec "$plugin_python" -I -B -m agent_braid "$@"
         _json(plugin / '.claude-plugin/plugin.json', common)
         args = ['plugin', 'serve', '--plugin-root']
         _json(plugin / 'mcp.json', {'$schema': 'https://agent-plugins.org/schemas/1.0.0/mcp.schema.json',
-            'mcpServers': {'agent-braid': {'type': 'stdio', 'command': '${PLUGIN_ROOT}/launch',
-                'args': args + ['${PLUGIN_ROOT}']}}})
+            'mcpServers': {'agent-braid': {'type': 'stdio', 'command': './launch',
+                'args': ['plugin', 'serve']}}})
         _json(plugin / '.mcp.json', {'mcpServers': {'agent-braid': {'command': '${CLAUDE_PLUGIN_ROOT}/launch',
             'args': args + ['${CLAUDE_PLUGIN_ROOT}']}}})
         _json(staging / '.agents/plugins/marketplace.json', {'name': 'agent-braid', 'interface': {'displayName': 'Agent Braid'},

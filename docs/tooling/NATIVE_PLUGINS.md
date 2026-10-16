@@ -2,7 +2,7 @@
 # Native AI plugins (SPEC-046)
 
 The native plugin is installed once **per user, per local host** and reused across
-repositories. Supported package targets are macOS arm64 and Linux x86_64. Codex
+repositories. Supported package targets are macOS arm64 and Linux x86_64 (glibc 2.28 or newer; no musl compatibility claim). Codex
 or Claude Code and Git must already be installed. The package includes CPython
 3.12.15 and hash-locked dependencies; Python, pip, uv, Node and Docker are not
 consumer prerequisites. The Python installation remains available below.
@@ -76,7 +76,9 @@ applying once. The initial workspace mode is analysis. Registering a repository
 does not authorize execution or issue a grant. Runtime opt-in and an existing
 operator grant store are separate explicit configuration choices.
 
-The bootstrap `plugin-status` MCP tool returns `bundledCli`. Use that absolute
+The bootstrap `plugin-status` MCP tool returns `bundledCli` and `registryHome`.
+Pass that `registryHome` explicitly as `--home` on CLI setup/discovery operations
+to keep storage consistent when a host filters environment variables. Use that absolute
 launcher path for the following commands (shell quotes are required for spaces):
 
 ```sh
@@ -105,6 +107,9 @@ Both hosts share Agent Braid's registry and results outside plugin caches:
 - macOS: `~/Library/Application Support/AgentBraid`.
 - Linux: `$XDG_DATA_HOME/agent-braid`, or `~/.local/share/agent-braid`.
 - Override: `AGENT_BRAID_HOME`, or an explicit `plugin ... --home PATH`.
+  A native host must forward custom environment variables to its MCP process
+  for an environment override to take effect there; inspect the returned
+  `registryHome` instead of assuming a shell variable survived host filtering.
 
 The home and registry are private, owned paths. Each workspace has a stable ID,
 explicit canonical source root and its own fixed result root. No global active

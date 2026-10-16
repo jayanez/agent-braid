@@ -163,6 +163,9 @@ def create_server(router):
                         uri=service._base_uri(artifact.run_id, artifact.artifact_id), mimeType='application/json'))
         return types.ListResourcesResult(resources=values)
 
+    async def list_resource_templates(_ctx, _params):
+        return types.ListResourceTemplatesResult(resourceTemplates=[])
+
     async def read_resource(_ctx, params):
         event = threading.Event()
         worker = asyncio.create_task(asyncio.to_thread(router.read_resource, str(params.uri), event))
@@ -191,6 +194,7 @@ def create_server(router):
         instructions='First read plugin-status/workspaces. Run the packaged setup skill when setup is required. Every delegated tool requires an explicit registered workspaceId. Never infer roots or grant authority. Registry changes require reconnecting.',
         on_list_tools=list_tools, on_call_tool=call_tool,
         on_list_resources=list_resources, on_read_resource=read_resource,
+        on_list_resource_templates=list_resource_templates,
         on_list_prompts=list_prompts, on_get_prompt=get_prompt)
 
 

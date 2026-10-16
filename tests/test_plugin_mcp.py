@@ -74,6 +74,7 @@ class PluginSdkTests(unittest.IsolatedAsyncioTestCase):
                 uri = value['evidenceRefs'][0]['uri']
                 data = await client.read_resource(uri)
                 self.assertTrue(json.loads(data.contents[0].text)['firstChunkUri'].startswith('agent-braid-plugin://'))
+                self.assertEqual((await client.list_resource_templates()).resource_templates, [])
                 self.assertEqual(len((await client.list_prompts()).prompts), 3)
                 prompt = await client.get_prompt('agent-braid-evidence')
                 self.assertIn('workspaceId', prompt.messages[0].content.text)

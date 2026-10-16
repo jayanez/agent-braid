@@ -18,6 +18,60 @@ import subprocess
 import sys
 
 
+
+async def codex_inventory(executable, env, cwd):
+    """Inspect actual host loading without starting a thread or model turn."""
+    process = await asyncio.create_subprocess_exec(str(executable), 'app-server', '--stdio',
+        env=env, cwd=cwd, stdin=asyncio.subprocess.PIPE, stdout=asyncio.subprocess.PIPE,
+        stderr=asyncio.subprocess.PIPE, limit=2 * 1024 * 1024)
+    async def drain_errors():
+        kept = bytearray()
+        while chunk := await process.stderr.read(4096):
+            kept.extend(chunk[:max(0, 65536 - len(kept))])
+        return bytes(kept).decode(errors='replace')
+    errors = asyncio.create_task(drain_errors())
+    async def request(identifier, method, params):
+        process.stdin.write((json.dumps({'id': identifier, 'method': method, 'params': params}) + '\n').encode())
+        await process.stdin.drain()
+        for _ in range(100):
+            raw = await asyncio.wait_for(process.stdout.readline(), 60)
+            if not raw:
+                raise RuntimeError('Native app server exited during discovery')
+            value = json.loads(raw)
+            if value.get('id') == identifier:
+                if 'error' in value:
+                    raise RuntimeError('Native app server refused discovery: ' + str(value['error']))
+                return value['result']
+        raise RuntimeError('Native app server discovery exceeded notification budget')
+    try:
+        await request(0, 'initialize', {'clientInfo': {'name': 'agent_braid_installation_probe', 'version': '0.1.0'}})
+        process.stdin.write(b'{"method":"initialized","params":{}}\n')
+        await process.stdin.drain()
+        listed = await request(1, 'skills/list', {'cwds': [str(cwd)], 'forceReload': True})
+        selected = [skill for row in listed['data'] for skill in row['skills']
+                    if skill.get('pluginId') == 'agent-braid@agent-braid']
+        assert len(selected) == 6 and all(skill['enabled'] for skill in selected), 'Native Codex did not load the six plugin skills'
+        inventory = await request(2, 'mcpServerStatus/list', {'limit': 20})
+        servers = [server for server in inventory['data'] if server.get('pluginId') == 'agent-braid@agent-braid']
+        assert len(servers) == 1, 'Native Codex did not load plugin MCP (inspect manifest/loader diagnostics)'
+        server = servers[0]
+        assert server.get('serverInfo', {}).get('name') == 'agent-braid-plugin', 'Native Codex handshake failed'
+        assert not server.get('toolsError') and {'plugin-status', 'workspaces'} <= set(server['tools'])
+        result = {'skills': selected, 'mcpServer': server,
+                  'limits': ['Actual native loader/discovery only; no thread/start, turn/start or skill invocation',
+                             'Host can expose global user components outside isolated profile; unrelated inventory is excluded']}
+    finally:
+        if process.returncode is None:
+            process.terminate()
+            try:
+                await asyncio.wait_for(process.wait(), 10)
+            except TimeoutError:
+                process.kill(); await process.wait()
+        stderr = await errors
+    result['stderr'] = stderr
+    return result
+
+
 def run(args):
     marketplace = args.marketplace.resolve(strict=True)
     plugin = marketplace / 'plugins/agent-braid'
@@ -114,12 +168,18 @@ def run(args):
             for _ in range(2):
                 command([executable, 'plugin', 'add', 'agent-braid@agent-braid'])
             command([executable, 'plugin', 'list', '--json'])
+            commands.append({'nativeCodexInventory': asyncio.run(codex_inventory(executable, env, state))})
             command([executable, 'plugin', 'remove', 'agent-braid@agent-braid'])
         else:
             command([executable, 'plugin', 'validate', plugin, '--strict'])
             for _ in range(2):
                 command([executable, 'plugin', 'install', 'agent-braid', '--marketplace', marketplace, '--scope', 'user'])
             command([executable, 'plugin', 'details', 'agent-braid@agent-braid'])
+            health = command([executable, 'mcp', 'list'])
+            plugin_lines = [line for line in health.splitlines() if 'plugin:agent-braid:' in line]
+            assert plugin_lines and all('Connected' in line for line in plugin_lines), 'Native Claude MCP handshake failed'
+            commands[-1]['stdout'] = '\n'.join(plugin_lines)
+            commands.append({'nativeClaudeMcpConnected': True, 'unrelatedHealthRowsExcluded': True})
             command([executable, 'plugin', 'list', '--json'])
             command([executable, 'plugin', 'uninstall', 'agent-braid@agent-braid', '--scope', 'user'])
         assert registry.read_bytes() == before and sentinel.read_text() == 'owned fixture result'
