@@ -4,11 +4,9 @@
     "agent-braid": {
       "args": [
         "plugin",
-        "serve",
-        "--plugin-root",
-        "${PLUGIN_ROOT}"
+        "serve"
       ],
-      "command": "${PLUGIN_ROOT}/launch",
+      "command": "./launch",
       "type": "stdio"
     }
   }

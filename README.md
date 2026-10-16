@@ -1,11 +1,12 @@
-# Agent Braid native plugin distribution candidate
+# Agent Braid native plugin — unpublished candidate
 
-Unpublished engineering candidate. Public distribution requires the founder's
-release decision. This branch contains the generated catalogs, bundled runtimes,
-license/provenance inventories and corresponding sources. Source development is
-on `develop`; inspect `plugins/agent-braid/provenance.json` for the exact candidate.
+This distribution branch descends from the source history. The generated plugin
+contains both supported runtimes, both host catalogs, five canonical product
+skills plus setup, dependency/license inventories and corresponding sources.
 
-For a local checkout, use its absolute path as the marketplace source:
+Version: 0.1.0-alpha.1. Source candidate: 9641fd6. Public branch/tag publication
+requires the founder decision; no official directory approval is claimed.
+Use the absolute directory path as a local native marketplace until publication.
 
 ```sh
 codex plugin marketplace add /absolute/marketplace
@@ -13,11 +14,11 @@ codex plugin add agent-braid@agent-braid
 claude plugin install agent-braid --marketplace /absolute/marketplace --scope user
 ```
 
-Open Agent Braid setup, explicitly select repositories, inspect/apply its preview
-and reconnect MCP. Git and a supported local host are required; Python and package
-managers are included. macOS arm64 and Linux x86_64 are the packaged targets.
-The five product skills and separate setup skill are discovered by the host.
+Open setup, select repositories, inspect/apply its digest and reconnect MCP.
+Git and an existing supported host are required; no external Python/package
+manager is needed. Targets: macOS arm64, Linux x86_64 with glibc 2.28+.
 
-Native plugin managers own updates/removal; private Agent Braid state survives.
-Official directory approvals and interactive acceptance are separate pending gates.
-See `plugins/agent-braid/README.md`, its LICENSE/NOTICE and source installation guide.
+Private configuration/results survive native update/removal. See the packaged
+README, LICENSE/NOTICE, provenance.json and package-inventory.json. Public source
+and installation documentation live on develop. Actual interactive skill journeys,
+version-changing native upgrade and directory eligibility/approval remain separate.
