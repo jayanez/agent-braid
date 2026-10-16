@@ -66,3 +66,28 @@ def git_fixture(*,seed=1,operations=2,dependency_chain=False):
                                 'dependencies':ids[i-1:i] if dependency_chain else [],'uncertainPaths':[],'declaredWrites':[name+'.txt']}
                                for i,(name,commit) in enumerate(zip(ids,commits))]}
         yield {'root':root,'repository':repo,'request':request,'seed':seed,'sourceHead':base}
+
+
+def operation_episode(*, seed, partition='development'):
+    """Generate cutoff-known descriptors and a separate simulated duration label.
+
+    No Git operation runs. The fixed linear law is a test fixture, not a learned
+    description of real preparation costs or an admitted resource profile.
+    """
+    integer(seed)
+    require(partition in ('development', 'calibration', 'holdout'), 'unsupported-lab-stratum')
+    origin = ('development', 'calibration', 'holdout').index(partition)*1000000000000
+    rng = random.Random(seed)
+    features = [rng.randint(1, 64), rng.randint(2, 4), rng.randint(0, 1)]
+    recipe = {'seed': seed, 'partition': partition, 'version': 1}
+    return {
+        'recipe': recipe, 'episodeGroup': 'operation-'+digest({'seed': seed, 'version': 1})[:24],
+        'partition': partition, 'resourceGroup': 'owned-lab',
+        'resourceReceiptDigest': digest({'profile': 'owned-lab', 'sourceKind': 'synthetic', 'version': 1}),
+        'cutoffNs': origin+12700000000, 'availableAtNs': origin,
+        'outcomeAtNs': origin+12800000000,
+        'featureNames': ['patchKiB', 'operationCount', 'dependencyChain'],
+        'features': features, 'targetId': 'preparation-duration', 'unit': 'ms',
+        'outcome': 3+2*features[0]+5*features[1]+11*features[2],
+        'provenance': 'synthetic-simulation',
+    }

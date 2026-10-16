@@ -13,6 +13,7 @@ All implementation, collection, experiment and approval checkboxes remain pendin
   Planned commands after implementation: `.venv-speckit/bin/python -m unittest discover -s tests -p "test_forecast*.py" -v` plus the requirement-specific procedure in `specs/036-forecast-parallelism-experiment/validation-plan.md`; source/model/launch/founder decisions require their actual reviewer record.
   Planned evidence: `specs/036-forecast-parallelism-experiment/evidence/t002.json`. Obtained evidence: none.
 - [ ] T003 (REQ-002 REQ-003 / SC-002 SC-003): Implement immutable rolling-origin forecast evaluation.
+  Offline engineering progress: see [bounded synthetic evaluation](offline-evaluation.md). The original dependency and acceptance gates below remain pending; software evidence does not mark this task complete. Obtained engineering evidence: `specs/036-forecast-parallelism-experiment/evidence/t003-offline-engineering.json` (synthetic controls only).
   Dependencies: T002; SPEC-035/T007. Target files: agent_braid/forecast_evaluation.py; tests/test_forecast_evaluation.py.
   Verification: Use purged episode folds and exact cutoff receipts; aggregate by target/horizon/resource without leaking future values or test groups.
   Planned commands after implementation: `.venv-speckit/bin/python -m unittest discover -s tests -p "test_forecast*.py" -v` plus the requirement-specific procedure in `specs/036-forecast-parallelism-experiment/validation-plan.md`; source/model/launch/founder decisions require their actual reviewer record.
