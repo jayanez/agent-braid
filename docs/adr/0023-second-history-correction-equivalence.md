@@ -18,9 +18,31 @@ on the base branch before the FC.1 change in PR #532.
 Preserve ADR 0022, its mapping, founder reviews, assurance snapshots, closure
 anchors and addenda byte for byte. Add a separate immutable canonical
 [2026-10-16 correction record](../releases/publication/history-rewrite-equivalence-20261016.json).
-Compose the original closed mapping with this second closed mapping only when
-their recorded trees agree. Never infer a route from a locally present old object,
-an arbitrary tag, an approximate file match or a runtime search of equal trees.
+Resolve only these explicitly listed cases, with strict canonical parsing of
+recordVersion 0.1.0 and the exact adr/entries/tags/reason/limits fields:
+
+1. If an identity is listed in ADR 0022, resolve its first-layer target and then
+   the exact second-layer entry for that intermediate identity. Require the first
+   and second recorded trees to agree. An absent required second-layer target
+   retains the existing fail-closed gate; do not silently call it migrated.
+2. For a legacy identity not listed as an ADR 0022 source, allow direct second-map
+   lookup ONLY if it is explicitly listed there. This includes the seven frozen
+   restore/review candidates 0974739ae4dc6784ff3c21a34745655a38dd4943,
+   2656924e51cccf4017a31563ae044c47efcc395d,
+   853df7432dd4700aa411f1f13b324a0b7beecd02,
+   bb2e0322fdf0fe3eabc6e28fec4864c9cfc954df and
+   c30e8bcfb572afba4447767fc2b51dd2c3320766,
+   5b6ecff16f2328c1b514517d8332ce2179d5bd1d and
+   7f679797784b5fc85503075e5c477c9b2d7b14e4. Their exact new objects/trees,
+   and retained annotated tag bindings where applicable, are closed trust inputs
+   in this record; they are not inferred from a tag name at validation time.
+3. Identities unlisted in both records retain their previous route and checks;
+   this adds no general fallback. Conflicting source keys, cycles, inconsistent
+   trees, ambiguous composition and out-of-domain destinations are rejected.
+
+Never infer a route from a locally present old object, an arbitrary tag, an
+approximate file match or a runtime search of equal trees. Tree/object/ancestry
+and exact approval-byte verification remain required after lookup.
 
 The proposed record binds 29 intermediate/public identities and ten retained
 annotated tags. Candidate generation inspected the rewritten public refs and
