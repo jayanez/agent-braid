@@ -116,6 +116,9 @@
           "id": "SC-001",
           "obtained_evidence": [
             {
+              "command": "Focused unittest command and bundled reproduce_native_plugin.py invocations recorded in evidence/engineering.json and linked native transcripts.",
+              "limits": "No interactive wizard/skill journey, version-changing upgrade, public release, provider approval, human rating or scientific result. Linux is emulated. Historical M4.5 evidence unchanged.",
+              "outcome": "Bounded engineering controls obtained for this scenario; see per-procedure obtained/remaining matrix in validation-plan.md. This draft does not imply full acceptance.",
               "path": "specs/046-native-ai-plugins/evidence/engineering.json",
               "sha256": "4f1ef65a4b9124f80ce524e72fc0b0ea18c44f726980e71294b82f542f03d12c"
             }
@@ -137,6 +140,9 @@
           "id": "SC-002",
           "obtained_evidence": [
             {
+              "command": "Focused unittest command and bundled reproduce_native_plugin.py invocations recorded in evidence/engineering.json and linked native transcripts.",
+              "limits": "No interactive wizard/skill journey, version-changing upgrade, public release, provider approval, human rating or scientific result. Linux is emulated. Historical M4.5 evidence unchanged.",
+              "outcome": "Bounded engineering controls obtained for this scenario; see per-procedure obtained/remaining matrix in validation-plan.md. This draft does not imply full acceptance.",
               "path": "specs/046-native-ai-plugins/evidence/engineering.json",
               "sha256": "4f1ef65a4b9124f80ce524e72fc0b0ea18c44f726980e71294b82f542f03d12c"
             }
@@ -158,6 +164,9 @@
           "id": "SC-003",
           "obtained_evidence": [
             {
+              "command": "Focused unittest command and bundled reproduce_native_plugin.py invocations recorded in evidence/engineering.json and linked native transcripts.",
+              "limits": "No interactive wizard/skill journey, version-changing upgrade, public release, provider approval, human rating or scientific result. Linux is emulated. Historical M4.5 evidence unchanged.",
+              "outcome": "Bounded engineering controls obtained for this scenario; see per-procedure obtained/remaining matrix in validation-plan.md. This draft does not imply full acceptance.",
               "path": "specs/046-native-ai-plugins/evidence/engineering.json",
               "sha256": "4f1ef65a4b9124f80ce524e72fc0b0ea18c44f726980e71294b82f542f03d12c"
             }
@@ -179,6 +188,9 @@
           "id": "SC-004",
           "obtained_evidence": [
             {
+              "command": "Focused unittest command and bundled reproduce_native_plugin.py invocations recorded in evidence/engineering.json and linked native transcripts.",
+              "limits": "No interactive wizard/skill journey, version-changing upgrade, public release, provider approval, human rating or scientific result. Linux is emulated. Historical M4.5 evidence unchanged.",
+              "outcome": "Bounded engineering controls obtained for this scenario; see per-procedure obtained/remaining matrix in validation-plan.md. This draft does not imply full acceptance.",
               "path": "specs/046-native-ai-plugins/evidence/engineering.json",
               "sha256": "4f1ef65a4b9124f80ce524e72fc0b0ea18c44f726980e71294b82f542f03d12c"
             }
@@ -200,6 +212,9 @@
           "id": "SC-005",
           "obtained_evidence": [
             {
+              "command": "Focused unittest command and bundled reproduce_native_plugin.py invocations recorded in evidence/engineering.json and linked native transcripts.",
+              "limits": "No interactive wizard/skill journey, version-changing upgrade, public release, provider approval, human rating or scientific result. Linux is emulated. Historical M4.5 evidence unchanged.",
+              "outcome": "Bounded engineering controls obtained for this scenario; see per-procedure obtained/remaining matrix in validation-plan.md. This draft does not imply full acceptance.",
               "path": "specs/046-native-ai-plugins/evidence/engineering.json",
               "sha256": "4f1ef65a4b9124f80ce524e72fc0b0ea18c44f726980e71294b82f542f03d12c"
             }
@@ -221,6 +236,9 @@
           "id": "SC-006",
           "obtained_evidence": [
             {
+              "command": "Focused unittest command and bundled reproduce_native_plugin.py invocations recorded in evidence/engineering.json and linked native transcripts.",
+              "limits": "No interactive wizard/skill journey, version-changing upgrade, public release, provider approval, human rating or scientific result. Linux is emulated. Historical M4.5 evidence unchanged.",
+              "outcome": "Bounded engineering controls obtained for this scenario; see per-procedure obtained/remaining matrix in validation-plan.md. This draft does not imply full acceptance.",
               "path": "specs/046-native-ai-plugins/evidence/engineering.json",
               "sha256": "4f1ef65a4b9124f80ce524e72fc0b0ea18c44f726980e71294b82f542f03d12c"
             }
@@ -242,6 +260,9 @@
           "id": "SC-007",
           "obtained_evidence": [
             {
+              "command": "Focused unittest command and bundled reproduce_native_plugin.py invocations recorded in evidence/engineering.json and linked native transcripts.",
+              "limits": "No interactive wizard/skill journey, version-changing upgrade, public release, provider approval, human rating or scientific result. Linux is emulated. Historical M4.5 evidence unchanged.",
+              "outcome": "Bounded engineering controls obtained for this scenario; see per-procedure obtained/remaining matrix in validation-plan.md. This draft does not imply full acceptance.",
               "path": "specs/046-native-ai-plugins/evidence/engineering.json",
               "sha256": "4f1ef65a4b9124f80ce524e72fc0b0ea18c44f726980e71294b82f542f03d12c"
             }
@@ -263,6 +284,9 @@
           "id": "SC-008",
           "obtained_evidence": [
             {
+              "command": "Focused unittest command and bundled reproduce_native_plugin.py invocations recorded in evidence/engineering.json and linked native transcripts.",
+              "limits": "No interactive wizard/skill journey, version-changing upgrade, public release, provider approval, human rating or scientific result. Linux is emulated. Historical M4.5 evidence unchanged.",
+              "outcome": "Bounded engineering controls obtained for this scenario; see per-procedure obtained/remaining matrix in validation-plan.md. This draft does not imply full acceptance.",
               "path": "specs/046-native-ai-plugins/evidence/engineering.json",
               "sha256": "4f1ef65a4b9124f80ce524e72fc0b0ea18c44f726980e71294b82f542f03d12c"
             }
@@ -284,6 +308,9 @@
           "id": "SC-009",
           "obtained_evidence": [
             {
+              "command": "Focused unittest command and bundled reproduce_native_plugin.py invocations recorded in evidence/engineering.json and linked native transcripts.",
+              "limits": "No interactive wizard/skill journey, version-changing upgrade, public release, provider approval, human rating or scientific result. Linux is emulated. Historical M4.5 evidence unchanged.",
+              "outcome": "Bounded engineering controls obtained for this scenario; see per-procedure obtained/remaining matrix in validation-plan.md. This draft does not imply full acceptance.",
               "path": "specs/046-native-ai-plugins/evidence/engineering.json",
               "sha256": "4f1ef65a4b9124f80ce524e72fc0b0ea18c44f726980e71294b82f542f03d12c"
             }
@@ -305,6 +332,9 @@
           "id": "SC-010",
           "obtained_evidence": [
             {
+              "command": "Focused unittest command and bundled reproduce_native_plugin.py invocations recorded in evidence/engineering.json and linked native transcripts.",
+              "limits": "No interactive wizard/skill journey, version-changing upgrade, public release, provider approval, human rating or scientific result. Linux is emulated. Historical M4.5 evidence unchanged.",
+              "outcome": "Bounded engineering controls obtained for this scenario; see per-procedure obtained/remaining matrix in validation-plan.md. This draft does not imply full acceptance.",
               "path": "specs/046-native-ai-plugins/evidence/engineering.json",
               "sha256": "4f1ef65a4b9124f80ce524e72fc0b0ea18c44f726980e71294b82f542f03d12c"
             }
@@ -326,6 +356,9 @@
           "id": "SC-011",
           "obtained_evidence": [
             {
+              "command": "Focused unittest command and bundled reproduce_native_plugin.py invocations recorded in evidence/engineering.json and linked native transcripts.",
+              "limits": "No interactive wizard/skill journey, version-changing upgrade, public release, provider approval, human rating or scientific result. Linux is emulated. Historical M4.5 evidence unchanged.",
+              "outcome": "Bounded engineering controls obtained for this scenario; see per-procedure obtained/remaining matrix in validation-plan.md. This draft does not imply full acceptance.",
               "path": "specs/046-native-ai-plugins/evidence/engineering.json",
               "sha256": "4f1ef65a4b9124f80ce524e72fc0b0ea18c44f726980e71294b82f542f03d12c"
             }
@@ -347,6 +380,9 @@
           "id": "SC-012",
           "obtained_evidence": [
             {
+              "command": "Focused unittest command and bundled reproduce_native_plugin.py invocations recorded in evidence/engineering.json and linked native transcripts.",
+              "limits": "No interactive wizard/skill journey, version-changing upgrade, public release, provider approval, human rating or scientific result. Linux is emulated. Historical M4.5 evidence unchanged.",
+              "outcome": "Bounded engineering controls obtained for this scenario; see per-procedure obtained/remaining matrix in validation-plan.md. This draft does not imply full acceptance.",
               "path": "specs/046-native-ai-plugins/evidence/engineering.json",
               "sha256": "4f1ef65a4b9124f80ce524e72fc0b0ea18c44f726980e71294b82f542f03d12c"
             }
@@ -368,6 +404,9 @@
           "id": "SC-013",
           "obtained_evidence": [
             {
+              "command": "Focused unittest command and bundled reproduce_native_plugin.py invocations recorded in evidence/engineering.json and linked native transcripts.",
+              "limits": "No interactive wizard/skill journey, version-changing upgrade, public release, provider approval, human rating or scientific result. Linux is emulated. Historical M4.5 evidence unchanged.",
+              "outcome": "Bounded engineering controls obtained for this scenario; see per-procedure obtained/remaining matrix in validation-plan.md. This draft does not imply full acceptance.",
               "path": "specs/046-native-ai-plugins/evidence/engineering.json",
               "sha256": "4f1ef65a4b9124f80ce524e72fc0b0ea18c44f726980e71294b82f542f03d12c"
             }
