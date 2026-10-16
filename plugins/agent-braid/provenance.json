@@ -42,7 +42,7 @@
   },
   "correspondingSource": {
     "path": "sources/agent-braid-0.1.0-alpha.1-source.tar.gz",
-    "sha256": "145e7535b9afaae5919a16ee2382536cb932ae8c16d7163ae620006225cd53b7"
+    "sha256": "b1ae5a1e0e827d185a80475e40f72541b01b1552a87e9fe05b75c8e5d094ddd7"
   },
   "dependencies": {
     "linux-x86_64": [
@@ -567,8 +567,8 @@
     }
   },
   "schema": "agent-braid-plugin-provenance/v1",
-  "sourceCommit": "0eb81b6d6caf7fd05c7aa22dc7e5fbe403295ca0",
+  "sourceCommit": "93124fb5078519fcbbe2a6360fcf183e4a01dcb5",
   "sourceDirty": false,
   "version": "0.1.0-alpha.1",
-  "wheelSha256": "a60bca807808a39d1a51642be7045b8c42f99151fd02cfe1665ae039327928f3"
+  "wheelSha256": "2dad1cd84abcecaa17695a87805a4714c3d77c24d0370c3dbc49a6da0dc5f551"
 }

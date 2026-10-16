@@ -133,7 +133,7 @@ def create_server(router):
                 definition.input_schema['properties']['workspaceId'] = {'type': 'string'}
                 definition.input_schema['required'].append('workspaceId')
                 definition.output_schema['properties']['schemaVersion'] = {'const': SCHEMA}
-                definition.output_schema['properties']['workspaceId'] = {'type': 'string'}
+                definition.output_schema['properties']['workspaceId'] = {'type': ['string', 'null']}
                 definitions[definition.name] = definition
         for name in ('plugin-status', 'workspaces'):
             definitions[name] = types.Tool(name=name, description='Read-only setup status, bundled CLI location and registered workspace IDs. No registration or grant effects.',

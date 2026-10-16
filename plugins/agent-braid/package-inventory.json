@@ -72,7 +72,7 @@
     },
     "provenance.json": {
       "executable": false,
-      "sha256": "d77eedb86ad505965fd8db3532148d72017458bf8e1437be151bdebd203f611d",
+      "sha256": "21880bb0a50047dc65460999fe8e4c81d4c1460b4d00f264b677c4289320ebab",
       "sizeBytes": 16479
     },
     "runtime/linux-x86_64/bin/2to3": {
@@ -7184,7 +7184,7 @@
     },
     "runtime/linux-x86_64/lib/python3.12/site-packages/agent_braid-0.1.0a1.dist-info/RECORD": {
       "executable": false,
-      "sha256": "f339d9b74017be236519f2adca8de4d6ba99e02027dde1d244c3a33962f1f398",
+      "sha256": "565a43e5a3d852182e98c5e9922d18a1e22fd0d941501dc7c0843dbf1ed16d08",
       "sizeBytes": 13060
     },
     "runtime/linux-x86_64/lib/python3.12/site-packages/agent_braid-0.1.0a1.dist-info/REQUESTED": {
@@ -7199,7 +7199,7 @@
     },
     "runtime/linux-x86_64/lib/python3.12/site-packages/agent_braid-0.1.0a1.dist-info/direct_url.json": {
       "executable": false,
-      "sha256": "66f7a398558391aaccfc891fb4c00ba926a321f32fa70ce9439017b6a01bcd22",
+      "sha256": "ee168710958f30a6f89f6ff7868797c880bb4828f9b451671f09bb29d5bdf120",
       "sizeBytes": 338
     },
     "runtime/linux-x86_64/lib/python3.12/site-packages/agent_braid-0.1.0a1.dist-info/entry_points.txt": {
@@ -7509,8 +7509,8 @@
     },
     "runtime/linux-x86_64/lib/python3.12/site-packages/agent_braid/__pycache__/plugin_mcp.cpython-312.pyc": {
       "executable": false,
-      "sha256": "eceef50b60d211a2bb9c767e707bc658eb5b46b5d5c78743a58b9cb4419f04c5",
-      "sizeBytes": 19587
+      "sha256": "faa47ffa7e518e6ac41255b173136b8d38254fa4dd2494bd59ba83f0534291a0",
+      "sizeBytes": 19603
     },
     "runtime/linux-x86_64/lib/python3.12/site-packages/agent_braid/__pycache__/plugin_package.cpython-312.pyc": {
       "executable": false,
@@ -8069,8 +8069,8 @@
     },
     "runtime/linux-x86_64/lib/python3.12/site-packages/agent_braid/plugin_mcp.py": {
       "executable": false,
-      "sha256": "0e9ea1447283b333452365f19cd0f0aeb689512cd0bc9045d60fc72c77d92e77",
-      "sizeBytes": 11120
+      "sha256": "b598eead8342e03949e5f2d2e721bea68107e2d805ab9668111f5ba550191148",
+      "sizeBytes": 11130
     },
     "runtime/linux-x86_64/lib/python3.12/site-packages/agent_braid/plugin_package.py": {
       "executable": false,
@@ -26439,7 +26439,7 @@
     },
     "runtime/macos-arm64/lib/python3.12/site-packages/agent_braid-0.1.0a1.dist-info/RECORD": {
       "executable": false,
-      "sha256": "f339d9b74017be236519f2adca8de4d6ba99e02027dde1d244c3a33962f1f398",
+      "sha256": "565a43e5a3d852182e98c5e9922d18a1e22fd0d941501dc7c0843dbf1ed16d08",
       "sizeBytes": 13060
     },
     "runtime/macos-arm64/lib/python3.12/site-packages/agent_braid-0.1.0a1.dist-info/REQUESTED": {
@@ -26454,7 +26454,7 @@
     },
     "runtime/macos-arm64/lib/python3.12/site-packages/agent_braid-0.1.0a1.dist-info/direct_url.json": {
       "executable": false,
-      "sha256": "66f7a398558391aaccfc891fb4c00ba926a321f32fa70ce9439017b6a01bcd22",
+      "sha256": "ee168710958f30a6f89f6ff7868797c880bb4828f9b451671f09bb29d5bdf120",
       "sizeBytes": 338
     },
     "runtime/macos-arm64/lib/python3.12/site-packages/agent_braid-0.1.0a1.dist-info/entry_points.txt": {
@@ -26764,8 +26764,8 @@
     },
     "runtime/macos-arm64/lib/python3.12/site-packages/agent_braid/__pycache__/plugin_mcp.cpython-312.pyc": {
       "executable": false,
-      "sha256": "d6278edf210b3232f8730a32575beb474dfc6804667a869e51c3a31035cc27fe",
-      "sizeBytes": 19586
+      "sha256": "3eb7d80933bd9a19cd3af1b710455710fb97107d1e7278dbf3a4e797f3736d4d",
+      "sizeBytes": 19602
     },
     "runtime/macos-arm64/lib/python3.12/site-packages/agent_braid/__pycache__/plugin_package.cpython-312.pyc": {
       "executable": false,
@@ -27324,8 +27324,8 @@
     },
     "runtime/macos-arm64/lib/python3.12/site-packages/agent_braid/plugin_mcp.py": {
       "executable": false,
-      "sha256": "0e9ea1447283b333452365f19cd0f0aeb689512cd0bc9045d60fc72c77d92e77",
-      "sizeBytes": 11120
+      "sha256": "b598eead8342e03949e5f2d2e721bea68107e2d805ab9668111f5ba550191148",
+      "sizeBytes": 11130
     },
     "runtime/macos-arm64/lib/python3.12/site-packages/agent_braid/plugin_package.py": {
       "executable": false,
