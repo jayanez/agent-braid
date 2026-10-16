@@ -48,3 +48,12 @@ All implementation, collection, experiment and approval checkboxes remain pendin
   Verification: A separate human/founder decision binds the exact candidate/population; a negative protocol may finish, but forecasting promotion needs positive accepted utility.
   Planned commands after implementation: `.venv-speckit/bin/python -m unittest discover -s tests -p "test_forecast*.py" -v` plus the requirement-specific procedure in `specs/036-forecast-parallelism-experiment/validation-plan.md`; source/model/launch/founder decisions require their actual reviewer record.
   Planned evidence: `specs/036-forecast-parallelism-experiment/evidence/t009.json`. Obtained evidence: none.
+
+## Bounded synthetic decision engineering
+
+T004 has an additive [offline decision-binding implementation](offline-decisions.md)
+connecting the T003 evaluation plan to independently selected development reference,
+frozen economic policy and synthetic candidate/advice identities. The obtained
+engineering receipt is `evidence/t004-synthetic-decisions.json`. The original T004
+checkbox and dependencies T002 and SPEC-037/T003 remain pending. This phase runs
+no model, VM or runtime arm and makes no full-cost or utility acceptance claim.

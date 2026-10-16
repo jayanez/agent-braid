@@ -153,3 +153,14 @@ def summarize_pairs(episodes):
     return {'intendedEpisodes':len(episodes),'completeEpisodes':len(ratios),'invalidEpisodes':failed,'pairedRatios':ratios,
             'runtimeCompleteEpisodes':runtime_complete,'fallbackEpisodes':fallback,'fallbackDiagnosticRatios':fallback_ratios,
             'status':'inconclusive' if failed or fallback else 'synthetic-descriptive','utilityAccepted':False,'realWorkloadEvidence':False}
+
+
+def simulate_frozen_policy_arms(signals, operations, *, evaluation, frozen, mode='shadow'):
+    """Rehearse frozen paired decisions only; no Git, session, operator or worker.
+
+    This distinct offline path binds the development-selected reference and both
+    synthetic candidate identities. It does not upgrade the historical measured
+    fixture harness above into a registered or forecast-authorized experiment.
+    """
+    from .forecast_decisions import simulate_decisions
+    return simulate_decisions(signals, operations, evaluation=evaluation, frozen=frozen, mode=mode)
