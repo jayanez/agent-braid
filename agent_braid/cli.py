@@ -82,6 +82,8 @@ def main(argv: list[str] | None = None) -> int:
     subparsers = parser.add_subparsers(dest="command", required=True)
     from .tooling_cli import add_parser
     add_parser(subparsers)
+    from .plugin_cli import add_parser as add_plugin_parser
+    add_plugin_parser(subparsers)
     from .forecast_cli import add_parser as add_forecast_parser
     add_forecast_parser(subparsers)
     decision_parser = subparsers.add_parser("system-one", help="opt-in offline synthetic decision diagnostics")
@@ -169,6 +171,9 @@ def main(argv: list[str] | None = None) -> int:
         if command == "recover-policy-run":
             policy_parser.add_argument("--action", choices=("resume", "abort"), required=True)
     args = parser.parse_args(argv)
+    if args.command == "plugin":
+        from .plugin_cli import run as run_plugin
+        return run_plugin(args)
     if args.command == "tooling":
         from .tooling_cli import run
         return run(args)

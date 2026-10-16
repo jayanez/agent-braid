@@ -1,5 +1,13 @@
 <!-- SPDX-License-Identifier: CC-BY-SA-4.0 -->
-# Experimental local AI tooling
+# Installing Agent Braid
+
+Start with the [native plugin installation guide](NATIVE_PLUGINS.md) for
+user-scoped Codex and Claude Code plugins, bundled runtime, automatic skill
+discovery, repository suggestions, setup, diagnostics, update and removal.
+It includes the optional curl installer and clearly separates local candidates
+from public distribution readiness.
+
+## Python installation and legacy lifecycle
 
 The M4.5 implementation candidate adds an optional stdio MCP server, five bounded
 workflow skills, receipt-owned installation and deterministic presentations.

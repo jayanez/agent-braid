@@ -254,3 +254,15 @@ evidence, the 108 outcomes, human evaluation, founder acceptance and M4.5
 closure remain pending. Historical registration-v1/v2 and subscription-policy-v1
 semantics are unchanged. These tasks do not check or rewrite original
 SPEC-044 T006/T009 or assurance history.
+
+
+## Native installation extension — SPEC-046
+
+[SPEC-046](../../specs/046-native-ai-plugins/spec.md) adds native user plugins,
+a bundled runtime, shared explicit workspaces, bounded discovery, setup and an
+optional shell installer. See [installation](NATIVE_PLUGINS.md) and
+[submission readiness](plugin-submissions/README.md). Its new evidence is tracked
+independently. It does not amend the frozen SPEC-039/040/042 acceptances, consume
+or relabel the registered 108 evaluation attempts, satisfy pending SPEC-041/043/044
+native/human gates, or close M4.5. Historical candidate observations above keep
+their original scope and source identities.

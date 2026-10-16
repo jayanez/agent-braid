@@ -309,6 +309,14 @@ block useful, sound engineering. Real adapter refinement remains a prerequisite.
 
 ## M4.5 — AI tooling integrations for Codex and Claude Code
 
+The additive [SPEC-046 native plugin extension](specs/046-native-ai-plugins/spec.md)
+adds bundled user installation for Codex/Claude Code, explicit multiple-workspace
+setup, bounded repository suggestions and an optional curl installer. Its 13 new
+tasks, distribution and official candidacy gates are separate from historical
+SPEC-039–044 completion. See [installation](docs/tooling/NATIVE_PLUGINS.md) and
+[alignment](specs/046-native-ai-plugins/m45-alignment.md). This extension does not
+close M4.5 or satisfy its pending registered native/human evaluation.
+
 **Status:** [Open](https://github.com/jayanez/agent-braid/milestone/19), adjacent to
 M4. The 60 original task criteria remain unchanged; 19 auxiliary evidence tasks
 bring the source task-checklist inventory to 79 items, of which 55 are checked
