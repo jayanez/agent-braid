@@ -14,7 +14,7 @@ import sys
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "scripts"))
 from constitution_replica import sync
-from history_equivalence import resolve_public_commit
+from history_equivalence import resolve_public_commit, retained_tag_binding
 
 COMMANDS = {"analyze", "checklist", "clarify", "constitution", "converge",
             "implement", "plan", "specify", "tasks", "taskstoissues"}
@@ -455,6 +455,7 @@ def _matches_preserved_draft_tag(root, relative_record, path, record):
         if relative_record != name:
             continue
         try:
+            candidate, tag_object = retained_tag_binding(root, ref, candidate, tag_object)
             if (git(root, "rev-parse", "--verify", ref).decode("ascii").strip() != tag_object
                     or git(root, "cat-file", "-t", ref).decode("ascii").strip() != "tag"
                     or git(root, "rev-parse", f"{ref}^{{commit}}").decode("ascii").strip() != candidate):
@@ -497,9 +498,17 @@ def _matches_reviewed_candidate_tag(root, relative_record, path, record, commit)
         public = resolve_public_commit(root, commit)
     except ValueError:
         return False
-    pins = [oid for feature, candidate, oid in REVIEWED_TAGS
-            if relative_record == f"specs/{feature}/assurance.json"
-            and candidate == public]
+    pins = []
+    for feature, candidate, oid in REVIEWED_TAGS:
+        if relative_record != f"specs/{feature}/assurance.json":
+            continue
+        ref = f"refs/tags/spec-{feature[:3]}-reviewed-{candidate[:7]}"
+        try:
+            candidate, oid = retained_tag_binding(root, ref, candidate, oid)
+        except ValueError:
+            return False
+        if candidate == public:
+            pins.append((ref, oid))
     if len(pins) != 1:
         return False
     metadata = [(assurance_hash, review_name, review_hash)
@@ -507,9 +516,9 @@ def _matches_reviewed_candidate_tag(root, relative_record, path, record, commit)
                 if relative_record == f"specs/{feature}/assurance.json"]
     if len(metadata) != 1:
         return False
-    tag_ref = f"refs/tags/spec-{match.group(1)}-reviewed-{public[:7]}"
+    tag_ref, pinned_object = pins[0]
     try:
-        if git(root, "rev-parse", "--verify", tag_ref).decode("ascii").strip() != pins[0]:
+        if git(root, "rev-parse", "--verify", tag_ref).decode("ascii").strip() != pinned_object:
             return False
         if git(root, "cat-file", "-t", tag_ref).decode("ascii").strip() != "tag":
             return False

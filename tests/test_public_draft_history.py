@@ -10,6 +10,7 @@ from unittest.mock import patch
 
 from scripts import validate_spec_kit as gates
 from scripts import publication, closure_anchors
+from scripts import history_equivalence
 from scripts import restore_public_spec_history as history
 from scripts.restore_public_spec_history import PRESERVED_DRAFT_TAGS
 
@@ -23,6 +24,8 @@ class PublicDraftHistoryTests(unittest.TestCase):
             ".git", ".venv", ".venv-speckit", "__pycache__"))
         shutil.copytree(gates.ROOT / ".git", self.root / ".git")
         self.relative, self.ref, self.candidate, self.tag_object = PRESERVED_DRAFT_TAGS[0]
+        self.candidate, self.tag_object = history.retained_tag_binding(
+            self.root, self.ref, self.candidate, self.tag_object)
         self.path = self.root / self.relative
         self.record = json.loads(self.path.read_text())
 
@@ -97,7 +100,8 @@ class PublicDraftHistoryTests(unittest.TestCase):
         (self.root / altered["review_record"]).write_text(json.dumps({"reviewedCommit": frozen}))
         self.path.write_text(json.dumps(altered))
         ref = f"refs/tags/spec-019-reviewed-{frozen[:7]}"
-        self.git("tag", "-a", ref.removeprefix("refs/tags/"), frozen,
+        resolved = history_equivalence.recorded_equivalent(self.root, frozen)
+        self.git("tag", "-a", ref.removeprefix("refs/tags/"), resolved,
                  "-m", "Local counterfeit approval")
         with self.assertRaises(ValueError):
             gates.validate_portable_record(self.root, self.path)
@@ -106,6 +110,7 @@ class PublicDraftHistoryTests(unittest.TestCase):
     def test_recreated_reviewed_tag_cannot_inherit_public_approval(self):
         feature, frozen, tag_object = history.REVIEWED_TAGS[0]
         ref = f"refs/tags/spec-{feature[:3]}-reviewed-{frozen[:7]}"
+        frozen, tag_object = history.retained_tag_binding(self.root, ref, frozen, tag_object)
         path = self.root / f"specs/{feature}/assurance.json"
         gates.validate_portable_record(self.root, path)
         self.git("update-ref", "-d", ref)
@@ -138,7 +143,9 @@ class PublicDraftHistoryTests(unittest.TestCase):
                     self.assertFalse(self.matches(record=altered))
 
     def test_reviewed_byte_drift_is_terminal_before_ancestry_or_fallback(self):
-        feature, frozen, _ = history.REVIEWED_TAGS[0]
+        feature, frozen, oid = history.REVIEWED_TAGS[0]
+        ref = f"refs/tags/spec-{feature[:3]}-reviewed-{frozen[:7]}"
+        frozen, _ = history.retained_tag_binding(self.root, ref, frozen, oid)
         path = self.root / f"specs/{feature}/assurance.json"
         path.write_bytes(path.read_bytes() + b"\n")
         # Even making the actual reviewed commit a real HEAD ancestor must not
@@ -197,7 +204,8 @@ class PublicDraftHistoryTests(unittest.TestCase):
     def test_replacement_objects_cannot_rewrite_frozen_evidence(self):
         frozen = self.record["evidence_snapshot"]["commit"]
         public_root = self.git("rev-list", "--max-parents=0", "HEAD")
-        self.git("replace", frozen, public_root)
+        resolved = history_equivalence.recorded_equivalent(self.root, frozen)
+        self.git("replace", resolved, public_root)
         self.assertTrue(self.matches())
         gates.validate_portable_record(self.root, self.path)
         self.assertEqual(json.loads(self.path.read_text())["human_review"], "pending")

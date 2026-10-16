@@ -8,7 +8,7 @@ import tempfile
 import unittest
 
 from scripts.constitution_replica import sync
-from scripts.history_equivalence import resolve_public_commit
+from scripts.history_equivalence import retained_tag_binding, resolve_public_commit
 from scripts.validate_spec_kit import (
     ROOT, _matches_preserved_draft_tag, authorities, check, digest, freeze,
     snapshot, validate_portable_record, validate_record,
@@ -182,6 +182,8 @@ class SpecKitTests(unittest.TestCase):
         data = json.loads(record.read_text())
         commit = data["authority_snapshot"]["commit"]
         tag_ref = f"refs/tags/spec-016-reviewed-{commit[:7]}"
+        validate_portable_record(self.root, record)
+        commit = resolve_public_commit(self.root, commit)
         subprocess.run(
             ["git", "-C", str(self.root), "update-ref", "-d", tag_ref],
             check=True, capture_output=True,
@@ -224,7 +226,15 @@ class SpecKitTests(unittest.TestCase):
         tag_ref = "refs/tags/m45-tooling-candidate-ae20930"
         candidate = "ae209301764562bde858b4a2eedd7c7a97f6688f"
         tag_object = "5c4269e04e97d734ae87fa7173236b86c65d5427"
-        original_bytes = record.read_bytes()
+        candidate, tag_object = retained_tag_binding(
+            self.root, tag_ref, candidate, tag_object)
+        wrong_candidate = subprocess.check_output(
+            ["git", "-C", str(self.root), "rev-parse", "HEAD"], text=True).strip()
+        self.assertNotEqual(candidate, wrong_candidate)
+        # Test the exact retained draft, not a later working-tree revision that
+        # may already fail the byte pin before any negative mutation is applied.
+        original_bytes = subprocess.check_output(
+            ["git", "-C", str(self.root), "show", f"{candidate}:{relative}"])
 
         def set_ref(value):
             subprocess.run(["git", "-C", str(self.root), "update-ref", tag_ref, value],
@@ -239,8 +249,7 @@ class SpecKitTests(unittest.TestCase):
                 ["git", "-C", str(self.root), "update-ref", "-d", tag_ref],
                 check=True, capture_output=True)),
             ("lightweight", lambda: set_ref(candidate)),
-            ("moved", lambda: set_ref(
-                "04f89c868406193be104c1f66360223907db4c38")),
+            ("moved", lambda: set_ref(wrong_candidate)),
             ("record-bytes", lambda: record.write_bytes(original_bytes + b"\n")),
             ("review-state", lambda: record.write_text(json.dumps({
                 **json.loads(original_bytes), "human_review": "approved"}))),
@@ -252,6 +261,7 @@ class SpecKitTests(unittest.TestCase):
             with self.subTest(case=name):
                 record.write_bytes(original_bytes)
                 set_ref(tag_object)
+                self.assertTrue(matches(), "fixture must start from a valid retained pin")
                 mutation()
                 self.assertFalse(matches(), f"invalid {name} pin was accepted")
 

@@ -71,3 +71,21 @@ additional spend is authorized by this reconciliation. Original task criteria,
 deferred human review, A/SPEC-044-T004 and milestone closure remain separate.
 No registered slot is consumed. Full-profile completion must not be claimed
 when its provenance predecessor refuses.
+
+## Approved shared history repair integration
+
+[Shared repair PR #533](https://github.com/jayanez/agent-braid/pull/533), integrated
+linearly through develop `6622448a69ea01953bc15561459e7b89addf5600`, now supplies the closed 2026-10-16
+equivalence table and ADR 0023 disposition. The owner approved the exact 29-entry,
+ten-tag record (SHA256 bc0505a1212a9e3131d13c15dcb72cf0a71a53c4fac627b40ca9f94865d10a38)
+and the revised ADR (SHA256 4334fe23543dad038811b7819acbc24fbebab3c1858789816b1512e786b7a8eb),
+including explicit direct lookup of seven frozen legacy candidates and strict
+two-layer composition. Original approval/assurance bytes and the first mapping
+remain unchanged. Two unmatched legacy routes remain fail-closed.
+
+The earlier provenance failures above are retained as dated evidence of the
+pre-repair state, not descriptions of a newly validated source. The shared
+repair's review/tests retain their own candidate scope. This integrated PR needs
+its own current-head validation, without relaunching native/provider journeys,
+platform reproductions or the closed A/SPEC-044-T004 work. The historical local
+telemetry/pilot documents remain separate and are not imported by this update.
