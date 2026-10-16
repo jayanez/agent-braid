@@ -22,7 +22,9 @@ class HistoryEquivalenceTests(unittest.TestCase):
         shutil.copytree(gates.ROOT / ".git", self.root / ".git")
         self.path = self.root / equivalence.EQUIVALENCE
         self.data = json.loads(self.path.read_text())
-        self.entries = {item["old"]: item for item in self.data["entries"]}
+        resolved = equivalence.load_equivalence(self.root)
+        self.entries = resolved['entries']
+        self.tags = resolved['tags']
         self.anchor = json.loads(
             (self.root / closure_anchors.ANCHORS).read_text())["milestones"]["M2"]
         equivalence._validated.cache_clear()
@@ -35,7 +37,7 @@ class HistoryEquivalenceTests(unittest.TestCase):
             text=True, stderr=subprocess.PIPE).strip()
 
     def tag_entry(self):
-        for item in self.data["tags"]:
+        for item in self.tags:
             entry = self.entries.get(item["oldCommit"])
             if entry and subprocess.run(
                     ["git", "-C", str(self.root), "merge-base", "--is-ancestor",
@@ -73,7 +75,7 @@ class HistoryEquivalenceTests(unittest.TestCase):
 
     def test_preflight_equivalent_needs_no_objects(self):
         item, entry = self.tag_entry()
-        for tag in self.data["tags"]:
+        for tag in self.tags:
             self.git("update-ref", "-d", f"refs/tags/{tag['newName']}")
         self.assertEqual(equivalence.recorded_equivalent(self.root, entry["old"]), entry["new"])
         self.assertEqual(equivalence.recorded_equivalent(self.root, "f" * 40), "f" * 40)
@@ -103,7 +105,7 @@ class HistoryEquivalenceTests(unittest.TestCase):
         # Corrected tags share ancestry, so every listed tag is replaced at once.
         for replacement in ("absent", "lightweight", "recreated"):
             with self.subTest(replacement=replacement):
-                for item in self.data["tags"]:
+                for item in self.tags:
                     ref = f"refs/tags/{item['newName']}"
                     self.git("update-ref", "-d", ref)
                     if replacement == "lightweight":
@@ -112,7 +114,7 @@ class HistoryEquivalenceTests(unittest.TestCase):
                         self.git("tag", "-a", item["newName"], item["newCommit"], "-m", "Counterfeit")
                 with self.assertRaisesRegex(ValueError, "not in public ancestry"):
                     equivalence.resolve_public_commit(self.root, entry["old"])
-                for item in self.data["tags"]:
+                for item in self.tags:
                     self.git("update-ref", f"refs/tags/{item['newName']}", item["newTagObject"])
         self.assertEqual(equivalence.resolve_public_commit(self.root, entry["old"]), entry["new"])
 

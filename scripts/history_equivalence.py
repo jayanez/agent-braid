@@ -22,6 +22,7 @@ import subprocess
 
 
 EQUIVALENCE = "docs/releases/publication/history-rewrite-equivalence-20261013.json"
+CORRECTION = "docs/releases/publication/history-rewrite-equivalence-20261016.json"
 RECORD_VERSION = "0.1.0"
 FIELDS = {"recordVersion", "adr", "reason", "entries", "tags", "limits"}
 ENTRY_FIELDS = {"old", "new", "tree"}
@@ -58,13 +59,59 @@ def load_equivalence(root: Path) -> dict:
             raise ValueError("history equivalence record is missing after introduction")
         return {"entries": {}, "tags": ()}
     payload = path.read_bytes()
-    return _validated(str(root), head, hashlib.sha256(payload).hexdigest())
+    legacy = _validated(str(root), head, hashlib.sha256(payload).hexdigest())
+    correction_path = root / CORRECTION
+    if not correction_path.is_file():
+        if _git(root, "log", "--format=%H", "--diff-filter=A", head, "--", CORRECTION).stdout.strip():
+            raise ValueError("history correction record is missing after introduction")
+        return legacy
+    correction = _validated_correction(str(root), head, hashlib.sha256(correction_path.read_bytes()).hexdigest())
+    if any(e['new'] in legacy['entries'] for e in correction['entries'].values()):
+        raise ValueError('history correction creates a cross-layer cycle')
+    entries = dict(correction['entries'])
+    for old, entry in legacy['entries'].items():
+        if old in entries:
+            raise ValueError("history corrections cannot replace original mapping keys")
+        replacement = correction['entries'].get(entry['new'])
+        if replacement and replacement['tree'] != entry['tree']:
+            raise ValueError("history correction changed a recorded tree")
+        entries[old] = {**entry, 'new': replacement['new']} if replacement else entry
+    tags = []
+    legacy_names = {t['newName'] for t in legacy['tags']}
+    if any(t['newName'] in legacy_names and t['oldName'] != t['newName']
+           for t in correction['tags']):
+        raise ValueError('history correction collides with an original tag name')
+    for item in legacy['tags']:
+        replacements = [t for t in correction['tags'] if t['oldName'] == item['newName']]
+        if not replacements:
+            tags.append(item)
+            continue
+        replacement = replacements[0]
+        if (replacement['oldCommit'], replacement['oldTagObject'], replacement['tree']) != (
+                item['newCommit'], item['newTagObject'], item['tree']):
+            raise ValueError("history correction changed an original tag binding")
+        tags.append({**item, 'newName': replacement['newName'],
+                     'newCommit': replacement['newCommit'], 'newTagObject': replacement['newTagObject']})
+    names = {t['newName'] for t in tags}
+    tags.extend(t for t in correction['tags'] if t['newName'] not in names)
+    return {'entries': entries, 'tags': tuple(tags)}
 
 
 @lru_cache(maxsize=16)
 def _validated(root_name: str, head: str, payload_hash: str) -> dict:
+    return _read_record(root_name, head, payload_hash, EQUIVALENCE,
+                        "docs/adr/0022-attribution-correction-history-equivalence.md")
+
+
+@lru_cache(maxsize=16)
+def _validated_correction(root_name: str, head: str, payload_hash: str) -> dict:
+    return _read_record(root_name, head, payload_hash, CORRECTION,
+                        "docs/adr/0023-second-history-correction-equivalence.md", same_names=True)
+
+
+def _read_record(root_name, head, payload_hash, relative, adr, same_names=False):
     root = Path(root_name)
-    payload = (root / EQUIVALENCE).read_bytes()
+    payload = (root / relative).read_bytes()
     if hashlib.sha256(payload).hexdigest() != payload_hash:
         raise ValueError("history equivalence record changed during validation")
     try:
@@ -73,7 +120,7 @@ def _validated(root_name: str, head: str, payload_hash: str) -> dict:
         raise ValueError("history equivalence record is invalid") from exc
     if not isinstance(data, dict) or set(data) != FIELDS \
             or data["recordVersion"] != RECORD_VERSION \
-            or data["adr"] != "docs/adr/0022-attribution-correction-history-equivalence.md" \
+            or data["adr"] != adr \
             or not isinstance(data["reason"], str) or not data["reason"].strip():
         raise ValueError("history equivalence record identity is invalid")
     if payload != _canonical(data):
@@ -94,13 +141,16 @@ def _validated(root_name: str, head: str, payload_hash: str) -> dict:
                 or any(not HEX40.fullmatch(str(item[name]))
                        for name in TAG_FIELDS - {"oldName", "newName"}) \
                 or any(not TAG_NAME.fullmatch(str(item[name])) for name in ("oldName", "newName")) \
-                or item["oldName"] == item["newName"]:
+                or (item["oldName"] == item["newName"] and not same_names) \
+                or item["oldTagObject"] == item["newTagObject"]:
             raise ValueError("history equivalence tag is invalid")
     olds = [item["old"] for item in entries]
     news = [item["new"] for item in entries]
     names = [item["newName"] for item in tags]
+    old_names = [item['oldName'] for item in tags]
     if olds != sorted(set(olds)) or len(news) != len(set(news)) \
-            or names != sorted(set(names)) or set(olds) & set(news):
+            or names != sorted(set(names)) or set(olds) & set(news) \
+            or (same_names and len(old_names) != len(set(old_names))):
         raise ValueError("history equivalence identities must be unique and sorted")
     mapping = {item["old"]: item for item in entries}
     for item in tags:
@@ -108,11 +158,32 @@ def _validated(root_name: str, head: str, payload_hash: str) -> dict:
         if entry is not None and (entry["new"], entry["tree"]) != (item["newCommit"], item["tree"]):
             raise ValueError("history equivalence tag contradicts its entry")
     introduced = _git(root, "log", "--format=%H", "--diff-filter=A", head,
-                      "--", EQUIVALENCE).stdout.decode("ascii").split()
+                      "--", relative).stdout.decode("ascii").split()
     if len(introduced) != 1 \
-            or _git(root, "show", f"{introduced[0]}:{EQUIVALENCE}").stdout != payload:
+            or _git(root, "show", f"{introduced[0]}:{relative}").stdout != payload:
         raise ValueError("history equivalence record must be unchanged since introduction")
     return {"entries": mapping, "tags": tuple(tags)}
+
+
+def retained_tag_binding(root: Path, ref: str, candidate: str, tag_object: str) -> tuple[str, str]:
+    """Resolve only a listed exact old tag binding; never trust a local tag's value."""
+    name = ref.removeprefix('refs/tags/')
+    # Read the second record directly: composing must retain legacy old bindings.
+    root = Path(root).resolve()
+    load_equivalence(root)
+    path = root / CORRECTION
+    if not path.is_file():
+        load_equivalence(root)  # missing-after-introduction remains terminal
+        return candidate, tag_object
+    head = _git(root, 'rev-parse', 'HEAD').stdout.decode().strip()
+    correction = _validated_correction(str(root), head, hashlib.sha256(path.read_bytes()).hexdigest())
+    matches = [t for t in correction['tags'] if t['oldName'] == name]
+    if not matches:
+        return candidate, tag_object
+    item = matches[0]
+    if (candidate, tag_object) != (item['oldCommit'], item['oldTagObject']):
+        raise ValueError('history correction does not match retained tag pin')
+    return item['newCommit'], item['newTagObject']
 
 
 def _verified_tag(root: Path, item: dict) -> bool:
