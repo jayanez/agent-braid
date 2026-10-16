@@ -10,6 +10,7 @@ from unittest.mock import patch
 
 from scripts import validate_spec_kit as gates
 from scripts import publication, closure_anchors
+from scripts import history_equivalence
 from scripts import restore_public_spec_history as history
 from scripts.restore_public_spec_history import PRESERVED_DRAFT_TAGS
 
@@ -99,7 +100,8 @@ class PublicDraftHistoryTests(unittest.TestCase):
         (self.root / altered["review_record"]).write_text(json.dumps({"reviewedCommit": frozen}))
         self.path.write_text(json.dumps(altered))
         ref = f"refs/tags/spec-019-reviewed-{frozen[:7]}"
-        self.git("tag", "-a", ref.removeprefix("refs/tags/"), frozen,
+        resolved = history_equivalence.recorded_equivalent(self.root, frozen)
+        self.git("tag", "-a", ref.removeprefix("refs/tags/"), resolved,
                  "-m", "Local counterfeit approval")
         with self.assertRaises(ValueError):
             gates.validate_portable_record(self.root, self.path)
@@ -202,7 +204,8 @@ class PublicDraftHistoryTests(unittest.TestCase):
     def test_replacement_objects_cannot_rewrite_frozen_evidence(self):
         frozen = self.record["evidence_snapshot"]["commit"]
         public_root = self.git("rev-list", "--max-parents=0", "HEAD")
-        self.git("replace", frozen, public_root)
+        resolved = history_equivalence.recorded_equivalent(self.root, frozen)
+        self.git("replace", resolved, public_root)
         self.assertTrue(self.matches())
         gates.validate_portable_record(self.root, self.path)
         self.assertEqual(json.loads(self.path.read_text())["human_review"], "pending")
