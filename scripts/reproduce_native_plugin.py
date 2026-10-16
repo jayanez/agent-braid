@@ -58,11 +58,13 @@ async def codex_inventory(executable, env, cwd, *, timeout_seconds=120):
         servers = [server for server in inventory['data'] if server.get('pluginId') == 'agent-braid@agent-braid']
         assert len(servers) == 1, 'Native Codex did not load plugin MCP (inspect manifest/loader diagnostics)'
         server = servers[0]
-        assert server.get('serverInfo', {}).get('name') == 'agent-braid-plugin', 'Native Codex handshake failed'
-        assert not server.get('toolsError') and {'plugin-status', 'workspaces'} <= set(server['tools'])
+        assert (server.get('serverInfo') or {}).get('name') == 'agent-braid-plugin', (
+            'Native Codex handshake failed: ' + str(server.get('toolsError')))
+        assert not server.get('toolsError') and set(server['tools']) == {
+            'plugin-status', 'workspaces', 'analyze-work', 'analyze', 'prepare'}, 'Native Codex did not load configured workspace tools'
         result = {'skills': selected, 'mcpServer': server,
                   'limits': ['Actual native loader/discovery only; no thread/start, turn/start or skill invocation',
-                             'Host can expose global user components outside isolated profile; unrelated inventory is excluded']}
+                             'Fresh child-process user home and host profiles; caller environment/global user settings unchanged']}
     finally:
         try:
             os.killpg(process.pid, signal.SIGTERM)
@@ -94,6 +96,13 @@ def run(args):
     state.mkdir(mode=0o700, parents=True)
     commands = []
     env = dict(os.environ)
+    # Real per-process test home, not a change to the caller's environment or user files.
+    # Native hosts can discover global components outside their config override.
+    user_home = state / 'user home'
+    user_home.mkdir(mode=0o700)
+    env['HOME'] = str(user_home)
+    for key in ('XDG_DATA_HOME', 'XDG_CONFIG_HOME', 'XDG_STATE_HOME', 'XDG_CACHE_HOME'):
+        env.pop(key, None)
     for key in ('OPENAI_API_KEY', 'ANTHROPIC_API_KEY', 'ANTHROPIC_AUTH_TOKEN'):
         env.pop(key, None)
     paths = state / 'tools'; paths.mkdir()
@@ -103,7 +112,8 @@ def run(args):
             raise ValueError(f'Missing prerequisite {name}')
         (paths / name).symlink_to(executable)
     env['PATH'] = str(paths)
-    env['AGENT_BRAID_HOME'] = str(state / 'application state')
+    application_home = user_home / ('Library/Application Support/AgentBraid' if sys.platform == 'darwin' else '.local/share/agent-braid')
+    env['AGENT_BRAID_HOME'] = str(application_home)
     for key, directory in [('CODEX_HOME', 'codex-profile'), ('CLAUDE_CONFIG_DIR', 'claude-profile')]:
         path = state / directory; path.mkdir(mode=0o700)
         env[key] = str(path)
