@@ -15,9 +15,9 @@ import re
 import subprocess
 
 try:
-    from scripts.history_equivalence import recorded_equivalent
+    from scripts.history_equivalence import recorded_equivalent, retained_tag_binding
 except ModuleNotFoundError:
-    from history_equivalence import recorded_equivalent
+    from history_equivalence import recorded_equivalent, retained_tag_binding
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -105,6 +105,8 @@ def git(*args: str, allow_failure: bool = False) -> str:
 
 def reviewed_tag_ref(feature: str, candidate: str, tag_object: str,
                      public_root: str) -> str:
+    ref = f"refs/tags/spec-{feature[:3]}-reviewed-{candidate[:7]}"
+    candidate, tag_object = retained_tag_binding(ROOT, ref, candidate, tag_object)
     record = json.loads((ROOT / "specs" / feature / "assurance.json").read_text())
     reviewed = record.get("authority_snapshot", {}).get("commit")
     if (record.get("human_review") != "approved"
@@ -119,7 +121,6 @@ def reviewed_tag_ref(feature: str, candidate: str, tag_object: str,
     if (not review_path.is_relative_to(ROOT.resolve()) or not review_path.is_file()
             or json.loads(review_path.read_text()).get("reviewedCommit") != reviewed):
         raise ValueError(f"SPEC-{feature[:3]} review does not match the pinned candidate")
-    ref = f"refs/tags/spec-{feature[:3]}-reviewed-{candidate[:7]}"
     existing = git("rev-parse", "--verify", ref, allow_failure=True)
     if existing and existing != tag_object:
         raise ValueError(f"reviewed tag has an unexpected local identity: {ref}")
@@ -147,6 +148,7 @@ def verify_reviewed_tag(ref: str, candidate: str, tag_object: str, public_root: 
 def restore_reviewed_tag(feature: str, candidate: str, tag_object: str,
                          public_root: str) -> str:
     ref = reviewed_tag_ref(feature, candidate, tag_object, public_root)
+    candidate, tag_object = retained_tag_binding(ROOT, ref, candidate, tag_object)
     if not git("rev-parse", "--verify", ref, allow_failure=True):
         git("fetch", "--atomic", "--quiet", "--no-tags", "origin", f"{tag_object}:{ref}")
     verify_reviewed_tag(ref, candidate, tag_object, public_root)
@@ -156,6 +158,7 @@ def restore_reviewed_tag(feature: str, candidate: str, tag_object: str,
 def preserved_tag_ref(ref: str, candidate: str, tag_object: str,
                       public_root: str) -> str:
     """Preflight one literal public draft pin without granting any review."""
+    candidate, tag_object = retained_tag_binding(ROOT, ref, candidate, tag_object)
     existing = git("rev-parse", "--verify", ref, allow_failure=True)
     if existing and existing != tag_object:
         raise ValueError(f"preserved tag has an unexpected local identity: {ref}")
@@ -182,6 +185,7 @@ def main() -> int:
             or not isinstance(candidate, str)
             or not re.fullmatch(r"[0-9a-f]{40}", candidate)):
         raise ValueError("SPEC-012 reviewed candidate is not consistently frozen")
+    candidate = recorded_equivalent(ROOT, candidate)
     origin = git("remote", "get-url", "origin")
     if origin not in {
         "https://github.com/jayanez/agent-braid",
@@ -198,10 +202,12 @@ def main() -> int:
     if existing_candidate_ref and existing_candidate_ref != candidate:
         raise ValueError("SPEC-012 local ref has an unexpected identity; not overwritten")
     # Preflight every record and advertised identity before changing any refs.
-    reviewed = [(reviewed_tag_ref(feature, commit, oid, roots[0]), commit, oid)
-                for feature, commit, oid in REVIEWED_TAGS]
-    preserved = [(preserved_tag_ref(ref, commit, oid, roots[0]), commit, oid)
-                 for _, ref, commit, oid in PRESERVED_DRAFT_TAGS]
+    reviewed = [(ref, *retained_tag_binding(ROOT, ref, commit, oid))
+                for feature, commit, oid in REVIEWED_TAGS
+                for ref in (reviewed_tag_ref(feature, commit, oid, roots[0]),)]
+    preserved = [(ref, *retained_tag_binding(ROOT, ref, commit, oid))
+                 for _, ref, commit, oid in PRESERVED_DRAFT_TAGS
+                 if preserved_tag_ref(ref, commit, oid, roots[0])]
     refspecs = [] if existing_candidate_ref else [f"{candidate}:{REF}"]
     refspecs.extend(f"{oid}:{ref}" for ref, _, oid in reviewed + preserved
                     if not git("rev-parse", "--verify", ref, allow_failure=True))

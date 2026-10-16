@@ -23,6 +23,8 @@ class PublicDraftHistoryTests(unittest.TestCase):
             ".git", ".venv", ".venv-speckit", "__pycache__"))
         shutil.copytree(gates.ROOT / ".git", self.root / ".git")
         self.relative, self.ref, self.candidate, self.tag_object = PRESERVED_DRAFT_TAGS[0]
+        self.candidate, self.tag_object = history.retained_tag_binding(
+            self.root, self.ref, self.candidate, self.tag_object)
         self.path = self.root / self.relative
         self.record = json.loads(self.path.read_text())
 
@@ -106,6 +108,7 @@ class PublicDraftHistoryTests(unittest.TestCase):
     def test_recreated_reviewed_tag_cannot_inherit_public_approval(self):
         feature, frozen, tag_object = history.REVIEWED_TAGS[0]
         ref = f"refs/tags/spec-{feature[:3]}-reviewed-{frozen[:7]}"
+        frozen, tag_object = history.retained_tag_binding(self.root, ref, frozen, tag_object)
         path = self.root / f"specs/{feature}/assurance.json"
         gates.validate_portable_record(self.root, path)
         self.git("update-ref", "-d", ref)
@@ -138,7 +141,9 @@ class PublicDraftHistoryTests(unittest.TestCase):
                     self.assertFalse(self.matches(record=altered))
 
     def test_reviewed_byte_drift_is_terminal_before_ancestry_or_fallback(self):
-        feature, frozen, _ = history.REVIEWED_TAGS[0]
+        feature, frozen, oid = history.REVIEWED_TAGS[0]
+        ref = f"refs/tags/spec-{feature[:3]}-reviewed-{frozen[:7]}"
+        frozen, _ = history.retained_tag_binding(self.root, ref, frozen, oid)
         path = self.root / f"specs/{feature}/assurance.json"
         path.write_bytes(path.read_bytes() + b"\n")
         # Even making the actual reviewed commit a real HEAD ancestor must not
