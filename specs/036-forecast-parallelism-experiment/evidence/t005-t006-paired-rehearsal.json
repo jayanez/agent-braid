@@ -1,0 +1,375 @@
+{
+  "baseCommit": "a861cec900654256c8e0c94702adc78594c35d9d",
+  "checks": {
+    "focused": {
+      "command": ".venv-speckit/bin/python -m unittest discover -s tests -p \"test_forecast_pairs.py\" -v",
+      "independentExecutor": "Luna Latest (gpt-6-luna)",
+      "independentResult": "15 tests passed; all seven input hashes matched; retained scenario digests replayed",
+      "mainRawOutput": "test_complete_recomputation_rejects_resigned_cost_outcome_and_roster_changes (test_forecast_pairs.PairedRehearsalTests.test_complete_recomputation_rejects_resigned_cost_outcome_and_roster_changes) ... ok\ntest_consultative_mode_keeps_actual_frozen_non_model_reference (test_forecast_pairs.PairedRehearsalTests.test_consultative_mode_keeps_actual_frozen_non_model_reference) ... ok\ntest_expired_decisions_refuse_every_arm_without_using_grants (test_forecast_pairs.PairedRehearsalTests.test_expired_decisions_refuse_every_arm_without_using_grants) ... ok\ntest_failure_does_not_mutate_clean_replay_and_expiry_boundary_is_explicit (test_forecast_pairs.PairedRehearsalTests.test_failure_does_not_mutate_clean_replay_and_expiry_boundary_is_explicit) ... ok\ntest_integrated_reproducible_balanced_order_and_equivalent_fixture_results (test_forecast_pairs.PairedRehearsalTests.test_integrated_reproducible_balanced_order_and_equivalent_fixture_results) ... ok\ntest_missing_copied_wrong_and_resigned_grants_refuse_before_execution (test_forecast_pairs.PairedRehearsalTests.test_missing_copied_wrong_and_resigned_grants_refuse_before_execution) ... ok\ntest_no_runtime_or_worker_and_no_changes_to_caller_inputs (test_forecast_pairs.PairedRehearsalTests.test_no_runtime_or_worker_and_no_changes_to_caller_inputs) ... ok\ntest_reject_unrecognized_or_boolean_controls (test_forecast_pairs.PairedRehearsalTests.test_reject_unrecognized_or_boolean_controls) ... ok\ntest_resigned_decision_inputs_or_labels_cannot_replace_frozen_report (test_forecast_pairs.PairedRehearsalTests.test_resigned_decision_inputs_or_labels_cannot_replace_frozen_report) ... ok\ntest_retained_evidence_replays_exact_candidate_bound_scenarios (test_forecast_pairs.PairedRehearsalTests.test_retained_evidence_replays_exact_candidate_bound_scenarios) ... ok\ntest_shadow_disagreement_executes_only_reference_fixture_choice (test_forecast_pairs.PairedRehearsalTests.test_shadow_disagreement_executes_only_reference_fixture_choice) ... ok\ntest_simulated_ledger_is_contiguous_includes_cleanup_export_and_reconciles (test_forecast_pairs.PairedRehearsalTests.test_simulated_ledger_is_contiguous_includes_cleanup_export_and_reconciles) ... ok\ntest_timeout_mismatch_and_cancellation_keep_all_attempted_and_not_run_arms (test_forecast_pairs.PairedRehearsalTests.test_timeout_mismatch_and_cancellation_keep_all_attempted_and_not_run_arms) ... ok\ntest_unavailable_forecast_keeps_fallback_and_complete_paired_roster (test_forecast_pairs.PairedRehearsalTests.test_unavailable_forecast_keeps_fallback_and_complete_paired_roster) ... ok\ntest_unknown_effects_keep_refused_roster_without_execution (test_forecast_pairs.PairedRehearsalTests.test_unknown_effects_keep_refused_roster_without_execution) ... ok\n\n----------------------------------------------------------------------\nRan 15 tests in 13.060s\n\nOK\n",
+      "result": "passed",
+      "tests": 15
+    },
+    "mutations": [
+      {
+        "detected": true,
+        "failures": 3,
+        "guard": "decision-binding",
+        "rawOutput": "test_resigned_decision_inputs_or_labels_cannot_replace_frozen_report (tests.test_forecast_pairs.PairedRehearsalTests.test_resigned_decision_inputs_or_labels_cannot_replace_frozen_report) ... \n  test_resigned_decision_inputs_or_labels_cannot_replace_frozen_report (tests.test_forecast_pairs.PairedRehearsalTests.test_resigned_decision_inputs_or_labels_cannot_replace_frozen_report) (field='plan') ... FAIL\n  test_resigned_decision_inputs_or_labels_cannot_replace_frozen_report (tests.test_forecast_pairs.PairedRehearsalTests.test_resigned_decision_inputs_or_labels_cannot_replace_frozen_report) (field='labels') ... FAIL\n  test_resigned_decision_inputs_or_labels_cannot_replace_frozen_report (tests.test_forecast_pairs.PairedRehearsalTests.test_resigned_decision_inputs_or_labels_cannot_replace_frozen_report) (field='authority') ... FAIL\n\n======================================================================\nFAIL: test_resigned_decision_inputs_or_labels_cannot_replace_frozen_report (tests.test_forecast_pairs.PairedRehearsalTests.test_resigned_decision_inputs_or_labels_cannot_replace_frozen_report) (field='plan')\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/private/tmp/agent-braid-fc1-decisions-20261016/tests/test_forecast_pairs.py\", line 176, in test_resigned_decision_inputs_or_labels_cannot_replace_frozen_report\n    with self.subTest(field=field), self.assertRaisesRegex(ForecastError, 'paired-decision-drift'):\n                                    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: ForecastError not raised\n\n======================================================================\nFAIL: test_resigned_decision_inputs_or_labels_cannot_replace_frozen_report (tests.test_forecast_pairs.PairedRehearsalTests.test_resigned_decision_inputs_or_labels_cannot_replace_frozen_report) (field='labels')\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/private/tmp/agent-braid-fc1-decisions-20261016/tests/test_forecast_pairs.py\", line 176, in test_resigned_decision_inputs_or_labels_cannot_replace_frozen_report\n    with self.subTest(field=field), self.assertRaisesRegex(ForecastError, 'paired-decision-drift'):\n                                    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: ForecastError not raised\n\n======================================================================\nFAIL: test_resigned_decision_inputs_or_labels_cannot_replace_frozen_report (tests.test_forecast_pairs.PairedRehearsalTests.test_resigned_decision_inputs_or_labels_cannot_replace_frozen_report) (field='authority')\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/private/tmp/agent-braid-fc1-decisions-20261016/tests/test_forecast_pairs.py\", line 176, in test_resigned_decision_inputs_or_labels_cannot_replace_frozen_report\n    with self.subTest(field=field), self.assertRaisesRegex(ForecastError, 'paired-decision-drift'):\n                                    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: ForecastError not raised\n\n----------------------------------------------------------------------\nRan 1 test in 0.949s\n\nFAILED (failures=3)\n",
+        "test": "test_resigned_decision_inputs_or_labels_cannot_replace_frozen_report"
+      },
+      {
+        "detected": true,
+        "failures": 4,
+        "guard": "arm-grant-binding",
+        "rawOutput": "test_missing_copied_wrong_and_resigned_grants_refuse_before_execution (tests.test_forecast_pairs.PairedRehearsalTests.test_missing_copied_wrong_and_resigned_grants_refuse_before_execution) ... \n  test_missing_copied_wrong_and_resigned_grants_refuse_before_execution (tests.test_forecast_pairs.PairedRehearsalTests.test_missing_copied_wrong_and_resigned_grants_refuse_before_execution) (modification='missing') ... FAIL\n  test_missing_copied_wrong_and_resigned_grants_refuse_before_execution (tests.test_forecast_pairs.PairedRehearsalTests.test_missing_copied_wrong_and_resigned_grants_refuse_before_execution) (modification='copy') ... FAIL\n  test_missing_copied_wrong_and_resigned_grants_refuse_before_execution (tests.test_forecast_pairs.PairedRehearsalTests.test_missing_copied_wrong_and_resigned_grants_refuse_before_execution) (modification='plan') ... FAIL\n  test_missing_copied_wrong_and_resigned_grants_refuse_before_execution (tests.test_forecast_pairs.PairedRehearsalTests.test_missing_copied_wrong_and_resigned_grants_refuse_before_execution) (modification='authority') ... FAIL\n\n======================================================================\nFAIL: test_missing_copied_wrong_and_resigned_grants_refuse_before_execution (tests.test_forecast_pairs.PairedRehearsalTests.test_missing_copied_wrong_and_resigned_grants_refuse_before_execution) (modification='missing')\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/private/tmp/agent-braid-fc1-decisions-20261016/tests/test_forecast_pairs.py\", line 106, in test_missing_copied_wrong_and_resigned_grants_refuse_before_execution\n    self.assertEqual('refused', row['status'])\n    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: 'refused' != 'simulated-completed'\n- refused\n+ simulated-completed\n\n\n======================================================================\nFAIL: test_missing_copied_wrong_and_resigned_grants_refuse_before_execution (tests.test_forecast_pairs.PairedRehearsalTests.test_missing_copied_wrong_and_resigned_grants_refuse_before_execution) (modification='copy')\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/private/tmp/agent-braid-fc1-decisions-20261016/tests/test_forecast_pairs.py\", line 106, in test_missing_copied_wrong_and_resigned_grants_refuse_before_execution\n    self.assertEqual('refused', row['status'])\n    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: 'refused' != 'simulated-completed'\n- refused\n+ simulated-completed\n\n\n======================================================================\nFAIL: test_missing_copied_wrong_and_resigned_grants_refuse_before_execution (tests.test_forecast_pairs.PairedRehearsalTests.test_missing_copied_wrong_and_resigned_grants_refuse_before_execution) (modification='plan')\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/private/tmp/agent-braid-fc1-decisions-20261016/tests/test_forecast_pairs.py\", line 106, in test_missing_copied_wrong_and_resigned_grants_refuse_before_execution\n    self.assertEqual('refused', row['status'])\n    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: 'refused' != 'simulated-completed'\n- refused\n+ simulated-completed\n\n\n======================================================================\nFAIL: test_missing_copied_wrong_and_resigned_grants_refuse_before_execution (tests.test_forecast_pairs.PairedRehearsalTests.test_missing_copied_wrong_and_resigned_grants_refuse_before_execution) (modification='authority')\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/private/tmp/agent-braid-fc1-decisions-20261016/tests/test_forecast_pairs.py\", line 106, in test_missing_copied_wrong_and_resigned_grants_refuse_before_execution\n    self.assertEqual('refused', row['status'])\n    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: 'refused' != 'simulated-completed'\n- refused\n+ simulated-completed\n\n\n----------------------------------------------------------------------\nRan 1 test in 1.322s\n\nFAILED (failures=4)\n",
+        "test": "test_missing_copied_wrong_and_resigned_grants_refuse_before_execution"
+      },
+      {
+        "detected": true,
+        "failures": 1,
+        "guard": "cancel-stop",
+        "rawOutput": "test_timeout_mismatch_and_cancellation_keep_all_attempted_and_not_run_arms (tests.test_forecast_pairs.PairedRehearsalTests.test_timeout_mismatch_and_cancellation_keep_all_attempted_and_not_run_arms) ... \n  test_timeout_mismatch_and_cancellation_keep_all_attempted_and_not_run_arms (tests.test_forecast_pairs.PairedRehearsalTests.test_timeout_mismatch_and_cancellation_keep_all_attempted_and_not_run_arms) (fault='cancel') ... FAIL\n\n======================================================================\nFAIL: test_timeout_mismatch_and_cancellation_keep_all_attempted_and_not_run_arms (tests.test_forecast_pairs.PairedRehearsalTests.test_timeout_mismatch_and_cancellation_keep_all_attempted_and_not_run_arms) (fault='cancel')\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/private/tmp/agent-braid-fc1-decisions-20261016/tests/test_forecast_pairs.py\", line 124, in test_timeout_mismatch_and_cancellation_keep_all_attempted_and_not_run_arms\n    self.assertEqual([expected]*2, [r['status'] for r in arms[1:]])\n    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: Lists differ: ['not-run-after-cancellation', 'not-run-after-cancellation'] != ['simulated-completed', 'simulated-completed']\n\nFirst differing element 0:\n'not-run-after-cancellation'\n'simulated-completed'\n\n- ['not-run-after-cancellation', 'not-run-after-cancellation']\n+ ['simulated-completed', 'simulated-completed']\n\n----------------------------------------------------------------------\nRan 1 test in 1.512s\n\nFAILED (failures=1)\n",
+        "test": "test_timeout_mismatch_and_cancellation_keep_all_attempted_and_not_run_arms"
+      },
+      {
+        "detected": true,
+        "failures": 1,
+        "guard": "result-verifier",
+        "rawOutput": "test_timeout_mismatch_and_cancellation_keep_all_attempted_and_not_run_arms (tests.test_forecast_pairs.PairedRehearsalTests.test_timeout_mismatch_and_cancellation_keep_all_attempted_and_not_run_arms) ... \n  test_timeout_mismatch_and_cancellation_keep_all_attempted_and_not_run_arms (tests.test_forecast_pairs.PairedRehearsalTests.test_timeout_mismatch_and_cancellation_keep_all_attempted_and_not_run_arms) (fault='verification-mismatch') ... FAIL\n\n======================================================================\nFAIL: test_timeout_mismatch_and_cancellation_keep_all_attempted_and_not_run_arms (tests.test_forecast_pairs.PairedRehearsalTests.test_timeout_mismatch_and_cancellation_keep_all_attempted_and_not_run_arms) (fault='verification-mismatch')\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/private/tmp/agent-braid-fc1-decisions-20261016/tests/test_forecast_pairs.py\", line 119, in test_timeout_mismatch_and_cancellation_keep_all_attempted_and_not_run_arms\n    self.assertEqual(status, arms[0]['status'])\n    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: 'failed-verification' != 'simulated-completed'\n- failed-verification\n+ simulated-completed\n\n\n----------------------------------------------------------------------\nRan 1 test in 1.206s\n\nFAILED (failures=1)\n",
+        "test": "test_timeout_mismatch_and_cancellation_keep_all_attempted_and_not_run_arms"
+      },
+      {
+        "detected": true,
+        "failures": 3,
+        "guard": "complete-receipt-binding",
+        "rawOutput": "test_complete_recomputation_rejects_resigned_cost_outcome_and_roster_changes (tests.test_forecast_pairs.PairedRehearsalTests.test_complete_recomputation_rejects_resigned_cost_outcome_and_roster_changes) ... \n  test_complete_recomputation_rejects_resigned_cost_outcome_and_roster_changes (tests.test_forecast_pairs.PairedRehearsalTests.test_complete_recomputation_rejects_resigned_cost_outcome_and_roster_changes) (field='cost') ... FAIL\n  test_complete_recomputation_rejects_resigned_cost_outcome_and_roster_changes (tests.test_forecast_pairs.PairedRehearsalTests.test_complete_recomputation_rejects_resigned_cost_outcome_and_roster_changes) (field='roster') ... FAIL\n  test_complete_recomputation_rejects_resigned_cost_outcome_and_roster_changes (tests.test_forecast_pairs.PairedRehearsalTests.test_complete_recomputation_rejects_resigned_cost_outcome_and_roster_changes) (field='outcome') ... FAIL\n\n======================================================================\nFAIL: test_complete_recomputation_rejects_resigned_cost_outcome_and_roster_changes (tests.test_forecast_pairs.PairedRehearsalTests.test_complete_recomputation_rejects_resigned_cost_outcome_and_roster_changes) (field='cost')\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/private/tmp/agent-braid-fc1-decisions-20261016/tests/test_forecast_pairs.py\", line 188, in test_complete_recomputation_rejects_resigned_cost_outcome_and_roster_changes\n    with self.subTest(field=field), self.assertRaisesRegex(ForecastError, 'paired-rehearsal-drift'):\n                                    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: ForecastError not raised\n\n======================================================================\nFAIL: test_complete_recomputation_rejects_resigned_cost_outcome_and_roster_changes (tests.test_forecast_pairs.PairedRehearsalTests.test_complete_recomputation_rejects_resigned_cost_outcome_and_roster_changes) (field='roster')\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/private/tmp/agent-braid-fc1-decisions-20261016/tests/test_forecast_pairs.py\", line 188, in test_complete_recomputation_rejects_resigned_cost_outcome_and_roster_changes\n    with self.subTest(field=field), self.assertRaisesRegex(ForecastError, 'paired-rehearsal-drift'):\n                                    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: ForecastError not raised\n\n======================================================================\nFAIL: test_complete_recomputation_rejects_resigned_cost_outcome_and_roster_changes (tests.test_forecast_pairs.PairedRehearsalTests.test_complete_recomputation_rejects_resigned_cost_outcome_and_roster_changes) (field='outcome')\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/private/tmp/agent-braid-fc1-decisions-20261016/tests/test_forecast_pairs.py\", line 188, in test_complete_recomputation_rejects_resigned_cost_outcome_and_roster_changes\n    with self.subTest(field=field), self.assertRaisesRegex(ForecastError, 'paired-rehearsal-drift'):\n                                    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: ForecastError not raised\n\n----------------------------------------------------------------------\nRan 1 test in 1.424s\n\nFAILED (failures=3)\n",
+        "test": "test_complete_recomputation_rejects_resigned_cost_outcome_and_roster_changes"
+      }
+    ],
+    "validationProfiles": {
+      "scope": "Reported separately in the pull request and candidate CI; this receipt asserts only the focused and mutation checks above"
+    }
+  },
+  "domain": "synthetic-simulation-only",
+  "environment": {
+    "platform": "macOS-27.0.1-arm64-arm-64bit-Mach-O",
+    "python": "3.13.11"
+  },
+  "inputs": {
+    "agent_braid/forecast_decisions.py": "e173e41705431ef5aa308fba9f61d83f5010ce466562c323e6a1638803394ee8",
+    "agent_braid/forecast_evaluation.py": "3ad040937a2d42ab3a107a638817b843fa5a9ddbfce9ad21f5ef0f78bb7af1e1",
+    "agent_braid/forecast_experiment.py": "a242be8f2397a4fedb96f090dc92acb10621c69c27a457cc3098ee01644684f0",
+    "agent_braid/forecast_lab.py": "ab17755a4414d179294fc9511f49e38e09fd6c41d4feb4b63467189f82f5a599",
+    "agent_braid/forecast_pairs.py": "ee40598c4c4c45e801df07e2e6f2e78b70e20617dc47c6f37741fd9998ac1b5e",
+    "agent_braid/forecast_policy.py": "0c15cbcb6983377cffa0193697400c7049c875416dd6be3bee7c84fbfa12d333",
+    "tests/test_forecast_pairs.py": "183b31267654accbbb692a8e40dc5d0947447e39baebc1c85d66ac97f75b4cbb"
+  },
+  "limits": [
+    "No model, VM, Docker, runtime, grant authority or execution package",
+    "Original task criteria and dependencies remain pending",
+    "Synthetic ticks are not observed costs; full deployment costs unknown",
+    "No real-workload, utility, ADR, promotion or source/resource/model admission"
+  ],
+  "review": {
+    "evidenceCorrection": "Actual focused and mutation commands/results populated; retained scenario digest replay is covered by the focused test and independent review",
+    "evidenceReadback": "Luna inspected the populated receipt; the evidence finding is resolved; no repeated test or suite execution",
+    "independentTests": 15,
+    "inputHashesVerified": 7,
+    "model": "gpt-6-luna",
+    "resolvedRecommendations": [
+      "Arm-level executionKind and asserted fixture-equivalence semantics",
+      "Unavailable fallback, expiry boundary and clean replay integration coverage"
+    ],
+    "scope": "synthetic paired rehearsal only; not human/scientific acceptance",
+    "status": "reviewed-no-blocking-findings"
+  },
+  "scenarios": {
+    "cancel": {
+      "arms": [
+        [
+          {
+            "arm": "serial-reference",
+            "reasonCodes": [
+              "simulated-cancel"
+            ],
+            "status": "cancelled"
+          },
+          {
+            "arm": "non-model-reference",
+            "reasonCodes": [],
+            "status": "not-run-after-cancellation"
+          },
+          {
+            "arm": "forecast-choice",
+            "reasonCodes": [],
+            "status": "not-run-after-cancellation"
+          }
+        ],
+        [
+          {
+            "arm": "non-model-reference",
+            "reasonCodes": [],
+            "status": "simulated-completed"
+          },
+          {
+            "arm": "forecast-choice",
+            "reasonCodes": [],
+            "status": "simulated-completed"
+          },
+          {
+            "arm": "serial-reference",
+            "reasonCodes": [],
+            "status": "simulated-completed"
+          }
+        ],
+        [
+          {
+            "arm": "forecast-choice",
+            "reasonCodes": [],
+            "status": "simulated-completed"
+          },
+          {
+            "arm": "serial-reference",
+            "reasonCodes": [],
+            "status": "simulated-completed"
+          },
+          {
+            "arm": "non-model-reference",
+            "reasonCodes": [],
+            "status": "simulated-completed"
+          }
+        ]
+      ],
+      "costs": {
+        "boundary": "simulated-data-preparation-through-export",
+        "fullDeploymentCosts": null,
+        "reason": "not-measured-no-runtime-executed",
+        "totalTicks": 69,
+        "unit": "synthetic-tick"
+      },
+      "receiptDigest": "8a52b163e5fb43bfab02787e4e96b803167e3814f07d6b8198569be467a5e8d6",
+      "summary": {
+        "completedArms": 6,
+        "intendedArms": 9,
+        "intendedEpisodes": 3,
+        "invalidEpisodes": 1
+      }
+    },
+    "normal": {
+      "arms": [
+        [
+          {
+            "arm": "serial-reference",
+            "reasonCodes": [],
+            "status": "simulated-completed"
+          },
+          {
+            "arm": "non-model-reference",
+            "reasonCodes": [],
+            "status": "simulated-completed"
+          },
+          {
+            "arm": "forecast-choice",
+            "reasonCodes": [],
+            "status": "simulated-completed"
+          }
+        ],
+        [
+          {
+            "arm": "non-model-reference",
+            "reasonCodes": [],
+            "status": "simulated-completed"
+          },
+          {
+            "arm": "forecast-choice",
+            "reasonCodes": [],
+            "status": "simulated-completed"
+          },
+          {
+            "arm": "serial-reference",
+            "reasonCodes": [],
+            "status": "simulated-completed"
+          }
+        ],
+        [
+          {
+            "arm": "forecast-choice",
+            "reasonCodes": [],
+            "status": "simulated-completed"
+          },
+          {
+            "arm": "serial-reference",
+            "reasonCodes": [],
+            "status": "simulated-completed"
+          },
+          {
+            "arm": "non-model-reference",
+            "reasonCodes": [],
+            "status": "simulated-completed"
+          }
+        ]
+      ],
+      "costs": {
+        "boundary": "simulated-data-preparation-through-export",
+        "fullDeploymentCosts": null,
+        "reason": "not-measured-no-runtime-executed",
+        "totalTicks": 90,
+        "unit": "synthetic-tick"
+      },
+      "receiptDigest": "71d943f34c55f9f621add28eece34938fddd197e366ff318c00d25d1f710eef5",
+      "summary": {
+        "completedArms": 9,
+        "intendedArms": 9,
+        "intendedEpisodes": 3,
+        "invalidEpisodes": 0
+      }
+    },
+    "timeout": {
+      "arms": [
+        [
+          {
+            "arm": "serial-reference",
+            "reasonCodes": [
+              "simulated-timeout"
+            ],
+            "status": "timed-out"
+          },
+          {
+            "arm": "non-model-reference",
+            "reasonCodes": [],
+            "status": "simulated-completed"
+          },
+          {
+            "arm": "forecast-choice",
+            "reasonCodes": [],
+            "status": "simulated-completed"
+          }
+        ],
+        [
+          {
+            "arm": "non-model-reference",
+            "reasonCodes": [],
+            "status": "simulated-completed"
+          },
+          {
+            "arm": "forecast-choice",
+            "reasonCodes": [],
+            "status": "simulated-completed"
+          },
+          {
+            "arm": "serial-reference",
+            "reasonCodes": [],
+            "status": "simulated-completed"
+          }
+        ],
+        [
+          {
+            "arm": "forecast-choice",
+            "reasonCodes": [],
+            "status": "simulated-completed"
+          },
+          {
+            "arm": "serial-reference",
+            "reasonCodes": [],
+            "status": "simulated-completed"
+          },
+          {
+            "arm": "non-model-reference",
+            "reasonCodes": [],
+            "status": "simulated-completed"
+          }
+        ]
+      ],
+      "costs": {
+        "boundary": "simulated-data-preparation-through-export",
+        "fullDeploymentCosts": null,
+        "reason": "not-measured-no-runtime-executed",
+        "totalTicks": 89,
+        "unit": "synthetic-tick"
+      },
+      "receiptDigest": "e516375e5eb9839cf963c368fbab7a8b06bcc439c4396f4704322f35e0bacc0b",
+      "summary": {
+        "completedArms": 8,
+        "intendedArms": 9,
+        "intendedEpisodes": 3,
+        "invalidEpisodes": 1
+      }
+    },
+    "verification-mismatch": {
+      "arms": [
+        [
+          {
+            "arm": "serial-reference",
+            "reasonCodes": [
+              "simulated-result-mismatch"
+            ],
+            "status": "failed-verification"
+          },
+          {
+            "arm": "non-model-reference",
+            "reasonCodes": [],
+            "status": "simulated-completed"
+          },
+          {
+            "arm": "forecast-choice",
+            "reasonCodes": [],
+            "status": "simulated-completed"
+          }
+        ],
+        [
+          {
+            "arm": "non-model-reference",
+            "reasonCodes": [],
+            "status": "simulated-completed"
+          },
+          {
+            "arm": "forecast-choice",
+            "reasonCodes": [],
+            "status": "simulated-completed"
+          },
+          {
+            "arm": "serial-reference",
+            "reasonCodes": [],
+            "status": "simulated-completed"
+          }
+        ],
+        [
+          {
+            "arm": "forecast-choice",
+            "reasonCodes": [],
+            "status": "simulated-completed"
+          },
+          {
+            "arm": "serial-reference",
+            "reasonCodes": [],
+            "status": "simulated-completed"
+          },
+          {
+            "arm": "non-model-reference",
+            "reasonCodes": [],
+            "status": "simulated-completed"
+          }
+        ]
+      ],
+      "costs": {
+        "boundary": "simulated-data-preparation-through-export",
+        "fullDeploymentCosts": null,
+        "reason": "not-measured-no-runtime-executed",
+        "totalTicks": 90,
+        "unit": "synthetic-tick"
+      },
+      "receiptDigest": "bb4b9586a4570ce3900fcee4c68a9db64183e1394c2583f352b02494d163b15a",
+      "summary": {
+        "completedArms": 8,
+        "intendedArms": 9,
+        "intendedEpisodes": 3,
+        "invalidEpisodes": 1
+      }
+    }
+  },
+  "tasks": [
+    "SPEC-036/T005:synthetic-engineering",
+    "SPEC-036/T006:synthetic-controls"
+  ],
+  "version": "agent-braid-paired-rehearsal-engineering-evidence-v1"
+}
