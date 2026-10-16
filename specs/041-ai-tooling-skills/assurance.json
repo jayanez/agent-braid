@@ -95,7 +95,7 @@
     "commit": null,
     "mode": "current"
   },
-  "execution_contract": "Source planning only. Future server defaults to analysis; execution/recovery delegate existing independent exact operator grants and private fixed-patch runtime. Installation writes only explicitly selected receipt-owned entries. No new effects.",
+  "execution_contract": "Experimental implementation over unchanged MCP/CLI/runtime contracts. Synthetic controls use owned disposable fixtures and separately issued test-operator grants. Actual host execution/recovery require existing exact operator grants, authentic native admission and specific registration/launch approval. Installation writes only explicitly selected receipt-owned entries. No new effects.",
   "human_review": "pending",
   "hypotheses": "Focused portable guidance may improve workflow completion and evidence fidelity; model compliance and positive utility are not presumed.",
   "observation_contract": "Exact input/candidate/host/environment identities and unchanged analyzer/runtime observation contracts; synthetic, protocol-peer, actual-host and clean-room evidence remain distinct.",
@@ -117,7 +117,9 @@
     "specs/039-ai-tooling-program/program.md",
     "specs/039-ai-tooling-program/research.md",
     "specs/041-ai-tooling-skills/contracts/skill-bundle.md",
-    "specs/041-ai-tooling-skills/validation-plan.md"
+    "specs/041-ai-tooling-skills/validation-plan.md",
+    "specs/041-ai-tooling-skills/implementation-status.md",
+    "docs/tooling/SKILLS.md"
   ],
   "requirements": [
     {

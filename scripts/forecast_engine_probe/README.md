@@ -85,7 +85,7 @@ been removed: the verbose bootstrap reports compiler details within the existing
 preparation deadline. The image's versioned install script preinstalls Swift 6.4
 and creates compiler symlinks; it does not establish a deferred installer as the
 cause. The historical 60-second cause remains unresolved. No diagnostic rerun or
-complete suite is implied; the pull request remains draft pending that diagnosis.
+complete suite is implied by that diagnostic result alone.
 
 A separately authorized single follow-up, run `38881821056`, reached compilation
 with the corrected harness sources from PR #529 commit
@@ -102,5 +102,8 @@ explain the entire delay or prove the historical timeout's exact cause.
 The corrected helper then prepared modules in 0.665 seconds and compiled the gate
 and parser in 0.214 and 1.015 seconds. Its focused checks passed 17 tests with one
 private-console skip. Luna Latest reviewed the results: the observed mechanism is
-supported, while the historical timeout remains unproven. No further diagnostic
-or full-suite run follows implicitly; PR #529 remains draft.
+supported, while the historical timeout remains unproven. On 2026-10-16 the owner
+accepted this mechanism-level diagnosis as sufficient to resume ordinary PR
+validation and authorized merging PR #529 only after all checks pass and Luna
+finds no remaining problems. This acceptance does not prove the historical cause
+or authorize further diagnostic, model or VM runs.
