@@ -52,3 +52,13 @@ existing synthetic-dispatch rejection. Its reusable engineering receipt is
 The original T003 checkbox and dependencies T001, SPEC-034/T005 and SPEC-035/T007
 remain pending. This does not admit real profiles, verify actual runtime plans or
 accept independent operator authority, source collection, launch or promotion.
+
+## Bounded synthetic shadow and recovery engineering
+
+T005/T006 have additive [shadow lifecycle integration](shadow-recovery.md),
+reusing the existing mapper, paired receipt and monitor. Obtained engineering
+receipt: `evidence/t005-t006-shadow-recovery.json`. It covers reference-preserving
+traces, label availability and deduplication, frozen pending outcomes, latched
+rollback/cancellation and explicit simulated overhead. The original checkboxes,
+dependencies and real-source/operator, measurement, launch and promotion gates
+remain pending. Synthetic event retention does not establish runtime recovery.

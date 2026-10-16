@@ -1,0 +1,317 @@
+{
+  "command": "python -m unittest tests.test_forecast_shadow -v",
+  "inputs": {
+    "agent_braid/forecast_decisions.py": "e173e41705431ef5aa308fba9f61d83f5010ce466562c323e6a1638803394ee8",
+    "agent_braid/forecast_evaluation.py": "3ad040937a2d42ab3a107a638817b843fa5a9ddbfce9ad21f5ef0f78bb7af1e1",
+    "agent_braid/forecast_lab.py": "ab17755a4414d179294fc9511f49e38e09fd6c41d4feb4b63467189f82f5a599",
+    "agent_braid/forecast_pairs.py": "ee40598c4c4c45e801df07e2e6f2e78b70e20617dc47c6f37741fd9998ac1b5e",
+    "agent_braid/forecast_policy.py": "0c15cbcb6983377cffa0193697400c7049c875416dd6be3bee7c84fbfa12d333",
+    "agent_braid/forecast_shadow.py": "71267b0d8ff2ef7ad1c327bc5a21279131fb9125921e3b64247fbfadccdb167d",
+    "agent_braid/forecast_trace.py": "7fa137143a0badcbda5bbb2cb280efdafc0466678ca0fdfe751f233382b2dde9",
+    "tests/test_forecast_shadow.py": "b16e1198b6d5754fd41a9f0dd13901b53c7935f4dd4b5ec2d1227f7ff57edf62"
+  },
+  "limits": [
+    "No actual outcomes or wall/CPU/memory costs observed",
+    "No runtime, model, VM, source admission, launch or promotion",
+    "Original T005/T006 criteria and dependencies remain pending"
+  ],
+  "provenance": "synthetic-simulation",
+  "scenarios": {
+    "cancel": {
+      "cancelled": true,
+      "costs": {
+        "advisoryTicks": 6,
+        "fullDeploymentCosts": null,
+        "reason": "not-measured-no-runtime-executed",
+        "scope": "forecast-and-advice-phases-of-forecast-choice-arm",
+        "unit": "synthetic-tick"
+      },
+      "decisionReportDigest": "0629067684a789b34185cb577557a7a53c69faa1635ac828e0b71c475fed498b",
+      "eventsDigest": "d8962cb488ac1c96129f95d900e0c44141ae32c7f981c74c0daac8c951d9e7d3",
+      "executionAuthorization": false,
+      "frozenDecisions": [
+        {
+          "decisionDigest": "c6a0064d01378d08f06af77c588baf075ff75696c3ebb70fea9bb74b1ac75b0b",
+          "episodeGroup": "episode-ccbbb9a3612bb8869636d56b",
+          "fallbackReasons": [],
+          "pairedArmStatuses": {
+            "forecast-choice": "simulated-completed",
+            "non-model-reference": "simulated-completed",
+            "serial-reference": "simulated-completed"
+          },
+          "proposedAction": "parallel",
+          "referenceAction": "parallel",
+          "selectedPlanDigest": "ed2aa43267dea3863a1610ce7867e191f66d7c95612dd62d6d720bb3d0d83cc1",
+          "status": "mapped"
+        },
+        {
+          "decisionDigest": "dfb85a31af24b2b737f3e2cded193d9998041fd8b04f69fcc2ca692fe50d3e87",
+          "episodeGroup": "episode-f128d0d6abc43f644a87d6ed",
+          "fallbackReasons": [],
+          "pairedArmStatuses": {
+            "forecast-choice": "simulated-completed",
+            "non-model-reference": "simulated-completed",
+            "serial-reference": "simulated-completed"
+          },
+          "proposedAction": "parallel",
+          "referenceAction": "parallel",
+          "selectedPlanDigest": "1bf0e4e616ab69a0096cb4fb316b674b48f3163203f44364626dc7ea7c7e5c84",
+          "status": "mapped"
+        },
+        {
+          "decisionDigest": "0d2ec148b6bbc357dd3ee1eef5f1164e278ac83dfc5a0b5f10be225cf6b4fde5",
+          "episodeGroup": "episode-ba9f0183087e440663931ed9",
+          "fallbackReasons": [],
+          "pairedArmStatuses": {
+            "forecast-choice": "simulated-completed",
+            "non-model-reference": "simulated-completed",
+            "serial-reference": "simulated-completed"
+          },
+          "proposedAction": "serial",
+          "referenceAction": "serial",
+          "selectedPlanDigest": "35905d0e7dcc13fb42bc2d9af0421c428d6385043625bad80186fd8e5e0391f0",
+          "status": "mapped"
+        }
+      ],
+      "modeAfter": "off",
+      "monitorPolicyDigest": "dbed71f0f1283a198de809d504aa52603ce62d8f7dbe51d16fb831feb0a9ad7b",
+      "pairedReceiptDigest": "8b03dd27a9848af24b9aca62fab7cbdeb1a137e242b3263d40f4a8505a3cdd64",
+      "pendingOutcomePolicy": "retain-frozen-decisions-no-runtime-recovery",
+      "provenance": "synthetic-simulation",
+      "realWorkloadEvidence": false,
+      "receiptDigest": "75bab1a3564bf8f7e26be0235b10e46a0aadd693cdeb1add375a828c91845ea1",
+      "records": [
+        {
+          "decisionDigest": "c6a0064d01378d08f06af77c588baf075ff75696c3ebb70fea9bb74b1ac75b0b",
+          "episodeGroup": "episode-ccbbb9a3612bb8869636d56b",
+          "eventDigest": "f025082c46874f6235943fd77198e4cd387ad317e702ee54f4d9a8518ab383b3",
+          "executionAuthorization": false,
+          "fallbackReasons": [],
+          "kind": "cancel",
+          "modeAfter": "off",
+          "observedAtNs": 12800000000,
+          "referenceAction": "parallel",
+          "selectedAction": "parallel",
+          "status": "cancelled-observation-session",
+          "trace": null
+        },
+        {
+          "decisionDigest": "c6a0064d01378d08f06af77c588baf075ff75696c3ebb70fea9bb74b1ac75b0b",
+          "episodeGroup": "episode-ccbbb9a3612bb8869636d56b",
+          "eventDigest": "e517551adc04b2c609104449a275ae5ae4c4393ae669e2d2cc0e68b0f35a27d9",
+          "executionAuthorization": false,
+          "fallbackReasons": [],
+          "kind": "outcome",
+          "modeAfter": "off",
+          "observedAtNs": 12800000000,
+          "referenceAction": "parallel",
+          "selectedAction": "parallel",
+          "status": "retained-after-cancellation",
+          "trace": null
+        }
+      ],
+      "rolledBack": false,
+      "utilityAccepted": false,
+      "version": "agent-braid-synthetic-shadow-recovery-v1"
+    },
+    "empty": {
+      "cancelled": false,
+      "costs": {
+        "advisoryTicks": 6,
+        "fullDeploymentCosts": null,
+        "reason": "not-measured-no-runtime-executed",
+        "scope": "forecast-and-advice-phases-of-forecast-choice-arm",
+        "unit": "synthetic-tick"
+      },
+      "decisionReportDigest": "0629067684a789b34185cb577557a7a53c69faa1635ac828e0b71c475fed498b",
+      "eventsDigest": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "executionAuthorization": false,
+      "frozenDecisions": [
+        {
+          "decisionDigest": "c6a0064d01378d08f06af77c588baf075ff75696c3ebb70fea9bb74b1ac75b0b",
+          "episodeGroup": "episode-ccbbb9a3612bb8869636d56b",
+          "fallbackReasons": [],
+          "pairedArmStatuses": {
+            "forecast-choice": "simulated-completed",
+            "non-model-reference": "simulated-completed",
+            "serial-reference": "simulated-completed"
+          },
+          "proposedAction": "parallel",
+          "referenceAction": "parallel",
+          "selectedPlanDigest": "ed2aa43267dea3863a1610ce7867e191f66d7c95612dd62d6d720bb3d0d83cc1",
+          "status": "mapped"
+        },
+        {
+          "decisionDigest": "dfb85a31af24b2b737f3e2cded193d9998041fd8b04f69fcc2ca692fe50d3e87",
+          "episodeGroup": "episode-f128d0d6abc43f644a87d6ed",
+          "fallbackReasons": [],
+          "pairedArmStatuses": {
+            "forecast-choice": "simulated-completed",
+            "non-model-reference": "simulated-completed",
+            "serial-reference": "simulated-completed"
+          },
+          "proposedAction": "parallel",
+          "referenceAction": "parallel",
+          "selectedPlanDigest": "1bf0e4e616ab69a0096cb4fb316b674b48f3163203f44364626dc7ea7c7e5c84",
+          "status": "mapped"
+        },
+        {
+          "decisionDigest": "0d2ec148b6bbc357dd3ee1eef5f1164e278ac83dfc5a0b5f10be225cf6b4fde5",
+          "episodeGroup": "episode-ba9f0183087e440663931ed9",
+          "fallbackReasons": [],
+          "pairedArmStatuses": {
+            "forecast-choice": "simulated-completed",
+            "non-model-reference": "simulated-completed",
+            "serial-reference": "simulated-completed"
+          },
+          "proposedAction": "serial",
+          "referenceAction": "serial",
+          "selectedPlanDigest": "35905d0e7dcc13fb42bc2d9af0421c428d6385043625bad80186fd8e5e0391f0",
+          "status": "mapped"
+        }
+      ],
+      "modeAfter": "shadow",
+      "monitorPolicyDigest": "dbed71f0f1283a198de809d504aa52603ce62d8f7dbe51d16fb831feb0a9ad7b",
+      "pairedReceiptDigest": "8b03dd27a9848af24b9aca62fab7cbdeb1a137e242b3263d40f4a8505a3cdd64",
+      "pendingOutcomePolicy": "retain-frozen-decisions-no-runtime-recovery",
+      "provenance": "synthetic-simulation",
+      "realWorkloadEvidence": false,
+      "receiptDigest": "e93f4f620f41840572f266e9bd371b4ab0e20dc583dc271cf4828df500e16c70",
+      "records": [],
+      "rolledBack": false,
+      "utilityAccepted": false,
+      "version": "agent-braid-synthetic-shadow-recovery-v1"
+    },
+    "rollback": {
+      "cancelled": false,
+      "costs": {
+        "advisoryTicks": 6,
+        "fullDeploymentCosts": null,
+        "reason": "not-measured-no-runtime-executed",
+        "scope": "forecast-and-advice-phases-of-forecast-choice-arm",
+        "unit": "synthetic-tick"
+      },
+      "decisionReportDigest": "0629067684a789b34185cb577557a7a53c69faa1635ac828e0b71c475fed498b",
+      "eventsDigest": "2818deb9eddbbc3c03126295bd78bae8bbb7570ef15a8c96c35c09623eae3b62",
+      "executionAuthorization": false,
+      "frozenDecisions": [
+        {
+          "decisionDigest": "c6a0064d01378d08f06af77c588baf075ff75696c3ebb70fea9bb74b1ac75b0b",
+          "episodeGroup": "episode-ccbbb9a3612bb8869636d56b",
+          "fallbackReasons": [],
+          "pairedArmStatuses": {
+            "forecast-choice": "simulated-completed",
+            "non-model-reference": "simulated-completed",
+            "serial-reference": "simulated-completed"
+          },
+          "proposedAction": "parallel",
+          "referenceAction": "parallel",
+          "selectedPlanDigest": "ed2aa43267dea3863a1610ce7867e191f66d7c95612dd62d6d720bb3d0d83cc1",
+          "status": "mapped"
+        },
+        {
+          "decisionDigest": "dfb85a31af24b2b737f3e2cded193d9998041fd8b04f69fcc2ca692fe50d3e87",
+          "episodeGroup": "episode-f128d0d6abc43f644a87d6ed",
+          "fallbackReasons": [],
+          "pairedArmStatuses": {
+            "forecast-choice": "simulated-completed",
+            "non-model-reference": "simulated-completed",
+            "serial-reference": "simulated-completed"
+          },
+          "proposedAction": "parallel",
+          "referenceAction": "parallel",
+          "selectedPlanDigest": "1bf0e4e616ab69a0096cb4fb316b674b48f3163203f44364626dc7ea7c7e5c84",
+          "status": "mapped"
+        },
+        {
+          "decisionDigest": "0d2ec148b6bbc357dd3ee1eef5f1164e278ac83dfc5a0b5f10be225cf6b4fde5",
+          "episodeGroup": "episode-ba9f0183087e440663931ed9",
+          "fallbackReasons": [],
+          "pairedArmStatuses": {
+            "forecast-choice": "simulated-completed",
+            "non-model-reference": "simulated-completed",
+            "serial-reference": "simulated-completed"
+          },
+          "proposedAction": "serial",
+          "referenceAction": "serial",
+          "selectedPlanDigest": "35905d0e7dcc13fb42bc2d9af0421c428d6385043625bad80186fd8e5e0391f0",
+          "status": "mapped"
+        }
+      ],
+      "modeAfter": "off",
+      "monitorPolicyDigest": "dbed71f0f1283a198de809d504aa52603ce62d8f7dbe51d16fb831feb0a9ad7b",
+      "pairedReceiptDigest": "8b03dd27a9848af24b9aca62fab7cbdeb1a137e242b3263d40f4a8505a3cdd64",
+      "pendingOutcomePolicy": "retain-frozen-decisions-no-runtime-recovery",
+      "provenance": "synthetic-simulation",
+      "realWorkloadEvidence": false,
+      "receiptDigest": "2e1ea4995255a4a349753ae435b33222a94b4f6217685547fcee36778b61ae6f",
+      "records": [
+        {
+          "decisionDigest": "c6a0064d01378d08f06af77c588baf075ff75696c3ebb70fea9bb74b1ac75b0b",
+          "episodeGroup": "episode-ccbbb9a3612bb8869636d56b",
+          "eventDigest": "e517551adc04b2c609104449a275ae5ae4c4393ae669e2d2cc0e68b0f35a27d9",
+          "executionAuthorization": false,
+          "fallbackReasons": [],
+          "kind": "outcome",
+          "modeAfter": "off",
+          "observedAtNs": 12800000000,
+          "referenceAction": "parallel",
+          "selectedAction": "parallel",
+          "status": "observed-synthetic-label",
+          "trace": {
+            "absoluteError": 95.0,
+            "adviceDigest": "695ecb2c24a35a5557ce99a02d1ed8eebed8fc398f6067b9f77fa0c420b1c609",
+            "executionAuthorization": false,
+            "failures": 1,
+            "forecastDigest": "27e016be85c9a21a7aa550d4cdb4b91d9671351a1aa14655afc00dceb03fffe7",
+            "monitorPolicyDigest": "dbed71f0f1283a198de809d504aa52603ce62d8f7dbe51d16fb831feb0a9ad7b",
+            "outcomeDigest": "b5e527ed00d8da7e0b00860621f9886e5c0f6674fd0565b123700e07fbc471a2",
+            "proposedAction": "parallel",
+            "provenance": "synthetic-simulation",
+            "reason": "synthetic-drift-rollback",
+            "receiptDigest": "6697a3315897b57c17209843d19222d5011b39128488390f30e19aac49ac6666",
+            "referenceAction": "parallel",
+            "rollbackMode": "off",
+            "shadowAction": "parallel",
+            "version": "agent-braid-synthetic-shadow-trace-v1"
+          }
+        },
+        {
+          "decisionDigest": "dfb85a31af24b2b737f3e2cded193d9998041fd8b04f69fcc2ca692fe50d3e87",
+          "episodeGroup": "episode-f128d0d6abc43f644a87d6ed",
+          "eventDigest": "9b4d5c33225031fa66863957cf92e27b5bc444335fda12fc26f23f793c37f226",
+          "executionAuthorization": false,
+          "fallbackReasons": [],
+          "kind": "outcome",
+          "modeAfter": "off",
+          "observedAtNs": 1012800000000,
+          "referenceAction": "parallel",
+          "selectedAction": "parallel",
+          "status": "observed-synthetic-label",
+          "trace": {
+            "absoluteError": 95.0,
+            "adviceDigest": "c69c83e0ff81bebea5a3917fa339b05f8abecd045e2883a2e36476c985880bb6",
+            "executionAuthorization": false,
+            "failures": 2,
+            "forecastDigest": "009e61524cff00dd6034152a3fe13b30d7d91444eb2b0163b47867d6b615a89a",
+            "monitorPolicyDigest": "dbed71f0f1283a198de809d504aa52603ce62d8f7dbe51d16fb831feb0a9ad7b",
+            "outcomeDigest": "22117f07d9cc92c1ab9bdc6645357e8a3f9f849c9cea457bdb6a9b359def1000",
+            "proposedAction": "parallel",
+            "provenance": "synthetic-simulation",
+            "reason": "synthetic-drift-rollback",
+            "receiptDigest": "73ab095db281006e1228d8be7a50cbf20f59ca2c4d15059cdffc361dabfc0495",
+            "referenceAction": "parallel",
+            "rollbackMode": "off",
+            "shadowAction": "parallel",
+            "version": "agent-braid-synthetic-shadow-trace-v1"
+          }
+        }
+      ],
+      "rolledBack": true,
+      "utilityAccepted": false,
+      "version": "agent-braid-synthetic-shadow-recovery-v1"
+    }
+  },
+  "scope": "SPEC-037 T005/T006 additive synthetic engineering only",
+  "version": 1
+}
