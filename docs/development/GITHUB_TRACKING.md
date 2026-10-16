@@ -38,6 +38,10 @@ it does not establish scientific validity or grant human or founder approval.
   SPEC-045/T007's [adopted disposition](../../specs/045-local-forecasting-capabilities/t007-disposition.md)
   retains seven completed FC.2 tasks and one cancelled/partial task. Issue/Project
   readback is separate; a generic Project Done value is administrative.
+  SPEC-034/T005's [adopted disposition](../../specs/034-workload-forecast-data/t005-disposition.md)
+  adds one FC.1 cancellation while retaining six completed and 26 open original
+  tasks after reconciliation. Its original criterion remains unchecked and its
+  dependencies remain unsatisfied; parent and milestone states stay open.
 - Issue bodies contain stable `agent-braid-spec-id` or `agent-braid-task-id`
   markers. Do not delete or reuse these markers. The linked repository files
   are current; issue prose may include historical reconciliation context.

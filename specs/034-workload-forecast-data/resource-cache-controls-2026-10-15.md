@@ -119,3 +119,7 @@ T006's software controls can be obtained now, but its T005 predecessor remains
 open. T001's real-source/privacy phase, FC.1 registration/launch/interpretation,
 complete cost and promotion gates remain independent. FC.2/T007's owner-adopted
 cancellation does not cancel either task or SPEC-035/T008.
+
+## Subsequent owner disposition (2026-10-16)
+
+The open-state statements above describe this dated 2026-10-15 tranche. The [adopted T005 disposition](t005-disposition.md) subsequently cancels its remaining admission work as not_planned, with the original criterion unchecked. SPEC-035/T006 and all T005-dependent acceptance remain pending. Integration and remote readback are separate; this historical engineering receipt is not rewritten as admission or completion.

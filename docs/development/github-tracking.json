@@ -267,6 +267,10 @@
     "SPEC-045/T007": {
       "decision": "specs/045-local-forecasting-capabilities/evidence/t007-owner-disposition-2026-10-15.json",
       "sha256": "2e7e7f16388d0e7107e473cbc89aa37c69a83f6187ae2d76009751f231fa7293"
+    },
+    "SPEC-034/T005": {
+      "decision": "specs/034-workload-forecast-data/evidence/t005-owner-disposition-2026-10-16.json",
+      "sha256": "3bc77b87db23653a3dd3136146743400e9d73403a7e8c49f7695d0fc697ee909"
     }
   }
 }
