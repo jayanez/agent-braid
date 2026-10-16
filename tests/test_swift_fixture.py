@@ -4,6 +4,8 @@ from contextlib import redirect_stderr
 import io
 import os
 from pathlib import Path
+import signal
+import subprocess
 import sys
 import tempfile
 import time
@@ -73,14 +75,61 @@ class SwiftFixtureTests(unittest.TestCase):
     @unittest.skipUnless(os.name == 'posix', 'owned process groups require POSIX')
     def test_timeout_kills_compiler_and_descendant_without_retry(self):
         with tempfile.TemporaryDirectory() as directory:
-            marker = Path(directory) / 'escaped'
-            child = f'import time,pathlib; time.sleep(.4); pathlib.Path({str(marker)!r}).touch()'
+            ready = Path(directory) / 'child-ready'
+            child = ('import os,time,pathlib; '
+                     f'pathlib.Path({str(ready)!r}).write_text(str(os.getpid())); time.sleep(30)')
             parent = ('import subprocess,sys,time; '
                       f'subprocess.Popen([sys.executable,"-c",{child!r}]); '
-                      'print("frontend-started",flush=True); time.sleep(5)')
-            with redirect_stderr(io.StringIO()) as log:
-                with self.assertRaisesRegex(RuntimeError, 'timeout after 0.2s'):
-                    run_phase([sys.executable, '-c', parent], 'fixture compilation', .2)
-            self.assertIn('frontend-started', log.getvalue())
-            time.sleep(.5)
-            self.assertFalse(marker.exists(), 'compiler descendant escaped the timeout')
+                      'print("frontend-started",flush=True); time.sleep(30)')
+            launch = subprocess.Popen
+
+            def launch_with_timeout(*args, **kwargs):
+                process = launch(*args, **kwargs)
+                wait = process.wait
+
+                def timeout_after_ready(timeout):
+                    if timeout == 10:
+                        deadline = time.monotonic() + 5
+                        while (not ready.exists() or not ready.read_text()) and time.monotonic() < deadline:
+                            time.sleep(.01)
+                        self.assertTrue(ready.exists() and ready.read_text(),
+                                        'child readiness was not observed')
+                        raise subprocess.TimeoutExpired(args[0], timeout)
+                    return wait(timeout=timeout)
+
+                process.wait = timeout_after_ready
+                return process
+
+            try:
+                with patch('tests.swift_fixture.subprocess.Popen', side_effect=launch_with_timeout):
+                    with redirect_stderr(io.StringIO()) as log:
+                        with self.assertRaisesRegex(RuntimeError, 'timeout after 10s'):
+                            run_phase([sys.executable, '-c', parent], 'fixture compilation', 10)
+                self.assertIn('frontend-started', log.getvalue())
+                child_pid = int(ready.read_text())
+                status = subprocess.run(['ps', '-p', str(child_pid), '-o', 'stat='],
+                                        capture_output=True, text=True, timeout=5).stdout.strip()
+                # Linux may retain a dead orphan as a zombie until init reaps it.
+                self.assertTrue(not status or status.startswith('Z'),
+                                f'compiler descendant still running: {status}')
+            finally:
+                if ready.exists():
+                    try:
+                        os.kill(int(ready.read_text()), signal.SIGKILL)
+                    except ProcessLookupError:
+                        pass
+
+    def test_interruption_preserves_exception_and_emits_diagnostics(self):
+        process = unittest.mock.Mock()
+        process.stdout = io.BytesIO(b'compiler context before interruption')
+        process.wait.side_effect = [KeyboardInterrupt('operator stop'), 0]
+        process.pid = 123456
+        with patch('tests.swift_fixture.subprocess.Popen', return_value=process), \
+                patch('tests.swift_fixture.os.killpg') as kill, \
+                redirect_stderr(io.StringIO()) as log:
+            with self.assertRaisesRegex(KeyboardInterrupt, 'operator stop'):
+                run_phase(['synthetic-compiler'], 'fixture compilation', 60)
+        if os.name == 'posix':
+            kill.assert_called_once_with(process.pid, signal.SIGKILL)
+        self.assertIn('compiler context before interruption', log.getvalue())
+        self.assertIn('Swift fixture compilation: elapsed=', log.getvalue())

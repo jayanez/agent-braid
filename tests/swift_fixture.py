@@ -27,6 +27,7 @@ def run_phase(command, phase, timeout):
     reader = threading.Thread(target=drain, daemon=True)
     reader.start()
     failure = None
+    interruption = None
     try:
         process.wait(timeout=timeout)
         reader.join(timeout=5)
@@ -36,9 +37,9 @@ def run_phase(command, phase, timeout):
             failure = f'exit {process.returncode}'
     except subprocess.TimeoutExpired:
         failure = f'timeout after {timeout}s'
-    except BaseException:
+    except BaseException as error:
         failure = 'interrupted'
-        raise
+        interruption = error
     finally:
         if failure:
             if os.name == 'posix':
@@ -56,6 +57,8 @@ def run_phase(command, phase, timeout):
               f'limit={timeout}s command={command!r}\n'
               f'{bytes(tail).decode("utf-8", "replace")}')
     print(detail, file=sys.stderr, flush=True)
+    if interruption is not None:
+        raise interruption
     if failure:
         raise RuntimeError(f'{failure}; {detail}')
 
