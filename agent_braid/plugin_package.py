@@ -47,6 +47,8 @@ def verify_package(root):
     value = json.loads(payload)
     if not isinstance(value, dict):
         raise ValueError('Unknown package inventory')
+    if not isinstance(value.get('version'), str) or not value['version'] or len(value['version']) > 128:
+        raise ValueError('Invalid package inventory version')
     if value.get('schema') != 'agent-braid-plugin-package/v1' or not isinstance(value.get('files'), dict):
         raise ValueError('Unknown package inventory')
     if len(value['files']) > 20000:

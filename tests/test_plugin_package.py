@@ -62,3 +62,12 @@ class PluginPackageTests(unittest.TestCase):
             os.mkfifo(root / 'package-inventory.json', 0o600)
             with self.assertRaisesRegex(ValueError, 'Invalid package inventory'):
                 verify_package(root)
+
+    def test_missing_or_malformed_version_is_a_bounded_refusal(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            for version in (None, 42, ''):
+                (root / 'package-inventory.json').write_text(json.dumps({
+                    'schema': 'agent-braid-plugin-package/v1', 'files': {}, 'version': version}))
+                with self.assertRaisesRegex(ValueError, 'version'):
+                    verify_package(root)

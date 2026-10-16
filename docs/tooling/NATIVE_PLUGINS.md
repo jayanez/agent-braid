@@ -153,3 +153,15 @@ modes; that detects drift, not publisher authenticity. Verify the release/ref an
 provenance before installing. See [submission readiness](plugin-submissions/README.md)
 for official ecosystem constraints and [SPEC-046](../../specs/046-native-ai-plugins/spec.md)
 for requirements, validation boundaries and remaining acceptance.
+
+
+For offline reproduction, run `scripts/reproduce_native_plugin.py` using the
+candidate's bundled Python with an explicit new state root, fixture, output and
+native host executable paths. The script restricts PATH to Git and shell utilities,
+creates disposable host profiles, runs actual native install/reinstall/remove and
+Claude component inventory, then exercises both MCP protocols and simultaneous
+workspace connections. It never starts a model/provider session. Linux container
+observations must be labelled as such; they do not establish physical Linux or
+interactive host acceptance. Record source, inventory/provenance hashes, exact
+host versions and retained state. A version-changing native upgrade remains a
+separate release test; repeating installation cannot substitute for it.

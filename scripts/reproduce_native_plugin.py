@@ -89,6 +89,15 @@ def run(args):
                 assert bad.structured_content['status'] == 'refused'
                 observations.append({'mode': mode, 'tools': names, 'twoWorkspaceAnalysis': 'passed',
                                      'unknownWorkspaceRefused': True, 'prompts': len((await client.list_prompts()).prompts)})
+        async def session(identifier):
+            params = StdioServerParameters(command=str(launch), args=['plugin', 'serve'], env=env, cwd=str(state))
+            async with Client(params) as client:
+                result = await client.call_tool('analyze-work', {'workspaceId': identifier, 'kind': 'aim', 'request': fixture})
+                assert result.structured_content['status'] == 'ok'
+                assert result.structured_content['workspaceId'] == identifier
+                return identifier
+        assert sorted(await asyncio.gather(*(session(identifier) for identifier in ids))) == sorted(ids)
+        observations.append({'simultaneousIndependentConnections': 2, 'workspaceIsolation': 'passed'})
         return observations
     protocols = asyncio.run(protocol())
     registry = Path(env['AGENT_BRAID_HOME']) / 'registry.json'
