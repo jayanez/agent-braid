@@ -42,6 +42,10 @@ Stable task IDs are implementation obligations. Check only after the paired proc
   Dependencies: T009 and feature-specific observation gates. Targets: frozen assurance, review record and SPEC-044 decision packet.
   Verification and planned evidence: candidate/evidence hashes, independent technical findings and actual decision; source validation and hashes are not approval.
 
+The [coordinated implementation map](implementation-status.md) records current
+engineering controls, native capture dependencies and ownership. No original
+checkbox changes follow from this local delivery.
+
 ## Separately verifiable technical clauses — owner-approved split
 
 These auxiliary tasks preserve the full criteria of the linked original task.
