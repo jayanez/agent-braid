@@ -9,6 +9,9 @@ boundaries are summarized in [technical status](TECHNICAL_STATUS.md). The Linux
 AMD64 procedure used explicit emulation on an ARM64 Docker host; it is not native
 AMD64 hardware or performance evidence.
 
+See [portable product skills](SKILLS.md) for the five canonical workflows and
+the SPEC-041 synthetic/native evidence boundary.
+
 ## Start here
 
 For the owner-requested bounded acceptance sequence and FC.1 entry preparation,
