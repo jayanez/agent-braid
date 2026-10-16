@@ -21,6 +21,7 @@ from agent_braid.plugin_package import file_hash, inventory, verify_package
 from agent_braid.tooling_assets import load_skill_bundle
 
 VERSION = '0.1.0-alpha.1'
+DISTRIBUTION_ATTRIBUTES = '* -text -filter -ident\n'
 
 
 def extract_runtime(archive, destination, expected):
@@ -82,6 +83,8 @@ def assemble(output, cache, *, platforms=None, allow_dirty=False):
     output.parent.mkdir(parents=True, exist_ok=True)
     with tempfile.TemporaryDirectory(prefix='.plugin-build-', dir=output.parent) as name:
         staging = Path(name)
+        # Git marketplaces must retain wheel RECORD/CPython CRLF bytes exactly.
+        (staging / '.gitattributes').write_text(DISTRIBUTION_ATTRIBUTES)
         plugin = staging / 'plugins/agent-braid'
         plugin.mkdir(parents=True)
         wheels = staging / 'wheels'

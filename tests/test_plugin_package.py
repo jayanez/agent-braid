@@ -7,7 +7,7 @@ import tarfile
 import tempfile
 import unittest
 from agent_braid.plugin_package import inventory, verify_package
-from scripts.build_native_plugin import ROOT, assemble, extract_runtime
+from scripts.build_native_plugin import DISTRIBUTION_ATTRIBUTES, ROOT, assemble, extract_runtime
 
 
 class PluginPackageTests(unittest.TestCase):
@@ -71,3 +71,21 @@ class PluginPackageTests(unittest.TestCase):
                     'schema': 'agent-braid-plugin-package/v1', 'files': {}, 'version': version}))
                 with self.assertRaisesRegex(ValueError, 'version'):
                     verify_package(root)
+
+    def test_distribution_git_checkout_preserves_runtime_crlf_bytes(self):
+        import subprocess
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            source = root / 'source'; clone = root / 'clone'
+            subprocess.run(['git', 'init', '-q', str(source)], check=True)
+            subprocess.run(['git', '-C', str(source), 'config', 'core.autocrlf', 'true'], check=True)
+            (source / '.gitattributes').write_text(DISTRIBUTION_ATTRIBUTES)
+            original = b'wheel,RECORD,bytes\r\nexact,checksum,data\r\n'
+            (source / 'RECORD').write_bytes(original)
+            subprocess.run(['git', '-C', str(source), 'add', '.'], check=True)
+            subprocess.run(['git', '-C', str(source), '-c', 'user.name=Fixture', '-c',
+                            'user.email=fixture@example.invalid', 'commit', '-qm', 'fixture'], check=True)
+            subprocess.run(['git', 'clone', '-q', '--no-local', str(source), str(clone)], check=True)
+            subprocess.run(['git', '-C', str(clone), 'config', 'core.autocrlf', 'true'], check=True)
+            subprocess.run(['git', '-C', str(clone), 'checkout-index', '--all', '--force'], check=True)
+            self.assertEqual((clone / 'RECORD').read_bytes(), original)
