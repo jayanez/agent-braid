@@ -311,7 +311,7 @@ block useful, sound engineering. Real adapter refinement remains a prerequisite.
 
 The additive [SPEC-046 native plugin extension](specs/046-native-ai-plugins/spec.md)
 adds bundled user installation for Codex/Claude Code, explicit multiple-workspace
-setup, bounded repository suggestions and an optional curl installer. Its 13 new
+setup, bounded repository suggestions and an optional curl installer. Its 15 new
 tasks, distribution and official candidacy gates are separate from historical
 SPEC-039–044 completion. See [installation](docs/tooling/NATIVE_PLUGINS.md) and
 [alignment](specs/046-native-ai-plugins/m45-alignment.md). This extension does not

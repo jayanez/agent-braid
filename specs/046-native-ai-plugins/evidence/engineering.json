@@ -1,0 +1,99 @@
+{
+  "candidate": "a7034ea1560fe9a3027a2afacbc4d42f408df480",
+  "inputs": {
+    "agent_braid/cli.py": "fe2d6550735469f6a7e60d5be62972a1697ed26648f371a2ffa968c1f2407497",
+    "agent_braid/plugin_cli.py": "25929184e65b64f4f18c85e5428f8c8a76426a5a301bc251bd6b13e6f4da0435",
+    "agent_braid/plugin_legacy.py": "c3e6173a688e0a6eb8ad2847ad7c4ba51fe39e4192c81a97f10065fab8a00326",
+    "agent_braid/plugin_mcp.py": "51bb193a96f7b5113eec8a6cd5ef7028a881b7f2a4793fbc61241dd999a94343",
+    "agent_braid/plugin_package.py": "92228211793f843b37be3b63b052317c02463811b9dacd2bcf5efb2a323c2f73",
+    "agent_braid/plugin_registry.py": "6a5a900792e95050487d5ebd9f2d4211cb86b86327b8fa42f17677b46064503b",
+    "docs/tooling/PLUGIN_PRIVACY.md": "707d34f3b0128fc626797822f6a76ced145df0aa924edfff7f83079d91a2e223",
+    "docs/tooling/plugin-submissions/README.md": "5ad3377ac39e954669e0ed5f19842983a998e39ddf74762f5b2d1e55a5092fb1",
+    "install.sh": "164eda156e3ca3bd5f96ab90bed86b9efdd3adf9ebf5581454200f81e31f2b74",
+    "integrations/agent-braid/plugin/runtime-lock.json": "fdfca18b9661fc7a8c071ccdc7256d151615b5d47a52d2f0c19d038ca460d438",
+    "integrations/agent-braid/plugin/setup/SKILL.md": "e7f2cf2c415e3484b56ef0615a344904bebd6175a7bec3b9e81e2d1d05fd2285",
+    "requirements-native-plugin.txt": "edea0fa7a788ce6c94ef2576d9244cbc26fb2caff4e779f7070c3d9425ab542f",
+    "scripts/build_native_plugin.py": "9af761651df3b644f9215cdf6b225cb4a517f69cfbca2eb80f44f18dd52036a6",
+    "scripts/reproduce_native_plugin.py": "e61b3a0a91106352f012e88687726ebb07098334c69841db2224e6b1825e39f9",
+    "tests/test_plugin_installer.py": "3a20a9b83a184f433080f026d4d7be7c88247c27ef3a84311a2653f1ba98edc6",
+    "tests/test_plugin_legacy.py": "67a4ef0dd60bdebddd0fb40d0e594b693d52601ab397a6d3765d9f638057ef0c",
+    "tests/test_plugin_mcp.py": "291de85ccd1ab7e1b345427c7d716df1bebab563705979a123462b95b9a28d55",
+    "tests/test_plugin_package.py": "83dd8c920bf6d4b38c71cf257687fb24b272da00bedac12d68486048a536fddb",
+    "tests/test_plugin_registry.py": "accd6464a57d48531e781eeb03ad1154d60ff4c5db0764914e6f467bb426c480"
+  },
+  "limits": [
+    "No model/provider request, native interactive skill journey, human rating or scientific claim",
+    "Version-changing native upgrade and public versioned distribution not observed",
+    "Official eligibility, submission and approvals pending; no provider contact sent",
+    "Linux container emulation is not physical Linux acceptance",
+    "Historical M4.5 snapshots and 108 registered attempts unchanged",
+    "Linux harness requested Docker --network none; no separate network probing or packet capture was performed"
+  ],
+  "linuxHarness": {
+    "path": "specs/046-native-ai-plugins/evidence/linux-harness.json",
+    "sha256": "7bfe630bbc71c2182772b447a91a8897ee3e5b878016c4e3407ae58f4958a40c"
+  },
+  "nativeRecords": [
+    {
+      "path": "specs/046-native-ai-plugins/evidence/mac-native-controls.json",
+      "rawRecordSha256": "7829cded53053775d31bf8c0c4907a720b62c7f750118694ec32bc54e5b300d0",
+      "sha256": "af87781359f9ea246d0b9e403a7243044ce744193b2c44af1e2ecc81897fb0f3"
+    },
+    {
+      "path": "specs/046-native-ai-plugins/evidence/linux-native-controls.json",
+      "rawRecordSha256": "db32906651fcc91105143692514b9440f1f1037c36f18e60228037b175c6a5b5",
+      "sha256": "8dd723ffb0a285a92aca3a384e7a83f7fb6937b915e66ea750ab3d8a496080c0"
+    }
+  ],
+  "observations": [
+    "CPython 3.12.15 bundled on both platforms; no external Python/package manager in probe PATH",
+    "macOS arm64 actual host CLI profiles; Linux AMD64 native CLI binaries in network-disabled container under emulation",
+    "Codex and Claude user install/reinstall/remove with application registry/results retained",
+    "Claude actual component inventory recognizes six skills, no hooks, one MCP server",
+    "Actual MCP auto and legacy connections, two-workspace analysis, unknown workspace refusal, prompts/resources, simultaneous independent connections",
+    "Receipt migration preserves modified skill; preview/digest, FIFO/malformed/oversized/private state and bounded discovery controls in tests",
+    "Shared listing, privacy/support, reviewer cases and separate OpenAI/Anthropic eligibility and binary-size blockers documented; approvals not claimed"
+  ],
+  "package": {
+    "fileBytes": 210390251,
+    "files": 4709,
+    "inventorySha256": "47d7aaa7d4e358550d4d8d60134eef49b5f44ccd7d45fb4d1711be444de473d0",
+    "largestFiles": [
+      [
+        "runtime/linux-x86_64/lib/libpython3.12.so.1.0",
+        32802968
+      ],
+      [
+        "runtime/linux-x86_64/bin/python3.12",
+        31009064
+      ],
+      [
+        "runtime/macos-arm64/bin/python3.12",
+        18134688
+      ],
+      [
+        "runtime/macos-arm64/lib/libpython3.12.dylib",
+        18134544
+      ],
+      [
+        "runtime/linux-x86_64/lib/python3.12/site-packages/cryptography/hazmat/bindings/_rust.abi3.so",
+        14436232
+      ],
+      [
+        "runtime/macos-arm64/lib/python3.12/site-packages/cryptography/hazmat/bindings/_rust.abi3.so",
+        10445664
+      ]
+    ],
+    "provenanceSha256": "7853c54db6b5fc48baee06ca512f47338a18a654a5459719cb7733d2140a9117"
+  },
+  "schema": "agent-braid-native-plugin-engineering/v1",
+  "sourceDirtyAtBuild": false,
+  "status": "bounded-engineering-controls-passed",
+  "unitTests": {
+    "command": ".venv-speckit/bin/python -m unittest tests.test_plugin_registry tests.test_plugin_mcp tests.test_plugin_installer tests.test_plugin_legacy tests.test_plugin_package",
+    "exitCode": 0,
+    "rawLogSha256": "d26d405754744e8aec9a18115fe780324290339b389ccb9191400fcb4c2d9ec8",
+    "skips": 0,
+    "tests": 26
+  }
+}

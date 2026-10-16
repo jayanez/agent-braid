@@ -27,3 +27,9 @@ No source promotion, arbitrary repository code, grants, cloud endpoint or provid
 ## Human review and unresolved decisions
 
 Owner approved implementation scope. ADR/capability adoption, provider candidacies and public release remain separate. Record blockers and actual outcomes without marking unfinished tasks complete.
+
+
+External approvals are tracked as T014 (OpenAI) and T015 (Anthropic), separate
+from the documentary T011/T012 acceptance. This implements the approved separation
+between preparation and provider approval. The owner-added shell entrypoint is
+T013. The extension therefore has 15 stable task IDs; no historical task is reused.

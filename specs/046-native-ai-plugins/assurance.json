@@ -112,14 +112,22 @@
       "id": "REQ-001",
       "scenarios": [
         {
-          "given": "An isolated owned installation and paired failure controls",
+          "given": "The approved scope, existing M4.5 authorities and five-skill contract",
           "id": "SC-001",
-          "obtained_evidence": [],
-          "planned_evidence": "specs/046-native-ai-plugins/evidence/sc-001.json",
+          "obtained_evidence": [
+            {
+              "command": ".venv-speckit/bin/python -m unittest tests.test_plugin_registry tests.test_plugin_mcp tests.test_plugin_installer tests.test_plugin_legacy tests.test_plugin_package; bundled Python scripts/reproduce_native_plugin.py (macOS and network-disabled Linux container)",
+              "limits": "No model/provider request, native interactive skill journey, human rating or scientific claim; Version-changing native upgrade and public versioned distribution not observed; Official eligibility, submission and approvals pending; no provider contact sent; Linux container emulation is not physical Linux acceptance; Historical M4.5 snapshots and 108 registered attempts unchanged",
+              "outcome": "26 focused tests and both package/native-manager reproductions passed; partial requirement evidence where interactive or external gates remain",
+              "path": "specs/046-native-ai-plugins/evidence/engineering.json",
+              "sha256": "70469e06cd8a0583faf756614bafe46e770c890fc1593d1a9c6b49cdbbfcd576"
+            }
+          ],
+          "planned_evidence": "specs/046-native-ai-plugins/evidence/engineering.json",
           "test_file": "specs/046-native-ai-plugins/validation-plan.md",
           "test_name": "procedure_001",
-          "then": "The stated requirement is observed or explicitly refused/pending without unrelated effects.",
-          "when": "procedure_001 runs"
+          "then": "requirements, tasks and procedures agree, old contracts remain unchanged and interactive/external gates are explicit",
+          "when": "specification, ADR and interface artifacts are analyzed"
         }
       ],
       "text": "Describe native plugins, immutable workspace bindings, runtime provenance and scope boundaries."
@@ -128,14 +136,22 @@
       "id": "REQ-002",
       "scenarios": [
         {
-          "given": "An isolated owned installation and paired failure controls",
+          "given": "A clean source commit and the two pinned runtime archives",
           "id": "SC-002",
-          "obtained_evidence": [],
-          "planned_evidence": "specs/046-native-ai-plugins/evidence/sc-002.json",
-          "test_file": "specs/046-native-ai-plugins/validation-plan.md",
-          "test_name": "procedure_002",
-          "then": "The stated requirement is observed or explicitly refused/pending without unrelated effects.",
-          "when": "procedure_002 runs"
+          "obtained_evidence": [
+            {
+              "command": ".venv-speckit/bin/python -m unittest tests.test_plugin_registry tests.test_plugin_mcp tests.test_plugin_installer tests.test_plugin_legacy tests.test_plugin_package; bundled Python scripts/reproduce_native_plugin.py (macOS and network-disabled Linux container)",
+              "limits": "No model/provider request, native interactive skill journey, human rating or scientific claim; Version-changing native upgrade and public versioned distribution not observed; Official eligibility, submission and approvals pending; no provider contact sent; Linux container emulation is not physical Linux acceptance; Historical M4.5 snapshots and 108 registered attempts unchanged",
+              "outcome": "26 focused tests and both package/native-manager reproductions passed; partial requirement evidence where interactive or external gates remain",
+              "path": "specs/046-native-ai-plugins/evidence/engineering.json",
+              "sha256": "70469e06cd8a0583faf756614bafe46e770c890fc1593d1a9c6b49cdbbfcd576"
+            }
+          ],
+          "planned_evidence": "specs/046-native-ai-plugins/evidence/engineering.json",
+          "test_file": "tests/test_plugin_package.py",
+          "test_name": "PluginPackageTests.test_inventory_rejects_content_drift_and_tracks_directory_symlinks",
+          "then": "both target runtimes start offline, hashes and license inventories are present, and corrupt archives or unsupported platforms refuse",
+          "when": "the package is built, relocated to a path with spaces and launched without external Python or package managers"
         }
       ],
       "text": "Bundle relocatable CPython and hash-locked tooling dependencies for macOS arm64 and Linux x86_64."
@@ -144,14 +160,22 @@
       "id": "REQ-003",
       "scenarios": [
         {
-          "given": "An isolated owned installation and paired failure controls",
+          "given": "Two analysis-only registered workspaces and separate MCP connections",
           "id": "SC-003",
-          "obtained_evidence": [],
-          "planned_evidence": "specs/046-native-ai-plugins/evidence/sc-003.json",
-          "test_file": "specs/046-native-ai-plugins/validation-plan.md",
-          "test_name": "procedure_003",
-          "then": "The stated requirement is observed or explicitly refused/pending without unrelated effects.",
-          "when": "procedure_003 runs"
+          "obtained_evidence": [
+            {
+              "command": ".venv-speckit/bin/python -m unittest tests.test_plugin_registry tests.test_plugin_mcp tests.test_plugin_installer tests.test_plugin_legacy tests.test_plugin_package; bundled Python scripts/reproduce_native_plugin.py (macOS and network-disabled Linux container)",
+              "limits": "No model/provider request, native interactive skill journey, human rating or scientific claim; Version-changing native upgrade and public versioned distribution not observed; Official eligibility, submission and approvals pending; no provider contact sent; Linux container emulation is not physical Linux acceptance; Historical M4.5 snapshots and 108 registered attempts unchanged",
+              "outcome": "26 focused tests and both package/native-manager reproductions passed; partial requirement evidence where interactive or external gates remain",
+              "path": "specs/046-native-ai-plugins/evidence/engineering.json",
+              "sha256": "70469e06cd8a0583faf756614bafe46e770c890fc1593d1a9c6b49cdbbfcd576"
+            }
+          ],
+          "planned_evidence": "specs/046-native-ai-plugins/evidence/engineering.json",
+          "test_file": "tests/test_plugin_mcp.py",
+          "test_name": "PluginRouterTests.test_two_workspaces_keep_core_results_and_resource_ownership",
+          "then": "core report values are preserved; unknown IDs, arbitrary roots, foreign resource IDs, stale bindings and unauthorized execution are refused",
+          "when": "each explicit ID analyzes a fixture and resources are read"
         }
       ],
       "text": "Require explicit workspace IDs and preserve fixed roots, evidence isolation and existing grant checks."
@@ -160,14 +184,22 @@
       "id": "REQ-004",
       "scenarios": [
         {
-          "given": "An isolated owned installation and paired failure controls",
+          "given": "Current and registered repositories, an explicit project folder, a Git worktree and symlink aliases",
           "id": "SC-004",
-          "obtained_evidence": [],
-          "planned_evidence": "specs/046-native-ai-plugins/evidence/sc-004.json",
-          "test_file": "specs/046-native-ai-plugins/validation-plan.md",
-          "test_name": "procedure_004",
-          "then": "The stated requirement is observed or explicitly refused/pending without unrelated effects.",
-          "when": "procedure_004 runs"
+          "obtained_evidence": [
+            {
+              "command": ".venv-speckit/bin/python -m unittest tests.test_plugin_registry tests.test_plugin_mcp tests.test_plugin_installer tests.test_plugin_legacy tests.test_plugin_package; bundled Python scripts/reproduce_native_plugin.py (macOS and network-disabled Linux container)",
+              "limits": "No model/provider request, native interactive skill journey, human rating or scientific claim; Version-changing native upgrade and public versioned distribution not observed; Official eligibility, submission and approvals pending; no provider contact sent; Linux container emulation is not physical Linux acceptance; Historical M4.5 snapshots and 108 registered attempts unchanged",
+              "outcome": "26 focused tests and both package/native-manager reproductions passed; partial requirement evidence where interactive or external gates remain",
+              "path": "specs/046-native-ai-plugins/evidence/engineering.json",
+              "sha256": "70469e06cd8a0583faf756614bafe46e770c890fc1593d1a9c6b49cdbbfcd576"
+            }
+          ],
+          "planned_evidence": "specs/046-native-ai-plugins/evidence/engineering.json",
+          "test_file": "tests/test_plugin_registry.py",
+          "test_name": "PluginRegistryTests.test_discovery_recognizes_worktrees_empty_and_unavailable_roots",
+          "then": "canonical roots are deduplicated, worktrees recognized, symlinks excluded, work bounded and no registry written; empty/unreadable folders permit manual selection",
+          "when": "discovery runs with a depth/entry budget or cancellation"
         }
       ],
       "text": "Suggest the current/registered repositories and scan only explicitly selected directories with bounded work and no symlink traversal."
@@ -176,14 +208,22 @@
       "id": "REQ-005",
       "scenarios": [
         {
-          "given": "An isolated owned installation and paired failure controls",
+          "given": "An installed plugin and two repositories selected by the user",
           "id": "SC-005",
-          "obtained_evidence": [],
-          "planned_evidence": "specs/046-native-ai-plugins/evidence/sc-005.json",
-          "test_file": "specs/046-native-ai-plugins/validation-plan.md",
-          "test_name": "procedure_005",
-          "then": "The stated requirement is observed or explicitly refused/pending without unrelated effects.",
-          "when": "procedure_005 runs"
+          "obtained_evidence": [
+            {
+              "command": ".venv-speckit/bin/python -m unittest tests.test_plugin_registry tests.test_plugin_mcp tests.test_plugin_installer tests.test_plugin_legacy tests.test_plugin_package; bundled Python scripts/reproduce_native_plugin.py (macOS and network-disabled Linux container)",
+              "limits": "No model/provider request, native interactive skill journey, human rating or scientific claim; Version-changing native upgrade and public versioned distribution not observed; Official eligibility, submission and approvals pending; no provider contact sent; Linux container emulation is not physical Linux acceptance; Historical M4.5 snapshots and 108 registered attempts unchanged",
+              "outcome": "26 focused tests and both package/native-manager reproductions passed; partial requirement evidence where interactive or external gates remain",
+              "path": "specs/046-native-ai-plugins/evidence/engineering.json",
+              "sha256": "70469e06cd8a0583faf756614bafe46e770c890fc1593d1a9c6b49cdbbfcd576"
+            }
+          ],
+          "planned_evidence": "specs/046-native-ai-plugins/evidence/engineering.json",
+          "test_file": "tests/test_plugin_registry.py",
+          "test_name": "PluginRegistryTests.test_preview_does_not_write_and_apply_preserves_stable_workspace",
+          "then": "one private registry transaction adds both in analysis mode; stale digests and concurrent changes refuse, cancellation before apply writes no registry, and reconnected status shows the selected IDs",
+          "when": "setup previews, the user applies the exact digest and MCP reconnects"
         }
       ],
       "text": "Preview and apply selected workspaces atomically, default to analysis and report required reconnection."
@@ -192,14 +232,22 @@
       "id": "REQ-006",
       "scenarios": [
         {
-          "given": "An isolated owned installation and paired failure controls",
+          "given": "A clean supported Codex user profile and source-bound marketplace",
           "id": "SC-006",
-          "obtained_evidence": [],
-          "planned_evidence": "specs/046-native-ai-plugins/evidence/sc-006.json",
+          "obtained_evidence": [
+            {
+              "command": ".venv-speckit/bin/python -m unittest tests.test_plugin_registry tests.test_plugin_mcp tests.test_plugin_installer tests.test_plugin_legacy tests.test_plugin_package; bundled Python scripts/reproduce_native_plugin.py (macOS and network-disabled Linux container)",
+              "limits": "No model/provider request, native interactive skill journey, human rating or scientific claim; Version-changing native upgrade and public versioned distribution not observed; Official eligibility, submission and approvals pending; no provider contact sent; Linux container emulation is not physical Linux acceptance; Historical M4.5 snapshots and 108 registered attempts unchanged",
+              "outcome": "26 focused tests and both package/native-manager reproductions passed; partial requirement evidence where interactive or external gates remain",
+              "path": "specs/046-native-ai-plugins/evidence/engineering.json",
+              "sha256": "70469e06cd8a0583faf756614bafe46e770c890fc1593d1a9c6b49cdbbfcd576"
+            }
+          ],
+          "planned_evidence": "specs/046-native-ai-plugins/evidence/engineering.json",
           "test_file": "specs/046-native-ai-plugins/validation-plan.md",
           "test_name": "procedure_006",
-          "then": "The stated requirement is observed or explicitly refused/pending without unrelated effects.",
-          "when": "procedure_006 runs"
+          "then": "five canonical product skills and setup onboarding are available with bundled stdio MCP; actual interactive skill use is recorded separately from CLI metadata inspection",
+          "when": "the native manager installs the plugin and the local host loads its components"
         }
       ],
       "text": "Generate a native Codex package with five canonical skills plus separate setup onboarding."
@@ -208,14 +256,22 @@
       "id": "REQ-007",
       "scenarios": [
         {
-          "given": "An isolated owned installation and paired failure controls",
+          "given": "A clean supported Claude Code user profile and the same marketplace sources",
           "id": "SC-007",
-          "obtained_evidence": [],
-          "planned_evidence": "specs/046-native-ai-plugins/evidence/sc-007.json",
+          "obtained_evidence": [
+            {
+              "command": ".venv-speckit/bin/python -m unittest tests.test_plugin_registry tests.test_plugin_mcp tests.test_plugin_installer tests.test_plugin_legacy tests.test_plugin_package; bundled Python scripts/reproduce_native_plugin.py (macOS and network-disabled Linux container)",
+              "limits": "No model/provider request, native interactive skill journey, human rating or scientific claim; Version-changing native upgrade and public versioned distribution not observed; Official eligibility, submission and approvals pending; no provider contact sent; Linux container emulation is not physical Linux acceptance; Historical M4.5 snapshots and 108 registered attempts unchanged",
+              "outcome": "26 focused tests and both package/native-manager reproductions passed; partial requirement evidence where interactive or external gates remain",
+              "path": "specs/046-native-ai-plugins/evidence/engineering.json",
+              "sha256": "70469e06cd8a0583faf756614bafe46e770c890fc1593d1a9c6b49cdbbfcd576"
+            }
+          ],
+          "planned_evidence": "specs/046-native-ai-plugins/evidence/engineering.json",
           "test_file": "specs/046-native-ai-plugins/validation-plan.md",
           "test_name": "procedure_007",
-          "then": "The stated requirement is observed or explicitly refused/pending without unrelated effects.",
-          "when": "procedure_007 runs"
+          "then": "the six skills and bundled stdio MCP are available, without global skill copying or Python setup; actual interactive skill use is recorded separately",
+          "when": "strict validation, user install and local component loading run"
         }
       ],
       "text": "Generate equivalent Claude Code metadata and user-scoped marketplace distribution."
@@ -224,14 +280,22 @@
       "id": "REQ-008",
       "scenarios": [
         {
-          "given": "An isolated owned installation and paired failure controls",
+          "given": "Installed user plugins, existing private results and a legacy receipt with one edited skill",
           "id": "SC-008",
-          "obtained_evidence": [],
-          "planned_evidence": "specs/046-native-ai-plugins/evidence/sc-008.json",
+          "obtained_evidence": [
+            {
+              "command": ".venv-speckit/bin/python -m unittest tests.test_plugin_registry tests.test_plugin_mcp tests.test_plugin_installer tests.test_plugin_legacy tests.test_plugin_package; bundled Python scripts/reproduce_native_plugin.py (macOS and network-disabled Linux container)",
+              "limits": "No model/provider request, native interactive skill journey, human rating or scientific claim; Version-changing native upgrade and public versioned distribution not observed; Official eligibility, submission and approvals pending; no provider contact sent; Linux container emulation is not physical Linux acceptance; Historical M4.5 snapshots and 108 registered attempts unchanged",
+              "outcome": "26 focused tests and both package/native-manager reproductions passed; partial requirement evidence where interactive or external gates remain",
+              "path": "specs/046-native-ai-plugins/evidence/engineering.json",
+              "sha256": "70469e06cd8a0583faf756614bafe46e770c890fc1593d1a9c6b49cdbbfcd576"
+            }
+          ],
+          "planned_evidence": "specs/046-native-ai-plugins/evidence/engineering.json",
           "test_file": "specs/046-native-ai-plugins/validation-plan.md",
           "test_name": "procedure_008",
-          "then": "The stated requirement is observed or explicitly refused/pending without unrelated effects.",
-          "when": "procedure_008 runs"
+          "then": "configuration/results and unrelated or modified bytes survive; only matching receipt-owned entries are removed; a real version change is observed before update acceptance",
+          "when": "native update/removal and explicit receipt migration are exercised"
         }
       ],
       "text": "Use native plugin lifecycle and receipt-owned legacy removal while retaining modified/shared files and private results."
@@ -240,14 +304,22 @@
       "id": "REQ-009",
       "scenarios": [
         {
-          "given": "An isolated owned installation and paired failure controls",
+          "given": "A clean source commit, runtime/dependency locks and owner release decision",
           "id": "SC-009",
-          "obtained_evidence": [],
-          "planned_evidence": "specs/046-native-ai-plugins/evidence/sc-009.json",
+          "obtained_evidence": [
+            {
+              "command": ".venv-speckit/bin/python -m unittest tests.test_plugin_registry tests.test_plugin_mcp tests.test_plugin_installer tests.test_plugin_legacy tests.test_plugin_package; bundled Python scripts/reproduce_native_plugin.py (macOS and network-disabled Linux container)",
+              "limits": "No model/provider request, native interactive skill journey, human rating or scientific claim; Version-changing native upgrade and public versioned distribution not observed; Official eligibility, submission and approvals pending; no provider contact sent; Linux container emulation is not physical Linux acceptance; Historical M4.5 snapshots and 108 registered attempts unchanged",
+              "outcome": "26 focused tests and both package/native-manager reproductions passed; partial requirement evidence where interactive or external gates remain",
+              "path": "specs/046-native-ai-plugins/evidence/engineering.json",
+              "sha256": "70469e06cd8a0583faf756614bafe46e770c890fc1593d1a9c6b49cdbbfcd576"
+            }
+          ],
+          "planned_evidence": "specs/046-native-ai-plugins/evidence/engineering.json",
           "test_file": "specs/046-native-ai-plugins/validation-plan.md",
           "test_name": "procedure_009",
-          "then": "The stated requirement is observed or explicitly refused/pending without unrelated effects.",
-          "when": "procedure_009 runs"
+          "then": "provenance binds source, wheel, locks, runtime archives and corresponding sources; inventory verifies; both catalogs install; binaries live only in the distribution branch and publication is separately authorized",
+          "when": "a versioned distribution is built and reproduced in fresh host profiles"
         }
       ],
       "text": "Build versioned marketplace artifacts, provenance and licenses; record clean package and native host observations separately."
@@ -256,14 +328,22 @@
       "id": "REQ-010",
       "scenarios": [
         {
-          "given": "An isolated owned installation and paired failure controls",
+          "given": "Existing historical M4.5 records and the new source artifacts",
           "id": "SC-010",
-          "obtained_evidence": [],
-          "planned_evidence": "specs/046-native-ai-plugins/evidence/sc-010.json",
+          "obtained_evidence": [
+            {
+              "command": ".venv-speckit/bin/python -m unittest tests.test_plugin_registry tests.test_plugin_mcp tests.test_plugin_installer tests.test_plugin_legacy tests.test_plugin_package; bundled Python scripts/reproduce_native_plugin.py (macOS and network-disabled Linux container)",
+              "limits": "No model/provider request, native interactive skill journey, human rating or scientific claim; Version-changing native upgrade and public versioned distribution not observed; Official eligibility, submission and approvals pending; no provider contact sent; Linux container emulation is not physical Linux acceptance; Historical M4.5 snapshots and 108 registered attempts unchanged",
+              "outcome": "26 focused tests and both package/native-manager reproductions passed; partial requirement evidence where interactive or external gates remain",
+              "path": "specs/046-native-ai-plugins/evidence/engineering.json",
+              "sha256": "70469e06cd8a0583faf756614bafe46e770c890fc1593d1a9c6b49cdbbfcd576"
+            }
+          ],
+          "planned_evidence": "specs/046-native-ai-plugins/evidence/engineering.json",
           "test_file": "specs/046-native-ai-plugins/validation-plan.md",
           "test_name": "procedure_010",
-          "then": "The stated requirement is observed or explicitly refused/pending without unrelated effects.",
-          "when": "procedure_010 runs"
+          "then": "native installation/setup/lifecycle come first; only allowlisted new IDs and intended milestone metadata change; post-audit operations are empty and private Project membership/status is read back independently",
+          "when": "English documentation and governed GitHub reconciliation are updated"
         }
       ],
       "text": "Update English installation/README, additive M4.5 references and governed GitHub records."
@@ -272,14 +352,22 @@
       "id": "REQ-011",
       "scenarios": [
         {
-          "given": "An isolated owned installation and paired failure controls",
+          "given": "OpenAI local-MCP publication requirements and the source-bound candidate",
           "id": "SC-011",
-          "obtained_evidence": [],
-          "planned_evidence": "specs/046-native-ai-plugins/evidence/sc-011.json",
+          "obtained_evidence": [
+            {
+              "command": ".venv-speckit/bin/python -m unittest tests.test_plugin_registry tests.test_plugin_mcp tests.test_plugin_installer tests.test_plugin_legacy tests.test_plugin_package; bundled Python scripts/reproduce_native_plugin.py (macOS and network-disabled Linux container)",
+              "limits": "No model/provider request, native interactive skill journey, human rating or scientific claim; Version-changing native upgrade and public versioned distribution not observed; Official eligibility, submission and approvals pending; no provider contact sent; Linux container emulation is not physical Linux acceptance; Historical M4.5 snapshots and 108 registered attempts unchanged",
+              "outcome": "26 focused tests and both package/native-manager reproductions passed; partial requirement evidence where interactive or external gates remain",
+              "path": "specs/046-native-ai-plugins/evidence/engineering.json",
+              "sha256": "70469e06cd8a0583faf756614bafe46e770c890fc1593d1a9c6b49cdbbfcd576"
+            }
+          ],
+          "planned_evidence": "specs/046-native-ai-plugins/evidence/engineering.json",
           "test_file": "specs/046-native-ai-plugins/validation-plan.md",
           "test_name": "procedure_011",
-          "then": "The stated requirement is observed or explicitly refused/pending without unrelated effects.",
-          "when": "procedure_011 runs"
+          "then": "documentary material is complete and partner/account/publication dependencies are explicitly assigned to T014; preparation never claims provider approval",
+          "when": "listing, privacy/support, test cases and eligibility checklist are reviewed"
         }
       ],
       "text": "Prepare listing, support/privacy/review material and identify partner eligibility for local MCP without claiming approval."
@@ -288,14 +376,22 @@
       "id": "REQ-012",
       "scenarios": [
         {
-          "given": "An isolated owned installation and paired failure controls",
+          "given": "Anthropic directory and official-marketplace rules and the bundled candidate inventory",
           "id": "SC-012",
-          "obtained_evidence": [],
-          "planned_evidence": "specs/046-native-ai-plugins/evidence/sc-012.json",
+          "obtained_evidence": [
+            {
+              "command": ".venv-speckit/bin/python -m unittest tests.test_plugin_registry tests.test_plugin_mcp tests.test_plugin_installer tests.test_plugin_legacy tests.test_plugin_package; bundled Python scripts/reproduce_native_plugin.py (macOS and network-disabled Linux container)",
+              "limits": "No model/provider request, native interactive skill journey, human rating or scientific claim; Version-changing native upgrade and public versioned distribution not observed; Official eligibility, submission and approvals pending; no provider contact sent; Linux container emulation is not physical Linux acceptance; Historical M4.5 snapshots and 108 registered attempts unchanged",
+              "outcome": "26 focused tests and both package/native-manager reproductions passed; partial requirement evidence where interactive or external gates remain",
+              "path": "specs/046-native-ai-plugins/evidence/engineering.json",
+              "sha256": "70469e06cd8a0583faf756614bafe46e770c890fc1593d1a9c6b49cdbbfcd576"
+            }
+          ],
+          "planned_evidence": "specs/046-native-ai-plugins/evidence/engineering.json",
           "test_file": "specs/046-native-ai-plugins/validation-plan.md",
           "test_name": "procedure_012",
-          "then": "The stated requirement is observed or explicitly refused/pending without unrelated effects.",
-          "when": "procedure_012 runs"
+          "then": "largest files and limits are recorded, directory and official-marketplace routes are distinct, and unresolved exceptions/account/publication approvals stay in T015",
+          "when": "listing/reviewer material and executable/size constraints are checked"
         }
       ],
       "text": "Prepare directory/official-marketplace material, identify binary/size restrictions and record external review separately."
@@ -304,14 +400,22 @@
       "id": "REQ-013",
       "scenarios": [
         {
-          "given": "An isolated owned installation and paired failure controls",
+          "given": "Existing Git and one or both native host executables",
           "id": "SC-013",
-          "obtained_evidence": [],
-          "planned_evidence": "specs/046-native-ai-plugins/evidence/sc-013.json",
-          "test_file": "specs/046-native-ai-plugins/validation-plan.md",
-          "test_name": "procedure_013",
-          "then": "The stated requirement is observed or explicitly refused/pending without unrelated effects.",
-          "when": "procedure_013 runs"
+          "obtained_evidence": [
+            {
+              "command": ".venv-speckit/bin/python -m unittest tests.test_plugin_registry tests.test_plugin_mcp tests.test_plugin_installer tests.test_plugin_legacy tests.test_plugin_package; bundled Python scripts/reproduce_native_plugin.py (macOS and network-disabled Linux container)",
+              "limits": "No model/provider request, native interactive skill journey, human rating or scientific claim; Version-changing native upgrade and public versioned distribution not observed; Official eligibility, submission and approvals pending; no provider contact sent; Linux container emulation is not physical Linux acceptance; Historical M4.5 snapshots and 108 registered attempts unchanged",
+              "outcome": "26 focused tests and both package/native-manager reproductions passed; partial requirement evidence where interactive or external gates remain",
+              "path": "specs/046-native-ai-plugins/evidence/engineering.json",
+              "sha256": "70469e06cd8a0583faf756614bafe46e770c890fc1593d1a9c6b49cdbbfcd576"
+            }
+          ],
+          "planned_evidence": "specs/046-native-ai-plugins/evidence/engineering.json",
+          "test_file": "tests/test_plugin_installer.py",
+          "test_name": "PluginInstallerTests.test_explicit_ref_is_independent_of_option_order",
+          "then": "only native user plugin-manager operations run; all selected hosts preflight first; option order preserves the explicit ref; dry-run performs no install; no Python bootstrap, sudo or provider session occurs",
+          "when": "the shell installer is invoked explicitly, dry-run, with a pinned ref or with a missing selected host"
         }
       ],
       "text": "Offer a POSIX curl entrypoint that uses native user-scoped plugin managers, requires no Python or sudo, and never starts a provider session."

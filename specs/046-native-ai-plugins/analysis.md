@@ -1,3 +1,26 @@
 # Cross-artifact analysis
 
-Owner-approved implementation adds a separate plugin surface. Five product skills remain canonical; setup is plugin-only. User-global installation does not expand roots. Historical SPEC-039/040/042 evidence and the registered 108 attempts remain unchanged. Official candidacy is preparation, not approval. No blocking normative contradiction identified; technical and native conformance remain to be obtained.
+The implementation adds a separately versioned plugin facade; existing MCP and
+Python installation contracts remain. Exactly five product skills still come
+from the canonical bundle; setup is inventoried separately. Registry bindings
+are immutable per connection and every delegated call identifies a workspace.
+No mutable global current repository, arbitrary root override or grant issuance
+was added. Native managers own installed files. Explicit receipt migration
+reuses the existing ownership-aware removal implementation.
+
+The 26 focused controls and clean candidate package reproductions are recorded
+in evidence/engineering.json. macOS native CLI and emulated container Linux CLI
+installations are distinguished from direct SDK protocol checks and from
+interactive model/skill journeys. Both MCP protocol modes and simultaneous
+connections were exercised without a model/provider request. None of this is
+retrospective evidence for the registered 108 attempts.
+
+Luna Latest review found and prompted regression fixes for unbounded directory
+entry enumeration, installer ref ordering, symlinked output containment, special
+state files, source archive inclusion and malformed inventory version handling.
+Historical SPEC-039/040/042 acceptances and SPEC-041/043/044 pending gates remain.
+No blocking normative contradiction was identified. Architectural adoption,
+interactive journeys, version-changing native upgrades, public distribution and
+external provider approval remain separately tracked, not implied by the local
+controls. The official candidacy materials explicitly identify eligibility and
+bundled-executable size restrictions rather than claiming a publishable listing.
