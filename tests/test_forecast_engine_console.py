@@ -9,6 +9,7 @@ import tempfile
 import unittest
 
 from tests.test_forecast_engine_probe import console, events, http
+from tests.swift_fixture import compile_swift
 
 ROOT = Path(__file__).resolve().parents[1] / 'scripts/forecast_engine_probe'
 
@@ -32,8 +33,7 @@ let results = rows.map { ["preflight": nativeEnginePreflight($0),
 let output = try JSONSerialization.data(withJSONObject: results)
 FileHandle.standardOutput.write(output)
 ''')
-        subprocess.run([shutil.which('swiftc'), str(source), '-o', str(cls.binary)],
-                       check=True, capture_output=True, timeout=60)
+        compile_swift(source, cls.binary)
 
     def inspect(self, *samples):
         result = subprocess.run([str(self.binary)], input=json.dumps(samples).encode(),

@@ -6,6 +6,8 @@ import subprocess
 import tempfile
 import unittest
 
+from tests.swift_fixture import compile_swift
+
 ROOT = Path(__file__).resolve().parents[1] / 'scripts/forecast_engine_probe'
 
 
@@ -66,8 +68,7 @@ if mode == "queued" {
 try output.fileHandleForWriting.close()
 FileHandle.standardOutput.write(output.fileHandleForReading.readDataToEndOfFile())
 ''')
-        subprocess.run([shutil.which('swiftc'), str(source), '-o', str(cls.binary)],
-                       capture_output=True, check=True, timeout=60)
+        compile_swift(source, cls.binary)
 
     def emitted(self, mode):
         return subprocess.run([str(self.binary), mode], capture_output=True,
@@ -82,6 +83,8 @@ FileHandle.standardOutput.write(output.fileHandleForReading.readDataToEndOfFile(
     def test_inflight_write_precedes_cancel_and_no_later_write_starts(self):
         self.assertEqual(b'FC2_ADMIT_OWN_DAEMON_CRASH\n', self.emitted('inflight'))
 
+
+class SerialCancellationSourceTests(unittest.TestCase):
     def test_native_writes_share_gate_and_cleanup_deadline_precedes_cancel(self):
         source = (ROOT / 'main.swift.in').read_text()
         self.assertIn((ROOT / 'SerialInputGate.swift').read_text(), source)
