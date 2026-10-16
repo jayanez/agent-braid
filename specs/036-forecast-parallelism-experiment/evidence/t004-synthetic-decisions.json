@@ -91,8 +91,9 @@
   "checks": {
     "focused": {
       "command": ".venv-speckit/bin/python -m unittest tests.test_forecast_decisions -v",
-      "executor": "independent Luna Latest review agent (gpt-6-luna)",
-      "outcome": "19 tests passed, including retained receipt replay"
+      "executor": "independent Luna Latest review agent (gpt-6-luna) and main session",
+      "outcome": "20 tests passed, including retained receipt replay and numeric-coercion binding regression",
+      "rawOutput": "test_default_off_and_unsupported_mode (tests.test_forecast_decisions.FrozenDecisionTests.test_default_off_and_unsupported_mode) ... ok\ntest_dependencies_conflicts_and_unknown_effects_cannot_win (tests.test_forecast_decisions.FrozenDecisionTests.test_dependencies_conflicts_and_unknown_effects_cannot_win) ... ok\ntest_evaluation_drift_and_unpaired_partitions_refuse (tests.test_forecast_decisions.FrozenDecisionTests.test_evaluation_drift_and_unpaired_partitions_refuse) ... ok\ntest_existing_experiment_entry_point_uses_no_runtime_or_model (tests.test_forecast_decisions.FrozenDecisionTests.test_existing_experiment_entry_point_uses_no_runtime_or_model) ... ok\ntest_failed_simulated_forecasts_fall_back_without_dropping_attempts (tests.test_forecast_decisions.FrozenDecisionTests.test_failed_simulated_forecasts_fall_back_without_dropping_attempts) ... ok\ntest_known_dependency_descriptor_cannot_be_overridden_as_independent (tests.test_forecast_decisions.FrozenDecisionTests.test_known_dependency_descriptor_cannot_be_overridden_as_independent) ... ok\ntest_later_folds_cannot_tune_reference_or_mapper (tests.test_forecast_decisions.FrozenDecisionTests.test_later_folds_cannot_tune_reference_or_mapper) ... ok\ntest_order_does_not_change_freeze_or_results (tests.test_forecast_decisions.FrozenDecisionTests.test_order_does_not_change_freeze_or_results) ... ok\ntest_point_of_use_recomputes_complete_binding_even_after_resigning (tests.test_forecast_decisions.FrozenDecisionTests.test_point_of_use_recomputes_complete_binding_even_after_resigning) ... ok\ntest_predictors_and_candidates_receive_no_future_labels (tests.test_forecast_decisions.FrozenDecisionTests.test_predictors_and_candidates_receive_no_future_labels) ... ok\ntest_python_numeric_equality_cannot_bypass_exact_json_bindings (tests.test_forecast_decisions.FrozenDecisionTests.test_python_numeric_equality_cannot_bypass_exact_json_bindings) ... ok\ntest_reference_is_selected_by_development_full_simulated_cost (tests.test_forecast_decisions.FrozenDecisionTests.test_reference_is_selected_by_development_full_simulated_cost) ... ok\ntest_reference_policy_is_independently_frozen (tests.test_forecast_decisions.FrozenDecisionTests.test_reference_policy_is_independently_frozen) ... ok\ntest_reproducible_complete_bindings_and_shadow (tests.test_forecast_decisions.FrozenDecisionTests.test_reproducible_complete_bindings_and_shadow) ... ok\ntest_resigned_reference_threshold_and_cost_drift_refuse (tests.test_forecast_decisions.FrozenDecisionTests.test_resigned_reference_threshold_and_cost_drift_refuse) ... ok\ntest_retained_evidence_reproduces_frozen_policy_and_attempts (tests.test_forecast_decisions.FrozenDecisionTests.test_retained_evidence_reproduces_frozen_policy_and_attempts) ... ok\ntest_shadow_disagreement_exists_and_is_never_applied (tests.test_forecast_decisions.FrozenDecisionTests.test_shadow_disagreement_exists_and_is_never_applied) ... ok\ntest_stale_changed_plan_resource_forecast_and_wrong_grant_refuse (tests.test_forecast_decisions.FrozenDecisionTests.test_stale_changed_plan_resource_forecast_and_wrong_grant_refuse) ... ok\ntest_unknown_effects_in_development_refuse_selection (tests.test_forecast_decisions.FrozenDecisionTests.test_unknown_effects_in_development_refuse_selection) ... ok\ntest_unknown_resources_and_cutoff_labels_cannot_be_resigned (tests.test_forecast_decisions.FrozenDecisionTests.test_unknown_resources_and_cutoff_labels_cannot_be_resigned) ... ok\n\n----------------------------------------------------------------------\nRan 20 tests in 39.281s\n\nOK\n"
     },
     "guardMutations": [
       {
@@ -124,7 +125,11 @@
         "test": "test_point_of_use_recomputes_complete_binding_even_after_resigning"
       }
     ],
-    "status": "passed-focused-and-mutations"
+    "numericBindingRegression": {
+      "green": "test_python_numeric_equality_cannot_bypass_exact_json_bindings (tests.test_forecast_decisions.FrozenDecisionTests.test_python_numeric_equality_cannot_bypass_exact_json_bindings) ... ok\n\n----------------------------------------------------------------------\nRan 1 test in 2.692s\n\nOK\n",
+      "red": "test_python_numeric_equality_cannot_bypass_exact_json_bindings (tests.test_forecast_decisions.FrozenDecisionTests.test_python_numeric_equality_cannot_bypass_exact_json_bindings) ... FAIL\n\n======================================================================\nFAIL: test_python_numeric_equality_cannot_bypass_exact_json_bindings (tests.test_forecast_decisions.FrozenDecisionTests.test_python_numeric_equality_cannot_bypass_exact_json_bindings)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/private/tmp/agent-braid-fc1-decisions-20261016/tests/test_forecast_decisions.py\", line 274, in test_python_numeric_equality_cannot_bypass_exact_json_bindings\n    with self.assertRaisesRegex(ForecastError, 'frozen-decision-policy-drift'):\n         ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: ForecastError not raised\n\n----------------------------------------------------------------------\nRan 1 test in 1.358s\n\nFAILED (failures=1)\n"
+    },
+    "status": "passed-focused-and-regression-controls"
   },
   "date": "2026-10-16",
   "domain": "synthetic-simulation",
@@ -158,13 +163,13 @@
     }
   },
   "inputHashes": {
-    "agent_braid/forecast_decisions.py": "34de1b5388cadd6127de1764f457a7f5bfdcf8f4b755ae844f2e1518b8348059",
+    "agent_braid/forecast_decisions.py": "e173e41705431ef5aa308fba9f61d83f5010ce466562c323e6a1638803394ee8",
     "agent_braid/forecast_evaluation.py": "3ad040937a2d42ab3a107a638817b843fa5a9ddbfce9ad21f5ef0f78bb7af1e1",
     "agent_braid/forecast_experiment.py": "f6a05be610adecf9fc68350027ea601aeebbf8cbf0368c3ba8584309dbd1fc8d",
     "agent_braid/forecast_lab.py": "ab17755a4414d179294fc9511f49e38e09fd6c41d4feb4b63467189f82f5a599",
     "agent_braid/forecast_policy.py": "0c15cbcb6983377cffa0193697400c7049c875416dd6be3bee7c84fbfa12d333",
     "agent_braid/runtime_scheduler.py": "47bb371c88726793d207a59bb85cb6911d86e00a44694b37934805d9fa2462a9",
-    "tests/test_forecast_decisions.py": "15a3c4d23345fc6301445827917e04e69927f3d888aaf5d734b5889b3da0b989"
+    "tests/test_forecast_decisions.py": "f1833d828df47f4d4d31b27310d46d6e1797f469983a038d5cb0e3c79962656a"
   },
   "limits": [
     "No model, VM, Docker, runtime arm, grant or execution package.",
@@ -247,7 +252,7 @@
   "review": {
     "limits": "Fixed synthetic resource recipes only: operation/mode/worker checks plus existing wave geometry are not arbitrary runtime patch/scratch/effect admission.",
     "model": "gpt-6-luna",
-    "outcome": "Dependency weakening and vacuous disagreement fixture findings corrected; final source/receipt review found no new correctness issues. Independently ran 19 focused tests and checked all seven input hashes.",
+    "outcome": "Dependency weakening, non-disagreeing fixture and Python numeric-equality findings corrected; final source/receipt review found no additional issues. Independently ran 20 focused tests and checked all seven input hashes.",
     "scope": "technical synthetic engineering only; not founder/source/resource/scientific/launch/promotion approval",
     "status": "completed-no-findings"
   },

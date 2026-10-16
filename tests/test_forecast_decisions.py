@@ -265,6 +265,25 @@ class FrozenDecisionTests(unittest.TestCase):
             {key: row[key] for key in ('episodeGroup', 'partition', 'status', 'reasonCodes', 'receiptDigest')}
             for row in report['decisions']])
 
+    def test_python_numeric_equality_cannot_bypass_exact_json_bindings(self):
+        from agent_braid.forecast_decisions import validate_synthetic_decision
+        plan = self.freeze()
+        changed = deepcopy(plan); changed['executionAuthorization'] = 0
+        self.assertEqual(plan, changed)  # Python equality is insufficient here.
+        self.assertNotEqual(digest(plan), digest(changed))
+        with self.assertRaisesRegex(ForecastError, 'frozen-decision-policy-drift'):
+            self.run_plan(changed)
+        row = self.run_plan(plan)['decisions'][0]
+        changed = deepcopy(row); changed['candidates'][0]['eligible'] = 1
+        self.assertEqual(row, changed)
+        self.assertNotEqual(digest(row), digest(changed))
+        with self.assertRaisesRegex(ForecastError, 'synthetic-decision-binding-drift'):
+            validate_synthetic_decision(changed, self.signals, self.operations,
+                                       evaluation=self.evaluation, frozen=plan, mode='shadow', now_ns=row['cutoffNs'])
+        evaluation = deepcopy(self.evaluation); evaluation['executionAuthorization'] = 0
+        with self.assertRaisesRegex(ForecastError, 'frozen-evaluation-drift'):
+            freeze_decision_policy(self.signals, self.operations, evaluation=evaluation)
+
 
 if __name__ == '__main__':
     unittest.main()

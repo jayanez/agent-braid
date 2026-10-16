@@ -131,9 +131,11 @@ test and fixture bindings, executed commands and review provenance. This evidenc
 supports only the software phase; it does not close either original task.
 
 Luna Latest (`gpt-6-luna`) reviewed the implementation and receipt, independently
-passed all 19 focused tests including retained-evidence replay, and verified all
-seven recorded source/test hashes. The dependency-weakening and non-disagreeing
-fixture findings were corrected before final review; no findings remain. Four
+passed all 20 focused tests including retained-evidence replay, and verified all
+seven recorded source/test hashes. Dependency weakening, a non-disagreeing fixture and Python numeric-equality
+coercion were corrected before final review; no findings remain. Exact JSON digest
+comparisons reject boolean/integer substitutions even where Python values compare
+equal and a stale original hash was retained. Four
 separate guard-removal controls detected frozen-policy, development-only,
 known-dependency and complete-receipt binding regressions. This is technical
 agent review, not the human/scientific acceptance left pending in assurance.

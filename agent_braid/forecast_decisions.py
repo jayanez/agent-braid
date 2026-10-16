@@ -25,7 +25,7 @@ _COST_LAW = {
 
 def _paired_cases(signals, operations, evaluation, shapes):
     expected = freeze_offline_evaluation(signals, operations, simulated_statuses=evaluation.get('simulatedStatuses'))
-    require(evaluation == expected, 'frozen-evaluation-drift')
+    require(digest(evaluation) == digest(expected), 'frozen-evaluation-drift')
     signals, operations = _offline_rosters(signals, operations)
     require(type(shapes) is dict and set(shapes) <= {s['episodeGroup'] for s in signals}, 'invalid-decision-shapes')
     require(all(shape in _SHAPES for shape in shapes.values()), 'invalid-decision-shapes')
@@ -183,7 +183,7 @@ def simulate_decisions(signals, operations, *, evaluation, frozen, mode='shadow'
     require(mode in ('off', 'shadow', 'consultative'), 'capability-not-promoted')
     require(type(frozen) is dict, 'invalid-decision-policy')
     expected = freeze_decision_policy(signals, operations, evaluation=evaluation, shapes=frozen.get('shapes'))
-    require(frozen == expected, 'frozen-decision-policy-drift')
+    require(digest(frozen) == digest(expected), 'frozen-decision-policy-drift')
     cases = _paired_cases(signals, operations, evaluation, frozen['shapes'])
     rows, labels = [], []
     for inputs, outcome in cases:
@@ -233,7 +233,7 @@ def validate_synthetic_decision(receipt, signals, operations, *, evaluation, fro
     require(type(receipt) is dict, 'invalid-decision-receipt')
     report = simulate_decisions(signals, operations, evaluation=evaluation, frozen=frozen, mode=mode)
     expected = next((row for row in report['decisions'] if row['episodeGroup'] == receipt.get('episodeGroup')), None)
-    require(expected is not None and receipt == expected, 'synthetic-decision-binding-drift')
+    require(expected is not None and digest(receipt) == digest(expected), 'synthetic-decision-binding-drift')
     require(expected['status'] == 'mapped', 'synthetic-decision-refused')
     require(now_ns >= expected['cutoffNs'], 'decision-not-yet-available')
     validate_advice(expected['advice'], expected['request'], now_ns=now_ns)
