@@ -120,3 +120,15 @@ class PluginRegistryTests(unittest.TestCase):
         subprocess.run(['git', '-C', str(self.repo), 'worktree', 'add', '-q', '--detach', str(worktree)], check=True)
         found = discover(self.home, [self.base], current=worktree)
         self.assertEqual({x['sourceRoot'] for x in found['candidates']}, {str(self.repo), str(worktree)})
+
+    def test_fifo_registry_and_receipt_are_refused_before_open(self):
+        import os
+        from agent_braid.plugin_legacy import selection
+        self.install()
+        path = self.home / 'registry.json'
+        path.unlink()
+        os.mkfifo(path, 0o600)
+        with self.assertRaisesRegex(RegistryError, 'file type'):
+            load(self.home)
+        with self.assertRaisesRegex(RegistryError, 'file type'):
+            selection('codex', path)

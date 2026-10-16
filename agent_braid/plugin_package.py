@@ -3,6 +3,7 @@
 from __future__ import annotations
 import hashlib
 import json
+import stat
 from pathlib import Path, PurePosixPath
 
 
@@ -37,9 +38,15 @@ def inventory(root):
 def verify_package(root):
     root = Path(root).resolve(strict=True)
     path = root / 'package-inventory.json'
-    if path.stat().st_size > 8 * 1024 * 1024 or path.is_symlink():
+    if not stat.S_ISREG(path.lstat().st_mode) or path.stat().st_size > 8 * 1024 * 1024:
         raise ValueError('Invalid package inventory')
-    value = json.loads(path.read_text())
+    with path.open('rb') as stream:
+        payload = stream.read(8 * 1024 * 1024 + 1)
+    if len(payload) > 8 * 1024 * 1024:
+        raise ValueError('Invalid package inventory size')
+    value = json.loads(payload)
+    if not isinstance(value, dict):
+        raise ValueError('Unknown package inventory')
     if value.get('schema') != 'agent-braid-plugin-package/v1' or not isinstance(value.get('files'), dict):
         raise ValueError('Unknown package inventory')
     if len(value['files']) > 20000:

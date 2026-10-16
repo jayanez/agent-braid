@@ -41,8 +41,11 @@ def _safe(path: Path, *, directory: bool | None = None) -> Path:
     for part in (path, *path.parents):
         if part.is_symlink():
             raise RegistryError('Symbolic links are not allowed in owned paths')
-    if path.exists() and directory is not None and path.is_dir() != directory:
-        raise RegistryError('Unexpected file type in owned path')
+    if path.exists() and directory is not None:
+        mode = path.stat().st_mode
+        expected = stat.S_ISDIR(mode) if directory else stat.S_ISREG(mode)
+        if not expected:
+            raise RegistryError('Unexpected file type in owned path')
     return path
 
 

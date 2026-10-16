@@ -54,3 +54,11 @@ class PluginPackageTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, 'outside the source checkout'):
                 assemble(root / 'alias/should-never-exist', root / 'cache')
             self.assertFalse((ROOT / 'should-never-exist').exists())
+
+    def test_fifo_inventory_is_refused_before_open(self):
+        import os
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            os.mkfifo(root / 'package-inventory.json', 0o600)
+            with self.assertRaisesRegex(ValueError, 'Invalid package inventory'):
+                verify_package(root)

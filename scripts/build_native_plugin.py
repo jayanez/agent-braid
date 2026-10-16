@@ -175,10 +175,10 @@ exec "$plugin_python" -I -B -m agent_braid "$@"
             'dependencyLockSha256': file_hash(ROOT / 'requirements-native-plugin.txt'), 'runtimes': runtime_provenance,
             'dependencies': package_licenses, 'canonicalSkills': bundle.inventory(),
             'limits': ['Engineering package; no native conformance, publisher authentication or official approval implied']})
-        # Exact current corresponding sources, including explicit dirty engineering inputs.
+        # Corresponding tracked sources only; never package unrelated untracked local files.
         sources = staging / 'sources'
         sources.mkdir()
-        paths = subprocess.check_output(['git', 'ls-files', '--cached', '--others', '--exclude-standard', '-z'], cwd=ROOT).split(b'\0')
+        paths = subprocess.check_output(['git', 'ls-files', '--cached', '-z'], cwd=ROOT).split(b'\0')
         with tarfile.open(sources / f'agent-braid-{VERSION}-source.tar.gz', 'w:gz') as archive:
             for raw in sorted(set(paths)):
                 if raw:
