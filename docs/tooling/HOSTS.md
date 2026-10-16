@@ -24,9 +24,9 @@ the five canonical Agent Braid skills from the frozen skill bundle. The C arm
 requires caller-verified evidence that the native host loaded the expected
 skill inventory; prompt injection that imitates skill text is not equivalent.
 Codex skill catalog visibility alone does not establish that full skill
-instructions were loaded. Claude's native `Skill(name)` tool selection is not
-a grant, and `--allowedTools` is an approval mechanism rather than a tool
-allowlist. The adapter does not infer that any host setting successfully
+instructions were loaded. Claude's `Skill(name)` patterns approve individual skill calls; they are not
+built-in availability names or runtime grants. `--allowedTools` is a host tool
+approval mechanism rather than an availability allowlist. The adapter does not infer that any host setting successfully
 isolates global instructions or disables a feature unless that is established
 by a trusted session receipt.
 
@@ -56,7 +56,10 @@ TOML overrides and bound by a digest. Legacy non-subscription Claude uses
 ... --no-session-persistence --print --verbose --output-format stream-json
 --model ... --effort medium`. The MCP-only Claude arm supplies an empty built-in
 tool set and disables slash commands. The skills arm selects the five exact
-native `Skill(name)` tools and does not disable slash commands. No command uses
+built-in `Skill` tool and separately approves calls to the five exact
+`Skill(name)` patterns; it does not disable slash commands. Both arms approve
+their configured MCP server namespaces explicitly under `dontAsk`; names are
+bounded literals to prevent permission-pattern injection. No command uses
 permission bypass flags or puts the prompt on argv.
 
 Subscription-bound Claude instead omits `--bare`: pinned Claude Code 2.1.286
@@ -127,3 +130,13 @@ approve the exact frozen candidate, route/provider, model, settings, cost and
 stop instrumentation, isolation evidence, and the live stop procedure. A
 passing test or structural validator is not a clean-room reproduction, human
 review, provider authorization, or capture receipt.
+
+The 2026-10-14 correction separates the two layers according to the current
+[CLI reference](https://code.claude.com/docs/en/cli-reference) and
+[MCP permissions](https://code.claude.com/docs/en/agent-sdk/mcp): `--tools`
+selects built-ins, whereas `--allowedTools` approves calls. MCP availability
+comes from the exact pinned server configuration. Host approval never creates
+an Agent Braid operator grant; execute/recover retain their core authority gates.
+Metadata initialization can establish parser acceptance before freeze, but actual
+skill loading, tool permissions and journey behavior still require admitted
+native receipts after exact registration approval.

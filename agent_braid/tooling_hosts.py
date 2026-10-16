@@ -26,6 +26,7 @@ from . import tooling_evaluation as evaluation
 from . import tooling_host_events
 from . import tooling_sessions
 from . import tooling_subscription as subscription_policy
+from . import tooling_registration_v6 as source_registration
 
 _SHA256 = re.compile(r"^[0-9a-f]{64}$")
 _MAX_CLAUDE_SETTINGS_BYTES = 16 * 1024
@@ -97,6 +98,7 @@ class HostLaunchConfig:
     host_build_sha256: str | None = None
     candidate_artifact_sha256: str | None = None
     model_identity: Mapping[str, Any] | None = field(default=None, repr=False)
+    claude_keychain_suffix: str | None = field(default=None, repr=False)
 
 
 @dataclass(frozen=True)
@@ -139,13 +141,15 @@ class HostLaunchPlan:
     kill_grace_seconds: float
     subscription_binding: (subscription_policy.SubscriptionBinding
                            | subscription_policy.NativeProcessRouteBinding
-                           | subscription_policy.OperationalProcessRouteBinding | None) = field(default=None, repr=False)
+                           | subscription_policy.OperationalProcessRouteBinding
+                           | source_registration.SourceRouteBinding | None) = field(default=None, repr=False)
     claude_subscription_settings: FilePin | None = field(default=None, repr=False)
     native_route_binding: subscription_policy.NativeProcessRouteBinding | None = field(default=None, repr=False)
     operational_route_binding: subscription_policy.OperationalProcessRouteBinding | None = field(default=None, repr=False)
     host_build_sha256: str | None = None
     candidate_artifact_sha256: str | None = None
     model_identity_sha256: str | None = None
+    source_route_binding: source_registration.SourceRouteBinding | None = field(default=None, repr=False)
 
 
 class PreparationVerifier(Protocol):
@@ -181,6 +185,7 @@ class HostSessionAdapter(tooling_sessions.SessionAdapter):
                  observer: Callable[..., Any], caps: Any,
                  native_route_verifier: NativeRouteVerifier | None = None,
                  operational_route_verifier: OperationalRouteVerifier | None = None,
+                 source_route_verifier: object | None = None,
                  supervisor: Callable[..., Any] | None = None,
                  outcome_reader: Callable[[Any], bytes] | None = None):
         if verifier is None or not callable(getattr(verifier, "verify_pre_dispatch", None)):
@@ -191,6 +196,10 @@ class HostSessionAdapter(tooling_sessions.SessionAdapter):
         self._verifier = verifier
         self._native_route_verifier = native_route_verifier
         self._operational_route_verifier = operational_route_verifier
+        self._source_route_verifier = source_route_verifier
+        if plan.source_route_binding is not None and not callable(
+                getattr(source_route_verifier, "verify_source_observation", None)):
+            raise HostPreparationError("trusted source route verifier is required for v6")
         if plan.native_route_binding is not None and not callable(
                 getattr(native_route_verifier, "verify_observation", None)):
             raise HostPreparationError("trusted native process route verifier is required for policy v2")
@@ -229,7 +238,10 @@ class HostSessionAdapter(tooling_sessions.SessionAdapter):
         else:
             runner = self._supervisor
         request = self._make_process_request(plan, admission)
-        if plan.native_route_binding is not None:
+        if plan.source_route_binding is not None:
+            outcome = runner(request, self._caps, self._observer,
+                             source_route_verifier=self._source_route_verifier)
+        elif plan.native_route_binding is not None:
             outcome = runner(request, self._caps, self._observer,
                              native_route_verifier=self._native_route_verifier)
         elif plan.operational_route_binding is not None:
@@ -265,6 +277,7 @@ class HostSessionAdapter(tooling_sessions.SessionAdapter):
             subscription_binding=plan.subscription_binding,
             native_route_binding=plan.native_route_binding,
             operational_route_binding=plan.operational_route_binding,
+            source_route_binding=plan.source_route_binding,
             subscription_estimate_runtime_guard=(admission.subscription_estimate_runtime_guard
                                                  if admission is not None else None),
             subscription_estimate_admission_receipt_sha256=(admission.receipt_sha256
@@ -375,6 +388,11 @@ class HostSessionAdapter(tooling_sessions.SessionAdapter):
 
     @staticmethod
     def _verify_pins(plan: HostLaunchPlan) -> None:
+        if plan.source_route_binding is not None:
+            try:
+                source_registration.check_claude_directory(plan.source_route_binding, plan.environment)
+            except subscription_policy.SubscriptionError as exc:
+                raise HostPreparationError("Claude canonical directory drift prevents dispatch") from exc
         _check_file_pin(FilePin(plan.executable, plan.executable_sha256), executable=True)
         for pin in plan.config_files:
             if plan.claude_subscription_settings is not None \
@@ -472,7 +490,8 @@ def prepare_host_launch(admission: capture.AttemptAdmission,
     if binding is not None:
         if not isinstance(binding, (subscription_policy.SubscriptionBinding,
                                     subscription_policy.NativeProcessRouteBinding,
-                                    subscription_policy.OperationalProcessRouteBinding)):
+                                    subscription_policy.OperationalProcessRouteBinding,
+                                    source_registration.SourceRouteBinding)):
             raise HostPreparationError("admission subscription binding is not a supported typed policy")
         if binding.host != config.host or binding.slot_id != admission.slot_id:
             raise HostPreparationError("route binding differs from the selected host or slot")
@@ -506,7 +525,15 @@ def prepare_host_launch(admission: capture.AttemptAdmission,
     argv = _build_argv(config)
     native_binding = binding if isinstance(binding, subscription_policy.NativeProcessRouteBinding) else None
     operational_binding = binding if isinstance(binding, subscription_policy.OperationalProcessRouteBinding) else None
-    process_binding = native_binding or operational_binding
+    source_binding = binding if isinstance(binding, source_registration.SourceRouteBinding) else None
+    if source_binding is not None:
+        try:
+            source_binding.validate()
+        except subscription_policy.SubscriptionError as exc:
+            raise HostPreparationError("source route binding is invalid") from exc
+        if config.host == "claude-code":
+            _validate_claude_launch_store(config, source_binding)
+    process_binding = native_binding or operational_binding or (source_binding.binding if source_binding is not None else None)
     normalized_pins = tuple(FilePin(pin.path.resolve(strict=True), pin.sha256)
                             for pin in (*config.config_files,
                                         *((config.claude_subscription_settings,)
@@ -579,6 +606,7 @@ def prepare_host_launch(admission: capture.AttemptAdmission,
         host_build_sha256=config.host_build_sha256,
         candidate_artifact_sha256=config.candidate_artifact_sha256,
         model_identity_sha256=model_identity_sha256,
+        source_route_binding=source_binding,
     )
 
 
@@ -599,6 +627,8 @@ def _build_argv(config: HostLaunchConfig) -> tuple[str, ...]:
         argv.extend(("--config", "web_search=\"disabled\""))
         return tuple(argv)
     if config.host == "claude-code":
+        if any(not re.fullmatch(r"[A-Za-z0-9_-]{1,64}", name) for name in config.mcp_servers):
+            raise HostPreparationError("Claude MCP permission namespaces must be bounded literal names")
         subscription = config.claude_subscription_settings is not None
         argv = [] if subscription else ["--bare"]
         if subscription:
@@ -611,10 +641,33 @@ def _build_argv(config: HostLaunchConfig) -> tuple[str, ...]:
         if config.arm == "mcp-only":
             argv.extend(("--tools", "", "--disable-slash-commands"))
         else:
-            argv.extend(("--tools", ",".join(config.expected_tools)))
+            # Availability uses built-in names; Skill(name) is a permission
+            # pattern, not the name of a built-in tool. MCP availability comes
+            # from the exact validated stdio configuration independently.
+            argv.extend(("--tools", "Skill"))
+        approvals = tuple(f"mcp__{name}__*" for name in config.mcp_servers)
+        if config.arm == "mcp-plus-skills":
+            approvals += config.expected_tools
+        if approvals:
+            argv.extend(("--allowedTools", ",".join(approvals)))
         argv.extend(("--permission-mode", "dontAsk"))
         return tuple(argv)
     raise HostPreparationError("unknown host route")
+
+
+def _validate_claude_launch_store(config, binding):
+    """Pin the canonical directory; authenticated source receipts verify its store."""
+    path = config.config_dir
+    if not path.is_absolute() or path.is_symlink() or not path.is_dir():
+        raise HostPreparationError("Claude launch directory must be an existing canonical directory")
+    canonical = path.resolve(strict=True)
+    if canonical != path or config.environment.get("CLAUDE_CONFIG_DIR") != str(canonical):
+        raise HostPreparationError("Claude launch directory aliases are refused")
+    store = binding.launch_store
+    if hashlib.sha256(str(canonical).encode("utf-8")).hexdigest() != store["canonicalConfigDirSha256"]:
+        raise HostPreparationError("Claude canonical directory differs from frozen registration")
+    if config.claude_keychain_suffix != store["keychainSuffix"]:
+        raise HostPreparationError("Claude observed credential suffix differs from frozen registration")
 
 
 def _validate_codex_configuration(config: HostLaunchConfig) -> None:

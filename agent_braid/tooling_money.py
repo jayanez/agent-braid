@@ -55,6 +55,7 @@ _MEASURE_ACTIVITY_KINDS = {
     "allocatedSubscriptionCostEur": {"setup", "attempt"},
     "apiReferenceEstimateEur": {"attempt"},
 }
+_OPERATIONAL_SCHEMAS = frozenset({evaluation.REGISTRATION_SCHEMA_V5, evaluation.REGISTRATION_SCHEMA_V6})
 _MAX_ACTIVITIES = 256
 _MAX_DECIMAL_DIGITS = 30
 _MAX_DECIMAL_EXPONENT = 30
@@ -675,8 +676,10 @@ class MoneyRoster:
             "schemaVersion": "agent-braid-m45-money-roster-v2",
             "registrationRef": self.registration_ref,
             "registrationSha256": self.registration_sha256,
-            "billingPolicySha256": subscription_policy_sha256(
-                self.registration.data["billingPolicy"]
+            "billingPolicySha256": (
+                _canonical_sha256(self.registration.data["billingPolicy"])
+                if self.registration.data["schemaVersion"] == evaluation.REGISTRATION_SCHEMA_V6
+                else subscription_policy_sha256(self.registration.data["billingPolicy"])
             ),
             "actualAdditionalSpendCapEur": _decimal_text(self.actual_additional_spend_cap_eur),
             "actualAdditionalSpendCapScope": (
@@ -749,7 +752,7 @@ class MoneyLedger:
                 raise MoneyAccountingError("receipt activity is outside the frozen roster")
             if (self.roster.registration.data["schemaVersion"] in {
                     evaluation.REGISTRATION_SCHEMA_V3, evaluation.REGISTRATION_SCHEMA_V4,
-                    evaluation.REGISTRATION_SCHEMA_V5,
+                    evaluation.REGISTRATION_SCHEMA_V5, evaluation.REGISTRATION_SCHEMA_V6,
                 }
                     and activity.kind == "reviewer"):
                 raise MoneyAccountingError(
@@ -968,7 +971,7 @@ class MoneyLedger:
                 technical_stop_required = (
                     not technical_required or technical_cap_violation is not False
                 )
-            elif self.roster.registration.data["schemaVersion"] == evaluation.REGISTRATION_SCHEMA_V5:
+            elif self.roster.registration.data["schemaVersion"] in _OPERATIONAL_SCHEMAS:
                 # The operational subscription route authorizes a bounded
                 # technical launch, but it is not a cash or allocation receipt.
                 # Keep money compliance unknown until independent reconciliation.
@@ -993,7 +996,7 @@ class MoneyLedger:
                 actual_additional_spend_cap_eur=cap,
                 cap_violation=cap_violation,
                 stop_required=(None if self.roster.registration.data["schemaVersion"]
-                               == evaluation.REGISTRATION_SCHEMA_V5 and cap_violation is None
+                               in _OPERATIONAL_SCHEMAS and cap_violation is None
                                else (not required_complete or cap_violation is not False)),
                 allocated_subscription_cost_eur=totals["allocatedSubscriptionCostEur"],
                 api_reference_estimate_eur=totals["apiReferenceEstimateEur"],

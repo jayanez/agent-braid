@@ -1,5 +1,16 @@
 # Codex native quota acquisition — 2026-10-12
 
+The assisted increment adds an optional private HMAC profile projection. Supply
+`private_hmac_key` to `CodexQuotaObserver` only from the independently controlled
+private identity-key installation. The existing native metadata requests and
+fixed transport/executable pins remain the same. Native account email is used
+transiently with the explicit `interface-email-v1` method; no email or key is
+retained in the returned sample. An absent/unusable email leaves the binding
+unavailable. `sample.native_profile_witness(binding)` requires the exact frozen
+Codex account-object and namespace hashes, retains the original profile time
+and hashes the sanitized projection. It supplies no browser/process provenance,
+current recharge setting or cash proof. See [interface correspondence](INTERFACE_OBSERVER.md).
+
 Status: an additive preparation component implemented on top of the owner-approved
 [source contract](CODEX_SOURCE_CONTRACT.md), dependent on PR #504. It acquires
 account-level metadata through the native app-server. It does not complete the

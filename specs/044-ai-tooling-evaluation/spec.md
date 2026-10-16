@@ -66,6 +66,13 @@ Verification: [procedure_complete_cost](validation-plan.md); [T006](tasks.md). O
 
 Retain the frozen human rubric and descriptive thresholds before capture; complete deterministic technical interpretation while human outcome labels and adjudication remain pending, then report disagreements/missing labels when the separately deferred human phase occurs.
 
+The owner-selected [prospective assisted audit](assisted-audit-decision.md) adds
+registration-v6 only: 36 initial cases, two independent humans per case and all
+prescribed escalations, with compact blinded evidence. Earlier schemas retain
+their original full-rating contract. Actual human coverage, unreviewed cases and
+model-assessment provenance must remain explicit. No source authenticity, exact
+registration approval or human outcome is obtained by this design decision.
+
 **SC-007:** Given completion thresholds met with complete costs, or missing required costs, a host failure or unresolved scoring, when the report is interpreted, then per-host denominators and uncertainty remain visible; missing costs that prevent interpretation set utilityClaimEligible false and suppress positive utility claims in reports/exports/decision packets despite completion thresholds; safety failures block acceptance and no general causal speedup claim is inferred.
 
 Verification: [procedure_interpretation](validation-plan.md); [T007](tasks.md). Obtained evidence: none.
