@@ -1,9 +1,14 @@
-# SPEC-041: Planning quickstart
+# SPEC-041: Engineering quickstart
 
-This packet defines future tooling; `agent-braid tooling` commands are not implemented by this PR.
+The experimental `agent-braid tooling` group and five product skills exist.
+This procedure captures synthetic engineering controls, not host acceptance.
+Use an isolated Python 3.12+ environment with the repository development
+requirements. Keep its interpreter first on PATH for nested Python commands.
 
 1. Read spec.md, plan.md, tasks.md, assurance.json and the SPEC-039 program.
-2. Resolve the consumed contract review: SPEC-039 scope and stable SPEC-040 schemas; lifecycle consumed by SPEC-042.
+2. Read [implementation status](implementation-status.md); refresh the two named
+   conversations and only the relevant source/receipt deltas. Preserve the
+   M4.5 frozen payload and existing approval boundaries.
 3. Select the feature explicitly; run prerequisites:
 
 ```sh
@@ -12,7 +17,28 @@ python3 -m scripts.validate_spec_kit
 python3 scripts/sync_github_tracking.py source
 ```
 
-4. Implement the approved slice and pair every task with its prospective validation procedure. Use an isolated dependency environment.
-5. Obtain actual receipts, run proportional validation, freeze a clean candidate and record review. Actual host capture uses the separately registered SPEC-044 protocol; do not assume provider cost/source authority.
+4. Run the focused capture with a new absolute output path outside the checkout:
+
+```sh
+python3 -m scripts.run_m45_skills_acceptance --output-root /absolute/new/private/spec041-controls
+```
+
+The command runs fixed local tests in one supervised child, with a 300-second
+work deadline, bounded retained streams and owned-group cleanup. It accepts no
+host, provider, prompt, grant-store or arbitrary-command input. Failure, skips,
+source drift, missing/duplicate tests or truncated output cannot pass. A failed
+directory is retained; existing outputs are never overwritten or retried
+automatically. Failures after reservation retain a terminal receipt while the
+output filesystem remains writable; lost permissions/full disk are reported as
+an output error and never a pass. `receipt.json` binds exact source bytes, test outcomes and limits;
+`manifest.json` hashes retained files. `native-capture-plan.json` lists both
+hosts' pending coverage without issuing permission or an attestation.
+
+5. Run proportional quick validation after a coherent increment and the PR
+   profile on the stable candidate. Installed-wheel verification remains a
+   separate local procedure; synthetic capture does not imply package installation.
+6. Obtain actual native receipts through the M4.5 continuation's registered
+   SPEC-044/T002 route only after exact admission and approval. Complete original
+   scenarios, freeze and request the applicable review/decision afterwards.
 
 Existing AIM/runtime/grant/verifier contracts remain unchanged. Analysis and preparation are consultative; host permission never substitutes for operator grants. No source ref promotion, repository-code/hook execution, arbitrary network effects or new scientific guarantee. Existing M4 G4 NO-GO and independent M3/M3.5 gates remain in effect.

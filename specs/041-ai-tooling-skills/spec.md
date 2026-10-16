@@ -2,7 +2,8 @@
 
 **Milestone:** M4.5 — AI tooling integrations for Codex and Claude Code
 
-**Status:** draft specification; implementation, observations and human acceptance are pending.
+**Status:** draft assurance; experimental implementation and bounded technical
+controls exist. Original native-host procedures and human acceptance remain pending.
 
 ## Purpose and scope
 
@@ -90,4 +91,10 @@ SDK/documentation, structural checks, synthetic controls, actual host observatio
 
 ## Evidence and unresolved questions
 
-Planned procedures are in validation-plan.md; obtained evidence is empty in assurance.json. The packet records a proposed design, not a runtime acceptance result. Required decisions: technical contract/ADR adoption, exact host versions and installation scope, provider budget/source rights for capture, independent review and founder acceptance. See program.md in SPEC-039 and evaluation-protocol.md in SPEC-044.
+Planned original procedures are in validation-plan.md; their obtained evidence is
+empty in assurance.json. Separate bounded technical clauses are recorded without
+completing the native procedures. The [implementation map](implementation-status.md)
+links current controls and coordination dependencies. Required decisions retain
+their scope: technical contract/ADR adoption, exact host versions and installation
+scope, provider budget/source rights for capture, independent review and founder
+acceptance. See program.md in SPEC-039 and evaluation-protocol.md in SPEC-044.

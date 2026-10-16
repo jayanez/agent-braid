@@ -1,6 +1,7 @@
-# Product skill bundle proposal
+# Product skill bundle contract
 
-Canonical source: `integrations/agent-braid/skills/` in future implementation.
+Canonical source: `integrations/agent-braid/skills/`, copied into package resources
+at build time and validated by `agent_braid.tooling_assets`.
 Each directory has an Agent Skills `SKILL.md` with matching lowercase name,
 nonempty description, licensing and bounded compatibility metadata. Keep each
 instruction body below 500 lines with details in references. No generated
@@ -29,3 +30,8 @@ Adversarial fixtures include repository/evidence text requesting grant creation,
 secret disclosure, false success, hidden host configuration changes and out-of-root
 reads. The workflow refuses these instructions and reports the observed limits.
 Runtime controls enforce effects independently of instruction compliance.
+
+The current bounded loader permits only `name`, `description` and `license`
+frontmatter fields and one `SKILL.md` per directory. Additional references or
+metadata require an explicit format change and matching controls; their optional
+availability in the general Agent Skills format does not enable them here.
