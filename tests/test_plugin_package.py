@@ -7,7 +7,7 @@ import tarfile
 import tempfile
 import unittest
 from agent_braid.plugin_package import inventory, verify_package
-from scripts.build_native_plugin import DISTRIBUTION_ATTRIBUTES, ROOT, assemble, extract_runtime
+from scripts.build_native_plugin import DISTRIBUTION_ATTRIBUTES, ROOT, assemble, extract_runtime, prepare_bytecode
 
 
 class PluginPackageTests(unittest.TestCase):
@@ -89,3 +89,21 @@ class PluginPackageTests(unittest.TestCase):
             subprocess.run(['git', '-C', str(clone), 'config', 'core.autocrlf', 'true'], check=True)
             subprocess.run(['git', '-C', str(clone), 'checkout-index', '--all', '--force'], check=True)
             self.assertEqual((clone / 'RECORD').read_bytes(), original)
+
+    @unittest.skipUnless(__import__('sys').version_info[:2] == (3, 12), 'native build requires Python 3.12')
+    def test_hash_bytecode_remains_unchanged_after_source_timestamp_changes(self):
+        import os
+        import subprocess
+        import sys
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            library = root / 'lib/python3.12'; library.mkdir(parents=True)
+            source = library / 'canary.py'; source.write_text('VALUE = 42\n')
+            prepare_bytecode(root, 'fixture')
+            cache = library / '__pycache__/canary.cpython-312.pyc'
+            before = cache.read_bytes()
+            self.assertEqual(int.from_bytes(before[4:8], 'little'), 3)
+            os.utime(source, (1, 1))
+            code = f'import sys; sys.path.insert(0, {str(library)!r}); import canary; assert canary.VALUE == 42'
+            subprocess.run([sys.executable, '-I', '-c', code], check=True)
+            self.assertEqual(cache.read_bytes(), before)

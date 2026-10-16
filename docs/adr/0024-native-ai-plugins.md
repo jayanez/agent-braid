@@ -23,3 +23,18 @@ uvx/pipx require another user prerequisite; frozen Python executables change sys
 ## Compatibility and review
 
 Legacy CLI/MCP/wheel contracts and historical snapshots remain unchanged. SPEC-046 is additive; SPEC-039/040/042 acceptance is not widened. No constitutional amendment is proposed. Luna technical review, real-host observations, founder acceptance and public release retain separate records.
+
+
+## Byte stability across Git and child interpreters
+
+The distribution root disables Git text/filter/ident transformations so hashes
+cover the bytes consumers actually check out. Build with Python 3.12 and
+precompile all bundled Python sources with checked-hash bytecode (PEP 552), using
+stable logical filenames. Timestamp caches would become stale after Git checkout
+or relocation; existing core subprocesses invoke sys.executable without -B and
+could otherwise rewrite/add caches in the installed package. This preserves the
+unmodified interpreter/core subprocess contract and complete package inventory;
+no volatile executable cache paths are silently excluded from verification.
+The initial runtime/dependency archives remain hash-pinned and resulting bytecode
+and compiler identity are inventoried as derived build output. Both target
+interpreters and a clean Git checkout must verify these controls independently.

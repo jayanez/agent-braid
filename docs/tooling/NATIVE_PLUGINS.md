@@ -137,7 +137,7 @@ configuration is not adopted. Existing Python environments can remain installed.
 
 ## Build a local distribution (maintainers)
 
-Use an isolated development environment with the build requirements, a clean
+Use an isolated **Python 3.12** development environment with the build requirements, a clean
 source commit and an output outside the checkout:
 
 ```sh
@@ -170,3 +170,13 @@ observations must be labelled as such; they do not establish physical Linux or
 interactive host acceptance. Record source, inventory/provenance hashes, exact
 host versions and retained state. A version-changing native upgrade remains a
 separate release test; repeating installation cannot substitute for it.
+
+
+The generated Git marketplace includes a root `.gitattributes` that preserves
+runtime/wheel bytes without text or filter conversion. All bundled Python sources
+are precompiled with checked-hash caches; this keeps the complete inventory stable
+when an existing core subprocess invokes the interpreter after relocation. Test
+the committed distribution via a new Git clone, not only the build directory.
+For container reproduction, the disposable plugin-cache filesystem must allow
+execution (for example `--tmpfs /tmp:rw,exec,mode=1777`); a noexec mount should
+refuse native MCP startup and must not be reported as plugin acceptance.

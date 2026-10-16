@@ -14,3 +14,13 @@ Reviewed local skill catalog and repository Spec Kit workflows. Applicable workf
 Decisions: include relocatable CPython rather than require uv/pip or change sys.executable with a frozen executable; provide one universal local package containing both architectures; use Git distribution before external directory approvals; keep no-dependency experience if a directory refuses the artifact. Official docs and CLI help do not establish observed plugin conformance.
 
 Observed planning CLI versions: Codex 0.163.0-alpha.10.2; Claude Code 2.1.292. Recheck installed versions during acceptance.
+
+
+[PEP 552](https://peps.python.org/pep-0552/) defines checked-hash bytecode that
+validates source content independently of modification timestamps. The package
+uses it after wheel provisioning because Git checkout changes timestamps and
+existing core child interpreters can write ordinary bytecode despite the main
+launcher using -B. The build retains full byte inventory coverage, without
+modifying frozen core process modules or excluding executable caches from doctor.
+A Git roundtrip with autocrlf=true and a separate interpreter import after mtime
+changes have regression controls; actual bundled child/Git canaries remain required.

@@ -3,10 +3,12 @@
 """Assemble an offline native plugin. Only this build step downloads dependencies."""
 from __future__ import annotations
 import argparse
+import compileall
 import hashlib
 from importlib import metadata
 import json
 import os
+import py_compile
 from pathlib import Path
 import shutil
 import subprocess
@@ -39,6 +41,22 @@ def extract_runtime(archive, destination, expected):
                    and item.name.rstrip('/') != 'python/share/terminfo']
         stream.extractall(destination, members=members, filter='data')
     return destination / 'python'
+
+
+
+def prepare_bytecode(runtime, platform):
+    """Keep core Python subprocesses read-only after relocation/Git timestamp changes."""
+    if sys.version_info[:2] != (3, 12):
+        raise ValueError('Native CPython 3.12 builds require a Python 3.12 build interpreter')
+    library = runtime / 'lib/python3.12'
+    for path in library.rglob('__pycache__'):
+        shutil.rmtree(path)
+    if not compileall.compile_dir(str(library), quiet=2, force=True, optimize=0,
+            ddir=f'/agent-braid/runtime/{platform}/lib/python3.12',
+            invalidation_mode=py_compile.PycInvalidationMode.CHECKED_HASH):
+        raise ValueError('Could not precompile every bundled Python source')
+    return {'mode': 'checked-hash', 'compiler': sys.version, 'optimization': 0,
+            'reason': 'Core subprocesses use sys.executable without -B; hash caches survive Git/relocation mtimes'}
 
 
 def _json(path, value):
@@ -117,7 +135,8 @@ def assemble(output, cache, *, platforms=None, allow_dirty=False):
             subprocess.run(command, check=True)
             subprocess.run([sys.executable, '-m', 'pip', '--isolated', 'install', '--no-deps', '--no-compile',
                             '--target', str(site), str(wheel)], check=True)
-            runtime_provenance[platform] = {**entry, 'pythonVersion': lock['pythonVersion'], 'build': lock['build']}
+            bytecode = prepare_bytecode(target, platform)
+            runtime_provenance[platform] = {**entry, 'pythonVersion': lock['pythonVersion'], 'build': lock['build'], 'bytecode': bytecode}
             package_licenses[platform] = sorted([{'name': d.metadata['Name'], 'version': d.version,
                 'license': d.metadata.get('License-Expression') or d.metadata.get('License', 'unknown'),
                 'licenseFiles': [str(p) for p in (d.files or []) if 'license' in str(p).lower() or 'copying' in str(p).lower()]}
