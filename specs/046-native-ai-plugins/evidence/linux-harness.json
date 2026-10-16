@@ -7,9 +7,9 @@
     "--marketplace",
     "/marketplace",
     "--state-root",
-    "/tmp/reproduction linux 2",
+    "/tmp/reproduction linux 8",
     "--output",
-    "/evidence/reproduction-linux-2.json",
+    "/evidence/reproduction-linux-8.json",
     "--fixture",
     "/source/examples/analysis/file-edits.json",
     "--codex-executable",
@@ -37,7 +37,7 @@
     "--cpus",
     "2",
     "--tmpfs",
-    "/tmp:rw,mode=1777"
+    "/tmp:rw,exec,mode=1777"
   ],
   "exitCode": 0,
   "image": "agent-braid-m45-sdk-diagnostic:latest",
@@ -46,11 +46,11 @@
     "Emulated container controls, not physical Linux or provider acceptance"
   ],
   "mountedInputs": [
-    "candidate-2:/marketplace:ro",
+    "clean-distribution-8:/marketplace:ro",
     "native-linux-tools:/tools:ro",
     "source:/source:ro",
     "artifacts:/evidence:rw"
   ],
-  "observation": "Executed Docker invocation for reproduction-linux-2.json",
-  "rawStdoutSha256": "41594a73f664a981a4f9596bf29fa45ef4807d60353938d346c3aac9727aabf7"
+  "observation": "Executed Docker invocation for reproduction-linux-8.json from clean Git distribution clone; exec tmpfs required for native host plugin cache",
+  "rawStdoutSha256": "fbeea90cc97c240578e4fff7e69870d8d37a8e62ef463a87b65152c0d81a4864"
 }

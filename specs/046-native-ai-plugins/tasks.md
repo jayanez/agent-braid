@@ -49,8 +49,8 @@ Stable source IDs; task completion does not imply native/provider or founder acc
 
 ## Remaining acceptance boundaries
 
-T005 requires an actual interactive setup journey. T006/T007 require native MCP
-startup/skill use beyond manager/component inspection. T008 retains the
+T005 requires an actual interactive setup journey. T006/T007 retain interactive
+skill use; native MCP startup/catalog loading has been observed on both targets. T008 retains the
 version-changing update observation. T009 retains reviewed distribution branch,
 tag and release authorization. T010 retains integrated governed GitHub/Project
 readback. Passing local implementation tests cannot silently close those gates.

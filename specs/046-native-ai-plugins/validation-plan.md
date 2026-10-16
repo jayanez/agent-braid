@@ -92,8 +92,8 @@ Preview without writes; digest drift; symlink and ownership refusal; malformed/o
 | 003 | test_plugin_mcp.py; actual SDK auto/legacy and simultaneous connections in reproduction script | Explicit IDs, core values, foreign-resource refusal, stale binding and analysis default controls obtained. |
 | 004 | test_plugin_registry.py discovery/worktree/budget/cancellation cases | Empty, unavailable, symlink, worktree and deduplication controls obtained; no home scan. |
 | 005 | registry preview/apply/digest/mode/lock controls and setup skill | Structured flow obtained; actual interactive wizard journey pending. |
-| 006 | isolated Codex marketplace add, plugin add/list/remove via reproduction script | Actual manager installation on both targets; native MCP startup and skill invocation pending. |
-| 007 | isolated Claude strict validate/install/details/list/uninstall | Six skills and one MCP recognized on both targets; interactive MCP/skill journey pending. |
+| 006 | isolated Codex marketplace add, plugin add/list/remove via reproduction script | Actual manager installation plus app-server MCP handshake, six skills and five analysis tools on both targets; interactive skill invocation pending. |
+| 007 | isolated Claude strict validate/install/details/list/uninstall | Six skills and connected bundled MCP on both targets; interactive skill journey pending. |
 | 008 | test_plugin_legacy.py; reproduction uninstall state sentinel | Modified legacy bytes and application state retained; version-changing upgrade pending. |
 | 009 | build sourceCommit/sourceDirty, inventory/provenance/source SHA; both native records | Clean candidate obtained; public distribution branch/tag and release gate pending. |
 | 010 | README, INSTALL, NATIVE_PLUGINS, alignment, source reconciler | Documentation and source map obtained; integrated remote issue/project readback pending. |
