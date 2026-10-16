@@ -76,7 +76,7 @@ reproduced Linux finding. A fresh private-cache check on Apple Swift 6.4 took
 reproduction. The bounded preparation window is a mitigation, not a measured
 upper bound or proof that subsequent CI will pass.
 
-The single bounded Linux diagnosis in run `38880715567` used the same
+The initial bounded Linux diagnosis in run `38880715567` used the same
 `ubuntu-24.04` image version (`20261012.334.1`) as the original failing run. It
 stopped at the separate `swiftc --version` query after 5.010 seconds, before any
 fixture or Foundation compilation. This exposed an additional insufficient
@@ -86,3 +86,21 @@ preparation deadline. The image's versioned install script preinstalls Swift 6.4
 and creates compiler symlinks; it does not establish a deferred installer as the
 cause. The historical 60-second cause remains unresolved. No diagnostic rerun or
 complete suite is implied; the pull request remains draft pending that diagnosis.
+
+A separately authorized single follow-up, run `38881821056`, reached compilation
+with the corrected harness sources from PR #529 commit
+`1f14726899d6ef352b7a45c97c8e48bb55863279`. The first fixture compilation took
+19.325 seconds (0.661 seconds user CPU and 0.216 seconds system CPU). Its five-second
+process snapshot showed `swift-driver` in state `D`, waiting on
+`folio_wait_bit_common`, with 810 major faults and 1 user/3 system clock ticks.
+The same fixture with a warm cache took 0.165 seconds; minimal Foundation with a
+new private module cache took 0.766 seconds. This strongly supports cold file/page
+I/O waits in the observed run rather than CPU-heavy fixture logic. A new module
+cache does not reset host binary page caches, and a single snapshot does not
+explain the entire delay or prove the historical timeout's exact cause.
+
+The corrected helper then prepared modules in 0.665 seconds and compiled the gate
+and parser in 0.214 and 1.015 seconds. Its focused checks passed 17 tests with one
+private-console skip. Luna Latest reviewed the results: the observed mechanism is
+supported, while the historical timeout remains unproven. No further diagnostic
+or full-suite run follows implicitly; PR #529 remains draft.
