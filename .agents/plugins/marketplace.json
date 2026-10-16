@@ -1,0 +1,20 @@
+{
+  "interface": {
+    "displayName": "Agent Braid"
+  },
+  "name": "agent-braid",
+  "plugins": [
+    {
+      "category": "Developer Tools",
+      "name": "agent-braid",
+      "policy": {
+        "authentication": "ON_USE",
+        "installation": "AVAILABLE"
+      },
+      "source": {
+        "path": "./plugins/agent-braid",
+        "source": "local"
+      }
+    }
+  ]
+}

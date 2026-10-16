@@ -1,0 +1,12 @@
+#!/bin/sh
+set -eu
+plugin_root=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd -P)
+case "$(uname -s):$(uname -m)" in
+  Darwin:arm64) plugin_platform=macos-arm64 ;;
+  Linux:x86_64) plugin_platform=linux-x86_64 ;;
+  *) echo 'Agent Braid: unsupported platform; use a supported local host' >&2; exit 2 ;;
+esac
+plugin_python="$plugin_root/runtime/$plugin_platform/bin/python3.12"
+[ -x "$plugin_python" ] || { echo 'Agent Braid: runtime missing; reinstall the native plugin' >&2; exit 2; }
+export AGENT_BRAID_PLUGIN_ROOT="$plugin_root"
+exec "$plugin_python" -I -B -m agent_braid "$@"

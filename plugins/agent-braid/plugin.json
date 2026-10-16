@@ -1,0 +1,31 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+  "author": {
+    "name": "Juan Antonio Y\u00e1\u00f1ez Garc\u00eda"
+  },
+  "description": "Inspect agent interactions with evidence and explicit workspace boundaries.",
+  "extensions": {
+    "com.openai": {
+      "interface": {
+        "category": "Developer Tools",
+        "composerIcon": "./assets/icon.svg",
+        "developerName": "Juan Antonio Y\u00e1\u00f1ez Garc\u00eda",
+        "displayName": "Agent Braid",
+        "logo": "./assets/icon.svg",
+        "longDescription": "Inspect agent interactions with evidence and explicit workspace boundaries.",
+        "privacyPolicyURL": "https://github.com/jayanez/agent-braid/blob/develop/docs/tooling/PLUGIN_PRIVACY.md",
+        "shortDescription": "Inspect agent interactions",
+        "supportURL": "https://github.com/jayanez/agent-braid/issues",
+        "termsOfServiceURL": "https://github.com/jayanez/agent-braid/blob/develop/LICENSE",
+        "websiteURL": "https://github.com/jayanez/agent-braid"
+      },
+      "onboardingSkill": "./skills/setup/SKILL.md",
+      "requires_local_executor": true
+    }
+  },
+  "homepage": "https://github.com/jayanez/agent-braid",
+  "license": "AGPL-3.0-only",
+  "name": "agent-braid",
+  "repository": "https://github.com/jayanez/agent-braid",
+  "version": "0.1.0-alpha.1"
+}

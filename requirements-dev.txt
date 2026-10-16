@@ -1,2 +1,0 @@
-# Development-only structural validation; core/lab use the standard library.
-jsonschema==4.25.1

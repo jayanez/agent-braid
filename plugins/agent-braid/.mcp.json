@@ -1,0 +1,13 @@
+{
+  "mcpServers": {
+    "agent-braid": {
+      "args": [
+        "plugin",
+        "serve",
+        "--plugin-root",
+        "${CLAUDE_PLUGIN_ROOT}"
+      ],
+      "command": "${CLAUDE_PLUGIN_ROOT}/launch"
+    }
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "author": {
+    "name": "Juan Antonio Y\u00e1\u00f1ez Garc\u00eda"
+  },
+  "description": "Inspect agent interactions with evidence and explicit workspace boundaries.",
+  "homepage": "https://github.com/jayanez/agent-braid",
+  "license": "AGPL-3.0-only",
+  "name": "agent-braid",
+  "repository": "https://github.com/jayanez/agent-braid",
+  "version": "0.1.0-alpha.1"
+}

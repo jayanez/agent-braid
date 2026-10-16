@@ -1,0 +1,562 @@
+{
+  "canonicalSkills": {
+    "bundleSha256": "284d84d226fd58438d995d324e0a01fbe1606f709faeed2759c6f4c3ec192542",
+    "bundleVersion": "0.1.0",
+    "skills": [
+      {
+        "description": "Use when inspecting proposed work for interactions, dependencies, conflicts, conditions, or unknowns.",
+        "license": "CC-BY-SA-4.0",
+        "name": "agent-braid-analyze",
+        "sha256": "bf3292e5c3d867f277cf34bf298227035f6a0ff3caabffaf865da16fda44fd31",
+        "sizeBytes": 2564
+      },
+      {
+        "description": "Use when preparing an advisory order for bounded work and explaining constraints or missing operator authority.",
+        "license": "CC-BY-SA-4.0",
+        "name": "agent-braid-plan",
+        "sha256": "90970a2d5930400dcb5344389c28ab18236086a5dd194379ea2f329f37e4cfb3",
+        "sizeBytes": 2466
+      },
+      {
+        "description": "Use only when executing an exact prepared batch that already has a matching operator grant.",
+        "license": "CC-BY-SA-4.0",
+        "name": "agent-braid-execute",
+        "sha256": "d2f2a4598ab498663bd9854ee9cfa854a77ee64167adca39adeced33bd0b5f43",
+        "sizeBytes": 2456
+      },
+      {
+        "description": "Use when inspecting an interrupted owned run and deciding whether existing authority permits bounded recovery.",
+        "license": "CC-BY-SA-4.0",
+        "name": "agent-braid-recover",
+        "sha256": "0d2d02c291514c6c09a456791bf1521fa12719efe8ada608e3566b422586e27f",
+        "sizeBytes": 2038
+      },
+      {
+        "description": "Use when explaining or exporting a bounded Agent Braid result with its provenance, uncertainty, and observation limits.",
+        "license": "CC-BY-SA-4.0",
+        "name": "agent-braid-evidence",
+        "sha256": "3618f553971f85b51fb90e465b30a6423e2cb52dfcbfecdea4c320429771cba1",
+        "sizeBytes": 3072
+      }
+    ]
+  },
+  "correspondingSource": {
+    "path": "sources/agent-braid-0.1.0-alpha.1-source.tar.gz",
+    "sha256": "7a8ce3420d7daa0a0f8dc046250a94029c08c535bffb3c6c3da66be2628157f9"
+  },
+  "dependencies": {
+    "linux-x86_64": [
+      {
+        "license": "AGPL-3.0-only",
+        "licenseFiles": [
+          "agent_braid-0.1.0a1.dist-info/licenses/LICENSE",
+          "agent_braid-0.1.0a1.dist-info/licenses/NOTICE",
+          "agent_braid/tooling_assets/licenses/AGPL-3.0-only.txt",
+          "agent_braid/tooling_assets/licenses/CC-BY-SA-4.0.txt"
+        ],
+        "name": "agent-braid",
+        "version": "0.1.0a1"
+      },
+      {
+        "license": "MIT",
+        "licenseFiles": [
+          "annotated_types-0.8.0.dist-info/licenses/LICENSE"
+        ],
+        "name": "annotated-types",
+        "version": "0.8.0"
+      },
+      {
+        "license": "MIT",
+        "licenseFiles": [
+          "anyio-4.15.1.dist-info/licenses/LICENSE"
+        ],
+        "name": "anyio",
+        "version": "4.15.1"
+      },
+      {
+        "license": "MIT",
+        "licenseFiles": [
+          "attrs-26.1.0.dist-info/licenses/LICENSE"
+        ],
+        "name": "attrs",
+        "version": "26.1.0"
+      },
+      {
+        "license": "MIT-0",
+        "licenseFiles": [
+          "cffi-2.1.1.dist-info/licenses/LICENSE"
+        ],
+        "name": "cffi",
+        "version": "2.1.1"
+      },
+      {
+        "license": "BSD-3-Clause",
+        "licenseFiles": [
+          "click-8.5.0.dist-info/licenses/LICENSE.txt"
+        ],
+        "name": "click",
+        "version": "8.5.0"
+      },
+      {
+        "license": "Apache-2.0 OR BSD-3-Clause",
+        "licenseFiles": [
+          "cryptography-50.0.2.dist-info/licenses/LICENSE",
+          "cryptography-50.0.2.dist-info/licenses/LICENSE.APACHE",
+          "cryptography-50.0.2.dist-info/licenses/LICENSE.BSD"
+        ],
+        "name": "cryptography",
+        "version": "50.0.2"
+      },
+      {
+        "license": "MIT",
+        "licenseFiles": [
+          "h11-0.16.0.dist-info/licenses/LICENSE.txt"
+        ],
+        "name": "h11",
+        "version": "0.16.0"
+      },
+      {
+        "license": "BSD-3-Clause",
+        "licenseFiles": [
+          "httpcore2-2.13.1.dist-info/licenses/LICENSE.md"
+        ],
+        "name": "httpcore2",
+        "version": "2.13.1"
+      },
+      {
+        "license": "BSD-3-Clause",
+        "licenseFiles": [
+          "httpx2-2.13.1.dist-info/licenses/LICENSE.md"
+        ],
+        "name": "httpx2",
+        "version": "2.13.1"
+      },
+      {
+        "license": "BSD-3-Clause",
+        "licenseFiles": [
+          "idna-3.20.dist-info/licenses/LICENSE.md"
+        ],
+        "name": "idna",
+        "version": "3.20"
+      },
+      {
+        "license": "MIT",
+        "licenseFiles": [
+          "jsonschema-4.26.0.dist-info/licenses/COPYING"
+        ],
+        "name": "jsonschema",
+        "version": "4.26.0"
+      },
+      {
+        "license": "MIT",
+        "licenseFiles": [
+          "jsonschema_specifications-2025.9.1.dist-info/licenses/COPYING"
+        ],
+        "name": "jsonschema-specifications",
+        "version": "2025.9.1"
+      },
+      {
+        "license": "MIT",
+        "licenseFiles": [
+          "mcp-2.3.0.dist-info/licenses/LICENSE"
+        ],
+        "name": "mcp",
+        "version": "2.3.0"
+      },
+      {
+        "license": "MIT",
+        "licenseFiles": [
+          "mcp_types-2.3.0.dist-info/licenses/LICENSE"
+        ],
+        "name": "mcp-types",
+        "version": "2.3.0"
+      },
+      {
+        "license": "Apache-2.0",
+        "licenseFiles": [
+          "opentelemetry_api-1.45.1.dist-info/licenses/LICENSE"
+        ],
+        "name": "opentelemetry-api",
+        "version": "1.45.1"
+      },
+      {
+        "license": "BSD-3-Clause",
+        "licenseFiles": [
+          "pycparser-3.11.dist-info/licenses/LICENSE"
+        ],
+        "name": "pycparser",
+        "version": "3.11"
+      },
+      {
+        "license": "MIT",
+        "licenseFiles": [
+          "pydantic-2.14.1.dist-info/licenses/LICENSE"
+        ],
+        "name": "pydantic",
+        "version": "2.14.1"
+      },
+      {
+        "license": "MIT",
+        "licenseFiles": [
+          "pydantic_core-2.50.1.dist-info/licenses/LICENSE"
+        ],
+        "name": "pydantic_core",
+        "version": "2.50.1"
+      },
+      {
+        "license": "MIT",
+        "licenseFiles": [
+          "pyjwt-2.15.1.dist-info/licenses/AUTHORS.rst",
+          "pyjwt-2.15.1.dist-info/licenses/LICENSE"
+        ],
+        "name": "PyJWT",
+        "version": "2.15.1"
+      },
+      {
+        "license": "Apache-2.0",
+        "licenseFiles": [
+          "python_multipart-0.0.32.dist-info/licenses/LICENSE.txt"
+        ],
+        "name": "python-multipart",
+        "version": "0.0.32"
+      },
+      {
+        "license": "MIT",
+        "licenseFiles": [
+          "referencing-0.37.0.dist-info/licenses/COPYING"
+        ],
+        "name": "referencing",
+        "version": "0.37.0"
+      },
+      {
+        "license": "MIT",
+        "licenseFiles": [
+          "rpds_py-2026.9.1.dist-info/licenses/LICENSE"
+        ],
+        "name": "rpds-py",
+        "version": "2026.9.1"
+      },
+      {
+        "license": "BSD-3-Clause",
+        "licenseFiles": [
+          "sse_starlette-3.5.0.dist-info/licenses/AUTHORS",
+          "sse_starlette-3.5.0.dist-info/licenses/LICENSE"
+        ],
+        "name": "sse-starlette",
+        "version": "3.5.0"
+      },
+      {
+        "license": "BSD-3-Clause",
+        "licenseFiles": [
+          "starlette-1.8.0.dist-info/licenses/LICENSE.md"
+        ],
+        "name": "starlette",
+        "version": "1.8.0"
+      },
+      {
+        "license": "MIT",
+        "licenseFiles": [
+          "truststore-0.10.5.dist-info/licenses/LICENSE"
+        ],
+        "name": "truststore",
+        "version": "0.10.5"
+      },
+      {
+        "license": "MIT",
+        "licenseFiles": [
+          "typing_inspection-0.4.4.dist-info/licenses/LICENSE"
+        ],
+        "name": "typing-inspection",
+        "version": "0.4.4"
+      },
+      {
+        "license": "PSF-2.0",
+        "licenseFiles": [
+          "typing_extensions-4.16.0.dist-info/licenses/LICENSE"
+        ],
+        "name": "typing_extensions",
+        "version": "4.16.0"
+      },
+      {
+        "license": "BSD-3-Clause",
+        "licenseFiles": [
+          "uvicorn-0.54.0.dist-info/licenses/LICENSE.md"
+        ],
+        "name": "uvicorn",
+        "version": "0.54.0"
+      }
+    ],
+    "macos-arm64": [
+      {
+        "license": "AGPL-3.0-only",
+        "licenseFiles": [
+          "agent_braid-0.1.0a1.dist-info/licenses/LICENSE",
+          "agent_braid-0.1.0a1.dist-info/licenses/NOTICE",
+          "agent_braid/tooling_assets/licenses/AGPL-3.0-only.txt",
+          "agent_braid/tooling_assets/licenses/CC-BY-SA-4.0.txt"
+        ],
+        "name": "agent-braid",
+        "version": "0.1.0a1"
+      },
+      {
+        "license": "MIT",
+        "licenseFiles": [
+          "annotated_types-0.8.0.dist-info/licenses/LICENSE"
+        ],
+        "name": "annotated-types",
+        "version": "0.8.0"
+      },
+      {
+        "license": "MIT",
+        "licenseFiles": [
+          "anyio-4.15.1.dist-info/licenses/LICENSE"
+        ],
+        "name": "anyio",
+        "version": "4.15.1"
+      },
+      {
+        "license": "MIT",
+        "licenseFiles": [
+          "attrs-26.1.0.dist-info/licenses/LICENSE"
+        ],
+        "name": "attrs",
+        "version": "26.1.0"
+      },
+      {
+        "license": "MIT-0",
+        "licenseFiles": [
+          "cffi-2.1.1.dist-info/licenses/LICENSE"
+        ],
+        "name": "cffi",
+        "version": "2.1.1"
+      },
+      {
+        "license": "BSD-3-Clause",
+        "licenseFiles": [
+          "click-8.5.0.dist-info/licenses/LICENSE.txt"
+        ],
+        "name": "click",
+        "version": "8.5.0"
+      },
+      {
+        "license": "Apache-2.0 OR BSD-3-Clause",
+        "licenseFiles": [
+          "cryptography-50.0.2.dist-info/licenses/LICENSE",
+          "cryptography-50.0.2.dist-info/licenses/LICENSE.APACHE",
+          "cryptography-50.0.2.dist-info/licenses/LICENSE.BSD"
+        ],
+        "name": "cryptography",
+        "version": "50.0.2"
+      },
+      {
+        "license": "MIT",
+        "licenseFiles": [
+          "h11-0.16.0.dist-info/licenses/LICENSE.txt"
+        ],
+        "name": "h11",
+        "version": "0.16.0"
+      },
+      {
+        "license": "BSD-3-Clause",
+        "licenseFiles": [
+          "httpcore2-2.13.1.dist-info/licenses/LICENSE.md"
+        ],
+        "name": "httpcore2",
+        "version": "2.13.1"
+      },
+      {
+        "license": "BSD-3-Clause",
+        "licenseFiles": [
+          "httpx2-2.13.1.dist-info/licenses/LICENSE.md"
+        ],
+        "name": "httpx2",
+        "version": "2.13.1"
+      },
+      {
+        "license": "BSD-3-Clause",
+        "licenseFiles": [
+          "idna-3.20.dist-info/licenses/LICENSE.md"
+        ],
+        "name": "idna",
+        "version": "3.20"
+      },
+      {
+        "license": "MIT",
+        "licenseFiles": [
+          "jsonschema-4.26.0.dist-info/licenses/COPYING"
+        ],
+        "name": "jsonschema",
+        "version": "4.26.0"
+      },
+      {
+        "license": "MIT",
+        "licenseFiles": [
+          "jsonschema_specifications-2025.9.1.dist-info/licenses/COPYING"
+        ],
+        "name": "jsonschema-specifications",
+        "version": "2025.9.1"
+      },
+      {
+        "license": "MIT",
+        "licenseFiles": [
+          "mcp-2.3.0.dist-info/licenses/LICENSE"
+        ],
+        "name": "mcp",
+        "version": "2.3.0"
+      },
+      {
+        "license": "MIT",
+        "licenseFiles": [
+          "mcp_types-2.3.0.dist-info/licenses/LICENSE"
+        ],
+        "name": "mcp-types",
+        "version": "2.3.0"
+      },
+      {
+        "license": "Apache-2.0",
+        "licenseFiles": [
+          "opentelemetry_api-1.45.1.dist-info/licenses/LICENSE"
+        ],
+        "name": "opentelemetry-api",
+        "version": "1.45.1"
+      },
+      {
+        "license": "BSD-3-Clause",
+        "licenseFiles": [
+          "pycparser-3.11.dist-info/licenses/LICENSE"
+        ],
+        "name": "pycparser",
+        "version": "3.11"
+      },
+      {
+        "license": "MIT",
+        "licenseFiles": [
+          "pydantic-2.14.1.dist-info/licenses/LICENSE"
+        ],
+        "name": "pydantic",
+        "version": "2.14.1"
+      },
+      {
+        "license": "MIT",
+        "licenseFiles": [
+          "pydantic_core-2.50.1.dist-info/licenses/LICENSE"
+        ],
+        "name": "pydantic_core",
+        "version": "2.50.1"
+      },
+      {
+        "license": "MIT",
+        "licenseFiles": [
+          "pyjwt-2.15.1.dist-info/licenses/AUTHORS.rst",
+          "pyjwt-2.15.1.dist-info/licenses/LICENSE"
+        ],
+        "name": "PyJWT",
+        "version": "2.15.1"
+      },
+      {
+        "license": "Apache-2.0",
+        "licenseFiles": [
+          "python_multipart-0.0.32.dist-info/licenses/LICENSE.txt"
+        ],
+        "name": "python-multipart",
+        "version": "0.0.32"
+      },
+      {
+        "license": "MIT",
+        "licenseFiles": [
+          "referencing-0.37.0.dist-info/licenses/COPYING"
+        ],
+        "name": "referencing",
+        "version": "0.37.0"
+      },
+      {
+        "license": "MIT",
+        "licenseFiles": [
+          "rpds_py-2026.9.1.dist-info/licenses/LICENSE"
+        ],
+        "name": "rpds-py",
+        "version": "2026.9.1"
+      },
+      {
+        "license": "BSD-3-Clause",
+        "licenseFiles": [
+          "sse_starlette-3.5.0.dist-info/licenses/AUTHORS",
+          "sse_starlette-3.5.0.dist-info/licenses/LICENSE"
+        ],
+        "name": "sse-starlette",
+        "version": "3.5.0"
+      },
+      {
+        "license": "BSD-3-Clause",
+        "licenseFiles": [
+          "starlette-1.8.0.dist-info/licenses/LICENSE.md"
+        ],
+        "name": "starlette",
+        "version": "1.8.0"
+      },
+      {
+        "license": "MIT",
+        "licenseFiles": [
+          "truststore-0.10.5.dist-info/licenses/LICENSE"
+        ],
+        "name": "truststore",
+        "version": "0.10.5"
+      },
+      {
+        "license": "MIT",
+        "licenseFiles": [
+          "typing_inspection-0.4.4.dist-info/licenses/LICENSE"
+        ],
+        "name": "typing-inspection",
+        "version": "0.4.4"
+      },
+      {
+        "license": "PSF-2.0",
+        "licenseFiles": [
+          "typing_extensions-4.16.0.dist-info/licenses/LICENSE"
+        ],
+        "name": "typing_extensions",
+        "version": "4.16.0"
+      },
+      {
+        "license": "BSD-3-Clause",
+        "licenseFiles": [
+          "uvicorn-0.54.0.dist-info/licenses/LICENSE.md"
+        ],
+        "name": "uvicorn",
+        "version": "0.54.0"
+      }
+    ]
+  },
+  "dependencyLockSha256": "edea0fa7a788ce6c94ef2576d9244cbc26fb2caff4e779f7070c3d9425ab542f",
+  "limits": [
+    "Engineering package; no native conformance, publisher authentication or official approval implied"
+  ],
+  "runtimes": {
+    "linux-x86_64": {
+      "build": "20261013",
+      "pythonVersion": "3.12.15",
+      "sha256": "178d3d83b6e8e99285a65d3fce9c16b87952cc5efdb4d1a0e3ff3be18ff0fc9c",
+      "url": "https://github.com/astral-sh/python-build-standalone/releases/download/20261013/cpython-3.12.15%2B20261013-x86_64-unknown-linux-gnu-install_only_stripped.tar.gz",
+      "wheelPlatforms": [
+        "manylinux_2_28_x86_64",
+        "manylinux2014_x86_64",
+        "manylinux_2_17_x86_64"
+      ]
+    },
+    "macos-arm64": {
+      "build": "20261013",
+      "pythonVersion": "3.12.15",
+      "sha256": "9866e11cf2ae9caa1e671383786f248859a52dd8bfb702fb4c0dc2c65f1d36de",
+      "url": "https://github.com/astral-sh/python-build-standalone/releases/download/20261013/cpython-3.12.15%2B20261013-aarch64-apple-darwin-install_only_stripped.tar.gz",
+      "wheelPlatforms": [
+        "macosx_11_0_arm64"
+      ]
+    }
+  },
+  "schema": "agent-braid-plugin-provenance/v1",
+  "sourceCommit": "a7034ea1560fe9a3027a2afacbc4d42f408df480",
+  "sourceDirty": false,
+  "version": "0.1.0-alpha.1",
+  "wheelSha256": "7be4477cf17b9f0203b0a7f1c44b312846d18b946c5ff453c9c781cc6bb48286"
+}
