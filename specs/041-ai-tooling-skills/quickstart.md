@@ -30,7 +30,8 @@ source drift, missing/duplicate tests or truncated output cannot pass. A failed
 directory is retained; existing outputs are never overwritten or retried
 automatically. Failures after reservation retain a terminal receipt while the
 output filesystem remains writable; lost permissions/full disk are reported as
-an output error and never a pass. `receipt.json` binds exact source bytes, test outcomes and limits;
+an output error and never a pass. `receipt.json` hashes the enumerated control
+inputs and records test outcomes and limits; it does not hash the entire checkout.
 `manifest.json` hashes retained files. `native-capture-plan.json` lists both
 hosts' pending coverage without issuing permission or an attestation.
 
