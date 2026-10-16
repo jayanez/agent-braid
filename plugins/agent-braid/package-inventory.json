@@ -72,7 +72,7 @@
     },
     "provenance.json": {
       "executable": false,
-      "sha256": "ff20828ac49e4d8bece92fa6f06b219d9f794b8c7351a0bc5ed8aab89f83366c",
+      "sha256": "b8b6a71d8f649ad9df762ecc9b16899b6f5c6d870ca51bcf442fe40d397f57b9",
       "sizeBytes": 15927
     },
     "runtime/linux-x86_64/bin/2to3": {
@@ -4284,7 +4284,7 @@
     },
     "runtime/linux-x86_64/lib/python3.12/site-packages/agent_braid-0.1.0a1.dist-info/RECORD": {
       "executable": false,
-      "sha256": "76e697c47f00068954d0a0dd991eba4c0a8e70c930b7486cb36fd29b84777761",
+      "sha256": "f685a251c537fe58584d8c63f85b37b25de029fd760f9f588181821f51761803",
       "sizeBytes": 13060
     },
     "runtime/linux-x86_64/lib/python3.12/site-packages/agent_braid-0.1.0a1.dist-info/REQUESTED": {
@@ -4299,7 +4299,7 @@
     },
     "runtime/linux-x86_64/lib/python3.12/site-packages/agent_braid-0.1.0a1.dist-info/direct_url.json": {
       "executable": false,
-      "sha256": "33496f27eb08bc8634900ebe4b23acce77c3d6559c7c360a3c13fb3d194dca6e",
+      "sha256": "98833d945f7481e8aa71ac22f838c41d43e743ca445d40a146fade9fc8653446",
       "sizeBytes": 338
     },
     "runtime/linux-x86_64/lib/python3.12/site-packages/agent_braid-0.1.0a1.dist-info/entry_points.txt": {
@@ -15979,7 +15979,7 @@
     },
     "runtime/macos-arm64/lib/python3.12/site-packages/agent_braid-0.1.0a1.dist-info/RECORD": {
       "executable": false,
-      "sha256": "76e697c47f00068954d0a0dd991eba4c0a8e70c930b7486cb36fd29b84777761",
+      "sha256": "f685a251c537fe58584d8c63f85b37b25de029fd760f9f588181821f51761803",
       "sizeBytes": 13060
     },
     "runtime/macos-arm64/lib/python3.12/site-packages/agent_braid-0.1.0a1.dist-info/REQUESTED": {
@@ -15994,7 +15994,7 @@
     },
     "runtime/macos-arm64/lib/python3.12/site-packages/agent_braid-0.1.0a1.dist-info/direct_url.json": {
       "executable": false,
-      "sha256": "33496f27eb08bc8634900ebe4b23acce77c3d6559c7c360a3c13fb3d194dca6e",
+      "sha256": "98833d945f7481e8aa71ac22f838c41d43e743ca445d40a146fade9fc8653446",
       "sizeBytes": 338
     },
     "runtime/macos-arm64/lib/python3.12/site-packages/agent_braid-0.1.0a1.dist-info/entry_points.txt": {

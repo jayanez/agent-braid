@@ -1,24 +1,13 @@
-# Agent Braid native plugin — unpublished candidate
+# Agent Braid native plugin
 
-This distribution branch descends from the source history. The generated plugin
-contains both supported runtimes, both host catalogs, five canonical product
-skills plus setup, dependency/license inventories and corresponding sources.
+Agent Braid inspects agent interactions, explains conflicts and carries bounded evidence forward. This local plugin includes its Python runtime, the existing tooling MCP implementation, five canonical product skills and a setup workflow. No Python, pip, uv or Node installation is required by the user. Git and a supported local Codex or Claude Code client remain prerequisites.
 
-Version: 0.1.0-alpha.1. Source candidate: 9641fd6. Public branch/tag publication
-requires the founder decision; no official directory approval is claimed.
-Use the absolute directory path as a local native marketplace until publication.
+Install at user scope from the Agent Braid marketplace. Open setup, select repositories, inspect the private configuration/results destinations, apply the exact preview and reconnect MCP. Selection is per repository; global plugin availability is not unrestricted filesystem access. Analysis is the default. Execution requires explicit operator configuration and existing exact grants; setup never creates grants or starts provider sessions.
 
-```sh
-codex plugin marketplace add /absolute/marketplace
-codex plugin add agent-braid@agent-braid
-claude plugin install agent-braid --marketplace /absolute/marketplace --scope user
-```
+The host manages plugin updates and removal. Shared configuration and private results live outside its plugin cache and survive those operations. Use setup to unregister a workspace without deleting its source or evidence. Legacy manual installations can be migrated only using their matching ownership receipts.
 
-Open setup, select repositories, inspect/apply its digest and reconnect MCP.
-Git and an existing supported host are required; no external Python/package
-manager is needed. Targets: macOS arm64, Linux x86_64 with glibc 2.28+.
+This is a research-alpha engineering package. See provenance.json and package-inventory.json for the exact software/runtime identities and license inventory. Corresponding source is distributed alongside the marketplace under sources/. Byte verification is not native host acceptance or official directory approval. Official listing status must be checked independently.
 
-Private configuration/results survive native update/removal. See the packaged
-README, LICENSE/NOTICE, provenance.json and package-inventory.json. Public source
-and installation documentation live on develop. Actual interactive skill journeys,
-version-changing native upgrade and directory eligibility/approval remain separate.
+Support: https://github.com/jayanez/agent-braid/issues
+
+Software and executable materials: AGPL-3.0-only. Documentation and skill instructions: CC-BY-SA-4.0. Bundled Python and third-party packages retain their own included licenses. See LICENSE, LICENSES and provenance.json.
