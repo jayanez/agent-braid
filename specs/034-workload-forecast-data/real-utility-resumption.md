@@ -9,10 +9,11 @@ It does not erase the [cancelled partial attempt](t005-disposition.md), consume 
 new native grant, or accept its original unchecked criterion. Historical decisions,
 assurance and receipts retain their exact domains. SPEC-045/T007 remains not_planned.
 
-The first implementation is the source-bound request envelope and concurrent
+The first implementation (commit `203c740`) was the source-bound request envelope and concurrent
 phase ledger in `agent_braid/forecast_admission.py`. It contains no native launcher,
 runtime invocation, model, host inspection, source collection, CLI or MCP endpoint.
-The original software paths, public contracts and mandatory verifiers are unchanged.
+Public contracts and mandatory runtime verifiers are unchanged. The opt-in launch
+implementation below now routes the relevant internal Git calls through a new boundary.
 
 **Status: blocked before an executable admission candidate.** No real inputs have
 been captured or admitted. The whole-flow watchdog, terminal publication/cleanup
@@ -167,13 +168,80 @@ failure from launch, retain process identities through reaping, and cover both
 runners. The whole-flow watchdog must also cover Python reconstruction and
 terminal publication/cleanup, with separately preserved verifier resources.
 Every temporary and retained root needs coverage; sampled per-stage scratch is
-not a hard aggregate quota. The historical runners and supervisor are unchanged.
+not a hard aggregate quota. The historical runners, M2 prototype and supervisor are unchanged.
 
 Until that concrete coverage, storage bound and input-specific request budget
 are justified, stop before an executable candidate. Do not create another generic
 watchdog, fixture, approval package or retry around unproved limits. The plugin
 NO-GO applies to the plugin value scenario; it does not by itself prohibit these
 separate fixed-runtime admission controls.
+
+## Opt-in launch and terminal supervision implementation
+
+`agent_braid/forecast_git_launch.py` adds a versioned internal route for a dedicated,
+externally contained POSIX worker. Adapter, replay and runtime calls share that route. The frozen `git_process.py`, `git_runtime_process.py`,
+`git_integration_prototype.py` and `tooling_supervisor.py` bytes remain unchanged. Outside the opt-in route, existing
+behavior delegates to the historical runners. Once opted in, the worker cannot
+return to a legacy route or reactivate another scope; it must terminate.
+
+Each scoped Popen reserves a phase request first, distinguishes failed start from
+launch, records the actual PID and reaping status, and inherits the worker group
+instead of creating a detached session. Cancellation kills tracked direct children;
+full descendant termination remains the external containment's responsibility.
+An unreaped child or unverified external cleanup never becomes a successful close.
+Selector-based I/O and bounded waits avoid an unbounded process.wait or pipe-reader
+join inside this route. Existing per-stage command/output/scratch limits remain.
+An address-space wrapper is unsupported in this route and refuses before launch.
+The historical M2 integration prototype is explicitly outside the admission worker:
+activation rejects it if already loaded, blocks later imports for the worker's
+lifetime, and requires a single Python thread at activation so an import cannot
+race that exclusion. The fixed adapter/replay/runtime route does not import it.
+Worker threads may start only after activation; no legacy fallback follows exit.
+
+The binding fixes the selected commits and patch hashes, base, mode, final-verifier
+route, source digest, executable path/hash, roots, PID/PGID, nonce and absolute
+whole-flow deadline. Every launch additionally submits its exact argv, environment,
+input hash and inherited descriptors to the trusted operator verifier. A mismatch
+refuses before spawn. Source/scratch cwd are constrained; Git environment redirects
+are rejected; HOME/TMPDIR/index must stay inside the quota root. No raw environment
+or patch contents are exported in the receipt.
+
+The authority is constructor-supplied by trusted operator code, never selected by
+a client/model payload. It must verify actual process-tree containment (including
+prevention of escape), coverage of every write root, hard phase quotas with protected
+future capacity, the matching external watchdog deadline, source inputs and an
+immutable Git executable. A hash check alone cannot eliminate path/exec TOCTOU.
+The verifier itself and non-Git Python work must be bounded by that external
+watchdog. Neither a boolean copied from a request nor a sampled disk scanner
+establishes these capabilities. There is no default authority, profile provisioning,
+CLI/MCP activation or native admission entrypoint in this increment.
+
+Requests, time and storage have separate explicit allocations for each phase,
+plus a terminal time/storage reserve. There are no default numeric time or disk
+budgets. The current operational values remain **unset**, because the selected
+inputs' inventory sizes and internal Git cap sums do not justify those whole-flow
+allocations. Missing, stale, mismatched or insufficient authority/capacity fails
+closed. This is implemented budget enforcement, not a measured budget estimate.
+
+The work worker cannot perform final verification. A new `verification_of` worker
+requires the previous work binding, confirmed termination, the original absolute
+deadline, sufficient remaining verify/terminal reserves and operator-approved
+read-only verification effects. Starting another worker never resets that deadline
+or authorizes recovery, grant reuse, publication or cleanup. Its empty work-phase
+counters describe only that independent verifier, not completion of the producer.
+
+The expanded source digest covers the dispatcher, ledger and validation helpers.
+Only the model-pin assignment is normalized to avoid a hash cycle; the inventory,
+ledger body and normalization algorithm are hashed. The source caps remain
+conditional cap arithmetic, with a new identity; old receipts keep their historical
+commit binding. No mutable source pin is treated as operator approval.
+
+**Current stop:** the software route is implemented and tested with fake processes;
+no operator-backed containment/quota/immutable-executable lease or closed numerical
+whole-flow budget has been obtained for the actual profile. Therefore it still
+cannot be presented as an executable admission candidate. Native qualification,
+source/rights acceptance, final-tree equivalence, T001/T005/T008/T009 and utility
+acceptance remain pending. No real inputs were replayed or captured.
 
 ## Plugin and telemetry coordination
 

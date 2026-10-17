@@ -3,7 +3,7 @@
   "date": "2026-10-17",
   "sourceBase": "48f4226db1e1b0565b1f8faf0eca81c150a65d30",
   "ownerDecision": "Direct user instruction: PLEASE IMPLEMENT THIS PLAN; resume SPEC-034/T005. Specific native/model/source execution gates retained.",
-  "domain": "Repository source-cap arithmetic and request-ledger unit regressions only",
+  "domain": "Incremental FC.1 admission engineering and static input registration; each stage retains its own domain and candidate binding; no native or real-source acceptance.",
   "inputs": {
     "agent_braid/forecast_admission.py": "58c3175208491e8752e28432233caa1527c797721b89490ba164686cec7d9eb4",
     "tests/test_forecast_admission.py": "ae301d9f2dcc9a7e4874fb2e36b8cf69d722e32fb68d181fe402d5473eeae056",
@@ -440,6 +440,229 @@
         "git diff --check"
       ],
       "limits": "Static documentary integrity only; no native/source/model experiment."
+    },
+    "documentCommit": "82658f41b231aab10454822ff68591f40825a9b6"
+  },
+  "supervisionImplementation": {
+    "date": "2026-10-17",
+    "ownerDecision": "Implement Git launch coverage, terminal supervision and time/storage budgets for the two selected inputs; no models, real sources or native controls.",
+    "sourceDigest": "59ba026ce481c7e719cf6b2ff9f90614f6797f1a0f581178b0dd0a84821f7508",
+    "inputs": {
+      "agent_braid/forecast_git_launch.py": "f5facc03348b65e620891bc14a8087a52b81c7332bf3d8eb5e8dd10b0edc3123",
+      "agent_braid/forecast_admission.py": "0d57dbfd5b11a050220cb4c67c6a44386399817910c3fb0062c767c8f3d727b2",
+      "agent_braid/git_adapter.py": "f563632ce51599fc6bdbba538be9ef9d6c7f58cb6e78bd0163c98c4bb3f0c98e",
+      "agent_braid/git_replay.py": "1397d608365e1b972c1ca7de843481905ca9b0b95fb105ce27329263ad71d683",
+      "agent_braid/git_runtime.py": "e4e7761cb8598a471adb5a573b5b944ac06bf2aeaf1f026a78c8a488379a9856",
+      "agent_braid/git_integration_prototype.py": "8e77bf6a27993be13188249bab64c1ec331c120438dc170cc47e323fb3854c4e",
+      "tests/test_forecast_git_launch.py": "4b69f8e0781c8db1ab2f3572f80278b5259e1b30ff08cde0078d0ea9c4851efd",
+      "tests/test_forecast_admission.py": "dafb1a35b94f22982adfd45d5a9b3664f6a191449e44e39e446e0af7bb166a8a",
+      "specs/034-workload-forecast-data/real-utility-resumption.md": "4118d32743f2269bcc2f762596c0109cf61f786fedb9bd0993a51c4ed80f3e80"
+    },
+    "currentSourceEnvelopes": [
+      {
+        "version": "agent-braid-admission-source-envelope-v1",
+        "sourceDigest": "59ba026ce481c7e719cf6b2ff9f90614f6797f1a0f581178b0dd0a84821f7508",
+        "mode": "serial",
+        "finalVerifier": "runtime",
+        "phases": [
+          {
+            "phase": "prepare",
+            "replayBudgets": 3,
+            "runtimeBudgets": 1,
+            "singleCommandProbes": 1,
+            "gitRequests": 1793,
+            "internalCapSumSeconds": 450
+          },
+          {
+            "phase": "grant",
+            "replayBudgets": 1,
+            "runtimeBudgets": 1,
+            "singleCommandProbes": 1,
+            "gitRequests": 769,
+            "internalCapSumSeconds": 210
+          },
+          {
+            "phase": "dispatch",
+            "replayBudgets": 1,
+            "runtimeBudgets": 2,
+            "singleCommandProbes": 1,
+            "gitRequests": 1025,
+            "internalCapSumSeconds": 270
+          },
+          {
+            "phase": "verify",
+            "replayBudgets": 0,
+            "runtimeBudgets": 1,
+            "singleCommandProbes": 0,
+            "gitRequests": 256,
+            "internalCapSumSeconds": 60
+          }
+        ],
+        "gitRequests": 3843,
+        "internalCapSumSeconds": 990,
+        "minimumMeasuredGitRequests": null,
+        "wholeFlowWallUpperBoundNs": null,
+        "blockers": [
+          "input-specific-bounds-not-established",
+          "native-launch-coverage-not-established",
+          "non-git-deadline-and-terminal-reserve-not-established",
+          "aggregate-retained-storage-bound-not-established"
+        ],
+        "executionAuthorization": false,
+        "actualProfileAdmitted": false,
+        "limits": [
+          "Source-cap arithmetic, not actual native counts or cost.",
+          "Per-budget scratch is sampled, not a hard whole-flow disk quota.",
+          "CPU/RSS observations are not host enforcement.",
+          "The existing budget observer swallows callback exceptions."
+        ]
+      },
+      {
+        "version": "agent-braid-admission-source-envelope-v1",
+        "sourceDigest": "59ba026ce481c7e719cf6b2ff9f90614f6797f1a0f581178b0dd0a84821f7508",
+        "mode": "parallel",
+        "finalVerifier": "policy",
+        "phases": [
+          {
+            "phase": "prepare",
+            "replayBudgets": 3,
+            "runtimeBudgets": 2,
+            "singleCommandProbes": 1,
+            "gitRequests": 2049,
+            "internalCapSumSeconds": 510
+          },
+          {
+            "phase": "grant",
+            "replayBudgets": 1,
+            "runtimeBudgets": 2,
+            "singleCommandProbes": 1,
+            "gitRequests": 1025,
+            "internalCapSumSeconds": 270
+          },
+          {
+            "phase": "dispatch",
+            "replayBudgets": 1,
+            "runtimeBudgets": 6,
+            "singleCommandProbes": 2,
+            "gitRequests": 2050,
+            "internalCapSumSeconds": 540
+          },
+          {
+            "phase": "verify",
+            "replayBudgets": 1,
+            "runtimeBudgets": 4,
+            "singleCommandProbes": 2,
+            "gitRequests": 1538,
+            "internalCapSumSeconds": 420
+          }
+        ],
+        "gitRequests": 6662,
+        "internalCapSumSeconds": 1740,
+        "minimumMeasuredGitRequests": null,
+        "wholeFlowWallUpperBoundNs": null,
+        "blockers": [
+          "input-specific-bounds-not-established",
+          "native-launch-coverage-not-established",
+          "non-git-deadline-and-terminal-reserve-not-established",
+          "aggregate-retained-storage-bound-not-established"
+        ],
+        "executionAuthorization": false,
+        "actualProfileAdmitted": false,
+        "limits": [
+          "Source-cap arithmetic, not actual native counts or cost.",
+          "Per-budget scratch is sampled, not a hard whole-flow disk quota.",
+          "CPU/RSS observations are not host enforcement.",
+          "The existing budget observer swallows callback exceptions."
+        ]
+      }
+    ],
+    "checks": [
+      {
+        "command": "python -m unittest tests.test_forecast_git_launch tests.test_forecast_admission -v",
+        "outcome": "29 passed before M2 compatibility correction; diagnostic inputs retained in failedStableProfile",
+        "domain": "Fake processes, owned temporary directories, source reads and fake operator leases only; no Git admission or source/model/VM execution."
+      },
+      {
+        "command": "python -m unittest tests.test_forecast_git_launch tests.test_forecast_admission tests.test_m2_closure tests.test_m2_performance_retest -v",
+        "outcome": "51 passed after restoring M2 prototype and enforcing its exclusion",
+        "domain": "Mock-process launch controls plus existing static M2 binding checks only; no real source/admission/model/VM execution."
+      }
+    ],
+    "developmentDiagnostic": "One new assertion initially failed because macOS canonicalized /var to /private/var; expected path corrected to its resolved identity. Retained privately in /tmp/fc1-launch-controls-development-failure.log. Earlier review defects and code pin omissions were corrected before stable profile.",
+    "review": {
+      "configuredModel": "gpt-6-luna",
+      "agent": "/root/luna_admission_review",
+      "resolved": [
+        "Exact launch identity/cwd/environment was not bound; now operator-approved per invocation.",
+        "Historical integration prototype bypass identified; prototype kept byte-frozen and explicitly excluded from the dedicated worker.",
+        "Binary hash/exec TOCTOU; immutable executable capability now mandatory.",
+        "Code pin omitted ledger/validators; normalized model-pin hashing now covers them.",
+        "M2 ordinary profile caught historical prototype byte binding. Prototype restored and excluded from the isolated, single-thread-at-activation admission worker; its original approvals remain unchanged."
+      ],
+      "targetedInMemoryMutationsDetected": [
+        "Remove invocation digest check",
+        "Remove immutable executable capability"
+      ],
+      "diskFilesMutated": false,
+      "finalVerdict": "no remaining findings in reviewed software/domain/pin scope; physical/operator capabilities remain unverified",
+      "activationPrecondition": "Luna confirmed: dedicated POSIX worker pid==pgid, exactly one Python thread before import exclusion, work threads only after activation, no foreign Python code; no additional tests repeated for this final static check."
+    },
+    "operationalBudget": {
+      "phaseWallNs": null,
+      "phaseStorageBytes": null,
+      "terminalWallNs": null,
+      "terminalStorageBytes": null,
+      "status": "unset-unjustified; explicit operator-backed allocations required; no defaults or authorization to spend"
+    },
+    "stableProfile": {
+      "command": "PATH=/tmp/agent-braid-fc1-decisions-20261016/.venv-speckit/bin:$PATH python -m scripts.validate_change --base origin/develop --profile pr",
+      "exitCode": 0,
+      "tests": 1959,
+      "skipped": 19,
+      "log": "/tmp/fc1-supervision-pr-final.log",
+      "outcome": "Selected executable validation passed; deferred boundary gates remain unexecuted.",
+      "limits": "Software/owned-fixture regressions and repository gates only. Evidence metadata finalized afterward; no native admission, model, VM or real-source experiment."
+    },
+    "actualProfileAdmitted": false,
+    "executionAuthorization": false,
+    "externalCleanupVerified": false,
+    "nativeAdmissionRuns": 0,
+    "modelExecutions": 0,
+    "vmExecutions": 0,
+    "realSourceCaptures": 0,
+    "newExecutionOrApprovalPackage": false,
+    "failedStableProfile": {
+      "command": "python -m scripts.validate_change --base origin/develop --profile pr",
+      "exitCode": 1,
+      "tests": 1957,
+      "failures": 2,
+      "errors": 2,
+      "skipped": 19,
+      "sourceDigest": "fc21d39bb8cd0e302af2a7fe28f02e29a04d57c454efb147044e7a209417ae75",
+      "inputHashes": {
+        "agent_braid/forecast_git_launch.py": "21bc2d64807a3b0ea56a75810e9760a7fad489e12790b790ee1f093b6cf95620",
+        "agent_braid/forecast_admission.py": "b0d41e3a4e8a06465adfad7e70f8d8d360c7684897ae9c09f86b018ecc8957fe",
+        "agent_braid/git_adapter.py": "f563632ce51599fc6bdbba538be9ef9d6c7f58cb6e78bd0163c98c4bb3f0c98e",
+        "agent_braid/git_replay.py": "1397d608365e1b972c1ca7de843481905ca9b0b95fb105ce27329263ad71d683",
+        "agent_braid/git_runtime.py": "e4e7761cb8598a471adb5a573b5b944ac06bf2aeaf1f026a78c8a488379a9856",
+        "agent_braid/git_integration_prototype.py": "faf8ba314e33429c7c74ddf009ba5d52204c7b4dc1a10e7b1716e934189c75ef",
+        "tests/test_forecast_git_launch.py": "51c3e9ce7719c5aec87acf192f7176dfa54b3d5e240734b3cac50311e999c376",
+        "tests/test_forecast_admission.py": "dafb1a35b94f22982adfd45d5a9b3664f6a191449e44e39e446e0af7bb166a8a",
+        "specs/034-workload-forecast-data/real-utility-resumption.md": "23e8860332b18af236b1f4ecbfcc99fee2c793dfaa9c288d95711cebca811e84"
+      },
+      "log": "/tmp/fc1-supervision-pr.log",
+      "reason": "Frozen M2 prototype import was changed, violating the founder-reviewed byte binding. Restored original bytes; historical approvals and hashes were not changed. This is not a passing profile."
+    },
+    "integrity": {
+      "outcome": "passed",
+      "checks": [
+        "current implementation/document hashes",
+        "historical initial inputs from203c740",
+        "historical static registration document from82658f4",
+        "normalized current source digest",
+        "M2 prototype bytes identical to HEAD"
+      ],
+      "limits": "Record binding only, not native qualification or operator approval."
     }
   }
 }

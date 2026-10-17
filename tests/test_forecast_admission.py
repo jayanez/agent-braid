@@ -58,6 +58,20 @@ class AdmissionAccountingTests(unittest.TestCase):
             with self.subTest(changes=changes), self.assertRaises(ForecastError):
                 self.ledger(**changes)
 
+    def test_model_pin_covers_ledger_and_validation_dependencies(self):
+        from agent_braid.forecast_admission import SOURCE_FILES
+        with tempfile.TemporaryDirectory() as directory:
+            clone=Path(directory)
+            for name in SOURCE_FILES:
+                target=clone/name; target.parent.mkdir(parents=True,exist_ok=True)
+                target.write_bytes((ROOT/name).read_bytes())
+            for name in ('agent_braid/forecast_admission.py','agent_braid/forecast_data.py'):
+                target=clone/name; original=target.read_bytes()
+                target.write_bytes(original+b'\n# changed ledger or validator\n')
+                with self.subTest(name=name), self.assertRaisesRegex(ForecastError,'admission-source-drift'):
+                    source_envelope(clone,mode='serial',final_verifier='runtime')
+                target.write_bytes(original)
+
     def test_dispatch_cannot_spend_verification_reservation(self):
         ledger = self.ledger()
         for phase in ('prepare', 'grant', 'dispatch'):

@@ -8,12 +8,15 @@ the source envelope nor a healthy ledger admits a profile or authorizes work.
 from copy import deepcopy
 import hashlib
 from pathlib import Path
+import re
 from threading import Lock
 
 from .forecast_data import digest, integer, pin, require
 
 PHASES = ('prepare', 'grant', 'dispatch', 'verify')
 SOURCE_FILES = (
+    'agent_braid/forecast_admission.py', 'agent_braid/forecast_data.py',
+    'agent_braid/forecast_git_launch.py',
     'agent_braid/runtime_policy.py', 'agent_braid/git_runtime.py',
     'agent_braid/runtime_scheduler.py', 'agent_braid/git_replay.py',
     'agent_braid/git_adapter.py', 'agent_braid/git_process.py',
@@ -24,14 +27,23 @@ SOURCE_FILES = (
 )
 # Fixed reviewed-source model: changing source requires a fresh accounting review,
 # not regenerating an arbitrary hash and treating it as accepted coverage.
-_MODELED_SOURCE = '463e2db603609a814306de5c2bc72106b9e2cc9cf9424a3c4ab3e24756b2d149'
+_MODELED_SOURCE = '59ba026ce481c7e719cf6b2ff9f90614f6797f1a0f581178b0dd0a84821f7508'
 
 
 def source_digest(root):
     """Hash only named repository sources; never inspect workload or host state."""
     root = Path(root)
-    return digest({name: hashlib.sha256((root / name).read_bytes()).hexdigest()
-                   for name in SOURCE_FILES})
+    hashes = {}
+    for name in SOURCE_FILES:
+        raw = (root / name).read_bytes()
+        if name == 'agent_braid/forecast_admission.py':
+            # Normalize only the one model-pin assignment to break its hash cycle.
+            # The ledger, inventory and normalization algorithm remain hashed.
+            raw, count = re.subn(rb"(?m)^_MODELED_SOURCE = '[0-9a-f]{64}'$",
+                                b"_MODELED_SOURCE = '<normalized-model-pin>'", raw)
+            require(count == 1, 'admission-model-pin-format')
+        hashes[name] = hashlib.sha256(raw).hexdigest()
+    return digest(hashes)
 
 
 def source_envelope(root, *, mode, final_verifier, expected_source_digest=None):

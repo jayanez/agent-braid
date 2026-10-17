@@ -24,7 +24,7 @@ from .analysis import _canonical, _digest
 from .git_adapter import analyze_git_with_provenance
 from .git_process import GitCommandBudget, GitCommandFailure
 from .utility_budget_observer import observe_git_budget
-from .git_runtime_process import run_owned_git
+from .forecast_git_launch import run_owned_git
 from .git_replay import (
     OID, _patches, _sanitized_environment, _supported_operations,
     _mark_unsupported_binary_patches, _topological_orders, _validate_request,
