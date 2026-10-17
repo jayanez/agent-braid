@@ -20,16 +20,16 @@ Stable source IDs; task completion does not imply native/provider or founder acc
 - [x] T006 (REQ-006 / SC-006): Codex plugin.
   Dependencies: T002, T005. Verification: procedure_006 in validation-plan.md. Evidence: evidence/release-alpha2.json.
 
-- [ ] T007 (REQ-007 / SC-007): Claude Code plugin.
+- [x] T007 (REQ-007 / SC-007): Claude Code plugin.
   Dependencies: T002, T005. Verification: procedure_007 in validation-plan.md. Evidence: evidence/release-alpha2.json.
 
-- [ ] T008 (REQ-008 / SC-008): Lifecycle and migration.
+- [x] T008 (REQ-008 / SC-008): Lifecycle and migration.
   Dependencies: T003, T006, T007. Verification: procedure_008 in validation-plan.md. Evidence: evidence/release-alpha2.json.
 
-- [ ] T009 (REQ-009 / SC-009): Distribution and technical acceptance.
+- [x] T009 (REQ-009 / SC-009): Distribution and technical acceptance.
   Dependencies: T002–T008. Verification: procedure_009 in validation-plan.md. Evidence: evidence/release-alpha2.json.
 
-- [ ] T010 (REQ-010 / SC-010): Documentation and tracking.
+- [x] T010 (REQ-010 / SC-010): Documentation and tracking.
   Dependencies: T001–T009. Verification: procedure_010 in validation-plan.md. Evidence: evidence/release-alpha2.json.
 
 - [x] T011 (REQ-011 / SC-011): OpenAI candidacy.
@@ -49,17 +49,21 @@ Stable source IDs; task completion does not imply native/provider or founder acc
 
 ## Remaining acceptance boundaries
 
-T005/T006 now have an actual agent-operated native Codex setup/product-skill
-journey, including cancellation, bounded discovery, exact preview/apply,
-reconnection and two-workspace MCP analysis. T007 remains blocked by the actual
-Claude Code session's expired native login. T008 now has native alpha.1 to alpha.2
-updates with unchanged registry/result bytes for both hosts on native macOS and
-emulated Linux; receipt-owned migration controls remain obtained. Its checkbox
-remains open until its explicit dependency T007 is satisfied. T009 retains
-public distribution branch/tag and the remote curl installation check: the
-owner's conditional publication authorization is not yet satisfied while T007 is
-blocked. T010 retains integrated GitHub/Project readback and publication-aligned
-documentation. See release-acceptance.md for exact observation boundaries.
+T005/T006/T007 have actual agent-operated native macOS setup/product-skill
+journeys, including bounded discovery, exact preview/apply, immutable binding
+reconnection and two-workspace MCP analysis. Codex additionally observed explicit
+cancellation before apply. The historical Claude login refusal was resolved by
+native login before its successful journey. T008 has real native alpha.1 → alpha.2
+updates and unchanged registry/result bytes for both hosts on macOS and emulated
+Linux. T009 has the public distribution branch/tag, exact fresh clone inventory
+and literal remote curl installation for both hosts on both observed platforms.
+T010 updates the English installation and source tracking map. The prior
+integrated audit returned `operations: []` with 15 linked tasks, independently
+read back in the private Project. Final reconciliation is applied only from
+merged clean sources; its empty post-audit and Project readback are retained
+privately after integration.
+See release-acceptance.md for exact observation boundaries.
 T011/T012 completion is documentary preparation only; T014/T015 keep external
-eligibility, contact/submission and approval independent, as the approved plan
-requires. No messages to providers have been sent.
+eligibility, contact/submission and approval independent. No provider submission
+messages have been sent. Historical 108 attempts and human/scientific/final M4.5
+gates remain unchanged.

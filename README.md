@@ -93,22 +93,24 @@ human-evaluation or founder-acceptance boundaries.
 The preferred installation route is the **native user plugin** for Codex or
 Claude Code on macOS arm64 and Linux x86_64. It includes Python and dependencies,
 registers its skills automatically and guides you through selecting repositories.
-The source candidate is experimental. Publication of `plugin-dist` is authorized
-once both native interactive journeys pass; the [current acceptance record](specs/046-native-ai-plugins/release-acceptance.md)
-records the pending Claude login gate. See [native installation and setup](docs/tooling/NATIVE_PLUGINS.md)
-for the marketplace commands, local candidate installation and the optional
-`curl … | sh` installer. Neither the installer nor discovery registers a repository
-without the setup preview and explicit apply.
+The experimental `0.1.0-alpha.2` marketplace is published on `plugin-dist`,
+with the pinned tag [`agent-braid--v0.1.0-alpha.2`](https://github.com/jayanez/agent-braid/tree/agent-braid--v0.1.0-alpha.2).
+Both native interactive journeys and the alpha.1 → alpha.2 update passed; see the
+[current acceptance record](specs/046-native-ai-plugins/release-acceptance.md).
+See [native installation and setup](docs/tooling/NATIVE_PLUGINS.md) for marketplace
+commands, repository selection and lifecycle operations. Neither installation nor
+discovery registers a repository without the setup preview and explicit apply.
 
-After `plugin-dist` publication, the optional installer command is:
+The optional installer command is:
 
 ```sh
 curl -fsSL https://raw.githubusercontent.com/jayanez/agent-braid/develop/install.sh \
   | sh -s -- --host codex
 ```
 
-Select `--host claude` or `--host both` as needed. For an unpublished candidate,
-use the [local marketplace instructions](docs/tooling/NATIVE_PLUGINS.md).
+Select `--host claude` or `--host both` as needed. Add
+`--ref agent-braid--v0.1.0-alpha.2` to pin the package. The runtime and dependencies
+are included; Git and the selected native host must already be installed.
 
 ### Python installation (development and existing users)
 

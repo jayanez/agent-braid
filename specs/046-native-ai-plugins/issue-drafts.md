@@ -20,16 +20,16 @@ Parent: SPEC-046 — Native AI plugins; milestone M4.5 #19.
 - [x] T006 (REQ-006 / SC-006): Codex plugin.
   Dependencies: T002, T005. Verification: procedure_006 in validation-plan.md. Evidence: evidence/release-alpha2.json.
 
-- [ ] T007 (REQ-007 / SC-007): Claude Code plugin.
+- [x] T007 (REQ-007 / SC-007): Claude Code plugin.
   Dependencies: T002, T005. Verification: procedure_007 in validation-plan.md. Evidence: evidence/release-alpha2.json.
 
-- [ ] T008 (REQ-008 / SC-008): Lifecycle and migration.
+- [x] T008 (REQ-008 / SC-008): Lifecycle and migration.
   Dependencies: T003, T006, T007. Verification: procedure_008 in validation-plan.md. Evidence: evidence/release-alpha2.json.
 
-- [ ] T009 (REQ-009 / SC-009): Distribution and technical acceptance.
+- [x] T009 (REQ-009 / SC-009): Distribution and technical acceptance.
   Dependencies: T002–T008. Verification: procedure_009 in validation-plan.md. Evidence: evidence/release-alpha2.json.
 
-- [ ] T010 (REQ-010 / SC-010): Documentation and tracking.
+- [x] T010 (REQ-010 / SC-010): Documentation and tracking.
   Dependencies: T001–T009. Verification: procedure_010 in validation-plan.md. Evidence: evidence/release-alpha2.json.
 
 - [x] T011 (REQ-011 / SC-011): OpenAI candidacy.
@@ -49,7 +49,7 @@ Parent: SPEC-046 — Native AI plugins; milestone M4.5 #19.
 
 Bodies inherit requirement/scenario, dependencies, verification and evidence links
 from tasks.md and the reconciler. Source completion reflects only the bounded
-engineering/documentary criteria stated there. Native interactive and external
-acceptance remain open. Remote creation is authorized by the owner-approved plan;
+engineering/documentary criteria stated there. Native macOS interactive journeys and own public distribution are obtained;
+external official approval and human acceptance remain open. Remote creation is authorized by the owner-approved plan;
 apply only from integrated clean sources with milestone/ID allowlist and reviewed
 digest. Read back issue/subissue links and Project state separately.

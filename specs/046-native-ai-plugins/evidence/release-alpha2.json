@@ -25,9 +25,10 @@
     "tests/test_validation_profiles.py": "a5a0bf45e9cd40942eca4657fd87b8b9f22e5f7a52d25e89356e9d0ae6269661"
   },
   "limits": [
-    "Agent-operated interactive Codex acceptance; no human usability rating",
-    "Local-directory version transition observed; no public Git refresh or remote curl install claimed",
-    "No public distribution, provider fallback, official approval or scientific result claimed"
+    "Both interactive acceptances agent-operated on native macOS; no human usability rating",
+    "Local-directory real version transition and fresh public Git/curl install are separate observations",
+    "Linux controls use emulation, no physical Linux or interactive subscription acceptance",
+    "Own marketplace publication does not establish official approval or scientific acceptance"
   ],
   "negativeControls": [
     "Alpha1 native Codex cache doctor refused aliases omitted by its installer; retained as a failed baseline",
@@ -39,7 +40,9 @@
     "Installed cache doctor now verifies in both hosts; contained runtime aliases materialized without relaxing inventory",
     "Real native alpha1-to-alpha2 upgrade in same isolated user profiles and unchanged local marketplace source identity on both tested platforms",
     "Registry/result bytes identical across both host updates and uninstall",
-    "Actual Codex setup cancellation/discovery/preview/apply/reconnect and product-skill MCP analysis passed"
+    "Actual Codex setup cancellation/discovery/preview/apply/reconnect and product-skill MCP analysis passed",
+    "Actual Claude native setup/digest/apply/reconnect and installed product-skill MCP analysis for both workspaces passed after native login renewal",
+    "Own public branch/tag published, exact public Git clone inventory passed, literal curl installer passed both hosts on native macOS and emulated Linux"
   ],
   "package": {
     "fileBytes": 390788156,
@@ -48,6 +51,8 @@
     "provenanceSha256": "73fc054fb9ab39b0f7bde5b64965928b9d6f324c1c7869c062c43304c2116b2c",
     "version": "0.1.0-alpha.2"
   },
+  "publishedDistribution": "6649c73d088799201bf9ab6e030f258e346e8062",
+  "publishedTag": "agent-braid--v0.1.0-alpha.2",
   "records": [
     {
       "path": "specs/046-native-ai-plugins/evidence/mac-native-alpha2.json",
@@ -77,18 +82,24 @@
     {
       "path": "specs/046-native-ai-plugins/evidence/claude-interactive-auth-blocker.json",
       "sha256": "56a595ec1f0ee71c79d8b7c8e06bfbc977ec7121fa4f9dd4ee6b8d611e2e59f7"
+    },
+    {
+      "path": "specs/046-native-ai-plugins/evidence/claude-interactive-alpha2.json",
+      "sha256": "c0d4044805753f1520bf147994f0592b9abf607153b9dfcc660e5cf7f345aa7e"
+    },
+    {
+      "path": "specs/046-native-ai-plugins/evidence/publication-alpha2.json",
+      "sha256": "f2ae4829f5e1793fcba51ce338df38c7b1df8e5912d198b351ae9365e31c2321"
     }
   ],
   "remaining": [
-    "Claude native interactive setup/product-skill journey blocked by expired native login",
-    "Own public marketplace branch/tag and real remote curl installation pending both-host interactive success",
     "Official ecosystem eligibility/submission/approval T014/T015 remain separate",
     "Historical M4.5 108 attempts, human/scientific/founder gates unchanged",
     "Linux emulated controls do not constitute physical Linux or a provider interaction"
   ],
   "schema": "agent-braid-native-plugin-release-acceptance/v1",
   "sourceDirtyAtBuild": false,
-  "status": "partially-observed-publication-blocked",
+  "status": "published-technical-observations-passed",
   "unitTests": {
     "command": ".venv-speckit/bin/python -m unittest tests.test_plugin_registry tests.test_plugin_mcp tests.test_plugin_installer tests.test_plugin_legacy tests.test_plugin_package tests.test_plugin_reproduction tests.test_validation_profiles",
     "exitCode": 0,

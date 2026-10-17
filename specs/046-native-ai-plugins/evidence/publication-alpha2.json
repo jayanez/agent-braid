@@ -1,0 +1,50 @@
+{
+  "branch": "plugin-dist",
+  "freshPublicClone": {
+    "fileBytes": 390788156,
+    "files": 7737,
+    "head": "6649c73d088799201bf9ab6e030f258e346e8062",
+    "inventorySha256": "5a70b4af226ea657b721468a2afe7226639999b5c6d0610e03916fc29e98d464",
+    "status": "passed"
+  },
+  "harnessSha256": "e24ef270cbecb12384ecb570c304bf89231ea95c15fa20381fc21a001ba89c2c",
+  "limits": [
+    "Linux is native AMD64 host binaries in an emulated container on macOS, network enabled to fetch public GitHub; no physical Linux claim",
+    "Remote fresh installation and local-directory real version transition are separate observations",
+    "No model/provider sessions started by the public installer controls",
+    "Official directory approval, human usability/scientific acceptance and historical M4.5 gates remain separate"
+  ],
+  "negativeControls": [
+    "Initial harness PATH omitted Git ancillary basename/sed utilities; native Claude Git submodule clone refused, retained privately, not a product acceptance",
+    "Initial Linux test image lacked curl; curl was provisioned only in the disposable test container before the successful clean host profiles"
+  ],
+  "observed": [
+    "Own marketplace published only after actual Codex and Claude interactive journeys and version-changing updates passed",
+    "Literal README curl pipeline --host both succeeded in fresh per-process HOME and native host profiles on both tested platforms",
+    "Both actual native installed caches passed complete inventory doctor",
+    "Native Codex discovered six skills and configured MCP tools; native Claude MCP Connected",
+    "Selected hosts ran with shell/Git/curl utilities only in PATH; no Python/pip/uv/Node/Docker consumer dependency",
+    "Fresh public Git clone inventory matches 7737 regular files, hashes, sizes and executable flags; no missing or extra package files"
+  ],
+  "records": [
+    {
+      "path": "specs/046-native-ai-plugins/evidence/mac-public-install-alpha2.json",
+      "rawRecordSha256": "46898e8ca1ab9b5738f42658022bd392c252afcb9a3579a42c7024fd1867c81f",
+      "sha256": "1dc21c94b4822f6bd043ae6ad251e5f9c9501385267c59084fc037c0fad4f46b"
+    },
+    {
+      "path": "specs/046-native-ai-plugins/evidence/linux-public-install-alpha2.json",
+      "rawRecordSha256": "88842aad39331cc9ae939d1bc90edb4d1f56fc0cdc0d4d51688e7068c5afd81a",
+      "sha256": "d761a272295366151ea727246f016815e1537b58b2d6bac94980bd6bb522db74"
+    }
+  ],
+  "remote": "https://github.com/jayanez/agent-braid.git",
+  "remoteRefs": [
+    "6649c73d088799201bf9ab6e030f258e346e8062\trefs/heads/plugin-dist",
+    "e0faa5e2999d8477fa024145098247d483d8b2c4\trefs/tags/agent-braid--v0.1.0-alpha.2",
+    "6649c73d088799201bf9ab6e030f258e346e8062\trefs/tags/agent-braid--v0.1.0-alpha.2^{}"
+  ],
+  "schema": "agent-braid-public-marketplace-observation/v1",
+  "status": "passed",
+  "tag": "agent-braid--v0.1.0-alpha.2"
+}
