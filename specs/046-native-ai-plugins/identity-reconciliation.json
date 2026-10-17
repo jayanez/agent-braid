@@ -1,0 +1,348 @@
+{
+  "schemaVersion": "documentary-identity-inventory/v1",
+  "status": "local-source-migration-not-integrated",
+  "telemetryBaseCommit": "b13737ed4584e512edb054d9a891a0b06fab8120",
+  "pluginBaseCommit": "48f4226db1e1b0565b1f8faf0eca81c150a65d30",
+  "decision": "NO-GO",
+  "executionAuthorization": false,
+  "scope": "Documentary inventory only; hashes do not rebind evidence or confer approval.",
+  "moves": [
+    {
+      "historicalPath": "specs/046-local-technical-telemetry/spec.md",
+      "historicalSha256": "a23dc1c0b63ff144795f04ca3026329b337313c540c09674b287208f7d7ff577",
+      "currentLocalPath": "specs/047-local-technical-telemetry/spec.md",
+      "currentLocalSha256": "3e0b48e83cf3c6dc1c42e5a05a5835f9e7231da9042ea3b2e226186ba24229b2"
+    },
+    {
+      "historicalPath": "specs/046-local-technical-telemetry/plan.md",
+      "historicalSha256": "10be89f304ceb9b15f04746d16b209a0b28ba4ee521ed39175b960a6422c0c90",
+      "currentLocalPath": "specs/047-local-technical-telemetry/plan.md",
+      "currentLocalSha256": "0d4d7abca9ea1ec340929f647e4e38e31492b3a25f46294748ea2c89fc43ca3d"
+    },
+    {
+      "historicalPath": "specs/046-local-technical-telemetry/tasks.md",
+      "historicalSha256": "8af6e3fffc21187dedcce284ef428ba9b850410e232567dab1fc86614b190819",
+      "currentLocalPath": "specs/047-local-technical-telemetry/tasks.md",
+      "currentLocalSha256": "b81d1948a8e49d26fcfd09f085570e84f7dc1c261ae6518906921c2896eddae5"
+    },
+    {
+      "historicalPath": "specs/046-local-technical-telemetry/assurance.json",
+      "historicalSha256": "1f99449edef5fec716b2aa2d3bcd2036d370e72c34a66b3f50f656456ab1b85a",
+      "currentLocalPath": "specs/047-local-technical-telemetry/assurance.json",
+      "currentLocalSha256": "dccd972195d017415811ca31f0f44dfdabf4ca9b80f8960081e59ba3e8561d98"
+    },
+    {
+      "historicalPath": "specs/046-local-technical-telemetry/data-contract.md",
+      "historicalSha256": "362dabded6429bb6051faac5af39ead0cc40f8e9969bdbbdd970bfa23687dfd9",
+      "currentLocalPath": "specs/047-local-technical-telemetry/data-contract.md",
+      "currentLocalSha256": "362dabded6429bb6051faac5af39ead0cc40f8e9969bdbbdd970bfa23687dfd9"
+    },
+    {
+      "historicalPath": "specs/046-local-technical-telemetry/quickstart.md",
+      "historicalSha256": "af95a3df8555e88a55416e7c2a0182db5d9ea5ff31aab06793a422f1374886ad",
+      "currentLocalPath": "specs/047-local-technical-telemetry/quickstart.md",
+      "currentLocalSha256": "af95a3df8555e88a55416e7c2a0182db5d9ea5ff31aab06793a422f1374886ad"
+    },
+    {
+      "historicalPath": "specs/046-local-technical-telemetry/validation-plan.md",
+      "historicalSha256": "4243803e597b5547eff11b1389cf95310f5f70532ed21a1368a72c57e223fee5",
+      "currentLocalPath": "specs/047-local-technical-telemetry/validation-plan.md",
+      "currentLocalSha256": "2659fe0c49188c798535a238306d0382fcce6ad4cb9b37b0ab38669cf074a430"
+    },
+    {
+      "historicalPath": "specs/046-local-technical-telemetry/alignment.json",
+      "historicalSha256": "295c58d59fff3b3e6c606d290480ece72707466b94dc15d3f219b0c427077ea9",
+      "currentLocalPath": "specs/047-local-technical-telemetry/alignment.json",
+      "currentLocalSha256": "c4a88342e851646ad159c54f9e0929f7e3f8012178e40a3a074264a103503ffb"
+    },
+    {
+      "historicalPath": "specs/046-local-technical-telemetry/tracking-drafts.json",
+      "historicalSha256": "63e4088d514dcef60fd56b05dfb36d9ddb6008609f92136b92cb23d19eba18cf",
+      "currentLocalPath": "specs/047-local-technical-telemetry/tracking-drafts.json",
+      "currentLocalSha256": "87539e6ac5942c9d95cbb68a22a976c86672f638393987bcaff48e2623c46109"
+    },
+    {
+      "historicalPath": "specs/046-local-technical-telemetry/issue-drafts.md",
+      "historicalSha256": "352d471a88fa83eb81b26be759150a0dec51a4cd5953f5d720649bc57ca58348",
+      "currentLocalPath": "specs/047-local-technical-telemetry/issue-drafts.md",
+      "currentLocalSha256": "cf3fab3f1abed60c4be68fd6f3664e994d83585c2b70042e519c6b38a59a0c85"
+    },
+    {
+      "historicalPath": "specs/046-local-technical-telemetry/milestone-description-draft.md",
+      "historicalSha256": "75e11343a95558d589037173a09e7b54a5bcf76234cc57b6c17286ab50345f8a",
+      "currentLocalPath": "specs/047-local-technical-telemetry/milestone-description-draft.md",
+      "currentLocalSha256": "69f061d878c33b0f29e3a0c6708c7c606bcf6c2367ec07315caaa1d0bbf29856"
+    },
+    {
+      "historicalPath": "specs/046-local-technical-telemetry/milestone-description-draft.json",
+      "historicalSha256": "69781729eeda365f98a81cee6e816a206c36461097a4557652165cfa95cc2b11",
+      "currentLocalPath": "specs/047-local-technical-telemetry/milestone-description-draft.json",
+      "currentLocalSha256": "58c455f203a62748379f9bd7391d5ddc0368f8a74505b99a762d336d4eec4990"
+    },
+    {
+      "historicalPath": "docs/adr/0024-local-technical-telemetry.md",
+      "historicalSha256": "c385f5c2bc6dc90a2d5227525b5718f3755e7d97e086bc6c43d53bad0890aef0",
+      "currentLocalPath": "docs/adr/0025-local-technical-telemetry.md",
+      "currentLocalSha256": "760dabbb236220bdb27843f95570e21ea2bf6c57057933c5f2f21101d416a2fd"
+    }
+  ],
+  "preservedHistoricalFiles": [
+    {
+      "path": "specs/046-local-technical-telemetry/admission-preparation-20261016.md",
+      "sha256": "5b1e27bce0cde5b137a307972d1d83f7a9e5c2436ed2ba77822061b837c2dbfe"
+    },
+    {
+      "path": "specs/046-local-technical-telemetry/documentary-reconciliation-938523a-20261017.json",
+      "sha256": "af814009188ddefde555564d0907ca5abd526299116c843c0383c707de39278e"
+    },
+    {
+      "path": "specs/046-local-technical-telemetry/documentary-reconciliation-938523a-20261017.md",
+      "sha256": "07fd9e6761e878b6b519d588d7cd0056e6958814c98d97466049015f0b150f66"
+    },
+    {
+      "path": "specs/046-local-technical-telemetry/e9-coverage-no-go-disposition.md",
+      "sha256": "7e689d55579c005545d8f3e2331ddd3c49054d9991139ba37db423c699fffa27"
+    },
+    {
+      "path": "specs/046-local-technical-telemetry/e9-engineering-acceptance-disposition.md",
+      "sha256": "59e22ef4d5486c17bd0c08c40ac1ea34ff4539b464f0e1666a771281814e829b"
+    },
+    {
+      "path": "specs/046-local-technical-telemetry/e9-native-observation-disposition.md",
+      "sha256": "ed8a36029be122565346d94528be6a44dc32ed9515ecc4e0e0cb41e42fa352e9"
+    },
+    {
+      "path": "specs/046-local-technical-telemetry/e9-owner-incorporation-checks-20261017.json",
+      "sha256": "7170e8253dfb40b238f2431801f26f3259467cab8d785f3ded03ba3ca920103e"
+    },
+    {
+      "path": "specs/046-local-technical-telemetry/evidence/e9-owner-incorporation-20261017.log",
+      "sha256": "905e4656dbf767842ea4da08b50b4bdfa82c88087cf5f132c0f537a4b9e49ce9"
+    },
+    {
+      "path": "specs/046-local-technical-telemetry/evidence/environment-corrected-controls.log",
+      "sha256": "c61fe62faf5353e3042526c2bcbf5fd5a5a188f68b35a6a5db64c3c4b528336f"
+    },
+    {
+      "path": "specs/046-local-technical-telemetry/evidence/environment-failure-controls.log",
+      "sha256": "5097d8f30e0a14d7f73c4ac326f769b452859c4e6f19199c050a0774aff1e000"
+    },
+    {
+      "path": "specs/046-local-technical-telemetry/evidence/final-packaging.json",
+      "sha256": "e3e4bbbe14776fab14b68605de5919130786d54cb1252bd4b874c08a07501186"
+    },
+    {
+      "path": "specs/046-local-technical-telemetry/evidence/final-packaging.log",
+      "sha256": "b28f0f3bd337a6cae29938ed6ec99ef7ecf3c0005cc38370479d91ec923e04ac"
+    },
+    {
+      "path": "specs/046-local-technical-telemetry/evidence/focused-tests.log",
+      "sha256": "fa32b15fc617f978ab036433ef3f4f5f7866ee574bbeb6c798d17733bae84fff"
+    },
+    {
+      "path": "specs/046-local-technical-telemetry/evidence/freeze-packaging.json",
+      "sha256": "9e953288400d46e2213d4f797edcd68567d29983f315df945bad2f6022b34e4a"
+    },
+    {
+      "path": "specs/046-local-technical-telemetry/evidence/freeze-raw-log-attribute-control.json",
+      "sha256": "c08304fc5f905efe94548318975e6b421bc0ff152ca40b8feb922938011806a6"
+    },
+    {
+      "path": "specs/046-local-technical-telemetry/evidence/freeze-staged-object-06a363a217837100b9bf1a5d86cc4fa7b4b0b029.log",
+      "sha256": "3cb6818177f10c0ff7d622e559ee783633032b2d2619ab61caf6b506353d0af9"
+    },
+    {
+      "path": "specs/046-local-technical-telemetry/evidence/freeze-staged-object-4f2a4753325be5b6f2e8373e33a546d3aba995e3.log",
+      "sha256": "ec95f8ba3b5cfb96358698100150610d32b13d48eb0b996cb8ea225cff506b8e"
+    },
+    {
+      "path": "specs/046-local-technical-telemetry/evidence/freeze-staged-object-e051312b77deb6a92f7469ec73003c187aba0cee.log",
+      "sha256": "1d6740187a19231c27c1163f8e41b9b7cdbc98fadbfcff51711013f62e136e4b"
+    },
+    {
+      "path": "specs/046-local-technical-telemetry/evidence/freeze-staging-preservation.json",
+      "sha256": "4030c514239ad7271e1df7706d822f06f376a47b33b421773b6c82c4151a3ee5"
+    },
+    {
+      "path": "specs/046-local-technical-telemetry/evidence/mutations.json",
+      "sha256": "35dfde60f5312396e3df3ccd831df4663ea7ff1a47f413059c8954560bc3825a"
+    },
+    {
+      "path": "specs/046-local-technical-telemetry/evidence/overhead.json",
+      "sha256": "ea1645d9c070ac3a7a62a176bc85d85028beed8fc00e2ebadae857762655820b"
+    },
+    {
+      "path": "specs/046-local-technical-telemetry/evidence/profile-pr.log",
+      "sha256": "1ed2802a72a1b6cc88c648f7706dd4486d75606f9359281db896a9d081a8f5c3"
+    },
+    {
+      "path": "specs/046-local-technical-telemetry/evidence/profile-quick.log",
+      "sha256": "518c3ee11900d2f52b66fb9bf753c418b369ff9701a486486353508ad021463b"
+    },
+    {
+      "path": "specs/046-local-technical-telemetry/evidence/profile-source-start.json",
+      "sha256": "f6a500561bf289676c399cd68c9ef5fb434b602e683a4e38240d47e68943722b"
+    },
+    {
+      "path": "specs/046-local-technical-telemetry/evidence/reconciliation-e474320e-pr.log",
+      "sha256": "de46e1ce742b6936c812485e36e95fcb3208f7ac668e1e429a240b86ce778f13"
+    },
+    {
+      "path": "specs/046-local-technical-telemetry/evidence/reconciliation-e474320e-targeted.log",
+      "sha256": "309fb6a4405db35d216631cb3817d7db9f6a10a931ef7e9cb0428379c01f7226"
+    },
+    {
+      "path": "specs/046-local-technical-telemetry/evidence/review-final-checks.log",
+      "sha256": "2e513a7289875e8dc066f4522760fb52c381d6898f08fd927d351f637ff2a3fc"
+    },
+    {
+      "path": "specs/046-local-technical-telemetry/evidence/review-final-packaging.json",
+      "sha256": "d1945d9878210b14b61b07e942a866163a65fb85fba81308864a8cde99074e07"
+    },
+    {
+      "path": "specs/046-local-technical-telemetry/evidence/review-final-packaging.log",
+      "sha256": "b28f0f3bd337a6cae29938ed6ec99ef7ecf3c0005cc38370479d91ec923e04ac"
+    },
+    {
+      "path": "specs/046-local-technical-telemetry/evidence/review-focused.log",
+      "sha256": "7b3d404c1e4958ffa6f0001d160bb834a21a66caaee450e59abfae97b80f0aae"
+    },
+    {
+      "path": "specs/046-local-technical-telemetry/evidence/review-green.log",
+      "sha256": "99981a0dd4a660cf1f6da01e1c205056e6b33ee2a3a77f7a727b82c84eb34dd1"
+    },
+    {
+      "path": "specs/046-local-technical-telemetry/evidence/review-interrupted-pr.log",
+      "sha256": "b7416247d98d785111d04f0b264de4e8e3c8bbfe2c4cc06feee0340ac172603c"
+    },
+    {
+      "path": "specs/046-local-technical-telemetry/evidence/review-interrupted-quick.log",
+      "sha256": "9b780877e6b076eb9f1b5ea3e568b9ce362b5d0a56a1405a09f1f380e9e2a30c"
+    },
+    {
+      "path": "specs/046-local-technical-telemetry/evidence/review-interrupted-source-start.json",
+      "sha256": "a15096591f779791c7805871eb6da16edd5b48cf1a8b7e5824f5c4e8266f2c50"
+    },
+    {
+      "path": "specs/046-local-technical-telemetry/evidence/review-mutations.json",
+      "sha256": "920096c0bc77c91d6c01889e173431446aa03d396a3f7a1cc167a8f6fd419550"
+    },
+    {
+      "path": "specs/046-local-technical-telemetry/evidence/review-overhead-final.json",
+      "sha256": "83ce1c678f02604b9ee3cf7219a672a8294b9fa6bac98124b8ff4bb724ea4e1d"
+    },
+    {
+      "path": "specs/046-local-technical-telemetry/evidence/review-overhead.json",
+      "sha256": "cbb1417fad8bf57422da6dac7ada5195d1df4894762eb7d0ed4302bb4498e9c2"
+    },
+    {
+      "path": "specs/046-local-technical-telemetry/evidence/review-portability-red.log",
+      "sha256": "498e62cb6027165660df2a1f9b45cf385bcf689260912b25448cd761db092866"
+    },
+    {
+      "path": "specs/046-local-technical-telemetry/evidence/review-preflight.log",
+      "sha256": "b28f0f3bd337a6cae29938ed6ec99ef7ecf3c0005cc38370479d91ec923e04ac"
+    },
+    {
+      "path": "specs/046-local-technical-telemetry/evidence/review-profile-pr.log",
+      "sha256": "39485cc6a1c621248def446f07366863efc270a68dbe086a459fd83304c8acd0"
+    },
+    {
+      "path": "specs/046-local-technical-telemetry/evidence/review-profile-quick.log",
+      "sha256": "f376ae09c5a99454c15d27d94fa13c8522742db3d3dbcc857a752f36d6d4ae8f"
+    },
+    {
+      "path": "specs/046-local-technical-telemetry/evidence/review-profile-source-start.json",
+      "sha256": "5a296051cf49cb32709b9489c9dae3e68f7bba57be984e95e3712126c6d8d165"
+    },
+    {
+      "path": "specs/046-local-technical-telemetry/evidence/review-red.log",
+      "sha256": "4fca5b2a6614ea806a1888edbda9d70bd5a2019484bcef634e380760a6a643aa"
+    },
+    {
+      "path": "specs/046-local-technical-telemetry/evidence/review-source-manifest.json",
+      "sha256": "6bc38406162e298627db7c18521a56d4adfd593e28448c7199fd6254dfbbfa71"
+    },
+    {
+      "path": "specs/046-local-technical-telemetry/evidence/review-validation.json",
+      "sha256": "ccfd9550b44ee284d2d4f2ec0843abfde5e7b03a523e0bfa8470ec8eb2206e2a"
+    },
+    {
+      "path": "specs/046-local-technical-telemetry/evidence/source-manifest.json",
+      "sha256": "678475bf40e1b391153125313a3a60d004d1f9444f3d23aface6ff15141be9ec"
+    },
+    {
+      "path": "specs/046-local-technical-telemetry/evidence/validation-environment.json",
+      "sha256": "fbf7c1d45bb2df15fd723f3dc982b8aa94e88dce2918fbade6891eaea147570c"
+    },
+    {
+      "path": "specs/046-local-technical-telemetry/evidence/validation.json",
+      "sha256": "0412998e5b7b3578ec995f9ccc08ff9a6abc44f5d6a25fa371e732fb8bc0460e"
+    },
+    {
+      "path": "specs/046-local-technical-telemetry/historical/adr-0023-local-technical-telemetry.md",
+      "sha256": "01552324429237a9f7114b223ee024687ba578d4efe72c8a0b6f49792125e989"
+    },
+    {
+      "path": "specs/046-local-technical-telemetry/historical/assurance-b3809cbbaa0a.json",
+      "sha256": "e143fa284e9e698fc99bbda11b7f411501301732a030fb38f6bf71a6dfa759f5"
+    },
+    {
+      "path": "specs/046-local-technical-telemetry/historical/owner-acceptance-disposition-20261016.md",
+      "sha256": "55a1b4ffe4e8d24e37a7ac0759665533c75739f4b5b313b4573191bd211645ff"
+    },
+    {
+      "path": "specs/046-local-technical-telemetry/historical/owner-decisions-20261016.json",
+      "sha256": "91fec7c1a2694b0efbd47b22d62b3a5c4e1e810953c00c75f360c8d012d4fa10"
+    },
+    {
+      "path": "specs/046-local-technical-telemetry/measure_overhead.py",
+      "sha256": "ad5a96eb8b1d8fc3f7b0dd5ea372e3343b9ab4dd286d351105329cd7e89c1c2a"
+    },
+    {
+      "path": "specs/046-local-technical-telemetry/owner-acceptance-disposition.md",
+      "sha256": "53e0bb0fb5a8ca45c1133b048b955f48a36da74d99f7e3e5d4d75381b0a4ce77"
+    },
+    {
+      "path": "specs/046-local-technical-telemetry/owner-decisions-20261016.json",
+      "sha256": "91fec7c1a2694b0efbd47b22d62b3a5c4e1e810953c00c75f360c8d012d4fa10"
+    },
+    {
+      "path": "specs/046-local-technical-telemetry/owner-decisions-20261016.md",
+      "sha256": "49ffb94c0721d6f1da4f8fab813fd2d8fa925985f270ed6c12e965b0b15c69f4"
+    },
+    {
+      "path": "specs/046-local-technical-telemetry/owner-decisions-e9-20261017.json",
+      "sha256": "2b00091209d1f0fafa06ffe9a3ddc1c1f901a22cd1ede542d3bbf950688e74ee"
+    },
+    {
+      "path": "specs/046-local-technical-telemetry/owner-decisions-e9-20261017.md",
+      "sha256": "15174fb690c85e352c8456a3cc5780136ce1131f85e1486b75736ea41bae136b"
+    },
+    {
+      "path": "specs/046-local-technical-telemetry/pr509-dependency.json",
+      "sha256": "86e8f7296b68d81f9e1343beb8c16606497e4f86b1b0d269d8c7d886077cabb7"
+    },
+    {
+      "path": "specs/046-local-technical-telemetry/reconciliation-e474320e.md",
+      "sha256": "bdea5d08a6625f965a52023210d058d548686353e401eedaa7fed403c278a7ce"
+    },
+    {
+      "path": "specs/046-local-technical-telemetry/reconciliation-integrity.json",
+      "sha256": "ea50fb9a6dcf7a2ebf7818307d587bc46bf58c6e907623ac864faa539ad1b845"
+    },
+    {
+      "path": "specs/046-local-technical-telemetry/reconciliation-validation.md",
+      "sha256": "222faec1442d5dcd73c6dec1b361555ea011c328004c3898dbcd4b688e42da50"
+    },
+    {
+      "path": "specs/046-local-technical-telemetry/review-20261016.md",
+      "sha256": "e48ded281d7c035eba0766ac9141b4b0bae6993a158da5dc6b53f5fdc8f74fb5"
+    },
+    {
+      "path": "specs/046-local-technical-telemetry/review-disposition.md",
+      "sha256": "fd48aae7c1f69b32059e912167826ccb4aa084a4346bbc54958ccd09620c11c9"
+    }
+  ],
+  "ownerMapSha256": "4f162bab1e072783586e1b17a395f64a610d5f893857d843de8eff1b033037b5"
+}

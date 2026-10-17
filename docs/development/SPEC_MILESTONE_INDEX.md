@@ -63,3 +63,11 @@ The 44 existing specs retain their 19 registered GitHub milestone identities. SP
 Frozen publication receipts, assurance/evidence records, founder decisions and
 dated audits retain their captured titles and counts. Resolve those historical
 names through the tracking crosswalk; do not rewrite their bound contents.
+
+## Coordinated identity allocation
+
+[The plugin/telemetry identity record](../../specs/046-native-ai-plugins/identity-reconciliation.md)
+preserves public SPEC-046/ADR-0024 and allocates SPEC-047/ADR-0025 to the local
+telemetry candidate. Its source migration is not integrated; it is not an added
+accepted feature or a change to historical milestone counts. The shared economic
+scenario is **NO-GO**.
