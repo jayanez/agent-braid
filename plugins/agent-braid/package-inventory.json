@@ -2,7 +2,7 @@
   "files": {
     ".claude-plugin/plugin.json": {
       "executable": false,
-      "sha256": "e00041d7467650e6e01ef648410b8685802648510368825c6be4d1d5f182a1ac",
+      "sha256": "b946ff22b04fe75077e30ed4f92d35ced3e86cbf7059cbb97feb2dba732b419d",
       "sizeBytes": 372
     },
     ".mcp.json": {
@@ -67,16 +67,18 @@
     },
     "plugin.json": {
       "executable": false,
-      "sha256": "b1826265fe158ee1875b4136d44f5793d1746c48b7f626d45a623c5f1a3ba0b3",
+      "sha256": "70a435dfdc434e2bbd96e3dbe4982b50b779cb60886ce69302937d7bcd274fee",
       "sizeBytes": 1348
     },
     "provenance.json": {
       "executable": false,
-      "sha256": "21880bb0a50047dc65460999fe8e4c81d4c1460b4d00f264b677c4289320ebab",
-      "sizeBytes": 16479
+      "sha256": "73fc054fb9ab39b0f7bde5b64965928b9d6f324c1c7869c062c43304c2116b2c",
+      "sizeBytes": 18727
     },
     "runtime/linux-x86_64/bin/2to3": {
-      "link": "2to3-3.12"
+      "executable": true,
+      "sha256": "f48f1c0840af7b30dac604fc0cd720b882a233b9eb571677a4df108a9eeaf32c",
+      "sizeBytes": 158
     },
     "runtime/linux-x86_64/bin/2to3-3.12": {
       "executable": true,
@@ -84,7 +86,9 @@
       "sizeBytes": 158
     },
     "runtime/linux-x86_64/bin/idle3": {
-      "link": "idle3.12"
+      "executable": true,
+      "sha256": "4ee1fe32bc385f4a8c0126daef3d45fe83febf4d91b20669305392e01bcc343d",
+      "sizeBytes": 156
     },
     "runtime/linux-x86_64/bin/idle3.12": {
       "executable": true,
@@ -107,7 +111,9 @@
       "sizeBytes": 234
     },
     "runtime/linux-x86_64/bin/pydoc3": {
-      "link": "pydoc3.12"
+      "executable": true,
+      "sha256": "b09b14b62a6976902b026cb58d8fb6c1fad5fc824913e01035a8802ec3e594be",
+      "sizeBytes": 141
     },
     "runtime/linux-x86_64/bin/pydoc3.12": {
       "executable": true,
@@ -115,13 +121,19 @@
       "sizeBytes": 141
     },
     "runtime/linux-x86_64/bin/python": {
-      "link": "python3.12"
+      "executable": true,
+      "sha256": "eaaa308032c4aa063df5880c4c293cd458b4629d503fbc2c03ec163d71f7f790",
+      "sizeBytes": 31009064
     },
     "runtime/linux-x86_64/bin/python3": {
-      "link": "python3.12"
+      "executable": true,
+      "sha256": "eaaa308032c4aa063df5880c4c293cd458b4629d503fbc2c03ec163d71f7f790",
+      "sizeBytes": 31009064
     },
     "runtime/linux-x86_64/bin/python3-config": {
-      "link": "python3.12-config"
+      "executable": true,
+      "sha256": "276d083c8dc925f0640eb86029cd09c0f2564540a8d5344b885390b8b4eeaafa",
+      "sizeBytes": 3219
     },
     "runtime/linux-x86_64/bin/python3.12": {
       "executable": true,
@@ -1244,7 +1256,9 @@
       "sizeBytes": 435
     },
     "runtime/linux-x86_64/lib/libpython3.12.so": {
-      "link": "libpython3.12.so.1.0"
+      "executable": true,
+      "sha256": "6ce055cc1613ae7407e412e61cca51e258aee50884587fd9904cb1e897b28431",
+      "sizeBytes": 32802968
     },
     "runtime/linux-x86_64/lib/libpython3.12.so.1.0": {
       "executable": true,
@@ -1277,10 +1291,14 @@
       "sizeBytes": 298
     },
     "runtime/linux-x86_64/lib/pkgconfig/python3-embed.pc": {
-      "link": "python-3.12-embed.pc"
+      "executable": false,
+      "sha256": "097367804cb41980b1a7fea8252cd63bc387cb2f23cbdd8af62265b2d36290c4",
+      "sizeBytes": 312
     },
     "runtime/linux-x86_64/lib/pkgconfig/python3.pc": {
-      "link": "python-3.12.pc"
+      "executable": false,
+      "sha256": "8fd251c5eaf0c622acd26df4d224429a2f43e0b20c423b830c4a719c10a81853",
+      "sizeBytes": 298
     },
     "runtime/linux-x86_64/lib/python3.12/LICENSE.txt": {
       "executable": false,
@@ -7184,8 +7202,8 @@
     },
     "runtime/linux-x86_64/lib/python3.12/site-packages/agent_braid-0.1.0a1.dist-info/RECORD": {
       "executable": false,
-      "sha256": "565a43e5a3d852182e98c5e9922d18a1e22fd0d941501dc7c0843dbf1ed16d08",
-      "sizeBytes": 13060
+      "sha256": "19470e3ce9081a681037f29e3254d9a188c7144dc4b8cf6eed461ce389fb5ad3",
+      "sizeBytes": 13148
     },
     "runtime/linux-x86_64/lib/python3.12/site-packages/agent_braid-0.1.0a1.dist-info/REQUESTED": {
       "executable": false,
@@ -7199,7 +7217,7 @@
     },
     "runtime/linux-x86_64/lib/python3.12/site-packages/agent_braid-0.1.0a1.dist-info/direct_url.json": {
       "executable": false,
-      "sha256": "ee168710958f30a6f89f6ff7868797c880bb4828f9b451671f09bb29d5bdf120",
+      "sha256": "115492b7a7c6efad2ef153f86500627c03c5accfcfbe13dade1731ff379a896c",
       "sizeBytes": 338
     },
     "runtime/linux-x86_64/lib/python3.12/site-packages/agent_braid-0.1.0a1.dist-info/entry_points.txt": {
@@ -7371,6 +7389,11 @@
       "executable": false,
       "sha256": "530232d9eb7d8c78b2566ecfecf5453bd8969be1f0b14b66dc9e91077fd38655",
       "sizeBytes": 14073
+    },
+    "runtime/linux-x86_64/lib/python3.12/site-packages/agent_braid/__pycache__/forecast_shadow.cpython-312.pyc": {
+      "executable": false,
+      "sha256": "8c091a26c60a56fe06845b1a48b45a8dbc4f15fda0bcc7101fe1e3411f862318",
+      "sizeBytes": 7476
     },
     "runtime/linux-x86_64/lib/python3.12/site-packages/agent_braid/__pycache__/forecast_store.cpython-312.pyc": {
       "executable": false,
@@ -7931,6 +7954,11 @@
       "executable": false,
       "sha256": "851a92343d2ac0f08552921cd81e51949b8fc037fa5d0278c259d09585a8f034",
       "sizeBytes": 10805
+    },
+    "runtime/linux-x86_64/lib/python3.12/site-packages/agent_braid/forecast_shadow.py": {
+      "executable": false,
+      "sha256": "71267b0d8ff2ef7ad1c327bc5a21279131fb9125921e3b64247fbfadccdb167d",
+      "sizeBytes": 6364
     },
     "runtime/linux-x86_64/lib/python3.12/site-packages/agent_braid/forecast_store.py": {
       "executable": false,
@@ -19323,10 +19351,14 @@
       "sizeBytes": 25855
     },
     "runtime/linux-x86_64/share/man/man1/python.1": {
-      "link": "python3.12.1"
+      "executable": false,
+      "sha256": "482786a0d83d8536eddc78aafdf702d247ddc1f33d45115bdfe86c92a3d6043f",
+      "sizeBytes": 20124
     },
     "runtime/linux-x86_64/share/man/man1/python3.1": {
-      "link": "python3.12.1"
+      "executable": false,
+      "sha256": "482786a0d83d8536eddc78aafdf702d247ddc1f33d45115bdfe86c92a3d6043f",
+      "sizeBytes": 20124
     },
     "runtime/linux-x86_64/share/man/man1/python3.12.1": {
       "executable": false,
@@ -19334,7 +19366,9 @@
       "sizeBytes": 20124
     },
     "runtime/macos-arm64/bin/2to3": {
-      "link": "2to3-3.12"
+      "executable": true,
+      "sha256": "f48f1c0840af7b30dac604fc0cd720b882a233b9eb571677a4df108a9eeaf32c",
+      "sizeBytes": 158
     },
     "runtime/macos-arm64/bin/2to3-3.12": {
       "executable": true,
@@ -19342,7 +19376,9 @@
       "sizeBytes": 158
     },
     "runtime/macos-arm64/bin/idle3": {
-      "link": "idle3.12"
+      "executable": true,
+      "sha256": "4ee1fe32bc385f4a8c0126daef3d45fe83febf4d91b20669305392e01bcc343d",
+      "sizeBytes": 156
     },
     "runtime/macos-arm64/bin/idle3.12": {
       "executable": true,
@@ -19365,7 +19401,9 @@
       "sizeBytes": 234
     },
     "runtime/macos-arm64/bin/pydoc3": {
-      "link": "pydoc3.12"
+      "executable": true,
+      "sha256": "b09b14b62a6976902b026cb58d8fb6c1fad5fc824913e01035a8802ec3e594be",
+      "sizeBytes": 141
     },
     "runtime/macos-arm64/bin/pydoc3.12": {
       "executable": true,
@@ -19373,13 +19411,19 @@
       "sizeBytes": 141
     },
     "runtime/macos-arm64/bin/python": {
-      "link": "python3.12"
+      "executable": true,
+      "sha256": "3274dde21f9767655564d093e63c9a5faacefbf1d41bc1e6bf8b6f6e5a441903",
+      "sizeBytes": 18134688
     },
     "runtime/macos-arm64/bin/python3": {
-      "link": "python3.12"
+      "executable": true,
+      "sha256": "3274dde21f9767655564d093e63c9a5faacefbf1d41bc1e6bf8b6f6e5a441903",
+      "sizeBytes": 18134688
     },
     "runtime/macos-arm64/bin/python3-config": {
-      "link": "python3.12-config"
+      "executable": true,
+      "sha256": "2b10c2f47d035259835eab4c68c34b026184d52b548dbe6886911fa548648948",
+      "sizeBytes": 2100
     },
     "runtime/macos-arm64/bin/python3.12": {
       "executable": true,
@@ -20532,10 +20576,14 @@
       "sizeBytes": 307
     },
     "runtime/macos-arm64/lib/pkgconfig/python3-embed.pc": {
-      "link": "python-3.12-embed.pc"
+      "executable": false,
+      "sha256": "2cf793203fe4379336bea855c76bb74f15a866f9f6df007ca28439534fae0267",
+      "sizeBytes": 321
     },
     "runtime/macos-arm64/lib/pkgconfig/python3.pc": {
-      "link": "python-3.12.pc"
+      "executable": false,
+      "sha256": "fe4f913a3bf44f5b22bebf6d7a579e520fcce093801947d738856751b7c5297a",
+      "sizeBytes": 307
     },
     "runtime/macos-arm64/lib/python3.12/LICENSE.txt": {
       "executable": false,
@@ -26439,8 +26487,8 @@
     },
     "runtime/macos-arm64/lib/python3.12/site-packages/agent_braid-0.1.0a1.dist-info/RECORD": {
       "executable": false,
-      "sha256": "565a43e5a3d852182e98c5e9922d18a1e22fd0d941501dc7c0843dbf1ed16d08",
-      "sizeBytes": 13060
+      "sha256": "19470e3ce9081a681037f29e3254d9a188c7144dc4b8cf6eed461ce389fb5ad3",
+      "sizeBytes": 13148
     },
     "runtime/macos-arm64/lib/python3.12/site-packages/agent_braid-0.1.0a1.dist-info/REQUESTED": {
       "executable": false,
@@ -26454,7 +26502,7 @@
     },
     "runtime/macos-arm64/lib/python3.12/site-packages/agent_braid-0.1.0a1.dist-info/direct_url.json": {
       "executable": false,
-      "sha256": "ee168710958f30a6f89f6ff7868797c880bb4828f9b451671f09bb29d5bdf120",
+      "sha256": "115492b7a7c6efad2ef153f86500627c03c5accfcfbe13dade1731ff379a896c",
       "sizeBytes": 338
     },
     "runtime/macos-arm64/lib/python3.12/site-packages/agent_braid-0.1.0a1.dist-info/entry_points.txt": {
@@ -26626,6 +26674,11 @@
       "executable": false,
       "sha256": "608fbb6972ecd2b14b2749647af1d4a296b28d6b0843ef18f2035cb5190d3219",
       "sizeBytes": 14072
+    },
+    "runtime/macos-arm64/lib/python3.12/site-packages/agent_braid/__pycache__/forecast_shadow.cpython-312.pyc": {
+      "executable": false,
+      "sha256": "e1ce4ed9e32aebae11df61b79b4b70c035406b5ec17c32b063cce274e1ba875d",
+      "sizeBytes": 7475
     },
     "runtime/macos-arm64/lib/python3.12/site-packages/agent_braid/__pycache__/forecast_store.cpython-312.pyc": {
       "executable": false,
@@ -27186,6 +27239,11 @@
       "executable": false,
       "sha256": "851a92343d2ac0f08552921cd81e51949b8fc037fa5d0278c259d09585a8f034",
       "sizeBytes": 10805
+    },
+    "runtime/macos-arm64/lib/python3.12/site-packages/agent_braid/forecast_shadow.py": {
+      "executable": false,
+      "sha256": "71267b0d8ff2ef7ad1c327bc5a21279131fb9125921e3b64247fbfadccdb167d",
+      "sizeBytes": 6364
     },
     "runtime/macos-arm64/lib/python3.12/site-packages/agent_braid/forecast_store.py": {
       "executable": false,
@@ -38583,10 +38641,14 @@
       "sizeBytes": 25855
     },
     "runtime/macos-arm64/share/man/man1/python.1": {
-      "link": "python3.12.1"
+      "executable": false,
+      "sha256": "482786a0d83d8536eddc78aafdf702d247ddc1f33d45115bdfe86c92a3d6043f",
+      "sizeBytes": 20124
     },
     "runtime/macos-arm64/share/man/man1/python3.1": {
-      "link": "python3.12.1"
+      "executable": false,
+      "sha256": "482786a0d83d8536eddc78aafdf702d247ddc1f33d45115bdfe86c92a3d6043f",
+      "sizeBytes": 20124
     },
     "runtime/macos-arm64/share/man/man1/python3.12.1": {
       "executable": false,
@@ -38620,10 +38682,10 @@
     },
     "skills/setup/SKILL.md": {
       "executable": false,
-      "sha256": "5be9bf45aabb2d71dde86658675bab6d84c18997c87000352afe8c06bf58f2af",
-      "sizeBytes": 2695
+      "sha256": "8a5f832857e172c22f641e06379b13aa6a210e9a2daf5c55db303325b09c255e",
+      "sizeBytes": 2835
     }
   },
   "schema": "agent-braid-plugin-package/v1",
-  "version": "0.1.0-alpha.1"
+  "version": "0.1.0-alpha.2"
 }

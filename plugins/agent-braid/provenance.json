@@ -41,8 +41,8 @@
     ]
   },
   "correspondingSource": {
-    "path": "sources/agent-braid-0.1.0-alpha.1-source.tar.gz",
-    "sha256": "b1ae5a1e0e827d185a80475e40f72541b01b1552a87e9fe05b75c8e5d094ddd7"
+    "path": "sources/agent-braid-0.1.0-alpha.2-source.tar.gz",
+    "sha256": "8f0ed84ee3213e3b8986bd6977ce4a5e3e8c5302529ca7933b05125d6a6d77c5"
   },
   "dependencies": {
     "linux-x86_64": [
@@ -541,6 +541,52 @@
         "optimization": 0,
         "reason": "Core subprocesses use sys.executable without -B; hash caches survive Git/relocation mtimes"
       },
+      "materializedAliases": [
+        {
+          "path": "bin/2to3",
+          "target": "bin/2to3-3.12"
+        },
+        {
+          "path": "bin/python3",
+          "target": "bin/python3.12"
+        },
+        {
+          "path": "bin/python",
+          "target": "bin/python3.12"
+        },
+        {
+          "path": "bin/idle3",
+          "target": "bin/idle3.12"
+        },
+        {
+          "path": "bin/python3-config",
+          "target": "bin/python3.12-config"
+        },
+        {
+          "path": "bin/pydoc3",
+          "target": "bin/pydoc3.12"
+        },
+        {
+          "path": "lib/libpython3.12.so",
+          "target": "lib/libpython3.12.so.1.0"
+        },
+        {
+          "path": "lib/pkgconfig/python3.pc",
+          "target": "lib/pkgconfig/python-3.12.pc"
+        },
+        {
+          "path": "lib/pkgconfig/python3-embed.pc",
+          "target": "lib/pkgconfig/python-3.12-embed.pc"
+        },
+        {
+          "path": "share/man/man1/python3.1",
+          "target": "share/man/man1/python3.12.1"
+        },
+        {
+          "path": "share/man/man1/python.1",
+          "target": "share/man/man1/python3.12.1"
+        }
+      ],
       "pythonVersion": "3.12.15",
       "sha256": "178d3d83b6e8e99285a65d3fce9c16b87952cc5efdb4d1a0e3ff3be18ff0fc9c",
       "url": "https://github.com/astral-sh/python-build-standalone/releases/download/20261013/cpython-3.12.15%2B20261013-x86_64-unknown-linux-gnu-install_only_stripped.tar.gz",
@@ -558,6 +604,48 @@
         "optimization": 0,
         "reason": "Core subprocesses use sys.executable without -B; hash caches survive Git/relocation mtimes"
       },
+      "materializedAliases": [
+        {
+          "path": "bin/2to3",
+          "target": "bin/2to3-3.12"
+        },
+        {
+          "path": "bin/python3",
+          "target": "bin/python3.12"
+        },
+        {
+          "path": "bin/python",
+          "target": "bin/python3.12"
+        },
+        {
+          "path": "bin/idle3",
+          "target": "bin/idle3.12"
+        },
+        {
+          "path": "bin/python3-config",
+          "target": "bin/python3.12-config"
+        },
+        {
+          "path": "bin/pydoc3",
+          "target": "bin/pydoc3.12"
+        },
+        {
+          "path": "lib/pkgconfig/python3.pc",
+          "target": "lib/pkgconfig/python-3.12.pc"
+        },
+        {
+          "path": "lib/pkgconfig/python3-embed.pc",
+          "target": "lib/pkgconfig/python-3.12-embed.pc"
+        },
+        {
+          "path": "share/man/man1/python3.1",
+          "target": "share/man/man1/python3.12.1"
+        },
+        {
+          "path": "share/man/man1/python.1",
+          "target": "share/man/man1/python3.12.1"
+        }
+      ],
       "pythonVersion": "3.12.15",
       "sha256": "9866e11cf2ae9caa1e671383786f248859a52dd8bfb702fb4c0dc2c65f1d36de",
       "url": "https://github.com/astral-sh/python-build-standalone/releases/download/20261013/cpython-3.12.15%2B20261013-aarch64-apple-darwin-install_only_stripped.tar.gz",
@@ -567,8 +655,8 @@
     }
   },
   "schema": "agent-braid-plugin-provenance/v1",
-  "sourceCommit": "93124fb5078519fcbbe2a6360fcf183e4a01dcb5",
+  "sourceCommit": "1cea4fac6555a06ee9666c83993c2583d0f5ebf8",
   "sourceDirty": false,
-  "version": "0.1.0-alpha.1",
-  "wheelSha256": "2dad1cd84abcecaa17695a87805a4714c3d77c24d0370c3dbc49a6da0dc5f551"
+  "version": "0.1.0-alpha.2",
+  "wheelSha256": "603b5a8ae8f4bfac53fb3ce24d9edb95103367e7646b7cdb138e52deca1a38b8"
 }
