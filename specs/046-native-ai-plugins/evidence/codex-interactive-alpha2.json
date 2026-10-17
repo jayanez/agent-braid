@@ -1,5 +1,5 @@
 {
-  "context": "Native macOS arm64 Codex app-server with authenticated ChatGPT subscription; actual thread/start and turn/start, installed setup and analyze skills",
+  "context": "Native macOS arm64 Codex app-server with existing authenticated account; actual thread/start and turn/start, installed setup and analyze skills",
   "events": [
     {
       "emittedAtMs": 1792224993184,
@@ -1581,7 +1581,6 @@
     "No runtime execution or grant issued",
     "No Claude success or marketplace publication implied"
   ],
-  "model": "gpt-6.1-sol",
   "observed": [
     "Installed package doctor verified",
     "Current-only suggestion inspected zero entries",

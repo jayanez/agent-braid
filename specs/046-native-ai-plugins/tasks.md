@@ -23,7 +23,7 @@ Stable source IDs; task completion does not imply native/provider or founder acc
 - [ ] T007 (REQ-007 / SC-007): Claude Code plugin.
   Dependencies: T002, T005. Verification: procedure_007 in validation-plan.md. Evidence: evidence/release-alpha2.json.
 
-- [x] T008 (REQ-008 / SC-008): Lifecycle and migration.
+- [ ] T008 (REQ-008 / SC-008): Lifecycle and migration.
   Dependencies: T003, T006, T007. Verification: procedure_008 in validation-plan.md. Evidence: evidence/release-alpha2.json.
 
 - [ ] T009 (REQ-009 / SC-009): Distribution and technical acceptance.
@@ -54,7 +54,8 @@ journey, including cancellation, bounded discovery, exact preview/apply,
 reconnection and two-workspace MCP analysis. T007 remains blocked by the actual
 Claude Code session's expired native login. T008 now has native alpha.1 to alpha.2
 updates with unchanged registry/result bytes for both hosts on native macOS and
-emulated Linux; receipt-owned migration controls remain obtained. T009 retains
+emulated Linux; receipt-owned migration controls remain obtained. Its checkbox
+remains open until its explicit dependency T007 is satisfied. T009 retains
 public distribution branch/tag and the remote curl installation check: the
 owner's conditional publication authorization is not yet satisfied while T007 is
 blocked. T010 retains integrated GitHub/Project readback and publication-aligned

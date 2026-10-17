@@ -72,11 +72,11 @@
     {
       "path": "specs/046-native-ai-plugins/evidence/codex-interactive-alpha2.json",
       "rawRecordSha256": "dd636c8731db0b538958a3f0a6291c048fee3c6646d2de6491e1af216b4729c9",
-      "sha256": "f10cd2d0f06f00043cdacd590c4b0cef0473d4cef6bc119377b5d49d7056fd41"
+      "sha256": "fa8b8af792badc9f2fc99fcdf8d3ad989161c7d98b0a5bc707f841e8030a3725"
     },
     {
       "path": "specs/046-native-ai-plugins/evidence/claude-interactive-auth-blocker.json",
-      "sha256": "63ecc5ae056d1a5c1b82fae7117d899f38be2a151b0518b28822ce5b60227406"
+      "sha256": "56a595ec1f0ee71c79d8b7c8e06bfbc977ec7121fa4f9dd4ee6b8d611e2e59f7"
     }
   ],
   "remaining": [

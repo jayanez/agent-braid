@@ -23,7 +23,7 @@ Parent: SPEC-046 — Native AI plugins; milestone M4.5 #19.
 - [ ] T007 (REQ-007 / SC-007): Claude Code plugin.
   Dependencies: T002, T005. Verification: procedure_007 in validation-plan.md. Evidence: evidence/release-alpha2.json.
 
-- [x] T008 (REQ-008 / SC-008): Lifecycle and migration.
+- [ ] T008 (REQ-008 / SC-008): Lifecycle and migration.
   Dependencies: T003, T006, T007. Verification: procedure_008 in validation-plan.md. Evidence: evidence/release-alpha2.json.
 
 - [ ] T009 (REQ-009 / SC-009): Distribution and technical acceptance.

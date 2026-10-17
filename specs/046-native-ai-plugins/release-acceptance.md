@@ -30,8 +30,8 @@ disabled and no operator grant was issued. This was an agent-operated interactio
 not a human usability rating or scientific acceptance.
 
 The native versions were Codex `0.163.0-alpha.10.2` and Claude Code `2.1.292`.
-The successful Codex interaction used the existing ChatGPT subscription and native
-default model `gpt-6.1-sol`. The Claude interactive session rejected the setup
+The successful Codex interaction used existing native authentication.
+The Claude interactive session rejected the setup
 request with `Login expired · Please run /login`. Its credential-status boolean
 was not accepted as a substitute for an actual successful request. No paid/API
 fallback was used. The owner must renew the native login before that journey can
@@ -70,3 +70,6 @@ approvals stay in T014/T015. Historical M4.5 attempts, human ratings, ADR adopti
 scientific interpretation and final milestone acceptance are unchanged. Linux
 records describe native binaries inside a network-disabled emulated container,
 not physical Linux or interactive subscription acceptance.
+
+T008 retains an open checkbox until its explicit T007 dependency is satisfied,
+even though its version-update and retention observations have passed.

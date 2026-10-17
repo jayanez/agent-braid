@@ -11,6 +11,5 @@
   ],
   "observedError": "Login expired \u00b7 Please run /login",
   "schema": "agent-braid-native-interactive-observation/v1",
-  "sessionId": "bbee131e-4023-465d-b3bb-ab7c2f49d825",
   "status": "blocked-authentication"
 }
