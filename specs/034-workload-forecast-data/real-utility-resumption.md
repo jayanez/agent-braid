@@ -338,6 +338,22 @@ not close native profile acceptance, input eligibility or utility. Do not
 build/provision an image, create a replacement execution package or launch a
 control automatically. T001, T005, T008 and T009 remain pending.
 
+### Read-only runtime integration follow-up
+
+The final verifier preserves the original `/work` run/grant paths and uses its
+own `/scratch` for HOME, TMPDIR, indexes and output. `verify_run` opens the existing
+coordinator lock with `O_RDONLY` while preserving exclusive `flock`; it cannot
+create a lock or change the retained run. This profile is local/tmpfs, not NFS.
+The private launch binding advances to v2 and explicitly binds the read-only work
+root only for the separate verifier. Writable scratch/environment constraints and
+operator approval of each invocation remain mandatory. Work mode cannot add this
+read-only root as another writable destination.
+
+These changes add no Git commands and leave the numeric cap rows unchanged.
+The prior proposal retains its historical source digest in the accounting record;
+the follow-up records the current digest and code hashes separately. Neither
+source identity is an execution approval or a native acceptance receipt.
+
 Technical references: the versioned [systemd execution contract](https://github.com/systemd/systemd/blob/v261.3/man/systemd.exec.xml),
 [service deadlines](https://github.com/systemd/systemd/blob/v261.3/man/systemd.service.xml)
 and [unit lifecycle dependencies](https://github.com/systemd/systemd/blob/v261.3/man/systemd.unit.xml).

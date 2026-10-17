@@ -871,7 +871,171 @@
       "plugins": "Central directive delivered; owner confirmed #557 and gates remain frozen.",
       "telemetry": "Central directive delivered; turn completed without a reported material change.",
       "constraints": "No new lots, packages, MCP expansion, real capture, host/model/native controls or conversion of product aggregates to causal windows.",
-      "remoteBranchStateReaudited": false
+      "remoteBranchStateReaudited": false,
+      "finalDirective": "Both tracks notified of source 8784a02... / code 5c70320 and final local profile success; holds and pending gates reaffirmed, no new work/review assigned."
+    },
+    "documentationCommit": "166f5c15a48f19e639786c1d97cdd0b46ec40acc",
+    "proposedAbortCeilingsSourceState": "Historical pre-read-only-integration proposal at source 59ba026...; current source-bound proposal is readOnlyIntegration.proposedAbortCeilings.",
+    "readOnlyIntegration": {
+      "implementationCommit": "5c703203c738554b48156a82443296779dcb70d8",
+      "sourceDigest": "8784a02cb0b4a9a8cb9277c10a8ad094288f7e56a48f21c0b7856abec96781ff",
+      "inputs": {
+        "agent_braid/forecast_admission.py": "df6e1cba1cbb3be7f1421d692d4eb1a3fb6df3f7f79965983792fa2cc1ce4099",
+        "agent_braid/forecast_git_launch.py": "9125d46c37a298abd8c33f05d196e241f22bf567dd02ae765ac829774f68d64f",
+        "agent_braid/forecast_linux_profile.py": "c4b098409af62039048571563b88afd6247d22743eb55597ba67e246172a7d43",
+        "agent_braid/git_runtime.py": "5be2d4202e5e541a84e46119f4161d2e2237cce597811e8e50cf523723e48a82",
+        "tests/test_forecast_git_launch.py": "496126f6e042098ccce86ca368acfeacf2bac09c2398b541013e9874bebdc310",
+        "tests/test_forecast_linux_profile.py": "baf282686b4737a75acc6765144044498b825d22921f34257979a9f70ff79a89",
+        "tests/test_git_runtime.py": "33d69bd9a25a3017efef88abe7a4a6caa98dfd2e125f5bd0a6decfbe8eb523f8",
+        "specs/034-workload-forecast-data/real-utility-resumption.md": "390917ef2cc0bb9cd8a50305ace584ec0df8ca747ae2527bf2af5d8fad330251"
+      },
+      "changes": [
+        "Original /work paths remain read-only; separate verifier /scratch holds writable temporaries/output.",
+        "Existing coordinator lock O_RDONLY + LOCK_EX without create; default mutation/recovery lock behavior retained.",
+        "Private launch binding v2 explicitly binds read-only verification work root; scratch and invocation authority unchanged."
+      ],
+      "proposedAbortCeilings": {
+        "serial": {
+          "mode": "serial",
+          "finalVerifier": "runtime",
+          "sourceDigest": "8784a02cb0b4a9a8cb9277c10a8ad094288f7e56a48f21c0b7856abec96781ff",
+          "phases": [
+            {
+              "phase": "prepare",
+              "requests": 1793,
+              "wallSeconds": 480,
+              "storageBytes": 276897792,
+              "inodes": 65536
+            },
+            {
+              "phase": "grant",
+              "requests": 769,
+              "wallSeconds": 240,
+              "storageBytes": 142680064,
+              "inodes": 65536
+            },
+            {
+              "phase": "dispatch",
+              "requests": 1025,
+              "wallSeconds": 300,
+              "storageBytes": 209788928,
+              "inodes": 65536
+            },
+            {
+              "phase": "verify",
+              "requests": 256,
+              "wallSeconds": 90,
+              "storageBytes": 75571200,
+              "inodes": 65536
+            },
+            {
+              "phase": "terminal",
+              "requests": 0,
+              "wallSeconds": 30,
+              "storageBytes": 8388608,
+              "inodes": 4096
+            }
+          ],
+          "wallSeconds": 1140,
+          "storageBytes": 713326592,
+          "gitRequests": 3843,
+          "basis": "conditional Git cap sums; 30s non-Git per phase; 8MiB output per phase; 64MiB per internal Git budget plus selected patch bytes; 30s/8MiB terminal",
+          "status": "proposed-abort-ceilings-owner-acceptance-pending",
+          "minimumCost": null,
+          "completionGuaranteed": false,
+          "executionAuthorization": false
+        },
+        "parallel": {
+          "mode": "parallel",
+          "finalVerifier": "policy",
+          "sourceDigest": "8784a02cb0b4a9a8cb9277c10a8ad094288f7e56a48f21c0b7856abec96781ff",
+          "phases": [
+            {
+              "phase": "prepare",
+              "requests": 2049,
+              "wallSeconds": 540,
+              "storageBytes": 344006656,
+              "inodes": 65536
+            },
+            {
+              "phase": "grant",
+              "requests": 1025,
+              "wallSeconds": 300,
+              "storageBytes": 209788928,
+              "inodes": 65536
+            },
+            {
+              "phase": "dispatch",
+              "requests": 2050,
+              "wallSeconds": 570,
+              "storageBytes": 478224384,
+              "inodes": 65536
+            },
+            {
+              "phase": "verify",
+              "requests": 1538,
+              "wallSeconds": 450,
+              "storageBytes": 344006656,
+              "inodes": 65536
+            },
+            {
+              "phase": "terminal",
+              "requests": 0,
+              "wallSeconds": 30,
+              "storageBytes": 8388608,
+              "inodes": 4096
+            }
+          ],
+          "wallSeconds": 1890,
+          "storageBytes": 1384415232,
+          "gitRequests": 6662,
+          "basis": "conditional Git cap sums; 30s non-Git per phase; 8MiB output per phase; 64MiB per internal Git budget plus selected patch bytes; 30s/8MiB terminal",
+          "status": "proposed-abort-ceilings-owner-acceptance-pending",
+          "minimumCost": null,
+          "completionGuaranteed": false,
+          "executionAuthorization": false
+        }
+      },
+      "checks": [
+        {
+          "command": "python -m unittest tests.test_forecast_linux_profile tests.test_forecast_admission tests.test_forecast_git_launch tests.test_git_runtime.ReadOnlyCoordinatorLockTests tests.test_git_runtime.GitRuntimeTests.test_execute_and_verify -v",
+          "tests": 56,
+          "exitCode": 0,
+          "log": "/tmp/fc1-linux-profile-readonly-final.log",
+          "domain": "Owned fixtures and mocked kernel; no native admission/model/real input control."
+        }
+      ],
+      "review": {
+        "model": "gpt-6-luna",
+        "verdict": "Read-only paths/scratch/exclusive lock coherent; no added Git calls or cap changes. Historical source proposal retained separately from current source binding.",
+        "nativeKernelManagerImageBridgeAcceptance": false
+      },
+      "interruptedProfile": {
+        "log": "/tmp/fc1-linux-profile-pr-final.log",
+        "exitCode": 130,
+        "reason": "Stopped on direct integration finding before original-path/read-only-lock correction; not a passing candidate result."
+      },
+      "portablePathControlDiagnostic": {
+        "log": "/tmp/fc1-linux-profile-readonly.log",
+        "tests": 56,
+        "failures": 1,
+        "cause": "Expected path did not resolve the macOS /var alias; corrected owned-test expectation to canonical path. No native profile effect."
+      },
+      "operativeBudgetAccepted": false,
+      "executionAuthorization": false,
+      "actualProfileAdmitted": false,
+      "stableProfile": {
+        "command": "PATH=/tmp/agent-braid-fc1-decisions-20261016/.venv-speckit/bin:$PATH python3 -m scripts.validate_change --base origin/develop --profile pr",
+        "implementationCommit": "5c703203c738554b48156a82443296779dcb70d8",
+        "exitCode": 0,
+        "tests": 1983,
+        "skipped": 19,
+        "unitSeconds": 1640.917,
+        "log": "/tmp/fc1-linux-profile-pr-stable.log",
+        "outcome": "All selected repository commands passed; native/profile/source/utility boundary gates remain unexecuted.",
+        "limits": "Owned software regressions and structural checks only. Final evidence metadata appended afterward; bound code and documentation bytes unchanged."
+      },
+      "integrity": "Current file hashes, normalized source model and historical initial input bindings checked; whitespace passed."
     }
   }
 }
