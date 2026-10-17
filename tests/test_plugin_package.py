@@ -7,10 +7,32 @@ import tarfile
 import tempfile
 import unittest
 from agent_braid.plugin_package import inventory, verify_package
-from scripts.build_native_plugin import DISTRIBUTION_ATTRIBUTES, ROOT, assemble, extract_runtime, prepare_bytecode
+from scripts.build_native_plugin import DISTRIBUTION_ATTRIBUTES, ROOT, assemble, extract_runtime, prepare_bytecode, materialize_runtime_links
 
 
 class PluginPackageTests(unittest.TestCase):
+    def test_runtime_aliases_survive_native_managers_that_omit_symlinks(self):
+        import shutil
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            runtime = root / 'runtime'; runtime.mkdir()
+            binary = runtime / 'python3.12'; binary.write_bytes(b'executable fixture'); binary.chmod(0o755)
+            (runtime / 'python').symlink_to('python3.12')
+            aliases = materialize_runtime_links(runtime)
+            self.assertEqual(aliases, [{'path': 'python', 'target': 'python3.12'}])
+            self.assertFalse((runtime / 'python').is_symlink())
+            self.assertEqual((runtime / 'python').read_bytes(), binary.read_bytes())
+            self.assertTrue((runtime / 'python').stat().st_mode & 0o111)
+            # Reproduce the native copier's regular-file-only behavior.
+            installed = root / 'installed'; installed.mkdir()
+            for path in runtime.iterdir():
+                if not path.is_symlink(): shutil.copy2(path, installed / path.name)
+            self.assertEqual(inventory(runtime), inventory(installed))
+            (runtime / 'escape').symlink_to(root / 'installed/python')
+            with self.assertRaisesRegex(ValueError, 'contained regular file'):
+                materialize_runtime_links(runtime)
+            self.assertTrue((runtime / 'escape').is_symlink())
+
     def test_inventory_rejects_content_drift_and_tracks_directory_symlinks(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)

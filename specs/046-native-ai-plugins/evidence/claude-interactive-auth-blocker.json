@@ -1,0 +1,15 @@
+{
+  "attempt": "Installed /agent-braid:setup selected in native interactive host; native /status also reported Expired",
+  "context": "Actual native Claude Code interactive PTY on owned repo two fixture",
+  "hostVersion": "2.1.292",
+  "limits": [
+    "auth status loggedIn flag was not accepted as proof of a successful interaction",
+    "No successful model completion, setup journey or skill use claimed",
+    "Per-invocation official base URL override only; global provider configuration unchanged",
+    "No paid/API fallback or credential contents recorded",
+    "Owner asked to renew native login; publication condition remains unsatisfied"
+  ],
+  "observedError": "Login expired \u00b7 Please run /login",
+  "schema": "agent-braid-native-interactive-observation/v1",
+  "status": "blocked-authentication"
+}

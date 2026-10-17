@@ -22,7 +22,7 @@ sys.path.insert(0, str(ROOT))
 from agent_braid.plugin_package import file_hash, inventory, verify_package
 from agent_braid.tooling_assets import load_skill_bundle
 
-VERSION = '0.1.0-alpha.1'
+VERSION = '0.1.0-alpha.2'
 DISTRIBUTION_ATTRIBUTES = '* -text -filter -ident\n'
 
 
@@ -42,6 +42,26 @@ def extract_runtime(archive, destination, expected):
         stream.extractall(destination, members=members, filter='data')
     return destination / 'python'
 
+
+
+def materialize_runtime_links(runtime):
+    """Native managers may omit symlinks; ship contained regular alias files."""
+    runtime = Path(runtime).resolve(strict=True)
+    aliases = []
+    for path in runtime.rglob('*'):
+        if not path.is_symlink():
+            continue
+        target = path.resolve(strict=True)
+        if not target.is_relative_to(runtime) or not target.is_file():
+            raise ValueError('Runtime alias must target a contained regular file')
+        aliases.append((path, target))
+    result = []
+    for path, target in aliases:
+        result.append({'path': path.relative_to(runtime).as_posix(),
+                       'target': target.relative_to(runtime).as_posix()})
+        path.unlink()
+        shutil.copy2(target, path)
+    return result
 
 
 def prepare_bytecode(runtime, platform):
@@ -135,8 +155,9 @@ def assemble(output, cache, *, platforms=None, allow_dirty=False):
             subprocess.run(command, check=True)
             subprocess.run([sys.executable, '-m', 'pip', '--isolated', 'install', '--no-deps', '--no-compile',
                             '--target', str(site), str(wheel)], check=True)
+            aliases = materialize_runtime_links(target)
             bytecode = prepare_bytecode(target, platform)
-            runtime_provenance[platform] = {**entry, 'pythonVersion': lock['pythonVersion'], 'build': lock['build'], 'bytecode': bytecode}
+            runtime_provenance[platform] = {**entry, 'pythonVersion': lock['pythonVersion'], 'build': lock['build'], 'bytecode': bytecode, 'materializedAliases': aliases}
             package_licenses[platform] = sorted([{'name': d.metadata['Name'], 'version': d.version,
                 'license': d.metadata.get('License-Expression') or d.metadata.get('License', 'unknown'),
                 'licenseFiles': [str(p) for p in (d.files or []) if 'license' in str(p).lower() or 'copying' in str(p).lower()]}

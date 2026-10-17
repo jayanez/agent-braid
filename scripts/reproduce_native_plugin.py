@@ -189,7 +189,10 @@ def run(args):
         if host == 'codex':
             command([executable, 'plugin', 'marketplace', 'add', marketplace])
             for _ in range(2):
-                command([executable, 'plugin', 'add', 'agent-braid@agent-braid'])
+                installed = json.loads(command([executable, 'plugin', 'add', 'agent-braid@agent-braid', '--json']))
+            installed_root = Path(installed['installedPath'])
+            check = json.loads(command([installed_root / 'launch', 'plugin', 'doctor', '--plugin-root', installed_root]))
+            assert check['package']['status'] == 'verified', 'Installed Codex cache inventory failed'
             command([executable, 'plugin', 'list', '--json'])
             commands.append({'nativeCodexInventory': asyncio.run(codex_inventory(executable, env, state))})
             command([executable, 'plugin', 'remove', 'agent-braid@agent-braid'])
@@ -203,7 +206,10 @@ def run(args):
             assert plugin_lines and all('Connected' in line for line in plugin_lines), 'Native Claude MCP handshake failed'
             commands[-1]['stdout'] = '\n'.join(plugin_lines)
             commands.append({'nativeClaudeMcpConnected': True, 'unrelatedHealthRowsExcluded': True})
-            command([executable, 'plugin', 'list', '--json'])
+            installed_plugins = json.loads(command([executable, 'plugin', 'list', '--json']))
+            installed_root = Path(next(row['installPath'] for row in installed_plugins if row['id'] == 'agent-braid@agent-braid'))
+            check = json.loads(command([installed_root / 'launch', 'plugin', 'doctor', '--plugin-root', installed_root]))
+            assert check['package']['status'] == 'verified', 'Installed Claude cache inventory failed'
             command([executable, 'plugin', 'uninstall', 'agent-braid@agent-braid', '--scope', 'user'])
         assert registry.read_bytes() == before and sentinel.read_text() == 'owned fixture result'
         commands.append({'nativeHost': host, 'version': version, 'binarySha256': hashlib.file_digest(executable.open('rb'), 'sha256').hexdigest(),

@@ -10,10 +10,12 @@ consumer prerequisites. The Python installation remains available below.
 ## Candidate and publication status
 
 The source implementation and local distribution candidates are experimental.
-The public `plugin-dist` branch/tag is a separate founder release decision. Do not
-interpret the following release commands as evidence that a public candidate has
-already been published. Until publication, build a local marketplace using the
-instructions below, then pass its absolute path to the native manager.
+The owner authorized publication of `plugin-dist` once both native interactive
+journeys and the version-changing update pass. The update and Codex journey have
+passed; the actual Claude journey is blocked by expired native authentication.
+No public distribution has been pushed. Until that gate passes, build a local
+marketplace using the instructions below and pass its absolute path to the native
+manager. See the [release acceptance record](../../specs/046-native-ai-plugins/release-acceptance.md).
 
 ## Install for your user
 
@@ -180,3 +182,11 @@ the committed distribution via a new Git clone, not only the build directory.
 For container reproduction, the disposable plugin-cache filesystem must allow
 execution (for example `--tmpfs /tmp:rw,exec,mode=1777`); a noexec mount should
 refuse native MCP startup and must not be reported as plugin acceptance.
+
+The alpha.2 release candidate materializes validated, contained CPython aliases
+before inventory creation so native host caches retain every required file.
+Reproduction checks `doctor` in each host's actual installed cache as well as in
+the source package. See the [current release acceptance record](../../specs/046-native-ai-plugins/release-acceptance.md)
+for the observed version-changing update, native Codex interaction and Claude
+authentication blocker. Public distribution and the remote curl install remain
+pending that final interactive gate.

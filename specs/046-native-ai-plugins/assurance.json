@@ -96,7 +96,7 @@
   "execution_contract": "Analysis is the default. Explicit registry bindings identify source/result roots; existing core policies and grants govern execution. Installing or discovering repositories grants no execution authority.",
   "human_review": "pending",
   "hypotheses": "No scientific hypothesis is introduced. Host/plugin interoperability is an engineering claim bounded by the observed exact versions.",
-  "observation_contract": "Source-bound unit controls, actual SDK connections, native manager and local MCP loading observations. macOS native and emulated Linux records are distinct; no model prompt or human wizard acceptance is implied.",
+  "observation_contract": "Source-bound controls and actual native installation/MCP loading on macOS and emulated Linux. Alpha2 includes agent-operated authenticated native Codex setup/product-skill interaction and version-changing updates. Claude interaction is blocked by expired native login; human ratings remain separate.",
   "references": [
     "CONSTITUTION.md",
     "GOVERNANCE.md",
@@ -116,14 +116,14 @@
           "id": "SC-001",
           "obtained_evidence": [
             {
-              "command": "Focused unittest command and bundled reproduce_native_plugin.py invocations recorded in evidence/engineering.json and linked native transcripts.",
-              "limits": "No interactive wizard/skill journey, version-changing upgrade, public release, provider approval, human rating or scientific result. Linux is emulated. Historical M4.5 evidence unchanged.",
-              "outcome": "Bounded engineering controls obtained for this scenario; see per-procedure obtained/remaining matrix in validation-plan.md. This draft does not imply full acceptance.",
-              "path": "specs/046-native-ai-plugins/evidence/engineering.json",
-              "sha256": "4f1ef65a4b9124f80ce524e72fc0b0ea18c44f726980e71294b82f542f03d12c"
+              "command": "46 focused tests; clean Git native reproduction; native alpha1-to-alpha2 update records; actual Codex setup/analyze interaction. See linked exact command/observation records.",
+              "limits": "No successful Claude interactive journey or public marketplace/remote curl install; Linux is emulated; no human usability/scientific/final M4.5 acceptance or official provider approval.",
+              "outcome": "Bounded observations obtained; per-procedure matrix and release-acceptance.md distinguish passed controls from Claude authentication and publication blockers.",
+              "path": "specs/046-native-ai-plugins/evidence/release-alpha2.json",
+              "sha256": "f42ee66806b558af8d5c42cf9ad782c252045e1b163f39dcfb09d61a0b421fe4"
             }
           ],
-          "planned_evidence": "specs/046-native-ai-plugins/evidence/engineering.json",
+          "planned_evidence": "specs/046-native-ai-plugins/evidence/release-alpha2.json",
           "test_file": "specs/046-native-ai-plugins/validation-plan.md",
           "test_name": "procedure_001",
           "then": "requirements, tasks and procedures agree, old contracts remain unchanged and interactive/external gates are explicit",
@@ -140,14 +140,14 @@
           "id": "SC-002",
           "obtained_evidence": [
             {
-              "command": "Focused unittest command and bundled reproduce_native_plugin.py invocations recorded in evidence/engineering.json and linked native transcripts.",
-              "limits": "No interactive wizard/skill journey, version-changing upgrade, public release, provider approval, human rating or scientific result. Linux is emulated. Historical M4.5 evidence unchanged.",
-              "outcome": "Bounded engineering controls obtained for this scenario; see per-procedure obtained/remaining matrix in validation-plan.md. This draft does not imply full acceptance.",
-              "path": "specs/046-native-ai-plugins/evidence/engineering.json",
-              "sha256": "4f1ef65a4b9124f80ce524e72fc0b0ea18c44f726980e71294b82f542f03d12c"
+              "command": "46 focused tests; clean Git native reproduction; native alpha1-to-alpha2 update records; actual Codex setup/analyze interaction. See linked exact command/observation records.",
+              "limits": "No successful Claude interactive journey or public marketplace/remote curl install; Linux is emulated; no human usability/scientific/final M4.5 acceptance or official provider approval.",
+              "outcome": "Bounded observations obtained; per-procedure matrix and release-acceptance.md distinguish passed controls from Claude authentication and publication blockers.",
+              "path": "specs/046-native-ai-plugins/evidence/release-alpha2.json",
+              "sha256": "f42ee66806b558af8d5c42cf9ad782c252045e1b163f39dcfb09d61a0b421fe4"
             }
           ],
-          "planned_evidence": "specs/046-native-ai-plugins/evidence/engineering.json",
+          "planned_evidence": "specs/046-native-ai-plugins/evidence/release-alpha2.json",
           "test_file": "tests/test_plugin_package.py",
           "test_name": "PluginPackageTests.test_inventory_rejects_content_drift_and_tracks_directory_symlinks",
           "then": "both target runtimes start offline, hashes and license inventories are present, and corrupt archives or unsupported platforms refuse",
@@ -164,14 +164,14 @@
           "id": "SC-003",
           "obtained_evidence": [
             {
-              "command": "Focused unittest command and bundled reproduce_native_plugin.py invocations recorded in evidence/engineering.json and linked native transcripts.",
-              "limits": "No interactive wizard/skill journey, version-changing upgrade, public release, provider approval, human rating or scientific result. Linux is emulated. Historical M4.5 evidence unchanged.",
-              "outcome": "Bounded engineering controls obtained for this scenario; see per-procedure obtained/remaining matrix in validation-plan.md. This draft does not imply full acceptance.",
-              "path": "specs/046-native-ai-plugins/evidence/engineering.json",
-              "sha256": "4f1ef65a4b9124f80ce524e72fc0b0ea18c44f726980e71294b82f542f03d12c"
+              "command": "46 focused tests; clean Git native reproduction; native alpha1-to-alpha2 update records; actual Codex setup/analyze interaction. See linked exact command/observation records.",
+              "limits": "No successful Claude interactive journey or public marketplace/remote curl install; Linux is emulated; no human usability/scientific/final M4.5 acceptance or official provider approval.",
+              "outcome": "Bounded observations obtained; per-procedure matrix and release-acceptance.md distinguish passed controls from Claude authentication and publication blockers.",
+              "path": "specs/046-native-ai-plugins/evidence/release-alpha2.json",
+              "sha256": "f42ee66806b558af8d5c42cf9ad782c252045e1b163f39dcfb09d61a0b421fe4"
             }
           ],
-          "planned_evidence": "specs/046-native-ai-plugins/evidence/engineering.json",
+          "planned_evidence": "specs/046-native-ai-plugins/evidence/release-alpha2.json",
           "test_file": "tests/test_plugin_mcp.py",
           "test_name": "PluginRouterTests.test_two_workspaces_keep_core_results_and_resource_ownership",
           "then": "core report values are preserved; unknown IDs, arbitrary roots, foreign resource IDs, stale bindings and unauthorized execution are refused",
@@ -188,14 +188,14 @@
           "id": "SC-004",
           "obtained_evidence": [
             {
-              "command": "Focused unittest command and bundled reproduce_native_plugin.py invocations recorded in evidence/engineering.json and linked native transcripts.",
-              "limits": "No interactive wizard/skill journey, version-changing upgrade, public release, provider approval, human rating or scientific result. Linux is emulated. Historical M4.5 evidence unchanged.",
-              "outcome": "Bounded engineering controls obtained for this scenario; see per-procedure obtained/remaining matrix in validation-plan.md. This draft does not imply full acceptance.",
-              "path": "specs/046-native-ai-plugins/evidence/engineering.json",
-              "sha256": "4f1ef65a4b9124f80ce524e72fc0b0ea18c44f726980e71294b82f542f03d12c"
+              "command": "46 focused tests; clean Git native reproduction; native alpha1-to-alpha2 update records; actual Codex setup/analyze interaction. See linked exact command/observation records.",
+              "limits": "No successful Claude interactive journey or public marketplace/remote curl install; Linux is emulated; no human usability/scientific/final M4.5 acceptance or official provider approval.",
+              "outcome": "Bounded observations obtained; per-procedure matrix and release-acceptance.md distinguish passed controls from Claude authentication and publication blockers.",
+              "path": "specs/046-native-ai-plugins/evidence/release-alpha2.json",
+              "sha256": "f42ee66806b558af8d5c42cf9ad782c252045e1b163f39dcfb09d61a0b421fe4"
             }
           ],
-          "planned_evidence": "specs/046-native-ai-plugins/evidence/engineering.json",
+          "planned_evidence": "specs/046-native-ai-plugins/evidence/release-alpha2.json",
           "test_file": "tests/test_plugin_registry.py",
           "test_name": "PluginRegistryTests.test_discovery_recognizes_worktrees_empty_and_unavailable_roots",
           "then": "canonical roots are deduplicated, worktrees recognized, symlinks excluded, work bounded and no registry written; empty/unreadable folders permit manual selection",
@@ -212,14 +212,14 @@
           "id": "SC-005",
           "obtained_evidence": [
             {
-              "command": "Focused unittest command and bundled reproduce_native_plugin.py invocations recorded in evidence/engineering.json and linked native transcripts.",
-              "limits": "No interactive wizard/skill journey, version-changing upgrade, public release, provider approval, human rating or scientific result. Linux is emulated. Historical M4.5 evidence unchanged.",
-              "outcome": "Bounded engineering controls obtained for this scenario; see per-procedure obtained/remaining matrix in validation-plan.md. This draft does not imply full acceptance.",
-              "path": "specs/046-native-ai-plugins/evidence/engineering.json",
-              "sha256": "4f1ef65a4b9124f80ce524e72fc0b0ea18c44f726980e71294b82f542f03d12c"
+              "command": "46 focused tests; clean Git native reproduction; native alpha1-to-alpha2 update records; actual Codex setup/analyze interaction. See linked exact command/observation records.",
+              "limits": "No successful Claude interactive journey or public marketplace/remote curl install; Linux is emulated; no human usability/scientific/final M4.5 acceptance or official provider approval.",
+              "outcome": "Bounded observations obtained; per-procedure matrix and release-acceptance.md distinguish passed controls from Claude authentication and publication blockers.",
+              "path": "specs/046-native-ai-plugins/evidence/release-alpha2.json",
+              "sha256": "f42ee66806b558af8d5c42cf9ad782c252045e1b163f39dcfb09d61a0b421fe4"
             }
           ],
-          "planned_evidence": "specs/046-native-ai-plugins/evidence/engineering.json",
+          "planned_evidence": "specs/046-native-ai-plugins/evidence/release-alpha2.json",
           "test_file": "tests/test_plugin_registry.py",
           "test_name": "PluginRegistryTests.test_preview_does_not_write_and_apply_preserves_stable_workspace",
           "then": "one private registry transaction adds both in analysis mode; stale digests and concurrent changes refuse, cancellation before apply writes no registry, and reconnected status shows the selected IDs",
@@ -236,14 +236,14 @@
           "id": "SC-006",
           "obtained_evidence": [
             {
-              "command": "Focused unittest command and bundled reproduce_native_plugin.py invocations recorded in evidence/engineering.json and linked native transcripts.",
-              "limits": "No interactive wizard/skill journey, version-changing upgrade, public release, provider approval, human rating or scientific result. Linux is emulated. Historical M4.5 evidence unchanged.",
-              "outcome": "Bounded engineering controls obtained for this scenario; see per-procedure obtained/remaining matrix in validation-plan.md. This draft does not imply full acceptance.",
-              "path": "specs/046-native-ai-plugins/evidence/engineering.json",
-              "sha256": "4f1ef65a4b9124f80ce524e72fc0b0ea18c44f726980e71294b82f542f03d12c"
+              "command": "46 focused tests; clean Git native reproduction; native alpha1-to-alpha2 update records; actual Codex setup/analyze interaction. See linked exact command/observation records.",
+              "limits": "No successful Claude interactive journey or public marketplace/remote curl install; Linux is emulated; no human usability/scientific/final M4.5 acceptance or official provider approval.",
+              "outcome": "Bounded observations obtained; per-procedure matrix and release-acceptance.md distinguish passed controls from Claude authentication and publication blockers.",
+              "path": "specs/046-native-ai-plugins/evidence/release-alpha2.json",
+              "sha256": "f42ee66806b558af8d5c42cf9ad782c252045e1b163f39dcfb09d61a0b421fe4"
             }
           ],
-          "planned_evidence": "specs/046-native-ai-plugins/evidence/engineering.json",
+          "planned_evidence": "specs/046-native-ai-plugins/evidence/release-alpha2.json",
           "test_file": "specs/046-native-ai-plugins/validation-plan.md",
           "test_name": "procedure_006",
           "then": "five canonical product skills and setup onboarding are available with bundled stdio MCP; actual interactive skill use is recorded separately from CLI metadata inspection",
@@ -260,14 +260,14 @@
           "id": "SC-007",
           "obtained_evidence": [
             {
-              "command": "Focused unittest command and bundled reproduce_native_plugin.py invocations recorded in evidence/engineering.json and linked native transcripts.",
-              "limits": "No interactive wizard/skill journey, version-changing upgrade, public release, provider approval, human rating or scientific result. Linux is emulated. Historical M4.5 evidence unchanged.",
-              "outcome": "Bounded engineering controls obtained for this scenario; see per-procedure obtained/remaining matrix in validation-plan.md. This draft does not imply full acceptance.",
-              "path": "specs/046-native-ai-plugins/evidence/engineering.json",
-              "sha256": "4f1ef65a4b9124f80ce524e72fc0b0ea18c44f726980e71294b82f542f03d12c"
+              "command": "46 focused tests; clean Git native reproduction; native alpha1-to-alpha2 update records; actual Codex setup/analyze interaction. See linked exact command/observation records.",
+              "limits": "No successful Claude interactive journey or public marketplace/remote curl install; Linux is emulated; no human usability/scientific/final M4.5 acceptance or official provider approval.",
+              "outcome": "Bounded observations obtained; per-procedure matrix and release-acceptance.md distinguish passed controls from Claude authentication and publication blockers.",
+              "path": "specs/046-native-ai-plugins/evidence/release-alpha2.json",
+              "sha256": "f42ee66806b558af8d5c42cf9ad782c252045e1b163f39dcfb09d61a0b421fe4"
             }
           ],
-          "planned_evidence": "specs/046-native-ai-plugins/evidence/engineering.json",
+          "planned_evidence": "specs/046-native-ai-plugins/evidence/release-alpha2.json",
           "test_file": "specs/046-native-ai-plugins/validation-plan.md",
           "test_name": "procedure_007",
           "then": "the six skills and bundled stdio MCP are available, without global skill copying or Python setup; actual interactive skill use is recorded separately",
@@ -284,14 +284,14 @@
           "id": "SC-008",
           "obtained_evidence": [
             {
-              "command": "Focused unittest command and bundled reproduce_native_plugin.py invocations recorded in evidence/engineering.json and linked native transcripts.",
-              "limits": "No interactive wizard/skill journey, version-changing upgrade, public release, provider approval, human rating or scientific result. Linux is emulated. Historical M4.5 evidence unchanged.",
-              "outcome": "Bounded engineering controls obtained for this scenario; see per-procedure obtained/remaining matrix in validation-plan.md. This draft does not imply full acceptance.",
-              "path": "specs/046-native-ai-plugins/evidence/engineering.json",
-              "sha256": "4f1ef65a4b9124f80ce524e72fc0b0ea18c44f726980e71294b82f542f03d12c"
+              "command": "46 focused tests; clean Git native reproduction; native alpha1-to-alpha2 update records; actual Codex setup/analyze interaction. See linked exact command/observation records.",
+              "limits": "No successful Claude interactive journey or public marketplace/remote curl install; Linux is emulated; no human usability/scientific/final M4.5 acceptance or official provider approval.",
+              "outcome": "Bounded observations obtained; per-procedure matrix and release-acceptance.md distinguish passed controls from Claude authentication and publication blockers.",
+              "path": "specs/046-native-ai-plugins/evidence/release-alpha2.json",
+              "sha256": "f42ee66806b558af8d5c42cf9ad782c252045e1b163f39dcfb09d61a0b421fe4"
             }
           ],
-          "planned_evidence": "specs/046-native-ai-plugins/evidence/engineering.json",
+          "planned_evidence": "specs/046-native-ai-plugins/evidence/release-alpha2.json",
           "test_file": "specs/046-native-ai-plugins/validation-plan.md",
           "test_name": "procedure_008",
           "then": "configuration/results and unrelated or modified bytes survive; only matching receipt-owned entries are removed; a real version change is observed before update acceptance",
@@ -308,14 +308,14 @@
           "id": "SC-009",
           "obtained_evidence": [
             {
-              "command": "Focused unittest command and bundled reproduce_native_plugin.py invocations recorded in evidence/engineering.json and linked native transcripts.",
-              "limits": "No interactive wizard/skill journey, version-changing upgrade, public release, provider approval, human rating or scientific result. Linux is emulated. Historical M4.5 evidence unchanged.",
-              "outcome": "Bounded engineering controls obtained for this scenario; see per-procedure obtained/remaining matrix in validation-plan.md. This draft does not imply full acceptance.",
-              "path": "specs/046-native-ai-plugins/evidence/engineering.json",
-              "sha256": "4f1ef65a4b9124f80ce524e72fc0b0ea18c44f726980e71294b82f542f03d12c"
+              "command": "46 focused tests; clean Git native reproduction; native alpha1-to-alpha2 update records; actual Codex setup/analyze interaction. See linked exact command/observation records.",
+              "limits": "No successful Claude interactive journey or public marketplace/remote curl install; Linux is emulated; no human usability/scientific/final M4.5 acceptance or official provider approval.",
+              "outcome": "Bounded observations obtained; per-procedure matrix and release-acceptance.md distinguish passed controls from Claude authentication and publication blockers.",
+              "path": "specs/046-native-ai-plugins/evidence/release-alpha2.json",
+              "sha256": "f42ee66806b558af8d5c42cf9ad782c252045e1b163f39dcfb09d61a0b421fe4"
             }
           ],
-          "planned_evidence": "specs/046-native-ai-plugins/evidence/engineering.json",
+          "planned_evidence": "specs/046-native-ai-plugins/evidence/release-alpha2.json",
           "test_file": "specs/046-native-ai-plugins/validation-plan.md",
           "test_name": "procedure_009",
           "then": "provenance binds source, wheel, locks, runtime archives and corresponding sources; inventory verifies; both catalogs install; binaries live only in the distribution branch and publication is separately authorized",
@@ -332,14 +332,14 @@
           "id": "SC-010",
           "obtained_evidence": [
             {
-              "command": "Focused unittest command and bundled reproduce_native_plugin.py invocations recorded in evidence/engineering.json and linked native transcripts.",
-              "limits": "No interactive wizard/skill journey, version-changing upgrade, public release, provider approval, human rating or scientific result. Linux is emulated. Historical M4.5 evidence unchanged.",
-              "outcome": "Bounded engineering controls obtained for this scenario; see per-procedure obtained/remaining matrix in validation-plan.md. This draft does not imply full acceptance.",
-              "path": "specs/046-native-ai-plugins/evidence/engineering.json",
-              "sha256": "4f1ef65a4b9124f80ce524e72fc0b0ea18c44f726980e71294b82f542f03d12c"
+              "command": "46 focused tests; clean Git native reproduction; native alpha1-to-alpha2 update records; actual Codex setup/analyze interaction. See linked exact command/observation records.",
+              "limits": "No successful Claude interactive journey or public marketplace/remote curl install; Linux is emulated; no human usability/scientific/final M4.5 acceptance or official provider approval.",
+              "outcome": "Bounded observations obtained; per-procedure matrix and release-acceptance.md distinguish passed controls from Claude authentication and publication blockers.",
+              "path": "specs/046-native-ai-plugins/evidence/release-alpha2.json",
+              "sha256": "f42ee66806b558af8d5c42cf9ad782c252045e1b163f39dcfb09d61a0b421fe4"
             }
           ],
-          "planned_evidence": "specs/046-native-ai-plugins/evidence/engineering.json",
+          "planned_evidence": "specs/046-native-ai-plugins/evidence/release-alpha2.json",
           "test_file": "specs/046-native-ai-plugins/validation-plan.md",
           "test_name": "procedure_010",
           "then": "native installation/setup/lifecycle come first; only allowlisted new IDs and intended milestone metadata change; post-audit operations are empty and private Project membership/status is read back independently",
@@ -356,14 +356,14 @@
           "id": "SC-011",
           "obtained_evidence": [
             {
-              "command": "Focused unittest command and bundled reproduce_native_plugin.py invocations recorded in evidence/engineering.json and linked native transcripts.",
-              "limits": "No interactive wizard/skill journey, version-changing upgrade, public release, provider approval, human rating or scientific result. Linux is emulated. Historical M4.5 evidence unchanged.",
-              "outcome": "Bounded engineering controls obtained for this scenario; see per-procedure obtained/remaining matrix in validation-plan.md. This draft does not imply full acceptance.",
-              "path": "specs/046-native-ai-plugins/evidence/engineering.json",
-              "sha256": "4f1ef65a4b9124f80ce524e72fc0b0ea18c44f726980e71294b82f542f03d12c"
+              "command": "46 focused tests; clean Git native reproduction; native alpha1-to-alpha2 update records; actual Codex setup/analyze interaction. See linked exact command/observation records.",
+              "limits": "No successful Claude interactive journey or public marketplace/remote curl install; Linux is emulated; no human usability/scientific/final M4.5 acceptance or official provider approval.",
+              "outcome": "Bounded observations obtained; per-procedure matrix and release-acceptance.md distinguish passed controls from Claude authentication and publication blockers.",
+              "path": "specs/046-native-ai-plugins/evidence/release-alpha2.json",
+              "sha256": "f42ee66806b558af8d5c42cf9ad782c252045e1b163f39dcfb09d61a0b421fe4"
             }
           ],
-          "planned_evidence": "specs/046-native-ai-plugins/evidence/engineering.json",
+          "planned_evidence": "specs/046-native-ai-plugins/evidence/release-alpha2.json",
           "test_file": "specs/046-native-ai-plugins/validation-plan.md",
           "test_name": "procedure_011",
           "then": "documentary material is complete and partner/account/publication dependencies are explicitly assigned to T014; preparation never claims provider approval",
@@ -380,14 +380,14 @@
           "id": "SC-012",
           "obtained_evidence": [
             {
-              "command": "Focused unittest command and bundled reproduce_native_plugin.py invocations recorded in evidence/engineering.json and linked native transcripts.",
-              "limits": "No interactive wizard/skill journey, version-changing upgrade, public release, provider approval, human rating or scientific result. Linux is emulated. Historical M4.5 evidence unchanged.",
-              "outcome": "Bounded engineering controls obtained for this scenario; see per-procedure obtained/remaining matrix in validation-plan.md. This draft does not imply full acceptance.",
-              "path": "specs/046-native-ai-plugins/evidence/engineering.json",
-              "sha256": "4f1ef65a4b9124f80ce524e72fc0b0ea18c44f726980e71294b82f542f03d12c"
+              "command": "46 focused tests; clean Git native reproduction; native alpha1-to-alpha2 update records; actual Codex setup/analyze interaction. See linked exact command/observation records.",
+              "limits": "No successful Claude interactive journey or public marketplace/remote curl install; Linux is emulated; no human usability/scientific/final M4.5 acceptance or official provider approval.",
+              "outcome": "Bounded observations obtained; per-procedure matrix and release-acceptance.md distinguish passed controls from Claude authentication and publication blockers.",
+              "path": "specs/046-native-ai-plugins/evidence/release-alpha2.json",
+              "sha256": "f42ee66806b558af8d5c42cf9ad782c252045e1b163f39dcfb09d61a0b421fe4"
             }
           ],
-          "planned_evidence": "specs/046-native-ai-plugins/evidence/engineering.json",
+          "planned_evidence": "specs/046-native-ai-plugins/evidence/release-alpha2.json",
           "test_file": "specs/046-native-ai-plugins/validation-plan.md",
           "test_name": "procedure_012",
           "then": "largest files and limits are recorded, directory and official-marketplace routes are distinct, and unresolved exceptions/account/publication approvals stay in T015",
@@ -404,14 +404,14 @@
           "id": "SC-013",
           "obtained_evidence": [
             {
-              "command": "Focused unittest command and bundled reproduce_native_plugin.py invocations recorded in evidence/engineering.json and linked native transcripts.",
-              "limits": "No interactive wizard/skill journey, version-changing upgrade, public release, provider approval, human rating or scientific result. Linux is emulated. Historical M4.5 evidence unchanged.",
-              "outcome": "Bounded engineering controls obtained for this scenario; see per-procedure obtained/remaining matrix in validation-plan.md. This draft does not imply full acceptance.",
-              "path": "specs/046-native-ai-plugins/evidence/engineering.json",
-              "sha256": "4f1ef65a4b9124f80ce524e72fc0b0ea18c44f726980e71294b82f542f03d12c"
+              "command": "46 focused tests; clean Git native reproduction; native alpha1-to-alpha2 update records; actual Codex setup/analyze interaction. See linked exact command/observation records.",
+              "limits": "No successful Claude interactive journey or public marketplace/remote curl install; Linux is emulated; no human usability/scientific/final M4.5 acceptance or official provider approval.",
+              "outcome": "Bounded observations obtained; per-procedure matrix and release-acceptance.md distinguish passed controls from Claude authentication and publication blockers.",
+              "path": "specs/046-native-ai-plugins/evidence/release-alpha2.json",
+              "sha256": "f42ee66806b558af8d5c42cf9ad782c252045e1b163f39dcfb09d61a0b421fe4"
             }
           ],
-          "planned_evidence": "specs/046-native-ai-plugins/evidence/engineering.json",
+          "planned_evidence": "specs/046-native-ai-plugins/evidence/release-alpha2.json",
           "test_file": "tests/test_plugin_installer.py",
           "test_name": "PluginInstallerTests.test_explicit_ref_is_independent_of_option_order",
           "then": "only native user plugin-manager operations run; all selected hosts preflight first; option order preserves the explicit ref; dry-run performs no install; no Python bootstrap, sudo or provider session occurs",

@@ -93,8 +93,9 @@ human-evaluation or founder-acceptance boundaries.
 The preferred installation route is the **native user plugin** for Codex or
 Claude Code on macOS arm64 and Linux x86_64. It includes Python and dependencies,
 registers its skills automatically and guides you through selecting repositories.
-The source candidate is experimental; publication of `plugin-dist` remains a
-separate release decision. See [native installation and setup](docs/tooling/NATIVE_PLUGINS.md)
+The source candidate is experimental. Publication of `plugin-dist` is authorized
+once both native interactive journeys pass; the [current acceptance record](specs/046-native-ai-plugins/release-acceptance.md)
+records the pending Claude login gate. See [native installation and setup](docs/tooling/NATIVE_PLUGINS.md)
 for the marketplace commands, local candidate installation and the optional
 `curl … | sh` installer. Neither the installer nor discovery registers a repository
 without the setup preview and explicit apply.

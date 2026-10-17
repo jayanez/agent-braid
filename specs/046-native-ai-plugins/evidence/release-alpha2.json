@@ -1,0 +1,99 @@
+{
+  "candidate": "1cea4fac6555a06ee9666c83993c2583d0f5ebf8",
+  "distributionCandidate": "a47919df91d2106c69d4f310ec27dc42ea40aa36",
+  "inputs": {
+    "agent_braid/cli.py": "fe2d6550735469f6a7e60d5be62972a1697ed26648f371a2ffa968c1f2407497",
+    "agent_braid/plugin_cli.py": "25929184e65b64f4f18c85e5428f8c8a76426a5a301bc251bd6b13e6f4da0435",
+    "agent_braid/plugin_legacy.py": "c3e6173a688e0a6eb8ad2847ad7c4ba51fe39e4192c81a97f10065fab8a00326",
+    "agent_braid/plugin_mcp.py": "b598eead8342e03949e5f2d2e721bea68107e2d805ab9668111f5ba550191148",
+    "agent_braid/plugin_package.py": "92228211793f843b37be3b63b052317c02463811b9dacd2bcf5efb2a323c2f73",
+    "agent_braid/plugin_registry.py": "6a5a900792e95050487d5ebd9f2d4211cb86b86327b8fa42f17677b46064503b",
+    "docs/tooling/PLUGIN_PRIVACY.md": "707d34f3b0128fc626797822f6a76ced145df0aa924edfff7f83079d91a2e223",
+    "docs/tooling/plugin-submissions/README.md": "5ad3377ac39e954669e0ed5f19842983a998e39ddf74762f5b2d1e55a5092fb1",
+    "install.sh": "164eda156e3ca3bd5f96ab90bed86b9efdd3adf9ebf5581454200f81e31f2b74",
+    "integrations/agent-braid/plugin/runtime-lock.json": "fdfca18b9661fc7a8c071ccdc7256d151615b5d47a52d2f0c19d038ca460d438",
+    "integrations/agent-braid/plugin/setup/SKILL.md": "8a5f832857e172c22f641e06379b13aa6a210e9a2daf5c55db303325b09c255e",
+    "requirements-native-plugin.txt": "edea0fa7a788ce6c94ef2576d9244cbc26fb2caff4e779f7070c3d9425ab542f",
+    "scripts/build_native_plugin.py": "24cc4a833a2b380c9935dc49be3375691cb9df8cabd4c664dde9ee9414480787",
+    "scripts/reproduce_native_plugin.py": "9559357be55cdde86f7f49d274f179d53575c70f5866cec483c1cd4562d209e7",
+    "tests/test_plugin_installer.py": "3a20a9b83a184f433080f026d4d7be7c88247c27ef3a84311a2653f1ba98edc6",
+    "tests/test_plugin_legacy.py": "67a4ef0dd60bdebddd0fb40d0e594b693d52601ab397a6d3765d9f638057ef0c",
+    "tests/test_plugin_mcp.py": "c751b07d7475f918660ea005bb903bd48d649c0c2bd1e60f6ea0d75f0837a5de",
+    "tests/test_plugin_package.py": "b35e35518a0d80ae01a6de11e3a8ea34510117f8d45325cacf76bc8357ac90a9",
+    "tests/test_plugin_registry.py": "accd6464a57d48531e781eeb03ad1154d60ff4c5db0764914e6f467bb426c480",
+    "tests/test_plugin_reproduction.py": "8786552dd251abf0cd19c77d27adc7a8854ba39c2f6024a4bec87002c3134cc2",
+    "tests/test_validation_profiles.py": "a5a0bf45e9cd40942eca4657fd87b8b9f22e5f7a52d25e89356e9d0ae6269661"
+  },
+  "limits": [
+    "Agent-operated interactive Codex acceptance; no human usability rating",
+    "Local-directory version transition observed; no public Git refresh or remote curl install claimed",
+    "No public distribution, provider fallback, official approval or scientific result claimed"
+  ],
+  "negativeControls": [
+    "Alpha1 native Codex cache doctor refused aliases omitted by its installer; retained as a failed baseline",
+    "Initial upgrade harness copy materialized symlinks before inventory and correctly failed; corrected harness preserves baseline symlinks",
+    "Alternate AGENT_BRAID_HOME supplied only to parent is filtered by Codex native MCP launch environment; final lifecycle control uses its isolated HOME default so CLI and MCP share exact registry; setup always consumes MCP registryHome"
+  ],
+  "observations": [
+    "Clean Git distribution alpha2 consumed by native host managers on macOS arm64 and Linux AMD64 emulated in network-disabled container",
+    "Installed cache doctor now verifies in both hosts; contained runtime aliases materialized without relaxing inventory",
+    "Real native alpha1-to-alpha2 upgrade in same isolated user profiles and unchanged local marketplace source identity on both tested platforms",
+    "Registry/result bytes identical across both host updates and uninstall",
+    "Actual Codex setup cancellation/discovery/preview/apply/reconnect and product-skill MCP analysis passed"
+  ],
+  "package": {
+    "fileBytes": 390788156,
+    "files": 7737,
+    "inventorySha256": "5a70b4af226ea657b721468a2afe7226639999b5c6d0610e03916fc29e98d464",
+    "provenanceSha256": "73fc054fb9ab39b0f7bde5b64965928b9d6f324c1c7869c062c43304c2116b2c",
+    "version": "0.1.0-alpha.2"
+  },
+  "records": [
+    {
+      "path": "specs/046-native-ai-plugins/evidence/mac-native-alpha2.json",
+      "rawRecordSha256": "aa299dff4d04c6948c4c49986b93a07ce0363b0f304918f0b5f722c73431c474",
+      "sha256": "c2914a4b6a30c52eff1fad8d8dc93c15d5de418604a72d82f8238fbca24ca25d"
+    },
+    {
+      "path": "specs/046-native-ai-plugins/evidence/linux-native-alpha2.json",
+      "rawRecordSha256": "bd0e5e9bd17674e9caf5e929d3e3c48adbb0de93ac22c0b656964e3c6bedba63",
+      "sha256": "d5224316d7563d241ac1ac9fb530ed82c2c3cac7afc1c6c1dbe2db74abaad11e"
+    },
+    {
+      "path": "specs/046-native-ai-plugins/evidence/mac-upgrade-alpha2.json",
+      "rawRecordSha256": "8bbb70c889fee24b5f3f239ed062e9cf691a482b57f0ce9bead01b9530fa4700",
+      "sha256": "de3321b0fe9789926413e20b61eeb334d87d99d5f0955f551559ae280b608a80"
+    },
+    {
+      "path": "specs/046-native-ai-plugins/evidence/linux-upgrade-alpha2.json",
+      "rawRecordSha256": "243a01a7003a054970e7bbc384c3097428da70d4981d5fc729b541fcd3086aee",
+      "sha256": "8e9cdfa21fd342caa19c9d1834458d8b47ef1bbbf4c07f6871d997b1868215b3"
+    },
+    {
+      "path": "specs/046-native-ai-plugins/evidence/codex-interactive-alpha2.json",
+      "rawRecordSha256": "dd636c8731db0b538958a3f0a6291c048fee3c6646d2de6491e1af216b4729c9",
+      "sha256": "fa8b8af792badc9f2fc99fcdf8d3ad989161c7d98b0a5bc707f841e8030a3725"
+    },
+    {
+      "path": "specs/046-native-ai-plugins/evidence/claude-interactive-auth-blocker.json",
+      "sha256": "56a595ec1f0ee71c79d8b7c8e06bfbc977ec7121fa4f9dd4ee6b8d611e2e59f7"
+    }
+  ],
+  "remaining": [
+    "Claude native interactive setup/product-skill journey blocked by expired native login",
+    "Own public marketplace branch/tag and real remote curl installation pending both-host interactive success",
+    "Official ecosystem eligibility/submission/approval T014/T015 remain separate",
+    "Historical M4.5 108 attempts, human/scientific/founder gates unchanged",
+    "Linux emulated controls do not constitute physical Linux or a provider interaction"
+  ],
+  "schema": "agent-braid-native-plugin-release-acceptance/v1",
+  "sourceDirtyAtBuild": false,
+  "status": "partially-observed-publication-blocked",
+  "unitTests": {
+    "command": ".venv-speckit/bin/python -m unittest tests.test_plugin_registry tests.test_plugin_mcp tests.test_plugin_installer tests.test_plugin_legacy tests.test_plugin_package tests.test_plugin_reproduction tests.test_validation_profiles",
+    "exitCode": 0,
+    "rawLogSha256": "aa19cdf48ec9853bff4c570e7b7dd294339d8da2fde49f58ee2a63cd04c8042d",
+    "skips": 0,
+    "tests": 46
+  }
+}
