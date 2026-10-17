@@ -40,31 +40,37 @@ Do not use for: refactoring, writing scripts from scratch, debugging business lo
 <!-- CODEGRAPH_START -->
 ## CodeGraph
 
-In repositories indexed by CodeGraph (a `.codegraph/` directory exists at the repo root), reach for it BEFORE grep/find or reading files when you need to understand or locate code:
-
-- **MCP tool** (when available): `codegraph_explore` answers most code questions in one call — the relevant symbols' verbatim source plus the call paths between them, including dynamic-dispatch hops grep can't follow. Name a file or symbol in the query to read its current line-numbered source. If it's listed but deferred, load it by name via tool search.
-- **Shell** (always works): `codegraph explore "<symbol names or question>"` prints the same output.
-
-If there is no `.codegraph/` directory, skip CodeGraph entirely — indexing is the user's decision.
+Use CodeGraph selectively when this repository has an existing `.codegraph/`
+index. Follow the workflow below rather than requiring CodeGraph before every
+search or read.
 <!-- CODEGRAPH_END -->
 
-### Bounded CodeGraph workflow
+### Selective CodeGraph workflow
 
-- Start with `codegraph_explore` and a specific file or symbol; use `maxFiles`
-  (CLI: `--max-files 2`) to bound the response. Treat returned current source as
-  already read; follow exact elided symbol names only when needed.
-- For a smaller slice, use `codegraph_node` (CLI: `codegraph node --file PATH
-  --symbols-only`, or `--offset N --limit N`). Use `codegraph_search` for names,
-  `codegraph_callers` / `codegraph_callees` for direct relationships, and
-  `codegraph_impact` before changing shared symbols. `codegraph_files` provides
-  indexed file structure; `codegraph_status` checks index health.
-- For task context without source, use `codegraph context --no-code --max-nodes 8`.
-  Use `codegraph affected PATH --json` to suggest affected tests; this does not
-  replace the required validation profiles or establish complete test coverage.
-- Pass this worktree's absolute `projectPath` when the MCP has no default project.
-  The MCP watches changes; after a freshness warning or offline edits, run
-  `codegraph sync` and check `codegraph status --json` before structural queries.
-- Use direct reads/searches for unindexed documentation/configuration, missing
-  results or explicit freshness failures. Resolution is best effort, not proof.
-- Keep cross-call source deduplication disabled: context compaction and separate
-  chats cannot guarantee that previously returned source remains available.
+- Choose the smallest sufficient retrieval. Use CodeGraph for callers, callees,
+  dependencies, impact and flows across files. Prefer specific `node`, `callers`,
+  `callees` or `impact` queries; use the CLI if the narrower MCP tool is unavailable.
+- Use direct search for exact text, identifiers or error messages, and bounded
+  direct reads when the file and relevant lines are known. No preliminary
+  CodeGraph call is required for these tasks.
+- Use direct search/read for documentation, JSON contracts, configuration and
+  other content the actual index does not cover. Do not assume every file is indexed.
+- Use `codegraph_explore` when the relevant code is unknown, with specific terms
+  and a small `maxFiles` (CLI: `--max-files 2`). If results are noisy, narrow to
+  exact symbols or switch to direct search/read instead of broadening repeatedly.
+- Prefer text output for understanding; request JSON only for programmatic use.
+  Bound impact depth and result limits to the question. For outlines or excerpts,
+  use `codegraph node --file PATH --symbols-only` or `--offset N --limit N`.
+- Treat current returned source as already read. Retrieve it again only if omitted,
+  changed, flagged stale or unavailable in the current context. Keep cross-call
+  source deduplication disabled because compaction and separate chats lose context.
+- Pass this worktree's absolute `projectPath` when MCP has no default project.
+  After freshness warnings or offline edits, run `codegraph sync` and check
+  `codegraph status --json` before relying on structural results.
+- `codegraph affected PATH` suggests tests; it does not replace required validation
+  profiles or establish complete coverage. Graph resolution is best effort, not proof.
+- Assess usefulness by relevant output volume, follow-up reads and answer quality.
+  Fewer calls alone do not establish context-token or billing savings.
+- Without an index, use normal search/read. Do not initialize or expand an index,
+  change documentation/configuration, or enable monitoring solely to apply this
+  policy without authorization. Preserve all governance and scientific requirements.
