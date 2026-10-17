@@ -5,3 +5,10 @@ The owner authorized synthetic software implementation on 2026-10-13 through the
 Current task dispositions and the FC.2 delivery boundary are mapped in [integration and tracking readiness](../045-local-forecasting-capabilities/delivery-readiness.md). Only SPEC-034/T002 and T004 have proposed original-task software closure; no source/profile/experiment/adoption gate is inferred.
 
 The [resource/cache tranche](resource-cache-controls-2026-10-15.md) obtains additional software controls for T005 and SPEC-035/T006. The owner has adopted [T005 cancellation as not_planned](t005-disposition.md), pending PR integration and GitHub readback; T005 is not completed. SPEC-035/T006 remains open, every T005-dependent acceptance remains unsatisfied, and six original FC.1 tasks remain completed. Its additive receipts do not refresh historical assurance or admit a real resource/source.
+
+On 2026-10-17 the owner [resumed T005 engineering for real utility](real-utility-resumption.md).
+The preceding cancellation and failed attempt remain historical; the new phase
+ledger/source envelope admits no resource or workload. Its original unchecked
+criterion, all consumer dependencies and real gates remain pending. No native
+execution request is ready while the recorded coverage/deadline/storage/input
+blockers remain. No historical assurance is refreshed or approval transferred.

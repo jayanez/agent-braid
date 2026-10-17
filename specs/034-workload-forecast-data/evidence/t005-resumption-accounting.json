@@ -1,0 +1,262 @@
+{
+  "version": "agent-braid-fc1-admission-accounting-evidence-v1",
+  "date": "2026-10-17",
+  "sourceBase": "48f4226db1e1b0565b1f8faf0eca81c150a65d30",
+  "ownerDecision": "Direct user instruction: PLEASE IMPLEMENT THIS PLAN; resume SPEC-034/T005. Specific native/model/source execution gates retained.",
+  "domain": "Repository source-cap arithmetic and request-ledger unit regressions only",
+  "inputs": {
+    "agent_braid/forecast_admission.py": "58c3175208491e8752e28432233caa1527c797721b89490ba164686cec7d9eb4",
+    "tests/test_forecast_admission.py": "ae301d9f2dcc9a7e4874fb2e36b8cf69d722e32fb68d181fe402d5473eeae056",
+    "specs/034-workload-forecast-data/real-utility-resumption.md": "28d26ab100dad2ea9f7a655a9a4a0673b0d316cf764440db2b1c2cd8520cd6a5"
+  },
+  "envelopes": [
+    {
+      "version": "agent-braid-admission-source-envelope-v1",
+      "sourceDigest": "463e2db603609a814306de5c2bc72106b9e2cc9cf9424a3c4ab3e24756b2d149",
+      "mode": "serial",
+      "finalVerifier": "runtime",
+      "phases": [
+        {
+          "phase": "prepare",
+          "replayBudgets": 3,
+          "runtimeBudgets": 1,
+          "singleCommandProbes": 1,
+          "gitRequests": 1793,
+          "internalCapSumSeconds": 450
+        },
+        {
+          "phase": "grant",
+          "replayBudgets": 1,
+          "runtimeBudgets": 1,
+          "singleCommandProbes": 1,
+          "gitRequests": 769,
+          "internalCapSumSeconds": 210
+        },
+        {
+          "phase": "dispatch",
+          "replayBudgets": 1,
+          "runtimeBudgets": 2,
+          "singleCommandProbes": 1,
+          "gitRequests": 1025,
+          "internalCapSumSeconds": 270
+        },
+        {
+          "phase": "verify",
+          "replayBudgets": 0,
+          "runtimeBudgets": 1,
+          "singleCommandProbes": 0,
+          "gitRequests": 256,
+          "internalCapSumSeconds": 60
+        }
+      ],
+      "gitRequests": 3843,
+      "internalCapSumSeconds": 990,
+      "minimumMeasuredGitRequests": null,
+      "wholeFlowWallUpperBoundNs": null,
+      "blockers": [
+        "input-specific-bounds-not-established",
+        "native-launch-coverage-not-established",
+        "non-git-deadline-and-terminal-reserve-not-established",
+        "aggregate-retained-storage-bound-not-established"
+      ],
+      "executionAuthorization": false,
+      "actualProfileAdmitted": false,
+      "limits": [
+        "Source-cap arithmetic, not actual native counts or cost.",
+        "Per-budget scratch is sampled, not a hard whole-flow disk quota.",
+        "CPU/RSS observations are not host enforcement.",
+        "The existing budget observer swallows callback exceptions."
+      ]
+    },
+    {
+      "version": "agent-braid-admission-source-envelope-v1",
+      "sourceDigest": "463e2db603609a814306de5c2bc72106b9e2cc9cf9424a3c4ab3e24756b2d149",
+      "mode": "parallel",
+      "finalVerifier": "runtime",
+      "phases": [
+        {
+          "phase": "prepare",
+          "replayBudgets": 3,
+          "runtimeBudgets": 2,
+          "singleCommandProbes": 1,
+          "gitRequests": 2049,
+          "internalCapSumSeconds": 510
+        },
+        {
+          "phase": "grant",
+          "replayBudgets": 1,
+          "runtimeBudgets": 2,
+          "singleCommandProbes": 1,
+          "gitRequests": 1025,
+          "internalCapSumSeconds": 270
+        },
+        {
+          "phase": "dispatch",
+          "replayBudgets": 1,
+          "runtimeBudgets": 6,
+          "singleCommandProbes": 2,
+          "gitRequests": 2050,
+          "internalCapSumSeconds": 540
+        },
+        {
+          "phase": "verify",
+          "replayBudgets": 0,
+          "runtimeBudgets": 1,
+          "singleCommandProbes": 0,
+          "gitRequests": 256,
+          "internalCapSumSeconds": 60
+        }
+      ],
+      "gitRequests": 5380,
+      "internalCapSumSeconds": 1380,
+      "minimumMeasuredGitRequests": null,
+      "wholeFlowWallUpperBoundNs": null,
+      "blockers": [
+        "input-specific-bounds-not-established",
+        "native-launch-coverage-not-established",
+        "non-git-deadline-and-terminal-reserve-not-established",
+        "aggregate-retained-storage-bound-not-established"
+      ],
+      "executionAuthorization": false,
+      "actualProfileAdmitted": false,
+      "limits": [
+        "Source-cap arithmetic, not actual native counts or cost.",
+        "Per-budget scratch is sampled, not a hard whole-flow disk quota.",
+        "CPU/RSS observations are not host enforcement.",
+        "The existing budget observer swallows callback exceptions."
+      ]
+    },
+    {
+      "version": "agent-braid-admission-source-envelope-v1",
+      "sourceDigest": "463e2db603609a814306de5c2bc72106b9e2cc9cf9424a3c4ab3e24756b2d149",
+      "mode": "parallel",
+      "finalVerifier": "policy",
+      "phases": [
+        {
+          "phase": "prepare",
+          "replayBudgets": 3,
+          "runtimeBudgets": 2,
+          "singleCommandProbes": 1,
+          "gitRequests": 2049,
+          "internalCapSumSeconds": 510
+        },
+        {
+          "phase": "grant",
+          "replayBudgets": 1,
+          "runtimeBudgets": 2,
+          "singleCommandProbes": 1,
+          "gitRequests": 1025,
+          "internalCapSumSeconds": 270
+        },
+        {
+          "phase": "dispatch",
+          "replayBudgets": 1,
+          "runtimeBudgets": 6,
+          "singleCommandProbes": 2,
+          "gitRequests": 2050,
+          "internalCapSumSeconds": 540
+        },
+        {
+          "phase": "verify",
+          "replayBudgets": 1,
+          "runtimeBudgets": 4,
+          "singleCommandProbes": 2,
+          "gitRequests": 1538,
+          "internalCapSumSeconds": 420
+        }
+      ],
+      "gitRequests": 6662,
+      "internalCapSumSeconds": 1740,
+      "minimumMeasuredGitRequests": null,
+      "wholeFlowWallUpperBoundNs": null,
+      "blockers": [
+        "input-specific-bounds-not-established",
+        "native-launch-coverage-not-established",
+        "non-git-deadline-and-terminal-reserve-not-established",
+        "aggregate-retained-storage-bound-not-established"
+      ],
+      "executionAuthorization": false,
+      "actualProfileAdmitted": false,
+      "limits": [
+        "Source-cap arithmetic, not actual native counts or cost.",
+        "Per-budget scratch is sampled, not a hard whole-flow disk quota.",
+        "CPU/RSS observations are not host enforcement.",
+        "The existing budget observer swallows callback exceptions."
+      ]
+    }
+  ],
+  "obtainedChecks": [
+    {
+      "command": "PATH=/tmp/agent-braid-fc1-decisions-20261016/.venv-speckit/bin:$PATH /tmp/agent-braid-fc1-decisions-20261016/.venv-speckit/bin/python -m scripts.validate_spec_kit",
+      "outcome": "passed-before-edits",
+      "limits": "Structural preflight only; no profile/source/resource admission."
+    },
+    {
+      "command": "/tmp/agent-braid-fc1-decisions-20261016/.venv-speckit/bin/python -m unittest tests.test_forecast_admission -v",
+      "outcome": "9 tests passed after fixing the Luna stop-on-failure finding",
+      "limits": "Unit accounting/source-drift checks only; no native Git launch or runtime flow. Initial red import failure was observed before implementation."
+    }
+  ],
+  "preparationAttempt": "First evidence-generation command used ambient Python 3.9 and failed at zip(strict=True) before writing evidence. Corrected to existing isolated Python 3.13; no source change or test rerun was needed for that generation error.",
+  "stableCandidateValidation": {
+    "command": "PATH=/tmp/agent-braid-fc1-decisions-20261016/.venv-speckit/bin:$PATH python -m scripts.validate_change --base origin/develop --profile pr",
+    "exitCode": 0,
+    "selectedCommands": 14,
+    "tests": 1937,
+    "skipped": 19,
+    "log": "/tmp/fc1-admission-pr.log",
+    "outcome": "Selected executable validation passed. Deferred boundary gates remain unexecuted.",
+    "limits": "Existing software regressions and structural controls only. Evidence metadata finalized afterward; no native admission, model, VM or real-source acceptance."
+  },
+  "review": {
+    "configuredModel": "gpt-6-luna",
+    "agent": "/root/luna_admission_review",
+    "scope": "Source arithmetic and additive phase-A accounting/code/domain review; no native experiment",
+    "initialFinding": "Work could continue after a denied request or failed spawn. Corrected; reserved final verification is the sole terminal exception.",
+    "finalVerdict": "no remaining code findings in reviewed scope",
+    "independentTests": 9,
+    "detectedInMemoryMutations": [
+      "concurrent reservation limit weakened from2to3",
+      "unhealthy phase advancement to grant allowed"
+    ],
+    "sourceFilesUnchangedByMutations": true,
+    "limits": "Not an executable native admission, resource/source/model/experiment acceptance or cryptographic identity attestation."
+  },
+  "corrections": {
+    "serialGitCap": 3843,
+    "parallelDirectVerifierGitCap": 5380,
+    "parallelPolicyInspectionGitCap": 6662,
+    "oldParallel6918": "double-counted one runtime budget in final policy inspection",
+    "oldWholeFlowWallClaims": "withdrawn; internal Git cap sums exclude non-Git work and terminal lifecycle"
+  },
+  "blockers": [
+    "input-specific-bounds-not-established",
+    "native-launch-coverage-not-established",
+    "non-git-deadline-and-terminal-reserve-not-established",
+    "aggregate-retained-storage-bound-not-established"
+  ],
+  "actualProfileAdmitted": false,
+  "criterionCompleted": false,
+  "dependenciesSatisfied": false,
+  "modelExecutions": 0,
+  "vmExecutions": 0,
+  "realSourceCaptures": 0,
+  "newExecutionOrApprovalPackage": false,
+  "utilityAccepted": false,
+  "realWorkloadEvidence": false,
+  "executionAuthorization": false,
+  "stop": "No executable admission request or further package until the retained blockers are resolved; no automatic retry or scenario expansion.",
+  "nativeAdmissionRuns": 0,
+  "interruptedValidation": {
+    "command": "python -m scripts.validate_change --base origin/develop --profile pr",
+    "exitCode": 130,
+    "reason": "Interrupted when final Luna review identified stop-on-failure defect. Not a passing profile and not the final candidate."
+  },
+  "pilotFreshnessGate": {
+    "status": "pending",
+    "historicalColdObservationSeconds": 4.133591752,
+    "proposedStepSeconds": 0.1,
+    "horizonBins": 1,
+    "requirement": "Actual monotonic decision time must precede target interval end and expiry; validate causal availability. Historical observation is not a universal lower bound. No horizon or scenario expansion authorized."
+  }
+}
