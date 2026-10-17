@@ -48,6 +48,7 @@ class GitLaunchScope:
                  phase_ns, phase_bytes, terminal_ns, terminal_bytes,
                  max_active, boundary_verifier,
                  verification_of=None, verification_deadline_ns=None,
+                 verification_work_root=None,
                  clock=time.monotonic_ns):
         self.root = Path(root).resolve(strict=True)
         self.source_root = Path(source_root).resolve(strict=True)
@@ -69,6 +70,15 @@ class GitLaunchScope:
         self.terminal_ns = integer(terminal_ns, 1)
         self.terminal_bytes = integer(terminal_bytes, 1)
         self.verification_of = None if verification_of is None else pin(verification_of)
+        self.verification_work_root = (None if verification_work_root is None
+                                       else Path(verification_work_root).resolve(strict=True))
+        if self.verification_work_root is not None:
+            require(self.verification_of is not None and self.verification_work_root.is_dir()
+                    and not self.verification_work_root.is_relative_to(self.root)
+                    and not self.root.is_relative_to(self.verification_work_root)
+                    and not self.verification_work_root.is_relative_to(self.source_root)
+                    and not self.source_root.is_relative_to(self.verification_work_root),
+                    'verification-work-root-binding')
         self._clock = clock
         self._origin = clock()
         if self.verification_of:
@@ -80,7 +90,7 @@ class GitLaunchScope:
             self._global_deadline = self._origin + sum(self.times.values()) + self.terminal_ns
         self.ledger = PhaseLedger(bounds=phase_requests, total=sum(phase_requests.values()),
                                   max_active=max_active)
-        self.binding = {'version': 'agent-braid-git-admission-boundary-v1',
+        self.binding = {'version': 'agent-braid-git-admission-boundary-v2',
                         'workerPid': os.getpid(), 'workerPgid': os.getpgrp(),
                         'scopeNonce': secrets.token_hex(16),
                         'root': str(self.root), 'sourceRoot': str(self.source_root),
@@ -93,6 +103,8 @@ class GitLaunchScope:
                         'phaseBytes': dict(self.space), 'terminalNs': self.terminal_ns,
                         'terminalBytes': self.terminal_bytes, 'maxActive': max_active}
         self.binding['verificationOf'] = self.verification_of
+        self.binding['verificationWorkRoot'] = (None if self.verification_work_root is None
+                                                 else str(self.verification_work_root))
         self.binding['wholeFlowDeadlineNs'] = self._global_deadline
         self.binding_digest = digest(self.binding)
         self._verify = boundary_verifier
@@ -304,7 +316,9 @@ def _run(scope, cwd, args, env, budget, payload, allow_failure, timeout, interva
     try:
         require(os.name == 'posix', 'admission-posix-required')
         cwd = Path(cwd).resolve(strict=True)
-        require(cwd == scope.source_root or cwd.is_relative_to(scope.root),
+        require(cwd == scope.source_root or cwd.is_relative_to(scope.root)
+                or scope.verification_work_root is not None
+                and cwd.is_relative_to(scope.verification_work_root),
                 'admission-cwd-outside-binding')
         root = Path(budget.temp_root).resolve(strict=True)
         require(root.is_relative_to(scope.root), 'admission-scratch-outside-quota')

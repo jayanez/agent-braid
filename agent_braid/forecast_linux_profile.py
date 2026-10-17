@@ -164,7 +164,7 @@ class LinuxAdmissionProfile:
             # Only the first phase starts a worker; external operator transitions
             # grow its work tmpfs and rearm its watchdog, never copy grants.
             prior = '' if phase == 'prepare' else (
-                'BindReadOnlyPaths=' + base + '/prepare:/prior/work\n')
+                'BindReadOnlyPaths=' + base + '/prepare:/work\n')
             if phase == 'terminal':
                 prior += 'BindReadOnlyPaths=' + base + '/verify:/prior/verify\n'
             requires = mount
@@ -176,6 +176,7 @@ class LinuxAdmissionProfile:
             # each phase allocation, not extra uncounted time.
             runtime = max(1, min(sum(p.wall_seconds for p in self.limits[:3])
                                 if phase == 'prepare' else limit.wall_seconds, remaining_seconds) - 3)
+            scratch = '/work' if phase == 'prepare' else '/scratch'
             units[stem + '-' + phase + '.service'] = (
                 '[Unit]\nDescription=FC1 isolated ' + phase + '\n'
                 'BindsTo=' + anchor + '\nAfter=' + anchor + ' ' + requires + '\n'
@@ -190,8 +191,9 @@ class LinuxAdmissionProfile:
                 'RestrictSUIDSGID=yes\nRestrictRealtime=yes\nLockPersonality=yes\n'
                 'Delegate=no\nInaccessiblePaths=/dev/shm /run /tmp /var/tmp\n'
                 'ProtectProc=invisible\nProcSubset=pid\n'
-                'BindPaths=' + path + ':/work\n' + prior +
-                'WorkingDirectory=/work\nUMask=0077\nEnvironment=HOME=/work/home TMPDIR=/work/tmp\n'
+                'BindPaths=' + path + ':' + scratch + '\n' + prior +
+                'WorkingDirectory=' + scratch + '\nUMask=0077\nEnvironment=HOME='
+                + scratch + '/home TMPDIR=' + scratch + '/tmp\n'
                 'Environment=PYTHONDONTWRITEBYTECODE=1\n'
                 'ExecStart=/opt/agent-braid/bin/fc1-worker ' + identity + ' ' + phase + '\n'
                 'TimeoutStartSec=2\nTimeoutStopSec=1\nRuntimeMaxSec=' + str(runtime) + '\n'

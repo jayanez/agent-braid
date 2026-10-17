@@ -317,3 +317,27 @@ class GitLaunchBoundaryTests(unittest.TestCase):
         scope=self.scope(); scope.enter('prepare'); scope.enter('grant'); scope.enter('dispatch')
         with self.assertRaisesRegex(ForecastError,'independent-verifier-required'):
             scope.enter('verify')
+
+    def test_separate_verifier_retains_original_readonly_run_path(self):
+        retained=self.root/'retained'
+        retained.mkdir()
+        self.observation.update(priorWorkTerminated=True,
+            terminatedWorkBindingDigest='c'*64,terminatedWorkDeadlineNs=420,
+            readOnlyVerification=True)
+        scope=self.scope(verification_of='c'*64,verification_deadline_ns=420,
+                         verification_work_root=retained)
+        scope.enter('verify')
+        from agent_braid.git_replay import _sanitized_environment
+        with launch.admission_launches(scope):
+            launch.run_git(retained,('status',),env=_sanitized_environment(self.work/'home'),
+                           budget=self.budget())
+        self.assertEqual(scope.binding['verificationWorkRoot'],str(retained.resolve()))
+        self.assertEqual(scope.binding['version'],'agent-braid-git-admission-boundary-v2')
+        self.spawn.assert_called_once()
+
+    def test_work_worker_cannot_add_a_verification_root(self):
+        retained=self.root/'retained'
+        retained.mkdir()
+        with self.assertRaisesRegex(ForecastError,'verification-work-root-binding'):
+            self.scope(verification_work_root=retained)
+        self.spawn.assert_not_called()

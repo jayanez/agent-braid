@@ -181,7 +181,9 @@ class GitRuntimeTests(unittest.TestCase):
         self.assertFalse(marker.exists())
         self.assertEqual(self.snapshot(self.repo), self.before)
         before = self.snapshot(self.dest)
-        verified = runtime.verify_run(self.request, self.dest)
+        with patch.object(runtime, '_lock', wraps=runtime._lock) as observed_lock:
+            verified = runtime.verify_run(self.request, self.dest)
+        observed_lock.assert_called_once_with(self.dest, create=False, read_only=True)
         self.assertEqual(verified['status'], 'verified-completed')
         self.assertEqual(self.snapshot(self.dest), before)
         self.assertEqual(runtime.recover_run(self.request, self.dest, manifest['manifestDigest'])['resultCommit'],
@@ -599,3 +601,24 @@ with r._lock(root):
             runtime.recover_run(self.request, self.dest, manifest['manifestDigest'])
         self.assertEqual(self.snapshot(self.dest), before)
         self.assertEqual(list(self.dest.iterdir()), [])
+
+
+class ReadOnlyCoordinatorLockTests(unittest.TestCase):
+    def test_read_only_fd_still_excludes_other_coordinators(self):
+        import fcntl
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            path = root / 'coordinator.lock'
+            path.write_bytes(b'preserved')
+            original_open = os.open
+            with patch.object(runtime.os, 'open', wraps=original_open) as opened:
+                with runtime._lock(root, create=False, read_only=True):
+                    flags = opened.call_args.args[1]
+                    self.assertEqual(flags & os.O_ACCMODE, os.O_RDONLY)
+                    fd = original_open(path, os.O_RDONLY)
+                    try:
+                        with self.assertRaises(BlockingIOError):
+                            fcntl.flock(fd, fcntl.LOCK_EX | fcntl.LOCK_NB)
+                    finally:
+                        os.close(fd)
+            self.assertEqual(path.read_bytes(), b'preserved')

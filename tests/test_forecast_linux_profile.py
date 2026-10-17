@@ -83,7 +83,9 @@ class LinuxProfileTests(unittest.TestCase):
         prep = units[prefix+'-prepare.service']
         verify = units[prefix+'-verify.service']
         self.assertNotIn(':/prior/', prep)
-        self.assertIn(':/prior/work\n', verify)
+        self.assertIn(':/work\n', verify)
+        self.assertIn(':/scratch\n', verify)
+        self.assertIn('Environment=HOME=/scratch/home TMPDIR=/scratch/tmp\n', verify)
         self.assertNotIn(':/prior/terminal', verify)
         self.assertEqual(verify.count('BindPaths='), 1)
         self.assertEqual(verify.count('BindReadOnlyPaths='), 1)

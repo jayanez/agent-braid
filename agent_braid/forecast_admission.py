@@ -27,7 +27,7 @@ SOURCE_FILES = (
 )
 # Fixed reviewed-source model: changing source requires a fresh accounting review,
 # not regenerating an arbitrary hash and treating it as accepted coverage.
-_MODELED_SOURCE = '59ba026ce481c7e719cf6b2ff9f90614f6797f1a0f581178b0dd0a84821f7508'
+_MODELED_SOURCE = '8784a02cb0b4a9a8cb9277c10a8ad094288f7e56a48f21c0b7856abec96781ff'
 
 
 def source_digest(root):
