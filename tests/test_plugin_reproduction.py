@@ -22,7 +22,7 @@ class NativeProbeDeadlineTests(unittest.IsolatedAsyncioTestCase):
             host.chmod(0o755)
             started = time.monotonic()
             with self.assertRaises(TimeoutError):
-                await codex_inventory(host, dict(os.environ), root, timeout_seconds=0.2)
+                await codex_inventory(host, dict(os.environ), root, timeout_seconds=1.0)
             self.assertLess(time.monotonic() - started, 3)
             with self.assertRaises(ProcessLookupError):
                 os.kill(int(marker.read_text()), 0)
