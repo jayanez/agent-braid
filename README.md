@@ -1,13 +1,41 @@
-# Agent Braid native plugin
+# Agent Braid plugin marketplace
 
-Agent Braid inspects agent interactions, explains conflicts and carries bounded evidence forward. This local plugin includes its Python runtime, the existing tooling MCP implementation, five canonical product skills and a setup workflow. No Python, pip, uv or Node installation is required by the user. Git and a supported local Codex or Claude Code client remain prerequisites.
+This versioned distribution includes the Agent Braid runtime and skills for Codex
+and Claude Code on macOS arm64 and Linux x86_64. Install once per user in each
+host, then explicitly select repositories through setup. Git and the selected
+native host are prerequisites; Python, pip, uv, Node and Docker are not required.
 
-Install at user scope from the Agent Braid marketplace. Open setup, select repositories, inspect the private configuration/results destinations, apply the exact preview and reconnect MCP. Selection is per repository; global plugin availability is not unrestricted filesystem access. Analysis is the default. Execution requires explicit operator configuration and existing exact grants; setup never creates grants or starts provider sessions.
+```sh
+codex plugin marketplace add https://github.com/jayanez/agent-braid.git --ref plugin-dist
+codex plugin add agent-braid@agent-braid
+```
 
-The host manages plugin updates and removal. Shared configuration and private results live outside its plugin cache and survive those operations. Use setup to unregister a workspace without deleting its source or evidence. Legacy manual installations can be migrated only using their matching ownership receipts.
+```sh
+claude plugin install agent-braid \
+  --marketplace 'https://github.com/jayanez/agent-braid.git#plugin-dist' --scope user
+```
 
-This is a research-alpha engineering package. See provenance.json and package-inventory.json for the exact software/runtime identities and license inventory. Corresponding source is distributed alongside the marketplace under sources/. Byte verification is not native host acceptance or official directory approval. Official listing status must be checked independently.
+Or use the [source installer](https://github.com/jayanez/agent-braid/blob/develop/install.sh):
 
-Support: https://github.com/jayanez/agent-braid/issues
+```sh
+curl -fsSL https://raw.githubusercontent.com/jayanez/agent-braid/develop/install.sh \
+  | sh -s -- --host both
+```
 
-Software and executable materials: AGPL-3.0-only. Documentation and skill instructions: CC-BY-SA-4.0. Bundled Python and third-party packages retain their own included licenses. See LICENSE, LICENSES and provenance.json.
+Open Agent Braid setup, select repositories, inspect and apply the exact preview,
+and reconnect MCP. Availability across repositories does not grant unrestricted
+filesystem access. Analysis is the default; setup does not issue execution grants
+or start provider sessions. Native managers own updates and removal; private
+configuration/results live outside their plugin caches.
+
+This is a research-alpha engineering package. See the [plugin documentation](plugins/agent-braid/README.md),
+[provenance](plugins/agent-braid/provenance.json),
+[complete file inventory](plugins/agent-braid/package-inventory.json),
+[corresponding source](sources/) and [licenses](plugins/agent-braid/LICENSES/).
+Software/executable material is AGPL-3.0-only; documentation/skill instructions are
+CC-BY-SA-4.0; bundled dependencies retain their included licenses. Inventory
+verification is not publisher authentication, scientific acceptance or official
+directory approval.
+
+[Full installation guide](https://github.com/jayanez/agent-braid/blob/develop/docs/tooling/NATIVE_PLUGINS.md)
+· [Support](https://github.com/jayanez/agent-braid/issues)
