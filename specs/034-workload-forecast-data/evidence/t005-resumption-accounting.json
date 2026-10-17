@@ -664,5 +664,40 @@
       ],
       "limits": "Record binding only, not native qualification or operator approval."
     }
+  },
+  "profileCapabilityResolution": {
+    "status": "blocked-no-existing-complete-profile",
+    "scope": "Static configuration only; no host inventory, Docker inspection/build/run, source replay or native qualification.",
+    "candidateCommit": "eef5ce2",
+    "reviewedPaths": [
+      "scripts/docker/t013/run-validation.sh",
+      "scripts/docker/t013/verify-resource-profile.py",
+      "specs/034-workload-forecast-data/resource-catalogue.md"
+    ],
+    "reusableDeclarations": [
+      "network none; read-only container root and repository mounts; dropped capabilities and no-new-privileges",
+      "2 GiB memory, 2 CPU, 512 tasks and 512 MiB tmpfs declarations",
+      "Linux per-child address-space gate"
+    ],
+    "missingGuarantees": {
+      "containment": "No FC.1 operator binding or independent proof of worker-tree termination and separate verifier lifecycle.",
+      "quota": "Writable /artifacts bind has no hard quota; no protected per-phase and terminal allocations across every write root.",
+      "immutability": "Image selected by mutable tag/environment override; no immutable image identity tied to source, Git executable and selected inputs.",
+      "deadline": "No external whole-flow watchdog preserving the original deadline through verification, export and cleanup.",
+      "budget": "No justified input-specific non-Git time or aggregate storage ceilings; historical T013 limits cannot be adopted as FC.1 allocations."
+    },
+    "decision": "Do not adapt or activate T013 implicitly. Require a concrete operator-owned profile with these capabilities before closing numerical allocations. No new execution package.",
+    "operationalBudgetClosed": false,
+    "nativeAdmissionRuns": 0,
+    "modelExecutions": 0,
+    "realSourceCaptures": 0,
+    "executionAuthorization": false,
+    "review": {
+      "model": "gpt-6-luna",
+      "method": "bounded static review; no execution",
+      "verdict": "Existing T013 configuration cannot close FC.1 executable budget. Its RLIMIT_AS wrapper is also refused by the new dispatcher; it is not directly reusable."
+    },
+    "documentSha256": "aee7497f441562b7997a4010991f3a7be57dcc9b82870084c90e1ce1d68f5fe9",
+    "priorEvidenceBindings": "supervisionImplementation inputs retain their historical eef5ce2-era document identity; this continuation records the changed document separately."
   }
 }

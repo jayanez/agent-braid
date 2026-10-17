@@ -243,6 +243,34 @@ cannot be presented as an executable admission candidate. Native qualification,
 source/rights acceptance, final-tree equivalence, T001/T005/T008/T009 and utility
 acceptance remain pending. No real inputs were replayed or captured.
 
+## Existing profile capability resolution (static only)
+
+The bounded review of `scripts/docker/t013/run-validation.sh` and
+`verify-resource-profile.py` does not supply an admitted FC.1 profile. Their
+read-only root/repository mounts, disabled network, dropped capabilities,
+CPU/memory/task declarations and bounded `/tmp` are reusable configuration ideas,
+not observations about the selected host. The Linux address-space check concerns
+one child, not aggregate memory or storage accounting.
+
+The concrete gaps are:
+
+| Guarantee | Missing from the existing configuration |
+| --- | --- |
+| Containment and closure | Operator binding and independently confirmed termination of the work tree before a separate verifier. |
+| Hard storage and reserves | `/artifacts` is a writable host bind without a hard quota; phase and terminal capacity are not protected across every write root. |
+| Immutable profile | The image is a mutable tag with an environment override; its identity is not bound to the source, executable and two selected commits. |
+| Whole-flow time | No external watchdog spans work, independent verification, publication and cleanup under the original deadline. |
+| Concrete allocation | The inputs do not establish non-Git time or aggregate storage ceilings. T013's historical numbers are not FC.1 budgets. |
+
+**Decision:** retain the implemented refusal boundary and stop numerical budget
+closure here. The next technical prerequisite is a concrete operator-owned profile
+covering these gaps, with immutable identity and all write roots enumerated. This
+is not a request to run T013, provision a container/VM, weaken the verifier or issue
+another package. No native qualification is authorized by this record. Until that
+prerequisite exists, time/storage allocations remain unset for both selected
+inputs; the Git cap sums remain conditional static bounds. T001, T005, T008 and
+T009 retain their pending acceptance gates.
+
 ## Plugin and telemetry coordination
 
 One candidate value scenario: real Agent Braid maintenance through the installed
