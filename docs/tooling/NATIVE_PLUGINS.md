@@ -10,10 +10,12 @@ consumer prerequisites. The Python installation remains available below.
 ## Candidate and publication status
 
 The source implementation and local distribution candidates are experimental.
-The public `plugin-dist` branch/tag is a separate founder release decision. Do not
-interpret the following release commands as evidence that a public candidate has
-already been published. Until publication, build a local marketplace using the
-instructions below, then pass its absolute path to the native manager.
+The owner authorized publication of `plugin-dist` once both native interactive
+journeys and the version-changing update pass. The update and Codex journey have
+passed; the actual Claude journey is blocked by expired native authentication.
+No public distribution has been pushed. Until that gate passes, build a local
+marketplace using the instructions below and pass its absolute path to the native
+manager. See the [release acceptance record](../../specs/046-native-ai-plugins/release-acceptance.md).
 
 ## Install for your user
 

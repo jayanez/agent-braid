@@ -123,7 +123,7 @@
               "sha256": "2ac0188b94eb4d851ae9a923f3ffefb1daa5d9d96e8028abe067db418effceb8"
             }
           ],
-          "planned_evidence": "specs/046-native-ai-plugins/evidence/engineering.json",
+          "planned_evidence": "specs/046-native-ai-plugins/evidence/release-alpha2.json",
           "test_file": "specs/046-native-ai-plugins/validation-plan.md",
           "test_name": "procedure_001",
           "then": "requirements, tasks and procedures agree, old contracts remain unchanged and interactive/external gates are explicit",
@@ -147,7 +147,7 @@
               "sha256": "2ac0188b94eb4d851ae9a923f3ffefb1daa5d9d96e8028abe067db418effceb8"
             }
           ],
-          "planned_evidence": "specs/046-native-ai-plugins/evidence/engineering.json",
+          "planned_evidence": "specs/046-native-ai-plugins/evidence/release-alpha2.json",
           "test_file": "tests/test_plugin_package.py",
           "test_name": "PluginPackageTests.test_inventory_rejects_content_drift_and_tracks_directory_symlinks",
           "then": "both target runtimes start offline, hashes and license inventories are present, and corrupt archives or unsupported platforms refuse",
@@ -171,7 +171,7 @@
               "sha256": "2ac0188b94eb4d851ae9a923f3ffefb1daa5d9d96e8028abe067db418effceb8"
             }
           ],
-          "planned_evidence": "specs/046-native-ai-plugins/evidence/engineering.json",
+          "planned_evidence": "specs/046-native-ai-plugins/evidence/release-alpha2.json",
           "test_file": "tests/test_plugin_mcp.py",
           "test_name": "PluginRouterTests.test_two_workspaces_keep_core_results_and_resource_ownership",
           "then": "core report values are preserved; unknown IDs, arbitrary roots, foreign resource IDs, stale bindings and unauthorized execution are refused",
@@ -195,7 +195,7 @@
               "sha256": "2ac0188b94eb4d851ae9a923f3ffefb1daa5d9d96e8028abe067db418effceb8"
             }
           ],
-          "planned_evidence": "specs/046-native-ai-plugins/evidence/engineering.json",
+          "planned_evidence": "specs/046-native-ai-plugins/evidence/release-alpha2.json",
           "test_file": "tests/test_plugin_registry.py",
           "test_name": "PluginRegistryTests.test_discovery_recognizes_worktrees_empty_and_unavailable_roots",
           "then": "canonical roots are deduplicated, worktrees recognized, symlinks excluded, work bounded and no registry written; empty/unreadable folders permit manual selection",
@@ -219,7 +219,7 @@
               "sha256": "2ac0188b94eb4d851ae9a923f3ffefb1daa5d9d96e8028abe067db418effceb8"
             }
           ],
-          "planned_evidence": "specs/046-native-ai-plugins/evidence/engineering.json",
+          "planned_evidence": "specs/046-native-ai-plugins/evidence/release-alpha2.json",
           "test_file": "tests/test_plugin_registry.py",
           "test_name": "PluginRegistryTests.test_preview_does_not_write_and_apply_preserves_stable_workspace",
           "then": "one private registry transaction adds both in analysis mode; stale digests and concurrent changes refuse, cancellation before apply writes no registry, and reconnected status shows the selected IDs",
@@ -243,7 +243,7 @@
               "sha256": "2ac0188b94eb4d851ae9a923f3ffefb1daa5d9d96e8028abe067db418effceb8"
             }
           ],
-          "planned_evidence": "specs/046-native-ai-plugins/evidence/engineering.json",
+          "planned_evidence": "specs/046-native-ai-plugins/evidence/release-alpha2.json",
           "test_file": "specs/046-native-ai-plugins/validation-plan.md",
           "test_name": "procedure_006",
           "then": "five canonical product skills and setup onboarding are available with bundled stdio MCP; actual interactive skill use is recorded separately from CLI metadata inspection",
@@ -267,7 +267,7 @@
               "sha256": "2ac0188b94eb4d851ae9a923f3ffefb1daa5d9d96e8028abe067db418effceb8"
             }
           ],
-          "planned_evidence": "specs/046-native-ai-plugins/evidence/engineering.json",
+          "planned_evidence": "specs/046-native-ai-plugins/evidence/release-alpha2.json",
           "test_file": "specs/046-native-ai-plugins/validation-plan.md",
           "test_name": "procedure_007",
           "then": "the six skills and bundled stdio MCP are available, without global skill copying or Python setup; actual interactive skill use is recorded separately",
@@ -291,7 +291,7 @@
               "sha256": "2ac0188b94eb4d851ae9a923f3ffefb1daa5d9d96e8028abe067db418effceb8"
             }
           ],
-          "planned_evidence": "specs/046-native-ai-plugins/evidence/engineering.json",
+          "planned_evidence": "specs/046-native-ai-plugins/evidence/release-alpha2.json",
           "test_file": "specs/046-native-ai-plugins/validation-plan.md",
           "test_name": "procedure_008",
           "then": "configuration/results and unrelated or modified bytes survive; only matching receipt-owned entries are removed; a real version change is observed before update acceptance",
@@ -315,7 +315,7 @@
               "sha256": "2ac0188b94eb4d851ae9a923f3ffefb1daa5d9d96e8028abe067db418effceb8"
             }
           ],
-          "planned_evidence": "specs/046-native-ai-plugins/evidence/engineering.json",
+          "planned_evidence": "specs/046-native-ai-plugins/evidence/release-alpha2.json",
           "test_file": "specs/046-native-ai-plugins/validation-plan.md",
           "test_name": "procedure_009",
           "then": "provenance binds source, wheel, locks, runtime archives and corresponding sources; inventory verifies; both catalogs install; binaries live only in the distribution branch and publication is separately authorized",
@@ -339,7 +339,7 @@
               "sha256": "2ac0188b94eb4d851ae9a923f3ffefb1daa5d9d96e8028abe067db418effceb8"
             }
           ],
-          "planned_evidence": "specs/046-native-ai-plugins/evidence/engineering.json",
+          "planned_evidence": "specs/046-native-ai-plugins/evidence/release-alpha2.json",
           "test_file": "specs/046-native-ai-plugins/validation-plan.md",
           "test_name": "procedure_010",
           "then": "native installation/setup/lifecycle come first; only allowlisted new IDs and intended milestone metadata change; post-audit operations are empty and private Project membership/status is read back independently",
@@ -363,7 +363,7 @@
               "sha256": "2ac0188b94eb4d851ae9a923f3ffefb1daa5d9d96e8028abe067db418effceb8"
             }
           ],
-          "planned_evidence": "specs/046-native-ai-plugins/evidence/engineering.json",
+          "planned_evidence": "specs/046-native-ai-plugins/evidence/release-alpha2.json",
           "test_file": "specs/046-native-ai-plugins/validation-plan.md",
           "test_name": "procedure_011",
           "then": "documentary material is complete and partner/account/publication dependencies are explicitly assigned to T014; preparation never claims provider approval",
@@ -387,7 +387,7 @@
               "sha256": "2ac0188b94eb4d851ae9a923f3ffefb1daa5d9d96e8028abe067db418effceb8"
             }
           ],
-          "planned_evidence": "specs/046-native-ai-plugins/evidence/engineering.json",
+          "planned_evidence": "specs/046-native-ai-plugins/evidence/release-alpha2.json",
           "test_file": "specs/046-native-ai-plugins/validation-plan.md",
           "test_name": "procedure_012",
           "then": "largest files and limits are recorded, directory and official-marketplace routes are distinct, and unresolved exceptions/account/publication approvals stay in T015",
@@ -411,7 +411,7 @@
               "sha256": "2ac0188b94eb4d851ae9a923f3ffefb1daa5d9d96e8028abe067db418effceb8"
             }
           ],
-          "planned_evidence": "specs/046-native-ai-plugins/evidence/engineering.json",
+          "planned_evidence": "specs/046-native-ai-plugins/evidence/release-alpha2.json",
           "test_file": "tests/test_plugin_installer.py",
           "test_name": "PluginInstallerTests.test_explicit_ref_is_independent_of_option_order",
           "then": "only native user plugin-manager operations run; all selected hosts preflight first; option order preserves the explicit ref; dry-run performs no install; no Python bootstrap, sudo or provider session occurs",
