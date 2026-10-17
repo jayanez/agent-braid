@@ -699,5 +699,179 @@
     },
     "documentSha256": "aee7497f441562b7997a4010991f3a7be57dcc9b82870084c90e1ce1d68f5fe9",
     "priorEvidenceBindings": "supervisionImplementation inputs retain their historical eef5ce2-era document identity; this continuation records the changed document separately."
+  },
+  "linuxProfileImplementation": {
+    "status": "implemented-private-compiler-and-operator-primitives; native-bindings-pending",
+    "inputs": {
+      "agent_braid/forecast_linux_profile.py": "7d24b167f5b802941038c152dcb01028a6120f45ec69f48acb70262031909590",
+      "tests/test_forecast_linux_profile.py": "db1a77714d6dc4337175af1979d20ede8e750a4b9b2aa0cc7028f51b42018b77",
+      "specs/034-workload-forecast-data/real-utility-resumption.md": "d39803e07669e424617aa7d63cfe01128af53611f368a21cf10194ed209f2a6d"
+    },
+    "selectedInputs": [
+      "203c74029b594055549b4d97c182829b793502f6",
+      "086901fed1a957271727a4bb4dc1b23790499829"
+    ],
+    "implementation": [
+      "systemd unit text only; no install/activation/build",
+      "dm-verity root identity; source/input/manager/compiler pins",
+      "original work/grant paths with frozen root-operator tmpfs quota transitions",
+      "external cgroup-kill watchdog with pidfd and original deadline",
+      "operator-side ledger; independent empty-cgroup verification and terminal sequence"
+    ],
+    "proposedAbortCeilings": {
+      "serial": {
+        "mode": "serial",
+        "finalVerifier": "runtime",
+        "sourceDigest": "59ba026ce481c7e719cf6b2ff9f90614f6797f1a0f581178b0dd0a84821f7508",
+        "phases": [
+          {
+            "phase": "prepare",
+            "requests": 1793,
+            "wallSeconds": 480,
+            "storageBytes": 276897792,
+            "inodes": 65536
+          },
+          {
+            "phase": "grant",
+            "requests": 769,
+            "wallSeconds": 240,
+            "storageBytes": 142680064,
+            "inodes": 65536
+          },
+          {
+            "phase": "dispatch",
+            "requests": 1025,
+            "wallSeconds": 300,
+            "storageBytes": 209788928,
+            "inodes": 65536
+          },
+          {
+            "phase": "verify",
+            "requests": 256,
+            "wallSeconds": 90,
+            "storageBytes": 75571200,
+            "inodes": 65536
+          },
+          {
+            "phase": "terminal",
+            "requests": 0,
+            "wallSeconds": 30,
+            "storageBytes": 8388608,
+            "inodes": 4096
+          }
+        ],
+        "wallSeconds": 1140,
+        "storageBytes": 713326592,
+        "gitRequests": 3843,
+        "basis": "conditional Git cap sums; 30s non-Git per phase; 8MiB output per phase; 64MiB per internal Git budget plus selected patch bytes; 30s/8MiB terminal",
+        "status": "proposed-abort-ceilings-owner-acceptance-pending",
+        "minimumCost": null,
+        "completionGuaranteed": false,
+        "executionAuthorization": false
+      },
+      "parallel": {
+        "mode": "parallel",
+        "finalVerifier": "policy",
+        "sourceDigest": "59ba026ce481c7e719cf6b2ff9f90614f6797f1a0f581178b0dd0a84821f7508",
+        "phases": [
+          {
+            "phase": "prepare",
+            "requests": 2049,
+            "wallSeconds": 540,
+            "storageBytes": 344006656,
+            "inodes": 65536
+          },
+          {
+            "phase": "grant",
+            "requests": 1025,
+            "wallSeconds": 300,
+            "storageBytes": 209788928,
+            "inodes": 65536
+          },
+          {
+            "phase": "dispatch",
+            "requests": 2050,
+            "wallSeconds": 570,
+            "storageBytes": 478224384,
+            "inodes": 65536
+          },
+          {
+            "phase": "verify",
+            "requests": 1538,
+            "wallSeconds": 450,
+            "storageBytes": 344006656,
+            "inodes": 65536
+          },
+          {
+            "phase": "terminal",
+            "requests": 0,
+            "wallSeconds": 30,
+            "storageBytes": 8388608,
+            "inodes": 4096
+          }
+        ],
+        "wallSeconds": 1890,
+        "storageBytes": 1384415232,
+        "gitRequests": 6662,
+        "basis": "conditional Git cap sums; 30s non-Git per phase; 8MiB output per phase; 64MiB per internal Git budget plus selected patch bytes; 30s/8MiB terminal",
+        "status": "proposed-abort-ceilings-owner-acceptance-pending",
+        "minimumCost": null,
+        "completionGuaranteed": false,
+        "executionAuthorization": false
+      }
+    },
+    "allowanceStatus": "Explicit refusal policy proposed for owner acceptance; not measured or inferred minimum requirements. Conditional source Git cap sums remain unnarrowed.",
+    "bindings": {
+      "rootImageSha256": null,
+      "verityRootHash": null,
+      "installedManagerSha256": null,
+      "workerEntrypoint": null,
+      "launchIpcBridge": null,
+      "independentNativeReadback": null
+    },
+    "checks": [
+      {
+        "command": "python -m unittest tests.test_forecast_linux_profile tests.test_forecast_admission tests.test_forecast_git_launch -v",
+        "tests": 52,
+        "exitCode": 0,
+        "log": "/tmp/fc1-linux-profile-targeted.log",
+        "domain": "owned mocks/source checks only; no native profile effects"
+      }
+    ],
+    "review": {
+      "model": "gpt-6-luna",
+      "scope": "new private profile/compiler/operator primitives",
+      "findingsCorrected": [
+        "single original work/grant store instead of phase copies",
+        "initial watchdog kernel/PID binding",
+        "explicit dispatch/verifier/terminal closure",
+        "rearm before quota transition while frozen",
+        "watchdog initialization failure revokes work",
+        "preopened root abort capability before initial/final freeze; empty confirmation required after error"
+      ],
+      "verdict": "Luna confirmed final freeze-abort paths corrected; no further material finding in those bounded routes. Kernel/manager/bridge/image gates remain unvalidated."
+    },
+    "operativeBudgetAccepted": false,
+    "actualProfileAdmitted": false,
+    "executionAuthorization": false,
+    "nativeAdmissionRuns": 0,
+    "modelExecutions": 0,
+    "vmExecutions": 0,
+    "realSourceCaptures": 0,
+    "newExecutionOrApprovalPackage": false,
+    "priorEvidenceBindings": "Earlier stages retain their own historical hashes and findings; this continuation does not refresh their approvals.",
+    "implementationCommit": "34bfa2859aff827ccec0fc253b3c2e06d76ad4f7",
+    "interruptedProfile": {
+      "log": "/tmp/fc1-linux-profile-pr.log",
+      "exitCode": 130,
+      "reason": "Stopped on new Luna finding before code correction; not a passing candidate result."
+    },
+    "coordination": {
+      "centralAuthority": "Owner reaffirmed central coordination of FC.1, plugins and telemetry.",
+      "plugins": "Central directive delivered; owner confirmed #557 and gates remain frozen.",
+      "telemetry": "Central directive delivered; turn completed without a reported material change.",
+      "constraints": "No new lots, packages, MCP expansion, real capture, host/model/native controls or conversion of product aggregates to causal windows.",
+      "remoteBranchStateReaudited": false
+    }
   }
 }

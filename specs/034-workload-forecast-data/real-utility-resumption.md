@@ -271,6 +271,79 @@ prerequisite exists, time/storage allocations remain unset for both selected
 inputs; the Git cap sums remain conditional static bounds. T001, T005, T008 and
 T009 retain their pending acceptance gates.
 
+## Linux operator profile implementation — not native admission
+
+`agent_braid/forecast_linux_profile.py` implements a private, non-activating
+profile compiler and operator-side protocol. It produces unit text in memory;
+it does not install services, mount storage, build an image or start a worker.
+It exposes no CLI/MCP capability. The actual resource catalogue remains empty.
+
+The proposed profile uses one CPU in aggregate, 2 GiB aggregate memory, no swap,
+64 tasks and at most two Git workers (one for serial). A systemd slice contains
+all workers. A root-image content digest, explicit dm-verity root hash, runtime
+source digest, compiler digest, manager digest, selected commits/patches and all
+allocations bind its identity. Values must be supplied by the operator; no
+placeholder image or manager identity is registered. The image contract requires
+one verity-protected root containing code, Git, inputs and trusted entrypoints;
+separate unverified partitions are prohibited. RootHash/read-only configuration
+is not evidence that a qualifying image already exists.
+
+Preparation, grant and dispatch retain one worker and the original run/grant
+paths. Root-only cgroup freeze plus kernel process membership excludes live Git
+children during a handoff. The operator remounts the same tmpfs with a new hard
+byte/inode cap equal to actual retained usage plus the next phase allocation,
+then verifies the kernel mount readback. No grant store is copied or reset.
+Verifier and terminal tmpfs mounts are separate; the work worker cannot address
+them. Prior work is exposed read-only to the separate final workers. Future
+capacity is excluded from the current write quota; this does not promise physical
+RAM availability or completion under the aggregate memory limit.
+
+The external watchdog process binds the frozen worker through kernel cgroup
+membership and a pidfd before arming. EOF, worker exit, expiry, invalid rearm or
+initialization failure triggers cgroup-wide kill. Phase transitions preserve the
+original monotonic deadline. A manager-level runtime/BindsTo bound complements
+that process; it does not replace independent kernel termination readback. The
+operator-side ledger survives worker changes. Empty cgroup confirmation precedes
+verification/terminal attachment; failures stop without retry or admission claims.
+No host artifact bind or unbounded stdout/journal export is introduced. Native
+acceptance must independently cover every writable mount, directive enforcement,
+watchdog death, reaping, publication and cleanup.
+
+### Concrete proposed refusal ceilings for the selected pair
+
+| Mode / final verifier | Git request cap | Whole-flow wall cap | Aggregate phase storage cap |
+| --- | ---: | ---: | ---: |
+| Serial / runtime | 3,843 | 1,140 s (19 min) | 713,326,592 bytes |
+| Parallel / policy | 6,662 | 1,890 s (31.5 min) | 1,384,415,232 bytes |
+
+These are **proposals of abort ceilings**, not narrowed measured minima, predicted
+cost, owner-approved spend or proof that either input will fit. Requests retain
+the source cap sums. Time adds an explicit policy allowance of 30 s for non-Git
+work per phase and a separate 30 s terminal reserve. Storage adds one existing
+64 MiB internal scratch envelope per Git budget, the registered 71,431 patch
+bytes and an explicit 8 MiB output allowance per phase, rounded upward to a
+4 KiB page, plus 8 MiB terminal storage. Output allowances and 65,536 inodes per
+work/verify phase (4,096 terminal) are proposed refusal policies, not empirical
+requirements. Instrumentation, mount transitions and verification pay their
+phase's allowance. Overflow/OOM/timeout is a retained failure, never an automatic
+increase. No two controls run concurrently. The full per-phase table is retained
+in the existing accounting record.
+
+**Remaining binding gate:** no matching root image/entrypoints, actual manager
+identity, launch IPC bridge or independent native readback has been supplied or
+qualified. The library cannot turn these missing bindings into a live verifier
+lease. Consequently, the operative budget remains unaccepted and the candidate
+remains non-activable. This increment implements the compiler and operator phase primitives; it does
+not close native profile acceptance, input eligibility or utility. Do not
+build/provision an image, create a replacement execution package or launch a
+control automatically. T001, T005, T008 and T009 remain pending.
+
+Technical references: the versioned [systemd execution contract](https://github.com/systemd/systemd/blob/v261.3/man/systemd.exec.xml),
+[service deadlines](https://github.com/systemd/systemd/blob/v261.3/man/systemd.service.xml)
+and [unit lifecycle dependencies](https://github.com/systemd/systemd/blob/v261.3/man/systemd.unit.xml).
+These describe the selected implementation mechanism; no installed version is
+inferred from them.
+
 ## Plugin and telemetry coordination
 
 One candidate value scenario: real Agent Braid maintenance through the installed
