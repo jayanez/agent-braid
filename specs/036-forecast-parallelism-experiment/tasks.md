@@ -68,3 +68,13 @@ failure, cancellation and interval; its evidence is
 predecessors remain pending. This does not execute the measured Git harness,
 verify physical isolation or real operator authority, recover complete costs,
 or accept a source/resource/model/experiment/scientific/promotion gate.
+
+## Bounded synthetic uncertainty reporting engineering
+
+T008 has additive [synthetic reporting](synthetic-reporting.md), reusing the exact
+paired and optional shadow receipts. Obtained engineering evidence:
+`evidence/t008-synthetic-report.json`. It covers all intended fixture groups and
+cycles, episode-cluster uncertainty, overhead/break-even diagnostics and explicit
+negative/inconclusive outcomes. It accepts no real workload evidence or utility.
+The original T008 checkbox and dependency on T007 or an admitted pre-launch
+infeasibility exit after T001 remain pending, along with all real gates.
