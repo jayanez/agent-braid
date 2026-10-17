@@ -1,0 +1,228 @@
+{
+  "command": "python -m unittest tests.test_forecast_report -v",
+  "fixtureDesign": {
+    "costs": "caller-assumed ticks, not measured runtime costs",
+    "cyclesPerEpisode": 2,
+    "episodes": 5,
+    "partitions": [
+      "development",
+      "calibration",
+      "holdout",
+      "holdout",
+      "holdout"
+    ]
+  },
+  "inputs": {
+    "agent_braid/forecast_decisions.py": "e173e41705431ef5aa308fba9f61d83f5010ce466562c323e6a1638803394ee8",
+    "agent_braid/forecast_evaluation.py": "3ad040937a2d42ab3a107a638817b843fa5a9ddbfce9ad21f5ef0f78bb7af1e1",
+    "agent_braid/forecast_lab.py": "ab17755a4414d179294fc9511f49e38e09fd6c41d4feb4b63467189f82f5a599",
+    "agent_braid/forecast_pairs.py": "ee40598c4c4c45e801df07e2e6f2e78b70e20617dc47c6f37741fd9998ac1b5e",
+    "agent_braid/forecast_report.py": "1a6335ad18e80d0fd4feda72f2642149623e764a0a9988e6957030fd2658a088",
+    "agent_braid/forecast_shadow.py": "71267b0d8ff2ef7ad1c327bc5a21279131fb9125921e3b64247fbfadccdb167d",
+    "agent_braid/forecast_trace.py": "7fa137143a0badcbda5bbb2cb280efdafc0466678ca0fdfe751f233382b2dde9",
+    "tests/test_forecast_report.py": "fa359c3f8935adae21be5e4d88ce4d4ed92f50c826a80dfbaa8aee259e4171c1"
+  },
+  "limits": [
+    "No accepted real experiment, statistical protocol or scientific interpretation",
+    "No model, VM, runtime execution, source/resource admission or promotion",
+    "Bootstrap confidence is a declared synthetic diagnostic, not guaranteed coverage",
+    "Historical missing full costs remain unknown"
+  ],
+  "provenance": "synthetic-simulation",
+  "scenarios": {
+    "missing": {
+      "costs": {
+        "boundary": "fixture-base-plus-advisory-overhead",
+        "fullDeploymentCosts": null,
+        "reason": "not-observed",
+        "unit": "synthetic-tick"
+      },
+      "diagnostic": "synthetic-inconclusive",
+      "groups": [
+        {
+          "eligibleEpisodes": 1,
+          "intendedEpisodes": 1,
+          "partition": "development",
+          "primaryComparison": {
+            "episodeCount": 1,
+            "interval": null,
+            "intervalReason": "fewer-than-two-independent-fixture-episodes",
+            "medianRatio": 1.3333333333333333
+          },
+          "primaryGroup": "local-fixture",
+          "status": "inconclusive"
+        },
+        {
+          "eligibleEpisodes": 1,
+          "intendedEpisodes": 1,
+          "partition": "calibration",
+          "primaryComparison": {
+            "episodeCount": 1,
+            "interval": null,
+            "intervalReason": "fewer-than-two-independent-fixture-episodes",
+            "medianRatio": 1.3333333333333333
+          },
+          "primaryGroup": "local-fixture",
+          "status": "inconclusive"
+        },
+        {
+          "eligibleEpisodes": 2,
+          "intendedEpisodes": 3,
+          "partition": "holdout",
+          "primaryComparison": {
+            "episodeCount": 2,
+            "interval": [
+              1.3333333333333333,
+              1.3333333333333333
+            ],
+            "intervalReason": null,
+            "medianRatio": 1.3333333333333333
+          },
+          "primaryGroup": "local-fixture",
+          "status": "inconclusive"
+        }
+      ],
+      "method": {
+        "confidence": 0.95,
+        "coverageGuaranteed": false,
+        "groupRule": "all-primary-holdout-groups",
+        "interval": "percentile-bootstrap-floor-ceil",
+        "replicates": 64,
+        "resamplingUnit": "episodeGroup",
+        "seed": 71,
+        "statistic": "median-of-episode-medians-of-paired-cycle-ratios"
+      },
+      "receiptDigest": "e58f3c12ac1e53a58b7428956666547e1d13ebd28b806f39308af68b51b020e3"
+    },
+    "negative": {
+      "costs": {
+        "boundary": "fixture-base-plus-advisory-overhead",
+        "fullDeploymentCosts": null,
+        "reason": "not-observed",
+        "unit": "synthetic-tick"
+      },
+      "diagnostic": "synthetic-negative",
+      "groups": [
+        {
+          "eligibleEpisodes": 1,
+          "intendedEpisodes": 1,
+          "partition": "development",
+          "primaryComparison": {
+            "episodeCount": 1,
+            "interval": null,
+            "intervalReason": "fewer-than-two-independent-fixture-episodes",
+            "medianRatio": 0.6666666666666666
+          },
+          "primaryGroup": "local-fixture",
+          "status": "inconclusive"
+        },
+        {
+          "eligibleEpisodes": 1,
+          "intendedEpisodes": 1,
+          "partition": "calibration",
+          "primaryComparison": {
+            "episodeCount": 1,
+            "interval": null,
+            "intervalReason": "fewer-than-two-independent-fixture-episodes",
+            "medianRatio": 0.6666666666666666
+          },
+          "primaryGroup": "local-fixture",
+          "status": "inconclusive"
+        },
+        {
+          "eligibleEpisodes": 3,
+          "intendedEpisodes": 3,
+          "partition": "holdout",
+          "primaryComparison": {
+            "episodeCount": 3,
+            "interval": [
+              0.6666666666666666,
+              0.6666666666666666
+            ],
+            "intervalReason": null,
+            "medianRatio": 0.6666666666666666
+          },
+          "primaryGroup": "local-fixture",
+          "status": "thresholds-not-met"
+        }
+      ],
+      "method": {
+        "confidence": 0.95,
+        "coverageGuaranteed": false,
+        "groupRule": "all-primary-holdout-groups",
+        "interval": "percentile-bootstrap-floor-ceil",
+        "replicates": 64,
+        "resamplingUnit": "episodeGroup",
+        "seed": 71,
+        "statistic": "median-of-episode-medians-of-paired-cycle-ratios"
+      },
+      "receiptDigest": "f7c9e3fad88c19bc19ad00341d1191f947d89ef3b855b55195d265eb96e938a2"
+    },
+    "positive": {
+      "costs": {
+        "boundary": "fixture-base-plus-advisory-overhead",
+        "fullDeploymentCosts": null,
+        "reason": "not-observed",
+        "unit": "synthetic-tick"
+      },
+      "diagnostic": "synthetic-positive",
+      "groups": [
+        {
+          "eligibleEpisodes": 1,
+          "intendedEpisodes": 1,
+          "partition": "development",
+          "primaryComparison": {
+            "episodeCount": 1,
+            "interval": null,
+            "intervalReason": "fewer-than-two-independent-fixture-episodes",
+            "medianRatio": 1.3333333333333333
+          },
+          "primaryGroup": "local-fixture",
+          "status": "inconclusive"
+        },
+        {
+          "eligibleEpisodes": 1,
+          "intendedEpisodes": 1,
+          "partition": "calibration",
+          "primaryComparison": {
+            "episodeCount": 1,
+            "interval": null,
+            "intervalReason": "fewer-than-two-independent-fixture-episodes",
+            "medianRatio": 1.3333333333333333
+          },
+          "primaryGroup": "local-fixture",
+          "status": "inconclusive"
+        },
+        {
+          "eligibleEpisodes": 3,
+          "intendedEpisodes": 3,
+          "partition": "holdout",
+          "primaryComparison": {
+            "episodeCount": 3,
+            "interval": [
+              1.3333333333333333,
+              1.3333333333333333
+            ],
+            "intervalReason": null,
+            "medianRatio": 1.3333333333333333
+          },
+          "primaryGroup": "local-fixture",
+          "status": "thresholds-met"
+        }
+      ],
+      "method": {
+        "confidence": 0.95,
+        "coverageGuaranteed": false,
+        "groupRule": "all-primary-holdout-groups",
+        "interval": "percentile-bootstrap-floor-ceil",
+        "replicates": 64,
+        "resamplingUnit": "episodeGroup",
+        "seed": 71,
+        "statistic": "median-of-episode-medians-of-paired-cycle-ratios"
+      },
+      "receiptDigest": "85bf11b1294f48c2919d926d667a200f9d1c7b419b112db9db8dfa5a90c62a55"
+    }
+  },
+  "scope": "SPEC-036/T008 synthetic engineering only; original task and predecessors pending",
+  "version": 1
+}
