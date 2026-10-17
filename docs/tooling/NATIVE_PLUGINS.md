@@ -180,3 +180,11 @@ the committed distribution via a new Git clone, not only the build directory.
 For container reproduction, the disposable plugin-cache filesystem must allow
 execution (for example `--tmpfs /tmp:rw,exec,mode=1777`); a noexec mount should
 refuse native MCP startup and must not be reported as plugin acceptance.
+
+The alpha.2 release candidate materializes validated, contained CPython aliases
+before inventory creation so native host caches retain every required file.
+Reproduction checks `doctor` in each host's actual installed cache as well as in
+the source package. See the [current release acceptance record](../../specs/046-native-ai-plugins/release-acceptance.md)
+for the observed version-changing update, native Codex interaction and Claude
+authentication blocker. Public distribution and the remote curl install remain
+pending that final interactive gate.

@@ -1,0 +1,713 @@
+{
+  "rawRecordSha256": "243a01a7003a054970e7bbc384c3097428da70d4981d5fc729b541fcd3086aee",
+  "sanitization": "Known owned source/artifact/user/app prefixes replaced. Original retained privately; no credentials copied.",
+  "sanitizedObservation": {
+    "after": {
+      "claude": [
+        {
+          "enabled": true,
+          "folderVersion": "0.1.0-alpha.2",
+          "id": "agent-braid@agent-braid",
+          "installPath": "/evidence/version-upgrade-linux/claude/plugins/cache/agent-braid/agent-braid/0.1.0-alpha.2",
+          "installedAt": "2026-10-17T08:20:07.987Z",
+          "lastUpdated": "2026-10-17T08:20:30.058Z",
+          "mcpServers": {
+            "agent-braid": {
+              "args": [
+                "plugin",
+                "serve",
+                "--plugin-root",
+                "${CLAUDE_PLUGIN_ROOT}"
+              ],
+              "command": "${CLAUDE_PLUGIN_ROOT}/launch"
+            }
+          },
+          "projectEnabled": false,
+          "readFromFolder": "/evidence/version-upgrade-linux/marketplace/plugins/agent-braid",
+          "scope": "user",
+          "version": "0.1.0-alpha.2"
+        }
+      ],
+      "codex": {
+        "authPolicy": "ON_USE",
+        "installedPath": "/evidence/version-upgrade-linux/codex/plugins/cache/agent-braid/agent-braid/0.1.0-alpha.2",
+        "marketplaceName": "agent-braid",
+        "name": "agent-braid",
+        "pluginId": "agent-braid@agent-braid",
+        "version": "0.1.0-alpha.2"
+      },
+      "installedCacheVerified": true,
+      "nativeMcpConnected": true,
+      "registryIdentical": true,
+      "resultIdentical": true
+    },
+    "before": {
+      "claude": [
+        {
+          "enabled": true,
+          "folderVersion": "0.1.0-alpha.1",
+          "id": "agent-braid@agent-braid",
+          "installPath": "/evidence/version-upgrade-linux/claude/plugins/cache/agent-braid/agent-braid/0.1.0-alpha.1",
+          "installedAt": "2026-10-17T08:20:07.987Z",
+          "lastUpdated": "2026-10-17T08:20:07.987Z",
+          "mcpServers": {
+            "agent-braid": {
+              "args": [
+                "plugin",
+                "serve",
+                "--plugin-root",
+                "${CLAUDE_PLUGIN_ROOT}"
+              ],
+              "command": "${CLAUDE_PLUGIN_ROOT}/launch"
+            }
+          },
+          "projectEnabled": false,
+          "readFromFolder": "/evidence/version-upgrade-linux/marketplace/plugins/agent-braid",
+          "scope": "user",
+          "version": "0.1.0-alpha.1"
+        }
+      ],
+      "codex": {
+        "authPolicy": "ON_USE",
+        "installedPath": "/evidence/version-upgrade-linux/codex/plugins/cache/agent-braid/agent-braid/0.1.0-alpha.1",
+        "marketplaceName": "agent-braid",
+        "name": "agent-braid",
+        "pluginId": "agent-braid@agent-braid",
+        "version": "0.1.0-alpha.1"
+      },
+      "codexDoctorStatus": "refused-inventory-changed",
+      "registrySha256": "f5dcc67dfb2465a353461da3f2040a5f3788d0f27eeb2e363615b25ef7990ffd",
+      "resultSha256": "4c4ab74cc1397892de95058879a7d036e50730834ceca371a0c6826cd688aa92",
+      "uninstalledCandidateDoctorStatus": "verified"
+    },
+    "commands": [
+      {
+        "argv": [
+          "/tools/codex",
+          "--version"
+        ],
+        "exitCode": 0,
+        "stderr": "",
+        "stdout": "codex-cli 0.163.0\n"
+      },
+      {
+        "argv": [
+          "/tools/claude",
+          "--version"
+        ],
+        "exitCode": 0,
+        "stderr": "",
+        "stdout": "2.1.292 (Claude Code)\n"
+      },
+      {
+        "argv": [
+          "/tools/codex",
+          "plugin",
+          "marketplace",
+          "add",
+          "/evidence/version-upgrade-linux/marketplace"
+        ],
+        "exitCode": 0,
+        "stderr": "",
+        "stdout": "Added marketplace `agent-braid` from /evidence/version-upgrade-linux/marketplace.\nInstalled marketplace root: /evidence/version-upgrade-linux/marketplace\n"
+      },
+      {
+        "argv": [
+          "/tools/codex",
+          "plugin",
+          "add",
+          "agent-braid@agent-braid",
+          "--json"
+        ],
+        "exitCode": 0,
+        "stderr": "",
+        "stdout": "{\n  \"pluginId\": \"agent-braid@agent-braid\",\n  \"name\": \"agent-braid\",\n  \"marketplaceName\": \"agent-braid\",\n  \"version\": \"0.1.0-alpha.1\",\n  \"installedPath\": \"/evidence/version-upgrade-linux/codex/plugins/cache/agent-braid/agent-braid/0.1.0-alpha.1\",\n  \"authPolicy\": \"ON_USE\"\n}\n"
+      },
+      {
+        "argv": [
+          "/tools/claude",
+          "plugin",
+          "install",
+          "agent-braid",
+          "--marketplace",
+          "/evidence/version-upgrade-linux/marketplace",
+          "--scope",
+          "user"
+        ],
+        "exitCode": 0,
+        "stderr": "",
+        "stdout": "Adding marketplace\u2026\n\u2714 Successfully added marketplace: agent-braid (declared in user settings)\nInstalling plugin \"agent-braid@agent-braid\"...\u2714 Successfully installed plugin: agent-braid@agent-braid (scope: user)\n"
+      },
+      {
+        "argv": [
+          "/tools/claude",
+          "plugin",
+          "list",
+          "--json"
+        ],
+        "exitCode": 0,
+        "stderr": "",
+        "stdout": "[\n  {\n    \"id\": \"agent-braid@agent-braid\",\n    \"version\": \"0.1.0-alpha.1\",\n    \"scope\": \"user\",\n    \"enabled\": true,\n    \"installPath\": \"/evidence/version-upgrade-linux/claude/plugins/cache/agent-braid/agent-braid/0.1.0-alpha.1\",\n    \"readFromFolder\": \"/evidence/version-upgrade-linux/marketplace/plugins/agent-braid\",\n    \"folderVersion\": \"0.1.0-alpha.1\",\n    \"installedAt\": \"2026-10-17T08:20:07.987Z\",\n    \"lastUpdated\": \"2026-10-17T08:20:07.987Z\",\n    \"mcpServers\": {\n      \"agent-braid\": {\n        \"command\": \"${CLAUDE_PLUGIN_ROOT}/launch\",\n        \"args\": [\n          \"plugin\",\n          \"serve\",\n          \"--plugin-root\",\n          \"${CLAUDE_PLUGIN_ROOT}\"\n        ]\n      }\n    },\n    \"projectEnabled\": false\n  }\n]\n"
+      },
+      {
+        "argv": [
+          "/evidence/version-upgrade-linux/codex/plugins/cache/agent-braid/agent-braid/0.1.0-alpha.1/launch",
+          "plugin",
+          "doctor",
+          "--plugin-root",
+          "/evidence/version-upgrade-linux/codex/plugins/cache/agent-braid/agent-braid/0.1.0-alpha.1"
+        ],
+        "exitCode": 2,
+        "stderr": "plugin refused: Plugin package inventory changed; reinstall using the native manager\n",
+        "stdout": ""
+      },
+      {
+        "argv": [
+          "/evidence/version-upgrade-linux/marketplace/plugins/agent-braid/launch",
+          "plugin",
+          "doctor"
+        ],
+        "exitCode": 0,
+        "stderr": "",
+        "stdout": "{\n  \"bundledCli\": \"/evidence/version-upgrade-linux/marketplace/plugins/agent-braid/launch\",\n  \"executionAuthorization\": false,\n  \"gitAvailable\": true,\n  \"package\": {\n    \"files\": 7733,\n    \"limits\": [\n      \"Byte inventory is not publisher authentication, native host acceptance or provider approval\"\n    ],\n    \"status\": \"verified\",\n    \"version\": \"0.1.0-alpha.1\"\n  },\n  \"reconnectRequired\": false,\n  \"registryHome\": \"/evidence/version-upgrade-linux/user home/.local/share/agent-braid\",\n  \"runtimeIncluded\": true,\n  \"schema\": \"agent-braid-plugin/v0.1\",\n  \"status\": \"setup-required\",\n  \"version\": \"0.1.0a1\",\n  \"workspaces\": []\n}\n"
+      },
+      {
+        "argv": [
+          "git",
+          "init",
+          "-q",
+          "/evidence/version-upgrade-linux/repo one"
+        ],
+        "exitCode": 0,
+        "stderr": "",
+        "stdout": ""
+      },
+      {
+        "argv": [
+          "git",
+          "init",
+          "-q",
+          "/evidence/version-upgrade-linux/repo two"
+        ],
+        "exitCode": 0,
+        "stderr": "",
+        "stdout": ""
+      },
+      {
+        "argv": [
+          "/evidence/version-upgrade-linux/marketplace/plugins/agent-braid/launch",
+          "plugin",
+          "setup",
+          "--source-root",
+          "/evidence/version-upgrade-linux/repo one",
+          "--source-root",
+          "/evidence/version-upgrade-linux/repo two"
+        ],
+        "exitCode": 0,
+        "stderr": "",
+        "stdout": "{\n  \"beforeSha256\": null,\n  \"effects\": [\n    \"Replace only the private workspace registry\",\n    \"Create missing private result directories; never delete source/results\"\n  ],\n  \"home\": \"/evidence/version-upgrade-linux/user home/.local/share/agent-braid\",\n  \"previewDigest\": \"44138df5919d56829bbc2438bb3a9dd5e66cec6c2e9a10e6e44d7df833bc8cc6\",\n  \"reconnectRequired\": true,\n  \"registry\": {\n    \"schema\": \"agent-braid-plugin-registry/v0.1\",\n    \"workspaces\": [\n      {\n        \"grantStore\": null,\n        \"resultRoot\": \"/evidence/version-upgrade-linux/user home/.local/share/agent-braid/results/5e9bf3c5b14a120a3b9bad4268ca8de8\",\n        \"runtimeEnabled\": false,\n        \"sourceRoot\": \"/evidence/version-upgrade-linux/repo two\",\n        \"workspaceId\": \"5e9bf3c5b14a120a3b9bad4268ca8de8\",\n        \"worktreeRoots\": []\n      },\n      {\n        \"grantStore\": null,\n        \"resultRoot\": \"/evidence/version-upgrade-linux/user home/.local/share/agent-braid/results/acf1d84ebe09bb465f00b6bf89a351fd\",\n        \"runtimeEnabled\": false,\n        \"sourceRoot\": \"/evidence/version-upgrade-linux/repo one\",\n        \"workspaceId\": \"acf1d84ebe09bb465f00b6bf89a351fd\",\n        \"worktreeRoots\": []\n      }\n    ]\n  },\n  \"schema\": \"agent-braid-plugin-setup/v0.1\"\n}\n"
+      },
+      {
+        "argv": [
+          "/evidence/version-upgrade-linux/marketplace/plugins/agent-braid/launch",
+          "plugin",
+          "setup",
+          "--source-root",
+          "/evidence/version-upgrade-linux/repo one",
+          "--source-root",
+          "/evidence/version-upgrade-linux/repo two",
+          "--apply",
+          "--preview-digest",
+          "44138df5919d56829bbc2438bb3a9dd5e66cec6c2e9a10e6e44d7df833bc8cc6"
+        ],
+        "exitCode": 0,
+        "stderr": "",
+        "stdout": "{\n  \"reconnectRequired\": true,\n  \"status\": \"configured\",\n  \"workspaces\": [\n    {\n      \"grantStore\": null,\n      \"resultRoot\": \"/evidence/version-upgrade-linux/user home/.local/share/agent-braid/results/5e9bf3c5b14a120a3b9bad4268ca8de8\",\n      \"runtimeEnabled\": false,\n      \"sourceRoot\": \"/evidence/version-upgrade-linux/repo two\",\n      \"workspaceId\": \"5e9bf3c5b14a120a3b9bad4268ca8de8\",\n      \"worktreeRoots\": []\n    },\n    {\n      \"grantStore\": null,\n      \"resultRoot\": \"/evidence/version-upgrade-linux/user home/.local/share/agent-braid/results/acf1d84ebe09bb465f00b6bf89a351fd\",\n      \"runtimeEnabled\": false,\n      \"sourceRoot\": \"/evidence/version-upgrade-linux/repo one\",\n      \"workspaceId\": \"acf1d84ebe09bb465f00b6bf89a351fd\",\n      \"worktreeRoots\": []\n    }\n  ]\n}\n"
+      },
+      {
+        "argv": [
+          "/tools/codex",
+          "plugin",
+          "add",
+          "agent-braid@agent-braid",
+          "--json"
+        ],
+        "exitCode": 0,
+        "stderr": "",
+        "stdout": "{\n  \"pluginId\": \"agent-braid@agent-braid\",\n  \"name\": \"agent-braid\",\n  \"marketplaceName\": \"agent-braid\",\n  \"version\": \"0.1.0-alpha.2\",\n  \"installedPath\": \"/evidence/version-upgrade-linux/codex/plugins/cache/agent-braid/agent-braid/0.1.0-alpha.2\",\n  \"authPolicy\": \"ON_USE\"\n}\n"
+      },
+      {
+        "argv": [
+          "/tools/claude",
+          "plugin",
+          "marketplace",
+          "update",
+          "agent-braid"
+        ],
+        "exitCode": 0,
+        "stderr": "",
+        "stdout": "Updating marketplace: agent-braid...Validating local marketplace\n\u2714 Successfully updated marketplace: agent-braid\n"
+      },
+      {
+        "argv": [
+          "/tools/claude",
+          "plugin",
+          "update",
+          "agent-braid@agent-braid",
+          "--scope",
+          "user"
+        ],
+        "exitCode": 0,
+        "stderr": "",
+        "stdout": "Checking for updates for plugin \"agent-braid@agent-braid\" at user scope\u2026\n\u2714 Plugin \"agent-braid\" updated from 0.1.0-alpha.1 to 0.1.0-alpha.2 for scope user. Restart to apply changes.\n"
+      },
+      {
+        "argv": [
+          "/tools/claude",
+          "plugin",
+          "list",
+          "--json"
+        ],
+        "exitCode": 0,
+        "stderr": "",
+        "stdout": "[\n  {\n    \"id\": \"agent-braid@agent-braid\",\n    \"version\": \"0.1.0-alpha.2\",\n    \"scope\": \"user\",\n    \"enabled\": true,\n    \"installPath\": \"/evidence/version-upgrade-linux/claude/plugins/cache/agent-braid/agent-braid/0.1.0-alpha.2\",\n    \"readFromFolder\": \"/evidence/version-upgrade-linux/marketplace/plugins/agent-braid\",\n    \"folderVersion\": \"0.1.0-alpha.2\",\n    \"installedAt\": \"2026-10-17T08:20:07.987Z\",\n    \"lastUpdated\": \"2026-10-17T08:20:30.058Z\",\n    \"mcpServers\": {\n      \"agent-braid\": {\n        \"command\": \"${CLAUDE_PLUGIN_ROOT}/launch\",\n        \"args\": [\n          \"plugin\",\n          \"serve\",\n          \"--plugin-root\",\n          \"${CLAUDE_PLUGIN_ROOT}\"\n        ]\n      }\n    },\n    \"projectEnabled\": false\n  }\n]\n"
+      },
+      {
+        "argv": [
+          "/evidence/version-upgrade-linux/codex/plugins/cache/agent-braid/agent-braid/0.1.0-alpha.2/launch",
+          "plugin",
+          "doctor",
+          "--plugin-root",
+          "/evidence/version-upgrade-linux/codex/plugins/cache/agent-braid/agent-braid/0.1.0-alpha.2"
+        ],
+        "exitCode": 0,
+        "stderr": "",
+        "stdout": "{\n  \"bundledCli\": \"/evidence/version-upgrade-linux/codex/plugins/cache/agent-braid/agent-braid/0.1.0-alpha.2/launch\",\n  \"executionAuthorization\": false,\n  \"gitAvailable\": true,\n  \"package\": {\n    \"files\": 7737,\n    \"limits\": [\n      \"Byte inventory is not publisher authentication, native host acceptance or provider approval\"\n    ],\n    \"status\": \"verified\",\n    \"version\": \"0.1.0-alpha.2\"\n  },\n  \"reconnectRequired\": false,\n  \"registryHome\": \"/evidence/version-upgrade-linux/user home/.local/share/agent-braid\",\n  \"runtimeIncluded\": true,\n  \"schema\": \"agent-braid-plugin/v0.1\",\n  \"status\": \"configured\",\n  \"version\": \"0.1.0a1\",\n  \"workspaces\": [\n    {\n      \"grantStore\": null,\n      \"resultRoot\": \"/evidence/version-upgrade-linux/user home/.local/share/agent-braid/results/5e9bf3c5b14a120a3b9bad4268ca8de8\",\n      \"runtimeEnabled\": false,\n      \"sourceRoot\": \"/evidence/version-upgrade-linux/repo two\",\n      \"workspaceId\": \"5e9bf3c5b14a120a3b9bad4268ca8de8\",\n      \"worktreeRoots\": []\n    },\n    {\n      \"grantStore\": null,\n      \"resultRoot\": \"/evidence/version-upgrade-linux/user home/.local/share/agent-braid/results/acf1d84ebe09bb465f00b6bf89a351fd\",\n      \"runtimeEnabled\": false,\n      \"sourceRoot\": \"/evidence/version-upgrade-linux/repo one\",\n      \"workspaceId\": \"acf1d84ebe09bb465f00b6bf89a351fd\",\n      \"worktreeRoots\": []\n    }\n  ]\n}\n"
+      },
+      {
+        "argv": [
+          "/evidence/version-upgrade-linux/claude/plugins/cache/agent-braid/agent-braid/0.1.0-alpha.2/launch",
+          "plugin",
+          "doctor",
+          "--plugin-root",
+          "/evidence/version-upgrade-linux/claude/plugins/cache/agent-braid/agent-braid/0.1.0-alpha.2"
+        ],
+        "exitCode": 0,
+        "stderr": "",
+        "stdout": "{\n  \"bundledCli\": \"/evidence/version-upgrade-linux/claude/plugins/cache/agent-braid/agent-braid/0.1.0-alpha.2/launch\",\n  \"executionAuthorization\": false,\n  \"gitAvailable\": true,\n  \"package\": {\n    \"files\": 7737,\n    \"limits\": [\n      \"Byte inventory is not publisher authentication, native host acceptance or provider approval\"\n    ],\n    \"status\": \"verified\",\n    \"version\": \"0.1.0-alpha.2\"\n  },\n  \"reconnectRequired\": false,\n  \"registryHome\": \"/evidence/version-upgrade-linux/user home/.local/share/agent-braid\",\n  \"runtimeIncluded\": true,\n  \"schema\": \"agent-braid-plugin/v0.1\",\n  \"status\": \"configured\",\n  \"version\": \"0.1.0a1\",\n  \"workspaces\": [\n    {\n      \"grantStore\": null,\n      \"resultRoot\": \"/evidence/version-upgrade-linux/user home/.local/share/agent-braid/results/5e9bf3c5b14a120a3b9bad4268ca8de8\",\n      \"runtimeEnabled\": false,\n      \"sourceRoot\": \"/evidence/version-upgrade-linux/repo two\",\n      \"workspaceId\": \"5e9bf3c5b14a120a3b9bad4268ca8de8\",\n      \"worktreeRoots\": []\n    },\n    {\n      \"grantStore\": null,\n      \"resultRoot\": \"/evidence/version-upgrade-linux/user home/.local/share/agent-braid/results/acf1d84ebe09bb465f00b6bf89a351fd\",\n      \"runtimeEnabled\": false,\n      \"sourceRoot\": \"/evidence/version-upgrade-linux/repo one\",\n      \"workspaceId\": \"acf1d84ebe09bb465f00b6bf89a351fd\",\n      \"worktreeRoots\": []\n    }\n  ]\n}\n"
+      },
+      {
+        "argv": [
+          "/tools/claude",
+          "mcp",
+          "list"
+        ],
+        "exitCode": 0,
+        "stderr": "",
+        "stdout": "Checking MCP server health\u2026\n\nplugin:agent-braid:agent-braid: /evidence/version-upgrade-linux/marketplace/plugins/agent-braid/launch plugin serve --plugin-root /evidence/version-upgrade-linux/marketplace/plugins/agent-braid - \u2714 Connected\n"
+      },
+      {
+        "argv": [
+          "/tools/codex",
+          "plugin",
+          "remove",
+          "agent-braid@agent-braid"
+        ],
+        "exitCode": 0,
+        "stderr": "",
+        "stdout": "Removed plugin `agent-braid` from marketplace `agent-braid`.\n"
+      },
+      {
+        "argv": [
+          "/tools/claude",
+          "plugin",
+          "uninstall",
+          "agent-braid@agent-braid",
+          "--scope",
+          "user"
+        ],
+        "exitCode": 0,
+        "stderr": "",
+        "stdout": "\u2714 Successfully uninstalled plugin: agent-braid (scope: user)\n"
+      }
+    ],
+    "context": "container-linux-amd64-emulated-on-macos",
+    "limits": [
+      "No provider/model session in this lifecycle control",
+      "Alpha1 Codex cache integrity is a known failed baseline: native manager omitted runtime aliases",
+      "Local directory marketplace kept the same path and host identity across the version change; remote Git refresh remains a separate transport observation"
+    ],
+    "newCodexInventory": {
+      "limits": [
+        "Actual native loader/discovery only; no thread/start, turn/start or skill invocation",
+        "Fresh child-process user home and host profiles; caller environment/global user settings unchanged"
+      ],
+      "mcpServer": {
+        "authStatus": "unsupported",
+        "httpOrigin": null,
+        "name": "agent-braid",
+        "pluginId": "agent-braid@agent-braid",
+        "resourceTemplates": [],
+        "resources": [
+          {
+            "mimeType": "application/json",
+            "name": "5e9bf3c5b14a120a3b9bad4268ca8de8-capabilities",
+            "uri": "agent-braid-plugin://5e9bf3c5b14a120a3b9bad4268ca8de8/capabilities"
+          },
+          {
+            "mimeType": "application/json",
+            "name": "acf1d84ebe09bb465f00b6bf89a351fd-capabilities",
+            "uri": "agent-braid-plugin://acf1d84ebe09bb465f00b6bf89a351fd/capabilities"
+          }
+        ],
+        "runtimeStatus": null,
+        "serverCapabilities": {
+          "prompts": {
+            "listChanged": false
+          },
+          "resources": {
+            "listChanged": false,
+            "subscribe": false
+          },
+          "tools": {
+            "listChanged": false
+          }
+        },
+        "serverInfo": {
+          "description": null,
+          "icons": null,
+          "name": "agent-braid-plugin",
+          "title": null,
+          "version": "0.1.0a1",
+          "websiteUrl": null
+        },
+        "tools": {
+          "analyze": {
+            "annotations": {
+              "destructiveHint": false,
+              "openWorldHint": false,
+              "readOnlyHint": true
+            },
+            "description": "Bounded Agent Braid analyze; host permissions and annotations do not grant runtime authority. This tool is part of plugin `Agent Braid`.",
+            "inputSchema": {
+              "additionalProperties": false,
+              "properties": {
+                "request": {
+                  "type": "object"
+                },
+                "workspaceId": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "request",
+                "workspaceId"
+              ],
+              "type": "object"
+            },
+            "name": "analyze",
+            "outputSchema": {
+              "properties": {
+                "evidenceRefs": {
+                  "type": "array"
+                },
+                "limits": {
+                  "type": "array"
+                },
+                "operation": {
+                  "type": "string"
+                },
+                "provenance": {
+                  "type": "object"
+                },
+                "result": {},
+                "schemaVersion": {
+                  "const": "agent-braid-plugin/v0.1"
+                },
+                "status": {
+                  "enum": [
+                    "ok",
+                    "refused",
+                    "unknown",
+                    "error"
+                  ]
+                },
+                "summary": {
+                  "type": "string"
+                },
+                "workspaceId": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                }
+              },
+              "required": [
+                "schemaVersion",
+                "operation",
+                "status",
+                "summary",
+                "result",
+                "evidenceRefs",
+                "limits",
+                "provenance"
+              ],
+              "type": "object"
+            }
+          },
+          "analyze-work": {
+            "annotations": {
+              "destructiveHint": false,
+              "openWorldHint": false,
+              "readOnlyHint": true
+            },
+            "description": "Bounded Agent Braid analyze-work; host permissions and annotations do not grant runtime authority. This tool is part of plugin `Agent Braid`.",
+            "inputSchema": {
+              "additionalProperties": false,
+              "properties": {
+                "kind": {
+                  "enum": [
+                    "aim",
+                    "git"
+                  ]
+                },
+                "request": {
+                  "oneOf": [
+                    {
+                      "type": "object"
+                    },
+                    {
+                      "type": "array"
+                    }
+                  ]
+                },
+                "workspaceId": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "kind",
+                "request",
+                "workspaceId"
+              ],
+              "type": "object"
+            },
+            "name": "analyze-work",
+            "outputSchema": {
+              "properties": {
+                "evidenceRefs": {
+                  "type": "array"
+                },
+                "limits": {
+                  "type": "array"
+                },
+                "operation": {
+                  "type": "string"
+                },
+                "provenance": {
+                  "type": "object"
+                },
+                "result": {},
+                "schemaVersion": {
+                  "const": "agent-braid-plugin/v0.1"
+                },
+                "status": {
+                  "enum": [
+                    "ok",
+                    "refused",
+                    "unknown",
+                    "error"
+                  ]
+                },
+                "summary": {
+                  "type": "string"
+                },
+                "workspaceId": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                }
+              },
+              "required": [
+                "schemaVersion",
+                "operation",
+                "status",
+                "summary",
+                "result",
+                "evidenceRefs",
+                "limits",
+                "provenance"
+              ],
+              "type": "object"
+            }
+          },
+          "plugin-status": {
+            "annotations": {
+              "openWorldHint": false,
+              "readOnlyHint": true
+            },
+            "description": "Read-only setup status, bundled CLI location and registered workspace IDs. No registration or grant effects. This tool is part of plugin `Agent Braid`.",
+            "inputSchema": {
+              "additionalProperties": false,
+              "properties": {},
+              "type": "object"
+            },
+            "name": "plugin-status"
+          },
+          "prepare": {
+            "annotations": {
+              "destructiveHint": false,
+              "openWorldHint": false,
+              "readOnlyHint": true
+            },
+            "description": "Bounded Agent Braid prepare; host permissions and annotations do not grant runtime authority. This tool is part of plugin `Agent Braid`.",
+            "inputSchema": {
+              "additionalProperties": false,
+              "properties": {
+                "mode": {
+                  "enum": [
+                    "serial",
+                    "parallel"
+                  ]
+                },
+                "request": {
+                  "type": "object"
+                },
+                "runDirectory": {
+                  "type": "string"
+                },
+                "workspaceId": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "request",
+                "runDirectory",
+                "workspaceId"
+              ],
+              "type": "object"
+            },
+            "name": "prepare",
+            "outputSchema": {
+              "properties": {
+                "evidenceRefs": {
+                  "type": "array"
+                },
+                "limits": {
+                  "type": "array"
+                },
+                "operation": {
+                  "type": "string"
+                },
+                "provenance": {
+                  "type": "object"
+                },
+                "result": {},
+                "schemaVersion": {
+                  "const": "agent-braid-plugin/v0.1"
+                },
+                "status": {
+                  "enum": [
+                    "ok",
+                    "refused",
+                    "unknown",
+                    "error"
+                  ]
+                },
+                "summary": {
+                  "type": "string"
+                },
+                "workspaceId": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                }
+              },
+              "required": [
+                "schemaVersion",
+                "operation",
+                "status",
+                "summary",
+                "result",
+                "evidenceRefs",
+                "limits",
+                "provenance"
+              ],
+              "type": "object"
+            }
+          },
+          "workspaces": {
+            "annotations": {
+              "openWorldHint": false,
+              "readOnlyHint": true
+            },
+            "description": "Read-only setup status, bundled CLI location and registered workspace IDs. No registration or grant effects. This tool is part of plugin `Agent Braid`.",
+            "inputSchema": {
+              "additionalProperties": false,
+              "properties": {},
+              "type": "object"
+            },
+            "name": "workspaces"
+          }
+        },
+        "toolsError": null
+      },
+      "skills": [
+        {
+          "description": "Use when inspecting proposed work for interactions, dependencies, conflicts, conditions, or unknowns.",
+          "enabled": true,
+          "name": "agent-braid:agent-braid-analyze",
+          "path": "/evidence/version-upgrade-linux/codex/plugins/cache/agent-braid/agent-braid/0.1.0-alpha.2/skills/agent-braid-analyze/SKILL.md",
+          "pluginId": "agent-braid@agent-braid",
+          "scope": "user"
+        },
+        {
+          "description": "Use when explaining or exporting a bounded Agent Braid result with its provenance, uncertainty, and observation limits.",
+          "enabled": true,
+          "name": "agent-braid:agent-braid-evidence",
+          "path": "/evidence/version-upgrade-linux/codex/plugins/cache/agent-braid/agent-braid/0.1.0-alpha.2/skills/agent-braid-evidence/SKILL.md",
+          "pluginId": "agent-braid@agent-braid",
+          "scope": "user"
+        },
+        {
+          "description": "Use only when executing an exact prepared batch that already has a matching operator grant.",
+          "enabled": true,
+          "name": "agent-braid:agent-braid-execute",
+          "path": "/evidence/version-upgrade-linux/codex/plugins/cache/agent-braid/agent-braid/0.1.0-alpha.2/skills/agent-braid-execute/SKILL.md",
+          "pluginId": "agent-braid@agent-braid",
+          "scope": "user"
+        },
+        {
+          "description": "Use when preparing an advisory order for bounded work and explaining constraints or missing operator authority.",
+          "enabled": true,
+          "name": "agent-braid:agent-braid-plan",
+          "path": "/evidence/version-upgrade-linux/codex/plugins/cache/agent-braid/agent-braid/0.1.0-alpha.2/skills/agent-braid-plan/SKILL.md",
+          "pluginId": "agent-braid@agent-braid",
+          "scope": "user"
+        },
+        {
+          "description": "Use when inspecting an interrupted owned run and deciding whether existing authority permits bounded recovery.",
+          "enabled": true,
+          "name": "agent-braid:agent-braid-recover",
+          "path": "/evidence/version-upgrade-linux/codex/plugins/cache/agent-braid/agent-braid/0.1.0-alpha.2/skills/agent-braid-recover/SKILL.md",
+          "pluginId": "agent-braid@agent-braid",
+          "scope": "user"
+        },
+        {
+          "description": "Configure the installed Agent Braid plugin for this user and explicitly selected repositories, or diagnose its installation.",
+          "enabled": true,
+          "name": "agent-braid:setup",
+          "path": "/evidence/version-upgrade-linux/codex/plugins/cache/agent-braid/agent-braid/0.1.0-alpha.2/skills/setup/SKILL.md",
+          "pluginId": "agent-braid@agent-braid",
+          "scope": "user"
+        }
+      ],
+      "stderr": "\u001b[2m2026-10-17T08:20:37.553568Z\u001b[0m \u001b[31mERROR\u001b[0m \u001b[2mcodex_app_server\u001b[0m\u001b[2m:\u001b[0m Codex could not find bubblewrap on PATH. Install bubblewrap with your OS package manager. See the sandbox prerequisites: https://developers.openai.com/codex/concepts/sandboxing#prerequisites. Codex will use the bundled bubblewrap in the meantime.\n"
+    },
+    "schema": "agent-braid-native-version-upgrade/v1",
+    "status": "passed",
+    "uninstallPreservedData": true
+  }
+}

@@ -14,16 +14,16 @@ Stable source IDs; task completion does not imply native/provider or founder acc
 - [x] T004 (REQ-004 / SC-004): Repository discovery.
   Dependencies: T003. Verification: procedure_004 in validation-plan.md. Evidence: evidence/engineering.json.
 
-- [ ] T005 (REQ-005 / SC-005): Onboarding wizard.
+- [x] T005 (REQ-005 / SC-005): Onboarding wizard.
   Dependencies: T003, T004. Verification: procedure_005 in validation-plan.md. Evidence: evidence/engineering.json.
 
-- [ ] T006 (REQ-006 / SC-006): Codex plugin.
+- [x] T006 (REQ-006 / SC-006): Codex plugin.
   Dependencies: T002, T005. Verification: procedure_006 in validation-plan.md. Evidence: evidence/engineering.json.
 
 - [ ] T007 (REQ-007 / SC-007): Claude Code plugin.
   Dependencies: T002, T005. Verification: procedure_007 in validation-plan.md. Evidence: evidence/engineering.json.
 
-- [ ] T008 (REQ-008 / SC-008): Lifecycle and migration.
+- [x] T008 (REQ-008 / SC-008): Lifecycle and migration.
   Dependencies: T003, T006, T007. Verification: procedure_008 in validation-plan.md. Evidence: evidence/engineering.json.
 
 - [ ] T009 (REQ-009 / SC-009): Distribution and technical acceptance.
@@ -49,11 +49,16 @@ Stable source IDs; task completion does not imply native/provider or founder acc
 
 ## Remaining acceptance boundaries
 
-T005 requires an actual interactive setup journey. T006/T007 retain interactive
-skill use; native MCP startup/catalog loading has been observed on both targets. T008 retains the
-version-changing update observation. T009 retains reviewed distribution branch,
-tag and release authorization. T010 retains integrated governed GitHub/Project
-readback. Passing local implementation tests cannot silently close those gates.
+T005/T006 now have an actual agent-operated native Codex setup/product-skill
+journey, including cancellation, bounded discovery, exact preview/apply,
+reconnection and two-workspace MCP analysis. T007 remains blocked by the actual
+Claude Code session's expired native login. T008 now has native alpha.1 to alpha.2
+updates with unchanged registry/result bytes for both hosts on native macOS and
+emulated Linux; receipt-owned migration controls remain obtained. T009 retains
+public distribution branch/tag and the remote curl installation check: the
+owner's conditional publication authorization is not yet satisfied while T007 is
+blocked. T010 retains integrated GitHub/Project readback and publication-aligned
+documentation. See release-acceptance.md for exact observation boundaries.
 T011/T012 completion is documentary preparation only; T014/T015 keep external
 eligibility, contact/submission and approval independent, as the approved plan
 requires. No messages to providers have been sent.

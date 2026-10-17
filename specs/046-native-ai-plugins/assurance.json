@@ -96,7 +96,7 @@
   "execution_contract": "Analysis is the default. Explicit registry bindings identify source/result roots; existing core policies and grants govern execution. Installing or discovering repositories grants no execution authority.",
   "human_review": "pending",
   "hypotheses": "No scientific hypothesis is introduced. Host/plugin interoperability is an engineering claim bounded by the observed exact versions.",
-  "observation_contract": "Source-bound unit controls, actual SDK connections, native manager and local MCP loading observations. macOS native and emulated Linux records are distinct; no model prompt or human wizard acceptance is implied.",
+  "observation_contract": "Source-bound controls and actual native installation/MCP loading on macOS and emulated Linux. Alpha2 includes agent-operated authenticated native Codex setup/product-skill interaction and version-changing updates. Claude interaction is blocked by expired native login; human ratings remain separate.",
   "references": [
     "CONSTITUTION.md",
     "GOVERNANCE.md",
@@ -114,7 +114,15 @@
         {
           "given": "The approved scope, existing M4.5 authorities and five-skill contract",
           "id": "SC-001",
-          "obtained_evidence": [],
+          "obtained_evidence": [
+            {
+              "command": "46 focused tests; clean Git native reproduction; native alpha1-to-alpha2 update records; actual Codex setup/analyze interaction. See linked exact command/observation records.",
+              "limits": "No successful Claude interactive journey or public marketplace/remote curl install; Linux is emulated; no human usability/scientific/final M4.5 acceptance or official provider approval.",
+              "outcome": "Bounded observations obtained; per-procedure matrix and release-acceptance.md distinguish passed controls from Claude authentication and publication blockers.",
+              "path": "specs/046-native-ai-plugins/evidence/release-alpha2.json",
+              "sha256": "2ac0188b94eb4d851ae9a923f3ffefb1daa5d9d96e8028abe067db418effceb8"
+            }
+          ],
           "planned_evidence": "specs/046-native-ai-plugins/evidence/engineering.json",
           "test_file": "specs/046-native-ai-plugins/validation-plan.md",
           "test_name": "procedure_001",
@@ -130,7 +138,15 @@
         {
           "given": "A clean source commit and the two pinned runtime archives",
           "id": "SC-002",
-          "obtained_evidence": [],
+          "obtained_evidence": [
+            {
+              "command": "46 focused tests; clean Git native reproduction; native alpha1-to-alpha2 update records; actual Codex setup/analyze interaction. See linked exact command/observation records.",
+              "limits": "No successful Claude interactive journey or public marketplace/remote curl install; Linux is emulated; no human usability/scientific/final M4.5 acceptance or official provider approval.",
+              "outcome": "Bounded observations obtained; per-procedure matrix and release-acceptance.md distinguish passed controls from Claude authentication and publication blockers.",
+              "path": "specs/046-native-ai-plugins/evidence/release-alpha2.json",
+              "sha256": "2ac0188b94eb4d851ae9a923f3ffefb1daa5d9d96e8028abe067db418effceb8"
+            }
+          ],
           "planned_evidence": "specs/046-native-ai-plugins/evidence/engineering.json",
           "test_file": "tests/test_plugin_package.py",
           "test_name": "PluginPackageTests.test_inventory_rejects_content_drift_and_tracks_directory_symlinks",
@@ -146,7 +162,15 @@
         {
           "given": "Two analysis-only registered workspaces and separate MCP connections",
           "id": "SC-003",
-          "obtained_evidence": [],
+          "obtained_evidence": [
+            {
+              "command": "46 focused tests; clean Git native reproduction; native alpha1-to-alpha2 update records; actual Codex setup/analyze interaction. See linked exact command/observation records.",
+              "limits": "No successful Claude interactive journey or public marketplace/remote curl install; Linux is emulated; no human usability/scientific/final M4.5 acceptance or official provider approval.",
+              "outcome": "Bounded observations obtained; per-procedure matrix and release-acceptance.md distinguish passed controls from Claude authentication and publication blockers.",
+              "path": "specs/046-native-ai-plugins/evidence/release-alpha2.json",
+              "sha256": "2ac0188b94eb4d851ae9a923f3ffefb1daa5d9d96e8028abe067db418effceb8"
+            }
+          ],
           "planned_evidence": "specs/046-native-ai-plugins/evidence/engineering.json",
           "test_file": "tests/test_plugin_mcp.py",
           "test_name": "PluginRouterTests.test_two_workspaces_keep_core_results_and_resource_ownership",
@@ -162,7 +186,15 @@
         {
           "given": "Current and registered repositories, an explicit project folder, a Git worktree and symlink aliases",
           "id": "SC-004",
-          "obtained_evidence": [],
+          "obtained_evidence": [
+            {
+              "command": "46 focused tests; clean Git native reproduction; native alpha1-to-alpha2 update records; actual Codex setup/analyze interaction. See linked exact command/observation records.",
+              "limits": "No successful Claude interactive journey or public marketplace/remote curl install; Linux is emulated; no human usability/scientific/final M4.5 acceptance or official provider approval.",
+              "outcome": "Bounded observations obtained; per-procedure matrix and release-acceptance.md distinguish passed controls from Claude authentication and publication blockers.",
+              "path": "specs/046-native-ai-plugins/evidence/release-alpha2.json",
+              "sha256": "2ac0188b94eb4d851ae9a923f3ffefb1daa5d9d96e8028abe067db418effceb8"
+            }
+          ],
           "planned_evidence": "specs/046-native-ai-plugins/evidence/engineering.json",
           "test_file": "tests/test_plugin_registry.py",
           "test_name": "PluginRegistryTests.test_discovery_recognizes_worktrees_empty_and_unavailable_roots",
@@ -178,7 +210,15 @@
         {
           "given": "An installed plugin and two repositories selected by the user",
           "id": "SC-005",
-          "obtained_evidence": [],
+          "obtained_evidence": [
+            {
+              "command": "46 focused tests; clean Git native reproduction; native alpha1-to-alpha2 update records; actual Codex setup/analyze interaction. See linked exact command/observation records.",
+              "limits": "No successful Claude interactive journey or public marketplace/remote curl install; Linux is emulated; no human usability/scientific/final M4.5 acceptance or official provider approval.",
+              "outcome": "Bounded observations obtained; per-procedure matrix and release-acceptance.md distinguish passed controls from Claude authentication and publication blockers.",
+              "path": "specs/046-native-ai-plugins/evidence/release-alpha2.json",
+              "sha256": "2ac0188b94eb4d851ae9a923f3ffefb1daa5d9d96e8028abe067db418effceb8"
+            }
+          ],
           "planned_evidence": "specs/046-native-ai-plugins/evidence/engineering.json",
           "test_file": "tests/test_plugin_registry.py",
           "test_name": "PluginRegistryTests.test_preview_does_not_write_and_apply_preserves_stable_workspace",
@@ -194,7 +234,15 @@
         {
           "given": "A clean supported Codex user profile and source-bound marketplace",
           "id": "SC-006",
-          "obtained_evidence": [],
+          "obtained_evidence": [
+            {
+              "command": "46 focused tests; clean Git native reproduction; native alpha1-to-alpha2 update records; actual Codex setup/analyze interaction. See linked exact command/observation records.",
+              "limits": "No successful Claude interactive journey or public marketplace/remote curl install; Linux is emulated; no human usability/scientific/final M4.5 acceptance or official provider approval.",
+              "outcome": "Bounded observations obtained; per-procedure matrix and release-acceptance.md distinguish passed controls from Claude authentication and publication blockers.",
+              "path": "specs/046-native-ai-plugins/evidence/release-alpha2.json",
+              "sha256": "2ac0188b94eb4d851ae9a923f3ffefb1daa5d9d96e8028abe067db418effceb8"
+            }
+          ],
           "planned_evidence": "specs/046-native-ai-plugins/evidence/engineering.json",
           "test_file": "specs/046-native-ai-plugins/validation-plan.md",
           "test_name": "procedure_006",
@@ -210,7 +258,15 @@
         {
           "given": "A clean supported Claude Code user profile and the same marketplace sources",
           "id": "SC-007",
-          "obtained_evidence": [],
+          "obtained_evidence": [
+            {
+              "command": "46 focused tests; clean Git native reproduction; native alpha1-to-alpha2 update records; actual Codex setup/analyze interaction. See linked exact command/observation records.",
+              "limits": "No successful Claude interactive journey or public marketplace/remote curl install; Linux is emulated; no human usability/scientific/final M4.5 acceptance or official provider approval.",
+              "outcome": "Bounded observations obtained; per-procedure matrix and release-acceptance.md distinguish passed controls from Claude authentication and publication blockers.",
+              "path": "specs/046-native-ai-plugins/evidence/release-alpha2.json",
+              "sha256": "2ac0188b94eb4d851ae9a923f3ffefb1daa5d9d96e8028abe067db418effceb8"
+            }
+          ],
           "planned_evidence": "specs/046-native-ai-plugins/evidence/engineering.json",
           "test_file": "specs/046-native-ai-plugins/validation-plan.md",
           "test_name": "procedure_007",
@@ -226,7 +282,15 @@
         {
           "given": "Installed user plugins, existing private results and a legacy receipt with one edited skill",
           "id": "SC-008",
-          "obtained_evidence": [],
+          "obtained_evidence": [
+            {
+              "command": "46 focused tests; clean Git native reproduction; native alpha1-to-alpha2 update records; actual Codex setup/analyze interaction. See linked exact command/observation records.",
+              "limits": "No successful Claude interactive journey or public marketplace/remote curl install; Linux is emulated; no human usability/scientific/final M4.5 acceptance or official provider approval.",
+              "outcome": "Bounded observations obtained; per-procedure matrix and release-acceptance.md distinguish passed controls from Claude authentication and publication blockers.",
+              "path": "specs/046-native-ai-plugins/evidence/release-alpha2.json",
+              "sha256": "2ac0188b94eb4d851ae9a923f3ffefb1daa5d9d96e8028abe067db418effceb8"
+            }
+          ],
           "planned_evidence": "specs/046-native-ai-plugins/evidence/engineering.json",
           "test_file": "specs/046-native-ai-plugins/validation-plan.md",
           "test_name": "procedure_008",
@@ -242,7 +306,15 @@
         {
           "given": "A clean source commit, runtime/dependency locks and owner release decision",
           "id": "SC-009",
-          "obtained_evidence": [],
+          "obtained_evidence": [
+            {
+              "command": "46 focused tests; clean Git native reproduction; native alpha1-to-alpha2 update records; actual Codex setup/analyze interaction. See linked exact command/observation records.",
+              "limits": "No successful Claude interactive journey or public marketplace/remote curl install; Linux is emulated; no human usability/scientific/final M4.5 acceptance or official provider approval.",
+              "outcome": "Bounded observations obtained; per-procedure matrix and release-acceptance.md distinguish passed controls from Claude authentication and publication blockers.",
+              "path": "specs/046-native-ai-plugins/evidence/release-alpha2.json",
+              "sha256": "2ac0188b94eb4d851ae9a923f3ffefb1daa5d9d96e8028abe067db418effceb8"
+            }
+          ],
           "planned_evidence": "specs/046-native-ai-plugins/evidence/engineering.json",
           "test_file": "specs/046-native-ai-plugins/validation-plan.md",
           "test_name": "procedure_009",
@@ -258,7 +330,15 @@
         {
           "given": "Existing historical M4.5 records and the new source artifacts",
           "id": "SC-010",
-          "obtained_evidence": [],
+          "obtained_evidence": [
+            {
+              "command": "46 focused tests; clean Git native reproduction; native alpha1-to-alpha2 update records; actual Codex setup/analyze interaction. See linked exact command/observation records.",
+              "limits": "No successful Claude interactive journey or public marketplace/remote curl install; Linux is emulated; no human usability/scientific/final M4.5 acceptance or official provider approval.",
+              "outcome": "Bounded observations obtained; per-procedure matrix and release-acceptance.md distinguish passed controls from Claude authentication and publication blockers.",
+              "path": "specs/046-native-ai-plugins/evidence/release-alpha2.json",
+              "sha256": "2ac0188b94eb4d851ae9a923f3ffefb1daa5d9d96e8028abe067db418effceb8"
+            }
+          ],
           "planned_evidence": "specs/046-native-ai-plugins/evidence/engineering.json",
           "test_file": "specs/046-native-ai-plugins/validation-plan.md",
           "test_name": "procedure_010",
@@ -274,7 +354,15 @@
         {
           "given": "OpenAI local-MCP publication requirements and the source-bound candidate",
           "id": "SC-011",
-          "obtained_evidence": [],
+          "obtained_evidence": [
+            {
+              "command": "46 focused tests; clean Git native reproduction; native alpha1-to-alpha2 update records; actual Codex setup/analyze interaction. See linked exact command/observation records.",
+              "limits": "No successful Claude interactive journey or public marketplace/remote curl install; Linux is emulated; no human usability/scientific/final M4.5 acceptance or official provider approval.",
+              "outcome": "Bounded observations obtained; per-procedure matrix and release-acceptance.md distinguish passed controls from Claude authentication and publication blockers.",
+              "path": "specs/046-native-ai-plugins/evidence/release-alpha2.json",
+              "sha256": "2ac0188b94eb4d851ae9a923f3ffefb1daa5d9d96e8028abe067db418effceb8"
+            }
+          ],
           "planned_evidence": "specs/046-native-ai-plugins/evidence/engineering.json",
           "test_file": "specs/046-native-ai-plugins/validation-plan.md",
           "test_name": "procedure_011",
@@ -290,7 +378,15 @@
         {
           "given": "Anthropic directory and official-marketplace rules and the bundled candidate inventory",
           "id": "SC-012",
-          "obtained_evidence": [],
+          "obtained_evidence": [
+            {
+              "command": "46 focused tests; clean Git native reproduction; native alpha1-to-alpha2 update records; actual Codex setup/analyze interaction. See linked exact command/observation records.",
+              "limits": "No successful Claude interactive journey or public marketplace/remote curl install; Linux is emulated; no human usability/scientific/final M4.5 acceptance or official provider approval.",
+              "outcome": "Bounded observations obtained; per-procedure matrix and release-acceptance.md distinguish passed controls from Claude authentication and publication blockers.",
+              "path": "specs/046-native-ai-plugins/evidence/release-alpha2.json",
+              "sha256": "2ac0188b94eb4d851ae9a923f3ffefb1daa5d9d96e8028abe067db418effceb8"
+            }
+          ],
           "planned_evidence": "specs/046-native-ai-plugins/evidence/engineering.json",
           "test_file": "specs/046-native-ai-plugins/validation-plan.md",
           "test_name": "procedure_012",
@@ -306,7 +402,15 @@
         {
           "given": "Existing Git and one or both native host executables",
           "id": "SC-013",
-          "obtained_evidence": [],
+          "obtained_evidence": [
+            {
+              "command": "46 focused tests; clean Git native reproduction; native alpha1-to-alpha2 update records; actual Codex setup/analyze interaction. See linked exact command/observation records.",
+              "limits": "No successful Claude interactive journey or public marketplace/remote curl install; Linux is emulated; no human usability/scientific/final M4.5 acceptance or official provider approval.",
+              "outcome": "Bounded observations obtained; per-procedure matrix and release-acceptance.md distinguish passed controls from Claude authentication and publication blockers.",
+              "path": "specs/046-native-ai-plugins/evidence/release-alpha2.json",
+              "sha256": "2ac0188b94eb4d851ae9a923f3ffefb1daa5d9d96e8028abe067db418effceb8"
+            }
+          ],
           "planned_evidence": "specs/046-native-ai-plugins/evidence/engineering.json",
           "test_file": "tests/test_plugin_installer.py",
           "test_name": "PluginInstallerTests.test_explicit_ref_is_independent_of_option_order",

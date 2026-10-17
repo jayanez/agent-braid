@@ -91,11 +91,11 @@ Preview without writes; digest drift; symlink and ownership refusal; malformed/o
 | 002 | build_native_plugin.py; test_plugin_package.py; bundled doctor in reproduce_native_plugin.py | Both pinned runtimes and locked wheels, relocation/space paths, inventory and source provenance obtained. |
 | 003 | test_plugin_mcp.py; actual SDK auto/legacy and simultaneous connections in reproduction script | Explicit IDs, core values, foreign-resource refusal, stale binding and analysis default controls obtained. |
 | 004 | test_plugin_registry.py discovery/worktree/budget/cancellation cases | Empty, unavailable, symlink, worktree and deduplication controls obtained; no home scan. |
-| 005 | registry preview/apply/digest/mode/lock controls and setup skill | Structured flow obtained; actual interactive wizard journey pending. |
-| 006 | isolated Codex marketplace add, plugin add/list/remove via reproduction script | Actual manager installation plus app-server MCP handshake, six skills and five analysis tools on both targets; interactive skill invocation pending. |
-| 007 | isolated Claude strict validate/install/details/list/uninstall | Six skills and connected bundled MCP on both targets; interactive skill journey pending. |
-| 008 | test_plugin_legacy.py; reproduction uninstall state sentinel | Modified legacy bytes and application state retained; version-changing upgrade pending. |
-| 009 | build sourceCommit/sourceDirty, inventory/provenance/source SHA; both native records | Clean candidate obtained; public distribution branch/tag and release gate pending. |
+| 005 | registry preview/apply/digest/mode/lock controls and setup skill | Actual native Codex setup cancellation, bounded discovery, preview/digest/apply and reconnection obtained; no human usability rating. |
+| 006 | isolated Codex marketplace add, plugin add/list/remove via reproduction script | Actual manager installation plus app-server MCP handshake, six skills and five analysis tools on both targets; native macOS interactive analyze skill/MCP resource use obtained; Linux interaction not observed. |
+| 007 | isolated Claude strict validate/install/details/list/uninstall | Six skills and connected bundled MCP on both targets; interactive skill journey blocked by expired native Claude login. |
+| 008 | test_plugin_legacy.py; reproduction uninstall state sentinel | Modified legacy bytes and application state retained; alpha.1 to alpha.2 native update and byte-identical registry/results obtained on macOS and emulated Linux. |
+| 009 | build sourceCommit/sourceDirty, inventory/provenance/source SHA; both native records | Clean candidate obtained; alpha.2 clean candidate and installed-cache integrity obtained; public distribution/remote curl gate pending Claude interaction. |
 | 010 | README, INSTALL, NATIVE_PLUGINS, alignment, source reconciler | Documentation and source map obtained; integrated remote issue/project readback pending. |
 | 011 | plugin-submissions/README.md OpenAI route; privacy/listing/reviewer material | Documentary preparation obtained; eligibility/contact/submission/approval pending T014. |
 | 012 | same shared material and Anthropic limits; candidate largest-file inventory | Documentary preparation obtained; binary/size exception/account/submission/approval pending T015. |
@@ -107,3 +107,7 @@ refused cyclic upstream terminfo links; the build now omits that unused subtree
 without relaxing extraction filters. Actual SDK startup first exposed snake-case
 attribute access differences, then passed after correction. Earlier dirty builds
 are engineering-only and do not substitute for the recorded clean candidate.
+
+Current release observations and the actual publication blocker are recorded in
+[release-acceptance.md](release-acceptance.md). Alpha.2 native records supplement
+the earlier alpha.1 observations without changing historical M4.5 evidence.
