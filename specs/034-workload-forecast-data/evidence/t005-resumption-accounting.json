@@ -1041,7 +1041,7 @@
   "operatorBridgeImplementation": {
     "status": "offline-software-protocol-reviewed-native-binding-blocked",
     "previousCandidate": "8105192",
-    "implementationCommit": null,
+    "implementationCommit": "e05a2498e6faa4f0d9e57b9f1d4f9d7ca8ea3df1",
     "ownerAuthorization": "Continue the bounded operator bridge/worker lot and synchronize both coordinated conversations; no models, real sources or native controls.",
     "sourceDigest": "87f94cec0c6944f643510c3204de62927b75a705074e0f0821935a0b25702529",
     "sourceFiles": [
@@ -1228,7 +1228,40 @@
         "reason": "Use the already validated parent for this bounded lot; local develop is stale 326887f, origin/develop remains 48f4226. Execute one stable PR profile rather than duplicate the same escalated commands."
       },
       "stableProfile": {
-        "status": "pending"
+        "status": "passed",
+        "candidateCommit": "e05a2498e6faa4f0d9e57b9f1d4f9d7ca8ea3df1",
+        "base": "81051925210fa4afceb253fbe4a54b69e27cb590",
+        "command": "PATH=<existing-isolated-venv>/bin:$PATH python -m scripts.validate_change --base 8105192 --profile pr",
+        "log": "/tmp/fc1-bridge-pr-stable.log",
+        "logSha256": "0d96000e7dcc0858a472a4f120533be1b47686379b9aa43d5145d8988e3caafc",
+        "exitCode": 0,
+        "tests": 2001,
+        "testSeconds": 1638.762,
+        "skipped": 19,
+        "selectedCommands": [
+          "repository: python3 scripts/validate_repository.py",
+          "contracts: python3 scripts/validate_contracts.py",
+          "release-records: python3 scripts/validate_release_records.py",
+          "publication: python3 scripts/validate_publication.py --portable",
+          "research-radar: python3 scripts/validate_research_radar.py --milestone M0.5",
+          "adoption-tracks: python3 scripts/validate_adoption_tracks.py",
+          "market-model: python3 scripts/market_sizing.py --check",
+          "cli-smoke: python3 -m agent_braid --help",
+          "full-tests: python3 -m unittest discover -s tests -v",
+          "scientific-controls: python3 -m research.lab.controls",
+          "spec-kit-structure: python3 scripts/validate_spec_kit.py",
+          "spec-kit-render: python3 scripts/spec_kit.py check",
+          "constitution-replica: python3 scripts/constitution_replica.py check",
+          "whitespace: git diff --check 81051925210fa4afceb253fbe4a54b69e27cb590 --"
+        ],
+        "scope": "local software validation including existing owned fixtures and finite controls; no selected input execution, model/VM/native admission or real source capture",
+        "deferredBoundaryGatesExecuted": false
+      },
+      "integrity": {
+        "boundInputsMatch": true,
+        "modeledSourceMatches": true,
+        "priorEvidencePreserved": true,
+        "scope": "static record integrity only"
       }
     },
     "review": {
@@ -1239,8 +1272,8 @@
       "resolution": "retain outstanding ticket and ambiguous reason, abort without refund or retry"
     },
     "coordination": {
-      "plugins": "frozen analysis-only #557; start-of-lot sync sent",
-      "telemetry": "frozen unintegrated separate capture contract; start-of-lot sync sent",
+      "plugins": "Start and stable-candidate sync sent; final result sync recorded in this conversation. Maintain #557 freeze, analysis-only and existing gates.",
+      "telemetry": "Start and stable-candidate sync sent; final result sync recorded in this conversation. Maintain hold, separate capture contract and existing gates.",
       "newWorkRequested": false
     },
     "nativeAdmissionRuns": 0,
