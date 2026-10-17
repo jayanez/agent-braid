@@ -15,9 +15,11 @@ Native macOS and emulated Linux manager/cache/MCP controls remain distinct from
 direct SDK calls and interactive model/skill journeys. Actual native Codex setup,
 cancellation, explicit discovery/preview/apply/reconnect and two-workspace analyze
 skill use have passed. Native alpha.1 to alpha.2 updates preserve registry/results
-for both hosts on macOS and emulated Linux. Claude's actual interactive request
-is blocked by expired native authentication. T008 remains open because T007 is an
-explicit dependency, despite the passing update controls. None of this is
+for both hosts on macOS and emulated Linux. After native login renewal, Claude's
+actual setup and reconnected analyze skill passed for both workspaces, including
+MCP evidence recovery and hash verification. The own Git marketplace/tag is
+published; fresh public Git/curl installation passed both hosts on macOS and
+emulated Linux. T007/T008/T009 technical criteria are obtained. None of this is
 retrospective evidence for the registered 108 attempts.
 
 Luna Latest review found and prompted regression fixes for unbounded directory
@@ -27,7 +29,7 @@ deadlines/process cleanup, portable MCP executable paths, isolated user homes,
 Git byte fidelity, hash-based bytecode and nullable workspace refusal schemas.
 Historical SPEC-039/040/042 acceptances and SPEC-041/043/044 pending gates remain.
 No blocking normative contradiction was identified. Architectural adoption,
-the pending Claude interaction, remote Git/curl distribution and external
-provider approval remain separately tracked. Conditional own-marketplace
-publication is authorized only after both interactive journeys pass. The official candidacy materials explicitly identify eligibility and
+external provider approval and human acceptance remain separately tracked.
+Conditional own-marketplace publication followed both passing interactive
+journeys and the update. The official candidacy materials identify eligibility and
 bundled-executable size restrictions rather than claiming a publishable listing.

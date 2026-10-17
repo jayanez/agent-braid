@@ -96,7 +96,7 @@
   "execution_contract": "Analysis is the default. Explicit registry bindings identify source/result roots; existing core policies and grants govern execution. Installing or discovering repositories grants no execution authority.",
   "human_review": "pending",
   "hypotheses": "No scientific hypothesis is introduced. Host/plugin interoperability is an engineering claim bounded by the observed exact versions.",
-  "observation_contract": "Source-bound controls and actual native installation/MCP loading on macOS and emulated Linux. Alpha2 includes agent-operated authenticated native Codex setup/product-skill interaction and version-changing updates. Claude interaction is blocked by expired native login; human ratings remain separate.",
+  "observation_contract": "Source-bound controls, actual native installation/MCP on macOS and emulated Linux, agent-operated authenticated native Codex and Claude setup/product-skill journeys, real version-changing updates, public Git/curl installation. Human ratings and physical Linux remain separate.",
   "references": [
     "CONSTITUTION.md",
     "GOVERNANCE.md",
@@ -116,11 +116,11 @@
           "id": "SC-001",
           "obtained_evidence": [
             {
-              "command": "46 focused tests; clean Git native reproduction; native alpha1-to-alpha2 update records; actual Codex setup/analyze interaction. See linked exact command/observation records.",
-              "limits": "No successful Claude interactive journey or public marketplace/remote curl install; Linux is emulated; no human usability/scientific/final M4.5 acceptance or official provider approval.",
-              "outcome": "Bounded observations obtained; per-procedure matrix and release-acceptance.md distinguish passed controls from Claude authentication and publication blockers.",
+              "command": "46 focused tests; clean Git native reproduction; native alpha1-to-alpha2 updates; actual Codex and Claude setup/analyze interactions; public Git/curl clean-profile installation. See linked exact records.",
+              "limits": "Linux is emulated, interactive journeys are agent-operated macOS; no human usability/scientific/final M4.5 acceptance or official provider approval.",
+              "outcome": "Both native macOS interactive journeys and real updates passed; own marketplace published and fresh remote installation passed both hosts on macOS and emulated Linux.",
               "path": "specs/046-native-ai-plugins/evidence/release-alpha2.json",
-              "sha256": "f42ee66806b558af8d5c42cf9ad782c252045e1b163f39dcfb09d61a0b421fe4"
+              "sha256": "8ad7dbe4f7e1ac803371c66876e38d2b9dee702d35bdc401d7a6cc6789586c9a"
             }
           ],
           "planned_evidence": "specs/046-native-ai-plugins/evidence/release-alpha2.json",
@@ -140,11 +140,11 @@
           "id": "SC-002",
           "obtained_evidence": [
             {
-              "command": "46 focused tests; clean Git native reproduction; native alpha1-to-alpha2 update records; actual Codex setup/analyze interaction. See linked exact command/observation records.",
-              "limits": "No successful Claude interactive journey or public marketplace/remote curl install; Linux is emulated; no human usability/scientific/final M4.5 acceptance or official provider approval.",
-              "outcome": "Bounded observations obtained; per-procedure matrix and release-acceptance.md distinguish passed controls from Claude authentication and publication blockers.",
+              "command": "46 focused tests; clean Git native reproduction; native alpha1-to-alpha2 updates; actual Codex and Claude setup/analyze interactions; public Git/curl clean-profile installation. See linked exact records.",
+              "limits": "Linux is emulated, interactive journeys are agent-operated macOS; no human usability/scientific/final M4.5 acceptance or official provider approval.",
+              "outcome": "Both native macOS interactive journeys and real updates passed; own marketplace published and fresh remote installation passed both hosts on macOS and emulated Linux.",
               "path": "specs/046-native-ai-plugins/evidence/release-alpha2.json",
-              "sha256": "f42ee66806b558af8d5c42cf9ad782c252045e1b163f39dcfb09d61a0b421fe4"
+              "sha256": "8ad7dbe4f7e1ac803371c66876e38d2b9dee702d35bdc401d7a6cc6789586c9a"
             }
           ],
           "planned_evidence": "specs/046-native-ai-plugins/evidence/release-alpha2.json",
@@ -164,11 +164,11 @@
           "id": "SC-003",
           "obtained_evidence": [
             {
-              "command": "46 focused tests; clean Git native reproduction; native alpha1-to-alpha2 update records; actual Codex setup/analyze interaction. See linked exact command/observation records.",
-              "limits": "No successful Claude interactive journey or public marketplace/remote curl install; Linux is emulated; no human usability/scientific/final M4.5 acceptance or official provider approval.",
-              "outcome": "Bounded observations obtained; per-procedure matrix and release-acceptance.md distinguish passed controls from Claude authentication and publication blockers.",
+              "command": "46 focused tests; clean Git native reproduction; native alpha1-to-alpha2 updates; actual Codex and Claude setup/analyze interactions; public Git/curl clean-profile installation. See linked exact records.",
+              "limits": "Linux is emulated, interactive journeys are agent-operated macOS; no human usability/scientific/final M4.5 acceptance or official provider approval.",
+              "outcome": "Both native macOS interactive journeys and real updates passed; own marketplace published and fresh remote installation passed both hosts on macOS and emulated Linux.",
               "path": "specs/046-native-ai-plugins/evidence/release-alpha2.json",
-              "sha256": "f42ee66806b558af8d5c42cf9ad782c252045e1b163f39dcfb09d61a0b421fe4"
+              "sha256": "8ad7dbe4f7e1ac803371c66876e38d2b9dee702d35bdc401d7a6cc6789586c9a"
             }
           ],
           "planned_evidence": "specs/046-native-ai-plugins/evidence/release-alpha2.json",
@@ -188,11 +188,11 @@
           "id": "SC-004",
           "obtained_evidence": [
             {
-              "command": "46 focused tests; clean Git native reproduction; native alpha1-to-alpha2 update records; actual Codex setup/analyze interaction. See linked exact command/observation records.",
-              "limits": "No successful Claude interactive journey or public marketplace/remote curl install; Linux is emulated; no human usability/scientific/final M4.5 acceptance or official provider approval.",
-              "outcome": "Bounded observations obtained; per-procedure matrix and release-acceptance.md distinguish passed controls from Claude authentication and publication blockers.",
+              "command": "46 focused tests; clean Git native reproduction; native alpha1-to-alpha2 updates; actual Codex and Claude setup/analyze interactions; public Git/curl clean-profile installation. See linked exact records.",
+              "limits": "Linux is emulated, interactive journeys are agent-operated macOS; no human usability/scientific/final M4.5 acceptance or official provider approval.",
+              "outcome": "Both native macOS interactive journeys and real updates passed; own marketplace published and fresh remote installation passed both hosts on macOS and emulated Linux.",
               "path": "specs/046-native-ai-plugins/evidence/release-alpha2.json",
-              "sha256": "f42ee66806b558af8d5c42cf9ad782c252045e1b163f39dcfb09d61a0b421fe4"
+              "sha256": "8ad7dbe4f7e1ac803371c66876e38d2b9dee702d35bdc401d7a6cc6789586c9a"
             }
           ],
           "planned_evidence": "specs/046-native-ai-plugins/evidence/release-alpha2.json",
@@ -212,11 +212,11 @@
           "id": "SC-005",
           "obtained_evidence": [
             {
-              "command": "46 focused tests; clean Git native reproduction; native alpha1-to-alpha2 update records; actual Codex setup/analyze interaction. See linked exact command/observation records.",
-              "limits": "No successful Claude interactive journey or public marketplace/remote curl install; Linux is emulated; no human usability/scientific/final M4.5 acceptance or official provider approval.",
-              "outcome": "Bounded observations obtained; per-procedure matrix and release-acceptance.md distinguish passed controls from Claude authentication and publication blockers.",
+              "command": "46 focused tests; clean Git native reproduction; native alpha1-to-alpha2 updates; actual Codex and Claude setup/analyze interactions; public Git/curl clean-profile installation. See linked exact records.",
+              "limits": "Linux is emulated, interactive journeys are agent-operated macOS; no human usability/scientific/final M4.5 acceptance or official provider approval.",
+              "outcome": "Both native macOS interactive journeys and real updates passed; own marketplace published and fresh remote installation passed both hosts on macOS and emulated Linux.",
               "path": "specs/046-native-ai-plugins/evidence/release-alpha2.json",
-              "sha256": "f42ee66806b558af8d5c42cf9ad782c252045e1b163f39dcfb09d61a0b421fe4"
+              "sha256": "8ad7dbe4f7e1ac803371c66876e38d2b9dee702d35bdc401d7a6cc6789586c9a"
             }
           ],
           "planned_evidence": "specs/046-native-ai-plugins/evidence/release-alpha2.json",
@@ -236,11 +236,11 @@
           "id": "SC-006",
           "obtained_evidence": [
             {
-              "command": "46 focused tests; clean Git native reproduction; native alpha1-to-alpha2 update records; actual Codex setup/analyze interaction. See linked exact command/observation records.",
-              "limits": "No successful Claude interactive journey or public marketplace/remote curl install; Linux is emulated; no human usability/scientific/final M4.5 acceptance or official provider approval.",
-              "outcome": "Bounded observations obtained; per-procedure matrix and release-acceptance.md distinguish passed controls from Claude authentication and publication blockers.",
+              "command": "46 focused tests; clean Git native reproduction; native alpha1-to-alpha2 updates; actual Codex and Claude setup/analyze interactions; public Git/curl clean-profile installation. See linked exact records.",
+              "limits": "Linux is emulated, interactive journeys are agent-operated macOS; no human usability/scientific/final M4.5 acceptance or official provider approval.",
+              "outcome": "Both native macOS interactive journeys and real updates passed; own marketplace published and fresh remote installation passed both hosts on macOS and emulated Linux.",
               "path": "specs/046-native-ai-plugins/evidence/release-alpha2.json",
-              "sha256": "f42ee66806b558af8d5c42cf9ad782c252045e1b163f39dcfb09d61a0b421fe4"
+              "sha256": "8ad7dbe4f7e1ac803371c66876e38d2b9dee702d35bdc401d7a6cc6789586c9a"
             }
           ],
           "planned_evidence": "specs/046-native-ai-plugins/evidence/release-alpha2.json",
@@ -260,11 +260,11 @@
           "id": "SC-007",
           "obtained_evidence": [
             {
-              "command": "46 focused tests; clean Git native reproduction; native alpha1-to-alpha2 update records; actual Codex setup/analyze interaction. See linked exact command/observation records.",
-              "limits": "No successful Claude interactive journey or public marketplace/remote curl install; Linux is emulated; no human usability/scientific/final M4.5 acceptance or official provider approval.",
-              "outcome": "Bounded observations obtained; per-procedure matrix and release-acceptance.md distinguish passed controls from Claude authentication and publication blockers.",
+              "command": "46 focused tests; clean Git native reproduction; native alpha1-to-alpha2 updates; actual Codex and Claude setup/analyze interactions; public Git/curl clean-profile installation. See linked exact records.",
+              "limits": "Linux is emulated, interactive journeys are agent-operated macOS; no human usability/scientific/final M4.5 acceptance or official provider approval.",
+              "outcome": "Both native macOS interactive journeys and real updates passed; own marketplace published and fresh remote installation passed both hosts on macOS and emulated Linux.",
               "path": "specs/046-native-ai-plugins/evidence/release-alpha2.json",
-              "sha256": "f42ee66806b558af8d5c42cf9ad782c252045e1b163f39dcfb09d61a0b421fe4"
+              "sha256": "8ad7dbe4f7e1ac803371c66876e38d2b9dee702d35bdc401d7a6cc6789586c9a"
             }
           ],
           "planned_evidence": "specs/046-native-ai-plugins/evidence/release-alpha2.json",
@@ -284,11 +284,11 @@
           "id": "SC-008",
           "obtained_evidence": [
             {
-              "command": "46 focused tests; clean Git native reproduction; native alpha1-to-alpha2 update records; actual Codex setup/analyze interaction. See linked exact command/observation records.",
-              "limits": "No successful Claude interactive journey or public marketplace/remote curl install; Linux is emulated; no human usability/scientific/final M4.5 acceptance or official provider approval.",
-              "outcome": "Bounded observations obtained; per-procedure matrix and release-acceptance.md distinguish passed controls from Claude authentication and publication blockers.",
+              "command": "46 focused tests; clean Git native reproduction; native alpha1-to-alpha2 updates; actual Codex and Claude setup/analyze interactions; public Git/curl clean-profile installation. See linked exact records.",
+              "limits": "Linux is emulated, interactive journeys are agent-operated macOS; no human usability/scientific/final M4.5 acceptance or official provider approval.",
+              "outcome": "Both native macOS interactive journeys and real updates passed; own marketplace published and fresh remote installation passed both hosts on macOS and emulated Linux.",
               "path": "specs/046-native-ai-plugins/evidence/release-alpha2.json",
-              "sha256": "f42ee66806b558af8d5c42cf9ad782c252045e1b163f39dcfb09d61a0b421fe4"
+              "sha256": "8ad7dbe4f7e1ac803371c66876e38d2b9dee702d35bdc401d7a6cc6789586c9a"
             }
           ],
           "planned_evidence": "specs/046-native-ai-plugins/evidence/release-alpha2.json",
@@ -308,11 +308,11 @@
           "id": "SC-009",
           "obtained_evidence": [
             {
-              "command": "46 focused tests; clean Git native reproduction; native alpha1-to-alpha2 update records; actual Codex setup/analyze interaction. See linked exact command/observation records.",
-              "limits": "No successful Claude interactive journey or public marketplace/remote curl install; Linux is emulated; no human usability/scientific/final M4.5 acceptance or official provider approval.",
-              "outcome": "Bounded observations obtained; per-procedure matrix and release-acceptance.md distinguish passed controls from Claude authentication and publication blockers.",
+              "command": "46 focused tests; clean Git native reproduction; native alpha1-to-alpha2 updates; actual Codex and Claude setup/analyze interactions; public Git/curl clean-profile installation. See linked exact records.",
+              "limits": "Linux is emulated, interactive journeys are agent-operated macOS; no human usability/scientific/final M4.5 acceptance or official provider approval.",
+              "outcome": "Both native macOS interactive journeys and real updates passed; own marketplace published and fresh remote installation passed both hosts on macOS and emulated Linux.",
               "path": "specs/046-native-ai-plugins/evidence/release-alpha2.json",
-              "sha256": "f42ee66806b558af8d5c42cf9ad782c252045e1b163f39dcfb09d61a0b421fe4"
+              "sha256": "8ad7dbe4f7e1ac803371c66876e38d2b9dee702d35bdc401d7a6cc6789586c9a"
             }
           ],
           "planned_evidence": "specs/046-native-ai-plugins/evidence/release-alpha2.json",
@@ -332,11 +332,11 @@
           "id": "SC-010",
           "obtained_evidence": [
             {
-              "command": "46 focused tests; clean Git native reproduction; native alpha1-to-alpha2 update records; actual Codex setup/analyze interaction. See linked exact command/observation records.",
-              "limits": "No successful Claude interactive journey or public marketplace/remote curl install; Linux is emulated; no human usability/scientific/final M4.5 acceptance or official provider approval.",
-              "outcome": "Bounded observations obtained; per-procedure matrix and release-acceptance.md distinguish passed controls from Claude authentication and publication blockers.",
+              "command": "46 focused tests; clean Git native reproduction; native alpha1-to-alpha2 updates; actual Codex and Claude setup/analyze interactions; public Git/curl clean-profile installation. See linked exact records.",
+              "limits": "Linux is emulated, interactive journeys are agent-operated macOS; no human usability/scientific/final M4.5 acceptance or official provider approval.",
+              "outcome": "Both native macOS interactive journeys and real updates passed; own marketplace published and fresh remote installation passed both hosts on macOS and emulated Linux.",
               "path": "specs/046-native-ai-plugins/evidence/release-alpha2.json",
-              "sha256": "f42ee66806b558af8d5c42cf9ad782c252045e1b163f39dcfb09d61a0b421fe4"
+              "sha256": "8ad7dbe4f7e1ac803371c66876e38d2b9dee702d35bdc401d7a6cc6789586c9a"
             }
           ],
           "planned_evidence": "specs/046-native-ai-plugins/evidence/release-alpha2.json",
@@ -356,11 +356,11 @@
           "id": "SC-011",
           "obtained_evidence": [
             {
-              "command": "46 focused tests; clean Git native reproduction; native alpha1-to-alpha2 update records; actual Codex setup/analyze interaction. See linked exact command/observation records.",
-              "limits": "No successful Claude interactive journey or public marketplace/remote curl install; Linux is emulated; no human usability/scientific/final M4.5 acceptance or official provider approval.",
-              "outcome": "Bounded observations obtained; per-procedure matrix and release-acceptance.md distinguish passed controls from Claude authentication and publication blockers.",
+              "command": "46 focused tests; clean Git native reproduction; native alpha1-to-alpha2 updates; actual Codex and Claude setup/analyze interactions; public Git/curl clean-profile installation. See linked exact records.",
+              "limits": "Linux is emulated, interactive journeys are agent-operated macOS; no human usability/scientific/final M4.5 acceptance or official provider approval.",
+              "outcome": "Both native macOS interactive journeys and real updates passed; own marketplace published and fresh remote installation passed both hosts on macOS and emulated Linux.",
               "path": "specs/046-native-ai-plugins/evidence/release-alpha2.json",
-              "sha256": "f42ee66806b558af8d5c42cf9ad782c252045e1b163f39dcfb09d61a0b421fe4"
+              "sha256": "8ad7dbe4f7e1ac803371c66876e38d2b9dee702d35bdc401d7a6cc6789586c9a"
             }
           ],
           "planned_evidence": "specs/046-native-ai-plugins/evidence/release-alpha2.json",
@@ -380,11 +380,11 @@
           "id": "SC-012",
           "obtained_evidence": [
             {
-              "command": "46 focused tests; clean Git native reproduction; native alpha1-to-alpha2 update records; actual Codex setup/analyze interaction. See linked exact command/observation records.",
-              "limits": "No successful Claude interactive journey or public marketplace/remote curl install; Linux is emulated; no human usability/scientific/final M4.5 acceptance or official provider approval.",
-              "outcome": "Bounded observations obtained; per-procedure matrix and release-acceptance.md distinguish passed controls from Claude authentication and publication blockers.",
+              "command": "46 focused tests; clean Git native reproduction; native alpha1-to-alpha2 updates; actual Codex and Claude setup/analyze interactions; public Git/curl clean-profile installation. See linked exact records.",
+              "limits": "Linux is emulated, interactive journeys are agent-operated macOS; no human usability/scientific/final M4.5 acceptance or official provider approval.",
+              "outcome": "Both native macOS interactive journeys and real updates passed; own marketplace published and fresh remote installation passed both hosts on macOS and emulated Linux.",
               "path": "specs/046-native-ai-plugins/evidence/release-alpha2.json",
-              "sha256": "f42ee66806b558af8d5c42cf9ad782c252045e1b163f39dcfb09d61a0b421fe4"
+              "sha256": "8ad7dbe4f7e1ac803371c66876e38d2b9dee702d35bdc401d7a6cc6789586c9a"
             }
           ],
           "planned_evidence": "specs/046-native-ai-plugins/evidence/release-alpha2.json",
@@ -404,11 +404,11 @@
           "id": "SC-013",
           "obtained_evidence": [
             {
-              "command": "46 focused tests; clean Git native reproduction; native alpha1-to-alpha2 update records; actual Codex setup/analyze interaction. See linked exact command/observation records.",
-              "limits": "No successful Claude interactive journey or public marketplace/remote curl install; Linux is emulated; no human usability/scientific/final M4.5 acceptance or official provider approval.",
-              "outcome": "Bounded observations obtained; per-procedure matrix and release-acceptance.md distinguish passed controls from Claude authentication and publication blockers.",
+              "command": "46 focused tests; clean Git native reproduction; native alpha1-to-alpha2 updates; actual Codex and Claude setup/analyze interactions; public Git/curl clean-profile installation. See linked exact records.",
+              "limits": "Linux is emulated, interactive journeys are agent-operated macOS; no human usability/scientific/final M4.5 acceptance or official provider approval.",
+              "outcome": "Both native macOS interactive journeys and real updates passed; own marketplace published and fresh remote installation passed both hosts on macOS and emulated Linux.",
               "path": "specs/046-native-ai-plugins/evidence/release-alpha2.json",
-              "sha256": "f42ee66806b558af8d5c42cf9ad782c252045e1b163f39dcfb09d61a0b421fe4"
+              "sha256": "8ad7dbe4f7e1ac803371c66876e38d2b9dee702d35bdc401d7a6cc6789586c9a"
             }
           ],
           "planned_evidence": "specs/046-native-ai-plugins/evidence/release-alpha2.json",

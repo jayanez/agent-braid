@@ -7,19 +7,17 @@ or Claude Code and Git must already be installed. The package includes CPython
 3.12.15 and hash-locked dependencies; Python, pip, uv, Node and Docker are not
 consumer prerequisites. The Python installation remains available below.
 
-## Candidate and publication status
+## Published experimental marketplace
 
-The source implementation and local distribution candidates are experimental.
-The owner authorized publication of `plugin-dist` once both native interactive
-journeys and the version-changing update pass. The update and Codex journey have
-passed; the actual Claude journey is blocked by expired native authentication.
-No public distribution has been pushed. Until that gate passes, build a local
-marketplace using the instructions below and pass its absolute path to the native
-manager. See the [release acceptance record](../../specs/046-native-ai-plugins/release-acceptance.md).
+The own GitHub marketplace is published on `plugin-dist`, with version
+`0.1.0-alpha.2` pinned by tag `agent-braid--v0.1.0-alpha.2` at
+`6649c73d088799201bf9ab6e030f258e346e8062`. Both authenticated native macOS
+setup/product-skill journeys and the native alpha.1 → alpha.2 update passed.
+The [release acceptance record](../../specs/046-native-ai-plugins/release-acceptance.md)
+distinguishes interactive observations, emulated Linux controls and public remote
+installation from official directory approvals and human acceptance.
 
 ## Install for your user
-
-After the reviewed distribution is published:
 
 ```sh
 codex plugin marketplace add https://github.com/jayanez/agent-braid.git --ref plugin-dist
@@ -187,6 +185,6 @@ The alpha.2 release candidate materializes validated, contained CPython aliases
 before inventory creation so native host caches retain every required file.
 Reproduction checks `doctor` in each host's actual installed cache as well as in
 the source package. See the [current release acceptance record](../../specs/046-native-ai-plugins/release-acceptance.md)
-for the observed version-changing update, native Codex interaction and Claude
-authentication blocker. Public distribution and the remote curl install remain
-pending that final interactive gate.
+for both native interactive journeys, the version-changing update and clean
+public Git/curl installation. The historical expired Claude login was resolved
+through native login before publication; no API fallback was used.
