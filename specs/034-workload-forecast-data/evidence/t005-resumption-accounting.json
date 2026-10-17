@@ -258,5 +258,188 @@
     "proposedStepSeconds": 0.1,
     "horizonBins": 1,
     "requirement": "Actual monotonic decision time must precede target interval end and expiry; validate causal availability. Historical observation is not a universal lower bound. No horizon or scenario expansion authorized."
+  },
+  "inputsCommit": "203c74029b594055549b4d97c182829b793502f6",
+  "inputSelection": {
+    "version": "agent-braid-static-admission-input-selection-v1",
+    "ownerDecision": "2026-10-17: OK, pues adelante, approving the proposed two existing lots for static identity/limit registration only.",
+    "commonBase": "48f4226db1e1b0565b1f8faf0eca81c150a65d30",
+    "inputs": [
+      {
+        "id": "fc1-accounting",
+        "baseCommit": "48f4226db1e1b0565b1f8faf0eca81c150a65d30",
+        "sourceCommit": "203c74029b594055549b4d97c182829b793502f6",
+        "sourceTree": "e3c1a385db8f419d007270fcccd734ae663237d9",
+        "patchSha256": "453877ff3d7779d64729566ad7e79dd121bc85704c3ae882e6fb32dba3fdbb62",
+        "patchBytes": 42227,
+        "changedPathCount": 6,
+        "changes": [
+          {
+            "path": "agent_braid/forecast_admission.py",
+            "status": "A",
+            "beforeMode": "000000",
+            "afterMode": "100644",
+            "beforeBlob": "0000000000000000000000000000000000000000",
+            "afterBlob": "2e2e73e4e4c6257cfa774e2b7dca87a210639e53"
+          },
+          {
+            "path": "specs/034-workload-forecast-data/evidence/t005-resumption-accounting.json",
+            "status": "A",
+            "beforeMode": "000000",
+            "afterMode": "100644",
+            "beforeBlob": "0000000000000000000000000000000000000000",
+            "afterBlob": "83a1949e586273f18be10ef4319379ee56fc653f"
+          },
+          {
+            "path": "specs/034-workload-forecast-data/implementation-status.md",
+            "status": "M",
+            "beforeMode": "100644",
+            "afterMode": "100644",
+            "beforeBlob": "22d5f9f3f570777a4c5b4d4e9b3547f360bb36d0",
+            "afterBlob": "d31bacb99514689061e8e3f2afda7252f7548e32"
+          },
+          {
+            "path": "specs/034-workload-forecast-data/real-utility-resumption.md",
+            "status": "A",
+            "beforeMode": "000000",
+            "afterMode": "100644",
+            "beforeBlob": "0000000000000000000000000000000000000000",
+            "afterBlob": "e88df7ee37efed9d6d367db752ec55830ecad07c"
+          },
+          {
+            "path": "specs/034-workload-forecast-data/tasks.md",
+            "status": "M",
+            "beforeMode": "100644",
+            "afterMode": "100644",
+            "beforeBlob": "a81bb549d6c8fe1c7b374e2ed52efc8b39c87dfb",
+            "afterBlob": "434e2b1c1e936b074ad58668572c6410e853fd42"
+          },
+          {
+            "path": "tests/test_forecast_admission.py",
+            "status": "A",
+            "beforeMode": "000000",
+            "afterMode": "100644",
+            "beforeBlob": "0000000000000000000000000000000000000000",
+            "afterBlob": "c17408ab924d6d9f8242f6527e50526bb3e6cbd9"
+          }
+        ],
+        "trackedBlobCount": 2078,
+        "trackedLogicalBlobBytes": 32932089
+      },
+      {
+        "id": "plugin-documentation",
+        "baseCommit": "48f4226db1e1b0565b1f8faf0eca81c150a65d30",
+        "sourceCommit": "086901fed1a957271727a4bb4dc1b23790499829",
+        "sourceTree": "84e58b806e558621898006a648aca66a05a58f11",
+        "patchSha256": "705a65e1047fd03753c7e44d2fb69fc6d0542bc7e65c5d45bdcead8e77c87fab",
+        "patchBytes": 29204,
+        "changedPathCount": 5,
+        "changes": [
+          {
+            "path": "docs/development/SPEC_MILESTONE_INDEX.md",
+            "status": "M",
+            "beforeMode": "100644",
+            "afterMode": "100644",
+            "beforeBlob": "754e104c539adf4d8a867c474d7d0f2f8f4bb748",
+            "afterBlob": "4febcc2d7c47acb67bcc924d62140af840f0e07c"
+          },
+          {
+            "path": "specs/046-native-ai-plugins/economic-admission.md",
+            "status": "A",
+            "beforeMode": "000000",
+            "afterMode": "100644",
+            "beforeBlob": "0000000000000000000000000000000000000000",
+            "afterBlob": "bbb1580e0862477400f6fd8a1dcc2831dc054fda"
+          },
+          {
+            "path": "specs/046-native-ai-plugins/identity-reconciliation.json",
+            "status": "A",
+            "beforeMode": "000000",
+            "afterMode": "100644",
+            "beforeBlob": "0000000000000000000000000000000000000000",
+            "afterBlob": "b4b0e1a77e998f3c6843e40ea999dd47925dca07"
+          },
+          {
+            "path": "specs/046-native-ai-plugins/identity-reconciliation.md",
+            "status": "A",
+            "beforeMode": "000000",
+            "afterMode": "100644",
+            "beforeBlob": "0000000000000000000000000000000000000000",
+            "afterBlob": "75739777c4b8edfa94ed4e468c029f4d4ebef649"
+          },
+          {
+            "path": "specs/046-native-ai-plugins/m45-alignment.md",
+            "status": "M",
+            "beforeMode": "100644",
+            "afterMode": "100644",
+            "beforeBlob": "d2194a9d7213bd69c6206515cc3172a9bcb9d31d",
+            "afterBlob": "5a82b4d3d182810d2ae712926eaab584087b783f"
+          }
+        ],
+        "trackedBlobCount": 2077,
+        "trackedLogicalBlobBytes": 32921249
+      }
+    ],
+    "aggregatePatchBytes": 71431,
+    "aggregateChangedPaths": 11,
+    "patchLimitBytes": 262144,
+    "runtimePathLimit": 16,
+    "overlappingPaths": [],
+    "nativeEquivalenceVerified": false,
+    "expectedFinalTree": null,
+    "independentEpisodes": 0,
+    "experimentalSourcePermission": false,
+    "executionAuthorization": false,
+    "realSourceCapture": false,
+    "storageLimitEstablished": false,
+    "limits": [
+      "Git metadata/diff reads only; raw patches were not exported or replayed.",
+      "Disjoint paths do not establish complete semantic equivalence or admissibility.",
+      "Tracked logical blob bytes exclude Git objects, pack/index/refs, temporary copies, grants, receipts and filesystem overhead; they are not a storage quota."
+    ]
+  },
+  "continuation": {
+    "date": "2026-10-17",
+    "scope": "Owner-approved static identity and limit registration; no executable/native admission preparation",
+    "documentSha256": "4aeab309abce1e7988cecf64163aa950046220fd23880b4373dc6ee6c7d84b09",
+    "technicalReview": {
+      "configuredModel": "gpt-6-luna",
+      "agent": "/root/luna_admission_review",
+      "scope": "Static launch/deadline/storage coverage; no tests or processes",
+      "findings": [
+        "Both Git runners create separate sessions; an outer coordinator group kill does not prove termination of all Git groups.",
+        "Per-launch identities, reservation/start/reaping records and shared watchdog coverage are absent.",
+        "Per-stage sampled scratch does not bound aggregate temporary and retained storage."
+      ],
+      "verdict": "stop-before-executable-candidate"
+    },
+    "coordination": {
+      "plugins": "#557 remains draft at086901fed1a957271727a4bb4dc1b23790499829; existing local PR profile completed:1928 tests,11 skipped; no rerun. No real equivalent runtime pair was supplied by that track.",
+      "telemetry": "b13737ed4584e512edb054d9a891a0b06fab8120 plus local uncommitted SPEC047/ADR0025 remap; no experimental episode/cost contract or permissioned immutable inputs available; no integration."
+    },
+    "inputSpecificExecutableBudgetEstablished": false,
+    "newModelOrVmExecution": false,
+    "nativeAdmissionRuns": 0,
+    "sourceCaptures": 0,
+    "newExecutionOrApprovalPackage": false,
+    "validation": "Previous executable profile remains bound to inputsCommit; this continuation only adds documentary registration. JSON/hash/patch-size/path-count integrity checked separately; software tests not repeated.",
+    "registrationReview": {
+      "configuredModel": "gpt-6-luna",
+      "agent": "/root/luna_admission_review",
+      "verdict": "no-actionable-findings",
+      "scope": "Only the two-file documentary delta: permission boundary, budget claims, static input registration versus executable candidate; no repeated tests or architecture inspection."
+    },
+    "integrityCheck": {
+      "outcome": "passed",
+      "checks": [
+        "historical input hashes verified from203c740",
+        "current document hash verified",
+        "aggregate patch bytes71431 and path count11 within262144/16",
+        "ordinary A/M modes and common base",
+        "no expected final tree or acceptance/launch authority",
+        "git diff --check"
+      ],
+      "limits": "Static documentary integrity only; no native/source/model experiment."
+    }
   }
 }

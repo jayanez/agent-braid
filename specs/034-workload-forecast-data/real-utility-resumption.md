@@ -121,6 +121,60 @@ Stop this increment at its recorded blockers. This is the original experiment's
 dependency order, not another synthetic scenario, execution package or recurring
 assessment. No native/model/source acceptance follows from these unit regressions.
 
+## Selected real maintenance inputs — static registration only
+
+The owner approved the proposed pair on 2026-10-17 ("OK, pues adelante"),
+solely to register existing input identities and static limits. The two lots
+share base `48f4226db1e1b0565b1f8faf0eca81c150a65d30`:
+
+| Operation | Frozen source commit | Patch bytes | Changed paths |
+|---|---|---:|---:|
+| FC.1 accounting maintenance | `203c74029b594055549b4d97c182829b793502f6` | 42,227 | 6 |
+| Plugin documentation maintenance | `086901fed1a957271727a4bb4dc1b23790499829` | 29,204 | 5 |
+| **Aggregate** | **Two existing operations** | **71,431** | **11** |
+
+Static Git metadata/diff inspection found only ordinary A/M file changes and no
+shared changed paths. The aggregate fits the existing 256 KiB patch and 16-path
+runtime limits. Exact patch digests, trees and file modes are in the existing
+[accounting receipt](evidence/t005-resumption-accounting.json). Raw patches were
+not exported, replayed or applied. No expected final merged tree is claimed.
+Disjoint paths do not establish semantic equivalence, runtime admissibility or
+independent episodes; the selected lots count as zero observed episodes.
+
+This registration is not experimental telemetry/source permission, a grant,
+resource-profile activation, cleanup authority or permission to launch. Existing
+branches and their approvals remain independent; this does not merge #557 or
+import the uncommitted telemetry branch.
+
+The two source trees contain respectively 32,932,089 and 32,921,249 logical blob
+bytes. These are static inventory sizes, not concurrent scratch or retained
+storage limits: Git objects, pack/index/refs, temporary copies, publication,
+grants, evidence and filesystem overhead still need a complete bound. Do not
+sum tree inventory sizes into a fabricated disk quota.
+
+The source-level request cap sums remain 3,843 for serial/direct verification
+and 6,662 for parallel/full policy inspection (10,505 across both controls).
+They are not narrowed input-specific operational budgets or measured minima.
+No executable admission budget is accepted by this registration.
+
+### Remaining technical stop, confirmed by independent static review
+
+Both `git_process.run_git` and `git_runtime_process.run_owned_git` launch with
+`start_new_session=True`. Their Git groups therefore need explicit ownership and
+termination verification; killing an outer coordinator group alone is not enough.
+A reliable launch boundary must reserve before each Popen, distinguish start
+failure from launch, retain process identities through reaping, and cover both
+runners. The whole-flow watchdog must also cover Python reconstruction and
+terminal publication/cleanup, with separately preserved verifier resources.
+Every temporary and retained root needs coverage; sampled per-stage scratch is
+not a hard aggregate quota. The historical runners and supervisor are unchanged.
+
+Until that concrete coverage, storage bound and input-specific request budget
+are justified, stop before an executable candidate. Do not create another generic
+watchdog, fixture, approval package or retry around unproved limits. The plugin
+NO-GO applies to the plugin value scenario; it does not by itself prohibit these
+separate fixed-runtime admission controls.
+
 ## Plugin and telemetry coordination
 
 One candidate value scenario: real Agent Braid maintenance through the installed
