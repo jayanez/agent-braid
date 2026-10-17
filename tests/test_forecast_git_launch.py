@@ -332,7 +332,7 @@ class GitLaunchBoundaryTests(unittest.TestCase):
             launch.run_git(retained,('status',),env=_sanitized_environment(self.work/'home'),
                            budget=self.budget())
         self.assertEqual(scope.binding['verificationWorkRoot'],str(retained.resolve()))
-        self.assertEqual(scope.binding['version'],'agent-braid-git-admission-boundary-v2')
+        self.assertEqual(scope.binding['version'],'agent-braid-git-admission-boundary-v3')
         self.spawn.assert_called_once()
 
     def test_work_worker_cannot_add_a_verification_root(self):
@@ -341,3 +341,42 @@ class GitLaunchBoundaryTests(unittest.TestCase):
         with self.assertRaisesRegex(ForecastError,'verification-work-root-binding'):
             self.scope(verification_work_root=retained)
         self.spawn.assert_not_called()
+
+
+class ExternalLedgerHooksTests(unittest.TestCase):
+    setUp = GitLaunchBoundaryTests.setUp
+    verifier = GitLaunchBoundaryTests.verifier
+    scope = GitLaunchBoundaryTests.scope
+    budget = GitLaunchBoundaryTests.budget
+    git = GitLaunchBoundaryTests.git
+    def test_external_reservation_before_popen_and_reap_ack_required(self):
+        events = []
+        def observer(event, **fields):
+            events.append(event)
+            return {'ticket':42} if event == 'reserve' else {}
+        scope = self.scope(launch_observer=observer)
+        scope.enter('prepare')
+        def spawn(*args, **kwargs):
+            self.assertEqual(events, ['reserve'])
+            return self.process
+        self.spawn.side_effect = spawn
+        with launch.admission_launches(scope):
+            self.git()
+        self.assertEqual(events, ['reserve','launched','reaped'])
+
+    def test_external_refusal_prevents_popen_without_fallback(self):
+        def observer(*args, **kwargs):
+            raise ForecastError('operator refused')
+        scope = self.scope(launch_observer=observer)
+        scope.enter('prepare')
+        with self.assertRaisesRegex(ForecastError, 'operator refused'):
+            with launch.admission_launches(scope):
+                self.git()
+        self.spawn.assert_not_called()
+        self.assertTrue(scope.receipt()['stopped'])
+
+    def test_original_origin_cannot_be_reset_at_worker_creation(self):
+        self.now = 50
+        scope = self.scope(flow_origin_ns=1)
+        self.assertEqual(scope.binding['flowOriginNs'], 1)
+        self.assertEqual(scope.binding['wholeFlowDeadlineNs'], 421)

@@ -49,7 +49,7 @@ class GitLaunchScope:
                  max_active, boundary_verifier,
                  verification_of=None, verification_deadline_ns=None,
                  verification_work_root=None,
-                 clock=time.monotonic_ns):
+                 launch_observer=None, flow_origin_ns=None, clock=time.monotonic_ns):
         self.root = Path(root).resolve(strict=True)
         self.source_root = Path(source_root).resolve(strict=True)
         self.git_executable = Path(git_executable).resolve(strict=True)
@@ -80,7 +80,9 @@ class GitLaunchScope:
                     and not self.source_root.is_relative_to(self.verification_work_root),
                     'verification-work-root-binding')
         self._clock = clock
-        self._origin = clock()
+        now = clock()
+        self._origin = now if flow_origin_ns is None else integer(flow_origin_ns, 1)
+        require(self._origin <= now, 'admission-origin-in-future')
         if self.verification_of:
             self._global_deadline = integer(verification_deadline_ns, 1)
             require(self._origin + self.times['verify'] + self.terminal_ns <= self._global_deadline,
@@ -90,7 +92,9 @@ class GitLaunchScope:
             self._global_deadline = self._origin + sum(self.times.values()) + self.terminal_ns
         self.ledger = PhaseLedger(bounds=phase_requests, total=sum(phase_requests.values()),
                                   max_active=max_active)
-        self.binding = {'version': 'agent-braid-git-admission-boundary-v2',
+        self.binding = {'version': 'agent-braid-git-admission-boundary-v3',
+                        'flowOriginNs': self._origin,
+                        'externalLaunchLedger': launch_observer is not None,
                         'workerPid': os.getpid(), 'workerPgid': os.getpgrp(),
                         'scopeNonce': secrets.token_hex(16),
                         'root': str(self.root), 'sourceRoot': str(self.source_root),
@@ -107,6 +111,9 @@ class GitLaunchScope:
                                                  else str(self.verification_work_root))
         self.binding['wholeFlowDeadlineNs'] = self._global_deadline
         self.binding_digest = digest(self.binding)
+        require(launch_observer is None or callable(launch_observer), 'operator-launch-observer-required')
+        self._launch_observer = launch_observer
+        self._external_tickets = {}
         self._verify = boundary_verifier
         self._deadline = self._origin
         self._phase = None
@@ -198,6 +205,10 @@ class GitLaunchScope:
                               'inputSha256': input_sha256, 'inheritedFds': list(kwargs['pass_fds'])}
                 self.check(invocation)
                 token = self.ledger.reserve()
+                if self._launch_observer is not None:
+                    reply = self._launch_observer('reserve', phase=self._phase,
+                        deadlineNs=self._deadline, invocation=deepcopy(invocation))
+                    self._external_tickets[token] = integer(reply['ticket'], 1)
             except BaseException:
                 self._stopped = True
                 raise
@@ -207,6 +218,8 @@ class GitLaunchScope:
                 process = subprocess.Popen(command, start_new_session=False, **kwargs)
             except BaseException:
                 self.ledger.start_failed(token)
+                if self._launch_observer is not None:
+                    self._launch_observer('startFailed', ticket=self._external_tickets[token])
                 self._stopped = True
                 raise
             self.ledger.launched(token)
@@ -214,11 +227,20 @@ class GitLaunchScope:
             self._records.append({'ticket': token, 'phase': self._phase,
                                   'pid': process.pid, 'reaped': False,
                                   'launchDigest': digest(invocation)})
+            try:
+                if self._launch_observer is not None:
+                    self._launch_observer('launched', ticket=self._external_tickets[token], pid=process.pid)
+            except BaseException:
+                self.stop()
+                raise
             return token, process
 
     def reaped(self, token, returncode):
         with self._lock:
             require(token in self._processes and type(returncode) is int, 'unknown-admission-child')
+            if self._launch_observer is not None:
+                self._launch_observer('reaped', ticket=self._external_tickets[token], returncode=returncode)
+                del self._external_tickets[token]
             self.ledger.finished(token)
             del self._processes[token]
             next(r for r in self._records if r['ticket'] == token).update(

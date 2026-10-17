@@ -17,6 +17,8 @@ PHASES = ('prepare', 'grant', 'dispatch', 'verify')
 SOURCE_FILES = (
     'agent_braid/forecast_admission.py', 'agent_braid/forecast_data.py',
     'agent_braid/forecast_git_launch.py',
+    'agent_braid/forecast_linux_profile.py', 'agent_braid/forecast_operator_bridge.py',
+    'agent_braid/forecast_admission_worker.py', 'scripts/fc1_admission_worker.py',
     'agent_braid/runtime_policy.py', 'agent_braid/git_runtime.py',
     'agent_braid/runtime_scheduler.py', 'agent_braid/git_replay.py',
     'agent_braid/git_adapter.py', 'agent_braid/git_process.py',
@@ -27,7 +29,7 @@ SOURCE_FILES = (
 )
 # Fixed reviewed-source model: changing source requires a fresh accounting review,
 # not regenerating an arbitrary hash and treating it as accepted coverage.
-_MODELED_SOURCE = '8784a02cb0b4a9a8cb9277c10a8ad094288f7e56a48f21c0b7856abec96781ff'
+_MODELED_SOURCE = '87f94cec0c6944f643510c3204de62927b75a705074e0f0821935a0b25702529'
 
 
 def source_digest(root):

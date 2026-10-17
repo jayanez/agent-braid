@@ -192,6 +192,7 @@ class LinuxAdmissionProfile:
                 'Delegate=no\nInaccessiblePaths=/dev/shm /run /tmp /var/tmp\n'
                 'ProtectProc=invisible\nProcSubset=pid\n'
                 'BindPaths=' + path + ':' + scratch + '\n' + prior +
+                'BindReadOnlyPaths=' + base + '/operator.sock:/operator.sock\n' +
                 'WorkingDirectory=' + scratch + '\nUMask=0077\nEnvironment=HOME='
                 + scratch + '/home TMPDIR=' + scratch + '/tmp\n'
                 'Environment=PYTHONDONTWRITEBYTECODE=1\n'
@@ -371,7 +372,7 @@ class FrozenWork:
 class OperatorSession:
     """Private supervisor protocol: ledger/reserves live OUTSIDE the worker.
 
-    Its owner must supply the launch IPC bridge and verify manager/mount/image
+    Its owner must attach the private launch IPC bridge and verify manager/mount/image
     readback. This object never trusts a worker reset of PhaseLedger. It does not
     issue grants, start workers, install units or accept source permissions.
     """
@@ -608,12 +609,15 @@ class AdmissionTimeline:
         index = self.index + 1
         future = sum(p.wall_seconds for p in self.profile.limits[index + 1:]) * 10**9
         limit = self.profile.limits[index]
-        if now_ns + limit.wall_seconds * 10**9 > self.deadline_ns - future:
+        # Startup/IPC consumes this phase's own allocation; never extend the
+        # original clock or borrow from future reserves. Keep 3s for start/kill.
+        available = self.deadline_ns - future - now_ns
+        if available <= 3 * 10**9:
             self.failed = True
             require(False, 'profile-reserves-exhausted')
         self.index, self.active = index, True
         self.last_ns = now_ns
-        self.phase_deadline_ns = now_ns + limit.wall_seconds * 10**9
+        self.phase_deadline_ns = min(now_ns + limit.wall_seconds * 10**9, self.deadline_ns - future)
         return self.phase_deadline_ns
 
     def finish(self, *, now_ns, cgroup_events, succeeded):

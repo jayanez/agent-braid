@@ -387,3 +387,66 @@ atomic concurrency. It creates no Git workload, model, VM or approval package.
 The [accounting receipt](evidence/t005-resumption-accounting.json) records obtained
 software checks and the continuing blockers. Original T005, SPEC-036/T001/T008/T009
 and dependent acceptance criteria remain unchecked; no milestone closes.
+
+### Private operator bridge and fixed worker continuation
+
+The next authorized software increment adds `forecast_operator_bridge.py`,
+`forecast_admission_worker.py` and the private image launcher source
+`scripts/fc1_admission_worker.py`. It adds no public CLI/MCP command and neither
+builds an image nor starts a manager, worker, native control or model.
+
+The root operator accepts a connected Linux Unix `SOCK_SEQPACKET` channel only
+with kernel-observed worker PID/UID. The worker requires a root peer. Messages
+have a 64 KiB ceiling, strict field sets, unique JSON keys, a monotonic sequence
+and an exact worker-binding digest. Socket descriptors are non-inheritable;
+requests have bounded I/O and the operator monitors disconnects against the
+original phase deadline. A read-only bind exposes only the operator socket file
+inside each worker; socket ownership/mode and its actual mount remain native
+readback requirements. No listener is automatically created.
+
+Each scoped Git launch reserves the external operator ledger before `Popen`.
+Its exact argv, environment, input digest and inherited descriptors accompany the
+reservation. The operator-supplied child observer must independently bind the
+PID/kernel identity, executable, invocation and containment, retain that identity,
+and independently confirm termination and return code before releasing the
+reservation. There is no default native observer. An already vanished command,
+producer-only `startFailed`, unknown exit, EOF, replay or identity ambiguity keeps
+uncertainty visible and aborts without refund or retry. A producer's completion
+message explicitly does **not** establish kernel closure. The original cgroup
+must independently be empty before another worker attaches.
+
+The fixed worker reads a bounded recipe from the immutable image, verifies its
+profile identity and requires the two selected input identities on their common
+base. It does not invent `expectedFinalTree`. It runs evidence/preparation,
+operator grant and dispatch in the same original work process and paths. The
+independent verifier uses the original read-only `/work` and its own scratch;
+acceptance requires `verified-completed`, the registered expected tree, and,
+for parallel mode, independent worker-tree/effect verification. The terminal
+worker writes a bounded digest record; it cannot admit the profile or establish
+operator/kernel cleanup. The operator still owns final ledger reconciliation
+and closure.
+
+Private launch bindings are now v3, with an explicit original flow origin and
+external-ledger flag. Startup/IPC consumes the current phase's allocation. A
+phase may shorten to preserve all later reserves and the original total deadline;
+it cannot reset that clock or borrow the verifier/terminal reserve. The named
+source inventory now includes the bridge, worker, Linux compiler and launcher.
+This adds no Git invocation to the modeled runtime routes. The unchanged 3,843 /
+6,662 request ceilings and 19 / 31.5 minute, 680.28125 / 1320.28125 MiB proposals
+remain abort policies, **not** measured minima, accepted budgets or authority.
+
+**Concrete remaining blocker:** no qualified Linux image/root hash, manager
+identity, immutable real recipe/expected tree or native boundary/child/binding
+observer is supplied. The prescribed local image directories are absent on the
+current macOS preparation host; this says nothing about uninspected other hosts.
+The callbacks intentionally have no permissive default. Consequently the
+software protocol can be checked offline but there is still no executable,
+admitted two-input candidate. No image construction, activation, source replay
+or replacement attempt follows automatically. The next decision needs that
+concrete artifact/provider binding, before any launch approval can be requested.
+
+The existing evidence record retains the previous source pins, diagnostics,
+reviews and limits. T001/T005/T008/T009 and all source, native, model, experiment,
+interpretation and adoption gates remain pending. Plugins #557 remains frozen
+and analysis-only; telemetry remains separate, unintegrated and unsuitable as
+causal FC.1 history. Neither track acquires execution or capture authority here.

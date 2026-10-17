@@ -1037,5 +1037,223 @@
       },
       "integrity": "Current file hashes, normalized source model and historical initial input bindings checked; whitespace passed."
     }
+  },
+  "operatorBridgeImplementation": {
+    "status": "offline-software-protocol-reviewed-native-binding-blocked",
+    "previousCandidate": "8105192",
+    "implementationCommit": null,
+    "ownerAuthorization": "Continue the bounded operator bridge/worker lot and synchronize both coordinated conversations; no models, real sources or native controls.",
+    "sourceDigest": "87f94cec0c6944f643510c3204de62927b75a705074e0f0821935a0b25702529",
+    "sourceFiles": [
+      "agent_braid/forecast_admission.py",
+      "agent_braid/forecast_data.py",
+      "agent_braid/forecast_git_launch.py",
+      "agent_braid/forecast_linux_profile.py",
+      "agent_braid/forecast_operator_bridge.py",
+      "agent_braid/forecast_admission_worker.py",
+      "scripts/fc1_admission_worker.py",
+      "agent_braid/runtime_policy.py",
+      "agent_braid/git_runtime.py",
+      "agent_braid/runtime_scheduler.py",
+      "agent_braid/git_replay.py",
+      "agent_braid/git_adapter.py",
+      "agent_braid/git_process.py",
+      "agent_braid/git_runtime_process.py",
+      "agent_braid/git_exec.py",
+      "agent_braid/git_partial_order.py",
+      "agent_braid/git_integration_prototype.py",
+      "agent_braid/utility_budget_observer.py",
+      "agent_braid/analysis.py",
+      "research/lab/model.py"
+    ],
+    "inputs": {
+      "agent_braid/forecast_admission.py": "589411dae349d75b0f0a3ebc5116b02c76abd1223b19607558eee905aa41f3ff",
+      "agent_braid/forecast_git_launch.py": "98dff81cd1956fccbe55df753736b30540ebba4fb3c67eece85f4468a86404d7",
+      "agent_braid/forecast_linux_profile.py": "ebc6b8397943068482c3dfe8018b934097c8dd43acd560aa8c0f504645be62ea",
+      "agent_braid/forecast_operator_bridge.py": "ec3d93fb730b8e0b7f50de1b2b665820c810533c280ac6cdf778b9ab3ddb9e9e",
+      "agent_braid/forecast_admission_worker.py": "f06c211d23ac284448a1b2f3e9aa30304f6a9c8fe917e01249dafa6a4d5ddcaf",
+      "scripts/fc1_admission_worker.py": "9648d96af40913575cc770cab137faad0529920c0cc793d1a6cf98a46f3a2b54",
+      "tests/test_forecast_operator_bridge.py": "2f8c790fec7da98395990294c5a981b8913063f1ef1094cec6c41208cf58e5c9",
+      "tests/test_forecast_admission_worker.py": "dd27c398144785f8b22d71e7d3c18a9e0a27035c4c1902beb08467842a88b3a1",
+      "tests/test_forecast_git_launch.py": "331242cee5426463caa78a1ab9a9a28737c56118ba199f2efd2883b9379b4899",
+      "tests/test_forecast_linux_profile.py": "ef23a63adb28d0cbafa43684a48dd5e2cb9d53ee892cce30aae85dc30ba7df07",
+      "specs/034-workload-forecast-data/real-utility-resumption.md": "e540db6a09e97adb811f1e90850e0a74d32f379b79a72f076de6aef45870dece"
+    },
+    "proposedAbortLimits": [
+      {
+        "mode": "serial",
+        "finalVerifier": "runtime",
+        "sourceDigest": "87f94cec0c6944f643510c3204de62927b75a705074e0f0821935a0b25702529",
+        "phases": [
+          {
+            "phase": "prepare",
+            "requests": 1793,
+            "wallSeconds": 480,
+            "storageBytes": 276897792,
+            "inodes": 65536
+          },
+          {
+            "phase": "grant",
+            "requests": 769,
+            "wallSeconds": 240,
+            "storageBytes": 142680064,
+            "inodes": 65536
+          },
+          {
+            "phase": "dispatch",
+            "requests": 1025,
+            "wallSeconds": 300,
+            "storageBytes": 209788928,
+            "inodes": 65536
+          },
+          {
+            "phase": "verify",
+            "requests": 256,
+            "wallSeconds": 90,
+            "storageBytes": 75571200,
+            "inodes": 65536
+          },
+          {
+            "phase": "terminal",
+            "requests": 0,
+            "wallSeconds": 30,
+            "storageBytes": 8388608,
+            "inodes": 4096
+          }
+        ],
+        "wallSeconds": 1140,
+        "storageBytes": 713326592,
+        "gitRequests": 3843,
+        "basis": "conditional Git cap sums; 30s non-Git per phase; 8MiB output per phase; 64MiB per internal Git budget plus selected patch bytes; 30s/8MiB terminal",
+        "status": "proposed-abort-ceilings-owner-acceptance-pending",
+        "minimumCost": null,
+        "completionGuaranteed": false,
+        "executionAuthorization": false
+      },
+      {
+        "mode": "parallel",
+        "finalVerifier": "policy",
+        "sourceDigest": "87f94cec0c6944f643510c3204de62927b75a705074e0f0821935a0b25702529",
+        "phases": [
+          {
+            "phase": "prepare",
+            "requests": 2049,
+            "wallSeconds": 540,
+            "storageBytes": 344006656,
+            "inodes": 65536
+          },
+          {
+            "phase": "grant",
+            "requests": 1025,
+            "wallSeconds": 300,
+            "storageBytes": 209788928,
+            "inodes": 65536
+          },
+          {
+            "phase": "dispatch",
+            "requests": 2050,
+            "wallSeconds": 570,
+            "storageBytes": 478224384,
+            "inodes": 65536
+          },
+          {
+            "phase": "verify",
+            "requests": 1538,
+            "wallSeconds": 450,
+            "storageBytes": 344006656,
+            "inodes": 65536
+          },
+          {
+            "phase": "terminal",
+            "requests": 0,
+            "wallSeconds": 30,
+            "storageBytes": 8388608,
+            "inodes": 4096
+          }
+        ],
+        "wallSeconds": 1890,
+        "storageBytes": 1384415232,
+        "gitRequests": 6662,
+        "basis": "conditional Git cap sums; 30s non-Git per phase; 8MiB output per phase; 64MiB per internal Git budget plus selected patch bytes; 30s/8MiB terminal",
+        "status": "proposed-abort-ceilings-owner-acceptance-pending",
+        "minimumCost": null,
+        "completionGuaranteed": false,
+        "executionAuthorization": false
+      }
+    ],
+    "acceptance": {
+      "operativeBudgetAccepted": false,
+      "actualProfileAdmitted": false,
+      "executionAuthorization": false
+    },
+    "remainingBlockers": [
+      "qualified immutable Linux image/root hash and installed manager identity absent",
+      "immutable selected-input recipe including expectedFinalTree absent",
+      "native boundary/child/binding observers and socket/mount/manager readback absent",
+      "native control-specific owner authorization absent"
+    ],
+    "localArtifactObservation": {
+      "host": "macOS preparation host only",
+      "pathsAbsent": [
+        "/var/lib/agent-braid/images",
+        "/opt/agent-braid"
+      ],
+      "otherHostsInspected": false,
+      "imagesBuilt": 0
+    },
+    "validation": {
+      "preflight": {
+        "log": "/tmp/fc1-bridge-preflight.log",
+        "exitCode": 0
+      },
+      "targeted": {
+        "command": "python -m unittest tests.test_forecast_operator_bridge tests.test_forecast_admission_worker tests.test_forecast_git_launch tests.test_forecast_linux_profile tests.test_forecast_admission",
+        "log": "/tmp/fc1-bridge-candidate-targeted-final.log",
+        "tests": 72,
+        "exitCode": 0,
+        "domain": "offline software/mocked kernel and process controls; no selected input replay"
+      },
+      "diagnosticsRetained": [
+        "/tmp/fc1-bridge-red.log",
+        "/tmp/fc1-bridge-integration.log",
+        "/tmp/fc1-bridge-protocol-targeted.log",
+        "/tmp/fc1-bridge-candidate-targeted.log"
+      ],
+      "diagnosticResolution": "initial missing implementation; private binding-version expectation; Linux credential constant mocked on macOS; timestamp pycache carried prior model pin until source mtime refreshed. No failed run is a pass.",
+      "quickPlan": {
+        "log": "/tmp/fc1-bridge-bounded-quick-plan.log",
+        "base": "8105192",
+        "effectiveProfile": "sensitive",
+        "executed": false,
+        "reason": "Use the already validated parent for this bounded lot; local develop is stale 326887f, origin/develop remains 48f4226. Execute one stable PR profile rather than duplicate the same escalated commands."
+      },
+      "stableProfile": {
+        "status": "pending"
+      }
+    },
+    "review": {
+      "reviewer": "Luna Latest (gpt-6-luna)",
+      "scope": "private protocol, lifecycle uncertainty, fixed worker route, clock reserves and source coverage",
+      "result": "No remaining correctable finding in bounded review; native bindings remain pending. Reviewer did not recalculate digest or execute tests.",
+      "finding": "producer-only startFailed could release external reservation",
+      "resolution": "retain outstanding ticket and ambiguous reason, abort without refund or retry"
+    },
+    "coordination": {
+      "plugins": "frozen analysis-only #557; start-of-lot sync sent",
+      "telemetry": "frozen unintegrated separate capture contract; start-of-lot sync sent",
+      "newWorkRequested": false
+    },
+    "nativeAdmissionRuns": 0,
+    "modelExecutions": 0,
+    "vmExecutions": 0,
+    "realSourceCaptures": 0,
+    "newExecutionPackages": 0,
+    "limits": [
+      "protocol readiness is not complete native launch coverage",
+      "completion message is not kernel closure",
+      "callbacks are operator-only with no permissive defaults",
+      "request/time/storage proposals remain abort ceilings, not measured minima or accepted budget",
+      "T001 T005 T008 T009 remain pending"
+    ]
   }
 }

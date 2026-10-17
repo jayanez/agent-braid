@@ -88,7 +88,8 @@ class LinuxProfileTests(unittest.TestCase):
         self.assertIn('Environment=HOME=/scratch/home TMPDIR=/scratch/tmp\n', verify)
         self.assertNotIn(':/prior/terminal', verify)
         self.assertEqual(verify.count('BindPaths='), 1)
-        self.assertEqual(verify.count('BindReadOnlyPaths='), 1)
+        self.assertEqual(verify.count('BindReadOnlyPaths='), 2)
+        self.assertIn('/operator.sock:/operator.sock\n', verify)
 
     def test_deadline_never_resets_and_future_reserves_block_late_start(self):
         timeline = AdmissionTimeline(self.profile(), origin_ns=10)
@@ -99,7 +100,7 @@ class LinuxProfileTests(unittest.TestCase):
         self.assertEqual(timeline.deadline_ns, deadline)
         timeline.finish(now_ns=2*10**9, cgroup_events='populated 1\nfrozen 1\n', succeeded=True)
         with self.assertRaisesRegex(ForecastError, 'reserves-exhausted'):
-            timeline.begin('dispatch', now_ns=25*10**9)
+            timeline.begin('dispatch', now_ns=28*10**9)
         self.assertTrue(timeline.failed)
 
     def test_uncertain_kernel_empty_or_expired_phase_stops_without_retry(self):
@@ -323,6 +324,13 @@ class LinuxProfileTests(unittest.TestCase):
         self.assertEqual(session.work.worker_pid,101)
         self.assertTrue(session.failed)
         self.assertFalse(session.cleanup_confirmed)
+
+
+    def test_startup_consumes_own_phase_without_resetting_flow_origin(self):
+        timeline = AdmissionTimeline(self.profile(), origin_ns=0)
+        timeline.begin('prepare',now_ns=10**9)
+        self.assertEqual(timeline.phase_deadline_ns,10*10**9)
+        self.assertEqual(timeline.deadline_ns,50*10**9)
 
 
 if __name__ == '__main__':
