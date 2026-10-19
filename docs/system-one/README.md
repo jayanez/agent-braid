@@ -2,6 +2,8 @@
 
 Documentary snapshot, 2026-10-20. Start here; reading chat history is not required.
 
+Latest bounded update: [T025 development receipt](addenda/t025-development-20261020.md). Development passed; evaluation/final engineering closure and DDP-T01 assignment remain pending. The base register below retains its earlier snapshot unchanged.
+
 - [Evidence and evolution](evolution.md): why each increment happened, what it found and what it cannot establish.
 - [Machine-readable evidence register](evidence-register.json): stable study/task aliases, exact report/protocol identities, line references, resource/failure boundaries and source bindings.
 - [Faithful report/protocol snapshots](source-documents.json): full research documentation text for audit, including commands and negative findings; embedded original paths/links refer to the source research checkout. This is documentary export, not model/data/code publication or clean-room reproduction.

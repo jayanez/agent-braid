@@ -1,0 +1,88 @@
+{
+  "id": "S1-ADD-T025-DEVELOPMENT-20261020",
+  "status": "closed development receipt; evaluation and final delivery pending",
+  "baseDocumentaryCandidate": "2ab54ff",
+  "sourceRoot": "/Users/juanyanez/Repos/Personal/agent-braid-system-one/artifacts/system-one/eof-consumers-v1",
+  "sourceBindings": {
+    "development/summary.json": "988a8a8e0990af74f3b6137e7226421e3aad9847dc7fe5327902536c922cdd75",
+    "development/resource-receipt.json": "cf4d9d5ec8ba23b12ec633baa1a5a09b6dbe27477974e316bf339524efcbd580",
+    "registration.json": "9097111a038021062b28b4b58632c3d6b2a7ef0493a41a9d8eab0c2b1ee86cde"
+  },
+  "development": {
+    "acceptedActionErrors": 0,
+    "accuracy": 1.0,
+    "actionCoverage": 0.7,
+    "actions": 84,
+    "attempts": 120,
+    "correct": 120,
+    "eligibilityDisagreements": 0,
+    "enesConsistentGroups": 60,
+    "enesGroups": 60,
+    "executeCalls": 0,
+    "executionAuthorization": false,
+    "externalSpendEUR": 0,
+    "gatePassed": true,
+    "medianAllAttemptMsByConsumer": {
+      "core-api": 6302.048666519113,
+      "mcp-service": 11496.943417005241,
+      "mcp-stdio": 11725.788374984404
+    },
+    "medianAnsweredMsByConsumer": {
+      "core-api": 6909.237312502228,
+      "mcp-service": 12585.216458508512,
+      "mcp-stdio": 12365.355041489238
+    },
+    "medianDeferMsByConsumer": {
+      "core-api": 1042.8409370069858,
+      "mcp-service": 899.2128960089758,
+      "mcp-stdio": 1015.3416249959264
+    },
+    "nativeTreeMatches": 84,
+    "preparedChoices": {
+      "k0": 72,
+      "k2": 12
+    },
+    "recoverCalls": 0,
+    "rejectedK0Proposals": 48,
+    "rejectedProposals": 360,
+    "repositories": 10,
+    "routeConsistentGroups": 40,
+    "routeGroups": 40,
+    "semanticDefers": 36,
+    "technicalRefusals": 0,
+    "wirePreparations": 28
+  },
+  "resources": {
+    "command": [
+      "/usr/bin/sandbox-exec",
+      "-p",
+      "(version 1)(allow default)(deny network*)",
+      "/Users/juanyanez/Repos/Personal/agent-braid-system-one/.venv-speckit/bin/python",
+      "-m",
+      "research.system_one.eof_consumers.study",
+      "development",
+      "--output",
+      "/Users/juanyanez/Repos/Personal/agent-braid-system-one/artifacts/system-one/eof-consumers-v1"
+    ],
+    "exitCode": 0,
+    "externalSpendEUR": 0,
+    "limits": "Sampled worker process-group RSS, excluding supervisor and unrelated applications; not an instantaneous hard allocation limit",
+    "maximumNewOutputBytes": 21474836480,
+    "maximumSeconds": 7179.251769875002,
+    "maximumWorkerGroupRssBytes": 17179869184,
+    "sampleIntervalSeconds": 0.5,
+    "sampledPeakWorkerGroupRssBytes": 52101120,
+    "samples": 1662,
+    "stopReason": null,
+    "trainingAuthorized": false,
+    "wallSeconds": 1116.9911932080286
+  },
+  "evaluation": "Coordinator reported 51/240 routes at update; evaluation open, no aggregate result accepted",
+  "evidenceBoundary": "Reused T024 opened fixtures, correlated views and routes; integration conformance, not independent accuracy",
+  "ddpT01": "not enabled; needs completed final engineering receipt checked by coordinator plus explicit assignment",
+  "humanReview": "pending",
+  "training": "no new authorization",
+  "admission": "pending",
+  "activation": "pending",
+  "sourceMutation": false
+}
