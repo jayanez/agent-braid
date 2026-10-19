@@ -1,0 +1,363 @@
+Requested profile: quick
+Effective profile: sensitive
+Changed paths: README.md, ROADMAP.md, agent_braid/cli.py, agent_braid/tooling_cli.py, agent_braid/tooling_install.py, agent_braid/tooling_mcp.py, agent_braid/tooling_telemetry.py, agent_braid/tooling_telemetry_cli.py, docs/adr/0023-local-technical-telemetry.md, docs/ai-tooling-presentation.md, docs/development/GITHUB_TRACKING.md, docs/development/SPEC_MILESTONE_INDEX.md, docs/development/github-tracking.json, docs/tooling/EVALUATION.md, docs/tooling/INSTALL.md, docs/tooling/JOURNEY.md, docs/tooling/M45_ALIGNMENT.md, docs/tooling/MEASUREMENTS.md, docs/tooling/README.md, docs/tooling/TECHNICAL_STATUS.md, docs/tooling/TELEMETRY.md, specs/039-ai-tooling-program/analysis.md, specs/039-ai-tooling-program/capability-matrix.md, specs/039-ai-tooling-program/delivery-status.md, specs/039-ai-tooling-program/implementation-status.md, specs/039-ai-tooling-program/plan.md, specs/039-ai-tooling-program/program.md, specs/039-ai-tooling-program/quickstart.md, specs/039-ai-tooling-program/spec.md, specs/040-portable-mcp-surface/contracts/interface.md, specs/040-portable-mcp-surface/plan.md, specs/040-portable-mcp-surface/quickstart.md, specs/040-portable-mcp-surface/spec.md, specs/041-ai-tooling-skills/plan.md, specs/041-ai-tooling-skills/quickstart.md, specs/041-ai-tooling-skills/spec.md, specs/042-ai-tooling-packaging/contracts/lifecycle.md, specs/042-ai-tooling-packaging/plan.md, specs/042-ai-tooling-packaging/quickstart.md, specs/042-ai-tooling-packaging/spec.md, specs/043-ai-tooling-journey/plan.md, specs/043-ai-tooling-journey/quickstart.md, specs/043-ai-tooling-journey/spec.md, specs/044-ai-tooling-evaluation/candidate-admission-matrix.md, specs/044-ai-tooling-evaluation/native-observation-contract-proposal.md, specs/044-ai-tooling-evaluation/plan.md, specs/044-ai-tooling-evaluation/quickstart.md, specs/044-ai-tooling-evaluation/spec.md, specs/044-ai-tooling-evaluation/t004-bounded-closure-reconciliation.json, specs/044-ai-tooling-evaluation/t004-bounded-closure-reconciliation.md, specs/044-ai-tooling-evaluation/tasks.md, specs/046-local-technical-telemetry/alignment.json, specs/046-local-technical-telemetry/assurance.json, specs/046-local-technical-telemetry/data-contract.md, specs/046-local-technical-telemetry/evidence/environment-corrected-controls.log, specs/046-local-technical-telemetry/evidence/environment-failure-controls.log, specs/046-local-technical-telemetry/evidence/final-packaging.json, specs/046-local-technical-telemetry/evidence/final-packaging.log, specs/046-local-technical-telemetry/evidence/focused-tests.log, specs/046-local-technical-telemetry/evidence/mutations.json, specs/046-local-technical-telemetry/evidence/overhead.json, specs/046-local-technical-telemetry/evidence/profile-pr.log, specs/046-local-technical-telemetry/evidence/profile-quick.log, specs/046-local-technical-telemetry/evidence/profile-source-start.json, specs/046-local-technical-telemetry/evidence/review-focused.log, specs/046-local-technical-telemetry/evidence/review-green.log, specs/046-local-technical-telemetry/evidence/review-mutations.json, specs/046-local-technical-telemetry/evidence/review-overhead.json, specs/046-local-technical-telemetry/evidence/review-preflight.log, specs/046-local-technical-telemetry/evidence/review-profile-source-start.json, specs/046-local-technical-telemetry/evidence/review-red.log, specs/046-local-technical-telemetry/evidence/review-validation.json, specs/046-local-technical-telemetry/evidence/source-manifest.json, specs/046-local-technical-telemetry/evidence/validation-environment.json, specs/046-local-technical-telemetry/evidence/validation.json, specs/046-local-technical-telemetry/issue-drafts.md, specs/046-local-technical-telemetry/measure_overhead.py, specs/046-local-technical-telemetry/milestone-description-draft.json, specs/046-local-technical-telemetry/milestone-description-draft.md, specs/046-local-technical-telemetry/plan.md, specs/046-local-technical-telemetry/pr509-dependency.json, specs/046-local-technical-telemetry/quickstart.md, specs/046-local-technical-telemetry/review-20261016.md, specs/046-local-technical-telemetry/review-disposition.md, specs/046-local-technical-telemetry/spec.md, specs/046-local-technical-telemetry/tasks.md, specs/046-local-technical-telemetry/tracking-drafts.json, specs/046-local-technical-telemetry/validation-plan.md, tests/test_tooling_telemetry.py
+Domains: ai-tooling, contributor-documentation, feature-assurance, normative, recorded-trace-import, runtime-analysis, system-one-core
+Commands:
+  - repository: python3 scripts/validate_repository.py
+  - contracts: python3 scripts/validate_contracts.py
+  - release-records: python3 scripts/validate_release_records.py
+  - publication: python3 scripts/validate_publication.py --portable
+  - research-radar: python3 scripts/validate_research_radar.py --milestone M0.5
+  - adoption-tracks: python3 scripts/validate_adoption_tracks.py
+  - market-model: python3 scripts/market_sizing.py --check
+  - cli-smoke: python3 -m agent_braid --help
+  - full-tests: python3 -m unittest discover -s tests -v
+  - scientific-controls: python3 -m research.lab.controls
+  - spec-kit-structure: python3 scripts/validate_spec_kit.py
+  - spec-kit-render: python3 scripts/spec_kit.py check
+  - constitution-replica: python3 scripts/constitution_replica.py check
+  - whitespace: git diff --check 466ada29b48bb768f8493ecf36a9472894af8440 --
+Deferred boundary gates:
+  - Feature-specific evidence capture, freeze and human review (not executed)
+  - M4.5 exact-candidate host discovery, clean-platform reproduction, registered 108-slot evaluation and founder acceptance (not executed)
+  - Real-source rights, provider adoption and contract acceptance (not executed)
+  - Synthetic diagnostic contract only; model/data/human acceptance and promotion remain separate (not executed)
+Limits:
+  - Path selection is not semantic dependency analysis or proof.
+  - Passing commands is not evidence capture, human review, founder approval or independent validation.
+  - Clean-room procedures remain separate and are not executed by this plan.
+
+==> repository: python3 scripts/validate_repository.py
+Repository validation passed.
+
+==> contracts: python3 scripts/validate_contracts.py
+Contract corpus passed: legacy, 0.2 structure and finite semantic checks.
+
+==> release-records: python3 scripts/validate_release_records.py
+Release records passed structural validation; no scientific approval inferred.
+
+==> publication: python3 scripts/validate_publication.py --portable
+Portable export integrity and internal reproduction passed; private ancestry remains unavailable.
+
+==> research-radar: python3 scripts/validate_research_radar.py --milestone M0.5
+Research radar structure and provenance passed (offline check only).
+
+==> adoption-tracks: python3 scripts/validate_adoption_tracks.py
+Adoption-track structure and conservative pathline checks passed (no approval inferred).
+
+==> market-model: python3 scripts/market_sizing.py --check
+
+==> cli-smoke: python3 -m agent_braid --help
+usage: __main__.py [-h]
+                   {tooling,telemetry,forecast,system-one,analyze,analyze-trace,analyze-git,verify,plan-git,verify-git,verify-plan,prototype-git,propose-exchange,verify-exchange,prepare-git-run,execute-git-run,recover-git-run,verify-git-run,prepare-policy-run,verify-policy-plan,grant-policy-run,execute-policy-run,recover-policy-run,inspect-policy-run} ...
+
+Agent Braid analyzer and explicitly authorized private Git runtime CLI.
+
+positional arguments:
+  {tooling,telemetry,forecast,system-one,analyze,analyze-trace,analyze-git,verify,plan-git,verify-git,verify-plan,prototype-git,propose-exchange,verify-exchange,prepare-git-run,execute-git-run,recover-git-run,verify-git-run,prepare-policy-run,verify-policy-plan,grant-policy-run,execute-policy-run,recover-policy-run,inspect-policy-run}
+    tooling             experimental portable local AI tooling
+    telemetry           local numeric telemetry; no automatic upload
+    forecast            opt-in local numeric forecasts and heuristic advice
+    system-one          opt-in offline synthetic decision diagnostics
+    analyze             analyze AIM 0.2 records
+    analyze-trace       analyze synthetic recorded metadata with explicit loss
+    analyze-git         analyze stable Git snapshots
+    verify              verify a bounded certificate bundle
+    plan-git            replay immutable Git commits and emit an advisory
+                        preparation plan
+    verify-git          replay and verify a bounded Git evidence bundle
+    verify-plan         verify a plan against independently replayed Git
+                        evidence
+    prototype-git       compare bounded parallel Git patch preparation with a
+                        serial scratch integration
+    propose-exchange    produce consultative anchored-sequence exchange
+                        evidence
+    verify-exchange     regenerate bounded structured exchange paths
+    prepare-git-run     bounded private local Git runtime
+    execute-git-run     bounded private local Git runtime
+    recover-git-run     bounded private local Git runtime
+    verify-git-run      bounded private local Git runtime
+    prepare-policy-run  verified local operator policy
+    verify-policy-plan  verified local operator policy
+    grant-policy-run    verified local operator policy
+    execute-policy-run  verified local operator policy
+    recover-policy-run  verified local operator policy
+    inspect-policy-run  verified local operator policy
+
+options:
+  -h, --help            show this help message and exit
+
+==> full-tests: python3 -m unittest discover -s tests -v
+test_cli_repeatable_and_metadata_commands_not_executed (test_adoption_evidence.AdoptionEvidenceTests.test_cli_repeatable_and_metadata_commands_not_executed) ... ok
+test_duplicate_episode_identity_rejects_new_ids_aliases_and_outcomes (test_adoption_evidence.AdoptionEvidenceTests.test_duplicate_episode_identity_rejects_new_ids_aliases_and_outcomes) ... ok
+test_huge_json_integer_refuses_without_float_overflow_or_traceback (test_adoption_evidence.AdoptionEvidenceTests.test_huge_json_integer_refuses_without_float_overflow_or_traceback) ... ok
+test_parser_duplicate_nonfinite_bounds_and_sanitized_cli (test_adoption_evidence.AdoptionEvidenceTests.test_parser_duplicate_nonfinite_bounds_and_sanitized_cli) ... ok
+test_sc001_canonical_units_and_aliases (test_adoption_evidence.AdoptionEvidenceTests.test_sc001_canonical_units_and_aliases) ... ok
+test_sc001_real_and_unresolved_intake_refused (test_adoption_evidence.AdoptionEvidenceTests.test_sc001_real_and_unresolved_intake_refused) ... ok
+test_sc002_independently_fixed_arithmetic (test_adoption_evidence.AdoptionEvidenceTests.test_sc002_independently_fixed_arithmetic) ... ok
+test_sc002_reject_wrong_unit_proxy_and_popularity (test_adoption_evidence.AdoptionEvidenceTests.test_sc002_reject_wrong_unit_proxy_and_popularity) ... ok
+test_sc003_complete_costs_and_missingness (test_adoption_evidence.AdoptionEvidenceTests.test_sc003_complete_costs_and_missingness) ... ok
+test_sc003_invalid_durations_refused (test_adoption_evidence.AdoptionEvidenceTests.test_sc003_invalid_durations_refused) ... ok
+test_sc004_contradictory_replay_not_admitted (test_adoption_evidence.AdoptionEvidenceTests.test_sc004_contradictory_replay_not_admitted) ... ok
+test_sc004_replay_is_closed_and_bounded (test_adoption_evidence.AdoptionEvidenceTests.test_sc004_replay_is_closed_and_bounded) ... ok
+test_sc004_rights_duplicates_and_unreplayable_controls (test_adoption_evidence.AdoptionEvidenceTests.test_sc004_rights_duplicates_and_unreplayable_controls) ... ok
+test_sc005_commands_environment_and_rights_required (test_adoption_evidence.AdoptionEvidenceTests.test_sc005_commands_environment_and_rights_required) ... ok
+test_sc005_externality_and_candidate_controls (test_adoption_evidence.AdoptionEvidenceTests.test_sc005_externality_and_candidate_controls) ... ok
+test_sc006_historical_source_bindings_and_pending_decisions (test_adoption_evidence.AdoptionEvidenceTests.test_sc006_historical_source_bindings_and_pending_decisions) ... ok
+test_sc007_all_missing_is_unknown_not_zero (test_adoption_evidence.AdoptionEvidenceTests.test_sc007_all_missing_is_unknown_not_zero) ... ok
+test_sc007_determinism_privacy_no_authority (test_adoption_evidence.AdoptionEvidenceTests.test_sc007_determinism_privacy_no_authority) ... ok
+test_sc007_hash_window_and_manifest_drift_invalidate (test_adoption_evidence.AdoptionEvidenceTests.test_sc007_hash_window_and_manifest_drift_invalidate) ... ok
+test_sc007_withdrawn_permission_and_stale_episode (test_adoption_evidence.AdoptionEvidenceTests.test_sc007_withdrawn_permission_and_stale_episode) ... ok
+test_negative_or_inconclusive_research_is_a_valid_terminal_decision (test_adoption_pathline.AdoptionPathlineTests.test_negative_or_inconclusive_research_is_a_valid_terminal_decision) ... ok
+test_rejects_adopted_track_without_feature_reference (test_adoption_pathline.AdoptionPathlineTests.test_rejects_adopted_track_without_feature_reference) ... ok
+test_rejects_backward_stage_history (test_adoption_pathline.AdoptionPathlineTests.test_rejects_backward_stage_history) ... ok
+test_rejects_missing_differentiation_metric (test_adoption_pathline.AdoptionPathlineTests.test_rejects_missing_differentiation_metric) ... ok
+test_rejects_missing_owner_or_next_decision (test_adoption_pathline.AdoptionPathlineTests.test_rejects_missing_owner_or_next_decision) ... ok
+test_rejects_schema_shape_drift (test_adoption_pathline.AdoptionPathlineTests.test_rejects_schema_shape_drift) ... ok
+test_rejects_unknown_committed_radar_id (test_adoption_pathline.AdoptionPathlineTests.test_rejects_unknown_committed_radar_id) ... ok
+test_seeded_registry_is_valid_and_has_no_adoption (test_adoption_pathline.AdoptionPathlineTests.test_seeded_registry_is_valid_and_has_no_adoption) ... ok
+test_cli_json_text_and_rejection (test_analysis.AnalyzerTests.test_cli_json_text_and_rejection) ... ok
+test_complete_disjoint_footprints_are_candidates_not_authorization (test_analysis.AnalyzerTests.test_complete_disjoint_footprints_are_candidates_not_authorization) ... ok
+test_deterministic_and_input_order_independent (test_analysis.AnalyzerTests.test_deterministic_and_input_order_independent) ... ok
+test_invalid_and_cyclic_batches_are_rejected (test_analysis.AnalyzerTests.test_invalid_and_cyclic_batches_are_rejected) ... ok
+test_overlap_dependency_partial_and_external_are_conservative (test_analysis.AnalyzerTests.test_overlap_dependency_partial_and_external_are_conservative) ... ok
+test_read_versions_remain_constraints (test_analysis.AnalyzerTests.test_read_versions_remain_constraints) ... ok
+test_report_schema (test_analysis.AnalyzerTests.test_report_schema) ... ok
+test_software_benchmark_has_no_false_safe_classification (test_analysis.AnalyzerTests.test_software_benchmark_has_no_false_safe_classification) ... ok
+test_verify_command_preserves_bounded_checker (test_analysis.AnalyzerTests.test_verify_command_preserves_bounded_checker) ... ok
+test_actual_classifier_unknown_path_runs_specialist_and_errors_emit_no_outputs (test_ci_validation.CIValidationTests.test_actual_classifier_unknown_path_runs_specialist_and_errors_emit_no_outputs) ... ok
+test_complete_results_accept_only_permitted_specialist_outcomes (test_ci_validation.CIValidationTests.test_complete_results_accept_only_permitted_specialist_outcomes) ... ok
+test_concurrency_supersedes_only_same_pr_and_preserves_each_non_pr_run (test_ci_validation.CIValidationTests.test_concurrency_supersedes_only_same_pr_and_preserves_each_non_pr_run) ... ok
+test_confirmation_and_final_checkpoint_recheck_cancellation (test_ci_validation.CIValidationTests.test_confirmation_and_final_checkpoint_recheck_cancellation) ... ok
+test_every_mandatory_job_failure_cancellation_skip_unknown_or_absence_blocks (test_ci_validation.CIValidationTests.test_every_mandatory_job_failure_cancellation_skip_unknown_or_absence_blocks) ... ok
+test_global_cancellation_blocks_even_after_all_prerequisites_succeeded (test_ci_validation.CIValidationTests.test_global_cancellation_blocks_even_after_all_prerequisites_succeeded) ... ok
+test_malformed_classifier_values_block_instead_of_becoming_false (test_ci_validation.CIValidationTests.test_malformed_classifier_values_block_instead_of_becoming_false) ... ok
+test_missing_extra_or_non_object_classifier_outputs_block (test_ci_validation.CIValidationTests.test_missing_extra_or_non_object_classifier_outputs_block) ... ok
+test_missing_malformed_or_non_object_prerequisite_json_blocks (test_ci_validation.CIValidationTests.test_missing_malformed_or_non_object_prerequisite_json_blocks) ... ok
+test_required_workflow_retains_full_pr_and_post_merge_checks_without_path_filter (test_ci_validation.CIValidationTests.test_required_workflow_retains_full_pr_and_post_merge_checks_without_path_filter) ... ok
+test_specialist_condition_selects_work_for_unknown_or_malformed_outputs (test_ci_validation.CIValidationTests.test_specialist_condition_selects_work_for_unknown_or_malformed_outputs) ... ok
+test_specialist_failed_cancelled_missing_or_unknown_blocks_even_when_unselected (test_ci_validation.CIValidationTests.test_specialist_failed_cancelled_missing_or_unknown_blocks_even_when_unselected) ... ok
+test_unknown_or_selected_inputs_must_use_sensitive_specialist_validation (test_ci_validation.CIValidationTests.test_unknown_or_selected_inputs_must_use_sensitive_specialist_validation) ... ok
+test_caps_logical_cache_hits_and_steps (test_contextual_lab.ContextualChecksTests.test_caps_logical_cache_hits_and_steps) ... ok
+test_configuration_bound_includes_unicode_and_all_raw_dimensions (test_contextual_lab.ContextualChecksTests.test_configuration_bound_includes_unicode_and_all_raw_dimensions) ... ok
+test_determinism_no_input_mutation_source_binding_and_public_api (test_contextual_lab.ContextualChecksTests.test_determinism_no_input_mutation_source_binding_and_public_api) ... ok
+test_exact_observation_restores_pending_before_observe (test_contextual_lab.ContextualChecksTests.test_exact_observation_restores_pending_before_observe) ... ok
+test_prelude_exhaustion_has_explicit_unavailable_placeholders (test_contextual_lab.ContextualChecksTests.test_prelude_exhaustion_has_explicit_unavailable_placeholders) ... ok
+test_reachability_dependencies_and_unsupported_extensions_reject (test_contextual_lab.ContextualChecksTests.test_reachability_dependencies_and_unsupported_extensions_reject) ... ok
+test_replay_mapping_matches_unchanged_full_interpreter (test_contextual_lab.ContextualChecksTests.test_replay_mapping_matches_unchanged_full_interpreter) ... ok
+test_report_byte_reservation_exhaustion_and_minimum_envelope (test_contextual_lab.ContextualChecksTests.test_report_byte_reservation_exhaustion_and_minimum_envelope) ... ok
+test_suffix_binding_and_bounds (test_contextual_lab.ContextualChecksTests.test_suffix_binding_and_bounds) ... ok
+test_suffix_limit_and_dependency_closed_partial_fragments (test_contextual_lab.ContextualChecksTests.test_suffix_limit_and_dependency_closed_partial_fragments) ... ok
+test_terminal_match_with_distinguishing_suffix (test_contextual_lab.ContextualChecksTests.test_terminal_match_with_distinguishing_suffix) ... ok
+test_cli_check_verify_paths_and_invalid_parser (test_contextual_lab.ContextualCliTests.test_cli_check_verify_paths_and_invalid_parser) ... ok
+test_errors_and_failed_pending_inventory_retain_partial_effects (test_contextual_lab.ContextualControlsTests.test_errors_and_failed_pending_inventory_retain_partial_effects) ... ok
+test_guard_enabledness_and_stale_version_failures_are_inconclusive (test_contextual_lab.ContextualControlsTests.test_guard_enabledness_and_stale_version_failures_are_inconclusive) ... ok
+test_initial_only_pair_match_does_not_cover_reachable_context (test_contextual_lab.ContextualControlsTests.test_initial_only_pair_match_does_not_cover_reachable_context) ... ok
+test_omitted_premises_and_event_order (test_contextual_lab.ContextualControlsTests.test_omitted_premises_and_event_order) ... ok
+test_return_values_remain_raw_under_projection (test_contextual_lab.ContextualControlsTests.test_return_values_remain_raw_under_projection) ... ok
+test_anchored_relations_and_exclusions (test_contextual_lab.ContextualProofMappingTests.test_anchored_relations_and_exclusions) ... ok
+test_mapping_cli_and_determinism (test_contextual_lab.ContextualProofMappingTests.test_mapping_cli_and_determinism) ... ok
+test_mapping_oracle_detects_corrupted_implementation (test_contextual_lab.ContextualProofMappingTests.test_mapping_oracle_detects_corrupted_implementation) ... ok
+test_aim_invalid_fields (test_contracts.StructuralTests.test_aim_invalid_fields) ... ok
+test_contract_corpus (test_contracts.StructuralTests.test_contract_corpus) ... ok
+test_legacy_bytes (test_contracts.StructuralTests.test_legacy_bytes) ... ok
+test_self_hashed_record_is_not_admitted_without_separate_pin_and_revocation_is_live (test_forecast_authority.DeploymentAuthorityTests.test_self_hashed_record_is_not_admitted_without_separate_pin_and_revocation_is_live) ... ok
+test_ewma_selection_requires_development_labels (test_forecast_baselines.ForecastBaselineTests.test_ewma_selection_requires_development_labels) ... ok
+test_persistence_and_ewma_have_independent_ordered_outputs (test_forecast_baselines.ForecastBaselineTests.test_persistence_and_ewma_have_independent_ordered_outputs) ... ok
+test_regression_fits_development_only_and_has_predictive_behavior (test_forecast_baselines.ForecastBaselineTests.test_regression_fits_development_only_and_has_predictive_behavior) ... ok
+test_unavailable_series_and_unsupported_horizons_refuse (test_forecast_baselines.ForecastBaselineTests.test_unavailable_series_and_unsupported_horizons_refuse) ... ok
+test_a_cached_model_identity_cannot_be_relabelled_as_the_current_artifact (test_forecast_cache.CacheConformanceTests.test_a_cached_model_identity_cannot_be_relabelled_as_the_current_artifact) ... ok
+test_a_misbound_cache_packet_refuses_instead_of_relabelling_its_values (test_forecast_cache.CacheConformanceTests.test_a_misbound_cache_packet_refuses_instead_of_relabelling_its_values) ... ok
+test_already_cancelled_or_expired_hit_never_even_reads_cache (test_forecast_cache.CacheConformanceTests.test_already_cancelled_or_expired_hit_never_even_reads_cache) ... ok
+test_cache_storage_and_sessions_do_not_share_mutable_results (test_forecast_cache.CacheConformanceTests.test_cache_storage_and_sessions_do_not_share_mutable_results) ... ok
+test_cancel_or_deadline_during_a_miss_never_invokes_the_backend (test_forecast_cache.CacheConformanceTests.test_cancel_or_deadline_during_a_miss_never_invokes_the_backend) ... ok
+test_cancel_or_deadline_during_cache_commit_removes_only_its_entry (test_forecast_cache.CacheConformanceTests.test_cancel_or_deadline_during_cache_commit_removes_only_its_entry) ... ok
+test_cancellation_after_backend_does_not_commit_an_incomplete_result (test_forecast_cache.CacheConformanceTests.test_cancellation_after_backend_does_not_commit_an_incomplete_result) ... ok
+test_cancellation_during_cache_read_never_delivers_the_hit (test_forecast_cache.CacheConformanceTests.test_cancellation_during_cache_read_never_delivers_the_hit) ... ok
+test_cancellation_during_cache_read_precedes_consuming_its_payload (test_forecast_cache.CacheConformanceTests.test_cancellation_during_cache_read_precedes_consuming_its_payload) ... ok
+test_changed_artifact_or_backend_cannot_reuse_another_prediction (test_forecast_cache.CacheConformanceTests.test_changed_artifact_or_backend_cannot_reuse_another_prediction) ... ok
+test_each_causal_identity_misses_and_cached_uncached_numerics_match (test_forecast_cache.CacheConformanceTests.test_each_causal_identity_misses_and_cached_uncached_numerics_match) ... ok
+test_hit_emits_current_cost_rather_than_original_inference_cost (test_forecast_cache.CacheConformanceTests.test_hit_emits_current_cost_rather_than_original_inference_cost) ... ok
+test_terminal_backend_results_never_populate_the_cache (test_forecast_cache.CacheConformanceTests.test_terminal_backend_results_never_populate_the_cache) ... ok
+test_median_output_axis_and_crossed_or_wrong_point_refuse (test_forecast_chronos.ForecastChronosTests.test_median_output_axis_and_crossed_or_wrong_point_refuse) ... ok
+test_missingness_is_preserved_and_no_future_target_is_constructed (test_forecast_chronos.ForecastChronosTests.test_missingness_is_preserved_and_no_future_target_is_constructed) ... ok
+test_unapproved_model_never_calls_worker_and_stub_is_explicit (test_forecast_chronos.ForecastChronosTests.test_unapproved_model_never_calls_worker_and_stub_is_explicit) ... ok
+test_capabilities_help_and_predict_load_no_ml (test_forecast_cli.ForecastCLITests.test_capabilities_help_and_predict_load_no_ml) ... ok
+test_oversized_malformed_input_refuses (test_forecast_cli.ForecastCLITests.test_oversized_malformed_input_refuses) ... ok
+test_active_phase_cannot_seal_or_reuse_an_identifier (test_forecast_cost.ForecastCostTests.test_active_phase_cannot_seal_or_reuse_an_identifier) ... ok
+test_counter_reset_duplicate_domain_and_meter_overlap_refuse (test_forecast_cost.ForecastCostTests.test_counter_reset_duplicate_domain_and_meter_overlap_refuse) ... ok
+test_empty_inventory_and_unconfirmed_cleanup_cannot_claim_coverage (test_forecast_cost.ForecastCostTests.test_empty_inventory_and_unconfirmed_cleanup_cannot_claim_coverage) ... ok
+test_failed_cancelled_and_refused_phases_are_retained (test_forecast_cost.ForecastCostTests.test_failed_cancelled_and_refused_phases_are_retained) ... ok
+test_integrity_bounds_and_oversized_roster_are_rejected (test_forecast_cost.ForecastCostTests.test_integrity_bounds_and_oversized_roster_are_rejected) ... ok
+test_memory_scopes_are_separate_and_sample_is_not_peak (test_forecast_cost.ForecastCostTests.test_memory_scopes_are_separate_and_sample_is_not_peak) ... ok
+test_missing_and_reused_setup_never_become_zero (test_forecast_cost.ForecastCostTests.test_missing_and_reused_setup_never_become_zero) ... ok
+test_overlapping_phases_use_union_not_sum (test_forecast_cost.ForecastCostTests.test_overlapping_phases_use_union_not_sum) ... ok
+test_partial_cpu_boundary_and_missing_roster_are_visible (test_forecast_cost.ForecastCostTests.test_partial_cpu_boundary_and_missing_roster_are_visible) ... ok
+test_phase_capacity_and_aggregate_overflow_are_bounded (test_forecast_cost.ForecastCostTests.test_phase_capacity_and_aggregate_overflow_are_bounded) ... ok
+test_recorder_retains_exception_and_does_not_mask_it (test_forecast_cost.ForecastCostTests.test_recorder_retains_exception_and_does_not_mask_it) ... ok
+test_baseline_cost_capture_is_no_model_and_keeps_unknowns (test_forecast_cost_procedure.ForecastCostProcedureTests.test_baseline_cost_capture_is_no_model_and_keeps_unknowns) ... ok
+test_changed_package_identity_keeps_failed_preflight_without_loading (test_forecast_cost_procedure.ForecastCostProcedureTests.test_changed_package_identity_keeps_failed_preflight_without_loading) ... ok
+test_cleanup_failure_is_persisted_without_confirming_cleanup (test_forecast_cost_procedure.ForecastCostProcedureTests.test_cleanup_failure_is_persisted_without_confirming_cleanup) ... ok
+test_existing_output_is_refused_before_session_work (test_forecast_cost_procedure.ForecastCostProcedureTests.test_existing_output_is_refused_before_session_work) ... ok
+test_interrupt_during_forecast_is_persisted_after_cleanup (test_forecast_cost_procedure.ForecastCostProcedureTests.test_interrupt_during_forecast_is_persisted_after_cleanup) ... ok
+test_sigterm_after_new_output_creation_keeps_registered_preflight (test_forecast_cost_procedure.ForecastCostProcedureTests.test_sigterm_after_new_output_creation_keeps_registered_preflight) ... ok
+test_sigterm_during_cleanup_is_queued_without_skipping_cleanup (test_forecast_cost_procedure.ForecastCostProcedureTests.test_sigterm_during_cleanup_is_queued_without_skipping_cleanup) ... ok
+test_sigterm_during_final_export_is_queued_until_receipts_persist (test_forecast_cost_procedure.ForecastCostProcedureTests.test_sigterm_during_final_export_is_queued_until_receipts_persist) ... ok
+test_source_checkout_origin_refuses_and_preserves_preflight_cost (test_forecast_cost_procedure.ForecastCostProcedureTests.test_source_checkout_origin_refuses_and_preserves_preflight_cost) ... ok
+test_existing_output_cannot_dispatch_or_overwrite (test_forecast_cost_supervised.SupervisedCostTests.test_existing_output_cannot_dispatch_or_overwrite) ... ok
+test_failed_launch_preserves_terminal_attempt (test_forecast_cost_supervised.SupervisedCostTests.test_failed_launch_preserves_terminal_attempt) ... ok
+test_missing_receipts_are_retained_as_failure_with_unconfirmed_cleanup (test_forecast_cost_supervised.SupervisedCostTests.test_missing_receipts_are_retained_as_failure_with_unconfirmed_cleanup) ... ok
+test_parent_covers_inner_publication_and_preserves_remaining_gaps (test_forecast_cost_supervised.SupervisedCostTests.test_parent_covers_inner_publication_and_preserves_remaining_gaps) ... ok
+test_unreapable_child_keeps_failure_and_does_not_confirm_cleanup (test_forecast_cost_supervised.SupervisedCostTests.test_unreapable_child_keeps_failure_and_does_not_confirm_cleanup) ... ok
+test_failed_shape_and_cancellation_attempts_keep_diagnostics_after_cleanup (test_forecast_cpu_procedure.CpuProcedureTests.test_failed_shape_and_cancellation_attempts_keep_diagnostics_after_cleanup) ... ok
+test_frozen_multivariate_and_causal_covariate_probes_have_exact_axes (test_forecast_cpu_procedure.CpuProcedureTests.test_frozen_multivariate_and_causal_covariate_probes_have_exact_axes) ... ok
+test_ingress_rejects_duplicates_nonfinite_and_oversize (test_forecast_data.ForecastDataTests.test_ingress_rejects_duplicates_nonfinite_and_oversize) ... ok
+test_malformed_and_late_data_are_refused (test_forecast_data.ForecastDataTests.test_malformed_and_late_data_are_refused) ... ok
+test_missing_values_need_reasons_and_masks (test_forecast_data.ForecastDataTests.test_missing_values_need_reasons_and_masks) ... ok
+test_overlap_is_not_double_counted_and_residual_is_explicit (test_forecast_data.ForecastDataTests.test_overlap_is_not_double_counted_and_residual_is_explicit) ... ok
+test_window_owns_copy_and_preserves_zero (test_forecast_data.ForecastDataTests.test_window_owns_copy_and_preserves_zero) ... ok
+test_active_write_emits_once_then_cancellation_refuses (test_forecast_engine_cancellation.SerialCancellationTests.test_active_write_emits_once_then_cancellation_refuses) ... ok
+test_cancel_before_queued_admission_emits_no_token (test_forecast_engine_cancellation.SerialCancellationTests.test_cancel_before_queued_admission_emits_no_token) ... ok
+test_inflight_write_precedes_cancel_and_no_later_write_starts (test_forecast_engine_cancellation.SerialCancellationTests.test_inflight_write_precedes_cancel_and_no_later_write_starts) ... ok
+test_native_writes_share_gate_and_cleanup_deadline_precedes_cancel (test_forecast_engine_cancellation.SerialCancellationTests.test_native_writes_share_gate_and_cleanup_deadline_precedes_cancel) ... ok
+test_large_valid_response_is_accepted_but_truncated_response_refuses (test_forecast_engine_console.NativeConsoleTests.test_large_valid_response_is_accepted_but_truncated_response_refuses) ... ok
+test_marker_lookalikes_cannot_admit_or_stop (test_forecast_engine_console.NativeConsoleTests.test_marker_lookalikes_cannot_admit_or_stop) ... ok
+test_markers_wait_for_complete_lf_or_crlf_records (test_forecast_engine_console.NativeConsoleTests.test_markers_wait_for_complete_lf_or_crlf_records) ... ok
+test_native_runtime_embeds_the_reviewed_parser_source (test_forecast_engine_console.NativeConsoleTests.test_native_runtime_embeds_the_reviewed_parser_source) ... ok
+test_retained_failed_run_is_still_refused (test_forecast_engine_console.NativeConsoleTests.test_retained_failed_run_is_still_refused) ... skipped 'explicit private retained console required'
+test_truncated_multiblock_info_never_admits (test_forecast_engine_console.NativeConsoleTests.test_truncated_multiblock_info_never_admits) ... ok
+test_valid_lf_and_crlf_require_the_same_strict_preflight (test_forecast_engine_console.NativeConsoleTests.test_valid_lf_and_crlf_require_the_same_strict_preflight) ... ok
+test_absent_pin_does_not_create_vm (test_forecast_engine_probe.ShellProtocolTests.test_absent_pin_does_not_create_vm) ... ok
+test_bad_root_live_restore_or_nonempty_population_refuses (test_forecast_engine_probe.ShellProtocolTests.test_bad_root_live_restore_or_nonempty_population_refuses) ... ok
+test_daemon_diagnostic_truncation_is_explicit_and_bounded (test_forecast_engine_probe.ShellProtocolTests.test_daemon_diagnostic_truncation_is_explicit_and_bounded) ... ok
+test_daemon_log_summary_parses_tail_count_value_and_truncation (test_forecast_engine_probe.ShellProtocolTests.test_daemon_log_summary_parses_tail_count_value_and_truncation) ... ok
+test_duplicate_or_missing_events_refuse (test_forecast_engine_probe.ShellProtocolTests.test_duplicate_or_missing_events_refuse) ... ok
+test_existing_dev_mount_is_detected_without_remount (test_forecast_engine_probe.ShellProtocolTests.test_existing_dev_mount_is_detected_without_remount) ... ok
+test_fake_failed_fault_retains_physical_cleanup (test_forecast_engine_probe.ShellProtocolTests.test_fake_failed_fault_retains_physical_cleanup) ... ok
+test_fake_interrupt_is_durable (test_forecast_engine_probe.ShellProtocolTests.test_fake_interrupt_is_durable) ... ok
+test_fake_success_consumes_once (test_forecast_engine_probe.ShellProtocolTests.test_fake_success_consumes_once) ... ok
+test_guest_script_parses_as_bash_without_executing (test_forecast_engine_probe.ShellProtocolTests.test_guest_script_parses_as_bash_without_executing) ... ok
+test_http_duplicate_framing_length_and_nonfinite_refuse (test_forecast_engine_probe.ShellProtocolTests.test_http_duplicate_framing_length_and_nonfinite_refuse) ... ok
+test_http_transport_does_not_half_close_on_request_stdin_eof (test_forecast_engine_probe.ShellProtocolTests.test_http_transport_does_not_half_close_on_request_stdin_eof) ... ok
+test_identity_signal_clock_and_fault_evidence_refuse (test_forecast_engine_probe.ShellProtocolTests.test_identity_signal_clock_and_fault_evidence_refuse) ... ok
+test_incomplete_daemon_startup_retains_only_bounded_diagnostics (test_forecast_engine_probe.ShellProtocolTests.test_incomplete_daemon_startup_retains_only_bounded_diagnostics) ... ok
+test_incomplete_diagnostic_preserves_failed_log_drain (test_forecast_engine_probe.ShellProtocolTests.test_incomplete_diagnostic_preserves_failed_log_drain) ... ok
+test_incomplete_log_is_decoded_exactly_once_including_base64_looking_bytes (test_forecast_engine_probe.ShellProtocolTests.test_incomplete_log_is_decoded_exactly_once_including_base64_looking_bytes) ... ok
+test_incomplete_log_missing_payload_or_inconsistent_length_refuses (test_forecast_engine_probe.ShellProtocolTests.test_incomplete_log_missing_payload_or_inconsistent_length_refuses) ... ok
+test_missing_or_negative_daemon_executable_identity_cannot_admit_or_qualify (test_forecast_engine_probe.ShellProtocolTests.test_missing_or_negative_daemon_executable_identity_cannot_admit_or_qualify) ... ok
+test_native_rejection_sends_abort_and_waits_for_guest_diagnostic (test_forecast_engine_probe.ShellProtocolTests.test_native_rejection_sends_abort_and_waits_for_guest_diagnostic) ... ok
+test_persistent_daemon_log_write_is_hard_bounded_and_fifo_drains_while_writer_stays_open (test_forecast_engine_probe.ShellProtocolTests.test_persistent_daemon_log_write_is_hard_bounded_and_fifo_drains_while_writer_stays_open) ... ok
+test_rejected_preflight_cannot_reach_signal_and_exports_abort_event (test_forecast_engine_probe.ShellProtocolTests.test_rejected_preflight_cannot_reach_signal_and_exports_abort_event) ... ok
+test_synthetic_launcher_failure_is_retained_without_qualification (test_forecast_engine_probe.ShellProtocolTests.test_synthetic_launcher_failure_is_retained_without_qualification) ... ok
+test_unknown_runc_search_path_refuses (test_forecast_engine_probe.ShellProtocolTests.test_unknown_runc_search_path_refuses) ... ok
+test_valid_guest_observation_and_host_guard (test_forecast_engine_probe.ShellProtocolTests.test_valid_guest_observation_and_host_guard) ... ok
+test_framed_abort_never_dispatches (test_forecast_engine_serial.SerialAdmissionTests.test_framed_abort_never_dispatches) ... ok
+test_framed_guest_reads_host_admission_before_synthetic_dispatch (test_forecast_engine_serial.SerialAdmissionTests.test_framed_guest_reads_host_admission_before_synthetic_dispatch) ... ok
+test_native_transport_uses_the_shared_serial_program (test_forecast_engine_serial.SerialAdmissionTests.test_native_transport_uses_the_shared_serial_program) ... ok
+test_raw_v7_shape_consumes_source_instead_of_host_admission (test_forecast_engine_serial.SerialAdmissionTests.test_raw_v7_shape_consumes_source_instead_of_host_admission) ... ok
+test_guest_options_hold_stdin_eof_until_delayed_response_finishes (test_forecast_engine_transport.SyntheticHTTPTransportTests.test_guest_options_hold_stdin_eof_until_delayed_response_finishes) ... skipped 'explicit isolated socat binary required'
+test_guest_transport_drains_fragmented_http_larger_than_one_read (test_forecast_engine_transport.SyntheticHTTPTransportTests.test_guest_transport_drains_fragmented_http_larger_than_one_read) ... skipped 'explicit isolated socat binary required'
+test_old_transport_exposes_early_eof_to_the_synthetic_server (test_forecast_engine_transport.SyntheticHTTPTransportTests.test_old_transport_exposes_early_eof_to_the_synthetic_server) ... skipped 'explicit isolated socat binary required'
+test_unresponsive_peer_requires_the_outer_deadline_and_is_reaped (test_forecast_engine_transport.SyntheticHTTPTransportTests.test_unresponsive_peer_requires_the_outer_deadline_and_is_reaped) ... skipped 'explicit isolated socat binary required'
+test_duplicate_episode_and_absent_development_are_refused (test_forecast_evaluation.RollingOriginTests.test_duplicate_episode_and_absent_development_are_refused) ... ok
+test_holdout_outcomes_cannot_change_development_selection (test_forecast_evaluation.RollingOriginTests.test_holdout_outcomes_cannot_change_development_selection) ... ok
+test_relabelled_window_and_same_seed_across_partitions_are_refused (test_forecast_evaluation.RollingOriginTests.test_relabelled_window_and_same_seed_across_partitions_are_refused) ... ok
+test_companion_costs_retain_failed_arms_grants_and_owned_cleanup (test_forecast_experiment.ForecastExperimentTests.test_companion_costs_retain_failed_arms_grants_and_owned_cleanup) ... ok
+test_generators_repeat_exactly_and_holdout_labels_stay_out_of_inputs (test_forecast_experiment.ForecastExperimentTests.test_generators_repeat_exactly_and_holdout_labels_stay_out_of_inputs) ... ok
+test_invalid_operator_preserves_all_three_arms (test_forecast_experiment.ForecastExperimentTests.test_invalid_operator_preserves_all_three_arms) ... ok
+test_metrics_keep_refusals_and_undefined_scale (test_forecast_experiment.ForecastExperimentTests.test_metrics_keep_refusals_and_undefined_scale) ... ok
+test_owned_fixture_runtime_uses_external_grants_and_equivalent_trees (test_forecast_experiment.ForecastExperimentTests.test_owned_fixture_runtime_uses_external_grants_and_equivalent_trees) ... Traceback (most recent call last):
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "/opt/homebrew/Cellar/python@3.13/3.13.11/Frameworks/Python.framework/Versions/3.13/lib/python3.13/unittest/__main__.py", line 18, in <module>
+    main(module=None)
+    ~~~~^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.13/3.13.11/Frameworks/Python.framework/Versions/3.13/lib/python3.13/unittest/main.py", line 104, in __init__
+    self.runTests()
+    ~~~~~~~~~~~~~^^
+  File "/opt/homebrew/Cellar/python@3.13/3.13.11/Frameworks/Python.framework/Versions/3.13/lib/python3.13/unittest/main.py", line 270, in runTests
+    self.result = testRunner.run(self.test)
+                  ~~~~~~~~~~~~~~^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.13/3.13.11/Frameworks/Python.framework/Versions/3.13/lib/python3.13/unittest/runner.py", line 240, in run
+    test(result)
+    ~~~~^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.13/3.13.11/Frameworks/Python.framework/Versions/3.13/lib/python3.13/unittest/suite.py", line 84, in __call__
+    return self.run(*args, **kwds)
+           ~~~~~~~~^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.13/3.13.11/Frameworks/Python.framework/Versions/3.13/lib/python3.13/unittest/suite.py", line 122, in run
+    test(result)
+    ~~~~^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.13/3.13.11/Frameworks/Python.framework/Versions/3.13/lib/python3.13/unittest/suite.py", line 84, in __call__
+    return self.run(*args, **kwds)
+           ~~~~~~~~^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.13/3.13.11/Frameworks/Python.framework/Versions/3.13/lib/python3.13/unittest/suite.py", line 122, in run
+    test(result)
+    ~~~~^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.13/3.13.11/Frameworks/Python.framework/Versions/3.13/lib/python3.13/unittest/suite.py", line 84, in __call__
+    return self.run(*args, **kwds)
+           ~~~~~~~~^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.13/3.13.11/Frameworks/Python.framework/Versions/3.13/lib/python3.13/unittest/suite.py", line 122, in run
+    test(result)
+    ~~~~^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.13/3.13.11/Frameworks/Python.framework/Versions/3.13/lib/python3.13/unittest/case.py", line 707, in __call__
+    return self.run(*args, **kwds)
+           ~~~~~~~~^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.13/3.13.11/Frameworks/Python.framework/Versions/3.13/lib/python3.13/unittest/case.py", line 651, in run
+    self._callTestMethod(testMethod)
+    ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.13/3.13.11/Frameworks/Python.framework/Versions/3.13/lib/python3.13/unittest/case.py", line 606, in _callTestMethod
+    if method() is not None:
+       ~~~~~~^^
+  File "<repository>/tests/test_forecast_experiment.py", line 35, in test_owned_fixture_runtime_uses_external_grants_and_equivalent_trees
+    result=paired_synthetic_episode(fixture,signal_episode('constant',seed=43),operator=operator)
+  File "<repository>/agent_braid/forecast_experiment.py", line 78, in paired_synthetic_episode
+    plan=runtime_policy.prepare_policy_run(request,destination/'result',replay_evidence=evidence,advisory_plan=portable,mode=row['mode'])
+  File "<repository>/agent_braid/runtime_policy.py", line 108, in prepare_policy_run
+    manifest = git_runtime.prepare_run(req, run_directory, cancel_event=cancel_event)
+  File "<repository>/agent_braid/git_runtime.py", line 271, in prepare_run
+    return _prepare(request, run_directory, Path(directory), cancel_event)[0]
+           ~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<repository>/agent_braid/git_runtime.py", line 219, in _prepare
+    _, provenance = analyze_git_with_provenance(analysis, env=env, budget=budget)
+                    ~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<repository>/agent_braid/git_adapter.py", line 305, in analyze_git_with_provenance
+    record, observation = _record(operation, repo_id, base, root, env, budget)
+                          ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<repository>/agent_braid/git_adapter.py", line 236, in _record
+    after = _snapshot(root, base, operation["source"], env, budget)
+  File "<repository>/agent_braid/git_adapter.py", line 153, in _snapshot
+    content = _git(root, "show", f"{resolved}:{path}", env=env, budget=budget)
+  File "<repository>/agent_braid/git_adapter.py", line 46, in _git
+    process = _git_result(cwd, *args, env=env, budget=budget)
+  File "<repository>/agent_braid/git_adapter.py", line 34, in _git_result
+    return run_git(cwd, args, env=env or os.environ.copy(), budget=budget,
+                   allow_failure=allow_failure)
+  File "<repository>/agent_braid/git_process.py", line 288, in run_git
+    time.sleep(poll_interval)
+    ~~~~~~~~~~^^^^^^^^^^^^^^^
+KeyboardInterrupt
+Contract corpus passed: legacy, 0.2 structure and finite semantic checks.
+Traceback (most recent call last):
+  File "<repository>/scripts/validate_change.py", line 499, in <module>
+    raise SystemExit(main())
+                     ~~~~^^
+  File "<repository>/scripts/validate_change.py", line 495, in main
+    return execute(plan, base, head)
+  File "<repository>/scripts/validate_change.py", line 452, in execute
+    result = subprocess.run(argv, cwd=root, check=False)
+  File "/opt/homebrew/Cellar/python@3.13/3.13.11/Frameworks/Python.framework/Versions/3.13/lib/python3.13/subprocess.py", line 556, in run
+    stdout, stderr = process.communicate(input, timeout=timeout)
+                     ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.13/3.13.11/Frameworks/Python.framework/Versions/3.13/lib/python3.13/subprocess.py", line 1214, in communicate
+    self.wait()
+    ~~~~~~~~~^^
+  File "/opt/homebrew/Cellar/python@3.13/3.13.11/Frameworks/Python.framework/Versions/3.13/lib/python3.13/subprocess.py", line 1280, in wait
+    return self._wait(timeout=timeout)
+           ~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.13/3.13.11/Frameworks/Python.framework/Versions/3.13/lib/python3.13/subprocess.py", line 2085, in _wait
+    (pid, sts) = self._try_wait(0)
+                 ~~~~~~~~~~~~~~^^^
+  File "/opt/homebrew/Cellar/python@3.13/3.13.11/Frameworks/Python.framework/Versions/3.13/lib/python3.13/subprocess.py", line 2043, in _try_wait
+    (pid, sts) = os.waitpid(self.pid, wait_flags)
+                 ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+KeyboardInterrupt

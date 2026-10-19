@@ -4,6 +4,11 @@ Date: 2026-10-17. Disposition: **NO-GO** for the proposed plugin + telemetry
 economic scenario; [admission reasons and stop rule](economic-admission.md).
 This is a documentary reconciliation, not a new specification or ADR adoption.
 
+**Current integration pointer — 2026-10-20:** the [telemetry integration record](../047-local-technical-telemetry/integration-review.md)
+tracks the source transfer after this allocation was merged in PR #557. The
+table, inventory hashes and local/uncommitted observations below describe the
+2026-10-17 allocation batch; they are not the current integration status.
+
 | Owner | Current identity | Historical local identity | Integration state |
 | --- | --- | --- | --- |
 | Native AI plugins | SPEC-046 / `046-native-ai-plugins`; ADR-0024 / `0024-native-ai-plugins.md` | Unchanged | Published source on `develop` at `48f4226db1e1b0565b1f8faf0eca81c150a65d30` |

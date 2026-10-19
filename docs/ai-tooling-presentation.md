@@ -63,3 +63,7 @@ appropriate. The helper never reads additional source content to complete an
 export. A selected reference is a pointer only; callers must resolve it through
 their already authorized owned-artifact interface before passing any additional
 evidence into a future formatter.
+
+## Local aggregate telemetry is a separate export
+
+`agent-braid telemetry report --format text|json` presents daily numeric product diagnostics; `telemetry export FILE` exports disjoint local deltas for explicit strict `telemetry merge FILE`. It does not format or transfer a full tooling result. `tooling present` and selected full evidence exports keep their existing contracts. See [telemetry privacy, consent and lifecycle](tooling/TELEMETRY.md); unavailable measurements and unknown losses remain visible, and no anonymity or experiment/native acceptance is inferred.

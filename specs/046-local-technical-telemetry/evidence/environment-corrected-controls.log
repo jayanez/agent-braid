@@ -1,0 +1,9 @@
+test_tag_only_target_requires_the_exact_annotated_tag (tests.test_history_equivalence.HistoryEquivalenceTests.test_tag_only_target_requires_the_exact_annotated_tag) ... ok
+test_timeout_kills_git_child_confined_to_worker_group (tests.test_git_counterexamples.GitCounterexampleSupervisorUnitTests.test_timeout_kills_git_child_confined_to_worker_group) ... ok
+test_exited_worker_cannot_orphan_grouped_git_child (tests.test_git_counterexamples.GitCounterexampleSupervisorUnitTests.test_exited_worker_cannot_orphan_grouped_git_child) ... ok
+test_git_command_limit_kills_child_without_killing_worker_group (tests.test_git_counterexamples.GitCounterexampleSupervisorUnitTests.test_git_command_limit_kills_child_without_killing_worker_group) ... ok
+
+----------------------------------------------------------------------
+Ran 4 tests in 5.722s
+
+OK

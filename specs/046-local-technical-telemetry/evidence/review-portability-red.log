@@ -1,0 +1,50 @@
+test_management_refuses_missing_secure_open_flags_without_traceback (tests.test_tooling_telemetry.TelemetryRegressionTests.test_management_refuses_missing_secure_open_flags_without_traceback) ... 
+  test_management_refuses_missing_secure_open_flags_without_traceback (tests.test_tooling_telemetry.TelemetryRegressionTests.test_management_refuses_missing_secure_open_flags_without_traceback) (flag='O_NOFOLLOW') ... ERROR
+  test_management_refuses_missing_secure_open_flags_without_traceback (tests.test_tooling_telemetry.TelemetryRegressionTests.test_management_refuses_missing_secure_open_flags_without_traceback) (flag='O_NONBLOCK') ... ERROR
+
+======================================================================
+ERROR: test_management_refuses_missing_secure_open_flags_without_traceback (tests.test_tooling_telemetry.TelemetryRegressionTests.test_management_refuses_missing_secure_open_flags_without_traceback) (flag='O_NOFOLLOW')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<repository>/tests/test_tooling_telemetry.py", line 340, in test_management_refuses_missing_secure_open_flags_without_traceback
+    code = main(['telemetry', 'merge', str(source)])
+  File "<repository>/agent_braid/cli.py", line 178, in main
+    return run(args)
+  File "<repository>/agent_braid/tooling_telemetry_cli.py", line 25, in run
+    output = method(args.file) if args.telemetry_command in {'export', 'merge'} else method()
+             ~~~~~~^^^^^^^^^^^
+  File "<repository>/agent_braid/tooling_telemetry.py", line 360, in merge
+    with _batch_file(source) as stream:
+         ~~~~~~~~~~~^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.13/3.13.11/Frameworks/Python.framework/Versions/3.13/lib/python3.13/contextlib.py", line 141, in __enter__
+    return next(self.gen)
+  File "<repository>/agent_braid/tooling_telemetry.py", line 119, in _batch_file
+    descriptor = os.open(path, os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK)
+                                             ^^^^^^^^^^^^^
+AttributeError: module 'os' has no attribute 'O_NOFOLLOW'. Did you mean: 'O_NOFOLLOW_ANY'?
+
+======================================================================
+ERROR: test_management_refuses_missing_secure_open_flags_without_traceback (tests.test_tooling_telemetry.TelemetryRegressionTests.test_management_refuses_missing_secure_open_flags_without_traceback) (flag='O_NONBLOCK')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<repository>/tests/test_tooling_telemetry.py", line 340, in test_management_refuses_missing_secure_open_flags_without_traceback
+    code = main(['telemetry', 'merge', str(source)])
+  File "<repository>/agent_braid/cli.py", line 178, in main
+    return run(args)
+  File "<repository>/agent_braid/tooling_telemetry_cli.py", line 25, in run
+    output = method(args.file) if args.telemetry_command in {'export', 'merge'} else method()
+             ~~~~~~^^^^^^^^^^^
+  File "<repository>/agent_braid/tooling_telemetry.py", line 360, in merge
+    with _batch_file(source) as stream:
+         ~~~~~~~~~~~^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.13/3.13.11/Frameworks/Python.framework/Versions/3.13/lib/python3.13/contextlib.py", line 141, in __enter__
+    return next(self.gen)
+  File "<repository>/agent_braid/tooling_telemetry.py", line 119, in _batch_file
+    descriptor = os.open(path, os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK)
+                                                             ^^^^^^^^^^^^^
+AttributeError: module 'os' has no attribute 'O_NONBLOCK'
+
+----------------------------------------------------------------------
+Ran 1 test in 0.050s
+
+FAILED (errors=2)

@@ -26,3 +26,8 @@ Native plugins retain SPEC-046/ADR-0024; active local telemetry moves to
 SPEC-047/ADR-0025 in its owner's unintegrated documentary candidate. Historical
 IDs remain candidate-qualified. No economic alternatives or execution authority
 are admitted; no capabilities are added and no existing tasks are closed.
+
+The allocation paragraph above records its first documentary batch. The
+[current telemetry integration record](../047-local-technical-telemetry/integration-review.md)
+tracks subsequent source integration without extending plugin consent, runtime
+authority, distribution or acceptance.

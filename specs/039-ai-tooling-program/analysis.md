@@ -1,5 +1,8 @@
 # Spec Kit cross-artifact analysis
 
+**Current local extension — 2026-10-16:** [M4.5 source alignment](../../docs/tooling/M45_ALIGNMENT.md). Seven source specs, 91 task obligations (65 checked, 26 unchecked), 3 historically closed parents and 4 open parents: 98 desired records. The local telemetry source and documentation are reconstructed on `e474320e`; candidate-bound validation is pending. Original bounded SPEC-039/040/042 acceptance and SPEC-044/T004 closure remain historical; native/candidate admission, review and M4.5 closure are pending. Dated procedures and counts below retain their original observation boundary.
+
+
 **Date:** 2026-10-08. **Scope:** SPEC-039–044 source packet.
 This is author analysis, not an independent reviewer result or human approval.
 Final structural validation receipts belong in delivery-status.md.

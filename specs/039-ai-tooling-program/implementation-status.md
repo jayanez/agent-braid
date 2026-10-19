@@ -1,5 +1,8 @@
 # M4.5 implementation status and source map
 
+**Current local extension — 2026-10-16:** [M4.5 source alignment](../../docs/tooling/M45_ALIGNMENT.md). Seven source specs, 91 task obligations (65 checked, 26 unchecked), 3 historically closed parents and 4 open parents: 98 desired records. The local telemetry source and documentation are reconstructed on `e474320e`; candidate-bound validation is pending. Original bounded SPEC-039/040/042 acceptance and SPEC-044/T004 closure remain historical; native/candidate admission, review and M4.5 closure are pending. Dated procedures and counts below retain their original observation boundary.
+
+
 ## Current autonomous closure scope — 2026-10-11
 
 The active owner-authorized work is the [autonomous closure plan](../044-ai-tooling-evaluation/autonomous-closure-plan.md); the earlier [five-task preparation plan](../044-ai-tooling-evaluation/preparation-delivery-plan.md) is historical. Seven bounded candidate-bound technical tasks are complete on source `72a396d294205201f7f56d00fa2349dccb540a5c`. Final quick and stable PR repository profiles both passed on that exact source. The six source task files now contain 52 checked and 27 unchecked boxes (79 total); this is a source inventory, not a remote issue-state assertion.

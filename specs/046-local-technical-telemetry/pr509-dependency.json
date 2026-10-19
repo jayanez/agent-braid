@@ -1,0 +1,49 @@
+{
+  "schema": "agent-braid-m45-pending-source-dependency/v1",
+  "observation": "2026-10-16 read-only GitHub PR state/diff and exact-ref public source; no execution/import of those sources.",
+  "base": "466ada29b48bb768f8493ecf36a9472894af8440",
+  "pullRequest": 509,
+  "state": "OPEN",
+  "draft": true,
+  "head": "482fbcc96227769f08768e79bc4d7f47d3445c4e",
+  "telemetryOwningPaths": [
+    "agent_braid/cli.py",
+    "agent_braid/tooling_cli.py",
+    "agent_braid/tooling_install.py",
+    "agent_braid/tooling_mcp.py"
+  ],
+  "telemetryOwningPathsChangedInObservedPR": [],
+  "remoteSources": [
+    {
+      "path": "agent_braid/tooling_registration_v6.py",
+      "ref": "482fbcc96227769f08768e79bc4d7f47d3445c4e",
+      "sha256": "75772c8faf8c788ffc0fa549ca44c02a537bbb0b7d27c264debdd65c510d6e83",
+      "presentInBase": false,
+      "source": "https://github.com/jayanez/agent-braid/blob/482fbcc96227769f08768e79bc4d7f47d3445c4e/agent_braid/tooling_registration_v6.py"
+    },
+    {
+      "path": "agent_braid/tooling_interface_observer.py",
+      "ref": "482fbcc96227769f08768e79bc4d7f47d3445c4e",
+      "sha256": "3004e67b14efd68446f5d5fa5698f7ccbc9077989e4a93633a18ce4f45303713",
+      "presentInBase": false,
+      "source": "https://github.com/jayanez/agent-braid/blob/482fbcc96227769f08768e79bc4d7f47d3445c4e/agent_braid/tooling_interface_observer.py"
+    },
+    {
+      "path": "agent_braid/tooling_receipt_instruments.py",
+      "ref": "482fbcc96227769f08768e79bc4d7f47d3445c4e",
+      "sha256": "44921298b9232d71166497de94beb728291e4c5f89da0340178f0910f09c5e17",
+      "presentInBase": false,
+      "source": "https://github.com/jayanez/agent-braid/blob/482fbcc96227769f08768e79bc4d7f47d3445c4e/agent_braid/tooling_receipt_instruments.py"
+    },
+    {
+      "path": "docs/tooling/ASSISTED_IMPLEMENTATION.md",
+      "ref": "482fbcc96227769f08768e79bc4d7f47d3445c4e",
+      "sha256": "8c246c7fe66dc72e06143182109ae7f074d3a192e85bb63e1b5ec2ca7d002543",
+      "presentInBase": false,
+      "source": "https://github.com/jayanez/agent-braid/blob/482fbcc96227769f08768e79bc4d7f47d3445c4e/docs/tooling/ASSISTED_IMPLEMENTATION.md"
+    }
+  ],
+  "technicalConclusion": "Local telemetry consumes existing 040/042 interfaces and does not require #509 implementation. Future source-based native admission requires reviewed incorporation of v6 registration, source/interface/process route and receipt/authentication instruments or an explicitly reviewed equivalent; old bytes or documentation do not admit the new candidate.",
+  "integration": "not performed; pending source choice/rebase and exact candidate review; no automatic merge required by this record",
+  "limits": "A bounded source dependency analysis, not an independent review of #509 or evidence of native/provider behavior."
+}

@@ -1,0 +1,22 @@
+{
+  "schema": "agent-braid-local-validation-environment-diagnosis/v1",
+  "defaultWorkerPython": "3.9.6",
+  "principalInterpreter": "3.13.11",
+  "causes": [
+    "Bare python3 workers inherited system PATH instead of the isolated interpreter.",
+    "The independent develop clone lacked the published m45-autonomous-candidate-20261011-corrected tag needed by the complete historical-equivalence test."
+  ],
+  "corrections": [
+    "Activate the isolated environment for parent and child commands; isolate global/system Git config.",
+    "Verify remote annotated tag object 5cda2c3f4418c35fc68c24fd74a9bfe5c82ecb04 and peeled commit 1ce83cc00e3ff64d82cb54ef4a7f27a8ffddca1c against the accepted ADR-0022 crosswalk, then fetch that exact already-public ref into this independent clone only."
+  ],
+  "productionCodeChanged": false,
+  "testsWeakened": false,
+  "sharedOriginalObjectStoreChanged": false,
+  "verification": {
+    "focusedEnvironmentControls": 4,
+    "exitCode": 0,
+    "gitFsckUnreachableOutput": "empty"
+  },
+  "limits": "Local test-environment correction only; not a platform clean-room reproduction, review, host/provider observation or new acceptance."
+}

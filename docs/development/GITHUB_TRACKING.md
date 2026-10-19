@@ -186,3 +186,11 @@ was corrected from **Todo** to the configured **Review pending**. This is a
 bounded UI observation, separate from repository issue reconciliation; no token
 permissions were expanded. See the [alignment record](m35-project-alignment.md)
 for the final source/remote audit and documentation boundary.
+
+## Unpublished SPEC-047/M4.5 extension
+
+The local telemetry delivery prepares one SPEC-047 parent and T001–T010, plus SPEC-044/T017/T018, assigned to existing milestone #19. [Local drafts](../../specs/047-local-technical-telemetry/issue-drafts.md) have stable markers and derived source states. SPEC-044/T004 incorporates a previously approved bounded documentary closure with [pinned provenance](../../specs/044-ai-tooling-evaluation/t004-bounded-closure-reconciliation.json); no reproduction or fresh acceptance is inferred. Local source preparation does not update remote issues or Project state.
+
+After separately authorized review/integration, scope the audit to milestone 19 and allowlist only the exact missing new records: SPEC-047, SPEC-047/T001 through SPEC-047/T010, SPEC-044/T017 and SPEC-044/T018. Confirm actual inventory first; the allowlist must omit IDs that already exist. Preserve the digest-bound audit/apply/readback procedure and require no pending scoped operations after eventual publication. Private Project verification stays separate. No audit/apply or remote write is authorized by these drafts.
+
+The [exact milestone #19 description draft](../../specs/047-local-technical-telemetry/milestone-description-draft.md) is local and unpublished. Existing synchronizer title/state/issue audit does not cover description drift; eventual publication needs its own reviewed guarded update and readback, without broadening the current no-write scope.

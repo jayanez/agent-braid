@@ -1,0 +1,38 @@
+{
+  "schema": "agent-braid-local-telemetry-follow-up-final-packaging/v1",
+  "sourceState": "uncommitted",
+  "base": "466ada29b48bb768f8493ecf36a9472894af8440",
+  "branch": "feat/local-technical-telemetry",
+  "checks": {
+    "quickSensitiveProfile": {
+      "exitCode": 0,
+      "tests": 1621,
+      "explicitSkips": 11
+    },
+    "prProfile": {
+      "exitCode": 0,
+      "tests": 1621,
+      "explicitSkips": 11
+    },
+    "focused": {
+      "tests": 87,
+      "skips": 0
+    },
+    "finalRepositoryAndSourceInventory": "passed",
+    "finalDocumentationDependencyControl": "1 test passed without skips",
+    "finalSpecKitStructuralGates": "passed",
+    "gitWhitespace": "passed",
+    "newSourceDocumentWhitespace": "26 files passed",
+    "gitFsckUnreachable": "empty",
+    "currentSourceEvidenceBindings": "82 hashes matched",
+    "originalCheckout": "clean; HEAD 76e9992fc9fe8f1ac17532da6088b4f0d1fa63c9",
+    "SPEC044T004": "task bytes and original evidence preserved; neither reopened nor reproduced"
+  },
+  "bindings": {
+    "specs/046-local-technical-telemetry/evidence/review-validation.json": "ccfd9550b44ee284d2d4f2ec0843abfde5e7b03a523e0bfa8470ec8eb2206e2a",
+    "specs/046-local-technical-telemetry/assurance.json": "ec95f8ba3b5cfb96358698100150610d32b13d48eb0b996cb8ea225cff506b8e",
+    "specs/046-local-technical-telemetry/evidence/review-final-packaging.log": "b28f0f3bd337a6cae29938ed6ec99ef7ecf3c0005cc38370479d91ec923e04ac",
+    "specs/046-local-technical-telemetry/evidence/review-final-checks.log": "2e513a7289875e8dc066f4522760fb52c381d6898f08fd927d351f637ff2a3fc"
+  },
+  "limits": "Single-session author review and synthetic local engineering only. Explicit skipped controls remain unexecuted. No additional agents, native hosts/providers, new T004 reproduction, commit freeze, independent review, admission, architectural adoption, human/founder acceptance, remote write, publication or merge."
+}

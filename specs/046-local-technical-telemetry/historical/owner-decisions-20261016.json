@@ -1,0 +1,114 @@
+{
+  "schema": "agent-braid-canonical-documentary-owner-decisions/v1",
+  "recordedAt": "2026-10-16T18:26:07.266947+00:00",
+  "sourceCandidate": "4f0a6bf407797bc4b682e6c5726dcd7a4f61bc28",
+  "metadataCommit": "b3809cbbaa0aa6ec1a1e50c6a841d840b753d94d",
+  "sourceTree": "573656e292cb54a2b996d3ad28347537e38080ed",
+  "metadataTree": "a0fbf87cc1ba9cfafb31f054cbf39369f5b24fcc",
+  "scope": "Canonical incorporation of approved documentary owner decisions only; no task closure or execution authority.",
+  "ownerDocumentaryDecisions": {
+    "D17": {
+      "decision": "approve",
+      "code": "approve-additive-contract-v1"
+    },
+    "D18": {
+      "decision": "approve",
+      "code": "approve-coverage-and-no-go-pilot"
+    },
+    "D10": {
+      "decision": "approve",
+      "code": "acknowledge-bounded-engineering-defer-final-acceptance"
+    }
+  },
+  "ownerReceiptSha256": "10f830b32caf1ea644935d36924126e3d7862d988f861c5835b5748b3db9dae0",
+  "ownerReceiptRecordedAt": "2026-10-16T16:36:24.890319+00:00",
+  "ownerReceiptAvailability": "Retained privately; digest and English scope summary only.",
+  "approvalProvenance": "Explicit direct human user response; not inferred from a commit author or a checksum. No cryptographic signature is claimed.",
+  "approvedPayloadSha256": "d1ddc1077338da662452f5413bc5e1377edd8e6963307827803f3e2db6a92f78",
+  "approvedPacketSealSha256": "ebd46c97451bc6649c63ce104419d25b23e12c5ec379ff9f3abdb101b659845a",
+  "applicationAuthorization": {
+    "source": "Subsequent direct human user instruction in this conversation",
+    "instructionSha256": "d808d474cb790cdc2848e6d69a77201618c19f226abe3f3b676172dec5f4e76e",
+    "englishScopeSummary": "Incorporate D17/D18/D10 in one local documentary lot, keeping NO-GO, tasks open and T004 intact; no additional agents, hosts/providers, publication or merge."
+  },
+  "documents": [
+    {
+      "sealedProposal": "T017-observation-contract-v1.md",
+      "sealedProposalSha256": "665d3d3022007c011b920812bc305c84e3a02999cb91924a6415f3d949b5541c",
+      "canonicalPath": "specs/044-ai-tooling-evaluation/native-observation-contract-v1.md",
+      "canonicalSha256": "413522c68a9f91b5ece8d500dfc939253a9e30e4e80be5311ef60bf06e130832",
+      "transformation": "Owner-approved status, canonical provenance links and explicit open-task effects; substantive constraints preserved."
+    },
+    {
+      "sealedProposal": "T018-admission-disposition.md",
+      "sealedProposalSha256": "e0766b3abb97d2ab2ba472f8ec8188eaf7ecbfeac09a36adf598065aa38252a6",
+      "canonicalPath": "specs/044-ai-tooling-evaluation/telemetry-candidate-owner-disposition.md",
+      "canonicalSha256": "bbd1fc54dd451e1e51f1c2aa9c61c4ee50fef3fe0efb15bab145bdce7243814e",
+      "transformation": "Owner-approved status, canonical provenance links and explicit open-task effects; substantive constraints preserved."
+    },
+    {
+      "sealedProposal": "T010-owner-disposition.md",
+      "sealedProposalSha256": "a897a573bd4758166d16602f049e344258966f2e34c605e6595c1305301093ec",
+      "canonicalPath": "specs/046-local-technical-telemetry/owner-acceptance-disposition.md",
+      "canonicalSha256": "55a1b4ffe4e8d24e37a7ac0759665533c75739f4b5b313b4573191bd211645ff",
+      "transformation": "Owner-approved status, canonical provenance links and explicit open-task effects; substantive constraints preserved."
+    }
+  ],
+  "canonicalDocumentaryRecord": true,
+  "canonicalReviewRecord": false,
+  "executionGrant": false,
+  "pilotAllowed": false,
+  "admitted": false,
+  "providerExecutionAllowed": false,
+  "independentReview": "pending-not-supplied",
+  "finalAcceptance": "deferred",
+  "ADR0023": "proposed; adoption pending",
+  "canonicalAssurance": {
+    "stage": "draft",
+    "human_review": "pending",
+    "authorityCommit": "4f0a6bf407797bc4b682e6c5726dcd7a4f61bc28",
+    "evidenceCommit": "4f0a6bf407797bc4b682e6c5726dcd7a4f61bc28",
+    "unchanged": true
+  },
+  "openTasks": [
+    "SPEC-044/T017",
+    "SPEC-044/T018",
+    "SPEC-046/T010"
+  ],
+  "taskClosures": [],
+  "sourceCounts": {
+    "specs": 7,
+    "tasks": 91,
+    "tasksChecked": 65,
+    "tasksUnchecked": 26,
+    "totalRecords": 98
+  },
+  "protectedBoundary": {
+    "SPEC044T002": "unchanged-required-not-waived",
+    "SPEC044T004": "preserve-closed-no-reproduction-no-rebinding",
+    "T004HistoricalCandidate": "482fbcc96227769f08768e79bc4d7f47d3445c4e"
+  },
+  "SPEC044T004BlockSha256": "4acb0c1e05919db526fd65a1be208dd5d559e9ac809a298aed10a051d0ceed7c",
+  "limits": {
+    "maxAdditionalSpendEUR": 0,
+    "extraAgentsAllowed": false,
+    "extraHostsAllowed": false,
+    "registrationMutationAllowed": false,
+    "installationOrConsentMutationAllowed": false,
+    "publicationAllowed": false,
+    "mergeAllowed": false,
+    "scheduledFutureOperations": []
+  },
+  "historicalValidation": {
+    "commits": [
+      "4f0a6bf407797bc4b682e6c5726dcd7a4f61bc28",
+      "b3809cbbaa0aa6ec1a1e50c6a841d840b753d94d"
+    ],
+    "eachLocalPrProfile": {
+      "tests": 1621,
+      "explicitSkips": 11,
+      "exitCode": 0
+    },
+    "limit": "Recorded results for those SHAs only; no transfer to the later documentary working tree or native/independent acceptance."
+  }
+}

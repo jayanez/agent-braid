@@ -286,8 +286,10 @@ class Selection:
     executable: Path | None = None
     enable_runtime: bool = False
     grant_store: Path | None = None
+    telemetry: str = "off"
 
     def paths(self) -> tuple[Path, Path, Path]:
+        _require(self.telemetry in {"off", "local"}, "telemetry mode must be off or local")
         _require(self.host in {"codex", "claude"}, "unsupported host")
         _require(self.scope in {"user", "project"}, "unsupported scope")
         _require(NAME.fullmatch(self.name), "invalid server name")
@@ -334,6 +336,8 @@ class Selection:
         _require(executable.is_file() and os.access(executable, os.X_OK), "selected executable is unavailable")
         args = ["-m", "agent_braid", "tooling", "serve", "--source-root", str(_canonical(self.source_root)),
                 "--result-root", str(_canonical(self.result_root))]
+        if self.telemetry == "local":
+            args += ["--telemetry", "local"]
         if self.enable_runtime:
             args += ["--enable-runtime", "--grant-store", str(self.grant_store)]
         return {"command": str(executable), "args": args}
@@ -690,6 +694,7 @@ def plan(selection: Selection, *, operation: str = "install", source_checkout: b
                      "skillDirectories": sorted({relative.split("/")[0] for relative in inventory}),
                      "executable": server["command"], "args": server["args"],
                      "sourceRoot": str(selection.source_root), "resultRoot": str(selection.result_root),
+                     "telemetry": {"mode": selection.telemetry, "retentionDays": 30, "automaticUpload": False},
                      "runtimeEnabled": selection.enable_runtime, "state": "installed", "residuals": []}
     receipt_before = _read(receipt_path)
     backups = _planned_backups(changes, receipt.get("backups", []) if receipt else [])
@@ -705,6 +710,7 @@ def plan(selection: Selection, *, operation: str = "install", source_checkout: b
                                 "scope": selection.scope, "serverName": selection.name,
                                 "server": server, "configPath": str(config), "skillsPath": str(skills),
                                 "receipt": str(receipt_path), "runtimeEnabled": selection.enable_runtime,
+                                "telemetry": {"mode": selection.telemetry, "retentionDays": 30, "automaticUpload": False, "purgeOnUninstall": False},
                                 "bundleVersion": bundle_version, "bundleSha256": bundle_hash,
                                 "enabledTools": ["analyze-work", "analyze", "prepare"] +
                                 (["status", "verify", "execute", "recover"] if selection.enable_runtime else []),
@@ -925,6 +931,34 @@ def doctor(selection: Selection, *, source_checkout: bool = False) -> dict:
     checks["schemas"] = {"status": "pending", "domain": "negotiated SDK discovery receipt required"}
     checks["analysis"] = {"status": "pending", "domain": "positive and negative fixture calls required"}
     checks["runtime"] = {"status": "enabled" if selection.enable_runtime else "disabled", "authority": "existing operator grant required"}
+    configured_mode = "unknown"
+    try:
+        raw = _read(selection.paths()[0])
+        if raw is None:
+            configured_mode = "not-configured"
+        else:
+            mapping = (_toml_parse(raw).get("mcp_servers", {}).get(selection.name) if selection.host == "codex"
+                       else _parse_json(raw).get("mcpServers", {}).get(selection.name))
+            if mapping is None:
+                configured_mode = "not-configured"
+            elif (isinstance(mapping, dict) and isinstance(mapping.get("args"), list)
+                  and all(isinstance(value, str) for value in mapping["args"])):
+                arguments = mapping["args"]
+                modes = []
+                for index, value in enumerate(arguments):
+                    if value == "--telemetry":
+                        modes.append(arguments[index + 1] if index + 1 < len(arguments) else None)
+                    elif isinstance(value, str) and value.startswith("--telemetry="):
+                        modes.append(value.split("=", 1)[1])
+                if not modes:
+                    configured_mode = "off"
+                elif len(modes) == 1 and modes[0] in {"off", "local"}:
+                    configured_mode = modes[0]
+    except (InstallationRefused, OSError, ValueError, TypeError, AttributeError):
+        pass
+    checks["telemetry"] = {"requestedMode": selection.telemetry, "configuredMode": configured_mode,
+                           "retentionDays": 30, "automaticUpload": False,
+                           "domain": "static server arguments only; no metrics read or created; uninstall retains metrics"}
     checks["authentication"] = {"status": "pending", "domain": "actual selected host observation required"}
     checks["hostApproval"] = {"status": "pending", "domain": "interactive selected host approval not observed"}
     return {"schema": "agent-braid-doctor/v0.1", "checks": checks,

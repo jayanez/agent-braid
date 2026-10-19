@@ -1,0 +1,212 @@
+{
+  "schema": "agent-braid-m45-local-alignment/v1",
+  "milestone": 19,
+  "sourceCounts": {
+    "specs": 8,
+    "tasks": 106,
+    "tasksChecked": 78,
+    "tasksUnchecked": 28,
+    "parentsClosed": 3,
+    "parentsOpen": 5,
+    "totalRecords": 114
+  },
+  "specs": [
+    {
+      "id": "SPEC-039",
+      "role": "Program",
+      "path": "specs/039-ai-tooling-program",
+      "scope": "Original bounded acceptance retained; additive program map and closure boundaries pending review."
+    },
+    {
+      "id": "SPEC-040",
+      "role": "MCP",
+      "path": "specs/040-portable-mcp-surface",
+      "scope": "Outer ToolingService.invoke instrumentation; tools, results, permissions and protocol unchanged."
+    },
+    {
+      "id": "SPEC-041",
+      "role": "Skills",
+      "path": "specs/041-ai-tooling-skills",
+      "scope": "Five skills unchanged; no telemetry activation/collection; native loading/use still pending."
+    },
+    {
+      "id": "SPEC-042",
+      "role": "Installation",
+      "path": "specs/042-ai-tooling-packaging",
+      "scope": "Explicit mode in preview/server arguments/receipt/static diagnosis; uninstall and purge distinct."
+    },
+    {
+      "id": "SPEC-043",
+      "role": "Journey",
+      "path": "specs/043-ai-tooling-journey",
+      "scope": "Privacy, report and aggregate exchange separate from full evidence exports."
+    },
+    {
+      "id": "SPEC-044",
+      "role": "Evaluation",
+      "path": "specs/044-ai-tooling-evaluation",
+      "scope": "Product metrics separate from receipts/native/cost; preserve T004; T017/T018 pending."
+    },
+    {
+      "id": "SPEC-046",
+      "role": "Native plugins",
+      "path": "specs/046-native-ai-plugins",
+      "scope": "Existing self-contained distribution, registry and setup; no new telemetry consent or publication; external candidacy tasks remain open."
+    },
+    {
+      "id": "SPEC-047",
+      "role": "Telemetry",
+      "path": "specs/047-local-technical-telemetry",
+      "scope": "Own collector, data contract, bounded storage, retention, report/exchange and synthetic validation."
+    }
+  ],
+  "dependencies": [
+    {
+      "predecessor": "M1",
+      "successor": "SPEC-039",
+      "kind": "technical"
+    },
+    {
+      "predecessor": "M2",
+      "successor": "SPEC-039",
+      "kind": "technical"
+    },
+    {
+      "predecessor": "M4",
+      "successor": "SPEC-039",
+      "kind": "technical"
+    },
+    {
+      "predecessor": "SPEC-039",
+      "successor": "SPEC-040",
+      "kind": "technical"
+    },
+    {
+      "predecessor": "SPEC-040",
+      "successor": "SPEC-041",
+      "kind": "technical"
+    },
+    {
+      "predecessor": "SPEC-040",
+      "successor": "SPEC-042",
+      "kind": "technical"
+    },
+    {
+      "predecessor": "SPEC-041",
+      "successor": "SPEC-042",
+      "kind": "technical"
+    },
+    {
+      "predecessor": "SPEC-040",
+      "successor": "SPEC-043",
+      "kind": "technical"
+    },
+    {
+      "predecessor": "SPEC-041",
+      "successor": "SPEC-043",
+      "kind": "technical"
+    },
+    {
+      "predecessor": "SPEC-042",
+      "successor": "SPEC-043",
+      "kind": "technical"
+    },
+    {
+      "predecessor": "SPEC-040",
+      "successor": "SPEC-047",
+      "kind": "technical"
+    },
+    {
+      "predecessor": "SPEC-042",
+      "successor": "SPEC-047",
+      "kind": "technical"
+    },
+    {
+      "predecessor": "SPEC-043",
+      "successor": "SPEC-044",
+      "kind": "technical"
+    },
+    {
+      "predecessor": "SPEC-047",
+      "successor": "SPEC-044",
+      "kind": "technical"
+    },
+    {
+      "predecessor": "SPEC-044/T017-disposition",
+      "successor": "future-pilot",
+      "kind": "review"
+    },
+    {
+      "predecessor": "SPEC-044/T018-admission",
+      "successor": "future-pilot",
+      "kind": "review"
+    },
+    {
+      "predecessor": "exact-native-host-loading-use-journey",
+      "successor": "M4.5-closure",
+      "kind": "observation"
+    },
+    {
+      "predecessor": "registered-108-attempts-and-cost",
+      "successor": "M4.5-closure",
+      "kind": "observation"
+    },
+    {
+      "predecessor": "human-ratings-and-founder-decision",
+      "successor": "M4.5-closure",
+      "kind": "acceptance"
+    }
+  ],
+  "externalBoundaries": [
+    {
+      "id": "SPEC-034",
+      "relation": "independent; no telemetry permission, experimental/training admission or gate completion inherited"
+    },
+    {
+      "id": "SPEC-035",
+      "relation": "independent; no telemetry permission, experimental/training admission or gate completion inherited"
+    },
+    {
+      "id": "SPEC-036",
+      "relation": "independent; no telemetry permission, experimental/training admission or gate completion inherited"
+    },
+    {
+      "id": "SPEC-037",
+      "relation": "independent; no telemetry permission, experimental/training admission or gate completion inherited"
+    },
+    {
+      "id": "SPEC-045",
+      "relation": "independent; no telemetry permission, experimental/training admission or gate completion inherited"
+    }
+  ],
+  "tracking": {
+    "status": "local-unpublished-drafts",
+    "remoteWrites": 0,
+    "scopedAudit": "deferred until reviewed source integration and explicit publication authorization",
+    "privateProject": "not inspected; verification pending"
+  },
+  "originalT004": "bounded-complete; not reopened; hashes verified without repetition",
+  "historicalPreparation": {
+    "date": "2026-10-16",
+    "base": "466ada29b48bb768f8493ecf36a9472894af8440",
+    "originalCandidate": "482fbcc96227769f08768e79bc4d7f47d3445c4e",
+    "PR509": {
+      "state": "OPEN",
+      "draft": true,
+      "head": "482fbcc96227769f08768e79bc4d7f47d3445c4e",
+      "observed": "2026-10-16",
+      "integration": "pending; no merge or source transplant assumed"
+    },
+    "boundary": "Original 2026-10-16 preparation observation only; not current remote state, current source absence, or native admission."
+  },
+  "currentDocumentaryScope": {
+    "sourceCandidate": "b2cf477fe9f9d586d6431ae9ed9a14abb3266706",
+    "integrationBase": "f0854d63a37f3d6dba777dcfd36524d7de37067c",
+    "rewrittenBase": "e474320eb763c33846665a0870677977b47d7a06",
+    "identity": "Telemetry SPEC-047 / proposed ADR0025; native plugin SPEC-046 / ADR0024 preserved",
+    "review": "Existing b2cf Luna review complete; integration delta reviewed separately; see integration-review.md",
+    "pilot": "NO-GO",
+    "admission": "withheld",
+    "validation": "Historical results keep their original scope; integrated candidate requires its own profile and CI."
+  }
+}

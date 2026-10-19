@@ -16,3 +16,7 @@ python3 scripts/sync_github_tracking.py source
 5. Obtain actual receipts, run proportional validation, freeze a clean candidate and record review. Actual host capture uses the separately registered SPEC-044 protocol; do not assume provider cost/source authority.
 
 Existing AIM/runtime/grant/verifier contracts remain unchanged. Analysis and preparation are consultative; host permission never substitutes for operator grants. No source ref promotion, repository-code/hook execution, arbitrary network effects or new scientific guarantee. Existing M4 G4 NO-GO and independent M3/M3.5 gates remain in effect.
+
+## Current installation and telemetry
+
+The original preparation steps above are historical planning context. For the implemented local candidate use [installation](../../docs/tooling/INSTALL.md), [telemetry consent and commands](../../docs/tooling/TELEMETRY.md) and [current alignment](../../docs/tooling/M45_ALIGNMENT.md). SPEC-047 adds explicit off|local consent to previewed server installation/configuration/update, receipts and static diagnosis. Default off is preserved. Uninstall retains aggregates; purge is separate. Prior bounded lifecycle acceptance is retained and does not automatically accept the new candidate.

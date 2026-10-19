@@ -61,3 +61,9 @@ The shared core and existing runtime remain authoritative. Descriptive tool/skil
 ## Human review and unresolved decisions
 
 Required: architectural/API/lifecycle review for the consumed contract; exact candidate/host/registration and budget decisions before capture; independent technical review and founder capability acceptance. ADR 0021 is proposed. Task completion requires actual evidence; separately verified technical clauses are recorded in `tasks.md` and `evidence/technical-clauses.json`, with native/registered/human/founder obligations preserved. Creating issues or a source PR is not adoption.
+
+## SPEC-047 alignment — 2026-10-16
+
+The five canonical skills neither select telemetry mode nor collect information. Their original native loading/use obligations remain pending; configuration consent and diagnostics belong to SPEC-042/046. No skill text or bundle is changed for telemetry.
+
+See [complete M4.5 matrix](../../docs/tooling/M45_ALIGNMENT.md), [SPEC-047](../047-local-technical-telemetry/spec.md) and [telemetry installation/use](../../docs/tooling/TELEMETRY.md). This local extension does not change frozen assurance/evidence records or authorize a native run.

@@ -142,3 +142,7 @@ separate legacy endpoint. Starting a server does not establish host
 discovery, authentication, user approval, or actual host acceptance. Those
 observations and any M4.5 evaluation require their separate registration and
 human decisions; this tutorial records none of them.
+
+## Optional aggregate diagnostics
+
+The [local telemetry guide](TELEMETRY.md) explains explicit consent, coverage and privacy before an operator chooses `--telemetry local` for the portable server or either analyzer CLI. After a separately authorized invocation, `agent-braid telemetry report` inspects daily numeric aggregates; `telemetry export FILE` exports only a manual incremental batch. `telemetry merge FILE` and `telemetry purge` are explicit local management actions. These metrics exclude complete evidence, source identity and native process receipts. Existing `tooling present --export-directory` continues to export complete selected evidence under its own privacy contract; telemetry export is a separate data product. Installation/update previews carry the mode; skills never activate it. See [current candidate admission](../../specs/044-ai-tooling-evaluation/candidate-admission-matrix.md) before a future native journey.

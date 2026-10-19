@@ -1,0 +1,61 @@
+{
+  "schema": "agent-braid-local-telemetry-synthetic-overhead/v1",
+  "method": "One owned AIM fixture, five warmups/mode/surface, alternating paired off/local calls in one process; CLI includes parser/rendering, MCP includes envelope generation and in-memory evidence inventory. Disk writes are real. No native host/provider, experiment or threshold/general performance claim.",
+  "environment": {
+    "python": "3.13.11",
+    "system": "Darwin",
+    "machine": "arm64",
+    "sqlite": "stdlib extension"
+  },
+  "measurements": {
+    "cli": {
+      "off": {
+        "samples": 100,
+        "medianMs": 3.0499375,
+        "p95Ms": 5.412166,
+        "minimumMs": 2.73725,
+        "maximumMs": 8.253792
+      },
+      "local": {
+        "samples": 100,
+        "medianMs": 5.1212085,
+        "p95Ms": 7.075,
+        "minimumMs": 4.499875,
+        "maximumMs": 8.705291
+      },
+      "medianPairedAddedMs": 2.0635210000000006,
+      "ratioOfMedians": 1.6791191622779156
+    },
+    "mcp": {
+      "off": {
+        "samples": 64,
+        "medianMs": 0.17049999999999998,
+        "p95Ms": 0.241,
+        "minimumMs": 0.143791,
+        "maximumMs": 0.265208
+      },
+      "local": {
+        "samples": 64,
+        "medianMs": 2.1200205,
+        "p95Ms": 2.654666,
+        "minimumMs": 1.876083,
+        "maximumMs": 2.856917
+      },
+      "medianPairedAddedMs": 1.9494794999999998,
+      "ratioOfMedians": 12.434137829912023
+    },
+    "storeBytesAfterCalls": 24576
+  },
+  "inputs": {
+    "examples/analysis/file-edits.json": "23a833a13adb2b029a696028bb1ae64ced30a65a19375d8e515c1c4d809fcd93",
+    "agent_braid/tooling_telemetry.py": "f72ba370eb6f44ae1fb82ee09c3d683bbcdbaa0a06d020acd5e0c0664222e015",
+    "agent_braid/cli.py": "0d59228c7ab9943455db6000f94ab85b35b593f64d155ab1b5babb68afc17cea",
+    "agent_braid/tooling_mcp.py": "4d35b94ba354b1dc7c248024f9fc6abc93bddec3aa679cc475aae01ff0b17194",
+    "specs/046-local-technical-telemetry/measure_overhead.py": "ad5a96eb8b1d8fc3f7b0dd5ea372e3343b9ab4dd286d351105329cd7e89c1c2a"
+  },
+  "limits": [
+    "Local uncontrolled synthetic descriptive timing only.",
+    "No native host, provider, production workload, independent reproduction or scientific utility evidence.",
+    "Warm measurements exclude module import; storage lock contention and stalled filesystem calls may add larger delays."
+  ]
+}

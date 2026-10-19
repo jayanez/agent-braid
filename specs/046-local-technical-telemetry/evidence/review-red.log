@@ -1,0 +1,25 @@
+test_existing_export_must_be_synced_before_pending_acknowledgement (tests.test_tooling_telemetry.TelemetryRegressionTests.test_existing_export_must_be_synced_before_pending_acknowledgement) ... FAIL
+test_import_replaced_with_symlink_between_check_and_open_refuses (tests.test_tooling_telemetry.TelemetryRegressionTests.test_import_replaced_with_symlink_between_check_and_open_refuses) ... FAIL
+
+======================================================================
+FAIL: test_existing_export_must_be_synced_before_pending_acknowledgement (tests.test_tooling_telemetry.TelemetryRegressionTests.test_existing_export_must_be_synced_before_pending_acknowledgement)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<repository>/tests/test_tooling_telemetry.py", line 346, in test_existing_export_must_be_synced_before_pending_acknowledgement
+    with self.assertRaises(OSError):
+         ~~~~~~~~~~~~~~~~~^^^^^^^^^
+AssertionError: OSError not raised
+
+======================================================================
+FAIL: test_import_replaced_with_symlink_between_check_and_open_refuses (tests.test_tooling_telemetry.TelemetryRegressionTests.test_import_replaced_with_symlink_between_check_and_open_refuses)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<repository>/tests/test_tooling_telemetry.py", line 374, in test_import_replaced_with_symlink_between_check_and_open_refuses
+    with self.assertRaises((OSError, ValueError)):
+         ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: (<class 'OSError'>, <class 'ValueError'>) not raised
+
+----------------------------------------------------------------------
+Ran 2 tests in 0.066s
+
+FAILED (failures=2)

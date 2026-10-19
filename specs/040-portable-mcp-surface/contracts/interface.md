@@ -118,3 +118,7 @@ Codex/Claude observation. Bind all actual outcomes to hashes and environment.
 Include multi-chunk results above 256 KiB, exact/partial last chunks, Unicode byte
 splits, repeat reads, stale digests, invalid ranges and corrupted/incomplete chains;
 compare the fully reconstructed result with the CLI core value.
+
+## Optional server-local telemetry
+
+SPEC-047 instruments the outer invocation boundary only. Server startup configuration selects `--telemetry off|local` (default off); no tool argument can enable it or choose storage. Typed tool inputs/outputs, advertised capabilities, permissions, resources/prompts and evidence envelopes keep their existing schemas. The standalone `python -m agent_braid.tooling_mcp` and `agent-braid tooling serve` both expose the explicit flag. The legacy `agent_braid.mcp_runtime` endpoint is excluded. No discovery/resource/prompt traffic or internal algorithm calls are counted as a new invocation.

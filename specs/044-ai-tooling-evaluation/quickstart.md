@@ -16,3 +16,7 @@ python3 scripts/sync_github_tracking.py source
 5. Obtain actual receipts, run proportional validation, freeze a clean candidate and record review. Actual host capture uses the separately approved v3 SPEC-044 technical registration; the owner’s deferral decision alone does not authorize capture. Preserve all 108 slots and the frozen rubric. Human ratings/adjudication remain pending, human cost remains unknown, and technical readiness cannot mark T007 fully complete, T010 accepted or M4.5 closed.
 
 Existing AIM/runtime/grant/verifier contracts remain unchanged. Analysis and preparation are consultative; host permission never substitutes for operator grants. No source ref promotion, repository-code/hook execution, arbitrary network effects or new scientific guarantee. Existing M4 G4 NO-GO and independent M3/M3.5 gates remain in effect.
+
+## Current installation and telemetry
+
+The original preparation steps above are historical planning context. For the implemented local candidate use [installation](../../docs/tooling/INSTALL.md), [telemetry consent and commands](../../docs/tooling/TELEMETRY.md) and [current alignment](../../docs/tooling/M45_ALIGNMENT.md). Product aggregates do not replace identity-bound receipts, actual native discovery/loading/use, registered attempts or economic accounting. Previously approved SPEC-044/T004 closure stays bound to 482fbcc. T017/T018 remain pending; validated SPEC-047 precedes a future admitted candidate pilot without depending on native evaluation.

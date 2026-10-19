@@ -2,7 +2,7 @@
 
 **Milestone:** M4.5 — AI tooling integrations for Codex and Claude Code
 
-**Status:** draft specification; experimental implementation and partial local observations exist, while full procedures and human acceptance remain pending.
+**Status:** original bounded MCP scope accepted on 2026-10-12; SPEC-047 extension review/adoption and M4.5 acceptance remain pending.
 
 ## Purpose and scope
 
@@ -91,3 +91,7 @@ SDK/documentation, structural checks, synthetic controls, actual host observatio
 ## Evidence and unresolved questions
 
 Planned procedures are in validation-plan.md; the assurance record contains candidate-bound partial local observations for SC-001, SC-002, SC-003 and SC-008, including installed default-resource bytes but not native loading, but no complete scenario has been established by these records. This packet remains draft and does not establish runtime acceptance, native-host acceptance or human approval. Required decisions: technical contract/ADR adoption, exact host versions and installation scope, provider budget/source rights for capture, independent review and founder acceptance. See program.md in SPEC-039 and evaluation-protocol.md in SPEC-044.
+
+## Additive SPEC-047 boundary — current local candidate
+
+The requirements/scenarios above retain their original criteria and evidence identities. [SPEC-047](../047-local-technical-telemetry/spec.md) owns default-off local numeric telemetry at the portable MCP and two analyzer CLI boundaries. Installation consent and reports are documented in [the telemetry guide](../../docs/tooling/TELEMETRY.md); five skills do not enable or collect telemetry. The [complete M4.5 map](../../docs/tooling/M45_ALIGNMENT.md) separates technical, observation, review and acceptance dependencies. Product metrics are not full evidence, experimental/training inputs or native/cost acceptance. Historical SPEC-044/T004 stays bounded-complete for 482fbcc; the new candidate has pending T017/T018 disposition/admission. No original criterion is relaxed or retrospectively rewritten by this extension.

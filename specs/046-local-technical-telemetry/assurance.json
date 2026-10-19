@@ -1,0 +1,8 @@
+{
+  "schema": "agent-braid-historical-reference-pointer/v1",
+  "date": "2026-10-20",
+  "status": "historical-navigation-only",
+  "historicalAssurance": "historical/assurance-b3809cbbaa0a.json",
+  "activeAssurance": "../047-local-technical-telemetry/assurance.json",
+  "boundary": "Compatibility navigation for retained historical links only. This file is not an active specification assurance record, evidence snapshot or approval. It does not rebind historical evidence, authority, candidate identity or acceptance."
+}

@@ -89,6 +89,12 @@ Existing AIM/runtime/grant/verifier contracts remain unchanged. Analysis and pre
 
 SDK/documentation, structural checks, synthetic controls, actual host observations and independent reproduction have separate evidence domains. Passing one does not establish the others or human approval. Public APIs are additive experimental proposals with migration/versioning review during implementation.
 
+
+
+## Additive SPEC-047 boundary — pending candidate
+
+SPEC-047 defines default-off numeric telemetry at the portable MCP and analyzer CLI boundaries. The five product skills do not enable or collect it. Candidate `4f0a6bf40779` and metadata `b3809cbbaa0a` hold the historical implementation/evidence; the reconstructed source on rewritten develop is still a new unvalidated candidate. Pilot **NO-GO**; T017/T018 and SPEC-047/T010 remain open. No original SPEC-041 or SPEC-044 criterion is relaxed. See [SPEC-047](../047-local-technical-telemetry/spec.md), [installation limits](../../docs/tooling/INSTALL.md) and [M4.5 alignment](../../docs/tooling/M45_ALIGNMENT.md).
+
 ## Evidence and unresolved questions
 
 Planned original procedures are in validation-plan.md; their obtained evidence is
