@@ -22,11 +22,16 @@ changes remain in the resulting source.
 
 The frozen `specs/046-local-technical-telemetry/` namespace, evidence, original
 ADR proposals and owner decisions retain their source bytes and candidate scopes.
-The active SPEC-047 authority snapshot is refreshed against the combined current
-authorities only; that does not alter historical snapshots or adopt ADR-0025.
+Both active draft authority inventories, native-plugin SPEC-046 and telemetry
+SPEC-047, are refreshed against the combined current authorities only; their
+draft stage, pending human review, current modes and null commit bindings remain
+unchanged. This does not alter historical snapshots or adopt ADR-0025.
 The initial integration preflight identified the expected stale/incomplete current
 authority snapshot after adding the public plugin ADR and telemetry ADR. Its
 correction is integration setup, not a collector regression or new acceptance.
+The full-suite integration run also identified the existing native-plugin draft
+inventory missing the two newly present telemetry ADR-path files; aligning that
+current inventory supplies no plugin or telemetry acceptance.
 
 ## Historical link compatibility correction
 
