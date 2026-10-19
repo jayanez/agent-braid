@@ -22,16 +22,23 @@ changes remain in the resulting source.
 
 The frozen `specs/046-local-technical-telemetry/` namespace, evidence, original
 ADR proposals and owner decisions retain their source bytes and candidate scopes.
-Both active draft authority inventories, native-plugin SPEC-046 and telemetry
-SPEC-047, are refreshed against the combined current authorities only; their
-draft stage, pending human review, current modes and null commit bindings remain
-unchanged. This does not alter historical snapshots or adopt ADR-0025.
+The active SPEC-047 authority inventory is refreshed against the combined
+current authorities; it retains current mode, a null commit, draft stage and
+pending human review. The native-plugin SPEC-046 active draft instead retains
+both its authority and evidence snapshots at the public integration base
+`f0854d63a37f3d6dba777dcfd36524d7de37067c` in historical mode. That public ancestor
+preserves the exact pre-telemetry authority and release-evidence input context.
+The immutable release record retains its original observed candidate IDs; the
+draft snapshot binding does not rebind those observations to the integration
+candidate, claim new validation or approval, or adopt ADR-0025.
 The initial integration preflight identified the expected stale/incomplete current
 authority snapshot after adding the public plugin ADR and telemetry ADR. Its
 correction is integration setup, not a collector regression or new acceptance.
-The full-suite integration run also identified the existing native-plugin draft
-inventory missing the two newly present telemetry ADR-path files; aligning that
-current inventory supplies no plugin or telemetry acceptance.
+The integration controls also identified native-plugin current-input drift after
+the telemetry ADR-path additions and CLI changes. Retaining that draft's snapshots
+at the public pre-telemetry base preserves the original authority/evidence input
+context without editing frozen release evidence or weakening validation. It
+supplies no plugin or telemetry acceptance.
 
 ## Historical link compatibility correction
 

@@ -16,7 +16,7 @@
   ],
   "assumptions": "Git and a supported native host already exist. Runtime/dependencies ship in the plugin. Official distribution eligibility and founder publication approval remain external.",
   "authority_snapshot": {
-    "commit": null,
+    "commit": "f0854d63a37f3d6dba777dcfd36524d7de37067c",
     "hashes": {
       "ARCHITECTURE.md": "7bad53a83a54da09a0f55fb514432b53265cc1d99e88fdc3e42989b2fa4ea256",
       "CONSTITUTION.md": "ff7196976a1736a639947c2ab26e8da157fef23c89ba9881312f2a36459964eb",
@@ -50,9 +50,7 @@
       "docs/adr/0021-codex-claude-tooling-integration.md": "c9e85fbab0c71445ca16d9aef7c33d17614abbf36588441ddf90b2b07fc1fd89",
       "docs/adr/0022-attribution-correction-history-equivalence.md": "0d394b895af69374c7f6bdf441cc780ee67802c34f9b0380f8ed58b1c9a17eb1",
       "docs/adr/0023-second-history-correction-equivalence.md": "4334fe23543dad038811b7819acbc24fbebab3c1858789816b1512e786b7a8eb",
-      "docs/adr/0024-local-technical-telemetry.md": "e3c2d827bbd839179e56d3f81fe3ad1b7234b4a61ed24c98bb59a8aa2f23b508",
       "docs/adr/0024-native-ai-plugins.md": "3a45d8a62cb241b01638a37f39fdc309cb0563941c0343fe58d9ab30c5c677ac",
-      "docs/adr/0025-local-technical-telemetry.md": "e2f9af4d0d0a118635677146ba0c96cbd82046b7943eca36eeabf041923601f7",
       "docs/architecture/AGENT_INTERACTION_METADATA.md": "0118d7f16c390fc4c1ff027b503a4eaba8a747edf3f6d7b088559f8870e27780",
       "docs/architecture/ASSURANCE_LEVELS.md": "3e86d0060ef566ba8d1e1690606fc06e8fee172f187a1b9779b13d27f0f915d9",
       "docs/architecture/CONFLUENCE_CERTIFICATE.md": "fd12a8f1a1477835848581b0f4ccd52f76d3f22dd96a3abaccb9074733464a8e",
@@ -87,13 +85,13 @@
       "schemas/governance/public-export-manifest.schema.json": "11eb7f2594939ae9fd0c9e6cfe4423a80aba686d6cdfdd8b73b0fb84b0840aa8",
       "schemas/governance/release-validation-record.schema.json": "d9943f0c9f5520ea52e3b12bfba88240d03f8011b433fc5e35cb49549ab6e819"
     },
-    "mode": "current"
+    "mode": "historical"
   },
   "compatibility": "Five canonical product skills are unchanged; setup has a separate inventory. Legacy Python installation and endpoint remain available; immutable plugin bindings require reconnection after setup changes.",
   "domain": "Software packaging, local configuration and engineering controls; no new scientific or effect domain.",
   "evidence_snapshot": {
-    "commit": null,
-    "mode": "current"
+    "commit": "f0854d63a37f3d6dba777dcfd36524d7de37067c",
+    "mode": "historical"
   },
   "execution_contract": "Analysis is the default. Explicit registry bindings identify source/result roots; existing core policies and grants govern execution. Installing or discovering repositories grants no execution authority.",
   "human_review": "pending",
