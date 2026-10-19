@@ -42,3 +42,13 @@ All evidence records include command, input/candidate hashes, environment and li
 Final candidate verification: `.venv-speckit/bin/python scripts/validate_change.py
 --base develop --profile pr`. Tests/procedures and feature evidence do not substitute
 for human review, scientific interpretation, explicit source rights or promotion.
+
+
+## Documentary reconciliation of research and proposed delivery — 2026-10-20
+
+These additive canonical identities retain the existing study/DDP aliases. Checked entries mean only their stated bounded historical lot; original research, human, model and product gates remain open. The evidence register is a documentary source snapshot, not new implementation or independent reproduction. See docs/system-one/README.md and task-map.json. No task launches agents or authorizes a study.
+
+- [ ] T009 (REQ-002 REQ-006 / SC-002 SC-006): Package bounded delivery and adoption gates (alias DDP-T08; proposed, not started).
+  Dependencies: SPEC-029/T027. Owner: coordinator.
+  Targets: specs/033-system-one-promotion/decision-delivery-gates.md, specs/028-system-one-core/decision-delivery-result.md. Verification planned: Document/contract review only; no runtime command required before implementation.
+  Criterion and negatives: docs/system-one/task-map.json alias DDP-T08; no obtained implementation evidence. Preserve no-authority and separate decision/prepare-budget boundaries.

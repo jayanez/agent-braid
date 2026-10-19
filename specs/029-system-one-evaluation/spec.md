@@ -59,3 +59,7 @@ Source inspection is in the analysis manifest; planned validation is in
 [validation-plan.md](validation-plan.md). Feature/model/workload acceptance evidence:
 none. All obtained_evidence arrays are empty and human_review is pending. Passing
 planning validators establishes artifact structure, not implementation or utility.
+
+## Current documentary reconciliation — 2026-10-20
+
+[Corpus status](corpus-status.md) links the complete S1.x evidence history, obtained bounded results, proposed implementation tasks and remaining gates. Historical planning wording below/above is not a denial of later source research or an acceptance of its implementation. The master assurance remains historical/draft; no approval or activation is inferred.
