@@ -215,6 +215,10 @@
     "046-native-ai-plugins": {
       "milestone": "M4.5 — AI tooling integrations for Codex and Claude Code",
       "state": "open"
+    },
+    "047-local-technical-telemetry": {
+      "milestone": "M4.5 — AI tooling integrations for Codex and Claude Code",
+      "state": "open"
     }
   },
   "task_state_overrides": {
