@@ -18,3 +18,11 @@ The 15 new task IDs T001–T015 belong only to SPEC-046. T013 incorporates the
 owner-requested shell installer; T014/T015 retain independent external approvals. The old 79-task inventory remains historical;
 new work is counted separately until governed source integration/reconciliation.
 Official approval, public release and M4.5 closure remain distinct decisions.
+
+## Coordinated plugin + telemetry admission
+
+The [first-batch economic admission](economic-admission.md) records **NO-GO**.
+Native plugins retain SPEC-046/ADR-0024; active local telemetry moves to
+SPEC-047/ADR-0025 in its owner's unintegrated documentary candidate. Historical
+IDs remain candidate-qualified. No economic alternatives or execution authority
+are admitted; no capabilities are added and no existing tasks are closed.

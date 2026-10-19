@@ -47,6 +47,38 @@ Stable source IDs; task completion does not imply native/provider or founder acc
 - [ ] T015 (REQ-012 / SC-012): Anthropic executable/size exception and external approval.
   Dependencies: T012, T009. Resolve bundled-runtime restrictions via an authorized review route, obtain publication decision and record directory/official-marketplace dispositions separately. Do not replace bundled runtime with external prerequisites.
 
+## Owner disposition — 2026-10-19
+
+T014/T015 and the plugin product remain frozen. The owner deferred further
+candidacy work and identified repository/package and executable size reduction
+as a possible future refactoring process. This note authorizes documentation
+only, not investigation, implementation, builds, migration, contact, submission
+or publication. Both tasks remain open; the economic NO-GO remains unchanged.
+
+For T015, the [current directory checklist](https://claude.com/docs/plugins/pre-submission-checklist)
+requires a repository below 50 MiB archived and 256 MiB unpacked, fewer than
+10,000 files and folders, and each plugin file below 5 MiB. These stop validation;
+reviewer holds for executables, files above 256 KiB and more than 512 plugin files
+do not waive those limits. The historical alpha.2 inventory records 390,788,156
+file bytes and 7,737 files; no new build or size measurement was performed for
+this disposition. No public size-exception procedure was established by the
+2026-10-19 documentation review. The [official-marketplace route](https://code.claude.com/docs/en/plugins/publish#submit-to-anthropics-directory)
+requires a separate partner discussion; its acceptance of this candidate remains
+unknown. The existing own Git marketplace is a supported distribution route,
+not Anthropic directory or official-marketplace approval and not T015 closure.
+
+If the owner later resumes size-reduction work, first measure repository archive,
+unpacked package, largest files, platform runtimes, dependencies and duplicated
+content separately. Compare Python packaging reductions with a bounded Rust
+prototype before choosing a migration. Rust is an unmeasured option, not an
+adopted architecture or a guarantee of meeting the per-file or total limits.
+Preserve the self-contained offline runtime, macOS arm64 and Linux x86_64,
+versioned contracts, workspace/grant boundaries and evidence provenance. Do not
+substitute external runtime prerequisites or evade directory limits through
+pointers, links or deferred runtime downloads. Any later architectural decision,
+implementation and acceptance require their applicable records and validation;
+existing candidate-bound evidence does not transfer to a rewritten product.
+
 ## Remaining acceptance boundaries
 
 T005/T006/T007 have actual agent-operated native macOS setup/product-skill
