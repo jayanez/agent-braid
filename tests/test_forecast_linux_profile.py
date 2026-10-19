@@ -17,7 +17,7 @@ from agent_braid.forecast_linux_profile import (
 class LinuxProfileTests(unittest.TestCase):
     def profile(self, **changes):
         values = dict(mode='serial', image_sha256='a'*64, root_hash='b'*64,
-                      source_digest='c'*64, manager_sha256='d'*64, uid=61000,
+                      source_digest='c'*64, manager_sha256='d'*64, operator_sha256='f'*64, operator_entry_sha256='8'*64, worker_sha256='9'*64, census_sha256='a'*64, recipe_sha256='e'*64, uid=61000,
                       limits=tuple(PhaseLimit(p, 0 if p == 'terminal' else 1,
                                               10, 4096, 8) for p in STEPS))
         values.update(changes)
@@ -41,6 +41,16 @@ class LinuxProfileTests(unittest.TestCase):
             with self.assertRaisesRegex(ForecastError, 'compiler-drift'):
                 p.units(remaining_seconds=50)
 
+    def test_acceptance_state_does_not_rename_reviewed_units(self):
+        profile=self.profile();original=profile.manifest
+        changed=original()
+        for key in ('execAdmissionEnforced','bootstrapSupervisionAccepted',
+                    'executionAuthorization','actualProfileAdmitted'):
+            changed[key]=True
+        identity=profile.identity
+        with patch.object(LinuxAdmissionProfile,'manifest',return_value=changed):
+            self.assertEqual(profile.identity,identity)
+
     def test_missing_pins_injection_mutable_limits_and_large_storage_refuse(self):
         for name, value in [('root_hash', ''), ('image_sha256', 'tag:latest'),
                             ('manager_sha256', 'a'*64+'\nExecStart=/bin/sh'),
@@ -54,6 +64,10 @@ class LinuxProfileTests(unittest.TestCase):
     def test_units_preserve_manager_containment_verity_and_no_host_export(self):
         p = self.profile()
         units = p.units(remaining_seconds=50)
+        stem='fc1'+p.identity
+        self.assertFalse(p.manifest()['bootstrapSupervisionAccepted'])
+        self.assertIn('Slice='+stem+'-root.slice\n',units[stem+'.service'])
+        self.assertIn('BindsTo='+stem+'.service\nAfter='+stem+'.service\n',units[stem+'-operator.service'])
         workers = [s for n,s in units.items() if n.endswith('.service') and 'RootImage=' in s]
         self.assertEqual(len(workers), 3)
         for worker in workers:
@@ -68,9 +82,9 @@ class LinuxProfileTests(unittest.TestCase):
             self.assertNotIn('EnvironmentFile=', worker)
             self.assertNotIn('[Install]', worker)
         slices = [s for n,s in units.items() if n.endswith('.slice')]
-        self.assertEqual(len(slices), 1)
+        self.assertEqual(len(slices), 3)
         for setting in ('CPUQuota=100%', 'MemoryMax=2147483648', 'MemorySwapMax=0', 'TasksMax=64'):
-            self.assertIn(setting+'\n', slices[0])
+            self.assertTrue(any(setting+'\n' in row for row in slices))
 
     def test_phase_storage_separate_bounded_and_prior_outputs_readonly(self):
         p = self.profile()
@@ -88,7 +102,8 @@ class LinuxProfileTests(unittest.TestCase):
         self.assertIn('Environment=HOME=/scratch/home TMPDIR=/scratch/tmp\n', verify)
         self.assertNotIn(':/prior/terminal', verify)
         self.assertEqual(verify.count('BindPaths='), 1)
-        self.assertEqual(verify.count('BindReadOnlyPaths='), 2)
+        self.assertEqual(verify.count('BindReadOnlyPaths='), 3)
+        self.assertIn('/exec-gate.sock:/exec-gate.sock', verify)
         self.assertIn('/operator.sock:/operator.sock\n', verify)
 
     def test_deadline_never_resets_and_future_reserves_block_late_start(self):

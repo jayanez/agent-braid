@@ -46,3 +46,27 @@ class AdmissionWorkerTests(unittest.TestCase):
             worker.verify(scope,{'expectedFinalTree':'t'},'serial')
         verify.assert_called_once_with({'expectedFinalTree':'t'},'/work/run')
         grant.assert_not_called(); prepare.assert_not_called()
+
+    def test_image_independent_recipe_and_external_profile_bind_without_hash_cycle(self):
+        import hashlib,json
+        from dataclasses import fields
+        from agent_braid.forecast_linux_profile import LinuxAdmissionProfile,PhaseLimit,STEPS
+        from agent_braid.forecast_recipe import recipe_bytes,BASE,REPOSITORY
+        from agent_braid.forecast_git_launch import INPUT_COMMITS
+        request={'gitRuntimeRequestVersion':'0.1.0-alpha','repository':REPOSITORY,'baseRevision':BASE,
+                 'expectedFinalTree':'1'*40,'order':['a','b'],'operations':[
+                     {'instanceId':name,'attemptId':name,'source':{'kind':'commit','revision':commit},
+                      'dependencies':[],'uncertainPaths':[],'declaredWrites':[name]}
+                     for name,commit in zip(('a','b'),INPUT_COMMITS)]}
+        raw=recipe_bytes(request,source_digest='c'*64,git_sha256='a'*64)
+        self.assertNotIn(b'imageSha256',raw)
+        self.assertNotIn(b'profileIdentity',raw)
+        config=dict(mode='serial',image_sha256='a'*64,root_hash='b'*64,source_digest='c'*64,
+                    manager_sha256='d'*64, operator_sha256='f'*64, operator_entry_sha256='8'*64, worker_sha256='9'*64, census_sha256='a'*64,recipe_sha256=hashlib.sha256(raw).hexdigest(),uid=61000,
+                    limits=tuple(PhaseLimit(p,0 if p=='terminal' else 1,10,4096,8) for p in STEPS))
+        profile=LinuxAdmissionProfile(**config)
+        wire=dict(config,limits=[vars(p) for p in config['limits']])
+        self.assertEqual(worker.recipe_profile(json.loads(raw),profile.identity,wire).identity,profile.identity)
+        changed=json.loads(raw);changed['gitSha256']='f'*64
+        with self.assertRaises(ForecastError):
+            worker.recipe_profile(changed,profile.identity,wire)

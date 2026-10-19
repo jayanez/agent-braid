@@ -18,6 +18,12 @@ SOURCE_FILES = (
     'agent_braid/forecast_admission.py', 'agent_braid/forecast_data.py',
     'agent_braid/forecast_git_launch.py',
     'agent_braid/forecast_linux_profile.py', 'agent_braid/forecast_operator_bridge.py',
+    'agent_braid/forecast_native.py', 'agent_braid/forecast_recipe.py',
+    'agent_braid/forecast_exec_census.py', 'agent_braid/forecast_exec_gate.py',
+    'agent_braid/forecast_launcher.py', 'agent_braid/forecast_bootstrap.py',
+    'agent_braid/forecast_manager.py', 'agent_braid/forecast_supervisor.py',
+    'agent_braid/forecast_build.py', 'research/native/fc1_manager_bridge.c',
+    'agent_braid/forecast_bundle_auth.py', 'agent_braid/forecast_linux_artifacts.py',
     'agent_braid/forecast_admission_worker.py', 'scripts/fc1_admission_worker.py',
     'agent_braid/runtime_policy.py', 'agent_braid/git_runtime.py',
     'agent_braid/runtime_scheduler.py', 'agent_braid/git_replay.py',
@@ -25,19 +31,25 @@ SOURCE_FILES = (
     'agent_braid/git_runtime_process.py', 'agent_braid/git_exec.py',
     'agent_braid/git_partial_order.py', 'agent_braid/git_integration_prototype.py',
     'agent_braid/utility_budget_observer.py', 'agent_braid/analysis.py',
-    'research/lab/model.py',
+    'research/lab/model.py', 'research/native/fc1_exec_census.bpf.c',
+    'agent_braid/forecast_exec_budget.py', 'agent_braid/forecast_mounts.py',
+    'agent_braid/forecast_systemd_patch.py', 'research/native/fc1_systemd_gate.c',
+    'research/native/fc1_systemd_gate.h', 'research/native/fc1_systemd_policy.h',
+    'research/native/fc1-systemd-2613.patch',
+    'agent_braid/forecast_host_census.py', 'agent_braid/forecast_manager_escrow.py',
+    'agent_braid/forecast_v9_driver.py', 'agent_braid/forecast_v9_renderer.py',
 )
 # Fixed reviewed-source model: changing source requires a fresh accounting review,
 # not regenerating an arbitrary hash and treating it as accepted coverage.
-_MODELED_SOURCE = '87f94cec0c6944f643510c3204de62927b75a705074e0f0821935a0b25702529'
+_MODELED_SOURCE = '1856d90528c49fd8acd88911144b4bec0f6bbcef4ffc81d66693bb7c054e4b8a'
 
 
-def source_digest(root):
+def source_digest(root, *, reader=None):
     """Hash only named repository sources; never inspect workload or host state."""
     root = Path(root)
     hashes = {}
     for name in SOURCE_FILES:
-        raw = (root / name).read_bytes()
+        raw = (root / name).read_bytes() if reader is None else reader(root / name)
         if name == 'agent_braid/forecast_admission.py':
             # Normalize only the one model-pin assignment to break its hash cycle.
             # The ledger, inventory and normalization algorithm remain hashed.

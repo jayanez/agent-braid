@@ -21,6 +21,7 @@ import threading
 from .forecast_admission import PHASES, PhaseLedger, source_envelope
 from .forecast_data import digest, integer, pin, require
 from .forecast_git_launch import INPUT_COMMITS, INPUT_PATCHES
+from .forecast_exec_gate import filter_sha256
 
 MIB = 1024 * 1024
 STEPS = (*PHASES, 'terminal')
@@ -90,6 +91,11 @@ class LinuxAdmissionProfile:
     root_hash: str
     source_digest: str
     manager_sha256: str
+    recipe_sha256: str
+    operator_sha256: str
+    operator_entry_sha256: str
+    worker_sha256: str
+    census_sha256: str
     limits: tuple[PhaseLimit, ...]
     uid: int
     compiler_sha256: str = field(init=False)
@@ -97,7 +103,7 @@ class LinuxAdmissionProfile:
     def __post_init__(self):
         object.__setattr__(self, 'compiler_sha256', hashlib.sha256(Path(__file__).read_bytes()).hexdigest())
         require(self.mode in ('serial', 'parallel'), 'profile-mode')
-        for value in (self.image_sha256, self.root_hash, self.source_digest, self.manager_sha256):
+        for value in (self.image_sha256, self.root_hash, self.source_digest, self.manager_sha256, self.recipe_sha256, self.operator_sha256, self.operator_entry_sha256, self.worker_sha256, self.census_sha256):
             pin(value)
         require(type(self.limits) is tuple and all(type(p) is PhaseLimit for p in self.limits)
                 and tuple(p.phase for p in self.limits) == STEPS, 'profile-phase-order')
@@ -106,23 +112,40 @@ class LinuxAdmissionProfile:
                 'profile-retained-storage-ceiling')
 
     def manifest(self):
-        return {'version': 'agent-braid-linux-admission-profile-v1', 'mode': self.mode,
+        return {'version': 'agent-braid-linux-admission-profile-v8', 'mode': self.mode,
                 'imageSha256': self.image_sha256, 'rootHash': self.root_hash,
                 'sourceDigest': self.source_digest, 'managerSha256': self.manager_sha256,
+                'recipeSha256': self.recipe_sha256, 'operatorSha256': self.operator_sha256, 'workerSha256':self.worker_sha256,'operatorEntrySha256':self.operator_entry_sha256, 'censusSha256': self.census_sha256,
                 'compilerSha256': self.compiler_sha256,
                 'baseCommit': BASE, 'inputCommits': list(INPUT_COMMITS),
                 'inputPatchSha256': list(INPUT_PATCHES), 'uid': self.uid,
                 'maxWorkers': 1 if self.mode == 'serial' else 2,
                 'cpuPercent': 100, 'memoryBytes': 2048 * MIB, 'swapBytes': 0,
-                'tasks': 64, 'phases': [vars(p).copy() for p in self.limits],
+                'tasks': 64, 'aggregateMemoryBytes': 3072*MIB, 'aggregateTasks':96,
+                'operatorMemoryBytes':512*MIB, 'operatorTasks':16, 'phases': [vars(p).copy() for p in self.limits],
                 'wallSeconds': sum(p.wall_seconds for p in self.limits),
                 'storageBytes': sum(p.storage_bytes for p in self.limits),
+                'auxiliaryExecAbortCap':sum(p.requests for p in self.limits),
+                'censusEventCapacity':65536, 'censusRecordBytes':48,
+                'execAdmissionImplemented':True,
+                'execFilterSha256':filter_sha256(),
+                'execAdmissionEnforced':False, 'bootstrapSupervisionAccepted':False,
                 'retries': 0, 'executionAuthorization': False,
                 'actualProfileAdmitted': False}
 
+    def external_config(self):
+        """Operator bootstrap config; image contains no self-referential profile."""
+        return {'mode':self.mode,'image_sha256':self.image_sha256,'root_hash':self.root_hash,
+                'source_digest':self.source_digest,'manager_sha256':self.manager_sha256,
+                'recipe_sha256':self.recipe_sha256,'operator_sha256':self.operator_sha256,'worker_sha256':self.worker_sha256,'operator_entry_sha256':self.operator_entry_sha256,'census_sha256':self.census_sha256,'uid':self.uid,
+                'limits':[vars(p).copy() for p in self.limits]}
+
     @property
     def identity(self):
-        return digest(self.manifest())
+        # Acceptance is external evidence; it must not rename reviewed units.
+        states={'execAdmissionEnforced','bootstrapSupervisionAccepted',
+                'executionAuthorization','actualProfileAdmitted'}
+        return digest({k:v for k,v in self.manifest().items() if k not in states})
 
     def units(self, *, remaining_seconds):
         """Render only. No [Install], shell, automatic phase chain or restart.
@@ -139,16 +162,36 @@ class LinuxAdmissionProfile:
         anchor = stem + '.service'
         image = '/var/lib/agent-braid/images/' + self.image_sha256 + '.raw'
         base = '/run/fc1/' + identity
-        slice_name = stem + '.slice'
+        slice_name = stem + '-workers.slice'
+        root_slice = stem + '-root.slice'
         units = {
+            stem+'.slice': '[Slice]\nCPUAccounting=yes\nCPUQuota=100%\nMemoryAccounting=yes\n'
+                          'MemoryMax=3221225472\nMemorySwapMax=0\nTasksAccounting=yes\nTasksMax=96\n',
+            stem+'-operator.service': '[Unit]\nBindsTo='+anchor+'\nAfter='+anchor+'\n'
+                '[Service]\nType=exec\nSlice='+root_slice+'\nUser=0\n'
+                'ExecStart=/opt/agent-braid/operator/python -I -S /opt/agent-braid/operator/admission.py '+identity+' operator\n'
+                'ProtectSystem=strict\nNoNewPrivileges=yes\n'
+                'CPUAccounting=yes\nCPUQuota=100%\nMemoryAccounting=yes\nMemoryMax=536870912\n'
+                'MemorySwapMax=0\nTasksAccounting=yes\nTasksMax=16\n'
+                'KillMode=control-group\nSendSIGKILL=yes\nRestart=no\nOOMPolicy=kill\n'
+                'RuntimeMaxSec='+str(remaining_seconds)+'\nTimeoutStopSec=1\n',
+            root_slice: '[Slice]\nCPUAccounting=yes\nCPUQuota=100%\nMemoryAccounting=yes\n'
+                        'MemoryMax=536870912\nMemorySwapMax=0\nTasksAccounting=yes\nTasksMax=16\n',
             slice_name: '[Slice]\nCPUAccounting=yes\nCPUQuota=100%\nMemoryAccounting=yes\n'
                         'MemoryMax=2147483648\nMemorySwapMax=0\nTasksAccounting=yes\nTasksMax=64\n',
             anchor: '[Unit]\nDescription=FC1 external deadline\n'
-                    '[Service]\nType=exec\nExecStart=/usr/bin/sleep ' + str(remaining_seconds) + '\n'
+                    '[Service]\nType=exec\nSlice='+root_slice+'\nUser=0\n'
+                    'ExecStart=/opt/agent-braid/operator/python -I -S /opt/agent-braid/operator/admission.py '+identity+' anchor\n'
                     'RuntimeMaxSec=' + str(remaining_seconds) + '\nTimeoutStartSec=2\n'
                     'TimeoutStopSec=1\nKillMode=control-group\nSendSIGKILL=yes\nRestart=no\n'
                     'StandardOutput=null\nStandardError=null\n',
         }
+        units[stem+'-supervisor.service'] = (
+            '[Service]\nType=exec\nSlice='+root_slice+'\nUser=0\n'
+            'ExecStart=/opt/agent-braid/operator/python -I -S /opt/agent-braid/operator/admission.py '+identity+' supervisor\n'
+            'ProtectSystem=strict\nNoNewPrivileges=yes\nKillMode=control-group\nSendSIGKILL=yes\n'
+            'Restart=no\nOOMPolicy=kill\nTimeoutStartSec=2\nTimeoutStopSec=1\n'
+            'RuntimeMaxSec='+str(remaining_seconds)+'\nStandardOutput=null\nStandardError=null\n')
         for limit in self.limits:
             phase = limit.phase
             if phase in ('grant', 'dispatch'):
@@ -193,10 +236,11 @@ class LinuxAdmissionProfile:
                 'ProtectProc=invisible\nProcSubset=pid\n'
                 'BindPaths=' + path + ':' + scratch + '\n' + prior +
                 'BindReadOnlyPaths=' + base + '/operator.sock:/operator.sock\n' +
+                'BindReadOnlyPaths=' + base + '/exec-gate.sock:/exec-gate.sock\n' +
                 'WorkingDirectory=' + scratch + '\nUMask=0077\nEnvironment=HOME='
                 + scratch + '/home TMPDIR=' + scratch + '/tmp\n'
                 'Environment=PYTHONDONTWRITEBYTECODE=1\n'
-                'ExecStart=/opt/agent-braid/bin/fc1-worker ' + identity + ' ' + phase + '\n'
+                'ExecStart=/opt/agent-braid/bin/python3 -I -S /opt/agent-braid/source/scripts/fc1_admission_worker.py ' + identity + ' ' + phase + '\n'
                 'TimeoutStartSec=2\nTimeoutStopSec=1\nRuntimeMaxSec=' + str(runtime) + '\n'
                 'KillMode=control-group\nSendSIGKILL=yes\nOOMPolicy=kill\nRestart=no\n'
                 'StandardInput=null\nStandardOutput=null\nStandardError=null\n')
@@ -292,7 +336,7 @@ class FrozenWork:
         self.worker_pid = integer(worker_pid, 2)
         require(unit_phase in ('prepare', 'verify', 'terminal'), 'profile-worker-unit')
         stem = 'fc1' + profile.identity
-        self.path = Path('/sys/fs/cgroup') / (stem+'.slice') / (stem+'-'+unit_phase+'.service')
+        self.path = Path('/sys/fs/cgroup') / (stem+'.slice') / (stem+'-workers.slice') / (stem+'-'+unit_phase+'.service')
         self.kill_fd = None
 
     def arm_abort(self):
@@ -386,14 +430,23 @@ class OperatorSession:
         self.watchdog = ExternalWatchdog(profile, self.timeline, self.work)
         self.failed = False
         self.cleanup_confirmed = False
+        self.boundary = None
+        self.active_binding = None
+        self.prior_binding = None
+        self.prior_empty = False
+        self.pending_final_phase=None
 
     def _abort(self):
         self.failed = self.timeline.failed = True
         try:
             self.watchdog.revoke()
         finally:
-            self.cleanup_confirmed = self.work.abort(
-                deadline_ns=min(time.monotonic_ns()+10**9, self.timeline.deadline_ns))
+            try:
+                self.cleanup_confirmed = self.work.abort(
+                    deadline_ns=min(time.monotonic_ns()+10**9, self.timeline.deadline_ns))
+            finally:
+                if self.boundary is not None:
+                    self.boundary.abort()
 
     def attach_work(self):
         """After operator manager/image readback, attach a gated original worker."""
@@ -404,6 +457,8 @@ class OperatorSession:
             self.work.freeze(deadline_ns=self.timeline.phase_deadline_ns)
             self.ledger.enter('prepare')
             self.watchdog.start()
+            if self.boundary is not None:
+                self.boundary.qualify()
             self.work.resume()
         except BaseException:
             self._abort()
@@ -418,15 +473,41 @@ class OperatorSession:
             events = self.work.freeze(deadline_ns=self.timeline.phase_deadline_ns)
             require(self.ledger.receipt()['outstandingReservations'] == 0,
                     'profile-launches-outstanding')
+            if self.boundary is not None:
+                self.boundary.close_phase(empty=phase in ('verify','terminal'))
             self.timeline.finish(now_ns=time.monotonic_ns(), cgroup_events=events, succeeded=True)
             self.timeline.begin(phase, now_ns=time.monotonic_ns())
             self.watchdog.arm()
             self.quota.advance(phase, frozen_work=self.work)
             self.ledger.enter(phase)
+            if self.boundary is not None:
+                self.boundary.qualify()
             self.work.resume()
         except BaseException:
             self._abort()
             raise
+
+    def prepare_final_phase(self,phase):
+        require(self.timeline.profile.manifest()['execAdmissionEnforced'] is True,
+                'profile-exec-admission-unqualified')
+        require(not self.failed and phase in ('verify','terminal') and self.boundary is not None
+                and self.boundary.root_gate is not None,'profile-root-gate-required')
+        try:
+            require(self.timeline.active and phase==STEPS[self.timeline.index+1], 'profile-phase-order')
+            require(self.ledger.receipt()['outstandingReservations']==0,'profile-launches-outstanding')
+            events=self.work.observe_empty()
+            self.prior_binding=self.active_binding;self.prior_empty=True
+            self.work.close_abort();self.boundary.close_phase(empty=True)
+            self.timeline.finish(now_ns=time.monotonic_ns(),cgroup_events=events,succeeded=True)
+            self.watchdog.revoke();self.timeline.begin(phase,now_ns=time.monotonic_ns())
+            gate=self.boundary.root_gate
+            gate.phase(self.timeline.index,self.timeline.phase_deadline_ns)
+            permit=gate.reserve_worker_start(phase)
+            self.pending_final_phase=phase
+            return {'unit':'fc1'+self.timeline.profile.identity+'-'+phase+'.service',
+                    'permit':permit,'deadlineNs':self.timeline.phase_deadline_ns}
+        except BaseException:
+            self._abort();raise
 
     def attach_final_worker(self, phase, *, worker_pid):
         """Stop/confirm prior cgroup, retain origin, attach separate gated worker.
@@ -436,10 +517,24 @@ class OperatorSession:
         """
         require(not self.failed and phase in ('verify', 'terminal'), 'profile-final-worker-state')
         try:
+            if self.boundary is not None and self.boundary.root_gate is not None:
+                require(self.pending_final_phase==phase and self.timeline.active
+                        and phase==STEPS[self.timeline.index],'profile-start-permit-before-worker-required')
+                self.pending_final_phase=None
+                if phase=='verify':self.ledger.enter('verify')
+                self.work=FrozenWork(self.timeline.profile,worker_pid=worker_pid,unit_phase=phase)
+                self.work.arm_abort();self.work.freeze(deadline_ns=self.timeline.phase_deadline_ns)
+                self.watchdog=ExternalWatchdog(self.timeline.profile,self.timeline,self.work)
+                self.watchdog.start();self.boundary.qualify();self.work.resume()
+                return
             require(self.timeline.active and phase == STEPS[self.timeline.index+1], 'profile-phase-order')
             require(self.ledger.receipt()['outstandingReservations'] == 0, 'profile-launches-outstanding')
             events = self.work.observe_empty()
+            self.prior_binding = self.active_binding
+            self.prior_empty = True
             self.work.close_abort()
+            if self.boundary is not None:
+                self.boundary.close_phase(empty=phase in ('verify','terminal'))
             self.timeline.finish(now_ns=time.monotonic_ns(), cgroup_events=events, succeeded=True)
             self.watchdog.revoke()
             self.timeline.begin(phase, now_ns=time.monotonic_ns())
@@ -450,6 +545,8 @@ class OperatorSession:
             self.work.freeze(deadline_ns=self.timeline.phase_deadline_ns)
             self.watchdog = ExternalWatchdog(self.timeline.profile, self.timeline, self.work)
             self.watchdog.start()
+            if self.boundary is not None:
+                self.boundary.qualify()
             self.work.resume()
         except BaseException:
             self._abort()
@@ -461,6 +558,9 @@ class OperatorSession:
         try:
             events = self.work.observe_empty()
             self.work.close_abort()
+            if self.boundary is not None:
+                self.boundary.close_phase(empty=True)
+                self.boundary.close_control()
             self.timeline.finish(now_ns=time.monotonic_ns(), cgroup_events=events, succeeded=True)
         except BaseException:
             self._abort()

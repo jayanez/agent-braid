@@ -6,6 +6,7 @@ Importing this module starts nothing. Native readiness is not inferred from it.
 """
 from dataclasses import fields
 import json
+import hashlib
 import os
 from pathlib import Path
 import socket
@@ -21,13 +22,15 @@ IMAGE_ROOT = Path('/opt/agent-braid')
 MAX_RECORD = 1024 * 1024
 
 
-def read_record(path):
+def read_record(path, *, expected_sha256=None):
     fd = os.open(path, os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK)
     with os.fdopen(fd, 'rb') as stream:
         info = os.fstat(stream.fileno())
         require(stat.S_ISREG(info.st_mode) and info.st_size <= MAX_RECORD, 'worker-record-bound')
         raw = stream.read(MAX_RECORD+1)
     require(len(raw) <= MAX_RECORD, 'worker-record-bound')
+    if expected_sha256 is not None:
+        require(hashlib.sha256(raw).hexdigest() == pin(expected_sha256), 'worker-recipe-sha')
     from research.lab.model import loads
     return loads(raw.decode())
 
@@ -42,26 +45,21 @@ def write_record(path, value):
         os.fsync(stream.fileno())
 
 
-def recipe_profile(recipe, identity):
-    """Static shape/input validation; does not inspect or execute input sources."""
-    require(type(recipe) is dict and set(recipe) == {'version','profile','request','gitSha256'},
+def recipe_profile(recipe, identity, config):
+    """Image-independent recipe; profile comes only from the root channel."""
+    require(type(recipe) is dict and set(recipe) == {'version','sourceDigest','request','gitSha256'},
             'worker-recipe-fields')
-    require(recipe['version'] == 'agent-braid-admission-worker-v1', 'worker-recipe-version')
-    config = dict(recipe['profile'])
+    require(recipe['version'] == 'agent-braid-admission-worker-v2', 'worker-recipe-version')
+    config = dict(config)
     config['limits'] = tuple(PhaseLimit(**p) for p in config['limits'])
     require(set(config) == {f.name for f in fields(LinuxAdmissionProfile) if f.init},
             'worker-profile-fields')
     profile = LinuxAdmissionProfile(**config)
-    require(profile.identity == pin(identity), 'worker-profile-identity')
-    pin(recipe['gitSha256'])
-    request = recipe['request']
-    require(type(request) is dict and request.get('repository') == str(IMAGE_ROOT/'inputs/repository')
-            and request.get('baseRevision') == BASE, 'worker-fixed-source')
-    require(bootstrap_free_request(request), 'worker-request-shape')
-    operations = request.get('operations')
-    require(type(operations) is list and len(operations) == 2
-            and tuple(op.get('source', {}).get('revision') for op in operations) == INPUT_COMMITS,
-            'worker-fixed-inputs')
+    require(profile.identity == pin(identity) and recipe['sourceDigest'] == profile.source_digest,
+            'worker-profile-identity')
+    from .forecast_recipe import recipe_bytes
+    require(hashlib.sha256(recipe_bytes(recipe['request'], source_digest=recipe['sourceDigest'],
+            git_sha256=recipe['gitSha256'])).hexdigest() == profile.recipe_sha256, 'worker-recipe-sha')
     return profile
 
 
@@ -136,25 +134,29 @@ def main(argv=None):
     identity, phase = argv
     pin(identity)
     require(phase in ('prepare','verify','terminal'), 'worker-unit-phase')
-    recipe = read_record(IMAGE_ROOT/'fc1'/(identity+'.json'))
-    profile = recipe_profile(recipe, identity)
-    require(os.getuid() == profile.uid and os.getpid() == os.getpgrp(), 'worker-process-identity')
-    profile.validate_source(IMAGE_ROOT/'source')
-    scratch = Path('/work' if phase == 'prepare' else '/scratch')
-    for name in ('home','tmp'):
-        (scratch/name).mkdir(mode=0o700, exist_ok=True)
-    os.environ['HOME'], os.environ['TMPDIR'] = str(scratch/'home'), str(scratch/'tmp')
-    import tempfile
-    tempfile.tempdir = str(scratch/'tmp')
     with socket.socket(socket.AF_UNIX, socket.SOCK_SEQPACKET) as sock:
         sock.settimeout(1)
         sock.set_inheritable(False)
         sock.connect('/operator.sock')
         peer(sock, uid=0)
         bootstrap = receive(sock)
-        require(set(bootstrap) == {'profileIdentity','phase','originNs','verificationOf','deadlineNs'}
+        require(set(bootstrap) == {'profileIdentity','phase','originNs','verificationOf','deadlineNs','profileConfig'}
                 and bootstrap['profileIdentity'] == identity and bootstrap['phase'] == phase,
                 'worker-bootstrap-binding')
+        config = dict(bootstrap['profileConfig'])
+        expected_recipe = pin(config['recipe_sha256'])
+        recipe = read_record(IMAGE_ROOT/'fc1/recipe.json', expected_sha256=expected_recipe)
+        profile = recipe_profile(recipe, identity, config)
+        require(os.getuid() == profile.uid and os.getpid() == os.getpgrp(), 'worker-process-identity')
+        profile.validate_source(IMAGE_ROOT/'source')
+        from .forecast_launcher import handoff_current_task
+        handoff_current_task(profile,phase)
+        scratch = Path('/work' if phase == 'prepare' else '/scratch')
+        for name in ('home','tmp'):
+            (scratch/name).mkdir(mode=0o700, exist_ok=True)
+        os.environ['HOME'], os.environ['TMPDIR'] = str(scratch/'home'), str(scratch/'tmp')
+        import tempfile
+        tempfile.tempdir = str(scratch/'tmp')
         # Terminal performs no Git/grant work. Operator must still close its own
         # ledger and confirm this cgroup empty; this file is not an acceptance.
         if phase == 'terminal':

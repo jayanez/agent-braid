@@ -20,7 +20,7 @@ MAX_PACKET = 64 * 1024
 FIELDS = {
     'check': {'phase', 'deadlineNs', 'invocation'},
     'reserve': {'phase', 'deadlineNs', 'invocation'},
-    'launched': {'ticket', 'pid'}, 'reaped': {'ticket', 'returncode'},
+    'launched': {'ticket', 'pid'}, 'exited': {'ticket'}, 'reaped': {'ticket', 'returncode'},
     'startFailed': {'ticket'}, 'transition': {'phase'}, 'complete': {'phase'},
 }
 
@@ -113,6 +113,12 @@ class OperatorBridge:
                     'operator-child-identity-unverified')
             self.session.ledger.launched(token)
             self.tickets[token]['pid'] = pid
+        elif event == 'exited':
+            require(self.tickets[token]['pid'] is not None, 'operator-child-not-launched')
+            native=self.observe_child(self.tickets[token]['pid'],'exited',
+                                      deepcopy(self.tickets[token]['invocation']))
+            require(type(native) is dict and native.get('exitObserved') is True,
+                    'operator-exit-unverified')
         else:
             require(self.tickets[token]['pid'] is not None and type(p['returncode']) is int,
                     'operator-child-not-launched')
@@ -241,6 +247,7 @@ def accept_binding(sock, session, *, worker_uid, worker_pid, bootstrap, validate
         require(type(binding) is dict and binding.get('workerPid') == worker_pid
                 and binding.get('externalLaunchLedger') is True
                 and validate_binding(deepcopy(binding)) is True, 'operator-handshake-binding')
+        session.active_binding=digest(binding)
         bridge = OperatorBridge(session, binding=binding, observe=observe, observe_child=observe_child)
         send(sock, {'bindingDigest': bridge.binding_digest})
         return bridge

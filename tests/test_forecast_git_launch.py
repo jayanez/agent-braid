@@ -49,6 +49,7 @@ class GitLaunchBoundaryTests(unittest.TestCase):
         patch.object(launch.os, 'getpid', return_value=100).start()
         patch.object(launch.os, 'getpgrp', return_value=100).start()
         patch.object(launch.threading, 'active_count', return_value=1).start()
+        patch.object(launch.os,'waitid',return_value=SimpleNamespace(si_pid=123)).start()
         self.spawn = patch.object(launch.subprocess, 'Popen').start()
         self.process = MagicMock(pid=123)
         self.process.stdin = None
@@ -146,7 +147,7 @@ class GitLaunchBoundaryTests(unittest.TestCase):
                            ('sourceInputsVerified',False),
                            ('immutableExecutable',False),
                            ('bindingDigest','0'*64),('expiresNs',0),
-                           ('watchdogDeadlineNs',101),('availableBytes',43),
+                           ('watchdogDeadlineNs',101),('availableBytes',33),
                            ('watchdogDeadlineNs',0),('phaseQuotaBytes',11),
                            ('phaseQuotaBytes',0)]:
             with self.subTest(field=field):
@@ -332,7 +333,7 @@ class GitLaunchBoundaryTests(unittest.TestCase):
             launch.run_git(retained,('status',),env=_sanitized_environment(self.work/'home'),
                            budget=self.budget())
         self.assertEqual(scope.binding['verificationWorkRoot'],str(retained.resolve()))
-        self.assertEqual(scope.binding['version'],'agent-braid-git-admission-boundary-v3')
+        self.assertEqual(scope.binding['version'],'agent-braid-git-admission-boundary-v4')
         self.spawn.assert_called_once()
 
     def test_work_worker_cannot_add_a_verification_root(self):
@@ -362,7 +363,7 @@ class ExternalLedgerHooksTests(unittest.TestCase):
         self.spawn.side_effect = spawn
         with launch.admission_launches(scope):
             self.git()
-        self.assertEqual(events, ['reserve','launched','reaped'])
+        self.assertEqual(events, ['reserve','launched','exited','reaped'])
 
     def test_external_refusal_prevents_popen_without_fallback(self):
         def observer(*args, **kwargs):

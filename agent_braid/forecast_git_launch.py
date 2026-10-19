@@ -92,7 +92,7 @@ class GitLaunchScope:
             self._global_deadline = self._origin + sum(self.times.values()) + self.terminal_ns
         self.ledger = PhaseLedger(bounds=phase_requests, total=sum(phase_requests.values()),
                                   max_active=max_active)
-        self.binding = {'version': 'agent-braid-git-admission-boundary-v3',
+        self.binding = {'version': 'agent-braid-git-admission-boundary-v4',
                         'flowOriginNs': self._origin,
                         'externalLaunchLedger': launch_observer is not None,
                         'workerPid': os.getpid(), 'workerPgid': os.getpgrp(),
@@ -176,7 +176,7 @@ class GitLaunchScope:
                 'admission-phase-quota-unverified')
         require(type(observed.get('availableBytes')) is int
                 and observed['availableBytes'] >= sum(self.space[p] for p in
-                    PHASES[PHASES.index(self._phase):]) + self.terminal_bytes,
+                    PHASES[PHASES.index(self._phase)+1:]) + self.terminal_bytes,
                 'terminal-storage-reserve-insufficient')
         require(type(observed.get('expiresNs')) is int and
                 self._clock() < min(self._deadline, observed['expiresNs'], observed['watchdogDeadlineNs']),
@@ -330,6 +330,13 @@ def run_owned_git(cwd, args, *, env, budget, input_bytes=None, allow_failure=Fal
                 (ownership_fd,) if ownership_fd is not None else ())
 
 
+def _exit_ready(scope, process):
+    if scope._launch_observer is None:
+        return process.poll() is not None
+    observed=os.waitid(os.P_PID,process.pid,os.WEXITED|os.WNOHANG|os.WNOWAIT)
+    return observed is not None and observed.si_pid == process.pid
+
+
 def _run(scope, cwd, args, env, budget, payload, allow_failure, timeout, interval, fds):
     """Versioned POSIX selector runner: bounded I/O and bounded reaping."""
     token = process = None
@@ -380,7 +387,7 @@ def _run(scope, cwd, args, env, budget, payload, allow_failure, timeout, interva
                 selector.register(process.stdin, selectors.EVENT_WRITE, 'stdin')
             else:
                 process.stdin.close()
-        while selector.get_map() or process.poll() is None:
+        while selector.get_map() or not _exit_ready(scope,process):
             scope.check()
             require(scope._clock() < deadline, 'admission-command-deadline')
             require(not (budget.cancel_event and budget.cancel_event.is_set()), 'admission-cancelled')
@@ -408,6 +415,8 @@ def _run(scope, cwd, args, env, budget, payload, allow_failure, timeout, interva
                 require(sum(map(len, outputs.values())) + len(data) <= budget.max_command_output_bytes
                         and budget.record_output(len(data)), 'admission-output-limit')
                 outputs[name].extend(data)
+        if scope._launch_observer is not None:
+            scope._launch_observer('exited',ticket=scope._external_tickets[token])
         result = process.wait(timeout=0.2)
         scope.reaped(token, result)
         token = None
