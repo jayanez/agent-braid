@@ -26,6 +26,7 @@
     "tests/test_workflow.py": "fda03aa8d1d4bb1a43b16a96da4a272427969a1a540cc0954709aeed7a03a4aa",
     "docs/EXPERIMENTS.md": "ce168deb03d4607c70e00e092701d2f6d5987db04e09779b0e3cad48b7fca558",
     "dependencies/README.md": "10dc39d7b1713dda734d83efbd3d81dc86c6c8c4403e378b1f000ceba91ee1dc",
-    "third_party/README.md": "8f9707ef2b73561d4d3eaa121eb0c00f6063aa97dc71bdcf4b5beddfa8080ece"
+    "third_party/README.md": "8f9707ef2b73561d4d3eaa121eb0c00f6063aa97dc71bdcf4b5beddfa8080ece",
+    "LICENSE": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30"
   }
 }

@@ -36,7 +36,7 @@ branches.
 ## Authority and evidence
 
 The ADR proposal stays feature-local. Canonical authorities and existing assurance
-records were preserved. New records use current authority snapshots and
+records were preserved. New records have frozen historical authority bindings and
 draft/pending review. Upstream tests and source probes support the research audit
 only. Passing planning validators cannot supply containment qualification, native
 host behavior, economic utility, founder adoption or independent review.
