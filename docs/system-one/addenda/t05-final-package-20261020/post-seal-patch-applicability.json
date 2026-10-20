@@ -1,0 +1,11 @@
+{
+  "scope": "Patch applicability to exact baseline using isolated temporary index; no source mutation, commit or publication",
+  "baseline": "fe6d25b3d9fb989c230aa11779b6a51d494d7a4e",
+  "command": "git apply --cached --check candidate.patch",
+  "exitCode": 0,
+  "stdout": "",
+  "stderr": "",
+  "patchSha256": "c675ab538c942612d3350ba2b8f4707256ae90cecee913e59049b2c0524192ef",
+  "externalSpendEUR": 0,
+  "executionAuthorization": false
+}
