@@ -1,0 +1,23 @@
+{
+  "scope": "Overlapping in-memory software guard controls, not independent observations",
+  "mutations": [
+    {
+      "name": "chunk digest guard absent",
+      "test": "test_artifact_chunk_guards_and_inline_reference_agreement",
+      "testsRun": 1,
+      "failures": 1,
+      "errors": 0,
+      "detected": true
+    },
+    {
+      "name": "boolean offset admission",
+      "test": "test_artifact_chunk_guards_and_inline_reference_agreement",
+      "testsRun": 1,
+      "failures": 1,
+      "errors": 0,
+      "detected": true
+    }
+  ],
+  "sourceInputsStillMatch": true,
+  "logSha256": "db2a8d978eee2aa8b01824d38084cf6c4acfc17f3d5f0d329d554454f253209c"
+}

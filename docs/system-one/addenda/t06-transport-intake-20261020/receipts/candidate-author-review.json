@@ -1,0 +1,31 @@
+{
+  "scope": "Author five-axis technical review only; no independent Luna reviewer assigned, T07 and human review pending",
+  "sourceHashes": {
+    "agent_braid/system_one_verified_consumers.py": "2b35dd7a784d18cc95969f9cf1902023ce3a07cf2792fdc26bcb4122bccb5788",
+    "agent_braid/system_one_verified_selection.py": "a8fd0d752c3ab179b233906adac65b7dfe2150cf8ef079c3e00334e689bbb51e",
+    "agent_braid/system_one_verified_stdio.py": "3caaafb091d3c314224992e334ec6ca302c2c72831de12997481ccc9fe7a8f42",
+    "agent_braid/system_one_verified_tooling.py": "128aed194149f648d0a579b9fff7d85e121c10339df7552e1e488363c744d04e",
+    "specs/031-system-one-integration/addenda/ddp-t06-transport-plan.md": "96a100062ff8ba55e48310f58b89950c4711036319efbc2b9848bb8bef7c0dbe",
+    "tests/test_system_one_verified_stdio.py": "67c61b11b8c94c64295fe44743519152aa853b8c0e66db75a2e4a8044fe4870f",
+    "tests/test_system_one_verified_tooling.py": "025410941b1bb37050dda5669ad0425a636ff52afbd230e5c8fa3567e939e583"
+  },
+  "observedFinalCapture": {
+    "tests": 17,
+    "errors": 0,
+    "skips": 0
+  },
+  "guardMutations": "Eight union guards detected; first7/8 with one masked boolean test; targeted recheck2/2 after test-only strengthening. Always-frame mutant causes one runtime test error, all tests actually ran.",
+  "axes": {
+    "correctness": "Exact consumer IDs, body/digest and policy bindings, full ordered evidence and native tree equality; Core checks retained.",
+    "security": "Only fixed read-only prepare mapping, bound source/destination, no execute/recover/grants/default activation; child environment isolated and network denied in real positives.",
+    "architecture": "Concrete local runtime collaborator within real ToolingService; parent retains original context and budget; no trusted context serialization. Minimal two-file compatibility seams documented.",
+    "readability": "Domain orchestration separated into Core, service artifact reader and stdio client/parent server. Existing legacy transport modules unchanged.",
+    "performance": "Bounded frames/bytes/chunks, shared output budget, observed resource/child cleanup. Descriptive timings only; no SLA or speedup claim."
+  },
+  "limits": [
+    "Internal controlled stdlib MCP client, not stock SDK server or native Codex/Claude adoption",
+    "Unknown termination retains scratch/token and requires explicit local investigation",
+    "Historical source pins superseded, archived bytes unchanged",
+    "Independent review/human/scientific/training/admission/activation pending"
+  ]
+}

@@ -1,0 +1,18 @@
+{
+  "checkedAtUTC": "2026-10-20T10:54:37.267565+00:00",
+  "scope": "Provisional documentary intake only",
+  "sourceInputsVerified": 7,
+  "beforeFiles": 2410,
+  "unchangedPriorFiles": 2408,
+  "justifiedChangedFiles": 2,
+  "expectedStatusesVerified": 24,
+  "ENESStatusReasonPairsVerified": 12,
+  "documentaryRepresentationsVerified": 32,
+  "receiptJSONValidated": 17,
+  "localLinksVerified": 66,
+  "repositoryValidationExitCode": 0,
+  "stagedWhitespace": "checked before commit",
+  "profiles": "pending; no final receipt in observation",
+  "newProductRunsOrAudit": false,
+  "publication": "local only"
+}

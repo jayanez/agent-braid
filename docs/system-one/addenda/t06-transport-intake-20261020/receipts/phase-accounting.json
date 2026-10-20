@@ -1,0 +1,48 @@
+{
+  "sourceCaptureSha256": "26d9fa67e2694773d8150d048bdfa429f67820d4c6a65757039f191591441a18",
+  "boundary": "Use occurrence0 inclusive phase spans. Repeated same-name nested rows overlap. The earlier summary sum of named rows is not an exclusive duration and must not be presented as additive stage latency. stdio transportEvidence includes parent native preparation inside its hosted call; isolated wire-only overhead was not measured.",
+  "descriptiveMilliseconds": {
+    "mcp-service": {
+      "nativePrepareFirstInvocationInclusiveMs": {
+        "n": 6,
+        "median": 710.3765415,
+        "min": 698.104541,
+        "max": 1160.038084
+      },
+      "nativeCheckFirstInvocationInclusiveMs": {
+        "n": 6,
+        "median": 1475.5587500000001,
+        "min": 1418.072333,
+        "max": 1568.05
+      },
+      "transportEvidenceFirstInvocationInclusiveMs": {
+        "n": 6,
+        "median": 0.703375,
+        "min": 0.656584,
+        "max": 8.559916
+      }
+    },
+    "mcp-stdio": {
+      "nativePrepareFirstInvocationInclusiveMs": {
+        "n": 6,
+        "median": 853.5441040000001,
+        "min": 820.416167,
+        "max": 882.784625
+      },
+      "nativeCheckFirstInvocationInclusiveMs": {
+        "n": 6,
+        "median": 1527.4923335,
+        "min": 1440.105875,
+        "max": 1639.876916
+      },
+      "transportEvidenceFirstInvocationInclusiveMs": {
+        "n": 6,
+        "median": 852.7705415,
+        "min": 819.137584,
+        "max": 881.946167
+      }
+    }
+  },
+  "sourceEdits": false,
+  "profilesRepeated": false
+}

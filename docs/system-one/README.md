@@ -6,6 +6,10 @@ Start here, then read the [agent resumption guide](RESUMPTION.md). This is the c
 
 [Core API documentary intake](addenda/t06-core-intake-20261020/README.md) preserves pre-fix/fixed/final-test capture epochs, scoped review/fixes, source hashes and descriptive costs. The [final Core-only reconciliation](addenda/t06-core-final-20261020/README.md) now records completed quick/PR and a verified final local package; the earlier intake remains an observation from before completion. This local branch increment is separate from integrated PR594 and contains no product implementation.
 
+## Subsequent local MCP/stdio intake
+
+[Transport intake](addenda/t06-transport-intake-20261020/README.md) preserves design, fixture failures, mutation test gap/repair, three capture epochs and source hashes. Final focused capture is obtained; quick/PR and final package are pending at this observation. This supplement remains local.
+
 ## Current handoff
 
 T05 internal engineering is delivered: [final packet and verification](addenda/t05-final-package-20261020/README.md), [full-profile receipts](addenda/t05-profiles-final-20261020/README.md) and [scoped Luna row-cap disposition](addenda/t05-rowcap-luna-disposition-20261020/README.md). Both full profiles recorded2042cases,2023passed,19skips,zero failures each; tests overlap and are not independent scientific observations. Packaging failures are preserved with their repairs;72packet bindings,22source-archive members and20reversible raw logs were checked.

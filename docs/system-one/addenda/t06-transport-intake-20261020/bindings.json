@@ -1,0 +1,404 @@
+{
+  "id": "S1-T06-TRANSPORT-INTAKE-20261020",
+  "checkedAtUTC": "2026-10-20T10:54:15.408904+00:00",
+  "documentaryParent": "fa13cef3599a380e1cebcdec0abda9c208c91607",
+  "finalCaptureInputs": {
+    "agent_braid/system_one_verified_consumers.py": "2b35dd7a784d18cc95969f9cf1902023ce3a07cf2792fdc26bcb4122bccb5788",
+    "agent_braid/system_one_verified_selection.py": "a8fd0d752c3ab179b233906adac65b7dfe2150cf8ef079c3e00334e689bbb51e",
+    "agent_braid/system_one_verified_stdio.py": "3caaafb091d3c314224992e334ec6ca302c2c72831de12997481ccc9fe7a8f42",
+    "agent_braid/system_one_verified_tooling.py": "128aed194149f648d0a579b9fff7d85e121c10339df7552e1e488363c744d04e",
+    "specs/031-system-one-integration/addenda/ddp-t06-transport-plan.md": "96a100062ff8ba55e48310f58b89950c4711036319efbc2b9848bb8bef7c0dbe",
+    "tests/test_system_one_verified_stdio.py": "67c61b11b8c94c64295fe44743519152aa853b8c0e66db75a2e4a8044fe4870f",
+    "tests/test_system_one_verified_tooling.py": "025410941b1bb37050dda5669ad0425a636ff52afbd230e5c8fa3567e939e583"
+  },
+  "beforeFiles": 2410,
+  "unchangedPreviousFiles": 2408,
+  "justifiedChangedFiles": {
+    "agent_braid/system_one_verified_consumers.py": {
+      "before": "956666ab9d9423e030acefb4b217e184a37ed5f62e2b215b4524af978c2a3808",
+      "current": "2b35dd7a784d18cc95969f9cf1902023ce3a07cf2792fdc26bcb4122bccb5788"
+    },
+    "agent_braid/system_one_verified_selection.py": {
+      "before": "5cb264e1be4eb6f26211af12d11541f272e0d44daeb2cc8a410d64bf1fc9a1d1",
+      "current": "a8fd0d752c3ab179b233906adac65b7dfe2150cf8ef079c3e00334e689bbb51e"
+    }
+  },
+  "priorCorePacketUnchangedSHA256": "2cf7048ee1d2fd596c87a60e13a86570870f7d3e549d95e05d192488ae25b9f0",
+  "expectedStatusesMatched": 24,
+  "ENESStatusReasonPairsVerified": 12,
+  "finalCaptureTests": 17,
+  "profiles": "running; no final receipt at intake observation",
+  "finalPacket": "pending",
+  "sourceArchivesRetainedLocal": [
+    {
+      "sourcePath": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/outputs/ddp-t06-transport-20261020/candidate-source.tar.gz",
+      "sha256": "dd4e84406effc0ead7fc06a686b4b484eda469681faeb838c3beec6fc23eb45d",
+      "published": false,
+      "members": [
+        {
+          "path": "agent_braid/system_one_verified_consumers.py",
+          "sha256": "2b35dd7a784d18cc95969f9cf1902023ce3a07cf2792fdc26bcb4122bccb5788",
+          "bytes": 22240
+        },
+        {
+          "path": "agent_braid/system_one_verified_selection.py",
+          "sha256": "4c8fe263379649ff4561038d30dc692e1350f7e36f7fc1df74d921f4e9a9e3b2",
+          "bytes": 29252
+        },
+        {
+          "path": "agent_braid/system_one_verified_tooling.py",
+          "sha256": "128aed194149f648d0a579b9fff7d85e121c10339df7552e1e488363c744d04e",
+          "bytes": 7280
+        },
+        {
+          "path": "agent_braid/system_one_verified_stdio.py",
+          "sha256": "3caaafb091d3c314224992e334ec6ca302c2c72831de12997481ccc9fe7a8f42",
+          "bytes": 17658
+        },
+        {
+          "path": "tests/test_system_one_verified_tooling.py",
+          "sha256": "20d74124ba3d49c325aab375a68ebba9ebbc37f998b5af27f5211c4417c2e799",
+          "bytes": 12483
+        },
+        {
+          "path": "tests/test_system_one_verified_stdio.py",
+          "sha256": "09702c1943764c707df328182a9fbcb474935579277936d56654d9352ae2e17e",
+          "bytes": 14177
+        },
+        {
+          "path": "specs/031-system-one-integration/addenda/ddp-t06-transport-plan.md",
+          "sha256": "96a100062ff8ba55e48310f58b89950c4711036319efbc2b9848bb8bef7c0dbe",
+          "bytes": 7258
+        },
+        {
+          "path": "delivery/capture.py",
+          "sha256": "1c964faec4c526bb21a579f814a7b5ebbc1ef53b5aa9bfa21c865dee4b89c222",
+          "bytes": 5477
+        }
+      ]
+    },
+    {
+      "sourcePath": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/outputs/ddp-t06-transport-20261020/final-capture/candidate-source.tar.gz",
+      "sha256": "2173b87c635acea0fd1ff825b1c5854c97a84e56140cd5cebd7373ca9d6518af",
+      "published": false,
+      "members": [
+        {
+          "path": "agent_braid/system_one_verified_consumers.py",
+          "sha256": "2b35dd7a784d18cc95969f9cf1902023ce3a07cf2792fdc26bcb4122bccb5788",
+          "bytes": 22240
+        },
+        {
+          "path": "agent_braid/system_one_verified_selection.py",
+          "sha256": "a8fd0d752c3ab179b233906adac65b7dfe2150cf8ef079c3e00334e689bbb51e",
+          "bytes": 29478
+        },
+        {
+          "path": "agent_braid/system_one_verified_tooling.py",
+          "sha256": "128aed194149f648d0a579b9fff7d85e121c10339df7552e1e488363c744d04e",
+          "bytes": 7280
+        },
+        {
+          "path": "agent_braid/system_one_verified_stdio.py",
+          "sha256": "3caaafb091d3c314224992e334ec6ca302c2c72831de12997481ccc9fe7a8f42",
+          "bytes": 17658
+        },
+        {
+          "path": "tests/test_system_one_verified_tooling.py",
+          "sha256": "e11833b150f6f13318c40a32f791eb9559934d3eed8b6eefe9b4452e9f8e21ea",
+          "bytes": 13356
+        },
+        {
+          "path": "tests/test_system_one_verified_stdio.py",
+          "sha256": "67c61b11b8c94c64295fe44743519152aa853b8c0e66db75a2e4a8044fe4870f",
+          "bytes": 14302
+        },
+        {
+          "path": "specs/031-system-one-integration/addenda/ddp-t06-transport-plan.md",
+          "sha256": "96a100062ff8ba55e48310f58b89950c4711036319efbc2b9848bb8bef7c0dbe",
+          "bytes": 7258
+        },
+        {
+          "path": "delivery/capture.py",
+          "sha256": "34c1e04bf6a11e2e2f07af28bb2b2da46f176db8a00736edb4d3d72edb00e33b",
+          "bytes": 5484
+        }
+      ]
+    },
+    {
+      "sourcePath": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/outputs/ddp-t06-transport-20261020/final-capture-v2/candidate-source.tar.gz",
+      "sha256": "7756b9f06d68adb116df9ea3541b9338128e0f2fa70992852bb377eead864b83",
+      "published": false,
+      "members": [
+        {
+          "path": "agent_braid/system_one_verified_consumers.py",
+          "sha256": "2b35dd7a784d18cc95969f9cf1902023ce3a07cf2792fdc26bcb4122bccb5788",
+          "bytes": 22240
+        },
+        {
+          "path": "agent_braid/system_one_verified_selection.py",
+          "sha256": "a8fd0d752c3ab179b233906adac65b7dfe2150cf8ef079c3e00334e689bbb51e",
+          "bytes": 29478
+        },
+        {
+          "path": "agent_braid/system_one_verified_tooling.py",
+          "sha256": "128aed194149f648d0a579b9fff7d85e121c10339df7552e1e488363c744d04e",
+          "bytes": 7280
+        },
+        {
+          "path": "agent_braid/system_one_verified_stdio.py",
+          "sha256": "3caaafb091d3c314224992e334ec6ca302c2c72831de12997481ccc9fe7a8f42",
+          "bytes": 17658
+        },
+        {
+          "path": "tests/test_system_one_verified_tooling.py",
+          "sha256": "025410941b1bb37050dda5669ad0425a636ff52afbd230e5c8fa3567e939e583",
+          "bytes": 13363
+        },
+        {
+          "path": "tests/test_system_one_verified_stdio.py",
+          "sha256": "67c61b11b8c94c64295fe44743519152aa853b8c0e66db75a2e4a8044fe4870f",
+          "bytes": 14302
+        },
+        {
+          "path": "specs/031-system-one-integration/addenda/ddp-t06-transport-plan.md",
+          "sha256": "96a100062ff8ba55e48310f58b89950c4711036319efbc2b9848bb8bef7c0dbe",
+          "bytes": 7258
+        },
+        {
+          "path": "delivery/capture.py",
+          "sha256": "34c1e04bf6a11e2e2f07af28bb2b2da46f176db8a00736edb4d3d72edb00e33b",
+          "bytes": 5484
+        }
+      ]
+    }
+  ],
+  "documents": [
+    {
+      "sourcePath": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/outputs/ddp-t06-transport-20261020/assignment.json",
+      "corpusPath": "docs/system-one/addenda/t06-transport-intake-20261020/receipts/assignment.json",
+      "sha256": "e9ee2c14db061d929fbe0763e85cd7b98c55124ecd3cf810eb3c4e7159b3793f",
+      "storedSHA256": "e9ee2c14db061d929fbe0763e85cd7b98c55124ecd3cf810eb3c4e7159b3793f",
+      "representation": "identity"
+    },
+    {
+      "sourcePath": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/outputs/ddp-t06-transport-20261020/before.json",
+      "corpusPath": "docs/system-one/addenda/t06-transport-intake-20261020/receipts/before.json.gz",
+      "sha256": "93edb797d8a44d472afda1ddf6f7bcb7265f965113e7e92014c0cf6fc523ff63",
+      "storedSHA256": "5a69d8bac22352f0a0cb5437b164abb399e32a9b26b67fce82d4e382bc0113af",
+      "representation": "gzip; original bytes unchanged"
+    },
+    {
+      "sourcePath": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/outputs/ddp-t06-transport-20261020/boolean-offset-test-strengthening.json",
+      "corpusPath": "docs/system-one/addenda/t06-transport-intake-20261020/receipts/boolean-offset-test-strengthening.json",
+      "sha256": "12d3642ae5dd3c5d8e12650f9cfd93a9ef86583e94da36c47eb4ac86dd96ba13",
+      "storedSHA256": "12d3642ae5dd3c5d8e12650f9cfd93a9ef86583e94da36c47eb4ac86dd96ba13",
+      "representation": "identity"
+    },
+    {
+      "sourcePath": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/outputs/ddp-t06-transport-20261020/candidate-author-review.json",
+      "corpusPath": "docs/system-one/addenda/t06-transport-intake-20261020/receipts/candidate-author-review.json",
+      "sha256": "c81eab269087e9d92abaa72e3d3c2a7046ebf43e7592e6af464b11809d9a2613",
+      "storedSHA256": "c81eab269087e9d92abaa72e3d3c2a7046ebf43e7592e6af464b11809d9a2613",
+      "representation": "identity"
+    },
+    {
+      "sourcePath": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/outputs/ddp-t06-transport-20261020/capture-registration.json",
+      "corpusPath": "docs/system-one/addenda/t06-transport-intake-20261020/receipts/capture-registration.json",
+      "sha256": "34f01c6f07447465e473dfc1700b258c3ae6b151c0a2f4d1ca32d12cfdf6e655",
+      "storedSHA256": "34f01c6f07447465e473dfc1700b258c3ae6b151c0a2f4d1ca32d12cfdf6e655",
+      "representation": "identity"
+    },
+    {
+      "sourcePath": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/outputs/ddp-t06-transport-20261020/capture-result.json",
+      "corpusPath": "docs/system-one/addenda/t06-transport-intake-20261020/receipts/capture-result.json.gz",
+      "sha256": "8fdde25f0148e22b91342b445e19c8beb771bba7e0c6c2632a7a3a1b9d620bc6",
+      "storedSHA256": "abd2bc64499d16f39ad1d319c8f0e50fa20ef6206021ddffa6d15fb2b6d58353",
+      "representation": "gzip; original bytes unchanged"
+    },
+    {
+      "sourcePath": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/outputs/ddp-t06-transport-20261020/capture-summary-final.json",
+      "corpusPath": "docs/system-one/addenda/t06-transport-intake-20261020/receipts/capture-summary-final.json",
+      "sha256": "06c2c3bdc54a414b9a372385d5dfc96517461ae1628e2d2b2155133f39497884",
+      "storedSHA256": "06c2c3bdc54a414b9a372385d5dfc96517461ae1628e2d2b2155133f39497884",
+      "representation": "identity"
+    },
+    {
+      "sourcePath": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/outputs/ddp-t06-transport-20261020/capture-supervisor.log",
+      "corpusPath": "docs/system-one/addenda/t06-transport-intake-20261020/receipts/capture-supervisor.log.gz",
+      "sha256": "788b4942cbd557d117a4f3b339d0148dc98f4fa93ab1db51aa06d115a46f24b2",
+      "storedSHA256": "ae47e15844b16fd7a54abe2428dfef99bfdf7f02e64bc9a8b8379a2c73fbb666",
+      "representation": "gzip; original bytes unchanged"
+    },
+    {
+      "sourcePath": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/outputs/ddp-t06-transport-20261020/composition-first.log",
+      "corpusPath": "docs/system-one/addenda/t06-transport-intake-20261020/receipts/composition-first.log.gz",
+      "sha256": "0d9017084cd83a255ca4450bc6d5b7b190118fe3d4cc3802a890ac008d86754c",
+      "storedSHA256": "2fb3742905e401c87c512197fe348dafdd75278547c71b4f7ec39d8ba4d0b9ed",
+      "representation": "gzip; original bytes unchanged"
+    },
+    {
+      "sourcePath": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/outputs/ddp-t06-transport-20261020/development-review.json",
+      "corpusPath": "docs/system-one/addenda/t06-transport-intake-20261020/receipts/development-review.json",
+      "sha256": "593d0aa62fef9bc3ddc64860f271ea71e132ae88264c6bd84d8ecbcf20c0fd2f",
+      "storedSHA256": "593d0aa62fef9bc3ddc64860f271ea71e132ae88264c6bd84d8ecbcf20c0fd2f",
+      "representation": "identity"
+    },
+    {
+      "sourcePath": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/outputs/ddp-t06-transport-20261020/final-capture/capture-registration.json",
+      "corpusPath": "docs/system-one/addenda/t06-transport-intake-20261020/receipts/final-capture/capture-registration.json",
+      "sha256": "84ee208612fb121217f4b1fbaf02deb77cf0508ac95cedb0daa409e1c0ca3c08",
+      "storedSHA256": "84ee208612fb121217f4b1fbaf02deb77cf0508ac95cedb0daa409e1c0ca3c08",
+      "representation": "identity"
+    },
+    {
+      "sourcePath": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/outputs/ddp-t06-transport-20261020/final-capture/capture-result.json",
+      "corpusPath": "docs/system-one/addenda/t06-transport-intake-20261020/receipts/final-capture/capture-result.json.gz",
+      "sha256": "a1927c6012f19ca58494de3a263d5d58a36868f4c2e52ef43b1251af08dad065",
+      "storedSHA256": "eea5695ab1bba508bba4967ebe696285257f9b3565aa908afa71a47d9dce2417",
+      "representation": "gzip; original bytes unchanged"
+    },
+    {
+      "sourcePath": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/outputs/ddp-t06-transport-20261020/final-capture/capture-supervisor.log",
+      "corpusPath": "docs/system-one/addenda/t06-transport-intake-20261020/receipts/final-capture/capture-supervisor.log.gz",
+      "sha256": "76f7432205abdce00e3a55d6862cb101a18b001944d2ca6cbb85c4f5c37683b3",
+      "storedSHA256": "7f8f733375f0a75c8f4b4a07cf4d039ac6cdb33b6296455938acb7e43efcd8ed",
+      "representation": "gzip; original bytes unchanged"
+    },
+    {
+      "sourcePath": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/outputs/ddp-t06-transport-20261020/final-capture/focused-capture.log",
+      "corpusPath": "docs/system-one/addenda/t06-transport-intake-20261020/receipts/final-capture/focused-capture.log.gz",
+      "sha256": "35e1953ecce8911486f457dbbca91e003908457243fcabe421e1be0d09f9efd6",
+      "storedSHA256": "1c7705b9f2e36b863f4e3c1523385339c16c30ea4d38823a38ac061370810c37",
+      "representation": "gzip; original bytes unchanged"
+    },
+    {
+      "sourcePath": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/outputs/ddp-t06-transport-20261020/final-capture-v2/capture-registration.json",
+      "corpusPath": "docs/system-one/addenda/t06-transport-intake-20261020/receipts/final-capture-v2/capture-registration.json",
+      "sha256": "08aadb8eb3e9a230f488079bd6c42c1e0e2f270e7a841fa37de8efc1c158ad66",
+      "storedSHA256": "08aadb8eb3e9a230f488079bd6c42c1e0e2f270e7a841fa37de8efc1c158ad66",
+      "representation": "identity"
+    },
+    {
+      "sourcePath": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/outputs/ddp-t06-transport-20261020/final-capture-v2/capture-result.json",
+      "corpusPath": "docs/system-one/addenda/t06-transport-intake-20261020/receipts/final-capture-v2/capture-result.json.gz",
+      "sha256": "26d9fa67e2694773d8150d048bdfa429f67820d4c6a65757039f191591441a18",
+      "storedSHA256": "8058369aee2a99153902de8336fbff1c3d7843047f689cd937f553b720051de1",
+      "representation": "gzip; original bytes unchanged"
+    },
+    {
+      "sourcePath": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/outputs/ddp-t06-transport-20261020/final-capture-v2/capture-supervisor.log",
+      "corpusPath": "docs/system-one/addenda/t06-transport-intake-20261020/receipts/final-capture-v2/capture-supervisor.log.gz",
+      "sha256": "98f8584449d14be3f498733aa2e717303f30962a949f476ef4e9b518b2ae9416",
+      "storedSHA256": "9f5dff02b63cdecb63d1e9e003ef6da629a08304ed66da0bdd815f2e6563255c",
+      "representation": "gzip; original bytes unchanged"
+    },
+    {
+      "sourcePath": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/outputs/ddp-t06-transport-20261020/final-capture-v2/focused-capture.log",
+      "corpusPath": "docs/system-one/addenda/t06-transport-intake-20261020/receipts/final-capture-v2/focused-capture.log.gz",
+      "sha256": "23c9ea17c37a461f32883801080d2921ca83a7f0b6b521a9558ed3880b1da566",
+      "storedSHA256": "004ed8503b5e47152219dacb8fadb49a6d213b6a5a70d9a3a82ed2a108ed3c9f",
+      "representation": "gzip; original bytes unchanged"
+    },
+    {
+      "sourcePath": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/outputs/ddp-t06-transport-20261020/focused-capture.log",
+      "corpusPath": "docs/system-one/addenda/t06-transport-intake-20261020/receipts/focused-capture.log.gz",
+      "sha256": "8f75c636fc2171116c66aedad6f8cbbc03de4b87966d1e52431ee4587701d9ac",
+      "storedSHA256": "5ac242c548719f1cd88cdfc84a03c821f9605989841be84f713c8b6668e090f9",
+      "representation": "gzip; original bytes unchanged"
+    },
+    {
+      "sourcePath": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/outputs/ddp-t06-transport-20261020/launch.json",
+      "corpusPath": "docs/system-one/addenda/t06-transport-intake-20261020/receipts/launch.json",
+      "sha256": "8be85f7a14ba613e22e764ea8018abeffb088931a74f535c623e481d1671876b",
+      "storedSHA256": "8be85f7a14ba613e22e764ea8018abeffb088931a74f535c623e481d1671876b",
+      "representation": "identity"
+    },
+    {
+      "sourcePath": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/outputs/ddp-t06-transport-20261020/mutation-recheck-supervisor.log",
+      "corpusPath": "docs/system-one/addenda/t06-transport-intake-20261020/receipts/mutation-recheck-supervisor.log.gz",
+      "sha256": "df710cc7b81efc9e174cad41c3e7810f95e75a52d159c59bd6486de73414f064",
+      "storedSHA256": "f3328d938e840e4248a0a9444587cda1f6931829595104a05c90425747b82d55",
+      "representation": "gzip; original bytes unchanged"
+    },
+    {
+      "sourcePath": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/outputs/ddp-t06-transport-20261020/mutation-supervisor.log",
+      "corpusPath": "docs/system-one/addenda/t06-transport-intake-20261020/receipts/mutation-supervisor.log.gz",
+      "sha256": "bccd4dd3ecbf61c2f825500951431ae8fd3511afa1e48f0c69709c01179c9c28",
+      "storedSHA256": "cccdd2e083d82d9275b97d4e95f77e5a3d9a8c4f29a28c3e0d1f52b23a89818d",
+      "representation": "gzip; original bytes unchanged"
+    },
+    {
+      "sourcePath": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/outputs/ddp-t06-transport-20261020/mutations-recheck.json",
+      "corpusPath": "docs/system-one/addenda/t06-transport-intake-20261020/receipts/mutations-recheck.json",
+      "sha256": "9685eaf29e5262d479e2f82ff619ad9c82a15803b9647359e443adf41ecd7738",
+      "storedSHA256": "9685eaf29e5262d479e2f82ff619ad9c82a15803b9647359e443adf41ecd7738",
+      "representation": "identity"
+    },
+    {
+      "sourcePath": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/outputs/ddp-t06-transport-20261020/mutations-recheck.log",
+      "corpusPath": "docs/system-one/addenda/t06-transport-intake-20261020/receipts/mutations-recheck.log.gz",
+      "sha256": "db2a8d978eee2aa8b01824d38084cf6c4acfc17f3d5f0d329d554454f253209c",
+      "storedSHA256": "94ce098b2607d037c4948d339ca422640c21113e4c3a8ee501bc3a8df9b7a9e9",
+      "representation": "gzip; original bytes unchanged"
+    },
+    {
+      "sourcePath": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/outputs/ddp-t06-transport-20261020/mutations.json",
+      "corpusPath": "docs/system-one/addenda/t06-transport-intake-20261020/receipts/mutations.json",
+      "sha256": "2e09946880e1fd1c3eb5bd43d716802db01d9760dac1d9742c491764c38854af",
+      "storedSHA256": "2e09946880e1fd1c3eb5bd43d716802db01d9760dac1d9742c491764c38854af",
+      "representation": "identity"
+    },
+    {
+      "sourcePath": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/outputs/ddp-t06-transport-20261020/mutations.log",
+      "corpusPath": "docs/system-one/addenda/t06-transport-intake-20261020/receipts/mutations.log.gz",
+      "sha256": "73ee3df5f66dc3987910d150409c416f8057ea576bfb6b94712095d5f7a03124",
+      "storedSHA256": "798fca1709231d1b621d86fadaeef333d2620de09528c28886a88057d75a11da",
+      "representation": "gzip; original bytes unchanged"
+    },
+    {
+      "sourcePath": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/outputs/ddp-t06-transport-20261020/phase-accounting.json",
+      "corpusPath": "docs/system-one/addenda/t06-transport-intake-20261020/receipts/phase-accounting.json",
+      "sha256": "8486ba59ad2d18cb66fa7b2bd52dd307219e03496a8a7c170d182f88d666b180",
+      "storedSHA256": "8486ba59ad2d18cb66fa7b2bd52dd307219e03496a8a7c170d182f88d666b180",
+      "representation": "identity"
+    },
+    {
+      "sourcePath": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/outputs/ddp-t06-transport-20261020/preflight.log",
+      "corpusPath": "docs/system-one/addenda/t06-transport-intake-20261020/receipts/preflight.log.gz",
+      "sha256": "b28f0f3bd337a6cae29938ed6ec99ef7ecf3c0005cc38370479d91ec923e04ac",
+      "storedSHA256": "2e6bb5f89adcbda5d31487351394140b1d9b034cc5bde975506c736a77b35be6",
+      "representation": "gzip; original bytes unchanged"
+    },
+    {
+      "sourcePath": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/outputs/ddp-t06-transport-20261020/service-first.log",
+      "corpusPath": "docs/system-one/addenda/t06-transport-intake-20261020/receipts/service-first.log.gz",
+      "sha256": "46cfd6d3247c33bbb1d5f0b266967fe26d30732d55421f185c64e7d6d8c8aacd",
+      "storedSHA256": "16298b1bd336a2df475c9415d7101caa6738fb890e6ebcf22992a6951d717710",
+      "representation": "gzip; original bytes unchanged"
+    },
+    {
+      "sourcePath": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/outputs/ddp-t06-transport-20261020/stdio-first.log",
+      "corpusPath": "docs/system-one/addenda/t06-transport-intake-20261020/receipts/stdio-first.log.gz",
+      "sha256": "db1fcad9676759e67d42d3d8628c1bffa3d142ee880a91eed5d821cd48db3804",
+      "storedSHA256": "b9eb91db145579f138f8a933fe204ed5e726b68c3299c3d5ff8c84c8f7fce4d5",
+      "representation": "gzip; original bytes unchanged"
+    },
+    {
+      "sourcePath": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/outputs/ddp-t06-transport-20261020/supervisor-start.json",
+      "corpusPath": "docs/system-one/addenda/t06-transport-intake-20261020/receipts/supervisor-start.json",
+      "sha256": "63fc0a14ec66d695c93b7cd5376db741fad61ba256a8ebb98b82f537b4044598",
+      "storedSHA256": "63fc0a14ec66d695c93b7cd5376db741fad61ba256a8ebb98b82f537b4044598",
+      "representation": "identity"
+    },
+    {
+      "sourcePath": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-verified-core/specs/031-system-one-integration/addenda/ddp-t06-transport-plan.md",
+      "corpusPath": "docs/system-one/addenda/t06-transport-intake-20261020/original-plan.txt",
+      "sha256": "96a100062ff8ba55e48310f58b89950c4711036319efbc2b9848bb8bef7c0dbe",
+      "storedSHA256": "96a100062ff8ba55e48310f58b89950c4711036319efbc2b9848bb8bef7c0dbe",
+      "representation": "identity; original source-relative links retained in text capsule"
+    }
+  ],
+  "noProductExecutionOrNewAudit": true,
+  "publication": "local only",
+  "gatesClosed": false
+}

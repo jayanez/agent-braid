@@ -59,3 +59,7 @@ Use the [adversarial review brief](adversarial-review.md) for further challenge.
 ## Final local T06 Core reconciliation
 
 The [final Core-only supplement](addenda/t06-core-final-20261020/README.md) supersedes the preceding local intake's pending profiles/package status: both profiles passed2063 tests including19 skips each on identical2339 inputs. It records97 verified bindings,28 archive members, the raw-receipt count discrepancy and complete/startup finalizer log provenance. PR594 is merged at2ffb4de; this subsequent branch is local only. Core engineering is obtained; MCP/stdio, full T06/T07 and scientific/human/admission/promotion/activation gates remain pending. No product source or task closure is included.
+
+## Subsequent MCP/stdio intake
+
+[Transport documentary intake](addenda/t06-transport-intake-20261020/README.md) adds the later stable candidate,24 directed controls/12 EN/ES pairs and17-test focused capture, with fixture errors and mutation test gap retained. Quick/PR and final package remain pending at intake; no full T06 closure or publication is asserted. Parent retains native work and live context; the real stdio child is a controlled MCP client, not stock SDK/host adoption. Phase-accounting corrections and sampled resource limits are explicit.

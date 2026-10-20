@@ -1,0 +1,11 @@
+{
+  "scope": "T06 MCP and actual stdio over verified Core, local M3 Pro EUR0",
+  "baseline": "fe6d25b3d9fb989c230aa11779b6a51d494d7a4e",
+  "priorFiles": 2410,
+  "priorCorePacketSha256": "2cf7048ee1d2fd596c87a60e13a86570870f7d3e549d95e05d192488ae25b9f0",
+  "training": "pending",
+  "humanReview": "pending",
+  "activation": "pending",
+  "publication": "not authorized",
+  "externalSpendEUR": 0
+}
