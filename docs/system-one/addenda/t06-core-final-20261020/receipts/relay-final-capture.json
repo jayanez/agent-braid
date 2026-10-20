@@ -1,0 +1,18 @@
+{
+  "recipientThread": "01a15640-452e-7c41-8140-01e144ad608c",
+  "toolDelivery": "confirmed",
+  "blocks": [
+    "final-capture-v2 21 tests exact registered candidate",
+    "11 EN/ES pairs and full prepared body digest checks",
+    "separate latency stage denominators",
+    "quick/pr single-shot launched, not passed",
+    "Luna delta and 11 targeted mutations"
+  ],
+  "summarySha256": "237e12ef9513974f4e685ae2fddb11f7d53d39171d6f9979df406708f3b44483",
+  "pending": [
+    "profile completion",
+    "packaging",
+    "documentary reconciliation"
+  ],
+  "productPublication": false
+}

@@ -1,0 +1,24 @@
+{
+  "checkedAtUTC": "2026-10-20T10:20:01.067573+00:00",
+  "scope": "Additive documentary reconciliation only; no new product execution/audit",
+  "packetBindingsVerified": 97,
+  "finalSourceArchiveMembersVerified": 28,
+  "profileInputHashesVerified": 2339,
+  "priorFilesUnchanged": 2333,
+  "justifiedPreviousFilesChanged": 3,
+  "rawManifestRepresentationsVerified": 58,
+  "receiptFilesBound": 65,
+  "producerScalarRetained": 63,
+  "corpusRepresentationsVerified": 69,
+  "newJSONValidated": 19,
+  "localLinksVerified": 63,
+  "repositoryValidation": {
+    "command": "env PYTHONDONTWRITEBYTECODE=1 /Users/juanyanez/Repos/Personal/agent-braid-system-one/.venv-speckit/bin/python scripts/validate_repository.py",
+    "exitCode": 0,
+    "stdout": "Repository validation passed.\n"
+  },
+  "whitespace": "git diff --check passed; staged diff checked before commit",
+  "noSuitesCapturesOrNewAudits": true,
+  "publicPublication": false,
+  "gatesClosed": false
+}

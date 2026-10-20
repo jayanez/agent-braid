@@ -55,3 +55,7 @@ Use the [adversarial review brief](adversarial-review.md) for further challenge.
 ## Subsequent local T06 intake
 
 [T06 Core source-bound documentary intake](addenda/t06-core-intake-20261020/README.md) records the later Core-only capture, findings/fix chronology and exact source epochs. Do not apply the preceding PR594 no-T06-results snapshot to this later observation. It is a local supplement with final profiles/package still pending; no product source, task closure or acceptance is supplied.
+
+## Final local T06 Core reconciliation
+
+The [final Core-only supplement](addenda/t06-core-final-20261020/README.md) supersedes the preceding local intake's pending profiles/package status: both profiles passed2063 tests including19 skips each on identical2339 inputs. It records97 verified bindings,28 archive members, the raw-receipt count discrepancy and complete/startup finalizer log provenance. PR594 is merged at2ffb4de; this subsequent branch is local only. Core engineering is obtained; MCP/stdio, full T06/T07 and scientific/human/admission/promotion/activation gates remain pending. No product source or task closure is included.

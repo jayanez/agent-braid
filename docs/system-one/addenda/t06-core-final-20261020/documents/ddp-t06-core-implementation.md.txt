@@ -1,0 +1,46 @@
+<!-- SPDX-License-Identifier: CC-BY-SA-4.0 -->
+# DDP-T06 — Internal Core API consumer increment
+
+This is a partial T06 engineering delivery against baseline `fe6d25b3d9fb989c230aa11779b6a51d494d7a4e`. The internal Core consumer is implemented and checked. MCP service and stdio consumers remain unimplemented in this increment. No default tool/catalog registration, product activation, execution grant, persistent run, model, download or paid service was added. Frozen producer/consumer contracts remain unchanged. The [source-bound plan](ddp-t06-core-plan.md) maps the controls to VPC-REQ-01–04 and SPEC-031 requirements. Earlier T05 statements about absent consumers remain historical for their exact archived source; this report supersedes only the Core implementation status.
+
+## Implementation and requirements
+
+| Task | Implemented control | Obtained controls |
+|---|---|---|
+| T06C-01 / VPC-REQ-01 | Bounded exact raw admission and complete active producer proposal binding before fresh source access | Duplicate/BOM/extra/oversize inputs, rehashed recipient/choice/tree/snapshot/request mutations, external proposal resurrection refusal |
+| T06C-02 / VPC-REQ-02 | Fresh same-context acquisition/verification, abstract effect whole-tree reconstruction, real native replay with independent check and native preparation | Four EN/ES views, invalid k0 selects k1, ties, two to four operations and multiple files, unchanged base entries, source/registry drift, native tree/body corruption |
+| T06C-03 / VPC-REQ-03 | Exact immutable ConsumerResult plus complete checked prepared body, distinct answer/defer/refusal and actual call counters | True defer skips tree/native work, full-body digest equality, incomplete summaries refused, exact reason taxonomy, no execute/recover/grant entry |
+| T06C-04 / VP-REQ-04 / VPC-REQ-04 | Same Git budget object, aggregate work/output/time accounting, monotonic stage deadlines, latched cancellation, terminal result sealing and cleanup | Native cap boundaries, no-reset tests, cancellation during native preparation/publication, terminal factory exception and token reuse, default native API compatibility |
+
+`CoreRequestContext` exposes `propose`, `consume`, `prepared` and the trusted local context; `prepare_core` is a Python convenience returning the exact result and complete prepared body or None. Contexts are request-local and nonserializable. Persisted/external proposals cannot recreate the original binding. Old producer snapshots remain immutable; complete proposal evidence retains the exact producer body and digest used in that proposal.
+
+Three existing modules change with explicit before/after hashes in the packet. `git_replay` and `git_runtime.prepare_run` gain optional trusted Python budget seams and place scratch under that same budget root; default behavior is retained. `system_one_verified_selection` gains a default-preserving trusted budget factory, read-only actual work counts and downstream `seal(factory)` under the existing token publication lock. No callable or budget factory is admitted from wire input. The consumer budget subclass tightens each native phase's original local caps as well as the outer request allowance, without resetting counters/start/deadline. Native preparation retains its 60-second/256-command/8-MiB aggregate/2-MiB per-command ceilings; larger outer allowances cannot relax them. Limits are cooperative, with sampled scratch and cleanup reporting, not a universal hard wall SLA.
+
+## Findings, fixes and preserved attempts
+
+Luna Latest performed bounded AI technical review and a targeted fix verification, followed by a single test-only delta check. Three reproduced P2 findings were corrected: downstream factory exceptions now terminally close publication before releasing token ownership; consumer reasons no longer acquire an unrelated internal-failure code; and counters now count actual acquisition/verifier entries rather than work skipped by cancellation. A parent inspection also identified native cap relaxation through a larger shared outer budget; local native caps now remain active. Six focused regressions and the 28-test T05 compatibility suite passed in the scoped fix check. This is AI engineering review, not human/scientific acceptance or the broader T07 review.
+
+The terminal-factory regression was strengthened to claim the token before the old context's first idempotent publication call. Product source did not change for that test-only delta. Eleven targeted in-memory mutations were detected with zero test errors. These overlap the suite and do not add independent observations. All development, pre-fix, fixed-candidate and final captures/reviews remain separate lossless receipts, including earlier source archives. The intermediate `seam-changes.json` selection hash is explicitly historical; final registered source hashes in this packet are authoritative for this increment.
+
+## Source-bound software capture and latency
+
+Final serial capture on the M3 Pro used the existing isolated Python 3.12 environment: 21 tests, zero failures/errors/skips, 81.578 seconds. Its source archive has seven verified members (six registered inputs plus capture helper), and source inputs remained identical. The 22 tagged related fixture controls returned eight expected answers with complete prepared-body digest matches, two correct semantic deferrals and twelve expected technical refusals of forged proposals. Accepted errors: 0/8. Matched EN/ES status/reason consistency: 11/11 pairs. These are related synthetic software fixtures, not independent accuracy observations, general NLP evaluation, a representative workload, confirmatory holdout or Laya parity. The mixed 8/22 answered fraction includes deliberately forged inputs and is not a workload coverage target or a <=1% error screening result.
+
+For eight positive controls, descriptive medians were: pure decision 3.560 ms, aggregate acquisition 676.070 ms, native check 1,801.433 ms, native preparation 967.578 ms, entry through cleanup 3,949.410 ms, and externally measured entry through returned result 3,950.138 ms (range 3,127.951–5,968.031 ms). `prepareNs` covers the full entry-through-cleanup interval, including producer work. Stage spans are nested and must not be summed. Acquisition and native checks dominate these fixtures; optimizing by removing freshness or independent native checks is not justified. There is no before/after performance improvement claim or universal latency guarantee.
+
+## Stable software profiles
+
+| Profile | Tests | Passed | Skipped | Unit seconds | Wall seconds | Exit |
+|---|---:|---:|---:|---:|---:|---:|
+| quick | 2063 | 2044 | 19 | 1964.590 | 2132.814 | 0 |
+| pr | 2063 | 2044 | 19 | 1971.374 | 2140.308 | 0 |
+
+Quick escalated using the existing sensitive-path policy. Both profiles ran once in independent source-equivalent local copies with the same existing isolated Python 3.12 dependencies and correct child PATH. All registered candidate input hashes matched afterward; temporary validation copies were removed. These overlapping software runs are separate from the serial capture, scientific reproduction and human review. No installations, remote model calls, experimental network use or external spend occurred.
+
+Of the 2,336 pre-increment files, 2,333 are byte-identical; only the three documented source seams changed. Previous packet/archive bytes remain intact. T05's current-source selection binding is intentionally superseded; its historical archived selection source still matches the original T05 hash. The first-batch 51 bindings still match current files. No assurance authority snapshot, contract, research source, IR/grammar, acquisition or registry source was rewritten. Packaging adds only evidence/report files after validated executable inputs were frozen.
+
+## Delivery and next assignment
+
+The [packet](../../029-system-one-evaluation/evidence/ddp-t06-core/packet.json) binds current source, historical supersession, complete raw evidence, review and profile receipts. Raw logs are losslessly compressed; raw review/helper text uses capsules to preserve exact bytes without treating embedded local paths as repository links. Source archive members and an external local patch are checked separately. Repository/whitespace/patch checks validate packaging only.
+
+The next bounded increment is MCP service and stdio transport adoption of this same active-context Core route, preserving exact producer bodies, raw admission, budgets, cancellation and no execution authority. It needs its own assignment and adversarial transport evidence. T06 overall, T07, representative real-workload reliability, training, new calibration, human review, data admission, public adoption, activation and product publication remain pending. The research checkout and experimental ledger are unchanged. External spend is EUR 0, and every decision/consumer result keeps executionAuthorization=false. The documentary conversation receives this verified packet for its own local supplement; its separate PR594 authorization does not publish this product candidate.

@@ -2,15 +2,15 @@
 
 Start here, then read the [agent resumption guide](RESUMPTION.md). This is the current reading map as of the documentary review on2026-10-20; individual receipts below retain their own observation times. Chat history and ZIP imports are not required to understand the recorded work.
 
-## Local subsequent T06 intake
+## Subsequent local T06 evidence
 
-[Core API documentary intake](addenda/t06-core-intake-20261020/README.md) preserves pre-fix/fixed/final-test capture epochs, scoped review/fixes, source hashes and descriptive costs. Final exact-candidate software capture is obtained; full quick/PR and final package remain pending. This local branch increment is separate from integrated PR594 and contains no product implementation.
+[Core API documentary intake](addenda/t06-core-intake-20261020/README.md) preserves pre-fix/fixed/final-test capture epochs, scoped review/fixes, source hashes and descriptive costs. The [final Core-only reconciliation](addenda/t06-core-final-20261020/README.md) now records completed quick/PR and a verified final local package; the earlier intake remains an observation from before completion. This local branch increment is separate from integrated PR594 and contains no product implementation.
 
 ## Current handoff
 
 T05 internal engineering is delivered: [final packet and verification](addenda/t05-final-package-20261020/README.md), [full-profile receipts](addenda/t05-profiles-final-20261020/README.md) and [scoped Luna row-cap disposition](addenda/t05-rowcap-luna-disposition-20261020/README.md). Both full profiles recorded2042cases,2023passed,19skips,zero failures each; tests overlap and are not independent scientific observations. Packaging failures are preserved with their repairs;72packet bindings,22source-archive members and20reversible raw logs were checked.
 
-The later T06 Core API assignment belongs to the coordinator's separate implementation conversation. This PR contains no T06 implementation or completed T06 evidence. See the [chronology/status clarification](addenda/pr594-documentary-review-20261020/status-clarifications.md) for that later authorization, the earlier conditional T05 GO and frozen DDP-T01 headers. DDP-T01 revision2 was verified by the coordinator for bounded planning; its frozen pre-disposition headers do not override that later receipt or imply public adoption.
+The following PR594 status is a historical integration snapshot; subsequent local Core evidence is linked above. The later T06 Core API assignment belongs to the coordinator's separate implementation conversation. This PR contains no T06 implementation or completed T06 evidence. See the [chronology/status clarification](addenda/pr594-documentary-review-20261020/status-clarifications.md) for that later authorization, the earlier conditional T05 GO and frozen DDP-T01 headers. DDP-T01 revision2 was verified by the coordinator for bounded planning; its frozen pre-disposition headers do not override that later receipt or imply public adoption.
 
 The corpus is published in [PR594](https://github.com/jayanez/agent-braid/pull/594), targeting develop; publication, current-head CI, review and integration are separate. Product source/tests/fixtures/config/source archives/patches remain in the explicitly hash-bound coordinator package. The [publication receipt](addenda/github-publication-20261020.md) records initial publication, not current CI. No scientific/human approval or activation follows from publication or software tests.
 

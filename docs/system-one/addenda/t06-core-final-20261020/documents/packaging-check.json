@@ -1,0 +1,12 @@
+{
+  "originalLogSha256": "4dba091ad34351df5a47ab88351937a7c08b8d04df4e59834546b6babf1479b0",
+  "repositoryExitCode": 0,
+  "storedLog": {
+    "encoding": "gzip; original bytes unchanged",
+    "original": "packaging-repository.log",
+    "originalBytes": 30,
+    "originalSha256": "4dba091ad34351df5a47ab88351937a7c08b8d04df4e59834546b6babf1479b0",
+    "stored": "specs/029-system-one-evaluation/evidence/ddp-t06-core/receipts/packaging-repository.log.gz",
+    "storedSha256": "0696100a701b397d88703d8069bf7bcba97a8b41e6c578358c51b159a9e4a95d"
+  }
+}

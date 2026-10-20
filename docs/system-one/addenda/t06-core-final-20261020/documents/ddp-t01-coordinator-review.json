@@ -1,0 +1,46 @@
+{
+  "activation": "pending",
+  "baselineCommit": "fe6d25b3d9fb989c230aa11779b6a51d494d7a4e",
+  "candidateFiles": [
+    {
+      "bytes": 21462,
+      "path": "specs/028-system-one-core/contracts/verified-plan-v1.md",
+      "sha256": "a68488d4a412820130231daa8c8dbeefb1e58445b2f1cfdf0c02b8669ef132d7"
+    },
+    {
+      "bytes": 20126,
+      "path": "specs/028-system-one-core/decision-delivery/addenda/ddp-t01-plan.md",
+      "sha256": "2ee328f92aa19820704b3838528599296c87f53a5872a1f12d2bd8cd59a6e62e"
+    },
+    {
+      "bytes": 13451,
+      "path": "specs/029-system-one-evaluation/verified-plan-conformance.md",
+      "sha256": "90f52099cdaebba51f2781c715c748d1ba0c13e9b2b9755a32b25e53f5a08e5b"
+    },
+    {
+      "bytes": 27847,
+      "path": "specs/029-system-one-evaluation/verified-plan-vectors.json",
+      "sha256": "6584ce4de05edf143e215945ff620b5127fe48e6c352dfb7a33b447e753a11f7"
+    },
+    {
+      "bytes": 11794,
+      "path": "specs/031-system-one-integration/contracts/verified-plan-consumer-v1.md",
+      "sha256": "b17b5f3398dba9086ba44bdc04c4ff9cae97364f1fb9430a7e4ebcb9cb9fd1f4"
+    }
+  ],
+  "candidateManifestSha256": "94eb1dcd348e08bef647401d03a4db312f2ef51f3b176dc03aa85d045dad4334",
+  "candidateRevision": 2,
+  "dispositions": {
+    "CT01": "resolved-documentary",
+    "CT02": "resolved-documentary"
+  },
+  "executionAuthorization": false,
+  "humanReview": "pending",
+  "id": "DDP-T01-CT01-CT02-coordinator-review-v1",
+  "implementationStarted": false,
+  "newRuntimeTestsExecuted": false,
+  "profileAtReview": "revision2-final-result-pending; prior interrupted attempt not passed",
+  "reviewDocumentSha256": "a1fbeb93c5cabc02934277f2578d82076b0ff95e13e1d60fd0855d4ef4cf11a4",
+  "reviewedAtUTC": "2026-10-20T05:35:17.069150+00:00",
+  "vectorCount": 32
+}

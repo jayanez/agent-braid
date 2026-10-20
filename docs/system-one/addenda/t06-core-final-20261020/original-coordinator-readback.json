@@ -1,0 +1,13 @@
+{
+  "packetSha256": "2cf7048ee1d2fd596c87a60e13a86570870f7d3e549d95e05d192488ae25b9f0",
+  "bindingsVerified": 97,
+  "sourceArchiveMembersVerified": 28,
+  "priorFilesUnchanged": 2333,
+  "profileInputFilesUnchanged": 2339,
+  "patchSha256": "96214865cfd158d69d527f4ab48a704a6dca17d883692f019f11d46b39e25da1",
+  "reportSha256": "7cfbe1d4c71d7098529b1b01f0f3a97490cf2f08f2935a29cde4829b71b9ca0e",
+  "productPublished": false,
+  "profilesPassed": true,
+  "externalSpendEUR": 0,
+  "scope": "Core-only internal engineering delivery; no scientific/human/activation closure"
+}
