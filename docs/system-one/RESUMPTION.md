@@ -47,3 +47,7 @@ Human/linguistic review, independent/Claude Code review, scientific and represen
 ## Subsequent T02 and serial-pin receipt
 
 [T02 component and serial pin](addenda/t02-and-serial-pin-20261020/README.md) now bind three actual T02 files, 25 focused passes, four directed mutation detections and the actual coordinator registry pin. The prior T04 pre-pin tests do not cover post-pin bytes. T03 final hashes and combined/post-pin validation remain pending in this handoff; no task closure or activation follows.
+
+## Subsequent T03 and focused post-pin join
+
+[T03 and post-pin component join](addenda/t03-and-component-join-20261020/README.md) now provide the exact T03 final receipt (13 passes) and overlapping combined suite (52 passes, four cross-component checks), with seven source-file hash comparisons and two log checks. This supersedes the earlier missing T03/post-pin focused evidence. Full profiles, independent review and T05/T06 remain pending; do not add overlapping test counts or relabel the historical failed full profile.

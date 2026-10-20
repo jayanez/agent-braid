@@ -1,0 +1,27 @@
+{
+  "stage": "cross-component software join passed; full profiles pending",
+  "files": {
+    "agent_braid/system_one_verified_ir.py": "a0378c34b805387b0518cf6ebc3da05599976cb7f037d5f140c2571c8f362ea3",
+    "agent_braid/system_one_verified_acquisition.py": "2380a32ef308fbbe540c67e71fb0bf43dc15b95a6732a13a8e2bf2be0d49e5b7",
+    "agent_braid/system_one_verified_registry.py": "8d9cb2070683497ea789a9f03905e07f69d6c812c7d0ec9d6ab8a72116f88e6c",
+    "tests/test_system_one_verified_components.py": "01abcb850572c3ad0f85beccaf7d437367fa388f681f0b77d55be24c98c32dcf"
+  },
+  "log": "components-focused.log",
+  "logSha256": "a18fa4c9fe67ddebecd1ef5783cbf9bd8e44579d6909efa009fba7a0ee3edd57",
+  "tests": 52,
+  "skips": 0,
+  "seconds": 12.403,
+  "exitCode": 0,
+  "boundaries": [
+    "acquisition -> pure validated IR -> exact EN/ES symbolic/controlled roundtrip -> complete finite options",
+    "same mutable request-local Git budget/cancel across reacquisition",
+    "actual pinned registry accepts matching source and rejects changed bytes",
+    "fresh imports load no research or neural packages"
+  ],
+  "notImplemented": [
+    "T05 wire selection/result envelope and request context",
+    "T06 native consumer adapter/telemetry",
+    "activation"
+  ],
+  "executionAuthorization": false
+}

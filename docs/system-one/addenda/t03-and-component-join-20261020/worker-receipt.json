@@ -1,0 +1,27 @@
+{
+  "task": "DDP-T03",
+  "stage": "component implemented; profiles pending",
+  "recordedAtUTC": "2026-10-20T06:27:26.696929+00:00",
+  "files": {
+    "agent_braid/system_one_verified_acquisition.py": "2380a32ef308fbbe540c67e71fb0bf43dc15b95a6732a13a8e2bf2be0d49e5b7",
+    "tests/test_system_one_verified_acquisition.py": "27ff8dd4192d1bc1b7d72b412fa1209e3ba28b32671f0181d3fb707a104ea8ed",
+    "tests/fixtures/system_one_verified_acquisition.json": "4c674337541e56bc7cc2219a8c10e522bba037fae24bd480a65317010fc15078"
+  },
+  "focusedTests": {
+    "count": 13,
+    "skips": 0,
+    "exitCode": 0,
+    "seconds": 10.445
+  },
+  "logs": {
+    "T03-focused-complete.log": "cb72c656fb2864109e4d6f75b47a18d326542a4e418388e441b24f2caacd3cb0"
+  },
+  "workerOwnership": "released",
+  "limits": [
+    "mapping seam requires T05 raw parser for duplicate JSON rejection",
+    "cooperative trusted owned fixtures",
+    "deterministic acquisition flags new; no legacy byte-parity claim under nondefault config",
+    "ruff unavailable; no installation attempted"
+  ],
+  "executionAuthorization": false
+}

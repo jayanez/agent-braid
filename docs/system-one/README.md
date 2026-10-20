@@ -2,7 +2,9 @@
 
 Documentary snapshot, 2026-10-20. Start here; reading chat history is not required. For a new agent, read the [resumption guide](RESUMPTION.md): completed documentary work, exact validation limits, ownership and next evidence.
 
-Latest component/pin evidence: [T02 component and actual serial IR pin](addenda/t02-and-serial-pin-20261020/README.md). T02 reports 25 focused passes and four directed mutation detections; registry post-pin and combined validation remain pending.
+Latest focused join evidence: [T03 and post-pin component join](addenda/t03-and-component-join-20261020/README.md). T03 records 13 focused passes; the overlapping combined suite records 52 passes on actual post-pin source. Full profiles, independent review and T05/T06 remain pending.
+
+Earlier component/pin evidence: [T02 component and actual serial IR pin](addenda/t02-and-serial-pin-20261020/README.md). T02 reports 25 focused passes and four directed mutation detections; registry post-pin and combined validation remain pending.
 
 Earlier component evidence: [T04 partial component receipt](addenda/t04-component-20261020/README.md), ten focused tests reported passed; production pin/integration and whole-task closure remain pending.
 
