@@ -1,0 +1,26 @@
+{
+  "task": "T06 Core compatibility seams",
+  "scope": "Current-source revisions required for same-budget native work and atomic downstream sealing; old T05 source archive remains historical",
+  "beforeFiles": 2336,
+  "unchanged": 2333,
+  "justifiedChanges": {
+    "agent_braid/git_replay.py": {
+      "before": "62a2c461902e30d874dfe82bed77ab79075f33cb0e56f1e543fd9d317f1d571e",
+      "current": "6dc84e50fe04abb4e5675ac0173f9579b239d13ad1741e106b2d4e272081a388"
+    },
+    "agent_braid/git_runtime.py": {
+      "before": "ceb4469906b6c97a6f03faf3cc1b4ea8387df937c06b8ccd49984eaf2dff4d4e",
+      "current": "8cf7168e2cbb9b874019eb3cc8dcee7b5ad69892eaeb4cc0511996fade29f897"
+    },
+    "agent_braid/system_one_verified_selection.py": {
+      "before": "8971650c51082938281ecb62e40e23adab4202bb20971b1eb23e1ef7d78c339c",
+      "current": "b04663aa7fcda1eb21001bf769ab357077f538c95bd0f982807eef36a9c9bc5c"
+    }
+  },
+  "priorPacketsUnmodified": {
+    "specs/029-system-one-evaluation/evidence/ddp-t02-t04/packet.json": "a22a42405e9b0f83e2dd87ab329a99545b8eff3ca249e30bec242c6020c4c871",
+    "specs/029-system-one-evaluation/evidence/ddp-t05/packet.json": "1b9f67d77da004678808f1620e0dfaf9a4e1a113eb12a02f146b0f7a058bbcbc"
+  },
+  "oldT05CurrentBindings": "selection.py intentionally superseded; do not claim old source hash matches current file",
+  "executionAuthorization": false
+}

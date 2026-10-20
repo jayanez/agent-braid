@@ -1,0 +1,23 @@
+{
+  "status": "fixed candidate ready for scoped recheck",
+  "findings": [
+    "T06C-FIND001",
+    "T06C-FIND002",
+    "T06C-FIND003"
+  ],
+  "nativeEnvelopeHardening": "T06C-FIND004; per-native limits retained in same aggregate budget",
+  "inputs": {
+    "agent_braid/system_one_verified_consumers.py": "956666ab9d9423e030acefb4b217e184a37ed5f62e2b215b4524af978c2a3808",
+    "tests/test_system_one_verified_consumers.py": "b30e14371e21e372b33bdd745bce13d1836e1de482bd92797709e62036feba6c",
+    "agent_braid/system_one_verified_selection.py": "5cb264e1be4eb6f26211af12d11541f272e0d44daeb2cc8a410d64bf1fc9a1d1",
+    "agent_braid/git_replay.py": "6dc84e50fe04abb4e5675ac0173f9579b239d13ad1741e106b2d4e272081a388",
+    "agent_braid/git_runtime.py": "8cf7168e2cbb9b874019eb3cc8dcee7b5ad69892eaeb4cc0511996fade29f897",
+    "specs/031-system-one-integration/addenda/ddp-t06-core-plan.md": "8b9bcd61d392edc6712a54c229f64253397db61aac81a6065eaf3d0ae5ec3285"
+  },
+  "archiveSha256": "c57d0547e7809ebfae5f3c338834383808d69c73a9de1b0086ae331d5d6c02b4",
+  "focusedFindingsLogSha256": "9845ad6489aca7c02dd870ac5eae20565664b3c9ed3d911f977bde79590f53e8",
+  "focusedFindings": "6 passed8.216s before added8MiB aggregate assertion",
+  "nativeCapBoundaryLogSha256": "680eb72925fe6800a1ca17772d31719a6010c1ee9db2662d41b0797405a96247",
+  "fullCapture": "pending final candidate; original15/22 pre-fix retained",
+  "executionAuthorization": false
+}

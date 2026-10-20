@@ -1,0 +1,81 @@
+{
+  "status": "obtained pre-review software capture; source changes may require new final capture",
+  "sourceRegistrationSha256": "5a7a6a01b4b09dd4462b431d57c9239a848207241e06316817cc043f542fa712",
+  "testCount": 15,
+  "skips": 0,
+  "failures": 0,
+  "errors": 0,
+  "recordedCases": 22,
+  "statusCounts": {
+    "answered": 8,
+    "semantic-defer": 2,
+    "refused": 12
+  },
+  "expectedOutcomeMismatches": [],
+  "acceptedErrors": 0,
+  "answeredDenominator": 8,
+  "positivePrepared": "8/8",
+  "correctDefers": "2/2",
+  "forgedProposalRejections": "12/12",
+  "matchedENESGroups": 11,
+  "consistentENESGroups": 11,
+  "latenciesDescriptiveOnly": {
+    "acquisitionNs": {
+      "n": 8,
+      "medianMs": 799.5765624999999,
+      "minMs": 540.622584,
+      "maxMs": 1167.766208
+    },
+    "decisionNs": {
+      "n": 8,
+      "medianMs": 3.5235630000000002,
+      "minMs": 3.147959,
+      "maxMs": 4.661083
+    },
+    "prepareNs": {
+      "n": 8,
+      "medianMs": 3920.9394785,
+      "minMs": 3247.475459,
+      "maxMs": 5719.46825
+    },
+    "cleanupNs": {
+      "n": 8,
+      "medianMs": 0.0921045,
+      "minMs": 0.081541,
+      "maxMs": 0.131
+    },
+    "entryToCleanupNs": {
+      "n": 8,
+      "medianMs": 3920.9394785,
+      "minMs": 3247.475459,
+      "maxMs": 5719.46825
+    },
+    "expectedTree": {
+      "n": 8,
+      "medianMs": 550.4454995,
+      "minMs": 462.794708,
+      "maxMs": 630.079751
+    },
+    "handoffRevalidation": {
+      "n": 8,
+      "medianMs": 344.6540415,
+      "minMs": 263.807791,
+      "maxMs": 491.05675
+    },
+    "nativeCheck": {
+      "n": 8,
+      "medianMs": 1734.700021,
+      "minMs": 1416.950375,
+      "maxMs": 2659.751
+    },
+    "nativePrepare": {
+      "n": 8,
+      "medianMs": 906.7065835000001,
+      "minMs": 743.034125,
+      "maxMs": 1293.530583
+    }
+  },
+  "limits": "Related software fixtures, no independent accuracy/holdout/parity evidence; not supported SLA or human review. Counts overlap the15 tests. Aggregate coverage over malicious controls is not workload coverage.",
+  "externalSpendEUR": 0,
+  "executionAuthorization": false
+}

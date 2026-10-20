@@ -51,3 +51,7 @@ Do not edit the coordinator candidate from the documentary branch or restart its
 For each material new receipt, record stable task/requirement alias, source commit/hashes, owner, command/environment, positive/negative outcome, skips, cost/time domain, actual reviewer/model/scope, unresolved gates and next owner. Append without rewriting frozen evidence; update the current entry point so older pending statuses are unambiguously historical. Reconcile issue/Project status only when supported and authorized. Source-bound receipts and versioned updates, rather than a chat acknowledgement or ZIP alone, complete the handoff.
 
 Use the [adversarial review brief](adversarial-review.md) for further challenge. No Claude Code review or human approval is invented. The documentary heartbeat through T05 was paused after final publication/relay; any subsequent follow-up must use its actual new authorization and scope.
+
+## Subsequent local T06 intake
+
+[T06 Core source-bound documentary intake](addenda/t06-core-intake-20261020/README.md) records the later Core-only capture, findings/fix chronology and exact source epochs. Do not apply the preceding PR594 no-T06-results snapshot to this later observation. It is a local supplement with final profiles/package still pending; no product source, task closure or acceptance is supplied.

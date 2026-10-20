@@ -1,0 +1,48 @@
+# T06 Core API scoped fix verification
+
+Date: 2026-10-20
+
+Scope: recheck only the three prior findings (T06C-FIND001–003) and the added native resource-envelope guard. No broader review was repeated; no source was edited.
+
+## Candidate pins
+
+All six `fixed-candidate.json` inputs match their current SHA-256 values:
+
+- `agent_braid/system_one_verified_consumers.py`: `956666ab9d9423e030acefb4b217e184a37ed5f62e2b215b4524af978c2a3808`
+- `tests/test_system_one_verified_consumers.py`: `b30e14371e21e372b33bdd745bce13d1836e1de482bd92797709e62036feba6c`
+- `agent_braid/system_one_verified_selection.py`: `5cb264e1be4eb6f26211af12d11541f272e0d44daeb2cc8a410d64bf1fc9a1d1`
+- `agent_braid/git_replay.py`: `6dc84e50fe04abb4e5675ac0173f9579b239d13ad1741e106b2d4e272081a388`
+- `agent_braid/git_runtime.py`: `8cf7168e2cbb9b874019eb3cc8dcee7b5ad69892eaeb4cc0511996fade29f897`
+- `specs/031-system-one-integration/addenda/ddp-t06-core-plan.md`: `8b9bcd61d392edc6712a54c229f64253397db61aac81a6065eaf3d0ae5ec3285`
+
+The fixed-candidate source archive hash also matches: `c57d0547e7809ebfae5f3c338834383808d69c73a9de1b0086ae331d5d6c02b4`.
+
+## Fix disposition
+
+T06C-FIND001 is fixed: a downstream seal-factory exception now latches producer refusal and terminal publication before the token is released. A later call cannot retry the factory. The Core adapter catches the first factory failure and constructs only the refused wrapper from the terminal producer result.
+
+T06C-FIND002 is fixed: known consumer-only refusal reasons no longer gain a synthetic `internal-failure`; exact consumer mismatch and runtime-request mismatch reason tuples are asserted.
+
+T06C-FIND003 is fixed: acquisition and verifier counters now come from invocation-entry counters in the live T05 context. Cancellation before revalidation entry reports only the initial producer acquisition/verifier calls; a registry failure after acquisition counts the second acquisition but not a verifier invocation.
+
+The native budget guard preserves the same aggregate GitCommandBudget and parent ceilings while enforcing nativeCheck/nativePrepare caps for stage time, command count, aggregate output and per-command output. The added boundary test checks limits without raising the parent counters or ceilings. I found no new P1/P2 issue in these implicated changes.
+
+## Checks executed
+
+Used the bundled Python `3.12.14` at `/Users/juanyanez/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/bin/python3`.
+
+Ran the six named T06 regressions:
+
+`test_failed_seal_factory_is_terminal_before_token_reuse`, `test_consumer_factory_failure_returns_only_terminal_refusal`, `test_known_consumer_reasons_are_exact_without_spurious_internal_failure`, `test_cancel_before_revalidation_does_not_count_unentered_work`, `test_failed_registry_revalidation_counts_only_actual_verifier_entries`, and `test_native_prepare_resource_caps_are_not_relaxed_by_outer_budget`.
+
+Result: 6 passed in 8.523s.
+
+Ran the existing T05 selection file only:
+
+`python3 -m unittest discover -s tests -p 'test_system_one_verified_selection.py' -v`
+
+Result: 28 passed in 9.673s.
+
+I verified, without rerunning, the supplied native cap boundary log SHA-256 `680eb72925fe6800a1ca17772d31719a6010c1ee9db2662d41b0797405a96247`. The broader T06 capture, other suites, and validation profiles were not rerun here.
+
+This closes only the scoped technical recheck of these fixes. It does not establish complete T06 acceptance, MCP service/stdio integration, human or scientific review, adoption, execution authority, or activation.

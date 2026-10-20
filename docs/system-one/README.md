@@ -2,6 +2,10 @@
 
 Start here, then read the [agent resumption guide](RESUMPTION.md). This is the current reading map as of the documentary review on2026-10-20; individual receipts below retain their own observation times. Chat history and ZIP imports are not required to understand the recorded work.
 
+## Local subsequent T06 intake
+
+[Core API documentary intake](addenda/t06-core-intake-20261020/README.md) preserves pre-fix/fixed/final-test capture epochs, scoped review/fixes, source hashes and descriptive costs. Final exact-candidate software capture is obtained; full quick/PR and final package remain pending. This local branch increment is separate from integrated PR594 and contains no product implementation.
+
 ## Current handoff
 
 T05 internal engineering is delivered: [final packet and verification](addenda/t05-final-package-20261020/README.md), [full-profile receipts](addenda/t05-profiles-final-20261020/README.md) and [scoped Luna row-cap disposition](addenda/t05-rowcap-luna-disposition-20261020/README.md). Both full profiles recorded2042cases,2023passed,19skips,zero failures each; tests overlap and are not independent scientific observations. Packaging failures are preserved with their repairs;72packet bindings,22source-archive members and20reversible raw logs were checked.

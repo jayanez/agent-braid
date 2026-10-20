@@ -1,0 +1,457 @@
+{
+  "id": "S1-T06-CORE-INTAKE-20261020",
+  "checkedAtUTC": "2026-10-20T09:43:51.509443+00:00",
+  "documentaryBase": "2ffb4de5fb702a5a0fb24ae68e57fae5181a47a3",
+  "productBaseline": "fe6d25b3d9fb989c230aa11779b6a51d494d7a4e",
+  "finalSourceInputs": {
+    "agent_braid/system_one_verified_consumers.py": "956666ab9d9423e030acefb4b217e184a37ed5f62e2b215b4524af978c2a3808",
+    "tests/test_system_one_verified_consumers.py": "d88c6dcb8f49a31023431258662cf82f3c848f1a92c3384ca0e74f430997493c",
+    "agent_braid/system_one_verified_selection.py": "5cb264e1be4eb6f26211af12d11541f272e0d44daeb2cc8a410d64bf1fc9a1d1",
+    "agent_braid/git_replay.py": "6dc84e50fe04abb4e5675ac0173f9579b239d13ad1741e106b2d4e272081a388",
+    "agent_braid/git_runtime.py": "8cf7168e2cbb9b874019eb3cc8dcee7b5ad69892eaeb4cc0511996fade29f897",
+    "specs/031-system-one-integration/addenda/ddp-t06-core-plan.md": "8b9bcd61d392edc6712a54c229f64253397db61aac81a6065eaf3d0ae5ec3285"
+  },
+  "sourceArchivesCheckedNotPublished": [
+    {
+      "sourcePath": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/outputs/ddp-t06-core-20261020/pre-fix-reviewed-source.tar.gz",
+      "sha256": "d039c0ce155527c95da6beba835ef48bd4b017d49134274159739c812fed7f16",
+      "published": false,
+      "membersChecked": [
+        {
+          "path": "agent_braid/system_one_verified_consumers.py",
+          "sha256": "e9ca7912bf9b5e09f3d746485cc2cc5e980beecdf030104490777ab5e1be0004",
+          "bytes": 19309
+        },
+        {
+          "path": "tests/test_system_one_verified_consumers.py",
+          "sha256": "9ef326e23f1cb55bebf824b3aefeded6b25273b0999a6eefb975d7b8d5a7e4a9",
+          "bytes": 19629
+        },
+        {
+          "path": "agent_braid/system_one_verified_selection.py",
+          "sha256": "b04663aa7fcda1eb21001bf769ab357077f538c95bd0f982807eef36a9c9bc5c",
+          "bytes": 27585
+        },
+        {
+          "path": "agent_braid/git_replay.py",
+          "sha256": "6dc84e50fe04abb4e5675ac0173f9579b239d13ad1741e106b2d4e272081a388",
+          "bytes": 32416
+        },
+        {
+          "path": "agent_braid/git_runtime.py",
+          "sha256": "8cf7168e2cbb9b874019eb3cc8dcee7b5ad69892eaeb4cc0511996fade29f897",
+          "bytes": 31565
+        },
+        {
+          "path": "specs/031-system-one-integration/addenda/ddp-t06-core-plan.md",
+          "sha256": "d1173d8a99a5e8ce8c5670a24adc6d695a8d56acc611285e46cc043e8dbfa2ff",
+          "bytes": 7029
+        }
+      ]
+    },
+    {
+      "sourcePath": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/outputs/ddp-t06-core-20261020/final-capture/candidate-source.tar.gz",
+      "sha256": "516055a9c2928a45b568c0d4ebdce6a47dbbf683c02363d108985cb063eeb026",
+      "published": false,
+      "membersChecked": [
+        {
+          "path": "agent_braid/system_one_verified_consumers.py",
+          "sha256": "956666ab9d9423e030acefb4b217e184a37ed5f62e2b215b4524af978c2a3808",
+          "bytes": 21962
+        },
+        {
+          "path": "tests/test_system_one_verified_consumers.py",
+          "sha256": "b30e14371e21e372b33bdd745bce13d1836e1de482bd92797709e62036feba6c",
+          "bytes": 25071
+        },
+        {
+          "path": "agent_braid/system_one_verified_selection.py",
+          "sha256": "5cb264e1be4eb6f26211af12d11541f272e0d44daeb2cc8a410d64bf1fc9a1d1",
+          "bytes": 28306
+        },
+        {
+          "path": "agent_braid/git_replay.py",
+          "sha256": "6dc84e50fe04abb4e5675ac0173f9579b239d13ad1741e106b2d4e272081a388",
+          "bytes": 32416
+        },
+        {
+          "path": "agent_braid/git_runtime.py",
+          "sha256": "8cf7168e2cbb9b874019eb3cc8dcee7b5ad69892eaeb4cc0511996fade29f897",
+          "bytes": 31565
+        },
+        {
+          "path": "specs/031-system-one-integration/addenda/ddp-t06-core-plan.md",
+          "sha256": "8b9bcd61d392edc6712a54c229f64253397db61aac81a6065eaf3d0ae5ec3285",
+          "bytes": 7560
+        },
+        {
+          "path": "delivery/capture.py",
+          "sha256": "bf030d30df0ddf289ba402ba6f4da07452ad40e70927b7b721d50d9617f3ad1b",
+          "bytes": 3455
+        }
+      ]
+    },
+    {
+      "sourcePath": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/outputs/ddp-t06-core-20261020/final-capture-v2/candidate-source.tar.gz",
+      "sha256": "7b515c955f02385b7629893ba78146b842d34bd02d975b0519dab36051b52bce",
+      "published": false,
+      "membersChecked": [
+        {
+          "path": "agent_braid/system_one_verified_consumers.py",
+          "sha256": "956666ab9d9423e030acefb4b217e184a37ed5f62e2b215b4524af978c2a3808",
+          "bytes": 21962
+        },
+        {
+          "path": "tests/test_system_one_verified_consumers.py",
+          "sha256": "d88c6dcb8f49a31023431258662cf82f3c848f1a92c3384ca0e74f430997493c",
+          "bytes": 25162
+        },
+        {
+          "path": "agent_braid/system_one_verified_selection.py",
+          "sha256": "5cb264e1be4eb6f26211af12d11541f272e0d44daeb2cc8a410d64bf1fc9a1d1",
+          "bytes": 28306
+        },
+        {
+          "path": "agent_braid/git_replay.py",
+          "sha256": "6dc84e50fe04abb4e5675ac0173f9579b239d13ad1741e106b2d4e272081a388",
+          "bytes": 32416
+        },
+        {
+          "path": "agent_braid/git_runtime.py",
+          "sha256": "8cf7168e2cbb9b874019eb3cc8dcee7b5ad69892eaeb4cc0511996fade29f897",
+          "bytes": 31565
+        },
+        {
+          "path": "specs/031-system-one-integration/addenda/ddp-t06-core-plan.md",
+          "sha256": "8b9bcd61d392edc6712a54c229f64253397db61aac81a6065eaf3d0ae5ec3285",
+          "bytes": 7560
+        },
+        {
+          "path": "delivery/capture.py",
+          "sha256": "bf030d30df0ddf289ba402ba6f4da07452ad40e70927b7b721d50d9617f3ad1b",
+          "bytes": 3455
+        }
+      ]
+    }
+  ],
+  "checks": {
+    "currentFinalPins": 6,
+    "expectedStatusMatches": 22,
+    "ENESStatusReasonPairs": 11,
+    "completePreparedBodyDigests": 8,
+    "mutationDetections": 11,
+    "errorsInMutationControls": 0,
+    "testsOrCapturesExecutedHere": false
+  },
+  "documents": [
+    {
+      "sourcePath": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/outputs/ddp-t06-core-20261020/assignment.json",
+      "originalSHA256": "3fb850a6b4fe659ab7de33935f10cd583f7338d19ce9d9203e647f2fee91d8cf",
+      "corpusPath": "docs/system-one/addenda/t06-core-intake-20261020/assignment.json",
+      "sha256": "3fb850a6b4fe659ab7de33935f10cd583f7338d19ce9d9203e647f2fee91d8cf",
+      "bytes": 445,
+      "representation": "original documentary bytes"
+    },
+    {
+      "sourcePath": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/outputs/ddp-t06-core-20261020/seam-changes.json",
+      "originalSHA256": "048c6abf85af759aa43782b969f6b7b187b61081a5841dd8ff4e0287f492f1b6",
+      "corpusPath": "docs/system-one/addenda/t06-core-intake-20261020/seam-changes.json",
+      "sha256": "048c6abf85af759aa43782b969f6b7b187b61081a5841dd8ff4e0287f492f1b6",
+      "bytes": 1380,
+      "representation": "original documentary bytes"
+    },
+    {
+      "sourcePath": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/outputs/ddp-t06-core-20261020/fixed-candidate.json",
+      "originalSHA256": "ac0d08eb419da71c2f647d45cbc0ef36356b4b04049021a4a4561540325dc7c3",
+      "corpusPath": "docs/system-one/addenda/t06-core-intake-20261020/fixed-candidate.json",
+      "sha256": "ac0d08eb419da71c2f647d45cbc0ef36356b4b04049021a4a4561540325dc7c3",
+      "bytes": 1426,
+      "representation": "original documentary bytes"
+    },
+    {
+      "sourcePath": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/outputs/ddp-t06-core-20261020/regression-strengthening.json",
+      "originalSHA256": "b116cb01362a4121ae980c58b02c04d5b9945f9dc12ee6254d8a4c39caa3853b",
+      "corpusPath": "docs/system-one/addenda/t06-core-intake-20261020/regression-strengthening.json",
+      "sha256": "b116cb01362a4121ae980c58b02c04d5b9945f9dc12ee6254d8a4c39caa3853b",
+      "bytes": 724,
+      "representation": "original documentary bytes"
+    },
+    {
+      "sourcePath": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/outputs/ddp-t06-core-20261020/mutation-guards.json",
+      "originalSHA256": "01991732c3f87fafb43c0cd4562957069a69aaad55b0e4056c839d4d66d68155",
+      "corpusPath": "docs/system-one/addenda/t06-core-intake-20261020/mutation-guards.json",
+      "sha256": "01991732c3f87fafb43c0cd4562957069a69aaad55b0e4056c839d4d66d68155",
+      "bytes": 2740,
+      "representation": "original documentary bytes"
+    },
+    {
+      "sourcePath": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/outputs/ddp-t06-core-20261020/pre-fix-source-reconstruction.json",
+      "originalSHA256": "b307feca23364e6efb180dd73bc5fc40f3d60b86a551364e67b937eda260e9c2",
+      "corpusPath": "docs/system-one/addenda/t06-core-intake-20261020/pre-fix-source-reconstruction.json",
+      "sha256": "b307feca23364e6efb180dd73bc5fc40f3d60b86a551364e67b937eda260e9c2",
+      "bytes": 942,
+      "representation": "original documentary bytes"
+    },
+    {
+      "sourcePath": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/outputs/ddp-t06-core-20261020/capture-summary.json",
+      "originalSHA256": "bda7b2a998e0005ee5f4aa1a769041746ad078bf47628364eda2d0b17a6c0c16",
+      "corpusPath": "docs/system-one/addenda/t06-core-intake-20261020/capture-summary.json",
+      "sha256": "bda7b2a998e0005ee5f4aa1a769041746ad078bf47628364eda2d0b17a6c0c16",
+      "bytes": 2087,
+      "representation": "original documentary bytes"
+    },
+    {
+      "sourcePath": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/outputs/ddp-t06-core-20261020/final-capture-summary.json",
+      "originalSHA256": "237e12ef9513974f4e685ae2fddb11f7d53d39171d6f9979df406708f3b44483",
+      "corpusPath": "docs/system-one/addenda/t06-core-intake-20261020/final-capture-summary.json",
+      "sha256": "237e12ef9513974f4e685ae2fddb11f7d53d39171d6f9979df406708f3b44483",
+      "bytes": 3120,
+      "representation": "original documentary bytes"
+    },
+    {
+      "sourcePath": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/outputs/ddp-t06-core-20261020/launch.json",
+      "originalSHA256": "bc4d365eee2380287f3bd0942bd435ce38d2167f4588e040cb916dfba0a57af8",
+      "corpusPath": "docs/system-one/addenda/t06-core-intake-20261020/launch.json",
+      "sha256": "bc4d365eee2380287f3bd0942bd435ce38d2167f4588e040cb916dfba0a57af8",
+      "bytes": 304,
+      "representation": "original documentary bytes"
+    },
+    {
+      "sourcePath": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/outputs/ddp-t06-core-20261020/supervisor-start.json",
+      "originalSHA256": "b801d4756f35ae979888a171e81a335c4f2144e2225bd401157a081bd820fee6",
+      "corpusPath": "docs/system-one/addenda/t06-core-intake-20261020/supervisor-start.json",
+      "sha256": "b801d4756f35ae979888a171e81a335c4f2144e2225bd401157a081bd820fee6",
+      "bytes": 444,
+      "representation": "original documentary bytes"
+    },
+    {
+      "sourcePath": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/outputs/ddp-t06-core-20261020/luna-core-review.md",
+      "originalSHA256": "81c4f7ad9b4752dd00d2660e228f4b0448f3977e4c2975bd512366107efb3dac",
+      "corpusPath": "docs/system-one/addenda/t06-core-intake-20261020/original-luna-review.txt",
+      "sha256": "81c4f7ad9b4752dd00d2660e228f4b0448f3977e4c2975bd512366107efb3dac",
+      "bytes": 6959,
+      "representation": "original documentary bytes"
+    },
+    {
+      "sourcePath": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/outputs/ddp-t06-core-20261020/luna-core-fix-verification.md",
+      "originalSHA256": "d6190673e60af65634eaeee9eb404f97a1e52146fdfe6d5fdbf51f8e1d290755",
+      "corpusPath": "docs/system-one/addenda/t06-core-intake-20261020/original-luna-fix-verification.txt",
+      "sha256": "d6190673e60af65634eaeee9eb404f97a1e52146fdfe6d5fdbf51f8e1d290755",
+      "bytes": 3547,
+      "representation": "original documentary bytes"
+    },
+    {
+      "sourcePath": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/outputs/ddp-t06-core-20261020/luna-core-final-test-delta.md",
+      "originalSHA256": "341eb2328522b8dd74fe4add62fa8003f2059eab69ca1fce9c0396fcfa416372",
+      "corpusPath": "docs/system-one/addenda/t06-core-intake-20261020/original-luna-final-test-delta.txt",
+      "sha256": "341eb2328522b8dd74fe4add62fa8003f2059eab69ca1fce9c0396fcfa416372",
+      "bytes": 1800,
+      "representation": "original documentary bytes"
+    },
+    {
+      "sourcePath": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/outputs/ddp-t06-core-20261020/capture-registration.json",
+      "originalSHA256": "5a7a6a01b4b09dd4462b431d57c9239a848207241e06316817cc043f542fa712",
+      "corpusPath": "docs/system-one/addenda/t06-core-intake-20261020/capture/pre-fix/capture-registration.json.gz",
+      "sha256": "fa45cdc19855e7172bf273a3cd19efc851d03c15c51a3dfddec5d021f1cfe94c",
+      "bytes": 672,
+      "originalBytes": 1064,
+      "representation": "lossless gzip; decoded original bytes hash-checked"
+    },
+    {
+      "sourcePath": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/outputs/ddp-t06-core-20261020/capture-result.json",
+      "originalSHA256": "53633f4b2869c373c5f3056fa846ac461ca0ea9e773b8711c53833ab0cc93b10",
+      "corpusPath": "docs/system-one/addenda/t06-core-intake-20261020/capture/pre-fix/capture-result.json.gz",
+      "sha256": "65e7b32165b5b404bb3fc1c8b79f01231546f8be78687918e9e76d5ced5b1e97",
+      "bytes": 6782,
+      "originalBytes": 82121,
+      "representation": "lossless gzip; decoded original bytes hash-checked"
+    },
+    {
+      "sourcePath": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/outputs/ddp-t06-core-20261020/focused-capture.log",
+      "originalSHA256": "47c5c4d7eee31cd89c393a600330d2cc3aa88730866341e859f11b6dbf79c77d",
+      "corpusPath": "docs/system-one/addenda/t06-core-intake-20261020/capture/pre-fix/focused-capture.log.gz",
+      "sha256": "525033123b6dfc1781ce4d0a65710a52b4085cc15838f6482ed995fff961d0b5",
+      "bytes": 638,
+      "originalBytes": 2950,
+      "representation": "lossless gzip; decoded original bytes hash-checked"
+    },
+    {
+      "sourcePath": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/outputs/ddp-t06-core-20261020/final-capture/capture-registration.json",
+      "originalSHA256": "3bae632fc54c6dc5f32e8a3a8a6f589e8d388360ea578e3dc11a5c5fc2c45c34",
+      "corpusPath": "docs/system-one/addenda/t06-core-intake-20261020/capture/corrected-test-before-strengthening/capture-registration.json.gz",
+      "sha256": "22e64518577c9a7fa96ce971bd94f7ad5c3decab70636b2c655eab1fa6c97515",
+      "bytes": 775,
+      "originalBytes": 1245,
+      "representation": "lossless gzip; decoded original bytes hash-checked"
+    },
+    {
+      "sourcePath": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/outputs/ddp-t06-core-20261020/final-capture/capture-result.json",
+      "originalSHA256": "74d5a794d1f235a07bca75d553d01e07b6199b703fa6ff1e92148240ea56c899",
+      "corpusPath": "docs/system-one/addenda/t06-core-intake-20261020/capture/corrected-test-before-strengthening/capture-result.json.gz",
+      "sha256": "c4cf34b50046c658b4fef9fd41aead05bd8b04bdb60fc6cd22f087091bd91c28",
+      "bytes": 114409,
+      "originalBytes": 1651688,
+      "representation": "lossless gzip; decoded original bytes hash-checked"
+    },
+    {
+      "sourcePath": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/outputs/ddp-t06-core-20261020/final-capture/focused-capture.log",
+      "originalSHA256": "516d412535e30a8268b66b5ad2a46670afa6f5809edd536f3c8fa50fc2f6532f",
+      "corpusPath": "docs/system-one/addenda/t06-core-intake-20261020/capture/corrected-test-before-strengthening/focused-capture.log.gz",
+      "sha256": "245aefd39db6926dc63b271f7c4e14d777657f44545c696f82c8a45815588ca1",
+      "bytes": 825,
+      "originalBytes": 4142,
+      "representation": "lossless gzip; decoded original bytes hash-checked"
+    },
+    {
+      "sourcePath": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/outputs/ddp-t06-core-20261020/final-capture-v2/capture-registration.json",
+      "originalSHA256": "2f706da30626e4f0cced69693961434c2312b80f501658bd2830b7343db5fa7f",
+      "corpusPath": "docs/system-one/addenda/t06-core-intake-20261020/capture/final-exact-candidate/capture-registration.json.gz",
+      "sha256": "1b5bf5f98cc37681273fd7ded7dbfc38c8c0ec18ac9567ee88733102ad867977",
+      "bytes": 777,
+      "originalBytes": 1245,
+      "representation": "lossless gzip; decoded original bytes hash-checked"
+    },
+    {
+      "sourcePath": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/outputs/ddp-t06-core-20261020/final-capture-v2/capture-result.json",
+      "originalSHA256": "8dd376c0b177f34d9d32612471b9e4e9c100f7f9233193a2350209ba82253579",
+      "corpusPath": "docs/system-one/addenda/t06-core-intake-20261020/capture/final-exact-candidate/capture-result.json.gz",
+      "sha256": "3ce55abeb182b8e116f0747e7a8e66cd8d2e65924470896f372e5aabf03f4615",
+      "bytes": 114342,
+      "originalBytes": 1651650,
+      "representation": "lossless gzip; decoded original bytes hash-checked"
+    },
+    {
+      "sourcePath": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/outputs/ddp-t06-core-20261020/final-capture-v2/focused-capture.log",
+      "originalSHA256": "5ce0f8e8f8e2bfe38032c817589bfd955e1697aca183f7d467b02ee5a2f89747",
+      "corpusPath": "docs/system-one/addenda/t06-core-intake-20261020/capture/final-exact-candidate/focused-capture.log.gz",
+      "sha256": "320605cff7efea860f61d641188ea63acde3919360dfb57b36c4b6697de1cbde",
+      "bytes": 825,
+      "originalBytes": 4142,
+      "representation": "lossless gzip; decoded original bytes hash-checked"
+    },
+    {
+      "sourcePath": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/outputs/ddp-t06-core-20261020/focused-first.log",
+      "originalSHA256": "3aa14974986bac98d405a4bdc9d705dd9e9a359a6bf98ca530cd8e9820abdfd1",
+      "corpusPath": "docs/system-one/addenda/t06-core-intake-20261020/development/focused-first.log.gz",
+      "sha256": "cedda1f54648f66d9c643ca5eb5f8bd4160f07fb890b7cb7f76d07fc461754bf",
+      "bytes": 570,
+      "originalBytes": 2560,
+      "representation": "lossless gzip; decoded original bytes hash-checked"
+    },
+    {
+      "sourcePath": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/outputs/ddp-t06-core-20261020/focused-second.log",
+      "originalSHA256": "9dd7fdd1fe503c9632b427f050e1f2b9d9141a3efee3739eae1aedc139a1f4a7",
+      "corpusPath": "docs/system-one/addenda/t06-core-intake-20261020/development/focused-second.log.gz",
+      "sha256": "0c4f098411415b7e5d244a77166db37431a15133ddfcb4d707a35b3d0f95d46a",
+      "bytes": 600,
+      "originalBytes": 2746,
+      "representation": "lossless gzip; decoded original bytes hash-checked"
+    },
+    {
+      "sourcePath": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/outputs/ddp-t06-core-20261020/multi-operation.log",
+      "originalSHA256": "01578428afa1f2ce1d99c5f27ecac3cadbf2a6426a12c7d632d6f3233ef2236a",
+      "corpusPath": "docs/system-one/addenda/t06-core-intake-20261020/development/multi-operation.log.gz",
+      "sha256": "adb275d97a6385c8fdffedea9eb96f026422f19e2520b929423f4dadc39fe41d",
+      "bytes": 161,
+      "originalBytes": 302,
+      "representation": "lossless gzip; decoded original bytes hash-checked"
+    },
+    {
+      "sourcePath": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/outputs/ddp-t06-core-20261020/focused-findings.log",
+      "originalSHA256": "9845ad6489aca7c02dd870ac5eae20565664b3c9ed3d911f977bde79590f53e8",
+      "corpusPath": "docs/system-one/addenda/t06-core-intake-20261020/development/focused-findings.log.gz",
+      "sha256": "feb72e4c6fdc8f4409ebb58212f7639de5e867722a60173bd9fb6eba8b1d88f8",
+      "bytes": 336,
+      "originalBytes": 1290,
+      "representation": "lossless gzip; decoded original bytes hash-checked"
+    },
+    {
+      "sourcePath": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/outputs/ddp-t06-core-20261020/native-cap-boundaries.log",
+      "originalSHA256": "680eb72925fe6800a1ca17772d31719a6010c1ee9db2662d41b0797405a96247",
+      "corpusPath": "docs/system-one/addenda/t06-core-intake-20261020/development/native-cap-boundaries.log.gz",
+      "sha256": "6e25ec42fa27ccbde30019d445aae5659df03fdd4794311e43a76dcb0bd995de",
+      "bytes": 157,
+      "originalBytes": 299,
+      "representation": "lossless gzip; decoded original bytes hash-checked"
+    },
+    {
+      "sourcePath": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/outputs/ddp-t06-core-20261020/t05-compatibility-first.log",
+      "originalSHA256": "da298c9e2abdcbdc474adb8d8e077450c87b520475af04fa99262536adfd37f1",
+      "corpusPath": "docs/system-one/addenda/t06-core-intake-20261020/development/t05-compatibility-first.log.gz",
+      "sha256": "ab6559e8719cee5a62e4ed9a131da043960d0dddbca3a7d4e361369e557c7f11",
+      "bytes": 1028,
+      "originalBytes": 5410,
+      "representation": "lossless gzip; decoded original bytes hash-checked"
+    },
+    {
+      "sourcePath": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/outputs/ddp-t06-core-20261020/mutation-guards.log",
+      "originalSHA256": "e0fe96addc1324633c9d4a779f6da3d98bb2acaeb140f3de31c868c30f16860c",
+      "corpusPath": "docs/system-one/addenda/t06-core-intake-20261020/development/mutation-guards.log.gz",
+      "sha256": "09789f01d40426fc44e456d7bac3eb5822b50b9c183bfc6e3990d5800e07a8b9",
+      "bytes": 2691,
+      "originalBytes": 20874,
+      "representation": "lossless gzip; decoded original bytes hash-checked"
+    },
+    {
+      "sourcePath": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/outputs/ddp-t06-core-20261020/preflight.log",
+      "originalSHA256": "b28f0f3bd337a6cae29938ed6ec99ef7ecf3c0005cc38370479d91ec923e04ac",
+      "corpusPath": "docs/system-one/addenda/t06-core-intake-20261020/development/preflight.log.gz",
+      "sha256": "2e6bb5f89adcbda5d31487351394140b1d9b034cc5bde975506c736a77b35be6",
+      "bytes": 88,
+      "originalBytes": 74,
+      "representation": "lossless gzip; decoded original bytes hash-checked"
+    },
+    {
+      "sourcePath": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-verified-core/specs/031-system-one-integration/addenda/ddp-t06-core-plan.md",
+      "originalSHA256": "8b9bcd61d392edc6712a54c229f64253397db61aac81a6065eaf3d0ae5ec3285",
+      "corpusPath": "docs/system-one/addenda/t06-core-intake-20261020/source-plan.txt",
+      "sha256": "8b9bcd61d392edc6712a54c229f64253397db61aac81a6065eaf3d0ae5ec3285",
+      "representation": "original plan text; source links retain original implementation paths"
+    },
+    {
+      "sourcePath": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/work/t06-corpus-intake/spec-kit-preflight.log",
+      "originalSHA256": "9cb6ff17168b57b903957d837a0000a5b9382e48a2c9a0f93b663337c4ed72b9",
+      "corpusPath": "docs/system-one/addenda/t06-core-intake-20261020/documentary-preflight/spec-kit-preflight.log.gz",
+      "sha256": "cff3d88158b0dcfb4720f1870a8c0dfb8901eb07c8563e958661c67474133b1f",
+      "representation": "lossless gzip documentary-workflow attempt; no product checks executed"
+    },
+    {
+      "sourcePath": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/work/t06-corpus-intake/old-worktrees.log",
+      "originalSHA256": "6e12c7b5478c0c5580dfd9b92cafa4a8f9d30f171fadc58300f622c4bab2fce3",
+      "corpusPath": "docs/system-one/addenda/t06-core-intake-20261020/documentary-preflight/old-worktrees.log.gz",
+      "sha256": "f3ae9d92dacff34f11d682dacdd588b42f46ff29267ce4b94897d8d1c0842afb",
+      "representation": "lossless gzip documentary-workflow attempt; no product checks executed"
+    },
+    {
+      "sourcePath": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/work/t06-corpus-intake/old-unreachable.log",
+      "originalSHA256": "f4d867b5d9e93f3fe37f02dbe1dfc6c01f5beee9b15f7b60ee09d5cbde5fd64b",
+      "corpusPath": "docs/system-one/addenda/t06-core-intake-20261020/documentary-preflight/old-unreachable.log.gz",
+      "sha256": "6c1b30436a4ff3cd8aa5aaeedc63439ee9484d97dc556d7eb42196a46ce22f60",
+      "representation": "lossless gzip documentary-workflow attempt; no product checks executed"
+    },
+    {
+      "sourcePath": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/work/t06-corpus-intake/restored-history.log",
+      "originalSHA256": "14cb7044e51579a80ae3305d2fe5e97a12c80ca1eaf1164865594a72c5cc3cb5",
+      "corpusPath": "docs/system-one/addenda/t06-core-intake-20261020/documentary-preflight/restored-history.log.gz",
+      "sha256": "b4972541071b9ebba7676197512d7ad57a54ba8c63cd71b1ead795cb7d6bb2e8",
+      "representation": "lossless gzip documentary-workflow attempt; no product checks executed"
+    },
+    {
+      "sourcePath": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/work/t06-corpus-intake/new-fsck.log",
+      "originalSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "corpusPath": "docs/system-one/addenda/t06-core-intake-20261020/documentary-preflight/new-fsck.log.gz",
+      "sha256": "9ceffb7310338057cfe71a4ae1e2c98d2c485d81cdef906532a801f457a38d64",
+      "representation": "lossless gzip documentary-workflow attempt; no product checks executed"
+    },
+    {
+      "sourcePath": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/work/t06-corpus-intake/recovered-preflight.log",
+      "originalSHA256": "b28f0f3bd337a6cae29938ed6ec99ef7ecf3c0005cc38370479d91ec923e04ac",
+      "corpusPath": "docs/system-one/addenda/t06-core-intake-20261020/documentary-preflight/recovered-preflight.log.gz",
+      "sha256": "2e6bb5f89adcbda5d31487351394140b1d9b034cc5bde975506c736a77b35be6",
+      "representation": "lossless gzip documentary-workflow attempt; no product checks executed"
+    }
+  ],
+  "profileResults": "not received; launch only",
+  "localOnly": true,
+  "productPublication": false
+}
