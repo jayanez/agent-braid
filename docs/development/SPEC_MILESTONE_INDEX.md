@@ -84,7 +84,6 @@ scenario is **NO-GO**.
 |---|---|
 | [SPEC-048: harness-variant-laboratory](../../specs/048-harness-variant-laboratory/spec.md) | [HAR.1 — Braid Harness laboratory](https://github.com/jayanez/agent-braid/milestone/21) |
 | [SPEC-049: harness-evaluation-learning](../../specs/049-harness-evaluation-learning/spec.md) | [HAR.2 — Braid Harness evaluation and learning](https://github.com/jayanez/agent-braid/milestone/22) |
-
 | [SPEC-050: braid-harness-adaptation](../../specs/050-braid-harness-adaptation/spec.md) | [HAR.3 — Braid Harness adaptation and integration](https://github.com/jayanez/agent-braid/milestone/23) |
 
 [Program and gates](../../specs/048-harness-variant-laboratory/program.md). Planning
