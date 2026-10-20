@@ -63,3 +63,7 @@ The documentary corpus is published on branch docs/ddp-t01-contracts in [draft P
 ## Final component-profile receipts
 
 [Final quick/sensitive and PR evidence](addenda/component-profiles-final-20261020/README.md) now records both exit0 results:2014 cases each,19 skipped,zero failures, identical2247-file inputs with2230baseline files intact. This supersedes earlier unknown/running observations only. Logs/receipts are preserved, actual inputs rechecked; no test rerun or scientific/human acceptance here. Final package and actual T05 GO remain pending at this observation.
+
+## Final first-batch package and T05 start
+
+[Final packet and T05 assignment](addenda/first-batch-final-package-20261020/README.md) resolve the earlier missing completion/GO status:51packet bindings and18archive members checked, conditional authority satisfied by the coordinator, T05 active since07:08:58Z. Product source/archive stay in the explicitly bound coordinator package; all documentary results/limits and additional source logs are mapped into the corpus. T05 delivery/tests and T06 remain pending; no acceptance/activation is implied.

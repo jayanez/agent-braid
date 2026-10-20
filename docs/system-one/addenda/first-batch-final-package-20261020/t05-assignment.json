@@ -1,0 +1,14 @@
+{
+  "task": "DDP-T05",
+  "userAuthorization": "Continue if both first-batch quick/pr pass; verified",
+  "startedAtUTC": "2026-10-20T07:08:58.410504+00:00",
+  "entryPacketSha256": "a22a42405e9b0f83e2dd87ab329a99545b8eff3ca249e30bec242c6020c4c871",
+  "worker": "/root/verified_ir",
+  "ownership": [
+    "agent_braid/system_one_verified_selection.py",
+    "tests/test_system_one_verified_selection.py"
+  ],
+  "state": "implementation active",
+  "externalSpendEUR": 0,
+  "executionAuthorization": false
+}

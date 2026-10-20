@@ -1,0 +1,9 @@
+{
+  "bindingsVerified": 51,
+  "executionAuthorization": false,
+  "packet": "specs/029-system-one-evaluation/evidence/ddp-t02-t04/packet.json",
+  "packetSha256": "a22a42405e9b0f83e2dd87ab329a99545b8eff3ca249e30bec242c6020c4c871",
+  "patchSha256": "bfca7b8ee8c40b29a89d56f39236be087dd64867c4a05560582d4af58266c0d5",
+  "report": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-verified-core/specs/028-system-one-core/decision-delivery/addenda/ddp-t02-t04-implementation.md",
+  "status": "complete"
+}

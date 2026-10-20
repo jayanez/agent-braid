@@ -1,0 +1,60 @@
+<!-- SPDX-License-Identifier: CC-BY-SA-4.0 -->
+# DDP-T02/T03/T04 — First implementation batch
+
+Local internal software delivery against public baseline fe6d25b3d9fb989c230aa11779b6a51d494d7a4e. No existing tracked source, public API, CLI/MCP discovery, historical assurance or research packet was changed. T01 contracts remain proposed public schemas; this delivery implements internal components only.
+
+## Implemented and checked
+
+- T02: pure finite EOF-aware IR, exact EN/ES symbolic/controlled grammar, complete offered-plan verification, minimum-cost/lexical selection and frozen records. Twenty-five focused tests and four targeted mutation controls passed.
+- T03: observed effects from explicitly owned synthetic local repositories, exact immutable source/declared bindings, two to four operations, multiple files/hunks, read-only source checks and the injected shared Git budget/cancellation seam. Thirteen focused tests passed.
+- T04: static single-domain registry, exact identities and bounded actual source-byte verification. Ten focused tests passed; coordinator subsequently pinned the final IR source and tested actual-pin success and changed-source refusal.
+- Four coordinator integration tests join acquisition, IR, both languages/representations and actual registry identity, preserve shared counters/cancellation, and check fresh imports load no research or neural packages. The combined focused suite passed52 tests with zero skips in12.403 seconds.
+
+## Stable validation
+
+{
+  "quick": {
+    "exitCode": 0,
+    "seconds": 2155.31922187499,
+    "sourceInputsStillMatch": true,
+    "unitSuite": [
+      [
+        "2014",
+        "1992.303"
+      ]
+    ],
+    "skips": [
+      "19"
+    ]
+  },
+  "pr": {
+    "exitCode": 0,
+    "seconds": 2153.644948375004,
+    "sourceInputsStillMatch": true,
+    "unitSuite": [
+      [
+        "2014",
+        "1990.396"
+      ]
+    ],
+    "skips": [
+      "19"
+    ]
+  }
+}
+
+Quick escalated to sensitive validation under the existing path map. Both profiles used independent source-equivalent local full clones with existing isolated Python3.12 dependencies and explicit child PATH; no downloads, provider calls, paid CI or new infrastructure. These checks are software validation, not clean-room or scientific reproduction. Complete logs and exact input hashes are in the bound packet.
+
+## Semantics, limits and handoff
+
+The internal functions raise fixed ValueError codes on invalid/exhausted work; T05 must construct the complete external refused envelope. Source-validation hunks nested in interpret/render consume the shared verification counter. T03 fixes safe Git diff context3/Myers/interhunk0/color/prefix behavior and binds the actual acquired bytes; byte parity with historical acquisition under nondefault Git configuration is not claimed. Raw JSON duplicate rejection must happen at T05 ingress before a Mapping exists. Cancellation is cooperative within declared trusted owned-fixture assumptions; no universal hard deadline or same-UID hostile isolation is claimed. Optional Ruff was unavailable and was not installed.
+
+T02/T03/T04 component and join engineering checks are obtained. T05 is next: implement the complete typed wire result, admitted raw request and request-local context using these frozen interfaces. Then T06 binds unchanged native consumers with explicit stage budgets/freshness/cleanup evidence; T07 compatibility and independent review and T08 packaging/adoption gates follow. No T05/T06 implementation, native evaluation, production activation or public exposure is supplied by this batch.
+
+No experimental population was generated or evaluated. The previous experimental ledger remains unchanged; software checks are accounted separately. No model, training, calibration, human review, scientific/representative acceptance, data admission, promotion, activation, remote publication or Laya parity is claimed. EUR0 external spend and executionAuthorization=false throughout.
+
+The managed worktree preflight failed on shared-store unreachable objects; the documented independent-clone recovery passed with existing public pinned history. An initial history-helper attempt rejected a local origin URL; it was corrected to the verified public origin using already-local object pins. Prerequisites required explicit SPEC028 directory selection; no feature scaffold/assurance was regenerated. All attempts are retained.
+
+Read the frozen package plan and the documentary conversation's central corpus/RESUMPTION. That separate documentary branch records additive updates; this implementation branch does not silently merge or overwrite it. No remote task is closed here. The worker receipts retain pre-pin registry hashes; serial-pin.json explicitly records the changed registry hash and final IR pin.
+
+[Bound software packet](../../../029-system-one-evaluation/evidence/ddp-t02-t04/packet.json)
