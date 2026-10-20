@@ -1,0 +1,15 @@
+{
+  "checkedAtUTC": "2026-10-20T12:03:30.925396+00:00",
+  "PR": "https://github.com/jayanez/agent-braid/pull/608",
+  "mergeSHA": "7a9cf27cde7f849dc5fccf9d3b1d91a059675d23",
+  "proofSha256": "0ad06fb747ab56849354e4b68319d0ec20f36cbefb468123e3b59c598dc83077",
+  "manifestSHA256": "9f4529949546f01185490316a8616008f622885fe36346cf3bf049d1b2f5afd9",
+  "manifestFilesVerified": 16,
+  "mergeTreeEqualsReviewedHead": true,
+  "parentEqualsExpectedBase": true,
+  "documentaryPathsVerified": 164,
+  "localFetchedOriginDevelopContains": true,
+  "postmergeCI": "not rechecked; unknown current result",
+  "productPublication": false,
+  "T07profiles": "separate; pending at this readback"
+}

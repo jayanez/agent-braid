@@ -1,0 +1,26 @@
+{
+  "scope": "Fresh-process test guard injections only; no product mutations or model loads; child admission blocked before spawn",
+  "mutations": [
+    {
+      "name": "ml-import",
+      "detected": true,
+      "exitCode": 1,
+      "expectedDiagnostic": "forbidden optional import: torch",
+      "logSha256": "0db27aab3a407dcd54213a3c4724c4796dfddd2139ab62aa384540205c34bd0d"
+    },
+    {
+      "name": "foreign-research",
+      "detected": true,
+      "exitCode": 1,
+      "expectedDiagnostic": "forbidden optional import: research.system_one",
+      "logSha256": "15a3e37dc957efdb56fd9658e81482a942c3657aa6cf68a428d1becec0662265"
+    },
+    {
+      "name": "child-launch",
+      "detected": true,
+      "exitCode": 1,
+      "expectedDiagnostic": "import/discovery effect: subprocess.Popen",
+      "logSha256": "8e504fad27d89d1d9e38cb4dee47019b778cc575f43dcd413c6f22b86160299c"
+    }
+  ]
+}

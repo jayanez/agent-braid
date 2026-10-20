@@ -1,0 +1,8 @@
+{
+  "command": "existing-python3.12 scripts/validate_spec_kit.py",
+  "exitCode": 0,
+  "execSessionId": 65139,
+  "prerequisitesExitCode": 0,
+  "feature": "specs/029-system-one-evaluation",
+  "noAuthorityRefresh": true
+}

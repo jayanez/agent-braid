@@ -1,0 +1,31 @@
+<!-- SPDX-License-Identifier: CC-BY-SA-4.0 -->
+# DDP-T07 — independent review and bounded compatibility conformance
+
+This local increment follows the archived T06 Core and transport packets. It adds software conformance controls and independent Luna Latest review; it makes no product-source change, schema adoption, default registration, execution grant or activation. The frozen T01 conformance catalog remains historical. The [new mapping](ddp-t07-conformance-map.json) registers 32 predicate families and exact test pins; it does not replay archived cases or prove every alternative mutation or reason branch. Original task checkboxes and historical assurance are not silently relabeled.
+
+## Obtained review and controls
+
+Luna Latest (gpt-6-luna) independently cross-read the integrated source and frozen contracts on 21 exact pins, unchanged before/after review. No actionable P1/P2 was identified in the bounded scope. Focused real stdio/service, cancellation/reaping, chunk bypass/integrity and compatibility checks are recorded with their actual invocation corrections: one initial PYTHONPATH import failure and one wrong test-class loader error were preserved. They are not test-body failures or broad-suite evidence. The scoped compatibility delta identified an overbroad coverage description, corrected in the plan; final delta found no further issue. The raw reports preserve limitations and exact commands. This is AI technical review, not human, Claude, scientific or founder approval.
+
+Four new parent tests passed with zero failures/errors/skips. They check six legacy boolean/choice/score EN/ES fixtures before and after seven opt-in imports in a fresh guarded interpreter; pure extracted/selection imports remain research-free. They check 24 malformed/legacy producer admission subcases across three internal consumer contexts, with propose raising invalid-envelope before source/scratch. A separate malformed proposal consume(b'{}') seals refusal with measured zero counters and no prepared body. This does not establish the same malformed producer bytes mapped by a public convenience wrapper. Defaults/catalogs/capability registries stay unchanged. Empty and repeated-operation options remain semantic failures while k2 remains selectable across EN/ES and both controlled/symbolic views.
+
+The integrated consumers inherit research.lab.model via existing git_runtime/mcp_runtime imports. This parser uses only Python standard-library modules and performs no I/O or model inference on import. The independent addendum pins the dependency and contract interpretation. Exact integrated research closure is allowlisted to research, research.lab and research.lab.model; all other research, optional ML and SDK imports are denied by the fresh-process guard. Network and process-launch attempts are also guarded. Three targeted guard injections were detected before optional model import, foreign research import and child spawn; they mutate only the test process text, never product code or weights. Do not call the whole integrated import closure research-free. Parser extraction is a separate architectural cleanup if future packaging policy requires it.
+
+## Preserved development failures
+
+The original external three-test draft produced 26 errors: 24 producer subcases and one defaults case called propose on refused requests, while the fresh-process guard incorrectly required the entire inherited consumer closure to be research-free. A diagnostic invocation reproduced the same result with full logs. Narrow investigation captured the actual pure-stdlib dependency; reviewer disposition and corrected coverage are retained. Two subsequent fixture errors used an absent results directory and then overlapping ToolingConfig roots; sibling existing roots fixed the fixture. The corrected three-test version passed before adding the explicit fourth semantic control. All attempts remain distinct; no product fix was necessary or invented.
+
+## Stable profile results
+
+| Profile | Tests | Passed | Skipped | Unit seconds | Profile seconds | Exit |
+|---|---:|---:|---:|---:|---:|---:|
+| quick | 2084 | 2065 | 19 | 2090.754 | 2267.630 | 0 |
+| pr | 2084 | 2065 | 19 | 2090.868 | 2267.817 | 0 |
+
+Both profiles ran once in source-equivalent local copies with existing isolated Python3.12 dependencies and correct child PATH. All 2,474 registered input hashes match each other and the candidate. Copies were removed. The 2,471 pre-increment files remain byte-identical, including all historical packets/archives and product sources. Quick escalation follows repository policy. Overlapping tests are not independent empirical observations; skipped cases are not passes. No model, study, private history, reserved corpus, dependency installation, experimental network or external spend was used. The experimental ledger is unchanged.
+
+## Observation limits and continuity
+
+These are compatibility/conformance predicates over the finite supported LF/EOF domain. They do not estimate decision accuracy, accepted error, workload coverage, general EN/ES comprehension, real reliability, causal performance or Laya parity. The prior T06 timings remain historical and are not remeasured here. Decision, acquisition, native preparation and full entry-to-result spans retain their original boundaries; nested spans must not be added as exclusive latency. Cooperative cancellation/resource enforcement is not a universal hard SLA. Stock SDK or external Codex/Claude host adoption remains untested.
+
+The [packet](../evidence/ddp-t07/packet.json) binds review reports, attempts, profile receipts and lossless raw representations. The local source archive and baseline-applicable patch are review artifacts, not publication or integration. The active packaging stdout is excluded and bound by a later external readback. Documentary handoff is separate and additive. Follow-up should prepare the next explicitly assigned delivery/package/adoption work from these pins and limits; training, calibration, human/Claude/scientific review, data admission, activation and product publication remain pending. No issue, milestone or approval gate is closed by this report.

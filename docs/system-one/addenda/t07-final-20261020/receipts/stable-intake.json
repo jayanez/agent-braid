@@ -1,0 +1,15 @@
+{
+  "beforeFilesPreserved": 2471,
+  "changesToPriorFiles": [],
+  "productSourceEdits": false,
+  "reviewModel": "gpt-6-luna",
+  "reviewFindingsP1P2": 0,
+  "hardware": "Apple M3 Pro",
+  "python": "3.12.13",
+  "newPaths": [
+    "tests/test_system_one_verified_compatibility.py",
+    "specs/029-system-one-evaluation/addenda/ddp-t07-plan.md",
+    "specs/029-system-one-evaluation/addenda/ddp-t07-conformance-map.json"
+  ],
+  "externalSpendEUR": 0
+}

@@ -1,0 +1,908 @@
+{
+  "id": "S1-T07-FINAL-20261020",
+  "checkedAtUTC": "2026-10-20T12:46:03.367334+00:00",
+  "taskAliases": [
+    "DDP-T07",
+    "SPEC-029/T027"
+  ],
+  "documentaryBase": "7a9cf27cde7f849dc5fccf9d3b1d91a059675d23",
+  "productBaseline": "fe6d25b3d9fb989c230aa11779b6a51d494d7a4e",
+  "packetSHA256": "27948e6669a4f360e6bc4eacd542b200d6f882d6bcb824aa23aa5560a08299d8",
+  "packetBindingsVerified": 89,
+  "rawFilesAndRepresentationsVerified": 48,
+  "reviewPinsVerified": 21,
+  "priorFilesUnchanged": 2471,
+  "profileInputsSameAndCurrent": 2474,
+  "profiles": {
+    "pr": {
+      "exitCode": 0,
+      "inputs": 2474,
+      "inputsStillMatch": true,
+      "logSha256": "697b8c948b70c20bd500997b514a272dcb8ea06e981ba40c4d6b4b1fbe249861",
+      "passed": 2065,
+      "profileSeconds": 2267.8168948750244,
+      "skips": 19,
+      "tests": 2084,
+      "unitSeconds": 2090.868
+    },
+    "quick": {
+      "exitCode": 0,
+      "inputs": 2474,
+      "inputsStillMatch": true,
+      "logSha256": "53d26861d03f6446db3798c328ce182b4ca4258c2dc024b71a8152934345c79c",
+      "passed": 2065,
+      "profileSeconds": 2267.6304267079686,
+      "skips": 19,
+      "tests": 2084,
+      "unitSeconds": 2090.754
+    }
+  },
+  "archiveSHA256": "82dec57a0c36bed27e4c601a5de75111d8a8a642b900b7f385c4b708da19d95c",
+  "archiveMembersVerifiedNotPublished": [
+    {
+      "path": ".gitattributes",
+      "sha256": "ddadbe68f2e47ff7ca9866dd346276a34d87ab64f2e0ddb25971c900eb62f653",
+      "bytes": 299
+    },
+    {
+      "path": "agent_braid/git_replay.py",
+      "sha256": "6dc84e50fe04abb4e5675ac0173f9579b239d13ad1741e106b2d4e272081a388",
+      "bytes": 32416
+    },
+    {
+      "path": "agent_braid/git_runtime.py",
+      "sha256": "8cf7168e2cbb9b874019eb3cc8dcee7b5ad69892eaeb4cc0511996fade29f897",
+      "bytes": 31565
+    },
+    {
+      "path": "agent_braid/system_one_verified_acquisition.py",
+      "sha256": "2380a32ef308fbbe540c67e71fb0bf43dc15b95a6732a13a8e2bf2be0d49e5b7",
+      "bytes": 20715
+    },
+    {
+      "path": "agent_braid/system_one_verified_consumers.py",
+      "sha256": "2b35dd7a784d18cc95969f9cf1902023ce3a07cf2792fdc26bcb4122bccb5788",
+      "bytes": 22240
+    },
+    {
+      "path": "agent_braid/system_one_verified_ir.py",
+      "sha256": "a0378c34b805387b0518cf6ebc3da05599976cb7f037d5f140c2571c8f362ea3",
+      "bytes": 18934
+    },
+    {
+      "path": "agent_braid/system_one_verified_registry.py",
+      "sha256": "8d9cb2070683497ea789a9f03905e07f69d6c812c7d0ec9d6ab8a72116f88e6c",
+      "bytes": 4294
+    },
+    {
+      "path": "agent_braid/system_one_verified_selection.py",
+      "sha256": "a8fd0d752c3ab179b233906adac65b7dfe2150cf8ef079c3e00334e689bbb51e",
+      "bytes": 29478
+    },
+    {
+      "path": "agent_braid/system_one_verified_stdio.py",
+      "sha256": "3caaafb091d3c314224992e334ec6ca302c2c72831de12997481ccc9fe7a8f42",
+      "bytes": 17658
+    },
+    {
+      "path": "agent_braid/system_one_verified_tooling.py",
+      "sha256": "128aed194149f648d0a579b9fff7d85e121c10339df7552e1e488363c744d04e",
+      "bytes": 7280
+    },
+    {
+      "path": "specs/028-system-one-core/contracts/verified-plan-v1.md",
+      "sha256": "a68488d4a412820130231daa8c8dbeefb1e58445b2f1cfdf0c02b8669ef132d7",
+      "bytes": 21462
+    },
+    {
+      "path": "specs/028-system-one-core/decision-delivery/addenda/ddp-t01-coordinator-review.json",
+      "sha256": "2fbed3cabf3ef6433dd0bd3cd2824423fc4265659c6fa505de8a9857f0495606",
+      "bytes": 1777
+    },
+    {
+      "path": "specs/028-system-one-core/decision-delivery/addenda/ddp-t01-coordinator-review.md",
+      "sha256": "a117ba5f197944de569099df4168c461eec8b62f0e3585f3a2af3dd1bbab1cfd",
+      "bytes": 3838
+    },
+    {
+      "path": "specs/028-system-one-core/decision-delivery/addenda/ddp-t01-plan.md",
+      "sha256": "2ee328f92aa19820704b3838528599296c87f53a5872a1f12d2bd8cd59a6e62e",
+      "bytes": 20126
+    },
+    {
+      "path": "specs/028-system-one-core/decision-delivery/addenda/ddp-t02-t04-implementation.md",
+      "sha256": "f660f8500396f97d828fe3648795608a78590ddbcb9b7e08aab357072717a15f",
+      "bytes": 4876
+    },
+    {
+      "path": "specs/028-system-one-core/decision-delivery/addenda/ddp-t05-implementation.md",
+      "sha256": "b44a21a94c68eaa10a148327fc335f0b6004b1af91084bdb97fb6515312258d3",
+      "bytes": 8387
+    },
+    {
+      "path": "specs/029-system-one-evaluation/addenda/ddp-t07-conformance-map.json",
+      "sha256": "beba5b4a4b128efeb2ec886a1fa7142820b720f6583b3d29dbcc185379d44526",
+      "bytes": 23064
+    },
+    {
+      "path": "specs/029-system-one-evaluation/addenda/ddp-t07-implementation.md",
+      "sha256": "6828a40c75882fce134a99f4baa463a68ff9d572b1661572646d697a178fb3f7",
+      "bytes": 6161
+    },
+    {
+      "path": "specs/029-system-one-evaluation/addenda/ddp-t07-plan.md",
+      "sha256": "e53366c9c02615cafce70dc4b44ebf9e7e7792594fea8f26a0c594b74928494e",
+      "bytes": 3247
+    },
+    {
+      "path": "specs/029-system-one-evaluation/verified-plan-conformance.md",
+      "sha256": "90f52099cdaebba51f2781c715c748d1ba0c13e9b2b9755a32b25e53f5a08e5b",
+      "bytes": 13451
+    },
+    {
+      "path": "specs/029-system-one-evaluation/verified-plan-vectors.json",
+      "sha256": "6584ce4de05edf143e215945ff620b5127fe48e6c352dfb7a33b447e753a11f7",
+      "bytes": 27847
+    },
+    {
+      "path": "specs/031-system-one-integration/addenda/ddp-t06-core-implementation.md",
+      "sha256": "7cfbe1d4c71d7098529b1b01f0f3a97490cf2f08f2935a29cde4829b71b9ca0e",
+      "bytes": 9096
+    },
+    {
+      "path": "specs/031-system-one-integration/addenda/ddp-t06-core-plan.md",
+      "sha256": "8b9bcd61d392edc6712a54c229f64253397db61aac81a6065eaf3d0ae5ec3285",
+      "bytes": 7560
+    },
+    {
+      "path": "specs/031-system-one-integration/addenda/ddp-t06-transport-implementation.md",
+      "sha256": "87d508dd534beba0fcc07d8a5b8e29bd95443dc2399d81bcf566cb8f610a55bb",
+      "bytes": 11360
+    },
+    {
+      "path": "specs/031-system-one-integration/addenda/ddp-t06-transport-plan.md",
+      "sha256": "96a100062ff8ba55e48310f58b89950c4711036319efbc2b9848bb8bef7c0dbe",
+      "bytes": 7258
+    },
+    {
+      "path": "specs/031-system-one-integration/contracts/verified-plan-consumer-v1.md",
+      "sha256": "b17b5f3398dba9086ba44bdc04c4ff9cae97364f1fb9430a7e4ebcb9cb9fd1f4",
+      "bytes": 11794
+    },
+    {
+      "path": "tests/fixtures/system_one_verified_acquisition.json",
+      "sha256": "4c674337541e56bc7cc2219a8c10e522bba037fae24bd480a65317010fc15078",
+      "bytes": 846
+    },
+    {
+      "path": "tests/fixtures/system_one_verified_ir.json",
+      "sha256": "c2aac157c85f4a1d9fd6e5fec998c003433bb4e9769bba3ed50c27f253318b76",
+      "bytes": 2931
+    },
+    {
+      "path": "tests/fixtures/system_one_verified_registry.json",
+      "sha256": "75753dac881c6cd933360aab88b5d71bb6d17c19d6537c0645b8024c78a1005a",
+      "bytes": 1241
+    },
+    {
+      "path": "tests/test_system_one_verified_acquisition.py",
+      "sha256": "27ff8dd4192d1bc1b7d72b412fa1209e3ba28b32671f0181d3fb707a104ea8ed",
+      "bytes": 20607
+    },
+    {
+      "path": "tests/test_system_one_verified_compatibility.py",
+      "sha256": "56e9e82f91d492b01fe48c413a8a14711f189406ea6ce25369d87ff249cbdf9e",
+      "bytes": 9328
+    },
+    {
+      "path": "tests/test_system_one_verified_components.py",
+      "sha256": "01abcb850572c3ad0f85beccaf7d437367fa388f681f0b77d55be24c98c32dcf",
+      "bytes": 7126
+    },
+    {
+      "path": "tests/test_system_one_verified_consumers.py",
+      "sha256": "d88c6dcb8f49a31023431258662cf82f3c848f1a92c3384ca0e74f430997493c",
+      "bytes": 25162
+    },
+    {
+      "path": "tests/test_system_one_verified_ir.py",
+      "sha256": "5550874646e3021cf147e14ebf5e5760a7f7397b08ce7701256ad59c2e9367be",
+      "bytes": 18917
+    },
+    {
+      "path": "tests/test_system_one_verified_registry.py",
+      "sha256": "53185df49342636e9b2545a5d53ef398998b4acc3367e39ee35ee0e5c525d254",
+      "bytes": 8812
+    },
+    {
+      "path": "tests/test_system_one_verified_selection.py",
+      "sha256": "d14d2ec1637b944eab96a6c9938b1758c8343e390fae208d55e615c9089e0b56",
+      "bytes": 32649
+    },
+    {
+      "path": "tests/test_system_one_verified_stdio.py",
+      "sha256": "67c61b11b8c94c64295fe44743519152aa853b8c0e66db75a2e4a8044fe4870f",
+      "bytes": 14302
+    },
+    {
+      "path": "tests/test_system_one_verified_tooling.py",
+      "sha256": "025410941b1bb37050dda5669ad0425a636ff52afbd230e5c8fa3567e939e583",
+      "bytes": 13363
+    }
+  ],
+  "mappedVectorIDs": 32,
+  "mappedDistinctTestsPassedInBothProfiles": [
+    "test_system_one_verified_acquisition.VerifiedAcquisitionTests.test_v32_one_child_shared_commands_output_and_cancel",
+    "test_system_one_verified_compatibility.VerifiedCompatibilityTests.test_all_consumer_ingresses_refuse_legacy_and_raw_authority_before_source",
+    "test_system_one_verified_compatibility.VerifiedCompatibilityTests.test_empty_and_repeated_options_stay_semantic_failures_EN_ES",
+    "test_system_one_verified_consumers.VerifiedCoreConsumerTests.test_actual_native_four_views_and_complete_body_shared_budget",
+    "test_system_one_verified_consumers.VerifiedCoreConsumerTests.test_forged_rehashed_bodies_refuse_before_fresh_source_or_native",
+    "test_system_one_verified_consumers.VerifiedCoreConsumerTests.test_source_loss_and_registry_drift_stop_before_native",
+    "test_system_one_verified_consumers.VerifiedCoreConsumerTests.test_three_and_four_operations_multifile_with_unchanged_base_entry",
+    "test_system_one_verified_ir.VerifiedIRTests.test_ambiguous_runtime_anchor_refuses_instead_of_false_candidate",
+    "test_system_one_verified_ir.VerifiedIRTests.test_bof_remains_strict_even_with_context",
+    "test_system_one_verified_ir.VerifiedIRTests.test_eof_with_retained_tail_context_allows_reorder",
+    "test_system_one_verified_ir.VerifiedIRTests.test_four_operations_two_hunks_and_multiple_files",
+    "test_system_one_verified_ir.VerifiedIRTests.test_malformed_programs_raise_fixed_codes_and_no_partial_result",
+    "test_system_one_verified_ir.VerifiedIRTests.test_order_and_option_name_invariance_causal_sensitivity",
+    "test_system_one_verified_ir.VerifiedIRTests.test_terminal_edit_without_retained_context_stays_at_eof",
+    "test_system_one_verified_ir.VerifiedIRTests.test_wrong_goal_is_completed_semantic_defer",
+    "test_system_one_verified_registry.VerifiedRegistryTests.test_unknown_identity_fields_refuse_before_source_access",
+    "test_system_one_verified_selection.VerifiedSelectionTests.test_cancellation_between_cleanup_and_publication_wins",
+    "test_system_one_verified_selection.VerifiedSelectionTests.test_deadline_equality_and_cleanup_reservation_before_allocation",
+    "test_system_one_verified_selection.VerifiedSelectionTests.test_exact_budgets_types_keys_ranges_before_source",
+    "test_system_one_verified_selection.VerifiedSelectionTests.test_exact_envelope_source_and_interpretation_fields",
+    "test_system_one_verified_selection.VerifiedSelectionTests.test_raw_parser_refuses_before_source_and_scratch",
+    "test_system_one_verified_selection.VerifiedSelectionTests.test_shared_budget_reacquisition_and_reverification_no_reset",
+    "test_system_one_verified_selection.VerifiedSelectionTests.test_text_goal_and_declaration_mismatches_refuse_without_partial_plans",
+    "test_system_one_verified_selection.VerifiedSelectionTests.test_wrong_goal_is_defer_with_null_selection_and_complete_evidence",
+    "test_system_one_verified_selection.VerifiedSelectionTests.test_zero_and_aggregate_hunk_caps_never_publish_partial_answer",
+    "test_system_one_verified_stdio.VerifiedStdioTests.test_defer_and_rehashed_cross_consumer_proposals_before_child",
+    "test_system_one_verified_stdio.VerifiedStdioTests.test_unknown_owned_worker_preserves_scratch_and_admission",
+    "test_system_one_verified_tooling.VerifiedToolingTests.test_artifact_chunk_guards_and_inline_reference_agreement"
+  ],
+  "reviewExecutionRecords": 5,
+  "reviewExecutionBoundary": "tool-result transcription only; full reviewer stdout/stderr were not preserved; no replay by documentary conversation",
+  "completedFinalizerLogSHA256": "0267c642635ed015158c71fe85236d1a937c2fbd206f23a9999d83b2ec97da1f",
+  "sourceRepresentations": [
+    {
+      "sourcePath": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-verified-core/.gitattributes",
+      "sha256": "ddadbe68f2e47ff7ca9866dd346276a34d87ab64f2e0ddb25971c900eb62f653",
+      "disposition": "retained local; product/tests/fixtures/config/source archives or executable helper capsules excluded"
+    },
+    {
+      "sourcePath": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-verified-core/agent_braid/git_replay.py",
+      "sha256": "6dc84e50fe04abb4e5675ac0173f9579b239d13ad1741e106b2d4e272081a388",
+      "disposition": "retained local; product/tests/fixtures/config/source archives or executable helper capsules excluded"
+    },
+    {
+      "sourcePath": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-verified-core/agent_braid/git_runtime.py",
+      "sha256": "8cf7168e2cbb9b874019eb3cc8dcee7b5ad69892eaeb4cc0511996fade29f897",
+      "disposition": "retained local; product/tests/fixtures/config/source archives or executable helper capsules excluded"
+    },
+    {
+      "sourcePath": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-verified-core/agent_braid/system_one_verified_acquisition.py",
+      "sha256": "2380a32ef308fbbe540c67e71fb0bf43dc15b95a6732a13a8e2bf2be0d49e5b7",
+      "disposition": "retained local; product/tests/fixtures/config/source archives or executable helper capsules excluded"
+    },
+    {
+      "sourcePath": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-verified-core/agent_braid/system_one_verified_consumers.py",
+      "sha256": "2b35dd7a784d18cc95969f9cf1902023ce3a07cf2792fdc26bcb4122bccb5788",
+      "disposition": "retained local; product/tests/fixtures/config/source archives or executable helper capsules excluded"
+    },
+    {
+      "sourcePath": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-verified-core/agent_braid/system_one_verified_ir.py",
+      "sha256": "a0378c34b805387b0518cf6ebc3da05599976cb7f037d5f140c2571c8f362ea3",
+      "disposition": "retained local; product/tests/fixtures/config/source archives or executable helper capsules excluded"
+    },
+    {
+      "sourcePath": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-verified-core/agent_braid/system_one_verified_registry.py",
+      "sha256": "8d9cb2070683497ea789a9f03905e07f69d6c812c7d0ec9d6ab8a72116f88e6c",
+      "disposition": "retained local; product/tests/fixtures/config/source archives or executable helper capsules excluded"
+    },
+    {
+      "sourcePath": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-verified-core/agent_braid/system_one_verified_selection.py",
+      "sha256": "a8fd0d752c3ab179b233906adac65b7dfe2150cf8ef079c3e00334e689bbb51e",
+      "disposition": "retained local; product/tests/fixtures/config/source archives or executable helper capsules excluded"
+    },
+    {
+      "sourcePath": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-verified-core/agent_braid/system_one_verified_stdio.py",
+      "sha256": "3caaafb091d3c314224992e334ec6ca302c2c72831de12997481ccc9fe7a8f42",
+      "disposition": "retained local; product/tests/fixtures/config/source archives or executable helper capsules excluded"
+    },
+    {
+      "sourcePath": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-verified-core/agent_braid/system_one_verified_tooling.py",
+      "sha256": "128aed194149f648d0a579b9fff7d85e121c10339df7552e1e488363c744d04e",
+      "disposition": "retained local; product/tests/fixtures/config/source archives or executable helper capsules excluded"
+    },
+    {
+      "sourcePath": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-verified-core/specs/028-system-one-core/contracts/verified-plan-v1.md",
+      "sha256": "a68488d4a412820130231daa8c8dbeefb1e58445b2f1cfdf0c02b8669ef132d7",
+      "corpusPath": "docs/system-one/addenda/t06-core-final-20261020/documents/verified-plan-v1.md.txt.gz",
+      "representation": "gzip; original bytes unchanged",
+      "disposition": "existing exact documentary representation"
+    },
+    {
+      "sourcePath": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-verified-core/specs/028-system-one-core/decision-delivery/addenda/ddp-t01-coordinator-review.json",
+      "sha256": "2fbed3cabf3ef6433dd0bd3cd2824423fc4265659c6fa505de8a9857f0495606",
+      "corpusPath": "docs/system-one/addenda/t06-core-final-20261020/documents/ddp-t01-coordinator-review.json",
+      "representation": "identity",
+      "disposition": "existing exact documentary representation"
+    },
+    {
+      "sourcePath": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-verified-core/specs/028-system-one-core/decision-delivery/addenda/ddp-t01-coordinator-review.md",
+      "sha256": "a117ba5f197944de569099df4168c461eec8b62f0e3585f3a2af3dd1bbab1cfd",
+      "corpusPath": "docs/system-one/addenda/t06-core-final-20261020/documents/ddp-t01-coordinator-review.md.txt",
+      "representation": "identity",
+      "disposition": "existing exact documentary representation"
+    },
+    {
+      "sourcePath": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-verified-core/specs/028-system-one-core/decision-delivery/addenda/ddp-t01-plan.md",
+      "sha256": "2ee328f92aa19820704b3838528599296c87f53a5872a1f12d2bd8cd59a6e62e",
+      "corpusPath": "docs/system-one/addenda/t06-core-final-20261020/documents/ddp-t01-plan.md.txt.gz",
+      "representation": "gzip; original bytes unchanged",
+      "disposition": "existing exact documentary representation"
+    },
+    {
+      "sourcePath": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-verified-core/specs/028-system-one-core/decision-delivery/addenda/ddp-t02-t04-implementation.md",
+      "sha256": "f660f8500396f97d828fe3648795608a78590ddbcb9b7e08aab357072717a15f",
+      "corpusPath": "docs/system-one/addenda/first-batch-final-package-20261020/implementation-report.txt",
+      "representation": "identity",
+      "disposition": "existing exact documentary representation"
+    },
+    {
+      "sourcePath": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-verified-core/specs/028-system-one-core/decision-delivery/addenda/ddp-t05-implementation.md",
+      "sha256": "b44a21a94c68eaa10a148327fc335f0b6004b1af91084bdb97fb6515312258d3",
+      "corpusPath": "docs/system-one/addenda/t05-final-package-20261020/implementation-report.txt",
+      "representation": "identity",
+      "disposition": "existing exact documentary representation"
+    },
+    {
+      "sourcePath": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-verified-core/specs/029-system-one-evaluation/addenda/ddp-t07-conformance-map.json",
+      "sha256": "beba5b4a4b128efeb2ec886a1fa7142820b720f6583b3d29dbcc185379d44526",
+      "corpusPath": "docs/system-one/addenda/t07-final-20261020/documents/ddp-t07-conformance-map.json.gz",
+      "storedSHA256": "ea55d0936e075b5716db3426d45eac7e6850d07e806804c41c8c41f9b091736b",
+      "representation": "gzip; original bytes unchanged",
+      "disposition": "additive exact documentary representation"
+    },
+    {
+      "sourcePath": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-verified-core/specs/029-system-one-evaluation/addenda/ddp-t07-implementation.md",
+      "sha256": "6828a40c75882fce134a99f4baa463a68ff9d572b1661572646d697a178fb3f7",
+      "corpusPath": "docs/system-one/addenda/t07-final-20261020/documents/ddp-t07-implementation.md.txt",
+      "storedSHA256": "6828a40c75882fce134a99f4baa463a68ff9d572b1661572646d697a178fb3f7",
+      "representation": "identity",
+      "disposition": "additive exact documentary representation"
+    },
+    {
+      "sourcePath": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-verified-core/specs/029-system-one-evaluation/addenda/ddp-t07-plan.md",
+      "sha256": "e53366c9c02615cafce70dc4b44ebf9e7e7792594fea8f26a0c594b74928494e",
+      "corpusPath": "docs/system-one/addenda/t07-final-20261020/documents/ddp-t07-plan.md.txt",
+      "storedSHA256": "e53366c9c02615cafce70dc4b44ebf9e7e7792594fea8f26a0c594b74928494e",
+      "representation": "identity",
+      "disposition": "additive exact documentary representation"
+    },
+    {
+      "sourcePath": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-verified-core/specs/029-system-one-evaluation/evidence/ddp-t07/new-source.tar.gz",
+      "sha256": "82dec57a0c36bed27e4c601a5de75111d8a8a642b900b7f385c4b708da19d95c",
+      "disposition": "retained local; product/tests/fixtures/config/source archives or executable helper capsules excluded"
+    },
+    {
+      "sourcePath": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-verified-core/specs/029-system-one-evaluation/evidence/ddp-t07/packaging-check.json",
+      "sha256": "5bd4268e46bbdad165d74d407e18b4b807b247196c8ef111c4a28932917bb640",
+      "corpusPath": "docs/system-one/addenda/t07-final-20261020/documents/packaging-check.json",
+      "storedSHA256": "5bd4268e46bbdad165d74d407e18b4b807b247196c8ef111c4a28932917bb640",
+      "representation": "identity",
+      "disposition": "additive exact documentary representation"
+    },
+    {
+      "sourcePath": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-verified-core/specs/029-system-one-evaluation/evidence/ddp-t07/raw-receipts.json",
+      "sha256": "4830a1ceee1aa65d7b56d485eec5d81622839e45915daad9cf0176bccc584729",
+      "corpusPath": "docs/system-one/addenda/t07-final-20261020/documents/raw-receipts.json",
+      "storedSHA256": "4830a1ceee1aa65d7b56d485eec5d81622839e45915daad9cf0176bccc584729",
+      "representation": "identity",
+      "disposition": "additive exact documentary representation"
+    },
+    {
+      "sourcePath": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-verified-core/specs/029-system-one-evaluation/evidence/ddp-t07/receipts/assignment.json",
+      "sha256": "761e986f4383bb530f11161d0ecd6f4eff4bdc63d03ee31ae9267cc9e7ce9e03",
+      "corpusPath": "docs/system-one/addenda/t07-final-20261020/receipts/assignment.json",
+      "storedSHA256": "761e986f4383bb530f11161d0ecd6f4eff4bdc63d03ee31ae9267cc9e7ce9e03",
+      "representation": "identity",
+      "disposition": "additive exact documentary representation"
+    },
+    {
+      "sourcePath": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-verified-core/specs/029-system-one-evaluation/evidence/ddp-t07/receipts/before.json",
+      "sha256": "fda5ced3bf902fe1bfcc913380e8de62241f78e6758a10b6d5131f8b633b03be",
+      "corpusPath": "docs/system-one/addenda/t07-final-20261020/receipts/before.json.gz",
+      "storedSHA256": "216ddb091541421e518c9285a5711102286e176996c1ce7e4eeb360f660d88e3",
+      "representation": "gzip; original bytes unchanged",
+      "disposition": "additive exact documentary representation"
+    },
+    {
+      "sourcePath": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-verified-core/specs/029-system-one-evaluation/evidence/ddp-t07/receipts/child-launch-guard-mutation.log.gz",
+      "sha256": "b8bc17ea89f8a9bd40fc3bfe84c3c7d0088111941aa637e62ee014c016b39b47",
+      "corpusPath": "docs/system-one/addenda/t07-final-20261020/receipts/child-launch-guard-mutation.log.gz",
+      "storedSHA256": "b8bc17ea89f8a9bd40fc3bfe84c3c7d0088111941aa637e62ee014c016b39b47",
+      "representation": "identity",
+      "disposition": "additive exact documentary representation"
+    },
+    {
+      "sourcePath": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-verified-core/specs/029-system-one-evaluation/evidence/ddp-t07/receipts/compatibility-attempt1-source.py.txt",
+      "sha256": "fe8f7a83e68b7902abd726bf93d996e42f5e219228872a56ba4a492ba45d1692",
+      "disposition": "retained local; product/tests/fixtures/config/source archives or executable helper capsules excluded"
+    },
+    {
+      "sourcePath": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-verified-core/specs/029-system-one-evaluation/evidence/ddp-t07/receipts/compatibility-attempt3-source.py.txt",
+      "sha256": "cc367728223a923a2ab421bed1f54dd1df4fee682259248db327872211d814af",
+      "disposition": "retained local; product/tests/fixtures/config/source archives or executable helper capsules excluded"
+    },
+    {
+      "sourcePath": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-verified-core/specs/029-system-one-evaluation/evidence/ddp-t07/receipts/compatibility-attempt3.json",
+      "sha256": "a9c3283979db8ff0bc49b45c3f8300f4060628158c110cb58483aa4abf96c7a5",
+      "corpusPath": "docs/system-one/addenda/t07-final-20261020/receipts/compatibility-attempt3.json",
+      "storedSHA256": "a9c3283979db8ff0bc49b45c3f8300f4060628158c110cb58483aa4abf96c7a5",
+      "representation": "identity",
+      "disposition": "additive exact documentary representation"
+    },
+    {
+      "sourcePath": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-verified-core/specs/029-system-one-evaluation/evidence/ddp-t07/receipts/compatibility-attempt3.log.gz",
+      "sha256": "0037a4ed1975418350d25976c8891286b4aa25452c2f95860c81179b99278af8",
+      "corpusPath": "docs/system-one/addenda/t07-final-20261020/receipts/compatibility-attempt3.log.gz",
+      "storedSHA256": "0037a4ed1975418350d25976c8891286b4aa25452c2f95860c81179b99278af8",
+      "representation": "identity",
+      "disposition": "additive exact documentary representation"
+    },
+    {
+      "sourcePath": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-verified-core/specs/029-system-one-evaluation/evidence/ddp-t07/receipts/compatibility-attempt4-source.py.txt",
+      "sha256": "473c8ea118384e941285adcc573b492f78ce5d43b8e581ad0e9e71a67ac15e25",
+      "disposition": "retained local; product/tests/fixtures/config/source archives or executable helper capsules excluded"
+    },
+    {
+      "sourcePath": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-verified-core/specs/029-system-one-evaluation/evidence/ddp-t07/receipts/compatibility-attempt4.json",
+      "sha256": "b989025d007206405d895621a160ef3a66cc8cb7c72cef038100d926800f7573",
+      "corpusPath": "docs/system-one/addenda/t07-final-20261020/receipts/compatibility-attempt4.json",
+      "storedSHA256": "b989025d007206405d895621a160ef3a66cc8cb7c72cef038100d926800f7573",
+      "representation": "identity",
+      "disposition": "additive exact documentary representation"
+    },
+    {
+      "sourcePath": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-verified-core/specs/029-system-one-evaluation/evidence/ddp-t07/receipts/compatibility-attempt4.log.gz",
+      "sha256": "3ce36bc7366b027239b01804e0bfa00eb268ce9b0168f8538e3a3e8465b8d86f",
+      "corpusPath": "docs/system-one/addenda/t07-final-20261020/receipts/compatibility-attempt4.log.gz",
+      "storedSHA256": "3ce36bc7366b027239b01804e0bfa00eb268ce9b0168f8538e3a3e8465b8d86f",
+      "representation": "identity",
+      "disposition": "additive exact documentary representation"
+    },
+    {
+      "sourcePath": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-verified-core/specs/029-system-one-evaluation/evidence/ddp-t07/receipts/compatibility-attempt5.json",
+      "sha256": "6f127cc86c52587af0d615f9683c3ddbaefaac0cc2db31e0a5c379bd33fcb0cd",
+      "corpusPath": "docs/system-one/addenda/t07-final-20261020/receipts/compatibility-attempt5.json",
+      "storedSHA256": "6f127cc86c52587af0d615f9683c3ddbaefaac0cc2db31e0a5c379bd33fcb0cd",
+      "representation": "identity",
+      "disposition": "additive exact documentary representation"
+    },
+    {
+      "sourcePath": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-verified-core/specs/029-system-one-evaluation/evidence/ddp-t07/receipts/compatibility-attempt5.log.gz",
+      "sha256": "4cf91dbaff635c5391eef69cf1b813397afb0e5450b4d0f0db991a8613eda01e",
+      "corpusPath": "docs/system-one/addenda/t07-final-20261020/receipts/compatibility-attempt5.log.gz",
+      "storedSHA256": "4cf91dbaff635c5391eef69cf1b813397afb0e5450b4d0f0db991a8613eda01e",
+      "representation": "identity",
+      "disposition": "additive exact documentary representation"
+    },
+    {
+      "sourcePath": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-verified-core/specs/029-system-one-evaluation/evidence/ddp-t07/receipts/compatibility-diagnostic-attempt2.log.gz",
+      "sha256": "6653e425b4183996ca7c93cf6e0442cb1873d8d65bd4032570c9c8c5451dc1a6",
+      "corpusPath": "docs/system-one/addenda/t07-final-20261020/receipts/compatibility-diagnostic-attempt2.log.gz",
+      "storedSHA256": "6653e425b4183996ca7c93cf6e0442cb1873d8d65bd4032570c9c8c5451dc1a6",
+      "representation": "identity",
+      "disposition": "additive exact documentary representation"
+    },
+    {
+      "sourcePath": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-verified-core/specs/029-system-one-evaluation/evidence/ddp-t07/receipts/compatibility-final.json",
+      "sha256": "0eec1a3b868ef6f953d19269ac8ab55094501e42dce1b9bbcda50f8666af767a",
+      "corpusPath": "docs/system-one/addenda/t07-final-20261020/receipts/compatibility-final.json",
+      "storedSHA256": "0eec1a3b868ef6f953d19269ac8ab55094501e42dce1b9bbcda50f8666af767a",
+      "representation": "identity",
+      "disposition": "additive exact documentary representation"
+    },
+    {
+      "sourcePath": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-verified-core/specs/029-system-one-evaluation/evidence/ddp-t07/receipts/compatibility-final.log.gz",
+      "sha256": "ffb3553953e40db507eb6035fc092353580104cf3871ed822f52acbd06acfcf1",
+      "corpusPath": "docs/system-one/addenda/t07-final-20261020/receipts/compatibility-final.log.gz",
+      "storedSHA256": "ffb3553953e40db507eb6035fc092353580104cf3871ed822f52acbd06acfcf1",
+      "representation": "identity",
+      "disposition": "additive exact documentary representation"
+    },
+    {
+      "sourcePath": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-verified-core/specs/029-system-one-evaluation/evidence/ddp-t07/receipts/compatibility-plan.md.txt",
+      "sha256": "6e403a23583f2bea8ccffcec0dc1f2c31b58d98f225b8fc8dc363737c5965047",
+      "corpusPath": "docs/system-one/addenda/t07-final-20261020/receipts/compatibility-plan.md.txt",
+      "storedSHA256": "6e403a23583f2bea8ccffcec0dc1f2c31b58d98f225b8fc8dc363737c5965047",
+      "representation": "identity",
+      "disposition": "additive exact documentary representation"
+    },
+    {
+      "sourcePath": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-verified-core/specs/029-system-one-evaluation/evidence/ddp-t07/receipts/conformance-map-draft1.json",
+      "sha256": "fc7728e99fc270876e5bd673219e7aff1a866cd64ac897958f16c7d19515ff7a",
+      "corpusPath": "docs/system-one/addenda/t07-final-20261020/receipts/conformance-map-draft1.json.gz",
+      "storedSHA256": "730f5f2b36fe4a2b929c00b15c7ec454dec0555c12832cd26a7147b310f76c0c",
+      "representation": "gzip; original bytes unchanged",
+      "disposition": "additive exact documentary representation"
+    },
+    {
+      "sourcePath": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-verified-core/specs/029-system-one-evaluation/evidence/ddp-t07/receipts/development-dispositions.json",
+      "sha256": "2bff8d467cced64be6d9f1316b37dc8f665e374989bf9111ed51f6753f52b979",
+      "corpusPath": "docs/system-one/addenda/t07-final-20261020/receipts/development-dispositions.json",
+      "storedSHA256": "2bff8d467cced64be6d9f1316b37dc8f665e374989bf9111ed51f6753f52b979",
+      "representation": "identity",
+      "disposition": "additive exact documentary representation"
+    },
+    {
+      "sourcePath": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-verified-core/specs/029-system-one-evaluation/evidence/ddp-t07/receipts/finalize_t07.py.txt",
+      "sha256": "9e7e6e8ab33ece24593a250e4f40c4fcc83c55c48d1cce2839d1370a52d569ab",
+      "disposition": "retained local; product/tests/fixtures/config/source archives or executable helper capsules excluded"
+    },
+    {
+      "sourcePath": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-verified-core/specs/029-system-one-evaluation/evidence/ddp-t07/receipts/foreign-research-guard-mutation.log.gz",
+      "sha256": "2c8539c6f3c8b3b3ca935492069e1cc746c6950908c2a9f25232a95b7e5081e3",
+      "corpusPath": "docs/system-one/addenda/t07-final-20261020/receipts/foreign-research-guard-mutation.log.gz",
+      "storedSHA256": "2c8539c6f3c8b3b3ca935492069e1cc746c6950908c2a9f25232a95b7e5081e3",
+      "representation": "identity",
+      "disposition": "additive exact documentary representation"
+    },
+    {
+      "sourcePath": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-verified-core/specs/029-system-one-evaluation/evidence/ddp-t07/receipts/fresh-process-diagnostic.log.gz",
+      "sha256": "ceed6a45522d9289e54a4631887bd2a8d9e601422dc992bea36eecb0388f70be",
+      "corpusPath": "docs/system-one/addenda/t07-final-20261020/receipts/fresh-process-diagnostic.log.gz",
+      "storedSHA256": "ceed6a45522d9289e54a4631887bd2a8d9e601422dc992bea36eecb0388f70be",
+      "representation": "identity",
+      "disposition": "additive exact documentary representation"
+    },
+    {
+      "sourcePath": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-verified-core/specs/029-system-one-evaluation/evidence/ddp-t07/receipts/guard-mutations.json",
+      "sha256": "e1a7f2b7943f93b006d5c483227971a94b333b15ed14f03bf7ef5e8329cc1719",
+      "corpusPath": "docs/system-one/addenda/t07-final-20261020/receipts/guard-mutations.json",
+      "storedSHA256": "e1a7f2b7943f93b006d5c483227971a94b333b15ed14f03bf7ef5e8329cc1719",
+      "representation": "identity",
+      "disposition": "additive exact documentary representation"
+    },
+    {
+      "sourcePath": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-verified-core/specs/029-system-one-evaluation/evidence/ddp-t07/receipts/launch.json",
+      "sha256": "3033b89ec675b259e97514da7ce85098d9e8e8e12adaa4ed756b96fbb2cacdd7",
+      "corpusPath": "docs/system-one/addenda/t07-final-20261020/receipts/launch.json",
+      "storedSHA256": "3033b89ec675b259e97514da7ce85098d9e8e8e12adaa4ed756b96fbb2cacdd7",
+      "representation": "identity",
+      "disposition": "additive exact documentary representation"
+    },
+    {
+      "sourcePath": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-verified-core/specs/029-system-one-evaluation/evidence/ddp-t07/receipts/luna-review/compatibility-final-delta.md.txt",
+      "sha256": "d462995c796fc8f6681dd0fa850a58755e114265132e890f7b1d9e610c5233db",
+      "corpusPath": "docs/system-one/addenda/t07-final-20261020/receipts/luna-review/compatibility-final-delta.md.txt",
+      "storedSHA256": "d462995c796fc8f6681dd0fa850a58755e114265132e890f7b1d9e610c5233db",
+      "representation": "identity",
+      "disposition": "additive exact documentary representation"
+    },
+    {
+      "sourcePath": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-verified-core/specs/029-system-one-evaluation/evidence/ddp-t07/receipts/luna-review/compatibility-test-delta.md.txt",
+      "sha256": "f2d6c388cb40bc867f250488a38dbdc656e1119252c05d06d7f6bdfc9816f8ae",
+      "corpusPath": "docs/system-one/addenda/t07-final-20261020/receipts/luna-review/compatibility-test-delta.md.txt",
+      "storedSHA256": "f2d6c388cb40bc867f250488a38dbdc656e1119252c05d06d7f6bdfc9816f8ae",
+      "representation": "identity",
+      "disposition": "additive exact documentary representation"
+    },
+    {
+      "sourcePath": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-verified-core/specs/029-system-one-evaluation/evidence/ddp-t07/receipts/luna-review/execution-record.json",
+      "sha256": "d369864dc908dcd5406ad5292e6d20bd8074670a949c00c053521d724b5079a0",
+      "corpusPath": "docs/system-one/addenda/t07-final-20261020/receipts/luna-review/execution-record.json",
+      "storedSHA256": "d369864dc908dcd5406ad5292e6d20bd8074670a949c00c053521d724b5079a0",
+      "representation": "identity",
+      "disposition": "additive exact documentary representation"
+    },
+    {
+      "sourcePath": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-verified-core/specs/029-system-one-evaluation/evidence/ddp-t07/receipts/luna-review/inherited-parser-dependency.md.txt",
+      "sha256": "025b4bdbe57670e5471ae5c453ec6ac386a7abda3c95570d757c7e26eb405b54",
+      "corpusPath": "docs/system-one/addenda/t07-final-20261020/receipts/luna-review/inherited-parser-dependency.md.txt",
+      "storedSHA256": "025b4bdbe57670e5471ae5c453ec6ac386a7abda3c95570d757c7e26eb405b54",
+      "representation": "identity",
+      "disposition": "additive exact documentary representation"
+    },
+    {
+      "sourcePath": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-verified-core/specs/029-system-one-evaluation/evidence/ddp-t07/receipts/luna-review/luna-review.md.txt",
+      "sha256": "76e4cdc85de2abbaf261a895e5f04dea2797e6e8b8f483386a34c5035eb1e95f",
+      "corpusPath": "docs/system-one/addenda/t07-final-20261020/receipts/luna-review/luna-review.md.txt",
+      "storedSHA256": "76e4cdc85de2abbaf261a895e5f04dea2797e6e8b8f483386a34c5035eb1e95f",
+      "representation": "identity",
+      "disposition": "additive exact documentary representation"
+    },
+    {
+      "sourcePath": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-verified-core/specs/029-system-one-evaluation/evidence/ddp-t07/receipts/map_vectors.py.txt",
+      "sha256": "db5b478c5be2d173c20bafc0785fe56c6e5e6937aa50a4c03091905088e3ea7e",
+      "disposition": "retained local; product/tests/fixtures/config/source archives or executable helper capsules excluded"
+    },
+    {
+      "sourcePath": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-verified-core/specs/029-system-one-evaluation/evidence/ddp-t07/receipts/ml-import-guard-mutation.log.gz",
+      "sha256": "f1ddc7d108ebe9462a70f273096946ffe301532e53a490eb4ecf61cb86556fe3",
+      "corpusPath": "docs/system-one/addenda/t07-final-20261020/receipts/ml-import-guard-mutation.log.gz",
+      "storedSHA256": "f1ddc7d108ebe9462a70f273096946ffe301532e53a490eb4ecf61cb86556fe3",
+      "representation": "identity",
+      "disposition": "additive exact documentary representation"
+    },
+    {
+      "sourcePath": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-verified-core/specs/029-system-one-evaluation/evidence/ddp-t07/receipts/packaging-repository.log.gz",
+      "sha256": "0696100a701b397d88703d8069bf7bcba97a8b41e6c578358c51b159a9e4a95d",
+      "corpusPath": "docs/system-one/addenda/t05-final-package-20261020/retained-logs/final-repository.log.gz",
+      "representation": "identity",
+      "disposition": "existing exact documentary representation"
+    },
+    {
+      "sourcePath": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-verified-core/specs/029-system-one-evaluation/evidence/ddp-t07/receipts/preflight.json",
+      "sha256": "c3545877c91f432b73a45cbcd8b81321c50186339089cd536afcf8b4c832fa61",
+      "corpusPath": "docs/system-one/addenda/t07-final-20261020/receipts/preflight.json",
+      "storedSHA256": "c3545877c91f432b73a45cbcd8b81321c50186339089cd536afcf8b4c832fa61",
+      "representation": "identity",
+      "disposition": "additive exact documentary representation"
+    },
+    {
+      "sourcePath": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-verified-core/specs/029-system-one-evaluation/evidence/ddp-t07/receipts/preflight.log.gz",
+      "sha256": "241bc3cae8267e1f9b9c4529e55fa475be4bc02a467fcc0ce57290c0a4d5c5d1",
+      "corpusPath": "docs/system-one/addenda/t06-core-final-20261020/receipts/preflight.log.gz",
+      "representation": "identity",
+      "disposition": "existing exact documentary representation"
+    },
+    {
+      "sourcePath": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-verified-core/specs/029-system-one-evaluation/evidence/ddp-t07/receipts/prepackage-verification.json",
+      "sha256": "521d58d75c9832f62838545a0f9a4b9f573a77d3439c07a1621ab7658da0b836",
+      "corpusPath": "docs/system-one/addenda/t07-final-20261020/receipts/prepackage-verification.json",
+      "storedSHA256": "521d58d75c9832f62838545a0f9a4b9f573a77d3439c07a1621ab7658da0b836",
+      "representation": "identity",
+      "disposition": "additive exact documentary representation"
+    },
+    {
+      "sourcePath": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-verified-core/specs/029-system-one-evaluation/evidence/ddp-t07/receipts/prior-documentary-merge-readback.json",
+      "sha256": "5a891a01541760b5eabdf8368eba77b494c80d255cf3e8dc14f7a903e7712179",
+      "corpusPath": "docs/system-one/addenda/t07-final-20261020/receipts/prior-documentary-merge-readback.json",
+      "storedSHA256": "5a891a01541760b5eabdf8368eba77b494c80d255cf3e8dc14f7a903e7712179",
+      "representation": "identity",
+      "disposition": "additive exact documentary representation"
+    },
+    {
+      "sourcePath": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-verified-core/specs/029-system-one-evaluation/evidence/ddp-t07/receipts/profiles/pr.json",
+      "sha256": "e56064c40318a61666f9a56f6b7e7c43f833cbd8373c2218e441236445fea543",
+      "corpusPath": "docs/system-one/addenda/t07-final-20261020/receipts/profiles/pr.json.gz",
+      "storedSHA256": "d8856400fe7fd6ec692d325e2461835794430144f2f944a9fddf0a7f94ad8426",
+      "representation": "gzip; original bytes unchanged",
+      "disposition": "additive exact documentary representation"
+    },
+    {
+      "sourcePath": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-verified-core/specs/029-system-one-evaluation/evidence/ddp-t07/receipts/profiles/pr.log.gz",
+      "sha256": "8e0dcf55659c4b42e5ac69acae86e1653e95eecc69db725f49885d991cbc82bd",
+      "corpusPath": "docs/system-one/addenda/t07-final-20261020/receipts/profiles/pr.log.gz",
+      "storedSHA256": "8e0dcf55659c4b42e5ac69acae86e1653e95eecc69db725f49885d991cbc82bd",
+      "representation": "identity",
+      "disposition": "additive exact documentary representation"
+    },
+    {
+      "sourcePath": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-verified-core/specs/029-system-one-evaluation/evidence/ddp-t07/receipts/profiles/quick.json",
+      "sha256": "949852c78ed2817d41749c6a06818b19988c6dc0af0dbdc128c8348e946f541f",
+      "corpusPath": "docs/system-one/addenda/t07-final-20261020/receipts/profiles/quick.json.gz",
+      "storedSHA256": "40a8672d19cf1160f5236ebaea2418de3b5298bc0b52e04535edbf7249be49ac",
+      "representation": "gzip; original bytes unchanged",
+      "disposition": "additive exact documentary representation"
+    },
+    {
+      "sourcePath": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-verified-core/specs/029-system-one-evaluation/evidence/ddp-t07/receipts/profiles/quick.log.gz",
+      "sha256": "469eb3b9a5b1ab76382a78c17779288aef6743da7df17f4065519d73aeee54b0",
+      "corpusPath": "docs/system-one/addenda/t07-final-20261020/receipts/profiles/quick.log.gz",
+      "storedSHA256": "469eb3b9a5b1ab76382a78c17779288aef6743da7df17f4065519d73aeee54b0",
+      "representation": "identity",
+      "disposition": "additive exact documentary representation"
+    },
+    {
+      "sourcePath": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-verified-core/specs/029-system-one-evaluation/evidence/ddp-t07/receipts/relay-progress.json",
+      "sha256": "89da80beca76ae341ce3f272e6abef2db049eada599062488fa8bab0962c56dc",
+      "corpusPath": "docs/system-one/addenda/t07-final-20261020/receipts/relay-progress.json",
+      "storedSHA256": "89da80beca76ae341ce3f272e6abef2db049eada599062488fa8bab0962c56dc",
+      "representation": "identity",
+      "disposition": "additive exact documentary representation"
+    },
+    {
+      "sourcePath": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-verified-core/specs/029-system-one-evaluation/evidence/ddp-t07/receipts/research-closure-diagnostic.log.gz",
+      "sha256": "778580274ad88ca849236b72ed8dc73b9da5b8539824d3beca9995b13642eb46",
+      "corpusPath": "docs/system-one/addenda/t07-final-20261020/receipts/research-closure-diagnostic.log.gz",
+      "storedSHA256": "778580274ad88ca849236b72ed8dc73b9da5b8539824d3beca9995b13642eb46",
+      "representation": "identity",
+      "disposition": "additive exact documentary representation"
+    },
+    {
+      "sourcePath": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-verified-core/specs/029-system-one-evaluation/evidence/ddp-t07/receipts/run_profiles.py.txt",
+      "sha256": "fff73347353ecf104526e3ab7cc902960510b45b0e47b38ab917765c964cc06d",
+      "disposition": "retained local; product/tests/fixtures/config/source archives or executable helper capsules excluded"
+    },
+    {
+      "sourcePath": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-verified-core/specs/029-system-one-evaluation/evidence/ddp-t07/receipts/stable-intake.json",
+      "sha256": "6586e6d103fd6e906e4c10a9059dd0e009a06cb2a363bcc62d322be0feb1dd9e",
+      "corpusPath": "docs/system-one/addenda/t07-final-20261020/receipts/stable-intake.json",
+      "storedSHA256": "6586e6d103fd6e906e4c10a9059dd0e009a06cb2a363bcc62d322be0feb1dd9e",
+      "representation": "identity",
+      "disposition": "additive exact documentary representation"
+    },
+    {
+      "sourcePath": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-verified-core/specs/029-system-one-evaluation/evidence/ddp-t07/receipts/supervise.py.txt",
+      "sha256": "5e8f17f40fccb432316cf985d91a439d40bbd1039b92da5deb989a1ef4c8e084",
+      "disposition": "retained local; product/tests/fixtures/config/source archives or executable helper capsules excluded"
+    },
+    {
+      "sourcePath": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-verified-core/specs/029-system-one-evaluation/evidence/ddp-t07/receipts/supervisor-completion.json",
+      "sha256": "91ddc3967e573a72c4469e2fc8bcbfc27c8f5ba07179786f3d50083e1dec9986",
+      "corpusPath": "docs/system-one/addenda/t07-final-20261020/receipts/supervisor-completion.json",
+      "storedSHA256": "91ddc3967e573a72c4469e2fc8bcbfc27c8f5ba07179786f3d50083e1dec9986",
+      "representation": "identity",
+      "disposition": "additive exact documentary representation"
+    },
+    {
+      "sourcePath": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-verified-core/specs/029-system-one-evaluation/evidence/ddp-t07/receipts/supervisor-start.json",
+      "sha256": "2b70187aa9e242cf961f0f017015cbfe61b0d647201a563e9af6b39330829851",
+      "corpusPath": "docs/system-one/addenda/t07-final-20261020/receipts/supervisor-start.json",
+      "storedSHA256": "2b70187aa9e242cf961f0f017015cbfe61b0d647201a563e9af6b39330829851",
+      "representation": "identity",
+      "disposition": "additive exact documentary representation"
+    },
+    {
+      "sourcePath": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-verified-core/specs/029-system-one-evaluation/evidence/ddp-t07/receipts/supervisor.log.gz",
+      "sha256": "e1c9fbfbfe5960e5f115dbc4fa043961730fb6746c5ee5a055f554d8bd1a9d8a",
+      "corpusPath": "docs/system-one/addenda/t07-final-20261020/receipts/supervisor.log.gz",
+      "storedSHA256": "e1c9fbfbfe5960e5f115dbc4fa043961730fb6746c5ee5a055f554d8bd1a9d8a",
+      "representation": "identity",
+      "disposition": "additive exact documentary representation"
+    },
+    {
+      "sourcePath": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-verified-core/specs/029-system-one-evaluation/evidence/ddp-t07/receipts/test_system_one_verified_compatibility.py.txt",
+      "sha256": "cc367728223a923a2ab421bed1f54dd1df4fee682259248db327872211d814af",
+      "disposition": "retained local; product/tests/fixtures/config/source archives or executable helper capsules excluded"
+    },
+    {
+      "sourcePath": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-verified-core/specs/029-system-one-evaluation/verified-plan-conformance.md",
+      "sha256": "90f52099cdaebba51f2781c715c748d1ba0c13e9b2b9755a32b25e53f5a08e5b",
+      "corpusPath": "docs/system-one/addenda/t06-core-final-20261020/documents/verified-plan-conformance.md.txt",
+      "representation": "identity",
+      "disposition": "existing exact documentary representation"
+    },
+    {
+      "sourcePath": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-verified-core/specs/029-system-one-evaluation/verified-plan-vectors.json",
+      "sha256": "6584ce4de05edf143e215945ff620b5127fe48e6c352dfb7a33b447e753a11f7",
+      "corpusPath": "docs/system-one/addenda/t06-core-final-20261020/documents/verified-plan-vectors.json.gz",
+      "representation": "gzip; original bytes unchanged",
+      "disposition": "existing exact documentary representation"
+    },
+    {
+      "sourcePath": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-verified-core/specs/031-system-one-integration/addenda/ddp-t06-core-implementation.md",
+      "sha256": "7cfbe1d4c71d7098529b1b01f0f3a97490cf2f08f2935a29cde4829b71b9ca0e",
+      "corpusPath": "docs/system-one/addenda/t06-core-final-20261020/documents/ddp-t06-core-implementation.md.txt",
+      "representation": "identity",
+      "disposition": "existing exact documentary representation"
+    },
+    {
+      "sourcePath": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-verified-core/specs/031-system-one-integration/addenda/ddp-t06-core-plan.md",
+      "sha256": "8b9bcd61d392edc6712a54c229f64253397db61aac81a6065eaf3d0ae5ec3285",
+      "corpusPath": "docs/system-one/addenda/t06-core-intake-20261020/source-plan.txt",
+      "representation": "identity",
+      "disposition": "existing exact documentary representation"
+    },
+    {
+      "sourcePath": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-verified-core/specs/031-system-one-integration/addenda/ddp-t06-transport-implementation.md",
+      "sha256": "87d508dd534beba0fcc07d8a5b8e29bd95443dc2399d81bcf566cb8f610a55bb",
+      "corpusPath": "docs/system-one/addenda/t06-transport-final-20261020/documents/ddp-t06-transport-implementation.md.txt",
+      "representation": "identity",
+      "disposition": "existing exact documentary representation"
+    },
+    {
+      "sourcePath": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-verified-core/specs/031-system-one-integration/addenda/ddp-t06-transport-plan.md",
+      "sha256": "96a100062ff8ba55e48310f58b89950c4711036319efbc2b9848bb8bef7c0dbe",
+      "corpusPath": "docs/system-one/addenda/t06-transport-intake-20261020/original-plan.txt",
+      "representation": "identity",
+      "disposition": "existing exact documentary representation"
+    },
+    {
+      "sourcePath": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-verified-core/specs/031-system-one-integration/contracts/verified-plan-consumer-v1.md",
+      "sha256": "b17b5f3398dba9086ba44bdc04c4ff9cae97364f1fb9430a7e4ebcb9cb9fd1f4",
+      "corpusPath": "docs/system-one/addenda/t06-core-final-20261020/documents/verified-plan-consumer-v1.md.txt",
+      "representation": "identity",
+      "disposition": "existing exact documentary representation"
+    },
+    {
+      "sourcePath": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-verified-core/tests/fixtures/system_one_verified_acquisition.json",
+      "sha256": "4c674337541e56bc7cc2219a8c10e522bba037fae24bd480a65317010fc15078",
+      "disposition": "retained local; product/tests/fixtures/config/source archives or executable helper capsules excluded"
+    },
+    {
+      "sourcePath": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-verified-core/tests/fixtures/system_one_verified_ir.json",
+      "sha256": "c2aac157c85f4a1d9fd6e5fec998c003433bb4e9769bba3ed50c27f253318b76",
+      "disposition": "retained local; product/tests/fixtures/config/source archives or executable helper capsules excluded"
+    },
+    {
+      "sourcePath": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-verified-core/tests/fixtures/system_one_verified_registry.json",
+      "sha256": "75753dac881c6cd933360aab88b5d71bb6d17c19d6537c0645b8024c78a1005a",
+      "disposition": "retained local; product/tests/fixtures/config/source archives or executable helper capsules excluded"
+    },
+    {
+      "sourcePath": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-verified-core/tests/test_system_one_verified_acquisition.py",
+      "sha256": "27ff8dd4192d1bc1b7d72b412fa1209e3ba28b32671f0181d3fb707a104ea8ed",
+      "disposition": "retained local; product/tests/fixtures/config/source archives or executable helper capsules excluded"
+    },
+    {
+      "sourcePath": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-verified-core/tests/test_system_one_verified_compatibility.py",
+      "sha256": "56e9e82f91d492b01fe48c413a8a14711f189406ea6ce25369d87ff249cbdf9e",
+      "disposition": "retained local; product/tests/fixtures/config/source archives or executable helper capsules excluded"
+    },
+    {
+      "sourcePath": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-verified-core/tests/test_system_one_verified_components.py",
+      "sha256": "01abcb850572c3ad0f85beccaf7d437367fa388f681f0b77d55be24c98c32dcf",
+      "disposition": "retained local; product/tests/fixtures/config/source archives or executable helper capsules excluded"
+    },
+    {
+      "sourcePath": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-verified-core/tests/test_system_one_verified_consumers.py",
+      "sha256": "d88c6dcb8f49a31023431258662cf82f3c848f1a92c3384ca0e74f430997493c",
+      "disposition": "retained local; product/tests/fixtures/config/source archives or executable helper capsules excluded"
+    },
+    {
+      "sourcePath": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-verified-core/tests/test_system_one_verified_ir.py",
+      "sha256": "5550874646e3021cf147e14ebf5e5760a7f7397b08ce7701256ad59c2e9367be",
+      "disposition": "retained local; product/tests/fixtures/config/source archives or executable helper capsules excluded"
+    },
+    {
+      "sourcePath": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-verified-core/tests/test_system_one_verified_registry.py",
+      "sha256": "53185df49342636e9b2545a5d53ef398998b4acc3367e39ee35ee0e5c525d254",
+      "disposition": "retained local; product/tests/fixtures/config/source archives or executable helper capsules excluded"
+    },
+    {
+      "sourcePath": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-verified-core/tests/test_system_one_verified_selection.py",
+      "sha256": "d14d2ec1637b944eab96a6c9938b1758c8343e390fae208d55e615c9089e0b56",
+      "disposition": "retained local; product/tests/fixtures/config/source archives or executable helper capsules excluded"
+    },
+    {
+      "sourcePath": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-verified-core/tests/test_system_one_verified_stdio.py",
+      "sha256": "67c61b11b8c94c64295fe44743519152aa853b8c0e66db75a2e4a8044fe4870f",
+      "disposition": "retained local; product/tests/fixtures/config/source archives or executable helper capsules excluded"
+    },
+    {
+      "sourcePath": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-verified-core/tests/test_system_one_verified_tooling.py",
+      "sha256": "025410941b1bb37050dda5669ad0425a636ff52afbd230e5c8fa3567e939e583",
+      "disposition": "retained local; product/tests/fixtures/config/source archives or executable helper capsules excluded"
+    },
+    {
+      "sourcePath": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-verified-core/specs/029-system-one-evaluation/evidence/ddp-t07/packet.json",
+      "sha256": "27948e6669a4f360e6bc4eacd542b200d6f882d6bcb824aa23aa5560a08299d8",
+      "corpusPath": "docs/system-one/addenda/t07-final-20261020/original-packet.json",
+      "storedSHA256": "27948e6669a4f360e6bc4eacd542b200d6f882d6bcb824aa23aa5560a08299d8",
+      "representation": "identity",
+      "disposition": "additive exact documentary representation"
+    },
+    {
+      "sourcePath": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/outputs/ddp-t07-20261020/completion.json",
+      "sha256": "1b49075843ee96e638c75e9c8bfe97cd40fe7b3e8fc7f8d492ae1fd1e50bf19f",
+      "corpusPath": "docs/system-one/addenda/t07-final-20261020/original-completion.json",
+      "storedSHA256": "1b49075843ee96e638c75e9c8bfe97cd40fe7b3e8fc7f8d492ae1fd1e50bf19f",
+      "representation": "identity",
+      "disposition": "additive exact documentary representation"
+    },
+    {
+      "sourcePath": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/outputs/ddp-t07-20261020/final-readback.json",
+      "sha256": "6c2a56373cd9fabb779bef28040dcfae792a1dab349ad4decd3a31644eccecc3",
+      "corpusPath": "docs/system-one/addenda/t07-final-20261020/original-author-readback.json",
+      "storedSHA256": "6c2a56373cd9fabb779bef28040dcfae792a1dab349ad4decd3a31644eccecc3",
+      "representation": "identity",
+      "disposition": "additive exact documentary representation"
+    },
+    {
+      "sourcePath": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/outputs/ddp-t07-20261020/finalize-t07-attempt1.log",
+      "sha256": "0267c642635ed015158c71fe85236d1a937c2fbd206f23a9999d83b2ec97da1f",
+      "corpusPath": "docs/system-one/addenda/t07-final-20261020/completed-finalizer.log.gz",
+      "storedSHA256": "71a07bba9cbe55d9cd7ada0ae440a4981ff03b2374cd4f804a12a604707373b8",
+      "representation": "gzip; original bytes unchanged",
+      "disposition": "additive exact documentary representation"
+    }
+  ],
+  "documentaryPublication": "local observation before separate documentary PR",
+  "productPublished": false,
+  "gatesClosed": false
+}

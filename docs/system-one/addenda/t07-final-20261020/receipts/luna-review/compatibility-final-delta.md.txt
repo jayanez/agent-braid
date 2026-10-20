@@ -1,0 +1,19 @@
+# T07 final compatibility-control delta
+
+**Disposition:** The test-only addition and plan clarification address the prior coverage-precision observation. No new actionable issue found. This is a read-only delta check; tests were not repeated.
+
+## Pins verified
+
+- Final `tests/test_system_one_verified_compatibility.py`: SHA-256 `56e9e82f91d492b01fe48c413a8a14711f189406ea6ce25369d87ff249cbdf9e`.
+- Updated `specs/029-system-one-evaluation/addenda/ddp-t07-plan.md`: SHA-256 `e53366c9c02615cafce70dc4b44ebf9e7e7792594fea8f26a0c594b74928494e`.
+- All nine reviewed product pins remain identical to the T07 before inventory: `system_one_verified_{tooling,stdio,consumers,selection,ir,acquisition,registry}.py`, `git_runtime.py`, and `git_replay.py`.
+
+## Delta assessment
+
+The plan now explicitly separates internal producer admission (`propose()` raises `invalid-envelope` before source/scratch work) from a separate malformed proposal passed to `consume(b'{}')` (sealed refusal, zero counters, no prepared body/allocation). It disclaims convenience-wrapper mapping of those same producer bytes. This resolves the earlier overbroad reading without changing product code.
+
+The fourth test adds explicit EN/ES × controlled/symbolic cases where an empty plan and a repeated-operation plan remain individually invalid while another offered option (`k2`) is eligible and selected. It asserts the exact invalid-plan reasons, the surviving eligibility/choice, and `executionAuthorization == false`. This complements the raw/legacy admission and fresh-process compatibility controls and keeps semantic failure distinct from refusal.
+
+No tests or profiles were run by this reviewer. Parent reports all four tests passed (0 failures/errors/skips, 0.2306 s); that result is reported, not independently reproduced. The conformance map's stated predicate-family limitation remains material: these controls do not establish exact replay of every archived row, every mutation, or every reason branch. No full vector-map or profile claim is made here.
+
+No repository files were changed.

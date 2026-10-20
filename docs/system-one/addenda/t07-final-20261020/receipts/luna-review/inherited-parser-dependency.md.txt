@@ -1,0 +1,17 @@
+# T07 addendum — inherited parser import boundary
+
+This addendum records a bounded dependency disposition only. It does not amend or replace the sealed `luna-review.md`, reopen the T07 review, or report new test execution.
+
+The integrated consumer import closure is not research-free: `agent_braid/system_one_verified_consumers.py` imports the existing `git_runtime` and `mcp_runtime` modules; `git_runtime.py` imports `loads` from `research.lab.model`, and `mcp_runtime.py` imports `Invalid, loads` from the same module. Their exact SHA-256 pins in the reviewed checkout are:
+
+- `agent_braid/git_runtime.py`: `8cf7168e2cbb9b874019eb3cc8dcee7b5ad69892eaeb4cc0511996fade29f897`
+- `agent_braid/mcp_runtime.py`: `32d30a6a167235e1ab8ca89acdc32b23eb74412e2ac0555fe7c9118d1d816d83`
+- `research/lab/model.py`: `f39040b5476d663f6e7384e65d00073b084df6c8958b38bff45e4d6b19da010f`
+
+The inherited parser module imports only Python standard-library modules (`copy`, `hashlib`, `itertools`, `json`) and defines bounded JSON/model validation helpers. Inspection found no optional ML imports and no import-time I/O, network, or subprocess activity. The dependency is therefore a truthful compatibility/package boundary, not evidence of neural/model execution.
+
+The frozen consumer contract at `specs/031-system-one-integration/contracts/verified-plan-consumer-v1.md` (SHA-256 `b17b5f3398dba9086ba44bdc04c4ff9cae97364f1fb9430a7e4ebcb9cb9fd1f4`) says feature-off preserves exact legacy behavior and “does not import optional ML packages” (line 54); it does not state that every integrated consumer import must avoid the `research` namespace. T07 handoff `specs/028-system-one-core/decision-delivery/handoffs/DDP-T07.md` (SHA-256 `d62f5f49a56bf43028a810716e66b12a242203bb9b554d7648b32f773d5cc946`) names a negative control for “neural module load on core import.” The T02–T04 implementation note `specs/028-system-one-core/decision-delivery/addenda/ddp-t02-t04-implementation.md` (SHA-256 `f660f8500396f97d828fe3648795608a78590ddbcb9b7e08aab357072717a15f`) describes no-research/no-neural fresh imports for the extracted component path, which remains the appropriate scope for the research-free assertion.
+
+Recommended truthful boundary: extracted IR/acquisition/registry/selection imports remain research-free; integrated consumer imports may load exactly `research`, `research.lab`, and `research.lab.model` through the legacy parser path, while optional ML packages and import-time process/network/I/O effects remain denied. Do not describe the integrated closure as research-free. Parser extraction or lazy imports are separate architecture/package work, not required by this frozen increment.
+
+No tests were run for this addendum. No repository files were changed.

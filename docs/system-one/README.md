@@ -2,7 +2,13 @@
 
 Start here, then read the [agent resumption guide](RESUMPTION.md). This is the current reading map as of the documentary review on2026-10-20; individual receipts below retain their own observation times. Chat history and ZIP imports are not required to understand the recorded work.
 
-## Current controlled-consumer delivery
+## Latest bounded T07 review and conformance evidence
+
+[Final T07 documentary supplement](addenda/t07-final-20261020/README.md) records independent Luna technical review, corrected compatibility controls, five transcribed reviewer executions, preserved failures and both completed profiles. Packet89 bindings/38 archived members/48 raw files were checked; product sources remain unchanged and local. The32-vector mapping supplies predicate-family evidence, not archived recipe replay or scientific accuracy. Human/Claude/scientific/training/admission/promotion/activation and external host adoption remain pending; no administrative or acceptance gate is closed.
+
+T06's documentary corpus was integrated through PR608 at7a9cf27. T07 is a separate supplement; earlier pending-T07 statements below and in frozen T06 receipts describe their earlier observation times. Its publication and any subsequent integration are separate from PR608 and from product publication.
+
+## Prior T06 controlled-consumer delivery
 
 [Final Core/MCP/stdio documentary reconciliation](addenda/t06-transport-final-20261020/README.md) is the latest engineering observation: Core API and controlled real service/stdio-client paths obtained, both transport profiles passed, final packet verified. It links failures, repairs, exact sources, logs and cost limits across all epochs. Independent product review/T07, host adoption and scientific/human/admission/promotion/activation gates remain pending. Product source is retained locally, not published by this documentary branch.
 

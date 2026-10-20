@@ -1,0 +1,10 @@
+{
+  "tests": 4,
+  "failures": 0,
+  "errors": 0,
+  "skips": 0,
+  "seconds": 0.23063329100841656,
+  "exitCode": 0,
+  "sourceSHA256": "56e9e82f91d492b01fe48c413a8a14711f189406ea6ce25369d87ff249cbdf9e",
+  "logSha256": "9efeadb762f05acdae4a5db8f2b02a22de7c2c71ce361dd644c42352b5f15909"
+}

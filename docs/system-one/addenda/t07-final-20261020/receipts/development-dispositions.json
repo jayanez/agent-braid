@@ -1,0 +1,14 @@
+{
+  "attempt1": {
+    "tests": 3,
+    "failures": 0,
+    "errors": 26,
+    "outcome": "failed external test draft; no product edits",
+    "diagnosticAttempt2": "same outcome, full log preserved",
+    "causes": [
+      "24 invalid ingress subcases plus default context test called propose on refused producer; expected API raises invalid-envelope",
+      "fresh import guard erroneously required integrated legacy consumer closure research-free; inherited pure stdlib research.lab.model parser is documented compatibility dependency"
+    ]
+  },
+  "correction": "Assert propose raises, consume malformed proposal returns sealed refusal. Preserve strict pure decision research-free check; exact allowlist legacy parser closure for integrated consumer, forbid all other research, neural/runtime optional packages, and external effects. No contract weakened or source changed."
+}

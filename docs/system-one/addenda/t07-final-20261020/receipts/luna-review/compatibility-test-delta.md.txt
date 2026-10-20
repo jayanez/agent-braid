@@ -1,0 +1,22 @@
+# T07 compatibility-control delta review
+
+**Disposition:** No product-code finding. One coverage-precision limitation is recorded below. This review only inspected the three new compatibility controls and their plan; it did not rerun tests or profiles.
+
+## Exact reviewed pins
+
+- `tests/test_system_one_verified_compatibility.py`: SHA-256 `9907da49204da937329773bdb8361ee280f628d85158e6e1a0c6d4572c561677`
+- `specs/029-system-one-evaluation/addenda/ddp-t07-plan.md`: SHA-256 `090e6aa9a239ff8d3e5143201f476d21ffbc1f39544dc1dc193105281e2397a3`
+
+Parent reports the final three tests passed in 0.117 seconds with zero skips. I did not repeat them.
+
+## Review observations
+
+The fresh-process test has a sound import-boundary sequence: it records legacy capability/router output and six EN/ES boolean/choice/score results, installs import and audit guards, imports the extracted decision modules, checks that this pure path remains research-free, then imports integrated consumer/tooling/stdio modules and requires the exact inherited `research`, `research.lab`, `research.lab.model` closure. It denies optional ML/MCP SDK roots and checks socket/process-launch audit events remain absent. The separation matches the frozen contract boundary and the inherited-parser addendum; it does not claim that the integrated consumer closure is research-free.
+
+The default-catalog test creates valid source/result directories, snapshots the legacy capability/router representation, exercises private contexts, and checks the existing ToolingService catalog/runtime/plans and legacy identity remain unchanged. This addresses the earlier invalid fixture setup by satisfying ToolingConfig's directory preconditions.
+
+The second test has a narrower result guarantee than its name/plan phrasing may imply. For each malformed `raw` it passes those bytes as the original producer request and verifies `context.propose()` raises `invalid-envelope` before acquisition/scratch/child dispatch. It then separately calls `context.consume(b'{}')` and checks a refused result, zero counters, no prepared body and no allocation. Since the bytes consumed in that assertion are always `{}`, it does not prove that each original malformed producer request is converted into a ConsumerResult by the public convenience adapter. This is consistent with the internal context API, whose `propose()` intentionally throws for refused producers; it is a test-claim limitation, not evidence of a product defect. If the conformance claim needs end-to-end result mapping, add a narrow adapter case using the same raw request (for Core API, `prepare_core`) and assert its refusal mapping. Otherwise describe the existing evidence as producer admission refusal plus a separate malformed-proposal refusal control.
+
+The plan's broad sentence “Every consumer rejects legacy, raw malformed and authority-bearing inputs ... exact reason, zero counters and cleanup recorded” should be read at those two distinct boundaries. No claim is made here about full V01–V32 conformance, full profiles, scientific or human acceptance, or external host adoption.
+
+No tests were executed by this reviewer. No repository files were changed.
