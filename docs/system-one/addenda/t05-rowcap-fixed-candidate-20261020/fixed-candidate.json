@@ -1,0 +1,25 @@
+{
+  "status": "fixed-candidate-for-scoped-recheck",
+  "finding": "T05-FIND-002",
+  "ownershipReleased": true,
+  "files": {
+    "agent_braid/system_one_verified_selection.py": "8971650c51082938281ecb62e40e23adab4202bb20971b1eb23e1ef7d78c339c",
+    "tests/test_system_one_verified_selection.py": "d14d2ec1637b944eab96a6c9938b1758c8343e390fae208d55e615c9089e0b56"
+  },
+  "logs": {
+    "T05-focused-rowcap.log": "2e39d5d026bb693dd1d026165862b5b9927ad021f6dc54750d481deea28b4744",
+    "T05-mutation-rowcap.log": "d04ba776b2a935bfe275136e7f996997a84c1510fc66a83d235660f70af76f44"
+  },
+  "focused": {
+    "tests": 28,
+    "skips": 0,
+    "errors": 0,
+    "seconds": 9.848,
+    "exitCode": 0
+  },
+  "newMutationsDetected": 2,
+  "review": "scoped Luna verification active",
+  "profiles": "not started",
+  "externalSpendEUR": 0,
+  "executionAuthorization": false
+}

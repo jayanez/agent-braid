@@ -6,7 +6,9 @@ GitHub availability: [published documentary corpus and follow-up](addenda/github
 
 Publication and next authority: [documentary publication mandate and conditional T05 handoff](addenda/publication-and-t05-condition-20261020.md). T05 depends on actual quick/PR passes and intact pins; no GO is inferred.
 
-Latest T05 review: [completed scoped Luna review; one row64 P2](addenda/t05-luna-row64-review-20261020/README.md), immediate-live-refusal fix and targeted recheck pending; final publication bypass was not observed.
+Latest T05 fix candidate: [row-cap correction with bound28-test pass and two mutation detections](addenda/t05-rowcap-fixed-candidate-20261020/README.md); same-reviewer disposition and full profiles pending.
+
+Earlier T05 review: [completed scoped Luna review; one row64 P2](addenda/t05-luna-row64-review-20261020/README.md), immediate-live-refusal fix and targeted recheck pending; final publication bypass was not observed.
 
 Earlier T05 candidate: [source-bound28-test candidate, three mutation detections and active review report](addenda/t05-review-candidate-20261020/README.md); row64 live-latch variant/open finding and full profiles remain pending.
 
