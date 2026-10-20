@@ -1,0 +1,87 @@
+{
+  "format": "ddp-t02-software-fixture-v1",
+  "provenance": "Independently authored finite software example; no research corpus or evaluation labels.",
+  "program": {
+    "files": {
+      "sample.txt": [
+        "alpha\n",
+        "beta\n",
+        "tail\n"
+      ]
+    },
+    "goal": {
+      "sample.txt": "63d0d35a135fe879efb808bbd069c41791d1a951"
+    },
+    "ops": {
+      "a": {
+        "dependencies": [],
+        "changes": [
+          {
+            "path": "sample.txt",
+            "old": "12be3658b4ba9d6f335716bd5d8a2cdd1c55c2a4",
+            "new": "f5b7b1b9ca7608d566d2548305dd93fdffdfdb4a",
+            "hunks": [
+              {
+                "begin": 0,
+                "end": 1,
+                "old": [
+                  "alpha\n"
+                ],
+                "new": [
+                  "ALPHA\n"
+                ],
+                "atStart": true,
+                "atEnd": false,
+                "patchLines": [
+                  "-alpha\n",
+                  "+ALPHA\n"
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "b": {
+        "dependencies": [],
+        "changes": [
+          {
+            "path": "sample.txt",
+            "old": "12be3658b4ba9d6f335716bd5d8a2cdd1c55c2a4",
+            "new": "ae9f9e0cc76a51b0607f2d02c2537c9c2a968922",
+            "hunks": [
+              {
+                "begin": 1,
+                "end": 2,
+                "old": [
+                  "beta\n"
+                ],
+                "new": [
+                  "BETA\n"
+                ],
+                "atStart": false,
+                "atEnd": false,
+                "patchLines": [
+                  "-beta\n",
+                  "+BETA\n"
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    },
+    "plans": {
+      "k0": [
+        "b",
+        "a"
+      ],
+      "k1": [],
+      "k2": [
+        "a",
+        "b"
+      ],
+      "wait": null
+    }
+  },
+  "controlledEn": "T024 controlled en.\nInitial file: [\"sample.txt\",[\"alpha\\n\",\"beta\\n\",\"tail\\n\"]].\nRequired final blob: [\"sample.txt\",\"63d0d35a135fe879efb808bbd069c41791d1a951\"].\nOperation and dependencies: [\"a\",[]].\nOperation file preimage and postimage: [\"a\",\"sample.txt\",\"12be3658b4ba9d6f335716bd5d8a2cdd1c55c2a4\",\"f5b7b1b9ca7608d566d2548305dd93fdffdfdb4a\"].\nOperation hunk read and write: [\"a\",\"sample.txt\",0,1,[\"alpha\\n\"],[\"ALPHA\\n\"],true,false,[\"-alpha\\n\",\"+ALPHA\\n\"]].\nOperation and dependencies: [\"b\",[]].\nOperation file preimage and postimage: [\"b\",\"sample.txt\",\"12be3658b4ba9d6f335716bd5d8a2cdd1c55c2a4\",\"ae9f9e0cc76a51b0607f2d02c2537c9c2a968922\"].\nOperation hunk read and write: [\"b\",\"sample.txt\",1,2,[\"beta\\n\"],[\"BETA\\n\"],false,false,[\"-beta\\n\",\"+BETA\\n\"]].\nOffered plan: [\"k0\",[\"b\",\"a\"]].\nOffered plan: [\"k1\",[]].\nOffered plan: [\"k2\",[\"a\",\"b\"]].\nOffered plan: [\"wait\",null].\n"
+}
