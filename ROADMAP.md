@@ -461,3 +461,22 @@ are valid. Forecast quality does not establish scheduling benefit or semantics;
 SPEC-019 and native System 1 model gates remain independent; SPEC-021's historical
 G4 NO-GO remains in force, and bounded M4 engineering/evaluation acceptance is
 recorded above. Current GitHub tracking is shown in the [live M4 milestone](https://github.com/jayanez/agent-braid/milestone/6). Milestone creation does not accept any capability or execute its tasks.
+
+## HAR — Braid Harness
+
+[The Braid Harness program](specs/048-harness-variant-laboratory/program.md) has three
+proposed implementation milestones: HAR.1 — Braid Harness laboratory (SPEC-048,
+15 tasks), HAR.2 — Braid Harness evaluation and learning (SPEC-049, 13 tasks), and
+HAR.3 — Braid Harness adaptation and integration (SPEC-050, 12 tasks). The three
+draft specs contain 28 requirements/scenarios and 40 pending implementation/gate
+tasks. Both long-task continuity and precise, efficient coordination are primary
+outcomes. Automatic isolated trials, initial human promotion, synthetic controls,
+advanced component/search capabilities and separately governed future automatic
+promotion are planned. Additional cash spend is capped at EUR 0.
+
+The [coverage matrix](specs/048-harness-variant-laboratory/capability-coverage.md)
+assigns implementation, validation and activation boundaries to each selected
+mechanism and lifecycle phase. Native containment/source/host qualification,
+complete costs, architectural adoption and per-capability acceptance remain
+explicit gates. Existing runtime, plugin, forecasting, System 1 and telemetry
+acceptance does not transfer. Upstream names identify source provenance only.

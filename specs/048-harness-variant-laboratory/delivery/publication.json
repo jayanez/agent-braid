@@ -1,0 +1,950 @@
+{
+  "repository": "jayanez/agent-braid",
+  "scope": [
+    "SPEC-048",
+    "SPEC-049",
+    "SPEC-050"
+  ],
+  "milestones": [
+    {
+      "number": 21,
+      "title": "HAR.1 — Braid Harness laboratory",
+      "html_url": "https://github.com/jayanez/agent-braid/milestone/21",
+      "state": "open"
+    },
+    {
+      "number": 22,
+      "title": "HAR.2 — Braid Harness evaluation and learning",
+      "html_url": "https://github.com/jayanez/agent-braid/milestone/22",
+      "state": "open"
+    },
+    {
+      "number": 23,
+      "title": "HAR.3 — Braid Harness adaptation and integration",
+      "html_url": "https://github.com/jayanez/agent-braid/milestone/23",
+      "state": "open"
+    }
+  ],
+  "issues": [
+    {
+      "key": "SPEC-048",
+      "kind": "spec",
+      "number": 611,
+      "id": 5949803943,
+      "node_id": "I_kwDOUkDWXM8AAAABYqLNpw",
+      "url": "https://github.com/jayanez/agent-braid/issues/611",
+      "milestone": 21,
+      "state": "open"
+    },
+    {
+      "key": "SPEC-048/T001",
+      "kind": "task",
+      "number": 612,
+      "id": 5949804238,
+      "node_id": "I_kwDOUkDWXM8AAAABYqLOzg",
+      "url": "https://github.com/jayanez/agent-braid/issues/612",
+      "milestone": 21,
+      "state": "open"
+    },
+    {
+      "key": "SPEC-048/T002",
+      "kind": "task",
+      "number": 613,
+      "id": 5949804485,
+      "node_id": "I_kwDOUkDWXM8AAAABYqLPxQ",
+      "url": "https://github.com/jayanez/agent-braid/issues/613",
+      "milestone": 21,
+      "state": "open"
+    },
+    {
+      "key": "SPEC-048/T003",
+      "kind": "task",
+      "number": 614,
+      "id": 5949804791,
+      "node_id": "I_kwDOUkDWXM8AAAABYqLQ9w",
+      "url": "https://github.com/jayanez/agent-braid/issues/614",
+      "milestone": 21,
+      "state": "open"
+    },
+    {
+      "key": "SPEC-048/T004",
+      "kind": "task",
+      "number": 615,
+      "id": 5949805139,
+      "node_id": "I_kwDOUkDWXM8AAAABYqLSUw",
+      "url": "https://github.com/jayanez/agent-braid/issues/615",
+      "milestone": 21,
+      "state": "open"
+    },
+    {
+      "key": "SPEC-048/T005",
+      "kind": "task",
+      "number": 616,
+      "id": 5949805472,
+      "node_id": "I_kwDOUkDWXM8AAAABYqLToA",
+      "url": "https://github.com/jayanez/agent-braid/issues/616",
+      "milestone": 21,
+      "state": "open"
+    },
+    {
+      "key": "SPEC-048/T006",
+      "kind": "task",
+      "number": 617,
+      "id": 5949805718,
+      "node_id": "I_kwDOUkDWXM8AAAABYqLUlg",
+      "url": "https://github.com/jayanez/agent-braid/issues/617",
+      "milestone": 21,
+      "state": "open"
+    },
+    {
+      "key": "SPEC-048/T007",
+      "kind": "task",
+      "number": 618,
+      "id": 5949805998,
+      "node_id": "I_kwDOUkDWXM8AAAABYqLVrg",
+      "url": "https://github.com/jayanez/agent-braid/issues/618",
+      "milestone": 21,
+      "state": "open"
+    },
+    {
+      "key": "SPEC-048/T008",
+      "kind": "task",
+      "number": 619,
+      "id": 5949806277,
+      "node_id": "I_kwDOUkDWXM8AAAABYqLWxQ",
+      "url": "https://github.com/jayanez/agent-braid/issues/619",
+      "milestone": 21,
+      "state": "open"
+    },
+    {
+      "key": "SPEC-048/T009",
+      "kind": "task",
+      "number": 620,
+      "id": 5949806518,
+      "node_id": "I_kwDOUkDWXM8AAAABYqLXtg",
+      "url": "https://github.com/jayanez/agent-braid/issues/620",
+      "milestone": 21,
+      "state": "open"
+    },
+    {
+      "key": "SPEC-048/T010",
+      "kind": "task",
+      "number": 621,
+      "id": 5949806823,
+      "node_id": "I_kwDOUkDWXM8AAAABYqLY5w",
+      "url": "https://github.com/jayanez/agent-braid/issues/621",
+      "milestone": 21,
+      "state": "open"
+    },
+    {
+      "key": "SPEC-048/T011",
+      "kind": "task",
+      "number": 633,
+      "id": 5950177372,
+      "node_id": "I_kwDOUkDWXM8AAAABYqiAXA",
+      "url": "https://github.com/jayanez/agent-braid/issues/633",
+      "milestone": 21,
+      "state": "open"
+    },
+    {
+      "key": "SPEC-048/T012",
+      "kind": "task",
+      "number": 634,
+      "id": 5950177673,
+      "node_id": "I_kwDOUkDWXM8AAAABYqiBiQ",
+      "url": "https://github.com/jayanez/agent-braid/issues/634",
+      "milestone": 21,
+      "state": "open"
+    },
+    {
+      "key": "SPEC-048/T013",
+      "kind": "task",
+      "number": 635,
+      "id": 5950177838,
+      "node_id": "I_kwDOUkDWXM8AAAABYqiCLg",
+      "url": "https://github.com/jayanez/agent-braid/issues/635",
+      "milestone": 21,
+      "state": "open"
+    },
+    {
+      "key": "SPEC-048/T014",
+      "kind": "task",
+      "number": 636,
+      "id": 5950178017,
+      "node_id": "I_kwDOUkDWXM8AAAABYqiC4Q",
+      "url": "https://github.com/jayanez/agent-braid/issues/636",
+      "milestone": 21,
+      "state": "open"
+    },
+    {
+      "key": "SPEC-048/T015",
+      "kind": "task",
+      "number": 637,
+      "id": 5950178219,
+      "node_id": "I_kwDOUkDWXM8AAAABYqiDqw",
+      "url": "https://github.com/jayanez/agent-braid/issues/637",
+      "milestone": 21,
+      "state": "open"
+    },
+    {
+      "key": "SPEC-049",
+      "kind": "spec",
+      "number": 622,
+      "id": 5949807113,
+      "node_id": "I_kwDOUkDWXM8AAAABYqLaCQ",
+      "url": "https://github.com/jayanez/agent-braid/issues/622",
+      "milestone": 22,
+      "state": "open"
+    },
+    {
+      "key": "SPEC-049/T001",
+      "kind": "task",
+      "number": 623,
+      "id": 5949807398,
+      "node_id": "I_kwDOUkDWXM8AAAABYqLbJg",
+      "url": "https://github.com/jayanez/agent-braid/issues/623",
+      "milestone": 22,
+      "state": "open"
+    },
+    {
+      "key": "SPEC-049/T002",
+      "kind": "task",
+      "number": 624,
+      "id": 5949807638,
+      "node_id": "I_kwDOUkDWXM8AAAABYqLcFg",
+      "url": "https://github.com/jayanez/agent-braid/issues/624",
+      "milestone": 22,
+      "state": "open"
+    },
+    {
+      "key": "SPEC-049/T003",
+      "kind": "task",
+      "number": 625,
+      "id": 5949807896,
+      "node_id": "I_kwDOUkDWXM8AAAABYqLdGA",
+      "url": "https://github.com/jayanez/agent-braid/issues/625",
+      "milestone": 22,
+      "state": "open"
+    },
+    {
+      "key": "SPEC-049/T004",
+      "kind": "task",
+      "number": 626,
+      "id": 5949808178,
+      "node_id": "I_kwDOUkDWXM8AAAABYqLeMg",
+      "url": "https://github.com/jayanez/agent-braid/issues/626",
+      "milestone": 22,
+      "state": "open"
+    },
+    {
+      "key": "SPEC-049/T005",
+      "kind": "task",
+      "number": 627,
+      "id": 5949808419,
+      "node_id": "I_kwDOUkDWXM8AAAABYqLfIw",
+      "url": "https://github.com/jayanez/agent-braid/issues/627",
+      "milestone": 22,
+      "state": "open"
+    },
+    {
+      "key": "SPEC-049/T006",
+      "kind": "task",
+      "number": 628,
+      "id": 5949808725,
+      "node_id": "I_kwDOUkDWXM8AAAABYqLgVQ",
+      "url": "https://github.com/jayanez/agent-braid/issues/628",
+      "milestone": 22,
+      "state": "open"
+    },
+    {
+      "key": "SPEC-049/T007",
+      "kind": "task",
+      "number": 629,
+      "id": 5949809052,
+      "node_id": "I_kwDOUkDWXM8AAAABYqLhnA",
+      "url": "https://github.com/jayanez/agent-braid/issues/629",
+      "milestone": 22,
+      "state": "open"
+    },
+    {
+      "key": "SPEC-049/T008",
+      "kind": "task",
+      "number": 630,
+      "id": 5949809309,
+      "node_id": "I_kwDOUkDWXM8AAAABYqLinQ",
+      "url": "https://github.com/jayanez/agent-braid/issues/630",
+      "milestone": 22,
+      "state": "open"
+    },
+    {
+      "key": "SPEC-049/T009",
+      "kind": "task",
+      "number": 631,
+      "id": 5949809638,
+      "node_id": "I_kwDOUkDWXM8AAAABYqLj5g",
+      "url": "https://github.com/jayanez/agent-braid/issues/631",
+      "milestone": 22,
+      "state": "open"
+    },
+    {
+      "key": "SPEC-049/T010",
+      "kind": "task",
+      "number": 632,
+      "id": 5949809938,
+      "node_id": "I_kwDOUkDWXM8AAAABYqLlEg",
+      "url": "https://github.com/jayanez/agent-braid/issues/632",
+      "milestone": 22,
+      "state": "open"
+    },
+    {
+      "key": "SPEC-049/T011",
+      "kind": "task",
+      "number": 638,
+      "id": 5950179812,
+      "node_id": "I_kwDOUkDWXM8AAAABYqiJ5A",
+      "url": "https://github.com/jayanez/agent-braid/issues/638",
+      "milestone": 22,
+      "state": "open"
+    },
+    {
+      "key": "SPEC-049/T012",
+      "kind": "task",
+      "number": 639,
+      "id": 5950180035,
+      "node_id": "I_kwDOUkDWXM8AAAABYqiKww",
+      "url": "https://github.com/jayanez/agent-braid/issues/639",
+      "milestone": 22,
+      "state": "open"
+    },
+    {
+      "key": "SPEC-049/T013",
+      "kind": "task",
+      "number": 640,
+      "id": 5950180246,
+      "node_id": "I_kwDOUkDWXM8AAAABYqiLlg",
+      "url": "https://github.com/jayanez/agent-braid/issues/640",
+      "milestone": 22,
+      "state": "open"
+    },
+    {
+      "key": "SPEC-050",
+      "kind": "spec",
+      "number": 641,
+      "id": 5950180429,
+      "node_id": "I_kwDOUkDWXM8AAAABYqiMTQ",
+      "url": "https://github.com/jayanez/agent-braid/issues/641",
+      "milestone": 23,
+      "state": "open"
+    },
+    {
+      "key": "SPEC-050/T001",
+      "kind": "task",
+      "number": 642,
+      "id": 5950180694,
+      "node_id": "I_kwDOUkDWXM8AAAABYqiNVg",
+      "url": "https://github.com/jayanez/agent-braid/issues/642",
+      "milestone": 23,
+      "state": "open"
+    },
+    {
+      "key": "SPEC-050/T002",
+      "kind": "task",
+      "number": 643,
+      "id": 5950180929,
+      "node_id": "I_kwDOUkDWXM8AAAABYqiOQQ",
+      "url": "https://github.com/jayanez/agent-braid/issues/643",
+      "milestone": 23,
+      "state": "open"
+    },
+    {
+      "key": "SPEC-050/T003",
+      "kind": "task",
+      "number": 644,
+      "id": 5950181188,
+      "node_id": "I_kwDOUkDWXM8AAAABYqiPRA",
+      "url": "https://github.com/jayanez/agent-braid/issues/644",
+      "milestone": 23,
+      "state": "open"
+    },
+    {
+      "key": "SPEC-050/T004",
+      "kind": "task",
+      "number": 645,
+      "id": 5950181442,
+      "node_id": "I_kwDOUkDWXM8AAAABYqiQQg",
+      "url": "https://github.com/jayanez/agent-braid/issues/645",
+      "milestone": 23,
+      "state": "open"
+    },
+    {
+      "key": "SPEC-050/T005",
+      "kind": "task",
+      "number": 646,
+      "id": 5950181698,
+      "node_id": "I_kwDOUkDWXM8AAAABYqiRQg",
+      "url": "https://github.com/jayanez/agent-braid/issues/646",
+      "milestone": 23,
+      "state": "open"
+    },
+    {
+      "key": "SPEC-050/T006",
+      "kind": "task",
+      "number": 647,
+      "id": 5950181861,
+      "node_id": "I_kwDOUkDWXM8AAAABYqiR5Q",
+      "url": "https://github.com/jayanez/agent-braid/issues/647",
+      "milestone": 23,
+      "state": "open"
+    },
+    {
+      "key": "SPEC-050/T007",
+      "kind": "task",
+      "number": 648,
+      "id": 5950182117,
+      "node_id": "I_kwDOUkDWXM8AAAABYqiS5Q",
+      "url": "https://github.com/jayanez/agent-braid/issues/648",
+      "milestone": 23,
+      "state": "open"
+    },
+    {
+      "key": "SPEC-050/T008",
+      "kind": "task",
+      "number": 649,
+      "id": 5950182401,
+      "node_id": "I_kwDOUkDWXM8AAAABYqiUAQ",
+      "url": "https://github.com/jayanez/agent-braid/issues/649",
+      "milestone": 23,
+      "state": "open"
+    },
+    {
+      "key": "SPEC-050/T009",
+      "kind": "task",
+      "number": 650,
+      "id": 5950182660,
+      "node_id": "I_kwDOUkDWXM8AAAABYqiVBA",
+      "url": "https://github.com/jayanez/agent-braid/issues/650",
+      "milestone": 23,
+      "state": "open"
+    },
+    {
+      "key": "SPEC-050/T010",
+      "kind": "task",
+      "number": 651,
+      "id": 5950182938,
+      "node_id": "I_kwDOUkDWXM8AAAABYqiWGg",
+      "url": "https://github.com/jayanez/agent-braid/issues/651",
+      "milestone": 23,
+      "state": "open"
+    },
+    {
+      "key": "SPEC-050/T011",
+      "kind": "task",
+      "number": 652,
+      "id": 5950183236,
+      "node_id": "I_kwDOUkDWXM8AAAABYqiXRA",
+      "url": "https://github.com/jayanez/agent-braid/issues/652",
+      "milestone": 23,
+      "state": "open"
+    },
+    {
+      "key": "SPEC-050/T012",
+      "kind": "task",
+      "number": 653,
+      "id": 5950183430,
+      "node_id": "I_kwDOUkDWXM8AAAABYqiYBg",
+      "url": "https://github.com/jayanez/agent-braid/issues/653",
+      "milestone": 23,
+      "state": "open"
+    }
+  ],
+  "subissue_links": [
+    {
+      "parent": "SPEC-048",
+      "task": "SPEC-048/T001",
+      "parent_number": 611,
+      "task_number": 612
+    },
+    {
+      "parent": "SPEC-048",
+      "task": "SPEC-048/T002",
+      "parent_number": 611,
+      "task_number": 613
+    },
+    {
+      "parent": "SPEC-048",
+      "task": "SPEC-048/T003",
+      "parent_number": 611,
+      "task_number": 614
+    },
+    {
+      "parent": "SPEC-048",
+      "task": "SPEC-048/T004",
+      "parent_number": 611,
+      "task_number": 615
+    },
+    {
+      "parent": "SPEC-048",
+      "task": "SPEC-048/T005",
+      "parent_number": 611,
+      "task_number": 616
+    },
+    {
+      "parent": "SPEC-048",
+      "task": "SPEC-048/T006",
+      "parent_number": 611,
+      "task_number": 617
+    },
+    {
+      "parent": "SPEC-048",
+      "task": "SPEC-048/T007",
+      "parent_number": 611,
+      "task_number": 618
+    },
+    {
+      "parent": "SPEC-048",
+      "task": "SPEC-048/T008",
+      "parent_number": 611,
+      "task_number": 619
+    },
+    {
+      "parent": "SPEC-048",
+      "task": "SPEC-048/T009",
+      "parent_number": 611,
+      "task_number": 620
+    },
+    {
+      "parent": "SPEC-048",
+      "task": "SPEC-048/T010",
+      "parent_number": 611,
+      "task_number": 621
+    },
+    {
+      "parent": "SPEC-049",
+      "task": "SPEC-049/T001",
+      "parent_number": 622,
+      "task_number": 623
+    },
+    {
+      "parent": "SPEC-049",
+      "task": "SPEC-049/T002",
+      "parent_number": 622,
+      "task_number": 624
+    },
+    {
+      "parent": "SPEC-049",
+      "task": "SPEC-049/T003",
+      "parent_number": 622,
+      "task_number": 625
+    },
+    {
+      "parent": "SPEC-049",
+      "task": "SPEC-049/T004",
+      "parent_number": 622,
+      "task_number": 626
+    },
+    {
+      "parent": "SPEC-049",
+      "task": "SPEC-049/T005",
+      "parent_number": 622,
+      "task_number": 627
+    },
+    {
+      "parent": "SPEC-049",
+      "task": "SPEC-049/T006",
+      "parent_number": 622,
+      "task_number": 628
+    },
+    {
+      "parent": "SPEC-049",
+      "task": "SPEC-049/T007",
+      "parent_number": 622,
+      "task_number": 629
+    },
+    {
+      "parent": "SPEC-049",
+      "task": "SPEC-049/T008",
+      "parent_number": 622,
+      "task_number": 630
+    },
+    {
+      "parent": "SPEC-049",
+      "task": "SPEC-049/T009",
+      "parent_number": 622,
+      "task_number": 631
+    },
+    {
+      "parent": "SPEC-049",
+      "task": "SPEC-049/T010",
+      "parent_number": 622,
+      "task_number": 632
+    },
+    {
+      "parent": "SPEC-048",
+      "task": "SPEC-048/T011",
+      "parent_number": 611,
+      "task_number": 633
+    },
+    {
+      "parent": "SPEC-048",
+      "task": "SPEC-048/T012",
+      "parent_number": 611,
+      "task_number": 634
+    },
+    {
+      "parent": "SPEC-048",
+      "task": "SPEC-048/T013",
+      "parent_number": 611,
+      "task_number": 635
+    },
+    {
+      "parent": "SPEC-048",
+      "task": "SPEC-048/T014",
+      "parent_number": 611,
+      "task_number": 636
+    },
+    {
+      "parent": "SPEC-048",
+      "task": "SPEC-048/T015",
+      "parent_number": 611,
+      "task_number": 637
+    },
+    {
+      "parent": "SPEC-049",
+      "task": "SPEC-049/T011",
+      "parent_number": 622,
+      "task_number": 638
+    },
+    {
+      "parent": "SPEC-049",
+      "task": "SPEC-049/T012",
+      "parent_number": 622,
+      "task_number": 639
+    },
+    {
+      "parent": "SPEC-049",
+      "task": "SPEC-049/T013",
+      "parent_number": 622,
+      "task_number": 640
+    },
+    {
+      "parent": "SPEC-050",
+      "task": "SPEC-050/T001",
+      "parent_number": 641,
+      "task_number": 642
+    },
+    {
+      "parent": "SPEC-050",
+      "task": "SPEC-050/T002",
+      "parent_number": 641,
+      "task_number": 643
+    },
+    {
+      "parent": "SPEC-050",
+      "task": "SPEC-050/T003",
+      "parent_number": 641,
+      "task_number": 644
+    },
+    {
+      "parent": "SPEC-050",
+      "task": "SPEC-050/T004",
+      "parent_number": 641,
+      "task_number": 645
+    },
+    {
+      "parent": "SPEC-050",
+      "task": "SPEC-050/T005",
+      "parent_number": 641,
+      "task_number": 646
+    },
+    {
+      "parent": "SPEC-050",
+      "task": "SPEC-050/T006",
+      "parent_number": 641,
+      "task_number": 647
+    },
+    {
+      "parent": "SPEC-050",
+      "task": "SPEC-050/T007",
+      "parent_number": 641,
+      "task_number": 648
+    },
+    {
+      "parent": "SPEC-050",
+      "task": "SPEC-050/T008",
+      "parent_number": 641,
+      "task_number": 649
+    },
+    {
+      "parent": "SPEC-050",
+      "task": "SPEC-050/T009",
+      "parent_number": 641,
+      "task_number": 650
+    },
+    {
+      "parent": "SPEC-050",
+      "task": "SPEC-050/T010",
+      "parent_number": 641,
+      "task_number": 651
+    },
+    {
+      "parent": "SPEC-050",
+      "task": "SPEC-050/T011",
+      "parent_number": 641,
+      "task_number": 652
+    },
+    {
+      "parent": "SPEC-050",
+      "task": "SPEC-050/T012",
+      "parent_number": 641,
+      "task_number": 653
+    }
+  ],
+  "approval_boundary": "Owner authorized this project milestone/issue/task planning publication; no execution or capability acceptance.",
+  "project": {
+    "url": "https://github.com/users/jayanez/projects/6",
+    "id": "PVT_kwHOAHdhhs4BkbNo",
+    "items": [
+      {
+        "key": "SPEC-048",
+        "item_id": "PVTI_lAHOAHdhhs4BkbNozhCPIOk",
+        "status": "Review pending"
+      },
+      {
+        "key": "SPEC-048/T001",
+        "item_id": "PVTI_lAHOAHdhhs4BkbNozhCPIP4",
+        "status": "Todo"
+      },
+      {
+        "key": "SPEC-048/T002",
+        "item_id": "PVTI_lAHOAHdhhs4BkbNozhCPIQ0",
+        "status": "Todo"
+      },
+      {
+        "key": "SPEC-048/T003",
+        "item_id": "PVTI_lAHOAHdhhs4BkbNozhCPIRo",
+        "status": "Todo"
+      },
+      {
+        "key": "SPEC-048/T004",
+        "item_id": "PVTI_lAHOAHdhhs4BkbNozhCPIS8",
+        "status": "Todo"
+      },
+      {
+        "key": "SPEC-048/T005",
+        "item_id": "PVTI_lAHOAHdhhs4BkbNozhCPIT8",
+        "status": "Todo"
+      },
+      {
+        "key": "SPEC-048/T006",
+        "item_id": "PVTI_lAHOAHdhhs4BkbNozhCPIVU",
+        "status": "Todo"
+      },
+      {
+        "key": "SPEC-048/T007",
+        "item_id": "PVTI_lAHOAHdhhs4BkbNozhCPIWc",
+        "status": "Todo"
+      },
+      {
+        "key": "SPEC-048/T008",
+        "item_id": "PVTI_lAHOAHdhhs4BkbNozhCPIW8",
+        "status": "Todo"
+      },
+      {
+        "key": "SPEC-048/T009",
+        "item_id": "PVTI_lAHOAHdhhs4BkbNozhCPIY4",
+        "status": "Todo"
+      },
+      {
+        "key": "SPEC-048/T010",
+        "item_id": "PVTI_lAHOAHdhhs4BkbNozhCPIZU",
+        "status": "Todo"
+      },
+      {
+        "key": "SPEC-048/T011",
+        "item_id": "PVTI_lAHOAHdhhs4BkbNozhCPfPs",
+        "status": "Todo"
+      },
+      {
+        "key": "SPEC-048/T012",
+        "item_id": "PVTI_lAHOAHdhhs4BkbNozhCPfQ8",
+        "status": "Todo"
+      },
+      {
+        "key": "SPEC-048/T013",
+        "item_id": "PVTI_lAHOAHdhhs4BkbNozhCPfRI",
+        "status": "Todo"
+      },
+      {
+        "key": "SPEC-048/T014",
+        "item_id": "PVTI_lAHOAHdhhs4BkbNozhCPfSM",
+        "status": "Todo"
+      },
+      {
+        "key": "SPEC-048/T015",
+        "item_id": "PVTI_lAHOAHdhhs4BkbNozhCPfTA",
+        "status": "Todo"
+      },
+      {
+        "key": "SPEC-049",
+        "item_id": "PVTI_lAHOAHdhhs4BkbNozhCPIaM",
+        "status": "Review pending"
+      },
+      {
+        "key": "SPEC-049/T001",
+        "item_id": "PVTI_lAHOAHdhhs4BkbNozhCPIb0",
+        "status": "Todo"
+      },
+      {
+        "key": "SPEC-049/T002",
+        "item_id": "PVTI_lAHOAHdhhs4BkbNozhCPIcI",
+        "status": "Todo"
+      },
+      {
+        "key": "SPEC-049/T003",
+        "item_id": "PVTI_lAHOAHdhhs4BkbNozhCPIdQ",
+        "status": "Todo"
+      },
+      {
+        "key": "SPEC-049/T004",
+        "item_id": "PVTI_lAHOAHdhhs4BkbNozhCPIeE",
+        "status": "Todo"
+      },
+      {
+        "key": "SPEC-049/T005",
+        "item_id": "PVTI_lAHOAHdhhs4BkbNozhCPIfQ",
+        "status": "Todo"
+      },
+      {
+        "key": "SPEC-049/T006",
+        "item_id": "PVTI_lAHOAHdhhs4BkbNozhCPIgc",
+        "status": "Todo"
+      },
+      {
+        "key": "SPEC-049/T007",
+        "item_id": "PVTI_lAHOAHdhhs4BkbNozhCPIgw",
+        "status": "Todo"
+      },
+      {
+        "key": "SPEC-049/T008",
+        "item_id": "PVTI_lAHOAHdhhs4BkbNozhCPIhY",
+        "status": "Todo"
+      },
+      {
+        "key": "SPEC-049/T009",
+        "item_id": "PVTI_lAHOAHdhhs4BkbNozhCPIik",
+        "status": "Todo"
+      },
+      {
+        "key": "SPEC-049/T010",
+        "item_id": "PVTI_lAHOAHdhhs4BkbNozhCPIjk",
+        "status": "Todo"
+      },
+      {
+        "key": "SPEC-049/T011",
+        "item_id": "PVTI_lAHOAHdhhs4BkbNozhCPfZQ",
+        "status": "Todo"
+      },
+      {
+        "key": "SPEC-049/T012",
+        "item_id": "PVTI_lAHOAHdhhs4BkbNozhCPfaE",
+        "status": "Todo"
+      },
+      {
+        "key": "SPEC-049/T013",
+        "item_id": "PVTI_lAHOAHdhhs4BkbNozhCPfaw",
+        "status": "Todo"
+      },
+      {
+        "key": "SPEC-050",
+        "item_id": "PVTI_lAHOAHdhhs4BkbNozhCPfck",
+        "status": "Review pending"
+      },
+      {
+        "key": "SPEC-050/T001",
+        "item_id": "PVTI_lAHOAHdhhs4BkbNozhCPfdg",
+        "status": "Todo"
+      },
+      {
+        "key": "SPEC-050/T002",
+        "item_id": "PVTI_lAHOAHdhhs4BkbNozhCPfec",
+        "status": "Todo"
+      },
+      {
+        "key": "SPEC-050/T003",
+        "item_id": "PVTI_lAHOAHdhhs4BkbNozhCPffI",
+        "status": "Todo"
+      },
+      {
+        "key": "SPEC-050/T004",
+        "item_id": "PVTI_lAHOAHdhhs4BkbNozhCPfgg",
+        "status": "Todo"
+      },
+      {
+        "key": "SPEC-050/T005",
+        "item_id": "PVTI_lAHOAHdhhs4BkbNozhCPfhY",
+        "status": "Todo"
+      },
+      {
+        "key": "SPEC-050/T006",
+        "item_id": "PVTI_lAHOAHdhhs4BkbNozhCPfh8",
+        "status": "Todo"
+      },
+      {
+        "key": "SPEC-050/T007",
+        "item_id": "PVTI_lAHOAHdhhs4BkbNozhCPfjI",
+        "status": "Todo"
+      },
+      {
+        "key": "SPEC-050/T008",
+        "item_id": "PVTI_lAHOAHdhhs4BkbNozhCPfj8",
+        "status": "Todo"
+      },
+      {
+        "key": "SPEC-050/T009",
+        "item_id": "PVTI_lAHOAHdhhs4BkbNozhCPflY",
+        "status": "Todo"
+      },
+      {
+        "key": "SPEC-050/T010",
+        "item_id": "PVTI_lAHOAHdhhs4BkbNozhCPflw",
+        "status": "Todo"
+      },
+      {
+        "key": "SPEC-050/T011",
+        "item_id": "PVTI_lAHOAHdhhs4BkbNozhCPfnA",
+        "status": "Todo"
+      },
+      {
+        "key": "SPEC-050/T012",
+        "item_id": "PVTI_lAHOAHdhhs4BkbNozhCPfn0",
+        "status": "Todo"
+      }
+    ],
+    "verified": true,
+    "method": "Existing authenticated browser updated the three parent statuses; read-only GraphQL verified all 43 items. Existing CLI token lacks project-write scope; scopes were not changed."
+  },
+  "revision_history": [
+    {
+      "revision": 1,
+      "candidate": "0ae6d030e64d25d466f342c4d0a73ff1260f9f24",
+      "path": "specs/048-harness-variant-laboratory/delivery/publication.json",
+      "sha256": "39e3b66b892445a6e211493c1a8abe6d1819eb204dd5944e267a5dc3bb8c8d17",
+      "counts": {
+        "milestones": 2,
+        "issues": 22,
+        "tasks": 20
+      },
+      "boundary": "Original compact planning publication; superseded by owner-requested coverage expansion and Braid Harness naming."
+    }
+  ],
+  "revision": 2,
+  "readback": {
+    "at": "2026-10-20T21:48:16.259695+00:00",
+    "issues": 43,
+    "subissue_links": 40,
+    "milestones": 3,
+    "project_items": 43,
+    "result": "verified",
+    "boundary": "Readback proves tracking state only; all implementation tasks remain open."
+  }
+}
