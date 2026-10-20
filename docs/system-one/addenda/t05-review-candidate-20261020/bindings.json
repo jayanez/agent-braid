@@ -1,0 +1,33 @@
+{
+  "id": "S1-DDP-T05-REVIEW-CANDIDATE-20261020",
+  "checkedAtUTC": "2026-10-20T07:24:11.417580+00:00",
+  "candidate": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-verified-core",
+  "candidateSourceBindings": {
+    "agent_braid/system_one_verified_selection.py": "109a182c1762b55acdb2575488ab1b573ca15d3e5dec760fec30621c164a6935",
+    "tests/test_system_one_verified_selection.py": "f5c8dd0e48a74f338b813d1a56ba66c650beb94123add3735c356c179755313e"
+  },
+  "checks": {
+    "actualSourceHashes": 2,
+    "originalLogHashes": 2,
+    "testExecutionHere": false,
+    "completedReviewReceived": false
+  },
+  "findingStatus": "T05-FIND-001 remains open; row64 live-latch variant pending",
+  "files": [
+    {
+      "path": "README.md",
+      "sha256": "d1e40e20b9a51943506a82a138b812553d64f0b671b4a0ffb441beb3ad28710c",
+      "bytes": 2655
+    },
+    {
+      "path": "log-capsules.json",
+      "sha256": "e519b9f033901398fdc369dd35c6f276c6b1c8283df3d6e09399943b9de92f76",
+      "bytes": 7773
+    },
+    {
+      "path": "worker-candidate.json",
+      "sha256": "20f175eab136769ec41c1cae898db00a74edf73d774eed3c24c09ccb3bf98fe4",
+      "bytes": 873
+    }
+  ]
+}

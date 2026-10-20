@@ -81,3 +81,5 @@ T05 quality sequence is now recorded in the [context/digest handoff](addenda/t05
 Subsequent T05 directions in the [additive admission/refusal record](addenda/t05-failure-latch-20261020/admission-and-late-refusal.md) reject zero task.goal blob IDs at wire admission and retain already-established pins in late refusals while clearing semantic selection/evidence. Tests/final pins/review remain pending. Historical shared-worktrees.log blank EOF is disclosed and original bytes preserved, not normalized.
 
 [T05-PACKAGING-001](addenda/t05-whitespace-preservation-20261020.md) records the one-log attributes exception after raw-log diff-check exit2, unchanged evidence and subsequent exit0. It is a disclosed entry-boundary exception pending Luna review, not a semantic fix or broad gate suppression.
+
+[Source-bound T05 review candidate](addenda/t05-review-candidate-20261020/README.md) now records28passes/9.780s, three directed mutation detections and checked source/test pins. Luna is reported active, not complete. The64-row live-latch variant remains pending even though final close refuses; T05-FIND-001 is not closed and profiles have not started at that receipt.
