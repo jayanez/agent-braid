@@ -1,0 +1,73 @@
+<!-- SPDX-License-Identifier: CC-BY-SA-4.0 -->
+# DDP-T08 — bounded verified-plan delivery result
+
+Status: local engineering delivery record, not adoption, product publication or activation. Canonical mapping: DDP-REQ-08 / DDP-SC-08; SPEC-033/T009, REQ-002/REQ-006 and SC-002/SC-006. The owner requested continuation after the verified T07 handoff. This increment owns this document and the [pending-gates matrix](../033-system-one-promotion/decision-delivery-gates.md); no runtime, historical task checkbox, assurance, schema, model or policy is changed.
+
+## Delivered capability and boundary
+
+Agent Braid now has a local, internal, opt-in deterministic verified-plan composition path. It acquires observed effects from owned synthetic Git repositories, interprets exact symbolic/controlled EN/ES text, evaluates all offered finite plans, chooses the lexically first minimum-operation-count valid plan, and carries complete bound evidence through Core API, an actual private ToolingService and a real stdlib MCP client subprocess. A model, Laya or Jev installation is not required by this path. It is not a general semantic predictor or a learned replacement for all typed boolean/choice/score decisions.
+
+The original `decision-stdlib-v1` contract and synthetic reference backend remain separate and unchanged. Deterministic eligibility is not calibrated probability; no verified-plan record is converted into a legacy `DecisionResponse`. Producer selection, independent consumer reconstruction, native replay and read-only native preparation are different checks. A prepared manifest is not execution authority. Every advisory result retains `executionAuthorization: false`; no execution, recovery, grant or persistent-run capability is exposed by this lane.
+
+### Exact supported domain
+
+The current domain is `t024-eof-context-v1`, IR `t024-literal-program-v1`, grammar `t024-text-v1`, observation `t024-path-blob-projection-v1`, implementation `t024-eof-verifier-extracted-v1`. Wire formats include `s1-verified-request-v1`, `s1-acquired-snapshot-v1`, `s1-verified-plan-v1` and `s1-verified-consumer-proposal-v1`; see the exact [producer contract](contracts/verified-plan-v1.md) and [consumer contract](../031-system-one-integration/contracts/verified-plan-consumer-v1.md), not this synopsis, for every required field. The frozen contract's initial "not implemented" wording describes its drafting observation; later implementation receipts below establish only their bounded internal route, without adopting a public schema.
+
+- Explicit immutable base/source commits in a coordinator-owned fixture root carrying `.owned-native-fixture`; a marker alone does not grant access. No private histories, arbitrary repositories or remote source URLs are admitted.
+- LF UTF-8 text, regular tracked patch paths matching the bounded flat `.txt` vocabulary, 2–4 operations, at most 8 files, 2 paths per operation, 2 hunks per path and 128 patch lines per hunk. Initial/result file limits are 64/128 lines and 4,096/8,192 bytes. These bounds are not a general source-code editor domain.
+- Exactly four offered options, with three plans of 0–6 operation IDs and one explicit null defer option. Repeated operations and empty plans are evaluated semantically. Unsupported/ambiguous/incomplete observations refuse; unknown is never completed by assumption.
+- Retained trailing context permits a terminal-looking hunk to match before the current EOF. A last-line edit without retained trailing context remains EOF-constrained. BOF and literal diff prefixes retain their own checks; multi-file steps are staged atomically in the finite verifier.
+- Exact EN/ES grammar round trips and equivalence to acquired state, not unrestricted prose understanding. Related translations/views are not independent observations.
+
+Answered means a complete eligible offered plan was selected; semantic-defer means no offered action plan reaches the goal; refused means technical/domain/budget failure. No partial result is published as success. Equal-cost valid options remain eligible, while policy chooses the first ASCII identifier. Consumer proposals are usable only inside the original live request context; a rehashed or persisted proposal cannot manufacture freshness or an admission slot.
+
+## Components and trustworthy context
+
+| Component | Current implementation | Obtained boundary |
+|---|---|---|
+| IR, language and verifier | `agent_braid/system_one_verified_ir.py` | Literal parsing, step preconditions/effects/goal, EOF and complete offered-plan eligibility |
+| Acquisition | `agent_braid/system_one_verified_acquisition.py` | Local observed blobs/hunks outrank declarations; complete observation or refusal |
+| Static identity | `agent_braid/system_one_verified_registry.py` | Allowlisted exact verifier source and manifest; no dynamic plugin or registry registration |
+| Selection/context | `agent_braid/system_one_verified_selection.py` | Raw admission, frozen inputs/evidence, shared counters, cancellation/deadlines and immutable publication |
+| Core consumer | `agent_braid/system_one_verified_consumers.py` | Exact producer body, reacquisition, whole-tree reconstruction, native replay and full prepared-body validation |
+| Service and stdio | `agent_braid/system_one_verified_tooling.py`, `agent_braid/system_one_verified_stdio.py` | Actual private service evidence/chunks; real child client with parent-owned Git/native work and observed termination |
+
+Pure extracted/selection imports remain research-free. Integrated consumers inherit the pure-stdlib `research.lab.model` parser through existing `git_runtime`/`mcp_runtime` imports. The checked integrated closure allows exactly `research`, `research.lab` and `research.lab.model`; it is not described as research-free. Optional ML/SDK imports and external effects are guarded in fresh-process compatibility controls. Packaging must retain this parser dependency unless a separately reviewed extraction removes it; a base-source import test is not installed-wheel parity.
+
+One trusted request owns the original monotonic start, budgets, cancellation latch, scratch and complete evidence bodies. Reacquisition/reverification and every native/transport step charge the same aggregate allowance; no wire-supplied context restarts it. Snapshot digest binds the inner observation; the snapshot evidence reference binds the full outer acquired body. Consumers retain the exact producer body used in the proposal. A cancelled/expired or unsuccessfully cleaned result cannot be republished as answered. Unknown worker termination retains scratch and admission ownership for explicit local investigation; it is not automatically retried.
+
+## Candidate-bound evidence chain
+
+The local checkout is `agent-braid-verified-core`, branch `feat/verified-plan-core`, baseline HEAD `fe6d25b3d9fb989c230aa11779b6a51d494d7a4e` plus preserved WIP. HEAD alone does not identify the implementation; packet bindings and archives do. Research and previous packets remain unchanged.
+
+| Batch | Exact packet SHA-256 | Scope |
+|---|---|---|
+| [T02–T04](../029-system-one-evaluation/evidence/ddp-t02-t04/packet.json) | `a22a42405e9b0f83e2dd87ab329a99545b8eff3ca249e30bec242c6020c4c871` | Extracted components and join; 51 bindings, 18 archived sources |
+| [T05](../029-system-one-evaluation/evidence/ddp-t05/packet.json) | `1b9f67d77da004678808f1620e0dfaf9a4e1a113eb12a02f146b0f7a058bbcbc` | Typed result/live request context; 72 historical bindings, 22 archived sources |
+| [T06 Core](../029-system-one-evaluation/evidence/ddp-t06-core/packet.json) | `2cf7048ee1d2fd596c87a60e13a86570870f7d3e549d95e05d192488ae25b9f0` | Controlled Core consumer; 97 historical bindings, 28 archived sources |
+| [T06 transport](../029-system-one-evaluation/evidence/ddp-t06-transport/packet.json) | `8331345f3d08c5e8b5799c27ac661f385ad14bce318b92fcbbd39a8336e5061e` | Actual service/stdio controlled paths; 88 bindings, 34 archived sources |
+| [T07](../029-system-one-evaluation/evidence/ddp-t07/packet.json) | `27948e6669a4f360e6bc4eacd542b200d6f882d6bcb824aa23aa5560a08299d8` | Independent bounded AI review and conformance; 89 bindings, 38 archived sources, 48 raw receipt files/representations |
+
+T07's current source archive SHA-256 is `82dec57a0c36bed27e4c601a5de75111d8a8a642b900b7f385c4b708da19d95c`. Verifier source pin is `a0378c34b805387b0518cf6ebc3da05599976cb7f037d5f140c2571c8f362ea3`. Original T05 selection and two Core source bindings are superseded by T06 transport; their archived bytes and evidence remain historical and intact. Never compare those old source hashes to current bytes to infer corruption or silently refresh the old packet. Core's historical raw-representation scalar discrepancy (63 versus 65 files) stays disclosed in its later documentary reconciliation.
+
+The [T07 report](../029-system-one-evaluation/addenda/ddp-t07-implementation.md) retains actual failures, invocation corrections, guard controls and independent review boundaries. Each T07 quick/PR profile ran 2,084 tests: 2,065 passed and 19 skipped, exit0, on 2,474 identical input hashes with all 2,471 prior files intact. Four new compatibility tests passed, and three guard injections were detected without changing product code or loading a model. The V01–V32 map covers 32 predicate families through 28 distinct tests observed passed in both profiles; it is not literal replay of archived vectors or a claim about every alternative mutation/reason branch. Suites, translations and captures overlap and are not added as independent observations.
+
+Luna Latest performed the bounded independent source/contract review and scoped test deltas; no actionable P1/P2 remained in that reviewed scope. The reviewer execution record contains **five tool-result transcriptions**, not complete saved raw stdout/stderr. AI review is not human/Claude/scientific acceptance. T08's documentary validation will be recorded separately in its local delivery receipt; the earlier passing T07 profiles do not certify new T08 bytes.
+
+## Observed cost and limits
+
+External spend for the local delivery is EUR0; no models, installs, experimental network, private-history intake, training or calibration ran in this lane. CPU hardware observed: Apple M3 Pro, existing Python3.12.13. These statements do not price future deployments or assert measured energy/cost benefit.
+
+T06 transport's final serial capture passed 17 tests and retained 24 related controls: 12 expected answers with 0 accepted errors out of12, four correct deferrals and eight expected refusals, with 12/12 paired EN/ES status/reason matches. This mixed population is not workload coverage, independent accuracy or the <=1% accepted-error / >=50% coverage screening result.
+
+For six positive controls per consumer, descriptive medians were: decision2.845/2.877ms, acquisition530.411/542.426ms and entry-to-result3,242.666/3,353.722ms for service/stdio. Native preparation occurrence0 inclusive was710.377/853.544ms. Stdio transportEvidence includes hosted native preparation; nested rows cannot be added as exclusive phases or treated as isolated wire overhead. No causal performance comparison follows. Sampled process-subtree RSS peaked at75,251,712bytes over287 observations at0.2s; sampling is not a hard cap, complete process census or performance qualification.
+
+Request maxima are128 cumulative hunk applications,512 Git commands,16MiB aggregate captured output,8MiB per-command output and64MiB scratch, with explicit nondefault cooperative time budgets. Native local caps may be tighter and remain active. Private stdio further limits frames to1MiB, incoming frame count144, total wire8MiB, stderr64KiB, chunks128 and complete prepared bodies1MiB. Cleanup margin is reserved before work. OS/filesystem operations and TERM/KILL/reap attempts do not create a universal hard time/RSS guarantee. Refusal under tightened budgets is a legitimate result.
+
+## Continuity, rollback and next delivery
+
+The useful result is a reusable deterministic internal verification path within its admitted patch domain. Consumers can opt out by not constructing these contexts; defaults remain unchanged. Do not claim an implemented production feature flag, promotion registry or automatic rollout/rollback service. In-flight contexts keep their sealed identities and must finish cleanup; unknown termination keeps resources/admission retained until locally investigated. Historical evidence is never deleted to roll back a capability.
+
+The [gate matrix](../033-system-one-promotion/decision-delivery-gates.md) is the decision record for what may be claimed next. No historical task is automatically checked, no issue/milestone is closed and no model is admitted. A documentary PR is not publication of the local product sources. The separate T07 documentary PR #609 was observed open with exact-head validate/tracking successful before T08 authoring; its integration needs separate authority and is not a dependency for preparing this local record.
+
+Recommended next bounded implementation choices, each requiring its own explicit assignment, are: prepare the product-source integration/migration candidate against current develop while preserving these archives; check installed-package/offline parser dependency and selected actual host compatibility; then register permissioned controlled workload utility evidence before adoption. Choose a concrete gap from those checks before broadening domains or tuning wording. Existing S1.x tasks retain ownership of broader schema/retrieval/lifecycle and learned branches. DDP-T09 remains blocked on separate source/label/research/budget authorization, not on finding a favorable model result. Training, new calibration, human review and activation remain pending.

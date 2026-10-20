@@ -1,0 +1,26 @@
+{
+  "task": "DDP-T08 / SPEC-033T009",
+  "authorization": "Direct owner continuation after T07 delivery, bounded local next documentary task from frozen handoff",
+  "ownership": [
+    "specs/028-system-one-core/decision-delivery-result.md",
+    "specs/033-system-one-promotion/decision-delivery-gates.md"
+  ],
+  "noDelegation": true,
+  "parentOwnsImplementation": true,
+  "preflight": {
+    "exitCode": 0,
+    "logSHA256": "b28f0f3bd337a6cae29938ed6ec99ef7ecf3c0005cc38370479d91ec923e04ac",
+    "prerequisites033ExitCode": 0
+  },
+  "dependencyT07PacketSHA256": "27948e6669a4f360e6bc4eacd542b200d6f882d6bcb824aa23aa5560a08299d8",
+  "limits": [
+    "No runtime/code/API/schema/model/policy changes",
+    "No source publication or merge/issue/tracking permission inferred",
+    "No assurance refresh or historical task checkbox changes",
+    "No studies/models/downloads/training/calibration/human review/data intake/activation"
+  ],
+  "ownedHashes": {
+    "specs/028-system-one-core/decision-delivery-result.md": "d1d5867c5656c63992ee33fcd8cd6eea0d3e1a8c54a9d0f3ec44e782dabc399d",
+    "specs/033-system-one-promotion/decision-delivery-gates.md": "0b4c9bc00addeb9b7ec5fe57ac7df0f9461c10f408128016cdcc8ba75cfea4a6"
+  }
+}

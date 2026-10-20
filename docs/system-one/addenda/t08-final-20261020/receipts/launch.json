@@ -1,0 +1,18 @@
+{
+  "pid": 36773,
+  "startedAtUTC": "2026-10-20T14:29:40.562218+00:00",
+  "command": [
+    "/Users/juanyanez/Repos/Personal/agent-braid-system-one/.venv-speckit/bin/python",
+    "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/outputs/ddp-t08-20261020/supervise.py"
+  ],
+  "automaticRetry": false,
+  "expectedInputs": 2529,
+  "expectedTests": 2084,
+  "expectedSkips": 19,
+  "reason": "Repository quick planner escalates preserved complete candidate WIP and feature-assurance documents; new T08 bytes require their own stable profiles, not a repeat of T07 receipt",
+  "externalSpendEUR": 0,
+  "ownedHashes": {
+    "specs/028-system-one-core/decision-delivery-result.md": "d1d5867c5656c63992ee33fcd8cd6eea0d3e1a8c54a9d0f3ec44e782dabc399d",
+    "specs/033-system-one-promotion/decision-delivery-gates.md": "0b4c9bc00addeb9b7ec5fe57ac7df0f9461c10f408128016cdcc8ba75cfea4a6"
+  }
+}
