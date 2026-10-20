@@ -6,6 +6,8 @@ GitHub availability: [published documentary corpus and follow-up](addenda/github
 
 Publication and next authority: [documentary publication mandate and conditional T05 handoff](addenda/publication-and-t05-condition-20261020.md). T05 depends on actual quick/PR passes and intact pins; no GO is inferred.
 
+Latest T05 design direction: [request lifetime, immutable snapshots and exact digest domains](addenda/t05-context-and-digest-seams-20261020.md), pending implementation receipt/tests.
+
 Latest final package and handoff: [T02/T03/T04 packet verified; T05 assigned and active](addenda/first-batch-final-package-20261020/README.md).51 source bindings and18 archive members checked; T05 results and independent/human gates remain pending.
 
 Current component validation: [final quick/sensitive and PR receipts](addenda/component-profiles-final-20261020/README.md). Both exit0 on identical2247-file inputs:2014 cases each,19 skips,zero failures; the later final package/T05 start receipt and current documentary-head CI remain separate. The [start record](addenda/component-profiles-started-20261020.md) preserves its earlier unknown outcome.

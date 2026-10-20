@@ -67,3 +67,7 @@ The documentary corpus is published on branch docs/ddp-t01-contracts in [draft P
 ## Final first-batch package and T05 start
 
 [Final packet and T05 assignment](addenda/first-batch-final-package-20261020/README.md) resolve the earlier missing completion/GO status:51packet bindings and18archive members checked, conditional authority satisfied by the coordinator, T05 active since07:08:58Z. Product source/archive stay in the explicitly bound coordinator package; all documentary results/limits and additional source logs are mapped into the corpus. T05 delivery/tests and T06 remain pending; no acceptance/activation is implied.
+
+## T05 in-progress context/digest directions
+
+[Request context and digest seams](addenda/t05-context-and-digest-seams-20261020.md) record the coordinator-confirmed internal API, producer-versus-final snapshot immutability, exact hashed envelopes and future T06 usage/digest rule. They remain implementation directions until source-bound receipt/tests, not obtained capabilities.
