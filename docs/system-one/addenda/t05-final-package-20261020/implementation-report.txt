@@ -1,0 +1,46 @@
+<!-- SPDX-License-Identifier: CC-BY-SA-4.0 -->
+# DDP-T05 / SPEC-028T011 — Typed result and request context
+
+Internal opt-in implementation against baseline `fe6d25b3d9fb989c230aa11779b6a51d494d7a4e`. T05 composes the previously delivered finite verifier, observed acquisition and pinned registry. This additive implementation receipt supersedes only the historical T01/T02–T04 statements that T05 had not yet been implemented; those frozen design and evidence files remain unchanged. It does not adopt a public schema or expose a default API, CLI, MCP tool, native prepare operation or execution grant. T06 remains unimplemented and requires its own assignment.
+
+## Implemented behavior and traceability
+
+| Requirement and scenario | Implemented control | Obtained software evidence |
+|---|---|---|
+| VP-REQ-01 / VP-SC-01 | Exact bounded raw request admission, nested types/keys/ranges, immutable request, invalid budgets and zero goal-object IDs refused before source/scratch | `test_raw_parser_refuses_before_source_and_scratch`, `test_exact_budgets_types_keys_ranges_before_source`, `test_exact_envelope_source_and_interpretation_fields`, inclusive-byte and charged-parsing tests |
+| VP-REQ-02 / VP-SC-02 | Independently acquired source compared with EN/ES symbolic/controlled interpretation; complete frozen snapshot/IR/verifier bodies and exact digest references | Four-view actual-source test, text/declaration mismatch, rehashed-observation drift and registry-source drift tests |
+| VP-REQ-03 / VP-SC-03 | Complete finite eligibility, minimum operation count and ASCII tie break; answered, semantic-defer and refused remain distinct; no probability or authority | Wrong-goal defer, invalid-k0 selection, exact-body/decision tests; executionAuthorization is always false |
+| VP-REQ-04 / VP-SC-04 | One request-local context owns shared counters, cancellation, monotonic deadlines, stage records and cleanup; no reset on reacquisition/revalidation | Shared command/hunk budget, memoized deadline, stage equality, cancellation, caught-failure latch, row saturation and cleanup tests |
+
+The internal API is `VerifiedRequestContext` with `decide`, read-only `request`, `decision`, `evidence`, trusted `git_budget`, `checkpoint`, `remaining_ns`, `phase`, `reacquire`, `revalidate`, `close` and `publish`. `evaluate` provides convenient final-result use with automatic cleanup. Contexts are not serializable and have no global registry. Live context lifetime supports a future same-request handoff; a persisted proposal cannot recreate that trusted context. Repeated work retains the same Git budget/event, aggregate counters and enclosing deadline ends.
+
+`decide` returns an immutable producer decision while cleanup/termination may still be unknown. Cleanup then final publication occurs under the existing cancellation token publication lock before releasing ownership. Final publication is idempotent. A new final usage snapshot never changes an earlier returned producer body. A future T06 consumer must retain exactly the producer body/digest used in its proposal, revalidate within this same live context and record its own final usage; it must not substitute a later decision body under an earlier digest.
+
+`VerifiedDecision.snapshotDigest` binds the retained inner snapshot. The snapshot evidence reference instead hashes the complete outer `AcquiredSnapshot`; interpretation and verifier references hash their complete corresponding bodies. All bodies remain available in trusted context. A technical refusal clears semantic bodies/selection but retains pins already established; unknown pins remain null. Raw wire goal blob zero is outside the contract's absence/preimage exception and refuses without changing the underlying generic IR semantics.
+
+## Findings, fixes and review
+
+The initial 22-test run had two fixture-aliasing failures; the builder was corrected using independent copies, with failed logs retained. A later self-inspection found T05-FIND-001: a caught phase/checkpoint budget exception could leave stale success available. Operational failures now irreversibly latch technical refusal.
+
+Luna Latest reviewed the pinned pre-row-cap candidate and confirmed T05-FIND-002 (documentary alias T05-REVIEW-P2-001): automatic checkpoint row-cap failure left live answered/evidence state until close. Final publication already refused, so the reproduced finding was not a final-publication bypass. The fix caps operational records at 63, reserves record 64 for actual cleanup, and latches checkpoint admission failures before rethrow. The public-API regression verifies immediate live refusal, cleared bodies, blocked subsequent work, immutable prior producer and recorded cleanup. Luna then checked the exact fixed source/test pins and ran only that named regression: one passed in 0.753 seconds, with no scoped regression observed. The original review, reproduction and later disposition are separate immutable records. This is AI technical review, not pending human or scientific review and not the broader T07 review.
+
+The final focused suite passed 28 tests, zero skips, in 9.848 seconds. Three earlier in-memory mutation controls and two row-cap mutation controls each caused assertion failures without test errors; they overlap the software tests and are not independent observations. The final component composition run passed 80 tests, zero skips, in 22.932 seconds (23.028 seconds wall). Full profiles below also overlap those controls.
+
+## Stable validation
+
+| Profile | Tests | Passed | Skipped | Unit seconds | Profile wall seconds | Exit |
+|---|---:|---:|---:|---:|---:|---:|
+| quick | 2042 | 2023 | 19 | 1826.000 | 1995.731 | 0 |
+| pr | 2042 | 2023 | 19 | 1827.548 | 1997.153 | 0 |
+
+Quick escalated through the existing sensitive path rules. Both profiles used source-equivalent independent local clones, existing isolated Python 3.12 dependencies and the correct child PATH. Their 2,284 input-file hashes matched the unchanged candidate afterward. No downloads, model/provider calls or paid CI occurred. These are software validation runs, not independent reproduction of scientific results, representative-workload validation or a new measurement of decision accuracy.
+
+The prior 2,282-file capture is preserved except one explicitly justified `.gitattributes` change: only the immutable raw `ddp-t02-t04/shared-worktrees.log` permits blank EOF. Its bytes and the earlier 51-binding packet remain unchanged. The existing raw-log preservation precedent is retained; other whitespace checks stay active. The exception was recorded before profiles and inspected by Luna. No contract, T02/T03/T04 source, legacy schema, assurance snapshot or research checkout was changed. Receipt/report additions after profile completion are finalization artifacts, not modifications of the validated executable source.
+
+## Limits and next handoff
+
+Finite owned synthetic LF UTF-8 patch semantics and controlled EN/ES grammar remain the admitted domain. This is not general NLP, real-workload reliability, Laya parity, a new independent precision estimate or an execution certificate. No experimental population, reserved data or training was used. The experimental ledger is unchanged. Deadlines are cooperative; blocking filesystem/cleanup calls have no universal hard wall guarantee. Cleanup reserves opportunity and reports actual overrun/failure. `prepareNs` stays null because no native preparation is implemented. Supported useful numeric budgets and end-to-end native enforcement remain T06 acceptance work.
+
+T05 internal engineering checks are obtained. T06 should implement only its assigned consumer adapter/tests, preserving exact producer evidence, freshness, the live shared context and native authority boundaries; native expected-tree, handoff, core/service/stdio behavior and measured cleanup/termination remain pending. Training, new calibration, human review, data admission, product adoption, activation and publication of this code remain pending. EUR 0 external spend and executionAuthorization=false throughout. The separate documentary conversation maintains its own authorized corpus PR; that authorization does not publish or merge this product candidate.
+
+[Bound software packet](../../../029-system-one-evaluation/evidence/ddp-t05/packet.json). Exact sources, attempts, logs, source-bound AI review and profile receipts are bound there.

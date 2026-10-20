@@ -95,3 +95,7 @@ Subsequent T05 directions in the [additive admission/refusal record](addenda/t05
 [T05 final profile results](addenda/t05-profiles-final-20261020/README.md) now record both exit0,2042cases/19skips/zero failures each, identical2284actual inputs and2281of2282prior files intact plus the disclosed attributes exception; prior51packetbindings intact. This supersedes unknown/running profile observations only. Whole T05 awaits the final source-bound packet and repository check; no consumer/activation acceptance follows.
 
 [T05-PACKAGING-002](addenda/t05-packaging-link-failure-20261020/README.md) retains the finalizer/repository-link failure after passing profiles. Raw Luna Markdown absolute source-line link is rejected; a byte-preserving .txt representation repair is planned, without code/profile reruns. Final completion remains pending until separate repair and final binding receipts.
+
+## Final T05 documentary handoff
+
+[T05 final packet](addenda/t05-final-package-20261020/README.md) now resolves prior packaging/completion-pending observations:72bindings/22archive members/20reversible raw logs checked,2281entry files intact plus justified attrs exception, prior51packetbindings unchanged. Internal T05 engineering is delivered; all failed attempts remain mapped. Product source/archive/patch stay in the explicitly hash-bound coordinator package; documentary PR publishes only evidence/metadata/report. T06 requires a new assignment; broader review/human/science/rights/admission/promotion/activation and current-head CI/PR integration remain pending.

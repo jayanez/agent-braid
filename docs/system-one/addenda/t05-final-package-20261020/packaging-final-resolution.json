@@ -1,0 +1,171 @@
+{
+  "attempts": "Link-check failure, raw failed-test stdout whitespace, and its echoed whitespace in failure log all retained. No source, validated attribute or profile input changes; no profile reruns.",
+  "executionAuthorization": false,
+  "id": "T05-PACKAGING-FINAL",
+  "rawLogs": [
+    {
+      "bytes": 14516,
+      "decompressedHashVerified": true,
+      "original": "T05-component-join.log",
+      "originalSha256": "91828fc3eef72cc6455008140da3bbbaa831838813942b8b6a46ae28d22cbf7d",
+      "stored": "T05-component-join.log.gz",
+      "storedSha256": "e8cd7836d7f2ec7944ecc3b67494a682e736b6b4e4ba0e3617179bbe9528508c"
+    },
+    {
+      "bytes": 5395,
+      "decompressedHashVerified": true,
+      "original": "T05-focused-final.log",
+      "originalSha256": "ddc96fcbf81d65e2871a50ccd327d082bbc0a97257fcd4b63e00e1e7480509c5",
+      "stored": "T05-focused-final.log.gz",
+      "storedSha256": "5d8be3ee62335ca070aacfabe4cfc6bcdec80dc725b71a4cb5dc0d4c0d66ca93"
+    },
+    {
+      "bytes": 5409,
+      "decompressedHashVerified": true,
+      "original": "T05-focused-rowcap.log",
+      "originalSha256": "2e39d5d026bb693dd1d026165862b5b9927ad021f6dc54750d481deea28b4744",
+      "stored": "T05-focused-rowcap.log.gz",
+      "storedSha256": "f4d24333f80ee57f98cfb494564dd6d416ec9aa578ca4c1ccbe0fada0b003f6e"
+    },
+    {
+      "bytes": 4227,
+      "decompressedHashVerified": true,
+      "original": "T05-focused-second.log",
+      "originalSha256": "8cd5ec71a27e40d97bc4e816705768c7db5756c614005fb23769919ce50eee9b",
+      "stored": "T05-focused-second.log.gz",
+      "storedSha256": "baa974e123f9c45e4f7caf7231f7f99e895d67c226363e8078ff49cf14e10e97"
+    },
+    {
+      "bytes": 5396,
+      "decompressedHashVerified": true,
+      "original": "T05-focused-third.log",
+      "originalSha256": "c0d89aae0dafe720cbe794b105350bd809e712a1f5e168c23651c527c7359f1e",
+      "stored": "T05-focused-third.log.gz",
+      "storedSha256": "dcd0ed9f07a1f09a0781f7a972d1e75a5b5ca17e90b3870acfa9afb0aee91d94"
+    },
+    {
+      "bytes": 1678,
+      "decompressedHashVerified": true,
+      "original": "T05-mutation-final.log",
+      "originalSha256": "9c4a1f5c91c1896442a66cbd753ff329b5837298fafdc3df99ed2507b5c59e40",
+      "stored": "T05-mutation-final.log.gz",
+      "storedSha256": "328328a2a0beb6a110442ec389d4aac88a598d15f7f344cb11ba9e6e05d8f5ff"
+    },
+    {
+      "bytes": 1051,
+      "decompressedHashVerified": true,
+      "original": "T05-mutation-rowcap.log",
+      "originalSha256": "d04ba776b2a935bfe275136e7f996997a84c1510fc66a83d235660f70af76f44",
+      "stored": "T05-mutation-rowcap.log.gz",
+      "storedSha256": "10c42271b710a51ac61174564466be2aea0e245a9d180b312d547a98ba178ef7"
+    },
+    {
+      "bytes": 1678,
+      "decompressedHashVerified": true,
+      "original": "T05-mutation.log",
+      "originalSha256": "6abff6c7c5dfc473a3f88d5fd28f78fc197be488ff95c9b1dd8b9a3de2e0b7b6",
+      "stored": "T05-mutation.log.gz",
+      "storedSha256": "4efe62bf3245461fbf19b91fbe1e8827f83f9852a5d4f4fc24a6dd3e877ef459"
+    },
+    {
+      "bytes": 240,
+      "decompressedHashVerified": true,
+      "original": "final-repository-attempt1.log",
+      "originalSha256": "d4c45eb7eaf3d16ba3660de1b47b2ed2b0979954964d42f54ddb2e5df28357de",
+      "stored": "final-repository-attempt1.log.gz",
+      "storedSha256": "ee758be29bb5056b257926af4c35e9aee2f321977d3694aeb3df166905114ac7"
+    },
+    {
+      "bytes": 30,
+      "decompressedHashVerified": true,
+      "original": "final-repository.log",
+      "originalSha256": "4dba091ad34351df5a47ab88351937a7c08b8d04df4e59834546b6babf1479b0",
+      "stored": "final-repository.log.gz",
+      "storedSha256": "0696100a701b397d88703d8069bf7bcba97a8b41e6c578358c51b159a9e4a95d"
+    },
+    {
+      "bytes": 267,
+      "decompressedHashVerified": true,
+      "original": "final-whitespace.log",
+      "originalSha256": "e17902c4b9a7a08915a8be5ed3d8f7a877106f68ea5edf152d85b92e88c63c5e",
+      "stored": "final-whitespace.log.gz",
+      "storedSha256": "0ca5348b52842fe76f1d9e543025326d5d3c1d1ebb2faca87014ef2081ccad67"
+    },
+    {
+      "bytes": 1383,
+      "decompressedHashVerified": true,
+      "original": "finalize-t05.log",
+      "originalSha256": "e35ef729c84ce35f2773b8030272e81d7e338957bfa386d0fb432a38ba871b13",
+      "stored": "finalize-t05.log.gz",
+      "storedSha256": "92b93b1999d6a783f8591e64a1ccdbbe47e1e97e96c2ceb4b70f3a011a9dadb3"
+    },
+    {
+      "bytes": 378232,
+      "decompressedHashVerified": true,
+      "original": "pr.log",
+      "originalSha256": "a6e2cff82b4b403a38434483b88704165dc3258703f0100becf00d58c854394e",
+      "stored": "profiles/pr.log.gz",
+      "storedSha256": "b836d3edb6c393a148ea09f246870f677a5851d4a1b1fedd3da3c077261b56ec"
+    },
+    {
+      "bytes": 378356,
+      "decompressedHashVerified": true,
+      "original": "quick.log",
+      "originalSha256": "f7a8c95b846c87871f195aa128cffdd66a8b2a8bc4fc2fba480aa57a5ce8af59",
+      "stored": "profiles/quick.log.gz",
+      "storedSha256": "fabddd479eaef1251db8c75b61a447aac2a7c4c58e67cf2011b8392045a5931f"
+    },
+    {
+      "bytes": 1087,
+      "decompressedHashVerified": true,
+      "original": "repair-packaging.log",
+      "originalSha256": "b32ad6baf8dc5659b71bc4b83b4cf2eacd4eec375592debe086a26794c70c241",
+      "stored": "repair-packaging.log.gz",
+      "storedSha256": "9e7f1bda3ead64a4af1eed8456ed7e5c8ee752d56f6bd6f292f19c1a9f9f8b3e"
+    },
+    {
+      "bytes": 305,
+      "decompressedHashVerified": true,
+      "original": "supervisor.log",
+      "originalSha256": "405793f188a05f5ac90615e82d4ba4cb1861b01475efde6f9aaebcf08755d39c",
+      "stored": "supervisor.log.gz",
+      "storedSha256": "7a2c81ebeb5cf9cb79264c518176820d1627fd4762e0bc7ee3a6132b6e236661"
+    },
+    {
+      "bytes": 7121,
+      "decompressedHashVerified": true,
+      "original": "T05-focused-first.log",
+      "originalSha256": "3306fbdd22f1067470bf038fae1dbd27f17edd1284b5f0d132145f7dcc9253d4",
+      "stored": "T05-focused-first.log.gz",
+      "storedSha256": "fb80c06f38b848ba86986991a900b0a1654dd2fbd4dcf1de0476790d64477169"
+    },
+    {
+      "bytes": 589,
+      "decompressedHashVerified": true,
+      "original": "finish-raw-log.log",
+      "originalSha256": "2528f908b21214d03f7f2cf5e7fed61e09c086162d2e13e9c60c76735e16bb6d",
+      "stored": "finish-raw-log.log.gz",
+      "storedSha256": "f62bf343bcf3f02fe09672bf0ca7fb257762a7fb0b239d05047b4c277f50e2f5"
+    },
+    {
+      "bytes": 0,
+      "decompressedHashVerified": true,
+      "original": "final-whitespace-seal.log",
+      "originalSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stored": "final-whitespace-seal.log.gz",
+      "storedSha256": "f1b651238a58fe290baec6c5e32f3bdb1943dd2bd582f02569231f7a757c7837"
+    },
+    {
+      "bytes": 30,
+      "decompressedHashVerified": true,
+      "original": "final-repository-seal.log",
+      "originalSha256": "4dba091ad34351df5a47ab88351937a7c08b8d04df4e59834546b6babf1479b0",
+      "stored": "final-repository-seal.log.gz",
+      "storedSha256": "0696100a701b397d88703d8069bf7bcba97a8b41e6c578358c51b159a9e4a95d"
+    }
+  ],
+  "repositoryExitCode": 0,
+  "status": "resolved",
+  "storage": "Lossless gzip raw stdout/stderr; originals external intact, SHA/decompression verified. Raw Luna review retained as txt.",
+  "whitespaceExitCode": 0
+}
