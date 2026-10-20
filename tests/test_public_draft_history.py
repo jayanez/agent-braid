@@ -55,6 +55,42 @@ class PublicDraftHistoryTests(unittest.TestCase):
         self.assertEqual(self.record["stage"], "draft")
         self.assertEqual(self.record["human_review"], "pending")
 
+    def test_harness_squash_preserves_all_three_pending_records_without_approval(self):
+        pins = [pin for pin in PRESERVED_DRAFT_TAGS
+                if pin[0].startswith(("specs/048-", "specs/049-", "specs/050-"))]
+        self.assertEqual(len(pins), 3)
+        self.assertEqual(len({pin[1] for pin in pins}), 1)
+        # A disposable fixture points at the actual squash, not its public PR
+        # ancestry. Worktree bytes are the same immutable three assurance files.
+        self.git("update-ref", "HEAD", "93ff67fc8136b48e70d3d0e9bb40ba3d6c80e44a")
+        for relative, ref, candidate, tag_object in pins:
+            with self.subTest(record=relative):
+                path = self.root / relative
+                original = path.read_bytes()
+                record = json.loads(original)
+                frozen = record["evidence_snapshot"]["commit"]
+                ancestry = subprocess.run(
+                    ["git", "-C", str(self.root), "merge-base", "--is-ancestor",
+                     frozen, "HEAD"], capture_output=True, check=False)
+                self.assertNotEqual(ancestry.returncode, 0)
+                self.assertTrue(self.matches(relative, path, record))
+                with patch.object(gates, "validate_record", wraps=gates.validate_record) as strict:
+                    gates.validate_portable_record(self.root, path)
+                strict.assert_called_once_with(self.root.resolve(), path)
+                self.assertEqual(record["stage"], "draft")
+                self.assertEqual(record["human_review"], "pending")
+                path.write_bytes(original + b"\n")
+                self.assertFalse(self.matches(relative, path))
+                path.write_bytes(original)
+                self.git("update-ref", "-d", ref)
+                self.assertFalse(self.matches(relative, path, record))
+                with self.assertRaises(ValueError):
+                    gates.validate_portable_record(self.root, path)
+                self.git("update-ref", ref, tag_object)
+                fake_review = dict(record, human_review="approved")
+                self.assertFalse(self.matches(relative, path, fake_review))
+                self.assertEqual(path.read_bytes(), original)
+
     def test_absent_lightweight_and_recreated_annotated_tags_fail_closed(self):
         for replacement in ("absent", "lightweight", "recreated"):
             with self.subTest(replacement=replacement):

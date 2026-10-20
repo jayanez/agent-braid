@@ -125,6 +125,25 @@ class PublicSpecHistoryTests(unittest.TestCase):
         self.assertEqual(self.record.read_bytes(), original)
         self.assertEqual(self.main_with((), preserved=pins), 0)
 
+    def test_one_preserved_public_tag_restores_three_pending_records_atomically(self):
+        data = json.loads(self.record.read_text())
+        data.update(stage="draft", human_review="pending")
+        pins = []
+        originals = {}
+        for number in (48, 49, 50):
+            relative = f"specs/{number:03d}-fixture/assurance.json"
+            path = self.root / relative
+            path.parent.mkdir(parents=True)
+            path.write_text(json.dumps(data))
+            originals[relative] = path.read_bytes()
+            pins.append((relative, self.ref, self.candidate, self.tag_object))
+        self.assertEqual(self.main_with((), preserved=tuple(pins)), 0)
+        self.assertEqual(git(self.root, "rev-parse", self.ref), self.tag_object)
+        self.assertEqual(self.main_with((), preserved=tuple(pins)), 0)
+        for relative, original in originals.items():
+            self.assertEqual((self.root / relative).read_bytes(), original)
+            self.assertEqual(json.loads(original)["human_review"], "pending")
+
     def test_late_preserved_pin_failure_installs_no_earlier_refs(self):
         before = git(self.root, "show-ref")
         pins = ((f"specs/{self.feature}/assurance.json", self.ref,
