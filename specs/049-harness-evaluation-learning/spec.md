@@ -1,6 +1,6 @@
-# SPEC-049: Joint harness evaluation and governed experience reuse
+# SPEC-049: Braid Harness evaluation and governed experience reuse
 
-**Milestone:** HAR.2 — Harness evaluation and learning
+**Milestone:** HAR.2 — Braid Harness evaluation and learning
 
 **Status:** draft; owner confirmed planning direction on 2026-10-20. Implementation, architectural adoption, native qualification and human acceptance remain pending.
 
@@ -63,6 +63,18 @@ Verification: [procedure_req_007](validation-plan.md#procedure_req_007). Planned
 **SC-008:** Given evidence is positive, negative, mixed, infeasible or incomplete, when the program reports or proposes an advisory interface, then it preserves each axis and cohort result, baselines, costs, uncertainty and open gates; no blended score hides safety loss and no new MCP execution surface or forecast/model promotion is implied.
 
 Verification: [procedure_req_008](validation-plan.md#procedure_req_008). Planned evidence only; obtained evidence: none.
+
+### REQ-009 — Verify outcomes independently of selection
+
+**SC-009:** Given a candidate supplies outputs and may contain forged scores or hidden-grader cues, when the registered verifier and adjudication workflow evaluate committed outputs, then they ignore candidate-supplied acceptance, retain oracle/proxy/human provenance, disagreement and missing labels, and prevent held-out verdicts reaching refinement.
+
+Verification: [procedure_req_009](validation-plan.md#procedure_req_009). Planned evidence only; obtained evidence: none.
+
+### REQ-010 — Implement reversible candidate-specific promotion
+
+**SC-010:** Given a valid human decision, stale profile or interrupted profile update exists, when the registry applies or rolls back a promotion transaction, then it verifies exact evidence/authority/profile identity, applies only the approved scope atomically, preserves the previous usable profile and refuses absent decisions or implicit automatic activation.
+
+Verification: [procedure_req_010](validation-plan.md#procedure_req_010). Planned evidence only; obtained evidence: none.
 
 ## Scientific boundaries and compatibility
 

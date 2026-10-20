@@ -18,7 +18,7 @@ See [source audit](../../research/harness2-source-audit.md), [agreed idea](../..
 
 ## Design and compatibility
 
-The flow is immutable source/base manifest → protected candidate import → independent admission/containment → bounded proposal/probe/composition → independent verification and base retention → journal/evidence → quarantined experience → exact human promotion. Interface proposal: [contracts/interface.md](contracts/interface.md). The two milestones share one [ADR proposal](../048-harness-variant-laboratory/adr-proposal.md); keeping it feature-local avoids silently invalidating existing current authority snapshots.
+The flow is immutable source/base manifest → protected candidate import → independent admission/containment → bounded proposal/probe/composition → independent verification and base retention → journal/evidence → quarantined experience → exact human promotion. Interface proposal: [contracts/interface.md](contracts/interface.md). The three milestones share one [ADR proposal](../048-harness-variant-laboratory/adr-proposal.md); keeping it feature-local avoids silently invalidating existing current authority snapshots.
 
 Planning choices: automatic isolated trials, human initial promotion, two co-primary outcomes, deterministic scenarios allowed, optional future automatic promotion explicitly evaluated but disabled. Proposed first algorithm budget is one round; its numerical execution/resource limits must be frozen at T001/T002 as applicable before implementation/native admission. Model-backed subscription use has a separate fresh zero-spend feasibility gate.
 
@@ -33,3 +33,7 @@ The proposed laboratory is separate from existing runtime execution; source prom
 ## Human review and unresolved decisions
 
 Human review remains pending. Keep negative utility and infeasibility as valid outcomes. Candidate freeze, independent Luna review when authorized, founder architectural adoption and per-capability activation are separate gates. No calendar dates or effort estimates are invented.
+
+## Expanded capability coverage
+
+The [coverage matrix](../048-harness-variant-laboratory/capability-coverage.md) supersedes the original compact twenty-task count. HAR.1 has fifteen tasks, HAR.2 thirteen and HAR.3 twelve. Context, observations, individual host adapters, CLI codecs, independent verifiers, complete costs and reversible promotion now have explicit implementation ownership. Advanced component/search/product capabilities belong to SPEC-050. The product and lifecycle name is Braid Harness; upstream Harness² identifies provenance only.

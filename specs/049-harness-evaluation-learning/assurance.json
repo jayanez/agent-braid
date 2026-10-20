@@ -21,7 +21,7 @@
   ],
   "assumptions": "Owner-controlled sources and qualified local hosts only; immutable authorities and frozen policies; no provider permission, containment support or positive utility inferred.",
   "authority_snapshot": {
-    "commit": "58d00f20fc810f32eda024f8eaef84f455f6f02f",
+    "commit": null,
     "hashes": {
       "ARCHITECTURE.md": "7bad53a83a54da09a0f55fb514432b53265cc1d99e88fdc3e42989b2fa4ea256",
       "CONSTITUTION.md": "ff7196976a1736a639947c2ab26e8da157fef23c89ba9881312f2a36459964eb",
@@ -92,13 +92,13 @@
       "schemas/governance/public-export-manifest.schema.json": "11eb7f2594939ae9fd0c9e6cfe4423a80aba686d6cdfdd8b73b0fb84b0840aa8",
       "schemas/governance/release-validation-record.schema.json": "d9943f0c9f5520ea52e3b12bfba88240d03f8011b433fc5e35cb49549ab6e819"
     },
-    "mode": "historical"
+    "mode": "current"
   },
   "compatibility": "Additive proposed opt-in laboratory; unchanged AIM/runtime/plugin/telemetry/System 1/forecast contracts and historical evidence.",
   "domain": "Two declared strata: long-task continuity/recovery and interaction/conflict coordination. Synthetic controls and permissioned native tasks are separate cohorts; neither results nor acceptance transfer automatically between them.",
   "evidence_snapshot": {
-    "commit": "58d00f20fc810f32eda024f8eaef84f455f6f02f",
-    "mode": "historical"
+    "commit": null,
+    "mode": "current"
   },
   "execution_contract": "Planning only. Future laboratory effects require a separate adopted contract and fresh matching operator admission; no existing grant or runtime language is widened.",
   "human_review": "pending",
@@ -248,6 +248,38 @@
         }
       ],
       "text": "Publish bounded per-axis decisions and product integration"
+    },
+    {
+      "id": "REQ-009",
+      "scenarios": [
+        {
+          "given": "a candidate supplies outputs and may contain forged scores or hidden-grader cues",
+          "id": "SC-009",
+          "obtained_evidence": [],
+          "planned_evidence": "Candidate-bound procedure for REQ-009/SC-009 with actual commands, hashes, observations and limits.",
+          "test_file": "specs/049-harness-evaluation-learning/validation-plan.md",
+          "test_name": "procedure_req_009",
+          "then": "they ignore candidate-supplied acceptance, retain oracle/proxy/human provenance, disagreement and missing labels, and prevent held-out verdicts reaching refinement",
+          "when": "the registered verifier and adjudication workflow evaluate committed outputs"
+        }
+      ],
+      "text": "Verify outcomes independently of selection"
+    },
+    {
+      "id": "REQ-010",
+      "scenarios": [
+        {
+          "given": "a valid human decision, stale profile or interrupted profile update exists",
+          "id": "SC-010",
+          "obtained_evidence": [],
+          "planned_evidence": "Candidate-bound procedure for REQ-010/SC-010 with actual commands, hashes, observations and limits.",
+          "test_file": "specs/049-harness-evaluation-learning/validation-plan.md",
+          "test_name": "procedure_req_010",
+          "then": "it verifies exact evidence/authority/profile identity, applies only the approved scope atomically, preserves the previous usable profile and refuses absent decisions or implicit automatic activation",
+          "when": "the registry applies or rolls back a promotion transaction"
+        }
+      ],
+      "text": "Implement reversible candidate-specific promotion"
     }
   ],
   "scientific_limits": "No acceptance evidence obtained; hypotheses can be false; source yield and hidden provider revisions limit inference; structural tests are not semantic/human approval.",

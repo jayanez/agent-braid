@@ -63,7 +63,7 @@ assurance record and the [roadmap](../../ROADMAP.md) for those boundaries.
 
 | [SPEC-047: local-technical-telemetry](../../specs/047-local-technical-telemetry/spec.md) | [M4.5 — AI tooling integrations for Codex and Claude Code](https://github.com/jayanez/agent-braid/milestone/19) |
 
-The current source inventory has 49 active specs across 22 declared milestone identities; HAR.1/HAR.2 are draft planning additions with separate scoped publication receipts. SPEC-045 remains FC.2/#20; SPEC-046 and SPEC-047 extend M4.5/#19. Eight source specs, 106 task obligations (78 checked, 28 unchecked), 3 historically closed parents and 5 open parents: 114 desired records. Historical evidence retains its original validation boundary; [current M4.5 alignment](../tooling/M45_ALIGNMENT.md) and [integration provenance](../../specs/047-local-technical-telemetry/integration-review.md) distinguish source review, current integration and pending acceptance.
+The current source inventory has 50 active specs across 23 declared milestone identities; HAR.1/HAR.2/HAR.3 are draft planning additions with separate scoped publication receipts. SPEC-045 remains FC.2/#20; SPEC-046 and SPEC-047 extend M4.5/#19. Eight source specs, 106 task obligations (78 checked, 28 unchecked), 3 historically closed parents and 5 open parents: 114 desired records. Historical evidence retains its original validation boundary; [current M4.5 alignment](../tooling/M45_ALIGNMENT.md) and [integration provenance](../../specs/047-local-technical-telemetry/integration-review.md) distinguish source review, current integration and pending acceptance.
 Frozen publication receipts, assurance/evidence records, founder decisions and
 dated audits retain their captured titles and counts. Resolve those historical
 names through the tracking crosswalk; do not rewrite their bound contents.
@@ -82,8 +82,10 @@ scenario is **NO-GO**.
 
 | Spec | Proposed milestone |
 |---|---|
-| [SPEC-048: harness-variant-laboratory](../../specs/048-harness-variant-laboratory/spec.md) | [HAR.1 — Harness variant laboratory](https://github.com/jayanez/agent-braid/milestone/21) |
-| [SPEC-049: harness-evaluation-learning](../../specs/049-harness-evaluation-learning/spec.md) | [HAR.2 — Harness evaluation and learning](https://github.com/jayanez/agent-braid/milestone/22) |
+| [SPEC-048: harness-variant-laboratory](../../specs/048-harness-variant-laboratory/spec.md) | [HAR.1 — Braid Harness laboratory](https://github.com/jayanez/agent-braid/milestone/21) |
+| [SPEC-049: harness-evaluation-learning](../../specs/049-harness-evaluation-learning/spec.md) | [HAR.2 — Braid Harness evaluation and learning](https://github.com/jayanez/agent-braid/milestone/22) |
+
+| [SPEC-050: braid-harness-adaptation](../../specs/050-braid-harness-adaptation/spec.md) | [HAR.3 — Braid Harness adaptation and integration](https://github.com/jayanez/agent-braid/milestone/23) |
 
 [Program and gates](../../specs/048-harness-variant-laboratory/program.md). Planning
 and tracking do not admit native execution or automatic promotion.

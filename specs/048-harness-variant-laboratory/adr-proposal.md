@@ -1,4 +1,4 @@
-# ADR proposal: Bounded native harness improvement
+# ADR proposal: Braid Harness — Bounded native harness improvement
 
 - **Status:** proposed; owner confirmed planning scope on 2026-10-20, not architectural adoption
 - **Date:** 2026-10-20
@@ -77,7 +77,7 @@ records through fresh review. No amendment is currently proposed.
 
 ## Validation
 
-SPEC-048/049 map 16 scenarios to prospective procedures and ordered tasks. Test
+SPEC-048/049/050 map 28 scenarios to prospective procedures and ordered tasks. Test
 protected mutations, symlinks, stale identities, containment failures, leakage,
 retries/duplicate effects, incomplete costs, unsafe parallelization and baseline
 regressions. Use actual fixture-process interruptions and separately qualified
@@ -94,3 +94,7 @@ are separate records.
 - [Pinned Harness² audit](../../research/harness2-source-audit.md)
 - [Harness² paper](https://arxiv.org/html/2610.14224v1)
 - [Program](program.md), [evaluation protocol](../049-harness-evaluation-learning/evaluation-protocol.md)
+
+## Full capability program and name
+
+The Agent Braid product/lifecycle name is **Braid Harness**. Harness² remains an attributed source reference. HAR.1 starts with task-local guidance/context; HAR.2 owns measurement, scoped experience and reversible human promotion; HAR.3 owns advanced component profiles and the operational lifecycle. A future profile may include skills, qualified helpers, hooks or delegated roles only after its separate effect/adoption review. The initial immutable-surface rule is not silently widened. Automatic-policy software can be implemented disabled, with native activation governed by its own exact adopted policy. See [coverage](capability-coverage.md) and [SPEC-050](../050-braid-harness-adaptation/spec.md).

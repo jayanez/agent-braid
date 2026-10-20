@@ -22,8 +22,9 @@
     "FC.1 — Forecast-guided parallelism experiment": "Permissioned workload telemetry, optional local Chronos-2, prospective forecasting/complete-cost parallelism experiment and separately governed shadow/promotion. Negative or infeasible outcomes are valid; no new execution domain or M4 closure.",
     "M4.5 — AI tooling integrations for Codex and Claude Code": "Adjacent to bounded-complete M4; historical G4 NO-GO and negative utility preserved. The combined source portfolio has 8 specs and 106 tasks (78 checked, 28 open), with 3 historically closed and 5 open parents; source counts do not assert remote issue closure. SPEC-039/040/042 retain bounded accepted scopes and SPEC-044/T004 retains its historical bounded closure. SPEC-046 owns native plugins and its 15 tasks; external candidacy approvals remain pending. SPEC-047 adds default-off local aggregate telemetry. Existing Luna review is bound to b2cf477fe9f9; integration adaptations and resulting candidate have separate review/validation. Pilot NO-GO; T017/T018/T010, native observations, ADR adoption, human/founder acceptance and M4.5 closure remain open.",
     "FC.2 — Local forecasting capabilities": "Local default-off API/CLI/MCP forecasting, synthetic engineering/reproduction and separately approved actual Chronos CPU conformance; no real workload utility or promotion implied.",
-    "HAR.1 — Harness variant laboratory": "Provide a native Agent Braid mechanism to propose, probe and compose small task-local harness variants against an immutable base, first with deterministic fixtures and later through separately qualified Codex/Claude adapters. Draft planning; no due date, native acceptance or activation implied. Extra cash spend EUR 0.",
-    "HAR.2 — Harness evaluation and learning": "Determine separately whether harness refinement improves long-task continuity and agent coordination, then retain only scoped evidence-supported lessons and make explicit human or future automatic promotion decisions. Draft planning; no due date, native acceptance or activation implied. Extra cash spend EUR 0."
+    "HAR.1 — Braid Harness laboratory": "Provide a native Agent Braid mechanism to propose, probe and compose small task-local harness variants against an immutable base, first with deterministic fixtures and later through separately qualified Codex/Claude adapters. Draft planning; no due date, native acceptance or activation implied. Extra cash spend EUR 0.",
+    "HAR.2 — Braid Harness evaluation and learning": "Determine separately whether harness refinement improves long-task continuity and agent coordination, then retain only scoped evidence-supported lessons and make explicit human or future automatic promotion decisions. Draft planning; no due date, native acceptance or activation implied. Extra cash spend EUR 0.",
+    "HAR.3 — Braid Harness adaptation and integration": "Implement staged Braid Harness component profiles, skills/helpers/hooks, delegated orchestration, measured depth/width refinement, scoped curation, disabled automatic-policy software and opt-in lifecycle/product integration. Draft planning; native qualification, exact policy adoption and activation remain separate. EUR 0 extra spend."
   },
   "closed_milestones": [
     "M0 — Operational foundations",
@@ -223,11 +224,15 @@
       "state": "open"
     },
     "048-harness-variant-laboratory": {
-      "milestone": "HAR.1 — Harness variant laboratory",
+      "milestone": "HAR.1 — Braid Harness laboratory",
       "state": "open"
     },
     "049-harness-evaluation-learning": {
-      "milestone": "HAR.2 — Harness evaluation and learning",
+      "milestone": "HAR.2 — Braid Harness evaluation and learning",
+      "state": "open"
+    },
+    "050-braid-harness-adaptation": {
+      "milestone": "HAR.3 — Braid Harness adaptation and integration",
       "state": "open"
     }
   },
@@ -260,7 +265,8 @@
     "SPEC-045",
     "SPEC-046",
     "SPEC-048",
-    "SPEC-049"
+    "SPEC-049",
+    "SPEC-050"
   ],
   "milestone_numbers": {
     "M0 — Operational foundations": 1,
@@ -283,8 +289,9 @@
     "FC.1 — Forecast-guided parallelism experiment": 18,
     "M4.5 — AI tooling integrations for Codex and Claude Code": 19,
     "FC.2 — Local forecasting capabilities": 20,
-    "HAR.1 — Harness variant laboratory": 21,
-    "HAR.2 — Harness evaluation and learning": 22
+    "HAR.1 — Braid Harness laboratory": 21,
+    "HAR.2 — Braid Harness evaluation and learning": 22,
+    "HAR.3 — Braid Harness adaptation and integration": 23
   },
   "task_cancellations": {
     "SPEC-045/T007": {

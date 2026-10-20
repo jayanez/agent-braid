@@ -66,6 +66,18 @@ Given evidence is positive, negative, mixed, infeasible or incomplete, exercise:
 
 Use positive, adversarial and unavailable-observation controls. Bind candidate and source/harness/policy versions; retain failures and unknowns. The mapped implementation task supplies planned test modules. A document procedure is a prospective test specification, not an executed test.
 
+## procedure_req_009
+
+Trace: REQ-009 / SC-009.
+
+Given a candidate supplies outputs and may contain forged scores or hidden-grader cues, exercise the registered verifier and adjudication workflow evaluate committed outputs. Required observation: they ignore candidate-supplied acceptance, retain oracle/proxy/human provenance, disagreement and missing labels, and prevent held-out verdicts reaching refinement. Use positive, adversarial, interruption and unavailable-observation controls with frozen candidate/source identities; no test execution is claimed.
+
+## procedure_req_010
+
+Trace: REQ-010 / SC-010.
+
+Given a valid human decision, stale profile or interrupted profile update exists, exercise the registry applies or rolls back a promotion transaction. Required observation: it verifies exact evidence/authority/profile identity, applies only the approved scope atomically, preserves the previous usable profile and refuses absent decisions or implicit automatic activation. Use positive, adversarial, interruption and unavailable-observation controls with frozen candidate/source identities; no test execution is claimed.
+
 ## Candidate checks
 
 Run `python3 scripts/validate_change.py --base develop --profile quick` after implementation increments and `--profile pr` once stable, with the isolated configured interpreter. Feature-specific frozen-candidate evidence and human review remain separate.

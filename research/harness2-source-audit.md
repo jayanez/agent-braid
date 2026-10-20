@@ -144,8 +144,8 @@ Owner decisions now confirmed: both target axes are co-primary; automatic isolat
 trials with initial human promotion; no new spend; repository-derived cases chosen
 by the planner. Synthetic scenarios and an optional future automatic-promotion
 assessment are explicitly retained. The resulting draft is
-[SPEC-048/049](../specs/048-harness-variant-laboratory/program.md), with 16
-requirements/scenarios and 20 pending tasks. No implementation acceptance is
+[SPEC-048/049](../specs/048-harness-variant-laboratory/program.md), with 28
+requirements/scenarios and 40 pending tasks across three milestones. No implementation acceptance is
 claimed by that planning packet.
 
 Delivery path: preserve the agreed idea and feature-local ADR proposal, validate
@@ -153,3 +153,5 @@ the planning candidate, and publish only the authorized new tracking scope in
 `jayanez/agent-braid` with proposal-source links. The requested Market Trends Report template and
 its retained PPTX were located; the presentation should summarize the agreed
 decision and sources rather than introduce another independent source of truth.
+
+The owner subsequently challenged the compact backlog and selected the product/lifecycle name **Braid Harness**. The [coverage audit](../specs/048-harness-variant-laboratory/capability-coverage.md) records the resulting implementation ownership and advanced capability scope. Harness² in this report identifies the upstream reference only.

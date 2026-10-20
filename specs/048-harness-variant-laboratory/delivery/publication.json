@@ -2,19 +2,26 @@
   "repository": "jayanez/agent-braid",
   "scope": [
     "SPEC-048",
-    "SPEC-049"
+    "SPEC-049",
+    "SPEC-050"
   ],
   "milestones": [
     {
       "number": 21,
-      "title": "HAR.1 — Harness variant laboratory",
+      "title": "HAR.1 — Braid Harness laboratory",
       "html_url": "https://github.com/jayanez/agent-braid/milestone/21",
       "state": "open"
     },
     {
       "number": 22,
-      "title": "HAR.2 — Harness evaluation and learning",
+      "title": "HAR.2 — Braid Harness evaluation and learning",
       "html_url": "https://github.com/jayanez/agent-braid/milestone/22",
+      "state": "open"
+    },
+    {
+      "number": 23,
+      "title": "HAR.3 — Braid Harness adaptation and integration",
+      "html_url": "https://github.com/jayanez/agent-braid/milestone/23",
       "state": "open"
     }
   ],
@@ -478,16 +485,22 @@
         "status": "Todo"
       }
     ],
-    "verified": true,
+    "verified": false,
     "method": "Existing authenticated browser updated the two parent statuses; read-only GraphQL verified all 22 items. Existing CLI token lacks project-write scope; scopes were not changed."
   },
-  "readback": {
-    "at": "2026-10-20T21:23:50.944571+00:00",
-    "issues": 22,
-    "subissue_links": 20,
-    "milestones": 2,
-    "project_items": 22,
-    "result": "verified",
-    "boundary": "Readback proves tracking state only; all implementation tasks remain open."
-  }
+  "revision_history": [
+    {
+      "revision": 1,
+      "candidate": "0ae6d030e64d25d466f342c4d0a73ff1260f9f24",
+      "path": "specs/048-harness-variant-laboratory/delivery/publication.json",
+      "sha256": "39e3b66b892445a6e211493c1a8abe6d1819eb204dd5944e267a5dc3bb8c8d17",
+      "counts": {
+        "milestones": 2,
+        "issues": 22,
+        "tasks": 20
+      },
+      "boundary": "Original compact planning publication; superseded by owner-requested coverage expansion and Braid Harness naming."
+    }
+  ],
+  "revision": 2
 }

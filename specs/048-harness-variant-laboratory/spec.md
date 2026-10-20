@@ -1,6 +1,6 @@
-# SPEC-048: Bounded harness variants and isolated probing
+# SPEC-048: Braid Harness variants and isolated probing
 
-**Milestone:** HAR.1 — Harness variant laboratory
+**Milestone:** HAR.1 — Braid Harness laboratory
 
 **Status:** draft; owner confirmed planning direction on 2026-10-20. Implementation, architectural adoption, native qualification and human acceptance remain pending.
 
@@ -63,6 +63,18 @@ Verification: [procedure_req_007](validation-plan.md#procedure_req_007). Planned
 **SC-008:** Given a synthetic or native run finishes or fails, when the CLI or an eventual separately versioned read-only adapter presents its result, then it exposes identities, decisions, losses, effects, limits and obtained evidence without grants, source promotion, success fabrication or scientific acceptance.
 
 Verification: [procedure_req_008](validation-plan.md#procedure_req_008). Planned evidence only; obtained evidence: none.
+
+### REQ-009 — Build bounded trusted context
+
+**SC-009:** Given authorized context entries include hostile text, large histories, stale facts or hidden grading material, when the context builder selects and packages evidence for a trial, then it includes only eligible trusted-inventory entries within frozen budgets, labels untrusted text and every truncation/omission, and excludes held-out graders without widening read access.
+
+Verification: [procedure_req_009](validation-plan.md#procedure_req_009). Planned evidence only; obtained evidence: none.
+
+### REQ-010 — Capture inspectable private observations
+
+**SC-010:** Given a fixture or qualified host yields complete, missing, sensitive or malformed events and artifacts, when the observer creates or exports a trajectory/evidence package, then it binds raw/normalized identities, records event loss and unknown effects, verifies redaction/retention and preserves terminal failures; unobservable outcomes cannot become completed success.
+
+Verification: [procedure_req_010](validation-plan.md#procedure_req_010). Planned evidence only; obtained evidence: none.
 
 ## Scientific boundaries and compatibility
 

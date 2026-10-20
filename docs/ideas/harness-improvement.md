@@ -1,4 +1,4 @@
-# Controlled harness improvement
+# Braid Harness
 
 ## Problem Statement
 
@@ -47,7 +47,7 @@ deterministic two-axis controls; prospective native pilot admission; quarantined
 lessons; human promotion and offline automatic-promotion assessment. Proposed
 interfaces remain separate from existing runtime grants and plugin contracts.
 
-## Not Doing (and Why)
+## Outside the initial pilot (and why)
 
 - Unrestricted self-rewriting of authorities, tools, hooks or host configuration:
   those effects exceed the initial laboratory contract.
@@ -68,3 +68,7 @@ Exact containment backend/host versions, source yield, numeric run caps,
 pre-registered evaluation margins and a future automatic-promotion eligibility
 class remain ordered implementation decisions. Missing native feasibility does
 not block honestly labeled deterministic engineering or a no-go report.
+
+## Full program coverage
+
+Owner refinement on 2026-10-20 expanded the compact pilot backlog into three milestones: laboratory (15 tasks), evaluation/learning (13), and advanced adaptation/product lifecycle (12). These forty tasks cover the [capability matrix](../../specs/048-harness-variant-laboratory/capability-coverage.md). The count is not a completion guarantee or ceiling; every selected capability needs implementation, validation and explicit activation disposition. The product name is **Braid Harness**; Harness² is upstream provenance.

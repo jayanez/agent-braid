@@ -6,11 +6,11 @@ Implementation, native qualification and architectural adoption remain pending.
 
 ## Coverage and source consistency
 
-Each of SPEC-048 and SPEC-049 has eight unique requirements and eight unique
-Given/When/Then scenarios. Every identifier appears in its spec, assurance record,
-prospective validation and at least one task. Each feature has ten unchecked
+SPEC-048 and SPEC-049 now each have ten requirements/scenarios; SPEC-050 has
+eight. Every identifier appears in its spec, assurance record,
+prospective validation and at least one task. The program has forty unchecked
 implementation/gate tasks and no obtained feature acceptance evidence. Source
-tracking emits exactly two parents and twenty open tasks for this scope.
+tracking emits exactly three parents and forty open tasks for this scope.
 
 ## Findings and disposition
 
@@ -47,3 +47,9 @@ Independent Luna review when separately authorized; exact human/founder decision
 frozen-candidate implementation/reproduction; eligible native sources and trusted
 route/containment observations; both-axis utility and complete costs. These remain
 tasks, not fulfilled claims in the planning packet.
+
+## Coverage audit after owner challenge
+
+The original twenty tasks were insufficiently explicit for the full requested program: context building, observations, per-host implementation, CLI/codecs, verifiers, cost reconciliation and reversible promotion were compressed. Advanced editable components, deeper/wider search, automatic-policy implementation and product operations had no task ownership. These are now owned by 048/T011–T015, 049/T011–T013 and SPEC-050/T001–T012. See capability-coverage.md. This is a substantive scope/ownership correction, not a claim that forty tasks prove completeness. No production code or acceptance was added.
+
+A primary-session structural dependency scan resolved all forty task references and found no cycle even when conditional native/library edges were included. All twenty-eight requirements/scenarios have task references and empty obtained-acceptance lists. This is a bounded artifact consistency check, not independent review or implementation evidence.
