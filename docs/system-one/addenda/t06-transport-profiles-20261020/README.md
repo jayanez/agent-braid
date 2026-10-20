@@ -1,0 +1,7 @@
+# T06 MCP/stdio — completed local profile receipts
+
+This observation follows the [transport intake](../t06-transport-intake-20261020/README.md). Both source-equivalent local profiles completed with exit0: each ran2080 tests,2061 passed and19 skipped, with zero suite failures. Input hashes are identical across both receipts and match all2415 current source files at readback. These overlapping suites must not be summed or treated as independent scientific observations. The original logs retain skipped cases, exact commands and environment.
+
+Quick unit/profile wall times were2102.117/2286.694 seconds; PR2102.103/2286.688 seconds. Both temporary profile copies were removed according to their receipts. The completed supervisor records exit0, no automatic retry and EUR0 external spend. [Exact source/representation hashes](bindings.json) bind the original JSON and reversible compressed logs. No profile was rerun by this documentary conversation.
+
+The final engineering packet/report and its complete bindings remain pending at this observation. This is a local documentary supplement, not hosted CI or a completed integration review. Core/transport captures, fixture errors, mutation gap/recheck and phase-accounting limits remain in their earlier supplements. Original pending statements there refer to earlier observation times. Full T06/T07 and independent scientific, human, training/calibration, admission, promotion and activation gates remain pending. No product code or source archive is published.

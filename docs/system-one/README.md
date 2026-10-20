@@ -8,7 +8,7 @@ Start here, then read the [agent resumption guide](RESUMPTION.md). This is the c
 
 ## Subsequent local MCP/stdio intake
 
-[Transport intake](addenda/t06-transport-intake-20261020/README.md) preserves design, fixture failures, mutation test gap/repair, three capture epochs and source hashes. Final focused capture is obtained; quick/PR and final package are pending at this observation. This supplement remains local.
+[Transport intake](addenda/t06-transport-intake-20261020/README.md) preserves design, fixture failures, mutation test gap/repair, three capture epochs and source hashes. Final focused capture is obtained. The later [profile receipts](addenda/t06-transport-profiles-20261020/README.md) record both full profiles passed on2415 identical inputs; final packaging remains pending. These supplements remain local.
 
 ## Current handoff
 

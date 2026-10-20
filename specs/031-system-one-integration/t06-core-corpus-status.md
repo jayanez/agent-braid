@@ -5,3 +5,5 @@ DDP-T06 aliases SPEC-031/T011. The [earlier intake](../../docs/system-one/addend
 Core engineering is obtained locally. Service/stdio, full T06/T07, independent scientific acceptance, training/calibration, human review, admission, promotion and activation remain pending. Related fixtures/profile cases do not establish real accuracy/coverage or timing guarantees. This documentary branch publishes no implementation and closes no remote task/milestone. PR594 is separately integrated; this supplement remains local.
 
 The later [MCP/stdio intake](../../docs/system-one/addenda/t06-transport-intake-20261020/README.md) records obtained focused transport capture and pending full profiles/package. Prior Core-only pending-service wording describes its earlier observation. No total T06 acceptance follows from this new provisional evidence.
+
+[Completed transport profiles](../../docs/system-one/addenda/t06-transport-profiles-20261020/README.md) supersede the intake's pending-profile observation: quick/PR passed2080 tests each with19 skips on2415 identical inputs. Final packaging and total acceptance remain pending.

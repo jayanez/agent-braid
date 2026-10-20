@@ -1,0 +1,10 @@
+{
+  "scope": "Receipt-only documentary checks; no suite rerun",
+  "sourceInputHashesVerified": 2415,
+  "originalRepresentationsVerified": 6,
+  "localLinksVerified": 69,
+  "JSONGzipHashes": "passed",
+  "repositoryExitCode": 0,
+  "stagedWhitespace": "checked before commit",
+  "finalPacket": "pending at observation"
+}

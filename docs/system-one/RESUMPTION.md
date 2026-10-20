@@ -63,3 +63,7 @@ The [final Core-only supplement](addenda/t06-core-final-20261020/README.md) supe
 ## Subsequent MCP/stdio intake
 
 [Transport documentary intake](addenda/t06-transport-intake-20261020/README.md) adds the later stable candidate,24 directed controls/12 EN/ES pairs and17-test focused capture, with fixture errors and mutation test gap retained. Quick/PR and final package remain pending at intake; no full T06 closure or publication is asserted. Parent retains native work and live context; the real stdio child is a controlled MCP client, not stock SDK/host adoption. Phase-accounting corrections and sampled resource limits are explicit.
+
+## Completed MCP/stdio profiles; package pending
+
+[Profile receipts](addenda/t06-transport-profiles-20261020/README.md) record2080 tests with19 skips each and zero failures for quick and PR;2415 input hashes matched across profiles and source at readback. This supersedes only earlier pending-profile observations. Final engineering packaging, documentary publication/integration and all acceptance gates remain separate and pending.
