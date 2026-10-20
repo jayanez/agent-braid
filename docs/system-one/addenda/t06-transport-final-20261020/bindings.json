@@ -621,9 +621,9 @@
     {
       "sourcePath": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-verified-core/specs/029-system-one-evaluation/evidence/ddp-t06-transport/receipts/profiles/pr.log.gz",
       "sha256": "29973feba753b10fb2d9f6e59464dac02e2fe1302792b5d132551278bc594bea",
-      "corpusPath": "docs/system-one/addenda/t06-transport-final-20261020/receipts/profiles/pr.log.gz.gz",
-      "storedSHA256": "a8ea937ace3c5ea6348948eb43580d09e3ae489c8844752ee96c8e206f3fbf55",
-      "representation": "gzip; original bytes unchanged",
+      "corpusPath": "docs/system-one/addenda/t06-transport-final-20261020/receipts/profiles/pr.log.gz",
+      "storedSHA256": "29973feba753b10fb2d9f6e59464dac02e2fe1302792b5d132551278bc594bea",
+      "representation": "identity",
       "disposition": "additive documentary representation"
     },
     {
@@ -636,9 +636,9 @@
     {
       "sourcePath": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-verified-core/specs/029-system-one-evaluation/evidence/ddp-t06-transport/receipts/profiles/quick.log.gz",
       "sha256": "8a2932edee24869b8c8eb7b007b1d87e6873e5b0d4a705b000bead1ab43fad1e",
-      "corpusPath": "docs/system-one/addenda/t06-transport-final-20261020/receipts/profiles/quick.log.gz.gz",
-      "storedSHA256": "43dec56583bb7553b9b63795f7d65a024a10995ce7e867da49a098257384db65",
-      "representation": "gzip; original bytes unchanged",
+      "corpusPath": "docs/system-one/addenda/t06-transport-final-20261020/receipts/profiles/quick.log.gz",
+      "storedSHA256": "8a2932edee24869b8c8eb7b007b1d87e6873e5b0d4a705b000bead1ab43fad1e",
+      "representation": "identity",
       "disposition": "additive documentary representation"
     },
     {
