@@ -2,7 +2,13 @@
 
 Start here, then read the [agent resumption guide](RESUMPTION.md). This is the current reading map as of the documentary review on2026-10-20; individual receipts below retain their own observation times. Chat history and ZIP imports are not required to understand the recorded work.
 
-## Latest bounded T07 review and conformance evidence
+## Latest T08 delivery and pending-gate record
+
+[Final T08 documentary supplement](addenda/t08-final-20261020/README.md) preserves the two exact local source documents and provides portable links to the complete T02–T07 evidence chain and a G01–G12 synopsis. Both2084-case profiles passed with19 skips each;24 receipts/40 archived members and all2527 prior files were checked. T08 delivers a local documentary candidate, not product/schema adoption, utility, human/scientific acceptance, model promotion or activation. T09 does not start; no task/issue/milestone is closed.
+
+T07 PR609 was integrated into develop as `b52d7ea3542a3c09678c4b69196c9105f8271f4a`. T08 PR610 was originally published against its unmerged branch; the current candidate now contains only T08 changes on that integrated base. The earlier publication/dependency observations remain historical. Documentary integration is separate from product publication and acceptance; the earlier T07 engineering evidence remains bounded, not a universal acceptance result.
+
+## Prior bounded T07 review and conformance evidence
 
 [Final T07 documentary supplement](addenda/t07-final-20261020/README.md) records independent Luna technical review, corrected compatibility controls, five transcribed reviewer executions, preserved failures and both completed profiles. Packet89 bindings/38 archived members/48 raw files were checked; product sources remain unchanged and local. The32-vector mapping supplies predicate-family evidence, not archived recipe replay or scientific accuracy. Human/Claude/scientific/training/admission/promotion/activation and external host adoption remain pending; no administrative or acceptance gate is closed.
 

@@ -1,0 +1,53 @@
+<!-- SPDX-License-Identifier: CC-BY-SA-4.0 -->
+# DDP-T08 — delivery and adoption gates
+
+Status: local documentary disposition for DDP-REQ-08 / DDP-SC-08 and SPEC-033/T009 (REQ-002/REQ-006, SC-002/SC-006). The [delivery result](../028-system-one-core/decision-delivery-result.md) binds the finite internal capability to exact T02–T07 evidence. This matrix records what that evidence permits; it is not an implemented promotion engine, founder approval, new assurance snapshot or activation instruction. Constitution Articles2/4–7/12–15/19/20/24 and governance remain applicable. No source/model/hardware/workload permission is inferred from a test or document.
+
+## Separate dispositions
+
+| Gate | Obtained disposition | Required next evidence or decision | Existing owner / task |
+|---|---|---|---|
+| G01 — finite software semantics | Obtained within the pinned LF/EOF and exact EN/ES grammar domain; T02/T05/T06/T07 packets | Source changes, new grammar/effect domain or altered bounds need explicit version/compatibility review and affected positive/negative controls | SPEC-028 contracts; SPEC-029/T027; SPEC-031/T011 |
+| G02 — evidence and identity integrity | Obtained for the registered local packets, full bodies, static pins, source archives and current bindings; historical superseded pins remain historical | A new candidate needs its own bound evidence; rehashing alone never establishes freshness or consent | DDP-T04/T05/T06; SPEC-031/REQ-004 |
+| G03 — independent AI technical review | Obtained bounded Luna Latest review, no actionable P1/P2 in that scope; five execution transcriptions, no saved complete reviewer stdout/stderr | Material source changes need affected review; this is not Claude review, human label adjudication, founder adoption or scientific validation | DDP-T07 / SPEC-029/T027 |
+| G04 — product integration and public API/schema adoption | Pending; product sources remain in an isolated local WIP candidate; documentary publication is separate | Review a concrete source diff/migration against current develop, ensure exact public contract/versioning scope and explicit publication/integration authority | GOVERNANCE; SPEC-028/T011; SPEC-031/T011; SPEC-033/T008 |
+| G05 — installed package / host / hardware support | M3 Pro local source conformance obtained; broader installed-wheel, OS/device and actual external-host adoption pending | Verify package/parser closure offline and named host/transport behavior on the exact installed artifact; do not call private stdlib client a stock SDK server or Codex/Claude host result | SPEC-031/T008; SPEC-030/T007 where a model is involved |
+| G06 — representative utility, correctness and coverage | Pending; synthetic related controls do not establish accepted error, coverage or benefit | Prospective permissioned paired workload protocol, complete denominators, rejection/error cost, group/EN/ES coverage and independent label/outcome policy; retain negative or infeasible results | SPEC-029/T001–T009; SPEC-031/T008; SPEC-033/T001/T006 |
+| G07 — cost and resource support | EUR0 external spend and bounded descriptive local timing/RSS observations obtained; deployment energy/complete workload cost and hard SLA unknown | Include acquisition, verification, transport, native preparation, cleanup, all attempts/refusals and actual deployment cost without adding nested spans; enforce named envelope before claiming it | SPEC-029/T007; SPEC-033/T001/T005 |
+| G08 — source rights, privacy and retention | Owned synthetic fixtures only for this lane; private-session collection/source admission not performed | Explicit source permission, eligible sampling/yield, retention and blind review controls before real histories or training data; zero-yield is a legitimate outcome | SPEC-029/T001/T002/T008; SPEC-033/T002 |
+| G09 — human/Claude/scientific acceptance | Pending; AI source review and profile success do not fill these gates | Named actual reviewer decisions or required independent procedures, with disagreement/uncertainty retained; no invented approval | GOVERNANCE; SPEC-029/T002; feature assurance records |
+| G10 — model training, calibration and promotion | Pending and outside DDP-T01–T08; no model required for deterministic verification | Separately authorized exact source/artifact, frozen splits, evaluation/calibration/budget, language/task-specific evidence and rights; do not substitute deterministic admissibility for probability | SPEC-030/T001–T008; SPEC-033/T001/T003; DDP-T09 separately blocked |
+| G11 — operational shadow/drift/fallback/rollback | Existing defaults and opt-in non-use preserved; this lane does not deliver all SPEC-033 operational services | Implement selected explicit retention/shadow/registry/drift/rollback/fallback tasks and their counterexamples before operational adoption; unknown labels stay unknown | SPEC-033/T002–T005 |
+| G12 — activation and historical tracking closure | Pending; no activation, issue/milestone closure or authority grant | Actual founder/operator decision on the named reviewed candidate and scope. Tracking reconciliation is a proposal until separately authorized and evidence checked | SPEC-033/T008; GOVERNANCE; original S1.x tasks |
+
+Pending representative evidence or human adoption does not block preparing these documents or the existing deterministic software controls. It does block claims or actions that require that evidence. This is not a rule that every engineering change requires a new human approval.
+
+## Negative dispositions that must survive packaging
+
+| Condition at review | Required disposition | Evidence boundary |
+|---|---|---|
+| Software tests pass but representative utility is absent or negative | G06 remains pending/not accepted; preserve the negative outcome; no automatic promotion | Existing synthetic controls are not workload acceptance |
+| No actual human approval or unfilled label packets | G09/G12 remain pending; AI review is recorded under G03 only | A receipt/hash or successful CI cannot mint approval |
+| Calibration is absent/stale or model/language identity differs | G10 remains pending and no calibratedProbability or learned promotion is invented | The verified-plan path remains deterministic and model-free |
+| Input/source/domain/grammar is unsupported, incomplete or ambiguous | Refuse explicitly; no guessed facts, covert fallback, partial answer or confidence-as-proof | Existing finite contract and observed effects control admission |
+| No offered plan reaches the final goal | Semantic-defer with no selected action or consumer/native preparation | Correct deferral is distinct from technical refusal and from a universal abstention "improvement" |
+| Complete evidence body or current source/registry pin is missing | Refuse before a trusted downstream action; rehashing does not repair facts or identity | Active request/budget and complete producer body are required |
+| Cancellation, deadline, native disagreement or cleanup/termination unknown | No answered publication; keep unknown distinct from stopped/removed; investigate retained owned resources without automatic retry | Cooperative checks are not universal hard termination guarantees |
+| Only documentary PR is published or merged | G04/G12 stay pending for product adoption/activation | Documentation, product implementation and adoption are different observations |
+
+These are requirements-quality/documentary negative dispositions grounded in existing contracts and controls, not a new executed promotion test suite. No `adopted=true` field or activation code exists in this T08 increment.
+
+## Reconciliation proposals, not task closures
+
+- Record DDP-T02/T03/T04 component extraction, T05 result/context, T06 controlled consumers and T07 bounded independent review/conformance as obtained local engineering lots using their exact packets. Preserve the original dated plans and all failed attempts.
+- Record DDP-T08 / SPEC-033/T009 as a candidate delivery/gate package only after its own documentary checks and receipt are obtained. Its two documents do not close original SPEC-033/T001–T008 or the whole S1.4 milestone.
+- Keep SPEC-031/T008 real integration/shadow utility, SPEC-029 original admission/evaluation gates and SPEC-030 original rights/model/device gates open unless their own required evidence is actually obtained. Do not duplicate existing runtimes or launch another model sweep to fill a checkbox.
+- Treat public schema/API/packaging cleanup, actual host adoption and representative utility as separate possible next assignments. No automatic issue creation, closure, source publication, merge or data intake follows from this list.
+
+## Rollout, non-use and rollback boundary
+
+The current composition is internal opt-in; non-use preserves existing public defaults/catalogs. No default flag is toggled by this package. Any later rollout needs a named candidate, requested capability/domain/host envelope, evidence references, owner decision and a tested way to return to legacy/no-advisor behavior. Do not claim SPEC-033 atomic artifact rollback, drift monitoring or a promotion registry is implemented merely because contexts can be omitted.
+
+In-flight request identities are immutable. Cleanup and child status must be observed before admission/resources can be released; unknown termination retains ownership and requires explicit local investigation. A rollback cannot delete historical packets or replace their hashes. No paid/API fallback, automatic training, live source collection, external telemetry or infinite escalation chain is authorized.
+
+The concrete next engineering priority is source integration and installed/host boundary verification for this admitted deterministic lane, followed by permissioned utility measurement before adoption. The learned path may be useful later, but is neither necessary to verify these finite plans nor authorized by the delivery of this gate matrix.

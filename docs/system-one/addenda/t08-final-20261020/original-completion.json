@@ -1,0 +1,44 @@
+{
+  "activation": "pending",
+  "baselineIndexApply": true,
+  "beforeFilesUnchanged": 2527,
+  "externalSpendEUR": 0,
+  "humanReview": "pending",
+  "ownedHashes": {
+    "specs/028-system-one-core/decision-delivery-result.md": "d1d5867c5656c63992ee33fcd8cd6eea0d3e1a8c54a9d0f3ec44e782dabc399d",
+    "specs/033-system-one-promotion/decision-delivery-gates.md": "0b4c9bc00addeb9b7ec5fe57ac7df0f9461c10f408128016cdcc8ba75cfea4a6"
+  },
+  "packetSHA256": "efc61772c38102c062ee584da005b3632392d1a9c83f3e621a2f2dfe4984ec32",
+  "patchSHA256": "e8fbfdaf67a2f206551206e079ed6e1f909285d18d1f77642e881a56781d718e",
+  "profiles": {
+    "pr": {
+      "exitCode": 0,
+      "inputFiles": 2529,
+      "logSha256": "26aa151c010adc140c64c19fd316a2a4ad14ff1812dc6399b3b199ebadd718ea",
+      "passed": 2065,
+      "profileSeconds": 2068.9158713750003,
+      "skips": 19,
+      "sourceInputsStillMatch": true,
+      "tests": 2084,
+      "unitSeconds": 1912.265
+    },
+    "quick": {
+      "exitCode": 0,
+      "inputFiles": 2529,
+      "logSha256": "ba7bd9adcc66052d2a0f6da9630a0173ec65e5309ec333357cd424e01d4e976a",
+      "passed": 2065,
+      "profileSeconds": 2068.9252898330005,
+      "skips": 19,
+      "sourceInputsStillMatch": true,
+      "tests": 2084,
+      "unitSeconds": 1912.282
+    }
+  },
+  "rawReceiptsBound": 24,
+  "repositoryExitCode": 0,
+  "sourceArchiveMembersVerified": 40,
+  "sourceArchiveSHA256": "7fadfe00caa7713356f588872f1bc9a3432661da9d00202d6d9d26aab32e10b2",
+  "status": "complete local documentary engineering scope",
+  "training": "pending",
+  "whitespaceExitCode": 0
+}

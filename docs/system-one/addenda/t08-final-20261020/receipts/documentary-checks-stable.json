@@ -1,0 +1,29 @@
+{
+  "scope": "T08 documentary binding/link/negative-disposition checks, not promotion software tests",
+  "ownedHashes": {
+    "specs/028-system-one-core/decision-delivery-result.md": "d1d5867c5656c63992ee33fcd8cd6eea0d3e1a8c54a9d0f3ec44e782dabc399d",
+    "specs/033-system-one-promotion/decision-delivery-gates.md": "0b4c9bc00addeb9b7ec5fe57ac7df0f9461c10f408128016cdcc8ba75cfea4a6"
+  },
+  "priorFilesUnchanged": 2527,
+  "localLinksVerified": 11,
+  "historicalPacketHashesVerified": 5,
+  "gateRows": 12,
+  "requiredPendingDispositionsVerified": [
+    "G04",
+    "G06",
+    "G09",
+    "G10",
+    "G12"
+  ],
+  "runtimeOrModelCalls": false,
+  "externalSpendEUR": 0,
+  "outcome": "passed",
+  "initialCheckerDiagnostic": "Initial broad gate-row selector also counted the Gate header; narrowed to explicit Gnn rows. No document/evidence changed to pass.",
+  "wireFormatsCheckedAgainstActualSources": [
+    "s1-acquired-snapshot-v1",
+    "s1-verified-consumer-proposal-v1",
+    "s1-verified-plan-v1",
+    "s1-verified-request-v1"
+  ],
+  "sourceReviewCorrection": "Draft wire name s1-verified-decision-v1 corrected to actual s1-verified-plan-v1 before profile launch; no runtime/contract changed."
+}

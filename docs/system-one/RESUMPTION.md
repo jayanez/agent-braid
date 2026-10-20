@@ -1,10 +1,16 @@
 # System One — agent resumption guide
 
-## Latest T07 observation and ownership
+## Latest T08 documentary observation
+
+Start with the [T08 delivery/gates supplement](addenda/t08-final-20261020/README.md), its exact source capsules and portable evidence/link map. T08 packages bounded internal capability, versions/domain, observed versus unknown costs, rollback/non-use and twelve distinct gates; it does not implement promotion services or close task/issue/milestone/acceptance gates. T09 requires a separate assignment. Source product/tests/archives remain local.
+
+The old temporary checkout is no longer present. The recovered corpus and current separate branch `docs/ddp-t08-corpus` are in `/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/work/agent-braid-t08-corpus`. PR609 is integrated as `b52d7ea3542a3c09678c4b69196c9105f8271f4a`; PR610 now carries only T08 changes on that base. The original T08 publication on T07 headfe91d190 and dependent base, and older checkout paths below, retain their historical observation meaning. Separate direct user authorization permits the ordered documentary integration after exact-head CI/review; no product integration or acceptance gate is authorized by that permission.
+
+## Prior T07 observation and ownership
 
 Read the [final T07 supplement](addenda/t07-final-20261020/README.md) first. Independent bounded Luna technical review and compatibility/conformance profiles are obtained; older pending-T07 wording below is historical. Four new tests and both2084-case profiles passed with19 skips per profile; mapping V01–V32 is family-level, not archived replay. Reviewer command evidence is a five-entry transcription without complete stdout/stderr logs. Product sources are unchanged and retained locally. T07's canonical task/acceptance status and human/Claude/scientific/training/admission/promotion/activation/host-adoption gates are not closed by this supplement.
 
-PR608 is merged into develop as7a9cf27; the current separate documentary branch is `docs/ddp-t07-corpus` in `/tmp/agent-braid-t06-documentary-20261020`. Its PR publication/integration is distinct. No authority to implement product changes or merge another PR is inferred from PR608.
+PR608 is merged into develop as7a9cf27; at that observation, the separate documentary branch was `docs/ddp-t07-corpus` in `/tmp/agent-braid-t06-documentary-20261020`. Its PR publication/integration is distinct. No authority to implement product changes or merge another PR is inferred from PR608.
 
 ## Historical T06 engineering observation
 

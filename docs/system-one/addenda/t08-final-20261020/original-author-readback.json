@@ -1,0 +1,22 @@
+{
+  "checkedAtUTC": "2026-10-20T15:17:49.386706+00:00",
+  "scope": "T08 local documentary engineering package; no runtime or contract edits",
+  "packetSHA256": "efc61772c38102c062ee584da005b3632392d1a9c83f3e621a2f2dfe4984ec32",
+  "completionSHA256": "da80a62c3c600ec25428bb3cba3eda7aeb179bf59046ba1cbf7176bf45ebb6fc",
+  "sourceArchiveSHA256": "7fadfe00caa7713356f588872f1bc9a3432661da9d00202d6d9d26aab32e10b2",
+  "patchSHA256": "e8fbfdaf67a2f206551206e079ed6e1f909285d18d1f77642e881a56781d718e",
+  "sourceArchiveMembersVerified": 40,
+  "rawReceiptsVerified": 24,
+  "priorFilesPreserved": 2527,
+  "ownedHashes": {
+    "specs/028-system-one-core/decision-delivery-result.md": "d1d5867c5656c63992ee33fcd8cd6eea0d3e1a8c54a9d0f3ec44e782dabc399d",
+    "specs/033-system-one-promotion/decision-delivery-gates.md": "0b4c9bc00addeb9b7ec5fe57ac7df0f9461c10f408128016cdcc8ba75cfea4a6"
+  },
+  "finalizerCompletedLogSHA256": "75a8e942a438025cd80caee5e789f963635f99f83212f23ef378d30ed929cb3a",
+  "finalizerLogScope": "Captured after observed exit0, excluded from active raw snapshot",
+  "documentaryReconciliation": "pending",
+  "externalSpendEUR": 0,
+  "training": "pending",
+  "humanReview": "pending",
+  "activation": "pending"
+}
