@@ -1,0 +1,10 @@
+{
+  "status": "provisional documentary intake locally received; profiles and product packet pending",
+  "receipt": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/outputs/t06-transport-documentary-intake-20261020/receipt.json",
+  "receiptSha256": "ef8b57b38e6755768ae709f221b775023e6b0e958685922da1a7515e8e630027",
+  "actualLocalCommit": "616d29cecd5ba8b5355416706fda80b5dc9a3c2b",
+  "clean": true,
+  "productPublication": false,
+  "profilesPassed": false,
+  "sourceChanges": false
+}

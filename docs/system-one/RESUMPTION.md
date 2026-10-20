@@ -1,5 +1,9 @@
 # System One — agent resumption guide
 
+## Latest engineering observation
+
+Start with the [final controlled-consumer reconciliation](addenda/t06-transport-final-20261020/README.md): Core API/private service/real stdio-client engineering is packaged, quick/PR and source bindings verified. Earlier pending profiles/package/service entries below are historical snapshots. Independent product review/T07, host adoption, scientific/human/admission/promotion/activation remain pending. The current documentary checkout is `/tmp/agent-braid-t06-documentary-20261020`, branch `docs/ddp-t06-core-corpus`; publication of this supplement is separate from merged PR594 and from retained local product source.
+
 Read this guide and the [central index](README.md) before resuming. Current documentary review snapshot:2026-10-20. Earlier addenda are timestamped history, not parallel current status. This guide is not execution, merge, public adoption or activation permission.
 
 ## Current state and ownership
