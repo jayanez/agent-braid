@@ -1,0 +1,11 @@
+# T05-FIND-002 — Luna targeted disposition on fixed pins
+
+S1-T05-LUNA-ROWCAP-DISPOSITION-20261020; canonical SPEC-028/T011. The same Luna Latest reviewer reports the row-cap defect fixed on the [corrected candidate](../t05-rowcap-fixed-candidate-20261020/README.md). Alias T05-FIND-002 = T05-REVIEW-P2-001. This resolves the previously pending targeted recheck, without rewriting [the original P2 review and reproduction](../t05-luna-row64-review-20261020/README.md).
+
+The [exact verification report](original-verification.txt) confirms source8971650c51082938281ecb62e40e23adab4202bb20971b1eb23e1ef7d78c339c and testsd14d2ec1637b944eab96a6c9938b1758c8343e390fae208d55e615c9089e0b56. It records one named public-API regression executed, passing in0.753s: row saturation, immediate irreversible refusal and evidence clearing, blocked later operations, actual cleanup row64, idempotent final refusal and the unchanged earlier producer snapshot. No broader audit or suite was repeated. No regression was observed within this finding's narrow scope.
+
+The reviewer also hash-checked the existing28-test focused log and two row-cap mutation detections, explicitly without rerunning them. The documentary conversation matched report pins/log hashes against the preserved corrected receipt and copied/hashed the report; it executed no tests or independent review. AI technical finding disposition is distinct from human/scientific/product approval.
+
+T05-FIND-002/T05-REVIEW-P2-001 is closed only for this pinned defect and targeted scope. The report makes no statement about other T05 findings, whole-feature convergence, consumer behavior or global T07 review. T05-FIND-001's broader chronology remains preserved; no blanket closure follows. The coordinator now reports starting the combined software join, then intends new quick/PR on stable inputs; no joined/full-profile result has been received at this observation.
+
+T05 delivery and final packet, T06 consumers, human/scientific/representative acceptance, training/calibration, rights/admission/promotion and activation remain pending. No remote task, parent or milestone is closed by this documentary disposition. Subsequent changed source hashes require their own evidence; this report is not approval of future bytes.

@@ -87,3 +87,5 @@ Subsequent T05 directions in the [additive admission/refusal record](addenda/t05
 [Luna row64 review](addenda/t05-luna-row64-review-20261020/README.md) is now completed on the preserved pre-fix pins, with oneP2: caught checkpoint cap leaves stale answered live state; final publish refuses. Correction/regression and same-reviewer recheck remain pending. No other actionableP1/P2 was reported within that bounded scope; no global/human/scientific acceptance follows.
 
 [Corrected row-cap candidate](addenda/t05-rowcap-fixed-candidate-20261020/README.md) binds new8971650c/d14d2ec source/test hashes,28passes9.848s and two new directed mutation detections. Alias T05-FIND-002 = T05-REVIEW-P2-001. Luna targeted disposition and new full profiles remain pending; do not close on focused evidence alone.
+
+[Luna targeted row-cap disposition](addenda/t05-rowcap-luna-disposition-20261020/README.md) now closes T05-FIND-002/T05-REVIEW-P2-001 on exact8971650c/d14d2ec pins after one regression pass0.753s. The broader T05 acceptance and combined/full profiles remain pending; preserve original review and fix-candidate receipts as history.
