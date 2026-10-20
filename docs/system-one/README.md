@@ -6,6 +6,8 @@ GitHub availability: [published documentary corpus and follow-up](addenda/github
 
 Publication and next authority: [documentary publication mandate and conditional T05 handoff](addenda/publication-and-t05-condition-20261020.md). T05 depends on actual quick/PR passes and intact pins; no GO is inferred.
 
+T05 packaging observation: [scoped whitespace exception preserving the raw log](addenda/t05-whitespace-preservation-20261020.md), independently unreviewed; evidence bytes remain unchanged.
+
 Latest T05 admission/refusal direction: [zero goal IDs, retained late-refusal pins and preserved historical whitespace](addenda/t05-failure-latch-20261020/admission-and-late-refusal.md), pending source-bound tests/review.
 
 Latest T05 finding: [T05-FIND-001 technical-refusal latch](addenda/t05-failure-latch-20261020/README.md), correction in progress; failed/22-pass/later28-pass log observations preserved without final source-bound closure.
