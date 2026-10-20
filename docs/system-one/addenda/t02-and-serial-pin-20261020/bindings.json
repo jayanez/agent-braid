@@ -1,0 +1,58 @@
+{
+  "id": "S1-DDP-T02-SERIAL-PIN-20261020",
+  "checkedAtUTC": "2026-10-20T06:27:15.537670+00:00",
+  "sourceCandidate": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-verified-core",
+  "taskAliases": {
+    "DDP-T02": "SPEC-029/T026",
+    "DDP-T04": "SPEC-028/T010"
+  },
+  "checks": {
+    "T02SourceTestFixtureHashes": 3,
+    "T02LogHashes": 2,
+    "actualIRPinAndRegistryAfter": "matched",
+    "registryBefore": "matched earlier immutable T04 receipt",
+    "testsRerunByDocumentaryConversation": false,
+    "independentCorrectnessReview": false,
+    "wholeTaskClosure": false
+  },
+  "candidateFiles": {
+    "agent_braid/system_one_verified_ir.py": "a0378c34b805387b0518cf6ebc3da05599976cb7f037d5f140c2571c8f362ea3",
+    "tests/test_system_one_verified_ir.py": "5550874646e3021cf147e14ebf5e5760a7f7397b08ce7701256ad59c2e9367be",
+    "tests/fixtures/system_one_verified_ir.json": "c2aac157c85f4a1d9fd6e5fec998c003433bb4e9769bba3ed50c27f253318b76"
+  },
+  "serialPin": {
+    "stage": "serial source pin after both workers released ownership",
+    "verifierSha256": "a0378c34b805387b0518cf6ebc3da05599976cb7f037d5f140c2571c8f362ea3",
+    "registryBeforeSha256": "2cae6dabd1aa1f9a4818f9c5b7214c8647f078f3fcc5d1ffb26e5657dabaa8c2",
+    "registryAfterSha256": "8d9cb2070683497ea789a9f03905e07f69d6c812c7d0ec9d6ab8a72116f88e6c",
+    "recordedAtUTC": "2026-10-20T06:25:31.745084+00:00",
+    "executionAuthorization": false
+  },
+  "files": [
+    {
+      "path": "README.md",
+      "sha256": "120486b77146805ad94bb10b26297bac5f6399be73df8afc9f1018fb3083fa71",
+      "bytes": 3742
+    },
+    {
+      "path": "focused-log.txt",
+      "sha256": "d682ece3eebbfba7546c2cc769acc0ccd5366afc74c1f741795d0a293815185f",
+      "bytes": 4178
+    },
+    {
+      "path": "mutation-log.txt",
+      "sha256": "d4da321fbc3fa6f062917b2177decf82456ed22ab70cf24a60684a51b03453c6",
+      "bytes": 1903
+    },
+    {
+      "path": "serial-pin.json",
+      "sha256": "3fc9a65e762d1389432edae0991098adfa867c57db609a84d4b7ad7208115bb1",
+      "bytes": 438
+    },
+    {
+      "path": "worker-receipt.json",
+      "sha256": "003feae69914902b0ac5b09f9ee9c3f2931300f382e7f52bb7806f1a3557f140",
+      "bytes": 995
+    }
+  ]
+}

@@ -43,3 +43,7 @@ Human/linguistic review, independent/Claude Code review, scientific and represen
 ## Subsequent partial component receipt
 
 [T04 registry component](addenda/t04-component-20261020/README.md) has now delivered three hash-checked files and an exact ten-test passing worker log. Production pin and integration remain pending; do not close T04 or treat this as full combined validation. This is later than the preparation-only snapshot above. Await T02/T03 and post-pin receipts.
+
+## Subsequent T02 and serial-pin receipt
+
+[T02 component and serial pin](addenda/t02-and-serial-pin-20261020/README.md) now bind three actual T02 files, 25 focused passes, four directed mutation detections and the actual coordinator registry pin. The prior T04 pre-pin tests do not cover post-pin bytes. T03 final hashes and combined/post-pin validation remain pending in this handoff; no task closure or activation follows.

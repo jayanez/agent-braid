@@ -1,0 +1,40 @@
+EOF too strict : RED; tests= 1 failures= 1 errors= 0
+Traceback (most recent call last):
+  File "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-verified-core/tests/test_system_one_verified_ir.py", line 137, in test_eof_with_retained_tail_context_allows_reorder
+    self.assertEqual(result['eligible'], ('k0', 'k2'))
+AssertionError: Tuples differ: ('k2',) != ('k0', 'k2')
+
+First differing element 0:
+'k2'
+'k0'
+
+Second tuple contains 1 additional elements.
+First extra element 1:
+'k2'
+
+- ('k2',)
++ ('k0', 'k2')
+
+EOF unconditional relaxation : RED; tests= 1 failures= 1 errors= 0
+Traceback (most recent call last):
+  File "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-verified-core/tests/test_system_one_verified_ir.py", line 146, in test_terminal_edit_without_retained_context_stays_at_eof
+    self.assertEqual(result['status'], 'semantic-defer')
+AssertionError: 'answered' != 'semantic-defer'
+- answered
++ semantic-defer
+
+
+BOF wrongly relaxed : RED; tests= 1 failures= 1 errors= 0
+Traceback (most recent call last):
+  File "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-verified-core/tests/test_system_one_verified_ir.py", line 155, in test_bof_remains_strict_even_with_context
+    self.assertEqual(self.verify(value)['plans']['k0']['failure'],
+AssertionError: None != {'step': 1, 'reason': 'missing-context'}
+
+Local cap excludes source validation : RED; tests= 1 failures= 1 errors= 0
+Traceback (most recent call last):
+  File "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-verified-core/tests/test_system_one_verified_ir.py", line 256, in test_source_and_all_candidate_hunks_charge_same_checkpoint
+    with self.assertRaisesRegex(ValueError, '^work-budget-exceeded$'):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: ValueError not raised
+
+Four targeted mutations detected as assertion failures; source bytes never modified.
