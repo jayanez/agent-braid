@@ -1,0 +1,36 @@
+{
+  "id": "S1-T05-ROWCAP-FIX-CANDIDATE-20261020",
+  "checkedAtUTC": "2026-10-20T07:26:58.286195+00:00",
+  "findingAliases": [
+    "T05-FIND-002",
+    "T05-REVIEW-P2-001"
+  ],
+  "status": "fix candidate obtained; reviewer disposition and full profiles pending",
+  "sourceBindings": {
+    "agent_braid/system_one_verified_selection.py": "8971650c51082938281ecb62e40e23adab4202bb20971b1eb23e1ef7d78c339c",
+    "tests/test_system_one_verified_selection.py": "d14d2ec1637b944eab96a6c9938b1758c8343e390fae208d55e615c9089e0b56"
+  },
+  "checks": {
+    "actualCandidateHashes": 2,
+    "originalLogHashes": 2,
+    "testsRerunHere": false,
+    "reviewCompletedAtObservation": false
+  },
+  "files": [
+    {
+      "path": "README.md",
+      "sha256": "0db2bee4ba1d65b394d9e16d11de5b23ef6be8e209142ceae6475dbab8dc0d9a",
+      "bytes": 2536
+    },
+    {
+      "path": "fixed-candidate.json",
+      "sha256": "3583dee652856639507871d99e7b88e9020a117a3711fd7f90d43170e6be28d9",
+      "bytes": 855
+    },
+    {
+      "path": "log-capsules.json",
+      "sha256": "a08edff497d50eba8ce5671914a83e77f902f14c050d07bf0f9fef121b7e78b4",
+      "bytes": 7140
+    }
+  ]
+}

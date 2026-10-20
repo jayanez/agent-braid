@@ -1,0 +1,13 @@
+{
+  "codeOrProfileInputsChanged": false,
+  "decompressedHashVerified": true,
+  "earlierRepositoryValidation": "passed after raw review stored as txt",
+  "executionAuthorization": false,
+  "failure": "git diff --check found raw failed-test stdout trailing whitespace at T05-focused-first.log:7",
+  "gzipSha256": "fb80c06f38b848ba86986991a900b0a1654dd2fbd4dcf1de0476790d64477169",
+  "id": "T05-PACKAGING-003",
+  "originalSha256": "3306fbdd22f1067470bf038fae1dbd27f17edd1284b5f0d132145f7dcc9253d4",
+  "rawExternalOriginalUnchanged": true,
+  "storage": "T05-focused-first.log.gz",
+  "strategy": "Lossless gzip raw receipt, never trim test evidence or weaken validated whitespace configuration"
+}

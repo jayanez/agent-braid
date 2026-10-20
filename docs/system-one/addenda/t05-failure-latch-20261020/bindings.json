@@ -1,0 +1,23 @@
+{
+  "id": "S1-T05-FIND-001-CORPUS",
+  "findingStatus": "self-inspection; fix in progress",
+  "checks": "original finding/log bytes copied and hashed; log outcomes parsed; no implementation review or test rerun",
+  "sourcePinsForCorrectedT05": "not received",
+  "files": [
+    {
+      "path": "README.md",
+      "sha256": "9ca4d8a807e5bf85651efbcedd1ec285a0b5b27fbe610ba7a885a73a4c1a80ba",
+      "bytes": 2726
+    },
+    {
+      "path": "finding.json",
+      "sha256": "8232a10e2757a4df3262b7b55c570799f7404d9982dd0a9d67f29dd4560298e8",
+      "bytes": 543
+    },
+    {
+      "path": "focused-log-capsules.json",
+      "sha256": "0e376b5c52afac0c0ac525d920d5cfdf3da2ad065d24fd8549c53fcfbf75bf4a",
+      "bytes": 18383
+    }
+  ]
+}

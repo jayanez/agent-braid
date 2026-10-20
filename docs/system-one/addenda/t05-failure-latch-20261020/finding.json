@@ -1,0 +1,10 @@
+{
+  "id": "T05-FIND-001",
+  "stage": "self-inspection; fix in progress",
+  "recordedAtUTC": "2026-10-20T07:17:51.592183+00:00",
+  "trigger": "caught live phase/checkpoint deadline or work exception followed by publish of earlier answered producer snapshot",
+  "requiredBehavior": "irreversible technical refusal before final publication; sealed final result unchanged",
+  "evidenceAtObservation": "worker report; revision with22focusedpasses predates new boundary checks",
+  "independentReview": "pending",
+  "executionAuthorization": false
+}

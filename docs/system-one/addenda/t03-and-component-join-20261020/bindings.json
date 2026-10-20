@@ -1,0 +1,52 @@
+{
+  "id": "S1-DDP-T03-JOIN-20261020",
+  "candidate": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-verified-core",
+  "checkedSourceBindings": {
+    "T03": {
+      "agent_braid/system_one_verified_acquisition.py": "2380a32ef308fbbe540c67e71fb0bf43dc15b95a6732a13a8e2bf2be0d49e5b7",
+      "tests/test_system_one_verified_acquisition.py": "27ff8dd4192d1bc1b7d72b412fa1209e3ba28b32671f0181d3fb707a104ea8ed",
+      "tests/fixtures/system_one_verified_acquisition.json": "4c674337541e56bc7cc2219a8c10e522bba037fae24bd480a65317010fc15078"
+    },
+    "componentJoin": {
+      "agent_braid/system_one_verified_ir.py": "a0378c34b805387b0518cf6ebc3da05599976cb7f037d5f140c2571c8f362ea3",
+      "agent_braid/system_one_verified_acquisition.py": "2380a32ef308fbbe540c67e71fb0bf43dc15b95a6732a13a8e2bf2be0d49e5b7",
+      "agent_braid/system_one_verified_registry.py": "8d9cb2070683497ea789a9f03905e07f69d6c812c7d0ec9d6ab8a72116f88e6c",
+      "tests/test_system_one_verified_components.py": "01abcb850572c3ad0f85beccaf7d437367fa388f681f0b77d55be24c98c32dcf"
+    }
+  },
+  "checks": {
+    "sourceHashComparisons": 7,
+    "logHashComparisons": 2,
+    "testsRerunHere": false,
+    "independentImplementationReview": false,
+    "fullProfiles": "pending",
+    "remoteMutations": 0
+  },
+  "files": [
+    {
+      "path": "README.md",
+      "sha256": "f404c730f2a97da9fac2f3a1cd32e12974d1e8f33f6b5d3c470d6f6fef5db26e",
+      "bytes": 3375
+    },
+    {
+      "path": "component-join.json",
+      "sha256": "cf882807d2a87f82a509a64afbebef8b3935315e0f291c22d5bc0cfb0afdcc6d",
+      "bytes": 1283
+    },
+    {
+      "path": "focused-log.txt",
+      "sha256": "cb72c656fb2864109e4d6f75b47a18d326542a4e418388e441b24f2caacd3cb0",
+      "bytes": 2579
+    },
+    {
+      "path": "join-log.txt",
+      "sha256": "a18fa4c9fe67ddebecd1ef5783cbf9bd8e44579d6909efa009fba7a0ee3edd57",
+      "bytes": 9206
+    },
+    {
+      "path": "worker-receipt.json",
+      "sha256": "2951596f10b25a1a91eff2e3e8a256194a80d2f4c07c280b7071e24cc0bc9806",
+      "bytes": 1083
+    }
+  ]
+}

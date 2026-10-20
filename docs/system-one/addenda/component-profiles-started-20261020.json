@@ -1,0 +1,33 @@
+{
+  "id": "S1-DDP-PROFILES-STARTED-20261020",
+  "observedAtUTC": "2026-10-20T06:31:02.755495+00:00",
+  "sourceSupervisor": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/outputs/ddp-first-parallel-20261020/run_profiles.py",
+  "supervisorSHA256": "fff73347353ecf104526e3ab7cc902960510b45b0e47b38ab917765c964cc06d",
+  "status": "coordinator reports quick and pr running; final results unknown",
+  "observation": {
+    "quickLogPresent": true,
+    "prLogPresent": true,
+    "quickReceiptPresent": false,
+    "prReceiptPresent": false
+  },
+  "sourceBoundary": "Coordinator reports baseline fe6d25b3d9fb989c230aa11779b6a51d494d7a4e plus17newfiles including7T01documents. Profile script read confirms independent local clone copies, per-file hash checks, existing isolated dependencies, fixed parent/child Python PATH, file-only Git protocol and offline model flags. Final inputHashes and outcomes must be read from final receipts, not inferred from live logs.",
+  "requestedProfiles": [
+    "quick",
+    "pr"
+  ],
+  "quickSelection": "coordinator reports escalation to sensitive by path map; preserve actual selection in final log",
+  "result": null,
+  "limits": [
+    "source-equivalent software checks, not independent scientific reproduction",
+    "52 focused cases overlap the component suites",
+    "no candidate edits while profiles run",
+    "no whole-task closure, remote publication, T05/T06 implementation or activation implied",
+    "prior DDP-T01 full profile failure unchanged"
+  ],
+  "next": "Bind exact completed quick/pr receipts and final logs, actual failures/skips, input hashes, candidate unchanged checks and cleanup. Coordinator finalize.py was reported prepared but not executed; no packet exists by inference.",
+  "taskAliases": [
+    "SPEC-029/T026 (DDP-T02)",
+    "SPEC-031/T010 (DDP-T03)",
+    "SPEC-028/T010 (DDP-T04)"
+  ]
+}

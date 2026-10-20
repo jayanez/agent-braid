@@ -1,0 +1,18 @@
+<!-- SPDX-License-Identifier: CC-BY-SA-4.0 -->
+# DDP-T01 — Final coordinator documentary disposition
+
+The revision-2 local contract-design delivery is verified and frozen for bounded implementation planning. CT01 and CT02 are resolved documentarily. This is not public schema adoption, runtime acceptance, independent/human/scientific review or activation. Remote task state is unchanged.
+
+The coordinator checked every one of the 38 manifest file bindings, all 40 ZIP members, 15 source pins, the five unchanged candidate documents and two separately recorded post-profile supplements. The 32 vectors are planned implementation controls, not newly executed runtime conformance. Exact identities and disposition are in [final-disposition.json](final-disposition.json), linked to the [sealed delivery receipt](../ddp-t01-contract-candidate/receipt.json).
+
+The full revision-2 profile remains FAILED: 1,962 cases, three environment-related failures, 19 skips. Literal `python3` child commands resolved to system Python3.9 while the parent used3.12. With PATH corrected to the existing isolated runtime, the affected29-test module passed; five remaining controls also passed. The complete corrected-environment profile was not rerun or reclassified. The earlier interrupted candidate attempt and all logs remain preserved. Future assignments must pin both parent Python and child PATH.
+
+## Next bounded parallel batch
+
+1. DDP-T02: extract pure EOF IR, controlled EN/ES grammar and finite verification; own IR module, tests and package-local fixtures.
+2. DDP-T03: extract observed acquisition; use the explicit shared GitCommandBudget, remaining-time and cancellation seam; own acquisition module, tests and fixtures.
+3. DDP-T04: implement the immutable static registry with package-local tests/fixtures; production availability waits for the actual T02 source pin and coordinator serial integration.
+
+The [frozen package plan](../ddp-t01-contract-candidate/staging/specs/028-system-one-core/decision-delivery/addenda/ddp-t01-plan.md) contains exact signatures, disjoint filenames, tests, dependencies and stop rules. No implementation agents were launched. After the three packages join and the actual verifier digest is pinned, T05 selection and then T06 consumers follow their dependencies.
+
+EUR0 external spend. Training, calibration, human review, scientific/representative acceptance, admission/promotion, public adoption/publication and activation remain pending. The research checkout and historical evidence remain unchanged.

@@ -1,0 +1,42 @@
+{
+  "bindingsVerified": 72,
+  "executionAuthorization": false,
+  "externalSpendEUR": 0,
+  "justifiedChangedFile": ".gitattributes",
+  "packagingFailuresPreservedAndResolved": true,
+  "packet": "specs/029-system-one-evaluation/evidence/ddp-t05/packet.json",
+  "packetSha256": "1b9f67d77da004678808f1620e0dfaf9a4e1a113eb12a02f146b0f7a058bbcbc",
+  "patchSha256": "c675ab538c942612d3350ba2b8f4707256ae90cecee913e59049b2c0524192ef",
+  "priorFilesUnchanged": 2281,
+  "priorPacketUnchanged": true,
+  "profiles": {
+    "pr": {
+      "exitCode": 0,
+      "inputFiles": 2284,
+      "logSha256": "a6e2cff82b4b403a38434483b88704165dc3258703f0100becf00d58c854394e",
+      "passed": 2023,
+      "profileWallSeconds": 1997.1530156669905,
+      "skips": 19,
+      "sourceInputsStillMatch": true,
+      "unittestSeconds": 1827.548,
+      "unittestTests": 2042
+    },
+    "quick": {
+      "exitCode": 0,
+      "inputFiles": 2284,
+      "logSha256": "f7a8c95b846c87871f195aa128cffdd66a8b2a8bc4fc2fba480aa57a5ce8af59",
+      "passed": 2023,
+      "profileWallSeconds": 1995.7306791670271,
+      "skips": 19,
+      "sourceInputsStillMatch": true,
+      "unittestSeconds": 1826.0,
+      "unittestTests": 2042
+    }
+  },
+  "report": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-verified-core/specs/028-system-one-core/decision-delivery/addenda/ddp-t05-implementation.md",
+  "reportSha256": "b44a21a94c68eaa10a148327fc335f0b6004b1af91084bdb97fb6515312258d3",
+  "sourceArchiveMembersVerified": 22,
+  "sourceArchiveSha256": "151113b44435c647f292e46db49e9e9b326153f9a81b75893ef12b2a13072868",
+  "status": "complete",
+  "task": "DDP-T05 / SPEC-028T011"
+}

@@ -1,0 +1,11 @@
+# PR594 — documentary review and integration preparation
+
+Review entry head06c3c6c6f15eb8a0b36fa4158ef7413a1b07b82d had successful validate/tracking CI; specialist matrix was skipped. [Exact entry CI](review-entry-ci.json) binds that state. No GitHub review/approval was present at entry. The PR was mergeable and draft; integration into develop remained a separate action.
+
+Three P2 chronology/navigation findings were corrected without modifying frozen contracts, evidence, source pins or historical results. See [findings and identity limitation](initial-findings.json), [corrections/temporal boundaries](status-clarifications.md) and [explicit Luna recheck](luna-recheck.md). The current index/resumption now give one current handoff followed by a historical receipt map, rather than competing “latest” statuses. No actionable issue remained within the bounded recheck of corrected head995057a3e9cb0e757a44f3389c09a67beda8b481.
+
+[Mechanical audit](mechanical-audit.json):134changed documentary paths,68JSON,190local links,62frozen receipt-file hashes,41UTF-8 capsules and20retained gzip streams/bindings checked; no errors. The actual repository validator and staged whitespace checks also passed. No new product unit suite, experiment, model run or source change was executed by this documentary review. The complete hosted CI for the final publication commit remains a separate exact-head gate.
+
+Integration preparation: publish the editorial fixes and review artifacts, verify no product code/config/tests/source archive enters the diff, confirm current develop base/no conflicts, mark ready for review, and read current-head CI. No merge, founder/human approval, product schema adoption or task/milestone closure is inferred. The scoped documentary AI review does not replace the broader T07, human/scientific/representative/rights/admission/promotion/activation gates.
+
+T06 implementation remains in the separately authorized coordinator conversation. This conversation records only the later authorization and [unimplemented seam relay](t06-relay-scope.txt), touches no implementation candidate and starts no T06 work. Hand off the final documentary SHA/CI/review findings to the coordinator before integration. The versioned review is evidence of preparation and bounded scrutiny, not an authorization to deploy or activate anything.

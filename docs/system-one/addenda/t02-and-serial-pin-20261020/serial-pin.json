@@ -1,0 +1,8 @@
+{
+  "stage": "serial source pin after both workers released ownership",
+  "verifierSha256": "a0378c34b805387b0518cf6ebc3da05599976cb7f037d5f140c2571c8f362ea3",
+  "registryBeforeSha256": "2cae6dabd1aa1f9a4818f9c5b7214c8647f078f3fcc5d1ffb26e5657dabaa8c2",
+  "registryAfterSha256": "8d9cb2070683497ea789a9f03905e07f69d6c812c7d0ec9d6ab8a72116f88e6c",
+  "recordedAtUTC": "2026-10-20T06:25:31.745084+00:00",
+  "executionAuthorization": false
+}

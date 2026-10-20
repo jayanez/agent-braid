@@ -1,0 +1,13 @@
+{
+  "id": "T05-PACKAGING-002",
+  "status": "specific repair prepared",
+  "failedCommand": "scripts/validate_repository.py",
+  "failure": "raw Luna review Markdown contains original absolute source-line link which repository relative-link checker rejects",
+  "rawReviewSha256": "c295c34aa8d8a8ce5dbf5970830187ad37a788e8aaf7b17afaa3349dada32772",
+  "failedRepositoryLogSha256": "d4c45eb7eaf3d16ba3660de1b47b2ed2b0979954964d42f54ddb2e5df28357de",
+  "finalizeAttemptLogSha256": "e35ef729c84ce35f2773b8030272e81d7e338957bfa386d0fb432a38ba871b13",
+  "completionExists": false,
+  "codeOrProfileInputsChanged": false,
+  "repair": "retain original raw review bytes as .txt receipt; retain failed validation log; run only affected repository validation and packaging checks",
+  "executionAuthorization": false
+}

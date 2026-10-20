@@ -1,0 +1,16 @@
+{
+  "id": "S1-DDP-T02-T04-PREPARATION-20261020",
+  "sourceThread": "01a14a9e-bea2-7c71-b818-c6d244a809cd",
+  "sourceTurn": "01a157f2-0a97-78e3-b3ca-95621da6cc8c",
+  "sourceReadbackSHA256": "d2b33b854dd07582881657dc8a0abbedd665d4038fc244741fd0f9f7d882421b",
+  "coordinatorHandoff": "Paso de implementación: tres agentes asignados T02verified_ir/T03verified_acquisition/T04verified_registry, todavía fase inicial SOLOLECTURA hastaGO. Checkoutmanaged /Users/juanyanez/.codex/worktrees/verified-plan-core/agent-braid fallópreflight por objetosinalcanzables (sin podar/alteraroriginal); recuperación documentada en cloncompleto independiente /Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-verified-core,baselinefe6d25b3d9fb989c230aa11779b6a51d494d7a4e,rama feat/verified-plan-core. Public refs/tagsrestaurados de copialocal,Gitfsck0;preflightnuevoencurso. InvestigaciónRO. Propiedades exactas: cada agente solo su nuevo módulo/test/fixtureJSON descrito enT01; sineditarcompartidos/CLI/MCP/contratos. Detalles de seam resueltos para el código, para futuro addendumdocumental: (1) funcionesinternaspuras elevan ValueError con razónfija eninvalid/budget y verify_program retorna solo los5campos completados answered/defer;T05transformará a refused externo, sin añadirreasoncampos inesperados. (2) validación dehunks de fuente desdeinterpret/render también cobra checkpoint verification conunits1 compartido;contabilizaranidamiento sinresetT05. (3) adquisición usa flagsseguridad T024 y fija diffcontext3/myers/interhunk0/nocolor/prefixes como hardeningnuevo;sha debytesrealmenteadquiridos,NOparidad histórica bajo configuraciónGitnodefault. (4) registro comprueba fuenteIRreal con lecturalimitada sin importsibling, permanece indisponible hastapinserialrealcoordinador. No marquesningúncomponenteentregado nipreflightpasado aún; próximos recibos iránconhashes/tests/limitaciones.",
+  "laterReadbackObservation": "The same in-progress turn subsequently reports independent-clone preflight exit0 (142.895s) and intent to import contracts/give GO. This conversation has not verified a sealed preflight or component receipt; no implementation completion or runtime acceptance is inferred.",
+  "status": "assigned/preparation; subsequent preflight pass reported in source turn, receipt pending",
+  "pending": [
+    "exact component source/test/fixture hashes and results",
+    "integration and actual production registry pin",
+    "T05/T06 dependency fulfillment",
+    "independent/human/scientific/admission/promotion/activation gates"
+  ],
+  "localScope": "Documentary incorporation only; coordinator candidate untouched"
+}

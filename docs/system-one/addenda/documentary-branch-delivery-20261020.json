@@ -1,0 +1,146 @@
+{
+  "id": "S1-DOCUMENTARY-BRANCH-DELIVERY-20261020",
+  "baselineCommit": "fe6d25b3d9fb989c230aa11779b6a51d494d7a4e",
+  "scope": "Documentary branch save point; no implementation, remote publication or gate acceptance",
+  "validation": "Prior Spec Kit preflight exit0; proportional JSON/link/hash/whitespace and export patch checks. Historical DDP-T01 full PR profile remains failed; no corrected full-suite rerun. Resumption guide receives JSON/link/whitespace/source-binding checks.",
+  "files": [
+    {
+      "path": "docs/system-one/README.md",
+      "sha256": "81c2e2fa47b181046831410c5263576599fb1288e19d8c4c189125819bd3ff33",
+      "bytes": 5197
+    },
+    {
+      "path": "docs/system-one/gates-and-assignment.md",
+      "sha256": "24a046352a72bdb2dff5e7ce917c96fd8e77137201dadf2a17f200e3c3e4bb78",
+      "bytes": 3172
+    },
+    {
+      "path": "docs/system-one/review-checklist.md",
+      "sha256": "9808cdf665c1ff7a3a763850fb07d756b254df2f5dc4814b9cb65623de24ad65",
+      "bytes": 5701
+    },
+    {
+      "path": "specs/028-system-one-core/corpus-status.md",
+      "sha256": "70635d876e9c5dfcfc2bd9f71bfecd3d4ffce86c14bab644067566ff82e8dfcd",
+      "bytes": 1148
+    },
+    {
+      "path": "docs/system-one/RESUMPTION.md",
+      "sha256": "00f02f2360370fc30832af3084ed4c2caf31a8a464f2403cfdcf41e87571ba07",
+      "bytes": 7535
+    },
+    {
+      "path": "docs/system-one/addenda/ddp-t02-t04-preparation-20261020.json",
+      "sha256": "03ae7c808b7d344f5e0fb2763ebb45afe037e737c0d5dfe10269614edbb04907",
+      "bytes": 2641
+    },
+    {
+      "path": "docs/system-one/addenda/ddp-t02-t04-preparation-20261020.md",
+      "sha256": "b6c0364564890ecdf5ceef1d2f7273457bc5870104e80b2430c8fb18ac6da40e",
+      "bytes": 2466
+    },
+    {
+      "path": "docs/system-one/addenda/t04-component-20261020/README.md",
+      "sha256": "1a85d2ce6c2794742c754b2b4cb4ab932ec2596e9b8825bb0bda68cd7925507c",
+      "bytes": 1893
+    },
+    {
+      "path": "docs/system-one/addenda/t04-component-20261020/bindings.json",
+      "sha256": "afd0cbd03d6eb471d7c05c4842a8ef65324ee7cb0a390bafba4f3de8f95b14b3",
+      "bytes": 1121
+    },
+    {
+      "path": "docs/system-one/addenda/t04-component-20261020/focused-log.txt",
+      "sha256": "be0ea6a187f543078d44f7b7561b12519a1ac5bdb4a5e781e5fd7221b91e7d81",
+      "bytes": 1845
+    },
+    {
+      "path": "docs/system-one/addenda/t04-component-20261020/worker-receipt.json",
+      "sha256": "1604193b95963654527067aa93d475580592c7a913fd53e8eeb91ff9417e2444",
+      "bytes": 785
+    },
+    {
+      "path": "docs/system-one/addenda/verification-continuity-20261020/README.md",
+      "sha256": "192b9eea5231aed946ff4abb6a3e629b219c498a1e86b37b0d105aab9fbff73d",
+      "bytes": 9745
+    },
+    {
+      "path": "docs/system-one/addenda/verification-continuity-20261020/bindings.json",
+      "sha256": "12dd0ea2a94a321d0557be62552805fa08391ec8991aaa6791cd7f54713afa22",
+      "bytes": 4814
+    },
+    {
+      "path": "docs/system-one/addenda/verification-continuity-20261020/coordination-update.json",
+      "sha256": "198a12d94eed8798ec8f467cfeac73dd07f0533a9ad6d751c19017dd2cab1ad4",
+      "bytes": 1375
+    },
+    {
+      "path": "docs/system-one/addenda/verification-continuity-20261020/ddp-t01-delivery-receipt.json",
+      "sha256": "c95ce25cdd4629ab296eb3a255885ec331738d27732f62da4494d248569cf881",
+      "bytes": 5174
+    },
+    {
+      "path": "docs/system-one/addenda/verification-continuity-20261020/ddp-t01-final-disposition.json",
+      "sha256": "a576de24310530ae2253fbe5e3a423cb5ed99209061965b38c8029c2b734d43b",
+      "bytes": 1966
+    },
+    {
+      "path": "docs/system-one/addenda/verification-continuity-20261020/ddp-t01-final-disposition.txt",
+      "sha256": "24ef64daeeb1dbd37c9ec32f63e1ff9b11c6a3d9b0efdea5248c82bfc1e82d91",
+      "bytes": 2533
+    },
+    {
+      "path": "docs/system-one/addenda/verification-continuity-20261020/project-s1-flat-export.json",
+      "sha256": "9267694effcf5b18dcf25f908d08fbb5d233b0a8b4d16ecb217f27186d7c5f92",
+      "bytes": 23767
+    },
+    {
+      "path": "docs/system-one/addenda/verification-continuity-20261020/project-verification.json",
+      "sha256": "e94387c39b2752a34428a32fd81d08d8ef3a41836b5e3873db01f14615542046",
+      "bytes": 33274
+    },
+    {
+      "path": "specs/028-system-one-core/contracts/verified-plan-v1.md",
+      "sha256": "a68488d4a412820130231daa8c8dbeefb1e58445b2f1cfdf0c02b8669ef132d7",
+      "bytes": 21462
+    },
+    {
+      "path": "specs/028-system-one-core/decision-delivery/addenda/ddp-t01-coordinator-review.json",
+      "sha256": "2fbed3cabf3ef6433dd0bd3cd2824423fc4265659c6fa505de8a9857f0495606",
+      "bytes": 1777
+    },
+    {
+      "path": "specs/028-system-one-core/decision-delivery/addenda/ddp-t01-coordinator-review.md",
+      "sha256": "a117ba5f197944de569099df4168c461eec8b62f0e3585f3a2af3dd1bbab1cfd",
+      "bytes": 3838
+    },
+    {
+      "path": "specs/028-system-one-core/decision-delivery/addenda/ddp-t01-plan.md",
+      "sha256": "2ee328f92aa19820704b3838528599296c87f53a5872a1f12d2bd8cd59a6e62e",
+      "bytes": 20126
+    },
+    {
+      "path": "specs/029-system-one-evaluation/verified-plan-conformance.md",
+      "sha256": "90f52099cdaebba51f2781c715c748d1ba0c13e9b2b9755a32b25e53f5a08e5b",
+      "bytes": 13451
+    },
+    {
+      "path": "specs/029-system-one-evaluation/verified-plan-vectors.json",
+      "sha256": "6584ce4de05edf143e215945ff620b5127fe48e6c352dfb7a33b447e753a11f7",
+      "bytes": 27847
+    },
+    {
+      "path": "specs/031-system-one-integration/contracts/verified-plan-consumer-v1.md",
+      "sha256": "b17b5f3398dba9086ba44bdc04c4ff9cae97364f1fb9430a7e4ebcb9cb9fd1f4",
+      "bytes": 11794
+    }
+  ],
+  "latestPartialComponent": "DDP-T04 three component files hash-checked; exact ten-test worker log copied; production pin and integration pending",
+  "checks": {
+    "frozenDDPDesignAndSupplementsUnchanged": 7,
+    "localLinks": 53,
+    "jsonParse": "passed",
+    "whitespace": "passed",
+    "fullCorrectedEnvironmentSuite": "not rerun; earlier profile remains failed"
+  }
+}

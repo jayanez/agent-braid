@@ -1,0 +1,27 @@
+# T05-FIND-002 row-cap fix verification
+
+Date: 2026-10-20
+
+Scope: verification of the previously reported row-cap refusal latching defect only. No broader review was repeated and no repository files were edited.
+
+## Pins and implementation
+
+- `agent_braid/system_one_verified_selection.py`: SHA-256 `8971650c51082938281ecb62e40e23adab4202bb20971b1eb23e1ef7d78c339c` (matches supplied pin).
+- `tests/test_system_one_verified_selection.py`: SHA-256 `d14d2ec1637b944eab96a6c9938b1758c8343e390fae208d55e615c9089e0b56` (matches supplied pin).
+- `_open()` now caps ordinary stage rows at 63, reserving row 64 for cleanup. `checkpoint()` now catches `ValueError` across automatic stage admission and hunk checks, latches refusal, and re-raises.
+
+The new regression reaches saturation through public phase scopes, catches the automatic checkpoint error, checks immediate refusal and evidence clearing, checks that later work remains blocked, and confirms actual cleanup occupies row 64 while the final refused response stays idempotent. The earlier immutable producer snapshot remains answered, as required for an already returned immutable record.
+
+## Check executed
+
+Ran only the named regression:
+
+`PYTHONPATH=tests python3 -m unittest test_system_one_verified_selection.VerifiedSelectionTests.test_row_saturation_latches_live_refusal_and_reserves_actual_cleanup -v`
+
+Result: 1 test passed in 0.753s.
+
+I also verified the coordinator-provided focused log hash `2e39d5d026bb693dd1d026165862b5b9927ad021f6dc54750d481deea28b4744`; it records 28/28 passed. The provided row-cap mutation log hash `d04ba776b2a935bfe275136e7f996997a84c1510fc66a83d235660f70af76f44` records both targeted row-cap mutations independently detected with one assertion failure and zero errors each. These profile/mutation runs were not rerun in this scoped verification.
+
+## Disposition
+
+T05-FIND-002 is fixed in the reviewed pinned source and the targeted regression passes. No regression was observed within this finding's scope. No statement is made about other T05 findings, broader validation, consumer behavior, or human/scientific/product acceptance.

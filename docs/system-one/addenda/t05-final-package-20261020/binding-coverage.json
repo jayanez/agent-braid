@@ -1,0 +1,589 @@
+{
+  "id": "S1-T05-FINAL-PACKAGE-20261020",
+  "checkedAtUTC": "2026-10-20T08:09:23.556025+00:00",
+  "sourceCandidate": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-verified-core",
+  "packetSha256": "1b9f67d77da004678808f1620e0dfaf9a4e1a113eb12a02f146b0f7a058bbcbc",
+  "bindingsChecked": 72,
+  "priorPacketBindingsChecked": 51,
+  "entryFiles": 2282,
+  "unchangedEntryFiles": 2281,
+  "justifiedException": ".gitattributes",
+  "reversibleRawLogsChecked": 20,
+  "sourceArchivePublished": false,
+  "archiveMembersCompared": [
+    {
+      "path": "agent_braid/system_one_verified_acquisition.py",
+      "sha256": "2380a32ef308fbbe540c67e71fb0bf43dc15b95a6732a13a8e2bf2be0d49e5b7",
+      "bytes": 20715
+    },
+    {
+      "path": "agent_braid/system_one_verified_ir.py",
+      "sha256": "a0378c34b805387b0518cf6ebc3da05599976cb7f037d5f140c2571c8f362ea3",
+      "bytes": 18934
+    },
+    {
+      "path": "agent_braid/system_one_verified_registry.py",
+      "sha256": "8d9cb2070683497ea789a9f03905e07f69d6c812c7d0ec9d6ab8a72116f88e6c",
+      "bytes": 4294
+    },
+    {
+      "path": "specs/028-system-one-core/contracts/verified-plan-v1.md",
+      "sha256": "a68488d4a412820130231daa8c8dbeefb1e58445b2f1cfdf0c02b8669ef132d7",
+      "bytes": 21462
+    },
+    {
+      "path": "specs/028-system-one-core/decision-delivery/addenda/ddp-t01-coordinator-review.json",
+      "sha256": "2fbed3cabf3ef6433dd0bd3cd2824423fc4265659c6fa505de8a9857f0495606",
+      "bytes": 1777
+    },
+    {
+      "path": "specs/028-system-one-core/decision-delivery/addenda/ddp-t01-coordinator-review.md",
+      "sha256": "a117ba5f197944de569099df4168c461eec8b62f0e3585f3a2af3dd1bbab1cfd",
+      "bytes": 3838
+    },
+    {
+      "path": "specs/028-system-one-core/decision-delivery/addenda/ddp-t01-plan.md",
+      "sha256": "2ee328f92aa19820704b3838528599296c87f53a5872a1f12d2bd8cd59a6e62e",
+      "bytes": 20126
+    },
+    {
+      "path": "specs/029-system-one-evaluation/verified-plan-conformance.md",
+      "sha256": "90f52099cdaebba51f2781c715c748d1ba0c13e9b2b9755a32b25e53f5a08e5b",
+      "bytes": 13451
+    },
+    {
+      "path": "specs/029-system-one-evaluation/verified-plan-vectors.json",
+      "sha256": "6584ce4de05edf143e215945ff620b5127fe48e6c352dfb7a33b447e753a11f7",
+      "bytes": 27847
+    },
+    {
+      "path": "specs/031-system-one-integration/contracts/verified-plan-consumer-v1.md",
+      "sha256": "b17b5f3398dba9086ba44bdc04c4ff9cae97364f1fb9430a7e4ebcb9cb9fd1f4",
+      "bytes": 11794
+    },
+    {
+      "path": "tests/fixtures/system_one_verified_acquisition.json",
+      "sha256": "4c674337541e56bc7cc2219a8c10e522bba037fae24bd480a65317010fc15078",
+      "bytes": 846
+    },
+    {
+      "path": "tests/fixtures/system_one_verified_ir.json",
+      "sha256": "c2aac157c85f4a1d9fd6e5fec998c003433bb4e9769bba3ed50c27f253318b76",
+      "bytes": 2931
+    },
+    {
+      "path": "tests/fixtures/system_one_verified_registry.json",
+      "sha256": "75753dac881c6cd933360aab88b5d71bb6d17c19d6537c0645b8024c78a1005a",
+      "bytes": 1241
+    },
+    {
+      "path": "tests/test_system_one_verified_acquisition.py",
+      "sha256": "27ff8dd4192d1bc1b7d72b412fa1209e3ba28b32671f0181d3fb707a104ea8ed",
+      "bytes": 20607
+    },
+    {
+      "path": "tests/test_system_one_verified_components.py",
+      "sha256": "01abcb850572c3ad0f85beccaf7d437367fa388f681f0b77d55be24c98c32dcf",
+      "bytes": 7126
+    },
+    {
+      "path": "tests/test_system_one_verified_ir.py",
+      "sha256": "5550874646e3021cf147e14ebf5e5760a7f7397b08ce7701256ad59c2e9367be",
+      "bytes": 18917
+    },
+    {
+      "path": "tests/test_system_one_verified_registry.py",
+      "sha256": "53185df49342636e9b2545a5d53ef398998b4acc3367e39ee35ee0e5c525d254",
+      "bytes": 8812
+    },
+    {
+      "path": "specs/028-system-one-core/decision-delivery/addenda/ddp-t02-t04-implementation.md",
+      "sha256": "f660f8500396f97d828fe3648795608a78590ddbcb9b7e08aab357072717a15f",
+      "bytes": 4876
+    },
+    {
+      "path": "agent_braid/system_one_verified_selection.py",
+      "sha256": "8971650c51082938281ecb62e40e23adab4202bb20971b1eb23e1ef7d78c339c",
+      "bytes": 26389
+    },
+    {
+      "path": "tests/test_system_one_verified_selection.py",
+      "sha256": "d14d2ec1637b944eab96a6c9938b1758c8343e390fae208d55e615c9089e0b56",
+      "bytes": 32649
+    },
+    {
+      "path": "specs/028-system-one-core/decision-delivery/addenda/ddp-t05-implementation.md",
+      "sha256": "b44a21a94c68eaa10a148327fc335f0b6004b1af91084bdb97fb6515312258d3",
+      "bytes": 8387
+    },
+    {
+      "path": ".gitattributes",
+      "sha256": "ddadbe68f2e47ff7ca9866dd346276a34d87ab64f2e0ddb25971c900eb62f653",
+      "bytes": 299
+    }
+  ],
+  "patchHashChecked": "c675ab538c942612d3350ba2b8f4707256ae90cecee913e59049b2c0524192ef",
+  "bindingCoverage": [
+    {
+      "sourcePath": ".gitattributes",
+      "sha256": "ddadbe68f2e47ff7ca9866dd346276a34d87ab64f2e0ddb25971c900eb62f653",
+      "availability": "coordinator candidate/hash-bound source archive only; product source/tests/fixtures/config/archive excluded from documentary publication"
+    },
+    {
+      "sourcePath": "agent_braid/system_one_verified_acquisition.py",
+      "sha256": "2380a32ef308fbbe540c67e71fb0bf43dc15b95a6732a13a8e2bf2be0d49e5b7",
+      "availability": "coordinator candidate/hash-bound source archive only; product source/tests/fixtures/config/archive excluded from documentary publication"
+    },
+    {
+      "sourcePath": "agent_braid/system_one_verified_ir.py",
+      "sha256": "a0378c34b805387b0518cf6ebc3da05599976cb7f037d5f140c2571c8f362ea3",
+      "availability": "coordinator candidate/hash-bound source archive only; product source/tests/fixtures/config/archive excluded from documentary publication"
+    },
+    {
+      "sourcePath": "agent_braid/system_one_verified_registry.py",
+      "sha256": "8d9cb2070683497ea789a9f03905e07f69d6c812c7d0ec9d6ab8a72116f88e6c",
+      "availability": "coordinator candidate/hash-bound source archive only; product source/tests/fixtures/config/archive excluded from documentary publication"
+    },
+    {
+      "sourcePath": "agent_braid/system_one_verified_selection.py",
+      "sha256": "8971650c51082938281ecb62e40e23adab4202bb20971b1eb23e1ef7d78c339c",
+      "availability": "coordinator candidate/hash-bound source archive only; product source/tests/fixtures/config/archive excluded from documentary publication"
+    },
+    {
+      "sourcePath": "specs/028-system-one-core/contracts/verified-plan-v1.md",
+      "sha256": "a68488d4a412820130231daa8c8dbeefb1e58445b2f1cfdf0c02b8669ef132d7",
+      "corpusPath": "specs/028-system-one-core/contracts/verified-plan-v1.md",
+      "representation": "original bytes"
+    },
+    {
+      "sourcePath": "specs/028-system-one-core/decision-delivery/addenda/ddp-t01-coordinator-review.json",
+      "sha256": "2fbed3cabf3ef6433dd0bd3cd2824423fc4265659c6fa505de8a9857f0495606",
+      "corpusPath": "specs/028-system-one-core/decision-delivery/addenda/ddp-t01-coordinator-review.json",
+      "representation": "original bytes"
+    },
+    {
+      "sourcePath": "specs/028-system-one-core/decision-delivery/addenda/ddp-t01-coordinator-review.md",
+      "sha256": "a117ba5f197944de569099df4168c461eec8b62f0e3585f3a2af3dd1bbab1cfd",
+      "corpusPath": "specs/028-system-one-core/decision-delivery/addenda/ddp-t01-coordinator-review.md",
+      "representation": "original bytes"
+    },
+    {
+      "sourcePath": "specs/028-system-one-core/decision-delivery/addenda/ddp-t01-plan.md",
+      "sha256": "2ee328f92aa19820704b3838528599296c87f53a5872a1f12d2bd8cd59a6e62e",
+      "corpusPath": "specs/028-system-one-core/decision-delivery/addenda/ddp-t01-plan.md",
+      "representation": "original bytes"
+    },
+    {
+      "sourcePath": "specs/028-system-one-core/decision-delivery/addenda/ddp-t02-t04-implementation.md",
+      "sha256": "f660f8500396f97d828fe3648795608a78590ddbcb9b7e08aab357072717a15f",
+      "corpusPath": "docs/system-one/addenda/first-batch-final-package-20261020/implementation-report.txt",
+      "representation": "original bytes"
+    },
+    {
+      "sourcePath": "specs/028-system-one-core/decision-delivery/addenda/ddp-t05-implementation.md",
+      "sha256": "b44a21a94c68eaa10a148327fc335f0b6004b1af91084bdb97fb6515312258d3",
+      "corpusPath": "docs/system-one/addenda/t05-final-package-20261020/implementation-report.txt",
+      "representation": "original bytes"
+    },
+    {
+      "sourcePath": "specs/029-system-one-evaluation/evidence/ddp-t05/T05-component-join.log.gz",
+      "sha256": "e8cd7836d7f2ec7944ecc3b67494a682e736b6b4e4ba0e3617179bbe9528508c",
+      "corpusPath": "docs/system-one/addenda/t05-final-package-20261020/retained-logs/T05-component-join.log.gz",
+      "representation": "exact gzip receipt; decompress to recover raw bytes",
+      "decodedSha256": "91828fc3eef72cc6455008140da3bbbaa831838813942b8b6a46ae28d22cbf7d",
+      "decodedBytes": 14516
+    },
+    {
+      "sourcePath": "specs/029-system-one-evaluation/evidence/ddp-t05/T05-focused-final.log.gz",
+      "sha256": "5d8be3ee62335ca070aacfabe4cfc6bcdec80dc725b71a4cb5dc0d4c0d66ca93",
+      "corpusPath": "docs/system-one/addenda/t05-final-package-20261020/retained-logs/T05-focused-final.log.gz",
+      "representation": "exact gzip receipt; decompress to recover raw bytes",
+      "decodedSha256": "ddc96fcbf81d65e2871a50ccd327d082bbc0a97257fcd4b63e00e1e7480509c5",
+      "decodedBytes": 5395
+    },
+    {
+      "sourcePath": "specs/029-system-one-evaluation/evidence/ddp-t05/T05-focused-first.log.gz",
+      "sha256": "fb80c06f38b848ba86986991a900b0a1654dd2fbd4dcf1de0476790d64477169",
+      "corpusPath": "docs/system-one/addenda/t05-final-package-20261020/retained-logs/T05-focused-first.log.gz",
+      "representation": "exact gzip receipt; decompress to recover raw bytes",
+      "decodedSha256": "3306fbdd22f1067470bf038fae1dbd27f17edd1284b5f0d132145f7dcc9253d4",
+      "decodedBytes": 7121
+    },
+    {
+      "sourcePath": "specs/029-system-one-evaluation/evidence/ddp-t05/T05-focused-rowcap.log.gz",
+      "sha256": "f4d24333f80ee57f98cfb494564dd6d416ec9aa578ca4c1ccbe0fada0b003f6e",
+      "corpusPath": "docs/system-one/addenda/t05-final-package-20261020/retained-logs/T05-focused-rowcap.log.gz",
+      "representation": "exact gzip receipt; decompress to recover raw bytes",
+      "decodedSha256": "2e39d5d026bb693dd1d026165862b5b9927ad021f6dc54750d481deea28b4744",
+      "decodedBytes": 5409
+    },
+    {
+      "sourcePath": "specs/029-system-one-evaluation/evidence/ddp-t05/T05-focused-second.log.gz",
+      "sha256": "baa974e123f9c45e4f7caf7231f7f99e895d67c226363e8078ff49cf14e10e97",
+      "corpusPath": "docs/system-one/addenda/t05-final-package-20261020/retained-logs/T05-focused-second.log.gz",
+      "representation": "exact gzip receipt; decompress to recover raw bytes",
+      "decodedSha256": "8cd5ec71a27e40d97bc4e816705768c7db5756c614005fb23769919ce50eee9b",
+      "decodedBytes": 4227
+    },
+    {
+      "sourcePath": "specs/029-system-one-evaluation/evidence/ddp-t05/T05-focused-third.log.gz",
+      "sha256": "dcd0ed9f07a1f09a0781f7a972d1e75a5b5ca17e90b3870acfa9afb0aee91d94",
+      "corpusPath": "docs/system-one/addenda/t05-final-package-20261020/retained-logs/T05-focused-third.log.gz",
+      "representation": "exact gzip receipt; decompress to recover raw bytes",
+      "decodedSha256": "c0d89aae0dafe720cbe794b105350bd809e712a1f5e168c23651c527c7359f1e",
+      "decodedBytes": 5396
+    },
+    {
+      "sourcePath": "specs/029-system-one-evaluation/evidence/ddp-t05/T05-mutation-final.log.gz",
+      "sha256": "328328a2a0beb6a110442ec389d4aac88a598d15f7f344cb11ba9e6e05d8f5ff",
+      "corpusPath": "docs/system-one/addenda/t05-final-package-20261020/retained-logs/T05-mutation-final.log.gz",
+      "representation": "exact gzip receipt; decompress to recover raw bytes",
+      "decodedSha256": "9c4a1f5c91c1896442a66cbd753ff329b5837298fafdc3df99ed2507b5c59e40",
+      "decodedBytes": 1678
+    },
+    {
+      "sourcePath": "specs/029-system-one-evaluation/evidence/ddp-t05/T05-mutation-rowcap.log.gz",
+      "sha256": "10c42271b710a51ac61174564466be2aea0e245a9d180b312d547a98ba178ef7",
+      "corpusPath": "docs/system-one/addenda/t05-final-package-20261020/retained-logs/T05-mutation-rowcap.log.gz",
+      "representation": "exact gzip receipt; decompress to recover raw bytes",
+      "decodedSha256": "d04ba776b2a935bfe275136e7f996997a84c1510fc66a83d235660f70af76f44",
+      "decodedBytes": 1051
+    },
+    {
+      "sourcePath": "specs/029-system-one-evaluation/evidence/ddp-t05/T05-mutation.log.gz",
+      "sha256": "4efe62bf3245461fbf19b91fbe1e8827f83f9852a5d4f4fc24a6dd3e877ef459",
+      "corpusPath": "docs/system-one/addenda/t05-final-package-20261020/retained-logs/T05-mutation.log.gz",
+      "representation": "exact gzip receipt; decompress to recover raw bytes",
+      "decodedSha256": "6abff6c7c5dfc473a3f88d5fd28f78fc197be488ff95c9b1dd8b9a3de2e0b7b6",
+      "decodedBytes": 1678
+    },
+    {
+      "sourcePath": "specs/029-system-one-evaluation/evidence/ddp-t05/assignment.json",
+      "sha256": "62d9b54a2834cb47fa2fcde6e67fdb52823fcca1c6cd2d5131d24647a912c150",
+      "corpusPath": "docs/system-one/addenda/t05-quality-plan-assignment-20261020.json",
+      "representation": "original bytes"
+    },
+    {
+      "sourcePath": "specs/029-system-one-evaluation/evidence/ddp-t05/before.json",
+      "sha256": "e521d2d040b85ffbb29bb2226b6d6e1bbf760ecbbac0f4df501e395c0cb9d6ea",
+      "corpusPath": "docs/system-one/addenda/t05-profiles-final-20261020/entry-before.json",
+      "representation": "original bytes"
+    },
+    {
+      "sourcePath": "specs/029-system-one-evaluation/evidence/ddp-t05/component-join.json",
+      "sha256": "eebb1a2a64687367ea509124efbc768dc96a0907d90617fd53b68e800c2bb547",
+      "corpusPath": "docs/system-one/addenda/t05-join-and-profiles-start-20261020/component-join.json",
+      "representation": "original bytes"
+    },
+    {
+      "sourcePath": "specs/029-system-one-evaluation/evidence/ddp-t05/failure-latch-finding.json",
+      "sha256": "8232a10e2757a4df3262b7b55c570799f7404d9982dd0a9d67f29dd4560298e8",
+      "corpusPath": "docs/system-one/addenda/t05-failure-latch-20261020/finding.json",
+      "representation": "original bytes"
+    },
+    {
+      "sourcePath": "specs/029-system-one-evaluation/evidence/ddp-t05/final-repository-attempt1.log.gz",
+      "sha256": "ee758be29bb5056b257926af4c35e9aee2f321977d3694aeb3df166905114ac7",
+      "corpusPath": "docs/system-one/addenda/t05-final-package-20261020/retained-logs/final-repository-attempt1.log.gz",
+      "representation": "exact gzip receipt; decompress to recover raw bytes",
+      "decodedSha256": "d4c45eb7eaf3d16ba3660de1b47b2ed2b0979954964d42f54ddb2e5df28357de",
+      "decodedBytes": 240
+    },
+    {
+      "sourcePath": "specs/029-system-one-evaluation/evidence/ddp-t05/final-repository-seal.log.gz",
+      "sha256": "0696100a701b397d88703d8069bf7bcba97a8b41e6c578358c51b159a9e4a95d",
+      "corpusPath": "docs/system-one/addenda/t05-final-package-20261020/retained-logs/final-repository-seal.log.gz",
+      "representation": "exact gzip receipt; decompress to recover raw bytes",
+      "decodedSha256": "4dba091ad34351df5a47ab88351937a7c08b8d04df4e59834546b6babf1479b0",
+      "decodedBytes": 30
+    },
+    {
+      "sourcePath": "specs/029-system-one-evaluation/evidence/ddp-t05/final-repository.log.gz",
+      "sha256": "0696100a701b397d88703d8069bf7bcba97a8b41e6c578358c51b159a9e4a95d",
+      "corpusPath": "docs/system-one/addenda/t05-final-package-20261020/retained-logs/final-repository.log.gz",
+      "representation": "exact gzip receipt; decompress to recover raw bytes",
+      "decodedSha256": "4dba091ad34351df5a47ab88351937a7c08b8d04df4e59834546b6babf1479b0",
+      "decodedBytes": 30
+    },
+    {
+      "sourcePath": "specs/029-system-one-evaluation/evidence/ddp-t05/final-whitespace-seal.log.gz",
+      "sha256": "f1b651238a58fe290baec6c5e32f3bdb1943dd2bd582f02569231f7a757c7837",
+      "corpusPath": "docs/system-one/addenda/t05-final-package-20261020/retained-logs/final-whitespace-seal.log.gz",
+      "representation": "exact gzip receipt; decompress to recover raw bytes",
+      "decodedSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "decodedBytes": 0
+    },
+    {
+      "sourcePath": "specs/029-system-one-evaluation/evidence/ddp-t05/final-whitespace.log.gz",
+      "sha256": "0ca5348b52842fe76f1d9e543025326d5d3c1d1ebb2faca87014ef2081ccad67",
+      "corpusPath": "docs/system-one/addenda/t05-final-package-20261020/retained-logs/final-whitespace.log.gz",
+      "representation": "exact gzip receipt; decompress to recover raw bytes",
+      "decodedSha256": "e17902c4b9a7a08915a8be5ed3d8f7a877106f68ea5edf152d85b92e88c63c5e",
+      "decodedBytes": 267
+    },
+    {
+      "sourcePath": "specs/029-system-one-evaluation/evidence/ddp-t05/finalize-t05.log.gz",
+      "sha256": "92b93b1999d6a783f8591e64a1ccdbbe47e1e97e96c2ceb4b70f3a011a9dadb3",
+      "corpusPath": "docs/system-one/addenda/t05-final-package-20261020/retained-logs/finalize-t05.log.gz",
+      "representation": "exact gzip receipt; decompress to recover raw bytes",
+      "decodedSha256": "e35ef729c84ce35f2773b8030272e81d7e338957bfa386d0fb432a38ba871b13",
+      "decodedBytes": 1383
+    },
+    {
+      "sourcePath": "specs/029-system-one-evaluation/evidence/ddp-t05/finalize_t05.py",
+      "sha256": "11579a64e9eb3bcac7b98a041d0f062cb322626f5998c0b37e49ee2a258ac7a1",
+      "corpusPath": "docs/system-one/addenda/t05-final-package-20261020/documentary-source-capsules.json",
+      "representation": "matching sourcePath entry text encoded as UTF-8"
+    },
+    {
+      "sourcePath": "specs/029-system-one-evaluation/evidence/ddp-t05/finish-raw-log.log.gz",
+      "sha256": "f62bf343bcf3f02fe09672bf0ca7fb257762a7fb0b239d05047b4c277f50e2f5",
+      "corpusPath": "docs/system-one/addenda/t05-final-package-20261020/retained-logs/finish-raw-log.log.gz",
+      "representation": "exact gzip receipt; decompress to recover raw bytes",
+      "decodedSha256": "2528f908b21214d03f7f2cf5e7fed61e09c086162d2e13e9c60c76735e16bb6d",
+      "decodedBytes": 589
+    },
+    {
+      "sourcePath": "specs/029-system-one-evaluation/evidence/ddp-t05/finish_raw_log_receipt.py",
+      "sha256": "eda4b1fcfc77233bda493dbc7e712347ccc040cdda5b719625f45320c1fbb4bc",
+      "corpusPath": "docs/system-one/addenda/t05-final-package-20261020/documentary-source-capsules.json",
+      "representation": "matching sourcePath entry text encoded as UTF-8"
+    },
+    {
+      "sourcePath": "specs/029-system-one-evaluation/evidence/ddp-t05/fixed-candidate.json",
+      "sha256": "3583dee652856639507871d99e7b88e9020a117a3711fd7f90d43170e6be28d9",
+      "corpusPath": "docs/system-one/addenda/t05-rowcap-fixed-candidate-20261020/fixed-candidate.json",
+      "representation": "original bytes"
+    },
+    {
+      "sourcePath": "specs/029-system-one-evaluation/evidence/ddp-t05/launch.json",
+      "sha256": "fec1f5bd130309ce2fb6c07f0bb08b967d096e96ed772c14230593e3a19fcf25",
+      "corpusPath": "docs/system-one/addenda/t05-join-and-profiles-start-20261020/launch.json",
+      "representation": "original bytes"
+    },
+    {
+      "sourcePath": "specs/029-system-one-evaluation/evidence/ddp-t05/luna-review.txt",
+      "sha256": "c295c34aa8d8a8ce5dbf5970830187ad37a788e8aaf7b17afaa3349dada32772",
+      "corpusPath": "docs/system-one/addenda/t05-luna-row64-review-20261020/original-review.txt",
+      "representation": "original bytes"
+    },
+    {
+      "sourcePath": "specs/029-system-one-evaluation/evidence/ddp-t05/luna-row64-repro.txt",
+      "sha256": "fb55a8fed819335d2c204e32cb83d4b662bd33f9539b6d6da44de3614e2f04f0",
+      "corpusPath": "docs/system-one/addenda/t05-luna-row64-review-20261020/row64-reproduction.txt",
+      "representation": "original bytes"
+    },
+    {
+      "sourcePath": "specs/029-system-one-evaluation/evidence/ddp-t05/luna-rowcap-verification.md",
+      "sha256": "e9306e36211f6a2554347fd315c814e62e640b73bea90e1d32729def867463e6",
+      "corpusPath": "docs/system-one/addenda/t05-rowcap-luna-disposition-20261020/original-verification.txt",
+      "representation": "original bytes"
+    },
+    {
+      "sourcePath": "specs/029-system-one-evaluation/evidence/ddp-t05/new-source.tar.gz",
+      "sha256": "151113b44435c647f292e46db49e9e9b326153f9a81b75893ef12b2a13072868",
+      "availability": "coordinator candidate/hash-bound source archive only; product source/tests/fixtures/config/archive excluded from documentary publication"
+    },
+    {
+      "sourcePath": "specs/029-system-one-evaluation/evidence/ddp-t05/packaging-final-resolution.json",
+      "sha256": "f6ae8ab29af53c05d1614bd0f0d081bd9279df4537197fb555b69805901164f9",
+      "corpusPath": "docs/system-one/addenda/t05-final-package-20261020/packaging-final-resolution.json",
+      "representation": "original bytes"
+    },
+    {
+      "sourcePath": "specs/029-system-one-evaluation/evidence/ddp-t05/packaging-link-failure.json",
+      "sha256": "e54ea1bf097a090655208ac12b94c81d368dc38d86f6f0c92c018d7f06653134",
+      "corpusPath": "docs/system-one/addenda/t05-packaging-link-failure-20261020/failure-receipt.json",
+      "representation": "original bytes"
+    },
+    {
+      "sourcePath": "specs/029-system-one-evaluation/evidence/ddp-t05/packaging-link-resolution.json",
+      "sha256": "df314623bdaff697c4858d4e77fbce07b17edd6b3c8f106102e93df32cf65fae",
+      "corpusPath": "docs/system-one/addenda/t05-final-package-20261020/packaging-link-resolution.json",
+      "representation": "original bytes"
+    },
+    {
+      "sourcePath": "specs/029-system-one-evaluation/evidence/ddp-t05/packet-attempt1.json",
+      "sha256": "48cf6d19068a15e9b6c29bf913eb0794dcf0f393e16b6e186f48466da762aa18",
+      "corpusPath": "docs/system-one/addenda/t05-final-package-20261020/documentary-source-capsules.json",
+      "representation": "matching sourcePath entry text encoded as UTF-8"
+    },
+    {
+      "sourcePath": "specs/029-system-one-evaluation/evidence/ddp-t05/packet-attempt2.json",
+      "sha256": "e1a582864d2ce9d7081fbc2033eb152fc6f5ef42757eba69d42e9fc6bf2968fe",
+      "corpusPath": "docs/system-one/addenda/t05-final-package-20261020/documentary-source-capsules.json",
+      "representation": "matching sourcePath entry text encoded as UTF-8"
+    },
+    {
+      "sourcePath": "specs/029-system-one-evaluation/evidence/ddp-t05/prepackage-verification.json",
+      "sha256": "48bf24a3b1ac396cf7e5490bd44a0e6d3400914f7daef4af4c21d22888f3a10d",
+      "corpusPath": "docs/system-one/addenda/t05-final-package-20261020/documentary-source-capsules.json",
+      "representation": "matching sourcePath entry text encoded as UTF-8"
+    },
+    {
+      "sourcePath": "specs/029-system-one-evaluation/evidence/ddp-t05/profiles/pr.json",
+      "sha256": "be62d7ca2d4fed43732a08e1554e19b6c4c8235033dc94c15401ebfce2cf4b2c",
+      "corpusPath": "docs/system-one/addenda/t05-profiles-final-20261020/pr-receipt.json",
+      "representation": "original bytes"
+    },
+    {
+      "sourcePath": "specs/029-system-one-evaluation/evidence/ddp-t05/profiles/pr.log.gz",
+      "sha256": "b836d3edb6c393a148ea09f246870f677a5851d4a1b1fedd3da3c077261b56ec",
+      "corpusPath": "docs/system-one/addenda/t05-final-package-20261020/retained-logs/profiles/pr.log.gz",
+      "representation": "exact gzip receipt; decompress to recover raw bytes",
+      "decodedSha256": "a6e2cff82b4b403a38434483b88704165dc3258703f0100becf00d58c854394e",
+      "decodedBytes": 378232
+    },
+    {
+      "sourcePath": "specs/029-system-one-evaluation/evidence/ddp-t05/profiles/quick.json",
+      "sha256": "86cbfb6213f2f807ffe64a1989795292ea7c311a83c3bf68eba1fa066b47dbd8",
+      "corpusPath": "docs/system-one/addenda/t05-profiles-final-20261020/quick-receipt.json",
+      "representation": "original bytes"
+    },
+    {
+      "sourcePath": "specs/029-system-one-evaluation/evidence/ddp-t05/profiles/quick.log.gz",
+      "sha256": "fabddd479eaef1251db8c75b61a447aac2a7c4c58e67cf2011b8392045a5931f",
+      "corpusPath": "docs/system-one/addenda/t05-final-package-20261020/retained-logs/profiles/quick.log.gz",
+      "representation": "exact gzip receipt; decompress to recover raw bytes",
+      "decodedSha256": "f7a8c95b846c87871f195aa128cffdd66a8b2a8bc4fc2fba480aa57a5ce8af59",
+      "decodedBytes": 378356
+    },
+    {
+      "sourcePath": "specs/029-system-one-evaluation/evidence/ddp-t05/raw-log-preservation.json",
+      "sha256": "ef183b2eedda6cd0a401b9f4b95f29ae22b013fa561f930d9d719deed6d4f9c0",
+      "corpusPath": "docs/system-one/addenda/t05-final-package-20261020/raw-log-preservation.json",
+      "representation": "original bytes"
+    },
+    {
+      "sourcePath": "specs/029-system-one-evaluation/evidence/ddp-t05/repair-packaging.log.gz",
+      "sha256": "9e7f1bda3ead64a4af1eed8456ed7e5c8ee752d56f6bd6f292f19c1a9f9f8b3e",
+      "corpusPath": "docs/system-one/addenda/t05-final-package-20261020/retained-logs/repair-packaging.log.gz",
+      "representation": "exact gzip receipt; decompress to recover raw bytes",
+      "decodedSha256": "b32ad6baf8dc5659b71bc4b83b4cf2eacd4eec375592debe086a26794c70c241",
+      "decodedBytes": 1087
+    },
+    {
+      "sourcePath": "specs/029-system-one-evaluation/evidence/ddp-t05/repair_packaging_link.py",
+      "sha256": "5ec342d5b62c4231dd767f6529e395948ccb00e3bfd8bb27d9bf4df0481fe196",
+      "corpusPath": "docs/system-one/addenda/t05-final-package-20261020/documentary-source-capsules.json",
+      "representation": "matching sourcePath entry text encoded as UTF-8"
+    },
+    {
+      "sourcePath": "specs/029-system-one-evaluation/evidence/ddp-t05/row-cap-finding.json",
+      "sha256": "fe5fe4feaacc73eb2ba686637c1806123f3cbf057aaeca2f145e0deba43f1c33",
+      "corpusPath": "docs/system-one/addenda/t05-final-package-20261020/documentary-source-capsules.json",
+      "representation": "matching sourcePath entry text encoded as UTF-8"
+    },
+    {
+      "sourcePath": "specs/029-system-one-evaluation/evidence/ddp-t05/run_profiles.py",
+      "sha256": "fff73347353ecf104526e3ab7cc902960510b45b0e47b38ab917765c964cc06d",
+      "corpusPath": "docs/system-one/addenda/first-batch-final-package-20261020/documentary-source-capsules.json",
+      "representation": "decode matching hash entry text as UTF-8"
+    },
+    {
+      "sourcePath": "specs/029-system-one-evaluation/evidence/ddp-t05/seal_packaging.py",
+      "sha256": "17ec33323423457779117453288b135679e86a784021487172f37dc6fd62ed5d",
+      "corpusPath": "docs/system-one/addenda/t05-final-package-20261020/documentary-source-capsules.json",
+      "representation": "matching sourcePath entry text encoded as UTF-8"
+    },
+    {
+      "sourcePath": "specs/029-system-one-evaluation/evidence/ddp-t05/supervise.py",
+      "sha256": "f05d6f0d060a27b1fb039c98333525f42b9de05025e8991e28c968eccc92ed02",
+      "corpusPath": "docs/system-one/addenda/t05-final-package-20261020/documentary-source-capsules.json",
+      "representation": "matching sourcePath entry text encoded as UTF-8"
+    },
+    {
+      "sourcePath": "specs/029-system-one-evaluation/evidence/ddp-t05/supervisor-completion.json",
+      "sha256": "a71c6ce55ff81bb9b3882d474b5a5d97e58bf20eaa6378ce1c2b8442539bbd45",
+      "corpusPath": "docs/system-one/addenda/t05-profiles-final-20261020/supervisor-completion.json",
+      "representation": "original bytes"
+    },
+    {
+      "sourcePath": "specs/029-system-one-evaluation/evidence/ddp-t05/supervisor-start.json",
+      "sha256": "11bc9c82dc45e62686f3151706dd49edfaeace08a579fbbc90e9572cd2264d5b",
+      "corpusPath": "docs/system-one/addenda/t05-join-and-profiles-start-20261020/supervisor-start.json",
+      "representation": "original bytes"
+    },
+    {
+      "sourcePath": "specs/029-system-one-evaluation/evidence/ddp-t05/supervisor.log.gz",
+      "sha256": "7a2c81ebeb5cf9cb79264c518176820d1627fd4762e0bc7ee3a6132b6e236661",
+      "corpusPath": "docs/system-one/addenda/t05-final-package-20261020/retained-logs/supervisor.log.gz",
+      "representation": "exact gzip receipt; decompress to recover raw bytes",
+      "decodedSha256": "405793f188a05f5ac90615e82d4ba4cb1861b01475efde6f9aaebcf08755d39c",
+      "decodedBytes": 305
+    },
+    {
+      "sourcePath": "specs/029-system-one-evaluation/evidence/ddp-t05/whitespace-preservation.json",
+      "sha256": "ef9bab57f142196017238cba620064e77542989a4c75f5d2def6faab113f2531",
+      "corpusPath": "docs/system-one/addenda/t05-whitespace-preservation-20261020.json",
+      "representation": "original bytes"
+    },
+    {
+      "sourcePath": "specs/029-system-one-evaluation/evidence/ddp-t05/worker-candidate.json",
+      "sha256": "20f175eab136769ec41c1cae898db00a74edf73d774eed3c24c09ccb3bf98fe4",
+      "corpusPath": "docs/system-one/addenda/t05-review-candidate-20261020/worker-candidate.json",
+      "representation": "original bytes"
+    },
+    {
+      "sourcePath": "specs/029-system-one-evaluation/verified-plan-conformance.md",
+      "sha256": "90f52099cdaebba51f2781c715c748d1ba0c13e9b2b9755a32b25e53f5a08e5b",
+      "corpusPath": "specs/029-system-one-evaluation/verified-plan-conformance.md",
+      "representation": "original bytes"
+    },
+    {
+      "sourcePath": "specs/029-system-one-evaluation/verified-plan-vectors.json",
+      "sha256": "6584ce4de05edf143e215945ff620b5127fe48e6c352dfb7a33b447e753a11f7",
+      "corpusPath": "specs/029-system-one-evaluation/verified-plan-vectors.json",
+      "representation": "original bytes"
+    },
+    {
+      "sourcePath": "specs/031-system-one-integration/contracts/verified-plan-consumer-v1.md",
+      "sha256": "b17b5f3398dba9086ba44bdc04c4ff9cae97364f1fb9430a7e4ebcb9cb9fd1f4",
+      "corpusPath": "specs/031-system-one-integration/contracts/verified-plan-consumer-v1.md",
+      "representation": "original bytes"
+    },
+    {
+      "sourcePath": "tests/fixtures/system_one_verified_acquisition.json",
+      "sha256": "4c674337541e56bc7cc2219a8c10e522bba037fae24bd480a65317010fc15078",
+      "availability": "coordinator candidate/hash-bound source archive only; product source/tests/fixtures/config/archive excluded from documentary publication"
+    },
+    {
+      "sourcePath": "tests/fixtures/system_one_verified_ir.json",
+      "sha256": "c2aac157c85f4a1d9fd6e5fec998c003433bb4e9769bba3ed50c27f253318b76",
+      "availability": "coordinator candidate/hash-bound source archive only; product source/tests/fixtures/config/archive excluded from documentary publication"
+    },
+    {
+      "sourcePath": "tests/fixtures/system_one_verified_registry.json",
+      "sha256": "75753dac881c6cd933360aab88b5d71bb6d17c19d6537c0645b8024c78a1005a",
+      "availability": "coordinator candidate/hash-bound source archive only; product source/tests/fixtures/config/archive excluded from documentary publication"
+    },
+    {
+      "sourcePath": "tests/test_system_one_verified_acquisition.py",
+      "sha256": "27ff8dd4192d1bc1b7d72b412fa1209e3ba28b32671f0181d3fb707a104ea8ed",
+      "availability": "coordinator candidate/hash-bound source archive only; product source/tests/fixtures/config/archive excluded from documentary publication"
+    },
+    {
+      "sourcePath": "tests/test_system_one_verified_components.py",
+      "sha256": "01abcb850572c3ad0f85beccaf7d437367fa388f681f0b77d55be24c98c32dcf",
+      "availability": "coordinator candidate/hash-bound source archive only; product source/tests/fixtures/config/archive excluded from documentary publication"
+    },
+    {
+      "sourcePath": "tests/test_system_one_verified_ir.py",
+      "sha256": "5550874646e3021cf147e14ebf5e5760a7f7397b08ce7701256ad59c2e9367be",
+      "availability": "coordinator candidate/hash-bound source archive only; product source/tests/fixtures/config/archive excluded from documentary publication"
+    },
+    {
+      "sourcePath": "tests/test_system_one_verified_registry.py",
+      "sha256": "53185df49342636e9b2545a5d53ef398998b4acc3367e39ee35ee0e5c525d254",
+      "availability": "coordinator candidate/hash-bound source archive only; product source/tests/fixtures/config/archive excluded from documentary publication"
+    },
+    {
+      "sourcePath": "tests/test_system_one_verified_selection.py",
+      "sha256": "d14d2ec1637b944eab96a6c9938b1758c8343e390fae208d55e615c9089e0b56",
+      "availability": "coordinator candidate/hash-bound source archive only; product source/tests/fixtures/config/archive excluded from documentary publication"
+    }
+  ],
+  "newDocumentarySourceCapsules": 9,
+  "testsOrHelpersExecutedHere": false,
+  "remoteTaskClosure": false
+}

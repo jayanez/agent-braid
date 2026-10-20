@@ -1,21 +1,51 @@
 # System One: evidence, capability and resumption index
 
-Documentary snapshot, 2026-10-20. Start here; reading chat history is not required.
+Start here, then read the [agent resumption guide](RESUMPTION.md). This is the current reading map as of the documentary review on2026-10-20; individual receipts below retain their own observation times. Chat history and ZIP imports are not required to understand the recorded work.
 
-Latest status: [T025 final engineering receipt and documentary DDP-T01 assignment](addenda/t025-final-20261020.md). T025 engineering is closed; DDP-T01 is enabled and assigned to the coordinator, without execution or implementation authority. Earlier registers/addenda retain their original snapshot.
+## Current handoff
 
-Earlier bounded update: [T025 development receipt](addenda/t025-development-20261020.md). Development passed; evaluation/final engineering closure and DDP-T01 assignment remain pending. The base register below retains its earlier snapshot unchanged.
+T05 internal engineering is delivered: [final packet and verification](addenda/t05-final-package-20261020/README.md), [full-profile receipts](addenda/t05-profiles-final-20261020/README.md) and [scoped Luna row-cap disposition](addenda/t05-rowcap-luna-disposition-20261020/README.md). Both full profiles recorded2042cases,2023passed,19skips,zero failures each; tests overlap and are not independent scientific observations. Packaging failures are preserved with their repairs;72packet bindings,22source-archive members and20reversible raw logs were checked.
 
-- [Evidence and evolution](evolution.md): why each increment happened, what it found and what it cannot establish.
-- [Machine-readable evidence register](evidence-register.json): stable study/task aliases, exact report/protocol identities, line references, resource/failure boundaries and source bindings.
-- [Faithful report/protocol snapshots](source-documents.json): full research documentation text for audit, including commands and negative findings; embedded original paths/links refer to the source research checkout. This is documentary export, not model/data/code publication or clean-room reproduction.
-- [Full capability map](../../specs/028-system-one-core/decision-delivery/program-map.md), [bounded architecture](../../specs/028-system-one-core/decision-delivery/architecture.md), [latency/budget boundaries](../../specs/028-system-one-core/decision-delivery/latency-and-budgets.md).
-- [Canonical task aliases and acceptance](task-map.json), [open gates and assignments](gates-and-assignment.md), [adversarial review brief](adversarial-review.md) and [requirements/convergence checklist](review-checklist.md).
+The later T06 Core API assignment belongs to the coordinator's separate implementation conversation. This PR contains no T06 implementation or completed T06 evidence. See the [chronology/status clarification](addenda/pr594-documentary-review-20261020/status-clarifications.md) for that later authorization, the earlier conditional T05 GO and frozen DDP-T01 headers. DDP-T01 revision2 was verified by the coordinator for bounded planning; its frozen pre-disposition headers do not override that later receipt or imply public adoption.
 
-## Source and observation boundary
+The corpus is published in [PR594](https://github.com/jayanez/agent-braid/pull/594), targeting develop; publication, current-head CI, review and integration are separate. Product source/tests/fixtures/config/source archives/patches remain in the explicitly hash-bound coordinator package. The [publication receipt](addenda/github-publication-20261020.md) records initial publication, not current CI. No scientific/human approval or activation follows from publication or software tests.
 
-Research source: /Users/juanyanez/Repos/Personal/agent-braid-system-one, observed HEAD 48f4226db1e1b0565b1f8faf0eca81c150a65d30 plus substantial WIP. Publication base may be later. Report and protocol hashes identify actual working bytes; HEAD alone does not reproduce them. Models, raw datasets, custodian labels, private histories, generators, runtime source and large artifacts are not bundled by this documentary delivery. Their original path/hash inventories support local inspection. Missing material must be reported, never reconstructed as obtained evidence.
+[PR594 documentary review and integration preparation](addenda/pr594-documentary-review-20261020/README.md) records chronology corrections, the bounded Luna recheck and mechanical checks; current-head CI and merge remain separate.
 
-The imported-draft decision-delivery package is a proposal, not acceptance or implementation. The earlier T025-in-progress snapshot is superseded by the final addendum above; scientific/human/product gates remain separate. The original five S1 milestones and six spec parents remain open. Human/linguistic review, representative workflow acceptance, independent scientific reproduction, rights for distribution and per-capability promotion/activation remain separately pending.
+## Core reading and traceability
 
-Claims: empirical/engineering only within each stated domain; no general calibrated reliability, theorem or Laya parity. Controlled EN/ES record round trips do not establish unrestricted language understanding. Deterministic admissibility is not calibrated probability. Software profiles and agent review do not supply human approval.
+- [Evidence and evolution](evolution.md): why each increment happened, positive/negative findings and domain limits.
+- [Evidence register](evidence-register.json) and [faithful report/protocol snapshots](source-documents.json): stable study/task aliases, hashes, line references, commands, resources and unknowns. Original paths/links describe research-source provenance.
+- [Capability map](../../specs/028-system-one-core/decision-delivery/program-map.md), [bounded architecture](../../specs/028-system-one-core/decision-delivery/architecture.md) and [latency/budget boundaries](../../specs/028-system-one-core/decision-delivery/latency-and-budgets.md).
+- [Canonical task aliases](task-map.json), [historical gates](gates-and-assignment.md) and [historical requirements checklist](review-checklist.md). Read their pending observations with the later receipts below, not as current status.
+- [Adversarial review brief](adversarial-review.md): review questions for Claude Code or another reviewer. No Claude Code review is claimed; scoped AI code reviews in later receipts are separate from global T07 and human/scientific acceptance.
+
+## Historical receipt map
+
+Rows identify frozen observations and later dispositions; a pending or active status inside an older receipt is not a current assertion.
+
+| Stage | Evidence and later disposition |
+|---|---|
+| T025 development and final engineering | [Development snapshot](addenda/t025-development-20261020.md), then [final engineering/assignment](addenda/t025-final-20261020.md) |
+| Corpus/Project/DDP-T01 reconciliation | [Continuity receipt](addenda/verification-continuity-20261020/README.md):88-item Project readback, original failed full profile and localized correction, final coordinator design disposition |
+| Initial component assignment | [Preparation handoff](addenda/ddp-t02-t04-preparation-20261020.md) |
+| T04 component and serial pin | [Pre-pin component](addenda/t04-component-20261020/README.md), then [T02 and actual pin](addenda/t02-and-serial-pin-20261020/README.md) |
+| T03 and component join | [T03/52-case join](addenda/t03-and-component-join-20261020/README.md), [profile start](addenda/component-profiles-started-20261020.md), then [final2014-case profiles](addenda/component-profiles-final-20261020/README.md) |
+| First component final package/T05 GO | [Final first batch and T05 assignment](addenda/first-batch-final-package-20261020/README.md); earlier [conditional authority](addenda/publication-and-t05-condition-20261020.md) |
+| T05 context and review plan | [Lifetime/digest directions](addenda/t05-context-and-digest-seams-20261020.md), with later source-bound implementation and review below |
+| T05 failure/candidate chronology | [Caught-failure finding and failed22-case attempt](addenda/t05-failure-latch-20261020/README.md), [admission/refusal directions](addenda/t05-failure-latch-20261020/admission-and-late-refusal.md), [review candidate](addenda/t05-review-candidate-20261020/README.md) |
+| T05 row-cap review and correction | [Original Luna P2/reproduction](addenda/t05-luna-row64-review-20261020/README.md), [fixed candidate](addenda/t05-rowcap-fixed-candidate-20261020/README.md), then [targeted disposition](addenda/t05-rowcap-luna-disposition-20261020/README.md) |
+| T05 joined/full validation | [80-case join and profile start](addenda/t05-join-and-profiles-start-20261020/README.md), then [final2042-case profiles](addenda/t05-profiles-final-20261020/README.md) |
+| T05 packaging integrity | [One-log attributes exception](addenda/t05-whitespace-preservation-20261020.md), [link-check failure](addenda/t05-packaging-link-failure-20261020/README.md), then [final packet/retained failures and repairs](addenda/t05-final-package-20261020/README.md) and [post-seal artifact check](addenda/t05-final-package-20261020/post-seal-check.md) |
+
+## Source and acceptance boundary
+
+Research-source snapshot: /Users/juanyanez/Repos/Personal/agent-braid-system-one, observed HEAD48f4226db1e1b0565b1f8faf0eca81c150a65d30 plus substantial WIP. Report/protocol hashes identify actual working bytes; HEAD alone does not reproduce them. Models, raw datasets, custodian labels, private histories, generators, runtime source and large artifacts are not bundled by this documentary delivery. Missing local inputs must be reported, never reconstructed as obtained evidence.
+
+The capability package and verified-plan public schemas remain proposals; the later component/T05 records establish bounded internal engineering only. Six spec parents and five S1 milestones remain open at the recorded tracking snapshot. Broader T07 review, human/linguistic and representative workflow acceptance, independent scientific reproduction, source rights, training/calibration, admission/promotion and activation remain separate pending gates.
+
+No general calibrated reliability, theorem, Laya parity or unrestricted language understanding is claimed. Deterministic admissibility is not calibrated probability; controlled EN/ES roundtrips and software/AI review do not supply human or scientific approval. Acquisition, layer1decision and complete native preparation have separate costs; no deadline/speedup is inferred from provisional timing.
+
+## Documentary continuity
+
+Before delivery, incorporate every material result, failed attempt, correction, review, decision and handoff with task/requirement mapping, exact sources/hashes, observation boundary, obtained result, validation scope and unresolved gates. Link details instead of duplicating them. Preserve frozen records and clarify supersession additively. Keep current navigation distinct from history, and local incorporation/publication/integration distinct from product implementation or acceptance. ZIPs are derivative snapshots; chat acknowledgements alone do not complete corpus incorporation.

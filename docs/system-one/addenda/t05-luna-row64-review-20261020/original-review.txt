@@ -1,0 +1,37 @@
+# T05 Luna Latest scoped review
+
+Date: 2026-10-20
+
+## Scope and pins
+
+Read-only review of T05 producer selection code/tests and the requested governance/contract sources in `agent-braid-verified-core`. Future T06 consumer work and prior T02–T04 implementation were outside review scope. No repository files were edited. No network, model, download, experiment, or full test profile was run.
+
+The reviewed source hashes match the assignment:
+
+- `agent_braid/system_one_verified_selection.py`: `109a182c1762b55acdb2575488ab1b573ca15d3e5dec760fec30621c164a6935`
+- `tests/test_system_one_verified_selection.py`: `f5c8dd0e48a74f338b813d1a56ba66c650beb94123add3735c356c179755313e`
+
+Read `CONSTITUTION.md`, `AGENTS.md`, `specs/028-system-one-core/contracts/verified-plan-v1.md`, `specs/031-system-one-integration/contracts/verified-plan-consumer-v1.md`, and `specs/028-system-one-core/decision-delivery/addenda/ddp-t01-plan.md`, plus the named existing cancellation and Git budget primitives.
+
+## Finding
+
+**P2 — checkpoint row-cap rejection does not latch refusal in the live context** — [`agent_braid/system_one_verified_selection.py:228`](/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-verified-core/agent_braid/system_one_verified_selection.py:228), especially lines 230–231 and 283–288.
+
+`_check()` latches cancellation/deadline failures, and `phase()` catches and latches failures. But when `checkpoint()` needs a new automatic stage row, `_open()` enforces `len(_rows) < 64` with a bare `_require` outside `_check()`'s catch. A trusted caller can catch that `ValueError`; `_failure` remains unset, the context's decision remains `answered`, and its complete evidence remains available after the reported work-budget failure. The request can therefore continue exposing a stale successful producer result until cleanup. This violates the contract's irreversible cancellation/deadline/work-budget refusal behavior and fails closed only later.
+
+Reproduced through the public context API with the existing owned software fixture: decide to `answered`, add valid selection phase rows until 63, open row 64 with `checkpoint('selection', 0)`, then catch `checkpoint('verification', 0)` raising `work-budget-exceeded`. Immediately afterward, observed `_failure is None`, `context.decision['status'] == 'answered'`, and nonempty evidence. `publish()` did refuse with `work-budget-exceeded`, because `close()` cannot append the cleanup row at 64; **there is no final publication bypass in this reproduction**. The defect is the stale live producer state before close, despite a caught budget error.
+
+Minimal fix: make the row-cap failure in `_open()` call `_fail('work-budget-exceeded')` before raising, and reserve a cleanup row by limiting operational rows to 63. Add a regression that catches the automatic checkpoint failure and asserts immediate refusal plus cleared semantic bodies, then verifies cleanup still records its row and publication remains refused.
+
+## Other reviewed areas
+
+Raw admission precedes scratch allocation and source acquisition. The request-local cancellation token, shared `GitCommandBudget`, memoized acquisition/decision/outer ends, cumulative hunk accounting, full snapshot evidence body and distinct inner `snapshotDigest`, and locked cancellation/publication path are consistent with the reviewed contract in the exercised paths. Cleanup failure/expiry suppresses final success. Execution authorization remains literal false. The `.gitattributes` addition is limited to the specified raw log whitespace rule. No other actionable P1/P2 finding identified within this scope.
+
+## Checks performed
+
+- Confirmed both assigned SHA-256 pins.
+- Ran one small deterministic Python reproduction through `VerifiedRequestContext`; outcome recorded above. This was a scoped software check, not a test-suite/profile run.
+- Inspected `.gitattributes` diff and scoped `git status`; no repository mutation was made by the review.
+- Focused 28/28 and three-mutation results are reported as pre-review evidence from the coordinator, not independently rerun here.
+
+This review is technical only; it does not imply human, scientific, product, or T06 acceptance.

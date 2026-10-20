@@ -1,0 +1,29 @@
+{
+  "id": "S1-DDP-T04-COMPONENT-20261020",
+  "scope": "partial component receipt; source hashes checked, tests not rerun here",
+  "sourceCandidate": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-verified-core",
+  "files": [
+    {
+      "path": "README.md",
+      "sha256": "1a85d2ce6c2794742c754b2b4cb4ab932ec2596e9b8825bb0bda68cd7925507c",
+      "bytes": 1893
+    },
+    {
+      "path": "focused-log.txt",
+      "sha256": "be0ea6a187f543078d44f7b7561b12519a1ac5bdb4a5e781e5fd7221b91e7d81",
+      "bytes": 1845
+    },
+    {
+      "path": "worker-receipt.json",
+      "sha256": "1604193b95963654527067aa93d475580592c7a913fd53e8eeb91ff9417e2444",
+      "bytes": 785
+    }
+  ],
+  "candidateFiles": {
+    "agent_braid/system_one_verified_registry.py": "2cae6dabd1aa1f9a4818f9c5b7214c8647f078f3fcc5d1ffb26e5657dabaa8c2",
+    "tests/test_system_one_verified_registry.py": "53185df49342636e9b2545a5d53ef398998b4acc3367e39ee35ee0e5c525d254",
+    "tests/fixtures/system_one_verified_registry.json": "75753dac881c6cd933360aab88b5d71bb6d17c19d6537c0645b8024c78a1005a"
+  },
+  "remoteMutations": 0,
+  "taskClosed": false
+}

@@ -1,0 +1,9 @@
+# Documentary corpus published on GitHub — 2026-10-20
+
+The user-authorized documentary branch is now public in [draft PR594](https://github.com/jayanez/agent-braid/pull/594), targeting develop. The initial published head was 1eb732f41839ad15977337c99041101ad7a0ec04. The complete corpus can be read from the [branch entry point](https://github.com/jayanez/agent-braid/blob/docs/ddp-t01-contracts/docs/system-one/README.md), including earlier integrated material and the latest supplements. This resolves the previous local-only availability limitation; earlier receipts retain their historical publication state.
+
+Publication is not integration into develop, completed CI, independent review, human/scientific acceptance or activation. At initial-head readback, tracking, impact classification, fast invariants and governance controls passed; complete Python and Spec Kit checks were still running, and the specialist matrix was skipped. These observations cover that exact head only. Later commits require their own CI readback; no completed aggregate is claimed.
+
+A thread follow-up is configured to check for final component-profile/package receipts every15minutes, remain silent without actionable changes, incorporate actual results/failures with exact bindings and publish documentary commits to this PR. It must preserve frozen records and historical failed profiles, avoid implementation-candidate writes, and pause once the pending final receipt publication and coordinator handoff are verified. No permissions were expanded. The coordinator has been told that this publication concerns documentation only.
+
+Final quick/PR component outcomes remain unknown until their completed source-bound receipts arrive. Conditional T05 authority does not imply GO. T06, independent/human/scientific gates, training/calibration, admission/promotion and activation remain separate.

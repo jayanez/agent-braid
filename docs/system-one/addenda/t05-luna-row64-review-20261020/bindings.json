@@ -1,0 +1,36 @@
+{
+  "id": "S1-T05-LUNA-ROW64-20261020",
+  "recordedAtUTC": "2026-10-20T07:25:04.608415+00:00",
+  "reviewerModel": "Luna Latest (gpt-6-luna), reported coordinator/reviewer identity",
+  "reviewedCandidate": {
+    "agent_braid/system_one_verified_selection.py": "109a182c1762b55acdb2575488ab1b573ca15d3e5dec760fec30621c164a6935",
+    "tests/test_system_one_verified_selection.py": "f5c8dd0e48a74f338b813d1a56ba66c650beb94123add3735c356c179755313e"
+  },
+  "findings": [
+    {
+      "id": "T05-REVIEW-P2-001",
+      "relatedBoundary": "T05-FIND-001",
+      "severity": "P2",
+      "status": "confirmed; fix and targeted recheck pending",
+      "finalPublicationBypassObserved": false
+    }
+  ],
+  "checks": "review pins matched preserved candidate; exact report/reproduction hashes; no tests rerun here",
+  "files": [
+    {
+      "path": "README.md",
+      "sha256": "14f942bde352cee136234b81899a7fafb4d7dc6eec304ff724b52d4c7eeed364",
+      "bytes": 3059
+    },
+    {
+      "path": "original-review.txt",
+      "sha256": "c295c34aa8d8a8ce5dbf5970830187ad37a788e8aaf7b17afaa3349dada32772",
+      "bytes": 4185
+    },
+    {
+      "path": "row64-reproduction.txt",
+      "sha256": "fb55a8fed819335d2c204e32cb83d4b662bd33f9539b6d6da44de3614e2f04f0",
+      "bytes": 204
+    }
+  ]
+}

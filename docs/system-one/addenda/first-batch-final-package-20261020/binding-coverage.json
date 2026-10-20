@@ -1,0 +1,402 @@
+{
+  "id": "S1-DDP-FIRST-BATCH-PACKAGE-20261020",
+  "checkedAtUTC": "2026-10-20T07:10:09.051093+00:00",
+  "packetSha256": "a22a42405e9b0f83e2dd87ab329a99545b8eff3ca249e30bec242c6020c4c871",
+  "sourceCandidate": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-verified-core",
+  "bindingsChecked": 51,
+  "archiveMembersCompared": [
+    {
+      "path": "agent_braid/system_one_verified_acquisition.py",
+      "sha256": "2380a32ef308fbbe540c67e71fb0bf43dc15b95a6732a13a8e2bf2be0d49e5b7",
+      "bytes": 20715
+    },
+    {
+      "path": "agent_braid/system_one_verified_ir.py",
+      "sha256": "a0378c34b805387b0518cf6ebc3da05599976cb7f037d5f140c2571c8f362ea3",
+      "bytes": 18934
+    },
+    {
+      "path": "agent_braid/system_one_verified_registry.py",
+      "sha256": "8d9cb2070683497ea789a9f03905e07f69d6c812c7d0ec9d6ab8a72116f88e6c",
+      "bytes": 4294
+    },
+    {
+      "path": "specs/028-system-one-core/contracts/verified-plan-v1.md",
+      "sha256": "a68488d4a412820130231daa8c8dbeefb1e58445b2f1cfdf0c02b8669ef132d7",
+      "bytes": 21462
+    },
+    {
+      "path": "specs/028-system-one-core/decision-delivery/addenda/ddp-t01-coordinator-review.json",
+      "sha256": "2fbed3cabf3ef6433dd0bd3cd2824423fc4265659c6fa505de8a9857f0495606",
+      "bytes": 1777
+    },
+    {
+      "path": "specs/028-system-one-core/decision-delivery/addenda/ddp-t01-coordinator-review.md",
+      "sha256": "a117ba5f197944de569099df4168c461eec8b62f0e3585f3a2af3dd1bbab1cfd",
+      "bytes": 3838
+    },
+    {
+      "path": "specs/028-system-one-core/decision-delivery/addenda/ddp-t01-plan.md",
+      "sha256": "2ee328f92aa19820704b3838528599296c87f53a5872a1f12d2bd8cd59a6e62e",
+      "bytes": 20126
+    },
+    {
+      "path": "specs/029-system-one-evaluation/verified-plan-conformance.md",
+      "sha256": "90f52099cdaebba51f2781c715c748d1ba0c13e9b2b9755a32b25e53f5a08e5b",
+      "bytes": 13451
+    },
+    {
+      "path": "specs/029-system-one-evaluation/verified-plan-vectors.json",
+      "sha256": "6584ce4de05edf143e215945ff620b5127fe48e6c352dfb7a33b447e753a11f7",
+      "bytes": 27847
+    },
+    {
+      "path": "specs/031-system-one-integration/contracts/verified-plan-consumer-v1.md",
+      "sha256": "b17b5f3398dba9086ba44bdc04c4ff9cae97364f1fb9430a7e4ebcb9cb9fd1f4",
+      "bytes": 11794
+    },
+    {
+      "path": "tests/fixtures/system_one_verified_acquisition.json",
+      "sha256": "4c674337541e56bc7cc2219a8c10e522bba037fae24bd480a65317010fc15078",
+      "bytes": 846
+    },
+    {
+      "path": "tests/fixtures/system_one_verified_ir.json",
+      "sha256": "c2aac157c85f4a1d9fd6e5fec998c003433bb4e9769bba3ed50c27f253318b76",
+      "bytes": 2931
+    },
+    {
+      "path": "tests/fixtures/system_one_verified_registry.json",
+      "sha256": "75753dac881c6cd933360aab88b5d71bb6d17c19d6537c0645b8024c78a1005a",
+      "bytes": 1241
+    },
+    {
+      "path": "tests/test_system_one_verified_acquisition.py",
+      "sha256": "27ff8dd4192d1bc1b7d72b412fa1209e3ba28b32671f0181d3fb707a104ea8ed",
+      "bytes": 20607
+    },
+    {
+      "path": "tests/test_system_one_verified_components.py",
+      "sha256": "01abcb850572c3ad0f85beccaf7d437367fa388f681f0b77d55be24c98c32dcf",
+      "bytes": 7126
+    },
+    {
+      "path": "tests/test_system_one_verified_ir.py",
+      "sha256": "5550874646e3021cf147e14ebf5e5760a7f7397b08ce7701256ad59c2e9367be",
+      "bytes": 18917
+    },
+    {
+      "path": "tests/test_system_one_verified_registry.py",
+      "sha256": "53185df49342636e9b2545a5d53ef398998b4acc3367e39ee35ee0e5c525d254",
+      "bytes": 8812
+    },
+    {
+      "path": "specs/028-system-one-core/decision-delivery/addenda/ddp-t02-t04-implementation.md",
+      "sha256": "f660f8500396f97d828fe3648795608a78590ddbcb9b7e08aab357072717a15f",
+      "bytes": 4876
+    }
+  ],
+  "sourceArchivePublished": false,
+  "candidatePatchHashVerified": "bfca7b8ee8c40b29a89d56f39236be087dd64867c4a05560582d4af58266c0d5",
+  "bindingCoverage": [
+    {
+      "sourcePath": "agent_braid/system_one_verified_acquisition.py",
+      "sha256": "2380a32ef308fbbe540c67e71fb0bf43dc15b95a6732a13a8e2bf2be0d49e5b7",
+      "availability": "retained in coordinator candidate/hash-bound archive; product implementation not published by this documentary PR"
+    },
+    {
+      "sourcePath": "agent_braid/system_one_verified_ir.py",
+      "sha256": "a0378c34b805387b0518cf6ebc3da05599976cb7f037d5f140c2571c8f362ea3",
+      "availability": "retained in coordinator candidate/hash-bound archive; product implementation not published by this documentary PR"
+    },
+    {
+      "sourcePath": "agent_braid/system_one_verified_registry.py",
+      "sha256": "8d9cb2070683497ea789a9f03905e07f69d6c812c7d0ec9d6ab8a72116f88e6c",
+      "availability": "retained in coordinator candidate/hash-bound archive; product implementation not published by this documentary PR"
+    },
+    {
+      "sourcePath": "specs/028-system-one-core/contracts/verified-plan-v1.md",
+      "sha256": "a68488d4a412820130231daa8c8dbeefb1e58445b2f1cfdf0c02b8669ef132d7",
+      "corpusPath": "specs/028-system-one-core/contracts/verified-plan-v1.md",
+      "representation": "original bytes"
+    },
+    {
+      "sourcePath": "specs/028-system-one-core/decision-delivery/addenda/ddp-t01-coordinator-review.json",
+      "sha256": "2fbed3cabf3ef6433dd0bd3cd2824423fc4265659c6fa505de8a9857f0495606",
+      "corpusPath": "specs/028-system-one-core/decision-delivery/addenda/ddp-t01-coordinator-review.json",
+      "representation": "original bytes"
+    },
+    {
+      "sourcePath": "specs/028-system-one-core/decision-delivery/addenda/ddp-t01-coordinator-review.md",
+      "sha256": "a117ba5f197944de569099df4168c461eec8b62f0e3585f3a2af3dd1bbab1cfd",
+      "corpusPath": "specs/028-system-one-core/decision-delivery/addenda/ddp-t01-coordinator-review.md",
+      "representation": "original bytes"
+    },
+    {
+      "sourcePath": "specs/028-system-one-core/decision-delivery/addenda/ddp-t01-plan.md",
+      "sha256": "2ee328f92aa19820704b3838528599296c87f53a5872a1f12d2bd8cd59a6e62e",
+      "corpusPath": "specs/028-system-one-core/decision-delivery/addenda/ddp-t01-plan.md",
+      "representation": "original bytes"
+    },
+    {
+      "sourcePath": "specs/028-system-one-core/decision-delivery/addenda/ddp-t02-t04-implementation.md",
+      "sha256": "f660f8500396f97d828fe3648795608a78590ddbcb9b7e08aab357072717a15f",
+      "path": "docs/system-one/addenda/first-batch-final-package-20261020/implementation-report.txt",
+      "representation": "original bytes"
+    },
+    {
+      "sourcePath": "specs/029-system-one-evaluation/evidence/ddp-t02-t04/T02-focused-final.log",
+      "sha256": "d682ece3eebbfba7546c2cc769acc0ccd5366afc74c1f741795d0a293815185f",
+      "path": "docs/system-one/addenda/t02-and-serial-pin-20261020/focused-log.txt",
+      "representation": "original bytes"
+    },
+    {
+      "sourcePath": "specs/029-system-one-evaluation/evidence/ddp-t02-t04/T02-focused.log",
+      "sha256": "26c5a1c5c2ecc4a3d6d5f9b2f21da6170cdbd7ff5045947d5496ed39abe0d141",
+      "corpusPath": "docs/system-one/addenda/first-batch-final-package-20261020/documentary-source-capsules.json",
+      "representation": "matching sourcePath entry text encoded as UTF-8"
+    },
+    {
+      "sourcePath": "specs/029-system-one-evaluation/evidence/ddp-t02-t04/T02-mutation-final.log",
+      "sha256": "d4da321fbc3fa6f062917b2177decf82456ed22ab70cf24a60684a51b03453c6",
+      "path": "docs/system-one/addenda/t02-and-serial-pin-20261020/mutation-log.txt",
+      "representation": "original bytes"
+    },
+    {
+      "sourcePath": "specs/029-system-one-evaluation/evidence/ddp-t02-t04/T02-mutation.log",
+      "sha256": "06c6abcd9ef3f2cea38937772524ca8147ea98d2f396deed1a11f9498d850eff",
+      "corpusPath": "docs/system-one/addenda/first-batch-final-package-20261020/documentary-source-capsules.json",
+      "representation": "matching sourcePath entry text encoded as UTF-8"
+    },
+    {
+      "sourcePath": "specs/029-system-one-evaluation/evidence/ddp-t02-t04/T02-worker-receipt.json",
+      "sha256": "003feae69914902b0ac5b09f9ee9c3f2931300f382e7f52bb7806f1a3557f140",
+      "path": "docs/system-one/addenda/t02-and-serial-pin-20261020/worker-receipt.json",
+      "representation": "original bytes"
+    },
+    {
+      "sourcePath": "specs/029-system-one-evaluation/evidence/ddp-t02-t04/T03-focused-complete.log",
+      "sha256": "cb72c656fb2864109e4d6f75b47a18d326542a4e418388e441b24f2caacd3cb0",
+      "path": "docs/system-one/addenda/t03-and-component-join-20261020/focused-log.txt",
+      "representation": "original bytes"
+    },
+    {
+      "sourcePath": "specs/029-system-one-evaluation/evidence/ddp-t02-t04/T03-focused-final.log",
+      "sha256": "835dad61ad29c227003d0c469f36d8f7f9c22695ce4b69b75cb19efd6e6178d9",
+      "corpusPath": "docs/system-one/addenda/first-batch-final-package-20261020/documentary-source-capsules.json",
+      "representation": "matching sourcePath entry text encoded as UTF-8"
+    },
+    {
+      "sourcePath": "specs/029-system-one-evaluation/evidence/ddp-t02-t04/T03-focused.log",
+      "sha256": "cc9211508f1a082a9206789937b58e85f713e44400ea590351e53adc1ca80664",
+      "corpusPath": "docs/system-one/addenda/first-batch-final-package-20261020/documentary-source-capsules.json",
+      "representation": "matching sourcePath entry text encoded as UTF-8"
+    },
+    {
+      "sourcePath": "specs/029-system-one-evaluation/evidence/ddp-t02-t04/T03-worker-receipt.json",
+      "sha256": "2951596f10b25a1a91eff2e3e8a256194a80d2f4c07c280b7071e24cc0bc9806",
+      "path": "docs/system-one/addenda/t03-and-component-join-20261020/worker-receipt.json",
+      "representation": "original bytes"
+    },
+    {
+      "sourcePath": "specs/029-system-one-evaluation/evidence/ddp-t02-t04/T04-focused.log",
+      "sha256": "be0ea6a187f543078d44f7b7561b12519a1ac5bdb4a5e781e5fd7221b91e7d81",
+      "path": "docs/system-one/addenda/t04-component-20261020/focused-log.txt",
+      "representation": "original bytes"
+    },
+    {
+      "sourcePath": "specs/029-system-one-evaluation/evidence/ddp-t02-t04/T04-worker-receipt.json",
+      "sha256": "1604193b95963654527067aa93d475580592c7a913fd53e8eeb91ff9417e2444",
+      "path": "docs/system-one/addenda/t04-component-20261020/worker-receipt.json",
+      "representation": "original bytes"
+    },
+    {
+      "sourcePath": "specs/029-system-one-evaluation/evidence/ddp-t02-t04/assignment.json",
+      "sha256": "d813fe5b7ce71914526cf1b7dcdc0c1c9f737e58acfc9e73c6e311c9b6cbefcb",
+      "corpusPath": "docs/system-one/addenda/first-batch-final-package-20261020/documentary-source-capsules.json",
+      "representation": "matching sourcePath entry text encoded as UTF-8"
+    },
+    {
+      "sourcePath": "specs/029-system-one-evaluation/evidence/ddp-t02-t04/baseline-files.json",
+      "sha256": "8ed9bf6d2eceaf35c7526123b151c5de2d17e4f1b600f397be093859196424b8",
+      "path": "docs/system-one/addenda/component-profiles-final-20261020/baseline-files.json",
+      "representation": "original bytes"
+    },
+    {
+      "sourcePath": "specs/029-system-one-evaluation/evidence/ddp-t02-t04/component-join.json",
+      "sha256": "cf882807d2a87f82a509a64afbebef8b3935315e0f291c22d5bc0cfb0afdcc6d",
+      "path": "docs/system-one/addenda/t03-and-component-join-20261020/component-join.json",
+      "representation": "original bytes"
+    },
+    {
+      "sourcePath": "specs/029-system-one-evaluation/evidence/ddp-t02-t04/components-focused.log",
+      "sha256": "a18fa4c9fe67ddebecd1ef5783cbf9bd8e44579d6909efa009fba7a0ee3edd57",
+      "path": "docs/system-one/addenda/t03-and-component-join-20261020/join-log.txt",
+      "representation": "original bytes"
+    },
+    {
+      "sourcePath": "specs/029-system-one-evaluation/evidence/ddp-t02-t04/ddp-core-preflight-clone.log",
+      "sha256": "b28f0f3bd337a6cae29938ed6ec99ef7ecf3c0005cc38370479d91ec923e04ac",
+      "corpusPath": "docs/system-one/addenda/first-batch-final-package-20261020/documentary-source-capsules.json",
+      "representation": "matching sourcePath entry text encoded as UTF-8"
+    },
+    {
+      "sourcePath": "specs/029-system-one-evaluation/evidence/ddp-t02-t04/ddp-core-preflight-worktree.log",
+      "sha256": "9cb6ff17168b57b903957d837a0000a5b9382e48a2c9a0f93b663337c4ed72b9",
+      "corpusPath": "docs/system-one/addenda/first-batch-final-package-20261020/documentary-source-capsules.json",
+      "representation": "matching sourcePath entry text encoded as UTF-8"
+    },
+    {
+      "sourcePath": "specs/029-system-one-evaluation/evidence/ddp-t02-t04/ddp-core-restored-history-final.log",
+      "sha256": "14cb7044e51579a80ae3305d2fe5e97a12c80ca1eaf1164865594a72c5cc3cb5",
+      "corpusPath": "docs/system-one/addenda/first-batch-final-package-20261020/documentary-source-capsules.json",
+      "representation": "matching sourcePath entry text encoded as UTF-8"
+    },
+    {
+      "sourcePath": "specs/029-system-one-evaluation/evidence/ddp-t02-t04/ddp-core-restored-history.log",
+      "sha256": "d030f53d59e53415dcf3d78da41399d3bd06b066ec345705f357665b6eb10d82",
+      "corpusPath": "docs/system-one/addenda/first-batch-final-package-20261020/documentary-source-capsules.json",
+      "representation": "matching sourcePath entry text encoded as UTF-8"
+    },
+    {
+      "sourcePath": "specs/029-system-one-evaluation/evidence/ddp-t02-t04/ddp-core-worktree-fsck.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "corpusPath": "docs/system-one/addenda/first-batch-final-package-20261020/documentary-source-capsules.json",
+      "representation": "matching sourcePath entry text encoded as UTF-8"
+    },
+    {
+      "sourcePath": "specs/029-system-one-evaluation/evidence/ddp-t02-t04/final-repository.log",
+      "sha256": "4dba091ad34351df5a47ab88351937a7c08b8d04df4e59834546b6babf1479b0",
+      "corpusPath": "docs/system-one/addenda/first-batch-final-package-20261020/documentary-source-capsules.json",
+      "representation": "matching sourcePath entry text encoded as UTF-8"
+    },
+    {
+      "sourcePath": "specs/029-system-one-evaluation/evidence/ddp-t02-t04/finalize.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "corpusPath": "docs/system-one/addenda/first-batch-final-package-20261020/documentary-source-capsules.json",
+      "representation": "matching sourcePath entry text encoded as UTF-8"
+    },
+    {
+      "sourcePath": "specs/029-system-one-evaluation/evidence/ddp-t02-t04/finalize.py",
+      "sha256": "368b8cab68c807678406a58b60d98acb6655d8177384c2176a2f1abb45fe613d",
+      "corpusPath": "docs/system-one/addenda/first-batch-final-package-20261020/documentary-source-capsules.json",
+      "representation": "matching sourcePath entry text encoded as UTF-8"
+    },
+    {
+      "sourcePath": "specs/029-system-one-evaluation/evidence/ddp-t02-t04/new-source.tar.gz",
+      "sha256": "7dd1b840502ca1d40dfd092f14ee71249b53e7ee6d6a2796e44a1404e26f6d34",
+      "availability": "retained in coordinator candidate/hash-bound archive; product implementation not published by this documentary PR"
+    },
+    {
+      "sourcePath": "specs/029-system-one-evaluation/evidence/ddp-t02-t04/profile-supervisor.log",
+      "sha256": "5eb2be0c51677c1a9aa201733d8aa8bf209a2454a7bb15d0dd38f37962b0d6be",
+      "corpusPath": "docs/system-one/addenda/first-batch-final-package-20261020/documentary-source-capsules.json",
+      "representation": "matching sourcePath entry text encoded as UTF-8"
+    },
+    {
+      "sourcePath": "specs/029-system-one-evaluation/evidence/ddp-t02-t04/profiles/pr.json",
+      "sha256": "685c1952d8f50c112068729d62599e94126e1a9c265cbab4153748bde8aef866",
+      "path": "docs/system-one/addenda/component-profiles-final-20261020/pr-receipt.json",
+      "representation": "original bytes"
+    },
+    {
+      "sourcePath": "specs/029-system-one-evaluation/evidence/ddp-t02-t04/profiles/pr.log",
+      "sha256": "dcea0b2c97d5b6504ab65e84c44f8969249fa2736015ad8d1920903edb204768",
+      "path": "docs/system-one/addenda/component-profiles-final-20261020/pr-log.json",
+      "representation": "decode text as UTF-8"
+    },
+    {
+      "sourcePath": "specs/029-system-one-evaluation/evidence/ddp-t02-t04/profiles/quick.json",
+      "sha256": "edf1ae4fd2537af83b1fbe790ddb90bfcc97bbb211973d6711f94466a3aa202c",
+      "path": "docs/system-one/addenda/component-profiles-final-20261020/quick-receipt.json",
+      "representation": "original bytes"
+    },
+    {
+      "sourcePath": "specs/029-system-one-evaluation/evidence/ddp-t02-t04/profiles/quick.log",
+      "sha256": "7a4177a9aeea14e573ccc90d1c8d0b4926040f86eacf2a03047e3438a1f9219c",
+      "path": "docs/system-one/addenda/component-profiles-final-20261020/quick-log.json",
+      "representation": "decode text as UTF-8"
+    },
+    {
+      "sourcePath": "specs/029-system-one-evaluation/evidence/ddp-t02-t04/run_profiles.py",
+      "sha256": "fff73347353ecf104526e3ab7cc902960510b45b0e47b38ab917765c964cc06d",
+      "corpusPath": "docs/system-one/addenda/first-batch-final-package-20261020/documentary-source-capsules.json",
+      "representation": "matching sourcePath entry text encoded as UTF-8"
+    },
+    {
+      "sourcePath": "specs/029-system-one-evaluation/evidence/ddp-t02-t04/serial-pin.json",
+      "sha256": "3fc9a65e762d1389432edae0991098adfa867c57db609a84d4b7ad7208115bb1",
+      "path": "docs/system-one/addenda/t02-and-serial-pin-20261020/serial-pin.json",
+      "representation": "original bytes"
+    },
+    {
+      "sourcePath": "specs/029-system-one-evaluation/evidence/ddp-t02-t04/shared-worktree-fsck-confirmed.log",
+      "sha256": "b95d003f92d0fbcc64dc6639694fa919a89cc06841aa64b78545e347e94f6976",
+      "corpusPath": "docs/system-one/addenda/first-batch-final-package-20261020/documentary-source-capsules.json",
+      "representation": "matching sourcePath entry text encoded as UTF-8"
+    },
+    {
+      "sourcePath": "specs/029-system-one-evaluation/evidence/ddp-t02-t04/shared-worktrees.log",
+      "sha256": "2e52c3b29b3ded0242b07e3eb53ae966e024e8e2a89d5a96f00a3181e17ff4a8",
+      "corpusPath": "docs/system-one/addenda/first-batch-final-package-20261020/documentary-source-capsules.json",
+      "representation": "matching sourcePath entry text encoded as UTF-8"
+    },
+    {
+      "sourcePath": "specs/029-system-one-evaluation/verified-plan-conformance.md",
+      "sha256": "90f52099cdaebba51f2781c715c748d1ba0c13e9b2b9755a32b25e53f5a08e5b",
+      "corpusPath": "specs/029-system-one-evaluation/verified-plan-conformance.md",
+      "representation": "original bytes"
+    },
+    {
+      "sourcePath": "specs/029-system-one-evaluation/verified-plan-vectors.json",
+      "sha256": "6584ce4de05edf143e215945ff620b5127fe48e6c352dfb7a33b447e753a11f7",
+      "corpusPath": "specs/029-system-one-evaluation/verified-plan-vectors.json",
+      "representation": "original bytes"
+    },
+    {
+      "sourcePath": "specs/031-system-one-integration/contracts/verified-plan-consumer-v1.md",
+      "sha256": "b17b5f3398dba9086ba44bdc04c4ff9cae97364f1fb9430a7e4ebcb9cb9fd1f4",
+      "corpusPath": "specs/031-system-one-integration/contracts/verified-plan-consumer-v1.md",
+      "representation": "original bytes"
+    },
+    {
+      "sourcePath": "tests/fixtures/system_one_verified_acquisition.json",
+      "sha256": "4c674337541e56bc7cc2219a8c10e522bba037fae24bd480a65317010fc15078",
+      "availability": "retained in coordinator candidate/hash-bound archive; product implementation not published by this documentary PR"
+    },
+    {
+      "sourcePath": "tests/fixtures/system_one_verified_ir.json",
+      "sha256": "c2aac157c85f4a1d9fd6e5fec998c003433bb4e9769bba3ed50c27f253318b76",
+      "availability": "retained in coordinator candidate/hash-bound archive; product implementation not published by this documentary PR"
+    },
+    {
+      "sourcePath": "tests/fixtures/system_one_verified_registry.json",
+      "sha256": "75753dac881c6cd933360aab88b5d71bb6d17c19d6537c0645b8024c78a1005a",
+      "availability": "retained in coordinator candidate/hash-bound archive; product implementation not published by this documentary PR"
+    },
+    {
+      "sourcePath": "tests/test_system_one_verified_acquisition.py",
+      "sha256": "27ff8dd4192d1bc1b7d72b412fa1209e3ba28b32671f0181d3fb707a104ea8ed",
+      "availability": "retained in coordinator candidate/hash-bound archive; product implementation not published by this documentary PR"
+    },
+    {
+      "sourcePath": "tests/test_system_one_verified_components.py",
+      "sha256": "01abcb850572c3ad0f85beccaf7d437367fa388f681f0b77d55be24c98c32dcf",
+      "availability": "retained in coordinator candidate/hash-bound archive; product implementation not published by this documentary PR"
+    },
+    {
+      "sourcePath": "tests/test_system_one_verified_ir.py",
+      "sha256": "5550874646e3021cf147e14ebf5e5760a7f7397b08ce7701256ad59c2e9367be",
+      "availability": "retained in coordinator candidate/hash-bound archive; product implementation not published by this documentary PR"
+    },
+    {
+      "sourcePath": "tests/test_system_one_verified_registry.py",
+      "sha256": "53185df49342636e9b2545a5d53ef398998b4acc3367e39ee35ee0e5c525d254",
+      "availability": "retained in coordinator candidate/hash-bound archive; product implementation not published by this documentary PR"
+    }
+  ],
+  "boundSourceCapsulesAdded": 17,
+  "independentReview": false,
+  "testsRerunHere": false,
+  "remoteTaskClosure": false
+}

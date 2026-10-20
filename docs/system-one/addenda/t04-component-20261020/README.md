@@ -1,0 +1,9 @@
+# DDP-T04 — partial component receipt
+
+The [original worker receipt](worker-receipt.json), recorded 2026-10-20T06:22:01.769304Z, and [exact focused log](focused-log.txt) record three delivered component files and ten focused tests: exit0, zero skips, 0.007s. This documentary conversation checked each of the three source/test/fixture hashes against the coordinator candidate and the log against the receipt. It did not rerun tests or independently review implementation correctness.
+
+Candidate: `/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-verified-core`, branch `feat/verified-plan-core`, recorded baseline fe6d25b3d9fb989c230aa11779b6a51d494d7a4e. Source bytes remain in that candidate; only the exact receipt/log and bounded interpretation are incorporated here. Worker ownership was released. The registry's production pin remains absent: production stays unavailable until actual T02 completion and coordinator serial pinning/integration. These component hashes precede that future pin and must not be reused for later changed bytes.
+
+The reported scope covers exact schema/domain/version/manifest/source checks, bounded source hashing and checkpoint propagation without reset, with no plugin dispatch. Treat this as reported component behavior with focused worker tests, not full integration, independent review, scientific/human approval or activation. T04 as a whole is not closed. T02/T03, production pin, combined validation and T05/T06 dependencies remain pending. No remote tracking state was changed by this documentary receipt. A later correction or post-pin hash requires a separate additive receipt.
+
+The receipt's executionAuthorization=false does not negate the separately recorded user-authorized implementation assignment; it grants no downstream execution/activation authority. Keep assignment provenance, component delivery and runtime authority distinct.

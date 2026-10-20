@@ -1,0 +1,23 @@
+{
+  "status": "stable-for-review",
+  "ownershipReleased": true,
+  "files": {
+    "agent_braid/system_one_verified_selection.py": "109a182c1762b55acdb2575488ab1b573ca15d3e5dec760fec30621c164a6935",
+    "tests/test_system_one_verified_selection.py": "f5c8dd0e48a74f338b813d1a56ba66c650beb94123add3735c356c179755313e"
+  },
+  "logs": {
+    "T05-focused-final.log": "ddc96fcbf81d65e2871a50ccd327d082bbc0a97257fcd4b63e00e1e7480509c5",
+    "T05-mutation-final.log": "9c4a1f5c91c1896442a66cbd753ff329b5837298fafdc3df99ed2507b5c59e40"
+  },
+  "focused": {
+    "tests": 28,
+    "skips": 0,
+    "seconds": 9.78,
+    "exitCode": 0
+  },
+  "mutationsDetected": 3,
+  "review": "Luna scoped active; row64 live-latch issue identified by coordinator and confirmed by implementer, final close refuses",
+  "profiles": "not started",
+  "externalSpendEUR": 0,
+  "executionAuthorization": false
+}

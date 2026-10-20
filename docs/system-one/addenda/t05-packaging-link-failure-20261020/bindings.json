@@ -1,0 +1,29 @@
+{
+  "id": "S1-T05-PACKAGING-002-CORPUS",
+  "checkedAtUTC": "2026-10-20T08:05:07.944453+00:00",
+  "status": "failed packaging attempt retained; scoped repair pending",
+  "checks": {
+    "failureReceiptCopiedByteExact": true,
+    "failedRepositoryLogHash": true,
+    "finalizerAttemptLogHash": true,
+    "reviewBytesMatchExistingCorpus": true,
+    "reranTestsOrPackagingHere": false
+  },
+  "files": [
+    {
+      "path": "README.md",
+      "sha256": "d88b7256e54278fa488f1ee9475c6388f9fe6646e4b57939eeb82855815acdab",
+      "bytes": 2252
+    },
+    {
+      "path": "failure-log-capsules.json",
+      "sha256": "b5a21376bd364c6bcdec82bd505f4cdf27d7fad54c170af294b5f89a85e2ad1d",
+      "bytes": 2290
+    },
+    {
+      "path": "failure-receipt.json",
+      "sha256": "e54ea1bf097a090655208ac12b94c81d368dc38d86f6f0c92c018d7f06653134",
+      "bytes": 802
+    }
+  ]
+}

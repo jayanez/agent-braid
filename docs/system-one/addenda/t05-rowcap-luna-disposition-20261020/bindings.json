@@ -1,0 +1,36 @@
+{
+  "id": "S1-T05-LUNA-ROWCAP-DISPOSITION-20261020",
+  "recordedAtUTC": "2026-10-20T07:27:37.506910+00:00",
+  "findingAliases": [
+    "T05-FIND-002",
+    "T05-REVIEW-P2-001"
+  ],
+  "disposition": "fixed in exact reviewed pins; targeted regression passed; no broader acceptance",
+  "reviewer": "same Luna Latest, reported by coordinator",
+  "reviewedSource": {
+    "agent_braid/system_one_verified_selection.py": "8971650c51082938281ecb62e40e23adab4202bb20971b1eb23e1ef7d78c339c",
+    "tests/test_system_one_verified_selection.py": "d14d2ec1637b944eab96a6c9938b1758c8343e390fae208d55e615c9089e0b56"
+  },
+  "reviewerExecutedTests": {
+    "count": 1,
+    "seconds": 0.753,
+    "scope": "named public-API row saturation regression"
+  },
+  "reviewerCheckedNotRerun": {
+    "T05-focused-rowcap.log": "2e39d5d026bb693dd1d026165862b5b9927ad021f6dc54750d481deea28b4744",
+    "T05-mutation-rowcap.log": "d04ba776b2a935bfe275136e7f996997a84c1510fc66a83d235660f70af76f44"
+  },
+  "documentaryConversationExecutedTests": false,
+  "files": [
+    {
+      "path": "README.md",
+      "sha256": "3ed827c1f0dfcf5015cd2667ecc2d237dc30ca1d272a561f57ae7ee616da426e",
+      "bytes": 2270
+    },
+    {
+      "path": "original-verification.txt",
+      "sha256": "e9306e36211f6a2554347fd315c814e62e640b73bea90e1d32729def867463e6",
+      "bytes": 2125
+    }
+  ]
+}

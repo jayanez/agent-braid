@@ -1,0 +1,91 @@
+{
+  "id": "S1-DOC-CONTINUITY-20261020",
+  "baselineCommit": "fe6d25b3d9fb989c230aa11779b6a51d494d7a4e",
+  "scope": "Additive documentary continuity; no implementation or acceptance",
+  "files": [
+    {
+      "path": "docs/system-one/addenda/verification-continuity-20261020/project-verification.json",
+      "sha256": "e94387c39b2752a34428a32fd81d08d8ef3a41836b5e3873db01f14615542046",
+      "bytes": 33274,
+      "originalSource": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/outputs/project-reconciliation-20261020/project-verification.json",
+      "kind": "byte-exact documentary receipt; embedded original paths remain original source paths"
+    },
+    {
+      "path": "docs/system-one/addenda/verification-continuity-20261020/project-s1-flat-export.json",
+      "sha256": "9267694effcf5b18dcf25f908d08fbb5d233b0a8b4d16ecb217f27186d7c5f92",
+      "bytes": 23767,
+      "originalSource": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/outputs/project-reconciliation-20261020/project-s1-flat-export.tsv",
+      "kind": "JSON capsule; decode text as UTF-8 for original exact TSV bytes",
+      "originalSHA256": "6c021e7a403ae2c548a32f19ba2ca75a7a66b63cd06bed4b14b214d4bea4cbee"
+    },
+    {
+      "path": "docs/system-one/addenda/verification-continuity-20261020/ddp-t01-delivery-receipt.json",
+      "sha256": "c95ce25cdd4629ab296eb3a255885ec331738d27732f62da4494d248569cf881",
+      "bytes": 5174,
+      "originalSource": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/outputs/ddp-t01-contract-candidate/receipt.json",
+      "kind": "byte-exact documentary receipt; embedded original paths remain original source paths"
+    },
+    {
+      "path": "docs/system-one/addenda/verification-continuity-20261020/ddp-t01-final-disposition.json",
+      "sha256": "a576de24310530ae2253fbe5e3a423cb5ed99209061965b38c8029c2b734d43b",
+      "bytes": 1966,
+      "originalSource": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/outputs/ddp-t01-coordinator-review/final-disposition.json",
+      "kind": "byte-exact documentary receipt; embedded original paths remain original source paths"
+    },
+    {
+      "path": "docs/system-one/addenda/verification-continuity-20261020/ddp-t01-final-disposition.txt",
+      "sha256": "24ef64daeeb1dbd37c9ec32f63e1ff9b11c6a3d9b0efdea5248c82bfc1e82d91",
+      "bytes": 2533,
+      "originalSource": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/outputs/ddp-t01-coordinator-review/final-disposition.md",
+      "kind": "byte-exact documentary receipt; embedded original paths remain original source paths"
+    },
+    {
+      "path": "specs/028-system-one-core/contracts/verified-plan-v1.md",
+      "sha256": "a68488d4a412820130231daa8c8dbeefb1e58445b2f1cfdf0c02b8669ef132d7",
+      "bytes": 21462,
+      "kind": "unchanged local DDP-T01 design/supplement"
+    },
+    {
+      "path": "specs/028-system-one-core/decision-delivery/addenda/ddp-t01-plan.md",
+      "sha256": "2ee328f92aa19820704b3838528599296c87f53a5872a1f12d2bd8cd59a6e62e",
+      "bytes": 20126,
+      "kind": "unchanged local DDP-T01 design/supplement"
+    },
+    {
+      "path": "specs/029-system-one-evaluation/verified-plan-conformance.md",
+      "sha256": "90f52099cdaebba51f2781c715c748d1ba0c13e9b2b9755a32b25e53f5a08e5b",
+      "bytes": 13451,
+      "kind": "unchanged local DDP-T01 design/supplement"
+    },
+    {
+      "path": "specs/029-system-one-evaluation/verified-plan-vectors.json",
+      "sha256": "6584ce4de05edf143e215945ff620b5127fe48e6c352dfb7a33b447e753a11f7",
+      "bytes": 27847,
+      "kind": "unchanged local DDP-T01 design/supplement"
+    },
+    {
+      "path": "specs/031-system-one-integration/contracts/verified-plan-consumer-v1.md",
+      "sha256": "b17b5f3398dba9086ba44bdc04c4ff9cae97364f1fb9430a7e4ebcb9cb9fd1f4",
+      "bytes": 11794,
+      "kind": "unchanged local DDP-T01 design/supplement"
+    },
+    {
+      "path": "specs/028-system-one-core/decision-delivery/addenda/ddp-t01-coordinator-review.md",
+      "sha256": "a117ba5f197944de569099df4168c461eec8b62f0e3585f3a2af3dd1bbab1cfd",
+      "bytes": 3838,
+      "kind": "unchanged local DDP-T01 design/supplement"
+    },
+    {
+      "path": "specs/028-system-one-core/decision-delivery/addenda/ddp-t01-coordinator-review.json",
+      "sha256": "2fbed3cabf3ef6433dd0bd3cd2824423fc4265659c6fa505de8a9857f0495606",
+      "bytes": 1777,
+      "kind": "unchanged local DDP-T01 design/supplement"
+    },
+    {
+      "path": "docs/system-one/addenda/verification-continuity-20261020/coordination-update.json",
+      "sha256": "198a12d94eed8798ec8f467cfeac73dd07f0533a9ad6d751c19017dd2cab1ad4",
+      "bytes": 1375,
+      "kind": "bounded thread readback and subsequent authorization event"
+    }
+  ]
+}

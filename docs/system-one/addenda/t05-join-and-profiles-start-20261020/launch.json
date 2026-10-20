@@ -1,0 +1,12 @@
+{
+  "status": "launched",
+  "supervisorPid": 49372,
+  "sourcePins": {
+    "agent_braid/system_one_verified_selection.py": "8971650c51082938281ecb62e40e23adab4202bb20971b1eb23e1ef7d78c339c",
+    "tests/test_system_one_verified_selection.py": "d14d2ec1637b944eab96a6c9938b1758c8343e390fae208d55e615c9089e0b56"
+  },
+  "scope": "T05 quick/pr once; stable source-equivalent software checks; no experiment",
+  "inputMutationAllowed": false,
+  "externalSpendEUR": 0,
+  "executionAuthorization": false
+}

@@ -1,5 +1,7 @@
 # Requirements quality and convergence checklist
 
+Historical snapshot. See the [latest continuity supplement and current pending matrix](addenda/verification-continuity-20261020/README.md) for subsequent T025, Project and DDP-T01 dispositions. Original entries below are preserved.
+
 Documentary checklist, not independent review or scientific acceptance. Sources: evidence-register.json, source-documents.json, task-map.json, gates-and-assignment.md; canonical CONSTITUTION.md, GOVERNANCE.md and docs/development/SPEC_KIT.md remain authoritative.
 
 - [x] S1-CHK-001: Distinguish typed synthetic foundation, local source software, obtained study, proposed extraction and acceptance/activation in README.md and the full capability map.

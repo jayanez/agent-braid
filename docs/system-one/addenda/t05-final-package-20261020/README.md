@@ -1,0 +1,29 @@
+# T05 — final internal engineering packet verified and documented
+
+S1-T05-FINAL-PACKAGE-20261020; canonical SPEC-028/T011 (DDP-T05). This is the current handoff after [passing T05 profiles](../t05-profiles-final-20261020/README.md) and [failed packaging attempts](../t05-packaging-link-failure-20261020/README.md). The [exact completion](completion.json), [final packet](packet.json), [original implementation report](implementation-report.txt) and [binding coverage](binding-coverage.json) record final internal engineering delivery. Historical pending/failure records retain their original observation times.
+
+## Material verification and acceptance boundary
+
+The documentary conversation checked all72 packet bindings against actual candidate bytes, all22 source-archive members against actual files, packet/report/archive/patch hashes, the prior51-binding packet and its unchanged sources, and2281of2282entry files unchanged. The sole entry exception is the previously justified scoped .gitattributes change. This conversation executed no tests, finalizer, repair helper or new experiment and did not modify the product candidate.
+
+Packet SHA-256:1b9f67d77da004678808f1620e0dfaf9a4e1a113eb12a02f146b0f7a058bbcbc. Source/test pins remain8971650c51082938281ecb62e40e23adab4202bb20971b1eb23e1ef7d78c339c andd14d2ec1637b944eab96a6c9938b1758c8343e390fae208d55e615c9089e0b56. The full report maps VP-REQ-01–04/scenarios to obtained internal producer/context controls and named tests. T05 internal engineering delivery is obtained; public adoption, consumer integration and human/scientific acceptance are not implied.
+
+Focused28passes, joined80passes, Luna's one targeted recheck and full quick/sensitive/PR suites overlap; they are not independent accuracy observations. Both full profiles recorded2042cases,2023passed,19skips,zero failures,exit0 on identical2284inputs. The older failed DDP-T01 profile remains failed. T05-FIND-001's caught-failure correction and T05-FIND-002's row-cap fix/disposition retain separate source-bound histories; scoped AI review does not complete global T07 or human review.
+
+## Packaging failures preserved and resolved
+
+The [link-resolution receipt](packaging-link-resolution.json) preserves T05-PACKAGING-002's failed absolute source-line Markdown link, unchanged raw review stored as .txt and subsequent repository check exit0. T05-PACKAGING-003's [initial raw-log preservation receipt](raw-log-preservation.json) records the first failed-test stdout trailing whitespace. The next attempted repair still failed when repair-packaging.log echoed that whitespace; its attempt logs and intermediate packet snapshots remain retained.
+
+The [final packaging resolution](packaging-final-resolution.json) records repository and whitespace exit0. Twenty raw-log receipts are stored as exact reversible gzip, with stored and decompressed SHA-256 checks; this conversation verified all20. Originals remain externally intact. The raw reviewer report remains .txt with identical original bytes. No source/profile-input change or full-profile rerun was used for these representation repairs, and the validated attributes exception was not broadened. [Coverage](binding-coverage.json) maps exact retained gzip artifacts and existing corpus copies, while additional UTF-8 capsules preserve missing documentary helpers/receipts/attempt snapshots without trimming their text.
+
+A documentary read attempted during finalization found that the plain validator logs had already been moved into sealed gzip form and stopped at its hash-location assertion before writing repository files. It was retried against the final sealed representations and exact decompressed hashes; no failure was silently accepted. Original material findings, failed attempts and representation corrections remain accessible.
+
+## Resumption, availability and pending work
+
+The candidate remains local at `/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-verified-core`, branch feat/verified-plan-core, recorded baseline fe6d25b3d9fb989c230aa11779b6a51d494d7a4e. The documentary PR publishes packet metadata, report, reviews, receipts/logs and verification mapping. Product code/tests/fixtures, changed product .gitattributes, source archive and product patch are deliberately retained in the hash-bound coordinator package; this documentary authorization does not publish them. Missing local inputs limit source reproduction and must be reported, not reconstructed or claimed present on GitHub.
+
+T05 delivers an internal typed producer and a live request-local context, not a default public API/tool or execution grant. Acquisition, decision and future native preparation remain separate; prepareNs is null. Controlled finite owned-fixture EN/ES software checks do not establish general NLP, Laya parity, representative-workload reliability, calibrated probability or a new independent precision/cost/SLA claim. Experimental ledger unchanged; EUR0/executionAuthorization=false remain the recorded boundaries.
+
+T06 consumer integration requires a new assignment and is not started or authorized by this final handoff. It must preserve the exact producer body/digest, live request budget/cancellation, source freshness and explicit end-to-end stage/cleanup evidence. Broader T07 review, source rights, human/scientific/representative acceptance, training/calibration, admission/promotion, product publication and activation remain pending. No remote issue/parent/milestone is closed here; PR integration/current-head CI/review remain separate. The documentary follow-up may pause after this publication and coordinator acknowledgement are verified.
+
+A separate [post-seal patch applicability receipt](post-seal-check.md) was subsequently received and hash-checked; it does not alter the sealed packet or imply merge/approval.

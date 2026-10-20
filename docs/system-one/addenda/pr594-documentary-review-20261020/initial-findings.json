@@ -1,0 +1,27 @@
+{
+  "id": "PR594-DOC-REVIEW-INITIAL",
+  "reviewedHead": "06c3c6c6f15eb8a0b36fa4158ef7413a1b07b82d",
+  "roleRequested": "reviewer (tool configuration selects gpt-6-luna)",
+  "identityLimitation": "Reviewer response could not independently attest its runtime model; initial findings are used as bounded feedback, not claimed as a verified Luna approval. Explicit gpt-6-luna recheck follows on corrected candidate.",
+  "findings": [
+    {
+      "id": "DOC-REV-001",
+      "severity": "P2",
+      "finding": "central index presents obsolete conditional T05 GO as current",
+      "status": "current navigation corrected; historical authority preserved"
+    },
+    {
+      "id": "DOC-REV-002",
+      "severity": "P2",
+      "finding": "T06 assignment pending without later authorization boundary",
+      "status": "later coordinator authorization recorded, no T06 implementation in this PR"
+    },
+    {
+      "id": "DOC-REV-003",
+      "severity": "P2",
+      "finding": "frozen DDP-T01 review-pending header conflicts with final disposition if read as current",
+      "status": "additive clarification links original snapshot to final coordinator disposition; frozen hashes unchanged"
+    }
+  ],
+  "scope": "current navigation, final T05/continuity receipts and five DDP-T01 design files; read-only, no tests"
+}

@@ -1,0 +1,19 @@
+{
+  "id": "T05-PACKAGING-001",
+  "scope": "Only permit blank EOF in one immutable raw diagnostic log, consistent with existing raw-log attribute precedent; other whitespace checks remain active.",
+  "path": ".gitattributes",
+  "beforeSha256": "753c03fc701bfa376d1621ca9bba2d36719e1f9b4e3f4b09dd3f1c069f90901f",
+  "afterSha256": "ddadbe68f2e47ff7ca9866dd346276a34d87ab64f2e0ddb25971c900eb62f653",
+  "rawLog": "specs/029-system-one-evaluation/evidence/ddp-t02-t04/shared-worktrees.log",
+  "rawLogSha256": "2e52c3b29b3ded0242b07e3eb53ae966e024e8e2a89d5a96f00a3181e17ff4a8",
+  "rawLogUnchanged": true,
+  "priorDiffCheck": {
+    "exitCode": 2,
+    "stdout": "specs/029-system-one-evaluation/evidence/ddp-t02-t04/shared-worktrees.log:24: new blank line at EOF.\n"
+  },
+  "currentDiffCheck": {
+    "exitCode": 0,
+    "stdout": ""
+  },
+  "priorPackageChanged": false
+}

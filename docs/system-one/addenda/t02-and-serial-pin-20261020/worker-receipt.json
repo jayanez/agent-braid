@@ -1,0 +1,23 @@
+{
+  "task": "DDP-T02",
+  "stage": "component implemented; join/full profiles pending",
+  "recordedAtUTC": "2026-10-20T06:26:04.039937+00:00",
+  "files": {
+    "agent_braid/system_one_verified_ir.py": "a0378c34b805387b0518cf6ebc3da05599976cb7f037d5f140c2571c8f362ea3",
+    "tests/test_system_one_verified_ir.py": "5550874646e3021cf147e14ebf5e5760a7f7397b08ce7701256ad59c2e9367be",
+    "tests/fixtures/system_one_verified_ir.json": "c2aac157c85f4a1d9fd6e5fec998c003433bb4e9769bba3ed50c27f253318b76"
+  },
+  "focusedTests": {
+    "count": 25,
+    "skips": 0,
+    "exitCode": 0,
+    "seconds": 0.021
+  },
+  "logs": {
+    "T02-focused-final.log": "d682ece3eebbfba7546c2cc769acc0ccd5366afc74c1f741795d0a293815185f",
+    "T02-mutation-final.log": "d4da321fbc3fa6f062917b2177decf82456ed22ab70cf24a60684a51b03453c6"
+  },
+  "mutationControls": "four targeted semantic mutations detected by assertion failure; not scientific validation",
+  "workerOwnership": "released",
+  "executionAuthorization": false
+}
