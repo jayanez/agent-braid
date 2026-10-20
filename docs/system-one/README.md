@@ -6,6 +6,8 @@ GitHub availability: [published documentary corpus and follow-up](addenda/github
 
 Publication and next authority: [documentary publication mandate and conditional T05 handoff](addenda/publication-and-t05-condition-20261020.md). T05 depends on actual quick/PR passes and intact pins; no GO is inferred.
 
+Latest T05 packaging: [T05-PACKAGING-002 link-validation failure](addenda/t05-packaging-link-failure-20261020/README.md), exact failed attempt preserved; representation repair and verified final packet pending.
+
 Current T05 profiles: [final quick/sensitive and PR receipts](addenda/t05-profiles-final-20261020/README.md), both exit0 with2042 cases/19skips/zero failures each and2284matching inputs. Final package/whole T05 closure remain pending; the [earlier launch](addenda/t05-join-and-profiles-start-20261020/README.md) retains its running status at that time.
 
 Latest T05 targeted disposition: [Luna confirms row-cap fix on exact pins; one regression passed](addenda/t05-rowcap-luna-disposition-20261020/README.md). This closes only T05-FIND-002/T05-REVIEW-P2-001 in reviewed scope; joined/full profiles and whole T05 remain pending.

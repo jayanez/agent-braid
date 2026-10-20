@@ -1,0 +1,17 @@
+{
+  "id": "S1-T05-PACKAGING-002-FAILURE-LOGS",
+  "logs": [
+    {
+      "sourcePath": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/outputs/ddp-t05-20261020/finalize-t05.log",
+      "sha256": "e35ef729c84ce35f2773b8030272e81d7e338957bfa386d0fb432a38ba871b13",
+      "bytes": 1383,
+      "text": "Traceback (most recent call last):\n  File \"/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/outputs/ddp-t05-20261020/finalize_t05.py\", line 120, in <module>\n    if __name__=='__main__':main()\n                            ^^^^^^\n  File \"/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/outputs/ddp-t05-20261020/finalize_t05.py\", line 108, in main\n    with (DEST/'final-repository.log').open('x') as log:checked([str(PYTHON),'scripts/validate_repository.py'],cwd=ROOT,env=env,stdout=log,stderr=subprocess.STDOUT)\n                                                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/outputs/ddp-t05-20261020/finalize_t05.py\", line 16, in checked\n    def checked(cmd,**kw):return subprocess.run(cmd,check=True,**kw)\n                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/juanyanez/.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/subprocess.py\", line 571, in run\n    raise CalledProcessError(retcode, process.args,\nsubprocess.CalledProcessError: Command '['/Users/juanyanez/Repos/Personal/agent-braid-system-one/.venv-speckit/bin/python', 'scripts/validate_repository.py']' returned non-zero exit status 1.\n"
+    },
+    {
+      "sourcePath": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-verified-core/specs/029-system-one-evaluation/evidence/ddp-t05/final-repository-attempt1.log",
+      "sha256": "d4c45eb7eaf3d16ba3660de1b47b2ed2b0979954964d42f54ddb2e5df28357de",
+      "bytes": 240,
+      "text": "Repository validation failed:\n- broken relative link: specs/029-system-one-evaluation/evidence/ddp-t05/luna-review.md -> /Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-verified-core/agent_braid/system_one_verified_selection.py:228\n"
+    }
+  ]
+}
