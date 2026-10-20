@@ -91,3 +91,7 @@ SDK/documentation, structural checks, synthetic controls, actual host observatio
 ## Evidence and unresolved questions
 
 Planned procedures are in validation-plan.md; obtained evidence is empty in assurance.json. The packet records a proposed design, not a runtime acceptance result. Required decisions: technical contract/ADR adoption, exact host versions and installation scope, provider budget/source rights for capture, independent review and founder acceptance. See program.md in SPEC-039 and evaluation-protocol.md in SPEC-044.
+
+## Additive SPEC-047 boundary — current local candidate
+
+The requirements/scenarios above retain their original criteria and evidence identities. [SPEC-047](../047-local-technical-telemetry/spec.md) owns default-off local numeric telemetry at the portable MCP and two analyzer CLI boundaries. Installation consent and reports are documented in [the telemetry guide](../../docs/tooling/TELEMETRY.md); five skills do not enable or collect telemetry. The [complete M4.5 map](../../docs/tooling/M45_ALIGNMENT.md) separates technical, observation, review and acceptance dependencies. Product metrics are not full evidence, experimental/training inputs or native/cost acceptance. Historical SPEC-044/T004 stays bounded-complete for 482fbcc; the new candidate has pending T017/T018 disposition/admission. No original criterion is relaxed or retrospectively rewritten by this extension.

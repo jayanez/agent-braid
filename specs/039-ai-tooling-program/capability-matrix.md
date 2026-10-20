@@ -27,3 +27,11 @@ Capabilities are advertised only when available in the configured mode. Analysis
 mode omits runtime mutation tools; resources cannot select a new source root.
 Host approval never substitutes for the operator grant. A shared skill directory
 does not establish native plugin compatibility; each wrapper has its own receipt.
+
+## Current additive capability
+
+| Capability | Basis | Local increment | Remaining boundary |
+|---|---|---|---|
+| Default-off technical diagnostics | SPEC-047; existing MCP/CLI boundaries | Local numeric reliability/duration/classification aggregates, private bounded retention, manual report/export/merge/purge, installation consent | Integration-candidate validation/delta review, architectural adoption and future pilot admission; no native/experimental or anonymity claim |
+
+The [global dependency matrix](../../docs/tooling/M45_ALIGNMENT.md) preserves original accepted capabilities and distinguishes all technical, observation, review and acceptance edges.

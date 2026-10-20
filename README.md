@@ -54,7 +54,8 @@ covers grants, recovery and MCP configuration.
 
 [M4.5](docs/tooling/README.md) is an open integration program adjacent to M4. Its
 original six specs retain the planned MCP, skills, lifecycle, presentation and evaluation
-scope. [SPEC-046](specs/046-native-ai-plugins/spec.md) extends M4.5 with
+scope. [SPEC-047](specs/047-local-technical-telemetry/spec.md) adds default-off local
+aggregate telemetry; the combined portfolio has eight source specifications. [SPEC-046](specs/046-native-ai-plugins/spec.md) extends M4.5 with
 native packaging, a shared workspace registry and setup; it does not reopen
 historical acceptance or replace existing evaluation gates. Current local evidence now covers bounded technical controls and fresh
 macOS/Linux package checks, each bound to its own candidate; it does not establish
@@ -76,6 +77,37 @@ observations for Codex and Claude are linked below; they do not establish M4.5
 product support or acceptance. Cursor, VS Code/GitHub Copilot, OpenCode and pi are
 future routes. Start with the [integration guide](docs/tooling/README.md) for the
 spec, contract and task map.
+
+### Optional local diagnostics
+
+The [integration record](specs/047-local-technical-telemetry/integration-review.md)
+identifies the reviewed telemetry source, current base and pending acceptance gates.
+
+The integration candidate adds local numeric telemetry to the portable MCP service and two analyzer CLI commands. It is **off by default**, has no automatic transmission, uses a private bounded SQLite store and retains 30 UTC dates on access. Installation previews/receipts expose the explicit server consent; skills never enable collection. Read [installation](docs/tooling/INSTALL.md) and [telemetry privacy, commands and limits](docs/tooling/TELEMETRY.md) before opting in.
+
+```sh
+agent-braid analyze /absolute/input.json --telemetry local
+agent-braid telemetry status --format json
+agent-braid telemetry report
+agent-braid telemetry export /absolute/private/telemetry-batch.json
+agent-braid telemetry merge /absolute/private/received-batch.json
+agent-braid telemetry purge
+```
+
+Exports are incremental manual aggregates and have no persistent installation identity. Full evidence exports remain separate. Uninstall keeps metrics; explicit purge clears local data/deduplication and cannot revoke copies. The [M4.5 alignment](docs/tooling/M45_ALIGNMENT.md) records current source inventory, prior SPEC-044/T004 bounded closure and pending candidate admission; historical checks below do not cover this changed candidate.
+
+The [local follow-up review](specs/046-local-technical-telemetry/review-20261016.md) records export-retry durability and input-file validation corrections, their regression controls and the candidate's remaining review/admission limits.
+
+The [canonical owner decisions D17/D18/D10](specs/046-local-technical-telemetry/owner-decisions-20261016.md) record the additive observation contract, reviewed coverage with pilot **NO-GO**, and bounded engineering acknowledgment with final acceptance deferred. T017, T018 and T010 remain open; installation and telemetry consent are unchanged.
+
+The [canonical E9 owner decisions](specs/046-local-technical-telemetry/owner-decisions-e9-20261017.md)
+record the approved documentary dispositions for frozen candidate `e9d4153cc880`:
+observation-contract applicability, coverage with pilot **NO-GO**, and bounded
+engineering acknowledgment with final acceptance deferred. T017/T018/T010 remain
+open; these decisions authorize no native/provider execution or installation/
+consent change. The historical C/D decisions retain their original scope.
+
+
 
 ## Final repository validation — 2026-10-11
 
@@ -234,7 +266,7 @@ lists every current assignment.
 | Research | [M2 — Confluence lab and scheduler](https://github.com/jayanez/agent-braid/milestone/4) | Closed internally. Bounded replay and finite observations do not establish general confluence. |
 | Research | [M3 — Braid semantics](https://github.com/jayanez/agent-braid/milestone/5) | Closed internally for `anchored-sequence-v1`; no general braid or Yang–Baxter theorem is claimed. |
 | Runtime | [M4 — Agent Braid runtime](https://github.com/jayanez/agent-braid/milestone/6) | Founder accepted bounded alpha engineering and evaluation as complete on 2026-10-09, with negative utility. Current GitHub tracking is shown in the [live M4 milestone](https://github.com/jayanez/agent-braid/milestone/6). Historical SPEC-021 G4 remains **NO-GO** on useful speedup under its frozen evidence. |
-| Integration | [M4.5 — AI tooling integrations for Codex and Claude Code](https://github.com/jayanez/agent-braid/milestone/19) | **Open.** Candidate-bound local paired procedures, package checks and technical controls passed within their stated domains. The source task checklist is 55/79 checked, with 24 unchecked and three closed/three open spec parents; SPEC-039/040/042 retain their recorded bounded acceptance. Native-host acceptance, human interpretation, remaining founder decisions and milestone closure remain open. |
+| Integration | [M4.5 — AI tooling integrations for Codex and Claude Code](https://github.com/jayanez/agent-braid/milestone/19) | **Open.** Candidate-bound local paired procedures, package checks and technical controls passed within their stated domains. The combined source inventory is 78/106 tasks checked, 28 open, with three historically closed and five open spec parents; SPEC-039/040/042 retain their recorded bounded acceptance. Native-host acceptance, human interpretation, remaining founder decisions and milestone closure remain open. |
 | Publication | [PUB.1 — Public research preview](https://github.com/jayanez/agent-braid/milestone/7) | **Open.** The preview is public; historical publication authorization reconciliation remains separately tracked. |
 | Governance | [GOV.1 — Governance and adoption](https://github.com/jayanez/agent-braid/milestone/8) | **Open.** Governance and adoption evidence work continues; issue state does not confer human or founder approval. |
 | Research | [M3.5 — Native proposal predictor](https://github.com/jayanez/agent-braid/milestone/9) | **Open.** Synthetic-only T002/T004 software is complete; zero real pairs are admitted. T001/T007/T003/T005 and #180 remain open for source admission, protocol, real-feed adaptation, experiment and review. |
@@ -432,3 +464,5 @@ process-bound native evidence, complete registration approval and capture
 authorization remain pending. The [technical completion preparation](docs/tooling/TECHNICAL_COMPLETION_20261011.md)
 records package preparation, native-interface limits and the selected free
 Linux x86_64 route; no registered slot has launched.
+
+The [local telemetry identity reconciliation](specs/047-local-technical-telemetry/identity-reconciliation-b13737ed4584.md) assigns SPEC-047/ADR-0025 to telemetry while preserving native plugin SPEC-046/ADR-0024 and all frozen evidence. Installation and default-off consent are unchanged; pilot **NO-GO** and tasks remain open.

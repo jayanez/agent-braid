@@ -284,3 +284,7 @@ technical scope can report measured technical-cost completion while reviewer
 fee/time and combined human-inclusive totals stay unavailable. It does not set
 human cost to zero or permit a positive utility claim. All
 intended slots and unknown costs remain visible.
+
+## Product telemetry boundary
+
+SPEC-047 [local aggregate telemetry](TELEMETRY.md) is default off and independent of these measurement/registered-evaluation contracts. Its daily numeric cells have no input/candidate/process identities and cannot replace receipt provenance, slot/cost accounting, native skill observations, source admission or training/experimental data. No existing collectors or quotas are rerun to enable this feature. See [M4.5 alignment](M45_ALIGNMENT.md) and [candidate admission](../../specs/044-ai-tooling-evaluation/candidate-admission-matrix.md).

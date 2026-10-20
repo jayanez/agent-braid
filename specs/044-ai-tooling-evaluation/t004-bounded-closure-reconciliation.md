@@ -1,0 +1,7 @@
+# Previously approved SPEC-044/T004 bounded closure
+
+The owner requested incorporation of the already approved and applied documentary closure; no criterion is re-executed or newly accepted here. The [reconciliation record](t004-bounded-closure-reconciliation.json) pins the approval packet (`653ed14d…ccd0`), private closure receipt and four already-applied document hashes. The existing `482fbcc96227769f08768e79bc4d7f47d3445c4e` candidate and its evidence retain their identity. Raw private receipts stay in owner-controlled storage.
+
+The closure covers installed analysis/core/CLI/local SDK protocol and declared success/refusal-unavailable/integrity controls in the retained macOS arm64 and Linux x86_64 evidence. Linux source/process closure is point-in-time and applies only to the HOME-corrected run. Mac B did not rerun a full profile. Earlier failures, omissions and skips remain preserved. This does not establish all-EC01–EC05 installed equivalence, privileged runtime execution/recovery, universal compatibility, continuous immutability or universal process absence.
+
+A remains closed in its approved scope. SPEC-044/T004 stays complete in this bounded engineering scope; T009, native adoption, the 108 attempts, economic reconciliation, human evaluation and founder M4.5 closure remain pending. No new host/provider, reproduction, review or approval was performed. SPEC-046 cannot inherit this result as automatic acceptance of its changed candidate; SPEC-044/T018 owns the admission proposal.

@@ -59,7 +59,11 @@ assurance record and the [roadmap](../../ROADMAP.md) for those boundaries.
 
 | [SPEC-045: local-forecasting-capabilities](../../specs/045-local-forecasting-capabilities/spec.md) | [FC.2 — Local forecasting capabilities](https://github.com/jayanez/agent-braid/milestone/20) |
 
-The 44 existing specs retain their 19 registered GitHub milestone identities. SPEC-045 adds **FC.2 — Local forecasting capabilities**, registered as milestone #20. Its parent and eight stable task IDs are prepared for publication through the reviewed, scoped post-merge tracking path. M4.5 remains Open with six spec parents, 60 preserved original task obligations and 19 separately verifiable technical clauses (79 task subissues in the approved autonomous reconciliation). The completed local procedures and remaining interventions are indexed in [AUTONOMOUS_COMPLETION.md](../tooling/AUTONOMOUS_COMPLETION.md).
+| [SPEC-046: native-ai-plugins](../../specs/046-native-ai-plugins/spec.md) | [M4.5 — AI tooling integrations for Codex and Claude Code](https://github.com/jayanez/agent-braid/milestone/19) |
+
+| [SPEC-047: local-technical-telemetry](../../specs/047-local-technical-telemetry/spec.md) | [M4.5 — AI tooling integrations for Codex and Claude Code](https://github.com/jayanez/agent-braid/milestone/19) |
+
+The current source inventory has 47 active specs across 20 registered milestone identities. SPEC-045 remains FC.2/#20; SPEC-046 and SPEC-047 extend M4.5/#19. Eight source specs, 106 task obligations (78 checked, 28 unchecked), 3 historically closed parents and 5 open parents: 114 desired records. Historical evidence retains its original validation boundary; [current M4.5 alignment](../tooling/M45_ALIGNMENT.md) and [integration provenance](../../specs/047-local-technical-telemetry/integration-review.md) distinguish source review, current integration and pending acceptance.
 Frozen publication receipts, assurance/evidence records, founder decisions and
 dated audits retain their captured titles and counts. Resolve those historical
 names through the tracking crosswalk; do not rewrite their bound contents.
@@ -68,8 +72,9 @@ names through the tracking crosswalk; do not rewrite their bound contents.
 
 [The plugin/telemetry identity record](../../specs/046-native-ai-plugins/identity-reconciliation.md)
 preserves public SPEC-046/ADR-0024 and allocates SPEC-047/ADR-0025 to the local
-telemetry candidate. Its source migration is not integrated; it is not an added
-accepted feature or a change to historical milestone counts. The shared economic
+telemetry candidate. The map records the historical allocation; the current
+[integration record](../../specs/047-local-technical-telemetry/integration-review.md)
+tracks source integration separately from feature acceptance and historical milestone counts. The shared economic
 scenario is **NO-GO**.
 
 

@@ -35,3 +35,9 @@ The shared core and existing runtime remain authoritative. Descriptive tool/skil
 ## Human review and unresolved decisions
 
 Required: architectural/API/lifecycle review for the consumed contract; exact candidate/host/registration and budget decisions before capture; independent technical review and founder capability acceptance. ADR 0021 is proposed. Task completion requires actual evidence; current bounded obtained procedures and remaining interventions are linked in `tasks.md`, `assurance.json` and `../../docs/tooling/AUTONOMOUS_COMPLETION.md`. Creating issues or a source PR is not adoption.
+
+## SPEC-047 alignment — 2026-10-16
+
+SPEC-047 extends the current program to seven specs. Original bounded program acceptance remains historical; this extension has pending review/adoption. Use the complete typed dependency map before the new candidate pilot.
+
+See [complete M4.5 matrix](../../docs/tooling/M45_ALIGNMENT.md), [SPEC-047](../047-local-technical-telemetry/spec.md) and [telemetry installation/use](../../docs/tooling/TELEMETRY.md). This local extension does not change frozen assurance/evidence records or authorize a native run.

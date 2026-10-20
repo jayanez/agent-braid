@@ -1,0 +1,27 @@
+{
+  "schema": "agent-braid-local-freeze-staged-object-preservation/v1",
+  "reason": "The portable-root gate refuses unreachable objects. Preserve the three known pre-packaging staged blobs inside this one candidate commit without pruning, extra commits or hidden refs.",
+  "objects": [
+    {
+      "originalPath": "specs/046-local-technical-telemetry/tasks.md",
+      "gitBlob": "e051312b77deb6a92f7469ec73003c187aba0cee",
+      "sha256": "1d6740187a19231c27c1163f8e41b9b7cdbc98fadbfcff51711013f62e136e4b",
+      "preservedAt": "specs/046-local-technical-telemetry/evidence/freeze-staged-object-e051312b77deb6a92f7469ec73003c187aba0cee.log",
+      "scope": "Exact pre-packaging staged bytes; raw historical artifact, not current source or new validation."
+    },
+    {
+      "originalPath": "specs/046-local-technical-telemetry/issue-drafts.md",
+      "gitBlob": "06a363a217837100b9bf1a5d86cc4fa7b4b0b029",
+      "sha256": "3cb6818177f10c0ff7d622e559ee783633032b2d2619ab61caf6b506353d0af9",
+      "preservedAt": "specs/046-local-technical-telemetry/evidence/freeze-staged-object-06a363a217837100b9bf1a5d86cc4fa7b4b0b029.log",
+      "scope": "Exact pre-packaging staged bytes; raw historical artifact, not current source or new validation."
+    },
+    {
+      "originalPath": "specs/046-local-technical-telemetry/assurance.json",
+      "gitBlob": "4f2a4753325be5b6f2e8373e33a546d3aba995e3",
+      "sha256": "ec95f8ba3b5cfb96358698100150610d32b13d48eb0b996cb8ea225cff506b8e",
+      "preservedAt": "specs/046-local-technical-telemetry/evidence/freeze-staged-object-4f2a4753325be5b6f2e8373e33a546d3aba995e3.log",
+      "scope": "Exact pre-packaging staged bytes; raw historical artifact, not current source or new validation."
+    }
+  ]
+}

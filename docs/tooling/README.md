@@ -7,7 +7,15 @@ marketplace publication and official directory approvals remain separate gates.
 [SPEC-046 alignment](../../specs/046-native-ai-plugins/m45-alignment.md) explains
 how this extension preserves the original six specifications and their evidence.
 
-**Implementation candidate — 2026-10-14:** the owner-approved assisted tracks
+**Current integration — 2026-10-20:** the combined M4.5 source portfolio has eight
+specs and 106 tasks (78 checked, 28 open), three historically closed parents and
+five open parents. [Telemetry SPEC-047](../../specs/047-local-technical-telemetry/spec.md)
+is default-off. Its [existing Luna review and integration provenance](../../specs/047-local-technical-telemetry/integration-review.md)
+are distinct from human/architectural acceptance and native admission. Pilot
+**NO-GO**; SPEC-044/T017 and T018 and SPEC-047/T010 remain open; historical
+SPEC-044/T004 remains intact. Current source counts do not assert remote issue states.
+
+**Historical implementation candidate — 2026-10-14:** the owner-approved assisted tracks
 now add a durable coordinator, separately authenticated source cache/producer,
 interface witness adapter, source-based registration v6, native process-bound
 supervision, prospective human audit and compact per-rater evidence exports.
@@ -18,9 +26,9 @@ platform reproduction, actual cash, human ratings and founder acceptance remain
 pending. The initial human sample is 36 cases with two independent people;
 escalations preserve its original rules and all unaudited cases stay unaudited.
 
-**Status — 2026-10-12:** [M4.5](https://github.com/jayanez/agent-braid/milestone/19) remains Open and adjacent to M4. The 60 original task criteria remain intact; 19 auxiliary tasks bring the source task-checklist inventory to 79 (55 checked, 24 unchecked), alongside three closed and three open spec parents; the verified milestone readback is 58 closed and 27 open issues. Candidate-bound local technical procedures passed: eight program controls, eight MCP acceptance scenarios with 37/37 tests, and lifecycle scenarios with 13/13 tests. The 223-test engineering suite passed without skips on its separately recorded candidate. Fresh macOS and emulated Linux AMD64 package checks passed for `53f1704`. See the [autonomous completion record](AUTONOMOUS_COMPLETION.md) and [technical evidence status](TECHNICAL_STATUS.md) for candidate identities, receipt links and limits. Those technical procedures alone do not establish native Codex/Claude acceptance, ADR 0021 adoption, human outcome acceptance or milestone closure. Administrative tracking is registered; the [registration record](../../specs/039-ai-tooling-program/administrative-registration.md) links each parent and its work queue.
+**Historical status snapshot — 2026-10-12:** [M4.5](https://github.com/jayanez/agent-braid/milestone/19) remains Open and adjacent to M4. The 60 original task criteria remain intact; 19 auxiliary tasks bring the source task-checklist inventory to 79 (55 checked, 24 unchecked), alongside three closed and three open spec parents; the verified milestone readback is 58 closed and 27 open issues. Candidate-bound local technical procedures passed: eight program controls, eight MCP acceptance scenarios with 37/37 tests, and lifecycle scenarios with 13/13 tests. The 223-test engineering suite passed without skips on its separately recorded candidate. Fresh macOS and emulated Linux AMD64 package checks passed for `53f1704`. See the [autonomous completion record](AUTONOMOUS_COMPLETION.md) and [technical evidence status](TECHNICAL_STATUS.md) for candidate identities, receipt links and limits. Those technical procedures alone do not establish native Codex/Claude acceptance, ADR 0021 adoption, human outcome acceptance or milestone closure. Administrative tracking is registered; the [registration record](../../specs/039-ai-tooling-program/administrative-registration.md) links each parent and its work queue.
 
-The current owner-authorized work follows the [autonomous closure plan](../../specs/044-ai-tooling-evaluation/autonomous-closure-plan.md); the [five-task preparation plan](../../specs/044-ai-tooling-evaluation/preparation-delivery-plan.md) is historical. The seven bounded technical tasks completed on the frozen source with EUR 0 additional spend. The registered 108-attempt evaluation, native-host acceptance, human outcome review and founder decision remain separate pending gates.
+The earlier owner-authorized work followed the [autonomous closure plan](../../specs/044-ai-tooling-evaluation/autonomous-closure-plan.md); the [five-task preparation plan](../../specs/044-ai-tooling-evaluation/preparation-delivery-plan.md) is historical. The seven bounded technical tasks completed on the frozen source with EUR 0 additional spend. The registered 108-attempt evaluation, native-host acceptance, human outcome review and founder decision remain separate pending gates.
 
 The new [prospective assisted-audit decision](../../specs/044-ai-tooling-evaluation/assisted-audit-decision.md)
 and [registration v6](REGISTRATION.md#assisted-source-registration-v6) apply only

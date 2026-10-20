@@ -1,0 +1,65 @@
+{
+  "SPEC046T010": "open",
+  "T004": "baseline bytes intact; bounded historical closure not reopened or reproduced",
+  "T017": "open",
+  "T018": "open",
+  "approvedDecisionsMatchedExactly": true,
+  "baselineCommit": "e9d4153cc880ab9dab9b5619ca509d2f08d368f4",
+  "boundary": "Earlier full-profile/scientific/native/approval claims are not refreshed or extended by documentary checks.",
+  "canonicalAndHistoricalHashBindings": "passed",
+  "canonicalDocuments": [
+    {
+      "decision": "E9-D17",
+      "path": "specs/046-local-technical-telemetry/e9-native-observation-disposition.md",
+      "sha256": "ed8a36029be122565346d94528be6a44dc32ed9515ecc4e0e0cb41e42fa352e9"
+    },
+    {
+      "decision": "E9-D18",
+      "path": "specs/046-local-technical-telemetry/e9-coverage-no-go-disposition.md",
+      "sha256": "7e689d55579c005545d8f3e2331ddd3c49054d9991139ba37db423c699fffa27"
+    },
+    {
+      "decision": "E9-D10",
+      "path": "specs/046-local-technical-telemetry/e9-engineering-acceptance-disposition.md",
+      "sha256": "59e22ef4d5486c17bd0c08c40ac1ea34ff4539b464f0e1666a771281814e829b"
+    }
+  ],
+  "canonicalRecord": {
+    "path": "specs/046-local-technical-telemetry/owner-decisions-e9-20261017.json",
+    "sha256": "2b00091209d1f0fafa06ffe9a3ddc1c1f901a22cd1ede542d3bbf950688e74ee"
+  },
+  "localFileLinks": "passed",
+  "modifiedExistingFiles": [
+    "README.md",
+    "docs/tooling/M45_ALIGNMENT.md"
+  ],
+  "notExecuted": [
+    "new full suite or PR profile",
+    "independent review",
+    "T004 reproduction",
+    "additional agents",
+    "AI host/provider operations",
+    "installation/consent/registration/pilot",
+    "publication/push/merge"
+  ],
+  "oldCommitObjectsAbsent": true,
+  "packetAndReceiptPayloadChecks": "passed; sealed originals unchanged",
+  "pilot": "NO-GO",
+  "productTestsValidatorsAuthoritiesAssuranceExistingEvidenceTaskFilesUnchanged": true,
+  "pushDisabled": true,
+  "schema": "agent-braid-local-documentary-incorporation-checks/v1",
+  "scope": "Local canonical documentary incorporation prepared for its separately authorized freeze; no candidate acceptance or task closure.",
+  "structuralValidation": {
+    "command": "Existing isolated Python 3.13: scripts.validate_spec_kit.validate_portable_record(cwd, specs/046-local-technical-telemetry/assurance.json)",
+    "log": "specs/046-local-technical-telemetry/evidence/e9-owner-incorporation-20261017.log",
+    "result": "passed; no semantic/human approval inferred",
+    "sha256": "905e4656dbf767842ea4da08b50b4bdfa82c88087cf5f132c0f537a4b9e49ce9"
+  },
+  "taskCounts": {
+    "checked": 65,
+    "open": 26,
+    "total": 91
+  },
+  "unchangedExistingTrackedFiles": 2089,
+  "whitespace": "git diff --check passed; new Markdown EOF/trailing whitespace checked"
+}

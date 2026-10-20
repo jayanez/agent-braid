@@ -1,0 +1,23 @@
+{
+  "schema": "agent-braid-local-telemetry-final-packaging/v1",
+  "sourceState": "uncommitted",
+  "base": "466ada29b48bb768f8493ecf36a9472894af8440",
+  "branch": "feat/local-technical-telemetry",
+  "checks": {
+    "repositoryValidation": "passed",
+    "trackingSourceInventory": "46 specs; 393 tasks; 294 completed; 2 cancelled; 20 milestones; 27 project review pending",
+    "documentationDependencyControl": "1 test passed without skips",
+    "specKitStructuralGates": "passed; final-packaging.log",
+    "gitDiffWhitespace": "passed",
+    "newSourceDocumentationWhitespace": "25 files passed",
+    "gitFsckUnreachable": "empty",
+    "allBoundHashes": "76 matched",
+    "originalCheckout": "clean; HEAD 76e9992fc9fe8f1ac17532da6088b4f0d1fa63c9"
+  },
+  "bindings": {
+    "specs/046-local-technical-telemetry/evidence/validation.json": "0412998e5b7b3578ec995f9ccc08ff9a6abc44f5d6a25fa371e732fb8bc0460e",
+    "specs/046-local-technical-telemetry/assurance.json": "283314bd8de7d8251955d8d4161f03c94d29fb0c9efe3b2927c807ddc0a29619",
+    "specs/046-local-technical-telemetry/evidence/final-packaging.log": "b28f0f3bd337a6cae29938ed6ec99ef7ecf3c0005cc38370479d91ec923e04ac"
+  },
+  "limits": "Final local packaging readback only. No commit freeze, independent review, publication, merge, native/provider call, new SPEC-044/T004 reproduction, architectural adoption or human/founder acceptance."
+}

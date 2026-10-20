@@ -1,0 +1,5 @@
+# Local telemetry quickstart
+
+Read [installation](../../docs/tooling/INSTALL.md) and [telemetry privacy/commands](../../docs/tooling/TELEMETRY.md). Default off performs no collection. Select `--telemetry local` only for an intended CLI analysis or previewed portable server configuration. Inspect numeric reports with `agent-braid telemetry report --format json`; export/merge/purge are explicit manual commands. Complete evidence exports and SPEC-044 observations remain separate.
+
+For contributors, use Python 3.12+ in an isolated environment. Run `python3 -m unittest tests.test_tooling_telemetry -v`, then the repository quick and stable PR profiles. The SDK stdio control requires the existing optional `mcp==2.3.0` extra; it starts only a synthetic local server, never Codex/Claude or a provider. See [validation](validation-plan.md) and [candidate admission](../044-ai-tooling-evaluation/candidate-admission-matrix.md). No command here constitutes a new reproduction, native acceptance, approval or publication.

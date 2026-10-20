@@ -1,5 +1,10 @@
 # M4.5 technical evidence status
 
+**Canonical owner decisions:** [D17/D18/D10](../../specs/046-local-technical-telemetry/owner-decisions-20261016.md) are recorded as documentary decisions. The pilot remains **NO-GO**; all three tasks remain open and final acceptance is deferred.
+
+**Current integration — 2026-10-20:** [M4.5 source alignment](M45_ALIGNMENT.md). Eight source specs, 106 task obligations (78 checked, 28 unchecked), 3 historically closed parents and 5 open parents: 114 desired records. Telemetry source b2cf is being integrated on public develop f0854d63a37f. [Existing Luna review](../../specs/047-local-technical-telemetry/integration-review.md) is complete at its stated source boundary; integration-delta review and candidate validation remain separate. Original bounded SPEC-039/040/042 acceptance and SPEC-044/T004 closure remain historical; native/operational admission, human/architectural acceptance and M4.5 closure remain pending. Dated procedures and counts below retain their original observation boundary.
+
+
 The [technical completion preparation](TECHNICAL_COMPLETION_20261011.md)
 continues the broader objective from PR #499 and separates current native
 interface observations, package preparation and remaining admission gates.

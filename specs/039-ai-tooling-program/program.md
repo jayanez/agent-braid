@@ -21,7 +21,9 @@ Installation and diagnostics make this workflow reproducible beyond this reposit
 | [041](../041-ai-tooling-skills/spec.md) | Five product skills | 039, 040 schemas | Analyze, plan, execute, recover, evidence workflows |
 | [042](../042-ai-tooling-packaging/spec.md) | Packaging and lifecycle | 040 interface, 041 layout | Optional extra, host assets, install/configure/doctor/update/uninstall |
 | [043](../043-ai-tooling-journey/spec.md) | Developer journey | 040, 041, 042 | Chat explanations, graph, offline Markdown/SVG/HTML |
-| [044](../044-ai-tooling-evaluation/spec.md) | Evaluation and closure | Registered protocol; stable 040–043 candidate | Host receipts, controls, complete-cost comparison, decision packet |
+| [044](../044-ai-tooling-evaluation/spec.md) | Evaluation and closure | Registered protocol; stable 040–043 and validated 047 for the future new-candidate pilot | Host receipts, controls, complete-cost comparison, decision packet |
+| [046](../046-native-ai-plugins/spec.md) | Native AI plugins | Existing 040/042 interfaces | Self-contained runtime, workspace registry, setup and separately tracked candidacy |
+| [047](../047-local-technical-telemetry/spec.md) | Local technical telemetry | Existing 040/042 interfaces | Default-off collector, bounded storage, manual exchange and validation |
 
 Independent engineering can advance once its consumed contract is stable.
 Dependency labels do not authorize concurrent agents, provider expenditure,
@@ -69,8 +71,7 @@ cannot satisfy criterion 1.
 
 ## Delivery and governed tracking
 
-First deliver a reviewable source PR containing these six specs, their task
-lists/assurance records, proposed ADR and mapping. Record review findings without
+The original delivery comprised six specs, their task lists/assurance records, proposed ADR and mapping. The current eight-spec portfolio is described below; no new PR, integration or publication is authorized by this record. Record review findings without
 inventing approval. Preserve current draft snapshots during this linear-history
 source integration; freeze the integrated develop candidate for later human
 acceptance as described in [integration provenance](analysis.md#integration-provenance).
@@ -100,3 +101,11 @@ merge and final closure retain their applicable decisions.
 
 These are documented options. They add no v1 tasks, compatibility claims or
 execution authority. No provider ranking is asserted.
+
+## Current local telemetry extension — 2026-10-16
+
+The current portfolio has eight specs: the original 039–044, [046 native plugins](../046-native-ai-plugins/spec.md) and [047 telemetry](../047-local-technical-telemetry/spec.md). SPEC-047 consumes the existing 040/042 interfaces and owns default-off local numeric aggregation, bounded SQLite retention and manual exchange. It must be validated before a future new-candidate pilot; it does not depend on completing native evaluation. [The global matrix](../../docs/tooling/M45_ALIGNMENT.md) separates technical dependencies, observations, review and acceptance, including M1/M2/M4 and SPEC-034–037/045.
+
+Original SPEC-039/040/042 acceptance and all frozen receipts remain historical. [Previously approved SPEC-044/T004 closure](../044-ai-tooling-evaluation/t004-bounded-closure-reconciliation.md) is incorporated without reopening A/T004 or repeating reproduction. SPEC-044/T017 and T018 remain pending. PR #509 was observed draft/open at `482fbcc` before the rewrite; its changes are now integrated in rewritten develop `e474320e`. The source modules are present, but their presence does not supply authenticated native observations or close registration/admission gates. The integration candidate has its own validation boundary; [the existing b2cf Luna review](../047-local-technical-telemetry/integration-review.md) is retained without repetition.
+
+This delivery prepares source tracking for milestone #19, one SPEC-047 parent, ten subissues and two SPEC-044 follow-ups. Sources are local and unpublished. Review, integration, scoped digest audit/apply with exact new-record keys, readback and private Project verification remain deferred until separately authorized. No remote issue is created or closed by this local source update.

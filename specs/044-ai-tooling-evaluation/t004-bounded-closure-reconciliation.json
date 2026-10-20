@@ -1,0 +1,33 @@
+{
+  "schema": "agent-braid-t004-documentary-reconciliation/v1",
+  "kind": "previously-approved-bounded-closure-incorporation",
+  "originalCandidate": "482fbcc96227769f08768e79bc4d7f47d3445c4e",
+  "approvalPacketSha256": "653ed14dd7163bf76367c50193bb623842aaeedfe3f5a07d1786f5149482ccd0",
+  "privateClosureReceiptSha256": "024639ea5c656db505d6a4d0d17990c60c94cdd3cad923721f9e7d74cb23758c",
+  "priorAppliedFiles": [
+    {
+      "name": "tasks.md",
+      "sha256": "d6ef8c90a5bb62eb4920a17f28471e9a7b4c794fad7cb23e9d845874f39f8b55"
+    },
+    {
+      "name": "sc-004.json",
+      "sha256": "eeb46d2f0e836c38cd9f3e89b44669fddd1c40dac6b76fe05e080639b9c5327a"
+    },
+    {
+      "name": "sc004-reproduction-assurance-addendum.json",
+      "sha256": "45ddf53b8eb340e183829b779ae91b4289d079053e713e4217a3223e5982d6c2"
+    },
+    {
+      "name": "assurance.json",
+      "sha256": "2c647dde768f8e2adf8c052d3ad55a596e7963a14d0c03d699d75ea4a81177bb"
+    }
+  ],
+  "scope": "procedure_clean_reproduction: installed analysis/core/CLI/local SDK protocol and declared success/refusal-unavailable/integrity controls in the retained macOS/Linux evidence; Linux final source/process closure is point-in-time and HOME-v2-run-only.",
+  "checksExecutedHere": "Hash comparison of the approved receipt and its four applied files only; no reproduction or new review.",
+  "AReopened": false,
+  "T004Reopened": false,
+  "T009Complete": false,
+  "M45Closed": false,
+  "newCandidateAcceptance": "pending",
+  "privateEvidence": "Retained owner-controlled evidence; no private payload or absolute path is published in this reconciliation."
+}

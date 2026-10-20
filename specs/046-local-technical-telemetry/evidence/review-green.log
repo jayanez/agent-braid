@@ -1,0 +1,10 @@
+test_existing_export_must_be_synced_before_pending_acknowledgement (tests.test_tooling_telemetry.TelemetryRegressionTests.test_existing_export_must_be_synced_before_pending_acknowledgement) ... ok
+test_import_replaced_with_symlink_between_check_and_open_refuses (tests.test_tooling_telemetry.TelemetryRegressionTests.test_import_replaced_with_symlink_between_check_and_open_refuses) ... ok
+test_management_does_not_create_absent_database_or_lock (tests.test_tooling_telemetry.TelemetryRegressionTests.test_management_does_not_create_absent_database_or_lock) ... ok
+test_management_refuses_missing_secure_open_flags_without_traceback (tests.test_tooling_telemetry.TelemetryRegressionTests.test_management_refuses_missing_secure_open_flags_without_traceback) ... ok
+test_single_kind_bound_rolls_back_before_export_becomes_impossible (tests.test_tooling_telemetry.TelemetryRegressionTests.test_single_kind_bound_rolls_back_before_export_becomes_impossible) ... ok
+
+----------------------------------------------------------------------
+Ran 5 tests in 0.048s
+
+OK

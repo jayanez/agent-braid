@@ -1,0 +1,32 @@
+{
+  "schema": "agent-braid-local-telemetry-mutation-controls/v1",
+  "controls": [
+    {
+      "control": "disabled-consent-guard",
+      "temporaryChange": {
+        "before": "    if mode != 'local':",
+        "after": "    if mode == 'local':"
+      },
+      "command": "python3 -B -m unittest tests.test_tooling_telemetry.TelemetryTests.test_disabled_has_no_files_and_accepts_no_payload -v",
+      "exitCode": 1,
+      "outcome": "Deliberate broken guard rejected by an executed assertion; not a collection/import error.",
+      "output": "test_disabled_has_no_files_and_accepts_no_payload (tests.test_tooling_telemetry.TelemetryTests.test_disabled_has_no_files_and_accepts_no_payload) ... FAIL\n\n======================================================================\nFAIL: test_disabled_has_no_files_and_accepts_no_payload (tests.test_tooling_telemetry.TelemetryTests.test_disabled_has_no_files_and_accepts_no_payload)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"<repository>/tests/test_tooling_telemetry.py\", line 33, in test_disabled_has_no_files_and_accepts_no_payload\n    self.assertFalse(self.directory.exists())\n    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: True is not false\n\n----------------------------------------------------------------------\nRan 1 test in 0.006s\n\nFAILED (failures=1)\n"
+    },
+    {
+      "control": "batch-field-allowlist",
+      "temporaryChange": {
+        "before": "_require(type(value) is dict and set(value) == {'schema', 'batchId', 'rows'})",
+        "after": "_require(type(value) is dict)"
+      },
+      "command": "python3 -B -m unittest tests.test_tooling_telemetry.TelemetryTests.test_exchange_validation_and_failed_export_recovery -v",
+      "exitCode": 1,
+      "outcome": "Deliberate broken guard rejected by an executed assertion; not a collection/import error.",
+      "output": "test_exchange_validation_and_failed_export_recovery (tests.test_tooling_telemetry.TelemetryTests.test_exchange_validation_and_failed_export_recovery) ... FAIL\n\n======================================================================\nFAIL: test_exchange_validation_and_failed_export_recovery (tests.test_tooling_telemetry.TelemetryTests.test_exchange_validation_and_failed_export_recovery)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"<repository>/tests/test_tooling_telemetry.py\", line 119, in test_exchange_validation_and_failed_export_recovery\n    with self.assertRaises(ValueError):\n         ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^\nAssertionError: ValueError not raised\n\n----------------------------------------------------------------------\nRan 1 test in 0.012s\n\nFAILED (failures=1)\n"
+    }
+  ],
+  "restored": true,
+  "inputs": {
+    "agent_braid/tooling_telemetry.py": "f72ba370eb6f44ae1fb82ee09c3d683bbcdbaa0a06d020acd5e0c0664222e015"
+  },
+  "limits": "Author-run bounded negative controls only; no independent/human review or broad mutation score."
+}

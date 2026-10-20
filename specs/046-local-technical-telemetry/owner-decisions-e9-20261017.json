@@ -1,0 +1,149 @@
+{
+  "applicationAuthorization": {
+    "instructionUtf8Sha256": "0082f2b2d94f7a4b5332c3c3cd87c840a599dc9a9f0b83eaa864623a2e39586f",
+    "scope": "Single local documentary incorporation only. Original local-receipt limitation is superseded only for this incorporation; no commit, task closure, operational admission or execution is authorized.",
+    "source": "Subsequent direct human instruction in this conversation"
+  },
+  "approvalBoundary": "Only the named candidate/tree and unchanged proposal effects. No acceptance transfer to this later documentary incorporation or any other candidate; changes require a new scoped disposition.",
+  "approvedPacketSealSha256": "ee0b573d229e5d0867bc1634b21f6f74a5cc12dcd15d8a2eca24e80285e546de",
+  "candidate": "e9d4153cc880ab9dab9b5619ca509d2f08d368f4",
+  "canonicalDocuments": [
+    {
+      "decision": "E9-D17",
+      "path": "specs/046-local-technical-telemetry/e9-native-observation-disposition.md",
+      "sha256": "ed8a36029be122565346d94528be6a44dc32ed9515ecc4e0e0cb41e42fa352e9"
+    },
+    {
+      "decision": "E9-D18",
+      "path": "specs/046-local-technical-telemetry/e9-coverage-no-go-disposition.md",
+      "sha256": "7e689d55579c005545d8f3e2331ddd3c49054d9991139ba37db423c699fffa27"
+    },
+    {
+      "decision": "E9-D10",
+      "path": "specs/046-local-technical-telemetry/e9-engineering-acceptance-disposition.md",
+      "sha256": "59e22ef4d5486c17bd0c08c40ac1ea34ff4539b464f0e1666a771281814e829b"
+    }
+  ],
+  "decisions": [
+    {
+      "approvedEffects": [
+        "Record a new candidate-specific documentary applicability disposition only.",
+        "Keep the original C/D D17 receipt and checksum-bound contract unchanged.",
+        "Retain authentic, candidate/bundle/process/attempt-bound observations and all original registration/observation gates as unsatisfied until supplied."
+      ],
+      "approvedRequest": "Confirm documentary applicability to this exact successor of the unchanged additive native observation contract v1, preserving separate C1 effective pre-prompt inventory, C2 instructions/skills loaded, and C3 observed use claims.",
+      "doesNotSatisfy": [
+        "T002 native acceptance",
+        "T017 completion",
+        "native discovery/loading/use evidence",
+        "collection consent or execution authority"
+      ],
+      "id": "E9-D17",
+      "resolution": "approve",
+      "task": "SPEC-044/T017"
+    },
+    {
+      "approvedEffects": [
+        "Record coverage acknowledged for commit/tree e9d4153cc880 only, with all declared observation and review gaps retained.",
+        "Record that required #509 registration/interface/receipt source modules already exist on the rewritten base; source presence does not authenticate observations or imply a merge decision.",
+        "Retain 11 explicit skipped controls as unexecuted and require separately selected changed-surface/platform checks before any prospective GO."
+      ],
+      "approvedRequest": "Approve the exact-candidate coverage and missing-evidence inventory for documentary review, explicitly retaining pilot NO-GO and no operational admission.",
+      "doesNotSatisfy": [
+        "T018 operational admission or task closure",
+        "independent review",
+        "registration/authenticated native receipts",
+        "108 attempts, CLI baseline, human ratings or economics"
+      ],
+      "id": "E9-D18",
+      "resolution": "approve",
+      "task": "SPEC-044/T018"
+    },
+    {
+      "approvedEffects": [
+        "Record a new scoped acknowledgment for reviewing this successor, not a transfer or rewrite of historical C/D acceptance.",
+        "Acknowledge original/predecessor/current D10 checksum mapping, proposed telemetry ADR 0024 identity, and the separate exact-tree integrity review.",
+        "Retain the 1888-test / 11-skip predecessor result in its stated pre-freeze boundary; do not relabel it as a new full suite on e9d4153cc880.",
+        "Keep independent review, findings disposition, ADR/accepted-scope adoption and human/founder acceptance pending."
+      ],
+      "approvedRequest": "Acknowledge the preserved D10 byte correspondence and bounded local engineering evidence as a basis for continued exact-candidate review, with architectural adoption and final acceptance deferred.",
+      "doesNotSatisfy": [
+        "T010 completion or full feature acceptance",
+        "ADR 0024 architectural adoption",
+        "extension of accepted SPEC-039/040/042 scopes",
+        "M4.5 closure, scientific/native utility or production suitability"
+      ],
+      "id": "E9-D10",
+      "resolution": "approve",
+      "task": "SPEC-046/T010"
+    }
+  ],
+  "freezeAuthorization": {
+    "instructionUtf8Sha256": "bbdcf7f70d4cc19c165ffcfd6df92c28f1ec100e77fe08f35d1ca6c850a7a508",
+    "scope": "Freeze this documentary lot in one local commit and update the external admission dossier only. No transfer of E9 approval to the packaging commit, task closure or execution authority.",
+    "source": "Subsequent explicit direct human instruction in this conversation"
+  },
+  "historicalRecordsUnchanged": [
+    {
+      "path": "specs/046-local-technical-telemetry/owner-decisions-20261016.json",
+      "sha256": "91fec7c1a2694b0efbd47b22d62b3a5c4e1e810953c00c75f360c8d012d4fa10"
+    },
+    {
+      "path": "specs/046-local-technical-telemetry/owner-decisions-20261016.md",
+      "sha256": "49ffb94c0721d6f1da4f8fab813fd2d8fa925985f270ed6c12e965b0b15c69f4"
+    },
+    {
+      "path": "specs/046-local-technical-telemetry/owner-acceptance-disposition.md",
+      "sha256": "53e0bb0fb5a8ca45c1133b048b955f48a36da74d99f7e3e5d4d75381b0a4ce77"
+    },
+    {
+      "path": "specs/046-local-technical-telemetry/historical/owner-acceptance-disposition-20261016.md",
+      "sha256": "55a1b4ffe4e8d24e37a7ac0759665533c75739f4b5b313b4573191bd211645ff"
+    },
+    {
+      "path": "specs/046-local-technical-telemetry/historical/owner-decisions-20261016.json",
+      "sha256": "91fec7c1a2694b0efbd47b22d62b3a5c4e1e810953c00c75f360c8d012d4fa10"
+    },
+    {
+      "path": "specs/046-local-technical-telemetry/assurance.json",
+      "sha256": "1f99449edef5fec716b2aa2d3bcd2036d370e72c34a66b3f50f656456ab1b85a"
+    }
+  ],
+  "notExecuted": [
+    "independent review or additional agents",
+    "AI host/provider operations",
+    "installation or collection consent changes",
+    "registration or pilot",
+    "T004 reproduction",
+    "full-suite rerun",
+    "publication, push or merge"
+  ],
+  "ownerReceipt": {
+    "availability": "Retained privately outside the repository; English scope summaries and digests only. No private receipt path or chat text is copied here.",
+    "humanApprovalSource": "Explicit direct human response; no signature, independent review or approval inferred from checksums or commit authorship.",
+    "recordedAtUtc": "2026-10-17T09:08:35.509802+00:00",
+    "resolutionJsonSha256": "b6dcd34c47db234dcf53c39605bf6d978d28391e519c59cd8beb8e5bd3dac09b",
+    "sealSha256": "93b8f8a4c8b21b0118e0083c70ef268cee843b706f28a406a3439eae8f5cc957"
+  },
+  "preservedBoundaries": {
+    "ADR0024": "proposed; adoption pending",
+    "SPEC046T010": "open",
+    "T004": "Prior bounded historical closure and all exclusions unchanged; no reopening, reproduction or rebinding.",
+    "T017": "open",
+    "T018": "open",
+    "additionalSpendEUR": 0,
+    "humanReview": "pending",
+    "operationalAdmission": "withheld",
+    "pilot": "NO-GO",
+    "taskCounts": {
+      "checked": 65,
+      "open": 26,
+      "total": 91
+    }
+  },
+  "proposalPayloadSha256": "03a3f948a10a6679c4e39853f934efa6fa7e6273f038e20cd9cd98610217e2c7",
+  "recordedDateEuropeMadrid": "2026-10-17",
+  "schema": "agent-braid-canonical-exact-candidate-owner-decisions/v1",
+  "state": "Approved owner documentary resolutions incorporated locally; separate documentary freeze prepared; no operational admission. Exact packaging commit is recorded in the external dossier update.",
+  "tree": "e85177654bc8cb63983a9bb68a3d7cd8ad4b6c5d"
+}

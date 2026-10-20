@@ -1,5 +1,7 @@
 # Tasks
 
+The owner-approved D17/D18 documentary dispositions leave T017 and T018 open; the telemetry pilot remains **NO-GO**. SPEC-044/T004 retains its prior approved bounded closure for historical candidate `482fbcc` only. It was not reproduced or reopened by this reconciliation.
+
 Stable task IDs are implementation obligations. Check only after the paired procedure produces candidate-bound evidence. Experimental implementation, historical T003 evidence and completed auxiliary engineering clauses are present. Other original registered-observation and decision obligations remain pending. Human outcome ratings and adjudication are explicitly deferred by [the owner decision](human-evaluation-deferral-clarification.md); this does not mark any task or human acceptance complete.
 
 - [ ] T001 (REQ-001/SC-001): Preregister exact population, source rights, candidate/input/host/model versions, all attempts, rubric and numerical caps before capture.
@@ -14,9 +16,9 @@ Stable task IDs are implementation obligations. Check only after the paired proc
   Dependencies: stable 040–043 candidate and frozen control/oracle inputs; paid/provider controls remain subject to approved T001 registration. Targets: `scripts/run_tooling_controls.py; research/tooling_evaluation.py; oracle parity/refusal fixtures`.
   Verification and evidence: `validation-plan.md::procedure_negative_controls`; `evidence/sc-003.json` and `evidence/sc-003-run/` contain the exact case commands, oracles, raw results and limits. Obtained: 19/19 bounded deterministic controls passed for candidate `3c01c5b2e594c7ddfaf7850585478a6d41a6677c`; this does not establish actual host, MCP SDK transport, provider/billing, clean-room or later-candidate acceptance.
 
-- [ ] T004 (REQ-004/SC-004): Reproduce installed-package/core/protocol controls on clean macOS arm64 and Linux x86_64 environments.
+- [x] T004 (REQ-004/SC-004): Reproduce installed-package/core/protocol controls on clean macOS arm64 and Linux x86_64 environments.
   Dependencies: approved T001 registration and its exact stable 040–043 candidate. Targets: `separate clean macOS/Linux reproduction receipts`.
-  Verification and planned evidence: `validation-plan.md::procedure_clean_reproduction`; `evidence/sc-004.json` with actual commands and negative controls. Obtained: none.
+  Obtained: previously approved bounded engineering closure for exact candidate `482fbcc96227769f08768e79bc4d7f47d3445c4e`, incorporated through [the reconciliation record](t004-bounded-closure-reconciliation.md). Installed analysis/core/CLI/local SDK protocol and declared success/refusal-unavailable/integrity controls only; Linux final source/process closure is point-in-time and HOME-corrected-run-only. Original failures, omissions and skips remain unchanged; Mac B did not rerun a full profile. No all-EC01–EC05 installed equivalence, privileged runtime, universal compatibility or new-candidate acceptance is inferred. A and T004 are not reopened; T009 and M4.5 closure remain pending.
 
 - [ ] T005 (REQ-005/SC-005): Compare CLI, MCP-only and MCP-plus-skills on 108 registered attempts with counterbalanced order and no outcome-driven revisions.
   Dependencies: approved T001 registration and stable 040–043 candidate with exact fixture roster, prompts, host/model builds, order and session isolation frozen. Targets: `evaluation harness roster/order/session isolation; 108-slot outcome index`.
@@ -74,3 +76,9 @@ A completed auxiliary does not complete native-host or human acceptance.
   Related original: T009. Dependencies: available bounded implementation; original acceptance remains separate. Targets: `assurance.json; source validation`.
   Verification: `evidence/technical-validation.json` with frozen candidate/input hashes, actual command, paired controls and stated limits.
   Obtained: Repository quick/PR validation results are recorded in `evidence/technical-validation.json`; raw test skips remain explicit. This does not establish native-host, registered-cohort, human or founder acceptance.
+
+- [ ] T017 (REQ-002/SC-002): Draft a versioned observation-contract correction distinguishing pre-prompt discovery, instructions loaded and observed skill/tool use without weakening the frozen T002 gate.
+  Dependencies: existing documented source analysis; no collector replay required. Planned evidence: reviewed contract proposal and exact gate disposition; the historical proposal is [native-observation-contract-proposal.md](native-observation-contract-proposal.md). Obtained: owner-approved [additive documentary contract v1](native-observation-contract-v1.md), canonically incorporated with [D17](../046-local-technical-telemetry/owner-decisions-20261016.md). T017 remains open by explicit owner instruction; T002 is unchanged and native evidence remains pending. No host/provider launch is authorized.
+
+- [ ] T018 (REQ-001,REQ-002,REQ-003,REQ-004,REQ-005,REQ-006,REQ-007,REQ-008/SC-001,SC-002,SC-003,SC-004,SC-005,SC-006,SC-007,SC-008): Prepare and obtain review of a coverage/admission matrix for the new telemetry candidate, preserving historical evidence identities and identifying missing observations.
+  Dependencies: validated SPEC-047 implementation before the future pilot; reviewed exact candidate, T001 registration and T017 disposition before native capture. Planned evidence: [candidate-admission-matrix.md](candidate-admission-matrix.md), candidate-specific controls and explicit admission decision. Obtained: frozen implementation/metadata identities and the owner-reviewed [coverage/NO-GO disposition](telemetry-candidate-owner-disposition.md), incorporated with D18. T018 remains open by explicit owner instruction; independent/native review, source-route resolution, registration and operational admission remain pending. Historical SPEC-044/T004 is not repeated or reopened.

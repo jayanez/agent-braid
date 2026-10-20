@@ -1,0 +1,11 @@
+{
+  "action": "proposed-existing-milestone-description-update",
+  "number": 19,
+  "observedState": "open",
+  "observedUpdatedAt": "2026-10-14T07:51:14Z",
+  "fromDescriptionSha256": "9474e0fbb6b31488033024db99e0de6cb50774378a7a14db0d47af6375864dd0",
+  "fromDescription": "Adjacent to bounded-complete M4; M4 historical G4 NO-GO and negative utility preserved. Local candidate-bound technical procedures passed: 8 program controls, 8 MCP scenarios/37 tests, 13 lifecycle tests, 223 engineering tests without skips, and macOS/Linux-emulated package checks. 60 original task criteria retained; 19 auxiliary evidence tasks produce 52/79 task issues complete, 27 pending, plus six open parents. Native Codex/Claude acceptance, human interpretation, founder decision, ADR adoption and milestone closure remain pending; M3.5 is independent with zero admitted real pairs.",
+  "toDescription": "Open M4.5 source program: 7 specs and 91 tasks (65 checked, 26 unchecked); 3 historically closed and 4 open parents, 98 desired records. Original SPEC-039/040/042 bounded acceptance and M4 G4 NO-GO retained. SPEC-047 adds default-off local numeric telemetry, private 30-day on-access retention and manual exchange. SPEC-044/T004 retains approved bounded engineering closure for 482fbcc only. T017/T018, native observations, 108 attempts, complete costs, human/founder acceptance and milestone closure remain pending. Local extension and counts are unpublished source state, not remote acceptance.",
+  "execution": "not executed or authorized in this delivery",
+  "synchronizerCoverage": "Existing synchronizer audits/applies milestone title/state and managed issues; it does not update existing descriptions. This exact #19 draft needs a separately reviewed guarded description update and readback; a no-op tracking audit alone does not cover it."
+}

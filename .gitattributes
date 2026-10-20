@@ -1,0 +1,2 @@
+# Preserve hash-bound raw test output, including runner whitespace.
+specs/046-local-technical-telemetry/evidence/*.log -whitespace

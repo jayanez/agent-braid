@@ -318,20 +318,25 @@ SPEC-039–044 completion. See [installation](docs/tooling/NATIVE_PLUGINS.md) an
 close M4.5 or satisfy its pending registered native/human evaluation.
 
 **Status:** [Open](https://github.com/jayanez/agent-braid/milestone/19), adjacent to
-M4. The 60 original task criteria remain unchanged; 19 auxiliary evidence tasks
-bring the source task-checklist inventory to 79 items, of which 55 are checked
-and 24 remain unchecked, alongside three closed and three open spec parents.
+M4. The original six-spec portfolio, its two evaluation follow-ups, the 15 native-plugin
+tasks and ten telemetry tasks now total 106 obligations across eight source specs:
+78 checked and 28 open, with three historically closed and five open parents.
+These are source states, not a remote issue readback.
 SPEC-039/040/042 retain their recorded bounded acceptance; remote issue state is
 tracked separately. Candidate-bound local technical procedures and
 fresh package checks have passed in their recorded domains. Native Codex/Claude
 acceptance, human interpretation, remaining founder decisions and milestone closure remain
-pending. The owner selected Codex and Claude Code for v1 on 2026-10-08. This work
-does not accept ADR 0021 or change M4's historical G4 NO-GO.
+pending. Telemetry remains default-off and pilot **NO-GO**; SPEC-044/T017,
+SPEC-044/T018 and SPEC-047/T010 remain open. [Existing Luna review and integration
+provenance](specs/047-local-technical-telemetry/integration-review.md) retain their
+exact candidate scope. ADR 0025 remains proposed. The owner selected Codex and
+Claude Code for v1 on 2026-10-08. This work does not accept ADR 0021 or change
+M4's historical G4 NO-GO.
 
 **Objective:** make the existing bounded analysis, planning, execution, recovery
 and evidence capabilities discoverable and usable through these two local hosts.
 
-The [six-spec program](specs/039-ai-tooling-program/program.md) defines the
+The [original six-spec program](specs/039-ai-tooling-program/program.md) defines the
 [capability matrix](specs/039-ai-tooling-program/capability-matrix.md), official-source
 research, proposed [ADR 0021](docs/adr/0021-codex-claude-tooling-integration.md)
 and traceable tasks for implementation and governed tracking.
@@ -348,7 +353,7 @@ Deliverables:
 - candidate-bound controls, clean reproduction, actual host observations and a
   preregistered CLI/MCP-only/MCP-plus-skills comparison with full costs.
 
-The current owner-authorized work follows the [autonomous closure plan](specs/044-ai-tooling-evaluation/autonomous-closure-plan.md). Its seven candidate-bound technical tasks are complete on the frozen source, including both repository profiles; the earlier [five-task preparation plan](specs/044-ai-tooling-evaluation/preparation-delivery-plan.md) is historical. The work remains bounded to EUR 0 additional spend and defers human outcome evaluation. It does not replace the full M4.5 exit criteria below.
+The current owner-authorized work follows the [autonomous closure plan](specs/044-ai-tooling-evaluation/autonomous-closure-plan.md). The seven technical tasks were complete on frozen source C, including historical repository profiles; the current integration candidate requires its own validation; the earlier [five-task preparation plan](specs/044-ai-tooling-evaluation/preparation-delivery-plan.md) is historical. The work remains bounded to EUR 0 additional spend and defers human outcome evaluation. It does not replace the full M4.5 exit criteria below.
 
 Candidate-specific results and canonical per-scenario receipts are recorded in
 the [autonomous completion record](docs/tooling/AUTONOMOUS_COMPLETION.md) and

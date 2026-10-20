@@ -20,7 +20,7 @@
     "S1.3 — Advisory integration": "Synthetic advisory adapters and bounded native preparation/transport studies exist; native workflow utility target was not met. Versioned EOF integration and reusable acquisition/consumer proposals are tracked separately; no grants or activation implied. Index: docs/system-one/README.md.",
     "S1.4 — Product capabilities and promotion": "Selected schema compiler, metadata router and hooks have engineering evidence; catalogue/export/batching branches remain independently selected/deferred. Shadow, drift, rollback, human/founder per-capability promotion and activation remain pending. Index: docs/system-one/README.md.",
     "FC.1 — Forecast-guided parallelism experiment": "Permissioned workload telemetry, optional local Chronos-2, prospective forecasting/complete-cost parallelism experiment and separately governed shadow/promotion. Negative or infeasible outcomes are valid; no new execution domain or M4 closure.",
-    "M4.5 — AI tooling integrations for Codex and Claude Code": "Adjacent to bounded-complete M4; M4 historical G4 NO-GO and negative utility preserved. Historical candidate-bound technical procedures and package checks retain their recorded domains. The 60 original task criteria and 19 auxiliary evidence tasks total 79: 55 checked and 24 pending, with three closed and three open spec parents. SPEC-039/040/042 retain their recorded bounded acceptance. Native Codex/Claude acceptance, human interpretation, remaining founder decisions, ADR adoption and milestone closure remain pending; M3.5 is independent with zero admitted real pairs. SPEC-046 adds 15 separately tracked native-plugin tasks (including the shell installer and independent external approvals); public distribution and official candidacy approvals remain separate gates.",
+    "M4.5 — AI tooling integrations for Codex and Claude Code": "Adjacent to bounded-complete M4; historical G4 NO-GO and negative utility preserved. The combined source portfolio has 8 specs and 106 tasks (78 checked, 28 open), with 3 historically closed and 5 open parents; source counts do not assert remote issue closure. SPEC-039/040/042 retain bounded accepted scopes and SPEC-044/T004 retains its historical bounded closure. SPEC-046 owns native plugins and its 15 tasks; external candidacy approvals remain pending. SPEC-047 adds default-off local aggregate telemetry. Existing Luna review is bound to b2cf477fe9f9; integration adaptations and resulting candidate have separate review/validation. Pilot NO-GO; T017/T018/T010, native observations, ADR adoption, human/founder acceptance and M4.5 closure remain open.",
     "FC.2 — Local forecasting capabilities": "Local default-off API/CLI/MCP forecasting, synthetic engineering/reproduction and separately approved actual Chronos CPU conformance; no real workload utility or promotion implied."
   },
   "closed_milestones": [
@@ -213,6 +213,10 @@
       "state": "open"
     },
     "046-native-ai-plugins": {
+      "milestone": "M4.5 — AI tooling integrations for Codex and Claude Code",
+      "state": "open"
+    },
+    "047-local-technical-telemetry": {
       "milestone": "M4.5 — AI tooling integrations for Codex and Claude Code",
       "state": "open"
     }

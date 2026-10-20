@@ -16,7 +16,7 @@
   ],
   "assumptions": "Git and a supported native host already exist. Runtime/dependencies ship in the plugin. Official distribution eligibility and founder publication approval remain external.",
   "authority_snapshot": {
-    "commit": null,
+    "commit": "f0854d63a37f3d6dba777dcfd36524d7de37067c",
     "hashes": {
       "ARCHITECTURE.md": "7bad53a83a54da09a0f55fb514432b53265cc1d99e88fdc3e42989b2fa4ea256",
       "CONSTITUTION.md": "ff7196976a1736a639947c2ab26e8da157fef23c89ba9881312f2a36459964eb",
@@ -85,13 +85,13 @@
       "schemas/governance/public-export-manifest.schema.json": "11eb7f2594939ae9fd0c9e6cfe4423a80aba686d6cdfdd8b73b0fb84b0840aa8",
       "schemas/governance/release-validation-record.schema.json": "d9943f0c9f5520ea52e3b12bfba88240d03f8011b433fc5e35cb49549ab6e819"
     },
-    "mode": "current"
+    "mode": "historical"
   },
   "compatibility": "Five canonical product skills are unchanged; setup has a separate inventory. Legacy Python installation and endpoint remain available; immutable plugin bindings require reconnection after setup changes.",
   "domain": "Software packaging, local configuration and engineering controls; no new scientific or effect domain.",
   "evidence_snapshot": {
-    "commit": null,
-    "mode": "current"
+    "commit": "f0854d63a37f3d6dba777dcfd36524d7de37067c",
+    "mode": "historical"
   },
   "execution_contract": "Analysis is the default. Explicit registry bindings identify source/result roots; existing core policies and grants govern execution. Installing or discovering repositories grants no execution authority.",
   "human_review": "pending",

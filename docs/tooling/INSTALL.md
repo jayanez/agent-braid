@@ -9,6 +9,17 @@ from public distribution readiness.
 
 ## Python installation and legacy lifecycle
 
+The source integration adds default-off local telemetry at these legacy
+portable MCP and analyzer CLI boundaries. It does not change the installed
+native plugin configuration or create consent for that product. The
+[integration record](../../specs/047-local-technical-telemetry/integration-review.md)
+pins the reviewed telemetry source and current base. This integration is not a
+new installation or native-host observation; pilot **NO-GO**, T017/T018/T010 open.
+
+Select Python 3.12+ before creating an isolated environment. Activate that
+environment when contributor commands launch bare `python3` workers, so parent
+and worker processes use the same interpreter.
+
 The M4.5 implementation candidate adds an optional stdio MCP server, five bounded
 workflow skills, receipt-owned installation and deterministic presentations.
 ADR 0021 remains proposed. Local controls do not establish actual Codex/Claude
@@ -97,3 +108,22 @@ under a private user-owned parent and an explicit evidence-reference selection.
 Exports keep complete sensitive evidence separate from sanitized human views.
 See [presentation](../ai-tooling-presentation.md) and
 [evaluation](EVALUATION.md) for the independent observation and acceptance gates.
+
+## Local telemetry consent, update and removal
+
+The SPEC-047 candidate adds optional local aggregate telemetry to the same installed package with no extra dependency. It is off by default. Direct `analyze` / `analyze-git` calls choose `--telemetry off|local` per invocation; the portable MCP service chooses it per configured server. The legacy endpoint and five skills do not enable collection.
+
+For a telemetry-enabled server installation, preview either selected host using the existing lifecycle:
+
+```sh
+agent-braid tooling install --host codex --scope user \
+  --source-root /absolute/repository --result-root /absolute/private/results \
+  --telemetry local
+agent-braid tooling install --host claude --scope user \
+  --source-root /absolute/repository --result-root /absolute/private/results \
+  --telemetry local
+```
+
+Choose one host and repeat its exact previewed arguments with `--apply --preview-digest DIGEST` only when installing intentionally. Preview binds mode, retention and no-upload policy; application records the mode and server arguments in its receipt. Neither step launches a host or creates metrics. `configure` can manage the server alone. `update --telemetry local` retains the explicit choice; a previewed `update --telemetry off` disables it for the next server launch. Omitting the option selects off. Restart an existing configured server separately when authorized. `doctor` distinguishes requested mode from statically configured mode without reading/creating telemetry or launching hosts.
+
+`uninstall` preserves local aggregates. Use `agent-braid telemetry purge` explicitly to clear them; exported copies/backups remain user-managed. The [telemetry guide](TELEMETRY.md) documents the exact private path, 30-day on-access retention, 10 MiB total bound, coverage, failures, report/export/merge/purge commands, batch deduplication and privacy limits. The [current alignment](M45_ALIGNMENT.md) separates historical acceptance from the changed candidate; installation commands documented here are not a claim of new installed/native observation.
