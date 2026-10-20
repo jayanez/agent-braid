@@ -4,7 +4,7 @@
 
 Start with the [T08 delivery/gates supplement](addenda/t08-final-20261020/README.md), its exact source capsules and portable evidence/link map. T08 packages bounded internal capability, versions/domain, observed versus unknown costs, rollback/non-use and twelve distinct gates; it does not implement promotion services or close task/issue/milestone/acceptance gates. T09 requires a separate assignment. Source product/tests/archives remain local.
 
-The old temporary checkout is no longer present. The recovered published T07 corpus and current separate branch `docs/ddp-t08-corpus` are in `/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/work/agent-braid-t08-corpus`, based on T07 headfe91d190. Historical checkout paths below retain their observation meaning. T07 PR609 remains open; T08 publication is a dependent documentary PR, with no merge authority inferred for either.
+The old temporary checkout is no longer present. The recovered corpus and current separate branch `docs/ddp-t08-corpus` are in `/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/work/agent-braid-t08-corpus`. PR609 is integrated as `b52d7ea3542a3c09678c4b69196c9105f8271f4a`; PR610 now carries only T08 changes on that base. The original T08 publication on T07 headfe91d190 and dependent base, and older checkout paths below, retain their historical observation meaning. Separate direct user authorization permits the ordered documentary integration after exact-head CI/review; no product integration or acceptance gate is authorized by that permission.
 
 ## Prior T07 observation and ownership
 

@@ -6,7 +6,7 @@ Start here, then read the [agent resumption guide](RESUMPTION.md). This is the c
 
 [Final T08 documentary supplement](addenda/t08-final-20261020/README.md) preserves the two exact local source documents and provides portable links to the complete T02–T07 evidence chain and a G01–G12 synopsis. Both2084-case profiles passed with19 skips each;24 receipts/40 archived members and all2527 prior files were checked. T08 delivers a local documentary candidate, not product/schema adoption, utility, human/scientific acceptance, model promotion or activation. T09 does not start; no task/issue/milestone is closed.
 
-This supplement follows the separate T07 PR609, which remains unmerged; its public branch carries that explicit dependency. The earlier T07 engineering observation below remains valid within its own scope and is not a universal acceptance result.
+T07 PR609 was integrated into develop as `b52d7ea3542a3c09678c4b69196c9105f8271f4a`. T08 PR610 was originally published against its unmerged branch; the current candidate now contains only T08 changes on that integrated base. The earlier publication/dependency observations remain historical. Documentary integration is separate from product publication and acceptance; the earlier T07 engineering evidence remains bounded, not a universal acceptance result.
 
 ## Prior bounded T07 review and conformance evidence
 
