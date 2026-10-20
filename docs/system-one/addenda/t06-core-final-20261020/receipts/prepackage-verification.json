@@ -1,0 +1,166 @@
+{
+  "baseline": "fe6d25b3d9fb989c230aa11779b6a51d494d7a4e",
+  "beforeFiles": 2336,
+  "beforeUnchanged": 2333,
+  "captureSummary": {
+    "ENESPairConsistency": {
+      "matchedStatusAndReasons": 11,
+      "pairs": 11,
+      "relatedFixtures": true
+    },
+    "acceptedErrors": {
+      "accepted": 8,
+      "errors": 0
+    },
+    "allExpectedStatusesMatch": true,
+    "archiveMembersVerified": 7,
+    "descriptiveMilliseconds": {
+      "acquisitionNs": {
+        "max": 1106.29575,
+        "median": 676.070271,
+        "min": 526.980959,
+        "n": 8
+      },
+      "decisionNs": {
+        "max": 4.171,
+        "median": 3.5600620000000003,
+        "min": 2.77275,
+        "n": 8
+      },
+      "entryToCleanupNs": {
+        "max": 5967.106709,
+        "median": 3949.409958,
+        "min": 3127.319375,
+        "n": 8
+      },
+      "entryToResultNs": {
+        "max": 5968.0305,
+        "median": 3950.137833,
+        "min": 3127.95125,
+        "n": 8
+      },
+      "expectedTreeNs": {
+        "max": 653.403583,
+        "median": 512.7220414999999,
+        "min": 413.318459,
+        "n": 8
+      },
+      "handoffRevalidationNs": {
+        "max": 592.905791,
+        "median": 341.0968955,
+        "min": 252.833625,
+        "n": 8
+      },
+      "nativeCheckNs": {
+        "max": 2778.986458,
+        "median": 1801.432979,
+        "min": 1421.141667,
+        "n": 8
+      },
+      "nativePrepareNs": {
+        "max": 1421.429208,
+        "median": 967.5776045,
+        "min": 745.888375,
+        "n": 8
+      },
+      "prepareNs": {
+        "max": 5967.106709,
+        "median": 3949.409958,
+        "min": 3127.319375,
+        "n": 8
+      }
+    },
+    "errors": 0,
+    "failures": 0,
+    "latencyBoundary": "Serial M3 Pro software fixture capture. Nested stage spans must not be added. No SLA or independent representative evaluation.",
+    "logSha256": "5ce0f8e8f8e2bfe38032c817589bfd955e1697aca183f7d467b02ee5a2f89747",
+    "matchedFixtureAnswerCoverage": {
+      "allTaggedControls": 22,
+      "answered": 8,
+      "note": "Includes deliberately forged refusals; not workload coverage or threshold acceptance"
+    },
+    "matchedFixtureControls": 22,
+    "negativeForgedProposals": {
+      "offered": 12,
+      "refused": 12
+    },
+    "outcomes": {
+      "answered": 8,
+      "refused": 12,
+      "semantic-defer": 2
+    },
+    "scope": "Related deterministic EN/ES software fixtures, no independent precision or model evaluation",
+    "semanticDefer": {
+      "correct": 2,
+      "offered": 2
+    },
+    "skips": 0,
+    "sourceArchiveSha256": "7b515c955f02385b7629893ba78146b842d34bd02d975b0519dab36051b52bce",
+    "sourceHashes": {
+      "agent_braid/git_replay.py": "6dc84e50fe04abb4e5675ac0173f9579b239d13ad1741e106b2d4e272081a388",
+      "agent_braid/git_runtime.py": "8cf7168e2cbb9b874019eb3cc8dcee7b5ad69892eaeb4cc0511996fade29f897",
+      "agent_braid/system_one_verified_consumers.py": "956666ab9d9423e030acefb4b217e184a37ed5f62e2b215b4524af978c2a3808",
+      "agent_braid/system_one_verified_selection.py": "5cb264e1be4eb6f26211af12d11541f272e0d44daeb2cc8a410d64bf1fc9a1d1",
+      "specs/031-system-one-integration/addenda/ddp-t06-core-plan.md": "8b9bcd61d392edc6712a54c229f64253397db61aac81a6065eaf3d0ae5ec3285",
+      "tests/test_system_one_verified_consumers.py": "d88c6dcb8f49a31023431258662cf82f3c848f1a92c3384ca0e74f430997493c"
+    },
+    "sourceInputsStillMatch": true,
+    "tests": 21,
+    "wallSeconds": 81.57761291699717
+  },
+  "checkedAtUTC": "2026-10-20T10:14:00.954878+00:00",
+  "executionAuthorization": false,
+  "externalSpendEUR": 0,
+  "finalSourceHashes": {
+    "agent_braid/git_replay.py": "6dc84e50fe04abb4e5675ac0173f9579b239d13ad1741e106b2d4e272081a388",
+    "agent_braid/git_runtime.py": "8cf7168e2cbb9b874019eb3cc8dcee7b5ad69892eaeb4cc0511996fade29f897",
+    "agent_braid/system_one_verified_consumers.py": "956666ab9d9423e030acefb4b217e184a37ed5f62e2b215b4524af978c2a3808",
+    "agent_braid/system_one_verified_selection.py": "5cb264e1be4eb6f26211af12d11541f272e0d44daeb2cc8a410d64bf1fc9a1d1",
+    "specs/031-system-one-integration/addenda/ddp-t06-core-plan.md": "8b9bcd61d392edc6712a54c229f64253397db61aac81a6065eaf3d0ae5ec3285",
+    "tests/test_system_one_verified_consumers.py": "d88c6dcb8f49a31023431258662cf82f3c848f1a92c3384ca0e74f430997493c"
+  },
+  "historicalT05SourceBindingSuperseded": "agent_braid/system_one_verified_selection.py",
+  "justifiedChanges": {
+    "agent_braid/git_replay.py": {
+      "before": "62a2c461902e30d874dfe82bed77ab79075f33cb0e56f1e543fd9d317f1d571e",
+      "current": "6dc84e50fe04abb4e5675ac0173f9579b239d13ad1741e106b2d4e272081a388"
+    },
+    "agent_braid/git_runtime.py": {
+      "before": "ceb4469906b6c97a6f03faf3cc1b4ea8387df937c06b8ccd49984eaf2dff4d4e",
+      "current": "8cf7168e2cbb9b874019eb3cc8dcee7b5ad69892eaeb4cc0511996fade29f897"
+    },
+    "agent_braid/system_one_verified_selection.py": {
+      "before": "8971650c51082938281ecb62e40e23adab4202bb20971b1eb23e1ef7d78c339c",
+      "current": "5cb264e1be4eb6f26211af12d11541f272e0d44daeb2cc8a410d64bf1fc9a1d1"
+    }
+  },
+  "priorPacketsUnchanged": {
+    "specs/029-system-one-evaluation/evidence/ddp-t02-t04/packet.json": "a22a42405e9b0f83e2dd87ab329a99545b8eff3ca249e30bec242c6020c4c871",
+    "specs/029-system-one-evaluation/evidence/ddp-t05/packet.json": "1b9f67d77da004678808f1620e0dfaf9a4e1a113eb12a02f146b0f7a058bbcbc"
+  },
+  "profiles": {
+    "pr": {
+      "exitCode": 0,
+      "inputFiles": 2339,
+      "logSha256": "14b02c9772f483e5674aa2bf2d4ebc81302b7f7a3b9cabcc4ba3daaca176ea17",
+      "passed": 2044,
+      "profileWallSeconds": 2140.3075698750326,
+      "skips": 19,
+      "sourceInputsStillMatch": true,
+      "tests": 2063,
+      "unittestSeconds": 1971.374
+    },
+    "quick": {
+      "exitCode": 0,
+      "inputFiles": 2339,
+      "logSha256": "09fbe548beac8a35e03e8cb8d616a7def9bd860db8249981b339f56155a7bb72",
+      "passed": 2044,
+      "profileWallSeconds": 2132.8139304579818,
+      "skips": 19,
+      "sourceInputsStillMatch": true,
+      "tests": 2063,
+      "unittestSeconds": 1964.59
+    }
+  },
+  "scope": "Core-only internal software conformance; T06 remains partial"
+}

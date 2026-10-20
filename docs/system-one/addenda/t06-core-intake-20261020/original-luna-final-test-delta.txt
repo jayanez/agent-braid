@@ -1,0 +1,21 @@
+# T06 final test-only delta verification
+
+Date: 2026-10-20
+
+The five product-source and plan hashes remain identical to the fixed candidate:
+
+- `agent_braid/system_one_verified_consumers.py`: `956666ab9d9423e030acefb4b217e184a37ed5f62e2b215b4524af978c2a3808`
+- `agent_braid/system_one_verified_selection.py`: `5cb264e1be4eb6f26211af12d11541f272e0d44daeb2cc8a410d64bf1fc9a1d1`
+- `agent_braid/git_replay.py`: `6dc84e50fe04abb4e5675ac0173f9579b239d13ad1741e106b2d4e272081a388`
+- `agent_braid/git_runtime.py`: `8cf7168e2cbb9b874019eb3cc8dcee7b5ad69892eaeb4cc0511996fade29f897`
+- `specs/031-system-one-integration/addenda/ddp-t06-core-plan.md`: `8b9bcd61d392edc6712a54c229f64253397db61aac81a6065eaf3d0ae5ec3285`
+
+The test-only delta is pinned as `tests/test_system_one_verified_consumers.py` SHA-256 `d88c6dcb8f49a31023431258662cf82f3c848f1a92c3384ca0e74f430997493c`.
+
+The strengthened seal regression now lets a second token owner claim before calling idempotent `publish()` on the old context. This ensures the old context cannot accidentally terminalize itself before the retry assertion. The named test passed once using bundled Python 3.12.14:
+
+`PYTHONPATH=tests python3 -m unittest -v test_system_one_verified_consumers.VerifiedCoreConsumerTests.test_failed_seal_factory_is_terminal_before_token_reuse`
+
+Result: 1 passed in 1.105s.
+
+I verified the supplied mutation-guards receipt/log hash `e0fe96addc1324633c9d4a779f6da3d98bb2acaeb140f3de31c868c30f16860c`; its receipt reports 11 targeted mutations detected, zero errors, and unchanged source bytes. I did not rerun those mutations, any suite, capture, or profile. No source edits were made. The previously reported three fixes and native guard remain verified within their prior bounded scope; this note covers only the final test-ordering delta.

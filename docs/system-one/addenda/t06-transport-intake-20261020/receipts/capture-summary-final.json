@@ -1,0 +1,156 @@
+{
+  "ENESPairs": {
+    "matchedStatusAndReasons": 12,
+    "pairs": 12
+  },
+  "acceptedErrors": {
+    "accepted": 12,
+    "errors": 0
+  },
+  "beforeFiles": 2410,
+  "beforeFilesUnchanged": 2408,
+  "controls": 24,
+  "descriptiveMilliseconds": {
+    "mcp-service": {
+      "acquisitionNs": {
+        "max": 649.619624,
+        "median": 530.4105420000001,
+        "min": 517.337459,
+        "n": 6
+      },
+      "decisionNs": {
+        "max": 3.062084,
+        "median": 2.844875,
+        "min": 2.760543,
+        "n": 6
+      },
+      "entryToCleanupNs": {
+        "max": 3640.727583,
+        "median": 3242.0065830000003,
+        "min": 3115.544542,
+        "n": 6
+      },
+      "entryToResultNs": {
+        "max": 3641.555667,
+        "median": 3242.665854,
+        "min": 3116.175292,
+        "n": 6
+      },
+      "nativeCheckNs": {
+        "max": 1568.05,
+        "median": 1475.5587500000001,
+        "min": 1418.072333,
+        "n": 6
+      },
+      "nativePrepareNs": {
+        "max": 1160.038084,
+        "median": 710.3765415,
+        "min": 698.104541,
+        "n": 6
+      },
+      "prepareNs": {
+        "max": 3640.727583,
+        "median": 3242.0065830000003,
+        "min": 3115.544542,
+        "n": 6
+      },
+      "transportEvidenceNs": {
+        "max": 8.559916,
+        "median": 0.703375,
+        "min": 0.656584,
+        "n": 6
+      }
+    },
+    "mcp-stdio": {
+      "acquisitionNs": {
+        "max": 577.056167,
+        "median": 542.425958,
+        "min": 516.262333,
+        "n": 6
+      },
+      "decisionNs": {
+        "max": 3.229375,
+        "median": 2.8767505,
+        "min": 2.781375,
+        "n": 6
+      },
+      "entryToCleanupNs": {
+        "max": 3519.867125,
+        "median": 3353.0005,
+        "min": 3331.621208,
+        "n": 6
+      },
+      "entryToResultNs": {
+        "max": 3520.715167,
+        "median": 3353.722062,
+        "min": 3332.3035,
+        "n": 6
+      },
+      "nativeCheckNs": {
+        "max": 1639.876916,
+        "median": 1527.4923335,
+        "min": 1440.105875,
+        "n": 6
+      },
+      "nativePrepareNs": {
+        "max": 1643.297667,
+        "median": 1619.506833,
+        "min": 1558.657417,
+        "n": 6
+      },
+      "prepareNs": {
+        "max": 3519.867125,
+        "median": 3353.0005,
+        "min": 3331.621208,
+        "n": 6
+      },
+      "transportEvidenceNs": {
+        "max": 881.946167,
+        "median": 852.7705415,
+        "min": 819.137584,
+        "n": 6
+      }
+    }
+  },
+  "errors": 0,
+  "executionAuthorization": false,
+  "externalSpendEUR": 0,
+  "failures": 0,
+  "fixtureAnswerCoverage": "12/24 mixed related controls including deliberate negatives; not workload coverage",
+  "justifiedChanges": {
+    "agent_braid/system_one_verified_consumers.py": {
+      "before": "956666ab9d9423e030acefb4b217e184a37ed5f62e2b215b4524af978c2a3808",
+      "current": "2b35dd7a784d18cc95969f9cf1902023ce3a07cf2792fdc26bcb4122bccb5788"
+    },
+    "agent_braid/system_one_verified_selection.py": {
+      "before": "5cb264e1be4eb6f26211af12d11541f272e0d44daeb2cc8a410d64bf1fc9a1d1",
+      "current": "a8fd0d752c3ab179b233906adac65b7dfe2150cf8ef079c3e00334e689bbb51e"
+    }
+  },
+  "logSha256": "23c9ea17c37a461f32883801080d2921ca83a7f0b6b521a9558ed3880b1da566",
+  "memory": {
+    "peakOwnProcessGroupRSSBytes": 75251712,
+    "samples": 287,
+    "samplingIntervalSeconds": 0.2
+  },
+  "outcomes": {
+    "answered": 12,
+    "refused": 8,
+    "semantic-defer": 4
+  },
+  "scope": "Finite controlled synthetic software fixtures, not independent precision, NLP, scientific/human acceptance, Laya parity or host adoption. Native work in live parent; child only MCP client. Nested times not additive.",
+  "skips": 0,
+  "sourceArchiveMembersVerified": 8,
+  "sourceArchiveSha256": "7756b9f06d68adb116df9ea3541b9338128e0f2fa70992852bb377eead864b83",
+  "sourceHashes": {
+    "agent_braid/system_one_verified_consumers.py": "2b35dd7a784d18cc95969f9cf1902023ce3a07cf2792fdc26bcb4122bccb5788",
+    "agent_braid/system_one_verified_selection.py": "a8fd0d752c3ab179b233906adac65b7dfe2150cf8ef079c3e00334e689bbb51e",
+    "agent_braid/system_one_verified_stdio.py": "3caaafb091d3c314224992e334ec6ca302c2c72831de12997481ccc9fe7a8f42",
+    "agent_braid/system_one_verified_tooling.py": "128aed194149f648d0a579b9fff7d85e121c10339df7552e1e488363c744d04e",
+    "specs/031-system-one-integration/addenda/ddp-t06-transport-plan.md": "96a100062ff8ba55e48310f58b89950c4711036319efbc2b9848bb8bef7c0dbe",
+    "tests/test_system_one_verified_stdio.py": "67c61b11b8c94c64295fe44743519152aa853b8c0e66db75a2e4a8044fe4870f",
+    "tests/test_system_one_verified_tooling.py": "025410941b1bb37050dda5669ad0425a636ff52afbd230e5c8fa3567e939e583"
+  },
+  "tests": 17,
+  "wallSeconds": 73.60989341698587
+}

@@ -1,0 +1,14 @@
+{
+  "task": "DDP-T06 Core API increment",
+  "scope": "Core API only; no MCP service or stdio",
+  "ownership": [
+    "agent_braid/system_one_verified_consumers.py",
+    "tests/test_system_one_verified_consumers.py"
+  ],
+  "priorPacket": "1b9f67d77da004678808f1620e0dfaf9a4e1a113eb12a02f146b0f7a058bbcbc",
+  "externalSpendEUR": 0,
+  "training": "pending",
+  "humanReview": "pending",
+  "activation": "pending",
+  "executionAuthorization": false
+}

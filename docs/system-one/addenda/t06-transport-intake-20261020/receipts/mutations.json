@@ -1,0 +1,71 @@
+{
+  "scope": "Overlapping in-memory software guard controls, not independent observations",
+  "mutations": [
+    {
+      "name": "chunk digest guard absent",
+      "test": "test_artifact_chunk_guards_and_inline_reference_agreement",
+      "testsRun": 1,
+      "failures": 1,
+      "errors": 0,
+      "detected": true
+    },
+    {
+      "name": "boolean offset admission",
+      "test": "test_artifact_chunk_guards_and_inline_reference_agreement",
+      "testsRun": 1,
+      "failures": 0,
+      "errors": 0,
+      "detected": false
+    },
+    {
+      "name": "wire frame ceiling never fires",
+      "test": "test_transport_frame_encoder_limits_and_no_default_catalog_change",
+      "testsRun": 1,
+      "failures": 1,
+      "errors": 0,
+      "detected": true
+    },
+    {
+      "name": "wire frame ceiling always fires",
+      "test": "test_transport_frame_encoder_limits_and_no_default_catalog_change",
+      "testsRun": 1,
+      "failures": 0,
+      "errors": 1,
+      "detected": true
+    },
+    {
+      "name": "skip required chunk exchange",
+      "test": "test_child_cannot_skip_chunk_protocol_even_with_valid_inline_body",
+      "testsRun": 1,
+      "failures": 1,
+      "errors": 0,
+      "detected": true
+    },
+    {
+      "name": "transport byte charging absent",
+      "test": "test_transport_bytes_share_original_aggregate_output_ceiling",
+      "testsRun": 1,
+      "failures": 1,
+      "errors": 0,
+      "detected": true
+    },
+    {
+      "name": "unknown worker treated as stopped",
+      "test": "test_unknown_owned_worker_preserves_scratch_and_admission",
+      "testsRun": 1,
+      "failures": 1,
+      "errors": 0,
+      "detected": true
+    },
+    {
+      "name": "unknown worker releases admission",
+      "test": "test_unknown_owned_worker_preserves_scratch_and_admission",
+      "testsRun": 1,
+      "failures": 1,
+      "errors": 0,
+      "detected": true
+    }
+  ],
+  "sourceInputsStillMatch": true,
+  "logSha256": "73ee3df5f66dc3987910d150409c416f8057ea576bfb6b94712095d5f7a03124"
+}

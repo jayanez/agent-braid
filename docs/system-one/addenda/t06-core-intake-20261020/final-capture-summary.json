@@ -1,0 +1,106 @@
+{
+  "ENESPairConsistency": {
+    "matchedStatusAndReasons": 11,
+    "pairs": 11,
+    "relatedFixtures": true
+  },
+  "acceptedErrors": {
+    "accepted": 8,
+    "errors": 0
+  },
+  "allExpectedStatusesMatch": true,
+  "archiveMembersVerified": 7,
+  "descriptiveMilliseconds": {
+    "acquisitionNs": {
+      "max": 1106.29575,
+      "median": 676.070271,
+      "min": 526.980959,
+      "n": 8
+    },
+    "decisionNs": {
+      "max": 4.171,
+      "median": 3.5600620000000003,
+      "min": 2.77275,
+      "n": 8
+    },
+    "entryToCleanupNs": {
+      "max": 5967.106709,
+      "median": 3949.409958,
+      "min": 3127.319375,
+      "n": 8
+    },
+    "entryToResultNs": {
+      "max": 5968.0305,
+      "median": 3950.137833,
+      "min": 3127.95125,
+      "n": 8
+    },
+    "expectedTreeNs": {
+      "max": 653.403583,
+      "median": 512.7220414999999,
+      "min": 413.318459,
+      "n": 8
+    },
+    "handoffRevalidationNs": {
+      "max": 592.905791,
+      "median": 341.0968955,
+      "min": 252.833625,
+      "n": 8
+    },
+    "nativeCheckNs": {
+      "max": 2778.986458,
+      "median": 1801.432979,
+      "min": 1421.141667,
+      "n": 8
+    },
+    "nativePrepareNs": {
+      "max": 1421.429208,
+      "median": 967.5776045,
+      "min": 745.888375,
+      "n": 8
+    },
+    "prepareNs": {
+      "max": 5967.106709,
+      "median": 3949.409958,
+      "min": 3127.319375,
+      "n": 8
+    }
+  },
+  "errors": 0,
+  "failures": 0,
+  "latencyBoundary": "Serial M3 Pro software fixture capture. Nested stage spans must not be added. No SLA or independent representative evaluation.",
+  "logSha256": "5ce0f8e8f8e2bfe38032c817589bfd955e1697aca183f7d467b02ee5a2f89747",
+  "matchedFixtureAnswerCoverage": {
+    "allTaggedControls": 22,
+    "answered": 8,
+    "note": "Includes deliberately forged refusals; not workload coverage or threshold acceptance"
+  },
+  "matchedFixtureControls": 22,
+  "negativeForgedProposals": {
+    "offered": 12,
+    "refused": 12
+  },
+  "outcomes": {
+    "answered": 8,
+    "refused": 12,
+    "semantic-defer": 2
+  },
+  "scope": "Related deterministic EN/ES software fixtures, no independent precision or model evaluation",
+  "semanticDefer": {
+    "correct": 2,
+    "offered": 2
+  },
+  "skips": 0,
+  "sourceArchiveSha256": "7b515c955f02385b7629893ba78146b842d34bd02d975b0519dab36051b52bce",
+  "sourceHashes": {
+    "agent_braid/git_replay.py": "6dc84e50fe04abb4e5675ac0173f9579b239d13ad1741e106b2d4e272081a388",
+    "agent_braid/git_runtime.py": "8cf7168e2cbb9b874019eb3cc8dcee7b5ad69892eaeb4cc0511996fade29f897",
+    "agent_braid/system_one_verified_consumers.py": "956666ab9d9423e030acefb4b217e184a37ed5f62e2b215b4524af978c2a3808",
+    "agent_braid/system_one_verified_selection.py": "5cb264e1be4eb6f26211af12d11541f272e0d44daeb2cc8a410d64bf1fc9a1d1",
+    "specs/031-system-one-integration/addenda/ddp-t06-core-plan.md": "8b9bcd61d392edc6712a54c229f64253397db61aac81a6065eaf3d0ae5ec3285",
+    "tests/test_system_one_verified_consumers.py": "d88c6dcb8f49a31023431258662cf82f3c848f1a92c3384ca0e74f430997493c"
+  },
+  "sourceInputsStillMatch": true,
+  "tests": 21,
+  "wallSeconds": 81.57761291699717
+}

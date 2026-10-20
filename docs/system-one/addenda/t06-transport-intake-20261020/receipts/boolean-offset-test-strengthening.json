@@ -1,0 +1,16 @@
+{
+  "reason": "Mutating every chunk offset let a later wrong value mask absence of the first chunk boolean type guard. Mutate only first offset; no product code change.",
+  "oldTestSha256": "e11833b150f6f13318c40a32f791eb9559934d3eed8b6eefe9b4452e9f8e21ea",
+  "newTestSha256": "025410941b1bb37050dda5669ad0425a636ff52afbd230e5c8fa3567e939e583",
+  "productPinsUnchanged": {
+    "agent_braid/system_one_verified_consumers.py": "2b35dd7a784d18cc95969f9cf1902023ce3a07cf2792fdc26bcb4122bccb5788",
+    "agent_braid/system_one_verified_selection.py": "a8fd0d752c3ab179b233906adac65b7dfe2150cf8ef079c3e00334e689bbb51e",
+    "agent_braid/system_one_verified_stdio.py": "3caaafb091d3c314224992e334ec6ca302c2c72831de12997481ccc9fe7a8f42",
+    "agent_braid/system_one_verified_tooling.py": "128aed194149f648d0a579b9fff7d85e121c10339df7552e1e488363c744d04e",
+    "specs/031-system-one-integration/addenda/ddp-t06-transport-plan.md": "96a100062ff8ba55e48310f58b89950c4711036319efbc2b9848bb8bef7c0dbe",
+    "tests/test_system_one_verified_stdio.py": "67c61b11b8c94c64295fe44743519152aa853b8c0e66db75a2e4a8044fe4870f"
+  },
+  "firstMutationsDetected": 7,
+  "firstMutationsOffered": 8,
+  "runtimeErrorsInDetectedAlwaysFrameCase": 1
+}

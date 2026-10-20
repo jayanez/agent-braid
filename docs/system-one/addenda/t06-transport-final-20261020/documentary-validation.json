@@ -1,0 +1,16 @@
+{
+  "scope": "All supplementary documentary changes since merged PR594; no product code execution",
+  "changedPaths": 159,
+  "JSONValidated": 69,
+  "gzipDecoded": 93,
+  "localLinks": 87,
+  "finalPackageDocumentaryRepresentationsVerified": 59,
+  "packetBindingsVerified": 88,
+  "archiveMembersVerified": 34,
+  "rawOriginalAndStoredVerified": 51,
+  "profileInputsVerified": 2415,
+  "priorFilesUnchanged": 2408,
+  "productCodePathsInDiff": 0,
+  "localUnitSuitesRun": false,
+  "producerReportsRetained": true
+}

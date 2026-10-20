@@ -1,0 +1,36 @@
+{
+  "scope": "Scoped author review; no independent Luna agent assigned in this increment; not T07 or human/scientific review",
+  "reviewAxes": [
+    "correctness",
+    "readability",
+    "architecture",
+    "security",
+    "performance"
+  ],
+  "obtained": [
+    {
+      "id": "T06M-DEV001",
+      "kind": "test fixture error",
+      "source": "service-first.log",
+      "outcome": "Frozen artifact mutation raised FrozenInstanceError. Fixture now replaces frozen record; failed attempt preserved."
+    },
+    {
+      "id": "T06M-DEV002",
+      "kind": "test fixture interference",
+      "source": "stdio-first.log",
+      "outcome": "Patching subprocess.Popen affected parent Git acquisition. Replaced with module-local _command patch; failed attempt preserved."
+    },
+    {
+      "id": "T06M-SEM003",
+      "kind": "new lifecycle seam",
+      "outcome": "Parent synchronous-only close assumption cannot cover unknown child termination. Owned process tracking retains scratch and token admission, refusing unknown termination. Controlled no-live-child negative added."
+    },
+    {
+      "id": "T06M-WIRE004",
+      "kind": "protocol hardening",
+      "outcome": "Require ordered full manifest/chunk exchange and final matching body; inline content cannot bypass resource protocol. Real adversarial peer control added."
+    }
+  ],
+  "softwareComposition": "116 tests, 0 failures/errors/skips, 168.973s before final ordered-resource guard; capture on new guard underway",
+  "pending": "A final review pass will confirm exact source/test pins and capture disposition before full profiles."
+}

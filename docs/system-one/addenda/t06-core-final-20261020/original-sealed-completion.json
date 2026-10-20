@@ -1,0 +1,62 @@
+{
+  "T06Overall": "partial; MCP/stdio pending",
+  "bindingsVerified": 97,
+  "completeFinalizerLogPreserved": true,
+  "executionAuthorization": false,
+  "externalSpendEUR": 0,
+  "initialPacketPreservedAt": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-verified-core/specs/029-system-one-evaluation/evidence/ddp-t06-core/receipts/packet-before-log-seal.json",
+  "justifiedChangedFiles": {
+    "agent_braid/git_replay.py": {
+      "before": "62a2c461902e30d874dfe82bed77ab79075f33cb0e56f1e543fd9d317f1d571e",
+      "current": "6dc84e50fe04abb4e5675ac0173f9579b239d13ad1741e106b2d4e272081a388"
+    },
+    "agent_braid/git_runtime.py": {
+      "before": "ceb4469906b6c97a6f03faf3cc1b4ea8387df937c06b8ccd49984eaf2dff4d4e",
+      "current": "8cf7168e2cbb9b874019eb3cc8dcee7b5ad69892eaeb4cc0511996fade29f897"
+    },
+    "agent_braid/system_one_verified_selection.py": {
+      "before": "8971650c51082938281ecb62e40e23adab4202bb20971b1eb23e1ef7d78c339c",
+      "current": "5cb264e1be4eb6f26211af12d11541f272e0d44daeb2cc8a410d64bf1fc9a1d1"
+    }
+  },
+  "logSealProvenanceSha256": "57c4d6ef573628772f6dbb6af52951cad510270a3819f16334b7952f7d6509f4",
+  "packet": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-verified-core/specs/029-system-one-evaluation/evidence/ddp-t06-core/packet.json",
+  "packetSha256": "2cf7048ee1d2fd596c87a60e13a86570870f7d3e549d95e05d192488ae25b9f0",
+  "patch": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/outputs/ddp-t06-core-20261020/candidate-sealed.patch",
+  "patchAppliesToBaselineIndex": true,
+  "patchSha256": "96214865cfd158d69d527f4ab48a704a6dca17d883692f019f11d46b39e25da1",
+  "priorFilesUnchanged": 2333,
+  "profiles": {
+    "pr": {
+      "exitCode": 0,
+      "inputFiles": 2339,
+      "logSha256": "14b02c9772f483e5674aa2bf2d4ebc81302b7f7a3b9cabcc4ba3daaca176ea17",
+      "passed": 2044,
+      "profileWallSeconds": 2140.3075698750326,
+      "skips": 19,
+      "sourceInputsStillMatch": true,
+      "tests": 2063,
+      "unittestSeconds": 1971.374
+    },
+    "quick": {
+      "exitCode": 0,
+      "inputFiles": 2339,
+      "logSha256": "09fbe548beac8a35e03e8cb8d616a7def9bd860db8249981b339f56155a7bb72",
+      "passed": 2044,
+      "profileWallSeconds": 2132.8139304579818,
+      "skips": 19,
+      "sourceInputsStillMatch": true,
+      "tests": 2063,
+      "unittestSeconds": 1964.59
+    }
+  },
+  "rawReceiptRepresentations": 63,
+  "report": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-verified-core/specs/031-system-one-integration/addenda/ddp-t06-core-implementation.md",
+  "reportSha256": "7cfbe1d4c71d7098529b1b01f0f3a97490cf2f08f2935a29cde4829b71b9ca0e",
+  "repositoryValidationExitCode": 0,
+  "sourceArchiveMembersVerified": 28,
+  "sourceArchiveSha256": "54e06575cc27029bdf4861e29795218fbe08e704b9df16a9b9ba6e63d8f2d338",
+  "status": "complete",
+  "task": "DDP-T06 Core-only increment",
+  "whitespaceExitCode": 0
+}

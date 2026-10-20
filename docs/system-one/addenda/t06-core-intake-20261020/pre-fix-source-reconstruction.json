@@ -1,0 +1,12 @@
+{
+  "method": "Inverse recorded edits; all six recovered source hashes equal original capture registration. No current source changed.",
+  "inputs": {
+    "agent_braid/system_one_verified_consumers.py": "e9ca7912bf9b5e09f3d746485cc2cc5e980beecdf030104490777ab5e1be0004",
+    "tests/test_system_one_verified_consumers.py": "9ef326e23f1cb55bebf824b3aefeded6b25273b0999a6eefb975d7b8d5a7e4a9",
+    "agent_braid/system_one_verified_selection.py": "b04663aa7fcda1eb21001bf769ab357077f538c95bd0f982807eef36a9c9bc5c",
+    "agent_braid/git_replay.py": "6dc84e50fe04abb4e5675ac0173f9579b239d13ad1741e106b2d4e272081a388",
+    "agent_braid/git_runtime.py": "8cf7168e2cbb9b874019eb3cc8dcee7b5ad69892eaeb4cc0511996fade29f897",
+    "specs/031-system-one-integration/addenda/ddp-t06-core-plan.md": "d1173d8a99a5e8ce8c5670a24adc6d695a8d56acc611285e46cc043e8dbfa2ff"
+  },
+  "archiveSha256": "d039c0ce155527c95da6beba835ef48bd4b017d49134274159739c812fed7f16"
+}

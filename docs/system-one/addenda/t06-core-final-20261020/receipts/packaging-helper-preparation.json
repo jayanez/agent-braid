@@ -1,0 +1,7 @@
+{
+  "helper": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/outputs/ddp-t06-core-20261020/finalize_core.py",
+  "sha256": "cb0225f84523a8dc3fb67052a965944bf9af3f507550f750e46fb46c7c9a977d",
+  "syntaxAST": "passed; helper not executed",
+  "conditions": "requires both profile receipts exit0/input hashes still match and no prior package/completion",
+  "sourceChangesWhileProfilesActive": false
+}

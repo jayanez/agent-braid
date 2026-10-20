@@ -1,0 +1,7 @@
+Documentary summary of the returned reviewer response; this file is not a verbatim raw transcript. Reviewer finding, identity, exact candidate and coverage are retained below.
+
+Model selection: gpt-6-luna, as configured. Exact reviewed HEAD629506e39318ea889f5ac90b60d0beb81ee7219f, base2ffb4de5fb702a5a0fb24ae68e57fae5181a47a3.
+
+P2: Current state table still presents PR594-era T06 absence as current. RESUMPTION.md:9-21 labels the table Current state and ownership while its T06/publication rows and following sentence describe the earlier PR594 snapshot. Mark the table historical or point current rows to latest Core/transport receipts, preserving original history.
+
+Coverage: current index/resumption/status page and Core intake/final, MCP/stdio intake/profiles/final supplements; chronology, provenance/current-vs-frozen semantics, source/cost boundaries, resumption navigation. Raw logs were not inspected line-by-line; no execution or product code review. No indication of product source or executable helper leakage in reviewed additions. Core raw count mismatch, profile overlaps/skips, stdlib-client/parent-native distinction, cost boundaries and pending gates consistently disclosed. This is bounded documentary review, not product T07, human/scientific acceptance or a GitHub approval.

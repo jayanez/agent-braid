@@ -1,0 +1,11 @@
+{
+  "status": "test-only strengthening after corrected-product capture",
+  "reason": "Reorder terminal-factory regression so token reuse occurs before idempotent publish; earlier assertion order could mask removal of terminal marker. No product source changed.",
+  "oldTestSha256": "b30e14371e21e372b33bdd745bce13d1836e1de482bd92797709e62036feba6c",
+  "newTestSha256": "d88c6dcb8f49a31023431258662cf82f3c848f1a92c3384ca0e74f430997493c",
+  "mutationsDetected": 11,
+  "mutationErrors": 0,
+  "mutationLogSha256": "e0fe96addc1324633c9d4a779f6da3d98bb2acaeb140f3de31c868c30f16860c",
+  "finalCapture": "deliberate final exact-candidate run pending after test-only change; prior21/22 retained",
+  "executionAuthorization": false
+}

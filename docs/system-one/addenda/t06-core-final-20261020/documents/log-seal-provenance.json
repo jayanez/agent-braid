@@ -1,0 +1,11 @@
+{
+  "completedFinalizerLogSha256": "bed451eb392c75f2805cdb83b6854e9c1716e2b6d84de545caad94e724b8a3bd",
+  "externalSpendEUR": 0,
+  "initialCompletionSha256": "8e2a888b168f1b43b1ec578b21126f46e10112d7fd9affe1c11f93980c3ab33e",
+  "initialPacketAndPatchPreserved": true,
+  "initialPacketSha256": "8d3d4fad8ec45926516f3e0f6298bf305eeb7335f279952a5f4126ac01852734",
+  "productSourceChanges": false,
+  "reason": "Initial raw receipt scan captured the finalizer output file at startup, before its final JSON was emitted. Preserve that empty startup snapshot and add the complete finished log separately.",
+  "softwareProfilesRepeated": false,
+  "startupLogSnapshotUnmodified": true
+}

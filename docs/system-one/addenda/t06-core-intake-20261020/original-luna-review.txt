@@ -1,0 +1,53 @@
+# T06 Core API scoped Luna Latest review
+
+Date: 2026-10-20
+
+Scope: read-only review of the authorized Core API increment only: the new `system_one_verified_consumers.py`, its tests and plan, and the assigned compatibility seams in `system_one_verified_selection.py`, `git_replay.py`, and `git_runtime.py`. MCP service/stdio, broad T05/T02–T04 review, training, human review, activation, and full validation profiles were outside this review. No source edits were made.
+
+## Capture registration and pins
+
+All six source/test/plan hashes in `capture-registration.json` match the current files:
+
+- `agent_braid/system_one_verified_consumers.py`: `e9ca7912bf9b5e09f3d746485cc2cc5e980beecdf030104490777ab5e1be0004`
+- `tests/test_system_one_verified_consumers.py`: `9ef326e23f1cb55bebf824b3aefeded6b25273b0999a6eefb975d7b8d5a7e4a9`
+- `agent_braid/system_one_verified_selection.py`: `b04663aa7fcda1eb21001bf769ab357077f538c95bd0f982807eef36a9c9bc5c`
+- `agent_braid/git_replay.py`: `6dc84e50fe04abb4e5675ac0173f9579b239d13ad1741e106b2d4e272081a388`
+- `agent_braid/git_runtime.py`: `8cf7168e2cbb9b874019eb3cc8dcee7b5ad69892eaeb4cc0511996fade29f897`
+- `specs/031-system-one-integration/addenda/ddp-t06-core-plan.md`: `d1173d8a99a5e8ce8c5670a24adc6d695a8d56acc611285e46cc043e8dbfa2ff`
+
+The registration records Python 3.12.13, EUR 0 spend, and `executionAuthorization: false`. The current focused capture log records 15/15 passed; I inspected the log but did not rerun that suite. Its pre-existing 13/13 and 14/14 development runs and full profiles were not treated as review evidence.
+
+## Findings
+
+**P2 — `seal(factory)` releases token ownership after a factory exception while leaving the context retryable** — `agent_braid/system_one_verified_selection.py:504-521`; Core call at `agent_braid/system_one_verified_consumers.py:330`.
+
+If the trusted downstream factory raises after cleanup, `_published` remains false, then the `finally` block removes the waker and releases the cancellation token. A subsequent `seal()` takes `_publish()` again with `_claimed == False`, so line 515 calls `final(False)` directly without `CancellationToken.publish()`'s lock. A different request can claim that token in the meantime, yet the old context can still run its factory and publish an `answered` result.
+
+I confirmed this with a small deterministic software check: a valid producer context called `seal()` with a factory that raises, then another owner claimed the token; a second `seal()` on the old context invoked the factory and returned `answered` while the other owner still held the token. The token publication wrapper was called once total, on the failed first attempt. This directly violates the atomic ownership/publication boundary if result construction fails.
+
+Minimal fix: make a factory exception terminal for the context before releasing ownership. Preserve a sanitized failure/refused state and prevent any later factory invocation from using the unclaimed fast path; add a regression that raises once, lets a second request claim the token, and verifies the old context cannot publish or invoke its factory again.
+
+**P2 — known consumer failures are also reported as `internal-failure`** — `agent_braid/system_one_verified_consumers.py:325-327` and `:279-307`.
+
+The consumer exception mapper recognizes the consumer-specific taxonomy, but the catch passes only producer `_REASONS` through to `VerifiedRequestContext._fail`; known consumer reasons become producer `internal-failure`. `_record()` then unions that producer reason with the original consumer reason. A valid proposal changed to `consumerId: mcp-service` with its proposal digest recomputed returns `status=refused`, `reasonCodes=('consumer-mismatch', 'internal-failure')`, and zero native calls. `internal-failure` is inaccurate for this deliberate recipient mismatch and muddies the contract's sanitized diagnostic taxonomy.
+
+Minimal fix: keep the producer's internal failure mapping where required, but construct ConsumerResult reason codes from the original known consumer reason without adding `internal-failure` for that same handled refusal. Assert the exact reason tuple for consumer mismatch and the other consumer-only reasons.
+
+**P2 — revalidation counters increment before either underlying operation begins** — `agent_braid/system_one_verified_consumers.py:313-316`.
+
+After proposal admission, the code increments both `acquisitionCalls` and `verifierCalls` before `revalidate()`. If cancellation arrives after proposal creation but before consume, `revalidate()` refuses at `handoffRevalidation` entry before source reacquisition or verifier invocation, yet the result reports 2 acquisition calls and 2 verifier calls (the only actual acquisition/verifier work was the producer's initial call). The contract requires counters to describe observed calls and says interrupted work may be unknown rather than silently reported as executed.
+
+A small deterministic cancellation-before-consume check returned exactly that result: refused/cancelled, acquisitionCalls 2, verifierCalls 2. Minimal fix: increment each counter at the corresponding actual acquisition/verifier invocation boundary, or report null/otherwise distinguish an unentered attempt when cancellation prevents those operations. Add a cancellation-at-revalidation-entry assertion.
+
+## Other scoped observations
+
+The schema admission and active-context binding are performed before consumer dispatch. For the exercised positive route, tree construction retains the base tree, applies the abstract line effects to changed paths, verifies the full expected tree, then native analysis and preparation use the same `GitCommandBudget` object. The adapter validates the native bundle/plan shape and digests, single complete schedule/order/tree, full prepared manifest bindings, and final output tree. Semantic defer skips tree/native/preparation. The optional budget seams in replay/preparation preserve the old defaults, and the T05 budget factory keeps acquisition's existing remaining-time seam while adding native stage command caps. No other actionable P1/P2 finding was established within this bounded review.
+
+## Checks executed
+
+- Verified all six registration SHA-256 pins above.
+- Ran three small deterministic software checks with the available bundled Python 3.12.14: (1) seal callback exception followed by token reuse; (2) rehashed foreign consumer ID; (3) cancellation after proposal and before consume. Outcomes are recorded in the findings.
+- Inspected the provided `focused-capture.log` (15/15 passed) but did not rerun it. No other suite/profile, model, experiment, network, or download was used.
+- Confirmed the working changes were only read; no source edits were made.
+
+This is a scoped technical review of the Core API increment. It does not imply MCP service/stdio integration, full T06 completion, human review, scientific acceptance, public adoption, execution authority, or activation.

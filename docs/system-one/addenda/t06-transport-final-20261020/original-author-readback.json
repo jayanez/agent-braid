@@ -1,0 +1,67 @@
+{
+  "activation": "pending",
+  "bindingsVerified": 88,
+  "executionAuthorization": false,
+  "externalSpendEUR": 0,
+  "humanReview": "pending",
+  "justifiedChangedFiles": {
+    "agent_braid/system_one_verified_consumers.py": {
+      "before": "956666ab9d9423e030acefb4b217e184a37ed5f62e2b215b4524af978c2a3808",
+      "current": "2b35dd7a784d18cc95969f9cf1902023ce3a07cf2792fdc26bcb4122bccb5788"
+    },
+    "agent_braid/system_one_verified_selection.py": {
+      "before": "5cb264e1be4eb6f26211af12d11541f272e0d44daeb2cc8a410d64bf1fc9a1d1",
+      "current": "a8fd0d752c3ab179b233906adac65b7dfe2150cf8ef079c3e00334e689bbb51e"
+    }
+  },
+  "packet": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-verified-core/specs/029-system-one-evaluation/evidence/ddp-t06-transport/packet.json",
+  "packetSha256": "8331345f3d08c5e8b5799c27ac661f385ad14bce318b92fcbbd39a8336e5061e",
+  "patch": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/outputs/ddp-t06-transport-20261020/candidate.patch",
+  "patchAppliesToBaselineIndex": true,
+  "patchSha256": "ff8496cd3d4b9d4faeca0896085e97f0f83c44719e1340a39affd1b263ed8b0f",
+  "priorFilesUnchanged": 2408,
+  "profiles": {
+    "pr": {
+      "exitCode": 0,
+      "inputFiles": 2415,
+      "logSha256": "1a6a1e8754f39ea5a43956157bab98e4afd0fae1c51f6832431009a1b012370b",
+      "passed": 2061,
+      "profileWallSeconds": 2286.6884764580172,
+      "skips": 19,
+      "sourceInputsStillMatch": true,
+      "tests": 2080,
+      "unittestSeconds": 2102.103
+    },
+    "quick": {
+      "exitCode": 0,
+      "inputFiles": 2415,
+      "logSha256": "ded121445caa6238c41c6e698af2044701a5d78d4c9cc3ebca3aac2480b333c6",
+      "passed": 2061,
+      "profileWallSeconds": 2286.694019082992,
+      "skips": 19,
+      "sourceInputsStillMatch": true,
+      "tests": 2080,
+      "unittestSeconds": 2102.117
+    }
+  },
+  "rawReceiptFiles": 51,
+  "rawRepresentationsVerified": 51,
+  "report": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-verified-core/specs/031-system-one-integration/addenda/ddp-t06-transport-implementation.md",
+  "reportSha256": "87d508dd534beba0fcc07d8a5b8e29bd95443dc2399d81bcf566cb8f610a55bb",
+  "repositoryValidationExitCode": 0,
+  "scope": "Core, service and actual stdio-client controlled paths; not default/SDK/host adoption",
+  "sourceArchiveMembersVerified": 34,
+  "sourceArchiveSha256": "10f936bb547efd0d0f868b4ed413a8fbb120182043b25eba806a0f33358ad14c",
+  "status": "complete",
+  "training": "pending",
+  "whitespaceExitCode": 0,
+  "completionSha256": "837a29cf0fc012a3f4d914d543e804834d3a913dc0cbd6436ae4f0ed56e79d0a",
+  "completedFinalizerLog": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/outputs/ddp-t06-transport-20261020/finalize-transport-attempt1.log",
+  "completedFinalizerLogSha256": "c7f1e81ab139a88a53f9ea255be3eb4c6640729b64526d387a84480778d3bf05",
+  "completedWhitespaceLogSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "rawOriginalAndStoredBytesAllVerified": true,
+  "all2415ProfileInputsStillMatch": true,
+  "productHeadUnchanged": true,
+  "productPublication": false,
+  "boundary": "Author source/artifact readback; not independent review or acceptance. Finalizer stdout deliberately outside frozen packet to avoid live/self-referential snapshot."
+}
