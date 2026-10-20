@@ -58,7 +58,7 @@ founder acceptance remains separate.
 
 These additive canonical identities retain the existing study/DDP aliases. Checked entries mean only their stated bounded historical lot; original research, human, model and product gates remain open. The evidence register is a documentary source snapshot, not new implementation or independent reproduction. See docs/system-one/README.md and task-map.json. No task launches agents or authorizes a study.
 
-- [ ] T009 (REQ-001 REQ-002 / SC-001 SC-002): Freeze additive contracts and migration map (alias DDP-T01; proposed, not started).
+- [ ] T009 (REQ-001 REQ-002 / SC-001 SC-002): Freeze additive contracts and migration map (alias DDP-T01; enabled and assigned documentarily to coordinator; no execution started).
   Dependencies: T025 completed engineering receipt checked by coordinator. Owner: coordinator.
   Targets: specs/028-system-one-core/contracts/verified-plan-v1.md, specs/031-system-one-integration/contracts/verified-plan-consumer-v1.md, specs/029-system-one-evaluation/verified-plan-conformance.md. Verification planned: Document/contract review only; no runtime command required before implementation.
   Criterion and negatives: docs/system-one/task-map.json alias DDP-T01; no obtained implementation evidence. Preserve no-authority and separate decision/prepare-budget boundaries.
