@@ -1,0 +1,31 @@
+{
+  "scope": "Supplementary documents since mergedPR594; documentary review only",
+  "checkedPaths": 163,
+  "JSONValidated": 70,
+  "gzipDecoded": 94,
+  "localLinksVerified": 88,
+  "productCodePaths": 0,
+  "repositoryValidation": {
+    "command": "env PYTHONDONTWRITEBYTECODE=1 /Users/juanyanez/Repos/Personal/agent-braid-system-one/.venv-speckit/bin/python scripts/validate_repository.py",
+    "exitCode": 0
+  },
+  "specKitStructural": {
+    "command": "env PATH=/Users/juanyanez/Repos/Personal/agent-braid-system-one/.venv-speckit/bin:/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin PYTHONDONTWRITEBYTECODE=1 /Users/juanyanez/Repos/Personal/agent-braid-system-one/.venv-speckit/bin/python scripts/validate_spec_kit.py",
+    "cwd": "/tmp/agent-braid-t06-documentary-20261020",
+    "exitCode": 0,
+    "originalLogSHA256": "b28f0f3bd337a6cae29938ed6ec99ef7ecf3c0005cc38370479d91ec923e04ac",
+    "log": "docs/system-one/addenda/t06-documentary-review-20261020/spec-kit-structural.log.gz",
+    "boundary": "Executed during documentary preparation; exact-head CI is separate; no semantic/human approval"
+  },
+  "whitespace": "git diff --check 2ffb4de HEAD passed; final staged check before commit",
+  "review": {
+    "model": "gpt-6-luna explicitly configured",
+    "initialHead": "629506e39318ea889f5ac90b60d0beb81ee7219f",
+    "intermediateHead": "e8a64026ea5e2651498bb8782d0ba3bbe54d787b",
+    "correctedRecheckedHead": "ce4b485deeba7ad6913c648dc2c77819c2a551af",
+    "P2FoundAndResolved": 2,
+    "scope": "Bounded documentary consistency and final resumption delta; not independent product review/T07"
+  },
+  "localProductSuitesRun": false,
+  "gatesClosed": false
+}
