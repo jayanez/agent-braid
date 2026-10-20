@@ -35,6 +35,8 @@ class VerifiedStdioTests(unittest.TestCase):
         return transport.StdioRequestContext(canonical(request or self.builder.request(lang, rep)),
                                              self.fixture.owned, **kw)
 
+    @unittest.skipUnless(sys.platform == 'darwin' and Path('/usr/bin/sandbox-exec').is_file(),
+                         'native network-denied stdio peer requires macOS sandbox-exec')
     def test_four_views_actual_stdio_full_body_and_shared_parent_budget(self):
         before = self.fixture.inventory()
         for lang in ('en', 'es'):
@@ -75,6 +77,24 @@ class VerifiedStdioTests(unittest.TestCase):
                         'language': lang, 'representation': rep, 'expected': 'answered',
                         'result': thaw(result), 'transport': deepcopy(receipt)})
         self.assertEqual(self.fixture.inventory(), before)
+
+    def test_unsupported_platform_refuses_before_child_without_claiming_containment(self):
+        with self.context() as context:
+            proposal = context.propose()
+            budget = context.context.git_budget
+            before = budget.commands
+            with tempfile.TemporaryDirectory(dir=budget.temp_root) as directory:
+                dest = Path(directory) / 'unallocated'
+                with patch.object(transport.sys, 'platform', 'linux'), context.context.phase('transportEvidence'):
+                    with self.assertRaisesRegex(ValueError, 'transport-failure'):
+                        transport.stdio_prepare(context.context, proposal['runtimeRequest'], dest)
+                receipt = context.context._transport_receipt
+                self.assertEqual(receipt['termination'], 'not-started')
+                self.assertIsNone(receipt['exitCode'])
+                self.assertNotIn('pid', receipt)
+                self.assertFalse(receipt['networkDeniedByOS'])
+                self.assertEqual(budget.commands, before)
+                self.assertFalse(dest.exists())
 
     def test_defer_and_rehashed_cross_consumer_proposals_before_child(self):
         from agent_braid import system_one_verified_ir as ir
@@ -184,6 +204,8 @@ send({'jsonrpc':'2.0','method':'notifications/verified-result','params':{'prepar
             self.assertEqual(context.transport_receipt['resourceReads'], 0)
             self.assertEqual(context.transport_receipt['termination'], 'stopped')
 
+    @unittest.skipUnless(sys.platform == 'darwin' and Path('/usr/bin/sandbox-exec').is_file(),
+                         'native network-denied stdio peer requires macOS sandbox-exec')
     def test_native_cancel_late_result_suppressed_and_child_reaped(self):
         token = CancellationToken()
         actual = git_runtime.prepare_run

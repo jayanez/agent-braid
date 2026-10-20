@@ -111,7 +111,7 @@ def stdio_prepare(context, request, destination):
            'GIT_ALLOW_PROTOCOL': 'file', 'HF_HUB_OFFLINE': '1', 'TRANSFORMERS_OFFLINE': '1'}
     process = None
     receipt = {'kind': 'real-stdio-client-parent-service', 'exitCode': None,
-               'termination': 'not-started', 'networkDeniedByOS': True,
+               'termination': 'not-started', 'networkDeniedByOS': False,
                'childGitCommands': 0, 'requests': 0, 'resourceReads': 0,
                'frames': 0, 'wireBytes': 0, 'stderrBytes': 0, 'transcript': []}
     context._transport_receipt = receipt

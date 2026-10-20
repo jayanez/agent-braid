@@ -4,6 +4,7 @@ from copy import deepcopy
 from dataclasses import replace
 from pathlib import Path
 import json
+import sys
 import tempfile
 import unittest
 from unittest.mock import patch
@@ -114,10 +115,22 @@ class VerifiedToolingTests(unittest.TestCase):
                     proposal = context.propose()
                     self.assertEqual(proposal['decision']['selectedOptionId'], 'k1')
                     result = context.consume(canonical(proposal))
-                    self.assertEqual(result['status'], 'answered', thaw(result))
-                    self.assertEqual(context.prepared['request']['order'], ('b', 'a'))
-                    type(self).observations.append({'consumer': cls.consumer_id, 'case': 'invalid-k0',
-                        'language': lang, 'representation': 'controlled', 'expected': 'answered',
+                    supported = cls is transport.ToolingRequestContext or (
+                        sys.platform == 'darwin' and Path('/usr/bin/sandbox-exec').is_file())
+                    expected = 'answered' if supported else 'refused'
+                    self.assertEqual(result['status'], expected, thaw(result))
+                    if supported:
+                        self.assertEqual(context.prepared['request']['order'], ('b', 'a'))
+                    else:
+                        self.assertEqual(result['reasonCodes'], ('transport-failure',))
+                        self.assertIsNone(context.prepared)
+                        receipt = context.transport_receipt
+                        self.assertEqual(receipt['termination'], 'not-started')
+                        self.assertNotIn('pid', receipt)
+                        self.assertFalse(receipt['networkDeniedByOS'])
+                    type(self).observations.append({'consumer': cls.consumer_id,
+                        'case': 'invalid-k0' if supported else 'invalid-k0-platform-refusal',
+                        'language': lang, 'representation': 'controlled', 'expected': expected,
                         'result': thaw(result), 'transport': deepcopy(context.transport_receipt)})
                 with cls(canonical(self.builder.request(lang)), self.fixture.owned) as context:
                     raw = canonical(context.propose())
