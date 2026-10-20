@@ -1,65 +1,49 @@
 # System One: evidence, capability and resumption index
 
-Documentary snapshot, 2026-10-20. Start here; reading chat history is not required. For a new agent, read the [resumption guide](RESUMPTION.md): completed documentary work, exact validation limits, ownership and next evidence.
+Start here, then read the [agent resumption guide](RESUMPTION.md). This is the current reading map as of the documentary review on2026-10-20; individual receipts below retain their own observation times. Chat history and ZIP imports are not required to understand the recorded work.
 
-GitHub availability: [published documentary corpus and follow-up](addenda/github-publication-20261020.md), [draft PR594](https://github.com/jayanez/agent-braid/pull/594). Available on the documentary branch; integration/review/current-head CI remain pending. Earlier local-only receipts retain their historical state.
+## Current handoff
 
-Publication and next authority: [documentary publication mandate and conditional T05 handoff](addenda/publication-and-t05-condition-20261020.md). T05 depends on actual quick/PR passes and intact pins; no GO is inferred.
+T05 internal engineering is delivered: [final packet and verification](addenda/t05-final-package-20261020/README.md), [full-profile receipts](addenda/t05-profiles-final-20261020/README.md) and [scoped Luna row-cap disposition](addenda/t05-rowcap-luna-disposition-20261020/README.md). Both full profiles recorded2042cases,2023passed,19skips,zero failures each; tests overlap and are not independent scientific observations. Packaging failures are preserved with their repairs;72packet bindings,22source-archive members and20reversible raw logs were checked.
 
-Latest completed handoff: [T05 final internal engineering packet verified](addenda/t05-final-package-20261020/README.md).72bindings,22archive members and20reversible raw logs checked; packaging failures preserved and resolved. T06 assignment, broader review, human/scientific acceptance and activation remain pending.
+The later T06 Core API assignment belongs to the coordinator's separate implementation conversation. This PR contains no T06 implementation or completed T06 evidence. See the [chronology/status clarification](addenda/pr594-documentary-review-20261020/status-clarifications.md) for that later authorization, the earlier conditional T05 GO and frozen DDP-T01 headers. DDP-T01 revision2 was verified by the coordinator for bounded planning; its frozen pre-disposition headers do not override that later receipt or imply public adoption.
 
-Earlier T05 packaging: [T05-PACKAGING-002 link-validation failure](addenda/t05-packaging-link-failure-20261020/README.md), exact failed attempt preserved; representation repair and verified final packet pending.
+The corpus is published in [PR594](https://github.com/jayanez/agent-braid/pull/594), targeting develop; publication, current-head CI, review and integration are separate. Product source/tests/fixtures/config/source archives/patches remain in the explicitly hash-bound coordinator package. The [publication receipt](addenda/github-publication-20261020.md) records initial publication, not current CI. No scientific/human approval or activation follows from publication or software tests.
 
-Current T05 profiles: [final quick/sensitive and PR receipts](addenda/t05-profiles-final-20261020/README.md), both exit0 with2042 cases/19skips/zero failures each and2284matching inputs. The later final packet records internal engineering closure separately; the [earlier launch](addenda/t05-join-and-profiles-start-20261020/README.md) retains its running status at that time.
+## Core reading and traceability
 
-Latest T05 targeted disposition: [Luna confirms row-cap fix on exact pins; one regression passed](addenda/t05-rowcap-luna-disposition-20261020/README.md). This closes only T05-FIND-002/T05-REVIEW-P2-001 in reviewed scope; joined/full profiles and whole T05 remain pending.
+- [Evidence and evolution](evolution.md): why each increment happened, positive/negative findings and domain limits.
+- [Evidence register](evidence-register.json) and [faithful report/protocol snapshots](source-documents.json): stable study/task aliases, hashes, line references, commands, resources and unknowns. Original paths/links describe research-source provenance.
+- [Capability map](../../specs/028-system-one-core/decision-delivery/program-map.md), [bounded architecture](../../specs/028-system-one-core/decision-delivery/architecture.md) and [latency/budget boundaries](../../specs/028-system-one-core/decision-delivery/latency-and-budgets.md).
+- [Canonical task aliases](task-map.json), [historical gates](gates-and-assignment.md) and [historical requirements checklist](review-checklist.md). Read their pending observations with the later receipts below, not as current status.
+- [Adversarial review brief](adversarial-review.md): review questions for Claude Code or another reviewer. No Claude Code review is claimed; scoped AI code reviews in later receipts are separate from global T07 and human/scientific acceptance.
 
-Earlier T05 fix candidate: [row-cap correction with bound28-test pass and two mutation detections](addenda/t05-rowcap-fixed-candidate-20261020/README.md); same-reviewer disposition and full profiles pending.
+## Historical receipt map
 
-Earlier T05 review: [completed scoped Luna review; one row64 P2](addenda/t05-luna-row64-review-20261020/README.md), immediate-live-refusal fix and targeted recheck pending; final publication bypass was not observed.
+Rows identify frozen observations and later dispositions; a pending or active status inside an older receipt is not a current assertion.
 
-Earlier T05 candidate: [source-bound28-test candidate, three mutation detections and active review report](addenda/t05-review-candidate-20261020/README.md); row64 live-latch variant/open finding and full profiles remain pending.
+| Stage | Evidence and later disposition |
+|---|---|
+| T025 development and final engineering | [Development snapshot](addenda/t025-development-20261020.md), then [final engineering/assignment](addenda/t025-final-20261020.md) |
+| Corpus/Project/DDP-T01 reconciliation | [Continuity receipt](addenda/verification-continuity-20261020/README.md):88-item Project readback, original failed full profile and localized correction, final coordinator design disposition |
+| Initial component assignment | [Preparation handoff](addenda/ddp-t02-t04-preparation-20261020.md) |
+| T04 component and serial pin | [Pre-pin component](addenda/t04-component-20261020/README.md), then [T02 and actual pin](addenda/t02-and-serial-pin-20261020/README.md) |
+| T03 and component join | [T03/52-case join](addenda/t03-and-component-join-20261020/README.md), [profile start](addenda/component-profiles-started-20261020.md), then [final2014-case profiles](addenda/component-profiles-final-20261020/README.md) |
+| First component final package/T05 GO | [Final first batch and T05 assignment](addenda/first-batch-final-package-20261020/README.md); earlier [conditional authority](addenda/publication-and-t05-condition-20261020.md) |
+| T05 context and review plan | [Lifetime/digest directions](addenda/t05-context-and-digest-seams-20261020.md), with later source-bound implementation and review below |
+| T05 failure/candidate chronology | [Caught-failure finding and failed22-case attempt](addenda/t05-failure-latch-20261020/README.md), [admission/refusal directions](addenda/t05-failure-latch-20261020/admission-and-late-refusal.md), [review candidate](addenda/t05-review-candidate-20261020/README.md) |
+| T05 row-cap review and correction | [Original Luna P2/reproduction](addenda/t05-luna-row64-review-20261020/README.md), [fixed candidate](addenda/t05-rowcap-fixed-candidate-20261020/README.md), then [targeted disposition](addenda/t05-rowcap-luna-disposition-20261020/README.md) |
+| T05 joined/full validation | [80-case join and profile start](addenda/t05-join-and-profiles-start-20261020/README.md), then [final2042-case profiles](addenda/t05-profiles-final-20261020/README.md) |
+| T05 packaging integrity | [One-log attributes exception](addenda/t05-whitespace-preservation-20261020.md), [link-check failure](addenda/t05-packaging-link-failure-20261020/README.md), then [final packet/retained failures and repairs](addenda/t05-final-package-20261020/README.md) and [post-seal artifact check](addenda/t05-final-package-20261020/post-seal-check.md) |
 
-T05 packaging observation: [scoped whitespace exception preserving the raw log](addenda/t05-whitespace-preservation-20261020.md), independently unreviewed; evidence bytes remain unchanged.
+## Source and acceptance boundary
 
-Latest T05 admission/refusal direction: [zero goal IDs, retained late-refusal pins and preserved historical whitespace](addenda/t05-failure-latch-20261020/admission-and-late-refusal.md), pending source-bound tests/review.
+Research-source snapshot: /Users/juanyanez/Repos/Personal/agent-braid-system-one, observed HEAD48f4226db1e1b0565b1f8faf0eca81c150a65d30 plus substantial WIP. Report/protocol hashes identify actual working bytes; HEAD alone does not reproduce them. Models, raw datasets, custodian labels, private histories, generators, runtime source and large artifacts are not bundled by this documentary delivery. Missing local inputs must be reported, never reconstructed as obtained evidence.
 
-Latest T05 finding: [T05-FIND-001 technical-refusal latch](addenda/t05-failure-latch-20261020/README.md), correction in progress; failed/22-pass/later28-pass log observations preserved without final source-bound closure.
+The capability package and verified-plan public schemas remain proposals; the later component/T05 records establish bounded internal engineering only. Six spec parents and five S1 milestones remain open at the recorded tracking snapshot. Broader T07 review, human/linguistic and representative workflow acceptance, independent scientific reproduction, source rights, training/calibration, admission/promotion and activation remain separate pending gates.
 
-Latest T05 design direction: [request lifetime, immutable snapshots and exact digest domains](addenda/t05-context-and-digest-seams-20261020.md), pending implementation receipt/tests.
+No general calibrated reliability, theorem, Laya parity or unrestricted language understanding is claimed. Deterministic admissibility is not calibrated probability; controlled EN/ES roundtrips and software/AI review do not supply human or scientific approval. Acquisition, layer1decision and complete native preparation have separate costs; no deadline/speedup is inferred from provisional timing.
 
-Latest final package and handoff: [T02/T03/T04 packet verified; T05 assigned and active](addenda/first-batch-final-package-20261020/README.md).51 source bindings and18 archive members checked; T05 results and independent/human gates remain pending.
+## Documentary continuity
 
-Current component validation: [final quick/sensitive and PR receipts](addenda/component-profiles-final-20261020/README.md). Both exit0 on identical2247-file inputs:2014 cases each,19 skips,zero failures; the later final package/T05 start receipt and current documentary-head CI remain separate. The [start record](addenda/component-profiles-started-20261020.md) preserves its earlier unknown outcome.
-
-Latest focused join evidence: [T03 and post-pin component join](addenda/t03-and-component-join-20261020/README.md). T03 records 13 focused passes; the overlapping combined suite records 52 passes on actual post-pin source. Full profiles, independent review and T05/T06 remain pending.
-
-Earlier component/pin evidence: [T02 component and actual serial IR pin](addenda/t02-and-serial-pin-20261020/README.md). T02 reports 25 focused passes and four directed mutation detections; registry post-pin and combined validation remain pending.
-
-Earlier component evidence: [T04 partial component receipt](addenda/t04-component-20261020/README.md), ten focused tests reported passed; production pin/integration and whole-task closure remain pending.
-
-Latest coordination: [T02/T03/T04 preparation handoff](addenda/ddp-t02-t04-preparation-20261020.md). Three agents assigned by the coordinator; component and integration receipts remain pending.
-
-Latest status: [verification continuity and current pending matrix](addenda/verification-continuity-20261020/README.md). The Project readback matched 88/88 items; DDP-T01 local design delivery was verified by the coordinator. Its complete PR profile remains failed, with a corrected affected-module pass recorded separately. The latest design and this supplement are documentary branch additions now published in PR594 and awaiting integration; this documentary delivery starts no implementation or activation. A subsequent verified coordination event records newly authorized T02/T03/T04 preparation in the coordinator conversation; no component delivery is inferred.
-
-Earlier final engineering status: [T025 final engineering receipt and documentary DDP-T01 assignment](addenda/t025-final-20261020.md). T025 engineering is closed; DDP-T01 is enabled and assigned to the coordinator, without execution or implementation authority. Earlier registers/addenda retain their original snapshot.
-
-Earlier bounded update: [T025 development receipt](addenda/t025-development-20261020.md). Development passed; evaluation/final engineering closure and DDP-T01 assignment remain pending. The base register below retains its earlier snapshot unchanged.
-
-- [Evidence and evolution](evolution.md): why each increment happened, what it found and what it cannot establish.
-- [Machine-readable evidence register](evidence-register.json): stable study/task aliases, exact report/protocol identities, line references, resource/failure boundaries and source bindings.
-- [Faithful report/protocol snapshots](source-documents.json): full research documentation text for audit, including commands and negative findings; embedded original paths/links refer to the source research checkout. This is documentary export, not model/data/code publication or clean-room reproduction.
-- [Full capability map](../../specs/028-system-one-core/decision-delivery/program-map.md), [bounded architecture](../../specs/028-system-one-core/decision-delivery/architecture.md), [latency/budget boundaries](../../specs/028-system-one-core/decision-delivery/latency-and-budgets.md).
-- [Canonical task aliases and acceptance](task-map.json), [historical gates and assignments](gates-and-assignment.md), [adversarial review brief](adversarial-review.md) and [requirements/convergence checklist](review-checklist.md).
-
-## Source and observation boundary
-
-Research source: /Users/juanyanez/Repos/Personal/agent-braid-system-one, observed HEAD 48f4226db1e1b0565b1f8faf0eca81c150a65d30 plus substantial WIP. Publication base may be later. Report and protocol hashes identify actual working bytes; HEAD alone does not reproduce them. Models, raw datasets, custodian labels, private histories, generators, runtime source and large artifacts are not bundled by this documentary delivery. Their original path/hash inventories support local inspection. Missing material must be reported, never reconstructed as obtained evidence.
-
-The imported-draft decision-delivery package is a proposal, not acceptance or implementation. The earlier T025-in-progress snapshot is superseded by the final addendum above; scientific/human/product gates remain separate. The original five S1 milestones and six spec parents remain open. Human/linguistic review, representative workflow acceptance, independent scientific reproduction, rights for distribution and per-capability promotion/activation remain separately pending.
-
-Claims: empirical/engineering only within each stated domain; no general calibrated reliability, theorem or Laya parity. Controlled EN/ES record round trips do not establish unrestricted language understanding. Deterministic admissibility is not calibrated probability. Software profiles and agent review do not supply human approval.
-
-## Documentary continuity rule
-
-Incorporate each material new result, failed attempt, correction, review, decision and handoff into this repository corpus before delivery. Record its study/task/requirement mapping, observation boundary, obtained result, source paths and hashes, validation scope and unresolved gates; update this entry point and link detailed evidence instead of duplicating it. Use additive supplements to correct or supersede frozen records. Keep local incorporation, remote publication, implementation, scientific acceptance and human/activation authorization distinct. Missing evidence remains unknown. ZIP exports are derivative snapshots; a chat message or ZIP alone does not complete corpus incorporation.
+Before delivery, incorporate every material result, failed attempt, correction, review, decision and handoff with task/requirement mapping, exact sources/hashes, observation boundary, obtained result, validation scope and unresolved gates. Link details instead of duplicating them. Preserve frozen records and clarify supersession additively. Keep current navigation distinct from history, and local incorporation/publication/integration distinct from product implementation or acceptance. ZIPs are derivative snapshots; chat acknowledgements alone do not complete corpus incorporation.
