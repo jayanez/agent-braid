@@ -50,7 +50,7 @@ The corpus publishes reports/metadata/receipts/reviews/logs and exact binding ma
 
 ## Next work and relay discipline
 
-Do not edit the coordinator candidate from the documentary branch or restart its tests/experiments. T06 Core API authorization is separate from this PR: retain exact producer body/digest, live context, shared cancellation/budget, source freshness and measured stage/cleanup boundaries. Service/stdio, activation and broader acceptance are outside that reported first increment. No completed T06 result is claimed here.
+Do not edit the coordinator candidate from the documentary branch or restart its tests/experiments. At the historical PR594 handoff, T06 authorization and completed results were outside that PR. This subsequent documentary branch now records Core and controlled service/stdio-client engineering; the final supplement at the start of this guide defines its evidence and limits. Preserve exact producer body/digest, live context, shared cancellation/budget, source freshness and measured stage/cleanup boundaries. Product publication, independent product review/T07, host adoption and broader acceptance remain separate and pending.
 
 For each material new receipt, record stable task/requirement alias, source commit/hashes, owner, command/environment, positive/negative outcome, skips, cost/time domain, actual reviewer/model/scope, unresolved gates and next owner. Append without rewriting frozen evidence; update the current entry point so older pending statuses are unambiguously historical. Reconcile issue/Project status only when supported and authorized. Source-bound receipts and versioned updates, rather than a chat acknowledgement or ZIP alone, complete the handoff.
 
