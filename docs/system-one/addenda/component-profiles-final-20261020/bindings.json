@@ -1,0 +1,55 @@
+{
+  "id": "S1-DDP-COMPONENT-PROFILES-FINAL-20261020",
+  "checkedAtUTC": "2026-10-20T07:08:06.573806+00:00",
+  "candidate": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-verified-core",
+  "checks": {
+    "inputMapsIdentical": true,
+    "actualCandidateFilesChecked": 2247,
+    "baselineFilesUnchanged": 2230,
+    "originalLogHashesChecked": 2,
+    "testsRerunHere": false,
+    "independentCorrectnessReview": false,
+    "profileExitCodes": {
+      "quick": 0,
+      "pr": 0
+    }
+  },
+  "completionReceivedAtObservation": true,
+  "files": [
+    {
+      "path": "README.md",
+      "sha256": "bf7a1d5f8f4749d36bad4c1d23f9edd35e245d762b009641d830b6e3bd6ef901",
+      "bytes": 3955
+    },
+    {
+      "path": "baseline-files.json",
+      "sha256": "8ed9bf6d2eceaf35c7526123b151c5de2d17e4f1b600f397be093859196424b8",
+      "bytes": 283994
+    },
+    {
+      "path": "pr-log.json",
+      "sha256": "aefa970e30eb3ce15f81a530679835ab085f8eccab1bfcede00a382e44e343b4",
+      "bytes": 372569
+    },
+    {
+      "path": "pr-receipt.json",
+      "sha256": "685c1952d8f50c112068729d62599e94126e1a9c265cbab4153748bde8aef866",
+      "bytes": 291670
+    },
+    {
+      "path": "prior-head-ci.json",
+      "sha256": "30c631fdbe7fcaa774b68ad88744143b6fbbf8cabe7afb811f3819a299e8f065",
+      "bytes": 2666
+    },
+    {
+      "path": "quick-log.json",
+      "sha256": "d63a908503b13dff0a1918e156967dcaa7d75939b4a2eb7b00039e533ba19516",
+      "bytes": 372693
+    },
+    {
+      "path": "quick-receipt.json",
+      "sha256": "edf1ae4fd2537af83b1fbe790ddb90bfcc97bbb211973d6711f94466a3aa202c",
+      "bytes": 291681
+    }
+  ]
+}

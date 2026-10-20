@@ -6,7 +6,7 @@ GitHub availability: [published documentary corpus and follow-up](addenda/github
 
 Publication and next authority: [documentary publication mandate and conditional T05 handoff](addenda/publication-and-t05-condition-20261020.md). T05 depends on actual quick/PR passes and intact pins; no GO is inferred.
 
-Current validation: [component profiles started](addenda/component-profiles-started-20261020.md); quick/PR outcomes remain unknown at the recorded observation.
+Current component validation: [final quick/sensitive and PR receipts](addenda/component-profiles-final-20261020/README.md). Both exit0 on identical2247-file inputs:2014 cases each,19 skips,zero failures; complete package/GO and current documentary-head CI remain separate. The [start record](addenda/component-profiles-started-20261020.md) preserves its earlier unknown outcome.
 
 Latest focused join evidence: [T03 and post-pin component join](addenda/t03-and-component-join-20261020/README.md). T03 records 13 focused passes; the overlapping combined suite records 52 passes on actual post-pin source. Full profiles, independent review and T05/T06 remain pending.
 

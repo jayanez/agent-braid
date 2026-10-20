@@ -59,3 +59,7 @@ Human/linguistic review, independent/Claude Code review, scientific and represen
 ## GitHub availability
 
 The documentary corpus is published on branch docs/ddp-t01-contracts in [draft PR594](https://github.com/jayanez/agent-braid/pull/594). See the [publication receipt](addenda/github-publication-20261020.md). Earlier statements about local-only delivery are historical; integration into develop, current-head CI and reviews remain separate.
+
+## Final component-profile receipts
+
+[Final quick/sensitive and PR evidence](addenda/component-profiles-final-20261020/README.md) now records both exit0 results:2014 cases each,19 skipped,zero failures, identical2247-file inputs with2230baseline files intact. This supersedes earlier unknown/running observations only. Logs/receipts are preserved, actual inputs rechecked; no test rerun or scientific/human acceptance here. Final package and actual T05 GO remain pending at this observation.
