@@ -1,0 +1,342 @@
+{
+  "activeFinalizerOutputExcluded": true,
+  "count": 48,
+  "representations": [
+    {
+      "encoding": "identity",
+      "original": "assignment.json",
+      "originalSha256": "761e986f4383bb530f11161d0ecd6f4eff4bdc63d03ee31ae9267cc9e7ce9e03",
+      "stored": "specs/029-system-one-evaluation/evidence/ddp-t07/receipts/assignment.json",
+      "storedSha256": "761e986f4383bb530f11161d0ecd6f4eff4bdc63d03ee31ae9267cc9e7ce9e03"
+    },
+    {
+      "encoding": "identity",
+      "original": "before.json",
+      "originalSha256": "fda5ced3bf902fe1bfcc913380e8de62241f78e6758a10b6d5131f8b633b03be",
+      "stored": "specs/029-system-one-evaluation/evidence/ddp-t07/receipts/before.json",
+      "storedSha256": "fda5ced3bf902fe1bfcc913380e8de62241f78e6758a10b6d5131f8b633b03be"
+    },
+    {
+      "encoding": "lossless gzip",
+      "original": "child-launch-guard-mutation.log",
+      "originalSha256": "8e504fad27d89d1d9e38cb4dee47019b778cc575f43dcd413c6f22b86160299c",
+      "stored": "specs/029-system-one-evaluation/evidence/ddp-t07/receipts/child-launch-guard-mutation.log.gz",
+      "storedSha256": "b8bc17ea89f8a9bd40fc3bfe84c3c7d0088111941aa637e62ee014c016b39b47"
+    },
+    {
+      "encoding": "identity",
+      "original": "compatibility-attempt1-source.py.txt",
+      "originalSha256": "fe8f7a83e68b7902abd726bf93d996e42f5e219228872a56ba4a492ba45d1692",
+      "stored": "specs/029-system-one-evaluation/evidence/ddp-t07/receipts/compatibility-attempt1-source.py.txt",
+      "storedSha256": "fe8f7a83e68b7902abd726bf93d996e42f5e219228872a56ba4a492ba45d1692"
+    },
+    {
+      "encoding": "identity",
+      "original": "compatibility-attempt3-source.py.txt",
+      "originalSha256": "cc367728223a923a2ab421bed1f54dd1df4fee682259248db327872211d814af",
+      "stored": "specs/029-system-one-evaluation/evidence/ddp-t07/receipts/compatibility-attempt3-source.py.txt",
+      "storedSha256": "cc367728223a923a2ab421bed1f54dd1df4fee682259248db327872211d814af"
+    },
+    {
+      "encoding": "identity",
+      "original": "compatibility-attempt3.json",
+      "originalSha256": "a9c3283979db8ff0bc49b45c3f8300f4060628158c110cb58483aa4abf96c7a5",
+      "stored": "specs/029-system-one-evaluation/evidence/ddp-t07/receipts/compatibility-attempt3.json",
+      "storedSha256": "a9c3283979db8ff0bc49b45c3f8300f4060628158c110cb58483aa4abf96c7a5"
+    },
+    {
+      "encoding": "lossless gzip",
+      "original": "compatibility-attempt3.log",
+      "originalSha256": "0281308c03583abd920dbb06281238fea10b9a03e7d20c2b503fd67a9382cd10",
+      "stored": "specs/029-system-one-evaluation/evidence/ddp-t07/receipts/compatibility-attempt3.log.gz",
+      "storedSha256": "0037a4ed1975418350d25976c8891286b4aa25452c2f95860c81179b99278af8"
+    },
+    {
+      "encoding": "identity",
+      "original": "compatibility-attempt4-source.py.txt",
+      "originalSha256": "473c8ea118384e941285adcc573b492f78ce5d43b8e581ad0e9e71a67ac15e25",
+      "stored": "specs/029-system-one-evaluation/evidence/ddp-t07/receipts/compatibility-attempt4-source.py.txt",
+      "storedSha256": "473c8ea118384e941285adcc573b492f78ce5d43b8e581ad0e9e71a67ac15e25"
+    },
+    {
+      "encoding": "identity",
+      "original": "compatibility-attempt4.json",
+      "originalSha256": "b989025d007206405d895621a160ef3a66cc8cb7c72cef038100d926800f7573",
+      "stored": "specs/029-system-one-evaluation/evidence/ddp-t07/receipts/compatibility-attempt4.json",
+      "storedSha256": "b989025d007206405d895621a160ef3a66cc8cb7c72cef038100d926800f7573"
+    },
+    {
+      "encoding": "lossless gzip",
+      "original": "compatibility-attempt4.log",
+      "originalSha256": "9475cb6b5b605df7396279036ea6078de092cc3ca342e45377db63171e97522d",
+      "stored": "specs/029-system-one-evaluation/evidence/ddp-t07/receipts/compatibility-attempt4.log.gz",
+      "storedSha256": "3ce36bc7366b027239b01804e0bfa00eb268ce9b0168f8538e3a3e8465b8d86f"
+    },
+    {
+      "encoding": "identity",
+      "original": "compatibility-attempt5.json",
+      "originalSha256": "6f127cc86c52587af0d615f9683c3ddbaefaac0cc2db31e0a5c379bd33fcb0cd",
+      "stored": "specs/029-system-one-evaluation/evidence/ddp-t07/receipts/compatibility-attempt5.json",
+      "storedSha256": "6f127cc86c52587af0d615f9683c3ddbaefaac0cc2db31e0a5c379bd33fcb0cd"
+    },
+    {
+      "encoding": "lossless gzip",
+      "original": "compatibility-attempt5.log",
+      "originalSha256": "451801f15e1de2103b0a506631613e6d652050639c1387c469d2d0d2043f9438",
+      "stored": "specs/029-system-one-evaluation/evidence/ddp-t07/receipts/compatibility-attempt5.log.gz",
+      "storedSha256": "4cf91dbaff635c5391eef69cf1b813397afb0e5450b4d0f0db991a8613eda01e"
+    },
+    {
+      "encoding": "lossless gzip",
+      "original": "compatibility-diagnostic-attempt2.log",
+      "originalSha256": "7713326b03f7a03d1e2744fa221fe8f0c0b86228f392c1dddd03c52527feb154",
+      "stored": "specs/029-system-one-evaluation/evidence/ddp-t07/receipts/compatibility-diagnostic-attempt2.log.gz",
+      "storedSha256": "6653e425b4183996ca7c93cf6e0442cb1873d8d65bd4032570c9c8c5451dc1a6"
+    },
+    {
+      "encoding": "identity",
+      "original": "compatibility-final.json",
+      "originalSha256": "0eec1a3b868ef6f953d19269ac8ab55094501e42dce1b9bbcda50f8666af767a",
+      "stored": "specs/029-system-one-evaluation/evidence/ddp-t07/receipts/compatibility-final.json",
+      "storedSha256": "0eec1a3b868ef6f953d19269ac8ab55094501e42dce1b9bbcda50f8666af767a"
+    },
+    {
+      "encoding": "lossless gzip",
+      "original": "compatibility-final.log",
+      "originalSha256": "9efeadb762f05acdae4a5db8f2b02a22de7c2c71ce361dd644c42352b5f15909",
+      "stored": "specs/029-system-one-evaluation/evidence/ddp-t07/receipts/compatibility-final.log.gz",
+      "storedSha256": "ffb3553953e40db507eb6035fc092353580104cf3871ed822f52acbd06acfcf1"
+    },
+    {
+      "encoding": "raw text capsule",
+      "original": "compatibility-plan.md",
+      "originalSha256": "6e403a23583f2bea8ccffcec0dc1f2c31b58d98f225b8fc8dc363737c5965047",
+      "stored": "specs/029-system-one-evaluation/evidence/ddp-t07/receipts/compatibility-plan.md.txt",
+      "storedSha256": "6e403a23583f2bea8ccffcec0dc1f2c31b58d98f225b8fc8dc363737c5965047"
+    },
+    {
+      "encoding": "identity",
+      "original": "conformance-map-draft1.json",
+      "originalSha256": "fc7728e99fc270876e5bd673219e7aff1a866cd64ac897958f16c7d19515ff7a",
+      "stored": "specs/029-system-one-evaluation/evidence/ddp-t07/receipts/conformance-map-draft1.json",
+      "storedSha256": "fc7728e99fc270876e5bd673219e7aff1a866cd64ac897958f16c7d19515ff7a"
+    },
+    {
+      "encoding": "identity",
+      "original": "development-dispositions.json",
+      "originalSha256": "2bff8d467cced64be6d9f1316b37dc8f665e374989bf9111ed51f6753f52b979",
+      "stored": "specs/029-system-one-evaluation/evidence/ddp-t07/receipts/development-dispositions.json",
+      "storedSha256": "2bff8d467cced64be6d9f1316b37dc8f665e374989bf9111ed51f6753f52b979"
+    },
+    {
+      "encoding": "raw text capsule",
+      "original": "finalize_t07.py",
+      "originalSha256": "9e7e6e8ab33ece24593a250e4f40c4fcc83c55c48d1cce2839d1370a52d569ab",
+      "stored": "specs/029-system-one-evaluation/evidence/ddp-t07/receipts/finalize_t07.py.txt",
+      "storedSha256": "9e7e6e8ab33ece24593a250e4f40c4fcc83c55c48d1cce2839d1370a52d569ab"
+    },
+    {
+      "encoding": "lossless gzip",
+      "original": "foreign-research-guard-mutation.log",
+      "originalSha256": "15a3e37dc957efdb56fd9658e81482a942c3657aa6cf68a428d1becec0662265",
+      "stored": "specs/029-system-one-evaluation/evidence/ddp-t07/receipts/foreign-research-guard-mutation.log.gz",
+      "storedSha256": "2c8539c6f3c8b3b3ca935492069e1cc746c6950908c2a9f25232a95b7e5081e3"
+    },
+    {
+      "encoding": "lossless gzip",
+      "original": "fresh-process-diagnostic.log",
+      "originalSha256": "08f1933c9cb0e644f3b5586f319c5e780e781a88508afab848bd2a3a67977c02",
+      "stored": "specs/029-system-one-evaluation/evidence/ddp-t07/receipts/fresh-process-diagnostic.log.gz",
+      "storedSha256": "ceed6a45522d9289e54a4631887bd2a8d9e601422dc992bea36eecb0388f70be"
+    },
+    {
+      "encoding": "identity",
+      "original": "guard-mutations.json",
+      "originalSha256": "e1a7f2b7943f93b006d5c483227971a94b333b15ed14f03bf7ef5e8329cc1719",
+      "stored": "specs/029-system-one-evaluation/evidence/ddp-t07/receipts/guard-mutations.json",
+      "storedSha256": "e1a7f2b7943f93b006d5c483227971a94b333b15ed14f03bf7ef5e8329cc1719"
+    },
+    {
+      "encoding": "identity",
+      "original": "launch.json",
+      "originalSha256": "3033b89ec675b259e97514da7ce85098d9e8e8e12adaa4ed756b96fbb2cacdd7",
+      "stored": "specs/029-system-one-evaluation/evidence/ddp-t07/receipts/launch.json",
+      "storedSha256": "3033b89ec675b259e97514da7ce85098d9e8e8e12adaa4ed756b96fbb2cacdd7"
+    },
+    {
+      "encoding": "raw text capsule",
+      "original": "luna-review/compatibility-final-delta.md",
+      "originalSha256": "d462995c796fc8f6681dd0fa850a58755e114265132e890f7b1d9e610c5233db",
+      "stored": "specs/029-system-one-evaluation/evidence/ddp-t07/receipts/luna-review/compatibility-final-delta.md.txt",
+      "storedSha256": "d462995c796fc8f6681dd0fa850a58755e114265132e890f7b1d9e610c5233db"
+    },
+    {
+      "encoding": "raw text capsule",
+      "original": "luna-review/compatibility-test-delta.md",
+      "originalSha256": "f2d6c388cb40bc867f250488a38dbdc656e1119252c05d06d7f6bdfc9816f8ae",
+      "stored": "specs/029-system-one-evaluation/evidence/ddp-t07/receipts/luna-review/compatibility-test-delta.md.txt",
+      "storedSha256": "f2d6c388cb40bc867f250488a38dbdc656e1119252c05d06d7f6bdfc9816f8ae"
+    },
+    {
+      "encoding": "identity",
+      "original": "luna-review/execution-record.json",
+      "originalSha256": "d369864dc908dcd5406ad5292e6d20bd8074670a949c00c053521d724b5079a0",
+      "stored": "specs/029-system-one-evaluation/evidence/ddp-t07/receipts/luna-review/execution-record.json",
+      "storedSha256": "d369864dc908dcd5406ad5292e6d20bd8074670a949c00c053521d724b5079a0"
+    },
+    {
+      "encoding": "raw text capsule",
+      "original": "luna-review/inherited-parser-dependency.md",
+      "originalSha256": "025b4bdbe57670e5471ae5c453ec6ac386a7abda3c95570d757c7e26eb405b54",
+      "stored": "specs/029-system-one-evaluation/evidence/ddp-t07/receipts/luna-review/inherited-parser-dependency.md.txt",
+      "storedSha256": "025b4bdbe57670e5471ae5c453ec6ac386a7abda3c95570d757c7e26eb405b54"
+    },
+    {
+      "encoding": "raw text capsule",
+      "original": "luna-review/luna-review.md",
+      "originalSha256": "76e4cdc85de2abbaf261a895e5f04dea2797e6e8b8f483386a34c5035eb1e95f",
+      "stored": "specs/029-system-one-evaluation/evidence/ddp-t07/receipts/luna-review/luna-review.md.txt",
+      "storedSha256": "76e4cdc85de2abbaf261a895e5f04dea2797e6e8b8f483386a34c5035eb1e95f"
+    },
+    {
+      "encoding": "raw text capsule",
+      "original": "map_vectors.py",
+      "originalSha256": "db5b478c5be2d173c20bafc0785fe56c6e5e6937aa50a4c03091905088e3ea7e",
+      "stored": "specs/029-system-one-evaluation/evidence/ddp-t07/receipts/map_vectors.py.txt",
+      "storedSha256": "db5b478c5be2d173c20bafc0785fe56c6e5e6937aa50a4c03091905088e3ea7e"
+    },
+    {
+      "encoding": "lossless gzip",
+      "original": "ml-import-guard-mutation.log",
+      "originalSha256": "0db27aab3a407dcd54213a3c4724c4796dfddd2139ab62aa384540205c34bd0d",
+      "stored": "specs/029-system-one-evaluation/evidence/ddp-t07/receipts/ml-import-guard-mutation.log.gz",
+      "storedSha256": "f1ddc7d108ebe9462a70f273096946ffe301532e53a490eb4ecf61cb86556fe3"
+    },
+    {
+      "encoding": "identity",
+      "original": "preflight.json",
+      "originalSha256": "c3545877c91f432b73a45cbcd8b81321c50186339089cd536afcf8b4c832fa61",
+      "stored": "specs/029-system-one-evaluation/evidence/ddp-t07/receipts/preflight.json",
+      "storedSha256": "c3545877c91f432b73a45cbcd8b81321c50186339089cd536afcf8b4c832fa61"
+    },
+    {
+      "encoding": "lossless gzip",
+      "original": "preflight.log",
+      "originalSha256": "b28f0f3bd337a6cae29938ed6ec99ef7ecf3c0005cc38370479d91ec923e04ac",
+      "stored": "specs/029-system-one-evaluation/evidence/ddp-t07/receipts/preflight.log.gz",
+      "storedSha256": "241bc3cae8267e1f9b9c4529e55fa475be4bc02a467fcc0ce57290c0a4d5c5d1"
+    },
+    {
+      "encoding": "identity",
+      "original": "prepackage-verification.json",
+      "originalSha256": "521d58d75c9832f62838545a0f9a4b9f573a77d3439c07a1621ab7658da0b836",
+      "stored": "specs/029-system-one-evaluation/evidence/ddp-t07/receipts/prepackage-verification.json",
+      "storedSha256": "521d58d75c9832f62838545a0f9a4b9f573a77d3439c07a1621ab7658da0b836"
+    },
+    {
+      "encoding": "identity",
+      "original": "prior-documentary-merge-readback.json",
+      "originalSha256": "5a891a01541760b5eabdf8368eba77b494c80d255cf3e8dc14f7a903e7712179",
+      "stored": "specs/029-system-one-evaluation/evidence/ddp-t07/receipts/prior-documentary-merge-readback.json",
+      "storedSha256": "5a891a01541760b5eabdf8368eba77b494c80d255cf3e8dc14f7a903e7712179"
+    },
+    {
+      "encoding": "identity",
+      "original": "profiles/pr.json",
+      "originalSha256": "e56064c40318a61666f9a56f6b7e7c43f833cbd8373c2218e441236445fea543",
+      "stored": "specs/029-system-one-evaluation/evidence/ddp-t07/receipts/profiles/pr.json",
+      "storedSha256": "e56064c40318a61666f9a56f6b7e7c43f833cbd8373c2218e441236445fea543"
+    },
+    {
+      "encoding": "lossless gzip",
+      "original": "profiles/pr.log",
+      "originalSha256": "697b8c948b70c20bd500997b514a272dcb8ea06e981ba40c4d6b4b1fbe249861",
+      "stored": "specs/029-system-one-evaluation/evidence/ddp-t07/receipts/profiles/pr.log.gz",
+      "storedSha256": "8e0dcf55659c4b42e5ac69acae86e1653e95eecc69db725f49885d991cbc82bd"
+    },
+    {
+      "encoding": "identity",
+      "original": "profiles/quick.json",
+      "originalSha256": "949852c78ed2817d41749c6a06818b19988c6dc0af0dbdc128c8348e946f541f",
+      "stored": "specs/029-system-one-evaluation/evidence/ddp-t07/receipts/profiles/quick.json",
+      "storedSha256": "949852c78ed2817d41749c6a06818b19988c6dc0af0dbdc128c8348e946f541f"
+    },
+    {
+      "encoding": "lossless gzip",
+      "original": "profiles/quick.log",
+      "originalSha256": "53d26861d03f6446db3798c328ce182b4ca4258c2dc024b71a8152934345c79c",
+      "stored": "specs/029-system-one-evaluation/evidence/ddp-t07/receipts/profiles/quick.log.gz",
+      "storedSha256": "469eb3b9a5b1ab76382a78c17779288aef6743da7df17f4065519d73aeee54b0"
+    },
+    {
+      "encoding": "identity",
+      "original": "relay-progress.json",
+      "originalSha256": "89da80beca76ae341ce3f272e6abef2db049eada599062488fa8bab0962c56dc",
+      "stored": "specs/029-system-one-evaluation/evidence/ddp-t07/receipts/relay-progress.json",
+      "storedSha256": "89da80beca76ae341ce3f272e6abef2db049eada599062488fa8bab0962c56dc"
+    },
+    {
+      "encoding": "lossless gzip",
+      "original": "research-closure-diagnostic.log",
+      "originalSha256": "c25b72bcd9b13285570f6eff79f655257fecb0aff4c48ea46ab2a0241e4d5083",
+      "stored": "specs/029-system-one-evaluation/evidence/ddp-t07/receipts/research-closure-diagnostic.log.gz",
+      "storedSha256": "778580274ad88ca849236b72ed8dc73b9da5b8539824d3beca9995b13642eb46"
+    },
+    {
+      "encoding": "raw text capsule",
+      "original": "run_profiles.py",
+      "originalSha256": "fff73347353ecf104526e3ab7cc902960510b45b0e47b38ab917765c964cc06d",
+      "stored": "specs/029-system-one-evaluation/evidence/ddp-t07/receipts/run_profiles.py.txt",
+      "storedSha256": "fff73347353ecf104526e3ab7cc902960510b45b0e47b38ab917765c964cc06d"
+    },
+    {
+      "encoding": "identity",
+      "original": "stable-intake.json",
+      "originalSha256": "6586e6d103fd6e906e4c10a9059dd0e009a06cb2a363bcc62d322be0feb1dd9e",
+      "stored": "specs/029-system-one-evaluation/evidence/ddp-t07/receipts/stable-intake.json",
+      "storedSha256": "6586e6d103fd6e906e4c10a9059dd0e009a06cb2a363bcc62d322be0feb1dd9e"
+    },
+    {
+      "encoding": "raw text capsule",
+      "original": "supervise.py",
+      "originalSha256": "5e8f17f40fccb432316cf985d91a439d40bbd1039b92da5deb989a1ef4c8e084",
+      "stored": "specs/029-system-one-evaluation/evidence/ddp-t07/receipts/supervise.py.txt",
+      "storedSha256": "5e8f17f40fccb432316cf985d91a439d40bbd1039b92da5deb989a1ef4c8e084"
+    },
+    {
+      "encoding": "identity",
+      "original": "supervisor-completion.json",
+      "originalSha256": "91ddc3967e573a72c4469e2fc8bcbfc27c8f5ba07179786f3d50083e1dec9986",
+      "stored": "specs/029-system-one-evaluation/evidence/ddp-t07/receipts/supervisor-completion.json",
+      "storedSha256": "91ddc3967e573a72c4469e2fc8bcbfc27c8f5ba07179786f3d50083e1dec9986"
+    },
+    {
+      "encoding": "identity",
+      "original": "supervisor-start.json",
+      "originalSha256": "2b70187aa9e242cf961f0f017015cbfe61b0d647201a563e9af6b39330829851",
+      "stored": "specs/029-system-one-evaluation/evidence/ddp-t07/receipts/supervisor-start.json",
+      "storedSha256": "2b70187aa9e242cf961f0f017015cbfe61b0d647201a563e9af6b39330829851"
+    },
+    {
+      "encoding": "lossless gzip",
+      "original": "supervisor.log",
+      "originalSha256": "7d4e080ad185aa2341ee4e1e61683fccec385f352b5eb277dca4ee76a87bd875",
+      "stored": "specs/029-system-one-evaluation/evidence/ddp-t07/receipts/supervisor.log.gz",
+      "storedSha256": "e1c9fbfbfe5960e5f115dbc4fa043961730fb6746c5ee5a055f554d8bd1a9d8a"
+    },
+    {
+      "encoding": "raw text capsule",
+      "original": "test_system_one_verified_compatibility.py",
+      "originalSha256": "cc367728223a923a2ab421bed1f54dd1df4fee682259248db327872211d814af",
+      "stored": "specs/029-system-one-evaluation/evidence/ddp-t07/receipts/test_system_one_verified_compatibility.py.txt",
+      "storedSha256": "cc367728223a923a2ab421bed1f54dd1df4fee682259248db327872211d814af"
+    },
+    {
+      "encoding": "lossless gzip",
+      "original": "packaging-repository.log",
+      "originalSha256": "4dba091ad34351df5a47ab88351937a7c08b8d04df4e59834546b6babf1479b0",
+      "stored": "specs/029-system-one-evaluation/evidence/ddp-t07/receipts/packaging-repository.log.gz",
+      "storedSha256": "0696100a701b397d88703d8069bf7bcba97a8b41e6c578358c51b159a9e4a95d"
+    }
+  ]
+}

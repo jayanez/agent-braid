@@ -1,0 +1,21 @@
+{
+  "observedAtUTC": "2026-10-20T12:47:17.421457+00:00",
+  "scope": "Later readback of documentary PR608 post-merge CI; original in-progress receipt unchanged",
+  "PR": "https://github.com/jayanez/agent-braid/pull/608",
+  "mergeSHA": "7a9cf27cde7f849dc5fccf9d3b1d91a059675d23",
+  "runs": [
+    {
+      "conclusion": "success",
+      "headSha": "7a9cf27cde7f849dc5fccf9d3b1d91a059675d23",
+      "status": "completed",
+      "url": "https://github.com/jayanez/agent-braid/actions/runs/39419131391"
+    },
+    {
+      "conclusion": "success",
+      "headSha": "7a9cf27cde7f849dc5fccf9d3b1d91a059675d23",
+      "status": "completed",
+      "url": "https://github.com/jayanez/agent-braid/actions/runs/39419131434"
+    }
+  ],
+  "productAcceptance": false
+}

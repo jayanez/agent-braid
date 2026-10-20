@@ -1,0 +1,44 @@
+{
+  "task": "DDP-T07 / SPEC-029T027",
+  "authorization": "Direct user: independent Luna Latest review, fixes, conformances, M3 Pro EUR0; documentary relay",
+  "reviewer": "/root/t05_luna_review",
+  "model": "gpt-6-luna",
+  "sourceOwnership": "Parent only; reviewer read-only",
+  "reviewPins": {
+    "agent_braid/git_replay.py": "6dc84e50fe04abb4e5675ac0173f9579b239d13ad1741e106b2d4e272081a388",
+    "agent_braid/git_runtime.py": "8cf7168e2cbb9b874019eb3cc8dcee7b5ad69892eaeb4cc0511996fade29f897",
+    "agent_braid/system_one_verified_acquisition.py": "2380a32ef308fbbe540c67e71fb0bf43dc15b95a6732a13a8e2bf2be0d49e5b7",
+    "agent_braid/system_one_verified_consumers.py": "2b35dd7a784d18cc95969f9cf1902023ce3a07cf2792fdc26bcb4122bccb5788",
+    "agent_braid/system_one_verified_ir.py": "a0378c34b805387b0518cf6ebc3da05599976cb7f037d5f140c2571c8f362ea3",
+    "agent_braid/system_one_verified_registry.py": "8d9cb2070683497ea789a9f03905e07f69d6c812c7d0ec9d6ab8a72116f88e6c",
+    "agent_braid/system_one_verified_selection.py": "a8fd0d752c3ab179b233906adac65b7dfe2150cf8ef079c3e00334e689bbb51e",
+    "agent_braid/system_one_verified_stdio.py": "3caaafb091d3c314224992e334ec6ca302c2c72831de12997481ccc9fe7a8f42",
+    "agent_braid/system_one_verified_tooling.py": "128aed194149f648d0a579b9fff7d85e121c10339df7552e1e488363c744d04e",
+    "specs/028-system-one-core/contracts/verified-plan-v1.md": "a68488d4a412820130231daa8c8dbeefb1e58445b2f1cfdf0c02b8669ef132d7",
+    "specs/029-system-one-evaluation/verified-plan-conformance.md": "90f52099cdaebba51f2781c715c748d1ba0c13e9b2b9755a32b25e53f5a08e5b",
+    "specs/029-system-one-evaluation/verified-plan-vectors.json": "6584ce4de05edf143e215945ff620b5127fe48e6c352dfb7a33b447e753a11f7",
+    "specs/031-system-one-integration/contracts/verified-plan-consumer-v1.md": "b17b5f3398dba9086ba44bdc04c4ff9cae97364f1fb9430a7e4ebcb9cb9fd1f4",
+    "tests/test_system_one_verified_acquisition.py": "27ff8dd4192d1bc1b7d72b412fa1209e3ba28b32671f0181d3fb707a104ea8ed",
+    "tests/test_system_one_verified_components.py": "01abcb850572c3ad0f85beccaf7d437367fa388f681f0b77d55be24c98c32dcf",
+    "tests/test_system_one_verified_consumers.py": "d88c6dcb8f49a31023431258662cf82f3c848f1a92c3384ca0e74f430997493c",
+    "tests/test_system_one_verified_ir.py": "5550874646e3021cf147e14ebf5e5760a7f7397b08ce7701256ad59c2e9367be",
+    "tests/test_system_one_verified_registry.py": "53185df49342636e9b2545a5d53ef398998b4acc3367e39ee35ee0e5c525d254",
+    "tests/test_system_one_verified_selection.py": "d14d2ec1637b944eab96a6c9938b1758c8343e390fae208d55e615c9089e0b56",
+    "tests/test_system_one_verified_stdio.py": "67c61b11b8c94c64295fe44743519152aa853b8c0e66db75a2e4a8044fe4870f",
+    "tests/test_system_one_verified_tooling.py": "025410941b1bb37050dda5669ad0425a636ff52afbd230e5c8fa3567e939e583"
+  },
+  "beforeSha256": "fda5ced3bf902fe1bfcc913380e8de62241f78e6758a10b6d5131f8b633b03be",
+  "boundaries": [
+    "No training/calibration/human review/admission/activation/product publication",
+    "No downloads/installs/models/private histories/reserved datasets",
+    "Preserve historical packets; research read-only",
+    "No repeated T06 profiles or research studies"
+  ],
+  "plannedConformance": [
+    "Fresh-process denied network/import/effect isolation, complete integrated import closure",
+    "Legacy boolean/choice/score requests identical before and after opt-in imports; no defaults/catalog mutation",
+    "V01-V32 exact boundary mapping to actual tests and evidence; identify gaps without inventing passes",
+    "Reviewer counterexample regressions and exact-pin scoped recheck",
+    "Focused tests and quick/pr on stable T07 candidate, raw attempts preserved"
+  ]
+}

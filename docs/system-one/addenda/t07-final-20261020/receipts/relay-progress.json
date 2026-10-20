@@ -1,0 +1,14 @@
+{
+  "observedAtUTC": "2026-10-20T11:58:06.874252+00:00",
+  "destinationThread": "01a15640-452e-7c41-8140-01e144ad608c",
+  "blocksSent": [
+    "T07 authorization and pins",
+    "Luna independent review and inherited parser disposition",
+    "Final compatibility tests, guard injections, mapping limits, profiles started",
+    "Reviewer invocation evidence provenance and raw-log limitation"
+  ],
+  "finalPacketSent": false,
+  "documentaryReconciliation": "pending final packet",
+  "supervisorPID": 58305,
+  "automation": "trasladar-evidencia-de-decisiones active T07"
+}

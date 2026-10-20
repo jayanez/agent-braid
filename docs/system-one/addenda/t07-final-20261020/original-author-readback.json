@@ -1,0 +1,24 @@
+{
+  "checkedAtUTC": "2026-10-20T12:41:24.300922+00:00",
+  "status": "verified local engineering package",
+  "packetSha256": "27948e6669a4f360e6bc4eacd542b200d6f882d6bcb824aa23aa5560a08299d8",
+  "completionSha256": "1b49075843ee96e638c75e9c8bfe97cd40fe7b3e8fc7f8d492ae1fd1e50bf19f",
+  "reportSha256": "6828a40c75882fce134a99f4baa463a68ff9d572b1661572646d697a178fb3f7",
+  "bindingsVerified": 89,
+  "sourceArchiveMembersVerified": 38,
+  "rawReceiptFilesAndRepresentationsVerified": 48,
+  "allPriorFilesPreserved": 2471,
+  "finalizerCompletedLog": {
+    "path": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/outputs/ddp-t07-20261020/finalize-t07-attempt1.log",
+    "sha256": "0267c642635ed015158c71fe85236d1a937c2fbd206f23a9999d83b2ec97da1f",
+    "scope": "Captured after process exit0; deliberately excluded from active packaging snapshot"
+  },
+  "patchSha256": "7589e925edfacaef9a6d0093bfbdf40c7757ff36bb152a0a27acc7bc886e8e8f",
+  "sourceArchiveSha256": "82dec57a0c36bed27e4c601a5de75111d8a8a642b900b7f385c4b708da19d95c",
+  "productSourceChanged": false,
+  "documentaryHandoff": "pending final receipt",
+  "externalSpendEUR": 0,
+  "training": "pending",
+  "humanReview": "pending",
+  "activation": "pending"
+}

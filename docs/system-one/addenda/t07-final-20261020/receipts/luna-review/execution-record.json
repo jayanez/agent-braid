@@ -1,0 +1,59 @@
+{
+  "recordType": "tool-result transcription; not a captured stdout/stderr archive",
+  "scope": "Commands actually executed by reviewer during the original bounded T07 review. No commands were rerun for this record.",
+  "limitations": [
+    "Complete raw stdout/stderr logs were not saved as files. Summaries below transcribe observed tool results in the conversation and do not claim preserved raw logs.",
+    "The later compatibility-test delta assignments explicitly prohibited rerunning tests; no tests were run for those delta reviews."
+  ],
+  "environment": {
+    "python": "/Users/juanyanez/Repos/Personal/agent-braid-system-one/.venv-speckit/bin/python",
+    "reported_runtime_from_tool": "Python 3.12.13"
+  },
+  "executions": [
+    {
+      "id": "stdio-initial-import-failure",
+      "command": "PATH=/Users/juanyanez/Repos/Personal/agent-braid-system-one/.venv-speckit/bin:$PATH /Users/juanyanez/Repos/Personal/agent-braid-system-one/.venv-speckit/bin/python -m unittest test_system_one_verified_stdio.VerifiedStdioTests.test_four_views_actual_stdio_full_body_and_shared_parent_budget test_system_one_verified_stdio.VerifiedStdioTests.test_stalled_child_cancelled_and_reaped_without_budget_reset test_system_one_verified_stdio.VerifiedStdioTests.test_child_cannot_skip_chunk_protocol_even_with_valid_inline_body",
+      "cwd": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-verified-core/tests",
+      "exitCode": 1,
+      "observedSummary": "3 unittest loader errors before test bodies ran: ModuleNotFoundError: No module named agent_braid (checkout root absent from PYTHONPATH)."
+    },
+    {
+      "id": "stdio-targeted-corrected",
+      "command": "PATH=/Users/juanyanez/Repos/Personal/agent-braid-system-one/.venv-speckit/bin:$PATH PYTHONPATH=.. /Users/juanyanez/Repos/Personal/agent-braid-system-one/.venv-speckit/bin/python -m unittest test_system_one_verified_stdio.VerifiedStdioTests.test_four_views_actual_stdio_full_body_and_shared_parent_budget test_system_one_verified_stdio.VerifiedStdioTests.test_stalled_child_cancelled_and_reaped_without_budget_reset test_system_one_verified_stdio.VerifiedStdioTests.test_child_cannot_skip_chunk_protocol_even_with_valid_inline_body",
+      "cwd": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-verified-core/tests",
+      "exitCode": 0,
+      "observedSummary": "3 tests passed in 20.373 s."
+    },
+    {
+      "id": "tooling-targeted",
+      "command": "PATH=/Users/juanyanez/Repos/Personal/agent-braid-system-one/.venv-speckit/bin:$PATH PYTHONPATH=.. /Users/juanyanez/Repos/Personal/agent-braid-system-one/.venv-speckit/bin/python -m unittest test_system_one_verified_tooling.VerifiedToolingTests.test_four_views_real_service_complete_evidence_and_same_budget test_system_one_verified_tooling.VerifiedToolingTests.test_cancel_during_resource_delivery_suppresses_prepared_success test_system_one_verified_tooling.VerifiedToolingTests.test_artifact_chunk_guards_and_inline_reference_agreement",
+      "cwd": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-verified-core/tests",
+      "exitCode": 0,
+      "observedSummary": "3 tests passed in 18.697 s."
+    },
+    {
+      "id": "compatibility-combined-wrong-class-name",
+      "command": "PATH=/Users/juanyanez/Repos/Personal/agent-braid-system-one/.venv-speckit/bin:$PATH PYTHONPATH=.. /Users/juanyanez/Repos/Personal/agent-braid-system-one/.venv-speckit/bin/python -m unittest test_system_one_verified_components.VerifiedComponentTests.test_core_component_imports_do_not_load_research_or_neural_packages test_system_one_verified_selection.VerifiedSelectionTests.test_exact_decision_shape_and_legacy_contract_unchanged test_system_one_verified_tooling.VerifiedToolingTests.test_default_service_catalog_and_resource_limits_are_unchanged test_system_one_verified_stdio.VerifiedStdioTests.test_transport_frame_encoder_limits_and_no_default_catalog_change",
+      "cwd": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-verified-core/tests",
+      "exitCode": 1,
+      "observedSummary": "1 unittest loader error: module has no VerifiedComponentTests; suggested VerifiedComponentsTests. The other 3 named tests passed; total 4 tests, 1 error, 0 assertion failures."
+    },
+    {
+      "id": "component-import-corrected",
+      "command": "PATH=/Users/juanyanez/Repos/Personal/agent-braid-system-one/.venv-speckit/bin:$PATH PYTHONPATH=.. /Users/juanyanez/Repos/Personal/agent-braid-system-one/.venv-speckit/bin/python -m unittest test_system_one_verified_components.VerifiedComponentsTests.test_core_component_imports_do_not_load_research_or_neural_packages",
+      "cwd": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-verified-core/tests",
+      "exitCode": 0,
+      "observedSummary": "1 test passed in 0.332 s."
+    }
+  ],
+  "otherChecks": [
+    {
+      "kind": "read-only hash comparison",
+      "observedSummary": "All 21 assigned review pins matched assignment.json and before.json during the original T07 review. A later scoped check confirmed all 9 product pins still matched the before inventory after compatibility-test additions."
+    },
+    {
+      "kind": "read-only hash comparison",
+      "observedSummary": "Final compatibility test SHA-256 56e9e82f91d492b01fe48c413a8a14711f189406ea6ce25369d87ff249cbdf9e; updated plan SHA-256 e53366c9c02615cafce70dc4b44ebf9e7e7792594fea8f26a0c594b74928494e."
+    }
+  ]
+}

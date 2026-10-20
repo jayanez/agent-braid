@@ -1,0 +1,36 @@
+{
+  "checkedAtUTC": "2026-10-20T12:47:15.707372+00:00",
+  "scope": "Documentary-only reconciliation; no producer commands repeated",
+  "base": "7a9cf27cde7f849dc5fccf9d3b1d91a059675d23",
+  "sourceBindingsVerified": 89,
+  "sourceArchiveMembersVerified": 38,
+  "rawRepresentationsAndFilesVerified": 48,
+  "reviewPinsVerified": 21,
+  "priorFilesUnchanged": 2471,
+  "sameCurrentProfileInputs": 2474,
+  "mappedVectorIDs": 32,
+  "distinctMappedTestsPassedInEachProfile": 28,
+  "reviewExecutionRecords": 5,
+  "reviewExecutionsRawCapture": false,
+  "documentaryRepresentationsVerified": 62,
+  "changedPathsVisitedBeforeValidationRecord": 53,
+  "JSONValidated": 27,
+  "gzipDecoded": 19,
+  "localLinksVerified": 76,
+  "readerCorrection": "Initial documentary reader assumed flat before.json; corrected to metadata.files; no producer/evidence change",
+  "repositoryValidation": {
+    "command": "env PYTHONDONTWRITEBYTECODE=1 /Users/juanyanez/Repos/Personal/agent-braid-system-one/.venv-speckit/bin/python scripts/validate_repository.py",
+    "exitCode": 0
+  },
+  "specKitStructural": {
+    "command": "env PATH=/Users/juanyanez/Repos/Personal/agent-braid-system-one/.venv-speckit/bin:/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin PYTHONDONTWRITEBYTECODE=1 /Users/juanyanez/Repos/Personal/agent-braid-system-one/.venv-speckit/bin/python scripts/validate_spec_kit.py",
+    "exitCode": 0,
+    "originalLogSHA256": "b28f0f3bd337a6cae29938ed6ec99ef7ecf3c0005cc38370479d91ec923e04ac",
+    "representation": "docs/system-one/addenda/t07-final-20261020/documentary-spec-kit.log.gz",
+    "boundary": "Structural only; not independent product/scientific/human acceptance"
+  },
+  "stagedWhitespace": "checked before commit",
+  "producerSuitesCapturesFinalizersOrReviewsRerun": false,
+  "productPathsInDiff": 0,
+  "gatesClosed": false
+}

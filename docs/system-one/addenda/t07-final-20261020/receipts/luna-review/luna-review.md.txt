@@ -1,0 +1,33 @@
+# Independent Luna review — DDP-T07 / SPEC-029 T027
+
+**Disposition:** No actionable P1/P2 finding identified in this bounded independent review. This is a source/contract review with focused software tests, not scientific, human, admission, activation, or production approval.
+
+## Scope and pins
+
+Reviewed the integrated candidate at HEAD `fe6d25b3d9fb989c230aa11779b6a51d494d7a4e` plus the preserved WIP, against the frozen verified-plan producer and consumer contracts, DDP-T01/T027 conformance references and repository authorities. Cross-read the actual acquisition, IR, registry, selection, consumer, ToolingService, stdio transport, and shared runtime seams as needed. Legacy/default behavior was checked at opt-in boundaries. MCP work remains explicit and offline/local; no default service catalog registration or execution/grant capability was found in the scoped path.
+
+All 21 assignment review pins matched both `assignment.json` and `before.json` before review; the post-check below matched those same hashes after the focused executions. Pinned reviewed additions include `system_one_verified_tooling.py` `128aed194149f648d0a579b9fff7d85e121c10339df7552e1e488363c744d04e`, `system_one_verified_stdio.py` `3caaafb091d3c314224992e334ec6ca302c2c72831de12997481ccc9fe7a8f42`, `git_runtime.py` `8cf7168e2cbb9b874019eb3cc8dcee7b5ad69892eaeb4cc0511996fade29f897`, and `git_replay.py` `6dc84e50fe04abb4e5675ac0173f9579b239d13ad1741e106b2d4e272081a388`. Source/test/contracts remained unchanged during this review.
+
+## Findings
+
+No actionable P1/P2 findings. In the reviewed transport path, the stdio client strictly sequences initialize, initialized notification, tool discovery/call, manifest/chunk reads, and terminal verified-result; the parent independently re-reads and validates the complete artifact body before returning a prepared result. Frame, frame-count, total-wire, stderr, artifact-size/chunk, URI progression, and aggregate-output constraints are bounded. The child is network sandboxed on the supported macOS path, performs no Git/source work, is tracked and terminated/reaped on failure/cancellation, and unknown termination prevents answered publication while retaining scratch. ToolingService preparation passes the exact request budget/cancellation token through the existing native prepare call and checks provenance/evidence before publication.
+
+Contract cross-read found the implementation consistent with the frozen semantics reviewed here: raw admission precedes native/consumer dispatch; unknown/incomplete observation does not become false; observed evidence is bound to exact complete bodies and pins; deterministic eligibility/lexical minimum-cost choice is not a probability; defer has no native or consumer call; cancellation/deadline and cleanup are checked before final publication; and execution authorization remains false. The pre-existing stdlib contract rejects these new records rather than silently coercing them.
+
+## Executed checks
+
+Using the existing Python 3.12.13 venv at `/Users/juanyanez/Repos/Personal/agent-braid-system-one/.venv-speckit/bin/python` with `PYTHONPATH=..` from `tests/`:
+
+- Passed 3 targeted stdio tests: four-view real subprocess round-trip with complete body/shared parent budget; stalled child cancellation and reap without budget reset; rejection of chunk-protocol bypass with otherwise valid inline body. (3 tests, 20.373 s.)
+- Passed 3 targeted ToolingService tests: four-view complete evidence/same budget; cancellation during resource delivery suppresses prepared success; artifact chunk guards and inline-reference agreement. (3 tests, 18.697 s.)
+- Passed isolated component import, legacy response incompatibility, unchanged default service catalog/resource limits, and frame encoder/default catalog checks. The first combined invocation had one test-loader error due to an incorrect test class name; the three other named tests passed. Corrected invocation of the component-import test passed separately. No test body failed.
+
+One initial test launch omitted the checkout from `PYTHONPATH` and failed at module import before executing a test; corrected invocation passed. These checks were narrow and are not a full profile or conformance-suite result. No model, study, dataset, network, dependency installation, or broad validation profile was run by this reviewer.
+
+## Limits and residual gaps
+
+The conformance document itself labels its T01/T027 content documentary and several V01–V32 items as planned expectations rather than prior passes. This review did not independently rerun the map, full fresh-process denied-import/network compatibility harness, all legacy semantic vectors before/after imports, full quick/pr profiles, stock MCP SDK/host interoperability, or hard timing/resource SLA qualification. No claim is made about stock SDK adoption, general host compatibility, scientific accuracy/utility, human review, or authorization to publish or activate. Parent-owned compatibility tests and conformance mapping remain separate evidence.
+
+## Hash verification
+
+Assignment review pins: 21 of 21 matched `assignment.json` and `before.json` at review start and matched again after targeted tests. Before inventory SHA-256: `fda5ced3bf902fe1bfcc913380e8de62241f78e6758a10b6d5131f8b633b03be`. Checkout HEAD remained `fe6d25b3d9fb989c230aa11779b6a51d494d7a4e`.

@@ -1,0 +1,45 @@
+{
+  "activation": "pending",
+  "bindingsVerified": 89,
+  "executionAuthorization": false,
+  "externalSpendEUR": 0,
+  "humanReview": "pending",
+  "packet": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-verified-core/specs/029-system-one-evaluation/evidence/ddp-t07/packet.json",
+  "packetSha256": "27948e6669a4f360e6bc4eacd542b200d6f882d6bcb824aa23aa5560a08299d8",
+  "patchAppliesBaselineIndex": true,
+  "patchSha256": "7589e925edfacaef9a6d0093bfbdf40c7757ff36bb152a0a27acc7bc886e8e8f",
+  "priorFilesPreserved": 2471,
+  "profiles": {
+    "pr": {
+      "exitCode": 0,
+      "inputs": 2474,
+      "inputsStillMatch": true,
+      "logSha256": "697b8c948b70c20bd500997b514a272dcb8ea06e981ba40c4d6b4b1fbe249861",
+      "passed": 2065,
+      "profileSeconds": 2267.8168948750244,
+      "skips": 19,
+      "tests": 2084,
+      "unitSeconds": 2090.868
+    },
+    "quick": {
+      "exitCode": 0,
+      "inputs": 2474,
+      "inputsStillMatch": true,
+      "logSha256": "53d26861d03f6446db3798c328ce182b4ca4258c2dc024b71a8152934345c79c",
+      "passed": 2065,
+      "profileSeconds": 2267.6304267079686,
+      "skips": 19,
+      "tests": 2084,
+      "unitSeconds": 2090.754
+    }
+  },
+  "rawReceiptFiles": 48,
+  "report": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-verified-core/specs/029-system-one-evaluation/addenda/ddp-t07-implementation.md",
+  "reportSha256": "6828a40c75882fce134a99f4baa463a68ff9d572b1661572646d697a178fb3f7",
+  "repositoryExitCode": 0,
+  "sourceArchiveMembers": 38,
+  "sourceArchiveSha256": "82dec57a0c36bed27e4c601a5de75111d8a8a642b900b7f385c4b708da19d95c",
+  "status": "complete",
+  "training": "pending",
+  "whitespaceExitCode": 0
+}

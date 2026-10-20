@@ -1,5 +1,11 @@
 # SPEC-031 — current controlled-consumer documentary status
 
+## Later bounded T07 evidence
+
+The [separate T07 disposition](../029-system-one-evaluation/t07-corpus-status.md) now records obtained bounded Luna technical review and software conformance, without closing canonical tasks or acceptance gates. The pending independent-review/T07 statements in the prior T06 observation below are historical. Human/Claude/scientific/training/admission/promotion/activation and external host adoption remain pending.
+
+## Prior T06 observation
+
 DDP-T06 aliases SPEC-031/T011. The [final controlled-consumer supplement](../../docs/system-one/addenda/t06-transport-final-20261020/README.md) is the latest engineering disposition: Core API, private service and real stdio-client controlled paths are locally packaged; transport quick/PR each passed2080 tests including19 skips on2415 identical source inputs. Final transport packet88 bindings/34 archived members/51 raw representations were checked. Original Core/transport plans retain requirement/scenario/control mapping; historical source pins and contracts are unchanged, with two Core pins explicitly superseded by transport.
 
 Trace the [Core intake](../../docs/system-one/addenda/t06-core-intake-20261020/README.md), [Core final](../../docs/system-one/addenda/t06-core-final-20261020/README.md), [transport intake](../../docs/system-one/addenda/t06-transport-intake-20261020/README.md), [transport profiles](../../docs/system-one/addenda/t06-transport-profiles-20261020/README.md) and final supplement for failures, repairs, captures and their observation boundaries. Earlier pending wording belongs to those immutable observations.

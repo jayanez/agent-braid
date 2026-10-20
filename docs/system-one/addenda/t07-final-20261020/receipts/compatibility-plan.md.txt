@@ -1,0 +1,18 @@
+# DDP-T07 / SPEC-029T027 — local engineering conformance
+
+Status: authorized; independent Luna Latest review in progress. Candidate baseline fe6d25b3 plus preserved implementation WIP. Assignment pins and complete prior-file inventory are external adjacent JSON. No existing contract or historical packet is rewritten.
+
+## Planned new controls
+
+1. Fresh Python process with network and process-launch audit guards: import all verified modules, inspect legacy capabilities/router manifests/catalogs before and after. Reject research/ML/SDK imports at import-hook boundary, rather than only examining sys.modules afterward. No source acquisition/native preparation on import.
+2. Real legacy synthetic boolean/choice/score evaluations before and after opt-in imports retain their semantic results, registry and public schemas. Nonsemantic elapsed time is compared only for shape/range, never byte equality.
+3. Every consumer rejects legacy, raw malformed and authority-bearing inputs without acquisition/native/child preparation; exact reason, zero counters and cleanup recorded. Real valid EN/ES request fixtures remain distinct from arbitrary raw input.
+4. Both directions of contract separation: legacy rejects verified request/result; verified rejects legacy request/result. No conversion, activation or probability invention.
+5. Independent reviewer counterexamples obtain regression controls; corrected source pins receive scoped recheck by the same Luna reviewer.
+6. Map all frozen V01–V32 vectors to concrete existing/new tests and limits. A missing assertion is a gap, not an inferred pass. Keep source fidelity/EOF/unknown/empates observations within finite supported domain.
+
+## Validation and stop rules
+
+Parent fixes only findings reproduced against pinned sources; reviewer read-only with external evidence ownership. No product edits during review/capture/profiles. After preflight, add tests and additive implementation plan/report. Run focused controls, quick increment and PR once on stable T07 candidate using existing Python3.12/PATH. Preserve any failed attempt and diagnose before retry; never blind restart. Capture/reproduction and profile evidence remain distinct. No downloads, new dependencies, model evaluation, datasets, private histories, paid services or product publication.
+
+Completion requires obtained independent review/recheck, actual conformance receipts, exact current hashes, historical byte preservation and documentary handoff. Human/Claude/scientific review, learned training/calibration, data admission, activation, native external host adoption and Laya parity remain pending.

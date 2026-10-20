@@ -1,8 +1,14 @@
 # System One — agent resumption guide
 
-## Latest engineering observation
+## Latest T07 observation and ownership
 
-Start with the [final controlled-consumer reconciliation](addenda/t06-transport-final-20261020/README.md): Core API/private service/real stdio-client engineering is packaged, quick/PR and source bindings verified. Earlier pending profiles/package/service entries below are historical snapshots. Independent product review/T07, host adoption, scientific/human/admission/promotion/activation remain pending. The current documentary checkout is `/tmp/agent-braid-t06-documentary-20261020`, branch `docs/ddp-t06-core-corpus`; publication of this supplement is separate from merged PR594 and from retained local product source.
+Read the [final T07 supplement](addenda/t07-final-20261020/README.md) first. Independent bounded Luna technical review and compatibility/conformance profiles are obtained; older pending-T07 wording below is historical. Four new tests and both2084-case profiles passed with19 skips per profile; mapping V01–V32 is family-level, not archived replay. Reviewer command evidence is a five-entry transcription without complete stdout/stderr logs. Product sources are unchanged and retained locally. T07's canonical task/acceptance status and human/Claude/scientific/training/admission/promotion/activation/host-adoption gates are not closed by this supplement.
+
+PR608 is merged into develop as7a9cf27; the current separate documentary branch is `docs/ddp-t07-corpus` in `/tmp/agent-braid-t06-documentary-20261020`. Its PR publication/integration is distinct. No authority to implement product changes or merge another PR is inferred from PR608.
+
+## Historical T06 engineering observation
+
+Start with the [final controlled-consumer reconciliation](addenda/t06-transport-final-20261020/README.md): Core API/private service/real stdio-client engineering is packaged, quick/PR and source bindings verified. Earlier pending profiles/package/service entries below are historical snapshots. Independent product review/T07, host adoption, scientific/human/admission/promotion/activation remain pending. At that T06 observation, the documentary checkout was `/tmp/agent-braid-t06-documentary-20261020`, branch `docs/ddp-t06-core-corpus`; publication of this supplement is separate from merged PR594 and from retained local product source.
 
 Read this guide and the [central index](README.md) before resuming. Current documentary review snapshot:2026-10-20. Earlier addenda are timestamped history, not parallel current status. This guide is not execution, merge, public adoption or activation permission.
 

@@ -1,0 +1,9 @@
+{
+  "tests": 3,
+  "failures": 0,
+  "errors": 1,
+  "skips": 0,
+  "seconds": 0.12055516697000712,
+  "exitCode": 1,
+  "logSha256": "9475cb6b5b605df7396279036ea6078de092cc3ca342e45377db63171e97522d"
+}
