@@ -73,3 +73,7 @@ The documentary corpus is published on branch docs/ddp-t01-contracts in [draft P
 [Request context and digest seams](addenda/t05-context-and-digest-seams-20261020.md) record the coordinator-confirmed internal API, producer-versus-final snapshot immutability, exact hashed envelopes and future T06 usage/digest rule. They remain implementation directions until source-bound receipt/tests, not obtained capabilities.
 
 T05 quality sequence is now recorded in the [context/digest handoff](addenda/t05-context-and-digest-seams-20261020.md): focused pass and stable hashes → scoped Luna Latest review → findings/fixes and affected tests → stable new quick/PR. This is a plan only, with human/scientific/T07 review separate; no completed review is claimed.
+
+## Open T05-FIND-001
+
+[Technical-refusal latch finding](addenda/t05-failure-latch-20261020/README.md) requires irreversible refusal after caught phase/checkpoint exhaustion, preserving already sealed final results. First22-test attempt failed twice, second22passed before the finding, later28-test log passed but lacks final source binding/disposition. Keep the finding open; await corrected pins/tests and Luna review. No independent acceptance is inferred.

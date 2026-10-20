@@ -6,6 +6,8 @@ GitHub availability: [published documentary corpus and follow-up](addenda/github
 
 Publication and next authority: [documentary publication mandate and conditional T05 handoff](addenda/publication-and-t05-condition-20261020.md). T05 depends on actual quick/PR passes and intact pins; no GO is inferred.
 
+Latest T05 finding: [T05-FIND-001 technical-refusal latch](addenda/t05-failure-latch-20261020/README.md), correction in progress; failed/22-pass/later28-pass log observations preserved without final source-bound closure.
+
 Latest T05 design direction: [request lifetime, immutable snapshots and exact digest domains](addenda/t05-context-and-digest-seams-20261020.md), pending implementation receipt/tests.
 
 Latest final package and handoff: [T02/T03/T04 packet verified; T05 assigned and active](addenda/first-batch-final-package-20261020/README.md).51 source bindings and18 archive members checked; T05 results and independent/human gates remain pending.
