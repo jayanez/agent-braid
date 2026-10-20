@@ -1,0 +1,15 @@
+{
+  "id": "PR594-DOCUMENTARY-REVIEW-AUDIT",
+  "checkedAtUTC": "2026-10-20T09:05:26.495441+00:00",
+  "head": "995057a3e9cb0e757a44f3389c09a67beda8b481",
+  "changedPaths": 134,
+  "jsonParsed": 68,
+  "localLinksChecked": 190,
+  "boundReceiptFilesChecked": 62,
+  "utf8CapsulesChecked": 41,
+  "gzipStreamsChecked": 20,
+  "finalPacketGzipBindingsChecked": 20,
+  "whitespace": "passed",
+  "errors": [],
+  "boundary": "Changed local Markdown links/JSON/capsules/receipt hashes/retained gzip; no product source or experiment/test execution, no remote scientific validation"
+}

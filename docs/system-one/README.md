@@ -10,6 +10,8 @@ The later T06 Core API assignment belongs to the coordinator's separate implemen
 
 The corpus is published in [PR594](https://github.com/jayanez/agent-braid/pull/594), targeting develop; publication, current-head CI, review and integration are separate. Product source/tests/fixtures/config/source archives/patches remain in the explicitly hash-bound coordinator package. The [publication receipt](addenda/github-publication-20261020.md) records initial publication, not current CI. No scientific/human approval or activation follows from publication or software tests.
 
+[PR594 documentary review and integration preparation](addenda/pr594-documentary-review-20261020/README.md) records chronology corrections, the bounded Luna recheck and mechanical checks; current-head CI and merge remain separate.
+
 ## Core reading and traceability
 
 - [Evidence and evolution](evolution.md): why each increment happened, positive/negative findings and domain limits.
