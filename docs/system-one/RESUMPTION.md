@@ -6,9 +6,9 @@ Start with the [final controlled-consumer reconciliation](addenda/t06-transport-
 
 Read this guide and the [central index](README.md) before resuming. Current documentary review snapshot:2026-10-20. Earlier addenda are timestamped history, not parallel current status. This guide is not execution, merge, public adoption or activation permission.
 
-## Current state and ownership
+## Historical PR594 state and ownership
 
-| Track | Obtained evidence/current boundary |
+| Track | Obtained evidence/boundary at the PR594 observation |
 |---|---|
 | Original research/T025 | Experiments, failures and limits preserved; T025 engineering-only final receipt |
 | DDP-T01 design | Revision2 verified by coordinator for bounded planning; frozen headers retain their earlier pre-disposition status; public schemas remain proposed |
@@ -18,7 +18,7 @@ Read this guide and the [central index](README.md) before resuming. Current docu
 | Publication/integration | Corpus on branch docs/ddp-t01-contracts in [PR594](https://github.com/jayanez/agent-braid/pull/594); exact-head CI, review and integration are separate |
 | Acceptance | Broader T07, human/scientific/representative/rights/training/calibration/admission/promotion/activation pending |
 
-Read the [status clarification](addenda/pr594-documentary-review-20261020/status-clarifications.md) for the temporal boundaries. T05's final “new T06 assignment required” predates the coordinator's subsequent direct user authorization; it does not contradict or itself supply that authority. This documentary conversation prepares PR review/integration and starts no T06 work.
+Read the [status clarification](addenda/pr594-documentary-review-20261020/status-clarifications.md) for the temporal boundaries. T05's final “new T06 assignment required” predates the coordinator's subsequent direct user authorization; it does not contradict or itself supply that authority. At that earlier observation, this documentary conversation prepared PR594 review/integration and started no T06 work. The later Core/transport evidence is linked in the latest engineering section above.
 
 ## Read order
 
@@ -32,7 +32,7 @@ Read the [status clarification](addenda/pr594-documentary-review-20261020/status
 
 The earlier corpus and T025 reconciliation were integrated through PR559/PR593. The37original importable documents already matched their manifest; duplicate import was unnecessary. The corpus reconciles earlier studies, implementation/proposal boundaries, negative/incomplete results and canonical task aliases. The existing Project's88S1items matched the sealed tracking snapshot at its readback time; no corrections were needed. Empty GitHub assignee fields are not invented coordinator accounts, and no task/parent/milestone closure follows from these later documentary receipts.
 
-The latest PR preserves frozen DDP-T01 design/review, source-bound component and T05 receipts, exact logs, all material findings/repairs and final packets. A failed attempt to append new text to a hash-bound finding README was corrected by restoring original bytes and using a separate supplement; Git and the supplement retain that documentary integrity correction. Original hashes were not refreshed to hide drift.
+Integrated PR594 preserves frozen DDP-T01 design/review, source-bound component and T05 receipts, exact logs, all material findings/repairs and final packets. A failed attempt to append new text to a hash-bound finding README was corrected by restoring original bytes and using a separate supplement; Git and the supplement retain that documentary integrity correction. Original hashes were not refreshed to hide drift.
 
 ## Validation that must not be overstated
 
@@ -44,7 +44,7 @@ The latest PR preserves frozen DDP-T01 design/review, source-bound component and
 
 ## Where material lives
 
-Documentary branch checkout: `/tmp/agent-braid-s1-t025-documentary-20261020`. Coordinator product candidate: `/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-verified-core`, branch feat/verified-plan-core, recorded baselinefe6d25b3d9fb989c230aa11779b6a51d494d7a4e. Research checkout `/Users/juanyanez/Repos/Personal/agent-braid-system-one` remains read-only for this documentary task.
+Historical PR594 documentary checkout: `/tmp/agent-braid-s1-t025-documentary-20261020`; current subsequent corpus checkout: `/tmp/agent-braid-t06-documentary-20261020`. Coordinator product candidate: `/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-verified-core`, branch feat/verified-plan-core, recorded baselinefe6d25b3d9fb989c230aa11779b6a51d494d7a4e. Research checkout `/Users/juanyanez/Repos/Personal/agent-braid-system-one` remains read-only for this documentary task.
 
 The corpus publishes reports/metadata/receipts/reviews/logs and exact binding maps. Product source/tests/fixtures/config/source archives/product patches remain in the hash-bound coordinator package. A reviewer can understand the recorded activity and evidence limits from GitHub; source reproduction needs those explicitly excluded local inputs. Missing inputs remain unavailable, never fabricated. Earlier local-only receipts and derivative ZIPs describe their original delivery; current publication is PR594.
 
