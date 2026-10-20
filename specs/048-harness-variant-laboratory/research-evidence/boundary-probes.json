@@ -1,0 +1,7 @@
+{
+  "source_commit": "1cfe254e8d25b15f37048c3730134686abe60335",
+  "allowed_path_symlink_target_read": true,
+  "base_available_to_selection": false,
+  "runmark_completion_checks_run_id_parameter": false,
+  "scope": "Synthetic local boundary probes; no secret files, model calls or upstream modifications."
+}

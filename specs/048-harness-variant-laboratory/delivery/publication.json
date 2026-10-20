@@ -1,0 +1,24 @@
+{
+  "repository": "jayanez/agent-braid",
+  "scope": [
+    "SPEC-048",
+    "SPEC-049"
+  ],
+  "milestones": [
+    {
+      "number": 21,
+      "title": "HAR.1 — Harness variant laboratory",
+      "html_url": "https://github.com/jayanez/agent-braid/milestone/21",
+      "state": "open"
+    },
+    {
+      "number": 22,
+      "title": "HAR.2 — Harness evaluation and learning",
+      "html_url": "https://github.com/jayanez/agent-braid/milestone/22",
+      "state": "open"
+    }
+  ],
+  "issues": [],
+  "subissue_links": [],
+  "approval_boundary": "Owner authorized this project milestone/issue/task planning publication; no execution or capability acceptance."
+}
