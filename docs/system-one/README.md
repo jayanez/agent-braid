@@ -2,6 +2,8 @@
 
 Documentary snapshot, 2026-10-20. Start here; reading chat history is not required. For a new agent, read the [resumption guide](RESUMPTION.md): completed documentary work, exact validation limits, ownership and next evidence.
 
+GitHub availability: [published documentary corpus and follow-up](addenda/github-publication-20261020.md), [draft PR594](https://github.com/jayanez/agent-braid/pull/594). Available on the documentary branch; integration/review/current-head CI remain pending. Earlier local-only receipts retain their historical state.
+
 Publication and next authority: [documentary publication mandate and conditional T05 handoff](addenda/publication-and-t05-condition-20261020.md). T05 depends on actual quick/PR passes and intact pins; no GO is inferred.
 
 Current validation: [component profiles started](addenda/component-profiles-started-20261020.md); quick/PR outcomes remain unknown at the recorded observation.
@@ -14,7 +16,7 @@ Earlier component evidence: [T04 partial component receipt](addenda/t04-componen
 
 Latest coordination: [T02/T03/T04 preparation handoff](addenda/ddp-t02-t04-preparation-20261020.md). Three agents assigned by the coordinator; component and integration receipts remain pending.
 
-Latest status: [verification continuity and current pending matrix](addenda/verification-continuity-20261020/README.md). The Project readback matched 88/88 items; DDP-T01 local design delivery was verified by the coordinator. Its complete PR profile remains failed, with a corrected affected-module pass recorded separately. The latest design and this supplement are documentary branch additions awaiting remote publication/integration; this documentary delivery starts no implementation or activation. A subsequent verified coordination event records newly authorized T02/T03/T04 preparation in the coordinator conversation; no component delivery is inferred.
+Latest status: [verification continuity and current pending matrix](addenda/verification-continuity-20261020/README.md). The Project readback matched 88/88 items; DDP-T01 local design delivery was verified by the coordinator. Its complete PR profile remains failed, with a corrected affected-module pass recorded separately. The latest design and this supplement are documentary branch additions now published in PR594 and awaiting integration; this documentary delivery starts no implementation or activation. A subsequent verified coordination event records newly authorized T02/T03/T04 preparation in the coordinator conversation; no component delivery is inferred.
 
 Earlier final engineering status: [T025 final engineering receipt and documentary DDP-T01 assignment](addenda/t025-final-20261020.md). T025 engineering is closed; DDP-T01 is enabled and assigned to the coordinator, without execution or implementation authority. Earlier registers/addenda retain their original snapshot.
 

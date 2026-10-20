@@ -55,3 +55,7 @@ Human/linguistic review, independent/Claude Code review, scientific and represen
 ## Component profiles started
 
 [Quick/PR start record](addenda/component-profiles-started-20261020.md) records running source-equivalent copies and unknown outcomes. Await final input-bound receipts/logs; do not infer a completed packet from a prepared finalizer or a passing profile from live output. The coordinator candidate must remain unchanged during its runs.
+
+## GitHub availability
+
+The documentary corpus is published on branch docs/ddp-t01-contracts in [draft PR594](https://github.com/jayanez/agent-braid/pull/594). See the [publication receipt](addenda/github-publication-20261020.md). Earlier statements about local-only delivery are historical; integration into develop, current-head CI and reviews remain separate.
