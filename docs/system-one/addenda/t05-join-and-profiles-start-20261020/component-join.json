@@ -1,0 +1,19 @@
+{
+  "command": [
+    "/Users/juanyanez/Repos/Personal/agent-braid-system-one/.venv-speckit/bin/python",
+    "-m",
+    "unittest",
+    "discover",
+    "-s",
+    "tests",
+    "-p",
+    "test_system_one_verified*.py",
+    "-v"
+  ],
+  "exitCode": 0,
+  "wallSeconds": 23.028198209000003,
+  "logSha256": "91828fc3eef72cc6455008140da3bbbaa831838813942b8b6a46ae28d22cbf7d",
+  "scope": "Composition software checks, overlapping focused tests; no independent scientific observations",
+  "externalSpendEUR": 0,
+  "executionAuthorization": false
+}

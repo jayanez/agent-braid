@@ -1,0 +1,42 @@
+{
+  "id": "S1-T05-JOIN-PROFILE-START-20261020",
+  "checkedAtUTC": "2026-10-20T07:28:38.225169+00:00",
+  "sourcePins": {
+    "agent_braid/system_one_verified_selection.py": "8971650c51082938281ecb62e40e23adab4202bb20971b1eb23e1ef7d78c339c",
+    "tests/test_system_one_verified_selection.py": "d14d2ec1637b944eab96a6c9938b1758c8343e390fae208d55e615c9089e0b56"
+  },
+  "checks": {
+    "actualSourceHashes": 2,
+    "completedJoinLogHash": true,
+    "launchedHelperHash": "fff73347353ecf104526e3ab7cc902960510b45b0e47b38ab917765c964cc06d",
+    "testExecutionHere": false,
+    "profileOutcomes": "not received"
+  },
+  "files": [
+    {
+      "path": "README.md",
+      "sha256": "8845af3a47ce22abffff08b11fa0718a4aefce799cb8d0373f93feac8a507e1e",
+      "bytes": 2160
+    },
+    {
+      "path": "component-join.json",
+      "sha256": "eebb1a2a64687367ea509124efbc768dc96a0907d90617fd53b68e800c2bb547",
+      "bytes": 536
+    },
+    {
+      "path": "join-log.json",
+      "sha256": "fa5d3ce8d7ba91961d9744cd696cad5d82365ba9ea0ddf80f66e5bd7cf0717cb",
+      "bytes": 14873
+    },
+    {
+      "path": "launch.json",
+      "sha256": "fec1f5bd130309ce2fb6c07f0bb08b967d096e96ed772c14230593e3a19fcf25",
+      "bytes": 496
+    },
+    {
+      "path": "supervisor-start.json",
+      "sha256": "11bc9c82dc45e62686f3151706dd49edfaeace08a579fbbc90e9572cd2264d5b",
+      "bytes": 439
+    }
+  ]
+}

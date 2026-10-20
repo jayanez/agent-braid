@@ -89,3 +89,5 @@ Subsequent T05 directions in the [additive admission/refusal record](addenda/t05
 [Corrected row-cap candidate](addenda/t05-rowcap-fixed-candidate-20261020/README.md) binds new8971650c/d14d2ec source/test hashes,28passes9.848s and two new directed mutation detections. Alias T05-FIND-002 = T05-REVIEW-P2-001. Luna targeted disposition and new full profiles remain pending; do not close on focused evidence alone.
 
 [Luna targeted row-cap disposition](addenda/t05-rowcap-luna-disposition-20261020/README.md) now closes T05-FIND-002/T05-REVIEW-P2-001 on exact8971650c/d14d2ec pins after one regression pass0.753s. The broader T05 acceptance and combined/full profiles remain pending; preserve original review and fix-candidate receipts as history.
+
+[T05 joined suite and full-profile launch](addenda/t05-join-and-profiles-start-20261020/README.md) record80overlapping tests passed22.932s and new quick/PR launched07:27:32Z on fixed pins. No complete T05 profile result or package is received at this start observation. Do not duplicate/restart runs or mutate their source inputs.
