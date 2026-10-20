@@ -51,3 +51,7 @@ Human/linguistic review, independent/Claude Code review, scientific and represen
 ## Subsequent T03 and focused post-pin join
 
 [T03 and post-pin component join](addenda/t03-and-component-join-20261020/README.md) now provide the exact T03 final receipt (13 passes) and overlapping combined suite (52 passes, four cross-component checks), with seven source-file hash comparisons and two log checks. This supersedes the earlier missing T03/post-pin focused evidence. Full profiles, independent review and T05/T06 remain pending; do not add overlapping test counts or relabel the historical failed full profile.
+
+## Component profiles started
+
+[Quick/PR start record](addenda/component-profiles-started-20261020.md) records running source-equivalent copies and unknown outcomes. Await final input-bound receipts/logs; do not infer a completed packet from a prepared finalizer or a passing profile from live output. The coordinator candidate must remain unchanged during its runs.
