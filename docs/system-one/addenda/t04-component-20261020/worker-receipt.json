@@ -1,0 +1,19 @@
+{
+  "task": "DDP-T04",
+  "stage": "component implemented; production pin/integration pending",
+  "recordedAtUTC": "2026-10-20T06:22:01.769304+00:00",
+  "files": {
+    "agent_braid/system_one_verified_registry.py": "2cae6dabd1aa1f9a4818f9c5b7214c8647f078f3fcc5d1ffb26e5657dabaa8c2",
+    "tests/test_system_one_verified_registry.py": "53185df49342636e9b2545a5d53ef398998b4acc3367e39ee35ee0e5c525d254",
+    "tests/fixtures/system_one_verified_registry.json": "75753dac881c6cd933360aab88b5d71bb6d17c19d6537c0645b8024c78a1005a"
+  },
+  "focusedLogSha256": "be0ea6a187f543078d44f7b7561b12519a1ac5bdb4a5e781e5fd7221b91e7d81",
+  "focusedTests": {
+    "count": 10,
+    "skips": 0,
+    "exitCode": 0,
+    "seconds": 0.007
+  },
+  "workerOwnership": "released",
+  "executionAuthorization": false
+}

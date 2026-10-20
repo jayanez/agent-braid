@@ -1,8 +1,14 @@
 # System One: evidence, capability and resumption index
 
-Documentary snapshot, 2026-10-20. Start here; reading chat history is not required.
+Documentary snapshot, 2026-10-20. Start here; reading chat history is not required. For a new agent, read the [resumption guide](RESUMPTION.md): completed documentary work, exact validation limits, ownership and next evidence.
 
-Latest status: [T025 final engineering receipt and documentary DDP-T01 assignment](addenda/t025-final-20261020.md). T025 engineering is closed; DDP-T01 is enabled and assigned to the coordinator, without execution or implementation authority. Earlier registers/addenda retain their original snapshot.
+Latest component evidence: [T04 partial component receipt](addenda/t04-component-20261020/README.md), ten focused tests reported passed; production pin/integration and whole-task closure remain pending.
+
+Latest coordination: [T02/T03/T04 preparation handoff](addenda/ddp-t02-t04-preparation-20261020.md). Three agents assigned by the coordinator; component and integration receipts remain pending.
+
+Latest status: [verification continuity and current pending matrix](addenda/verification-continuity-20261020/README.md). The Project readback matched 88/88 items; DDP-T01 local design delivery was verified by the coordinator. Its complete PR profile remains failed, with a corrected affected-module pass recorded separately. The latest design and this supplement are documentary branch additions awaiting remote publication/integration; this documentary delivery starts no implementation or activation. A subsequent verified coordination event records newly authorized T02/T03/T04 preparation in the coordinator conversation; no component delivery is inferred.
+
+Earlier final engineering status: [T025 final engineering receipt and documentary DDP-T01 assignment](addenda/t025-final-20261020.md). T025 engineering is closed; DDP-T01 is enabled and assigned to the coordinator, without execution or implementation authority. Earlier registers/addenda retain their original snapshot.
 
 Earlier bounded update: [T025 development receipt](addenda/t025-development-20261020.md). Development passed; evaluation/final engineering closure and DDP-T01 assignment remain pending. The base register below retains its earlier snapshot unchanged.
 
@@ -10,7 +16,7 @@ Earlier bounded update: [T025 development receipt](addenda/t025-development-2026
 - [Machine-readable evidence register](evidence-register.json): stable study/task aliases, exact report/protocol identities, line references, resource/failure boundaries and source bindings.
 - [Faithful report/protocol snapshots](source-documents.json): full research documentation text for audit, including commands and negative findings; embedded original paths/links refer to the source research checkout. This is documentary export, not model/data/code publication or clean-room reproduction.
 - [Full capability map](../../specs/028-system-one-core/decision-delivery/program-map.md), [bounded architecture](../../specs/028-system-one-core/decision-delivery/architecture.md), [latency/budget boundaries](../../specs/028-system-one-core/decision-delivery/latency-and-budgets.md).
-- [Canonical task aliases and acceptance](task-map.json), [open gates and assignments](gates-and-assignment.md), [adversarial review brief](adversarial-review.md) and [requirements/convergence checklist](review-checklist.md).
+- [Canonical task aliases and acceptance](task-map.json), [historical gates and assignments](gates-and-assignment.md), [adversarial review brief](adversarial-review.md) and [requirements/convergence checklist](review-checklist.md).
 
 ## Source and observation boundary
 
@@ -19,3 +25,7 @@ Research source: /Users/juanyanez/Repos/Personal/agent-braid-system-one, observe
 The imported-draft decision-delivery package is a proposal, not acceptance or implementation. The earlier T025-in-progress snapshot is superseded by the final addendum above; scientific/human/product gates remain separate. The original five S1 milestones and six spec parents remain open. Human/linguistic review, representative workflow acceptance, independent scientific reproduction, rights for distribution and per-capability promotion/activation remain separately pending.
 
 Claims: empirical/engineering only within each stated domain; no general calibrated reliability, theorem or Laya parity. Controlled EN/ES record round trips do not establish unrestricted language understanding. Deterministic admissibility is not calibrated probability. Software profiles and agent review do not supply human approval.
+
+## Documentary continuity rule
+
+Incorporate each material new result, failed attempt, correction, review, decision and handoff into this repository corpus before delivery. Record its study/task/requirement mapping, observation boundary, obtained result, source paths and hashes, validation scope and unresolved gates; update this entry point and link detailed evidence instead of duplicating it. Use additive supplements to correct or supersede frozen records. Keep local incorporation, remote publication, implementation, scientific acceptance and human/activation authorization distinct. Missing evidence remains unknown. ZIP exports are derivative snapshots; a chat message or ZIP alone does not complete corpus incorporation.

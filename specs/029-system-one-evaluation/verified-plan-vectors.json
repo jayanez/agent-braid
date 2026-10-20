@@ -1,0 +1,811 @@
+{
+  "format": "ddp-t01-documentary-vectors-v1",
+  "status": "proposed; coordinator review pending; no new runtime test executed",
+  "baselineCommit": "fe6d25b3d9fb989c230aa11779b6a51d494d7a4e",
+  "researchRootReadOnly": "/Users/juanyanez/Repos/Personal/agent-braid-system-one",
+  "sourceBindings": {
+    "research/system_one/eof_verification/verifier.py": "3f2db37e4422cec5e4cdab2663a721a8719e66ba43a423764ad38cdd0fa900f9",
+    "research/system_one/eof_verification/language.py": "61991ca55fe23cc3ff4fa8e0c77560da10b7ba9cbed107cf219ba098d3f717ad",
+    "research/system_one/eof_verification/adapter.py": "0f9eeff04248e1cc7a4c33e1f1837b34a94ad5d5bda9e1165f63df26a4252bfd",
+    "research/system_one/eof_verification/ingress.py": "406984924cd686a23a3cb90fc71b780cd3e155656e19a100c39cb23812e19382",
+    "research/system_one/eof_verification/fixtures.py": "adde4407c6e0f132211aaf40504c37b268114d63044832b93608056a80e4121c",
+    "research/system_one/eof_consumers/engine.py": "9f4daeecdc4f12812c95e0a7a57086d69c4f715a006f4a62910e68ae70664962",
+    "research/system_one/eof_consumers/bridge.py": "37ad23f9c7b358c7b5619dcd612d6fa3f0cf8849b1297ee487c728646833b998",
+    "research/system_one/boundary_verification/adapter.py": "d413d56ff89d65ae1342c85d770bd9cc2747ebf7a50438fe48f7cc537d4a477f",
+    "research/system_one/native_verification/adapter.py": "8ffb1cd7b45f7f219887895c96dc8fc05fa7766ba7c08d0a96e74bcba0b4e52a",
+    "tests/test_system_one_eof_verification.py": "65bb810a8af5bfd56164e17f30c63941e166173d30bff3b62b76fdb01806621b",
+    "tests/test_system_one_eof_consumers.py": "4a3717ca4b06f64e169932a7af4f8bb89faf6a4c7b198c803896a39710e91e01",
+    "specs/029-system-one-evaluation/evidence/eof-consumers/packet.json": "89ed6eaf9260ff90b7d7513feecdd0df2b7139eb7f331e5a88ffd38a2b655f87",
+    "artifacts/system-one/eof-consumers-v1/development.jsonl": "924402792368390ed03532d442bc3d870dc6da967b4ab52c0d1242e2fc2ab219",
+    "artifacts/system-one/eof-consumers-v1/development/trials.jsonl": "038d42eb68dc225d0d11bc0f9b96cfe3e7111fed568bdf08a9bf5f9aa4e9035e",
+    "agent_braid/git_process.py": "3247ac861404cfb68f08939770a5048294b45ddc984a1379ca9eb2091ad48668"
+  },
+  "archivedDeveloperCases": [
+    {
+      "caseId": "eof-00-0",
+      "row": 1,
+      "rowSHA256": "1d563b22f3b2bfb1da6596b2040c208f24943f5d42565f53e501db109eecd5b3",
+      "view": "controlled/en",
+      "consumer": "core-api",
+      "status": "answered",
+      "choice": "k0",
+      "eligible": [
+        "k0"
+      ],
+      "planFailures": {
+        "k1": {
+          "step": 0,
+          "reason": "operation-precondition"
+        },
+        "k2": {
+          "step": 1,
+          "reason": "missing-context"
+        },
+        "k0": null
+      },
+      "nativeCalls": 1,
+      "consumerCalls": 1
+    },
+    {
+      "caseId": "eof-01-0",
+      "row": 13,
+      "rowSHA256": "69d2d67b06f941e50541c9bb3110329cf8b612dea586d0604df78d38a319ff03",
+      "view": "controlled/en",
+      "consumer": "core-api",
+      "status": "answered",
+      "choice": "k0",
+      "eligible": [
+        "k0"
+      ],
+      "planFailures": {
+        "k1": {
+          "step": 0,
+          "reason": "operation-precondition"
+        },
+        "k2": {
+          "step": 1,
+          "reason": "missing-context"
+        },
+        "k0": null
+      },
+      "nativeCalls": 1,
+      "consumerCalls": 1
+    },
+    {
+      "caseId": "eof-02-0",
+      "row": 25,
+      "rowSHA256": "13dc390732f487853c9c42353bc43c109571b205676ef915eb0886a8d17c6002",
+      "view": "controlled/en",
+      "consumer": "core-api",
+      "status": "answered",
+      "choice": "k0",
+      "eligible": [
+        "k0",
+        "k2"
+      ],
+      "planFailures": {
+        "k1": {
+          "step": 0,
+          "reason": "operation-precondition"
+        },
+        "k2": null,
+        "k0": null
+      },
+      "nativeCalls": 1,
+      "consumerCalls": 1
+    },
+    {
+      "caseId": "eof-03-0",
+      "row": 37,
+      "rowSHA256": "e503d59619cb44842c309d3d9f0e3e16f2a446e880ff6ce2735283197b7b5253",
+      "view": "controlled/en",
+      "consumer": "core-api",
+      "status": "answered",
+      "choice": "k0",
+      "eligible": [
+        "k0",
+        "k2"
+      ],
+      "planFailures": {
+        "k1": {
+          "step": 0,
+          "reason": "operation-precondition"
+        },
+        "k2": null,
+        "k0": null
+      },
+      "nativeCalls": 1,
+      "consumerCalls": 1
+    },
+    {
+      "caseId": "eof-04-0",
+      "row": 49,
+      "rowSHA256": "aa7b9241a446fb5fa65a8beee6b03a2117033f3af6cc2ed55017d088d4c397c7",
+      "view": "controlled/en",
+      "consumer": "core-api",
+      "status": "semantic-defer",
+      "choice": "wait",
+      "eligible": [
+        "wait"
+      ],
+      "planFailures": {
+        "k1": {
+          "step": 0,
+          "reason": "operation-precondition"
+        },
+        "k2": {
+          "step": 1,
+          "reason": "missing-context"
+        },
+        "k0": {
+          "step": 1,
+          "reason": "missing-context"
+        }
+      },
+      "nativeCalls": 0,
+      "consumerCalls": 0
+    },
+    {
+      "caseId": "eof-05-0",
+      "row": 61,
+      "rowSHA256": "bb6d92d3ae2bec7b2aff91c7bdd29fa479e7e3d1d024c8fcc8ab730b209860e1",
+      "view": "controlled/en",
+      "consumer": "core-api",
+      "status": "semantic-defer",
+      "choice": "wait",
+      "eligible": [
+        "wait"
+      ],
+      "planFailures": {
+        "k1": {
+          "step": 0,
+          "reason": "operation-precondition"
+        },
+        "k2": {
+          "step": 1,
+          "reason": "missing-context"
+        },
+        "k0": {
+          "step": 1,
+          "reason": "missing-context"
+        }
+      },
+      "nativeCalls": 0,
+      "consumerCalls": 0
+    },
+    {
+      "caseId": "eof-06-0",
+      "row": 73,
+      "rowSHA256": "5ef7085e1f4c5c6a08588bdea19cb5594f9229e611bc42ae15f0f1acdd413b22",
+      "view": "controlled/en",
+      "consumer": "core-api",
+      "status": "answered",
+      "choice": "k2",
+      "eligible": [
+        "k2"
+      ],
+      "planFailures": {
+        "k1": {
+          "step": 0,
+          "reason": "operation-precondition"
+        },
+        "k2": null,
+        "k0": {
+          "step": 1,
+          "reason": "missing-context"
+        }
+      },
+      "nativeCalls": 1,
+      "consumerCalls": 1
+    },
+    {
+      "caseId": "eof-07-0",
+      "row": 85,
+      "rowSHA256": "d29f3bab45cd4a92cd7e4ec64de1b6d99dbd87028eed5e1252b6067f783da26b",
+      "view": "controlled/en",
+      "consumer": "core-api",
+      "status": "answered",
+      "choice": "k0",
+      "eligible": [
+        "k0",
+        "k2"
+      ],
+      "planFailures": {
+        "k1": {
+          "step": 0,
+          "reason": "operation-precondition"
+        },
+        "k2": null,
+        "k0": null
+      },
+      "nativeCalls": 1,
+      "consumerCalls": 1
+    },
+    {
+      "caseId": "eof-08-0",
+      "row": 97,
+      "rowSHA256": "7e7610e306f328787a557fb618b30e66afa3c1009e0ca43c44a7526020df2f77",
+      "view": "controlled/en",
+      "consumer": "core-api",
+      "status": "answered",
+      "choice": "k0",
+      "eligible": [
+        "k0",
+        "k2"
+      ],
+      "planFailures": {
+        "k1": {
+          "step": 0,
+          "reason": "operation-precondition"
+        },
+        "k2": null,
+        "k0": null
+      },
+      "nativeCalls": 1,
+      "consumerCalls": 1
+    },
+    {
+      "caseId": "eof-09-0",
+      "row": 109,
+      "rowSHA256": "65541d436b54d2cc3350b7a4a0a74806aca8ddc1dfb85238005ae632e4719b50",
+      "view": "controlled/en",
+      "consumer": "core-api",
+      "status": "semantic-defer",
+      "choice": "wait",
+      "eligible": [
+        "wait"
+      ],
+      "planFailures": {
+        "k1": {
+          "step": 0,
+          "reason": "operation-precondition"
+        },
+        "k2": {
+          "step": 3,
+          "reason": "final-goal"
+        },
+        "k0": {
+          "step": 3,
+          "reason": "final-goal"
+        }
+      },
+      "nativeCalls": 0,
+      "consumerCalls": 0
+    }
+  ],
+  "vectors": [
+    {
+      "id": "V01",
+      "inputOrMutation": "eof-00-0 tail-one, original program/payload",
+      "expected": "answered,k0; native tree equality in old recorded route",
+      "evidenceStatus": "archived developer outcome",
+      "sourceAnchors": [
+        {
+          "path": "artifacts/system-one/eof-consumers-v1/development/trials.jsonl",
+          "caseId": "eof-00-0",
+          "row": 1
+        }
+      ],
+      "newImplementationTestExecuted": false
+    },
+    {
+      "id": "V02",
+      "inputOrMutation": "eof-02-0 tail-three, trailing context preserved",
+      "expected": "eligible k0,k2; choose k0",
+      "evidenceStatus": "archived; retained EOF recovery",
+      "sourceAnchors": [
+        {
+          "path": "artifacts/system-one/eof-consumers-v1/development/trials.jsonl",
+          "caseId": "eof-02-0",
+          "row": 25
+        }
+      ],
+      "newImplementationTestExecuted": false
+    },
+    {
+      "id": "V03",
+      "inputOrMutation": "eof-04-0 last-line, no retained trailing context",
+      "expected": "semantic-defer; k0 missing-context; new outer choice null, old wait",
+      "evidenceStatus": "archived + explicit wrapper mapping",
+      "sourceAnchors": [
+        {
+          "path": "artifacts/system-one/eof-consumers-v1/development/trials.jsonl",
+          "caseId": "eof-04-0",
+          "row": 49
+        }
+      ],
+      "newImplementationTestExecuted": false
+    },
+    {
+      "id": "V04",
+      "inputOrMutation": "eof-06-0 bof-regression",
+      "expected": "k0 invalid/missing-context; answered,k2",
+      "evidenceStatus": "archived",
+      "sourceAnchors": [
+        {
+          "path": "artifacts/system-one/eof-consumers-v1/development/trials.jsonl",
+          "caseId": "eof-06-0",
+          "row": 73
+        }
+      ],
+      "newImplementationTestExecuted": false
+    },
+    {
+      "id": "V05",
+      "inputOrMutation": "eof-07-0 two-hunks",
+      "expected": "answered,k0, eligible k0,k2; two literal hunks remain",
+      "evidenceStatus": "archived/source assertions",
+      "sourceAnchors": [
+        {
+          "path": "artifacts/system-one/eof-consumers-v1/development/trials.jsonl",
+          "caseId": "eof-07-0",
+          "row": 85
+        }
+      ],
+      "newImplementationTestExecuted": false
+    },
+    {
+      "id": "V06",
+      "inputOrMutation": "eof-08-0 four-ops-two-files",
+      "expected": "answered,k0; atomic staged multifile changes and dependencies",
+      "evidenceStatus": "archived/source assertions",
+      "sourceAnchors": [
+        {
+          "path": "artifacts/system-one/eof-consumers-v1/development/trials.jsonl",
+          "caseId": "eof-08-0",
+          "row": 97
+        }
+      ],
+      "newImplementationTestExecuted": false
+    },
+    {
+      "id": "V07",
+      "inputOrMutation": "eof-05-0 context-conflict",
+      "expected": "semantic-defer, no goal-reaching offered plan",
+      "evidenceStatus": "archived",
+      "sourceAnchors": [
+        {
+          "path": "artifacts/system-one/eof-consumers-v1/development/trials.jsonl",
+          "caseId": "eof-05-0",
+          "row": 61
+        }
+      ],
+      "newImplementationTestExecuted": false
+    },
+    {
+      "id": "V08",
+      "inputOrMutation": "eof-09-0 wrong-goal",
+      "expected": "semantic-defer, otherwise complete k0/k2 fail final-goal",
+      "evidenceStatus": "archived",
+      "sourceAnchors": [
+        {
+          "path": "artifacts/system-one/eof-consumers-v1/development/trials.jsonl",
+          "caseId": "eof-09-0",
+          "row": 109
+        }
+      ],
+      "newImplementationTestExecuted": false
+    },
+    {
+      "id": "V09",
+      "inputOrMutation": "eof-02-0 optionOrder begins k2 but all same programs/goals",
+      "expected": "still min-cost lexical choice k0, preserve supplied order for binding",
+      "evidenceStatus": "new wrapper expectation from verify source; old order changed would need reacquisition/rebinding",
+      "sourceAnchors": [
+        {
+          "path": "research/system_one/eof_verification/verifier.py",
+          "symbol": "verify"
+        },
+        {
+          "path": "tests/test_system_one_eof_verification.py",
+          "symbol": "EofTests"
+        }
+      ],
+      "newImplementationTestExecuted": false,
+      "specificSourceSymbol": "verify"
+    },
+    {
+      "id": "V10",
+      "inputOrMutation": "eof-08-0 set plans.k0=[a,a,b,c,d]",
+      "expected": "k0 valid=false, failure operation-precondition; no global malformed-IR refusal",
+      "evidenceStatus": "existing named test/source",
+      "sourceAnchors": [
+        {
+          "path": "research/system_one/eof_verification/verifier.py",
+          "symbol": "verify"
+        },
+        {
+          "path": "tests/test_system_one_eof_verification.py",
+          "symbol": "EofTests"
+        }
+      ],
+      "newImplementationTestExecuted": false,
+      "specificSourceSymbol": "test_budget_repetition_empty_plan_and_multifile"
+    },
+    {
+      "id": "V11",
+      "inputOrMutation": "eof-08-0 set plans.k0=[]",
+      "expected": "k0 valid=false, incomplete/final-goal; evaluate remaining options",
+      "evidenceStatus": "existing named test/source",
+      "sourceAnchors": [
+        {
+          "path": "research/system_one/eof_verification/verifier.py",
+          "symbol": "verify"
+        },
+        {
+          "path": "tests/test_system_one_eof_verification.py",
+          "symbol": "EofTests"
+        }
+      ],
+      "newImplementationTestExecuted": false,
+      "specificSourceSymbol": "test_budget_repetition_empty_plan_and_multifile"
+    },
+    {
+      "id": "V12",
+      "inputOrMutation": "source task operation uncertainPaths=[shared.txt]",
+      "expected": "refused/incomplete-observation; eligible=[],choice=null; unknown is not false",
+      "evidenceStatus": "source rejection; new sanitized code mapping planned",
+      "sourceAnchors": [
+        {
+          "path": "research/system_one/eof_verification/verifier.py",
+          "symbol": "verify"
+        },
+        {
+          "path": "tests/test_system_one_eof_verification.py",
+          "symbol": "EofTests"
+        }
+      ],
+      "newImplementationTestExecuted": false,
+      "specificSourceSymbol": "project"
+    },
+    {
+      "id": "V13",
+      "inputOrMutation": "flip final context prefix space→plus without updating old/new",
+      "expected": "refused/invalid-ir before selection",
+      "evidenceStatus": "existing test, reconstruction mismatch",
+      "sourceAnchors": [
+        {
+          "path": "research/system_one/eof_verification/verifier.py",
+          "symbol": "verify"
+        },
+        {
+          "path": "tests/test_system_one_eof_verification.py",
+          "symbol": "EofTests"
+        }
+      ],
+      "newImplementationTestExecuted": false,
+      "specificSourceSymbol": "test_marker_fidelity_binding_and_all_text_conditions"
+    },
+    {
+      "id": "V14",
+      "inputOrMutation": "apply_changes with old block duplicated, both boundary flags false",
+      "expected": "technical ambiguous-anchor refusal, not a false goal judgment",
+      "evidenceStatus": "existing runtime-ambiguity assertion",
+      "sourceAnchors": [
+        {
+          "path": "research/system_one/eof_verification/verifier.py",
+          "symbol": "verify"
+        },
+        {
+          "path": "tests/test_system_one_eof_verification.py",
+          "symbol": "EofTests"
+        }
+      ],
+      "newImplementationTestExecuted": false,
+      "specificSourceSymbol": "test_multiple_hunks_and_runtime_ambiguity"
+    },
+    {
+      "id": "V15",
+      "inputOrMutation": "valid four-op program with hunk cap0",
+      "expected": "refused/work-budget-exceeded, no partial answer",
+      "evidenceStatus": "existing test + sanitized mapping",
+      "sourceAnchors": [
+        {
+          "path": "research/system_one/eof_verification/verifier.py",
+          "symbol": "verify"
+        },
+        {
+          "path": "tests/test_system_one_eof_verification.py",
+          "symbol": "EofTests"
+        }
+      ],
+      "newImplementationTestExecuted": false,
+      "specificSourceSymbol": "test_budget_repetition_empty_plan_and_multifile"
+    },
+    {
+      "id": "V16",
+      "inputOrMutation": "new/old proposal alter choice to inadmissible bof k0, then rehash",
+      "expected": "refusal before native/consumer; new code inadmissible-choice",
+      "evidenceStatus": "existing T025 rehashed-option test, new wrapper planned",
+      "sourceAnchors": [
+        {
+          "path": "research/system_one/eof_consumers/bridge.py",
+          "symbol": "check_handoff"
+        },
+        {
+          "path": "tests/test_system_one_eof_consumers.py",
+          "symbol": "EofConsumerTests"
+        }
+      ],
+      "newImplementationTestExecuted": false,
+      "specificSourceSymbol": "test_rehashed_option_version_recipient_tree_and_legacy_refuse"
+    },
+    {
+      "id": "V17",
+      "inputOrMutation": "proposal verifierVersion=t021-boundary-v1 or new identity wrong",
+      "expected": "refused/unsupported-version or verifier-mismatch before dispatch",
+      "evidenceStatus": "existing version-negative anchor",
+      "sourceAnchors": [
+        {
+          "path": "research/system_one/eof_consumers/bridge.py",
+          "symbol": "check_handoff"
+        },
+        {
+          "path": "tests/test_system_one_eof_consumers.py",
+          "symbol": "EofConsumerTests"
+        }
+      ],
+      "newImplementationTestExecuted": false,
+      "specificSourceSymbol": "test_rehashed_option_version_recipient_tree_and_legacy_refuse"
+    },
+    {
+      "id": "V18",
+      "inputOrMutation": "core-api packet delivered to mcp-service (valid rehash)",
+      "expected": "refused/consumer-mismatch; no native/consumer call",
+      "evidenceStatus": "existing recipient-negative anchor",
+      "sourceAnchors": [
+        {
+          "path": "research/system_one/eof_consumers/bridge.py",
+          "symbol": "check_handoff"
+        },
+        {
+          "path": "tests/test_system_one_eof_consumers.py",
+          "symbol": "EofConsumerTests"
+        }
+      ],
+      "newImplementationTestExecuted": false,
+      "specificSourceSymbol": "test_rehashed_option_version_recipient_tree_and_legacy_refuse"
+    },
+    {
+      "id": "V19",
+      "inputOrMutation": "expectedFinalTree=40 zeroes, valid proposal rehash",
+      "expected": "refused/target-tree-mismatch (or invalid-envelope at zero-tree admission), never prepare",
+      "evidenceStatus": "existing tree-negative anchor; new strict zero-tree admission",
+      "sourceAnchors": [
+        {
+          "path": "research/system_one/eof_consumers/bridge.py",
+          "symbol": "check_handoff"
+        },
+        {
+          "path": "tests/test_system_one_eof_consumers.py",
+          "symbol": "EofConsumerTests"
+        }
+      ],
+      "newImplementationTestExecuted": false,
+      "specificSourceSymbol": "test_rehashed_option_version_recipient_tree_and_legacy_refuse"
+    },
+    {
+      "id": "V20",
+      "inputOrMutation": "proposal.format=t022-consumer-proposal-v1",
+      "expected": "refused/unsupported-version, no silent conversion",
+      "evidenceStatus": "existing legacy-negative anchor",
+      "sourceAnchors": [
+        {
+          "path": "research/system_one/eof_consumers/bridge.py",
+          "symbol": "check_handoff"
+        },
+        {
+          "path": "tests/test_system_one_eof_consumers.py",
+          "symbol": "EofConsumerTests"
+        }
+      ],
+      "newImplementationTestExecuted": false,
+      "specificSourceSymbol": "test_rehashed_option_version_recipient_tree_and_legacy_refuse"
+    },
+    {
+      "id": "V21",
+      "inputOrMutation": "declaration a.after=40 ones; or text changes goal",
+      "expected": "refused/declaration-mismatch or text-mismatch; no native call",
+      "evidenceStatus": "existing observed/text negatives",
+      "sourceAnchors": [
+        {
+          "path": "research/system_one/eof_consumers/bridge.py",
+          "symbol": "check_handoff"
+        },
+        {
+          "path": "tests/test_system_one_eof_consumers.py",
+          "symbol": "EofConsumerTests"
+        }
+      ],
+      "newImplementationTestExecuted": false,
+      "specificSourceSymbol": "test_observed_declarations_and_text_refuse_without_native_calls"
+    },
+    {
+      "id": "V22",
+      "inputOrMutation": "change immutable source/base pin after snapshot, rehash only packet",
+      "expected": "refused/source-drift when independent reacquisition/bindings differ; unavailable object is source-unavailable",
+      "evidenceStatus": "source check_handoff; new wrapper planned, no fresh native run",
+      "sourceAnchors": [
+        {
+          "path": "research/system_one/eof_consumers/bridge.py",
+          "symbol": "check_handoff"
+        },
+        {
+          "path": "tests/test_system_one_eof_consumers.py",
+          "symbol": "EofConsumerTests"
+        }
+      ],
+      "newImplementationTestExecuted": false,
+      "specificSourceSymbol": "check_handoff"
+    },
+    {
+      "id": "V23",
+      "inputOrMutation": "omit verifierResult or any evidence reference/body/chunk",
+      "expected": "refused/invalid-envelope or evidence-incomplete; no hash-only success",
+      "evidenceStatus": "new complete-body requirement; T06 test pending",
+      "sourceAnchors": [
+        {
+          "path": "specs/028-system-one-core/contracts/verified-plan-v1.md",
+          "kind": "new proposed requirement"
+        }
+      ],
+      "newImplementationTestExecuted": false
+    },
+    {
+      "id": "V24",
+      "inputOrMutation": "valid request carries confidence=1 or executionAuthorization=true",
+      "expected": "refused/invalid-envelope, no backend/Git admission",
+      "evidenceStatus": "new exact-key/no-authority requirement",
+      "sourceAnchors": [
+        {
+          "path": "specs/028-system-one-core/contracts/verified-plan-v1.md",
+          "kind": "new proposed requirement"
+        }
+      ],
+      "newImplementationTestExecuted": false
+    },
+    {
+      "id": "V25",
+      "inputOrMutation": "duplicate JSON member, BOM, NaN, 17 nested containers, noncanonical literal text",
+      "expected": "refused at bounded parsing/interpretation; no silent normalization",
+      "evidenceStatus": "stdlib parser + text-round-trip source; new inner-literal hardening pending",
+      "sourceAnchors": [
+        {
+          "path": "specs/028-system-one-core/contracts/verified-plan-v1.md",
+          "kind": "new proposed requirement"
+        }
+      ],
+      "newImplementationTestExecuted": false
+    },
+    {
+      "id": "V26",
+      "inputOrMutation": "interpret stage starts100ns, parent end200ns; attempted child end300ns",
+      "expected": "effective child end<=200ns; at200 expired, no next stage",
+      "evidenceStatus": "new budget-context test pending",
+      "sourceAnchors": [
+        {
+          "path": "specs/028-system-one-core/contracts/verified-plan-v1.md",
+          "kind": "new proposed requirement"
+        }
+      ],
+      "newImplementationTestExecuted": false
+    },
+    {
+      "id": "V27",
+      "inputOrMutation": "cap128; verify consumes80 then revalidation requests fresh128",
+      "expected": "second call has<=48 remaining; reset/enlargement refused",
+      "evidenceStatus": "new aggregate-work test pending",
+      "sourceAnchors": [
+        {
+          "path": "specs/028-system-one-core/contracts/verified-plan-v1.md",
+          "kind": "new proposed requirement"
+        }
+      ],
+      "newImplementationTestExecuted": false
+    },
+    {
+      "id": "V28",
+      "inputOrMutation": "decision expired/cancel set just before publish",
+      "expected": "no answered result, zero prepare calls; cancellation stays set",
+      "evidenceStatus": "new request-local checkpoint test pending",
+      "sourceAnchors": [
+        {
+          "path": "specs/028-system-one-core/contracts/verified-plan-v1.md",
+          "kind": "new proposed requirement"
+        }
+      ],
+      "newImplementationTestExecuted": false
+    },
+    {
+      "id": "V29",
+      "inputOrMutation": "terminationMode=hard",
+      "expected": "refused with exactly invalid-budget at T05 request admission before acquisition or consumer",
+      "evidenceStatus": "new exact request-budget rule; not executed",
+      "sourceAnchors": [
+        {
+          "path": "specs/028-system-one-core/contracts/verified-plan-v1.md",
+          "kind": "new proposed requirement"
+        }
+      ],
+      "newImplementationTestExecuted": false
+    },
+    {
+      "id": "V30",
+      "inputOrMutation": "child still alive or scratch removal unknown at response",
+      "expected": "usage termination/cleanup unknown; no successful cleanup/termination claim; retain admission until stopped",
+      "evidenceStatus": "new T06 lifecycle test pending",
+      "sourceAnchors": [
+        {
+          "path": "specs/028-system-one-core/contracts/verified-plan-v1.md",
+          "kind": "new proposed requirement"
+        }
+      ],
+      "newImplementationTestExecuted": false
+    },
+    {
+      "id": "V31",
+      "inputOrMutation": "budgets omits prepareBudgetMs",
+      "expected": "refused with exactly invalid-budget at T05 request admission, no default/source/consumer",
+      "evidenceStatus": "new trusted budget interface requirement; implementation test pending",
+      "sourceAnchors": [
+        {
+          "path": "agent_braid/git_process.py",
+          "symbols": [
+            "GitCommandBudget.begin_command",
+            "GitCommandBudget.record_output",
+            "run_git"
+          ]
+        },
+        {
+          "path": "specs/028-system-one-core/decision-delivery/addenda/ddp-t01-plan.md",
+          "kind": "new proposed seam"
+        }
+      ],
+      "newImplementationTestExecuted": false
+    },
+    {
+      "id": "V32",
+      "inputOrMutation": "Two acquisitions share the same GitCommandBudget: max_commands=1; first one-command read completes; second admission attempts a child. Companion output-byte-cap and cancel_event-between-calls subcases.",
+      "expected": "GitCommandLimitExceeded before second child; same object identity and original started_at/limits; cumulative output_bytes retained; GitExecutionCancelled before child if event set; parent scratch owned until actual work stops",
+      "evidenceStatus": "new trusted budget interface requirement; implementation test pending",
+      "sourceAnchors": [
+        {
+          "path": "agent_braid/git_process.py",
+          "symbols": [
+            "GitCommandBudget.begin_command",
+            "GitCommandBudget.record_output",
+            "run_git"
+          ]
+        },
+        {
+          "path": "specs/028-system-one-core/decision-delivery/addenda/ddp-t01-plan.md",
+          "kind": "new proposed seam"
+        }
+      ],
+      "newImplementationTestExecuted": false
+    }
+  ],
+  "canonicalByteExamples": [
+    {
+      "input": "{\"b\":false,\"a\":0}",
+      "canonicalUTF8": "{\"a\":0,\"b\":false}",
+      "sha256": "52085979d646cc38e44911756ead618224dfbd14592ccc80b7e2ef8e91663e07"
+    },
+    {
+      "input": "{\"z\":\"é\",\"a\":[false,null]}",
+      "canonicalUTF8": "{\"a\":[false,null],\"z\":\"é\"}",
+      "sha256": "d035d3c0af70f708eaefc97b88251d24460ac3d07914d0b3f52d540beffa3782"
+    }
+  ],
+  "unobtained": [
+    "New contract implementation and actual pin values",
+    "New budget/cancellation/lifecycle controls",
+    "Independent Luna or Claude Code review",
+    "Human/scientific/admission/activation approval"
+  ],
+  "aggregateWorkBudgetMigration": "New aggregate allowance includes source validation/revalidation; old per-verifier hunk_budget=64 is not the same whole-path budget.",
+  "reviewDispositions": {
+    "CT01": "Explicit injected GitCommandBudget + remaining_ns callable, scratch parent/cancel event ownership and V32 reset detection.",
+    "CT02": "terminationMode!=cooperative and missing prepareBudgetMs both exactly invalid-budget at T05 ingress; separate V29 and V31."
+  }
+}

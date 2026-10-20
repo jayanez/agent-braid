@@ -1,0 +1,15 @@
+test_checkpoint_errors_propagate_at_every_boundary (test_system_one_verified_registry.VerifiedRegistryTests.test_checkpoint_errors_propagate_at_every_boundary) ... ok
+test_exact_schema_rejects_missing_extra_and_authority_fields (test_system_one_verified_registry.VerifiedRegistryTests.test_exact_schema_rejects_missing_extra_and_authority_fields) ... ok
+test_identity_values_have_strict_types_bounds_and_encoding (test_system_one_verified_registry.VerifiedRegistryTests.test_identity_values_have_strict_types_bounds_and_encoding) ... ok
+test_independent_pins_and_manifest_are_required (test_system_one_verified_registry.VerifiedRegistryTests.test_independent_pins_and_manifest_are_required) ... ok
+test_missing_changed_oversized_source_refuses_even_with_valid_manifest (test_system_one_verified_registry.VerifiedRegistryTests.test_missing_changed_oversized_source_refuses_even_with_valid_manifest) ... ok
+test_private_static_identity_and_canonical_manifest (test_system_one_verified_registry.VerifiedRegistryTests.test_private_static_identity_and_canonical_manifest) ... ok
+test_product_interface_has_no_caller_registration_or_dispatch (test_system_one_verified_registry.VerifiedRegistryTests.test_product_interface_has_no_caller_registration_or_dispatch) ... ok
+test_production_unavailable_without_pin_and_no_source_read (test_system_one_verified_registry.VerifiedRegistryTests.test_production_unavailable_without_pin_and_no_source_read) ... ok
+test_source_read_is_bounded (test_system_one_verified_registry.VerifiedRegistryTests.test_source_read_is_bounded) ... ok
+test_unknown_identity_fields_refuse_before_source_access (test_system_one_verified_registry.VerifiedRegistryTests.test_unknown_identity_fields_refuse_before_source_access) ... ok
+
+----------------------------------------------------------------------
+Ran 10 tests in 0.007s
+
+OK

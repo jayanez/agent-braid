@@ -1,0 +1,109 @@
+{
+  "schemaVersion": 1,
+  "sealedAtUTC": "2026-10-20T06:06:24.331324+00:00",
+  "task": "SPEC-028/T009 alias DDP-T01",
+  "status": "local documentary candidate delivered for final coordinator verification; remote task remains open",
+  "baselineCommit": "fe6d25b3d9fb989c230aa11779b6a51d494d7a4e",
+  "branch": "docs/ddp-t01-contracts",
+  "candidateRevision": 2,
+  "profileBoundFiles": [
+    {
+      "path": "specs/028-system-one-core/contracts/verified-plan-v1.md",
+      "sha256": "a68488d4a412820130231daa8c8dbeefb1e58445b2f1cfdf0c02b8669ef132d7",
+      "bytes": 21462
+    },
+    {
+      "path": "specs/028-system-one-core/decision-delivery/addenda/ddp-t01-plan.md",
+      "sha256": "2ee328f92aa19820704b3838528599296c87f53a5872a1f12d2bd8cd59a6e62e",
+      "bytes": 20126
+    },
+    {
+      "path": "specs/029-system-one-evaluation/verified-plan-conformance.md",
+      "sha256": "90f52099cdaebba51f2781c715c748d1ba0c13e9b2b9755a32b25e53f5a08e5b",
+      "bytes": 13451
+    },
+    {
+      "path": "specs/029-system-one-evaluation/verified-plan-vectors.json",
+      "sha256": "6584ce4de05edf143e215945ff620b5127fe48e6c352dfb7a33b447e753a11f7",
+      "bytes": 27847
+    },
+    {
+      "path": "specs/031-system-one-integration/contracts/verified-plan-consumer-v1.md",
+      "sha256": "b17b5f3398dba9086ba44bdc04c4ff9cae97364f1fb9430a7e4ebcb9cb9fd1f4",
+      "bytes": 11794
+    }
+  ],
+  "postProfileSupplements": [
+    {
+      "path": "specs/028-system-one-core/decision-delivery/addenda/ddp-t01-coordinator-review.md",
+      "sha256": "a117ba5f197944de569099df4168c461eec8b62f0e3585f3a2af3dd1bbab1cfd"
+    },
+    {
+      "path": "specs/028-system-one-core/decision-delivery/addenda/ddp-t01-coordinator-review.json",
+      "sha256": "2fbed3cabf3ef6433dd0bd3cd2824423fc4265659c6fa505de8a9857f0495606"
+    }
+  ],
+  "validation": {
+    "command": "PYTHONDONTWRITEBYTECODE=1 /Users/juanyanez/Repos/Personal/agent-braid-system-one/.venv-speckit/bin/python scripts/validate_change.py --base origin/develop --profile pr",
+    "exitCode": 1,
+    "result": "full profile failed only at three literal-child-Python environment cases; targeted corrected module and all remaining controls passed; full corrected-environment suite not rerun",
+    "logSHA256": "8a5c93c9d8aedee5aacfd7269ca7a128c1cf9dd66fa89362f4bec1b965e1bb9d",
+    "affectedModule": {
+      "command": "PATH=<existing-isolated-venv-bin>:$PATH PYTHONDONTWRITEBYTECODE=1 <isolated-python> -m unittest discover -s tests -p test_git_counterexamples.py -v",
+      "exitCode": 0,
+      "reportedTests": 29,
+      "seconds": 17.031,
+      "logSHA256": "d71324f8ec8e408635e7cb9a7a7dfbea1a028da623de3fdee32404a331094eac"
+    },
+    "remainingControlsSHA256": "b2132a16a66999d2c2a12ed37fb62de34f34dffce665c31b4b690b4802b2062e",
+    "unittestRuns": [
+      [
+        "1962",
+        "1713.886"
+      ]
+    ],
+    "skippedCases": 19,
+    "skipsAreNotPasses": true,
+    "fullProfileScope": "exact original five candidate files; full profile failed as recorded; corrected affected-module and remaining checks cover localized repair; two review supplements checked proportionally afterward",
+    "supersededAttempt": "intentionally interrupted/non-passed; log, induced failure and process receipt retained",
+    "documentChecksSHA256": "cedd6ae9aa8ec71a27df8ac55c182d878c2f4d44012f950334221a9713d83ade",
+    "supplementChecksSHA256": "760e148cb9078fffc397ed3dcde983f509db3dae00db18323980e76d5939baa6"
+  },
+  "review": {
+    "type": "coordinator read-only documentary consistency; no independent/human/scientific/runtime review",
+    "CT01": "resolved-documentary",
+    "CT02": "resolved-documentary",
+    "sourceReviewSHA256": "a1fbeb93c5cabc02934277f2578d82076b0ff95e13e1d60fd0855d4ef4cf11a4",
+    "sourceReceiptSHA256": "2fbed3cabf3ef6433dd0bd3cd2824423fc4265659c6fa505de8a9857f0495606",
+    "candidateManifestSHA256": "94eb1dcd348e08bef647401d03a4db312f2ef51f3b176dc03aa85d045dad4334"
+  },
+  "scope": {
+    "newVersionableFiles": 7,
+    "existingTrackedFilesChanged": 0,
+    "productImplementationFilesChanged": 0,
+    "remoteMutations": 0,
+    "agentsLaunched": 0,
+    "externalSpendEUR": 0,
+    "newExperiments": 0,
+    "researchSourceWrites": 0,
+    "newRuntimeVectorTestsExecuted": false,
+    "vectorCount": 32,
+    "archivedDeveloperCasesReadWithoutExecution": 10,
+    "sourceBindingsChecked": 15
+  },
+  "projectSupplement": {
+    "path": "../project-reconciliation-20261020/project-verification.json",
+    "sha256": "e94387c39b2752a34428a32fd81d08d8ef3a41836b5e3873db01f14615542046",
+    "status": "88/88 matched; zero changes required"
+  },
+  "pending": [
+    "Coordinator final T01 delivery disposition and implementation assignment",
+    "Actual new-contract implementation and focused runtime conformance",
+    "Actual extracted verifier/registry production pin at serial integration",
+    "T06 useful supported numeric budgets and termination/cleanup evidence",
+    "Public API/schema/architecture adoption and publication authorization",
+    "Independent/human/scientific/representative/rights/admission/promotion/activation gates",
+    "Training/calibration/learned interpreter work"
+  ],
+  "executionAuthorization": false
+}

@@ -1,5 +1,7 @@
 # Open gates and documentary assignment
 
+Historical snapshot. See the [latest continuity supplement and current pending matrix](addenda/verification-continuity-20261020/README.md) for subsequent T025, Project and DDP-T01 dispositions. Original entries below are preserved.
+
 | Gate | Current documentary state | Required next evidence / owner |
 |---|---|---|
 | T025 focused controls | Six tests passed, 57.629 s; coordinator-reported with local log binding | Keep separate from full-lot completion |

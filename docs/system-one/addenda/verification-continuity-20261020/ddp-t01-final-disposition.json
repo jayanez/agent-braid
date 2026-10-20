@@ -1,0 +1,44 @@
+{
+  "CT01": "resolved-documentary",
+  "CT02": "resolved-documentary",
+  "baselineCommit": "fe6d25b3d9fb989c230aa11779b6a51d494d7a4e",
+  "candidateRevision": 2,
+  "candidateRoot": "../ddp-t01-contract-candidate",
+  "executionAuthorization": false,
+  "externalSpendEUR": 0,
+  "freezeMeaning": "Exact local contract design accepted for bounded implementation planning; no public API adoption, implementation acceptance, human or scientific approval",
+  "id": "DDP-T01-final-coordinator-disposition-v1",
+  "manifestFilesVerified": 38,
+  "manifestSha256": "283ecc91acb11da492556c076cd22f245f174a5b0de606dac08697c41d95c10c",
+  "nextBatch": [
+    "DDP-T02: pure IR and controlled grammar",
+    "DDP-T03: observed acquisition with injected shared budget",
+    "DDP-T04: static registry; final production pin waits for T02 and serial integration"
+  ],
+  "parallelImplementationStarted": false,
+  "pending": [
+    "new runtime implementation and tests",
+    "public adoption/publication/integration authorization",
+    "training/calibration",
+    "human review",
+    "scientific and representative acceptance",
+    "data admission/promotion",
+    "activation"
+  ],
+  "postProfileSupplementsVerified": 2,
+  "profileBoundFilesVerified": 5,
+  "receiptSha256": "c95ce25cdd4629ab296eb3a255885ec331738d27732f62da4494d248569cf881",
+  "recordedAtUTC": "2026-10-20T06:08:39.569112+00:00",
+  "remoteTask": "remains open; no remote mutation by coordinator",
+  "sourceBindingsVerified": 15,
+  "status": "documentary-design-delivery-verified",
+  "validation": {
+    "correctedAffectedModule": "29 cases passed; 0 skips; PATH corrected to existing Python3.12",
+    "fullProfile": "failed; 1962 cases, 3 environment failures, 19 skips; not relabeled passed",
+    "newRuntimeConformance": "not executed",
+    "remainingControls": "five completed with exit0"
+  },
+  "vectors": 32,
+  "zipMembersVerified": 40,
+  "zipSha256": "741628a89a5a33eeb741401267b42c4b30856c1113bccb1e3e7cb63c82906dc5"
+}
