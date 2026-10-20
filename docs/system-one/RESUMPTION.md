@@ -71,3 +71,5 @@ The documentary corpus is published on branch docs/ddp-t01-contracts in [draft P
 ## T05 in-progress context/digest directions
 
 [Request context and digest seams](addenda/t05-context-and-digest-seams-20261020.md) record the coordinator-confirmed internal API, producer-versus-final snapshot immutability, exact hashed envelopes and future T06 usage/digest rule. They remain implementation directions until source-bound receipt/tests, not obtained capabilities.
+
+T05 quality sequence is now recorded in the [context/digest handoff](addenda/t05-context-and-digest-seams-20261020.md): focused pass and stable hashes → scoped Luna Latest review → findings/fixes and affected tests → stable new quick/PR. This is a plan only, with human/scientific/T07 review separate; no completed review is claimed.
