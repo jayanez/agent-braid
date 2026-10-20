@@ -1,0 +1,14 @@
+{
+  "startedAtUTC": "2026-10-20T20:40:02.987078+00:00",
+  "pid": 52811,
+  "command": [
+    "/Users/juanyanez/Repos/Personal/agent-braid-system-one/.venv-speckit/bin/python",
+    "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/outputs/ddp-integration-profiles-sdk-20261020/run_profiles.py"
+  ],
+  "helperSha256": "19faeb0caa479f81a00ebe5a48245b97e22267441b91d8546b9f84d22cef51af",
+  "externalSpendEUR": 0,
+  "automaticRetry": false,
+  "exitCode": 0,
+  "wallSeconds": 2164.5585277499995,
+  "finishedAtUTC": "2026-10-20T21:16:07.553157+00:00"
+}

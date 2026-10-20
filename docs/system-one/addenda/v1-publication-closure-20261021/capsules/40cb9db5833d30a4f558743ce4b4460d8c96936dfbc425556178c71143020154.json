@@ -1,0 +1,31 @@
+{
+  "status": "passed-with-preserved-controller-failure",
+  "wheel": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/outputs/ddp-documentary-merges-and-code-preparation-20261020/package-probe/dist/agent_braid-0.1.0a1-py3-none-any.whl",
+  "wheelSHA256": "eb746ec75e17194cb562e61746c5f99f6298cdb06bf8024f02f78063ff93bbe9",
+  "recordRows": 149,
+  "hashedRowsVerified": 148,
+  "productionModulesVerified": 9,
+  "skillAssetsVerified": 5,
+  "installedChecks": {
+    "installedRoot": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/outputs/ddp-documentary-merges-and-code-preparation-20261020/package-probe/venv/lib/python3.12/site-packages/agent_braid",
+    "tests": 4,
+    "failures": 0,
+    "errors": 0,
+    "skips": 0,
+    "sdkAvailable": false
+  },
+  "originalInputFilesUnchanged": 2529,
+  "candidateSoftwareFilesUnchanged": 21,
+  "hardware": "Apple M3 Pro",
+  "externalSpendEUR": 0,
+  "buildNetwork": "sandbox-exec deny network*",
+  "installation": "uv offline no-index no-deps no-build into private venv",
+  "scope": "Python3.12 installed artifact; four component fixtures and CLIhelp",
+  "firstAttempt": "Probe controller AttributeError importlib.util before test collection; preserved; no wheel rebuild",
+  "SDKLane": "pending: mcp unavailable and pinnedPython3.13.11 lane not run",
+  "nativeHostAcceptance": "pending",
+  "training": "pending",
+  "humanReview": "pending",
+  "activation": "pending",
+  "newCandidateFullProfiles": "pending; plan-only captured"
+}

@@ -319,7 +319,8 @@ def _bundle_digest(bundle: dict) -> str:
     return _hash_digest(payload)
 
 
-def _build_evidence(request: dict, *, order_selector=None) -> dict:
+def _build_evidence(request: dict, *, order_selector=None,
+                    budget: GitCommandBudget | None = None) -> dict:
     _validate_request(request)
     source_root = Path(request["repository"]).expanduser().resolve()
     normalized = deepcopy(request)
@@ -330,10 +331,11 @@ def _build_evidence(request: dict, *, order_selector=None) -> dict:
     for operation in normalized["operations"]:
         operation["dependencies"] = sorted(operation["dependencies"])
         operation["uncertainPaths"] = sorted(operation["uncertainPaths"])
-    with tempfile.TemporaryDirectory(prefix="agent-braid-git-replay-") as directory:
+    with tempfile.TemporaryDirectory(prefix="agent-braid-git-replay-",
+                                     dir=budget.temp_root if budget is not None else None) as directory:
         temp_root = Path(directory)
         env = dict(_sanitized_environment(temp_root / "home"))
-        budget = GitCommandBudget(
+        budget = budget if budget is not None else GitCommandBudget(
             temp_root=temp_root,
             wall_seconds=MAX_REPLAY_SECONDS,
             max_commands=MAX_GIT_COMMANDS,
@@ -511,10 +513,10 @@ def _validate_plan_shape(value: object) -> dict:
     return value
 
 
-def produce(request: object) -> tuple[dict, dict]:
+def produce(request: object, *, budget: GitCommandBudget | None = None) -> tuple[dict, dict]:
     """Return an evidence bundle and plan after producer-side replay checking."""
-    bundle = _build_evidence(request)
-    verification = verify(bundle, request["repository"])
+    bundle = _build_evidence(request, budget=budget)
+    verification = verify(bundle, request["repository"], budget=budget)
     if verification.get("status") not in {"verified", "unverified"}:
         raise InvalidGitReplay("producer replay evidence did not verify")
     return bundle, _plan(bundle, verification)
@@ -596,7 +598,8 @@ def _validate_bundle_shape(bundle: object) -> dict:
     return bundle
 
 
-def verify(bundle: object, repository: str) -> dict:
+def verify(bundle: object, repository: str, *,
+           budget: GitCommandBudget | None = None) -> dict:
     """Reconstruct and independently replay a Git evidence bundle."""
     try:
         _validate_bundle_shape(bundle)
@@ -604,7 +607,7 @@ def verify(bundle: object, repository: str) -> dict:
         if bundle["evidenceDigest"] != _bundle_digest(bundle):
             return {"status": "rejected", "reason": "evidence digest mismatch"}
         request = _normalized_request({**bundle, "repositoryPath": repository})
-        computed = _build_evidence(request)
+        computed = _build_evidence(request, budget=budget)
         if computed != bundle:
             return {"status": "rejected", "reason": "replayed evidence mismatch"}
         return {

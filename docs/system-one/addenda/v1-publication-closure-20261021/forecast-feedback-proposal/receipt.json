@@ -1,0 +1,38 @@
+{
+  "recordedAt": "2026-10-20T21:39:31.729539+00:00",
+  "scope": "Read-only deduplication and local versionable planning, no active candidate changes",
+  "newProposedTasks": {
+    "SPEC-045": [
+      "T009",
+      "T010",
+      "T011",
+      "T012",
+      "T013",
+      "T014",
+      "T015",
+      "T016",
+      "T017"
+    ],
+    "SPEC-047": [
+      "T011"
+    ]
+  },
+  "aliases": "RF-T01 through RF-T10; no historical DDP alias reuse",
+  "existingTasksReused": "SPEC045 T001\u2013006/T008, SPEC047 T001\u2013009, SPEC031 T007 and SPEC032 T007; historical SPEC045 T007 cancellation and SPEC047 T010 pending acceptance preserved",
+  "requirements": "REQ-CI-001 through REQ-CI-009 with paired SC-CI IDs; proposed only",
+  "plannedRepositoryPlacement": [
+    "specs/045-local-forecasting-capabilities/addenda/owned-work-feedback-tasks.md",
+    "specs/047-local-technical-telemetry/addenda/owned-work-compatibility.md",
+    "docs/system-one/addenda/owned-work-feedback-planning/",
+    "docs/system-one/task-map.json (additive proposed aliases only after adoption)"
+  ],
+  "sourceBindings": "source-bindings.json",
+  "taskMap": "task-map.json",
+  "validation": "validation.json",
+  "status": "local draft; not registered, committed, published, implemented or independently reviewed",
+  "collectionExecuted": false,
+  "newConversationCreated": false,
+  "sourcePermissionAndRouteAdmission": "pending before collection; design/software readiness can proceed within separately assigned scope",
+  "humanAndScientificGates": "pending",
+  "forecastModelExecution": false
+}

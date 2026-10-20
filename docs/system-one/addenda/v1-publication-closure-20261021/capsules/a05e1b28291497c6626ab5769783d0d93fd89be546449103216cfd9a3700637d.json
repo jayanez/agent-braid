@@ -1,0 +1,29 @@
+{
+  "files": [
+    {
+      "path": "README.md",
+      "sha256": "0fe75115c94610b204458d16ed1ea920b5b65173432ce728b49798f2899da59e",
+      "bytes": 1217
+    },
+    {
+      "path": "documentary-final-handoff.json",
+      "sha256": "55d100ddb020a0c79d27db1236cc98a4c818b59668f075f5c4d392d03bc7ec91",
+      "bytes": 681
+    },
+    {
+      "path": "real-work-child-creation.json",
+      "sha256": "be53aa13971c35aff3f05640527dd46b2f60dccee8e31062aa3be60e911ad0ea",
+      "bytes": 1273
+    },
+    {
+      "path": "real-work-thread-handoff-ready.md",
+      "sha256": "ffe2b0541a360dc841a9b19cd6574e6efc415ae9965c1134e4247072269bcf27",
+      "bytes": 15837
+    },
+    {
+      "path": "routing-receipt.json",
+      "sha256": "62dd61c9737dfe997446aeac0511871b9e2635dde1c5b3bb64159317f7064124",
+      "bytes": 2151
+    }
+  ]
+}

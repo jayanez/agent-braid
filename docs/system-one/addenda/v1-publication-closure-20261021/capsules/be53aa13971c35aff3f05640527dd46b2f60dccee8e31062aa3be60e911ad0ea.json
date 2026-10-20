@@ -1,0 +1,18 @@
+{
+  "createdAtUTC": "2026-10-20T22:16:20.287028+00:00",
+  "threadId": "01a15b62-b363-7dd2-abe8-b74bc8722288",
+  "hostId": "local",
+  "projectId": "357a4362-a9dd-4e64-a019-361c3303b092",
+  "titleRequested": "Agent Braid: fiabilidad en trabajo real",
+  "environment": "local",
+  "modelOverride": null,
+  "promptPath": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/outputs/ddp-sdk-endpoint-20261020/real-work-thread-handoff-ready.md",
+  "promptSHA256": "ffe2b0541a360dc841a9b19cd6574e6efc415ae9965c1134e4247072269bcf27",
+  "v1PacketSHA256": "806231d11d3ec1fba130e5b2ca90a048e391e71b9e8959efca8716f3b3baf5d9",
+  "documentaryReceiptSHA256": "5b4dc213a29cad2c76e88776864e9ba4cf4aaafd7aaac5065a316ca3bf317f8c",
+  "planningReceiptSHA256": "8df47ec1c55acabebfaa884fc3579ca14c5a79a091c5d050e8d1b8b7f6f37dd9",
+  "sourceProtected": "Engineering candidate, original WIP, research and documentary staging read-only to child",
+  "continuation": "Read-only intake then independent owned clone, genuine backlog task, route authority/observation rules and actual coverage/feedback; EUR0; no training, human/science closure, promotion or activation",
+  "dispatchResult": "create_thread returned threadId+hostId successfully",
+  "firstUsefulProgress": "pending"
+}

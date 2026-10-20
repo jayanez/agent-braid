@@ -83,3 +83,7 @@ The [final Core-only supplement](addenda/t06-core-final-20261020/README.md) supe
 ## Completed MCP/stdio profiles; package pending
 
 [Profile receipts](addenda/t06-transport-profiles-20261020/README.md) record2080 tests with19 skips each and zero failures for quick and PR;2415 input hashes matched across profiles and source at readback. This supersedes only earlier pending-profile observations. Final engineering packaging, documentary publication/integration and all acceptance gates remain separate and pending.
+
+## Bounded v1 final engineering and continuation (2026-10-21)
+
+Read the [final publication-closure supplement](addenda/v1-publication-closure-20261021/README.md) for the later local preparation, final SDK/Codex engineering, failures, exact source capsules and pending gates. Earlier pending entries retain their dated observation boundary. The [RF feedback proposal](addenda/v1-publication-closure-20261021/forecast-feedback-proposal/README.md) is planned work, not accepted collection or implemented telemetry. Combined-candidate review/CI/publication remain the final coordinator's separate receipt; this index edit supplies no scientific/human/promotion/activation acceptance.

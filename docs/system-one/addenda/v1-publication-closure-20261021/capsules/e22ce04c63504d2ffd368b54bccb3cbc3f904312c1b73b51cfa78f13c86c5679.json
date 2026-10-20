@@ -1,0 +1,15 @@
+{
+  "createdAt": "2026-10-20T16:06:37.172446+00:00",
+  "files": [
+    {
+      "path": "README.md",
+      "sha256": "4a01a6028b5b33455483b930544852aaaf8898d051f2800c2ce6a1de7a383d2a",
+      "bytes": 718
+    },
+    {
+      "path": "receipt.json",
+      "sha256": "24141d6dab9ef4ec5dce30b666ba742392fc2c9f7596dfde3da3ec7cbfb2c0f9",
+      "bytes": 7848
+    }
+  ]
+}

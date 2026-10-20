@@ -1,0 +1,57 @@
+{
+  "documentaryMerges": [
+    {
+      "PR": 609,
+      "merge": "b52d7ea3542a3c09678c4b69196c9105f8271f4a"
+    },
+    {
+      "PR": 610,
+      "merge": "69e7d374e5aaf13376486664e7368711d9826e6f"
+    }
+  ],
+  "candidate": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/work/agent-braid-code-integration-20261020",
+  "branch": "prep/verified-plan-integration",
+  "sourceFiles": 21,
+  "preflightExitCode": 0,
+  "whitespaceExitCode": 0,
+  "ASTandJSON": "passed before import",
+  "originalInputsUnchanged": 2529,
+  "packageProbe": {
+    "status": "passed-with-preserved-controller-failure",
+    "wheel": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/outputs/ddp-documentary-merges-and-code-preparation-20261020/package-probe/dist/agent_braid-0.1.0a1-py3-none-any.whl",
+    "wheelSHA256": "eb746ec75e17194cb562e61746c5f99f6298cdb06bf8024f02f78063ff93bbe9",
+    "recordRows": 149,
+    "hashedRowsVerified": 148,
+    "productionModulesVerified": 9,
+    "skillAssetsVerified": 5,
+    "installedChecks": {
+      "installedRoot": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/outputs/ddp-documentary-merges-and-code-preparation-20261020/package-probe/venv/lib/python3.12/site-packages/agent_braid",
+      "tests": 4,
+      "failures": 0,
+      "errors": 0,
+      "skips": 0,
+      "sdkAvailable": false
+    },
+    "originalInputFilesUnchanged": 2529,
+    "candidateSoftwareFilesUnchanged": 21,
+    "hardware": "Apple M3 Pro",
+    "externalSpendEUR": 0,
+    "buildNetwork": "sandbox-exec deny network*",
+    "installation": "uv offline no-index no-deps no-build into private venv",
+    "scope": "Python3.12 installed artifact; four component fixtures and CLIhelp",
+    "firstAttempt": "Probe controller AttributeError importlib.util before test collection; preserved; no wheel rebuild",
+    "SDKLane": "pending: mcp unavailable and pinnedPython3.13.11 lane not run",
+    "nativeHostAcceptance": "pending",
+    "training": "pending",
+    "humanReview": "pending",
+    "activation": "pending",
+    "newCandidateFullProfiles": "pending; plan-only captured"
+  },
+  "reviewablePatchSHA256": "1c0d94dd178ff6139bc2f2e25b21273e6f01611929e33c844c57fc0e26de5565",
+  "productPublished": false,
+  "productCommitted": false,
+  "hostProtocol": "host-readiness-protocol.md",
+  "nextUnits": "integration-handoff.md",
+  "fullCandidateValidation": "quick/pr planned, NOT executed",
+  "externalSpendEUR": 0
+}

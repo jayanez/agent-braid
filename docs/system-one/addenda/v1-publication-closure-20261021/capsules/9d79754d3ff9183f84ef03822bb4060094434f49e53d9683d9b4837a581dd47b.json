@@ -1,0 +1,81 @@
+{
+  "checkedAt": "2026-10-20T16:06:08.353519+00:00",
+  "url": "https://github.com/jayanez/agent-braid/pull/610",
+  "state": "MERGED",
+  "reviewedHead": "68e4f7aa38ad7bd132d5237309b439f2fac6169e",
+  "base": "b52d7ea3542a3c09678c4b69196c9105f8271f4a",
+  "merge": "69e7d374e5aaf13376486664e7368711d9826e6f",
+  "parents": [
+    "b52d7ea3542a3c09678c4b69196c9105f8271f4a"
+  ],
+  "tree": "a4fc06b97915ba670dd5cc0e26193e507b57666b",
+  "treeEqualsReviewedHead": true,
+  "documentaryPaths": [
+    "docs/system-one/README.md",
+    "docs/system-one/RESUMPTION.md",
+    "docs/system-one/addenda/t08-final-20261020/README.md",
+    "docs/system-one/addenda/t08-final-20261020/bindings.json",
+    "docs/system-one/addenda/t08-final-20261020/completed-finalizer.log.gz",
+    "docs/system-one/addenda/t08-final-20261020/documentary-preflight.log.gz",
+    "docs/system-one/addenda/t08-final-20261020/documentary-validation.json",
+    "docs/system-one/addenda/t08-final-20261020/original-author-readback.json",
+    "docs/system-one/addenda/t08-final-20261020/original-completion.json",
+    "docs/system-one/addenda/t08-final-20261020/original-packet.json",
+    "docs/system-one/addenda/t08-final-20261020/receipts/assignment-stable.json",
+    "docs/system-one/addenda/t08-final-20261020/receipts/assignment.json",
+    "docs/system-one/addenda/t08-final-20261020/receipts/before.json.gz",
+    "docs/system-one/addenda/t08-final-20261020/receipts/decision-delivery-result.md.txt",
+    "docs/system-one/addenda/t08-final-20261020/receipts/documentary-checks-stable.json",
+    "docs/system-one/addenda/t08-final-20261020/receipts/documentary-checks.json",
+    "docs/system-one/addenda/t08-final-20261020/receipts/launch.json",
+    "docs/system-one/addenda/t08-final-20261020/receipts/profiles/pr.json.gz",
+    "docs/system-one/addenda/t08-final-20261020/receipts/profiles/pr.log.gz",
+    "docs/system-one/addenda/t08-final-20261020/receipts/profiles/quick.json.gz",
+    "docs/system-one/addenda/t08-final-20261020/receipts/profiles/quick.log.gz",
+    "docs/system-one/addenda/t08-final-20261020/receipts/quick-plan.json.gz",
+    "docs/system-one/addenda/t08-final-20261020/receipts/relay-progress.json",
+    "docs/system-one/addenda/t08-final-20261020/receipts/supervisor-completion.json",
+    "docs/system-one/addenda/t08-final-20261020/receipts/supervisor-start.json",
+    "docs/system-one/addenda/t08-final-20261020/receipts/supervisor.log.gz",
+    "docs/system-one/addenda/t08-final-20261020/restored-public-history.log.gz",
+    "docs/system-one/addenda/t08-final-20261020/source-documents/decision-delivery-gates.txt",
+    "docs/system-one/addenda/t08-final-20261020/source-documents/decision-delivery-result.txt",
+    "specs/033-system-one-promotion/t08-corpus-status.md"
+  ],
+  "remoteDevelop": "69e7d374e5aaf13376486664e7368711d9826e6f",
+  "remoteContainsMerge": true,
+  "validateRun": 39450780057,
+  "trackingRun": 39450779848,
+  "premergeCI": "SUCCESS",
+  "specialistMatrix": "SKIPPED",
+  "review": "Independent Luna Latest documentary review; no actionable P1/P2; no human approval inferred",
+  "pendingGates": [
+    "human",
+    "science",
+    "training",
+    "calibration",
+    "admission",
+    "promotion",
+    "activation",
+    "host adoption"
+  ],
+  "productChangesPublished": false,
+  "postmergeRunsObserved": [
+    {
+      "conclusion": "",
+      "databaseId": 39454161160,
+      "headSha": "69e7d374e5aaf13376486664e7368711d9826e6f",
+      "name": "Validate repository",
+      "status": "in_progress",
+      "url": "https://github.com/jayanez/agent-braid/actions/runs/39454161160"
+    },
+    {
+      "conclusion": "success",
+      "databaseId": 39454161192,
+      "headSha": "69e7d374e5aaf13376486664e7368711d9826e6f",
+      "name": "Audit Spec Kit GitHub tracking",
+      "status": "completed",
+      "url": "https://github.com/jayanez/agent-braid/actions/runs/39454161192"
+    }
+  ]
+}

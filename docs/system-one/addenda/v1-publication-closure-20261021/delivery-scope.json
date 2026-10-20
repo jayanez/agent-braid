@@ -1,0 +1,60 @@
+{
+  "base": "69e7d374e5aaf13376486664e7368711d9826e6f",
+  "alreadyPublishedLots": [
+    {
+      "lot": "t06-core-final-documentary-reconciliation-20261020",
+      "alreadyPublishedPR": 608,
+      "existingEntry": "docs/system-one/addenda/t06-core-final-20261020/README.md",
+      "action": "Retain published corpus; add only local reconciliation receipt if not hash-identical in baseline"
+    },
+    {
+      "lot": "t06-transport-final-documentary-reconciliation-20261020",
+      "alreadyPublishedPR": 608,
+      "existingEntry": "docs/system-one/addenda/t06-transport-final-20261020/README.md",
+      "action": "Retain published corpus; add only local reconciliation receipt if not hash-identical in baseline"
+    },
+    {
+      "lot": "t07-final-documentary-reconciliation-20261020",
+      "alreadyPublishedPR": 609,
+      "existingEntry": "docs/system-one/addenda/t07-final-20261020/README.md",
+      "action": "Retain published corpus; add only local reconciliation receipt if not hash-identical in baseline"
+    },
+    {
+      "lot": "t08-final-documentary-reconciliation-20261020",
+      "alreadyPublishedPR": 610,
+      "existingEntry": "docs/system-one/addenda/t08-final-20261020/README.md",
+      "action": "Retain published corpus; add only local reconciliation receipt if not hash-identical in baseline"
+    }
+  ],
+  "sourceGroups": [
+    "sdk-final",
+    "sdk-partial",
+    "integration-profiles",
+    "local-preparation",
+    "real-work-routing"
+  ],
+  "deduplicatedAgainstExisting": 30,
+  "duplicateSourceEntriesSharedWithinOverlay": 4,
+  "capsulesStored": 141,
+  "sourceEntries": 211,
+  "planningProposalCount": 10,
+  "indexBasePreconditions": [
+    {
+      "target": "docs/system-one/README.md",
+      "expectedBaseSHA256": "5924b34526f55ae7f4954210ae5206365645b4035051b7cbee778af04879d474",
+      "operation": "Append final supplement link only; preserve all original bytes"
+    },
+    {
+      "target": "docs/system-one/RESUMPTION.md",
+      "expectedBaseSHA256": "214c0740dbd9ccd78842f179f5e9d18d9023da37548dcf4a78934efea1532ce3",
+      "operation": "Append final supplement link only; preserve all original bytes"
+    }
+  ],
+  "sourceCapsulesFrozen": true,
+  "remoteOperationsPerformed": false,
+  "productFilesIncluded": false,
+  "newTasksExecuted": false,
+  "childRFPrototype": "Owner-reported frozen five-path metadata prefilter,14 focused pass/7 mutations; full profiles pending at observation; separate source/evidence import by final coordinator, not canonical acceptance",
+  "additionalLosslessDeduplication": 57,
+  "allSourceBytesReconstructedAndHashed": 211
+}

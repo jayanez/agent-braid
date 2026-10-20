@@ -1,0 +1,18 @@
+{
+  "checkedAtUTC": "2026-10-20T20:46:51.524286+00:00",
+  "supervisorAlive": true,
+  "inputsStillMatch": 2626,
+  "profiles": {
+    "quick": {
+      "completedReceipt": false,
+      "logBytesObserved": 85425
+    },
+    "pr": {
+      "completedReceipt": false,
+      "logBytesObserved": 85340
+    }
+  },
+  "conditionalSDKImplementationStarted": false,
+  "externalSpendEUR": 0,
+  "continuationAutomation": "ACTIVE"
+}

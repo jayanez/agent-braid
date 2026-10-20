@@ -1,0 +1,253 @@
+{
+  "format": "owned-work-feedback-proposed-task-map-v1",
+  "status": "draft-local-unregistered",
+  "tasks": [
+    {
+      "canonical": "SPEC-045/T009",
+      "alias": "RF-T01",
+      "title": "Route, consent and source applicability matrix",
+      "state": "proposed-local-not-started",
+      "dependencies": [],
+      "requirements": [
+        "SPEC-045/REQ-CI-001"
+      ],
+      "scenarios": [
+        "SPEC-045/SC-CI-001"
+      ],
+      "targets": [
+        "specs/045-local-forecasting-capabilities/addenda/owned-work-authority.md"
+      ],
+      "negativeControls": "Missing authority, denied provider route, wrong source root and blanket NO-GO misapplication are distinguished; no collection performed.",
+      "plannedEvidence": "outputs/owned-work-readiness/route-authority.json",
+      "obtainedEvidence": null,
+      "verificationCommand": "Not executed; after contract adoption and authorized implementation: isolated-python -m unittest tests.test_owned_work_contracts -v",
+      "stopRule": "Stop collection on missing applicable route authority, source/version drift, privacy failure, unbounded resource use or outcome/split leakage; preserve failure, no paid/model fallback."
+    },
+    {
+      "canonical": "SPEC-045/T010",
+      "alias": "RF-T02",
+      "title": "New real-work ledger contract and compatibility disposition",
+      "state": "proposed-local-not-started",
+      "dependencies": [
+        "SPEC-045/T009"
+      ],
+      "requirements": [
+        "SPEC-045/REQ-CI-002"
+      ],
+      "scenarios": [
+        "SPEC-045/SC-CI-002"
+      ],
+      "targets": [
+        "specs/045-local-forecasting-capabilities/contracts/owned-work-evaluation-v1.md",
+        "specs/045-local-forecasting-capabilities/addenda/owned-work-migration.md"
+      ],
+      "negativeControls": "Reject relabeling authentic-on-synthetic, current forecast API repo inputs and attempts to modify SPEC047 store; explicit incompatible-version and migration decision.",
+      "plannedEvidence": "outputs/owned-work-readiness/contract-controls.json",
+      "obtainedEvidence": null,
+      "verificationCommand": "Not executed; after contract adoption and authorized implementation: isolated-python -m unittest tests.test_owned_work_contracts -v",
+      "stopRule": "Stop collection on missing applicable route authority, source/version drift, privacy failure, unbounded resource use or outcome/split leakage; preserve failure, no paid/model fallback."
+    },
+    {
+      "canonical": "SPEC-045/T011",
+      "alias": "RF-T03",
+      "title": "Private bounded lineage store and replay design",
+      "state": "proposed-local-not-started",
+      "dependencies": [
+        "SPEC-045/T010"
+      ],
+      "requirements": [
+        "SPEC-045/REQ-CI-003"
+      ],
+      "scenarios": [
+        "SPEC-045/SC-CI-003"
+      ],
+      "targets": [
+        "agent_braid/owned_work_ledger.py",
+        "tests/test_owned_work_ledger.py"
+      ],
+      "negativeControls": "Digest tamper, duplicated/conflicting attempt, truncated write, symlink/hardlink, overflow, revocation, retention and user-managed backups; no source content persistence.",
+      "plannedEvidence": "outputs/owned-work-readiness/ledger-controls.json",
+      "obtainedEvidence": null,
+      "verificationCommand": "Not executed; after contract adoption and authorized implementation: isolated-python -m unittest tests.test_owned_work_ledger -v",
+      "stopRule": "Stop collection on missing applicable route authority, source/version drift, privacy failure, unbounded resource use or outcome/split leakage; preserve failure, no paid/model fallback."
+    },
+    {
+      "canonical": "SPEC-045/T012",
+      "alias": "RF-T04",
+      "title": "Causal stage/resource receipt adapter",
+      "state": "proposed-local-not-started",
+      "dependencies": [
+        "SPEC-045/T010"
+      ],
+      "requirements": [
+        "SPEC-045/REQ-CI-004"
+      ],
+      "scenarios": [
+        "SPEC-045/SC-CI-004"
+      ],
+      "targets": [
+        "agent_braid/owned_work_observer.py",
+        "tests/test_owned_work_observer.py"
+      ],
+      "negativeControls": "Clock regression, missing counters, inclusive span double-counting, observer overhead and cold/warm separation; hook mutation/stall/cleanup failures; no identity enters collector047.",
+      "plannedEvidence": "outputs/owned-work-readiness/stage-controls.json",
+      "obtainedEvidence": null,
+      "verificationCommand": "Not executed; after contract adoption and authorized implementation: isolated-python -m unittest tests.test_owned_work_observer -v",
+      "stopRule": "Stop collection on missing applicable route authority, source/version drift, privacy failure, unbounded resource use or outcome/split leakage; preserve failure, no paid/model fallback."
+    },
+    {
+      "canonical": "SPEC-045/T013",
+      "alias": "RF-T05",
+      "title": "All-attempt denominator and independently checkable outcome oracle",
+      "state": "proposed-local-not-started",
+      "dependencies": [
+        "SPEC-045/T011",
+        "SPEC-045/T012"
+      ],
+      "requirements": [
+        "SPEC-045/REQ-CI-005"
+      ],
+      "scenarios": [
+        "SPEC-045/SC-CI-005"
+      ],
+      "targets": [
+        "specs/045-local-forecasting-capabilities/contracts/owned-work-oracle.md",
+        "tests/test_owned_work_outcomes.py"
+      ],
+      "negativeControls": "Prose success, incomplete tests, retry-selected success, immature/censored outcome and changed validation command cannot silently become gold. Freeze inclusion and oracle before collection.",
+      "plannedEvidence": "outputs/owned-work-readiness/oracle-and-attempt-registry.json",
+      "obtainedEvidence": null,
+      "verificationCommand": "Not executed; after contract adoption and authorized implementation: isolated-python -m unittest tests.test_owned_work_outcomes -v",
+      "stopRule": "Stop collection on missing applicable route authority, source/version drift, privacy failure, unbounded resource use or outcome/split leakage; preserve failure, no paid/model fallback."
+    },
+    {
+      "canonical": "SPEC-045/T014",
+      "alias": "RF-T06",
+      "title": "Frozen forecast assessment and anti-leakage evaluator",
+      "state": "proposed-local-not-started",
+      "dependencies": [
+        "SPEC-045/T013"
+      ],
+      "requirements": [
+        "SPEC-045/REQ-CI-006"
+      ],
+      "scenarios": [
+        "SPEC-045/SC-CI-006"
+      ],
+      "targets": [
+        "specs/045-local-forecasting-capabilities/addenda/owned-work-evaluation-protocol.md",
+        "tests/test_owned_work_evaluation.py"
+      ],
+      "negativeControls": "Future features, train/test family overlap, retry leakage, selected-only denominators, unit/horizon mismatch and tiny/empty groups refuse or yield not-estimable; descriptive controls without model calls/fitting.",
+      "plannedEvidence": "outputs/owned-work-readiness/evaluation-controls.json",
+      "obtainedEvidence": null,
+      "verificationCommand": "Not executed; after contract adoption and authorized implementation: isolated-python -m unittest tests.test_owned_work_evaluation -v",
+      "stopRule": "Stop collection on missing applicable route authority, source/version drift, privacy failure, unbounded resource use or outcome/split leakage; preserve failure, no paid/model fallback."
+    },
+    {
+      "canonical": "SPEC-045/T015",
+      "alias": "RF-T07",
+      "title": "Feedback counterexamples and deduplicated task drafts",
+      "state": "proposed-local-not-started",
+      "dependencies": [
+        "SPEC-045/T014"
+      ],
+      "requirements": [
+        "SPEC-045/REQ-CI-007"
+      ],
+      "scenarios": [
+        "SPEC-045/SC-CI-007"
+      ],
+      "targets": [
+        "specs/045-local-forecasting-capabilities/addenda/feedback-triage-contract.md",
+        "tests/test_owned_work_feedback.py"
+      ],
+      "negativeControls": "Repeated counterexample dedup; uncertain attribution retained; no runtime grants, data admission, fitting/calibration, promotion or automatic issue publication.",
+      "plannedEvidence": "outputs/owned-work-readiness/feedback-drafts.json",
+      "obtainedEvidence": null,
+      "verificationCommand": "Not executed; after contract adoption and authorized implementation: isolated-python -m unittest tests.test_owned_work_feedback -v",
+      "stopRule": "Stop collection on missing applicable route authority, source/version drift, privacy failure, unbounded resource use or outcome/split leakage; preserve failure, no paid/model fallback."
+    },
+    {
+      "canonical": "SPEC-045/T016",
+      "alias": "RF-T08",
+      "title": "Bounded real-work study readiness and handoff",
+      "state": "proposed-local-not-started",
+      "dependencies": [
+        "SPEC-045/T015",
+        "SPEC-047/T011",
+        "SPEC-045/T017"
+      ],
+      "requirements": [
+        "SPEC-045/REQ-CI-001",
+        "SPEC-045/REQ-CI-008"
+      ],
+      "scenarios": [
+        "SPEC-045/SC-CI-001",
+        "SPEC-045/SC-CI-008"
+      ],
+      "targets": [
+        "docs/system-one/addenda/owned-work-readiness/README.md",
+        "docs/system-one/task-map.json"
+      ],
+      "negativeControls": "Readiness refuses missing source permission, exact v1 packet/route/cost/oracle/split/caps; records pending science/human/host gates. Admitted future collection is a separate execution decision, not done by readiness.",
+      "plannedEvidence": "outputs/owned-work-readiness/readiness.json",
+      "obtainedEvidence": null,
+      "verificationCommand": "Not executed; after contract adoption and authorized implementation: isolated-python -m unittest tests.test_owned_work_contracts -v",
+      "stopRule": "Stop collection on missing applicable route authority, source/version drift, privacy failure, unbounded resource use or outcome/split leakage; preserve failure, no paid/model fallback."
+    },
+    {
+      "canonical": "SPEC-047/T011",
+      "alias": "RF-T09",
+      "title": "Ledger-to-aggregate privacy compatibility barrier",
+      "state": "proposed-local-not-started",
+      "dependencies": [
+        "SPEC-045/T010"
+      ],
+      "requirements": [
+        "SPEC-047/REQ-CI-002",
+        "SPEC-047/REQ-CI-008"
+      ],
+      "scenarios": [
+        "SPEC-047/SC-CI-002",
+        "SPEC-047/SC-CI-008"
+      ],
+      "targets": [
+        "specs/047-local-technical-telemetry/addenda/owned-work-compatibility.md",
+        "tests/test_owned_work_telemetry_privacy.py"
+      ],
+      "negativeControls": "Inject repository/task/run/attempt/model/policy hashes, exact timestamps, arbitrary metrics, content and metadata traps: current aggregate schema refuses; default-off has no persistence; no collector activation. Reuse T007 controls, add cross-ledger negatives only.",
+      "plannedEvidence": "outputs/owned-work-readiness/privacy-boundary-controls.json",
+      "obtainedEvidence": null,
+      "verificationCommand": "Not executed; after contract adoption and authorized implementation: isolated-python -m unittest tests.test_owned_work_telemetry_privacy -v",
+      "stopRule": "Stop collection on missing applicable route authority, source/version drift, privacy failure, unbounded resource use or outcome/split leakage; preserve failure, no paid/model fallback."
+    },
+    {
+      "canonical": "SPEC-045/T017",
+      "alias": "RF-T10",
+      "title": "Measure original real-backlog domain coverage before utility claims",
+      "state": "proposed-local-not-started",
+      "dependencies": [
+        "SPEC-045/T009",
+        "SPEC-045/T010"
+      ],
+      "requirements": [
+        "SPEC-045/REQ-CI-009"
+      ],
+      "scenarios": [
+        "SPEC-045/SC-CI-009"
+      ],
+      "targets": [
+        "specs/045-local-forecasting-capabilities/contracts/real-backlog-coverage.md",
+        "tests/test_owned_work_coverage.py"
+      ],
+      "negativeControls": "Original .py/.md/subdirectory, unsupported operation counts, rename-to-txt laundering, transformed fixtures, retry exclusion and legacy analyzer attribution. Preserve all selected backlog attempts, no typed-v1 broadening.",
+      "verificationCommand": "After authorized implementation: isolated-python -m unittest tests.test_owned_work_coverage -v",
+      "plannedEvidence": "outputs/owned-work-readiness/backlog-coverage.json",
+      "obtainedEvidence": null,
+      "stopRule": "No representative utility claim on infeasible coverage; draft a separately versioned extension, no silent regex relaxation."
+    }
+  ],
+  "requirementsAuthority": "Supplement only; existing normative contracts unchanged",
+  "taskMapMutationApplied": false
+}

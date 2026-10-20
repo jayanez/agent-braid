@@ -1,0 +1,85 @@
+{
+  "createdAt": "2026-10-20T16:06:37.168729+00:00",
+  "files": [
+    {
+      "path": "branch-rules.json",
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "bytes": 2
+    },
+    {
+      "path": "files.json",
+      "sha256": "5576cf0b227da50e7973b38e2be297fade86ce06c18a249089c6b2fd283a5210",
+      "bytes": 130554
+    },
+    {
+      "path": "gate-decision.json",
+      "sha256": "422b2dc4b01782fbf3ba174901cb266779f25b7419db148246b35e027b64850c",
+      "bytes": 541
+    },
+    {
+      "path": "merge-comment-response.txt",
+      "sha256": "d43e5b0b2784af0d2ce3c3899fc37d13e548f343ce85098e3d3a63c43d7dab7a",
+      "bytes": 72
+    },
+    {
+      "path": "merge-comment.md",
+      "sha256": "a26eda80050f3d0751d8697efbbacfc685e59246720bbc1178ae3efac9ff1b0a",
+      "bytes": 1403
+    },
+    {
+      "path": "merge-commit.json",
+      "sha256": "ab39297e555136a74c5ae0017ca605ebc0da0cf2a0d4cebe44257f4c3d066617",
+      "bytes": 2624
+    },
+    {
+      "path": "merge-proof.json",
+      "sha256": "9d79754d3ff9183f84ef03822bb4060094434f49e53d9683d9b4837a581dd47b",
+      "bytes": 3883
+    },
+    {
+      "path": "merge-response.json",
+      "sha256": "0d74125ee316753a04954dc8ec5aae2549f75918b1476f7379e875cfdf201110",
+      "bytes": 109
+    },
+    {
+      "path": "merge-stderr.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "merged-state.json",
+      "sha256": "3c7f651d0deeb4b68c67d15ccc0dbd5e6c2626dd1e042634c9320151166429ba",
+      "bytes": 254
+    },
+    {
+      "path": "postmerge-runs-observed.json",
+      "sha256": "3e9deb99b4590377a7ab7cfcfde1fed0adcd1413ca6ee80dc7b03dc575e061d7",
+      "bytes": 458
+    },
+    {
+      "path": "premerge-state.json",
+      "sha256": "b44e39dadaf9758ef3182376c41d04bbae586726d22d166ebb05ed2aee99e0bb",
+      "bytes": 2815
+    },
+    {
+      "path": "remote-fetch.log",
+      "sha256": "0c052122b49740746e45e0d09eeb94da245f4432614650050d2b266eec372bba",
+      "bytes": 140
+    },
+    {
+      "path": "threads-protection.json",
+      "sha256": "1fe7d47c3101abfa1d9bf7a5c1a12a8bf9239b2d98a8ada33c4daf164032972c",
+      "bytes": 533
+    },
+    {
+      "path": "tracking-run.json",
+      "sha256": "88acbbc0a54dadcae15e07d62a5378085b02e417aa30dc03a3a0177d961123fd",
+      "bytes": 1740
+    },
+    {
+      "path": "validate-run.json",
+      "sha256": "03236c069ba2479017c1b3073b01e8a61076f16355ed4c14ace6c5a2651fb467",
+      "bytes": 11917
+    }
+  ]
+}

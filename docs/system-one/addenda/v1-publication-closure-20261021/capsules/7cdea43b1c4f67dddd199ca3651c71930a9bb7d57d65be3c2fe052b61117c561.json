@@ -1,0 +1,22 @@
+{
+  "status": "verified",
+  "checkedAtUTC": "2026-10-20T22:13:19.137967+00:00",
+  "completionSHA256": "0b75b352d84aba9a45f2501e544daf1164f56ec029479ebffb249ae8e7c25991",
+  "packetSHA256": "806231d11d3ec1fba130e5b2ca90a048e391e71b9e8959efca8716f3b3baf5d9",
+  "reportSHA256": "2148871e7b45f1c786d5bbfb57a122306ff2839104210b7225cbafc1323b745b",
+  "archiveSHA256": "ecfc5ed7b622f49dd6f4e2c01b68bc554066ff6cb14e68e29602c2a1707f5399",
+  "archiveMembersVerified": 25,
+  "patchSHA256": "fcd39138000e4d48f827b9a6722dabda6d8f9a5e52a2104a2f13df9bda9e10ca",
+  "bindingCountVerified": 105,
+  "rawRepresentationsVerified": 79,
+  "rawBytesVerified": 6525168,
+  "profiledInputsMatchCurrent": 2629,
+  "finalizerLogSHA256": "0b75b352d84aba9a45f2501e544daf1164f56ec029479ebffb249ae8e7c25991",
+  "finalizerLogProvenance": "Captured after single-shot finalizer exited0, excluded from in-progress packet",
+  "finalizerExitCode": 0,
+  "externalSpendEUR": 0,
+  "scientificAcceptance": "pending",
+  "humanReview": "pending",
+  "training": "pending",
+  "activation": "pending"
+}

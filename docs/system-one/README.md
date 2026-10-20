@@ -75,3 +75,7 @@ No general calibrated reliability, theorem, Laya parity or unrestricted language
 ## Documentary continuity
 
 Before delivery, incorporate every material result, failed attempt, correction, review, decision and handoff with task/requirement mapping, exact sources/hashes, observation boundary, obtained result, validation scope and unresolved gates. Link details instead of duplicating them. Preserve frozen records and clarify supersession additively. Keep current navigation distinct from history, and local incorporation/publication/integration distinct from product implementation or acceptance. ZIPs are derivative snapshots; chat acknowledgements alone do not complete corpus incorporation.
+
+## Bounded v1 final engineering and continuation (2026-10-21)
+
+Read the [final publication-closure supplement](addenda/v1-publication-closure-20261021/README.md) for the later local preparation, final SDK/Codex engineering, failures, exact source capsules and pending gates. Earlier pending entries retain their dated observation boundary. The [RF feedback proposal](addenda/v1-publication-closure-20261021/forecast-feedback-proposal/README.md) is planned work, not accepted collection or implemented telemetry. Combined-candidate review/CI/publication remain the final coordinator's separate receipt; this index edit supplies no scientific/human/promotion/activation acceptance.

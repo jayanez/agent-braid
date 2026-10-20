@@ -1,0 +1,41 @@
+{
+  "checkedAtUTC": "2026-10-20T15:42:35.191824+00:00",
+  "PR": "https://github.com/jayanez/agent-braid/pull/609",
+  "state": "MERGED",
+  "head": "fe91d190f71b658635a8957eba1c55fe01629b01",
+  "mergeSHA": "b52d7ea3542a3c09678c4b69196c9105f8271f4a",
+  "base": "7a9cf27cde7f849dc5fccf9d3b1d91a059675d23",
+  "mergedAt": "2026-10-20T15:38:14Z",
+  "method": "squash; exact SHA precondition; noadmin/bypass/nodeletebranch",
+  "treeEqualsReviewedHead": true,
+  "singleParentMatchesBase": true,
+  "remoteDevelopContainsMerge": true,
+  "paths": 56,
+  "allDocumentary": true,
+  "validate": "SUCCESS",
+  "tracking": "SUCCESS",
+  "independentReview": "Luna Latest gpt-6-luna documentary no actionable P1/P2 exactfe91",
+  "unresolvedThreads": 0,
+  "changesRequested": false,
+  "requiredApprovals": 0,
+  "postmergeRuns": [
+    {
+      "conclusion": "",
+      "databaseId": 39450254965,
+      "headSha": "b52d7ea3542a3c09678c4b69196c9105f8271f4a",
+      "status": "in_progress",
+      "url": "https://github.com/jayanez/agent-braid/actions/runs/39450254965",
+      "workflowName": "Validate repository"
+    },
+    {
+      "conclusion": "success",
+      "databaseId": 39450255086,
+      "headSha": "b52d7ea3542a3c09678c4b69196c9105f8271f4a",
+      "status": "completed",
+      "url": "https://github.com/jayanez/agent-braid/actions/runs/39450255086",
+      "workflowName": "Audit Spec Kit GitHub tracking"
+    }
+  ],
+  "productPublished": false,
+  "gatesClosed": false
+}
