@@ -1,0 +1,27 @@
+{
+  "scope": "Read-only preparation intake while documentary gates run; no code candidate created yet",
+  "observations": {
+    "codexVersion": "0.163.0-alpha.10.2",
+    "claudeVersion": "2.1.292",
+    "provenance": "exact --version tool outputs observed in this turn; not a model session",
+    "MCPHelp": "Codex mcp exposes list/get/add/remove/login/logout; Claude mcp list/get may health-check approved servers, so ambient list/get was not run"
+  },
+  "existingPython": "/Users/juanyanez/Repos/Personal/agent-braid-system-one/.venv-speckit/bin/python",
+  "availableModules": {
+    "build": false,
+    "setuptools": true,
+    "wheel": false,
+    "mcp": false,
+    "packaging": true
+  },
+  "sourcePyprojectPackages": [
+    "agent_braid",
+    "research",
+    "research.lab"
+  ],
+  "modelSessionsStarted": 0,
+  "configsModified": false,
+  "productCodeChanged": false,
+  "externalSpendEUR": 0,
+  "hostScopeLimit": "No verified-plan public MCP endpoint currently registered. T06 stdio is an own client with native work in its parent, not Codex/Claude host adoption."
+}

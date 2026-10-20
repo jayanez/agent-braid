@@ -1,0 +1,22 @@
+{
+  "recordedAt": "2026-10-20T21:39:05.539802+00:00",
+  "specKitPreflight": {
+    "checkout": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/work/agent-braid-t08-corpus",
+    "command": "python -m scripts.validate_spec_kit",
+    "exitCode": 0,
+    "result": "Spec Kit structural gates passed; semantic/human review separate"
+  },
+  "prerequisites": {
+    "feature": "specs/047-local-technical-telemetry",
+    "exitCode": 0,
+    "availableDocs": [
+      "quickstart.md"
+    ]
+  },
+  "productTestsRun": false,
+  "minorReadAttempt": "One shell regex query failed with bad pattern after successful bounded read; corrected with direct sed; no source or test action.",
+  "taskCount": 10,
+  "completedNewTasks": 0,
+  "proposedNotRegistered": true,
+  "repositoryStatus": ""
+}

@@ -1,0 +1,8 @@
+{
+  "attempt1": "installed-components.stderr",
+  "reason": "Probe controller omitted explicit importlib.util import; AttributeError before test collection",
+  "productSourceChanged": false,
+  "rebuild": false,
+  "previousControllerSHA256": "337cb6d3c61c86ffaa71fd3c884eb97df0941efc80f0bf77c4c85740e3da04ab",
+  "correctedControllerSHA256": "b2c83c9d8acb27b6d79db78008be987c03d3dea670169002ecd7ee20138363e2"
+}

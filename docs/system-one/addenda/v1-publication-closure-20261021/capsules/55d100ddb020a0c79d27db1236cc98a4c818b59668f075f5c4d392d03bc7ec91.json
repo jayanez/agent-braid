@@ -1,0 +1,13 @@
+{
+  "status": "verified local documentary handoff",
+  "receipt": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/outputs/ddp-documentary-local-sdk-endpoint-final-20261021/receipt.json",
+  "receiptSHA256": "5b4dc213a29cad2c76e88776864e9ba4cf4aaafd7aaac5065a316ca3bf317f8c",
+  "manifestSHA256": "290f6d5826d6d3d128ffb6f761178473bf6612ce087411d5d6a1628cab9f3675",
+  "manifestedFiles": 73,
+  "safeRawRepresentations": 64,
+  "excludedProductRepresentations": 15,
+  "packetSHA256": "806231d11d3ec1fba130e5b2ca90a048e391e71b9e8959efca8716f3b3baf5d9",
+  "noNewProductChecks": true,
+  "externalSpendEUR": 0,
+  "checkedAtUTC": "2026-10-20T22:15:48.308372+00:00"
+}

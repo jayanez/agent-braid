@@ -1,0 +1,10 @@
+{
+  "checkedAt": "2026-10-20T22:15:11.871741+00:00",
+  "JSONFiles": 5,
+  "gzipFiles": 64,
+  "localMarkdownLinks": 7,
+  "whitespace": "passed",
+  "uniqueDestinationPaths": true,
+  "hashManifest": "all copied members verified exact against original",
+  "repositoryOrProductTests": "not run; documentary checks only"
+}

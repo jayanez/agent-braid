@@ -1,0 +1,23 @@
+{
+  "commit": "629506e39318ea889f5ac90b60d0beb81ee7219f",
+  "checkout": "/tmp/agent-braid-t06-documentary-20261020",
+  "branch": "docs/ddp-t06-core-corpus",
+  "clean": true,
+  "base": "2ffb4de5fb702a5a0fb24ae68e57fae5181a47a3",
+  "supplement": "docs/system-one/addenda/t06-transport-final-20261020",
+  "packetSHA256": "8331345f3d08c5e8b5799c27ac661f385ad14bce318b92fcbbd39a8336e5061e",
+  "bindingsSHA256": "ba230acf04ad9b6c91db78deddac83550522a54acfed72456a983b224d045853",
+  "packetBindingsVerified": 88,
+  "archiveMembersVerified": 34,
+  "rawRepresentationsVerified": 51,
+  "priorFilesUnchanged": 2408,
+  "equalCurrentProfileInputs": 2415,
+  "documentaryRepresentationsVerified": 59,
+  "changedPathsSincePR594": 160,
+  "allPathsDocumentary": true,
+  "repositoryAndWhitespace": "passed",
+  "localFullProductSuitesRun": false,
+  "publication": "local at reconciliation; later GitHub publication/CI/review/merge receipts additive",
+  "productPublished": false,
+  "gatesClosed": false
+}

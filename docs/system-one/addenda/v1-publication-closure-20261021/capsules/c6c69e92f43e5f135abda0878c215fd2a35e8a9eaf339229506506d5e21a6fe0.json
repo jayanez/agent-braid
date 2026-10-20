@@ -1,0 +1,33 @@
+{
+  "authorization": "Direct user: run quick/pr on new candidate; if passed advance SDK and Codex/Claude endpoint, EUR0; training/human/activation pending",
+  "base": "69e7d374e5aaf13376486664e7368711d9826e6f",
+  "candidate": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/work/agent-braid-code-integration-20261020",
+  "inputFiles": 2626,
+  "softwarePins": {
+    "agent_braid/git_replay.py": "6dc84e50fe04abb4e5675ac0173f9579b239d13ad1741e106b2d4e272081a388",
+    "agent_braid/git_runtime.py": "8cf7168e2cbb9b874019eb3cc8dcee7b5ad69892eaeb4cc0511996fade29f897",
+    "agent_braid/system_one_verified_acquisition.py": "2380a32ef308fbbe540c67e71fb0bf43dc15b95a6732a13a8e2bf2be0d49e5b7",
+    "agent_braid/system_one_verified_consumers.py": "2b35dd7a784d18cc95969f9cf1902023ce3a07cf2792fdc26bcb4122bccb5788",
+    "agent_braid/system_one_verified_ir.py": "a0378c34b805387b0518cf6ebc3da05599976cb7f037d5f140c2571c8f362ea3",
+    "agent_braid/system_one_verified_registry.py": "8d9cb2070683497ea789a9f03905e07f69d6c812c7d0ec9d6ab8a72116f88e6c",
+    "agent_braid/system_one_verified_selection.py": "a8fd0d752c3ab179b233906adac65b7dfe2150cf8ef079c3e00334e689bbb51e",
+    "agent_braid/system_one_verified_stdio.py": "3caaafb091d3c314224992e334ec6ca302c2c72831de12997481ccc9fe7a8f42",
+    "agent_braid/system_one_verified_tooling.py": "128aed194149f648d0a579b9fff7d85e121c10339df7552e1e488363c744d04e",
+    "tests/fixtures/system_one_verified_acquisition.json": "4c674337541e56bc7cc2219a8c10e522bba037fae24bd480a65317010fc15078",
+    "tests/fixtures/system_one_verified_ir.json": "c2aac157c85f4a1d9fd6e5fec998c003433bb4e9769bba3ed50c27f253318b76",
+    "tests/fixtures/system_one_verified_registry.json": "75753dac881c6cd933360aab88b5d71bb6d17c19d6537c0645b8024c78a1005a",
+    "tests/test_system_one_verified_acquisition.py": "27ff8dd4192d1bc1b7d72b412fa1209e3ba28b32671f0181d3fb707a104ea8ed",
+    "tests/test_system_one_verified_compatibility.py": "56e9e82f91d492b01fe48c413a8a14711f189406ea6ce25369d87ff249cbdf9e",
+    "tests/test_system_one_verified_components.py": "01abcb850572c3ad0f85beccaf7d437367fa388f681f0b77d55be24c98c32dcf",
+    "tests/test_system_one_verified_consumers.py": "d88c6dcb8f49a31023431258662cf82f3c848f1a92c3384ca0e74f430997493c",
+    "tests/test_system_one_verified_ir.py": "5550874646e3021cf147e14ebf5e5760a7f7397b08ce7701256ad59c2e9367be",
+    "tests/test_system_one_verified_registry.py": "53185df49342636e9b2545a5d53ef398998b4acc3367e39ee35ee0e5c525d254",
+    "tests/test_system_one_verified_selection.py": "d14d2ec1637b944eab96a6c9938b1758c8343e390fae208d55e615c9089e0b56",
+    "tests/test_system_one_verified_stdio.py": "67c61b11b8c94c64295fe44743519152aa853b8c0e66db75a2e4a8044fe4870f",
+    "tests/test_system_one_verified_tooling.py": "025410941b1bb37050dda5669ad0425a636ff52afbd230e5c8fa3567e939e583"
+  },
+  "sourcePreparation": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/outputs/ddp-documentary-merges-and-code-preparation-20261020/preparation-result.json",
+  "externalSpendEUR": 0,
+  "conditionalPhase": "SDK/endpoint implementation only after both profiles exit0 with identical inputs",
+  "scope": "Local opt-in developer endpoint; no product push/merge/release or default/global host activation"
+}

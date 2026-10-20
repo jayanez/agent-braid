@@ -1,0 +1,51 @@
+{
+  "activation": "pending",
+  "bindingsVerified": 105,
+  "externalSpendEUR": 0,
+  "humanReview": "pending",
+  "originalProductFilesUnchanged": 2529,
+  "packetPath": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/work/agent-braid-code-integration-20261020/specs/029-system-one-evaluation/evidence/ddp-sdk-endpoint/packet.json",
+  "packetSHA256": "806231d11d3ec1fba130e5b2ca90a048e391e71b9e8959efca8716f3b3baf5d9",
+  "patchAppliesBaselineAndReproducesAllChangedBytes": true,
+  "patchSHA256": "fcd39138000e4d48f827b9a6722dabda6d8f9a5e52a2104a2f13df9bda9e10ca",
+  "productPublication": "pending",
+  "profiledInputsStillIdentical": 2629,
+  "profiles": {
+    "pr": {
+      "errors": 0,
+      "exitCode": 0,
+      "failures": 0,
+      "logSHA256": "faf850c3cce916026b06c46ad33efc6e0cb851ca5042388a84b6b2a6ca19cfbe",
+      "passed": 2071,
+      "profileSeconds": 2267.390424666999,
+      "skipped": 23,
+      "sourceInputsStillMatch": true,
+      "tests": 2094,
+      "unitSeconds": 2087.543
+    },
+    "quick": {
+      "errors": 0,
+      "exitCode": 0,
+      "failures": 0,
+      "logSHA256": "5daef2ea93762f21166e6979472317ed97c2e9ad4ef5bd297261827fe7ed15bd",
+      "passed": 2071,
+      "profileSeconds": 2271.391145458001,
+      "skipped": 23,
+      "sourceInputsStillMatch": true,
+      "tests": 2094,
+      "unitSeconds": 2091.806
+    }
+  },
+  "rawRepresentationsVerified": 79,
+  "reportPath": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/work/agent-braid-code-integration-20261020/specs/031-system-one-integration/addenda/ddp-sdk-endpoint-implementation.md",
+  "reportSHA256": "2148871e7b45f1c786d5bbfb57a122306ff2839104210b7225cbafc1323b745b",
+  "repositoryExitCode": 0,
+  "sourceArchiveMembersVerified": 25,
+  "sourceArchiveSHA256": "ecfc5ed7b622f49dd6f4e2c01b68bc554066ff6cb14e68e29602c2a1707f5399",
+  "status": "packaged bounded developer SDK/Codex engineering v1",
+  "supersededPriorFiles": [
+    "agent_braid/system_one_verified_consumers.py"
+  ],
+  "training": "pending",
+  "whitespaceExitCode": 0
+}

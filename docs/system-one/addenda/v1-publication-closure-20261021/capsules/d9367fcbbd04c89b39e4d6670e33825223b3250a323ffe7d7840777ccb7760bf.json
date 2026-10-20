@@ -1,0 +1,199 @@
+{
+  "base": "69e7d374e5aaf13376486664e7368711d9826e6f",
+  "changedPaths": [
+    ".venv-speckit",
+    "agent_braid/git_replay.py",
+    "agent_braid/git_runtime.py",
+    "agent_braid/system_one_verified_acquisition.py",
+    "agent_braid/system_one_verified_consumers.py",
+    "agent_braid/system_one_verified_ir.py",
+    "agent_braid/system_one_verified_registry.py",
+    "agent_braid/system_one_verified_selection.py",
+    "agent_braid/system_one_verified_stdio.py",
+    "agent_braid/system_one_verified_tooling.py",
+    "tests/fixtures/system_one_verified_acquisition.json",
+    "tests/fixtures/system_one_verified_ir.json",
+    "tests/fixtures/system_one_verified_registry.json",
+    "tests/test_system_one_verified_acquisition.py",
+    "tests/test_system_one_verified_compatibility.py",
+    "tests/test_system_one_verified_components.py",
+    "tests/test_system_one_verified_consumers.py",
+    "tests/test_system_one_verified_ir.py",
+    "tests/test_system_one_verified_registry.py",
+    "tests/test_system_one_verified_selection.py",
+    "tests/test_system_one_verified_stdio.py",
+    "tests/test_system_one_verified_tooling.py"
+  ],
+  "commands": [
+    {
+      "argv": [
+        "python3",
+        "scripts/validate_repository.py"
+      ],
+      "id": "repository"
+    },
+    {
+      "argv": [
+        "python3",
+        "scripts/validate_contracts.py"
+      ],
+      "id": "contracts"
+    },
+    {
+      "argv": [
+        "python3",
+        "scripts/validate_release_records.py"
+      ],
+      "id": "release-records"
+    },
+    {
+      "argv": [
+        "python3",
+        "scripts/validate_publication.py",
+        "--portable"
+      ],
+      "id": "publication"
+    },
+    {
+      "argv": [
+        "python3",
+        "scripts/validate_research_radar.py",
+        "--milestone",
+        "M0.5"
+      ],
+      "id": "research-radar"
+    },
+    {
+      "argv": [
+        "python3",
+        "scripts/validate_adoption_tracks.py"
+      ],
+      "id": "adoption-tracks"
+    },
+    {
+      "argv": [
+        "python3",
+        "scripts/market_sizing.py",
+        "--check"
+      ],
+      "id": "market-model"
+    },
+    {
+      "argv": [
+        "python3",
+        "-m",
+        "agent_braid",
+        "--help"
+      ],
+      "id": "cli-smoke"
+    },
+    {
+      "argv": [
+        "python3",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "tests",
+        "-v"
+      ],
+      "id": "full-tests"
+    },
+    {
+      "argv": [
+        "python3",
+        "-m",
+        "research.lab.controls"
+      ],
+      "id": "scientific-controls"
+    },
+    {
+      "argv": [
+        "python3",
+        "scripts/validate_spec_kit.py"
+      ],
+      "id": "spec-kit-structure"
+    },
+    {
+      "argv": [
+        "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/work/agent-braid-code-integration-20261020/.venv-speckit/bin/python",
+        "scripts/spec_kit.py",
+        "check"
+      ],
+      "id": "spec-kit-render"
+    },
+    {
+      "argv": [
+        "python3",
+        "scripts/constitution_replica.py",
+        "check"
+      ],
+      "id": "constitution-replica"
+    },
+    {
+      "argv": [
+        "git",
+        "diff",
+        "--check",
+        "69e7d374e5aaf13376486664e7368711d9826e6f",
+        "--"
+      ],
+      "id": "whitespace"
+    },
+    {
+      "argv": [
+        "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/work/agent-braid-code-integration-20261020/.venv-speckit/bin/python",
+        "scripts/test_spec_kit_integration.py"
+      ],
+      "id": "spec-kit-integration"
+    }
+  ],
+  "deferredBoundaryGates": [
+    "Private runtime evidence reproduction, independent review and founder acceptance",
+    "Synthetic diagnostic contract only; model/data/human acceptance and promotion remain separate"
+  ],
+  "domains": [
+    "git-replay",
+    "git-runtime",
+    "system-one-core",
+    "tests-other",
+    "unknown"
+  ],
+  "effectiveProfile": "sensitive",
+  "head": null,
+  "limits": [
+    "Path selection is not semantic dependency analysis or proof.",
+    "Passing commands is not evidence capture, human review, founder approval or independent validation.",
+    "Clean-room procedures remain separate and are not executed by this plan."
+  ],
+  "reasons": [
+    ".venv-speckit: no owned rule; conservative sensitive fallback",
+    "agent_braid/git_replay.py: git-replay",
+    "agent_braid/git_runtime.py: git-runtime",
+    "agent_braid/system_one_verified_acquisition.py: system-one-core",
+    "agent_braid/system_one_verified_consumers.py: system-one-core",
+    "agent_braid/system_one_verified_ir.py: system-one-core",
+    "agent_braid/system_one_verified_registry.py: system-one-core",
+    "agent_braid/system_one_verified_selection.py: system-one-core",
+    "agent_braid/system_one_verified_stdio.py: system-one-core",
+    "agent_braid/system_one_verified_tooling.py: system-one-core",
+    "tests/fixtures/system_one_verified_acquisition.json: tests-other",
+    "tests/fixtures/system_one_verified_ir.json: tests-other",
+    "tests/fixtures/system_one_verified_registry.json: tests-other",
+    "tests/test_system_one_verified_acquisition.py: system-one-core",
+    "tests/test_system_one_verified_compatibility.py: system-one-core",
+    "tests/test_system_one_verified_components.py: system-one-core",
+    "tests/test_system_one_verified_consumers.py: system-one-core",
+    "tests/test_system_one_verified_ir.py: system-one-core",
+    "tests/test_system_one_verified_registry.py: system-one-core",
+    "tests/test_system_one_verified_selection.py: system-one-core",
+    "tests/test_system_one_verified_stdio.py: system-one-core",
+    "tests/test_system_one_verified_tooling.py: system-one-core"
+  ],
+  "requestedProfile": "quick",
+  "sensitive": true,
+  "specKitIntegration": true,
+  "unknownPaths": [
+    ".venv-speckit"
+  ]
+}
