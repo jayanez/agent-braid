@@ -49,3 +49,21 @@ Evidence is bound in `evidence/technical-delivery.json` and the focused, review,
 quick-profile and exact offline-wheel records. Whole assurance remains draft;
 human/empirical/model acceptance is pending. Stable PR profile passed on the bound metadata candidate. Clean supported freeze
 is recorded in assurance.json; human/empirical gates remain pending.
+
+
+## Documentary reconciliation of research and proposed delivery — 2026-10-20
+
+These additive canonical identities retain the existing study/DDP aliases. Checked entries mean only their stated bounded historical lot; original research, human, model and product gates remain open. The evidence register is a documentary source snapshot, not new implementation or independent reproduction. See docs/system-one/README.md and task-map.json. No task launches agents or authorizes a study.
+
+- [x] T009 (REQ-002 REQ-003 REQ-006 / SC-002 SC-003 SC-006): Measure complete native-workflow chain and retain the bounded negative utility result.
+  Source research task T009; eight history-derived episodes, all six arms and failed/inconclusive outcomes retained. Evidence: docs/system-one/evidence-register.json S1-NATIVE-WORKFLOWS. No native workflow acceptance, neural speedup or successful task execution claim; T008 remains open.
+
+- [ ] T010 (REQ-002 / SC-002): Extract bounded observed-effect acquisition (alias DDP-T03; proposed, not started).
+  Dependencies: SPEC-028/T009. Owner: agent-B.
+  Targets: agent_braid/system_one_verified_acquisition.py, tests/test_system_one_verified_acquisition.py. Verification planned: .venv-speckit/bin/python -m unittest tests.test_system_one_verified_acquisition -v.
+  Criterion and negatives: docs/system-one/task-map.json alias DDP-T03; no obtained implementation evidence. Preserve no-authority and separate decision/prepare-budget boundaries.
+
+- [ ] T011 (REQ-004 REQ-005 REQ-006 / SC-004 SC-005 SC-006): Bind extracted decisions to read-only preparation consumers (alias DDP-T06; proposed, not started).
+  Dependencies: SPEC-028/T011, T025 completed engineering receipt checked by coordinator. Owner: agent-B.
+  Targets: agent_braid/system_one_verified_consumer.py, tests/test_system_one_verified_consumer.py, tests/test_system_one_verified_stdio.py. Verification planned: .venv-speckit/bin/python -m unittest tests.test_system_one_verified_consumer tests.test_system_one_verified_stdio -v.
+  Criterion and negatives: docs/system-one/task-map.json alias DDP-T06; no obtained implementation evidence. Preserve no-authority and separate decision/prepare-budget boundaries.

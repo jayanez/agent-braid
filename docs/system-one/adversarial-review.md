@@ -1,0 +1,11 @@
+# Adversarial review handoff for Claude Code or another reviewer
+
+Mission: challenge the documentary claims, coverage and traceability; do not implement, fit, re-evaluate models, open a holdout, activate policies or rewrite frozen evidence. This packet is prepared for review; no Claude review has been performed. Any Codex review agent, if separately authorized, must use Luna Latest; Claude Code review records must retain their actual model identity.
+
+Read README.md → evolution.md → gates-and-assignment.md → task-map.json. For each disputed claim, inspect evidence-register.json line anchors and full source-documents.json text, then the original hash-bound local packet/log/code if needed. Original source WIP and large raw artifacts are not reproduced by this documentation checkout; absence blocks the corresponding verification claim, not the whole review.
+
+Check especially: taxonomy labels versus human quality; fresh partitions versus opened recovery and shared generator lineage; all attempts/refusals/defers and accepted-error denominators; causal pairs versus answer agreement; static Git checks versus independent scientific oracles; k0 concentration/alternative-order coverage; EOF admissibility versus selected-choice correctness; producer claims versus consumer revalidation; diagnostic model timing versus complete public request and prepare costs; sampled RSS versus hard limits; historical approvals versus later WIP.
+
+Try to falsify these obligations without new experiments: every listed study has source hashes, candidate/population/partition/command references, negative/failure history, costs or unknowns and explicit pending gates; every claimed increment maps to original requirements/scenarios, canonical task aliases, tests/evidence and close criteria; no duplicate issue markers or unearned closure; no promotion/activation from software tests.
+
+Return findings as ID, severity, exact file/record/line, violated obligation, evidence and concrete documentary correction. Mark unavailable source or pending human evidence explicitly. Do not invent approvals or claim independent validation from this review. Return a local report to the coordinator without overwriting WIP or sending external messages.

@@ -1,0 +1,122 @@
+[
+  {
+    "id": "DDP-T01",
+    "title": "[SPEC-028][DDP-T01] Freeze additive contracts and migration map",
+    "bodyPath": "specs/028-system-one-core/decision-delivery/issues/DDP-T01.md",
+    "dedupKey": "jayanez/agent-braid:system-one-decision-delivery:DDP-T01:v1",
+    "dependencies": [
+      "T025 completed engineering receipt checked by coordinator"
+    ],
+    "repository": "https://github.com/jayanez/agent-braid",
+    "state": "draft",
+    "remoteCreated": false,
+    "remoteNumber": null
+  },
+  {
+    "id": "DDP-T02",
+    "title": "[SPEC-029][DDP-T02] Extract EOF IR and controlled interpretation",
+    "bodyPath": "specs/028-system-one-core/decision-delivery/issues/DDP-T02.md",
+    "dedupKey": "jayanez/agent-braid:system-one-decision-delivery:DDP-T02:v1",
+    "dependencies": [
+      "DDP-T01"
+    ],
+    "repository": "https://github.com/jayanez/agent-braid",
+    "state": "draft",
+    "remoteCreated": false,
+    "remoteNumber": null
+  },
+  {
+    "id": "DDP-T03",
+    "title": "[SPEC-031][DDP-T03] Extract bounded observed-effect acquisition",
+    "bodyPath": "specs/028-system-one-core/decision-delivery/issues/DDP-T03.md",
+    "dedupKey": "jayanez/agent-braid:system-one-decision-delivery:DDP-T03:v1",
+    "dependencies": [
+      "DDP-T01"
+    ],
+    "repository": "https://github.com/jayanez/agent-braid",
+    "state": "draft",
+    "remoteCreated": false,
+    "remoteNumber": null
+  },
+  {
+    "id": "DDP-T04",
+    "title": "[SPEC-028][DDP-T04] Implement static domain verifier registry",
+    "bodyPath": "specs/028-system-one-core/decision-delivery/issues/DDP-T04.md",
+    "dedupKey": "jayanez/agent-braid:system-one-decision-delivery:DDP-T04:v1",
+    "dependencies": [
+      "DDP-T01"
+    ],
+    "repository": "https://github.com/jayanez/agent-braid",
+    "state": "draft",
+    "remoteCreated": false,
+    "remoteNumber": null
+  },
+  {
+    "id": "DDP-T05",
+    "title": "[SPEC-028][DDP-T05] Deliver deterministic verified-plan selection",
+    "bodyPath": "specs/028-system-one-core/decision-delivery/issues/DDP-T05.md",
+    "dedupKey": "jayanez/agent-braid:system-one-decision-delivery:DDP-T05:v1",
+    "dependencies": [
+      "DDP-T02",
+      "DDP-T03",
+      "DDP-T04"
+    ],
+    "repository": "https://github.com/jayanez/agent-braid",
+    "state": "draft",
+    "remoteCreated": false,
+    "remoteNumber": null
+  },
+  {
+    "id": "DDP-T06",
+    "title": "[SPEC-031][DDP-T06] Bind extracted decisions to read-only preparation consumers",
+    "bodyPath": "specs/028-system-one-core/decision-delivery/issues/DDP-T06.md",
+    "dedupKey": "jayanez/agent-braid:system-one-decision-delivery:DDP-T06:v1",
+    "dependencies": [
+      "DDP-T05",
+      "T025 completed engineering receipt checked by coordinator"
+    ],
+    "repository": "https://github.com/jayanez/agent-braid",
+    "state": "draft",
+    "remoteCreated": false,
+    "remoteNumber": null
+  },
+  {
+    "id": "DDP-T07",
+    "title": "[SPEC-029][DDP-T07] Verify integrated compatibility and adversarial boundaries",
+    "bodyPath": "specs/028-system-one-core/decision-delivery/issues/DDP-T07.md",
+    "dedupKey": "jayanez/agent-braid:system-one-decision-delivery:DDP-T07:v1",
+    "dependencies": [
+      "DDP-T06"
+    ],
+    "repository": "https://github.com/jayanez/agent-braid",
+    "state": "draft",
+    "remoteCreated": false,
+    "remoteNumber": null
+  },
+  {
+    "id": "DDP-T08",
+    "title": "[SPEC-033][DDP-T08] Package bounded delivery and adoption gates",
+    "bodyPath": "specs/028-system-one-core/decision-delivery/issues/DDP-T08.md",
+    "dedupKey": "jayanez/agent-braid:system-one-decision-delivery:DDP-T08:v1",
+    "dependencies": [
+      "DDP-T07"
+    ],
+    "repository": "https://github.com/jayanez/agent-braid",
+    "state": "draft",
+    "remoteCreated": false,
+    "remoteNumber": null
+  },
+  {
+    "id": "DDP-T09",
+    "title": "[SPEC-030][DDP-T09] Register learned interpretation and selection follow-up only",
+    "bodyPath": "specs/028-system-one-core/decision-delivery/issues/DDP-T09.md",
+    "dedupKey": "jayanez/agent-braid:system-one-decision-delivery:DDP-T09:v1",
+    "dependencies": [
+      "Separate owner authorization; SPEC-029/T008; SPEC-030 rights/budget gates"
+    ],
+    "repository": "https://github.com/jayanez/agent-braid",
+    "state": "draft",
+    "remoteCreated": false,
+    "remoteNumber": null
+  }
+]

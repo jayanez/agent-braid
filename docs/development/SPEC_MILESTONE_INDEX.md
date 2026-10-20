@@ -71,3 +71,8 @@ preserves public SPEC-046/ADR-0024 and allocates SPEC-047/ADR-0025 to the local
 telemetry candidate. Its source migration is not integrated; it is not an added
 accepted feature or a change to historical milestone counts. The shared economic
 scenario is **NO-GO**.
+
+
+## System One research and delivery traceability
+
+[System One evidence/resumption corpus](../system-one/README.md) reconciles SPEC-028–033 and S1.0–S1.4, including negative results and unfinished T025. Task closure remains distinct from scientific, human, founder and activation gates.

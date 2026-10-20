@@ -1,0 +1,1021 @@
+{
+  "format": "s1-canonical-task-alias-map-v1",
+  "ddpAliases": {
+    "DDP-T01": "SPEC-028/T009",
+    "DDP-T02": "SPEC-029/T026",
+    "DDP-T03": "SPEC-031/T010",
+    "DDP-T04": "SPEC-028/T010",
+    "DDP-T05": "SPEC-028/T011",
+    "DDP-T06": "SPEC-031/T011",
+    "DDP-T07": "SPEC-029/T027",
+    "DDP-T08": "SPEC-033/T009",
+    "DDP-T09": "SPEC-030/T016"
+  },
+  "records": [
+    {
+      "alias": "DDP-T01",
+      "canonical": "SPEC-028/T009",
+      "requirements": [
+        "SPEC-028/REQ-001",
+        "SPEC-028/REQ-002",
+        "SPEC-031/REQ-002"
+      ],
+      "scenarioAlias": "DDP-SC-01",
+      "dependencies": [
+        "T025 completed engineering receipt checked by coordinator"
+      ],
+      "files": [
+        "specs/028-system-one-core/contracts/verified-plan-v1.md",
+        "specs/031-system-one-integration/contracts/verified-plan-consumer-v1.md",
+        "specs/029-system-one-evaluation/verified-plan-conformance.md"
+      ],
+      "positiveCriterion": "Contract vectors and migration table reviewed against exact T025 candidate; affected public API/architectural decisions remain proposed until governance review.",
+      "negative": "Malformed/unknown versions, missing pins and probability/coercion attempts are rejected by planned vectors; compare every proposed bound to T024 source. Reject budget reset/enlargement, implicit prepare caps and false hard-termination guarantees.",
+      "plannedCommand": null,
+      "evidenceRequired": "Contract vectors and migration table reviewed against exact T025 candidate; affected public API/architectural decisions remain proposed until governance review.",
+      "state": "open; not started",
+      "owner": "coordinator"
+    },
+    {
+      "alias": "DDP-T02",
+      "canonical": "SPEC-029/T026",
+      "requirements": [
+        "SPEC-029/REQ-005",
+        "SPEC-028/REQ-002"
+      ],
+      "scenarioAlias": "DDP-SC-02",
+      "dependencies": [
+        "SPEC-028/T009"
+      ],
+      "files": [
+        "agent_braid/system_one_verified_ir.py",
+        "tests/test_system_one_verified_ir.py"
+      ],
+      "positiveCriterion": "Golden IR/grammar parity on fixed developer fixtures with original T024 semantics; old sources unmodified.",
+      "negative": "Retained-tail versus terminal-edit, forged patch prefixes, ambiguous anchors, BOF, malformed/overbudget text and exact round trip; unrestricted prose refuses.",
+      "plannedCommand": ".venv-speckit/bin/python -m unittest tests.test_system_one_verified_ir -v",
+      "evidenceRequired": "Golden IR/grammar parity on fixed developer fixtures with original T024 semantics; old sources unmodified.",
+      "state": "open; not started",
+      "owner": "agent-A"
+    },
+    {
+      "alias": "DDP-T03",
+      "canonical": "SPEC-031/T010",
+      "requirements": [
+        "SPEC-031/REQ-002",
+        "SPEC-029/REQ-005"
+      ],
+      "scenarioAlias": "DDP-SC-03",
+      "dependencies": [
+        "SPEC-028/T009"
+      ],
+      "files": [
+        "agent_braid/system_one_verified_acquisition.py",
+        "tests/test_system_one_verified_acquisition.py"
+      ],
+      "positiveCriterion": "Pinned local fixture source/hash manifest, scratch cleanup receipt and no-write assertions; no corpus study.",
+      "negative": "Source drift, path escape, wrong revision, non-LF/binary/missing-newline, unsupported mode/rename, incomplete effects and deadline exhaustion refuse; source refs/files remain identical.",
+      "plannedCommand": ".venv-speckit/bin/python -m unittest tests.test_system_one_verified_acquisition -v",
+      "evidenceRequired": "Pinned local fixture source/hash manifest, scratch cleanup receipt and no-write assertions; no corpus study.",
+      "state": "open; not started",
+      "owner": "agent-B"
+    },
+    {
+      "alias": "DDP-T04",
+      "canonical": "SPEC-028/T010",
+      "requirements": [
+        "SPEC-028/REQ-005",
+        "SPEC-031/REQ-001"
+      ],
+      "scenarioAlias": "DDP-SC-04",
+      "dependencies": [
+        "SPEC-028/T009"
+      ],
+      "files": [
+        "agent_braid/system_one_verified_registry.py",
+        "tests/test_system_one_verified_registry.py"
+      ],
+      "positiveCriterion": "Registry identity vectors and bounded negative dispatch tests; no general-domain support claim.",
+      "negative": "Unknown domain/version/observation, forged digest, mutable entry and dynamic plugin/callable dispatch refuse; exact supported registration passes.",
+      "plannedCommand": ".venv-speckit/bin/python -m unittest tests.test_system_one_verified_registry -v",
+      "evidenceRequired": "Registry identity vectors and bounded negative dispatch tests; no general-domain support claim.",
+      "state": "open; not started",
+      "owner": "agent-C"
+    },
+    {
+      "alias": "DDP-T05",
+      "canonical": "SPEC-028/T011",
+      "requirements": [
+        "SPEC-028/REQ-003",
+        "SPEC-028/REQ-004",
+        "SPEC-031/REQ-003"
+      ],
+      "scenarioAlias": "DDP-SC-05",
+      "dependencies": [
+        "SPEC-029/T026",
+        "SPEC-031/T010",
+        "SPEC-028/T010"
+      ],
+      "files": [
+        "agent_braid/system_one_verified_decision.py",
+        "tests/test_system_one_verified_decision.py"
+      ],
+      "positiveCriterion": "A local vertical-slice receipt from pinned source to verified decision, full per-option consequences and all negative controls. No model invocation.",
+      "negative": "No eligible plan, tie, duplicate/omitted option, stale snapshot/registry, unmet dependency, changed goal and exhausted budget; selected result has no probability or authority.",
+      "plannedCommand": ".venv-speckit/bin/python -m unittest tests.test_system_one_verified_decision -v",
+      "evidenceRequired": "A local vertical-slice receipt from pinned source to verified decision, full per-option consequences and all negative controls. No model invocation.",
+      "state": "open; not started",
+      "owner": "agent-A"
+    },
+    {
+      "alias": "DDP-T06",
+      "canonical": "SPEC-031/T011",
+      "requirements": [
+        "SPEC-031/REQ-004",
+        "SPEC-031/REQ-005",
+        "SPEC-031/REQ-006"
+      ],
+      "scenarioAlias": "DDP-SC-06",
+      "dependencies": [
+        "SPEC-028/T011",
+        "T025 completed engineering receipt checked by coordinator"
+      ],
+      "files": [
+        "agent_braid/system_one_verified_consumer.py",
+        "tests/test_system_one_verified_consumer.py",
+        "tests/test_system_one_verified_stdio.py"
+      ],
+      "positiveCriterion": "Core/service/real-stdio parity receipts, exact expected tree, cleanup and source-immutability checks. T024 corpus replay only if separately authorized as software integration regression; never new accuracy. Local bounded stage receipts include acquisition, IR, verifier, selection, tree build, revalidation, fresh native proof, prepare/reverification, transport/evidence validation and cleanup, with measured outer total and null unknowns. Numeric envelope and enforcement mode must be explicit before closure. No cache reuse without separately reviewed freshness/binding/invalidation contract.",
+      "negative": "Tampered choice/tree/source/prefix/payload, cross-consumer packet replay, frame/cancellation failures and rejected-k0; zero execute/recover/grant/persistent-run effects; evidence chunks checked completely. Decision expiry prevents prepare; remaining prepare budget cannot reset; cancellation suppresses late result and proves cleanup/termination or records enforcement unsupported; stale observation/proof reuse refuses.",
+      "plannedCommand": ".venv-speckit/bin/python -m unittest tests.test_system_one_verified_consumer tests.test_system_one_verified_stdio -v",
+      "evidenceRequired": "Core/service/real-stdio parity receipts, exact expected tree, cleanup and source-immutability checks. T024 corpus replay only if separately authorized as software integration regression; never new accuracy. Local bounded stage receipts include acquisition, IR, verifier, selection, tree build, revalidation, fresh native proof, prepare/reverification, transport/evidence validation and cleanup, with measured outer total and null unknowns. Numeric envelope and enforcement mode must be explicit before closure. No cache reuse without separately reviewed freshness/binding/invalidation contract.",
+      "state": "open; not started",
+      "owner": "agent-B"
+    },
+    {
+      "alias": "DDP-T07",
+      "canonical": "SPEC-029/T027",
+      "requirements": [
+        "SPEC-029/REQ-005",
+        "SPEC-029/REQ-006",
+        "SPEC-028/REQ-006"
+      ],
+      "scenarioAlias": "DDP-SC-07",
+      "dependencies": [
+        "SPEC-031/T011"
+      ],
+      "files": [
+        "tests/test_system_one_verified_compatibility.py",
+        "specs/029-system-one-evaluation/evidence/decision-delivery/software-validation.json"
+      ],
+      "positiveCriterion": "Focused tests plus quick during work and pr once stable with exact commands/SHA/environment/skips; findings resolved or explicit blockers. Luna review pending until actually authorized/performed.",
+      "negative": "Changed old stdlib response, neural module load on core import, unsupported input accepted, omitted evidence chunk, forged authorization and non-cleaned scratch fail the suite.",
+      "plannedCommand": ".venv-speckit/bin/python -m unittest tests.test_system_one_verified_compatibility -v",
+      "evidenceRequired": "Focused tests plus quick during work and pr once stable with exact commands/SHA/environment/skips; findings resolved or explicit blockers. Luna review pending until actually authorized/performed.",
+      "state": "open; not started",
+      "owner": "agent-C / later Luna reviewer"
+    },
+    {
+      "alias": "DDP-T08",
+      "canonical": "SPEC-033/T009",
+      "requirements": [
+        "SPEC-033/REQ-002",
+        "SPEC-033/REQ-006"
+      ],
+      "scenarioAlias": "DDP-SC-08",
+      "dependencies": [
+        "SPEC-029/T027"
+      ],
+      "files": [
+        "specs/033-system-one-promotion/decision-delivery-gates.md",
+        "specs/028-system-one-core/decision-delivery-result.md"
+      ],
+      "positiveCriterion": "Candidate-bound software packet and explicit pending-gates matrix; no assurance rewrite, activation, tracking publish or milestone closure.",
+      "negative": "Negative utility, absent human approval and missing representative evidence keep relevant promotion gates pending; passing tests cannot set adopted=true.",
+      "plannedCommand": null,
+      "evidenceRequired": "Candidate-bound software packet and explicit pending-gates matrix; no assurance rewrite, activation, tracking publish or milestone closure.",
+      "state": "open; not started",
+      "owner": "coordinator"
+    },
+    {
+      "alias": "DDP-T09",
+      "canonical": "SPEC-030/T016",
+      "requirements": [
+        "SPEC-030/REQ-001",
+        "SPEC-030/REQ-004",
+        "SPEC-033/REQ-002"
+      ],
+      "scenarioAlias": "DDP-SC-09",
+      "dependencies": [
+        "Separate owner authorization; SPEC-029/T008; SPEC-030 rights/budget gates"
+      ],
+      "files": [
+        "specs/030-system-one-model/verified-plan-learned-proposal.md"
+      ],
+      "positiveCriterion": "Approved prospective protocol and exact budget/rights records required before any work beyond drafting; this task stays blocked and is not on the deterministic critical path.",
+      "negative": "Absent source permission, representative labels, calibration partition or promotion review blocks execution; verifier still rejects unsafe model proposals.",
+      "plannedCommand": null,
+      "evidenceRequired": "Approved prospective protocol and exact budget/rights records required before any work beyond drafting; this task stays blocked and is not on the deterministic critical path.",
+      "state": "open; not started",
+      "owner": "unassigned / blocked"
+    },
+    {
+      "alias": "S1-INTAKE",
+      "canonical": "SPEC-030/T001",
+      "requirements": [
+        "REQ-001",
+        "REQ-003",
+        "REQ-005",
+        "REQ-006"
+      ],
+      "scenarioAlias": "Parent existing scenarios; exact protocol bound in evidence-register.json",
+      "evidenceRecord": "S1-INTAKE",
+      "positiveCriterion": "Completed bounded registered scope and retained outcomes, not a positive hypothesis",
+      "state": "bounded evidence obtained; canonical checkbox may preserve broader pending gates",
+      "scenarios": [
+        "SC-001",
+        "SC-003",
+        "SC-005",
+        "SC-006"
+      ],
+      "tests": [],
+      "protocolAndReport": {
+        "path": "research/system_one/prefit-review.md",
+        "sha256": "6965a8c1053ad5f309b8e182a777b4d7736faf29f143ab4fa5921ff48540331d"
+      },
+      "plannedVsObtained": "Obtained bounded source evidence; original broader acceptance pending"
+    },
+    {
+      "alias": "S1-LOCAL-PILOT",
+      "canonical": "SPEC-030/T001",
+      "requirements": [
+        "REQ-001",
+        "REQ-004",
+        "REQ-006"
+      ],
+      "scenarioAlias": "Parent existing scenarios; exact protocol bound in evidence-register.json",
+      "evidenceRecord": "S1-LOCAL-PILOT",
+      "positiveCriterion": "Completed bounded registered scope and retained outcomes, not a positive hypothesis",
+      "state": "bounded evidence obtained; canonical checkbox may preserve broader pending gates",
+      "scenarios": [
+        "SC-001",
+        "SC-004",
+        "SC-006"
+      ],
+      "tests": [
+        {
+          "path": "tests/test_system_one_local_pilot.py",
+          "sha256": "5c416019c26cd4a045e81ed11f69538304e55dd8a303f5cf84dd4c5a01c95537",
+          "bytes": 7936
+        },
+        {
+          "path": "tests/test_system_one_neural.py",
+          "sha256": "df646b9da264073950a134bfe26cc8d89568b48d62421b244fa345d8837cad13",
+          "bytes": 23198
+        }
+      ],
+      "protocolAndReport": {
+        "path": "research/system_one/local_pilot/report.md",
+        "sha256": "9da129378b80c86ba7a020e1570f44de10f727712f7d620c8ea651f7f0af04c8"
+      },
+      "plannedVsObtained": "Obtained bounded source evidence; original broader acceptance pending"
+    },
+    {
+      "alias": "S1-LOCAL-PILOT",
+      "canonical": "SPEC-030/T005",
+      "requirements": [
+        "REQ-001",
+        "REQ-004",
+        "REQ-006"
+      ],
+      "scenarioAlias": "Parent existing scenarios; exact protocol bound in evidence-register.json",
+      "evidenceRecord": "S1-LOCAL-PILOT",
+      "positiveCriterion": "Completed bounded registered scope and retained outcomes, not a positive hypothesis",
+      "state": "bounded evidence obtained; canonical checkbox may preserve broader pending gates",
+      "scenarios": [
+        "SC-001",
+        "SC-004",
+        "SC-006"
+      ],
+      "tests": [
+        {
+          "path": "tests/test_system_one_local_pilot.py",
+          "sha256": "5c416019c26cd4a045e81ed11f69538304e55dd8a303f5cf84dd4c5a01c95537",
+          "bytes": 7936
+        },
+        {
+          "path": "tests/test_system_one_neural.py",
+          "sha256": "df646b9da264073950a134bfe26cc8d89568b48d62421b244fa345d8837cad13",
+          "bytes": 23198
+        }
+      ],
+      "protocolAndReport": {
+        "path": "research/system_one/local_pilot/report.md",
+        "sha256": "9da129378b80c86ba7a020e1570f44de10f727712f7d620c8ea651f7f0af04c8"
+      },
+      "plannedVsObtained": "Obtained bounded source evidence; original broader acceptance pending"
+    },
+    {
+      "alias": "S1-LOCAL-PILOT",
+      "canonical": "SPEC-030/T006",
+      "requirements": [
+        "REQ-001",
+        "REQ-004",
+        "REQ-006"
+      ],
+      "scenarioAlias": "Parent existing scenarios; exact protocol bound in evidence-register.json",
+      "evidenceRecord": "S1-LOCAL-PILOT",
+      "positiveCriterion": "Completed bounded registered scope and retained outcomes, not a positive hypothesis",
+      "state": "bounded evidence obtained; canonical checkbox may preserve broader pending gates",
+      "scenarios": [
+        "SC-001",
+        "SC-004",
+        "SC-006"
+      ],
+      "tests": [
+        {
+          "path": "tests/test_system_one_local_pilot.py",
+          "sha256": "5c416019c26cd4a045e81ed11f69538304e55dd8a303f5cf84dd4c5a01c95537",
+          "bytes": 7936
+        },
+        {
+          "path": "tests/test_system_one_neural.py",
+          "sha256": "df646b9da264073950a134bfe26cc8d89568b48d62421b244fa345d8837cad13",
+          "bytes": 23198
+        }
+      ],
+      "protocolAndReport": {
+        "path": "research/system_one/local_pilot/report.md",
+        "sha256": "9da129378b80c86ba7a020e1570f44de10f727712f7d620c8ea651f7f0af04c8"
+      },
+      "plannedVsObtained": "Obtained bounded source evidence; original broader acceptance pending"
+    },
+    {
+      "alias": "S1-CHOICE-COMPARISON",
+      "canonical": "SPEC-030/T013",
+      "requirements": [
+        "REQ-001",
+        "REQ-004",
+        "REQ-006"
+      ],
+      "scenarioAlias": "Parent existing scenarios; exact protocol bound in evidence-register.json",
+      "evidenceRecord": "S1-CHOICE-COMPARISON",
+      "positiveCriterion": "Completed bounded registered scope and retained outcomes, not a positive hypothesis",
+      "state": "bounded evidence obtained; canonical checkbox may preserve broader pending gates",
+      "scenarios": [
+        "SC-001",
+        "SC-004",
+        "SC-006"
+      ],
+      "tests": [
+        {
+          "path": "tests/test_system_one_choice_comparison.py",
+          "sha256": "a58939b972d4b2b0413b05b580cf34b0c249ea3d70f9e92541f7862131b176a8",
+          "bytes": 6898
+        },
+        {
+          "path": "tests/test_system_one_semantic.py",
+          "sha256": "9b88a7308cd4e78a241baa5024c93ffed85702484a7389bf52b40c828eca622d",
+          "bytes": 7355
+        }
+      ],
+      "protocolAndReport": {
+        "path": "research/system_one/choice_comparison/report.md",
+        "sha256": "f02e7b1ae5a5f33a64ef2ff4bc2874877cde0dd3f066e51796bba0b4a2f13473"
+      },
+      "plannedVsObtained": "Obtained bounded source evidence; original broader acceptance pending"
+    },
+    {
+      "alias": "S1-CHOICE-COMPARISON",
+      "canonical": "SPEC-030/T014",
+      "requirements": [
+        "REQ-001",
+        "REQ-004",
+        "REQ-006"
+      ],
+      "scenarioAlias": "Parent existing scenarios; exact protocol bound in evidence-register.json",
+      "evidenceRecord": "S1-CHOICE-COMPARISON",
+      "positiveCriterion": "Completed bounded registered scope and retained outcomes, not a positive hypothesis",
+      "state": "bounded evidence obtained; canonical checkbox may preserve broader pending gates",
+      "scenarios": [
+        "SC-001",
+        "SC-004",
+        "SC-006"
+      ],
+      "tests": [
+        {
+          "path": "tests/test_system_one_choice_comparison.py",
+          "sha256": "a58939b972d4b2b0413b05b580cf34b0c249ea3d70f9e92541f7862131b176a8",
+          "bytes": 6898
+        },
+        {
+          "path": "tests/test_system_one_semantic.py",
+          "sha256": "9b88a7308cd4e78a241baa5024c93ffed85702484a7389bf52b40c828eca622d",
+          "bytes": 7355
+        }
+      ],
+      "protocolAndReport": {
+        "path": "research/system_one/choice_comparison/report.md",
+        "sha256": "f02e7b1ae5a5f33a64ef2ff4bc2874877cde0dd3f066e51796bba0b4a2f13473"
+      },
+      "plannedVsObtained": "Obtained bounded source evidence; original broader acceptance pending"
+    },
+    {
+      "alias": "S1-RESIDENT",
+      "canonical": "SPEC-030/T015",
+      "requirements": [
+        "REQ-001",
+        "REQ-004",
+        "REQ-006"
+      ],
+      "scenarioAlias": "Parent existing scenarios; exact protocol bound in evidence-register.json",
+      "evidenceRecord": "S1-RESIDENT",
+      "positiveCriterion": "Completed bounded registered scope and retained outcomes, not a positive hypothesis",
+      "state": "bounded evidence obtained; canonical checkbox may preserve broader pending gates",
+      "scenarios": [
+        "SC-001",
+        "SC-004",
+        "SC-006"
+      ],
+      "tests": [
+        {
+          "path": "tests/test_system_one_resident.py",
+          "sha256": "8125da233130e73862748a27f34f380cb24d64e242b3ea0bdb68e7e19d83ed65",
+          "bytes": 14821
+        },
+        {
+          "path": "tests/test_system_one_resident_replay.py",
+          "sha256": "d449c6b5b63b27a1def21fab36b1920a885d8b022753e96a4a02f9d0284cb475",
+          "bytes": 3733
+        }
+      ],
+      "protocolAndReport": {
+        "path": "research/system_one/resident_runtime/report.md",
+        "sha256": "7cc80bb1f23098cf44757ce4d70a859030886c56f68893b1503ceab1dc2e3e77"
+      },
+      "plannedVsObtained": "Obtained bounded source evidence; original broader acceptance pending"
+    },
+    {
+      "alias": "S1-NATIVE-WORKFLOWS",
+      "canonical": "SPEC-029/T010",
+      "requirements": [
+        "REQ-003",
+        "REQ-005",
+        "REQ-006"
+      ],
+      "scenarioAlias": "Parent existing scenarios; exact protocol bound in evidence-register.json",
+      "evidenceRecord": "S1-NATIVE-WORKFLOWS",
+      "positiveCriterion": "Completed bounded registered scope and retained outcomes, not a positive hypothesis",
+      "state": "bounded evidence obtained; canonical checkbox may preserve broader pending gates",
+      "scenarios": [
+        "SC-003",
+        "SC-005",
+        "SC-006"
+      ],
+      "tests": [
+        {
+          "path": "tests/test_system_one_native_workflows.py",
+          "sha256": "620911a1ad898d0bbd71a0c7d5871b8559b638fcd995ce09ff8c0603e63a3253",
+          "bytes": 11078
+        }
+      ],
+      "protocolAndReport": {
+        "path": "research/system_one/native_workflows/report.md",
+        "sha256": "e284774bf92215627726efd717926f44e400370919eeacce9e3e69513a15c4a0"
+      },
+      "plannedVsObtained": "Obtained bounded source evidence; original broader acceptance pending"
+    },
+    {
+      "alias": "S1-NATIVE-WORKFLOWS",
+      "canonical": "SPEC-031/T009",
+      "requirements": [
+        "REQ-003",
+        "REQ-005",
+        "REQ-006"
+      ],
+      "scenarioAlias": "Parent existing scenarios; exact protocol bound in evidence-register.json",
+      "evidenceRecord": "S1-NATIVE-WORKFLOWS",
+      "positiveCriterion": "Completed bounded registered scope and retained outcomes, not a positive hypothesis",
+      "state": "bounded evidence obtained; canonical checkbox may preserve broader pending gates",
+      "scenarios": [
+        "SC-003",
+        "SC-005",
+        "SC-006"
+      ],
+      "tests": [
+        {
+          "path": "tests/test_system_one_native_workflows.py",
+          "sha256": "620911a1ad898d0bbd71a0c7d5871b8559b638fcd995ce09ff8c0603e63a3253",
+          "bytes": 11078
+        }
+      ],
+      "protocolAndReport": {
+        "path": "research/system_one/native_workflows/report.md",
+        "sha256": "e284774bf92215627726efd717926f44e400370919eeacce9e3e69513a15c4a0"
+      },
+      "plannedVsObtained": "Obtained bounded source evidence; original broader acceptance pending"
+    },
+    {
+      "alias": "S1-RELIABILITY",
+      "canonical": "SPEC-029/T011",
+      "requirements": [
+        "REQ-003",
+        "REQ-005",
+        "REQ-006"
+      ],
+      "scenarioAlias": "Parent existing scenarios; exact protocol bound in evidence-register.json",
+      "evidenceRecord": "S1-RELIABILITY",
+      "positiveCriterion": "Completed bounded registered scope and retained outcomes, not a positive hypothesis",
+      "state": "bounded evidence obtained; canonical checkbox may preserve broader pending gates",
+      "scenarios": [
+        "SC-003",
+        "SC-005",
+        "SC-006"
+      ],
+      "tests": [
+        {
+          "path": "tests/test_system_one_reliability.py",
+          "sha256": "922bfa551605b989977f8cab2c19708d1ff26f820e54d782fe213ef0fd04b467",
+          "bytes": 16994
+        }
+      ],
+      "protocolAndReport": {
+        "path": "research/system_one/reliability/report.md",
+        "sha256": "3a628da99de6bc819d8c8b0371ee8a4488b719786ea587b4462830bfd3a8b235"
+      },
+      "plannedVsObtained": "Obtained bounded source evidence; original broader acceptance pending"
+    },
+    {
+      "alias": "S1-CONTROLLED-60",
+      "canonical": "SPEC-029/T012",
+      "requirements": [
+        "REQ-003",
+        "REQ-005",
+        "REQ-006"
+      ],
+      "scenarioAlias": "Parent existing scenarios; exact protocol bound in evidence-register.json",
+      "evidenceRecord": "S1-CONTROLLED-60",
+      "positiveCriterion": "Completed bounded registered scope and retained outcomes, not a positive hypothesis",
+      "state": "bounded evidence obtained; canonical checkbox may preserve broader pending gates",
+      "scenarios": [
+        "SC-003",
+        "SC-005",
+        "SC-006"
+      ],
+      "tests": [
+        {
+          "path": "tests/test_system_one_controlled.py",
+          "sha256": "d5434558924c739c9b07eb414f885c2684723ebb7285483b737760eb4910bc6d",
+          "bytes": 9068
+        }
+      ],
+      "protocolAndReport": {
+        "path": "research/system_one/reliability/controlled-report.md",
+        "sha256": "a51c6e172f955665543ce84eccc0e250c785761a05b0352c57be9efdafaea5b7"
+      },
+      "plannedVsObtained": "Obtained bounded source evidence; original broader acceptance pending"
+    },
+    {
+      "alias": "S1-SEMANTIC-300",
+      "canonical": "SPEC-029/T013",
+      "requirements": [
+        "REQ-003",
+        "REQ-005",
+        "REQ-006"
+      ],
+      "scenarioAlias": "Parent existing scenarios; exact protocol bound in evidence-register.json",
+      "evidenceRecord": "S1-SEMANTIC-300",
+      "positiveCriterion": "Completed bounded registered scope and retained outcomes, not a positive hypothesis",
+      "state": "bounded evidence obtained; canonical checkbox may preserve broader pending gates",
+      "scenarios": [
+        "SC-003",
+        "SC-005",
+        "SC-006"
+      ],
+      "tests": [
+        {
+          "path": "tests/test_system_one_semantic_pilot.py",
+          "sha256": "16c2e8854e8118991633da4a16a0a1321ef5a8c6b11d1f58c0ae7ff4388aefeb",
+          "bytes": 10199
+        }
+      ],
+      "protocolAndReport": {
+        "path": "research/system_one/semantic_pilot/report.md",
+        "sha256": "69c6b819e9a13ec0e047926aa51b435261b59a416d8b1670aee012d9052147e5"
+      },
+      "plannedVsObtained": "Obtained bounded source evidence; original broader acceptance pending"
+    },
+    {
+      "alias": "S1-LAYA-REFERENCE",
+      "canonical": "SPEC-029/T014",
+      "requirements": [
+        "REQ-003",
+        "REQ-005",
+        "REQ-006"
+      ],
+      "scenarioAlias": "Parent existing scenarios; exact protocol bound in evidence-register.json",
+      "evidenceRecord": "S1-LAYA-REFERENCE",
+      "positiveCriterion": "Completed bounded registered scope and retained outcomes, not a positive hypothesis",
+      "state": "bounded evidence obtained; canonical checkbox may preserve broader pending gates",
+      "scenarios": [
+        "SC-003",
+        "SC-005",
+        "SC-006"
+      ],
+      "tests": [
+        {
+          "path": "tests/test_system_one_laya_reference.py",
+          "sha256": "49fccea4d68a56290561aa452ab4bf22a17a17dae142193ec8605ee80d962b54",
+          "bytes": 4723
+        }
+      ],
+      "protocolAndReport": {
+        "path": "research/system_one/laya_reference/report.md",
+        "sha256": "63c91479ecf82c55b3a9099e520bbee10b10ee746f70b8e60958b2de28e7a6f0"
+      },
+      "plannedVsObtained": "Obtained bounded source evidence; original broader acceptance pending"
+    },
+    {
+      "alias": "S1-OPTION-GROUNDING",
+      "canonical": "SPEC-029/T015",
+      "requirements": [
+        "REQ-003",
+        "REQ-005",
+        "REQ-006"
+      ],
+      "scenarioAlias": "Parent existing scenarios; exact protocol bound in evidence-register.json",
+      "evidenceRecord": "S1-OPTION-GROUNDING",
+      "positiveCriterion": "Completed bounded registered scope and retained outcomes, not a positive hypothesis",
+      "state": "bounded evidence obtained; canonical checkbox may preserve broader pending gates",
+      "scenarios": [
+        "SC-003",
+        "SC-005",
+        "SC-006"
+      ],
+      "tests": [
+        {
+          "path": "tests/test_system_one_option_grounding.py",
+          "sha256": "087411e185dd47e50d698d51deed936d3970fcc10a2e8d2a89b516f17422accd",
+          "bytes": 6002
+        }
+      ],
+      "protocolAndReport": {
+        "path": "research/system_one/option_grounding/report.md",
+        "sha256": "ed4ea53b6e952495165d2156bf2299988b4b88249507087fbaf09ce31dac01ca"
+      },
+      "plannedVsObtained": "Obtained bounded source evidence; original broader acceptance pending"
+    },
+    {
+      "alias": "S1-T016",
+      "canonical": "SPEC-029/T016",
+      "requirements": [
+        "REQ-003",
+        "REQ-005",
+        "REQ-006"
+      ],
+      "scenarioAlias": "Parent existing scenarios; exact protocol bound in evidence-register.json",
+      "evidenceRecord": "S1-T016",
+      "positiveCriterion": "Completed bounded registered scope and retained outcomes, not a positive hypothesis",
+      "state": "bounded evidence obtained; canonical checkbox may preserve broader pending gates",
+      "scenarios": [
+        "SC-003",
+        "SC-005",
+        "SC-006"
+      ],
+      "tests": [
+        {
+          "path": "tests/test_system_one_causal_contrast.py",
+          "sha256": "2e773e7887eb02b66ea444b4740f57f9ebac426adb4badd1371d85ec372dae56",
+          "bytes": 9341
+        }
+      ],
+      "protocolAndReport": {
+        "path": "research/system_one/causal_contrast/report.md",
+        "sha256": "80a00820e1463037cd654a8173beea3cb3cbb47ea1a135ecc8c106a0ccc02835"
+      },
+      "plannedVsObtained": "Obtained bounded source evidence; original broader acceptance pending"
+    },
+    {
+      "alias": "S1-T017",
+      "canonical": "SPEC-029/T017",
+      "requirements": [
+        "REQ-003",
+        "REQ-005",
+        "REQ-006"
+      ],
+      "scenarioAlias": "Parent existing scenarios; exact protocol bound in evidence-register.json",
+      "evidenceRecord": "S1-T017",
+      "positiveCriterion": "Completed bounded registered scope and retained outcomes, not a positive hypothesis",
+      "state": "bounded evidence obtained; canonical checkbox may preserve broader pending gates",
+      "scenarios": [
+        "SC-003",
+        "SC-005",
+        "SC-006"
+      ],
+      "tests": [
+        {
+          "path": "tests/test_system_one_verified_decisions.py",
+          "sha256": "38156c55a75d7f3e546401565907e973adcd852b9cfaae37838209de20659347",
+          "bytes": 10014
+        }
+      ],
+      "protocolAndReport": {
+        "path": "research/system_one/verified_decisions/report.md",
+        "sha256": "c5d00c491a847e819ef7543894e8b8bd07a773126ad59d3cf2c5201e49a013ba"
+      },
+      "plannedVsObtained": "Obtained bounded source evidence; original broader acceptance pending"
+    },
+    {
+      "alias": "S1-T018",
+      "canonical": "SPEC-029/T018",
+      "requirements": [
+        "REQ-003",
+        "REQ-005",
+        "REQ-006"
+      ],
+      "scenarioAlias": "Parent existing scenarios; exact protocol bound in evidence-register.json",
+      "evidenceRecord": "S1-T018",
+      "positiveCriterion": "Completed bounded registered scope and retained outcomes, not a positive hypothesis",
+      "state": "bounded evidence obtained; canonical checkbox may preserve broader pending gates",
+      "scenarios": [
+        "SC-003",
+        "SC-005",
+        "SC-006"
+      ],
+      "tests": [
+        {
+          "path": "tests/test_system_one_native_verification.py",
+          "sha256": "40ef617c36d63bab34e0ca3ea9e9500e502e769bdbe32147fb1a89ca4039313a",
+          "bytes": 9688
+        }
+      ],
+      "protocolAndReport": {
+        "path": "research/system_one/native_verification/report.md",
+        "sha256": "fd2d226c89259837c1b719677de46f7e7111921a1529096f01c70c81346268fb"
+      },
+      "plannedVsObtained": "Obtained bounded source evidence; original broader acceptance pending"
+    },
+    {
+      "alias": "S1-T019",
+      "canonical": "SPEC-029/T019",
+      "requirements": [
+        "REQ-003",
+        "REQ-005",
+        "REQ-006"
+      ],
+      "scenarioAlias": "Parent existing scenarios; exact protocol bound in evidence-register.json",
+      "evidenceRecord": "S1-T019",
+      "positiveCriterion": "Completed bounded registered scope and retained outcomes, not a positive hypothesis",
+      "state": "bounded evidence obtained; canonical checkbox may preserve broader pending gates",
+      "scenarios": [
+        "SC-003",
+        "SC-005",
+        "SC-006"
+      ],
+      "tests": [
+        {
+          "path": "tests/test_system_one_multiline_verification.py",
+          "sha256": "5f25af1a92a12ab47a1fb0d33a3f309014f5c1c969236ac97470feb180d425b8",
+          "bytes": 8741
+        }
+      ],
+      "protocolAndReport": {
+        "path": "research/system_one/multiline_verification/report.md",
+        "sha256": "97055165b267b969b4e0839f21826163e76f874078210ef3328f16667fc84031"
+      },
+      "plannedVsObtained": "Obtained bounded source evidence; original broader acceptance pending"
+    },
+    {
+      "alias": "S1-T020",
+      "canonical": "SPEC-029/T020",
+      "requirements": [
+        "REQ-003",
+        "REQ-005",
+        "REQ-006"
+      ],
+      "scenarioAlias": "Parent existing scenarios; exact protocol bound in evidence-register.json",
+      "evidenceRecord": "S1-T020",
+      "positiveCriterion": "Completed bounded registered scope and retained outcomes, not a positive hypothesis",
+      "state": "bounded evidence obtained; canonical checkbox may preserve broader pending gates",
+      "scenarios": [
+        "SC-003",
+        "SC-005",
+        "SC-006"
+      ],
+      "tests": [
+        {
+          "path": "tests/test_system_one_context_verification.py",
+          "sha256": "baae9cc7a0c0ac7f5a7c87f2a403a6681893e6b9a6848dc804dec077dc1bdcc8",
+          "bytes": 11935
+        }
+      ],
+      "protocolAndReport": {
+        "path": "research/system_one/context_verification/report.md",
+        "sha256": "a27344eff0d640a1ed0facd563e0bcc696f0c36aad5682d3715ecc2c3e7f4e21"
+      },
+      "plannedVsObtained": "Obtained bounded source evidence; original broader acceptance pending"
+    },
+    {
+      "alias": "S1-T021",
+      "canonical": "SPEC-029/T021",
+      "requirements": [
+        "REQ-003",
+        "REQ-005",
+        "REQ-006"
+      ],
+      "scenarioAlias": "Parent existing scenarios; exact protocol bound in evidence-register.json",
+      "evidenceRecord": "S1-T021",
+      "positiveCriterion": "Completed bounded registered scope and retained outcomes, not a positive hypothesis",
+      "state": "bounded evidence obtained; canonical checkbox may preserve broader pending gates",
+      "scenarios": [
+        "SC-003",
+        "SC-005",
+        "SC-006"
+      ],
+      "tests": [
+        {
+          "path": "tests/test_system_one_boundary_verification.py",
+          "sha256": "e0cba77d680e1cbb7e625a5377d3e9df419ff0fdc6fb0c9d7f23c55316454635",
+          "bytes": 9250
+        }
+      ],
+      "protocolAndReport": {
+        "path": "research/system_one/boundary_verification/report.md",
+        "sha256": "9e40660368e004e3ebac6d28e654bda8c519c8fac544cd96c9650563a01ddc76"
+      },
+      "plannedVsObtained": "Obtained bounded source evidence; original broader acceptance pending"
+    },
+    {
+      "alias": "S1-T022",
+      "canonical": "SPEC-029/T022",
+      "requirements": [
+        "REQ-003",
+        "REQ-005",
+        "REQ-006"
+      ],
+      "scenarioAlias": "Parent existing scenarios; exact protocol bound in evidence-register.json",
+      "evidenceRecord": "S1-T022",
+      "positiveCriterion": "Completed bounded registered scope and retained outcomes, not a positive hypothesis",
+      "state": "bounded evidence obtained; canonical checkbox may preserve broader pending gates",
+      "scenarios": [
+        "SC-003",
+        "SC-005",
+        "SC-006"
+      ],
+      "tests": [
+        {
+          "path": "tests/test_system_one_consumer_verification.py",
+          "sha256": "534b821c3b8a04fd2aca994349a6db249cbe70282b8910483c814fd941304ea6",
+          "bytes": 8353
+        }
+      ],
+      "protocolAndReport": {
+        "path": "research/system_one/consumer_verification/report.md",
+        "sha256": "5fa94d396960ed37bc1c93265e57eb45679f7d81ffce9e18728dc3a774a677e6"
+      },
+      "plannedVsObtained": "Obtained bounded source evidence; original broader acceptance pending"
+    },
+    {
+      "alias": "S1-T023",
+      "canonical": "SPEC-029/T023",
+      "requirements": [
+        "REQ-003",
+        "REQ-005",
+        "REQ-006"
+      ],
+      "scenarioAlias": "Parent existing scenarios; exact protocol bound in evidence-register.json",
+      "evidenceRecord": "S1-T023",
+      "positiveCriterion": "Completed bounded registered scope and retained outcomes, not a positive hypothesis",
+      "state": "bounded evidence obtained; canonical checkbox may preserve broader pending gates",
+      "scenarios": [
+        "SC-003",
+        "SC-005",
+        "SC-006"
+      ],
+      "tests": [
+        {
+          "path": "tests/test_system_one_transport_verification.py",
+          "sha256": "1607dcb222a17a44e9793b0e05272c14506672432e27aeeb717370b8b1f18831",
+          "bytes": 6921
+        }
+      ],
+      "protocolAndReport": {
+        "path": "research/system_one/transport_verification/report.md",
+        "sha256": "1af048bc18e0e2690e719e13754f9d07d7b3da36d40595442980242b3a4f1648"
+      },
+      "plannedVsObtained": "Obtained bounded source evidence; original broader acceptance pending"
+    },
+    {
+      "alias": "S1-T024",
+      "canonical": "SPEC-029/T024",
+      "requirements": [
+        "REQ-001",
+        "REQ-003",
+        "REQ-005",
+        "REQ-006"
+      ],
+      "scenarioAlias": "Parent existing scenarios; exact protocol bound in evidence-register.json",
+      "evidenceRecord": "S1-T024",
+      "positiveCriterion": "Completed bounded registered scope and retained outcomes, not a positive hypothesis",
+      "state": "bounded evidence obtained; canonical checkbox may preserve broader pending gates",
+      "scenarios": [
+        "SC-001",
+        "SC-003",
+        "SC-005",
+        "SC-006"
+      ],
+      "tests": [
+        {
+          "path": "tests/test_system_one_eof_verification.py",
+          "sha256": "65bb810a8af5bfd56164e17f30c63941e166173d30bff3b62b76fdb01806621b",
+          "bytes": 5435
+        }
+      ],
+      "protocolAndReport": {
+        "path": "research/system_one/eof_verification/report.md",
+        "sha256": "f27559f8103930f969edec5d74a637b0336b11c63b9ebacde37592b871407530"
+      },
+      "plannedVsObtained": "Obtained bounded source evidence; original broader acceptance pending"
+    },
+    {
+      "alias": "S1-T025",
+      "canonical": "SPEC-029/T025",
+      "requirements": [
+        "REQ-001",
+        "REQ-003",
+        "REQ-005",
+        "REQ-006"
+      ],
+      "scenarioAlias": "Parent existing scenarios; exact protocol bound in evidence-register.json",
+      "evidenceRecord": "S1-T025",
+      "positiveCriterion": "Completed bounded registered scope and retained outcomes, not a positive hypothesis",
+      "state": "in-progress",
+      "scenarios": [
+        "SC-001",
+        "SC-003",
+        "SC-005",
+        "SC-006"
+      ],
+      "tests": [
+        {
+          "path": "tests/test_system_one_eof_consumers.py",
+          "sha256": "4a3717ca4b06f64e169932a7af4f8bb89faf6a4c7b198c803896a39710e91e01",
+          "bytes": 5958
+        }
+      ],
+      "protocolAndReport": {
+        "path": "research/system_one/eof_consumers/protocol.md",
+        "sha256": "7fffbb4162123f3705f34b416b3f5dbb3ddddc325c2ec37a4e27b4de0da5e110"
+      },
+      "plannedVsObtained": "Obtained bounded source evidence; original broader acceptance pending"
+    },
+    {
+      "alias": "S1-RELIABILITY-SYNTHESIS",
+      "canonical": "SPEC-029/T014",
+      "requirements": [
+        "REQ-003",
+        "REQ-005",
+        "REQ-006"
+      ],
+      "scenarioAlias": "Parent existing scenarios; exact protocol bound in evidence-register.json",
+      "evidenceRecord": "S1-RELIABILITY-SYNTHESIS",
+      "positiveCriterion": "Completed bounded registered scope and retained outcomes, not a positive hypothesis",
+      "state": "bounded evidence obtained; canonical checkbox may preserve broader pending gates",
+      "scenarios": [
+        "SC-003",
+        "SC-005",
+        "SC-006"
+      ],
+      "tests": [],
+      "protocolAndReport": {
+        "path": "research/system_one/reliability_factors/report.md",
+        "sha256": "6ce960f9fbd0b0e7329f381d3f18b4a2ee3825dffefaadeca3a1454413763fcb"
+      },
+      "plannedVsObtained": "Obtained bounded source evidence; original broader acceptance pending"
+    },
+    {
+      "alias": "S1-RELIABILITY-SYNTHESIS",
+      "canonical": "SPEC-029/T016",
+      "requirements": [
+        "REQ-003",
+        "REQ-005",
+        "REQ-006"
+      ],
+      "scenarioAlias": "Parent existing scenarios; exact protocol bound in evidence-register.json",
+      "evidenceRecord": "S1-RELIABILITY-SYNTHESIS",
+      "positiveCriterion": "Completed bounded registered scope and retained outcomes, not a positive hypothesis",
+      "state": "bounded evidence obtained; canonical checkbox may preserve broader pending gates",
+      "scenarios": [
+        "SC-003",
+        "SC-005",
+        "SC-006"
+      ],
+      "tests": [],
+      "protocolAndReport": {
+        "path": "research/system_one/reliability_factors/report.md",
+        "sha256": "6ce960f9fbd0b0e7329f381d3f18b4a2ee3825dffefaadeca3a1454413763fcb"
+      },
+      "plannedVsObtained": "Obtained bounded source evidence; original broader acceptance pending"
+    }
+  ]
+}

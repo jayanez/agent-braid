@@ -1,0 +1,166 @@
+[
+  {
+    "path": "research/system_one/causal_contrast/report.md",
+    "anchors": [
+      {
+        "line": 4,
+        "text": "Executed locally on Apple M3 Pro, 36 GiB, CPU float32, one Torch thread; offline, EUR 0 external spend. Training, new calibration, human review, source/training admission and activation remain pending."
+      },
+      {
+        "line": 10,
+        "text": "The imperative oracle and exhaustive bounded transition-relation oracle share a DSL and assumptions. Their agreement is software evidence within that finite domain, not independent validation or real-workload reliability. EN/ES value round trips passed; human linguistic equivalence is pending."
+      },
+      {
+        "line": 18,
+        "text": "| semantic-17 | EN | 25.26% | 32.03% | 48.96% | 0 \u2192 5 / 192 | 0 \u2192 2 / 192 |"
+      },
+      {
+        "line": 19,
+        "text": "| semantic-17 | ES | 28.65% | 48.70% | 48.96% | 0 \u2192 38 / 192 | 0 \u2192 37 / 192 |"
+      },
+      {
+        "line": 20,
+        "text": "| marker2-17 | EN | 24.09% | 42.32% | 48.96% | 0 \u2192 27 / 192 | 0 \u2192 12 / 192 |"
+      },
+      {
+        "line": 21,
+        "text": "| marker2-17 | ES | 25.00% | 37.89% | 48.96% | 0 \u2192 17 / 192 | 0 \u2192 13 / 192 |"
+      },
+      {
+        "line": 22,
+        "text": "| laya-multilingual | EN | 25.78% | 45.05% | 48.96% | 0 \u2192 36 / 192 | 0 \u2192 16 / 192 |"
+      },
+      {
+        "line": 23,
+        "text": "| laya-multilingual | ES | 26.17% | 45.83% | 48.96% | 1 \u2192 40 / 192 | 0 \u2192 18 / 192 |"
+      },
+      {
+        "line": 24,
+        "text": "| laya-typed-decisions | EN | 25.26% | 49.48% | 48.96% | 1 \u2192 37 / 192 | 0 \u2192 33 / 192 |"
+      },
+      {
+        "line": 25,
+        "text": "| laya-typed-decisions | ES | 25.39% | 48.31% | 48.96% | 2 \u2192 42 / 192 | 0 \u2192 33 / 192 |"
+      },
+      {
+        "line": 56,
+        "text": "The data provides verified synthetic counterexamples for possible future review; it is not admitted training material. Blind reviewer packets are unfilled, identities unassigned. A numerical pass cannot close human/source gates or the existing 1% accepted-error / 50% coverage requirement. No training, calibration, production policy, catalogue, public API or execution grant was changed. Master plans/tasks/assurance and prior registered evidence remain byte-bound and unchanged."
+      }
+    ]
+  },
+  {
+    "path": "research/system_one/eof_verification/report.md",
+    "anchors": [
+      {
+        "line": 4,
+        "text": "Empirical engineering evidence on owned controlled repositories. No model inference, training, new calibration, human review or activation. No claim of general Git equivalence, natural-language understanding, real-workload reliability or Laya parity."
+      },
+      {
+        "line": 9,
+        "text": "Evaluation: 80/80 correct across 20 repositories, with four correlated EN/ES symbolic/controlled views each."
+      },
+      {
+        "line": 13,
+        "text": "Exact extraction: 80/80; EN/ES consistency: 40/40 correlated groups."
+      },
+      {
+        "line": 17,
+        "text": "The improvement is recovery of valid offered orders previously excluded by the old EOF anchor. Retained trailing space-prefixed context now permits the complete read block to occur before current EOF. A terminal edit with zero trailing context retains the EOF constraint. BOF anchoring and full-context conflicts remain enforced. Acquisition keeps the actual prefix markers; matching does not infer context from equal old/new strings."
+      },
+      {
+        "line": 18,
+        "text": "The frozen old baseline chose correctly on 64/80 views. It incorrectly deferred the one-line and two-line trailing-context cases; other false exclusions still left it a valid alternative. Thus this corpus shows both recovered eligibility and a choice-accuracy increase, attributable entirely to deterministic semantics. No learned component contributed to this result."
+      },
+      {
+        "line": 40,
+        "text": "M3 Pro, existing isolated Python, no model or Torch load, OS network denial for experimental subprocesses, EUR 0 external spend. Registered sources: 291."
+      },
+      {
+        "line": 41,
+        "text": "Entry through observed effect acquisition, bound extraction and new decision: median 271.871 ms, maximum 819.335 ms. Baseline inference and reference preparation are excluded from this trial latency and charged separately in phase totals."
+      },
+      {
+        "line": 42,
+        "text": "New experimental preparation/development/evaluation: 193.734434750 seconds. Charged cumulative: 47058.325099681/86400 seconds, without resetting prior attempts. Sampled peak own-worker-group RSS: 35471360 bytes. This is sampled group memory, not instantaneous machine-wide enforcement."
+      },
+      {
+        "line": 47,
+        "text": "Focused: seven paired positive/negative tests passed. Each complete profile ran 2,184 tests: 2,166 passed and 18 optional checks were skipped, with no failures. Spec Kit preflight passed before edits."
+      },
+      {
+        "line": 52,
+        "text": "After profiles, one explanatory report paragraph was corrected to reflect the already-frozen baseline accuracy of 64/80 and its false deferrals. The prior report and generator, before/after hashes and rationale are retained in validation/post-profile-editorial. No registered experimental code, input, prediction or metric changed."
+      },
+      {
+        "line": 61,
+        "text": "Training, new calibration, human review, data admission, independent validation, representative workload acceptance, activation, publication and any claim of Laya parity remain pending."
+      }
+    ]
+  },
+  {
+    "path": "research/system_one/consumer_verification/bridge.py",
+    "anchors": [
+      {
+        "line": 11,
+        "text": "from research.system_one.boundary_verification.verifier import verify,apply_changes,blob_id"
+      },
+      {
+        "line": 12,
+        "text": "from research.system_one.boundary_verification.observation import native_check,native_request"
+      },
+      {
+        "line": 109,
+        "text": "        require(not dest.exists() and not grants.exists() and manifest['sourcePromotion'] is False,'preparation-created-runtime-or-authority')"
+      }
+    ]
+  },
+  {
+    "path": "specs/030-system-one-model/native-delivery.md",
+    "anchors": [
+      {
+        "line": 4,
+        "text": "model/data approval, empirical acceptance, promotion or canonical ADR adoption."
+      },
+      {
+        "line": 12,
+        "text": "[engineering review](evidence/luna-review.json); human authority acceptance remains"
+      },
+      {
+        "line": 13,
+        "text": "pending. The old private snapshot object is not"
+      },
+      {
+        "line": 21,
+        "text": "consumers, English/Spanish evaluation, and no external spending. Installation"
+      },
+      {
+        "line": 46,
+        "text": "model load while no validated promotion exists. Explicit diagnostic requests may"
+      },
+      {
+        "line": 71,
+        "text": "consumer traffic and promotion retain their explicit reviewed gates."
+      },
+      {
+        "line": 79,
+        "text": "data review remain pending; do not invent them from hardware capacity."
+      },
+      {
+        "line": 96,
+        "text": "5. Run SPEC-031 shadow and SPEC-033 per-capability promotion/rollback."
+      },
+      {
+        "line": 104,
+        "text": "human acceptance and official publication remain separate pending gates; no task"
+      },
+      {
+        "line": 136,
+        "text": "human workflow acceptance or promotion follows. The installed wheel can load the"
+      },
+      {
+        "line": 139,
+        "text": "human labels, fresh architecture comparisons and real Braid utility remain pending."
+      }
+    ]
+  }
+]

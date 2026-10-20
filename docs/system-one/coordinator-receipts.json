@@ -1,0 +1,20 @@
+{
+  "status": "partial engineering/update, not final T025 acceptance",
+  "receipts": [
+    {
+      "path": "/Users/juanyanez/Repos/Personal/agent-braid-system-one/artifacts/system-one/decision-delivery-design-v1/import-receipt.json",
+      "sha256": "4cf00848d15622cd463851a067bcefbe40fcf1609a579b9f2c046727a0e3dbb2",
+      "bytes": 5683
+    },
+    {
+      "path": "/Users/juanyanez/Repos/Personal/agent-braid-system-one/artifacts/system-one/eof-consumers-v1/validation/focused.log",
+      "sha256": "d58eefd2d50c897cfd519e855f3db39730e72b8d5d4672b2499859f318f30412",
+      "bytes": 1141
+    },
+    {
+      "path": "/tmp/t025-focused.log",
+      "sha256": "d58eefd2d50c897cfd519e855f3db39730e72b8d5d4672b2499859f318f30412",
+      "bytes": 1141
+    }
+  ]
+}

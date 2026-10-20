@@ -52,3 +52,23 @@ profiles each passed 558 tests with four documented skips on `abeca31`; the
 supported clean authority/evidence freeze binds `0e17c4d`. Exact offline wheel
 installation and Luna contract/core/CLI review are recorded. Human/model/data/
 founder acceptance remains separate.
+
+
+## Documentary reconciliation of research and proposed delivery — 2026-10-20
+
+These additive canonical identities retain the existing study/DDP aliases. Checked entries mean only their stated bounded historical lot; original research, human, model and product gates remain open. The evidence register is a documentary source snapshot, not new implementation or independent reproduction. See docs/system-one/README.md and task-map.json. No task launches agents or authorizes a study.
+
+- [ ] T009 (REQ-001 REQ-002 / SC-001 SC-002): Freeze additive contracts and migration map (alias DDP-T01; proposed, not started).
+  Dependencies: T025 completed engineering receipt checked by coordinator. Owner: coordinator.
+  Targets: specs/028-system-one-core/contracts/verified-plan-v1.md, specs/031-system-one-integration/contracts/verified-plan-consumer-v1.md, specs/029-system-one-evaluation/verified-plan-conformance.md. Verification planned: Document/contract review only; no runtime command required before implementation.
+  Criterion and negatives: docs/system-one/task-map.json alias DDP-T01; no obtained implementation evidence. Preserve no-authority and separate decision/prepare-budget boundaries.
+
+- [ ] T010 (REQ-005 / SC-005): Implement static domain verifier registry (alias DDP-T04; proposed, not started).
+  Dependencies: SPEC-028/T009. Owner: agent-C.
+  Targets: agent_braid/system_one_verified_registry.py, tests/test_system_one_verified_registry.py. Verification planned: .venv-speckit/bin/python -m unittest tests.test_system_one_verified_registry -v.
+  Criterion and negatives: docs/system-one/task-map.json alias DDP-T04; no obtained implementation evidence. Preserve no-authority and separate decision/prepare-budget boundaries.
+
+- [ ] T011 (REQ-003 REQ-004 / SC-003 SC-004): Deliver deterministic verified-plan selection (alias DDP-T05; proposed, not started).
+  Dependencies: SPEC-029/T026, SPEC-031/T010, SPEC-028/T010. Owner: agent-A.
+  Targets: agent_braid/system_one_verified_decision.py, tests/test_system_one_verified_decision.py. Verification planned: .venv-speckit/bin/python -m unittest tests.test_system_one_verified_decision -v.
+  Criterion and negatives: docs/system-one/task-map.json alias DDP-T05; no obtained implementation evidence. Preserve no-authority and separate decision/prepare-budget boundaries.

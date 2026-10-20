@@ -1,0 +1,285 @@
+[
+  {
+    "id": "DDP-T01",
+    "requirement": "DDP-REQ-01",
+    "scenario": "DDP-SC-01",
+    "issueKey": "jayanez/agent-braid:system-one-decision-delivery:DDP-T01:v1",
+    "title": "Freeze additive contracts and migration map",
+    "spec": "SPEC-028",
+    "milestone": "S1.0",
+    "owner": "coordinator",
+    "dependencies": [
+      "T025 completed engineering receipt checked by coordinator"
+    ],
+    "state": "prepared-conditional",
+    "files": [
+      "specs/028-system-one-core/contracts/verified-plan-v1.md",
+      "specs/031-system-one-integration/contracts/verified-plan-consumer-v1.md",
+      "specs/029-system-one-evaluation/verified-plan-conformance.md"
+    ],
+    "scope": "Freeze exact field sets, canonicalization, limits, error taxonomy and T024/T025 version mapping; document old-version refusal and no authority escalation. Freeze separate decision/acquisition/end-to-end prepare budget semantics, nested absolute deadlines, enforceability labels and explicit unsupported/refusal behavior; do not reuse the classifier deadline for prepare.",
+    "negativeControl": "Malformed/unknown versions, missing pins and probability/coercion attempts are rejected by planned vectors; compare every proposed bound to T024 source. Reject budget reset/enlargement, implicit prepare caps and false hard-termination guarantees.",
+    "evidenceRequired": "Contract vectors and migration table reviewed against exact T025 candidate; affected public API/architectural decisions remain proposed until governance review.",
+    "closeCriterion": "Contract vectors and migration table reviewed against exact T025 candidate; affected public API/architectural decisions remain proposed until governance review.",
+    "mapsTo": [
+      "SPEC-028/REQ-001",
+      "SPEC-028/REQ-002",
+      "SPEC-031/REQ-002"
+    ],
+    "limits": "EUR 0; local CPU; no experiments, model runs, training, calibration, activation, remote writes or T025 edits.",
+    "verification": "Use focused standard-library unittest modules named by owned tests after implementation, then coordinator validate_change quick/pr under repository policy. No checks were executed by this draft.",
+    "plannedFocusedCommand": null,
+    "programScope": "First deterministic verified-plan lane only; see program-map.md for existing full S1.x task ownership.",
+    "t025DependencyMeaning": "Completed engineering receipt with actual results, exact candidate/interface/file bindings checked by coordinator; not human review, scientific admission, product acceptance, promotion or activation.",
+    "startCondition": "Coordinator checks the completed T025 engineering receipt and explicitly assigns DDP-T01; human/scientific/product/activation gates remain pending."
+  },
+  {
+    "id": "DDP-T02",
+    "requirement": "DDP-REQ-02",
+    "scenario": "DDP-SC-02",
+    "issueKey": "jayanez/agent-braid:system-one-decision-delivery:DDP-T02:v1",
+    "title": "Extract EOF IR and controlled interpretation",
+    "spec": "SPEC-029",
+    "milestone": "S1.1",
+    "owner": "agent-A",
+    "dependencies": [
+      "DDP-T01"
+    ],
+    "state": "prepared-conditional",
+    "files": [
+      "agent_braid/system_one_verified_ir.py",
+      "tests/test_system_one_verified_ir.py"
+    ],
+    "scope": "Extract pure T024 validation and exact EN/ES parser/renderer with prefix preservation; no source I/O, labels or Git in this module.",
+    "negativeControl": "Retained-tail versus terminal-edit, forged patch prefixes, ambiguous anchors, BOF, malformed/overbudget text and exact round trip; unrestricted prose refuses.",
+    "evidenceRequired": "Golden IR/grammar parity on fixed developer fixtures with original T024 semantics; old sources unmodified.",
+    "closeCriterion": "Golden IR/grammar parity on fixed developer fixtures with original T024 semantics; old sources unmodified.",
+    "mapsTo": [
+      "SPEC-029/REQ-005",
+      "SPEC-028/REQ-002"
+    ],
+    "limits": "EUR 0; local CPU; no experiments, model runs, training, calibration, activation, remote writes or T025 edits.",
+    "verification": "Use focused standard-library unittest modules named by owned tests after implementation, then coordinator validate_change quick/pr under repository policy. No checks were executed by this draft.",
+    "plannedFocusedCommand": ".venv-speckit/bin/python -m unittest tests.test_system_one_verified_ir -v",
+    "programScope": "First deterministic verified-plan lane only; see program-map.md for existing full S1.x task ownership."
+  },
+  {
+    "id": "DDP-T03",
+    "requirement": "DDP-REQ-03",
+    "scenario": "DDP-SC-03",
+    "issueKey": "jayanez/agent-braid:system-one-decision-delivery:DDP-T03:v1",
+    "title": "Extract bounded observed-effect acquisition",
+    "spec": "SPEC-031",
+    "milestone": "S1.3",
+    "owner": "agent-B",
+    "dependencies": [
+      "DDP-T01"
+    ],
+    "state": "prepared-conditional",
+    "files": [
+      "agent_braid/system_one_verified_acquisition.py",
+      "tests/test_system_one_verified_acquisition.py"
+    ],
+    "scope": "Extract read-only pinned source acquisition into the frozen snapshot envelope. Reuse current local Git helpers without editing them; keep declaration/observation channels.",
+    "negativeControl": "Source drift, path escape, wrong revision, non-LF/binary/missing-newline, unsupported mode/rename, incomplete effects and deadline exhaustion refuse; source refs/files remain identical.",
+    "evidenceRequired": "Pinned local fixture source/hash manifest, scratch cleanup receipt and no-write assertions; no corpus study.",
+    "closeCriterion": "Pinned local fixture source/hash manifest, scratch cleanup receipt and no-write assertions; no corpus study.",
+    "mapsTo": [
+      "SPEC-031/REQ-002",
+      "SPEC-029/REQ-005"
+    ],
+    "limits": "EUR 0; local CPU; no experiments, model runs, training, calibration, activation, remote writes or T025 edits.",
+    "verification": "Use focused standard-library unittest modules named by owned tests after implementation, then coordinator validate_change quick/pr under repository policy. No checks were executed by this draft.",
+    "plannedFocusedCommand": ".venv-speckit/bin/python -m unittest tests.test_system_one_verified_acquisition -v",
+    "programScope": "First deterministic verified-plan lane only; see program-map.md for existing full S1.x task ownership."
+  },
+  {
+    "id": "DDP-T04",
+    "requirement": "DDP-REQ-04",
+    "scenario": "DDP-SC-04",
+    "issueKey": "jayanez/agent-braid:system-one-decision-delivery:DDP-T04:v1",
+    "title": "Implement static domain verifier registry",
+    "spec": "SPEC-028",
+    "milestone": "S1.0",
+    "owner": "agent-C",
+    "dependencies": [
+      "DDP-T01"
+    ],
+    "state": "prepared-conditional",
+    "files": [
+      "agent_braid/system_one_verified_registry.py",
+      "tests/test_system_one_verified_registry.py"
+    ],
+    "scope": "Implement immutable allowlisted registry and dispatch validation against a stub data-only verifier result; defer concrete IR import to DDP-T05.",
+    "negativeControl": "Unknown domain/version/observation, forged digest, mutable entry and dynamic plugin/callable dispatch refuse; exact supported registration passes.",
+    "evidenceRequired": "Registry identity vectors and bounded negative dispatch tests; no general-domain support claim.",
+    "closeCriterion": "Registry identity vectors and bounded negative dispatch tests; no general-domain support claim.",
+    "mapsTo": [
+      "SPEC-028/REQ-005",
+      "SPEC-031/REQ-001"
+    ],
+    "limits": "EUR 0; local CPU; no experiments, model runs, training, calibration, activation, remote writes or T025 edits.",
+    "verification": "Use focused standard-library unittest modules named by owned tests after implementation, then coordinator validate_change quick/pr under repository policy. No checks were executed by this draft.",
+    "plannedFocusedCommand": ".venv-speckit/bin/python -m unittest tests.test_system_one_verified_registry -v",
+    "programScope": "First deterministic verified-plan lane only; see program-map.md for existing full S1.x task ownership."
+  },
+  {
+    "id": "DDP-T05",
+    "requirement": "DDP-REQ-05",
+    "scenario": "DDP-SC-05",
+    "issueKey": "jayanez/agent-braid:system-one-decision-delivery:DDP-T05:v1",
+    "title": "Deliver deterministic verified-plan selection",
+    "spec": "SPEC-028",
+    "milestone": "S1.0",
+    "owner": "agent-A",
+    "dependencies": [
+      "DDP-T02",
+      "DDP-T03",
+      "DDP-T04"
+    ],
+    "state": "prepared-conditional",
+    "files": [
+      "agent_braid/system_one_verified_decision.py",
+      "tests/test_system_one_verified_decision.py"
+    ],
+    "scope": "Bind acquisition, IR and registry; verify complete offered plans then select stable eligible goal-reaching option or defer. Report technical refusal separately; preserve the declared decision deadline and any explicitly enclosing acquisition deadline.",
+    "negativeControl": "No eligible plan, tie, duplicate/omitted option, stale snapshot/registry, unmet dependency, changed goal and exhausted budget; selected result has no probability or authority.",
+    "evidenceRequired": "A local vertical-slice receipt from pinned source to verified decision, full per-option consequences and all negative controls. No model invocation.",
+    "closeCriterion": "A local vertical-slice receipt from pinned source to verified decision, full per-option consequences and all negative controls. No model invocation.",
+    "mapsTo": [
+      "SPEC-028/REQ-003",
+      "SPEC-028/REQ-004",
+      "SPEC-031/REQ-003"
+    ],
+    "limits": "EUR 0; local CPU; no experiments, model runs, training, calibration, activation, remote writes or T025 edits.",
+    "verification": "Use focused standard-library unittest modules named by owned tests after implementation, then coordinator validate_change quick/pr under repository policy. No checks were executed by this draft.",
+    "plannedFocusedCommand": ".venv-speckit/bin/python -m unittest tests.test_system_one_verified_decision -v",
+    "programScope": "First deterministic verified-plan lane only; see program-map.md for existing full S1.x task ownership."
+  },
+  {
+    "id": "DDP-T06",
+    "requirement": "DDP-REQ-06",
+    "scenario": "DDP-SC-06",
+    "issueKey": "jayanez/agent-braid:system-one-decision-delivery:DDP-T06:v1",
+    "title": "Bind extracted decisions to read-only preparation consumers",
+    "spec": "SPEC-031",
+    "milestone": "S1.3",
+    "owner": "agent-B",
+    "dependencies": [
+      "DDP-T05",
+      "T025 completed engineering receipt checked by coordinator"
+    ],
+    "state": "prepared-conditional",
+    "files": [
+      "agent_braid/system_one_verified_consumer.py",
+      "tests/test_system_one_verified_consumer.py",
+      "tests/test_system_one_verified_stdio.py"
+    ],
+    "scope": "Implement separate adapter calling existing core prepare and ToolingService through approved interfaces plus real stdio tests. Port exact T025 handoff/tree logic without changing its research files or default tool registry. Require explicit decision, acquisition and end-to-end prepare budgets plus bounded per-stage telemetry receipts per latency-and-budgets.md. Measure repeated revalidation/native checks and cleanup separately; do not disable checks or infer speedup.",
+    "negativeControl": "Tampered choice/tree/source/prefix/payload, cross-consumer packet replay, frame/cancellation failures and rejected-k0; zero execute/recover/grant/persistent-run effects; evidence chunks checked completely. Decision expiry prevents prepare; remaining prepare budget cannot reset; cancellation suppresses late result and proves cleanup/termination or records enforcement unsupported; stale observation/proof reuse refuses.",
+    "evidenceRequired": "Core/service/real-stdio parity receipts, exact expected tree, cleanup and source-immutability checks. T024 corpus replay only if separately authorized as software integration regression; never new accuracy. Local bounded stage receipts include acquisition, IR, verifier, selection, tree build, revalidation, fresh native proof, prepare/reverification, transport/evidence validation and cleanup, with measured outer total and null unknowns. Numeric envelope and enforcement mode must be explicit before closure. No cache reuse without separately reviewed freshness/binding/invalidation contract.",
+    "closeCriterion": "Core/service/real-stdio parity receipts, exact expected tree, cleanup and source-immutability checks. T024 corpus replay only if separately authorized as software integration regression; never new accuracy. Local bounded stage receipts include acquisition, IR, verifier, selection, tree build, revalidation, fresh native proof, prepare/reverification, transport/evidence validation and cleanup, with measured outer total and null unknowns. Numeric envelope and enforcement mode must be explicit before closure. No cache reuse without separately reviewed freshness/binding/invalidation contract.",
+    "mapsTo": [
+      "SPEC-031/REQ-004",
+      "SPEC-031/REQ-005",
+      "SPEC-031/REQ-006"
+    ],
+    "limits": "EUR 0; local CPU; no experiments, model runs, training, calibration, activation, remote writes or T025 edits.",
+    "verification": "Use focused standard-library unittest modules named by owned tests after implementation, then coordinator validate_change quick/pr under repository policy. No checks were executed by this draft.",
+    "plannedFocusedCommand": ".venv-speckit/bin/python -m unittest tests.test_system_one_verified_consumer tests.test_system_one_verified_stdio -v",
+    "stageTelemetryReference": "latency-and-budgets.md",
+    "programScope": "First deterministic verified-plan lane only; see program-map.md for existing full S1.x task ownership.",
+    "t025DependencyMeaning": "Completed engineering receipt with actual results, exact candidate/interface/file bindings checked by coordinator; not human review, scientific admission, product acceptance, promotion or activation."
+  },
+  {
+    "id": "DDP-T07",
+    "requirement": "DDP-REQ-07",
+    "scenario": "DDP-SC-07",
+    "issueKey": "jayanez/agent-braid:system-one-decision-delivery:DDP-T07:v1",
+    "title": "Verify integrated compatibility and adversarial boundaries",
+    "spec": "SPEC-029",
+    "milestone": "S1.1",
+    "owner": "agent-C / later Luna reviewer",
+    "dependencies": [
+      "DDP-T06"
+    ],
+    "state": "prepared-conditional",
+    "files": [
+      "tests/test_system_one_verified_compatibility.py",
+      "specs/029-system-one-evaluation/evidence/decision-delivery/software-validation.json"
+    ],
+    "scope": "Independently test old defaults/new opt-in and adversarial boundary coverage; coordinator runs required validation profiles on stable candidate. Review agent launch needs separate authorization and Luna Latest.",
+    "negativeControl": "Changed old stdlib response, neural module load on core import, unsupported input accepted, omitted evidence chunk, forged authorization and non-cleaned scratch fail the suite.",
+    "evidenceRequired": "Focused tests plus quick during work and pr once stable with exact commands/SHA/environment/skips; findings resolved or explicit blockers. Luna review pending until actually authorized/performed.",
+    "closeCriterion": "Focused tests plus quick during work and pr once stable with exact commands/SHA/environment/skips; findings resolved or explicit blockers. Luna review pending until actually authorized/performed.",
+    "mapsTo": [
+      "SPEC-029/REQ-005",
+      "SPEC-029/REQ-006",
+      "SPEC-028/REQ-006"
+    ],
+    "limits": "EUR 0; local CPU; no experiments, model runs, training, calibration, activation, remote writes or T025 edits.",
+    "verification": "Use focused standard-library unittest modules named by owned tests after implementation, then coordinator validate_change quick/pr under repository policy. No checks were executed by this draft.",
+    "plannedFocusedCommand": ".venv-speckit/bin/python -m unittest tests.test_system_one_verified_compatibility -v",
+    "programScope": "First deterministic verified-plan lane only; see program-map.md for existing full S1.x task ownership."
+  },
+  {
+    "id": "DDP-T08",
+    "requirement": "DDP-REQ-08",
+    "scenario": "DDP-SC-08",
+    "issueKey": "jayanez/agent-braid:system-one-decision-delivery:DDP-T08:v1",
+    "title": "Package bounded delivery and adoption gates",
+    "spec": "SPEC-033",
+    "milestone": "S1.4",
+    "owner": "coordinator",
+    "dependencies": [
+      "DDP-T07"
+    ],
+    "state": "prepared-conditional",
+    "files": [
+      "specs/033-system-one-promotion/decision-delivery-gates.md",
+      "specs/028-system-one-core/decision-delivery-result.md"
+    ],
+    "scope": "Record delivered capability, exact domain/versions, costs observed or unknown, rollback, task reconciliation proposals and open founder/source/utility gates. Do not mark historical tasks complete by analogy.",
+    "negativeControl": "Negative utility, absent human approval and missing representative evidence keep relevant promotion gates pending; passing tests cannot set adopted=true.",
+    "evidenceRequired": "Candidate-bound software packet and explicit pending-gates matrix; no assurance rewrite, activation, tracking publish or milestone closure.",
+    "closeCriterion": "Candidate-bound software packet and explicit pending-gates matrix; no assurance rewrite, activation, tracking publish or milestone closure.",
+    "mapsTo": [
+      "SPEC-033/REQ-002",
+      "SPEC-033/REQ-006"
+    ],
+    "limits": "EUR 0; local CPU; no experiments, model runs, training, calibration, activation, remote writes or T025 edits.",
+    "verification": "Use focused standard-library unittest modules named by owned tests after implementation, then coordinator validate_change quick/pr under repository policy. No checks were executed by this draft.",
+    "plannedFocusedCommand": null,
+    "programScope": "First deterministic verified-plan lane only; see program-map.md for existing full S1.x task ownership."
+  },
+  {
+    "id": "DDP-T09",
+    "requirement": "DDP-REQ-09",
+    "scenario": "DDP-SC-09",
+    "issueKey": "jayanez/agent-braid:system-one-decision-delivery:DDP-T09:v1",
+    "title": "Register learned interpretation and selection follow-up only",
+    "spec": "SPEC-030",
+    "milestone": "S1.2",
+    "owner": "unassigned / blocked",
+    "dependencies": [
+      "Separate owner authorization; SPEC-029/T008; SPEC-030 rights/budget gates"
+    ],
+    "state": "blocked",
+    "files": [
+      "specs/030-system-one-model/verified-plan-learned-proposal.md"
+    ],
+    "scope": "Define a future learned interpreter/ranker experiment only after data rights, blind labels, disjoint calibration and exact budget review; reuse existing runtime rather than rebuilding it.",
+    "negativeControl": "Absent source permission, representative labels, calibration partition or promotion review blocks execution; verifier still rejects unsafe model proposals.",
+    "evidenceRequired": "Approved prospective protocol and exact budget/rights records required before any work beyond drafting; this task stays blocked and is not on the deterministic critical path.",
+    "closeCriterion": "Approved prospective protocol and exact budget/rights records required before any work beyond drafting; this task stays blocked and is not on the deterministic critical path.",
+    "mapsTo": [
+      "SPEC-030/REQ-001",
+      "SPEC-030/REQ-004",
+      "SPEC-033/REQ-002"
+    ],
+    "limits": "EUR 0; local CPU; no experiments, model runs, training, calibration, activation, remote writes or T025 edits.",
+    "verification": "Use focused standard-library unittest modules named by owned tests after implementation, then coordinator validate_change quick/pr under repository policy. No checks were executed by this draft.",
+    "plannedFocusedCommand": null,
+    "programScope": "First deterministic verified-plan lane only; see program-map.md for existing full S1.x task ownership."
+  }
+]
