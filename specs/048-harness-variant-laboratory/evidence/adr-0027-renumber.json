@@ -105,6 +105,25 @@
     "rule": "These records describe what was reviewed or executed against the pre-renumber bytes (including the 0026 path/hash) and are kept byte-identical; this record supplies the new binding instead of rewriting them."
   },
   "unchangedSemantics": "No scientific claim, gate status, authorized task set or numeric limit changed. T005, T011, T012, native hosts, pilots and promotion remain blocked/pending; human review remains pending.",
-  "postRenumberValidation": "pending",
+  "postRenumberValidation": {
+    "candidateCommit": "5691cdfd",
+    "focused": {
+      "command": ".venv-speckit/bin/python -m unittest discover -s tests -p \"test_harness*.py\"",
+      "run": 62,
+      "skipped": 0,
+      "exitCode": 0
+    },
+    "quick": {
+      "command": "scripts/validate_change.py --base origin/develop --profile quick (fresh independent clone, public spec history restored, Python 3.13.11)",
+      "exitCode": 0,
+      "unittest": {
+        "run": 2173,
+        "skipped": 24,
+        "failures": 0,
+        "errors": 0
+      }
+    },
+    "limits": "Local engineering checks only; this record is evidence-only packaging after the quick run. The final pr profile result is reported with the pull request, not inside this record."
+  },
   "limits": "Documentary renumbering and evidence rebinding only; no new review by the prior independent reviewer was obtained for the renumbered bytes."
 }
