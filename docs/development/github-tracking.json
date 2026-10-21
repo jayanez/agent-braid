@@ -234,6 +234,10 @@
     "050-braid-harness-adaptation": {
       "milestone": "HAR.3 — Braid Harness adaptation and integration",
       "state": "open"
+    },
+    "051-owned-work-evaluation": {
+      "milestone": "FC.2 — Local forecasting capabilities",
+      "state": "open"
     }
   },
   "task_state_overrides": {
