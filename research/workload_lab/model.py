@@ -61,8 +61,8 @@ def digest(value):
     return hashlib.sha256(canonical(value)).hexdigest()
 
 
-def loads(text):
-    """Parse bounded strict JSON, rejecting duplicate members and floats."""
+def loads(text, limit=INPUT_BYTES):
+    """Parse strict JSON under an explicit transport byte limit (8 MiB default)."""
     def pairs(items):
         result = {}
         for key, value in items:
@@ -74,9 +74,10 @@ def loads(text):
         raise InvalidWorkload("floating/nonfinite JSON numbers are forbidden")
 
     try:
+        _require(type(limit) is int and limit >= 0, "byte limit must be a nonnegative integer")
         _require(type(text) in (str, bytes), "expected JSON text")
         encoded = text.encode("utf-8") if type(text) is str else text
-        _require(len(encoded) <= INPUT_BYTES, "input exceeds 8 MiB")
+        _require(len(encoded) <= limit, "input exceeds byte limit")
         # Decode bytes strictly: json.loads otherwise admits UTF-16/UTF-32 bytes.
         decoded = encoded.decode("utf-8")
         value = json.loads(decoded, object_pairs_hook=pairs,

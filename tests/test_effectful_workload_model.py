@@ -273,3 +273,19 @@ class WorkloadModelTests(unittest.TestCase):
         self.assertEqual(loads(' ' * (INPUT_BYTES - 1) + '0'), 0)
         with self.assertRaises(InvalidWorkload): loads(' ' * INPUT_BYTES + '0')
         with self.assertRaises(InvalidWorkload): loads(b'\xff')
+
+    def test_explicit_transport_limit_preserves_request_default(self):
+        larger_report = ' ' * INPUT_BYTES + '0'
+        with self.assertRaises(InvalidWorkload): loads(larger_report)
+        self.assertEqual(loads(larger_report, limit=INPUT_BYTES + 1), 0)
+        self.assertEqual(loads('0', limit=1), 0)
+        self.assertEqual(loads(b'0', limit=1), 0)
+        for text, limit in [('0', 0), (' 0', 1), ('"é"', 3)]:
+            with self.subTest(text=text, limit=limit), self.assertRaises(InvalidWorkload):
+                loads(text, limit=limit)
+        self.assertEqual(loads('"é"', limit=4), 'é')
+        for limit in [-1, True, False, 1.0, None, '1']:
+            with self.subTest(limit=limit), self.assertRaises(InvalidWorkload):
+                loads('0', limit=limit)
+        # A larger transport allowance never relaxes strict JSON content rules.
+        with self.assertRaises(InvalidWorkload): loads('1.0', limit=512 * 1024 * 1024)
