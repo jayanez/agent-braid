@@ -1,0 +1,172 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "decision",
+    "authorityId",
+    "sourceKind",
+    "sourceRootDigest",
+    "scopeDigest",
+    "consentReferenceDigest",
+    "reviewRecordDigest",
+    "featureAllowlistDigest",
+    "oracleContractDigest",
+    "splitProtocolDigest",
+    "validFromUTC",
+    "validUntilUTC",
+    "allowedActions",
+    "caps",
+    "executionAuthorization",
+    "trainingAdmission",
+    "collector047Enabled"
+  ],
+  "properties": {
+    "schema": {
+      "const": "agent-braid-owned-work-authority/v1"
+    },
+    "decision": {
+      "enum": [
+        "proposed",
+        "admitted",
+        "denied",
+        "revoked"
+      ]
+    },
+    "authorityId": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{32}$"
+    },
+    "sourceKind": {
+      "const": "owned-deterministic-development"
+    },
+    "sourceRootDigest": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "scopeDigest": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "consentReferenceDigest": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "reviewRecordDigest": {
+      "anyOf": [
+        {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "featureAllowlistDigest": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "oracleContractDigest": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "splitProtocolDigest": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "validFromUTC": {
+      "type": "string",
+      "format": "date-time",
+      "pattern": "Z$"
+    },
+    "validUntilUTC": {
+      "type": "string",
+      "format": "date-time",
+      "pattern": "Z$"
+    },
+    "allowedActions": {
+      "type": "array",
+      "maxItems": 5,
+      "uniqueItems": true,
+      "items": {
+        "enum": [
+          "read-metadata",
+          "record-origin",
+          "append-outcome",
+          "purge",
+          "manual-export"
+        ]
+      }
+    },
+    "caps": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "maxAttempts",
+        "maxRecords",
+        "maxRecordBytes",
+        "maxStoreBytes",
+        "retentionUTCDates"
+      ],
+      "properties": {
+        "maxAttempts": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 1000
+        },
+        "maxRecords": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 4096
+        },
+        "maxRecordBytes": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 65536
+        },
+        "maxStoreBytes": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 10485760
+        },
+        "retentionUTCDates": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 30
+        }
+      }
+    },
+    "executionAuthorization": {
+      "const": false
+    },
+    "trainingAdmission": {
+      "const": false
+    },
+    "collector047Enabled": {
+      "const": false
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "decision": {
+            "const": "admitted"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "reviewRecordDigest": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$"
+          }
+        }
+      }
+    }
+  ],
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:agent-braid:proposed:owned-work-authority:v1",
+  "title": "PROPOSED authority descriptor; bytes never mint consent"
+}
