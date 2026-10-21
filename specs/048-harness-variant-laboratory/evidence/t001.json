@@ -1,0 +1,21 @@
+{
+  "task": "SPEC-048/T001",
+  "sourceBaseline": "a6329c828011d1468fed3dfa4e98f5a8531167e2",
+  "candidateBinding": "Current source/input hashes; no frozen implementation commit claimed",
+  "inputs": {
+    "docs/adr/0027-braid-harness-offline-foundations.md": "076e524bb4b31a0075ff72c605a438edc9dcb70aa09dec9583ef21db5362b046",
+    "specs/048-harness-variant-laboratory/offline-adoption.json": "f07d7b3cd95d00b0e795aeb74ceb5625a88395cb78bc449b78246f855de909db",
+    "specs/048-harness-variant-laboratory/kickoff-decision.md": "1687200b64edac8444efc4c5109678fad57affe2d157156cffbbbf826197f6d2",
+    "specs/048-harness-variant-laboratory/authority-impact-review.json": "ba90bb330a406c160e67eddaa8a7c72ecfd3af614bfb15958cd2c32ca504141a"
+  },
+  "method": "Actual explicit founder decision plus scoped Luna authority-impact review",
+  "outcome": "Offline architecture/profile adopted; T002\u2013T004 dependency prerequisite satisfied",
+  "executedChecks": [
+    {
+      "command": "PATH=<workspace>/.venv-speckit/bin:$PATH .venv-speckit/bin/python scripts/validate_spec_kit.py",
+      "exitCode": 0,
+      "scope": "Unchanged kickoff candidate preflight before adoption edits"
+    }
+  ],
+  "limits": "Manual adoption, provenance and host-feasibility inventory only. No HAR software acceptance tests, native qualification, dispatch or economic utility obtained."
+}

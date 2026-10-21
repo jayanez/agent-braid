@@ -1,0 +1,46 @@
+{
+  "recordVersion": "braid-harness-offline-adoption/v1",
+  "date": "2026-10-21",
+  "decision": "adopted-offline-foundations",
+  "decider": "Juan Antonio Yáñez García (@jayanez)",
+  "provenance": {
+    "kind": "explicit-owner-message",
+    "source": "Current Codex conversation",
+    "instruction": "Sí, adopto el perfil offline de T001. Registra la decisión y arranca T002; después gestiona T003 y T004 en paralelo, manteniendo los límites y gates acordados.",
+    "identityLimit": "Conversation instruction; not a cryptographic identity attestation."
+  },
+  "sourceBaseline": "a6329c828011d1468fed3dfa4e98f5a8531167e2",
+  "reviewedPacket": {
+    "path": "specs/048-harness-variant-laboratory/kickoff-decision.md",
+    "sha256": "1687200b64edac8444efc4c5109678fad57affe2d157156cffbbbf826197f6d2"
+  },
+  "priorDocumentReview": {
+    "model": "gpt-6-luna",
+    "candidateContentId": "473c8f1528a6548ce4ee7cafb1814aa1a7458ac0a83abf69e210666362a082ba",
+    "disposition": "No actionable findings within document scope; not implementation acceptance."
+  },
+  "adr": "docs/adr/0027-braid-harness-offline-foundations.md",
+  "authorizedTasks": [
+    "048/T002",
+    "048/T003",
+    "048/T004"
+  ],
+  "dependencyOrder": [
+    "048/T002",
+    "048/T003 and 048/T004 with disjoint ownership after T002"
+  ],
+  "nativeModelChildNetworkRetryCounts": 0,
+  "additionalCashMicros": 0,
+  "cashCurrency": "EUR",
+  "admissionMaximumSeconds": 300,
+  "excluded": [
+    "runner dispatch",
+    "native hosts",
+    "ordinary-use promotion",
+    "automatic promotion activation",
+    "new MCP/plugin capability",
+    "existing runtime-grant extension",
+    "full-feature acceptance"
+  ],
+  "historicalBindings": "Preserve reviewed planning packet and original historical assurance bytes; do not re-freeze previous approval."
+}
