@@ -1,0 +1,629 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://agent-braid.dev/experimental/workload-lab/request-v1.schema.json",
+  "title": "Effectful workload simulation v1 request",
+  "description": "Structural grammar only; semantic validation additionally checks aliases, matching versions, dependencies, result references and nesting/input bounds.",
+  "type": "object",
+  "properties": {
+    "model": {
+      "const": "effectful-workload-simulation-v1"
+    },
+    "initial": {
+      "type": "object",
+      "properties": {
+        "state": {
+          "type": "object",
+          "minProperties": 1,
+          "maxProperties": 64,
+          "propertyNames": {
+            "$ref": "#/$defs/name"
+          },
+          "additionalProperties": {
+            "$ref": "#/$defs/integer"
+          }
+        },
+        "versions": {
+          "type": "object",
+          "minProperties": 1,
+          "maxProperties": 64,
+          "propertyNames": {
+            "$ref": "#/$defs/name"
+          },
+          "additionalProperties": {
+            "$ref": "#/$defs/version"
+          }
+        },
+        "aliases": {
+          "type": "object",
+          "maxProperties": 64,
+          "propertyNames": {
+            "$ref": "#/$defs/name"
+          },
+          "additionalProperties": {
+            "$ref": "#/$defs/name"
+          }
+        }
+      },
+      "required": [
+        "state",
+        "versions",
+        "aliases"
+      ],
+      "additionalProperties": false
+    },
+    "operations": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 6,
+      "items": {
+        "oneOf": [
+          {
+            "type": "object",
+            "properties": {
+              "id": {
+                "$ref": "#/$defs/name"
+              },
+              "kind": {
+                "const": "snapshot-read"
+              },
+              "resource": {
+                "$ref": "#/$defs/name"
+              },
+              "dependencies": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/$defs/name"
+                },
+                "uniqueItems": true,
+                "maxItems": 5
+              },
+              "outcomes": {
+                "type": "array",
+                "minItems": 1,
+                "maxItems": 2,
+                "uniqueItems": true,
+                "items": {
+                  "enum": [
+                    "success",
+                    "error"
+                  ]
+                }
+              },
+              "requiredVersion": {
+                "$ref": "#/$defs/version"
+              },
+              "effects": {
+                "$ref": "#/$defs/effects"
+              }
+            },
+            "required": [
+              "id",
+              "kind",
+              "resource",
+              "dependencies",
+              "outcomes"
+            ],
+            "additionalProperties": false
+          },
+          {
+            "type": "object",
+            "properties": {
+              "id": {
+                "$ref": "#/$defs/name"
+              },
+              "kind": {
+                "const": "config-read"
+              },
+              "resource": {
+                "$ref": "#/$defs/name"
+              },
+              "dependencies": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/$defs/name"
+                },
+                "uniqueItems": true,
+                "maxItems": 5
+              },
+              "outcomes": {
+                "type": "array",
+                "minItems": 1,
+                "maxItems": 2,
+                "uniqueItems": true,
+                "items": {
+                  "enum": [
+                    "success",
+                    "error"
+                  ]
+                }
+              },
+              "requiredVersion": {
+                "$ref": "#/$defs/version"
+              },
+              "effects": {
+                "$ref": "#/$defs/effects"
+              }
+            },
+            "required": [
+              "id",
+              "kind",
+              "resource",
+              "dependencies",
+              "outcomes"
+            ],
+            "additionalProperties": false
+          },
+          {
+            "type": "object",
+            "properties": {
+              "id": {
+                "$ref": "#/$defs/name"
+              },
+              "kind": {
+                "const": "literal-write"
+              },
+              "resource": {
+                "$ref": "#/$defs/name"
+              },
+              "dependencies": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/$defs/name"
+                },
+                "uniqueItems": true,
+                "maxItems": 5
+              },
+              "outcomes": {
+                "type": "array",
+                "minItems": 1,
+                "maxItems": 2,
+                "uniqueItems": true,
+                "items": {
+                  "enum": [
+                    "success",
+                    "error"
+                  ]
+                }
+              },
+              "requiredVersion": {
+                "$ref": "#/$defs/version"
+              },
+              "effects": {
+                "$ref": "#/$defs/effects"
+              },
+              "value": {
+                "$ref": "#/$defs/integer"
+              }
+            },
+            "required": [
+              "id",
+              "kind",
+              "resource",
+              "dependencies",
+              "outcomes",
+              "value"
+            ],
+            "additionalProperties": false
+          },
+          {
+            "type": "object",
+            "properties": {
+              "id": {
+                "$ref": "#/$defs/name"
+              },
+              "kind": {
+                "const": "derived-write"
+              },
+              "resource": {
+                "$ref": "#/$defs/name"
+              },
+              "dependencies": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/$defs/name"
+                },
+                "uniqueItems": true,
+                "maxItems": 5
+              },
+              "outcomes": {
+                "type": "array",
+                "minItems": 1,
+                "maxItems": 2,
+                "uniqueItems": true,
+                "items": {
+                  "enum": [
+                    "success",
+                    "error"
+                  ]
+                }
+              },
+              "requiredVersion": {
+                "$ref": "#/$defs/version"
+              },
+              "effects": {
+                "$ref": "#/$defs/effects"
+              },
+              "expression": {
+                "$ref": "#/$defs/expression"
+              }
+            },
+            "required": [
+              "id",
+              "kind",
+              "resource",
+              "dependencies",
+              "outcomes",
+              "expression"
+            ],
+            "additionalProperties": false
+          },
+          {
+            "type": "object",
+            "properties": {
+              "id": {
+                "$ref": "#/$defs/name"
+              },
+              "kind": {
+                "const": "guarded-write"
+              },
+              "resource": {
+                "$ref": "#/$defs/name"
+              },
+              "dependencies": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/$defs/name"
+                },
+                "uniqueItems": true,
+                "maxItems": 5
+              },
+              "outcomes": {
+                "type": "array",
+                "minItems": 1,
+                "maxItems": 2,
+                "uniqueItems": true,
+                "items": {
+                  "enum": [
+                    "success",
+                    "error"
+                  ]
+                }
+              },
+              "requiredVersion": {
+                "$ref": "#/$defs/version"
+              },
+              "effects": {
+                "$ref": "#/$defs/effects"
+              },
+              "expression": {
+                "$ref": "#/$defs/expression"
+              },
+              "guard": {
+                "$ref": "#/$defs/guard"
+              }
+            },
+            "required": [
+              "id",
+              "kind",
+              "resource",
+              "dependencies",
+              "outcomes",
+              "expression",
+              "guard"
+            ],
+            "additionalProperties": false
+          },
+          {
+            "type": "object",
+            "properties": {
+              "id": {
+                "$ref": "#/$defs/name"
+              },
+              "kind": {
+                "const": "add-constant"
+              },
+              "resource": {
+                "$ref": "#/$defs/name"
+              },
+              "dependencies": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/$defs/name"
+                },
+                "uniqueItems": true,
+                "maxItems": 5
+              },
+              "outcomes": {
+                "type": "array",
+                "minItems": 1,
+                "maxItems": 2,
+                "uniqueItems": true,
+                "items": {
+                  "enum": [
+                    "success",
+                    "error"
+                  ]
+                }
+              },
+              "requiredVersion": {
+                "$ref": "#/$defs/version"
+              },
+              "effects": {
+                "$ref": "#/$defs/effects"
+              },
+              "amount": {
+                "$ref": "#/$defs/integer"
+              }
+            },
+            "required": [
+              "id",
+              "kind",
+              "resource",
+              "dependencies",
+              "outcomes",
+              "amount"
+            ],
+            "additionalProperties": false
+          },
+          {
+            "type": "object",
+            "properties": {
+              "id": {
+                "$ref": "#/$defs/name"
+              },
+              "kind": {
+                "const": "external-action"
+              },
+              "resource": {
+                "$ref": "#/$defs/name"
+              },
+              "dependencies": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/$defs/name"
+                },
+                "uniqueItems": true,
+                "maxItems": 5
+              },
+              "outcomes": {
+                "type": "array",
+                "minItems": 1,
+                "maxItems": 2,
+                "uniqueItems": true,
+                "items": {
+                  "enum": [
+                    "success",
+                    "error",
+                    "send-then-error"
+                  ]
+                }
+              },
+              "requiredVersion": {
+                "$ref": "#/$defs/version"
+              },
+              "effects": {
+                "$ref": "#/$defs/effects"
+              },
+              "event": {
+                "$ref": "#/$defs/name"
+              },
+              "idempotencyKey": {
+                "$ref": "#/$defs/name"
+              }
+            },
+            "required": [
+              "id",
+              "kind",
+              "resource",
+              "dependencies",
+              "outcomes",
+              "event"
+            ],
+            "additionalProperties": false
+          }
+        ]
+      }
+    },
+    "observation": {
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "mode": {
+              "const": "exact"
+            }
+          },
+          "required": [
+            "mode"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "mode": {
+              "const": "selected-values"
+            },
+            "resources": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/name"
+              },
+              "uniqueItems": true,
+              "maxItems": 64
+            }
+          },
+          "required": [
+            "mode",
+            "resources"
+          ],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "caps": {
+      "type": "object",
+      "properties": {
+        "paths": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 20000
+        },
+        "steps": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 120000
+        },
+        "events": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 240000
+        }
+      },
+      "required": [
+        "paths",
+        "steps",
+        "events"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "required": [
+    "model",
+    "initial",
+    "operations",
+    "observation",
+    "caps"
+  ],
+  "additionalProperties": false,
+  "$defs": {
+    "name": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 256,
+      "pattern": "^[^\\uD800-\\uDFFF]+$"
+    },
+    "integer": {
+      "type": "integer",
+      "minimum": -9223372036854775807,
+      "maximum": 9223372036854775807
+    },
+    "version": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 9223372036854775807
+    },
+    "expression": {
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "int": {
+              "$ref": "#/$defs/integer"
+            }
+          },
+          "required": [
+            "int"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "result": {
+              "$ref": "#/$defs/name"
+            }
+          },
+          "required": [
+            "result"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "op": {
+              "enum": [
+                "add",
+                "subtract",
+                "multiply"
+              ]
+            },
+            "left": {
+              "$ref": "#/$defs/expression"
+            },
+            "right": {
+              "$ref": "#/$defs/expression"
+            }
+          },
+          "required": [
+            "op",
+            "left",
+            "right"
+          ],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "guard": {
+      "type": "object",
+      "properties": {
+        "op": {
+          "enum": [
+            "eq",
+            "lt",
+            "le"
+          ]
+        },
+        "left": {
+          "$ref": "#/$defs/expression"
+        },
+        "right": {
+          "$ref": "#/$defs/expression"
+        }
+      },
+      "required": [
+        "op",
+        "left",
+        "right"
+      ],
+      "additionalProperties": false
+    },
+    "effects": {
+      "type": "object",
+      "properties": {
+        "complete": {
+          "type": "boolean"
+        },
+        "reads": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/name"
+          },
+          "uniqueItems": true
+        },
+        "writes": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/name"
+          },
+          "uniqueItems": true
+        },
+        "emits": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/name"
+          },
+          "uniqueItems": true
+        }
+      },
+      "required": [
+        "complete",
+        "reads",
+        "writes",
+        "emits"
+      ],
+      "additionalProperties": false
+    }
+  }
+}
