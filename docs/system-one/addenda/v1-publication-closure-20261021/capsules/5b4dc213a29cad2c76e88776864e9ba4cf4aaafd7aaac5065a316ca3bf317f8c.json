@@ -1,0 +1,915 @@
+{
+  "recordedAt": "2026-10-20T22:14:33.483436+00:00",
+  "scope": "Final bounded SDK/Codex v1 documentary reconciliation, local only; no product tests rerun or product review",
+  "sourceBindingsVerified": 105,
+  "sourceArchiveMembersHashCheckedInMemory": [
+    {
+      "path": "agent_braid/git_replay.py",
+      "sha256": "6dc84e50fe04abb4e5675ac0173f9579b239d13ad1741e106b2d4e272081a388",
+      "bytes": 32416
+    },
+    {
+      "path": "agent_braid/git_runtime.py",
+      "sha256": "8cf7168e2cbb9b874019eb3cc8dcee7b5ad69892eaeb4cc0511996fade29f897",
+      "bytes": 31565
+    },
+    {
+      "path": "agent_braid/system_one_verified_acquisition.py",
+      "sha256": "2380a32ef308fbbe540c67e71fb0bf43dc15b95a6732a13a8e2bf2be0d49e5b7",
+      "bytes": 20715
+    },
+    {
+      "path": "agent_braid/system_one_verified_consumers.py",
+      "sha256": "94bbae509e85ba8b241b422cd2a31eb18b1cb7eaa0afeb9f0d18e17548e9d4eb",
+      "bytes": 22873
+    },
+    {
+      "path": "agent_braid/system_one_verified_ir.py",
+      "sha256": "a0378c34b805387b0518cf6ebc3da05599976cb7f037d5f140c2571c8f362ea3",
+      "bytes": 18934
+    },
+    {
+      "path": "agent_braid/system_one_verified_mcp.py",
+      "sha256": "e34983f7e92ab1812ca6a8265d4a365ee7e5217ae8f1689da71b8998354025d4",
+      "bytes": 7996
+    },
+    {
+      "path": "agent_braid/system_one_verified_registry.py",
+      "sha256": "8d9cb2070683497ea789a9f03905e07f69d6c812c7d0ec9d6ab8a72116f88e6c",
+      "bytes": 4294
+    },
+    {
+      "path": "agent_braid/system_one_verified_selection.py",
+      "sha256": "a8fd0d752c3ab179b233906adac65b7dfe2150cf8ef079c3e00334e689bbb51e",
+      "bytes": 29478
+    },
+    {
+      "path": "agent_braid/system_one_verified_stdio.py",
+      "sha256": "3caaafb091d3c314224992e334ec6ca302c2c72831de12997481ccc9fe7a8f42",
+      "bytes": 17658
+    },
+    {
+      "path": "agent_braid/system_one_verified_tooling.py",
+      "sha256": "128aed194149f648d0a579b9fff7d85e121c10339df7552e1e488363c744d04e",
+      "bytes": 7280
+    },
+    {
+      "path": "specs/031-system-one-integration/addenda/ddp-sdk-endpoint-implementation.md",
+      "sha256": "2148871e7b45f1c786d5bbfb57a122306ff2839104210b7225cbafc1323b745b",
+      "bytes": 7556
+    },
+    {
+      "path": "specs/031-system-one-integration/addenda/ddp-sdk-endpoint-plan.md",
+      "sha256": "710e1cdd852e50b444505894b25580b8c73c62330d5d3dc295256cdc31e2f335",
+      "bytes": 4361
+    },
+    {
+      "path": "tests/fixtures/system_one_verified_acquisition.json",
+      "sha256": "4c674337541e56bc7cc2219a8c10e522bba037fae24bd480a65317010fc15078",
+      "bytes": 846
+    },
+    {
+      "path": "tests/fixtures/system_one_verified_ir.json",
+      "sha256": "c2aac157c85f4a1d9fd6e5fec998c003433bb4e9769bba3ed50c27f253318b76",
+      "bytes": 2931
+    },
+    {
+      "path": "tests/fixtures/system_one_verified_registry.json",
+      "sha256": "75753dac881c6cd933360aab88b5d71bb6d17c19d6537c0645b8024c78a1005a",
+      "bytes": 1241
+    },
+    {
+      "path": "tests/test_system_one_verified_acquisition.py",
+      "sha256": "27ff8dd4192d1bc1b7d72b412fa1209e3ba28b32671f0181d3fb707a104ea8ed",
+      "bytes": 20607
+    },
+    {
+      "path": "tests/test_system_one_verified_compatibility.py",
+      "sha256": "56e9e82f91d492b01fe48c413a8a14711f189406ea6ce25369d87ff249cbdf9e",
+      "bytes": 9328
+    },
+    {
+      "path": "tests/test_system_one_verified_components.py",
+      "sha256": "01abcb850572c3ad0f85beccaf7d437367fa388f681f0b77d55be24c98c32dcf",
+      "bytes": 7126
+    },
+    {
+      "path": "tests/test_system_one_verified_consumers.py",
+      "sha256": "d88c6dcb8f49a31023431258662cf82f3c848f1a92c3384ca0e74f430997493c",
+      "bytes": 25162
+    },
+    {
+      "path": "tests/test_system_one_verified_ir.py",
+      "sha256": "5550874646e3021cf147e14ebf5e5760a7f7397b08ce7701256ad59c2e9367be",
+      "bytes": 18917
+    },
+    {
+      "path": "tests/test_system_one_verified_mcp.py",
+      "sha256": "de25fedb771ff7dd612df978b2d926bef3018cb5d027b22d67dfa8c71ca9d023",
+      "bytes": 16092
+    },
+    {
+      "path": "tests/test_system_one_verified_registry.py",
+      "sha256": "53185df49342636e9b2545a5d53ef398998b4acc3367e39ee35ee0e5c525d254",
+      "bytes": 8812
+    },
+    {
+      "path": "tests/test_system_one_verified_selection.py",
+      "sha256": "d14d2ec1637b944eab96a6c9938b1758c8343e390fae208d55e615c9089e0b56",
+      "bytes": 32649
+    },
+    {
+      "path": "tests/test_system_one_verified_stdio.py",
+      "sha256": "67c61b11b8c94c64295fe44743519152aa853b8c0e66db75a2e4a8044fe4870f",
+      "bytes": 14302
+    },
+    {
+      "path": "tests/test_system_one_verified_tooling.py",
+      "sha256": "025410941b1bb37050dda5669ad0425a636ff52afbd230e5c8fa3567e939e583",
+      "bytes": 13363
+    }
+  ],
+  "sourceArchiveCopied": false,
+  "patchHashVerifiedNotApplied": "fcd39138000e4d48f827b9a6722dabda6d8f9a5e52a2104a2f13df9bda9e10ca",
+  "patchAppliedByThisReadback": false,
+  "producerPatchReproductionResult": true,
+  "rawRepresentationsVerified": 79,
+  "rawBytesVerified": 6525168,
+  "safeRawRepresentationsCopied": 64,
+  "excludedRawRepresentations": [
+    {
+      "source": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/outputs/ddp-sdk-endpoint-20261020/claude-host-metadata-attempt1/mcp.json",
+      "representation": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/work/agent-braid-code-integration-20261020/specs/029-system-one-evaluation/evidence/ddp-sdk-endpoint/raw/claude-host-metadata-attempt1/mcp.json.gz",
+      "sha256": "d3e63fdd92120cc17fac2d6a2e30ad76de49c0e29eca412fc1de58a89b7f455c",
+      "representationSHA256": "c799a2f8616accb1adfa2651a0ad2dae5b3111802b4730377ad8fd7b8c1b8102",
+      "reason": "Executable helper, host/dependency config or generated protocol source; retained local only"
+    },
+    {
+      "source": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/outputs/ddp-sdk-endpoint-20261020/codex-protocol-schema/ClientRequest.json",
+      "representation": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/work/agent-braid-code-integration-20261020/specs/029-system-one-evaluation/evidence/ddp-sdk-endpoint/raw/codex-protocol-schema/ClientRequest.json.gz",
+      "sha256": "92d920b10b9ce7871e21f49573275bb931a58ad7fd367ab71b3716edbb6a0352",
+      "representationSHA256": "a662315d875d5d533932cd0cf16a51f4bb693f6e9dd9611380fdbd914228872b",
+      "reason": "Executable helper, host/dependency config or generated protocol source; retained local only"
+    },
+    {
+      "source": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/outputs/ddp-sdk-endpoint-20261020/codex-protocol-schema/v2/ListMcpServerStatusParams.json",
+      "representation": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/work/agent-braid-code-integration-20261020/specs/029-system-one-evaluation/evidence/ddp-sdk-endpoint/raw/codex-protocol-schema/v2/ListMcpServerStatusParams.json.gz",
+      "sha256": "30b978c6502b37c9f0002aeba241f41c91d4c6adf0f92d89242b62ffde415a2d",
+      "representationSHA256": "3069793c21801875cfccf8ca8bb1653efea52cc5f091dbf9e9b3479491cd42f9",
+      "reason": "Executable helper, host/dependency config or generated protocol source; retained local only"
+    },
+    {
+      "source": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/outputs/ddp-sdk-endpoint-20261020/codex-protocol-schema/v2/ListMcpServerStatusResponse.json",
+      "representation": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/work/agent-braid-code-integration-20261020/specs/029-system-one-evaluation/evidence/ddp-sdk-endpoint/raw/codex-protocol-schema/v2/ListMcpServerStatusResponse.json.gz",
+      "sha256": "00c56c0faacbd4950b7f446f20b11b8a95456c5108de2f1e7366a1b2e60db8c6",
+      "representationSHA256": "778eb2f98a6a0fffbe5cde51f6f34b5cd41395f1022cefd5f0c5ded2b3c0be55",
+      "reason": "Executable helper, host/dependency config or generated protocol source; retained local only"
+    },
+    {
+      "source": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/outputs/ddp-sdk-endpoint-20261020/codex-protocol-schema/v2/McpServerToolCallParams.json",
+      "representation": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/work/agent-braid-code-integration-20261020/specs/029-system-one-evaluation/evidence/ddp-sdk-endpoint/raw/codex-protocol-schema/v2/McpServerToolCallParams.json.gz",
+      "sha256": "7039a7583a1cbf38e9e0f5fe6398ff3711acd4d654b81b0be562514087fce6ba",
+      "representationSHA256": "eeaafcaba99d63f8adc25bbb7f4e01f33ea001f5d501fda033bf6a54f765d9b6",
+      "reason": "Executable helper, host/dependency config or generated protocol source; retained local only"
+    },
+    {
+      "source": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/outputs/ddp-sdk-endpoint-20261020/codex-protocol-schema/v2/McpServerToolCallResponse.json",
+      "representation": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/work/agent-braid-code-integration-20261020/specs/029-system-one-evaluation/evidence/ddp-sdk-endpoint/raw/codex-protocol-schema/v2/McpServerToolCallResponse.json.gz",
+      "sha256": "04a59b2064922c37b0c49bdb2470b8fff08d943e56dba4f7280a6b34bfa52c68",
+      "representationSHA256": "9138fed35bed1685442df5ee451149c6459321e25fcd49981f1b4cde876d7475",
+      "reason": "Executable helper, host/dependency config or generated protocol source; retained local only"
+    },
+    {
+      "source": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/outputs/ddp-sdk-endpoint-20261020/codex_host_probe.py",
+      "representation": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/work/agent-braid-code-integration-20261020/specs/029-system-one-evaluation/evidence/ddp-sdk-endpoint/raw/codex_host_probe.py.gz",
+      "sha256": "228c7856e1dacc4f114aa0c8aa4800554cf7219b151362855ce5688f17d3d678",
+      "representationSHA256": "8148ce54746c84cf428a70dedb1530543fe685aeeb3ebfc60a877ab7e020273d",
+      "reason": "Executable helper, host/dependency config or generated protocol source; retained local only"
+    },
+    {
+      "source": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/outputs/ddp-sdk-endpoint-20261020/finalize_sdk.py",
+      "representation": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/work/agent-braid-code-integration-20261020/specs/029-system-one-evaluation/evidence/ddp-sdk-endpoint/raw/finalize_sdk.py.gz",
+      "sha256": "559861d7eca4f37df6a7eaddc252106314f23abc6972e5abe65dcc46b57c7580",
+      "representationSHA256": "cb1e79b5ce84301ccac65aa470b976594f58d6d3b02bfce14d3ac62aa9c620a3",
+      "reason": "Executable helper, host/dependency config or generated protocol source; retained local only"
+    },
+    {
+      "source": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/outputs/ddp-sdk-endpoint-20261020/installed-probe/controller.py",
+      "representation": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/work/agent-braid-code-integration-20261020/specs/029-system-one-evaluation/evidence/ddp-sdk-endpoint/raw/installed-probe/controller.py.gz",
+      "sha256": "e38cdbbf5b4a6c449d0772c6d3a4041ebc3ccc8424d65bac7d671912070cfc57",
+      "representationSHA256": "43208a760ec9d0f57b6b588523da236b726d12e14d9e6f7454f5ca1d0c2c7adc",
+      "reason": "Executable helper, host/dependency config or generated protocol source; retained local only"
+    },
+    {
+      "source": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/outputs/ddp-sdk-endpoint-20261020/installed_sdk_probe.py",
+      "representation": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/work/agent-braid-code-integration-20261020/specs/029-system-one-evaluation/evidence/ddp-sdk-endpoint/raw/installed_sdk_probe.py.gz",
+      "sha256": "aace86a2fd77f08fa1866fbf6033547215d5234c3e6c9c6810937c88c6e857dd",
+      "representationSHA256": "b8cdb8186ad469313909ddd6a5b1169254dc173564e77d5cf43a8d5ddfa0cca9",
+      "reason": "Executable helper, host/dependency config or generated protocol source; retained local only"
+    },
+    {
+      "source": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/outputs/ddp-sdk-endpoint-20261020/run_profiles.py",
+      "representation": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/work/agent-braid-code-integration-20261020/specs/029-system-one-evaluation/evidence/ddp-sdk-endpoint/raw/run_profiles.py.gz",
+      "sha256": "19faeb0caa479f81a00ebe5a48245b97e22267441b91d8546b9f84d22cef51af",
+      "representationSHA256": "aa812c3ee8655075ead819cf2f07cb9c3504f6dc1a412df98277dcd9e00a5cbf",
+      "reason": "Executable helper, host/dependency config or generated protocol source; retained local only"
+    },
+    {
+      "source": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/outputs/ddp-sdk-endpoint-20261020/sdk312-constraints.txt",
+      "representation": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/work/agent-braid-code-integration-20261020/specs/029-system-one-evaluation/evidence/ddp-sdk-endpoint/raw/sdk312-constraints.txt.gz",
+      "sha256": "4da0af3c25c82d79bf291fd0518600cc6e312c8514c6afc017c5fc0134e1caa4",
+      "representationSHA256": "333502990686f362d4f40686ff250b517c7fef29a009870015bbdcee243c2ba5",
+      "reason": "Executable helper, host/dependency config or generated protocol source; retained local only"
+    },
+    {
+      "source": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/outputs/ddp-sdk-endpoint-20261020/sdk312.in",
+      "representation": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/work/agent-braid-code-integration-20261020/specs/029-system-one-evaluation/evidence/ddp-sdk-endpoint/raw/sdk312.in.gz",
+      "sha256": "b2a3a41cb92969a57ba10746218731ed453fe6528322ddda667df989ac494035",
+      "representationSHA256": "9bac30f4df04cf9fa6e789892aed939e405e91a96145bce7a2a0c41fb3dd4e8c",
+      "reason": "Executable helper, host/dependency config or generated protocol source; retained local only"
+    },
+    {
+      "source": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/outputs/ddp-sdk-endpoint-20261020/sdk312.lock.txt",
+      "representation": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/work/agent-braid-code-integration-20261020/specs/029-system-one-evaluation/evidence/ddp-sdk-endpoint/raw/sdk312.lock.txt.gz",
+      "sha256": "c0a35dfdb5552f7d9876a00685c03fea1c2b6deb5655eb802302fa41177fc73d",
+      "representationSHA256": "659154ee6a9cf18bcb600cdadd522d5c78e540449d14808c8c14aa2cacfd2205",
+      "reason": "Executable helper, host/dependency config or generated protocol source; retained local only"
+    },
+    {
+      "source": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/outputs/ddp-sdk-endpoint-20261020/supervise.py",
+      "representation": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/work/agent-braid-code-integration-20261020/specs/029-system-one-evaluation/evidence/ddp-sdk-endpoint/raw/supervise.py.gz",
+      "sha256": "875c2ecd5c6f8534c70ef87cda41ef0d918936b76eff3576085ff3975f9bb408",
+      "representationSHA256": "590da2025c05913cb620b50993de924e1456d1b0783f90b10909bb53988d84e3",
+      "reason": "Executable helper, host/dependency config or generated protocol source; retained local only"
+    }
+  ],
+  "copiedRaw": [
+    {
+      "source": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/work/agent-braid-code-integration-20261020/specs/029-system-one-evaluation/evidence/ddp-sdk-endpoint/raw/assignment.json.gz",
+      "copy": "raw/assignment.json.gz",
+      "sha256": "5d3ab387a51c1f98a189cb6e3814bd9467f1824a9dd8352fe70e67d7c7e24df3",
+      "bytes": 297,
+      "rawSource": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/outputs/ddp-sdk-endpoint-20261020/assignment.json",
+      "rawSHA256": "c90bc68ad45edc391c1c9a048b802ab6e47a2645f962e3b47366d873f8d91934",
+      "rawBytes": 515
+    },
+    {
+      "source": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/work/agent-braid-code-integration-20261020/specs/029-system-one-evaluation/evidence/ddp-sdk-endpoint/raw/before.json.gz",
+      "copy": "raw/before.json.gz",
+      "sha256": "4f1acdd03b5930079579fec630ec32f43f31e9a6ed72dc6bb51254fe695985dc",
+      "bytes": 125364,
+      "rawSource": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/outputs/ddp-sdk-endpoint-20261020/before.json",
+      "rawSHA256": "0fc407806ae86959d679320b88cb99f66268d07f50abbf95d71cb1efec218a1c",
+      "rawBytes": 343517
+    },
+    {
+      "source": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/work/agent-braid-code-integration-20261020/specs/029-system-one-evaluation/evidence/ddp-sdk-endpoint/raw/claude-host-metadata-attempt1/receipt.json.gz",
+      "copy": "raw/claude-host-metadata-attempt1/receipt.json.gz",
+      "sha256": "0f4708dad9c6473d252d6406417a636cf58e9a9987c93329f182ef63830d36a3",
+      "bytes": 416,
+      "rawSource": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/outputs/ddp-sdk-endpoint-20261020/claude-host-metadata-attempt1/receipt.json",
+      "rawSHA256": "c05937e63124ba47b17b2d1feb4a41e36927c5f8b550ca90d75ca97bfc59cdc3",
+      "rawBytes": 691
+    },
+    {
+      "source": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/work/agent-braid-code-integration-20261020/specs/029-system-one-evaluation/evidence/ddp-sdk-endpoint/raw/claude-host-metadata-attempt1/stderr.raw.gz",
+      "copy": "raw/claude-host-metadata-attempt1/stderr.raw.gz",
+      "sha256": "48d5b1f33dc68c18c2e785f087db47390779fd6da536e5fe5f3ac4d861acad27",
+      "bytes": 197,
+      "rawSource": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/outputs/ddp-sdk-endpoint-20261020/claude-host-metadata-attempt1/stderr.raw",
+      "rawSHA256": "6dae870103fdf9415ef079771ded2f2314b04bda40518c808c8bc34a3d3a287d",
+      "rawBytes": 550
+    },
+    {
+      "source": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/work/agent-braid-code-integration-20261020/specs/029-system-one-evaluation/evidence/ddp-sdk-endpoint/raw/claude-host-metadata-attempt1/stdout.raw.gz",
+      "copy": "raw/claude-host-metadata-attempt1/stdout.raw.gz",
+      "sha256": "f1b651238a58fe290baec6c5e32f3bdb1943dd2bd582f02569231f7a757c7837",
+      "bytes": 20,
+      "rawSource": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/outputs/ddp-sdk-endpoint-20261020/claude-host-metadata-attempt1/stdout.raw",
+      "rawSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "rawBytes": 0
+    },
+    {
+      "source": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/work/agent-braid-code-integration-20261020/specs/029-system-one-evaluation/evidence/ddp-sdk-endpoint/raw/claude-host-metadata-attempt2/receipt.json.gz",
+      "copy": "raw/claude-host-metadata-attempt2/receipt.json.gz",
+      "sha256": "51c6a34f6fb7abcf4550802c4b650eaafe1b204f010e352e65778da6398ae3f3",
+      "bytes": 412,
+      "rawSource": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/outputs/ddp-sdk-endpoint-20261020/claude-host-metadata-attempt2/receipt.json",
+      "rawSHA256": "86456312ec4989e22deaf5d7ff78cd81d2995bc624d1f039254f823b0af0d6a9",
+      "rawBytes": 657
+    },
+    {
+      "source": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/work/agent-braid-code-integration-20261020/specs/029-system-one-evaluation/evidence/ddp-sdk-endpoint/raw/claude-host-metadata-attempt2/stderr.raw.gz",
+      "copy": "raw/claude-host-metadata-attempt2/stderr.raw.gz",
+      "sha256": "7710ae89626fbecf3f87599c0686cf126e23fbaff4d82b802442c95e63501802",
+      "bytes": 85,
+      "rawSource": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/outputs/ddp-sdk-endpoint-20261020/claude-host-metadata-attempt2/stderr.raw",
+      "rawSHA256": "74b6db2f35794609d6a3c97c9370cece7ffc8a875225e22eacf6af9cfa37d19b",
+      "rawBytes": 69
+    },
+    {
+      "source": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/work/agent-braid-code-integration-20261020/specs/029-system-one-evaluation/evidence/ddp-sdk-endpoint/raw/claude-host-metadata-attempt2/stdout.raw.gz",
+      "copy": "raw/claude-host-metadata-attempt2/stdout.raw.gz",
+      "sha256": "f1b651238a58fe290baec6c5e32f3bdb1943dd2bd582f02569231f7a757c7837",
+      "bytes": 20,
+      "rawSource": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/outputs/ddp-sdk-endpoint-20261020/claude-host-metadata-attempt2/stdout.raw",
+      "rawSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "rawBytes": 0
+    },
+    {
+      "source": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/work/agent-braid-code-integration-20261020/specs/029-system-one-evaluation/evidence/ddp-sdk-endpoint/raw/claude-version.stderr.gz",
+      "copy": "raw/claude-version.stderr.gz",
+      "sha256": "f1b651238a58fe290baec6c5e32f3bdb1943dd2bd582f02569231f7a757c7837",
+      "bytes": 20,
+      "rawSource": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/outputs/ddp-sdk-endpoint-20261020/claude-version.stderr",
+      "rawSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "rawBytes": 0
+    },
+    {
+      "source": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/work/agent-braid-code-integration-20261020/specs/029-system-one-evaluation/evidence/ddp-sdk-endpoint/raw/claude-version.stdout.gz",
+      "copy": "raw/claude-version.stdout.gz",
+      "sha256": "317863990a31db7769346c7c216e58ebce6f90f06da3b656fa124d0429fb830a",
+      "bytes": 42,
+      "rawSource": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/outputs/ddp-sdk-endpoint-20261020/claude-version.stdout",
+      "rawSHA256": "46ef67828dfb9d34aef4d5df24d529825edb3cfa334f333e445fe5d0f1b14cc2",
+      "rawBytes": 22
+    },
+    {
+      "source": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/work/agent-braid-code-integration-20261020/specs/029-system-one-evaluation/evidence/ddp-sdk-endpoint/raw/codex-host-attempt1/controls.json.gz",
+      "copy": "raw/codex-host-attempt1/controls.json.gz",
+      "sha256": "59a68b798698ed9dd5c873f150364cd5734d7cee60bdf176ccd1e87266bf874f",
+      "bytes": 62088,
+      "rawSource": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/outputs/ddp-sdk-endpoint-20261020/codex-host-attempt1/controls.json",
+      "rawSHA256": "1d1e0d5b7603251793f1c0f05e3402eb4b9a2561e8846ea53806ee90f65d6b7d",
+      "rawBytes": 710531
+    },
+    {
+      "source": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/work/agent-braid-code-integration-20261020/specs/029-system-one-evaluation/evidence/ddp-sdk-endpoint/raw/codex-host-attempt1/discovery.json.gz",
+      "copy": "raw/codex-host-attempt1/discovery.json.gz",
+      "sha256": "da077abee61cb5bd527debc88b101dae29a900cb6dc15b2eb95bd1fd605c5256",
+      "bytes": 506,
+      "rawSource": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/outputs/ddp-sdk-endpoint-20261020/codex-host-attempt1/discovery.json",
+      "rawSHA256": "d6e1d6acf9b1db5c126d42aa00e62f2500506066eae2e2cf4d2cf1c4b2e2e0bc",
+      "rawBytes": 1306
+    },
+    {
+      "source": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/work/agent-braid-code-integration-20261020/specs/029-system-one-evaluation/evidence/ddp-sdk-endpoint/raw/codex-host-attempt1/protocol.json.gz",
+      "copy": "raw/codex-host-attempt1/protocol.json.gz",
+      "sha256": "49df12bb271107c057fedff8ff1f05457b1711646ee1bbf3970d45a73aa13a6b",
+      "bytes": 65315,
+      "rawSource": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/outputs/ddp-sdk-endpoint-20261020/codex-host-attempt1/protocol.json",
+      "rawSHA256": "e1d74078590b432608d2962130b77dd19e6c38d45a665900df8df8cf32690601",
+      "rawBytes": 742599
+    },
+    {
+      "source": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/work/agent-braid-code-integration-20261020/specs/029-system-one-evaluation/evidence/ddp-sdk-endpoint/raw/codex-host-attempt1/receipt.json.gz",
+      "copy": "raw/codex-host-attempt1/receipt.json.gz",
+      "sha256": "77c2970b71914751608c91138c59afb0537485226961c1748a78b6248ad6fb30",
+      "bytes": 376,
+      "rawSource": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/outputs/ddp-sdk-endpoint-20261020/codex-host-attempt1/receipt.json",
+      "rawSHA256": "8305d2abd447073bdbabcd758947d4de56705eaff6e5d877236e11cf9630eb08",
+      "rawBytes": 611
+    },
+    {
+      "source": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/work/agent-braid-code-integration-20261020/specs/029-system-one-evaluation/evidence/ddp-sdk-endpoint/raw/codex-host-attempt1/requests.json.gz",
+      "copy": "raw/codex-host-attempt1/requests.json.gz",
+      "sha256": "8fce860dad53a01f1368f87401cf0520ebd52297b9c7121742f5ea6e307d777a",
+      "bytes": 1937,
+      "rawSource": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/outputs/ddp-sdk-endpoint-20261020/codex-host-attempt1/requests.json",
+      "rawSHA256": "f6521df7f6dec353288454511cba7d10c08c35c3cc57ffc3c04b5cdb8139e686",
+      "rawBytes": 37705
+    },
+    {
+      "source": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/work/agent-braid-code-integration-20261020/specs/029-system-one-evaluation/evidence/ddp-sdk-endpoint/raw/codex-host-attempt1/stderr.raw.gz",
+      "copy": "raw/codex-host-attempt1/stderr.raw.gz",
+      "sha256": "0215245d310f944cef184e06b409fcb38244cdfdaef4ac470680376d85c04c94",
+      "bytes": 218,
+      "rawSource": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/outputs/ddp-sdk-endpoint-20261020/codex-host-attempt1/stderr.raw",
+      "rawSHA256": "80814b7eeb635418afaba7d4c1bfe054d840c558f4712e5c8f6b64b60b4f988f",
+      "rawBytes": 274
+    },
+    {
+      "source": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/work/agent-braid-code-integration-20261020/specs/029-system-one-evaluation/evidence/ddp-sdk-endpoint/raw/codex-version.stderr.gz",
+      "copy": "raw/codex-version.stderr.gz",
+      "sha256": "f1b651238a58fe290baec6c5e32f3bdb1943dd2bd582f02569231f7a757c7837",
+      "bytes": 20,
+      "rawSource": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/outputs/ddp-sdk-endpoint-20261020/codex-version.stderr",
+      "rawSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "rawBytes": 0
+    },
+    {
+      "source": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/work/agent-braid-code-integration-20261020/specs/029-system-one-evaluation/evidence/ddp-sdk-endpoint/raw/codex-version.stdout.gz",
+      "copy": "raw/codex-version.stdout.gz",
+      "sha256": "631468e76880267aac2467341a04f05bb6bf60c7fd9ca0e9b1fffc661037e7b6",
+      "bytes": 49,
+      "rawSource": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/outputs/ddp-sdk-endpoint-20261020/codex-version.stdout",
+      "rawSHA256": "7340c8bbe8b5bb886770f0f608cad06978bad881369879cb31b4af372fc02c0c",
+      "rawBytes": 29
+    },
+    {
+      "source": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/work/agent-braid-code-integration-20261020/specs/029-system-one-evaluation/evidence/ddp-sdk-endpoint/raw/conditional-real-work-dispatch.json.gz",
+      "copy": "raw/conditional-real-work-dispatch.json.gz",
+      "sha256": "880097f2f651ea82ed7d94c1ebd3fa7202332f045c2ed16a0a5e11d67cc18495",
+      "bytes": 503,
+      "rawSource": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/outputs/ddp-sdk-endpoint-20261020/conditional-real-work-dispatch.json",
+      "rawSHA256": "2643373e3cc2fd358fc97efd72b9e4e243aaff4c9be8078838ae896fe12669f0",
+      "rawBytes": 776
+    },
+    {
+      "source": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/work/agent-braid-code-integration-20261020/specs/029-system-one-evaluation/evidence/ddp-sdk-endpoint/raw/documentary-partial-readback.json.gz",
+      "copy": "raw/documentary-partial-readback.json.gz",
+      "sha256": "c65b81a7786ca97a5abcde85b6388d06b780af2c19d43742fc0dd1c6c7341244",
+      "bytes": 266,
+      "rawSource": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/outputs/ddp-sdk-endpoint-20261020/documentary-partial-readback.json",
+      "rawSHA256": "d48d286377032796b695e36445b73b08561bdc8330d326432fca1b80d0a90904",
+      "rawBytes": 352
+    },
+    {
+      "source": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/work/agent-braid-code-integration-20261020/specs/029-system-one-evaluation/evidence/ddp-sdk-endpoint/raw/focused-attempt1.log.gz",
+      "copy": "raw/focused-attempt1.log.gz",
+      "sha256": "c4e354f12cabf4bfa7fd97eae11e35547dcb6a91654e602ee613722653035bfa",
+      "bytes": 1776,
+      "rawSource": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/outputs/ddp-sdk-endpoint-20261020/focused-attempt1.log",
+      "rawSHA256": "18e8b35738637c4c6a44da38b2dc2ac379e9348c41b54f83588db0e542baac21",
+      "rawBytes": 9481
+    },
+    {
+      "source": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/work/agent-braid-code-integration-20261020/specs/029-system-one-evaluation/evidence/ddp-sdk-endpoint/raw/focused-attempt2.log.gz",
+      "copy": "raw/focused-attempt2.log.gz",
+      "sha256": "bbc5c7b9c7db1a58d8b4f0d4c59f0247244a1377ba43c0fc0c997b904bda2eb5",
+      "bytes": 493,
+      "rawSource": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/outputs/ddp-sdk-endpoint-20261020/focused-attempt2.log",
+      "rawSHA256": "40c4c90c5f0334ca66595686d7ae6d83a01eb307c847a951ca82eb503b46a7d7",
+      "rawBytes": 1898
+    },
+    {
+      "source": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/work/agent-braid-code-integration-20261020/specs/029-system-one-evaluation/evidence/ddp-sdk-endpoint/raw/focused-composition.log.gz",
+      "copy": "raw/focused-composition.log.gz",
+      "sha256": "00a51ddca8ed7d1ce408a1bb8b109288e5e28b6e67eaf015d286ae359760bfa3",
+      "bytes": 1154,
+      "rawSource": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/outputs/ddp-sdk-endpoint-20261020/focused-composition.log",
+      "rawSHA256": "9620d07426834c3d0575e2a72c9fca18fda29c3a68abdc1346746539b411ccb6",
+      "rawBytes": 5929
+    },
+    {
+      "source": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/work/agent-braid-code-integration-20261020/specs/029-system-one-evaluation/evidence/ddp-sdk-endpoint/raw/forecast-telemetry-planning-readback.json.gz",
+      "copy": "raw/forecast-telemetry-planning-readback.json.gz",
+      "sha256": "5066c204d02c88a927e2d29a872bc64d012a71691d69e7c9009763f7dd9d6470",
+      "bytes": 348,
+      "rawSource": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/outputs/ddp-sdk-endpoint-20261020/forecast-telemetry-planning-readback.json",
+      "rawSHA256": "33bb184e3b195ffec0ef4f7feb8ec8989381eecc884b7c0a49b341fa62c72315",
+      "rawBytes": 477
+    },
+    {
+      "source": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/work/agent-braid-code-integration-20261020/specs/029-system-one-evaluation/evidence/ddp-sdk-endpoint/raw/gateadmission.json.gz",
+      "copy": "raw/gateadmission.json.gz",
+      "sha256": "fe9a00b2e844dc45352d069d4107a6e0924cc3d1e8e81bf23d65c43e39862566",
+      "bytes": 439,
+      "rawSource": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/outputs/ddp-sdk-endpoint-20261020/gateadmission.json",
+      "rawSHA256": "5748543bf000158bc0190885b9c9b63d5621c25e617ef0149df7b7000e71c24c",
+      "rawBytes": 823
+    },
+    {
+      "source": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/work/agent-braid-code-integration-20261020/specs/029-system-one-evaluation/evidence/ddp-sdk-endpoint/raw/installed-probe/commands.json.gz",
+      "copy": "raw/installed-probe/commands.json.gz",
+      "sha256": "3d31c92d4478cefe6bbd68318effb4464d90401d5b878bc5610c951e6bb82456",
+      "bytes": 559,
+      "rawSource": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/outputs/ddp-sdk-endpoint-20261020/installed-probe/commands.json",
+      "rawSHA256": "02fecf73a9d2012b99c1896c5becd79495b8e43a518a2907656fd5e4902e9b07",
+      "rawBytes": 2734
+    },
+    {
+      "source": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/work/agent-braid-code-integration-20261020/specs/029-system-one-evaluation/evidence/ddp-sdk-endpoint/raw/installed-probe/installed-endpoint-help.stderr.gz",
+      "copy": "raw/installed-probe/installed-endpoint-help.stderr.gz",
+      "sha256": "f1b651238a58fe290baec6c5e32f3bdb1943dd2bd582f02569231f7a757c7837",
+      "bytes": 20,
+      "rawSource": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/outputs/ddp-sdk-endpoint-20261020/installed-probe/installed-endpoint-help.stderr",
+      "rawSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "rawBytes": 0
+    },
+    {
+      "source": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/work/agent-braid-code-integration-20261020/specs/029-system-one-evaluation/evidence/ddp-sdk-endpoint/raw/installed-probe/installed-endpoint-help.stdout.gz",
+      "copy": "raw/installed-probe/installed-endpoint-help.stdout.gz",
+      "sha256": "ed617d0962235177b561ec631f9707da16864249b69542f7ab50273612755536",
+      "bytes": 317,
+      "rawSource": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/outputs/ddp-sdk-endpoint-20261020/installed-probe/installed-endpoint-help.stdout",
+      "rawSHA256": "c94e20df241475ab414d3445be1ae895d32fcd3f41fec227b31baa722e9dbda6",
+      "rawBytes": 469
+    },
+    {
+      "source": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/work/agent-braid-code-integration-20261020/specs/029-system-one-evaluation/evidence/ddp-sdk-endpoint/raw/installed-probe/installed-sdk-tests.stderr.gz",
+      "copy": "raw/installed-probe/installed-sdk-tests.stderr.gz",
+      "sha256": "ee6255ced8b703863165f2354f0174d7b6b7869de2b8d6f7ba03d576758a00d5",
+      "bytes": 488,
+      "rawSource": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/outputs/ddp-sdk-endpoint-20261020/installed-probe/installed-sdk-tests.stderr",
+      "rawSHA256": "e20d421a76a56550c9e0362d16580bc0dc9d7af6f372cd37d64f6f669f428c6b",
+      "rawBytes": 1886
+    },
+    {
+      "source": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/work/agent-braid-code-integration-20261020/specs/029-system-one-evaluation/evidence/ddp-sdk-endpoint/raw/installed-probe/installed-sdk-tests.stdout.gz",
+      "copy": "raw/installed-probe/installed-sdk-tests.stdout.gz",
+      "sha256": "dbd9d98e912d1c8581cc6df2f1e8178376eb41e983a934749877efa9ff20216e",
+      "bytes": 250,
+      "rawSource": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/outputs/ddp-sdk-endpoint-20261020/installed-probe/installed-sdk-tests.stdout",
+      "rawSHA256": "d97b2785d28c7784ddd7cee16e1fb9d1a6ae04daf1ec161b0f5463f987234ba0",
+      "rawBytes": 318
+    },
+    {
+      "source": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/work/agent-braid-code-integration-20261020/specs/029-system-one-evaluation/evidence/ddp-sdk-endpoint/raw/installed-probe/receipt.json.gz",
+      "copy": "raw/installed-probe/receipt.json.gz",
+      "sha256": "b6929c3824c857c4e91ebe1996378038394b4a00692d7e4b76d3e9cb5215cc87",
+      "bytes": 673,
+      "rawSource": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/outputs/ddp-sdk-endpoint-20261020/installed-probe/receipt.json",
+      "rawSHA256": "d4cb72cb9fd71ce33dcc6f1bb7fa222548a99a24f6c6186b8e91a9700a91fc8e",
+      "rawBytes": 1224
+    },
+    {
+      "source": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/work/agent-braid-code-integration-20261020/specs/029-system-one-evaluation/evidence/ddp-sdk-endpoint/raw/installed-probe/sdk-controls.json.gz",
+      "copy": "raw/installed-probe/sdk-controls.json.gz",
+      "sha256": "be6facb861bd365b128ea1cd1133fc46c8c4b388218332aab3b07cdea8462cef",
+      "bytes": 63617,
+      "rawSource": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/outputs/ddp-sdk-endpoint-20261020/installed-probe/sdk-controls.json",
+      "rawSHA256": "8381b53a35e3bac3f49eab5ea2406fea51d17970a641143e1e9a13e6c641c695",
+      "rawBytes": 732760
+    },
+    {
+      "source": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/work/agent-braid-code-integration-20261020/specs/029-system-one-evaluation/evidence/ddp-sdk-endpoint/raw/installed-probe/source-paths.stderr.gz",
+      "copy": "raw/installed-probe/source-paths.stderr.gz",
+      "sha256": "f1b651238a58fe290baec6c5e32f3bdb1943dd2bd582f02569231f7a757c7837",
+      "bytes": 20,
+      "rawSource": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/outputs/ddp-sdk-endpoint-20261020/installed-probe/source-paths.stderr",
+      "rawSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "rawBytes": 0
+    },
+    {
+      "source": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/work/agent-braid-code-integration-20261020/specs/029-system-one-evaluation/evidence/ddp-sdk-endpoint/raw/installed-probe/source-paths.stdout.gz",
+      "copy": "raw/installed-probe/source-paths.stdout.gz",
+      "sha256": "22a9f6755b967efdc00ace21851cc661538985d62680c8b9a8e425057636e773",
+      "bytes": 19383,
+      "rawSource": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/outputs/ddp-sdk-endpoint-20261020/installed-probe/source-paths.stdout",
+      "rawSHA256": "b777930aa2096b5598a6cd23d674c367e2db03c3ca3fa359971faa0bfce5a529",
+      "rawBytes": 151959
+    },
+    {
+      "source": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/work/agent-braid-code-integration-20261020/specs/029-system-one-evaluation/evidence/ddp-sdk-endpoint/raw/installed-probe/source-pins.json.gz",
+      "copy": "raw/installed-probe/source-pins.json.gz",
+      "sha256": "054db2b76bcb70c460f820f57ee9b53823d21634d4c983c245faaaf6d341f6dc",
+      "bytes": 125508,
+      "rawSource": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/outputs/ddp-sdk-endpoint-20261020/installed-probe/source-pins.json",
+      "rawSHA256": "efacc1ee598676db851d5433c058c9f01b7fc6fe42f2650477ae898a8b99ce67",
+      "rawBytes": 343879
+    },
+    {
+      "source": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/work/agent-braid-code-integration-20261020/specs/029-system-one-evaluation/evidence/ddp-sdk-endpoint/raw/installed-probe/wheel-build.stderr.gz",
+      "copy": "raw/installed-probe/wheel-build.stderr.gz",
+      "sha256": "e7ee971ba56abc13386389249037a46d7483b2c1791879c072e3a1e29137a78c",
+      "bytes": 654,
+      "rawSource": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/outputs/ddp-sdk-endpoint-20261020/installed-probe/wheel-build.stderr",
+      "rawSHA256": "0327d1c3ba3d0e5126f457a6a4af02134c2734d6932db0d304b684ca815b8548",
+      "rawBytes": 2380
+    },
+    {
+      "source": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/work/agent-braid-code-integration-20261020/specs/029-system-one-evaluation/evidence/ddp-sdk-endpoint/raw/installed-probe/wheel-build.stdout.gz",
+      "copy": "raw/installed-probe/wheel-build.stdout.gz",
+      "sha256": "01494571143895d57a4bc9c66930432b5cb1aecd1e1633bf866d41d71fe5ce3c",
+      "bytes": 3093,
+      "rawSource": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/outputs/ddp-sdk-endpoint-20261020/installed-probe/wheel-build.stdout",
+      "rawSHA256": "44357c8b819b656dfb9ec2ce36c461d6a67086f61d301e181ca5782d80d7dd44",
+      "rawBytes": 33234
+    },
+    {
+      "source": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/work/agent-braid-code-integration-20261020/specs/029-system-one-evaluation/evidence/ddp-sdk-endpoint/raw/installed-probe/wheel-install.stderr.gz",
+      "copy": "raw/installed-probe/wheel-install.stderr.gz",
+      "sha256": "5f417b2aa7dbbaa5c1e8f0d2090f1c62b27931a020f3d8d045c48be3bf3d32c3",
+      "bytes": 248,
+      "rawSource": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/outputs/ddp-sdk-endpoint-20261020/installed-probe/wheel-install.stderr",
+      "rawSHA256": "1d119fb89b8cf136fa948e6bcbfdab71d9d62b72d6300ab298615d17fbcd49fd",
+      "rawBytes": 441
+    },
+    {
+      "source": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/work/agent-braid-code-integration-20261020/specs/029-system-one-evaluation/evidence/ddp-sdk-endpoint/raw/installed-probe/wheel-install.stdout.gz",
+      "copy": "raw/installed-probe/wheel-install.stdout.gz",
+      "sha256": "f1b651238a58fe290baec6c5e32f3bdb1943dd2bd582f02569231f7a757c7837",
+      "bytes": 20,
+      "rawSource": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/outputs/ddp-sdk-endpoint-20261020/installed-probe/wheel-install.stdout",
+      "rawSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "rawBytes": 0
+    },
+    {
+      "source": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/work/agent-braid-code-integration-20261020/specs/029-system-one-evaluation/evidence/ddp-sdk-endpoint/raw/launch.json.gz",
+      "copy": "raw/launch.json.gz",
+      "sha256": "ce172ded7cd92f3d00c41096288b6fd8c9a359ab7c1707d7b04298566cccf576",
+      "bytes": 418,
+      "rawSource": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/outputs/ddp-sdk-endpoint-20261020/launch.json",
+      "rawSHA256": "15f0488a0509afe2a56a5f6b7cf5afc44c0a6eea0a16bc5b3bbda4cd3c1fd193",
+      "rawBytes": 636
+    },
+    {
+      "source": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/work/agent-braid-code-integration-20261020/specs/029-system-one-evaluation/evidence/ddp-sdk-endpoint/raw/pre-profile-summary.json.gz",
+      "copy": "raw/pre-profile-summary.json.gz",
+      "sha256": "609614cbbbb8f555d7ac7799e3c8ccc9c0ceec9da0528ef84e18d33673fbc4d2",
+      "bytes": 1746,
+      "rawSource": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/outputs/ddp-sdk-endpoint-20261020/pre-profile-summary.json",
+      "rawSHA256": "0d626caa59f55a4bb7a838f28aae19de2ebd812ca3ed46e5e7df7f3f529c8fed",
+      "rawBytes": 3789
+    },
+    {
+      "source": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/work/agent-braid-code-integration-20261020/specs/029-system-one-evaluation/evidence/ddp-sdk-endpoint/raw/profiles/pr.json.gz",
+      "copy": "raw/profiles/pr.json.gz",
+      "sha256": "3779f6b14ff130041a486ad8ef6b37823a4c8aa3d4e4e1b8b0a8a24a5a9a92fe",
+      "bytes": 126287,
+      "rawSource": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/outputs/ddp-sdk-endpoint-20261020/profiles/pr.json",
+      "rawSHA256": "a0bc870fdf459574df28794d23a95d25111244f7e89f795b3f4667b66e381513",
+      "rawBytes": 350152
+    },
+    {
+      "source": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/work/agent-braid-code-integration-20261020/specs/029-system-one-evaluation/evidence/ddp-sdk-endpoint/raw/profiles/pr.log.gz",
+      "copy": "raw/profiles/pr.log.gz",
+      "sha256": "5446f22d573fd1a1b69cfcdc07449f0818e72dd1302d2dad887fe9d21fb3fd7f",
+      "bytes": 61491,
+      "rawSource": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/outputs/ddp-sdk-endpoint-20261020/profiles/pr.log",
+      "rawSHA256": "faf850c3cce916026b06c46ad33efc6e0cb851ca5042388a84b6b2a6ca19cfbe",
+      "rawBytes": 385718
+    },
+    {
+      "source": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/work/agent-braid-code-integration-20261020/specs/029-system-one-evaluation/evidence/ddp-sdk-endpoint/raw/profiles/quick.json.gz",
+      "copy": "raw/profiles/quick.json.gz",
+      "sha256": "e4397db5a0b97a87fb353f29c02d3275638d51f2ef3d7c0ace943f12b93d6405",
+      "bytes": 126292,
+      "rawSource": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/outputs/ddp-sdk-endpoint-20261020/profiles/quick.json",
+      "rawSHA256": "0adeb5fbcda1d36e1fbfb1022de9c156a02ba4f8bc859991b636396006b6f285",
+      "rawBytes": 350164
+    },
+    {
+      "source": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/work/agent-braid-code-integration-20261020/specs/029-system-one-evaluation/evidence/ddp-sdk-endpoint/raw/profiles/quick.log.gz",
+      "copy": "raw/profiles/quick.log.gz",
+      "sha256": "576b6865d7f5d49c12cd138c1847959b3c0a8f254a72e3d543c930981a6c2801",
+      "bytes": 61518,
+      "rawSource": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/outputs/ddp-sdk-endpoint-20261020/profiles/quick.log",
+      "rawSHA256": "5daef2ea93762f21166e6979472317ed97c2e9ad4ef5bd297261827fe7ed15bd",
+      "rawBytes": 385842
+    },
+    {
+      "source": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/work/agent-braid-code-integration-20261020/specs/029-system-one-evaluation/evidence/ddp-sdk-endpoint/raw/real-work-thread-handoff-draft.md.gz",
+      "copy": "raw/real-work-thread-handoff-draft.md.gz",
+      "sha256": "fc85077d67461679b5de5a5f04d39f637a893fd8b6c65eff76b4bd4f65fe99ad",
+      "bytes": 3497,
+      "rawSource": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/outputs/ddp-sdk-endpoint-20261020/real-work-thread-handoff-draft.md",
+      "rawSHA256": "35a77e69ab4e23478b5d7e85cf667ddb02c785cb20fe8e53b3ad7d7765683fc8",
+      "rawBytes": 7347
+    },
+    {
+      "source": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/work/agent-braid-code-integration-20261020/specs/029-system-one-evaluation/evidence/ddp-sdk-endpoint/raw/sdk-install.stderr.gz",
+      "copy": "raw/sdk-install.stderr.gz",
+      "sha256": "2f4c46cf7e2d3dfb63d61a800ae571bef0d6e04d0ca6a293a7658afe42f0f1ca",
+      "bytes": 324,
+      "rawSource": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/outputs/ddp-sdk-endpoint-20261020/sdk-install.stderr",
+      "rawSHA256": "aa60d153dae3d5f50a3e4c166885b0ee77cfcfa7933cc5825ae6f539261a7d99",
+      "rawBytes": 399
+    },
+    {
+      "source": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/work/agent-braid-code-integration-20261020/specs/029-system-one-evaluation/evidence/ddp-sdk-endpoint/raw/sdk-install.stdout.gz",
+      "copy": "raw/sdk-install.stdout.gz",
+      "sha256": "f1b651238a58fe290baec6c5e32f3bdb1943dd2bd582f02569231f7a757c7837",
+      "bytes": 20,
+      "rawSource": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/outputs/ddp-sdk-endpoint-20261020/sdk-install.stdout",
+      "rawSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "rawBytes": 0
+    },
+    {
+      "source": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/work/agent-braid-code-integration-20261020/specs/029-system-one-evaluation/evidence/ddp-sdk-endpoint/raw/sdk-setup-attempt1.json.gz",
+      "copy": "raw/sdk-setup-attempt1.json.gz",
+      "sha256": "461fe297f62453acb35162703efc4a26cf1c15b3b2d61519d332c7f555f67215",
+      "bytes": 375,
+      "rawSource": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/outputs/ddp-sdk-endpoint-20261020/sdk-setup-attempt1.json",
+      "rawSHA256": "e42350afb1aa55e0cb53c695386117aac0189d82fac1aedfc4197083de06c53a",
+      "rawBytes": 1002
+    },
+    {
+      "source": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/work/agent-braid-code-integration-20261020/specs/029-system-one-evaluation/evidence/ddp-sdk-endpoint/raw/sdk-venv.stderr.gz",
+      "copy": "raw/sdk-venv.stderr.gz",
+      "sha256": "5bab96b6f287c5ff6c4d0244d3a3dad0ffa4aa469bf2ca6a9c7d28e809beb72d",
+      "bytes": 142,
+      "rawSource": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/outputs/ddp-sdk-endpoint-20261020/sdk-venv.stderr",
+      "rawSHA256": "23db7d791d0678f0786f1b48b6ebecb230bc10311cf31055f22d4369cbbaf083",
+      "rawBytes": 169
+    },
+    {
+      "source": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/work/agent-braid-code-integration-20261020/specs/029-system-one-evaluation/evidence/ddp-sdk-endpoint/raw/sdk-venv.stdout.gz",
+      "copy": "raw/sdk-venv.stdout.gz",
+      "sha256": "f1b651238a58fe290baec6c5e32f3bdb1943dd2bd582f02569231f7a757c7837",
+      "bytes": 20,
+      "rawSource": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/outputs/ddp-sdk-endpoint-20261020/sdk-venv.stdout",
+      "rawSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "rawBytes": 0
+    },
+    {
+      "source": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/work/agent-braid-code-integration-20261020/specs/029-system-one-evaluation/evidence/ddp-sdk-endpoint/raw/sdk312-compile.stderr.gz",
+      "copy": "raw/sdk312-compile.stderr.gz",
+      "sha256": "0376a216f032eda20709cb93dde39e02bfad33c373db8a90368092bf18e34eb1",
+      "bytes": 49,
+      "rawSource": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/outputs/ddp-sdk-endpoint-20261020/sdk312-compile.stderr",
+      "rawSHA256": "bf6342e9111cfba5438a359db4796869c9604d6f18d01ac8ada09367f45a1259",
+      "rawBytes": 29
+    },
+    {
+      "source": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/work/agent-braid-code-integration-20261020/specs/029-system-one-evaluation/evidence/ddp-sdk-endpoint/raw/sdk312-compile.stdout.gz",
+      "copy": "raw/sdk312-compile.stdout.gz",
+      "sha256": "659154ee6a9cf18bcb600cdadd522d5c78e540449d14808c8c14aa2cacfd2205",
+      "bytes": 19799,
+      "rawSource": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/outputs/ddp-sdk-endpoint-20261020/sdk312-compile.stdout",
+      "rawSHA256": "c0a35dfdb5552f7d9876a00685c03fea1c2b6deb5655eb802302fa41177fc73d",
+      "rawBytes": 43327
+    },
+    {
+      "source": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/work/agent-braid-code-integration-20261020/specs/029-system-one-evaluation/evidence/ddp-sdk-endpoint/raw/sdk312-install.stderr.gz",
+      "copy": "raw/sdk312-install.stderr.gz",
+      "sha256": "cc87497e449998f5e0f37c795244e3bb6ef52ec6a9e07654588f5b5e064f8652",
+      "bytes": 401,
+      "rawSource": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/outputs/ddp-sdk-endpoint-20261020/sdk312-install.stderr",
+      "rawSHA256": "10c107ac934240e942240eb143f6cb97d08cebbfdac27a3f05af7976171a2628",
+      "rawBytes": 709
+    },
+    {
+      "source": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/work/agent-braid-code-integration-20261020/specs/029-system-one-evaluation/evidence/ddp-sdk-endpoint/raw/sdk312-install.stdout.gz",
+      "copy": "raw/sdk312-install.stdout.gz",
+      "sha256": "f1b651238a58fe290baec6c5e32f3bdb1943dd2bd582f02569231f7a757c7837",
+      "bytes": 20,
+      "rawSource": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/outputs/ddp-sdk-endpoint-20261020/sdk312-install.stdout",
+      "rawSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "rawBytes": 0
+    },
+    {
+      "source": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/work/agent-braid-code-integration-20261020/specs/029-system-one-evaluation/evidence/ddp-sdk-endpoint/raw/sdk312-setup-attempt1.json.gz",
+      "copy": "raw/sdk312-setup-attempt1.json.gz",
+      "sha256": "0ab27cc5b952a5ac378506a4e3db862ec5546abddd456115bde4bb3a32c04870",
+      "bytes": 395,
+      "rawSource": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/outputs/ddp-sdk-endpoint-20261020/sdk312-setup-attempt1.json",
+      "rawSHA256": "543b05ba4c6d7a3f795b4d6c7478cf4362f71ae72f3b097c539e46db0fd6e723",
+      "rawBytes": 1798
+    },
+    {
+      "source": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/work/agent-braid-code-integration-20261020/specs/029-system-one-evaluation/evidence/ddp-sdk-endpoint/raw/sdk312-venv.stderr.gz",
+      "copy": "raw/sdk312-venv.stderr.gz",
+      "sha256": "53c64e86f381385625cdd455237a45f311d89cc7210c0b85bc9143b62efb17d8",
+      "bytes": 174,
+      "rawSource": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/outputs/ddp-sdk-endpoint-20261020/sdk312-venv.stderr",
+      "rawSHA256": "9d1bd793da0f6a61df0f1bea0d86ee9c66e3e83cfbc39b09ba60e9ec9b862937",
+      "rawBytes": 210
+    },
+    {
+      "source": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/work/agent-braid-code-integration-20261020/specs/029-system-one-evaluation/evidence/ddp-sdk-endpoint/raw/sdk312-venv.stdout.gz",
+      "copy": "raw/sdk312-venv.stdout.gz",
+      "sha256": "f1b651238a58fe290baec6c5e32f3bdb1943dd2bd582f02569231f7a757c7837",
+      "bytes": 20,
+      "rawSource": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/outputs/ddp-sdk-endpoint-20261020/sdk312-venv.stdout",
+      "rawSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "rawBytes": 0
+    },
+    {
+      "source": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/work/agent-braid-code-integration-20261020/specs/029-system-one-evaluation/evidence/ddp-sdk-endpoint/raw/source-sdk-controls-attempt2.json.gz",
+      "copy": "raw/source-sdk-controls-attempt2.json.gz",
+      "sha256": "b6f1ae63a6d840a7444f1591af2b548e3dcb468dd96742919d9561edf84bab81",
+      "bytes": 63578,
+      "rawSource": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/outputs/ddp-sdk-endpoint-20261020/source-sdk-controls-attempt2.json",
+      "rawSHA256": "896954c821ea13455d0be756b6270d6d15d805fbbfbb0af34dc59620717aa9fb",
+      "rawBytes": 732682
+    },
+    {
+      "source": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/work/agent-braid-code-integration-20261020/specs/029-system-one-evaluation/evidence/ddp-sdk-endpoint/raw/source-sdk-controls-final.json.gz",
+      "copy": "raw/source-sdk-controls-final.json.gz",
+      "sha256": "928795a6e1956d00c2dddfdfa6cd77167b05bd0a5ff0565f23620c0c6ed27d46",
+      "bytes": 63661,
+      "rawSource": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/outputs/ddp-sdk-endpoint-20261020/source-sdk-controls-final.json",
+      "rawSHA256": "5427010bcb72eb0eb72043463ac2ce0d885afa09cdad5b6d3c9a9ec05a640444",
+      "rawBytes": 732752
+    },
+    {
+      "source": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/work/agent-braid-code-integration-20261020/specs/029-system-one-evaluation/evidence/ddp-sdk-endpoint/raw/stable-source-pins.json.gz",
+      "copy": "raw/stable-source-pins.json.gz",
+      "sha256": "da698f3584fc45285ba9e7f47c7ee77cc46555cbe654e22351a47190e121e4dc",
+      "bytes": 314,
+      "rawSource": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/outputs/ddp-sdk-endpoint-20261020/stable-source-pins.json",
+      "rawSHA256": "57a457775044ce21ed370c8f0a1959b89791deffd9b508634ca5a4cf2701b579",
+      "rawBytes": 483
+    },
+    {
+      "source": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/work/agent-braid-code-integration-20261020/specs/029-system-one-evaluation/evidence/ddp-sdk-endpoint/raw/supervisor-completion.json.gz",
+      "copy": "raw/supervisor-completion.json.gz",
+      "sha256": "9a22b53f2e1020a3d91607558750ff030b2aed3c1c5a04a8dd3b3395f85e2f5e",
+      "bytes": 385,
+      "rawSource": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/outputs/ddp-sdk-endpoint-20261020/supervisor-completion.json",
+      "rawSHA256": "f399637887aed6967288cae23e15e4f60411f7eaec89e1e0e1c1f286d6cd5c1c",
+      "rawBytes": 557
+    },
+    {
+      "source": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/work/agent-braid-code-integration-20261020/specs/029-system-one-evaluation/evidence/ddp-sdk-endpoint/raw/supervisor-start.json.gz",
+      "copy": "raw/supervisor-start.json.gz",
+      "sha256": "9745940f9d20b4f57123d2c9fe5b31cdfcedb1355c22bd13c383090f4ee1bab0",
+      "bytes": 331,
+      "rawSource": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/outputs/ddp-sdk-endpoint-20261020/supervisor-start.json",
+      "rawSHA256": "d368f1b918c6497241d5b44d32a9511b2b55a1bc8e365827199c1849b6c81a41",
+      "rawBytes": 448
+    },
+    {
+      "source": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/work/agent-braid-code-integration-20261020/specs/029-system-one-evaluation/evidence/ddp-sdk-endpoint/raw/supervisor.log.gz",
+      "copy": "raw/supervisor.log.gz",
+      "sha256": "f7c7c9089ec89f6cb035e0783e4ddb11f34b3e2124e71c0f37e24ef00881185a",
+      "bytes": 181,
+      "rawSource": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/outputs/ddp-sdk-endpoint-20261020/supervisor.log",
+      "rawSHA256": "74a30afd9edfe881191961a5e7592c95a733144a5eab8ed39caabb134a03c170",
+      "rawBytes": 303
+    }
+  ],
+  "capsules": [
+    {
+      "source": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/work/agent-braid-code-integration-20261020/specs/029-system-one-evaluation/evidence/ddp-sdk-endpoint/packet.json",
+      "copy": "source-capsules/packet.json",
+      "sha256": "806231d11d3ec1fba130e5b2ca90a048e391e71b9e8959efca8716f3b3baf5d9",
+      "bytes": 20750
+    },
+    {
+      "source": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/work/agent-braid-code-integration-20261020/specs/031-system-one-integration/addenda/ddp-sdk-endpoint-implementation.md",
+      "copy": "source-capsules/implementation-report.md",
+      "sha256": "2148871e7b45f1c786d5bbfb57a122306ff2839104210b7225cbafc1323b745b",
+      "bytes": 7556
+    },
+    {
+      "source": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/work/agent-braid-code-integration-20261020/specs/029-system-one-evaluation/evidence/ddp-sdk-endpoint/raw-representations.json",
+      "copy": "source-capsules/raw-representations.json",
+      "sha256": "01775e6509301e1e5ff0122cd3cd6e505346594c1ddc365228d88240099c5900",
+      "bytes": 44569
+    },
+    {
+      "source": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/outputs/ddp-sdk-endpoint-20261020/completion.json",
+      "copy": "source-capsules/completion.json",
+      "sha256": "0b75b352d84aba9a45f2501e544daf1164f56ec029479ebffb249ae8e7c25991",
+      "bytes": 2065
+    },
+    {
+      "source": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/outputs/ddp-sdk-endpoint-20261020/final-readback.json",
+      "copy": "source-capsules/final-readback.json",
+      "sha256": "7cdea43b1c4f67dddd199ca3651c71930a9bb7d57d65be3c2fe052b61117c561",
+      "bytes": 1053
+    },
+    {
+      "source": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/outputs/ddp-sdk-endpoint-20261020/finalize-sdk-attempt1.log",
+      "copy": "source-capsules/finalizer.log",
+      "sha256": "0b75b352d84aba9a45f2501e544daf1164f56ec029479ebffb249ae8e7c25991",
+      "bytes": 2065
+    }
+  ],
+  "profiles": [
+    {
+      "profile": "quick",
+      "tests": 2094,
+      "passed": 2071,
+      "skips": 23,
+      "unitSeconds": 2091.806,
+      "profileSeconds": 2271.391145458001,
+      "logSHA256": "5daef2ea93762f21166e6979472317ed97c2e9ad4ef5bd297261827fe7ed15bd",
+      "receiptInputsEqualInstalledSourcePins": true
+    },
+    {
+      "profile": "pr",
+      "tests": 2094,
+      "passed": 2071,
+      "skips": 23,
+      "unitSeconds": 2087.543,
+      "profileSeconds": 2267.390424666999,
+      "logSHA256": "faf850c3cce916026b06c46ad33efc6e0cb851ca5042388a84b6b2a6ca19cfbe",
+      "receiptInputsEqualInstalledSourcePins": true
+    }
+  ],
+  "profileInputCount": 2629,
+  "historicalPinBoundary": "Receipt inputs equal installed source pins; no full current-candidate or original-product audit repeated. Original2529 unchanged and sole2626 consumer delta are producer readback statements.",
+  "earlierPartial": "../ddp-documentary-local-sdk-endpoint-partial-20261020/README.md",
+  "planningPacket": {
+    "receipt": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/outputs/ddp-real-repo-forecast-telemetry-planning-20261020/receipt.json",
+    "sha256": "8df47ec1c55acabebfaa884fc3579ca14c5a79a091c5d050e8d1b8b7f6f37dd9",
+    "manifestSHA256": "0643adc9c73a88509418aa9dd8806cd06bd94911ac43bdcd8d52ca9dd929fce0",
+    "state": "10 proposed unregistered, unimplemented tasks; planning packet completed, not tasks closed"
+  },
+  "additionalExclusions": [
+    "product modules and tests/fixtures",
+    "wheel",
+    "candidate-source.tar.gz",
+    "candidate.patch",
+    "SDK environments/runtime homes/private configuration/credentials"
+  ],
+  "independentEndpointReview": "not obtained; coordinator scoped review only",
+  "publication": false,
+  "repositoryCommit": null,
+  "pendingGates": [
+    "Python313 pinned qualification",
+    "actual Claude tool call",
+    "model-driven real-work utility",
+    "training",
+    "calibration",
+    "human/scientific review",
+    "future data source admission",
+    "promotion",
+    "global activation",
+    "product publication"
+  ]
+}

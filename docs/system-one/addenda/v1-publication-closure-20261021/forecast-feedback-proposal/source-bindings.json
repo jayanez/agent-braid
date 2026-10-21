@@ -1,0 +1,129 @@
+{
+  "repository": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/work/agent-braid-t08-corpus",
+  "readHead": "68e4f7aa38ad7bd132d5237309b439f2fac6169e",
+  "readRemoteDevelop": "69e7d374e5aaf13376486664e7368711d9826e6f",
+  "files": [
+    {
+      "path": "CONSTITUTION.md",
+      "sha256": "ff7196976a1736a639947c2ab26e8da157fef23c89ba9881312f2a36459964eb"
+    },
+    {
+      "path": "GOVERNANCE.md",
+      "sha256": "c8eda331d97c42e54be4730ef906dfaad9ae2814e36704302f97afceff037d82"
+    },
+    {
+      "path": "docs/development/SPEC_KIT.md",
+      "sha256": "26d39721b860be7da2cfcf109f7ec90981aacf123fb17dec834afe5330ce056d"
+    },
+    {
+      "path": ".specify/templates/overrides/tasks-template.md",
+      "sha256": "246e1420ca0f06145f9c78b44e8265ac676106c816fcc9629167a68c44b0d517"
+    },
+    {
+      "path": "specs/045-local-forecasting-capabilities/spec.md",
+      "sha256": "ca0efc7bd30d0147445a834f42326258598b38023720e0c4771d24fea1729911"
+    },
+    {
+      "path": "specs/045-local-forecasting-capabilities/plan.md",
+      "sha256": "2d57340cedcc015af183d2720bce6b34a1af01e3fa0632c665ea72dc0f342acc"
+    },
+    {
+      "path": "specs/045-local-forecasting-capabilities/tasks.md",
+      "sha256": "9e52c990e416238cb46eb617f237bb653999b62b3d79cc49bd2efcab1dc2b8db"
+    },
+    {
+      "path": "specs/045-local-forecasting-capabilities/assurance.json",
+      "sha256": "06e6cd9ea900135ea78b228c04b82bf1a0bde4df504eb7e32edba83b73c75928"
+    },
+    {
+      "path": "specs/045-local-forecasting-capabilities/tracks.md",
+      "sha256": "d9c2dbb4e09264de5bcbea385079886a48f1ead475edb75fbacfb3f9245e229f"
+    },
+    {
+      "path": "specs/045-local-forecasting-capabilities/t007-disposition.md",
+      "sha256": "fde40994d4fc2a6c3300e460e2b67337d2e705f204ef638694dd2b2282b6029b"
+    },
+    {
+      "path": "specs/047-local-technical-telemetry/spec.md",
+      "sha256": "0e0ff60b97abe0e593c384cab4656e3703c7cc49e55a88685bccd65a4641c552"
+    },
+    {
+      "path": "specs/047-local-technical-telemetry/plan.md",
+      "sha256": "da2d013da5effb9d95a9a82297f719de27e8f3562b9c73e944ec131a8be87265"
+    },
+    {
+      "path": "specs/047-local-technical-telemetry/tasks.md",
+      "sha256": "1f049489dfc6800c5bd943184d8cbc8e0142ad73ac15add4184d400beb04db8a"
+    },
+    {
+      "path": "specs/047-local-technical-telemetry/assurance.json",
+      "sha256": "e8eb3042158a715d033fd603831506a00b6ee925c82959e7e725cc908bda7489"
+    },
+    {
+      "path": "specs/047-local-technical-telemetry/data-contract.md",
+      "sha256": "362dabded6429bb6051faac5af39ead0cc40f8e9969bdbbdd970bfa23687dfd9"
+    },
+    {
+      "path": "specs/046-local-technical-telemetry/owner-decisions-e9-20261017.md",
+      "sha256": "15174fb690c85e352c8456a3cc5780136ce1131f85e1486b75736ea41bae136b"
+    },
+    {
+      "path": "specs/046-local-technical-telemetry/owner-acceptance-disposition.md",
+      "sha256": "53e0bb0fb5a8ca45c1133b048b955f48a36da74d99f7e3e5d4d75381b0a4ce77"
+    },
+    {
+      "path": "specs/044-ai-tooling-evaluation/telemetry-candidate-owner-disposition.md",
+      "sha256": "bbd1fc54dd451e1e51f1c2aa9c61c4ee50fef3fe0efb15bab145bdce7243814e"
+    },
+    {
+      "path": "specs/044-ai-tooling-evaluation/native-process-route-policy.md",
+      "sha256": "e68396909748320f5dec7c560d07b38f254274430d82bee3a082507b4597588a"
+    },
+    {
+      "path": "specs/031-system-one-integration/spec.md",
+      "sha256": "ff0ac3464423837dade99371ad3ea33a8ca69203592acb464a2fc0f0e65d8a11"
+    },
+    {
+      "path": "specs/031-system-one-integration/tasks.md",
+      "sha256": "4e1602df3942dd4e48f99d3e97fe1ae7a7861e1e137516e43189d0448103330a"
+    },
+    {
+      "path": "specs/032-system-one-product/spec.md",
+      "sha256": "ee963e1ac14ad7eea4bfb2b47361a509f699b5268e6a91a7d21a424538c7fae4"
+    },
+    {
+      "path": "specs/032-system-one-product/tasks.md",
+      "sha256": "241bf264ab382a4c508a5f23f225e641a8091a7d2d8fb970041ecd43d5720e85"
+    },
+    {
+      "path": "docs/system-one/task-map.json",
+      "sha256": "a6f2c92611210c05e225019ff2ef27ef73d8ecd165472f6d0889b2a17d110eae"
+    },
+    {
+      "path": "docs/adr/0025-local-technical-telemetry.md",
+      "sha256": "e2f9af4d0d0a118635677146ba0c96cbd82046b7943eca36eeabf041923601f7"
+    },
+    {
+      "path": "agent_braid/forecast_telemetry.py",
+      "sha256": "ad910c2c6c4017eeb81060cfad616639b924309716825fbf4631a5c00bb00521"
+    }
+  ],
+  "historicalSnapshotsUnchanged": true,
+  "separateReadOnlyCandidateBindings": [
+    {
+      "source": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/work/agent-braid-code-integration-20261020/agent_braid/forecast_data.py",
+      "sha256": "ebffe780a25cc6393e32a6f264447144b0ef1f3e44ae74c0ab47b65471833fae",
+      "purpose": "Exact existing permissioned validation or finite-v1 domain restriction; no source copied/modified"
+    },
+    {
+      "source": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/work/agent-braid-code-integration-20261020/agent_braid/system_one_verified_ir.py",
+      "sha256": "a0378c34b805387b0518cf6ebc3da05599976cb7f037d5f140c2571c8f362ea3",
+      "purpose": "Exact existing permissioned validation or finite-v1 domain restriction; no source copied/modified"
+    },
+    {
+      "source": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/work/agent-braid-code-integration-20261020/agent_braid/system_one_verified_acquisition.py",
+      "sha256": "2380a32ef308fbbe540c67e71fb0bf43dc15b95a6732a13a8e2bf2be0d49e5b7",
+      "purpose": "Exact existing permissioned validation or finite-v1 domain restriction; no source copied/modified"
+    }
+  ]
+}

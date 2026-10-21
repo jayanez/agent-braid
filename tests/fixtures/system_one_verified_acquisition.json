@@ -1,0 +1,11 @@
+{
+  "format": "s1-acquisition-software-fixtures-v1",
+  "base": {
+    "first.txt": ["line00\n", "line01\n", "line02\n", "line03\n", "line04\n", "line05\n", "line06\n", "line07\n", "line08\n", "line09\n", "line10\n", "line11\n", "line12\n", "line13\n", "line14\n", "line15\n", "line16\n", "line17\n", "line18\n", "line19\n", "line20\n", "line21\n", "line22\n", "line23\n"]
+  },
+  "operations": {
+    "a": {"first.txt": ["changed00\n", "line01\n", "line02\n", "line03\n", "line04\n", "line05\n", "line06\n", "line07\n", "line08\n", "line09\n", "line10\n", "line11\n", "line12\n", "line13\n", "line14\n", "line15\n", "line16\n", "line17\n", "line18\n", "line19\n", "changed20\n", "line21\n", "line22\n", "line23\n"]},
+    "b": {"new.txt": ["hello\n", "world\n"]}
+  },
+  "note": "Fresh software-only fixture; no research labels or evaluation data."
+}

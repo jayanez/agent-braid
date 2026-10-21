@@ -1,0 +1,14 @@
+{
+  "createdAtUTC": "2026-10-20T15:35:28.753601+00:00",
+  "authorization": "Direct user: review and merge PR609 then PR610 if CI and review pass; afterward prepare code integration and package/real-host tests; EUR0, training/human/activation pending",
+  "documentaryOwner": "01a15640-452e-7c41-8140-01e144ad608c",
+  "productOwner": "current parent chat",
+  "researchReadOnly": "/Users/juanyanez/Repos/Personal/agent-braid-system-one",
+  "localProductPreserved": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-verified-core",
+  "limits": [
+    "No protection bypass or merge of changed unreviewed SHA",
+    "No new paid resources or external model calls",
+    "No product push/PR/merge/release or real-host activation inferred from preparation",
+    "Preserve sealed packets and all WIP"
+  ]
+}

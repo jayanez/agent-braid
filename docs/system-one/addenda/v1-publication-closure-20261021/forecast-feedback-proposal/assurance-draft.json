@@ -1,0 +1,72 @@
+{
+  "status": "draft-local-proposal",
+  "source": "source-bindings.json",
+  "articles": [
+    0,
+    5,
+    7,
+    12,
+    13,
+    14,
+    19,
+    20,
+    21
+  ],
+  "scope": "Prospective owned-work evaluation; ledger separate from aggregate collector",
+  "scientificResult": "none",
+  "obtainedEvidence": [],
+  "humanReview": "pending",
+  "independentReview": "not requested or performed",
+  "authoritySnapshotRefreshed": false,
+  "sourceAdmission": "not obtained",
+  "modelExecution": false,
+  "collectionExecuted": false,
+  "publication": false,
+  "requirements": [
+    {
+      "id": "REQ-CI-001",
+      "scenario": "SC-CI-001",
+      "status": "proposed"
+    },
+    {
+      "id": "REQ-CI-002",
+      "scenario": "SC-CI-002",
+      "status": "proposed"
+    },
+    {
+      "id": "REQ-CI-003",
+      "scenario": "SC-CI-003",
+      "status": "proposed"
+    },
+    {
+      "id": "REQ-CI-004",
+      "scenario": "SC-CI-004",
+      "status": "proposed"
+    },
+    {
+      "id": "REQ-CI-005",
+      "scenario": "SC-CI-005",
+      "status": "proposed"
+    },
+    {
+      "id": "REQ-CI-006",
+      "scenario": "SC-CI-006",
+      "status": "proposed"
+    },
+    {
+      "id": "REQ-CI-007",
+      "scenario": "SC-CI-007",
+      "status": "proposed"
+    },
+    {
+      "id": "REQ-CI-008",
+      "scenario": "SC-CI-008",
+      "status": "proposed"
+    },
+    {
+      "id": "REQ-CI-009",
+      "scenario": "SC-CI-009",
+      "status": "proposed"
+    }
+  ]
+}

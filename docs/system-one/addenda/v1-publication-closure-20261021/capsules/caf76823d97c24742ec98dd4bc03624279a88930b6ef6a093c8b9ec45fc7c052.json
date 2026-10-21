@@ -1,0 +1,229 @@
+{
+  "checkedAtUTC": "2026-10-20T10:20:27.812521+00:00",
+  "checkout": "/tmp/agent-braid-t06-documentary-20261020",
+  "branch": "docs/ddp-t06-core-corpus",
+  "commit": "fa13cef3599a380e1cebcdec0abda9c208c91607",
+  "parent": "b636e355bc83668edce2f49b088e8a9a36b1eb86",
+  "clean": true,
+  "publication": "local only; no push or new PR",
+  "pr594": "https://github.com/jayanez/agent-braid/pull/594",
+  "pr594Merge": "2ffb4de5fb702a5a0fb24ae68e57fae5181a47a3",
+  "entry": "docs/system-one/README.md",
+  "resumption": "docs/system-one/RESUMPTION.md",
+  "supplement": "docs/system-one/addenda/t06-core-final-20261020",
+  "packetSHA256": "2cf7048ee1d2fd596c87a60e13a86570870f7d3e549d95e05d192488ae25b9f0",
+  "bindingsSHA256": "0761e9a10642744394132f6c77b34beb0aff8b57aad814059e8ac72a76f3b933",
+  "checked": {
+    "packetBindings": 97,
+    "sourceArchiveMembers": 28,
+    "profileInputs": 2339,
+    "priorFilesUnchanged": 2333,
+    "rawManifestEntries": 58,
+    "actualBoundReceiptFiles": 65,
+    "producerScalar": 63,
+    "localLinks": 63,
+    "repositoryExitCode": 0,
+    "stagedWhitespaceExitCode": 0
+  },
+  "scope": "Core-only documentary reconciliation; MCP/stdio and full T06/T07 remain pending",
+  "noProductExecutionOrNewAudit": true,
+  "humanScientificAdmissionPromotionActivationGatesClosed": false,
+  "changedPaths": [
+    {
+      "path": "docs/system-one/README.md",
+      "sha256": "f50488dc2471851c2d12fc4d9d10c70d517faee9feb8102c338b5ba5486aae22"
+    },
+    {
+      "path": "docs/system-one/RESUMPTION.md",
+      "sha256": "7d5f1819eddd18a3f6f2cced95971925fcdd52b23f1b3e877c0cbb324835a2aa"
+    },
+    {
+      "path": "docs/system-one/addenda/t06-core-final-20261020/README.md",
+      "sha256": "8f0909b34e3edac8378491baabb933dec8e5cc66272cf9b774195fe39371342a"
+    },
+    {
+      "path": "docs/system-one/addenda/t06-core-final-20261020/bindings.json",
+      "sha256": "0761e9a10642744394132f6c77b34beb0aff8b57aad814059e8ac72a76f3b933"
+    },
+    {
+      "path": "docs/system-one/addenda/t06-core-final-20261020/documentary-validation.json",
+      "sha256": "2b704c87ea94545d241c2d8bb87cacce86d841be7e076fde69cd03f0d4260bdf"
+    },
+    {
+      "path": "docs/system-one/addenda/t06-core-final-20261020/documents/ddp-t01-coordinator-review.json",
+      "sha256": "2fbed3cabf3ef6433dd0bd3cd2824423fc4265659c6fa505de8a9857f0495606"
+    },
+    {
+      "path": "docs/system-one/addenda/t06-core-final-20261020/documents/ddp-t01-coordinator-review.md.txt",
+      "sha256": "a117ba5f197944de569099df4168c461eec8b62f0e3585f3a2af3dd1bbab1cfd"
+    },
+    {
+      "path": "docs/system-one/addenda/t06-core-final-20261020/documents/ddp-t01-plan.md.txt.gz",
+      "sha256": "05704f3163fe8dead491a39c825f90879adc16ddd629739b9224c9ced6091adf"
+    },
+    {
+      "path": "docs/system-one/addenda/t06-core-final-20261020/documents/ddp-t06-core-implementation.md.txt",
+      "sha256": "7cfbe1d4c71d7098529b1b01f0f3a97490cf2f08f2935a29cde4829b71b9ca0e"
+    },
+    {
+      "path": "docs/system-one/addenda/t06-core-final-20261020/documents/log-seal-provenance.json",
+      "sha256": "57c4d6ef573628772f6dbb6af52951cad510270a3819f16334b7952f7d6509f4"
+    },
+    {
+      "path": "docs/system-one/addenda/t06-core-final-20261020/documents/packaging-check.json",
+      "sha256": "7e79f02c887208d556c70e986d106f1a36bd9a289ea139d1f01b002f23c58f33"
+    },
+    {
+      "path": "docs/system-one/addenda/t06-core-final-20261020/documents/raw-receipts.json.gz",
+      "sha256": "db3d88e0b55b07588cbc73fb9c4d5849e3c7bbaf8f1aef073d30f635f680f80e"
+    },
+    {
+      "path": "docs/system-one/addenda/t06-core-final-20261020/documents/verified-plan-conformance.md.txt",
+      "sha256": "90f52099cdaebba51f2781c715c748d1ba0c13e9b2b9755a32b25e53f5a08e5b"
+    },
+    {
+      "path": "docs/system-one/addenda/t06-core-final-20261020/documents/verified-plan-consumer-v1.md.txt",
+      "sha256": "b17b5f3398dba9086ba44bdc04c4ff9cae97364f1fb9430a7e4ebcb9cb9fd1f4"
+    },
+    {
+      "path": "docs/system-one/addenda/t06-core-final-20261020/documents/verified-plan-v1.md.txt.gz",
+      "sha256": "260b5dbbb4f65e19147b72026cb974f8201a83aa64dee1ad6bc52434ca4d66ed"
+    },
+    {
+      "path": "docs/system-one/addenda/t06-core-final-20261020/documents/verified-plan-vectors.json.gz",
+      "sha256": "178985cecf995818457efdc017124038bd78ac6e212e3b45a983f2435eac10eb"
+    },
+    {
+      "path": "docs/system-one/addenda/t06-core-final-20261020/original-coordinator-readback.json",
+      "sha256": "b339f3a1c834568edf440b34084d67482ab64e1e55f56a6ecf696a91380f580a"
+    },
+    {
+      "path": "docs/system-one/addenda/t06-core-final-20261020/original-packet.json.gz",
+      "sha256": "57aaf3c3ae960705a8cf31b702b7bde542ce4caaf16dcc6f3cc14e215808aea1"
+    },
+    {
+      "path": "docs/system-one/addenda/t06-core-final-20261020/original-sealed-completion.json",
+      "sha256": "ec1ef8053b9d9d5b7ba3c463975c9882ed65f47a9799a001e7780a85a788efd7"
+    },
+    {
+      "path": "docs/system-one/addenda/t06-core-final-20261020/receipts/before.json.gz",
+      "sha256": "9407fc6ecead143379dd5de65c8059cc63243f9bfbd904fa48b128856fb52661"
+    },
+    {
+      "path": "docs/system-one/addenda/t06-core-final-20261020/receipts/capture-supervisor.log.gz",
+      "sha256": "f9f8fea2393f1768d3d43096fb854a8c5092fc0ef899fc8bfa4eca6af4913336"
+    },
+    {
+      "path": "docs/system-one/addenda/t06-core-final-20261020/receipts/documentary-intake-relay.json",
+      "sha256": "c4ef4fc73db9ce8f34296fda93468d1ddd2562bac72fa2edd5b5184466f5d548"
+    },
+    {
+      "path": "docs/system-one/addenda/t06-core-final-20261020/receipts/final-capture-v2/capture-supervisor.log.gz",
+      "sha256": "c8fdff4121fd5ae06452bfcac8963ad6a5346fcca170a4b55d96d4d04594c8af"
+    },
+    {
+      "path": "docs/system-one/addenda/t06-core-final-20261020/receipts/final-capture-v2/focused-capture.log.gz",
+      "sha256": "243ae96c259619abcf67a758a7697134437191f8316f1d74f4a1c20331ea76c0"
+    },
+    {
+      "path": "docs/system-one/addenda/t06-core-final-20261020/receipts/final-capture/capture-supervisor.log.gz",
+      "sha256": "bf2927eaca369fa40060c27861869924cd3ff830bb744505e0a067f955b9fd41"
+    },
+    {
+      "path": "docs/system-one/addenda/t06-core-final-20261020/receipts/final-capture/focused-capture.log.gz",
+      "sha256": "14cb76bab507cc937618ec0e3d84512373b7a9387b105aa467d33b38cfb4c3ba"
+    },
+    {
+      "path": "docs/system-one/addenda/t06-core-final-20261020/receipts/finalize-core-attempt1.log.complete.gz",
+      "sha256": "77460fa1d7f69a3700de18bad8ef79361e2fcc6b0755782c45b75d67c2c66409"
+    },
+    {
+      "path": "docs/system-one/addenda/t06-core-final-20261020/receipts/focused-capture.log.gz",
+      "sha256": "d2dfed740ccfb8693ad5ecfce7ca5e5ee52ae5b46ea4891c248a7c5cb7b7c598"
+    },
+    {
+      "path": "docs/system-one/addenda/t06-core-final-20261020/receipts/focused-findings.log.gz",
+      "sha256": "1fd6d1b3d26e549721c284951c3770e5f31e7650745b82abdbfd59f3a98f8c6e"
+    },
+    {
+      "path": "docs/system-one/addenda/t06-core-final-20261020/receipts/focused-first.log.gz",
+      "sha256": "b55179517506dbbf2dae68d081b810ea381dfad5d0c23393bcf0b6d295de0d39"
+    },
+    {
+      "path": "docs/system-one/addenda/t06-core-final-20261020/receipts/focused-second.log.gz",
+      "sha256": "b961d1551d732ea2fc055a650f1977335bef01c780ccc7ab9ec405204049cb92"
+    },
+    {
+      "path": "docs/system-one/addenda/t06-core-final-20261020/receipts/initial-completion.json",
+      "sha256": "8e2a888b168f1b43b1ec578b21126f46e10112d7fd9affe1c11f93980c3ab33e"
+    },
+    {
+      "path": "docs/system-one/addenda/t06-core-final-20261020/receipts/multi-operation.log.gz",
+      "sha256": "26a9f818956404638bb38f219afa8f656d5ab960735b0bf0f2710c6a02ee45c5"
+    },
+    {
+      "path": "docs/system-one/addenda/t06-core-final-20261020/receipts/mutation-guards.log.gz",
+      "sha256": "a5da76eee95ee4abd27aa46c605ed02f2838ea2ab26bac8b3b00dcdb9488652d"
+    },
+    {
+      "path": "docs/system-one/addenda/t06-core-final-20261020/receipts/mutation-supervisor.log.gz",
+      "sha256": "51be74cdca77db7447dfb12aa4e377ea0068b2d61891d1ff56c71198bec628a4"
+    },
+    {
+      "path": "docs/system-one/addenda/t06-core-final-20261020/receipts/native-cap-boundaries.log.gz",
+      "sha256": "e9b6df3567b46dfd196a835754c7b45e76875f41db6388a22025a9e05be18a4f"
+    },
+    {
+      "path": "docs/system-one/addenda/t06-core-final-20261020/receipts/packaging-helper-preparation.json",
+      "sha256": "c950ccd17a447cd40200ec8cbd00087da2452a724bc618be81a2c7365ed4d913"
+    },
+    {
+      "path": "docs/system-one/addenda/t06-core-final-20261020/receipts/packet-before-log-seal.json.gz",
+      "sha256": "9cb8f63d321a9b880ec8047be040e77dca36ae4ac656ec99661d475073651147"
+    },
+    {
+      "path": "docs/system-one/addenda/t06-core-final-20261020/receipts/preflight.log.gz",
+      "sha256": "241bc3cae8267e1f9b9c4529e55fa475be4bc02a467fcc0ce57290c0a4d5c5d1"
+    },
+    {
+      "path": "docs/system-one/addenda/t06-core-final-20261020/receipts/prepackage-verification.json",
+      "sha256": "affe88d93eb2239bfa960f98961edacfc565ef3fcd467fa783826697db324a71"
+    },
+    {
+      "path": "docs/system-one/addenda/t06-core-final-20261020/receipts/profiles/pr.json.gz",
+      "sha256": "39f97f5dea762a067d842ce0c4b81d1f6228350722d0e4f4f3ca845d54dc0070"
+    },
+    {
+      "path": "docs/system-one/addenda/t06-core-final-20261020/receipts/profiles/pr.log.gz",
+      "sha256": "657601680bc994846cdd94d208feafd1904697507d8c14bffec1661c71e5bba2"
+    },
+    {
+      "path": "docs/system-one/addenda/t06-core-final-20261020/receipts/profiles/quick.json.gz",
+      "sha256": "c05ed97786f7ed77186f90c19f187978f68bdcb84935826012601a33282a7ea8"
+    },
+    {
+      "path": "docs/system-one/addenda/t06-core-final-20261020/receipts/profiles/quick.log.gz",
+      "sha256": "be4aecc02bde3000e1dd6e0fba7a021f9c1302bf28d43d485946dbb8ed4dbe86"
+    },
+    {
+      "path": "docs/system-one/addenda/t06-core-final-20261020/receipts/relay-final-capture.json",
+      "sha256": "16d66213c1e2f3536027c36b4ecd75ccc2dea406742c84bb18dc2f82a2c5dab6"
+    },
+    {
+      "path": "docs/system-one/addenda/t06-core-final-20261020/receipts/supervisor-completion.json",
+      "sha256": "2db7cafa6fb236aa62a455b1cdd3a0c4ed1ca53db5b7ecec869af080faf66fda"
+    },
+    {
+      "path": "docs/system-one/addenda/t06-core-final-20261020/receipts/supervisor.log.gz",
+      "sha256": "b05e5ecb2365697aff5e67c6e1b81adee4d4e621456cd38d9da1313e142d6c8c"
+    },
+    {
+      "path": "docs/system-one/addenda/t06-core-final-20261020/receipts/t05-compatibility-first.log.gz",
+      "sha256": "12c3c9fc2a05d64330edcd60ffffb6445783bb284d9e1083ebc4fce1cdc6624b"
+    },
+    {
+      "path": "specs/031-system-one-integration/t06-core-corpus-status.md",
+      "sha256": "a6075580adde730cd94f0deec3b32b2907612cc605392dd29270df56b947cae5"
+    }
+  ]
+}

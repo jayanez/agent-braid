@@ -1,0 +1,155 @@
+{
+  "completedAt": "2026-10-20T16:06:37.171639+00:00",
+  "scope": "Ordered documentary squash merges only; no product publication or gate closure",
+  "pullRequests": [
+    {
+      "number": 609,
+      "url": "https://github.com/jayanez/agent-braid/pull/609",
+      "proof": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/outputs/ddp-documentary-merges-and-code-preparation-20261020/documentary-609-610/pr609/merge-proof.json",
+      "proofSHA256": "39d81b0f7d787e758b3aac6cd568c4163ae58fda178687ab0bed667d8d48e75e",
+      "manifest": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/outputs/ddp-documentary-merges-and-code-preparation-20261020/documentary-609-610/pr609/manifest.json",
+      "manifestSHA256": "afb9f2bee40c63b345047cb8a3beeabf32d58c095b6a2ed534eea2b02da60e98",
+      "verifiedProof": {
+        "checkedAtUTC": "2026-10-20T15:42:35.191824+00:00",
+        "PR": "https://github.com/jayanez/agent-braid/pull/609",
+        "state": "MERGED",
+        "head": "fe91d190f71b658635a8957eba1c55fe01629b01",
+        "mergeSHA": "b52d7ea3542a3c09678c4b69196c9105f8271f4a",
+        "base": "7a9cf27cde7f849dc5fccf9d3b1d91a059675d23",
+        "mergedAt": "2026-10-20T15:38:14Z",
+        "method": "squash; exact SHA precondition; noadmin/bypass/nodeletebranch",
+        "treeEqualsReviewedHead": true,
+        "singleParentMatchesBase": true,
+        "remoteDevelopContainsMerge": true,
+        "paths": 56,
+        "allDocumentary": true,
+        "validate": "SUCCESS",
+        "tracking": "SUCCESS",
+        "independentReview": "Luna Latest gpt-6-luna documentary no actionable P1/P2 exactfe91",
+        "unresolvedThreads": 0,
+        "changesRequested": false,
+        "requiredApprovals": 0,
+        "postmergeRuns": [
+          {
+            "conclusion": "",
+            "databaseId": 39450254965,
+            "headSha": "b52d7ea3542a3c09678c4b69196c9105f8271f4a",
+            "status": "in_progress",
+            "url": "https://github.com/jayanez/agent-braid/actions/runs/39450254965",
+            "workflowName": "Validate repository"
+          },
+          {
+            "conclusion": "success",
+            "databaseId": 39450255086,
+            "headSha": "b52d7ea3542a3c09678c4b69196c9105f8271f4a",
+            "status": "completed",
+            "url": "https://github.com/jayanez/agent-braid/actions/runs/39450255086",
+            "workflowName": "Audit Spec Kit GitHub tracking"
+          }
+        ],
+        "productPublished": false,
+        "gatesClosed": false
+      }
+    },
+    {
+      "number": 610,
+      "url": "https://github.com/jayanez/agent-braid/pull/610",
+      "proof": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/outputs/ddp-documentary-merges-and-code-preparation-20261020/documentary-609-610/pr610-merge/merge-proof.json",
+      "proofSHA256": "9d79754d3ff9183f84ef03822bb4060094434f49e53d9683d9b4837a581dd47b",
+      "manifest": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/outputs/ddp-documentary-merges-and-code-preparation-20261020/documentary-609-610/pr610-merge/manifest.json",
+      "manifestSHA256": "52afe879304e253b2aa9bb4455b20b190f9c41a9b8d0e1200320fa5c22054e7e",
+      "verifiedProof": {
+        "checkedAt": "2026-10-20T16:06:08.353519+00:00",
+        "url": "https://github.com/jayanez/agent-braid/pull/610",
+        "state": "MERGED",
+        "reviewedHead": "68e4f7aa38ad7bd132d5237309b439f2fac6169e",
+        "base": "b52d7ea3542a3c09678c4b69196c9105f8271f4a",
+        "merge": "69e7d374e5aaf13376486664e7368711d9826e6f",
+        "parents": [
+          "b52d7ea3542a3c09678c4b69196c9105f8271f4a"
+        ],
+        "tree": "a4fc06b97915ba670dd5cc0e26193e507b57666b",
+        "treeEqualsReviewedHead": true,
+        "documentaryPaths": [
+          "docs/system-one/README.md",
+          "docs/system-one/RESUMPTION.md",
+          "docs/system-one/addenda/t08-final-20261020/README.md",
+          "docs/system-one/addenda/t08-final-20261020/bindings.json",
+          "docs/system-one/addenda/t08-final-20261020/completed-finalizer.log.gz",
+          "docs/system-one/addenda/t08-final-20261020/documentary-preflight.log.gz",
+          "docs/system-one/addenda/t08-final-20261020/documentary-validation.json",
+          "docs/system-one/addenda/t08-final-20261020/original-author-readback.json",
+          "docs/system-one/addenda/t08-final-20261020/original-completion.json",
+          "docs/system-one/addenda/t08-final-20261020/original-packet.json",
+          "docs/system-one/addenda/t08-final-20261020/receipts/assignment-stable.json",
+          "docs/system-one/addenda/t08-final-20261020/receipts/assignment.json",
+          "docs/system-one/addenda/t08-final-20261020/receipts/before.json.gz",
+          "docs/system-one/addenda/t08-final-20261020/receipts/decision-delivery-result.md.txt",
+          "docs/system-one/addenda/t08-final-20261020/receipts/documentary-checks-stable.json",
+          "docs/system-one/addenda/t08-final-20261020/receipts/documentary-checks.json",
+          "docs/system-one/addenda/t08-final-20261020/receipts/launch.json",
+          "docs/system-one/addenda/t08-final-20261020/receipts/profiles/pr.json.gz",
+          "docs/system-one/addenda/t08-final-20261020/receipts/profiles/pr.log.gz",
+          "docs/system-one/addenda/t08-final-20261020/receipts/profiles/quick.json.gz",
+          "docs/system-one/addenda/t08-final-20261020/receipts/profiles/quick.log.gz",
+          "docs/system-one/addenda/t08-final-20261020/receipts/quick-plan.json.gz",
+          "docs/system-one/addenda/t08-final-20261020/receipts/relay-progress.json",
+          "docs/system-one/addenda/t08-final-20261020/receipts/supervisor-completion.json",
+          "docs/system-one/addenda/t08-final-20261020/receipts/supervisor-start.json",
+          "docs/system-one/addenda/t08-final-20261020/receipts/supervisor.log.gz",
+          "docs/system-one/addenda/t08-final-20261020/restored-public-history.log.gz",
+          "docs/system-one/addenda/t08-final-20261020/source-documents/decision-delivery-gates.txt",
+          "docs/system-one/addenda/t08-final-20261020/source-documents/decision-delivery-result.txt",
+          "specs/033-system-one-promotion/t08-corpus-status.md"
+        ],
+        "remoteDevelop": "69e7d374e5aaf13376486664e7368711d9826e6f",
+        "remoteContainsMerge": true,
+        "validateRun": 39450780057,
+        "trackingRun": 39450779848,
+        "premergeCI": "SUCCESS",
+        "specialistMatrix": "SKIPPED",
+        "review": "Independent Luna Latest documentary review; no actionable P1/P2; no human approval inferred",
+        "pendingGates": [
+          "human",
+          "science",
+          "training",
+          "calibration",
+          "admission",
+          "promotion",
+          "activation",
+          "host adoption"
+        ],
+        "productChangesPublished": false,
+        "postmergeRunsObserved": [
+          {
+            "conclusion": "",
+            "databaseId": 39454161160,
+            "headSha": "69e7d374e5aaf13376486664e7368711d9826e6f",
+            "name": "Validate repository",
+            "status": "in_progress",
+            "url": "https://github.com/jayanez/agent-braid/actions/runs/39454161160"
+          },
+          {
+            "conclusion": "success",
+            "databaseId": 39454161192,
+            "headSha": "69e7d374e5aaf13376486664e7368711d9826e6f",
+            "name": "Audit Spec Kit GitHub tracking",
+            "status": "completed",
+            "url": "https://github.com/jayanez/agent-braid/actions/runs/39454161192"
+          }
+        ]
+      }
+    }
+  ],
+  "handoffOwner": "S1.x System One",
+  "pendingGates": [
+    "human review",
+    "scientific acceptance",
+    "training",
+    "calibration",
+    "admission",
+    "promotion",
+    "activation",
+    "host adoption"
+  ]
+}

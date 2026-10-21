@@ -1,0 +1,31 @@
+{
+  "purpose": "private-test-only-unregistered",
+  "sourceBytes": "Private immutable registry test bytes; not a production verifier.\n",
+  "entry": {
+    "domainId": "t024-eof-context-v1",
+    "irVersion": "t024-literal-program-v1",
+    "observationContract": "t024-path-blob-projection-v1",
+    "implementationId": "t024-eof-verifier-extracted-v1",
+    "verifierDigest": "a4c6af6601264da9df262e59c16ee3a32907c4d67150824e06645758e0f5ed0c"
+  },
+  "manifest": {
+    "format": "s1-static-verifier-registry-v1",
+    "entries": [
+      {
+        "domainId": "t024-eof-context-v1",
+        "irVersion": "t024-literal-program-v1",
+        "observationContract": "t024-path-blob-projection-v1",
+        "implementationId": "t024-eof-verifier-extracted-v1",
+        "verifierDigest": "a4c6af6601264da9df262e59c16ee3a32907c4d67150824e06645758e0f5ed0c"
+      }
+    ],
+    "executionAuthorization": false
+  },
+  "identity": {
+    "domainId": "t024-eof-context-v1",
+    "irVersion": "t024-literal-program-v1",
+    "observationContract": "t024-path-blob-projection-v1",
+    "verifierDigest": "a4c6af6601264da9df262e59c16ee3a32907c4d67150824e06645758e0f5ed0c",
+    "registryDigest": "167ed4c2cf8927b10dadb5bb921c66d198326127f6b0a1165e709818131abdbf"
+  }
+}

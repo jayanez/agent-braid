@@ -1,0 +1,13 @@
+{
+  "profiles": "running; no receipts yet",
+  "inputsStillMatch": 2626,
+  "sdkMetadataVersion": "2.3.0",
+  "cachedSDKSource": "/Users/juanyanez/.cache/uv/archive-v0/vThtTkJpu80M2y4s/lib/python3.12/site-packages/mcp",
+  "cachedClosureVerified": false,
+  "existingPython313": "Python 3.13.11",
+  "SDKInstalledByThisIncrement": false,
+  "sourceEditsDuringValidation": false,
+  "externalSpendEUR": 0,
+  "designDraftSHA256": "5076edc8541e8b3d311fc9a3a81cb48416e54239a5f5f4a10e25c221f85e432e",
+  "context7ResultsSHA256": "16886d58e7ba8146235c6453ff3f02882c922b1d4d2f98469167fe6e65f4fb17"
+}

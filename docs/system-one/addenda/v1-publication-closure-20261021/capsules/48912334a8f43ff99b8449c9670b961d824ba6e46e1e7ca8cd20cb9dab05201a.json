@@ -1,0 +1,75 @@
+[
+  {
+    "argv": [
+      "git",
+      "ls-files",
+      "-z"
+    ],
+    "cwd": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/work/agent-braid-code-integration-20261020",
+    "exitCode": 0
+  },
+  {
+    "argv": [
+      "/Users/juanyanez/Repos/Personal/agent-braid-system-one/.venv-speckit/bin/python",
+      "-c",
+      "import sys,setuptools;print(sys.version);print(setuptools.__version__)"
+    ],
+    "cwd": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/outputs/ddp-documentary-merges-and-code-preparation-20261020/package-probe",
+    "exitCode": 0
+  },
+  {
+    "argv": [
+      "/usr/bin/sandbox-exec",
+      "-p",
+      "(version 1)(allow default)(deny network*)",
+      "/Users/juanyanez/Repos/Personal/agent-braid-system-one/.venv-speckit/bin/python",
+      "-c",
+      "import setuptools.build_meta as b;print(b.build_wheel('/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/outputs/ddp-documentary-merges-and-code-preparation-20261020/package-probe/dist'))"
+    ],
+    "cwd": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/outputs/ddp-documentary-merges-and-code-preparation-20261020/package-probe/build-source",
+    "exitCode": 0
+  },
+  {
+    "argv": [
+      "/Users/juanyanez/.local/bin/uv",
+      "venv",
+      "--offline",
+      "--no-config",
+      "--no-project",
+      "--no-python-downloads",
+      "--python",
+      "/Users/juanyanez/Repos/Personal/agent-braid-system-one/.venv-speckit/bin/python",
+      "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/outputs/ddp-documentary-merges-and-code-preparation-20261020/package-probe/venv"
+    ],
+    "cwd": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/outputs/ddp-documentary-merges-and-code-preparation-20261020/package-probe",
+    "exitCode": 0
+  },
+  {
+    "argv": [
+      "/Users/juanyanez/.local/bin/uv",
+      "pip",
+      "install",
+      "--offline",
+      "--no-config",
+      "--no-index",
+      "--no-deps",
+      "--no-build",
+      "--python",
+      "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/outputs/ddp-documentary-merges-and-code-preparation-20261020/package-probe/venv/bin/python",
+      "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/outputs/ddp-documentary-merges-and-code-preparation-20261020/package-probe/dist/agent_braid-0.1.0a1-py3-none-any.whl"
+    ],
+    "cwd": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/outputs/ddp-documentary-merges-and-code-preparation-20261020/package-probe",
+    "exitCode": 0
+  },
+  {
+    "argv": [
+      "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/outputs/ddp-documentary-merges-and-code-preparation-20261020/package-probe/venv/bin/python",
+      "-I",
+      "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/outputs/ddp-documentary-merges-and-code-preparation-20261020/package-probe/installed_probe.py",
+      "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/outputs/ddp-documentary-merges-and-code-preparation-20261020/candidate-prepared.json",
+      "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/work/agent-braid-code-integration-20261020/tests"
+    ],
+    "cwd": "/Users/juanyanez/Documents/Codex/2026-10-20/agent-braid-decision-delivery/outputs/ddp-documentary-merges-and-code-preparation-20261020/package-probe",
+    "exitCode": 1
+  }
+]

@@ -1,0 +1,12 @@
+{
+  "recordedAt": "2026-10-20T16:07:21.209717+00:00",
+  "destinationThread": "01a14a9e-bea2-7c71-b818-c6d244a809cd",
+  "sendMessageDelivered": true,
+  "coordinatorIndependentReadback": "Coordinator message confirmed PR610 MERGED69e7d374, exact reviewed tree and sole parent b52; compact thread snapshot confirms continued local preparation ownership.",
+  "combinedReceiptDelivered": true,
+  "ackScope": "Independent merge/tree readback plus successful delivery of final combined receipt; no new scientific or human acceptance inferred",
+  "automationId": "publicar-recibos-del-corpus-system-one",
+  "automationStatus": "PAUSED",
+  "productPublicationAuthorized": false,
+  "pendingGatesPreserved": true
+}

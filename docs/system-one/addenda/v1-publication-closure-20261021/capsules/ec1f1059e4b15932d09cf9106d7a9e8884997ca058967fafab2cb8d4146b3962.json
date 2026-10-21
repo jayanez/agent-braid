@@ -1,0 +1,9 @@
+{
+  "pid": 52811,
+  "startedAtUTC": "2026-10-20T20:40:02.963817+00:00",
+  "inputs": 2626,
+  "helperSHA256": "19faeb0caa479f81a00ebe5a48245b97e22267441b91d8546b9f84d22cef51af",
+  "supervisorSHA256": "875c2ecd5c6f8534c70ef87cda41ef0d918936b76eff3576085ff3975f9bb408",
+  "noAutomaticRetry": true,
+  "externalSpendEUR": 0
+}

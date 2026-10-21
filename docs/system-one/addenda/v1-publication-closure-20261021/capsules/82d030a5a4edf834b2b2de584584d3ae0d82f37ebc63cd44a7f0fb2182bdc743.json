@@ -1,0 +1,12 @@
+{
+  "checkedAtUTC": "2026-10-20T15:44:22.056043+00:00",
+  "mergeSHA": "b52d7ea3542a3c09678c4b69196c9105f8271f4a",
+  "proofSHA256": "39d81b0f7d787e758b3aac6cd568c4163ae58fda178687ab0bed667d8d48e75e",
+  "manifestSHA256": "afb9f2bee40c63b345047cb8a3beeabf32d58c095b6a2ed534eea2b02da60e98",
+  "manifestFilesVerified": 15,
+  "mergeTreeEqualsReviewedHead": true,
+  "parentEqualsBase": true,
+  "documentaryPathsVerified": 56,
+  "PR610": "separate new candidate CI pending; no old CI reuse",
+  "productCandidatePrepared": false
+}

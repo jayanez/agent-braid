@@ -1,0 +1,89 @@
+{
+  "files": [
+    {
+      "path": "README.md",
+      "sha256": "046a628dbd098ee054470d17daede7cc58e324aadc13d18417c2fc46648d1438",
+      "bytes": 2171
+    },
+    {
+      "path": "receipt.json",
+      "sha256": "2fe62cc078ab4d7d7569070a3499054b4313c5edaa1e753a40fbaaf95b7db7b0",
+      "bytes": 7971
+    },
+    {
+      "path": "sources/assignment.json",
+      "sha256": "c6c69e92f43e5f135abda0878c215fd2a35e8a9eaf339229506506d5e21a6fe0",
+      "bytes": 3284
+    },
+    {
+      "path": "sources/before.json",
+      "sha256": "0fc407806ae86959d679320b88cb99f66268d07f50abbf95d71cb1efec218a1c",
+      "bytes": 343517
+    },
+    {
+      "path": "sources/context7-results.json",
+      "sha256": "16886d58e7ba8146235c6453ff3f02882c922b1d4d2f98469167fe6e65f4fb17",
+      "bytes": 15424
+    },
+    {
+      "path": "sources/gateadmission.json",
+      "sha256": "5748543bf000158bc0190885b9c9b63d5621c25e617ef0149df7b7000e71c24c",
+      "bytes": 823
+    },
+    {
+      "path": "sources/launch.json",
+      "sha256": "ec1f1059e4b15932d09cf9106d7a9e8884997ca058967fafab2cb8d4146b3962",
+      "bytes": 320
+    },
+    {
+      "path": "sources/profiles/pr.json",
+      "sha256": "ce2ed97560a9972a77a17620e221ca44650f3c9ecda136e2565cd9585129250a",
+      "bytes": 349785
+    },
+    {
+      "path": "sources/profiles/pr.log",
+      "sha256": "53a6d01b4dc824c5541cd8d6ba01f12a64ff67bffbed18b5e4e91f47c8f81412",
+      "bytes": 383490
+    },
+    {
+      "path": "sources/profiles/quick.json",
+      "sha256": "b7431bf7171250a5a0ca7a11e3dc7738a86dc664ef736f03219baf4135bdb9f2",
+      "bytes": 349796
+    },
+    {
+      "path": "sources/profiles/quick.log",
+      "sha256": "7945bbfe94cb0a678a2065d3ed15148da8cea83c4f74f97f405b6081d469c027",
+      "bytes": 383614
+    },
+    {
+      "path": "sources/progress-at-yield.json",
+      "sha256": "1f1269524724364ff0f37ed7ed2ba17e9e43c7f7ee3fa732c4b442c72206f983",
+      "bytes": 414
+    },
+    {
+      "path": "sources/read-only-sdk-intake.json",
+      "sha256": "ab71f4bdb49d4f73157d9efd3492b09999a65d1af74c3d499855c5c2f663982d",
+      "bytes": 584
+    },
+    {
+      "path": "sources/sdk-endpoint-design-draft.md",
+      "sha256": "5076edc8541e8b3d311fc9a3a81cb48416e54239a5f5f4a10e25c221f85e432e",
+      "bytes": 6885
+    },
+    {
+      "path": "sources/supervisor-completion.json",
+      "sha256": "83b78e634552e8ac18e2240c77a8ac0415f88b604c61ec661f190a06b78765b7",
+      "bytes": 569
+    },
+    {
+      "path": "sources/supervisor-start.json",
+      "sha256": "eeba7a0c89be88812951df451c70a37fbdd93cea6941377bc835b3bfbacc8955",
+      "bytes": 460
+    },
+    {
+      "path": "sources/supervisor.log",
+      "sha256": "3b4fb931b9c05631318ef985bcfac1ac442270bdc708c5981ead65a9471779a6",
+      "bytes": 304
+    }
+  ]
+}

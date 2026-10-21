@@ -89,6 +89,21 @@ PRESERVED_DRAFT_TAGS = (
      "refs/tags/spec-045-software-candidate-bb2e032",
      "bb2e0322fdf0fe3eabc6e28fec4864c9cfc954df",
      "d4d02eac6f4d4511df03ead37d484e7b6ab511c5"),
+    # Already-public PR #654 draft: one immutable tag retains three pending
+    # records across squash merge, never implementation or founder approval.
+    ("specs/048-harness-variant-laboratory/assurance.json",
+     "refs/tags/braid-harness-planning-candidate-d266c85",
+     "d266c85ef78d11950c7fbeff2fed720df85ae052",
+     "65bf671dd21c19e55794ff7b9c84cd5e6e1d6968"),
+    ("specs/049-harness-evaluation-learning/assurance.json",
+     "refs/tags/braid-harness-planning-candidate-d266c85",
+     "d266c85ef78d11950c7fbeff2fed720df85ae052",
+     "65bf671dd21c19e55794ff7b9c84cd5e6e1d6968"),
+    ("specs/050-braid-harness-adaptation/assurance.json",
+     "refs/tags/braid-harness-planning-candidate-d266c85",
+     "d266c85ef78d11950c7fbeff2fed720df85ae052",
+     "65bf671dd21c19e55794ff7b9c84cd5e6e1d6968"),
+
 )
 
 
