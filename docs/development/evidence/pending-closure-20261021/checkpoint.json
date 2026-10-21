@@ -1,0 +1,53 @@
+{
+  "artifacts": {
+    "pr-deferral.json": {
+      "compressedSha256": "f19163122d016178aceb1563b8b737921b0e9fa81daaa87665dfa008daf4c39d",
+      "path": "docs/development/evidence/pending-closure-20261021/pr-deferral.json.gz",
+      "rawBytes": 329,
+      "rawSha256": "593dd7dee1192e2dcc345f376edd385d249e95cec9695b2333c8c6f701f8eb42"
+    },
+    "pr.log": {
+      "compressedSha256": "d4c66f047223fd1b6135de2ac0d0d05ed9dfa4ee773a63e5b03bada7a131a7cb",
+      "path": "docs/development/evidence/pending-closure-20261021/pr.log.gz",
+      "rawBytes": 51220,
+      "rawSha256": "714fddfc7067540288d2f822fa92a5e4c423c70d4530142ebfcb2f31e26a6e21"
+    },
+    "quick.log": {
+      "compressedSha256": "4226b37510841b9aca6491a2afd0265ea93b71f2b5b304f680a5e26786c95c36",
+      "path": "docs/development/evidence/pending-closure-20261021/quick.log.gz",
+      "rawBytes": 387183,
+      "rawSha256": "78d317b61d5014dc469bd1fe52db20b56a3bb2458f9849880528f0c6cacc703a"
+    },
+    "receipt.json": {
+      "compressedSha256": "b02da0892196e48dd7620b9a547b3a068a6fede580722e06db1526060f2e3f70",
+      "path": "docs/development/evidence/pending-closure-20261021/receipt.json.gz",
+      "rawBytes": 403676,
+      "rawSha256": "724da99aa6fabc538ac420133bcc76544a3c80ced2af7cde84189687ddc50784"
+    }
+  },
+  "candidate": "00165ccb938cb19c151dab99d1be9e7e49664af6",
+  "executionAuthorization": false,
+  "format": "pending-closure-checkpoint-v1",
+  "inputCount": 2924,
+  "inputHashesUnchanged": true,
+  "packagingBoundary": "Lossless evidence-only packaging after candidate profiles; no executable source or historical evidence changed. Complete private supervisor receipt is retained losslessly.",
+  "pr": {
+    "disposition": "interrupted-by-coordinator",
+    "exitCode": 241,
+    "interruptionObservations": "First SIGINT was caught inside the suite and produced a FAIL and ResourceWarning. Coordinator then stopped the suite, terminated its observed owned descendant and suite; exact observed PIDs 11969,13331,29131,34960 no longer existed at readback. Raw log retained. No product-cause or passing-PR claim.",
+    "reason": "Started prematurely on preparation-only candidate while architecture decision/dependent implementation remain pending. Deferred to stable implementation candidate.",
+    "seconds": 162.3473237080034
+  },
+  "quick": {
+    "effective": "sensitive",
+    "exitCode": 0,
+    "passed": 2087,
+    "requested": "quick",
+    "seconds": 2149.0790151670008,
+    "skipped": 24,
+    "tests": 2111
+  },
+  "remoteMutations": [],
+  "taskStates": "SPEC024/T001-T008 and SPEC025/T007 unchanged; relevant human/architecture/proof decisions pending.",
+  "technicalReviews": "Separate bounded Luna contract and SPEC025 packet reviews obtained; no architecture or proof adoption."
+}
