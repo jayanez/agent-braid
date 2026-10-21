@@ -1,0 +1,1532 @@
+{
+  "format": "effectful-workload-manifest-v1",
+  "protocol": {
+    "format": "effectful-workload-protocol-v1",
+    "methods": [
+      "conservative-all-orders",
+      "declared-effects",
+      "additive-terminal",
+      "exhaustive-replay"
+    ],
+    "warmups": 3,
+    "repetitions": 20,
+    "order": "rotate-methods-by-fixture-and-repetition",
+    "threshold": {
+      "minimumRecoveredTerminalCandidates": 1,
+      "medianWholeAnalysisCostRatioAtMost": 1
+    },
+    "coverage": "identical-complete-or-inconclusive",
+    "costBoundary": [
+      "setup",
+      "footprintValidation",
+      "classification",
+      "replay",
+      "observation",
+      "comparison",
+      "serialization",
+      "totalWall"
+    ],
+    "claims": {
+      "contextualEquivalence": "unknown",
+      "runtimeSafety": "unknown",
+      "executionAuthorization": false
+    }
+  },
+  "fixtures": [
+    {
+      "id": "lost-update",
+      "request": {
+        "model": "effectful-workload-simulation-v1",
+        "initial": {
+          "state": {
+            "x": 0
+          },
+          "versions": {
+            "x": 0
+          },
+          "aliases": {}
+        },
+        "operations": [
+          {
+            "id": "a",
+            "kind": "snapshot-read",
+            "resource": "x",
+            "dependencies": [],
+            "outcomes": [
+              "success"
+            ],
+            "effects": {
+              "complete": true,
+              "reads": [
+                "x"
+              ],
+              "writes": [],
+              "emits": []
+            }
+          },
+          {
+            "id": "b",
+            "kind": "snapshot-read",
+            "resource": "x",
+            "dependencies": [],
+            "outcomes": [
+              "success"
+            ],
+            "effects": {
+              "complete": true,
+              "reads": [
+                "x"
+              ],
+              "writes": [],
+              "emits": []
+            }
+          },
+          {
+            "id": "c",
+            "kind": "derived-write",
+            "resource": "x",
+            "dependencies": [
+              "a"
+            ],
+            "outcomes": [
+              "success"
+            ],
+            "expression": {
+              "op": "add",
+              "left": {
+                "result": "a"
+              },
+              "right": {
+                "int": 1
+              }
+            },
+            "effects": {
+              "complete": true,
+              "reads": [
+                "x"
+              ],
+              "writes": [
+                "x"
+              ],
+              "emits": []
+            }
+          },
+          {
+            "id": "d",
+            "kind": "derived-write",
+            "resource": "x",
+            "dependencies": [
+              "b"
+            ],
+            "outcomes": [
+              "success"
+            ],
+            "expression": {
+              "op": "add",
+              "left": {
+                "result": "b"
+              },
+              "right": {
+                "int": 1
+              }
+            },
+            "effects": {
+              "complete": true,
+              "reads": [
+                "x"
+              ],
+              "writes": [
+                "x"
+              ],
+              "emits": []
+            }
+          }
+        ],
+        "observation": {
+          "mode": "selected-values",
+          "resources": [
+            "x"
+          ]
+        },
+        "caps": {
+          "paths": 20000,
+          "steps": 120000,
+          "events": 240000
+        }
+      },
+      "requestHash": "791c43fc4118e3f055b71dbc16e42748195cd3500847502326b89db566e52d98",
+      "invariant": {
+        "kind": "state-below",
+        "resource": "x",
+        "value": 2
+      },
+      "h2": false
+    },
+    {
+      "id": "write-skew",
+      "request": {
+        "model": "effectful-workload-simulation-v1",
+        "initial": {
+          "state": {
+            "x": 1,
+            "y": 1
+          },
+          "versions": {
+            "x": 0,
+            "y": 0
+          },
+          "aliases": {}
+        },
+        "operations": [
+          {
+            "id": "a",
+            "kind": "snapshot-read",
+            "resource": "x",
+            "dependencies": [],
+            "outcomes": [
+              "success"
+            ],
+            "effects": {
+              "complete": true,
+              "reads": [
+                "x"
+              ],
+              "writes": [],
+              "emits": []
+            }
+          },
+          {
+            "id": "b",
+            "kind": "snapshot-read",
+            "resource": "y",
+            "dependencies": [],
+            "outcomes": [
+              "success"
+            ],
+            "effects": {
+              "complete": true,
+              "reads": [
+                "y"
+              ],
+              "writes": [],
+              "emits": []
+            }
+          },
+          {
+            "id": "c",
+            "kind": "guarded-write",
+            "resource": "y",
+            "dependencies": [
+              "a"
+            ],
+            "outcomes": [
+              "success"
+            ],
+            "expression": {
+              "int": 0
+            },
+            "guard": {
+              "op": "eq",
+              "left": {
+                "result": "a"
+              },
+              "right": {
+                "int": 1
+              }
+            },
+            "effects": {
+              "complete": true,
+              "reads": [
+                "x"
+              ],
+              "writes": [
+                "y"
+              ],
+              "emits": []
+            }
+          },
+          {
+            "id": "d",
+            "kind": "guarded-write",
+            "resource": "x",
+            "dependencies": [
+              "b"
+            ],
+            "outcomes": [
+              "success"
+            ],
+            "expression": {
+              "int": 0
+            },
+            "guard": {
+              "op": "eq",
+              "left": {
+                "result": "b"
+              },
+              "right": {
+                "int": 1
+              }
+            },
+            "effects": {
+              "complete": true,
+              "reads": [
+                "y"
+              ],
+              "writes": [
+                "x"
+              ],
+              "emits": []
+            }
+          }
+        ],
+        "observation": {
+          "mode": "selected-values",
+          "resources": [
+            "x",
+            "y"
+          ]
+        },
+        "caps": {
+          "paths": 20000,
+          "steps": 120000,
+          "events": 240000
+        }
+      },
+      "requestHash": "ad5aa2834e44d548e3f55505262cb3e1f01caa70fad9975a235f312f53e7dc83",
+      "invariant": {
+        "kind": "sum-below",
+        "resources": [
+          "x",
+          "y"
+        ],
+        "value": 1
+      },
+      "h2": false
+    },
+    {
+      "id": "configuration-stale-read",
+      "request": {
+        "model": "effectful-workload-simulation-v1",
+        "initial": {
+          "state": {
+            "config": 1,
+            "output": 0
+          },
+          "versions": {
+            "config": 0,
+            "output": 0
+          },
+          "aliases": {}
+        },
+        "operations": [
+          {
+            "id": "a",
+            "kind": "config-read",
+            "resource": "config",
+            "dependencies": [],
+            "outcomes": [
+              "success"
+            ],
+            "effects": {
+              "complete": true,
+              "reads": [
+                "config"
+              ],
+              "writes": [],
+              "emits": []
+            }
+          },
+          {
+            "id": "b",
+            "kind": "literal-write",
+            "resource": "config",
+            "dependencies": [],
+            "outcomes": [
+              "success"
+            ],
+            "value": 2,
+            "effects": {
+              "complete": true,
+              "reads": [],
+              "writes": [
+                "config"
+              ],
+              "emits": []
+            }
+          },
+          {
+            "id": "c",
+            "kind": "derived-write",
+            "resource": "output",
+            "dependencies": [
+              "a"
+            ],
+            "outcomes": [
+              "success"
+            ],
+            "expression": {
+              "result": "a"
+            },
+            "effects": {
+              "complete": true,
+              "reads": [
+                "config"
+              ],
+              "writes": [
+                "output"
+              ],
+              "emits": []
+            }
+          }
+        ],
+        "observation": {
+          "mode": "selected-values",
+          "resources": [
+            "config",
+            "output"
+          ]
+        },
+        "caps": {
+          "paths": 20000,
+          "steps": 120000,
+          "events": 240000
+        }
+      },
+      "requestHash": "368e9881cfa8d62278c7af7077e7b343762770e5a9604b65953f803ce29608f1",
+      "invariant": {
+        "kind": "state-pair",
+        "left": "config",
+        "leftValue": 2,
+        "right": "output",
+        "rightValue": 1
+      },
+      "h2": false
+    },
+    {
+      "id": "duplicate-events",
+      "request": {
+        "model": "effectful-workload-simulation-v1",
+        "initial": {
+          "state": {
+            "x": 0
+          },
+          "versions": {
+            "x": 0
+          },
+          "aliases": {}
+        },
+        "operations": [
+          {
+            "id": "a",
+            "kind": "external-action",
+            "resource": "x",
+            "dependencies": [],
+            "outcomes": [
+              "success"
+            ],
+            "event": "send",
+            "effects": {
+              "complete": true,
+              "reads": [
+                "x"
+              ],
+              "writes": [],
+              "emits": [
+                "x"
+              ]
+            }
+          },
+          {
+            "id": "b",
+            "kind": "external-action",
+            "resource": "x",
+            "dependencies": [],
+            "outcomes": [
+              "success"
+            ],
+            "event": "send",
+            "effects": {
+              "complete": true,
+              "reads": [
+                "x"
+              ],
+              "writes": [],
+              "emits": [
+                "x"
+              ]
+            }
+          }
+        ],
+        "observation": {
+          "mode": "selected-values",
+          "resources": [
+            "x"
+          ]
+        },
+        "caps": {
+          "paths": 20000,
+          "steps": 120000,
+          "events": 240000
+        }
+      },
+      "requestHash": "a0ef165c9d47fa127d71fc7f982063a430bed86ae22b31851212c9fd8fdaed11",
+      "invariant": {
+        "kind": "event-count",
+        "count": 2,
+        "duplicate": true
+      },
+      "h2": false
+    },
+    {
+      "id": "idempotent-events",
+      "request": {
+        "model": "effectful-workload-simulation-v1",
+        "initial": {
+          "state": {
+            "x": 0
+          },
+          "versions": {
+            "x": 0
+          },
+          "aliases": {}
+        },
+        "operations": [
+          {
+            "id": "a",
+            "kind": "external-action",
+            "resource": "x",
+            "dependencies": [],
+            "outcomes": [
+              "success"
+            ],
+            "event": "send",
+            "idempotencyKey": "retry",
+            "effects": {
+              "complete": true,
+              "reads": [
+                "x"
+              ],
+              "writes": [],
+              "emits": [
+                "x"
+              ]
+            }
+          },
+          {
+            "id": "b",
+            "kind": "external-action",
+            "resource": "x",
+            "dependencies": [],
+            "outcomes": [
+              "success"
+            ],
+            "event": "send",
+            "idempotencyKey": "retry",
+            "effects": {
+              "complete": true,
+              "reads": [
+                "x"
+              ],
+              "writes": [],
+              "emits": [
+                "x"
+              ]
+            }
+          }
+        ],
+        "observation": {
+          "mode": "selected-values",
+          "resources": [
+            "x"
+          ]
+        },
+        "caps": {
+          "paths": 20000,
+          "steps": 120000,
+          "events": 240000
+        }
+      },
+      "requestHash": "13bc4589440c82351f42526d1b24c64ba3a0fbd2d00c87f9bdefd197fdd6bf7e",
+      "invariant": {
+        "kind": "event-count",
+        "count": 1,
+        "duplicate": false
+      },
+      "h2": false
+    },
+    {
+      "id": "alias-hidden-effects",
+      "request": {
+        "model": "effectful-workload-simulation-v1",
+        "initial": {
+          "state": {
+            "x": 0
+          },
+          "versions": {
+            "x": 0
+          },
+          "aliases": {
+            "alias": "x"
+          }
+        },
+        "operations": [
+          {
+            "id": "a",
+            "kind": "add-constant",
+            "resource": "alias",
+            "dependencies": [],
+            "outcomes": [
+              "success"
+            ],
+            "amount": 1,
+            "effects": {
+              "complete": true,
+              "reads": [
+                "alias"
+              ],
+              "writes": [
+                "alias"
+              ],
+              "emits": []
+            }
+          },
+          {
+            "id": "b",
+            "kind": "add-constant",
+            "resource": "x",
+            "dependencies": [],
+            "outcomes": [
+              "success"
+            ],
+            "amount": 2
+          }
+        ],
+        "observation": {
+          "mode": "selected-values",
+          "resources": [
+            "x"
+          ]
+        },
+        "caps": {
+          "paths": 20000,
+          "steps": 120000,
+          "events": 240000
+        }
+      },
+      "requestHash": "f1c888bfdc169facfa6c84031669e5604c6cc01c9add988331269d490ebe8159",
+      "invariant": {
+        "kind": "unknown-shared-resource",
+        "resource": "x"
+      },
+      "h2": false
+    },
+    {
+      "id": "disjoint-positive",
+      "request": {
+        "model": "effectful-workload-simulation-v1",
+        "initial": {
+          "state": {
+            "x": 0,
+            "y": 0
+          },
+          "versions": {
+            "x": 0,
+            "y": 0
+          },
+          "aliases": {}
+        },
+        "operations": [
+          {
+            "id": "a",
+            "kind": "literal-write",
+            "resource": "x",
+            "dependencies": [],
+            "outcomes": [
+              "success"
+            ],
+            "value": 1,
+            "effects": {
+              "complete": true,
+              "reads": [],
+              "writes": [
+                "x"
+              ],
+              "emits": []
+            }
+          },
+          {
+            "id": "b",
+            "kind": "literal-write",
+            "resource": "y",
+            "dependencies": [],
+            "outcomes": [
+              "success"
+            ],
+            "value": 2,
+            "effects": {
+              "complete": true,
+              "reads": [],
+              "writes": [
+                "y"
+              ],
+              "emits": []
+            }
+          }
+        ],
+        "observation": {
+          "mode": "selected-values",
+          "resources": [
+            "x",
+            "y"
+          ]
+        },
+        "caps": {
+          "paths": 20000,
+          "steps": 120000,
+          "events": 240000
+        }
+      },
+      "requestHash": "ebcb698a6770c26ff7a7bd722745155956787336dcdc3739cedd2965ecae467a",
+      "invariant": {
+        "kind": "all-state",
+        "values": {
+          "x": 1,
+          "y": 2
+        }
+      },
+      "h2": false
+    },
+    {
+      "id": "h2-shared-additions",
+      "request": {
+        "model": "effectful-workload-simulation-v1",
+        "initial": {
+          "state": {
+            "x": 0
+          },
+          "versions": {
+            "x": 0
+          },
+          "aliases": {}
+        },
+        "operations": [
+          {
+            "id": "a",
+            "kind": "add-constant",
+            "resource": "x",
+            "dependencies": [],
+            "outcomes": [
+              "success"
+            ],
+            "amount": 1,
+            "effects": {
+              "complete": true,
+              "reads": [
+                "x"
+              ],
+              "writes": [
+                "x"
+              ],
+              "emits": []
+            }
+          },
+          {
+            "id": "b",
+            "kind": "add-constant",
+            "resource": "x",
+            "dependencies": [],
+            "outcomes": [
+              "success"
+            ],
+            "amount": 2,
+            "effects": {
+              "complete": true,
+              "reads": [
+                "x"
+              ],
+              "writes": [
+                "x"
+              ],
+              "emits": []
+            }
+          }
+        ],
+        "observation": {
+          "mode": "selected-values",
+          "resources": [
+            "x"
+          ]
+        },
+        "caps": {
+          "paths": 20000,
+          "steps": 120000,
+          "events": 240000
+        }
+      },
+      "requestHash": "43442c027584e3961927bfc6669cdea5ee7b12a2df98abfd1eb38af3c6cf4f35",
+      "invariant": {
+        "kind": "terminal-candidate",
+        "expected": true,
+        "returnedValuesDiffer": true
+      },
+      "h2": true
+    },
+    {
+      "id": "h2-disjoint-additions",
+      "request": {
+        "model": "effectful-workload-simulation-v1",
+        "initial": {
+          "state": {
+            "x": 0,
+            "y": 0
+          },
+          "versions": {
+            "x": 0,
+            "y": 0
+          },
+          "aliases": {}
+        },
+        "operations": [
+          {
+            "id": "a",
+            "kind": "add-constant",
+            "resource": "x",
+            "dependencies": [],
+            "outcomes": [
+              "success"
+            ],
+            "amount": 1,
+            "effects": {
+              "complete": true,
+              "reads": [
+                "x"
+              ],
+              "writes": [
+                "x"
+              ],
+              "emits": []
+            }
+          },
+          {
+            "id": "b",
+            "kind": "add-constant",
+            "resource": "y",
+            "dependencies": [],
+            "outcomes": [
+              "success"
+            ],
+            "amount": 2,
+            "effects": {
+              "complete": true,
+              "reads": [
+                "y"
+              ],
+              "writes": [
+                "y"
+              ],
+              "emits": []
+            }
+          }
+        ],
+        "observation": {
+          "mode": "selected-values",
+          "resources": [
+            "x",
+            "y"
+          ]
+        },
+        "caps": {
+          "paths": 20000,
+          "steps": 120000,
+          "events": 240000
+        }
+      },
+      "requestHash": "cb601fe963779c1557fba26c8becabb939ab08b7006d24680e5a1e0cbbbdfe4f",
+      "invariant": {
+        "kind": "terminal-candidate",
+        "expected": true,
+        "returnedValuesDiffer": false
+      },
+      "h2": true
+    },
+    {
+      "id": "h2-dependent-additions",
+      "request": {
+        "model": "effectful-workload-simulation-v1",
+        "initial": {
+          "state": {
+            "x": 2
+          },
+          "versions": {
+            "x": 0
+          },
+          "aliases": {}
+        },
+        "operations": [
+          {
+            "id": "a",
+            "kind": "add-constant",
+            "resource": "x",
+            "dependencies": [],
+            "outcomes": [
+              "success"
+            ],
+            "amount": -1,
+            "effects": {
+              "complete": true,
+              "reads": [
+                "x"
+              ],
+              "writes": [
+                "x"
+              ],
+              "emits": []
+            }
+          },
+          {
+            "id": "b",
+            "kind": "add-constant",
+            "resource": "x",
+            "dependencies": [
+              "a"
+            ],
+            "outcomes": [
+              "success"
+            ],
+            "amount": 3,
+            "effects": {
+              "complete": true,
+              "reads": [
+                "x"
+              ],
+              "writes": [
+                "x"
+              ],
+              "emits": []
+            }
+          },
+          {
+            "id": "c",
+            "kind": "add-constant",
+            "resource": "x",
+            "dependencies": [],
+            "outcomes": [
+              "success"
+            ],
+            "amount": 2,
+            "effects": {
+              "complete": true,
+              "reads": [
+                "x"
+              ],
+              "writes": [
+                "x"
+              ],
+              "emits": []
+            }
+          }
+        ],
+        "observation": {
+          "mode": "selected-values",
+          "resources": [
+            "x"
+          ]
+        },
+        "caps": {
+          "paths": 20000,
+          "steps": 120000,
+          "events": 240000
+        }
+      },
+      "requestHash": "2b53c27ec0f9ee7ece35345063a9c1f13e98314fc5c3e89ff45a64f624019aa2",
+      "invariant": {
+        "kind": "terminal-candidate",
+        "expected": true,
+        "returnedValuesDiffer": true
+      },
+      "h2": true
+    },
+    {
+      "id": "h2-four-additions",
+      "request": {
+        "model": "effectful-workload-simulation-v1",
+        "initial": {
+          "state": {
+            "x": 3
+          },
+          "versions": {
+            "x": 0
+          },
+          "aliases": {}
+        },
+        "operations": [
+          {
+            "id": "a",
+            "kind": "add-constant",
+            "resource": "x",
+            "dependencies": [],
+            "outcomes": [
+              "success"
+            ],
+            "amount": -1,
+            "effects": {
+              "complete": true,
+              "reads": [
+                "x"
+              ],
+              "writes": [
+                "x"
+              ],
+              "emits": []
+            }
+          },
+          {
+            "id": "b",
+            "kind": "add-constant",
+            "resource": "x",
+            "dependencies": [],
+            "outcomes": [
+              "success"
+            ],
+            "amount": 2,
+            "effects": {
+              "complete": true,
+              "reads": [
+                "x"
+              ],
+              "writes": [
+                "x"
+              ],
+              "emits": []
+            }
+          },
+          {
+            "id": "c",
+            "kind": "add-constant",
+            "resource": "x",
+            "dependencies": [],
+            "outcomes": [
+              "success"
+            ],
+            "amount": 1,
+            "effects": {
+              "complete": true,
+              "reads": [
+                "x"
+              ],
+              "writes": [
+                "x"
+              ],
+              "emits": []
+            }
+          },
+          {
+            "id": "d",
+            "kind": "add-constant",
+            "resource": "x",
+            "dependencies": [],
+            "outcomes": [
+              "success"
+            ],
+            "amount": -2,
+            "effects": {
+              "complete": true,
+              "reads": [
+                "x"
+              ],
+              "writes": [
+                "x"
+              ],
+              "emits": []
+            }
+          }
+        ],
+        "observation": {
+          "mode": "selected-values",
+          "resources": [
+            "x"
+          ]
+        },
+        "caps": {
+          "paths": 20000,
+          "steps": 120000,
+          "events": 240000
+        }
+      },
+      "requestHash": "9b64679f76d0723b968b5801ad4085ea1c65481098f77b1dde2598ede4224f88",
+      "invariant": {
+        "kind": "terminal-candidate",
+        "expected": true,
+        "returnedValuesDiffer": true
+      },
+      "h2": true
+    },
+    {
+      "id": "h2-overflow-exclusion",
+      "request": {
+        "model": "effectful-workload-simulation-v1",
+        "initial": {
+          "state": {
+            "x": 9223372036854775806
+          },
+          "versions": {
+            "x": 0
+          },
+          "aliases": {}
+        },
+        "operations": [
+          {
+            "id": "a",
+            "kind": "add-constant",
+            "resource": "x",
+            "dependencies": [],
+            "outcomes": [
+              "success"
+            ],
+            "amount": 1,
+            "effects": {
+              "complete": true,
+              "reads": [
+                "x"
+              ],
+              "writes": [
+                "x"
+              ],
+              "emits": []
+            }
+          },
+          {
+            "id": "b",
+            "kind": "add-constant",
+            "resource": "x",
+            "dependencies": [],
+            "outcomes": [
+              "success"
+            ],
+            "amount": 1,
+            "effects": {
+              "complete": true,
+              "reads": [
+                "x"
+              ],
+              "writes": [
+                "x"
+              ],
+              "emits": []
+            }
+          }
+        ],
+        "observation": {
+          "mode": "selected-values",
+          "resources": [
+            "x"
+          ]
+        },
+        "caps": {
+          "paths": 20000,
+          "steps": 120000,
+          "events": 240000
+        }
+      },
+      "requestHash": "719443d8db36a6c2cd48096494dfa55c20b8c96a8b8cba203a42d18d5f446185",
+      "invariant": {
+        "kind": "terminal-candidate",
+        "expected": false,
+        "reason": "non-success-path"
+      },
+      "h2": true
+    },
+    {
+      "id": "h2-literal-write-exclusion",
+      "request": {
+        "model": "effectful-workload-simulation-v1",
+        "initial": {
+          "state": {
+            "x": 0
+          },
+          "versions": {
+            "x": 0
+          },
+          "aliases": {}
+        },
+        "operations": [
+          {
+            "id": "a",
+            "kind": "literal-write",
+            "resource": "x",
+            "dependencies": [],
+            "outcomes": [
+              "success"
+            ],
+            "value": 1,
+            "effects": {
+              "complete": true,
+              "reads": [],
+              "writes": [
+                "x"
+              ],
+              "emits": []
+            }
+          },
+          {
+            "id": "b",
+            "kind": "literal-write",
+            "resource": "x",
+            "dependencies": [],
+            "outcomes": [
+              "success"
+            ],
+            "value": 2,
+            "effects": {
+              "complete": true,
+              "reads": [],
+              "writes": [
+                "x"
+              ],
+              "emits": []
+            }
+          }
+        ],
+        "observation": {
+          "mode": "selected-values",
+          "resources": [
+            "x"
+          ]
+        },
+        "caps": {
+          "paths": 20000,
+          "steps": 120000,
+          "events": 240000
+        }
+      },
+      "requestHash": "1039eddd9def1941c012bff43a02f3fd58c5e0239a2298edcbe2dc2a642560ca",
+      "invariant": {
+        "kind": "terminal-candidate",
+        "expected": false,
+        "reason": "outside-additive-class"
+      },
+      "h2": true
+    },
+    {
+      "id": "h2-version-exclusion",
+      "request": {
+        "model": "effectful-workload-simulation-v1",
+        "initial": {
+          "state": {
+            "x": 0
+          },
+          "versions": {
+            "x": 0
+          },
+          "aliases": {}
+        },
+        "operations": [
+          {
+            "id": "a",
+            "kind": "add-constant",
+            "resource": "x",
+            "dependencies": [],
+            "outcomes": [
+              "success"
+            ],
+            "amount": 1,
+            "requiredVersion": 0,
+            "effects": {
+              "complete": true,
+              "reads": [
+                "x"
+              ],
+              "writes": [
+                "x"
+              ],
+              "emits": []
+            }
+          },
+          {
+            "id": "b",
+            "kind": "add-constant",
+            "resource": "x",
+            "dependencies": [],
+            "outcomes": [
+              "success"
+            ],
+            "amount": 2,
+            "requiredVersion": 0,
+            "effects": {
+              "complete": true,
+              "reads": [
+                "x"
+              ],
+              "writes": [
+                "x"
+              ],
+              "emits": []
+            }
+          }
+        ],
+        "observation": {
+          "mode": "selected-values",
+          "resources": [
+            "x"
+          ]
+        },
+        "caps": {
+          "paths": 20000,
+          "steps": 120000,
+          "events": 240000
+        }
+      },
+      "requestHash": "a77eb8c179a57b5c5da1c4435f283e71354be2d2824622f34e10ab17cf505377",
+      "invariant": {
+        "kind": "terminal-candidate",
+        "expected": false,
+        "reason": "version-precondition"
+      },
+      "h2": true
+    },
+    {
+      "id": "h2-guard-exclusion",
+      "request": {
+        "model": "effectful-workload-simulation-v1",
+        "initial": {
+          "state": {
+            "x": 0
+          },
+          "versions": {
+            "x": 0
+          },
+          "aliases": {}
+        },
+        "operations": [
+          {
+            "id": "a",
+            "kind": "add-constant",
+            "resource": "x",
+            "dependencies": [],
+            "outcomes": [
+              "success"
+            ],
+            "amount": 1,
+            "effects": {
+              "complete": true,
+              "reads": [
+                "x"
+              ],
+              "writes": [
+                "x"
+              ],
+              "emits": []
+            }
+          },
+          {
+            "id": "b",
+            "kind": "guarded-write",
+            "resource": "x",
+            "dependencies": [],
+            "outcomes": [
+              "success"
+            ],
+            "expression": {
+              "int": 2
+            },
+            "guard": {
+              "op": "eq",
+              "left": {
+                "int": 1
+              },
+              "right": {
+                "int": 1
+              }
+            },
+            "effects": {
+              "complete": true,
+              "reads": [],
+              "writes": [
+                "x"
+              ],
+              "emits": []
+            }
+          }
+        ],
+        "observation": {
+          "mode": "selected-values",
+          "resources": [
+            "x"
+          ]
+        },
+        "caps": {
+          "paths": 20000,
+          "steps": 120000,
+          "events": 240000
+        }
+      },
+      "requestHash": "64292f3b75dba5bc81106eaf5eb5ebebf01e1df14172ea50e293d6849dc09cce",
+      "invariant": {
+        "kind": "terminal-candidate",
+        "expected": false,
+        "reason": "outside-additive-class"
+      },
+      "h2": true
+    },
+    {
+      "id": "h2-unknown-exclusion",
+      "request": {
+        "model": "effectful-workload-simulation-v1",
+        "initial": {
+          "state": {
+            "x": 0
+          },
+          "versions": {
+            "x": 0
+          },
+          "aliases": {}
+        },
+        "operations": [
+          {
+            "id": "a",
+            "kind": "add-constant",
+            "resource": "x",
+            "dependencies": [],
+            "outcomes": [
+              "success"
+            ],
+            "amount": 1
+          },
+          {
+            "id": "b",
+            "kind": "add-constant",
+            "resource": "x",
+            "dependencies": [],
+            "outcomes": [
+              "success"
+            ],
+            "amount": 2,
+            "effects": {
+              "complete": true,
+              "reads": [
+                "x"
+              ],
+              "writes": [
+                "x"
+              ],
+              "emits": []
+            }
+          }
+        ],
+        "observation": {
+          "mode": "selected-values",
+          "resources": [
+            "x"
+          ]
+        },
+        "caps": {
+          "paths": 20000,
+          "steps": 120000,
+          "events": 240000
+        }
+      },
+      "requestHash": "2d478d588a1bd0f506a5f6263c94cecd388aedb41c2d4521c301fb14e926ad3e",
+      "invariant": {
+        "kind": "terminal-candidate",
+        "expected": false,
+        "reason": "unknown-effects"
+      },
+      "h2": true
+    },
+    {
+      "id": "h2-event-exclusion",
+      "request": {
+        "model": "effectful-workload-simulation-v1",
+        "initial": {
+          "state": {
+            "x": 0
+          },
+          "versions": {
+            "x": 0
+          },
+          "aliases": {}
+        },
+        "operations": [
+          {
+            "id": "a",
+            "kind": "add-constant",
+            "resource": "x",
+            "dependencies": [],
+            "outcomes": [
+              "success"
+            ],
+            "amount": 1,
+            "effects": {
+              "complete": true,
+              "reads": [
+                "x"
+              ],
+              "writes": [
+                "x"
+              ],
+              "emits": []
+            }
+          },
+          {
+            "id": "b",
+            "kind": "add-constant",
+            "resource": "x",
+            "dependencies": [],
+            "outcomes": [
+              "success"
+            ],
+            "amount": 2,
+            "effects": {
+              "complete": true,
+              "reads": [
+                "x"
+              ],
+              "writes": [
+                "x"
+              ],
+              "emits": []
+            }
+          },
+          {
+            "id": "c",
+            "kind": "external-action",
+            "resource": "x",
+            "dependencies": [],
+            "outcomes": [
+              "success"
+            ],
+            "event": "observe",
+            "effects": {
+              "complete": true,
+              "reads": [
+                "x"
+              ],
+              "writes": [],
+              "emits": [
+                "x"
+              ]
+            }
+          }
+        ],
+        "observation": {
+          "mode": "selected-values",
+          "resources": [
+            "x"
+          ]
+        },
+        "caps": {
+          "paths": 20000,
+          "steps": 120000,
+          "events": 240000
+        }
+      },
+      "requestHash": "b25d7c9f4b8c80c6c7e664e8eec849bf9169bef41b59291159c88e52c2121e80",
+      "invariant": {
+        "kind": "terminal-candidate",
+        "expected": false,
+        "reason": "outside-additive-class"
+      },
+      "h2": true
+    }
+  ]
+}
