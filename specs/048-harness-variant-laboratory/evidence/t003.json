@@ -1,0 +1,59 @@
+{
+  "candidateBinding": "Current source/input hashes; no frozen implementation commit claimed",
+  "disposition": "Completed for the adopted offline foundation task; broader feature gates pending",
+  "executedChecks": [
+    {
+      "command": ".venv-speckit/bin/python -m unittest discover -s tests -p \"test_harness*.py\" -v",
+      "crossModuleTests": 3,
+      "exitCode": 0,
+      "moduleTests": 28,
+      "scope": "Final post-alias correction focused run; real macOS filesystem tests executed without skips.",
+      "testsRun": 62
+    }
+  ],
+  "independentReview": {
+    "disposition": "No remaining actionable blockers after independent re-review of both corrected P1 findings",
+    "path": "specs/048-harness-variant-laboratory/evidence/offline-foundations-review.json",
+    "reviewerModel": "gpt-6-luna",
+    "sha256": "60244678fddf329f254b472c2496542ef4d2ab395671517d9b08adac7d9b2e8a"
+  },
+  "inputs": {
+    "LICENSES/Harness2-Apache-2.0.txt": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
+    "NOTICE": "3ef822bdcd9c7ff652fe9f0a14d36b6ddff2388315c8566e4a691bd04c9819a2",
+    "agent_braid/harness_manifest.py": "373f1dd8e888c88fde6a47399c429c9b56ab040eea94811f22de796bc6b5d5a1",
+    "agent_braid/harness_surface.py": "f2256d063eb6cf4f853558715a5487b61a31ca16e5919450fe132907d6c96304",
+    "docs/adr/0027-braid-harness-offline-foundations.md": "076e524bb4b31a0075ff72c605a438edc9dcb70aa09dec9583ef21db5362b046",
+    "docs/development/THIRD_PARTY.md": "b12347059e3e2cf4612b5b9f9a5e39e4eefb550e747bf480ad798ed5e8a4d294",
+    "specs/048-harness-variant-laboratory/contracts/offline-foundations.md": "580d844af7236818c1a006d79ea482677c0df58c48e4f55391a69598184001c9",
+    "tests/test_harness_foundations.py": "8e97f53196047e8ea84a1fd7b358e5690a55c87b6a327667e93cdf3266b66926",
+    "tests/test_harness_manifest.py": "b1d844c799ec6a79a4f704f0223d19883e45894d781f5564cd537724b8b268ef",
+    "tests/test_harness_surface.py": "e39656ed5c66dc30ab0d5e37cafb163031cea2106b4b848ac99f52676acba9cf"
+  },
+  "limits": "Owned temporary files only. Instruction injection remains inert data because nothing executes; not a qualified sandbox or a host/model prompt-resistance claim. Source commit/root observations trusted; same-UID compromise and power-loss excluded.",
+  "method": "Actual offline unittest execution under isolated Python 3.13.11, venv-first PATH",
+  "outcome": "Bounded real-filesystem import/protected-layer and conservative cleanup controls passed.",
+  "outputs": {
+    "specs/048-harness-variant-laboratory/evidence/offline-foundations-tests.log": "f9b85f99d8e04f73bce75bcd423d2d31c75ef466de851b15fe660ceb6c2ae08b"
+  },
+  "pending": [
+    "T005+ and complete feature acceptance; all native/human/scientific/economic gates"
+  ],
+  "repositoryValidation": {
+    "path": "specs/048-harness-variant-laboratory/evidence/offline-foundations-validation.json",
+    "scope": "Stable local PR:14commands,2173tests/24skips; focused62/0skips; no native/whole-feature acceptance",
+    "sha256": "172fd11a10f6028672a7ae993be39d536ddc1e714522a519e07ad99490983f32"
+  },
+  "sourceBaseline": "a6329c828011d1468fed3dfa4e98f5a8531167e2",
+  "task": "SPEC-048/T003",
+  "upstreamAdaptation": {
+    "changes": "Positive selected source/context reads; exact bounded base/candidate inventory; descriptor-relative no-follow traversal, guidance-only protected surface, strict text/hash/type/mode checks, private exclusive staging, atomic accepted-tree publication and conservative cleanup; no compile/dispatch.",
+    "commit": "1cfe254e8d25b15f37048c3730134686abe60335",
+    "copyright": "2026 Google LLC",
+    "license": "Apache-2.0",
+    "portions": "SurfaceSpec lines41\u201360; normalize_rel82\u201389; read_tree127\u2013148; write_tree156\u2013185; validate336\u2013390",
+    "repository": "google-research/harness2",
+    "selectedInputs": {
+      "harness2/core/tree.py": "c2a15690b1b6b02156e922c5e0b1a215c5065d7bea5a3bae2e56b47309197552"
+    }
+  }
+}
