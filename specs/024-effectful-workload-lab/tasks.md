@@ -1,30 +1,38 @@
 # SPEC-024 tasks
 
-All tasks are pending implementation. Checks are planned, not executed. Negative
-or inconclusive results can finish the protocol; real adapters remain excluded.
+T002–T004 are implemented and locally verified (focused unittest and CLI
+explore/verify on a frozen fixture request); independent code review of the
+SPEC-024 implementation is still pending. All other tasks remain open and their
+checks remain planned. Negative or inconclusive results can finish the
+protocol; real adapters remain excluded.
 
 - [ ] T001 (REQ-001/SC-001, REQ-001/SC-002): Define the typed simulation contract and architecture decision
   - Dependencies: none; contract/ADR review before integration.
+  - Status: open. The founder adopted the bounded architecture on 2026-10-21 (feature-local `architecture-decision-20261021.md`); the canonical `docs/adr/` entry and its number await an owner decision.
   - Targets: new dedicated `docs/adr/` ADR, `research/workload_lab/SEMANTICS.md`, new experimental request/report schemas; preserve existing schemas.
   - Commands: planned `python3 scripts/validate_contracts.py`; review grammar, aliases, outcomes and zero external execution.
   - Evidence: reviewed premise/field inventory, positive/negative schema corpus, versioning note, hashes and explicit approval status.
-- [ ] T002 (REQ-001/SC-001, REQ-001/SC-002): Implement private configurations and closed transitions
+- [x] T002 (REQ-001/SC-001, REQ-001/SC-002): Implement private configurations and closed transitions
   - Dependencies: T001.
   - Targets: `research/workload_lab/model.py`, `tests/test_effectful_workload_lab.py`.
   - Commands: planned focused tests named in quickstart SC-001/SC-002.
   - Evidence: fresh-state, alias, results/versions/step traces, malformed inputs; source review of forbidden execution surfaces.
-- [ ] T003 (REQ-002/SC-003): Implement finite branch exploration and deterministic caps
+  - Status: implemented; `tests.test_effectful_workload_model` and `tests.test_effectful_workload_contracts` pass; local scan of `research/workload_lab/` finds no process, network, dynamic-import or eval surfaces. Independent source review pending.
+- [x] T003 (REQ-002/SC-003): Implement finite branch exploration and deterministic caps
   - Dependencies: T002.
   - Targets: `research/workload_lab/explore.py`, `research/workload_lab/__main__.py`, exploration tests.
   - Commands: planned `WorkloadExplorationTests.test_complete_and_truncated_domains` and CLI exploration.
   - Evidence: complete counts, cap-exhaustion artifacts, honest unvisited upper bounds.
-- [ ] T004 (REQ-003/SC-004, REQ-005/SC-006): Bind observations and replay retained partial effects
+  - Status: implemented; `WorkloadExplorationTests` (including `test_complete_and_truncated_domains`) pass; `python3 -m research.workload_lab explore` on a single frozen fixture request writes an exclusive report. Independent review pending.
+- [x] T004 (REQ-003/SC-004, REQ-005/SC-006): Bind observations and replay retained partial effects
   - Dependencies: T003.
   - Targets: `research/workload_lab/observations.py`, `research/workload_lab/evidence.py`, observation/evidence tests.
   - Commands: planned SC-004/SC-006 tests and `python3 -m research.workload_lab verify <report>`.
   - Evidence: send-then-error/projection and successful matching-values/different-results-or-events controls, global terminal-projection-match labels and stronger-claim refusals, omission/tamper results, digests and no-authorization output.
+  - Status: implemented; `WorkloadObservationTests`, `WorkloadEvidenceTests` and `WorkloadCliTests` pass; `verify` regenerates the report read-only and keeps `executionAuthorization: false`. Independent review pending.
 - [ ] T005 (REQ-004/SC-005): Freeze race, idempotency and uncertainty controls
   - Dependencies: T002, T004.
+  - Status: open. Manifest/registration and `WorkloadControlsTests` exist and pass, but the planned manifest exploration command is not supported by the single-request CLI and eligibility/exclusion counts are not yet captured as evidence.
   - Targets: `examples/workload-lab/` manifest/invariants, control tests.
   - Commands: planned `WorkloadControlsTests.test_named_races_and_hidden_effects` and manifest exploration.
   - Evidence: eligibility/exclusion counts; named race witnesses, alias/hidden-effect abstentions and positives.
