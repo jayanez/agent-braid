@@ -1,0 +1,251 @@
+{
+  "adrRenumber": {
+    "path": "specs/048-harness-variant-laboratory/evidence/adr-0027-renumber.json",
+    "scope": "Owner-directed ADR number change 0026->0027 only. inputs were rebound from current bytes; focusedFinal, historicalFixtureRegression, intermediateQuick and stablePR record executions on the pre-renumber candidate and are retained unchanged as history. Post-renumber local validation is recorded in the renumber record."
+  },
+  "candidateBinding": "Current implementation source/input hashes; no frozen implementation commit or hosted CI claimed",
+  "evidenceOnlyPackaging": {
+    "afterPassingPR": [
+      "specs/048-harness-variant-laboratory/assurance.json",
+      "specs/048-harness-variant-laboratory/evidence/offline-foundations-validation.json",
+      "specs/048-harness-variant-laboratory/evidence/t002.json",
+      "specs/048-harness-variant-laboratory/evidence/t003.json",
+      "specs/048-harness-variant-laboratory/evidence/t004.json",
+      "specs/048-harness-variant-laboratory/kickoff-tracks.md",
+      "specs/048-harness-variant-laboratory/offline-foundations-status.md",
+      "specs/048-harness-variant-laboratory/tasks.md"
+    ],
+    "validation": "Recheck current record/input/output/reference hashes and whitespace; do not repeat unchanged implementation tests"
+  },
+  "executionAuthorization": false,
+  "focusedFinal": {
+    "command": [
+      "/Users/juanyanez/Repos/Personal/agent-braid-harness-kickoff-20261021/.venv-speckit/bin/python",
+      "-m",
+      "unittest",
+      "discover",
+      "-s",
+      "tests",
+      "-p",
+      "test_harness*.py",
+      "-v"
+    ],
+    "exitCode": 0,
+    "logSha256": "f9b85f99d8e04f73bce75bcd423d2d31c75ef466de851b15fe660ceb6c2ae08b",
+    "run": 62,
+    "scope": "11 manifest,28 surface,20 admission,3 composition; actual macOS case-alias regressions executed without skips",
+    "skipped": 0
+  },
+  "historicalFixtureRegression": {
+    "command": "PATH=<workspace>/.venv-speckit/bin:$PATH PYTHONPATH=<workspace>/tests:<workspace> .venv-speckit/bin/python -m unittest test_public_draft_history.PublicDraftHistoryTests.test_harness_squash_preserves_all_three_pending_records_without_approval -v",
+    "exitCode": 0,
+    "independentReview": "Luna confirmed exact tagged bytes restored only in disposable fixture; no validator/pin or strict assertion weakened",
+    "run": 1,
+    "seconds": 12.744
+  },
+  "independentReview": {
+    "path": "specs/048-harness-variant-laboratory/evidence/offline-foundations-review.json",
+    "reviewerModel": "gpt-6-luna",
+    "sha256": "60244678fddf329f254b472c2496542ef4d2ab395671517d9b08adac7d9b2e8a"
+  },
+  "inputs": {
+    "LICENSES/Harness2-Apache-2.0.txt": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
+    "NOTICE": "3ef822bdcd9c7ff652fe9f0a14d36b6ddff2388315c8566e4a691bd04c9819a2",
+    "agent_braid/harness_admission.py": "49197a2518d8df9b66658ec6c279d079bc1cf915a9c3570673f524dca60b5901",
+    "agent_braid/harness_manifest.py": "373f1dd8e888c88fde6a47399c429c9b56ab040eea94811f22de796bc6b5d5a1",
+    "agent_braid/harness_surface.py": "f2256d063eb6cf4f853558715a5487b61a31ca16e5919450fe132907d6c96304",
+    "docs/adr/0027-braid-harness-offline-foundations.md": "076e524bb4b31a0075ff72c605a438edc9dcb70aa09dec9583ef21db5362b046",
+    "docs/development/THIRD_PARTY.md": "b12347059e3e2cf4612b5b9f9a5e39e4eefb550e747bf480ad798ed5e8a4d294",
+    "specs/047-local-technical-telemetry/assurance.json": "a531249eb7825733e158de2c5d4e5aa817620a872a68b9837c8071bcef4e54ee",
+    "specs/048-harness-variant-laboratory/authority-impact-review.json": "ba90bb330a406c160e67eddaa8a7c72ecfd3af614bfb15958cd2c32ca504141a",
+    "specs/048-harness-variant-laboratory/contracts/offline-foundations.md": "580d844af7236818c1a006d79ea482677c0df58c48e4f55391a69598184001c9",
+    "specs/048-harness-variant-laboratory/evidence/offline-foundations-review.json": "60244678fddf329f254b472c2496542ef4d2ab395671517d9b08adac7d9b2e8a",
+    "specs/048-harness-variant-laboratory/evidence/offline-foundations-tests.log": "f9b85f99d8e04f73bce75bcd423d2d31c75ef466de851b15fe660ceb6c2ae08b",
+    "specs/048-harness-variant-laboratory/evidence/t001.json": "d8bf40eac3dbcc74f77b2a9bd98af28708f9a016b58a8984bb9245e3a00898b9",
+    "specs/048-harness-variant-laboratory/historical/planning-assurance-d266c85.json": "f5917a3f4ca8a42f9c18635c3daa0dadc26744aad0b3b73b11e74c238fa5e2f9",
+    "specs/048-harness-variant-laboratory/kickoff-decision.md": "1687200b64edac8444efc4c5109678fad57affe2d157156cffbbbf826197f6d2",
+    "specs/048-harness-variant-laboratory/offline-adoption.json": "f07d7b3cd95d00b0e795aeb74ceb5625a88395cb78bc449b78246f855de909db",
+    "specs/049-harness-evaluation-learning/corpus.md": "af4b6ba7381c719b7dc0a67bf3f2ebccc35f5927e43acf5bf985b5ff1415f182",
+    "specs/049-harness-evaluation-learning/source-registration.md": "e43eb2b3c3253ee0d82c69870535a18db2c56ef40748ec4493915f4e03462092",
+    "tests/test_harness_admission.py": "2bce2834d651795f2e754fa2f5acb8b8f0080f1428c9994ea033bf8cf9b93122",
+    "tests/test_harness_foundations.py": "8e97f53196047e8ea84a1fd7b358e5690a55c87b6a327667e93cdf3266b66926",
+    "tests/test_harness_manifest.py": "b1d844c799ec6a79a4f704f0223d19883e45894d781f5564cd537724b8b268ef",
+    "tests/test_harness_surface.py": "e39656ed5c66dc30ab0d5e37cafb163031cea2106b4b848ac99f52676acba9cf",
+    "tests/test_public_draft_history.py": "b50f71731ae5a9076c9595817e992390ae3f1ae0099e07a4936d59b4aaed8555"
+  },
+  "intermediateQuick": {
+    "findings": [
+      {
+        "error": "Stale evidence input: agent_braid/harness_admission.py",
+        "resolution": "Rebound current source/evidence; actual stable048 passes both validate_record and validate_portable_record. Final PR runs with no workspace edits.",
+        "scope": "Temporary fixture copied while alias correction/evidence rebinding was in progress"
+      },
+      {
+        "error": "Historical HAR squash test passed evidence_snapshot.commit=None to merge-base",
+        "resolution": "Restore exact retained-tag historical assurance bytes inside disposable fixture; production validators/pins unchanged. Targeted historical test passed:1test/12.744s. Independent Luna review accepted narrow correction."
+      }
+    ],
+    "intermediateQuick": {
+      "errors": 2,
+      "exitCode": 1,
+      "logSha256": "a9409e514e97862768955cfe4fecf03405cce6e1df6c4099b693706a49e5f714",
+      "skipped": 24,
+      "testsRun": 2168
+    },
+    "limits": "Intermediate quick is not a passing final-candidate gate. Stable PR must execute the complete gate; no native or approval result inferred."
+  },
+  "limits": "All profile results are local engineering checks, not scientific proof, native/provider/human/economic acceptance or execution authorization. Suite skips remain skips. The nonpassing intermediate quick is retained and does not substitute for the passing stable PR. All admitted native/model/child/network/retry/cash limits remain zero; developer validation is a separate scope.",
+  "operatorLocalReports": "/Users/juanyanez/.codex/reports/braid-harness-foundations-20261021",
+  "pendingGates": [
+    "T005+ including T011 context and T012 observation prerequisites",
+    "Complete feature/human product acceptance",
+    "Clean-room or frozen-commit reproduction and hosted CI",
+    "Separate Codex/Claude native qualification, issuer/source/corpus acceptance",
+    "Scientific/economic utility and promotion"
+  ],
+  "recordVersion": "braid-harness-offline-validation/v0.1",
+  "scope": "SPEC-048/T001\u2013T004 offline foundations only; local engineering completion",
+  "sourceBaseline": "a6329c828011d1468fed3dfa4e98f5a8531167e2",
+  "stablePR": {
+    "command": [
+      "/Users/juanyanez/Repos/Personal/agent-braid-harness-kickoff-20261021/.venv-speckit/bin/python",
+      "scripts/validate_change.py",
+      "--base",
+      "develop",
+      "--profile",
+      "pr"
+    ],
+    "completedCommands": [
+      {
+        "argv": [
+          "python3",
+          "scripts/validate_repository.py"
+        ],
+        "id": "repository"
+      },
+      {
+        "argv": [
+          "python3",
+          "scripts/validate_contracts.py"
+        ],
+        "id": "contracts"
+      },
+      {
+        "argv": [
+          "python3",
+          "scripts/validate_release_records.py"
+        ],
+        "id": "release-records"
+      },
+      {
+        "argv": [
+          "python3",
+          "scripts/validate_publication.py",
+          "--portable"
+        ],
+        "id": "publication"
+      },
+      {
+        "argv": [
+          "python3",
+          "scripts/validate_research_radar.py",
+          "--milestone",
+          "M0.5"
+        ],
+        "id": "research-radar"
+      },
+      {
+        "argv": [
+          "python3",
+          "scripts/validate_adoption_tracks.py"
+        ],
+        "id": "adoption-tracks"
+      },
+      {
+        "argv": [
+          "python3",
+          "scripts/market_sizing.py",
+          "--check"
+        ],
+        "id": "market-model"
+      },
+      {
+        "argv": [
+          "python3",
+          "-m",
+          "agent_braid",
+          "--help"
+        ],
+        "id": "cli-smoke"
+      },
+      {
+        "argv": [
+          "python3",
+          "-m",
+          "unittest",
+          "discover",
+          "-s",
+          "tests",
+          "-v"
+        ],
+        "id": "full-tests"
+      },
+      {
+        "argv": [
+          "python3",
+          "-m",
+          "research.lab.controls"
+        ],
+        "id": "scientific-controls"
+      },
+      {
+        "argv": [
+          "python3",
+          "scripts/validate_spec_kit.py"
+        ],
+        "id": "spec-kit-structure"
+      },
+      {
+        "argv": [
+          "python3",
+          "scripts/spec_kit.py",
+          "check"
+        ],
+        "id": "spec-kit-render"
+      },
+      {
+        "argv": [
+          "python3",
+          "scripts/constitution_replica.py",
+          "check"
+        ],
+        "id": "constitution-replica"
+      },
+      {
+        "argv": [
+          "git",
+          "diff",
+          "--check",
+          "a6329c828011d1468fed3dfa4e98f5a8531167e2",
+          "--"
+        ],
+        "id": "whitespace"
+      }
+    ],
+    "endedAt": "2026-10-21T09:38:30.392385+00:00",
+    "exitCode": 0,
+    "inputDriftBeforePackaging": [],
+    "logSha256": "28480c5372a3400503713d97da4dd7c98579862e5285d09cd27b35c3478f71a9",
+    "prePackagingCandidateContentId": "64bb160cd784176ba79ef28209d3dcf0d6506e16c0cae9f8bd203d81aab5e2ed",
+    "profileReportPath": "/Users/juanyanez/.codex/reports/braid-harness-foundations-20261021/pr.json",
+    "profileReportSha256": "d6ca53ac54c6ddda4ae98b64251622f0a5ee3e67fde805d10498af1a315cb05d",
+    "requestedProfile": "pr",
+    "startedAt": "2026-10-21T08:57:00.487282+00:00",
+    "unittest": {
+      "errors": 0,
+      "failures": 0,
+      "run": 2173,
+      "skipped": 24
+    }
+  }
+}
