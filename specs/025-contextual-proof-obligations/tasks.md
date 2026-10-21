@@ -58,3 +58,13 @@ The repetition shares maintainer, host and an existing isolated Python environme
 it is not independent external reproduction. Human/founder approval and accepted
 proof status remain pending. Historical premise-inventory status fields retain their
 original capture boundary; current obtained finite evidence is recorded separately.
+
+## Current additive disposition (2026-10-21)
+
+See [current technical status](current-status-20261021.md) and its source-bound
+finite receipt for the existing Unicode fix, 21 passing focused tests and current
+continuation/mapping checks. Historical profiles and freeze already exist within
+their named candidate boundary; they do not cover the later additive delivery.
+T007 remains unchecked pending its specific independent proof review and the
+current delivery's separately coordinated validation/packaging gates. Human
+scientific and founder acceptance remain pending.
