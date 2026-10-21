@@ -1,5 +1,9 @@
 # System One: evidence, capability and resumption index
 
+## Latest RF-T01/RF-T02 documentary receipt (2026-10-21)
+
+[Final SPEC-051 local software evidence](addenda/spec051-rf01-rf02-final-20261021/README.md) preserves42 focused controls, corrected quick/PR2153 tests each (2130 passed,23 skipped), the failed first profiles and incomplete OS read, metadata repair, mutation limitations and pending gates. This is corpus publication only: canonical SPEC051/ADR0026/modules/tests remain unpublished in the coordinator's product candidate. Pure validation does not admit real sources, storage, observer, training, human/scientific approval or activation. Earlier proposal/receipt states remain dated history.
+
 Start here, then read the [agent resumption guide](RESUMPTION.md). This is the current reading map as of the documentary review on2026-10-20; individual receipts below retain their own observation times. Chat history and ZIP imports are not required to understand the recorded work.
 
 ## Latest T08 delivery and pending-gate record

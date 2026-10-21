@@ -1,0 +1,31 @@
+{
+  "status": "verified-local-software-packet",
+  "packetSha256": "7773a3607315e042dd7d5672ecdf41fba9b797c579fbdf363973b58562517ce9",
+  "completionSha256": "178d6a1d791af130e6d8ad4f802c8a3fb56e7f237c6d4a2af6381fec3f12805d",
+  "reportSha256": "f1811e7a7e4be5f3537f8d12aa4f3dd79ebe8b424c95b0e52e43c54c1b7aa863",
+  "bindingCount": 68,
+  "sourceMembers": 18,
+  "rawRepresentations": 50,
+  "baselineFilesIntact": 2915,
+  "baselineExceptions": {
+    "docs/development/github-tracking.json": "d829a4be008d6dd8d706c9d3f5efcdf6d93683f56338cc47bd327a40681ceb11",
+    "specs/047-local-technical-telemetry/assurance.json": "e7106dcaff8318f26315f0db6c3709e13917121ea5a79b8c62bcb21420a830b0"
+  },
+  "testedInputsCurrent": 2932,
+  "archiveSha256": "3377dca34148e5a2380433183a9e2edc5f7d83fe4c346572bd968dfe7ec7a255",
+  "patchSha256": "8736d827129403b676b43046abaa64d9f2fdc5287df79ee138013e6d51bc33db",
+  "finalizerLogSha256": "178d6a1d791af130e6d8ad4f802c8a3fb56e7f237c6d4a2af6381fec3f12805d",
+  "platform": "Darwin",
+  "machine": "arm64",
+  "python": "3.12.13",
+  "externalSpendEUR": 0,
+  "captureReal": false,
+  "independentReview": "pending",
+  "publication": "pending",
+  "limits": [
+    "pure supplied-state checks, not physical trust or authentic source evidence",
+    "numeric caps do not implement secure storage",
+    "supplied denominator completeness only",
+    "no independent scientific samples/forecast accuracy/training/activation"
+  ]
+}

@@ -1,5 +1,9 @@
 # System One — agent resumption guide
 
+## Latest RF-T01/RF-T02 documentary receipt (2026-10-21)
+
+[Final SPEC-051 local software evidence](addenda/spec051-rf01-rf02-final-20261021/README.md) preserves42 focused controls, corrected quick/PR2153 tests each (2130 passed,23 skipped), the failed first profiles and incomplete OS read, metadata repair, mutation limitations and pending gates. This is corpus publication only: canonical SPEC051/ADR0026/modules/tests remain unpublished in the coordinator's product candidate. Pure validation does not admit real sources, storage, observer, training, human/scientific approval or activation. Earlier proposal/receipt states remain dated history.
+
 ## Latest T08 documentary observation
 
 Start with the [T08 delivery/gates supplement](addenda/t08-final-20261020/README.md), its exact source capsules and portable evidence/link map. T08 packages bounded internal capability, versions/domain, observed versus unknown costs, rollback/non-use and twelve distinct gates; it does not implement promotion services or close task/issue/milestone/acceptance gates. T09 requires a separate assignment. Source product/tests/archives remain local.
