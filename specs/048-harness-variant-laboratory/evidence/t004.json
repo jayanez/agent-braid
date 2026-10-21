@@ -1,0 +1,59 @@
+{
+  "candidateBinding": "Current source/input hashes; no frozen implementation commit claimed",
+  "disposition": "Completed for the adopted offline foundation task; broader feature gates pending",
+  "executedChecks": [
+    {
+      "command": ".venv-speckit/bin/python -m unittest discover -s tests -p \"test_harness*.py\" -v",
+      "crossModuleTests": 3,
+      "exitCode": 0,
+      "moduleTests": 20,
+      "scope": "Final post-alias correction focused run; real macOS filesystem tests executed without skips.",
+      "testsRun": 62
+    }
+  ],
+  "independentReview": {
+    "disposition": "No remaining actionable blockers after independent re-review of both corrected P1 findings",
+    "path": "specs/048-harness-variant-laboratory/evidence/offline-foundations-review.json",
+    "reviewerModel": "gpt-6-luna",
+    "sha256": "60244678fddf329f254b472c2496542ef4d2ab395671517d9b08adac7d9b2e8a"
+  },
+  "inputs": {
+    "LICENSES/Harness2-Apache-2.0.txt": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
+    "NOTICE": "3ef822bdcd9c7ff652fe9f0a14d36b6ddff2388315c8566e4a691bd04c9819a2",
+    "agent_braid/harness_admission.py": "49197a2518d8df9b66658ec6c279d079bc1cf915a9c3570673f524dca60b5901",
+    "agent_braid/harness_manifest.py": "373f1dd8e888c88fde6a47399c429c9b56ab040eea94811f22de796bc6b5d5a1",
+    "docs/adr/0027-braid-harness-offline-foundations.md": "076e524bb4b31a0075ff72c605a438edc9dcb70aa09dec9583ef21db5362b046",
+    "docs/development/THIRD_PARTY.md": "b12347059e3e2cf4612b5b9f9a5e39e4eefb550e747bf480ad798ed5e8a4d294",
+    "specs/048-harness-variant-laboratory/contracts/offline-foundations.md": "580d844af7236818c1a006d79ea482677c0df58c48e4f55391a69598184001c9",
+    "tests/test_harness_admission.py": "2bce2834d651795f2e754fa2f5acb8b8f0080f1428c9994ea033bf8cf9b93122",
+    "tests/test_harness_foundations.py": "8e97f53196047e8ea84a1fd7b358e5690a55c87b6a327667e93cdf3266b66926",
+    "tests/test_harness_manifest.py": "b1d844c799ec6a79a4f704f0223d19883e45894d781f5564cd537724b8b268ef"
+  },
+  "limits": "Test-only independently installed operator fixtures; no issuer API, runtime grant conversion, dispatch or paid/native route. Thread/forkprocess races tested; power-loss/hostile same-UID compromise excluded.",
+  "method": "Actual offline unittest execution under isolated Python 3.13.11, venv-first PATH",
+  "outcome": "Protected operator-file admission verification and single-use reservation controls passed.",
+  "outputs": {
+    "specs/048-harness-variant-laboratory/evidence/offline-foundations-tests.log": "f9b85f99d8e04f73bce75bcd423d2d31c75ef466de851b15fe660ceb6c2ae08b"
+  },
+  "pending": [
+    "T005+ and complete feature acceptance; all native/human/scientific/economic gates"
+  ],
+  "repositoryValidation": {
+    "path": "specs/048-harness-variant-laboratory/evidence/offline-foundations-validation.json",
+    "scope": "Stable local PR:14commands,2173tests/24skips; focused62/0skips; no native/whole-feature acceptance",
+    "sha256": "172fd11a10f6028672a7ae993be39d536ddc1e714522a519e07ad99490983f32"
+  },
+  "sourceBaseline": "a6329c828011d1468fed3dfa4e98f5a8531167e2",
+  "task": "SPEC-048/T004",
+  "upstreamAdaptation": {
+    "changes": "Separate trusted operator scope and protected admission files, fresh full-identity checks, bounded single-use reservation with cross-process exclusion and consumed partial state; no issuer, upstream ledger dispatch or cash route.",
+    "commit": "1cfe254e8d25b15f37048c3730134686abe60335",
+    "copyright": "2026 Google LLC",
+    "license": "Apache-2.0",
+    "portions": "Unique-entry ledger/accounting scaffold",
+    "repository": "google-research/harness2",
+    "selectedInputs": {
+      "harness2/core/ledger.py": "7059de5d90fc9fb8d4b3b799ff075f09d34f182ba0fdb56eb9d8b8383d0bbf55"
+    }
+  }
+}
