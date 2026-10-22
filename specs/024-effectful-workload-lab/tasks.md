@@ -32,7 +32,7 @@ can finish the protocol; real adapters remain excluded.
   - Status: implemented, pending T001 and independent review; `WorkloadObservationTests`, `WorkloadEvidenceTests` and `WorkloadCliTests` pass; `verify` regenerates the report read-only and keeps `executionAuthorization: false`.
 - [ ] T005 (REQ-004/SC-005): Freeze race, idempotency and uncertainty controls
   - Dependencies: T002, T004.
-  - Status: open. Manifest/registration and `WorkloadControlsTests` exist and pass; quickstart now explores the manifest one fixture request at a time (the CLI takes a single request), but eligibility/exclusion counts are not yet captured as evidence.
+  - Status: open, pending T001, T002–T004 and independent review. Manifest/registration and `WorkloadControlsTests` pass. Control evidence `evidence/controls-20261022.json` (SHA-256 `2813261672a3ec2949659a4bd9729e548115a58a67ee81098d53dbb29a3d5290`, captured with `python3 -m research.workload_lab.controls` at source commit `52c49f6d`, Python 3.13.11, no timings): 17/17 fixtures with complete coverage and passing authored controls (7 named controls, 10 H2 fixtures); H2 eligibility 4 terminal candidates, 6 exclusions (outside-additive-class 3, non-success-path 1, unknown-effects 1, version-precondition 1). Scientific review of the corpus is pending.
   - Targets: `examples/workload-lab/` manifest/invariants, control tests.
   - Commands: planned `WorkloadControlsTests.test_named_races_and_hidden_effects` and manifest exploration.
   - Evidence: eligibility/exclusion counts; named race witnesses, alias/hidden-effect abstentions and positives.

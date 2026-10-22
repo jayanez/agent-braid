@@ -69,12 +69,14 @@ python3 -m unittest tests.test_effectful_workload_model tests.test_effectful_wor
 WORK="$(cd "$(mktemp -d)" && pwd -P)"
 python3 -c 'import json, sys; [open(sys.argv[1] + "/" + f["id"] + ".request.json", "x").write(json.dumps(f["request"])) for f in json.load(open("examples/workload-lab/manifest.json"))["fixtures"]]' "$WORK"
 for request in "$WORK"/*.request.json; do python3 -m research.workload_lab explore "$request" --output "${request%.request.json}.report.json" && python3 -m research.workload_lab verify "${request%.request.json}.report.json"; done
+python3 -m research.workload_lab.controls --manifest examples/workload-lab/manifest.json --registration examples/workload-lab/registration.json --output "$WORK/controls.json"
 python3 scripts/validate_change.py --base develop --profile quick
 python3 scripts/validate_change.py --base develop --profile pr
 ```
 
 Expected: one `written` and one `verified` line per fixture, each with
-`executionAuthorization: false`; finite or explicitly inconclusive coverage,
+`executionAuthorization: false`, then one controls summary (T005 evidence
+without timings; the committed capture is `evidence/controls-20261022.json`); finite or explicitly inconclusive coverage,
 deterministic replay, zero real external effects. Capture raw outputs, hashes,
 host/commit and actual commands after execution, and reproduce in a fresh
 independent clone before science review; passing profiles do not supply this
