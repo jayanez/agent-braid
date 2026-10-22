@@ -83,7 +83,8 @@
       "schemas/agent-interaction-metadata.schema.json": "44b60956817cbcd92e0802dfe99ca537b20768f53472f04afd1dcc502f53cd5c",
       "schemas/confluence-certificate.schema.json": "ea68bf94f6767d615881167d8f7dd28359e6c399edd66935ba17b88b2b1cf785",
       "schemas/governance/public-export-manifest.schema.json": "11eb7f2594939ae9fd0c9e6cfe4423a80aba686d6cdfdd8b73b0fb84b0840aa8",
-      "schemas/governance/release-validation-record.schema.json": "d9943f0c9f5520ea52e3b12bfba88240d03f8011b433fc5e35cb49549ab6e819"
+      "schemas/governance/release-validation-record.schema.json": "d9943f0c9f5520ea52e3b12bfba88240d03f8011b433fc5e35cb49549ab6e819",
+      "docs/adr/0026-pure-owned-work-validation.md": "dc6a045316c37201767adba79ad59779cff4646c9d05e4a2306dfaec481e4ccd"
     }
   },
   "compatibility": "Additive CLI flags and management commands; unchanged core algorithms, legacy MCP and product results.",
