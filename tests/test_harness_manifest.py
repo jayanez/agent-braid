@@ -263,6 +263,33 @@ class HarnessManifestTests(unittest.TestCase):
         value["effects"]["write"] = ["lab/A.md", "lab/a.md"]
         self.rejects(value)
 
+    def assert_reason(self, value, reason):
+        with self.assertRaises(manifests.ManifestError) as caught:
+            self.parse(value)
+        self.assertEqual(caught.exception.reason, reason)
+
+    def test_write_and_delete_effects_are_confined_to_lab_namespace(self):
+        # The path is an allowed component, so only the namespace can refuse it.
+        for kind in ("write", "delete"):
+            for namespace in ("source", "base", "candidate", "context"):
+                value = make_manifest()
+                value["effects"][kind] = [namespace + "/guidance/main.md"]
+                with self.subTest(kind=kind, namespace=namespace):
+                    self.assert_reason(value, "effect-outside-inventory")
+            value = make_manifest()
+            value["effects"][kind] = ["lab/guidance/main.md"]
+            self.parse(value)
+
+    def test_base_and_candidate_inventories_stay_inside_allowed_surface(self):
+        for name in ("base", "candidate"):
+            value = make_manifest()
+            value[name]["files"][0]["path"] = "guidance/other.md"
+            value[name]["sha256"] = digest(value[name]["files"])
+            value["effects"]["read"][value["effects"]["read"].index(
+                name + "/guidance/main.md")] = name + "/guidance/other.md"
+            with self.subTest(name=name):
+                self.assert_reason(value, "path-outside-surface")
+
 
 if __name__ == "__main__":
     unittest.main()

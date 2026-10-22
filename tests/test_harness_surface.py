@@ -219,6 +219,15 @@ class HarnessSurfaceTests(unittest.TestCase):
                 self.refusal()
         file.chmod(0o644)
 
+    def test_group_or_world_writable_selected_input_ancestor_refuses(self):
+        notes = self.roots["context"] / "notes"
+        for mode in (0o775, 0o757):
+            notes.chmod(mode)
+            with self.subTest(mode=mode):
+                self.assertEqual(self.refusal().reason, "unsafe-directory")
+        notes.chmod(0o755)
+        self.run_import()
+
     def test_unsupported_encoding_binary_and_script_signatures_refuse(self):
         for raw in (b"\xff", b"\xef\xbb\xbfhello", b"a\0b", b"\x7fELF\0body",
                     b"#!/bin/sh\necho hidden\n", b"  #!/usr/bin/env python\npass\n"):

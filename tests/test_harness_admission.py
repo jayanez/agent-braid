@@ -143,6 +143,78 @@ class AdmissionTests(unittest.TestCase):
             output.close()
             output.join_thread()
 
+    def test_distinct_ids_racing_past_preflight_are_rechecked_under_lock(self):
+        # A passes its read-only preflight, then B (another id) completes. Only
+        # the re-check under the lock stops A from spending a second reservation.
+        first = self.admission
+        self.admission = self.wire("case-2")
+        self.write()
+        self.admission = first
+        original = admissions._check_store
+        calls = []
+
+        def interleave(*args):
+            original(*args)
+            calls.append(None)
+            if len(calls) == 1:
+                admissions.reserve_admission(
+                    self.raw, expected_manifest_sha256=self.manifest.sha256, scope=self.scope,
+                    admission_id="case-2", now=self.now)
+        with patch.object(admissions, "_check_store", side_effect=interleave):
+            with self.assertRaises(admissions.AdmissionError) as caught:
+                self.reserve()
+        self.assertEqual(caught.exception.reason, "reservation-budget-exhausted")
+        self.assertEqual(sorted(p.name for p in self.paths["reservation_root"].iterdir()),
+                         [".lock", "case-2.json"])
+
+    def lock_file(self, raw=b""):
+        lock = self.paths["reservation_root"] / ".lock"
+        lock.write_bytes(raw)
+        lock.chmod(0o600)
+        return lock
+
+    def test_held_lock_refuses_as_busy_without_reservation(self):
+        lock = self.lock_file()
+        fd = os.open(lock, os.O_RDWR)
+        try:
+            admissions.fcntl.flock(fd, admissions.fcntl.LOCK_EX | admissions.fcntl.LOCK_NB)
+            with self.assertRaises(admissions.AdmissionError) as caught:
+                self.reserve()
+            self.assertEqual(caught.exception.reason, "reservation-busy")
+            self.assertEqual(sorted(p.name for p in lock.parent.iterdir()), [".lock"])
+        finally:
+            os.close(fd)
+        self.reserve()
+
+    def test_nonempty_or_symlinked_lock_refuses_without_reservation(self):
+        lock = self.lock_file(b"x")
+        with self.assertRaises(admissions.AdmissionError) as caught:
+            self.reserve()
+        self.assertEqual(caught.exception.reason, "corrupt-reservation-store")
+        self.assertEqual(lock.read_bytes(), b"x")
+        lock.unlink()
+        target = self.root / "lock-target"
+        target.write_bytes(b"")
+        target.chmod(0o600)
+        lock.symlink_to(target)
+        self.rejects_without_reservation()
+
+    def test_manifest_destination_must_match_trusted_lab_root(self):
+        # Rebind every other identity so only the destination differs.
+        other = self.root / "other_lab"
+        other.mkdir(mode=0o700)
+        scope = replace(self.scope, lab_root=other)
+        initial = parse_manifest(canonical(self.value))
+        self.scope = replace(scope, expected_bindings={
+            key: value for key, value in initial.bindings.items() if key != "envelope"})
+        self.bind()
+        self.admission = self.wire()
+        self.write()
+        with self.assertRaises(admissions.AdmissionError) as caught:
+            self.reserve()
+        self.assertEqual(caught.exception.reason, "destination-drift")
+        self.assertEqual(list(self.paths["reservation_root"].iterdir()), [])
+
     def test_reservation_before_import_accepts_missing_lab_leaf_without_creating_it(self):
         self.paths["lab_root"].rmdir()
         self.reserve()
