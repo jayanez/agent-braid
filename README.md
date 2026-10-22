@@ -57,7 +57,8 @@ packages its own runtime for supported local hosts.
 
 ### Newest work
 
-Merged or merging on 2026-10-22; see each pull request for its state. Each keeps
+As of 2026-10-22, SPEC-051 and the Braid Harness foundations are merged, SPEC-025 is
+merging and SPEC-024 remains a draft pending owner and independent review. Each keeps
 `executionAuthorization: false` and leaves its human, scientific and acceptance
 gates open.
 
@@ -65,7 +66,7 @@ gates open.
 | --- | --- | --- |
 | **Braid Harness offline foundations** (SPEC-048 T001–T004, ADR 0027) | [#657](https://github.com/jayanez/agent-braid/pull/657) | Immutable offline experiment manifests, protected candidate import and single-use operator admission for comparing agent-guidance variants; no native host, model or paid route. |
 | **Owned-work evaluation contracts** (SPEC-051) | [#659](https://github.com/jayanez/agent-braid/pull/659) | Pure operator-authority resolution and frozen-registration append validation for evaluating real owned work; no real sources, storage or training. |
-| **Effectful workload laboratory** (SPEC-024 T002–T004) | [#660](https://github.com/jayanez/agent-braid/pull/660) | A closed, standard-library simulator that explores effectful request/transition state spaces and binds observations to replayable evidence. |
+| **Effectful workload laboratory** (SPEC-024 T002–T004) | [#660](https://github.com/jayanez/agent-braid/pull/660) (draft) | A closed, standard-library simulator that explores effectful request/transition state spaces and binds observations to replayable evidence. |
 | **Contextual proof obligations** (SPEC-025) | [#658](https://github.com/jayanez/agent-braid/pull/658) | A reconciled finite evidence packet for contextual safety checks; no theorem is accepted. |
 
 The runtime executes allowlisted Git plumbing. Repository code, source-ref
