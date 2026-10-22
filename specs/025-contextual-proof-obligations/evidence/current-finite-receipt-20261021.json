@@ -1,0 +1,2772 @@
+{
+  "candidate": "a6329c828011d1468fed3dfa4e98f5a8531167e2",
+  "capturedAt": "2026-10-21T06:11:21.013036+00:00",
+  "checks": [
+    {
+      "argv": [
+        "git",
+        "rev-parse",
+        "HEAD"
+      ],
+      "cwd": "/private/tmp/agent-braid-contextual-closure-20261021",
+      "exitCode": 0,
+      "stderr": "",
+      "stdout": "a6329c828011d1468fed3dfa4e98f5a8531167e2\n"
+    },
+    {
+      "argv": [
+        "git",
+        "status",
+        "--porcelain"
+      ],
+      "cwd": "/private/tmp/agent-braid-contextual-closure-20261021",
+      "exitCode": 0,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/agent-braid-pending-closure-20261021/.venv-speckit/bin/python",
+        "-m",
+        "unittest",
+        "tests.test_contextual_lab",
+        "tests.test_system_one_context.SystemOneContextTests.test_lone_surrogate_ids_and_values_refuse_domain_error",
+        "-v"
+      ],
+      "cwd": "/private/tmp/agent-braid-contextual-closure-20261021",
+      "exitCode": 0,
+      "stderr": "test_caps_logical_cache_hits_and_steps (tests.test_contextual_lab.ContextualChecksTests.test_caps_logical_cache_hits_and_steps) ... ok\ntest_configuration_bound_includes_unicode_and_all_raw_dimensions (tests.test_contextual_lab.ContextualChecksTests.test_configuration_bound_includes_unicode_and_all_raw_dimensions) ... ok\ntest_determinism_no_input_mutation_source_binding_and_public_api (tests.test_contextual_lab.ContextualChecksTests.test_determinism_no_input_mutation_source_binding_and_public_api) ... ok\ntest_exact_observation_restores_pending_before_observe (tests.test_contextual_lab.ContextualChecksTests.test_exact_observation_restores_pending_before_observe) ... ok\ntest_prelude_exhaustion_has_explicit_unavailable_placeholders (tests.test_contextual_lab.ContextualChecksTests.test_prelude_exhaustion_has_explicit_unavailable_placeholders) ... ok\ntest_reachability_dependencies_and_unsupported_extensions_reject (tests.test_contextual_lab.ContextualChecksTests.test_reachability_dependencies_and_unsupported_extensions_reject) ... ok\ntest_replay_mapping_matches_unchanged_full_interpreter (tests.test_contextual_lab.ContextualChecksTests.test_replay_mapping_matches_unchanged_full_interpreter) ... ok\ntest_report_byte_reservation_exhaustion_and_minimum_envelope (tests.test_contextual_lab.ContextualChecksTests.test_report_byte_reservation_exhaustion_and_minimum_envelope) ... ok\ntest_suffix_binding_and_bounds (tests.test_contextual_lab.ContextualChecksTests.test_suffix_binding_and_bounds) ... ok\ntest_suffix_limit_and_dependency_closed_partial_fragments (tests.test_contextual_lab.ContextualChecksTests.test_suffix_limit_and_dependency_closed_partial_fragments) ... ok\ntest_terminal_match_with_distinguishing_suffix (tests.test_contextual_lab.ContextualChecksTests.test_terminal_match_with_distinguishing_suffix) ... ok\ntest_cli_check_verify_paths_and_invalid_parser (tests.test_contextual_lab.ContextualCliTests.test_cli_check_verify_paths_and_invalid_parser) ... ok\ntest_errors_and_failed_pending_inventory_retain_partial_effects (tests.test_contextual_lab.ContextualControlsTests.test_errors_and_failed_pending_inventory_retain_partial_effects) ... ok\ntest_guard_enabledness_and_stale_version_failures_are_inconclusive (tests.test_contextual_lab.ContextualControlsTests.test_guard_enabledness_and_stale_version_failures_are_inconclusive) ... ok\ntest_initial_only_pair_match_does_not_cover_reachable_context (tests.test_contextual_lab.ContextualControlsTests.test_initial_only_pair_match_does_not_cover_reachable_context) ... ok\ntest_omitted_premises_and_event_order (tests.test_contextual_lab.ContextualControlsTests.test_omitted_premises_and_event_order) ... ok\ntest_return_values_remain_raw_under_projection (tests.test_contextual_lab.ContextualControlsTests.test_return_values_remain_raw_under_projection) ... ok\ntest_anchored_relations_and_exclusions (tests.test_contextual_lab.ContextualProofMappingTests.test_anchored_relations_and_exclusions) ... ok\ntest_mapping_cli_and_determinism (tests.test_contextual_lab.ContextualProofMappingTests.test_mapping_cli_and_determinism) ... ok\ntest_mapping_oracle_detects_corrupted_implementation (tests.test_contextual_lab.ContextualProofMappingTests.test_mapping_oracle_detects_corrupted_implementation) ... ok\ntest_lone_surrogate_ids_and_values_refuse_domain_error (tests.test_system_one_context.SystemOneContextTests.test_lone_surrogate_ids_and_values_refuse_domain_error) ... ok\n\n----------------------------------------------------------------------\nRan 21 tests in 0.385s\n\nOK\n",
+      "stdout": ""
+    },
+    {
+      "argv": [
+        "/private/tmp/agent-braid-pending-closure-20261021/.venv-speckit/bin/python",
+        "-m",
+        "research.contextual_lab",
+        "check",
+        "examples/contextual-lab/manifest.json",
+        "--output",
+        "/private/tmp/track-a-20261021/continuations-1.json"
+      ],
+      "cwd": "/private/tmp/agent-braid-contextual-closure-20261021",
+      "exitCode": 0,
+      "stderr": "",
+      "stdout": "{\"status\": \"written\", \"verdict\": \"divergent\", \"executionAuthorization\": false}\n"
+    },
+    {
+      "argv": [
+        "/private/tmp/agent-braid-pending-closure-20261021/.venv-speckit/bin/python",
+        "-m",
+        "research.contextual_lab",
+        "verify",
+        "/private/tmp/track-a-20261021/continuations-1.json"
+      ],
+      "cwd": "/private/tmp/agent-braid-contextual-closure-20261021",
+      "exitCode": 0,
+      "stderr": "",
+      "stdout": "{\"executionAuthorization\": false, \"proofAccepted\": false, \"status\": \"verified\", \"verdict\": \"divergent\"}\n"
+    },
+    {
+      "argv": [
+        "/private/tmp/agent-braid-pending-closure-20261021/.venv-speckit/bin/python",
+        "-m",
+        "research.contextual_lab",
+        "check",
+        "examples/contextual-lab/manifest.json",
+        "--output",
+        "/private/tmp/track-a-20261021/continuations-2.json"
+      ],
+      "cwd": "/private/tmp/agent-braid-contextual-closure-20261021",
+      "exitCode": 0,
+      "stderr": "",
+      "stdout": "{\"status\": \"written\", \"verdict\": \"divergent\", \"executionAuthorization\": false}\n"
+    },
+    {
+      "argv": [
+        "/private/tmp/agent-braid-pending-closure-20261021/.venv-speckit/bin/python",
+        "-m",
+        "research.contextual_lab",
+        "verify",
+        "/private/tmp/track-a-20261021/continuations-2.json"
+      ],
+      "cwd": "/private/tmp/agent-braid-contextual-closure-20261021",
+      "exitCode": 0,
+      "stderr": "",
+      "stdout": "{\"executionAuthorization\": false, \"proofAccepted\": false, \"status\": \"verified\", \"verdict\": \"divergent\"}\n"
+    },
+    {
+      "argv": [
+        "/private/tmp/agent-braid-pending-closure-20261021/.venv-speckit/bin/python",
+        "scripts/crosscheck_contextual_proof_mapping.py",
+        "--manifest",
+        "examples/contextual-lab/anchored-manifest.json",
+        "--output",
+        "/private/tmp/track-a-20261021/anchored-mapping.json"
+      ],
+      "cwd": "/private/tmp/agent-braid-contextual-closure-20261021",
+      "exitCode": 0,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "argv": [
+        "git",
+        "status",
+        "--porcelain"
+      ],
+      "cwd": "/private/tmp/agent-braid-contextual-closure-20261021",
+      "exitCode": 0,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "argv": [
+        "git",
+        "diff",
+        "ce388dad8482f9ba561c2376b8ca27308e6f824a",
+        "HEAD",
+        "--",
+        "research/contextual_lab",
+        "scripts/crosscheck_contextual_proof_mapping.py",
+        "examples/contextual-lab",
+        "tests/test_contextual_lab.py"
+      ],
+      "cwd": "/private/tmp/agent-braid-contextual-closure-20261021",
+      "exitCode": 0,
+      "stderr": "",
+      "stdout": ""
+    }
+  ],
+  "continuationBytesEqual": true,
+  "earlierAttempt": {
+    "cause": "The /tmp parent is a macOS symlink; CLI rejects symlink destinations. Repeated with canonical /private/tmp path, unchanged inputs/source.",
+    "exitCode": 1,
+    "output": "/tmp/track-a-20261021/continuations-1.json",
+    "stdout": "{\"status\": \"rejected\", \"reason\": \"invalid bounded local artifact\"}\n"
+  },
+  "environment": {
+    "executable": "/private/tmp/agent-braid-pending-closure-20261021/.venv-speckit/bin/python",
+    "isolatedEnvironment": "Reused isolated coordinator environment; not independently provisioned.",
+    "platform": "macOS-27.0.1-arm64-arm-64bit-Mach-O",
+    "python": "3.13.11",
+    "sameHost": true,
+    "sameMaintainingTeam": true
+  },
+  "executionAuthorization": false,
+  "format": "contextual-current-finite-receipt-v1",
+  "founderApproval": "pending",
+  "historicalFreeze": {
+    "currentPublicEquivalent": "ce388dad8482f9ba561c2376b8ca27308e6f824a",
+    "firstPublicEquivalent": "d6b7083b8a8e0b1dac2e1f5a10a21b96ea422c1e",
+    "recorded": "a5eaa04939eabaa654d54654e2ab4ea68d3a224b",
+    "reviewStatus": "draft/pending; retained freeze supplies no acceptance",
+    "tree": "a0424461aab07c6b0b73c05c5b1aa8c8a99239db"
+  },
+  "humanReview": "pending",
+  "independentExternalReproduction": false,
+  "limits": [
+    "Finite contextual/mapping and existing Unicode regression only; no universal correspondence or theorem acceptance.",
+    "Clean linked worktree with shared Git object store and same host/team/environment; not a new independent clean clone. Historical internal-clean-clone receipt remains separate.",
+    "Current delivery quick/pr profiles and final packaging commit are coordinated separately; this receipt names only its tested base candidate."
+  ],
+  "outputs": {
+    "anchored-mapping.json": {
+      "artifact": {
+        "cases": [
+          {
+            "adjacentChecks": 0,
+            "distinctChronologicalTraceHashes": 2,
+            "distinctInstanceResidualIndices": 3,
+            "farChecks": 0,
+            "involutiveChecks": 2,
+            "mismatches": [],
+            "orders": 2,
+            "reference": [
+              {
+                "id": "n0",
+                "value": "N0"
+              },
+              {
+                "id": "base",
+                "value": "B"
+              },
+              {
+                "id": "n1",
+                "value": "N1"
+              }
+            ],
+            "requestHash": "9570a913e0f560887945e8526c5efe55e14fa679b0bd0927008fe022d06cf5cf"
+          },
+          {
+            "adjacentChecks": 6,
+            "distinctChronologicalTraceHashes": 6,
+            "distinctInstanceResidualIndices": 6,
+            "farChecks": 0,
+            "involutiveChecks": 12,
+            "mismatches": [],
+            "orders": 6,
+            "reference": [
+              {
+                "id": "n0",
+                "value": "N0"
+              },
+              {
+                "id": "n2",
+                "value": "N2"
+              },
+              {
+                "id": "base",
+                "value": "B"
+              },
+              {
+                "id": "n1",
+                "value": "N1"
+              }
+            ],
+            "requestHash": "48c551edb0d43e6d451c36956d4aaa9d784ee0cf300583ddf5b1aecd9be5f932"
+          },
+          {
+            "adjacentChecks": 24,
+            "distinctChronologicalTraceHashes": 24,
+            "distinctInstanceResidualIndices": 10,
+            "farChecks": 24,
+            "involutiveChecks": 72,
+            "mismatches": [],
+            "orders": 24,
+            "reference": [
+              {
+                "id": "n0",
+                "value": "N0"
+              },
+              {
+                "id": "n2",
+                "value": "N2"
+              },
+              {
+                "id": "base",
+                "value": "B"
+              },
+              {
+                "id": "n1",
+                "value": "N1"
+              },
+              {
+                "id": "n3",
+                "value": "N3"
+              }
+            ],
+            "requestHash": "2aeaa8e42ae54de9471abfbfee19d976ccecfb34971f0422fdf2ed579a508abc"
+          }
+        ],
+        "excluded": [
+          {
+            "rejected": true,
+            "requestHash": "dd34a7c40634fbbcd14e85ccd9498a78ef5c9f085bcd3eea2344c59e3bf272a2"
+          },
+          {
+            "rejected": true,
+            "requestHash": "1ee440cb7c8ed931eec412933f1db6dfe5aa83f5036fa4c4caa22a617e386c0c"
+          },
+          {
+            "rejected": true,
+            "requestHash": "0d1e8e88267fcefed46a923567aec9e38d99d368c4a273bb9a69f928bdc27cbe"
+          },
+          {
+            "rejected": true,
+            "requestHash": "01e2b9b59622f6ebaa2b4000392d063e3ad336f08774564799169baeff7758c2"
+          }
+        ],
+        "executionAuthorization": false,
+        "limits": "Named finite insert fixtures only; candidate argument and independent proof review remain separate.",
+        "manifestHash": "e169a8be3c0da6b67c53af31a9d1effb45e19adfe7abf29638675dd5b3ff368a",
+        "proofAccepted": false,
+        "reportHash": "7267ed26e08d5dd253b4bd933df6d3693b1bce33b52bec6d2fa4f1a23a90c519",
+        "sources": {
+          "agent_braid/structured_exchange.py": "f43079b348c78e9e1a994492fb14754e1771533771e009b1186ff54bb3efa396",
+          "docs/adr/0017-bounded-structured-exchange.md": "72cecb595605a16eaa5de7a88e960492205d82a300af2f6fb4451263f7e780c4",
+          "docs/theory/STRUCTURED_EXCHANGE.md": "522fa1e4f2be6a0873c00ba2f503f475fa04833292a6684620ec01ef725bb710",
+          "scripts/crosscheck_contextual_proof_mapping.py": "642a387eb5d20f977de85e6b30b9410a8a21c0f931036c0c52332335e0ef57f2",
+          "specs/025-contextual-proof-obligations/premise-inventory.json": "25c9a7ab8594c03d7bb865607d660cb5c42b8251d6d8f287ddec173e518af979"
+        },
+        "status": "finite-mapping-match",
+        "version": "anchored-proof-mapping-v1"
+      },
+      "sha256": "a2b2820ffb05ec52c8ace30a4af3650ec950cac58083abfdca82c5b491857e67"
+    },
+    "continuations-1.json": {
+      "artifact": {
+        "checks": [
+          {
+            "comparison": "matching",
+            "enabledness": {
+              "left": {
+                "c": {
+                  "fragmentOutcome": {
+                    "events": [
+                      {
+                        "id": "a",
+                        "kind": "assign",
+                        "reads": {},
+                        "resource": "hidden",
+                        "value": 1,
+                        "writes": [
+                          "hidden"
+                        ]
+                      },
+                      {
+                        "id": "b",
+                        "kind": "assign",
+                        "reads": {},
+                        "resource": "hidden",
+                        "value": 2,
+                        "writes": [
+                          "hidden"
+                        ]
+                      },
+                      {
+                        "id": "c",
+                        "kind": "assign",
+                        "reads": {
+                          "hidden": 2
+                        },
+                        "resource": "visible",
+                        "value": 2,
+                        "writes": [
+                          "visible"
+                        ]
+                      }
+                    ],
+                    "pending": [],
+                    "reason": "",
+                    "results": {
+                      "a": 1,
+                      "b": 2,
+                      "c": 2
+                    },
+                    "state": {
+                      "hidden": 2,
+                      "visible": 2
+                    },
+                    "status": "complete",
+                    "versions": {
+                      "hidden": 2,
+                      "visible": 1
+                    }
+                  },
+                  "fragmentOutcomeHash": "sha256:1206f32975a7f737fb7072867835c6fd57ba237e0da3d0a2fc88e9163edd013f",
+                  "outcome": {
+                    "events": [
+                      {
+                        "id": "a",
+                        "kind": "assign",
+                        "reads": {},
+                        "resource": "hidden",
+                        "value": 1,
+                        "writes": [
+                          "hidden"
+                        ]
+                      },
+                      {
+                        "id": "b",
+                        "kind": "assign",
+                        "reads": {},
+                        "resource": "hidden",
+                        "value": 2,
+                        "writes": [
+                          "hidden"
+                        ]
+                      },
+                      {
+                        "id": "c",
+                        "kind": "assign",
+                        "reads": {
+                          "hidden": 2
+                        },
+                        "resource": "visible",
+                        "value": 2,
+                        "writes": [
+                          "visible"
+                        ]
+                      }
+                    ],
+                    "pending": [],
+                    "reason": "",
+                    "results": {
+                      "a": 1,
+                      "b": 2,
+                      "c": 2
+                    },
+                    "state": {
+                      "hidden": 2,
+                      "visible": 2
+                    },
+                    "status": "complete",
+                    "versions": {
+                      "hidden": 2,
+                      "visible": 1
+                    }
+                  },
+                  "outcomeHash": "sha256:1206f32975a7f737fb7072867835c6fd57ba237e0da3d0a2fc88e9163edd013f",
+                  "reason": "",
+                  "status": "enabled"
+                }
+              },
+              "right": {
+                "c": {
+                  "fragmentOutcome": {
+                    "events": [
+                      {
+                        "id": "b",
+                        "kind": "assign",
+                        "reads": {},
+                        "resource": "hidden",
+                        "value": 2,
+                        "writes": [
+                          "hidden"
+                        ]
+                      },
+                      {
+                        "id": "a",
+                        "kind": "assign",
+                        "reads": {},
+                        "resource": "hidden",
+                        "value": 1,
+                        "writes": [
+                          "hidden"
+                        ]
+                      },
+                      {
+                        "id": "c",
+                        "kind": "assign",
+                        "reads": {
+                          "hidden": 2
+                        },
+                        "resource": "visible",
+                        "value": 1,
+                        "writes": [
+                          "visible"
+                        ]
+                      }
+                    ],
+                    "pending": [],
+                    "reason": "",
+                    "results": {
+                      "a": 1,
+                      "b": 2,
+                      "c": 1
+                    },
+                    "state": {
+                      "hidden": 1,
+                      "visible": 1
+                    },
+                    "status": "complete",
+                    "versions": {
+                      "hidden": 2,
+                      "visible": 1
+                    }
+                  },
+                  "fragmentOutcomeHash": "sha256:1f185e8eec9fd029006c0c7f1c65f8a31255306093b53923cdccfd6f8f96c711",
+                  "outcome": {
+                    "events": [
+                      {
+                        "id": "b",
+                        "kind": "assign",
+                        "reads": {},
+                        "resource": "hidden",
+                        "value": 2,
+                        "writes": [
+                          "hidden"
+                        ]
+                      },
+                      {
+                        "id": "a",
+                        "kind": "assign",
+                        "reads": {},
+                        "resource": "hidden",
+                        "value": 1,
+                        "writes": [
+                          "hidden"
+                        ]
+                      },
+                      {
+                        "id": "c",
+                        "kind": "assign",
+                        "reads": {
+                          "hidden": 2
+                        },
+                        "resource": "visible",
+                        "value": 1,
+                        "writes": [
+                          "visible"
+                        ]
+                      }
+                    ],
+                    "pending": [],
+                    "reason": "",
+                    "results": {
+                      "a": 1,
+                      "b": 2,
+                      "c": 1
+                    },
+                    "state": {
+                      "hidden": 1,
+                      "visible": 1
+                    },
+                    "status": "complete",
+                    "versions": {
+                      "hidden": 2,
+                      "visible": 1
+                    }
+                  },
+                  "outcomeHash": "sha256:1f185e8eec9fd029006c0c7f1c65f8a31255306093b53923cdccfd6f8f96c711",
+                  "reason": "",
+                  "status": "enabled"
+                }
+              }
+            },
+            "fragmentOutcomeHashes": {
+              "left": "sha256:56d56dcd0006e045a0e7be12092861c37a496c698678f5b3f7a372b51262db70",
+              "right": "sha256:12dbc9e8fd33936ed9be5c3b3ea48aa8045822f01c40bdbe0e7f54b70850dbf6"
+            },
+            "fragmentOutcomes": {
+              "left": {
+                "events": [
+                  {
+                    "id": "a",
+                    "kind": "assign",
+                    "reads": {},
+                    "resource": "hidden",
+                    "value": 1,
+                    "writes": [
+                      "hidden"
+                    ]
+                  },
+                  {
+                    "id": "b",
+                    "kind": "assign",
+                    "reads": {},
+                    "resource": "hidden",
+                    "value": 2,
+                    "writes": [
+                      "hidden"
+                    ]
+                  }
+                ],
+                "pending": [],
+                "reason": "",
+                "results": {
+                  "a": 1,
+                  "b": 2
+                },
+                "state": {
+                  "hidden": 2,
+                  "visible": 0
+                },
+                "status": "complete",
+                "versions": {
+                  "hidden": 2,
+                  "visible": 0
+                }
+              },
+              "right": {
+                "events": [
+                  {
+                    "id": "b",
+                    "kind": "assign",
+                    "reads": {},
+                    "resource": "hidden",
+                    "value": 2,
+                    "writes": [
+                      "hidden"
+                    ]
+                  },
+                  {
+                    "id": "a",
+                    "kind": "assign",
+                    "reads": {},
+                    "resource": "hidden",
+                    "value": 1,
+                    "writes": [
+                      "hidden"
+                    ]
+                  }
+                ],
+                "pending": [],
+                "reason": "",
+                "results": {
+                  "a": 1,
+                  "b": 2
+                },
+                "state": {
+                  "hidden": 1,
+                  "visible": 0
+                },
+                "status": "complete",
+                "versions": {
+                  "hidden": 2,
+                  "visible": 0
+                }
+              }
+            },
+            "index": 0,
+            "observationHashes": {
+              "left": "sha256:3e17f87b591b20051a100a60eddf9e5c9f5d4fe31ce629e94fe1852693e43d29",
+              "right": "sha256:3e17f87b591b20051a100a60eddf9e5c9f5d4fe31ce629e94fe1852693e43d29"
+            },
+            "observations": {
+              "left": {
+                "state": {
+                  "visible": 0
+                },
+                "status": "complete"
+              },
+              "right": {
+                "state": {
+                  "visible": 0
+                },
+                "status": "complete"
+              }
+            },
+            "outcomeHashes": {
+              "left": "sha256:f27b1c7100f7ab3ebe3d193691299b8801742ca9a01dec55b98353d0c02e0674",
+              "right": "sha256:5ae95bf1dceeadba2bb0448b4a4d48003d53b1bebf601b08a730fa3c56cf298a"
+            },
+            "outcomes": {
+              "left": {
+                "events": [
+                  {
+                    "id": "a",
+                    "kind": "assign",
+                    "reads": {},
+                    "resource": "hidden",
+                    "value": 1,
+                    "writes": [
+                      "hidden"
+                    ]
+                  },
+                  {
+                    "id": "b",
+                    "kind": "assign",
+                    "reads": {},
+                    "resource": "hidden",
+                    "value": 2,
+                    "writes": [
+                      "hidden"
+                    ]
+                  }
+                ],
+                "pending": [
+                  "c"
+                ],
+                "reason": "",
+                "results": {
+                  "a": 1,
+                  "b": 2
+                },
+                "state": {
+                  "hidden": 2,
+                  "visible": 0
+                },
+                "status": "complete",
+                "versions": {
+                  "hidden": 2,
+                  "visible": 0
+                }
+              },
+              "right": {
+                "events": [
+                  {
+                    "id": "b",
+                    "kind": "assign",
+                    "reads": {},
+                    "resource": "hidden",
+                    "value": 2,
+                    "writes": [
+                      "hidden"
+                    ]
+                  },
+                  {
+                    "id": "a",
+                    "kind": "assign",
+                    "reads": {},
+                    "resource": "hidden",
+                    "value": 1,
+                    "writes": [
+                      "hidden"
+                    ]
+                  }
+                ],
+                "pending": [
+                  "c"
+                ],
+                "reason": "",
+                "results": {
+                  "a": 1,
+                  "b": 2
+                },
+                "state": {
+                  "hidden": 1,
+                  "visible": 0
+                },
+                "status": "complete",
+                "versions": {
+                  "hidden": 2,
+                  "visible": 0
+                }
+              }
+            },
+            "rawDifferences": [
+              "state",
+              "events"
+            ],
+            "suffix": [],
+            "unavailable": []
+          },
+          {
+            "comparison": "different",
+            "enabledness": {
+              "left": {},
+              "right": {}
+            },
+            "fragmentOutcomeHashes": {
+              "left": "sha256:1206f32975a7f737fb7072867835c6fd57ba237e0da3d0a2fc88e9163edd013f",
+              "right": "sha256:1f185e8eec9fd029006c0c7f1c65f8a31255306093b53923cdccfd6f8f96c711"
+            },
+            "fragmentOutcomes": {
+              "left": {
+                "events": [
+                  {
+                    "id": "a",
+                    "kind": "assign",
+                    "reads": {},
+                    "resource": "hidden",
+                    "value": 1,
+                    "writes": [
+                      "hidden"
+                    ]
+                  },
+                  {
+                    "id": "b",
+                    "kind": "assign",
+                    "reads": {},
+                    "resource": "hidden",
+                    "value": 2,
+                    "writes": [
+                      "hidden"
+                    ]
+                  },
+                  {
+                    "id": "c",
+                    "kind": "assign",
+                    "reads": {
+                      "hidden": 2
+                    },
+                    "resource": "visible",
+                    "value": 2,
+                    "writes": [
+                      "visible"
+                    ]
+                  }
+                ],
+                "pending": [],
+                "reason": "",
+                "results": {
+                  "a": 1,
+                  "b": 2,
+                  "c": 2
+                },
+                "state": {
+                  "hidden": 2,
+                  "visible": 2
+                },
+                "status": "complete",
+                "versions": {
+                  "hidden": 2,
+                  "visible": 1
+                }
+              },
+              "right": {
+                "events": [
+                  {
+                    "id": "b",
+                    "kind": "assign",
+                    "reads": {},
+                    "resource": "hidden",
+                    "value": 2,
+                    "writes": [
+                      "hidden"
+                    ]
+                  },
+                  {
+                    "id": "a",
+                    "kind": "assign",
+                    "reads": {},
+                    "resource": "hidden",
+                    "value": 1,
+                    "writes": [
+                      "hidden"
+                    ]
+                  },
+                  {
+                    "id": "c",
+                    "kind": "assign",
+                    "reads": {
+                      "hidden": 2
+                    },
+                    "resource": "visible",
+                    "value": 1,
+                    "writes": [
+                      "visible"
+                    ]
+                  }
+                ],
+                "pending": [],
+                "reason": "",
+                "results": {
+                  "a": 1,
+                  "b": 2,
+                  "c": 1
+                },
+                "state": {
+                  "hidden": 1,
+                  "visible": 1
+                },
+                "status": "complete",
+                "versions": {
+                  "hidden": 2,
+                  "visible": 1
+                }
+              }
+            },
+            "index": 1,
+            "observationHashes": {
+              "left": "sha256:09f74798eff91bcbd1bf377bed33c33b83415cb9e19599b854ea2ba7aea77ba9",
+              "right": "sha256:9f3c6782689b96d9bccda1df90d59ed38f4391cd8db918e9be4aed7bb1204ade"
+            },
+            "observations": {
+              "left": {
+                "state": {
+                  "visible": 2
+                },
+                "status": "complete"
+              },
+              "right": {
+                "state": {
+                  "visible": 1
+                },
+                "status": "complete"
+              }
+            },
+            "outcomeHashes": {
+              "left": "sha256:1206f32975a7f737fb7072867835c6fd57ba237e0da3d0a2fc88e9163edd013f",
+              "right": "sha256:1f185e8eec9fd029006c0c7f1c65f8a31255306093b53923cdccfd6f8f96c711"
+            },
+            "outcomes": {
+              "left": {
+                "events": [
+                  {
+                    "id": "a",
+                    "kind": "assign",
+                    "reads": {},
+                    "resource": "hidden",
+                    "value": 1,
+                    "writes": [
+                      "hidden"
+                    ]
+                  },
+                  {
+                    "id": "b",
+                    "kind": "assign",
+                    "reads": {},
+                    "resource": "hidden",
+                    "value": 2,
+                    "writes": [
+                      "hidden"
+                    ]
+                  },
+                  {
+                    "id": "c",
+                    "kind": "assign",
+                    "reads": {
+                      "hidden": 2
+                    },
+                    "resource": "visible",
+                    "value": 2,
+                    "writes": [
+                      "visible"
+                    ]
+                  }
+                ],
+                "pending": [],
+                "reason": "",
+                "results": {
+                  "a": 1,
+                  "b": 2,
+                  "c": 2
+                },
+                "state": {
+                  "hidden": 2,
+                  "visible": 2
+                },
+                "status": "complete",
+                "versions": {
+                  "hidden": 2,
+                  "visible": 1
+                }
+              },
+              "right": {
+                "events": [
+                  {
+                    "id": "b",
+                    "kind": "assign",
+                    "reads": {},
+                    "resource": "hidden",
+                    "value": 2,
+                    "writes": [
+                      "hidden"
+                    ]
+                  },
+                  {
+                    "id": "a",
+                    "kind": "assign",
+                    "reads": {},
+                    "resource": "hidden",
+                    "value": 1,
+                    "writes": [
+                      "hidden"
+                    ]
+                  },
+                  {
+                    "id": "c",
+                    "kind": "assign",
+                    "reads": {
+                      "hidden": 2
+                    },
+                    "resource": "visible",
+                    "value": 1,
+                    "writes": [
+                      "visible"
+                    ]
+                  }
+                ],
+                "pending": [],
+                "reason": "",
+                "results": {
+                  "a": 1,
+                  "b": 2,
+                  "c": 1
+                },
+                "state": {
+                  "hidden": 1,
+                  "visible": 1
+                },
+                "status": "complete",
+                "versions": {
+                  "hidden": 2,
+                  "visible": 1
+                }
+              }
+            },
+            "rawDifferences": [
+              "state",
+              "results",
+              "events"
+            ],
+            "suffix": [
+              "c"
+            ],
+            "unavailable": []
+          }
+        ],
+        "costs": {
+          "actualReplays": 4,
+          "cacheHits": 6,
+          "checks": 12,
+          "steps": 10
+        },
+        "coverage": {
+          "capLocation": null,
+          "capReason": null,
+          "completed": 2,
+          "ordering": "length-then-lexical",
+          "prelude": {
+            "initialProbes": {
+              "left": {
+                "c": "completed"
+              },
+              "right": {
+                "c": "completed"
+              }
+            },
+            "prefixes": {
+              "left": "completed",
+              "right": "completed"
+            }
+          },
+          "requested": 2,
+          "unvisited": []
+        },
+        "executionAuthorization": false,
+        "initialEnabledness": {
+          "left": {
+            "c": {
+              "fragmentOutcome": {
+                "events": [
+                  {
+                    "id": "a",
+                    "kind": "assign",
+                    "reads": {},
+                    "resource": "hidden",
+                    "value": 1,
+                    "writes": [
+                      "hidden"
+                    ]
+                  },
+                  {
+                    "id": "b",
+                    "kind": "assign",
+                    "reads": {},
+                    "resource": "hidden",
+                    "value": 2,
+                    "writes": [
+                      "hidden"
+                    ]
+                  },
+                  {
+                    "id": "c",
+                    "kind": "assign",
+                    "reads": {
+                      "hidden": 2
+                    },
+                    "resource": "visible",
+                    "value": 2,
+                    "writes": [
+                      "visible"
+                    ]
+                  }
+                ],
+                "pending": [],
+                "reason": "",
+                "results": {
+                  "a": 1,
+                  "b": 2,
+                  "c": 2
+                },
+                "state": {
+                  "hidden": 2,
+                  "visible": 2
+                },
+                "status": "complete",
+                "versions": {
+                  "hidden": 2,
+                  "visible": 1
+                }
+              },
+              "fragmentOutcomeHash": "sha256:1206f32975a7f737fb7072867835c6fd57ba237e0da3d0a2fc88e9163edd013f",
+              "outcome": {
+                "events": [
+                  {
+                    "id": "a",
+                    "kind": "assign",
+                    "reads": {},
+                    "resource": "hidden",
+                    "value": 1,
+                    "writes": [
+                      "hidden"
+                    ]
+                  },
+                  {
+                    "id": "b",
+                    "kind": "assign",
+                    "reads": {},
+                    "resource": "hidden",
+                    "value": 2,
+                    "writes": [
+                      "hidden"
+                    ]
+                  },
+                  {
+                    "id": "c",
+                    "kind": "assign",
+                    "reads": {
+                      "hidden": 2
+                    },
+                    "resource": "visible",
+                    "value": 2,
+                    "writes": [
+                      "visible"
+                    ]
+                  }
+                ],
+                "pending": [],
+                "reason": "",
+                "results": {
+                  "a": 1,
+                  "b": 2,
+                  "c": 2
+                },
+                "state": {
+                  "hidden": 2,
+                  "visible": 2
+                },
+                "status": "complete",
+                "versions": {
+                  "hidden": 2,
+                  "visible": 1
+                }
+              },
+              "outcomeHash": "sha256:1206f32975a7f737fb7072867835c6fd57ba237e0da3d0a2fc88e9163edd013f",
+              "reason": "",
+              "status": "enabled"
+            }
+          },
+          "right": {
+            "c": {
+              "fragmentOutcome": {
+                "events": [
+                  {
+                    "id": "b",
+                    "kind": "assign",
+                    "reads": {},
+                    "resource": "hidden",
+                    "value": 2,
+                    "writes": [
+                      "hidden"
+                    ]
+                  },
+                  {
+                    "id": "a",
+                    "kind": "assign",
+                    "reads": {},
+                    "resource": "hidden",
+                    "value": 1,
+                    "writes": [
+                      "hidden"
+                    ]
+                  },
+                  {
+                    "id": "c",
+                    "kind": "assign",
+                    "reads": {
+                      "hidden": 2
+                    },
+                    "resource": "visible",
+                    "value": 1,
+                    "writes": [
+                      "visible"
+                    ]
+                  }
+                ],
+                "pending": [],
+                "reason": "",
+                "results": {
+                  "a": 1,
+                  "b": 2,
+                  "c": 1
+                },
+                "state": {
+                  "hidden": 1,
+                  "visible": 1
+                },
+                "status": "complete",
+                "versions": {
+                  "hidden": 2,
+                  "visible": 1
+                }
+              },
+              "fragmentOutcomeHash": "sha256:1f185e8eec9fd029006c0c7f1c65f8a31255306093b53923cdccfd6f8f96c711",
+              "outcome": {
+                "events": [
+                  {
+                    "id": "b",
+                    "kind": "assign",
+                    "reads": {},
+                    "resource": "hidden",
+                    "value": 2,
+                    "writes": [
+                      "hidden"
+                    ]
+                  },
+                  {
+                    "id": "a",
+                    "kind": "assign",
+                    "reads": {},
+                    "resource": "hidden",
+                    "value": 1,
+                    "writes": [
+                      "hidden"
+                    ]
+                  },
+                  {
+                    "id": "c",
+                    "kind": "assign",
+                    "reads": {
+                      "hidden": 2
+                    },
+                    "resource": "visible",
+                    "value": 1,
+                    "writes": [
+                      "visible"
+                    ]
+                  }
+                ],
+                "pending": [],
+                "reason": "",
+                "results": {
+                  "a": 1,
+                  "b": 2,
+                  "c": 1
+                },
+                "state": {
+                  "hidden": 1,
+                  "visible": 1
+                },
+                "status": "complete",
+                "versions": {
+                  "hidden": 2,
+                  "visible": 1
+                }
+              },
+              "outcomeHash": "sha256:1f185e8eec9fd029006c0c7f1c65f8a31255306093b53923cdccfd6f8f96c711",
+              "reason": "",
+              "status": "enabled"
+            }
+          }
+        },
+        "limits": "Finite named observation/enablement product only; no theorem or universal equivalence.",
+        "prefixes": {
+          "left": {
+            "available": true,
+            "fragmentOutcome": {
+              "events": [
+                {
+                  "id": "a",
+                  "kind": "assign",
+                  "reads": {},
+                  "resource": "hidden",
+                  "value": 1,
+                  "writes": [
+                    "hidden"
+                  ]
+                },
+                {
+                  "id": "b",
+                  "kind": "assign",
+                  "reads": {},
+                  "resource": "hidden",
+                  "value": 2,
+                  "writes": [
+                    "hidden"
+                  ]
+                }
+              ],
+              "pending": [],
+              "reason": "",
+              "results": {
+                "a": 1,
+                "b": 2
+              },
+              "state": {
+                "hidden": 2,
+                "visible": 0
+              },
+              "status": "complete",
+              "versions": {
+                "hidden": 2,
+                "visible": 0
+              }
+            },
+            "fragmentOutcomeHash": "sha256:56d56dcd0006e045a0e7be12092861c37a496c698678f5b3f7a372b51262db70",
+            "outcome": {
+              "events": [
+                {
+                  "id": "a",
+                  "kind": "assign",
+                  "reads": {},
+                  "resource": "hidden",
+                  "value": 1,
+                  "writes": [
+                    "hidden"
+                  ]
+                },
+                {
+                  "id": "b",
+                  "kind": "assign",
+                  "reads": {},
+                  "resource": "hidden",
+                  "value": 2,
+                  "writes": [
+                    "hidden"
+                  ]
+                }
+              ],
+              "pending": [
+                "c"
+              ],
+              "reason": "",
+              "results": {
+                "a": 1,
+                "b": 2
+              },
+              "state": {
+                "hidden": 2,
+                "visible": 0
+              },
+              "status": "complete",
+              "versions": {
+                "hidden": 2,
+                "visible": 0
+              }
+            },
+            "outcomeHash": "sha256:f27b1c7100f7ab3ebe3d193691299b8801742ca9a01dec55b98353d0c02e0674",
+            "reason": "replayed"
+          },
+          "right": {
+            "available": true,
+            "fragmentOutcome": {
+              "events": [
+                {
+                  "id": "b",
+                  "kind": "assign",
+                  "reads": {},
+                  "resource": "hidden",
+                  "value": 2,
+                  "writes": [
+                    "hidden"
+                  ]
+                },
+                {
+                  "id": "a",
+                  "kind": "assign",
+                  "reads": {},
+                  "resource": "hidden",
+                  "value": 1,
+                  "writes": [
+                    "hidden"
+                  ]
+                }
+              ],
+              "pending": [],
+              "reason": "",
+              "results": {
+                "a": 1,
+                "b": 2
+              },
+              "state": {
+                "hidden": 1,
+                "visible": 0
+              },
+              "status": "complete",
+              "versions": {
+                "hidden": 2,
+                "visible": 0
+              }
+            },
+            "fragmentOutcomeHash": "sha256:12dbc9e8fd33936ed9be5c3b3ea48aa8045822f01c40bdbe0e7f54b70850dbf6",
+            "outcome": {
+              "events": [
+                {
+                  "id": "b",
+                  "kind": "assign",
+                  "reads": {},
+                  "resource": "hidden",
+                  "value": 2,
+                  "writes": [
+                    "hidden"
+                  ]
+                },
+                {
+                  "id": "a",
+                  "kind": "assign",
+                  "reads": {},
+                  "resource": "hidden",
+                  "value": 1,
+                  "writes": [
+                    "hidden"
+                  ]
+                }
+              ],
+              "pending": [
+                "c"
+              ],
+              "reason": "",
+              "results": {
+                "a": 1,
+                "b": 2
+              },
+              "state": {
+                "hidden": 1,
+                "visible": 0
+              },
+              "status": "complete",
+              "versions": {
+                "hidden": 2,
+                "visible": 0
+              }
+            },
+            "outcomeHash": "sha256:5ae95bf1dceeadba2bb0448b4a4d48003d53b1bebf601b08a730fa3c56cf298a",
+            "reason": "replayed"
+          }
+        },
+        "proofAccepted": false,
+        "reportHash": "sha256:b86f4e92703a4473f9a53348a946c42ce536a267a61be3f78eeed2322aba27a3",
+        "reportVersion": "contextual-continuations-v1",
+        "request": {
+          "caps": {
+            "checks": 20000,
+            "steps": 120000
+          },
+          "fixture": {
+            "modelVersion": "integer-batch-v1",
+            "observation": {
+              "mode": "projection",
+              "resources": [
+                "visible"
+              ]
+            },
+            "operations": [
+              {
+                "dependencies": [],
+                "expression": {
+                  "int": 1
+                },
+                "id": "a",
+                "kind": "assign",
+                "readVersions": {},
+                "target": "hidden"
+              },
+              {
+                "dependencies": [],
+                "expression": {
+                  "int": 2
+                },
+                "id": "b",
+                "kind": "assign",
+                "readVersions": {},
+                "target": "hidden"
+              },
+              {
+                "dependencies": [],
+                "expression": {
+                  "read": "hidden"
+                },
+                "id": "c",
+                "kind": "assign",
+                "readVersions": {},
+                "target": "visible"
+              }
+            ],
+            "state": {
+              "hidden": 0,
+              "visible": 0
+            },
+            "versions": {
+              "hidden": 0,
+              "visible": 0
+            }
+          },
+          "leftPrefix": [
+            "a",
+            "b"
+          ],
+          "requestVersion": "contextual-continuations-v1",
+          "rightPrefix": [
+            "b",
+            "a"
+          ],
+          "sourceBindings": {
+            "CONSTITUTION.md": "ff7196976a1736a639947c2ab26e8da157fef23c89ba9881312f2a36459964eb",
+            "docs/adr/0005-evidence-contracts-and-bounded-laboratory.md": "a35504083c719993a8c9a460d579c9017871b20bd65760f9f2534de2d7f27f6b",
+            "docs/adr/0017-bounded-structured-exchange.md": "72cecb595605a16eaa5de7a88e960492205d82a300af2f6fb4451263f7e780c4",
+            "docs/theory/OPERATIONAL_SEMANTICS.md": "7e83813d138dde064f85aafee1ba20302d55ede768d35d26340abd522ecce1f7",
+            "research/contextual_lab/__init__.py": "b47b50e317f912ceb915b51f87446eb8ac356d88ac1d8d7a6e654dc48688c278",
+            "research/contextual_lab/__main__.py": "a1feebe76446e8ee17b76cc4d50d401f07134855af18dc5d02e036f03d264d28",
+            "research/contextual_lab/checker.py": "56c63276cd7c9036a4447cd4443bfeb307ba231a5cf34d5b0945a5fe98ea0c73",
+            "research/lab/model.py": "f39040b5476d663f6e7384e65d00073b084df6c8958b38bff45e4d6b19da010f",
+            "specs/025-contextual-proof-obligations/contracts/continuations-v1.md": "4bae1481bfd2a9247eb53f6a6fd4ff161e90ee428b0a4aaae83a5f1c980d70ab",
+            "specs/025-contextual-proof-obligations/premise-inventory.json": "25c9a7ab8594c03d7bb865607d660cb5c42b8251d6d8f287ddec173e518af979"
+          },
+          "suffixes": [
+            [],
+            [
+              "c"
+            ]
+          ]
+        },
+        "requestHash": "sha256:5b55897bc6eeb6359bab6940aedb144b3103e80ef390a28439e7f9aff34f7c60",
+        "sourceBindings": {
+          "CONSTITUTION.md": "ff7196976a1736a639947c2ab26e8da157fef23c89ba9881312f2a36459964eb",
+          "docs/adr/0005-evidence-contracts-and-bounded-laboratory.md": "a35504083c719993a8c9a460d579c9017871b20bd65760f9f2534de2d7f27f6b",
+          "docs/adr/0017-bounded-structured-exchange.md": "72cecb595605a16eaa5de7a88e960492205d82a300af2f6fb4451263f7e780c4",
+          "docs/theory/OPERATIONAL_SEMANTICS.md": "7e83813d138dde064f85aafee1ba20302d55ede768d35d26340abd522ecce1f7",
+          "research/contextual_lab/__init__.py": "b47b50e317f912ceb915b51f87446eb8ac356d88ac1d8d7a6e654dc48688c278",
+          "research/contextual_lab/__main__.py": "a1feebe76446e8ee17b76cc4d50d401f07134855af18dc5d02e036f03d264d28",
+          "research/contextual_lab/checker.py": "56c63276cd7c9036a4447cd4443bfeb307ba231a5cf34d5b0945a5fe98ea0c73",
+          "research/lab/model.py": "f39040b5476d663f6e7384e65d00073b084df6c8958b38bff45e4d6b19da010f",
+          "specs/025-contextual-proof-obligations/contracts/continuations-v1.md": "4bae1481bfd2a9247eb53f6a6fd4ff161e90ee428b0a4aaae83a5f1c980d70ab",
+          "specs/025-contextual-proof-obligations/premise-inventory.json": "25c9a7ab8594c03d7bb865607d660cb5c42b8251d6d8f287ddec173e518af979"
+        },
+        "verdict": "divergent",
+        "witness": {
+          "checkIndex": 1,
+          "minimality": "shortest-then-lexical registered suffix",
+          "suffix": [
+            "c"
+          ]
+        }
+      },
+      "sha256": "58b6862c65bc9e273f233423e1d7cd698140b508ef9ad8433c498f70b6b17f7f"
+    },
+    "continuations-2.json": {
+      "artifact": {
+        "checks": [
+          {
+            "comparison": "matching",
+            "enabledness": {
+              "left": {
+                "c": {
+                  "fragmentOutcome": {
+                    "events": [
+                      {
+                        "id": "a",
+                        "kind": "assign",
+                        "reads": {},
+                        "resource": "hidden",
+                        "value": 1,
+                        "writes": [
+                          "hidden"
+                        ]
+                      },
+                      {
+                        "id": "b",
+                        "kind": "assign",
+                        "reads": {},
+                        "resource": "hidden",
+                        "value": 2,
+                        "writes": [
+                          "hidden"
+                        ]
+                      },
+                      {
+                        "id": "c",
+                        "kind": "assign",
+                        "reads": {
+                          "hidden": 2
+                        },
+                        "resource": "visible",
+                        "value": 2,
+                        "writes": [
+                          "visible"
+                        ]
+                      }
+                    ],
+                    "pending": [],
+                    "reason": "",
+                    "results": {
+                      "a": 1,
+                      "b": 2,
+                      "c": 2
+                    },
+                    "state": {
+                      "hidden": 2,
+                      "visible": 2
+                    },
+                    "status": "complete",
+                    "versions": {
+                      "hidden": 2,
+                      "visible": 1
+                    }
+                  },
+                  "fragmentOutcomeHash": "sha256:1206f32975a7f737fb7072867835c6fd57ba237e0da3d0a2fc88e9163edd013f",
+                  "outcome": {
+                    "events": [
+                      {
+                        "id": "a",
+                        "kind": "assign",
+                        "reads": {},
+                        "resource": "hidden",
+                        "value": 1,
+                        "writes": [
+                          "hidden"
+                        ]
+                      },
+                      {
+                        "id": "b",
+                        "kind": "assign",
+                        "reads": {},
+                        "resource": "hidden",
+                        "value": 2,
+                        "writes": [
+                          "hidden"
+                        ]
+                      },
+                      {
+                        "id": "c",
+                        "kind": "assign",
+                        "reads": {
+                          "hidden": 2
+                        },
+                        "resource": "visible",
+                        "value": 2,
+                        "writes": [
+                          "visible"
+                        ]
+                      }
+                    ],
+                    "pending": [],
+                    "reason": "",
+                    "results": {
+                      "a": 1,
+                      "b": 2,
+                      "c": 2
+                    },
+                    "state": {
+                      "hidden": 2,
+                      "visible": 2
+                    },
+                    "status": "complete",
+                    "versions": {
+                      "hidden": 2,
+                      "visible": 1
+                    }
+                  },
+                  "outcomeHash": "sha256:1206f32975a7f737fb7072867835c6fd57ba237e0da3d0a2fc88e9163edd013f",
+                  "reason": "",
+                  "status": "enabled"
+                }
+              },
+              "right": {
+                "c": {
+                  "fragmentOutcome": {
+                    "events": [
+                      {
+                        "id": "b",
+                        "kind": "assign",
+                        "reads": {},
+                        "resource": "hidden",
+                        "value": 2,
+                        "writes": [
+                          "hidden"
+                        ]
+                      },
+                      {
+                        "id": "a",
+                        "kind": "assign",
+                        "reads": {},
+                        "resource": "hidden",
+                        "value": 1,
+                        "writes": [
+                          "hidden"
+                        ]
+                      },
+                      {
+                        "id": "c",
+                        "kind": "assign",
+                        "reads": {
+                          "hidden": 2
+                        },
+                        "resource": "visible",
+                        "value": 1,
+                        "writes": [
+                          "visible"
+                        ]
+                      }
+                    ],
+                    "pending": [],
+                    "reason": "",
+                    "results": {
+                      "a": 1,
+                      "b": 2,
+                      "c": 1
+                    },
+                    "state": {
+                      "hidden": 1,
+                      "visible": 1
+                    },
+                    "status": "complete",
+                    "versions": {
+                      "hidden": 2,
+                      "visible": 1
+                    }
+                  },
+                  "fragmentOutcomeHash": "sha256:1f185e8eec9fd029006c0c7f1c65f8a31255306093b53923cdccfd6f8f96c711",
+                  "outcome": {
+                    "events": [
+                      {
+                        "id": "b",
+                        "kind": "assign",
+                        "reads": {},
+                        "resource": "hidden",
+                        "value": 2,
+                        "writes": [
+                          "hidden"
+                        ]
+                      },
+                      {
+                        "id": "a",
+                        "kind": "assign",
+                        "reads": {},
+                        "resource": "hidden",
+                        "value": 1,
+                        "writes": [
+                          "hidden"
+                        ]
+                      },
+                      {
+                        "id": "c",
+                        "kind": "assign",
+                        "reads": {
+                          "hidden": 2
+                        },
+                        "resource": "visible",
+                        "value": 1,
+                        "writes": [
+                          "visible"
+                        ]
+                      }
+                    ],
+                    "pending": [],
+                    "reason": "",
+                    "results": {
+                      "a": 1,
+                      "b": 2,
+                      "c": 1
+                    },
+                    "state": {
+                      "hidden": 1,
+                      "visible": 1
+                    },
+                    "status": "complete",
+                    "versions": {
+                      "hidden": 2,
+                      "visible": 1
+                    }
+                  },
+                  "outcomeHash": "sha256:1f185e8eec9fd029006c0c7f1c65f8a31255306093b53923cdccfd6f8f96c711",
+                  "reason": "",
+                  "status": "enabled"
+                }
+              }
+            },
+            "fragmentOutcomeHashes": {
+              "left": "sha256:56d56dcd0006e045a0e7be12092861c37a496c698678f5b3f7a372b51262db70",
+              "right": "sha256:12dbc9e8fd33936ed9be5c3b3ea48aa8045822f01c40bdbe0e7f54b70850dbf6"
+            },
+            "fragmentOutcomes": {
+              "left": {
+                "events": [
+                  {
+                    "id": "a",
+                    "kind": "assign",
+                    "reads": {},
+                    "resource": "hidden",
+                    "value": 1,
+                    "writes": [
+                      "hidden"
+                    ]
+                  },
+                  {
+                    "id": "b",
+                    "kind": "assign",
+                    "reads": {},
+                    "resource": "hidden",
+                    "value": 2,
+                    "writes": [
+                      "hidden"
+                    ]
+                  }
+                ],
+                "pending": [],
+                "reason": "",
+                "results": {
+                  "a": 1,
+                  "b": 2
+                },
+                "state": {
+                  "hidden": 2,
+                  "visible": 0
+                },
+                "status": "complete",
+                "versions": {
+                  "hidden": 2,
+                  "visible": 0
+                }
+              },
+              "right": {
+                "events": [
+                  {
+                    "id": "b",
+                    "kind": "assign",
+                    "reads": {},
+                    "resource": "hidden",
+                    "value": 2,
+                    "writes": [
+                      "hidden"
+                    ]
+                  },
+                  {
+                    "id": "a",
+                    "kind": "assign",
+                    "reads": {},
+                    "resource": "hidden",
+                    "value": 1,
+                    "writes": [
+                      "hidden"
+                    ]
+                  }
+                ],
+                "pending": [],
+                "reason": "",
+                "results": {
+                  "a": 1,
+                  "b": 2
+                },
+                "state": {
+                  "hidden": 1,
+                  "visible": 0
+                },
+                "status": "complete",
+                "versions": {
+                  "hidden": 2,
+                  "visible": 0
+                }
+              }
+            },
+            "index": 0,
+            "observationHashes": {
+              "left": "sha256:3e17f87b591b20051a100a60eddf9e5c9f5d4fe31ce629e94fe1852693e43d29",
+              "right": "sha256:3e17f87b591b20051a100a60eddf9e5c9f5d4fe31ce629e94fe1852693e43d29"
+            },
+            "observations": {
+              "left": {
+                "state": {
+                  "visible": 0
+                },
+                "status": "complete"
+              },
+              "right": {
+                "state": {
+                  "visible": 0
+                },
+                "status": "complete"
+              }
+            },
+            "outcomeHashes": {
+              "left": "sha256:f27b1c7100f7ab3ebe3d193691299b8801742ca9a01dec55b98353d0c02e0674",
+              "right": "sha256:5ae95bf1dceeadba2bb0448b4a4d48003d53b1bebf601b08a730fa3c56cf298a"
+            },
+            "outcomes": {
+              "left": {
+                "events": [
+                  {
+                    "id": "a",
+                    "kind": "assign",
+                    "reads": {},
+                    "resource": "hidden",
+                    "value": 1,
+                    "writes": [
+                      "hidden"
+                    ]
+                  },
+                  {
+                    "id": "b",
+                    "kind": "assign",
+                    "reads": {},
+                    "resource": "hidden",
+                    "value": 2,
+                    "writes": [
+                      "hidden"
+                    ]
+                  }
+                ],
+                "pending": [
+                  "c"
+                ],
+                "reason": "",
+                "results": {
+                  "a": 1,
+                  "b": 2
+                },
+                "state": {
+                  "hidden": 2,
+                  "visible": 0
+                },
+                "status": "complete",
+                "versions": {
+                  "hidden": 2,
+                  "visible": 0
+                }
+              },
+              "right": {
+                "events": [
+                  {
+                    "id": "b",
+                    "kind": "assign",
+                    "reads": {},
+                    "resource": "hidden",
+                    "value": 2,
+                    "writes": [
+                      "hidden"
+                    ]
+                  },
+                  {
+                    "id": "a",
+                    "kind": "assign",
+                    "reads": {},
+                    "resource": "hidden",
+                    "value": 1,
+                    "writes": [
+                      "hidden"
+                    ]
+                  }
+                ],
+                "pending": [
+                  "c"
+                ],
+                "reason": "",
+                "results": {
+                  "a": 1,
+                  "b": 2
+                },
+                "state": {
+                  "hidden": 1,
+                  "visible": 0
+                },
+                "status": "complete",
+                "versions": {
+                  "hidden": 2,
+                  "visible": 0
+                }
+              }
+            },
+            "rawDifferences": [
+              "state",
+              "events"
+            ],
+            "suffix": [],
+            "unavailable": []
+          },
+          {
+            "comparison": "different",
+            "enabledness": {
+              "left": {},
+              "right": {}
+            },
+            "fragmentOutcomeHashes": {
+              "left": "sha256:1206f32975a7f737fb7072867835c6fd57ba237e0da3d0a2fc88e9163edd013f",
+              "right": "sha256:1f185e8eec9fd029006c0c7f1c65f8a31255306093b53923cdccfd6f8f96c711"
+            },
+            "fragmentOutcomes": {
+              "left": {
+                "events": [
+                  {
+                    "id": "a",
+                    "kind": "assign",
+                    "reads": {},
+                    "resource": "hidden",
+                    "value": 1,
+                    "writes": [
+                      "hidden"
+                    ]
+                  },
+                  {
+                    "id": "b",
+                    "kind": "assign",
+                    "reads": {},
+                    "resource": "hidden",
+                    "value": 2,
+                    "writes": [
+                      "hidden"
+                    ]
+                  },
+                  {
+                    "id": "c",
+                    "kind": "assign",
+                    "reads": {
+                      "hidden": 2
+                    },
+                    "resource": "visible",
+                    "value": 2,
+                    "writes": [
+                      "visible"
+                    ]
+                  }
+                ],
+                "pending": [],
+                "reason": "",
+                "results": {
+                  "a": 1,
+                  "b": 2,
+                  "c": 2
+                },
+                "state": {
+                  "hidden": 2,
+                  "visible": 2
+                },
+                "status": "complete",
+                "versions": {
+                  "hidden": 2,
+                  "visible": 1
+                }
+              },
+              "right": {
+                "events": [
+                  {
+                    "id": "b",
+                    "kind": "assign",
+                    "reads": {},
+                    "resource": "hidden",
+                    "value": 2,
+                    "writes": [
+                      "hidden"
+                    ]
+                  },
+                  {
+                    "id": "a",
+                    "kind": "assign",
+                    "reads": {},
+                    "resource": "hidden",
+                    "value": 1,
+                    "writes": [
+                      "hidden"
+                    ]
+                  },
+                  {
+                    "id": "c",
+                    "kind": "assign",
+                    "reads": {
+                      "hidden": 2
+                    },
+                    "resource": "visible",
+                    "value": 1,
+                    "writes": [
+                      "visible"
+                    ]
+                  }
+                ],
+                "pending": [],
+                "reason": "",
+                "results": {
+                  "a": 1,
+                  "b": 2,
+                  "c": 1
+                },
+                "state": {
+                  "hidden": 1,
+                  "visible": 1
+                },
+                "status": "complete",
+                "versions": {
+                  "hidden": 2,
+                  "visible": 1
+                }
+              }
+            },
+            "index": 1,
+            "observationHashes": {
+              "left": "sha256:09f74798eff91bcbd1bf377bed33c33b83415cb9e19599b854ea2ba7aea77ba9",
+              "right": "sha256:9f3c6782689b96d9bccda1df90d59ed38f4391cd8db918e9be4aed7bb1204ade"
+            },
+            "observations": {
+              "left": {
+                "state": {
+                  "visible": 2
+                },
+                "status": "complete"
+              },
+              "right": {
+                "state": {
+                  "visible": 1
+                },
+                "status": "complete"
+              }
+            },
+            "outcomeHashes": {
+              "left": "sha256:1206f32975a7f737fb7072867835c6fd57ba237e0da3d0a2fc88e9163edd013f",
+              "right": "sha256:1f185e8eec9fd029006c0c7f1c65f8a31255306093b53923cdccfd6f8f96c711"
+            },
+            "outcomes": {
+              "left": {
+                "events": [
+                  {
+                    "id": "a",
+                    "kind": "assign",
+                    "reads": {},
+                    "resource": "hidden",
+                    "value": 1,
+                    "writes": [
+                      "hidden"
+                    ]
+                  },
+                  {
+                    "id": "b",
+                    "kind": "assign",
+                    "reads": {},
+                    "resource": "hidden",
+                    "value": 2,
+                    "writes": [
+                      "hidden"
+                    ]
+                  },
+                  {
+                    "id": "c",
+                    "kind": "assign",
+                    "reads": {
+                      "hidden": 2
+                    },
+                    "resource": "visible",
+                    "value": 2,
+                    "writes": [
+                      "visible"
+                    ]
+                  }
+                ],
+                "pending": [],
+                "reason": "",
+                "results": {
+                  "a": 1,
+                  "b": 2,
+                  "c": 2
+                },
+                "state": {
+                  "hidden": 2,
+                  "visible": 2
+                },
+                "status": "complete",
+                "versions": {
+                  "hidden": 2,
+                  "visible": 1
+                }
+              },
+              "right": {
+                "events": [
+                  {
+                    "id": "b",
+                    "kind": "assign",
+                    "reads": {},
+                    "resource": "hidden",
+                    "value": 2,
+                    "writes": [
+                      "hidden"
+                    ]
+                  },
+                  {
+                    "id": "a",
+                    "kind": "assign",
+                    "reads": {},
+                    "resource": "hidden",
+                    "value": 1,
+                    "writes": [
+                      "hidden"
+                    ]
+                  },
+                  {
+                    "id": "c",
+                    "kind": "assign",
+                    "reads": {
+                      "hidden": 2
+                    },
+                    "resource": "visible",
+                    "value": 1,
+                    "writes": [
+                      "visible"
+                    ]
+                  }
+                ],
+                "pending": [],
+                "reason": "",
+                "results": {
+                  "a": 1,
+                  "b": 2,
+                  "c": 1
+                },
+                "state": {
+                  "hidden": 1,
+                  "visible": 1
+                },
+                "status": "complete",
+                "versions": {
+                  "hidden": 2,
+                  "visible": 1
+                }
+              }
+            },
+            "rawDifferences": [
+              "state",
+              "results",
+              "events"
+            ],
+            "suffix": [
+              "c"
+            ],
+            "unavailable": []
+          }
+        ],
+        "costs": {
+          "actualReplays": 4,
+          "cacheHits": 6,
+          "checks": 12,
+          "steps": 10
+        },
+        "coverage": {
+          "capLocation": null,
+          "capReason": null,
+          "completed": 2,
+          "ordering": "length-then-lexical",
+          "prelude": {
+            "initialProbes": {
+              "left": {
+                "c": "completed"
+              },
+              "right": {
+                "c": "completed"
+              }
+            },
+            "prefixes": {
+              "left": "completed",
+              "right": "completed"
+            }
+          },
+          "requested": 2,
+          "unvisited": []
+        },
+        "executionAuthorization": false,
+        "initialEnabledness": {
+          "left": {
+            "c": {
+              "fragmentOutcome": {
+                "events": [
+                  {
+                    "id": "a",
+                    "kind": "assign",
+                    "reads": {},
+                    "resource": "hidden",
+                    "value": 1,
+                    "writes": [
+                      "hidden"
+                    ]
+                  },
+                  {
+                    "id": "b",
+                    "kind": "assign",
+                    "reads": {},
+                    "resource": "hidden",
+                    "value": 2,
+                    "writes": [
+                      "hidden"
+                    ]
+                  },
+                  {
+                    "id": "c",
+                    "kind": "assign",
+                    "reads": {
+                      "hidden": 2
+                    },
+                    "resource": "visible",
+                    "value": 2,
+                    "writes": [
+                      "visible"
+                    ]
+                  }
+                ],
+                "pending": [],
+                "reason": "",
+                "results": {
+                  "a": 1,
+                  "b": 2,
+                  "c": 2
+                },
+                "state": {
+                  "hidden": 2,
+                  "visible": 2
+                },
+                "status": "complete",
+                "versions": {
+                  "hidden": 2,
+                  "visible": 1
+                }
+              },
+              "fragmentOutcomeHash": "sha256:1206f32975a7f737fb7072867835c6fd57ba237e0da3d0a2fc88e9163edd013f",
+              "outcome": {
+                "events": [
+                  {
+                    "id": "a",
+                    "kind": "assign",
+                    "reads": {},
+                    "resource": "hidden",
+                    "value": 1,
+                    "writes": [
+                      "hidden"
+                    ]
+                  },
+                  {
+                    "id": "b",
+                    "kind": "assign",
+                    "reads": {},
+                    "resource": "hidden",
+                    "value": 2,
+                    "writes": [
+                      "hidden"
+                    ]
+                  },
+                  {
+                    "id": "c",
+                    "kind": "assign",
+                    "reads": {
+                      "hidden": 2
+                    },
+                    "resource": "visible",
+                    "value": 2,
+                    "writes": [
+                      "visible"
+                    ]
+                  }
+                ],
+                "pending": [],
+                "reason": "",
+                "results": {
+                  "a": 1,
+                  "b": 2,
+                  "c": 2
+                },
+                "state": {
+                  "hidden": 2,
+                  "visible": 2
+                },
+                "status": "complete",
+                "versions": {
+                  "hidden": 2,
+                  "visible": 1
+                }
+              },
+              "outcomeHash": "sha256:1206f32975a7f737fb7072867835c6fd57ba237e0da3d0a2fc88e9163edd013f",
+              "reason": "",
+              "status": "enabled"
+            }
+          },
+          "right": {
+            "c": {
+              "fragmentOutcome": {
+                "events": [
+                  {
+                    "id": "b",
+                    "kind": "assign",
+                    "reads": {},
+                    "resource": "hidden",
+                    "value": 2,
+                    "writes": [
+                      "hidden"
+                    ]
+                  },
+                  {
+                    "id": "a",
+                    "kind": "assign",
+                    "reads": {},
+                    "resource": "hidden",
+                    "value": 1,
+                    "writes": [
+                      "hidden"
+                    ]
+                  },
+                  {
+                    "id": "c",
+                    "kind": "assign",
+                    "reads": {
+                      "hidden": 2
+                    },
+                    "resource": "visible",
+                    "value": 1,
+                    "writes": [
+                      "visible"
+                    ]
+                  }
+                ],
+                "pending": [],
+                "reason": "",
+                "results": {
+                  "a": 1,
+                  "b": 2,
+                  "c": 1
+                },
+                "state": {
+                  "hidden": 1,
+                  "visible": 1
+                },
+                "status": "complete",
+                "versions": {
+                  "hidden": 2,
+                  "visible": 1
+                }
+              },
+              "fragmentOutcomeHash": "sha256:1f185e8eec9fd029006c0c7f1c65f8a31255306093b53923cdccfd6f8f96c711",
+              "outcome": {
+                "events": [
+                  {
+                    "id": "b",
+                    "kind": "assign",
+                    "reads": {},
+                    "resource": "hidden",
+                    "value": 2,
+                    "writes": [
+                      "hidden"
+                    ]
+                  },
+                  {
+                    "id": "a",
+                    "kind": "assign",
+                    "reads": {},
+                    "resource": "hidden",
+                    "value": 1,
+                    "writes": [
+                      "hidden"
+                    ]
+                  },
+                  {
+                    "id": "c",
+                    "kind": "assign",
+                    "reads": {
+                      "hidden": 2
+                    },
+                    "resource": "visible",
+                    "value": 1,
+                    "writes": [
+                      "visible"
+                    ]
+                  }
+                ],
+                "pending": [],
+                "reason": "",
+                "results": {
+                  "a": 1,
+                  "b": 2,
+                  "c": 1
+                },
+                "state": {
+                  "hidden": 1,
+                  "visible": 1
+                },
+                "status": "complete",
+                "versions": {
+                  "hidden": 2,
+                  "visible": 1
+                }
+              },
+              "outcomeHash": "sha256:1f185e8eec9fd029006c0c7f1c65f8a31255306093b53923cdccfd6f8f96c711",
+              "reason": "",
+              "status": "enabled"
+            }
+          }
+        },
+        "limits": "Finite named observation/enablement product only; no theorem or universal equivalence.",
+        "prefixes": {
+          "left": {
+            "available": true,
+            "fragmentOutcome": {
+              "events": [
+                {
+                  "id": "a",
+                  "kind": "assign",
+                  "reads": {},
+                  "resource": "hidden",
+                  "value": 1,
+                  "writes": [
+                    "hidden"
+                  ]
+                },
+                {
+                  "id": "b",
+                  "kind": "assign",
+                  "reads": {},
+                  "resource": "hidden",
+                  "value": 2,
+                  "writes": [
+                    "hidden"
+                  ]
+                }
+              ],
+              "pending": [],
+              "reason": "",
+              "results": {
+                "a": 1,
+                "b": 2
+              },
+              "state": {
+                "hidden": 2,
+                "visible": 0
+              },
+              "status": "complete",
+              "versions": {
+                "hidden": 2,
+                "visible": 0
+              }
+            },
+            "fragmentOutcomeHash": "sha256:56d56dcd0006e045a0e7be12092861c37a496c698678f5b3f7a372b51262db70",
+            "outcome": {
+              "events": [
+                {
+                  "id": "a",
+                  "kind": "assign",
+                  "reads": {},
+                  "resource": "hidden",
+                  "value": 1,
+                  "writes": [
+                    "hidden"
+                  ]
+                },
+                {
+                  "id": "b",
+                  "kind": "assign",
+                  "reads": {},
+                  "resource": "hidden",
+                  "value": 2,
+                  "writes": [
+                    "hidden"
+                  ]
+                }
+              ],
+              "pending": [
+                "c"
+              ],
+              "reason": "",
+              "results": {
+                "a": 1,
+                "b": 2
+              },
+              "state": {
+                "hidden": 2,
+                "visible": 0
+              },
+              "status": "complete",
+              "versions": {
+                "hidden": 2,
+                "visible": 0
+              }
+            },
+            "outcomeHash": "sha256:f27b1c7100f7ab3ebe3d193691299b8801742ca9a01dec55b98353d0c02e0674",
+            "reason": "replayed"
+          },
+          "right": {
+            "available": true,
+            "fragmentOutcome": {
+              "events": [
+                {
+                  "id": "b",
+                  "kind": "assign",
+                  "reads": {},
+                  "resource": "hidden",
+                  "value": 2,
+                  "writes": [
+                    "hidden"
+                  ]
+                },
+                {
+                  "id": "a",
+                  "kind": "assign",
+                  "reads": {},
+                  "resource": "hidden",
+                  "value": 1,
+                  "writes": [
+                    "hidden"
+                  ]
+                }
+              ],
+              "pending": [],
+              "reason": "",
+              "results": {
+                "a": 1,
+                "b": 2
+              },
+              "state": {
+                "hidden": 1,
+                "visible": 0
+              },
+              "status": "complete",
+              "versions": {
+                "hidden": 2,
+                "visible": 0
+              }
+            },
+            "fragmentOutcomeHash": "sha256:12dbc9e8fd33936ed9be5c3b3ea48aa8045822f01c40bdbe0e7f54b70850dbf6",
+            "outcome": {
+              "events": [
+                {
+                  "id": "b",
+                  "kind": "assign",
+                  "reads": {},
+                  "resource": "hidden",
+                  "value": 2,
+                  "writes": [
+                    "hidden"
+                  ]
+                },
+                {
+                  "id": "a",
+                  "kind": "assign",
+                  "reads": {},
+                  "resource": "hidden",
+                  "value": 1,
+                  "writes": [
+                    "hidden"
+                  ]
+                }
+              ],
+              "pending": [
+                "c"
+              ],
+              "reason": "",
+              "results": {
+                "a": 1,
+                "b": 2
+              },
+              "state": {
+                "hidden": 1,
+                "visible": 0
+              },
+              "status": "complete",
+              "versions": {
+                "hidden": 2,
+                "visible": 0
+              }
+            },
+            "outcomeHash": "sha256:5ae95bf1dceeadba2bb0448b4a4d48003d53b1bebf601b08a730fa3c56cf298a",
+            "reason": "replayed"
+          }
+        },
+        "proofAccepted": false,
+        "reportHash": "sha256:b86f4e92703a4473f9a53348a946c42ce536a267a61be3f78eeed2322aba27a3",
+        "reportVersion": "contextual-continuations-v1",
+        "request": {
+          "caps": {
+            "checks": 20000,
+            "steps": 120000
+          },
+          "fixture": {
+            "modelVersion": "integer-batch-v1",
+            "observation": {
+              "mode": "projection",
+              "resources": [
+                "visible"
+              ]
+            },
+            "operations": [
+              {
+                "dependencies": [],
+                "expression": {
+                  "int": 1
+                },
+                "id": "a",
+                "kind": "assign",
+                "readVersions": {},
+                "target": "hidden"
+              },
+              {
+                "dependencies": [],
+                "expression": {
+                  "int": 2
+                },
+                "id": "b",
+                "kind": "assign",
+                "readVersions": {},
+                "target": "hidden"
+              },
+              {
+                "dependencies": [],
+                "expression": {
+                  "read": "hidden"
+                },
+                "id": "c",
+                "kind": "assign",
+                "readVersions": {},
+                "target": "visible"
+              }
+            ],
+            "state": {
+              "hidden": 0,
+              "visible": 0
+            },
+            "versions": {
+              "hidden": 0,
+              "visible": 0
+            }
+          },
+          "leftPrefix": [
+            "a",
+            "b"
+          ],
+          "requestVersion": "contextual-continuations-v1",
+          "rightPrefix": [
+            "b",
+            "a"
+          ],
+          "sourceBindings": {
+            "CONSTITUTION.md": "ff7196976a1736a639947c2ab26e8da157fef23c89ba9881312f2a36459964eb",
+            "docs/adr/0005-evidence-contracts-and-bounded-laboratory.md": "a35504083c719993a8c9a460d579c9017871b20bd65760f9f2534de2d7f27f6b",
+            "docs/adr/0017-bounded-structured-exchange.md": "72cecb595605a16eaa5de7a88e960492205d82a300af2f6fb4451263f7e780c4",
+            "docs/theory/OPERATIONAL_SEMANTICS.md": "7e83813d138dde064f85aafee1ba20302d55ede768d35d26340abd522ecce1f7",
+            "research/contextual_lab/__init__.py": "b47b50e317f912ceb915b51f87446eb8ac356d88ac1d8d7a6e654dc48688c278",
+            "research/contextual_lab/__main__.py": "a1feebe76446e8ee17b76cc4d50d401f07134855af18dc5d02e036f03d264d28",
+            "research/contextual_lab/checker.py": "56c63276cd7c9036a4447cd4443bfeb307ba231a5cf34d5b0945a5fe98ea0c73",
+            "research/lab/model.py": "f39040b5476d663f6e7384e65d00073b084df6c8958b38bff45e4d6b19da010f",
+            "specs/025-contextual-proof-obligations/contracts/continuations-v1.md": "4bae1481bfd2a9247eb53f6a6fd4ff161e90ee428b0a4aaae83a5f1c980d70ab",
+            "specs/025-contextual-proof-obligations/premise-inventory.json": "25c9a7ab8594c03d7bb865607d660cb5c42b8251d6d8f287ddec173e518af979"
+          },
+          "suffixes": [
+            [],
+            [
+              "c"
+            ]
+          ]
+        },
+        "requestHash": "sha256:5b55897bc6eeb6359bab6940aedb144b3103e80ef390a28439e7f9aff34f7c60",
+        "sourceBindings": {
+          "CONSTITUTION.md": "ff7196976a1736a639947c2ab26e8da157fef23c89ba9881312f2a36459964eb",
+          "docs/adr/0005-evidence-contracts-and-bounded-laboratory.md": "a35504083c719993a8c9a460d579c9017871b20bd65760f9f2534de2d7f27f6b",
+          "docs/adr/0017-bounded-structured-exchange.md": "72cecb595605a16eaa5de7a88e960492205d82a300af2f6fb4451263f7e780c4",
+          "docs/theory/OPERATIONAL_SEMANTICS.md": "7e83813d138dde064f85aafee1ba20302d55ede768d35d26340abd522ecce1f7",
+          "research/contextual_lab/__init__.py": "b47b50e317f912ceb915b51f87446eb8ac356d88ac1d8d7a6e654dc48688c278",
+          "research/contextual_lab/__main__.py": "a1feebe76446e8ee17b76cc4d50d401f07134855af18dc5d02e036f03d264d28",
+          "research/contextual_lab/checker.py": "56c63276cd7c9036a4447cd4443bfeb307ba231a5cf34d5b0945a5fe98ea0c73",
+          "research/lab/model.py": "f39040b5476d663f6e7384e65d00073b084df6c8958b38bff45e4d6b19da010f",
+          "specs/025-contextual-proof-obligations/contracts/continuations-v1.md": "4bae1481bfd2a9247eb53f6a6fd4ff161e90ee428b0a4aaae83a5f1c980d70ab",
+          "specs/025-contextual-proof-obligations/premise-inventory.json": "25c9a7ab8594c03d7bb865607d660cb5c42b8251d6d8f287ddec173e518af979"
+        },
+        "verdict": "divergent",
+        "witness": {
+          "checkIndex": 1,
+          "minimality": "shortest-then-lexical registered suffix",
+          "suffix": [
+            "c"
+          ]
+        }
+      },
+      "sha256": "58b6862c65bc9e273f233423e1d7cd698140b508ef9ad8433c498f70b6b17f7f"
+    }
+  },
+  "preflight": {
+    "command": "PATH=/tmp/agent-braid-pending-closure-20261021/.venv-speckit/bin:$PATH python3 -m scripts.validate_spec_kit",
+    "exitCode": 0,
+    "logSha256": "b28f0f3bd337a6cae29938ed6ec99ef7ecf3c0005cc38370479d91ec923e04ac",
+    "stdout": "Spec Kit structural gates passed; semantic/human review remains separate.\n"
+  },
+  "proofAccepted": false,
+  "sourceBindings": {
+    "agent_braid/structured_exchange.py": "f43079b348c78e9e1a994492fb14754e1771533771e009b1186ff54bb3efa396",
+    "docs/releases/publication/history-rewrite-equivalence-20261013.json": "760a4ab95cead520be67e42a090d14924c2ad2c97ad985d64a2db148e9ef212c",
+    "docs/releases/publication/history-rewrite-equivalence-20261016.json": "bc0505a1212a9e3131d13c15dcb72cf0a71a53c4fac627b40ca9f94865d10a38",
+    "examples/contextual-lab/anchored-manifest.json": "e169a8be3c0da6b67c53af31a9d1effb45e19adfe7abf29638675dd5b3ff368a",
+    "examples/contextual-lab/expected.json": "0d55121d29fe57f640927bc29b31dbe3cbcafac93447c584f4f8e730b96d0f46",
+    "examples/contextual-lab/manifest.json": "5b55897bc6eeb6359bab6940aedb144b3103e80ef390a28439e7f9aff34f7c60",
+    "research/contextual_lab/checker.py": "56c63276cd7c9036a4447cd4443bfeb307ba231a5cf34d5b0945a5fe98ea0c73",
+    "research/lab/model.py": "f39040b5476d663f6e7384e65d00073b084df6c8958b38bff45e4d6b19da010f",
+    "research/proofs/contextual-candidates/anchored-candidate.md": "f7b3eb0fc553ff12a49f9a35a993261351210f8e9a7ef80d29a36e83a0b65816",
+    "scripts/crosscheck_contextual_proof_mapping.py": "642a387eb5d20f977de85e6b30b9410a8a21c0f931036c0c52332335e0ef57f2",
+    "specs/025-contextual-proof-obligations/assurance.json": "bf2e4863cc750e330f9acdf68e8c4a97598731e2e5472c813c68b61e106c2ec5",
+    "specs/025-contextual-proof-obligations/evidence/candidate-profiles.json": "1946dba226c4b491d101bfac0cbcf32abf4bf61bfde76b820c0c683e342bd744",
+    "specs/025-contextual-proof-obligations/evidence/internal-clean-clone.json": "44863c9da73361e3d0e92da652fb9caa79f50851050bef0a98f9d490079f0329",
+    "specs/025-contextual-proof-obligations/evidence/luna-mathematical-inspection.json": "b4f9f14dc4a086f5bbcda9057243cae6efd3041ea12370f51c88622c436d52d8",
+    "specs/025-contextual-proof-obligations/evidence/technical-delivery.json": "753ae8d7696017f453744a0bd0006071191e3347547c2504c8d9c135e730820a",
+    "tests/test_contextual_lab.py": "aa8f33ba47d79a6418d7d1f3d1a570782561ced894dbf24ada03cda5679e674b",
+    "tests/test_system_one_context.py": "f54ac437ed9d516033189efe3f17b4990d872d4627a6f5fadf51950132771978"
+  },
+  "specificIndependentProofReview": "pending"
+}
