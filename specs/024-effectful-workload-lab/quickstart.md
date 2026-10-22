@@ -60,7 +60,9 @@ executionAuthorization false.
 The CLI explores one request per invocation, so manifest-level exploration runs
 it once per frozen fixture request. Inputs, outputs and every ancestor directory
 must be non-symlink paths; on macOS resolve the scratch directory with `pwd -P`
-(`/tmp` and `/var` are symlinks). Outputs are created exclusively.
+(`/tmp` and `/var` are symlinks). Outputs are created exclusively. Refusals
+print `status: rejected` with a reason such as `symlink-path`, `output-exists`,
+`not-regular-file`, `too-large`, `invalid-json` or `invalid-request`.
 
 ```sh
 python3 -m unittest tests.test_effectful_workload_model tests.test_effectful_workload_contracts tests.test_effectful_workload_lab tests.test_effectful_workload_controls tests.test_effectful_workload_comparison -v

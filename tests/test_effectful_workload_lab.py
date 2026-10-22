@@ -238,6 +238,10 @@ class WorkloadCliTests(unittest.TestCase):
             code = main(args)
         return code, json.loads(output.getvalue())
 
+    @staticmethod
+    def rejected(reason):
+        return {"status": "rejected", "reason": reason, "executionAuthorization": False}
+
     def test_exclusive_cli_roundtrip_and_verification_is_read_only(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory).resolve(); source = root / "request.json"; report = root / "report.json"
@@ -246,11 +250,15 @@ class WorkloadCliTests(unittest.TestCase):
             before = report.read_bytes()
             self.assertEqual(self.invoke(["verify", str(report)])[1]["status"], "verified")
             self.assertEqual(report.read_bytes(), before)
-            self.assertEqual(self.invoke(["explore", str(source), "--output", str(report)])[0], 1)
+            self.assertEqual(self.invoke(["explore", str(source), "--output", str(report)]),
+                             (1, self.rejected("output-exists")))
             self.assertEqual(report.read_bytes(), before)
-            self.assertEqual(self.invoke(["verify", str(report), "--output", str(root / "other")])[0], 1)
+            self.assertEqual(self.invoke(["verify", str(report), "--output", str(root / "other")]),
+                             (1, self.rejected("verify-is-read-only")))
             self.assertFalse((root / "other").exists())
-            self.assertEqual(self.invoke(["explore", str(source), "--output", str(source)])[0], 1)
+            self.assertEqual(self.invoke(["explore", str(source), "--output", str(source)]),
+                             (1, self.rejected("output-is-input")))
+            self.assertEqual(self.invoke(["explore", str(source)]), (1, self.rejected("output-required")))
             self.assertEqual(source.read_bytes(), canonical(fixture()))
             self.assertEqual(os.stat(report).st_mode & 0o777, 0o600)
 
@@ -259,14 +267,26 @@ class WorkloadCliTests(unittest.TestCase):
             root = Path(directory).resolve(); source = root / "request.json"
             source.write_bytes(canonical(fixture()))
             link = root / "linked.json"; link.symlink_to(source)
-            self.assertEqual(self.invoke(["explore", str(link), "--output", str(root / "out")])[0], 1)
+            self.assertEqual(self.invoke(["explore", str(link), "--output", str(root / "out")]),
+                             (1, self.rejected("symlink-path")))
             parent_link = root / "alias"; parent_link.symlink_to(root, target_is_directory=True)
-            self.assertEqual(self.invoke(["explore", str(source), "--output", str(parent_link / "out")])[0], 1)
+            self.assertEqual(self.invoke(["explore", str(source), "--output", str(parent_link / "out")]),
+                             (1, self.rejected("symlink-path")))
             self.assertFalse((root / "out").exists())
+            self.assertEqual(self.invoke(["explore", str(root / "missing.json"), "--output", str(root / "out")]),
+                             (1, self.rejected("unavailable-path")))
             fifo = root / "pipe"; os.mkfifo(fifo)
-            self.assertEqual(self.invoke(["verify", str(fifo)])[0], 1)
-            with self.assertRaises(InvalidWorkload):
+            self.assertEqual(self.invoke(["verify", str(fifo)]), (1, self.rejected("not-regular-file")))
+            with self.assertRaises(InvalidWorkload) as refused:
                 load_file(source, limit=1)
+            self.assertEqual(refused.exception.reason, "too-large")
+            for name, data, reason in (("bad.json", b"{", "invalid-json"),
+                                       ("utf16.json", canonical(fixture()).decode().encode("utf-16"), "invalid-json"),
+                                       ("unknown.json", canonical({**fixture(), "extra": 1}), "invalid-request")):
+                (root / name).write_bytes(data)
+                self.assertEqual(self.invoke(["explore", str(root / name), "--output", str(root / (name + ".out"))]),
+                                 (1, self.rejected(reason)))
+                self.assertFalse((root / (name + ".out")).exists())
 
 
 if __name__ == "__main__":

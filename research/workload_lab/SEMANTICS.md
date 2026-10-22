@@ -29,8 +29,10 @@ or contextual-equivalence verdict.
 `evidence.explore` binds the original request and current source/contract bytes.
 `verify` regenerates the full deterministic report. Timings stay in the separate
 experiment report. CLI reads bounded nonsymlink regular files and exclusively
-creates explicit outputs. Its report transport bound is 512 MiB; an oversized
-encoded artifact is refused, never silently truncated or labeled complete.
+creates explicit outputs, naming the refusal reason (for example `symlink-path`,
+`output-exists`, `too-large`, `invalid-json`, `invalid-request`). Its report
+transport bound is 512 MiB; an oversized encoded artifact is refused, never
+silently truncated or labeled complete.
 Exploration also stops before a retained step would push the canonical path
 payload past 256 MiB (`explore.PATH_BYTES`), recording `capReason: "bytes"`,
 a `cap-exhausted` partial path and an `inconclusive` verdict, so a report stays
