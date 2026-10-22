@@ -44,3 +44,5 @@ and placement are a separately reviewed integration operation at the next unused
 identity, with explicit inventory-impact reconciliation. This does not block the
 owner-authorized isolated simulator implementation, reopen HAR, or reserve its
 ADR identity. Historical source and evidence bindings remain unchanged.
+
+Canonical record: [ADR 0028](../../docs/adr/0028-closed-effectful-workload-simulation.md), approved by the founder on 2026-10-23.

@@ -1,6 +1,6 @@
 # SPEC-024 validation scenarios
 
-T002–T004 are implemented, pending T001 integration and independent review; the
+T001 is done (ADR 0028); T002–T004 are implemented, pending independent review; the
 tests and CLI commands below run against the current branch. T005–T008 remain
 open: SC-007 is still planned, and the SC-008 experiment (re-registered
 incremental-cost criterion) has not been run. Passing commands are local
@@ -82,7 +82,7 @@ host/commit and actual commands after execution, and reproduce in a fresh
 independent clone before science review; passing profiles do not supply this
 evidence.
 
-Registered experiment (T006/T008). Not run yet; it waits for T001–T005 and the independent review:
+Registered experiment (T006/T008). Not run yet; it waits for T002–T005 and the independent review:
 
 ```sh
 python3 scripts/run_effectful_workload_experiment.py --manifest examples/workload-lab/manifest.json --output specs/024-effectful-workload-lab/evidence/comparison.json

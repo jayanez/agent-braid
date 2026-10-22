@@ -1,0 +1,47 @@
+{
+  "recordVersion": "spec024-adr-integration/v1",
+  "date": "2026-10-23",
+  "decision": "integrate-canonical-adr-0028",
+  "decider": "Juan Antonio Yáñez García (@jayanez)",
+  "provenance": {
+    "kind": "owner-approval-in-session",
+    "approvals": [
+      "Number and title: 0028 Closed effectful workload simulation.",
+      "Status: accepted by the founder on 2026-10-21 for the bounded simulation profile.",
+      "Constitutional articles: 0, 2–6, 9, 12–14, 19–20, 23–25.",
+      "Context, Decision, dated Amendments, Alternatives, Consequences, Validation and References approved section by section.",
+      "Refresh the SPEC-047/048/051 current authority snapshots.",
+      "Keep the feature-local decision and link it to ADR 0028; close T001."
+    ],
+    "identityLimit": "Interactive owner answers in the working session; not a cryptographic identity attestation."
+  },
+  "adr": {
+    "path": "docs/adr/0028-closed-effectful-workload-simulation.md",
+    "sha256": "be8bb2fefc702a2d85b804f70141f68f25b68e45118d25b4f4fa0e99d62eca85"
+  },
+  "featureLocalDecision": {
+    "path": "specs/024-effectful-workload-lab/architecture-decision-20261021.md",
+    "contentDelta": "One appended line pointing to ADR 0028; all earlier bytes unchanged.",
+    "sha256": "78efb9af3006a8da4ddc420128b60d54fc707c0e1adddc3779c35b105be050dd"
+  },
+  "method": "Current authority snapshots refreshed with `scripts/validate_spec_kit.py snapshot <feature>`; the only hash change in each is the added ADR 0028 entry. No hash was hand-edited. Historical records that cite earlier assurance hashes are left unchanged.",
+  "reboundRecords": [
+    {
+      "path": "specs/047-local-technical-telemetry/assurance.json",
+      "previousSha256": "a7cf754d2c0fde71f5835bec40ec23a4447636dad452b18ab36b867f764d41e0",
+      "currentSha256": "dcae92e20258cad42f8824d8e0f7d2f2a3c076a67997e2917478dc83db1772f5"
+    },
+    {
+      "path": "specs/048-harness-variant-laboratory/assurance.json",
+      "previousSha256": "ec63f9146cc6ec9b66226f19159bb3858d37d7c0343fe800de5fd332a0f6d30a",
+      "currentSha256": "478d6b6d3b1029b5617f0927936111a8c11f124031676284ef265c32e4e22cf9"
+    },
+    {
+      "path": "specs/051-owned-work-evaluation/assurance.json",
+      "previousSha256": "b82724c8258b053e2f4e3e2c0c81806540da832ccc3777fc6d0b72e22470b2ea",
+      "currentSha256": "c994bb93d90b7f73a8a0981bdc848cbc681c7b1afacb0644786d0ee802315a2c"
+    }
+  ],
+  "humanReview": "pending",
+  "executionAuthorization": false
+}
