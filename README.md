@@ -55,11 +55,9 @@ packages its own runtime for supported local hosts.
 | **Forecast local workloads** | Opt-in `forecast` predict/advice/inspect/export, optional Chronos-2 adapter and a read-only stdio MCP transport | Synthetic and frozen paired controls with episode-cluster uncertainty; advice is heuristic and grants no parallelism or utility claim. |
 | **Measure your own usage locally** | Default-off `telemetry` with a private bounded SQLite store and manual export/merge/purge | Numeric aggregates only, no automatic transmission; pilot remains **NO-GO**. |
 
-<a id="in-review"></a>
+### In review
 
-### In review (draft pull requests, 2026-10-22)
-
-These capabilities have open draft pull requests and are not yet part of `develop`.
+As of 2026-10-22, these capabilities have open draft pull requests and are not yet part of `develop`.
 Each keeps `executionAuthorization: false` and leaves its human, scientific and
 acceptance gates open.
 
