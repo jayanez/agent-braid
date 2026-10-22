@@ -9,6 +9,15 @@
       "moduleTests": 28,
       "scope": "Final post-alias correction focused run; real macOS filesystem tests executed without skips.",
       "testsRun": 62
+    },
+    {
+      "command": ".venv-speckit/bin/python -m unittest discover -s tests -p \"test_harness*.py\" -v",
+      "crossModuleTests": 3,
+      "exitCode": 0,
+      "logSha256": "2977e84f443015211eeeb98461bf45befd5d2212a5a5cf20dced3faa5eab6187",
+      "moduleTests": 29,
+      "scope": "PR #657 review follow-up focused run; real macOS filesystem tests executed without skips.",
+      "testsRun": 69
     }
   ],
   "independentReview": {
@@ -21,13 +30,13 @@
     "LICENSES/Harness2-Apache-2.0.txt": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
     "NOTICE": "3ef822bdcd9c7ff652fe9f0a14d36b6ddff2388315c8566e4a691bd04c9819a2",
     "agent_braid/harness_manifest.py": "373f1dd8e888c88fde6a47399c429c9b56ab040eea94811f22de796bc6b5d5a1",
-    "agent_braid/harness_surface.py": "f2256d063eb6cf4f853558715a5487b61a31ca16e5919450fe132907d6c96304",
+    "agent_braid/harness_surface.py": "78ca27952ffa1054d8ef61cbc0bd9458d51d967f716e5bd1ba6462daa892529c",
     "docs/adr/0027-braid-harness-offline-foundations.md": "076e524bb4b31a0075ff72c605a438edc9dcb70aa09dec9583ef21db5362b046",
     "docs/development/THIRD_PARTY.md": "b12347059e3e2cf4612b5b9f9a5e39e4eefb550e747bf480ad798ed5e8a4d294",
     "specs/048-harness-variant-laboratory/contracts/offline-foundations.md": "580d844af7236818c1a006d79ea482677c0df58c48e4f55391a69598184001c9",
     "tests/test_harness_foundations.py": "8e97f53196047e8ea84a1fd7b358e5690a55c87b6a327667e93cdf3266b66926",
-    "tests/test_harness_manifest.py": "b1d844c799ec6a79a4f704f0223d19883e45894d781f5564cd537724b8b268ef",
-    "tests/test_harness_surface.py": "e39656ed5c66dc30ab0d5e37cafb163031cea2106b4b848ac99f52676acba9cf"
+    "tests/test_harness_manifest.py": "1ceb49f412d0fcc51c2519a089de0d62f0ef9ce075b3dfdd00c86e93fff186c2",
+    "tests/test_harness_surface.py": "4b2a3d06195e2e6f57191dfd2721b559ab04f3319fc41d4e749a20267a83ec77"
   },
   "limits": "Owned temporary files only. Instruction injection remains inert data because nothing executes; not a qualified sandbox or a host/model prompt-resistance claim. Source commit/root observations trusted; same-UID compromise and power-loss excluded.",
   "method": "Actual offline unittest execution under isolated Python 3.13.11, venv-first PATH",
@@ -41,7 +50,11 @@
   "repositoryValidation": {
     "path": "specs/048-harness-variant-laboratory/evidence/offline-foundations-validation.json",
     "scope": "Stable local PR:14commands,2173tests/24skips; focused62/0skips; no native/whole-feature acceptance",
-    "sha256": "172fd11a10f6028672a7ae993be39d536ddc1e714522a519e07ad99490983f32"
+    "sha256": "65b987184049690f54d95dadae1de76609ae343f0a0364989c9225c156b9cf5b"
+  },
+  "reviewFollowUp": {
+    "path": "specs/048-harness-variant-laboratory/evidence/review-followup-pr657.json",
+    "scope": "PR #657 adversarial-review follow-up: added deterministic tests only plus one variable rename in harness_surface.py (no behavior change). inputs rebound from current bytes; earlier executedChecks/focusedFinal/stablePR entries are retained unchanged as history of the pre-follow-up candidate."
   },
   "sourceBaseline": "a6329c828011d1468fed3dfa4e98f5a8531167e2",
   "task": "SPEC-048/T003",
