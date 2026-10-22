@@ -186,6 +186,26 @@ class WorkloadObservationTests(unittest.TestCase):
         self.assertEqual(report["coverage"]["events"], 0)
 
 
+    def test_trace_safety_counts_error_failures_and_keyed_duplicates_only(self):
+        request = self.event_fixture()
+        request["operations"][0]["outcomes"] = ["success"]
+        request["operations"][1]["requiredVersion"] = 5
+        report = explore(request)
+        blocked = report["paths"][0]["configuration"]
+        self.assertEqual((blocked["outcome"], blocked["reason"], len(blocked["events"])),
+                         ("blocked", "stale-version", 1))
+        self.assertEqual(report["traceSafety"]["partialFailurePaths"], [])
+        self.assertEqual(report["traceSafety"]["status"], "inconclusive")
+        request = self.event_fixture()
+        request["operations"] = [{**request["operations"][0], "outcomes": ["success"],
+                                  "idempotencyKey": "one"},
+                                 {**request["operations"][0], "id": "b", "outcomes": ["success"],
+                                  "idempotencyKey": "two"}]
+        report = explore(request)
+        self.assertTrue(all(len(path["configuration"]["events"]) == 2 for path in report["paths"]))
+        self.assertEqual(report["traceSafety"]["duplicateEventPaths"], [])
+
+
 class WorkloadEvidenceTests(unittest.TestCase):
     def test_report_schema_is_strict_but_never_replaces_replay(self):
         from jsonschema import Draft202012Validator
@@ -225,6 +245,12 @@ class WorkloadEvidenceTests(unittest.TestCase):
         self.assertEqual(explore(fixture()), original)
         self.assertEqual(fixture()["initial"]["state"], {"x": 0})
 
+    def test_source_change_during_exploration_is_refused(self):
+        with mock.patch("research.workload_lab.evidence.source_bindings",
+                        side_effect=[{"a": "0" * 64}, {"a": "1" * 64}]):
+            with self.assertRaises(InvalidWorkload):
+                explore(fixture())
+
     def test_invalid_executable_fields_never_reach_exploration(self):
         request = fixture(); request["operations"][0]["callback"] = lambda: self.fail("executed")
         with self.assertRaises(InvalidWorkload):
@@ -261,6 +287,15 @@ class WorkloadCliTests(unittest.TestCase):
             self.assertEqual(self.invoke(["explore", str(source)]), (1, self.rejected("output-required")))
             self.assertEqual(source.read_bytes(), canonical(fixture()))
             self.assertEqual(os.stat(report).st_mode & 0o777, 0o600)
+
+    def test_report_byte_limit_refuses_oversized_output(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory).resolve(); source = root / "request.json"
+            source.write_bytes(canonical(fixture()))
+            with mock.patch("research.workload_lab.__main__.REPORT_BYTES", 10):
+                self.assertEqual(self.invoke(["explore", str(source), "--output", str(root / "out")]),
+                                 (1, self.rejected("report-too-large")))
+            self.assertFalse((root / "out").exists())
 
     def test_nonsymlink_regular_input_and_output_ancestors(self):
         with tempfile.TemporaryDirectory() as directory:

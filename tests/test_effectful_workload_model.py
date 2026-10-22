@@ -273,6 +273,10 @@ class WorkloadModelTests(unittest.TestCase):
         self.assertEqual(loads(' ' * (INPUT_BYTES - 1) + '0'), 0)
         with self.assertRaises(InvalidWorkload): loads(' ' * INPUT_BYTES + '0')
         with self.assertRaises(InvalidWorkload): loads(b'\xff')
+        # json.loads would auto-detect these encodings from bytes; only UTF-8 is admitted.
+        for encoding in ('utf-16', 'utf-16-le', 'utf-32'):
+            with self.subTest(encoding=encoding), self.assertRaises(InvalidWorkload):
+                loads('{"a":1}'.encode(encoding))
 
     def test_explicit_transport_limit_preserves_request_default(self):
         larger_report = ' ' * INPUT_BYTES + '0'

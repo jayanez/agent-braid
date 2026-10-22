@@ -111,5 +111,25 @@ class WorkloadComparisonTests(unittest.TestCase):
         self.assertFalse(failed["fixtures"][0]["matchedCompleteCoverage"])
 
 
+    def test_h2_cost_threshold_tie_is_inclusive(self):
+        # Pins the registered rule: medianWholeAnalysisCostRatioAtMost 1 admits a tie.
+        manifest, registration = corpus()
+        manifest["fixtures"] = [next(f for f in manifest["fixtures"] if f["id"] == "h2-shared-additions")]
+        registration.update(manifestHash=digest(manifest), fixtureCount=1)
+        actual_measure = measure
+        def fixed(rule_cost):
+            def fake(request, method):
+                result = actual_measure(request, method)
+                cost = rule_cost if method == "additive-terminal" else 1000
+                result["costNanoseconds"] = {**result["costNanoseconds"], "totalWall": cost}
+                return result
+            return fake
+        for rule_cost, status in ((1000, "positive"), (1001, "negative")):
+            with self.subTest(rule_cost=rule_cost), \
+                    patch("research.workload_lab.analysis.measure", side_effect=fixed(rule_cost)):
+                report = run_experiment(manifest, registration)
+                self.assertEqual(report["feasibility"]["costThresholdMet"], status == "positive")
+                self.assertEqual(report["feasibility"]["status"], status)
+
 if __name__ == "__main__":
     unittest.main()
