@@ -8,7 +8,6 @@ from __future__ import annotations
 
 import hashlib
 import json
-import os
 import platform
 import sys
 import statistics
@@ -161,6 +160,8 @@ def additive_candidate(request, report, declarations=None):
         reason = "terminal-values-diverge"
     # The complete oracle must retain all intermediate values; checking it is
     # charged to each rule run, and no overflow path can become a candidate.
+    # Defensive: `step` turns overflow into an error path, already excluded as
+    # non-success above. Kept so the registered rule cost is unchanged.
     elif any(abs(value) > 2**63 - 1 for path in report["paths"] for step in path["steps"] for side in ("before", "after") for value in step[side]["state"].values()):
         reason = "intermediate-overflow"
     return {"terminalCandidate": reason is None, "exclusion": reason,
@@ -332,7 +333,7 @@ def run_experiment(manifest, registration, command=None):
     source_files = (Path(__file__), Path(__file__).parents[2] / "scripts/run_effectful_workload_experiment.py")
     return {"format": "effectful-workload-experiment-v1", "registration": registration, "protocol": manifest["protocol"],
             "environment": {"python": platform.python_version(), "implementation": platform.python_implementation(),
-                            "platform": sys.platform, "machine": os.uname().machine, "command": command},
+                            "platform": sys.platform, "machine": platform.machine(), "command": command},
             "toolBindings": {str(path.relative_to(Path(__file__).parents[2])): hashlib.sha256(path.read_bytes()).hexdigest() for path in source_files},
             "fixtures": results, "accounting": {"registeredFixtures": len(results), "registeredH2Fixtures": sum(f["h2"] for f in manifest["fixtures"]),
                 "eligibleH2Fixtures": sum(bool(r["h2"] and r["h2"]["terminalCandidate"]) for r in results),
