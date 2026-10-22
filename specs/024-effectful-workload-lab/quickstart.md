@@ -1,6 +1,6 @@
 # SPEC-024 validation scenarios
 
-T001 is done (ADR 0028); T002–T004 are implemented, pending independent review; the
+T001 is done (ADR 0028); T002–T004 are done after independent review; the
 tests and CLI commands below run against the current branch. T005–T008 remain
 open: SC-007 is still planned, and the SC-008 experiment (re-registered
 incremental-cost criterion) has not been run. Passing commands are local
@@ -90,4 +90,4 @@ python3 scripts/run_effectful_workload_experiment.py --manifest examples/workloa
 
 ## SC-008 bounded H2 terminal-candidate comparison
 
-Test `WorkloadH2Tests.test_terminal_rule_preserves_raw_differences_and_denies_runtime` in `tests/test_effectful_workload_comparison.py` checks shared-target additive terminal positives, changed return/event negatives for stronger claims, overflow, guards/versions, literal-write conflicts and missing oracle paths. Freeze the additive class/corpus/threshold before runs. The experiment entrypoint writes baseline/rule/oracle counts and full costs; 3 warm-ups and 20 measured repetitions per method/fixture with deterministic alternating order. Recovery and a rule incremental cost whose one-sided 95% upper median bound is at most 50,000 ppm of the paired oracle total are descriptive feasibility outcomes (`test_rule_incremental_cost_margin_is_inclusive`). Changed observation, false candidate or incomplete domain prevents a positive assessment. No result grants contextual equivalence or runtime safety.
+Test `WorkloadH2Tests.test_terminal_rule_preserves_raw_differences_and_denies_runtime` in `tests/test_effectful_workload_comparison.py` checks shared-target additive terminal positives, changed return/event negatives for stronger claims, overflow, guards/versions, literal-write conflicts and missing oracle paths. Freeze the additive class/corpus/threshold before runs. The experiment entrypoint writes baseline/rule/oracle counts and full costs; 3 warm-ups and 20 measured repetitions per method/fixture with deterministic alternating order. Recovery and a rule incremental cost whose one-sided 95% upper median bound is at most 50,000 ppm of the paired oracle total are descriptive feasibility outcomes (`test_rule_incremental_cost_margin_is_inclusive`). The T008 report must say that this cost test barely discriminates (exploratory upper bounds were about 35× below the margin), that the 200 pooled samples are not independent, and that the numerator excludes `footprintValidation`; it must also disclose the four exploratory review runs made before the official run (tasks.md T008). Changed observation, false candidate or incomplete domain prevents a positive assessment. No result grants contextual equivalence or runtime safety.
