@@ -4,6 +4,10 @@
     "scope": "Owner-directed ADR number change 0026->0027 only. inputs were rebound from current bytes; focusedFinal, historicalFixtureRegression, intermediateQuick and stablePR record executions on the pre-renumber candidate and are retained unchanged as history. Post-renumber local validation is recorded in the renumber record."
   },
   "candidateBinding": "Current implementation source/input hashes; no frozen implementation commit or hosted CI claimed",
+  "developIntegration": {
+    "path": "specs/048-harness-variant-laboratory/evidence/develop-integration-20261022.json",
+    "scope": "Merge of develop after SPEC-051 (#659, ADR 0026, squash c0df17b1). SPEC-047/048/051 current authority snapshots refreshed with validate_spec_kit.py snapshot to include both ADR 0026 and ADR 0027; inputs rebound from current bytes. Earlier records kept unchanged as history."
+  },
   "evidenceOnlyPackaging": {
     "afterPassingPR": [
       "specs/048-harness-variant-laboratory/assurance.json",
@@ -56,7 +60,7 @@
     "agent_braid/harness_surface.py": "78ca27952ffa1054d8ef61cbc0bd9458d51d967f716e5bd1ba6462daa892529c",
     "docs/adr/0027-braid-harness-offline-foundations.md": "076e524bb4b31a0075ff72c605a438edc9dcb70aa09dec9583ef21db5362b046",
     "docs/development/THIRD_PARTY.md": "b12347059e3e2cf4612b5b9f9a5e39e4eefb550e747bf480ad798ed5e8a4d294",
-    "specs/047-local-technical-telemetry/assurance.json": "a531249eb7825733e158de2c5d4e5aa817620a872a68b9837c8071bcef4e54ee",
+    "specs/047-local-technical-telemetry/assurance.json": "a7cf754d2c0fde71f5835bec40ec23a4447636dad452b18ab36b867f764d41e0",
     "specs/048-harness-variant-laboratory/authority-impact-review.json": "ba90bb330a406c160e67eddaa8a7c72ecfd3af614bfb15958cd2c32ca504141a",
     "specs/048-harness-variant-laboratory/contracts/offline-foundations.md": "580d844af7236818c1a006d79ea482677c0df58c48e4f55391a69598184001c9",
     "specs/048-harness-variant-laboratory/evidence/offline-foundations-review.json": "60244678fddf329f254b472c2496542ef4d2ab395671517d9b08adac7d9b2e8a",

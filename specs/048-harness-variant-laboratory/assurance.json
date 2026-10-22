@@ -58,6 +58,7 @@
       "docs/adr/0024-local-technical-telemetry.md": "e3c2d827bbd839179e56d3f81fe3ad1b7234b4a61ed24c98bb59a8aa2f23b508",
       "docs/adr/0024-native-ai-plugins.md": "3a45d8a62cb241b01638a37f39fdc309cb0563941c0343fe58d9ab30c5c677ac",
       "docs/adr/0025-local-technical-telemetry.md": "e2f9af4d0d0a118635677146ba0c96cbd82046b7943eca36eeabf041923601f7",
+      "docs/adr/0026-pure-owned-work-validation.md": "dc6a045316c37201767adba79ad59779cff4646c9d05e4a2306dfaec481e4ccd",
       "docs/adr/0027-braid-harness-offline-foundations.md": "076e524bb4b31a0075ff72c605a438edc9dcb70aa09dec9583ef21db5362b046",
       "docs/architecture/AGENT_INTERACTION_METADATA.md": "0118d7f16c390fc4c1ff027b503a4eaba8a747edf3f6d7b088559f8870e27780",
       "docs/architecture/ASSURANCE_LEVELS.md": "3e86d0060ef566ba8d1e1690606fc06e8fee172f187a1b9779b13d27f0f915d9",
@@ -148,7 +149,7 @@
               "limits": "Owned temporary files only. Instruction injection remains inert data because nothing executes; not a qualified sandbox or a host/model prompt-resistance claim. Source commit/root observations trusted; same-UID compromise and power-loss excluded.",
               "outcome": "Bounded real-filesystem import/protected-layer and conservative cleanup controls passed.",
               "path": "specs/048-harness-variant-laboratory/evidence/t003.json",
-              "sha256": "3e81e356f413eb4b4e0e72e110292dcd54ceb39a4af730e2dc2091ac4fa2b261"
+              "sha256": "3c5f51bd0bcdc302f0cc74c5656f1b5ad85c21ef000a88afbc3a61865f86c0c1"
             }
           ],
           "planned_evidence": "Candidate-bound procedure report for REQ-001/SC-001; actual commands, environment, input/output hashes and limits.",
@@ -172,14 +173,14 @@
               "limits": "Parser/identity engineering controls only. No actual source import, admission issuance, runner, model/host qualification or utility outcome.",
               "outcome": "Strict immutable offline manifest and independent identity controls passed.",
               "path": "specs/048-harness-variant-laboratory/evidence/t002.json",
-              "sha256": "aba7c65945ec8f6cd1130b0be27ca166b703384f52d184f342a94ee06233d6c5"
+              "sha256": "1bc55fdad0a2b776e0b7ca65d0be07093c6ac1dd78cd3cebf145b320091b2daf"
             },
             {
               "command": ".venv-speckit/bin/python -m unittest discover -s tests -p \"test_harness*.py\" -v",
               "limits": "Owned temporary files only. Instruction injection remains inert data because nothing executes; not a qualified sandbox or a host/model prompt-resistance claim. Source commit/root observations trusted; same-UID compromise and power-loss excluded.",
               "outcome": "Bounded real-filesystem import/protected-layer and conservative cleanup controls passed.",
               "path": "specs/048-harness-variant-laboratory/evidence/t003.json",
-              "sha256": "3e81e356f413eb4b4e0e72e110292dcd54ceb39a4af730e2dc2091ac4fa2b261"
+              "sha256": "3c5f51bd0bcdc302f0cc74c5656f1b5ad85c21ef000a88afbc3a61865f86c0c1"
             }
           ],
           "planned_evidence": "Candidate-bound procedure report for REQ-002/SC-002; actual commands, environment, input/output hashes and limits.",
@@ -210,7 +211,7 @@
               "limits": "Test-only independently installed operator fixtures; no issuer API, runtime grant conversion, dispatch or paid/native route. Thread/forkprocess races tested; power-loss/hostile same-UID compromise excluded.",
               "outcome": "Protected operator-file admission verification and single-use reservation controls passed.",
               "path": "specs/048-harness-variant-laboratory/evidence/t004.json",
-              "sha256": "f32a502c3e59dc82547374e6fb4a35651975638715fe3ef1af521960105a2fef"
+              "sha256": "8881bf2077d9b8da814aa635e2eab2ac63d1e339e12ca6df6882a74dcd303d74"
             }
           ],
           "planned_evidence": "Candidate-bound procedure report for REQ-003/SC-003; actual commands, environment, input/output hashes and limits.",
@@ -297,7 +298,7 @@
               "limits": "Test-only independently installed operator fixtures; no issuer API, runtime grant conversion, dispatch or paid/native route. Thread/forkprocess races tested; power-loss/hostile same-UID compromise excluded.",
               "outcome": "Protected operator-file admission verification and single-use reservation controls passed.",
               "path": "specs/048-harness-variant-laboratory/evidence/t004.json",
-              "sha256": "f32a502c3e59dc82547374e6fb4a35651975638715fe3ef1af521960105a2fef"
+              "sha256": "8881bf2077d9b8da814aa635e2eab2ac63d1e339e12ca6df6882a74dcd303d74"
             }
           ],
           "planned_evidence": "Candidate-bound procedure report for REQ-007/SC-007; actual commands, environment, input/output hashes and limits.",
@@ -321,7 +322,7 @@
               "limits": "Parser/identity engineering controls only. No actual source import, admission issuance, runner, model/host qualification or utility outcome.",
               "outcome": "Strict immutable offline manifest and independent identity controls passed.",
               "path": "specs/048-harness-variant-laboratory/evidence/t002.json",
-              "sha256": "aba7c65945ec8f6cd1130b0be27ca166b703384f52d184f342a94ee06233d6c5"
+              "sha256": "1bc55fdad0a2b776e0b7ca65d0be07093c6ac1dd78cd3cebf145b320091b2daf"
             }
           ],
           "planned_evidence": "Candidate-bound procedure report for REQ-008/SC-008; actual commands, environment, input/output hashes and limits.",

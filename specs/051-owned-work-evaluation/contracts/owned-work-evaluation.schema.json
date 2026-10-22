@@ -1,0 +1,3075 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "kind",
+    "sourceKind",
+    "sequence",
+    "attemptId",
+    "taskId",
+    "familyId",
+    "authorityDigest",
+    "sourceRevision",
+    "sourceState",
+    "dirtyDiffDigest",
+    "configDigest",
+    "policyDigest",
+    "toolchainDigest",
+    "modelDigest",
+    "recordedAtUTC",
+    "previousRecordDigest",
+    "supersedesRecordDigest",
+    "recordDigest",
+    "payload",
+    "executionAuthorization",
+    "trainingAdmission",
+    "collector047Projection"
+  ],
+  "properties": {
+    "schema": {
+      "const": "agent-braid-owned-work-evaluation/v1"
+    },
+    "kind": {
+      "enum": [
+        "origin",
+        "outcome"
+      ]
+    },
+    "sourceKind": {
+      "const": "owned-deterministic-development"
+    },
+    "sequence": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 9223372036854775807
+    },
+    "attemptId": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{32}$"
+    },
+    "taskId": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{32}$"
+    },
+    "familyId": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{32}$"
+    },
+    "authorityDigest": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "sourceRevision": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{40}$"
+    },
+    "sourceState": {
+      "enum": [
+        "clean",
+        "dirty"
+      ]
+    },
+    "dirtyDiffDigest": {
+      "anyOf": [
+        {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "configDigest": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "policyDigest": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "toolchainDigest": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "modelDigest": {
+      "anyOf": [
+        {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "recordedAtUTC": {
+      "type": "string",
+      "format": "date-time",
+      "pattern": "Z$"
+    },
+    "previousRecordDigest": {
+      "anyOf": [
+        {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "supersedesRecordDigest": {
+      "anyOf": [
+        {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "recordDigest": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "payload": {},
+    "executionAuthorization": {
+      "const": false
+    },
+    "trainingAdmission": {
+      "const": false
+    },
+    "collector047Projection": {
+      "const": "none"
+    }
+  },
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:agent-braid:proposed:owned-work-evaluation:v1",
+  "title": "PROPOSED private evaluation ledger event; no capture admission",
+  "$defs": {
+    "origin": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "clockDomainId",
+        "originNs",
+        "cutoffNs",
+        "lotDigest",
+        "populationDigest",
+        "partitionDigest",
+        "familyPartition",
+        "features",
+        "capabilities",
+        "condition",
+        "recommendation",
+        "recommendationArtifactDigest",
+        "chosenAction",
+        "forecast"
+      ],
+      "properties": {
+        "clockDomainId": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{32}$"
+        },
+        "originNs": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9223372036854775807
+        },
+        "cutoffNs": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9223372036854775807
+        },
+        "lotDigest": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "populationDigest": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "partitionDigest": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "familyPartition": {
+          "enum": [
+            "development",
+            "evaluation"
+          ]
+        },
+        "features": {
+          "type": "array",
+          "maxItems": 6,
+          "items": {
+            "oneOf": [
+              {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "name",
+                  "unit",
+                  "value",
+                  "missingReason",
+                  "scope",
+                  "eventNs",
+                  "availableAtNs"
+                ],
+                "properties": {
+                  "name": {
+                    "const": "operation_count"
+                  },
+                  "unit": {
+                    "const": "count"
+                  },
+                  "value": {
+                    "anyOf": [
+                      {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 9223372036854775807
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "missingReason": {
+                    "anyOf": [
+                      {
+                        "enum": [
+                          "not-measured",
+                          "not-applicable",
+                          "not-admitted",
+                          "not-produced",
+                          "not-probed",
+                          "unavailable",
+                          "cross-clock",
+                          "censored",
+                          "revoked",
+                          "unknown"
+                        ]
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "scope": {
+                    "enum": [
+                      "attempt",
+                      "validation-process",
+                      "observer-process"
+                    ]
+                  },
+                  "eventNs": {
+                    "anyOf": [
+                      {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 9223372036854775807
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "availableAtNs": {
+                    "anyOf": [
+                      {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 9223372036854775807
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  }
+                },
+                "allOf": [
+                  {
+                    "if": {
+                      "properties": {
+                        "value": {
+                          "type": "null"
+                        }
+                      }
+                    },
+                    "then": {
+                      "properties": {
+                        "missingReason": {
+                          "enum": [
+                            "not-measured",
+                            "not-applicable",
+                            "not-admitted",
+                            "not-produced",
+                            "not-probed",
+                            "unavailable",
+                            "cross-clock",
+                            "censored",
+                            "revoked",
+                            "unknown"
+                          ]
+                        },
+                        "eventNs": {
+                          "type": "null"
+                        },
+                        "availableAtNs": {
+                          "type": "null"
+                        }
+                      }
+                    },
+                    "else": {
+                      "properties": {
+                        "missingReason": {
+                          "type": "null"
+                        },
+                        "eventNs": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 9223372036854775807
+                        },
+                        "availableAtNs": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 9223372036854775807
+                        }
+                      }
+                    }
+                  }
+                ]
+              },
+              {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "name",
+                  "unit",
+                  "value",
+                  "missingReason",
+                  "scope",
+                  "eventNs",
+                  "availableAtNs"
+                ],
+                "properties": {
+                  "name": {
+                    "const": "changed_file_count"
+                  },
+                  "unit": {
+                    "const": "count"
+                  },
+                  "value": {
+                    "anyOf": [
+                      {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 9223372036854775807
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "missingReason": {
+                    "anyOf": [
+                      {
+                        "enum": [
+                          "not-measured",
+                          "not-applicable",
+                          "not-admitted",
+                          "not-produced",
+                          "not-probed",
+                          "unavailable",
+                          "cross-clock",
+                          "censored",
+                          "revoked",
+                          "unknown"
+                        ]
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "scope": {
+                    "enum": [
+                      "attempt",
+                      "validation-process",
+                      "observer-process"
+                    ]
+                  },
+                  "eventNs": {
+                    "anyOf": [
+                      {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 9223372036854775807
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "availableAtNs": {
+                    "anyOf": [
+                      {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 9223372036854775807
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  }
+                },
+                "allOf": [
+                  {
+                    "if": {
+                      "properties": {
+                        "value": {
+                          "type": "null"
+                        }
+                      }
+                    },
+                    "then": {
+                      "properties": {
+                        "missingReason": {
+                          "enum": [
+                            "not-measured",
+                            "not-applicable",
+                            "not-admitted",
+                            "not-produced",
+                            "not-probed",
+                            "unavailable",
+                            "cross-clock",
+                            "censored",
+                            "revoked",
+                            "unknown"
+                          ]
+                        },
+                        "eventNs": {
+                          "type": "null"
+                        },
+                        "availableAtNs": {
+                          "type": "null"
+                        }
+                      }
+                    },
+                    "else": {
+                      "properties": {
+                        "missingReason": {
+                          "type": "null"
+                        },
+                        "eventNs": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 9223372036854775807
+                        },
+                        "availableAtNs": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 9223372036854775807
+                        }
+                      }
+                    }
+                  }
+                ]
+              },
+              {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "name",
+                  "unit",
+                  "value",
+                  "missingReason",
+                  "scope",
+                  "eventNs",
+                  "availableAtNs"
+                ],
+                "properties": {
+                  "name": {
+                    "const": "declared_write_count"
+                  },
+                  "unit": {
+                    "const": "count"
+                  },
+                  "value": {
+                    "anyOf": [
+                      {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 9223372036854775807
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "missingReason": {
+                    "anyOf": [
+                      {
+                        "enum": [
+                          "not-measured",
+                          "not-applicable",
+                          "not-admitted",
+                          "not-produced",
+                          "not-probed",
+                          "unavailable",
+                          "cross-clock",
+                          "censored",
+                          "revoked",
+                          "unknown"
+                        ]
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "scope": {
+                    "enum": [
+                      "attempt",
+                      "validation-process",
+                      "observer-process"
+                    ]
+                  },
+                  "eventNs": {
+                    "anyOf": [
+                      {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 9223372036854775807
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "availableAtNs": {
+                    "anyOf": [
+                      {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 9223372036854775807
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  }
+                },
+                "allOf": [
+                  {
+                    "if": {
+                      "properties": {
+                        "value": {
+                          "type": "null"
+                        }
+                      }
+                    },
+                    "then": {
+                      "properties": {
+                        "missingReason": {
+                          "enum": [
+                            "not-measured",
+                            "not-applicable",
+                            "not-admitted",
+                            "not-produced",
+                            "not-probed",
+                            "unavailable",
+                            "cross-clock",
+                            "censored",
+                            "revoked",
+                            "unknown"
+                          ]
+                        },
+                        "eventNs": {
+                          "type": "null"
+                        },
+                        "availableAtNs": {
+                          "type": "null"
+                        }
+                      }
+                    },
+                    "else": {
+                      "properties": {
+                        "missingReason": {
+                          "type": "null"
+                        },
+                        "eventNs": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 9223372036854775807
+                        },
+                        "availableAtNs": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 9223372036854775807
+                        }
+                      }
+                    }
+                  }
+                ]
+              },
+              {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "name",
+                  "unit",
+                  "value",
+                  "missingReason",
+                  "scope",
+                  "eventNs",
+                  "availableAtNs"
+                ],
+                "properties": {
+                  "name": {
+                    "const": "context_bytes"
+                  },
+                  "unit": {
+                    "const": "bytes"
+                  },
+                  "value": {
+                    "anyOf": [
+                      {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 9223372036854775807
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "missingReason": {
+                    "anyOf": [
+                      {
+                        "enum": [
+                          "not-measured",
+                          "not-applicable",
+                          "not-admitted",
+                          "not-produced",
+                          "not-probed",
+                          "unavailable",
+                          "cross-clock",
+                          "censored",
+                          "revoked",
+                          "unknown"
+                        ]
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "scope": {
+                    "enum": [
+                      "attempt",
+                      "validation-process",
+                      "observer-process"
+                    ]
+                  },
+                  "eventNs": {
+                    "anyOf": [
+                      {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 9223372036854775807
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "availableAtNs": {
+                    "anyOf": [
+                      {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 9223372036854775807
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  }
+                },
+                "allOf": [
+                  {
+                    "if": {
+                      "properties": {
+                        "value": {
+                          "type": "null"
+                        }
+                      }
+                    },
+                    "then": {
+                      "properties": {
+                        "missingReason": {
+                          "enum": [
+                            "not-measured",
+                            "not-applicable",
+                            "not-admitted",
+                            "not-produced",
+                            "not-probed",
+                            "unavailable",
+                            "cross-clock",
+                            "censored",
+                            "revoked",
+                            "unknown"
+                          ]
+                        },
+                        "eventNs": {
+                          "type": "null"
+                        },
+                        "availableAtNs": {
+                          "type": "null"
+                        }
+                      }
+                    },
+                    "else": {
+                      "properties": {
+                        "missingReason": {
+                          "type": "null"
+                        },
+                        "eventNs": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 9223372036854775807
+                        },
+                        "availableAtNs": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 9223372036854775807
+                        }
+                      }
+                    }
+                  }
+                ]
+              },
+              {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "name",
+                  "unit",
+                  "value",
+                  "missingReason",
+                  "scope",
+                  "eventNs",
+                  "availableAtNs"
+                ],
+                "properties": {
+                  "name": {
+                    "const": "prior_queue_wait_ns"
+                  },
+                  "unit": {
+                    "const": "ns"
+                  },
+                  "value": {
+                    "anyOf": [
+                      {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 9223372036854775807
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "missingReason": {
+                    "anyOf": [
+                      {
+                        "enum": [
+                          "not-measured",
+                          "not-applicable",
+                          "not-admitted",
+                          "not-produced",
+                          "not-probed",
+                          "unavailable",
+                          "cross-clock",
+                          "censored",
+                          "revoked",
+                          "unknown"
+                        ]
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "scope": {
+                    "enum": [
+                      "attempt",
+                      "validation-process",
+                      "observer-process"
+                    ]
+                  },
+                  "eventNs": {
+                    "anyOf": [
+                      {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 9223372036854775807
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "availableAtNs": {
+                    "anyOf": [
+                      {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 9223372036854775807
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  }
+                },
+                "allOf": [
+                  {
+                    "if": {
+                      "properties": {
+                        "value": {
+                          "type": "null"
+                        }
+                      }
+                    },
+                    "then": {
+                      "properties": {
+                        "missingReason": {
+                          "enum": [
+                            "not-measured",
+                            "not-applicable",
+                            "not-admitted",
+                            "not-produced",
+                            "not-probed",
+                            "unavailable",
+                            "cross-clock",
+                            "censored",
+                            "revoked",
+                            "unknown"
+                          ]
+                        },
+                        "eventNs": {
+                          "type": "null"
+                        },
+                        "availableAtNs": {
+                          "type": "null"
+                        }
+                      }
+                    },
+                    "else": {
+                      "properties": {
+                        "missingReason": {
+                          "type": "null"
+                        },
+                        "eventNs": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 9223372036854775807
+                        },
+                        "availableAtNs": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 9223372036854775807
+                        }
+                      }
+                    }
+                  }
+                ]
+              },
+              {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "name",
+                  "unit",
+                  "value",
+                  "missingReason",
+                  "scope",
+                  "eventNs",
+                  "availableAtNs"
+                ],
+                "properties": {
+                  "name": {
+                    "const": "required_validation_count"
+                  },
+                  "unit": {
+                    "const": "count"
+                  },
+                  "value": {
+                    "anyOf": [
+                      {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 9223372036854775807
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "missingReason": {
+                    "anyOf": [
+                      {
+                        "enum": [
+                          "not-measured",
+                          "not-applicable",
+                          "not-admitted",
+                          "not-produced",
+                          "not-probed",
+                          "unavailable",
+                          "cross-clock",
+                          "censored",
+                          "revoked",
+                          "unknown"
+                        ]
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "scope": {
+                    "enum": [
+                      "attempt",
+                      "validation-process",
+                      "observer-process"
+                    ]
+                  },
+                  "eventNs": {
+                    "anyOf": [
+                      {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 9223372036854775807
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "availableAtNs": {
+                    "anyOf": [
+                      {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 9223372036854775807
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  }
+                },
+                "allOf": [
+                  {
+                    "if": {
+                      "properties": {
+                        "value": {
+                          "type": "null"
+                        }
+                      }
+                    },
+                    "then": {
+                      "properties": {
+                        "missingReason": {
+                          "enum": [
+                            "not-measured",
+                            "not-applicable",
+                            "not-admitted",
+                            "not-produced",
+                            "not-probed",
+                            "unavailable",
+                            "cross-clock",
+                            "censored",
+                            "revoked",
+                            "unknown"
+                          ]
+                        },
+                        "eventNs": {
+                          "type": "null"
+                        },
+                        "availableAtNs": {
+                          "type": "null"
+                        }
+                      }
+                    },
+                    "else": {
+                      "properties": {
+                        "missingReason": {
+                          "type": "null"
+                        },
+                        "eventNs": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 9223372036854775807
+                        },
+                        "availableAtNs": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 9223372036854775807
+                        }
+                      }
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        "capabilities": {
+          "type": "array",
+          "maxItems": 3,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "name",
+              "status",
+              "availableAtNs",
+              "evidenceDigest",
+              "reason"
+            ],
+            "properties": {
+              "name": {
+                "enum": [
+                  "resolved-toolchain",
+                  "process-supervision",
+                  "native-stdio-containment"
+                ]
+              },
+              "status": {
+                "enum": [
+                  "available",
+                  "unavailable",
+                  "not-probed"
+                ]
+              },
+              "availableAtNs": {
+                "anyOf": [
+                  {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 9223372036854775807
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "evidenceDigest": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "pattern": "^[0-9a-f]{64}$"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "reason": {
+                "enum": [
+                  "observed-pass",
+                  "permission-denied",
+                  "missing-binary",
+                  "unsupported-platform",
+                  "not-probed",
+                  "unknown"
+                ]
+              }
+            }
+          }
+        },
+        "condition": {
+          "enum": [
+            "cold",
+            "warm",
+            "unknown"
+          ]
+        },
+        "recommendation": {
+          "enum": [
+            "not-produced",
+            "answered",
+            "refused",
+            "semantic-defer",
+            "unavailable"
+          ]
+        },
+        "recommendationArtifactDigest": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "chosenAction": {
+          "enum": [
+            "not-yet-chosen",
+            "keep-order",
+            "serial-development",
+            "abandon"
+          ]
+        },
+        "forecast": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "status",
+            "target",
+            "horizonNs",
+            "point",
+            "lower",
+            "upper",
+            "unit",
+            "methodDigest",
+            "missingReason"
+          ],
+          "properties": {
+            "status": {
+              "enum": [
+                "not-produced",
+                "produced"
+              ]
+            },
+            "target": {
+              "const": "validation_wall_ns"
+            },
+            "horizonNs": {
+              "anyOf": [
+                {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 86400000000000
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "point": {
+              "anyOf": [
+                {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 9223372036854775807
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "lower": {
+              "anyOf": [
+                {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 9223372036854775807
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "upper": {
+              "anyOf": [
+                {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 9223372036854775807
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "unit": {
+              "const": "ns"
+            },
+            "methodDigest": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "pattern": "^[0-9a-f]{64}$"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "missingReason": {
+              "anyOf": [
+                {
+                  "enum": [
+                    "not-measured",
+                    "not-applicable",
+                    "not-admitted",
+                    "not-produced",
+                    "not-probed",
+                    "unavailable",
+                    "cross-clock",
+                    "censored",
+                    "revoked",
+                    "unknown"
+                  ]
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          },
+          "allOf": [
+            {
+              "if": {
+                "properties": {
+                  "status": {
+                    "const": "not-produced"
+                  }
+                }
+              },
+              "then": {
+                "properties": {
+                  "horizonNs": {
+                    "type": "null"
+                  },
+                  "point": {
+                    "type": "null"
+                  },
+                  "lower": {
+                    "type": "null"
+                  },
+                  "upper": {
+                    "type": "null"
+                  },
+                  "methodDigest": {
+                    "type": "null"
+                  },
+                  "missingReason": {
+                    "enum": [
+                      "not-measured",
+                      "not-applicable",
+                      "not-admitted",
+                      "not-produced",
+                      "not-probed",
+                      "unavailable",
+                      "cross-clock",
+                      "censored",
+                      "revoked",
+                      "unknown"
+                    ]
+                  }
+                }
+              },
+              "else": {
+                "properties": {
+                  "horizonNs": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 86400000000000
+                  },
+                  "point": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 9223372036854775807
+                  },
+                  "methodDigest": {
+                    "type": "string",
+                    "pattern": "^[0-9a-f]{64}$"
+                  },
+                  "missingReason": {
+                    "type": "null"
+                  }
+                }
+              }
+            },
+            {
+              "oneOf": [
+                {
+                  "properties": {
+                    "lower": {
+                      "type": "null"
+                    },
+                    "upper": {
+                      "type": "null"
+                    }
+                  }
+                },
+                {
+                  "properties": {
+                    "lower": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 9223372036854775807
+                    },
+                    "upper": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 9223372036854775807
+                    }
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    "outcome": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "originRecordDigest",
+        "clockDomainId",
+        "chosenAction",
+        "workflowTerminal",
+        "productDisposition",
+        "verificationDisposition",
+        "terminalNs",
+        "availableAtNs",
+        "maturityNs",
+        "labelState",
+        "metrics",
+        "oracle",
+        "censoring",
+        "diagnosis",
+        "spans",
+        "amendmentReason"
+      ],
+      "properties": {
+        "originRecordDigest": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "clockDomainId": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{32}$"
+        },
+        "chosenAction": {
+          "enum": [
+            "keep-order",
+            "serial-development",
+            "abandon",
+            "not-observed"
+          ]
+        },
+        "workflowTerminal": {
+          "enum": [
+            "completed",
+            "refused",
+            "cancelled",
+            "error",
+            "abandoned",
+            "missing",
+            "not-selected"
+          ]
+        },
+        "productDisposition": {
+          "enum": [
+            "answered",
+            "refused",
+            "semantic-defer",
+            "error",
+            "not-run",
+            "unknown"
+          ]
+        },
+        "verificationDisposition": {
+          "enum": [
+            "verified",
+            "failed",
+            "unavailable",
+            "not-run",
+            "unknown"
+          ]
+        },
+        "terminalNs": {
+          "anyOf": [
+            {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9223372036854775807
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "availableAtNs": {
+          "anyOf": [
+            {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9223372036854775807
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "maturityNs": {
+          "anyOf": [
+            {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9223372036854775807
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "labelState": {
+          "enum": [
+            "unavailable",
+            "pending",
+            "mature",
+            "censored",
+            "invalid"
+          ]
+        },
+        "metrics": {
+          "type": "array",
+          "maxItems": 12,
+          "items": {
+            "oneOf": [
+              {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "name",
+                  "unit",
+                  "value",
+                  "missingReason",
+                  "scope"
+                ],
+                "properties": {
+                  "name": {
+                    "const": "validation_wall_ns"
+                  },
+                  "unit": {
+                    "const": "ns"
+                  },
+                  "value": {
+                    "anyOf": [
+                      {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 9223372036854775807
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "missingReason": {
+                    "anyOf": [
+                      {
+                        "enum": [
+                          "not-measured",
+                          "not-applicable",
+                          "not-admitted",
+                          "not-produced",
+                          "not-probed",
+                          "unavailable",
+                          "cross-clock",
+                          "censored",
+                          "revoked",
+                          "unknown"
+                        ]
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "scope": {
+                    "enum": [
+                      "attempt",
+                      "validation-process",
+                      "observer-process"
+                    ]
+                  }
+                },
+                "allOf": [
+                  {
+                    "if": {
+                      "properties": {
+                        "value": {
+                          "type": "null"
+                        }
+                      }
+                    },
+                    "then": {
+                      "properties": {
+                        "missingReason": {
+                          "enum": [
+                            "not-measured",
+                            "not-applicable",
+                            "not-admitted",
+                            "not-produced",
+                            "not-probed",
+                            "unavailable",
+                            "cross-clock",
+                            "censored",
+                            "revoked",
+                            "unknown"
+                          ]
+                        }
+                      }
+                    },
+                    "else": {
+                      "properties": {
+                        "missingReason": {
+                          "type": "null"
+                        }
+                      }
+                    }
+                  }
+                ]
+              },
+              {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "name",
+                  "unit",
+                  "value",
+                  "missingReason",
+                  "scope"
+                ],
+                "properties": {
+                  "name": {
+                    "const": "queue_wait_ns"
+                  },
+                  "unit": {
+                    "const": "ns"
+                  },
+                  "value": {
+                    "anyOf": [
+                      {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 9223372036854775807
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "missingReason": {
+                    "anyOf": [
+                      {
+                        "enum": [
+                          "not-measured",
+                          "not-applicable",
+                          "not-admitted",
+                          "not-produced",
+                          "not-probed",
+                          "unavailable",
+                          "cross-clock",
+                          "censored",
+                          "revoked",
+                          "unknown"
+                        ]
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "scope": {
+                    "enum": [
+                      "attempt",
+                      "validation-process",
+                      "observer-process"
+                    ]
+                  }
+                },
+                "allOf": [
+                  {
+                    "if": {
+                      "properties": {
+                        "value": {
+                          "type": "null"
+                        }
+                      }
+                    },
+                    "then": {
+                      "properties": {
+                        "missingReason": {
+                          "enum": [
+                            "not-measured",
+                            "not-applicable",
+                            "not-admitted",
+                            "not-produced",
+                            "not-probed",
+                            "unavailable",
+                            "cross-clock",
+                            "censored",
+                            "revoked",
+                            "unknown"
+                          ]
+                        }
+                      }
+                    },
+                    "else": {
+                      "properties": {
+                        "missingReason": {
+                          "type": "null"
+                        }
+                      }
+                    }
+                  }
+                ]
+              },
+              {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "name",
+                  "unit",
+                  "value",
+                  "missingReason",
+                  "scope"
+                ],
+                "properties": {
+                  "name": {
+                    "const": "cpu_user_ns"
+                  },
+                  "unit": {
+                    "const": "ns"
+                  },
+                  "value": {
+                    "anyOf": [
+                      {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 9223372036854775807
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "missingReason": {
+                    "anyOf": [
+                      {
+                        "enum": [
+                          "not-measured",
+                          "not-applicable",
+                          "not-admitted",
+                          "not-produced",
+                          "not-probed",
+                          "unavailable",
+                          "cross-clock",
+                          "censored",
+                          "revoked",
+                          "unknown"
+                        ]
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "scope": {
+                    "enum": [
+                      "attempt",
+                      "validation-process",
+                      "observer-process"
+                    ]
+                  }
+                },
+                "allOf": [
+                  {
+                    "if": {
+                      "properties": {
+                        "value": {
+                          "type": "null"
+                        }
+                      }
+                    },
+                    "then": {
+                      "properties": {
+                        "missingReason": {
+                          "enum": [
+                            "not-measured",
+                            "not-applicable",
+                            "not-admitted",
+                            "not-produced",
+                            "not-probed",
+                            "unavailable",
+                            "cross-clock",
+                            "censored",
+                            "revoked",
+                            "unknown"
+                          ]
+                        }
+                      }
+                    },
+                    "else": {
+                      "properties": {
+                        "missingReason": {
+                          "type": "null"
+                        }
+                      }
+                    }
+                  }
+                ]
+              },
+              {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "name",
+                  "unit",
+                  "value",
+                  "missingReason",
+                  "scope"
+                ],
+                "properties": {
+                  "name": {
+                    "const": "cpu_system_ns"
+                  },
+                  "unit": {
+                    "const": "ns"
+                  },
+                  "value": {
+                    "anyOf": [
+                      {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 9223372036854775807
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "missingReason": {
+                    "anyOf": [
+                      {
+                        "enum": [
+                          "not-measured",
+                          "not-applicable",
+                          "not-admitted",
+                          "not-produced",
+                          "not-probed",
+                          "unavailable",
+                          "cross-clock",
+                          "censored",
+                          "revoked",
+                          "unknown"
+                        ]
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "scope": {
+                    "enum": [
+                      "attempt",
+                      "validation-process",
+                      "observer-process"
+                    ]
+                  }
+                },
+                "allOf": [
+                  {
+                    "if": {
+                      "properties": {
+                        "value": {
+                          "type": "null"
+                        }
+                      }
+                    },
+                    "then": {
+                      "properties": {
+                        "missingReason": {
+                          "enum": [
+                            "not-measured",
+                            "not-applicable",
+                            "not-admitted",
+                            "not-produced",
+                            "not-probed",
+                            "unavailable",
+                            "cross-clock",
+                            "censored",
+                            "revoked",
+                            "unknown"
+                          ]
+                        }
+                      }
+                    },
+                    "else": {
+                      "properties": {
+                        "missingReason": {
+                          "type": "null"
+                        }
+                      }
+                    }
+                  }
+                ]
+              },
+              {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "name",
+                  "unit",
+                  "value",
+                  "missingReason",
+                  "scope"
+                ],
+                "properties": {
+                  "name": {
+                    "const": "sampled_peak_rss_bytes"
+                  },
+                  "unit": {
+                    "const": "bytes"
+                  },
+                  "value": {
+                    "anyOf": [
+                      {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 9223372036854775807
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "missingReason": {
+                    "anyOf": [
+                      {
+                        "enum": [
+                          "not-measured",
+                          "not-applicable",
+                          "not-admitted",
+                          "not-produced",
+                          "not-probed",
+                          "unavailable",
+                          "cross-clock",
+                          "censored",
+                          "revoked",
+                          "unknown"
+                        ]
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "scope": {
+                    "enum": [
+                      "attempt",
+                      "validation-process",
+                      "observer-process"
+                    ]
+                  }
+                },
+                "allOf": [
+                  {
+                    "if": {
+                      "properties": {
+                        "value": {
+                          "type": "null"
+                        }
+                      }
+                    },
+                    "then": {
+                      "properties": {
+                        "missingReason": {
+                          "enum": [
+                            "not-measured",
+                            "not-applicable",
+                            "not-admitted",
+                            "not-produced",
+                            "not-probed",
+                            "unavailable",
+                            "cross-clock",
+                            "censored",
+                            "revoked",
+                            "unknown"
+                          ]
+                        }
+                      }
+                    },
+                    "else": {
+                      "properties": {
+                        "missingReason": {
+                          "type": "null"
+                        }
+                      }
+                    }
+                  }
+                ]
+              },
+              {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "name",
+                  "unit",
+                  "value",
+                  "missingReason",
+                  "scope"
+                ],
+                "properties": {
+                  "name": {
+                    "const": "git_calls"
+                  },
+                  "unit": {
+                    "const": "count"
+                  },
+                  "value": {
+                    "anyOf": [
+                      {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 9223372036854775807
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "missingReason": {
+                    "anyOf": [
+                      {
+                        "enum": [
+                          "not-measured",
+                          "not-applicable",
+                          "not-admitted",
+                          "not-produced",
+                          "not-probed",
+                          "unavailable",
+                          "cross-clock",
+                          "censored",
+                          "revoked",
+                          "unknown"
+                        ]
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "scope": {
+                    "enum": [
+                      "attempt",
+                      "validation-process",
+                      "observer-process"
+                    ]
+                  }
+                },
+                "allOf": [
+                  {
+                    "if": {
+                      "properties": {
+                        "value": {
+                          "type": "null"
+                        }
+                      }
+                    },
+                    "then": {
+                      "properties": {
+                        "missingReason": {
+                          "enum": [
+                            "not-measured",
+                            "not-applicable",
+                            "not-admitted",
+                            "not-produced",
+                            "not-probed",
+                            "unavailable",
+                            "cross-clock",
+                            "censored",
+                            "revoked",
+                            "unknown"
+                          ]
+                        }
+                      }
+                    },
+                    "else": {
+                      "properties": {
+                        "missingReason": {
+                          "type": "null"
+                        }
+                      }
+                    }
+                  }
+                ]
+              },
+              {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "name",
+                  "unit",
+                  "value",
+                  "missingReason",
+                  "scope"
+                ],
+                "properties": {
+                  "name": {
+                    "const": "retry_count"
+                  },
+                  "unit": {
+                    "const": "count"
+                  },
+                  "value": {
+                    "anyOf": [
+                      {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 9223372036854775807
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "missingReason": {
+                    "anyOf": [
+                      {
+                        "enum": [
+                          "not-measured",
+                          "not-applicable",
+                          "not-admitted",
+                          "not-produced",
+                          "not-probed",
+                          "unavailable",
+                          "cross-clock",
+                          "censored",
+                          "revoked",
+                          "unknown"
+                        ]
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "scope": {
+                    "enum": [
+                      "attempt",
+                      "validation-process",
+                      "observer-process"
+                    ]
+                  }
+                },
+                "allOf": [
+                  {
+                    "if": {
+                      "properties": {
+                        "value": {
+                          "type": "null"
+                        }
+                      }
+                    },
+                    "then": {
+                      "properties": {
+                        "missingReason": {
+                          "enum": [
+                            "not-measured",
+                            "not-applicable",
+                            "not-admitted",
+                            "not-produced",
+                            "not-probed",
+                            "unavailable",
+                            "cross-clock",
+                            "censored",
+                            "revoked",
+                            "unknown"
+                          ]
+                        }
+                      }
+                    },
+                    "else": {
+                      "properties": {
+                        "missingReason": {
+                          "type": "null"
+                        }
+                      }
+                    }
+                  }
+                ]
+              },
+              {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "name",
+                  "unit",
+                  "value",
+                  "missingReason",
+                  "scope"
+                ],
+                "properties": {
+                  "name": {
+                    "const": "conflict_count"
+                  },
+                  "unit": {
+                    "const": "count"
+                  },
+                  "value": {
+                    "anyOf": [
+                      {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 9223372036854775807
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "missingReason": {
+                    "anyOf": [
+                      {
+                        "enum": [
+                          "not-measured",
+                          "not-applicable",
+                          "not-admitted",
+                          "not-produced",
+                          "not-probed",
+                          "unavailable",
+                          "cross-clock",
+                          "censored",
+                          "revoked",
+                          "unknown"
+                        ]
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "scope": {
+                    "enum": [
+                      "attempt",
+                      "validation-process",
+                      "observer-process"
+                    ]
+                  }
+                },
+                "allOf": [
+                  {
+                    "if": {
+                      "properties": {
+                        "value": {
+                          "type": "null"
+                        }
+                      }
+                    },
+                    "then": {
+                      "properties": {
+                        "missingReason": {
+                          "enum": [
+                            "not-measured",
+                            "not-applicable",
+                            "not-admitted",
+                            "not-produced",
+                            "not-probed",
+                            "unavailable",
+                            "cross-clock",
+                            "censored",
+                            "revoked",
+                            "unknown"
+                          ]
+                        }
+                      }
+                    },
+                    "else": {
+                      "properties": {
+                        "missingReason": {
+                          "type": "null"
+                        }
+                      }
+                    }
+                  }
+                ]
+              },
+              {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "name",
+                  "unit",
+                  "value",
+                  "missingReason",
+                  "scope"
+                ],
+                "properties": {
+                  "name": {
+                    "const": "rework_count"
+                  },
+                  "unit": {
+                    "const": "count"
+                  },
+                  "value": {
+                    "anyOf": [
+                      {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 9223372036854775807
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "missingReason": {
+                    "anyOf": [
+                      {
+                        "enum": [
+                          "not-measured",
+                          "not-applicable",
+                          "not-admitted",
+                          "not-produced",
+                          "not-probed",
+                          "unavailable",
+                          "cross-clock",
+                          "censored",
+                          "revoked",
+                          "unknown"
+                        ]
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "scope": {
+                    "enum": [
+                      "attempt",
+                      "validation-process",
+                      "observer-process"
+                    ]
+                  }
+                },
+                "allOf": [
+                  {
+                    "if": {
+                      "properties": {
+                        "value": {
+                          "type": "null"
+                        }
+                      }
+                    },
+                    "then": {
+                      "properties": {
+                        "missingReason": {
+                          "enum": [
+                            "not-measured",
+                            "not-applicable",
+                            "not-admitted",
+                            "not-produced",
+                            "not-probed",
+                            "unavailable",
+                            "cross-clock",
+                            "censored",
+                            "revoked",
+                            "unknown"
+                          ]
+                        }
+                      }
+                    },
+                    "else": {
+                      "properties": {
+                        "missingReason": {
+                          "type": "null"
+                        }
+                      }
+                    }
+                  }
+                ]
+              },
+              {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "name",
+                  "unit",
+                  "value",
+                  "missingReason",
+                  "scope"
+                ],
+                "properties": {
+                  "name": {
+                    "const": "validation_exit_code"
+                  },
+                  "unit": {
+                    "const": "exit-code"
+                  },
+                  "value": {
+                    "anyOf": [
+                      {
+                        "type": "integer",
+                        "minimum": -255,
+                        "maximum": 255
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "missingReason": {
+                    "anyOf": [
+                      {
+                        "enum": [
+                          "not-measured",
+                          "not-applicable",
+                          "not-admitted",
+                          "not-produced",
+                          "not-probed",
+                          "unavailable",
+                          "cross-clock",
+                          "censored",
+                          "revoked",
+                          "unknown"
+                        ]
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "scope": {
+                    "enum": [
+                      "attempt",
+                      "validation-process",
+                      "observer-process"
+                    ]
+                  }
+                },
+                "allOf": [
+                  {
+                    "if": {
+                      "properties": {
+                        "value": {
+                          "type": "null"
+                        }
+                      }
+                    },
+                    "then": {
+                      "properties": {
+                        "missingReason": {
+                          "enum": [
+                            "not-measured",
+                            "not-applicable",
+                            "not-admitted",
+                            "not-produced",
+                            "not-probed",
+                            "unavailable",
+                            "cross-clock",
+                            "censored",
+                            "revoked",
+                            "unknown"
+                          ]
+                        }
+                      }
+                    },
+                    "else": {
+                      "properties": {
+                        "missingReason": {
+                          "type": "null"
+                        }
+                      }
+                    }
+                  }
+                ]
+              },
+              {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "name",
+                  "unit",
+                  "value",
+                  "missingReason",
+                  "scope"
+                ],
+                "properties": {
+                  "name": {
+                    "const": "observer_wall_ns"
+                  },
+                  "unit": {
+                    "const": "ns"
+                  },
+                  "value": {
+                    "anyOf": [
+                      {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 9223372036854775807
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "missingReason": {
+                    "anyOf": [
+                      {
+                        "enum": [
+                          "not-measured",
+                          "not-applicable",
+                          "not-admitted",
+                          "not-produced",
+                          "not-probed",
+                          "unavailable",
+                          "cross-clock",
+                          "censored",
+                          "revoked",
+                          "unknown"
+                        ]
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "scope": {
+                    "enum": [
+                      "attempt",
+                      "validation-process",
+                      "observer-process"
+                    ]
+                  }
+                },
+                "allOf": [
+                  {
+                    "if": {
+                      "properties": {
+                        "value": {
+                          "type": "null"
+                        }
+                      }
+                    },
+                    "then": {
+                      "properties": {
+                        "missingReason": {
+                          "enum": [
+                            "not-measured",
+                            "not-applicable",
+                            "not-admitted",
+                            "not-produced",
+                            "not-probed",
+                            "unavailable",
+                            "cross-clock",
+                            "censored",
+                            "revoked",
+                            "unknown"
+                          ]
+                        }
+                      }
+                    },
+                    "else": {
+                      "properties": {
+                        "missingReason": {
+                          "type": "null"
+                        }
+                      }
+                    }
+                  }
+                ]
+              },
+              {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "name",
+                  "unit",
+                  "value",
+                  "missingReason",
+                  "scope"
+                ],
+                "properties": {
+                  "name": {
+                    "const": "output_bytes"
+                  },
+                  "unit": {
+                    "const": "bytes"
+                  },
+                  "value": {
+                    "anyOf": [
+                      {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 9223372036854775807
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "missingReason": {
+                    "anyOf": [
+                      {
+                        "enum": [
+                          "not-measured",
+                          "not-applicable",
+                          "not-admitted",
+                          "not-produced",
+                          "not-probed",
+                          "unavailable",
+                          "cross-clock",
+                          "censored",
+                          "revoked",
+                          "unknown"
+                        ]
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "scope": {
+                    "enum": [
+                      "attempt",
+                      "validation-process",
+                      "observer-process"
+                    ]
+                  }
+                },
+                "allOf": [
+                  {
+                    "if": {
+                      "properties": {
+                        "value": {
+                          "type": "null"
+                        }
+                      }
+                    },
+                    "then": {
+                      "properties": {
+                        "missingReason": {
+                          "enum": [
+                            "not-measured",
+                            "not-applicable",
+                            "not-admitted",
+                            "not-produced",
+                            "not-probed",
+                            "unavailable",
+                            "cross-clock",
+                            "censored",
+                            "revoked",
+                            "unknown"
+                          ]
+                        }
+                      }
+                    },
+                    "else": {
+                      "properties": {
+                        "missingReason": {
+                          "type": "null"
+                        }
+                      }
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        "oracle": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "status",
+            "contractDigest",
+            "artifactDigest",
+            "check",
+            "semanticCorrectness",
+            "humanLabel"
+          ],
+          "properties": {
+            "status": {
+              "enum": [
+                "not-obtained",
+                "pending",
+                "verified",
+                "failed"
+              ]
+            },
+            "contractDigest": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
+            },
+            "artifactDigest": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "pattern": "^[0-9a-f]{64}$"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "check": {
+              "const": "validation-command-terminal-and-bound-log"
+            },
+            "semanticCorrectness": {
+              "const": "unknown"
+            },
+            "humanLabel": {
+              "const": "unknown"
+            }
+          }
+        },
+        "censoring": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "state",
+            "reason",
+            "observedUntilNs"
+          ],
+          "properties": {
+            "state": {
+              "enum": [
+                "not-censored",
+                "right-censored",
+                "missing-outcome",
+                "revoked",
+                "invalid-oracle",
+                "not-applicable"
+              ]
+            },
+            "reason": {
+              "anyOf": [
+                {
+                  "enum": [
+                    "not-measured",
+                    "not-applicable",
+                    "not-admitted",
+                    "not-produced",
+                    "not-probed",
+                    "unavailable",
+                    "cross-clock",
+                    "censored",
+                    "revoked",
+                    "unknown"
+                  ]
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "observedUntilNs": {
+              "anyOf": [
+                {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 9223372036854775807
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          }
+        },
+        "diagnosis": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "claimLevel",
+            "layer",
+            "causeCode",
+            "evidenceDigest",
+            "boundedDiagnosticAnnexDigest"
+          ],
+          "properties": {
+            "claimLevel": {
+              "enum": [
+                "unknown",
+                "observed-mechanism",
+                "hypothesis"
+              ]
+            },
+            "layer": {
+              "enum": [
+                "unknown",
+                "product",
+                "verification",
+                "infrastructure"
+              ]
+            },
+            "causeCode": {
+              "enum": [
+                "unassigned",
+                "os-exec-permission-denied",
+                "explicit-boundary-refusal",
+                "deadline-observed",
+                "cancellation-observed"
+              ]
+            },
+            "evidenceDigest": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "pattern": "^[0-9a-f]{64}$"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "boundedDiagnosticAnnexDigest": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "pattern": "^[0-9a-f]{64}$"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          },
+          "allOf": [
+            {
+              "if": {
+                "properties": {
+                  "claimLevel": {
+                    "const": "unknown"
+                  }
+                }
+              },
+              "then": {
+                "properties": {
+                  "causeCode": {
+                    "const": "unassigned"
+                  }
+                }
+              }
+            },
+            {
+              "if": {
+                "properties": {
+                  "claimLevel": {
+                    "const": "observed-mechanism"
+                  }
+                }
+              },
+              "then": {
+                "properties": {
+                  "evidenceDigest": {
+                    "type": "string",
+                    "pattern": "^[0-9a-f]{64}$"
+                  }
+                }
+              }
+            }
+          ]
+        },
+        "spans": {
+          "type": "array",
+          "maxItems": 1024,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "spanId",
+              "parentSpanId",
+              "clockDomainId",
+              "stage",
+              "startedNs",
+              "finishedNs",
+              "status",
+              "accounting"
+            ],
+            "properties": {
+              "spanId": {
+                "type": "string",
+                "pattern": "^[0-9a-f]{32}$"
+              },
+              "parentSpanId": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "pattern": "^[0-9a-f]{32}$"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "clockDomainId": {
+                "type": "string",
+                "pattern": "^[0-9a-f]{32}$"
+              },
+              "stage": {
+                "enum": [
+                  "queue",
+                  "acquisition",
+                  "decision",
+                  "prepare",
+                  "transport",
+                  "validation",
+                  "cleanup",
+                  "observer"
+                ]
+              },
+              "startedNs": {
+                "anyOf": [
+                  {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 9223372036854775807
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "finishedNs": {
+                "anyOf": [
+                  {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 9223372036854775807
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "status": {
+                "enum": [
+                  "complete",
+                  "interrupted",
+                  "unavailable"
+                ]
+              },
+              "accounting": {
+                "enum": [
+                  "inclusive",
+                  "exclusive"
+                ]
+              }
+            },
+            "allOf": [
+              {
+                "if": {
+                  "properties": {
+                    "status": {
+                      "const": "complete"
+                    }
+                  }
+                },
+                "then": {
+                  "properties": {
+                    "startedNs": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 9223372036854775807
+                    },
+                    "finishedNs": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 9223372036854775807
+                    }
+                  }
+                }
+              },
+              {
+                "if": {
+                  "properties": {
+                    "status": {
+                      "const": "unavailable"
+                    }
+                  }
+                },
+                "then": {
+                  "properties": {
+                    "startedNs": {
+                      "type": "null"
+                    },
+                    "finishedNs": {
+                      "type": "null"
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        "amendmentReason": {
+          "enum": [
+            "initial",
+            "late-maturity",
+            "correction"
+          ]
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "labelState": {
+                "const": "mature"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "terminalNs": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 9223372036854775807
+              },
+              "availableAtNs": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 9223372036854775807
+              },
+              "maturityNs": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 9223372036854775807
+              },
+              "oracle": {
+                "properties": {
+                  "status": {
+                    "const": "verified"
+                  },
+                  "artifactDigest": {
+                    "type": "string",
+                    "pattern": "^[0-9a-f]{64}$"
+                  }
+                }
+              },
+              "censoring": {
+                "properties": {
+                  "state": {
+                    "const": "not-censored"
+                  },
+                  "reason": {
+                    "type": "null"
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "labelState": {
+                "const": "censored"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "censoring": {
+                "properties": {
+                  "state": {
+                    "enum": [
+                      "right-censored",
+                      "missing-outcome",
+                      "revoked",
+                      "invalid-oracle",
+                      "not-applicable"
+                    ]
+                  },
+                  "reason": {
+                    "enum": [
+                      "not-measured",
+                      "not-applicable",
+                      "not-admitted",
+                      "not-produced",
+                      "not-probed",
+                      "unavailable",
+                      "cross-clock",
+                      "censored",
+                      "revoked",
+                      "unknown"
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "kind": {
+            "const": "origin"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "payload": {
+            "$ref": "#/$defs/origin"
+          }
+        }
+      },
+      "else": {
+        "properties": {
+          "payload": {
+            "$ref": "#/$defs/outcome"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "sourceState": {
+            "const": "clean"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "dirtyDiffDigest": {
+            "type": "null"
+          }
+        }
+      },
+      "else": {
+        "properties": {
+          "dirtyDiffDigest": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$"
+          }
+        }
+      }
+    }
+  ]
+}

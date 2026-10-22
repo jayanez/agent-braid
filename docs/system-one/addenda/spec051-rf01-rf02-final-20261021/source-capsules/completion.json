@@ -1,0 +1,14 @@
+{
+  "archiveSha256": "3377dca34148e5a2380433183a9e2edc5f7d83fe4c346572bd968dfe7ec7a255",
+  "bindingCount": 68,
+  "documentaryRelay": "pending",
+  "externalSpendEUR": 0,
+  "packet": "/private/tmp/agent-braid-spec051-corrected-20261021/specs/051-owned-work-evaluation/evidence/rf01-rf02/packet.json",
+  "packetSha256": "7773a3607315e042dd7d5672ecdf41fba9b797c579fbdf363973b58562517ce9",
+  "patchSha256": "8736d827129403b676b43046abaa64d9f2fdc5287df79ee138013e6d51bc33db",
+  "rawRepresentations": 50,
+  "report": "/private/tmp/agent-braid-spec051-corrected-20261021/specs/051-owned-work-evaluation/implementation-result.md",
+  "reportSha256": "f1811e7a7e4be5f3537f8d12aa4f3dd79ebe8b424c95b0e52e43c54c1b7aa863",
+  "sourceMembers": 18,
+  "status": "packaged-local"
+}

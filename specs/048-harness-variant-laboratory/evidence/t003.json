@@ -1,5 +1,9 @@
 {
   "candidateBinding": "Current source/input hashes; no frozen implementation commit claimed",
+  "developIntegration": {
+    "path": "specs/048-harness-variant-laboratory/evidence/develop-integration-20261022.json",
+    "scope": "Merge of develop after SPEC-051 (#659, ADR 0026, squash c0df17b1). SPEC-047/048/051 current authority snapshots refreshed with validate_spec_kit.py snapshot to include both ADR 0026 and ADR 0027; inputs rebound from current bytes. Earlier records kept unchanged as history."
+  },
   "disposition": "Completed for the adopted offline foundation task; broader feature gates pending",
   "executedChecks": [
     {
@@ -50,7 +54,7 @@
   "repositoryValidation": {
     "path": "specs/048-harness-variant-laboratory/evidence/offline-foundations-validation.json",
     "scope": "Stable local PR:14commands,2173tests/24skips; focused62/0skips; no native/whole-feature acceptance",
-    "sha256": "65b987184049690f54d95dadae1de76609ae343f0a0364989c9225c156b9cf5b"
+    "sha256": "85e983fa3e4ed636ec4c6556506f64dedcfc5eb13655bc33f782ce73908e7074"
   },
   "reviewFollowUp": {
     "path": "specs/048-harness-variant-laboratory/evidence/review-followup-pr657.json",

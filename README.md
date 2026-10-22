@@ -57,8 +57,9 @@ packages its own runtime for supported local hosts.
 
 ### Newest work
 
-Integrated on 2026-10-22. Each keeps `executionAuthorization: false` and leaves
-its human, scientific and acceptance gates open.
+Merged or merging on 2026-10-22; see each pull request for its state. Each keeps
+`executionAuthorization: false` and leaves its human, scientific and acceptance
+gates open.
 
 | Work | Pull request | What it adds |
 | --- | --- | --- |

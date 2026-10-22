@@ -1,0 +1,198 @@
+{
+  "controls": [
+    {
+      "id": "RF-CONTRACT-N01",
+      "boundary": "trust",
+      "violation": "wire-admitted flag without trusted registry",
+      "requiredDisposition": "refuse-source-authority",
+      "scope": "Pure synthetic software control only; not real source admission",
+      "status": "implemented-focused",
+      "testModule": "tests/test_owned_work_authority.py"
+    },
+    {
+      "id": "RF-CONTRACT-N02",
+      "boundary": "revocation",
+      "violation": "expired/revoked owner receipt",
+      "requiredDisposition": "stop-capture",
+      "scope": "Pure synthetic software control only; not real source admission",
+      "status": "implemented-focused",
+      "testModule": "tests/test_owned_work_authority.py"
+    },
+    {
+      "id": "RF-CONTRACT-N03",
+      "boundary": "scope",
+      "violation": "wrong canonical root/pins/actions",
+      "requiredDisposition": "refuse-source-scope",
+      "scope": "Pure synthetic software control only; not real source admission",
+      "status": "implemented-focused",
+      "testModule": "tests/test_owned_work_authority.py",
+      "limit": "Digest/scope comparisons only; physical canonical root/link verification requires trusted adapter."
+    },
+    {
+      "id": "RF-CONTRACT-N04",
+      "boundary": "chain",
+      "violation": "reused sequence or broken predecessor",
+      "requiredDisposition": "refuse-chain",
+      "scope": "Pure synthetic software control only; not real source admission",
+      "status": "implemented-focused",
+      "testModule": "tests/test_owned_work_contracts.py"
+    },
+    {
+      "id": "RF-CONTRACT-N05",
+      "boundary": "origin",
+      "violation": "conflicting second origin or wrong origin digest",
+      "requiredDisposition": "refuse-origin",
+      "scope": "Pure synthetic software control only; not real source admission",
+      "status": "implemented-focused",
+      "testModule": "tests/test_owned_work_contracts.py"
+    },
+    {
+      "id": "RF-CONTRACT-N06",
+      "boundary": "supersession",
+      "violation": "correction targets another attempt",
+      "requiredDisposition": "refuse-supersession",
+      "scope": "Pure synthetic software control only; not real source admission",
+      "status": "implemented-focused",
+      "testModule": "tests/test_owned_work_contracts.py"
+    },
+    {
+      "id": "RF-CONTRACT-N07",
+      "boundary": "late-feature",
+      "violation": "availableAtNs exceeds T0 cutoff",
+      "requiredDisposition": "refuse-causal-feature",
+      "scope": "Pure synthetic software control only; not real source admission",
+      "status": "implemented-focused",
+      "testModule": "tests/test_owned_work_contracts.py"
+    },
+    {
+      "id": "RF-CONTRACT-N08",
+      "boundary": "clock",
+      "violation": "different clock domain without trusted mapping",
+      "requiredDisposition": "unavailable-or-censored; no subtraction",
+      "scope": "Pure synthetic software control only; not real source admission",
+      "status": "implemented-focused",
+      "testModule": "tests/test_owned_work_contracts.py"
+    },
+    {
+      "id": "RF-CONTRACT-N09",
+      "boundary": "family",
+      "violation": "related retry/language family crosses split",
+      "requiredDisposition": "refuse-partition",
+      "scope": "Pure synthetic software control only; not real source admission",
+      "status": "implemented-focused",
+      "testModule": "tests/test_owned_work_contracts.py"
+    },
+    {
+      "id": "RF-CONTRACT-N10",
+      "boundary": "capability",
+      "violation": "unprobed capability relabeled available",
+      "requiredDisposition": "refuse-unobserved-claim",
+      "scope": "Pure synthetic software control only; not real source admission",
+      "status": "implemented-focused",
+      "testModule": "tests/test_owned_work_contracts.py"
+    },
+    {
+      "id": "RF-CONTRACT-N11",
+      "boundary": "maturity",
+      "violation": "no verified bound oracle or premature maturity",
+      "requiredDisposition": "refuse-mature-label",
+      "scope": "Pure synthetic software control only; not real source admission",
+      "status": "implemented-focused",
+      "testModule": "tests/test_owned_work_contracts.py"
+    },
+    {
+      "id": "RF-CONTRACT-N12",
+      "boundary": "censor",
+      "violation": "no terminal before frozen follow-up horizon",
+      "requiredDisposition": "retain-right-censored",
+      "scope": "Pure synthetic software control only; not real source admission",
+      "status": "implemented-focused",
+      "testModule": "tests/test_owned_work_contracts.py"
+    },
+    {
+      "id": "RF-CONTRACT-N13",
+      "boundary": "interval",
+      "violation": "lower/point/upper inconsistent",
+      "requiredDisposition": "refuse-interval",
+      "scope": "Pure synthetic software control only; not real source admission",
+      "status": "implemented-focused",
+      "testModule": "tests/test_owned_work_contracts.py"
+    },
+    {
+      "id": "RF-CONTRACT-N14",
+      "boundary": "diagnosis",
+      "violation": "transport symptom or later CI called root cause",
+      "requiredDisposition": "retain-unassigned-or-hypothesis",
+      "scope": "Pure synthetic software control only; not real source admission",
+      "status": "implemented-focused",
+      "testModule": "tests/test_owned_work_contracts.py"
+    },
+    {
+      "id": "RF-CONTRACT-N15",
+      "boundary": "content",
+      "violation": "raw stdout/stderr/path/PATH/secret injected",
+      "requiredDisposition": "refuse-field; no default annex",
+      "scope": "Pure synthetic software control only; not real source admission",
+      "status": "implemented-focused",
+      "testModule": "tests/test_owned_work_contracts.py"
+    },
+    {
+      "id": "RF-CONTRACT-N16",
+      "boundary": "privacy",
+      "violation": "ledger ID/digest exported into047",
+      "requiredDisposition": "refuse-projection",
+      "scope": "Pure synthetic software control only; not real source admission",
+      "status": "implemented-focused",
+      "testModule": "tests/test_owned_work_contracts.py"
+    },
+    {
+      "id": "RF-CONTRACT-N17",
+      "boundary": "storage",
+      "violation": "unsafe link/owner/truncation/budget",
+      "requiredDisposition": "RF-T03 storage gate; not implemented",
+      "scope": "Pure synthetic software control only; not real source admission",
+      "status": "deferred",
+      "testModule": null,
+      "limit": "RF-T03 filesystem/link/atomic store controls not implemented; numeric caps checked only."
+    },
+    {
+      "id": "RF-CONTRACT-N18",
+      "boundary": "noninterference",
+      "violation": "observer fault changes product outcome or budget",
+      "requiredDisposition": "reject integration; RF-T04 test",
+      "scope": "Pure synthetic software control only; not real source admission",
+      "status": "deferred",
+      "testModule": null,
+      "limit": "RF-T04 integrated observer noninterference not implemented; pure no-I/O control only."
+    },
+    {
+      "id": "RF-CONTRACT-N19",
+      "boundary": "denominator",
+      "violation": "failed/cancelled/missing attempts dropped",
+      "requiredDisposition": "refuse-population-claim",
+      "scope": "Pure synthetic software control only; not real source admission",
+      "status": "partial-supplied-population-only",
+      "testModule": "tests/test_owned_work_contracts.py",
+      "limit": "Reports every supplied registration member; cannot prove registry completeness or source truth."
+    },
+    {
+      "id": "RF-CONTRACT-N20",
+      "boundary": "source-verifier",
+      "violation": "always-True lambda replaces actual external source admission",
+      "requiredDisposition": "refuse-real-source",
+      "scope": "Pure synthetic software control only; not real source admission",
+      "status": "implemented-focused",
+      "testModule": "tests/test_owned_work_authority.py"
+    },
+    {
+      "id": "RF-CONTRACT-N21",
+      "boundary": "late-outcome-original-horizon",
+      "violation": "terminalNs exceeds frozen originNs+horizonNs but a correction sets mature or adds a point/interval error for the original lot",
+      "requiredDisposition": "retain-right-censored; append evidence without changing original eligibility",
+      "scope": "Pure synthetic software control only; not real source admission",
+      "status": "implemented-focused",
+      "testModule": "tests/test_owned_work_contracts.py"
+    }
+  ],
+  "scope": "Obtained focused controls; profiles and real gates separate"
+}
