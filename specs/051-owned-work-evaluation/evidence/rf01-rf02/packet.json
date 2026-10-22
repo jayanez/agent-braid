@@ -21,7 +21,6 @@
     "specs/051-owned-work-evaluation/contracts/owned-work-authority.schema.json": "e05dbc60f1dd4a6cd0a1a9de824c13a817d989da8a8be3454fe5d1e74d6fb056",
     "specs/051-owned-work-evaluation/contracts/owned-work-evaluation-v1.md": "0c2c8a905c45f08864fd5d1c13ae92f6a9cfaa9c524bee8c913b17950eaded57",
     "specs/051-owned-work-evaluation/contracts/owned-work-evaluation.schema.json": "52af4ea616e0c552888b41bb48286e52238e961e40e538f8e4be0035b752e134",
-    "specs/051-owned-work-evaluation/evidence/rf01-rf02/adopt.py.gz": "20dc85c6484218c948951b5903ce54238a4f45dd478a1fd451194e99d701351b",
     "specs/051-owned-work-evaluation/evidence/rf01-rf02/adoption.json.gz": "2e868b79df881d053f5ddd8f39f98ed6b8e8d65316e72acd36aa3f8ec16b9903",
     "specs/051-owned-work-evaluation/evidence/rf01-rf02/attempt1-os-read-interruption.json.gz": "58bc151e49fd55b6c4d099bd6b37521b5a1d9dc7de46b34a14ae06e4ed257448",
     "specs/051-owned-work-evaluation/evidence/rf01-rf02/before.json.gz": "d168b540b25eb76f5627093eeba54bbada2c295159b80525d00cf43f1fe03cb0",
@@ -31,12 +30,10 @@
     "specs/051-owned-work-evaluation/evidence/rf01-rf02/corrected/profiles/pr.log.gz": "a3fa3024f9683e45e34567ab6eb108340e45b09a19d9c867aa14bc3059125803",
     "specs/051-owned-work-evaluation/evidence/rf01-rf02/corrected/profiles/quick.json.gz": "15884e8f0badca00b8e01a87d64d1b3b940116f549a69c5693ff2fbc0b8b0f02",
     "specs/051-owned-work-evaluation/evidence/rf01-rf02/corrected/profiles/quick.log.gz": "6de195bf11b046b00b41780930b879c336b091e70d9fea2c7091242a958bb7da",
-    "specs/051-owned-work-evaluation/evidence/rf01-rf02/corrected/run_profiles.py.gz": "43890c6054df104b0e990ff2a67cd66c6973a5a934b15e91b1524ef8342a5545",
     "specs/051-owned-work-evaluation/evidence/rf01-rf02/corrected/supervise.py.gz": "590da2025c05913cb620b50993de924e1456d1b0783f90b10909bb53988d84e3",
     "specs/051-owned-work-evaluation/evidence/rf01-rf02/corrected/supervisor-completion.json.gz": "10a0c216c25c39f066e8865e33d867903a9204c8fddd378c7751342b2b284e02",
     "specs/051-owned-work-evaluation/evidence/rf01-rf02/corrected/supervisor-start.json.gz": "20b36f5222113c50455e7c2e9d920baee73791fc7d5fd1cec332b8cc79081c96",
     "specs/051-owned-work-evaluation/evidence/rf01-rf02/corrected/supervisor.log.gz": "f24c4463ded7f06177355333968ade27868fa9b85d2e7757bd4d13d8756c7619",
-    "specs/051-owned-work-evaluation/evidence/rf01-rf02/finalize.py.gz": "4fce850ce167825357a7a6310a2b5a8e8d85c14a597803def6dd6d2d24f9cd2d",
     "specs/051-owned-work-evaluation/evidence/rf01-rf02/focused-attempt1.log.gz": "71f56a942f14a85a2e8fc594d3cd4e7cf57f419a351b42b0efe49f90d06cc210",
     "specs/051-owned-work-evaluation/evidence/rf01-rf02/focused-attempt2.log.gz": "8abad14406e824e456f0a372e1bd591f71554c2eb61e1801618c154b1cdf9abc",
     "specs/051-owned-work-evaluation/evidence/rf01-rf02/focused-stable.log.gz": "0847b79e6a0e52b8e201b6d5fa768c9e6431a0bab96f9e930e6ef65471b256b8",
@@ -53,17 +50,10 @@
     "specs/051-owned-work-evaluation/evidence/rf01-rf02/mutation-oracle-binding.log.gz": "6da27f0c7a90b4766c806e53e14028e1374759102af2c01ccd905fbcfc36543b",
     "specs/051-owned-work-evaluation/evidence/rf01-rf02/mutation-results.json.gz": "5b90dbcce83fc72b9899ea5a040299bea0673daf81b64c81595c534e28369fbf",
     "specs/051-owned-work-evaluation/evidence/rf01-rf02/mutation-source-binding.log.gz": "b66989c0ccc33766d72df843c46667a5ca0504912f21e4fa5b908dd5e8b5890b",
-    "specs/051-owned-work-evaluation/evidence/rf01-rf02/mutations.py.gz": "6216af2c89541d67370bb5e7b9d15ebddf9d5848b5f170c6e8563ca69c8f1279",
     "specs/051-owned-work-evaluation/evidence/rf01-rf02/preflight.log.gz": "241bc3cae8267e1f9b9c4529e55fa475be4bc02a467fcc0ce57290c0a4d5c5d1",
-    "specs/051-owned-work-evaluation/evidence/rf01-rf02/profile-monitor-sample-command.log.gz": "6561d87f5aad824612cb66e4e1b9319c13601129bd33038d6b4deaad7db27546",
-    "specs/051-owned-work-evaluation/evidence/rf01-rf02/profile-monitor-sample.txt.gz": "c604e5dde23742407b7e55cbbae0a33626bcf7a3c61cc34c899fa1c180293157",
     "specs/051-owned-work-evaluation/evidence/rf01-rf02/profiles/pr.log.gz": "89566a4f7c42232e24c0e2c99974e6a91fd1883d99bb7082b384f6c0553ebd35",
     "specs/051-owned-work-evaluation/evidence/rf01-rf02/profiles/quick.log.gz": "a504753695cdd03e3cba4242e79a38cf6ddb4693ef670471e928dacaea11faec",
-    "specs/051-owned-work-evaluation/evidence/rf01-rf02/readback.py.gz": "b3e0588a3f196c6067b8aa313856e75fb465cb805ed192d0cd11707998ef3f90",
-    "specs/051-owned-work-evaluation/evidence/rf01-rf02/repair_metadata.py.gz": "fecb35622abfea049656871634693ac0f1eb4005ea1099944b33f6b8477d073a",
-    "specs/051-owned-work-evaluation/evidence/rf01-rf02/repair_metadata_v2.py.gz": "3cc004a1a0b7f28028660408e9a43e083f42d0e0b3744ce03c9d0fbd67243464",
     "specs/051-owned-work-evaluation/evidence/rf01-rf02/repository-before-profiles.log.gz": "0696100a701b397d88703d8069bf7bcba97a8b41e6c578358c51b159a9e4a95d",
-    "specs/051-owned-work-evaluation/evidence/rf01-rf02/run_profiles.py.gz": "7cae4003ab16485bc32702a2453fe1c51f7b86393338e57235637fe86a35fab8",
     "specs/051-owned-work-evaluation/evidence/rf01-rf02/scope-review.json.gz": "d8b0b2eed8da5897024d195139b42603a16f6353b0cf79abf5444aa39b29af57",
     "specs/051-owned-work-evaluation/evidence/rf01-rf02/snapshot-stable.log.gz": "07c61c4f1912a6c8e8ace43d559c2dcd771448304daa7038a910bcc193a96895",
     "specs/051-owned-work-evaluation/evidence/rf01-rf02/snapshot.log.gz": "07c61c4f1912a6c8e8ace43d559c2dcd771448304daa7038a910bcc193a96895",
@@ -138,13 +128,6 @@
   },
   "rawRepresentations": [
     {
-      "rawBytes": 12492,
-      "rawSha256": "efcbfb1c2db71e8a80f719986c39a0e30e51f3a2652cb3a01e633a99ee630f95",
-      "representation": "specs/051-owned-work-evaluation/evidence/rf01-rf02/adopt.py.gz",
-      "representationSha256": "20dc85c6484218c948951b5903ce54238a4f45dd478a1fd451194e99d701351b",
-      "sourceRelative": "adopt.py"
-    },
-    {
       "rawBytes": 323,
       "rawSha256": "d4837c583d492e9249148acf5d12bb1c6c5c64eb053663d7bcbcaf828cedd12a",
       "representation": "specs/051-owned-work-evaluation/evidence/rf01-rf02/adoption.json.gz",
@@ -215,13 +198,6 @@
       "sourceRelative": "repository-before-profiles.log"
     },
     {
-      "rawBytes": 3256,
-      "rawSha256": "5900dfae22696acb481813a69a2d8dabf2a5eb96935941467128fa7cea9ea6b8",
-      "representation": "specs/051-owned-work-evaluation/evidence/rf01-rf02/mutations.py.gz",
-      "representationSha256": "6216af2c89541d67370bb5e7b9d15ebddf9d5848b5f170c6e8563ca69c8f1279",
-      "sourceRelative": "mutations.py"
-    },
-    {
       "rawBytes": 2654,
       "rawSha256": "8c7c90b0b0c78ac3e152539693af8377b26049eee78f2719ec0fc419524b05e9",
       "representation": "specs/051-owned-work-evaluation/evidence/rf01-rf02/mutation-results.json.gz",
@@ -271,13 +247,6 @@
       "sourceRelative": "supervisor.log"
     },
     {
-      "rawBytes": 3926,
-      "rawSha256": "d851a15d4cff249ff62d25dc3bd33eaf08279e5d3987dd2be188e8e78cc3229c",
-      "representation": "specs/051-owned-work-evaluation/evidence/rf01-rf02/run_profiles.py.gz",
-      "representationSha256": "7cae4003ab16485bc32702a2453fe1c51f7b86393338e57235637fe86a35fab8",
-      "sourceRelative": "run_profiles.py"
-    },
-    {
       "rawBytes": 1424,
       "rawSha256": "875c2ecd5c6f8534c70ef87cda41ef0d918936b76eff3576085ff3975f9bb408",
       "representation": "specs/051-owned-work-evaluation/evidence/rf01-rf02/supervise.py.gz",
@@ -297,34 +266,6 @@
       "representation": "specs/051-owned-work-evaluation/evidence/rf01-rf02/profiles/pr.log.gz",
       "representationSha256": "89566a4f7c42232e24c0e2c99974e6a91fd1883d99bb7082b384f6c0553ebd35",
       "sourceRelative": "profiles/pr.log"
-    },
-    {
-      "rawBytes": 13435,
-      "rawSha256": "3d33b6453e9af1055e6626e4b89caeb2b5ed0236f3933a02104f30f60890c175",
-      "representation": "specs/051-owned-work-evaluation/evidence/rf01-rf02/finalize.py.gz",
-      "representationSha256": "4fce850ce167825357a7a6310a2b5a8e8d85c14a597803def6dd6d2d24f9cd2d",
-      "sourceRelative": "finalize.py"
-    },
-    {
-      "rawBytes": 2803,
-      "rawSha256": "64a97e59701b45ce007385dc9c7b5194633d046b8a7a7f59b3dabab0fa5f7c38",
-      "representation": "specs/051-owned-work-evaluation/evidence/rf01-rf02/readback.py.gz",
-      "representationSha256": "b3e0588a3f196c6067b8aa313856e75fb465cb805ed192d0cd11707998ef3f90",
-      "sourceRelative": "readback.py"
-    },
-    {
-      "rawBytes": 4649,
-      "rawSha256": "77236b6e139d931fdfd74627bdcc98688b600ee8ac00f4e1fe40e8f95a986421",
-      "representation": "specs/051-owned-work-evaluation/evidence/rf01-rf02/repair_metadata.py.gz",
-      "representationSha256": "fecb35622abfea049656871634693ac0f1eb4005ea1099944b33f6b8477d073a",
-      "sourceRelative": "repair_metadata.py"
-    },
-    {
-      "rawBytes": 5606,
-      "rawSha256": "6c7b3cd9ae7e99e72c7947289ed52df11ce6a2a78138f28bbddc3a321d7d8bda",
-      "representation": "specs/051-owned-work-evaluation/evidence/rf01-rf02/repair_metadata_v2.py.gz",
-      "representationSha256": "3cc004a1a0b7f28028660408e9a43e083f42d0e0b3744ce03c9d0fbd67243464",
-      "sourceRelative": "repair_metadata_v2.py"
     },
     {
       "rawBytes": 1765,
@@ -362,20 +303,6 @@
       "sourceRelative": "attempt1-os-read-interruption.json"
     },
     {
-      "rawBytes": 75975,
-      "rawSha256": "00bcf85fd92ef86b1d5733f377830d7d950524a5fff52a04225f61d6c7e2a6ce",
-      "representation": "specs/051-owned-work-evaluation/evidence/rf01-rf02/profile-monitor-sample.txt.gz",
-      "representationSha256": "c604e5dde23742407b7e55cbbae0a33626bcf7a3c61cc34c899fa1c180293157",
-      "sourceRelative": "profile-monitor-sample.txt"
-    },
-    {
-      "rawBytes": 316,
-      "rawSha256": "4c1a16f23a0072f4f17aa7a9cd1a08f5171ce8c54b0519918310bffe15e0f5be",
-      "representation": "specs/051-owned-work-evaluation/evidence/rf01-rf02/profile-monitor-sample-command.log.gz",
-      "representationSha256": "6561d87f5aad824612cb66e4e1b9319c13601129bd33038d6b4deaad7db27546",
-      "sourceRelative": "profile-monitor-sample-command.log"
-    },
-    {
       "rawBytes": 632,
       "rawSha256": "161cf672514df00765d959b9d7824da940ff846d72b4c900600e6f30e71a644b",
       "representation": "specs/051-owned-work-evaluation/evidence/rf01-rf02/corrected/launch.json.gz",
@@ -402,13 +329,6 @@
       "representation": "specs/051-owned-work-evaluation/evidence/rf01-rf02/corrected/supervisor.log.gz",
       "representationSha256": "f24c4463ded7f06177355333968ade27868fa9b85d2e7757bd4d13d8756c7619",
       "sourceRelative": "corrected/supervisor.log"
-    },
-    {
-      "rawBytes": 3870,
-      "rawSha256": "2a2ea97f7ab417363c934d035ba72e813916b00a6137b6e76e22849236f5b1dd",
-      "representation": "specs/051-owned-work-evaluation/evidence/rf01-rf02/corrected/run_profiles.py.gz",
-      "representationSha256": "43890c6054df104b0e990ff2a67cd66c6973a5a934b15e91b1524ef8342a5545",
-      "sourceRelative": "corrected/run_profiles.py"
     },
     {
       "rawBytes": 1424,
@@ -490,5 +410,81 @@
   ],
   "schema": "agent-braid-rf01-rf02-software-evidence/v1",
   "scope": "Pure software, synthetic fixtures; no source admission/capture",
-  "testedInputCount": 2932
+  "testedInputCount": 2932,
+  "withdrawnRepresentations": {
+    "items": [
+      {
+        "rawBytes": 12492,
+        "rawSha256": "efcbfb1c2db71e8a80f719986c39a0e30e51f3a2652cb3a01e633a99ee630f95",
+        "representation": "specs/051-owned-work-evaluation/evidence/rf01-rf02/adopt.py.gz",
+        "representationSha256": "20dc85c6484218c948951b5903ce54238a4f45dd478a1fd451194e99d701351b",
+        "sourceRelative": "adopt.py"
+      },
+      {
+        "rawBytes": 3870,
+        "rawSha256": "2a2ea97f7ab417363c934d035ba72e813916b00a6137b6e76e22849236f5b1dd",
+        "representation": "specs/051-owned-work-evaluation/evidence/rf01-rf02/corrected/run_profiles.py.gz",
+        "representationSha256": "43890c6054df104b0e990ff2a67cd66c6973a5a934b15e91b1524ef8342a5545",
+        "sourceRelative": "corrected/run_profiles.py"
+      },
+      {
+        "rawBytes": 13435,
+        "rawSha256": "3d33b6453e9af1055e6626e4b89caeb2b5ed0236f3933a02104f30f60890c175",
+        "representation": "specs/051-owned-work-evaluation/evidence/rf01-rf02/finalize.py.gz",
+        "representationSha256": "4fce850ce167825357a7a6310a2b5a8e8d85c14a597803def6dd6d2d24f9cd2d",
+        "sourceRelative": "finalize.py"
+      },
+      {
+        "rawBytes": 3256,
+        "rawSha256": "5900dfae22696acb481813a69a2d8dabf2a5eb96935941467128fa7cea9ea6b8",
+        "representation": "specs/051-owned-work-evaluation/evidence/rf01-rf02/mutations.py.gz",
+        "representationSha256": "6216af2c89541d67370bb5e7b9d15ebddf9d5848b5f170c6e8563ca69c8f1279",
+        "sourceRelative": "mutations.py"
+      },
+      {
+        "rawBytes": 316,
+        "rawSha256": "4c1a16f23a0072f4f17aa7a9cd1a08f5171ce8c54b0519918310bffe15e0f5be",
+        "representation": "specs/051-owned-work-evaluation/evidence/rf01-rf02/profile-monitor-sample-command.log.gz",
+        "representationSha256": "6561d87f5aad824612cb66e4e1b9319c13601129bd33038d6b4deaad7db27546",
+        "sourceRelative": "profile-monitor-sample-command.log"
+      },
+      {
+        "rawBytes": 75975,
+        "rawSha256": "00bcf85fd92ef86b1d5733f377830d7d950524a5fff52a04225f61d6c7e2a6ce",
+        "representation": "specs/051-owned-work-evaluation/evidence/rf01-rf02/profile-monitor-sample.txt.gz",
+        "representationSha256": "c604e5dde23742407b7e55cbbae0a33626bcf7a3c61cc34c899fa1c180293157",
+        "sourceRelative": "profile-monitor-sample.txt"
+      },
+      {
+        "rawBytes": 2803,
+        "rawSha256": "64a97e59701b45ce007385dc9c7b5194633d046b8a7a7f59b3dabab0fa5f7c38",
+        "representation": "specs/051-owned-work-evaluation/evidence/rf01-rf02/readback.py.gz",
+        "representationSha256": "b3e0588a3f196c6067b8aa313856e75fb465cb805ed192d0cd11707998ef3f90",
+        "sourceRelative": "readback.py"
+      },
+      {
+        "rawBytes": 4649,
+        "rawSha256": "77236b6e139d931fdfd74627bdcc98688b600ee8ac00f4e1fe40e8f95a986421",
+        "representation": "specs/051-owned-work-evaluation/evidence/rf01-rf02/repair_metadata.py.gz",
+        "representationSha256": "fecb35622abfea049656871634693ac0f1eb4005ea1099944b33f6b8477d073a",
+        "sourceRelative": "repair_metadata.py"
+      },
+      {
+        "rawBytes": 5606,
+        "rawSha256": "6c7b3cd9ae7e99e72c7947289ed52df11ce6a2a78138f28bbddc3a321d7d8bda",
+        "representation": "specs/051-owned-work-evaluation/evidence/rf01-rf02/repair_metadata_v2.py.gz",
+        "representationSha256": "3cc004a1a0b7f28028660408e9a43e083f42d0e0b3744ce03c9d0fbd67243464",
+        "sourceRelative": "repair_metadata_v2.py"
+      },
+      {
+        "rawBytes": 3926,
+        "rawSha256": "d851a15d4cff249ff62d25dc3bd33eaf08279e5d3987dd2be188e8e78cc3229c",
+        "representation": "specs/051-owned-work-evaluation/evidence/rf01-rf02/run_profiles.py.gz",
+        "representationSha256": "7cae4003ab16485bc32702a2453fe1c51f7b86393338e57235637fe86a35fab8",
+        "sourceRelative": "run_profiles.py"
+      }
+    ],
+    "reason": "privacy: local absolute paths and a macOS sample process dump; withdrawn after commit f03796066d14d152dc1df3ba417546650b7405e4 by owner decision (2026-10-22)",
+    "retainedAt": "owner's private rescue archive agent-braid-codex-rescue-20261021 (tmp-snapshots/agent-braid-spec051-corrected-20261021), outside this repository"
+  }
 }

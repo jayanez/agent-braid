@@ -1,9 +1,9 @@
 # Review repair after commit f0379606
 
 An adversarial review of commit `f03796066d14d152dc1df3ba417546650b7405e4` found two
-required software defects. This record covers only those repairs. The historical
-[packet](evidence/rf01-rf02/packet.json) stays byte-exact and describes that commit,
-not this tree.
+required software defects. This record covers those repairs and one evidence
+withdrawal. The historical [packet](evidence/rf01-rf02/packet.json) describes that
+commit, not this tree.
 
 ## R1: a correction could prefer a later success
 
@@ -32,6 +32,18 @@ The censoring guards were correct, but three mutants survived the suite. New tes
   receipt, root and revocation sets (`registry-type`) instead of splitting a string
   into characters.
 - Removed unused imports.
+
+## Privacy withdrawal
+
+By owner decision, ten raw representations unique to this branch were removed:
+eight `.py.gz` helper scripts and the two `profile-monitor-sample*` files (a macOS
+`sample` process dump and its command log). Nine held local absolute paths;
+`readback.py.gz` had none but was withdrawn with the other exclusive helpers. The
+packet drops their bindings and raw entries and lists each one, with its raw and
+representation sha256, under `withdrawnRepresentations`. Byte-identical copies stay
+in the owner's private rescue archive outside the repository. The two
+`supervise.py.gz` files and every `.gz` already present in `develop` are kept
+unchanged. No history is rewritten.
 
 ## Checks
 

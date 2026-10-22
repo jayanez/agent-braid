@@ -113,6 +113,8 @@ real source/privacy/population/oracle admission require their next assignment.
 Training/calibration, human/scientific review, promotion and activation remain pending.
 
 Evidence: [packet](evidence/rf01-rf02/packet.json), historical and bound to commit
-`f03796066d14d152dc1df3ba417546650b7405e4`; it is not rewritten. Later review
-repairs and their hashes are recorded in [review-repair.md](review-repair.md). The external source archive and
+`f03796066d14d152dc1df3ba417546650b7405e4`. Its only later change withdraws ten
+private raw representations, listed with their hashes under
+`withdrawnRepresentations`. Later review repairs and their hashes are recorded in
+[review-repair.md](review-repair.md). The external source archive and
 baseline patch are private reproducibility materials, not publication approval.
