@@ -24,7 +24,7 @@ Today it offers an advisory analyzer for agent effects and dependencies, bounded
 replay and verified private execution of Git changes, native plugins and an MCP
 surface for Codex and Claude Code, and opt-in local diagnostics for decisions,
 workload forecasts and telemetry. An offline laboratory for comparing agent
-guidance variants (Braid Harness) is in review. Every result states its inputs,
+guidance variants (Braid Harness) has its first foundations. Every result states its inputs,
 method and limits; none of them authorizes execution on its own.
 
 Nothing runs without explicit consent. Execution requires a separately issued,
@@ -36,7 +36,7 @@ packages its own runtime for supported local hosts.
 
 **[Quick start](#-quick-start) · [CLI reference](#-cli-reference) ·
 [Owned runtime demo](examples/runtime/README.md) · [Planned AI tooling](docs/tooling/README.md) · [Architecture](ARCHITECTURE.md) ·
-[In review](#in-review) · [Evidence and status](#-evidence-and-project-status) · [Documentation](#-documentation)**
+[Newest work](#newest-work) · [Evidence and status](#-evidence-and-project-status) · [Documentation](#-documentation)**
 
 <a id="what-you-can-do"></a>
 
@@ -55,11 +55,10 @@ packages its own runtime for supported local hosts.
 | **Forecast local workloads** | Opt-in `forecast` predict/advice/inspect/export, optional Chronos-2 adapter and a read-only stdio MCP transport | Synthetic and frozen paired controls with episode-cluster uncertainty; advice is heuristic and grants no parallelism or utility claim. |
 | **Measure your own usage locally** | Default-off `telemetry` with a private bounded SQLite store and manual export/merge/purge | Numeric aggregates only, no automatic transmission; pilot remains **NO-GO**. |
 
-### In review
+### Newest work
 
-As of 2026-10-22, these capabilities have open draft pull requests and are not yet part of `develop`.
-Each keeps `executionAuthorization: false` and leaves its human, scientific and
-acceptance gates open.
+Integrated on 2026-10-22. Each keeps `executionAuthorization: false` and leaves
+its human, scientific and acceptance gates open.
 
 | Work | Pull request | What it adds |
 | --- | --- | --- |
