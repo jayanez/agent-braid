@@ -168,7 +168,9 @@ operator obligations; a malicious in-process caller is outside this trust model.
 `AttemptRegistration` freezes identities, source/config/toolchain/model pins,
 partition, clock and prospective capability/recommendation evidence.
 `FrozenRegistration` freezes lot/population/split, allowed method identities and
-trusted oracle/diagnostic attestations. Expected evidence must be supplied by an
+trusted oracle/diagnostic attestations, with at most one oracle attestation per
+attempt so a correction cannot rebind a failed attempt to a later passing run.
+Expected evidence must be supplied by an
 independently admitted host path; creating an attestation is not evidence capture.
 `validate_append` returns immutable canonical bytes in `ValidatedState`, duplicate
 status, eligible mature forecast-outcome digests and every supplied population

@@ -112,5 +112,7 @@ documentary reconciliation/publication is tracked separately. RF-T03/RF-T04 and
 real source/privacy/population/oracle admission require their next assignment.
 Training/calibration, human/scientific review, promotion and activation remain pending.
 
-Evidence: [packet](evidence/rf01-rf02/packet.json). The external source archive and
+Evidence: [packet](evidence/rf01-rf02/packet.json), historical and bound to commit
+`f03796066d14d152dc1df3ba417546650b7405e4`; it is not rewritten. Later review
+repairs and their hashes are recorded in [review-repair.md](review-repair.md). The external source archive and
 baseline patch are private reproducibility materials, not publication approval.
