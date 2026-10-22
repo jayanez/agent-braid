@@ -457,9 +457,9 @@ def import_candidate(raw: bytes, *, expected_sha256: str,
             descriptors = {}
             identities = set()
             lineages: dict[str, list[tuple[int, int]]] = {}
-            for name, path in roots.items():
+            for name, root_path in roots.items():
                 lineages[name] = []
-                descriptor = _open_directory(path, lineage=lineages[name])
+                descriptor = _open_directory(root_path, lineage=lineages[name])
                 stack.callback(os.close, descriptor)
                 info = os.fstat(descriptor)
                 identity = info.st_dev, info.st_ino
