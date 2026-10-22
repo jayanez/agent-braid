@@ -159,7 +159,7 @@
       "h2": false,
       "h2Eligibility": null,
       "id": "lost-update",
-      "reportHash": "44f2ed23f2829f62de2e2cd558546d26eb4eb6bcdc428942225169a4734b9d3d",
+      "reportHash": "c53153add9f7646f825a09952e387851551e0495fb5f7f482e77f2aba9416197",
       "requestHash": "791c43fc4118e3f055b71dbc16e42748195cd3500847502326b89db566e52d98",
       "traceSafety": {
         "duplicateEventPaths": [],
@@ -296,7 +296,7 @@
       "h2": false,
       "h2Eligibility": null,
       "id": "write-skew",
-      "reportHash": "ff1c1679edff1114a35fa9054e4bf3a5f1470f041874c92976884c177e04e1a6",
+      "reportHash": "6e23ddc873d10b11a017a650b263ce0a106139f27b9f60697dc4347218c32039",
       "requestHash": "ad5aa2834e44d548e3f55505262cb3e1f01caa70fad9975a235f312f53e7dc83",
       "traceSafety": {
         "duplicateEventPaths": [],
@@ -390,7 +390,7 @@
       "h2": false,
       "h2Eligibility": null,
       "id": "configuration-stale-read",
-      "reportHash": "1c7afe19e2678654a41f86b871055da9fc6a574e95c664b9e6c259a6e26c64bf",
+      "reportHash": "308cb97e2d4ade52c14ff8e60629bfac510f35d9f593088d18d94e05cfa8db0e",
       "requestHash": "368e9881cfa8d62278c7af7077e7b343762770e5a9604b65953f803ce29608f1",
       "traceSafety": {
         "duplicateEventPaths": [],
@@ -454,7 +454,7 @@
       "h2": false,
       "h2Eligibility": null,
       "id": "duplicate-events",
-      "reportHash": "1987eb2f4df530c2d3390ea89ecd1f7f556761ed799927e1fdf4fedb521d6723",
+      "reportHash": "453030242643582b90f4a249c3c799279a9d704b86b6d805d37cdedcc2774b8b",
       "requestHash": "a0ef165c9d47fa127d71fc7f982063a430bed86ae22b31851212c9fd8fdaed11",
       "traceSafety": {
         "duplicateEventPaths": [
@@ -521,7 +521,7 @@
       "h2": false,
       "h2Eligibility": null,
       "id": "idempotent-events",
-      "reportHash": "97113d1aeb6bc080961a41824f0a0c71cb45c760ccac3678f81738f1bfd1da51",
+      "reportHash": "0e1ddc54b3e35ec097b0cff7fcbab4b953564d52d13702d10defcabfd6204752",
       "requestHash": "13bc4589440c82351f42526d1b24c64ba3a0fbd2d00c87f9bdefd197fdd6bf7e",
       "traceSafety": {
         "duplicateEventPaths": [],
@@ -588,7 +588,7 @@
       "h2": false,
       "h2Eligibility": null,
       "id": "alias-hidden-effects",
-      "reportHash": "6c3baa4ec67fe4c2580f3f4b2f6bea8df9d59514750054482de3b8a6a417cd67",
+      "reportHash": "297b4b3469c0195304ded05e7d60766f5dc9b0fe2bdd1f87db4db11a98339c53",
       "requestHash": "f1c888bfdc169facfa6c84031669e5604c6cc01c9add988331269d490ebe8159",
       "traceSafety": {
         "duplicateEventPaths": [],
@@ -654,7 +654,7 @@
       "h2": false,
       "h2Eligibility": null,
       "id": "disjoint-positive",
-      "reportHash": "97cca2bbc6579e32ead2abb0da7deb9a605051a108ae0778c5b26a30aa78aea9",
+      "reportHash": "415a4bb94e7ae8085c8048a5454d055277c58841f3d9b0977ae4565ae60a07c5",
       "requestHash": "ebcb698a6770c26ff7a7bd722745155956787336dcdc3739cedd2965ecae467a",
       "traceSafety": {
         "duplicateEventPaths": [],
@@ -738,7 +738,7 @@
         "terminalCandidate": true
       },
       "id": "h2-shared-additions",
-      "reportHash": "60d1a69b65928f0ef1f09a772a8d622d13a32c1b5d93d5c2f90b92ce61bb7763",
+      "reportHash": "3bd529de6d1d5e70e235efb008d1f404fe2098a763e1b87f345fc80ad37674b0",
       "requestHash": "43442c027584e3961927bfc6669cdea5ee7b12a2df98abfd1eb38af3c6cf4f35",
       "traceSafety": {
         "duplicateEventPaths": [],
@@ -818,7 +818,7 @@
         "terminalCandidate": true
       },
       "id": "h2-disjoint-additions",
-      "reportHash": "a7bc1a191f3735f51671bccb3ad1b75dc5b0d84410706ebfebb922ffc7fd3f08",
+      "reportHash": "fbe85b683e88504b88d403bc5490e7c09e05594c2299c7111e716e1377b2f285",
       "requestHash": "cb601fe963779c1557fba26c8becabb939ab08b7006d24680e5a1e0cbbbdfe4f",
       "traceSafety": {
         "duplicateEventPaths": [],
@@ -930,7 +930,7 @@
         "terminalCandidate": true
       },
       "id": "h2-dependent-additions",
-      "reportHash": "5c9ad7b3b9f1078a5a375a8cf84622c6aed436da0af86913b7e80a8fe9d92456",
+      "reportHash": "065be4516a42c3e198b2644a15a7bfe7f31b2b280eab51531636b76f0ccf00b2",
       "requestHash": "2b53c27ec0f9ee7ece35345063a9c1f13e98314fc5c3e89ff45a64f624019aa2",
       "traceSafety": {
         "duplicateEventPaths": [],
@@ -1084,7 +1084,7 @@
         "terminalCandidate": true
       },
       "id": "h2-four-additions",
-      "reportHash": "d63153ec6c744dbdeeb390d1fe14bb8b2f9d967e4492125b2babad12243609e8",
+      "reportHash": "ec953a7e6ad1e6253298bcdf2800a22c0c417b9e9fd73086907e976bcd9bb1fd",
       "requestHash": "9b64679f76d0723b968b5801ad4085ea1c65481098f77b1dde2598ede4224f88",
       "traceSafety": {
         "duplicateEventPaths": [],
@@ -1168,7 +1168,7 @@
         "terminalCandidate": false
       },
       "id": "h2-overflow-exclusion",
-      "reportHash": "109a591a46a01ae5f265bf1749394db98d48cfa9c5e334545a45ace5fbb6a3e4",
+      "reportHash": "a18736837c12ada9e74043547c57c15eb930a4c75cf7690cca77bd2b8f3f046b",
       "requestHash": "719443d8db36a6c2cd48096494dfa55c20b8c96a8b8cba203a42d18d5f446185",
       "traceSafety": {
         "duplicateEventPaths": [],
@@ -1252,7 +1252,7 @@
         "terminalCandidate": false
       },
       "id": "h2-literal-write-exclusion",
-      "reportHash": "afdce8d170a5510fa7ff64db6352cdfd7ec3dd30d2c9e666eb93bcc93973d93c",
+      "reportHash": "b0dbdbbad4a89e3fd4b7ade4cfd6c372ae344319f893f138367395427c6d95df",
       "requestHash": "1039eddd9def1941c012bff43a02f3fd58c5e0239a2298edcbe2dc2a642560ca",
       "traceSafety": {
         "duplicateEventPaths": [],
@@ -1338,7 +1338,7 @@
         "terminalCandidate": false
       },
       "id": "h2-version-exclusion",
-      "reportHash": "db010917613a899f78831617218c5c9dd350a90dea52b4b56ab0905fc38271b4",
+      "reportHash": "2f2081630d74f56f1cbf233fab6d632045930ef976839215adef35ed88d37191",
       "requestHash": "a77eb8c179a57b5c5da1c4435f283e71354be2d2824622f34e10ab17cf505377",
       "traceSafety": {
         "duplicateEventPaths": [],
@@ -1424,7 +1424,7 @@
         "terminalCandidate": false
       },
       "id": "h2-guard-exclusion",
-      "reportHash": "05600919074978c2f164871066c580b0bb7a453088cefc724a3c546efda069bd",
+      "reportHash": "7f8e7c4496aba42f98e07644dfac8e0eb358e002860a694317e840dda6318d0f",
       "requestHash": "64292f3b75dba5bc81106eaf5eb5ebebf01e1df14172ea50e293d6849dc09cce",
       "traceSafety": {
         "duplicateEventPaths": [],
@@ -1512,7 +1512,7 @@
         "terminalCandidate": false
       },
       "id": "h2-unknown-exclusion",
-      "reportHash": "dbb4b7b53af36067eaf0a5e8d371f190676a0618f178a02b33efb9c3cc8097b6",
+      "reportHash": "e999cf8a222f5edced26b12a68419ecac44096149748bfc2f116fdd84be04807",
       "requestHash": "2d478d588a1bd0f506a5f6263c94cecd388aedb41c2d4521c301fb14e926ad3e",
       "traceSafety": {
         "duplicateEventPaths": [],
@@ -1626,7 +1626,7 @@
         "terminalCandidate": false
       },
       "id": "h2-event-exclusion",
-      "reportHash": "7cba83a4ac5517e54317472435c93df9fc1ecc57b89f492e0b35f3e84ad936b2",
+      "reportHash": "2638c4ff9ee6b2c70f3af5eaec03e11852112cc4f4aeb3bb6dbe7baa1fe4b65e",
       "requestHash": "b25d7c9f4b8c80c6c7e664e8eec849bf9169bef41b59291159c88e52c2121e80",
       "traceSafety": {
         "duplicateEventPaths": [],
@@ -1642,8 +1642,8 @@
     "executionAuthorization": false,
     "fixtureCount": 17,
     "format": "effectful-workload-registration-v1",
-    "manifestHash": "21b35582e507d59148e28f35fe01eac4a3f23f0f595931e7846ebbf4ed7decdc",
-    "protocolHash": "8b0f66e8fb67a7f4362f77f6bd6bfac5580c9ec923c6425129c3416d9860f42b"
+    "manifestHash": "ad8b00ca8c8fc4329699cd8ba5f07525b45f00cff604b76d69bacdb9fae6babc",
+    "protocolHash": "7dfb10da9eb1a8a9e1e61b7d73e4641c23920d6283da322b2321e3a912faddb9"
   },
   "runtimeSafety": "unknown",
   "scientificReview": "pending",
@@ -1651,7 +1651,7 @@
     "research/workload_lab/SEMANTICS.md": "e2c5637355a2ee96e66299aa0788ff57fbef353a35ece44e07ac8a3d6db71f2a",
     "research/workload_lab/__init__.py": "30db3e643969ae50c28637e413800a6906a03807247f014648d5b447b9f06871",
     "research/workload_lab/__main__.py": "787334ed2cc335b075ceab7d395cfe7a6ae2e5df5f3605d750b37c73db8b30ad",
-    "research/workload_lab/analysis.py": "f0c0df670ba6fa7883975cd493e93dba824cfb824bb7d2e6a90faba8dc006c07",
+    "research/workload_lab/analysis.py": "ecf39ec4d694de8b5a347d061deef3d3104e4234da45102570d327629de61706",
     "research/workload_lab/controls.py": "b9a2ad9ef7276665af1aefa055284a3350f7aacd3750254db2481c9301961f6a",
     "research/workload_lab/evidence.py": "a18717e40a438d62e73cddd6c753a482a37f3e5af02523b105abfdd6ff75b2cf",
     "research/workload_lab/explore.py": "99234a8383d968092a3c56a5c7f6dfb583e10eb521bce994c4bef79b2a14417d",
