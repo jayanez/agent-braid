@@ -15,20 +15,28 @@
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-AGPL%20%2B%20CC%20BY%20SA-2ea44f" alt="Split software and documentation licenses"></a>
 </p>
 
-Agent Braid is an open research and engineering toolkit for **analyzing agent
-effects, replaying Git changes and verifying bounded local execution**. It turns
-declared dependencies, resource footprints and immutable inputs into portable
-reports another consumer can reconstruct.
+Agent Braid is an open research and engineering toolkit for **coordinating AI
+coding agents on evidence rather than trust**. It shows how concurrent agent work
+interacts, what can safely proceed and in which order, and keeps a portable record
+that another person or tool can reconstruct.
 
-The analyzer is advisory. The opt-in policy pipeline requires a separately issued,
-one-use operator grant and publishes into private local storage. Runtime
-dependencies: **Python's standard library**. Git workflows additionally require
-Git; execution requires Linux or macOS with POSIX locking. The native plugin
+Today it offers an advisory analyzer for agent effects and dependencies, bounded
+replay and verified private execution of Git changes, native plugins and an MCP
+surface for Codex and Claude Code, and opt-in local diagnostics for decisions,
+workload forecasts and telemetry. An offline laboratory for comparing agent
+guidance variants (Braid Harness) is in review. Every result states its inputs,
+method and limits; none of them authorizes execution on its own.
+
+Nothing runs without explicit consent. Execution requires a separately issued,
+one-use operator grant and publishes only into private local storage; diagnostics,
+forecasting and telemetry are off by default and never leave the machine
+automatically. The core needs only **Python's standard library**; Git workflows also
+need Git, and execution needs Linux or macOS with POSIX locking. The native plugin
 packages its own runtime for supported local hosts.
 
 **[Quick start](#-quick-start) · [CLI reference](#-cli-reference) ·
 [Owned runtime demo](examples/runtime/README.md) · [Planned AI tooling](docs/tooling/README.md) · [Architecture](ARCHITECTURE.md) ·
-[Evidence and status](#-evidence-and-project-status) · [Documentation](#-documentation)**
+[In review](#in-review) · [Evidence and status](#-evidence-and-project-status) · [Documentation](#-documentation)**
 
 <a id="what-you-can-do"></a>
 
@@ -42,7 +50,25 @@ packages its own runtime for supported local hosts.
 | **Run an owned Git pipeline** | Verified policy plans, local grants, isolated preparation and serial publication | Fixed text patches, checked paths/modes/blobs, private results and process-interruption resume/abort. |
 | **Connect through stdio MCP** | Six bounded tools: `analyze`, `prepare`, `status`, `execute`, `recover`, `verify` | Configured source/result roots and the same local policy; grant issuance stays with the operator. |
 | **Prepare and inspect M3.5 proposals** | Synthetic trainer/inference, evaluator controls, hidden-proposal journals, session/pair accounting, filtered labs and aggregate seals | Software scope completed for T002/T004 on caller-declared synthetic inputs; **zero admitted real pairs**. Real-feed adaptation, source rights, protocol approval, capture, real fit and held-out evaluation remain gated. |
-| **Inspect local System 1 decisions** | Opt-in `system-one` diagnostics with a standard-library reference backend | Synthetic requests only; no learned model, calibration, accepted utility or execution authority. |
+| **Inspect local System 1 decisions** | Opt-in `system-one` diagnostics with a standard-library reference backend, plus a verified typed-plan selection core with Core, stdio and opt-in MCP SDK consumers | Synthetic requests and owned fixtures in a finite two-to-four-operation grammar; no learned model, calibration, accepted utility or execution authority. |
+| **Use Agent Braid from Codex or Claude Code** | Native user plugins (`0.1.0-alpha.2`) with bundled runtime, skills, workspace registry and guided setup | Both native interactive journeys and the alpha.1 → alpha.2 update passed locally; M4.5 product support and acceptance remain open. |
+| **Forecast local workloads** | Opt-in `forecast` predict/advice/inspect/export, optional Chronos-2 adapter and a read-only stdio MCP transport | Synthetic and frozen paired controls with episode-cluster uncertainty; advice is heuristic and grants no parallelism or utility claim. |
+| **Measure your own usage locally** | Default-off `telemetry` with a private bounded SQLite store and manual export/merge/purge | Numeric aggregates only, no automatic transmission; pilot remains **NO-GO**. |
+
+<a id="in-review"></a>
+
+### In review (draft pull requests, 2026-10-22)
+
+These capabilities have open draft pull requests and are not yet part of `develop`.
+Each keeps `executionAuthorization: false` and leaves its human, scientific and
+acceptance gates open.
+
+| Work | Pull request | What it adds |
+| --- | --- | --- |
+| **Braid Harness offline foundations** (SPEC-048 T001–T004, ADR 0027) | [#657](https://github.com/jayanez/agent-braid/pull/657) | Immutable offline experiment manifests, protected candidate import and single-use operator admission for comparing agent-guidance variants; no native host, model or paid route. |
+| **Owned-work evaluation contracts** (SPEC-051) | [#659](https://github.com/jayanez/agent-braid/pull/659) | Pure operator-authority resolution and frozen-registration append validation for evaluating real owned work; no real sources, storage or training. |
+| **Effectful workload laboratory** (SPEC-024 T002–T004) | [#660](https://github.com/jayanez/agent-braid/pull/660) | A closed, standard-library simulator that explores effectful request/transition state spaces and binds observations to replayable evidence. |
+| **Contextual proof obligations** (SPEC-025) | [#658](https://github.com/jayanez/agent-braid/pull/658) | A reconciled finite evidence packet for contextual safety checks; no theorem is accepted. |
 
 The runtime executes allowlisted Git plumbing. Repository code, source-ref
 promotion and broader agent/provider adapters require additional contracts and
@@ -239,6 +265,10 @@ command's required artifacts, destinations and acknowledgements.
 | `prepare-git-run`, `execute-git-run`, `recover-git-run`, `verify-git-run` | Prepare, explicitly authorize, recover or verify the bounded local Git runtime. |
 | `prepare-policy-run`, `verify-policy-plan`, `grant-policy-run`, `execute-policy-run`, `inspect-policy-run`, `recover-policy-run` | Prepare and reconstruct an operator policy, issue a digest-bound grant, then execute or inspect/recover the private result. |
 | `system-one capabilities`, `system-one decide` | Inspect or run opt-in offline synthetic decision diagnostics. |
+| `forecast capabilities`, `forecast predict`, `forecast advice`, `forecast inspect`, `forecast export`, `forecast serve-mcp` | Run opt-in local numeric forecasts and heuristic advice, or serve them over a read-only stdio MCP transport. |
+| `telemetry status`, `telemetry report`, `telemetry export`, `telemetry merge`, `telemetry purge` | Inspect, move or clear default-off local numeric telemetry. |
+| `plugin setup`, `plugin discover`, `plugin doctor`, `plugin workspaces`, `plugin serve` | Configure and diagnose the native user plugin and its workspace registry. |
+| `tooling` | Experimental portable local AI tooling surface. |
 
 The analyzer/runtime contract is `0.1.0-alpha`; AIM and certificate contracts
 are `0.2.0-draft`; the package version is `0.1.0a1`. The public CLI does not
