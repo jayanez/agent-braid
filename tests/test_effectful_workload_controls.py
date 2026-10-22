@@ -6,6 +6,7 @@ import unittest
 from pathlib import Path
 
 from research.workload_lab.analysis import classify, control_result, validate_manifest
+from research.workload_lab.controls import control_evidence
 from research.workload_lab.evidence import explore
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -73,6 +74,27 @@ class WorkloadControlsTests(unittest.TestCase):
         report = explore(fixture["request"])
         self.assertEqual(control_result(fixture, report)["status"], "inconclusive")
 
+
+    def test_control_evidence_accounts_every_fixture_without_timing(self):
+        manifest, registration = corpus()
+        evidence = control_evidence(manifest, registration)
+        self.assertEqual(evidence, control_evidence(manifest, registration))
+        self.assertEqual([entry["id"] for entry in evidence["fixtures"]],
+                         [fixture["id"] for fixture in manifest["fixtures"]])
+        accounting = evidence["accounting"]
+        self.assertEqual((accounting["registeredFixtures"], accounting["controlFixtures"],
+                          accounting["h2Fixtures"], accounting["completeCoverage"]), (17, 7, 10, 17))
+        self.assertEqual(accounting["controlStatus"], {"pass": 17})
+        self.assertEqual(accounting["h2EligibleTerminalCandidates"]
+                         + sum(accounting["h2Exclusions"].values()), accounting["h2Fixtures"])
+        self.assertNotIn("feasibility", evidence)
+        self.assertFalse(any("costNanoseconds" in entry for entry in evidence["fixtures"]))
+        self.assertIs(evidence["executionAuthorization"], False)
+        self.assertEqual(evidence["scientificReview"], "pending")
+        changed = copy.deepcopy(manifest)
+        changed["fixtures"][0]["invariant"]["value"] = 100
+        with self.assertRaisesRegex(ValueError, "hash mismatch"):
+            control_evidence(changed, registration)
 
 if __name__ == "__main__":
     unittest.main()
