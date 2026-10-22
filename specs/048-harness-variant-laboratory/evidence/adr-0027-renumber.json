@@ -1,0 +1,129 @@
+{
+  "recordVersion": "braid-harness-adr-renumber/v1",
+  "date": "2026-10-21",
+  "decision": "renumber-adr-0026-to-0027",
+  "decider": "Juan Antonio Yáñez García (@jayanez)",
+  "provenance": {
+    "kind": "owner-decision-relayed-by-coordinator",
+    "instruction": "ADR 0026 → SPEC-051. Harness renumera a 0027 y recalcula hashes.",
+    "reason": "SPEC-051 keeps docs/adr/0026 (pure owned-work validation); this track takes the next free number.",
+    "identityLimit": "Relayed owner answer; not a cryptographic identity attestation."
+  },
+  "sourceBaseline": "a6329c828011d1468fed3dfa4e98f5a8531167e2",
+  "adr": {
+    "previous": {
+      "path": "docs/adr/0026-braid-harness-offline-foundations.md",
+      "sha256": "cd09a66cd384f710f119630cabefe9e525c8055303051004d3cbfc5019b92867"
+    },
+    "current": {
+      "path": "docs/adr/0027-braid-harness-offline-foundations.md",
+      "sha256": "076e524bb4b31a0075ff72c605a438edc9dcb70aa09dec9583ef21db5362b046"
+    },
+    "contentDelta": "Title line only ('# ADR 0026:' -> '# ADR 0027:'); status, decision, scope and all other bytes identical."
+  },
+  "method": "Authority snapshots of SPEC-047/048 refreshed with scripts/validate_spec_kit.py snapshot; every other binding recomputed as SHA-256 of current file bytes in dependency order (inputs, then dependent records, then assurance). No hash was hand-edited.",
+  "reboundRecords": [
+    {
+      "path": "specs/048-harness-variant-laboratory/offline-adoption.json",
+      "previousSha256": "911b2e5a58b2200597fbc56afbec48d601da044eced94b4eb889d4c7422cbddc",
+      "currentSha256": "f07d7b3cd95d00b0e795aeb74ceb5625a88395cb78bc449b78246f855de909db"
+    },
+    {
+      "path": "specs/048-harness-variant-laboratory/contracts/offline-foundations.md",
+      "previousSha256": "cb77083e60d035039494514873f9f47b3ebc48a5d33c1c1b5a66b11f3a7d6506",
+      "currentSha256": "580d844af7236818c1a006d79ea482677c0df58c48e4f55391a69598184001c9"
+    },
+    {
+      "path": "specs/048-harness-variant-laboratory/kickoff-tracks.md",
+      "previousSha256": "cfa7a046b0f85c930e960fddd4710a514aa82493265ca1c14f880ec23a3663b3",
+      "currentSha256": "dbd39a0186e15067da2a28b9e006b0942abddea3a3a4bb0b0ada1406a82f33ac"
+    },
+    {
+      "path": "specs/048-harness-variant-laboratory/offline-foundations-status.md",
+      "previousSha256": "89e5bb05b3f400438d3b140daeabe02e95402f35c03c515085c22f422721097e",
+      "currentSha256": "fad50b239e6bc883f1a009c1141ad7c9b49dcdd259c8f3c9a3faeee98375db2c"
+    },
+    {
+      "path": "specs/047-local-technical-telemetry/assurance.json",
+      "previousSha256": "166bf1459cd6de1e0b9c68e1b7fe3d9fd54aa66e578860457bdd83ae154c76de",
+      "currentSha256": "a531249eb7825733e158de2c5d4e5aa817620a872a68b9837c8071bcef4e54ee"
+    },
+    {
+      "path": "specs/048-harness-variant-laboratory/evidence/t001.json",
+      "previousSha256": "be392a99ba311f408a5d5b5a8923e2a0f7feaa568f1098af9444ab93dda2e0a3",
+      "currentSha256": "d8bf40eac3dbcc74f77b2a9bd98af28708f9a016b58a8984bb9245e3a00898b9"
+    },
+    {
+      "path": "specs/048-harness-variant-laboratory/evidence/offline-foundations-validation.json",
+      "previousSha256": "940195c8868850f5e24603af59aa843e8ed376c991f7a3bb2a681c67c122d18c",
+      "currentSha256": "172fd11a10f6028672a7ae993be39d536ddc1e714522a519e07ad99490983f32"
+    },
+    {
+      "path": "specs/048-harness-variant-laboratory/evidence/t002.json",
+      "previousSha256": "c3cb78435d54ba3bb831818d27817b212c41fc0c8debf2b47c192e2e5cab7264",
+      "currentSha256": "63c9b79fa01e227812fbe27918f41290ce7b92901acf2eb49d7ff68c68c2f220"
+    },
+    {
+      "path": "specs/048-harness-variant-laboratory/evidence/t003.json",
+      "previousSha256": "5fc336028f793a983bc0202da10e3570242fd73dc85ed98eb8d24c24aeaa57d6",
+      "currentSha256": "65940cd375ef4c3322a59f3a5ffd9d5f0314002b49159280fb1997a0cb3fb7dc"
+    },
+    {
+      "path": "specs/048-harness-variant-laboratory/evidence/t004.json",
+      "previousSha256": "da801b3074f9e33fa01dd1d4e760d1311f719435e403ce5f17bb0e9b2280eaaf",
+      "currentSha256": "cf85bf471274cb6d4b4bd8f48cbe8df00688ad79a24ba67146585346bf3349f9"
+    },
+    {
+      "path": "specs/048-harness-variant-laboratory/assurance.json",
+      "previousSha256": "7ae56b204caa530838c9682d096113dfdf1b9741a6688ee671a01d3e50acaff8",
+      "currentSha256": "1a12b708ef436bb633d9c21dc9cbfb64edbcd980abeaf0cd01ed599c8584a87e"
+    }
+  ],
+  "preservedHistory": {
+    "records": [
+      {
+        "path": "specs/048-harness-variant-laboratory/evidence/offline-foundations-review.json",
+        "sha256": "60244678fddf329f254b472c2496542ef4d2ab395671517d9b08adac7d9b2e8a"
+      },
+      {
+        "path": "specs/048-harness-variant-laboratory/authority-impact-review.json",
+        "sha256": "ba90bb330a406c160e67eddaa8a7c72ecfd3af614bfb15958cd2c32ca504141a"
+      },
+      {
+        "path": "specs/048-harness-variant-laboratory/kickoff-decision.md",
+        "sha256": "1687200b64edac8444efc4c5109678fad57affe2d157156cffbbbf826197f6d2"
+      },
+      {
+        "path": "specs/048-harness-variant-laboratory/historical/planning-assurance-d266c85.json",
+        "sha256": "f5917a3f4ca8a42f9c18635c3daa0dadc26744aad0b3b73b11e74c238fa5e2f9"
+      },
+      {
+        "path": "specs/048-harness-variant-laboratory/evidence/offline-foundations-tests.log",
+        "sha256": "f9b85f99d8e04f73bce75bcd423d2d31c75ef466de851b15fe660ceb6c2ae08b"
+      }
+    ],
+    "rule": "These records describe what was reviewed or executed against the pre-renumber bytes (including the 0026 path/hash) and are kept byte-identical; this record supplies the new binding instead of rewriting them."
+  },
+  "unchangedSemantics": "No scientific claim, gate status, authorized task set or numeric limit changed. T005, T011, T012, native hosts, pilots and promotion remain blocked/pending; human review remains pending.",
+  "postRenumberValidation": {
+    "candidateCommit": "5691cdfd",
+    "focused": {
+      "command": ".venv-speckit/bin/python -m unittest discover -s tests -p \"test_harness*.py\"",
+      "run": 62,
+      "skipped": 0,
+      "exitCode": 0
+    },
+    "quick": {
+      "command": "scripts/validate_change.py --base origin/develop --profile quick (fresh independent clone, public spec history restored, Python 3.13.11)",
+      "exitCode": 0,
+      "unittest": {
+        "run": 2173,
+        "skipped": 24,
+        "failures": 0,
+        "errors": 0
+      }
+    },
+    "limits": "Local engineering checks only; this record is evidence-only packaging after the quick run. The final pr profile result is reported with the pull request, not inside this record."
+  },
+  "limits": "Documentary renumbering and evidence rebinding only; no new review by the prior independent reviewer was obtained for the renumbered bytes."
+}

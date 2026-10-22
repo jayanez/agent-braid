@@ -61,11 +61,15 @@ class PublicDraftHistoryTests(unittest.TestCase):
         self.assertEqual(len(pins), 3)
         self.assertEqual(len({pin[1] for pin in pins}), 1)
         # A disposable fixture points at the actual squash, not its public PR
-        # ancestry. Worktree bytes are the same immutable three assurance files.
+        # ancestry. Restore exact tagged planning bytes in this historical fixture;
+        # current worktree assurance can legitimately advance to a new pending
+        # implementation snapshot without inheriting the planning pin's authority.
         self.git("update-ref", "HEAD", "93ff67fc8136b48e70d3d0e9bb40ba3d6c80e44a")
         for relative, ref, candidate, tag_object in pins:
             with self.subTest(record=relative):
                 path = self.root / relative
+                path.write_bytes(subprocess.check_output(
+                    ["git", "-C", str(self.root), "show", f"{ref}:{relative}"]))
                 original = path.read_bytes()
                 record = json.loads(original)
                 frozen = record["evidence_snapshot"]["commit"]

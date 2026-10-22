@@ -39,3 +39,29 @@ operation resolves the historical object, public research-preview distribution
 must use the clean-export procedure in
 `docs/releases/RESEARCH_PREVIEW_PROPOSAL.md`. The existing private repository
 must not be made public merely because the current tree is redistributable.
+
+## Braid Harness offline foundations
+
+Pinned source: `google-research/harness2` at
+`1cfe254e8d25b15f37048c3730134686abe60335`, Copyright 2026 Google LLC,
+Apache-2.0. The complete upstream license is retained in
+[`LICENSES/Harness2-Apache-2.0.txt`](../../LICENSES/Harness2-Apache-2.0.txt).
+The inspected root source tree has no NOTICE file. Preserve applicable upstream
+notices on adapted source portions and prominent changed-file notices. File-level
+Apache terms are exceptions under the existing repository license map, not a
+relicensing of unrelated Agent Braid code or documentation.
+
+The [reviewed inventory](../../specs/048-harness-variant-laboratory/kickoff-decision.md)
+binds complete original file hashes. Selected seams are `core/spec.py` typed
+views and `core/runmark.py` fingerprint/completion identity for
+`agent_braid/harness_manifest.py`; `core/tree.py` bounded surface/import structure
+for `harness_surface.py`; and `core/ledger.py` stage/accounting concepts for
+`harness_admission.py`. Adaptations replace upstream assumptions with full
+SHA-256 manifests, positive inventories, protected layers, zero-launch offline
+limits and operator-owned reservation semantics. Each module identifies its
+actual adaptation; task evidence records the implemented portions and deltas.
+Original project tests retain their stated project license.
+
+No benchmark stack, bundled dataset, third-party runner patch, bypass launcher,
+upstream documentation/artwork or branding is imported. Other upstream assets
+have no rights or execution clearance from this bounded inventory.

@@ -1,0 +1,23 @@
+{
+  "date": "2026-10-21",
+  "reviewerModel": "gpt-6-luna",
+  "scope": "Fresh authority/adoption delta only; no implementation, telemetry acceptance or native review",
+  "disposition": "No blockers",
+  "authorityDelta": {
+    "added": {
+      "docs/adr/0026-braid-harness-offline-foundations.md": "cd09a66cd384f710f119630cabefe9e525c8055303051004d3cbfc5019b92867"
+    },
+    "changed": {},
+    "removed": []
+  },
+  "priorSPEC047Assurance": {
+    "path": "specs/047-local-technical-telemetry/assurance.json",
+    "baseline": "a6329c828011d1468fed3dfa4e98f5a8531167e2",
+    "sha256": "e8eb3042158a715d033fd603831506a00b6ee925c82959e7e725cc908bda7489"
+  },
+  "preservedHARPlanningAssurance": {
+    "path": "specs/048-harness-variant-laboratory/historical/planning-assurance-d266c85.json",
+    "sha256": "f5917a3f4ca8a42f9c18635c3daa0dadc26744aad0b3b73b11e74c238fa5e2f9"
+  },
+  "transition": "Refresh only pending current inventories. Preserve all previous historical bindings and all pending acceptance gates."
+}

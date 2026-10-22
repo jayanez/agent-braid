@@ -2,6 +2,12 @@
 
 Status: proposed sampling frame; no native user data or model evaluation collected.
 Source baseline: `69e7d374e5aaf13376486664e7368711d9826e6f`.
+
+The [kickoff source registration](source-registration.md) inspects these anchors
+at `a6329c828011d1468fed3dfa4e98f5a8531167e2`, recording exact source identities,
+rights basis and actual versus proposed yield. It preserves this historical
+baseline and supplies no native admission or obtained HAR outcome. C01/C03 share
+fixture ancestry; partitioning by family name alone does not prevent leakage.
 The owner requested both continuity and coordination, delegated case selection,
 and retained context-loss/recovery and conflict/rework as target situations.
 

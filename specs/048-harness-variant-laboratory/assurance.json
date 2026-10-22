@@ -21,7 +21,7 @@
   ],
   "assumptions": "Owner-controlled sources and qualified local hosts only; immutable authorities and frozen policies; no provider permission, containment support or positive utility inferred.",
   "authority_snapshot": {
-    "commit": "08d5e98a19a9b0feeda24c25820b88d0e12ce594",
+    "commit": null,
     "hashes": {
       "ARCHITECTURE.md": "7bad53a83a54da09a0f55fb514432b53265cc1d99e88fdc3e42989b2fa4ea256",
       "CONSTITUTION.md": "ff7196976a1736a639947c2ab26e8da157fef23c89ba9881312f2a36459964eb",
@@ -58,6 +58,8 @@
       "docs/adr/0024-local-technical-telemetry.md": "e3c2d827bbd839179e56d3f81fe3ad1b7234b4a61ed24c98bb59a8aa2f23b508",
       "docs/adr/0024-native-ai-plugins.md": "3a45d8a62cb241b01638a37f39fdc309cb0563941c0343fe58d9ab30c5c677ac",
       "docs/adr/0025-local-technical-telemetry.md": "e2f9af4d0d0a118635677146ba0c96cbd82046b7943eca36eeabf041923601f7",
+      "docs/adr/0026-pure-owned-work-validation.md": "dc6a045316c37201767adba79ad59779cff4646c9d05e4a2306dfaec481e4ccd",
+      "docs/adr/0027-braid-harness-offline-foundations.md": "076e524bb4b31a0075ff72c605a438edc9dcb70aa09dec9583ef21db5362b046",
       "docs/architecture/AGENT_INTERACTION_METADATA.md": "0118d7f16c390fc4c1ff027b503a4eaba8a747edf3f6d7b088559f8870e27780",
       "docs/architecture/ASSURANCE_LEVELS.md": "3e86d0060ef566ba8d1e1690606fc06e8fee172f187a1b9779b13d27f0f915d9",
       "docs/architecture/CONFLUENCE_CERTIFICATE.md": "fd12a8f1a1477835848581b0f4ccd52f76d3f22dd96a3abaccb9074733464a8e",
@@ -92,15 +94,15 @@
       "schemas/governance/public-export-manifest.schema.json": "11eb7f2594939ae9fd0c9e6cfe4423a80aba686d6cdfdd8b73b0fb84b0840aa8",
       "schemas/governance/release-validation-record.schema.json": "d9943f0c9f5520ea52e3b12bfba88240d03f8011b433fc5e35cb49549ab6e819"
     },
-    "mode": "historical"
+    "mode": "current"
   },
-  "compatibility": "Additive proposed opt-in laboratory; unchanged AIM/runtime/plugin/telemetry/System 1/forecast contracts and historical evidence.",
+  "compatibility": "Additive opt-in offline foundations under ADR 0027; internal v0.1 records only. Existing AIM/runtime/plugin/telemetry/System 1/forecast contracts and historical evidence unchanged.",
   "domain": "Owned repository tasks, task-local guidance and selected context packaging; deterministic laboratory controls first. Arbitrary tools, scripts, hooks, policy rewrites and production source mutation are outside the initial editable surface.",
   "evidence_snapshot": {
-    "commit": "08d5e98a19a9b0feeda24c25820b88d0e12ce594",
-    "mode": "historical"
+    "commit": null,
+    "mode": "current"
   },
-  "execution_contract": "Planning only. Future laboratory effects require a separate adopted contract and fresh matching operator admission; no existing grant or runtime language is widened.",
+  "execution_contract": "ADR 0027 adopts only offline foundations T002\u2013T004: immutable identity verification, bounded positive-inventory import and externally issued operator-admission reservation. No launcher or issuance API; all executionAuthorization fields false. Runner, host, context packaging, observation/export and later feature acceptance remain pending; no existing grant or runtime language is widened.",
   "human_review": "pending",
   "hypotheses": "Contrastive refinement and scoped experience may improve both continuity and coordination at acceptable complete cost; evaluate and allow null, negative or infeasible results.",
   "observation_contract": "Candidate/source/host/policy-bound attempts, actual effects and outcomes, full denominators and costs; synthetic/native/human/economic boundaries explicit.",
@@ -118,7 +120,14 @@
     "docs/adr/0025-local-technical-telemetry.md",
     "research/harness2-source-audit.md",
     "specs/048-harness-variant-laboratory/spec.md",
-    "specs/048-harness-variant-laboratory/validation-plan.md"
+    "specs/048-harness-variant-laboratory/validation-plan.md",
+    "docs/adr/0027-braid-harness-offline-foundations.md",
+    "specs/048-harness-variant-laboratory/offline-adoption.json",
+    "specs/048-harness-variant-laboratory/authority-impact-review.json",
+    "specs/048-harness-variant-laboratory/historical/planning-assurance-d266c85.json",
+    "specs/048-harness-variant-laboratory/contracts/offline-foundations.md",
+    "specs/048-harness-variant-laboratory/evidence/offline-foundations-validation.json",
+    "specs/048-harness-variant-laboratory/evidence/adr-0027-renumber.json"
   ],
   "requirements": [
     {
@@ -127,10 +136,25 @@
         {
           "given": "a candidate changes global instructions, grants, validators, host settings, tools, hooks, executable scripts or an out-of-scope path",
           "id": "SC-001",
-          "obtained_evidence": [],
+          "obtained_evidence": [
+            {
+              "command": "Manual founder adoption in current conversation; scoped Luna authority-impact review",
+              "limits": "Manual adoption, provenance and host-feasibility inventory only. No HAR software acceptance tests, native qualification, dispatch or economic utility obtained.",
+              "outcome": "Offline architecture/profile adopted; T002\u2013T004 dependency prerequisite satisfied",
+              "path": "specs/048-harness-variant-laboratory/evidence/t001.json",
+              "sha256": "d8bf40eac3dbcc74f77b2a9bd98af28708f9a016b58a8984bb9245e3a00898b9"
+            },
+            {
+              "command": ".venv-speckit/bin/python -m unittest discover -s tests -p \"test_harness*.py\" -v",
+              "limits": "Owned temporary files only. Instruction injection remains inert data because nothing executes; not a qualified sandbox or a host/model prompt-resistance claim. Source commit/root observations trusted; same-UID compromise and power-loss excluded.",
+              "outcome": "Bounded real-filesystem import/protected-layer and conservative cleanup controls passed.",
+              "path": "specs/048-harness-variant-laboratory/evidence/t003.json",
+              "sha256": "3c5f51bd0bcdc302f0cc74c5656f1b5ad85c21ef000a88afbc3a61865f86c0c1"
+            }
+          ],
           "planned_evidence": "Candidate-bound procedure report for REQ-001/SC-001; actual commands, environment, input/output hashes and limits.",
-          "test_file": "specs/048-harness-variant-laboratory/validation-plan.md",
-          "test_name": "procedure_req_001",
+          "test_file": "tests/test_harness_surface.py",
+          "test_name": "HarnessSurfaceTests.test_protected_authorities_settings_tools_and_executables_cannot_be_allowlisted",
           "then": "it refuses before materialization or execution and preserves the base; symlinks, traversal, oversized files and undeclared effects refuse",
           "when": "the importer validates the candidate"
         }
@@ -143,10 +167,25 @@
         {
           "given": "a base, candidate, task source, host/model selection, tool inventory, policy, context or environment changes",
           "id": "SC-002",
-          "obtained_evidence": [],
+          "obtained_evidence": [
+            {
+              "command": ".venv-speckit/bin/python -m unittest discover -s tests -p \"test_harness*.py\" -v",
+              "limits": "Parser/identity engineering controls only. No actual source import, admission issuance, runner, model/host qualification or utility outcome.",
+              "outcome": "Strict immutable offline manifest and independent identity controls passed.",
+              "path": "specs/048-harness-variant-laboratory/evidence/t002.json",
+              "sha256": "1bc55fdad0a2b776e0b7ca65d0be07093c6ac1dd78cd3cebf145b320091b2daf"
+            },
+            {
+              "command": ".venv-speckit/bin/python -m unittest discover -s tests -p \"test_harness*.py\" -v",
+              "limits": "Owned temporary files only. Instruction injection remains inert data because nothing executes; not a qualified sandbox or a host/model prompt-resistance claim. Source commit/root observations trusted; same-UID compromise and power-loss excluded.",
+              "outcome": "Bounded real-filesystem import/protected-layer and conservative cleanup controls passed.",
+              "path": "specs/048-harness-variant-laboratory/evidence/t003.json",
+              "sha256": "3c5f51bd0bcdc302f0cc74c5656f1b5ad85c21ef000a88afbc3a61865f86c0c1"
+            }
+          ],
           "planned_evidence": "Candidate-bound procedure report for REQ-002/SC-002; actual commands, environment, input/output hashes and limits.",
-          "test_file": "specs/048-harness-variant-laboratory/validation-plan.md",
-          "test_name": "procedure_req_002",
+          "test_file": "tests/test_harness_manifest.py",
+          "test_name": "HarnessManifestTests.test_each_independent_binding_refuses_even_with_matching_complete_digest",
           "then": "it detects the mismatch and refuses reuse; unknown provider build identity stays explicit and cannot masquerade as a pinned build",
           "when": "any admission, cache or resume consumer validates its immutable manifest"
         }
@@ -159,10 +198,25 @@
         {
           "given": "a proposed candidate exists without fresh matching laboratory admission",
           "id": "SC-003",
-          "obtained_evidence": [],
+          "obtained_evidence": [
+            {
+              "command": "Manual founder adoption in current conversation; scoped Luna authority-impact review",
+              "limits": "Manual adoption, provenance and host-feasibility inventory only. No HAR software acceptance tests, native qualification, dispatch or economic utility obtained.",
+              "outcome": "Offline architecture/profile adopted; T002\u2013T004 dependency prerequisite satisfied",
+              "path": "specs/048-harness-variant-laboratory/evidence/t001.json",
+              "sha256": "d8bf40eac3dbcc74f77b2a9bd98af28708f9a016b58a8984bb9245e3a00898b9"
+            },
+            {
+              "command": ".venv-speckit/bin/python -m unittest discover -s tests -p \"test_harness*.py\" -v",
+              "limits": "Test-only independently installed operator fixtures; no issuer API, runtime grant conversion, dispatch or paid/native route. Thread/forkprocess races tested; power-loss/hostile same-UID compromise excluded.",
+              "outcome": "Protected operator-file admission verification and single-use reservation controls passed.",
+              "path": "specs/048-harness-variant-laboratory/evidence/t004.json",
+              "sha256": "8881bf2077d9b8da814aa635e2eab2ac63d1e339e12ca6df6882a74dcd303d74"
+            }
+          ],
           "planned_evidence": "Candidate-bound procedure report for REQ-003/SC-003; actual commands, environment, input/output hashes and limits.",
-          "test_file": "specs/048-harness-variant-laboratory/validation-plan.md",
-          "test_name": "procedure_req_003",
+          "test_file": "tests/test_harness_admission.py",
+          "test_name": "AdmissionTests.test_expiry_ttl_future_and_stale_observation_refuse_without_state",
           "then": "it refuses without effects; only an independently enforced, operator-adopted envelope can admit dynamically generated candidate hashes and no existing runtime grant is widened",
           "when": "a probe requests execution"
         }
@@ -175,7 +229,15 @@
         {
           "given": "a probe attempts undeclared filesystem, credential, process or network access",
           "id": "SC-004",
-          "obtained_evidence": [],
+          "obtained_evidence": [
+            {
+              "command": "Manual founder adoption in current conversation; scoped Luna authority-impact review",
+              "limits": "Manual adoption, provenance and host-feasibility inventory only. No HAR software acceptance tests, native qualification, dispatch or economic utility obtained.",
+              "outcome": "Offline architecture/profile adopted; T002\u2013T004 dependency prerequisite satisfied",
+              "path": "specs/048-harness-variant-laboratory/evidence/t001.json",
+              "sha256": "d8bf40eac3dbcc74f77b2a9bd98af28708f9a016b58a8984bb9245e3a00898b9"
+            }
+          ],
           "planned_evidence": "Candidate-bound procedure report for REQ-004/SC-004; actual commands, environment, input/output hashes and limits.",
           "test_file": "specs/048-harness-variant-laboratory/validation-plan.md",
           "test_name": "procedure_req_004",
@@ -223,10 +285,25 @@
         {
           "given": "proposal, probing, selection, reflection, retry or cleanup approaches a frozen limit",
           "id": "SC-007",
-          "obtained_evidence": [],
+          "obtained_evidence": [
+            {
+              "command": "Manual founder adoption in current conversation; scoped Luna authority-impact review",
+              "limits": "Manual adoption, provenance and host-feasibility inventory only. No HAR software acceptance tests, native qualification, dispatch or economic utility obtained.",
+              "outcome": "Offline architecture/profile adopted; T002\u2013T004 dependency prerequisite satisfied",
+              "path": "specs/048-harness-variant-laboratory/evidence/t001.json",
+              "sha256": "d8bf40eac3dbcc74f77b2a9bd98af28708f9a016b58a8984bb9245e3a00898b9"
+            },
+            {
+              "command": ".venv-speckit/bin/python -m unittest discover -s tests -p \"test_harness*.py\" -v",
+              "limits": "Test-only independently installed operator fixtures; no issuer API, runtime grant conversion, dispatch or paid/native route. Thread/forkprocess races tested; power-loss/hostile same-UID compromise excluded.",
+              "outcome": "Protected operator-file admission verification and single-use reservation controls passed.",
+              "path": "specs/048-harness-variant-laboratory/evidence/t004.json",
+              "sha256": "8881bf2077d9b8da814aa635e2eab2ac63d1e339e12ca6df6882a74dcd303d74"
+            }
+          ],
           "planned_evidence": "Candidate-bound procedure report for REQ-007/SC-007; actual commands, environment, input/output hashes and limits.",
-          "test_file": "specs/048-harness-variant-laboratory/validation-plan.md",
-          "test_name": "procedure_req_007",
+          "test_file": "tests/test_harness_admission.py",
+          "test_name": "AdmissionTests.test_trusted_scope_copies_bindings_and_refuses_partial_or_higher_profile",
           "then": "it reserves conservatively and refuses or stops further work; counts, wall time, process/resource usage and unknown costs remain visible; additional cash spend is capped at EUR 0",
           "when": "the supervisor admits the next step or observes exhaustion"
         }
@@ -239,10 +316,18 @@
         {
           "given": "a synthetic or native run finishes or fails",
           "id": "SC-008",
-          "obtained_evidence": [],
+          "obtained_evidence": [
+            {
+              "command": ".venv-speckit/bin/python -m unittest discover -s tests -p \"test_harness*.py\" -v",
+              "limits": "Parser/identity engineering controls only. No actual source import, admission issuance, runner, model/host qualification or utility outcome.",
+              "outcome": "Strict immutable offline manifest and independent identity controls passed.",
+              "path": "specs/048-harness-variant-laboratory/evidence/t002.json",
+              "sha256": "1bc55fdad0a2b776e0b7ca65d0be07093c6ac1dd78cd3cebf145b320091b2daf"
+            }
+          ],
           "planned_evidence": "Candidate-bound procedure report for REQ-008/SC-008; actual commands, environment, input/output hashes and limits.",
-          "test_file": "specs/048-harness-variant-laboratory/validation-plan.md",
-          "test_name": "procedure_req_008",
+          "test_file": "tests/test_harness_manifest.py",
+          "test_name": "HarnessManifestTests.test_canonical_identity_and_all_named_bindings",
           "then": "it exposes identities, decisions, losses, effects, limits and obtained evidence without grants, source promotion, success fabrication or scientific acceptance",
           "when": "the CLI or an eventual separately versioned read-only adapter presents its result"
         }
@@ -282,7 +367,7 @@
       "text": "Capture inspectable private observations"
     }
   ],
-  "scientific_limits": "No acceptance evidence obtained; hypotheses can be false; source yield and hidden provider revisions limit inference; structural tests are not semantic/human approval.",
-  "scope": "Provide a native Agent Braid mechanism to propose, probe and compose small task-local harness variants against an immutable base, first with deterministic fixtures and later through separately qualified Codex/Claude adapters.",
+  "scientific_limits": "Offline engineering checks and manual architecture adoption support only their stated boundaries; no native, human-product, scientific or economic acceptance obtained. Hypotheses can be false; source yield and hidden provider revisions limit inference.",
+  "scope": "Provide a native Agent Braid mechanism to propose, probe and compose small task-local harness variants against an immutable base, first with deterministic fixtures and later through separately qualified Codex/Claude adapters. Current implementation work is limited by ADR 0027 to offline foundations T002\u2013T004. The original historical planning assurance is preserved separately; no previous software or native acceptance is transferred.",
   "stage": "draft"
 }

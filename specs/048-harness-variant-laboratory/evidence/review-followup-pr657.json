@@ -1,0 +1,104 @@
+{
+  "changedInputs": [
+    {
+      "currentSha256": "78ca27952ffa1054d8ef61cbc0bd9458d51d967f716e5bd1ba6462daa892529c",
+      "path": "agent_braid/harness_surface.py",
+      "previousSha256": "f2256d063eb6cf4f853558715a5487b61a31ca16e5919450fe132907d6c96304"
+    },
+    {
+      "currentSha256": "2d528a4a76cadbc3fb0e3faeba77b58f1472f40aabb813e97958ce284a53f832",
+      "path": "tests/test_harness_admission.py",
+      "previousSha256": "2bce2834d651795f2e754fa2f5acb8b8f0080f1428c9994ea033bf8cf9b93122"
+    },
+    {
+      "currentSha256": "1ceb49f412d0fcc51c2519a089de0d62f0ef9ce075b3dfdd00c86e93fff186c2",
+      "path": "tests/test_harness_manifest.py",
+      "previousSha256": "b1d844c799ec6a79a4f704f0223d19883e45894d781f5564cd537724b8b268ef"
+    },
+    {
+      "currentSha256": "4b2a3d06195e2e6f57191dfd2721b559ab04f3319fc41d4e749a20267a83ec77",
+      "path": "tests/test_harness_surface.py",
+      "previousSha256": "e39656ed5c66dc30ab0d5e37cafb163031cea2106b4b848ac99f52676acba9cf"
+    }
+  ],
+  "changes": [
+    {
+      "commit": "15dfb993",
+      "summary": "Tests only: distinct-id interleave under lock, held/non-empty/symlinked lock, admission destination-drift, lab-only write/delete effects, base/candidate subset of allowedComponentPaths, writable intermediate input directory."
+    },
+    {
+      "commit": "fad8edb3",
+      "summary": "Rename root loop variable in harness_surface.import_candidate; no behavior change."
+    }
+  ],
+  "date": "2026-10-22",
+  "executionAuthorization": false,
+  "findings": {
+    "O3": "Ownership check of intermediate directories in harness_surface._read_inventory was not pinned.",
+    "R1": "Under-lock re-check, flock and empty-lock checks in harness_admission._reserve were not pinned by any test.",
+    "R3": "Lab-only write/delete effects, admission destination-drift and base/candidate allowed-surface subset were not pinned by their own tests.",
+    "mypy": "Loop variable reused str->Path in harness_surface.import_candidate."
+  },
+  "focused": {
+    "command": ".venv-speckit/bin/python -m unittest discover -s tests -p \"test_harness*.py\" -v",
+    "exitCode": 0,
+    "log": "specs/048-harness-variant-laboratory/evidence/review-followup-tests.log",
+    "logSha256": "2977e84f443015211eeeb98461bf45befd5d2212a5a5cf20dced3faa5eab6187",
+    "run": 69,
+    "skipped": 0
+  },
+  "limits": "Independent review reviewed the pre-follow-up bytes; the added tests have not been independently re-reviewed. Hosted CI and human review pending. Not native, economic or whole-feature acceptance.",
+  "mutationCheck": {
+    "killed": [
+      "M11 remove under-lock _check_store",
+      "M13 remove empty-lock check",
+      "M14 remove flock",
+      "M21 remove admission destination-drift",
+      "M22 remove lab namespace restriction",
+      "M16 remove base/candidate allowed subset",
+      "M7 remove intermediate-directory ownership check"
+    ],
+    "method": "Each mutant applied to a disposable copy; focused suite rerun.",
+    "survived": []
+  },
+  "preservedHistory": [
+    "specs/048-harness-variant-laboratory/evidence/offline-foundations-review.json",
+    "specs/048-harness-variant-laboratory/evidence/offline-foundations-tests.log",
+    "specs/048-harness-variant-laboratory/evidence/adr-0027-renumber.json"
+  ],
+  "previousCandidate": "6663a784e99912aefa0a490fad21618c0e771432",
+  "provenance": {
+    "identityLimit": "Relayed owner request; not a cryptographic identity attestation.",
+    "instruction": "Apply the must-fix findings (R1, R3) of the adversarial review of PR #657; optional O3 and mypy rename.",
+    "kind": "owner-request-relayed-by-coordinator"
+  },
+  "reboundRecords": [
+    {
+      "currentSha256": "65b987184049690f54d95dadae1de76609ae343f0a0364989c9225c156b9cf5b",
+      "path": "specs/048-harness-variant-laboratory/evidence/offline-foundations-validation.json",
+      "previousSha256": "172fd11a10f6028672a7ae993be39d536ddc1e714522a519e07ad99490983f32"
+    },
+    {
+      "currentSha256": "aba7c65945ec8f6cd1130b0be27ca166b703384f52d184f342a94ee06233d6c5",
+      "path": "specs/048-harness-variant-laboratory/evidence/t002.json",
+      "previousSha256": "63c9b79fa01e227812fbe27918f41290ce7b92901acf2eb49d7ff68c68c2f220"
+    },
+    {
+      "currentSha256": "3e81e356f413eb4b4e0e72e110292dcd54ceb39a4af730e2dc2091ac4fa2b261",
+      "path": "specs/048-harness-variant-laboratory/evidence/t003.json",
+      "previousSha256": "65940cd375ef4c3322a59f3a5ffd9d5f0314002b49159280fb1997a0cb3fb7dc"
+    },
+    {
+      "currentSha256": "f32a502c3e59dc82547374e6fb4a35651975638715fe3ef1af521960105a2fef",
+      "path": "specs/048-harness-variant-laboratory/evidence/t004.json",
+      "previousSha256": "cf85bf471274cb6d4b4bd8f48cbe8df00688ad79a24ba67146585346bf3349f9"
+    },
+    {
+      "currentSha256": "21d77a803feb27160967bb231b0272ab4282c5b594106f4529b52794450ad35a",
+      "path": "specs/048-harness-variant-laboratory/assurance.json",
+      "previousSha256": "1a12b708ef436bb633d9c21dc9cbfb64edbcd980abeaf0cd01ed599c8584a87e"
+    }
+  ],
+  "recordVersion": "braid-harness-review-followup/v1",
+  "sourceBaseline": "a6329c828011d1468fed3dfa4e98f5a8531167e2"
+}

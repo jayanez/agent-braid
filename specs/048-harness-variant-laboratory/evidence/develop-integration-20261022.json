@@ -1,0 +1,67 @@
+{
+  "authoritySnapshots": [
+    {
+      "branchSha256": "a531249eb7825733e158de2c5d4e5aa817620a872a68b9837c8071bcef4e54ee",
+      "currentSha256": "a7cf754d2c0fde71f5835bec40ec23a4447636dad452b18ab36b867f764d41e0",
+      "developSha256": "e7106dcaff8318f26315f0db6c3709e13917121ea5a79b8c62bcb21420a830b0",
+      "path": "specs/047-local-technical-telemetry/assurance.json"
+    },
+    {
+      "branchSha256": "21d77a803feb27160967bb231b0272ab4282c5b594106f4529b52794450ad35a",
+      "currentSha256": "ec63f9146cc6ec9b66226f19159bb3858d37d7c0343fe800de5fd332a0f6d30a",
+      "developSha256": "f5917a3f4ca8a42f9c18635c3daa0dadc26744aad0b3b73b11e74c238fa5e2f9",
+      "path": "specs/048-harness-variant-laboratory/assurance.json"
+    },
+    {
+      "branchSha256": null,
+      "currentSha256": "b82724c8258b053e2f4e3e2c0c81806540da832ccc3777fc6d0b72e22470b2ea",
+      "developSha256": "18ff3859ffe5d6b64e2f913a06f872e58f191008a6d18167765837c7d9d3ed12",
+      "path": "specs/051-owned-work-evaluation/assurance.json"
+    }
+  ],
+  "date": "2026-10-22",
+  "developBase": "c0df17b1",
+  "executionAuthorization": false,
+  "limits": "All three records were already human_review pending; snapshot refresh grants no approval. Not native, economic or whole-feature acceptance.",
+  "method": "validate_spec_kit.py snapshot for each current-mode record (047, 048, 051); every other binding recomputed as SHA-256 of current bytes in dependency order. No hash hand-edited.",
+  "preservedHistory": [
+    "specs/048-harness-variant-laboratory/evidence/adr-0027-renumber.json",
+    "specs/048-harness-variant-laboratory/evidence/review-followup-pr657.json",
+    "specs/048-harness-variant-laboratory/evidence/offline-foundations-review.json",
+    "specs/051-owned-work-evaluation/evidence/rf01-rf02/packet.json",
+    "docs/system-one/addenda/spec051-rf01-rf02-final-20261021/"
+  ],
+  "provenance": {
+    "identityLimit": "Chat instructions; not a cryptographic identity attestation.",
+    "instruction": "Owner: merge the stacked PRs if everything is OK. Coordinator order: #659 -> #657 -> #658 -> #660.",
+    "kind": "owner-instruction-and-coordinator-order"
+  },
+  "reboundRecords": [
+    {
+      "currentSha256": "85e983fa3e4ed636ec4c6556506f64dedcfc5eb13655bc33f782ce73908e7074",
+      "path": "specs/048-harness-variant-laboratory/evidence/offline-foundations-validation.json",
+      "previousSha256": "65b987184049690f54d95dadae1de76609ae343f0a0364989c9225c156b9cf5b"
+    },
+    {
+      "currentSha256": "1bc55fdad0a2b776e0b7ca65d0be07093c6ac1dd78cd3cebf145b320091b2daf",
+      "path": "specs/048-harness-variant-laboratory/evidence/t002.json",
+      "previousSha256": "aba7c65945ec8f6cd1130b0be27ca166b703384f52d184f342a94ee06233d6c5"
+    },
+    {
+      "currentSha256": "3c5f51bd0bcdc302f0cc74c5656f1b5ad85c21ef000a88afbc3a61865f86c0c1",
+      "path": "specs/048-harness-variant-laboratory/evidence/t003.json",
+      "previousSha256": "3e81e356f413eb4b4e0e72e110292dcd54ceb39a4af730e2dc2091ac4fa2b261"
+    },
+    {
+      "currentSha256": "8881bf2077d9b8da814aa635e2eab2ac63d1e339e12ca6df6882a74dcd303d74",
+      "path": "specs/048-harness-variant-laboratory/evidence/t004.json",
+      "previousSha256": "f32a502c3e59dc82547374e6fb4a35651975638715fe3ef1af521960105a2fef"
+    },
+    {
+      "currentSha256": "ec63f9146cc6ec9b66226f19159bb3858d37d7c0343fe800de5fd332a0f6d30a",
+      "path": "specs/048-harness-variant-laboratory/assurance.json",
+      "previousSha256": "f5d039adc61be2b6f414f668f6d8e531efd1e0f7d398c6925992682a21afb284"
+    }
+  ],
+  "recordVersion": "braid-harness-develop-integration/v1"
+}

@@ -1,0 +1,48 @@
+{
+  "date": "2026-10-21",
+  "disposition": "No remaining actionable blockers after independent re-review of both corrected P1 findings",
+  "documentaryCheck": "Adoption matches exact owner instruction and reviewed packet; original HAR planning assurance byte-preserved; current pending SPEC-047 adds only ADR0026. Licensing/provenance inspected without blockers. Final root combined focused run passed62; reviewer independently reran corrected surface28/admission20 with actual macOS alias tests and no skips. Repository profiles and later evidence-only packaging are recorded separately, never represented as broad-profile execution by reviewer.",
+  "focusedTests": {
+    "admission": 20,
+    "composition": 3,
+    "manifest": 11,
+    "surface": 28,
+    "total": 62
+  },
+  "inputs": {
+    "LICENSES/Harness2-Apache-2.0.txt": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
+    "NOTICE": "3ef822bdcd9c7ff652fe9f0a14d36b6ddff2388315c8566e4a691bd04c9819a2",
+    "agent_braid/harness_admission.py": "49197a2518d8df9b66658ec6c279d079bc1cf915a9c3570673f524dca60b5901",
+    "agent_braid/harness_manifest.py": "373f1dd8e888c88fde6a47399c429c9b56ab040eea94811f22de796bc6b5d5a1",
+    "agent_braid/harness_surface.py": "f2256d063eb6cf4f853558715a5487b61a31ca16e5919450fe132907d6c96304",
+    "docs/adr/0026-braid-harness-offline-foundations.md": "cd09a66cd384f710f119630cabefe9e525c8055303051004d3cbfc5019b92867",
+    "docs/development/THIRD_PARTY.md": "b12347059e3e2cf4612b5b9f9a5e39e4eefb550e747bf480ad798ed5e8a4d294",
+    "specs/048-harness-variant-laboratory/contracts/offline-foundations.md": "cb77083e60d035039494514873f9f47b3ebc48a5d33c1c1b5a66b11f3a7d6506",
+    "specs/048-harness-variant-laboratory/offline-adoption.json": "911b2e5a58b2200597fbc56afbec48d601da044eced94b4eb889d4c7422cbddc",
+    "tests/test_harness_admission.py": "2bce2834d651795f2e754fa2f5acb8b8f0080f1428c9994ea033bf8cf9b93122",
+    "tests/test_harness_foundations.py": "8e97f53196047e8ea84a1fd7b358e5690a55c87b6a327667e93cdf3266b66926",
+    "tests/test_harness_manifest.py": "b1d844c799ec6a79a4f704f0223d19883e45894d781f5564cd537724b8b268ef",
+    "tests/test_harness_surface.py": "e39656ed5c66dc30ab0d5e37cafb163031cea2106b4b848ac99f52676acba9cf",
+    "tests/test_public_draft_history.py": "b50f71731ae5a9076c9595817e992390ae3f1ae0099e07a4936d59b4aaed8555"
+  },
+  "limits": "Offline local engineering behavior only. No broad profile run by reviewer, external issuer authenticity, source/corpus acceptance, native/host/runner execution, scientific/economic utility, product acceptance or promotion.",
+  "method": "Independent read-only code/security/domain review, focused unittest execution and bounded documentary hash comparison",
+  "resolvedFindings": [
+    {
+      "finding": "Write/delete lab resources were not restricted to allowedComponentPaths",
+      "resolution": "Require both lab namespace and exact positive component membership; negative write and delete regressions passed; independently re-reviewed.",
+      "severity": "P1"
+    },
+    {
+      "finding": "Lexical root ancestry and leaf inode equality missed real APFS alternate-case ancestor containment, permitting source mutation",
+      "resolution": "Both importer and reservation verify actual no-follow descriptor ancestor dev/inode lineages before any write, including missing destination parent. Real macOS case-alias regressions pass without skips; independently re-reviewed.",
+      "severity": "P1"
+    },
+    {
+      "finding": "Historical HAR squash fixture read evolving current048assurance rather than exact retained planning bytes",
+      "resolution": "Restore exact tagged bytes only in disposable test clone; preserve nonancestry, strict validation, pin/hash/tag drift and fakeapproval rejection. Independent Luna review found no weakened gate.",
+      "scope": "Validation fixture maintenance"
+    }
+  ],
+  "reviewerModel": "gpt-6-luna"
+}
