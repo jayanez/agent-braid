@@ -13,12 +13,20 @@ import sys
 import statistics
 import time
 from itertools import combinations
+from math import comb
 from pathlib import Path
 
 from .model import canonical, declared_effects, digest, footprint, validate
 
 METHODS = ("conservative-all-orders", "declared-effects", "additive-terminal", "exhaustive-replay")
-STAGES = ("setup", "footprintValidation", "classification", "replay", "observation", "comparison", "serialization")
+STAGES = ("setup", "footprintValidation", "classification", "replay", "observation", "comparison", "rule", "serialization")
+# Registered H2 cost criterion: the additive rule's own stage, paired with the
+# exhaustive-replay total of the same fixture and repetition, as parts per million.
+RULE_INCREMENTAL_COST = {
+    "numerator": "additive-terminal rule stage", "denominator": "exhaustive-replay totalWall",
+    "pairing": "same-fixture-same-repetition", "population": "matched-complete-h2-fixtures",
+    "unit": "ppm", "bound": "order-statistic-one-sided-95-upper-median", "marginAtMostPpm": 50000,
+}
 
 
 def _json(value):
@@ -35,10 +43,10 @@ def validate_manifest(manifest, registration):
         raise ValueError("invalid registration authority")
     protocol = manifest["protocol"]
     expected = {
-        "format": "effectful-workload-protocol-v1", "methods": list(METHODS),
+        "format": "effectful-workload-protocol-v2", "methods": list(METHODS),
         "warmups": 3, "repetitions": 20,
         "order": "rotate-methods-by-fixture-and-repetition",
-        "threshold": {"minimumRecoveredTerminalCandidates": 1, "medianWholeAnalysisCostRatioAtMost": 1},
+        "threshold": {"minimumRecoveredTerminalCandidates": 1, "ruleIncrementalCost": RULE_INCREMENTAL_COST},
         "coverage": "identical-complete-or-inconclusive", "costBoundary": [*STAGES, "totalWall"],
         "claims": {"contextualEquivalence": "unknown", "runtimeSafety": "unknown", "executionAuthorization": False},
     }
@@ -249,9 +257,10 @@ def measure(request, method):
     verification = verify(report)
     if verification.get("status") != "verified":
         raise ValueError("oracle replay verification rejected")
-    rule = additive_candidate(parsed, report, declarations) if method == "additive-terminal" else None
-    comparison = {"classification": classification, "observation": observed, "rule": rule, "verification": verification}
     stage("comparison")
+    rule = additive_candidate(parsed, report, declarations) if method == "additive-terminal" else None
+    stage("rule")
+    comparison = {"classification": classification, "observation": observed, "rule": rule, "verification": verification}
     serialized = _json({"request": parsed, "report": report, "comparison": comparison})
     retained = _retained_objects(parsed, encoded, declarations, classification, report, observed, verification, rule, comparison, serialized)
     stage("serialization")
@@ -273,12 +282,28 @@ def matched_coverage(runs):
     return all(run["coverage"]["complete"] and all(run[key] == first[key] for key in keys) for run in runs)
 
 
+def median_upper_bound(values):
+    """Distribution-free one-sided 95% upper bound for the median, or None.
+
+    Returns the k-th order statistic for the smallest k with
+    P(Binomial(n, 1/2) <= k - 1) >= 0.95, in exact integer arithmetic.
+    """
+    ordered = sorted(values)
+    n = len(ordered)
+    cumulative = 0
+    for k in range(1, n + 1):
+        cumulative += comb(n, k - 1)
+        if 20 * cumulative >= 19 * 2**n:
+            return ordered[k - 1]
+    return None
+
+
 def run_experiment(manifest, registration, command=None):
     """Run the preregistered local protocol; negative outcomes are valid results."""
     validate_manifest(manifest, registration)
     results = []
     recovered = false_candidates = exclusions = 0
-    rule_costs, oracle_costs = [], []
+    rule_costs, oracle_costs, paired_ppm = [], [], []
     for index, fixture in enumerate(manifest["fixtures"]):
         samples = {method: [] for method in METHODS}
         warmups = {method: 0 for method in METHODS}
@@ -322,13 +347,18 @@ def run_experiment(manifest, registration, command=None):
             if matched:
                 rule_costs.extend(s["costNanoseconds"]["totalWall"] for s in samples["additive-terminal"])
                 oracle_costs.extend(s["costNanoseconds"]["totalWall"] for s in samples["exhaustive-replay"])
+                oracle_by_repetition = {s["repetition"]: s["costNanoseconds"]["totalWall"]
+                                        for s in samples["exhaustive-replay"]}
+                paired_ppm.extend(s["costNanoseconds"]["rule"] * 1_000_000 // max(oracle_by_repetition[s["repetition"]], 1)
+                                  for s in samples["additive-terminal"])
         results.append({"id": fixture["id"], "requestHash": fixture["requestHash"], "matchedCompleteCoverage": matched,
                         "warmupsCompleted": warmups, "samples": samples, "failures": failures,
                         "control": control, "h2": h2, "oracle": oracle, "executionAuthorization": False})
     complete = all(result["matchedCompleteCoverage"] and result["control"]["status"] == "pass" for result in results)
     rule_median = statistics.median(rule_costs) if rule_costs else None
     oracle_median = statistics.median(oracle_costs) if oracle_costs else None
-    threshold = rule_median is not None and oracle_median is not None and rule_median <= oracle_median
+    upper = median_upper_bound(paired_ppm)
+    threshold = upper is not None and upper <= RULE_INCREMENTAL_COST["marginAtMostPpm"]
     feasibility = "inconclusive" if not complete or false_candidates else "positive" if recovered >= 1 and threshold else "negative"
     source_files = (Path(__file__), Path(__file__).parents[2] / "scripts/run_effectful_workload_experiment.py")
     return {"format": "effectful-workload-experiment-v1", "registration": registration, "protocol": manifest["protocol"],
@@ -341,6 +371,11 @@ def run_experiment(manifest, registration, command=None):
                 "matchedCompleteFixtures": sum(r["matchedCompleteCoverage"] for r in results),
                 "failedRepetitions": sum(len(r["failures"]) for r in results)},
             "feasibility": {"status": feasibility, "medianRuleWholeCostNanoseconds": rule_median,
-                            "medianOracleWholeCostNanoseconds": oracle_median, "costThresholdMet": threshold,
+                            "medianOracleWholeCostNanoseconds": oracle_median,
+                            "ruleIncrementalCostPpm": {"samples": len(paired_ppm),
+                                                       "median": statistics.median(paired_ppm) if paired_ppm else None,
+                                                       "upper95": upper,
+                                                       "marginAtMost": RULE_INCREMENTAL_COST["marginAtMostPpm"]},
+                            "costThresholdMet": threshold,
                             "scope": "descriptive frozen synthetic corpus only"},
             "contextualEquivalence": "unknown", "runtimeSafety": "unknown", "scientificReview": "pending", "executionAuthorization": False}

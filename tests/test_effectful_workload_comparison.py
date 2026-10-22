@@ -8,7 +8,7 @@ from unittest.mock import patch
 
 from research.workload_lab.analysis import (
     METHODS, STAGES, additive_candidate, control_result, matched_coverage,
-    measure, run_experiment, validate_manifest,
+    measure, median_upper_bound, run_experiment, validate_manifest,
 )
 from research.workload_lab.evidence import explore, verify
 from research.workload_lab.model import digest
@@ -111,25 +111,47 @@ class WorkloadComparisonTests(unittest.TestCase):
         self.assertFalse(failed["fixtures"][0]["matchedCompleteCoverage"])
 
 
-    def test_h2_cost_threshold_tie_is_inclusive(self):
-        # Pins the registered rule: medianWholeAnalysisCostRatioAtMost 1 admits a tie.
+    def run_with_costs(self, rule_stage, rule_total, oracle_total):
         manifest, registration = corpus()
         manifest["fixtures"] = [next(f for f in manifest["fixtures"] if f["id"] == "h2-shared-additions")]
         registration.update(manifestHash=digest(manifest), fixtureCount=1)
         actual_measure = measure
-        def fixed(rule_cost):
-            def fake(request, method):
-                result = actual_measure(request, method)
-                cost = rule_cost if method == "additive-terminal" else 1000
-                result["costNanoseconds"] = {**result["costNanoseconds"], "totalWall": cost}
-                return result
-            return fake
-        for rule_cost, status in ((1000, "positive"), (1001, "negative")):
-            with self.subTest(rule_cost=rule_cost), \
-                    patch("research.workload_lab.analysis.measure", side_effect=fixed(rule_cost)):
-                report = run_experiment(manifest, registration)
+        def fake(request, method):
+            result = actual_measure(request, method)
+            costs = dict(result["costNanoseconds"])
+            if method == "additive-terminal":
+                costs.update(rule=rule_stage, totalWall=rule_total)
+            elif method == "exhaustive-replay":
+                costs.update(totalWall=oracle_total)
+            result["costNanoseconds"] = costs
+            return result
+        with patch("research.workload_lab.analysis.measure", side_effect=fake):
+            return run_experiment(manifest, registration)
+
+    def test_rule_incremental_cost_margin_is_inclusive(self):
+        # Registered margin: 50,000 ppm of the paired exhaustive-replay total.
+        for rule_stage, status in ((50_000, "positive"), (50_001, "negative")):
+            with self.subTest(rule_stage=rule_stage):
+                report = self.run_with_costs(rule_stage, 1_050_000, 1_000_000)
+                cost = report["feasibility"]["ruleIncrementalCostPpm"]
+                self.assertEqual((cost["samples"], cost["marginAtMost"]), (20, 50_000))
+                self.assertEqual(cost["upper95"], rule_stage)
                 self.assertEqual(report["feasibility"]["costThresholdMet"], status == "positive")
                 self.assertEqual(report["feasibility"]["status"], status)
+
+    def test_whole_cost_noise_no_longer_decides_the_verdict(self):
+        # A rule run slower overall than the oracle (timer noise, shared replay)
+        # does not flip the verdict; only the rule's own paired stage counts.
+        for rule_total in (900_000, 1_000_000, 1_200_000):
+            with self.subTest(rule_total=rule_total):
+                report = self.run_with_costs(1_000, rule_total, 1_000_000)
+                self.assertEqual(report["feasibility"]["status"], "positive")
+
+    def test_median_upper_bound_is_an_exact_order_statistic(self):
+        self.assertEqual(median_upper_bound(range(20, 0, -1)), 15)
+        self.assertEqual(median_upper_bound([7] * 200), 7)
+        self.assertIsNone(median_upper_bound([1, 2, 3, 4]))
+        self.assertIsNone(median_upper_bound([]))
 
 if __name__ == "__main__":
     unittest.main()

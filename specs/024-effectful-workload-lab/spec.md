@@ -110,9 +110,12 @@ and public contract review before integrating its implementation.
     agree but return values/events differ, when the comparison runs, then the
     report labels only terminal-equivalent candidates, retains those differences
     and contextual/runtime status unknown, never commuting or safe parallelism.
-    At least one recovered oracle-confirmed terminal candidate and median whole
-    analysis cost no greater than exhaustive replay are the preregistered
-    descriptive feasibility criteria; absence or excess cost is a valid negative
+    At least one recovered oracle-confirmed terminal candidate and a rule
+    incremental cost within the registered margin are the preregistered
+    descriptive feasibility criteria: pair the additive rule's own stage with
+    the exhaustive-replay total of the same fixture and repetition, and require
+    the distribution-free one-sided 95% upper bound of the median paired ratio
+    to be at most 50,000 ppm (5%); absence or excess cost is a valid negative
     result. Any false terminal candidate, incomplete oracle or altered observation
     prevents a positive assessment. Real H2 usefulness remains unestablished.
 

@@ -48,7 +48,8 @@ can finish the protocol; real adapters remain excluded.
   - Evidence: raw reproduction output, review findings/status; no real refinement or independent-validation claim until separately evidenced.
 
 - [ ] T008 (REQ-007/SC-008): Implement and freeze the bounded additive terminal-candidate H2 comparison
-  - Dependencies: T002, T003, T004, T005; freeze class, corpus and whole-cost threshold before any comparison run. T007 review packet also includes T008 results.
+  - Dependencies: T002, T003, T004, T005; freeze class, corpus and incremental-cost threshold before any comparison run. T007 review packet also includes T008 results.
+  - Status: open; not run. On 2026-10-22 the owner approved re-registering the cost criterion as the rule's paired incremental cost (option A) with margin m = 50,000 ppm (5%), replacing the whole-cost criterion before any registered run; protocol `effectful-workload-protocol-v2` and the registration hashes were refrozen accordingly.
   - Targets: simulator add-constant primitive/rule, `scripts/run_effectful_workload_experiment.py`, `tests/test_effectful_workload_lab.py`, future H2 manifest and evidence packet.
   - Commands: planned `WorkloadH2Tests.test_terminal_rule_preserves_raw_differences_and_denies_runtime` and registered comparison command from quickstart; quick/PR remain separate.
   - Evidence: exact-resource baseline, complete oracle, recovered/false-candidate counts, exclusions, all return/event differences, 3 warm-up/20 measured method repetitions and full-cost accounting. No contextual or runtime safe-parallelism claim; negative/inconclusive completion is valid.

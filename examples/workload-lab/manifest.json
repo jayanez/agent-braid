@@ -1,7 +1,7 @@
 {
   "format": "effectful-workload-manifest-v1",
   "protocol": {
-    "format": "effectful-workload-protocol-v1",
+    "format": "effectful-workload-protocol-v2",
     "methods": [
       "conservative-all-orders",
       "declared-effects",
@@ -13,7 +13,15 @@
     "order": "rotate-methods-by-fixture-and-repetition",
     "threshold": {
       "minimumRecoveredTerminalCandidates": 1,
-      "medianWholeAnalysisCostRatioAtMost": 1
+      "ruleIncrementalCost": {
+        "numerator": "additive-terminal rule stage",
+        "denominator": "exhaustive-replay totalWall",
+        "pairing": "same-fixture-same-repetition",
+        "population": "matched-complete-h2-fixtures",
+        "unit": "ppm",
+        "bound": "order-statistic-one-sided-95-upper-median",
+        "marginAtMostPpm": 50000
+      }
     },
     "coverage": "identical-complete-or-inconclusive",
     "costBoundary": [
@@ -23,6 +31,7 @@
       "replay",
       "observation",
       "comparison",
+      "rule",
       "serialization",
       "totalWall"
     ],

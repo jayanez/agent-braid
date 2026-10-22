@@ -2,8 +2,8 @@
 
 T002–T004 are implemented, pending T001 integration and independent review; the
 tests and CLI commands below run against the current branch. T005–T008 remain
-open: SC-007 is still planned, and the SC-008 experiment must not be run until
-the owner decides its re-registered threshold. Passing commands are local
+open: SC-007 is still planned, and the SC-008 experiment (re-registered
+incremental-cost criterion) has not been run. Passing commands are local
 software checks, not scientific acceptance.
 
 ## SC-001 private configuration and retained transitions
@@ -82,7 +82,7 @@ host/commit and actual commands after execution, and reproduce in a fresh
 independent clone before science review; passing profiles do not supply this
 evidence.
 
-Not yet runnable as evidence (T006/T008, pending the owner's protocol decision):
+Registered experiment (T006/T008). Not run yet; it waits for T001–T005 and the independent review:
 
 ```sh
 python3 scripts/run_effectful_workload_experiment.py --manifest examples/workload-lab/manifest.json --output specs/024-effectful-workload-lab/evidence/comparison.json
@@ -90,4 +90,4 @@ python3 scripts/run_effectful_workload_experiment.py --manifest examples/workloa
 
 ## SC-008 bounded H2 terminal-candidate comparison
 
-Test `WorkloadH2Tests.test_terminal_rule_preserves_raw_differences_and_denies_runtime` in `tests/test_effectful_workload_comparison.py` checks shared-target additive terminal positives, changed return/event negatives for stronger claims, overflow, guards/versions, literal-write conflicts and missing oracle paths. Freeze the additive class/corpus/threshold before runs. The experiment entrypoint writes baseline/rule/oracle counts and full costs; 3 warm-ups and 20 measured repetitions per method/fixture with deterministic alternating order. Recovery and <=oracle-cost are descriptive feasibility outcomes. Changed observation, false candidate or incomplete domain prevents a positive assessment. No result grants contextual equivalence or runtime safety.
+Test `WorkloadH2Tests.test_terminal_rule_preserves_raw_differences_and_denies_runtime` in `tests/test_effectful_workload_comparison.py` checks shared-target additive terminal positives, changed return/event negatives for stronger claims, overflow, guards/versions, literal-write conflicts and missing oracle paths. Freeze the additive class/corpus/threshold before runs. The experiment entrypoint writes baseline/rule/oracle counts and full costs; 3 warm-ups and 20 measured repetitions per method/fixture with deterministic alternating order. Recovery and a rule incremental cost whose one-sided 95% upper median bound is at most 50,000 ppm of the paired oracle total are descriptive feasibility outcomes (`test_rule_incremental_cost_margin_is_inclusive`). Changed observation, false candidate or incomplete domain prevents a positive assessment. No result grants contextual equivalence or runtime safety.

@@ -1,7 +1,7 @@
 {
   "format": "effectful-workload-registration-v1",
-  "manifestHash": "21b35582e507d59148e28f35fe01eac4a3f23f0f595931e7846ebbf4ed7decdc",
-  "protocolHash": "8b0f66e8fb67a7f4362f77f6bd6bfac5580c9ec923c6425129c3416d9860f42b",
+  "manifestHash": "ad8b00ca8c8fc4329699cd8ba5f07525b45f00cff604b76d69bacdb9fae6babc",
+  "protocolHash": "7dfb10da9eb1a8a9e1e61b7d73e4641c23920d6283da322b2321e3a912faddb9",
   "fixtureCount": 17,
   "executionAuthorization": false
 }
