@@ -31,5 +31,10 @@ or contextual-equivalence verdict.
 experiment report. CLI reads bounded nonsymlink regular files and exclusively
 creates explicit outputs. Its report transport bound is 512 MiB; an oversized
 encoded artifact is refused, never silently truncated or labeled complete.
-Model count limits do not establish a hard process-memory or wall-time guarantee.
+Exploration also stops before a retained step would push the canonical path
+payload past 256 MiB (`explore.PATH_BYTES`), recording `capReason: "bytes"`,
+a `cap-exhausted` partial path and an `inconclusive` verdict, so a report stays
+within the transport bound. This is an implementation bound beyond the request
+caps, not a contract cap. Peak process memory is roughly twice the retained
+payload; count limits and this budget do not establish a wall-time guarantee.
 All outputs retain `executionAuthorization: false`.

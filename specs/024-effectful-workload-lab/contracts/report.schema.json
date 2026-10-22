@@ -571,7 +571,8 @@
             null,
             "paths",
             "steps",
-            "events"
+            "events",
+            "bytes"
           ]
         }
       },

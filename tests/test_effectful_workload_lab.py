@@ -9,6 +9,7 @@ import os
 from pathlib import Path
 import tempfile
 import unittest
+from unittest import mock
 
 from research.workload_lab.evidence import explore, verify
 from research.workload_lab.model import InvalidWorkload, canonical, validate
@@ -89,6 +90,28 @@ class WorkloadExplorationTests(unittest.TestCase):
         self.assertEqual(report["coverage"]["schedules"], 720)
         self.assertEqual(report["coverage"]["assignedPaths"], 720)
         self.assertEqual(report["paths"], [])
+
+
+    def test_byte_budget_stops_before_retaining_oversized_payload(self):
+        request = fixture()
+        step_bytes = len(canonical(explore(request)["paths"][0]["steps"][0])) + 1
+        with mock.patch("research.workload_lab.explore.PATH_BYTES", 0):
+            empty = explore(request)
+        self.assertEqual((empty["coverage"]["attemptedPaths"], empty["coverage"]["capReason"]),
+                         (0, "bytes"))
+        with mock.patch("research.workload_lab.explore.PATH_BYTES", step_bytes):
+            report = explore(request)
+            self.assertEqual(verify(json.loads(canonical(report)))["status"], "verified")
+        coverage = report["coverage"]
+        self.assertEqual((coverage["attemptedPaths"], coverage["completedPaths"], coverage["steps"],
+                          coverage["capReason"], coverage["complete"]), (1, 0, 1, "bytes", False))
+        partial = report["paths"][0]
+        self.assertEqual(len(partial["steps"]), 1)
+        self.assertEqual((partial["configuration"]["outcome"], partial["configuration"]["reason"],
+                          partial["configuration"]["pending"]), ("cap-exhausted", "bytes", ["b"]))
+        self.assertLessEqual(len(canonical(partial["steps"])), step_bytes + 1)
+        self.assertEqual(report["comparison"]["verdict"], "inconclusive")
+        self.assertFalse(report["executionAuthorization"])
 
 
 class WorkloadObservationTests(unittest.TestCase):
@@ -179,6 +202,8 @@ class WorkloadEvidenceTests(unittest.TestCase):
         self.assertEqual(verify(changed)["status"], "rejected")
         capped = fixture(); capped["caps"]["steps"] = 0
         validator.validate(explore(capped))
+        with mock.patch("research.workload_lab.explore.PATH_BYTES", 0):
+            validator.validate(explore(fixture()))
 
     def test_tamper_coverage_and_cost_accounting(self):
         original = explore(fixture())
