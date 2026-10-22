@@ -1,0 +1,45 @@
+{
+  "scope": "Artifact integrity readback only; no product execution or tests",
+  "packetSha256": "7773a3607315e042dd7d5672ecdf41fba9b797c579fbdf363973b58562517ce9",
+  "bindingsChecked": 68,
+  "losslessRepresentationsChecked": 50,
+  "archiveMembersChecked": 18,
+  "archiveHashMatches": true,
+  "errors": [],
+  "notReexecuted": [
+    "parent tests",
+    "profiles",
+    "captures",
+    "historical diagnosis",
+    "full baseline replay"
+  ],
+  "parentReceiptsRead": {
+    "quick": {
+      "exitCode": 0,
+      "receiptInputCount": 2932,
+      "softwarePinsMatchReceipt": true,
+      "logHashMatches": true,
+      "batchSummaries": [
+        "Ran 2153 tests in 2198.039s",
+        "OK (skipped=23)"
+      ],
+      "sourceInputsStillMatch": true,
+      "ownedTemporaryCopyRemoved": true
+    },
+    "pr": {
+      "exitCode": 0,
+      "receiptInputCount": 2932,
+      "softwarePinsMatchReceipt": true,
+      "logHashMatches": true,
+      "batchSummaries": [
+        "Ran 2153 tests in 2198.943s",
+        "OK (skipped=23)"
+      ],
+      "sourceInputsStillMatch": true,
+      "ownedTemporaryCopyRemoved": true
+    }
+  },
+  "patchHashMatchesCompletion": true,
+  "completionHashMatchesHandoff": true,
+  "finalReadbackHashMatchesHandoff": true
+}
