@@ -4,8 +4,6 @@ import ast
 from dataclasses import FrozenInstanceError, replace
 import json
 from pathlib import Path
-import subprocess
-import sys
 import unittest
 from unittest.mock import patch
 
@@ -251,6 +249,63 @@ class ContractTests(unittest.TestCase):
         event["payload"].update(labelState="mature",
              censoring=dict(state="not-censored", reason=None, observedUntilNs=270))
         self.reject(event, "original-horizon-censored", state=first.state, registration=reg)
+
+    def censored_at_horizon(self):
+        event = outcome(self.origin)
+        event["payload"].update(labelState="censored", terminalNs=None, availableAtNs=None,
+                                maturityNs=None, verificationDisposition="unavailable")
+        event["payload"]["oracle"].update(status="not-obtained", artifactDigest=None)
+        event["payload"]["metrics"][0].update(value=None, missingReason="censored")
+        event["payload"]["censoring"].update(state="right-censored", reason="censored", observedUntilNs=200)
+        return event
+
+    def test_right_censored_without_terminal_cannot_mature_on_amendment(self):
+        first = self.append(self.censored_at_horizon(), self.origin_state())
+        self.assertEqual(first.population_status, (("1"*32, "censored"),))
+        # The in-horizon oracle alone would mature; only the prior censoring blocks it.
+        event = outcome(self.origin, sequence=2, previous=first.state.head_digest)
+        event["supersedesRecordDigest"] = first.state.head_digest
+        event["payload"]["amendmentReason"] = "late-maturity"
+        self.reject(event, "original-horizon-censored", state=first.state)
+
+    def test_unterminated_observation_reaching_horizon_must_be_right_censored(self):
+        event = self.censored_at_horizon()
+        event["payload"].update(labelState="pending")
+        event["payload"]["oracle"].update(status="pending")
+        event["payload"]["metrics"][0].update(missingReason="not-measured")
+        event["payload"]["censoring"].update(state="not-censored", reason=None)
+        self.reject(event, "original-horizon-censored", state=self.origin_state())
+
+    def test_terminal_exactly_at_horizon_end_is_mature(self):
+        edge = replace(self.registration.oracle_attestations[0], terminal_ns=200,
+                       available_at_ns=210, maturity_ns=220)
+        reg = replace(self.registration, oracle_attestations=(edge,))
+        event = outcome(self.origin)
+        event["payload"].update(terminalNs=200, availableAtNs=210, maturityNs=220)
+        event["payload"]["metrics"][0]["value"] = 90
+        event["payload"]["censoring"]["observedUntilNs"] = 220
+        state = self.append(self.origin, registration=reg).state
+        result = self.append(event, state, registration=reg)
+        self.assertEqual(result.eligible_outcome_digests, (result.state.head_digest,))
+
+    def test_correction_cannot_rebind_failed_attempt_to_a_passing_oracle(self):
+        ok = self.registration.oracle_attestations[0]
+        failed = replace(ok, artifact_digest=D("c"), exit_code=1)
+        with self.assertRaisesRegex(OwnedWorkError, "conflicting-attestation"):
+            replace(self.registration, oracle_attestations=(failed, ok))
+        reg = replace(self.registration, oracle_attestations=(failed,))
+        state = self.append(self.origin, registration=reg).state
+        event = outcome(self.origin)
+        event["payload"]["verificationDisposition"] = "failed"
+        event["payload"]["oracle"]["artifactDigest"] = D("c")
+        first = self.append(event, state, registration=reg)
+        self.assertEqual(first.eligible_outcome_digests, (first.state.head_digest,))
+        event = outcome(self.origin, sequence=2, previous=first.state.head_digest)
+        event["supersedesRecordDigest"] = first.state.head_digest
+        event["payload"]["amendmentReason"] = "correction"
+        self.reject(event, "unbound-oracle", state=first.state, registration=reg)
+        event["payload"]["oracle"]["artifactDigest"] = D("c")
+        self.reject(event, "verification-disposition", state=first.state, registration=reg)
 
     def test_missing_refused_and_cancelled_are_retained_not_error_labels(self):
         state = self.origin_state()

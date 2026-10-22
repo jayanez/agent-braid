@@ -138,6 +138,9 @@ class AuthorityTests(unittest.TestCase):
         self.assertEqual(new.descriptors, (raw,))
         with self.assertRaisesRegex(OwnedWorkError, "registry-conflict"):
             replace(reg, descriptors=(raw, raw))
+        for value in (D("c"), D("c").encode(), [1]):
+            with self.assertRaisesRegex(OwnedWorkError, "registry-type"):
+                replace(reg, consent_receipts=value)
 
     def test_embedded_schema_matches_exact_adopted_contract(self):
         root = Path(__file__).resolve().parents[1]

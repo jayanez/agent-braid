@@ -7,7 +7,7 @@ reads roots, authenticates consent, issues execution grants or admits real captu
 from __future__ import annotations
 
 from dataclasses import dataclass
-from datetime import datetime, timezone
+from datetime import datetime
 import hashlib
 import json
 import math
@@ -192,7 +192,10 @@ class OperatorRegistry:
         object.__setattr__(self, "descriptors", tuple(canonical_bytes(parse_authority(x))
                                                    for x in self.descriptors))
         for name in ("consent_receipts", "review_receipts", "canonical_roots", "revoked_ids"):
+            # A bare string would silently become a set of its characters.
+            _require(not isinstance(getattr(self, name), (str, bytes)), "registry-type")
             object.__setattr__(self, name, frozenset(getattr(self, name)))
+            _require(all(type(x) is str for x in getattr(self, name)), "registry-type")
         _require(type(self.revision) is str and
                  re.fullmatch(r"[0-9a-f]{64}", self.revision) is not None, "registry-revision")
         ids = [parse_authority(x)["authorityId"] for x in self.descriptors]

@@ -8,11 +8,10 @@ module. A secure host adapter and actual source admission are separate work.
 from __future__ import annotations
 
 from dataclasses import dataclass
-import hashlib
 import json
 
 from agent_braid.owned_work_authority import (
-    OperatorRegistry, OwnedWorkError, _check, _require, canonical_bytes, digest,
+    OperatorRegistry, _check, _require, canonical_bytes, digest,
     parse_json, resolve_authority, utc,
 )
 
@@ -152,11 +151,13 @@ class FrozenRegistration:
                 value = (attempt.family_id, attempt.family_partition)
                 _require(key not in groups or groups[key] == value, "registration-partition")
                 groups[key] = value
-        for name in ("oracle_attestations", "diagnostic_attestations"):
+        # One operational oracle per attempt: a correction cannot rebind the
+        # attempt to a later passing run and so prefer a success over a failure.
+        for name, key in (("oracle_attestations", lambda x: x.attempt_id),
+                          ("diagnostic_attestations", lambda x: (x.attempt_id, x.evidence_digest))):
             values = getattr(self, name)
             _require(all(x.attempt_id in ids for x in values), "unregistered-attestation")
-            keys = [(x.attempt_id, getattr(x, "artifact_digest", getattr(x, "evidence_digest", None)))
-                    for x in values]
+            keys = [key(x) for x in values]
             _require(len(set(keys)) == len(keys), "conflicting-attestation")
 
 
@@ -254,7 +255,6 @@ def _outcome(event, origin, attempt, registration, previous):
     else:
         _require(event["supersedesRecordDigest"] == previous["recordDigest"] and
                  p["amendmentReason"] != "initial", "outcome-supersession")
-        _require(utc(event["recordedAtUTC"]) >= utc(previous["recordedAtUTC"]), "record-time-regression")
     _unique(p["metrics"], "name", "duplicate-metric")
     oracle = p["oracle"]
     pins = json.loads(registration.authority_pins)
@@ -275,7 +275,8 @@ def _outcome(event, origin, attempt, registration, previous):
     horizon = op["forecast"]["horizonNs"]
     end = op["originNs"] + horizon if horizon is not None else None
     late = end is not None and p["terminalNs"] is not None and p["terminalNs"] > end
-    if late or end is not None and p["terminalNs"] is None and p["censoring"]["observedUntilNs"] is not None and p["censoring"]["observedUntilNs"] >= end:
+    observed = p["censoring"]["observedUntilNs"]
+    if late or (end is not None and p["terminalNs"] is None and observed is not None and observed >= end):
         _require(p["labelState"] == "censored" and p["censoring"]["state"] == "right-censored",
                  "original-horizon-censored")
     if previous is not None and previous["payload"]["censoring"]["state"] == "right-censored":
