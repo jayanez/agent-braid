@@ -114,7 +114,7 @@ RULES = (
     Rule("effectful-workload-lab", (
         "research/workload_lab/**", "examples/workload-lab/**",
         "tests/test_effectful_workload*.py", "scripts/run_effectful_workload_experiment.py",
-    ), ("full-tests", "scientific-controls", "contracts"), True,
+    ), ("full-tests", "contracts"), True,
         boundary="Finite simulated effects only; real adapters, scientific review and execution refinement remain separate"),
     Rule("predictor-preparation", (
         "scripts/check_predictor_readiness.py", "agent_braid/native_predictor.py",

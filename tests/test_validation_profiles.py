@@ -18,6 +18,10 @@ ROOT = Path(__file__).resolve().parents[1]
 
 class ValidationProfileTests(unittest.TestCase):
     def test_effectful_workload_lab_has_owned_sensitive_controls(self):
+        # Workload lab tests run in full-tests; the scientific-controls command
+        # exercises the separate SPEC lab, so the rule must not claim it.
+        rule = next(rule for rule in validation.RULES if rule.domain == "effectful-workload-lab")
+        self.assertEqual(rule.commands, ("full-tests", "contracts"))
         for path in ("research/workload_lab/model.py", "research/workload_lab/evidence.py",
                      "research/workload_lab/SEMANTICS.md", "examples/workload-lab/manifest.json",
                      "scripts/run_effectful_workload_experiment.py",
@@ -26,7 +30,6 @@ class ValidationProfileTests(unittest.TestCase):
                 plan = validation.build_plan([path], "quick")
                 self.assertIn("effectful-workload-lab", plan.impact.domains)
                 self.assertEqual(plan.effective_profile, "sensitive")
-                self.assertIn("scientific-controls", plan.commands)
                 self.assertIn("full-tests", plan.commands)
                 self.assertIn("contracts", plan.commands)
                 self.assertFalse(plan.impact.unknown_paths)
