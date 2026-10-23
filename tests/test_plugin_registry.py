@@ -216,3 +216,13 @@ class PluginRegistryTests(unittest.TestCase):
         code, _, _ = run('--telemetry', 'local', '--apply', '--preview-digest', preview['previewDigest'])
         self.assertEqual(code, 0)
         self.assertEqual(load(self.home)['telemetry'], 'local')
+
+    def test_discovery_reads_v01_registry_without_writing_and_flags_migration(self):
+        self.legacy_registry()
+        path = self.home / 'registry.json'
+        before = path.read_bytes()
+        found = discover(self.home, [], current=self.repo)
+        self.assertTrue(found['migrationRequired'])
+        self.assertEqual(found['candidates'], [{'sourceRoot': str(self.repo), 'origin': 'registered'}])
+        self.assertEqual(path.read_bytes(), before)
+        self.assertFalse(discover(self.base / 'fresh', [])['migrationRequired'])
