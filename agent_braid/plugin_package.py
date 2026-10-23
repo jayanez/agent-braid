@@ -15,13 +15,33 @@ def file_hash(path):
     return digest.hexdigest()
 
 
+# Native hosts (e.g. Claude Code) record live processes as `.in_use/<pid>` files in
+# the installed plugin root. They are host-owned and outside the package bytes.
+HOST_MARKER_DIRECTORY = '.in_use'
+HOST_MARKER_MAX_BYTES = 4096
+
+
+def _is_host_marker(path, parts):
+    if parts[0] != HOST_MARKER_DIRECTORY:
+        return False
+    if len(parts) == 1 and path.is_dir() and not path.is_symlink():
+        return True
+    if (len(parts) == 2 and parts[1].isdigit() and path.is_file() and not path.is_symlink()
+            and path.stat().st_size <= HOST_MARKER_MAX_BYTES):
+        return True
+    raise ValueError('Unsupported entry in host marker directory')
+
+
 def inventory(root):
     root = Path(root).resolve(strict=True)
     result = {}
     for index, path in enumerate(root.rglob('*')):
         if index >= 20000:
             raise ValueError('Package traversal exceeds its entry limit')
-        name = path.relative_to(root).as_posix()
+        relative = path.relative_to(root)
+        name = relative.as_posix()
+        if _is_host_marker(path, relative.parts):
+            continue
         if name == 'package-inventory.json' or (path.is_dir() and not path.is_symlink()):
             continue
         if path.is_symlink():

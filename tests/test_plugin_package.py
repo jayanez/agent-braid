@@ -47,6 +47,42 @@ class PluginPackageTests(unittest.TestCase):
             with self.assertRaises(ValueError):
                 verify_package(root)
 
+    def test_host_in_use_markers_are_tolerated_but_bounded(self):
+        import os
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            (root / 'assets').mkdir()
+            (root / 'assets/data').write_text('original')
+            (root / 'package-inventory.json').write_text(json.dumps({
+                'schema': 'agent-braid-plugin-package/v1', 'version': 'test', 'files': inventory(root)}))
+            markers = root / '.in_use'; markers.mkdir()
+            (markers / '10785').write_text('{"pid":10785,"procStart":"Fri Oct 23 07:34:53 2026"}')
+            self.assertEqual(verify_package(root)['status'], 'verified')
+            self.assertNotIn('.in_use/10785', inventory(root))
+            for name, make in (
+                    ('not-a-pid', lambda p: p.write_text('{}')),
+                    ('123', lambda p: p.write_bytes(b'x' * 4097)),
+                    ('124', lambda p: p.symlink_to(root / 'assets/data')),
+                    ('125', lambda p: (p.mkdir(), (p / 'nested').write_text('{}')))):
+                with self.subTest(name=name):
+                    make(markers / name)
+                    with self.assertRaisesRegex(ValueError, 'host marker'):
+                        verify_package(root)
+                    target = markers / name
+                    if target.is_dir() and not target.is_symlink():
+                        (target / 'nested').unlink(); target.rmdir()
+                    else:
+                        target.unlink()
+            nested = root / 'assets/.in_use'; nested.mkdir()
+            (nested / '1').write_text('{}')
+            with self.assertRaisesRegex(ValueError, 'inventory changed'):
+                verify_package(root)
+            (nested / '1').unlink(); nested.rmdir()
+            (markers / '10785').unlink(); os.rmdir(markers)
+            markers.symlink_to(root / 'assets', target_is_directory=True)
+            with self.assertRaisesRegex(ValueError, 'host marker'):
+                verify_package(root)
+
     def test_extract_rejects_hash_and_traversal_but_omits_unused_cyclic_terminfo(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
