@@ -1,0 +1,95 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://agent-braid.dev/specs/053/braid-gate-args-v2.delta.schema.json",
+  "title": "braid-gate arguments v2 delta (draft fragment, not a standalone schema)",
+  "description": "Adds optional transcript inputs to the SPEC-052 v1 argument schema (specs/052-claude-workflow-gate/contracts/braid-gate-args.schema.json), which has additionalProperties false and accepts only base, sources and workspaceId. With none of these members the v1 arguments and v1 result are unchanged. Cross-field rules (each source ordinal below the number of sources and used once, path xor file, file requires transcriptDir, at most 32 entries, worktreeRoot lexical only) are enforced by the validation phase and reported as refusals; JSON Schema alone does not express them. Path tokens are not SPEC-052 identifiers: SPEC-052 REQ-008 admits only validated identifiers in agent prompts, so this delta depends on a reviewed SPEC-052 amendment that names a validated path token class; without it the transcript part of the gate is no-go. Draft, blocked by G0, adopted by nothing.",
+  "x-extends": {
+    "schema": "specs/052-claude-workflow-gate/contracts/braid-gate-args.schema.json"
+  },
+  "type": "object",
+  "properties": {
+    "transcripts": {
+      "description": "One entry per agent transcript, aligned to sources by ordinal. Supplying transcripts selects the v2 result.",
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 32,
+      "items": {
+        "$ref": "#/$defs/transcriptEntry"
+      }
+    },
+    "transcriptDir": {
+      "description": "Directory whose subagents/ folder holds the transcript files named by entries that use file. Never the main session transcript.",
+      "$ref": "#/$defs/pathToken"
+    },
+    "republishPaths": {
+      "description": "Opt-in. When true the v2 result may repeat bounded transcript-derived repository-relative paths; default false (counts only).",
+      "type": "boolean",
+      "default": false
+    }
+  },
+  "$defs": {
+    "pathToken": {
+      "description": "Absolute POSIX path of simple characters: no whitespace, quotes, shell metacharacters, option-leading text, '..', '//' or trailing slash, so a prompt can embed it without raw repository text.",
+      "type": "string",
+      "minLength": 2,
+      "maxLength": 512,
+      "pattern": "^/[A-Za-z0-9._~/-]+$",
+      "not": {
+        "pattern": "(\\.\\.|//|/$)"
+      }
+    },
+    "fileName": {
+      "type": "string",
+      "maxLength": 132,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,126}\\.jsonl$"
+    },
+    "transcriptEntry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "source",
+        "worktreeRoot"
+      ],
+      "properties": {
+        "source": {
+          "description": "Ordinal into sources.",
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 31
+        },
+        "worktreeRoot": {
+          "description": "The agent's worktree root, used lexically to normalize paths; never opened.",
+          "$ref": "#/$defs/pathToken"
+        },
+        "path": {
+          "$ref": "#/$defs/pathToken"
+        },
+        "file": {
+          "$ref": "#/$defs/fileName"
+        }
+      },
+      "oneOf": [
+        {
+          "required": [
+            "path"
+          ],
+          "not": {
+            "required": [
+              "file"
+            ]
+          }
+        },
+        {
+          "required": [
+            "file"
+          ],
+          "not": {
+            "required": [
+              "path"
+            ]
+          }
+        }
+      ]
+    }
+  }
+}

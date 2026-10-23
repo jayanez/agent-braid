@@ -24,7 +24,8 @@
     "FC.2 — Local forecasting capabilities": "Local default-off API/CLI/MCP forecasting, synthetic engineering/reproduction and separately approved actual Chronos CPU conformance; no real workload utility or promotion implied.",
     "HAR.1 — Braid Harness laboratory": "Provide a native Agent Braid mechanism to propose, probe and compose small task-local harness variants against an immutable base, first with deterministic fixtures and later through separately qualified Codex/Claude adapters. Draft planning; no due date, native acceptance or activation implied. Extra cash spend EUR 0.",
     "HAR.2 — Braid Harness evaluation and learning": "Determine separately whether harness refinement improves long-task continuity and agent coordination, then retain only scoped evidence-supported lessons and make explicit human or future automatic promotion decisions. Draft planning; no due date, native acceptance or activation implied. Extra cash spend EUR 0.",
-    "HAR.3 — Braid Harness adaptation and integration": "Implement staged Braid Harness component profiles, skills/helpers/hooks, delegated orchestration, measured depth/width refinement, scoped curation, disabled automatic-policy software and opt-in lifecycle/product integration. Draft planning; native qualification, exact policy adoption and activation remain separate. EUR 0 extra spend."
+    "HAR.3 — Braid Harness adaptation and integration": "Implement staged Braid Harness component profiles, skills/helpers/hooks, delegated orchestration, measured depth/width refinement, scoped curation, disabled automatic-policy software and opt-in lifecycle/product integration. Draft planning; native qualification, exact policy adoption and activation remain separate. EUR 0 extra spend.",
+    "M4.6 — Claude Code dynamic workflows": "Read-only Agent Braid integration gate for Claude Code dynamic workflows (SPEC-052) and a G0-gated transcript trace adapter (SPEC-053); planning only, no execution authority. Extra cash spend EUR 0."
   },
   "closed_milestones": [
     "M0 — Operational foundations",
@@ -237,6 +238,14 @@
     },
     "051-owned-work-evaluation": {
       "milestone": "FC.2 — Local forecasting capabilities",
+      "state": "open"
+    },
+    "052-claude-workflow-gate": {
+      "milestone": "M4.6 — Claude Code dynamic workflows",
+      "state": "open"
+    },
+    "053-claude-transcript-trace-adapter": {
+      "milestone": "M4.6 — Claude Code dynamic workflows",
       "state": "open"
     }
   },

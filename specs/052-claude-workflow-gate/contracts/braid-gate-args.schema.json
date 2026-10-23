@@ -1,0 +1,37 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://agent-braid.dev/specs/052-claude-workflow-gate/contracts/braid-gate-args.schema.json",
+  "title": "braid-gate workflow arguments (draft contract, not adopted)",
+  "description": "Arguments of /agent-braid:braid-gate. Planned contract of SPEC-052; no implementation exists. Identifiers are restricted to simple ref names or full commit identifiers so that agent prompts can embed them without raw repository text or revision expressions. Cross-field rules (at least two distinct sources, at most 32 operations, equality with the base, ancestry, presence in the registered repository) are enforced by the workflow validation phase and reported as refusals; JSON Schema alone does not express them.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["base", "sources", "workspaceId"],
+  "properties": {
+    "base": {
+      "description": "Commit or branch or tag name of the integration base. Resolved to a full commit identifier and pinned in the validation phase.",
+      "$ref": "#/$defs/refName"
+    },
+    "sources": {
+      "description": "One commit or branch or tag name per worktree agent. At least two distinct sources are required (founder clarification 2026-10-23); at most 32, the plugin MCP operation limit. Worktree paths are never accepted.",
+      "type": "array",
+      "minItems": 2,
+      "maxItems": 32,
+      "uniqueItems": true,
+      "items": { "$ref": "#/$defs/refName" }
+    },
+    "workspaceId": {
+      "description": "Explicitly registered plugin workspace identifier (32 lowercase hexadecimal characters, as issued by plugin setup). Never inferred and never defaulted.",
+      "type": "string",
+      "pattern": "^[0-9a-f]{32}$"
+    }
+  },
+  "$defs": {
+    "refName": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 256,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._/-]*$",
+      "not": { "pattern": "(\\.\\.|//|\\.lock$|/$|\\.$)" }
+    }
+  }
+}

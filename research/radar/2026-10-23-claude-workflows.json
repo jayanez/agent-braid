@@ -1,0 +1,56 @@
+{
+  "radarVersion": "0.1.0",
+  "review": {
+    "date": "2026-10-23",
+    "kind": "milestone",
+    "milestones": ["M4.6"],
+    "reviewer": "project preparation; founder review pending",
+    "decision": "pending",
+    "decisionRecord": "docs/strategy/ECOSYSTEM.md",
+    "scopeSnapshot": "research/radar/2026-09-27-m2.json"
+  },
+  "entries": [
+    {
+      "id": "RAD-2026-013",
+      "title": "Claude Code dynamic workflows (documentation and v2.1.154 changelog entry)",
+      "url": "https://code.claude.com/docs/en/workflows",
+      "sourceDate": "documentation living page; CHANGELOG v2.1.154 introduced workflows, current release v2.1.309; accessed 2026-10-23",
+      "sourceClass": "official-documentation",
+      "provenance": "primary",
+      "peerReviewed": false,
+      "claimLevel": "official-documentation",
+      "relationship": "Documents scripted multi-agent workflows with optional per-agent worktree isolation, plugin-shipped workflows, and SubagentStart/SubagentStop hooks that expose transcript paths. The documentation describes no automatic merge and no conflict detection across worktree agents. Whether plugin MCP tools, plugin agents as agentType, and nested calls to plugin workflows work inside workflow agents is unconfirmed and requires host verification. The page is a product description, not evidence about Agent Braid's value.",
+      "affectedArtifacts": ["docs/strategy/ECOSYSTEM.md", "research/adoption/2026-09-initial-triage.json"],
+      "status": "candidate",
+      "decision": "Investigate through the M4.6 preregistered gate G0 (read-only; no additional spend). No adoption, support or superiority claim; negative or inconclusive G0 outcomes are valid and close the track."
+    },
+    {
+      "id": "RAD-2026-014",
+      "title": "clash: cross-worktree conflict detection for coding agents",
+      "url": "https://github.com/clash-sh/clash",
+      "sourceDate": "repository page; accessed 2026-10-23",
+      "sourceClass": "product",
+      "provenance": "primary",
+      "peerReviewed": false,
+      "claimLevel": "product-capability",
+      "relationship": "Reported pairwise git merge-tree conflict detection across worktrees, exposed through a PreToolUse hook. It operates at file and text level; it was not observed reasoning about declared effects, read/write hazards or order independence. It is the closest comparable alternative and a candidate baseline for G0. Behavior has not been reproduced by this project.",
+      "affectedArtifacts": ["docs/strategy/ECOSYSTEM.md", "research/adoption/2026-09-initial-triage.json"],
+      "status": "watch",
+      "decision": "Retain as a comparable alternative and merge-tree baseline reference for M4.6 G0; verify its behavior directly before any comparative statement."
+    },
+    {
+      "id": "RAD-2026-015",
+      "title": "mcp_agent_mail: agent mailbox and advisory file leases",
+      "url": "https://github.com/Dicklesworthstone/mcp_agent_mail",
+      "sourceDate": "repository page; accessed 2026-10-23",
+      "sourceClass": "product",
+      "provenance": "primary",
+      "peerReviewed": false,
+      "claimLevel": "product-capability",
+      "relationship": "Reported advisory path leases and messaging between agents. Leases are file/path-level and advisory; no declared-effect or order-independence reasoning was observed. Per Constitution Art. 12, coordination messages do not substitute for concurrency control. Behavior has not been reproduced by this project.",
+      "affectedArtifacts": ["docs/strategy/ECOSYSTEM.md", "research/adoption/2026-09-initial-triage.json"],
+      "status": "watch",
+      "decision": "Retain as a coordination-layer comparator; no integration or comparison claim in M4.6 beyond documenting the difference in mechanism."
+    }
+  ]
+}

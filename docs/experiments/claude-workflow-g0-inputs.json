@@ -1,0 +1,263 @@
+{
+  "recordVersion": "agent-braid-claude-workflow-g0-input-proposal-1",
+  "status": "pending-founder-decision",
+  "frozen": false,
+  "executionAuthorization": false,
+  "milestone": "M4.6 - Claude Code dynamic workflows",
+  "gate": "G0",
+  "hypothesis": {
+    "id": "H-CW1",
+    "path": "research/hypotheses/H-CW1-claude-workflow-integration.md",
+    "evidenceStatus": "untested"
+  },
+  "specs": {
+    "owner": "SPEC-053",
+    "dependent": "SPEC-052",
+    "additiveDependency": "SPEC-023"
+  },
+  "proposal": {
+    "path": "docs/experiments/CLAUDE_WORKFLOW_INTEGRATION_PROPOSAL.md",
+    "sha256": "02291d0d9cbde74222652ba6b22a4cdd0293fcf7a5aa3c6adf9a119cb6cb3e8d"
+  },
+  "sourceAndBudgetDecision": {
+    "path": "specs/053-claude-transcript-trace-adapter/budget-and-source-decision.md",
+    "status": "pending-founder-signature"
+  },
+  "runner": "founder",
+  "budget": {
+    "additionalSpendEur": 0,
+    "billingRoute": "existing-claude-subscription-included-quota",
+    "extraUsageEnabled": false,
+    "autoRechargeEnabled": false,
+    "apiCredentialsUsed": false,
+    "stopOnQuotaExhaustion": true,
+    "reference": "docs/tooling/BUDGET.md"
+  },
+  "design": {
+    "workflowKind": "ad-hoc-claude-dynamic-workflow",
+    "minEligibleRuns": 10,
+    "maxStartedRuns": 14,
+    "agentsPerRun": {
+      "min": 3,
+      "max": 4
+    },
+    "worktreeIsolation": true,
+    "agentsMustCommit": true,
+    "workflowPerformsMerge": false,
+    "repository": null,
+    "baseCommit": null,
+    "overlap": {
+      "minRunsWithDesignedFileOrSymbolOverlapOfFirstTen": 7,
+      "minRunsWithCrossFileContractDependencyOfFirstTen": 3,
+      "firstTenOrder": "eligible-runs-in-run-ordinal-fixed-in-manifest-before-launch",
+      "designPropertiesFixedInManifestBeforeLaunch": true
+    },
+    "serialOrder": "agent-ordinal-order-fixed-in-run-manifest-before-launch",
+    "predictionsHashedBeforeReference": true,
+    "dropRunsAfterSeeingOutcome": false,
+    "eligibility": [
+      "every-agent-commits-differently-from-base",
+      "base-tests-pass",
+      "each-branch-tests-pass-alone",
+      "workflow-completes-without-branch-edits",
+      "transcripts-available-for-probe-else-git-arms-only"
+    ],
+    "exclusionReasons": [
+      "agent-did-not-commit",
+      "base-tests-fail",
+      "branch-tests-fail-alone",
+      "flaky-final-tests",
+      "workflow-aborted",
+      "quota-exhausted",
+      "manual-edit-of-agent-branch",
+      "probe-unavailable"
+    ],
+    "probeUnavailableRuns": "counted-and-reported-outside-the-10-run-minimum-and-the-C1b-C2-C3-denominators"
+  },
+  "referenceOutcome": {
+    "method": "serial-git-merge-in-preregistered-order-then-project-tests",
+    "labels": [
+      "clean",
+      "textual-conflict",
+      "semantic-failure"
+    ],
+    "referenceFailure": [
+      "textual-conflict",
+      "semantic-failure"
+    ],
+    "finalTestExecutions": 2,
+    "semanticFailureRequiresFailureInBothExecutions": true
+  },
+  "arms": [
+    {
+      "id": "merge-tree-pairwise",
+      "baseline": true,
+      "required": true
+    },
+    {
+      "id": "merge-tree-chained",
+      "baseline": true,
+      "required": true
+    },
+    {
+      "id": "naive-path-overlap",
+      "baseline": true,
+      "required": true
+    },
+    {
+      "id": "clash",
+      "baseline": true,
+      "required": false
+    },
+    {
+      "id": "braid-analyze-git",
+      "baseline": false,
+      "required": true,
+      "primaryFlag": "any-pair-conflicting-or-ordered",
+      "secondaryFlag": "also-any-pair-unknown",
+      "replayWhenAtMostOperations": 4
+    },
+    {
+      "id": "transcript-probe",
+      "baseline": false,
+      "required": true,
+      "flag": "ordered-agent-pair-read-by-one-written-by-other-and-never-written-by-reader"
+    }
+  ],
+  "probe": {
+    "toolClasses": [
+      "Read",
+      "write:Edit|Write|NotebookEdit",
+      "Bash",
+      "Grep|Glob",
+      "mcp__*",
+      "other"
+    ],
+    "retainedOutputs": "integer-counts-only",
+    "retainsPaths": false,
+    "retainsContent": false,
+    "failedCallsCountAsUnknown": true,
+    "outsideWorktreePathsMatched": false,
+    "scriptSha256": null
+  },
+  "metrics": [
+    "hits-misses-vs-reference",
+    "unknown-rate",
+    "replay-ineligible-rate",
+    "share-runs-over-4-agents",
+    "bash-share",
+    "read-write-overlap-precision",
+    "analysis-cost",
+    "reference-failure-prevalence"
+  ],
+  "unknownRate": {
+    "primary": "pooled-share-of-probe-tool-calls-classified-unknown",
+    "secondary": [
+      "share-of-analyze-git-operations-unknown-or-partial",
+      "share-of-pairs-unknown"
+    ]
+  },
+  "thresholds": {
+    "C1a": {
+      "role": "informs-R1-only-unlocks-nothing",
+      "gatesTranscriptRequirements": false,
+      "countsTowardPassOrFail": false,
+      "minReferenceFailuresMissedByMergeTreeAndFlaggedByBraid": 1,
+      "missedBy": [
+        "merge-tree-pairwise",
+        "merge-tree-chained"
+      ],
+      "flaggedBy": [
+        "braid-analyze-git-primary"
+      ]
+    },
+    "C1b": {
+      "role": "transcript-dependent-gate-for-PR5-and-PR6",
+      "gatesTranscriptRequirements": true,
+      "countsTowardPassOrFail": true,
+      "minReferenceFailuresMissedByAllNonTranscriptArmsAndFlaggedByProbe": 1,
+      "missedBy": [
+        "merge-tree-pairwise",
+        "merge-tree-chained",
+        "naive-path-overlap",
+        "braid-analyze-git-primary",
+        "braid-analyze-git-inclusive"
+      ],
+      "flaggedBy": [
+        "transcript-probe"
+      ]
+    },
+    "C2": {
+      "minReadWriteOverlapPrecision": 0.3,
+      "mustExceedReferenceFailurePrevalence": true,
+      "mustExceedNaivePathOverlapPrecisionWhenDefined": true,
+      "prevalenceDenominator": "eligible-runs-with-probe-data",
+      "prevalenceReportedBeforeEvaluation": true,
+      "minFlaggedRunsToEvaluate": 3,
+      "unit": "run"
+    },
+    "C3": {
+      "maxUnknownRate": 0.4
+    }
+  },
+  "decisionRule": {
+    "pass": "C1b-and-C2-and-C3-on-at-least-10-eligible-runs-with-probe-data",
+    "fail": "C1b-or-C3-unmet-or-C2-unmet-when-evaluated-on-at-least-10-eligible-runs-with-probe-data",
+    "inconclusive": "fewer-than-10-eligible-runs-with-probe-data-or-fewer-than-3-probe-flagged-runs-when-C1b-and-C3-are-met",
+    "inconclusiveCountsAsPass": false,
+    "evaluationOrder": [
+      "step-1-fewer-than-10-eligible-runs-with-probe-data-is-inconclusive-and-stops",
+      "step-2-evaluate-C1b-and-C3-either-unmet-is-fail-and-stops",
+      "step-3-fewer-than-3-probe-flagged-runs-is-inconclusive-and-stops",
+      "step-4-evaluate-C2-unmet-is-fail-and-stops",
+      "step-5-all-met-is-pass"
+    ],
+    "precedence": "fail-over-inconclusive-once-10-eligible-runs-with-probe-data-exist",
+    "c1aGatesNothing": true
+  },
+  "killOutcome": {
+    "trigger": "g0-fail",
+    "adoptionTrack": "AT-2026-006",
+    "adoptionTrackTo": "watch-or-rejected",
+    "spec053": "closed-not-adopted",
+    "milestone": "M4.6 closes with R1 only"
+  },
+  "retention": {
+    "retained": [
+      "manifest-without-private-task-prose",
+      "branch-head-hashes",
+      "prediction-file-hash",
+      "per-arm-run-level-labels",
+      "probe-integer-counts",
+      "aggregate-metrics"
+    ],
+    "notRetained": [
+      "transcripts",
+      "prompts",
+      "file-contents",
+      "diffs",
+      "repository-file-paths",
+      "merge-tree-output",
+      "workflow-journals"
+    ]
+  },
+  "requiredBeforeFreeze": [
+    "repository",
+    "baseCommit",
+    "probe.scriptSha256",
+    "runnerScriptSha256",
+    "toolVersions",
+    "workflowCensus",
+    "signedSourceAndBudgetDecision",
+    "founderDecisionBindingProposalAndInputsBytes"
+  ],
+  "claimLimits": [
+    "no-speed-claim",
+    "designed-overlap-not-representative",
+    "single-owner-repository",
+    "n-small-descriptive-only",
+    "transcripts-record-intent-not-effects",
+    "bash-effects-invisible-to-probe",
+    "host-and-model-versions-recorded-not-controlled"
+  ]
+}

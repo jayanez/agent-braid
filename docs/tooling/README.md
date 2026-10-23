@@ -7,6 +7,12 @@ marketplace publication and official directory approvals remain separate gates.
 [SPEC-046 alignment](../../specs/046-native-ai-plugins/m45-alignment.md) explains
 how this extension preserves the original six specifications and their evidence.
 
+**Planned — M4.6 Claude Code dynamic workflows:** [SPEC-052](../../specs/052-claude-workflow-gate/spec.md)
+proposes a read-only `braid-gate` plugin workflow for committed worktree results
+and [SPEC-053](../../specs/053-claude-transcript-trace-adapter/spec.md) a
+G0-gated transcript trace adapter. Both are draft planning; the current plugin
+ships no workflow.
+
 **Current integration — 2026-10-20:** the combined M4.5 source portfolio has eight
 specs and 106 tasks (78 checked, 28 open), three historically closed parents and
 five open parents. [Telemetry SPEC-047](../../specs/047-local-technical-telemetry/spec.md)

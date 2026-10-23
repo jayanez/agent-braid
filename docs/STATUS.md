@@ -23,6 +23,13 @@ gates open.
 | **Effectful workload laboratory** (SPEC-024 T001–T004, ADR 0028) | [#660](https://github.com/jayanez/agent-braid/pull/660) | A closed, standard-library simulator that explores effectful request/transition state spaces with byte-bounded exploration and binds observations to replayable evidence. |
 | **Contextual proof obligations** (SPEC-025) | [#658](https://github.com/jayanez/agent-braid/pull/658) | A reconciled finite evidence packet for contextual safety checks; no theorem is accepted. |
 
+**Draft planning — [M4.6 Claude Code dynamic workflows](../ROADMAP.md#m46--claude-code-dynamic-workflows):**
+[SPEC-052](../specs/052-claude-workflow-gate/spec.md) specifies a read-only
+integration gate for Claude Code dynamic workflows and
+[SPEC-053](../specs/053-claude-transcript-trace-adapter/spec.md) a transcript trace
+adapter blocked by a preregistered G0 experiment. Nothing is implemented,
+published or accepted; the ADR change remains a feature-local proposal.
+
 The runtime executes allowlisted Git plumbing. Repository code, source-ref
 promotion and broader agent/provider adapters require additional contracts and
 authority. The [runtime demo](../examples/runtime/README.md) gives you a complete

@@ -1,0 +1,301 @@
+{
+  "articles": [
+    0,
+    1,
+    5,
+    7,
+    12,
+    13,
+    15,
+    19,
+    20,
+    21,
+    23,
+    25
+  ],
+  "assumptions": "Owner-controlled repository and the founder's own Claude sessions on the existing subscription at EUR 0 additional spend; transcript layout is host-documented but unconfirmed until the first G0 run; SPEC-023 acceptance and analysis.py stay unchanged; SPEC-052 supplies the v1 gate; G0 is not frozen and the decision record is unsigned.",
+  "authority_snapshot": {
+    "commit": null,
+    "hashes": {
+      "ARCHITECTURE.md": "7bad53a83a54da09a0f55fb514432b53265cc1d99e88fdc3e42989b2fa4ea256",
+      "CONSTITUTION.md": "ff7196976a1736a639947c2ab26e8da157fef23c89ba9881312f2a36459964eb",
+      "GOVERNANCE.md": "c8eda331d97c42e54be4730ef906dfaad9ae2814e36704302f97afceff037d82",
+      "LICENSE": "340d66a837b3a1617645d00622a46d1bcbf3534bedd997b6461d16d2e08b374f",
+      "MATHEMATICAL_FOUNDATIONS.md": "8c56b59b20ca5f9bc7464b458f980e51e05c0820645cf86181cf08883acd5ca4",
+      "RESEARCH.md": "a3e9668e2c1b80024a6ce9024b7558d31f0d3d2d1e22fa89f460a70beefdd56d",
+      "TERMINOLOGY.md": "4b52b621900a413f58fa920254c2d36df849bda906e9989f0e49b0a43aaf503c",
+      "TRADEMARKS.md": "be084562378235f7c72b4a16e9d0f37b01e7e2b035291eceb4f6478048a517b8",
+      "docs/adr/0000-template.md": "546bd5098b2f8f07804253f0b1fd2c893264d4519644ccd93913956056fac8f4",
+      "docs/adr/0001-formalization-before-implementation.md": "c68d05ee8abb12932acaebee8b95ef4873172a97f93a8dae2187b84b63a29188",
+      "docs/adr/0002-yang-baxter-is-a-hypothesis.md": "8f72ec03ea85a5cef1bed08b04c871bca5930a70e2c313f01124d4a0c194efef",
+      "docs/adr/0003-copyleft-and-trademark-protection.md": "174745a166b4f521fab0f1a043d5c96b8b4b6a626b344245d8b89616d919f8c6",
+      "docs/adr/0004-scientific-constitutional-clarifications.md": "eaf956ab7a8daae2b5ea75d5ae8832a039ef2c6d18bf2e0e27e9b2b964e0fd71",
+      "docs/adr/0005-evidence-contracts-and-bounded-laboratory.md": "a35504083c719993a8c9a460d579c9017871b20bd65760f9f2534de2d7f27f6b",
+      "docs/adr/0006-shared-spec-kit-guardrails.md": "b02e0844e311e0364b40d06e2de3c1c73628247625d20c534a644ff8d9387cb7",
+      "docs/adr/0007-read-only-python-analyzer.md": "c864497da1a8172826d1b96b728b03d16272396c53dc194680d646301c4d07f3",
+      "docs/adr/0008-read-only-git-worktree-adapter.md": "8915605500bb4fa0150ff2fe576482db8a55bd29fb53a17788a51f8671a52e76",
+      "docs/adr/0009-transparent-validation-status.md": "7e329563e069e972ef2febcf64e0fec29255c0c9af29e331a1d5beb7f382e60d",
+      "docs/adr/0010-clean-publication-provenance.md": "6481cf11e2daf5d307928310763ae82889b280cea215126ebae3b32a708f3994",
+      "docs/adr/0011-risk-based-validation-gates.md": "3aa363f808821ead18d830e931e476a0d790106112ef637875428f322d321531",
+      "docs/adr/0012-vendored-python-skills-license-boundary.md": "e98b19c465689190265ed410b9226d60d52f00a8abf95410f5aa0a567aa80fea",
+      "docs/adr/0013-isolated-git-replay-and-advisory-planning.md": "1c291cb527825864520075edc2ae7c84bafb07f66790f9fc29b0149a07024d24",
+      "docs/adr/0014-parallel-integration-contract.md": "2481e93cf1e392887f2ee74e39efec7dfee0a9c52340fccd491903fd4292f679",
+      "docs/adr/0015-real-repository-validation-profile.md": "43e05f6fa96b5b3a8a8a83ddc922d8bced11b89a3f88263760b83b358febde99",
+      "docs/adr/0016-post-root-public-provenance.md": "e3c001cc23b64db5362ed0274af21d1d5a42b27d2bff68654db51498fbfb142a",
+      "docs/adr/0017-bounded-structured-exchange.md": "72cecb595605a16eaa5de7a88e960492205d82a300af2f6fb4451263f7e780c4",
+      "docs/adr/0018-private-source-sidecar-and-disposable-labs.md": "487c48e8ed4296bb4120e32e9d7e75724c76da88ebb6435396cb7fdcf7d317ad",
+      "docs/adr/0019-bounded-local-git-runtime.md": "9023b6176762885ce291721633f686ae2c4d3a4c1404f3ee164e7414a69b5fd3",
+      "docs/adr/0020-bounded-m4-alpha-runtime.md": "b91615158b29902237ce638d659bc30484562766a0f2607a38fcc4bd717fda28",
+      "docs/adr/0021-codex-claude-tooling-integration.md": "c9e85fbab0c71445ca16d9aef7c33d17614abbf36588441ddf90b2b07fc1fd89",
+      "docs/adr/0022-attribution-correction-history-equivalence.md": "0d394b895af69374c7f6bdf441cc780ee67802c34f9b0380f8ed58b1c9a17eb1",
+      "docs/adr/0023-second-history-correction-equivalence.md": "4334fe23543dad038811b7819acbc24fbebab3c1858789816b1512e786b7a8eb",
+      "docs/adr/0024-local-technical-telemetry.md": "e3c2d827bbd839179e56d3f81fe3ad1b7234b4a61ed24c98bb59a8aa2f23b508",
+      "docs/adr/0024-native-ai-plugins.md": "3a45d8a62cb241b01638a37f39fdc309cb0563941c0343fe58d9ab30c5c677ac",
+      "docs/adr/0025-local-technical-telemetry.md": "e2f9af4d0d0a118635677146ba0c96cbd82046b7943eca36eeabf041923601f7",
+      "docs/adr/0026-pure-owned-work-validation.md": "dc6a045316c37201767adba79ad59779cff4646c9d05e4a2306dfaec481e4ccd",
+      "docs/adr/0027-braid-harness-offline-foundations.md": "076e524bb4b31a0075ff72c605a438edc9dcb70aa09dec9583ef21db5362b046",
+      "docs/adr/0028-closed-effectful-workload-simulation.md": "be8bb2fefc702a2d85b804f70141f68f25b68e45118d25b4f4fa0e99d62eca85",
+      "docs/architecture/AGENT_INTERACTION_METADATA.md": "0118d7f16c390fc4c1ff027b503a4eaba8a747edf3f6d7b088559f8870e27780",
+      "docs/architecture/ASSURANCE_LEVELS.md": "3e86d0060ef566ba8d1e1690606fc06e8fee172f187a1b9779b13d27f0f915d9",
+      "docs/architecture/CONFLUENCE_CERTIFICATE.md": "fd12a8f1a1477835848581b0f4ccd52f76d3f22dd96a3abaccb9074733464a8e",
+      "docs/architecture/DRAFT_0_2.md": "ae2bc09d941537eec6ea05edb69e4402d5c17dae0585b4add0825d6a01fdc29f",
+      "docs/architecture/GIT_REPLAY.md": "991de0aba02d2f89cb5fd01af4d9842c0a15b1ee52fb692671e34a81a6b09ab2",
+      "docs/architecture/PARALLEL_INTEGRATION.md": "14a55efe552cb0b5a90e8112260af681b303b9ce2e0fd0b49c7024ab4b15843b",
+      "docs/theory/CLAIM_DISCIPLINE.md": "0fcd89ae045e017f62cbe0b7a83a9a9c107770856bba12a340e77f06576db053",
+      "docs/theory/OPERATIONAL_SEMANTICS.md": "7e83813d138dde064f85aafee1ba20302d55ede768d35d26340abd522ecce1f7",
+      "docs/theory/SCIENTIFIC_INTEGRATION.md": "3bdb0e13edf1e7666902c426df864cb51219d33e762f6bd87e8d2702bb1642eb",
+      "docs/theory/STRUCTURED_EXCHANGE.md": "522fa1e4f2be6a0873c00ba2f503f475fa04833292a6684620ec01ef725bb710",
+      "schemas/0.1.0-alpha/analysis-report.schema.json": "91c759ad0d28de0b4e68f5bd3958de37ff2e6c102ecd8c6c2f0083e0151ad578",
+      "schemas/0.1.0-alpha/git-analysis-provenance.schema.json": "403b2e61ff7a7700c0db05df4ac3b11504e2c69e2bab9161b4a9ceb156b1316c",
+      "schemas/0.1.0-alpha/git-analysis-request.schema.json": "928c777ae68a184fae172a7cb2b172ba283b5af912edaf6c4b389bd8bf767a96",
+      "schemas/0.1.0-alpha/git-integration-prototype-report.schema.json": "417e5ae3f27083dfa0592589bf229fa9db8bd66cd20a29d472d9c0a83509b22e",
+      "schemas/0.1.0-alpha/git-integration-prototype-request.schema.json": "3dcde3972f3ab99939bec923416e5be57f9a6c0a2fc73a281830a20f6998222b",
+      "schemas/0.1.0-alpha/git-plan.schema.json": "3519d38b395974c3261fbb9243dd2fcbf1d0f08086c2164d64d7ebfb9a726972",
+      "schemas/0.1.0-alpha/git-replay-evidence.schema.json": "46560e30af74daf22d816130590d7bc596a9ae4fe1060ff4709e76f19487d137",
+      "schemas/0.1.0-alpha/git-runtime-manifest.schema.json": "a302dec5d42d61d72128798a8e08f7a7ad5b1b6024d18f3e89e6ef6abe3f868c",
+      "schemas/0.1.0-alpha/git-runtime-report.schema.json": "b2b1833e43c3b8429f9cc20a2a632a27214f8d2acd59a3e9ce5f0243579af73b",
+      "schemas/0.1.0-alpha/git-runtime-request.schema.json": "a83873e072ea357b29331e74e42b5a075769d939bcfba69f458712876b187f5d",
+      "schemas/0.1.0-alpha/git-runtime-state.schema.json": "6ce9a56e6493e10938eaf60dfc6501d52cd59af240e9f0bb5a0a8c036677d75a",
+      "schemas/0.1.0-alpha/runtime-operator-grant.schema.json": "0a49f4800ed40873022eaa14d37e12eacb5790f71197ac1013766f4742162b8d",
+      "schemas/0.1.0-alpha/runtime-policy.schema.json": "dc88b1e7de631c797002ad29276a4eeccf8f2a1bbbb3a48c41dd4f82ea6f8c17",
+      "schemas/0.1.0-alpha/runtime-preparation-evidence.schema.json": "1989267da48fa7ad3432b67d0767e2f702381773edb02aff7bd8a9ad37a3229f",
+      "schemas/0.1.0-alpha/runtime-schedule.schema.json": "0bd21c877e5f594e7710085d4232b5b095683e1239277a7b322f0890d4b28f64",
+      "schemas/0.2.0-draft/agent-interaction-metadata.schema.json": "9d2ff528d0d3f02ba5bce63181e88732eecef96e90fabb5898b3314abd554900",
+      "schemas/0.2.0-draft/confluence-certificate.schema.json": "8e375fdc57fbd3b9f15544f2079c8f92633ec1def660f3eabed77feb784f34f0",
+      "schemas/0.3.0-experimental/structured-exchange-evidence.schema.json": "1cb4e536d89b519b3a5ffc70421a6ec561b06e1826b22c69b9e9cc01cca4c767",
+      "schemas/0.3.0-experimental/structured-exchange-request.schema.json": "5b2065b94fa50570ecfe5392551d87f1f1fd31cff8dc4b840045e1c13e3aaabb",
+      "schemas/agent-interaction-metadata.schema.json": "44b60956817cbcd92e0802dfe99ca537b20768f53472f04afd1dcc502f53cd5c",
+      "schemas/confluence-certificate.schema.json": "ea68bf94f6767d615881167d8f7dd28359e6c399edd66935ba17b88b2b1cf785",
+      "schemas/governance/public-export-manifest.schema.json": "11eb7f2594939ae9fd0c9e6cfe4423a80aba686d6cdfdd8b73b0fb84b0840aa8",
+      "schemas/governance/release-validation-record.schema.json": "d9943f0c9f5520ea52e3b12bfba88240d03f8011b433fc5e35cb49549ab6e819"
+    },
+    "mode": "current"
+  },
+  "compatibility": "Additive to AIM 0.2.0-draft, the analysis report and the SPEC-052 gate; declared additive dependency on SPEC-023 (ADP.1) without changing its acceptance, limits or synthetic-only default; no change to analysis.py or the plugin MCP tool set.",
+  "domain": "Claude Code dynamic-workflow subagent transcripts of 3 or 4 worktree agents in one Git repository, mapped conservatively to AIM 0.2.0-draft; a transcript is a record of requested tool calls, not observed effects.",
+  "evidence_snapshot": {
+    "commit": null,
+    "mode": "current"
+  },
+  "execution_contract": "Read-only. No model invocation, network, grant, merge or promotion by any adapter or checker; the founder runs G0 workflows outside this delivery; implementation requirements are blocked by G0; no concurrent agent, push or remote issue is authorized.",
+  "human_review": "pending",
+  "hypotheses": "H-CW1 (untested): Braid commit-level analysis or transcript read/write overlap identifies integration failures that git merge-tree misses, with precision at least 0.3 and unknown rate at most 40%; falsification and inconclusive outcomes are valid.",
+  "observation_contract": "Run-level reference outcome from a serial Git merge in a preregistered order plus project tests; predictions hashed before the reference exists; the probe retains integer counts only; unknown, partial, excluded and inconclusive cases are reported with denominators.",
+  "references": [
+    "CONSTITUTION.md",
+    "GOVERNANCE.md",
+    "docs/development/SPEC_KIT.md",
+    "docs/theory/OPERATIONAL_SEMANTICS.md",
+    "docs/theory/CLAIM_DISCIPLINE.md",
+    "docs/architecture/AGENT_INTERACTION_METADATA.md",
+    "docs/architecture/PARALLEL_INTEGRATION.md",
+    "docs/experiments/PROTOCOL.md",
+    "docs/experiments/CLAUDE_WORKFLOW_INTEGRATION_PROPOSAL.md",
+    "docs/experiments/claude-workflow-g0-inputs.json",
+    "docs/tooling/BUDGET.md",
+    "docs/tooling/CLAUDE_SOURCE_CONTRACT.md",
+    "research/hypotheses/H-CW1-claude-workflow-integration.md",
+    "scripts/validate_claude_workflow_g0_proposal.py",
+    "specs/023-recorded-trace-adapters/spec.md",
+    "specs/053-claude-transcript-trace-adapter/spec.md",
+    "specs/053-claude-transcript-trace-adapter/validation-plan.md",
+    "specs/053-claude-transcript-trace-adapter/budget-and-source-decision.md",
+    "specs/053-claude-transcript-trace-adapter/plan.md",
+    "specs/053-claude-transcript-trace-adapter/research.md",
+    "specs/053-claude-transcript-trace-adapter/quickstart.md",
+    "specs/053-claude-transcript-trace-adapter/tasks.md",
+    "specs/053-claude-transcript-trace-adapter/contracts/README.md",
+    "specs/053-claude-transcript-trace-adapter/contracts/transcript-mapping.md",
+    "specs/053-claude-transcript-trace-adapter/contracts/aim-trace-record.example.json",
+    "specs/053-claude-transcript-trace-adapter/contracts/gate-result-v2.md",
+    "specs/053-claude-transcript-trace-adapter/contracts/gate-result-v2.delta.schema.json",
+    "specs/053-claude-transcript-trace-adapter/contracts/braid-gate-args-v2.delta.schema.json",
+    "specs/052-claude-workflow-gate/contracts/braid-gate-result.schema.json",
+    "specs/052-claude-workflow-gate/contracts/braid-gate-args.schema.json"
+  ],
+  "requirements": [
+    {
+      "id": "REQ-001",
+      "scenarios": [
+        {
+          "given": "the G0 proposal and its inputs record",
+          "id": "SC-001",
+          "obtained_evidence": [],
+          "planned_evidence": "Run of the named unittest class and the structural checker with exact commands, hashes and outcomes; structural only, not a G0 result.",
+          "test_file": "tests/test_claude_workflow_g0_proposal.py",
+          "test_name": "ClaudeWorkflowG0ProposalTests.test_committed_inputs_pass_every_structural_check",
+          "then": "the proposal bytes, every required field and each threshold (C1a and C1b at least 1 each, C2 at least 0.3 and above both the reference-failure prevalence and the naive path-overlap precision, C3 at most 40%), the decision rule with its order of evaluation, the kill outcome, the EUR 0 budget, the probe's counts-only retention and the unfrozen, non-authorizing status are pinned, and removing or relaxing any of them is rejected",
+          "when": "the structural checker and its tests run"
+        }
+      ],
+      "text": "Preregister gate G0 before any data exists"
+    },
+    {
+      "id": "REQ-002",
+      "scenarios": [
+        {
+          "given": "the draft decision record",
+          "id": "SC-002",
+          "obtained_evidence": [],
+          "planned_evidence": "Run of the named unittest class and the structural checker with exact commands, hashes and outcomes; structural only, not a G0 result.",
+          "test_file": "tests/test_claude_workflow_g0_proposal.py",
+          "test_name": "ClaudeWorkflowG0ProposalTests.test_decision_record_and_hypothesis_stay_pending_and_untested",
+          "then": "it states EUR 0 additional spend on the existing subscription, the transcript source scope and its pending provider-terms confirmation, the G0 aggregate-only retention table and a pending signature, and no approval is inferred from the draft",
+          "when": "it is reviewed"
+        }
+      ],
+      "text": "Record source rights and budget for founder signature"
+    },
+    {
+      "id": "REQ-003",
+      "scenarios": [
+        {
+          "given": "bounded Claude subagent transcripts and a base commit",
+          "id": "SC-003",
+          "obtained_evidence": [],
+          "planned_evidence": "tests/test_claude_transcript_trace.py (planned, not existing) mapping-table cases and byte-identical analysis of non-Claude inputs, plus procedure_req_003; blocked until G0 is frozen, run and recorded as a pass; exact commands, hashes, failures and limits.",
+          "test_file": "specs/053-claude-transcript-trace-adapter/validation-plan.md",
+          "test_name": "procedure_req_003",
+          "then": "`Read` yields a read effect, `Edit`, `Write` and `NotebookEdit` yield write effects, and `Bash`, `Grep`, `Glob`, MCP tools and every other tool yield an `unknown` effect; the mapper lives outside `agent_braid/analysis.py`, has a versioned identifier, adds no vendor field to the core schema and leaves analysis results for existing inputs unchanged",
+          "when": "`claude-subagent-transcript-v1` maps them to AIM `0.2.0-draft`"
+        }
+      ],
+      "text": "Map transcripts with an additive Claude mapper (BLOCKED by G0)"
+    },
+    {
+      "id": "REQ-004",
+      "scenarios": [
+        {
+          "given": "an agent reads a path that exists at the base commit",
+          "id": "SC-004",
+          "obtained_evidence": [],
+          "planned_evidence": "tests/test_claude_transcript_trace.py (planned) base-blob binding and exclusion cases against a fixture Git repository, plus procedure_req_004; blocked until G0 passes; exact commands, hashes, failures and limits.",
+          "test_file": "specs/053-claude-transcript-trace-adapter/validation-plan.md",
+          "test_name": "procedure_req_004",
+          "then": "the read is bound to the base blob identity (the integer representation and its provenance table are fixed at planning); a read of a path the same agent already wrote, a path absent at the base, or a path outside the worktree emits no read effect and no read version and is counted as a recorded loss (an AIM read effect without a version is itself reported as a loss by the generic importer, so none is emitted)",
+          "when": "the mapper emits `readVersions`"
+        }
+      ],
+      "text": "Bind reads to the base blob and ignore self-reads (BLOCKED by G0)"
+    },
+    {
+      "id": "REQ-005",
+      "scenarios": [
+        {
+          "given": "any mapped transcript",
+          "id": "SC-005",
+          "obtained_evidence": [],
+          "planned_evidence": "tests/test_claude_transcript_trace.py (planned) coverage, failed-call and inferred-channel cases and the probe conformance report, plus procedure_req_005; blocked until G0 passes; exact commands, hashes, failures and limits.",
+          "test_file": "specs/053-claude-transcript-trace-adapter/validation-plan.md",
+          "test_name": "procedure_req_005",
+          "then": "it is always `partial` (never `complete`), failed tool calls produce no effect and count as losses, and no pair containing an `unknown` effect is reported as an independent candidate with complete coverage; because coverage is always `partial`, a transcript-derived pair can be classified only as `conflicting`, `ordered` or `unknown`, never as an independent candidate, so transcript evidence can surface hazards but never positive independence; transcript-derived effects are recorded in the `inferred` channel because they are the agent's recorded request, not an independently observed effect",
+          "when": "coverage is assigned"
+        }
+      ],
+      "text": "Keep coverage partial and never promote unknown (BLOCKED by G0)"
+    },
+    {
+      "id": "REQ-006",
+      "scenarios": [
+        {
+          "given": "a real Claude transcript and today's adapter that admits only synthetic input",
+          "id": "SC-006",
+          "obtained_evidence": [],
+          "planned_evidence": "tests/test_claude_transcript_trace.py (planned) admission matrix and unchanged synthetic path bytes, plus procedure_req_006 and the founder-reviewed admission record; blocked until G0 passes; exact commands, hashes, failures and limits.",
+          "test_file": "specs/053-claude-transcript-trace-adapter/validation-plan.md",
+          "test_name": "procedure_req_006",
+          "then": "it is accepted only with a separately reviewed admission record naming rights, allowed fields, transformations, retention and privacy boundaries, using a new admission kind; without the record, or with a mismatched one, it is rejected with a fixed diagnostic code, and the synthetic path is byte-for-byte unchanged",
+          "when": "a real source is offered"
+        }
+      ],
+      "text": "Admit real transcripts only through a reviewed path (BLOCKED by G0)"
+    },
+    {
+      "id": "REQ-007",
+      "scenarios": [
+        {
+          "given": "transcripts that contain prompts, file contents, command output and secret-like strings",
+          "id": "SC-007",
+          "obtained_evidence": [],
+          "planned_evidence": "tests/test_claude_transcript_trace.py (planned) bounds, sentinel and no-network cases and the independent privacy and security review record, plus procedure_req_007; blocked until G0 passes; exact commands, hashes, failures and limits.",
+          "test_file": "specs/053-claude-transcript-trace-adapter/validation-plan.md",
+          "test_name": "procedure_req_007",
+          "then": "the converter reads locally and without network, streams within fail-closed bounds (confirmed at clarification on 2026-10-23: at most 32 transcripts, 32 MiB per transcript, 1 MiB per line, 512 distinct paths per agent, metadata strings of at most 256 characters), retains and emits only allowlisted metadata and aggregate counts under the retention label `allowlisted-metadata-and-counts` (not `aggregate-only`, which is the G0 probe's stricter rule), names the retained non-aggregate items (repository-relative paths, base object ids and a per-transcript SHA-256 digest) in the admission record as sensitive metadata, never copies prompts, file contents, command text or tool output into a result, provenance or diagnostic, and rejects breaches before analysis",
+          "when": "they are converted"
+        }
+      ],
+      "text": "Enforce privacy, retention and size bounds (BLOCKED by G0)"
+    },
+    {
+      "id": "REQ-008",
+      "scenarios": [
+        {
+          "given": "the additive mapper and admission kind are implemented",
+          "id": "SC-008",
+          "obtained_evidence": [],
+          "planned_evidence": "Unmodified tests.test_trace_adapter and tests.test_trace_lifecycle_spikes, analyze-trace checks, a diff proving agent_braid/trace_adapter.py and agent_braid/analysis.py unchanged, and the SPEC-023 owner's review record, plus procedure_req_008; blocked until G0 passes; exact commands, hashes, failures and limits.",
+          "test_file": "specs/053-claude-transcript-trace-adapter/validation-plan.md",
+          "test_name": "procedure_req_008",
+          "then": "they pass without modification and without changing a SPEC-023 limit, mapper, schema or acceptance statement, and the SPEC-023 owner's review is recorded before merge",
+          "when": "the SPEC-023 and trace-adapter test suites and the existing `analyze-trace` behavior run"
+        }
+      ],
+      "text": "Preserve SPEC-023 acceptance (BLOCKED by G0)"
+    },
+    {
+      "id": "REQ-009",
+      "scenarios": [
+        {
+          "given": "SPEC-052's `braid-gate` receives transcript inputs through new optional arguments (explicit transcript paths, or file names under a `<transcriptDir>/subagents/` directory)",
+          "id": "SC-009",
+          "obtained_evidence": [],
+          "planned_evidence": "tests/test_claude_transcript_gate_v2.py (planned) the argument overlay tests, package verification and founder host receipts, plus procedure_req_009; blocked until G0 passes and SPEC-052's v1 gate exists; exact commands, hashes, failures and limits.",
+          "test_file": "specs/053-claude-transcript-trace-adapter/validation-plan.md",
+          "test_name": "procedure_req_009",
+          "then": "a single agent converts them to AIM through the mapper by calling the bundled CLI subcommand `analyze-claude-transcripts`, used alongside the working MCP tools and not only as a fallback, under the constrained Bash that SPEC-052's Clarifications and REQ-016(d) define once (explicit launcher subcommands only, never the launcher binary) and that gate v2 extends by exactly that one additional subcommand as a planning amendment pending founder review (the plugin MCP tool set is unchanged and cannot read transcripts outside registered workspaces), without raising SPEC-052's bound of four agents, and a missing, unreadable, oversized or unrecognized transcript degrades only the transcript evidence, never the commit-level evidence, and is reported as such; if the host cannot express that constrained Bash, the amendment is refused or host verification HV-1 fails, the transcript part of the gate is no-go (a valid negative result) and the commit-level gate is unaffected",
+          "when": "it runs"
+        }
+      ],
+      "text": "Let the gate consume subagent transcripts (BLOCKED by G0 and SPEC-052)"
+    },
+    {
+      "id": "REQ-010",
+      "scenarios": [
+        {
+          "given": "commit-level analysis and transcript-derived AIM for the same agents",
+          "id": "SC-010",
+          "obtained_evidence": [],
+          "planned_evidence": "tests/test_claude_transcript_gate_v2.py (planned) v2 schema, overlay composition against the committed SPEC-052 v1 schema and v1-consumer tests and the migration note in contracts/gate-result-v2.md, plus procedure_req_010; blocked until G0 passes and SPEC-052's v1 gate exists; exact commands, hashes, failures and limits.",
+          "test_file": "specs/053-claude-transcript-trace-adapter/validation-plan.md",
+          "test_name": "procedure_req_010",
+          "then": "the result uses an additive schema v2 (a new `schemaVersion`, because the SPEC-052 v1 schema rejects unknown members) in which every pair keeps its commit-level label and adds the transcript read/write hazards with their coverage, and the `git merge-tree` baseline, replay eligibility and the unknown share are unchanged in meaning; \"v1 consumers keep working\" holds only in this bounded sense: the v1 result is emitted unchanged when no transcripts are supplied and every v1 field keeps its name, type and meaning in v2, while a strict v1 validator does not accept a v2 payload; a migration note states every field, `assurance` constant and canonical limit added, replaced or preserved (the v1 `assurance` constants remain valid when no transcripts are supplied; in v2 the `property`, `evidenceMethod`, `domain`, `assumptions`, `observationContract` and `executionContract` constants are extended to cover transcript evidence, while `compatibilityClass` stays `0-heuristic` and `notAGuarantee` stays true)",
+          "when": "the gate merges them"
+        }
+      ],
+      "text": "Merge transcript and Git analysis under result schema v2 (BLOCKED by G0 and SPEC-052)"
+    }
+  ],
+  "scientific_limits": "No acceptance evidence obtained; designed overlap on one repository with 10 or more runs is a feasibility screen, not prevalence or effectiveness; a single hit can satisfy C1; hypothesis H-CW1 may be false or inconclusive; Bash effects are invisible; structural tests prove no semantic or scientific claim.",
+  "scope": "Preregister gate G0 and specify, behind it, an additive Claude subagent transcript to AIM adapter, a reviewed real-source admission path, privacy and size bounds, and the gate v2 transcript consumption requirements for M4.6.",
+  "stage": "draft"
+}

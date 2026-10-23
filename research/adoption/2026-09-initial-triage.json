@@ -97,5 +97,24 @@
     "stageHistory": [{"stage": "observed", "date": "2026-09-18", "actor": "founder review", "record": "research/radar/2026-09-18-m0.5.json"}, {"stage": "decision", "date": "2026-09-23", "actor": "project preparation", "record": "specs/011-adoption-pathline/spec.md"}],
     "obtainedEvidence": [],
     "limits": ["No reproduction or algorithm adoption is included", "Research-only is not product adoption"]
+  },
+  {
+    "trackVersion": "0.1.0",
+    "trackId": "AT-2026-006-claude-dynamic-workflows",
+    "title": "Claude Code dynamic workflows integration (M4.6, SPEC-052/053)",
+    "owner": "Agent Braid maintainer",
+    "nextDecision": "Founder review of SPEC-052/053 and the feature-local adr-proposal, then preregistration and execution of gate G0; kill criterion applies if G0 shows no incremental evidence over a git merge-tree baseline.",
+    "sourceRadarIds": ["RAD-2026-013", "RAD-2026-014", "RAD-2026-015"],
+    "sources": [{"url": "https://code.claude.com/docs/en/workflows", "sourceClass": "official-documentation", "provenance": "primary", "claimLevel": "official-documentation", "peerReviewed": false}, {"url": "https://github.com/clash-sh/clash", "sourceClass": "product", "provenance": "primary", "claimLevel": "product-capability", "peerReviewed": false}, {"url": "https://github.com/Dicklesworthstone/mcp_agent_mail", "sourceClass": "product", "provenance": "primary", "claimLevel": "product-capability", "peerReviewed": false}],
+    "capabilityDelta": {"baseline": "A Claude workflow with worktree agents whose results the user integrates manually, optionally with a git merge-tree per-file conflict check", "candidate": "A read-only gate packaged in the native plugin that returns commit-level evidence, a merge-tree baseline, and for at most four operations a replay certificate, plus transcript-derived read/write hazards only if G0 passes; a one-way adapter into AIM, never granting execution authority", "alternative": "clash-style pairwise merge-tree detection and advisory path leases (mcp_agent_mail), which operate at file or text level", "observableMetric": "Preregistered at G0: incremental hazards or order-independence findings beyond the merge-tree baseline, false-negative and unknown rates, and operator effort, on a bounded multi-worktree corpus; no speed metric (parallel runtime speedup is NO-GO in SPEC-021, SPEC-022 and SPEC-038)", "comparisonScenario": "Bounded set of real or recorded Claude workflow runs with two to four worktree agents, run on the founder's existing Claude subscription with EUR 0 additional spend"},
+    "hypothesis": {"statement": "Declared-effect and read/write hazard evidence from recorded workflow runs surfaces integration problems or order-independence facts that a git merge-tree baseline alone does not. This is a differentiation hypothesis, untested.", "invalidationResult": "G0 finds no incremental evidence over the merge-tree baseline, or the transcript signal is too incomplete (mostly unknown) to be useful; the track then closes as watch, rejected or research-only and SPEC-053 is not pursued."},
+    "evidencePlan": ["Preregister gate G0 (corpus, baseline, metrics, kill criterion) before any run", "Host-verify the unconfirmed behaviors: plugin MCP tools and plugin agents inside workflow agents, and nested plugin workflow calls", "Run the read-only gate on the bounded corpus and compare against the merge-tree baseline", "Report positive, negative and inconclusive outcomes separately; keep obtainedEvidence empty until recorded"],
+    "affectedArtifacts": ["docs/strategy/ECOSYSTEM.md", "research/radar/2026-10-23-claude-workflows.json", "specs/052-claude-workflow-gate/spec.md", "specs/053-claude-transcript-trace-adapter/spec.md"],
+    "risks": ["Host behaviors for plugin MCP tools, plugin agents and nested plugin workflows are unconfirmed", "Transcript-derived effects may be mostly unknown, limiting hazard evidence", "The platform vendor may add native conflict detection, removing the gap", "Adopting this track amends ADR 0024 and touches the SPEC-023 trace adapter boundary, requiring a separate ADR and founder decision", "Demand for this evidence is not established"],
+    "stage": "differentiation-hypothesis",
+    "decision": "pending",
+    "stageHistory": [{"stage": "differentiation-hypothesis", "date": "2026-10-23", "actor": "project preparation; founder decision pending", "record": "research/radar/2026-10-23-claude-workflows.json"}],
+    "obtainedEvidence": [],
+    "limits": ["No evidence obtained; human review pending", "Not adoption, host compatibility or superiority; a stage record only", "Moving beyond this stage requires the Spec Kit features, an ADR and a founder decision per the adoption pathline"]
   }
 ]
