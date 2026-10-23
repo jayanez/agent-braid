@@ -4,7 +4,7 @@ import subprocess
 import tempfile
 import unittest
 
-from agent_braid.plugin_registry import RegistryError, load, plan_setup, apply, discover
+from agent_braid.plugin_registry import MigrationRequired, RegistryError, load, plan_setup, apply, discover
 
 
 class PluginRegistryTests(unittest.TestCase):
@@ -132,3 +132,87 @@ class PluginRegistryTests(unittest.TestCase):
             load(self.home)
         with self.assertRaisesRegex(RegistryError, 'file type'):
             selection('codex', path)
+
+    def legacy_registry(self):
+        """Rewrite an applied registry as the alpha.2 schema without consent."""
+        import json
+        self.install()
+        path = self.home / 'registry.json'
+        value = json.loads(path.read_bytes())
+        del value['telemetry']
+        value['schema'] = 'agent-braid-plugin-registry/v0.1'
+        path.write_text(json.dumps(value))
+        return value['workspaces']
+
+    def test_new_registry_uses_v02_with_default_off_telemetry(self):
+        preview = plan_setup(self.home, [self.repo])
+        self.assertEqual(preview['registry']['schema'], 'agent-braid-plugin-registry/v0.2')
+        self.assertEqual(preview['registry']['telemetry'], 'off')
+        self.assertIsNone(preview['migratedFrom'])
+        self.assertEqual(load(self.home)['telemetry'], 'off')
+
+    def test_telemetry_consent_requires_preview_digest_and_can_be_withdrawn(self):
+        self.install()
+        preview = plan_setup(self.home, [], telemetry='local')
+        self.assertEqual(load(self.home)['telemetry'], 'off')
+        self.assertTrue(preview['reconnectRequired'])
+        self.assertTrue(any('telemetry' in effect for effect in preview['effects']))
+        with self.assertRaises(RegistryError):
+            apply(self.home, preview, '0' * 64)
+        apply(self.home, preview, preview['previewDigest'])
+        self.assertEqual(load(self.home)['telemetry'], 'local')
+        self.assertEqual(len(load(self.home)['workspaces']), 1)
+        preview = plan_setup(self.home, [], telemetry='off')
+        apply(self.home, preview, preview['previewDigest'])
+        self.assertEqual(load(self.home)['telemetry'], 'off')
+        with self.assertRaises(RegistryError):
+            plan_setup(self.home, [], telemetry='remote')
+
+    def test_v01_registry_requires_visible_migration_preview(self):
+        workspaces = self.legacy_registry()
+        with self.assertRaisesRegex(MigrationRequired, 'plugin setup'):
+            load(self.home)
+        preview = plan_setup(self.home, [])
+        self.assertEqual(preview['migratedFrom'], 'agent-braid-plugin-registry/v0.1')
+        self.assertTrue(preview['reconnectRequired'])
+        self.assertTrue(any('v0.1' in effect for effect in preview['effects']))
+        apply(self.home, preview, preview['previewDigest'])
+        migrated = load(self.home)
+        self.assertEqual(migrated['workspaces'], workspaces)
+        self.assertEqual(migrated['telemetry'], 'off')
+
+    def test_unknown_or_missing_telemetry_consent_refuses(self):
+        import json
+        self.install()
+        path = self.home / 'registry.json'
+        value = json.loads(path.read_bytes())
+        for consent in ('remote', True, None):
+            value['telemetry'] = consent
+            path.write_text(json.dumps(value))
+            with self.assertRaises(RegistryError):
+                load(self.home)
+        del value['telemetry']
+        path.write_text(json.dumps(value))
+        with self.assertRaises(RegistryError):
+            load(self.home)
+
+    def test_cli_setup_previews_and_applies_telemetry_consent_alone(self):
+        import contextlib
+        import io
+        import json
+        from agent_braid.cli import main
+        def run(*extra):
+            out, err = io.StringIO(), io.StringIO()
+            with contextlib.redirect_stdout(out), contextlib.redirect_stderr(err):
+                code = main(['plugin', 'setup', '--home', str(self.home), *extra])
+            return code, out.getvalue(), err.getvalue()
+        code, _, err = run()
+        self.assertEqual(code, 2)
+        self.assertIn('--telemetry', err)
+        code, out, _ = run('--telemetry', 'local')
+        self.assertEqual(code, 0)
+        preview = json.loads(out)
+        self.assertFalse(self.home.exists())
+        code, _, _ = run('--telemetry', 'local', '--apply', '--preview-digest', preview['previewDigest'])
+        self.assertEqual(code, 0)
+        self.assertEqual(load(self.home)['telemetry'], 'local')

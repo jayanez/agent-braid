@@ -13,7 +13,7 @@ import threading
 from urllib.parse import urlsplit
 
 from . import __version__
-from .plugin_registry import RegistryError, home_path, load
+from .plugin_registry import MigrationRequired, RegistryError, home_path, load
 from . import tooling_mcp as core
 
 SCHEMA = 'agent-braid-plugin/v0.1'
@@ -49,21 +49,35 @@ class PluginRouter:
     def __init__(self, home=None, plugin_root=None):
         self.home = home_path(home)
         self.plugin_root = Path(plugin_root).resolve() if plugin_root else None
-        self.snapshot = load(self.home)
+        # A v0.1 registry (baseline None) serves bootstrap status only until setup migrates it.
+        self.baseline = self._current()
+        self.snapshot = self.baseline or {'telemetry': 'off', 'workspaces': []}
         self.services = {}
         for row in self.snapshot['workspaces']:
             config = core.ToolingConfig(Path(row['sourceRoot']), Path(row['resultRoot']),
                 grant_store=Path(row['grantStore']) if row['grantStore'] else None,
                 runtime_enabled=row['runtimeEnabled'],
-                worktree_roots=tuple(Path(p) for p in row['worktreeRoots']))
+                worktree_roots=tuple(Path(p) for p in row['worktreeRoots']),
+                telemetry=self.snapshot['telemetry'])
             self.services[row['workspaceId']] = WorkspaceService(row['workspaceId'], config)
         # One global admission lock bounds reservations across all workspace services.
         self.admission = threading.Lock()
 
+    def _current(self):
+        try:
+            return load(self.home)
+        except MigrationRequired:
+            return None
+
     def status(self):
+        current = self._current()
         return {'schema': SCHEMA, 'version': __version__,
-                'status': 'configured' if self.services else 'setup-required',
-                'reconnectRequired': load(self.home) != self.snapshot,
+                'status': ('migration-required' if current is None else
+                           'configured' if self.services else 'setup-required'),
+                'reconnectRequired': current != self.baseline,
+                'telemetry': {'configuredMode': current['telemetry'] if current else 'off',
+                              'activeMode': self.snapshot['telemetry'],
+                              'retentionDays': 30, 'automaticUpload': False},
                 'gitAvailable': shutil.which('git') is not None,
                 'registryHome': str(self.home),
                 'bundledCli': str(self.plugin_root / 'launch') if self.plugin_root else None,
@@ -92,7 +106,7 @@ class PluginRouter:
             identifier = args.get('workspaceId')
             if not isinstance(identifier, str) or identifier not in self.services:
                 raise RegistryError('Select an explicitly registered workspaceId using workspaces; run setup if none exists')
-            if load(self.home) != self.snapshot:
+            if self._current() != self.baseline:
                 raise RegistryError('Registry changed; reconnect MCP before dispatch')
             service = self.services[identifier]
             if not self.admission.acquire(blocking=False):
@@ -115,7 +129,7 @@ class PluginRouter:
         parsed = urlsplit(uri)
         if parsed.scheme != 'agent-braid-plugin' or parsed.netloc not in self.services or parsed.query or parsed.fragment:
             raise core.ToolingError('Unknown plugin resource')
-        if load(self.home) != self.snapshot:
+        if self._current() != self.baseline:
             raise core.ToolingError('Registry changed; reconnect MCP')
         return self.services[parsed.netloc].read_resource(uri, cancelled)
 

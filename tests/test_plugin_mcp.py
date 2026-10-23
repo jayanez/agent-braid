@@ -48,6 +48,50 @@ class PluginRouterTests(unittest.TestCase):
         self.assertEqual(router.invoke('analyze-work', {'workspaceId': identifier}, threading.Event())['status'], 'refused')
 
 
+    def test_snapshotted_telemetry_consent_reaches_every_workspace_and_requires_reconnect(self):
+        self.install()
+        router = PluginRouter(self.home)
+        self.assertEqual({s.config.telemetry for s in router.services.values()}, {'off'})
+        self.assertEqual(router.status()['telemetry'], {'configuredMode': 'off', 'activeMode': 'off',
+            'retentionDays': 30, 'automaticUpload': False})
+        preview = plan_setup(self.home, [], telemetry='local')
+        apply(self.home, preview, preview['previewDigest'])
+        status = router.status()
+        self.assertTrue(status['reconnectRequired'])
+        self.assertEqual((status['telemetry']['configuredMode'], status['telemetry']['activeMode']), ('local', 'off'))
+        identifier = load(self.home)['workspaces'][0]['workspaceId']
+        self.assertEqual(router.invoke('analyze-work', {'workspaceId': identifier}, threading.Event())['status'], 'refused')
+        reconnected = PluginRouter(self.home)
+        self.assertEqual({s.config.telemetry for s in reconnected.services.values()}, {'local'})
+        self.assertEqual(reconnected.status()['telemetry']['activeMode'], 'local')
+
+    def test_local_consent_records_plugin_calls_as_mcp_surface(self):
+        from unittest.mock import patch
+        from agent_braid import tooling_telemetry as telemetry
+        self.install()
+        preview = plan_setup(self.home, [], telemetry='local')
+        apply(self.home, preview, preview['previewDigest'])
+        store = self.base / 'telemetry'
+        with patch.object(telemetry, 'default_directory', return_value=store):
+            router = PluginRouter(self.home)
+            identifier = load(self.home)['workspaces'][0]['workspaceId']
+            sample = json.loads((Path(__file__).resolve().parents[1] / 'examples/analysis/file-edits.json').read_text())
+            result = router.invoke('analyze-work', {'workspaceId': identifier, 'kind': 'aim', 'request': sample}, threading.Event())
+            self.assertEqual(result['status'], 'ok')
+            report = telemetry.Store().report()
+        self.assertIn('mcp', json.dumps(report))
+        self.assertIn('analyze-work', json.dumps(report))
+
+    def test_v01_registry_serves_migration_status_without_workspaces(self):
+        registry_tests.PluginRegistryTests.legacy_registry(self)
+        router = PluginRouter(self.home)
+        status = router.status()
+        self.assertEqual(status['status'], 'migration-required')
+        self.assertEqual(status['workspaces'], [])
+        self.assertEqual(router.services, {})
+        self.assertEqual(status['telemetry']['activeMode'], 'off')
+
+
 @unittest.skipUnless(importlib.util.find_spec("mcp"), "optional mcp==2.3.0 SDK is unavailable")
 class PluginSdkTests(unittest.IsolatedAsyncioTestCase):
     setUp = registry_tests.PluginRegistryTests.setUp
