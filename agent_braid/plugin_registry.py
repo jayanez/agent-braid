@@ -156,6 +156,11 @@ def _decode(raw: bytes | None, home: Path, *, migrate: bool = False) -> dict:
         raise RegistryError('Malformed workspace registry') from exc
 
 
+def _legacy(raw: bytes | None) -> bool:
+    """True for raw bytes already accepted by _decode(..., migrate=True) as v0.1."""
+    return raw is not None and json.loads(raw)['schema'] == LEGACY_SCHEMA
+
+
 def load(home: Path | None = None) -> dict:
     selected = home_path(home)
     return _decode(_raw(selected), selected)
@@ -179,7 +184,7 @@ def plan_setup(home: Path | None, sources: list[Path], *, remove=(), runtime: bo
     selected = home_path(home)
     before = _raw(selected)
     value = _decode(before, selected, migrate=True)
-    migrated = LEGACY_SCHEMA if before is not None and json.loads(before)['schema'] == LEGACY_SCHEMA else None
+    migrated = LEGACY_SCHEMA if _legacy(before) else None
     if telemetry is not None:
         if telemetry not in TELEMETRY_MODES:
             raise RegistryError('Telemetry consent must be off or local')
@@ -291,7 +296,12 @@ def discover(home: Path | None, search_roots=(), *, current: Path | None = None,
         root = _repository(Path(path))
         if root is not None:
             candidates.setdefault(str(root), {'sourceRoot': str(root), 'origin': origin})
-    for row in load(home)['workspaces']:
+    # Discovery never writes, so a v0.1 registry is read like a migration preview.
+    selected = home_path(home)
+    raw = _raw(selected)
+    registered = _decode(raw, selected, migrate=True)
+    migration_required = _legacy(raw)
+    for row in registered['workspaces']:
         add(row['sourceRoot'], 'registered')
     if current is not None:
         add(current, 'current')
@@ -321,4 +331,5 @@ def discover(home: Path | None, search_roots=(), *, current: Path | None = None,
             errors.append({'directory': str(path), 'status': 'unavailable'})
     return {'candidates': sorted(candidates.values(), key=lambda x: x['sourceRoot']),
             'visitedDirectories': visited, 'inspectedEntries': inspected, 'truncated': truncated,
-            'cancelled': cancelled.is_set() if cancelled is not None else False, 'unavailable': errors}
+            'cancelled': cancelled.is_set() if cancelled is not None else False, 'unavailable': errors,
+            'migrationRequired': migration_required}
