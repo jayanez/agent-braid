@@ -111,6 +111,11 @@ RULES = (
         "tests/test_lab.py",
     ), ("lab-tests", "scientific-controls", "contracts"), True,
         boundary="Scientific evidence capture or reproduction, when claims are refreshed"),
+    Rule("effectful-workload-lab", (
+        "research/workload_lab/**", "examples/workload-lab/**",
+        "tests/test_effectful_workload*.py", "scripts/run_effectful_workload_experiment.py",
+    ), ("full-tests", "contracts"), True,
+        boundary="Finite simulated effects only; real adapters, scientific review and execution refinement remain separate"),
     Rule("predictor-preparation", (
         "scripts/check_predictor_readiness.py", "agent_braid/native_predictor.py",
         "tests/test_predictor_readiness.py", "tests/test_native_predictor.py",

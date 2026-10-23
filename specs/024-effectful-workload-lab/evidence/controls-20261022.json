@@ -1,0 +1,1665 @@
+{
+  "accounting": {
+    "completeCoverage": 17,
+    "controlFixtures": 7,
+    "controlStatus": {
+      "pass": 17
+    },
+    "h2EligibleTerminalCandidates": 4,
+    "h2Exclusions": {
+      "non-success-path": 1,
+      "outside-additive-class": 3,
+      "unknown-effects": 1,
+      "version-precondition": 1
+    },
+    "h2Fixtures": 10,
+    "registeredFixtures": 17
+  },
+  "contextualEquivalence": "unknown",
+  "environment": {
+    "command": [
+      "python3",
+      "-m",
+      "research.workload_lab.controls",
+      "--manifest",
+      "examples/workload-lab/manifest.json",
+      "--registration",
+      "examples/workload-lab/registration.json",
+      "--output",
+      "specs/024-effectful-workload-lab/evidence/controls-20261022.json"
+    ],
+    "implementation": "CPython",
+    "machine": "arm64",
+    "platform": "darwin",
+    "python": "3.13.11"
+  },
+  "executionAuthorization": false,
+  "fixtures": [
+    {
+      "classifications": {
+        "conservative-all-orders": {
+          "pairs": [
+            {
+              "classification": "resource-conflict",
+              "operations": [
+                "a",
+                "b"
+              ]
+            },
+            {
+              "classification": "dependency-ordered",
+              "operations": [
+                "a",
+                "c"
+              ]
+            },
+            {
+              "classification": "resource-conflict",
+              "operations": [
+                "a",
+                "d"
+              ]
+            },
+            {
+              "classification": "resource-conflict",
+              "operations": [
+                "b",
+                "c"
+              ]
+            },
+            {
+              "classification": "dependency-ordered",
+              "operations": [
+                "b",
+                "d"
+              ]
+            },
+            {
+              "classification": "resource-conflict",
+              "operations": [
+                "c",
+                "d"
+              ]
+            }
+          ],
+          "unknownOperations": []
+        },
+        "declared-effects": {
+          "pairs": [
+            {
+              "classification": "disjoint-candidate",
+              "operations": [
+                "a",
+                "b"
+              ]
+            },
+            {
+              "classification": "dependency-ordered",
+              "operations": [
+                "a",
+                "c"
+              ]
+            },
+            {
+              "classification": "resource-conflict",
+              "operations": [
+                "a",
+                "d"
+              ]
+            },
+            {
+              "classification": "resource-conflict",
+              "operations": [
+                "b",
+                "c"
+              ]
+            },
+            {
+              "classification": "dependency-ordered",
+              "operations": [
+                "b",
+                "d"
+              ]
+            },
+            {
+              "classification": "resource-conflict",
+              "operations": [
+                "c",
+                "d"
+              ]
+            }
+          ],
+          "unknownOperations": []
+        }
+      },
+      "control": {
+        "details": {},
+        "executionAuthorization": false,
+        "expected": {
+          "kind": "state-below",
+          "resource": "x",
+          "value": 2
+        },
+        "status": "pass"
+      },
+      "coverage": {
+        "assignedPaths": 6,
+        "attemptedPaths": 6,
+        "capReason": null,
+        "complete": true,
+        "completedPaths": 6,
+        "events": 0,
+        "partialPaths": 0,
+        "schedules": 6,
+        "steps": 24,
+        "unattemptedPaths": 0,
+        "unresolvedUpperBound": 0
+      },
+      "executionAuthorization": false,
+      "h2": false,
+      "h2Eligibility": null,
+      "id": "lost-update",
+      "reportHash": "c53153add9f7646f825a09952e387851551e0495fb5f7f482e77f2aba9416197",
+      "requestHash": "791c43fc4118e3f055b71dbc16e42748195cd3500847502326b89db566e52d98",
+      "traceSafety": {
+        "duplicateEventPaths": [],
+        "eventOrderMismatch": false,
+        "partialFailurePaths": [],
+        "status": "finite-no-event-witness"
+      },
+      "verdict": "divergent"
+    },
+    {
+      "classifications": {
+        "conservative-all-orders": {
+          "pairs": [
+            {
+              "classification": "disjoint-candidate",
+              "operations": [
+                "a",
+                "b"
+              ]
+            },
+            {
+              "classification": "dependency-ordered",
+              "operations": [
+                "a",
+                "c"
+              ]
+            },
+            {
+              "classification": "resource-conflict",
+              "operations": [
+                "a",
+                "d"
+              ]
+            },
+            {
+              "classification": "resource-conflict",
+              "operations": [
+                "b",
+                "c"
+              ]
+            },
+            {
+              "classification": "dependency-ordered",
+              "operations": [
+                "b",
+                "d"
+              ]
+            },
+            {
+              "classification": "resource-conflict",
+              "operations": [
+                "c",
+                "d"
+              ]
+            }
+          ],
+          "unknownOperations": []
+        },
+        "declared-effects": {
+          "pairs": [
+            {
+              "classification": "disjoint-candidate",
+              "operations": [
+                "a",
+                "b"
+              ]
+            },
+            {
+              "classification": "dependency-ordered",
+              "operations": [
+                "a",
+                "c"
+              ]
+            },
+            {
+              "classification": "resource-conflict",
+              "operations": [
+                "a",
+                "d"
+              ]
+            },
+            {
+              "classification": "resource-conflict",
+              "operations": [
+                "b",
+                "c"
+              ]
+            },
+            {
+              "classification": "dependency-ordered",
+              "operations": [
+                "b",
+                "d"
+              ]
+            },
+            {
+              "classification": "resource-conflict",
+              "operations": [
+                "c",
+                "d"
+              ]
+            }
+          ],
+          "unknownOperations": []
+        }
+      },
+      "control": {
+        "details": {},
+        "executionAuthorization": false,
+        "expected": {
+          "kind": "sum-below",
+          "resources": [
+            "x",
+            "y"
+          ],
+          "value": 1
+        },
+        "status": "pass"
+      },
+      "coverage": {
+        "assignedPaths": 6,
+        "attemptedPaths": 6,
+        "capReason": null,
+        "complete": true,
+        "completedPaths": 6,
+        "events": 0,
+        "partialPaths": 0,
+        "schedules": 6,
+        "steps": 24,
+        "unattemptedPaths": 0,
+        "unresolvedUpperBound": 0
+      },
+      "executionAuthorization": false,
+      "h2": false,
+      "h2Eligibility": null,
+      "id": "write-skew",
+      "reportHash": "6e23ddc873d10b11a017a650b263ce0a106139f27b9f60697dc4347218c32039",
+      "requestHash": "ad5aa2834e44d548e3f55505262cb3e1f01caa70fad9975a235f312f53e7dc83",
+      "traceSafety": {
+        "duplicateEventPaths": [],
+        "eventOrderMismatch": false,
+        "partialFailurePaths": [],
+        "status": "inconclusive"
+      },
+      "verdict": "inconclusive"
+    },
+    {
+      "classifications": {
+        "conservative-all-orders": {
+          "pairs": [
+            {
+              "classification": "resource-conflict",
+              "operations": [
+                "a",
+                "b"
+              ]
+            },
+            {
+              "classification": "dependency-ordered",
+              "operations": [
+                "a",
+                "c"
+              ]
+            },
+            {
+              "classification": "resource-conflict",
+              "operations": [
+                "b",
+                "c"
+              ]
+            }
+          ],
+          "unknownOperations": []
+        },
+        "declared-effects": {
+          "pairs": [
+            {
+              "classification": "resource-conflict",
+              "operations": [
+                "a",
+                "b"
+              ]
+            },
+            {
+              "classification": "dependency-ordered",
+              "operations": [
+                "a",
+                "c"
+              ]
+            },
+            {
+              "classification": "resource-conflict",
+              "operations": [
+                "b",
+                "c"
+              ]
+            }
+          ],
+          "unknownOperations": []
+        }
+      },
+      "control": {
+        "details": {},
+        "executionAuthorization": false,
+        "expected": {
+          "kind": "state-pair",
+          "left": "config",
+          "leftValue": 2,
+          "right": "output",
+          "rightValue": 1
+        },
+        "status": "pass"
+      },
+      "coverage": {
+        "assignedPaths": 3,
+        "attemptedPaths": 3,
+        "capReason": null,
+        "complete": true,
+        "completedPaths": 3,
+        "events": 0,
+        "partialPaths": 0,
+        "schedules": 3,
+        "steps": 9,
+        "unattemptedPaths": 0,
+        "unresolvedUpperBound": 0
+      },
+      "executionAuthorization": false,
+      "h2": false,
+      "h2Eligibility": null,
+      "id": "configuration-stale-read",
+      "reportHash": "308cb97e2d4ade52c14ff8e60629bfac510f35d9f593088d18d94e05cfa8db0e",
+      "requestHash": "368e9881cfa8d62278c7af7077e7b343762770e5a9604b65953f803ce29608f1",
+      "traceSafety": {
+        "duplicateEventPaths": [],
+        "eventOrderMismatch": false,
+        "partialFailurePaths": [],
+        "status": "finite-no-event-witness"
+      },
+      "verdict": "divergent"
+    },
+    {
+      "classifications": {
+        "conservative-all-orders": {
+          "pairs": [
+            {
+              "classification": "event-order-sensitive",
+              "operations": [
+                "a",
+                "b"
+              ]
+            }
+          ],
+          "unknownOperations": []
+        },
+        "declared-effects": {
+          "pairs": [
+            {
+              "classification": "event-order-sensitive",
+              "operations": [
+                "a",
+                "b"
+              ]
+            }
+          ],
+          "unknownOperations": []
+        }
+      },
+      "control": {
+        "details": {},
+        "executionAuthorization": false,
+        "expected": {
+          "count": 2,
+          "duplicate": true,
+          "kind": "event-count"
+        },
+        "status": "pass"
+      },
+      "coverage": {
+        "assignedPaths": 2,
+        "attemptedPaths": 2,
+        "capReason": null,
+        "complete": true,
+        "completedPaths": 2,
+        "events": 4,
+        "partialPaths": 0,
+        "schedules": 2,
+        "steps": 4,
+        "unattemptedPaths": 0,
+        "unresolvedUpperBound": 0
+      },
+      "executionAuthorization": false,
+      "h2": false,
+      "h2Eligibility": null,
+      "id": "duplicate-events",
+      "reportHash": "453030242643582b90f4a249c3c799279a9d704b86b6d805d37cdedcc2774b8b",
+      "requestHash": "a0ef165c9d47fa127d71fc7f982063a430bed86ae22b31851212c9fd8fdaed11",
+      "traceSafety": {
+        "duplicateEventPaths": [
+          0,
+          1
+        ],
+        "eventOrderMismatch": true,
+        "partialFailurePaths": [],
+        "status": "witness"
+      },
+      "verdict": "terminal-projection-match"
+    },
+    {
+      "classifications": {
+        "conservative-all-orders": {
+          "pairs": [
+            {
+              "classification": "event-order-sensitive",
+              "operations": [
+                "a",
+                "b"
+              ]
+            }
+          ],
+          "unknownOperations": []
+        },
+        "declared-effects": {
+          "pairs": [
+            {
+              "classification": "event-order-sensitive",
+              "operations": [
+                "a",
+                "b"
+              ]
+            }
+          ],
+          "unknownOperations": []
+        }
+      },
+      "control": {
+        "details": {},
+        "executionAuthorization": false,
+        "expected": {
+          "count": 1,
+          "duplicate": false,
+          "kind": "event-count"
+        },
+        "status": "pass"
+      },
+      "coverage": {
+        "assignedPaths": 2,
+        "attemptedPaths": 2,
+        "capReason": null,
+        "complete": true,
+        "completedPaths": 2,
+        "events": 2,
+        "partialPaths": 0,
+        "schedules": 2,
+        "steps": 4,
+        "unattemptedPaths": 0,
+        "unresolvedUpperBound": 0
+      },
+      "executionAuthorization": false,
+      "h2": false,
+      "h2Eligibility": null,
+      "id": "idempotent-events",
+      "reportHash": "0e1ddc54b3e35ec097b0cff7fcbab4b953564d52d13702d10defcabfd6204752",
+      "requestHash": "13bc4589440c82351f42526d1b24c64ba3a0fbd2d00c87f9bdefd197fdd6bf7e",
+      "traceSafety": {
+        "duplicateEventPaths": [],
+        "eventOrderMismatch": true,
+        "partialFailurePaths": [],
+        "status": "witness"
+      },
+      "verdict": "terminal-projection-match"
+    },
+    {
+      "classifications": {
+        "conservative-all-orders": {
+          "pairs": [
+            {
+              "classification": "unknown-effects",
+              "operations": [
+                "a",
+                "b"
+              ]
+            }
+          ],
+          "unknownOperations": [
+            "b"
+          ]
+        },
+        "declared-effects": {
+          "pairs": [
+            {
+              "classification": "unknown-effects",
+              "operations": [
+                "a",
+                "b"
+              ]
+            }
+          ],
+          "unknownOperations": [
+            "b"
+          ]
+        }
+      },
+      "control": {
+        "details": {},
+        "executionAuthorization": false,
+        "expected": {
+          "kind": "unknown-shared-resource",
+          "resource": "x"
+        },
+        "status": "pass"
+      },
+      "coverage": {
+        "assignedPaths": 2,
+        "attemptedPaths": 2,
+        "capReason": null,
+        "complete": true,
+        "completedPaths": 2,
+        "events": 0,
+        "partialPaths": 0,
+        "schedules": 2,
+        "steps": 4,
+        "unattemptedPaths": 0,
+        "unresolvedUpperBound": 0
+      },
+      "executionAuthorization": false,
+      "h2": false,
+      "h2Eligibility": null,
+      "id": "alias-hidden-effects",
+      "reportHash": "297b4b3469c0195304ded05e7d60766f5dc9b0fe2bdd1f87db4db11a98339c53",
+      "requestHash": "f1c888bfdc169facfa6c84031669e5604c6cc01c9add988331269d490ebe8159",
+      "traceSafety": {
+        "duplicateEventPaths": [],
+        "eventOrderMismatch": false,
+        "partialFailurePaths": [],
+        "status": "finite-no-event-witness"
+      },
+      "verdict": "terminal-projection-match"
+    },
+    {
+      "classifications": {
+        "conservative-all-orders": {
+          "pairs": [
+            {
+              "classification": "disjoint-candidate",
+              "operations": [
+                "a",
+                "b"
+              ]
+            }
+          ],
+          "unknownOperations": []
+        },
+        "declared-effects": {
+          "pairs": [
+            {
+              "classification": "disjoint-candidate",
+              "operations": [
+                "a",
+                "b"
+              ]
+            }
+          ],
+          "unknownOperations": []
+        }
+      },
+      "control": {
+        "details": {},
+        "executionAuthorization": false,
+        "expected": {
+          "kind": "all-state",
+          "values": {
+            "x": 1,
+            "y": 2
+          }
+        },
+        "status": "pass"
+      },
+      "coverage": {
+        "assignedPaths": 2,
+        "attemptedPaths": 2,
+        "capReason": null,
+        "complete": true,
+        "completedPaths": 2,
+        "events": 0,
+        "partialPaths": 0,
+        "schedules": 2,
+        "steps": 4,
+        "unattemptedPaths": 0,
+        "unresolvedUpperBound": 0
+      },
+      "executionAuthorization": false,
+      "h2": false,
+      "h2Eligibility": null,
+      "id": "disjoint-positive",
+      "reportHash": "415a4bb94e7ae8085c8048a5454d055277c58841f3d9b0977ae4565ae60a07c5",
+      "requestHash": "ebcb698a6770c26ff7a7bd722745155956787336dcdc3739cedd2965ecae467a",
+      "traceSafety": {
+        "duplicateEventPaths": [],
+        "eventOrderMismatch": false,
+        "partialFailurePaths": [],
+        "status": "finite-no-event-witness"
+      },
+      "verdict": "terminal-projection-match"
+    },
+    {
+      "classifications": {
+        "conservative-all-orders": {
+          "pairs": [
+            {
+              "classification": "resource-conflict",
+              "operations": [
+                "a",
+                "b"
+              ]
+            }
+          ],
+          "unknownOperations": []
+        },
+        "declared-effects": {
+          "pairs": [
+            {
+              "classification": "resource-conflict",
+              "operations": [
+                "a",
+                "b"
+              ]
+            }
+          ],
+          "unknownOperations": []
+        }
+      },
+      "control": {
+        "details": {
+          "claim": "finite-terminal-values-only",
+          "contextualEquivalence": "unknown",
+          "exclusion": null,
+          "executionAuthorization": false,
+          "rawMismatchDimensions": [
+            "results"
+          ],
+          "runtimeSafety": "unknown",
+          "terminalCandidate": true
+        },
+        "executionAuthorization": false,
+        "expected": {
+          "expected": true,
+          "kind": "terminal-candidate",
+          "returnedValuesDiffer": true
+        },
+        "status": "pass"
+      },
+      "coverage": {
+        "assignedPaths": 2,
+        "attemptedPaths": 2,
+        "capReason": null,
+        "complete": true,
+        "completedPaths": 2,
+        "events": 0,
+        "partialPaths": 0,
+        "schedules": 2,
+        "steps": 4,
+        "unattemptedPaths": 0,
+        "unresolvedUpperBound": 0
+      },
+      "executionAuthorization": false,
+      "h2": true,
+      "h2Eligibility": {
+        "claim": "finite-terminal-values-only",
+        "contextualEquivalence": "unknown",
+        "exclusion": null,
+        "executionAuthorization": false,
+        "rawMismatchDimensions": [
+          "results"
+        ],
+        "runtimeSafety": "unknown",
+        "terminalCandidate": true
+      },
+      "id": "h2-shared-additions",
+      "reportHash": "3bd529de6d1d5e70e235efb008d1f404fe2098a763e1b87f345fc80ad37674b0",
+      "requestHash": "43442c027584e3961927bfc6669cdea5ee7b12a2df98abfd1eb38af3c6cf4f35",
+      "traceSafety": {
+        "duplicateEventPaths": [],
+        "eventOrderMismatch": false,
+        "partialFailurePaths": [],
+        "status": "finite-no-event-witness"
+      },
+      "verdict": "terminal-projection-match"
+    },
+    {
+      "classifications": {
+        "conservative-all-orders": {
+          "pairs": [
+            {
+              "classification": "disjoint-candidate",
+              "operations": [
+                "a",
+                "b"
+              ]
+            }
+          ],
+          "unknownOperations": []
+        },
+        "declared-effects": {
+          "pairs": [
+            {
+              "classification": "disjoint-candidate",
+              "operations": [
+                "a",
+                "b"
+              ]
+            }
+          ],
+          "unknownOperations": []
+        }
+      },
+      "control": {
+        "details": {
+          "claim": "finite-terminal-values-only",
+          "contextualEquivalence": "unknown",
+          "exclusion": null,
+          "executionAuthorization": false,
+          "rawMismatchDimensions": [],
+          "runtimeSafety": "unknown",
+          "terminalCandidate": true
+        },
+        "executionAuthorization": false,
+        "expected": {
+          "expected": true,
+          "kind": "terminal-candidate",
+          "returnedValuesDiffer": false
+        },
+        "status": "pass"
+      },
+      "coverage": {
+        "assignedPaths": 2,
+        "attemptedPaths": 2,
+        "capReason": null,
+        "complete": true,
+        "completedPaths": 2,
+        "events": 0,
+        "partialPaths": 0,
+        "schedules": 2,
+        "steps": 4,
+        "unattemptedPaths": 0,
+        "unresolvedUpperBound": 0
+      },
+      "executionAuthorization": false,
+      "h2": true,
+      "h2Eligibility": {
+        "claim": "finite-terminal-values-only",
+        "contextualEquivalence": "unknown",
+        "exclusion": null,
+        "executionAuthorization": false,
+        "rawMismatchDimensions": [],
+        "runtimeSafety": "unknown",
+        "terminalCandidate": true
+      },
+      "id": "h2-disjoint-additions",
+      "reportHash": "fbe85b683e88504b88d403bc5490e7c09e05594c2299c7111e716e1377b2f285",
+      "requestHash": "cb601fe963779c1557fba26c8becabb939ab08b7006d24680e5a1e0cbbbdfe4f",
+      "traceSafety": {
+        "duplicateEventPaths": [],
+        "eventOrderMismatch": false,
+        "partialFailurePaths": [],
+        "status": "finite-no-event-witness"
+      },
+      "verdict": "terminal-projection-match"
+    },
+    {
+      "classifications": {
+        "conservative-all-orders": {
+          "pairs": [
+            {
+              "classification": "dependency-ordered",
+              "operations": [
+                "a",
+                "b"
+              ]
+            },
+            {
+              "classification": "resource-conflict",
+              "operations": [
+                "a",
+                "c"
+              ]
+            },
+            {
+              "classification": "resource-conflict",
+              "operations": [
+                "b",
+                "c"
+              ]
+            }
+          ],
+          "unknownOperations": []
+        },
+        "declared-effects": {
+          "pairs": [
+            {
+              "classification": "dependency-ordered",
+              "operations": [
+                "a",
+                "b"
+              ]
+            },
+            {
+              "classification": "resource-conflict",
+              "operations": [
+                "a",
+                "c"
+              ]
+            },
+            {
+              "classification": "resource-conflict",
+              "operations": [
+                "b",
+                "c"
+              ]
+            }
+          ],
+          "unknownOperations": []
+        }
+      },
+      "control": {
+        "details": {
+          "claim": "finite-terminal-values-only",
+          "contextualEquivalence": "unknown",
+          "exclusion": null,
+          "executionAuthorization": false,
+          "rawMismatchDimensions": [
+            "results"
+          ],
+          "runtimeSafety": "unknown",
+          "terminalCandidate": true
+        },
+        "executionAuthorization": false,
+        "expected": {
+          "expected": true,
+          "kind": "terminal-candidate",
+          "returnedValuesDiffer": true
+        },
+        "status": "pass"
+      },
+      "coverage": {
+        "assignedPaths": 3,
+        "attemptedPaths": 3,
+        "capReason": null,
+        "complete": true,
+        "completedPaths": 3,
+        "events": 0,
+        "partialPaths": 0,
+        "schedules": 3,
+        "steps": 9,
+        "unattemptedPaths": 0,
+        "unresolvedUpperBound": 0
+      },
+      "executionAuthorization": false,
+      "h2": true,
+      "h2Eligibility": {
+        "claim": "finite-terminal-values-only",
+        "contextualEquivalence": "unknown",
+        "exclusion": null,
+        "executionAuthorization": false,
+        "rawMismatchDimensions": [
+          "results"
+        ],
+        "runtimeSafety": "unknown",
+        "terminalCandidate": true
+      },
+      "id": "h2-dependent-additions",
+      "reportHash": "065be4516a42c3e198b2644a15a7bfe7f31b2b280eab51531636b76f0ccf00b2",
+      "requestHash": "2b53c27ec0f9ee7ece35345063a9c1f13e98314fc5c3e89ff45a64f624019aa2",
+      "traceSafety": {
+        "duplicateEventPaths": [],
+        "eventOrderMismatch": false,
+        "partialFailurePaths": [],
+        "status": "finite-no-event-witness"
+      },
+      "verdict": "terminal-projection-match"
+    },
+    {
+      "classifications": {
+        "conservative-all-orders": {
+          "pairs": [
+            {
+              "classification": "resource-conflict",
+              "operations": [
+                "a",
+                "b"
+              ]
+            },
+            {
+              "classification": "resource-conflict",
+              "operations": [
+                "a",
+                "c"
+              ]
+            },
+            {
+              "classification": "resource-conflict",
+              "operations": [
+                "a",
+                "d"
+              ]
+            },
+            {
+              "classification": "resource-conflict",
+              "operations": [
+                "b",
+                "c"
+              ]
+            },
+            {
+              "classification": "resource-conflict",
+              "operations": [
+                "b",
+                "d"
+              ]
+            },
+            {
+              "classification": "resource-conflict",
+              "operations": [
+                "c",
+                "d"
+              ]
+            }
+          ],
+          "unknownOperations": []
+        },
+        "declared-effects": {
+          "pairs": [
+            {
+              "classification": "resource-conflict",
+              "operations": [
+                "a",
+                "b"
+              ]
+            },
+            {
+              "classification": "resource-conflict",
+              "operations": [
+                "a",
+                "c"
+              ]
+            },
+            {
+              "classification": "resource-conflict",
+              "operations": [
+                "a",
+                "d"
+              ]
+            },
+            {
+              "classification": "resource-conflict",
+              "operations": [
+                "b",
+                "c"
+              ]
+            },
+            {
+              "classification": "resource-conflict",
+              "operations": [
+                "b",
+                "d"
+              ]
+            },
+            {
+              "classification": "resource-conflict",
+              "operations": [
+                "c",
+                "d"
+              ]
+            }
+          ],
+          "unknownOperations": []
+        }
+      },
+      "control": {
+        "details": {
+          "claim": "finite-terminal-values-only",
+          "contextualEquivalence": "unknown",
+          "exclusion": null,
+          "executionAuthorization": false,
+          "rawMismatchDimensions": [
+            "results"
+          ],
+          "runtimeSafety": "unknown",
+          "terminalCandidate": true
+        },
+        "executionAuthorization": false,
+        "expected": {
+          "expected": true,
+          "kind": "terminal-candidate",
+          "returnedValuesDiffer": true
+        },
+        "status": "pass"
+      },
+      "coverage": {
+        "assignedPaths": 24,
+        "attemptedPaths": 24,
+        "capReason": null,
+        "complete": true,
+        "completedPaths": 24,
+        "events": 0,
+        "partialPaths": 0,
+        "schedules": 24,
+        "steps": 96,
+        "unattemptedPaths": 0,
+        "unresolvedUpperBound": 0
+      },
+      "executionAuthorization": false,
+      "h2": true,
+      "h2Eligibility": {
+        "claim": "finite-terminal-values-only",
+        "contextualEquivalence": "unknown",
+        "exclusion": null,
+        "executionAuthorization": false,
+        "rawMismatchDimensions": [
+          "results"
+        ],
+        "runtimeSafety": "unknown",
+        "terminalCandidate": true
+      },
+      "id": "h2-four-additions",
+      "reportHash": "ec953a7e6ad1e6253298bcdf2800a22c0c417b9e9fd73086907e976bcd9bb1fd",
+      "requestHash": "9b64679f76d0723b968b5801ad4085ea1c65481098f77b1dde2598ede4224f88",
+      "traceSafety": {
+        "duplicateEventPaths": [],
+        "eventOrderMismatch": false,
+        "partialFailurePaths": [],
+        "status": "finite-no-event-witness"
+      },
+      "verdict": "terminal-projection-match"
+    },
+    {
+      "classifications": {
+        "conservative-all-orders": {
+          "pairs": [
+            {
+              "classification": "resource-conflict",
+              "operations": [
+                "a",
+                "b"
+              ]
+            }
+          ],
+          "unknownOperations": []
+        },
+        "declared-effects": {
+          "pairs": [
+            {
+              "classification": "resource-conflict",
+              "operations": [
+                "a",
+                "b"
+              ]
+            }
+          ],
+          "unknownOperations": []
+        }
+      },
+      "control": {
+        "details": {
+          "claim": "finite-terminal-values-only",
+          "contextualEquivalence": "unknown",
+          "exclusion": "non-success-path",
+          "executionAuthorization": false,
+          "rawMismatchDimensions": [
+            "results"
+          ],
+          "runtimeSafety": "unknown",
+          "terminalCandidate": false
+        },
+        "executionAuthorization": false,
+        "expected": {
+          "expected": false,
+          "kind": "terminal-candidate",
+          "reason": "non-success-path"
+        },
+        "status": "pass"
+      },
+      "coverage": {
+        "assignedPaths": 2,
+        "attemptedPaths": 2,
+        "capReason": null,
+        "complete": true,
+        "completedPaths": 2,
+        "events": 0,
+        "partialPaths": 0,
+        "schedules": 2,
+        "steps": 4,
+        "unattemptedPaths": 0,
+        "unresolvedUpperBound": 0
+      },
+      "executionAuthorization": false,
+      "h2": true,
+      "h2Eligibility": {
+        "claim": "finite-terminal-values-only",
+        "contextualEquivalence": "unknown",
+        "exclusion": "non-success-path",
+        "executionAuthorization": false,
+        "rawMismatchDimensions": [
+          "results"
+        ],
+        "runtimeSafety": "unknown",
+        "terminalCandidate": false
+      },
+      "id": "h2-overflow-exclusion",
+      "reportHash": "a18736837c12ada9e74043547c57c15eb930a4c75cf7690cca77bd2b8f3f046b",
+      "requestHash": "719443d8db36a6c2cd48096494dfa55c20b8c96a8b8cba203a42d18d5f446185",
+      "traceSafety": {
+        "duplicateEventPaths": [],
+        "eventOrderMismatch": false,
+        "partialFailurePaths": [],
+        "status": "inconclusive"
+      },
+      "verdict": "inconclusive"
+    },
+    {
+      "classifications": {
+        "conservative-all-orders": {
+          "pairs": [
+            {
+              "classification": "resource-conflict",
+              "operations": [
+                "a",
+                "b"
+              ]
+            }
+          ],
+          "unknownOperations": []
+        },
+        "declared-effects": {
+          "pairs": [
+            {
+              "classification": "resource-conflict",
+              "operations": [
+                "a",
+                "b"
+              ]
+            }
+          ],
+          "unknownOperations": []
+        }
+      },
+      "control": {
+        "details": {
+          "claim": "finite-terminal-values-only",
+          "contextualEquivalence": "unknown",
+          "exclusion": "outside-additive-class",
+          "executionAuthorization": false,
+          "rawMismatchDimensions": [
+            "state"
+          ],
+          "runtimeSafety": "unknown",
+          "terminalCandidate": false
+        },
+        "executionAuthorization": false,
+        "expected": {
+          "expected": false,
+          "kind": "terminal-candidate",
+          "reason": "outside-additive-class"
+        },
+        "status": "pass"
+      },
+      "coverage": {
+        "assignedPaths": 2,
+        "attemptedPaths": 2,
+        "capReason": null,
+        "complete": true,
+        "completedPaths": 2,
+        "events": 0,
+        "partialPaths": 0,
+        "schedules": 2,
+        "steps": 4,
+        "unattemptedPaths": 0,
+        "unresolvedUpperBound": 0
+      },
+      "executionAuthorization": false,
+      "h2": true,
+      "h2Eligibility": {
+        "claim": "finite-terminal-values-only",
+        "contextualEquivalence": "unknown",
+        "exclusion": "outside-additive-class",
+        "executionAuthorization": false,
+        "rawMismatchDimensions": [
+          "state"
+        ],
+        "runtimeSafety": "unknown",
+        "terminalCandidate": false
+      },
+      "id": "h2-literal-write-exclusion",
+      "reportHash": "b0dbdbbad4a89e3fd4b7ade4cfd6c372ae344319f893f138367395427c6d95df",
+      "requestHash": "1039eddd9def1941c012bff43a02f3fd58c5e0239a2298edcbe2dc2a642560ca",
+      "traceSafety": {
+        "duplicateEventPaths": [],
+        "eventOrderMismatch": false,
+        "partialFailurePaths": [],
+        "status": "finite-no-event-witness"
+      },
+      "verdict": "divergent"
+    },
+    {
+      "classifications": {
+        "conservative-all-orders": {
+          "pairs": [
+            {
+              "classification": "resource-conflict",
+              "operations": [
+                "a",
+                "b"
+              ]
+            }
+          ],
+          "unknownOperations": []
+        },
+        "declared-effects": {
+          "pairs": [
+            {
+              "classification": "resource-conflict",
+              "operations": [
+                "a",
+                "b"
+              ]
+            }
+          ],
+          "unknownOperations": []
+        }
+      },
+      "control": {
+        "details": {
+          "claim": "finite-terminal-values-only",
+          "contextualEquivalence": "unknown",
+          "exclusion": "version-precondition",
+          "executionAuthorization": false,
+          "rawMismatchDimensions": [
+            "state",
+            "results"
+          ],
+          "runtimeSafety": "unknown",
+          "terminalCandidate": false
+        },
+        "executionAuthorization": false,
+        "expected": {
+          "expected": false,
+          "kind": "terminal-candidate",
+          "reason": "version-precondition"
+        },
+        "status": "pass"
+      },
+      "coverage": {
+        "assignedPaths": 2,
+        "attemptedPaths": 2,
+        "capReason": null,
+        "complete": true,
+        "completedPaths": 2,
+        "events": 0,
+        "partialPaths": 0,
+        "schedules": 2,
+        "steps": 4,
+        "unattemptedPaths": 0,
+        "unresolvedUpperBound": 0
+      },
+      "executionAuthorization": false,
+      "h2": true,
+      "h2Eligibility": {
+        "claim": "finite-terminal-values-only",
+        "contextualEquivalence": "unknown",
+        "exclusion": "version-precondition",
+        "executionAuthorization": false,
+        "rawMismatchDimensions": [
+          "state",
+          "results"
+        ],
+        "runtimeSafety": "unknown",
+        "terminalCandidate": false
+      },
+      "id": "h2-version-exclusion",
+      "reportHash": "2f2081630d74f56f1cbf233fab6d632045930ef976839215adef35ed88d37191",
+      "requestHash": "a77eb8c179a57b5c5da1c4435f283e71354be2d2824622f34e10ab17cf505377",
+      "traceSafety": {
+        "duplicateEventPaths": [],
+        "eventOrderMismatch": false,
+        "partialFailurePaths": [],
+        "status": "inconclusive"
+      },
+      "verdict": "inconclusive"
+    },
+    {
+      "classifications": {
+        "conservative-all-orders": {
+          "pairs": [
+            {
+              "classification": "resource-conflict",
+              "operations": [
+                "a",
+                "b"
+              ]
+            }
+          ],
+          "unknownOperations": []
+        },
+        "declared-effects": {
+          "pairs": [
+            {
+              "classification": "resource-conflict",
+              "operations": [
+                "a",
+                "b"
+              ]
+            }
+          ],
+          "unknownOperations": []
+        }
+      },
+      "control": {
+        "details": {
+          "claim": "finite-terminal-values-only",
+          "contextualEquivalence": "unknown",
+          "exclusion": "outside-additive-class",
+          "executionAuthorization": false,
+          "rawMismatchDimensions": [
+            "state",
+            "results"
+          ],
+          "runtimeSafety": "unknown",
+          "terminalCandidate": false
+        },
+        "executionAuthorization": false,
+        "expected": {
+          "expected": false,
+          "kind": "terminal-candidate",
+          "reason": "outside-additive-class"
+        },
+        "status": "pass"
+      },
+      "coverage": {
+        "assignedPaths": 2,
+        "attemptedPaths": 2,
+        "capReason": null,
+        "complete": true,
+        "completedPaths": 2,
+        "events": 0,
+        "partialPaths": 0,
+        "schedules": 2,
+        "steps": 4,
+        "unattemptedPaths": 0,
+        "unresolvedUpperBound": 0
+      },
+      "executionAuthorization": false,
+      "h2": true,
+      "h2Eligibility": {
+        "claim": "finite-terminal-values-only",
+        "contextualEquivalence": "unknown",
+        "exclusion": "outside-additive-class",
+        "executionAuthorization": false,
+        "rawMismatchDimensions": [
+          "state",
+          "results"
+        ],
+        "runtimeSafety": "unknown",
+        "terminalCandidate": false
+      },
+      "id": "h2-guard-exclusion",
+      "reportHash": "7f8e7c4496aba42f98e07644dfac8e0eb358e002860a694317e840dda6318d0f",
+      "requestHash": "64292f3b75dba5bc81106eaf5eb5ebebf01e1df14172ea50e293d6849dc09cce",
+      "traceSafety": {
+        "duplicateEventPaths": [],
+        "eventOrderMismatch": false,
+        "partialFailurePaths": [],
+        "status": "finite-no-event-witness"
+      },
+      "verdict": "divergent"
+    },
+    {
+      "classifications": {
+        "conservative-all-orders": {
+          "pairs": [
+            {
+              "classification": "unknown-effects",
+              "operations": [
+                "a",
+                "b"
+              ]
+            }
+          ],
+          "unknownOperations": [
+            "a"
+          ]
+        },
+        "declared-effects": {
+          "pairs": [
+            {
+              "classification": "unknown-effects",
+              "operations": [
+                "a",
+                "b"
+              ]
+            }
+          ],
+          "unknownOperations": [
+            "a"
+          ]
+        }
+      },
+      "control": {
+        "details": {
+          "claim": "finite-terminal-values-only",
+          "contextualEquivalence": "unknown",
+          "exclusion": "unknown-effects",
+          "executionAuthorization": false,
+          "rawMismatchDimensions": [
+            "results"
+          ],
+          "runtimeSafety": "unknown",
+          "terminalCandidate": false
+        },
+        "executionAuthorization": false,
+        "expected": {
+          "expected": false,
+          "kind": "terminal-candidate",
+          "reason": "unknown-effects"
+        },
+        "status": "pass"
+      },
+      "coverage": {
+        "assignedPaths": 2,
+        "attemptedPaths": 2,
+        "capReason": null,
+        "complete": true,
+        "completedPaths": 2,
+        "events": 0,
+        "partialPaths": 0,
+        "schedules": 2,
+        "steps": 4,
+        "unattemptedPaths": 0,
+        "unresolvedUpperBound": 0
+      },
+      "executionAuthorization": false,
+      "h2": true,
+      "h2Eligibility": {
+        "claim": "finite-terminal-values-only",
+        "contextualEquivalence": "unknown",
+        "exclusion": "unknown-effects",
+        "executionAuthorization": false,
+        "rawMismatchDimensions": [
+          "results"
+        ],
+        "runtimeSafety": "unknown",
+        "terminalCandidate": false
+      },
+      "id": "h2-unknown-exclusion",
+      "reportHash": "e999cf8a222f5edced26b12a68419ecac44096149748bfc2f116fdd84be04807",
+      "requestHash": "2d478d588a1bd0f506a5f6263c94cecd388aedb41c2d4521c301fb14e926ad3e",
+      "traceSafety": {
+        "duplicateEventPaths": [],
+        "eventOrderMismatch": false,
+        "partialFailurePaths": [],
+        "status": "finite-no-event-witness"
+      },
+      "verdict": "terminal-projection-match"
+    },
+    {
+      "classifications": {
+        "conservative-all-orders": {
+          "pairs": [
+            {
+              "classification": "resource-conflict",
+              "operations": [
+                "a",
+                "b"
+              ]
+            },
+            {
+              "classification": "event-order-sensitive",
+              "operations": [
+                "a",
+                "c"
+              ]
+            },
+            {
+              "classification": "event-order-sensitive",
+              "operations": [
+                "b",
+                "c"
+              ]
+            }
+          ],
+          "unknownOperations": []
+        },
+        "declared-effects": {
+          "pairs": [
+            {
+              "classification": "resource-conflict",
+              "operations": [
+                "a",
+                "b"
+              ]
+            },
+            {
+              "classification": "event-order-sensitive",
+              "operations": [
+                "a",
+                "c"
+              ]
+            },
+            {
+              "classification": "event-order-sensitive",
+              "operations": [
+                "b",
+                "c"
+              ]
+            }
+          ],
+          "unknownOperations": []
+        }
+      },
+      "control": {
+        "details": {
+          "claim": "finite-terminal-values-only",
+          "contextualEquivalence": "unknown",
+          "exclusion": "outside-additive-class",
+          "executionAuthorization": false,
+          "rawMismatchDimensions": [
+            "results",
+            "events"
+          ],
+          "runtimeSafety": "unknown",
+          "terminalCandidate": false
+        },
+        "executionAuthorization": false,
+        "expected": {
+          "expected": false,
+          "kind": "terminal-candidate",
+          "reason": "outside-additive-class"
+        },
+        "status": "pass"
+      },
+      "coverage": {
+        "assignedPaths": 6,
+        "attemptedPaths": 6,
+        "capReason": null,
+        "complete": true,
+        "completedPaths": 6,
+        "events": 6,
+        "partialPaths": 0,
+        "schedules": 6,
+        "steps": 18,
+        "unattemptedPaths": 0,
+        "unresolvedUpperBound": 0
+      },
+      "executionAuthorization": false,
+      "h2": true,
+      "h2Eligibility": {
+        "claim": "finite-terminal-values-only",
+        "contextualEquivalence": "unknown",
+        "exclusion": "outside-additive-class",
+        "executionAuthorization": false,
+        "rawMismatchDimensions": [
+          "results",
+          "events"
+        ],
+        "runtimeSafety": "unknown",
+        "terminalCandidate": false
+      },
+      "id": "h2-event-exclusion",
+      "reportHash": "2638c4ff9ee6b2c70f3af5eaec03e11852112cc4f4aeb3bb6dbe7baa1fe4b65e",
+      "requestHash": "b25d7c9f4b8c80c6c7e664e8eec849bf9169bef41b59291159c88e52c2121e80",
+      "traceSafety": {
+        "duplicateEventPaths": [],
+        "eventOrderMismatch": true,
+        "partialFailurePaths": [],
+        "status": "witness"
+      },
+      "verdict": "terminal-projection-match"
+    }
+  ],
+  "format": "effectful-workload-controls-evidence-v1",
+  "registration": {
+    "executionAuthorization": false,
+    "fixtureCount": 17,
+    "format": "effectful-workload-registration-v1",
+    "manifestHash": "ad8b00ca8c8fc4329699cd8ba5f07525b45f00cff604b76d69bacdb9fae6babc",
+    "protocolHash": "7dfb10da9eb1a8a9e1e61b7d73e4641c23920d6283da322b2321e3a912faddb9"
+  },
+  "runtimeSafety": "unknown",
+  "scientificReview": "pending",
+  "sourceBindings": {
+    "research/workload_lab/SEMANTICS.md": "e2c5637355a2ee96e66299aa0788ff57fbef353a35ece44e07ac8a3d6db71f2a",
+    "research/workload_lab/__init__.py": "30db3e643969ae50c28637e413800a6906a03807247f014648d5b447b9f06871",
+    "research/workload_lab/__main__.py": "787334ed2cc335b075ceab7d395cfe7a6ae2e5df5f3605d750b37c73db8b30ad",
+    "research/workload_lab/analysis.py": "ecf39ec4d694de8b5a347d061deef3d3104e4234da45102570d327629de61706",
+    "research/workload_lab/controls.py": "b9a2ad9ef7276665af1aefa055284a3350f7aacd3750254db2481c9301961f6a",
+    "research/workload_lab/evidence.py": "a18717e40a438d62e73cddd6c753a482a37f3e5af02523b105abfdd6ff75b2cf",
+    "research/workload_lab/explore.py": "99234a8383d968092a3c56a5c7f6dfb583e10eb521bce994c4bef79b2a14417d",
+    "research/workload_lab/model.py": "c441ca32d4410d7ebe39e987c24e10f8f282a901200dfc057fd1f180d89963bb",
+    "research/workload_lab/observations.py": "44644b7f10da4b2ee763caf4c902503b189a6b02e01c2689398ff110edb215e6",
+    "specs/024-effectful-workload-lab/contracts/report.schema.json": "614a6f21b800ddcf4fb04aae0ce577b08444c00f31d37846cd6ad0ed47062583",
+    "specs/024-effectful-workload-lab/contracts/request.schema.json": "0e62a1558159a51774905d3c387305433398de4dff18c84dedc87e859892314d",
+    "specs/024-effectful-workload-lab/contracts/simulation-v1.md": "ec0851a4503ec0d40d7dff9a8b9542a5d3dcc44843d2458c8dd738ebd4dedad5"
+  },
+  "timing": "none; deterministic controls only, the registered experiment was not run"
+}

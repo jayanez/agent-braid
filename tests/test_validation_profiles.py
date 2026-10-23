@@ -17,6 +17,25 @@ ROOT = Path(__file__).resolve().parents[1]
 
 
 class ValidationProfileTests(unittest.TestCase):
+    def test_effectful_workload_lab_has_owned_sensitive_controls(self):
+        # Workload lab tests run in full-tests; the scientific-controls command
+        # exercises the separate SPEC lab, so the rule must not claim it.
+        rule = next(rule for rule in validation.RULES if rule.domain == "effectful-workload-lab")
+        self.assertEqual(rule.commands, ("full-tests", "contracts"))
+        for path in ("research/workload_lab/model.py", "research/workload_lab/evidence.py",
+                     "research/workload_lab/SEMANTICS.md", "examples/workload-lab/manifest.json",
+                     "scripts/run_effectful_workload_experiment.py",
+                     "tests/test_effectful_workload_lab.py", "tests/test_effectful_workload_model.py"):
+            with self.subTest(path=path):
+                plan = validation.build_plan([path], "quick")
+                self.assertIn("effectful-workload-lab", plan.impact.domains)
+                self.assertEqual(plan.effective_profile, "sensitive")
+                self.assertIn("full-tests", plan.commands)
+                self.assertIn("contracts", plan.commands)
+                self.assertFalse(plan.impact.unknown_paths)
+                self.assertFalse(plan.impact.spec_kit_integration)
+                self.assertTrue(plan.impact.boundaries)
+
     def test_forecasting_has_owned_sensitive_domain_and_separate_model_gates(self):
         for path in ('agent_braid/forecast_worker.py','tests/test_forecast_mcp.py','scripts/reproduce_forecast_cpu.py','docs/forecast/OPERATIONS.md'):
             plan=validation.build_plan([path],'quick')
