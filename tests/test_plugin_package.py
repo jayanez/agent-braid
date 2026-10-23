@@ -47,41 +47,83 @@ class PluginPackageTests(unittest.TestCase):
             with self.assertRaises(ValueError):
                 verify_package(root)
 
-    def test_host_in_use_markers_are_tolerated_but_bounded(self):
-        import os
+    def _package_with_markers(self, directory):
+        root = Path(directory)
+        (root / 'assets').mkdir()
+        (root / 'assets/data').write_text('original')
+        (root / 'package-inventory.json').write_text(json.dumps({
+            'schema': 'agent-braid-plugin-package/v1', 'version': 'test', 'files': inventory(root)}))
+        markers = root / '.in_use'
+        markers.mkdir()
+        return root, markers
+
+    def test_host_in_use_markers_are_tolerated(self):
         with tempfile.TemporaryDirectory() as directory:
-            root = Path(directory)
-            (root / 'assets').mkdir()
-            (root / 'assets/data').write_text('original')
-            (root / 'package-inventory.json').write_text(json.dumps({
-                'schema': 'agent-braid-plugin-package/v1', 'version': 'test', 'files': inventory(root)}))
-            markers = root / '.in_use'; markers.mkdir()
+            root, markers = self._package_with_markers(directory)
             (markers / '10785').write_text('{"pid":10785,"procStart":"Fri Oct 23 07:34:53 2026"}')
+            (markers / '4096').write_bytes(b'x' * 4096)
             self.assertEqual(verify_package(root)['status'], 'verified')
-            self.assertNotIn('.in_use/10785', inventory(root))
-            for name, make in (
-                    ('not-a-pid', lambda p: p.write_text('{}')),
-                    ('123', lambda p: p.write_bytes(b'x' * 4097)),
-                    ('124', lambda p: p.symlink_to(root / 'assets/data')),
-                    ('125', lambda p: (p.mkdir(), (p / 'nested').write_text('{}')))):
-                with self.subTest(name=name):
-                    make(markers / name)
-                    with self.assertRaisesRegex(ValueError, 'host marker'):
-                        verify_package(root)
-                    target = markers / name
-                    if target.is_dir() and not target.is_symlink():
-                        (target / 'nested').unlink(); target.rmdir()
-                    else:
-                        target.unlink()
-            nested = root / 'assets/.in_use'; nested.mkdir()
-            (nested / '1').write_text('{}')
-            with self.assertRaisesRegex(ValueError, 'inventory changed'):
+
+    def test_unsupported_host_marker_entries_are_refused(self):
+        cases = {
+            'non-numeric name': lambda m: (m / 'not-a-pid').write_text('{}'),
+            'non-ascii digits': lambda m: (m / '\u0661\u0662\u0663').write_text('{}'),
+            'oversized marker': lambda m: (m / '123').write_bytes(b'x' * 4097),
+            'symlinked marker': lambda m: (m / '124').symlink_to(m.parent / 'assets/data'),
+            'directory marker': lambda m: (m / '125').mkdir(),
+            'fifo marker': lambda m: __import__('os').mkfifo(m / '126'),
+            'nested entry': lambda m: ((m / '127').mkdir(), (m / '127/nested').write_text('{}')),
+        }
+        for label, make in cases.items():
+            with self.subTest(label), tempfile.TemporaryDirectory() as directory:
+                root, markers = self._package_with_markers(directory)
+                make(markers)
+                with self.assertRaisesRegex(ValueError, 'host marker'):
+                    verify_package(root)
+
+    def test_marker_directory_must_be_a_real_root_directory(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root, markers = self._package_with_markers(directory)
+            markers.rmdir()
+            markers.write_text('{}')
+            with self.assertRaisesRegex(ValueError, 'host marker'):
                 verify_package(root)
-            (nested / '1').unlink(); nested.rmdir()
-            (markers / '10785').unlink(); os.rmdir(markers)
+        with tempfile.TemporaryDirectory() as directory:
+            root, markers = self._package_with_markers(directory)
+            markers.rmdir()
             markers.symlink_to(root / 'assets', target_is_directory=True)
             with self.assertRaisesRegex(ValueError, 'host marker'):
                 verify_package(root)
+        with tempfile.TemporaryDirectory() as directory:
+            root, markers = self._package_with_markers(directory)
+            nested = root / 'assets/.in_use'
+            nested.mkdir()
+            (nested / '1').write_text('{}')
+            with self.assertRaisesRegex(ValueError, 'inventory changed'):
+                verify_package(root)
+
+    def test_marker_removed_by_host_during_the_walk_is_skipped(self):
+        from unittest import mock
+        with tempfile.TemporaryDirectory() as directory:
+            root, markers = self._package_with_markers(directory)
+            marker = markers / '10785'
+            marker.write_text('{}')
+            real_rglob = Path.rglob
+
+            def rglob_then_host_exits(self, pattern):
+                for path in real_rglob(self, pattern):
+                    if path.name == marker.name and marker.exists():
+                        marker.unlink()
+                    yield path
+            with mock.patch.object(Path, 'rglob', rglob_then_host_exits):
+                self.assertEqual(verify_package(root)['status'], 'verified')
+
+    def test_build_inventory_does_not_hide_marker_shaped_files(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root, markers = self._package_with_markers(directory)
+            (markers / '1').write_text('{}')
+            self.assertIn('.in_use/1', inventory(root))
+            self.assertNotIn('.in_use/1', inventory(root, allow_host_markers=True))
 
     def test_extract_rejects_hash_and_traversal_but_omits_unused_cyclic_terminfo(self):
         with tempfile.TemporaryDirectory() as directory:

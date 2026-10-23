@@ -3,6 +3,7 @@
 from __future__ import annotations
 import hashlib
 import json
+import re
 import stat
 from pathlib import Path, PurePosixPath
 
@@ -19,20 +20,26 @@ def file_hash(path):
 # the installed plugin root. They are host-owned and outside the package bytes.
 HOST_MARKER_DIRECTORY = '.in_use'
 HOST_MARKER_MAX_BYTES = 4096
+HOST_MARKER_NAME = re.compile(r'[0-9]{1,10}')
 
 
-def _is_host_marker(path, parts):
+def _skip_host_marker(path, parts):
+    """Return True for a host-owned marker entry, False for package bytes; refuse anything else."""
     if parts[0] != HOST_MARKER_DIRECTORY:
         return False
-    if len(parts) == 1 and path.is_dir() and not path.is_symlink():
+    try:
+        info = path.lstat()
+    except FileNotFoundError:
+        return True  # the host removed it while the package was being walked
+    if len(parts) == 1 and stat.S_ISDIR(info.st_mode):
         return True
-    if (len(parts) == 2 and parts[1].isdigit() and path.is_file() and not path.is_symlink()
-            and path.stat().st_size <= HOST_MARKER_MAX_BYTES):
+    if (len(parts) == 2 and HOST_MARKER_NAME.fullmatch(parts[1]) and stat.S_ISREG(info.st_mode)
+            and info.st_size <= HOST_MARKER_MAX_BYTES):
         return True
     raise ValueError('Unsupported entry in host marker directory')
 
 
-def inventory(root):
+def inventory(root, *, allow_host_markers=False):
     root = Path(root).resolve(strict=True)
     result = {}
     for index, path in enumerate(root.rglob('*')):
@@ -40,7 +47,7 @@ def inventory(root):
             raise ValueError('Package traversal exceeds its entry limit')
         relative = path.relative_to(root)
         name = relative.as_posix()
-        if _is_host_marker(path, relative.parts):
+        if allow_host_markers and _skip_host_marker(path, relative.parts):
             continue
         if name == 'package-inventory.json' or (path.is_dir() and not path.is_symlink()):
             continue
@@ -77,7 +84,7 @@ def verify_package(root):
         parts = PurePosixPath(name)
         if parts.is_absolute() or '..' in parts.parts or str(parts) != name:
             raise ValueError('Unsafe package inventory path')
-    if inventory(root) != value['files']:
+    if inventory(root, allow_host_markers=True) != value['files']:
         raise ValueError('Plugin package inventory changed; reinstall using the native manager')
     return {'status': 'verified', 'files': len(value['files']), 'version': value['version'],
             'limits': ['Byte inventory is not publisher authentication, native host acceptance or provider approval']}
