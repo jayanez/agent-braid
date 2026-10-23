@@ -14,13 +14,19 @@ import sys
 import tempfile
 import threading
 
-SCHEMA = 'agent-braid-plugin-registry/v0.1'
+SCHEMA = 'agent-braid-plugin-registry/v0.2'
+LEGACY_SCHEMA = 'agent-braid-plugin-registry/v0.1'
+TELEMETRY_MODES = ('off', 'local')
 MAX_BYTES = 256 * 1024
 MAX_WORKSPACES = 64
 
 
 class RegistryError(ValueError):
     """An unsafe or stale registration is refused."""
+
+
+class MigrationRequired(RegistryError):
+    """A valid alpha.2 registry must be migrated through a setup preview."""
 
 
 def home_path(value: Path | None = None) -> Path:
@@ -121,13 +127,21 @@ def _workspace(value: dict, home: Path) -> None:
             raise RegistryError('Grant store must exist outside source and plugin state')
 
 
-def _decode(raw: bytes | None, home: Path) -> dict:
+def _decode(raw: bytes | None, home: Path, *, migrate: bool = False) -> dict:
+    """Validate the current registry; only setup may convert a v0.1 registry."""
     if raw is None:
-        return {'schema': SCHEMA, 'workspaces': []}
+        return {'schema': SCHEMA, 'telemetry': 'off', 'workspaces': []}
     try:
         value = json.loads(raw, object_pairs_hook=_pairs, parse_constant=lambda _: (_ for _ in ()).throw(RegistryError('Nonfinite registry value')))
-        if not isinstance(value, dict) or set(value) != {'schema', 'workspaces'} or value['schema'] != SCHEMA:
+        if isinstance(value, dict) and set(value) == {'schema', 'workspaces'} and value['schema'] == LEGACY_SCHEMA:
+            if not migrate:
+                raise MigrationRequired('Registry v0.1 must be migrated with a plugin setup preview')
+            value = {'schema': SCHEMA, 'telemetry': 'off', 'workspaces': value['workspaces']}
+        if (not isinstance(value, dict) or set(value) != {'schema', 'telemetry', 'workspaces'}
+                or value['schema'] != SCHEMA):
             raise RegistryError('Unknown registry schema')
+        if not isinstance(value['telemetry'], str) or value['telemetry'] not in TELEMETRY_MODES:
+            raise RegistryError('Unknown telemetry consent')
         rows = value['workspaces']
         if not isinstance(rows, list) or len(rows) > MAX_WORKSPACES:
             raise RegistryError('Too many registered workspaces')
@@ -161,10 +175,15 @@ def _repository(path: Path) -> Path | None:
 
 
 def plan_setup(home: Path | None, sources: list[Path], *, remove=(), runtime: bool | None = None,
-               grant_store: Path | None = None, worktree_roots=()) -> dict:
+               grant_store: Path | None = None, worktree_roots=(), telemetry: str | None = None) -> dict:
     selected = home_path(home)
     before = _raw(selected)
-    value = _decode(before, selected)
+    value = _decode(before, selected, migrate=True)
+    migrated = LEGACY_SCHEMA if before is not None and json.loads(before)['schema'] == LEGACY_SCHEMA else None
+    if telemetry is not None:
+        if telemetry not in TELEMETRY_MODES:
+            raise RegistryError('Telemetry consent must be off or local')
+        value['telemetry'] = telemetry
     rows = {row['workspaceId']: row for row in value['workspaces']}
     for identifier in remove:
         if identifier not in rows:
@@ -186,11 +205,15 @@ def plan_setup(home: Path | None, sources: list[Path], *, remove=(), runtime: bo
         rows[identifier] = row
     value['workspaces'] = sorted(rows.values(), key=lambda x: x['workspaceId'])
     _decode(_bytes(value), selected)
-    preview = {'schema': 'agent-braid-plugin-setup/v0.1', 'home': str(selected),
-               'beforeSha256': _hash(before), 'registry': value,
-               'effects': ['Replace only the private workspace registry',
-                           'Create missing private result directories; never delete source/results'],
-               'reconnectRequired': before != _bytes(value)}
+    effects = ['Replace only the private workspace registry',
+               'Create missing private result directories; never delete source/results']
+    if migrated:
+        effects.append('Migrate the registry from v0.1 to v0.2 without a v0.1 backup; earlier plugin versions refuse v0.2')
+    effects.append(f"Plugin MCP telemetry consent: {value['telemetry']}; applies after reconnect, "
+                   'local aggregates only, no upload; setup itself collects nothing')
+    preview = {'schema': 'agent-braid-plugin-setup/v0.2', 'home': str(selected),
+               'beforeSha256': _hash(before), 'migratedFrom': migrated, 'registry': value,
+               'effects': effects, 'reconnectRequired': before != _bytes(value)}
     preview['previewDigest'] = _hash(_bytes(preview))
     return preview
 

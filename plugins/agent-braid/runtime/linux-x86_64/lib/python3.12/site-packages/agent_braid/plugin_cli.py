@@ -27,6 +27,8 @@ def add_parser(subparsers):
             mode.add_argument('--disable-runtime', dest='runtime', action='store_const', const=False)
             command.add_argument('--grant-store', type=Path)
             command.add_argument('--worktree-root', type=Path, action='append', default=[])
+        if name == 'setup':
+            command.add_argument('--telemetry', choices=('off', 'local'), help='persist plugin MCP local telemetry consent; default off')
         if name == 'legacy':
             command.add_argument('--host', choices=('codex', 'claude'), required=True)
             command.add_argument('--receipt', type=Path)
@@ -73,14 +75,16 @@ def run(args):
                 raise registry.RegistryError('Choose explicit source roots for configuration changes')
             output = registry.load(home)
         else:
-            if not (args.source_root or args.remove):
-                raise registry.RegistryError('Select repositories first with discover or --source-root')
+            telemetry = getattr(args, 'telemetry', None)
+            if not (args.source_root or args.remove or telemetry):
+                raise registry.RegistryError('Select repositories first with discover or --source-root, or choose --telemetry')
             if args.grant_store and args.runtime is not True:
                 raise registry.RegistryError('--grant-store requires explicit --enable-runtime')
             if args.runtime is not None and len(args.source_root) != 1:
                 raise registry.RegistryError('Configure runtime for one explicit workspace at a time')
             preview = registry.plan_setup(home, args.source_root, remove=args.remove,
-                runtime=args.runtime, grant_store=args.grant_store, worktree_roots=args.worktree_root)
+                runtime=args.runtime, grant_store=args.grant_store, worktree_roots=args.worktree_root,
+                telemetry=telemetry)
             output = registry.apply(home, preview, args.preview_digest) if args.apply else preview
         print(json.dumps(output, ensure_ascii=False, sort_keys=True, indent=2))
         return 0

@@ -2,7 +2,7 @@
   "files": {
     ".claude-plugin/plugin.json": {
       "executable": false,
-      "sha256": "b946ff22b04fe75077e30ed4f92d35ced3e86cbf7059cbb97feb2dba732b419d",
+      "sha256": "1ad62583ba6336c65584e78394880efc743d11b8f5663ecaa61a855c67d62b14",
       "sizeBytes": 372
     },
     ".mcp.json": {
@@ -25,6 +25,11 @@
       "sha256": "23ee78c8bae49cf08ea2f0c84945c66b987ebe4520881fb51b3dad4fb43d07c2",
       "sizeBytes": 20137
     },
+    "LICENSES/Harness2-Apache-2.0.txt": {
+      "executable": false,
+      "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
+      "sizeBytes": 11358
+    },
     "LICENSES/Spec-Kit-MIT.txt": {
       "executable": false,
       "sha256": "2510b446bc1f0cf9702453075d20cd88631e20e5642658edb7325d9c1eb534f7",
@@ -37,8 +42,8 @@
     },
     "NOTICE": {
       "executable": false,
-      "sha256": "c68b8c70b5d4a707eecf3ca4cb0dbc14d3754aa8dff3700f1252e9ac80cbffb5",
-      "sizeBytes": 1220
+      "sha256": "3ef822bdcd9c7ff652fe9f0a14d36b6ddff2388315c8566e4a691bd04c9819a2",
+      "sizeBytes": 1593
     },
     "README.md": {
       "executable": false,
@@ -67,12 +72,12 @@
     },
     "plugin.json": {
       "executable": false,
-      "sha256": "70a435dfdc434e2bbd96e3dbe4982b50b779cb60886ce69302937d7bcd274fee",
+      "sha256": "30ba38e90228418c391222eb6f144c67747efd99ffbe1eab80293cb3b09ffff8",
       "sizeBytes": 1348
     },
     "provenance.json": {
       "executable": false,
-      "sha256": "73fc054fb9ab39b0f7bde5b64965928b9d6f324c1c7869c062c43304c2116b2c",
+      "sha256": "188184bf2b1a08f739eaaf73521e10a692544a424ea075c6118ca748626c5d22",
       "sizeBytes": 18727
     },
     "runtime/linux-x86_64/bin/2to3": {
@@ -7197,13 +7202,13 @@
     },
     "runtime/linux-x86_64/lib/python3.12/site-packages/agent_braid-0.1.0a1.dist-info/METADATA": {
       "executable": false,
-      "sha256": "9159248ca5007ada60c3a28000f75f3558cc90148e6883e195a89e5da34b1caa",
-      "sizeBytes": 31572
+      "sha256": "d9c57ad3541c18f02a2ac6d7b2cc37a275eacf55b012230f40baf4b7a8839d68",
+      "sizeBytes": 16616
     },
     "runtime/linux-x86_64/lib/python3.12/site-packages/agent_braid-0.1.0a1.dist-info/RECORD": {
       "executable": false,
-      "sha256": "19470e3ce9081a681037f29e3254d9a188c7144dc4b8cf6eed461ce389fb5ad3",
-      "sizeBytes": 13148
+      "sha256": "5964b945e47e9942aae6b2580a617bcb8d0e6c93dfaf9377b167a559fdf5b0b8",
+      "sizeBytes": 14772
     },
     "runtime/linux-x86_64/lib/python3.12/site-packages/agent_braid-0.1.0a1.dist-info/REQUESTED": {
       "executable": false,
@@ -7212,13 +7217,13 @@
     },
     "runtime/linux-x86_64/lib/python3.12/site-packages/agent_braid-0.1.0a1.dist-info/WHEEL": {
       "executable": false,
-      "sha256": "61532836a2b3111b7ec23519c09df7c41180c27165fb872a6d8913b566b88ad1",
+      "sha256": "98e75747d0b7c0c568bfb71263c3d8f970b3a374a6996087bc642be5cb09a1aa",
       "sizeBytes": 91
     },
     "runtime/linux-x86_64/lib/python3.12/site-packages/agent_braid-0.1.0a1.dist-info/direct_url.json": {
       "executable": false,
-      "sha256": "115492b7a7c6efad2ef153f86500627c03c5accfcfbe13dade1731ff379a896c",
-      "sizeBytes": 338
+      "sha256": "0ea285888ef87e45cbb64d73357bab9dea020b62540455148f6fc0548e2b331a",
+      "sizeBytes": 440
     },
     "runtime/linux-x86_64/lib/python3.12/site-packages/agent_braid-0.1.0a1.dist-info/entry_points.txt": {
       "executable": false,
@@ -7232,8 +7237,8 @@
     },
     "runtime/linux-x86_64/lib/python3.12/site-packages/agent_braid-0.1.0a1.dist-info/licenses/NOTICE": {
       "executable": false,
-      "sha256": "c68b8c70b5d4a707eecf3ca4cb0dbc14d3754aa8dff3700f1252e9ac80cbffb5",
-      "sizeBytes": 1220
+      "sha256": "3ef822bdcd9c7ff652fe9f0a14d36b6ddff2388315c8566e4a691bd04c9819a2",
+      "sizeBytes": 1593
     },
     "runtime/linux-x86_64/lib/python3.12/site-packages/agent_braid-0.1.0a1.dist-info/top_level.txt": {
       "executable": false,
@@ -7277,8 +7282,8 @@
     },
     "runtime/linux-x86_64/lib/python3.12/site-packages/agent_braid/__pycache__/cli.cpython-312.pyc": {
       "executable": false,
-      "sha256": "cb5bf63a0752ff1826bbbdd4448c3ddcab40f2ff2d25f7a821eddcddade98320",
-      "sizeBytes": 21700
+      "sha256": "3c7c6a2982f51ce6c214032ee2c0ede9d00c1565af86cfca361a7e7d44116518",
+      "sizeBytes": 22914
     },
     "runtime/linux-x86_64/lib/python3.12/site-packages/agent_braid/__pycache__/forecast_advice.cpython-312.pyc": {
       "executable": false,
@@ -7385,6 +7390,11 @@
       "sha256": "218a07c33c856267fd7a35a41aa386858634be1d3474e53f49b59a8ebcd4df0e",
       "sizeBytes": 8866
     },
+    "runtime/linux-x86_64/lib/python3.12/site-packages/agent_braid/__pycache__/forecast_report.cpython-312.pyc": {
+      "executable": false,
+      "sha256": "96f5bd9497d55e2d8f85912dc0b9399011085ead804f9559cea167a5b4e13637",
+      "sizeBytes": 13907
+    },
     "runtime/linux-x86_64/lib/python3.12/site-packages/agent_braid/__pycache__/forecast_resources.cpython-312.pyc": {
       "executable": false,
       "sha256": "530232d9eb7d8c78b2566ecfecf5453bd8969be1f0b14b66dc9e91077fd38655",
@@ -7462,18 +7472,33 @@
     },
     "runtime/linux-x86_64/lib/python3.12/site-packages/agent_braid/__pycache__/git_replay.cpython-312.pyc": {
       "executable": false,
-      "sha256": "3da7fe9fef74e59d64edc06fe52cd989c4554877868a576a04f14c5e3b740fc8",
-      "sizeBytes": 40743
+      "sha256": "8729b2e07053e4b85c2000c786a03ecd5027edb7fc8499fd94f993e9fcf31f4c",
+      "sizeBytes": 41033
     },
     "runtime/linux-x86_64/lib/python3.12/site-packages/agent_braid/__pycache__/git_runtime.cpython-312.pyc": {
       "executable": false,
-      "sha256": "d796af4f56fd803c666d0daf0aebd0e5b508dd701fe621ab599405c5e7e5103c",
-      "sizeBytes": 43550
+      "sha256": "1e115461c9d4ce7fd8559c0f19a3cd431719532dc1d6adbaff095e584a85806a",
+      "sizeBytes": 43673
     },
     "runtime/linux-x86_64/lib/python3.12/site-packages/agent_braid/__pycache__/git_runtime_process.cpython-312.pyc": {
       "executable": false,
       "sha256": "57ac533d04ac451d47e94dd4500b1e88e6fb5fced8f7453515492860e8be6a9b",
       "sizeBytes": 8033
+    },
+    "runtime/linux-x86_64/lib/python3.12/site-packages/agent_braid/__pycache__/harness_admission.cpython-312.pyc": {
+      "executable": false,
+      "sha256": "01aaa889380d8dfa0cc857fa6e3a2f80a1275516b162d11cf0c7ec79aa452c29",
+      "sizeBytes": 22584
+    },
+    "runtime/linux-x86_64/lib/python3.12/site-packages/agent_braid/__pycache__/harness_manifest.cpython-312.pyc": {
+      "executable": false,
+      "sha256": "40f0a27ba8102b39ed117e48e263cce7ceb4cc9655b085639b6eadac4e2b7064",
+      "sizeBytes": 17826
+    },
+    "runtime/linux-x86_64/lib/python3.12/site-packages/agent_braid/__pycache__/harness_surface.cpython-312.pyc": {
+      "executable": false,
+      "sha256": "ce6705a5fcb6ca5590fc8a8764a8ac6f45f320ecd8d3f9e8af771a8283912f4a",
+      "sizeBytes": 38091
     },
     "runtime/linux-x86_64/lib/python3.12/site-packages/agent_braid/__pycache__/m35_source_window.cpython-312.pyc": {
       "executable": false,
@@ -7520,10 +7545,20 @@
       "sha256": "9813d760da0ce895845dbac94f1a74f50b2130921948ed84f9dbd2266af225a1",
       "sizeBytes": 32860
     },
+    "runtime/linux-x86_64/lib/python3.12/site-packages/agent_braid/__pycache__/owned_work_authority.cpython-312.pyc": {
+      "executable": false,
+      "sha256": "fc39bd3a03ab51abf01f2b8e4454367714a82bc39165a967c2132d3ab4c8623c",
+      "sizeBytes": 19871
+    },
+    "runtime/linux-x86_64/lib/python3.12/site-packages/agent_braid/__pycache__/owned_work_contracts.cpython-312.pyc": {
+      "executable": false,
+      "sha256": "047f0b4e8d5768bf63fb130b2ab59b8f4d570ffd25c9c188d3f4d535de71199c",
+      "sizeBytes": 60649
+    },
     "runtime/linux-x86_64/lib/python3.12/site-packages/agent_braid/__pycache__/plugin_cli.cpython-312.pyc": {
       "executable": false,
-      "sha256": "a408b0439027b7e58168690c014451afecc1da1d375c741926ec063cc1863ec4",
-      "sizeBytes": 7312
+      "sha256": "3e43a1e109739a7d5726dcbe76ad8222a416b549bb67536fc1d0aef32f6dc6cd",
+      "sizeBytes": 7609
     },
     "runtime/linux-x86_64/lib/python3.12/site-packages/agent_braid/__pycache__/plugin_legacy.cpython-312.pyc": {
       "executable": false,
@@ -7532,18 +7567,18 @@
     },
     "runtime/linux-x86_64/lib/python3.12/site-packages/agent_braid/__pycache__/plugin_mcp.cpython-312.pyc": {
       "executable": false,
-      "sha256": "faa47ffa7e518e6ac41255b173136b8d38254fa4dd2494bd59ba83f0534291a0",
-      "sizeBytes": 19603
+      "sha256": "609f9754c6e8ade4dd45c5cb73f78973e0daa328c9e91b1a2c2bab65931c3eca",
+      "sizeBytes": 20212
     },
     "runtime/linux-x86_64/lib/python3.12/site-packages/agent_braid/__pycache__/plugin_package.cpython-312.pyc": {
       "executable": false,
-      "sha256": "4ef6625d281623a8dab2eea64119785c4e4d8aa0cd49a595875eb0272ec29884",
-      "sizeBytes": 4881
+      "sha256": "08009a5c07dc551fba0b4c517e7ac0ba2831b6a2391f523a49ee3d2c5ebc35ad",
+      "sizeBytes": 6141
     },
     "runtime/linux-x86_64/lib/python3.12/site-packages/agent_braid/__pycache__/plugin_registry.cpython-312.pyc": {
       "executable": false,
-      "sha256": "a3b4fd89862c2e1a4015f2fb141d489d3e595a78deacf0e509154ae2ee24c802",
-      "sizeBytes": 20545
+      "sha256": "5b9b6a681a000c7bf3010aeca5663b9ecf9b67113d4408f8b17295d19b8d5bd2",
+      "sizeBytes": 22201
     },
     "runtime/linux-x86_64/lib/python3.12/site-packages/agent_braid/__pycache__/runtime_policy.cpython-312.pyc": {
       "executable": false,
@@ -7615,6 +7650,46 @@
       "sha256": "9a21f99300d59436c02f7fda2edb6d8978f1d33c5f0ade5ec2b5cee019da9c5d",
       "sizeBytes": 6396
     },
+    "runtime/linux-x86_64/lib/python3.12/site-packages/agent_braid/__pycache__/system_one_verified_acquisition.cpython-312.pyc": {
+      "executable": false,
+      "sha256": "371b79ef2e3ae5df4b365be4751c4ec627fb21607f50df0781ee5dfd5dd8b322",
+      "sizeBytes": 30029
+    },
+    "runtime/linux-x86_64/lib/python3.12/site-packages/agent_braid/__pycache__/system_one_verified_consumers.cpython-312.pyc": {
+      "executable": false,
+      "sha256": "67882b73904b29b15d43cf300cdcd39a581aa5198a17d3b768da0eda8e9f607d",
+      "sizeBytes": 31092
+    },
+    "runtime/linux-x86_64/lib/python3.12/site-packages/agent_braid/__pycache__/system_one_verified_ir.cpython-312.pyc": {
+      "executable": false,
+      "sha256": "f34f18be13304538dadf904b116c2301184ff310124ed893dd6285ad05b1370b",
+      "sizeBytes": 27965
+    },
+    "runtime/linux-x86_64/lib/python3.12/site-packages/agent_braid/__pycache__/system_one_verified_mcp.cpython-312.pyc": {
+      "executable": false,
+      "sha256": "dc836746274f9f83cfe5c74436f196924997837a8e22af738b669d8939ae5e04",
+      "sizeBytes": 12101
+    },
+    "runtime/linux-x86_64/lib/python3.12/site-packages/agent_braid/__pycache__/system_one_verified_registry.cpython-312.pyc": {
+      "executable": false,
+      "sha256": "19bf1f5b6c86b3bd5e1a08f9cea0086cbd1920f92afb82d42c47446e062444c1",
+      "sizeBytes": 5791
+    },
+    "runtime/linux-x86_64/lib/python3.12/site-packages/agent_braid/__pycache__/system_one_verified_selection.cpython-312.pyc": {
+      "executable": false,
+      "sha256": "90d2b4abdfc7a57f13ae59d405ed1882a363a840df20b89886163ef6f05793c1",
+      "sizeBytes": 40335
+    },
+    "runtime/linux-x86_64/lib/python3.12/site-packages/agent_braid/__pycache__/system_one_verified_stdio.cpython-312.pyc": {
+      "executable": false,
+      "sha256": "c6747c4b86aa9d9bce2542ef47d88c9ca7192cd6455a6d4d2587053497d275bc",
+      "sizeBytes": 24269
+    },
+    "runtime/linux-x86_64/lib/python3.12/site-packages/agent_braid/__pycache__/system_one_verified_tooling.cpython-312.pyc": {
+      "executable": false,
+      "sha256": "725daac5c93ca7c121ee8032c516d6d59f99d7bdc9e04b1494aee53b987d5195",
+      "sizeBytes": 11100
+    },
     "runtime/linux-x86_64/lib/python3.12/site-packages/agent_braid/__pycache__/tooling_allocation.cpython-312.pyc": {
       "executable": false,
       "sha256": "7cb14326d03e962276fa40628d4c01cda1bdcd2b42bc8e4a9763e350d4654222",
@@ -7647,8 +7722,8 @@
     },
     "runtime/linux-x86_64/lib/python3.12/site-packages/agent_braid/__pycache__/tooling_cli.cpython-312.pyc": {
       "executable": false,
-      "sha256": "27eab16ea8c70c106f44d59c4072a5046c21f7f4bbb1a06009d713f6aafb9e45",
-      "sizeBytes": 8538
+      "sha256": "05f02799590d5e9176f83c333ec9adffd0c4f7435cb51c8ca9b0e631b15e8de9",
+      "sizeBytes": 8911
     },
     "runtime/linux-x86_64/lib/python3.12/site-packages/agent_braid/__pycache__/tooling_codex_observer.cpython-312.pyc": {
       "executable": false,
@@ -7717,8 +7792,8 @@
     },
     "runtime/linux-x86_64/lib/python3.12/site-packages/agent_braid/__pycache__/tooling_install.cpython-312.pyc": {
       "executable": false,
-      "sha256": "44218c868b1a0a9e3062a0acd45cf7be80ef5e0006855a9ef5c4fff87d1d02e4",
-      "sizeBytes": 61300
+      "sha256": "c0de4b2e295c30ba56c7970583af106413edd05d8aec6ee286792bbec4da3f50",
+      "sizeBytes": 63704
     },
     "runtime/linux-x86_64/lib/python3.12/site-packages/agent_braid/__pycache__/tooling_interface_observer.cpython-312.pyc": {
       "executable": false,
@@ -7727,8 +7802,8 @@
     },
     "runtime/linux-x86_64/lib/python3.12/site-packages/agent_braid/__pycache__/tooling_mcp.cpython-312.pyc": {
       "executable": false,
-      "sha256": "28d0b79c8fccea1bba1c73ac172a5879d389da39c825acfd2a2310f304b0d6dc",
-      "sizeBytes": 53022
+      "sha256": "6b45ed9d424bc92aa3c9e931f239c31d0c585ff894cd13fd03798c53d649bdc3",
+      "sizeBytes": 54411
     },
     "runtime/linux-x86_64/lib/python3.12/site-packages/agent_braid/__pycache__/tooling_measurements.cpython-312.pyc": {
       "executable": false,
@@ -7800,6 +7875,16 @@
       "sha256": "f3fbb35f98934fea23773fc21780e2c9656127d865146d440d5e0ff779b48b52",
       "sizeBytes": 93258
     },
+    "runtime/linux-x86_64/lib/python3.12/site-packages/agent_braid/__pycache__/tooling_telemetry.cpython-312.pyc": {
+      "executable": false,
+      "sha256": "b208530182100ea0a8595703ae6278e1aa54103238283a062bce57aa4de04e6c",
+      "sizeBytes": 37510
+    },
+    "runtime/linux-x86_64/lib/python3.12/site-packages/agent_braid/__pycache__/tooling_telemetry_cli.cpython-312.pyc": {
+      "executable": false,
+      "sha256": "93a457097a38a753916252a636b6d1aefe14a3e366f087f1917a7a8b5e70050e",
+      "sizeBytes": 3339
+    },
     "runtime/linux-x86_64/lib/python3.12/site-packages/agent_braid/__pycache__/trace_adapter.cpython-312.pyc": {
       "executable": false,
       "sha256": "8bac47f84a0585148984d061e84c880634eb364bf7687c2c8a294ffb6656c29e",
@@ -7842,8 +7927,8 @@
     },
     "runtime/linux-x86_64/lib/python3.12/site-packages/agent_braid/cli.py": {
       "executable": false,
-      "sha256": "fe2d6550735469f6a7e60d5be62972a1697ed26648f371a2ffa968c1f2407497",
-      "sizeBytes": 18069
+      "sha256": "a9f340cfe5f379ba2f0c83a815c8e72b44fade320b7904943b164b1ab670f8c7",
+      "sizeBytes": 19104
     },
     "runtime/linux-x86_64/lib/python3.12/site-packages/agent_braid/forecast_advice.py": {
       "executable": false,
@@ -7950,6 +8035,11 @@
       "sha256": "6569d2b7f8fb64299dce3c45b3460936aa2172507d8dab9ef84819de3d2442ab",
       "sizeBytes": 6312
     },
+    "runtime/linux-x86_64/lib/python3.12/site-packages/agent_braid/forecast_report.py": {
+      "executable": false,
+      "sha256": "1a6335ad18e80d0fd4feda72f2642149623e764a0a9988e6957030fd2658a088",
+      "sizeBytes": 10369
+    },
     "runtime/linux-x86_64/lib/python3.12/site-packages/agent_braid/forecast_resources.py": {
       "executable": false,
       "sha256": "851a92343d2ac0f08552921cd81e51949b8fc037fa5d0278c259d09585a8f034",
@@ -8027,18 +8117,33 @@
     },
     "runtime/linux-x86_64/lib/python3.12/site-packages/agent_braid/git_replay.py": {
       "executable": false,
-      "sha256": "62a2c461902e30d874dfe82bed77ab79075f33cb0e56f1e543fd9d317f1d571e",
-      "sizeBytes": 32089
+      "sha256": "6dc84e50fe04abb4e5675ac0173f9579b239d13ad1741e106b2d4e272081a388",
+      "sizeBytes": 32416
     },
     "runtime/linux-x86_64/lib/python3.12/site-packages/agent_braid/git_runtime.py": {
       "executable": false,
-      "sha256": "ceb4469906b6c97a6f03faf3cc1b4ea8387df937c06b8ccd49984eaf2dff4d4e",
-      "sizeBytes": 31403
+      "sha256": "8cf7168e2cbb9b874019eb3cc8dcee7b5ad69892eaeb4cc0511996fade29f897",
+      "sizeBytes": 31565
     },
     "runtime/linux-x86_64/lib/python3.12/site-packages/agent_braid/git_runtime_process.py": {
       "executable": false,
       "sha256": "6cde49846602aec8b18a3df141c8f77ff2bb66badd098d149393e900c44c0da4",
       "sizeBytes": 6004
+    },
+    "runtime/linux-x86_64/lib/python3.12/site-packages/agent_braid/harness_admission.py": {
+      "executable": false,
+      "sha256": "49197a2518d8df9b66658ec6c279d079bc1cf915a9c3570673f524dca60b5901",
+      "sizeBytes": 16871
+    },
+    "runtime/linux-x86_64/lib/python3.12/site-packages/agent_braid/harness_manifest.py": {
+      "executable": false,
+      "sha256": "373f1dd8e888c88fde6a47399c429c9b56ab040eea94811f22de796bc6b5d5a1",
+      "sizeBytes": 12501
+    },
+    "runtime/linux-x86_64/lib/python3.12/site-packages/agent_braid/harness_surface.py": {
+      "executable": false,
+      "sha256": "78ca27952ffa1054d8ef61cbc0bd9458d51d967f716e5bd1ba6462daa892529c",
+      "sizeBytes": 26912
     },
     "runtime/linux-x86_64/lib/python3.12/site-packages/agent_braid/m35_source_window.py": {
       "executable": false,
@@ -8085,10 +8190,20 @@
       "sha256": "5c77eb3c134ed8bdb8f1a6f7ab5a46b3fda62014282d7da0211863e7d3b2d8a3",
       "sizeBytes": 26640
     },
+    "runtime/linux-x86_64/lib/python3.12/site-packages/agent_braid/owned_work_authority.py": {
+      "executable": false,
+      "sha256": "0fcaa2ef75ff7f3e5dbe0a59a3cf92f7963c34d124d338319abfd94cc84a2e64",
+      "sizeBytes": 13099
+    },
+    "runtime/linux-x86_64/lib/python3.12/site-packages/agent_braid/owned_work_contracts.py": {
+      "executable": false,
+      "sha256": "6df4dd3a64228aa88d081a5fbe2ee9cc7c32a41b347238cd79434200700d2f09",
+      "sizeBytes": 53478
+    },
     "runtime/linux-x86_64/lib/python3.12/site-packages/agent_braid/plugin_cli.py": {
       "executable": false,
-      "sha256": "25929184e65b64f4f18c85e5428f8c8a76426a5a301bc251bd6b13e6f4da0435",
-      "sizeBytes": 5358
+      "sha256": "1c4edd2d28646fa6ab72f3678133285cf181fb77512f060cb29e47ba63a942d9",
+      "sizeBytes": 5654
     },
     "runtime/linux-x86_64/lib/python3.12/site-packages/agent_braid/plugin_legacy.py": {
       "executable": false,
@@ -8097,18 +8212,18 @@
     },
     "runtime/linux-x86_64/lib/python3.12/site-packages/agent_braid/plugin_mcp.py": {
       "executable": false,
-      "sha256": "b598eead8342e03949e5f2d2e721bea68107e2d805ab9668111f5ba550191148",
-      "sizeBytes": 11130
+      "sha256": "78c51a56887518273a41d37f079e05beff958471d12a9620c74f2b10da8af7a5",
+      "sizeBytes": 11852
     },
     "runtime/linux-x86_64/lib/python3.12/site-packages/agent_braid/plugin_package.py": {
       "executable": false,
-      "sha256": "92228211793f843b37be3b63b052317c02463811b9dacd2bcf5efb2a323c2f73",
-      "sizeBytes": 2845
+      "sha256": "628b8afc397be428a93b77aa1d12af8c27643c0a1bc6981ad1385eb4da90c438",
+      "sizeBytes": 3968
     },
     "runtime/linux-x86_64/lib/python3.12/site-packages/agent_braid/plugin_registry.py": {
       "executable": false,
-      "sha256": "6a5a900792e95050487d5ebd9f2d4211cb86b86327b8fa42f17677b46064503b",
-      "sizeBytes": 13318
+      "sha256": "ce414a24262c8674043659de07086d6f60f95784cb63cf490bc949f129808378",
+      "sizeBytes": 14870
     },
     "runtime/linux-x86_64/lib/python3.12/site-packages/agent_braid/runtime_policy.py": {
       "executable": false,
@@ -8180,6 +8295,46 @@
       "sha256": "bc69c1027aa829935979304538a8fd63dcd1be6af0757a86fc3fb9afe0509b50",
       "sizeBytes": 4289
     },
+    "runtime/linux-x86_64/lib/python3.12/site-packages/agent_braid/system_one_verified_acquisition.py": {
+      "executable": false,
+      "sha256": "2380a32ef308fbbe540c67e71fb0bf43dc15b95a6732a13a8e2bf2be0d49e5b7",
+      "sizeBytes": 20715
+    },
+    "runtime/linux-x86_64/lib/python3.12/site-packages/agent_braid/system_one_verified_consumers.py": {
+      "executable": false,
+      "sha256": "94bbae509e85ba8b241b422cd2a31eb18b1cb7eaa0afeb9f0d18e17548e9d4eb",
+      "sizeBytes": 22873
+    },
+    "runtime/linux-x86_64/lib/python3.12/site-packages/agent_braid/system_one_verified_ir.py": {
+      "executable": false,
+      "sha256": "a0378c34b805387b0518cf6ebc3da05599976cb7f037d5f140c2571c8f362ea3",
+      "sizeBytes": 18934
+    },
+    "runtime/linux-x86_64/lib/python3.12/site-packages/agent_braid/system_one_verified_mcp.py": {
+      "executable": false,
+      "sha256": "e34983f7e92ab1812ca6a8265d4a365ee7e5217ae8f1689da71b8998354025d4",
+      "sizeBytes": 7996
+    },
+    "runtime/linux-x86_64/lib/python3.12/site-packages/agent_braid/system_one_verified_registry.py": {
+      "executable": false,
+      "sha256": "8d9cb2070683497ea789a9f03905e07f69d6c812c7d0ec9d6ab8a72116f88e6c",
+      "sizeBytes": 4294
+    },
+    "runtime/linux-x86_64/lib/python3.12/site-packages/agent_braid/system_one_verified_selection.py": {
+      "executable": false,
+      "sha256": "a8fd0d752c3ab179b233906adac65b7dfe2150cf8ef079c3e00334e689bbb51e",
+      "sizeBytes": 29478
+    },
+    "runtime/linux-x86_64/lib/python3.12/site-packages/agent_braid/system_one_verified_stdio.py": {
+      "executable": false,
+      "sha256": "8876c0493f9ab3daac504ea859ebc5e10a37d708e138a5758fe251964d5e272e",
+      "sizeBytes": 17659
+    },
+    "runtime/linux-x86_64/lib/python3.12/site-packages/agent_braid/system_one_verified_tooling.py": {
+      "executable": false,
+      "sha256": "128aed194149f648d0a579b9fff7d85e121c10339df7552e1e488363c744d04e",
+      "sizeBytes": 7280
+    },
     "runtime/linux-x86_64/lib/python3.12/site-packages/agent_braid/tooling_allocation.py": {
       "executable": false,
       "sha256": "9f506909be5c004baa928a45a374820d0fecca01d4101436681d9069e9376be5",
@@ -8192,8 +8347,8 @@
     },
     "runtime/linux-x86_64/lib/python3.12/site-packages/agent_braid/tooling_assets/NOTICE": {
       "executable": false,
-      "sha256": "c68b8c70b5d4a707eecf3ca4cb0dbc14d3754aa8dff3700f1252e9ac80cbffb5",
-      "sizeBytes": 1220
+      "sha256": "3ef822bdcd9c7ff652fe9f0a14d36b6ddff2388315c8566e4a691bd04c9819a2",
+      "sizeBytes": 1593
     },
     "runtime/linux-x86_64/lib/python3.12/site-packages/agent_braid/tooling_assets/TRADEMARKS.md": {
       "executable": false,
@@ -8272,8 +8427,8 @@
     },
     "runtime/linux-x86_64/lib/python3.12/site-packages/agent_braid/tooling_cli.py": {
       "executable": false,
-      "sha256": "2ba676c7873ee17590e66baa8ace4bef2453a12d686db57654382a8b23dece1a",
-      "sizeBytes": 6375
+      "sha256": "393d8b41f30b75872bde151d62b1bd94ec719a9a5b118ff6f87705ad11df380a",
+      "sizeBytes": 6698
     },
     "runtime/linux-x86_64/lib/python3.12/site-packages/agent_braid/tooling_codex_observer.py": {
       "executable": false,
@@ -8342,8 +8497,8 @@
     },
     "runtime/linux-x86_64/lib/python3.12/site-packages/agent_braid/tooling_install.py": {
       "executable": false,
-      "sha256": "91a736438833efdb8f98d70fed654075cf6da7e9c9303703c965e1d90e8fd5bd",
-      "sizeBytes": 48804
+      "sha256": "ba1856d30e7848e194b3f317bd913b9743fd2a906f10a86dd155fd93dca9aa78",
+      "sizeBytes": 50893
     },
     "runtime/linux-x86_64/lib/python3.12/site-packages/agent_braid/tooling_interface_observer.py": {
       "executable": false,
@@ -8352,8 +8507,8 @@
     },
     "runtime/linux-x86_64/lib/python3.12/site-packages/agent_braid/tooling_mcp.py": {
       "executable": false,
-      "sha256": "f8d151fb11905d5bff7114571e5663bf80cb0cd15af3acb1bf5159b14c54b6dd",
-      "sizeBytes": 40695
+      "sha256": "4d35b94ba354b1dc7c248024f9fc6abc93bddec3aa679cc475aae01ff0b17194",
+      "sizeBytes": 41836
     },
     "runtime/linux-x86_64/lib/python3.12/site-packages/agent_braid/tooling_measurements.py": {
       "executable": false,
@@ -8424,6 +8579,16 @@
       "executable": false,
       "sha256": "cfac9ce684c2b442bc7f0fd59c79a661d699143d34f9993d9329212bedd72b43",
       "sizeBytes": 80668
+    },
+    "runtime/linux-x86_64/lib/python3.12/site-packages/agent_braid/tooling_telemetry.py": {
+      "executable": false,
+      "sha256": "066fbd1ffa955d48b9ee5e69267d05a0c096ebd8eb646d5e0422e1786a644c2c",
+      "sizeBytes": 22946
+    },
+    "runtime/linux-x86_64/lib/python3.12/site-packages/agent_braid/tooling_telemetry_cli.py": {
+      "executable": false,
+      "sha256": "fe008cf49daa3a38e08279c439a2b1a51b00c69d002dbeb0de7046fad12d3f68",
+      "sizeBytes": 2181
     },
     "runtime/linux-x86_64/lib/python3.12/site-packages/agent_braid/trace_adapter.py": {
       "executable": false,
@@ -9292,33 +9457,33 @@
     },
     "runtime/linux-x86_64/lib/python3.12/site-packages/bin/cffi-gen-src": {
       "executable": true,
-      "sha256": "a9232c6d29a4e3824001c2dbb4f53518c609b2c9593815dc0cf5ffc2abf78b94",
-      "sizeBytes": 261
+      "sha256": "7fee3363fc21a501a81e3e609b2eb1aa640de57d1ddff215b1b380947b1eda94",
+      "sizeBytes": 325
     },
     "runtime/linux-x86_64/lib/python3.12/site-packages/bin/httpx2": {
       "executable": true,
-      "sha256": "1dd238973314eec4c4e27519c42ebc713c9927be4f41d9171cf9087bddf0d012",
-      "sizeBytes": 257
+      "sha256": "9c5e5dff98449d1ce5cdcb968f5c2c979a87a11b79756a9464c74db38ff79c5b",
+      "sizeBytes": 321
     },
     "runtime/linux-x86_64/lib/python3.12/site-packages/bin/idna": {
       "executable": true,
-      "sha256": "318a29f73fe16f40c77e83c7486c386b5db30d0c30b7a676c5dd0f1cd6777b24",
-      "sizeBytes": 253
+      "sha256": "ab546f128ffda0174c319ef332d69d594e15f3c112d7519dafb65f172bb87d6d",
+      "sizeBytes": 317
     },
     "runtime/linux-x86_64/lib/python3.12/site-packages/bin/jsonschema": {
       "executable": true,
-      "sha256": "374c0239e5f0173ef0e9ab8d61a33d97e8beb1c8b4c41dda25c74928b13a5a8d",
-      "sizeBytes": 259
+      "sha256": "aeac5a5e6605b2596c174e4679f7c45f50036259755dde75cbd99311ea713a39",
+      "sizeBytes": 323
     },
     "runtime/linux-x86_64/lib/python3.12/site-packages/bin/mcp": {
       "executable": true,
-      "sha256": "9e335cdc69604b881f4916049ae24002bf07e6dc5b70b214b3a14833e276828c",
-      "sizeBytes": 250
+      "sha256": "8f050230fffe21faa94f6c53f5d6171841075b8915ee7b3895839777206ea6a9",
+      "sizeBytes": 314
     },
     "runtime/linux-x86_64/lib/python3.12/site-packages/bin/uvicorn": {
       "executable": true,
-      "sha256": "8f87aba1c09688b43856b44bfd574abe7e48dc827a67b457dd5512498b327b91",
-      "sizeBytes": 257
+      "sha256": "71dbd75b56359b188b26672e5afa979a2851a67f248b49cdaad3d8b36cfdb6b1",
+      "sizeBytes": 321
     },
     "runtime/linux-x86_64/lib/python3.12/site-packages/cffi-2.1.1.dist-info/INSTALLER": {
       "executable": false,
@@ -9332,7 +9497,7 @@
     },
     "runtime/linux-x86_64/lib/python3.12/site-packages/cffi-2.1.1.dist-info/RECORD": {
       "executable": false,
-      "sha256": "2ebeb475aeb99d458518d7b880227d301da52172f45cb87378ff81679061111d",
+      "sha256": "e6cef04a75f501370eafbed29dfbfbf1c33de4915bdc97665726186d6c3d1da9",
       "sizeBytes": 2662
     },
     "runtime/linux-x86_64/lib/python3.12/site-packages/cffi-2.1.1.dist-info/REQUESTED": {
@@ -11292,7 +11457,7 @@
     },
     "runtime/linux-x86_64/lib/python3.12/site-packages/httpx2-2.13.1.dist-info/RECORD": {
       "executable": false,
-      "sha256": "e174ec434e73580dcd72e5f25c6cb4f65ed9b30236dde25e44a7537156f8449d",
+      "sha256": "d95a1272a448438f58e44804c63be8b1e973302e3f0aa3f598986e352167ab6e",
       "sizeBytes": 3112
     },
     "runtime/linux-x86_64/lib/python3.12/site-packages/httpx2-2.13.1.dist-info/REQUESTED": {
@@ -11632,7 +11797,7 @@
     },
     "runtime/linux-x86_64/lib/python3.12/site-packages/idna-3.20.dist-info/RECORD": {
       "executable": false,
-      "sha256": "5207ef0a4c3c48815343074e5b2b745b75be42f08d39ead9c0244837b961098b",
+      "sha256": "e5fd4eded703727b596b29df398a149c80ef43585675a57abfee2514264ae103",
       "sizeBytes": 1424
     },
     "runtime/linux-x86_64/lib/python3.12/site-packages/idna-3.20.dist-info/REQUESTED": {
@@ -11772,7 +11937,7 @@
     },
     "runtime/linux-x86_64/lib/python3.12/site-packages/jsonschema-4.26.0.dist-info/RECORD": {
       "executable": false,
-      "sha256": "df75bd49b7c8913a637d825275ad8fd985450eb58a4eabb8d878e0d2da32a92a",
+      "sha256": "ac9c34a0a7039c41dbeefe58dd6a865ee68ff3fb07c238dc4cc29928945ff9b8",
       "sizeBytes": 4131
     },
     "runtime/linux-x86_64/lib/python3.12/site-packages/jsonschema-4.26.0.dist-info/REQUESTED": {
@@ -12477,7 +12642,7 @@
     },
     "runtime/linux-x86_64/lib/python3.12/site-packages/mcp-2.3.0.dist-info/RECORD": {
       "executable": false,
-      "sha256": "ca10530f194577367c390d99483bc6b06880bc286170253a62275a2361610b71",
+      "sha256": "f1926a8a8bb349e48c32eb006d6daae3b5bee46daf24349717daf09fc790cf5e",
       "sizeBytes": 11373
     },
     "runtime/linux-x86_64/lib/python3.12/site-packages/mcp-2.3.0.dist-info/REQUESTED": {
@@ -15855,6 +16020,11 @@
       "sha256": "5a351b9d9ea33c0777d5c9c214069e588544373c87b47749c8e95e96fd4663bd",
       "sizeBytes": 1445
     },
+    "runtime/linux-x86_64/lib/python3.12/site-packages/research/__pycache__/owned_work_coverage.cpython-312.pyc": {
+      "executable": false,
+      "sha256": "d52acf6e867c7932ff3b4597b63c4d72054d541946516554a290541928e462c9",
+      "sizeBytes": 7239
+    },
     "runtime/linux-x86_64/lib/python3.12/site-packages/research/lab/__init__.py": {
       "executable": false,
       "sha256": "e88d4e8c9e00094720fc9a572fa7f12f6c21e41ad81b3b52e5d29c2360d281cb",
@@ -15904,6 +16074,11 @@
       "executable": false,
       "sha256": "f39040b5476d663f6e7384e65d00073b084df6c8958b38bff45e4d6b19da010f",
       "sizeBytes": 10081
+    },
+    "runtime/linux-x86_64/lib/python3.12/site-packages/research/owned_work_coverage.py": {
+      "executable": false,
+      "sha256": "f398f0fc42e182ecf2b8e207d35a263a063d64650c84a8f6a23b699422ddf120",
+      "sizeBytes": 4578
     },
     "runtime/linux-x86_64/lib/python3.12/site-packages/rpds/__init__.py": {
       "executable": false,
@@ -16657,7 +16832,7 @@
     },
     "runtime/linux-x86_64/lib/python3.12/site-packages/uvicorn-0.54.0.dist-info/RECORD": {
       "executable": false,
-      "sha256": "1c4afdba07693e54a4a10d09334fba7f8cc32accc2fd7d23fcc541dc3114dd30",
+      "sha256": "a6a01f40aeeba880bcf031fe819d3f534861020b041e6083e5152ce50c8a3664",
       "sizeBytes": 4619
     },
     "runtime/linux-x86_64/lib/python3.12/site-packages/uvicorn-0.54.0.dist-info/REQUESTED": {
@@ -26482,13 +26657,13 @@
     },
     "runtime/macos-arm64/lib/python3.12/site-packages/agent_braid-0.1.0a1.dist-info/METADATA": {
       "executable": false,
-      "sha256": "9159248ca5007ada60c3a28000f75f3558cc90148e6883e195a89e5da34b1caa",
-      "sizeBytes": 31572
+      "sha256": "d9c57ad3541c18f02a2ac6d7b2cc37a275eacf55b012230f40baf4b7a8839d68",
+      "sizeBytes": 16616
     },
     "runtime/macos-arm64/lib/python3.12/site-packages/agent_braid-0.1.0a1.dist-info/RECORD": {
       "executable": false,
-      "sha256": "19470e3ce9081a681037f29e3254d9a188c7144dc4b8cf6eed461ce389fb5ad3",
-      "sizeBytes": 13148
+      "sha256": "5964b945e47e9942aae6b2580a617bcb8d0e6c93dfaf9377b167a559fdf5b0b8",
+      "sizeBytes": 14772
     },
     "runtime/macos-arm64/lib/python3.12/site-packages/agent_braid-0.1.0a1.dist-info/REQUESTED": {
       "executable": false,
@@ -26497,13 +26672,13 @@
     },
     "runtime/macos-arm64/lib/python3.12/site-packages/agent_braid-0.1.0a1.dist-info/WHEEL": {
       "executable": false,
-      "sha256": "61532836a2b3111b7ec23519c09df7c41180c27165fb872a6d8913b566b88ad1",
+      "sha256": "98e75747d0b7c0c568bfb71263c3d8f970b3a374a6996087bc642be5cb09a1aa",
       "sizeBytes": 91
     },
     "runtime/macos-arm64/lib/python3.12/site-packages/agent_braid-0.1.0a1.dist-info/direct_url.json": {
       "executable": false,
-      "sha256": "115492b7a7c6efad2ef153f86500627c03c5accfcfbe13dade1731ff379a896c",
-      "sizeBytes": 338
+      "sha256": "0ea285888ef87e45cbb64d73357bab9dea020b62540455148f6fc0548e2b331a",
+      "sizeBytes": 440
     },
     "runtime/macos-arm64/lib/python3.12/site-packages/agent_braid-0.1.0a1.dist-info/entry_points.txt": {
       "executable": false,
@@ -26517,8 +26692,8 @@
     },
     "runtime/macos-arm64/lib/python3.12/site-packages/agent_braid-0.1.0a1.dist-info/licenses/NOTICE": {
       "executable": false,
-      "sha256": "c68b8c70b5d4a707eecf3ca4cb0dbc14d3754aa8dff3700f1252e9ac80cbffb5",
-      "sizeBytes": 1220
+      "sha256": "3ef822bdcd9c7ff652fe9f0a14d36b6ddff2388315c8566e4a691bd04c9819a2",
+      "sizeBytes": 1593
     },
     "runtime/macos-arm64/lib/python3.12/site-packages/agent_braid-0.1.0a1.dist-info/top_level.txt": {
       "executable": false,
@@ -26562,8 +26737,8 @@
     },
     "runtime/macos-arm64/lib/python3.12/site-packages/agent_braid/__pycache__/cli.cpython-312.pyc": {
       "executable": false,
-      "sha256": "afe326ff90fc492a16473ce4b8c806ab20ce089792229c9a9a03ca3dee3fd12a",
-      "sizeBytes": 21699
+      "sha256": "e385fb7bd7c1e1d36f5ccf70d2f3117434d3d329a0bfb3a82c6573b4e281c769",
+      "sizeBytes": 22913
     },
     "runtime/macos-arm64/lib/python3.12/site-packages/agent_braid/__pycache__/forecast_advice.cpython-312.pyc": {
       "executable": false,
@@ -26670,6 +26845,11 @@
       "sha256": "bd172403465ba69f1cc00e3a51f717458a656cb150751576dba94568c7f5eed8",
       "sizeBytes": 8865
     },
+    "runtime/macos-arm64/lib/python3.12/site-packages/agent_braid/__pycache__/forecast_report.cpython-312.pyc": {
+      "executable": false,
+      "sha256": "9b5226b816f3ebaa48c2bb3b6e13334a8b8504ef2f072ead1d20ee30758a1322",
+      "sizeBytes": 13906
+    },
     "runtime/macos-arm64/lib/python3.12/site-packages/agent_braid/__pycache__/forecast_resources.cpython-312.pyc": {
       "executable": false,
       "sha256": "608fbb6972ecd2b14b2749647af1d4a296b28d6b0843ef18f2035cb5190d3219",
@@ -26747,18 +26927,33 @@
     },
     "runtime/macos-arm64/lib/python3.12/site-packages/agent_braid/__pycache__/git_replay.cpython-312.pyc": {
       "executable": false,
-      "sha256": "01928cfa92805f2fa0ef529f619008b724808af5c31c25f267d4d457b6e4ee3d",
-      "sizeBytes": 40742
+      "sha256": "9a489cdaf71b5694d97d4fdaa45c5f85b0247153ca67b6fa71b2fb8b2ec28cd6",
+      "sizeBytes": 41032
     },
     "runtime/macos-arm64/lib/python3.12/site-packages/agent_braid/__pycache__/git_runtime.cpython-312.pyc": {
       "executable": false,
-      "sha256": "56b1f740a037a86c530da2041d8d30b2fb53b9d2b46c2ce5bfd8c13d9615fd9b",
-      "sizeBytes": 43549
+      "sha256": "01432f6fa0a4d2b4e4d45bf43f3002e7a9b36bc0e68e1984a83b0cf027d6924a",
+      "sizeBytes": 43672
     },
     "runtime/macos-arm64/lib/python3.12/site-packages/agent_braid/__pycache__/git_runtime_process.cpython-312.pyc": {
       "executable": false,
       "sha256": "ea3494b2a67ec375d6942315ab9bd8e226603ecdd6742be0d0bbbb58637b9068",
       "sizeBytes": 8032
+    },
+    "runtime/macos-arm64/lib/python3.12/site-packages/agent_braid/__pycache__/harness_admission.cpython-312.pyc": {
+      "executable": false,
+      "sha256": "636a103d5a03cc7a763e618fc4ee5c2a3a7f7780a4877dfa1ce36a58f3309766",
+      "sizeBytes": 22583
+    },
+    "runtime/macos-arm64/lib/python3.12/site-packages/agent_braid/__pycache__/harness_manifest.cpython-312.pyc": {
+      "executable": false,
+      "sha256": "94f2f092b94f445f987e028d2c23d090358dd8524851b968fe3d797467befb15",
+      "sizeBytes": 17825
+    },
+    "runtime/macos-arm64/lib/python3.12/site-packages/agent_braid/__pycache__/harness_surface.cpython-312.pyc": {
+      "executable": false,
+      "sha256": "73df11d111755798397f89665dcecc3323c40832cd41ebcb93150b432e64be62",
+      "sizeBytes": 38090
     },
     "runtime/macos-arm64/lib/python3.12/site-packages/agent_braid/__pycache__/m35_source_window.cpython-312.pyc": {
       "executable": false,
@@ -26792,8 +26987,8 @@
     },
     "runtime/macos-arm64/lib/python3.12/site-packages/agent_braid/__pycache__/native_predictor_adapter.cpython-312.pyc": {
       "executable": false,
-      "sha256": "f13a4bf576d9834f2374b897122416ffd76a20fc429e43db63cfb99c8872fd91",
-      "sizeBytes": 28350
+      "sha256": "c923f2131b0fc04ee050b85730c7d045db3e3d7bf711039143a7aaa39b43debf",
+      "sizeBytes": 28365
     },
     "runtime/macos-arm64/lib/python3.12/site-packages/agent_braid/__pycache__/native_predictor_evaluation.cpython-312.pyc": {
       "executable": false,
@@ -26805,10 +27000,20 @@
       "sha256": "75f2395676ffdb51cefd3c672223e25658699239a63740681a1aaf7204386da5",
       "sizeBytes": 32859
     },
+    "runtime/macos-arm64/lib/python3.12/site-packages/agent_braid/__pycache__/owned_work_authority.cpython-312.pyc": {
+      "executable": false,
+      "sha256": "a243384603d5384cd465bcf243f9cd2c739d3beb8b9dc616355386cf8c3bc530",
+      "sizeBytes": 19870
+    },
+    "runtime/macos-arm64/lib/python3.12/site-packages/agent_braid/__pycache__/owned_work_contracts.cpython-312.pyc": {
+      "executable": false,
+      "sha256": "373570c2a0ed767069baac7fed6a5d0bf5c051d977bc18d3abb36eaf052ba0c7",
+      "sizeBytes": 60648
+    },
     "runtime/macos-arm64/lib/python3.12/site-packages/agent_braid/__pycache__/plugin_cli.cpython-312.pyc": {
       "executable": false,
-      "sha256": "e3c1c817e4b1b102953896ba21184e5ff3d64be3b6372c90cf4d62f3d3631edb",
-      "sizeBytes": 7311
+      "sha256": "f6f9d445fa7f40be5412a07d15fcc3c46d4b66d4a038f237672dd1303283ab1d",
+      "sizeBytes": 7608
     },
     "runtime/macos-arm64/lib/python3.12/site-packages/agent_braid/__pycache__/plugin_legacy.cpython-312.pyc": {
       "executable": false,
@@ -26817,18 +27022,18 @@
     },
     "runtime/macos-arm64/lib/python3.12/site-packages/agent_braid/__pycache__/plugin_mcp.cpython-312.pyc": {
       "executable": false,
-      "sha256": "3eb7d80933bd9a19cd3af1b710455710fb97107d1e7278dbf3a4e797f3736d4d",
-      "sizeBytes": 19602
+      "sha256": "3b1a6a91185730ab1c6e62fbbdcfa46b040c923da3504e8fe63884df6114bca2",
+      "sizeBytes": 20211
     },
     "runtime/macos-arm64/lib/python3.12/site-packages/agent_braid/__pycache__/plugin_package.cpython-312.pyc": {
       "executable": false,
-      "sha256": "6147bc147b85de61a129cbead868565a9c8307d16d5bfeb4d045e153cd32b1a6",
-      "sizeBytes": 4880
+      "sha256": "39e0a0923e6021f84d34b881f9aee4058e1403ed72e71b1e3846797d0b1544c1",
+      "sizeBytes": 6140
     },
     "runtime/macos-arm64/lib/python3.12/site-packages/agent_braid/__pycache__/plugin_registry.cpython-312.pyc": {
       "executable": false,
-      "sha256": "ae1e5801c76c168fb9a494e922487238c3fdba82700c962c8db13ec07dead223",
-      "sizeBytes": 20544
+      "sha256": "a38ac1a488d9bded5553e3e9e4edbbc99fbe88a04a8bc10198d830e25fdc1b2e",
+      "sizeBytes": 22200
     },
     "runtime/macos-arm64/lib/python3.12/site-packages/agent_braid/__pycache__/runtime_policy.cpython-312.pyc": {
       "executable": false,
@@ -26900,6 +27105,46 @@
       "sha256": "4c5b9172efdd54bb957f26304252cebe9cc45ea5022e068b589ffa84ece2e6f2",
       "sizeBytes": 6395
     },
+    "runtime/macos-arm64/lib/python3.12/site-packages/agent_braid/__pycache__/system_one_verified_acquisition.cpython-312.pyc": {
+      "executable": false,
+      "sha256": "6d039888b4c8214c423173377b406e1349206b036b3965b37069597f1310c2ac",
+      "sizeBytes": 30028
+    },
+    "runtime/macos-arm64/lib/python3.12/site-packages/agent_braid/__pycache__/system_one_verified_consumers.cpython-312.pyc": {
+      "executable": false,
+      "sha256": "89a8de39a904c0669c4ad076cc46216bfd7a4d9f109b249d86aa3aa028293e05",
+      "sizeBytes": 31091
+    },
+    "runtime/macos-arm64/lib/python3.12/site-packages/agent_braid/__pycache__/system_one_verified_ir.cpython-312.pyc": {
+      "executable": false,
+      "sha256": "98a4354d7abf80951238500d78a6635c1cf2e50b11acf130d46d64be0db35f52",
+      "sizeBytes": 27964
+    },
+    "runtime/macos-arm64/lib/python3.12/site-packages/agent_braid/__pycache__/system_one_verified_mcp.cpython-312.pyc": {
+      "executable": false,
+      "sha256": "bbcba4d6d13fd1557ca186f642754d1dd67c915ec4aa73f6a8008442fd6200f0",
+      "sizeBytes": 12100
+    },
+    "runtime/macos-arm64/lib/python3.12/site-packages/agent_braid/__pycache__/system_one_verified_registry.cpython-312.pyc": {
+      "executable": false,
+      "sha256": "0d5ba8b47f7d40efe713bbb9bcbcc09a1f155d10d9ac17b8898678bc6b5a405a",
+      "sizeBytes": 5790
+    },
+    "runtime/macos-arm64/lib/python3.12/site-packages/agent_braid/__pycache__/system_one_verified_selection.cpython-312.pyc": {
+      "executable": false,
+      "sha256": "7bc0cdd55e2ea7781ed8eeccf11e863f822e347201815f0cd062411e4324c2e6",
+      "sizeBytes": 40334
+    },
+    "runtime/macos-arm64/lib/python3.12/site-packages/agent_braid/__pycache__/system_one_verified_stdio.cpython-312.pyc": {
+      "executable": false,
+      "sha256": "578941ec843f6a2f04e6c9dd6e8a27392d7f15f51f6d30f91d7842fad88e140c",
+      "sizeBytes": 24268
+    },
+    "runtime/macos-arm64/lib/python3.12/site-packages/agent_braid/__pycache__/system_one_verified_tooling.cpython-312.pyc": {
+      "executable": false,
+      "sha256": "37cd7cd51984eedcd0be0cc495ff543b05af24c6f67c77c95f6818a47775683b",
+      "sizeBytes": 11099
+    },
     "runtime/macos-arm64/lib/python3.12/site-packages/agent_braid/__pycache__/tooling_allocation.cpython-312.pyc": {
       "executable": false,
       "sha256": "3e7ed32b66eb2cc2b983b6be8fd197823768e9dd5ccacda10d19fa0530a84d35",
@@ -26932,8 +27177,8 @@
     },
     "runtime/macos-arm64/lib/python3.12/site-packages/agent_braid/__pycache__/tooling_cli.cpython-312.pyc": {
       "executable": false,
-      "sha256": "c50d340d996df2b092acd7320198bbd3293d527dce4a7a37e8e425d61b396bf1",
-      "sizeBytes": 8537
+      "sha256": "eb50bcdfba76a91e0c992320b3c1ab574f07c8f519fdbff08085ab64541ba943",
+      "sizeBytes": 8910
     },
     "runtime/macos-arm64/lib/python3.12/site-packages/agent_braid/__pycache__/tooling_codex_observer.cpython-312.pyc": {
       "executable": false,
@@ -27002,8 +27247,8 @@
     },
     "runtime/macos-arm64/lib/python3.12/site-packages/agent_braid/__pycache__/tooling_install.cpython-312.pyc": {
       "executable": false,
-      "sha256": "fb5c6fd220d70a59d1bbe2b9cc9dd297d426042a9a51cd5ddcd2f58f004b7f48",
-      "sizeBytes": 61299
+      "sha256": "d0c9b5107a6bcdb2340467f822aae055d5f39da353bce571dd6e7dc9cecce0f1",
+      "sizeBytes": 63703
     },
     "runtime/macos-arm64/lib/python3.12/site-packages/agent_braid/__pycache__/tooling_interface_observer.cpython-312.pyc": {
       "executable": false,
@@ -27012,8 +27257,8 @@
     },
     "runtime/macos-arm64/lib/python3.12/site-packages/agent_braid/__pycache__/tooling_mcp.cpython-312.pyc": {
       "executable": false,
-      "sha256": "e04e65d9c7e8993e581757404a4f36e127a2009118bbafef62c514fe11c82320",
-      "sizeBytes": 53021
+      "sha256": "26ae907b38ae359a01a93f8c34206177a8bd262c72fcc20bbb7f230b9a2cfc74",
+      "sizeBytes": 54410
     },
     "runtime/macos-arm64/lib/python3.12/site-packages/agent_braid/__pycache__/tooling_measurements.cpython-312.pyc": {
       "executable": false,
@@ -27085,6 +27330,16 @@
       "sha256": "dc0ca7fa61cee5568630d40a23856c25e4dbe35fffb3ae643979621423cd346f",
       "sizeBytes": 93257
     },
+    "runtime/macos-arm64/lib/python3.12/site-packages/agent_braid/__pycache__/tooling_telemetry.cpython-312.pyc": {
+      "executable": false,
+      "sha256": "7d3f07d4201fa9003ecc757546c1303a40d82d5acc7a19da59d78edf64506115",
+      "sizeBytes": 37509
+    },
+    "runtime/macos-arm64/lib/python3.12/site-packages/agent_braid/__pycache__/tooling_telemetry_cli.cpython-312.pyc": {
+      "executable": false,
+      "sha256": "ac52626f49a88b2b65d2266b3cf8105277c6424e37315d0ecbad64148f803c0c",
+      "sizeBytes": 3338
+    },
     "runtime/macos-arm64/lib/python3.12/site-packages/agent_braid/__pycache__/trace_adapter.cpython-312.pyc": {
       "executable": false,
       "sha256": "dfc5da44145c3888a9db0d0a4ead0c6366f283d65db5be718534a73ad48d7443",
@@ -27127,8 +27382,8 @@
     },
     "runtime/macos-arm64/lib/python3.12/site-packages/agent_braid/cli.py": {
       "executable": false,
-      "sha256": "fe2d6550735469f6a7e60d5be62972a1697ed26648f371a2ffa968c1f2407497",
-      "sizeBytes": 18069
+      "sha256": "a9f340cfe5f379ba2f0c83a815c8e72b44fade320b7904943b164b1ab670f8c7",
+      "sizeBytes": 19104
     },
     "runtime/macos-arm64/lib/python3.12/site-packages/agent_braid/forecast_advice.py": {
       "executable": false,
@@ -27235,6 +27490,11 @@
       "sha256": "6569d2b7f8fb64299dce3c45b3460936aa2172507d8dab9ef84819de3d2442ab",
       "sizeBytes": 6312
     },
+    "runtime/macos-arm64/lib/python3.12/site-packages/agent_braid/forecast_report.py": {
+      "executable": false,
+      "sha256": "1a6335ad18e80d0fd4feda72f2642149623e764a0a9988e6957030fd2658a088",
+      "sizeBytes": 10369
+    },
     "runtime/macos-arm64/lib/python3.12/site-packages/agent_braid/forecast_resources.py": {
       "executable": false,
       "sha256": "851a92343d2ac0f08552921cd81e51949b8fc037fa5d0278c259d09585a8f034",
@@ -27312,18 +27572,33 @@
     },
     "runtime/macos-arm64/lib/python3.12/site-packages/agent_braid/git_replay.py": {
       "executable": false,
-      "sha256": "62a2c461902e30d874dfe82bed77ab79075f33cb0e56f1e543fd9d317f1d571e",
-      "sizeBytes": 32089
+      "sha256": "6dc84e50fe04abb4e5675ac0173f9579b239d13ad1741e106b2d4e272081a388",
+      "sizeBytes": 32416
     },
     "runtime/macos-arm64/lib/python3.12/site-packages/agent_braid/git_runtime.py": {
       "executable": false,
-      "sha256": "ceb4469906b6c97a6f03faf3cc1b4ea8387df937c06b8ccd49984eaf2dff4d4e",
-      "sizeBytes": 31403
+      "sha256": "8cf7168e2cbb9b874019eb3cc8dcee7b5ad69892eaeb4cc0511996fade29f897",
+      "sizeBytes": 31565
     },
     "runtime/macos-arm64/lib/python3.12/site-packages/agent_braid/git_runtime_process.py": {
       "executable": false,
       "sha256": "6cde49846602aec8b18a3df141c8f77ff2bb66badd098d149393e900c44c0da4",
       "sizeBytes": 6004
+    },
+    "runtime/macos-arm64/lib/python3.12/site-packages/agent_braid/harness_admission.py": {
+      "executable": false,
+      "sha256": "49197a2518d8df9b66658ec6c279d079bc1cf915a9c3570673f524dca60b5901",
+      "sizeBytes": 16871
+    },
+    "runtime/macos-arm64/lib/python3.12/site-packages/agent_braid/harness_manifest.py": {
+      "executable": false,
+      "sha256": "373f1dd8e888c88fde6a47399c429c9b56ab040eea94811f22de796bc6b5d5a1",
+      "sizeBytes": 12501
+    },
+    "runtime/macos-arm64/lib/python3.12/site-packages/agent_braid/harness_surface.py": {
+      "executable": false,
+      "sha256": "78ca27952ffa1054d8ef61cbc0bd9458d51d967f716e5bd1ba6462daa892529c",
+      "sizeBytes": 26912
     },
     "runtime/macos-arm64/lib/python3.12/site-packages/agent_braid/m35_source_window.py": {
       "executable": false,
@@ -27370,10 +27645,20 @@
       "sha256": "5c77eb3c134ed8bdb8f1a6f7ab5a46b3fda62014282d7da0211863e7d3b2d8a3",
       "sizeBytes": 26640
     },
+    "runtime/macos-arm64/lib/python3.12/site-packages/agent_braid/owned_work_authority.py": {
+      "executable": false,
+      "sha256": "0fcaa2ef75ff7f3e5dbe0a59a3cf92f7963c34d124d338319abfd94cc84a2e64",
+      "sizeBytes": 13099
+    },
+    "runtime/macos-arm64/lib/python3.12/site-packages/agent_braid/owned_work_contracts.py": {
+      "executable": false,
+      "sha256": "6df4dd3a64228aa88d081a5fbe2ee9cc7c32a41b347238cd79434200700d2f09",
+      "sizeBytes": 53478
+    },
     "runtime/macos-arm64/lib/python3.12/site-packages/agent_braid/plugin_cli.py": {
       "executable": false,
-      "sha256": "25929184e65b64f4f18c85e5428f8c8a76426a5a301bc251bd6b13e6f4da0435",
-      "sizeBytes": 5358
+      "sha256": "1c4edd2d28646fa6ab72f3678133285cf181fb77512f060cb29e47ba63a942d9",
+      "sizeBytes": 5654
     },
     "runtime/macos-arm64/lib/python3.12/site-packages/agent_braid/plugin_legacy.py": {
       "executable": false,
@@ -27382,18 +27667,18 @@
     },
     "runtime/macos-arm64/lib/python3.12/site-packages/agent_braid/plugin_mcp.py": {
       "executable": false,
-      "sha256": "b598eead8342e03949e5f2d2e721bea68107e2d805ab9668111f5ba550191148",
-      "sizeBytes": 11130
+      "sha256": "78c51a56887518273a41d37f079e05beff958471d12a9620c74f2b10da8af7a5",
+      "sizeBytes": 11852
     },
     "runtime/macos-arm64/lib/python3.12/site-packages/agent_braid/plugin_package.py": {
       "executable": false,
-      "sha256": "92228211793f843b37be3b63b052317c02463811b9dacd2bcf5efb2a323c2f73",
-      "sizeBytes": 2845
+      "sha256": "628b8afc397be428a93b77aa1d12af8c27643c0a1bc6981ad1385eb4da90c438",
+      "sizeBytes": 3968
     },
     "runtime/macos-arm64/lib/python3.12/site-packages/agent_braid/plugin_registry.py": {
       "executable": false,
-      "sha256": "6a5a900792e95050487d5ebd9f2d4211cb86b86327b8fa42f17677b46064503b",
-      "sizeBytes": 13318
+      "sha256": "ce414a24262c8674043659de07086d6f60f95784cb63cf490bc949f129808378",
+      "sizeBytes": 14870
     },
     "runtime/macos-arm64/lib/python3.12/site-packages/agent_braid/runtime_policy.py": {
       "executable": false,
@@ -27465,6 +27750,46 @@
       "sha256": "bc69c1027aa829935979304538a8fd63dcd1be6af0757a86fc3fb9afe0509b50",
       "sizeBytes": 4289
     },
+    "runtime/macos-arm64/lib/python3.12/site-packages/agent_braid/system_one_verified_acquisition.py": {
+      "executable": false,
+      "sha256": "2380a32ef308fbbe540c67e71fb0bf43dc15b95a6732a13a8e2bf2be0d49e5b7",
+      "sizeBytes": 20715
+    },
+    "runtime/macos-arm64/lib/python3.12/site-packages/agent_braid/system_one_verified_consumers.py": {
+      "executable": false,
+      "sha256": "94bbae509e85ba8b241b422cd2a31eb18b1cb7eaa0afeb9f0d18e17548e9d4eb",
+      "sizeBytes": 22873
+    },
+    "runtime/macos-arm64/lib/python3.12/site-packages/agent_braid/system_one_verified_ir.py": {
+      "executable": false,
+      "sha256": "a0378c34b805387b0518cf6ebc3da05599976cb7f037d5f140c2571c8f362ea3",
+      "sizeBytes": 18934
+    },
+    "runtime/macos-arm64/lib/python3.12/site-packages/agent_braid/system_one_verified_mcp.py": {
+      "executable": false,
+      "sha256": "e34983f7e92ab1812ca6a8265d4a365ee7e5217ae8f1689da71b8998354025d4",
+      "sizeBytes": 7996
+    },
+    "runtime/macos-arm64/lib/python3.12/site-packages/agent_braid/system_one_verified_registry.py": {
+      "executable": false,
+      "sha256": "8d9cb2070683497ea789a9f03905e07f69d6c812c7d0ec9d6ab8a72116f88e6c",
+      "sizeBytes": 4294
+    },
+    "runtime/macos-arm64/lib/python3.12/site-packages/agent_braid/system_one_verified_selection.py": {
+      "executable": false,
+      "sha256": "a8fd0d752c3ab179b233906adac65b7dfe2150cf8ef079c3e00334e689bbb51e",
+      "sizeBytes": 29478
+    },
+    "runtime/macos-arm64/lib/python3.12/site-packages/agent_braid/system_one_verified_stdio.py": {
+      "executable": false,
+      "sha256": "8876c0493f9ab3daac504ea859ebc5e10a37d708e138a5758fe251964d5e272e",
+      "sizeBytes": 17659
+    },
+    "runtime/macos-arm64/lib/python3.12/site-packages/agent_braid/system_one_verified_tooling.py": {
+      "executable": false,
+      "sha256": "128aed194149f648d0a579b9fff7d85e121c10339df7552e1e488363c744d04e",
+      "sizeBytes": 7280
+    },
     "runtime/macos-arm64/lib/python3.12/site-packages/agent_braid/tooling_allocation.py": {
       "executable": false,
       "sha256": "9f506909be5c004baa928a45a374820d0fecca01d4101436681d9069e9376be5",
@@ -27477,8 +27802,8 @@
     },
     "runtime/macos-arm64/lib/python3.12/site-packages/agent_braid/tooling_assets/NOTICE": {
       "executable": false,
-      "sha256": "c68b8c70b5d4a707eecf3ca4cb0dbc14d3754aa8dff3700f1252e9ac80cbffb5",
-      "sizeBytes": 1220
+      "sha256": "3ef822bdcd9c7ff652fe9f0a14d36b6ddff2388315c8566e4a691bd04c9819a2",
+      "sizeBytes": 1593
     },
     "runtime/macos-arm64/lib/python3.12/site-packages/agent_braid/tooling_assets/TRADEMARKS.md": {
       "executable": false,
@@ -27557,8 +27882,8 @@
     },
     "runtime/macos-arm64/lib/python3.12/site-packages/agent_braid/tooling_cli.py": {
       "executable": false,
-      "sha256": "2ba676c7873ee17590e66baa8ace4bef2453a12d686db57654382a8b23dece1a",
-      "sizeBytes": 6375
+      "sha256": "393d8b41f30b75872bde151d62b1bd94ec719a9a5b118ff6f87705ad11df380a",
+      "sizeBytes": 6698
     },
     "runtime/macos-arm64/lib/python3.12/site-packages/agent_braid/tooling_codex_observer.py": {
       "executable": false,
@@ -27627,8 +27952,8 @@
     },
     "runtime/macos-arm64/lib/python3.12/site-packages/agent_braid/tooling_install.py": {
       "executable": false,
-      "sha256": "91a736438833efdb8f98d70fed654075cf6da7e9c9303703c965e1d90e8fd5bd",
-      "sizeBytes": 48804
+      "sha256": "ba1856d30e7848e194b3f317bd913b9743fd2a906f10a86dd155fd93dca9aa78",
+      "sizeBytes": 50893
     },
     "runtime/macos-arm64/lib/python3.12/site-packages/agent_braid/tooling_interface_observer.py": {
       "executable": false,
@@ -27637,8 +27962,8 @@
     },
     "runtime/macos-arm64/lib/python3.12/site-packages/agent_braid/tooling_mcp.py": {
       "executable": false,
-      "sha256": "f8d151fb11905d5bff7114571e5663bf80cb0cd15af3acb1bf5159b14c54b6dd",
-      "sizeBytes": 40695
+      "sha256": "4d35b94ba354b1dc7c248024f9fc6abc93bddec3aa679cc475aae01ff0b17194",
+      "sizeBytes": 41836
     },
     "runtime/macos-arm64/lib/python3.12/site-packages/agent_braid/tooling_measurements.py": {
       "executable": false,
@@ -27709,6 +28034,16 @@
       "executable": false,
       "sha256": "cfac9ce684c2b442bc7f0fd59c79a661d699143d34f9993d9329212bedd72b43",
       "sizeBytes": 80668
+    },
+    "runtime/macos-arm64/lib/python3.12/site-packages/agent_braid/tooling_telemetry.py": {
+      "executable": false,
+      "sha256": "066fbd1ffa955d48b9ee5e69267d05a0c096ebd8eb646d5e0422e1786a644c2c",
+      "sizeBytes": 22946
+    },
+    "runtime/macos-arm64/lib/python3.12/site-packages/agent_braid/tooling_telemetry_cli.py": {
+      "executable": false,
+      "sha256": "fe008cf49daa3a38e08279c439a2b1a51b00c69d002dbeb0de7046fad12d3f68",
+      "sizeBytes": 2181
     },
     "runtime/macos-arm64/lib/python3.12/site-packages/agent_braid/trace_adapter.py": {
       "executable": false,
@@ -28577,33 +28912,33 @@
     },
     "runtime/macos-arm64/lib/python3.12/site-packages/bin/cffi-gen-src": {
       "executable": true,
-      "sha256": "a9232c6d29a4e3824001c2dbb4f53518c609b2c9593815dc0cf5ffc2abf78b94",
-      "sizeBytes": 261
+      "sha256": "7fee3363fc21a501a81e3e609b2eb1aa640de57d1ddff215b1b380947b1eda94",
+      "sizeBytes": 325
     },
     "runtime/macos-arm64/lib/python3.12/site-packages/bin/httpx2": {
       "executable": true,
-      "sha256": "1dd238973314eec4c4e27519c42ebc713c9927be4f41d9171cf9087bddf0d012",
-      "sizeBytes": 257
+      "sha256": "9c5e5dff98449d1ce5cdcb968f5c2c979a87a11b79756a9464c74db38ff79c5b",
+      "sizeBytes": 321
     },
     "runtime/macos-arm64/lib/python3.12/site-packages/bin/idna": {
       "executable": true,
-      "sha256": "318a29f73fe16f40c77e83c7486c386b5db30d0c30b7a676c5dd0f1cd6777b24",
-      "sizeBytes": 253
+      "sha256": "ab546f128ffda0174c319ef332d69d594e15f3c112d7519dafb65f172bb87d6d",
+      "sizeBytes": 317
     },
     "runtime/macos-arm64/lib/python3.12/site-packages/bin/jsonschema": {
       "executable": true,
-      "sha256": "374c0239e5f0173ef0e9ab8d61a33d97e8beb1c8b4c41dda25c74928b13a5a8d",
-      "sizeBytes": 259
+      "sha256": "aeac5a5e6605b2596c174e4679f7c45f50036259755dde75cbd99311ea713a39",
+      "sizeBytes": 323
     },
     "runtime/macos-arm64/lib/python3.12/site-packages/bin/mcp": {
       "executable": true,
-      "sha256": "9e335cdc69604b881f4916049ae24002bf07e6dc5b70b214b3a14833e276828c",
-      "sizeBytes": 250
+      "sha256": "8f050230fffe21faa94f6c53f5d6171841075b8915ee7b3895839777206ea6a9",
+      "sizeBytes": 314
     },
     "runtime/macos-arm64/lib/python3.12/site-packages/bin/uvicorn": {
       "executable": true,
-      "sha256": "8f87aba1c09688b43856b44bfd574abe7e48dc827a67b457dd5512498b327b91",
-      "sizeBytes": 257
+      "sha256": "71dbd75b56359b188b26672e5afa979a2851a67f248b49cdaad3d8b36cfdb6b1",
+      "sizeBytes": 321
     },
     "runtime/macos-arm64/lib/python3.12/site-packages/cffi-2.1.1.dist-info/INSTALLER": {
       "executable": false,
@@ -28617,7 +28952,7 @@
     },
     "runtime/macos-arm64/lib/python3.12/site-packages/cffi-2.1.1.dist-info/RECORD": {
       "executable": false,
-      "sha256": "51def20350c1c63831ecb14f1eae6a0ac9134a1b8c310ae41383ee65c665db04",
+      "sha256": "5b083b8b5c03ad566f93593d3dfa44867854f2d29d5d4b5f8c6cb4f2a2514102",
       "sizeBytes": 2652
     },
     "runtime/macos-arm64/lib/python3.12/site-packages/cffi-2.1.1.dist-info/REQUESTED": {
@@ -30577,7 +30912,7 @@
     },
     "runtime/macos-arm64/lib/python3.12/site-packages/httpx2-2.13.1.dist-info/RECORD": {
       "executable": false,
-      "sha256": "e174ec434e73580dcd72e5f25c6cb4f65ed9b30236dde25e44a7537156f8449d",
+      "sha256": "d95a1272a448438f58e44804c63be8b1e973302e3f0aa3f598986e352167ab6e",
       "sizeBytes": 3112
     },
     "runtime/macos-arm64/lib/python3.12/site-packages/httpx2-2.13.1.dist-info/REQUESTED": {
@@ -30917,7 +31252,7 @@
     },
     "runtime/macos-arm64/lib/python3.12/site-packages/idna-3.20.dist-info/RECORD": {
       "executable": false,
-      "sha256": "5207ef0a4c3c48815343074e5b2b745b75be42f08d39ead9c0244837b961098b",
+      "sha256": "e5fd4eded703727b596b29df398a149c80ef43585675a57abfee2514264ae103",
       "sizeBytes": 1424
     },
     "runtime/macos-arm64/lib/python3.12/site-packages/idna-3.20.dist-info/REQUESTED": {
@@ -31057,7 +31392,7 @@
     },
     "runtime/macos-arm64/lib/python3.12/site-packages/jsonschema-4.26.0.dist-info/RECORD": {
       "executable": false,
-      "sha256": "df75bd49b7c8913a637d825275ad8fd985450eb58a4eabb8d878e0d2da32a92a",
+      "sha256": "ac9c34a0a7039c41dbeefe58dd6a865ee68ff3fb07c238dc4cc29928945ff9b8",
       "sizeBytes": 4131
     },
     "runtime/macos-arm64/lib/python3.12/site-packages/jsonschema-4.26.0.dist-info/REQUESTED": {
@@ -31762,7 +32097,7 @@
     },
     "runtime/macos-arm64/lib/python3.12/site-packages/mcp-2.3.0.dist-info/RECORD": {
       "executable": false,
-      "sha256": "ca10530f194577367c390d99483bc6b06880bc286170253a62275a2361610b71",
+      "sha256": "f1926a8a8bb349e48c32eb006d6daae3b5bee46daf24349717daf09fc790cf5e",
       "sizeBytes": 11373
     },
     "runtime/macos-arm64/lib/python3.12/site-packages/mcp-2.3.0.dist-info/REQUESTED": {
@@ -35140,6 +35475,11 @@
       "sha256": "5a351b9d9ea33c0777d5c9c214069e588544373c87b47749c8e95e96fd4663bd",
       "sizeBytes": 1445
     },
+    "runtime/macos-arm64/lib/python3.12/site-packages/research/__pycache__/owned_work_coverage.cpython-312.pyc": {
+      "executable": false,
+      "sha256": "19ed3fc11cbe3046039086d7aa5581d579d5b2029a126abb8719511cd959b524",
+      "sizeBytes": 7238
+    },
     "runtime/macos-arm64/lib/python3.12/site-packages/research/lab/__init__.py": {
       "executable": false,
       "sha256": "e88d4e8c9e00094720fc9a572fa7f12f6c21e41ad81b3b52e5d29c2360d281cb",
@@ -35189,6 +35529,11 @@
       "executable": false,
       "sha256": "f39040b5476d663f6e7384e65d00073b084df6c8958b38bff45e4d6b19da010f",
       "sizeBytes": 10081
+    },
+    "runtime/macos-arm64/lib/python3.12/site-packages/research/owned_work_coverage.py": {
+      "executable": false,
+      "sha256": "f398f0fc42e182ecf2b8e207d35a263a063d64650c84a8f6a23b699422ddf120",
+      "sizeBytes": 4578
     },
     "runtime/macos-arm64/lib/python3.12/site-packages/rpds/__init__.py": {
       "executable": false,
@@ -35942,7 +36287,7 @@
     },
     "runtime/macos-arm64/lib/python3.12/site-packages/uvicorn-0.54.0.dist-info/RECORD": {
       "executable": false,
-      "sha256": "1c4afdba07693e54a4a10d09334fba7f8cc32accc2fd7d23fcc541dc3114dd30",
+      "sha256": "a6a01f40aeeba880bcf031fe819d3f534861020b041e6083e5152ce50c8a3664",
       "sizeBytes": 4619
     },
     "runtime/macos-arm64/lib/python3.12/site-packages/uvicorn-0.54.0.dist-info/REQUESTED": {
@@ -38682,10 +39027,10 @@
     },
     "skills/setup/SKILL.md": {
       "executable": false,
-      "sha256": "8a5f832857e172c22f641e06379b13aa6a210e9a2daf5c55db303325b09c255e",
-      "sizeBytes": 2835
+      "sha256": "29abc75c12d8bcf02dd5245612154ff0ce90818ad1bff926f3c4f495b83a627b",
+      "sizeBytes": 3501
     }
   },
   "schema": "agent-braid-plugin-package/v1",
-  "version": "0.1.0-alpha.2"
+  "version": "0.1.0-alpha.3"
 }

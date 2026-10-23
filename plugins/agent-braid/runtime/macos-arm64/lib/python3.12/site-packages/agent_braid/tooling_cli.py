@@ -30,6 +30,7 @@ def add_parser(subparsers):
     serve.add_argument("--result-root", type=Path, required=True)
     serve.add_argument("--grant-store", type=Path)
     serve.add_argument("--enable-runtime", action="store_true")
+    serve.add_argument("--telemetry", choices=("off", "local"), default="off", help="explicit local numeric telemetry; default off")
     serve.add_argument("--worktree-root", type=Path, action="append", default=[])
     for name in ("configure", "install", "doctor", "update", "uninstall"):
         command = commands.add_parser(name, help=f"{name} selected receipt-owned host assets")
@@ -40,6 +41,7 @@ def add_parser(subparsers):
         command.add_argument("--name", default="agent-braid")
         command.add_argument("--grant-store", type=Path)
         command.add_argument("--enable-runtime", action="store_true")
+        command.add_argument("--telemetry", choices=("off", "local"), default="off", help="explicit server-local telemetry; default off")
         command.add_argument("--executable", type=Path)
         command.add_argument("--destination", type=Path, help="explicit alternate config/skills/receipt root")
         command.add_argument("--receipt", type=Path)
@@ -61,7 +63,7 @@ def run(args) -> int:
             from .tooling_mcp import ToolingConfig, serve_stdio
             config = ToolingConfig(source_root=args.source_root, result_parent=args.result_root,
                                    grant_store=args.grant_store, runtime_enabled=args.enable_runtime,
-                                   worktree_roots=tuple(args.worktree_root))
+                                   worktree_roots=tuple(args.worktree_root), telemetry=args.telemetry)
             asyncio.run(serve_stdio(config))
             return 0
         if args.tooling_command == "present":
@@ -85,7 +87,7 @@ def run(args) -> int:
         selection = Selection(host=args.host, scope=args.scope, source_root=args.source_root,
                               result_root=args.result_root, name=args.name,
                               executable=args.executable, destination=args.destination, receipt=args.receipt,
-                              enable_runtime=args.enable_runtime, grant_store=args.grant_store)
+                              enable_runtime=args.enable_runtime, grant_store=args.grant_store, telemetry=args.telemetry)
         if args.tooling_command == "doctor":
             output = doctor(selection, source_checkout=args.source_checkout_assets)
         else:

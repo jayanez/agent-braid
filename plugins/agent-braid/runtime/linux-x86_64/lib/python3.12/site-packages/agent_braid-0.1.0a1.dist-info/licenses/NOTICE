@@ -18,6 +18,12 @@ Project-authored documentation and research materials are licensed under CC-BY-S
 The third-party exceptions above retain their MIT terms.
 See LICENSE and the canonical texts in LICENSES/ for the precise scope and terms.
 
+Braid Harness selectively adapts software scaffolding from google-research/harness2
+at 1cfe254e8d25b15f37048c3730134686abe60335, Copyright 2026 Google LLC,
+licensed under the Apache License, Version 2.0. Applicable derived portions retain
+their file-level terms and prominent modification notices. See
+LICENSES/Harness2-Apache-2.0.txt and docs/development/THIRD_PARTY.md.
+
 The copyright licenses do not grant rights to use the Agent Braid name, logos,
 or other project marks in a way that suggests affiliation, endorsement, or
 continuity with the official project. See TRADEMARKS.md.

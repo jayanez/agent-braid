@@ -265,10 +265,12 @@ def _digest_bytes(value: bytes) -> str:
 
 
 def prepare_run(request: object, run_directory: str | Path, *,
-                cancel_event: threading.Event | None = None) -> dict:
+                cancel_event: threading.Event | None = None,
+                budget: GitCommandBudget | None = None) -> dict:
     """Rehearse and describe a batch. Never allocate the persistent run directory."""
-    with tempfile.TemporaryDirectory(prefix="agent-braid-runtime-prepare-") as directory:
-        return _prepare(request, run_directory, Path(directory), cancel_event)[0]
+    with tempfile.TemporaryDirectory(prefix="agent-braid-runtime-prepare-",
+                                     dir=budget.temp_root if budget is not None else None) as directory:
+        return _prepare(request, run_directory, Path(directory), cancel_event, budget=budget)[0]
 
 
 def _fsync_dir(path: Path) -> None:

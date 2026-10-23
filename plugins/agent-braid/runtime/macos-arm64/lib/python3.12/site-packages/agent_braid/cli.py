@@ -82,6 +82,8 @@ def main(argv: list[str] | None = None) -> int:
     subparsers = parser.add_subparsers(dest="command", required=True)
     from .tooling_cli import add_parser
     add_parser(subparsers)
+    from .tooling_telemetry_cli import add_parser as add_telemetry_parser
+    add_telemetry_parser(subparsers)
     from .plugin_cli import add_parser as add_plugin_parser
     add_plugin_parser(subparsers)
     from .forecast_cli import add_parser as add_forecast_parser
@@ -94,6 +96,7 @@ def main(argv: list[str] | None = None) -> int:
     analyze_parser = subparsers.add_parser("analyze", help="analyze AIM 0.2 records")
     analyze_parser.add_argument("input", type=Path)
     analyze_parser.add_argument("--format", choices=("json", "text"), default="json")
+    analyze_parser.add_argument("--telemetry", choices=("off", "local"), default="off", help="explicit local numeric telemetry; default off")
     trace_parser = subparsers.add_parser("analyze-trace", help="analyze synthetic recorded metadata with explicit loss")
     trace_parser.add_argument("input", type=Path)
     trace_parser.add_argument("--mapper", choices=("generic-metadata-v1",), required=True)
@@ -104,6 +107,7 @@ def main(argv: list[str] | None = None) -> int:
     git_parser.add_argument("--format", choices=("json", "text"), default="json")
     git_parser.add_argument("--provenance-output", type=Path, required=True,
                             help="explicit path for the required Git provenance artifact")
+    git_parser.add_argument("--telemetry", choices=("off", "local"), default="off", help="explicit local numeric telemetry; default off")
     verify_parser = subparsers.add_parser("verify", help="verify a bounded certificate bundle")
     verify_parser.add_argument("input", type=Path)
     plan_git_parser = subparsers.add_parser(
@@ -171,6 +175,9 @@ def main(argv: list[str] | None = None) -> int:
         if command == "recover-policy-run":
             policy_parser.add_argument("--action", choices=("resume", "abort"), required=True)
     args = parser.parse_args(argv)
+    if args.command == "telemetry":
+        from .tooling_telemetry_cli import run
+        return run(args)
     if args.command == "plugin":
         from .plugin_cli import run as run_plugin
         return run_plugin(args)
@@ -183,6 +190,16 @@ def main(argv: list[str] | None = None) -> int:
     if args.command == "system-one":
         from .system_one_cli import run
         return run(args)
+    if args.command in {"analyze", "analyze-git"} and args.telemetry == "local":
+        from .tooling_telemetry import observe
+        with observe("local", "cli", args.command) as observation:
+            result = _run_command(args, observation)
+            observation.outcome = "ok" if result == 0 else "refused" if result == 2 else "error"
+            return result
+    return _run_command(args)
+
+
+def _run_command(args, observation=None) -> int:
     try:
         if args.command == "analyze-trace":
             destination = validate_destination(args.input, args.provenance_output)
@@ -298,6 +315,8 @@ def main(argv: list[str] | None = None) -> int:
                 args.provenance_output.write_text(
                     json.dumps(provenance, sort_keys=True, indent=2) + "\n", encoding="utf-8"
                 )
+            if observation is not None:
+                observation.summary(report)
             print(render_text(report) if args.format == "text" else
                   json.dumps(report, sort_keys=True, indent=2))
             return 0
