@@ -100,6 +100,32 @@ configuration. Every delegated call identifies `workspaceId`; callers cannot
 supply arbitrary source or result roots. Resource URIs are workspace-scoped.
 The legacy stdio MCP endpoint retains its existing contract.
 
+## Local telemetry consent
+
+Plugin MCP telemetry is **off by default**. To persist local consent, preview and
+apply it like any other setup change, then reconnect MCP:
+
+```sh
+"/installed/plugin/launch" plugin setup --home "REGISTRY_HOME" --telemetry local
+# Inspect the preview, then repeat with:
+# --apply --preview-digest THE_EXACT_PREVIEW_DIGEST
+"/installed/plugin/launch" telemetry status --format json
+"/installed/plugin/launch" telemetry report
+```
+
+Use `--telemetry off` the same way to stop future collection. The consent is one
+global key in the user registry; each MCP connection snapshots it at startup, and
+`plugin-status` / `plugin doctor` report the configured and active modes. Skills
+and environment variables never enable it. Delegated workspace calls are recorded
+as surface `mcp` under the [local telemetry](TELEMETRY.md) contract; export, merge
+and purge stay manual.
+
+Version 0.1.0-alpha.3 moves the registry to schema v0.2. After updating from
+alpha.2, `plugin-status` reports `migration-required` until you preview and apply
+`plugin setup --telemetry off` (or `local`). No v0.1 backup is kept and earlier
+plugin versions refuse v0.2; after a rollback, remove `registry.json` from the
+Agent Braid home (results are kept) and register repositories again.
+
 ## Storage, updates and removal
 
 Both hosts share Agent Braid's registry and results outside plugin caches:

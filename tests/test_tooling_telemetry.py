@@ -162,7 +162,7 @@ class TelemetryIntegrationTests(unittest.TestCase):
         plugin = self.cli(['plugin', 'workspaces', '--home', str(home)])
         self.assertEqual(plugin[0], 0)
         self.assertEqual(json.loads(plugin[1]), {
-            'schema': 'agent-braid-plugin-registry/v0.1', 'workspaces': []})
+            'schema': 'agent-braid-plugin-registry/v0.2', 'telemetry': 'off', 'workspaces': []})
         self.assertFalse(home.exists())
         forecast = self.cli(['forecast', 'capabilities'])
         self.assertEqual(forecast[0], 0)
