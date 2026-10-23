@@ -47,7 +47,7 @@ Answered with the founder as planning decisions (`speckit-clarify`; see the [SPE
 - Branch or tag names are accepted, resolved to full commit SHAs and re-resolved at the end; a moved reference is reported as stale.
 - The baseline uses a temporary `GIT_OBJECT_DIRECTORY` with the repository store as alternate; no object reaches the repository.
 - `workspaceId` is explicit; the gate never defaults and refuses on a repository-root mismatch.
-- If plugin MCP tools are unavailable to workflow agents, the bundled CLI is allowed only with the Bash permission constrained to the plugin launcher (defined once in the SPEC-052 Clarifications as an explicit launcher-subcommand allowlist, never the launcher binary; the read-only `plugin workspaces` registry read is part of it as a planning interpretation pending founder review); otherwise R1 is no-go and only the recipe ships.
+- If plugin MCP tools are unavailable to workflow agents, the bundled CLI is allowed only with the Bash permission constrained to the plugin launcher (defined once in the SPEC-052 Clarifications as an explicit launcher-subcommand allowlist, never the launcher binary; the read-only `plugin workspaces` registry read is part of it as a planning interpretation approved by the founder on 2026-10-24); otherwise R1 is no-go and only the recipe ships.
 - Gate agents inherit the session model; no model or effort is pinned.
 - PR2 may merge before ADR adoption provided no version bump, plugin-dist publication or release occurs before adoption; the builder excludes `workflows/` by default until then.
 - R1 is the commit-level gate alone, expected as `0.1.0-alpha.4`, independent of G0 and subject to separate founder release acceptance.
@@ -59,7 +59,7 @@ Answered with the founder as planning decisions (`speckit-clarify`; see the [SPE
 3. G0 preregistration freeze before data collection, and G0 disposition.
 4. Whether G2 (SPEC-054) is opened.
 5. Remote tracking publication (milestone, issues, Project) and milestone closure.
-6. The planning amendments to the constrained Bash allowlist: `plugin workspaces` for the v1 fallback registry checks, `analyze-claude-transcripts` for gate v2, and validated path tokens in gate v2 prompts (SPEC-052 Clarifications; SPEC-053 REQ-009). Not approved; pending review.
+6. The planning amendments to the constrained Bash allowlist: `plugin workspaces` for the v1 fallback registry checks, `analyze-claude-transcripts` for gate v2, and validated path tokens in gate v2 prompts (SPEC-052 Clarifications; SPEC-053 REQ-009). Approved by the founder on 2026-10-24 as planning amendments; host verification and G0 still apply.
 
 ## Kill criteria
 

@@ -74,7 +74,7 @@ decision ids are `RS-n`, so that they cannot be confused with the release names 
 4. The subagent transcript line schema is **unconfirmed** and is pinned only after
    the founder's first G0 run (RS-4).
 5. Gate v2 reaches the converter through the bundled CLI (a new additive subcommand
-   `analyze-claude-transcripts`) under the constrained Bash that SPEC-052 defines (REQ-016(d)) plus that one subcommand as a planning amendment pending founder review, used alongside the MCP tools; no new MCP
+   `analyze-claude-transcripts`) under the constrained Bash that SPEC-052 defines (REQ-016(d)) plus that one subcommand as a planning amendment approved by the founder on 2026-10-24, used alongside the MCP tools; no new MCP
    tool (RS-9). The conversion is folded into the existing analyze-phase agent, so
    SPEC-052's four-agent bound is unchanged. This is the main feasibility dependency of
    REQ-009; if it fails the transcript part of the gate is no-go.

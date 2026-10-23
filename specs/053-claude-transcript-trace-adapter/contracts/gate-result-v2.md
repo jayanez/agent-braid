@@ -83,7 +83,7 @@ grant and execute subcommands). SPEC-052's v1 closed list is `analyze-git`,
 `plan-git`, `verify-git` and the argument-less `plugin workspaces`, admitted only
 on its fallback path. Gate v2 needs exactly one more entry, `analyze-claude-transcripts`.
 SPEC-052's Clarifications and REQ-016 record that entry as a **planning amendment
-pending founder review**, not approved: it is admitted only for gate v2 (blocked by
+approved by the founder on 2026-10-24**: it is admitted only for gate v2 (blocked by
 G0 and by SPEC-052's v1 gate), gate v1 never allows it, and the subcommand is
 read-only toward the repository, the registry and the transcripts and creates only
 its own new private output files at explicit paths. This note uses that

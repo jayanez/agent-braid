@@ -238,7 +238,7 @@ uses SPEC-052's single definition of the constrained Bash (explicit launcher
 subcommands only, never the launcher binary) and, unlike SPEC-052's fallback, uses
 the CLI alongside working MCP tools, so it needs exactly one more allowlist entry,
 `analyze-claude-transcripts`, recorded in SPEC-052's Clarifications and REQ-016 as a
-planning amendment pending founder review (not approved). Folding the
+planning amendment approved by the founder on 2026-10-24. Folding the
 conversion into the analyze agent keeps SPEC-052's static four-agent test (T004) and
 D-4 intact; a fifth agent would need a reviewed SPEC-052 change. Transcript paths are
 not SPEC-052 identifiers, so SPEC-052 REQ-008 (agent prompts embed only validated
