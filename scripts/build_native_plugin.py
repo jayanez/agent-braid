@@ -22,7 +22,7 @@ sys.path.insert(0, str(ROOT))
 from agent_braid.plugin_package import file_hash, inventory, verify_package
 from agent_braid.tooling_assets import load_skill_bundle
 
-VERSION = '0.1.0-alpha.2'
+VERSION = '0.1.0-alpha.3'
 DISTRIBUTION_ATTRIBUTES = '* -text -filter -ident\n'
 
 
