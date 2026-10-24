@@ -1,6 +1,7 @@
 # G0 founder runbook (SPEC-053)
 
-**Status:** preparation kit for revision 2 of the preregistration. It authorizes
+**Status:** preparation kit for revision 3 of the preregistration (C3 is
+attribution coverage of changes). It authorizes
 nothing: no workflow run, no spend, no freeze. The preregistration is
 [the proposal](../../docs/experiments/CLAUDE_WORKFLOW_INTEGRATION_PROPOSAL.md),
 [its inputs](../../docs/experiments/claude-workflow-g0-inputs.json) and
@@ -13,8 +14,8 @@ Kit files (all stdlib or plain JS, no network):
 | File | Role |
 |---|---|
 | `census.py` | Pre-freeze layout census: prints aggregate structure and tool-name histograms only |
-| `probe.py` | Reads subagent transcripts, prints integer counts only |
-| `scorer.py` | `decide()` on the vectors' count tuples; run-level C1a, C1b, C2, C3, C4 and the order of evaluation |
+| `probe.py` | Reads subagent transcripts and, with `--repo` and `--base`, the local git diff of each agent; prints integer counts only |
+| `scorer.py` | `decide()` on the vectors' count tuples; run-level C1a, C1b, C2, C3 (attribution coverage), C4 and the order of evaluation |
 | `workflow_template.js` | The runner: ad-hoc workflow, 3 or 4 worktree agents that must commit; no merge |
 | `run-manifest.template.json` | Run manifest to fill and hash before launch (overlap, contract and negative-control entries) |
 
@@ -32,7 +33,8 @@ copies against the committed bytes with `shasum -a 256` before use.
 The probe must never change after the preregistration is frozen, so the order is:
 
 1. **Renew the signature** of the source and budget declaration against the
-   revised bytes of the proposal, inputs and vectors. Until then nothing below
+   revision-3 bytes of the proposal, inputs and vectors (the revision-2 hashes are
+   superseded; the renewal record is redone against the final bytes after merge). Until then nothing below
    counts toward G0. Claude extra usage and auto-recharge stay off, declared
    manually by the founder in the account settings (not checked by any script); no
    API key, credits or overage; additional spend EUR 0; stop on quota exhaustion.
@@ -52,14 +54,17 @@ The probe must never change after the preregistration is frozen, so the order is
    assume; (b) every tool name that writes files and is not `Edit`, `Write` or
    `NotebookEdit` (for example a multi-edit tool) - it must join the probe's write
    class or it falls into `other`, inflates the unknown rate and hides writes;
-   (c) the writer-capable shares against the 40% cap of C3 (`shares` in the
-   output). If the census already shows the cap would be exceeded on your existing
-   transcripts, record before freezing either a new revision or the acceptance that
-   `g0-fail` on tool mix is the likely outcome. The agent count histogram is the
+   (c) the call mix (`shares` in the output): since revision 3 the call-share
+   unknown rate and the `Bash` share are descriptive only and never gate. The
+   pre-freeze census on the founder's transcripts (1,418 subagent files, 65,639
+   tool calls) gave `Bash` 80.2% and 85.4% of calls in the unknown class, which is
+   why C3 became attribution coverage of changes; the raw census output is not
+   committed. The agent count histogram is the
    descriptive input for the "more than 4 agents" metric; it counts subagent files,
    not workflow runs.
 3. **Probe written and tested.** Edit `probe.py` only now, against the observed
-   layout, and test it on a de-identified real fixture derived from the census
+   layout and the revision-3 attribution counts (`changed_files`,
+   `attributed_changed_files`), and test it on a de-identified real fixture derived from the census
    material (strip content and paths, keep the record shape), not on a
    hand-written synthetic transcript. The committed tests use synthetic lines
    shaped like the observed layout; they do not replace the real fixture.
@@ -126,13 +131,22 @@ The probe must never change after the preregistration is frozen, so the order is
    C1b, C2, C3 and C4 denominators.
 3. If the transcript layout differs from the census, record the run as
    `probe-unavailable`. The probe is pinned; it is not patched.
-4. Run the probe, agents in ordinal order, read-only, one `--agent` per transcript:
+4. Run the probe, agents in ordinal order, read-only, one `--agent` per transcript,
+   with the repository and the run's base commit:
 
    ```bash
-   python3 probe.py --agent /path/to/worktree1 t1.jsonl --agent /path/to/worktree2 t2.jsonl --agent /path/to/worktree3 t3.jsonl > counts-r01.json
+   python3 probe.py --repo /path/to/repo --base BASE_COMMIT --agent /path/to/worktree1 t1.jsonl --agent /path/to/worktree2 t2.jsonl --agent /path/to/worktree3 t3.jsonl > counts-r01.json
    ```
 
-   The output is integers only. Keep the transcripts local; do not copy them into
+   Run it while each agent worktree still exists: the changed files of an agent are
+   the paths added or modified (`git diff --name-only --diff-filter=AM`, no rename
+   detection) between `BASE_COMMIT` and the `HEAD` of that worktree, its final
+   branch state. Git runs locally with hooks, system and user configuration,
+   external diff and textconv disabled; it never writes. A changed file is
+   attributed when the transcript has at least one successful `Write`, `Edit` or
+   `NotebookEdit` call on that repository-relative path; files changed only through
+   `Bash` (`sed -i`, `mv`, generators, formatters) are unattributed by definition.
+   The output is integers only (no path, name or hash). Keep the transcripts local; do not copy them into
    any repository.
 5. Compute every arm's prediction (merge-tree pairwise and chained, naive path
    overlap, `clash` if installed, `braid-analyze-git` primary and inclusive), write
@@ -166,14 +180,16 @@ section of the probe output (already summed over the run's agents):
            "braid-analyze-git-inclusive": false},
   "attribution": {"contract_named_in_manifest": true,
                   "counterfactual_removes_failure": true},
-  "probe": {"denominator_calls": 0, "unknown_writer_calls": 0,
-            "read_only_search_calls": 0, "ordered_pairs_with_overlap": 0}
+  "probe": {"changed_files": 0, "attributed_changed_files": 0,
+            "ordered_pairs_with_overlap": 0, "denominator_calls": 0,
+            "unknown_writer_calls": 0, "read_only_search_calls": 0, "bash_calls": 0}
 }]}
 ```
 
 (Values above are placeholders, not data.) `status` is `eligible`,
 `probe-unavailable` or an exclusion reason; `reference` and `arms` are required for
-the first two, `probe` for `eligible` only. `reference` is `clean`,
+the first two, `probe` for `eligible` only (`changed_files` and `attributed_changed_files` required,
+the first not below the second; `bash_calls` optional). `reference` is `clean`,
 `textual-conflict`, `semantic-failure` or `indeterminate`. `design.contract` and
 `design.overlap` exclude each other; a negative control has `overlap` true.
 `attribution` defaults to false for both conditions, so C1b needs it set explicitly.
@@ -190,8 +206,12 @@ contract, 3 negative control) is `g0-inconclusive`; step 2 C1b, C3 or C4 unmet i
 unmet is `g0-fail`; step 5 is `g0-pass`. It prints the outcome, the deciding step,
 the unmet criteria, the count tuple, C1a (against naive overlap; it informs R1 only
 and gates nothing), C1b (a pass means feasibility not refuted), C2 against the
-prevalence and the naive precision, C3 on writer-capable classes (Grep and Glob are
-reported separately), C4 on the negative controls, per-arm confusion counts with
+prevalence and the naive precision, C3 as attribution coverage of changes
+(`5*attributed >= 3*changed` summed over the analysis set; a zero `changed` leaves
+C3 unmet; the 0.60 threshold is a proposal the founder may amend before the freeze;
+C3 answers whether transcript evidence can explain the writes at all, the
+precondition for C1b and C2), the descriptive call mix (unknown call rate, Bash
+share, read-only searches; never gating), C4 on the negative controls, per-arm confusion counts with
 Wilson 95% intervals (description, not inference) and, alongside, the
 intention-to-treat view of all started runs with exclusion reasons. Later eligible
 runs are descriptive only. Negative and inconclusive outcomes are valid and are

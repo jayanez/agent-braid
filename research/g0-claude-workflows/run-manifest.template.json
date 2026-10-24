@@ -1,7 +1,7 @@
 {
-  "recordVersion": "agent-braid-claude-workflow-g0-run-manifest-template-2",
+  "recordVersion": "agent-braid-claude-workflow-g0-run-manifest-template-3",
   "frozen": false,
-  "note": "Template only, revision 2 of the preregistration. Copy outside the repository, fill every null before launch, hash the filled file before run 1. Never commit task prose that names private content. Design classes, contracts, negative-control designations and the serial merge order are fixed here before launch and never changed after an outcome is seen.",
+  "note": "Template only, revision 3 of the preregistration (C3 is attribution coverage of changes; the call-share unknown rate and the Bash share are descriptive only). Copy outside the repository, fill every null before launch, hash the filled file before run 1. Never commit task prose that names private content. Design classes, contracts, negative-control designations and the serial merge order are fixed here before launch and never changed after an outcome is seen.",
   "freezeOrder": [
     "renew-source-and-budget-signature-against-revised-bytes",
     "transcript-layout-and-tool-name-census",
@@ -15,6 +15,11 @@
   "repository": null,
   "baseCommit": null,
   "testCommand": null,
+  "probeInvocation": {
+    "repo": null,
+    "base": "the baseCommit above",
+    "note": "python3 probe.py --repo REPO --base BASE --agent WORKTREE_ROOT TRANSCRIPT ...; run it while each agent worktree still exists, its HEAD being the agent's final branch state; the output is integer counts only (changed_files and attributed_changed_files feed C3, the call mix is descriptive)"
+  },
   "toolVersions": {
     "git": null,
     "claudeCode": null,

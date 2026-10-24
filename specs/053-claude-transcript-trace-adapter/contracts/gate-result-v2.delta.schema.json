@@ -494,7 +494,7 @@
       }
     },
     "unknownShare": {
-      "description": "Share of transcript tool calls classified unknown (bash, search, mcp, other), as two integers. Does not replace or redefine the commit-level unknown share or the G0 C3 rate.",
+      "description": "Share of transcript tool calls classified unknown (bash, search, mcp, other), as two integers. Does not replace or redefine the commit-level unknown share or the G0 C3 attribution coverage.",
       "type": "object",
       "additionalProperties": false,
       "required": [

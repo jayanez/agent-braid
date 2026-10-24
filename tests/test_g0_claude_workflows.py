@@ -53,6 +53,15 @@ class ProbeTests(unittest.TestCase):
     def run_probe(self, a_lines, b_lines):
         return probe.probe([(ROOT_A, a_lines), (ROOT_B, b_lines)])
 
+    def test_unreadable_transcript_fails_without_echoing_the_path(self):
+        result = subprocess.run(
+            [sys.executable, str(KIT / "probe.py"), "--agent", ROOT_A,
+             "/nonexistent/private-dir-name/transcript.jsonl"],
+            capture_output=True, text=True)
+        self.assertEqual(result.returncode, 1)
+        self.assertEqual(result.stdout, "")
+        self.assertNotIn("private-dir-name", result.stderr)
+
     def test_read_by_one_written_by_other_is_one_ordered_pair(self):
         out = self.run_probe(ok("1", "Read", file_path="/w/a/src/x.py"),
                              ok("2", "Edit", file_path="/w/b/src/x.py"))
@@ -184,10 +193,189 @@ class ProbeTests(unittest.TestCase):
         self.assertNotIn("zz", proc.stdout)
         self.assertTrue(all_ints(out))
 
+    def test_attribution_counts_are_added_only_when_changed_sets_are_given(self):
+        out = self.run_probe(ok("1", "Edit", file_path="/w/a/x.py"), [])
+        self.assertNotIn("changed_files", out["run"])
+        out = probe.probe([(ROOT_A, ok("1", "Edit", file_path="/w/a/x.py")
+                            + ok("2", "Write", file_path="/w/a/new.py")
+                            + [use("3", "Edit", file_path="/w/a/failed.py"), result("3", error=True)]
+                            + ok("4", "Bash", command="sed -i s/a/b/ bashonly.py")
+                            + ok("5", "Edit", file_path="/elsewhere/outside.py")),
+                           (ROOT_B, ok("6", "NotebookEdit", notebook_path="/w/b/n.ipynb"))],
+                          [{"x.py", "new.py", "failed.py", "bashonly.py", "outside.py"}, {"n.ipynb"}])
+        self.assertEqual((out["agents"][0]["changed_files"], out["agents"][0]["attributed_changed_files"]),
+                         (5, 2))
+        self.assertEqual((out["run"]["changed_files"], out["run"]["attributed_changed_files"]), (6, 3))
+        self.assertEqual(out["run"]["bash_calls"], 1)
+        self.assertTrue(all_ints(out))
+        with self.assertRaises(ValueError):
+            probe.probe([(ROOT_A, [])], [set(), set()])
+
+    def test_attribution_requires_a_write_on_the_same_agents_path_not_a_read_or_a_peer(self):
+        out = probe.probe([(ROOT_A, ok("1", "Read", file_path="/w/a/x.py")),
+                           (ROOT_B, ok("2", "Edit", file_path="/w/b/x.py"))],
+                          [{"x.py"}, set()])
+        self.assertEqual((out["agents"][0]["changed_files"], out["agents"][0]["attributed_changed_files"]),
+                         (1, 0))
+        self.assertEqual(out["agents"][1]["attributed_changed_files"], 0)
+
     def test_probe_is_stdlib_only_and_offline(self):
         source = (KIT / "probe.py").read_text(encoding="utf-8")
-        for banned in ("socket", "urllib", "http", "requests", "subprocess", "hashlib", "open(\"w"):
+        for banned in ("socket", "urllib", "http", "requests", "hashlib", "open(\"w"):
             self.assertNotIn(banned, source)
+        # The only subprocess is a hardened, read-only local git.
+        self.assertEqual(source.count("subprocess.run("), 1)
+        for needed in ("GIT_CONFIG_NOSYSTEM", "core.hooksPath", "--no-ext-diff", "--no-textconv",
+                       "--diff-filter=AM", "GIT_CONFIG_GLOBAL"):
+            self.assertIn(needed, source)
+        for banned in ("shell=True", '"commit"', '"checkout"', '"add"', '"push"', '"fetch"',
+                       '"reset"', '"config"'):
+            self.assertNotIn(banned, source)
+
+
+def run_git(cwd, *args):
+    env = {"PATH": "/usr/bin:/bin:/usr/local/bin:/opt/homebrew/bin", "GIT_CONFIG_NOSYSTEM": "1",
+           "GIT_CONFIG_GLOBAL": "/dev/null"}
+    return subprocess.run(["git", "-C", str(cwd), "-c", "user.name=t", "-c", "user.email=t@t.test",
+                           "-c", "commit.gpgsign=false", *args], env=env, check=True,
+                          capture_output=True, text=True).stdout.strip()
+
+
+class AttributionGitFixtureTests(unittest.TestCase):
+    """A temporary git repository with two agent worktrees and synthetic transcripts."""
+
+    def setUp(self):
+        self._tmp = tempfile.TemporaryDirectory()
+        self.addCleanup(self._tmp.cleanup)
+        tmp = Path(self._tmp.name)
+        self.repo = tmp / "repo"
+        self.repo.mkdir()
+        run_git(self.repo, "init", "-q", "-b", "main")
+        for name in ("secret-edit.py", "secret-bash.py", "secret-gone.py", "secret-old.py", "same.py"):
+            (self.repo / name).write_text(f"{name}\n", encoding="utf-8")
+        (self.repo / "dir with space").mkdir()
+        (self.repo / "dir with space" / "secret-sp\u00e9.py").write_text("x\n", encoding="utf-8")
+        run_git(self.repo, "add", "-A")
+        run_git(self.repo, "commit", "-q", "-m", "base")
+        self.base = run_git(self.repo, "rev-parse", "HEAD")
+        self.w1, self.w2 = tmp / "w1", tmp / "w2"
+        run_git(self.repo, "worktree", "add", "-q", "-b", "a1", str(self.w1), self.base)
+        run_git(self.repo, "worktree", "add", "-q", "-b", "a2", str(self.w2), self.base)
+        # Agent 1: edit (Edit), add (Write), add via Bash only, modify via Bash only,
+        # delete (not a change), rename via Bash (an added path), a path inside a spaced dir.
+        (self.w1 / "secret-edit.py").write_text("edited\n", encoding="utf-8")
+        (self.w1 / "secret-new.py").write_text("new\n", encoding="utf-8")
+        (self.w1 / "secret-gen.py").write_text("generated\n", encoding="utf-8")
+        (self.w1 / "secret-bash.py").write_text("sed\n", encoding="utf-8")
+        (self.w1 / "secret-gone.py").unlink()
+        (self.w1 / "secret-old.py").rename(self.w1 / "secret-moved.py")
+        (self.w1 / "dir with space" / "secret-sp\u00e9.py").write_text("y\n", encoding="utf-8")
+        run_git(self.w1, "add", "-A")
+        run_git(self.w1, "commit", "-q", "-m", "agent 1")
+        # Agent 2: one Write on an added file.
+        (self.w2 / "secret-two.py").write_text("two\n", encoding="utf-8")
+        run_git(self.w2, "add", "-A")
+        run_git(self.w2, "commit", "-q", "-m", "agent 2")
+        r1, r2 = str(self.w1), str(self.w2)
+        self.lines1 = (ok("1", "Edit", file_path=f"{r1}/secret-edit.py")
+                       + ok("2", "Write", file_path=f"{r1}/secret-new.py")
+                       + ok("3", "Bash", command="sed -i s/a/b/ secret-bash.py; mv secret-old.py secret-moved.py")
+                       + ok("4", "Write", file_path=f"{r1}/dir with space/secret-sp\u00e9.py")
+                       + [use("5", "Write", file_path=f"{r1}/secret-gen.py"), result("5", error=True)]
+                       + ok("6", "Edit", file_path=f"{r1}/same.py")  # written but unchanged in git
+                       + ok("7", "Read", file_path=f"{r1}/secret-bash.py"))
+        self.lines2 = (ok("8", "Write", file_path=f"{r2}/secret-two.py")
+                       + ok("9", "Edit", file_path=f"{r1}/secret-edit.py"))  # a peer's worktree path
+        self.changed = [probe.changed_paths(str(self.repo), self.base, r1),
+                        probe.changed_paths(str(self.repo), self.base, r2)]
+
+    def test_changed_paths_are_added_or_modified_only_and_renames_are_additions(self):
+        self.assertEqual(self.changed[0], {
+            "secret-edit.py", "secret-new.py", "secret-gen.py", "secret-bash.py", "secret-moved.py",
+            "dir with space/secret-sp\u00e9.py"})
+        self.assertEqual(self.changed[1], {"secret-two.py"})
+
+    def test_attribution_counts_from_a_real_git_diff_and_transcripts(self):
+        out = probe.probe([(str(self.w1), self.lines1), (str(self.w2), self.lines2)], self.changed)
+        a1, a2 = out["agents"]
+        # Attributed: edit, new, spaced-dir path. Unattributed: Bash-only modify, Bash-only rename
+        # target, and the file whose only Write failed.
+        self.assertEqual((a1["changed_files"], a1["attributed_changed_files"]), (6, 3))
+        self.assertEqual((a2["changed_files"], a2["attributed_changed_files"]), (1, 1))
+        self.assertEqual((out["run"]["changed_files"], out["run"]["attributed_changed_files"]), (7, 4))
+        self.assertEqual(out["run"]["bash_calls"], 1)
+        self.assertTrue(all_ints(out))
+        self.assertNotIn("secret", json.dumps(out))
+
+    def test_cli_prints_integers_only_and_no_path_string_appears(self):
+        a, b = Path(self._tmp.name, "a.jsonl"), Path(self._tmp.name, "b.jsonl")
+        a.write_text("\n".join(self.lines1), encoding="utf-8")
+        b.write_text("\n".join(self.lines2), encoding="utf-8")
+        proc = subprocess.run(
+            [sys.executable, str(KIT / "probe.py"), "--repo", str(self.repo), "--base", self.base,
+             "--agent", str(self.w1), str(a), "--agent", str(self.w2), str(b)],
+            capture_output=True, text=True, check=True)
+        out = json.loads(proc.stdout)
+        self.assertEqual((out["run"]["changed_files"], out["run"]["attributed_changed_files"]), (7, 4))
+        self.assertTrue(all_ints(out))
+        everything = proc.stdout + proc.stderr
+        for fragment in ("secret", "py", "w1", "w2", "repo", "dir with space", "tmp", self.base[:12],
+                         "a1", "a2", "/"):
+            self.assertNotIn(fragment, everything.replace("denominator_calls", "").replace(
+                "ordered_pairs_with_overlap", "").replace("distinct_paths_with_overlap", "").replace(
+                "outside_worktree", "").replace("read_only_search_calls", "").replace(
+                "unknown_writer_calls", "").replace("failed_or_unpaired_calls", ""), fragment)
+
+    def test_git_ignores_repository_configuration_that_could_run_code(self):
+        marker = Path(self._tmp.name, "marker-ran")
+        script = Path(self._tmp.name, "hook.sh")
+        script.write_text(f"#!/bin/sh\ntouch '{marker}'\n", encoding="utf-8")
+        script.chmod(0o755)
+        hooks = self.repo / "evil-hooks"
+        hooks.mkdir()
+        for name in ("post-checkout", "reference-transaction", "pre-commit"):
+            (hooks / name).write_text(f"#!/bin/sh\ntouch '{marker}'\n", encoding="utf-8")
+            (hooks / name).chmod(0o755)
+        run_git(self.repo, "config", "core.hooksPath", str(hooks))
+        run_git(self.repo, "config", "diff.external", str(script))
+        run_git(self.repo, "config", "core.fsmonitor", str(script))
+        (self.repo / ".gitattributes").write_text("*.py diff=evil\n", encoding="utf-8")
+        run_git(self.repo, "config", "diff.evil.textconv", str(script))
+        again = probe.changed_paths(str(self.repo), self.base, str(self.w2))
+        self.assertEqual(again, {"secret-two.py"})
+        self.assertFalse(marker.exists())
+
+    def test_git_failures_are_generic_and_leak_no_path(self):
+        with tempfile.TemporaryDirectory() as empty:
+            a = Path(empty, "a.jsonl")
+            a.write_text("", encoding="utf-8")
+            for base in ("0" * 40, "--output=pwned"):
+                proc = subprocess.run(
+                    [sys.executable, str(KIT / "probe.py"), "--repo", str(self.repo), "--base=" + base,
+                     "--agent", str(self.w1), str(a)], capture_output=True, text=True)
+                self.assertEqual(proc.returncode, 1)
+                self.assertEqual(proc.stdout, "")
+                self.assertEqual(proc.stderr.strip(), "probe: git could not compute the changed files")
+        self.assertFalse(Path("pwned").exists())
+
+    def test_repo_and_base_must_be_given_together(self):
+        a = Path(self._tmp.name, "a.jsonl")
+        a.write_text("", encoding="utf-8")
+        proc = subprocess.run([sys.executable, str(KIT / "probe.py"), "--repo", str(self.repo),
+                               "--agent", str(self.w1), str(a)], capture_output=True, text=True)
+        self.assertEqual(proc.returncode, 2)
+
+    def test_attribution_counts_flow_into_the_scorer_c3(self):
+        out = probe.probe([(str(self.w1), self.lines1), (str(self.w2), self.lines2)], self.changed)["run"]
+        runs = passing_runs()
+        for run in runs:
+            run["probe"].update(changed_files=0, attributed_changed_files=0)
+        runs[0]["probe"].update(changed_files=out["changed_files"],
+                                attributed_changed_files=out["attributed_changed_files"])
+        scored = scorer.score({"runs": runs})
+        self.assertEqual((scored["counts"]["changedFiles"], scored["counts"]["attributedChangedFiles"]), (7, 4))
+        self.assertFalse(scored["c3"]["met"])  # 5*4 < 3*7: 4 of 7 is below 0.60
+        self.assertEqual(scored["unmet_or_reason"], ["C3"])
 
 
 VECTORS = (Path(__file__).resolve().parents[1] / "docs" / "experiments"
@@ -199,7 +387,7 @@ ZERO_ARMS = dict(pairwise=False, chained=False, naive=False, primary=False)
 
 def make_run(ordinal, reference="clean", *, design=None, pairwise=False, chained=False,
              naive=False, primary=False, inclusive=None, pairs=0, denominator=10, unknown=2,
-             search=0, status="eligible", attribution=None, clash=None):
+             search=0, changed=10, attributed=8, status="eligible", attribution=None, clash=None):
     run = {"run_id": f"r{ordinal:02d}", "ordinal": ordinal, "status": status,
            "reference": reference,
            "design": {"overlap": design in ("overlap", "control"),
@@ -214,7 +402,8 @@ def make_run(ordinal, reference="clean", *, design=None, pairwise=False, chained
         run["arms"]["clash"] = clash
     if status == "eligible":
         run["probe"] = {"denominator_calls": denominator, "unknown_writer_calls": unknown,
-                        "read_only_search_calls": search, "ordered_pairs_with_overlap": pairs}
+                        "read_only_search_calls": search, "ordered_pairs_with_overlap": pairs,
+                        "changed_files": changed, "attributed_changed_files": attributed}
     return run
 
 
@@ -248,7 +437,7 @@ class DecisionVectorTests(unittest.TestCase):
         cls.vectors = json.loads(VECTORS.read_text(encoding="utf-8"))
 
     def test_scorer_reproduces_every_decision_vector(self):
-        self.assertEqual(len(self.vectors["vectors"]), 19)
+        self.assertEqual(len(self.vectors["vectors"]), 23)
         for vector in self.vectors["vectors"]:
             with self.subTest(vector=vector["id"]):
                 self.assertEqual(scorer.decide(vector["counts"]), vector["expected"])
@@ -279,6 +468,18 @@ class DecisionVectorTests(unittest.TestCase):
         self.assertEqual(scorer.MAX_STARTED, inputs["design"]["maxStartedRuns"])
         self.assertEqual(sorted(scorer.EXCLUSIONS + ("probe-unavailable",)),
                          sorted(inputs["design"]["exclusionReasons"]))
+
+    def test_decide_rejects_more_attributed_than_changed_files(self):
+        counts = dict(self.vectors["vectors"][0]["counts"], attributedChangedFiles=101)
+        with self.assertRaises(ValueError):
+            scorer.decide(counts)
+
+    def test_c3_vectors_match_the_integer_rule(self):
+        for vector in self.vectors["vectors"]:
+            counts = vector["counts"]
+            expected = counts["changedFiles"] > 0 and 5 * counts["attributedChangedFiles"] >= 3 * counts["changedFiles"]
+            with self.subTest(vector=vector["id"]):
+                self.assertEqual(scorer.c3_met(counts), expected)
 
     def test_decide_rejects_malformed_counts(self):
         counts = dict(self.vectors["vectors"][0]["counts"])
@@ -317,7 +518,7 @@ class ScorerTests(unittest.TestCase):
 
     def test_fewer_than_ten_eligible_is_inconclusive_before_anything_else(self):
         runs = passing_runs()[:9]
-        runs[0] = make_run(1, "semantic-failure", design="contract", pairs=0, unknown=10)
+        runs[0] = make_run(1, "semantic-failure", design="contract", pairs=0, attributed=0)
         out = self.outcome(runs)  # C1b and C3 are unmet, but step 1 stops first
         self.assertEqual((out["outcome"], out["decided_at_step"]), ("g0-inconclusive", 1))
         self.assertEqual(out["unmet_or_reason"], ["eligible-runs", "design-quota"])
@@ -372,40 +573,62 @@ class ScorerTests(unittest.TestCase):
                 (make_run(i, design="contract") if i < 4 else commit_level(i)) for i in range(1, 11)]
         self.assertEqual(self.step(runs), ("g0-fail", 2))
 
-    def test_c3_boundary_is_inclusive_at_forty_percent(self):
-        def c3(last_unknown):
+    def test_c3_boundary_is_inclusive_at_sixty_percent(self):
+        def c3(attributed_last, changed_last=10):
             runs = passing_runs()
             for run in runs:
-                run["probe"]["unknown_writer_calls"] = 4
-            runs[9]["probe"]["unknown_writer_calls"] = last_unknown
-            return self.outcome(runs)["c3"]
-        self.assertTrue(c3(4)["met"])  # 40 of 100
-        self.assertFalse(c3(5)["met"])  # 41 of 100
+                run["probe"].update(changed_files=10, attributed_changed_files=6)
+            runs[9]["probe"].update(changed_files=changed_last,
+                                    attributed_changed_files=attributed_last)
+            return self.outcome(runs)
+        met = c3(6)  # 60 of 100
+        self.assertTrue(met["c3"]["met"])
+        self.assertEqual((met["c3"]["attributed_changed_files"], met["c3"]["changed_files"],
+                          met["c3"]["coverage"]), (60, 100, 0.6))
+        self.assertEqual(met["outcome"], "g0-pass")
+        unmet = c3(5)  # 59 of 100
+        self.assertFalse(unmet["c3"]["met"])
+        self.assertEqual((unmet["outcome"], unmet["unmet_or_reason"]), ("g0-fail", ["C3"]))
+
+    def test_c3_small_boundaries_use_integer_cross_multiplication(self):
+        def met(attributed, changed):
+            return scorer.c3_met({"attributedChangedFiles": attributed, "changedFiles": changed})
+        self.assertTrue(met(3, 5))
+        self.assertFalse(met(2, 4))
+        self.assertFalse(met(0, 0))
+        self.assertTrue(met(1, 1))
 
     def test_c3_unmet_fails_at_step_two_even_with_few_flagged_runs(self):
         runs = passing_runs()
-        for index in (0, 3, 4):
-            runs[index]["probe"]["unknown_writer_calls"] = 10  # 44 unknown of 100
+        for run in runs:
+            run["probe"]["attributed_changed_files"] = 5  # 50 of 100
         out = self.outcome(runs)
         self.assertEqual((out["outcome"], out["decided_at_step"], out["unmet_or_reason"]),
                          ("g0-fail", 2, ["C3"]))
 
-    def test_c3_without_any_counted_calls_is_unmet(self):
-        runs = [dict(r, probe=dict(r["probe"], denominator_calls=0, unknown_writer_calls=0))
+    def test_c3_without_any_changed_file_is_unmet(self):
+        runs = [dict(r, probe=dict(r["probe"], changed_files=0, attributed_changed_files=0))
                 for r in passing_runs()]
         out = self.outcome(runs)
         self.assertFalse(out["c3"]["met"])
-        self.assertIsNone(out["c3"]["rate"])
+        self.assertIsNone(out["c3"]["coverage"])
         self.assertEqual(self.step(runs), ("g0-fail", 2))
 
-    def test_read_only_searches_are_reported_separately_and_leave_c3(self):
+    def test_call_mix_is_descriptive_and_never_gates_c3(self):
         runs = passing_runs()
-        for run in runs:
-            run["probe"]["read_only_search_calls"] = 50
+        for run in runs:  # the founder's census mix: almost every call is unknown
+            run["probe"].update(denominator_calls=100, unknown_writer_calls=90,
+                                read_only_search_calls=50, bash_calls=80)
         out = self.outcome(runs)
-        self.assertEqual((out["c3"]["denominator_calls"], out["c3"]["read_only_search_calls"]),
-                         (100, 500))
         self.assertEqual(out["outcome"], "g0-pass")
+        mix = out["descriptive_call_mix"]
+        self.assertTrue(mix["gates_nothing"])
+        self.assertEqual((mix["denominator_calls"], mix["unknown_writer_calls"],
+                          mix["read_only_search_calls"], mix["unknown_call_rate"],
+                          mix["bash_share_of_all_calls"]), (1000, 900, 500, 0.9, 0.5333))
+        for run in runs:
+            del run["probe"]["bash_calls"]
+        self.assertIsNone(self.outcome(runs)["descriptive_call_mix"]["bash_share_of_all_calls"])
 
     def test_c4_two_flagged_negative_controls_fail_at_step_two(self):
         runs = passing_runs()
@@ -481,13 +704,14 @@ class ScorerTests(unittest.TestCase):
 
     def test_first_ten_rule_later_eligible_runs_are_descriptive_only(self):
         runs = passing_runs() + [
-            make_run(11, "semantic-failure", design="contract", pairs=1, unknown=10, attribution=ATTRIBUTED),
+            make_run(11, "semantic-failure", design="contract", pairs=1, changed=50, attribution=ATTRIBUTED),
             commit_level(12, "semantic-failure", pairs=1)]
         random_order = list(reversed(runs))
         out = self.outcome(random_order)
         self.assertEqual((out["outcome"], out["counts"]["analysisSetRuns"],
                           out["counts"]["eligibleRunsWithProbeData"]), ("g0-pass", 10, 12))
-        self.assertEqual(out["counts"]["unknownRateDenominatorCalls"], 100)
+        self.assertEqual((out["counts"]["changedFiles"], out["counts"]["attributedChangedFiles"]),
+                         (100, 80))
         itt = out["intention_to_treat"]
         self.assertEqual((itt["started_runs"], itt["later_eligible_runs_descriptive_only"]), (12, 2))
         self.assertEqual(itt["arms"]["transcript-probe"]["runs"], 12)
@@ -544,6 +768,10 @@ class ScorerTests(unittest.TestCase):
         rejects(lambda r: r[0]["arms"].update({"braid-analyze-git-primary": True}))
         rejects(lambda r: r[0]["arms"].update({"clash": "no"}))
         rejects(lambda r: r[0]["probe"].update(unknown_writer_calls=99))
+        rejects(lambda r: r[0]["probe"].update(attributed_changed_files=11))
+        rejects(lambda r: r[0]["probe"].pop("changed_files"))
+        rejects(lambda r: r[0]["probe"].pop("attributed_changed_files"))
+        rejects(lambda r: r[0]["probe"].update(bash_calls=-1))
         rejects(lambda r: r[0]["probe"].pop("read_only_search_calls"))
         rejects(lambda r: r[0]["design"].update(overlap=True))  # contract and overlap
         rejects(lambda r: r[7]["design"].update(overlap=False))  # control without overlap

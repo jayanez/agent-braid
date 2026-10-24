@@ -62,7 +62,12 @@ class ClaudeWorkflowG0ProposalTests(unittest.TestCase):
                 ("C2", "mustExceedReferenceFailurePrevalence", False),
                 ("C2", "mustExceedNaivePathOverlapPrecisionWhenDefined", False),
                 ("C2", "prevalenceReportedBeforeEvaluation", False),
-                ("C3", "maxUnknownRate", 0.9)):
+                ("C3", "minAttributionCoverage", 0.3),
+                ("C3", "minAttributionCoverage", 0.9),
+                ("C3", "comparison", "attributed/changed>0.5"),
+                ("C3", "zeroDenominator", "met"),
+                ("C3", "countsTowardPassOrFail", False),
+                ("C3", "callShareUnknownRateAndBashShare", "gating")):
             changed = deepcopy(self.proposal)
             changed["thresholds"][criterion][field] = value
             with self.subTest(relaxed=field), self.assertRaisesRegex(
@@ -161,7 +166,8 @@ class ClaudeWorkflowG0ProposalTests(unittest.TestCase):
         with self.assertRaisesRegex(G0ProposalRejected, "pinned hash"):
             check_proposal_bytes(self.proposal, self.proposal_bytes + b"x")
         text = self.proposal_bytes.decode("utf-8")
-        for phrase in ("0.3", "40%", "at least 10 eligible", "AT-2026-006",
+        for phrase in ("0.3", "0.60", "at least 10 eligible", "Revision 3",
+                       "5*attributed >= 3*changed", "AT-2026-006",
                        "C1b", "Order of evaluation", "reference-failure prevalence"):
             self.assertIn(phrase, text)
         stripped = self.proposal_bytes.replace(b"0.3", b"0.1")
@@ -184,8 +190,8 @@ class ClaudeWorkflowG0ProposalTests(unittest.TestCase):
 
     def test_every_negative_control_is_actually_exercised(self) -> None:
         rejected = negative_controls(self.proposal, self.proposal_bytes, self.vectors)
-        self.assertGreaterEqual(len(rejected), len(REQUIRED_FIELDS) + 17 + 40)
-        for name in ("relaxed-precision", "relaxed-unknown-rate", "removed-c1",
+        self.assertGreaterEqual(len(rejected), len(REQUIRED_FIELDS) + 17 + 40 + 30)
+        for name in ("relaxed-precision", "relaxed-attribution-coverage", "removed-c1",
                      "removed-c1a", "c1b-satisfiable-by-commit-level-flag",
                      "c1b-ignores-inclusive-braid-flag",
                      "c1b-ignores-naive-path-overlap", "c1a-made-gating",
@@ -202,14 +208,43 @@ class ClaudeWorkflowG0ProposalTests(unittest.TestCase):
                      "census-not-required-before-freeze", "power-row-edited",
                      "signature-restored-silently", "renewal-not-required",
                      "vectors-wrong-expectation", "vectors-drop-precedence-case",
-                     "vectors-drop-c4-branch", "vectors-drop-first-10-case"):
+                     "vectors-drop-c4-branch", "vectors-drop-first-10-case",
+                     "c3-reverts-to-call-share-cap", "c3-coverage-floor-relaxed",
+                     "c3-coverage-floor-raised", "c3-comparison-changed",
+                     "c3-stops-counting", "c3-stops-gating-transcript-requirements",
+                     "call-share-unknown-rate-gates-again",
+                     "call-share-bash-share-gates-again", "attribution-coverage-removed",
+                     "attribution-counts-bash-writes", "attribution-accepts-failed-writes",
+                     "attribution-counts-deleted-files",
+                     "attribution-zero-denominator-passes",
+                     "attribution-comparison-uses-floats", "attribution-stops-gating",
+                     "attribution-output-retains-paths",
+                     "attribution-output-not-counts-only",
+                     "attribution-bash-only-changes-attributed",
+                     "attribution-metric-removed", "census-evidence-edited",
+                     "census-raw-output-committed", "census-evidence-removed",
+                     "revision-reverts-to-2", "revision-adds-renewal",
+                     "revision-changes-other-criteria",
+                     "revision2-superseded-hash-edited",
+                     "revision2-superseded-list-dropped",
+                     "superseded-by-wrong-revision",
+                     "vectors-drop-c3-boundary-case", "vectors-drop-c3-59-of-100-case",
+                     "vectors-drop-c3-zero-denominator-case",
+                     "vectors-c3-expectation-flipped",
+                     "vectors-c3-attributed-exceeds-changed",
+                     "vectors-old-call-share-field"):
             self.assertIn(name, rejected)
 
     def test_signature_is_superseded_not_valid(self) -> None:
         decision = self.proposal["sourceAndBudgetDecision"]
         self.assertEqual(decision["status"], "signature-superseded-renewal-required")
         self.assertEqual(decision["supersededSignature"]["newHashes"], "computed-at-renewal")
-        self.assertEqual(self.proposal["revision"]["number"], 2)
+        self.assertEqual(self.proposal["revision"]["number"], 3)
+        self.assertFalse(self.proposal["revision"]["renewalAddedByThisRevision"])
+        superseded = decision["supersededSignature"]
+        self.assertEqual(superseded["supersededBy"], "revision-3")
+        self.assertEqual(len(superseded["supersededRevision2BytesSha256"]), 4)
+        self.assertEqual(self.proposal["thresholds"]["C3"]["minAttributionCoverage"], 0.6)
         self.assertTrue(self.proposal["revision"]["founderResignatureRequired"])
         changed = deepcopy(self.proposal)
         changed["sourceAndBudgetDecision"]["status"] = "pending-founder-signature"
@@ -229,6 +264,7 @@ class ClaudeWorkflowG0ProposalTests(unittest.TestCase):
     def test_decision_vectors_are_checked_and_cover_every_branch(self) -> None:
         ids = check_decision_vectors(self.vectors, self.proposal)
         self.assertGreaterEqual(len(ids), 19)
+        self.assertGreaterEqual(len(ids), 23)
         for entry in self.vectors["vectors"]:
             with self.subTest(vector=entry["id"]):
                 outcome, step, reasons = evaluate_g0(entry["counts"])
@@ -240,8 +276,12 @@ class ClaudeWorkflowG0ProposalTests(unittest.TestCase):
         base = {entry["id"]: entry["counts"] for entry in self.vectors["vectors"]}["v01-pass-base"]
         self.assertEqual(evaluate_g0(base)[0], "g0-pass")
         cases = (
-            ({"unknownWriterCapableCalls": 40}, "g0-pass"),
-            ({"unknownWriterCapableCalls": 41}, "g0-fail"),
+            ({"attributedChangedFiles": 60}, "g0-pass"),
+            ({"attributedChangedFiles": 59}, "g0-fail"),
+            ({"attributedChangedFiles": 3, "changedFiles": 5}, "g0-pass"),
+            ({"attributedChangedFiles": 2, "changedFiles": 4}, "g0-fail"),
+            ({"attributedChangedFiles": 0, "changedFiles": 0}, "g0-fail"),
+            ({"attributedChangedFiles": 100, "changedFiles": 100}, "g0-pass"),
             ({"negativeControlRunsFlagged": 1}, "g0-pass"),
             ({"negativeControlRunsFlagged": 2}, "g0-fail"),
             ({"contractDependencyRuns": 2}, "g0-inconclusive"),
@@ -257,6 +297,26 @@ class ClaudeWorkflowG0ProposalTests(unittest.TestCase):
         for change, expected in cases:
             with self.subTest(change=change):
                 self.assertEqual(evaluate_g0({**base, **change})[0], expected)
+
+    def test_c3_is_attribution_coverage_and_call_share_is_descriptive(self) -> None:
+        c3 = self.proposal["thresholds"]["C3"]
+        self.assertEqual(c3["comparison"], "5*attributedChangedFiles>=3*changedFiles")
+        self.assertEqual(c3["zeroDenominator"], "unmet")
+        self.assertFalse(self.proposal["unknownRate"]["gatesAnyCriterion"])
+        self.assertEqual(self.proposal["unknownRate"]["role"], "descriptive-only-never-gating")
+        self.assertEqual(self.proposal["probe"]["attributionOutputs"]["fields"],
+                         ["changedFiles", "attributedChangedFiles"])
+        self.assertEqual(self.proposal["censusEvidence"]["toolCalls"], 65639)
+        self.assertFalse(self.proposal["censusEvidence"]["rawOutputCommitted"])
+        base = {e["id"]: e["counts"] for e in self.vectors["vectors"]}["v01-pass-base"]
+        # A call-share style field can no longer be smuggled into a vector.
+        self.assertNotIn("unknownWriterCapableCalls", base)
+        # A Bash-heavy call mix does not gate: only attribution coverage does.
+        self.assertEqual(evaluate_g0({**base, "attributedChangedFiles": 6,
+                                      "changedFiles": 10})[0], "g0-pass")
+        self.assertEqual(evaluate_g0({**base, "attributedChangedFiles": 5,
+                                      "changedFiles": 10})[:3],
+                         ("g0-fail", "step-2", ["C3"]))
 
     def test_power_table_and_attrition_tables_are_published_and_consistent(self) -> None:
         table = self.proposal["powerTable"]

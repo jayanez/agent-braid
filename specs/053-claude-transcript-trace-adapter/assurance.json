@@ -100,7 +100,7 @@
   },
   "execution_contract": "Read-only. No model invocation, network, grant, merge or promotion by any adapter or checker; the founder runs G0 workflows outside this delivery; implementation requirements are blocked by G0; no concurrent agent, push or remote issue is authorized.",
   "human_review": "pending",
-  "hypotheses": "H-CW1 (untested): Braid commit-level analysis or transcript read/write overlap identifies integration failures that git merge-tree misses, with precision at least 0.3 and unknown rate at most 40%; falsification and inconclusive outcomes are valid.",
+  "hypotheses": "H-CW1 (untested): Braid commit-level analysis or transcript read/write overlap identifies integration failures that git merge-tree misses, with precision at least 0.3 and attribution coverage of changed files at least 0.60; falsification and inconclusive outcomes are valid.",
   "observation_contract": "Run-level reference outcome from a serial Git merge in a preregistered order plus project tests; predictions hashed before the reference exists; the probe retains integer counts only; unknown, partial, excluded and inconclusive cases are reported with denominators.",
   "references": [
     "CONSTITUTION.md",
@@ -145,7 +145,7 @@
           "planned_evidence": "Run of the named unittest class and the structural checker with exact commands, hashes and outcomes; structural only, not a G0 result.",
           "test_file": "tests/test_claude_workflow_g0_proposal.py",
           "test_name": "ClaudeWorkflowG0ProposalTests.test_committed_inputs_pass_every_structural_check",
-          "then": "the proposal bytes, every required field and each threshold (C1a and C1b at least 1 each, C1b with its attribution condition, C2 at least 0.3 and above both the reference-failure prevalence and the naive path-overlap precision, C3 at most 40% over writer-capable calls, C4 at most 1 flagged negative control), the freeze order, the decision rule with its order of evaluation, the kill outcome, the EUR 0 budget, the probe's counts-only retention and the unfrozen, non-authorizing status are pinned, and removing or relaxing any of them is rejected",
+          "then": "the proposal bytes, every required field and each threshold (C1a and C1b at least 1 each, C1b with its attribution condition, C2 at least 0.3 and above both the reference-failure prevalence and the naive path-overlap precision, C3 attribution coverage of changes at least 0.60 (`5*attributed >= 3*changed`; zero changed files leaves it unmet), C4 at most 1 flagged negative control), the freeze order, the decision rule with its order of evaluation, the kill outcome, the EUR 0 budget, the probe's counts-only retention and the unfrozen, non-authorizing status are pinned, and removing or relaxing any of them is rejected",
           "when": "the structural checker and its tests run"
         }
       ],

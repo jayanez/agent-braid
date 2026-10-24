@@ -12,6 +12,39 @@ the checker is `scripts/validate_claude_workflow_g0_proposal.py`.
 [H-CW1](../../research/hypotheses/H-CW1-claude-workflow-integration.md).
 **Owner of the gate:** [SPEC-053](../../specs/053-claude-transcript-trace-adapter/spec.md).
 
+## Revision 3 (2026-10-24, same day as revisions 1 and 2)
+
+This revision redefines criterion C3 by a founder decision of 2026-10-24. It
+changes bound bytes, so it changes the signature state again. Only C3 and the
+places that reference C3's inputs change; the evaluation order, C1a, C1b, C2, C4
+and the analysis set stay as in revision 2.
+
+1. **Reason.** The pre-freeze census on the founder's own transcripts (1,418
+   subagent files, 65,639 tool calls) shows `Bash` = 80.2% of calls and 85.4% of
+   calls in the unknown class (read-only searches 0.0%, `Read` 7.8%). The
+   call-share definition of revision 2 (at most 40% unknown over writer-capable
+   classes) would therefore fail by construction, regardless of the science. The
+   census output is aggregate-only and the raw output is not committed.
+2. **New C3 is attribution coverage of changes.** C3 asks whether the transcript
+   can explain the writes at all, which is the precondition for C1b and C2. The
+   definition is in "Preregistered success thresholds and decision" and in
+   metric 2.
+3. **The call-share unknown rate and the `Bash` share become descriptive only.**
+   They are still computed and reported from the census and from the runs, and
+   they never gate. `Grep` and `Glob` stay a separate read-only search share.
+4. **The 0.60 threshold is a proposal** that the founder may amend before the
+   freeze; an amendment is a new revision and a renewed signature.
+5. **Signature state.** The signature of 2026-10-24 applied to the bytes of
+   revision 1 and was superseded by revision 2; revision 3 supersedes the
+   revision-2 bytes as well. Revision 2 bytes (SHA-256): this proposal
+   `066ea12b226410b52ac9843d14f57a257db3ea28d6a649b08336dc9318b788fd`, the inputs
+   file `dd48f0adb47fee62da4c805c701b89e2beb1a32105ea2e9640e95e2b49a36625`, the
+   decision vectors `c100a7acbd4a5a231f36967073c6d8e6169f76d97340647e49e8a85d6baedf55`
+   and the source and budget decision
+   `53775c0de293b9db20a994d2283206f7db8e576c12c7bfc8d7959b6b0f6db138`. This
+   change does not add a renewal: the renewal record is re-done against the final
+   bytes after merge, and this document does not state the new hashes.
+
 ## Revision 2 (2026-10-24, same day as revision 1)
 
 This revision answers a review of the first draft. It changes bound bytes, so it
@@ -38,7 +71,8 @@ changes the signature state. The changes are:
 6. **Executable decision rule.** Run-level count tuples map to an expected
    outcome in the decision vectors file, which the structural check validates.
 7. **C3 definition.** Read-only searches (`Grep`, `Glob`) are separated from
-   unknown writers.
+   unknown writers. (Superseded by revision 3: C3 is now attribution coverage of
+   changes.)
 8. **Signature state.** The founder's declaration of 2026-10-24 in the delivery
    session applied to the bytes of revision 1. This revision changes the bound
    bytes, so that signature is **superseded**. A renewal against the new hashes
@@ -49,7 +83,7 @@ changes the signature state. The changes are:
    and budget decision
    `333406c25dbdf87b0cd72c2895f441998710e7f3a477e95c137647e12e4a9c62`. The new
    hashes are computed at renewal; this document does not state them, because a
-   file cannot contain its own hash.
+   file cannot contain its own hash. Revision 3 supersedes these bytes in turn.
 9. **Host retries.** The host may restart a stalled workflow agent
    automatically (for example "attempt 2 (stalled)", reported to allow up to five
    restarts) and a script cannot suppress that. In G0 every run records the
@@ -106,7 +140,7 @@ of unknown results?
   founder's existing subscription. Provider-terms review for using one's own
   transcripts as local analysis input is recorded in the
   [source and budget decision](../../specs/053-claude-transcript-trace-adapter/budget-and-source-decision.md),
-  whose signature is superseded by this revision until renewed. No third-party
+  whose signature is superseded until renewed. No third-party
   repository, user or transcript is in scope.
 - **Sampling frame:** runs designed by the founder before launch, not sampled
   from history. Each run is an ad-hoc workflow with 3 or 4 agents, `isolation:
@@ -176,20 +210,22 @@ The order is fixed so that the probe never changes after the preregistration is
 frozen:
 
 1. **Renew the signature** of the source and budget declaration against the
-   revised bytes (see Revision 2, item 8). The census below reads the founder's
+   revised bytes (see Revision 2, item 8, and Revision 3, item 5). The census below reads the founder's
    own transcripts locally, which that declaration covers.
 2. **Transcript layout and tool-name census.** The founder reads the founder's
    own existing subagent transcripts locally and retains only a structure and
    tool-name histogram: which record kinds exist, which tool names occur, how
    many per class, how many calls are paired with a result. Nothing else is
    retained; the aggregate-only rule applies. The census also supplies the
-   descriptive agent-count census (metric 4) and the tool-class shares used to
-   check the C3 cap.
+   descriptive agent-count census (metric 4) and the descriptive tool-class
+   shares (including the `Bash` share and the call-share unknown rate, which no
+   longer gate). Its result is recorded in Revision 3.
 3. **Write the probe against the observed layout** and test it on a
    de-identified real fixture derived from the census material, not on a
    hand-written synthetic transcript. A tool name that writes files but is not
    in the write class (for example a multi-edit tool) is added to the write class
-   here, or it would fall into `other`, inflate the unknown rate and hide writes.
+   here, or it would fall into `other`, inflate the descriptive unknown rate, hide
+   writes and leave changed files unattributed (C3).
 4. **Estimate the eligible yield** (attrition rule above).
 5. **Hash the probe and the runner** and record the hashes.
 6. **Accept the power operating point** (see "Power table"): the founder records
@@ -259,8 +295,11 @@ calls (`Read`; `Edit`, `Write`, `NotebookEdit` and any further write tool found 
 the census as write; `Bash`; `Grep` and `Glob`; tool names starting `mcp__`;
 other), normalizes file paths to repository-relative paths using the worktree
 root from the manifest, and counts read/write overlaps. It retains only integer
-counts: per agent and per tool class, and per run the number of ordered agent
-pairs and distinct paths with a read/write overlap. Paths, file contents, prompts
+counts: per agent and per tool class, per run the number of ordered agent
+pairs and distinct paths with a read/write overlap, and, for C3, per run the two
+integers `changedFiles` and `attributedChangedFiles` (see metric 2). The
+comparison of the transcript with the changed paths is done inside the probe, on
+the local machine; only the two integer counts leave it. Paths, file contents, prompts
 and tool outputs are never written to any retained artifact. Failed tool calls
 count as calls; a failed write-class call is an unknown writer, never an effect.
 Paths outside the worktree are counted separately and never matched. A write
@@ -273,15 +312,23 @@ G0 and not the SPEC-053 mapper.
 1. Hits and misses against the reference: the run-level confusion counts
    (true/false positive/negative), reported with the textual, semantic and
    indeterminate classes separately.
-2. Unknown rate. Primary (criterion C3): the share of probe tool calls that are
-   unknown **writer-capable** calls. Numerator: `Bash`, MCP (`mcp__*`) and other
-   calls, and failed write-class calls. Denominator: every counted call except the
-   read-only searches `Grep` and `Glob`, which are removed from numerator and
-   denominator and reported separately as the read-only search share. Failed
-   `Read` calls are reported separately and are not unknown writers. Secondary,
-   always reported: the share of `analyze-git` operations with an `unknown` effect
-   or partial coverage, the share of agent pairs labelled `unknown`, and the
-   read-only search share.
+2. Attribution coverage of changes (criterion C3). For each analysis run and each
+   agent, `changedFiles` is the number of files whose content changed between the
+   base and that agent's final branch state, added or modified paths only, from
+   Git, computed locally by the probe or runner. A changed file is
+   **attributed** when the agent's transcript contains at least one successful
+   `Write`, `Edit` or `NotebookEdit` tool call on that repository-relative path
+   (a probe-side comparison; the output is integer counts only, never a path or a
+   hash). Files changed only through `Bash` (`sed -i`, `mv`, generators,
+   formatters) are **unattributed** by definition. `attributedChangedFiles` and
+   `changedFiles` are summed over the 10 analysis runs. Descriptive only, always
+   reported and never gating: the call-share unknown rate (the share of probe tool
+   calls that are unknown **writer-capable** calls; numerator `Bash`, MCP
+   (`mcp__*`) and other calls and failed write-class calls; denominator every
+   counted call except `Grep` and `Glob`, which are reported separately as the
+   read-only search share), the `Bash` share, failed `Read` calls, the share of
+   `analyze-git` operations with an `unknown` effect or partial coverage, and the
+   share of agent pairs labelled `unknown`.
 3. Replay-ineligible rate: the share of runs in which `plan-git`/`verify-git`
    cannot certify the batch (more than 4 operations, any unknown effect, partial
    coverage, or refusal).
@@ -289,7 +336,7 @@ G0 and not the SPEC-053 mapper.
    construction, so this is read from the descriptive census of the founder's
    existing worktree workflows (agent counts only) taken in the pre-freeze census
    step; it is not a pass criterion.
-5. `Bash` share of subagent tool calls.
+5. `Bash` share of subagent tool calls (descriptive only, never gating).
 6. Precision of read/write overlap as a predictor of reference failure:
    flagged runs with a reference failure divided by flagged runs (unit: the run;
    pairs inside a run are not independent). Also reported for every other arm
@@ -338,12 +385,14 @@ it. The criteria below are fixed before any data exist.
   applicable and the other two conditions still bind. Because designed overlap
   makes prevalence high by construction, C2 is a floor against a probe that
   flags nearly every run and not evidence that the probe is useful.
-- **C3:** the unknown writer-capable rate (primary definition in metric 2) is at
-  most 40%. A zero denominator leaves C3 unmet. The pre-freeze census gives the
-  tool-class shares; if the census already shows that the cap would be exceeded on
-  the founder's existing transcripts, the founder records before freezing either a
-  new revision or the acceptance that a `g0-fail` on tool mix is the likely
-  outcome.
+- **C3 (attribution coverage of changes):** summed over the 10 analysis runs,
+  attributed changed files divided by changed files is at least 0.60 (metric 2).
+  The comparison is integer: C3 is met iff `5*attributed >= 3*changed`. A zero
+  `changedFiles` denominator leaves C3 unmet. C3 now answers "can transcript
+  evidence explain the writes at all", the precondition for C1b and C2. The
+  call-share unknown rate and the `Bash` share from the census are descriptive
+  only and never gate. The 0.60 threshold is a proposal the founder may amend
+  before the freeze (Revision 3, item 4).
 - **C4 (negative controls):** among the at least 3 negative-control runs of the
   analysis set, the probe flags at most 1.
 
@@ -353,7 +402,7 @@ outcome. The same rule is executable in the decision vectors file:
 1. Fewer than 10 eligible runs with probe data, or an analysis set that misses a
    design quota (7 overlap, 3 contract-dependency, 3 negative-control runs):
    `g0-inconclusive`.
-2. Evaluate C1b, C3 and C4 on the analysis set. If any is unmet: `g0-fail`. This
+2. Evaluate C1b, C3 (attribution coverage) and C4 on the analysis set. If any is unmet: `g0-fail`. This
    holds even when fewer than 3 runs are flagged by the probe; with no
    probe-flagged run C1b is unmet.
 3. Fewer than 3 runs flagged by the probe: `g0-inconclusive`.
@@ -373,20 +422,23 @@ The scorer in the G0 kit (a separate pull request) must pass these vectors befor
 its bytes are pinned. Comparisons use integer cross-multiplication, not floats.
 
 **Power table.** The table gives the probability of each outcome under stated
-assumptions. It is illustrative, it is not a prediction, and it assumes C3 is met.
+assumptions. It is illustrative, it is not a prediction, and it treats C3 as met (attribution coverage is not
+modelled, so the true pass probabilities are lower by the unmodelled chance that
+coverage is below 0.60). Revision 3 recomputed the table with the same
+assumptions and seed; the figures moved by at most 0.1 percentage points.
 Model: 10 analysis runs: 4 other overlap runs and 3 negative controls that fail
 with probability 0.7, and 3 contract-dependency runs that fail semantically with
 probability 0.4 (naive path overlap flags the 7 overlap runs and none of the
-contract runs). Monte Carlo, 200,000 trials, seed 20261024, applying the order of
+contract runs). Monte Carlo, 200,000 trials, seed 20261024 (numpy `default_rng`), applying the order of
 evaluation above.
 
 | Scenario (probe flag probability on failing / non-failing runs; on negative controls; attribution of a flagged contract failure) | pass | fail | inconclusive |
 |---|---|---|---|
-| Uninformative probe, flags 60% of all runs; attribution 0.2 | 1.7% | 98.3% | 0.1% |
+| Uninformative probe, flags 60% of all runs; attribution 0.2 | 1.6% | 98.3% | 0.1% |
 | Uninformative probe, flags 90% of all runs; attribution 0.2 | 0.2% | 99.8% | 0.0% |
 | Weaker probe, 80% / 40%; controls 20%; attribution 0.7 | 26.9% | 72.3% | 0.9% |
-| Strong probe, 90% / 30%; controls 10%; attribution 0.9 | 45.2% | 53.6% | 1.2% |
-| Ideal probe, 100% / 10%; controls 0%; attribution 1.0 | 65.1% | 32.5% | 2.4% |
+| Strong probe, 90% / 30%; controls 10%; attribution 0.9 | 45.1% | 53.6% | 1.2% |
+| Ideal probe, 100% / 10%; controls 0%; attribution 1.0 | 65.0% | 32.5% | 2.4% |
 
 Reading: an uninformative probe passes in under 2% of simulated experiments,
 which is the false-pass rate the founder accepts; a strong probe passes in fewer
@@ -461,7 +513,9 @@ negative controls. The power table shows that a fail is weak evidence and a pass
 is a feasibility observation. At commit level the Braid primary flag adds
 packaging and labelling, not detection, over naive path overlap.
 Transcripts are an agent's recorded intent; `Bash`-driven effects are invisible
-to the probe. Host, model and Claude Code versions drift between runs and are
+to the probe, and C3 counts a file changed only through `Bash` as unattributed.
+Attribution by a successful write call on the path shows that the transcript
+names the file, not that the call produced the final content. Host, model and Claude Code versions drift between runs and are
 recorded, not controlled. The merge-tree baselines are stronger than file-level
 overlap on textual conflicts and weaker on semantic ones, so the arms answer
 different questions. Passing deterministic checks of this document proves only
