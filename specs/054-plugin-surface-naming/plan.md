@@ -46,10 +46,8 @@ Alternatives considered:
    omits `prompts`. `SCHEMA` becomes `agent-braid-plugin/v0.2`; delegated
    envelopes carry it. The portable server (`tooling_mcp`) keeps its prompts and
    `agent-braid-tooling/v0.1`.
-2. **Display metadata (optional).** If the pinned SDK accepts them, the plugin
-   server MAY add `title` to its tool definitions and `serverInfo`. Tool names,
-   input/output schemas and annotations stay unchanged. Titles are applied in the
-   plugin facade only, so the portable listing stays byte-compatible.
+2. **Display metadata (deferred).** No `title` is added in alpha.4 (owner
+   decision D5). Titles remain additive and can ship later without a schema bump.
 3. **Skill packaging.** The builder maps `agent-braid-analyze → analyze`,
    `agent-braid-plan → plan`, `agent-braid-evidence → evidence`,
    `agent-braid-execute → execute`, `agent-braid-recover → recover`; `setup` is
@@ -92,20 +90,18 @@ No vendor-specific semantics enter the core. No amendment is proposed.
 
 ## Human review and unresolved decisions
 
-Decisions needing owner approval before or during implementation:
+Decisions (D5–D8 recorded 2026-10-24; the rest remain open):
 
-1. Adopt [ADR 0030](../../docs/adr/0030-native-plugin-surface-naming.md)
-   (currently Proposed). It amends ADR 0024's "unchanged five product skills"
-   decision for plugin packaging only.
-2. Authorize implementation of T002–T008 on a feature branch.
-3. Whether to add tool and server `title` metadata in alpha.4 (MAY; default
-   proposed: add for the plugin server only).
-4. Whether alpha.4 also bundles other pending plugin fixes, such as the SPEC-046
-   T016–T019 stale-registry reconnect tasks proposed in an open PR.
+1. DECIDED (D7): [ADR 0030](../../docs/adr/0030-native-plugin-surface-naming.md)
+   is Accepted. It amends ADR 0024's "unchanged five product skills" decision
+   for plugin packaging only.
+2. DECIDED: implementation of T002–T008 is authorized on feature branches.
+3. DECIDED (D5): no tool or server `title` metadata in alpha.4.
+4. DECIDED (D6): alpha.4 does not bundle SPEC-046 T016–T019; they ship
+   separately.
 5. Release: building, tagging `agent-braid--v0.1.0-alpha.4` and publishing to
    `plugin-dist` remain separate owner decisions after T009.
 6. Timing of a future `agent-braid-tooling/v0.2` portable contract with the
    unprefixed prompt names and an alias window (D3); not scheduled here.
-7. GitHub tracking: SPEC-054 is registered under M4.5 only in the local
-   `github-tracking.json` and SPEC-047 alignment inventory; remote issues,
-   milestone membership and Project entries need explicit approval to create.
+7. DECIDED (D8): remote GitHub tracking for SPEC-054 is created now through
+   the reviewed reconciliation workflow, after a dry-run is shown to the owner.

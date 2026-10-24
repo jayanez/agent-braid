@@ -177,8 +177,7 @@ Verification: [procedure_009](validation-plan.md); T009.
 
 Engineering only; no hypothesis. Naming does not change effects, authority,
 analysis results or evidence. Public contract impact: plugin MCP schema
-`agent-braid-plugin/v0.1` → `v0.2` (prompts removed, display metadata MAY be
-added); plugin skill invocation names change in `0.1.0-alpha.4`. Unchanged:
+`agent-braid-plugin/v0.1` → `v0.2` (prompts removed; display titles deferred); plugin skill invocation names change in `0.1.0-alpha.4`. Unchanged:
 plugin identifier, server key, tool names, resource URI schemes, user registry
 `agent-braid-plugin-registry/v0.2`, `agent-braid-tooling/v0.1`, SPEC-041/042
 legacy installs and the SPEC-047 v1 data contract. Any future tool rename

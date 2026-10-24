@@ -32,9 +32,9 @@ source, **C** convention, **O** observed host behavior, **D** owner decision.
 | `displayName` / `interface.displayName` | product name with spaces | `Agent Braid` | unchanged | N |
 | MCP server key (`mcp.json`, `.mcp.json`) | equal to the plugin name; no `__`, no trailing `_` | `agent-braid` | unchanged | C (official plugins), O (Codex does not scope plugin server keys; duplicates are skipped), N (Claude permission rules) |
 | MCP `serverInfo.name` | distinct per server program | `agent-braid-plugin`, `agent-braid-tooling` | unchanged | N (not a namespace; display and logging only) |
-| MCP `serverInfo.title` | MAY be added | absent | `Agent Braid` (plugin, when supported by the pinned SDK) | N |
+| MCP `serverInfo.title` | MAY be added later (additive) | absent | absent in alpha.4 (D5) | N |
 | MCP tool `name` | unprefixed lowercase verb or verb-noun in kebab-case; unique per server | 9 names | unchanged | N (MCP tool name SHOULD rules), D4 |
-| MCP tool `title` | MAY be added as sentence-case text | absent | MAY be added to the plugin server only | N |
+| MCP tool `title` | MAY be added later (additive) | absent | absent in alpha.4 (D5) | N |
 | MCP prompts, plugin server | SHALL NOT be published | 3 prompts | none (`agent-braid-plugin/v0.2`) | D1 |
 | MCP prompts, portable server | frozen in `agent-braid-tooling/v0.1` | `agent-braid-analyze`, `agent-braid-plan`, `agent-braid-evidence` | unchanged; future target `analyze`, `plan`, `evidence` | D3 |
 | Resource URI scheme | RFC 3986 custom scheme owned by the product; workspace in the authority component | `agent-braid://`, `agent-braid-plugin://<workspaceId>/` | unchanged | N (custom schemes per RFC 3986) |

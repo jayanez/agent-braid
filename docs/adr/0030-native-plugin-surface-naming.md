@@ -1,7 +1,9 @@
 # ADR 0030: Native plugin surface naming
 
-- **Status:** Proposed. The owner selected the policy options on 2026-10-24; this
-  is not ADR adoption, implementation approval or release approval.
+- **Status:** Accepted on 2026-10-24 by the founder (conversation decision in the
+  SPEC-054 pull request). Adoption authorizes implementation tracks T002–T008
+  only; native observation, release, tag and `plugin-dist` publication remain
+  separate founder decisions.
 - **Date:** 2026-10-24
 - **Articles:** 0, 14–16, 19, 20, 23, 24
 - **Specification:** [SPEC-054](../../specs/054-plugin-surface-naming/spec.md)
@@ -25,7 +27,7 @@ Adopt the [naming policy](../../specs/054-plugin-surface-naming/contracts/naming
 3. Plugin skills drop the brand prefix inside the plugin namespace: `analyze`,
    `plan`, `evidence`, `execute`, `recover`, `setup`. Renaming happens at build
    time; canonical sources and legacy global installs keep prefixed names.
-4. Keep all MCP tool names and resource URI schemes; display titles MAY be added.
+4. Keep all MCP tool names and resource URI schemes; display titles are deferred (additive, no schema bump).
 5. Keep the portable `agent-braid-tooling/v0.1` contract, including its prompts;
    unprefixed prompt names are the target of a future versioned contract.
 6. Any future tool rename requires a new SPEC-047 telemetry contract version.
