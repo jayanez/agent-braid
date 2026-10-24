@@ -20,9 +20,11 @@ to its final name while the journal lock is held, so a kill leaves either no rec
 one. Leftover temp files are ignored by readers (and counted against the entry budget) and swept
 by the next locked write. A damaged *published* record still refuses; nothing is repaired.
 
-Coupling: the storage helpers (``open_directory``, ``read_record``, ``check_record_file``,
-``validate_receipt``) come from ``harness_admission`` and ``ALL_TERMINALS`` / ``is_relative``
-from ``harness_observation``, so the private-store rules stay defined in one place.
+Coupling: the storage and predicate helpers are the underscore-private ones of `harness_admission`
+(`_directory`, `_read_record`, `_file_info`, `_validate_receipt`) and `harness_observation`
+(`_ALL_TERMINALS`, `_is_relative`), shared on purpose so the private-store rules stay defined in one
+place. Promoting them to public names would invalidate the pinned hashes in earlier evidence files,
+so that rename is left to a change that refreshes them.
 """
 from __future__ import annotations
 
@@ -37,12 +39,12 @@ import re
 from typing import Any
 
 from .harness_admission import (
-    MAX_RECORD_BYTES, AdmissionError, Reservation, open_directory, check_record_file, read_record,
-    validate_receipt)
+    MAX_RECORD_BYTES, AdmissionError, Reservation, _directory, _file_info, _read_record,
+    _validate_receipt)
 from .harness_lab import ContainmentBackend, FixtureLimits, LabResult, run_fixture
 from .harness_manifest import HarnessManifest
 from .harness_observation import (
-    ALL_TERMINALS, MAX_ARTIFACTS, MAX_TIME, ExportInventory, is_relative)
+    _ALL_TERMINALS, MAX_ARTIFACTS, MAX_TIME, ExportInventory, _is_relative)
 from .system_one import InvalidDecision, canonical
 
 FORMAT = "braid-harness-journal/v0.1"
@@ -141,7 +143,7 @@ class AttemptStatus:
 def _open_root(root: Any) -> int:
     _require(isinstance(root, Path), "unsafe-root")
     try:
-        return open_directory(root, private=True)
+        return _directory(root, private=True)
     except (OSError, AdmissionError):
         raise JournalError("unsafe-root") from None
 
@@ -156,7 +158,7 @@ class _Locked:
         self.directory = _open_root(self.root)
         try:
             self.lock = self._open_lock()
-            check_record_file(self.lock)
+            _file_info(self.lock)
             _require(os.fstat(self.lock).st_size == 0, "corrupt-journal")
             try:
                 fcntl.flock(self.lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
@@ -214,7 +216,7 @@ def _validate_record(kind_name: str, record: Any, attempt_id: str) -> None:
                  and not set(record["completed"]) & set(record["pending"])
                  and _artifacts(record["artifacts"]), "corrupt-journal")
     elif kind == "terminal":
-        _require(record["state"] in ALL_TERMINALS and _hash(record["observationSha256"])
+        _require(record["state"] in _ALL_TERMINALS and _hash(record["observationSha256"])
                  and record["containment"] in ("simulated", "native")
                  and type(record["settled"]) is bool and type(record["cleaned"]) is bool,
                  "corrupt-journal")
@@ -230,7 +232,7 @@ def _work(value: Any) -> bool:
 
 def _artifacts(value: Any) -> bool:
     return (type(value) is dict and len(value) <= MAX_ARTIFACTS
-            and all(is_relative(k) and _hash(v) for k, v in value.items()))
+            and all(_is_relative(k) and _hash(v) for k, v in value.items()))
 
 
 @dataclass(frozen=True)
@@ -297,7 +299,7 @@ def _load(directory: int) -> dict[str, _Attempt]:
         records, raws = [], []
         for key in order:
             try:
-                record, raw = read_record(directory, group[key])
+                record, raw = _read_record(directory, group[key])
             except (OSError, InvalidDecision, AdmissionError):
                 raise JournalError("corrupt-journal") from None
             _validate_record(key, record, attempt_id)
@@ -336,7 +338,7 @@ def _append(directory: int, attempts: Mapping[str, _Attempt], name: str, record:
     fd = os.open(temp, os.O_WRONLY | os.O_CREAT | os.O_EXCL | os.O_NOFOLLOW, 0o600,
                  dir_fd=directory)
     try:
-        check_record_file(fd)
+        _file_info(fd)
         remaining = memoryview(raw)
         while remaining:
             written = os.write(fd, remaining)
@@ -383,7 +385,7 @@ def _reservation(reservation: Any) -> dict:
     _require(isinstance(reservation, Reservation), "invalid-reservation")
     try:
         value = reservation.to_dict()
-        validate_receipt(value, f"{value.get('id')}.json")
+        _validate_receipt(value, f"{value.get('id')}.json")
     except (InvalidDecision, AdmissionError):
         raise JournalError("invalid-reservation") from None
     return value
