@@ -166,6 +166,38 @@ class ArtifactAndEffectTests(unittest.TestCase):
         self.assertEqual(got, {("write", "claimed.txt", "inferred"), ("create", "real.txt", "observed"),
                                ("network", None, "inferred")})
 
+    def test_effect_fields_follow_the_allow_list(self):
+        evts = events({"seq": 1, "kind": "effect", "effect": "write", "path": "private/where.txt"})
+        no_path = make_inventory(allowedEventFields=["effect"])
+        d = observe(evts, inventory=no_path).to_dict()
+        self.assertEqual(d["effects"], [{"kind": "write", "path": None, "evidence": "inferred"}])
+        self.assertNotIn("private/where.txt", json.dumps(d))
+        self.assertEqual(d["redaction"]["droppedFields"], 1)
+        no_kind = make_inventory(allowedEventFields=["path"])
+        d = observe(evts, inventory=no_kind).to_dict()
+        self.assertEqual(d["effects"], [])
+        self.assertNotIn("private/where.txt", json.dumps(d))
+
+    def test_effect_path_secret_redacted(self):
+        evts = events({"seq": 1, "kind": "effect", "effect": "write", "path": f"d/{SECRET}"})
+        d = observe(evts).to_dict()
+        self.assertNotIn(SECRET, json.dumps(d))
+        self.assertEqual(d["effects"][0]["path"], "d/[REDACTED]")
+
+    def test_invalid_effect_path_is_malformed_not_fatal(self):
+        evts = events({"seq": 1, "kind": "effect", "effect": "write", "path": "../escape"})
+        d = observe(evts).to_dict()
+        self.assertEqual(d["loss"]["malformedEvents"], 1)
+        self.assertEqual(d["terminal"], "unobserved")
+        self.assertEqual(d["effects"], [])
+
+    def test_non_json_raw_event_values_use_fixed_reason(self):
+        for bad in (b"bytes", object(), float("nan"), {1: 1, "a": 2}):
+            evts = events({"seq": 1, "kind": "message", "provider_raw": bad})
+            with self.assertRaises(obs.ObservationError, msg=repr(bad)) as ctx:
+                observe(evts)
+            self.assertEqual(ctx.exception.reason, "invalid-events")
+
     def test_unobserved_artifacts_when_not_supplied(self):
         d = observe().to_dict()
         self.assertEqual(d["artifacts"], [])

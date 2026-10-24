@@ -5,18 +5,18 @@
     {
       "command": ".venv-speckit/bin/python -m unittest discover -s tests -p \"test_harness*.py\" -v",
       "exitCode": 0,
-      "moduleTests": 24,
-      "scope": "Focused offline run; includes manual mutation checks (completion-with-loss, redaction removal, inferred->observed, expiry bypass each failed tests before restoring).",
-      "testsRun": 93
+      "moduleTests": 28,
+      "scope": "Focused offline run; includes manual mutation checks (completion-with-loss, redaction removal, inferred->observed, expiry bypass each failed tests before restoring). Review follow-up: effect fields gated by allow-list, invalid effect path counted as malformed, non-JSON raw events refused with invalid-events.",
+      "testsRun": 97
     }
   ],
   "executionAuthorization": false,
   "inputs": {
     "agent_braid/harness_manifest.py": "373f1dd8e888c88fde6a47399c429c9b56ab040eea94811f22de796bc6b5d5a1",
-    "agent_braid/harness_observation.py": "451ede8f9f0144e4d7c35bb122dc3ddb2d3ccd621c1d4f5de8e70c907b64ba0a",
+    "agent_braid/harness_observation.py": "053075bad3ac4f18da28569f4c60f4d32923a5a4f1ac8c183cd5941f41cd2a2a",
     "agent_braid/system_one.py": "8a52a047bc72ba4f1099df60c1051178fbcb7735ee4d6e615d9b8052bbb31f44",
     "specs/048-harness-variant-laboratory/contracts/interface.md": "c39fc6a3037c056e826934d4fd2898f171f97e9d6a43fe4fa9d4b04ea8fc7b45",
-    "tests/test_harness_observation.py": "49cc35ba61c0b4a38595c013f2891c10fb946d94c5119c00ed2d10833e561d6f"
+    "tests/test_harness_observation.py": "9a8aaa10c9b398951ed938c9aa47c4d31e9149f7b98be962ae1de50c0c3f52cf"
   },
   "limits": "Pure in-memory library; no filesystem, host, process or network. Secret redaction covers inventory literals only, not unknown secrets. Retention/purge operate on caller-held records; no durable store (T007) or CLI codec (T015). Hashes are not signatures; same-UID compromise excluded.",
   "outcome": "Events, artifact diffs, terminals, missing events and transport errors normalize into versioned hash-bound observations; loss blocks completed; secrets redacted via hash-verified inventory with post-redaction scan; retention enforced; purge keeps failed-attempt tombstones; no raw transcript or artifact content exported.",

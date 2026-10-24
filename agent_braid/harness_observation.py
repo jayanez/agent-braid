@@ -28,6 +28,7 @@ MAX_FIELD_BYTES = 4096
 MAX_TRANSPORT_ERRORS = 16
 MAX_SECRETS = 64
 MAX_TIME = 1 << 40
+MAX_COUNT = 65_536
 REDACTED = "[REDACTED]"
 TERMINALS = ("completed", "failed", "interrupted", "refused")
 _ALL_TERMINALS = (*TERMINALS, "unobserved")
@@ -82,10 +83,14 @@ def _strings(value: Any):
             yield from _strings(child)
 
 
+def _is_relative(path: Any) -> bool:
+    return (_text(path) and path != "" and not path.startswith("/") and "\\" not in path
+            and "\x00" not in path and all(p not in ("", ".", "..") for p in path.split("/"))
+            and len(path.split("/")) <= 8 and len(path) <= 200)
+
+
 def _relative(path: Any) -> None:
-    _require(_text(path) and path != "" and not path.startswith("/") and "\\" not in path
-             and "\x00" not in path and all(p not in ("", ".", "..") for p in path.split("/"))
-             and len(path.split("/")) <= 8 and len(path) <= 200, "invalid-path")
+    _require(_is_relative(path), "invalid-path")
 
 
 # --- export inventory -------------------------------------------------------------
@@ -186,8 +191,7 @@ def _normalize_events(events: Any, expected: int | None, inventory: ExportInvent
         if valid and kind == "terminal":
             valid = event.get("state") in TERMINALS
         if valid and kind == "effect":
-            valid = (event.get("effect") in _EFFECTS
-                     and ("path" not in event or (_relative(event["path"]) is None)))
+            valid = event.get("effect") in _EFFECTS and ("path" not in event or _is_relative(event["path"]))
         if not valid:
             malformed += 1
         elif seq in accepted:
@@ -261,37 +265,45 @@ def observe(events: Sequence[Mapping[str, Any]], *, manifest_sha256: str, attemp
              and all(type(e) is str and _ID.fullmatch(e) for e in transport_errors), "invalid-transport-errors")
     _require((before is None) == (after is None), "invalid-artifacts")
 
+    try:
+        raw_digest = sha256(canonical(list(events))).hexdigest()
+    except (TypeError, ValueError, OverflowError, RecursionError):
+        raise ObservationError("invalid-events") from None
     accepted, exported, duplicates, missing, malformed, replaced, dropped = _normalize_events(
         events, expected_events, inventory)
-    for event in accepted.values():
-        if event["kind"] == "effect" and "path" in event:
-            _identity(event["path"], secrets)
 
     artifacts, effects = [], {}
     if before is not None:
         artifacts = _diff(_snapshot(before), _snapshot(after), secrets)
         for item in artifacts:
             effects[(_EFFECT_FOR[item["change"]], item["path"])] = "observed"
+    # Event-declared effects leave only through inventory-allowed fields; the rest
+    # were already counted in droppedFields. An effect without an allowed kind is omitted.
+    allowed = inventory.data["allowedEventFields"]
     for event in accepted.values():
-        if event["kind"] == "effect":
-            effects.setdefault((event["effect"], event.get("path")), "inferred")
+        if event["kind"] != "effect" or "effect" not in allowed:
+            continue
+        path = event.get("path") if "path" in allowed else None
+        if (event["effect"], path) in effects:
+            continue
+        if path is not None:
+            path, n = _redact(path, secrets)
+            replaced += n
+        effects.setdefault((event["effect"], path), "inferred")
 
     terminals = [accepted[s]["state"] for s in sorted(accepted) if accepted[s]["kind"] == "terminal"]
-    lossy = bool(missing or duplicates or malformed or transport_errors)
-    terminal = terminals[0] if len(terminals) == 1 and not lossy else "unobserved"
-    if len(terminals) > 1:
-        terminal = "unobserved"
+    loss = {"missingSeq": missing, "duplicateSeq": duplicates, "malformedEvents": malformed,
+            "transportErrors": list(transport_errors), "terminalEvents": len(terminals)}
+    terminal = "unobserved" if _lossy(loss) else terminals[0]
 
-    rawdigest = sha256(canonical(list(events))).hexdigest()
     record = {
         "format": FORMAT, "attemptId": attempt_id, "manifestSha256": manifest_sha256,
         "source": source, "state": "retained", "terminal": terminal,
-        "rawEventsSha256": rawdigest, "normalizedEventsSha256": sha256(canonical(exported)).hexdigest(),
+        "rawEventsSha256": raw_digest, "normalizedEventsSha256": sha256(canonical(exported)).hexdigest(),
         "events": exported, "artifactsObserved": before is not None, "artifacts": artifacts,
         "effects": [{"kind": k, "path": p, "evidence": e} for (k, p), e in sorted(
             effects.items(), key=lambda i: (i[0][0], i[0][1] or ""))],
-        "loss": {"missingSeq": missing, "duplicateSeq": duplicates, "malformedEvents": malformed,
-                 "transportErrors": list(transport_errors), "terminalEvents": len(terminals)},
+        "loss": loss,
         "redaction": {"inventorySha256": inventory.sha256, "replacements": replaced,
                       "droppedFields": dropped},
         "observedAt": now, "retainUntil": now + retention_seconds, "purgedPayloadSha256": None,
@@ -301,6 +313,12 @@ def observe(events: Sequence[Mapping[str, Any]], *, manifest_sha256: str, attemp
 
 
 # --- verification, reuse and purge -----------------------------------------------
+
+
+def _lossy(loss: Mapping[str, Any]) -> bool:
+    """Any loss, or other than exactly one terminal event, forbids a stated outcome."""
+    return bool(loss["missingSeq"] or loss["duplicateSeq"] or loss["malformedEvents"]
+                or loss["transportErrors"] or loss["terminalEvents"] != 1)
 
 
 def _validate_record(v: Any) -> None:
@@ -349,12 +367,10 @@ def _validate_record(v: Any) -> None:
              "invalid-observation")
     red = v["redaction"]
     _require(type(red) is dict and set(red) == {"inventorySha256", "replacements", "droppedFields"}
-             and _int(red["replacements"], 0, MAX_TIME) and _int(red["droppedFields"], 0, MAX_TIME),
+             and _int(red["replacements"], 0, MAX_COUNT) and _int(red["droppedFields"], 0, MAX_COUNT),
              "invalid-observation")
     _hash(red["inventorySha256"])
-    lossy = (loss["missingSeq"] or loss["duplicateSeq"] or loss["malformedEvents"]
-             or loss["transportErrors"] or loss["terminalEvents"] != 1)
-    _require(not (lossy and v["terminal"] != "unobserved"), "invalid-observation")
+    _require(_lossy(loss) == (v["terminal"] == "unobserved"), "invalid-observation")
 
 
 def verify_observation(raw: bytes, *, expected_sha256: str, now: int,
