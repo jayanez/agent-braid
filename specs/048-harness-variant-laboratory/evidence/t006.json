@@ -1,0 +1,34 @@
+{
+  "candidateBinding": "Current source/input hashes; no frozen implementation commit claimed",
+  "disposition": "Completed for the offline deterministic one-round refinement state machine; native, host, model-backed, scientific-utility and independent-review gates pending",
+  "executedChecks": [
+    {
+      "command": "python3.13 -m unittest discover -s tests -p \"test_harness*.py\"",
+      "exitCode": 0,
+      "moduleTests": 26,
+      "testsRun": 169,
+      "scope": "Focused offline run, Python 3.13. Manual mutation checks each made module tests fail: composition margin relaxed (1), keep-base margin relaxed (2), top-tie inconclusive disabled (1), score-without-completion check removed (1), prober output exact-key check removed (1), probe budget check removed (2), policy re-verification removed (1), no-op proposal check removed (1), protected-surface path validation removed (3), parent-manifest check removed (1), unscored-base guard removed (4 errors), extra-field refusal removed (1), duplicate-candidate check removed (1); all restored. A first output-key mutation survived because the check was duplicated; the duplicate was removed and the mutation then failed a test. Under the system Python 3.9 in a git worktree the unrelated harness_surface/foundations tests error (environment); those 46 errors are outside this module and absent under 3.13."
+    }
+  ],
+  "executionAuthorization": false,
+  "inputs": {
+    "agent_braid/harness_manifest.py": "373f1dd8e888c88fde6a47399c429c9b56ab040eea94811f22de796bc6b5d5a1",
+    "agent_braid/harness_surface.py": "78ca27952ffa1054d8ef61cbc0bd9458d51d967f716e5bd1ba6462daa892529c",
+    "agent_braid/system_one.py": "8a52a047bc72ba4f1099df60c1051178fbcb7735ee4d6e615d9b8052bbb31f44",
+    "specs/048-harness-variant-laboratory/contracts/interface.md": "c39fc6a3037c056e826934d4fd2898f171f97e9d6a43fe4fa9d4b04ea8fc7b45",
+    "specs/048-harness-variant-laboratory/upstream-adaptation.md": "049432928aa8030e81ebaaa5859ac8d4a42d50eb028bffee63c21d1dc2130042"
+  },
+  "outputs": {
+    "agent_braid/harness_refinement.py": "85f6091f602e85a4ba3bfb9dc24e390e9eb5c39b51d006ac3ffdb112db640d53",
+    "tests/test_harness_refinement.py": "f41c582884823569248397a7b936af1670231d6b0f2ef1d78b0c3d0069d2ff9d"
+  },
+  "limits": "Pure offline engineering controls on caller-supplied proposer/prober callbacks. The module launches no host, model, process or paid route and reads no files; scores are whatever an independent verifier callback returns, so no utility, precision or cost claim is made and the callbacks' own independence is not verified here. One fixed round: base probe, general probe, task probe, composed probe (policy maxProbes 1..4 counts every probe; retries and reflection are not implemented). Composition is a deterministic union of disjoint or identical per-path changes; conflicting or oversize composition is recorded and not probed. Candidates are scored against the unchanged base and selected only when they exceed it by the frozen margin; ties with the base keep the base and tied top candidates are inconclusive. Each candidate hash binds the base inventory overlaid with the changes, but the per-candidate manifest, T004 admission/reservation, T007 durable attempt journal and T008 native containment that a real dispatch needs are separate gates not exercised here. Guidance-only surface and protected components are enforced by reusing harness_surface.SurfaceSpec; text content is inert untrusted data and the rationale is bounded then discarded, never recorded or passed to the prober. Upstream recursion/selection mechanisms are adapted (stage structure, anonymized comparison with the base) with provenance in the module header and every decision record; upstream parallelism, reflection and adoption-by-output-presence are not carried over.",
+  "method": "Actual offline unittest execution",
+  "outcome": "Ties, regressions, invalid proposals (14 reason codes), missing/malformed/failed/refused probe outputs, explicit abstention, proposer failure, budget exhaustion, composition conflict and unusable base each yield candidate, keep-base, inconclusive or refused with fixed reason codes; no prober output, rationale or proposal field can carry or alter the policy, which is re-verified against the manifest hash before use; generated output alone never wins.",
+  "pending": [
+    "Stable pr-profile result recorded in the pull request",
+    "T009/T015 consumers; T007 journal; T008 native containment qualification and all native/human/scientific/economic gates"
+  ],
+  "spec": "048-harness-variant-laboratory",
+  "task": "SPEC-048/T006"
+}
