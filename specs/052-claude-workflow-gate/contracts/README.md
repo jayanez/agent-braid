@@ -52,7 +52,8 @@ T007. None of this is obtained evidence for any requirement.
 - Absent observations are `null` and never mean clean. A skipped replay carries a
   `skipReason` and never counts as a pass.
 - `phases` is a fixed five-entry sequence (`validate`, `analyze`, `baseline`,
-  `finalize`, `report`) with `agentUsed`; `agentsUsed` is at most 4.
+  `finalize`, `report`) with `agentUsed`; `agentsUsed` is at most 4 and counts the agents the script launched (a lower bound when the host restarts stalled attempts, REQ-010).
+- Echoed strings (`request`, `refusal.input`, `refusal.message`, `phases[].detail`) are untrusted text: they may carry repository-controlled or tool-controlled content and must not be fed back to a model as instructions. Tightening the echoed name fields to the arguments pattern is T047; the schema is unchanged in this revision.
 - `analysis` mirrors the analyzer without rewriting it: interaction
   classes, coverage and unknown effects.
 - `baseline` records the pairwise `git merge-tree --write-tree` result with the

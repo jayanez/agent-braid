@@ -113,6 +113,8 @@ nothing". The spec requires `partial`, never `complete`. Since `partial` already
 blocks `independent-candidate` in the analyzer, the conservative direction is
 preserved.
 
+Open for the T009 re-plan (review of 2026-10-24): in the analyzer `partial` and `unknown` coverage produce identical pair labels, so this departure from SPEC-023 changes the reported label and not the analysis; following SPEC-023, or setting `unknown` above a stated loss ratio, remains a candidate. Likewise a write request with no result record is dropped as a failed call here, whereas the G0 probe counts it as an unknown writer; an `unknown` effect for it remains a candidate. Neither is decided before G0.
+
 Alternatives: emit `unknown` when any loss exists (rejected: contradicts SC-005);
 add a `partial` carve-out to the generic importer (rejected: edits SPEC-023
 behavior). An agent with no recognized tool-call record at all is rejected as
@@ -123,7 +125,7 @@ behavior). An agent with no recognized tool-call record at all is rejected as
 Decision: the converter reads the subagent transcript file named by the caller
 (a path, or the files under `<transcriptDir>/subagents/`), never the main session
 transcript, and never through a hook. The line schema is **provisional**: PR5
-pins it only after the founder confirms it on the first G0 run, and `-v1` refuses
+pins it from the pre-freeze layout and tool-name census (T002) and the host versions recorded during the runs, and `-v1` refuses
 anything else. The G0 probe, not the product mapper, is the first reader.
 
 Rationale: the hooks page documents the subagent transcript's location in a nested
@@ -300,7 +302,7 @@ evidence steps around it. Points the plan keeps visible:
   evidence of usefulness.
 
 - Source yield and consent come first: the budget-and-source decision is
-  unsigned and the provider-terms confirmation is pending. No run counts before the
+  unsigned (the 2026-10-24 chat declaration applied to the revision 1 bytes and is superseded by revision 2) and the provider-terms confirmation is pending. No run counts before the
   founder signs and freezes.
 - The reference outcome (serial merge plus tests, run twice) is observed; every
   tool prediction is a proxy hashed before the reference exists. No human label is

@@ -2,7 +2,7 @@
 
 # Unpublished issue drafts
 
-Milestone: **M4.6 — Claude Code dynamic workflows** (not yet created; number unassigned). Publication: forbidden in this delivery. No remote issue, milestone, description or Project write, audit/apply or merge was performed. Labels: `spec` for the parent, `task` for each task. Project Review pending: SPEC-052 (draft flag only). Records: 1 spec parent and 46 task issues, all proposed open.
+Milestone: **M4.6 — Claude Code dynamic workflows** (not yet created; number unassigned). Publication: forbidden in this delivery. No remote issue, milestone, description or Project write, audit/apply or merge was performed. Labels: `spec` for the parent, `task` for each task. Project Review pending: SPEC-052 (draft flag only). Records: 1 spec parent and 47 task issues, all proposed open.
 
 Task issues keep the "Blocked by" and "Founder:" markers of tasks.md; a blocked or founder task is tracking state only and authorizes nothing.
 
@@ -234,7 +234,7 @@ Proposed state: open. Parent: SPEC-052. Milestone: M4.6 — Claude Code dynamic 
 
 ## Task
 
-Complete the degradation mapping and partial-output preservation. Dependencies: T010 T011 T012. Target files: integrations/agent-braid/plugin/workflows/braid-gate.js. Acceptance: A failed or timed-out phase keeps earlier phase outputs in the envelope, marks later phases `not-run`, never fabricates a clean verdict, never retries and never widens limits or selects another workspace; the 1 MiB, 32-operation, four-active-call and 360 s limits are adopted as the stricter bound, not raised. Verification: T006 degradation tests pass. Planned evidence: specs/052-claude-workflow-gate/evidence/t014.json; obtained: none.
+Complete the degradation mapping and partial-output preservation. Dependencies: T010 T011 T012. Target files: integrations/agent-braid/plugin/workflows/braid-gate.js. Acceptance: A failed or timed-out phase keeps earlier phase outputs in the envelope, marks later phases `not-run`, never fabricates a clean verdict, never retries (the host may restart a stalled agent, which the script cannot suppress: MCP calls stay read-only and idempotent, `prepare` is requested at most once, a busy refusal that may stem from the gate's own earlier attempt maps to `inconclusive`, and `agentsUsed` is a lower bound) and never widens limits or selects another workspace; the 1 MiB, 32-operation, four-active-call and 360 s limits are adopted as the stricter bound, not raised. Verification: T006 degradation tests pass. Planned evidence: specs/052-claude-workflow-gate/evidence/t014.json; obtained: none.
 
 - Source: [spec.md](https://github.com/jayanez/agent-braid/blob/develop/specs/052-claude-workflow-gate/spec.md) · [tasks.md](https://github.com/jayanez/agent-braid/blob/develop/specs/052-claude-workflow-gate/tasks.md) · [assurance.json](https://github.com/jayanez/agent-braid/blob/develop/specs/052-claude-workflow-gate/assurance.json)
 - Trace: REQ-010 SC-010
@@ -346,7 +346,7 @@ Proposed state: open. Parent: SPEC-052. Milestone: M4.6 — Claude Code dynamic 
 
 ## Task
 
-Run the known-answer comparison of the analyzer against the merge-tree baseline. Dependencies: T011 T013. Target files: specs/052-claude-workflow-gate/evidence/corpus-comparison.json. Acceptance: A complete classification table with denominators, each counterexample listed with commit identifiers or "none observed in this corpus"; H1 and H2 are not claimed beyond the corpus; a counterexample blocks conservativeness wording and is not by itself a protocol failure. Verification: the corpus run through the analyzer and direct merge-tree. Planned evidence: the corpus-comparison file with Git and analyzer versions; obtained: none.
+Run the known-answer comparison of the analyzer against the merge-tree baseline. Dependencies: T011 T013. Target files: specs/052-claude-workflow-gate/evidence/corpus-comparison.json. Acceptance: A complete classification table with denominators, each counterexample listed with commit identifiers or "none observed in this corpus"; every pair also carries a naive path-overlap column and an analyzer `conflicting` pair counts as added detection only where naive overlap missed it (expected none); H1 is not claimed beyond the corpus and H2 is a packaging statement, not a detection claim; a counterexample blocks conservativeness wording and is not by itself a protocol failure. Verification: the corpus run through the analyzer and direct merge-tree. Planned evidence: the corpus-comparison file with Git and analyzer versions; obtained: none.
 
 - Source: [spec.md](https://github.com/jayanez/agent-braid/blob/develop/specs/052-claude-workflow-gate/spec.md) · [tasks.md](https://github.com/jayanez/agent-braid/blob/develop/specs/052-claude-workflow-gate/tasks.md) · [assurance.json](https://github.com/jayanez/agent-braid/blob/develop/specs/052-claude-workflow-gate/assurance.json)
 - Trace: REQ-015 SC-015
@@ -442,7 +442,7 @@ Proposed state: open. Parent: SPEC-052. Milestone: M4.6 — Claude Code dynamic 
 
 ## Task
 
-HV-4, resume after interruption. Blocked by T023. Dependencies: T023. Target files: evidence/hv-4.json. Acceptance: Records which gate agents rerun after a stop and relaunch, and whether any second MCP caller or duplicate prepare call occurred. Verification: native probe run. Planned evidence: evidence/hv-4.json; obtained: none.
+HV-4, resume after interruption and automatic restart of a stalled agent. Blocked by T023. Dependencies: T023. Target files: evidence/hv-4.json. Acceptance: Records which gate agents rerun after a stop and relaunch, and whether any second MCP caller or duplicate prepare call occurred; forces a stall of the analyze and finalize agents (for example a long-running read) and records whether the host restarts them ("attempt 2 (stalled)"), how many restarts, whether the restarted attempt calls the MCP again, whether the admission lock refuses it, and what `agentsUsed` and the envelope report; negative and unobserved outcomes are valid. Verification: native probe run. Planned evidence: evidence/hv-4.json; obtained: none.
 
 - Source: [spec.md](https://github.com/jayanez/agent-braid/blob/develop/specs/052-claude-workflow-gate/spec.md) · [tasks.md](https://github.com/jayanez/agent-braid/blob/develop/specs/052-claude-workflow-gate/tasks.md) · [assurance.json](https://github.com/jayanez/agent-braid/blob/develop/specs/052-claude-workflow-gate/assurance.json)
 - Trace: REQ-013 SC-013 REQ-010 SC-010
@@ -750,6 +750,22 @@ Founder: close the SPEC-052 part of M4.6. Blocked by T045 and the SPEC-053 and G
 
 - Source: [spec.md](https://github.com/jayanez/agent-braid/blob/develop/specs/052-claude-workflow-gate/spec.md) · [tasks.md](https://github.com/jayanez/agent-braid/blob/develop/specs/052-claude-workflow-gate/tasks.md) · [assurance.json](https://github.com/jayanez/agent-braid/blob/develop/specs/052-claude-workflow-gate/assurance.json)
 - Trace: REQ-009 SC-009 REQ-013 SC-013 REQ-014 SC-014
+- State basis: Source checkbox in tasks.md.
+
+Planned and obtained evidence are separate in assurance.json. Closing this issue does not imply human review or scientific proof.
+
+## SPEC-052/T047
+
+Proposed state: open. Parent: SPEC-052. Milestone: M4.6 — Claude Code dynamic workflows (unassigned number). Labels: `task`.
+
+<!-- agent-braid-task-id: SPEC-052/T047 -->
+
+## Task
+
+Adapt the gate implementation to host restarts and untrusted echoed text. Blocked by: PR #672 rebase (the gate implementation branch must be rebased onto this packet first; no gate code is written in the specification packet). Dependencies: T006 T007 T010 T012 T014. Target files: integrations/agent-braid/plugin/workflows/braid-gate.js; tests/test_claude_workflow_gate.py; specs/052-claude-workflow-gate/contracts/braid-gate-result.schema.json. Acceptance: Harness tests with a simulated host restart (the same phase result delivered twice; a busy admission-lock refusal after the first attempt of the same phase completed) show a schema-valid envelope, a busy result attributable to the gate's own earlier attempt reported as `inconclusive`, `prepare` requested at most once by the script and no script retry; an agent result that fails the strict schema is not trusted; after the validate phase later prompts embed only the 40-hex identifiers the script resolved; a ref name carrying instruction-like text within the arguments pattern never reaches a later prompt; the result schema constrains the echoed name fields (`request.base`, `request.sources[]`, `refusal.input`) to the arguments pattern and marks `refusal.message` and `phases[].detail` as untrusted text in their descriptions (a schema change coordinated with the PR #672 tests). Verification: the T006 and T007 test classes extended; the real host is observed in T027. Planned evidence: specs/052-claude-workflow-gate/evidence/t047.json; obtained: none.
+
+- Source: [spec.md](https://github.com/jayanez/agent-braid/blob/develop/specs/052-claude-workflow-gate/spec.md) · [tasks.md](https://github.com/jayanez/agent-braid/blob/develop/specs/052-claude-workflow-gate/tasks.md) · [assurance.json](https://github.com/jayanez/agent-braid/blob/develop/specs/052-claude-workflow-gate/assurance.json)
+- Trace: REQ-010 SC-010 REQ-007 SC-007 REQ-008 SC-008
 - State basis: Source checkbox in tasks.md.
 
 Planned and obtained evidence are separate in assurance.json. Closing this issue does not imply human review or scientific proof.

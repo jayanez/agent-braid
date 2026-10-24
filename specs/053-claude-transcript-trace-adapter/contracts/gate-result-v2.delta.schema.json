@@ -38,7 +38,7 @@
             "The registered workspace repository root equals the repository the agents inspect.",
             "Agent-reported command results match what the commands produced.",
             "The host permission allowlist of REQ-016 is in force; it is recorded by host receipts, not verified by the script.",
-            "Each supplied transcript is the host's record of the agent that produced the matching source commit (matched by ordinal); the transcript line schema is unconfirmed until it is pinned after the first G0 run.",
+            "Each supplied transcript is the host's record of the agent that produced the matching source commit (matched by ordinal); the transcript line schema is unconfirmed until it is pinned from the pre-freeze census.",
             "The Bash allowlist of REQ-016 for gate v2 contains exactly one additional launcher subcommand, analyze-claude-transcripts; it is recorded by host receipts, not verified by the script."
           ]
         },

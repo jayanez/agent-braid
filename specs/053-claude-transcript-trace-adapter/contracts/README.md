@@ -20,4 +20,4 @@ is well formed; it proves nothing about real transcripts, the mapping's
 soundness or any integration outcome.
 
 The shape of the transcript lines the mapper reads is provisional and is not part
-of any contract until it is pinned after the first G0 run.
+of any contract until it is pinned from the pre-freeze census (task T002).

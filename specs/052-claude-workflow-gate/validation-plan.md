@@ -141,12 +141,13 @@ Failure handling: Any speed, safety or semantic-correctness claim, or any implie
 
 Trace: REQ-010 / SC-010.
 
-Given the plugin admission lock is busy, the workspace is not registered, MCP limits are exceeded, a timeout occurs, or the workflow is disabled by the organization, exercise: the gate runs. Required observation: the result is refused, busy or inconclusive with the specific condition, without retry loops, without choosing another workspace, without widening limits, and with partial phase outputs preserved.
+Given the plugin admission lock is busy, the workspace is not registered, MCP limits are exceeded, a timeout occurs, the workflow is disabled by the organization, or the host restarts a stalled gate agent automatically, exercise: the gate runs. Required observation: the result is refused, busy or inconclusive with the specific condition, without retry loops in the script, without choosing another workspace, without widening limits, and with partial phase outputs preserved; a host restart is tolerated by contract (MCP calls are read-only and idempotent, a busy refusal that may stem from the gate's own earlier attempt is reported as `inconclusive`, every agent result still passes the strict schema, and `agentsUsed` counts script-launched agents as a lower bound).
 
 Commands and controls:
 - Provoke each condition in the harness: hold the admission lock from a second caller, use an unregistered workspaceId, exceed the 1 MiB or 32-operation limit, simulate a timeout (T006, T014), and (host evidence) run under disableWorkflows (T031).
+- Host restarts (T014, T047, host evidence T027): deliver the same phase result twice, and a busy admission-lock refusal after the first attempt of the same phase completed; assert a schema-valid envelope, a busy result attributable to the gate's own attempt reported as `inconclusive`, `prepare` requested at most once by the script, no script retry, and no unvalidated agent result trusted. The host side is observed under HV-4 with a forced stall.
 
-Expected observation: Each condition maps to its status and message; no second workspace is tried; no automatic retry occurs.
+Expected observation: Each condition maps to its status and message; no second workspace is tried; no automatic retry occurs in the script; a restarted attempt is recorded and its output is schema-checked like any other.
 
 Failure handling: Infinite or repeated retries, or fabricating a clean verdict after a failure, fail the requirement. Bind source, candidate, host version and policy identifiers; retain missingness, failures and all costs. Native or human acceptance needs its own obtained observations.
 
@@ -183,7 +184,7 @@ Failure handling: Unverified host behavior presented as fact fails review. Bind 
 
 Trace: REQ-013 / SC-013.
 
-Given the documentation does not confirm that plugin MCP tools are available inside workflow agents, that plugin agents can be used as agentType, or that a plugin workflow can be called by name from nested workflow(), exercise: host verification runs on a recorded Claude Code version. Required observation: each behavior (HV-1 plugin MCP tools in workflow agents, HV-2 plugin agentType, HV-3 nested call by plugin name, HV-4 resume after interruption, HV-5 per-run approval, auto-mode prompts and the permission allowlist of REQ-016) has a recorded pass, fail or unobserved outcome with version, and the design degrades to a declared fallback or a no-go when a required behavior fails.
+Given the documentation does not confirm that plugin MCP tools are available inside workflow agents, that plugin agents can be used as agentType, or that a plugin workflow can be called by name from nested workflow(), exercise: host verification runs on a recorded Claude Code version. Required observation: each behavior (HV-1 plugin MCP tools in workflow agents, HV-2 plugin agentType, HV-3 nested call by plugin name, HV-4 resume after interruption and automatic restart of a stalled agent, HV-5 per-run approval, auto-mode prompts and the permission allowlist of REQ-016) has a recorded pass, fail or unobserved outcome with version, and the design degrades to a declared fallback or a no-go when a required behavior fails.
 
 Commands and controls:
 - Run the native probes on a recorded Claude Code version with the plugin installed; save transcripts, version and outcome per behavior in the evidence directory (T023 to T029). The founder provides the host at EUR 0 additional spend.
@@ -210,10 +211,10 @@ Failure handling: Missing observations remain listed as not observed; no claim o
 
 Trace: REQ-015 / SC-015.
 
-Given a fixture corpus of base and branch commits with known file-level truth, including delete versus modify, rename, binary, same hunk, different hunks and untouched pairs, exercise: the analyzer verdict and the merge-tree baseline are compared per pair. Required observation: the agreement classification (both clean, both conflicting, analyzer stricter, baseline stricter, analyzer unknown) is reported, any case where the analyzer says independent-candidate and the baseline conflicts is a recorded counterexample, and no hypothesis of conservativeness is claimed beyond the corpus.
+Given a fixture corpus of base and branch commits with known file-level truth, including delete versus modify, rename, binary, same hunk, different hunks and untouched pairs, exercise: the analyzer verdict and the merge-tree baseline are compared per pair. Required observation: the agreement classification (both clean, both conflicting, analyzer stricter, baseline stricter, analyzer unknown) is reported with a naive path-overlap column (paths changed by both branches relative to the base); an analyzer `conflicting` pair counts as added detection only where naive overlap missed it (expected: none at commit level, so any such pair is an analyzer-versus-naive discrepancy to explain, not a success); any case where the analyzer says independent-candidate and the baseline conflicts is a recorded counterexample, and no hypothesis of conservativeness is claimed beyond the corpus.
 
 Commands and controls:
-- Run the corpus through the analyzer and direct merge-tree; tabulate classification counts and list counterexamples with commit identifiers (T005, T021). Truth labels are written before any tool output is read.
+- Run the corpus through the analyzer and direct merge-tree; tabulate classification counts and list counterexamples with commit identifiers (T005, T021); compute naive path overlap (paths changed by both branches relative to the base) for every pair and report the analyzer against it, so that a hit counts as added detection only where naive overlap missed it. Truth labels are written before any tool output is read.
 
 Expected observation: Complete classification table with denominators; counterexamples listed or stated as none observed in this corpus.
 

@@ -1,9 +1,27 @@
 # Draft decision record: G0 budget and transcript source rights
 
-**Status:** Pending founder signature. This is a draft for the founder to accept,
-amend or reject. It records no approval, no provider permission and no spend, and
-it authorizes no workflow run. It supports the
+**Status:** Signature superseded by revision 2 of the preregistration (2026-10-24);
+renewal against the new bytes is required before the freeze. This is a draft for
+the founder to accept, amend or reject. It records no approval, no provider
+permission and no spend, and it authorizes no workflow run. It supports the
 [G0 preregistration](../../docs/experiments/CLAUDE_WORKFLOW_INTEGRATION_PROPOSAL.md).
+
+## State of decisions
+
+This table is the single statement of state; other files link here instead of
+restating it.
+
+| Item | State |
+|---|---|
+| Founder chat declaration of 2026-10-24 (EUR 0, own-transcript scope, provider-terms position) | Declared in chat and transcribed by an agent in [founder-decision-20261024.md](founder-decision-20261024.md); it applied to the bytes of revision 1 and is **superseded** by revision 2, which changes the bound bytes. It is not a signature. |
+| Binding founder record for revision 2 (task T001) | **Pending.** Produced by the founder in a location the founder chooses; it binds the new hashes of this file, the proposal, the inputs file and the decision vectors file, computed at renewal. |
+| Provider-terms confirmation | Pending; an owner declaration, not an authenticated observation. |
+| Freeze of the preregistration | Not done; follows the renewal and the pre-freeze preparation (T002, T003). |
+
+Revision 1 bytes (SHA-256) that the earlier declaration applied to: this file
+`333406c25dbdf87b0cd72c2895f441998710e7f3a477e95c137647e12e4a9c62`, the proposal
+`02291d0d9cbde74222652ba6b22a4cdd0293fcf7a5aa3c6adf9a119cb6cb3e8d`, the inputs
+file `6a5b6167257523947361be3ecba26690a42b5d1316d9045c664f2f71ec628033`.
 
 ## Decision requested
 
@@ -31,7 +49,7 @@ it authorizes no workflow run. It supports the
 - Not used: the Claude source composition receipts of
   [CLAUDE_SOURCE_CONTRACT](../../docs/tooling/CLAUDE_SOURCE_CONTRACT.md). They
   check a Braid-supervised launch and G0 has none; the founder instead states in
-  the signed record that extra usage and auto-recharge are off, as a manual
+  the founder's binding record that extra usage and auto-recharge are off, as a manual
   declaration, not an authenticated observation.
 
 ## Transcript source rights
@@ -63,7 +81,9 @@ the document that states them):
 | Transcripts, prompts, file contents, diffs, repository file paths, merge-tree output, workflow journals | Read in place or kept locally; never copied into the project repository; not published. The founder may delete them after reporting. |
 | Probe output | Integer counts only: tool-call counts per class per agent, and per run the count of ordered agent pairs and distinct paths with a read/write overlap. No path strings or path hashes. |
 | Retained after founder review | Manifest without private task prose, branch-head hashes, prediction-file hash, per-arm run-level labels, probe counts, aggregate metrics. |
-| Run manifest and probe script | Bytes hashed before the first run. |
+| Pre-freeze layout and tool-name census | Read in place from the founder's own existing subagent transcripts; only a structure and tool-name histogram is retained (record kinds, tool names per class, calls paired with a result, agent counts), aggregate-only; no path, path hash, prompt, file content or tool output. A de-identified fixture derived from it stays local. |
+| Probe and runner scripts | Bytes hashed before the freeze. |
+| Run manifest | Bytes hashed before each run. |
 
 This table is the G0 retention rule (`aggregate-only`). It is stricter than the
 product mapper's retention, which keeps allowlisted metadata (repository-relative
@@ -72,10 +92,12 @@ paths, base object ids, a transcript digest) and counts under the label
 
 ## Signature
 
-Founder decision: pending.
-Signature: pending.
+Founder decision: pending renewal.
+Signature: pending (the declaration of 2026-10-24 is superseded).
 Date: pending.
-Amendments: none.
+Amendments: this file was edited on 2026-10-24 (same day) for revision 2, so the
+bytes the earlier declaration applied to no longer exist.
 
 Nothing here becomes effective until the founder signs a separate record that
-binds the bytes of this file together with the proposal and its inputs file.
+binds the bytes of this file together with the proposal, its inputs file and the
+decision vectors file.

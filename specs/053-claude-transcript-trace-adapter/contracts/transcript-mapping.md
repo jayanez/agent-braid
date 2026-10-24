@@ -9,15 +9,17 @@ independently observed effect.
 
 Requirement trace: REQ-003, REQ-004, REQ-005, REQ-006, REQ-007 (SC-003 to SC-007).
 
-## Provisional input shape (to be pinned after the first G0 run)
+## Provisional input shape (to be pinned from the pre-freeze census)
 
 The host documents where a subagent transcript lives (a JSONL file in a nested
 `subagents/` folder, reported as `agent_transcript_path` in the SubagentStop hook
 input; see [research.md](../research.md) RS-4). It does **not** document the line
 schema. The shape below is an expectation drawn from the common
 `tool_use` / `tool_result` content-block convention. It is unconfirmed for this
-project. The founder confirms or corrects it on the first G0 run, and PR5 then
-pins the confirmed shape as the transcript schema version that `-v1` accepts.
+project. The founder's pre-freeze layout and tool-name census (task T002) reads
+the founder's own existing subagent transcripts locally and keeps only a structure
+and tool-name histogram, the G0 probe is written against that observed layout, and
+PR5 then pins the observed shape as the transcript schema version that `-v1` accepts.
 Until then no code may rely on it. A line that does not match the pinned shape is
 a loss or a rejection (below), never a guess.
 
@@ -56,7 +58,10 @@ Rules:
 
 - The table is closed. A name that is not in it is `other`, never inferred from
   its spelling. Mapping `MultiEdit` to `write` would need a new mapper version,
-  because the requirement lists only three write tools.
+  because the requirement lists only three write tools. The real tool inventory
+  is pinned from the pre-freeze census (T002) at the T009 re-plan, and each
+  write-capable tool the census finds that is not in this table gets its own
+  conformance row (a write that falls into `other` is invisible as a write).
 - At most one `unknown` effect per class and agent is emitted; the number of calls
   folded into it is an aggregate count in provenance.
 - `unknown` resources are scoped to the agent so that two agents never share an
@@ -106,15 +111,24 @@ No read effect and no read version are emitted, and one loss code is counted, fo
 - A loss never lowers coverage below `partial` in this mapper. This is
   deliberately different from the generic mapper (`generic-metadata-v1`), which
   sets `unknown` whenever it records a loss, and does not edit that rule (see
-  [research.md](../research.md) RS-3). Losses are counted in provenance.
+  [research.md](../research.md) RS-3). Losses are counted in provenance. In the
+  analyzer `partial` and `unknown` produce the same pair labels, so this choice
+  changes the label, not the analysis; it is reconsidered at the T009 re-plan.
 - Failed tool calls produce no effect. A request with no result (interrupted or
-  truncated transcript) is treated as failed. Both count under `failed-tool-call`.
+  truncated transcript) is treated as failed here and counts under
+  `failed-tool-call`. This differs from the G0 probe, which counts a write-class
+  request without a result as an unknown writer; whether the mapper should emit
+  an `unknown` effect for it is an open design question for the T009 re-plan, so
+  that a write of unknown outcome is not silently dropped (Article 5).
 - Because coverage is always `partial`, the existing analyzer can classify a pair
   as `conflicting`, `ordered` or `unknown`, and can **never** classify it
   `independent-candidate` from transcript evidence alone. The report must say so;
   independence is not a result this mapper can produce.
 - Hidden effects remain surfaced as uncertainty (Article 5): `Bash`, `Grep`,
-  `Glob` and MCP effects are invisible and stay `unknown`.
+  `Glob` and MCP effects are invisible and stay `unknown`. The product keeps
+  `Grep` and `Glob` as `unknown`, whereas the G0 criterion C3 separates read-only
+  searches from unknown writers; the conformance check (T018) reports that
+  difference as a count.
 
 | Loss code | Condition | Counted as |
 |---|---|---|

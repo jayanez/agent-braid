@@ -144,7 +144,7 @@
           "planned_evidence": "Run of the named unittest class and the structural checker with exact commands, hashes and outcomes; structural only, not a G0 result.",
           "test_file": "tests/test_claude_workflow_g0_proposal.py",
           "test_name": "ClaudeWorkflowG0ProposalTests.test_committed_inputs_pass_every_structural_check",
-          "then": "the proposal bytes, every required field and each threshold (C1a and C1b at least 1 each, C2 at least 0.3 and above both the reference-failure prevalence and the naive path-overlap precision, C3 at most 40%), the decision rule with its order of evaluation, the kill outcome, the EUR 0 budget, the probe's counts-only retention and the unfrozen, non-authorizing status are pinned, and removing or relaxing any of them is rejected",
+          "then": "the proposal bytes, every required field and each threshold (C1a and C1b at least 1 each, C1b with its attribution condition, C2 at least 0.3 and above both the reference-failure prevalence and the naive path-overlap precision, C3 at most 40% over writer-capable calls, C4 at most 1 flagged negative control), the freeze order, the decision rule with its order of evaluation, the kill outcome, the EUR 0 budget, the probe's counts-only retention and the unfrozen, non-authorizing status are pinned, and removing or relaxing any of them is rejected",
           "when": "the structural checker and its tests run"
         }
       ],

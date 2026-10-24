@@ -98,7 +98,7 @@ Requirement → scenario → test → evidence is carried by [validation-plan.md
 
 1. Structural and offline: Node-free static checks (T004), schema checks (T007), fixture corpus (T005), harness with substituted agents (T006, T009–T014), packaging (T015). A missing JavaScript runtime is an unavailable observation, not a pass.
 2. Negative controls: equal-to-base, duplicate, non-descendant, one source, 33 operations, revision-syntax identifier, parallel wrapper, isolation option, fifth agent, `model` or `effort` option, runtime-enabled registration with a planted grant, sentinel hook, fsmonitor, merge driver and filter, default build containing `workflows/`, tampered package file, altered result schema, moved reference between phases, busy lock, unregistered workspace, timeout.
-3. Comparison (REQ-015): analyzer verdict versus merge-tree baseline per pair on a known-answer corpus, with a classification table and denominators; counterexamples are findings; H1 and H2 are not requirements and are claimed only within the corpus.
+3. Comparison (REQ-015): analyzer verdict versus merge-tree baseline per pair on a known-answer corpus, with a classification table and denominators; the same table carries a naive path-overlap column, because at commit level the analyzer's `conflicting` set equals path overlap by construction and a hit counts as added detection only where naive overlap missed it; counterexamples are findings; H1 and H2 are not requirements, H2 is a packaging statement and not a detection hypothesis, and neither is claimed beyond the corpus.
 4. Host (REQ-013): HV-1 to HV-5 on a recorded Claude Code version, saved transcripts, pass/fail/unobserved with version; failures trigger the fallback or kill criterion in [program.md](program.md).
 5. Release (REQ-014): clean commit, reproduction, native install, update, uninstall, fixture matrix, explicit gaps.
 
@@ -115,7 +115,7 @@ Validation profile. This feature touches sensitive paths: `specs/**`, `integrati
 | R1 | Version 0.1.0-alpha.4 (expected), build, reproduction, release acceptance | T037–T041; requires PR3 and host outcomes; independent of G0 |
 | Publication | One scoped, owner-authorized plugin-dist write with a `delivery/publication.json` receipt | T042; forbidden in the delivery that created this packet |
 | Tracking | Remote milestone, issue and Project publication | T043; drafts only until the founder authorizes |
-| Closure | Radar milestone review, technical review, founder closure of the SPEC-052 part | T044–T046; M4.6 closure also needs the SPEC-053 and G0 items |
+| Closure | Radar milestone review, technical review, founder closure of the SPEC-052 part | T044–T046; follow-up T047 after the PR #672 rebase; M4.6 closure also needs the SPEC-053 and G0 items |
 
 SPEC-053 (adapter) and a later gate v2 are outside this plan; SPEC-052 does not wait for G0.
 
@@ -136,6 +136,7 @@ SPEC-053 (adapter) and a later gate v2 are outside this plan; SPEC-052 does not 
 | Over-claiming | Claim-discipline breach | Canonical limits in the schema; review checklist; no speed claim | Review-dependent |
 | Admission lock held by another caller | Busy result | Report `busy`, no retry loop | Operator retries manually |
 | Resume reruns agents (HV-4) | Duplicate analysis or prepare call | Record behavior; prepare is non-allocating; no retry logic in script | To be observed |
+| Host restarts a stalled agent automatically (HV-4; documented per the PR #671 review, not yet observed here) | A second MCP call from the same phase (busy refusal on the admission lock, or a repeated `prepare`); the script cannot suppress it | Every MCP call is read-only and idempotent; the script requests `prepare` at most once; a busy refusal that may stem from the gate's own attempt is `inconclusive`; no agent result is trusted without the strict schema; `agentsUsed` is a lower bound (T014, T047, T027) | Observed under HV-4 with a forced stall; the guarantee is the script's, not the host's |
 
 ## Constitution check after design
 

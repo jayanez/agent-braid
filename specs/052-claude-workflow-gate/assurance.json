@@ -105,7 +105,7 @@
   },
   "execution_contract": "Planning only in this delivery. The future workflow performs read-only analysis, replay evidence and a non-allocating prepare step through the existing plugin MCP (analyze-work, analyze, prepare; the bundled CLI only on the constrained fallback), spawns at most four sequential agents without worktree isolation under fixed hardened Git commands, refuses runtime-enabled registrations, requires a host permission allowlist, and never issues or uses a grant, executes the owned runtime, edits files, applies merges, creates refs or installs hooks. executionAuthorization is always false.",
   "human_review": "pending",
-  "hypotheses": "H1 (hypothesis; no observation exists, may be false): on histories limited to added or modified files the analyzer's conflicting set may contain the merge-tree conflicting set; the expected reason is that the analyzer is file-level, which is a reason to expect it and not a result; H2 (hypothesis): a commit-level gate may surface integration hazards that worktree-per-agent tools leave unreasoned (their path-level behavior is a reading of documentation, not reproduced here); neither is a requirement to obtain a positive result, and counterexamples or null results are valid reports.",
+  "hypotheses": "H1 (hypothesis; no observation exists, may be false): on histories limited to added or modified files the analyzer's conflicting set may contain the merge-tree conflicting set; the expected reason is that the analyzer is file-level, which is a reason to expect it and not a result; H2 (packaging statement, not a detection hypothesis): at commit level the Agent Braid primary flag equals path overlap plus unknown labelling, so no detection advantage over path-only worktree tools or naive overlap is hypothesized; H2 states only that the packaging (labelled file-level evidence, a bounded replay certificate for at most four operations, refusal controls and stated limits) may be useful, and no requirement tests it; neither is a requirement to obtain a positive result, and counterexamples or null results are valid reports.",
   "observation_contract": "Pinned base and source commit identifiers, per-phase status, analyzer report and coverage, replay certificate digests or skip reason, prepared batch reference, per-pair merge-tree outcome from fixed hardened Git commands, end-of-run reference re-resolution (stale references), agent count and the assurance block; the host version is listed as unobserved by the script and bound by host receipts; absent observations are reported as unavailable, never as clean.",
   "references": [
     "CONSTITUTION.md",
@@ -305,13 +305,13 @@
       "id": "REQ-010",
       "scenarios": [
         {
-          "given": "the plugin admission lock is busy, the workspace is not registered, MCP limits are exceeded, a timeout occurs, or the workflow is disabled by the organization",
+          "given": "the plugin admission lock is busy, the workspace is not registered, MCP limits are exceeded, a timeout occurs, the workflow is disabled by the organization, or the host restarts a stalled gate agent automatically",
           "id": "SC-010",
           "obtained_evidence": [],
           "planned_evidence": "Candidate-bound procedure for REQ-010/SC-010: exact commands, hashes, failures and limits recorded as obtained evidence only after execution.",
           "test_file": "specs/052-claude-workflow-gate/validation-plan.md",
           "test_name": "procedure_req_010",
-          "then": "the result is refused, busy or inconclusive with the specific condition, without retry loops, without choosing another workspace, without widening limits, and with partial phase outputs preserved",
+          "then": "the result is refused, busy or inconclusive with the specific condition, without retry loops in the script, without choosing another workspace, without widening limits, and with partial phase outputs preserved; a host restart is tolerated by contract (MCP calls are read-only and idempotent, a busy refusal that may stem from the gate's own earlier attempt is reported as `inconclusive`, every agent result still passes the strict schema, and `agentsUsed` counts script-launched agents as a lower bound)",
           "when": "the gate runs"
         }
       ],
@@ -359,7 +359,7 @@
           "planned_evidence": "Candidate-bound procedure for REQ-013/SC-013: exact commands, hashes, failures and limits recorded as obtained evidence only after execution.",
           "test_file": "specs/052-claude-workflow-gate/validation-plan.md",
           "test_name": "procedure_req_013",
-          "then": "each behavior (HV-1 plugin MCP tools in workflow agents, HV-2 plugin agentType, HV-3 nested call by plugin name, HV-4 resume after interruption, HV-5 per-run approval, auto-mode prompts and the permission allowlist of REQ-016) has a recorded pass, fail or unobserved outcome with version, and the design degrades to a declared fallback or a no-go when a required behavior fails",
+          "then": "each behavior (HV-1 plugin MCP tools in workflow agents, HV-2 plugin agentType, HV-3 nested call by plugin name, HV-4 resume after interruption and automatic restart of a stalled agent, HV-5 per-run approval, auto-mode prompts and the permission allowlist of REQ-016) has a recorded pass, fail or unobserved outcome with version, and the design degrades to a declared fallback or a no-go when a required behavior fails",
           "when": "host verification runs on a recorded Claude Code version"
         }
       ],
@@ -391,7 +391,7 @@
           "planned_evidence": "Candidate-bound procedure for REQ-015/SC-015: exact commands, hashes, failures and limits recorded as obtained evidence only after execution.",
           "test_file": "specs/052-claude-workflow-gate/validation-plan.md",
           "test_name": "procedure_req_015",
-          "then": "the agreement classification (both clean, both conflicting, analyzer stricter, baseline stricter, analyzer unknown) is reported, any case where the analyzer says independent-candidate and the baseline conflicts is a recorded counterexample, and no hypothesis of conservativeness is claimed beyond the corpus",
+          "then": "the agreement classification (both clean, both conflicting, analyzer stricter, baseline stricter, analyzer unknown) is reported with a naive path-overlap column (paths changed by both branches relative to the base); an analyzer `conflicting` pair counts as added detection only where naive overlap missed it (expected: none at commit level, so any such pair is an analyzer-versus-naive discrepancy to explain, not a success); any case where the analyzer says independent-candidate and the baseline conflicts is a recorded counterexample, and no hypothesis of conservativeness is claimed beyond the corpus",
           "when": "the analyzer verdict and the merge-tree baseline are compared per pair"
         }
       ],

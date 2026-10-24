@@ -40,7 +40,9 @@ publishes, creates a remote issue, commits or pushes.
    the pinned proposal hash. Negative controls inside the tests (removed field,
    relaxed threshold, removed C1a or C1b, a C1b that commit-level evidence or
    naive overlap could satisfy, a C1a made gating, a C2 without the prevalence or
-   naive-precision comparison, a removed or inverted order of evaluation, fewer
+   naive-precision comparison, a removed or inverted order of evaluation, a C1b without
+   attribution, fewer than 3 negative controls, a probe hashed after the freeze, a
+   decision vectors file that misses a branch of the order of evaluation, fewer
    runs, non-zero spend, false freeze, path-retaining probe, changed bytes,
    approved/supported rewording) must be rejected. Limits: structure and bytes
    only.
@@ -123,22 +125,35 @@ publishes, creates a remote issue, commits or pushes.
 These are procedures, not commands this repository runs. The authoritative text is
 the [preregistration](../../docs/experiments/CLAUDE_WORKFLOW_INTEGRATION_PROPOSAL.md).
 
-1. Founder reads, amends or signs the
+1. Founder reads, amends or renews the signature of the
    [budget and source decision](budget-and-source-decision.md) as a separate record
-   that binds its bytes with the proposal and inputs file. Expected: a signed
-   record exists; until then the draft grants nothing.
-2. Founder fills the pre-freeze bindings (`requiredBeforeFreeze` in the inputs
+   that binds its bytes with the proposal, the inputs file and the decision vectors
+   file. Expected: a binding record exists against the new hashes; until then the
+   draft grants nothing and the chat declaration of 2026-10-24 is superseded.
+2. Founder runs the **transcript layout and tool-name census**: reads the
+   founder's own existing subagent transcripts locally and keeps only a structure
+   and tool-name histogram (aggregate-only). Expected: a histogram with no path,
+   prompt or content.
+3. Founder writes the stdlib probe **outside the repository** against the observed
+   layout and tests it on a de-identified real fixture derived from the census
+   (not a hand-written synthetic transcript); write-capable tools found by the
+   census join the write class.
+4. Founder estimates the eligible yield, records `plannedRunCount` (at most 14),
+   prepares the ad-hoc workflow script and run manifest (including at least 3
+   negative-control runs), hashes the probe and runner, and records that the
+   published power operating point is acceptable. Expected: planned count times
+   yield is at least 10, else downgrade or a new proposal.
+5. Founder fills the pre-freeze bindings (`requiredBeforeFreeze` in the inputs
    record) and records the explicit freeze decision. Expected: `frozen` is true only
-   through that separate record; changing a threshold or arm afterwards invalidates
-   earlier runs.
-3. Prepare the ad-hoc workflow script, run manifest and probe script **outside the
-   repository** and hash them before the first run.
-4. Founder runs at least 10 and at most 14 workflows, each with the host's own
-   per-run approval, on the existing subscription, stopping on quota exhaustion.
-   Expected per run: manifest hashed first, predictions hashed before the reference
-   outcome, reference outcome by serial merge in the preregistered order and two
-   test executions.
-5. Founder records the aggregate report, the exclusion counts, the costs (or
+   through that separate record; changing a threshold, quota or arm afterwards
+   invalidates earlier runs.
+6. Founder runs at least 10 and at most `plannedRunCount` workflows, each with the
+   host's own per-run approval, on the existing subscription, stopping on quota
+   exhaustion. Expected per run: manifest hashed first, host restarts recorded per
+   agent, predictions hashed before the reference outcome, each branch's own tests
+   run twice before any merge, reference outcome by serial merge in the
+   preregistered order and two test executions.
+7. Founder records the aggregate report, the exclusion counts, the costs (or
    "unavailable") and the disposition `g0-pass`, `g0-fail` or `g0-inconclusive`.
    Expected: all three are valid, published with counts; an inconclusive result does
    not pass.

@@ -10,7 +10,7 @@ The text below is identical to the description already recorded for this milesto
 
 ## Source facts at the planning candidate
 
-- SPEC-052 contributes 1 spec parent and 46 task issues, all pending (see [tracking-drafts.json](tracking-drafts.json)). Obtained evidence: none; human review pending; nothing frozen or approved.
+- SPEC-052 contributes 1 spec parent and 47 task issues, all pending (see [tracking-drafts.json](tracking-drafts.json)). Obtained evidence: none; human review pending; nothing frozen or approved.
 - SPEC-053 contributes 1 spec parent and 33 task issues, all pending (see its [tracking-drafts.json](../053-claude-transcript-trace-adapter/tracking-drafts.json)); its requirements REQ-003 to REQ-010 are blocked by G0. The combined M4.6 count is computed by the integrator from both tasks files.
 - This file is the single milestone description draft for M4.6; the SPEC-053 tracking drafts point here and do not carry their own.
 - The gate (SPEC-052) is independent of the G0 experiment; the SPEC-053 adapter and a gate v2 are blocked by G0, which may end negative or inconclusive and still allow closure.

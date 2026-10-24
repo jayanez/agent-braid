@@ -3,7 +3,7 @@
 - [x] Every requirement has a scenario, a planned verification procedure and a named test file or procedure.
 - [x] REQ-003 to REQ-010 say they are blocked by G0; only REQ-001 and REQ-002 are actionable. Only draft design artifacts exist for the blocked requirements.
 - [x] The research protocol states population, source permissions, sampling frame, eligibility, exclusions, observed outcome versus proxy predictions, held-out unit and negative or inconclusive reporting.
-- [x] Thresholds (C1a and C1b at least 1 each, C2 at least 0.3 and above the reference-failure prevalence and the naive path-overlap precision, C3 at most 40%), the decision rule with its order of evaluation and the kill outcome are fixed before any data and pinned by a checker and tests with mutation controls. Only C1b gates PR5 and PR6.
+- [x] Thresholds (C1a and C1b at least 1 each with C1b attribution, C2 at least 0.3 and above the reference-failure prevalence and the naive path-overlap precision, C3 at most 40% over writer-capable calls, C4 at most 1 flagged negative control), the decision rule with its order of evaluation (executable in the decision vectors file) and the kill outcome are fixed before any data and pinned by a checker and tests with mutation controls. Only C1b gates PR5 and PR6, and a pass means feasibility not refuted.
 - [x] Additive dependency on SPEC-023 is declared without changing its acceptance; the core analysis module is untouched (Article 15).
 - [x] Hypothesis H-CW1, heuristic, analogy and formal claims are separated; no speed, safety or commutation claim.
 - [x] Obtained evidence is empty and human review is pending; no approval, signature or freeze is inferred.

@@ -25,7 +25,7 @@ empty and human review is pending.
 - Inputs that exist now: the G0 proposal and inputs record, the pinned structural
   checker `scripts/validate_claude_workflow_g0_proposal.py` with
   `tests/test_claude_workflow_g0_proposal.py`, the draft
-  [budget and source decision](budget-and-source-decision.md) (unsigned), and
+  [budget and source decision](budget-and-source-decision.md) (unsigned; the 2026-10-24 chat declaration applied to revision 1 bytes and is superseded), and
   hypothesis H-CW1 (untested).
 - Out of scope, unchanged from the spec: any execution, grant, merge or promotion;
   live capture or hooks; edits to `analysis.py`; changes to SPEC-023 acceptance;
@@ -72,7 +72,7 @@ decision ids are `RS-n`, so that they cannot be confused with the release names 
    provenance table (RS-2).
 3. Coverage is always `partial`; losses are counted, not escalated to `unknown` (RS-3).
 4. The subagent transcript line schema is **unconfirmed** and is pinned only after
-   the founder's first G0 run (RS-4).
+   the pre-freeze layout and tool-name census (T002) that precedes the probe, its hash and the G0 freeze (RS-4).
 5. Gate v2 reaches the converter through the bundled CLI (a new additive subcommand
    `analyze-claude-transcripts`) under the constrained Bash that SPEC-052 defines (REQ-016(d)) plus that one subcommand as a planning amendment approved by the founder on 2026-10-24, used alongside the MCP tools; no new MCP
    tool (RS-9). The conversion is folded into the existing analyze-phase agent, so
@@ -91,7 +91,7 @@ SPEC-052's v1 gate exists before PR6.
 Empirical-protocol planning (gate G0) follows the preregistration as drafted, including
 its review amendments (C1 split into C1a and C1b, C2 compared with the prevalence and the
 naive path-overlap precision, a fixed order of evaluation):
-source permission and yield come first (signature, then freeze), designed overlap
+source permission and yield come first (signature renewal, layout and tool-name census, probe written and tested on a de-identified real fixture, yield estimate and `plannedRunCount`, probe and runner hashes, power operating point accepted, then freeze), designed overlap
 limits generalization, the reference outcome is observed (serial merge plus tests
 twice), predictions are hashed before it exists, no human label is used, the run is
 the held-out unit, and missing probe data is reported per run. There is no model
@@ -187,7 +187,7 @@ degrades only transcript evidence; no transcripts yields the unchanged v1 result
 Conformance check: the mapper and the pinned G0 probe run on the same synthetic
 fixture and every counted difference is reported, not suppressed.
 
-Native or interactive acceptance (transcript layout on the first G0 run; plugin MCP
+Native or interactive acceptance (transcript layout census before the freeze; plugin MCP
 tools, Bash constraint and nested calls inside workflow agents) needs its own
 founder observations and is never implied by a passing test run.
 
@@ -207,10 +207,11 @@ Each item is a separate reviewed change. No date or effort estimate is stated.
 
 1. **PR1 — specs.** SPEC-053 spec, this plan, research, contracts, quickstart,
    validation plan, tasks, assurance record and draft tracking. Documents only.
-2. **Founder pre-freeze steps (not a PR).** Sign or amend the budget and source
-   decision (REQ-002); fill the pre-freeze bindings and freeze the preregistration
-   explicitly (REQ-001). The workflow script, run manifest and probe script stay
-   outside the repository; their hashes are pinned before the first run.
+2. **Founder pre-freeze steps (not a PR).** Renew or amend the signature of the budget and source
+   decision (REQ-002); run the transcript layout and tool-name census, write the probe against the
+   observed layout and hash the probe and runner (T002); fill the pre-freeze bindings and freeze the
+   preregistration explicitly (REQ-001, T003). The workflow script, run manifest and probe script stay
+   outside the repository; their hashes are pinned before the freeze.
 3. **G0 run (founder).** At least 10 and at most 14 started runs of 3 or 4 worktree
    agents on the existing subscription; predictions hashed before the reference
    outcome; host per-run approval for each workflow.
@@ -236,7 +237,7 @@ Gate G0 blocks PR5, PR6 and R2, and only criterion C1b (with C2 and C3) can unbl
 
 | Risk | Effect | Handling |
 |---|---|---|
-| The transcript line schema differs from the expectation or changes between host versions | Mapper rejects or mis-maps | Pin after the first G0 run; refuse unrecognized shapes; record host versions; a fixture-only mapper is not evidence of real behavior |
+| The transcript line schema differs from the expectation or changes between host versions | Mapper rejects or mis-maps | Pin from the pre-freeze census; a later difference is `probe-unavailable` and unrecognized shapes are refused; record host versions; a fixture-only mapper is not evidence of real behavior |
 | Most tool calls are `Bash`/search/MCP | High unknown share; weak signal | This is exactly C3; a result above 40% is a valid `g0-fail` |
 | Gate v2 has no safe interface to the converter (Bash cannot be constrained, no MCP tool, or the SPEC-052 amendment for validated path tokens is refused) | REQ-009 infeasible | Transcript part of the gate is no-go; commit-level gate unaffected; recorded as a negative result |
 | Private content reaches an output or diagnostic | Privacy breach | Allowlist, aggregate counts, fixed codes, sentinel tests, independent privacy/security review record |

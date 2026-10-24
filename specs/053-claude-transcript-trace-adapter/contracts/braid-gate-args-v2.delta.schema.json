@@ -29,7 +29,7 @@
   },
   "$defs": {
     "pathToken": {
-      "description": "Absolute POSIX path of simple characters: no whitespace, quotes, shell metacharacters, option-leading text, '..', '//' or trailing slash, so a prompt can embed it without raw repository text.",
+      "description": "Absolute POSIX path of simple characters: no whitespace, quotes, shell metacharacters, option-leading text, '..', '//' or trailing slash, so a prompt can embed it without raw repository text. Paths outside this alphabet (spaces, non-ASCII, '@', '+', '#') are refused with a fixed diagnostic and are not percent-decoded in this draft; the allowed transcript root and the scratch root are defined at T023.",
       "type": "string",
       "minLength": 2,
       "maxLength": 512,

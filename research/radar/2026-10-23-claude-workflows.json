@@ -22,7 +22,7 @@
       "relationship": "Documents scripted multi-agent workflows with optional per-agent worktree isolation, plugin-shipped workflows, and SubagentStart/SubagentStop hooks that expose transcript paths. The documentation describes no automatic merge and no conflict detection across worktree agents. Whether plugin MCP tools, plugin agents as agentType, and nested calls to plugin workflows work inside workflow agents is unconfirmed and requires host verification. The page is a product description, not evidence about Agent Braid's value.",
       "affectedArtifacts": ["docs/strategy/ECOSYSTEM.md", "research/adoption/2026-09-initial-triage.json"],
       "status": "candidate",
-      "decision": "Investigate through the M4.6 preregistered gate G0 (read-only; no additional spend). No adoption, support or superiority claim; negative or inconclusive G0 outcomes are valid and close the track."
+      "decision": "Investigate through the M4.6 preregistered gate G0 (read-only; no additional spend). No adoption, support or superiority claim; a G0 pass would mean feasibility not refuted, and negative or inconclusive G0 outcomes are valid (a g0-fail closes the track; g0-inconclusive keeps the transcript requirements blocked)."
     },
     {
       "id": "RAD-2026-014",
