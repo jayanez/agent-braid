@@ -47,6 +47,18 @@ Stable source IDs; task completion does not imply native/provider or founder acc
 - [ ] T015 (REQ-012 / SC-012): Anthropic executable/size exception and external approval.
   Dependencies: T012, T009. Resolve bundled-runtime restrictions via an authorized review route, obtain publication decision and record directory/official-marketplace dispositions separately. Do not replace bundled runtime with external prerequisites.
 
+- [ ] T016 (REQ-003 / SC-003): Typed stale-registry refusal in the plugin MCP.
+  Dependencies: T003. Add `RegistryStale` (a `RegistryError`) with the stable code `reconnect-required`. `PluginRouter.invoke` and `read_resource` must not degrade it to the generic "check workspace, arguments, registry and reconnect state" refusal: the summary names reconnecting the MCP and `plugin-status`, and the refusal keeps the requested `workspaceId` when it is registered. Verification: focused `tests/test_plugin_mcp.py` cases (specific refusal, `isError`, bootstrap tools still answer) via procedure_003 in validation-plan.md. Evidence: pending.
+
+- [ ] T017 (REQ-003 / SC-003): Effective-configuration comparison for reconnect detection.
+  Dependencies: T016. Compare the snapshotted and current registry by effective configuration (telemetry consent and normalized workspace rows), not by raw document equality or order, so an idempotent `plugin setup --apply` does not mark reconnect. `plugin-status` adds path-free `baselineDigest` and `currentDigest`. Immutable roots and grants per connection are unchanged; a change in any registered workspace, grant or consent still requires reconnect. Verification: focused `tests/test_plugin_registry.py` and `tests/test_plugin_mcp.py` cases (no-op rewrite, reordered rows, added/removed/changed workspace, consent change) via procedure_003. Evidence: pending.
+
+- [ ] T018 (REQ-003 / SC-003): Distinguish reconnect-required refusals in local MCP telemetry.
+  Dependencies: T016; SPEC-047/T003. Record the refusal cause (`reconnect-required` versus unknown workspace, full inventory, busy admission, malformed arguments) under surface `mcp` so stale-connection refusals are not counted as usage failures. First inspect the actual SPEC-047 collector; if a versioned category value is needed, specify it in `plan.md` before implementation and keep the data contract otherwise unchanged. Verification: focused plugin telemetry tests with consent `local` and `off` via procedure_003. Evidence: pending.
+
+- [ ] T019 (REQ-010 / SC-010): Document multi-session registry changes and reconnect.
+  Dependencies: T016–T018. Update `docs/tooling/NATIVE_PLUGINS.md` and `contracts/interface.md`: a setup apply from any session or the CLI invalidates already running connections; reconnect steps; the new refusal code and digests. State that T016–T019 are a bounded defect fix after the 2026-10-19 owner disposition and do not reopen T014/T015 candidacy, builds, size work or publication. Verification: documentation review and Spec Kit validation via procedure_010. Evidence: pending.
+
 ## Owner disposition — 2026-10-19
 
 T014/T015 and the plugin product remain frozen. The owner deferred further

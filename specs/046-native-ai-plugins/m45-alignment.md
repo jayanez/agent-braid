@@ -14,8 +14,10 @@ skills. The separate plugin MCP contract delegates existing services.
 | SPEC-043 presentation | Preserve pending human interpretation and native presentation acceptance. New CLI JSON previews and diagnostics do not satisfy those gates. |
 | SPEC-044 evaluation | Preserve registered cohort, 108 attempt identities, baseline, cost, native/provider and human gates. New installation/protocol controls are a separate engineering domain. |
 
-The 15 new task IDs T001–T015 belong only to SPEC-046. T013 incorporates the
-owner-requested shell installer; T014/T015 retain independent external approvals. The old 79-task inventory remains historical;
+The 19 new task IDs T001–T019 belong only to SPEC-046. T013 incorporates the
+owner-requested shell installer; T014/T015 retain independent external approvals.
+T016–T019 (2026-10-24) are a bounded stale-registry defect fix and do not reopen
+T014/T015. The old 79-task inventory remains historical;
 new work is counted separately until governed source integration/reconciliation.
 Official approval, public release and M4.5 closure remain distinct decisions.
 
