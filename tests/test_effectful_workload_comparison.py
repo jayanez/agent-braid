@@ -89,7 +89,7 @@ class WorkloadComparisonTests(unittest.TestCase):
         self.assertTrue(fixture["matchedCompleteCoverage"])
         self.assertEqual(fixture["warmupsCompleted"], {m: 3 for m in METHODS})
         self.assertTrue(all(len(fixture["samples"][m]) == 20 for m in METHODS))
-        orders = {tuple(s["methodOrder"]) for method in METHODS for s in fixture["samples"][method]}
+        orders = {s["orderOffset"] for method in METHODS for s in fixture["samples"][method]}
         self.assertEqual(len(orders), len(METHODS))
         self.assertEqual(report["accounting"]["recoveredTerminalCandidates"], 1)
         self.assertIn(report["feasibility"]["status"], ("positive", "negative"))
@@ -110,6 +110,23 @@ class WorkloadComparisonTests(unittest.TestCase):
         self.assertEqual(failed["feasibility"]["status"], "inconclusive")
         self.assertFalse(failed["fixtures"][0]["matchedCompleteCoverage"])
 
+    def test_unstable_deterministic_field_prevents_matched_coverage(self):
+        manifest, registration = corpus()
+        manifest["fixtures"] = [next(f for f in manifest["fixtures"] if f["id"] == "h2-shared-additions")]
+        registration.update(manifestHash=digest(manifest), fixtureCount=1)
+        actual_measure = measure
+        calls = 0
+        def drift(request, method):
+            nonlocal calls
+            calls += 1
+            result = actual_measure(request, method)
+            if calls == 30:
+                result["observation"] = {**result["observation"], "terminalValuesMatch": not result["observation"]["terminalValuesMatch"]}
+            return result
+        with patch("research.workload_lab.analysis.measure", side_effect=drift):
+            report = run_experiment(manifest, registration)
+        self.assertFalse(report["fixtures"][0]["matchedCompleteCoverage"])
+        self.assertEqual(report["feasibility"]["status"], "inconclusive")
 
     def run_with_costs(self, rule_stage, rule_total, oracle_total):
         manifest, registration = corpus()
@@ -153,6 +170,7 @@ class WorkloadComparisonTests(unittest.TestCase):
         self.assertIsNone(median_upper_bound([1, 2, 3, 4]))
         self.assertIsNone(median_upper_bound([]))
 
+
 EVIDENCE = ROOT / "specs/024-effectful-workload-lab/evidence/comparison-20261024.json"
 
 
@@ -164,10 +182,13 @@ def evidence_problems(evidence, manifest, registration):
     if [r["id"] for r in evidence["fixtures"]] != [f["id"] for f in manifest["fixtures"]]:
         problems.append("fixtures")
     for result, fixture in zip(evidence["fixtures"], manifest["fixtures"]):
-        if result["requestHash"] != fixture["requestHash"] or result["oracle"] != explore(fixture["request"]):
+        if result["requestHash"] != fixture["requestHash"] or result["oracleDigest"] != digest(explore(fixture["request"])):
             problems.append("oracle " + fixture["id"])
         if not result["matchedCompleteCoverage"] or result["failures"] or result["control"]["status"] != "pass":
             problems.append("coverage " + fixture["id"])
+        if any(not shared["coverage"]["complete"] or shared["requestHash"] != fixture["requestHash"]
+               for shared in result["deterministicByMethod"].values()):
+            problems.append("deterministic " + fixture["id"])
         if any(len(result["samples"][m]) != 20 or result["warmupsCompleted"][m] != 3 for m in METHODS):
             problems.append("repetitions " + fixture["id"])
     accounting = evidence["accounting"]
@@ -188,7 +209,8 @@ class WorkloadCapturedEvidenceTests(unittest.TestCase):
         self.assertEqual(evidence_problems(evidence, manifest, registration), [])
         self.assertEqual(evidence["accounting"]["registeredFixtures"], 17)
         for mutate in (
-            lambda e: e["fixtures"][0]["oracle"]["paths"].pop(),
+            lambda e: e["fixtures"][0].__setitem__("oracleDigest", "0" * 64),
+            lambda e: e["fixtures"][0]["deterministicByMethod"]["declared-effects"]["coverage"].update(complete=False),
             lambda e: e["fixtures"][0]["samples"]["declared-effects"].pop(),
             lambda e: e["accounting"].__setitem__("falseTerminalCandidates", 1),
             lambda e: e.__setitem__("executionAuthorization", True),
