@@ -12,9 +12,9 @@ Relative links below were rebased from the repository root to `docs/`.
 
 ### Newest work
 
-As of 2026-10-23, all four lines below are merged into `develop`. Each keeps
-`executionAuthorization: false` and leaves its human, scientific and acceptance
-gates open.
+As of 2026-10-24, all lines below are merged into `develop`. Each keeps
+`executionAuthorization: false` (where applicable) and leaves its human, scientific
+and acceptance gates open.
 
 | Work | Pull request | What it adds |
 | --- | --- | --- |
@@ -22,6 +22,7 @@ gates open.
 | **Owned-work evaluation contracts** (SPEC-051) | [#659](https://github.com/jayanez/agent-braid/pull/659) | Pure operator-authority resolution and frozen-registration append validation for evaluating real owned work; no real sources, storage or training. |
 | **Effectful workload laboratory** (SPEC-024 T001–T004, ADR 0028) | [#660](https://github.com/jayanez/agent-braid/pull/660) | A closed, standard-library simulator that explores effectful request/transition state spaces with byte-bounded exploration and binds observations to replayable evidence. |
 | **Contextual proof obligations** (SPEC-025) | [#658](https://github.com/jayanez/agent-braid/pull/658) | A reconciled finite evidence packet for contextual safety checks; no theorem is accepted. |
+| **Plugin MCP local telemetry consent** (SPEC-046/SPEC-047) | [#669](https://github.com/jayanez/agent-braid/pull/669), [#670](https://github.com/jayanez/agent-braid/pull/670) | Persisted default-off local telemetry consent in the plugin registry (v0.2), set only through `plugin setup --telemetry`, and unpublished plugin `0.1.0-alpha.3`; `plugin discover` reads a v0.1 registry before migration. SPEC-047 T010/T017/T018 and the pilot stay open/NO-GO; nothing is published. |
 
 The runtime executes allowlisted Git plumbing. Repository code, source-ref
 promotion and broader agent/provider adapters require additional contracts and
