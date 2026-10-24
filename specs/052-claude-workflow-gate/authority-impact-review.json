@@ -1,0 +1,69 @@
+{
+  "date": "2026-10-24",
+  "reviewerModel": "claude-sonnet-5-5 (author self-review; independent review not yet obtained)",
+  "scope": "Authority delta from the unadopted PR3 adoption package for SPEC-052 only; no implementation, release or adoption",
+  "disposition": "Pending independent review; no blockers found by the author",
+  "authorityDelta": {
+    "added": {
+      "docs/adr/0029-claude-dynamic-workflows.md": "132ab0ccf85f17ee38cc6c42d524283959513df4e381e473c9306cde2a477f87"
+    },
+    "changed": {
+      "docs/adr/0024-native-ai-plugins.md": {
+        "before": "3a45d8a62cb241b01638a37f39fdc309cb0563941c0343fe58d9ab30c5c677ac",
+        "after": "ca2fd4a76294aff60ab2a5861ae110262032bc133b011a2043e91b16884845e5",
+        "nature": "link-only 'Related decisions' section; no normative text changed"
+      }
+    },
+    "removed": []
+  },
+  "currentSnapshotsRefreshed": {
+    "047-local-technical-telemetry": {
+      "path": "specs/047-local-technical-telemetry/assurance.json",
+      "authorityDriftReported": [
+        "docs/adr/0024-native-ai-plugins.md (changed)",
+        "docs/adr/0029-claude-dynamic-workflows.md (added)"
+      ],
+      "requirementsImpact": "Telemetry requirements concern local aggregate telemetry (ADR 0025). The ADR 0024 delta is a link-only addition and the new ADR constrains only a Claude-only workflows/ component that emits no telemetry. REQ unaffected; no wording of 047 changes.",
+      "humanReviewAfterRefresh": "pending"
+    },
+    "048-harness-variant-laboratory": {
+      "path": "specs/048-harness-variant-laboratory/assurance.json",
+      "authorityDriftReported": [
+        "docs/adr/0024-native-ai-plugins.md (changed)",
+        "docs/adr/0029-claude-dynamic-workflows.md (added)"
+      ],
+      "requirementsImpact": "HAR offline foundations (ADR 0027) forbid native routes, launchers and provider paths. The new ADR adds no laboratory capability, grant or runtime path and is unadopted. Requirements unaffected.",
+      "humanReviewAfterRefresh": "pending"
+    },
+    "051-owned-work-evaluation": {
+      "path": "specs/051-owned-work-evaluation/assurance.json",
+      "authorityDriftReported": [
+        "docs/adr/0024-native-ai-plugins.md (changed)",
+        "docs/adr/0029-claude-dynamic-workflows.md (added)"
+      ],
+      "requirementsImpact": "Pure owned-work validation (ADR 0026) is untouched; the workflows component is read-only and not an evaluation path. Requirements unaffected.",
+      "humanReviewAfterRefresh": "pending"
+    },
+    "052-claude-workflow-gate": {
+      "path": "specs/052-claude-workflow-gate/assurance.json",
+      "authorityDriftReported": [
+        "docs/adr/0024-native-ai-plugins.md (changed)",
+        "docs/adr/0029-claude-dynamic-workflows.md (added)"
+      ],
+      "requirementsImpact": "Directly affected: this ADR is the authority required by REQ-009/REQ-011 (T033-T036). Inventory now includes ADR 0029 in Proposed status; no requirement text changes; adoption, builder default flip and README reconciliation remain open (T036).",
+      "humanReviewAfterRefresh": "pending"
+    },
+    "053-claude-transcript-trace-adapter": {
+      "path": "specs/053-claude-transcript-trace-adapter/assurance.json",
+      "authorityDriftReported": [
+        "docs/adr/0024-native-ai-plugins.md (changed)",
+        "docs/adr/0029-claude-dynamic-workflows.md (added)"
+      ],
+      "requirementsImpact": "Transcript adapter depends on SPEC-052 and gate G0 and ships nothing. ADR 0029 lists transcript hooks as deferred; requirements unaffected.",
+      "humanReviewAfterRefresh": "pending"
+    }
+  },
+  "notRefreshed": "All other assurance records are historical or not in current mode; verified that only these five are in current mode. No historical binding was rewritten.",
+  "adoption": "ADR 0029 is Proposed — awaiting founder adoption. This review records no adoption, approval or release; adoption changes the ADR status line only, which will need a further re-snapshot.",
+  "transition": "Refresh only pending current inventories. Preserve all historical bindings and all pending acceptance gates."
+}
