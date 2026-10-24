@@ -6,7 +6,7 @@
   REQ-001 / SC-001; depends T001.
 - [x] T003 (RF-T02.B): implement pure schema/semantic state validator and controls;
   REQ-002 / SC-002; depends T002.
-- [ ] T004: compatibility, focused and proportional quick/pr, evidence and local
+- [x] T004: compatibility, focused and proportional quick/pr, evidence and local
   documentary relay; REQ-003 / SC-003; depends T003.
 
 Following tasks RF-T03 store, RF-T04 observer, RF-T05 source/population/oracle and
@@ -17,5 +17,8 @@ future controls. N19 can report supplied population missingness, not discover an
 unregistered real denominator. All controls remain planned until recorded results.
 
 T001–T003 local software checks obtained: 42 focused tests, zero failures/errors/skips.
-No independent review, real admission or publication is implied. T004 remains
-pending until actual profile and relay receipts; see delivery evidence when obtained.
+T004 obtained on candidate `1900391c` (independent clone): 60 focused tests OK, quick
+exit 0, pr exit 0 (14 commands, 2286 tests, 24 skipped); receipts in
+[evidence/t004/t004.json](evidence/t004/t004.json). These are engineering checks only.
+No independent review, real admission or publication is implied; the remote issue
+(#665) and Project state are not changed by this record.

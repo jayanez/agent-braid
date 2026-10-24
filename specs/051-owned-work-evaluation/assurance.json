@@ -145,7 +145,15 @@
         {
           "given": "Synthetic supplied descriptors and frozen state",
           "id": "SC-003",
-          "obtained_evidence": [],
+          "obtained_evidence": [
+            {
+              "command": "python -m unittest tests.test_owned_work_authority tests.test_owned_work_contracts tests.test_owned_work_coverage; scripts/validate_change.py --base develop --profile quick; --profile pr",
+              "limits": "Engineering software controls on candidate 1900391c in an independent clone; not clean-room reproduction, forecasting skill, review or approval. Profile logs bound by hash; evidence-commit files after the candidate are not covered by these receipts.",
+              "outcome": "60 focused tests OK; quick exit 0; pr exit 0 (14 commands, 2286 tests, 24 skipped).",
+              "path": "specs/051-owned-work-evaluation/evidence/t004/t004.json",
+              "sha256": "f33b835da0b2a365dd7babb7c037b73cd926cfa166e5228dd7f3d3928f52f869"
+            }
+          ],
           "planned_evidence": "Focused unit controls and proportional quick/pr receipts with actual pins and limits.",
           "test_file": "tests/test_owned_work_contracts.py",
           "test_name": "ContractTests.test_modules_have_no_io_model_or_collector_imports_and_no_side_effects",
