@@ -47,6 +47,18 @@ Parent: SPEC-046 — Native AI plugins; milestone M4.5 #19.
 - [ ] T015 (REQ-012 / SC-012): Anthropic executable/size exception and external approval.
   Dependencies: T012, T009. Resolve bundled-runtime restrictions via an authorized review route, obtain publication decision and record directory/official-marketplace dispositions separately. Do not replace bundled runtime with external prerequisites.
 
+- [ ] T016 (REQ-003 / SC-003): Typed stale-registry refusal in the plugin MCP.
+  Dependencies: T003. Add `RegistryStale` with the stable code `reconnect-required`; `invoke` and `read_resource` name reconnecting the MCP and `plugin-status` instead of the generic refusal, keeping a registered `workspaceId`.
+
+- [ ] T017 (REQ-003 / SC-003): Effective-configuration comparison for reconnect detection.
+  Dependencies: T016. Compare telemetry consent and normalized workspace rows, not raw bytes or order; expose path-free `baselineDigest`/`currentDigest` in `plugin-status`. Idempotent setup does not mark reconnect; any real change still does.
+
+- [ ] T018 (REQ-003 / SC-003): Distinguish reconnect-required refusals in local MCP telemetry.
+  Dependencies: T016; SPEC-047/T003. Record the refusal cause under surface `mcp` after inspecting the SPEC-047 collector; specify any versioned category in `plan.md` first.
+
+- [ ] T019 (REQ-010 / SC-010): Document multi-session registry changes and reconnect.
+  Dependencies: T016–T018. Update `NATIVE_PLUGINS.md` and `contracts/interface.md`; state that T016–T019 are a bounded defect fix and do not reopen T014/T015.
+
 Bodies inherit requirement/scenario, dependencies, verification and evidence links
 from tasks.md and the reconciler. Source completion reflects only the bounded
 engineering/documentary criteria stated there. Native macOS interactive journeys and own public distribution are obtained;
