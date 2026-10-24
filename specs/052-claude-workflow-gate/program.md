@@ -6,7 +6,7 @@ Status: draft planning. Planning decisions of 2026-10-23 are recorded below (the
 
 Make Agent Braid usable at the end of Claude Code dynamic workflows that run worktree agents. According to its documentation, Claude Code applies no automatic merge or conflict detection to such agents. End state ("integrated"): a user installs the plugin; a workflow with worktree agents ends by calling `/agent-braid:braid-gate` (directly or nested); the gate returns commit-level evidence (read and write hazards from transcripts only if G0 passes), a `git merge-tree` baseline and, for at most four operations, a replay certificate and a prepared batch; the operator grants outside the workflow (grant-policy-run) and executes through the owned runtime, or integrates manually in the advisory order. Agent Braid ships no fan-out and makes no speed claim (parallel runtime speedup is a recorded NO-GO: SPEC-021 G4 median 0.5581, SPEC-022, SPEC-038 0.6539).
 
-Out of scope: pre-flight partitioning (possible SPEC-054, gate G2), Codex workflows, execution authority, hooks and mods.
+Out of scope for SPEC-052/053: orchestrator-style coordination, which the founder opened on 2026-10-24 as SPEC-057 (advisory core: declared ownership, pre-flight, checkpoint receipts, recovery reports, pull notices; owns G1), SPEC-058 (opt-in policy compiler and guard, blocked by G1 and an ADR amendment) and SPEC-059 (coordination ledger and optional active push, blocked by G2). Still out of scope: Codex workflows, execution authority and mods.
 
 ## Specs
 
@@ -23,7 +23,8 @@ SPEC-052 and SPEC-053 are independent engineering tracks except gate v2 (PR6), w
   Preregistered rule, as summarized from [the proposal](../../docs/experiments/CLAUDE_WORKFLOW_INTEGRATION_PROPOSAL.md), which is authoritative and not yet frozen: at least 10 eligible runs with probe data are needed. C1a (commit-level evidence: a reference failure missed by both `git merge-tree` baselines and flagged by the Braid primary flag) informs R1 only, unlocks nothing and is neither a pass nor a fail input. C1b (the only C1 criterion that gates the transcript adapter and gate v2): at least 1 reference failure missed by both merge-tree baselines, by naive path overlap and by `analyze-git` under its primary and inclusive flags, and flagged by the transcript probe. C2: read/write-overlap precision of at least 0.3 and strictly above both the reference-failure prevalence and the naive path-overlap precision. C3: unknown rate of at most 40%. Order of evaluation: fewer than 10 eligible runs with probe data is `g0-inconclusive`; otherwise C1b and C3 are evaluated and either unmet is `g0-fail` even with fewer than 3 probe-flagged runs; then fewer than 3 probe-flagged runs is `g0-inconclusive`; then C2 is evaluated and unmet is `g0-fail`; `g0-pass` needs C1b, C2 and C3 together. An inconclusive G0 never passes. Obtained evidence: none; nothing frozen or run.
 - **R1 — release, commit level.** Plugin package (candidate 0.1.0-alpha.4) containing SPEC-052 only. Requires ADR adoption (PR3), host-verification outcomes, release acceptance (REQ-014). Independent of G0.
 - **R2 — release with transcripts.** Only if G0 passes; includes the adapter and gate v2.
-- **G2 — optional pre-flight partitioning (SPEC-054).** Requires the "Coordination across tools" contract of specs/039 (identity, concurrency, idempotency, recovery) and its own ADR. Not planned unless the founder opens it.
+- **G1 — orchestration evidence (SPEC-057/055).** Preregistered in [docs/experiments/CLAUDE_ORCHESTRATION_G1_PROPOSAL.md](../../docs/experiments/CLAUDE_ORCHESTRATION_G1_PROPOSAL.md): prompt partitioning versus the advisory core and, separately, the opt-in guard on all four surfaces. SPEC-058 is not adopted without it.
+- **G2 — coordination contract (SPEC-059).** Requires the "Coordination across tools" contract of specs/039 (identity, concurrency, idempotency, recovery) and its own ADR before the SPEC-059 ledger or active push.
 
 ## PR sequence
 
@@ -57,7 +58,7 @@ Answered with the founder as planning decisions (`speckit-clarify`; see the [SPE
 1. Adopt, amend or reject the ADR proposal (PR3).
 2. R1 version number confirmation, release acceptance and any plugin-dist publication.
 3. G0 preregistration freeze before data collection, and G0 disposition.
-4. Whether G2 (SPEC-054) is opened.
+4. SPEC-057–056 were opened on 2026-10-24; whether to open G2 (the specs/039 coordination contract) for SPEC-059 remains a founder decision.
 5. Remote tracking publication (milestone, issues, Project) and milestone closure.
 6. The planning amendments to the constrained Bash allowlist: `plugin workspaces` for the v1 fallback registry checks, `analyze-claude-transcripts` for gate v2, and validated path tokens in gate v2 prompts (SPEC-052 Clarifications; SPEC-053 REQ-009). Approved by the founder on 2026-10-24 as planning amendments; host verification and G0 still apply.
 

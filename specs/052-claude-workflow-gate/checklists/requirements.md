@@ -4,7 +4,7 @@ This checklist records properties of the documents, not evidence or approval.
 
 - [x] CHK-001 Every requirement REQ-001..REQ-016 has exactly one scenario, a `procedure_req_NNN` section and planned (not obtained) evidence.
 - [x] CHK-002 Scenarios use Given/When/Then and each states failure or inconclusive handling.
-- [x] CHK-003 Exclusions are explicit: no transcript analysis (SPEC-053), no pre-flight partitioning (possible SPEC-054), no fan-out, edits, merges, refs, hooks, mods, grants or execution.
+- [x] CHK-003 Exclusions are explicit: no transcript analysis (SPEC-053), no pre-flight or orchestration coordination (SPEC-057 to SPEC-059), no fan-out, edits, merges, refs, hooks, mods, grants or execution.
 - [x] CHK-004 Analogy, hypothesis, empirical and formal statements are separated; H1 and H2 are not requirements; negative results are valid.
 - [x] CHK-005 Known analyzer limits (A/M-only write effects, unknown for deletes, renames, binaries and symlinks, empty read versions, file-level conflicts, equal-to-base false negative) are stated and tied to requirements.
 - [x] CHK-006 Host-dependent claims are marked unconfirmed until verified (REQ-013); no documentation claim is presented as observation.

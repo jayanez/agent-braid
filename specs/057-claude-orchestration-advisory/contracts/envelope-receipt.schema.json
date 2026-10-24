@@ -1,0 +1,320 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://agent-braid.dev/specs/057-claude-orchestration-advisory/contracts/envelope-receipt.schema.json",
+  "title": "Agent Braid declared-versus-observed receipt (draft, not adopted)",
+  "description": "Result of one checkpoint check: the declaration compared with committed or quiesced Git state. Paths and hashes only. On a shared working tree (agent teams, sessions editing in place) Git cannot attribute a change to a unit, so this receipt attributes nothing to any unit there: every changed path is an unattributed writer with unknown effect, and a per-unit comparison is not made for it. A list longer than its bound is cut deterministically (sorted, first entries) and the cut is recorded in truncations with the total, so a busy shared tree yields a partial receipt, never a refusal and never a clean one. A per-unit not-observed outcome is a result of the observation contract and is never clean. A refusal (busy lock, unstable snapshot, unobservable or over-bound source, existing output path) is not representable here: it is an error under command-error.schema.json and produces no receipt.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "executionAuthorization",
+    "assurance",
+    "snapshot",
+    "units",
+    "unattributedWriters",
+    "exemptedPaths",
+    "limits",
+    "truncations"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": "agent-braid-ownership-receipt/v0.1"
+    },
+    "executionAuthorization": {
+      "const": false
+    },
+    "assurance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "compatibilityClass",
+        "property",
+        "evidenceMethod",
+        "domain",
+        "assumptions",
+        "observationContract",
+        "executionContract",
+        "notAGuarantee"
+      ],
+      "properties": {
+        "compatibilityClass": {
+          "const": "1-syntactic"
+        },
+        "property": {
+          "const": "Exact repository-relative path agreement between declared ownership and file-level Git effects at the named snapshot; not semantic commutation, hunk-level safety or order independence."
+        },
+        "evidenceMethod": {
+          "const": "Declaration validation and expansion, and the bounded read-only Git adapter run in-process by the bundled CLI over committed or quiesced worktrees; the plugin MCP is not used."
+        },
+        "domain": {
+          "const": "Committed or quiesced Git state of at most 32 units in one repository; file-level resources."
+        },
+        "assumptions": {
+          "const": [
+            "The declaration was written against the stated base.",
+            "The observed worktrees were committed or quiescent for both Git observations.",
+            "Writers that cannot be attributed to a unit are unknown, not violations; on a shared working tree no change is attributed to any unit."
+          ]
+        },
+        "observationContract": {
+          "const": "Added and modified files are write effects; deletions, renames, binaries, symlinks and submodules are unknown; reads are never observed; Bash in flight, MCP effects and uncommitted work of active writers are not observed; absent observations are not-observed and never mean clean."
+        },
+        "executionContract": {
+          "const": "Read-only; no launch, message, resume, grant, edit, merge or write other than the explicit new output path; executionAuthorization is false."
+        },
+        "notAGuarantee": {
+          "const": true
+        }
+      }
+    },
+    "snapshot": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "digest",
+        "base"
+      ],
+      "properties": {
+        "digest": {
+          "type": "string",
+          "pattern": "^sha256:[0-9a-f]{64}(?!\\n)$"
+        },
+        "base": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{40}(?!\\n)$"
+        },
+        "checkpoint": {
+          "type": "string",
+          "maxLength": 64,
+          "pattern": "^[A-Za-z0-9._-]*(?!\\n)$"
+        }
+      }
+    },
+    "units": {
+      "type": "array",
+      "maxItems": 32,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "observation",
+          "coverage"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,63}(?!\\n)$"
+          },
+          "observation": {
+            "enum": [
+              "observed",
+              "not-observed"
+            ],
+            "description": "not-observed is never clean; the unit's coverage is partial."
+          },
+          "notObservedReason": {
+            "enum": [
+              "no-source-supplied",
+              "not-a-descendant-of-base"
+            ],
+            "description": "Only reasons that are outcomes of the observation contract. Busy, unstable, unobservable and over-bound are refusals (errors), not reasons."
+          },
+          "coverage": {
+            "enum": [
+              "complete",
+              "partial"
+            ]
+          },
+          "undeclaredWrites": {
+            "$ref": "#/$defs/boundedPaths"
+          },
+          "siblingAreaWrites": {
+            "type": "array",
+            "maxItems": 512,
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "path",
+                "ownerUnit"
+              ],
+              "properties": {
+                "path": {
+                  "$ref": "#/$defs/boundedString"
+                },
+                "ownerUnit": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,63}(?!\\n)$"
+                }
+              }
+            }
+          },
+          "declaredNotObserved": {
+            "$ref": "#/$defs/boundedPaths"
+          },
+          "unknown": {
+            "type": "array",
+            "maxItems": 512,
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "path",
+                "reason"
+              ],
+              "properties": {
+                "path": {
+                  "$ref": "#/$defs/boundedString"
+                },
+                "reason": {
+                  "enum": [
+                    "deleted",
+                    "renamed",
+                    "binary",
+                    "symlink",
+                    "submodule",
+                    "unsupported"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "allOf": [
+          {
+            "if": {
+              "properties": {
+                "observation": {
+                  "const": "not-observed"
+                }
+              }
+            },
+            "then": {
+              "required": [
+                "notObservedReason"
+              ]
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "observation": {
+                  "const": "not-observed"
+                }
+              },
+              "required": [
+                "observation"
+              ]
+            },
+            "then": {
+              "properties": {
+                "coverage": {
+                  "const": "partial"
+                }
+              }
+            }
+          }
+        ]
+      }
+    },
+    "unattributedWriters": {
+      "type": "array",
+      "maxItems": 64,
+      "description": "Paths changed in a shared checkout that cannot be tied to a unit (orchestrator, human or shared-tree edits, agent teams on one tree). Unknown effect by default; never a unit's violation. A path covered by a declared exemption rule is listed under exemptedPaths instead.",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "path",
+          "effect"
+        ],
+        "properties": {
+          "path": {
+            "$ref": "#/$defs/boundedString"
+          },
+          "effect": {
+            "const": "unknown"
+          }
+        }
+      }
+    },
+    "limits": {
+      "type": "array",
+      "maxItems": 16,
+      "items": {
+        "$ref": "#/$defs/boundedString"
+      }
+    },
+    "exemptedPaths": {
+      "type": "array",
+      "maxItems": 64,
+      "description": "Paths excluded from unattributedWriters by an explicit exemption rule declared in the declaration. The rule id is recorded; the exclusion is the orchestrator's declaration, not an observation that the write is safe.",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "path",
+          "ruleId"
+        ],
+        "properties": {
+          "path": {
+            "$ref": "#/$defs/boundedString"
+          },
+          "ruleId": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,63}(?!\\n)$"
+          }
+        }
+      }
+    },
+    "truncations": {
+      "type": "array",
+      "maxItems": 64,
+      "description": "Lists that were cut to their bound. Empty means nothing was cut. A receipt with an entry here is partial: it is never clean.",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "list",
+          "total"
+        ],
+        "properties": {
+          "list": {
+            "enum": [
+              "unattributedWriters",
+              "exemptedPaths",
+              "undeclaredWrites",
+              "siblingAreaWrites",
+              "declaredNotObserved",
+              "unknown"
+            ]
+          },
+          "unitId": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,63}(?!\\n)$"
+          },
+          "total": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 1000000
+          }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "boundedString": {
+      "type": "string",
+      "maxLength": 256,
+      "pattern": "^[^\\u0000-\\u001f\\u007f-\\u009f\\u00ad\\u061c\\u115f-\\u1160\\u180e\\u200b-\\u200f\\u2028-\\u202e\\u2060-\\u206f\\u3164\\ufeff\\uffa0\\ufff9-\\ufffb\\U000e0000-\\U000e007f]*(?!\\n)$"
+    },
+    "boundedPaths": {
+      "type": "array",
+      "maxItems": 512,
+      "items": {
+        "$ref": "#/$defs/boundedString"
+      }
+    }
+  }
+}

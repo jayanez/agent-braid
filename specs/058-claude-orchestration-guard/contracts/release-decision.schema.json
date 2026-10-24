@@ -1,0 +1,361 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://agent-braid.dev/specs/058-claude-orchestration-guard/contracts/release-decision.schema.json",
+  "title": "Agent Braid guard release decision record (draft, not adopted)",
+  "description": "The founder-recorded input that the companion-plugin package builder requires for a package build, listing or release. It is not needed to build or run the unreleased engineering candidate that G1 arm A3 evaluates. A record whose gate outcome is not pass is refused. GG pass requires GA pass and at least one claimed surface and output whose own gate outcome is pass; only such surfaces are claimed, and every other surface is listed in guardNotCovered. Receipts are typed and carry a path and digest. A pass permits release consideration only; it does not adopt, publish or prove anything. Each claimed surface also records whether the native-controls-only arm AN of G1 ran on it; if it did not, the release wording must carry the G1 proposal's limitation sentence verbatim, because without AN a GG pass shows nothing about value over hand-written permissions.deny and sandbox settings alone. Refusals by the builder use SPEC-057's command-error vocabulary (ERR-MALFORMED-INPUT with a rule naming the missing or mismatched field, ERR-OUTPUT-EXISTS for an existing output path); a builder refusal is never a package.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "executionAuthorization",
+    "g1ProposalSha256",
+    "evaluatedCandidateCommit",
+    "gateGG",
+    "gateGA",
+    "s2DecisionPath",
+    "adrIdentity",
+    "policyProfileSchemaCommit"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": "agent-braid-guard-release-decision/v0.1"
+    },
+    "executionAuthorization": {
+      "const": false
+    },
+    "g1ProposalSha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}(?!\\n)$"
+    },
+    "evaluatedCandidateCommit": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{40}(?!\\n)$",
+      "description": "The commit of the unreleased candidate that the G1 manifest hashed and that G1 evaluated."
+    },
+    "gateGG": {
+      "enum": [
+        "pass",
+        "fail",
+        "inconclusive",
+        "not-evaluated"
+      ]
+    },
+    "gateGA": {
+      "enum": [
+        "pass",
+        "fail",
+        "inconclusive",
+        "not-evaluated"
+      ]
+    },
+    "g1Downgraded": {
+      "type": "boolean",
+      "default": false,
+      "description": "True when G1 was declared observational before launch; a downgraded G1 evaluates no threshold and cannot release the guard."
+    },
+    "s2DecisionPath": {
+      "$ref": "#/$defs/repositoryText",
+      "minLength": 1
+    },
+    "adrIdentity": {
+      "$ref": "#/$defs/repositoryText",
+      "minLength": 1,
+      "description": "Identity of the adopted ADR. Adoption happens with the G1 outcome, not before."
+    },
+    "policyProfileSchemaCommit": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{40}(?!\\n)$",
+      "description": "The commit at which the SPEC-057 policy-profile schema was merged."
+    },
+    "claimedSurfaces": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 16,
+      "items": {
+        "$ref": "#/$defs/claimedSurface"
+      }
+    },
+    "guardNotCovered": {
+      "type": "array",
+      "maxItems": 16,
+      "description": "Surfaces and outputs below their G1 minimum, without observed liveness or without a per-surface pass. They are listed, not claimed.",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "surface",
+          "output",
+          "reason"
+        ],
+        "properties": {
+          "surface": {
+            "enum": [
+              "workflow-tracks",
+              "linked-sessions",
+              "agent-teams",
+              "batch"
+            ]
+          },
+          "output": {
+            "enum": [
+              "native-host-settings",
+              "companion-plugin-hooks",
+              "settings-snippet"
+            ]
+          },
+          "reason": {
+            "enum": [
+              "below-g1-minimum",
+              "liveness-not-observed",
+              "gate-not-passed",
+              "host-receipt-missing"
+            ]
+          }
+        }
+      }
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "gateGG": {
+            "const": "pass"
+          }
+        },
+        "required": [
+          "gateGG"
+        ]
+      },
+      "then": {
+        "required": [
+          "claimedSurfaces"
+        ],
+        "properties": {
+          "gateGA": {
+            "const": "pass"
+          },
+          "g1Downgraded": {
+            "const": false
+          }
+        }
+      }
+    }
+  ],
+  "$defs": {
+    "claimedSurface": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "surface",
+        "output",
+        "hostVersion",
+        "gateOutcome",
+        "hostReceipts",
+        "nativeControls"
+      ],
+      "properties": {
+        "surface": {
+          "enum": [
+            "workflow-tracks",
+            "linked-sessions",
+            "agent-teams",
+            "batch"
+          ]
+        },
+        "output": {
+          "enum": [
+            "native-host-settings",
+            "companion-plugin-hooks",
+            "settings-snippet"
+          ]
+        },
+        "hostVersion": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._+-]{0,31}(?!\\n)$"
+        },
+        "gateOutcome": {
+          "const": "pass",
+          "description": "The per-surface, per-output outcome of gate GG. A surface or output without a pass is not claimed."
+        },
+        "taskCreatedClaimed": {
+          "type": "boolean",
+          "default": false
+        },
+        "hostReceipts": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 16,
+          "items": {
+            "$ref": "#/$defs/typedReceipt"
+          }
+        },
+        "nativeControls": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "arm"
+          ],
+          "description": "Whether G1's optional stage 2 native-controls-only arm AN (a hand-written permissions.deny and sandbox write allowlist derived from the same declaration, no Agent Braid component) ran on this surface. The comparison is descriptive and has no threshold; it sets the release wording only.",
+          "properties": {
+            "arm": {
+              "enum": [
+                "ran",
+                "not-run"
+              ]
+            },
+            "limitStatement": {
+              "const": "G1 has no native-controls-only arm, so no claim is made against permissions.deny or sandbox settings alone.",
+              "description": "Verbatim sentence of the G1 proposal (Decision and kill criteria, Native controls and release wording). Required when arm is not-run; a conformance test compares it with the proposal text with whitespace normalized."
+            },
+            "comparisonReceiptPath": {
+              "$ref": "#/$defs/repositoryText",
+              "minLength": 1
+            },
+            "comparisonReceiptSha256": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}(?!\\n)$"
+            }
+          },
+          "allOf": [
+            {
+              "if": {
+                "properties": {
+                  "arm": {
+                    "const": "not-run"
+                  }
+                },
+                "required": [
+                  "arm"
+                ]
+              },
+              "then": {
+                "required": [
+                  "limitStatement"
+                ]
+              }
+            },
+            {
+              "if": {
+                "properties": {
+                  "arm": {
+                    "const": "ran"
+                  }
+                },
+                "required": [
+                  "arm"
+                ]
+              },
+              "then": {
+                "required": [
+                  "comparisonReceiptPath",
+                  "comparisonReceiptSha256"
+                ]
+              }
+            }
+          ]
+        }
+      },
+      "allOf": [
+        {
+          "properties": {
+            "hostReceipts": {
+              "contains": {
+                "properties": {
+                  "probe": {
+                    "const": "HV-6"
+                  }
+                },
+                "required": [
+                  "probe"
+                ]
+              }
+            }
+          }
+        },
+        {
+          "properties": {
+            "hostReceipts": {
+              "contains": {
+                "properties": {
+                  "probe": {
+                    "const": "HV-8"
+                  }
+                },
+                "required": [
+                  "probe"
+                ]
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "taskCreatedClaimed": {
+                "const": true
+              }
+            },
+            "required": [
+              "taskCreatedClaimed"
+            ]
+          },
+          "then": {
+            "properties": {
+              "hostReceipts": {
+                "contains": {
+                  "properties": {
+                    "probe": {
+                      "const": "HV-7"
+                    }
+                  },
+                  "required": [
+                    "probe"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "typedReceipt": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "probe",
+        "receiptPath",
+        "receiptSha256"
+      ],
+      "properties": {
+        "probe": {
+          "enum": [
+            "HV-6",
+            "HV-7",
+            "HV-8",
+            "HV-10",
+            "GP-1",
+            "GP-2",
+            "GP-3",
+            "GP-4",
+            "GP-5"
+          ]
+        },
+        "receiptPath": {
+          "$ref": "#/$defs/repositoryText",
+          "minLength": 1
+        },
+        "receiptSha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}(?!\\n)$"
+        }
+      }
+    },
+    "repositoryText": {
+      "type": "string",
+      "maxLength": 256,
+      "pattern": "^[^\\u0000-\\u001f\\u007f-\\u009f\\u00ad\\u061c\\u115f-\\u1160\\u180e\\u200b-\\u200f\\u2028-\\u202e\\u2060-\\u206f\\u3164\\ufeff\\uffa0\\ufff9-\\ufffb\\U000e0000-\\U000e007f]*(?!\\n)$",
+      "description": "Reused byte for byte from SPEC-057 contracts/hazard-notice.schema.json $defs/repositoryText (REQ-008 of SPEC-057): the single definition of the escaping and bounding rule. A conformance test compares this definition with SPEC-057's."
+    }
+  }
+}

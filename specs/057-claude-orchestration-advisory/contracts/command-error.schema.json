@@ -1,0 +1,47 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://agent-braid.dev/specs/057-claude-orchestration-advisory/contracts/command-error.schema.json",
+  "title": "Agent Braid orchestration command error (draft, not adopted)",
+  "description": "The one representation of a refusal by any SPEC-057 command: a busy lock, an unstable snapshot, an unobservable source, an over-bound or malformed input, or an existing output path. A refusal ends the command with this object (or its code on standard error), a nonzero exit status and no result object, so it can never be read as a receipt, a pre-flight verdict, a report, clean or independent. It carries a code from a closed list and optionally a declared unit id, never repository text.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "executionAuthorization",
+    "resultProduced",
+    "errorCode"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": "agent-braid-command-error/v0.1"
+    },
+    "executionAuthorization": {
+      "const": false
+    },
+    "resultProduced": {
+      "const": false,
+      "description": "Always false: a refusal is not a result."
+    },
+    "errorCode": {
+      "enum": [
+        "ERR-BUSY",
+        "ERR-UNSTABLE-SNAPSHOT",
+        "ERR-UNOBSERVABLE-SOURCE",
+        "ERR-OVER-BOUND",
+        "ERR-MALFORMED-INPUT",
+        "ERR-OUTPUT-EXISTS"
+      ]
+    },
+    "unitId": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,63}(?!\\n)$",
+      "description": "A unit id from the declaration, when the refusal concerns one unit (for example an unstable worktree). Never a path or repository text."
+    },
+    "rule": {
+      "type": "string",
+      "maxLength": 64,
+      "pattern": "^[A-Za-z0-9._-]*(?!\\n)$",
+      "description": "Name of the violated bound or rule, from the closed vocabulary of the command's help."
+    }
+  }
+}

@@ -1,0 +1,332 @@
+{
+  "schemaVersion": "agent-braid-orchestration-surface-matrix/v0.1",
+  "surfaceIds": [
+    "workflow-tracks",
+    "linked-sessions",
+    "agent-teams",
+    "batch"
+  ],
+  "surfaceIdsNote": "The closed surface vocabulary of the whole orchestration family. The declaration schema, the policy-profile attestation, the SPEC-058 guard matrix and the SPEC-059 contracts use exactly these ids; the checker rejects any other spelling.",
+  "status": "draft; documentation reading as of 2026-10-24; no host observation recorded; not an adoption",
+  "hostVersionsRead": {
+    "changelogLatest": "2.1.310",
+    "readDate": "2026-10-24",
+    "versionBasis": "minHostVersion is the first entry of the public Claude Code changelog (read-only reading of the repository CHANGELOG.md on 2026-10-24) that names the capability: agent teams 2.1.32 (research preview, experimental flag), /batch 2.1.63, agent view 2.1.139, claude agents --json 2.1.145, dynamic workflows 2.1.154 (as recorded for SPEC-052), cross-session SendMessage 2.1.224. It is a documentation reading, not a support claim for any version, and it is not a host observation.",
+    "note": "Documentation readings. A cell is only host-observed when it names a receipt created by a probe launched after the founder authorized it. SPEC-058's guard matrix may state a different minimum version for the same surface because it names a different capability (for example the TaskCreated hook, changelog 2.1.84, for agent-teams)."
+  },
+  "evidenceStatuses": [
+    "documented",
+    "inferred",
+    "unconfirmed",
+    "host-observed"
+  ],
+  "cellStatuses": [
+    "planned",
+    "deferred",
+    "reuse-of-SPEC-052-unverified",
+    "not-covered"
+  ],
+  "previewSurfaces": [
+    "agent-teams",
+    "linked-sessions"
+  ],
+  "previewNote": "Agent teams are experimental and off by default; agent view is a research preview; channels are a research preview. /batch details and the desktop session tools are not fully documented.",
+  "notCovered": [
+    "Codex",
+    "cloud sessions",
+    "Remote Control and other-machine sessions",
+    "VS Code extension",
+    "Windows ledger support",
+    "non-Git workspaces"
+  ],
+  "cells": [
+    {
+      "surface": "workflow-tracks",
+      "lifecycle": "pre-flight",
+      "capability": "Declaration, expansion and pairwise evidence through analyze-work kind=aim or the CLI; isolation and base audit; agent() isolation-option lint",
+      "status": "planned",
+      "compatibilityClass": "0-heuristic",
+      "ownerSpec": "SPEC-057",
+      "minHostVersion": "2.1.154",
+      "preview": false,
+      "evidence": {
+        "status": "inferred",
+        "receipt": null,
+        "probes": [
+          "HV-1",
+          "HV-10"
+        ]
+      },
+      "notes": "Whether workflow agents can call the plugin MCP is unconfirmed (SPEC-052 HV-1); the declared fallback is the orchestrating session or the CLI before the workflow starts. The isolation option list is documented only in the host's bundled authoring guidance."
+    },
+    {
+      "surface": "workflow-tracks",
+      "lifecycle": "continuous",
+      "capability": "Receipt at wave boundaries for committed or quiesced worktrees through the CLI; pull notice",
+      "status": "planned",
+      "compatibilityClass": "1-syntactic",
+      "ownerSpec": "SPEC-057",
+      "minHostVersion": "2.1.154",
+      "preview": false,
+      "evidence": {
+        "status": "documented",
+        "receipt": null,
+        "probes": []
+      },
+      "notes": "Enforcement through hooks or permissions is SPEC-058. Bash writes and reads are not observed."
+    },
+    {
+      "surface": "workflow-tracks",
+      "lifecycle": "recovery",
+      "capability": "Read-only report for stopped or restarted agents from claude agents --json input, Git state and (best effort) the workflow journal",
+      "status": "planned",
+      "compatibilityClass": "0-heuristic",
+      "ownerSpec": "SPEC-057",
+      "minHostVersion": "2.1.145",
+      "preview": false,
+      "evidence": {
+        "status": "inferred",
+        "receipt": null,
+        "probes": [
+          "HV-9",
+          "HV-12"
+        ]
+      },
+      "notes": "A resumed or restarted agent can re-apply edits over files other tracks touched; the journal is not a documented interface."
+    },
+    {
+      "surface": "workflow-tracks",
+      "lifecycle": "integration",
+      "capability": "Planned reuse of the SPEC-052 braid-gate over committed work (SPEC-052 is unadopted and its host behavior is unobserved)",
+      "status": "reuse-of-SPEC-052-unverified",
+      "compatibilityClass": "0-heuristic",
+      "ownerSpec": "SPEC-052",
+      "minHostVersion": "2.1.154",
+      "preview": false,
+      "evidence": {
+        "status": "documented",
+        "receipt": null,
+        "probes": []
+      },
+      "notes": "Unchanged by SPEC-057 and owned by SPEC-052. Replay certificates apply to at most four operations."
+    },
+    {
+      "surface": "linked-sessions",
+      "lifecycle": "pre-flight",
+      "capability": "Plan-footprints step before launching sessions; isolation audit of shared working trees and base",
+      "status": "planned",
+      "compatibilityClass": "0-heuristic",
+      "ownerSpec": "SPEC-057",
+      "minHostVersion": "2.1.145",
+      "preview": true,
+      "evidence": {
+        "status": "documented",
+        "receipt": null,
+        "probes": [
+          "HV-9",
+          "HV-10"
+        ]
+      },
+      "notes": "Agent view is a research preview. Desktop session tool names are not in the public documentation and nothing depends on them."
+    },
+    {
+      "surface": "linked-sessions",
+      "lifecycle": "continuous",
+      "capability": "Receipt at turn-end or idle checkpoints; epoch-stamped pull notice that the orchestrator reads and may relay through the host's own messaging",
+      "status": "planned",
+      "compatibilityClass": "1-syntactic",
+      "ownerSpec": "SPEC-057",
+      "minHostVersion": "2.1.224",
+      "preview": true,
+      "evidence": {
+        "status": "documented",
+        "receipt": null,
+        "probes": [
+          "HV-6"
+        ]
+      },
+      "notes": "The Mailbox: a pull notice the orchestrator reads (the host wakes the orchestrator at the end of each turn of a linked session). Agent Braid never sends messages as a session. Whisper delivery is SPEC-058; Megaphone, Doorbell and a shared ledger are SPEC-059, behind G2."
+    },
+    {
+      "surface": "linked-sessions",
+      "lifecycle": "recovery",
+      "capability": "Orphan report: observed worktree state versus claim, overlap with live siblings, warning before agent-view delete",
+      "status": "planned",
+      "compatibilityClass": "0-heuristic",
+      "ownerSpec": "SPEC-057",
+      "minHostVersion": "2.1.145",
+      "preview": true,
+      "evidence": {
+        "status": "documented",
+        "receipt": null,
+        "probes": [
+          "HV-9"
+        ]
+      },
+      "notes": "Delete in agent view discards uncommitted work. No claim reclaim, resume or restart."
+    },
+    {
+      "surface": "linked-sessions",
+      "lifecycle": "integration",
+      "capability": "Branch tips of isolated sessions as possible commit sources for the SPEC-052 gate, inferred only; no SPEC-057 behavior is added at this point",
+      "status": "reuse-of-SPEC-052-unverified",
+      "compatibilityClass": "0-heuristic",
+      "ownerSpec": "SPEC-052",
+      "minHostVersion": "2.1.154",
+      "preview": true,
+      "evidence": {
+        "status": "inferred",
+        "receipt": null,
+        "probes": []
+      },
+      "notes": "Inferred, not documented or observed: whether a session's branch tip is a usable commit source is unconfirmed. Integration is owned by SPEC-052. The documented recipe may use the pairwise pre-flight matrix to choose which subset of at most four units is certified first; the rest are listed as uncertified."
+    },
+    {
+      "surface": "agent-teams",
+      "lifecycle": "pre-flight",
+      "capability": "Team plan check from per-task footprints submitted before spawning; shared-tree stale-read hazard flagged",
+      "status": "planned",
+      "compatibilityClass": "0-heuristic",
+      "ownerSpec": "SPEC-057",
+      "minHostVersion": "2.1.32",
+      "preview": true,
+      "evidence": {
+        "status": "documented",
+        "receipt": null,
+        "probes": [
+          "HV-7"
+        ]
+      },
+      "notes": "Experimental and off by default. TaskCreated-based enforcement is SPEC-058 and fires only when the task tools are present, a documented rule whose presence on the model in use is unconfirmed (HV-7)."
+    },
+    {
+      "surface": "agent-teams",
+      "lifecycle": "continuous",
+      "capability": "Shared-tree change inventory at quiescent points: every changed path is an unattributed writer with unknown effect; no per-unit comparison and no attribution to any teammate; lists beyond their bound are truncated and recorded, not refused; guard outputs are SPEC-058",
+      "status": "planned",
+      "compatibilityClass": "1-syntactic",
+      "ownerSpec": "SPEC-057",
+      "minHostVersion": "2.1.32",
+      "preview": true,
+      "evidence": {
+        "status": "documented",
+        "receipt": null,
+        "probes": [
+          "HV-6"
+        ]
+      },
+      "notes": "One working tree: Git cannot attribute a write to a teammate, so the receipt cannot say who wrote what; it only inventories changed paths against the union of declarations. A busy tree yields a partial receipt with truncations, never a refusal and never a clean result. Orchestrator, human and shared-tree edits are unattributed writers reported as unknown unless a declared exemption rule excludes them. No PostToolUse Bash observer is specified."
+    },
+    {
+      "surface": "agent-teams",
+      "lifecycle": "recovery",
+      "capability": "Best-effort orphaned-claim report from Git state and, only if HV-12 passes, the task directory",
+      "status": "planned",
+      "compatibilityClass": "0-heuristic",
+      "ownerSpec": "SPEC-057",
+      "minHostVersion": "2.1.32",
+      "preview": true,
+      "evidence": {
+        "status": "unconfirmed",
+        "receipt": null,
+        "probes": [
+          "HV-12"
+        ]
+      },
+      "notes": "In-process teammates are not restored by resume; the task directory is not a documented interface and the report fails soft."
+    },
+    {
+      "surface": "agent-teams",
+      "lifecycle": "integration",
+      "capability": "No commit sources exist on a shared tree; no integration capability is specified",
+      "status": "not-covered",
+      "compatibilityClass": "not-applicable",
+      "ownerSpec": "none",
+      "minHostVersion": "2.1.32",
+      "preview": true,
+      "evidence": {
+        "status": "unconfirmed",
+        "receipt": null,
+        "probes": [
+          "HV-L7"
+        ]
+      },
+      "notes": "Whether an attributed-write ledger serves agent teams is decided after probe HV-L7 (SPEC-059); otherwise guidance is documentation plus per-teammate checkpoints committed by the lead, which is advisory only."
+    },
+    {
+      "surface": "batch",
+      "lifecycle": "pre-flight",
+      "capability": "Plan lint at plan approval: declared footprints with required reads, shared-resource conventions, base check, isolation lint",
+      "status": "planned",
+      "compatibilityClass": "0-heuristic",
+      "ownerSpec": "SPEC-057",
+      "minHostVersion": "2.1.63",
+      "preview": false,
+      "evidence": {
+        "status": "inferred",
+        "receipt": null,
+        "probes": [
+          "HV-10",
+          "HV-11"
+        ]
+      },
+      "notes": "The host has no hook at /batch plan approval; the lint is invoked by the user or the orchestrator. The decomposition and layout are not fully documented. Whether G1 includes a pre-flight arm for batch is decided after HV-11 and before the freeze (T043)."
+    },
+    {
+      "surface": "batch",
+      "lifecycle": "continuous",
+      "capability": "Receipt per unit at quiescent points; coalesced digest",
+      "status": "planned",
+      "compatibilityClass": "1-syntactic",
+      "ownerSpec": "SPEC-057",
+      "minHostVersion": "2.1.63",
+      "preview": false,
+      "evidence": {
+        "status": "inferred",
+        "receipt": null,
+        "probes": [
+          "HV-6"
+        ]
+      },
+      "notes": "Whether hooks fire inside /batch units is inferred; hooks are SPEC-058."
+    },
+    {
+      "surface": "batch",
+      "lifecycle": "recovery",
+      "capability": "Classify each unit untouched, dirty, published, conflicting or unknown; flag worktrees with unrecorded work before deletion",
+      "status": "planned",
+      "compatibilityClass": "0-heuristic",
+      "ownerSpec": "SPEC-057",
+      "minHostVersion": "2.1.145",
+      "preview": false,
+      "evidence": {
+        "status": "inferred",
+        "receipt": null,
+        "probes": [
+          "HV-9",
+          "HV-11"
+        ]
+      },
+      "notes": "/batch is not documented as resumable. Version 2.1.145 is the claude agents --json floor; /batch itself is 2.1.63."
+    },
+    {
+      "surface": "batch",
+      "lifecycle": "integration",
+      "capability": "Published branch tips as commit sources for the SPEC-052 gate, only if the undocumented layout maps to commit sources",
+      "status": "not-covered",
+      "compatibilityClass": "not-applicable",
+      "ownerSpec": "none",
+      "minHostVersion": "2.1.63",
+      "preview": false,
+      "evidence": {
+        "status": "unconfirmed",
+        "receipt": null,
+        "probes": [
+          "HV-11"
+        ]
+      },
+      "notes": "Not covered. SPEC-052 does not mention /batch today. Until probe HV-11 records the branch and publication layout, nothing is claimed; if the layout maps to commit sources, a SPEC-052 extension would have to be specified, reviewed and recorded as a separate change, and no SPEC-057 behavior is added."
+    }
+  ],
+  "cellStatusesNote": "reuse-of-SPEC-052-unverified means that the SPEC-052 read-only integration gate over commit sources is the intended integration evidence for the surface. SPEC-052 is an unadopted specification whose host behavior (HV-1 to HV-5) is unobserved, takes commit sources only, and has no surface id; the cell is a plan to reuse it, not a coverage claim, and it becomes covered only when the SPEC-052 evidence exists."
+}

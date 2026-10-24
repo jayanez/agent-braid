@@ -2,8 +2,10 @@
 # Agent Braid plugin privacy and support
 
 Agent Braid's native plugin runs a local stdio MCP process. It has no hosted
-Agent Braid service, telemetry, analytics, advertising, account or credential
-collection. The plugin does not install or invoke a model provider. Its host's
+Agent Braid service, analytics, advertising, account or credential collection.
+Optional local technical telemetry ([TELEMETRY.md](TELEMETRY.md)) is off by
+default, records only daily numeric aggregates on this machine after explicit
+consent and is never sent anywhere automatically. The plugin does not install or invoke a model provider. Its host's
 privacy policy and permissions continue to govern data the host supplies to a
 model or other tools.
 
@@ -20,6 +22,20 @@ alternative private location. Registration is previewed before application.
 Unregistering a workspace and uninstalling the plugin retain its results. Users
 can inspect and remove their own retained application data after preserving any
 needed evidence. No deletion request to a remote Agent Braid service is needed.
+
+An optional, Claude-only `braid-gate` workflow is specified but unreleased
+([recipe](CLAUDE_WORKFLOWS.md)); Codex ignores it and the product skills and setup
+skill are unchanged. If present, its agents read the committed file contents and
+diffs of the pinned commits in a registered repository: the Git `merge-tree`
+baseline reads the committed trees and blobs, and the plugin's analyzer
+(`analyze-work`) reads file effects. They also read the workspace registry rows,
+so the registered local source and result paths appear in agent prompts and
+results. The gate itself uploads nothing and is designed to contact no network
+service, write no source state (its only write is a temporary scratch directory)
+and issue no grant; that is intended behavior and depends on the host permission
+allowlist, which is unverified on any host. The agents run on the host's model
+provider, which therefore receives those prompts and tool results under the
+host's own terms. Review the resulting envelope before sharing it.
 
 Runtime execution remains explicitly opt-in and requires existing operator grants;
 the plugin neither creates grants nor widens filesystem trust. Reconnection is

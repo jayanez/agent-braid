@@ -1,0 +1,48 @@
+{
+  "schemaVersion": "agent-braid-ownership-declaration/v0.1",
+  "base": {
+    "ref": "develop"
+  },
+  "provenance": "orchestrator-session",
+  "units": [
+    {
+      "id": "track-a",
+      "surface": "workflow-tracks",
+      "reads": [
+        "docs/design.md",
+        "src/util.py"
+      ],
+      "criticalReads": [
+        "src/util.py"
+      ],
+      "writes": [
+        "src/report.py"
+      ],
+      "creates": [
+        "src/report_helpers.py"
+      ],
+      "deletes": [],
+      "sharedResources": [
+        {
+          "class": "lockfile",
+          "path": "package-lock.json"
+        }
+      ],
+      "complete": false
+    },
+    {
+      "id": "track-b",
+      "surface": "workflow-tracks",
+      "reads": [
+        "docs/design.md"
+      ],
+      "writes": [
+        "src/util.py"
+      ],
+      "creates": [],
+      "deletes": [],
+      "dependsOn": [],
+      "complete": false
+    }
+  ]
+}

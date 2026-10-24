@@ -1,0 +1,261 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://agent-braid.dev/specs/057-claude-orchestration-advisory/contracts/policy-profile.schema.json",
+  "title": "Agent Braid policy profile (draft, not adopted)",
+  "description": "Shared by SPEC-057 (schema, examples, conformance tests) and SPEC-058 (the policy compiler and guard). A profile turns one unit's declared ownership into an enforcement description with up to three supported outputs. Hooks inside the main plugin are not representable. The decision vocabulary has no allow and no grant member exists. Constraints that JSON Schema can express are conditional rules here (an enabled mode requires protected control paths; Bash coverage requires the native-settings output alone plus an attestation; an observed enforcement requires an attestation). Rules it cannot express (the audit default when enforcement is enabled, a mode that skips the ladder, that the recorded envelope digest matches the envelope) are compiler and validator rules owned by SPEC-058 and are tested there and in tests/test_policy_profile.py.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "executionAuthorization",
+    "unit",
+    "envelope",
+    "outputs",
+    "guardVocabulary",
+    "coverageBoundary",
+    "enforcementObserved"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": "agent-braid-policy-profile/v0.1"
+    },
+    "executionAuthorization": {
+      "const": false
+    },
+    "unit": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,63}(?!\\n)$"
+    },
+    "mode": {
+      "enum": [
+        "off",
+        "audit",
+        "warn",
+        "block"
+      ],
+      "description": "Absent means off. The default when enforcement is enabled is audit, which records would-have-blocked decisions and blocks nothing."
+    },
+    "envelope": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "writes"
+      ],
+      "properties": {
+        "writes": {
+          "$ref": "#/$defs/paths"
+        },
+        "creates": {
+          "$ref": "#/$defs/paths"
+        },
+        "protectedControlPaths": {
+          "$ref": "#/$defs/paths",
+          "description": "Paths the guarded agent must not write: the envelope itself, settings files and hook scripts. Required (non-empty) whenever the mode is audit, warn or block; a guard that does not protect its own control paths is not conformant."
+        }
+      }
+    },
+    "outputs": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 3,
+      "uniqueItems": true,
+      "items": {
+        "enum": [
+          "native-host-settings",
+          "companion-plugin-hooks",
+          "settings-snippet"
+        ],
+        "description": "native-host-settings: permissions.deny plus a sandbox write allowlist (preferred where verified to apply to subagents and teammates; covers Bash only where HV-8 confirms). companion-plugin-hooks: the opt-in companion plugin (installing it is the opt-in). settings-snippet: an exported snippet for manual paste."
+      }
+    },
+    "guardVocabulary": {
+      "const": [
+        "no-opinion",
+        "ask",
+        "deny",
+        "additionalContext"
+      ],
+      "description": "The only decisions a guard may emit. allow is unreachable and a guard never holds a grant."
+    },
+    "coverageBoundary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "tools",
+        "bash",
+        "unattributed"
+      ],
+      "properties": {
+        "tools": {
+          "type": "array",
+          "items": {
+            "enum": [
+              "Write",
+              "Edit"
+            ]
+          },
+          "minItems": 1,
+          "uniqueItems": true,
+          "description": "Write and Edit are the founder-decided coverage. NotebookEdit is not accepted; it would be added by a versioned schema change if the founder accepts it."
+        },
+        "bash": {
+          "enum": [
+            "not-covered",
+            "covered-where-verified"
+          ],
+          "description": "covered-where-verified is valid only when outputs is exactly native-host-settings and an attestation names the HV-8 receipt."
+        },
+        "unattributed": {
+          "const": "not-covered"
+        }
+      }
+    },
+    "enforcementObserved": {
+      "type": "boolean",
+      "default": false,
+      "description": "True only with an attestation that enforcement was observed live on this surface and version. The default is false: absence of evidence is advisory only."
+    },
+    "attestation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "hostVersion",
+        "surface",
+        "receipt"
+      ],
+      "properties": {
+        "hostVersion": {
+          "type": "string",
+          "maxLength": 32
+        },
+        "surface": {
+          "enum": [
+            "workflow-tracks",
+            "linked-sessions",
+            "agent-teams",
+            "batch"
+          ]
+        },
+        "receipt": {
+          "type": "string",
+          "maxLength": 256
+        }
+      }
+    },
+    "failureBehavior": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "onInternalError",
+        "askScope"
+      ],
+      "description": "Failure behavior stated as data (decided 2026-10-24). A guard internal error or timeout is fail-open and recorded: no opinion, a record, and the liveness attestation degraded to advisory. ask is used only for undecidable paths in block mode until probe GP-2 settles its behavior.",
+      "properties": {
+        "onInternalError": {
+          "const": "fail-open-recorded"
+        },
+        "askScope": {
+          "const": "undecidable-paths-in-block-until-GP-2"
+        }
+      }
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "required": [
+          "enforcementObserved"
+        ],
+        "properties": {
+          "enforcementObserved": {
+            "const": true
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "attestation"
+        ]
+      }
+    },
+    {
+      "if": {
+        "required": [
+          "mode"
+        ],
+        "properties": {
+          "mode": {
+            "enum": [
+              "audit",
+              "warn",
+              "block"
+            ]
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "failureBehavior"
+        ],
+        "properties": {
+          "envelope": {
+            "required": [
+              "writes",
+              "protectedControlPaths"
+            ],
+            "properties": {
+              "protectedControlPaths": {
+                "minItems": 1
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "coverageBoundary": {
+            "properties": {
+              "bash": {
+                "const": "covered-where-verified"
+              }
+            },
+            "required": [
+              "bash"
+            ]
+          }
+        },
+        "required": [
+          "coverageBoundary"
+        ]
+      },
+      "then": {
+        "required": [
+          "attestation"
+        ],
+        "properties": {
+          "outputs": {
+            "maxItems": 1,
+            "items": {
+              "const": "native-host-settings"
+            }
+          }
+        }
+      }
+    }
+  ],
+  "$defs": {
+    "paths": {
+      "type": "array",
+      "maxItems": 512,
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 256,
+        "pattern": "^[^\\u0000-\\u001f\\u007f-\\u009f\\u00ad\\u061c\\u115f-\\u1160\\u180e\\u200b-\\u200f\\u2028-\\u202e\\u2060-\\u206f\\u3164\\ufeff\\uffa0\\ufff9-\\ufffb\\U000e0000-\\U000e007f]+(?!\\n)$"
+      }
+    }
+  }
+}

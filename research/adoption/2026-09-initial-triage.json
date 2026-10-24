@@ -116,5 +116,116 @@
     "stageHistory": [{"stage": "differentiation-hypothesis", "date": "2026-10-23", "actor": "project preparation; founder decision pending", "record": "research/radar/2026-10-23-claude-workflows.json"}],
     "obtainedEvidence": [],
     "limits": ["No evidence obtained; human review pending", "Not adoption, host compatibility or superiority; a stage record only", "Moving beyond this stage requires the Spec Kit features, an ADR and a founder decision per the adoption pathline"]
+  },
+  {
+    "trackVersion": "0.1.0",
+    "trackId": "AT-2026-007-orchestrator-coordination",
+    "title": "Claude Code orchestrator coordination: advisory pre-flight, continuous checks and opt-in guard (M4.6, SPEC-057/058/059)",
+    "owner": "Agent Braid maintainer",
+    "nextDecision": "Founder review of SPEC-057, SPEC-058 and the SPEC-059 sketch, then preregistration of experiment G1 for SPEC-057; repeat the dated prior-art pass before any wording implying uniqueness and before SPEC-058 release. Kill criterion: G1 shows no incremental caught-conflicts or reduced late conflicts over baseline A0 (prompt partitioning per the host's published guidance, the worktree or isolation flag where the surface offers it, and the SPEC-052 end-of-run gate with git merge-tree as comparator), or host verification shows the guard does not fire inside subagents. G1 adds a native-controls-only arm (founder-written permissions.deny and sandbox rules, with no Agent Braid output) beside baseline A0 and the other arms; until that arm has a recorded result, no claim is made against permissions.deny or sandbox settings alone, and a GG pass would not show that the compiler or guard adds anything over them.",
+    "sourceRadarIds": [
+      "RAD-2026-013",
+      "RAD-2026-014",
+      "RAD-2026-015",
+      "RAD-2026-016",
+      "RAD-2026-018",
+      "RAD-2026-019",
+      "RAD-2026-020",
+      "RAD-2026-022",
+      "RAD-2026-023",
+      "RAD-2026-024",
+      "RAD-2026-025",
+      "RAD-2026-028",
+      "RAD-2026-033"
+    ],
+    "sources": [
+      {
+        "url": "https://code.claude.com/docs/en/workflows",
+        "sourceClass": "official-documentation",
+        "provenance": "primary",
+        "claimLevel": "official-documentation",
+        "peerReviewed": false
+      },
+      {
+        "url": "https://github.com/gastownhall/gastown",
+        "sourceClass": "product",
+        "provenance": "primary",
+        "claimLevel": "product-capability",
+        "peerReviewed": false
+      },
+      {
+        "url": "https://github.com/Dicklesworthstone/mcp_agent_mail",
+        "sourceClass": "product",
+        "provenance": "primary",
+        "claimLevel": "product-capability",
+        "peerReviewed": false
+      },
+      {
+        "url": "https://github.com/Jake-Network/radar",
+        "sourceClass": "product",
+        "provenance": "primary",
+        "claimLevel": "product-capability",
+        "peerReviewed": false
+      },
+      {
+        "url": "https://github.com/anthropics/claude-plugins-official",
+        "sourceClass": "product",
+        "provenance": "primary",
+        "claimLevel": "market-observation",
+        "peerReviewed": false
+      }
+    ],
+    "capabilityDelta": {
+      "baseline": "A Claude orchestrator (workflow script, linked or background sessions, agent teams or /batch) that partitions work by instruction, relies on native worktree isolation and native permissions, and meets conflicts at integration time, optionally with file-level tools such as path leases or merge-tree prediction",
+      "candidate": "An advisory core (SPEC-057) that maps declared ownership to pre-flight verdicts, checks declared-versus-observed envelopes at quiescent checkpoints and reports recovery inventories, with pull-based notices (Mailbox plus Whisper by default; monitor, channel and own-session socket transports are opt-in and deferred to SPEC-059); the differentiation hypothesis rests on the combination of an Article 13 compatibility class, pairwise classification that includes unknown, declared read/write hazards and a declared-versus-observed receipt, not on reporting unknown alone; a later opt-in guard (SPEC-058) compiled from declared ownership to host permissions, a companion plugin or an exported snippet; a sketch only for the later layer (SPEC-059): Mailbox plus Whisper by default, Megaphone and Doorbell opt-in and gated by the G1 late-notice harm result and by G2, a separate notification companion, an attributed-write ledger decided after HV-L7, interoperation as documentation only; Agent Braid never launches, messages-as, resumes or authorizes sessions",
+      "alternative": "Path leases and claims (mcp_agent_mail, agent-coord, git-kura, CoProgrammer), live conflict prediction (Clash, DriftWatch), declared-footprint schedulers (OpenWeft, Orchestune), combined-tree and merge-queue integration gates (Radar, SVRF, Gas Town Refinery) and native Claude Code controls (worktree isolation, permissions, TaskCreated hooks, agent teams, cross-session messaging)",
+      "observableMetric": "Preregistered at G1: conflicts caught earlier or prevented relative to baseline A0 (prompt partitioning, worktree flag and the SPEC-052 gate) and relative to the native-controls-only arm, false-block and bypass rate, parallelism retained (serialization rate), unknown rate and operator effort on a small paired design; no speed metric",
+      "comparisonScenario": "Small paired runs of two to four derived tracks on the founder's existing Claude subscription at EUR 0 additional spend, downgraded to observational if a paired design is infeasible"
+    },
+    "hypothesis": {
+      "statement": "Declared-ownership pre-flight verdicts and declared-versus-observed envelope receipts, with unknown preserved and coverage stated, let an orchestrator catch or avoid some integration problems earlier than baseline A0 without removing parallelism. This is a differentiation hypothesis, untested. The 2026-10-24 prior-art pass found a crowded field of file-level and symbol-level tools, so the possible increment is limited to effect-level hazards, coverage-stated receipts and measured control.",
+      "invalidationResult": "G1 shows no incremental caught-conflicts or earlier detection over baseline A0, or the observed envelope is mostly unknown, or host verification shows hooks and permissions do not apply inside the target surfaces; the track then closes as watch, rejected or research-only and SPEC-058 is not released."
+    },
+    "evidencePlan": [
+      "Preregister experiment G1 (design, baseline, metrics, kill criterion) before any run",
+      "Repeat the dated prior-art pass with the recorded query set before any wording implying uniqueness, before SPEC-058 release and at M4.6 closure",
+      "Verify on a host which of the four surfaces honor permissions.deny, sandbox allowlists and plugin hooks inside subagents, teammates and dispatched sessions",
+      "Read TeamBus and Orchestune in detail (README beyond the recorded summaries, and a reproduction on a synthetic corpus if feasible) before any read-effect comparison",
+      "Reproduce Clash, Radar and one lease tool on a synthetic corpus before any comparative statement; report negative and inconclusive results separately",
+      "Keep obtainedEvidence empty until a result is recorded"
+    ],
+    "affectedArtifacts": [
+      "docs/strategy/ECOSYSTEM.md",
+      "research/radar/2026-10-24-claude-orchestration.json",
+      "specs/057-claude-orchestration-advisory/spec.md",
+      "specs/058-claude-orchestration-guard/spec.md",
+      "specs/059-claude-orchestration-ledger/spec.md"
+    ],
+    "risks": [
+      "The field moves quickly: several relevant entrants (Radar, DriftWatch, OpenWeft, Orchestune, TeamBus, SVRF) were not in the 2026-10-23 radar",
+      "Most competitor behavior was read from README text and not reproduced",
+      "The platform vendor may add native ownership declaration or conflict detection, removing the gap",
+      "Reporting missing evidence is not unique (Radar by Jake-Network does it), so the differentiation rests only on the combination, which is untested and could be copied",
+      "Host behavior for hooks, permissions and sandbox inside subagents, teammates and dispatched sessions is unverified",
+      "G1 compares against baseline A0 only; a native-controls-only comparator such as host permissions or sandbox settings alone is not an arm, so any statement against it needs a separate preregistered design",
+      "Enabling any hook component amends ADR 0024 and enforcement is not a grant of authority (ADR 0021); a ledger needs its own ADR and contract G2",
+      "Demand for this evidence is not established; the stale-read dogfood datum is a single case with no outcome measured"
+    ],
+    "stage": "differentiation-hypothesis",
+    "decision": "pending",
+    "stageHistory": [
+      {
+        "stage": "differentiation-hypothesis",
+        "date": "2026-10-24",
+        "actor": "project preparation; founder decision pending",
+        "record": "research/radar/2026-10-24-claude-orchestration.json"
+      }
+    ],
+    "obtainedEvidence": [],
+    "limits": [
+      "No evidence obtained; human review pending",
+      "Not adoption, host compatibility, superiority or uniqueness; a stage record only",
+      "Moving beyond this stage requires the Spec Kit features, ADRs, gate G1 and a founder decision per the adoption pathline"
+    ]
   }
 ]

@@ -1,0 +1,428 @@
+{
+  "claims": "Descriptive for this corpus only. H1 and H2 are not claimed beyond it; a counterexample would block conservativeness wording and is not a protocol failure. The analyzer is file-level (added/modified writes only; delete, rename, binary and symlink yield unknown), coarser than merge-tree hunk merging, so same-file-different-hunks is expected to be analyzer-stricter.",
+  "counterexamples": "none observed in this corpus",
+  "denominators": {
+    "analyzer-stricter": 1,
+    "analyzer-unknown": 4,
+    "baseline-stricter": 0,
+    "baseline-unavailable": 0,
+    "both-clean": 2,
+    "both-conflicting": 1,
+    "not-comparable": 0,
+    "pairs": 8
+  },
+  "evidenceVersion": "0.1.0-alpha",
+  "executionAuthorization": false,
+  "inputSha256": {
+    "baseCommit": "c193a5f4bc57704a7c75a2bbb05ee31cc6709c8f",
+    "comparisonScript": "d86be585c527d776419bf9d5c6f49a509fb1a0db99df36f915104855ec3ebd42",
+    "corpusBuilder": "4004e5434e7bb09c0ea6beb657543f7414dde24713c7a9c4604ab646fe89dc9c",
+    "requests": {
+      "binary-versus-disjoint": "ab5bb464bb5e78a886fd685d43efe503e65c974d791fe27467ae186d2a32bab8",
+      "delete-versus-modify": "d75529ebde1ae110484882dac009a2b79b1c70e2cacab5a92ade879e549e36c7",
+      "disjoint-files": "814fd0be2dda0f589fed8876cf878856070a47294a1cb2d208dc57f72d8297ea",
+      "rename-versus-modify": "3abc749d4279ae3b703c1078b6b08026f0c9cbb818b62f19a574b56b1fd0046e",
+      "same-file-different-hunks": "4b3b8fadf151e9023419794ae60c768636902cfcbf57ff5d9daf39f7c457e83b",
+      "same-hunk": "0d64ccd79464f898e1fca6ba86c5a4c84aa6c5d65691adbd57b5311291ffd9ef",
+      "symlink-versus-disjoint": "34a9b91df61e59c14fdfec8f351dc5f4ae9a266796414ece40f50f3ee987a266",
+      "untouched-pair": "4c99e6ee9e7fe38f2314cd153297b143741103036730bd8fd6e009dea8b459cf"
+    }
+  },
+  "method": "Truth labels are literals in tests/claude_workflow_gate_helpers.py TRUTH, fixed before tool output was read. Analyzer: `analyze-git` over commit sources. Baseline: `git merge-tree --write-tree --merge-base` with GIT_OBJECT_DIRECTORY set to a temporary directory and the corpus store as alternate.",
+  "pairs": [
+    {
+      "analyzer": {
+        "classification": "independent-candidate",
+        "command": [
+          "python",
+          "-m",
+          "agent_braid",
+          "analyze-git",
+          "<work>/disjoint-files.request.json",
+          "--format",
+          "json",
+          "--provenance-output",
+          "<work>/disjoint-files.provenance.json"
+        ],
+        "error": null,
+        "matchesTruth": true,
+        "reportSha256": "47c3711ba3ea0047b086937b322305c3d292d3a095673b7e9e287868867c4342"
+      },
+      "baseline": {
+        "command": [
+          "git",
+          "-C",
+          "<work>/corpus",
+          "merge-tree",
+          "--write-tree",
+          "--merge-base=c193a5f4bc57704a7c75a2bbb05ee31cc6709c8f",
+          "e937a22538d4cd87d83ebc4357ba6d50fe9e600e",
+          "c0dcad11bb32b506c4b65214a91ce3fa41aafa41"
+        ],
+        "matchesTruth": true,
+        "result": "clean"
+      },
+      "case": "disjoint-files",
+      "classification": "both-clean",
+      "left": {
+        "branch": "ind1",
+        "commit": "e937a22538d4cd87d83ebc4357ba6d50fe9e600e"
+      },
+      "right": {
+        "branch": "ind2",
+        "commit": "c0dcad11bb32b506c4b65214a91ce3fa41aafa41"
+      },
+      "truth": {
+        "analyzer": "independent-candidate",
+        "mergeTree": "clean",
+        "sharedFile": false
+      }
+    },
+    {
+      "analyzer": {
+        "classification": "conflicting",
+        "command": [
+          "python",
+          "-m",
+          "agent_braid",
+          "analyze-git",
+          "<work>/same-file-different-hunks.request.json",
+          "--format",
+          "json",
+          "--provenance-output",
+          "<work>/same-file-different-hunks.provenance.json"
+        ],
+        "error": null,
+        "matchesTruth": true,
+        "reportSha256": "30fd31441e6725627b8fece30125bbeef614c1bb4a5371bcf0674cc756d152bf"
+      },
+      "baseline": {
+        "command": [
+          "git",
+          "-C",
+          "<work>/corpus",
+          "merge-tree",
+          "--write-tree",
+          "--merge-base=c193a5f4bc57704a7c75a2bbb05ee31cc6709c8f",
+          "ce6638c23c764d9e4d6ddc988944a2fe1465db1f",
+          "d4d5e2911e9922a3359adfa900fa6bf8ba299243"
+        ],
+        "matchesTruth": true,
+        "result": "clean"
+      },
+      "case": "same-file-different-hunks",
+      "classification": "analyzer-stricter",
+      "left": {
+        "branch": "hunkA",
+        "commit": "ce6638c23c764d9e4d6ddc988944a2fe1465db1f"
+      },
+      "right": {
+        "branch": "hunkB",
+        "commit": "d4d5e2911e9922a3359adfa900fa6bf8ba299243"
+      },
+      "truth": {
+        "analyzer": "conflicting",
+        "mergeTree": "clean",
+        "sharedFile": true
+      }
+    },
+    {
+      "analyzer": {
+        "classification": "conflicting",
+        "command": [
+          "python",
+          "-m",
+          "agent_braid",
+          "analyze-git",
+          "<work>/same-hunk.request.json",
+          "--format",
+          "json",
+          "--provenance-output",
+          "<work>/same-hunk.provenance.json"
+        ],
+        "error": null,
+        "matchesTruth": true,
+        "reportSha256": "cc93eae0080d24541b82ea4d81088dd83394ced9a52de799742ba75c950c664b"
+      },
+      "baseline": {
+        "command": [
+          "git",
+          "-C",
+          "<work>/corpus",
+          "merge-tree",
+          "--write-tree",
+          "--merge-base=c193a5f4bc57704a7c75a2bbb05ee31cc6709c8f",
+          "4980497ef125a3739a52d82ad54c8b962617c208",
+          "16c2c901ce9f6e50d28b5568fb53d22996dc14f7"
+        ],
+        "matchesTruth": true,
+        "result": "conflicted"
+      },
+      "case": "same-hunk",
+      "classification": "both-conflicting",
+      "left": {
+        "branch": "sameA",
+        "commit": "4980497ef125a3739a52d82ad54c8b962617c208"
+      },
+      "right": {
+        "branch": "sameB",
+        "commit": "16c2c901ce9f6e50d28b5568fb53d22996dc14f7"
+      },
+      "truth": {
+        "analyzer": "conflicting",
+        "mergeTree": "conflicted",
+        "sharedFile": true
+      }
+    },
+    {
+      "analyzer": {
+        "classification": "unknown",
+        "command": [
+          "python",
+          "-m",
+          "agent_braid",
+          "analyze-git",
+          "<work>/delete-versus-modify.request.json",
+          "--format",
+          "json",
+          "--provenance-output",
+          "<work>/delete-versus-modify.provenance.json"
+        ],
+        "error": null,
+        "matchesTruth": true,
+        "reportSha256": "fc7386ff95de5e7085491f1a1761938886109a080206ed0bc5018269a1c3e279"
+      },
+      "baseline": {
+        "command": [
+          "git",
+          "-C",
+          "<work>/corpus",
+          "merge-tree",
+          "--write-tree",
+          "--merge-base=c193a5f4bc57704a7c75a2bbb05ee31cc6709c8f",
+          "d993e2e32d3f0bfd968d0fdfb4e6d9e03ca96c61",
+          "a9efe1ea0f27d3c196a2265d754a942c07ca202f"
+        ],
+        "matchesTruth": true,
+        "result": "conflicted"
+      },
+      "case": "delete-versus-modify",
+      "classification": "analyzer-unknown",
+      "left": {
+        "branch": "del",
+        "commit": "d993e2e32d3f0bfd968d0fdfb4e6d9e03ca96c61"
+      },
+      "right": {
+        "branch": "mod",
+        "commit": "a9efe1ea0f27d3c196a2265d754a942c07ca202f"
+      },
+      "truth": {
+        "analyzer": "unknown",
+        "mergeTree": "conflicted",
+        "sharedFile": true
+      }
+    },
+    {
+      "analyzer": {
+        "classification": "unknown",
+        "command": [
+          "python",
+          "-m",
+          "agent_braid",
+          "analyze-git",
+          "<work>/rename-versus-modify.request.json",
+          "--format",
+          "json",
+          "--provenance-output",
+          "<work>/rename-versus-modify.provenance.json"
+        ],
+        "error": null,
+        "matchesTruth": true,
+        "reportSha256": "215fe95040c04caa66f6a42750ad2787444966cadc9c296a2724e434c6f85f3c"
+      },
+      "baseline": {
+        "command": [
+          "git",
+          "-C",
+          "<work>/corpus",
+          "merge-tree",
+          "--write-tree",
+          "--merge-base=c193a5f4bc57704a7c75a2bbb05ee31cc6709c8f",
+          "96a5235b16f8c65df96a779a1e1fe3afebf22481",
+          "e0489b15907f268977c7d4a8af056d1153ba16ef"
+        ],
+        "matchesTruth": true,
+        "result": "clean"
+      },
+      "case": "rename-versus-modify",
+      "classification": "analyzer-unknown",
+      "left": {
+        "branch": "ren",
+        "commit": "96a5235b16f8c65df96a779a1e1fe3afebf22481"
+      },
+      "right": {
+        "branch": "modE",
+        "commit": "e0489b15907f268977c7d4a8af056d1153ba16ef"
+      },
+      "truth": {
+        "analyzer": "unknown",
+        "mergeTree": "clean",
+        "sharedFile": true
+      }
+    },
+    {
+      "analyzer": {
+        "classification": "unknown",
+        "command": [
+          "python",
+          "-m",
+          "agent_braid",
+          "analyze-git",
+          "<work>/binary-versus-disjoint.request.json",
+          "--format",
+          "json",
+          "--provenance-output",
+          "<work>/binary-versus-disjoint.provenance.json"
+        ],
+        "error": null,
+        "matchesTruth": true,
+        "reportSha256": "c712e471192dad391126e5bb63ba6c8afb2fa4b5883d62e17727f701d43ce06b"
+      },
+      "baseline": {
+        "command": [
+          "git",
+          "-C",
+          "<work>/corpus",
+          "merge-tree",
+          "--write-tree",
+          "--merge-base=c193a5f4bc57704a7c75a2bbb05ee31cc6709c8f",
+          "5dda4c3fd96b97f1953587fca56acea7238fd897",
+          "e937a22538d4cd87d83ebc4357ba6d50fe9e600e"
+        ],
+        "matchesTruth": true,
+        "result": "clean"
+      },
+      "case": "binary-versus-disjoint",
+      "classification": "analyzer-unknown",
+      "left": {
+        "branch": "bin1",
+        "commit": "5dda4c3fd96b97f1953587fca56acea7238fd897"
+      },
+      "right": {
+        "branch": "ind1",
+        "commit": "e937a22538d4cd87d83ebc4357ba6d50fe9e600e"
+      },
+      "truth": {
+        "analyzer": "unknown",
+        "mergeTree": "clean",
+        "sharedFile": false
+      }
+    },
+    {
+      "analyzer": {
+        "classification": "unknown",
+        "command": [
+          "python",
+          "-m",
+          "agent_braid",
+          "analyze-git",
+          "<work>/symlink-versus-disjoint.request.json",
+          "--format",
+          "json",
+          "--provenance-output",
+          "<work>/symlink-versus-disjoint.provenance.json"
+        ],
+        "error": null,
+        "matchesTruth": true,
+        "reportSha256": "2ed8b344347d4a766da0041ab0663c30e3ac5da3855bcd7455af782e3d318419"
+      },
+      "baseline": {
+        "command": [
+          "git",
+          "-C",
+          "<work>/corpus",
+          "merge-tree",
+          "--write-tree",
+          "--merge-base=c193a5f4bc57704a7c75a2bbb05ee31cc6709c8f",
+          "796d6b49282dfc13902796e181d78a9a0a1b7a5d",
+          "c0dcad11bb32b506c4b65214a91ce3fa41aafa41"
+        ],
+        "matchesTruth": true,
+        "result": "clean"
+      },
+      "case": "symlink-versus-disjoint",
+      "classification": "analyzer-unknown",
+      "left": {
+        "branch": "sym",
+        "commit": "796d6b49282dfc13902796e181d78a9a0a1b7a5d"
+      },
+      "right": {
+        "branch": "ind2",
+        "commit": "c0dcad11bb32b506c4b65214a91ce3fa41aafa41"
+      },
+      "truth": {
+        "analyzer": "unknown",
+        "mergeTree": "clean",
+        "sharedFile": false
+      }
+    },
+    {
+      "analyzer": {
+        "classification": "independent-candidate",
+        "command": [
+          "python",
+          "-m",
+          "agent_braid",
+          "analyze-git",
+          "<work>/untouched-pair.request.json",
+          "--format",
+          "json",
+          "--provenance-output",
+          "<work>/untouched-pair.provenance.json"
+        ],
+        "error": null,
+        "matchesTruth": true,
+        "reportSha256": "f44045d08bdc8516157862bd0c980d2ac9435b50bcf42738be86c5e0f3b76310"
+      },
+      "baseline": {
+        "command": [
+          "git",
+          "-C",
+          "<work>/corpus",
+          "merge-tree",
+          "--write-tree",
+          "--merge-base=c193a5f4bc57704a7c75a2bbb05ee31cc6709c8f",
+          "7c8f4940453176f840e27e6928123be3c08cbb3e",
+          "e36dc809ad5bb6f3f0ad46f4f5455f85c727ee02"
+        ],
+        "matchesTruth": true,
+        "result": "clean"
+      },
+      "case": "untouched-pair",
+      "classification": "both-clean",
+      "left": {
+        "branch": "solo1",
+        "commit": "7c8f4940453176f840e27e6928123be3c08cbb3e"
+      },
+      "right": {
+        "branch": "solo2",
+        "commit": "e36dc809ad5bb6f3f0ad46f4f5455f85c727ee02"
+      },
+      "truth": {
+        "analyzer": "independent-candidate",
+        "mergeTree": "clean",
+        "sharedFile": false
+      }
+    }
+  ],
+  "repositoryStoreUnchanged": true,
+  "requirement": "REQ-015 / SC-015",
+  "task": "SPEC-052 T021",
+  "truthMismatches": [],
+  "versions": {
+    "agentBraidSource": "7e903db33718937bdde9f228ca0b061bd5482fc6",
+    "git": "git version 2.54.0 (Apple Git-157)",
+    "platform": "macOS-27.0.1-arm64-arm-64bit-Mach-O",
+    "python": "3.13.11"
+  }
+}

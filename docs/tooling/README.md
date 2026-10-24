@@ -10,8 +10,11 @@ how this extension preserves the original six specifications and their evidence.
 **Planned — M4.6 Claude Code dynamic workflows:** [SPEC-052](../../specs/052-claude-workflow-gate/spec.md)
 proposes a read-only `braid-gate` plugin workflow for committed worktree results
 and [SPEC-053](../../specs/053-claude-transcript-trace-adapter/spec.md) a
-G0-gated transcript trace adapter. Both are draft planning; the current plugin
-ships no workflow.
+G0-gated transcript trace adapter; [SPEC-057](../../specs/057-claude-orchestration-advisory/spec.md),
+[SPEC-058](../../specs/058-claude-orchestration-guard/spec.md) and
+[SPEC-059](../../specs/059-claude-orchestration-ledger/spec.md) plan advisory
+coordination, an opt-in guard and a ledger for orchestrator-style parallel
+agents. All are draft planning; the current plugin ships no workflow or hook.
 
 **Current integration — 2026-10-20:** the combined M4.5 source portfolio has nine
 specs and 120 tasks (85 checked, 35 open), three historically closed parents and

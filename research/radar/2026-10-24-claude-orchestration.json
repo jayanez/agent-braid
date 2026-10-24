@@ -1,0 +1,484 @@
+{
+  "radarVersion": "0.1.0",
+  "review": {
+    "date": "2026-10-24",
+    "kind": "milestone",
+    "milestones": [
+      "M4.6"
+    ],
+    "reviewer": "project preparation; founder review pending",
+    "decision": "pending",
+    "decisionRecord": "docs/strategy/ECOSYSTEM.md",
+    "scopeSnapshot": "research/radar/2026-10-23-claude-workflows.json"
+  },
+  "priorArtPass": {
+    "date": "2026-10-24",
+    "purpose": "Dated prior-art pass for orchestrator-coordination (SPEC-057, SPEC-058, SPEC-059). Required before any wording that implies uniqueness.",
+    "method": "GitHub REST search and README reads through the gh CLI (read-only), one marketplace manifest fetch, one codeberg README fetch, plus the 2026-10-24 research digest for host documentation and literature. No tool was installed or executed; no behavior was reproduced.",
+    "querySet": [
+      "gh api search/repositories: claude code multi-agent coordination",
+      "claude code worktree conflict agents",
+      "claude code file lock hook agents",
+      "topic:claude-code multi-agent coordination",
+      "git worktree conflict detection ai coding agents",
+      "merge queue ai agents bisecting",
+      "semantic merge tool tree-sitter git merge driver",
+      "topic:claude-code-plugin conflict",
+      "agent teams claude code conflict",
+      "topic:merge-queue",
+      "mergiraf",
+      "claude-code-plugin orchestration parallel agents conflict (0 results)",
+      "agent teams claude code hooks file ownership (0 results)",
+      "claude code parallel agents ownership hook PreToolUse deny worktree (0 results)",
+      "semantic merge driver git syntax-aware (0 results)",
+      "Direct reads by name: gastownhall/gastown, gastownhall/beads, Dicklesworthstone/mcp_agent_mail, clash-sh/clash, ThatHunky/agent-coord, ilyasibrahim/claude-agents-coordination, tooppoo/git-kura, andrehrferreira/claude-net (archived), smtg-ai/claude-squad, kbwo/ccmanager",
+      "anthropics/claude-plugins-official marketplace.json keyword filter on name+description"
+    ],
+    "classification": [
+      {
+        "capability": "Plain write/write path exclusion, leases, seals, locks",
+        "classification": "behind",
+        "basis": "mcp_agent_mail, agent-coord, git-kura, CoProgrammer, relayBrain, TeamBus, claude-code-merge-queue; claude-net archived"
+      },
+      {
+        "capability": "Glob or directory ownership declaration",
+        "classification": "parity-at-best",
+        "basis": "agent-coord, git-kura, mcp_agent_mail, OpenWeft manifests"
+      },
+      {
+        "capability": "Hook-based hard blocking of Write/Edit",
+        "classification": "parity",
+        "basis": "agent-coord, TeamBus, relayBrain; Clash asks rather than denies"
+      },
+      {
+        "capability": "Textual conflict prediction across live worktrees",
+        "classification": "behind",
+        "basis": "Clash (merge-tree, 65 stars), DriftWatch, Radar for committed branches"
+      },
+      {
+        "capability": "Symbol-level or contract-level overlap",
+        "classification": "behind",
+        "basis": "DriftWatch symbol graph, Orchestune symbol footprints, TeamBus contract consumers; Agent Braid resources are exact strings"
+      },
+      {
+        "capability": "Declared-footprint pre-flight scheduling",
+        "classification": "parity",
+        "basis": "OpenWeft manifests, Orchestune footprints and shared-contract risks; neither README was found to state read-set validation with explicit coverage, but Orchestune also reports shared-contract risks, so a read-side check is not ruled out"
+      },
+      {
+        "capability": "Combined-tree integration check and merge queue with verification gates",
+        "classification": "behind-or-parity",
+        "basis": "Radar, SVRF, Gas Town Refinery, claude-code-merge-queue, Mergify plugin"
+      },
+      {
+        "capability": "Stuck detection, liveness and recovery of agent sessions",
+        "classification": "behind",
+        "basis": "Gas Town Witness/Deacon, mcp_agent_mail doctor, claude-net heartbeat (archived), OpenWeft recovery"
+      },
+      {
+        "capability": "Messaging, inbox and notification between agents",
+        "classification": "behind",
+        "basis": "mcp_agent_mail, TeamBus, Cotal, agent-message-queue, native Claude Code agent teams and cross-session messaging; Agent Braid is pull-only by decision"
+      },
+      {
+        "capability": "Durable claim or audit ledger",
+        "classification": "parity-or-behind",
+        "basis": "Beads, Edda, tracecraft, mcp_agent_mail git artifacts"
+      },
+      {
+        "capability": "Semantic textual merge",
+        "classification": "complementary",
+        "basis": "Mergiraf; not a coordination competitor"
+      },
+      {
+        "capability": "Launching and managing agent fleets",
+        "classification": "not-a-goal",
+        "basis": "Gas Town, claude-squad, ccmanager, OpenWeft; Agent Braid never launches sessions"
+      },
+      {
+        "capability": "Declared read/write effect hazards (my reads versus your writes) with explicit coverage",
+        "classification": "candidate-differentiator, bounded",
+        "basis": "No surveyed README was found that states read-set validation with explicit coverage. The nearest counterparts are TeamBus (published contracts with consumers blocked until they commit; conflict check over contract-consumer and import relations) and Orchestune (shared-contract risks), which are consumer-side dependency checks and so close to read effects; whether they state coverage was not established from README text and nothing was reproduced. Read-set validation exists in the literature (S-Bus, arXiv:2605.17076v1), so this is an applied-to-Git-worktrees and Claude Code claim, not a novel technique"
+      },
+      {
+        "capability": "Reporting unknown or missing evidence (standalone)",
+        "classification": "parity",
+        "basis": "Radar (Jake-Network/radar) and other tools report missing evidence, so unknown as a first-class result is not a differentiator by itself and is dropped as a standalone claim by founder decision of 2026-10-24. Only the combination is retained as a candidate: an Article 13 compatibility class on every output, pairwise classification that includes unknown, declared read/write hazards and a declared-versus-observed receipt. The combination is untested and each part is small and copyable"
+      },
+      {
+        "capability": "Order-independence evidence via bounded replay certificates (at most four operations)",
+        "classification": "candidate-differentiator, bounded",
+        "basis": "No counterpart found; merge-queue bisection (Refinery, SVRF) is post hoc and answers a different question"
+      },
+      {
+        "capability": "Declared-versus-observed envelope receipt with stated observation coverage",
+        "classification": "candidate-differentiator, bounded",
+        "basis": "No counterpart found among surveyed tools; unverified for tools whose behavior beyond the README was not read. Classified exact-path receipt, Article 13 class 1-syntactic, never a guarantee"
+      },
+      {
+        "capability": "Audit-first enforcement ladder (off, audit, warn, block) compiled from declared ownership to host permissions or an opt-in companion plugin",
+        "classification": "parity-or-not-differentiating",
+        "basis": "Not listed as a differentiator: small, easily copied and untested, and dependent on host behavior still unverified (G1)"
+      }
+    ],
+    "literatureReferences": [
+      {
+        "name": "S-Bus",
+        "identifier": "arXiv:2605.17076v1",
+        "title": "S-Bus: Automatic Read-Set Reconstruction for Multi-Agent LLM State Coordination",
+        "dateRead": "2026-10-24",
+        "whatWasRead": "search-result excerpt of the HTML version (introduction and related-work fragments); not read in full",
+        "supports": "optimistic concurrency control applied to a multi-agent shared read set exists in the literature"
+      },
+      {
+        "name": "CooperBench",
+        "identifier": "arXiv:2601.13295v1",
+        "title": "CooperBench: Why Coding Agents Cannot be Your Teammates Yet",
+        "dateRead": "2026-10-24",
+        "whatWasRead": "search-result excerpts of the HTML version and project page; not read in full",
+        "supports": "cited only as a benchmark of coding-agent cooperation and merge failures; no figure from it is used"
+      },
+      {
+        "name": "MERGEGYM",
+        "identifier": "arXiv:2610.04779v1",
+        "title": "Asymmetric Repository Lineage Modeling and Verifier-Guided Coordination in Concurrent AI Coding Agents",
+        "dateRead": "2026-10-24",
+        "whatWasRead": "abstract page fetched; abstract reports 79 of 167 textual conflicts (47.3 percent) with disjoint authored file sets on a stratified 715-pair lineage set; full text not read",
+        "supports": "the 47.3 percent figure is a share within a stratified sample of pairs, not a prevalence of conflicts in practice; it motivates exact merge-tree checks, not a rate to quote"
+      }
+    ],
+    "unverifiedLiterature": [
+      "STORM, Atomix, MPAC and Claim Plane are named only in the 2026-10-24 research digest; no identifier, version or date was checked in this pass, so they must not be cited by name or number",
+      "The figures 32 to 49 percent (agent self-reports over-claiming shared resources) and 92 to 95 percent (races blocked by a freshness guard that are benign) come only from that digest and are not traceable to a read source; do not use them"
+    ],
+    "boundedClaim": "In a dated pass on 2026-10-24 (query set recorded in the radar snapshot), no surveyed README of a shipped Claude Code plugin or coordination tool was found that states read-set validation with explicit coverage, or that provides order-independence evidence from bounded replay. TeamBus and Orchestune describe consumer-side or shared-contract checks that may be near-neighbors; their READMEs were read, their behavior was not reproduced. This is absence within the surveyed set, not a statement about the whole market, not a claim of novelty over the literature, and not evidence of user demand.",
+    "forbiddenWording": [
+      "unique",
+      "only",
+      "first",
+      "nobody offers",
+      "faster",
+      "speedup"
+    ],
+    "limits": [
+      "GitHub search ranks by stars and matches names, descriptions and topics, so low-visibility repositories can be missed",
+      "READMEs are self-reported; no tool behavior was reproduced",
+      "The official marketplace filter used plugin names and descriptions only; other plugin directories were not enumerated in this pass",
+      "Commercial products (Conductor, Nimbalyst, Sculptor, Devin, Jules, Amp, Cursor, Copilot agent) were not re-read; see the research digest for their weaker evidence",
+      "Native Claude Code features (agent teams, cross-session messaging, agent view, /batch, hooks) are taken from the research digest and orchestrator-verified facts, not re-fetched in this pass",
+      "Literature was not re-surveyed. The references listed under literatureReferences were identified through search excerpts or an abstract page on 2026-10-24, not read in full. The percentage figures from the 2026-10-24 research digest that are not listed there (agent self-reports over-claiming shared resources by 32 to 49 percent; 92 to 95 percent of freshness-guard blocked races being benign) are unverified and must not be cited",
+      "The search used 17 queries, a name-and-description filter over 315 official marketplace plugins and several queries that returned 0 results; READMEs of TeamBus and Orchestune were not read beyond the summaries recorded here",
+      "Star counts are point-in-time observations on 2026-10-24",
+      "Newly appearing entrants (Radar, DriftWatch, OpenWeft, Orchestune, TeamBus, SVRF) were absent from the earlier 2026-10-23 radar; the field is moving, so any claim expires quickly and must be re-run before use"
+    ],
+    "reviewTrigger": "Repeat the pass before any publication wording, before SPEC-058 release and at M4.6 closure."
+  },
+  "entries": [
+    {
+      "id": "RAD-2026-016",
+      "title": "Gas Town: multi-agent workspace manager (Witness, Refinery, convoys, hooks)",
+      "url": "https://github.com/gastownhall/gastown",
+      "sourceDate": "README read via gh api on 2026-10-24; MIT, 18,509 stars, pushed 2026-10-24",
+      "sourceClass": "product",
+      "provenance": "primary",
+      "peerReviewed": false,
+      "claimLevel": "product-capability",
+      "relationship": "Reported coordinator (Mayor) plus git-worktree-backed hooks, a per-rig Witness that monitors workers, detects stuck agents and triggers recovery, a Deacon patrol supervisor, convoys with stall detection, escalation routing and a Refinery described as a Bors-style bisecting merge queue with verification gates. It launches and manages agents, which Agent Braid never does. Liveness, recovery and merge-queue verification are broader than anything Agent Braid plans (behind). The README describes no declared read/write effect analysis or order-independence evidence. Candidate interoperation: Agent Braid as an evidence step consumed by a verification gate; not designed or tested.",
+      "affectedArtifacts": [
+        "docs/strategy/ECOSYSTEM.md",
+        "research/adoption/2026-09-initial-triage.json"
+      ],
+      "status": "watch",
+      "decision": "Retain as a surveyed comparator for the M4.6 orchestrator-coordination track; no integration, comparison or superiority claim. Behavior was read from the README only and was not reproduced."
+    },
+    {
+      "id": "RAD-2026-017",
+      "title": "Beads: git-backed, dependency-aware agent issue memory",
+      "url": "https://github.com/gastownhall/beads",
+      "sourceDate": "README read via gh api on 2026-10-24; MIT, 28,160 stars, pushed 2026-10-24",
+      "sourceClass": "product",
+      "provenance": "primary",
+      "peerReviewed": false,
+      "claimLevel": "product-capability",
+      "relationship": "Reported Dolt-backed dependency graph, atomic claim (bd update --claim), ready-work listing and hash IDs to avoid merge collisions. It is task memory and claiming, not file or effect analysis. A durable claim register is behind Beads for task state; Agent Braid's SPEC-059 ledger must not duplicate it without a documented reason (G2).",
+      "affectedArtifacts": [
+        "docs/strategy/ECOSYSTEM.md",
+        "research/adoption/2026-09-initial-triage.json"
+      ],
+      "status": "watch",
+      "decision": "Retain as a surveyed comparator for the M4.6 orchestrator-coordination track; no integration, comparison or superiority claim. Behavior was read from the README only and was not reproduced."
+    },
+    {
+      "id": "RAD-2026-018",
+      "title": "mcp_agent_mail re-read: identities, inboxes, advisory leases, optional pre-commit guard",
+      "url": "https://github.com/Dicklesworthstone/mcp_agent_mail",
+      "sourceDate": "README read via gh api on 2026-10-24; 2,222 stars, pushed 2026-10-23, license reported as NOASSERTION by the GitHub API; extends RAD-2026-015",
+      "sourceClass": "product",
+      "provenance": "primary",
+      "peerReviewed": false,
+      "claimLevel": "product-capability",
+      "relationship": "README reports file reservations (leases) on files or globs with ttl_seconds and an exclusive flag, a git-stored audit trail, searchable message threads and an optional pre-commit guard that blocks commits conflicting with another agent's active exclusive reservation. Overlapping reservations are reported as conflicts at reservation time. No effect-level reasoning observed. Messaging, inbox and leases are ahead of Agent Braid's pull-only notices. License is unclear in API metadata; check before any adapter.",
+      "affectedArtifacts": [
+        "docs/strategy/ECOSYSTEM.md",
+        "research/adoption/2026-09-initial-triage.json"
+      ],
+      "status": "watch",
+      "decision": "Retain as a surveyed comparator for the M4.6 orchestrator-coordination track; no integration, comparison or superiority claim. Behavior was read from the README only and was not reproduced."
+    },
+    {
+      "id": "RAD-2026-019",
+      "title": "agent-coord: MCP file locks, task claims and a PreToolUse enforcement hook",
+      "url": "https://github.com/ThatHunky/agent-coord",
+      "sourceDate": "README read via gh api on 2026-10-24; MIT, 1 star, pushed 2026-06-26",
+      "sourceClass": "product",
+      "provenance": "primary",
+      "peerReviewed": false,
+      "claimLevel": "product-capability",
+      "relationship": "README reports repo-relative glob locks keyed to the repository so one lock spans worktrees, task claims, a status broadcast board and a PreToolUse hook that denies edits to files locked by another agent with TTL-based crash tolerance. Hard blocking of Write/Edit-class tools exists here, so hook-based denial is parity, not differentiation. Very low adoption.",
+      "affectedArtifacts": [
+        "docs/strategy/ECOSYSTEM.md",
+        "research/adoption/2026-09-initial-triage.json"
+      ],
+      "status": "watch",
+      "decision": "Retain as a surveyed comparator for the M4.6 orchestrator-coordination track; no integration, comparison or superiority claim. Behavior was read from the README only and was not reproduced."
+    },
+    {
+      "id": "RAD-2026-020",
+      "title": "git-kura: keyed worktrees and path seals",
+      "url": "https://github.com/tooppoo/git-kura",
+      "sourceDate": "Repository confirmed via read-only gh api repos/tooppoo/git-kura on 2026-10-24: https://github.com/tooppoo/git-kura, 0 stars, last push 2026-09-14T16:17:26Z; README read via gh api on 2026-10-24; Apache-2.0",
+      "sourceClass": "product",
+      "provenance": "primary",
+      "peerReviewed": false,
+      "claimLevel": "product-capability",
+      "relationship": "README describes keyed worktrees and path seals (a task claims repository-relative paths it intends to edit, with a pre-edit check and an optional pre-commit hook). An earlier orchestration brief listed git-kura as not found; a later read-only gh api check confirmed the repository exists, so the entry stands as a dated source. Its seal format and behavior beyond the README are unconfirmed and unreproduced. Path-level claims are parity or behind. Very low adoption, so it is not parity evidence on the strength of adoption.",
+      "affectedArtifacts": [
+        "docs/strategy/ECOSYSTEM.md",
+        "research/adoption/2026-09-initial-triage.json"
+      ],
+      "status": "watch",
+      "decision": "Retain as a surveyed comparator for the M4.6 orchestrator-coordination track; no integration, comparison or superiority claim. Behavior was read from the README only and was not reproduced."
+    },
+    {
+      "id": "RAD-2026-021",
+      "title": "ilyasibrahim/claude-agents-coordination: tiered delegation and institutional memory for Claude Code",
+      "url": "https://github.com/ilyasibrahim/claude-agents-coordination",
+      "sourceDate": "README read via gh api on 2026-10-24; Unlicense, 87 stars, pushed 2026-05-30",
+      "sourceClass": "product",
+      "provenance": "primary",
+      "peerReviewed": false,
+      "claimLevel": "product-capability",
+      "relationship": "README describes agent-definition layers, tiered delegation, a registry and tech-debt tracking. It is prompt and configuration architecture for delegation and memory. No file-overlap or effect analysis was identified in the sections read; it is not a comparator for conflict evidence. Recorded so the survey does not omit a named candidate.",
+      "affectedArtifacts": [
+        "docs/strategy/ECOSYSTEM.md",
+        "research/adoption/2026-09-initial-triage.json"
+      ],
+      "status": "watch",
+      "decision": "Retain as a surveyed comparator for the M4.6 orchestrator-coordination track; no integration, comparison or superiority claim. Behavior was read from the README only and was not reproduced."
+    },
+    {
+      "id": "RAD-2026-022",
+      "title": "Radar (Jake-Network): combined-tree integration check for parallel agent branches",
+      "url": "https://github.com/Jake-Network/radar",
+      "sourceDate": "Repository confirmed via read-only gh api repos/Jake-Network/radar on 2026-10-24: https://github.com/Jake-Network/radar, 2 stars, last push 2026-10-17T11:26:12Z; README read via gh api on 2026-10-24",
+      "sourceClass": "product",
+      "provenance": "primary",
+      "peerReviewed": false,
+      "claimLevel": "product-capability",
+      "relationship": "README reports that committed agent branches are combined privately, checked without running repository code, with missing evidence explained, local records, commit trailers and opt-in PR checks, and states that human-labeled recall is not yet available. This overlaps SPEC-052's commit-level integration gate and also surfaces missing evidence, so unknown-style reporting is not unique to Agent Braid. No read/write hazard or replay-certificate reasoning was identified. Closest functional comparator found in this pass for the integration stage; consider it for G0 baseline discussion. Low adoption and unreproduced.",
+      "affectedArtifacts": [
+        "docs/strategy/ECOSYSTEM.md",
+        "research/adoption/2026-09-initial-triage.json"
+      ],
+      "status": "watch",
+      "decision": "Retain as the closest integration-stage comparator found in the 2026-10-24 pass; verify behavior directly before any comparative statement. Founder decision on whether it joins the G0 baseline set."
+    },
+    {
+      "id": "RAD-2026-023",
+      "title": "DriftWatch: tree-sitter symbol-graph conflict detection across worktrees",
+      "url": "https://github.com/Vignesh-P-C/DriftWatch",
+      "sourceDate": "README read via gh api on 2026-10-24; 2 stars, pushed 2026-09-15",
+      "sourceClass": "product",
+      "provenance": "primary",
+      "peerReviewed": false,
+      "claimLevel": "product-capability",
+      "relationship": "README reports watching every active worktree, building tree-sitter symbol graphs, cross-referencing changed symbols against usages in other worktrees, an optional bring-your-own-key LLM severity layer, and feeding a conflict into a running agent's context. This is symbol-level overlap detection from observed code, which is finer than Agent Braid's exact-string resource model (Agent Braid is behind on semantic granularity). It does not appear to model declared effects, coverage or order independence. Low adoption and unreproduced.",
+      "affectedArtifacts": [
+        "docs/strategy/ECOSYSTEM.md",
+        "research/adoption/2026-09-initial-triage.json"
+      ],
+      "status": "watch",
+      "decision": "Retain as a surveyed comparator for the M4.6 orchestrator-coordination track; no integration, comparison or superiority claim. Behavior was read from the README only and was not reproduced."
+    },
+    {
+      "id": "RAD-2026-024",
+      "title": "OpenWeft: batch scheduling by declared file manifests, with recovery",
+      "url": "https://github.com/NeuraCerebra-AI/openweft",
+      "sourceDate": "README read via gh api on 2026-10-24; MIT per README badge; stars not recorded in this pass; pushed 2026-09-09 per search listing",
+      "sourceClass": "product",
+      "provenance": "primary",
+      "peerReviewed": false,
+      "claimLevel": "product-capability",
+      "relationship": "README reports plans that declare files to create, modify or delete, overlap detection across manifests, phased scheduling, worktree execution through Codex CLI or Claude Code, and recovery of interrupted work. It states that decisions use predicted file changes, not a semantic dependency graph, and that an agent can change files outside its manifest. Declared-footprint pre-flight is therefore parity; it also launches agents, which Agent Braid does not.",
+      "affectedArtifacts": [
+        "docs/strategy/ECOSYSTEM.md",
+        "research/adoption/2026-09-initial-triage.json"
+      ],
+      "status": "watch",
+      "decision": "Retain as a surveyed comparator for the M4.6 orchestrator-coordination track; no integration, comparison or superiority claim. Behavior was read from the README only and was not reproduced."
+    },
+    {
+      "id": "RAD-2026-025",
+      "title": "Orchestune: dependency-aware decomposition with file or symbol footprints",
+      "url": "https://github.com/Saltmu/orchestune",
+      "sourceDate": "README read via gh api on 2026-10-24; beta; stars not recorded in this pass; pushed 2026-10-24 per search listing",
+      "sourceClass": "product",
+      "provenance": "primary",
+      "peerReviewed": false,
+      "claimLevel": "product-capability",
+      "relationship": "README reports plans whose subtasks carry expected file or symbol footprints, a DAG with cycle detection, and detection of overlapping files or symbols and shared-contract risks before agents modify code, delivered as GitHub issues. Declared-footprint pre-flight with symbols is parity or ahead of exact-string resources. Operates on planning artifacts, not on observed worktrees.",
+      "affectedArtifacts": [
+        "docs/strategy/ECOSYSTEM.md",
+        "research/adoption/2026-09-initial-triage.json"
+      ],
+      "status": "watch",
+      "decision": "Retain as a surveyed comparator for the M4.6 orchestrator-coordination track; no integration, comparison or superiority claim. Behavior was read from the README only and was not reproduced."
+    },
+    {
+      "id": "RAD-2026-026",
+      "title": "SVRF: merge queue for AI agent swarms (batch, bisect, braided train)",
+      "url": "https://github.com/nybarius/SVRF",
+      "sourceDate": "README read via gh api on 2026-10-24; 2 stars, pushed 2026-10-24",
+      "sourceClass": "product",
+      "provenance": "primary",
+      "peerReviewed": false,
+      "claimLevel": "product-capability",
+      "relationship": "README reports a merge queue that folds compatible pull requests, runs a user-supplied gate on the folded tree, bisects a red batch and verifies the base after each merge. A merge queue with verification gates is parity or behind for the integration stage and complements, rather than replaces, effect-level evidence. Candidate interoperation as an evidence input to the gate command is not designed or tested.",
+      "affectedArtifacts": [
+        "docs/strategy/ECOSYSTEM.md",
+        "research/adoption/2026-09-initial-triage.json"
+      ],
+      "status": "watch",
+      "decision": "Retain as a surveyed comparator for the M4.6 orchestrator-coordination track; no integration, comparison or superiority claim. Behavior was read from the README only and was not reproduced."
+    },
+    {
+      "id": "RAD-2026-027",
+      "title": "claude-code-merge-queue: local merge queue and numbered worktree lanes for Claude Code",
+      "url": "https://github.com/funador/claude-code-merge-queue",
+      "sourceDate": "README read via gh api on 2026-10-24; 131 stars, pushed 2026-08-24",
+      "sourceClass": "product",
+      "provenance": "primary",
+      "peerReviewed": false,
+      "claimLevel": "product-capability",
+      "relationship": "README reports a local landing queue, numbered lanes integrated through a WorktreeCreate hook, a machine-wide build lock and a pre-push hook that makes landing non-optional. Hook-based lane management and serialized landing are parity or behind; it ships a hook component in the plugin path, which Agent Braid's governance treats as an opt-in matter.",
+      "affectedArtifacts": [
+        "docs/strategy/ECOSYSTEM.md",
+        "research/adoption/2026-09-initial-triage.json"
+      ],
+      "status": "watch",
+      "decision": "Retain as a surveyed comparator for the M4.6 orchestrator-coordination track; no integration, comparison or superiority claim. Behavior was read from the README only and was not reproduced."
+    },
+    {
+      "id": "RAD-2026-028",
+      "title": "TeamBus: shared intents, contracts and edit-blocking hooks for teams of Claude Code agents",
+      "url": "https://github.com/Beastburner/teambus",
+      "sourceDate": "README read via gh api on 2026-10-24; stars not recorded in this pass; pushed 2026-10-21 per search listing",
+      "sourceClass": "product",
+      "provenance": "primary",
+      "peerReviewed": false,
+      "claimLevel": "product-capability",
+      "relationship": "README reports an MCP and REST hub with SQLite, posted edit intents, published API or schema contracts with consumers blocked until they commit, a conflict check combining same-file, contract-consumer, same-directory function-name and import relations, and PreToolUse Edit/Write blocking. Contract-consumer conflict rules are a semantic-ish layer ahead of exact-string resources. Behavior not reproduced. Low adoption.",
+      "affectedArtifacts": [
+        "docs/strategy/ECOSYSTEM.md",
+        "research/adoption/2026-09-initial-triage.json"
+      ],
+      "status": "watch",
+      "decision": "Retain as a surveyed comparator for the M4.6 orchestrator-coordination track; no integration, comparison or superiority claim. Behavior was read from the README only and was not reproduced."
+    },
+    {
+      "id": "RAD-2026-029",
+      "title": "relayBrain: file and dependency-aware locks with a graph memory",
+      "url": "https://github.com/prakrititz/relayBrain",
+      "sourceDate": "README read via gh api on 2026-10-24; 32 stars, pushed 2026-10-18",
+      "sourceClass": "product",
+      "provenance": "primary",
+      "peerReviewed": false,
+      "claimLevel": "product-capability",
+      "relationship": "README reports pre-tool hooks claiming locks, post-tool release, dependency-aware locks and a FalkorDB property graph recording edits, contention and decisions. Lock enforcement and rationale memory are parity or behind. Introduces a graph database dependency that Agent Braid does not have.",
+      "affectedArtifacts": [
+        "docs/strategy/ECOSYSTEM.md",
+        "research/adoption/2026-09-initial-triage.json"
+      ],
+      "status": "watch",
+      "decision": "Retain as a surveyed comparator for the M4.6 orchestrator-coordination track; no integration, comparison or superiority claim. Behavior was read from the README only and was not reproduced."
+    },
+    {
+      "id": "RAD-2026-030",
+      "title": "CoProgrammer: shared tasks, path leases and handoffs across worktrees",
+      "url": "https://github.com/QIU-Guanzong/CoProgrammer",
+      "sourceDate": "README read via gh api on 2026-10-24; 1 star, pushed 2026-10-23",
+      "sourceClass": "product",
+      "provenance": "primary",
+      "peerReviewed": false,
+      "claimLevel": "product-capability",
+      "relationship": "README reports atomic task claims checking owners, worktrees and path leases, dependency and overlap checks, check receipts for stale test results, CLI and MCP access, and support for several hosts. Path claims and receipts are parity; its receipts concern stale test results, not declared-vs-observed effects. Very low adoption.",
+      "affectedArtifacts": [
+        "docs/strategy/ECOSYSTEM.md",
+        "research/adoption/2026-09-initial-triage.json"
+      ],
+      "status": "watch",
+      "decision": "Retain as a surveyed comparator for the M4.6 orchestrator-coordination track; no integration, comparison or superiority claim. Behavior was read from the README only and was not reproduced."
+    },
+    {
+      "id": "RAD-2026-031",
+      "title": "Edda and tracecraft: tamper-evident ledger and atomic claims for agent fleets",
+      "url": "https://github.com/fagemx/edda",
+      "sourceDate": "README read via gh api on 2026-10-24; Edda 36 stars, pushed 2026-09-26; tracecraft (https://github.com/Arrmlet/tracecraft) 31 stars, pushed 2026-08-16",
+      "sourceClass": "product",
+      "provenance": "primary",
+      "peerReviewed": false,
+      "claimLevel": "product-capability",
+      "relationship": "Edda is described as a local tamper-evident ledger for decisions and coordination; tracecraft mirrors sessions to a user bucket and decides task claims by conditional writes. Durable audit and claim ledgers already exist; a SPEC-059 ledger would be parity at best on persistence and must justify itself on analysis content (compatibility class, coverage, basis) if at all, under the G2 contract.",
+      "affectedArtifacts": [
+        "docs/strategy/ECOSYSTEM.md",
+        "research/adoption/2026-09-initial-triage.json"
+      ],
+      "status": "watch",
+      "decision": "Retain as a surveyed comparator for the M4.6 orchestrator-coordination track; no integration, comparison or superiority claim. Behavior was read from the README only and was not reproduced."
+    },
+    {
+      "id": "RAD-2026-032",
+      "title": "Mergiraf: syntax-aware git merge driver",
+      "url": "https://codeberg.org/mergiraf/mergiraf",
+      "sourceDate": "README read via curl on 2026-10-24; README fetched from codeberg.org; GPLv3",
+      "sourceClass": "product",
+      "provenance": "primary",
+      "peerReviewed": false,
+      "claimLevel": "product-capability",
+      "relationship": "Syntax-aware merge driver for a growing set of languages. It resolves textual conflicts at integration time and is complementary to advisory evidence: it neither predicts conflicts across live worktrees nor reports effect hazards. Classified as complementary, not competing; GPLv3 matters for any bundling decision (none proposed).",
+      "affectedArtifacts": [
+        "docs/strategy/ECOSYSTEM.md",
+        "research/adoption/2026-09-initial-triage.json"
+      ],
+      "status": "watch",
+      "decision": "Retain as a surveyed comparator for the M4.6 orchestrator-coordination track; no integration, comparison or superiority claim. Behavior was read from the README only and was not reproduced."
+    },
+    {
+      "id": "RAD-2026-033",
+      "title": "Official Claude plugin marketplace sweep (anthropics/claude-plugins-official, 315 plugins at fetch)",
+      "url": "https://github.com/anthropics/claude-plugins-official",
+      "sourceDate": "marketplace.json fetched via gh api on 2026-10-24; repository 44,176 stars, pushed 2026-10-23",
+      "sourceClass": "product",
+      "provenance": "primary",
+      "peerReviewed": false,
+      "claimLevel": "market-observation",
+      "relationship": "A keyword filter over plugin names and descriptions (worktree, parallel, multi-agent, orchestrat, coordinat, conflict, merge, swarm, agent team, lock) returned no plugin whose description targets multi-agent file ownership, worktree conflict detection or effect-hazard analysis. The one merge-adjacent hit is a Mergify plugin (merge queue and stacked pull request CLI skills). Description-only filter: plugins whose descriptions omit these words are not covered. Third-party coordination plugins found elsewhere (agent-coord, TeamBus, relayBrain, claude-code-merge-queue, Clash) are not in this snapshot by this filter.",
+      "affectedArtifacts": [
+        "docs/strategy/ECOSYSTEM.md",
+        "research/adoption/2026-09-initial-triage.json"
+      ],
+      "status": "watch",
+      "decision": "Retain as a surveyed comparator for the M4.6 orchestrator-coordination track; no integration, comparison or superiority claim. Behavior was read from the README only and was not reproduced."
+    }
+  ]
+}

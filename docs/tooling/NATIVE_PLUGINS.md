@@ -115,6 +115,22 @@ configuration. Every delegated call identifies `workspaceId`; callers cannot
 supply arbitrary source or result roots. Resource URIs are workspace-scoped.
 The legacy stdio MCP endpoint retains its existing contract.
 
+## Optional Claude-only gate workflow (unreleased)
+
+[SPEC-052](../../specs/052-claude-workflow-gate/spec.md) specifies an optional
+`braid-gate` workflow, a component distinct from the skills. It is **unreleased**:
+no published plugin version contains it, and a build that includes it before the
+ADR 0024 amendment is adopted is an engineering artifact only. It is Claude-only;
+Codex is expected to ignore it (intended, not observed). The five product skills
+and the `setup` skill are unchanged. By design it reaches no network, writes no
+source state (only a temporary scratch directory), issues no grant and reports
+`executionAuthorization: false`; enforcement depends on a host permission
+allowlist that is unverified (HV-5). No Claude Code version has been observed
+running it, and host behaviors remain unverified. See the
+[recipe](CLAUDE_WORKFLOWS.md) for use, the required host permission allowlist, the
+refusal of runtime-enabled registrations and the operator steps that happen
+outside the workflow.
+
 ## Local telemetry consent
 
 Plugin MCP telemetry is **off by default**. To persist local consent, preview and

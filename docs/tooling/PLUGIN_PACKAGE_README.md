@@ -4,6 +4,8 @@ Agent Braid inspects agent interactions, explains conflicts and carries bounded 
 
 Install at user scope from the Agent Braid marketplace. Open setup (Claude Code: `/agent-braid:setup`; Codex: select the Agent Braid `setup` skill), select repositories, inspect the private configuration/results destinations, apply the exact preview and reconnect MCP. Selection is per repository; global plugin availability is not unrestricted filesystem access. Analysis is the default. Execution requires explicit operator configuration and existing exact grants; setup never creates grants or starts provider sessions.
 
+No workflow ships in this package.
+
 The host manages plugin updates and removal. Shared configuration and private results live outside its plugin cache and survive those operations. Use setup to unregister a workspace without deleting its source or evidence. Legacy manual installations can be migrated only using their matching ownership receipts.
 
 This is a research-alpha engineering package. See provenance.json and package-inventory.json for the exact software/runtime identities and license inventory. Corresponding source is distributed alongside the marketplace under sources/. Byte verification is not native host acceptance or official directory approval. Official listing status must be checked independently.
