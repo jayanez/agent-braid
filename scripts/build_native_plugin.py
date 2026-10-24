@@ -9,6 +9,7 @@ from importlib import metadata
 import json
 import os
 import py_compile
+import re
 from pathlib import Path
 import shutil
 import subprocess
@@ -24,6 +25,62 @@ from agent_braid.tooling_assets import load_skill_bundle
 
 VERSION = '0.1.0-alpha.3'
 DISTRIBUTION_ATTRIBUTES = '* -text -filter -ident\n'
+
+
+PLUGIN_NAME = 'agent-braid'
+SKILL_SUBSTITUTIONS = {f'agent-braid-{x}': x for x in ('analyze', 'plan', 'evidence', 'execute', 'recover')}
+PACKAGED_SKILL_NAMES = frozenset(SKILL_SUBSTITUTIONS.values()) | {'setup'}
+NAME_PATTERN = re.compile(r'^[a-z0-9]+(-[a-z0-9]+)*$')
+PREFIXED_TOKEN = re.compile(r'(?<![A-Za-z0-9-])agent-braid-(?:analyze|plan|evidence|execute|recover)(?![A-Za-z0-9-])')
+FRONTMATTER_NAME = re.compile(r'^name: (\S+)$', re.M)
+
+
+def package_skill(content):
+    """Apply only the declared SPEC-054 substitutions to one canonical skill body.
+
+    Rewrites the frontmatter ``name`` and backtick-quoted sibling references."""
+    head, separator, rest = content.partition('\n---\n')
+    match = FRONTMATTER_NAME.search(head)
+    if not content.startswith('---\n') or not separator or not match or match.group(1) not in SKILL_SUBSTITUTIONS:
+        raise ValueError('Canonical skill frontmatter name is not in the substitution table')
+    head = FRONTMATTER_NAME.sub(lambda m: 'name: ' + SKILL_SUBSTITUTIONS[m.group(1)], head, count=1)
+    rest = re.sub(r'`(agent-braid-[a-z]+)`', lambda m: '`' + SKILL_SUBSTITUTIONS.get(m.group(1), m.group(1)) + '`', rest)
+    return head + separator + rest
+
+
+def check_package_names(staging):
+    """Fail unless every SPEC-054 packaged name matches the naming policy.
+
+    ``staging`` is the marketplace root holding ``plugins/agent-braid``."""
+    staging = Path(staging)
+    plugin = staging / 'plugins' / PLUGIN_NAME
+
+    def load(path):
+        return json.loads(path.read_text())
+
+    def require(condition, message):
+        if not condition:
+            raise ValueError('Naming policy violation: ' + message)
+
+    require(load(plugin / 'plugin.json').get('name') == PLUGIN_NAME, 'plugin.json name')
+    require(load(plugin / '.claude-plugin/plugin.json').get('name') == PLUGIN_NAME, '.claude-plugin/plugin.json name')
+    for path in (staging / '.agents/plugins/marketplace.json', staging / '.claude-plugin/marketplace.json'):
+        market = load(path)
+        require(market.get('name') == PLUGIN_NAME, f'{path.name} marketplace name')
+        require([x.get('name') for x in market.get('plugins', [])] == [PLUGIN_NAME], f'{path.name} entry name')
+    for filename in ('mcp.json', '.mcp.json'):
+        require(list(load(plugin / filename).get('mcpServers', {})) == [PLUGIN_NAME], f'{filename} server key')
+    skills = plugin / 'skills'
+    directories = sorted(x.name for x in skills.iterdir() if x.is_dir())
+    require(set(directories) == PACKAGED_SKILL_NAMES, f'skill directories {directories}')
+    for directory in directories:
+        text = (skills / directory / 'SKILL.md').read_text()
+        match = FRONTMATTER_NAME.search(text.partition('\n---\n')[0])
+        require(match and match.group(1) == directory, f'skill {directory} frontmatter name differs from directory')
+        require(NAME_PATTERN.match(directory) and len(directory) <= 64, f'skill name {directory} is not portable')
+        for path in (skills / directory).rglob('*'):
+            if path.is_file() and PREFIXED_TOKEN.search(path.read_text(errors='ignore')):
+                require(False, f'prefixed skill token remains in {path.relative_to(plugin)}')
 
 
 def extract_runtime(archive, destination, expected):
@@ -163,10 +220,14 @@ def assemble(output, cache, *, platforms=None, allow_dirty=False):
                 'licenseFiles': [str(p) for p in (d.files or []) if 'license' in str(p).lower() or 'copying' in str(p).lower()]}
                 for d in metadata.distributions(path=[str(site)])], key=lambda x: x['name'].lower())
         bundle = load_skill_bundle(source_checkout=True)
+        skill_provenance = []
         for skill in bundle.skills:
-            destination = plugin / 'skills' / skill.name / 'SKILL.md'
+            packaged = package_skill(skill.content)
+            destination = plugin / 'skills' / SKILL_SUBSTITUTIONS[skill.name] / 'SKILL.md'
             destination.parent.mkdir(parents=True)
-            destination.write_text(skill.content)
+            destination.write_text(packaged)
+            skill_provenance.append({'canonicalName': skill.name, 'packagedName': SKILL_SUBSTITUTIONS[skill.name],
+                'canonicalSha256': skill.sha256, 'packagedSha256': hashlib.sha256(packaged.encode()).hexdigest()})
         shutil.copytree(ROOT / 'integrations/agent-braid/plugin/setup', plugin / 'skills/setup')
         launch = plugin / 'launch'
         launch.write_text('''#!/bin/sh
@@ -217,6 +278,7 @@ exec "$plugin_python" -I -B -m agent_braid "$@"
             'sourceCommit': candidate, 'sourceDirty': dirty, 'wheelSha256': file_hash(wheel),
             'dependencyLockSha256': file_hash(ROOT / 'requirements-native-plugin.txt'), 'runtimes': runtime_provenance,
             'dependencies': package_licenses, 'canonicalSkills': bundle.inventory(),
+            'skillNaming': {'policy': 'SPEC-054', 'substitutions': SKILL_SUBSTITUTIONS, 'skills': skill_provenance},
             'limits': ['Engineering package; no native conformance, publisher authentication or official approval implied']})
         # Corresponding tracked sources only; never package unrelated untracked local files.
         sources = staging / 'sources'
@@ -229,6 +291,7 @@ exec "$plugin_python" -I -B -m agent_braid "$@"
                     path = ROOT / relative
                     if path.is_file() and not path.is_symlink():
                         archive.add(path, arcname=relative, recursive=False)
+        check_package_names(staging)
         provenance_path = plugin / 'provenance.json'
         provenance = json.loads(provenance_path.read_text())
         source_archive = sources / f'agent-braid-{VERSION}-source.tar.gz'
