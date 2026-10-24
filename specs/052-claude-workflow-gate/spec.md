@@ -17,7 +17,7 @@ What the gate adds, stated plainly. At commit level the Agent Braid primary flag
 ### Exclusions
 
 - No transcript or tool-call analysis, and no read hazards: SPEC-053 (adapter) and the G0 experiment, after which a gate v2 may use them.
-- No pre-flight partitioning of work before agents start: a possible future SPEC-054 behind gate G2, requiring the coordination-across-tools contract of specs/039 and its own ADR.
+- No pre-flight analysis, checkpoint monitoring or recovery reporting for orchestrator-style parallel agents: the founder opened these on 2026-10-24 as [SPEC-057](../057-claude-orchestration-advisory/spec.md) (advisory core, gate G1), [SPEC-058](../058-claude-orchestration-guard/spec.md) (opt-in guard, blocked by G1 and an ADR amendment) and [SPEC-059](../059-claude-orchestration-ledger/spec.md) (ledger and optional push, blocked by G2).
 - No edits, no merge applied to any ref, worktree or the repository object store, no refs, branches, pushes, hooks, mods, plugin agents, grants, execution, runtime-mode calls or remote artifacts. The merge results the gate computes (pairwise and chained `git merge-tree --write-tree`) are ephemeral: they live only in a temporary object directory, are never applied and are discarded.
 - No speed, throughput or agent-count claim; the parallel runtime speedup results are recorded NO-GO (SPEC-021 G4, SPEC-022, SPEC-038).
 - No change to SPEC-023 acceptance, to Codex packaging or to existing contracts.

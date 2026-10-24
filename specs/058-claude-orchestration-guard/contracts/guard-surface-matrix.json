@@ -1,0 +1,281 @@
+{
+  "schemaVersion": "agent-braid-guard-surface-matrix/v0.1",
+  "surfaceIds": [
+    "workflow-tracks",
+    "linked-sessions",
+    "agent-teams",
+    "batch"
+  ],
+  "surfaceIdsNote": "The closed surface vocabulary of the whole orchestration family, identical to SPEC-057's surface-capability-matrix.json (surfaceIds). The checker rejects any other spelling, including the singular forms of earlier drafts.",
+  "status": "draft; documentation reading as of 2026-10-24; no host observation recorded; not an adoption; no cell is enforced or protected",
+  "hostVersionsRead": {
+    "changelogLatest": "2.1.310",
+    "readDate": "2026-10-24",
+    "note": "A cell is host-observed only when it names a receipt created by a probe that the founder authorized.",
+    "minHostVersionBasis": "Reconciled with SPEC-057's matrix, whose versionBasis names the first public changelog entry per capability: agent teams 2.1.32, /batch 2.1.63, agent view and claude agents --json 2.1.145, dynamic workflows 2.1.154. A cell here states the first entry of its surface; the companion cell for agent-teams states 2.1.84 because it names the TaskCreated hook (changelog 2.1.84). The version at which hooks run inside subagents of each surface is not established. These are documentation readings, not support claims for any version and not host observations."
+  },
+  "evidenceStatuses": [
+    "documented",
+    "inferred",
+    "unconfirmed",
+    "host-observed"
+  ],
+  "cellStatuses": [
+    "planned",
+    "not-offered",
+    "guard-not-covered"
+  ],
+  "previewSurfaces": [
+    "agent-teams",
+    "linked-sessions"
+  ],
+  "previewNote": "Agent teams are experimental and off by default; agent view is a research preview. Task-hook availability depends on the model: the documented rule is that TaskCreated fires only when the task tools are present, and their presence on the model in use is unconfirmed (HV-7).",
+  "notCovered": [
+    "Codex",
+    "cloud sessions",
+    "Remote Control and other-machine sessions",
+    "VS Code extension",
+    "non-Git workspaces",
+    "Bash and MCP effects through hooks",
+    "unattributed writers",
+    "semantic prompt injection through repository-derived text on any route (escaping and closed templates bound the Whisper route only)"
+  ],
+  "cells": [
+    {
+      "surface": "workflow-tracks",
+      "output": "companion-plugin-hooks",
+      "capability": "PreToolUse decision for Write and Edit by agent_id and path; audit, warn, block; Whisper context (warn and block); liveness canary",
+      "status": "planned",
+      "compatibilityClass": "1-syntactic",
+      "ownerSpec": "SPEC-058",
+      "minHostVersion": "2.1.154",
+      "preview": false,
+      "evidence": {
+        "status": "inferred",
+        "receipt": null,
+        "probes": [
+          "HV-6",
+          "GP-1",
+          "GP-2",
+          "GP-3"
+        ]
+      },
+      "notes": "Hooks run inside subagents with agent_id (documented for subagents); firing for this surface stays inferred until HV-6. Bash, MCP effects and unattributed writers are not covered. Hooks fail open and can be disabled."
+    },
+    {
+      "surface": "workflow-tracks",
+      "output": "native-host-settings",
+      "capability": "permissions.deny on other units' paths and control paths plus a sandbox write allowlist listing the unit's envelope; the allowlist semantics (additive versus restrictive) are unconfirmed",
+      "status": "planned",
+      "compatibilityClass": "1-syntactic",
+      "ownerSpec": "SPEC-058",
+      "minHostVersion": "2.1.154",
+      "preview": false,
+      "evidence": {
+        "status": "unconfirmed",
+        "receipt": null,
+        "probes": [
+          "HV-8",
+          "GP-5"
+        ]
+      },
+      "notes": "Offered only where HV-8 records that deny rules and the sandbox apply on this surface; Bash coverage and any restriction by the allowlist are claimed only with a receipt that records them (HV-8, GP-5). Host configuration supplied by the operator; not Agent Braid authority and not a grant. Denylist inversion: the deny list names other units' paths, not 'everything else'."
+    },
+    {
+      "surface": "workflow-tracks",
+      "output": "settings-snippet",
+      "capability": "Paste-ready text of the selected output; applied only by the operator",
+      "status": "planned",
+      "compatibilityClass": "0-heuristic",
+      "ownerSpec": "SPEC-058",
+      "minHostVersion": "2.1.154",
+      "preview": false,
+      "evidence": {
+        "status": "documented",
+        "receipt": null,
+        "probes": [
+          "GP-5"
+        ]
+      },
+      "notes": "Carries the same coverage boundary as its source output; nothing is applied by Agent Braid."
+    },
+    {
+      "surface": "linked-sessions",
+      "output": "companion-plugin-hooks",
+      "capability": "PreToolUse decision for Write and Edit by agent_id and path; audit, warn, block; Whisper context (warn and block); liveness canary",
+      "status": "planned",
+      "compatibilityClass": "1-syntactic",
+      "ownerSpec": "SPEC-058",
+      "minHostVersion": "2.1.145",
+      "preview": true,
+      "evidence": {
+        "status": "inferred",
+        "receipt": null,
+        "probes": [
+          "HV-6",
+          "GP-1",
+          "GP-2",
+          "GP-3"
+        ]
+      },
+      "notes": "Hooks run inside subagents with agent_id (documented for subagents); firing for this surface stays inferred until HV-6. Bash, MCP effects and unattributed writers are not covered. Hooks fail open and can be disabled. Agent view is a research preview. Configuration root and working directory differ in Desktop worktree sessions (HV-10, GP-3). The operator's own launcher supplies any per-unit setting."
+    },
+    {
+      "surface": "linked-sessions",
+      "output": "native-host-settings",
+      "capability": "permissions.deny on other units' paths and control paths plus a sandbox write allowlist listing the unit's envelope; the allowlist semantics (additive versus restrictive) are unconfirmed",
+      "status": "planned",
+      "compatibilityClass": "1-syntactic",
+      "ownerSpec": "SPEC-058",
+      "minHostVersion": "2.1.145",
+      "preview": true,
+      "evidence": {
+        "status": "unconfirmed",
+        "receipt": null,
+        "probes": [
+          "HV-8",
+          "GP-5"
+        ]
+      },
+      "notes": "Offered only where HV-8 records that deny rules and the sandbox apply on this surface; Bash coverage and any restriction by the allowlist are claimed only with a receipt that records them (HV-8, GP-5). Host configuration supplied by the operator; not Agent Braid authority and not a grant. Denylist inversion: the deny list names other units' paths, not 'everything else'. Agent view is a research preview. Configuration root and working directory differ in Desktop worktree sessions (HV-10, GP-3). The operator's own launcher supplies any per-unit setting."
+    },
+    {
+      "surface": "linked-sessions",
+      "output": "settings-snippet",
+      "capability": "Paste-ready text of the selected output; applied only by the operator",
+      "status": "planned",
+      "compatibilityClass": "0-heuristic",
+      "ownerSpec": "SPEC-058",
+      "minHostVersion": "2.1.145",
+      "preview": true,
+      "evidence": {
+        "status": "documented",
+        "receipt": null,
+        "probes": [
+          "GP-5"
+        ]
+      },
+      "notes": "Carries the same coverage boundary as its source output; nothing is applied by Agent Braid."
+    },
+    {
+      "surface": "agent-teams",
+      "output": "companion-plugin-hooks",
+      "capability": "PreToolUse decision for Write and Edit by agent_id and path; audit, warn, block; Whisper context (warn and block); liveness canary; TaskCreated footprint check (exit status 2 in block)",
+      "status": "planned",
+      "compatibilityClass": "1-syntactic",
+      "ownerSpec": "SPEC-058",
+      "minHostVersion": "2.1.84",
+      "preview": true,
+      "evidence": {
+        "status": "inferred",
+        "receipt": null,
+        "probes": [
+          "HV-6",
+          "GP-1",
+          "GP-2",
+          "GP-3",
+          "HV-7",
+          "GP-4"
+        ]
+      },
+      "notes": "Hooks run inside subagents with agent_id (documented for subagents); firing for this surface stays inferred until HV-6. Bash, MCP effects and unattributed writers are not covered. Hooks fail open and can be disabled. In-process teammates carry agent_id (documented, not observed; qualified by host version and HV-6); split-pane teammates are separate processes whose plugin loading is inferred. TaskCreated fires only when the task tools are present (documented rule); their presence on the model in use is unconfirmed (HV-7, GP-4); otherwise guard-not-covered for task creation. TaskCreated has no ask: an undecidable footprint is no-opinion with would-ask, and the unmarked-task behavior is unconfirmed (HV-7)."
+    },
+    {
+      "surface": "agent-teams",
+      "output": "native-host-settings",
+      "capability": "permissions.deny on other units' paths and control paths plus a sandbox write allowlist listing the unit's envelope; the allowlist semantics (additive versus restrictive) are unconfirmed",
+      "status": "not-offered",
+      "compatibilityClass": "1-syntactic",
+      "ownerSpec": "SPEC-058",
+      "minHostVersion": "2.1.32",
+      "preview": true,
+      "evidence": {
+        "status": "unconfirmed",
+        "receipt": null,
+        "probes": [
+          "HV-8",
+          "GP-5"
+        ]
+      },
+      "notes": "Offered only where HV-8 records that deny rules and the sandbox apply on this surface; Bash coverage and any restriction by the allowlist are claimed only with a receipt that records them (HV-8, GP-5). Host configuration supplied by the operator; not Agent Braid authority and not a grant. Denylist inversion: the deny list names other units' paths, not 'everything else'. One shared tree: rules apply per path, not per teammate, unless per-teammate settings reach split-pane processes (unconfirmed). Not offered as per-unit control until HV-8 records otherwise."
+    },
+    {
+      "surface": "agent-teams",
+      "output": "settings-snippet",
+      "capability": "Paste-ready text of the selected output; applied only by the operator",
+      "status": "planned",
+      "compatibilityClass": "0-heuristic",
+      "ownerSpec": "SPEC-058",
+      "minHostVersion": "2.1.32",
+      "preview": true,
+      "evidence": {
+        "status": "documented",
+        "receipt": null,
+        "probes": [
+          "GP-5"
+        ]
+      },
+      "notes": "Carries the same coverage boundary as its source output; nothing is applied by Agent Braid."
+    },
+    {
+      "surface": "batch",
+      "output": "companion-plugin-hooks",
+      "capability": "PreToolUse decision for Write and Edit by agent_id and path; audit, warn, block; Whisper context (warn and block); liveness canary",
+      "status": "planned",
+      "compatibilityClass": "1-syntactic",
+      "ownerSpec": "SPEC-058",
+      "minHostVersion": "2.1.63",
+      "preview": false,
+      "evidence": {
+        "status": "inferred",
+        "receipt": null,
+        "probes": [
+          "HV-6",
+          "GP-1",
+          "GP-2",
+          "GP-3"
+        ]
+      },
+      "notes": "Hooks run inside subagents with agent_id (documented for subagents); firing for this surface stays inferred until HV-6. Bash, MCP effects and unattributed writers are not covered. Hooks fail open and can be disabled. Branch and publication layout undocumented (HV-11); units are background subagents."
+    },
+    {
+      "surface": "batch",
+      "output": "native-host-settings",
+      "capability": "permissions.deny on other units' paths and control paths plus a sandbox write allowlist listing the unit's envelope; the allowlist semantics (additive versus restrictive) are unconfirmed",
+      "status": "planned",
+      "compatibilityClass": "1-syntactic",
+      "ownerSpec": "SPEC-058",
+      "minHostVersion": "2.1.63",
+      "preview": false,
+      "evidence": {
+        "status": "unconfirmed",
+        "receipt": null,
+        "probes": [
+          "HV-8",
+          "GP-5"
+        ]
+      },
+      "notes": "Offered only where HV-8 records that deny rules and the sandbox apply on this surface; Bash coverage and any restriction by the allowlist are claimed only with a receipt that records them (HV-8, GP-5). Host configuration supplied by the operator; not Agent Braid authority and not a grant. Denylist inversion: the deny list names other units' paths, not 'everything else'. Branch and publication layout undocumented (HV-11); units are background subagents."
+    },
+    {
+      "surface": "batch",
+      "output": "settings-snippet",
+      "capability": "Paste-ready text of the selected output; applied only by the operator",
+      "status": "planned",
+      "compatibilityClass": "0-heuristic",
+      "ownerSpec": "SPEC-058",
+      "minHostVersion": "2.1.63",
+      "preview": false,
+      "evidence": {
+        "status": "documented",
+        "receipt": null,
+        "probes": [
+          "GP-5"
+        ]
+      },
+      "notes": "Carries the same coverage boundary as its source output; nothing is applied by Agent Braid. Branch and publication layout undocumented (HV-11); units are background subagents."
+    }
+  ],
+  "coverageNote": "Covered tools are Write and Edit. NotebookEdit is a proposed extension pending founder acceptance and is not named in any cell.",
+  "sandboxNote": "The semantics of the sandbox write allowlist are unconfirmed: additive to the default working-directory write access or restrictive, and how it relates to default writes (HV-8, GP-5). No cell states a restriction or an operating-system bound. The allowlist and the deny list are host configuration supplied by the operator; they are not Agent Braid authority and not a grant."
+}

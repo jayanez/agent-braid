@@ -1,0 +1,170 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://agent-braid.dev/specs/059-claude-orchestration-ledger/contracts/push-settings.schema.json",
+  "title": "SPEC-059 extension of the orchestration settings: push transports, kill switch and resolved delivery (draft, not adopted)",
+  "description": "SPEC-059 does not redefine scopes, modes or strategies. SPEC-057's orchestration-settings schema owns conversation, repository and user scopes, notificationMode (pull or push), notificationStrategy (mailbox-whisper, megaphone or doorbell), guardMode, the precedence (the most specific scope wins; a block guard mode at repository or user scope is a floor) and operator ownership, and it carries a versioned extensions member keyed by owner specification. This schema defines what SPEC-059 stores under extensions.SPEC-059 (the top-level validation target: an extension entry with extensionVersion agent-braid-push-settings/v0.1 and a bounded settings object) and, in $defs.resolvedDelivery, the result that the SPEC-059 resolver produces from the SPEC-057 resolved record. Composition is two-step and is part of the planned tests: the whole settings record validates against the SPEC-057 schema (which stores the entry without interpreting it), and the entry validates against this schema. Megaphone (monitor-stdout or channel) and Doorbell (session-socket-self) are the only push strategies; both are opt-in. Push is effective only when every enabling condition holds; otherwise the effective mode is pull with each unmet condition named from the closed list. The default Mailbox + Whisper strategy needs no SPEC-059 push: the Mailbox is the pull notice and the Whisper is a SPEC-058 companion output.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["extensionVersion", "settings"],
+  "properties": {
+    "extensionVersion": { "const": "agent-braid-push-settings/v0.1" },
+    "settings": { "$ref": "#/$defs/pushSettings" }
+  },
+  "$defs": {
+    "transportId": {
+      "enum": ["session-socket-self", "monitor-stdout", "channel"],
+      "description": "The SPEC-059 push transports. monitor-stdout and channel are the Megaphone; session-socket-self is the Doorbell. The Whisper carrier (hook additional context) is the SPEC-058 companion's and is not a SPEC-059 push option."
+    },
+    "pushSettings": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Member names and value shapes satisfy the SPEC-057 extensionEntry bounds (scalars and short lists of short strings). pushTransports is an ordered preference; a transport without a passing receipt, or one that does not belong to the requested strategy, is skipped and never assumed. killSwitch true at any scope or at the top level disables every SPEC-059 push; like the block guard mode it is a floor that a more specific scope cannot lower (a planning interpretation of the founder's floor rule, to be confirmed in the G2 review).",
+      "properties": {
+        "pushTransports": {
+          "type": "array",
+          "maxItems": 3,
+          "uniqueItems": true,
+          "items": { "$ref": "#/$defs/transportId" }
+        },
+        "killSwitch": { "type": "boolean" }
+      }
+    },
+    "resolvedDelivery": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Result of the SPEC-059 resolver. It consumes the SPEC-057 resolved settings (consumedFromSPEC057) and completes the member that SPEC-057 records as reserved-for-SPEC-059. The mapping is: not-requested stays not-requested; reserved-for-SPEC-059 becomes active or unavailable. The resolver performs no network, socket or process operation and never reports an unavailable push as active.",
+      "required": [
+        "schemaVersion",
+        "executionAuthorization",
+        "consumedFromSPEC057",
+        "effectiveNotificationMode",
+        "effectiveDelivery",
+        "pushStatus",
+        "unavailableReasons",
+        "killSwitch",
+        "effectiveTransport",
+        "transportReceipt"
+      ],
+      "properties": {
+        "schemaVersion": { "const": "agent-braid-push-resolution/v0.1" },
+        "executionAuthorization": { "const": false },
+        "consumedFromSPEC057": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["pushStatus", "requestedNotificationMode", "requestedNotificationStrategy", "resolvedFromScope"],
+          "properties": {
+            "pushStatus": { "enum": ["not-requested", "reserved-for-SPEC-059"] },
+            "requestedNotificationMode": { "enum": ["pull", "push"] },
+            "requestedNotificationStrategy": { "enum": ["mailbox-whisper", "megaphone", "doorbell"] },
+            "resolvedFromScope": { "enum": ["conversation", "repository", "user", "default"] }
+          }
+        },
+        "effectiveNotificationMode": { "enum": ["pull", "push"] },
+        "effectiveDelivery": {
+          "enum": ["mailbox", "megaphone", "doorbell"],
+          "description": "mailbox is the pull notice that the orchestrator reads; megaphone and doorbell appear only when push is active."
+        },
+        "pushStatus": { "enum": ["not-requested", "active", "unavailable"] },
+        "unavailableReasons": {
+          "type": "array",
+          "uniqueItems": true,
+          "maxItems": 12,
+          "items": {
+            "enum": [
+              "g2-contract-not-adopted",
+              "adr-not-adopted",
+              "g1-late-notice-harm-not-recorded",
+              "doorbell-adr-reframing-not-adopted",
+              "push-strategy-not-selected",
+              "companion-not-installed",
+              "no-verified-transport",
+              "transport-not-verified-after-g2",
+              "host-version-not-verified",
+              "ledger-unhealthy",
+              "kill-switch",
+              "platform-not-supported"
+            ]
+          }
+        },
+        "killSwitch": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["set", "scope"],
+          "properties": {
+            "set": { "type": "boolean" },
+            "scope": { "oneOf": [{ "type": "null" }, { "enum": ["conversation", "repository", "user", "operator-wide"] }] }
+          }
+        },
+        "effectiveTransport": { "oneOf": [{ "type": "null" }, { "$ref": "#/$defs/transportId" }] },
+        "transportReceipt": {
+          "oneOf": [
+            { "type": "null" },
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["path", "sha256", "hostVersion", "recordedAfterG2Adoption"],
+              "properties": {
+                "path": { "type": "string", "minLength": 1, "maxLength": 256, "pattern": "^[A-Za-z0-9._/-]+(?![\\s\\S])", "description": "Repository-relative receipt location in a conservative ASCII set, so that no control, bidirectional, format or tag character can occur; the same anchor rejects a final line feed, which a plain dollar anchor would accept under Python." },
+                "sha256": { "type": "string", "pattern": "^sha256:[0-9a-f]{64}(?![\\s\\S])" },
+                "hostVersion": { "type": "string", "maxLength": 32, "pattern": "^[0-9A-Za-z._+-]+(?![\\s\\S])" },
+                "recordedAfterG2Adoption": { "type": "boolean", "description": "True when the passing probe receipt was pinned after the founder recorded adoption of the G2 contract. Required for the Doorbell." }
+              }
+            }
+          ]
+        }
+      },
+      "allOf": [
+        {
+          "if": { "properties": { "pushStatus": { "const": "active" } }, "required": ["pushStatus"] },
+          "then": {
+            "properties": {
+              "effectiveNotificationMode": { "const": "push" },
+              "effectiveTransport": { "type": "string" },
+              "transportReceipt": { "type": "object" }
+            }
+          }
+        },
+        {
+          "if": { "properties": { "effectiveNotificationMode": { "const": "push" } }, "required": ["effectiveNotificationMode"] },
+          "then": {
+            "properties": {
+              "pushStatus": { "const": "active" },
+              "effectiveDelivery": { "enum": ["megaphone", "doorbell"] },
+              "unavailableReasons": { "maxItems": 0 },
+              "killSwitch": { "properties": { "set": { "const": false } } },
+              "effectiveTransport": { "type": "string" },
+              "transportReceipt": { "type": "object" }
+            }
+          },
+          "else": {
+            "properties": {
+              "effectiveDelivery": { "const": "mailbox" },
+              "effectiveTransport": { "type": "null" }
+            }
+          }
+        },
+        {
+          "if": { "properties": { "pushStatus": { "const": "unavailable" } }, "required": ["pushStatus"] },
+          "then": { "properties": { "effectiveNotificationMode": { "const": "pull" }, "unavailableReasons": { "minItems": 1 } } }
+        },
+        {
+          "if": { "properties": { "pushStatus": { "const": "not-requested" } }, "required": ["pushStatus"] },
+          "then": { "properties": { "unavailableReasons": { "maxItems": 0 }, "effectiveNotificationMode": { "const": "pull" } } }
+        },
+        {
+          "if": { "properties": { "effectiveDelivery": { "const": "megaphone" } }, "required": ["effectiveDelivery"] },
+          "then": { "properties": { "effectiveTransport": { "enum": ["monitor-stdout", "channel"] } } }
+        },
+        {
+          "if": { "properties": { "effectiveDelivery": { "const": "doorbell" } }, "required": ["effectiveDelivery"] },
+          "then": {
+            "properties": {
+              "effectiveTransport": { "const": "session-socket-self" },
+              "transportReceipt": { "properties": { "recordedAfterG2Adoption": { "const": true } } }
+            }
+          }
+        }
+      ]
+    }
+  }
+}

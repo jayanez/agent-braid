@@ -1,0 +1,24 @@
+{
+  "schemaVersion": "agent-braid-push-resolution/v0.1",
+  "executionAuthorization": false,
+  "consumedFromSPEC057": {
+    "pushStatus": "reserved-for-SPEC-059",
+    "requestedNotificationMode": "push",
+    "requestedNotificationStrategy": "doorbell",
+    "resolvedFromScope": "repository"
+  },
+  "effectiveNotificationMode": "pull",
+  "effectiveDelivery": "mailbox",
+  "pushStatus": "unavailable",
+  "unavailableReasons": [
+    "g2-contract-not-adopted",
+    "adr-not-adopted",
+    "g1-late-notice-harm-not-recorded",
+    "doorbell-adr-reframing-not-adopted",
+    "companion-not-installed",
+    "no-verified-transport"
+  ],
+  "killSwitch": { "set": false, "scope": null },
+  "effectiveTransport": null,
+  "transportReceipt": null
+}

@@ -1,0 +1,472 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://agent-braid.dev/specs/058-claude-orchestration-guard/contracts/guard-decision.schema.json",
+  "title": "Agent Braid guard decision (draft, not adopted)",
+  "description": "The internal result of one guard evaluation, before it is adapted to the host wire format. The decision vocabulary is closed: no-opinion, ask, deny, additionalContext. allow, defer, input rewriting and grants are unrepresentable. Reasons come from a closed code list and never carry repository text. For the TaskCreated event the host has no ask, so the decision is one of no-opinion, deny or additionalContext; an undecidable footprint in block is no-opinion with the would-decision would-ask and the surface reads guard-not-covered for that case. Whether the host shows additionalContext from TaskCreated is unconfirmed (HV-7, GP-2). Repository-derived strings use SPEC-057's single escaping and bounding definition ($defs/repositoryText, reused byte for byte). The Whisper (template pending-notice) carries no sibling-written path text: only the notice id, the epoch, the hazard kinds, the unit ids, a path count, short path digests, and at most a few paths that equal an entry of the receiving unit's own declared envelope. Escaping removes control and bidirectional characters; it does not neutralise semantic prompt injection, which is a residual risk stated in the specification.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "executionAuthorization",
+    "decision",
+    "mode",
+    "reasonCode",
+    "event"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": "agent-braid-guard-decision/v0.1"
+    },
+    "executionAuthorization": {
+      "const": false
+    },
+    "decision": {
+      "enum": [
+        "no-opinion",
+        "ask",
+        "deny",
+        "additionalContext"
+      ]
+    },
+    "mode": {
+      "enum": [
+        "off",
+        "audit",
+        "warn",
+        "block"
+      ]
+    },
+    "modeSource": {
+      "enum": [
+        "conversation",
+        "repository",
+        "user",
+        "profile",
+        "default"
+      ],
+      "description": "Where the effective mode came from: the most specific scope wins and a block at repository or user scope is a floor; profile is the compiled default beneath the user scope."
+    },
+    "guardModeLoweringRefused": {
+      "type": "boolean",
+      "description": "True when a more specific scope asked for a mode below a block floor and the floor was kept."
+    },
+    "event": {
+      "enum": [
+        "PreToolUse",
+        "TaskCreated"
+      ]
+    },
+    "reasonCode": {
+      "enum": [
+        "in-envelope",
+        "outside-envelope",
+        "control-path",
+        "undecidable-path",
+        "partial-envelope",
+        "tamper-suspected",
+        "unmarked-task",
+        "footprint-outside-envelope",
+        "footprint-overlaps-sibling",
+        "unattributed-writer",
+        "pending-notice",
+        "guard-error",
+        "mode-off"
+      ]
+    },
+    "wouldDecision": {
+      "enum": [
+        "would-deny",
+        "would-ask",
+        "would-warn",
+        "none"
+      ],
+      "description": "Present in audit mode: what the guard would have decided in block or warn mode. The emitted decision in audit mode is always no-opinion."
+    },
+    "context": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Present only when decision is additionalContext. The template is chosen by templateId from a closed list; repository-derived values appear only in the labelled data fields, escaped and bounded.",
+      "required": [
+        "templateId",
+        "data"
+      ],
+      "properties": {
+        "templateId": {
+          "enum": [
+            "outside-envelope",
+            "control-path",
+            "undecidable-path",
+            "footprint-outside-envelope",
+            "tamper-suspected",
+            "pending-notice"
+          ]
+        },
+        "data": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "unit": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,63}(?!\\n)$"
+            },
+            "path": {
+              "$ref": "#/$defs/repositoryText",
+              "description": "Own-write templates only: the path of the agent's own tool call (outside-envelope, control-path, undecidable-path, footprint-outside-envelope, tamper-suspected). Never used by pending-notice."
+            },
+            "scope": {
+              "enum": [
+                "conversation",
+                "repository",
+                "user",
+                "profile",
+                "default"
+              ]
+            },
+            "noticeId": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{16,64}(?!\\n)$",
+              "description": "Whisper only: id of a pull notice that validates against the SPEC-057 hazard-notice schema."
+            },
+            "epoch": {
+              "type": "string",
+              "pattern": "^sha256:[0-9a-f]{64}(?!\\n)$"
+            },
+            "hazardKinds": {
+              "type": "array",
+              "maxItems": 10,
+              "uniqueItems": true,
+              "items": {
+                "enum": [
+                  "read-write",
+                  "write-write",
+                  "create-collision",
+                  "undeclared-write",
+                  "sibling-area-write",
+                  "partial-coverage",
+                  "shared-resource",
+                  "base-mismatch",
+                  "not-observed",
+                  "unattributed-writer"
+                ]
+              }
+            },
+            "units": {
+              "type": "array",
+              "maxItems": 32,
+              "uniqueItems": true,
+              "items": {
+                "type": "string",
+                "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,63}(?!\\n)$"
+              },
+              "description": "Whisper only: declared unit ids named by the notice's hazards (an operator-authored vocabulary, not repository text)."
+            },
+            "pathCount": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 4096,
+              "description": "Whisper only: how many hazard paths the full notice lists, so the agent knows the notice holds more than the Whisper shows."
+            },
+            "pathDigests": {
+              "type": "array",
+              "maxItems": 8,
+              "uniqueItems": true,
+              "items": {
+                "type": "string",
+                "pattern": "^[0-9a-f]{12}(?!\\n)$"
+              },
+              "description": "Whisper only: the first 12 hexadecimal characters of the SHA-256 of each hazard path, at most 8. A digest cannot carry an instruction; the paths themselves are in the Mailbox notice that the orchestrator reads."
+            },
+            "ownDeclaredPaths": {
+              "type": "array",
+              "maxItems": 4,
+              "uniqueItems": true,
+              "items": {
+                "$ref": "#/$defs/repositoryText"
+              },
+              "description": "Whisper only: at most 4 paths, each an exact match (after the SPEC-057 normalization) of an entry in the receiving unit's own declared envelope, which the operator wrote. A path written by a sibling or taken from the notice is never forwarded as text."
+            }
+          }
+        }
+      }
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "decision": {
+            "const": "additionalContext"
+          }
+        },
+        "required": [
+          "decision"
+        ]
+      },
+      "then": {
+        "required": [
+          "context"
+        ]
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "mode": {
+            "enum": [
+              "off",
+              "audit"
+            ]
+          }
+        },
+        "required": [
+          "mode"
+        ]
+      },
+      "then": {
+        "properties": {
+          "decision": {
+            "const": "no-opinion"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "mode": {
+            "const": "warn"
+          }
+        },
+        "required": [
+          "mode"
+        ]
+      },
+      "then": {
+        "properties": {
+          "decision": {
+            "enum": [
+              "no-opinion",
+              "additionalContext"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "reasonCode": {
+            "const": "guard-error"
+          }
+        },
+        "required": [
+          "reasonCode"
+        ]
+      },
+      "then": {
+        "properties": {
+          "decision": {
+            "const": "no-opinion"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "reasonCode": {
+            "const": "in-envelope"
+          }
+        },
+        "required": [
+          "reasonCode"
+        ]
+      },
+      "then": {
+        "properties": {
+          "decision": {
+            "const": "no-opinion"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "event": {
+            "const": "TaskCreated"
+          }
+        },
+        "required": [
+          "event"
+        ]
+      },
+      "then": {
+        "properties": {
+          "decision": {
+            "enum": [
+              "no-opinion",
+              "deny",
+              "additionalContext"
+            ]
+          },
+          "reasonCode": {
+            "not": {
+              "enum": [
+                "pending-notice",
+                "control-path",
+                "tamper-suspected"
+              ]
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "reasonCode": {
+            "const": "pending-notice"
+          }
+        },
+        "required": [
+          "reasonCode"
+        ]
+      },
+      "then": {
+        "properties": {
+          "decision": {
+            "enum": [
+              "no-opinion",
+              "additionalContext"
+            ]
+          },
+          "event": {
+            "const": "PreToolUse"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "context": {
+            "properties": {
+              "templateId": {
+                "const": "pending-notice"
+              }
+            },
+            "required": [
+              "templateId"
+            ]
+          }
+        },
+        "required": [
+          "context"
+        ]
+      },
+      "then": {
+        "properties": {
+          "context": {
+            "properties": {
+              "data": {
+                "required": [
+                  "noticeId",
+                  "epoch",
+                  "hazardKinds"
+                ],
+                "not": {
+                  "required": [
+                    "path"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "context": {
+            "properties": {
+              "templateId": {
+                "enum": [
+                  "outside-envelope",
+                  "control-path",
+                  "undecidable-path",
+                  "footprint-outside-envelope",
+                  "tamper-suspected"
+                ]
+              }
+            },
+            "required": [
+              "templateId"
+            ]
+          }
+        },
+        "required": [
+          "context"
+        ]
+      },
+      "then": {
+        "properties": {
+          "context": {
+            "properties": {
+              "data": {
+                "not": {
+                  "anyOf": [
+                    {
+                      "required": [
+                        "noticeId"
+                      ]
+                    },
+                    {
+                      "required": [
+                        "epoch"
+                      ]
+                    },
+                    {
+                      "required": [
+                        "hazardKinds"
+                      ]
+                    },
+                    {
+                      "required": [
+                        "units"
+                      ]
+                    },
+                    {
+                      "required": [
+                        "pathCount"
+                      ]
+                    },
+                    {
+                      "required": [
+                        "pathDigests"
+                      ]
+                    },
+                    {
+                      "required": [
+                        "ownDeclaredPaths"
+                      ]
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  ],
+  "$defs": {
+    "repositoryText": {
+      "type": "string",
+      "maxLength": 256,
+      "pattern": "^[^\\u0000-\\u001f\\u007f-\\u009f\\u00ad\\u061c\\u115f-\\u1160\\u180e\\u200b-\\u200f\\u2028-\\u202e\\u2060-\\u206f\\u3164\\ufeff\\uffa0\\ufff9-\\ufffb\\U000e0000-\\U000e007f]*(?!\\n)$",
+      "description": "Reused byte for byte from SPEC-057 contracts/hazard-notice.schema.json $defs/repositoryText (REQ-008 of SPEC-057): the single definition of the escaping and bounding rule. A conformance test compares this definition with SPEC-057's."
+    }
+  }
+}

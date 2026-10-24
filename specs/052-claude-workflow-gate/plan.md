@@ -6,7 +6,7 @@ Status: draft planning. Nothing here authorizes implementation, a version bump, 
 
 Language and runtime: one plain-JavaScript workflow script, `integrations/agent-braid/plugin/workflows/braid-gate.js`, executed by the Claude Code workflow runtime; no module loading, no direct filesystem or shell access from the script itself (agents run the commands). Host: Claude Code with dynamic workflows (introduced in v2.1.154, documented current v2.1.309; the [workflows page](https://code.claude.com/docs/en/workflows) and [plugin components page](https://code.claude.com/docs/en/plugins/components) are the primary sources). Product side: the unchanged plugin MCP (`workspaces`, `analyze-work`, `analyze`, `prepare`), the bundled launcher, and `git`. Storage: none; the gate writes nothing to the source repository.
 
-Scope is the read-only gate of the spec: five strictly sequential phases (validate, analyze, baseline, finalize, report) and at most four agents. Out of scope: transcripts and read hazards (SPEC-053, gate G0, then a gate v2), pre-flight partitioning (possible SPEC-054, gate G2), any fan-out, edit, merge, ref, hook, mod, plugin agent, grant, execution or remote artifact.
+Scope is the read-only gate of the spec: five strictly sequential phases (validate, analyze, baseline, finalize, report) and at most four agents. Out of scope: transcripts and read hazards (SPEC-053, gate G0, then a gate v2), orchestrator-style coordination (SPEC-057 to SPEC-059, gates G1 and G2), any fan-out, edit, merge, ref, hook, mod, plugin agent, grant, execution or remote artifact.
 
 Verified Agent Braid code limits that bound the design (read from the repository at the planning commit; they are cited, not changed):
 

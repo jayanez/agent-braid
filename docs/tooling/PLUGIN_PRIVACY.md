@@ -2,8 +2,10 @@
 # Agent Braid plugin privacy and support
 
 Agent Braid's native plugin runs a local stdio MCP process. It has no hosted
-Agent Braid service, telemetry, analytics, advertising, account or credential
-collection. The plugin does not install or invoke a model provider. Its host's
+Agent Braid service, analytics, advertising, account or credential collection.
+Optional local technical telemetry ([TELEMETRY.md](TELEMETRY.md)) is off by
+default, records only daily numeric aggregates on this machine after explicit
+consent and is never sent anywhere automatically. The plugin does not install or invoke a model provider. Its host's
 privacy policy and permissions continue to govern data the host supplies to a
 model or other tools.
 

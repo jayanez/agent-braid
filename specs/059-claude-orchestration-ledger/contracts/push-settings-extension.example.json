@@ -1,0 +1,4 @@
+{
+  "extensionVersion": "agent-braid-push-settings/v0.1",
+  "settings": { "pushTransports": ["monitor-stdout", "channel"], "killSwitch": false }
+}

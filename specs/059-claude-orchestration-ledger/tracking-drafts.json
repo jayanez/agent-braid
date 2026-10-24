@@ -1,0 +1,158 @@
+{
+  "schema": "agent-braid-unpublished-tracking-drafts/v1",
+  "milestone": null,
+  "milestoneTitle": "M4.6 — Claude Code dynamic workflows",
+  "milestoneNumber": null,
+  "milestoneState": "not created; number assigned only if the founder later authorizes creation",
+  "publication": "forbidden in this delivery",
+  "scope": "SPEC-059 only. SPEC-052, SPEC-053, SPEC-057 and SPEC-058 records are drafted by their own tracks; no combined M4.6 count is stated here. The single M4.6 milestone description draft is specs/052-claude-workflow-gate/milestone-description-draft.md (owned by the SPEC-052 track); the M4.6 description in docs/development/github-tracking.json is integrator-owned and not edited by this track.",
+  "labels": [
+    "spec",
+    "task"
+  ],
+  "newRecordKeys": [
+    "SPEC-059",
+    "SPEC-059/T001",
+    "SPEC-059/T002",
+    "SPEC-059/T003",
+    "SPEC-059/T004",
+    "SPEC-059/T005",
+    "SPEC-059/T006",
+    "SPEC-059/T007",
+    "SPEC-059/T008"
+  ],
+  "projectReviewPendingDraft": [
+    "SPEC-059"
+  ],
+  "projectReviewPendingNote": "Draft flag only, spec parent only (tasks inherit the review through the parent), the convention of the SPEC-052, SPEC-053 and SPEC-057 drafts. The configuration file docs/development/github-tracking.json is integrator-owned and is not edited by this track; the integrator decides whether to flag tasks too.",
+  "sourceCounts": {
+    "specs": 1,
+    "tasks": 8,
+    "tasksChecked": 0,
+    "tasksUnchecked": 8,
+    "parentsClosed": 0,
+    "parentsOpen": 1,
+    "totalRecords": 9
+  },
+  "sourceState": "all tasks unchecked in tasks.md; obtained_evidence empty; human review pending; nothing frozen, signed, run or approved; SPEC-059 is a sketch with decision, review and gate tasks only; implementation is blocked by GN, G2 and an ADR",
+  "milestoneDescriptionDraft": "specs/052-claude-workflow-gate/milestone-description-draft.md",
+  "records": [
+    {
+      "key": "SPEC-059",
+      "kind": "spec",
+      "parent": null,
+      "title": "[SPEC-059] SPEC-059: Coordination ledger and opt-in push notifications across Claude Code sessions (sketch)",
+      "body": "<!-- agent-braid-spec-id: SPEC-059 -->\n\nSource: [spec.md](https://github.com/jayanez/agent-braid/blob/develop/specs/059-claude-orchestration-ledger/spec.md) · [tasks.md](https://github.com/jayanez/agent-braid/blob/develop/specs/059-claude-orchestration-ledger/tasks.md) · [assurance.json](https://github.com/jayanez/agent-braid/blob/develop/specs/059-claude-orchestration-ledger/assurance.json)\n\nRequirements: REQ-001, REQ-002, REQ-003, REQ-004, REQ-005.\n\nIssue state is a bounded tracking record, not a scientific or founder approval.\n",
+      "milestone": "M4.6 — Claude Code dynamic workflows",
+      "state": "open",
+      "labels": [
+        "spec"
+      ],
+      "projectReviewPending": true
+    },
+    {
+      "key": "SPEC-059/T001",
+      "kind": "task",
+      "parent": "SPEC-059",
+      "title": "[SPEC-059 T001] Founder: after the G1 results are recorded and gate GN has passed, review contracts/coordination-contr...",
+      "body": "<!-- agent-braid-task-id: SPEC-059/T001 -->\n\n## Task\n\nFounder: after the G1 results are recorded and gate GN has passed, review `contracts/coordination-contract.md` and record a decision to adopt (with amendments), defer or reject it as the G2 contract of the specs/039 route, as a separate decision record that names the contract file hash and includes the retention and deletion rule. Acceptance: adopting the contract is not adopting the ADR and unblocks nothing alone. Planned evidence: decision record path and SHA-256. Obtained: none.\n\n- Source: [spec.md](https://github.com/jayanez/agent-braid/blob/develop/specs/059-claude-orchestration-ledger/spec.md) · [tasks.md](https://github.com/jayanez/agent-braid/blob/develop/specs/059-claude-orchestration-ledger/tasks.md) · [assurance.json](https://github.com/jayanez/agent-braid/blob/develop/specs/059-claude-orchestration-ledger/assurance.json)\n- Trace: REQ-001 SC-001\n- State basis: Source checkbox in tasks.md.\n\nPlanned and obtained evidence are separate in assurance.json. Closing this issue does not imply human review or scientific proof.\n",
+      "milestone": "M4.6 — Claude Code dynamic workflows",
+      "state": "open",
+      "task_text": "Founder: after the G1 results are recorded and gate GN has passed, review `contracts/coordination-contract.md` and record a decision to adopt (with amendments), defer or reject it as the G2 contract of the specs/039 route, as a separate decision record that names the contract file hash and includes the retention and deletion rule. Acceptance: adopting the contract is not adopting the ADR and unblocks nothing alone. Planned evidence: decision record path and SHA-256. Obtained: none.",
+      "labels": [
+        "task"
+      ]
+    },
+    {
+      "key": "SPEC-059/T002",
+      "kind": "task",
+      "parent": "SPEC-059",
+      "title": "[SPEC-059 T002] Review: an independent reviewer checks the coordination contract (identity, concurrency, idempotency,...",
+      "body": "<!-- agent-braid-task-id: SPEC-059/T002 -->\n\n## Task\n\nReview: an independent reviewer checks the coordination contract (identity, concurrency, idempotency, recovery, delivery, privacy) for gaps and for any weakening of the Constitution, GOVERNANCE.md or ADRs, before T001. Planned evidence: review record. Obtained: none.\n\n- Source: [spec.md](https://github.com/jayanez/agent-braid/blob/develop/specs/059-claude-orchestration-ledger/spec.md) · [tasks.md](https://github.com/jayanez/agent-braid/blob/develop/specs/059-claude-orchestration-ledger/tasks.md) · [assurance.json](https://github.com/jayanez/agent-braid/blob/develop/specs/059-claude-orchestration-ledger/assurance.json)\n- Trace: REQ-001 SC-001\n- State basis: Source checkbox in tasks.md.\n\nPlanned and obtained evidence are separate in assurance.json. Closing this issue does not imply human review or scientific proof.\n",
+      "milestone": "M4.6 — Claude Code dynamic workflows",
+      "state": "open",
+      "task_text": "Review: an independent reviewer checks the coordination contract (identity, concurrency, idempotency, recovery, delivery, privacy) for gaps and for any weakening of the Constitution, GOVERNANCE.md or ADRs, before T001. Planned evidence: review record. Obtained: none.",
+      "labels": [
+        "task"
+      ]
+    },
+    {
+      "key": "SPEC-059/T003",
+      "kind": "task",
+      "parent": "SPEC-059",
+      "title": "[SPEC-059 T003] Review: run the offline schema checks of validation procedure 002 (composition with the SPEC-057 setti...",
+      "body": "<!-- agent-braid-task-id: SPEC-059/T003 -->\n\n## Task\n\nReview: run the offline schema checks of validation procedure 002 (composition with the SPEC-057 settings schema, the resolved-delivery coherence rule, the invalid fixture, trailing line feed and bidirectional character cases) and record the outcome. Planned evidence: command output and hashes. Obtained: none.\n\n- Source: [spec.md](https://github.com/jayanez/agent-braid/blob/develop/specs/059-claude-orchestration-ledger/spec.md) · [tasks.md](https://github.com/jayanez/agent-braid/blob/develop/specs/059-claude-orchestration-ledger/tasks.md) · [assurance.json](https://github.com/jayanez/agent-braid/blob/develop/specs/059-claude-orchestration-ledger/assurance.json)\n- Trace: REQ-002 SC-002\n- State basis: Source checkbox in tasks.md.\n\nPlanned and obtained evidence are separate in assurance.json. Closing this issue does not imply human review or scientific proof.\n",
+      "milestone": "M4.6 — Claude Code dynamic workflows",
+      "state": "open",
+      "task_text": "Review: run the offline schema checks of validation procedure 002 (composition with the SPEC-057 settings schema, the resolved-delivery coherence rule, the invalid fixture, trailing line feed and bidirectional character cases) and record the outcome. Planned evidence: command output and hashes. Obtained: none.",
+      "labels": [
+        "task"
+      ]
+    },
+    {
+      "key": "SPEC-059/T004",
+      "kind": "task",
+      "parent": "SPEC-059",
+      "title": "[SPEC-059 T004] Founder: with the SPEC-057 owner, confirm that the G1 protocol defines the late-notice-harm measure be...",
+      "body": "<!-- agent-braid-task-id: SPEC-059/T004 -->\n\n## Task\n\nFounder: with the SPEC-057 owner, confirm that the G1 protocol defines the late-notice-harm measure before its freeze (how an arm with earlier notice differs from the pull arm, the observation unit and a threshold), or record that the Megaphone and the Doorbell are dropped. Planned evidence: the G1 proposal text and a decision record. Obtained: none.\n\n- Source: [spec.md](https://github.com/jayanez/agent-braid/blob/develop/specs/059-claude-orchestration-ledger/spec.md) · [tasks.md](https://github.com/jayanez/agent-braid/blob/develop/specs/059-claude-orchestration-ledger/tasks.md) · [assurance.json](https://github.com/jayanez/agent-braid/blob/develop/specs/059-claude-orchestration-ledger/assurance.json)\n- Trace: REQ-003 SC-003\n- State basis: Source checkbox in tasks.md.\n\nPlanned and obtained evidence are separate in assurance.json. Closing this issue does not imply human review or scientific proof.\n",
+      "milestone": "M4.6 — Claude Code dynamic workflows",
+      "state": "open",
+      "task_text": "Founder: with the SPEC-057 owner, confirm that the G1 protocol defines the late-notice-harm measure before its freeze (how an arm with earlier notice differs from the pull arm, the observation unit and a threshold), or record that the Megaphone and the Doorbell are dropped. Planned evidence: the G1 proposal text and a decision record. Obtained: none.",
+      "labels": [
+        "task"
+      ]
+    },
+    {
+      "key": "SPEC-059/T005",
+      "kind": "task",
+      "parent": "SPEC-059",
+      "title": "[SPEC-059 T005] Orchestrator-launched: only if G2 is opened, probes HV-L1 to HV-L8 (hook context per surface, own-sess...",
+      "body": "<!-- agent-braid-task-id: SPEC-059/T005 -->\n\n## Task\n\nOrchestrator-launched: only if G2 is opened, probes HV-L1 to HV-L8 (hook context per surface, own-session socket acceptance, monitor and channel delivery, repetition after compaction or resume, loss and duplication, identifier survival across restart, lock and fsync behavior), each after the founder's individual authorization, and the founder's decision on the attributed-write recorder after HV-L7. Planned evidence: pinned probe receipts with the host version. Obtained: none.\n\n- Source: [spec.md](https://github.com/jayanez/agent-braid/blob/develop/specs/059-claude-orchestration-ledger/spec.md) · [tasks.md](https://github.com/jayanez/agent-braid/blob/develop/specs/059-claude-orchestration-ledger/tasks.md) · [assurance.json](https://github.com/jayanez/agent-braid/blob/develop/specs/059-claude-orchestration-ledger/assurance.json)\n- Trace: REQ-003 SC-003\n- State basis: Source checkbox in tasks.md.\n\nPlanned and obtained evidence are separate in assurance.json. Closing this issue does not imply human review or scientific proof.\n",
+      "milestone": "M4.6 — Claude Code dynamic workflows",
+      "state": "open",
+      "task_text": "Orchestrator-launched: only if G2 is opened, probes HV-L1 to HV-L8 (hook context per surface, own-session socket acceptance, monitor and channel delivery, repetition after compaction or resume, loss and duplication, identifier survival across restart, lock and fsync behavior), each after the founder's individual authorization, and the founder's decision on the attributed-write recorder after HV-L7. Planned evidence: pinned probe receipts with the host version. Obtained: none.",
+      "labels": [
+        "task"
+      ]
+    },
+    {
+      "key": "SPEC-059/T006",
+      "kind": "task",
+      "parent": "SPEC-059",
+      "title": "[SPEC-059 T006] Deferred: interoperation adapters for mcp_agent_mail or Gas Town, only after demand or G1 evidence exi...",
+      "body": "<!-- agent-braid-task-id: SPEC-059/T006 -->\n\n## Task\n\nDeferred: interoperation adapters for mcp_agent_mail or Gas Town, only after demand or G1 evidence exists and the formats are read from dated releases; until then `contracts/interop-adapters.md` stays documentation. Obtained: none.\n\n- Source: [spec.md](https://github.com/jayanez/agent-braid/blob/develop/specs/059-claude-orchestration-ledger/spec.md) · [tasks.md](https://github.com/jayanez/agent-braid/blob/develop/specs/059-claude-orchestration-ledger/tasks.md) · [assurance.json](https://github.com/jayanez/agent-braid/blob/develop/specs/059-claude-orchestration-ledger/assurance.json)\n- Trace: REQ-004 SC-004\n- State basis: Source checkbox in tasks.md.\n\nPlanned and obtained evidence are separate in assurance.json. Closing this issue does not imply human review or scientific proof.\n",
+      "milestone": "M4.6 — Claude Code dynamic workflows",
+      "state": "open",
+      "task_text": "Deferred: interoperation adapters for mcp_agent_mail or Gas Town, only after demand or G1 evidence exists and the formats are read from dated releases; until then `contracts/interop-adapters.md` stays documentation. Obtained: none.",
+      "labels": [
+        "task"
+      ]
+    },
+    {
+      "key": "SPEC-059/T007",
+      "kind": "task",
+      "parent": "SPEC-059",
+      "title": "[SPEC-059 T007] Integrator: keep the HAR.3 cross-reference, hypothesis index and roadmap wording consistent with this...",
+      "body": "<!-- agent-braid-task-id: SPEC-059/T007 -->\n\n## Task\n\nIntegrator: keep the HAR.3 cross-reference, hypothesis index and roadmap wording consistent with this sketch (H-LD3 withdrawn; SPEC-059 specified now and implemented later or never). Planned evidence: reviewed integration diff. Obtained: none.\n\n- Source: [spec.md](https://github.com/jayanez/agent-braid/blob/develop/specs/059-claude-orchestration-ledger/spec.md) · [tasks.md](https://github.com/jayanez/agent-braid/blob/develop/specs/059-claude-orchestration-ledger/tasks.md) · [assurance.json](https://github.com/jayanez/agent-braid/blob/develop/specs/059-claude-orchestration-ledger/assurance.json)\n- Trace: REQ-005 SC-005\n- State basis: Source checkbox in tasks.md.\n\nPlanned and obtained evidence are separate in assurance.json. Closing this issue does not imply human review or scientific proof.\n",
+      "milestone": "M4.6 — Claude Code dynamic workflows",
+      "state": "open",
+      "task_text": "Integrator: keep the HAR.3 cross-reference, hypothesis index and roadmap wording consistent with this sketch (H-LD3 withdrawn; SPEC-059 specified now and implemented later or never). Planned evidence: reviewed integration diff. Obtained: none.",
+      "labels": [
+        "task"
+      ]
+    },
+    {
+      "key": "SPEC-059/T008",
+      "kind": "task",
+      "parent": "SPEC-059",
+      "title": "[SPEC-059 T008] Founder: after review, record the disposition of SPEC-059 (open G2, defer or never implement) and clos...",
+      "body": "<!-- agent-braid-task-id: SPEC-059/T008 -->\n\n## Task\n\nFounder: after review, record the disposition of SPEC-059 (open G2, defer or never implement) and close the sketch; a GN fail or an inconclusive gate means G2 is not opened. Planned evidence: decision record. Obtained: none.\n\n- Source: [spec.md](https://github.com/jayanez/agent-braid/blob/develop/specs/059-claude-orchestration-ledger/spec.md) · [tasks.md](https://github.com/jayanez/agent-braid/blob/develop/specs/059-claude-orchestration-ledger/tasks.md) · [assurance.json](https://github.com/jayanez/agent-braid/blob/develop/specs/059-claude-orchestration-ledger/assurance.json)\n- Trace: REQ-005 SC-005\n- State basis: Source checkbox in tasks.md.\n\nPlanned and obtained evidence are separate in assurance.json. Closing this issue does not imply human review or scientific proof.\n",
+      "milestone": "M4.6 — Claude Code dynamic workflows",
+      "state": "open",
+      "task_text": "Founder: after review, record the disposition of SPEC-059 (open G2, defer or never implement) and close the sketch; a GN fail or an inconclusive gate means G2 is not opened. Planned evidence: decision record. Obtained: none.",
+      "labels": [
+        "task"
+      ]
+    }
+  ]
+}

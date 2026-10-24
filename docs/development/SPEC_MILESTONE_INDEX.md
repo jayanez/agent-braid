@@ -65,7 +65,7 @@ assurance record and the [roadmap](../../ROADMAP.md) for those boundaries.
 
 | [SPEC-047: local-technical-telemetry](../../specs/047-local-technical-telemetry/spec.md) | [M4.5 — AI tooling integrations for Codex and Claude Code](https://github.com/jayanez/agent-braid/milestone/19) |
 
-The current source inventory has 54 active specs across 24 declared milestone identities; SPEC-051 extends FC.2/#20; M4.6 (SPEC-052/053) is draft planning whose local tracking entries create no remote milestone, issue or Project record until a separately authorized publication; HAR.1/HAR.2/HAR.3 are draft planning additions with separate scoped publication receipts. SPEC-045 remains FC.2/#20; SPEC-046, SPEC-047 and draft SPEC-054 extend M4.5/#19. For M4.5: nine source specs, 120 task obligations (78 checked, 42 unchecked), 3 historically closed parents and 6 open parents: 129 desired records. Historical evidence retains its original validation boundary; [current M4.5 alignment](../tooling/M45_ALIGNMENT.md) and [integration provenance](../../specs/047-local-technical-telemetry/integration-review.md) distinguish source review, current integration and pending acceptance.
+The current source inventory has 57 active specs across 24 declared milestone identities; SPEC-051 extends FC.2/#20; M4.6 (SPEC-052, SPEC-053 and SPEC-057 to SPEC-059) is draft planning whose local tracking entries create no remote milestone, issue or Project record until a separately authorized publication; HAR.1/HAR.2/HAR.3 are draft planning additions with separate scoped publication receipts. SPEC-045 remains FC.2/#20; SPEC-046, SPEC-047 and draft SPEC-054 extend M4.5/#19. For M4.5: nine source specs, 120 task obligations (78 checked, 42 unchecked), 3 historically closed parents and 6 open parents: 129 desired records. Historical evidence retains its original validation boundary; [current M4.5 alignment](../tooling/M45_ALIGNMENT.md) and [integration provenance](../../specs/047-local-technical-telemetry/integration-review.md) distinguish source review, current integration and pending acceptance.
 Frozen publication receipts, assurance/evidence records, founder decisions and
 dated audits retain their captured titles and counts. Resolve those historical
 names through the tracking crosswalk; do not rewrite their bound contents.
@@ -98,9 +98,13 @@ and tracking do not admit native execution or automatic promotion.
 |---|---|
 | [SPEC-052: claude-workflow-gate](../../specs/052-claude-workflow-gate/spec.md) | M4.6 — Claude Code dynamic workflows (not yet published) |
 | [SPEC-053: claude-transcript-trace-adapter](../../specs/053-claude-transcript-trace-adapter/spec.md) | M4.6 — Claude Code dynamic workflows (not yet published) |
+| [SPEC-057: claude-orchestration-advisory](../../specs/057-claude-orchestration-advisory/spec.md) | M4.6 — Claude Code dynamic workflows (not yet published) |
+| [SPEC-058: claude-orchestration-guard](../../specs/058-claude-orchestration-guard/spec.md) | M4.6 — Claude Code dynamic workflows (not yet published) |
+| [SPEC-059: claude-orchestration-ledger](../../specs/059-claude-orchestration-ledger/spec.md) | M4.6 — Claude Code dynamic workflows (not yet published) |
 
 [Program and gates](../../specs/052-claude-workflow-gate/program.md). SPEC-053
-implementation is blocked by the preregistered G0 experiment; planning and local
+implementation is blocked by the preregistered G0 experiment, SPEC-058 by G1 and
+SPEC-059 by G2; planning and local
 tracking do not create remote records or execution authority.
 
 

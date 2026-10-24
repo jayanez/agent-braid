@@ -1,0 +1,439 @@
+{
+  "articles": [
+    0,
+    1,
+    2,
+    3,
+    5,
+    6,
+    7,
+    12,
+    13,
+    14,
+    15,
+    19,
+    20,
+    21,
+    23,
+    25
+  ],
+  "assumptions": "Claude Code only; behavior of the four surfaces is the host documentation as read on 2026-10-24 (changelog to 2.1.310) and is unconfirmed on a host until the probes HV-6 to HV-13 are recorded; the plugin MCP admission lock, worktree allowlist and limits are as in the repository; a declaration is a claim by the orchestrator and may be incomplete; settings are operator-owned; the G1 proposal was drafted by another track, is unfrozen and may change before the freeze; implementation follows #671, #672 and the pull request carrying this specification; SPEC-058 must exist as an unreleased engineering candidate before G1 arm A3 can run; EUR 0 additional spend on the founder's existing subscription.",
+  "authority_snapshot": {
+    "commit": null,
+    "hashes": {
+      "ARCHITECTURE.md": "7bad53a83a54da09a0f55fb514432b53265cc1d99e88fdc3e42989b2fa4ea256",
+      "CONSTITUTION.md": "ff7196976a1736a639947c2ab26e8da157fef23c89ba9881312f2a36459964eb",
+      "GOVERNANCE.md": "c8eda331d97c42e54be4730ef906dfaad9ae2814e36704302f97afceff037d82",
+      "LICENSE": "340d66a837b3a1617645d00622a46d1bcbf3534bedd997b6461d16d2e08b374f",
+      "MATHEMATICAL_FOUNDATIONS.md": "8c56b59b20ca5f9bc7464b458f980e51e05c0820645cf86181cf08883acd5ca4",
+      "RESEARCH.md": "a3e9668e2c1b80024a6ce9024b7558d31f0d3d2d1e22fa89f460a70beefdd56d",
+      "TERMINOLOGY.md": "4b52b621900a413f58fa920254c2d36df849bda906e9989f0e49b0a43aaf503c",
+      "TRADEMARKS.md": "be084562378235f7c72b4a16e9d0f37b01e7e2b035291eceb4f6478048a517b8",
+      "docs/adr/0000-template.md": "546bd5098b2f8f07804253f0b1fd2c893264d4519644ccd93913956056fac8f4",
+      "docs/adr/0001-formalization-before-implementation.md": "c68d05ee8abb12932acaebee8b95ef4873172a97f93a8dae2187b84b63a29188",
+      "docs/adr/0002-yang-baxter-is-a-hypothesis.md": "8f72ec03ea85a5cef1bed08b04c871bca5930a70e2c313f01124d4a0c194efef",
+      "docs/adr/0003-copyleft-and-trademark-protection.md": "174745a166b4f521fab0f1a043d5c96b8b4b6a626b344245d8b89616d919f8c6",
+      "docs/adr/0004-scientific-constitutional-clarifications.md": "eaf956ab7a8daae2b5ea75d5ae8832a039ef2c6d18bf2e0e27e9b2b964e0fd71",
+      "docs/adr/0005-evidence-contracts-and-bounded-laboratory.md": "a35504083c719993a8c9a460d579c9017871b20bd65760f9f2534de2d7f27f6b",
+      "docs/adr/0006-shared-spec-kit-guardrails.md": "b02e0844e311e0364b40d06e2de3c1c73628247625d20c534a644ff8d9387cb7",
+      "docs/adr/0007-read-only-python-analyzer.md": "c864497da1a8172826d1b96b728b03d16272396c53dc194680d646301c4d07f3",
+      "docs/adr/0008-read-only-git-worktree-adapter.md": "8915605500bb4fa0150ff2fe576482db8a55bd29fb53a17788a51f8671a52e76",
+      "docs/adr/0009-transparent-validation-status.md": "7e329563e069e972ef2febcf64e0fec29255c0c9af29e331a1d5beb7f382e60d",
+      "docs/adr/0010-clean-publication-provenance.md": "6481cf11e2daf5d307928310763ae82889b280cea215126ebae3b32a708f3994",
+      "docs/adr/0011-risk-based-validation-gates.md": "3aa363f808821ead18d830e931e476a0d790106112ef637875428f322d321531",
+      "docs/adr/0012-vendored-python-skills-license-boundary.md": "e98b19c465689190265ed410b9226d60d52f00a8abf95410f5aa0a567aa80fea",
+      "docs/adr/0013-isolated-git-replay-and-advisory-planning.md": "1c291cb527825864520075edc2ae7c84bafb07f66790f9fc29b0149a07024d24",
+      "docs/adr/0014-parallel-integration-contract.md": "2481e93cf1e392887f2ee74e39efec7dfee0a9c52340fccd491903fd4292f679",
+      "docs/adr/0015-real-repository-validation-profile.md": "43e05f6fa96b5b3a8a8a83ddc922d8bced11b89a3f88263760b83b358febde99",
+      "docs/adr/0016-post-root-public-provenance.md": "e3c001cc23b64db5362ed0274af21d1d5a42b27d2bff68654db51498fbfb142a",
+      "docs/adr/0017-bounded-structured-exchange.md": "72cecb595605a16eaa5de7a88e960492205d82a300af2f6fb4451263f7e780c4",
+      "docs/adr/0018-private-source-sidecar-and-disposable-labs.md": "487c48e8ed4296bb4120e32e9d7e75724c76da88ebb6435396cb7fdcf7d317ad",
+      "docs/adr/0019-bounded-local-git-runtime.md": "9023b6176762885ce291721633f686ae2c4d3a4c1404f3ee164e7414a69b5fd3",
+      "docs/adr/0020-bounded-m4-alpha-runtime.md": "b91615158b29902237ce638d659bc30484562766a0f2607a38fcc4bd717fda28",
+      "docs/adr/0021-codex-claude-tooling-integration.md": "c9e85fbab0c71445ca16d9aef7c33d17614abbf36588441ddf90b2b07fc1fd89",
+      "docs/adr/0022-attribution-correction-history-equivalence.md": "0d394b895af69374c7f6bdf441cc780ee67802c34f9b0380f8ed58b1c9a17eb1",
+      "docs/adr/0023-second-history-correction-equivalence.md": "4334fe23543dad038811b7819acbc24fbebab3c1858789816b1512e786b7a8eb",
+      "docs/adr/0024-local-technical-telemetry.md": "e3c2d827bbd839179e56d3f81fe3ad1b7234b4a61ed24c98bb59a8aa2f23b508",
+      "docs/adr/0024-native-ai-plugins.md": "3a45d8a62cb241b01638a37f39fdc309cb0563941c0343fe58d9ab30c5c677ac",
+      "docs/adr/0025-local-technical-telemetry.md": "e2f9af4d0d0a118635677146ba0c96cbd82046b7943eca36eeabf041923601f7",
+      "docs/adr/0026-pure-owned-work-validation.md": "dc6a045316c37201767adba79ad59779cff4646c9d05e4a2306dfaec481e4ccd",
+      "docs/adr/0027-braid-harness-offline-foundations.md": "076e524bb4b31a0075ff72c605a438edc9dcb70aa09dec9583ef21db5362b046",
+      "docs/adr/0028-closed-effectful-workload-simulation.md": "be8bb2fefc702a2d85b804f70141f68f25b68e45118d25b4f4fa0e99d62eca85",
+      "docs/adr/0030-native-plugin-surface-naming.md": "2bff8ce3fd5c2e183dca8000044ccd4d08980ec7e4a1b31d9af7a3a4b7f18c8e",
+      "docs/architecture/AGENT_INTERACTION_METADATA.md": "0118d7f16c390fc4c1ff027b503a4eaba8a747edf3f6d7b088559f8870e27780",
+      "docs/architecture/ASSURANCE_LEVELS.md": "3e86d0060ef566ba8d1e1690606fc06e8fee172f187a1b9779b13d27f0f915d9",
+      "docs/architecture/CONFLUENCE_CERTIFICATE.md": "fd12a8f1a1477835848581b0f4ccd52f76d3f22dd96a3abaccb9074733464a8e",
+      "docs/architecture/DRAFT_0_2.md": "ae2bc09d941537eec6ea05edb69e4402d5c17dae0585b4add0825d6a01fdc29f",
+      "docs/architecture/GIT_REPLAY.md": "991de0aba02d2f89cb5fd01af4d9842c0a15b1ee52fb692671e34a81a6b09ab2",
+      "docs/architecture/PARALLEL_INTEGRATION.md": "14a55efe552cb0b5a90e8112260af681b303b9ce2e0fd0b49c7024ab4b15843b",
+      "docs/theory/CLAIM_DISCIPLINE.md": "0fcd89ae045e017f62cbe0b7a83a9a9c107770856bba12a340e77f06576db053",
+      "docs/theory/OPERATIONAL_SEMANTICS.md": "7e83813d138dde064f85aafee1ba20302d55ede768d35d26340abd522ecce1f7",
+      "docs/theory/SCIENTIFIC_INTEGRATION.md": "3bdb0e13edf1e7666902c426df864cb51219d33e762f6bd87e8d2702bb1642eb",
+      "docs/theory/STRUCTURED_EXCHANGE.md": "522fa1e4f2be6a0873c00ba2f503f475fa04833292a6684620ec01ef725bb710",
+      "schemas/0.1.0-alpha/analysis-report.schema.json": "91c759ad0d28de0b4e68f5bd3958de37ff2e6c102ecd8c6c2f0083e0151ad578",
+      "schemas/0.1.0-alpha/git-analysis-provenance.schema.json": "403b2e61ff7a7700c0db05df4ac3b11504e2c69e2bab9161b4a9ceb156b1316c",
+      "schemas/0.1.0-alpha/git-analysis-request.schema.json": "928c777ae68a184fae172a7cb2b172ba283b5af912edaf6c4b389bd8bf767a96",
+      "schemas/0.1.0-alpha/git-integration-prototype-report.schema.json": "417e5ae3f27083dfa0592589bf229fa9db8bd66cd20a29d472d9c0a83509b22e",
+      "schemas/0.1.0-alpha/git-integration-prototype-request.schema.json": "3dcde3972f3ab99939bec923416e5be57f9a6c0a2fc73a281830a20f6998222b",
+      "schemas/0.1.0-alpha/git-plan.schema.json": "3519d38b395974c3261fbb9243dd2fcbf1d0f08086c2164d64d7ebfb9a726972",
+      "schemas/0.1.0-alpha/git-replay-evidence.schema.json": "46560e30af74daf22d816130590d7bc596a9ae4fe1060ff4709e76f19487d137",
+      "schemas/0.1.0-alpha/git-runtime-manifest.schema.json": "a302dec5d42d61d72128798a8e08f7a7ad5b1b6024d18f3e89e6ef6abe3f868c",
+      "schemas/0.1.0-alpha/git-runtime-report.schema.json": "b2b1833e43c3b8429f9cc20a2a632a27214f8d2acd59a3e9ce5f0243579af73b",
+      "schemas/0.1.0-alpha/git-runtime-request.schema.json": "a83873e072ea357b29331e74e42b5a075769d939bcfba69f458712876b187f5d",
+      "schemas/0.1.0-alpha/git-runtime-state.schema.json": "6ce9a56e6493e10938eaf60dfc6501d52cd59af240e9f0bb5a0a8c036677d75a",
+      "schemas/0.1.0-alpha/runtime-operator-grant.schema.json": "0a49f4800ed40873022eaa14d37e12eacb5790f71197ac1013766f4742162b8d",
+      "schemas/0.1.0-alpha/runtime-policy.schema.json": "dc88b1e7de631c797002ad29276a4eeccf8f2a1bbbb3a48c41dd4f82ea6f8c17",
+      "schemas/0.1.0-alpha/runtime-preparation-evidence.schema.json": "1989267da48fa7ad3432b67d0767e2f702381773edb02aff7bd8a9ad37a3229f",
+      "schemas/0.1.0-alpha/runtime-schedule.schema.json": "0bd21c877e5f594e7710085d4232b5b095683e1239277a7b322f0890d4b28f64",
+      "schemas/0.2.0-draft/agent-interaction-metadata.schema.json": "9d2ff528d0d3f02ba5bce63181e88732eecef96e90fabb5898b3314abd554900",
+      "schemas/0.2.0-draft/confluence-certificate.schema.json": "8e375fdc57fbd3b9f15544f2079c8f92633ec1def660f3eabed77feb784f34f0",
+      "schemas/0.3.0-experimental/structured-exchange-evidence.schema.json": "1cb4e536d89b519b3a5ffc70421a6ec561b06e1826b22c69b9e9cc01cca4c767",
+      "schemas/0.3.0-experimental/structured-exchange-request.schema.json": "5b2065b94fa50570ecfe5392551d87f1f1fd31cff8dc4b840045e1c13e3aaabb",
+      "schemas/agent-interaction-metadata.schema.json": "44b60956817cbcd92e0802dfe99ca537b20768f53472f04afd1dcc502f53cd5c",
+      "schemas/confluence-certificate.schema.json": "ea68bf94f6767d615881167d8f7dd28359e6c399edd66935ba17b88b2b1cf785",
+      "schemas/governance/public-export-manifest.schema.json": "11eb7f2594939ae9fd0c9e6cfe4423a80aba686d6cdfdd8b73b0fb84b0840aa8",
+      "schemas/governance/release-validation-record.schema.json": "d9943f0c9f5520ea52e3b12bfba88240d03f8011b433fc5e35cb49549ab6e819"
+    },
+    "mode": "current"
+  },
+  "compatibility": "Additive. No change to agent_braid/analysis.py, AIM 0.2.0-draft, SPEC-023, the SPEC-052 gate and its schemas, the plugin MCP tools, limits or grants, or the existing five product skills. New: one pure module, four read-only CLI subcommands, schemas and a recipe document, all after #672 (the SPEC-052 implementation pull request). Any plugin-level change needs the ADR amendment handled by SPEC-058 and the SPEC-052 proposal.",
+  "domain": "Declared ownership of 2 to 32 units on four documented Claude Code parallel surfaces (workflow-tracks, linked-sessions, agent-teams, batch) in Git repositories at file level, checked at committed or quiesced checkpoints and recovery points; not Codex, cloud or remote sessions, the VS Code extension, non-Git workspaces, or per-tool-call monitoring.",
+  "evidence_snapshot": {
+    "commit": null,
+    "mode": "current"
+  },
+  "execution_contract": "Read-only, local, offline and bounded. No model invocation, network, socket, launch, message, resume, stop, grant, merge or promotion by any command; no hook, mod, monitor, channel, workflow fan-out, skill or MCP tool is added; executionAuthorization is false in every emitted object; results are written only to explicit new private paths; probes are launched by the orchestrating session only after the founder authorizes each one, and G1 runs are started and approved by the founder, both outside this delivery; no concurrent agent, push or remote issue is authorized.",
+  "human_review": "pending",
+  "hypotheses": "H-OR1 (untested; H-CW2 part a): on real Claude Code parallel runs a declared-ownership pre-flight plus a checkpoint receipt catches or prevents integration failures earlier than prompt partitioning plus the SPEC-052 gate without serializing most of the work. H-OR2 (untested; H-CW2 part a): the pre-flight false-assurance rate and the declaration under-coverage are small enough for the advice to be useful. H-CW2 part b (pull digests) is carried by SPEC-059 as H-LD1 and part c (opt-in guard) by SPEC-058 as H-OR3. Falsification and inconclusive outcomes are valid; the gates GA, GN and GG and their evaluation order are fixed in the G1 proposal.",
+  "observation_contract": "Declaration records as written by the orchestrator; committed or quiesced Git state at named snapshots through the existing bounded Git adapter; documented host settings read from a closed key list of settings files; session state as printed by the host and supplied by the operator, used for booleans and counts only; host behavior only through recorded probe receipts of counts and booleans with the Claude Code version. Absent, unreadable or excluded observations are unknown or not-observed and never clean; an observation that cannot be taken in a bounded and stable way is a refusal (an error with a code and no result), not a result.",
+  "references": [
+    "CONSTITUTION.md",
+    "GOVERNANCE.md",
+    "docs/development/SPEC_KIT.md",
+    "docs/theory/OPERATIONAL_SEMANTICS.md",
+    "docs/theory/CLAIM_DISCIPLINE.md",
+    "docs/architecture/AGENT_INTERACTION_METADATA.md",
+    "docs/architecture/PARALLEL_INTEGRATION.md",
+    "docs/adr/0014-parallel-integration-contract.md",
+    "docs/adr/0021-codex-claude-tooling-integration.md",
+    "docs/adr/0024-native-ai-plugins.md",
+    "docs/tooling/BUDGET.md",
+    "docs/experiments/PROTOCOL.md",
+    "docs/experiments/CLAUDE_ORCHESTRATION_G1_PROPOSAL.md",
+    "specs/023-recorded-trace-adapters/spec.md",
+    "specs/039-ai-tooling-program/program.md",
+    "specs/047-local-technical-telemetry/spec.md",
+    "specs/050-braid-harness-adaptation/spec.md",
+    "specs/050-braid-harness-adaptation/tasks.md",
+    "specs/052-claude-workflow-gate/spec.md",
+    "specs/052-claude-workflow-gate/program.md",
+    "specs/052-claude-workflow-gate/adr-proposal.md",
+    "specs/053-claude-transcript-trace-adapter/spec.md",
+    "agent_braid/analysis.py",
+    "agent_braid/git_adapter.py",
+    "agent_braid/runtime_scheduler.py",
+    "agent_braid/plugin_mcp.py",
+    "tests/test_plugin_package.py",
+    "specs/057-claude-orchestration-advisory/spec.md",
+    "specs/057-claude-orchestration-advisory/validation-plan.md",
+    "specs/057-claude-orchestration-advisory/plan.md",
+    "specs/057-claude-orchestration-advisory/research.md",
+    "specs/057-claude-orchestration-advisory/quickstart.md",
+    "specs/057-claude-orchestration-advisory/tasks.md",
+    "specs/057-claude-orchestration-advisory/issue-drafts.md",
+    "specs/057-claude-orchestration-advisory/checklists/requirements.md",
+    "specs/057-claude-orchestration-advisory/contracts/README.md",
+    "specs/057-claude-orchestration-advisory/contracts/ownership-declaration.schema.json",
+    "specs/057-claude-orchestration-advisory/contracts/envelope-receipt.schema.json",
+    "specs/057-claude-orchestration-advisory/contracts/hazard-notice.schema.json",
+    "specs/057-claude-orchestration-advisory/contracts/orchestration-settings.schema.json",
+    "specs/057-claude-orchestration-advisory/contracts/policy-profile.schema.json",
+    "specs/057-claude-orchestration-advisory/contracts/recovery-report.schema.json",
+    "specs/057-claude-orchestration-advisory/contracts/surface-capability-matrix.json",
+    "specs/057-claude-orchestration-advisory/contracts/interop-inputs.md",
+    "specs/057-claude-orchestration-advisory/contracts/ownership-declaration.example.json",
+    "specs/057-claude-orchestration-advisory/contracts/command-error.schema.json",
+    "research/radar/2026-10-24-claude-orchestration.json",
+    "docs/strategy/ECOSYSTEM.md",
+    "research/hypotheses/H-CW2-claude-orchestration-ownership.md",
+    "research/adoption/2026-09-initial-triage.json",
+    "docs/experiments/claude-orchestration-g1-inputs.json"
+  ],
+  "requirements": [
+    {
+      "id": "REQ-001",
+      "scenarios": [
+        {
+          "given": "an orchestrator's plan for 2 to 32 parallel units (on the surfaces `workflow-tracks`, `linked-sessions`, `agent-teams` or `batch`)",
+          "id": "SC-001",
+          "obtained_evidence": [],
+          "planned_evidence": "tests/test_ownership_declaration.py (planned, not existing) with fixtures under tests/fixtures/ownership/ (planned) and procedure_req_001; exact commands, hashes, failures and limits are recorded when it runs. Planned only; obtained evidence: none. Tasks: T012, T013.",
+          "test_file": "specs/057-claude-orchestration-advisory/validation-plan.md",
+          "test_name": "procedure_req_001",
+          "then": "the record accepts only the documented members (unit id, surface id from the closed four-id set, declared base reference, reads, critical reads, writes, creates, deletes, declared dependencies, shared-resource classes, a completeness flag, provenance with an optional imported-from member, and optional explicit exemption rules for unattributed writers); the record rejects unknown members, any member that could carry file content, command text, prompts or transcripts, duplicate unit ids, the reserved unit id `unattributed`, more than 32 units, more than 512 path entries per unit, strings over 256 characters, strings that contain a character of the REQ-008 text exclusion set (also when a line feed follows) and a base reference containing `..` or `//`; the core members contain no vendor-specific member; and a declaration that claims completeness without a declared base is refused",
+          "when": "each unit's ownership is written as a declaration record and validated against the declaration schema"
+        }
+      ],
+      "text": "Declare ownership and footprints in a vendor-neutral, bounded schema"
+    },
+    {
+      "id": "REQ-002",
+      "scenarios": [
+        {
+          "given": "a declaration with literal paths, directories and glob patterns and a pinned base tree",
+          "id": "SC-002",
+          "obtained_evidence": [],
+          "planned_evidence": "tests/test_ownership_expansion.py (planned, not existing) and procedure_req_002; exact commands, hashes, failures and limits are recorded when it runs. Planned only; obtained evidence: none. Tasks: T014, T015.",
+          "test_file": "specs/057-claude-orchestration-advisory/validation-plan.md",
+          "test_name": "procedure_req_002",
+          "then": "literal paths and patterns that match files at the pinned base become exact repository-relative paths under one normalization rule (separator, `./`, `..`, absolute to repository-relative, Unicode NFC, case-fold collision detection for case-insensitive filesystems, and symlinks that resolve inside the repository or are refused); `creates` entries are carried as exact paths or as prefix regions; every pattern or region that cannot be expanded exactly is reported with partial coverage, so any pair that involves it is classified `unknown` or `conflicting` and never as an independent candidate; two units that create the same path, or a create prefix that overlaps another unit's path, are reported as conflicting; and the prefix-overlap rule is the semantics of `agent_braid/runtime_scheduler._overlap`, moved once into a neutral helper that both the expansion module and the scheduler import, with the scheduler's current behavior pinned by its existing tests, so that no second spelling of the rule exists",
+          "when": "the pure expansion module (planned `agent_braid/ownership.py`) expands it"
+        }
+      ],
+      "text": "Expand ownership to exact paths with explicit path identity and conservative coverage"
+    },
+    {
+      "id": "REQ-003",
+      "scenarios": [
+        {
+          "given": "expanded declarations for 2 to 32 units",
+          "id": "SC-003",
+          "obtained_evidence": [],
+          "planned_evidence": "tests/test_ownership_preflight.py (planned, not existing) and procedure_req_003; exact commands, hashes, failures and limits are recorded when it runs. Planned only; obtained evidence: none. Tasks: T015, T016.",
+          "test_file": "specs/057-claude-orchestration-advisory/validation-plan.md",
+          "test_name": "procedure_req_003",
+          "then": "the expansion emits AIM `0.2.0-draft` operation records in the declared channel and the existing analyzer is reused unchanged (no new analyzer, `agent_braid/analysis.py` untouched); every pair keeps the existing classes independent candidate, ordered, conflicting or unknown with its coverage; a result involving partial coverage is never an independent candidate; the envelope states evidence, constraints and unknowns in a closed vocabulary and never wording that starts, schedules, approves or recommends parallel execution (a wording lint over emitted text and over the recipe and skill text rejects such terms); the class is `0-heuristic` and the label is `declared-only`; the envelope states that disjoint file sets do not imply a clean merge and that integration evidence remains SPEC-052; empty read sets and undeclared shared-resource conventions (lockfiles, barrel files, generated outputs, formatters) are reported as constraints and unknowns; and `executionAuthorization` is false",
+          "when": "the pre-flight runs through the bundled CLI or through the existing plugin MCP `analyze-work` tool with `kind: aim`"
+        }
+      ],
+      "text": "Produce pre-flight evidence through the existing AIM analyzer with a closed output vocabulary"
+    },
+    {
+      "id": "REQ-004",
+      "scenarios": [
+        {
+          "given": "a declaration and the Git state of each unit at a checkpoint where the unit is committed or quiesced",
+          "id": "SC-004",
+          "obtained_evidence": [],
+          "planned_evidence": "tests/test_ownership_receipt.py (planned, not existing) and procedure_req_004; exact commands, hashes, failures and limits are recorded when it runs. Planned only; obtained evidence: none. Tasks: T017, T018, T042.",
+          "test_file": "specs/057-claude-orchestration-advisory/validation-plan.md",
+          "test_name": "procedure_req_004",
+          "then": "the receipt lists per unit the undeclared writes, the writes into another unit's declared area, the declared writes not observed, and `unknown` for deletions, renames, binaries, symlinks and submodules; writers that cannot be attributed (orchestrator, human and shared-tree edits) are reported as an unattributed writer with unknown effect and never as a violation by a unit, unless a declared exemption rule explicitly excludes the path, in which case the receipt names the rule; on a shared working tree (agent teams, sessions editing in place) the receipt attributes no change to any unit, lists every changed path as an unattributed writer and makes no per-unit comparison; a list longer than its reporting bound is cut deterministically and the cut is recorded with its total in `truncations`, so a busy shared tree yields a partial receipt that is never clean and not a refusal; a unit for which no source was supplied, or whose commits are not a descendant of the declared base, is a per-unit `not-observed` result with a closed reason and is never clean; a busy lock, a worktree that changes between the two Git observations, an unobservable source, over-bound input (REQ-017) or an existing output path is a refusal, that is an error with a stable code and no receipt (the single rule of REQ-017); the class is `1-syntactic`, limited to exact repository-relative paths at the named snapshot (on a shared tree it says only that these paths changed, not who changed them); the receipt states what was observed (committed or quiesced Git) and what was not (Bash in flight, MCP effects, reads, uncommitted work of active writers); and it carries a snapshot digest, paths and hashes only",
+          "when": "the operator or the orchestrating session runs the checkpoint check through the bundled CLI, not by polling the plugin MCP"
+        }
+      ],
+      "text": "Compare declared and observed footprints at committed or quiesced checkpoints"
+    },
+    {
+      "id": "REQ-005",
+      "scenarios": [
+        {
+          "given": "the orchestrator's repository, the documented Claude Code settings files and, optionally, the text of a user's workflow script",
+          "id": "SC-005",
+          "obtained_evidence": [],
+          "planned_evidence": "tests/test_isolation_audit.py (planned, not existing) and procedure_req_005; exact commands, hashes, failures and limits are recorded when it runs. Planned only; obtained evidence: none. Tasks: T020.",
+          "test_file": "specs/057-claude-orchestration-advisory/validation-plan.md",
+          "test_name": "procedure_req_005",
+          "then": "it reports as observations and not as verdicts whether units share a working tree (current directory versus repository root versus `git worktree list`, and session working directories read from supplied `claude agents --json` output, reported as booleans and counts and never as stored paths); the configured `worktree.baseRef` (a read-only read of documented settings files, unreadable meaning unknown) compared with the local HEAD and the origin default branch, so a unit that branches from the origin default cannot silently miss unpushed orchestrator commits; and, for a supplied workflow script text, whether `agent()` calls lack the `isolation: \"worktree\"` option, labelled `inferred` because the option list is documented only in the host's bundled authoring guidance; every observation names its source and is `unknown` when unreadable. The audit reads only a closed key list from settings files (`worktree.baseRef` and `worktree.bgIsolation`), never outputs or persists any other settings value (an `env` value, a token, a hook command), and persists session `name`, `waitingFor` and `cwd` from the supplied listing in no output (they are used in memory to compute the booleans and counts only). The class is `0-heuristic`",
+          "when": "the isolation and base audit runs"
+        }
+      ],
+      "text": "Audit isolation and base as configuration observations"
+    },
+    {
+      "id": "REQ-006",
+      "scenarios": [
+        {
+          "given": "the four surface ids (`workflow-tracks`, `linked-sessions`, `agent-teams`, `batch`) and the lifecycle points pre-flight, continuous checkpoint, recovery and integration",
+          "id": "SC-006",
+          "obtained_evidence": [],
+          "planned_evidence": "tests/test_orchestration_matrix.py (planned, not existing) and procedure_req_006; exact commands, hashes, failures and limits are recorded when it runs. Planned only; obtained evidence: none. Tasks: T011, T024, T044.",
+          "test_file": "specs/057-claude-orchestration-advisory/validation-plan.md",
+          "test_name": "procedure_req_006",
+          "then": "every surface and lifecycle cell records a capability, a status (planned, deferred, reuse of SPEC-052 unverified, not covered), the Article 13 class, the owner specification (or `none`), the minimum Claude Code version with its documentation basis, a `preview` label where the host marks the surface experimental or a research preview, and an evidence status (documented, inferred, unconfirmed or host-observed); the surface ids are a closed set shared with the declaration schema, the policy-profile attestation, the SPEC-058 guard matrix and the SPEC-059 contracts, and a checker rejects any other spelling; Codex, cloud sessions, Remote Control and other-machine sessions, the VS Code extension and Windows ledger support are listed as `not covered`; an integration cell never says covered while SPEC-052 is unadopted and its host probes are unobserved, and the `batch` integration cell is not covered until HV-11 because SPEC-052 does not mention `/batch`; and the checker rejects a cell marked host-observed without a receipt path, a cell without a class, a missing preview label for agent teams and agent view, and any wording that says a surface is enforced",
+          "when": "the matrix document and its checker are reviewed"
+        }
+      ],
+      "text": "Publish a per-surface capability and assurance matrix with host versions and preview labels"
+    },
+    {
+      "id": "REQ-007",
+      "scenarios": [
+        {
+          "given": "the output of `claude agents --json` (with or without `--all`) saved to a file or supplied on standard input, and the Git state of the units' worktrees",
+          "id": "SC-007",
+          "obtained_evidence": [],
+          "planned_evidence": "tests/test_recovery_report.py (planned, not existing) and procedure_req_007; exact commands, hashes, failures and limits are recorded when it runs. Planned only; obtained evidence: none. Tasks: T021.",
+          "test_file": "specs/057-claude-orchestration-advisory/validation-plan.md",
+          "test_name": "procedure_req_007",
+          "then": "it classifies each unit as untouched, dirty, published, conflicting or unknown from the observed Git state against the declared claim, lists overlap with units that are still live, and never reclaims, resumes, deletes, messages, restarts or launches anything; Agent Braid never executes the `claude` binary (the operator supplies the input); input that is not parseable JSON or exceeds the bound is a refusal (an error, REQ-017), while input that parses but has a missing, renamed or unknown field or value yields a per-unit `unknown` naming the field; interfaces without a documented stable form (the agent-teams task directory, workflow journals) are best-effort, labelled `inferred` and fail soft; a unit with uncommitted work in a worktree that the host's agent-view delete would discard is listed as a warning datum; and the report persists no session `name`, `waitingFor`, `cwd` or other free text from the listing (only the unit id, the closed state and kind enumerations, booleans, counts and an input digest). The class is `0-heuristic`",
+          "when": "the recovery report runs"
+        }
+      ],
+      "text": "Report orphans and recovery state read-only"
+    },
+    {
+      "id": "REQ-008",
+      "scenarios": [
+        {
+          "given": "a pre-flight verdict or a checkpoint receipt that contains repository-derived strings (paths, branch names, commit subjects, task text)",
+          "id": "SC-008",
+          "obtained_evidence": [],
+          "planned_evidence": "tests/test_hazard_notice.py (planned, not existing) and procedure_req_008; exact commands, hashes, failures and limits are recorded when it runs. Planned only; obtained evidence: none. Tasks: T019.",
+          "test_file": "specs/057-claude-orchestration-advisory/validation-plan.md",
+          "test_name": "procedure_req_008",
+          "then": "the notice carries a notice id, an epoch (digest of the declaration and observation snapshot), a valid-until time, an optional superseded notice id, a recheck instruction chosen from a closed list that contains no repository text, and structured hazard items; every repository-derived string is escaped (each character of the text exclusion set, namely Cc and C1 controls, Cf format characters including bidirectional and zero-width characters, U+2028, U+2029 and tag characters, is replaced by visible text), bounded to 256 characters, and placed only in labelled data fields, never in an instruction field; the notice schema enforces exactly that rule, so it rejects a string that still contains an excluded character or ends with a line feed, a `validUntil` that is not a UTC time of the stated shape and duplicate unit ids in a hazard item, without relying on a format checker; adversarial fixtures (a file named like an instruction, a branch name with directives, a commit subject with markup, an oversized name) leave the notice schema-valid and the instruction fields byte-identical; the notice is delivered only as data (a file or standard output) that the orchestrator reads, expires and can be superseded; it carries no file content, command text or transcript; and the same escaping and bounding rules are the contract that any rendering of the notice by a later component (the SPEC-058 Whisper, the SPEC-059 ledger notice) must reuse byte for byte",
+          "when": "a hazard notice is built for the orchestrator to read (the Mailbox)"
+        }
+      ],
+      "text": "Emit epoch-stamped hazard notices as data with injection-safe repository strings"
+    },
+    {
+      "id": "REQ-009",
+      "scenarios": [
+        {
+          "given": "a settings record that may be present at conversation, repository and user scope",
+          "id": "SC-009",
+          "obtained_evidence": [],
+          "planned_evidence": "tests/test_orchestration_settings.py (planned, not existing) and procedure_req_009; exact commands, hashes, failures and limits are recorded when it runs. Planned only; obtained evidence: none. Tasks: T022.",
+          "test_file": "specs/057-claude-orchestration-advisory/validation-plan.md",
+          "test_name": "procedure_req_009",
+          "then": "the record accepts `notificationMode` (`pull` or `push`), `notificationStrategy` (`mailbox-whisper`, `megaphone` or `doorbell`) and `guardMode` (`off`, `audit`, `warn` or `block`) and nothing else outside a namespaced `extensions` member; the resolver applies the most specific scope (conversation over repository over user); a `block` guard mode set at repository or user scope is a floor that a more specific scope cannot lower, so the resolved guard mode is `block` and the resolution records the floor and the scope it came from; settings are operator-owned, so the resolver reads each scope only from its defined operator-owned location (user: a file in the per-user configuration directory; repository: a file outside every working tree, keyed by the repository digest; conversation: a document the operator supplies at invocation), records where each scope came from, and refuses any other source (a tracked or untracked file inside a working tree, a symlink, a file writable by group or others) with `ERR-UNOBSERVABLE-SOURCE`; the block floor can come only from the repository and user locations and is as strong as their file permissions, no stronger; in this specification every resolved notification value yields the effective strategy Mailbox (the pull notice that the orchestrator reads), the Whisper is recorded as a SPEC-058 companion output that this specification neither implements nor enables, and a request for `push`, `megaphone` or `doorbell` is recorded with the status `reserved-for-SPEC-059` and causes no push, no network operation and no socket operation; unknown values, unknown scopes and unknown top-level or scope members are rejected, as is a mode and strategy that contradict each other (`push` with `mailbox-whisper`, `pull` with `megaphone` or `doorbell`); and the schema carries an `extensions` member at the top level and at each scope, keyed by owner specification identifier, each value carrying its own `extensionVersion` and a bounded `settings` object that this specification stores without interpreting, effectiveness or defaults, so that SPEC-059 extends the schema under its own versioned definition without a change here",
+          "when": "the settings are resolved for a run"
+        }
+      ],
+      "text": "Own the orchestration-settings schema, with pull notices as the only effective strategy and a versioned extension point"
+    },
+    {
+      "id": "REQ-010",
+      "scenarios": [
+        {
+          "given": "a unit's declared ownership and a requested enforcement mode",
+          "id": "SC-010",
+          "obtained_evidence": [],
+          "planned_evidence": "tests/test_policy_profile.py (planned, not existing) and procedure_req_010; exact commands, hashes, failures and limits are recorded when it runs. Planned only; obtained evidence: none. Tasks: T023.",
+          "test_file": "specs/057-claude-orchestration-advisory/validation-plan.md",
+          "test_name": "procedure_req_010",
+          "then": "the profile has the unit, the ownership envelope, the mode (`off`, `audit`, `warn` or `block`; absent means `off`; the default when enabled is `audit`) and up to three supported output targets: native host settings (`permissions.deny` and a sandbox write allowlist), a companion plugin's hook configuration (the opt-in is installing that plugin), and an exported settings snippet for manual paste; hooks inside the main plugin are not representable; the guard output vocabulary is limited to no-opinion, ask, deny and additional context, and `allow` or any grant member is unrepresentable; the profile names its coverage boundary (Write and Edit tool calls; Bash only through native permissions and sandbox where host verification HV-8 confirms it) and carries an `enforcementObserved` attestation whose default is false; an enabled mode (`audit`, `warn` or `block`) requires non-empty `protectedControlPaths`; a Bash coverage of `covered-where-verified` is valid only for the native-host-settings output alone and with an attestation naming the HV-8 receipt; the profile states the failure behavior as data (a guard internal error or timeout is fail-open and recorded: no opinion, a record, and the liveness attestation degraded to advisory; `ask` is used only for undecidable paths in `block` mode until probe GP-2 settles it); the schema expresses these constraints with conditional rules where JSON Schema can, and the compiler and validator rules that it cannot express (the audit default when enabled, a mode that skips the ladder, that the envelope digest matches) are named and tested separately; this specification ships the schema, examples and conformance tests only, and the compiler, hooks and guard belong to SPEC-058",
+          "when": "a policy profile is written against `contracts/policy-profile.schema.json` and validated"
+        }
+      ],
+      "text": "Define the policy-profile schema shared with SPEC-058"
+    },
+    {
+      "id": "REQ-011",
+      "scenarios": [
+        {
+          "given": "a user who writes their own dynamic workflow, session launcher or batch plan",
+          "id": "SC-011",
+          "obtained_evidence": [],
+          "planned_evidence": "tests/test_orchestration_recipe.py (planned, not existing) and procedure_req_011; exact commands, hashes, failures and limits are recorded when it runs. Planned only; obtained evidence: none. Tasks: T026, T027, T039.",
+          "test_file": "specs/057-claude-orchestration-advisory/validation-plan.md",
+          "test_name": "procedure_req_011",
+          "then": "the recipe contains a copyable snippet of the user's own script that runs the pre-flight, branches deterministically on the returned verdict, runs a checkpoint between waves and defers integration to the SPEC-052 gate, in which the launch step is a placeholder comment (for example `// your own agent launch here`) and the snippet contains no `agent(` call and no other launch, message or resume construct; Agent Braid ships no workflow or script that calls `agent()` with write capability or creates a fan-out (a static test over every shipped workflow file) and the same static test scans the code blocks of the recipe and of the shipped documentation for an `agent(` call; the recipe states that shared files such as roadmap and program documents are serialized to one unit; the recipe records the dogfood datum (three fan-outs, one stale-read event, no outcome measured) with those limits and makes no value, speed or prevention claim; and the recipe states for each surface which lifecycle points are covered and which are not. Guidance ships as repository documentation and CLI help only; an orchestration skill is deferred (T039)",
+          "when": "the recipe document `docs/tooling/CLAUDE_ORCHESTRATION.md` (planned), the CLI help of the four subcommands and the shipped package files are reviewed"
+        }
+      ],
+      "text": "Document the wave-gate recipe without shipping a fan-out"
+    },
+    {
+      "id": "REQ-012",
+      "scenarios": [
+        {
+          "given": "the host behaviors that the design depends on and that the documentation does not settle (HV-6 to HV-13, listed in the plan)",
+          "id": "SC-012",
+          "obtained_evidence": [],
+          "planned_evidence": "specs/057-claude-orchestration-advisory/evidence/ (planned receipts; none exist) and procedure_req_012; exact commands, hashes, failures and limits are recorded when it runs. Planned only; obtained evidence: none. Tasks: T003, T004, T005, T006, T007, T008, T009, T010, T011.",
+          "test_file": "specs/057-claude-orchestration-advisory/validation-plan.md",
+          "test_name": "procedure_req_012",
+          "then": "each probe has a recorded outcome of pass, fail or unobserved with the Claude Code version, operating system, surface id, date and a receipt made only of counts and booleans, pinned to the host version; nothing in any output or document is labelled host-observed without its receipt; a failed probe selects the documented fallback or removes the capability from the matrix; probes create no standing hook or setting in a shared configuration; coding agents prepare only log-only probe scripts, which stay outside the repository with their hashes in the receipt; no authorization carries from one probe to another; and Agent Braid itself launches nothing",
+          "when": "the orchestrating Claude session launches each probe through a workflow or derived sessions on a scratch repository on the existing subscription after the founder authorizes that probe individually"
+        }
+      ],
+      "text": "Verify host behavior by recorded probes before any assertion"
+    },
+    {
+      "id": "REQ-013",
+      "scenarios": [
+        {
+          "given": "the G1 proposal at `docs/experiments/CLAUDE_ORCHESTRATION_G1_PROPOSAL.md` with its inputs record, written alongside this specification and not yet frozen",
+          "id": "SC-013",
+          "obtained_evidence": [],
+          "planned_evidence": "tests/test_claude_orchestration_g1_proposal.py and scripts/validate_claude_orchestration_g1_proposal.py (both drafted by the G1 track; reviewed and extended under T032) and procedure_req_013; exact commands, hashes, failures and limits are recorded when it runs. Planned only; obtained evidence: none. Tasks: T032, T033, T034, T035, T036, T043.",
+          "test_file": "specs/057-claude-orchestration-advisory/validation-plan.md",
+          "test_name": "procedure_req_013",
+          "then": "the proposal states the baseline arm A0 (prompt partitioning, the host isolation flag where it applies and the SPEC-052 gate), the advisory arms A1 and A2, the opt-in guard arms A3a (audit mode) and A3b (block mode) and a native-controls-only comparison (the host's own `permissions.deny` and sandbox write allowlist without any Agent Braid component; its identifier is set by the G1 proposal), so that the guard is compared with what the host already provides; the staging, in which stage 1 (A0 to A2) runs first on two surfaces and stage 2 (A3) starts only after the founder reads the stage 1 report and records a separate decision; the sentence that SPEC-058 must be implemented as an unreleased engineering candidate (behind the G1 gate) before arm A3 can run, and that adoption or release happens only after G1 gate GG passes and the ADR is adopted; that the planned run count and every threshold are fixed before the freeze and never changed afterwards; the four surfaces (`workflow-tracks`, `linked-sessions`, `agent-teams`, `batch`) each with a minimum number of eligible runs and each claimed or dropped on its own; paired task sets with repetitions and a recorded permutation seed; the primary metrics (conflicts prevented or caught earlier than the SPEC-052 gate, parallelism retained, false blocks, bypasses, the pre-flight false-assurance rate, declaration recall and precision, enforcement liveness, overhead and notification volume); the three gates with their semantics (GA for the advisory arms, GN for pull digests as a prerequisite for planning G2, GG for the guard, with the stated order of evaluation in which a failure outranks an inconclusive outcome and a pass permits only the planning or release consideration of the dependent specification); the limit that the benefit criterion CA1 is an existence screen on designed strata on at least two surfaces and says nothing about prevalence; that gate GG needs at least one claimed surface; pre-stated kill criteria; EUR 0 additional spend on the existing subscription with Sonnet at medium effort and a downgrade to observational findings before launch when the paired arms are infeasible; the host version recorded per run; designed-overlap runs reported separately and never used for prevalence; no speed claim; and the decision on whether `batch` has a pre-flight arm, which the founder takes after probe HV-11 records the layout and before the freeze (T043); a structural checker and tests (drafted by the G1 track) pin these elements once the proposal is frozen; and G1 results are an input to SPEC-058's release decision but not a precondition of the advisory core's implementation",
+          "when": "its structure is checked against this requirement and the founder freezes it as a separate act"
+        }
+      ],
+      "text": "Own the preregistered, staged G1 protocol"
+    },
+    {
+      "id": "REQ-014",
+      "scenarios": [
+        {
+          "given": "third-party coordination tools that may already hold a team's claims or conflict predictions (Clash, mcp_agent_mail, git-kura, Gas Town and Beads)",
+          "id": "SC-014",
+          "obtained_evidence": [],
+          "planned_evidence": "tests/test_orchestration_interop_contract.py (planned, not existing) and procedure_req_014; exact commands, hashes, failures and limits are recorded when it runs. Planned only; obtained evidence: none. Tasks: T030, T031.",
+          "test_file": "specs/057-claude-orchestration-advisory/validation-plan.md",
+          "test_name": "procedure_req_014",
+          "then": "it defines input-only imports as declared or observed inputs with the provenance `imported` plus an `importedFrom` member naming the tool and version (rendered `imported:<tool>@<version>`), never as authority and never as a grant; it positions Agent Braid as an evidence gate that such a tool's verification step may call through documented interfaces, without coupling; every import is optional, bounded, read from files offline and not implemented until the tool's output format is verified on a dated version and there is demand or G1 evidence for it; no adapter code ships in this specification's first releases; and the document makes no claim about those tools beyond what the dated sources show, each such statement citing its source and date (the radar entries RAD-2026-016 to RAD-2026-020 and the repository metadata read read-only on 2026-10-24) and none being used as parity or behind evidence unless the radar classification itself supports it",
+          "when": "the interoperability contract document is reviewed"
+        }
+      ],
+      "text": "Specify optional interoperability inputs, documentation now and adapters deferred"
+    },
+    {
+      "id": "REQ-015",
+      "scenarios": [
+        {
+          "given": "the market and literature research recorded in research.md, the dated pass recorded in `research/radar/2026-10-24-claude-orchestration.json` (RAD-2026-016 to RAD-2026-033, including the official-marketplace sweep of 315 plugins), `docs/strategy/ECOSYSTEM.md` and adoption track AT-2026-007, and the claim discipline of the repository",
+          "id": "SC-015",
+          "obtained_evidence": [],
+          "planned_evidence": "tests/test_orchestration_claim_wording.py (planned, not existing) and procedure_req_015; exact commands, hashes, failures and limits are recorded when it runs. Planned only; obtained evidence: none. Tasks: T002, T027.",
+          "test_file": "specs/057-claude-orchestration-advisory/validation-plan.md",
+          "test_name": "procedure_req_015",
+          "then": "a prior-art record with its query set, sources, date and results exists before any public wording that says unique, first or only; until then the only permitted wording is the single bounded sentence recorded in ECOSYSTEM.md (\"In a dated pass on 2026-10-24 (query set recorded in the radar snapshot), no surveyed shipped Claude Code plugin or coordination tool README was found that declares read/write effect hazards with explicit coverage, or that provides order-independence evidence from bounded replay. This is absence within the surveyed set, not a statement about the whole market, not a claim of novelty over the literature, and not evidence of user demand.\"), or its shorter form `no surveyed shipped plugin found` with the same query set and date; parity and behind items are listed (plain write exclusion and leases, glob ownership, hook-based blocking, textual conflict prediction, symbol-level overlap (DriftWatch), declared-footprint pre-flight scheduling (OpenWeft, Orchestune), combined-tree integration checks that also name missing evidence (Radar) and merge queues with verification gates (SVRF, Gas Town Refinery), shared claims and liveness recovery, and the quick wins), and syntax-aware textual merge (Mergiraf) is listed as complementary; `unknown` as a first-class result is not claimed as a differentiator by itself, because Radar and other tools report missing evidence; only the combination of an Article 13 compatibility class, pairwise classification that includes unknown, declared read/write hazards and the declared-versus-observed receipt is retained as a bounded, untested candidate; the literature (STORM, Atomix, S-Bus, MPAC, Claim Plane) is cited as prior art for the technique so that novelty is stated as an application to Claude Code agent fleets and not as a new technique; the pass is repeated before publication wording, before SPEC-058 release and at M4.6 closure; and a wording lint rejects unbounded superlatives, the words unique, only, first and \"nobody offers\", and a standalone unknown-as-differentiator claim",
+          "when": "the prior-art pass is repeated or extended under T002 and the wording of the specification set, the recipe and any skill text is checked"
+        }
+      ],
+      "text": "Bound uniqueness and market claims by a dated prior-art pass"
+    },
+    {
+      "id": "REQ-016",
+      "scenarios": [
+        {
+          "given": "the repository's authorities (ADR 0021, ADR 0024, AGENTS.md, Articles 12, 13 and 20) and specs/050 tasks T005, T006 and T011",
+          "id": "SC-016",
+          "obtained_evidence": [],
+          "planned_evidence": "tests/test_orchestration_governance.py (planned, not existing) and procedure_req_016; exact commands, hashes, failures and limits are recorded when it runs. Planned only; obtained evidence: none. Tasks: T001, T025, T028, T029.",
+          "test_file": "specs/057-claude-orchestration-advisory/validation-plan.md",
+          "test_name": "procedure_req_016",
+          "then": "no code, workflow, skill or package file from this specification launches, messages as, resumes, authorizes or stops a session, agent, team or batch; adds a hook, mod, monitor or channel to the main plugin (the existing no-hooks inventory assertions of `tests/test_plugin_package.py` stay unchanged); adds a model-callable grant or MCP tool; or executes the `claude` binary; every emitted object has `executionAuthorization` false; the new commands are operator or orchestrator invoked and are not added to SPEC-052's constrained Bash allowlist; the cross-reference to specs/050 T005, T006 and T011 states what is reused and that this specification builds no second hook-profile compiler or orchestration planner; and the documentation and tracking consistency fixes are recorded as T029; the integrator made most of them in this pull request and the remaining one (the cross-note in the SPEC-052 ADR proposal's no-go list) is not made by this specification's track",
+          "when": "the deliverables of this specification are inspected and its tests run"
+        }
+      ],
+      "text": "Keep the governance boundary and reconcile with HAR.3"
+    },
+    {
+      "id": "REQ-017",
+      "scenarios": [
+        {
+          "given": "any input to the new commands (declarations, Git state, `claude agents --json` output, settings files, script text)",
+          "id": "SC-017",
+          "obtained_evidence": [],
+          "planned_evidence": "tests/test_orchestration_bounds.py (planned, not existing) and procedure_req_017; exact commands, hashes, failures and limits are recorded when it runs. Planned only; obtained evidence: none. Tasks: T013, T018, T025, T040, T041, T042.",
+          "test_file": "specs/057-claude-orchestration-advisory/validation-plan.md",
+          "test_name": "procedure_req_017",
+          "then": "all new commands are read-only, local and offline (no network and no socket); the commands refuse over-limit input before analysis (declaration at most 1 MiB, at most 32 units, at most 512 paths per unit, strings at most 256 characters, `claude agents --json` input at most 1 MiB, Git observation within the existing bounded Git helpers); the commands never write into the repository or the registry; the commands write results only to explicit new private paths and refuse existing paths; the commands store paths and hashes only (no file content, command text, prompts, transcripts, session names or settings values outside the closed key list); one rule governs every refusal: a busy lock, an unstable snapshot (a worktree that changes between the two Git observations), an unobservable source, an over-bound or malformed input and an existing output path end the command with a stable error code from a closed list (`command-error.schema.json`), a nonzero exit status and no result object, so that a refusal cannot appear as a receipt, a pre-flight verdict or a report and cannot be read as clean or independent, while `unknown`, `not-observed` and a recorded truncation inside a produced result are Article 13 outcomes of the observation contract and are also never clean (an observed list longer than its reporting bound is truncated and recorded, which is a result and not a refusal); and nothing is collected by telemetry now: the exclusion list below is part of this specification, and a later SPEC-047 vocabulary may add only the aggregate families named in task T041 after SPEC-047 and ADR 0025 are adopted and the producing feature ships",
+          "when": "the commands run, including on oversized, malformed or unreadable input"
+        }
+      ],
+      "text": "Fail closed within fixed bounds, refuse with errors and keep records free of content"
+    }
+  ],
+  "scientific_limits": "No acceptance evidence obtained and no host behavior observed. A declaration-based pre-flight is declared-only and no better than the declaration; disjoint declarations do not imply a clean merge; checkpoint receipts observe committed or quiesced file-level Git state only and not reads, Bash in flight or MCP effects; unattributed writers are unknown by default; hooks, if released later, cannot see Bash writes and fail open. The dogfood datum (three fan-outs, one stale-read event) is an anecdote with no measured outcome. The cited literature is mostly single-author preprints on research harnesses and none measures Claude Code surfaces. The prior-art pass bounds a wording, not a market fact, and unknown as a result is not a differentiator by itself. Structural tests prove no semantic or scientific claim. Hypotheses H-OR1 and H-OR2 may be false or inconclusive. No speed claim.",
+  "scope": "Specify the advisory core of the Claude Code orchestration family for M4.6: a vendor-neutral ownership and footprint declaration with a pure expansion module, pre-flight evidence through the existing AIM analyzer, declared-versus-observed receipts at committed or quiesced checkpoints through the bundled CLI, an isolation and base audit, read-only recovery reports, epoch-stamped pull notices (the Mailbox of the default Mailbox + Whisper strategy), the orchestration-settings schema (most specific scope wins, block floor, operator-owned, versioned extension point, only the pull Mailbox effective), one refusal rule (errors with codes, never results), the policy-profile schema shared with SPEC-058, a per-surface capability and assurance matrix on one surface vocabulary, host-verification probes HV-6 to HV-13 launched by the orchestrating session after per-probe founder authorization, ownership of the preregistered and staged G1 protocol, documented and deferred interoperability inputs, a dated and repeatable prior-art pass with bounded wording, deferred orchestration skill and telemetry, and the governance boundary. SPEC-058 (opt-in guard, implemented first as an unreleased engineering candidate behind G1, adopted only with an ADR amendment after gate GG) and SPEC-059 (ledger and active push; reduced to a sketch of decisions and a draft coordination contract, with no requirement breakdown, blocked by G2 and its own ADR) are separate specifications.",
+  "stage": "draft"
+}

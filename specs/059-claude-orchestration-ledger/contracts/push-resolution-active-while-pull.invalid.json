@@ -1,0 +1,20 @@
+{
+  "schemaVersion": "agent-braid-push-resolution/v0.1",
+  "executionAuthorization": false,
+  "consumedFromSPEC057": {
+    "pushStatus": "reserved-for-SPEC-059",
+    "requestedNotificationMode": "push",
+    "requestedNotificationStrategy": "doorbell",
+    "resolvedFromScope": "repository"
+  },
+  "effectiveNotificationMode": "pull",
+  "effectiveDelivery": "mailbox",
+  "pushStatus": "active",
+  "unavailableReasons": [],
+  "killSwitch": {
+    "set": false,
+    "scope": null
+  },
+  "effectiveTransport": null,
+  "transportReceipt": null
+}

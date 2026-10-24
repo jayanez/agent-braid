@@ -1,0 +1,269 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://agent-braid.dev/specs/057-claude-orchestration-advisory/contracts/ownership-declaration.schema.json",
+  "title": "Agent Braid ownership declaration (draft, not adopted)",
+  "description": "Vendor-neutral declaration of what each parallel unit reads, writes, creates and deletes, written by the orchestrator. It is a claim, not an observation. It carries paths and class labels only: no file content, command text, prompt or transcript member exists. The surface member is drawn from the closed four-id vocabulary of the whole orchestration family; adding a surface is a versioned schema change.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "units"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": "agent-braid-ownership-declaration/v0.1"
+    },
+    "base": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "The base the declaration was written against. Required when any unit claims completeness. A branch or tag name is resolved and pinned by the expansion step; a full commit identifier is used as is.",
+      "anyOf": [
+        {
+          "required": [
+            "ref"
+          ]
+        },
+        {
+          "required": [
+            "commit"
+          ]
+        }
+      ],
+      "properties": {
+        "ref": {
+          "type": "string",
+          "pattern": "^(?!.*\\.\\.)(?!.*//)[A-Za-z0-9][A-Za-z0-9._/-]{0,127}(?!\\n)$"
+        },
+        "commit": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{40}(?!\\n)$"
+        }
+      }
+    },
+    "provenance": {
+      "type": "string",
+      "enum": [
+        "orchestrator-session",
+        "user-script",
+        "human",
+        "imported"
+      ],
+      "description": "Who wrote the declaration. For an imported declaration the importing tool and its version are named in importedFrom (rendered imported:<tool>@<version>); an imported declaration is an input to the analyzer, never authority and never a grant."
+    },
+    "units": {
+      "type": "array",
+      "minItems": 2,
+      "maxItems": 32,
+      "items": {
+        "$ref": "#/$defs/unit"
+      }
+    },
+    "importedFrom": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "tool",
+        "version"
+      ],
+      "description": "Present only when provenance is imported. Names the other coordination tool and the dated version whose output format was verified. No adapter ships in the first releases.",
+      "properties": {
+        "tool": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9_.-]{0,63}(?!\\n)$"
+        },
+        "version": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._+-]{0,63}(?!\\n)$"
+        }
+      }
+    },
+    "unattributedWriterExemptions": {
+      "type": "array",
+      "maxItems": 16,
+      "description": "Explicit, declared exemption rules. Writers that cannot be attributed to a unit (orchestrator, human, shared tree) are reported as unknown by default; only a path covered by a rule here is excluded from that report, and the receipt names the rule. A rule never attributes a write to a unit and never marks a write safe.",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "ruleId",
+          "writer",
+          "paths"
+        ],
+        "properties": {
+          "ruleId": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,63}(?!\\n)$"
+          },
+          "writer": {
+            "enum": [
+              "orchestrator",
+              "human",
+              "shared-tree"
+            ]
+          },
+          "paths": {
+            "$ref": "#/$defs/pathList",
+            "minItems": 1
+          }
+        }
+      }
+    }
+  },
+  "if": {
+    "required": [
+      "units"
+    ],
+    "properties": {
+      "units": {
+        "contains": {
+          "required": [
+            "complete"
+          ],
+          "properties": {
+            "complete": {
+              "const": true
+            }
+          }
+        }
+      }
+    }
+  },
+  "then": {
+    "required": [
+      "base"
+    ]
+  },
+  "$defs": {
+    "path": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 256,
+      "pattern": "^[^\\u0000-\\u001f\\u007f-\\u009f\\u00ad\\u061c\\u115f-\\u1160\\u180e\\u200b-\\u200f\\u2028-\\u202e\\u2060-\\u206f\\u3164\\ufeff\\uffa0\\ufff9-\\ufffb\\U000e0000-\\U000e007f]+(?!\\n)$",
+      "description": "A repository-relative or absolute path, directory or glob pattern. The expansion step normalizes it; the schema only bounds it."
+    },
+    "pathList": {
+      "type": "array",
+      "maxItems": 512,
+      "uniqueItems": true,
+      "items": {
+        "$ref": "#/$defs/path"
+      }
+    },
+    "unit": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "surface",
+        "reads",
+        "writes"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^(?!unattributed$)[A-Za-z0-9][A-Za-z0-9._-]{0,63}(?!\\n)$",
+          "description": "Unit id. The word unattributed is reserved for the attributed-write export and is refused."
+        },
+        "surface": {
+          "enum": [
+            "workflow-tracks",
+            "linked-sessions",
+            "agent-teams",
+            "batch"
+          ],
+          "description": "Closed vocabulary shared by the whole orchestration family: dynamic-workflow tracks, sessions launched from another session, agent teams sharing one working tree, and /batch units."
+        },
+        "reads": {
+          "$ref": "#/$defs/pathList"
+        },
+        "criticalReads": {
+          "$ref": "#/$defs/pathList",
+          "description": "Reads whose content the unit depends on. A write by another unit to one of these is a hazard, not an advisory overlap. Every entry must also be covered by reads; this is checked by the validator, not by the schema."
+        },
+        "writes": {
+          "$ref": "#/$defs/pathList"
+        },
+        "creates": {
+          "$ref": "#/$defs/pathList"
+        },
+        "deletes": {
+          "$ref": "#/$defs/pathList"
+        },
+        "dependsOn": {
+          "type": "array",
+          "maxItems": 31,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,63}(?!\\n)$"
+          },
+          "description": "Declared dependencies on other unit ids. They are the only source of the analyzer class ordered."
+        },
+        "sharedResources": {
+          "type": "array",
+          "maxItems": 64,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "class"
+            ],
+            "properties": {
+              "class": {
+                "enum": [
+                  "lockfile",
+                  "barrel",
+                  "generated",
+                  "formatter",
+                  "schema",
+                  "cache",
+                  "config",
+                  "other"
+                ]
+              },
+              "path": {
+                "$ref": "#/$defs/path"
+              }
+            }
+          }
+        },
+        "complete": {
+          "type": "boolean",
+          "default": false,
+          "description": "True only if the orchestrator states that the reads, writes, creates and deletes are complete. Even then, coverage is partial unless every entry expands exactly."
+        }
+      }
+    }
+  },
+  "dependentSchemas": {
+    "importedFrom": {
+      "required": [
+        "provenance"
+      ],
+      "properties": {
+        "provenance": {
+          "const": "imported"
+        }
+      }
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "required": [
+          "provenance"
+        ],
+        "properties": {
+          "provenance": {
+            "const": "imported"
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "importedFrom"
+        ]
+      }
+    }
+  ]
+}

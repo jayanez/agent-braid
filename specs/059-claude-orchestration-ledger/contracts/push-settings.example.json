@@ -1,0 +1,19 @@
+{
+  "schemaVersion": "agent-braid-orchestration-settings/v0.1",
+  "repository": {
+    "notificationMode": "push",
+    "notificationStrategy": "doorbell",
+    "extensions": {
+      "SPEC-059": {
+        "extensionVersion": "agent-braid-push-settings/v0.1",
+        "settings": { "pushTransports": ["session-socket-self"] }
+      }
+    }
+  },
+  "extensions": {
+    "SPEC-059": {
+      "extensionVersion": "agent-braid-push-settings/v0.1",
+      "settings": { "killSwitch": false }
+    }
+  }
+}
