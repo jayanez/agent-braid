@@ -25,6 +25,10 @@ from .system_one import digest, freeze, thaw
 
 _ID = re.compile(r"[A-Za-z0-9][A-Za-z0-9_.:-]{0,63}\Z")
 _NAMESPACES = ("source/", "base/", "candidate/", "lab/")
+MAX_FEEDBACK_RECORDS = 64
+MAX_RECORD_BYTES = 16_384
+MAX_BUDGET_ENTRIES = 64
+MAX_BUDGET_BYTES = 262_144
 _FEEDBACK_TRUST = {"observed": "observed", "untrusted-text": "untrusted-evidence"}
 
 
@@ -55,7 +59,6 @@ class ContextPackage:
     receipts: tuple
     budget: ContextBudget
     _verified: Mapping = field(repr=False, compare=False)
-    _limits: tuple = field(repr=False, compare=False)
 
     @property
     def sha256(self) -> str:
@@ -113,7 +116,7 @@ def _entry(entry_id: str, label: str | None, trust: str, data: bytes, kept: byte
 
 
 def _pack(kind: str, candidates: list, omitted: list, budget: ContextBudget,
-          graders: frozenset, limits: tuple) -> ContextPackage:
+          graders: frozenset) -> ContextPackage:
     """candidates: (id, label, trust, bytes) already inventory-verified, in order."""
     entries, receipts, verified, used = [], list(omitted), {}, 0
     for entry_id, label, trust, data in candidates:
@@ -128,7 +131,9 @@ def _pack(kind: str, candidates: list, omitted: list, budget: ContextBudget,
                    budget.max_total_bytes - used)
         kept = _cut(data, take)
         if data and not kept:
-            receipts.append(_receipt(entry_id, "budget-total", len(data), 0, digest_hex))
+            reason = "budget-excerpt" if min(budget.max_entry_bytes,
+                                             budget.excerpt_bytes) == 0 else "budget-total"
+            receipts.append(_receipt(entry_id, reason, len(data), 0, digest_hex))
             continue
         if len(kept) < len(data):
             receipts.append(_receipt(entry_id, "truncated", len(data), len(kept), digest_hex))
@@ -136,7 +141,7 @@ def _pack(kind: str, candidates: list, omitted: list, budget: ContextBudget,
         entries.append(_entry(entry_id, label, trust, data, kept))
         verified[entry_id] = data
     return ContextPackage(kind, freeze(entries), freeze(receipts), budget,
-                          MappingProxyType(verified), limits)
+                          MappingProxyType(verified))
 
 
 def _unsafe(path: str) -> bool:
@@ -154,34 +159,37 @@ def assemble_context(manifest: HarnessManifest, contents: Mapping[str, bytes], *
     graders = frozenset(grader_hashes) | {
         data["task"]["fixtureSha256"], data["verifier"]["sha256"],
         data["normalizer"]["sha256"]}
+    if not isinstance(contents, Mapping) or not all(type(k) is str for k in contents):
+        raise ContextError("invalid-context")
     readable = set(data["effects"]["read"])
     inventory = {row["path"] for row in data["context"]}
     omitted, candidates = [], []
+
+    def _omit(row, reason):
+        omitted.append(_receipt(row["id"], reason, row["sizeBytes"], 0, row["sha256"]))
+
     for path in sorted(p for p in contents if p not in inventory):
         reason = "cross-workspace" if _unsafe(path) else "not-in-inventory"
         omitted.append(_receipt(str(path), reason, 0, 0, "0" * 64))
     for row in data["context"]:
-        def skip(reason, size=row["sizeBytes"]):
-            omitted.append(_receipt(row["id"], reason, size, 0, row["sha256"]))
         raw = contents.get(row["path"])
         if not row["selected"]:
-            skip("unselected")
+            _omit(row, "unselected")
         elif "context/" + row["path"] not in readable:
-            skip("no-read-authority")
+            _omit(row, "no-read-authority")
         elif raw is None:
-            skip("missing-content")
+            _omit(row, "missing-content")
         elif type(raw) is not bytes or len(raw) != row["sizeBytes"] or \
                 sha256(raw).hexdigest() != row["sha256"]:
-            skip("stale-content")
+            _omit(row, "stale-content")
         else:
             try:
                 raw.decode("utf-8")
             except UnicodeDecodeError:
-                skip("unsupported-encoding")
+                _omit(row, "unsupported-encoding")
                 continue
             candidates.append((row["id"], row["path"], row["trust"], raw))
-    return _pack("context", candidates, omitted, budget, graders,
-                 (limits["maxContextEntries"], limits["maxContextBytes"]))
+    return _pack("context", candidates, omitted, budget, graders)
 
 
 def disclose(package: ContextPackage, ref: str) -> ContextPackage:
@@ -190,26 +198,21 @@ def disclose(package: ContextPackage, ref: str) -> ContextPackage:
     if target is None:
         raise ContextError("not-in-inventory")
     budget = package.budget
-    candidates = []
-    for e in package.entries:
-        raw = package._verified[e["id"]]
-        keep = e["id"] == target
-        candidates.append((e["id"], e["path"], e["trust"], raw, keep))
     used = sum(e["keptBytes"] for e in package.entries if e["id"] != target)
-    entries, receipts = [], [r for r in package.receipts
-                             if r["reason"] != "truncated" or r["id"] != target]
-    for entry_id, label, trust, raw, expand in candidates:
-        if not expand:
-            entries.append(next(e for e in package.entries if e["id"] == entry_id))
+    entries = []
+    receipts = [r for r in package.receipts if r["reason"] != "truncated" or r["id"] != target]
+    for e in package.entries:
+        if e["id"] != target:
+            entries.append(e)
             continue
-        take = min(len(raw), budget.max_entry_bytes, budget.max_total_bytes - used)
-        kept = _cut(raw, take)
+        raw = package._verified[target]
+        kept = _cut(raw, min(len(raw), budget.max_entry_bytes, budget.max_total_bytes - used))
         if len(kept) < len(raw):
-            receipts.append(_receipt(entry_id, "truncated", len(raw), len(kept),
+            receipts.append(_receipt(target, "truncated", len(raw), len(kept),
                                      sha256(raw).hexdigest()))
-        entries.append(_entry(entry_id, label, trust, raw, kept))
+        entries.append(_entry(target, e["path"], e["trust"], raw, kept))
     return ContextPackage(package.kind, freeze(entries), freeze(receipts), budget,
-                          package._verified, package._limits)
+                          package._verified)
 
 
 def build_feedback(records: Any, *, budget: ContextBudget,
@@ -217,8 +220,10 @@ def build_feedback(records: Any, *, budget: ContextBudget,
     """Bound caller-supplied feedback text; free text is always untrusted evidence."""
     if type(records) is not list:
         raise ContextError("invalid-feedback")
-    # Feedback has no manifest; the caller budget is the only (still mandatory) cap.
-    _check_budget(budget, budget.max_entries, budget.max_total_bytes)
+    # Feedback has no manifest, so fixed module caps bound the input and the budget.
+    _check_budget(budget, MAX_BUDGET_ENTRIES, MAX_BUDGET_BYTES)
+    if len(records) > MAX_FEEDBACK_RECORDS:
+        raise ContextError("input-budget-exceeded")
     candidates, seen = [], set()
     for record in records:
         if type(record) is not dict or set(record) != {"id", "kind", "text"} or \
@@ -226,8 +231,14 @@ def build_feedback(records: Any, *, budget: ContextBudget,
                 record["id"] in seen or record["kind"] not in _FEEDBACK_TRUST or \
                 type(record["text"]) is not str:
             raise ContextError("invalid-feedback")
+        if len(record["text"]) > MAX_RECORD_BYTES:  # chars <= bytes: refuse before encoding
+            raise ContextError("input-budget-exceeded")
+        try:
+            raw = record["text"].encode("utf-8")
+        except UnicodeEncodeError:
+            raise ContextError("invalid-feedback") from None
+        if len(raw) > MAX_RECORD_BYTES:
+            raise ContextError("input-budget-exceeded")
         seen.add(record["id"])
-        candidates.append((record["id"], None, _FEEDBACK_TRUST[record["kind"]],
-                           record["text"].encode("utf-8")))
-    return _pack("feedback", candidates, [], budget, frozenset(grader_hashes),
-                 (budget.max_entries, budget.max_total_bytes))
+        candidates.append((record["id"], None, _FEEDBACK_TRUST[record["kind"]], raw))
+    return _pack("feedback", candidates, [], budget, frozenset(grader_hashes))

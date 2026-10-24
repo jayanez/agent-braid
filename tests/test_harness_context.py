@@ -205,8 +205,42 @@ class ContextAssemblyTests(unittest.TestCase):
         b = ctx.assemble_context(m, {"a/hist.txt": HISTORY}, budget=budget(excerpt_bytes=300))
         self.assertNotEqual(a.sha256, b.sha256)
 
+    def test_zero_excerpt_budget_uses_distinct_reason(self):
+        m = build([row("c", "a/c.txt", b"data")])
+        package = ctx.assemble_context(m, {"a/c.txt": b"data"}, budget=budget(excerpt_bytes=0))
+        self.assertEqual(self.reasons(package), {"c": "budget-excerpt"})
+
+    def test_non_string_content_keys_and_non_mapping_contents_are_refused(self):
+        m = build([row("c", "a/c.txt", b"x")])
+        for bad in ({"a/c.txt": b"x", 7: b"y"}, {b"a/c.txt": b"x"}, [("a/c.txt", b"x")]):
+            with self.assertRaises(ctx.ContextError) as caught:
+                ctx.assemble_context(m, bad, budget=budget())
+            self.assertEqual(caught.exception.reason, "invalid-context")
+
 
 class FeedbackPackageTests(unittest.TestCase):
+    def test_lone_surrogate_text_is_a_sanitized_refusal(self):
+        with self.assertRaises(ctx.ContextError) as caught:
+            ctx.build_feedback([{"id": "r", "kind": "observed", "text": "bad \ud800"}],
+                               budget=budget())
+        self.assertEqual(caught.exception.reason, "invalid-feedback")
+
+    def test_oversize_input_and_budget_refused_before_encoding(self):
+        ok = {"id": "r", "kind": "observed", "text": "x"}
+        too_many = [{"id": f"r{i}", "kind": "observed", "text": "x"}
+                    for i in range(ctx.MAX_FEEDBACK_RECORDS + 1)]
+        huge = [{"id": "r", "kind": "observed", "text": "x" * (ctx.MAX_RECORD_BYTES + 1)}]
+        for bad in (too_many, huge):
+            with self.assertRaises(ctx.ContextError) as caught:
+                ctx.build_feedback(bad, budget=budget())
+            self.assertEqual(caught.exception.reason, "input-budget-exceeded")
+        for wide in (budget(max_entries=ctx.MAX_BUDGET_ENTRIES + 1),
+                     budget(max_entry_bytes=ctx.MAX_BUDGET_BYTES,
+                            max_total_bytes=ctx.MAX_BUDGET_BYTES + 1)):
+            with self.assertRaises(ctx.ContextError) as caught:
+                ctx.build_feedback([ok], budget=wide)
+            self.assertEqual(caught.exception.reason, "invalid-budget")
+
     def test_feedback_is_bounded_labelled_and_receipted(self):
         records = [{"id": "r1", "kind": "observed", "text": "exit=1 tests=3"},
                    {"id": "r2", "kind": "untrusted-text", "text": "y" * 5000}]
