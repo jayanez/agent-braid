@@ -60,8 +60,13 @@ class PluginRouterTests(unittest.TestCase):
         return path
 
     def two_workspaces(self):
-        self.install([self.repo, self.make_repo('another')])
+        second = self.make_repo('another')
+        self.install([self.repo, second])
         return [x['workspaceId'] for x in load(self.home)['workspaces']]
+
+    def assert_not_reconnect_refusal(self, result):
+        self.assertNotIn('reconnect', result['summary'])
+        self.assertNotEqual(result['result'], {'code': RegistryStale.code})
 
     def test_noop_and_reordered_rewrites_do_not_require_reconnect(self):
         ids = self.two_workspaces()
@@ -72,8 +77,22 @@ class PluginRouterTests(unittest.TestCase):
         status = router.status()
         self.assertFalse(status['reconnectRequired'])
         self.assertEqual((status['baselineDigest'], status['currentDigest']), (baseline, baseline))
-        result = router.invoke('analyze-work', {'workspaceId': ids[0]}, threading.Event())
-        self.assertNotEqual(result['result'], {'code': RegistryStale.code})
+        sample = json.loads((Path(__file__).resolve().parents[1] / 'examples/analysis/file-edits.json').read_text())
+        result = router.invoke('analyze-work', {'workspaceId': ids[0], 'kind': 'aim', 'request': sample}, threading.Event())
+        self.assertEqual(result['status'], 'ok')
+        self.assert_not_reconnect_refusal(result)
+
+    def test_raw_byte_differences_alone_do_not_require_reconnect(self):
+        self.two_workspaces()
+        router = PluginRouter(self.home)
+        path = self.home / 'registry.json'
+        before = path.read_bytes()
+        value = json.loads(before)
+        path.write_text(json.dumps(dict(reversed(list(value.items()))), indent=4, sort_keys=False) + '\n\n')
+        self.assertNotEqual(path.read_bytes(), before)
+        status = router.status()
+        self.assertFalse(status['reconnectRequired'])
+        self.assertEqual(status['baselineDigest'], status['currentDigest'])
 
     def test_idempotent_setup_apply_does_not_require_reconnect(self):
         self.install()
@@ -83,18 +102,21 @@ class PluginRouterTests(unittest.TestCase):
 
     def test_each_effective_change_requires_reconnect_and_changes_the_digest(self):
         extra = self.make_repo('third')
-        self.make_repo('another')
-        wt = self.make_repo('worktree')
+        second = self.make_repo('another')
+        worktree = self.make_repo('worktree')
+        grants = self.base / 'grants'
+        grants.mkdir()
+        first = lambda v, **change: dict(v, workspaces=[dict(v['workspaces'][0], **change)] + v['workspaces'][1:])
         changes = {
             'removed': lambda v: dict(v, workspaces=v['workspaces'][:1]),
             'consent': lambda v: dict(v, telemetry='local'),
-            'changed': lambda v: dict(v, workspaces=[dict(v['workspaces'][0], worktreeRoots=[str(wt)])]
-                                      + v['workspaces'][1:]),
+            'worktree-root': lambda v: first(v, worktreeRoots=[str(worktree)]),
+            'grant': lambda v: first(v, runtimeEnabled=True, grantStore=str(grants)),
         }
         for name, change in changes.items():
             with self.subTest(name):
                 self.home = self.base / f'state-{name}'
-                self.two_workspaces_once()
+                self.install([self.repo, second])
                 router = PluginRouter(self.home)
                 self.rewrite(change)
                 status = router.status()
@@ -102,13 +124,12 @@ class PluginRouterTests(unittest.TestCase):
                 self.assertNotEqual(status['baselineDigest'], status['currentDigest'])
         with self.subTest('added'):
             self.home = self.base / 'state-added'
-            self.install()
+            self.install([self.repo])
             router = PluginRouter(self.home)
             self.install([extra])
-            self.assertTrue(router.status()['reconnectRequired'])
-
-    def two_workspaces_once(self):
-        self.install([self.repo, self.base / 'another'])
+            status = router.status()
+            self.assertTrue(status['reconnectRequired'])
+            self.assertNotEqual(status['baselineDigest'], status['currentDigest'])
 
     def test_digests_are_path_free(self):
         self.install()
