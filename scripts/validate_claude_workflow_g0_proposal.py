@@ -33,7 +33,7 @@ REQUIRED_FIELDS = (
     "recordVersion", "revision", "status", "frozen", "executionAuthorization", "milestone",
     "gate", "hypothesis", "specs", "proposal", "sourceAndBudgetDecision",
     "runner", "budget", "design", "referenceOutcome", "arms", "probe",
-    "metrics", "unknownRate", "thresholds", "decisionRule", "killOutcome",
+    "metrics", "unknownRate", "attributionCoverage", "censusEvidence", "thresholds", "decisionRule", "killOutcome",
     "retention", "requiredBeforeFreeze", "claimLimits", "freezeOrder", "powerTable",
 )
 EXPECTED_THRESHOLDS = {
@@ -79,8 +79,19 @@ EXPECTED_THRESHOLDS = {
         "minFlaggedRunsToEvaluate": 3,
         "unit": "run",
     },
-    "C3": {"maxUnknownRate": 0.4, "definition": "unknownRate.primary",
-           "cappedOnWriterCapableClasses": True, "zeroDenominator": "unmet"},
+    # Revision 3: C3 is attribution coverage of changes (founder decision of
+    # 2026-10-24). The call-share unknown rate is descriptive only.
+    "C3": {
+        "role": "attribution-coverage-of-changes",
+        "gatesTranscriptRequirements": True,
+        "countsTowardPassOrFail": True,
+        "minAttributionCoverage": 0.6,
+        "definition": "attributionCoverage",
+        "comparison": "5*attributedChangedFiles>=3*changedFiles",
+        "zeroDenominator": "unmet",
+        "thresholdIsProposalFounderMayAmendBeforeFreeze": True,
+        "callShareUnknownRateAndBashShare": "descriptive-only-never-gating",
+    },
     "C4": {
         "role": "negative-controls-probe-must-not-respond",
         "gatesTranscriptRequirements": True,
@@ -115,14 +126,50 @@ EXPECTED_DECISION_RULE = {
                              "every-vector-before-its-bytes-are-pinned",
 }
 EXPECTED_UNKNOWN_RATE = {
-    "primary": "share-of-unknown-writer-capable-calls-excluding-read-only-searches",
+    "role": "descriptive-only-never-gating",
+    "primary": "descriptive-share-of-unknown-writer-capable-calls-excluding-read-only-searches",
     "numerator": ["Bash", "mcp__*", "other", "failed-write-class-calls"],
     "denominator": "all-counted-probe-calls-except-Grep-and-Glob",
     "readOnlySearchesReportedSeparately": True,
     "failedReadsReportedSeparately": True,
-    "zeroDenominator": "C3-unmet",
+    "gatesAnyCriterion": False,
     "secondary": ["share-of-analyze-git-operations-unknown-or-partial",
                   "share-of-pairs-unknown", "read-only-search-share"],
+}
+EXPECTED_ATTRIBUTION_COVERAGE = {
+    "role": "criterion-C3", "gates": True,
+    "unit": "changed-files-summed-over-the-10-analysis-runs",
+    "changedFiles": "files-added-or-modified-between-base-and-agent-final-branch-state",
+    "attributed": "successful-Write-Edit-or-NotebookEdit-call-on-the-path-in-the-agent-transcript",
+    "unattributed": "files-changed-only-through-Bash-sed-i-mv-generators-formatters",
+    "outputIsIntegerCountsOnly": True,
+    "comparison": "5*attributedChangedFiles>=3*changedFiles",
+    "zeroDenominator": "C3-unmet",
+    "answers": "can-transcript-evidence-explain-the-writes-at-all-precondition-for-C1b-and-C2",
+}
+EXPECTED_ATTRIBUTION_OUTPUTS = {
+    "fields": ["changedFiles", "attributedChangedFiles"],
+    "changedFilesDefinition": "files-added-or-modified-between-base-and-agent-final-branch-state-from-git-computed-locally",
+    "attributedDefinition": "changed-file-with-at-least-one-successful-Write-Edit-or-NotebookEdit-call-on-that-repository-relative-path-in-the-agent-transcript",
+    "bashOnlyChangesAreUnattributed": True, "comparisonIsProbeSide": True,
+    "outputIsIntegerCountsOnly": True, "retainsPathOrHash": False,
+}
+EXPECTED_CENSUS_EVIDENCE = {
+    "kind": "pre-freeze-census-on-the-founder-own-transcripts",
+    "outputIsAggregateOnly": True, "rawOutputCommitted": False,
+    "subagentFiles": 1418, "toolCalls": 65639,
+    "bashSharePercent": 80.2, "unknownClassSharePercent": 85.4,
+    "readOnlySearchSharePercent": 0.0, "readSharePercent": 7.8,
+    "consequence": "call-share-definition-of-revision-2-fails-by-construction-regardless-of-the-science",
+}
+EXPECTED_REVISION = {
+    "number": 3, "date": "2026-10-24", "previousRevisionDate": "2026-10-24",
+    "reason": "founder-decision-2026-10-24-redefine-C3-as-attribution-coverage-of-changes-"
+              "because-the-pre-freeze-census-shows-the-call-share-definition-fails-by-construction",
+    "changesBoundBytes": True, "founderResignatureRequired": True,
+    "changedCriterion": "C3",
+    "unchangedFromRevision2": ["evaluation-order", "C1a", "C1b", "C2", "C4", "analysis-set"],
+    "renewalAddedByThisRevision": False,
 }
 EXPECTED_ANALYSIS_SET = {
     "primary": "first-10-eligible-runs-with-probe-data-in-manifest-ordinal",
@@ -159,6 +206,16 @@ FREEZE_ORDER = (
     "runs-start",
 )
 SIGNATURE_STATUS = "signature-superseded-renewal-required"
+SUPERSEDED_REVISION2_BYTES = {
+    "specs/053-claude-transcript-trace-adapter/budget-and-source-decision.md":
+        "53775c0de293b9db20a994d2283206f7db8e576c12c7bfc8d7959b6b0f6db138",
+    "docs/experiments/CLAUDE_WORKFLOW_INTEGRATION_PROPOSAL.md":
+        "066ea12b226410b52ac9843d14f57a257db3ea28d6a649b08336dc9318b788fd",
+    "docs/experiments/claude-workflow-g0-inputs.json":
+        "dd48f0adb47fee62da4c805c701b89e2beb1a32105ea2e9640e95e2b49a36625",
+    "docs/experiments/claude-workflow-g0-decision-vectors.json":
+        "c100a7acbd4a5a231f36967073c6d8e6169f76d97340647e49e8a85d6baedf55",
+}
 SUPERSEDED_BYTES = {
     "specs/053-claude-transcript-trace-adapter/budget-and-source-decision.md":
         "333406c25dbdf87b0cd72c2895f441998710e7f3a477e95c137647e12e4a9c62",
@@ -190,7 +247,7 @@ REQUIRED_METRICS = ("hits-misses-vs-reference", "unknown-rate",
                     "replay-ineligible-rate", "share-runs-over-4-agents",
                     "bash-share", "read-write-overlap-precision", "analysis-cost",
                     "reference-failure-prevalence", "negative-control-flag-rate",
-                    "intention-to-treat-counts", "read-only-search-share")
+                    "intention-to-treat-counts", "read-only-search-share", "attribution-coverage")
 REQUIRED_BEFORE_FREEZE = (
     "repository", "baseCommit", "transcriptLayoutCensus", "probe.scriptSha256",
     "runnerScriptSha256", "toolVersions", "workflowCensus", "plannedRunCount",
@@ -203,7 +260,9 @@ REQUIRED_RETENTION_EXCLUSIONS = ("transcripts", "prompts", "file-contents", "dif
 REQUIRED_CLAIM_LIMITS = (
     "no-speed-claim", "single-owner-repository", "n-small-descriptive-only",
     "commit-level-braid-flag-equals-naive-path-overlap-plus-unknown-labelling",
-    "pass-means-feasibility-not-refuted", "low-power-fail-is-weak-evidence")
+    "pass-means-feasibility-not-refuted", "low-power-fail-is-weak-evidence",
+    "c3-attribution-by-successful-write-call-names-the-file-not-the-final-content",
+    "bash-only-changes-are-unattributed-by-definition")
 REQUIRED_EXCLUSIONS = ("agent-did-not-commit", "base-tests-fail",
                        "branch-tests-fail-alone", "flaky-branch-tests")
 FLAKY_DEFINITION = ("pre-merge-double-run-of-each-agent-branch-own-tests-with-"
@@ -219,7 +278,10 @@ REQUIRED_PROPOSAL_PHRASES = (
     "closes with R1 only", "EUR 0", "founder runs", "prediction file is hashed", "Freezing",
     "feasibility not refuted", "transcript layout and tool-name census",
     "negative-control", "Power table", "intention-to-treat", "indeterminate",
-    "writer-capable", "superseded", "stalled", "two agents changed a common path",
+    "writer-capable", "superseded", "Revision 3", "attribution coverage",
+    "5*attributed >= 3*changed", "attributedChangedFiles", "unattributed",
+    "descriptive only", "1,418 subagent files", "65,639 tool calls",
+    "may amend before the freeze", "stalled", "two agents changed a common path",
     "decision vectors", "C4", "plannedRunCount", "first 10 eligible runs with probe data",
     "flaky-branch-tests",
 )
@@ -302,8 +364,9 @@ def check_design(proposal: dict) -> None:
     require(all(metric in proposal["metrics"] for metric in REQUIRED_METRICS),
             "required metric removed")
     unknown = proposal["unknownRate"]
-    require(unknown.get("primary") == EXPECTED_UNKNOWN_RATE["primary"],
-            "primary unknown-rate definition changed")
+    require(unknown.get("primary") == EXPECTED_UNKNOWN_RATE["primary"]
+            and unknown.get("gatesAnyCriterion") is False,
+            "unknown-rate definition changed or made gating")
     probe = proposal["probe"]
     require(probe.get("retainsPaths") is False and probe.get("retainsContent") is False
             and probe.get("retainedOutputs") == "integer-counts-only"
@@ -362,8 +425,15 @@ def check_revised_design(proposal: dict) -> None:
             and reference.get("indeterminate") == EXPECTED_INDETERMINATE
             and reference.get("textualConflictHandling") == EXPECTED_TEXTUAL_CONFLICT,
             "reference outcome handling of indeterminate or conflicted runs changed")
-    require(proposal["unknownRate"] == EXPECTED_UNKNOWN_RATE, "unknown-rate definition changed")
+    require(proposal["unknownRate"] == EXPECTED_UNKNOWN_RATE,
+            "unknown-rate definition changed")
+    require(proposal["attributionCoverage"] == EXPECTED_ATTRIBUTION_COVERAGE,
+            "attribution coverage definition changed")
+    require(proposal["censusEvidence"] == EXPECTED_CENSUS_EVIDENCE,
+            "census evidence record changed")
     probe = proposal["probe"]
+    require(probe.get("attributionOutputs") == EXPECTED_ATTRIBUTION_OUTPUTS,
+            "probe attribution outputs changed")
     require([probe.get("writerCapableClasses"), probe.get("readOnlySearchClasses")]
             == list(REQUIRED_TOOL_CLASS_SPLIT)
             and probe.get("writtenAgainstCensusLayout") is True
@@ -437,15 +507,13 @@ def check_authority_and_budget(proposal: dict) -> None:
     superseded = decision.get("supersededSignature", {})
     require(superseded.get("appliedToRevision") == 1
             and superseded.get("appliedToBytesSha256") == SUPERSEDED_BYTES
-            and superseded.get("supersededBy") == "revision-2"
+            and superseded.get("supersededBy") == "revision-3"
+            and superseded.get("supersededRevision2BytesSha256") == SUPERSEDED_REVISION2_BYTES
             and superseded.get("newHashes") == "computed-at-renewal"
-            and superseded.get("renewalRequiredBeforeFreeze") is True,
+            and superseded.get("renewalRequiredBeforeFreeze") is True
+            and superseded.get("renewalRecordRedoneAgainstFinalBytesAfterMerge") is True,
             "superseded signature record changed")
-    revision = proposal["revision"]
-    require(revision.get("number") == 2 and revision.get("date") == "2026-10-24"
-            and revision.get("changesBoundBytes") is True
-            and revision.get("founderResignatureRequired") is True,
-            "revision record changed")
+    require(proposal["revision"] == EXPECTED_REVISION, "revision record changed")
     require(proposal["design"].get("repository") is None
             and proposal["design"].get("baseCommit") is None
             and proposal["probe"].get("scriptSha256") is None,
@@ -464,7 +532,7 @@ def check_proposal_bytes(proposal: dict, data: bytes) -> None:
 TUPLE_FIELDS = (
     "eligibleRunsWithProbeData", "analysisSetRuns", "overlapRuns",
     "contractDependencyRuns", "negativeControlRuns", "negativeControlRunsFlagged",
-    "c1bQualifyingFailures", "unknownWriterCapableCalls", "unknownRateDenominatorCalls",
+    "c1bQualifyingFailures", "attributedChangedFiles", "changedFiles",
     "probeFlaggedRuns", "probeFlaggedReferenceFailures", "referenceFailureRuns",
     "naiveFlaggedRuns", "naiveFlaggedReferenceFailures",
 )
@@ -498,8 +566,8 @@ def evaluate_g0(counts: dict) -> tuple[str, str, list[str]]:
         return "g0-inconclusive", "step-1", reasons
     if counts["c1bQualifyingFailures"] < 1:
         reasons.append("C1b")
-    denominator = counts["unknownRateDenominatorCalls"]
-    if denominator <= 0 or counts["unknownWriterCapableCalls"] * 10 > 4 * denominator:
+    changed = counts["changedFiles"]
+    if changed <= 0 or 5 * counts["attributedChangedFiles"] < 3 * changed:
         reasons.append("C3")
     if counts["negativeControlRunsFlagged"] > 1:
         reasons.append("C4")
@@ -538,7 +606,7 @@ def check_vector_counts(counts: dict) -> None:
             and counts["naiveFlaggedRuns"] <= n
             and counts["naiveFlaggedReferenceFailures"] <= counts["naiveFlaggedRuns"]
             and counts["naiveFlaggedReferenceFailures"] <= counts["referenceFailureRuns"]
-            and counts["unknownWriterCapableCalls"] <= counts["unknownRateDenominatorCalls"],
+            and counts["attributedChangedFiles"] <= counts["changedFiles"],
             "vector counts are internally inconsistent")
 
 
@@ -586,13 +654,16 @@ def check_decision_vectors(vectors: dict, proposal: dict) -> list[str]:
             "no vector shows step 1 stopping before C1b")
     require(any(c["eligibleRunsWithProbeData"] > 10 for c, r in by_counts),
             "no vector exercises the first-10 rule")
-    require(any(c["unknownRateDenominatorCalls"] == 0 for c, r in by_counts),
-            "no vector exercises the zero denominator")
+    require(any(c["changedFiles"] == 0 and r[:3] == ("g0-fail", "step-2", ["C3"])
+                for c, r in by_counts), "no vector exercises the zero denominator")
     require(any(c["naiveFlaggedRuns"] == 0 and r[0] == "g0-pass" for c, r in by_counts),
             "no vector exercises the undefined naive precision")
-    require(any(c["unknownWriterCapableCalls"] * 10 == 4 * c["unknownRateDenominatorCalls"]
-                and c["unknownRateDenominatorCalls"] > 0 and r[0] == "g0-pass"
+    require(any(5 * c["attributedChangedFiles"] == 3 * c["changedFiles"]
+                and c["changedFiles"] > 0 and r[0] == "g0-pass"
                 for c, r in by_counts), "no vector exercises the C3 boundary")
+    require(any(c["changedFiles"] == 100 and c["attributedChangedFiles"] == 59
+                and r[:3] == ("g0-fail", "step-2", ["C3"]) for c, r in by_counts),
+            "no vector exercises the C3 just-below-boundary case")
     return ids
 
 
@@ -649,6 +720,90 @@ def revised_negative_controls(proposal: dict, vectors: dict) -> list[tuple[str, 
            set_in(("unknownRate", "denominator"), "all-counted-probe-calls"), check_design)
     mutate("c3-zero-denominator-passes",
            set_in(("thresholds", "C3", "zeroDenominator"), "met"), check_thresholds)
+    mutate("c3-reverts-to-call-share-cap",
+           lambda p: p["thresholds"].__setitem__(
+               "C3", {"maxUnknownRate": 0.4, "definition": "unknownRate.primary",
+                      "cappedOnWriterCapableClasses": True, "zeroDenominator": "unmet"}),
+           check_thresholds)
+    mutate("c3-coverage-floor-relaxed",
+           set_in(("thresholds", "C3", "minAttributionCoverage"), 0.3), check_thresholds)
+    mutate("c3-coverage-floor-raised",
+           set_in(("thresholds", "C3", "minAttributionCoverage"), 0.9), check_thresholds)
+    mutate("c3-comparison-changed",
+           set_in(("thresholds", "C3", "comparison"), "attributed/changed>0.5"),
+           check_thresholds)
+    mutate("c3-stops-counting",
+           set_in(("thresholds", "C3", "countsTowardPassOrFail"), False), check_thresholds)
+    mutate("c3-stops-gating-transcript-requirements",
+           set_in(("thresholds", "C3", "gatesTranscriptRequirements"), False),
+           check_thresholds)
+    mutate("c3-threshold-not-amendable-note-dropped",
+           lambda p: p["thresholds"]["C3"].pop("thresholdIsProposalFounderMayAmendBeforeFreeze"),
+           check_thresholds)
+    mutate("call-share-unknown-rate-gates-again",
+           set_in(("unknownRate", "gatesAnyCriterion"), True), check_design)
+    mutate("call-share-unknown-rate-role-dropped",
+           lambda p: p["unknownRate"].pop("role"), check_design)
+    mutate("call-share-bash-share-gates-again",
+           set_in(("thresholds", "C3", "callShareUnknownRateAndBashShare"), "gating"),
+           check_thresholds)
+    mutate("attribution-coverage-removed", lambda p: p.pop("attributionCoverage"),
+           check_required_fields)
+    mutate("attribution-counts-bash-writes",
+           set_in(("attributionCoverage", "unattributed"), "none"), check_design)
+    mutate("attribution-accepts-failed-writes",
+           set_in(("attributionCoverage", "attributed"),
+                  "any-Write-Edit-or-NotebookEdit-call-on-the-path-failed-or-not"), check_design)
+    mutate("attribution-counts-deleted-files",
+           set_in(("attributionCoverage", "changedFiles"),
+                  "files-added-modified-or-deleted-between-base-and-agent-final-branch-state"),
+           check_design)
+    mutate("attribution-zero-denominator-passes",
+           set_in(("attributionCoverage", "zeroDenominator"), "C3-met"), check_design)
+    mutate("attribution-comparison-uses-floats",
+           set_in(("attributionCoverage", "comparison"), "attributed/changed>=0.6"), check_design)
+    mutate("attribution-stops-gating", set_in(("attributionCoverage", "gates"), False),
+           check_design)
+    mutate("attribution-output-retains-paths",
+           set_in(("probe", "attributionOutputs", "retainsPathOrHash"), True), check_design)
+    mutate("attribution-output-not-counts-only",
+           set_in(("probe", "attributionOutputs", "outputIsIntegerCountsOnly"), False),
+           check_design)
+    mutate("attribution-outputs-field-dropped",
+           lambda p: p["probe"]["attributionOutputs"]["fields"].remove("changedFiles"),
+           check_design)
+    mutate("attribution-bash-only-changes-attributed",
+           set_in(("probe", "attributionOutputs", "bashOnlyChangesAreUnattributed"), False),
+           check_design)
+    mutate("attribution-metric-removed",
+           lambda p: p["metrics"].remove("attribution-coverage"), check_design)
+    mutate("attribution-claim-limit-removed",
+           lambda p: p["claimLimits"].remove(
+               "bash-only-changes-are-unattributed-by-definition"), check_design)
+    mutate("census-evidence-edited",
+           set_in(("censusEvidence", "bashSharePercent"), 10.0), check_design)
+    mutate("census-raw-output-committed",
+           set_in(("censusEvidence", "rawOutputCommitted"), True), check_design)
+    mutate("census-evidence-removed", lambda p: p.pop("censusEvidence"), check_required_fields)
+    mutate("revision-reverts-to-2", set_in(("revision", "number"), 2),
+           check_authority_and_budget)
+    mutate("revision-adds-renewal",
+           set_in(("revision", "renewalAddedByThisRevision"), True),
+           check_authority_and_budget)
+    mutate("revision-changes-other-criteria",
+           lambda p: p["revision"]["unchangedFromRevision2"].remove("C4"),
+           check_authority_and_budget)
+    mutate("revision2-superseded-hash-edited",
+           set_in(("sourceAndBudgetDecision", "supersededSignature",
+                   "supersededRevision2BytesSha256",
+                   "docs/experiments/CLAUDE_WORKFLOW_INTEGRATION_PROPOSAL.md"), "0" * 64),
+           check_authority_and_budget)
+    mutate("revision2-superseded-list-dropped",
+           lambda p: p["sourceAndBudgetDecision"]["supersededSignature"].pop(
+               "supersededRevision2BytesSha256"), check_authority_and_budget)
+    mutate("superseded-by-wrong-revision",
+           set_in(("sourceAndBudgetDecision", "supersededSignature", "supersededBy"),
+                  "revision-2"), check_authority_and_budget)
     mutate("probe-merges-search-and-writer-classes",
            set_in(("probe", "readOnlySearchClasses"), []), check_design)
     mutate("flaky-decided-on-reference-outcome",
@@ -733,7 +888,8 @@ def revised_negative_controls(proposal: dict, vectors: dict) -> list[tuple[str, 
                 lambda v: v.update({"vectors": [e for e in v["vectors"]
                                                 if e["id"] not in (
                                     "v06-fail-over-inconclusive-no-flags",
-                                    "v07-c3-unmet-with-few-flags")]}))
+                                    "v07-c3-unmet-with-few-flags",
+                                    "v22-c3-zero-denominator-few-flags")]}))
     vector_case("vectors-drop-c4-branch",
                 lambda v: v.update({"vectors": [e for e in v["vectors"]
                                                 if e["id"] != "v10-c4-two-controls-flagged"]}))
@@ -753,6 +909,30 @@ def revised_negative_controls(proposal: dict, vectors: dict) -> list[tuple[str, 
     vector_case("vectors-duplicate-id",
                 lambda v: v["vectors"].append(deepcopy(v["vectors"][0])))
     vector_case("vectors-claim-frozen", lambda v: v.update({"frozen": True}))
+    vector_case("vectors-drop-c3-boundary-case",
+                lambda v: v.update({"vectors": [e for e in v["vectors"]
+                                                if e["id"] not in (
+                                    "v08-c3-boundary-60-percent",
+                                    "v20-c3-boundary-3-of-5-met")]}))
+    vector_case("vectors-drop-c3-59-of-100-case",
+                lambda v: v.update({"vectors": [e for e in v["vectors"]
+                                                if e["id"] not in (
+                                    "v07-c3-unmet-with-few-flags",
+                                    "v21-c3-59-of-100-unmet")]}))
+    vector_case("vectors-drop-c3-zero-denominator-case",
+                lambda v: v.update({"vectors": [e for e in v["vectors"]
+                                                if e["id"] not in (
+                                    "v09-c3-zero-denominator",
+                                    "v22-c3-zero-denominator-few-flags")]}))
+    vector_case("vectors-c3-expectation-flipped",
+                lambda v: [e["expected"].update({"outcome": "g0-pass",
+                                                 "decidedAtStep": "step-5",
+                                                 "unmetOrReason": ["all-met"]})
+                           for e in v["vectors"] if e["id"] == "v21-c3-59-of-100-unmet"])
+    vector_case("vectors-c3-attributed-exceeds-changed",
+                lambda v: v["vectors"][0]["counts"].update({"attributedChangedFiles": 101}))
+    vector_case("vectors-old-call-share-field",
+                lambda v: v["vectors"][0]["counts"].update({"unknownWriterCapableCalls": 20}))
     return cases
 
 
@@ -768,8 +948,8 @@ def negative_controls(proposal: dict, proposal_bytes: bytes,
     relaxed["thresholds"]["C2"]["minReadWriteOverlapPrecision"] = 0.1
     cases.append(("relaxed-precision", lambda: check_thresholds(relaxed)))
     loosened = deepcopy(proposal)
-    loosened["thresholds"]["C3"]["maxUnknownRate"] = 0.9
-    cases.append(("relaxed-unknown-rate", lambda: check_thresholds(loosened)))
+    loosened["thresholds"]["C3"]["minAttributionCoverage"] = 0.1
+    cases.append(("relaxed-attribution-coverage", lambda: check_thresholds(loosened)))
     dropped = deepcopy(proposal)
     del dropped["thresholds"]["C1b"]
     cases.append(("removed-c1", lambda: check_thresholds(dropped)))

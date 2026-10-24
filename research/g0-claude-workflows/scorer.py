@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: AGPL-3.0-only
 """G0 scorer: C1a, C1b, C2, C3, C4 and the preregistered order of evaluation.
 
-Revision 2 of the preregistration (docs/experiments/CLAUDE_WORKFLOW_INTEGRATION_PROPOSAL.md,
+Revision 3 of the preregistration (docs/experiments/CLAUDE_WORKFLOW_INTEGRATION_PROPOSAL.md,
 claude-workflow-g0-inputs.json, claude-workflow-g0-decision-vectors.json).
 
 Two layers:
@@ -23,9 +23,13 @@ design: {overlap, contract, negative_control} booleans fixed in the manifest
 arms: merge-tree-pairwise, merge-tree-chained, naive-path-overlap,
   braid-analyze-git-primary, braid-analyze-git-inclusive (booleans; inclusive
   must include primary); clash (optional boolean).
-probe (eligible runs): denominator_calls, unknown_writer_calls,
-  read_only_search_calls, ordered_pairs_with_overlap (integers), as summed over
-  the run's agents by probe.py.
+probe (eligible runs): changed_files, attributed_changed_files (C3, gating),
+  ordered_pairs_with_overlap (C2 and C4 flags), and the descriptive denominator_calls,
+  unknown_writer_calls, read_only_search_calls (integers), as summed over the
+  run's agents by probe.py; optional descriptive bash_calls. C3 is attribution
+  coverage of changes: summed over the analysis set, met iff
+  5*attributed >= 3*changed with changed > 0. The call-share unknown rate and
+  the Bash share are descriptive only and never gate.
 attribution (optional, default false): contract_named_in_manifest and
   counterfactual_removes_failure, the two conditions of C1b attribution.
 Output is aggregate JSON only. Stdlib only.
@@ -49,15 +53,15 @@ MIN_FLAGGED = 3
 COUNT_FIELDS = (
     "eligibleRunsWithProbeData", "analysisSetRuns", "overlapRuns", "contractDependencyRuns",
     "negativeControlRuns", "negativeControlRunsFlagged", "c1bQualifyingFailures",
-    "unknownWriterCapableCalls", "unknownRateDenominatorCalls", "probeFlaggedRuns",
+    "attributedChangedFiles", "changedFiles", "probeFlaggedRuns",
     "probeFlaggedReferenceFailures", "referenceFailureRuns", "naiveFlaggedRuns",
     "naiveFlaggedReferenceFailures")
 
 
 def c3_met(counts):
-    """Unknown writer-capable rate at most 40%; a zero denominator is unmet."""
-    denominator = counts["unknownRateDenominatorCalls"]
-    return denominator > 0 and counts["unknownWriterCapableCalls"] * 10 <= 4 * denominator
+    """Attribution coverage at least 0.60 (5*attributed >= 3*changed); zero changed is unmet."""
+    changed = counts["changedFiles"]
+    return changed > 0 and 5 * counts["attributedChangedFiles"] >= 3 * changed
 
 
 def c2_unmet(counts):
@@ -80,6 +84,8 @@ def decide(counts):
         value = counts.get(field)
         if not isinstance(value, int) or isinstance(value, bool) or value < 0:
             raise ValueError(f"counts.{field} must be a non-negative integer")
+    if counts["attributedChangedFiles"] > counts["changedFiles"]:
+        raise ValueError("counts.attributedChangedFiles exceeds counts.changedFiles")
     reasons = []
     if counts["eligibleRunsWithProbeData"] < ANALYSIS_RUNS:
         reasons.append("eligible-runs")
@@ -177,10 +183,15 @@ def validate(runs):
             _opt_bool(run, "attribution", key)
         if status == "eligible":
             denominator, unknown = _count(run, "denominator_calls"), _count(run, "unknown_writer_calls")
+            changed, attributed = _count(run, "changed_files"), _count(run, "attributed_changed_files")
             _count(run, "read_only_search_calls")
             _count(run, "ordered_pairs_with_overlap")
+            if "bash_calls" in run["probe"]:
+                _count(run, "bash_calls")
             if unknown > denominator:
                 raise ValueError(f"run {run['run_id']}: unknown_writer_calls exceeds denominator_calls")
+            if attributed > changed:
+                raise ValueError(f"run {run['run_id']}: attributed_changed_files exceeds changed_files")
 
 
 def _num(value):
@@ -267,8 +278,8 @@ def derive_counts(analysis, eligible_total):
         "negativeControlRuns": len(controls),
         "negativeControlRunsFlagged": sum(1 for r in controls if _probe_flag(r)),
         "c1bQualifyingFailures": sum(1 for r in analysis if _qualifies_c1b(r)),
-        "unknownWriterCapableCalls": sum(r["probe"]["unknown_writer_calls"] for r in analysis),
-        "unknownRateDenominatorCalls": sum(r["probe"]["denominator_calls"] for r in analysis),
+        "attributedChangedFiles": sum(r["probe"]["attributed_changed_files"] for r in analysis),
+        "changedFiles": sum(r["probe"]["changed_files"] for r in analysis),
         "probeFlaggedRuns": len(flagged),
         "probeFlaggedReferenceFailures": sum(1 for r in flagged if _is_failure(r)),
         "referenceFailureRuns": sum(1 for r in analysis if r["reference"] != "clean"),
@@ -289,7 +300,12 @@ def score(data):
     counts = derive_counts(analysis, len(eligible))
     decision = decide(counts)
 
-    n, denominator = len(analysis), counts["unknownRateDenominatorCalls"]
+    n = len(analysis)
+    unknown_calls = sum(r["probe"]["unknown_writer_calls"] for r in analysis)
+    denominator = sum(r["probe"]["denominator_calls"] for r in analysis)
+    searches = sum(r["probe"]["read_only_search_calls"] for r in analysis)
+    bash = (sum(r["probe"]["bash_calls"] for r in analysis)
+            if all("bash_calls" in r["probe"] for r in analysis) else None)
     prevalence = _ratio(counts["referenceFailureRuns"], n)
     precision = _ratio(counts["probeFlaggedReferenceFailures"], counts["probeFlaggedRuns"])
     naive_precision = _ratio(counts["naiveFlaggedReferenceFailures"], counts["naiveFlaggedRuns"])
@@ -313,11 +329,21 @@ def score(data):
                "prevalence": _num(prevalence), "naive_precision": _num(naive_precision),
                "naive_comparison": "applied" if counts["naiveFlaggedRuns"] else "not-applicable",
                "unmet_if_evaluated": c2_unmet(counts) if counts["probeFlaggedRuns"] else None},
-        "c3": {"unknown_writer_calls": counts["unknownWriterCapableCalls"],
-               "denominator_calls": denominator,
-               "rate": _num(_ratio(counts["unknownWriterCapableCalls"], denominator)),
-               "met": c3_met(counts),
-               "read_only_search_calls": sum(r["probe"]["read_only_search_calls"] for r in analysis)},
+        "c3": {"definition": "attribution-coverage-of-changes",
+               "attributed_changed_files": counts["attributedChangedFiles"],
+               "changed_files": counts["changedFiles"],
+               "coverage": _num(_ratio(counts["attributedChangedFiles"], counts["changedFiles"])),
+               "threshold_proposal": "0.60",
+               "met": c3_met(counts)},
+        # Descriptive only since revision 3: reported, never gating.
+        "descriptive_call_mix": {
+            "gates_nothing": True,
+            "unknown_writer_calls": unknown_calls,
+            "denominator_calls": denominator,
+            "unknown_call_rate": _num(_ratio(unknown_calls, denominator)),
+            "read_only_search_calls": searches,
+            "bash_share_of_all_calls": (None if bash is None
+                                        else _num(_ratio(bash, denominator + searches)))},
         "c4": {"negative_control_runs": counts["negativeControlRuns"],
                "flagged": counts["negativeControlRunsFlagged"],
                "flag_rate": _num(_ratio(counts["negativeControlRunsFlagged"],

@@ -11,8 +11,10 @@ merge-tree` baselines, a naive path-overlap rule and Agent Braid commit-level
 analysis (`analyze-git`) all miss, with the failure attributable to the flagged
 pair (C1b); the overlap predicts reference failures with a precision that is at
 least 0.3 and exceeds both the reference-failure prevalence and the naive
-path-overlap precision (C2); the share of unknown writer-capable tool calls is
-bounded (C3); and the probe stays quiet on designed negative controls (C4). A
+path-overlap precision (C2); transcript evidence explains the writes, that is, at
+least 0.60 of the files changed on agent branches are attributed to a successful
+write call in the agent's transcript (C3, attribution coverage); and the probe
+stays quiet on designed negative controls (C4). A
 pass of this hypothesis' test means feasibility not refuted on a small designed
 sample, not that the probe is worth implementing.
 
@@ -42,8 +44,10 @@ missed by both merge-tree baselines, the naive path-overlap arm and both Braid
 flags, flagged by the probe and attributable to the flagged pair (C1b);
 read/write-overlap precision below 0.3, or not above the reference-failure
 prevalence or the naive path-overlap precision, with at least 3 probe-flagged
-runs (C2); a pooled unknown writer-capable rate above 40%, where read-only
-searches are reported separately (C3); or the probe flagging more than 1 of the
+runs (C2); attribution coverage of changed files below 0.60, with files changed
+only through `Bash` counted as unattributed, or no changed file (C3; the
+call-share unknown rate and the `Bash` share are descriptive only and never
+gate); or the probe flagging more than 1 of the
 at least 3 negative-control runs (C4).
 
 Order of evaluation: fewer than 10 eligible runs with probe data, or an unmet
@@ -58,13 +62,13 @@ the table), so a fail is weak evidence against the heuristic.
 ## Evidence status and links
 
 - Obtained evidence: none. The preregistration is not frozen and no run exists.
-- Preregistration (revision 2, 2026-10-24): [proposal](../../docs/experiments/CLAUDE_WORKFLOW_INTEGRATION_PROPOSAL.md),
+- Preregistration (revision 3, 2026-10-24; C3 redefined by a founder decision after a pre-freeze census on the founder's own transcripts, aggregate-only, raw output not committed; the 0.60 threshold is a proposal the founder may amend before the freeze): [proposal](../../docs/experiments/CLAUDE_WORKFLOW_INTEGRATION_PROPOSAL.md),
   [inputs](../../docs/experiments/claude-workflow-g0-inputs.json) and
   [decision vectors](../../docs/experiments/claude-workflow-g0-decision-vectors.json),
   checked by `scripts/validate_claude_workflow_g0_proposal.py`.
 - Specification: [SPEC-053](../../specs/053-claude-transcript-trace-adapter/spec.md);
   consumer: SPEC-052 (read-only integration gate).
-- Source and budget decision (signature superseded by revision 2, renewal required before freezing): [decision record](../../specs/053-claude-transcript-trace-adapter/budget-and-source-decision.md).
+- Source and budget decision (signature superseded by revisions 2 and 3, renewal required before freezing): [decision record](../../specs/053-claude-transcript-trace-adapter/budget-and-source-decision.md).
 - Related negative result: parallel runtime speedup NO-GO (SPEC-021 G4, SPEC-022,
   SPEC-038); H-CW1 makes no timing claim.
 - Index: on this branch the identifier is not listed in the hypotheses README or

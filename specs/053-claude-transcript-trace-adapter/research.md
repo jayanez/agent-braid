@@ -113,7 +113,7 @@ nothing". The spec requires `partial`, never `complete`. Since `partial` already
 blocks `independent-candidate` in the analyzer, the conservative direction is
 preserved.
 
-Open for the T009 re-plan (review of 2026-10-24): in the analyzer `partial` and `unknown` coverage produce identical pair labels, so this departure from SPEC-023 changes the reported label and not the analysis; following SPEC-023, or setting `unknown` above a stated loss ratio, remains a candidate. Likewise a write request with no result record is dropped as a failed call here, whereas the G0 probe counts it as an unknown writer; an `unknown` effect for it remains a candidate. Neither is decided before G0.
+Open for the T009 re-plan (review of 2026-10-24): in the analyzer `partial` and `unknown` coverage produce identical pair labels, so this departure from SPEC-023 changes the reported label and not the analysis; following SPEC-023, or setting `unknown` above a stated loss ratio, remains a candidate. Likewise a write request with no result record is dropped as a failed call here, whereas the G0 probe counts it as an unknown writer in its descriptive rate and attributes no file to it; an `unknown` effect for it remains a candidate. Neither is decided before G0.
 
 Alternatives: emit `unknown` when any loss exists (rejected: contradicts SC-005);
 add a `partial` carve-out to the generic importer (rejected: edits SPEC-023
@@ -155,14 +155,14 @@ starting `mcp__` and every other name are `unknown`. The table is closed and
 versioned; a name is never classified by its spelling beyond the `mcp__` prefix.
 
 Rationale: this is the spec's list, and it is the same classification the G0 probe
-uses, so the measured unknown rate and the product's unknown share are comparable.
+uses, so the descriptive call-share unknown rate and the product's unknown share are comparable.
 Treating an unlisted tool as `unknown` can only reduce what the analyzer concludes
 (Article 5: hidden effects reduce assurance and are surfaced).
 
 Alternatives: map `MultiEdit` and similar tools to `write` (rejected for `-v1`:
 outside the spec list; a later mapper version can add them after review). Count a
 failed `Bash` as an unknown effect (rejected for the mapper by SC-005; the G0
-probe counts failed calls as unknown for C3, so the two are reported side by side,
+probe counts failed calls as unknown writers in its descriptive rate and attributes no file to them (C3), so the two are reported side by side,
 not merged).
 
 ## RS-6. Effect channel and resource naming
@@ -301,8 +301,9 @@ evidence steps around it. Points the plan keeps visible:
   must exceed that prevalence and the naive path-overlap precision; it is a floor, not
   evidence of usefulness.
 
+- C3 (revision 3) is attribution coverage of changes: attributed over changed files, at least 0.60, because the pre-freeze census on the founder's own transcripts (1,418 subagent files, 65,639 tool calls; aggregate-only, raw output not committed) shows `Bash` at 80.2% of calls and 85.4% of calls in the unknown class (read-only searches 0.0%, `Read` 7.8%), so the call-share definition would fail by construction. The threshold is a founder-amendable proposal; the call-share unknown rate is descriptive only.
 - Source yield and consent come first: the budget-and-source decision is
-  unsigned (the 2026-10-24 chat declaration applied to the revision 1 bytes and is superseded by revision 2) and the provider-terms confirmation is pending. No run counts before the
+  unsigned (the 2026-10-24 chat declaration applied to the revision 1 bytes and is superseded by revisions 2 and 3) and the provider-terms confirmation is pending. No run counts before the
   founder signs and freezes.
 - The reference outcome (serial merge plus tests, run twice) is observed; every
   tool prediction is a proxy hashed before the reference exists. No human label is

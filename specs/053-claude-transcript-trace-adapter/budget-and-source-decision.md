@@ -1,7 +1,8 @@
 # Draft decision record: G0 budget and transcript source rights
 
-**Status:** Signature superseded by revision 2 of the preregistration (2026-10-24);
-renewal against the new bytes is required before the freeze. This is a draft for
+**Status:** Signature superseded by revisions 2 and 3 of the preregistration
+(2026-10-24); renewal against the final bytes, recorded after merge, is required
+before the freeze. This is a draft for
 the founder to accept, amend or reject. It records no approval, no provider
 permission and no spend, and it authorizes no workflow run. It supports the
 [G0 preregistration](../../docs/experiments/CLAUDE_WORKFLOW_INTEGRATION_PROPOSAL.md).
@@ -14,9 +15,17 @@ restating it.
 | Item | State |
 |---|---|
 | Founder chat declaration of 2026-10-24 (EUR 0, own-transcript scope, provider-terms position) | Declared in chat and transcribed by an agent in [founder-decision-20261024.md](founder-decision-20261024.md); it applied to the bytes of revision 1 and is **superseded** by revision 2, which changes the bound bytes. It is not a signature. |
-| Binding founder record for revision 2 (task T001) | **Pending.** Produced by the founder in a location the founder chooses; it binds the new hashes of this file, the proposal, the inputs file and the decision vectors file, computed at renewal. |
+| Binding founder record for the final revision-3 bytes (task T001) | **Pending.** Produced by the founder in a location the founder chooses; it binds the new hashes of this file, the proposal, the inputs file and the decision vectors file, computed at renewal. |
 | Provider-terms confirmation | Pending; an owner declaration, not an authenticated observation. |
 | Freeze of the preregistration | Not done; follows the renewal and the pre-freeze preparation (T002, T003). |
+
+**Revision 3 (2026-10-24):** a founder decision redefined criterion C3 of the
+preregistration (attribution coverage of changes), which changes the bound bytes
+again. The revision-2 hashes are superseded as well as the revision-1 hashes
+below. The renewal is to be recorded against the final bytes after merge; this
+note does not state new hashes (a file cannot contain its own hash) and does not
+claim a renewal or a signature. The state column above is unchanged: the binding
+record stays pending, `signature-superseded-renewal-required`.
 
 Revision 1 bytes (SHA-256) that the earlier declaration applied to: this file
 `333406c25dbdf87b0cd72c2895f441998710e7f3a477e95c137647e12e4a9c62`, the proposal
@@ -95,7 +104,7 @@ paths, base object ids, a transcript digest) and counts under the label
 Founder decision: pending renewal.
 Signature: pending (the declaration of 2026-10-24 is superseded).
 Date: pending.
-Amendments: this file was edited on 2026-10-24 (same day) for revision 2, so the
+Amendments: this file was edited on 2026-10-24 (same day) for revisions 2 and 3, so the
 bytes the earlier declaration applied to no longer exist.
 
 Nothing here becomes effective until the founder signs a separate record that

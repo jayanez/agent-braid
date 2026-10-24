@@ -41,7 +41,7 @@ publishes, creates a remote issue, commits or pushes.
    relaxed threshold, removed C1a or C1b, a C1b that commit-level evidence or
    naive overlap could satisfy, a C1a made gating, a C2 without the prevalence or
    naive-precision comparison, a removed or inverted order of evaluation, a C1b without
-   attribution, fewer than 3 negative controls, a probe hashed after the freeze, a
+   attribution, a C3 relaxed below 0.60 or gated on the call-share rate, fewer than 3 negative controls, a probe hashed after the freeze, a
    decision vectors file that misses a branch of the order of evaluation, fewer
    runs, non-zero spend, false freeze, path-retaining probe, changed bytes,
    approved/supported rewording) must be rejected. Limits: structure and bytes
@@ -129,11 +129,11 @@ the [preregistration](../../docs/experiments/CLAUDE_WORKFLOW_INTEGRATION_PROPOSA
    [budget and source decision](budget-and-source-decision.md) as a separate record
    that binds its bytes with the proposal, the inputs file and the decision vectors
    file. Expected: a binding record exists against the new hashes; until then the
-   draft grants nothing and the chat declaration of 2026-10-24 is superseded.
+   draft grants nothing and the chat declaration of 2026-10-24 is superseded by revisions 2 and 3 (the renewal is recorded against the final bytes after merge).
 2. Founder runs the **transcript layout and tool-name census**: reads the
    founder's own existing subagent transcripts locally and keeps only a structure
    and tool-name histogram (aggregate-only). Expected: a histogram with no path,
-   prompt or content.
+   prompt or content. Its aggregate result is recorded in revision 3 of the proposal (raw output not committed).
 3. Founder writes the stdlib probe **outside the repository** against the observed
    layout and tests it on a de-identified real fixture derived from the census
    (not a hand-written synthetic transcript); write-capable tools found by the

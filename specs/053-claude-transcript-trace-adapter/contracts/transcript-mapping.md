@@ -126,7 +126,7 @@ No read effect and no read version are emitted, and one loss code is counted, fo
   independence is not a result this mapper can produce.
 - Hidden effects remain surfaced as uncertainty (Article 5): `Bash`, `Grep`,
   `Glob` and MCP effects are invisible and stay `unknown`. The product keeps
-  `Grep` and `Glob` as `unknown`, whereas the G0 criterion C3 separates read-only
+  `Grep` and `Glob` as `unknown`, whereas the G0 descriptive call-share rate separates read-only
   searches from unknown writers; the conformance check (T018) reports that
   difference as a count.
 
@@ -240,7 +240,7 @@ republishes transcript-derived paths only when the operator opts in
 
 The G0 probe ([proposal](../../../docs/experiments/CLAUDE_WORKFLOW_INTEGRATION_PROPOSAL.md))
 is a separate measurement tool with retained integer counts only. It counts failed
-calls as unknown, whereas the mapper emits no effect for a failed call (SC-005);
-C3 stays tied to the probe and is not redefined by the mapper. PR5 adds a
+calls as unknown writers in its descriptive rate and attributes no changed file to them, whereas the mapper emits no effect for a failed call (SC-005);
+C3 (attribution coverage of changes) stays tied to the probe and is not redefined by the mapper. PR5 adds a
 conformance check that runs both on the same synthetic fixture and reports, not
-hides, every difference. The probe's C3 number stays the preregistered one.
+hides, every difference. The probe's C3 attribution coverage stays the preregistered one.

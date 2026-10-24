@@ -2,13 +2,26 @@
 """G0 transcript read/write probe (measurement tool, not the SPEC-053 mapper).
 
 Reads Claude Code subagent transcript JSONL files locally and in memory and
-prints ONLY integer counts: per agent and tool class, and per run the number of
-ordered agent pairs and distinct paths with a read/write overlap. No path, path
-hash, prompt, file content or tool output is ever written. Stdlib only.
+prints ONLY integer counts: per agent and tool class, per run the number of
+ordered agent pairs and distinct paths with a read/write overlap, and (C3,
+revision 3) per agent and run the integers changed_files and
+attributed_changed_files. No path, path hash, prompt, file content or tool
+output is ever written. Stdlib only; the only subprocess is a hardened,
+read-only local git (see changed_paths).
 
 Usage (agents in preregistered ordinal order):
-    python3 probe.py --agent WORKTREE_ROOT TRANSCRIPT.jsonl \
+    python3 probe.py --repo REPO --base BASE_COMMIT \
+                     --agent WORKTREE_ROOT TRANSCRIPT.jsonl \
                      --agent WORKTREE_ROOT TRANSCRIPT.jsonl ...
+
+--repo and --base go together. For each agent the changed files are the paths
+added or modified between BASE_COMMIT and the HEAD of that agent's worktree
+(its final branch state), from `git diff --name-only --diff-filter=AM`. A
+changed file is attributed when the agent's transcript has at least one
+successful Write, Edit or NotebookEdit call on that repository-relative path
+(compared inside the probe). A file changed only through Bash (sed -i, mv,
+generators, formatters) is unattributed by definition. Without --repo and
+--base the attribution integers are not printed.
 
 Transcript shape (observed by the pre-freeze census, see census.py): one JSON
 object per line; assistant lines carry message.content blocks of
@@ -23,10 +36,10 @@ its hash is recorded.
 Counting rules (preregistered, see the proposal):
 - A call with no result record, or with is_error true, is a failed call. A
   failed call is never an effect (never a read or a write for the overlap).
-- unknown_writer_calls (C3 numerator): every Bash, mcp__* and other call, plus
+- unknown_writer_calls (descriptive since revision 3, never gating): every Bash, mcp__* and other call, plus
   every failed write-class call (Edit, Write, NotebookEdit), including a write
   request that has no result record.
-- denominator_calls (C3 denominator): every counted call except Grep and Glob.
+- denominator_calls (descriptive since revision 3, never gating): every counted call except Grep and Glob.
 - Grep and Glob are read-only searches: they leave numerator and denominator
   and are reported separately as read_only_search_calls. Failed Read calls are
   reported separately as failed_read_calls and are not unknown writers.
@@ -37,7 +50,9 @@ Counting rules (preregistered, see the proposal):
 
 import argparse
 import json
+import os
 import posixpath
+import subprocess
 import sys
 
 WRITE_TOOLS = {"Edit": "file_path", "Write": "file_path", "NotebookEdit": "notebook_path"}
@@ -133,6 +148,39 @@ def scan_agent(root, lines):
     return counts, reads, writes
 
 
+def _git(repo, *args):
+    """Run a hardened read-only git in `repo`; return stdout bytes.
+
+    No hooks, no system or user configuration, no external diff or textconv, no
+    optional locks, an otherwise empty environment. Nothing from git's stderr is
+    ever surfaced because it can contain paths.
+    """
+    env = {"PATH": os.environ.get("PATH", os.defpath), "LC_ALL": "C",
+           "GIT_CONFIG_NOSYSTEM": "1", "GIT_CONFIG_GLOBAL": os.devnull,
+           "GIT_OPTIONAL_LOCKS": "0", "GIT_TERMINAL_PROMPT": "0"}
+    command = ["git", "-C", repo, "-c", "core.hooksPath=" + os.devnull,
+               "-c", "core.fsmonitor=false", "-c", "core.quotepath=false",
+               "-c", "diff.external=", "-c", "protocol.allow=never"] + list(args)
+    done = subprocess.run(command, env=env, stdin=subprocess.DEVNULL,
+                          stdout=subprocess.PIPE, stderr=subprocess.DEVNULL)
+    if done.returncode != 0:
+        raise RuntimeError("git failed")
+    return done.stdout
+
+
+def changed_paths(repo, base, root):
+    """Paths added or modified between base and the HEAD of worktree `root`.
+
+    Memory only. Renames are not detected, so a moved file is an added path.
+    """
+    if not base or base.startswith("-"):
+        raise RuntimeError("git failed")
+    head = _git(root, "rev-parse", "--verify", "HEAD^{commit}").decode("ascii").strip()
+    out = _git(repo, "diff", "--name-only", "--diff-filter=AM", "--no-renames",
+               "--no-ext-diff", "--no-textconv", "-z", base + ".." + head, "--")
+    return {item.decode("utf-8", "surrogateescape") for item in out.split(b"\0") if item}
+
+
 def overlaps(agents):
     """Count ordered pairs (i, j) and distinct paths where i read p, j wrote p, i never wrote p."""
     pairs = 0
@@ -148,28 +196,54 @@ def overlaps(agents):
     return {"ordered_pairs_with_overlap": pairs, "distinct_paths_with_overlap": len(distinct)}
 
 
-def probe(specs):
-    """specs: [(worktree_root, iterable_of_lines)] in ordinal order."""
+def probe(specs, changed=None):
+    """specs: [(worktree_root, iterable_of_lines)] in ordinal order.
+
+    changed: optional [set_of_changed_repo_relative_paths] in the same order;
+    when given, changed_files and attributed_changed_files are added.
+    """
     agents = [scan_agent(root, lines) for root, lines in specs]
     run = overlaps(agents)
     for key in ("denominator_calls", "unknown_writer_calls", "read_only_search_calls"):
         run[key] = sum(a[0][key] for a in agents)
-    return {
-        "agents": [dict(ordinal=n + 1, **a[0]) for n, a in enumerate(agents)],
-        "run": run,
-    }
+    run["bash_calls"] = sum(a[0]["bash"] for a in agents)
+    out = {"agents": [dict(ordinal=n + 1, **a[0]) for n, a in enumerate(agents)], "run": run}
+    if changed is not None:
+        if len(changed) != len(agents):
+            raise ValueError("one changed-path set per agent is required")
+        for entry, agent, paths in zip(out["agents"], agents, changed):
+            entry["changed_files"] = len(paths)
+            entry["attributed_changed_files"] = len(paths & agent[2])
+        for key in ("changed_files", "attributed_changed_files"):
+            run[key] = sum(entry[key] for entry in out["agents"])
+    return out
 
 
 def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__.split("\n")[0])
     parser.add_argument("--agent", nargs=2, action="append", required=True,
                         metavar=("WORKTREE_ROOT", "TRANSCRIPT"))
+    parser.add_argument("--repo", help="repository used for the local git diff (with --base)")
+    parser.add_argument("--base", help="base commit of the run (with --repo)")
     args = parser.parse_args(argv)
+    if bool(args.repo) != bool(args.base):
+        parser.error("--repo and --base go together")
     specs = []
     for root, path in args.agent:
-        with open(path, encoding="utf-8", errors="replace") as handle:
-            specs.append((root, handle.read().splitlines()))
-    json.dump(probe(specs), sys.stdout, sort_keys=True, indent=2)
+        try:
+            with open(path, encoding="utf-8", errors="replace") as handle:
+                specs.append((root, handle.read().splitlines()))
+        except OSError:
+            sys.stderr.write("probe: a transcript could not be read\n")
+            return 1
+    changed = None
+    if args.repo:
+        try:
+            changed = [changed_paths(args.repo, args.base, root) for root, _ in specs]
+        except (RuntimeError, OSError, UnicodeError):
+            sys.stderr.write("probe: git could not compute the changed files\n")
+            return 1
+    json.dump(probe(specs, changed), sys.stdout, sort_keys=True, indent=2)
     sys.stdout.write("\n")
     return 0
 

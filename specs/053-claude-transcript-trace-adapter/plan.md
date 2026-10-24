@@ -25,7 +25,7 @@ empty and human review is pending.
 - Inputs that exist now: the G0 proposal and inputs record, the pinned structural
   checker `scripts/validate_claude_workflow_g0_proposal.py` with
   `tests/test_claude_workflow_g0_proposal.py`, the draft
-  [budget and source decision](budget-and-source-decision.md) (unsigned; the 2026-10-24 chat declaration applied to revision 1 bytes and is superseded), and
+  [budget and source decision](budget-and-source-decision.md) (unsigned; the 2026-10-24 chat declaration applied to revision 1 bytes and is superseded by revisions 2 and 3), and
   hypothesis H-CW1 (untested).
 - Out of scope, unchanged from the spec: any execution, grant, merge or promotion;
   live capture or hooks; edits to `analysis.py`; changes to SPEC-023 acceptance;
@@ -91,7 +91,7 @@ SPEC-052's v1 gate exists before PR6.
 Empirical-protocol planning (gate G0) follows the preregistration as drafted, including
 its review amendments (C1 split into C1a and C1b, C2 compared with the prevalence and the
 naive path-overlap precision, a fixed order of evaluation):
-source permission and yield come first (signature renewal, layout and tool-name census, probe written and tested on a de-identified real fixture, yield estimate and `plannedRunCount`, probe and runner hashes, power operating point accepted, then freeze), designed overlap
+source permission and yield come first (signature renewal against the final revision 3 bytes, layout and tool-name census whose aggregate result is recorded in revision 3, probe including the attribution-coverage comparison written and tested on a de-identified real fixture, yield estimate and `plannedRunCount`, probe and runner hashes, power operating point accepted, then freeze), designed overlap
 limits generalization, the reference outcome is observed (serial merge plus tests
 twice), predictions are hashed before it exists, no human label is used, the run is
 the held-out unit, and missing probe data is reported per run. There is no model
@@ -238,12 +238,12 @@ Gate G0 blocks PR5, PR6 and R2, and only criterion C1b (with C2 and C3) can unbl
 | Risk | Effect | Handling |
 |---|---|---|
 | The transcript line schema differs from the expectation or changes between host versions | Mapper rejects or mis-maps | Pin from the pre-freeze census; a later difference is `probe-unavailable` and unrecognized shapes are refused; record host versions; a fixture-only mapper is not evidence of real behavior |
-| Most tool calls are `Bash`/search/MCP | High unknown share; weak signal | This is exactly C3; a result above 40% is a valid `g0-fail` |
+| Most file changes come through `Bash` (the census shows `Bash` at 80.2% of calls) | Low attribution coverage; transcripts cannot explain the writes | This is exactly C3; coverage below 0.60 is a valid `g0-fail`; the call-share unknown rate is descriptive only |
 | Gate v2 has no safe interface to the converter (Bash cannot be constrained, no MCP tool, or the SPEC-052 amendment for validated path tokens is refused) | REQ-009 infeasible | Transcript part of the gate is no-go; commit-level gate unaffected; recorded as a negative result |
 | Private content reaches an output or diagnostic | Privacy breach | Allowlist, aggregate counts, fixed codes, sentinel tests, independent privacy/security review record |
 | Paths are sensitive metadata | Disclosure when republished | Honest retention label and named non-aggregate items; the admission record names path disclosure; the gate republishes transcript paths only on operator opt-in; keep artifacts local |
 | Sibling module breaks if SPEC-023 public names change | Mapper stops working | Test pins imported names; SPEC-023 owner review |
-| The mapper and the G0 probe disagree | Misleading reading of G0 | Conformance check reports differences; the preregistered C3 stays the probe's |
+| The mapper and the G0 probe disagree | Misleading reading of G0 | Conformance check reports differences; the preregistered C3 (attribution coverage) stays the probe's |
 | Designed overlap on one repository is read as general | Overclaim | Limits restated in every report; no prevalence, effectiveness or speed claim |
 | Quota exhaustion or host change mid-G0 | Fewer eligible runs | `quota-exhausted` exclusion; `g0-inconclusive` is a valid outcome; no paid capacity |
 

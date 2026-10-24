@@ -5,7 +5,9 @@ Reads the founder's own existing Claude Code subagent transcripts locally and
 prints ONLY aggregate structure: record-type, content-block-type, tool-name and
 input-key-name histograms, how many tool calls are paired with a result, how
 many results are errors, the number of subagents per parent session, and the
-tool-class shares used to check the C3 cap. No path, file name, directory name,
+descriptive tool-class shares (since revision 3 of the preregistration the
+call-share unknown rate and the Bash share are reported and never gate; C3 is
+attribution coverage of changes, computed by probe.py). No path, file name, directory name,
 hash, prompt, file content or tool output is ever printed. Tool names that are
 not simple identifiers are bucketed, and every MCP tool name collapses into one
 `mcp__*` bucket so that server names are not retained. Stdlib only.
@@ -118,7 +120,7 @@ def scan_file(path, census):
 
 
 def shares(class_calls):
-    """C3-shaped shares: Grep and Glob leave numerator and denominator."""
+    """Descriptive call-mix shares (never gating): Grep and Glob leave numerator and denominator."""
     searches = class_calls.get("grep_glob", 0)
     denominator = sum(class_calls.values()) - searches
     unknown_by_class = sum(class_calls.get(c, 0) for c in ("bash", "mcp", "other"))

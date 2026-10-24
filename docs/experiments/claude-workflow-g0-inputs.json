@@ -1,12 +1,22 @@
 {
   "recordVersion": "agent-braid-claude-workflow-g0-input-proposal-1",
   "revision": {
-    "number": 2,
+    "number": 3,
     "date": "2026-10-24",
     "previousRevisionDate": "2026-10-24",
-    "reason": "review-of-revision-1-found-circular-freeze-order-weak-c1b-commit-level-equivalence-attrition-selection-leaks-nonexecutable-rule-c3-definition-and-signature-contradiction",
+    "reason": "founder-decision-2026-10-24-redefine-C3-as-attribution-coverage-of-changes-because-the-pre-freeze-census-shows-the-call-share-definition-fails-by-construction",
     "changesBoundBytes": true,
-    "founderResignatureRequired": true
+    "founderResignatureRequired": true,
+    "changedCriterion": "C3",
+    "unchangedFromRevision2": [
+      "evaluation-order",
+      "C1a",
+      "C1b",
+      "C2",
+      "C4",
+      "analysis-set"
+    ],
+    "renewalAddedByThisRevision": false
   },
   "status": "pending-founder-decision",
   "frozen": false,
@@ -25,7 +35,7 @@
   },
   "proposal": {
     "path": "docs/experiments/CLAUDE_WORKFLOW_INTEGRATION_PROPOSAL.md",
-    "sha256": "066ea12b226410b52ac9843d14f57a257db3ea28d6a649b08336dc9318b788fd",
+    "sha256": "ad3d7a0e4e767d8c5bcdee61b5a51a783d1ea89a73ab28b17925341e263945ef",
     "decisionVectorsPath": "docs/experiments/claude-workflow-g0-decision-vectors.json"
   },
   "sourceAndBudgetDecision": {
@@ -39,9 +49,16 @@
         "docs/experiments/CLAUDE_WORKFLOW_INTEGRATION_PROPOSAL.md": "02291d0d9cbde74222652ba6b22a4cdd0293fcf7a5aa3c6adf9a119cb6cb3e8d",
         "docs/experiments/claude-workflow-g0-inputs.json": "6a5b6167257523947361be3ecba26690a42b5d1316d9045c664f2f71ec628033"
       },
-      "supersededBy": "revision-2",
+      "supersededBy": "revision-3",
       "newHashes": "computed-at-renewal",
-      "renewalRequiredBeforeFreeze": true
+      "renewalRequiredBeforeFreeze": true,
+      "supersededRevision2BytesSha256": {
+        "specs/053-claude-transcript-trace-adapter/budget-and-source-decision.md": "53775c0de293b9db20a994d2283206f7db8e576c12c7bfc8d7959b6b0f6db138",
+        "docs/experiments/CLAUDE_WORKFLOW_INTEGRATION_PROPOSAL.md": "066ea12b226410b52ac9843d14f57a257db3ea28d6a649b08336dc9318b788fd",
+        "docs/experiments/claude-workflow-g0-inputs.json": "dd48f0adb47fee62da4c805c701b89e2beb1a32105ea2e9640e95e2b49a36625",
+        "docs/experiments/claude-workflow-g0-decision-vectors.json": "c100a7acbd4a5a231f36967073c6d8e6169f76d97340647e49e8a85d6baedf55"
+      },
+      "renewalRecordRedoneAgainstFinalBytesAfterMerge": true
     }
   },
   "runner": "founder",
@@ -232,7 +249,19 @@
     "writeToolsFromCensus": true,
     "resultlessWriteRequest": "counted-as-failed-call",
     "testedOnDeidentifiedRealFixture": true,
-    "writtenAgainstCensusLayout": true
+    "writtenAgainstCensusLayout": true,
+    "attributionOutputs": {
+      "fields": [
+        "changedFiles",
+        "attributedChangedFiles"
+      ],
+      "changedFilesDefinition": "files-added-or-modified-between-base-and-agent-final-branch-state-from-git-computed-locally",
+      "attributedDefinition": "changed-file-with-at-least-one-successful-Write-Edit-or-NotebookEdit-call-on-that-repository-relative-path-in-the-agent-transcript",
+      "bashOnlyChangesAreUnattributed": true,
+      "comparisonIsProbeSide": true,
+      "outputIsIntegerCountsOnly": true,
+      "retainsPathOrHash": false
+    }
   },
   "metrics": [
     "hits-misses-vs-reference",
@@ -245,10 +274,12 @@
     "reference-failure-prevalence",
     "negative-control-flag-rate",
     "intention-to-treat-counts",
-    "read-only-search-share"
+    "read-only-search-share",
+    "attribution-coverage"
   ],
   "unknownRate": {
-    "primary": "share-of-unknown-writer-capable-calls-excluding-read-only-searches",
+    "role": "descriptive-only-never-gating",
+    "primary": "descriptive-share-of-unknown-writer-capable-calls-excluding-read-only-searches",
     "numerator": [
       "Bash",
       "mcp__*",
@@ -258,7 +289,7 @@
     "denominator": "all-counted-probe-calls-except-Grep-and-Glob",
     "readOnlySearchesReportedSeparately": true,
     "failedReadsReportedSeparately": true,
-    "zeroDenominator": "C3-unmet",
+    "gatesAnyCriterion": false,
     "secondary": [
       "share-of-analyze-git-operations-unknown-or-partial",
       "share-of-pairs-unknown",
@@ -316,10 +347,15 @@
       "unit": "run"
     },
     "C3": {
-      "maxUnknownRate": 0.4,
-      "definition": "unknownRate.primary",
-      "cappedOnWriterCapableClasses": true,
-      "zeroDenominator": "unmet"
+      "role": "attribution-coverage-of-changes",
+      "gatesTranscriptRequirements": true,
+      "countsTowardPassOrFail": true,
+      "minAttributionCoverage": 0.6,
+      "definition": "attributionCoverage",
+      "comparison": "5*attributedChangedFiles>=3*changedFiles",
+      "zeroDenominator": "unmet",
+      "thresholdIsProposalFounderMayAmendBeforeFreeze": true,
+      "callShareUnknownRateAndBashShare": "descriptive-only-never-gating"
     },
     "C4": {
       "role": "negative-controls-probe-must-not-respond",
@@ -404,7 +440,9 @@
     "commit-level-braid-flag-equals-naive-path-overlap-plus-unknown-labelling",
     "pass-means-feasibility-not-refuted",
     "low-power-fail-is-weak-evidence",
-    "negative-controls-n-3"
+    "negative-controls-n-3",
+    "c3-attribution-by-successful-write-call-names-the-file-not-the-final-content",
+    "bash-only-changes-are-unattributed-by-definition"
   ],
   "powerTable": {
     "kind": "illustrative-monte-carlo-not-a-prediction",
@@ -429,7 +467,7 @@
         "flagGivenNonFailure": 0.6,
         "flagOnNegativeControl": 0.6,
         "attribution": 0.2,
-        "pass": 0.017,
+        "pass": 0.016,
         "fail": 0.983,
         "inconclusive": 0.001
       },
@@ -459,7 +497,7 @@
         "flagGivenNonFailure": 0.3,
         "flagOnNegativeControl": 0.1,
         "attribution": 0.9,
-        "pass": 0.452,
+        "pass": 0.451,
         "fail": 0.536,
         "inconclusive": 0.012
       },
@@ -469,13 +507,15 @@
         "flagGivenNonFailure": 0.1,
         "flagOnNegativeControl": 0.0,
         "attribution": 1.0,
-        "pass": 0.651,
+        "pass": 0.65,
         "fail": 0.325,
         "inconclusive": 0.024
       }
     ],
     "founderMustAcceptOperatingPointBeforeFreeze": true,
-    "reading": "low-power-a-fail-is-weak-evidence-and-a-pass-is-feasibility-not-refuted"
+    "reading": "low-power-a-fail-is-weak-evidence-and-a-pass-is-feasibility-not-refuted",
+    "c3Note": "attribution-coverage-not-modelled-treated-as-met-recomputed-in-revision-3-with-same-assumptions-and-seed",
+    "generator": "numpy-default_rng"
   },
   "freezeOrder": [
     "renew-source-and-budget-signature-against-revised-bytes",
@@ -486,5 +526,29 @@
     "founder-accepts-power-operating-point",
     "freeze-decision-binding-proposal-inputs-and-vectors-bytes",
     "runs-start"
-  ]
+  ],
+  "censusEvidence": {
+    "kind": "pre-freeze-census-on-the-founder-own-transcripts",
+    "outputIsAggregateOnly": true,
+    "rawOutputCommitted": false,
+    "subagentFiles": 1418,
+    "toolCalls": 65639,
+    "bashSharePercent": 80.2,
+    "unknownClassSharePercent": 85.4,
+    "readOnlySearchSharePercent": 0.0,
+    "readSharePercent": 7.8,
+    "consequence": "call-share-definition-of-revision-2-fails-by-construction-regardless-of-the-science"
+  },
+  "attributionCoverage": {
+    "role": "criterion-C3",
+    "gates": true,
+    "unit": "changed-files-summed-over-the-10-analysis-runs",
+    "changedFiles": "files-added-or-modified-between-base-and-agent-final-branch-state",
+    "attributed": "successful-Write-Edit-or-NotebookEdit-call-on-the-path-in-the-agent-transcript",
+    "unattributed": "files-changed-only-through-Bash-sed-i-mv-generators-formatters",
+    "outputIsIntegerCountsOnly": true,
+    "comparison": "5*attributedChangedFiles>=3*changedFiles",
+    "zeroDenominator": "C3-unmet",
+    "answers": "can-transcript-evidence-explain-the-writes-at-all-precondition-for-C1b-and-C2"
+  }
 }

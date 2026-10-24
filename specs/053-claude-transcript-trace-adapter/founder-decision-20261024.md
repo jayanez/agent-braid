@@ -14,7 +14,16 @@ edited the draft decision record, so section 1 below is **superseded**: it appli
 to the bytes listed in its table and a renewal against the new hashes is required
 before the freeze. Sections 2 and 3 are unaffected by the byte change.
 
-## 1. G0 budget and transcript source rights — declared in chat; superseded by revision 2
+**Revision 3 (2026-10-24, same day):** a founder decision redefined criterion C3
+of the preregistration (attribution coverage of changes) after a pre-freeze
+census on the founder's own transcripts, so the proposal, the inputs file and the
+decision vectors file changed again. The revision-2 bytes are **superseded as
+well**: the revision-1 and revision-2 hashes no longer describe any current file.
+The renewal is to be recorded against the final bytes after merge; this change
+adds no renewal and no signature, and the new hashes are not stated here because
+a file cannot contain its own hash.
+
+## 1. G0 budget and transcript source rights — declared in chat; superseded by revisions 2 and 3
 
 The founder declared, in the delivery session, acceptance of the draft
 [budget and source decision](budget-and-source-decision.md) without amendments:
