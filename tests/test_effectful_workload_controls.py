@@ -74,7 +74,6 @@ class WorkloadControlsTests(unittest.TestCase):
         report = explore(fixture["request"])
         self.assertEqual(control_result(fixture, report)["status"], "inconclusive")
 
-
     def test_removing_each_witness_or_prevention_fails_the_control(self):
         manifest, _ = corpus()
         by_id = {f["id"]: copy.deepcopy(f) for f in manifest["fixtures"] if not f["h2"]}
