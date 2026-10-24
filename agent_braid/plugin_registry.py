@@ -25,6 +25,11 @@ class RegistryError(ValueError):
     """An unsafe or stale registration is refused."""
 
 
+class RegistryStale(RegistryError):
+    """The registry changed effectively since this connection snapshotted it."""
+    code = 'reconnect-required'
+
+
 class MigrationRequired(RegistryError):
     """A valid alpha.2 registry must be migrated through a setup preview."""
 
@@ -159,6 +164,18 @@ def _decode(raw: bytes | None, home: Path, *, migrate: bool = False) -> dict:
 def _legacy(raw: bytes | None) -> bool:
     """True for raw bytes already accepted by _decode(..., migrate=True) as v0.1."""
     return raw is not None and json.loads(raw)['schema'] == LEGACY_SCHEMA
+
+
+def configuration_digest(value: dict | None) -> str | None:
+    """Path-free digest of the effective configuration: consent and normalized workspace rows.
+
+    Raw bytes, row order and worktree-root order carry no authority and are ignored.
+    """
+    if value is None:
+        return None
+    rows = sorted((dict(row, worktreeRoots=sorted(row['worktreeRoots'])) for row in value['workspaces']),
+                  key=lambda row: row['workspaceId'])
+    return _hash(_bytes({'telemetry': value['telemetry'], 'workspaces': rows}))
 
 
 def load(home: Path | None = None) -> dict:
