@@ -80,8 +80,11 @@ class TelemetryTests(unittest.TestCase):
             connection.close()
 
     def test_concurrent_writes_are_transactional(self):
-        with ThreadPoolExecutor(max_workers=6) as pool:
-            list(pool.map(lambda _: self.record(), range(24)))
+        # Correctness of concurrent writes, not the fail-closed policy: wait long enough that a loaded CI
+        # runner does not turn contention into a refusal (the short production waits stay under test elsewhere).
+        with patch.object(telemetry, 'LOCK_WAIT_SECONDS', 30), patch.object(telemetry, 'SQLITE_TIMEOUT_SECONDS', 30):
+            with ThreadPoolExecutor(max_workers=6) as pool:
+                list(pool.map(lambda _: self.record(), range(24)))
         self.assertEqual(sum(r['count'] for r in self.store.report()['rows'] if r['metric'] == 'calls'), 24)
 
     def test_incremental_export_merge_and_replay(self):
@@ -267,10 +270,13 @@ class TelemetryBoundaryTests(unittest.TestCase):
     def test_multiple_processes_and_lock_failure(self):
         import subprocess
         import sys
-        code = "from pathlib import Path; import sys; from agent_braid.tooling_telemetry import Store; s=Store(Path(sys.argv[1])); [s.record('cli','analyze','ok',1) for _ in range(10)]"
+        # The children exercise cross-process correctness with long waits; the busy refusal below uses the short defaults.
+        code = ("from pathlib import Path; import sys; import agent_braid.tooling_telemetry as t; "
+                "t.LOCK_WAIT_SECONDS = t.SQLITE_TIMEOUT_SECONDS = 30; s=t.Store(Path(sys.argv[1])); "
+                "[s.record('cli','analyze','ok',1) for _ in range(10)]")
         children = [subprocess.Popen([sys.executable, '-c', code, str(self.directory)], stdout=subprocess.PIPE, stderr=subprocess.PIPE) for _ in range(3)]
         for child in children:
-            out, error = child.communicate(timeout=10)
+            out, error = child.communicate(timeout=60)
             self.assertEqual(child.returncode, 0, error.decode())
             self.assertEqual(out, b'')
         self.assertEqual(sum(r['count'] for r in self.store.report()['rows'] if r['metric'] == 'calls'), 30)

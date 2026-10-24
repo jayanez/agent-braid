@@ -23,6 +23,9 @@ MAX_BATCH_BYTES = 1024 * 1024
 MAX_ROWS = 4096
 MAX_BATCHES = 2048
 MAX_COUNT = 10**12
+# Fail-closed waits: a busy store refuses the observation instead of delaying the caller.
+LOCK_WAIT_SECONDS = 0.25
+SQLITE_TIMEOUT_SECONDS = 0.25
 CATEGORIES = ('independent-candidate', 'ordered', 'conflicting', 'unknown')
 OPERATIONS = {
     'cli': ('analyze', 'analyze-git'),
@@ -181,7 +184,7 @@ class Store:
         db = None
         try:
             _path(lock_path)
-            deadline = time.monotonic() + 0.25
+            deadline = time.monotonic() + LOCK_WAIT_SECONDS
             while True:
                 try:
                     fcntl.flock(descriptor, fcntl.LOCK_EX | fcntl.LOCK_NB)
@@ -202,7 +205,7 @@ class Store:
             fd = os.open(path, os.O_RDWR | os.O_CREAT | os.O_NOFOLLOW, 0o600)
             os.close(fd)
             fresh = path.stat().st_size == 0
-            db = sqlite3.connect(path, timeout=0.25, isolation_level=None)
+            db = sqlite3.connect(path, timeout=SQLITE_TIMEOUT_SECONDS, isolation_level=None)
             db.execute('PRAGMA trusted_schema=OFF')
             if not fresh:
                 application_id = db.execute('PRAGMA application_id').fetchone()[0]
