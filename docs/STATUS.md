@@ -28,6 +28,13 @@ and acceptance gates open.
 | **Owned-work evaluation closure** (SPEC-051 T004) | [#676](https://github.com/jayanez/agent-braid/pull/676) | Compatibility and profile evidence for the pure contracts; remote closure, real sources and review remain pending. |
 | **Plugin reconnect-required refusal** (SPEC-046 T016, T017) | [#679](https://github.com/jayanez/agent-braid/pull/679), [#682](https://github.com/jayanez/agent-braid/pull/682) | A typed `reconnect-required` refusal and effective-configuration reconnect detection with path-free digests in `plugin-status`. T016/T017 stay open until installed-procedure evidence is recorded; T018 (telemetry cause) and T019 (documentation) are not started. |
 
+**Draft planning — [M4.6 Claude Code dynamic workflows](../ROADMAP.md#m46--claude-code-dynamic-workflows):**
+[SPEC-052](../specs/052-claude-workflow-gate/spec.md) specifies a read-only
+integration gate for Claude Code dynamic workflows and
+[SPEC-053](../specs/053-claude-transcript-trace-adapter/spec.md) a transcript trace
+adapter blocked by a preregistered G0 experiment. Nothing is implemented,
+published or accepted; the ADR change remains a feature-local proposal.
+
 The runtime executes allowlisted Git plumbing. Repository code, source-ref
 promotion and broader agent/provider adapters require additional contracts and
 authority. The [runtime demo](../examples/runtime/README.md) gives you a complete

@@ -60,7 +60,7 @@ class AdoptionPathlineTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)
             _write_registry(root, records)
-            (root / "research/radar").mkdir(parents=True)
+            (root / "research/radar").mkdir(parents=True, exist_ok=True)
             (root / "research/radar/current.json").write_text(
                 json.dumps({"entries": [{"id": "RAD-2026-001"}]})
             )

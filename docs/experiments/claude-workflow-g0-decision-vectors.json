@@ -1,0 +1,554 @@
+{
+  "recordVersion": "agent-braid-claude-workflow-g0-decision-vectors-1",
+  "status": "proposal-vectors-not-frozen",
+  "frozen": false,
+  "executionAuthorization": false,
+  "inputs": "docs/experiments/claude-workflow-g0-inputs.json",
+  "purpose": "Executable form of the G0 decision rule: run-level count tuples map to an expected outcome. The structural check validates this file; the G0 kit scorer (a separate pull request) must pass every vector before its bytes are pinned.",
+  "tupleFields": [
+    "eligibleRunsWithProbeData",
+    "analysisSetRuns",
+    "overlapRuns",
+    "contractDependencyRuns",
+    "negativeControlRuns",
+    "negativeControlRunsFlagged",
+    "c1bQualifyingFailures",
+    "unknownWriterCapableCalls",
+    "unknownRateDenominatorCalls",
+    "probeFlaggedRuns",
+    "probeFlaggedReferenceFailures",
+    "referenceFailureRuns",
+    "naiveFlaggedRuns",
+    "naiveFlaggedReferenceFailures"
+  ],
+  "fieldNotes": {
+    "eligibleRunsWithProbeData": "all eligible runs with probe data; only the first 10 form the analysis set",
+    "analysisSetRuns": "min(eligibleRunsWithProbeData, 10); every other count is computed on the analysis set",
+    "overlapRuns": "analysis-set runs with designed file or symbol overlap, negative controls included",
+    "contractDependencyRuns": "analysis-set runs with a manifest-declared contract dependency and no shared file",
+    "negativeControlRuns": "overlap runs designated negative controls in the manifest before launch",
+    "c1bQualifyingFailures": "semantic failures missed by every non-transcript arm, flagged by the probe and attributable to the flagged pair",
+    "unknownWriterCapableCalls": "Bash, MCP, other and failed write-class calls",
+    "unknownRateDenominatorCalls": "all counted probe calls except Grep and Glob",
+    "referenceFailureRuns": "prevalence numerator: textual conflicts, semantic failures and indeterminate runs",
+    "probeFlaggedReferenceFailures": "probe-flagged runs that are textual conflicts or semantic failures (indeterminate is not a hit)"
+  },
+  "comparisons": "C3: unknown*10 <= 4*denominator and denominator > 0. C2: hits*10 >= 3*flagged; hits*N > referenceFailures*flagged; when naiveFlagged > 0, hits*naiveFlagged > naiveHits*flagged. N = analysisSetRuns.",
+  "vectors": [
+    {
+      "id": "v01-pass-base",
+      "note": "All criteria met on exactly 10 runs.",
+      "counts": {
+        "eligibleRunsWithProbeData": 10,
+        "analysisSetRuns": 10,
+        "overlapRuns": 7,
+        "contractDependencyRuns": 3,
+        "negativeControlRuns": 3,
+        "negativeControlRunsFlagged": 0,
+        "c1bQualifyingFailures": 1,
+        "unknownWriterCapableCalls": 20,
+        "unknownRateDenominatorCalls": 100,
+        "probeFlaggedRuns": 5,
+        "probeFlaggedReferenceFailures": 4,
+        "referenceFailureRuns": 6,
+        "naiveFlaggedRuns": 7,
+        "naiveFlaggedReferenceFailures": 5
+      },
+      "expected": {
+        "outcome": "g0-pass",
+        "decidedAtStep": "step-5",
+        "unmetOrReason": [
+          "all-met"
+        ]
+      }
+    },
+    {
+      "id": "v02-fewer-than-10-eligible-over-c1b",
+      "note": "9 eligible runs and C1b unmet: inconclusive wins because step 1 stops first.",
+      "counts": {
+        "eligibleRunsWithProbeData": 9,
+        "analysisSetRuns": 9,
+        "overlapRuns": 6,
+        "contractDependencyRuns": 3,
+        "negativeControlRuns": 3,
+        "negativeControlRunsFlagged": 0,
+        "c1bQualifyingFailures": 0,
+        "unknownWriterCapableCalls": 20,
+        "unknownRateDenominatorCalls": 100,
+        "probeFlaggedRuns": 5,
+        "probeFlaggedReferenceFailures": 4,
+        "referenceFailureRuns": 6,
+        "naiveFlaggedRuns": 7,
+        "naiveFlaggedReferenceFailures": 5
+      },
+      "expected": {
+        "outcome": "g0-inconclusive",
+        "decidedAtStep": "step-1",
+        "unmetOrReason": [
+          "eligible-runs",
+          "design-quota"
+        ]
+      }
+    },
+    {
+      "id": "v03-quota-unmet",
+      "note": "10 eligible runs but only 2 contract-dependency runs.",
+      "counts": {
+        "eligibleRunsWithProbeData": 10,
+        "analysisSetRuns": 10,
+        "overlapRuns": 7,
+        "contractDependencyRuns": 2,
+        "negativeControlRuns": 3,
+        "negativeControlRunsFlagged": 0,
+        "c1bQualifyingFailures": 1,
+        "unknownWriterCapableCalls": 20,
+        "unknownRateDenominatorCalls": 100,
+        "probeFlaggedRuns": 5,
+        "probeFlaggedReferenceFailures": 4,
+        "referenceFailureRuns": 6,
+        "naiveFlaggedRuns": 7,
+        "naiveFlaggedReferenceFailures": 5
+      },
+      "expected": {
+        "outcome": "g0-inconclusive",
+        "decidedAtStep": "step-1",
+        "unmetOrReason": [
+          "design-quota"
+        ]
+      }
+    },
+    {
+      "id": "v04-first-10-rule",
+      "note": "12 eligible runs: counts describe the first 10 only, and decide.",
+      "counts": {
+        "eligibleRunsWithProbeData": 12,
+        "analysisSetRuns": 10,
+        "overlapRuns": 7,
+        "contractDependencyRuns": 3,
+        "negativeControlRuns": 3,
+        "negativeControlRunsFlagged": 0,
+        "c1bQualifyingFailures": 1,
+        "unknownWriterCapableCalls": 20,
+        "unknownRateDenominatorCalls": 100,
+        "probeFlaggedRuns": 5,
+        "probeFlaggedReferenceFailures": 4,
+        "referenceFailureRuns": 6,
+        "naiveFlaggedRuns": 7,
+        "naiveFlaggedReferenceFailures": 5
+      },
+      "expected": {
+        "outcome": "g0-pass",
+        "decidedAtStep": "step-5",
+        "unmetOrReason": [
+          "all-met"
+        ]
+      }
+    },
+    {
+      "id": "v05-c1b-unmet",
+      "note": "C1b alone unmet with 5 flagged runs.",
+      "counts": {
+        "eligibleRunsWithProbeData": 10,
+        "analysisSetRuns": 10,
+        "overlapRuns": 7,
+        "contractDependencyRuns": 3,
+        "negativeControlRuns": 3,
+        "negativeControlRunsFlagged": 0,
+        "c1bQualifyingFailures": 0,
+        "unknownWriterCapableCalls": 20,
+        "unknownRateDenominatorCalls": 100,
+        "probeFlaggedRuns": 5,
+        "probeFlaggedReferenceFailures": 4,
+        "referenceFailureRuns": 6,
+        "naiveFlaggedRuns": 7,
+        "naiveFlaggedReferenceFailures": 5
+      },
+      "expected": {
+        "outcome": "g0-fail",
+        "decidedAtStep": "step-2",
+        "unmetOrReason": [
+          "C1b"
+        ]
+      }
+    },
+    {
+      "id": "v06-fail-over-inconclusive-no-flags",
+      "note": "No probe-flagged run: C1b unmet, so fail, not inconclusive.",
+      "counts": {
+        "eligibleRunsWithProbeData": 10,
+        "analysisSetRuns": 10,
+        "overlapRuns": 7,
+        "contractDependencyRuns": 3,
+        "negativeControlRuns": 3,
+        "negativeControlRunsFlagged": 0,
+        "c1bQualifyingFailures": 0,
+        "unknownWriterCapableCalls": 20,
+        "unknownRateDenominatorCalls": 100,
+        "probeFlaggedRuns": 0,
+        "probeFlaggedReferenceFailures": 0,
+        "referenceFailureRuns": 6,
+        "naiveFlaggedRuns": 7,
+        "naiveFlaggedReferenceFailures": 5
+      },
+      "expected": {
+        "outcome": "g0-fail",
+        "decidedAtStep": "step-2",
+        "unmetOrReason": [
+          "C1b"
+        ]
+      }
+    },
+    {
+      "id": "v07-c3-unmet-with-few-flags",
+      "note": "C3 at 41/100 with only 1 flagged run: fail over inconclusive.",
+      "counts": {
+        "eligibleRunsWithProbeData": 10,
+        "analysisSetRuns": 10,
+        "overlapRuns": 7,
+        "contractDependencyRuns": 3,
+        "negativeControlRuns": 3,
+        "negativeControlRunsFlagged": 0,
+        "c1bQualifyingFailures": 1,
+        "unknownWriterCapableCalls": 41,
+        "unknownRateDenominatorCalls": 100,
+        "probeFlaggedRuns": 1,
+        "probeFlaggedReferenceFailures": 1,
+        "referenceFailureRuns": 6,
+        "naiveFlaggedRuns": 7,
+        "naiveFlaggedReferenceFailures": 5
+      },
+      "expected": {
+        "outcome": "g0-fail",
+        "decidedAtStep": "step-2",
+        "unmetOrReason": [
+          "C3"
+        ]
+      }
+    },
+    {
+      "id": "v08-c3-boundary-40-percent",
+      "note": "Exactly 40% passes the cap.",
+      "counts": {
+        "eligibleRunsWithProbeData": 10,
+        "analysisSetRuns": 10,
+        "overlapRuns": 7,
+        "contractDependencyRuns": 3,
+        "negativeControlRuns": 3,
+        "negativeControlRunsFlagged": 0,
+        "c1bQualifyingFailures": 1,
+        "unknownWriterCapableCalls": 40,
+        "unknownRateDenominatorCalls": 100,
+        "probeFlaggedRuns": 5,
+        "probeFlaggedReferenceFailures": 4,
+        "referenceFailureRuns": 6,
+        "naiveFlaggedRuns": 7,
+        "naiveFlaggedReferenceFailures": 5
+      },
+      "expected": {
+        "outcome": "g0-pass",
+        "decidedAtStep": "step-5",
+        "unmetOrReason": [
+          "all-met"
+        ]
+      }
+    },
+    {
+      "id": "v09-c3-zero-denominator",
+      "note": "No counted calls: C3 unmet.",
+      "counts": {
+        "eligibleRunsWithProbeData": 10,
+        "analysisSetRuns": 10,
+        "overlapRuns": 7,
+        "contractDependencyRuns": 3,
+        "negativeControlRuns": 3,
+        "negativeControlRunsFlagged": 0,
+        "c1bQualifyingFailures": 1,
+        "unknownWriterCapableCalls": 0,
+        "unknownRateDenominatorCalls": 0,
+        "probeFlaggedRuns": 5,
+        "probeFlaggedReferenceFailures": 4,
+        "referenceFailureRuns": 6,
+        "naiveFlaggedRuns": 7,
+        "naiveFlaggedReferenceFailures": 5
+      },
+      "expected": {
+        "outcome": "g0-fail",
+        "decidedAtStep": "step-2",
+        "unmetOrReason": [
+          "C3"
+        ]
+      }
+    },
+    {
+      "id": "v10-c4-two-controls-flagged",
+      "note": "Probe flags 2 of 3 negative controls.",
+      "counts": {
+        "eligibleRunsWithProbeData": 10,
+        "analysisSetRuns": 10,
+        "overlapRuns": 7,
+        "contractDependencyRuns": 3,
+        "negativeControlRuns": 3,
+        "negativeControlRunsFlagged": 2,
+        "c1bQualifyingFailures": 1,
+        "unknownWriterCapableCalls": 20,
+        "unknownRateDenominatorCalls": 100,
+        "probeFlaggedRuns": 5,
+        "probeFlaggedReferenceFailures": 4,
+        "referenceFailureRuns": 6,
+        "naiveFlaggedRuns": 7,
+        "naiveFlaggedReferenceFailures": 5
+      },
+      "expected": {
+        "outcome": "g0-fail",
+        "decidedAtStep": "step-2",
+        "unmetOrReason": [
+          "C4"
+        ]
+      }
+    },
+    {
+      "id": "v11-c4-boundary-one-flagged",
+      "note": "One flagged negative control is allowed.",
+      "counts": {
+        "eligibleRunsWithProbeData": 10,
+        "analysisSetRuns": 10,
+        "overlapRuns": 7,
+        "contractDependencyRuns": 3,
+        "negativeControlRuns": 3,
+        "negativeControlRunsFlagged": 1,
+        "c1bQualifyingFailures": 1,
+        "unknownWriterCapableCalls": 20,
+        "unknownRateDenominatorCalls": 100,
+        "probeFlaggedRuns": 5,
+        "probeFlaggedReferenceFailures": 4,
+        "referenceFailureRuns": 6,
+        "naiveFlaggedRuns": 7,
+        "naiveFlaggedReferenceFailures": 5
+      },
+      "expected": {
+        "outcome": "g0-pass",
+        "decidedAtStep": "step-5",
+        "unmetOrReason": [
+          "all-met"
+        ]
+      }
+    },
+    {
+      "id": "v12-fewer-than-3-flagged",
+      "note": "C1b, C3 and C4 met but only 2 flagged runs.",
+      "counts": {
+        "eligibleRunsWithProbeData": 10,
+        "analysisSetRuns": 10,
+        "overlapRuns": 7,
+        "contractDependencyRuns": 3,
+        "negativeControlRuns": 3,
+        "negativeControlRunsFlagged": 0,
+        "c1bQualifyingFailures": 1,
+        "unknownWriterCapableCalls": 20,
+        "unknownRateDenominatorCalls": 100,
+        "probeFlaggedRuns": 2,
+        "probeFlaggedReferenceFailures": 2,
+        "referenceFailureRuns": 6,
+        "naiveFlaggedRuns": 7,
+        "naiveFlaggedReferenceFailures": 5
+      },
+      "expected": {
+        "outcome": "g0-inconclusive",
+        "decidedAtStep": "step-3",
+        "unmetOrReason": [
+          "flagged-runs"
+        ]
+      }
+    },
+    {
+      "id": "v13-exactly-3-flagged-evaluates-c2",
+      "note": "Three flagged runs are enough to evaluate C2.",
+      "counts": {
+        "eligibleRunsWithProbeData": 10,
+        "analysisSetRuns": 10,
+        "overlapRuns": 7,
+        "contractDependencyRuns": 3,
+        "negativeControlRuns": 3,
+        "negativeControlRunsFlagged": 0,
+        "c1bQualifyingFailures": 1,
+        "unknownWriterCapableCalls": 20,
+        "unknownRateDenominatorCalls": 100,
+        "probeFlaggedRuns": 3,
+        "probeFlaggedReferenceFailures": 3,
+        "referenceFailureRuns": 6,
+        "naiveFlaggedRuns": 7,
+        "naiveFlaggedReferenceFailures": 5
+      },
+      "expected": {
+        "outcome": "g0-pass",
+        "decidedAtStep": "step-5",
+        "unmetOrReason": [
+          "all-met"
+        ]
+      }
+    },
+    {
+      "id": "v14-c2-below-floor",
+      "note": "Precision 0.2 is below 0.3 while above prevalence 0.1.",
+      "counts": {
+        "eligibleRunsWithProbeData": 10,
+        "analysisSetRuns": 10,
+        "overlapRuns": 7,
+        "contractDependencyRuns": 3,
+        "negativeControlRuns": 3,
+        "negativeControlRunsFlagged": 0,
+        "c1bQualifyingFailures": 1,
+        "unknownWriterCapableCalls": 20,
+        "unknownRateDenominatorCalls": 100,
+        "probeFlaggedRuns": 5,
+        "probeFlaggedReferenceFailures": 1,
+        "referenceFailureRuns": 1,
+        "naiveFlaggedRuns": 0,
+        "naiveFlaggedReferenceFailures": 0
+      },
+      "expected": {
+        "outcome": "g0-fail",
+        "decidedAtStep": "step-4",
+        "unmetOrReason": [
+          "C2-threshold"
+        ]
+      }
+    },
+    {
+      "id": "v15-c2-prevalence-tie",
+      "note": "Precision 0.6 equals prevalence 0.6: strictly greater is required.",
+      "counts": {
+        "eligibleRunsWithProbeData": 10,
+        "analysisSetRuns": 10,
+        "overlapRuns": 7,
+        "contractDependencyRuns": 3,
+        "negativeControlRuns": 3,
+        "negativeControlRunsFlagged": 0,
+        "c1bQualifyingFailures": 1,
+        "unknownWriterCapableCalls": 20,
+        "unknownRateDenominatorCalls": 100,
+        "probeFlaggedRuns": 5,
+        "probeFlaggedReferenceFailures": 3,
+        "referenceFailureRuns": 6,
+        "naiveFlaggedRuns": 0,
+        "naiveFlaggedReferenceFailures": 0
+      },
+      "expected": {
+        "outcome": "g0-fail",
+        "decidedAtStep": "step-4",
+        "unmetOrReason": [
+          "C2-prevalence"
+        ]
+      }
+    },
+    {
+      "id": "v16-c2-naive-tie",
+      "note": "Precision 0.8 equals naive precision 0.8.",
+      "counts": {
+        "eligibleRunsWithProbeData": 10,
+        "analysisSetRuns": 10,
+        "overlapRuns": 7,
+        "contractDependencyRuns": 3,
+        "negativeControlRuns": 3,
+        "negativeControlRunsFlagged": 0,
+        "c1bQualifyingFailures": 1,
+        "unknownWriterCapableCalls": 20,
+        "unknownRateDenominatorCalls": 100,
+        "probeFlaggedRuns": 5,
+        "probeFlaggedReferenceFailures": 4,
+        "referenceFailureRuns": 6,
+        "naiveFlaggedRuns": 5,
+        "naiveFlaggedReferenceFailures": 4
+      },
+      "expected": {
+        "outcome": "g0-fail",
+        "decidedAtStep": "step-4",
+        "unmetOrReason": [
+          "C2-naive"
+        ]
+      }
+    },
+    {
+      "id": "v17-c2-naive-undefined",
+      "note": "Naive flags no run: that comparison is not applicable and the rest binds.",
+      "counts": {
+        "eligibleRunsWithProbeData": 10,
+        "analysisSetRuns": 10,
+        "overlapRuns": 7,
+        "contractDependencyRuns": 3,
+        "negativeControlRuns": 3,
+        "negativeControlRunsFlagged": 0,
+        "c1bQualifyingFailures": 1,
+        "unknownWriterCapableCalls": 20,
+        "unknownRateDenominatorCalls": 100,
+        "probeFlaggedRuns": 5,
+        "probeFlaggedReferenceFailures": 4,
+        "referenceFailureRuns": 6,
+        "naiveFlaggedRuns": 0,
+        "naiveFlaggedReferenceFailures": 0
+      },
+      "expected": {
+        "outcome": "g0-pass",
+        "decidedAtStep": "step-5",
+        "unmetOrReason": [
+          "all-met"
+        ]
+      }
+    },
+    {
+      "id": "v18-c2-naive-better",
+      "note": "Naive precision 6/7 exceeds probe precision 4/5.",
+      "counts": {
+        "eligibleRunsWithProbeData": 10,
+        "analysisSetRuns": 10,
+        "overlapRuns": 7,
+        "contractDependencyRuns": 3,
+        "negativeControlRuns": 3,
+        "negativeControlRunsFlagged": 0,
+        "c1bQualifyingFailures": 1,
+        "unknownWriterCapableCalls": 20,
+        "unknownRateDenominatorCalls": 100,
+        "probeFlaggedRuns": 5,
+        "probeFlaggedReferenceFailures": 4,
+        "referenceFailureRuns": 6,
+        "naiveFlaggedRuns": 7,
+        "naiveFlaggedReferenceFailures": 6
+      },
+      "expected": {
+        "outcome": "g0-fail",
+        "decidedAtStep": "step-4",
+        "unmetOrReason": [
+          "C2-naive"
+        ]
+      }
+    },
+    {
+      "id": "v19-probe-flags-every-run",
+      "note": "Probe flags all 10 runs: precision equals prevalence.",
+      "counts": {
+        "eligibleRunsWithProbeData": 10,
+        "analysisSetRuns": 10,
+        "overlapRuns": 7,
+        "contractDependencyRuns": 3,
+        "negativeControlRuns": 3,
+        "negativeControlRunsFlagged": 1,
+        "c1bQualifyingFailures": 1,
+        "unknownWriterCapableCalls": 20,
+        "unknownRateDenominatorCalls": 100,
+        "probeFlaggedRuns": 10,
+        "probeFlaggedReferenceFailures": 6,
+        "referenceFailureRuns": 6,
+        "naiveFlaggedRuns": 0,
+        "naiveFlaggedReferenceFailures": 0
+      },
+      "expected": {
+        "outcome": "g0-fail",
+        "decidedAtStep": "step-4",
+        "unmetOrReason": [
+          "C2-prevalence"
+        ]
+      }
+    }
+  ],
+  "limits": "Synthetic count tuples that exercise the rule; they are not data, not a G0 result and not a scorer."
+}

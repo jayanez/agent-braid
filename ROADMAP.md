@@ -380,6 +380,63 @@ closure gates in place. M3/M3.5 remain independent. Cursor, VS Code/GitHub Copil
 OpenCode and pi are deferred alongside four other documented expansion routes;
 no extra environment or new runtime effect is admitted by this program.
 
+## M4.6 — Claude Code dynamic workflows
+
+**Status:** Draft planning, adjacent to M4.5 and separate from its closure. The
+[M4.6 program](specs/052-claude-workflow-gate/program.md) contains
+[SPEC-052](specs/052-claude-workflow-gate/spec.md) and
+[SPEC-053](specs/053-claude-transcript-trace-adapter/spec.md). No remote milestone,
+issue or Project record exists yet; publication requires a separate owner
+authorization. Extra cash spend is EUR 0.
+
+**Objective:** make Agent Braid's read-only interaction evidence available at the
+integration point of Claude Code dynamic workflows. According to the vendor
+documentation, workflows parallelize and isolate agent work in worktrees but
+leave conflict detection and integration to the user. Agent Braid consumes those recorded results; it does not replace the
+orchestrator, ship a fan-out, merge branches, publish refs or issue grants.
+
+Deliverables:
+
+- SPEC-052: a single-analysis-agent `braid-gate` plugin workflow over committed
+  worktree results, with a `git merge-tree` baseline, bounded replay and an
+  operator-ready prepared batch for at most four operations, plus packaging and
+  a user recipe;
+- SPEC-053: a Claude subagent transcript to AIM trace adapter and a gate revision
+  that reports read/write hazards, both blocked by the preregistered G0
+  experiment;
+- a feature-local proposal to amend ADR 0024 for a Claude-only workflow
+  component; a canonical ADR is created only at founder adoption.
+
+Gates:
+
+- **G0:** a preregistered experiment on an owner-controlled repository tests
+  whether transcript read/write evidence flags integration failures that the
+  `git merge-tree` baselines, naive path overlap and commit-level Agent Braid
+  analysis all miss (C1b), with precision above both the observed failure
+  prevalence and naive path overlap (C2) and a bounded unknown rate (C3).
+  Commit-level hits (C1a) inform R1 only and unlock nothing. A failed G0 is a
+  valid negative result: SPEC-053 closes unadopted and M4.6 closes with the
+  commit-level gate only; an inconclusive G0 never passes.
+- **R1/R2:** plugin releases with fresh package checks, real-host receipts and
+  separate founder release acceptance.
+- **G2 (optional):** pre-flight partitioning is a future route that needs the
+  coordination contract in the [AI tooling program](specs/039-ai-tooling-program/program.md)
+  and its own ADR.
+
+Exit criteria:
+
+- real-host receipts for the gate and, if G0 passes, the adapter;
+- refusal controls show no fan-out, grant, merge, ref publication or false
+  success;
+- every attempt, unavailable field and negative or inconclusive outcome remains
+  visible; no speedup or general compatibility claim;
+- radar milestone review, technical review and a separate founder closure
+  decision.
+
+The gate's current commit-level evidence is file-level and coarser than
+`git merge-tree`; its differentiation is a hypothesis under test, not a result.
+M4's historical G4 NO-GO on useful speedup remains in force.
+
 ## Parallel mathematical laboratory
 
 The project may expose selected GAP/YangBaxter, SageMath, SnapPy, quimb, or proof-assistant capabilities when a concrete research hypothesis requires them. The laboratory remains modular and cannot block the practical analyzer.
@@ -393,6 +450,9 @@ The project may expose selected GAP/YangBaxter, SageMath, SnapPy, quimb, or proo
 - specific model/runtime integrations.
 
 Each requires an ADR or governance decision with alternatives and consequences.
+The proposed Claude Code workflow integration is tracked as
+[M4.6](#m46--claude-code-dynamic-workflows); its feature-local ADR proposal does
+not resolve this deferral until founder adoption.
 
 ## Adoption overlay
 

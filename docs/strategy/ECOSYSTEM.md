@@ -43,6 +43,34 @@ It will be tested through integrations, independent reproductions, benchmark
 coverage, contributor activity, and interviews. A negative result should narrow
 or invalidate the thesis rather than be reframed as success.
 
+### Claude Code dynamic workflows (M4.6, untested)
+
+Per Claude Code's [official documentation](https://code.claude.com/docs/en/workflows),
+dynamic workflows script many agents and can isolate each in a Git worktree. The
+documentation describes no automatic merge and no conflict detection across those
+worktrees, so detection and integration remain the user's task. This is a reading
+of vendor documentation, not an observation by this project.
+
+Third-party tools address part of that gap at file or text level:
+[clash](https://github.com/clash-sh/clash) reports pairwise `git merge-tree`
+conflict detection across worktrees, and
+[mcp_agent_mail](https://github.com/Dicklesworthstone/mcp_agent_mail) reports
+advisory path leases. Neither was observed reasoning about declared effects,
+read/write hazards or order independence. Their behavior is not reproduced here.
+
+Agent Braid's differentiation hypothesis is that effect-level evidence, including
+read/write hazards and order-independence findings, surfaces problems that a
+`git merge-tree` baseline does not. That hypothesis is untested. It is gated by the
+preregistered M4.6 gate G0, and a negative or inconclusive result narrows or closes
+it. Today's analysis is commit-level, with coverage limits and a documented
+false-negative case; no speed claim is made, since parallel runtime speedup is
+NO-GO in earlier evaluations. Agent Braid consumes recorded workflow output and
+does not replace orchestration. Records:
+[radar entries](../../research/radar/2026-10-23-claude-workflows.json),
+[adoption track AT-2026-006](../../research/adoption/2026-09-initial-triage.json),
+[SPEC-052](../../specs/052-claude-workflow-gate/spec.md) and
+[SPEC-053](../../specs/053-claude-transcript-trace-adapter/spec.md).
+
 ## Adapter rule
 
 Adapters for generic traces, OpenAI Agents, MCP, A2A, or NeMo must preserve:

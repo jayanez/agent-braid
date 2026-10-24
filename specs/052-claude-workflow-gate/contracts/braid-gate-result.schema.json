@@ -1,0 +1,1322 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://agent-braid.dev/specs/052-claude-workflow-gate/contracts/braid-gate-result.schema.json",
+  "title": "braid-gate workflow result (draft contract, not adopted)",
+  "description": "Single structured result of /agent-braid:braid-gate. Planned contract of SPEC-052; no implementation exists. The workflow script validates the envelope before returning it. Refused, busy and inconclusive runs use the same envelope; absent observations are null and never mean clean. executionAuthorization is the constant false and no field can carry a grant. The assurance block carries the Article 13 and 14 declarations.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "gate",
+    "status",
+    "executionAuthorization",
+    "assurance",
+    "request",
+    "pinned",
+    "operationCount",
+    "agentsUsed",
+    "phases",
+    "refusal",
+    "analysis",
+    "baseline",
+    "agreement",
+    "replay",
+    "prepare",
+    "advisoryOrder",
+    "staleRefs",
+    "unobserved",
+    "limits"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": "agent-braid-claude-gate-result/v0.1"
+    },
+    "gate": {
+      "const": "braid-gate"
+    },
+    "status": {
+      "enum": [
+        "refused",
+        "busy",
+        "inconclusive",
+        "hazards-found",
+        "ok-analyzed",
+        "ok-certified"
+      ],
+      "description": "refused: an argument, validation or workspace rule failed; busy: the plugin admission lock was busy; inconclusive: a phase failed, timed out, was unavailable or a reference moved; hazards-found: analysis completed and at least one pair is conflicting or unknown or the baseline conflicts; ok-analyzed: analysis and baseline completed with no conflicting or unknown pair but replay or preparation was not performed; ok-certified: as ok-analyzed plus a replay certificate and a prepared batch. None of these values is an approval or a guarantee."
+    },
+    "executionAuthorization": {
+      "const": false
+    },
+    "assurance": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Article 13 and 14 block, set by the script as constants. The class is a claim of the producer and is not verified evidence or authorization to execute.",
+      "required": [
+        "compatibilityClass",
+        "property",
+        "evidenceMethod",
+        "domain",
+        "assumptions",
+        "observationContract",
+        "executionContract",
+        "notAGuarantee"
+      ],
+      "properties": {
+        "compatibilityClass": {
+          "const": "0-heuristic"
+        },
+        "property": {
+          "const": "File-level interaction classes and pairwise merge-tree outcomes over committed work; not semantic commutation, hunk-level merge safety or order independence."
+        },
+        "evidenceMethod": {
+          "const": "Existing read-only analyzer report through plugin MCP analyze-work, git merge-tree --write-tree baseline in a temporary object directory, and replay evidence through plugin MCP analyze; commands are executed by agents and returned under strict schemas, not independently re-run by the script."
+        },
+        "domain": {
+          "const": "Committed Git work of at most 32 operations in one registered analysis-only workspace; replay and prepare only for 2 to 4 operations."
+        },
+        "assumptions": {
+          "const": [
+            "Sources are committed work and the base is an ancestor of every source.",
+            "The registered workspace repository root equals the repository the agents inspect.",
+            "Agent-reported command results match what the commands produced.",
+            "The host permission allowlist of REQ-016 is in force; it is recorded by host receipts, not verified by the script."
+          ]
+        },
+        "observationContract": {
+          "const": "Pinned base and source commit identifiers, analyzer coverage and interaction classes, per-pair merge-tree result, replay digests, prepare outcome and end-of-run reference re-resolution; absent observations are null and never mean clean."
+        },
+        "executionContract": {
+          "const": "Read-only analysis and a non-allocating prepare step; no grant, execution, edit, ref write or applied merge; executionAuthorization is false."
+        },
+        "notAGuarantee": {
+          "const": true,
+          "description": "The status names (ok-analyzed, ok-certified) are not approvals, safety statements or guarantees."
+        }
+      }
+    },
+    "request": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "workspaceId",
+        "base",
+        "sources"
+      ],
+      "properties": {
+        "workspaceId": {
+          "type": "string",
+          "maxLength": 256
+        },
+        "base": {
+          "type": "string",
+          "maxLength": 256
+        },
+        "sources": {
+          "type": "array",
+          "maxItems": 32,
+          "items": {
+            "type": "string",
+            "maxLength": 256
+          }
+        }
+      }
+    },
+    "pinned": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "base",
+        "sources",
+        "pinnedInPhase"
+      ],
+      "properties": {
+        "base": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "type": "string",
+              "pattern": "^[0-9a-f]{40}$"
+            }
+          ]
+        },
+        "sources": {
+          "type": "array",
+          "maxItems": 32,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "input",
+              "commit"
+            ],
+            "properties": {
+              "input": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 256
+              },
+              "commit": {
+                "oneOf": [
+                  {
+                    "type": "null"
+                  },
+                  {
+                    "type": "string",
+                    "pattern": "^[0-9a-f]{40}$"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "pinnedInPhase": {
+          "enum": [
+            "validate",
+            "not-pinned"
+          ]
+        }
+      }
+    },
+    "operationCount": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 32
+    },
+    "agentsUsed": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 4
+    },
+    "phases": {
+      "type": "array",
+      "minItems": 5,
+      "maxItems": 5,
+      "prefixItems": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "name",
+            "status",
+            "agentUsed",
+            "detail"
+          ],
+          "properties": {
+            "name": {
+              "const": "validate"
+            },
+            "status": {
+              "enum": [
+                "ok",
+                "skipped",
+                "refused",
+                "busy",
+                "failed",
+                "inconclusive",
+                "not-run"
+              ]
+            },
+            "agentUsed": {
+              "type": "boolean"
+            },
+            "detail": {
+              "type": "string",
+              "maxLength": 512
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "name",
+            "status",
+            "agentUsed",
+            "detail"
+          ],
+          "properties": {
+            "name": {
+              "const": "analyze"
+            },
+            "status": {
+              "enum": [
+                "ok",
+                "skipped",
+                "refused",
+                "busy",
+                "failed",
+                "inconclusive",
+                "not-run"
+              ]
+            },
+            "agentUsed": {
+              "type": "boolean"
+            },
+            "detail": {
+              "type": "string",
+              "maxLength": 512
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "name",
+            "status",
+            "agentUsed",
+            "detail"
+          ],
+          "properties": {
+            "name": {
+              "const": "baseline"
+            },
+            "status": {
+              "enum": [
+                "ok",
+                "skipped",
+                "refused",
+                "busy",
+                "failed",
+                "inconclusive",
+                "not-run"
+              ]
+            },
+            "agentUsed": {
+              "type": "boolean"
+            },
+            "detail": {
+              "type": "string",
+              "maxLength": 512
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "name",
+            "status",
+            "agentUsed",
+            "detail"
+          ],
+          "properties": {
+            "name": {
+              "const": "finalize"
+            },
+            "status": {
+              "enum": [
+                "ok",
+                "skipped",
+                "refused",
+                "busy",
+                "failed",
+                "inconclusive",
+                "not-run"
+              ]
+            },
+            "agentUsed": {
+              "type": "boolean"
+            },
+            "detail": {
+              "type": "string",
+              "maxLength": 512
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "name",
+            "status",
+            "agentUsed",
+            "detail"
+          ],
+          "properties": {
+            "name": {
+              "const": "report"
+            },
+            "status": {
+              "enum": [
+                "ok",
+                "skipped",
+                "refused",
+                "busy",
+                "failed",
+                "inconclusive",
+                "not-run"
+              ]
+            },
+            "agentUsed": {
+              "type": "boolean"
+            },
+            "detail": {
+              "type": "string",
+              "maxLength": 512
+            }
+          }
+        }
+      ],
+      "items": false
+    },
+    "refusal": {
+      "oneOf": [
+        {
+          "type": "null"
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "rule",
+            "input",
+            "message",
+            "uncommittedWorkObserved"
+          ],
+          "properties": {
+            "rule": {
+              "enum": [
+                "unknown-field",
+                "missing-field",
+                "wrong-type",
+                "invalid-identifier",
+                "too-few-sources",
+                "too-many-operations",
+                "duplicate-source",
+                "source-equals-base",
+                "unresolvable-ref",
+                "not-descendant-of-base",
+                "not-in-workspace-repository",
+                "workspace-not-registered",
+                "workspace-root-mismatch",
+                "runtime-enabled-workspace",
+                "unsafe-tool-surface",
+                "mcp-unavailable",
+                "limit-exceeded",
+                "timeout"
+              ]
+            },
+            "input": {
+              "oneOf": [
+                {
+                  "type": "null"
+                },
+                {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 256
+                }
+              ]
+            },
+            "message": {
+              "type": "string",
+              "maxLength": 1024
+            },
+            "uncommittedWorkObserved": {
+              "const": false
+            }
+          }
+        }
+      ]
+    },
+    "analysis": {
+      "oneOf": [
+        {
+          "type": "null"
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "operation",
+            "kind",
+            "analysisId",
+            "inputDigest",
+            "evidenceRefs",
+            "operations",
+            "interactions",
+            "unknownEffects",
+            "uncertainty"
+          ],
+          "properties": {
+            "operation": {
+              "enum": [
+                "analyze-work"
+              ]
+            },
+            "kind": {
+              "const": "git"
+            },
+            "analysisId": {
+              "type": "string",
+              "pattern": "^sha256:[0-9a-f]{64}$"
+            },
+            "inputDigest": {
+              "type": "string",
+              "pattern": "^sha256:[0-9a-f]{64}$"
+            },
+            "evidenceRefs": {
+              "type": "array",
+              "maxItems": 8,
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "uri",
+                  "sha256",
+                  "sizeBytes"
+                ],
+                "properties": {
+                  "uri": {
+                    "type": "string",
+                    "maxLength": 512
+                  },
+                  "sha256": {
+                    "type": "string",
+                    "pattern": "^sha256:[0-9a-f]{64}$"
+                  },
+                  "sizeBytes": {
+                    "type": "integer",
+                    "minimum": 0
+                  }
+                }
+              }
+            },
+            "operations": {
+              "type": "array",
+              "maxItems": 32,
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "instanceId",
+                  "source",
+                  "coverage"
+                ],
+                "properties": {
+                  "instanceId": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 256
+                  },
+                  "source": {
+                    "type": "string",
+                    "pattern": "^[0-9a-f]{40}$"
+                  },
+                  "coverage": {
+                    "enum": [
+                      "complete",
+                      "partial",
+                      "unknown"
+                    ]
+                  }
+                }
+              }
+            },
+            "interactions": {
+              "type": "array",
+              "maxItems": 496,
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "left",
+                  "right",
+                  "classification",
+                  "sharedResources",
+                  "coverage"
+                ],
+                "properties": {
+                  "left": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 256
+                  },
+                  "right": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 256
+                  },
+                  "classification": {
+                    "enum": [
+                      "independent-candidate",
+                      "ordered",
+                      "conflicting",
+                      "unknown"
+                    ]
+                  },
+                  "sharedResources": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "maxLength": 512
+                    }
+                  },
+                  "coverage": {
+                    "type": "array",
+                    "items": {
+                      "enum": [
+                        "complete",
+                        "partial",
+                        "unknown"
+                      ]
+                    }
+                  }
+                }
+              }
+            },
+            "unknownEffects": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "instanceId",
+                  "paths"
+                ],
+                "properties": {
+                  "instanceId": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 256
+                  },
+                  "paths": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "maxLength": 512
+                    }
+                  }
+                }
+              }
+            },
+            "uncertainty": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "maxLength": 512
+              }
+            }
+          }
+        }
+      ]
+    },
+    "baseline": {
+      "oneOf": [
+        {
+          "type": "null"
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "status",
+            "gitVersion",
+            "mergeBase",
+            "objectStore",
+            "hardening",
+            "pairs",
+            "repositoryStateCheck"
+          ],
+          "properties": {
+            "status": {
+              "enum": [
+                "completed",
+                "unavailable",
+                "failed"
+              ]
+            },
+            "gitVersion": {
+              "oneOf": [
+                {
+                  "type": "null"
+                },
+                {
+                  "type": "string",
+                  "maxLength": 64
+                }
+              ]
+            },
+            "mergeBase": {
+              "const": "explicit-base-commit"
+            },
+            "objectStore": {
+              "const": "temporary-object-directory-with-repository-alternate"
+            },
+            "hardening": {
+              "const": "fixed-hardened-git-template",
+              "description": "Every Git command of every phase uses one fixed template embedded in the script: system and global configuration disabled, hooks, fsmonitor, external merge drivers and content filters disabled, no network, no prompts. A command that cannot be hardened is not run and its phase is unavailable or inconclusive."
+            },
+            "pairs": {
+              "type": "array",
+              "maxItems": 496,
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "left",
+                  "right",
+                  "result",
+                  "conflictedPaths",
+                  "message"
+                ],
+                "properties": {
+                  "left": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 256
+                  },
+                  "right": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 256
+                  },
+                  "result": {
+                    "enum": [
+                      "clean",
+                      "conflicted",
+                      "error",
+                      "unavailable"
+                    ]
+                  },
+                  "conflictedPaths": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "maxLength": 512
+                    }
+                  },
+                  "message": {
+                    "oneOf": [
+                      {
+                        "type": "null"
+                      },
+                      {
+                        "type": "string",
+                        "maxLength": 512
+                      }
+                    ]
+                  }
+                }
+              }
+            },
+            "repositoryStateCheck": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "refsUnchanged",
+                "objectCountUnchanged"
+              ],
+              "properties": {
+                "refsUnchanged": {
+                  "enum": [
+                    "true",
+                    "false",
+                    "not-observed"
+                  ]
+                },
+                "objectCountUnchanged": {
+                  "enum": [
+                    "true",
+                    "false",
+                    "not-observed"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "agreement": {
+      "oneOf": [
+        {
+          "type": "null"
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "pairs",
+            "counts",
+            "counterexampleCount"
+          ],
+          "properties": {
+            "pairs": {
+              "type": "array",
+              "maxItems": 496,
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "left",
+                  "right",
+                  "analyzer",
+                  "baseline",
+                  "agreement",
+                  "counterexample"
+                ],
+                "properties": {
+                  "left": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 256
+                  },
+                  "right": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 256
+                  },
+                  "analyzer": {
+                    "enum": [
+                      "independent-candidate",
+                      "ordered",
+                      "conflicting",
+                      "unknown"
+                    ]
+                  },
+                  "baseline": {
+                    "enum": [
+                      "clean",
+                      "conflicted",
+                      "error",
+                      "unavailable"
+                    ]
+                  },
+                  "agreement": {
+                    "enum": [
+                      "both-clean",
+                      "both-conflicting",
+                      "analyzer-stricter",
+                      "baseline-stricter",
+                      "analyzer-unknown",
+                      "baseline-unavailable",
+                      "not-comparable"
+                    ]
+                  },
+                  "counterexample": {
+                    "type": "boolean",
+                    "description": "True only when the analyzer says independent-candidate and the baseline conflicts. A recorded counterexample blocks conservativeness wording."
+                  }
+                }
+              }
+            },
+            "counts": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "both-clean",
+                "both-conflicting",
+                "analyzer-stricter",
+                "baseline-stricter",
+                "analyzer-unknown",
+                "baseline-unavailable",
+                "not-comparable"
+              ],
+              "properties": {
+                "both-clean": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "both-conflicting": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "analyzer-stricter": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "baseline-stricter": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "analyzer-unknown": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "baseline-unavailable": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "not-comparable": {
+                  "type": "integer",
+                  "minimum": 0
+                }
+              }
+            },
+            "counterexampleCount": {
+              "type": "integer",
+              "minimum": 0
+            }
+          }
+        }
+      ]
+    },
+    "replay": {
+      "oneOf": [
+        {
+          "type": "null"
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "status",
+            "skipReason",
+            "certificate",
+            "message"
+          ],
+          "properties": {
+            "status": {
+              "enum": [
+                "certified",
+                "failed",
+                "inconclusive",
+                "skipped"
+              ]
+            },
+            "skipReason": {
+              "oneOf": [
+                {
+                  "type": "null"
+                },
+                {
+                  "enum": [
+                    "operation-limit-4",
+                    "analysis-not-eligible",
+                    "conflicting-or-unknown-pair",
+                    "earlier-phase-not-completed"
+                  ]
+                }
+              ]
+            },
+            "certificate": {
+              "oneOf": [
+                {
+                  "type": "null"
+                },
+                {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "evidenceDigest",
+                    "advisoryPlanDigest",
+                    "result",
+                    "evidenceRef"
+                  ],
+                  "properties": {
+                    "evidenceDigest": {
+                      "type": "string",
+                      "pattern": "^sha256:[0-9a-f]{64}$"
+                    },
+                    "advisoryPlanDigest": {
+                      "type": "string",
+                      "pattern": "^sha256:[0-9a-f]{64}$"
+                    },
+                    "result": {
+                      "type": "string",
+                      "maxLength": 128
+                    },
+                    "evidenceRef": {
+                      "oneOf": [
+                        {
+                          "type": "null"
+                        },
+                        {
+                          "type": "string",
+                          "maxLength": 512
+                        }
+                      ]
+                    }
+                  }
+                }
+              ]
+            },
+            "message": {
+              "oneOf": [
+                {
+                  "type": "null"
+                },
+                {
+                  "type": "string",
+                  "maxLength": 1024
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    "prepare": {
+      "oneOf": [
+        {
+          "type": "null"
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "status",
+            "mode",
+            "notPreparedReasons",
+            "batch",
+            "message"
+          ],
+          "properties": {
+            "status": {
+              "enum": [
+                "prepared",
+                "not-prepared",
+                "failed"
+              ]
+            },
+            "mode": {
+              "const": "serial"
+            },
+            "notPreparedReasons": {
+              "type": "array",
+              "items": {
+                "enum": [
+                  "operation-limit-4",
+                  "partial-coverage",
+                  "conflicting-pair",
+                  "unknown-pair",
+                  "baseline-conflict",
+                  "baseline-unavailable",
+                  "replay-not-certified",
+                  "expected-tree-unavailable",
+                  "declared-writes-mismatch"
+                ]
+              }
+            },
+            "batch": {
+              "oneOf": [
+                {
+                  "type": "null"
+                },
+                {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "planDigest",
+                    "order",
+                    "expectedFinalTree"
+                  ],
+                  "properties": {
+                    "planDigest": {
+                      "type": "string",
+                      "pattern": "^sha256:[0-9a-f]{64}$"
+                    },
+                    "order": {
+                      "type": "array",
+                      "maxItems": 4,
+                      "items": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 256
+                      },
+                      "description": "Input order of sources, as required by the runtime request; not a recommendation and not derived from analysis."
+                    },
+                    "expectedFinalTree": {
+                      "type": "string",
+                      "pattern": "^[0-9a-f]{40}$"
+                    }
+                  }
+                }
+              ]
+            },
+            "message": {
+              "oneOf": [
+                {
+                  "type": "null"
+                },
+                {
+                  "type": "string",
+                  "maxLength": 1024
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    "advisoryOrder": {
+      "oneOf": [
+        {
+          "type": "null"
+        },
+        {
+          "type": "array",
+          "maxItems": 32,
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 256
+          },
+          "description": "Advisory only; null unless the analysis declares dependencies (the gate declares none, so this is null in v0.1). The order used for prepare is the input order of sources and is not a recommendation."
+        }
+      ]
+    },
+    "staleRefs": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "checked",
+        "report"
+      ],
+      "properties": {
+        "checked": {
+          "type": "boolean"
+        },
+        "report": {
+          "type": "array",
+          "maxItems": 33,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "input",
+              "pinned",
+              "current",
+              "reason"
+            ],
+            "properties": {
+              "input": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 256
+              },
+              "pinned": {
+                "type": "string",
+                "pattern": "^[0-9a-f]{40}$"
+              },
+              "current": {
+                "oneOf": [
+                  {
+                    "type": "null"
+                  },
+                  {
+                    "type": "string",
+                    "pattern": "^[0-9a-f]{40}$"
+                  }
+                ]
+              },
+              "reason": {
+                "enum": [
+                  "moved",
+                  "deleted",
+                  "unresolvable"
+                ]
+              }
+            }
+          }
+        }
+      },
+      "description": "End-of-run re-resolution by the finalize agent. A non-empty report makes the status inconclusive; earlier phase results stay labelled as of the pinned commits and nothing is re-analysed."
+    },
+    "unobserved": {
+      "type": "array",
+      "minItems": 3,
+      "items": {
+        "enum": [
+          "uncommitted-work",
+          "reads",
+          "transcripts",
+          "tool-calls",
+          "hunk-level-merge",
+          "semantic-effects",
+          "host-version"
+        ]
+      },
+      "allOf": [
+        {
+          "contains": {
+            "const": "uncommitted-work"
+          }
+        },
+        {
+          "contains": {
+            "const": "reads"
+          }
+        },
+        {
+          "contains": {
+            "const": "transcripts"
+          }
+        }
+      ]
+    },
+    "limits": {
+      "type": "array",
+      "minItems": 8,
+      "maxItems": 16,
+      "items": {
+        "type": "string",
+        "maxLength": 512
+      },
+      "allOf": [
+        {
+          "contains": {
+            "const": "File-level resources only; coarser than hunk merging; a read plus a write on one resource counts as conflicting."
+          }
+        },
+        {
+          "contains": {
+            "const": "Reads are not observed; read hazards are outside this gate."
+          }
+        },
+        {
+          "contains": {
+            "const": "Only committed work is observed; uncommitted work in any worktree is not observed."
+          }
+        },
+        {
+          "contains": {
+            "const": "Deletions, renames, binaries and symlinks are unknown effects with partial coverage."
+          }
+        },
+        {
+          "contains": {
+            "const": "Replay, preparation and the owned runtime are limited to four operations; analysis is limited to 32."
+          }
+        },
+        {
+          "contains": {
+            "const": "No speed, throughput or agent-count claim; parallel runtime speedup results are recorded NO-GO (SPEC-021 G4, SPEC-022, SPEC-038)."
+          }
+        },
+        {
+          "contains": {
+            "const": "Host approval and auto mode are not authority; executionAuthorization is false; grants are issued by the operator outside the workflow."
+          }
+        },
+        {
+          "contains": {
+            "const": "An independent-candidate, clean or certified outcome is not a guarantee of semantic correctness, conflict freedom or order independence."
+          }
+        }
+      ]
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "status": {
+            "const": "ok-certified"
+          }
+        },
+        "required": [
+          "status"
+        ]
+      },
+      "then": {
+        "properties": {
+          "replay": {
+            "type": "object",
+            "properties": {
+              "status": {
+                "const": "certified"
+              }
+            }
+          },
+          "prepare": {
+            "type": "object",
+            "properties": {
+              "status": {
+                "const": "prepared"
+              }
+            }
+          },
+          "refusal": {
+            "type": "null"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "status": {
+            "const": "refused"
+          }
+        },
+        "required": [
+          "status"
+        ]
+      },
+      "then": {
+        "properties": {
+          "refusal": {
+            "type": "object"
+          },
+          "analysis": {
+            "type": "null"
+          },
+          "replay": {
+            "type": "null"
+          },
+          "prepare": {
+            "type": "null"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "status": {
+            "enum": [
+              "ok-analyzed",
+              "ok-certified",
+              "hazards-found"
+            ]
+          }
+        },
+        "required": [
+          "status"
+        ]
+      },
+      "then": {
+        "properties": {
+          "analysis": {
+            "type": "object"
+          },
+          "refusal": {
+            "type": "null"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "staleRefs": {
+            "properties": {
+              "report": {
+                "minItems": 1
+              }
+            },
+            "required": [
+              "report"
+            ]
+          }
+        },
+        "required": [
+          "staleRefs"
+        ]
+      },
+      "then": {
+        "properties": {
+          "status": {
+            "const": "inconclusive"
+          }
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,514 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://agent-braid.dev/specs/053/gate-result-v2.delta.schema.json",
+  "title": "braid-gate result v2 delta (draft fragment, not a standalone result schema)",
+  "description": "Describes only what v2 changes relative to the committed SPEC-052 v1 result schema (specs/052-claude-workflow-gate/contracts/braid-gate-result.schema.json, schemaVersion agent-braid-claude-gate-result/v0.1). v1 has additionalProperties false at the top level and in request, so v2 is a new schemaVersion and a strict v1 validator rejects it by design. Compose by overlaying these members (including the extended assurance constants) on a copy of the v1 schema and moving $defs to its root; the x-v1-* annotations are non-validating notes. Draft, blocked by G0, adopted by nothing.",
+  "x-extends": {
+    "schema": "specs/052-claude-workflow-gate/contracts/braid-gate-result.schema.json",
+    "v1SchemaVersion": "agent-braid-claude-gate-result/v0.1"
+  },
+  "type": "object",
+  "properties": {
+    "schemaVersion": {
+      "description": "Replaces the v1 constant. Emitted only when transcript inputs were supplied; with none, the gate emits the v1 result unchanged (schemaVersion v0.1).",
+      "const": "agent-braid-claude-gate-result/v0.2"
+    },
+    "executionAuthorization": {
+      "const": false
+    },
+    "assurance": {
+      "description": "Replaces six constants of the v1 assurance block so that the declared contract matches what a v2 result contains (Article 13). compatibilityClass and notAGuarantee are unchanged and repeated for explicitness. The v1 constants remain the valid ones for a v1 result, which is emitted whenever no transcripts are supplied. Overlay on properties.assurance.properties of the v1 schema; additionalProperties false and the required list of v1 are kept.",
+      "type": "object",
+      "properties": {
+        "compatibilityClass": {
+          "const": "0-heuristic"
+        },
+        "property": {
+          "const": "File-level interaction classes and pairwise merge-tree outcomes over committed work, plus read/write hazards inferred from the requested tool calls recorded in subagent transcripts with partial coverage; heuristic evidence, not semantic commutation, hunk-level merge safety, order independence or independence."
+        },
+        "evidenceMethod": {
+          "const": "Existing read-only analyzer report through plugin MCP analyze-work, git merge-tree --write-tree baseline in a temporary object directory, and replay evidence through plugin MCP analyze; commands are executed by agents and returned under strict schemas, not independently re-run by the script. In addition, the bundled converter analyze-claude-transcripts maps the supplied subagent transcripts (the host's record of requested tool calls) to Agent Interaction Metadata through the mapper claude-subagent-transcript-v1, and the same read-only analyzer reports their read/write hazards; the conversion is run by the analyze-phase agent and returned under a strict schema, not independently re-run by the script."
+        },
+        "domain": {
+          "const": "Committed Git work of at most 32 operations in one registered analysis-only workspace; replay and prepare only for 2 to 4 operations. Transcript evidence only for the supplied subagent transcripts of those operations (at most 32 transcripts, 32 MiB per transcript, 1 MiB per line, 512 distinct paths per agent), mapped with partial coverage; other hosts, live capture and agents without a supplied transcript are outside the domain."
+        },
+        "assumptions": {
+          "const": [
+            "Sources are committed work and the base is an ancestor of every source.",
+            "The registered workspace repository root equals the repository the agents inspect.",
+            "Agent-reported command results match what the commands produced.",
+            "The host permission allowlist of REQ-016 is in force; it is recorded by host receipts, not verified by the script.",
+            "Each supplied transcript is the host's record of the agent that produced the matching source commit (matched by ordinal); the transcript line schema is unconfirmed until it is pinned from the pre-freeze census.",
+            "The Bash allowlist of REQ-016 for gate v2 contains exactly one additional launcher subcommand, analyze-claude-transcripts; it is recorded by host receipts, not verified by the script."
+          ]
+        },
+        "observationContract": {
+          "const": "Pinned base and source commit identifiers, analyzer coverage and interaction classes, per-pair merge-tree result, replay digests, prepare outcome and end-of-run reference re-resolution; absent observations are null and never mean clean. Transcript evidence adds, per agent, the conversion status, the mapper pin, aggregate tool-call and loss counts and per-pair read/write hazards with partial coverage; a transcript records requested calls, not observed effects, and a missing, failed or partial transcript is reported in transcriptEvidence and never means no hazard."
+        },
+        "executionContract": {
+          "const": "Read-only analysis and a non-allocating prepare step; no grant, execution, edit, ref write or applied merge; executionAuthorization is false. The converter reads local transcripts without network access or model invocation and creates only its own new private output files at explicit paths outside the source repository; transcript hazards never change status, replay or preparation."
+        },
+        "notAGuarantee": {
+          "const": true
+        }
+      }
+    },
+    "request": {
+      "description": "v1 request members unchanged; adds an echo of the transcript inputs as counts and flags only, never the supplied paths.",
+      "type": "object",
+      "properties": {
+        "transcripts": {
+          "$ref": "#/$defs/requestTranscripts"
+        }
+      }
+    },
+    "analysis": {
+      "description": "v1 analysis unchanged; each element of analysis.interactions gains one optional member. The v1 left and right are operation instance identifiers; the gate uses the same identifiers as the transcript conversion instance identifiers so the two pair sets join exactly.",
+      "oneOf": [
+        {
+          "type": "null"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "interactions": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "transcriptHazards": {
+                    "$ref": "#/$defs/transcriptHazards"
+                  }
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "unobserved": {
+      "description": "Replaces the v1 requirement (uncommitted-work, reads, transcripts). v2 requires uncommitted-work, reads and tool-calls; transcripts is listed only for an agent whose transcript was not mapped. Reads stay unobserved: they are known only as requested calls.",
+      "type": "array",
+      "minItems": 3,
+      "allOf": [
+        {
+          "contains": {
+            "const": "uncommitted-work"
+          }
+        },
+        {
+          "contains": {
+            "const": "reads"
+          }
+        },
+        {
+          "contains": {
+            "const": "tool-calls"
+          }
+        }
+      ]
+    },
+    "limits": {
+      "description": "Replaces one canonical v1 limit and adds three; seven v1 limits are kept verbatim. The v1 maximum of 16 entries is unchanged.",
+      "type": "array",
+      "minItems": 8,
+      "maxItems": 16,
+      "allOf": [
+        {
+          "contains": {
+            "const": "File-level resources only; coarser than hunk merging; a read plus a write on one resource counts as conflicting."
+          }
+        },
+        {
+          "contains": {
+            "const": "Only committed work is observed; uncommitted work in any worktree is not observed."
+          }
+        },
+        {
+          "contains": {
+            "const": "Deletions, renames, binaries and symlinks are unknown effects with partial coverage."
+          }
+        },
+        {
+          "contains": {
+            "const": "Replay, preparation and the owned runtime are limited to four operations; analysis is limited to 32."
+          }
+        },
+        {
+          "contains": {
+            "const": "No speed, throughput or agent-count claim; parallel runtime speedup results are recorded NO-GO (SPEC-021 G4, SPEC-022, SPEC-038)."
+          }
+        },
+        {
+          "contains": {
+            "const": "Host approval and auto mode are not authority; executionAuthorization is false; grants are issued by the operator outside the workflow."
+          }
+        },
+        {
+          "contains": {
+            "const": "An independent-candidate, clean or certified outcome is not a guarantee of semantic correctness, conflict freedom or order independence."
+          }
+        },
+        {
+          "contains": {
+            "const": "Reads are known only as tool calls requested in subagent transcripts, with partial coverage; they are not observed, and transcript read/write hazards are heuristic evidence, not proof."
+          }
+        },
+        {
+          "contains": {
+            "const": "Transcripts record requested tool calls; Bash, search and MCP effects are invisible and stay unknown."
+          }
+        },
+        {
+          "contains": {
+            "const": "Independence is never concluded from transcripts; a transcript-derived pair is conflicting, ordered or unknown, never independent-candidate."
+          }
+        },
+        {
+          "contains": {
+            "const": "Transcript-derived paths are sensitive metadata and are republished only when the operator opts in; status, replay and preparation reflect commit-level evidence only."
+          }
+        }
+      ]
+    },
+    "transcriptEvidence": {
+      "$ref": "#/$defs/transcriptEvidence"
+    }
+  },
+  "required": [
+    "schemaVersion",
+    "executionAuthorization",
+    "transcriptEvidence"
+  ],
+  "x-v1-replaced": {
+    "schemaVersion": "const v0.1 -> const v0.2",
+    "unobserved": "requires transcripts -> requires tool-calls instead; transcripts only for unmapped agents",
+    "limits": {
+      "removed": "Reads are not observed; read hazards are outside this gate.",
+      "added": [
+        "Reads are known only as tool calls requested in subagent transcripts, with partial coverage; they are not observed, and transcript read/write hazards are heuristic evidence, not proof.",
+        "Transcripts record requested tool calls; Bash, search and MCP effects are invisible and stay unknown.",
+        "Independence is never concluded from transcripts; a transcript-derived pair is conflicting, ordered or unknown, never independent-candidate.",
+        "Transcript-derived paths are sensitive metadata and are republished only when the operator opts in; status, replay and preparation reflect commit-level evidence only."
+      ],
+      "keptVerbatim": [
+        "File-level resources only; coarser than hunk merging; a read plus a write on one resource counts as conflicting.",
+        "Only committed work is observed; uncommitted work in any worktree is not observed.",
+        "Deletions, renames, binaries and symlinks are unknown effects with partial coverage.",
+        "Replay, preparation and the owned runtime are limited to four operations; analysis is limited to 32.",
+        "No speed, throughput or agent-count claim; parallel runtime speedup results are recorded NO-GO (SPEC-021 G4, SPEC-022, SPEC-038).",
+        "Host approval and auto mode are not authority; executionAuthorization is false; grants are issued by the operator outside the workflow.",
+        "An independent-candidate, clean or certified outcome is not a guarantee of semantic correctness, conflict freedom or order independence."
+      ]
+    },
+    "assurance": {
+      "unchanged": [
+        "compatibilityClass",
+        "notAGuarantee"
+      ],
+      "extended": [
+        "property",
+        "evidenceMethod",
+        "domain",
+        "assumptions",
+        "observationContract",
+        "executionContract"
+      ],
+      "rule": "v1 constants stay valid for a v1 result (no transcripts supplied); a v2 result carries the extended constants and a v2 payload carrying the v1 constants is rejected, so the declared contract cannot omit the transcript evidence the result contains"
+    }
+  },
+  "x-v1-unchanged": [
+    "gate",
+    "status (commit-level meaning only)",
+    "operationCount",
+    "agentsUsed (at most 4)",
+    "phases (five fixed entries; conversion is folded into the analyze-phase agent and its outcome is reported only in transcriptEvidence)",
+    "refusal",
+    "baseline",
+    "agreement",
+    "replay",
+    "prepare",
+    "advisoryOrder",
+    "staleRefs",
+    "pinned"
+  ],
+  "$defs": {
+    "fixedCode": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9-]{0,63}$"
+    },
+    "count": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 1000000000
+    },
+    "requestTranscripts": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "count",
+        "mode",
+        "republishPaths"
+      ],
+      "properties": {
+        "count": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 32
+        },
+        "mode": {
+          "enum": [
+            "paths",
+            "directory"
+          ]
+        },
+        "republishPaths": {
+          "type": "boolean",
+          "description": "Operator opt-in; false by default."
+        }
+      }
+    },
+    "transcriptEvidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "status",
+        "mapper",
+        "transcriptSchemaPin",
+        "coverage",
+        "retention",
+        "retainedNonAggregate",
+        "agents",
+        "pairsWithHazards",
+        "unknownShare",
+        "limits"
+      ],
+      "properties": {
+        "status": {
+          "enum": [
+            "used",
+            "degraded",
+            "unavailable"
+          ]
+        },
+        "mapper": {
+          "const": "claude-subagent-transcript-v1"
+        },
+        "transcriptSchemaPin": {
+          "type": "string",
+          "maxLength": 64
+        },
+        "coverage": {
+          "const": "partial"
+        },
+        "retention": {
+          "description": "Product retention label. Not aggregate-only: that label is the G0 probe's stricter rule.",
+          "const": "allowlisted-metadata-and-counts"
+        },
+        "retainedNonAggregate": {
+          "description": "Non-aggregate items the conversion retained.",
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "enum": [
+              "repository-relative-paths",
+              "base-object-ids",
+              "transcript-sha256"
+            ]
+          },
+          "allOf": [
+            {
+              "contains": {
+                "const": "repository-relative-paths"
+              }
+            },
+            {
+              "contains": {
+                "const": "base-object-ids"
+              }
+            },
+            {
+              "contains": {
+                "const": "transcript-sha256"
+              }
+            }
+          ]
+        },
+        "agents": {
+          "type": "array",
+          "maxItems": 32,
+          "items": {
+            "$ref": "#/$defs/agentTranscript"
+          }
+        },
+        "pairsWithHazards": {
+          "$ref": "#/$defs/count"
+        },
+        "unknownShare": {
+          "$ref": "#/$defs/unknownShare"
+        },
+        "limits": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "maxLength": 256
+          }
+        }
+      }
+    },
+    "agentTranscript": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "source",
+        "status"
+      ],
+      "properties": {
+        "source": {
+          "description": "Ordinal into request.sources.",
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 31
+        },
+        "status": {
+          "enum": [
+            "mapped",
+            "missing",
+            "unreadable",
+            "oversized",
+            "unrecognized",
+            "rejected"
+          ]
+        },
+        "diagnostic": {
+          "$ref": "#/$defs/fixedCode"
+        },
+        "toolCalls": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "read": {
+              "$ref": "#/$defs/count"
+            },
+            "write": {
+              "$ref": "#/$defs/count"
+            },
+            "bash": {
+              "$ref": "#/$defs/count"
+            },
+            "search": {
+              "$ref": "#/$defs/count"
+            },
+            "mcp": {
+              "$ref": "#/$defs/count"
+            },
+            "other": {
+              "$ref": "#/$defs/count"
+            },
+            "failed": {
+              "$ref": "#/$defs/count"
+            }
+          }
+        },
+        "losses": {
+          "type": "object",
+          "propertyNames": {
+            "$ref": "#/$defs/fixedCode"
+          },
+          "additionalProperties": {
+            "$ref": "#/$defs/count"
+          }
+        }
+      }
+    },
+    "transcriptHazards": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "analyzerClassification",
+        "kinds",
+        "readWriteOverlapCount",
+        "resourcesRepublished",
+        "coverage"
+      ],
+      "properties": {
+        "analyzerClassification": {
+          "description": "Never independent-candidate: transcript coverage is always partial.",
+          "enum": [
+            "conflicting",
+            "ordered",
+            "unknown"
+          ]
+        },
+        "kinds": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "enum": [
+              "read-write",
+              "write-write",
+              "unknown-effect"
+            ]
+          }
+        },
+        "readWriteOverlapCount": {
+          "$ref": "#/$defs/count"
+        },
+        "resourcesRepublished": {
+          "type": "boolean",
+          "description": "True only when the operator opted in to republishing transcript-derived paths."
+        },
+        "resources": {
+          "description": "Present only when resourcesRepublished is true. Shared repository-relative paths; bounded; sensitive metadata.",
+          "type": "array",
+          "maxItems": 32,
+          "items": {
+            "type": "string",
+            "maxLength": 256
+          }
+        },
+        "resourcesTruncated": {
+          "type": "boolean"
+        },
+        "coverage": {
+          "const": "partial"
+        }
+      },
+      "if": {
+        "properties": {
+          "resourcesRepublished": {
+            "const": false
+          }
+        },
+        "required": [
+          "resourcesRepublished"
+        ]
+      },
+      "then": {
+        "not": {
+          "required": [
+            "resources"
+          ]
+        }
+      }
+    },
+    "unknownShare": {
+      "description": "Share of transcript tool calls classified unknown (bash, search, mcp, other), as two integers. Does not replace or redefine the commit-level unknown share or the G0 C3 rate.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "unknown",
+        "total"
+      ],
+      "properties": {
+        "unknown": {
+          "$ref": "#/$defs/count"
+        },
+        "total": {
+          "$ref": "#/$defs/count"
+        }
+      }
+    }
+  }
+}

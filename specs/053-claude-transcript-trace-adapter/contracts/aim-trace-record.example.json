@@ -1,0 +1,98 @@
+[
+  {
+    "aimVersion": "0.2.0-draft",
+    "instanceId": "claude-agent-1",
+    "attemptId": "claude-agent-1-attempt-1",
+    "definition": {
+      "id": "claude-subagent-transcript",
+      "digest": "sha256:c6c6d0e0deeed5e52add716037f3d59e6386d1d44e606cac7c49d6ce299d5f83"
+    },
+    "inputDigest": "sha256:9572b2e7355446d02771f32dda5ba2845507052a8ce17cab6e1715a16b15aea4",
+    "dependencies": [],
+    "readVersions": {
+      "git://104278dea2d0993b803449dfe3435239484d6f82fa08009d6357c23024a089d8/src/util.py": 0
+    },
+    "effects": {
+      "declared": [],
+      "inferred": [
+        {
+          "kind": "read",
+          "resource": "git://104278dea2d0993b803449dfe3435239484d6f82fa08009d6357c23024a089d8/src/util.py"
+        },
+        {
+          "kind": "write",
+          "resource": "git://104278dea2d0993b803449dfe3435239484d6f82fa08009d6357c23024a089d8/src/report.py"
+        },
+        {
+          "kind": "unknown",
+          "resource": "claude-unknown://104278dea2d0993b803449dfe3435239484d6f82fa08009d6357c23024a089d8/claude-agent-1/bash"
+        }
+      ],
+      "observed": [],
+      "coverage": {
+        "status": "partial",
+        "domain": "claude-subagent-transcript-requested-tool-calls",
+        "method": "claude-subagent-transcript-v1"
+      }
+    },
+    "evidence": [
+      {
+        "property": "independence",
+        "method": "declared",
+        "domain": "claude-subagent-transcript-requested-tool-calls",
+        "assumptions": [
+          "transcript-records-requested-tool-calls-not-observed-effects",
+          "bash-and-mcp-effects-are-invisible"
+        ],
+        "observationContract": "requested-tool-calls-v1",
+        "executionContract": "read-only-no-execution",
+        "assuranceClass": 0
+      }
+    ]
+  },
+  {
+    "aimVersion": "0.2.0-draft",
+    "instanceId": "claude-agent-2",
+    "attemptId": "claude-agent-2-attempt-1",
+    "definition": {
+      "id": "claude-subagent-transcript",
+      "digest": "sha256:c6c6d0e0deeed5e52add716037f3d59e6386d1d44e606cac7c49d6ce299d5f83"
+    },
+    "inputDigest": "sha256:f018f2d91313f5640e72a34be7e3af9b90175baec1ff38bbb6b659c7ed7793bc",
+    "dependencies": [],
+    "readVersions": {},
+    "effects": {
+      "declared": [],
+      "inferred": [
+        {
+          "kind": "write",
+          "resource": "git://104278dea2d0993b803449dfe3435239484d6f82fa08009d6357c23024a089d8/src/util.py"
+        },
+        {
+          "kind": "unknown",
+          "resource": "claude-unknown://104278dea2d0993b803449dfe3435239484d6f82fa08009d6357c23024a089d8/claude-agent-2/search"
+        }
+      ],
+      "observed": [],
+      "coverage": {
+        "status": "partial",
+        "domain": "claude-subagent-transcript-requested-tool-calls",
+        "method": "claude-subagent-transcript-v1"
+      }
+    },
+    "evidence": [
+      {
+        "property": "independence",
+        "method": "declared",
+        "domain": "claude-subagent-transcript-requested-tool-calls",
+        "assumptions": [
+          "transcript-records-requested-tool-calls-not-observed-effects",
+          "bash-and-mcp-effects-are-invisible"
+        ],
+        "observationContract": "requested-tool-calls-v1",
+        "executionContract": "read-only-no-execution",
+        "assuranceClass": 0
+      }
+    ]
+  }
+]
