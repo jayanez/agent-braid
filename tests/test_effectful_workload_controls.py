@@ -75,6 +75,40 @@ class WorkloadControlsTests(unittest.TestCase):
         self.assertEqual(control_result(fixture, report)["status"], "inconclusive")
 
 
+    def test_removing_each_witness_or_prevention_fails_the_control(self):
+        manifest, _ = corpus()
+        by_id = {f["id"]: copy.deepcopy(f) for f in manifest["fixtures"] if not f["h2"]}
+
+        def status(fixture):
+            report = explore(fixture["request"])
+            self.assertTrue(report["coverage"]["complete"])
+            return control_result(fixture, report)["status"]
+
+        for name in by_id:
+            self.assertEqual(status(by_id[name]), "pass", name)
+        # Unsatisfiable authored invariants: a control must be able to fail.
+        for name, patch in {"lost-update": {"value": 0}, "write-skew": {"value": 0},
+                            "configuration-stale-read": {"rightValue": 99},
+                            "duplicate-events": {"count": 1}, "idempotent-events": {"count": 2},
+                            "disjoint-positive": {"values": {"x": 1, "y": 3}}}.items():
+            mutated = copy.deepcopy(by_id[name])
+            mutated["invariant"].update(patch)
+            with self.subTest(invariant=name):
+                self.assertEqual(status(mutated), "fail")
+        # Removing the modeled prevention / adding the modeled prevention flips the event controls.
+        dup = copy.deepcopy(by_id["duplicate-events"])
+        for op in dup["request"]["operations"]:
+            op["idempotencyKey"] = "retry"
+        self.assertEqual(status(dup), "fail")
+        idem = copy.deepcopy(by_id["idempotent-events"])
+        for op in idem["request"]["operations"]:
+            del op["idempotencyKey"]
+        self.assertEqual(status(idem), "fail")
+        # Completing the hidden effect declaration removes the uncertainty witness.
+        hidden = copy.deepcopy(by_id["alias-hidden-effects"])
+        hidden["request"]["operations"][1]["effects"] = {"complete": True, "reads": ["x"], "writes": ["x"], "emits": []}
+        self.assertEqual(status(hidden), "fail")
+
     def test_control_evidence_accounts_every_fixture_without_timing(self):
         manifest, registration = corpus()
         evidence = control_evidence(manifest, registration)
