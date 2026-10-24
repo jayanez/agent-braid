@@ -1,13 +1,18 @@
 # SPDX-License-Identifier: AGPL-3.0-only
+import contextlib
 import hashlib
 import io
 import json
 from pathlib import Path
+import shutil
+import subprocess
 import tarfile
 import tempfile
 import unittest
+from unittest import mock
 from agent_braid.plugin_package import inventory, verify_package
-from scripts.build_native_plugin import DISTRIBUTION_ATTRIBUTES, ROOT, assemble, extract_runtime, prepare_bytecode, materialize_runtime_links
+from scripts import build_native_plugin
+from scripts.build_native_plugin import DISTRIBUTION_ATTRIBUTES, ROOT, VERSION, assemble, extract_runtime, prepare_bytecode, materialize_runtime_links
 
 
 class PluginPackageTests(unittest.TestCase):
@@ -207,3 +212,216 @@ class PluginPackageTests(unittest.TestCase):
             code = f'import sys; sys.path.insert(0, {str(library)!r}); import canary; assert canary.VALUE == 42'
             subprocess.run([sys.executable, '-I', '-c', code], check=True)
             self.assertEqual(cache.read_bytes(), before)
+
+
+WORKFLOW_FIXTURE = {'braid-gate.js': b"export const meta = { name: 'braid-gate' }\n",
+                    'lib/helper.js': b'export const helper = 1\n'}
+
+
+_REAL_RUN = subprocess.run
+
+
+def _fake_run(command, **options):
+    """Stand in for the wheel build and pip installs; Git calls stay real. No network is used."""
+    command = [str(x) for x in command]
+    if command[0] == 'git':
+        return _REAL_RUN(command, **options)
+    if '--wheel' in command:
+        outdir = Path(command[command.index('--outdir') + 1])
+        outdir.mkdir(parents=True, exist_ok=True)
+        (outdir / 'agent_braid-0-py3-none-any.whl').write_bytes(b'fixture wheel')
+
+
+def _fake_extract(archive, destination, expected):
+    runtime = Path(destination) / 'python'
+    (runtime / 'lib/python3.12/site-packages').mkdir(parents=True)
+    return runtime
+
+
+class WorkflowPackagingTests(unittest.TestCase):
+    """Opt-in packaging of the Claude-only workflow component (SPEC-052 REQ-011)."""
+
+    @classmethod
+    def setUpClass(cls):
+        cls.scratch = tempfile.TemporaryDirectory()
+        base = Path(cls.scratch.name)
+        cls.fixture = base / 'workflows'
+        for name, data in WORKFLOW_FIXTURE.items():
+            (cls.fixture / name).parent.mkdir(parents=True, exist_ok=True)
+            (cls.fixture / name).write_bytes(data)
+        subprocess.run(['git', 'init', '-q', str(base)], check=True)
+        (cls.fixture / 'ignored.local').write_text('secret\n')
+        (cls.fixture / 'untracked.js').write_text('export {}\n')
+        (cls.fixture / 'link.js').symlink_to(base / 'outside')
+        (base / '.gitignore').write_text('ignored.local\n__pycache__/\n')
+        subprocess.run(['git', '-C', str(base), 'add', '-f', '--'] +
+                       ['workflows/' + x for x in WORKFLOW_FIXTURE], check=True)
+        cls.default = cls._build(base / 'default')
+        cls.opt_in = cls._build(base / 'opt-in', include_workflows=True)
+        cls.opt_in_again = cls._build(base / 'opt-in-again', include_workflows=True)
+
+    @classmethod
+    def tearDownClass(cls):
+        cls.scratch.cleanup()
+
+    @classmethod
+    def _build(cls, output, **options):
+        base = Path(cls.scratch.name)
+        with mock.patch.object(build_native_plugin, 'WORKFLOWS_SOURCE', cls.fixture), \
+                mock.patch.object(build_native_plugin.subprocess, 'run', _fake_run), \
+                mock.patch.object(build_native_plugin, '_download'), \
+                mock.patch.object(build_native_plugin, 'extract_runtime', _fake_extract), \
+                mock.patch.object(build_native_plugin, 'prepare_bytecode', return_value={'mode': 'fixture'}):
+            result = assemble(output, base / 'cache', platforms=['macos-arm64'], allow_dirty=True, **options)
+        return Path(result['plugin'])
+
+    def test_default_build_excludes_workflows_and_verifies(self):
+        self.assertFalse((self.default / 'workflows').exists())
+        self.assertFalse((self.default / 'ENGINEERING-ONLY.json').exists())
+        self.assertFalse([x for x in inventory(self.default) if x.startswith('workflows/')])
+        self.assertEqual(verify_package(self.default)['status'], 'verified')
+        provenance = json.loads((self.default / 'provenance.json').read_text())
+        self.assertNotIn('engineeringOnly', provenance)
+
+    def test_opt_in_ships_only_tracked_regular_files(self):
+        shipped = sorted(x for x in inventory(self.opt_in) if x.startswith('workflows/'))
+        self.assertEqual(shipped, sorted('workflows/' + x for x in WORKFLOW_FIXTURE))
+        for name in ('ignored.local', 'untracked.js', 'link.js'):
+            self.assertFalse((self.opt_in / 'workflows' / name).exists(), name)
+
+    def test_tracked_symlink_in_workflow_source_is_rejected(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            subprocess.run(['git', 'init', '-q', str(root)], check=True)
+            (root / 'w').mkdir()
+            (root / 'w/a.js').write_text('export {}\n')
+            (root / 'w/link.js').symlink_to(root / 'w/a.js')
+            subprocess.run(['git', '-C', str(root), 'add', '-A'], check=True)
+            with self.assertRaisesRegex(ValueError, 'tracked regular file'):
+                build_native_plugin.copy_tracked_workflows(root / 'w', root / 'out')
+
+    def test_tracked_but_deleted_workflow_file_is_rejected(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            subprocess.run(['git', 'init', '-q', str(root)], check=True)
+            (root / 'w').mkdir()
+            (root / 'w/a.js').write_text('export {}\n')
+            subprocess.run(['git', '-C', str(root), 'add', '-A'], check=True)
+            (root / 'w/a.js').unlink()
+            with self.assertRaisesRegex(ValueError, 'tracked regular file'):
+                build_native_plugin.copy_tracked_workflows(root / 'w', root / 'out')
+
+    def test_default_source_archive_holds_only_tracked_files(self):
+        tracked = set(subprocess.check_output(['git', 'ls-files', '--cached', '-z'], cwd=ROOT,
+                                              text=True).split('\0'))
+        archive = next((self.default.parent.parent / 'sources').glob('*-source.tar.gz'))
+        with tarfile.open(archive) as stream:
+            names = set(stream.getnames())
+        self.assertFalse(names - tracked)
+        self.assertFalse((self.default / 'workflows').exists())
+
+    def test_opt_in_copies_the_workflow_tree_with_stable_inventory_entries(self):
+        files = inventory(self.opt_in)
+        for name, data in WORKFLOW_FIXTURE.items():
+            self.assertEqual((self.opt_in / 'workflows' / name).read_bytes(), data)
+            self.assertEqual(files['workflows/' + name]['sha256'], hashlib.sha256(data).hexdigest())
+        self.assertEqual(sorted(x for x in files if x.startswith('workflows/')),
+                         sorted('workflows/' + x for x in WORKFLOW_FIXTURE))
+        self.assertEqual(verify_package(self.opt_in)['status'], 'verified')
+
+    def test_two_opt_in_builds_have_identical_inventories(self):
+        first, second = inventory(self.opt_in), inventory(self.opt_in_again)
+        # provenance.json embeds the source archive hash, whose gzip header carries a timestamp.
+        first.pop('provenance.json'); second.pop('provenance.json')
+        self.assertEqual(first, second)
+
+    def test_opt_in_is_marked_engineering_only_and_keeps_the_version(self):
+        marker = json.loads((self.opt_in / 'ENGINEERING-ONLY.json').read_text())
+        self.assertEqual(marker['component'], 'workflows')
+        self.assertIs(marker['releasable'], False)
+        provenance = json.loads((self.opt_in / 'provenance.json').read_text())
+        self.assertEqual(provenance['engineeringOnly']['component'], 'workflows')
+        for plugin in (self.default, self.opt_in):
+            self.assertEqual(provenance['version'], VERSION)
+            self.assertEqual(json.loads((plugin / '.claude-plugin/plugin.json').read_text())['version'], VERSION)
+            self.assertEqual(json.loads((plugin / 'plugin.json').read_text())['version'], VERSION)
+            self.assertEqual(json.loads((plugin / 'package-inventory.json').read_text())['version'], VERSION)
+        self.assertEqual(VERSION, '0.1.0-alpha.3')
+
+    def test_opt_in_leaves_manifests_mcp_and_skills_byte_identical(self):
+        names = ['plugin.json', '.claude-plugin/plugin.json', 'mcp.json', '.mcp.json', 'launch']
+        names += [x for x in inventory(self.default) if x.startswith('skills/')]
+        # Five product skills plus the setup skill, all present in both builds.
+        self.assertEqual(len([x for x in names if x.endswith('/SKILL.md')]), 6)
+        for name in names:
+            self.assertEqual((self.opt_in / name).read_bytes(), (self.default / name).read_bytes(), name)
+        before, after = inventory(self.default), inventory(self.opt_in)
+        extra = set(after) - set(before)
+        self.assertEqual(extra, {'ENGINEERING-ONLY.json'} | {'workflows/' + x for x in WORKFLOW_FIXTURE})
+        self.assertEqual(set(before) - set(after), set())
+        for name in set(before) - {'provenance.json'}:
+            self.assertEqual(before[name], after[name], name)
+
+    def test_claude_manifest_declares_no_workflows_override_and_no_other_components(self):
+        for plugin in (self.default, self.opt_in):
+            manifest = json.loads((plugin / '.claude-plugin/plugin.json').read_text())
+            portable = json.loads((plugin / 'plugin.json').read_text())
+            for key in ('workflows', 'hooks', 'mods', 'agents', 'monitors'):
+                self.assertNotIn(key, manifest)
+                self.assertNotIn(key, portable)
+            self.assertEqual(sorted(x for x in inventory(plugin)
+                                    if x.split('/')[0] in ('hooks', 'mods', 'agents', 'monitors')), [])
+        self.assertIn('mcpServers', json.loads((self.opt_in / '.mcp.json').read_text()))
+
+    def test_verification_rejects_missing_altered_and_extra_workflow_files(self):
+        def missing(root): (root / 'workflows/braid-gate.js').unlink()
+        def altered(root): (root / 'workflows/braid-gate.js').write_bytes(b'export const meta = {}\n')
+        def extra(root): (root / 'workflows/extra.js').write_text('export {}\n')
+        def missing_directory(root): shutil.rmtree(root / 'workflows/lib')
+        for label, change in (('missing', missing), ('altered', altered), ('extra', extra),
+                              ('missing directory', missing_directory)):
+            with self.subTest(label), tempfile.TemporaryDirectory() as directory:
+                copy = Path(directory) / 'plugin'
+                shutil.copytree(self.opt_in, copy)
+                self.assertEqual(verify_package(copy)['status'], 'verified')
+                change(copy)
+                with self.assertRaisesRegex(ValueError, 'inventory changed'):
+                    verify_package(copy)
+
+    def test_engineering_marker_and_workflow_directory_must_agree(self):
+        build_native_plugin.verify_engineering_marker(self.default)
+        build_native_plugin.verify_engineering_marker(self.opt_in)
+        with tempfile.TemporaryDirectory() as directory:
+            copy = Path(directory) / 'plugin'
+            shutil.copytree(self.opt_in, copy)
+            (copy / 'ENGINEERING-ONLY.json').unlink()
+            with self.assertRaisesRegex(ValueError, 'engineering-only'):
+                build_native_plugin.verify_engineering_marker(copy)
+        with tempfile.TemporaryDirectory() as directory:
+            copy = Path(directory) / 'plugin'
+            shutil.copytree(self.default, copy)
+            (copy / 'ENGINEERING-ONLY.json').write_text('{}')
+            with self.assertRaisesRegex(ValueError, 'engineering-only'):
+                build_native_plugin.verify_engineering_marker(copy)
+
+    def test_opt_in_requires_an_existing_workflow_directory(self):
+        with tempfile.TemporaryDirectory() as directory:
+            missing = Path(directory) / 'absent'
+            with mock.patch.object(build_native_plugin, 'WORKFLOWS_SOURCE', missing):
+                with self.assertRaisesRegex(ValueError, 'workflow'):
+                    assemble(Path(directory) / 'out', Path(directory) / 'cache', allow_dirty=True,
+                             include_workflows=True)
+            self.assertFalse((Path(directory) / 'out').exists())
+
+    def test_command_line_flag_is_explicit_and_off_by_default(self):
+        with mock.patch.object(build_native_plugin, 'assemble', return_value={}) as built, \
+                mock.patch.object(build_native_plugin.sys, 'argv', ['build', '--output', 'o', '--cache', 'c']):
+            with contextlib.redirect_stdout(io.StringIO()):
+                build_native_plugin.main()
+        self.assertFalse(built.call_args.kwargs['include_workflows'])
+        with mock.patch.object(build_native_plugin, 'assemble', return_value={}) as built, \
+                mock.patch.object(build_native_plugin.sys, 'argv',
+                                  ['build', '--output', 'o', '--cache', 'c', '--include-workflows']):
+            with contextlib.redirect_stdout(io.StringIO()):
+                build_native_plugin.main()
+        self.assertTrue(built.call_args.kwargs['include_workflows'])

@@ -167,6 +167,12 @@ RULES = (
         boundary="Applicable milestone, release or publication clean-room protocol"),
     Rule("feature-assurance", ("specs/**",), ("spec-kit-structure",), True,
         boundary="Feature-specific evidence capture, freeze and human review"),
+    Rule("claude-workflow-gate", (
+        "integrations/agent-braid/plugin/workflows/**", "tests/test_claude_workflow_gate.py",
+        "tests/claude_workflow_gate_helpers.py", "tests/fixtures/claude_workflow_gate/**",
+        "docs/tooling/CLAUDE_WORKFLOWS.md",
+    ), ("full-tests",), True,
+        boundary="Claude Code host verification of the workflow gate and release acceptance remain separate; the gate is analysis-only and unreleased"),
     Rule("ai-tooling", (
         "agent_braid/cli.py", "agent_braid/tooling_*.py", "tests/test_tooling_*.py",
         "agent_braid/plugin_*.py", "tests/test_plugin_*.py", "install.sh",
