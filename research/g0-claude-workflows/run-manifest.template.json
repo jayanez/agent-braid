@@ -1,7 +1,17 @@
 {
-  "recordVersion": "agent-braid-claude-workflow-g0-run-manifest-template-1",
+  "recordVersion": "agent-braid-claude-workflow-g0-run-manifest-template-2",
   "frozen": false,
-  "note": "Template only. Copy outside the repository, fill every null before launch, hash the filled file before run 1. Never commit task prose that names private content.",
+  "note": "Template only, revision 2 of the preregistration. Copy outside the repository, fill every null before launch, hash the filled file before run 1. Never commit task prose that names private content. Design classes, contracts, negative-control designations and the serial merge order are fixed here before launch and never changed after an outcome is seen.",
+  "freezeOrder": [
+    "renew-source-and-budget-signature-against-revised-bytes",
+    "transcript-layout-and-tool-name-census",
+    "write-probe-against-observed-layout-and-test-on-deidentified-real-fixture",
+    "estimate-eligible-yield-and-record-plannedRunCount",
+    "hash-probe-and-runner",
+    "founder-accepts-power-operating-point",
+    "freeze-decision-binding-proposal-inputs-and-vectors-bytes",
+    "runs-start"
+  ],
   "repository": null,
   "baseCommit": null,
   "testCommand": null,
@@ -12,32 +22,85 @@
     "agentBraidPluginVersion": null,
     "clash": "not-installed"
   },
-  "scriptSha256": {
-    "probe": null,
-    "scorer": null,
-    "workflowTemplate": null
+  "preFreeze": {
+    "transcriptLayoutCensus": null,
+    "workflowCensus": null,
+    "plannedRunCount": null,
+    "eligibleYieldEstimate": null,
+    "quotaSharePerRunRecorded": null,
+    "powerOperatingPointAcceptedByFounder": null,
+    "layoutDifferenceRule": "a transcript layout that differs from the census is recorded as probe-unavailable and the probe is never patched"
   },
-  "transcriptLayoutConfirmedOnFirstRun": null,
+  "scriptSha256": {
+    "census": null,
+    "probe": null,
+    "runner": null,
+    "scorer": null
+  },
   "runs": [
     {
       "runId": "r01",
       "ordinal": 1,
       "agentCount": 3,
+      "designClass": "overlap",
       "baseCommit": null,
       "serialMergeOrder": [1, 2, 3],
-      "design": {
-        "overlap": true,
-        "contract": false,
-        "overlapRationale": null
-      },
+      "design": { "overlap": true, "contract": false, "negative_control": false, "overlapRationale": null },
+      "contractDependency": null,
       "worktreeRoots": { "1": null, "2": null, "3": null },
       "taskSet": [
         { "ordinal": 1, "title": null, "instructions": null },
         { "ordinal": 2, "title": null, "instructions": null },
         { "ordinal": 3, "title": null, "instructions": null }
       ],
+      "hostRestartsPerAgent": { "1": null, "2": null, "3": null },
+      "branchTestsDoubleRun": { "1": null, "2": null, "3": null },
       "predictionFileSha256": null,
-      "branchHeads": null
+      "branchHeads": null,
+      "counterfactualRerunWithoutFlaggedWriter": null
+    },
+    {
+      "runId": "r02",
+      "ordinal": 2,
+      "agentCount": 3,
+      "designClass": "contract",
+      "baseCommit": null,
+      "serialMergeOrder": [1, 2, 3],
+      "design": { "overlap": false, "contract": true, "negative_control": false, "overlapRationale": null },
+      "contractDependency": { "symbolOrContract": null, "readerOrdinal": null, "writerOrdinal": null },
+      "worktreeRoots": { "1": null, "2": null, "3": null },
+      "taskSet": [
+        { "ordinal": 1, "title": null, "instructions": null },
+        { "ordinal": 2, "title": null, "instructions": null },
+        { "ordinal": 3, "title": null, "instructions": null }
+      ],
+      "hostRestartsPerAgent": { "1": null, "2": null, "3": null },
+      "branchTestsDoubleRun": { "1": null, "2": null, "3": null },
+      "predictionFileSha256": null,
+      "branchHeads": null,
+      "counterfactualRerunWithoutFlaggedWriter": null
+    },
+    {
+      "runId": "r03",
+      "ordinal": 3,
+      "agentCount": 3,
+      "designClass": "negative-control",
+      "baseCommit": null,
+      "serialMergeOrder": [1, 2, 3],
+      "design": { "overlap": true, "contract": false, "negative_control": true, "overlapRationale": null },
+      "contractDependency": null,
+      "negativeControlDeclaration": "overlap without contract dependency; no agent reads a path another agent writes unless it also writes it",
+      "worktreeRoots": { "1": null, "2": null, "3": null },
+      "taskSet": [
+        { "ordinal": 1, "title": null, "instructions": null },
+        { "ordinal": 2, "title": null, "instructions": null },
+        { "ordinal": 3, "title": null, "instructions": null }
+      ],
+      "hostRestartsPerAgent": { "1": null, "2": null, "3": null },
+      "branchTestsDoubleRun": { "1": null, "2": null, "3": null },
+      "predictionFileSha256": null,
+      "branchHeads": null,
+      "counterfactualRerunWithoutFlaggedWriter": null
     }
   ]
 }

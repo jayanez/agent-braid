@@ -10,14 +10,29 @@ Usage (agents in preregistered ordinal order):
     python3 probe.py --agent WORKTREE_ROOT TRANSCRIPT.jsonl \
                      --agent WORKTREE_ROOT TRANSCRIPT.jsonl ...
 
-Assumed transcript shape (the founder confirms it on the first run): one JSON
+Transcript shape (observed by the pre-freeze census, see census.py): one JSON
 object per line; assistant lines carry message.content blocks of
 {"type": "tool_use", "id", "name", "input"}; user lines carry blocks of
-{"type": "tool_result", "tool_use_id", "is_error"}. Repeated tool_use ids are
-counted once. A call with no result, or with is_error true, counts as a call
-and as unknown, never as an effect. Paths must be absolute and under the
-worktree root after lexical normalization (no filesystem access, no symlink
-following); anything else counts as outside_worktree and is never matched.
+{"type": "tool_result", "tool_use_id", "is_error"?}. A missing is_error means
+success; only is_error true is an error. Repeated tool_use ids are counted
+once. Records whose message.content is a string, and every other record or
+block kind, are ignored. A layout that differs from the census at run time is
+recorded as probe-unavailable by the founder; this file is never patched after
+its hash is recorded.
+
+Counting rules (preregistered, see the proposal):
+- A call with no result record, or with is_error true, is a failed call. A
+  failed call is never an effect (never a read or a write for the overlap).
+- unknown_writer_calls (C3 numerator): every Bash, mcp__* and other call, plus
+  every failed write-class call (Edit, Write, NotebookEdit), including a write
+  request that has no result record.
+- denominator_calls (C3 denominator): every counted call except Grep and Glob.
+- Grep and Glob are read-only searches: they leave numerator and denominator
+  and are reported separately as read_only_search_calls. Failed Read calls are
+  reported separately as failed_read_calls and are not unknown writers.
+- Paths must be absolute and under the worktree root after lexical
+  normalization (no filesystem access, no symlink following); anything else
+  counts as outside_worktree and is never matched.
 """
 
 import argparse
@@ -28,8 +43,8 @@ import sys
 WRITE_TOOLS = {"Edit": "file_path", "Write": "file_path", "NotebookEdit": "notebook_path"}
 READ_TOOLS = {"Read": "file_path"}
 CLASSES = ("read", "write", "bash", "grep_glob", "mcp", "other")
-# Classes that are unknown by definition (C3 numerator, with failed calls).
-UNKNOWN_CLASSES = ("bash", "grep_glob", "mcp", "other")
+# Writer-capable classes that are unknown by definition (C3 numerator).
+UNKNOWN_CLASSES = ("bash", "mcp", "other")
 
 
 def classify(name):
@@ -85,8 +100,9 @@ def scan_agent(root, lines):
             elif block.get("type") == "tool_result" and isinstance(block.get("tool_use_id"), str):
                 results.setdefault(block["tool_use_id"], block.get("is_error") is True)
     counts = {name: 0 for name in CLASSES}
-    counts.update(total_calls=0, unknown_calls=0, failed_or_unpaired_calls=0,
-                  outside_worktree=0, malformed_lines=malformed)
+    counts.update(total_calls=0, denominator_calls=0, unknown_writer_calls=0,
+                  read_only_search_calls=0, failed_read_calls=0, failed_write_calls=0,
+                  failed_or_unpaired_calls=0, outside_worktree=0, malformed_lines=malformed)
     reads, writes = set(), set()
     for call_id, call in calls.items():
         cls = classify(call.get("name"))
@@ -95,8 +111,16 @@ def scan_agent(root, lines):
         failed = call_id not in results or results[call_id]
         if failed:
             counts["failed_or_unpaired_calls"] += 1
-        if failed or cls in UNKNOWN_CLASSES:
-            counts["unknown_calls"] += 1
+        if cls == "grep_glob":
+            counts["read_only_search_calls"] += 1
+            continue
+        counts["denominator_calls"] += 1
+        if cls in UNKNOWN_CLASSES or (failed and cls == "write"):
+            counts["unknown_writer_calls"] += 1
+        if failed and cls == "read":
+            counts["failed_read_calls"] += 1
+        if failed and cls == "write":
+            counts["failed_write_calls"] += 1
         if failed or cls not in ("read", "write"):
             continue
         field = (READ_TOOLS if cls == "read" else WRITE_TOOLS)[call["name"]]
@@ -127,9 +151,12 @@ def overlaps(agents):
 def probe(specs):
     """specs: [(worktree_root, iterable_of_lines)] in ordinal order."""
     agents = [scan_agent(root, lines) for root, lines in specs]
+    run = overlaps(agents)
+    for key in ("denominator_calls", "unknown_writer_calls", "read_only_search_calls"):
+        run[key] = sum(a[0][key] for a in agents)
     return {
         "agents": [dict(ordinal=n + 1, **a[0]) for n, a in enumerate(agents)],
-        "run": overlaps(agents),
+        "run": run,
     }
 
 
