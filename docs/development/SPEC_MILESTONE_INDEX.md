@@ -79,6 +79,14 @@ telemetry candidate. The map records the historical allocation; the current
 tracks source integration separately from feature acceptance and historical milestone counts. The shared economic
 scenario is **NO-GO**.
 
+**M4.6 numbering note.** The orchestration family merged in PR #683 is
+**SPEC-057** (advisory core), **SPEC-058** (guard) and **SPEC-059** (ledger and
+push). The squash commit message of that pull request (`77b951b`) still cites the
+earlier working numbers SPEC-054, SPEC-055 and SPEC-056 because the title was not
+updated after renumbering; SPEC-054 and ADR 0030 belong to the plugin surface
+naming work. The files, directories, tracking entries and cross-references in the
+repository use SPEC-057 to SPEC-059. Historical commit messages are not rewritten.
+
 
 ## Proposed harness program
 
