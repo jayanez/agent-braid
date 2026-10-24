@@ -82,7 +82,7 @@ host/commit and actual commands after execution, and reproduce in a fresh
 independent clone before science review; passing profiles do not supply this
 evidence.
 
-Registered experiment (T006/T008). Run once on 2026-10-24 after the independent review; the committed capture is `evidence/comparison-20261024.json` (about 6 MB, includes each oracle report):
+Registered experiment (T006/T008). Run once on 2026-10-24 after the independent review; the committed capture is `evidence/comparison-20261024.json` (about 390 KB; oracle reports are replaced by digests):
 
 ```sh
 python3 scripts/run_effectful_workload_experiment.py --manifest examples/workload-lab/manifest.json --output specs/024-effectful-workload-lab/evidence/comparison.json
