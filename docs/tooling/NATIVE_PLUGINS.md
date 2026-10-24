@@ -132,6 +132,8 @@ When a connection is stale:
    `plugin-status` again: the digests must match and `reconnectRequired` must be
    `false`. The new connection snapshots the new workspaces and consent.
 
+Local telemetry does not count these refusals (or any other plugin-router refusal such as unknown workspace, malformed arguments, busy admission or a full inventory): they are not usage failures and the SPEC-047 data contract is unchanged.
+
 Registration is not execution authority and the stale connection keeps its
 original immutable roots and grants until it is replaced.
 

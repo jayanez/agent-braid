@@ -221,6 +221,64 @@ class PluginRouterTests(unittest.TestCase):
         self.assertIn('mcp', json.dumps(report))
         self.assertIn('analyze-work', json.dumps(report))
 
+    def router_refusals(self, router, identifier):
+        """Every router-level refusal path; each must refuse before the service telemetry boundary."""
+        from unittest.mock import patch
+        from agent_braid import tooling_mcp as core
+        sample = {'workspaceId': identifier, 'kind': 'aim', 'request': {}}
+        out = {'unknown-workspace': router.invoke('analyze-work', dict(sample, workspaceId='not-registered'), threading.Event()),
+               'malformed-arguments': router.invoke('analyze-work', ['not', 'an', 'object'], threading.Event()),
+               'bootstrap-arguments': router.invoke('workspaces', {'x': 1}, threading.Event())}
+        with router.admission:
+            out['busy-admission'] = router.invoke('analyze-work', sample, threading.Event())
+        with patch.object(core, 'MAX_INVENTORY_ARTIFACTS', 0):
+            out['full-inventory'] = router.invoke('analyze-work', sample, threading.Event())
+        return out
+
+    def assert_router_refusals_write_no_telemetry(self, consent, stale):
+        from unittest.mock import patch
+        from agent_braid import tooling_telemetry as telemetry
+        self.install()
+        if consent == 'local':
+            preview = plan_setup(self.home, [], telemetry='local')
+            apply(self.home, preview, preview['previewDigest'])
+        store = self.base / 'telemetry'
+        with patch.object(telemetry, 'default_directory', return_value=store):
+            router = PluginRouter(self.home)
+            self.assertEqual(router.status()['telemetry']['activeMode'], consent)
+            identifier = load(self.home)['workspaces'][0]['workspaceId']
+            refusals = self.router_refusals(router, identifier)
+            if stale:
+                self.rewrite(lambda v: dict(v, workspaces=[]))
+                refusals['reconnect-required'] = router.invoke('analyze-work', {'workspaceId': identifier}, threading.Event())
+                self.assertEqual(refusals['reconnect-required']['result'], {'code': RegistryStale.code})
+            for cause, result in refusals.items():
+                self.assertEqual(result['status'], 'refused', cause)
+            self.assertFalse(store.exists(), 'a refusal created the telemetry store')
+            self.assertEqual(telemetry.Store().report()['rows'], [])
+
+    def test_router_refusals_write_no_telemetry_cell_with_consent_local(self):
+        self.assert_router_refusals_write_no_telemetry('local', stale=True)
+
+    def test_router_refusals_write_no_telemetry_with_consent_off(self):
+        self.assert_router_refusals_write_no_telemetry('off', stale=True)
+
+    def test_refusal_pin_can_fail_because_service_calls_are_counted(self):
+        from unittest.mock import patch
+        from agent_braid import tooling_telemetry as telemetry
+        self.install()
+        preview = plan_setup(self.home, [], telemetry='local')
+        apply(self.home, preview, preview['previewDigest'])
+        with patch.object(telemetry, 'default_directory', return_value=self.base / 'telemetry'):
+            router = PluginRouter(self.home)
+            identifier = load(self.home)['workspaces'][0]['workspaceId']
+            # A refusal that does reach the service boundary is counted, so the pin above is not vacuous.
+            result = router.invoke('analyze-work', {'workspaceId': identifier}, threading.Event())
+            self.assertEqual(result['status'], 'refused')
+            rows = telemetry.Store().report()['rows']
+        self.assertIn(('mcp', 'analyze-work', 'refused', 'calls', 1),
+                      [(r['surface'], r['operation'], r['outcome'], r['metric'], r['count']) for r in rows])
+
     def test_v01_registry_serves_migration_status_without_workspaces(self):
         registry_tests.PluginRegistryTests.legacy_registry(self)
         router = PluginRouter(self.home)
