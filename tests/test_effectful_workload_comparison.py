@@ -89,7 +89,7 @@ class WorkloadComparisonTests(unittest.TestCase):
         self.assertTrue(fixture["matchedCompleteCoverage"])
         self.assertEqual(fixture["warmupsCompleted"], {m: 3 for m in METHODS})
         self.assertTrue(all(len(fixture["samples"][m]) == 20 for m in METHODS))
-        orders = {tuple(s["methodOrder"]) for method in METHODS for s in fixture["samples"][method]}
+        orders = {s["orderOffset"] for method in METHODS for s in fixture["samples"][method]}
         self.assertEqual(len(orders), len(METHODS))
         self.assertEqual(report["accounting"]["recoveredTerminalCandidates"], 1)
         self.assertIn(report["feasibility"]["status"], ("positive", "negative"))
@@ -110,6 +110,23 @@ class WorkloadComparisonTests(unittest.TestCase):
         self.assertEqual(failed["feasibility"]["status"], "inconclusive")
         self.assertFalse(failed["fixtures"][0]["matchedCompleteCoverage"])
 
+    def test_unstable_deterministic_field_prevents_matched_coverage(self):
+        manifest, registration = corpus()
+        manifest["fixtures"] = [next(f for f in manifest["fixtures"] if f["id"] == "h2-shared-additions")]
+        registration.update(manifestHash=digest(manifest), fixtureCount=1)
+        actual_measure = measure
+        calls = 0
+        def drift(request, method):
+            nonlocal calls
+            calls += 1
+            result = actual_measure(request, method)
+            if calls == 30:
+                result["observation"] = {**result["observation"], "terminalValuesMatch": not result["observation"]["terminalValuesMatch"]}
+            return result
+        with patch("research.workload_lab.analysis.measure", side_effect=drift):
+            report = run_experiment(manifest, registration)
+        self.assertFalse(report["fixtures"][0]["matchedCompleteCoverage"])
+        self.assertEqual(report["feasibility"]["status"], "inconclusive")
 
     def run_with_costs(self, rule_stage, rule_total, oracle_total):
         manifest, registration = corpus()
@@ -152,6 +169,57 @@ class WorkloadComparisonTests(unittest.TestCase):
         self.assertEqual(median_upper_bound([7] * 200), 7)
         self.assertIsNone(median_upper_bound([1, 2, 3, 4]))
         self.assertIsNone(median_upper_bound([]))
+
+
+EVIDENCE = ROOT / "specs/024-effectful-workload-lab/evidence/comparison-20261024.json"
+
+
+def evidence_problems(evidence, manifest, registration):
+    """List deterministic ways a captured experiment departs from the frozen corpus."""
+    problems = []
+    if evidence["registration"] != registration or evidence["protocol"] != manifest["protocol"]:
+        problems.append("registration")
+    if [r["id"] for r in evidence["fixtures"]] != [f["id"] for f in manifest["fixtures"]]:
+        problems.append("fixtures")
+    for result, fixture in zip(evidence["fixtures"], manifest["fixtures"]):
+        if result["requestHash"] != fixture["requestHash"] or result["oracleDigest"] != digest(explore(fixture["request"])):
+            problems.append("oracle " + fixture["id"])
+        if not result["matchedCompleteCoverage"] or result["failures"] or result["control"]["status"] != "pass":
+            problems.append("coverage " + fixture["id"])
+        if any(not shared["coverage"]["complete"] or shared["requestHash"] != fixture["requestHash"]
+               for shared in result["deterministicByMethod"].values()):
+            problems.append("deterministic " + fixture["id"])
+        if any(len(result["samples"][m]) != 20 or result["warmupsCompleted"][m] != 3 for m in METHODS):
+            problems.append("repetitions " + fixture["id"])
+    accounting = evidence["accounting"]
+    if accounting["falseTerminalCandidates"] or accounting["recoveredTerminalCandidates"] != sum(
+            bool(r["h2"] and r["h2"].get("recoveredFromExactResourceOverlap")) for r in evidence["fixtures"]):
+        problems.append("accounting")
+    if evidence["feasibility"]["ruleIncrementalCostPpm"]["samples"] != 200:
+        problems.append("samples")
+    if evidence["executionAuthorization"] is not False or evidence["scientificReview"] != "pending":
+        problems.append("authority")
+    return problems
+
+
+class WorkloadCapturedEvidenceTests(unittest.TestCase):
+    def test_committed_comparison_matches_frozen_corpus_and_detects_tampering(self):
+        manifest, registration = corpus()
+        evidence = json.loads(EVIDENCE.read_text())
+        self.assertEqual(evidence_problems(evidence, manifest, registration), [])
+        self.assertEqual(evidence["accounting"]["registeredFixtures"], 17)
+        for mutate in (
+            lambda e: e["fixtures"][0].__setitem__("oracleDigest", "0" * 64),
+            lambda e: e["fixtures"][0]["deterministicByMethod"]["declared-effects"]["coverage"].update(complete=False),
+            lambda e: e["fixtures"][0]["samples"]["declared-effects"].pop(),
+            lambda e: e["accounting"].__setitem__("falseTerminalCandidates", 1),
+            lambda e: e.__setitem__("executionAuthorization", True),
+            lambda e: e["registration"].__setitem__("fixtureCount", 16),
+        ):
+            changed = copy.deepcopy(evidence)
+            mutate(changed)
+            self.assertNotEqual(evidence_problems(changed, manifest, registration), [])
+
 
 if __name__ == "__main__":
     unittest.main()
