@@ -132,10 +132,6 @@ function gitPrefix(root, scratch = false) {
   return envHead(scratch) + GIT_ENV.join(" ") + " git " + location + GIT_OVERRIDES.map((item) => "-c " + item).join(" ") + " ";
 }
 
-function scratchPrefix(root) {
-  return gitPrefix(root, true);
-}
-
 // ---------------------------------------------------------------------------------- schemas
 
 const NULLABLE_STRING = {"type": ["string", "null"]};
@@ -292,25 +288,22 @@ const BASELINE_SCHEMA = {
 };
 
 const CALL_OUTCOMES = ["ok", "busy", "refused", "unavailable", "timeout", "failed", "not-called"];
+const RESOLVED_ROW = {
+  "type": "object",
+  "properties": {"input": {"type": "string"}, "commit": NULLABLE_STRING, "state": {"enum": ["resolved", "missing", "error"]}},
+  "required": ["input", "commit", "state"]
+};
 const FINALIZE_SCHEMA = {
   "type": "object",
   "properties": {
     "resolved": {
       "type": "object",
       "properties": {
-        "base": {
-          "type": "object",
-          "properties": {"input": {"type": "string"}, "commit": NULLABLE_STRING, "state": {"enum": ["resolved", "missing", "error"]}},
-          "required": ["input", "commit", "state"]
-        },
+        "base": RESOLVED_ROW,
         "sources": {
           "type": "array",
           "maxItems": 32,
-          "items": {
-            "type": "object",
-            "properties": {"input": {"type": "string"}, "commit": NULLABLE_STRING, "state": {"enum": ["resolved", "missing", "error"]}},
-            "required": ["input", "commit", "state"]
-          }
+          "items": RESOLVED_ROW
         }
       },
       "required": ["base", "sources"]
@@ -404,8 +397,8 @@ function baselinePrompt(root, spec) {
     'SETUP_3: ' + prefix + 'init --bare --template= -q "${GATE_TMP:?}/gitdir"',
     "STATE_REFS: " + prefix + "for-each-ref --format='%(refname) %(objectname)' | " + prefix + "hash-object --stdin",
     "STATE_OBJECTS: " + prefix + "count-objects -v | " + prefix + "hash-object --stdin",
-    "MERGE_TREE_TEMPLATE: " + scratchPrefix(root) + "merge-tree --write-tree --merge-base=<BASE> --name-only -z --no-messages <LEFT> <RIGHT>",
-    "SCRATCH_GITDIR: " + scratchPrefix(root) + "rev-parse --absolute-git-dir",
+    "MERGE_TREE_TEMPLATE: " + gitPrefix(root, true) + "merge-tree --write-tree --merge-base=<BASE> --name-only -z --no-messages <LEFT> <RIGHT>",
+    "SCRATCH_GITDIR: " + gitPrefix(root, true) + "rev-parse --absolute-git-dir",
     'CLEANUP_GUARD: P="<SCRATCH>"; T="${TMPDIR:-/tmp}"; T="${T%/}"; N="${P#"$T"}"; N="${N#/}"; N="${N#/}"; case "$N" in braid-gate.????????) case "${N#braid-gate.}" in *[!A-Za-z0-9]*) echo refused;; *) if [ -d "$P" ]; then echo ok; else echo refused; fi;; esac;; *) echo refused;; esac',
     'CLEANUP_REMOVE: rm -rf -- "<SCRATCH>"',
     "BASELINE_JSON: " + JSON.stringify(spec),
@@ -495,7 +488,7 @@ function sortedUnique(items) {
 }
 
 function isSafeRoot(value) {
-  return typeof value === "string" && SAFE_PATH.test(value) && !DOT_SEGMENT.test(value.length > 1 ? value.replace(/\/+$/, "") : value);
+  return typeof value === "string" && SAFE_PATH.test(value) && !DOT_SEGMENT.test(trimSlash(value));
 }
 
 function trimSlash(path) {
@@ -588,10 +581,28 @@ function newState(given) {
     "replay": null,
     "prepare": null,
     "staleRefs": {"checked": false, "report": []},
-    "finalizeRan": false,
     "finalizeBusy": false,
     "incomplete": false
   };
+}
+
+function inputNames(state) {
+  return state.pinned.sources.map((item) => item.input);
+}
+
+// The operations of an analysis or runtime request; only a runtime request carries declared writes.
+function operationEntries(state, writes) {
+  return state.pinned.sources.map((item, index) => {
+    const entry = {
+      "instanceId": item.input,
+      "attemptId": "attempt-" + (index + 1),
+      "source": {"kind": "commit", "revision": item.commit},
+      "dependencies": [],
+      "uncertainPaths": []
+    };
+    if (writes !== undefined) entry.declaredWrites = writes.get(item.input);
+    return entry;
+  });
 }
 
 function setPhase(state, name, status, agentUsed, detail) {
@@ -675,19 +686,13 @@ function analysisRequest(state) {
     "gitAnalysisRequestVersion": "0.1.0-alpha",
     "repository": state.workspace.sourceRoot,
     "baseRevision": state.pinned.base,
-    "operations": state.pinned.sources.map((item, index) => ({
-      "instanceId": item.input,
-      "attemptId": "attempt-" + (index + 1),
-      "source": {"kind": "commit", "revision": item.commit},
-      "dependencies": [],
-      "uncertainPaths": []
-    }))
+    "operations": operationEntries(state)
   };
 }
 
 // Returns {problem} or {analysis, facts}. The analyzer's values are copied, never rewritten.
 function interpretAnalysis(result, state) {
-  const names = state.pinned.sources.map((item) => item.input);
+  const names = inputNames(state);
   const commits = new Map(state.pinned.sources.map((item) => [item.input, item.commit]));
   if (!DIGEST.test(result.analysisId || "") || !DIGEST.test(result.inputDigest || "")) return {"problem": "analysis identifiers are not sha256 digests"};
   if (!Array.isArray(result.operations) || result.operations.length !== names.length) return {"problem": "analysis operations do not match the pinned sources"};
@@ -801,7 +806,7 @@ function scratchAttested(result) {
 
 // Returns {baseline, facts}. A baseline that is not hardened or lacks merge-tree is unavailable, never clean.
 function interpretBaseline(result, state) {
-  const names = state.pinned.sources.map((item) => item.input);
+  const names = inputNames(state);
   const reported = new Map();
   for (const row of Array.isArray(result.pairs) ? result.pairs : []) {
     if (isObject(row)) reported.set(pairKey(String(row.left), String(row.right)), row);
@@ -915,20 +920,12 @@ function planFinalize(state) {
   let request = null;
   let prepare = null;
   if (skip === null) {
-    const names = state.pinned.sources.map((item) => item.input);
     request = {
       "gitRuntimeRequestVersion": "0.1.0-alpha",
       "repository": state.workspace.sourceRoot,
       "baseRevision": state.pinned.base,
-      "operations": state.pinned.sources.map((item, index) => ({
-        "instanceId": item.input,
-        "attemptId": "attempt-" + (index + 1),
-        "source": {"kind": "commit", "revision": item.commit},
-        "dependencies": [],
-        "uncertainPaths": [],
-        "declaredWrites": facts.writes.get(item.input)
-      })),
-      "order": names,
+      "operations": operationEntries(state, facts.writes),
+      "order": inputNames(state),
       "expectedFinalTree": state.baselineFacts.expectedFinalTree
     };
     const directory = "braid-gate-" + state.pinned.base.slice(0, 12) + "-" + state.pinned.sources[0].commit.slice(0, 12) + "-" + count;
@@ -942,7 +939,7 @@ function callMessage(call) {
 }
 
 function interpretFinalize(result, plan, state) {
-  const names = state.pinned.sources.map((item) => item.input);
+  const names = inputNames(state);
   const problems = [];
   const stale = [];
   const resolved = isObject(result.resolved) ? result.resolved : {};
@@ -998,10 +995,8 @@ function interpretFinalize(result, plan, state) {
     replay = {"status": "inconclusive", "skipReason": null, "certificate": null, "message": "replay result was not a verified equivalent observation: " + clip(String(call.replayResult), 100)};
     if (call.replayResult === "equivalent-observed" && call.verificationStatus === "verified") degraded.push("replay reported an equivalent observation without valid digests");
   }
-  const reasons = [];
-  if (replay.status !== "certified") reasons.push("replay-not-certified");
   if (replay.status !== "certified") {
-    prepare = {"status": "not-prepared", "mode": "serial", "notPreparedReasons": reasons, "batch": null, "message": "replay was not certified"};
+    prepare = {"status": "not-prepared", "mode": "serial", "notPreparedReasons": ["replay-not-certified"], "batch": null, "message": "replay was not certified"};
     if (made.called === true) {
       prepare = {"status": "failed", "mode": "serial", "notPreparedReasons": [], "batch": null, "message": "prepare was reported called without a certified replay"};
       problems.push("prepare called without a certified replay");
@@ -1099,6 +1094,8 @@ function selfCheck(envelope) {
   return problems;
 }
 
+// The fallback is deliberately a literal of its own and never calls buildEnvelope: it must stay
+// correct when the envelope builder is the thing that failed its self-check.
 function degraded(state, problems) {
   const phases = PHASE_NAMES.map((name) => ({"name": name, "status": "not-run", "agentUsed": false, "detail": "not reported"}));
   phases[4] = {"name": "report", "status": "failed", "agentUsed": false, "detail": clip("envelope self-check failed: " + problems.join("; "), 512)};
@@ -1128,93 +1125,96 @@ function degraded(state, problems) {
 
 // ---------------------------------------------------------------------------------- run
 
-async function runPhases(state) {
-  const problem = checkArgs(args);
-  if (problem !== null) {
-    state.refusal = problem;
-    state.forced = "refused";
-    setPhase(state, "validate", "refused", false, "arguments refused before any agent was spawned: " + problem.rule);
-    return;
-  }
-  const given = {"workspaceId": args.workspaceId, "base": args.base, "sources": args.sources.slice()};
+// How a non-ok analyze outcome ends the run: the forced status, the phase status, the refusal rule (if
+// the outcome is one) and the phase detail prefix. Any other outcome (refused, failed) is unstated.
+const ANALYZE_OUTCOMES = {
+  "busy": {"forced": "busy", "phase": "busy", "rule": null, "reason": null, "detail": "the plugin admission lock is busy; no retry: "},
+  "unavailable": {"forced": "refused", "phase": "refused", "rule": "mcp-unavailable", "reason": "the plugin analysis tool is not available to the workflow agent: ", "detail": "mcp-unavailable: "},
+  "limit-exceeded": {"forced": "refused", "phase": "refused", "rule": "limit-exceeded", "reason": "a plugin limit was exceeded: ", "detail": "limit-exceeded: "},
+  "timeout": {"forced": "inconclusive", "phase": "inconclusive", "rule": "timeout", "reason": "the analysis call timed out: ", "detail": "timeout; no retry: "}
+};
 
+function endForAnalyzeOutcome(state, answer) {
+  const message = clip(answer.message, 400);
+  const known = Object.prototype.hasOwnProperty.call(ANALYZE_OUTCOMES, answer.outcome);
+  const row = known ? ANALYZE_OUTCOMES[answer.outcome] : {
+    "forced": "inconclusive",
+    "phase": answer.outcome === "refused" ? "refused" : "failed",
+    "rule": null,
+    "reason": null,
+    "detail": "the analysis tool refused or failed without a stated cause; no retry: "
+  };
+  state.forced = row.forced;
+  if (row.rule !== null) state.refusal = refusalOf(row.rule, null, row.reason + message);
+  setPhase(state, "analyze", row.phase, true, row.detail + message);
+}
+
+// Each phase runner returns true when the next phase may run.
+async function runValidate(state, given) {
   phase("Validate");
   const checked = await settle(state, () => agent(validatePrompt(given), {schema: VALIDATE_SCHEMA, label: "validate", phase: "Validate"}));
   if (!checked.ok) {
     state.forced = "inconclusive";
     setPhase(state, "validate", "failed", true, "the validate agent failed: " + checked.error);
-    return;
+    return false;
   }
   const refusal = applyValidation(checked.value, given, state);
   if (refusal !== null) {
     state.refusal = refusal;
     state.forced = "refused";
     setPhase(state, "validate", "refused", true, refusal.rule + ": " + refusal.message);
-    return;
+    return false;
   }
   if (checked.value.replaceRefCount !== 0) {
     // Replace objects change what a commit looks like to Git; the gate ignores them but the analyzer may not.
     state.forced = "inconclusive";
     const count = Number.isInteger(checked.value.replaceRefCount) ? checked.value.replaceRefCount + " replace reference(s) exist" : "replace references could not be listed";
     setPhase(state, "validate", "inconclusive", true, "pinned, but " + count + " in the repository; analyzer and baseline could see different histories, so no later phase ran");
-    return;
+    return false;
   }
   setPhase(state, "validate", "ok", true, "base and sources pinned to full commit identifiers; uncommitted work is not observed");
+  return true;
+}
 
+async function runAnalyze(state) {
   phase("Analyze");
   const analyzed = await settle(state, () => agent(analyzePrompt(state.workspace.id, analysisRequest(state)), {schema: ANALYZE_SCHEMA, label: "analyze", phase: "Analyze"}));
   if (!analyzed.ok) {
     state.forced = "inconclusive";
     setPhase(state, "analyze", "failed", true, "the analyze agent failed: " + analyzed.error);
-    return;
+    return false;
   }
   const answer = analyzed.value;
   const unsafe = forbiddenTool(answer.toolNamesCalled);
   if (unsafe !== null) {
     state.forced = "inconclusive";
     setPhase(state, "analyze", "failed", true, "unsafe-tool-surface: the agent reported calling " + unsafe);
-    return;
+    return false;
   }
   if (answer.outcome !== "ok") {
-    const message = clip(answer.message, 400);
-    if (answer.outcome === "busy") {
-      state.forced = "busy";
-      setPhase(state, "analyze", "busy", true, "the plugin admission lock is busy; no retry: " + message);
-    } else if (answer.outcome === "unavailable") {
-      state.forced = "refused";
-      state.refusal = refusalOf("mcp-unavailable", null, "the plugin analysis tool is not available to the workflow agent: " + message);
-      setPhase(state, "analyze", "refused", true, "mcp-unavailable: " + message);
-    } else if (answer.outcome === "limit-exceeded") {
-      state.forced = "refused";
-      state.refusal = refusalOf("limit-exceeded", null, "a plugin limit was exceeded: " + message);
-      setPhase(state, "analyze", "refused", true, "limit-exceeded: " + message);
-    } else if (answer.outcome === "timeout") {
-      state.forced = "inconclusive";
-      state.refusal = refusalOf("timeout", null, "the analysis call timed out: " + message);
-      setPhase(state, "analyze", "inconclusive", true, "timeout; no retry: " + message);
-    } else {
-      state.forced = "inconclusive";
-      setPhase(state, "analyze", answer.outcome === "refused" ? "refused" : "failed", true, "the analysis tool refused or failed without a stated cause; no retry: " + message);
-    }
-    return;
+    endForAnalyzeOutcome(state, answer);
+    return false;
   }
   const understood = interpretAnalysis(answer, state);
   if (understood.problem) {
     state.forced = "inconclusive";
     setPhase(state, "analyze", "failed", true, "analysis result is inconsistent with the pinned inputs: " + understood.problem);
-    return;
+    return false;
   }
   state.analysis = understood.analysis;
   state.analysisFacts = understood.facts;
   setPhase(state, "analyze", "ok", true, "analysis over commit sources; the analyzer values are copied unchanged");
+  return true;
+}
 
+async function runBaseline(state) {
   phase("Baseline");
   const spec = baselineSpec(state);
   const measured = await settle(state, () => agent(baselinePrompt(state.workspace.sourceRoot, spec), {schema: BASELINE_SCHEMA, label: "baseline", phase: "Baseline"}));
   if (!measured.ok) {
     state.incomplete = true;
     setPhase(state, "baseline", "failed", true, "the baseline agent failed: " + measured.error);
-    return;
+    return false;
   }
   const baseline = interpretBaseline(measured.value, state);
   state.baseline = baseline.baseline;
@@ -1227,10 +1227,13 @@ async function runPhases(state) {
   }[state.baseline.status];
   setPhase(state, "baseline", state.baseline.status === "completed" ? "ok" : state.baseline.status === "unavailable" ? "inconclusive" : "failed", true, baselineDetail);
   if (state.baseline.status !== "completed") state.incomplete = true;
+  return true;
+}
 
+async function runFinalize(state) {
   phase("Finalize");
   const plan = planFinalize(state);
-  const spec2 = {
+  const spec = {
     "workspaceId": state.workspace.id,
     "baseInput": state.request.base,
     "base": state.pinned.base,
@@ -1238,14 +1241,13 @@ async function runPhases(state) {
     "replayRequest": plan.request,
     "prepare": plan.prepare
   };
-  const finished = await settle(state, () => agent(finalizePrompt(state.workspace.sourceRoot, spec2), {schema: FINALIZE_SCHEMA, label: "finalize", phase: "Finalize"}));
+  const finished = await settle(state, () => agent(finalizePrompt(state.workspace.sourceRoot, spec), {schema: FINALIZE_SCHEMA, label: "finalize", phase: "Finalize"}));
   if (!finished.ok) {
     state.incomplete = true;
     setPhase(state, "finalize", "failed", true, "the finalize agent failed; references were not re-checked: " + finished.error);
     return;
   }
   const outcome = interpretFinalize(finished.value, plan, state);
-  state.finalizeRan = true;
   state.replay = outcome.replay;
   state.prepare = outcome.prepare;
   if (outcome.problems.length > 0) {
@@ -1257,10 +1259,25 @@ async function runPhases(state) {
     setPhase(state, "finalize", "inconclusive", true, "a reference moved or was deleted after pinning; earlier results stay labelled as of the pinned commits and nothing was re-analysed");
   } else if (outcome.degraded.length > 0) {
     state.incomplete = true;
-    setPhase(state, "finalize", outcome.failed || state.replay.status === "failed" ? "failed" : "inconclusive", true, outcome.degraded.join("; ") + "; references re-resolved unchanged");
+    setPhase(state, "finalize", outcome.failed ? "failed" : "inconclusive", true, outcome.degraded.join("; ") + "; references re-resolved unchanged");
   } else {
     setPhase(state, "finalize", "ok", true, "references re-resolved unchanged");
   }
+}
+
+async function runPhases(state) {
+  const problem = checkArgs(args);
+  if (problem !== null) {
+    state.refusal = problem;
+    state.forced = "refused";
+    setPhase(state, "validate", "refused", false, "arguments refused before any agent was spawned: " + problem.rule);
+    return;
+  }
+  const given = {"workspaceId": args.workspaceId, "base": args.base, "sources": args.sources.slice()};
+  if (!(await runValidate(state, given))) return;
+  if (!(await runAnalyze(state))) return;
+  if (!(await runBaseline(state))) return;
+  await runFinalize(state);
 }
 
 const gateState = newState(args);

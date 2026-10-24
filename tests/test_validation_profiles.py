@@ -51,6 +51,8 @@ class ValidationProfileTests(unittest.TestCase):
                 boundary = " ".join(plan.impact.boundaries).lower()
                 self.assertIn("host verification", boundary)
                 self.assertIn("release acceptance", boundary)
+        rule = next(item for item in validation.RULES if item.domain == "claude-workflow-gate")
+        self.assertEqual(rule.commands, ("full-tests",))
 
     def test_forecasting_has_owned_sensitive_domain_and_separate_model_gates(self):
         for path in ('agent_braid/forecast_worker.py','tests/test_forecast_mcp.py','scripts/reproduce_forecast_cpu.py','docs/forecast/OPERATIONS.md'):

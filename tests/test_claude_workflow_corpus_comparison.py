@@ -1,5 +1,6 @@
 # SPDX-License-Identifier: AGPL-3.0-only
 """SPEC-052 T021: corpus comparison classifies each pair as the pre-stated truth predicts."""
+import dataclasses
 import json
 from pathlib import Path
 import sys
@@ -17,6 +18,36 @@ class CorpusComparisonTests(unittest.TestCase):
         self.assertEqual(comparison.classify("unknown", "clean"), "analyzer-unknown")
         self.assertEqual(comparison.classify("unknown", "unavailable"), "baseline-unavailable")
         self.assertEqual(comparison.classify(None, "clean"), "not-comparable")
+        self.assertEqual(comparison.classify("independent-candidate", "clean"), "both-clean")
+        self.assertEqual(comparison.classify("conflicting", "conflicted"), "both-conflicting")
+        self.assertEqual(comparison.classify("something-else", "clean"), "not-comparable")
+
+    def test_counterexamples_are_independent_candidates_against_a_conflicted_baseline(self):
+        def row(name, analyzer, baseline):
+            return {"case": name, "left": {"commit": "l"}, "right": {"commit": "r"},
+                    "analyzer": {"classification": analyzer}, "baseline": {"result": baseline}}
+        rows = [row("hit", "independent-candidate", "conflicted"),
+                row("agree", "independent-candidate", "clean"),
+                row("stricter", "conflicting", "clean"),
+                row("unknown", "unknown", "conflicted")]
+        self.assertEqual(comparison.find_counterexamples(rows, "base"),
+                         [{"case": "hit", "left": "l", "right": "r", "base": "base"}])
+        self.assertEqual(comparison.find_counterexamples(rows[1:], "base"), [])
+
+    def test_scrub_replaces_machine_specific_paths(self):
+        with tempfile.TemporaryDirectory() as work:
+            text = f"{work}/x {comparison.ROOT}/y {sys.executable}"
+            self.assertEqual(comparison.scrub(text, Path(work)), "<work>/x <repo>/y python")
+
+    @unittest.skipUnless(fixtures.supports_merge_tree_write_tree(), "needs Git 2.38+")
+    def test_baseline_failure_maps_to_unavailable(self):
+        with tempfile.TemporaryDirectory() as work:
+            corpus = fixtures.build_corpus(Path(work))
+            case = corpus.cases[0]
+            bogus = dataclasses.replace(corpus, shas={**corpus.shas, case.left: "0" * 40})
+            with tempfile.TemporaryDirectory(dir=work) as objects:
+                _, result = comparison.run_baseline(bogus, case, Path(objects))
+        self.assertEqual(result, "unavailable")
 
     @unittest.skipUnless(fixtures.supports_merge_tree_write_tree(), "needs Git 2.38+")
     def test_corpus_matches_truth_and_store_is_untouched(self):

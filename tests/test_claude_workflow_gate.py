@@ -447,6 +447,12 @@ class ValidationPhaseTests(GateCase):
         self.refused(["ind1", "equal"], "source-equals-base", expect_input="equal")
         self.refused(["ind1", self.corpus.base], "source-equals-base", expect_input=self.corpus.base)
 
+    def test_source_missing_from_the_workspace_repository_is_refused(self) -> None:
+        shas = self.corpus.shas
+        rows = [{"input": name, "commit": shas[name], "present": present, "descendantOfBase": True}
+                for name, present in (("ind1", False), ("ind2", True))]
+        self.refused(["ind1", "ind2"], "not-in-workspace-repository", expect_input="ind1", patch={"validate": {"sources": rows}})
+
     def test_duplicate_after_resolution_is_refused(self) -> None:
         self.refused(["ind1", self.corpus.shas["ind1"]], "duplicate-source", expect_input=self.corpus.shas["ind1"])
 
@@ -613,6 +619,27 @@ class FullRunTests(GateCase):
         self.assertEqual(envelope["analysis"]["unknownEffects"], [{"instanceId": "del", "paths": ["d.txt"]}])
         self.assertIn("partial-coverage", envelope["prepare"]["notPreparedReasons"])
         self.assertEqual(envelope["replay"]["status"], "skipped")
+
+    def test_a_conflicting_chain_over_clean_pairs_is_a_hazard_and_blocks_replay(self) -> None:
+        with tempfile.TemporaryDirectory() as parent:
+            corpus = h.build_corpus(Path(parent))
+            names = h.build_many(corpus, 3)
+            chain = {"outcome": "conflicted", "finalTree": None, "message": ""}
+            envelope = self.gate(names, corpus=corpus, patch={"baseline": {"chain": chain}})["envelope"]
+        self.assertEqual({pair["result"] for pair in envelope["baseline"]["pairs"]}, {"clean"})
+        self.assertEqual(envelope["status"], "hazards-found")
+        self.assertEqual(envelope["prepare"]["notPreparedReasons"], ["baseline-conflict"])
+        self.assertEqual(envelope["replay"]["skipReason"], "analysis-not-eligible")
+
+    def test_a_non_additive_change_with_complete_coverage_is_still_an_unknown_effect(self) -> None:
+        changes = [{"instanceId": "ind1", "changes": [{"status": "D", "path": "b.txt"}]},
+                   {"instanceId": "ind2", "changes": [{"status": "M", "path": "c.txt"}]}]
+        envelope = self.gate(["ind1", "ind2"], patch={"analyze": {"changes": changes}})["envelope"]
+        self.assertEqual({op["coverage"] for op in envelope["analysis"]["operations"]}, {"complete"})
+        self.assertEqual(envelope["analysis"]["unknownEffects"], [{"instanceId": "ind1", "paths": ["b.txt"]}])
+        self.assertEqual(envelope["status"], "hazards-found")
+        self.assertEqual(envelope["replay"]["skipReason"], "analysis-not-eligible")
+        self.assertIn("partial-coverage", envelope["prepare"]["notPreparedReasons"])
 
     def test_independent_candidate_against_a_conflicting_baseline_is_a_counterexample(self) -> None:
         analysis = self.gate(["ind1", "ind2"])["envelope"]["analysis"]
@@ -841,11 +868,34 @@ class DegradationTests(GateCase):
 
     @needs_merge_tree
     def test_changed_object_count_or_refs_is_reported_and_fails_the_baseline(self) -> None:
-        record = self.run_with(patch={"baseline": {"objectsDigestAfter": "changed"}})
-        envelope = record["envelope"]
-        self.assertEqual(envelope["baseline"]["repositoryStateCheck"]["objectCountUnchanged"], "false")
+        for patched, check in (("objectsDigestAfter", "objectCountUnchanged"), ("refsDigestAfter", "refsUnchanged")):
+            with self.subTest(patched=patched):
+                record = self.run_with(patch={"baseline": {patched: "changed"}})
+                envelope = record["envelope"]
+                state_check = envelope["baseline"]["repositoryStateCheck"]
+                self.assertEqual(state_check[check], "false")
+                self.assertEqual(sorted(k for k, v in state_check.items() if v == "false"), [check])
+                self.assertEqual(envelope["baseline"]["status"], "failed")
+                self.assertEqual(envelope["status"], "inconclusive")
+
+    @needs_merge_tree
+    def test_an_errored_baseline_pair_is_baseline_unavailable_never_both_clean(self) -> None:
+        errored = [{"left": "ind1", "right": "ind2", "result": "error", "conflictedPaths": [], "message": "merge-tree failed"}]
+        envelope = self.run_with(patch={"baseline": {"pairs": errored}})["envelope"]
         self.assertEqual(envelope["baseline"]["status"], "failed")
+        self.assertEqual(envelope["agreement"]["pairs"][0]["agreement"], "baseline-unavailable")
+        self.assertEqual(envelope["agreement"]["counts"]["both-clean"], 0)
+        self.assertEqual(envelope["agreement"]["counts"]["baseline-unavailable"], 1)
         self.assertEqual(envelope["status"], "inconclusive")
+
+    def test_analysis_identifiers_that_are_not_digests_are_inconclusive(self) -> None:
+        for patch in ({"analysisId": "not-a-digest"}, {"inputDigest": "sha256:short"}):
+            with self.subTest(patch=patch):
+                record = self.run_with(patch={"analyze": patch})
+                self.assertEqual(record["envelope"]["status"], "inconclusive")
+                self.assertEqual(record["envelope"]["phases"][1]["status"], "failed")
+                self.assertIn("digest", record["envelope"]["phases"][1]["detail"])
+                self.assertEqual(self.labels(record), ["validate", "analyze"])
 
     @needs_merge_tree
     def test_finalize_failures_keep_earlier_phases(self) -> None:

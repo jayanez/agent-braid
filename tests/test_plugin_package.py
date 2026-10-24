@@ -300,6 +300,44 @@ class WorkflowPackagingTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, 'tracked regular file'):
                 build_native_plugin.copy_tracked_workflows(root / 'w', root / 'out')
 
+    def test_tracked_file_below_a_directory_replaced_by_a_symlink_is_rejected(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            subprocess.run(['git', 'init', '-q', str(root)], check=True)
+            (root / 'w/sub').mkdir(parents=True)
+            (root / 'w/sub/a.js').write_text('export {}\n')
+            subprocess.run(['git', '-C', str(root), 'add', '-A'], check=True)
+            (root / 'outside').mkdir()
+            (root / 'outside/a.js').write_text('export const outside = 1\n')
+            shutil.rmtree(root / 'w/sub')
+            (root / 'w/sub').symlink_to(root / 'outside')
+            with self.assertRaisesRegex(ValueError, 'tracked regular file'):
+                build_native_plugin.copy_tracked_workflows(root / 'w', root / 'out')
+            self.assertFalse((root / 'out').exists())
+
+    def test_workflow_source_without_tracked_files_is_rejected(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            subprocess.run(['git', 'init', '-q', str(root)], check=True)
+            (root / 'w').mkdir()
+            (root / 'w/untracked.js').write_text('export {}\n')
+            with self.assertRaisesRegex(ValueError, 'no tracked files'):
+                build_native_plugin.copy_tracked_workflows(root / 'w', root / 'out')
+
+    def test_copy_preserves_the_executable_bit(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            subprocess.run(['git', 'init', '-q', str(root)], check=True)
+            (root / 'w').mkdir()
+            (root / 'w/run.js').write_text('export {}\n')
+            (root / 'w/run.js').chmod(0o755)
+            (root / 'w/plain.js').write_text('export {}\n')
+            (root / 'w/plain.js').chmod(0o644)
+            subprocess.run(['git', '-C', str(root), 'add', '-A'], check=True)
+            build_native_plugin.copy_tracked_workflows(root / 'w', root / 'out')
+            self.assertEqual((root / 'out/run.js').stat().st_mode & 0o777, 0o755)
+            self.assertEqual((root / 'out/plain.js').stat().st_mode & 0o777, 0o644)
+
     def test_tracked_but_deleted_workflow_file_is_rejected(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
@@ -403,6 +441,23 @@ class WorkflowPackagingTests(unittest.TestCase):
             (copy / 'ENGINEERING-ONLY.json').write_text('{}')
             with self.assertRaisesRegex(ValueError, 'engineering-only'):
                 build_native_plugin.verify_engineering_marker(copy)
+
+    def test_engineering_marker_content_must_match(self):
+        for label, change in (('releasable', {'releasable': True}), ('reason', {'reason': 'altered'})):
+            with self.subTest(label), tempfile.TemporaryDirectory() as directory:
+                copy = Path(directory) / 'plugin'
+                shutil.copytree(self.opt_in, copy)
+                marker = copy / 'ENGINEERING-ONLY.json'
+                marker.write_text(json.dumps({**json.loads(marker.read_text()), **change}))
+                with self.assertRaisesRegex(ValueError, 'engineering-only'):
+                    build_native_plugin.verify_engineering_marker(copy)
+
+    def test_assemble_verifies_the_engineering_marker(self):
+        with mock.patch.object(build_native_plugin, 'verify_engineering_marker',
+                               side_effect=ValueError('marker check ran')) as check:
+            with self.assertRaisesRegex(ValueError, 'marker check ran'):
+                self._build(Path(self.scratch.name) / 'marker-wiring', include_workflows=True)
+        check.assert_called_once()
 
     def test_opt_in_requires_an_existing_workflow_directory(self):
         with tempfile.TemporaryDirectory() as directory:

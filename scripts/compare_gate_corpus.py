@@ -91,6 +91,15 @@ def classify(analyzer: str | None, baseline: str) -> str:
     return "not-comparable"
 
 
+def find_counterexamples(rows: list[dict], base: str) -> list[dict]:
+    """Pairs the analyzer calls independent although the baseline reports a conflict."""
+    return [
+        {"case": row["case"], "left": row["left"]["commit"], "right": row["right"]["commit"], "base": base}
+        for row in rows if row["analyzer"]["classification"] == "independent-candidate"
+        and row["baseline"]["result"] == "conflicted"
+    ]
+
+
 def store_fingerprint(repo: Path) -> str:
     """Hash of refs and object-store file names, to show the repository store is unchanged."""
     refs = fixtures.git(repo, "for-each-ref").stdout
@@ -119,12 +128,7 @@ def compare(work: Path) -> dict:
             "classification": classification,
         })
     counts = {name: sum(row["classification"] == name for row in rows) for name in CLASSES}
-    counterexamples = [
-        {"case": row["case"], "left": row["left"]["commit"], "right": row["right"]["commit"],
-         "base": corpus.base}
-        for row in rows if row["analyzer"]["classification"] == "independent-candidate"
-        and row["baseline"]["result"] == "conflicted"
-    ]
+    counterexamples = find_counterexamples(rows, corpus.base)
     return {
         "evidenceVersion": "0.1.0-alpha", "task": "SPEC-052 T021", "requirement": "REQ-015 / SC-015",
         "executionAuthorization": False,
