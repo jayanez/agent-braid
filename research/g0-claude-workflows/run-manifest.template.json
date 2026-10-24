@@ -1,0 +1,43 @@
+{
+  "recordVersion": "agent-braid-claude-workflow-g0-run-manifest-template-1",
+  "frozen": false,
+  "note": "Template only. Copy outside the repository, fill every null before launch, hash the filled file before run 1. Never commit task prose that names private content.",
+  "repository": null,
+  "baseCommit": null,
+  "testCommand": null,
+  "toolVersions": {
+    "git": null,
+    "claudeCode": null,
+    "agentBraidCommit": null,
+    "agentBraidPluginVersion": null,
+    "clash": "not-installed"
+  },
+  "scriptSha256": {
+    "probe": null,
+    "scorer": null,
+    "workflowTemplate": null
+  },
+  "transcriptLayoutConfirmedOnFirstRun": null,
+  "runs": [
+    {
+      "runId": "r01",
+      "ordinal": 1,
+      "agentCount": 3,
+      "baseCommit": null,
+      "serialMergeOrder": [1, 2, 3],
+      "design": {
+        "overlap": true,
+        "contract": false,
+        "overlapRationale": null
+      },
+      "worktreeRoots": { "1": null, "2": null, "3": null },
+      "taskSet": [
+        { "ordinal": 1, "title": null, "instructions": null },
+        { "ordinal": 2, "title": null, "instructions": null },
+        { "ordinal": 3, "title": null, "instructions": null }
+      ],
+      "predictionFileSha256": null,
+      "branchHeads": null
+    }
+  ]
+}
