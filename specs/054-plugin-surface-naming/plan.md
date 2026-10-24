@@ -106,5 +106,6 @@ Decisions needing owner approval before or during implementation:
    `plugin-dist` remain separate owner decisions after T009.
 6. Timing of a future `agent-braid-tooling/v0.2` portable contract with the
    unprefixed prompt names and an alias window (D3); not scheduled here.
-7. GitHub tracking: issues, milestone membership and Project entries for
-   SPEC-054 are drafted locally only and need explicit approval to create.
+7. GitHub tracking: SPEC-054 is registered under M4.5 only in the local
+   `github-tracking.json` and SPEC-047 alignment inventory; remote issues,
+   milestone membership and Project entries need explicit approval to create.
