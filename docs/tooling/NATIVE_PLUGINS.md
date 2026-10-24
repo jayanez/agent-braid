@@ -10,12 +10,18 @@ consumer prerequisites. The Python installation remains available below.
 ## Published experimental marketplace
 
 The own GitHub marketplace is published on `plugin-dist`, with version
-`0.1.0-alpha.2` pinned by tag `agent-braid--v0.1.0-alpha.2` at
-`6649c73d088799201bf9ab6e030f258e346e8062`. Both authenticated native macOS
-setup/product-skill journeys and the native alpha.1 → alpha.2 update passed.
-The [release acceptance record](../../specs/046-native-ai-plugins/release-acceptance.md)
+`0.1.0-alpha.3` pinned by tag `agent-braid--v0.1.0-alpha.3` at
+`8ed7838a9b12c2dc1684a5e7c1e7cada7543c663`. For alpha.3, native macOS arm64
+observations with Claude Code 2.1.292 cover the isolated alpha.2 → alpha.3 update,
+doctor verification and a public marketplace install; Codex CLI, a Linux container
+and interactive skill use were not observed. The
+[alpha.3 acceptance record](../../specs/046-native-ai-plugins/release-acceptance-alpha3.md)
+states these limits. The earlier
+[alpha.2 record](../../specs/046-native-ai-plugins/release-acceptance.md)
 distinguishes interactive observations, emulated Linux controls and public remote
 installation from official directory approvals and human acceptance.
+Version `0.1.0-alpha.4` is an unpublished candidate and is not available from the
+marketplace.
 
 ## Install for your user
 
@@ -134,6 +140,16 @@ alpha.2, `plugin-status` reports `migration-required` until you preview and appl
 `plugin setup --telemetry off` (or `local`). No v0.1 backup is kept and earlier
 plugin versions refuse v0.2; after a rollback, remove `registry.json` from the
 Agent Braid home (results are kept) and register repositories again.
+
+Version 0.1.0-alpha.4 is an **unpublished candidate** (SPEC-054, ADR 0030). It
+removes the plugin MCP prompts (`agent-braid-plugin/v0.2`) and renames the packaged
+skills to unprefixed names, so skill invocations change for Claude Code; the
+qualified Codex invocation name has not yet been observed. The registry stays
+`agent-braid-plugin-registry/v0.2` and registered workspaces, results and telemetry
+consent are untouched, so no migration step is needed after updating from alpha.3.
+Tool ids and permission rules are unchanged, and no aliases for the old skill names
+are provided. To roll back, reinstall `0.1.0-alpha.3` from tag
+`agent-braid--v0.1.0-alpha.3`; the registry and results are accepted unchanged.
 
 ## Storage, updates and removal
 

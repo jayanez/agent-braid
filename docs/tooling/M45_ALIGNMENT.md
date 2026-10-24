@@ -9,7 +9,7 @@ engineering acknowledgment do not supply native evidence or final acceptance.
 T017/T018/T010 remain open. This later documentary lot changes no product,
 consent, registration, authority, historical record or task state.
 
-**Disposition:** source integration candidate; operational admission withheld and M4.5 open. Nine source specs, 120 task obligations (78 checked, 42 unchecked), 3 historically closed parents and 6 open parents: 129 desired records; draft SPEC-054 adds the plugin surface naming policy.
+**Disposition:** source integration candidate; operational admission withheld and M4.5 open. Nine source specs, 120 task obligations (85 checked, 35 unchecked), 3 historically closed parents and 6 open parents: 129 desired records; draft SPEC-054 adds the plugin surface naming policy.
 
 Counts are derived from `sync_github_tracking.source_inventory`, not remote issue closure. The [machine-readable map](../../specs/047-local-technical-telemetry/alignment.json) records typed dependencies. Original portfolio: 60 original obligations plus 19 auxiliary tasks. The combined portfolio adds 15 SPEC-046 plugin tasks, ten SPEC-047 telemetry tasks and pending SPEC-044/T017/T018; existing IDs and original satisfied criteria are preserved. Checked implementation/documentary tasks record their stated bounded evidence only.
 

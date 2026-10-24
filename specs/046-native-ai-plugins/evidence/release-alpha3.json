@@ -1,0 +1,33 @@
+{
+  "limits": [
+    "Observed on macOS arm64 with Claude Code 2.1.292 only",
+    "Codex CLI and a Linux container were not observed for alpha.3",
+    "Interactive skill use was not covered for alpha.3",
+    "Observations are agent-operated engineering checks, not human usability rating, official approval or scientific acceptance"
+  ],
+  "notObserved": [
+    "Codex CLI native installation or update",
+    "Linux container installation or update",
+    "Interactive skill use"
+  ],
+  "observations": [
+    "reproduce_native_plugin native-mac: 19 commands passed",
+    "Isolated alpha.2 to alpha.3 update passed",
+    "Doctor verified the installed package",
+    "Public marketplace install of alpha.3 verified",
+    "Local telemetry consent is off by default"
+  ],
+  "package": {
+    "files": 7806,
+    "fileBytes": 392204845,
+    "inventorySha256": "61a4dcdafebb3a7f6c3495783532df0c1a4a14b6c0ddd5f3d6891e206c3a37d7",
+    "sourceArchive": "sources/agent-braid-0.1.0-alpha.3-source.tar.gz",
+    "sourceArchiveSha256": "60ca57b10c03718749c3f5ac7bdb1296bae84bd1b86a1d8655bb9158dcfc1502",
+    "version": "0.1.0-alpha.3"
+  },
+  "platform": {"host": "Claude Code 2.1.292", "os": "macOS arm64"},
+  "publishedDistribution": "8ed7838a9b12c2dc1684a5e7c1e7cada7543c663",
+  "publishedTag": "agent-braid--v0.1.0-alpha.3",
+  "tagObject": "4579ac71b48a3a8e98a8376d6c1a88e428c52d00",
+  "verification": "Hashes, file count and tag object re-derived from a fresh public clone of the tag on 2026-10-24; the observations above are as reported by the owner and are not re-run here."
+}

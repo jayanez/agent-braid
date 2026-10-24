@@ -14,7 +14,7 @@ G0-gated transcript trace adapter. Both are draft planning; the current plugin
 ships no workflow.
 
 **Current integration — 2026-10-20:** the combined M4.5 source portfolio has nine
-specs and 120 tasks (78 checked, 42 open), three historically closed parents and
+specs and 120 tasks (85 checked, 35 open), three historically closed parents and
 six open parents, including draft SPEC-054 plugin surface naming. [Telemetry SPEC-047](../../specs/047-local-technical-telemetry/spec.md)
 is default-off. Its [existing Luna review and integration provenance](../../specs/047-local-technical-telemetry/integration-review.md)
 are distinct from human/architectural acceptance and native admission. Pilot
