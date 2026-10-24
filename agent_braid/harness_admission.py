@@ -72,7 +72,7 @@ def _integer(value: Any, minimum: int, maximum: int) -> bool:
     return type(value) is int and minimum <= value <= maximum
 
 
-def _directory(path: Path, *, private: bool,
+def open_directory(path: Path, *, private: bool,
                lineage: list[tuple[int, int]] | None = None) -> int:
     """Open without symlinks, recording actual dev/inode ancestry when requested."""
     _require(path.is_absolute() and path == Path(os.path.normpath(path)), "unsafe-root")
@@ -99,7 +99,7 @@ def _directory(path: Path, *, private: bool,
         raise
 
 
-def _file_info(fd: int) -> os.stat_result:
+def check_record_file(fd: int) -> os.stat_result:
     info = os.fstat(fd)
     _require(stat.S_ISREG(info.st_mode) and info.st_uid == os.getuid() and
              stat.S_IMODE(info.st_mode) == 0o600 and info.st_nlink == 1,
@@ -107,10 +107,10 @@ def _file_info(fd: int) -> os.stat_result:
     return info
 
 
-def _read_record(directory: int, name: str) -> tuple[dict, bytes]:
+def read_record(directory: int, name: str) -> tuple[dict, bytes]:
     fd = os.open(name, os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK, dir_fd=directory)
     try:
-        info = _file_info(fd)
+        info = check_record_file(fd)
         _require(0 < info.st_size <= MAX_RECORD_BYTES, "record-budget-exceeded")
         raw = os.read(fd, MAX_RECORD_BYTES + 1)
         _require(len(raw) == info.st_size and len(raw) <= MAX_RECORD_BYTES,
@@ -198,7 +198,7 @@ def _roots(scope: OperatorScope) -> dict[str, int]:
             if name == "lab_root":
                 # Reservation precedes import: inspect a missing final destination
                 # through its no-follow existing parent without creating it.
-                parent = _directory(path.parent, private=False, lineage=lineage)
+                parent = open_directory(path.parent, private=False, lineage=lineage)
                 try:
                     try:
                         os.stat(path.name, dir_fd=parent, follow_symlinks=False)
@@ -208,12 +208,12 @@ def _roots(scope: OperatorScope) -> dict[str, int]:
                         parent = -1
                     else:
                         lineage.clear()
-                        opened[name] = _directory(path, private=False, lineage=lineage)
+                        opened[name] = open_directory(path, private=False, lineage=lineage)
                 finally:
                     if parent >= 0:
                         os.close(parent)
             else:
-                opened[name] = _directory(
+                opened[name] = open_directory(
                     path, private=name in {"operator_root", "reservation_root"}, lineage=lineage)
         # Lexical checks alone miss case/Unicode aliases on case-insensitive filesystems.
         # Compare actual leaf identities against every other's entire opened lineage.
@@ -237,7 +237,7 @@ def _roots(scope: OperatorScope) -> dict[str, int]:
         raise
 
 
-def _validate_receipt(value: dict, name: str) -> None:
+def validate_receipt(value: dict, name: str) -> None:
     _require(set(value) == _RECEIPT_KEYS and value["format"] == RECEIPT_FORMAT and
              type(value["id"]) is str and _ID.fullmatch(value["id"]) is not None and
              name == value["id"] + ".json" and value["executionAuthorization"] is False,
@@ -260,8 +260,8 @@ def _check_store(directory: int, scope: OperatorScope, record: dict) -> None:
             _require(entry.name.endswith(".json") and
                      _ID.fullmatch(entry.name[:-5]) is not None,
                      "corrupt-reservation-store")
-            previous, raw = _read_record(directory, entry.name)
-            _validate_receipt(previous, entry.name)
+            previous, raw = read_record(directory, entry.name)
+            validate_receipt(previous, entry.name)
             count += 1
             reserved += previous["reservedJournalBytes"]
             actual += len(raw)
@@ -278,7 +278,7 @@ def _reserve(directory: int, scope: OperatorScope, record: dict) -> Reservation:
     lock = os.open(".lock", os.O_RDWR | os.O_CREAT | os.O_NOFOLLOW | os.O_NONBLOCK,
                    0o600, dir_fd=directory)
     try:
-        _file_info(lock)
+        check_record_file(lock)
         _require(os.fstat(lock).st_size == 0, "corrupt-reservation-store")
         try:
             fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
@@ -290,7 +290,7 @@ def _reserve(directory: int, scope: OperatorScope, record: dict) -> Reservation:
         fd = os.open(record["id"] + ".json", os.O_WRONLY | os.O_CREAT | os.O_EXCL | os.O_NOFOLLOW,
                      0o600, dir_fd=directory)
         try:
-            _file_info(fd)
+            check_record_file(fd)
             remaining = memoryview(raw)
             while remaining:
                 written = os.write(fd, remaining)
@@ -330,7 +330,7 @@ def reserve_admission(raw_manifest: bytes, *, expected_manifest_sha256: str,
         _require(limits["maxJournalBytes"] <= scope.max_reserved_journal_bytes,
                  "reservation-budget-exhausted")
         opened = _roots(scope)
-        admission, raw = _read_record(opened["operator_root"], admission_id + ".json")
+        admission, raw = read_record(opened["operator_root"], admission_id + ".json")
         _require(set(admission) == _ADMISSION_KEYS and admission["format"] == FORMAT and
                  admission["id"] == admission_id and admission["issuer"] == scope.issuer and
                  admission["adoptedProfileSha256"] == scope.adopted_profile_sha256 and

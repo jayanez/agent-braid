@@ -33,7 +33,7 @@ from typing import Any
 from .harness_manifest import HarnessManifest
 from .harness_observation import (
     MAX_ARTIFACT_BYTES, MAX_ARTIFACTS, MAX_EVENTS, MAX_SEQ, ExportInventory, Observation,
-    ObservationError, _is_relative, observe)
+    ObservationError, is_relative, observe)
 from .system_one import InvalidDecision, canonical, parse_json
 
 QUALIFICATION_FORMAT = "braid-harness-containment-qualification/v0.1"
@@ -237,7 +237,7 @@ def _collect(workdir: Path) -> tuple[dict[str, bytes], bool]:
                     with os.fdopen(fd, "rb") as stream:
                         data = stream.read(MAX_ARTIFACT_BYTES + 1)
                     if len(files) >= MAX_ARTIFACTS or len(data) > MAX_ARTIFACT_BYTES \
-                            or not _is_relative(rel):
+                            or not is_relative(rel):
                         complete = False
                     else:
                         files[rel] = data
@@ -340,7 +340,7 @@ def run_fixture(manifest: HarnessManifest, fixture: bytes, *, backend: Containme
     _require(limits.max_output_bytes <= manifest_limits["maxStageOutputBytes"], "invalid-limits")
     _require(isinstance(inputs, Mapping) and len(inputs) <= min(MAX_FIXTURE_FILES, manifest_limits["maxFiles"])
              and len({str(k).casefold() for k in inputs}) == len(inputs)
-             and all(_is_relative(k) and type(v) is bytes
+             and all(is_relative(k) and type(v) is bytes
                      and len(v) <= min(MAX_ARTIFACT_BYTES, manifest_limits["maxFileBytes"])
                      for k, v in inputs.items()), "invalid-inputs")
     source = "fixture" if label == "simulated" else "host"

@@ -31,7 +31,7 @@ MAX_TIME = 1 << 40
 MAX_COUNT = 65_536
 REDACTED = "[REDACTED]"
 TERMINALS = ("completed", "failed", "interrupted", "refused")
-_ALL_TERMINALS = (*TERMINALS, "unobserved")
+ALL_TERMINALS = (*TERMINALS, "unobserved")
 _KINDS = frozenset({"start", "message", "tool", "effect", "terminal", "error"})
 _EFFECTS = frozenset({"create", "write", "delete", "process", "network"})
 _RESERVED = frozenset({"seq", "kind"})
@@ -83,14 +83,14 @@ def _strings(value: Any):
             yield from _strings(child)
 
 
-def _is_relative(path: Any) -> bool:
+def is_relative(path: Any) -> bool:
     return (_text(path) and path != "" and not path.startswith("/") and "\\" not in path
             and "\x00" not in path and all(p not in ("", ".", "..") for p in path.split("/"))
             and len(path.split("/")) <= 8 and len(path) <= 200)
 
 
 def _relative(path: Any) -> None:
-    _require(_is_relative(path), "invalid-path")
+    _require(is_relative(path), "invalid-path")
 
 
 # --- export inventory -------------------------------------------------------------
@@ -191,7 +191,7 @@ def _normalize_events(events: Any, expected: int | None, inventory: ExportInvent
         if valid and kind == "terminal":
             valid = event.get("state") in TERMINALS
         if valid and kind == "effect":
-            valid = event.get("effect") in _EFFECTS and ("path" not in event or _is_relative(event["path"]))
+            valid = event.get("effect") in _EFFECTS and ("path" not in event or is_relative(event["path"]))
         if not valid:
             malformed += 1
         elif seq in accepted:
@@ -327,7 +327,7 @@ def _validate_record(v: Any) -> None:
     for name in ("manifestSha256", "rawEventsSha256", "normalizedEventsSha256"):
         _hash(v[name])
     _require(v["source"] in ("fixture", "host") and v["state"] in ("retained", "purged")
-             and v["terminal"] in _ALL_TERMINALS and v["executionAuthorization"] is False
+             and v["terminal"] in ALL_TERMINALS and v["executionAuthorization"] is False
              and type(v["artifactsObserved"]) is bool, "invalid-observation")
     _require(_int(v["observedAt"], 0, MAX_TIME) and _int(v["retainUntil"], 1, MAX_TIME)
              and v["retainUntil"] > v["observedAt"], "invalid-observation")

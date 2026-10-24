@@ -26,6 +26,7 @@ from tests.test_harness_lab import make_inventory, manifest_for
 NOW = 1_800_000_000
 REPO = Path(__file__).resolve().parent.parent
 BOUNDARIES = ("after-start", "after-checkpoint", "after-run", "after-terminal")
+TORN = ("torn-start", "torn-cp01", "torn-end")
 
 
 def fixture_bytes(effects: str, pidfile: str, sleep: int = 0) -> bytes:
@@ -52,6 +53,14 @@ def drive(boundary: str, root: str, effects: str, pidfile: str, sleep: int) -> N
     fixture = fixture_bytes(effects, pidfile, sleep)
     manifest = manifest_for(fixture)
     path, kill = Path(root), lambda: os.kill(os.getpid(), signal.SIGKILL)
+    if boundary.startswith("torn-"):  # die after the temp record is written, before publication
+        real_rename, target = os.rename, f".{boundary[5:]}"
+
+        def rename(src, dst, **kwargs):
+            if target in str(dst):
+                kill()
+            return real_rename(src, dst, **kwargs)
+        os.rename = rename
     journal.begin_attempt(path, manifest, attempt_id="attempt-1",
                           reservation=reservation_for(manifest), now=NOW)
     if boundary == "after-start":
@@ -153,6 +162,29 @@ class KillTests(Base):
                              now=NOW + 1000)
                 self.assertEqual(self.effect_count(), 0 if boundary in ("after-start",
                                  "after-checkpoint") else 1)
+
+    def test_sigkill_between_write_and_publish_leaves_a_recoverable_journal(self):
+        # (boundary, attempt durable?, fixture effects, status after kill)
+        cases = {"torn-start": (False, 0), "torn-cp01": (True, 0), "torn-end": (True, 1)}
+        for boundary in TORN:
+            with self.subTest(boundary=boundary):
+                self.tearDown(), self.setUp()
+                proc = self.spawn(boundary)
+                self.assertEqual(proc.wait(timeout=60), -signal.SIGKILL)
+                durable, effects = cases[boundary]
+                self.assertTrue(any(n.startswith(".tmp-") for n in os.listdir(self.root)))
+                self.assertEqual(self.effect_count(), effects)
+                if not durable:  # nothing was published, so nothing was consumed
+                    self.refuses("unknown-attempt", self.inspect)
+                    self.assertEqual(self.begin().phase, "started")
+                    continue
+                self.assertEqual(self.inspect().state, None)
+                reconciled = journal.reconcile_attempt(self.root, self.manifest,
+                                                       attempt_id="attempt-1", now=NOW)
+                self.assertEqual((reconciled.state, reconciled.outcome), ("interrupted", "unknown"))
+                self.assertFalse(any(n.startswith(".tmp-") for n in os.listdir(self.root)))
+                self.refuses("admission-consumed", self.begin, "attempt-2")
+                self.assertEqual(self.effect_count(), effects)
 
     def test_killed_while_the_fixture_child_runs(self):
         fixture = fixture_bytes(self.effects, self.pidfile, sleep=30)
@@ -336,6 +368,29 @@ class StoreIntegrityTests(Base):
         os.unlink(self.root / "attempt-1.cp01.json")
         (self.root / "stray.txt").write_text("x")
         self.refuses("corrupt-journal", self.inspect)
+
+    def test_leftover_temp_files_are_ignored_counted_and_swept(self):
+        self.begin()
+        (self.root / ".tmp-0123456789abcdef").write_bytes(b"partial")
+        self.assertEqual(self.inspect().phase, "started")
+        (self.root / ".tmp-nothex").write_bytes(b"x")  # not our naming: foreign
+        self.refuses("corrupt-journal", self.inspect)
+        os.unlink(self.root / ".tmp-nothex")
+        journal.reconcile_attempt(self.root, self.manifest, attempt_id="attempt-1", now=NOW)
+        self.assertEqual([n for n in os.listdir(self.root) if n.startswith(".tmp-")], [])
+        for index in range(journal.MAX_ENTRIES + 1):
+            (self.root / f".tmp-{index:016x}").write_bytes(b"x")
+        self.refuses("journal-budget-exhausted", self.inspect)
+
+    def test_torn_published_record_still_refuses(self):
+        self.begin()
+        journal.checkpoint(self.root, self.manifest, attempt_id="attempt-1", completed=[],
+                           pending=[], artifacts={}, now=NOW)
+        journal.reconcile_attempt(self.root, self.manifest, attempt_id="attempt-1", now=NOW)
+        (self.root / "attempt-1.cp01.json").write_bytes(b"")  # media damage mid-chain
+        self.refuses("corrupt-journal", self.inspect)
+        self.refuses("corrupt-journal", journal.reconcile_attempt, self.root, self.manifest,
+                     attempt_id="attempt-1", now=NOW)
 
     def test_gap_orphan_and_post_end_records_refuse(self):
         self.begin()

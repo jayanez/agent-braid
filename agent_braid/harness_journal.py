@@ -14,6 +14,15 @@ the fixture happened to finish. A supplied manifest that differs from the one bo
 refuses as drift. Records are evidence, never authorization: ``executionAuthorization`` is
 false everywhere. Hashes are not signatures; same-UID tampering that rewrites a whole chain is
 excluded, as is fsync loss on storage that ignores it.
+
+Publication is atomic: a record is written and fsynced under a ``.tmp-<hex>`` name and renamed
+to its final name while the journal lock is held, so a kill leaves either no record or a whole
+one. Leftover temp files are ignored by readers (and counted against the entry budget) and swept
+by the next locked write. A damaged *published* record still refuses; nothing is repaired.
+
+Coupling: the storage helpers (``open_directory``, ``read_record``, ``check_record_file``,
+``validate_receipt``) come from ``harness_admission`` and ``ALL_TERMINALS`` / ``is_relative``
+from ``harness_observation``, so the private-store rules stay defined in one place.
 """
 from __future__ import annotations
 
@@ -28,12 +37,12 @@ import re
 from typing import Any
 
 from .harness_admission import (
-    MAX_RECORD_BYTES, AdmissionError, Reservation, _directory, _file_info, _read_record,
-    _validate_receipt)
+    MAX_RECORD_BYTES, AdmissionError, Reservation, open_directory, check_record_file, read_record,
+    validate_receipt)
 from .harness_lab import ContainmentBackend, FixtureLimits, LabResult, run_fixture
 from .harness_manifest import HarnessManifest
 from .harness_observation import (
-    _ALL_TERMINALS, MAX_ARTIFACTS, MAX_TIME, ExportInventory, _is_relative)
+    ALL_TERMINALS, MAX_ARTIFACTS, MAX_TIME, ExportInventory, is_relative)
 from .system_one import InvalidDecision, canonical
 
 FORMAT = "braid-harness-journal/v0.1"
@@ -43,7 +52,9 @@ MAX_WORK_ITEMS = 16
 MAX_ENTRIES = 1 + MAX_ATTEMPTS * (MAX_CHECKPOINTS + 2)
 _HASH = re.compile(r"[0-9a-f]{64}\Z")
 _ID = re.compile(r"[a-z0-9][a-z0-9-]{0,63}\Z")
+_TEMP = re.compile(r"\.tmp-[0-9a-f]{16}\Z")
 _NAME = re.compile(r"([a-z0-9][a-z0-9-]{0,63})\.(start|cp[0-9]{2}|end)\.json\Z")
+_FILE_KINDS = {"start": ("start",), "cp": ("checkpoint",), "end": ("terminal", "reconciled")}
 _COMMON = {"format", "kind", "attemptId", "manifestSha256", "at", "prevSha256",
            "executionAuthorization"}
 _EXTRA = {
@@ -130,7 +141,7 @@ class AttemptStatus:
 def _open_root(root: Any) -> int:
     _require(isinstance(root, Path), "unsafe-root")
     try:
-        return _directory(root, private=True)
+        return open_directory(root, private=True)
     except (OSError, AdmissionError):
         raise JournalError("unsafe-root") from None
 
@@ -145,7 +156,7 @@ class _Locked:
         self.directory = _open_root(self.root)
         try:
             self.lock = self._open_lock()
-            _file_info(self.lock)
+            check_record_file(self.lock)
             _require(os.fstat(self.lock).st_size == 0, "corrupt-journal")
             try:
                 fcntl.flock(self.lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
@@ -161,15 +172,17 @@ class _Locked:
 
     def _open_lock(self) -> int:
         # Concurrent O_CREAT of one name can transiently report ENOENT on some filesystems
-        # (observed on APFS); the file is never removed, so a bounded retry is safe.
-        for attempt in range(4):
+        # (observed on APFS); the file is never removed, so a few retries are safe.
+        for _ in range(3):
             try:
-                return os.open(".lock", os.O_RDWR | os.O_CREAT | os.O_NOFOLLOW | os.O_NONBLOCK,
-                               0o600, dir_fd=self.directory)
+                return self._create_lock()
             except FileNotFoundError:
-                if attempt == 3:
-                    raise
-        raise AssertionError("unreachable")
+                continue
+        return self._create_lock()
+
+    def _create_lock(self) -> int:
+        return os.open(".lock", os.O_RDWR | os.O_CREAT | os.O_NOFOLLOW | os.O_NONBLOCK,
+                       0o600, dir_fd=self.directory)
 
     def __exit__(self, *exc: Any) -> None:
         for fd in (self.lock, self.directory):
@@ -185,9 +198,7 @@ def _validate_record(kind_name: str, record: Any, attempt_id: str) -> None:
     _require(set(record) == _COMMON | _EXTRA[kind] and record["format"] == FORMAT
              and record["attemptId"] == attempt_id and _hash(record["manifestSha256"])
              and record["executionAuthorization"] is False and _int(record["at"], 0, MAX_TIME)
-             and (kind_name == "start") == (kind == "start")
-             and (kind_name.startswith("cp") == (kind == "checkpoint"))
-             and (kind_name == "end") == (kind in ("terminal", "reconciled"))
+             and kind in _FILE_KINDS[kind_name[:2] if kind_name.startswith("cp") else kind_name]
              and (record["prevSha256"] is None) == (kind == "start")
              and (kind == "start" or _hash(record["prevSha256"])), "corrupt-journal")
     if kind == "start":
@@ -203,7 +214,7 @@ def _validate_record(kind_name: str, record: Any, attempt_id: str) -> None:
                  and not set(record["completed"]) & set(record["pending"])
                  and _artifacts(record["artifacts"]), "corrupt-journal")
     elif kind == "terminal":
-        _require(record["state"] in _ALL_TERMINALS and _hash(record["observationSha256"])
+        _require(record["state"] in ALL_TERMINALS and _hash(record["observationSha256"])
                  and record["containment"] in ("simulated", "native")
                  and type(record["settled"]) is bool and type(record["cleaned"]) is bool,
                  "corrupt-journal")
@@ -219,7 +230,7 @@ def _work(value: Any) -> bool:
 
 def _artifacts(value: Any) -> bool:
     return (type(value) is dict and len(value) <= MAX_ARTIFACTS
-            and all(_is_relative(k) and _hash(v) for k, v in value.items()))
+            and all(is_relative(k) and _hash(v) for k, v in value.items()))
 
 
 @dataclass(frozen=True)
@@ -235,6 +246,9 @@ class _Attempt:
     def end(self) -> dict | None:
         last = self.records[-1]
         return last if last["kind"] in ("terminal", "reconciled") else None
+
+    def extended(self, record: dict, raw: bytes) -> "_Attempt":
+        return _Attempt(self.records + (record,), self.raws + (raw,))
 
     @property
     def last_sha256(self) -> str:
@@ -266,7 +280,7 @@ def _load(directory: int) -> dict[str, _Attempt]:
     with os.scandir(directory) as entries:
         for index, entry in enumerate(entries):
             _require(index < MAX_ENTRIES, "journal-budget-exhausted")
-            if entry.name == ".lock":
+            if entry.name == ".lock" or _TEMP.fullmatch(entry.name):
                 continue
             match = _NAME.fullmatch(entry.name)
             _require(match is not None, "corrupt-journal")
@@ -283,7 +297,7 @@ def _load(directory: int) -> dict[str, _Attempt]:
         records, raws = [], []
         for key in order:
             try:
-                record, raw = _read_record(directory, group[key])
+                record, raw = read_record(directory, group[key])
             except (OSError, InvalidDecision, AdmissionError):
                 raise JournalError("corrupt-journal") from None
             _validate_record(key, record, attempt_id)
@@ -297,27 +311,43 @@ def _load(directory: int) -> dict[str, _Attempt]:
     return attempts
 
 
+def _sweep_temp(directory: int) -> None:
+    """Remove temp files of killed writers; the caller holds the lock, so none is live."""
+    with os.scandir(directory) as entries:
+        stale = [e.name for e in entries if _TEMP.fullmatch(e.name)]
+    for name in stale:
+        os.unlink(name, dir_fd=directory)
+
+
 def _append(directory: int, attempts: Mapping[str, _Attempt], name: str, record: dict,
-            budget: int) -> None:
+            budget: int) -> bytes:
+    """Publish ``record`` atomically as ``name`` and return its canonical bytes."""
     raw = canonical(record)
     used = sum(len(r) for a in attempts.values() for r in a.raws)
     _require(len(raw) <= MAX_RECORD_BYTES and used + len(raw) <= budget, "journal-budget-exhausted")
+    _sweep_temp(directory)
     try:
-        fd = os.open(name, os.O_WRONLY | os.O_CREAT | os.O_EXCL | os.O_NOFOLLOW, 0o600,
-                     dir_fd=directory)
-    except FileExistsError:
-        raise JournalError("record-exists") from None
+        os.stat(name, dir_fd=directory, follow_symlinks=False)
+    except FileNotFoundError:
+        pass
+    else:
+        raise JournalError("record-exists")
+    temp = f".tmp-{os.urandom(8).hex()}"
+    fd = os.open(temp, os.O_WRONLY | os.O_CREAT | os.O_EXCL | os.O_NOFOLLOW, 0o600,
+                 dir_fd=directory)
     try:
-        _file_info(fd)
+        check_record_file(fd)
         remaining = memoryview(raw)
         while remaining:
             written = os.write(fd, remaining)
             _require(written > 0, "journal-io-failed")
             remaining = remaining[written:]
         os.fsync(fd)
-        os.fsync(directory)
     finally:
         os.close(fd)
+    os.rename(temp, name, src_dir_fd=directory, dst_dir_fd=directory)
+    os.fsync(directory)
+    return raw
 
 
 def _record(kind: str, attempt: _Attempt | None, attempt_id: str, manifest_sha256: str, now: int,
@@ -353,7 +383,7 @@ def _reservation(reservation: Any) -> dict:
     _require(isinstance(reservation, Reservation), "invalid-reservation")
     try:
         value = reservation.to_dict()
-        _validate_receipt(value, f"{value.get('id')}.json")
+        validate_receipt(value, f"{value.get('id')}.json")
     except (InvalidDecision, AdmissionError):
         raise JournalError("invalid-reservation") from None
     return value
@@ -386,9 +416,9 @@ def begin_attempt(root: Path, manifest: HarnessManifest, *, attempt_id: str,
                          fixtureSha256=manifest.bindings["fixture"],
                          admissionSha256=reservation.sha256, reservationId=receipt["id"],
                          expiresAt=receipt["expiresAt"], budgetBytes=receipt["reservedJournalBytes"])
-        _append(directory, attempts, f"{attempt_id}.start.json", record,
-                receipt["reservedJournalBytes"])
-        return _Attempt((record,), (canonical(record),)).status()
+        raw = _append(directory, attempts, f"{attempt_id}.start.json", record,
+                      receipt["reservedJournalBytes"])
+        return _Attempt((record,), (raw,)).status()
 
 
 @_domain
@@ -409,9 +439,9 @@ def checkpoint(root: Path, manifest: HarnessManifest, *, attempt_id: str, comple
         _require(seq <= MAX_CHECKPOINTS, "checkpoint-budget-exhausted")
         record = _record("checkpoint", attempt, attempt_id, manifest.sha256, now, seq=seq,
                          completed=done, pending=todo, artifacts=files, permissionRenewed=False)
-        _append(directory, attempts, f"{attempt_id}.cp{seq:02d}.json", record,
-                attempt.start["budgetBytes"])
-        return _Attempt(attempt.records + (record,), attempt.raws + (canonical(record),)).status()
+        raw = _append(directory, attempts, f"{attempt_id}.cp{seq:02d}.json", record,
+                      attempt.start["budgetBytes"])
+        return attempt.extended(record, raw).status()
 
 
 @_domain
@@ -432,8 +462,9 @@ def finish_attempt(root: Path, manifest: HarnessManifest, *, attempt_id: str, re
                          containment=result.containment, settled=result.settled,
                          cleaned=result.cleaned)
         _validate_record("end", record, attempt_id)
-        _append(directory, attempts, f"{attempt_id}.end.json", record, attempt.start["budgetBytes"])
-        return _Attempt(attempt.records + (record,), attempt.raws + (canonical(record),)).status()
+        raw = _append(directory, attempts, f"{attempt_id}.end.json", record,
+                      attempt.start["budgetBytes"])
+        return attempt.extended(record, raw).status()
 
 
 @_domain
@@ -464,8 +495,9 @@ def reconcile_attempt(root: Path, manifest: HarnessManifest, *, attempt_id: str,
             return attempt.status()
         record = _record("reconciled", attempt, attempt_id, manifest.sha256, now,
                          state="interrupted", outcome="unknown", cost="unknown")
-        _append(directory, attempts, f"{attempt_id}.end.json", record, attempt.start["budgetBytes"])
-        return _Attempt(attempt.records + (record,), attempt.raws + (canonical(record),)).status()
+        raw = _append(directory, attempts, f"{attempt_id}.end.json", record,
+                      attempt.start["budgetBytes"])
+        return attempt.extended(record, raw).status()
 
 
 def run_journaled(root: Path, manifest: HarnessManifest, fixture: bytes, *, attempt_id: str,
