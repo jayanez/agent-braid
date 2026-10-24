@@ -20,6 +20,10 @@ A POSIX install.sh is an alternative frontend to native user-scoped managers, no
 
 uvx/pipx require another user prerequisite; frozen Python executables change sys.executable semantics used by current runners; a remote MCP changes privacy, transport and execution scope. None is adopted. Bundled runtimes cost download/storage and require per-platform conformance, provenance and license inventories. Directory size/binary policies can block candidacy independently of engineering delivery.
 
+## Related decisions
+
+[ADR 0029](0029-claude-dynamic-workflows.md) proposes a Claude-only `workflows/` component; it is not adopted and this record is otherwise unchanged.
+
 ## Compatibility and review
 
 Legacy CLI/MCP/wheel contracts and historical snapshots remain unchanged. SPEC-046 is additive; SPEC-039/040/042 acceptance is not widened. No constitutional amendment is proposed. Luna technical review, real-host observations, founder acceptance and public release retain separate records.
