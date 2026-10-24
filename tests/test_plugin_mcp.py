@@ -100,6 +100,7 @@ class PluginSdkTests(unittest.IsolatedAsyncioTestCase):
     async def test_actual_sdk_connection_preserves_both_protocols_and_workspace_resources(self):
         import sys
         from mcp import Client
+        from mcp.shared.exceptions import MCPError
         from mcp.client.stdio import StdioServerParameters
         self.install()
         identifier = load(self.home)['workspaces'][0]['workspaceId']
@@ -129,13 +130,10 @@ class PluginSdkTests(unittest.IsolatedAsyncioTestCase):
                 self.assertEqual(refused.structured_content['schemaVersion'], 'agent-braid-plugin/v0.2')
                 self.assertEqual(definitions['analyze-work'].output_schema['properties']['schemaVersion'], {'const': 'agent-braid-plugin/v0.2'})
                 self.assertIsNone(client.server_capabilities.prompts)
-                try:
-                    listed = (await client.list_prompts()).prompts
-                except Exception:
-                    listed = []
-                self.assertEqual(listed, [])
+                with self.assertRaisesRegex(MCPError, 'Method not found'):
+                    await client.list_prompts()
                 before = sorted(str(r.uri) for r in (await client.list_resources()).resources)
-                with self.assertRaises(Exception):
+                with self.assertRaisesRegex(MCPError, 'Method not found'):
                     await client.get_prompt('agent-braid-analyze')
                 after = sorted(str(r.uri) for r in (await client.list_resources()).resources)
                 self.assertEqual(before, after)
