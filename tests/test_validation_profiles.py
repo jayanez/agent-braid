@@ -36,6 +36,24 @@ class ValidationProfileTests(unittest.TestCase):
                 self.assertFalse(plan.impact.spec_kit_integration)
                 self.assertTrue(plan.impact.boundaries)
 
+    def test_claude_workflow_gate_has_named_sensitive_domain_with_host_boundary(self):
+        for path in ("integrations/agent-braid/plugin/workflows/braid-gate.js",
+                     "tests/test_claude_workflow_gate.py",
+                     "tests/claude_workflow_gate_helpers.py",
+                     "tests/fixtures/claude_workflow_gate/harness.mjs",
+                     "docs/tooling/CLAUDE_WORKFLOWS.md"):
+            with self.subTest(path=path):
+                plan = validation.build_plan([path], "quick")
+                self.assertIn("claude-workflow-gate", plan.impact.domains)
+                self.assertEqual(plan.effective_profile, "sensitive")
+                self.assertIn("full-tests", plan.commands)
+                self.assertFalse(plan.impact.unknown_paths)
+                boundary = " ".join(plan.impact.boundaries).lower()
+                self.assertIn("host verification", boundary)
+                self.assertIn("release acceptance", boundary)
+        rule = next(item for item in validation.RULES if item.domain == "claude-workflow-gate")
+        self.assertEqual(rule.commands, ("full-tests",))
+
     def test_forecasting_has_owned_sensitive_domain_and_separate_model_gates(self):
         for path in ('agent_braid/forecast_worker.py','tests/test_forecast_mcp.py','scripts/reproduce_forecast_cpu.py','docs/forecast/OPERATIONS.md'):
             plan=validation.build_plan([path],'quick')

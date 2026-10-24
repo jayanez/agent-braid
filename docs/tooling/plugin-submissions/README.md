@@ -27,6 +27,18 @@ that requires Python, uv, Node or Docker to bypass a directory restriction.
   results, Git for Git operations; no service credentials, network telemetry or
   automatic execution authorization.
 
+## Optional workflow component (unreleased)
+
+The listing material above describes the five product skills plus setup, which
+are unchanged. An optional, Claude-only `braid-gate` workflow
+([SPEC-052](../../../specs/052-claude-workflow-gate/spec.md),
+[recipe](../CLAUDE_WORKFLOWS.md)) is specified but unreleased and is not part of
+any submitted candidate. Codex is expected to ignore it (not observed). By design
+it makes no network access, no source-state writes (only a temporary scratch
+directory) and no grants, which depends on an unverified host allowlist. Do not list or describe it in any submission, and
+do not claim compatibility for any host, until the ADR 0024 amendment is adopted
+and host behaviors are observed on a recorded Claude Code version.
+
 ## Reviewer test cases
 
 1. Install the clean source-bound marketplace in a fresh user profile; verify six

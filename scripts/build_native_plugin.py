@@ -25,6 +25,31 @@ from agent_braid.tooling_assets import load_skill_bundle
 
 VERSION = '0.1.0-alpha.3'
 DISTRIBUTION_ATTRIBUTES = '* -text -filter -ident\n'
+WORKFLOWS_SOURCE = ROOT / 'integrations/agent-braid/plugin/workflows'
+ENGINEERING_MARKER = 'ENGINEERING-ONLY.json'
+ENGINEERING_MARKER_VALUE = {
+    'schema': 'agent-braid-plugin-engineering-only/v1', 'component': 'workflows', 'releasable': False,
+    'reason': 'The workflow component is excluded from default builds until the ADR 0024 amendment is adopted; '
+              'this package shares the unchanged version string and is never a releasable identity'}
+
+
+def copy_tracked_workflows(source, destination):
+    """Copy only Git-tracked regular files; ignored, untracked and symlinked content never ships."""
+    source = Path(source)
+    listing = subprocess.check_output(['git', 'ls-files', '--cached', '-z', '--', '.'], cwd=source)
+    names = sorted({os.fsdecode(raw) for raw in listing.split(b'\0') if raw})
+    if not names:
+        raise ValueError('The workflow source directory has no tracked files')
+    root = source.resolve(strict=True)
+    for name in names:
+        path = source / name
+        if path.is_symlink() or not path.is_file() or not path.resolve(strict=True).is_relative_to(root):
+            raise ValueError(f'Workflow source {name} is not a tracked regular file')
+    for name in names:
+        target = Path(destination) / name
+        target.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copyfile(source / name, target)
+        shutil.copymode(source / name, target)
 
 
 PLUGIN_NAME = 'agent-braid'
@@ -161,13 +186,24 @@ def _download(path, entry):
         raise ValueError('Cached runtime SHA-256 mismatch')
 
 
-def assemble(output, cache, *, platforms=None, allow_dirty=False):
+def verify_engineering_marker(plugin):
+    """The workflow directory and the engineering-only marker exist together or not at all."""
+    plugin = Path(plugin)
+    marker = plugin / ENGINEERING_MARKER
+    present = (plugin / 'workflows').exists()
+    if present != marker.is_file() or (present and json.loads(marker.read_text()) != ENGINEERING_MARKER_VALUE):
+        raise ValueError('Workflow component and engineering-only marker disagree')
+
+
+def assemble(output, cache, *, platforms=None, allow_dirty=False, include_workflows=False):
     output = Path(output).resolve()
     if output.exists() or output.is_relative_to(ROOT):
         raise ValueError('Build into a new directory outside the source checkout')
     dirty = bool(subprocess.check_output(['git', 'status', '--porcelain'], cwd=ROOT))
     if dirty and not allow_dirty:
         raise ValueError('Commit the exact candidate before building, or explicitly mark an --allow-dirty engineering artifact')
+    if include_workflows and not WORKFLOWS_SOURCE.is_dir():
+        raise ValueError('The workflow source directory is missing')
     candidate = subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=ROOT, text=True).strip()
     lock = json.loads((ROOT / 'integrations/agent-braid/plugin/runtime-lock.json').read_text())
     selected = platforms or list(lock['platforms'])
@@ -229,6 +265,10 @@ def assemble(output, cache, *, platforms=None, allow_dirty=False):
             skill_provenance.append({'canonicalName': skill.name, 'packagedName': SKILL_SUBSTITUTIONS[skill.name],
                 'canonicalSha256': skill.sha256, 'packagedSha256': hashlib.sha256(packaged.encode()).hexdigest()})
         shutil.copytree(ROOT / 'integrations/agent-braid/plugin/setup', plugin / 'skills/setup')
+        if include_workflows:
+            # Pre-adoption guard: Claude-only component, opt-in, never a releasable identity.
+            copy_tracked_workflows(WORKFLOWS_SOURCE, plugin / 'workflows')
+            _json(plugin / ENGINEERING_MARKER, ENGINEERING_MARKER_VALUE)
         launch = plugin / 'launch'
         launch.write_text('''#!/bin/sh
 set -eu
@@ -280,7 +320,15 @@ exec "$plugin_python" -I -B -m agent_braid "$@"
             'dependencies': package_licenses, 'canonicalSkills': bundle.inventory(),
             'skillNaming': {'policy': 'SPEC-054', 'substitutions': SKILL_SUBSTITUTIONS, 'skills': skill_provenance},
             'limits': ['Engineering package; no native conformance, publisher authentication or official approval implied']})
+        if include_workflows:
+            provenance_path = plugin / 'provenance.json'
+            provenance = json.loads(provenance_path.read_text())
+            provenance['engineeringOnly'] = {'component': 'workflows', 'marker': ENGINEERING_MARKER}
+            _json(provenance_path, provenance)
         # Corresponding tracked sources only; never package unrelated untracked local files.
+        # Decision: the default (non-opt-in) source archive keeps the tracked workflow sources. The AGPL
+        # corresponding-source obligation covers the repository at this commit, and the files are inert
+        # source text there; only the plugin tree (plugin/workflows) is gated by --include-workflows.
         sources = staging / 'sources'
         sources.mkdir()
         paths = subprocess.check_output(['git', 'ls-files', '--cached', '-z'], cwd=ROOT).split(b'\0')
@@ -301,6 +349,7 @@ exec "$plugin_python" -I -B -m agent_braid "$@"
         _json(plugin / 'package-inventory.json', {'schema': 'agent-braid-plugin-package/v1', 'version': VERSION,
                                                 'files': inventory(plugin)})
         verify_package(plugin)
+        verify_engineering_marker(plugin)
         shutil.rmtree(wheels)
         for path in staging.glob('extract-*'):
             shutil.rmtree(path)
@@ -315,8 +364,11 @@ def main():
     parser.add_argument('--cache', type=Path, required=True)
     parser.add_argument('--platform', choices=('macos-arm64', 'linux-x86_64'), action='append')
     parser.add_argument('--allow-dirty', action='store_true', help='explicit engineering artifact; never a releasable source identity')
+    parser.add_argument('--include-workflows', action='store_true',
+                        help='explicit opt-in: add the Claude-only workflow directory; the artifact is engineering-only')
     args = parser.parse_args()
-    print(json.dumps(assemble(args.output, args.cache, platforms=args.platform, allow_dirty=args.allow_dirty), indent=2))
+    print(json.dumps(assemble(args.output, args.cache, platforms=args.platform, allow_dirty=args.allow_dirty,
+                              include_workflows=args.include_workflows), indent=2))
 
 
 if __name__ == '__main__':
