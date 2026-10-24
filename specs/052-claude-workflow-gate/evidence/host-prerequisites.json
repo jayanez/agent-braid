@@ -1,0 +1,83 @@
+{
+  "task": "T023",
+  "recordedAt": "2026-10-24T20:31:25Z",
+  "operator": "Founder-authorized preparation by an agent for T023 only; no workflow, workflow agent, HV probe or claude -p session was run",
+  "claudeCode": {
+    "version": "2.1.292 (Claude Code)",
+    "platform": "macOS 27.0.1 (build 26A434), arm64, git 2.54.0 (Apple Git-157)",
+    "installMethod": "Homebrew cask (/opt/homebrew/Caskroom/claude-code/2.1.292/claude, symlinked from /opt/homebrew/bin/claude)"
+  },
+  "workflowsSetting": {
+    "key": "disableWorkflows (absent from the user settings files that were read)",
+    "value": "enabled: observed, not configured. The Workflow tool ran dynamic workflows in a Claude Code session on this host on 2026-10-24, so workflows are not disabled for this session.",
+    "howLooked": "Read-only grep for 'workflow' in ~/.claude/settings.json and ~/.claude/settings.local.json, env vars matching WORKFLOW, and 'claude --help' output; no setting was changed. Only the key skipWorkflowUsageWarning=true was found in ~/.claude/settings.json (a usage-warning suppression, not an enable switch). No enabling key, no disableWorkflows key and no managed-settings directory (/Library/Application Support/ClaudeCode) was found. Whether 2.1.292 enables workflows and how that setting is spelled was not looked up in host docs and remains unverified.",
+    "organizationDisabled": "no (inferred from the same observation); no managed setting was read"
+  },
+  "pluginLoad": {
+    "method": "plugin-dir (planned: claude --plugin-dir <out>/plugins/agent-braid); not yet loaded or run",
+    "installedAgentBraidPresent": true,
+    "handling": "claude plugin list shows agent-braid@agent-braid 0.1.0-alpha.3, scope user, enabled. Nothing was installed, disabled or modified. Handling at HV time (session-scoped --plugin-dir, or disable and re-enable the installed plugin, or a separate CLAUDE_CONFIG_DIR) is the founder's choice and is not decided here."
+  },
+  "candidate": {
+    "pluginVersion": "0.1.0-alpha.3",
+    "sourceCommit": "49342845a31d2341fd3f829eb211a5e6a5bf2f10",
+    "packageInventorySha256": "924bcc19280b7880acc220db8e658cafa0e4a24dc82d1eede4d9e26e99c17b4c",
+    "braidGateJsSha256": "f07d61362979869057f2270167dfebcb086f92f5c161d8d4fd8ea08f4d780b45",
+    "engineeringOnlyMarkerPresent": true,
+    "pluginValidateOutput": "claude plugin validate <out>/plugins/agent-braid (CLI 2.1.292): 'Validating plugin manifest: /private/tmp/claude-502/hv-candidate-49342845/out/plugins/agent-braid/.claude-plugin/plugin.json' then '✔ Validation passed'. claude plugin validate <out> (marketplace): 'Validating marketplace manifest: /private/tmp/claude-502/hv-candidate-49342845/out/.claude-plugin/marketplace.json', '⚠ Found 1 warning:', '❯ description: No marketplace description provided. Adding a description helps users understand what this marketplace offers', '✔ Validation passed with warnings'. Manifest-only check; says nothing about workflow, MCP or host behavior.",
+    "engineeringOnly": true,
+    "releasable": false,
+    "sourceDirty": false,
+    "location": "/private/tmp/claude-502/hv-candidate-49342845/out/plugins/agent-braid",
+    "buildCommand": "scripts/build_native_plugin.py --output /private/tmp/claude-502/hv-candidate-49342845/out --cache /private/tmp/claude-502/hv-candidate-49342845/cache --platform macos-arm64 --include-workflows, run from a clean local clone (/private/tmp/claude-502/hv-candidate-49342845/src, git status empty, checked out at the source commit) with a scratch Python 3.12.13 venv holding build 1.6.1",
+    "platformBuilt": "macos-arm64",
+    "engineeringOnlyMarkerSha256": "5449fdf73c7944d6da36a93870018d32901f95f638bca2d6ffaf7c4730f51869",
+    "wheelSha256": "cb20dead29a3c9b4bded6a09f0cdaa8bac5d160641c465182511643676678951",
+    "runtimeArchiveSha256": "9866e11cf2ae9caa1e671383786f248859a52dd8bfb702fb4c0dc2c65f1d36de",
+    "braidGateJsEqualsCommittedSource": true,
+    "sizes": {
+      "outputDir": "173M",
+      "pluginDir": "152M",
+      "runtimeArchiveCache": "24M (25052618 bytes)"
+    },
+    "networkNote": "The runtime archive was not downloaded by this run: the pinned, hash-checked archive was copied from an earlier scratch build cache (/private/tmp/claude-502/hv-kit-build/cache/macos-arm64.tar.gz) and the script verified it. Dependency wheels were resolved from the local pip cache ('Using cached'); the build log contains zero 'Downloading' lines. No other fetch occurred.",
+    "notComparable": "Hashes differ from the older runbook section 0 candidate (commit 9a85823d...) because the source moved to 49342845; this is a new candidate and supersedes those values for HV runs."
+  },
+  "fixture": {
+    "path": "/private/tmp/claude-502/hv-fixture-49342845/braid-hv-fixture",
+    "base": "a81edc6e773be1cc0f48c14b621b2a0a377503e7",
+    "branches": {
+      "agent/a": "50c71e8ddbd3991dc79eac62cc884fbb30c7740c",
+      "agent/b": "313ef7c3dba10563d950a395c658c1f4dab1453f",
+      "agent/c": "454b3dea97e40aa8067f2d4010e43ae0549237e6",
+      "agent/d": "0c628d11c3dfb95ec67bf71f6c0fa8b5e988ec3f",
+      "agent/conflict": "346d63553dba6bf1870db6cc472c23ad015d18a7"
+    },
+    "gitVersion": "2.54.0 (Apple Git-157)",
+    "note": "Created exactly per runbook 2.3 with git config user.name hv and user.email hv@example.invalid; HEAD on main; working tree clean; outside every real project."
+  },
+  "registration": {
+    "mode": "analysis",
+    "registryHome": "/private/tmp/claude-502/hv-registry-analysis-49342845",
+    "workspaceId": "df151dcb11dd715f074df8eb3f5791f8",
+    "pluginStatusRegistryHome": null,
+    "runtimeEnabled": false,
+    "grantStore": null,
+    "previewDigest": "7d8bb320726c40ad9d61c67cae2aa4d4ce0e2a72af068af88d0af1ebad3d4d85",
+    "howRegistered": "<out>/plugins/agent-braid/launch plugin setup --home <registry> --source-root <fixture> (preview), then --apply --preview-digest; no --enable-runtime, no --grant-store. The registry directory needed chmod 700 first (setup refused 'Owned plugin state must be private to its user'). 'plugin doctor --home' reported status configured, package verified (3922 files), runtimeIncluded true, executionAuthorization false, telemetry off. Setup transcripts: /private/tmp/claude-502/hv-candidate-49342845/setup-preview.json, setup-apply.json, workspaces.json, doctor.json.",
+    "pluginStatusNote": "The MCP plugin-status tool was not called, so which registry home the loaded candidate's MCP reads is unobserved (null). The user's real AgentBraid registry (~/Library/Application Support/AgentBraid) was not touched."
+  },
+  "spend": {
+    "additionalEur": 0,
+    "paidApiOrCreditsOrUpgrade": false,
+    "subscriptionOnly": true
+  },
+  "unobserved": [
+    "Whether the candidate loads via --plugin-dir alongside the already-installed agent-braid user-scope plugin (no name-clash test was run)",
+    "Which registry home the candidate's MCP plugin-status reports (MCP never started from the candidate)",
+    "Any HV-1..HV-5 behavior; nothing was run on the host",
+    "Native host acceptance of the plugin; plugin validate is a manifest check only",
+    "Whether the candidate plugin loaded through --plugin-dir coexists with the installed agent-braid 0.1.0-alpha.3 of the same name (HV-1 and the runbook section 2.2 handling), and which registry home the candidate MCP reads."
+  ],
+  "notes": "Preparation only for T023. Engineering-only candidate, never a releasable identity. obtained_evidence stays empty and human review pending; nothing frozen or signed. Scratch paths (kept in place, may be cleaned by the OS): /private/tmp/claude-502/hv-candidate-49342845 (src, cache, out, build.log), /private/tmp/claude-502/hv-fixture-49342845, /private/tmp/claude-502/hv-registry-analysis-49342845. The workflows setting fields stay null, so the runbook pass criterion (every field filled from observation) is not yet met; the founder must look up the setting on the host and fill it before T023 is closed."
+}
