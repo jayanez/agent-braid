@@ -44,7 +44,7 @@ def package_skill(content):
     if not content.startswith('---\n') or not separator or not match or match.group(1) not in SKILL_SUBSTITUTIONS:
         raise ValueError('Canonical skill frontmatter name is not in the substitution table')
     head = FRONTMATTER_NAME.sub(lambda m: 'name: ' + SKILL_SUBSTITUTIONS[m.group(1)], head, count=1)
-    rest = re.sub(r'`(agent-braid-[a-z]+)`', lambda m: '`' + SKILL_SUBSTITUTIONS.get(m.group(1), m.group(0)[1:-1]) + '`', rest)
+    rest = re.sub(r'`(agent-braid-[a-z]+)`', lambda m: '`' + SKILL_SUBSTITUTIONS.get(m.group(1), m.group(1)) + '`', rest)
     return head + separator + rest
 
 
