@@ -15,8 +15,8 @@
 #
 # Agent Braid modifications Copyright 2026 Juan Antonio Yáñez García.
 # Adapted the propose/probe/compose stage structure with fallback from
-# harness2/core/recursion.py (Stage, _run_stage, run_sequential) and the anonymized
-# candidate comparison that includes the unchanged base from
+# harness2/core/recursion.py (Stage, _run_stage, run_sequential) and the candidate
+# comparison that includes the unchanged base from
 # harness2/core/selection.py (assign_ids, selection_pool) at
 # 1cfe254e8d25b15f37048c3730134686abe60335. Changes: one fixed round, injected
 # proposer/prober callbacks instead of model sessions or thread pools, a frozen
@@ -43,6 +43,8 @@ from typing import Any
 import re
 
 from .harness_manifest import HarnessManifest
+# _text is private to harness_surface; coupled deliberately so proposal text uses the
+# exact same encoding/executable checks as candidate import.
 from .harness_surface import SurfaceError, SurfaceSpec, _text
 from .system_one import InvalidDecision, canonical, digest, freeze, parse_json, thaw
 
@@ -65,7 +67,7 @@ _PROVENANCE = {
     "upstreamRevision": UPSTREAM_REVISION,
     "adapted": [
         "core/recursion.py: Stage/_run_stage propose-probe-compose with fallback",
-        "core/selection.py: assign_ids/selection_pool anonymized comparison including base",
+        "core/selection.py: assign_ids/selection_pool candidate comparison including base (labels are not blinding)",
     ],
     "changes": "one fixed round; injected callbacks; frozen hash-bound policy; "
                "keep-base/inconclusive/refused; strict output validation; no reflection",
@@ -163,48 +165,63 @@ def _candidate_hash(manifest: HarnessManifest, changes: Mapping[str, bytes]) -> 
     return digest([rows[p] for p in sorted(rows)]), ""
 
 
-def _validate_proposal(value: Any, scope: str, manifest: HarnessManifest) -> tuple[dict | None, str]:
-    """Return (changes, "") for a valid proposal or (None, fixed reason). Never raises."""
+def _copy(value: Any) -> dict | None:
+    """Copy an untrusted mapping into a plain dict; hostile behaviour yields None.
+
+    The only broad catch: it runs untrusted code (``keys``/``__getitem__``/``__iter__``).
+    Everything after it operates on plain builtins, so our own bugs still propagate.
+    """
+    if not isinstance(value, Mapping):
+        return None
     try:
-        wire = dict(value) if isinstance(value, Mapping) else None
-        if wire is None:
-            return None, "invalid-proposal"
-        if set(wire) != _PROPOSAL_KEYS:
-            return None, "unexpected-field" if set(wire) > _PROPOSAL_KEYS else "invalid-proposal"
-        if wire["parentManifestSha256"] != manifest.sha256:
-            return None, "wrong-parent"
-        if wire["scope"] != scope:
-            return None, "wrong-scope"
-        rationale = wire["rationale"]
-        if type(rationale) is not str or len(rationale) > MAX_RATIONALE_BYTES \
-                or len(rationale.encode("utf-8")) > MAX_RATIONALE_BYTES:
-            return None, "invalid-rationale"  # untrusted text is bounded, then discarded
-        raw_changes = wire["changes"]
-        if not isinstance(raw_changes, Mapping):
-            return None, "invalid-changes"
-        changes = dict(raw_changes)
-        limits = manifest.data["limits"]
-        if not changes:
-            return None, "empty-changes"
-        if len(changes) > limits["maxFiles"] or not all(
-                type(k) is str and type(v) is bytes for k, v in changes.items()):
-            return None, "invalid-changes"
-        spec = _surface(manifest)
+        return dict(value)
+    except Exception:
+        return None
+
+
+def _validate_proposal(value: Any, scope: str, manifest: HarnessManifest) -> tuple[dict | None, str]:
+    """Return (changes, "") for a valid proposal or (None, fixed reason)."""
+    wire = _copy(value)
+    if wire is None:
+        return None, "invalid-proposal"
+    if set(wire) != _PROPOSAL_KEYS:
+        return None, "unexpected-field" if set(wire) > _PROPOSAL_KEYS else "invalid-proposal"
+    if wire["parentManifestSha256"] != manifest.sha256:
+        return None, "wrong-parent"
+    if wire["scope"] != scope:
+        return None, "wrong-scope"
+    rationale = wire["rationale"]
+    try:
+        bounded = type(rationale) is str and len(rationale) <= MAX_RATIONALE_BYTES \
+            and len(rationale.encode("utf-8")) <= MAX_RATIONALE_BYTES
+    except UnicodeEncodeError:  # lone surrogate
+        bounded = False
+    if not bounded:
+        return None, "invalid-rationale"  # untrusted text is bounded, then discarded
+    changes = _copy(wire["changes"])
+    if changes is None:
+        return None, "invalid-changes"
+    limits = manifest.data["limits"]
+    if not changes:
+        return None, "empty-changes"
+    if len(changes) > limits["maxFiles"] or not all(
+            type(k) is str and type(v) is bytes for k, v in changes.items()):
+        return None, "invalid-changes"
+    spec = _surface(manifest)
+    try:
         for path, content in changes.items():
             spec.validate_path(path)
             if len(content) > limits["maxFileBytes"]:
                 return None, "file-too-large"
             _text(content)
-        candidate, reason = _candidate_hash(manifest, changes)
-        if candidate is None:
-            return None, reason
-        if candidate == manifest.data["base"]["sha256"]:
-            return None, "no-op"
-        return changes, ""
     except SurfaceError as exc:
         return None, exc.reason
-    except Exception:  # hostile mapping/bytes behaviour: refuse, never escape
-        return None, "invalid-proposal"
+    candidate, reason = _candidate_hash(manifest, changes)
+    if candidate is None:
+        return None, reason
+    if candidate == manifest.data["base"]["sha256"]:
+        return None, "no-op"
+    return changes, ""
 
 
 def _compose(manifest: HarnessManifest, first: Mapping[str, bytes],
@@ -217,19 +234,17 @@ def _compose(manifest: HarnessManifest, first: Mapping[str, bytes],
     return (merged, "") if candidate is not None else (None, "composition-too-large")
 
 
+
 def _outcome(output: Any) -> dict:
     """Normalize an untrusted prober result into a fixed-shape attempt outcome."""
     if output is None:
         return {"status": "missing", "reason": "no-output"}
-    try:
-        wire = dict(output) if isinstance(output, Mapping) else {}
-        ok = (set(wire) == _OUTPUT_KEYS and wire["terminal"] in _TERMINALS
-              and (wire["score"] is None or (_int(wire["score"], 0, MAX_SCORE)
-                                             and wire["terminal"] == "completed"))
-              and type(wire["observationSha256"]) is str
-              and _HASH.fullmatch(wire["observationSha256"]) is not None)
-    except Exception:
-        ok = False
+    wire = _copy(output) or {}
+    ok = (set(wire) == _OUTPUT_KEYS and wire["terminal"] in _TERMINALS
+          and (wire["score"] is None or (_int(wire["score"], 0, MAX_SCORE)
+                                         and wire["terminal"] == "completed"))
+          and type(wire["observationSha256"]) is str
+          and _HASH.fullmatch(wire["observationSha256"]) is not None)
     if not ok:
         return {"status": "invalid", "reason": "invalid-output"}
     score = wire["score"]
@@ -294,8 +309,62 @@ class _Round:
                            observationSha256=outcome.get("observationSha256"))
 
 
+
 def _scored(attempt: dict | None) -> bool:
     return attempt is not None and attempt["status"] == "scored"
+
+
+def _collect_proposals(state: _Round, propose: Callable[[str], Any], seen: set[str]
+                       ) -> tuple[list[tuple[str, str, dict]], int, int]:
+    """Ask the proposer per scope; record abstentions/rejections; return valid ones."""
+    manifest = state.manifest
+    valid: list[tuple[str, str, dict]] = []
+    abstentions = rejections = 0
+    for scope in SCOPES:
+        try:
+            proposed = propose(scope)
+        except Exception:  # untrusted proposer: surface a fixed reason only
+            state.record(scope, None, "missing", "proposer-failed")
+            continue
+        if proposed is None:
+            abstentions += 1
+            state.record(scope, None, "abstained")
+            continue
+        changes, reason = _validate_proposal(proposed, scope, manifest)
+        candidate = _candidate_hash(manifest, changes)[0] if changes else None
+        if changes is not None and candidate in seen:
+            changes, reason = None, "duplicate-candidate"
+        if changes is None:
+            rejections += 1
+            state.record(scope, None, "rejected", reason)
+            continue
+        seen.add(candidate)
+        valid.append((scope, candidate, changes))
+    return valid, abstentions, rejections
+
+
+def _decide(attempts: list[dict], base: dict, margin: int, abstentions: int
+            ) -> tuple[str, list[str], str | None]:
+    """Select from the probed attempts against the base; also fills delta/regressed."""
+    candidates = [a for a in attempts if a["scope"] != "base" and a["candidateSha256"]]
+    for attempt in candidates:
+        if attempt["score"] is not None:
+            attempt["deltaMicros"] = attempt["score"] - base["score"]
+            attempt["regressed"] = attempt["deltaMicros"] < 0
+    scored = [a for a in candidates if a["status"] == "scored"]
+    if scored:
+        best = max(a["score"] for a in scored)
+        top = [a for a in scored if a["score"] == best]
+        if best - base["score"] < margin:
+            return "keep-base", ["no-candidate-beats-base"], None
+        if len(top) > 1:
+            return "inconclusive", ["top-tied"], None
+        return "candidate", ["improved-over-base"], top[0]["candidateSha256"]
+    if any(a["status"] in _UNOBSERVED for a in attempts if a["scope"] != "base"):
+        return "inconclusive", ["no-scored-candidate"], None
+    if abstentions == len(SCOPES):
+        return "keep-base", ["all-abstained"], None
+    return "keep-base", ["no-valid-candidate"], None
 
 
 def run_round(manifest: HarnessManifest, policy: SelectionPolicy, *,
@@ -317,32 +386,10 @@ def run_round(manifest: HarnessManifest, policy: SelectionPolicy, *,
     elif not _scored(base):
         decision, reasons, chosen = "inconclusive", ["base-unscored"], None
     else:
-        valid: list[tuple[str, str, dict]] = []
         seen = {base_hash}
-        for scope in SCOPES:
-            try:
-                proposed = propose(scope)
-            except Exception:
-                state.record(scope, None, "missing", "proposer-failed")
-                continue
-            if proposed is None:
-                abstentions += 1
-                state.record(scope, None, "abstained")
-                continue
-            changes, reason = _validate_proposal(proposed, scope, manifest)
-            candidate = _candidate_hash(manifest, changes)[0] if changes else None
-            if changes is not None and candidate in seen:
-                changes, reason = None, "duplicate-candidate"
-            if changes is None:
-                rejections += 1
-                state.record(scope, None, "rejected", reason)
-                continue
-            seen.add(candidate)
-            valid.append((scope, candidate, changes))
-
-        results = {}
-        for scope, candidate, changes in valid:
-            results[scope] = (state.probe(scope, candidate, changes), changes)
+        valid, abstentions, rejections = _collect_proposals(state, propose, seen)
+        results = {scope: (state.probe(scope, candidate, changes), changes)
+                   for scope, candidate, changes in valid}
         if len(results) == len(SCOPES) and all(
                 _scored(a) and a["score"] - base["score"] >= margin for a, _ in results.values()):
             merged, reason = _compose(manifest, results["general"][1], results["task"][1])
@@ -353,32 +400,10 @@ def run_round(manifest: HarnessManifest, policy: SelectionPolicy, *,
                 state.losses.add("composition-duplicate")
             else:
                 state.probe("composed", candidate, merged)
+        decision, reasons, chosen = _decide(state.attempts, base, margin, abstentions)
 
-        candidates = [a for a in state.attempts if a["scope"] != "base" and a["candidateSha256"]]
-        for attempt in candidates:
-            if attempt["score"] is not None:
-                attempt["deltaMicros"] = attempt["score"] - base["score"]
-                attempt["regressed"] = attempt["deltaMicros"] < 0
-        scored = [a for a in candidates if a["status"] == "scored"]
-        chosen = None
-        if scored:
-            best = max(a["score"] for a in scored)
-            top = [a for a in scored if a["score"] == best]
-            if best - base["score"] < margin:
-                decision, reasons = "keep-base", ["no-candidate-beats-base"]
-            elif len(top) > 1:
-                decision, reasons = "inconclusive", ["top-tied"]
-            else:
-                decision, reasons, chosen = "candidate", ["improved-over-base"], \
-                    top[0]["candidateSha256"]
-        elif any(a["status"] in _UNOBSERVED for a in state.attempts if a["scope"] != "base"):
-            decision, reasons = "inconclusive", ["no-scored-candidate"]
-        elif abstentions == len(SCOPES):
-            decision, reasons = "keep-base", ["all-abstained"]
-        else:
-            decision, reasons = "keep-base", ["no-valid-candidate"]
-
-    # Anonymized, input-order-independent ids over every attempt, base included.
+    # Deterministic labels over every attempt, base included. These are stable
+    # identifiers, not blinding: each attempt keeps its scope and candidate hash.
     keyed = sorted(state.attempts, key=lambda a: sha256(
         f"{policy.sha256}:{a['candidateSha256'] or a['scope']}".encode()).hexdigest())
     for number, attempt in enumerate(keyed, 1):

@@ -240,6 +240,38 @@ class SelectionTests(unittest.TestCase):
                 self.assertEqual(lab.probed, ["base"])
                 self.assertEqual(wire["decision"], "keep-base")
 
+    def test_lone_surrogate_rationale_is_invalid_rationale(self):
+        bad = proposal(self.manifest, "general", {"guidance/general.md": b"x\n"},
+                       rationale="bad \ud800 text")
+        lab = self.lab({"base": done(0)}, {"general": bad, "task": None})
+        general = [a for a in lab.run(self.policy).to_dict()["attempts"]
+                   if a["scope"] == "general"][0]
+        self.assertEqual((general["status"], general["reason"]), ("rejected", "invalid-rationale"))
+
+    def test_internal_errors_propagate_instead_of_becoming_rejections(self):
+        from unittest import mock
+        lab = self.lab({"base": done(0), "general": done(1), "task": done(1)})
+        with mock.patch.object(ref, "_surface", side_effect=AttributeError("bug")):
+            with self.assertRaises(AttributeError):
+                lab.run(self.policy)
+
+    def test_hostile_mapping_behaviour_is_a_rejection(self):
+        class Hostile(dict):
+            def __getitem__(self, key):
+                raise ValueError("hostile")
+
+            def __iter__(self):
+                raise TypeError("hostile")
+        lab = self.lab({"base": done(0)}, {"general": Hostile(a=1), "task": None})
+        general = [a for a in lab.run(self.policy).to_dict()["attempts"]
+                   if a["scope"] == "general"][0]
+        self.assertEqual((general["status"], general["reason"]), ("rejected", "invalid-proposal"))
+
+    def test_attempt_ids_are_labels_not_blinding(self):
+        wire = self.lab({"base": done(0), "general": done(1), "task": done(1)}).run(
+            self.policy).to_dict()
+        self.assertNotIn("anonymized", json.dumps(wire["provenance"]))
+
     def test_duplicate_proposals_do_not_double_count(self):
         twin = proposal(self.manifest, "task", dict(self.general["changes"]))
         lab = self.lab({"base": done(0), "general": done(900_000)},
