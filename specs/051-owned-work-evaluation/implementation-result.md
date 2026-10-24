@@ -118,3 +118,20 @@ private raw representations, listed with their hashes under
 `withdrawnRepresentations`. Later review repairs and their hashes are recorded in
 [review-repair.md](review-repair.md). The external source archive and
 baseline patch are private reproducibility materials, not publication approval.
+
+## T004 closure and local documentary relay (2026-10-24)
+
+Baseline develop `6078d98a`; profiles ran on candidate `1900391c` (adds only the
+`docs/STATUS.md` entry for #669/#670) in a fresh independent clone, because the
+shared worktree object store fails the Spec Kit preflight with unreachable objects.
+Compatibility: no `agent_braid/` or `tests/` change; 60 focused owned-work tests
+passed; quick exit 0 (docs-only, not escalated); pr exit 0 with 14 commands, 2286
+tests, 24 skipped. No failures in this run. Receipt: [t004.json](evidence/t004/t004.json)
+with hashed gz logs. The evidence commit itself follows the candidate and is covered
+by PR CI, not by these receipts.
+
+Relay (local, documentary): T004 is checked in `tasks.md` and SC-003 carries its
+obtained evidence. `github-tracking.json` needs no edit (task state follows the
+checkbox); the remote #665 closure, Project status, RF-T03+ and real source
+admission, independent/human review and clean-room reproduction remain pending and
+unperformed. No guarded GitHub apply was run.
