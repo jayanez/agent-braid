@@ -8,7 +8,7 @@ marketplace publication and official directory approvals remain separate gates.
 how this extension preserves the original six specifications and their evidence.
 
 **Current integration — 2026-10-20:** the combined M4.5 source portfolio has eight
-specs and 106 tasks (78 checked, 28 open), three historically closed parents and
+specs and 110 tasks (78 checked, 32 open), three historically closed parents and
 five open parents. [Telemetry SPEC-047](../../specs/047-local-technical-telemetry/spec.md)
 is default-off. Its [existing Luna review and integration provenance](../../specs/047-local-technical-telemetry/integration-review.md)
 are distinct from human/architectural acceptance and native admission. Pilot
