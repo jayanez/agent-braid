@@ -1,0 +1,88 @@
+{
+  "schema": "agent-braid-native-observation/v1",
+  "task": "SPEC-054 T009a",
+  "observedOn": "2026-10-24",
+  "commit": "268a8179f4b7fe68bb18722d6bb122c309e29aa0",
+  "sourceDirty": false,
+  "versions": {
+    "candidate": "0.1.0-alpha.4",
+    "previous": "0.1.0-alpha.3",
+    "previousTag": "agent-braid--v0.1.0-alpha.3",
+    "previousTagCommit": "8ed7838a9b12c2dc1684a5e7c1e7cada7543c663",
+    "registrySchema": "agent-braid-plugin-registry/v0.2",
+    "pluginInterface": "agent-braid-plugin/v0.2"
+  },
+  "environment": {
+    "os": "macOS 27.0.1 (26A434) arm64",
+    "claudeCode": "2.1.292 (/opt/homebrew/bin/claude)",
+    "uv": "0.11.26",
+    "buildPython": "CPython 3.12.13 (uv venv with requirements-dev.txt, build and pip)",
+    "bundledPython": "CPython 3.12.15",
+    "codex": "not installed",
+    "profile": "disposable HOME, CLAUDE_CONFIG_DIR and AGENT_BRAID_HOME outside any repository; empty environment; no login, model or provider session"
+  },
+  "package": {
+    "inventorySha256": "12c9ab896a9d223e17b0ee52764e87ca54f7fdf5686cad7ee56e4c779ef4d6c5",
+    "provenanceSha256": "2a123a466cc48743655b15064e2203cfb6154b1bbecb17e93eca8ef0d8763e0a",
+    "sourceArchive": "sources/agent-braid-0.1.0-alpha.4-source.tar.gz",
+    "sourceArchiveSha256": "497936f1e004627c56c13e0d99ed0a7df5259750502dc6a9307223a9ed683dfd",
+    "inventoryEntries": 7818,
+    "inventoryBytes": 392442760,
+    "distributionFiles": 7824,
+    "distributionBytes": 415485999,
+    "distributionNote": "distributionFiles and distributionBytes count the working tree of the local distribution commit excluding .git and include the root README.md carried from plugin-dist",
+    "provenanceSkillNaming": {
+      "policy": "SPEC-054",
+      "packagedNames": ["analyze", "plan", "evidence", "execute", "recover", "setup"],
+      "canonicalSourceNames": ["agent-braid-analyze", "agent-braid-plan", "agent-braid-execute", "agent-braid-recover", "agent-braid-evidence"]
+    },
+    "localDistributionCommit": "b1fdb84ff81cabe2d8553108e231890bba6ede13",
+    "localTagObject": "64fbfb297661ddef3900aac4c6baa43212bbafee",
+    "localTag": "agent-braid--v0.1.0-alpha.4",
+    "localDistributionPublished": false
+  },
+  "commands": [
+    {"step": 1, "command": "scripts/build_native_plugin.py --output OUT --cache CACHE (no --allow-dirty)", "outcome": "passed after adding pip to the uv venv", "detail": "sourceDirty false; sourceCommit equals the clone HEAD"},
+    {"step": 2, "command": "launch plugin doctor --plugin-root plugins/agent-braid", "outcome": "passed", "detail": "package verified, 7818 files, version 0.1.0-alpha.4, telemetry off"},
+    {"step": 2, "command": "bundled Python MCP SDK client, modes auto and legacy, disposable registry", "outcome": "passed", "detail": "server prompts capability absent; list_prompts raised Method not found; tools analyze, analyze-work, plugin-status, prepare, workspaces; schemaVersion agent-braid-plugin/v0.2; analyze-work ok on a registered fixture"},
+    {"step": 3, "command": "scripts/reproduce_native_plugin.py as committed at 268a8179", "outcome": "FAILED", "detail": "line 168 calls list_prompts and counts the result; the server now answers Method not found, so the script raises MCPError"},
+    {"step": 3, "command": "same script with that single expression replaced by a check that the prompts capability is absent (copy outside the repository)", "outcome": "passed, 19 commands", "detail": "sha256 of the patched copy 28dcfe94bf1fc8cfc0cfe697554954969c2e512831e25fe17859bc6a50510766; record sha256 4640531eb7c4c160cad930f05b30a883d5a1343746ed9348fed6b520feffd383"},
+    {"step": 4, "command": "claude plugin marketplace add 'https://github.com/jayanez/agent-braid.git#agent-braid--v0.1.0-alpha.3'; plugin install agent-braid@agent-braid --scope user", "outcome": "passed", "detail": "installed 0.1.0-alpha.3; skills agent-braid-analyze, agent-braid-evidence, agent-braid-execute, agent-braid-plan, agent-braid-recover, setup; doctor verified 7806 files"},
+    {"step": 4, "command": "plugin setup (preview, then apply with digest) for one fixture repository; results file written", "outcome": "passed", "detail": "registry agent-braid-plugin-registry/v0.2, telemetry off"},
+    {"step": 4, "command": "claude plugin marketplace add LOCAL_DIST_OUT; claude plugin update agent-braid@agent-braid --scope user", "outcome": "passed", "detail": "updated from 0.1.0-alpha.3 to 0.1.0-alpha.4"},
+    {"step": 4, "command": "claude plugin validate --strict; plugin details; mcp list; doctor with .in_use/PID marker; MCP plugin-status", "outcome": "passed", "detail": "six unprefixed skills, 1 MCP server, no prompts; mcp list reports plugin:agent-braid:agent-braid Connected; doctor verified; plugin-status ok, status configured"},
+    {"step": 4, "command": "rollback to alpha.3", "outcome": "passed on the second attempt", "detail": "marketplace add of the tag was refused while the local directory entry existed; after plugin marketplace remove and re-add, install gave 0.1.0-alpha.3 and doctor verified"},
+    {"step": 5, "command": "local distribution commit and annotated tag; fresh clone of the local tag; byte comparison", "outcome": "passed", "detail": "diff -r identical to the build output apart from .git and README.md; 7818 of 7818 inventory entries match hash, size and executable bit; doctor verified"}
+  ],
+  "hashes": {
+    "registryJsonSha256BeforeAndAfterUpdateAndAfterRollback": "c7d0ce258f52725cc6ccaa1027edf6f959c1cd129c170a2dd387ce3824e1f7c6",
+    "resultsFileSha256BeforeAndAfterUpdateAndAfterRollback": "e8134843fbf95687477b4a6b7a00a1bef1deb01e0c311bcb1d869410f82ed09c"
+  },
+  "outcomes": {
+    "build": "passed",
+    "doctor": "passed",
+    "mcpNoPrompts": "passed",
+    "reproduceNativePluginAsCommitted": "failed",
+    "reproduceNativePluginWithPromptCheckPatched": "passed",
+    "updateAlpha3ToAlpha4": "passed",
+    "stateRetainedAcrossUpdateAndRollback": "passed",
+    "installedSkills": "analyze, evidence, execute, plan, recover, setup; no agent-braid-* directory",
+    "rollback": "passed",
+    "localDistributionRoundTrip": "passed"
+  },
+  "findings": [
+    "scripts/reproduce_native_plugin.py still lists prompts; it fails against the alpha.4 server and needs a source fix before it can serve as a release gate.",
+    "The first rollback attempt failed because the profile's declared marketplace source (a local directory) differs from the tag; the marketplace had to be removed and re-added.",
+    "After an update Claude Code marks the previous version cache directory as orphaned by adding .orphaned_at and .mcp.json; doctor on that orphaned directory refuses with package inventory changed, while a fresh install verifies.",
+    "With a directory marketplace, claude mcp list launches the server from the marketplace folder, not from the plugin cache.",
+    "The build needs pip in the virtual environment; a uv venv has none and the build failed until it was added."
+  ],
+  "limits": [
+    "Interactive /agent-braid:analyze and any Claude Code session were not performed and are not observed",
+    "Codex was not observed (not installed)",
+    "Linux was not observed",
+    "Remote Git marketplace update from a published alpha.4 was not observed; alpha.4 was updated from a local directory marketplace",
+    "The distribution is a local candidate; nothing was pushed, tagged on the remote or published, and the release build must be redone from the then-current develop commit before any publication",
+    "Agent-operated engineering observations; not a human usability rating or official approval"
+  ]
+}
