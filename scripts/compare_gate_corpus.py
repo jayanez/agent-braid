@@ -36,6 +36,14 @@ def file_sha256(path: Path) -> str:
     return sha256(path.read_bytes())
 
 
+def scrub(text: str, work: Path) -> str:
+    """Replace machine-specific paths so the committed evidence is reproducible."""
+    work_dirs = {str(work), str(work.resolve())}
+    for path in sorted(work_dirs, key=len, reverse=True):
+        text = text.replace(path, "<work>")
+    return text.replace(str(ROOT), "<repo>").replace(sys.executable, "python")
+
+
 def request_for(corpus: fixtures.Corpus, case: fixtures.Case) -> dict:
     def operation(name: str) -> dict:
         return {"instanceId": name, "attemptId": f"{name}-1", "dependencies": [], "uncertainPaths": [],
@@ -52,10 +60,10 @@ def run_analyzer(request: dict, work: Path, stem: str) -> tuple[list[str], str |
                "--provenance-output", str(provenance_path)]
     result = subprocess.run(command, cwd=ROOT, capture_output=True, text=True)
     if result.returncode != 0:
-        return command, None, (result.stderr or result.stdout).strip()[:500], sha256(result.stdout.encode())
+        return command, None, scrub((result.stderr or result.stdout).strip()[:500], work), sha256(scrub(result.stdout, work).encode())
     report = json.loads(result.stdout)
     classifications = [item["classification"] for item in report["interactions"]]
-    return command, classifications[0] if len(classifications) == 1 else None, None, sha256(result.stdout.encode())
+    return command, classifications[0] if len(classifications) == 1 else None, None, sha256(scrub(result.stdout, work).encode())
 
 
 def run_baseline(corpus: fixtures.Corpus, case: fixtures.Case, objects: Path) -> tuple[list[str], str]:
@@ -98,16 +106,15 @@ def compare(work: Path) -> dict:
         analyzer_command, analyzer, error, report_sha = run_analyzer(request_for(corpus, case), work, case.name)
         with tempfile.TemporaryDirectory(dir=work) as objects:
             baseline_command, baseline = run_baseline(corpus, case, Path(objects))
-        request_path = work / f"{case.name}.request.json"
-        inputs[case.name] = file_sha256(request_path)
+        inputs[case.name] = sha256(scrub((work / f"{case.name}.request.json").read_text(), work).encode())
         classification = classify(analyzer, baseline)
         rows.append({
             "case": case.name, "left": {"branch": case.left, "commit": corpus.shas[case.left]},
             "right": {"branch": case.right, "commit": corpus.shas[case.right]},
             "truth": {"sharedFile": case.shared_file, "analyzer": case.analyzer, "mergeTree": case.merge_tree},
-            "analyzer": {"classification": analyzer, "error": error, "command": analyzer_command,
+            "analyzer": {"classification": analyzer, "error": error, "command": [scrub(part, work) for part in analyzer_command],
                          "reportSha256": report_sha, "matchesTruth": analyzer == case.analyzer},
-            "baseline": {"result": baseline, "command": baseline_command,
+            "baseline": {"result": baseline, "command": [scrub(part, work) for part in baseline_command],
                          "matchesTruth": baseline == case.merge_tree},
             "classification": classification,
         })
