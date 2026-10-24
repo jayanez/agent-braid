@@ -239,6 +239,7 @@ class PluginSdkTests(unittest.IsolatedAsyncioTestCase):
     async def test_actual_sdk_connection_preserves_both_protocols_and_workspace_resources(self):
         import sys
         from mcp import Client
+        from mcp.shared.exceptions import MCPError
         from mcp.client.stdio import StdioServerParameters
         self.install()
         identifier = load(self.home)['workspaces'][0]['workspaceId']
@@ -264,6 +265,31 @@ class PluginSdkTests(unittest.IsolatedAsyncioTestCase):
                 data = await client.read_resource(uri)
                 self.assertTrue(json.loads(data.contents[0].text)['firstChunkUri'].startswith('agent-braid-plugin://'))
                 self.assertEqual((await client.list_resource_templates()).resource_templates, [])
-                self.assertEqual(len((await client.list_prompts()).prompts), 3)
-                prompt = await client.get_prompt('agent-braid-evidence')
-                self.assertIn('workspaceId', prompt.messages[0].content.text)
+                self.assertEqual(value['schemaVersion'], 'agent-braid-plugin/v0.2')
+                self.assertEqual(refused.structured_content['schemaVersion'], 'agent-braid-plugin/v0.2')
+                self.assertEqual(definitions['analyze-work'].output_schema['properties']['schemaVersion'], {'const': 'agent-braid-plugin/v0.2'})
+                self.assertIsNone(client.server_capabilities.prompts)
+                with self.assertRaisesRegex(MCPError, 'Method not found'):
+                    await client.list_prompts()
+                before = sorted(str(r.uri) for r in (await client.list_resources()).resources)
+                with self.assertRaisesRegex(MCPError, 'Method not found'):
+                    await client.get_prompt('agent-braid-analyze')
+                after = sorted(str(r.uri) for r in (await client.list_resources()).resources)
+                self.assertEqual(before, after)
+                capabilities = json.loads((await client.read_resource(f'agent-braid-plugin://{identifier}/capabilities')).contents[0].text)
+                self.assertNotIn('prompts', capabilities)
+                self.assertTrue(capabilities['resources'])
+
+
+class PluginPromptNegativeControlTests(unittest.TestCase):
+    setUp = registry_tests.PluginRegistryTests.setUp
+    install = registry_tests.PluginRegistryTests.install
+
+    def test_negative_control_shared_core_still_advertises_prompts_but_plugin_drops_them(self):
+        from agent_braid import tooling_mcp as core
+        self.install()
+        service = next(iter(PluginRouter(self.home).services.values()))
+        shared = core.ToolingService.capabilities(service)
+        self.assertEqual(len(shared['prompts']), 3)  # the old v0.1 plugin behaviour: would fail the new assertion
+        self.assertNotIn('prompts', service.capabilities())
+        self.assertEqual(len(core._PROMPT_TEXT), 3)  # portable server keeps its prompts

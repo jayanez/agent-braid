@@ -238,6 +238,10 @@
     "051-owned-work-evaluation": {
       "milestone": "FC.2 — Local forecasting capabilities",
       "state": "open"
+    },
+    "054-plugin-surface-naming": {
+      "milestone": "M4.5 — AI tooling integrations for Codex and Claude Code",
+      "state": "open"
     }
   },
   "task_state_overrides": {

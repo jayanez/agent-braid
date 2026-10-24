@@ -7,9 +7,9 @@ marketplace publication and official directory approvals remain separate gates.
 [SPEC-046 alignment](../../specs/046-native-ai-plugins/m45-alignment.md) explains
 how this extension preserves the original six specifications and their evidence.
 
-**Current integration — 2026-10-20:** the combined M4.5 source portfolio has eight
-specs and 110 tasks (78 checked, 32 open), three historically closed parents and
-five open parents. [Telemetry SPEC-047](../../specs/047-local-technical-telemetry/spec.md)
+**Current integration — 2026-10-20:** the combined M4.5 source portfolio has nine
+specs and 120 tasks (78 checked, 42 open), three historically closed parents and
+six open parents, including draft SPEC-054 plugin surface naming. [Telemetry SPEC-047](../../specs/047-local-technical-telemetry/spec.md)
 is default-off. Its [existing Luna review and integration provenance](../../specs/047-local-technical-telemetry/integration-review.md)
 are distinct from human/architectural acceptance and native admission. Pilot
 **NO-GO**; SPEC-044/T017 and T018 and SPEC-047/T010 remain open; historical

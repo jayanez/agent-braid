@@ -2,13 +2,13 @@
   "schema": "agent-braid-m45-local-alignment/v1",
   "milestone": 19,
   "sourceCounts": {
-    "specs": 8,
-    "tasks": 110,
+    "specs": 9,
+    "tasks": 120,
     "tasksChecked": 78,
-    "tasksUnchecked": 32,
+    "tasksUnchecked": 42,
     "parentsClosed": 3,
-    "parentsOpen": 5,
-    "totalRecords": 118
+    "parentsOpen": 6,
+    "totalRecords": 129
   },
   "specs": [
     {
@@ -58,6 +58,12 @@
       "role": "Telemetry",
       "path": "specs/047-local-technical-telemetry",
       "scope": "Own collector, data contract, bounded storage, retention, report/exchange and synthetic validation."
+    },
+    {
+      "id": "SPEC-054",
+      "role": "Plugin surface naming",
+      "path": "specs/054-plugin-surface-naming",
+      "scope": "Draft naming policy for native plugin surfaces; no implementation, release or telemetry contract change."
     }
   ],
   "dependencies": [
@@ -114,6 +120,11 @@
     {
       "predecessor": "SPEC-040",
       "successor": "SPEC-047",
+      "kind": "technical"
+    },
+    {
+      "predecessor": "SPEC-046",
+      "successor": "SPEC-054",
       "kind": "technical"
     },
     {
