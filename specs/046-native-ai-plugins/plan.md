@@ -33,3 +33,13 @@ External approvals are tracked as T014 (OpenAI) and T015 (Anthropic), separate
 from the documentary T011/T012 acceptance. This implements the approved separation
 between preparation and provider approval. The owner-added shell entrypoint is
 T013. The extension therefore has 15 stable task IDs; no historical task is reused.
+
+## T018 decision: reconnect-required refusals stay uncounted (owner decision A, 2026-10-24)
+
+Inspection. The SPEC-047 collector (`tooling_telemetry.observe` / `Store.record`) is wrapped only inside `ToolingService.invoke`. `PluginRouter.invoke` refuses before delegating: reconnect-required (`RegistryStale`), unknown or missing `workspaceId`, non-object or oversized arguments, busy global admission and a full plugin inventory. None reach the service, so with consent `local` they write no cell. This matches `docs/tooling/TELEMETRY.md` ("Protocol/schema refusals that never reach the service invocation are outside coverage"). Refusals produced inside the service (invalid call shape, per-service concurrency, per-service inventory) are counted as `refused`.
+
+Decision A (adopted). Router-level refusals, including reconnect-required, are not counted. Stale-connection refusals therefore never appear as usage failures. The SPEC-047 data contract is unchanged: no new outcome value, no schema v2. The refusal cause is deliberately not recorded. The behavior is pinned by `tests/test_plugin_mcp.py` (`test_router_refusals_write_no_telemetry_cell_with_consent_local`, `..._with_consent_off`, with the control `test_refusal_pin_can_fail_because_service_calls_are_counted`), so a refactor that starts counting router refusals fails.
+
+Rejected alternative B. A new outcome value `reconnect-required` under telemetry schema v2 (importer accepting v1 and v2). Rejected because it changes the SPEC-047 data contract for a cause that is already excluded from usage failures. Reconsider only if the owner needs an aggregate count of stale-connection refusals (for example to measure how often setup changes strand running sessions); that would be a new owner-approved contract change, not part of T016-T019.
+
+T018 stays open until the installed/native procedure_003 rerun is recorded, like T016/T017.
