@@ -1,0 +1,39 @@
+{
+  "task": "T024",
+  "behavior": "HV-1",
+  "recordedAt": "2026-10-24",
+  "claudeCode": {
+    "version": "2.1.292 (Claude Code)",
+    "platform": "macOS arm64"
+  },
+  "outcome": "pass",
+  "scope": "analysis-only registration only; runtime-enabled registration not run",
+  "candidate": "engineering candidate loaded with --plugin-dir; AGENT_BRAID_HOME pointed at a scratch analysis-only registry; installed plugin and user config untouched",
+  "visibleToolNames": [
+    "mcp__plugin_agent-braid_agent-braid__analyze",
+    "mcp__plugin_agent-braid_agent-braid__analyze-work",
+    "mcp__plugin_agent-braid_agent-braid__plugin-status",
+    "mcp__plugin_agent-braid_agent-braid__prepare",
+    "mcp__plugin_agent-braid_agent-braid__workspaces"
+  ],
+  "callable": {
+    "workspaces": "ok",
+    "plugin-status": "ok",
+    "analyze-work": "ok (valid core result, pair classified independent-candidate, executionAuthorization false)"
+  },
+  "registryHome": "scratch analysis-only registry (plugin-status)",
+  "workspaceId": "df151dcb11dd715f074df8eb3f5791f8",
+  "execute_recover_verify_status_visible": false,
+  "unobserved": [
+    "runtime-enabled registration tool surface",
+    "whether the host can deny execute/recover/verify/status when visible (not needed: not visible in analysis-only)"
+  ],
+  "firstAttempt": "refused: probe prompt gave a wrong analyze-work request shape; superseded by the retry",
+  "costUsdApprox": {
+    "loadCheck": 0.33,
+    "firstAttempt": 0.54,
+    "retry": "see transcript run"
+  },
+  "transcript": "hv-1-transcript.md",
+  "tasksTicked": false
+}
