@@ -172,7 +172,7 @@ class ArtifactAndEffectTests(unittest.TestCase):
         d = observe(evts, inventory=no_path).to_dict()
         self.assertEqual(d["effects"], [{"kind": "write", "path": None, "evidence": "inferred"}])
         self.assertNotIn("private/where.txt", json.dumps(d))
-        self.assertEqual(d["redaction"]["droppedFields"], 1)
+        self.assertEqual(d["redaction"]["droppedFields"], 2)  # path and terminal state
         no_kind = make_inventory(allowedEventFields=["path"])
         d = observe(evts, inventory=no_kind).to_dict()
         self.assertEqual(d["effects"], [])
