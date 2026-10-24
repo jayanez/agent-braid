@@ -31,15 +31,22 @@ C2_PRECISION = Fraction(3, 10)
 C3_MAX_UNKNOWN = Fraction(2, 5)
 
 
+def _section(run, name):
+    value = run.get(name)
+    if not isinstance(value, dict):
+        raise ValueError(f"run {run['run_id']}: {name} must be an object")
+    return value
+
+
 def _flag(run, arm):
-    value = run["arms"].get(arm)
+    value = _section(run, "arms").get(arm)
     if not isinstance(value, bool):
         raise ValueError(f"run {run['run_id']}: arm {arm} must be a boolean")
     return value
 
 
 def _count(run, key):
-    value = run["probe"].get(key)
+    value = _section(run, "probe").get(key)
     if not isinstance(value, int) or isinstance(value, bool) or value < 0:
         raise ValueError(f"run {run['run_id']}: probe.{key} must be a non-negative integer")
     return value
@@ -64,11 +71,14 @@ def validate(runs):
         if status in ("eligible", "probe-unavailable"):
             if run.get("reference") not in REFERENCES:
                 raise ValueError(f"run {run['run_id']}: invalid reference")
-            for arm in BASELINES[:4]:
+            for arm in BASELINES:
                 _flag(run, arm)
             if _flag(run, "braid-analyze-git-primary") and not _flag(run, "braid-analyze-git-inclusive"):
                 raise ValueError(f"run {run['run_id']}: inclusive flag must include primary")
-            _flag(run, "braid-analyze-git-inclusive")
+            design = run.get("design", {})
+            if not isinstance(design, dict) or any(
+                    not isinstance(design.get(key, False), bool) for key in ("overlap", "contract")):
+                raise ValueError(f"run {run['run_id']}: design.overlap and design.contract must be booleans")
         if status == "eligible":
             total, unknown = _count(run, "total_calls"), _count(run, "unknown_calls")
             _count(run, "ordered_pairs_with_overlap")
@@ -171,15 +181,9 @@ def score(data):
     else:
         outcome, step = "g0-pass", 5
 
+    arm_flags = {name: (lambda r, name=name: r["arms"][name]) for name in BASELINES}
+    arm_flags["transcript-probe"] = probe_flag
     arms = {}
-    arm_flags = {
-        "merge-tree-pairwise": lambda r: r["arms"]["merge-tree-pairwise"],
-        "merge-tree-chained": lambda r: r["arms"]["merge-tree-chained"],
-        "naive-path-overlap": lambda r: r["arms"]["naive-path-overlap"],
-        "braid-analyze-git-primary": lambda r: r["arms"]["braid-analyze-git-primary"],
-        "braid-analyze-git-inclusive": lambda r: r["arms"]["braid-analyze-git-inclusive"],
-        "transcript-probe": probe_flag,
-    }
     for name, flag_of in arm_flags.items():
         population = probed if name == "transcript-probe" else scored
         stats, prec, rec = _arm_stats(population, flag_of)
@@ -189,11 +193,13 @@ def score(data):
         arms[name] = stats
 
     first_ten = probed[:MIN_ELIGIBLE]
+    with_overlap = sum(1 for r in first_ten if r.get("design", {}).get("overlap"))
+    with_contract = sum(1 for r in first_ten if r.get("design", {}).get("contract"))
     adherence = {  # reported separately from the result
-        "first_ten_with_designed_overlap": sum(1 for r in first_ten if r.get("design", {}).get("overlap")),
-        "first_ten_with_cross_file_contract": sum(1 for r in first_ten if r.get("design", {}).get("contract")),
-        "overlap_design_met": sum(1 for r in first_ten if r.get("design", {}).get("overlap")) >= 7,
-        "contract_design_met": sum(1 for r in first_ten if r.get("design", {}).get("contract")) >= 3,
+        "first_ten_with_designed_overlap": with_overlap,
+        "first_ten_with_cross_file_contract": with_contract,
+        "overlap_design_met": with_overlap >= 7,
+        "contract_design_met": with_contract >= 3,
     }
     return {
         "outcome": outcome, "decided_at_step": step,
@@ -211,7 +217,11 @@ def main(argv=None):
         sys.stderr.write("usage: scorer.py RUNS.json\n")
         return 2
     with open(argv[0], encoding="utf-8") as handle:
-        result = score(json.load(handle))
+        try:
+            result = score(json.load(handle))
+        except ValueError as error:
+            sys.stderr.write(f"scorer: {error}\n")
+            return 1
     json.dump(result, sys.stdout, sort_keys=True, indent=2)
     sys.stdout.write("\n")
     return 0

@@ -290,6 +290,81 @@ class ScorerTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             self.outcome(bad)
 
+    def test_c2_floor_is_inclusive_at_exactly_three_tenths(self):
+        def outcome(flagged, failing):
+            runs = [make_run(i, "semantic-failure" if i <= failing else "clean",
+                             pairs=1 if i <= flagged else 0) for i in range(1, 15)]
+            return self.outcome(runs)
+        at_floor = outcome(10, 3)  # precision 3/10, prevalence 3/14
+        self.assertEqual(at_floor["c2"]["precision"], 0.3)
+        self.assertEqual((at_floor["outcome"], at_floor["decided_at_step"]), ("g0-pass", 5))
+        below = outcome(7, 2)  # precision 2/7, just under the floor
+        self.assertEqual((below["outcome"], below["decided_at_step"]), ("g0-fail", 4))
+
+    def test_c1a_requires_both_merge_tree_baselines_to_miss(self):
+        only_chained = [make_run(1, "semantic-failure", chained=True, primary=True)]
+        self.assertEqual(scorer.score({"runs": only_chained})["c1a"]["count"], 0)
+        only_pairwise = [make_run(1, "semantic-failure", pairwise=True, primary=True)]
+        self.assertEqual(scorer.score({"runs": only_pairwise})["c1a"]["count"], 0)
+
+    def test_c1a_reports_naive_overlap_among_its_runs(self):
+        runs = [make_run(1, "semantic-failure", primary=True, naive=True),
+                make_run(2, "textual-conflict", primary=True)]
+        c1a = scorer.score({"runs": runs})["c1a"]
+        self.assertEqual((c1a["count"], c1a["also_flagged_by_naive"]), (2, 1))
+
+    def test_prevalence_counts_only_eligible_runs_with_probe_data(self):
+        runs = passing_runs() + [make_run(11, "semantic-failure", status="probe-unavailable")]
+        out = self.outcome(runs)
+        self.assertEqual(out["reference_failure_prevalence"], 0.3)  # 3 of 10, not 4 of 11
+        self.assertEqual(out["c2"]["prevalence"], 0.3)
+
+    def test_adherence_uses_first_ten_eligible_by_ordinal(self):
+        runs = [make_run(i) for i in range(1, 13)]
+        for run in runs[:10]:
+            run["design"] = {"overlap": True, "contract": False}
+        runs[10]["design"] = {"overlap": False, "contract": True}  # ordinal 11
+        runs[11]["design"] = {"overlap": False, "contract": True}  # ordinal 12
+        runs[10]["run_id"] = "aa"  # run_id order differs from ordinal order
+        runs.reverse()  # and so does input order
+        adherence = self.outcome(runs)["adherence"]
+        self.assertEqual((adherence["first_ten_with_designed_overlap"],
+                          adherence["first_ten_with_cross_file_contract"]), (10, 0))
+
+    def test_adherence_thresholds_are_seven_overlap_and_three_contract(self):
+        def adherence(overlap, contract):
+            runs = [make_run(i) for i in range(1, 11)]
+            for n, run in enumerate(runs):
+                run["design"] = {"overlap": n < overlap, "contract": n < contract}
+            return self.outcome(runs)["adherence"]
+        self.assertFalse(adherence(6, 3)["overlap_design_met"])
+        self.assertTrue(adherence(7, 2)["overlap_design_met"])
+        self.assertFalse(adherence(7, 2)["contract_design_met"])
+        self.assertTrue(adherence(7, 3)["contract_design_met"])
+
+    def test_missing_or_mistyped_sections_raise_value_error(self):
+        for mutate in (lambda r: r.pop("probe"), lambda r: r.pop("arms"),
+                       lambda r: r.update(probe=[]), lambda r: r.update(arms="x")):
+            bad = passing_runs()
+            mutate(bad[0])
+            with self.assertRaises(ValueError):
+                self.outcome(bad)
+
+    def test_design_flags_must_be_booleans_and_cli_reports_value_errors(self):
+        bad = passing_runs()
+        bad[0]["design"]["overlap"] = "no"
+        with self.assertRaises(ValueError):
+            self.outcome(bad)
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp, "runs.json")
+            path.write_text(json.dumps({"runs": [{"run_id": "r01", "ordinal": 1,
+                                                 "status": "eligible"}]}), encoding="utf-8")
+            proc = subprocess.run([sys.executable, str(KIT / "scorer.py"), str(path)],
+                                  capture_output=True, text=True)
+        self.assertEqual(proc.returncode, 1)
+        self.assertIn("run r01", proc.stderr)
+        self.assertNotIn("Traceback", proc.stderr)
+
     def test_duplicate_run_ids_boolean_ordinals_and_non_list_runs_are_rejected(self):
         bad = passing_runs()
         bad[1]["run_id"] = bad[0]["run_id"]  # would double count one run
@@ -318,6 +393,8 @@ class KitFilesTests(unittest.TestCase):
         self.assertIn("isolation: 'worktree'", source)
         for banned in ("git merge", "git push", "Date.now", "Math.random"):
             self.assertNotIn(banned, source)
+        self.assertIn("tasks.length < 3 || tasks.length > 4", source)
+        self.assertIn("typeof args.testCommand !== 'string' || !args.testCommand", source)
 
     def test_manifest_template_is_valid_json_with_unset_bindings(self):
         manifest = json.loads((KIT / "run-manifest.template.json").read_text(encoding="utf-8"))
