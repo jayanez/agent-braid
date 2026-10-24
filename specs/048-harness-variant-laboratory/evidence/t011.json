@@ -1,0 +1,32 @@
+{
+  "candidateBinding": "Current source/input hashes; no frozen implementation commit claimed",
+  "disposition": "Completed for offline trusted context assembly and bounded feedback packages; broader feature gates pending",
+  "executedChecks": [
+    {
+      "command": "python3 -m unittest discover -s tests -p \"test_harness*.py\" -v",
+      "exitCode": 0,
+      "moduleTests": 16,
+      "scope": "Focused run, Python 3.13.11; includes T002-T004 and cross-module tests. Mutation checks (grader exclusion disabled; hash/size staleness check disabled) made 3 and 1 module tests fail respectively.",
+      "testsRun": 85
+    }
+  ],
+  "inputs": {
+    "agent_braid/harness_context.py": "29075386183637ca89262d916fdc273499c0318ad0ce085e1490276423f647e9",
+    "agent_braid/harness_manifest.py": "373f1dd8e888c88fde6a47399c429c9b56ab040eea94811f22de796bc6b5d5a1",
+    "specs/048-harness-variant-laboratory/upstream-adaptation.md": "049432928aa8030e81ebaaa5859ac8d4a42d50eb028bffee63c21d1dc2130042",
+    "tests/test_harness_context.py": "3685642fe415472afea4941b3ef774a604539dd2a6ff6068aa727ed734ad1bd5",
+    "tests/test_harness_manifest.py": "1ceb49f412d0fcc51c2519a089de0d62f0ef9ce075b3dfdd00c86e93fff186c2"
+  },
+  "limits": "Pure offline engineering controls on owned fixtures. Instruction-like text is inert quoted data; this is not a host/model prompt-resistance claim. Grader exclusion is hash-based over caller-supplied and manifest-bound hashes, so unlisted hidden material is not detected. No retrieval, native, model or paid route.",
+  "method": "Actual offline unittest execution",
+  "outcome": "Positive inventory, trust labels, byte/entry budgets, progressive disclosure, loss receipts, hidden-grader exclusion and bounded feedback controls passed.",
+  "outputs": {
+    "agent_braid/harness_context.py": "29075386183637ca89262d916fdc273499c0318ad0ce085e1490276423f647e9",
+    "tests/test_harness_context.py": "3685642fe415472afea4941b3ef774a604539dd2a6ff6068aa727ed734ad1bd5"
+  },
+  "pending": [
+    "Stable pr profile result (recorded in the pull request); T005+ consumers; all native/human/scientific/economic gates"
+  ],
+  "spec": "048-harness-variant-laboratory",
+  "task": "T011"
+}
