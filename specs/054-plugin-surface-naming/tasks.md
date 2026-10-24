@@ -46,6 +46,6 @@ authorize concurrent agents.
   Dependencies: T006, T008. Verification: procedure_009. Evidence: native
   observation record with environment and limits. Blocked on owner-run sessions.
 
-- [ ] T010 (all): Run `--profile pr` on the stable candidate, record results and
+- [x] T010 (all): Run `--profile pr` on the stable candidate, record results and
   request owner release decision. Dependencies: T002–T009. Evidence: profile
   receipt. Release and publication remain separate owner decisions.

@@ -320,7 +320,7 @@ close M4.5 or satisfy its pending registered native/human evaluation.
 **Status:** [Open](https://github.com/jayanez/agent-braid/milestone/19), adjacent to
 M4. The original six-spec portfolio, its two evaluation follow-ups, the 19 native-plugin
 tasks, ten telemetry tasks and ten draft SPEC-054 naming tasks now total 120
-obligations across nine source specs: 85 checked and 35 open, with three
+obligations across nine source specs: 86 checked and 34 open, with three
 historically closed and six open parents.
 These are source states, not a remote issue readback.
 SPEC-039/040/042 retain their recorded bounded acceptance; remote issue state is
