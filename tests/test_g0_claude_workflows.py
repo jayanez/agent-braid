@@ -290,6 +290,19 @@ class ScorerTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             self.outcome(bad)
 
+    def test_duplicate_run_ids_boolean_ordinals_and_non_list_runs_are_rejected(self):
+        bad = passing_runs()
+        bad[1]["run_id"] = bad[0]["run_id"]  # would double count one run
+        with self.assertRaises(ValueError):
+            self.outcome(bad)
+        bad = passing_runs()
+        bad[0]["ordinal"] = True  # bool is an int subclass
+        with self.assertRaises(ValueError):
+            self.outcome(bad)
+        for runs in (None, {"r01": {}}, "runs"):
+            with self.assertRaises(ValueError):
+                self.outcome(runs)
+
     def test_excluded_runs_are_counted_but_not_scored(self):
         runs = passing_runs() + [make_run(11, status="quota-exhausted")]
         out = self.outcome(runs)

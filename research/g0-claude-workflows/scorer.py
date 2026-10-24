@@ -46,11 +46,17 @@ def _count(run, key):
 
 
 def validate(runs):
+    if not isinstance(runs, list) or not all(isinstance(run, dict) for run in runs):
+        raise ValueError("runs must be a list of objects")
     if len(runs) > MAX_STARTED:
         raise ValueError(f"more than {MAX_STARTED} started runs")
     ordinals = [run.get("ordinal") for run in runs]
-    if len(set(ordinals)) != len(ordinals) or not all(isinstance(o, int) for o in ordinals):
+    if (len(set(ordinals)) != len(ordinals)
+            or not all(isinstance(o, int) and not isinstance(o, bool) for o in ordinals)):
         raise ValueError("ordinals must be distinct integers")
+    run_ids = [run.get("run_id") for run in runs]
+    if len(set(run_ids)) != len(run_ids) or not all(isinstance(r, str) and r for r in run_ids):
+        raise ValueError("run_id must be a distinct non-empty string per run")
     for run in runs:
         status = run.get("status")
         if status not in ("eligible", "probe-unavailable") + EXCLUSIONS:
@@ -107,7 +113,7 @@ def _arm_stats(runs, flag_of):
 
 
 def score(data):
-    runs = data["runs"]
+    runs = data.get("runs") if isinstance(data, dict) else None
     validate(runs)
     by_status = {}
     for run in runs:
