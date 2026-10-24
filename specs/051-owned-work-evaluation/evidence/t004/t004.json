@@ -1,0 +1,55 @@
+{
+  "candidate": {
+    "base": "6078d98a63959d279fce9a64ac9122209f2685ef",
+    "commit": "1900391c6fae500f18a6e5bc6256695be87664ea",
+    "note": "Profiles ran on this commit (docs/STATUS.md change over develop). This evidence commit adds only evidence/spec-record files after it and is covered by PR CI, not by these receipts."
+  },
+  "compatibility": "No file under agent_braid/ or tests/ changed relative to develop; SPEC-051 modules unchanged since #659; import-purity test test_modules_have_no_io_model_or_collector_imports_and_no_side_effects included in the focused run and the full suite.",
+  "environment": {
+    "clone": "fresh independent full clone of public develop plus restore_public_spec_history.py (shared worktree store fails preflight: public repository contains unreachable objects)",
+    "python": "3.13 venv from requirements-speckit.txt and requirements-dev.txt; spec-kit preflight passed in clone"
+  },
+  "externalSpendEUR": 0,
+  "focused": {
+    "command": "python -m unittest tests.test_owned_work_authority tests.test_owned_work_contracts tests.test_owned_work_coverage",
+    "errors": 0,
+    "failures": 0,
+    "note": "60 = 42 T001-T003 tests plus later coverage-control tests; counts overlap, not independent samples",
+    "skipped": 0,
+    "tests": 60
+  },
+  "limits": [
+    "Engineering checks only; not clean-room reproduction, source capture, scientific validity, forecasting skill, independent review, human or founder approval.",
+    "quick on a docs-only path set did not escalate; the earlier sensitive-profile receipts in ../rf01-rf02 are historical and bound to a different candidate.",
+    "Failures: none in this run. Earlier failed attempts remain recorded in ../../integration-repair.md and rf01-rf02."
+  ],
+  "profiles": {
+    "pr": {
+      "command": "scripts/validate_change.py --base develop --profile pr",
+      "commands": 14,
+      "exitCode": 0,
+      "log": "pr.log.gz",
+      "logGzSha256": "82560a2b0f67ceb9da46263b3c523ce69c7a67069593c2a9ac316283d9ab50d1",
+      "skipped": 24,
+      "tests": 2286,
+      "unitSeconds": 2181.655
+    },
+    "quick": {
+      "command": "scripts/validate_change.py --base develop --profile quick",
+      "commands": [
+        "repository",
+        "constitution-replica",
+        "whitespace"
+      ],
+      "effectiveProfile": "quick",
+      "exitCode": 0,
+      "log": "quick.log.gz",
+      "logGzSha256": "acf23fdcb3a30c83e2d90d98003c3e5ad7b0a14cbf53ba1bfd5445f901c30130",
+      "seconds": 2
+    }
+  },
+  "requirement": "REQ-003",
+  "scenario": "SC-003",
+  "schema": "agent-braid-spec051-t004-receipt/v1",
+  "task": "SPEC-051/T004"
+}
