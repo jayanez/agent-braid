@@ -1,0 +1,31 @@
+{
+  "task": "SPEC-048/T007",
+  "candidateBinding": "Current source/input hashes; no frozen implementation commit claimed",
+  "disposition": "Completed for the offline durable-attempt journal engineering controls; native, host, utility and independent-review gates pending",
+  "executionAuthorization": false,
+  "executedChecks": [
+    {
+      "command": "python3.13 -m unittest discover -s tests -p \"test_harness*.py\" -v",
+      "exitCode": 0,
+      "moduleTests": 24,
+      "testsRun": 167,
+      "scope": "Focused offline run. Real-process controls: a driver subprocess SIGKILLs itself (exit -9 asserted) after the start marker, after a checkpoint, after the fixture child ran, and after the terminal record; a fourth case SIGKILLs the driver while the fixture child is still running and then kills the child group. Manual mutation checks (each failed tests before restoring): reconcile writing completed, admission-consumed check removed, manifest-drift check removed, unreconciled-attempt check removed, admission-window check removed, permissionRenewed true. A transient ENOENT on concurrent .lock creation (APFS) found by a flaky run was fixed with a bounded retry."
+    }
+  ],
+  "inputs": {
+    "agent_braid/harness_journal.py": "5a8687229efa7e8ee672c558226487058a29d7bb4b41c6b7dde35706a2679288",
+    "agent_braid/harness_admission.py": "49197a2518d8df9b66658ec6c279d079bc1cf915a9c3570673f524dca60b5901",
+    "agent_braid/harness_lab.py": "deea7a023b7e9b132d63a6192986cae2933bb79939f30d97263bbcb106bc3ec5",
+    "agent_braid/harness_manifest.py": "373f1dd8e888c88fde6a47399c429c9b56ab040eea94811f22de796bc6b5d5a1",
+    "agent_braid/harness_observation.py": "053075bad3ac4f18da28569f4c60f4d32923a5a4f1ac8c183cd5941f41cd2a2a",
+    "specs/048-harness-variant-laboratory/contracts/interface.md": "c39fc6a3037c056e826934d4fd2898f171f97e9d6a43fe4fa9d4b04ea8fc7b45",
+    "tests/test_harness_journal.py": "2ec89e7c10d62c6f68be3f09a78f05708f4190f3b4ca629f2d234b1d2f7a421f"
+  },
+  "outcome": "A start marker is durably written before dispatch and consumes its reservation; interruption at any boundary leaves an open attempt that reconciles only to interrupted/unknown (never completed, even when the fixture child finished); a terminal record copies the observed state; reservations cannot be reused or renewed and a next attempt needs reconciliation plus a fresh reservation; manifest or fixture drift, torn/foreign/tampered/oversized records, unsafe roots and held locks refuse with fixed reason codes; zero duplicate fixture effects were observed across kills.",
+  "limits": "Single-host, single-UID: hashes are not signatures and a same-UID actor rewriting a whole chain is excluded; durability depends on the filesystem honouring fsync (not tested against power loss); only the simulated backend was exercised, so effects are the fixture's own writes, not confined; no host, model, network, native containment, utility or independent-review claim; reservation shape is checked but its issuance trust stays with harness_admission; the journal records the observation hash, not the observation, so retention/purge of observations remains T012; no CLI codec (T015).",
+  "pending": [
+    "T008+ native/human/scientific/economic gates",
+    "Stable pr-profile result recorded in the pull request",
+    "Independent review"
+  ]
+}
