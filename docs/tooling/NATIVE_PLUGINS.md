@@ -109,6 +109,36 @@ configuration. Every delegated call identifies `workspaceId`; callers cannot
 supply arbitrary source or result roots. Resource URIs are workspace-scoped.
 The legacy stdio MCP endpoint retains its existing contract.
 
+### Registry changes and running connections
+
+A `plugin setup --apply` (or `plugin workspaces --remove`) from any session or
+from the CLI changes the shared registry, so it can invalidate connections that
+are already running in other sessions. A connection compares the *effective
+configuration* (telemetry consent and the normalized workspace rows) with the
+one it snapshotted at start. An idempotent re-apply, a reordering or a raw
+byte-level rewrite is not a change; an added, removed or changed workspace,
+grant or consent is.
+
+When a connection is stale:
+
+1. Delegated tools and resource reads refuse with the code `reconnect-required`
+   and a summary that names the reconnect step. They never act on the old or
+   the new configuration.
+2. `plugin-status` and `workspaces` keep answering. `plugin-status` reports
+   `reconnectRequired: true` plus path-free `baselineDigest` (the configuration
+   this connection started with) and `currentDigest` (the registry now). Equal
+   digests mean no reconnect is needed.
+3. Reconnect MCP with the host's native reconnect/restart operation, then read
+   `plugin-status` again: the digests must match and `reconnectRequired` must be
+   `false`. The new connection snapshots the new workspaces and consent.
+
+Registration is not execution authority and the stale connection keeps its
+original immutable roots and grants until it is replaced.
+
+Scope: SPEC-046 T016–T019 are a bounded defect fix after the 2026-10-19 owner
+disposition. They do not reopen T014/T015 candidacy, builds, size work or
+publication.
+
 ## Optional Claude-only gate workflow (unreleased)
 
 [SPEC-052](../../specs/052-claude-workflow-gate/spec.md) specifies an optional
