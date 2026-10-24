@@ -153,5 +153,51 @@ class WorkloadComparisonTests(unittest.TestCase):
         self.assertIsNone(median_upper_bound([1, 2, 3, 4]))
         self.assertIsNone(median_upper_bound([]))
 
+EVIDENCE = ROOT / "specs/024-effectful-workload-lab/evidence/comparison-20261024.json"
+
+
+def evidence_problems(evidence, manifest, registration):
+    """List deterministic ways a captured experiment departs from the frozen corpus."""
+    problems = []
+    if evidence["registration"] != registration or evidence["protocol"] != manifest["protocol"]:
+        problems.append("registration")
+    if [r["id"] for r in evidence["fixtures"]] != [f["id"] for f in manifest["fixtures"]]:
+        problems.append("fixtures")
+    for result, fixture in zip(evidence["fixtures"], manifest["fixtures"]):
+        if result["requestHash"] != fixture["requestHash"] or result["oracle"] != explore(fixture["request"]):
+            problems.append("oracle " + fixture["id"])
+        if not result["matchedCompleteCoverage"] or result["failures"] or result["control"]["status"] != "pass":
+            problems.append("coverage " + fixture["id"])
+        if any(len(result["samples"][m]) != 20 or result["warmupsCompleted"][m] != 3 for m in METHODS):
+            problems.append("repetitions " + fixture["id"])
+    accounting = evidence["accounting"]
+    if accounting["falseTerminalCandidates"] or accounting["recoveredTerminalCandidates"] != sum(
+            bool(r["h2"] and r["h2"].get("recoveredFromExactResourceOverlap")) for r in evidence["fixtures"]):
+        problems.append("accounting")
+    if evidence["feasibility"]["ruleIncrementalCostPpm"]["samples"] != 200:
+        problems.append("samples")
+    if evidence["executionAuthorization"] is not False or evidence["scientificReview"] != "pending":
+        problems.append("authority")
+    return problems
+
+
+class WorkloadCapturedEvidenceTests(unittest.TestCase):
+    def test_committed_comparison_matches_frozen_corpus_and_detects_tampering(self):
+        manifest, registration = corpus()
+        evidence = json.loads(EVIDENCE.read_text())
+        self.assertEqual(evidence_problems(evidence, manifest, registration), [])
+        self.assertEqual(evidence["accounting"]["registeredFixtures"], 17)
+        for mutate in (
+            lambda e: e["fixtures"][0]["oracle"]["paths"].pop(),
+            lambda e: e["fixtures"][0]["samples"]["declared-effects"].pop(),
+            lambda e: e["accounting"].__setitem__("falseTerminalCandidates", 1),
+            lambda e: e.__setitem__("executionAuthorization", True),
+            lambda e: e["registration"].__setitem__("fixtureCount", 16),
+        ):
+            changed = copy.deepcopy(evidence)
+            mutate(changed)
+            self.assertNotEqual(evidence_problems(changed, manifest, registration), [])
+
+
 if __name__ == "__main__":
     unittest.main()
