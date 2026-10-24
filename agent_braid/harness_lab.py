@@ -3,7 +3,7 @@
 
 Runs one runner-owned Python fixture whose bytes are bound to the manifest's
 ``fixtureSha256`` in a bounded, killed-and-settled child process group with an
-empty environment and a private working directory, and turns its JSON-lines events
+a minimal environment (``PYTHONHASHSEED`` only, no inherited variables) and a private working directory, and turns its JSON-lines events
 plus the before/after working-directory files into a T012 observation.
 
 Containment is labelled, never inherited: the built-in backend is ``simulated`` (it
@@ -22,7 +22,6 @@ from hashlib import sha256
 import os
 from pathlib import Path
 import re
-import resource
 import shutil
 import signal
 import subprocess
@@ -41,6 +40,7 @@ QUALIFICATION_FORMAT = "braid-harness-containment-qualification/v0.1"
 ENFORCED_EFFECTS = ("credential", "filesystem", "network", "process")
 MAX_WALL_SECONDS = 60
 MAX_FIXTURE_FILES = 32
+MAX_SCAN_ENTRIES = 4096
 _HASH = re.compile(r"[0-9a-f]{64}\Z")
 _ID = re.compile(r"[A-Za-z0-9][A-Za-z0-9_.:-]{0,63}\Z")
 _CHILD_ENV = {"PYTHONHASHSEED": "0"}
@@ -94,7 +94,7 @@ def verify_qualification(raw: bytes, *, expected_sha256: str) -> Qualification:
         value = parse_json(raw)
     except InvalidDecision:
         raise LabError("invalid-qualification") from None
-    ok = (set(value) == {"format", "backend", "kind", "environmentSha256", "enforced",
+    ok = (type(value) is dict and set(value) == {"format", "backend", "kind", "environmentSha256", "enforced",
                          "expiresAt", "evidenceSha256"}
           and value["format"] == QUALIFICATION_FORMAT and value["kind"] == "native"
           and type(value["backend"]) is str and _ID.fullmatch(value["backend"]) is not None
@@ -142,15 +142,16 @@ class ContainmentBackend:
         raise NotImplementedError
 
 
-def _limit_child(limits: FixtureLimits):
-    cap = limits.max_output_bytes + 1
-
-    def apply() -> None:
-        resource.setrlimit(resource.RLIMIT_CPU, (limits.wall_seconds + 1, limits.wall_seconds + 1))
-        resource.setrlimit(resource.RLIMIT_FSIZE, (cap, cap))
-        resource.setrlimit(resource.RLIMIT_CORE, (0, 0))
-        resource.setrlimit(resource.RLIMIT_NOFILE, (64, 64))
-    return apply
+# Runs inside the child before the fixture: applies rlimits without ``preexec_fn``
+# (unsafe in multi-threaded parents), then executes the fixture source from argv.
+_PREAMBLE = (
+    "import resource, sys\n"
+    "cpu, cap = int(sys.argv[2]), int(sys.argv[3])\n"
+    "resource.setrlimit(resource.RLIMIT_CPU, (cpu, cpu))\n"
+    "resource.setrlimit(resource.RLIMIT_FSIZE, (cap, cap))\n"
+    "resource.setrlimit(resource.RLIMIT_CORE, (0, 0))\n"
+    "resource.setrlimit(resource.RLIMIT_NOFILE, (64, 64))\n"
+    "exec(compile(sys.argv[1], '<fixture>', 'exec'), {'__name__': '__main__'})\n")
 
 
 def _settle(pgid: int) -> bool:
@@ -178,10 +179,10 @@ class SimulatedContainment(ContainmentBackend):
             with open(out_path, "wb") as sink:
                 try:
                     child = subprocess.Popen(
-                        [sys.executable, "-I", "-S", "-c", source.decode("utf-8")],
+                        [sys.executable, "-I", "-S", "-c", _PREAMBLE, source.decode("utf-8"),
+                         str(limits.wall_seconds + 1), str(limits.max_output_bytes + 1)],
                         cwd=workdir, env=_CHILD_ENV, stdin=subprocess.DEVNULL, stdout=sink,
-                        stderr=subprocess.DEVNULL, close_fds=True, start_new_session=True,
-                        preexec_fn=_limit_child(limits))
+                        stderr=subprocess.DEVNULL, close_fds=True, start_new_session=True)
                 except (OSError, ValueError, UnicodeDecodeError):
                     raise LabError("launch-failed") from None
                 timed_out = False
@@ -218,25 +219,30 @@ def _collect(workdir: Path) -> tuple[dict[str, bytes], bool]:
     files: dict[str, bytes] = {}
     complete = True
     stack = [(workdir, 0)]
+    visited = 0
     while stack:
         directory, depth = stack.pop()
-        for entry in os.scandir(directory):
-            rel = Path(entry.path).relative_to(workdir).as_posix()
-            if entry.is_symlink() or depth >= 7:
-                complete = False
-            elif entry.is_dir(follow_symlinks=False):
-                stack.append((Path(entry.path), depth + 1))
-            elif entry.is_file(follow_symlinks=False):
-                fd = os.open(entry.path, os.O_RDONLY | os.O_NOFOLLOW)
-                with os.fdopen(fd, "rb") as stream:
-                    data = stream.read(MAX_ARTIFACT_BYTES + 1)
-                if len(files) >= MAX_ARTIFACTS or len(data) > MAX_ARTIFACT_BYTES \
-                        or not _is_relative(rel):
+        with os.scandir(directory) as entries:
+            for entry in entries:
+                visited += 1
+                if visited > MAX_SCAN_ENTRIES:
+                    return files, False
+                rel = Path(entry.path).relative_to(workdir).as_posix()
+                if entry.is_symlink() or depth >= 7:
                     complete = False
+                elif entry.is_dir(follow_symlinks=False):
+                    stack.append((Path(entry.path), depth + 1))
+                elif entry.is_file(follow_symlinks=False):
+                    fd = os.open(entry.path, os.O_RDONLY | os.O_NOFOLLOW)
+                    with os.fdopen(fd, "rb") as stream:
+                        data = stream.read(MAX_ARTIFACT_BYTES + 1)
+                    if len(files) >= MAX_ARTIFACTS or len(data) > MAX_ARTIFACT_BYTES \
+                            or not _is_relative(rel):
+                        complete = False
+                    else:
+                        files[rel] = data
                 else:
-                    files[rel] = data
-            else:
-                complete = False
+                    complete = False
     return files, complete
 
 
@@ -277,13 +283,33 @@ class LabResult:
     output_truncated: bool
     settled: bool
     cleaned: bool
-    executionAuthorization: bool = False
+
+    @property
+    def executionAuthorization(self) -> bool:
+        return False
 
     def to_dict(self) -> dict:
         return {"observationSha256": self.observation.sha256, "containment": self.containment,
                 "exitCode": self.exit_code, "timedOut": self.timed_out,
                 "outputTruncated": self.output_truncated, "settled": self.settled,
                 "cleaned": self.cleaned, "executionAuthorization": False}
+
+
+def _execute(backend: ContainmentBackend, fixture: bytes, workdir: Path,
+             inputs: Mapping[str, bytes], limits: FixtureLimits):
+    """Seed the workdir, run the backend, snapshot the result; domain errors only."""
+    try:
+        _write_inputs(workdir, inputs)
+        child = backend.run(fixture, workdir, limits)
+        files, complete = _collect(workdir)
+    except LabError:
+        raise
+    except OSError:
+        raise LabError("workspace-unavailable") from None
+    except Exception:  # untrusted backend: surface a fixed reason only
+        raise LabError("backend-failed") from None
+    _require(isinstance(child, ChildResult), "invalid-backend-result")
+    return child, files, complete
 
 
 def _check_backend(backend: Any, manifest: HarnessManifest, now: int) -> str:
@@ -330,18 +356,7 @@ def run_fixture(manifest: HarnessManifest, fixture: bytes, *, backend: Containme
     except OSError:
         raise LabError("workspace-unavailable") from None
     try:
-        try:
-            _write_inputs(workdir, inputs)
-            try:
-                child = backend.run(fixture, workdir, limits)
-            except LabError:
-                raise
-            except Exception:  # untrusted backend: surface a fixed reason only
-                raise LabError("backend-failed") from None
-            after, complete = _collect(workdir)
-        except OSError:
-            raise LabError("workspace-unavailable") from None
-        _require(isinstance(child, ChildResult), "invalid-backend-result")
+        child, after, complete = _execute(backend, fixture, workdir, inputs, limits)
         events, errors = _parse_events(child.stdout)
         _supervisor_terminal(events, child)
         if child.output_truncated:

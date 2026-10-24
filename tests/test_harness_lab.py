@@ -5,6 +5,7 @@ from hashlib import sha256
 import glob
 import os
 import tempfile
+import threading
 import time
 import unittest
 
@@ -282,6 +283,50 @@ class ContainmentTests(unittest.TestCase):
                 lab.verify_qualification(raw_bad, expected_sha256=good)
         with self.assertRaises(lab.LabError):
             lab.verify_qualification(raw, expected_sha256="short")
+
+class ReviewFollowupTests(unittest.TestCase):
+    def test_non_object_qualification_json_is_a_domain_refusal(self):
+        for raw in (b"[]", b"[1]", b"1", b'"x"', b"null", b"true"):
+            with self.subTest(raw=raw), self.assertRaisesRegex(lab.LabError, "^invalid-qualification$"):
+                lab.verify_qualification(raw, expected_sha256="0" * 64)
+
+    def test_authorization_is_not_a_constructible_field(self):
+        result = run()
+        with self.assertRaises(TypeError):
+            lab.LabResult(result.observation, "simulated", 0, False, False, True, True,
+                          executionAuthorization=True)
+        self.assertIs(result.executionAuthorization, False)
+        with self.assertRaises(FrozenInstanceError):
+            result.executionAuthorization = True
+
+    def test_entry_scan_is_capped_and_lossy(self):
+        fixture = f'''
+import json, os
+for i in range({lab.MAX_SCAN_ENTRIES + 50}):
+    os.mkdir("d%d" % i)
+for e in ({{"seq": 0, "kind": "start"}}, {{"seq": 1, "kind": "terminal", "state": "completed"}}):
+    print(json.dumps(e))
+'''.encode()
+        result = run(fixture, limits=lab.FixtureLimits(wall_seconds=10))
+        self.assertEqual(terminal(result), "unobserved")
+        self.assertIn("artifact-unobservable", result.observation.to_dict()["loss"]["transportErrors"])
+        self.assertTrue(result.cleaned)
+
+    def test_runs_from_a_non_main_thread(self):
+        box = []
+        thread = threading.Thread(target=lambda: box.append(run()))
+        thread.start()
+        thread.join(30)
+        self.assertEqual(terminal(box[0]), "completed")
+
+    def test_child_cannot_exceed_rlimits(self):
+        fixture = b'''
+import json, resource
+print(json.dumps({"seq": 0, "kind": "start"}))
+print(json.dumps({"seq": 1, "kind": "message", "text": str(resource.getrlimit(resource.RLIMIT_NOFILE)[0])}))
+print(json.dumps({"seq": 2, "kind": "terminal", "state": "completed"}))
+'''
+        self.assertEqual(run(fixture).observation.to_dict()["events"][1]["text"], "64")
 
 
 if __name__ == "__main__":
