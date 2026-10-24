@@ -66,8 +66,8 @@ The build downloads the pinned runtime archive and hash-locked wheels (no spend)
   Agent Braid authority (ADR 0021).
 - Save the full transcript of each probe (copy the terminal session or use the
   host's export) beside the JSON file. Evidence files go in
-  `specs/052-claude-workflow-gate/evidence/` (the directory does not exist yet;
-  create it when the first record is written). Do not edit `tasks.md` boxes; the
+  `specs/052-claude-workflow-gate/evidence/` (the directory exists and holds only
+  `corpus-comparison.json`, the T021 result; add the HV files beside it). Do not edit `tasks.md` boxes; the
   task checkbox change is a separate reviewed step after the evidence exists.
 - Use the template of each section. `outcome` is exactly one of `pass`, `fail`,
   `unobserved`. Put the permission rule text you actually used verbatim; put raw
