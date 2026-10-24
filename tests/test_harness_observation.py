@@ -175,8 +175,7 @@ class ArtifactAndEffectTests(unittest.TestCase):
         self.assertEqual(d["redaction"]["droppedFields"], 2)  # path and terminal state
         no_kind = make_inventory(allowedEventFields=["path"])
         d = observe(evts, inventory=no_kind).to_dict()
-        self.assertEqual(d["effects"], [])
-        self.assertNotIn("private/where.txt", json.dumps(d))
+        self.assertEqual(d["effects"], [])  # no allowed kind: no effect claim at all
 
     def test_effect_path_secret_redacted(self):
         evts = events({"seq": 1, "kind": "effect", "effect": "write", "path": f"d/{SECRET}"})

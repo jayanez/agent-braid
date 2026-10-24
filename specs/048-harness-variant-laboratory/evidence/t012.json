@@ -16,7 +16,7 @@
     "agent_braid/harness_observation.py": "053075bad3ac4f18da28569f4c60f4d32923a5a4f1ac8c183cd5941f41cd2a2a",
     "agent_braid/system_one.py": "8a52a047bc72ba4f1099df60c1051178fbcb7735ee4d6e615d9b8052bbb31f44",
     "specs/048-harness-variant-laboratory/contracts/interface.md": "c39fc6a3037c056e826934d4fd2898f171f97e9d6a43fe4fa9d4b04ea8fc7b45",
-    "tests/test_harness_observation.py": "fbfa0e5952493b09d1b08146a314a6c7888cb479cdb2cbd58128773ece23d64c"
+    "tests/test_harness_observation.py": "77201c56698e129d2c377517487a7bad08063c81b06d42a2c0c7c5eed8cbaefc"
   },
   "limits": "Pure in-memory library; no filesystem, host, process or network. Secret redaction covers inventory literals only, not unknown secrets. Retention/purge operate on caller-held records; no durable store (T007) or CLI codec (T015). Hashes are not signatures; same-UID compromise excluded.",
   "outcome": "Events, artifact diffs, terminals, missing events and transport errors normalize into versioned hash-bound observations; loss blocks completed; secrets redacted via hash-verified inventory with post-redaction scan; retention enforced; purge keeps failed-attempt tombstones; no raw transcript or artifact content exported.",
