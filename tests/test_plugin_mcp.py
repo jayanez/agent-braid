@@ -6,7 +6,7 @@ import unittest
 import importlib.util
 from tests import test_plugin_registry as registry_tests
 from agent_braid.plugin_mcp import PluginRouter
-from agent_braid.plugin_registry import load, plan_setup, apply
+from agent_braid.plugin_registry import RegistryStale, load, plan_setup, apply
 
 
 class PluginRouterTests(unittest.TestCase):
@@ -47,6 +47,145 @@ class PluginRouterTests(unittest.TestCase):
         self.assertTrue(router.status()['reconnectRequired'])
         self.assertEqual(router.invoke('analyze-work', {'workspaceId': identifier}, threading.Event())['status'], 'refused')
 
+    def rewrite(self, transform):
+        path = self.home / 'registry.json'
+        value = transform(json.loads(path.read_text()))
+        path.write_text(json.dumps(value, separators=(',', ':')))
+
+    def make_repo(self, name):
+        import subprocess
+        path = self.base / name
+        path.mkdir()
+        subprocess.run(['git', 'init', '-q', str(path)], check=True)
+        return path
+
+    def two_workspaces(self):
+        second = self.make_repo('another')
+        self.install([self.repo, second])
+        return [x['workspaceId'] for x in load(self.home)['workspaces']]
+
+    def assert_not_reconnect_refusal(self, result):
+        self.assertNotIn('reconnect', result['summary'])
+        self.assertNotEqual(result['result'], {'code': RegistryStale.code})
+
+    def test_noop_and_reordered_rewrites_do_not_require_reconnect(self):
+        ids = self.two_workspaces()
+        router = PluginRouter(self.home)
+        baseline = router.status()['baselineDigest']
+        self.rewrite(lambda v: v)
+        self.rewrite(lambda v: dict(v, workspaces=list(reversed(v['workspaces']))))
+        status = router.status()
+        self.assertFalse(status['reconnectRequired'])
+        self.assertEqual((status['baselineDigest'], status['currentDigest']), (baseline, baseline))
+        sample = json.loads((Path(__file__).resolve().parents[1] / 'examples/analysis/file-edits.json').read_text())
+        result = router.invoke('analyze-work', {'workspaceId': ids[0], 'kind': 'aim', 'request': sample}, threading.Event())
+        self.assertEqual(result['status'], 'ok')
+        self.assert_not_reconnect_refusal(result)
+
+    def test_raw_byte_differences_alone_do_not_require_reconnect(self):
+        self.two_workspaces()
+        router = PluginRouter(self.home)
+        path = self.home / 'registry.json'
+        before = path.read_bytes()
+        value = json.loads(before)
+        path.write_text(json.dumps(dict(reversed(list(value.items()))), indent=4, sort_keys=False) + '\n\n')
+        self.assertNotEqual(path.read_bytes(), before)
+        status = router.status()
+        self.assertFalse(status['reconnectRequired'])
+        self.assertEqual(status['baselineDigest'], status['currentDigest'])
+
+    def test_idempotent_setup_apply_does_not_require_reconnect(self):
+        self.install()
+        router = PluginRouter(self.home)
+        self.install()
+        self.assertFalse(router.status()['reconnectRequired'])
+
+    def test_each_effective_change_requires_reconnect_and_changes_the_digest(self):
+        extra = self.make_repo('third')
+        second = self.make_repo('another')
+        worktree = self.make_repo('worktree')
+        grants = self.base / 'grants'
+        grants.mkdir()
+        first = lambda v, **change: dict(v, workspaces=[dict(v['workspaces'][0], **change)] + v['workspaces'][1:])
+        changes = {
+            'removed': lambda v: dict(v, workspaces=v['workspaces'][:1]),
+            'consent': lambda v: dict(v, telemetry='local'),
+            'worktree-root': lambda v: first(v, worktreeRoots=[str(worktree)]),
+            'grant': lambda v: first(v, runtimeEnabled=True, grantStore=str(grants)),
+        }
+        for name, change in changes.items():
+            with self.subTest(name):
+                self.home = self.base / f'state-{name}'
+                self.install([self.repo, second])
+                router = PluginRouter(self.home)
+                self.rewrite(change)
+                status = router.status()
+                self.assertTrue(status['reconnectRequired'])
+                self.assertNotEqual(status['baselineDigest'], status['currentDigest'])
+        with self.subTest('added'):
+            self.home = self.base / 'state-added'
+            self.install([self.repo])
+            router = PluginRouter(self.home)
+            self.install([extra])
+            status = router.status()
+            self.assertTrue(status['reconnectRequired'])
+            self.assertNotEqual(status['baselineDigest'], status['currentDigest'])
+
+    def test_digests_are_path_free(self):
+        self.install()
+        router = PluginRouter(self.home)
+        status = router.status()
+        for key in ('baselineDigest', 'currentDigest'):
+            self.assertRegex(status[key], r'^[0-9a-f]{64}$')
+        self.assertNotIn(str(self.base), json.dumps({k: status[k] for k in ('baselineDigest', 'currentDigest')}))
+
+    def test_stale_refusal_names_reconnect_and_keeps_registered_workspace_id(self):
+        self.install()
+        router = PluginRouter(self.home)
+        identifier = load(self.home)['workspaces'][0]['workspaceId']
+        self.rewrite(lambda v: dict(v, telemetry='local'))
+        result = router.invoke('analyze-work', {'workspaceId': identifier}, threading.Event())
+        self.assertEqual(result['status'], 'refused')
+        self.assertEqual(result['workspaceId'], identifier)
+        self.assertEqual(result['result'], {'code': RegistryStale.code})
+        self.assertIn('reconnect', result['summary'])
+        self.assertIn('plugin-status', result['summary'])
+        self.assertNotIn('check workspace, arguments', result['summary'])
+        self.assertFalse(result['provenance']['executionAuthorization'])
+
+    def test_stale_refusal_for_unregistered_workspace_does_not_echo_it(self):
+        self.install()
+        router = PluginRouter(self.home)
+        self.rewrite(lambda v: dict(v, telemetry='local'))
+        result = router.invoke('analyze-work', {'workspaceId': 'not-registered'}, threading.Event())
+        self.assertEqual(result['status'], 'refused')
+        self.assertIsNone(result['workspaceId'])
+
+    def test_stale_read_resource_raises_registry_stale(self):
+        self.install()
+        router = PluginRouter(self.home)
+        identifier = load(self.home)['workspaces'][0]['workspaceId']
+        self.rewrite(lambda v: dict(v, telemetry='local'))
+        with self.assertRaises(RegistryStale) as caught:
+            router.read_resource(f'agent-braid-plugin://{identifier}/capabilities')
+        self.assertIn('plugin-status', str(caught.exception))
+
+    def test_bootstrap_tools_still_answer_when_stale(self):
+        self.install()
+        router = PluginRouter(self.home)
+        self.rewrite(lambda v: dict(v, telemetry='local'))
+        for name in ('plugin-status', 'workspaces'):
+            result = router.invoke(name, {}, threading.Event())
+            self.assertEqual(result['status'], 'ok')
+            self.assertTrue(result['result']['reconnectRequired'])
+
+    def test_stale_connection_keeps_its_snapshotted_roots_and_grants(self):
+        self.install()
+        router = PluginRouter(self.home)
+        before = router.status()['workspaces']
+        self.rewrite(lambda v: dict(v, workspaces=[]))
+        self.assertEqual(router.status()['workspaces'], before)
+        self.assertEqual(len(router.services), 1)
 
     def test_snapshotted_telemetry_consent_reaches_every_workspace_and_requires_reconnect(self):
         self.install()
@@ -100,6 +239,7 @@ class PluginSdkTests(unittest.IsolatedAsyncioTestCase):
     async def test_actual_sdk_connection_preserves_both_protocols_and_workspace_resources(self):
         import sys
         from mcp import Client
+        from mcp.shared.exceptions import MCPError
         from mcp.client.stdio import StdioServerParameters
         self.install()
         identifier = load(self.home)['workspaces'][0]['workspaceId']
@@ -125,6 +265,31 @@ class PluginSdkTests(unittest.IsolatedAsyncioTestCase):
                 data = await client.read_resource(uri)
                 self.assertTrue(json.loads(data.contents[0].text)['firstChunkUri'].startswith('agent-braid-plugin://'))
                 self.assertEqual((await client.list_resource_templates()).resource_templates, [])
-                self.assertEqual(len((await client.list_prompts()).prompts), 3)
-                prompt = await client.get_prompt('agent-braid-evidence')
-                self.assertIn('workspaceId', prompt.messages[0].content.text)
+                self.assertEqual(value['schemaVersion'], 'agent-braid-plugin/v0.2')
+                self.assertEqual(refused.structured_content['schemaVersion'], 'agent-braid-plugin/v0.2')
+                self.assertEqual(definitions['analyze-work'].output_schema['properties']['schemaVersion'], {'const': 'agent-braid-plugin/v0.2'})
+                self.assertIsNone(client.server_capabilities.prompts)
+                with self.assertRaisesRegex(MCPError, 'Method not found'):
+                    await client.list_prompts()
+                before = sorted(str(r.uri) for r in (await client.list_resources()).resources)
+                with self.assertRaisesRegex(MCPError, 'Method not found'):
+                    await client.get_prompt('agent-braid-analyze')
+                after = sorted(str(r.uri) for r in (await client.list_resources()).resources)
+                self.assertEqual(before, after)
+                capabilities = json.loads((await client.read_resource(f'agent-braid-plugin://{identifier}/capabilities')).contents[0].text)
+                self.assertNotIn('prompts', capabilities)
+                self.assertTrue(capabilities['resources'])
+
+
+class PluginPromptNegativeControlTests(unittest.TestCase):
+    setUp = registry_tests.PluginRegistryTests.setUp
+    install = registry_tests.PluginRegistryTests.install
+
+    def test_negative_control_shared_core_still_advertises_prompts_but_plugin_drops_them(self):
+        from agent_braid import tooling_mcp as core
+        self.install()
+        service = next(iter(PluginRouter(self.home).services.values()))
+        shared = core.ToolingService.capabilities(service)
+        self.assertEqual(len(shared['prompts']), 3)  # the old v0.1 plugin behaviour: would fail the new assertion
+        self.assertNotIn('prompts', service.capabilities())
+        self.assertEqual(len(core._PROMPT_TEXT), 3)  # portable server keeps its prompts

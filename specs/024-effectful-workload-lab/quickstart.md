@@ -2,8 +2,8 @@
 
 T001 is done (ADR 0028); T002–T004 are done after independent review; the
 tests and CLI commands below run against the current branch. T005–T008 remain
-open: SC-007 is still planned, and the SC-008 experiment (re-registered
-incremental-cost criterion) has not been run. Passing commands are local
+open: SC-007 is still planned; the SC-008 experiment (re-registered
+incremental-cost criterion) ran once on 2026-10-24 (`evidence/comparison-20261024.json`). Passing commands are local
 software checks, not scientific acceptance.
 
 ## SC-001 private configuration and retained transitions
@@ -82,7 +82,7 @@ host/commit and actual commands after execution, and reproduce in a fresh
 independent clone before science review; passing profiles do not supply this
 evidence.
 
-Registered experiment (T006/T008). Not run yet; it waits for T002–T005 and the independent review:
+Registered experiment (T006/T008). Run once on 2026-10-24 after the independent review; the committed capture is `evidence/comparison-20261024.json` (about 390 KB; oracle reports are replaced by digests):
 
 ```sh
 python3 scripts/run_effectful_workload_experiment.py --manifest examples/workload-lab/manifest.json --output specs/024-effectful-workload-lab/evidence/comparison.json

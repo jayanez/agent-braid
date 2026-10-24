@@ -298,6 +298,24 @@ def median_upper_bound(values):
     return None
 
 
+SAMPLE_KEYS = ("repetition", "orderOffset", "peakRetainedObjects", "serializedBytes")
+COST_ORDER = [*STAGES, "totalWall"]
+# "orderOffset" rotates METHODS: order = METHODS[offset:] + METHODS[:offset].
+DETERMINISTIC_KEYS = ("requestHash", "sourceBindings", "coverage", "observation", "classification", "rule", "verification",
+                      "retainedObjectMeasurement")
+
+
+def _compact(samples):
+    """Keep per-sample costs; store each deterministic field once if every sample agrees."""
+    shared, stable = {}, True
+    for method, entries in samples.items():
+        if entries:
+            first = {key: entries[0][key] for key in DETERMINISTIC_KEYS}
+            stable &= all(all(entry[key] == first[key] for key in DETERMINISTIC_KEYS) for entry in entries)
+            shared[method] = first
+    return shared, stable
+
+
 def run_experiment(manifest, registration, command=None):
     """Run the preregistered local protocol; negative outcomes are valid results."""
     validate_manifest(manifest, registration)
@@ -321,7 +339,7 @@ def run_experiment(manifest, registration, command=None):
                     oracle = measured["report"]
                     entry = {key: value for key, value in measured.items() if key != "report"}
                     entry["repetition"] = repetition
-                    entry["methodOrder"] = list(order)
+                    entry["orderOffset"] = offset
                     if repetition < 0:
                         warmups[method] += 1
                     else:
@@ -332,7 +350,9 @@ def run_experiment(manifest, registration, command=None):
                     failures.append({"method": method, "repetition": repetition, "error": str(exc), "type": type(exc).__name__,
                                      "totalWallNanoseconds": time.perf_counter_ns() - attempt_start,
                                      "stageAccounting": "incomplete-failed-attempt", "methodOrder": list(order)})
-        matched = not failures and matched_coverage(all_runs) and all(len(samples[m]) == 20 and warmups[m] == 3 for m in METHODS)
+        shared, stable = _compact(samples)
+        matched = (not failures and stable and matched_coverage(all_runs)
+                   and all(len(samples[m]) == 20 and warmups[m] == 3 for m in METHODS))
         control = control_result(fixture, oracle) if oracle is not None else {"status": "inconclusive", "executionAuthorization": False}
         h2 = None
         if fixture["h2"] and oracle is not None:
@@ -352,8 +372,11 @@ def run_experiment(manifest, registration, command=None):
                 paired_ppm.extend(s["costNanoseconds"]["rule"] * 1_000_000 // max(oracle_by_repetition[s["repetition"]], 1)
                                   for s in samples["additive-terminal"])
         results.append({"id": fixture["id"], "requestHash": fixture["requestHash"], "matchedCompleteCoverage": matched,
-                        "warmupsCompleted": warmups, "samples": samples, "failures": failures,
-                        "control": control, "h2": h2, "oracle": oracle, "executionAuthorization": False})
+                        "warmupsCompleted": warmups, "deterministicByMethod": shared,
+                        "samples": {m: [{**{key: entry[key] for key in SAMPLE_KEYS}, "costs": [entry["costNanoseconds"][name] for name in COST_ORDER]}
+                                        for entry in entries] for m, entries in samples.items()},
+                        "failures": failures, "control": control, "h2": h2,
+                        "oracleDigest": digest(oracle) if oracle is not None else None, "executionAuthorization": False})
     complete = all(result["matchedCompleteCoverage"] and result["control"]["status"] == "pass" for result in results)
     rule_median = statistics.median(rule_costs) if rule_costs else None
     oracle_median = statistics.median(oracle_costs) if oracle_costs else None
@@ -378,4 +401,7 @@ def run_experiment(manifest, registration, command=None):
                                                        "marginAtMost": RULE_INCREMENTAL_COST["marginAtMostPpm"]},
                             "costThresholdMet": threshold,
                             "scope": "descriptive frozen synthetic corpus only"},
+            "interpretation": {"registeredRuns": 1, "costOrder": COST_ORDER, "costUnit": "nanoseconds", "timings": "machine-bound; see environment",
+                               "feasibilityIsUtilityOrGeneralClaim": False,
+                               "oracle": "per-fixture report omitted; oracleDigest is the canonical digest of explore(request), recomputable"},
             "contextualEquivalence": "unknown", "runtimeSafety": "unknown", "scientificReview": "pending", "executionAuthorization": False}

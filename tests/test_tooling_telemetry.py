@@ -615,7 +615,7 @@ print('preserved')
         tasks = [x for x in selected if x['kind'] == 'task']
         self.assertEqual(alignment['sourceCounts']['tasks'], len(tasks))
         self.assertEqual(alignment['sourceCounts']['tasksChecked'], sum(x['state']=='closed' for x in tasks))
-        self.assertEqual({x['id'] for x in alignment['specs']}, {'SPEC-039','SPEC-040','SPEC-041','SPEC-042','SPEC-043','SPEC-044','SPEC-046','SPEC-047'})
+        self.assertEqual({x['id'] for x in alignment['specs']}, {'SPEC-039','SPEC-040','SPEC-041','SPEC-042','SPEC-043','SPEC-044','SPEC-046','SPEC-047','SPEC-054'})
         states = {x['key']:x['state'] for x in selected}
         self.assertEqual(states['SPEC-044/T004'], 'closed')
         self.assertEqual(states['SPEC-044/T017'], 'open')

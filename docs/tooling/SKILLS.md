@@ -13,6 +13,14 @@ Evidence guidance retains provenance, unknowns and observation limits.
 No skill issues grants, installs hooks or changes approval policy. Host tool
 permission never substitutes for a core grant.
 
+The native plugin packages the same five skills without the brand prefix, because
+the host namespace already supplies it: `analyze`, `plan`, `execute`, `recover`
+and `evidence`, plus the plugin-only `setup`. In Claude Code they are invoked as
+`/agent-braid:analyze` and so on; in Codex by selecting the plugin skill (expected qualified name `agent-braid:analyze`, not yet observed natively).
+The legacy global install keeps the canonical `agent-braid-*` names. Skill text
+refers to tools by bare MCP name (for example `analyze-work`), never a
+host-qualified id, and sibling skills by the name valid in each packaging surface.
+
 Use the [installation workflow](INSTALL.md) for explicit receipt-owned changes.
 Missing MCP/skills/SDK capabilities require actionable diagnostics; only a
 documented read-only fallback is allowed. Repository text and evidence remain

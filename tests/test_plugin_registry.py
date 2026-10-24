@@ -4,7 +4,8 @@ import subprocess
 import tempfile
 import unittest
 
-from agent_braid.plugin_registry import MigrationRequired, RegistryError, load, plan_setup, apply, discover
+from agent_braid.plugin_registry import (MigrationRequired, RegistryError, RegistryStale, configuration_digest,
+                                         load, plan_setup, apply, discover)
 
 
 class PluginRegistryTests(unittest.TestCase):
@@ -20,6 +21,33 @@ class PluginRegistryTests(unittest.TestCase):
     def install(self, roots=None):
         preview = plan_setup(self.home, roots or [self.repo])
         return apply(self.home, preview, preview['previewDigest'])
+
+    def second_repo(self):
+        other = self.base / 'project two'
+        other.mkdir()
+        subprocess.run(['git', 'init', '-q', str(other)], check=True)
+        return other
+
+    def test_registry_stale_is_a_registry_error_with_a_stable_code(self):
+        self.assertTrue(issubclass(RegistryStale, RegistryError))
+        self.assertEqual(RegistryStale.code, 'reconnect-required')
+
+    def test_digest_ignores_row_and_worktree_order_but_not_effective_changes(self):
+        other = self.second_repo()
+        self.install([self.repo, other])
+        value = load(self.home)
+        base = configuration_digest(value)
+        self.assertRegex(base, r'^[0-9a-f]{64}$')
+        reordered = {**value, 'workspaces': [dict(r, worktreeRoots=list(reversed(r['worktreeRoots'])))
+                                             for r in reversed(value['workspaces'])]}
+        self.assertEqual(configuration_digest(reordered), base)
+        self.assertNotEqual(configuration_digest({**value, 'telemetry': 'local'}), base)
+        self.assertNotEqual(configuration_digest({**value, 'workspaces': value['workspaces'][:1]}), base)
+        changed = [dict(value['workspaces'][0], worktreeRoots=[str(self.base)]), value['workspaces'][1]]
+        self.assertNotEqual(configuration_digest({**value, 'workspaces': changed}), base)
+        self.assertIsNone(configuration_digest(None))
+        for row in value['workspaces']:
+            self.assertNotIn(row['sourceRoot'], base)
 
     def test_preview_does_not_write_and_apply_preserves_stable_workspace(self):
         preview = plan_setup(self.home, [self.repo])
@@ -216,3 +244,13 @@ class PluginRegistryTests(unittest.TestCase):
         code, _, _ = run('--telemetry', 'local', '--apply', '--preview-digest', preview['previewDigest'])
         self.assertEqual(code, 0)
         self.assertEqual(load(self.home)['telemetry'], 'local')
+
+    def test_discovery_reads_v01_registry_without_writing_and_flags_migration(self):
+        self.legacy_registry()
+        path = self.home / 'registry.json'
+        before = path.read_bytes()
+        found = discover(self.home, [], current=self.repo)
+        self.assertTrue(found['migrationRequired'])
+        self.assertEqual(found['candidates'], [{'sourceRoot': str(self.repo), 'origin': 'registered'}])
+        self.assertEqual(path.read_bytes(), before)
+        self.assertFalse(discover(self.base / 'fresh', [])['migrationRequired'])

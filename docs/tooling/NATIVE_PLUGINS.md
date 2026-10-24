@@ -36,6 +36,15 @@ operations. Skills are discovered from the installed plugin; no copying to globa
 skills folders or `npx skills add` is needed. Five product skills come from the
 existing canonical bundle; a sixth, `setup`, owns onboarding independently.
 
+Plugin skills are unprefixed. In Claude Code invoke `/agent-braid:analyze`,
+`/agent-braid:plan`, `/agent-braid:evidence`, `/agent-braid:execute`,
+`/agent-braid:recover` or `/agent-braid:setup`; in Codex select the skill from the Agent Braid
+plugin (`$` or `/skills`); its qualified name is expected to be
+`agent-braid:analyze` and has not yet been observed in a native Codex session. The legacy global install keeps `agent-braid-*`.
+Skills and docs reference tools by bare MCP name (for example `analyze-work`):
+Claude Code keeps the hyphens in its host tool ids and Codex rewrites them to
+underscores. Codex does not display MCP prompts and the plugin publishes none.
+
 The optional shell entrypoint delegates to exactly these native commands:
 
 ```sh
@@ -63,7 +72,7 @@ output and rerun the same selection; native managers own idempotency.
 
 ## Setup and repository suggestions
 
-Open Agent Braid onboarding in Codex, or invoke `/agent-braid:setup` in Claude
+Open Agent Braid onboarding in Codex (select the Agent Braid `setup` skill), or invoke `/agent-braid:setup` in Claude
 Code. The setup skill first checks the bundled CLI, Git and configuration. It
 suggests the current repository and registered repositories. It can search project
 folders **you select**, to a bounded depth and entry count, without following

@@ -12,9 +12,9 @@ Relative links below were rebased from the repository root to `docs/`.
 
 ### Newest work
 
-As of 2026-10-23, all four lines below are merged into `develop`. Each keeps
-`executionAuthorization: false` and leaves its human, scientific and acceptance
-gates open.
+As of 2026-10-24, all lines below are merged into `develop`. Each keeps
+`executionAuthorization: false` (where applicable) and leaves its human, scientific
+and acceptance gates open.
 
 | Work | Pull request | What it adds |
 | --- | --- | --- |
@@ -22,6 +22,7 @@ gates open.
 | **Owned-work evaluation contracts** (SPEC-051) | [#659](https://github.com/jayanez/agent-braid/pull/659) | Pure operator-authority resolution and frozen-registration append validation for evaluating real owned work; no real sources, storage or training. |
 | **Effectful workload laboratory** (SPEC-024 T001–T004, ADR 0028) | [#660](https://github.com/jayanez/agent-braid/pull/660) | A closed, standard-library simulator that explores effectful request/transition state spaces with byte-bounded exploration and binds observations to replayable evidence. |
 | **Contextual proof obligations** (SPEC-025) | [#658](https://github.com/jayanez/agent-braid/pull/658) | A reconciled finite evidence packet for contextual safety checks; no theorem is accepted. |
+| **Plugin MCP local telemetry consent** (SPEC-046/SPEC-047) | [#669](https://github.com/jayanez/agent-braid/pull/669), [#670](https://github.com/jayanez/agent-braid/pull/670) | Persisted default-off local telemetry consent in the plugin registry (v0.2), set only through `plugin setup --telemetry`, and unpublished plugin `0.1.0-alpha.3`; `plugin discover` reads a v0.1 registry before migration. SPEC-047 T010/T017/T018 and the pilot stay open/NO-GO; nothing is published. |
 
 **Draft planning — [M4.6 Claude Code dynamic workflows](../ROADMAP.md#m46--claude-code-dynamic-workflows):**
 [SPEC-052](../specs/052-claude-workflow-gate/spec.md) specifies a read-only
@@ -126,7 +127,7 @@ lists every current assignment.
 | Research | [M2 — Confluence lab and scheduler](https://github.com/jayanez/agent-braid/milestone/4) | Closed internally. Bounded replay and finite observations do not establish general confluence. |
 | Research | [M3 — Braid semantics](https://github.com/jayanez/agent-braid/milestone/5) | Closed internally for `anchored-sequence-v1`; no general braid or Yang–Baxter theorem is claimed. |
 | Runtime | [M4 — Agent Braid runtime](https://github.com/jayanez/agent-braid/milestone/6) | Founder accepted bounded alpha engineering and evaluation as complete on 2026-10-09, with negative utility. Current GitHub tracking is shown in the [live M4 milestone](https://github.com/jayanez/agent-braid/milestone/6). Historical SPEC-021 G4 remains **NO-GO** on useful speedup under its frozen evidence. |
-| Integration | [M4.5 — AI tooling integrations for Codex and Claude Code](https://github.com/jayanez/agent-braid/milestone/19) | **Open.** Candidate-bound local paired procedures, package checks and technical controls passed within their stated domains. The combined source inventory is 78/106 tasks checked, 28 open, with three historically closed and five open spec parents; SPEC-039/040/042 retain their recorded bounded acceptance. Native-host acceptance, human interpretation, remaining founder decisions and milestone closure remain open. |
+| Integration | [M4.5 — AI tooling integrations for Codex and Claude Code](https://github.com/jayanez/agent-braid/milestone/19) | **Open.** Candidate-bound local paired procedures, package checks and technical controls passed within their stated domains. The combined source inventory is 78/120 tasks checked, 42 open, with three historically closed and six open spec parents (including draft SPEC-054 plugin surface naming); SPEC-039/040/042 retain their recorded bounded acceptance. Native-host acceptance, human interpretation, remaining founder decisions and milestone closure remain open. |
 | Publication | [PUB.1 — Public research preview](https://github.com/jayanez/agent-braid/milestone/7) | **Open.** The preview is public; historical publication authorization reconciliation remains separately tracked. |
 | Governance | [GOV.1 — Governance and adoption](https://github.com/jayanez/agent-braid/milestone/8) | **Open.** Governance and adoption evidence work continues; issue state does not confer human or founder approval. |
 | Research | [M3.5 — Native proposal predictor](https://github.com/jayanez/agent-braid/milestone/9) | **Open.** Synthetic-only T002/T004 software is complete; zero real pairs are admitted. T001/T007/T003/T005 and #180 remain open for source admission, protocol, real-feed adaptation, experiment and review. |

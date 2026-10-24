@@ -13,10 +13,11 @@ import threading
 from urllib.parse import urlsplit
 
 from . import __version__
-from .plugin_registry import MigrationRequired, RegistryError, home_path, load
+from .plugin_registry import (MigrationRequired, RegistryError, RegistryStale, configuration_digest,
+                              home_path, load)
 from . import tooling_mcp as core
 
-SCHEMA = 'agent-braid-plugin/v0.1'
+SCHEMA = 'agent-braid-plugin/v0.2'
 
 
 class WorkspaceService(core.ToolingService):
@@ -42,6 +43,7 @@ class WorkspaceService(core.ToolingService):
     def capabilities(self):
         value = super().capabilities()
         value['resources'] = [self.external(uri) for uri in value['resources']]
+        value.pop('prompts', None)  # the plugin surface advertises no prompts (SPEC-054 REQ-003)
         return value
 
 
@@ -51,6 +53,7 @@ class PluginRouter:
         self.plugin_root = Path(plugin_root).resolve() if plugin_root else None
         # A v0.1 registry (baseline None) serves bootstrap status only until setup migrates it.
         self.baseline = self._current()
+        self.baseline_digest = configuration_digest(self.baseline)
         self.snapshot = self.baseline or {'telemetry': 'off', 'workspaces': []}
         self.services = {}
         for row in self.snapshot['workspaces']:
@@ -71,10 +74,12 @@ class PluginRouter:
 
     def status(self):
         current = self._current()
+        current_digest = configuration_digest(current)
         return {'schema': SCHEMA, 'version': __version__,
                 'status': ('migration-required' if current is None else
                            'configured' if self.services else 'setup-required'),
-                'reconnectRequired': current != self.baseline,
+                'reconnectRequired': current_digest != self.baseline_digest,
+                'baselineDigest': self.baseline_digest, 'currentDigest': current_digest,
                 'telemetry': {'configuredMode': current['telemetry'] if current else 'off',
                               'activeMode': self.snapshot['telemetry'],
                               'retentionDays': 30, 'automaticUpload': False},
@@ -84,6 +89,11 @@ class PluginRouter:
                 'runtimeIncluded': bool(self.plugin_root and Path(sys.executable).resolve().is_relative_to(self.plugin_root)),
                 'workspaces': copy.deepcopy(self.snapshot['workspaces']),
                 'executionAuthorization': False}
+
+    def _require_current(self):
+        if configuration_digest(self._current()) != self.baseline_digest:
+            raise RegistryStale('Registry changed since this connection started: reconnect the MCP, '
+                                'then read plugin-status (code reconnect-required)')
 
     def _refusal(self, name, message, identifier=None):
         return {'schemaVersion': SCHEMA, 'workspaceId': identifier, 'operation': name,
@@ -103,11 +113,10 @@ class PluginRouter:
                         'status': 'ok', 'summary': 'Read-only plugin configuration status',
                         'result': self.status(), 'evidenceRefs': [], 'limits': ['Registration is not execution authority'],
                         'provenance': {'executionAuthorization': False}}
+            self._require_current()
             identifier = args.get('workspaceId')
             if not isinstance(identifier, str) or identifier not in self.services:
                 raise RegistryError('Select an explicitly registered workspaceId using workspaces; run setup if none exists')
-            if self._current() != self.baseline:
-                raise RegistryError('Registry changed; reconnect MCP before dispatch')
             service = self.services[identifier]
             if not self.admission.acquire(blocking=False):
                 raise RegistryError('Plugin admission is busy; inspect existing work before retrying')
@@ -120,6 +129,10 @@ class PluginRouter:
                 return dict(value, schemaVersion=SCHEMA, workspaceId=identifier)
             finally:
                 self.admission.release()
+        except RegistryStale as exc:
+            identifier = args.get('workspaceId') if isinstance(args, dict) else None
+            refusal = self._refusal(name, str(exc), identifier if isinstance(identifier, str) and identifier in self.services else None)
+            return dict(refusal, result={'code': exc.code})
         except (RegistryError, core.ToolingError, OSError, TypeError, ValueError):
             return self._refusal(name, 'Plugin request refused: check workspace, arguments, registry and reconnect state')
 
@@ -129,8 +142,7 @@ class PluginRouter:
         parsed = urlsplit(uri)
         if parsed.scheme != 'agent-braid-plugin' or parsed.netloc not in self.services or parsed.query or parsed.fragment:
             raise core.ToolingError('Unknown plugin resource')
-        if self._current() != self.baseline:
-            raise core.ToolingError('Registry changed; reconnect MCP')
+        self._require_current()
         return self.services[parsed.netloc].read_resource(uri, cancelled)
 
 
@@ -191,25 +203,11 @@ def create_server(router):
             raise
         return types.ReadResourceResult(contents=[types.TextResourceContents(uri=str(params.uri), mimeType=mime, text=value)])
 
-    async def list_prompts(_ctx, _params):
-        return types.ListPromptsResult(prompts=[types.Prompt(name=name, description=text)
-            for name, text in core._PROMPT_TEXT.items()])
-
-    async def get_prompt(_ctx, params):
-        text = core._PROMPT_TEXT.get(params.name)
-        if text is None:
-            raise core.ToolingError('Unknown plugin prompt')
-        core._bounded_input(params.arguments or {})
-        return types.GetPromptResult(description='Read-only workspace guidance', messages=[
-            types.PromptMessage(role='user', content=types.TextContent(
-                text='Select an explicitly registered workspaceId before calling a tool. ' + text))])
-
     return Server('agent-braid-plugin', version=__version__,
         instructions='First read plugin-status/workspaces. Run the packaged setup skill when setup is required. Every delegated tool requires an explicit registered workspaceId. Never infer roots or grant authority. Registry changes require reconnecting.',
         on_list_tools=list_tools, on_call_tool=call_tool,
         on_list_resources=list_resources, on_read_resource=read_resource,
-        on_list_resource_templates=list_resource_templates,
-        on_list_prompts=list_prompts, on_get_prompt=get_prompt)
+        on_list_resource_templates=list_resource_templates)
 
 
 async def serve(home=None, plugin_root=None):

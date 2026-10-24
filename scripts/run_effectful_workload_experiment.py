@@ -26,7 +26,7 @@ def main(argv=None):
         manifest = load_file(args.manifest)
         frozen = load_file(registration)
         report = run_experiment(manifest, frozen, command=["scripts/run_effectful_workload_experiment.py", *(sys.argv[1:] if argv is None else argv)])
-        data = json.dumps(report, sort_keys=True, indent=2, ensure_ascii=True, allow_nan=False).encode("ascii") + b"\n"
+        data = json.dumps(report, sort_keys=True, separators=(",", ":"), ensure_ascii=True, allow_nan=False).encode("ascii") + b"\n"
         write_exclusive(args.output, data, args.manifest)
     except (OSError, ValueError, TypeError, KeyError) as exc:
         parser.exit(2, f"experiment rejected: {exc}\n")
