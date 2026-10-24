@@ -139,7 +139,15 @@
         {
           "given": "a built plugin candidate",
           "id": "SC-002",
-          "obtained_evidence": [],
+          "obtained_evidence": [
+            {
+              "command": "python -m unittest tests.test_plugin_skill_naming tests.test_plugin_package",
+              "limits": "Fixture and unit evidence on macOS arm64 only; no native Codex or Claude Code observation (T009), no owner review (T001), no release or publication",
+              "outcome": "22 tests OK (1 skipped); negative controls for server key, names and directories fail as required",
+              "path": "specs/054-plugin-surface-naming/evidence/implementation-result.md",
+              "sha256": "af71ab5ea045f7c80efcd4fb315701f73a9c258e4429c7fb42dc60df26529332"
+            }
+          ],
           "planned_evidence": "Candidate-bound procedure_002 record: command, hashes, environment, expected and actual outcome, negative controls and limits.",
           "test_file": "specs/054-plugin-surface-naming/validation-plan.md",
           "test_name": "procedure_002",
@@ -155,7 +163,15 @@
         {
           "given": "a plugin MCP connection with two registered workspaces",
           "id": "SC-003",
-          "obtained_evidence": [],
+          "obtained_evidence": [
+            {
+              "command": "python -m unittest tests.test_plugin_mcp",
+              "limits": "Fixture and unit evidence on macOS arm64 only; no native Codex or Claude Code observation (T009), no owner review (T001), no release or publication",
+              "outcome": "17 tests OK; SDK client sees no prompts capability",
+              "path": "specs/054-plugin-surface-naming/evidence/implementation-result.md",
+              "sha256": "af71ab5ea045f7c80efcd4fb315701f73a9c258e4429c7fb42dc60df26529332"
+            }
+          ],
           "planned_evidence": "Candidate-bound procedure_003 record: command, hashes, environment, expected and actual outcome, negative controls and limits.",
           "test_file": "specs/054-plugin-surface-naming/validation-plan.md",
           "test_name": "procedure_003",
@@ -171,7 +187,15 @@
         {
           "given": "the canonical skill sources and a built plugin",
           "id": "SC-004",
-          "obtained_evidence": [],
+          "obtained_evidence": [
+            {
+              "command": "python -m unittest tests.test_plugin_skill_naming tests.test_plugin_package",
+              "limits": "Fixture and unit evidence on macOS arm64 only; no native Codex or Claude Code observation (T009), no owner review (T001), no release or publication",
+              "outcome": "22 tests OK (1 skipped); declared substitutions only",
+              "path": "specs/054-plugin-surface-naming/evidence/implementation-result.md",
+              "sha256": "af71ab5ea045f7c80efcd4fb315701f73a9c258e4429c7fb42dc60df26529332"
+            }
+          ],
           "planned_evidence": "Candidate-bound procedure_004 record: command, hashes, environment, expected and actual outcome, negative controls and limits.",
           "test_file": "specs/054-plugin-surface-naming/validation-plan.md",
           "test_name": "procedure_004",
@@ -187,7 +211,15 @@
         {
           "given": "the portable server and a legacy receipt install",
           "id": "SC-005",
-          "obtained_evidence": [],
+          "obtained_evidence": [
+            {
+              "command": "python -m unittest tests.test_tooling_mcp tests.test_tooling_mcp_acceptance tests.test_installed_tooling tests.test_tooling_install tests.test_tooling_hosts tests.test_tooling_assets tests.test_plugin_legacy",
+              "limits": "Fixture and unit evidence on macOS arm64 only; no native Codex or Claude Code observation (T009), no owner review (T001), no release or publication",
+              "outcome": "106 tests OK, unchanged",
+              "path": "specs/054-plugin-surface-naming/evidence/implementation-result.md",
+              "sha256": "af71ab5ea045f7c80efcd4fb315701f73a9c258e4429c7fb42dc60df26529332"
+            }
+          ],
           "planned_evidence": "Candidate-bound procedure_005 record: command, hashes, environment, expected and actual outcome, negative controls and limits.",
           "test_file": "specs/054-plugin-surface-naming/validation-plan.md",
           "test_name": "procedure_005",
@@ -203,7 +235,15 @@
         {
           "given": "an `0.1.0-alpha.3` installation with a v0.2 registry and existing results",
           "id": "SC-006",
-          "obtained_evidence": [],
+          "obtained_evidence": [
+            {
+              "command": "python -m unittest tests.test_plugin_update_rollback tests.test_plugin_registry",
+              "limits": "Fixture and unit evidence on macOS arm64 only; no native Codex or Claude Code observation (T009), no owner review (T001), no release or publication",
+              "outcome": "Registry and results digests identical across alpha.3 -> alpha.4 -> alpha.3 in owned fixtures",
+              "path": "specs/054-plugin-surface-naming/evidence/implementation-result.md",
+              "sha256": "af71ab5ea045f7c80efcd4fb315701f73a9c258e4429c7fb42dc60df26529332"
+            }
+          ],
           "planned_evidence": "Candidate-bound procedure_006 record: command, hashes, environment, expected and actual outcome, negative controls and limits.",
           "test_file": "specs/054-plugin-surface-naming/validation-plan.md",
           "test_name": "procedure_006",
@@ -219,7 +259,15 @@
         {
           "given": "telemetry `local` and the candidate plugin",
           "id": "SC-007",
-          "obtained_evidence": [],
+          "obtained_evidence": [
+            {
+              "command": "python -m unittest tests.test_tooling_telemetry",
+              "limits": "Fixture and unit evidence on macOS arm64 only; no native Codex or Claude Code observation (T009), no owner review (T001), no release or publication",
+              "outcome": "OK, telemetry operations and contracts unchanged",
+              "path": "specs/054-plugin-surface-naming/evidence/implementation-result.md",
+              "sha256": "af71ab5ea045f7c80efcd4fb315701f73a9c258e4429c7fb42dc60df26529332"
+            }
+          ],
           "planned_evidence": "Candidate-bound procedure_007 record: command, hashes, environment, expected and actual outcome, negative controls and limits.",
           "test_file": "specs/054-plugin-surface-naming/validation-plan.md",
           "test_name": "procedure_007",
@@ -235,7 +283,15 @@
         {
           "given": "updated documentation and packaged skills",
           "id": "SC-008",
-          "obtained_evidence": [],
+          "obtained_evidence": [
+            {
+              "command": "git grep -nE \"/agent-braid:|agent-braid-plan|agent-braid-analyze\" -- docs/tooling/NATIVE_PLUGINS.md integrations/agent-braid/plugin README.md",
+              "limits": "Fixture and unit evidence on macOS arm64 only; no native Codex or Claude Code observation (T009), no owner review (T001), no release or publication",
+              "outcome": "Policy invocation forms present; no Codex MCP prompt claim found",
+              "path": "specs/054-plugin-surface-naming/evidence/implementation-result.md",
+              "sha256": "af71ab5ea045f7c80efcd4fb315701f73a9c258e4429c7fb42dc60df26529332"
+            }
+          ],
           "planned_evidence": "Candidate-bound procedure_008 record: command, hashes, environment, expected and actual outcome, negative controls and limits.",
           "test_file": "specs/054-plugin-surface-naming/validation-plan.md",
           "test_name": "procedure_008",

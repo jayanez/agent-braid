@@ -9,35 +9,35 @@ authorize concurrent agents.
   `docs/adr/0030-native-plugin-surface-naming.md`. Verification: procedure_001.
   Evidence: owner review record and ADR decision.
 
-- [ ] T002 (REQ-002 / SC-002): Add a package check that pins plugin, marketplace,
+- [x] T002 (REQ-002 / SC-002): Add a package check that pins plugin, marketplace,
   server-key and tool names. Dependencies: T001. Files:
   `scripts/build_native_plugin.py`, plugin package tests. Verification:
   procedure_002. Evidence: test output with negative controls.
 
-- [ ] T003 (REQ-003 / SC-003): Remove prompts from the plugin MCP server and
+- [x] T003 (REQ-003 / SC-003): Remove prompts from the plugin MCP server and
   publish `agent-braid-plugin/v0.2`. Dependencies: T001. Files:
   `agent_braid/plugin_mcp.py`, `tests/test_plugin_mcp.py`. Verification:
   procedure_003. Evidence: SDK client test output.
 
-- [ ] T004 (REQ-004 / SC-004): Package unprefixed plugin skills with recorded
+- [x] T004 (REQ-004 / SC-004): Package unprefixed plugin skills with recorded
   substitutions. Dependencies: T001. Files: `scripts/build_native_plugin.py`,
   plugin inventory tests. Verification: procedure_004. Evidence: built package
   inventory and test output.
 
-- [ ] T005 (REQ-005 / SC-005): Regression-check the portable server and legacy
+- [x] T005 (REQ-005 / SC-005): Regression-check the portable server and legacy
   install. Dependencies: T003, T004. Files: existing tooling MCP and install
   tests. Verification: procedure_005. Evidence: unchanged test results.
 
-- [ ] T006 (REQ-006 / SC-006): Set version `0.1.0-alpha.4`, write release notes
+- [x] T006 (REQ-006 / SC-006): Set version `0.1.0-alpha.4`, write release notes
   and the migration/rollback note, and exercise update from alpha.3 in owned
   fixtures. Dependencies: T002–T005. Verification: procedure_006. Evidence:
   update/rollback fixture record.
 
-- [ ] T007 (REQ-007 / SC-007): Confirm telemetry operations and contracts are
+- [x] T007 (REQ-007 / SC-007): Confirm telemetry operations and contracts are
   unchanged. Dependencies: T003. Files: telemetry tests. Verification:
   procedure_007. Evidence: test output.
 
-- [ ] T008 (REQ-008 / SC-008): Update English documentation and the SPEC-046
+- [x] T008 (REQ-008 / SC-008): Update English documentation and the SPEC-046
   interface contract to plugin interface v0.2. Dependencies: T003, T004.
   Verification: procedure_008. Evidence: documentation diff and search record.
 
@@ -46,6 +46,6 @@ authorize concurrent agents.
   Dependencies: T006, T008. Verification: procedure_009. Evidence: native
   observation record with environment and limits. Blocked on owner-run sessions.
 
-- [ ] T010 (all): Run `--profile pr` on the stable candidate, record results and
+- [x] T010 (all): Run `--profile pr` on the stable candidate, record results and
   request owner release decision. Dependencies: T002–T009. Evidence: profile
   receipt. Release and publication remain separate owner decisions.
