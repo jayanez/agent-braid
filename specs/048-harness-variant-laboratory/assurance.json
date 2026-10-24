@@ -61,6 +61,7 @@
       "docs/adr/0026-pure-owned-work-validation.md": "dc6a045316c37201767adba79ad59779cff4646c9d05e4a2306dfaec481e4ccd",
       "docs/adr/0027-braid-harness-offline-foundations.md": "076e524bb4b31a0075ff72c605a438edc9dcb70aa09dec9583ef21db5362b046",
       "docs/adr/0028-closed-effectful-workload-simulation.md": "be8bb2fefc702a2d85b804f70141f68f25b68e45118d25b4f4fa0e99d62eca85",
+      "docs/adr/0030-native-plugin-surface-naming.md": "24af6caa6cd8cdceb5f06a1f43638ff9c6b3abe338731e2bbeafa4a88d156413",
       "docs/architecture/AGENT_INTERACTION_METADATA.md": "0118d7f16c390fc4c1ff027b503a4eaba8a747edf3f6d7b088559f8870e27780",
       "docs/architecture/ASSURANCE_LEVELS.md": "3e86d0060ef566ba8d1e1690606fc06e8fee172f187a1b9779b13d27f0f915d9",
       "docs/architecture/CONFLUENCE_CERTIFICATE.md": "fd12a8f1a1477835848581b0f4ccd52f76d3f22dd96a3abaccb9074733464a8e",
